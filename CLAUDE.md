@@ -79,6 +79,8 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 
 작업폴더에 자동 생성되는 폴더(모두 gitignore): `HF/`(모델·데이터셋 캐시),
 `data_cache/`(토큰 바이너리, 크기별 재사용), `runs/`(ckpt·logs).
+`paths.py` 는 외부 `HF_HOME` 을 무시하고 HF 캐시를 **강제로 `HF/`** 로 돌린다
+(허브 캐시 = `HF/hub`). 다른 위치를 쓰려면 실행 전 `TINYLM_HF=<경로>`.
 
 ## 빌드 · 실행
 
@@ -123,7 +125,8 @@ python run100m.py generate --arch tied --prompt "안녕하세요" --max-new 80
 `grill-with-docs`(설계 반론 검증), `impact-analysis`(변경 영향). `.claude/project.json` 이
 없어 프로젝트 상수는 기본값으로 동작한다.
 
-## 직전 버전 보존
+## 직전 버전 보존 / 기타 폴더
 
-`architecture_v4/`(NaN 발산본), `architecture_v5/`(단일파일 v5)는 이력 보존용이다.
+`architecture/`(단일파일 v5 이력), `spec/`(spec_v4), `util/`(rank_spectrum_v3),
+`handoff/`(세션 인수인계), `article/`(참고 논문)로 정리돼 있다.
 신규 작업은 `tinylm/` 에서만 한다.

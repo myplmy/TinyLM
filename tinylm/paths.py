@@ -15,14 +15,17 @@ from pathlib import Path
 
 ROOT = Path(os.environ.get("TINYLM_DIR", Path(__file__).resolve().parents[1]))
 
-HF_DIR     = ROOT / "HF"            # 모델·데이터셋 로컬 캐시
+HF_DIR     = Path(os.environ.get("TINYLM_HF", ROOT / "HF"))  # 모델·데이터셋 로컬 캐시
 DATA_CACHE = ROOT / "data_cache"   # 토큰화된 바이너리(크기별 재사용)
 RUNS       = ROOT / "runs"         # 체크포인트·로그
 
-# HF 캐시를 작업폴더로. 사용자가 이미 환경변수를 잡았으면 그것을 존중(setdefault).
-os.environ.setdefault("HF_HOME", str(HF_DIR))
-os.environ.setdefault("HF_HUB_CACHE", str(HF_DIR / "hub"))
-os.environ.setdefault("HF_DATASETS_CACHE", str(HF_DIR / "datasets"))
+# HF 캐시를 '강제로' 작업폴더 하위(HF/)로 돌린다.
+# 사용자 환경의 외부 HF_HOME 이 다른 곳을 가리켜도 무시하고 여기로 받는다.
+# (원래 위치를 쓰고 싶으면 실행 전 TINYLM_HF=<경로> 로 지정.)
+os.environ["HF_HOME"] = str(HF_DIR)
+os.environ["HF_HUB_CACHE"] = str(HF_DIR / "hub")
+os.environ["HF_DATASETS_CACHE"] = str(HF_DIR / "datasets")
+os.environ.pop("TRANSFORMERS_CACHE", None)   # 옛 변수가 외부를 가리키면 제거
 
-for _d in (HF_DIR, DATA_CACHE, RUNS, RUNS / "ckpt", RUNS / "logs"):
+for _d in (HF_DIR, HF_DIR / "hub", DATA_CACHE, RUNS, RUNS / "ckpt", RUNS / "logs"):
     _d.mkdir(parents=True, exist_ok=True)

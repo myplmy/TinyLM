@@ -125,16 +125,21 @@ def grid_sweep(preset="m100", arch="tied", data="ko-en", n_tokens="50M", *,
     return {"method": "grid", "arch": arch, "preset": preset, "rows": rows, "suggested_lr": pick}
 
 
-def lr_find(method="range", **kw):
+def lr_find(method="range", *, preset="m100", arch="tied", data="ko-en", n_tokens="50M",
+            micro_bs=8, seq=1024, accum=8, ckpt=True, device=None,
+            range_steps=150, lr_min=1e-5, lr_max=1e-1,
+            grid_lrs=(3e-4, 6e-4, 1e-3, 2e-3), grid_steps=60, grad_thr=10.0):
+    """method: 'range'(기본) / 'grid'(고급) / 'both'. 함수별 인자를 명시적으로 라우팅한다."""
     LOGS.mkdir(parents=True, exist_ok=True)
     results = {}
+    common = dict(preset=preset, arch=arch, data=data, n_tokens=n_tokens,
+                  micro_bs=micro_bs, seq=seq, accum=accum, ckpt=ckpt, device=device)
     if method in ("range", "both"):
-        results["range"] = range_test(**kw)
+        results["range"] = range_test(steps=range_steps, lr_min=lr_min, lr_max=lr_max,
+                                      grad_thr=grad_thr, **common)
     if method in ("grid", "both"):
-        gkw = {k: v for k, v in kw.items()
-               if k in ("preset", "arch", "data", "n_tokens", "micro_bs", "seq",
-                        "accum", "ckpt", "device", "lrs", "steps", "grad_thr")}
-        results["grid"] = grid_sweep(**gkw)
+        results["grid"] = grid_sweep(lrs=tuple(grid_lrs), steps=grid_steps,
+                                     grad_thr=grad_thr, **common)
     (LOGS / "lrfind.json").write_text(json.dumps(results, indent=2, default=str))
     sug = (results.get("grid") or results.get("range") or {}).get("suggested_lr")
     print(f"\n[lrfind] 최종 권장 lr ≈ {sug}   (본 실행 --lr 로 사용)")

@@ -95,11 +95,11 @@ def main():
 
     elif a.cmd == "lrfind":
         from .train import lr_find
-        lrs = tuple(float(x) for x in a.lrs.split(","))
+        grid_lrs = tuple(float(x) for x in a.lrs.split(","))
         lr_find(method=a.method, preset=preset, arch=a.arch, data=a.data,
                 n_tokens=a.tokens, micro_bs=a.micro_bs, seq=a.seq, accum=a.accum,
-                ckpt=ckpt, lrs=lrs, steps=a.lrfind_steps,
-                lr_min=a.lr_min, lr_max=a.lr_max)
+                ckpt=ckpt, range_steps=a.lrfind_steps, lr_min=a.lr_min, lr_max=a.lr_max,
+                grid_lrs=grid_lrs)
 
     elif a.cmd == "generate":
         from .infer import generate
