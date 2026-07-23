@@ -104,9 +104,15 @@ def grid_sweep(preset="m100", arch="tied", data="ko-en", n_tokens="50M", *,
         torch.manual_seed(1337)
         cfg, model = _make(preset, arch, seq, ckpt, device)
         opt = torch.optim.AdamW(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8)
+        base = [g["lr"] for g in opt.param_groups]
+        warm = max(5, steps // 5)     # 실제 학습처럼 warmup 램프 — 목표 LR을 cold로 때려
+                                       # 오발산하는 것을 막는다(안 그러면 grid가 부당하게 가혹).
         tr = Loader("train", micro_bs, seq, device, meta["dir"], seed=1234)
         gmax, first, last, diverged = 0.0, None, None, False
         for s in range(steps):
+            f = min(1.0, (s + 1) / warm)
+            for g, b in zip(opt.param_groups, base):
+                g["lr"] = b * f
             loss, gn = _step(model, opt, tr, accum, device, cfg)
             if first is None:
                 first = loss
