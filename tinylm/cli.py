@@ -136,7 +136,7 @@ def main():
         from .eval import evaluate
         from .infer import load_model
         meta = prepare(a.data, n_tok)
-        ckp = a.ckpt_path or str(paths.RUNS / "ckpt" / (f"{a.tag}.pt" if a.tag else f"{base}_{a.arch}.pt"))
+        ckp = a.ckpt_path or str(paths.RUNS / "ckpt" / (f"{base}_{a.tag}.pt" if a.tag else f"{base}_{a.arch}.pt"))
         model, cfg, device = load_model(a.arch, ckp)
         print(model.report())
         va = Loader("val", a.micro_bs, a.seq, device, meta["dir"], seed=99)
@@ -158,7 +158,7 @@ def main():
         from .infer import generate
         if not a.prompt:
             p.error("generate 에는 --prompt 가 필요합니다")
-        gckp = a.ckpt_path or str(paths.RUNS / "ckpt" / (f"{a.tag}.pt" if a.tag else f"{base}_{a.arch}.pt"))
+        gckp = a.ckpt_path or str(paths.RUNS / "ckpt" / (f"{base}_{a.tag}.pt" if a.tag else f"{base}_{a.arch}.pt"))
         generate(a.prompt, arch=a.arch, data=a.data, max_new=a.max_new,
                  temperature=a.temp, top_k=a.top_k, ckpt_path=gckp)
 

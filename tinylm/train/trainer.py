@@ -86,7 +86,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     warm = max(5, min(steps // 10, 100))
 
     tokstr = tokstr or (f"{int(n_tokens)//1_000_000}M" if n_tokens >= 10**6 else str(int(n_tokens)))
-    name = tag or f"{preset}_{data}_{tokstr}_{arch}"   # 스케일별 분리 → 클로버 방지
+    _base = f"{preset}_{data}_{tokstr}"                # 스케일 프리픽스
+    name = f"{_base}_{tag}" if tag else f"{_base}_{arch}"   # 태그도 스케일별 분리 → 클로버·오염 방지
     start = 0
     ck = CKPT / f"{name}.pt"
     ck_best = CKPT / f"{name}_best.pt"
