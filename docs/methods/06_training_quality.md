@@ -13,7 +13,7 @@
 | **LR 재조정 (기본 6e-4)** | ✅ | v5 | d=768·유효배치 131K에 2e-3은 과다 | — | 발산 원인이던 LR 하향 |
 | **자동 LR 탐색** | 🧪 | v6 (`lrfind`) | range test(발산의 1/3) + grid 스윕 | — | grid는 warmup 램프 포함(cold-start 오판 방지) |
 | **베스트 체크포인트** | ✅ | v6 | val 최저 시 `{name}_best.pt` 저장(raw 기준) | 디스크 | 스케일별 이름으로 클로버 방지 |
-| **EMA / 체크포인트 병합** | 🧪 | v6 (`--ema`) | 가중치 지수평균 → 무료 품질 향상 | **decay 스케일 주의**: 0.999는 유효창 ~1000스텝, 짧은 런엔 과함 | 주 val은 raw 보고, EMA는 부가 `[ema]`. 근거 WSM |
+| **EMA / 체크포인트 병합** | 🧪 | v6 (`--ema`) | 가중치 지수평균 → 무료 품질 향상 | **decay 스케일 주의** | 주 val은 raw 보고, EMA는 부가 `[ema]`. **실측(P002 t_base): 0.999@2289스텝은 무효**(final ema 4.30≫raw 3.96). 짧은 런은 0.99 권장 |
 | **WSD 스케줄** | 🧪 | v6 (`--sched wsd`) | 긴 plateau + 마지막 20% 감쇠 | — | plateau 체크포인트 재사용(도메인 분기). 근거 MiniCPM |
 | **조기 종료** | 🧪 | v6 (`--early-stop`) | val 개선 없이 N회 → 종료 | 본 실행은 undertrained라 효과 제한 | LR/아키텍처 스윕용 |
 | **train-val 모니터** | ✅ | v6 | 매 eval에 `val-train` 출력 | — | 과적합 신호 감시(현재는 undertraining) |

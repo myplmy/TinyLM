@@ -144,7 +144,7 @@ def main():
 
     elif a.cmd == "compare":
         from .eval import compare
-        compare(base)
+        compare(base, a.tag)
 
     elif a.cmd == "lrfind":
         from .train import lr_find

@@ -8,15 +8,29 @@ from .. import paths
 LOGS = paths.RUNS / "logs"
 
 
-def compare(base=None):
-    names = {"dense": f"{base}_dense" if base else "dense",
-             "tied":  f"{base}_tied"  if base else "tied"}
+def compare(base=None, tied_tag=None):
+    """dense(base) vs tied 비교. tied_tag 를 주면 그 조건 로그와 비교한다.
+    태그 로그는 신규 이름 {base}_{tag} 우선, 없으면 구 이름 {tag} 로 폴백."""
+    def _resolve(kind):
+        if kind == "dense":
+            cands = [f"{base}_dense"] if base else ["dense"]
+        elif tied_tag:
+            cands = [f"{base}_{tied_tag}", tied_tag] if base else [tied_tag]
+        else:
+            cands = [f"{base}_tied"] if base else ["tied"]
+        for c in cands:
+            if (LOGS / f"{c}.json").exists():
+                return c
+        return cands[0]
+
+    names = {"dense": _resolve("dense"), "tied": _resolve("tied")}
     out = {}
     for a in ("dense", "tied"):
         p = LOGS / f"{names[a]}.json"
         if not p.exists():
             print(f"[compare] {p} 없음. 먼저 학습하세요."); return
         out[a] = json.loads(p.read_text())
+    print(f"  (dense={names['dense']}.json  tied={names['tied']}.json)")
     d, t = out["dense"], out["tied"]
     MB = lambda n: n * 1.95 / 8 / 1024**2
     dl, tl = d["final"]["val_loss"], t["final"]["val_loss"]
