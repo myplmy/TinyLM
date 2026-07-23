@@ -56,6 +56,7 @@ def main():
     p.add_argument("--lora-rank", type=int, default=0, help="공유 MLP 층별 LoRA rank(0=끔)")
     p.add_argument("--lora-bits", type=int, default=2, choices=[2, 16])
     p.add_argument("--tag", default=None, help="체크포인트/로그 파일명(실험 조건 구분용)")
+    p.add_argument("--vs", default=None, help="compare에서 tied vs tied 비교할 상대 태그")
     p.add_argument("--mlp-film", action="store_true", help="공유 MLP에 층별 FiLM(거의 공짜 조건화)")
     p.add_argument("--force-dense", action="store_true", help="all 실행 시 dense 재학습 강제(기본은 재사용)")
     # lrfind
@@ -144,7 +145,7 @@ def main():
 
     elif a.cmd == "compare":
         from .eval import compare
-        compare(base, a.tag)
+        compare(base, a.tag, a.vs)
 
     elif a.cmd == "lrfind":
         from .train import lr_find

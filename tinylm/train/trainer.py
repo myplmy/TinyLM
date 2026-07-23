@@ -68,6 +68,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         teacher.eval(); teacher.set_anneal(1.0)
         for p in teacher.parameters():
             p.requires_grad_(False)
+        if compile_:
+            teacher = torch.compile(teacher)   # KD 가속: 교사 forward도 컴파일(eager→컴파일)
         print(f"[kd] 교사 로드 완료 (alpha={kd_alpha}, T={kd_temp})")
 
     if compile_:
@@ -78,7 +80,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         model = torch.compile(model, mode=compile_mode)
     print(model.report())
     eff = micro_bs * accum * seq
-    print(f"[{arch}] device={device}  {steps}step x {eff/1e3:.0f}K tok = "
+    print(f"[{label}] device={device}  {steps}step x {eff/1e3:.0f}K tok = "
           f"{steps*eff/1e6:.0f}M 토큰  (sched={sched} ema={ema} lora_r={lora_rank})\n")
 
     opt = torch.optim.AdamW(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8)
@@ -88,6 +90,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     tokstr = tokstr or (f"{int(n_tokens)//1_000_000}M" if n_tokens >= 10**6 else str(int(n_tokens)))
     _base = f"{preset}_{data}_{tokstr}"                # 스케일 프리픽스
     name = f"{_base}_{tag}" if tag else f"{_base}_{arch}"   # 태그도 스케일별 분리 → 클로버·오염 방지
+    label = tag or arch                                # 로그 표시용(예: t_kdinit / tied)
     start = 0
     ck = CKPT / f"{name}.pt"
     ck_best = CKPT / f"{name}_best.pt"
@@ -218,6 +221,6 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "lora_rank": lora_rank, "wall_sec": time.time() - t0}
     res["tag"] = name
     (LOGS / f"{name}.json").write_text(json.dumps(res, indent=2))
-    print(f"\n[{arch}] 최종 val_loss {final['val_loss']:.4f}  ppl {final['ppl']:.2f}  "
+    print(f"\n[{label}] 최종 val_loss {final['val_loss']:.4f}  ppl {final['ppl']:.2f}  "
           f"best {best_val:.4f}@{best_step}  ({n_par/1e6:.1f}M, {(time.time()-t0)/60:.1f}분, skip {n_skip})")
     return res
