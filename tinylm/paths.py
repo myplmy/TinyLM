@@ -26,6 +26,7 @@ os.environ["HF_HOME"] = str(HF_DIR)
 os.environ["HF_HUB_CACHE"] = str(HF_DIR / "hub")
 os.environ["HF_DATASETS_CACHE"] = str(HF_DIR / "datasets")
 os.environ.pop("TRANSFORMERS_CACHE", None)   # 옛 변수가 외부를 가리키면 제거
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")  # 단편화 완화
 
 for _d in (HF_DIR, HF_DIR / "hub", DATA_CACHE, RUNS, RUNS / "ckpt", RUNS / "logs"):
     _d.mkdir(parents=True, exist_ok=True)

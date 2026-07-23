@@ -38,6 +38,11 @@ class TMTConfig:
     quant_anneal: float = 1.0
     quantize_embedding: bool = True
 
+    # --- relaxation: RRT식 층별 LoRA (공유 MLP 위, 배포 메모리 최소) ---
+    mlp_lora_rank: int = 0            # 0이면 비활성
+    mlp_lora_bits: int = 2           # 2=삼진(저비트), 16=fp16
+    mlp_film: bool = False           # 층별 FiLM(공유 MLP 은닉 변조, 거의 공짜)
+
     # --- misc ---
     max_seq_len: int = 2048
     rope_theta: float = 10000.0
@@ -84,7 +89,14 @@ def _m100(seq, ckpt):
                      micro_group=128, max_seq_len=seq, grad_checkpoint=ckpt)
 
 
-PRESETS = {"tiny": _tiny, "m100": _m100}
+def _m100d(seq, ckpt):   # 깊고 얇게: 중간층 24, g6 (MLP 그룹 4개는 동일, 깊이만 증가)
+    return TMTConfig(vocab_size=VOCAB, dim=768, ffn_dim=2048, n_q_heads=12, n_kv_heads=3,
+                     emb_rank=256, n_prelude=2, n_middle=24, n_coda=2,
+                     mlp_group=6, cla_group=2, n_modes=1, mode_rank=0,
+                     micro_group=128, max_seq_len=seq, grad_checkpoint=ckpt)
+
+
+PRESETS = {"tiny": _tiny, "m100": _m100, "m100d": _m100d}
 
 
 def build_config(preset: str, arch: str, seq: int, ckpt: bool = True) -> TMTConfig:

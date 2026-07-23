@@ -43,6 +43,19 @@ def main():
     p.add_argument("--tiny", action="store_true", help="tiny 프리셋(파이프라인 확인용)")
     p.add_argument("--no-ckpt", action="store_true", help="gradient checkpointing 끄기")
     p.add_argument("--compile", action="store_true", help="torch.compile 사용")
+    # --- v6: 효율/실험 ---
+    p.add_argument("--sched", choices=["cosine", "wsd"], default="cosine")
+    p.add_argument("--ema", type=float, default=0.0, help="EMA decay(0=끔, 예: 0.999)")
+    p.add_argument("--early-stop", type=int, default=0, help="val 개선 없이 N회 eval시 종료(0=끔)")
+    p.add_argument("--init-from", action="store_true", help="tied를 dense.pt로 부모초기화")
+    p.add_argument("--kd", action="store_true", help="dense.pt를 교사로 KD")
+    p.add_argument("--kd-alpha", type=float, default=0.5)
+    p.add_argument("--kd-temp", type=float, default=2.0)
+    p.add_argument("--lora-rank", type=int, default=0, help="공유 MLP 층별 LoRA rank(0=끔)")
+    p.add_argument("--lora-bits", type=int, default=2, choices=[2, 16])
+    p.add_argument("--tag", default=None, help="체크포인트/로그 파일명(실험 조건 구분용)")
+    p.add_argument("--mlp-film", action="store_true", help="공유 MLP에 층별 FiLM(거의 공짜 조건화)")
+    p.add_argument("--force-dense", action="store_true", help="all 실행 시 dense 재학습 강제(기본은 재사용)")
     # lrfind
     p.add_argument("--method", choices=["range", "grid", "both"], default="range")
     p.add_argument("--lrs", default="3e-4,6e-4,1e-3,2e-3", help="grid 스윕 LR 목록(콤마)")
@@ -59,6 +72,9 @@ def main():
 
     n_tok = _tok(a.tokens)
     preset, ckpt = _preset(a), not a.no_ckpt
+    tokstr = f"{n_tok//1_000_000}M" if n_tok >= 10**6 else str(n_tok)
+    base = f"{preset}_{a.data}_{tokstr}"        # 스케일별 이름 프리픽스
+    dense_ck = paths.RUNS / "ckpt" / f"{base}_dense.pt"
 
     if a.cmd == "prepare":
         from .data import prepare
@@ -67,16 +83,49 @@ def main():
     elif a.cmd == "train":
         from .train import train
         train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
-              a.lr, a.eval_every, a.resume, ckpt, a.compile)
+              a.lr, a.eval_every, a.resume, ckpt, a.compile,
+              sched=a.sched, ema=a.ema, early_stop=a.early_stop,
+              init_from=(str(dense_ck) if a.init_from else None),
+              kd=(str(dense_ck) if a.kd else False), kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
+              lora_rank=a.lora_rank, lora_bits=a.lora_bits, mlp_film=a.mlp_film,
+              tag=a.tag, tokstr=tokstr)
 
     elif a.cmd == "all":
         from .train import train
         from .eval import compare
+        import json as _json
+        dlog = paths.RUNS / "logs" / f"{base}_dense.json"
+        # dense 재사용: 같은 (preset,data,steps) 의 dense 로그·체크포인트가 있으면 재학습 생략.
+        # (seq·lr 은 로그에 있으면 함께 대조. --force-dense 로 강제 재학습.)
+        reuse = False
+        if not a.force_dense and dense_ck.exists() and dlog.exists():
+            try:
+                dj = _json.loads(dlog.read_text())
+                reuse = (dj.get("preset") == preset and dj.get("data") == a.data
+                         and dj.get("steps") == a.steps
+                         and dj.get("seq", a.seq) == a.seq
+                         and abs(dj.get("lr", a.lr) - a.lr) < 1e-12)
+            except Exception:
+                reuse = False
         for arch in ("dense", "tied"):
+            if arch == "dense" and reuse:
+                dj = _json.loads(dlog.read_text())
+                print("\n" + "#" * 68 + "\n#  dense (재사용)\n" + "#" * 68)
+                print(f"[dense] 기존 학습 재사용: val {dj['final']['val_loss']:.4f} "
+                      f"(preset={dj.get('preset')} data={dj.get('data')} steps={dj.get('steps')}). "
+                      f"재학습하려면 --force-dense")
+                continue
             print("\n" + "#" * 68 + f"\n#  {arch}\n" + "#" * 68)
+            is_tied = arch == "tied"
             train(preset, arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
-                  a.lr, a.eval_every, a.resume, ckpt, a.compile)
-        print(); compare()
+                  a.lr, a.eval_every, a.resume, ckpt, a.compile,
+                  sched=a.sched, ema=a.ema, early_stop=a.early_stop,
+                  init_from=(str(dense_ck) if (is_tied and a.init_from) else None),
+                  kd=(str(dense_ck) if (is_tied and a.kd) else False),
+                  kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
+                  lora_rank=(a.lora_rank if is_tied else 0), lora_bits=a.lora_bits,
+                  mlp_film=(a.mlp_film if is_tied else False), tokstr=tokstr)
+        print(); compare(base)
 
     elif a.cmd == "eval":
         import torch
@@ -84,14 +133,15 @@ def main():
         from .eval import evaluate
         from .infer import load_model
         meta = prepare(a.data, n_tok)
-        model, cfg, device = load_model(a.arch, a.ckpt_path)
+        ckp = a.ckpt_path or str(paths.RUNS / "ckpt" / (f"{a.tag}.pt" if a.tag else f"{base}_{a.arch}.pt"))
+        model, cfg, device = load_model(a.arch, ckp)
         print(model.report())
         va = Loader("val", a.micro_bs, a.seq, device, meta["dir"], seed=99)
         print(evaluate(model, va, 100, device))
 
     elif a.cmd == "compare":
         from .eval import compare
-        compare()
+        compare(base)
 
     elif a.cmd == "lrfind":
         from .train import lr_find
@@ -105,8 +155,9 @@ def main():
         from .infer import generate
         if not a.prompt:
             p.error("generate 에는 --prompt 가 필요합니다")
+        gckp = a.ckpt_path or str(paths.RUNS / "ckpt" / (f"{a.tag}.pt" if a.tag else f"{base}_{a.arch}.pt"))
         generate(a.prompt, arch=a.arch, data=a.data, max_new=a.max_new,
-                 temperature=a.temp, top_k=a.top_k, ckpt_path=a.ckpt_path)
+                 temperature=a.temp, top_k=a.top_k, ckpt_path=gckp)
 
 
 if __name__ == "__main__":

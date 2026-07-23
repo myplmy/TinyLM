@@ -66,3 +66,28 @@ class TLinear(nn.Module):
             h = F.linear(x, self.mode_a) * (mode_p @ self.mode_gain)
             y = y + F.linear(h, self.mode_b)
         return y
+
+
+def ternary_g(w, group, cfg):
+    """명시적 group 으로 삼진화(LoRA용). group 은 w 의 마지막 차원을 나눠야 한다."""
+    return _TernarySTE.apply(w, group, cfg.twn_thr_ratio, cfg.ste_clip)
+
+
+class LoRA(nn.Module):
+    """공유 MLP projection 위에 얹는 '층별' 저랭크 보정(RRT식).
+    U 를 0으로 초기화해 시작 시 no-op → 안전. bits=2면 D·U 도 삼진(거의 공짜)."""
+
+    def __init__(self, cfg, in_f, out_f, r):
+        super().__init__()
+        self.cfg, self.in_f, self.r = cfg, in_f, r
+        self.D = nn.Parameter(torch.randn(r, in_f) / math.sqrt(in_f))
+        self.U = nn.Parameter(torch.zeros(out_f, r))
+        self.bits = cfg.mlp_lora_bits
+
+    def forward(self, x):
+        D, U = self.D, self.U
+        if self.bits == 2:
+            gD = self.cfg.micro_group if self.in_f % self.cfg.micro_group == 0 else self.in_f
+            D = ternary_g(D, gD, self.cfg)
+            U = ternary_g(U, self.r, self.cfg)      # r개를 한 그룹으로(출력 행별 스케일)
+        return F.linear(F.linear(x, D), U)

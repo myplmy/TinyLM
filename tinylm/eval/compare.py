@@ -8,10 +8,12 @@ from .. import paths
 LOGS = paths.RUNS / "logs"
 
 
-def compare():
+def compare(base=None):
+    names = {"dense": f"{base}_dense" if base else "dense",
+             "tied":  f"{base}_tied"  if base else "tied"}
     out = {}
     for a in ("dense", "tied"):
-        p = LOGS / f"{a}.json"
+        p = LOGS / f"{names[a]}.json"
         if not p.exists():
             print(f"[compare] {p} 없음. 먼저 학습하세요."); return
         out[a] = json.loads(p.read_text())

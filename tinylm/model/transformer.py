@@ -13,6 +13,7 @@ from torch.utils.checkpoint import checkpoint
 from ..config import TMTConfig, dense_baseline  # noqa: F401  (재export)
 from .ternary import TLinear, ternary  # noqa: F401
 from .modules import RMSNorm, Attention, MLP, Layer, build_rope, apply_rope  # noqa: F401
+from .ternary import LoRA  # noqa: F401
 
 
 class TiedMLPTransformer(nn.Module):
@@ -42,7 +43,8 @@ class TiedMLPTransformer(nn.Module):
                 mlp = self.mid_mlps[j // cfg.mlp_group if cfg.tie_mlp else j]
             else:
                 mlp = self.coda_mlps[i - cfg.n_prelude - cfg.n_middle]
-            layers.append(Layer(cfg, owns, mlp))
+            is_mid_tied = (cfg.n_prelude <= i < cfg.n_prelude + cfg.n_middle) and cfg.tie_mlp
+            layers.append(Layer(cfg, owns, mlp, mlp_lora=is_mid_tied, mlp_film=is_mid_tied))
         self.layers = nn.ModuleList(layers)
 
         self.norm_f = RMSNorm(cfg.dim, cfg.norm_eps)
@@ -159,10 +161,12 @@ class TiedMLPTransformer(nn.Module):
         mode = sum(p.numel() for m in self._tlinears() if m.use_mode
                    for p in (m.mode_a, m.mode_b, m.mode_gain))
         emb = self.emb.weight.numel() + (self.emb_up.weight.numel() if self.emb_up is not None else 0)
-        other = sum(p.numel() for p in self.parameters()) - tern - mode - emb
-        total = tern + mode + emb + other
+        lora = sum(p.numel() for m in self.modules() if isinstance(m, LoRA) for p in m.parameters())
+        other = sum(p.numel() for p in self.parameters()) - tern - mode - emb - lora
+        total = tern + mode + emb + other + lora
         e_bits = bpw if cfg.quantize_embedding else 16
-        mem = MB(tern, bpw) + MB(mode, 16) + MB(emb, e_bits) + MB(other, 16)
+        l_bits = cfg.mlp_lora_bits
+        mem = MB(tern, bpw) + MB(mode, 16) + MB(emb, e_bits) + MB(other, 16) + MB(lora, l_bits)
 
         per_l = (cfg.dim*cfg.dim*2 + cfg.kv_dim*cfg.dim*2) + 3*cfg.dim*cfg.ffn_dim
         flops = 2 * cfg.n_layers * per_l / 1e9
@@ -178,6 +182,7 @@ class TiedMLPTransformer(nn.Module):
         A("=" * 72)
         A(f"  {'삼진 가중치':<24}{tern/1e6:>9.1f}M{MB(tern,bpw):>10.1f} MB")
         if mode: A(f"  {'모드 delta (fp16)':<24}{mode/1e6:>9.1f}M{MB(mode,16):>10.1f} MB")
+        if lora: A(f"  {'LoRA(r='+str(cfg.mlp_lora_rank)+', '+str(l_bits)+'bit)':<24}{lora/1e6:>9.1f}M{MB(lora,l_bits):>10.1f} MB")
         A(f"  {'임베딩(factorized)':<24}{emb/1e6:>9.1f}M{MB(emb,e_bits):>10.1f} MB")
         A(f"  {'기타(norm/gate/router)':<24}{other/1e6:>9.1f}M{MB(other,16):>10.1f} MB")
         A(f"  {'-'*52}")
@@ -185,7 +190,10 @@ class TiedMLPTransformer(nn.Module):
         A("")
         A(f"  L3({l3_mb:.0f}MB) 상주       : {'가능' if mem < l3_mb*0.7 else '불가'}"
           f"   (여유 {l3_mb-mem:.1f} MB — KV·활성용)")
-        A(f"  타이드 MLP 1그룹      : {mlp_mb:.1f} MB  ({cfg.mlp_group}회 연속 재사용)")
+        if cfg.tie_mlp:
+            A(f"  타이드 MLP 1그룹      : {mlp_mb:.1f} MB  ({cfg.mlp_group}회 연속 재사용)")
+        else:
+            A(f"  MLP 블록(층별 독립)    : {mlp_mb:.1f} MB  (dense: 재사용 없음)")
         A(f"  토큰당 FLOPs          : {flops:.3f} GFLOP")
         A(f"  KV 캐시               : {kv_kb:.1f} KB/token  ({n_kv}/{cfg.n_layers} 층만 소유)")
         A(f"    1024 ctx {kv_kb*1024/1024:.1f} MB   2048 ctx {kv_kb*2048/1024:.1f} MB")
