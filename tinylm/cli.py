@@ -43,6 +43,8 @@ def main():
     p.add_argument("--tiny", action="store_true", help="tiny 프리셋(파이프라인 확인용)")
     p.add_argument("--no-ckpt", action="store_true", help="gradient checkpointing 끄기")
     p.add_argument("--compile", action="store_true", help="torch.compile 사용")
+    p.add_argument("--compile-mode", choices=["default", "reduce-overhead", "max-autotune"],
+                   default="default", help="reduce-overhead=CUDA그래프(런치 오버헤드↓)")
     # --- v6: 효율/실험 ---
     p.add_argument("--sched", choices=["cosine", "wsd"], default="cosine")
     p.add_argument("--ema", type=float, default=0.0, help="EMA decay(0=끔, 예: 0.999)")
@@ -88,7 +90,7 @@ def main():
               init_from=(str(dense_ck) if a.init_from else None),
               kd=(str(dense_ck) if a.kd else False), kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
               lora_rank=a.lora_rank, lora_bits=a.lora_bits, mlp_film=a.mlp_film,
-              tag=a.tag, tokstr=tokstr)
+              tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode)
 
     elif a.cmd == "all":
         from .train import train
@@ -124,7 +126,8 @@ def main():
                   kd=(str(dense_ck) if (is_tied and a.kd) else False),
                   kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
                   lora_rank=(a.lora_rank if is_tied else 0), lora_bits=a.lora_bits,
-                  mlp_film=(a.mlp_film if is_tied else False), tokstr=tokstr)
+                  mlp_film=(a.mlp_film if is_tied else False), tokstr=tokstr,
+                  compile_mode=a.compile_mode)
         print(); compare(base)
 
     elif a.cmd == "eval":

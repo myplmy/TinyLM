@@ -40,9 +40,17 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           resume=False, ckpt=True, compile_=False, *,
           sched="cosine", ema=0.0, early_stop=0, init_from=None,
           kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
-          tag=None, tokstr=None):
+          tag=None, tokstr=None, compile_mode="default"):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(1337)
+    if device == "cuda":                        # 저비용 성능 스위치
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
+        torch.backends.cudnn.benchmark = True   # 고정 shape → cuDNN 오토튜너
+        try:
+            torch.set_float32_matmul_precision("high")   # fp32 matmul을 TF32로
+        except Exception:
+            pass
     CKPT.mkdir(parents=True, exist_ok=True); LOGS.mkdir(parents=True, exist_ok=True)
 
     meta = prepare(data, n_tokens)
@@ -63,8 +71,11 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         print(f"[kd] 교사 로드 완료 (alpha={kd_alpha}, T={kd_temp})")
 
     if compile_:
-        print('[compile] torch.compile 첫 스텝은 수 분 걸릴 수 있습니다')
-        model = torch.compile(model)
+        if compile_mode == "reduce-overhead":
+            print("[compile] 주의: reduce-overhead(CUDA그래프)는 임베딩 타잉과 충돌해 "
+                  "backward에서 크래시할 수 있습니다. 크래시 시 --compile-mode default 로 재실행하세요.")
+        print(f'[compile] mode={compile_mode} — 첫 스텝은 수 분 걸릴 수 있습니다')
+        model = torch.compile(model, mode=compile_mode)
     print(model.report())
     eff = micro_bs * accum * seq
     print(f"[{arch}] device={device}  {steps}step x {eff/1e3:.0f}K tok = "
@@ -96,6 +107,11 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     def _swap_out(backup):
         for p, b in zip(params, backup):
             p.data.copy_(b)
+
+    # reduce-overhead(CUDA그래프)는 micro-step마다 그래프 출력 버퍼를 재사용하므로,
+    # grad accum에서 각 forward 전에 step 경계를 표시해 backward가 덮인 버퍼를 참조하지 않게 한다.
+    _cudagraph_step = (getattr(torch.compiler, "cudagraph_mark_step_begin", None)
+                       if (compile_ and compile_mode == "reduce-overhead") else None)
 
     tr = Loader("train", micro_bs, seq, device, meta["dir"], seed=1234)
     va = Loader("val", micro_bs, seq, device, meta["dir"], seed=99)
@@ -139,6 +155,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         tot = 0.0
         for _ in range(accum):
             x, y = tr()
+            if _cudagraph_step is not None:
+                _cudagraph_step()
             with torch.autocast(device, dtype=torch.bfloat16, enabled=(device == "cuda")):
                 logits = model(x)
                 ce = F.cross_entropy(logits.reshape(-1, cfg.vocab_size), y.reshape(-1))
