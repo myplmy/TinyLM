@@ -40,7 +40,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           resume=False, ckpt=True, compile_=False, *,
           sched="cosine", ema=0.0, early_stop=0, init_from=None,
           kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
-          tag=None, tokstr=None, compile_mode="default"):
+          tag=None, tokstr=None, compile_mode="default", mlp_group=None):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(1337)
     if device == "cuda":                        # 저비용 성능 스위치
@@ -55,6 +55,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
 
     meta = prepare(data, n_tokens)
     cfg = build_config(preset, arch, seq, ckpt)
+    if mlp_group and arch == "tied":            # g 스윕용 오버라이드(P003)
+        assert cfg.n_middle % mlp_group == 0, f"n_middle {cfg.n_middle} % g {mlp_group} != 0"
+        cfg.mlp_group = mlp_group
     cfg.mlp_lora_rank, cfg.mlp_lora_bits = lora_rank, lora_bits
     cfg.mlp_film = mlp_film
     model = TiedMLPTransformer(cfg).to(device)
@@ -124,12 +127,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
 
     def _do_eval(step, train_loss):
         nonlocal best_val, best_step, since_improve
-        m = evaluate(model, va, 20, device); m["ema"] = False   # 주 지표 = raw 모델(실제 진행)
+        m = evaluate(model, va, 50, device); m["ema"] = False   # 주 지표 = raw 모델(실제 진행)
         line = (f"    >> val_loss {m['val_loss']:.4f}  ppl {m['ppl']:.2f}  "
                 f"(train {train_loss:.3f}, val-train {m['val_loss']-train_loss:+.3f})")
         if shadow is not None:                                  # EMA는 부가 표시
             backup = _swap_in_ema()
-            me = evaluate(model, va, 20, device)
+            me = evaluate(model, va, 50, device)
             _swap_out(backup)
             m["val_ema"] = me["val_loss"]; line += f"  [ema {me['val_loss']:.4f}]"
         m.update(step=step, train_loss=train_loss, gap=m["val_loss"] - train_loss)

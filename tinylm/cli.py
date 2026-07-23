@@ -57,6 +57,7 @@ def main():
     p.add_argument("--lora-bits", type=int, default=2, choices=[2, 16])
     p.add_argument("--tag", default=None, help="체크포인트/로그 파일명(실험 조건 구분용)")
     p.add_argument("--vs", default=None, help="compare에서 tied vs tied 비교할 상대 태그")
+    p.add_argument("--mlp-group", type=int, default=None, help="MLP 타잉 g 오버라이드(프리셋값 대체, g-스윕용)")
     p.add_argument("--mlp-film", action="store_true", help="공유 MLP에 층별 FiLM(거의 공짜 조건화)")
     p.add_argument("--force-dense", action="store_true", help="all 실행 시 dense 재학습 강제(기본은 재사용)")
     # lrfind
@@ -91,7 +92,7 @@ def main():
               init_from=(str(dense_ck) if a.init_from else None),
               kd=(str(dense_ck) if a.kd else False), kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
               lora_rank=a.lora_rank, lora_bits=a.lora_bits, mlp_film=a.mlp_film,
-              tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode)
+              tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode, mlp_group=a.mlp_group)
 
     elif a.cmd == "all":
         from .train import train
@@ -128,7 +129,7 @@ def main():
                   kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
                   lora_rank=(a.lora_rank if is_tied else 0), lora_bits=a.lora_bits,
                   mlp_film=(a.mlp_film if is_tied else False), tokstr=tokstr,
-                  compile_mode=a.compile_mode)
+                  compile_mode=a.compile_mode, mlp_group=(a.mlp_group if is_tied else None))
         print(); compare(base)
 
     elif a.cmd == "eval":
