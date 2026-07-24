@@ -46,7 +46,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           sched="cosine", ema=0.0, early_stop=0, init_from=None,
           kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, ema_start=0.0,
-          center_weights=False, decay_from=None, snapshots=None):
+          center_weights=False, decay_from=None, snapshots=None,
+          use_ternary_kernel=False, ternary_kernel_triton=False):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(1337)
     if device == "cuda":                        # 저비용 성능 스위치
@@ -67,6 +68,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     cfg.mlp_lora_rank, cfg.mlp_lora_bits = lora_rank, lora_bits
     cfg.mlp_film = mlp_film
     cfg.center_weights = center_weights
+    cfg.use_ternary_kernel = use_ternary_kernel
+    cfg.ternary_kernel_triton = ternary_kernel_triton
     model = TiedMLPTransformer(cfg).to(device)
 
     if init_from:
@@ -94,6 +97,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                   "backward에서 크래시할 수 있습니다. 크래시 시 --compile-mode default 로 재실행하세요.")
         print(f'[compile] mode={compile_mode} — 첫 스텝은 수 분 걸릴 수 있습니다')
         model = torch.compile(model, mode=compile_mode)
+    tokstr = tokstr or (f"{int(n_tokens)//1_000_000}M" if n_tokens >= 10**6 else str(int(n_tokens)))
+    _base = f"{preset}_{data}_{tokstr}"
+    name = f"{_base}_{tag}" if tag else f"{_base}_{arch}"   # 스케일별 이름(클로버·오염 방지)
+    label = tag or arch                                    # 로그 표시용(예: t_kd_g8 / tied)
     print(model.report())
     eff = micro_bs * accum * seq
     print(f"[{label}] device={device}  {steps}step x {eff/1e3:.0f}K tok = "
@@ -110,10 +117,6 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         lbl = f"{int(tok)//1_000_000}M" if int(tok) >= 10**6 else str(int(tok))
         snap_steps[stp] = lbl
 
-    tokstr = tokstr or (f"{int(n_tokens)//1_000_000}M" if n_tokens >= 10**6 else str(int(n_tokens)))
-    _base = f"{preset}_{data}_{tokstr}"                # 스케일 프리픽스
-    name = f"{_base}_{tag}" if tag else f"{_base}_{arch}"   # 태그도 스케일별 분리 → 클로버·오염 방지
-    label = tag or arch                                # 로그 표시용(예: t_kdinit / tied)
     start = 0
     ck = CKPT / f"{name}.pt"
     ck_best = CKPT / f"{name}_best.pt"

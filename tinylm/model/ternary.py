@@ -34,6 +34,9 @@ def ternary(w, cfg):
     return _TernarySTE.apply(w, cfg.micro_group, cfg.twn_thr_ratio, cfg.ste_clip)
 
 
+from .ternary_kernel import ternary_kernel_linear  # noqa: E402  (커스텀 커널 진입점, 기본 off)
+
+
 class TLinear(nn.Module):
     """g128 삼진 선형층. depth-delta 없음. 모드 delta는 선택."""
 
@@ -69,8 +72,11 @@ class TLinear(nn.Module):
         self._wq = None
 
     def forward(self, x, mode_p=None):
-        wq = self._wq if self._wq is not None else ternary(self._w(), self.cfg)
-        y = F.linear(x, wq)
+        if getattr(self.cfg, "use_ternary_kernel", False):   # 분리된 커스텀 커널 경로(기본 off)
+            y = ternary_kernel_linear(x, self._w(), self.cfg)
+        else:
+            wq = self._wq if self._wq is not None else ternary(self._w(), self.cfg)
+            y = F.linear(x, wq)
         if self.use_mode and mode_p is not None:
             h = F.linear(x, self.mode_a) * (mode_p @ self.mode_gain)
             y = y + F.linear(h, self.mode_b)
