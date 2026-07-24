@@ -16,7 +16,10 @@
 | **Sequence packing (패딩 제거)** | ✅ | v4~ | 문서를 이어붙인 스트림에서 연속 크롭 → 패딩 0, 밀도 100% | — | 이미 적용(Loader). 제안의 "15~30% 이득"은 이미 반영됨 |
 | **Muon 옵티마이저** | 💡 | — | Linear 가중치에 스펙트럴(Newton-Schulz) 업데이트 → 같은 loss까지 step↓ | **대배치에서 이득 집중**(소배치·단일GPU엔 제한적), ternary STE와 상호작용 미검증, 구현·튜닝 비용 | muP와 결합 시 HP 전이. 1.7B·대배치 확장 때 유력. 근거 arXiv:2505.02222 |
 | **MTP(학습 aux head)** | 💡 | — | 미래 2~4토큰 동시 예측 aux loss → 수렴·표현력↑ | 헤드·loss 추가 연산, 소형 모델 이득 불확실 | factorized 헤드와 결합 가능. 학습용은 DeepSeek-V3식. FastMTP는 추론용(별건) |
-| **커스텀 삼진 커널(분리 모듈)** | 🧪 | v6 (`--ternary-kernel[-triton]`) | int8 codes+그룹alpha 패킹, STE backward 보존. 레퍼런스=기존 경로와 등가, Triton=속도 시도(검증 후) | 연산 바운드라 대역폭 이득 위주(FLOP 이득은 활성 저비트에서), Windows-Triton 리스크 | 기본 off(무영향). P014 검증. docs/custom_ternary_kernel.md |
+| **커스텀 삼진 커널(분리 모듈)** | 🧪→⚠️GPU | v6 (`--ternary-kernel[-triton]`) | int8 codes+그룹alpha 패킹, STE backward 보존. 레퍼런스=기존 경로와 등가, Triton=속도 시도 | **GPU에선 cuBLAS 대비 10×+ 느림**(소박한 커널·recompile 폭주). +compile 시 quant_anneal 값가드로 재컴파일 한도 초과 | **GPU 학습 가속 아님 → 목적은 CPU LUT 배포**. P014② 검증 완료(정확성 통과). 커널 벤치는 `--compile` 없이 |
+| **Skip-Forward / Dynamic KD** | ✅ | v6 (`--kd-every K [--kd-dynamic]`) | 교사 forward를 K스텝마다 1회 → 교사 연산 1/K. dynamic은 초반 촘촘·후반 성김 | 건너뛴 스텝 KD 신호 0 → K 크면 격차 재확대(임계점 P017에서 측정) | 온라인 KD 병목(교사 full forward)의 유일한 직접 절감책. `kd_fwd_steps` 로그 |
+| **압축 교사 distill** | ✅ | v6 (`--kd-teacher-tag`) | 교사를 dense(132.5M) 대신 압축 tied(≈72.9M)로 → 교사 forward ~0.55× | 교사 상한=압축 교사 품질, 순환성(교사 1회 학습 비용은 지불) | `load_dense`가 cfg로 범용 복원. P018 |
+| **hidden(E=256) 정확 오프라인 KD** | 💡 | — | 교사 pre-head hidden h_E(256차)만 캐시 → logits=h_E@emb^T 로 **정확 복원**(top-k 손실 없음). 교사 body forward 제거 | 300M×256 fp16=154GB(int8 77GB, int4 38GB) 디스크. 복원 시 V×E matmul | P015 top-k 실패의 대안. E=256은 head 랭크(정확성 하한). 축소=양자화/PQ/랭크절단 |
 | **Fused Cross-Entropy 커널** | 💡 | — | 큰 vocab 로짓 materialize 없이 linear+CE 융합 → 메모리·오버헤드↓ | Windows 호환 불확실 | torch.compile이 일부 융합. vocab 32k라 이득 소폭 |
 
 ## VRAM/스필 주의 (Windows, RTX 4070 Ti Super 16GB)

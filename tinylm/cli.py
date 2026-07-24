@@ -57,6 +57,12 @@ def main():
     p.add_argument("--kd-best", action="store_true", help="KD 교사를 dense_best.pt로(더 강한 교사)")
     p.add_argument("--kd-cache", action="store_true", help="오프라인 KD(캐시 top-k, 교사 forward 없음)")
     p.add_argument("--kd-topk", type=int, default=16, help="오프라인 KD top-k")
+    p.add_argument("--kd-every", type=int, default=1,
+                   help="온라인 KD skip-forward: K스텝마다 교사 forward 1회(교사 연산 1/K). 1=매 스텝")
+    p.add_argument("--kd-dynamic", action="store_true",
+                   help="동적 KD: 교사 forward 간격을 1→kd-every 로 선형 증가(초반 촘촘·후반 성김)")
+    p.add_argument("--kd-teacher-tag", default=None,
+                   help="KD 교사를 dense 대신 임의 태그 체크포인트로(압축 교사 distill, P018)")
     p.add_argument("--ema-start", type=float, default=0.0, help="EMA를 steps의 이 비율 이후부터 누적(0=처음부터)")
     p.add_argument("--kd-alpha", type=float, default=0.5)
     p.add_argument("--kd-temp", type=float, default=2.0)
@@ -102,18 +108,24 @@ def main():
 
     elif a.cmd == "train":
         from .train import train
+        # KD 교사 경로: 압축 교사(--kd-teacher-tag) > dense_best > dense
+        if a.kd_teacher_tag:
+            kd_teacher = str(paths.RUNS / "ckpt" / f"{base}_{a.kd_teacher_tag}.pt")
+        else:
+            kd_teacher = str(dense_best_ck if a.kd_best else dense_ck)
         train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
               a.lr, a.eval_every, a.resume, ckpt, a.compile,
               sched=a.sched, ema=a.ema, early_stop=a.early_stop,
               init_from=(str(dense_ck) if a.init_from else None),
-              kd=((str(dense_best_ck) if a.kd_best else str(dense_ck)) if a.kd else False),
+              kd=(kd_teacher if a.kd else False),
               kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
               lora_rank=a.lora_rank, lora_bits=a.lora_bits, mlp_film=a.mlp_film,
               tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode, mlp_group=a.mlp_group,
               ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from,
               snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None),
               use_ternary_kernel=a.ternary_kernel, ternary_kernel_triton=a.ternary_kernel_triton,
-              kd_cache=a.kd_cache, kd_topk=a.kd_topk)
+              kd_cache=a.kd_cache, kd_topk=a.kd_topk,
+              kd_every=a.kd_every, kd_dynamic=a.kd_dynamic)
 
     elif a.cmd == "all":
         from .train import train

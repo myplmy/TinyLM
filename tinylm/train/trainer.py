@@ -48,7 +48,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, ema_start=0.0,
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
-          kd_cache=False, kd_topk=16):
+          kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(1337)
     if device == "cuda":                        # 저비용 성능 스위치
@@ -92,6 +92,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         model.load_state_dict(_strip(st["model"]))
         print(f"[decay] plateau 로드 -> cooldown {steps}스텝  <- {decay_from}")
 
+    if compile_ and ternary_kernel_triton:
+        print("[compile] 경고: 삼진 커널(Triton)+torch.compile 동시 사용은 "
+              "quant_anneal 값 가드로 recompile 폭주(재컴파일 한도 초과)를 유발해 크게 느려집니다. "
+              "커널 벤치마크는 --compile 없이 실행하세요(커널 자체가 별도 최적화 경로).")
     if compile_:
         if compile_mode == "reduce-overhead":
             print("[compile] 주의: reduce-overhead(CUDA그래프)는 임베딩 타잉과 충돌해 "
@@ -157,6 +161,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     va = Loader("val", micro_bs, seq, device, meta["dir"], seed=99)
     hist, t0, gmax, gpeak, n_skip = [], time.time(), 0.0, 0.0, 0
     best_val, best_step, since_improve = float("inf"), 0, 0
+    n_kd_fwd = 0                                 # 실제 교사 forward를 수행한 스텝 수(가속 측정용)
 
     def _do_eval(step, train_loss):
         nonlocal best_val, best_step, since_improve
@@ -195,6 +200,17 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         for g, b in zip(opt.param_groups, base_lrs):
             g["lr"] = b * f
 
+        # Skip-Forward / Dynamic KD: 이 스텝에서 교사 forward를 수행할지 결정(P017).
+        #   kd_every=1 → 매 스텝(기존). kd_every=K → K스텝마다 1회(교사 연산 1/K).
+        #   kd_dynamic → 간격을 1→K 로 선형 증가(초반 촘촘한 KD, 후반 성김).
+        kd_this = teacher is not None
+        if teacher is not None and kd_every > 1:
+            cur_every = (max(1, round(1 + (kd_every - 1) * s / steps))
+                         if kd_dynamic else kd_every)
+            kd_this = (s % cur_every == 0)
+        if kd_this and teacher is not None:
+            n_kd_fwd += 1
+
         model.train()
         tot = 0.0
         for _ in range(accum):
@@ -209,7 +225,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                     tv, ti = kd_reader.next(device)
                     kl = kd_cache_loss(logits, tv, ti, cfg.vocab_size, kd_temp)
                     loss = ((1 - kd_alpha) * ce + kd_alpha * kl) / accum
-                elif teacher is not None:               # 온라인 KD(교사 forward)
+                elif teacher is not None and kd_this:   # 온라인 KD(교사 forward, skip-forward 반영)
                     with torch.no_grad():
                         tlog = teacher(x)
                     T = kd_temp
@@ -270,9 +286,13 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "tokens": steps * eff, "final": final, "best_val": best_val, "best_step": best_step,
            "history": hist, "grad_max": gmax, "grad_peak_warmup": gpeak, "n_skip": n_skip,
            "sched": sched, "ema": ema, "kd": bool(kd), "init_from": bool(init_from),
+           "kd_every": kd_every, "kd_dynamic": bool(kd_dynamic), "kd_fwd_steps": n_kd_fwd,
            "lora_rank": lora_rank, "wall_sec": time.time() - t0}
     res["tag"] = name
     (LOGS / f"{name}.json").write_text(json.dumps(res, indent=2))
+    kd_note = ""
+    if teacher is not None and kd_every > 1:
+        kd_note = f", KD forward {n_kd_fwd}/{steps}스텝(≈{n_kd_fwd/max(steps,1)*100:.0f}%)"
     print(f"\n[{label}] 최종 val_loss {final['val_loss']:.4f}  ppl {final['ppl']:.2f}  "
-          f"best {best_val:.4f}@{best_step}  ({n_par/1e6:.1f}M, {(time.time()-t0)/60:.1f}분, skip {n_skip})")
+          f"best {best_val:.4f}@{best_step}  ({n_par/1e6:.1f}M, {(time.time()-t0)/60:.1f}분, skip {n_skip}{kd_note})")
     return res
