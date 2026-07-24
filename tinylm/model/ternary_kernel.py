@@ -79,10 +79,11 @@ def _ref_matmul(x, codes, alpha, group, dtype):
 
 
 class _TernaryKernelLinear(torch.autograd.Function):
-    """저비트 forward + STE 보존 backward. 기존 _TernarySTE+F.linear 와 수학적으로 동일."""
+    """저비트 forward + STE 보존 backward. **삼진 어닐 반영** → 기존 경로와 값·gradient 모두 동일.
+    anneal>=1(완전 삼진)일 때만 저비트 커널/레퍼런스 사용, anneal<1은 full-precision 블렌드(값)."""
 
     @staticmethod
-    def forward(ctx, x, w, group, thr, clip, use_triton):
+    def forward(ctx, x, w, group, thr, clip, anneal, use_triton):
         O, I = w.shape
         wg = w.reshape(O, I // group, group)
         aw = wg.abs()
@@ -90,39 +91,43 @@ class _TernaryKernelLinear(torch.autograd.Function):
         cnt = mask.sum(dim=2, keepdim=True).clamp_min(1.0)
         alpha = (aw * mask).sum(dim=2, keepdim=True) / cnt      # [O, G, 1]
         codes = (torch.sign(wg) * mask).to(torch.int8)          # [O, G, group]
+        wq = (codes.to(w.dtype) * alpha).reshape(O, I)          # 삼진 값
 
-        if use_triton and _HAS_TRITON and x.is_cuda:
-            try:
-                x2d = x.reshape(-1, I).contiguous()
-                codes2d = codes.reshape(O, I).contiguous()
-                alpha2d = alpha.reshape(O, I // group).contiguous().to(torch.float32)
-                y = _triton_matmul(x2d, codes2d, alpha2d, group).to(x.dtype)
-                y = y.reshape(*x.shape[:-1], O)
-            except Exception as e:                              # 안전 폴백
-                print(f"[ternary_kernel] Triton 실패 → 레퍼런스 폴백: {e}")
-                y = _ref_matmul(x, codes, alpha, group, x.dtype)
-        else:
-            y = _ref_matmul(x, codes, alpha, group, x.dtype)
+        if anneal >= 1.0:                                       # 완전 삼진 → 저비트 경로
+            eff = wq
+            if use_triton and _HAS_TRITON and x.is_cuda:
+                try:
+                    x2d = x.reshape(-1, I).contiguous()
+                    codes2d = codes.reshape(O, I).contiguous()
+                    alpha2d = alpha.reshape(O, I // group).contiguous().float()
+                    y = _triton_matmul(x2d, codes2d, alpha2d, group).to(x.dtype)
+                    y = y.reshape(*x.shape[:-1], O)
+                except Exception as e:
+                    print(f"[ternary_kernel] Triton 실패 → 레퍼런스 폴백: {e}")
+                    y = F.linear(x, wq.to(x.dtype))
+            else:
+                y = F.linear(x, wq.to(x.dtype))
+        else:                                                  # 어닐 중: 기존 STE와 동일 블렌드(값)
+            eff = wq + (1.0 - anneal) * (w - wq)
+            y = F.linear(x, eff.to(x.dtype))
 
-        ctx.save_for_backward(x, aw, alpha, codes)
+        ctx.save_for_backward(x, aw, alpha, eff)
         ctx.meta = (O, I, group, clip)
         return y
 
     @staticmethod
     def backward(ctx, gy):
-        x, aw, alpha, codes = ctx.saved_tensors
+        x, aw, alpha, eff = ctx.saved_tensors
         O, I, group, clip = ctx.meta
-        wq = (codes.to(gy.dtype) * alpha.to(gy.dtype)).reshape(O, I)   # 활성 dtype로 통일
-        gx = gy @ wq                                            # [.., I] (bf16)
-        # 가중치 grad 는 float32(파라미터 dtype)로 정확히
+        gx = gy @ eff.to(gy.dtype)                             # off 경로와 동일(값 eff)
         gw_full = gy.reshape(-1, O).t().float() @ x.reshape(-1, I).float()
         win = (1.0 / (1.0 + (aw / (clip * alpha).clamp_min(1e-8)).pow(4))).float()
         gw = (gw_full.reshape(O, I // group, group) * win).reshape(O, I)
-        return gx, gw, None, None, None, None
+        return gx, gw, None, None, None, None, None
 
 
 def ternary_kernel_linear(x, w, cfg):
-    """TLinear.forward 에서 호출하는 진입점(기본 off일 땐 호출되지 않음)."""
+    """TLinear.forward 진입점. cfg.quant_anneal 을 반영해 기존 경로와 동일하게 동작."""
     return _TernaryKernelLinear.apply(
         x, w, cfg.micro_group, cfg.twn_thr_ratio, cfg.ste_clip,
-        getattr(cfg, "ternary_kernel_triton", False))
+        float(cfg.quant_anneal), getattr(cfg, "ternary_kernel_triton", False))

@@ -47,7 +47,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, ema_start=0.0,
           center_weights=False, decay_from=None, snapshots=None,
-          use_ternary_kernel=False, ternary_kernel_triton=False):
+          use_ternary_kernel=False, ternary_kernel_triton=False,
+          kd_cache=False, kd_topk=16):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(1337)
     if device == "cuda":                        # 저비용 성능 스위치
@@ -76,7 +77,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         init_from_dense(model, init_from, device)
 
     teacher = None
-    if kd:
+    if kd and not kd_cache:
         teacher, _ = load_dense(kd if isinstance(kd, str) else CKPT / "dense.pt", device)
         teacher.eval(); teacher.set_anneal(1.0)
         for p in teacher.parameters():
@@ -124,6 +125,13 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         st = torch.load(ck, map_location=device)
         model.load_state_dict(st["model"]); opt.load_state_dict(st["opt"]); start = st["step"]
         print(f"[{arch}] step {start}에서 재개")
+
+    kd_reader = None
+    if kd_cache:
+        from .kd_cache import KdCacheReader
+        kd_reader = KdCacheReader(_base, kd_topk, micro_bs, seq)
+        kd_reader.seek_step(start, accum)
+        print(f"[kd-cache] 오프라인 KD 캐시 사용 (top{kd_topk}, 교사 forward 없음)")
 
     params = [p for p in model.parameters() if p.requires_grad]
     shadow = None                               # P1: 후반부(ema_start 이후)에만 지연 생성·누적
@@ -196,7 +204,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             with torch.autocast(device, dtype=torch.bfloat16, enabled=(device == "cuda")):
                 logits = model(x)
                 ce = F.cross_entropy(logits.reshape(-1, cfg.vocab_size), y.reshape(-1))
-                if teacher is not None:
+                if kd_reader is not None:               # 오프라인 KD(캐시 top-k)
+                    from .kd_cache import kd_cache_loss
+                    tv, ti = kd_reader.next(device)
+                    kl = kd_cache_loss(logits, tv, ti, cfg.vocab_size, kd_temp)
+                    loss = ((1 - kd_alpha) * ce + kd_alpha * kl) / accum
+                elif teacher is not None:               # 온라인 KD(교사 forward)
                     with torch.no_grad():
                         tlog = teacher(x)
                     T = kd_temp

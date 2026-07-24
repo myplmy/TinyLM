@@ -1,33 +1,35 @@
 @echo off
-REM ===== P003: KD + g-sweep (more aggressive tying, extra memory reduction) =====
-REM Reuse existing dense teacher m100_ko-en_300M_dense.pt.
-REM Question: does KD close the g=8 gap too? (target reduction ~2.08x)
+REM ===== (A) offline-KD validation on tiny  +  (B) t_kd_g16 (extreme tying) =====
 
 echo =========================================
-echo (1/2) g=8 only, no KD  [raw g8 gap baseline]
+echo (A) offline-KD validation (tiny, ~2min)
 echo =========================================
-python run100m.py train --arch tied --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --no-ckpt --mlp-group 8 --tag t_g8
+echo   a) tiny dense teacher
+python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 40 --micro-bs 4 --seq 128 --accum 2 --eval-every 20
 if errorlevel 1 goto ERROR
-
-echo =========================================
-echo (2/2) g=8 + KD + parent-init  [no --no-ckpt: teacher on GPU]
-echo =========================================
-python run100m.py train --arch tied --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --mlp-group 8 --init-from --kd --tag t_kd_g8
+echo   b) build KD cache (top32)
+python run100m.py kdcache --tiny --data synthetic --tokens 2M --steps 40 --micro-bs 4 --seq 128 --accum 2 --kd-topk 32
 if errorlevel 1 goto ERROR
+echo   c) online KD  (tag kc_online)
+python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 40 --micro-bs 4 --seq 128 --accum 2 --eval-every 20 --init-from --kd --tag kc_online
+if errorlevel 1 goto ERROR
+echo   d) offline KD (tag kc_offline)
+python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 40 --micro-bs 4 --seq 128 --accum 2 --eval-every 20 --init-from --kd-cache --kd-topk 32 --tag kc_offline
+if errorlevel 1 goto ERROR
+echo   CHECK: kc_online vs kc_offline final loss should be CLOSE (top-k approx). If very different, offline KD has a bug.
+pause
 
 echo =========================================
-echo compare (each vs dense 3.8241; and t_g8 vs t_kd_g8)
+echo (B) t_kd_g16 : g=16 extreme tying + KD + parent-init (online KD)
 echo =========================================
-python run100m.py compare --tag t_g8
-python run100m.py compare --tag t_kd_g8
-python run100m.py compare --tag t_g8 --vs t_kd_g8
-
-echo =========================================
-echo P003 done. Verdict: if t_kd_g8 gap within +0.07, adopt g=8 (2.08x memory)
-echo =========================================
+python run100m.py train --arch tied --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --mlp-group 16 --init-from --kd --tag t_kd_g16
+if errorlevel 1 goto ERROR
+python run100m.py compare --tag t_kd_g16
+python run100m.py compare --tag t_kd_g8 --vs t_kd_g16
+echo done. Speed up KD later: kdcache (m100) then train --kd-cache.
 pause
 exit /b 0
 
 :ERROR
-echo [WARN] stopped: error during training.
+echo [WARN] stopped: error during run.
 pause

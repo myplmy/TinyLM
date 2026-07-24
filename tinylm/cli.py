@@ -28,7 +28,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("cmd", choices=["prepare", "train", "eval", "compare", "all",
-                                   "lrfind", "generate"])
+                                   "lrfind", "generate", "kdcache"])
     p.add_argument("--arch", choices=["dense", "tied"], default="tied")
     p.add_argument("--preset", choices=["tiny", "m100"], default="m100")
     p.add_argument("--data", default="ko-en", choices=list(DATASETS) + ["synthetic"])
@@ -55,6 +55,8 @@ def main():
     p.add_argument("--init-from", action="store_true", help="tied를 dense.pt로 부모초기화")
     p.add_argument("--kd", action="store_true", help="dense.pt를 교사로 KD")
     p.add_argument("--kd-best", action="store_true", help="KD 교사를 dense_best.pt로(더 강한 교사)")
+    p.add_argument("--kd-cache", action="store_true", help="오프라인 KD(캐시 top-k, 교사 forward 없음)")
+    p.add_argument("--kd-topk", type=int, default=16, help="오프라인 KD top-k")
     p.add_argument("--ema-start", type=float, default=0.0, help="EMA를 steps의 이 비율 이후부터 누적(0=처음부터)")
     p.add_argument("--kd-alpha", type=float, default=0.5)
     p.add_argument("--kd-temp", type=float, default=2.0)
@@ -93,6 +95,11 @@ def main():
         from .data import prepare
         prepare(a.data, n_tok)
 
+    elif a.cmd == "kdcache":
+        from .train.kd_cache import build_kd_cache
+        teacher = str(dense_best_ck if a.kd_best else dense_ck)
+        build_kd_cache(base, teacher, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum, a.kd_topk)
+
     elif a.cmd == "train":
         from .train import train
         train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
@@ -105,7 +112,8 @@ def main():
               tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode, mlp_group=a.mlp_group,
               ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from,
               snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None),
-              use_ternary_kernel=a.ternary_kernel, ternary_kernel_triton=a.ternary_kernel_triton)
+              use_ternary_kernel=a.ternary_kernel, ternary_kernel_triton=a.ternary_kernel_triton,
+              kd_cache=a.kd_cache, kd_topk=a.kd_topk)
 
     elif a.cmd == "all":
         from .train import train
