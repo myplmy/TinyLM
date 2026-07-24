@@ -18,6 +18,7 @@ from __future__ import annotations
 import torch
 import torch.nn.functional as F
 
+_KERNEL_WARNED = False
 try:
     import triton
     import triton.language as tl
@@ -32,27 +33,25 @@ except Exception:
 # ---------------------------------------------------------------------------
 if _HAS_TRITON:
     @triton.jit
-    def _tern_mm_kernel(X, CODES, ALPHA, Y, M, N, K, G,
+    def _tern_mm_kernel(X, CODES, ALPHA, Y, M, N, K,
                         sxm, sxk, scn, sck, san, sag, sym, syn,
-                        BM: tl.constexpr, BN: tl.constexpr):
+                        BM: tl.constexpr, BN: tl.constexpr, G: tl.constexpr):
         pid_m = tl.program_id(0)
         pid_n = tl.program_id(1)
         offs_m = pid_m * BM + tl.arange(0, BM)
         offs_n = pid_n * BN + tl.arange(0, BN)
         offs_g = tl.arange(0, G)
         acc = tl.zeros((BM, BN), dtype=tl.float32)
-        g_idx = 0
         for kb in range(0, K, G):
             offs_k = kb + offs_g
             x = tl.load(X + offs_m[:, None] * sxm + offs_k[None, :] * sxk,
                         mask=(offs_m[:, None] < M) & (offs_k[None, :] < K), other=0.0)
             codes = tl.load(CODES + offs_n[:, None] * scn + offs_k[None, :] * sck,
                             mask=(offs_n[:, None] < N) & (offs_k[None, :] < K), other=0)
-            alpha = tl.load(ALPHA + offs_n * san + g_idx * sag,
+            alpha = tl.load(ALPHA + offs_n * san + (kb // G) * sag,
                             mask=offs_n < N, other=0.0)
             w = codes.to(tl.float32) * alpha[:, None]          # [BN, G]
             acc += tl.dot(x.to(tl.float32), tl.trans(w))       # [BM,G]@[G,BN]
-            g_idx += 1
         y = acc.to(tl.float32)
         tl.store(Y + offs_m[:, None] * sym + offs_n[None, :] * syn, y,
                  mask=(offs_m[:, None] < M) & (offs_n[None, :] < N))
@@ -64,10 +63,10 @@ if _HAS_TRITON:
         BM, BN = 64, 64
         grid = (triton.cdiv(M, BM), triton.cdiv(N, BN))
         _tern_mm_kernel[grid](
-            x2d, codes2d, alpha2d, y, M, N, K, group,
+            x2d, codes2d, alpha2d, y, M, N, K,
             x2d.stride(0), x2d.stride(1), codes2d.stride(0), codes2d.stride(1),
             alpha2d.stride(0), alpha2d.stride(1), y.stride(0), y.stride(1),
-            BM=BM, BN=BN)
+            BM=BM, BN=BN, G=group)
         return y
 
 
@@ -102,8 +101,11 @@ class _TernaryKernelLinear(torch.autograd.Function):
                     alpha2d = alpha.reshape(O, I // group).contiguous().float()
                     y = _triton_matmul(x2d, codes2d, alpha2d, group).to(x.dtype)
                     y = y.reshape(*x.shape[:-1], O)
-                except Exception as e:
-                    print(f"[ternary_kernel] Triton 실패 → 레퍼런스 폴백: {e}")
+                except Exception as e:                          # 안전 폴백(1회만 경고)
+                    global _KERNEL_WARNED
+                    if not _KERNEL_WARNED:
+                        print(f"[ternary_kernel] Triton 실패 → 레퍼런스 폴백(이후 조용히): {str(e)[:120]}")
+                        _KERNEL_WARNED = True
                     y = F.linear(x, wq.to(x.dtype))
             else:
                 y = F.linear(x, wq.to(x.dtype))
