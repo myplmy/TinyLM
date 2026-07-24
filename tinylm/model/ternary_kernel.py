@@ -74,7 +74,7 @@ if _HAS_TRITON:
 def _ref_matmul(x, codes, alpha, group, dtype):
     """레퍼런스: dequant 후 F.linear. 기존 경로와 동일 결과(정확성 기준)."""
     O = codes.shape[0]
-    wq = (codes.to(dtype) * alpha).reshape(O, -1)      # [O, I]
+    wq = (codes.to(dtype) * alpha.to(dtype)).reshape(O, -1)   # [O, I] (활성 dtype로 통일)
     return F.linear(x, wq)
 
 
@@ -112,10 +112,11 @@ class _TernaryKernelLinear(torch.autograd.Function):
     def backward(ctx, gy):
         x, aw, alpha, codes = ctx.saved_tensors
         O, I, group, clip = ctx.meta
-        wq = (codes.to(gy.dtype) * alpha).reshape(O, I)         # [O, I]
-        gx = gy @ wq                                            # [.., I]
-        gw_full = gy.reshape(-1, O).t().to(x.dtype) @ x.reshape(-1, I)   # [O, I]
-        win = 1.0 / (1.0 + (aw / (clip * alpha).clamp_min(1e-8)).pow(4))  # [O, G, group]
+        wq = (codes.to(gy.dtype) * alpha.to(gy.dtype)).reshape(O, I)   # 활성 dtype로 통일
+        gx = gy @ wq                                            # [.., I] (bf16)
+        # 가중치 grad 는 float32(파라미터 dtype)로 정확히
+        gw_full = gy.reshape(-1, O).t().float() @ x.reshape(-1, I).float()
+        win = (1.0 / (1.0 + (aw / (clip * alpha).clamp_min(1e-8)).pow(4))).float()
         gw = (gw_full.reshape(O, I // group, group) * win).reshape(O, I)
         return gx, gw, None, None, None, None
 

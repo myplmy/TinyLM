@@ -70,13 +70,8 @@ def compare(base=None, tied_tag=None, vs_tag=None):
         print("=" * 68); return
 
     if verdict:
-        print(f"\n  손실 격차 {gap:+.4f}   (논문 기준 MLP g=4의 예상치는 +0.05 ~ +0.07)")
-        if gap <= 0.07:
-            print("  -> 예상 범위 안. g를 더 키우거나 어텐션 타잉을 시험해볼 만함.")
-        elif gap <= 0.15:
-            print("  -> 다소 큼. prelude/coda를 3+3으로 늘리거나 g=2로 낮춰볼 것.")
-        else:
-            print("  -> 과도함. |g|max가 10 이상이면 학습 문제(LR)지 아키텍처 문제 아님.")
+        mag = "작음" if gap <= 0.07 else ("보통" if gap <= 0.15 else "큼")
+        print(f"\n  손실 격차 {gap:+.4f}  ({mag})")
     else:
         print(f"\n  손실 차이(우-좌) {gap:+.4f}   ({rlabel}가 {llabel}보다 "
               f"{'낮음(좋음)' if gap < 0 else '높음'})")
