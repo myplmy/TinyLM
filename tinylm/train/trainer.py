@@ -46,7 +46,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           sched="cosine", ema=0.0, early_stop=0, init_from=None,
           kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, ema_start=0.0,
-          center_weights=False, decay_from=None):
+          center_weights=False, decay_from=None, snapshots=None):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(1337)
     if device == "cuda":                        # 저비용 성능 스위치
@@ -103,6 +103,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                             fused=(device == "cuda"))   # ①: optimizer update 단일 커널
     base_lrs = [g["lr"] for g in opt.param_groups]
     warm = 0 if sched == "decay" else max(5, min(steps // 10, 100))
+    # 토큰 마크별 명명 스냅샷: {마크토큰: 라벨}. decay-branch 소스로 재사용.
+    snap_steps = {}
+    for tok in (snapshots or []):
+        stp = max(1, round(int(tok) / eff))
+        lbl = f"{int(tok)//1_000_000}M" if int(tok) >= 10**6 else str(int(tok))
+        snap_steps[stp] = lbl
 
     tokstr = tokstr or (f"{int(n_tokens)//1_000_000}M" if n_tokens >= 10**6 else str(int(n_tokens)))
     _base = f"{preset}_{data}_{tokstr}"                # 스케일 프리픽스
@@ -233,6 +239,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             if early_stop and since_improve >= early_stop:
                 print(f"  [early-stop] {early_stop}회 연속 개선 없음 (best {best_val:.4f} @ {best_step}). 종료.")
                 break
+        if (s + 1) in snap_steps:               # 토큰 마크 스냅샷(plateau 분기 소스)
+            snap = CKPT / f"{name}_snap{snap_steps[s + 1]}.pt"
+            torch.save({"model": model.state_dict(), "cfg": cfg.__dict__, "step": s + 1}, snap)
+            print(f"       [snapshot] {snap_steps[s + 1]} 토큰 지점 저장 -> {snap.name}")
 
     final = evaluate(model, va, 100, device, bytes_per_token=bpt); final["ema"] = False
     if shadow is not None:

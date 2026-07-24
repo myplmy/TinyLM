@@ -49,6 +49,7 @@ def main():
     p.add_argument("--sched", choices=["cosine", "wsd", "stable", "decay"], default="cosine",
                    help="stable=plateau 생성(감쇠X), decay=plateau에서 cooldown 분기")
     p.add_argument("--decay-from", default=None, help="decay 분기 시 불러올 plateau 체크포인트 경로")
+    p.add_argument("--snapshot-at", default=None, help="토큰 마크에서 명명 스냅샷 저장(콤마, 예: 100M,300M,600M)")
     p.add_argument("--ema", type=float, default=0.0, help="EMA decay(0=끔, 예: 0.999)")
     p.add_argument("--early-stop", type=int, default=0, help="val 개선 없이 N회 eval시 종료(0=끔)")
     p.add_argument("--init-from", action="store_true", help="tied를 dense.pt로 부모초기화")
@@ -100,7 +101,8 @@ def main():
               kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
               lora_rank=a.lora_rank, lora_bits=a.lora_bits, mlp_film=a.mlp_film,
               tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode, mlp_group=a.mlp_group,
-              ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from)
+              ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from,
+              snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None))
 
     elif a.cmd == "all":
         from .train import train

@@ -39,3 +39,6 @@ python run100m.py train --arch tied  --preset m100d ... --init-from --kd --mlp-g
 
 ## 산출
 - 결과는 `test_result/00N_..._KD-g스윕.md` + 실험목록 갱신. `docs/methods/02_memory.md`(g 스윕 행) 특기 갱신.
+
+## 부속(S5) — warm-start
+- g 변형은 처음부터가 아니라 **KD된 g4 모델에서 warm-start**하면 수렴이 빨라진다(속도 전술).
