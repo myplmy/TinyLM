@@ -61,6 +61,7 @@ class TiedMLPTransformer(nn.Module):
 
         # v5: 삼진 어닐 계수를 버퍼로 → torch.compile 재컴파일 방지.
         self.register_buffer("_anneal", torch.tensor(float(cfg.quant_anneal)), persistent=False)
+        self._tlinear_cache = list(self._tlinears())   # ②: 매 forward 모듈 트리 순회 제거(plain list)
 
     # ---------- quantization ----------
     def _tlinears(self):
@@ -73,11 +74,11 @@ class TiedMLPTransformer(nn.Module):
         self.cfg.quant_anneal = float(v)
 
     def refresh_quant(self):
-        for m in self._tlinears():
+        for m in self._tlinear_cache:
             m.refresh_quant(self._anneal)
 
     def clear_quant(self):
-        for m in self._tlinears():
+        for m in self._tlinear_cache:
             m.clear_quant()
 
     # ---------- forward ----------

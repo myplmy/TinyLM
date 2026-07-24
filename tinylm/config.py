@@ -42,6 +42,8 @@ class TMTConfig:
     mlp_lora_rank: int = 0            # 0이면 비활성
     mlp_lora_bits: int = 2           # 2=삼진(저비트), 16=fp16
     mlp_film: bool = False           # 층별 FiLM(공유 MLP 은닉 변조, 거의 공짜)
+    attn_kind: str = "softmax_cla"   # 어텐션 종류(컴포넌트 선택). 신규는 register_attention 로 등록
+    center_weights: bool = False     # (실험) g128 그룹별 latent weight mean-centering
 
     # --- misc ---
     max_seq_len: int = 2048

@@ -9,6 +9,25 @@ import torch.nn.functional as F
 
 from .ternary import TLinear, LoRA
 
+# ---- 어텐션 컴포넌트 레지스트리 (config.attn_kind 로 선택) ----
+ATTENTION_KINDS = {}
+
+def register_attention(name):
+    def deco(cls):
+        ATTENTION_KINDS[name] = cls
+        return cls
+    return deco
+
+def build_attention(cfg, owns_kv):
+    kind = getattr(cfg, "attn_kind", "softmax_cla")
+    if kind not in ATTENTION_KINDS:
+        raise NotImplementedError(
+            f"attn_kind={kind!r} 미구현. 등록됨: {list(ATTENTION_KINDS)}. "
+            f"새 어텐션은 @register_attention('name') 로 modules.py 에 추가하세요.\n"
+            f"주의: transformer.forward 의 KV-bank(compute_kv/owner) 로직은 softmax_cla 전용이라, "
+            f"KDA 등 상태가 다른 종류는 그 오케스트레이션도 함께 일반화해야 합니다(P004).")
+    return ATTENTION_KINDS[kind](cfg, owns_kv)
+
 
 class RMSNorm(nn.Module):
     def __init__(self, dim, eps=1e-5):
@@ -29,8 +48,9 @@ def apply_rope(x, cos, sin):
     return torch.cat([x1*cos - x2*sin, x1*sin + x2*cos], dim=-1).to(x.dtype)
 
 
+@register_attention("softmax_cla")
 class Attention(nn.Module):
-    """Q/O는 항상 층별 독립. K/V는 cla_group의 첫 층만 소유하고 나머지는 재사용.
+    """softmax + GQA + CLA + QK-norm. Q/O는 층별 독립, K/V는 cla_group 첫 층만 소유·재사용.
     v5: q·k 내적 전에 파라미터 없는 RMSNorm(QK-norm) 으로 로짓 폭주를 막는다."""
 
     def __init__(self, cfg, owns_kv: bool):
@@ -99,7 +119,7 @@ class Layer(nn.Module):
     def __init__(self, cfg, owns_kv: bool, mlp: MLP, mlp_lora: bool = False, mlp_film: bool = False):
         super().__init__()
         self.ln1, self.ln2 = RMSNorm(cfg.dim, cfg.norm_eps), RMSNorm(cfg.dim, cfg.norm_eps)
-        self.attn = Attention(cfg, owns_kv)
+        self.attn = build_attention(cfg, owns_kv)
         self.mlp = [mlp]                       # 모듈 등록 회피: 파라미터 중복 계수 방지
         self.has_lora = mlp_lora and cfg.mlp_lora_rank > 0
         if self.has_lora:                      # 공유 MLP를 층별로 특화시키는 저랭크 보정

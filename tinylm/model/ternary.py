@@ -50,17 +50,26 @@ class TLinear(nn.Module):
             self.mode_gain = nn.Parameter(torch.ones(cfg.n_modes, r) + 0.02*torch.randn(cfg.n_modes, r))
         self._wq = None
 
+    def _w(self):
+        """(옵션) g128 그룹별 mean-centering 후 latent weight 반환."""
+        w = self.weight
+        if getattr(self.cfg, "center_weights", False):
+            O, I = w.shape; g = self.cfg.micro_group
+            wg = w.reshape(O, I // g, g)
+            w = (wg - wg.mean(dim=2, keepdim=True)).reshape(O, I)
+        return w
+
     def refresh_quant(self, anneal):
         # torch.compile 안전: Python 분기 없이 항상 STE 항을 더한다(anneal은 스칼라 텐서).
-        # anneal==1.0이면 계수가 0이 되어 순수 삼진.
-        wq = ternary(self.weight, self.cfg)
-        self._wq = wq + (1.0 - anneal) * (self.weight - wq).detach()
+        w = self._w()
+        wq = ternary(w, self.cfg)
+        self._wq = wq + (1.0 - anneal) * (w - wq).detach()
 
     def clear_quant(self):
         self._wq = None
 
     def forward(self, x, mode_p=None):
-        wq = self._wq if self._wq is not None else ternary(self.weight, self.cfg)
+        wq = self._wq if self._wq is not None else ternary(self._w(), self.cfg)
         y = F.linear(x, wq)
         if self.use_mode and mode_p is not None:
             h = F.linear(x, self.mode_a) * (mode_p @ self.mode_gain)

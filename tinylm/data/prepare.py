@@ -93,6 +93,25 @@ def _find_reusable(name, n_tokens):
     return best
 
 
+def _ensure_bpt(meta):
+    """bytes_per_token 이 없으면 val.bin 을 디코드해 계산·백필(토크나이저 무관 bpb용)."""
+    if meta.get("bytes_per_token") or meta.get("data") == "synthetic":
+        return meta
+    try:
+        from tokenizers import Tokenizer
+        tok = Tokenizer.from_file(str(tokenizer_path(meta["data"])))
+        d = np.memmap(Path(meta["dir"]) / "val.bin", dtype=np.uint16, mode="r")
+        ids = d[:min(len(d), 500_000)].tolist()
+        meta["bytes_per_token"] = len(tok.decode(ids).encode("utf-8")) / max(len(ids), 1)
+        mp = Path(meta["dir"]) / "meta.json"
+        m2 = json.loads(mp.read_text()); m2["bytes_per_token"] = meta["bytes_per_token"]
+        mp.write_text(json.dumps(m2, indent=2))
+        print(f"[bpb] bytes_per_token={meta['bytes_per_token']:.3f} 백필 완료")
+    except Exception as e:
+        print(f"[bpb] bytes_per_token 계산 실패(무시): {e}")
+    return meta
+
+
 def prepare(name, n_tokens, val_frac=0.005):
     n_tokens = int(n_tokens)
     DATA_CACHE.mkdir(parents=True, exist_ok=True)
@@ -102,7 +121,7 @@ def prepare(name, n_tokens, val_frac=0.005):
         if reuse:
             print(f"[data] 캐시 재사용: {reuse['tokens']/1e6:.1f}M 토큰 ({name}) "
                   f"-> {reuse['dir']}")
-            return reuse
+            return _ensure_bpt(reuse)
 
     cache_dir = DATA_CACHE / f"{name}_{n_tokens}"
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -120,12 +139,13 @@ def prepare(name, n_tokens, val_frac=0.005):
     else:
         tok = build_tokenizer(name)
         eos = tok.token_to_id("<eos>") or 2
-        buf, total = [], 0
+        buf, total, total_bytes = [], 0, 0
         t0 = time.time()
         for text in _stream(name):
             ids = tok.encode(text).ids
             buf.append(np.array(ids + [eos], dtype=np.uint16))
             total += len(ids) + 1
+            total_bytes += len(text.encode("utf-8"))
             if total >= n_tokens:
                 break
             if total % 5_000_000 < 2000:
@@ -138,6 +158,8 @@ def prepare(name, n_tokens, val_frac=0.005):
     arr[-n_val:].tofile(cache_dir / "val.bin")
     meta = {"data": name, "tokens": int(len(arr)), "vocab": VOCAB,
             "train": int(len(arr) - n_val), "val": int(n_val), "dir": str(cache_dir)}
+    if name != "synthetic":
+        meta["bytes_per_token"] = total_bytes / max(total, 1)
     (cache_dir / "meta.json").write_text(json.dumps(meta, indent=2))
     print(f"[data] train {meta['train']/1e6:.1f}M / val {meta['val']/1e3:.0f}K 토큰 저장 -> {cache_dir}")
     return meta

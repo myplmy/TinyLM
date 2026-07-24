@@ -15,7 +15,8 @@ class Loader:
 
     def __call__(self):
         ix = self.rng.integers(0, len(self.d) - self.seq - 1, self.bs)
-        x = np.stack([self.d[i:i+self.seq+1] for i in ix]).astype(np.int64)
+        # ③ 파이썬 루프 대신 NumPy advanced indexing 으로 한 번에 슬라이싱
+        x = self.d[ix[:, None] + np.arange(self.seq + 1)].astype(np.int64)
         t = torch.from_numpy(x)
         if self.device == "cuda":
             t = t.pin_memory().to("cuda", non_blocking=True)

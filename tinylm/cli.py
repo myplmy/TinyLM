@@ -46,11 +46,15 @@ def main():
     p.add_argument("--compile-mode", choices=["default", "reduce-overhead", "max-autotune"],
                    default="default", help="reduce-overhead=CUDA그래프(런치 오버헤드↓)")
     # --- v6: 효율/실험 ---
-    p.add_argument("--sched", choices=["cosine", "wsd"], default="cosine")
+    p.add_argument("--sched", choices=["cosine", "wsd", "stable", "decay"], default="cosine",
+                   help="stable=plateau 생성(감쇠X), decay=plateau에서 cooldown 분기")
+    p.add_argument("--decay-from", default=None, help="decay 분기 시 불러올 plateau 체크포인트 경로")
     p.add_argument("--ema", type=float, default=0.0, help="EMA decay(0=끔, 예: 0.999)")
     p.add_argument("--early-stop", type=int, default=0, help="val 개선 없이 N회 eval시 종료(0=끔)")
     p.add_argument("--init-from", action="store_true", help="tied를 dense.pt로 부모초기화")
     p.add_argument("--kd", action="store_true", help="dense.pt를 교사로 KD")
+    p.add_argument("--kd-best", action="store_true", help="KD 교사를 dense_best.pt로(더 강한 교사)")
+    p.add_argument("--ema-start", type=float, default=0.0, help="EMA를 steps의 이 비율 이후부터 누적(0=처음부터)")
     p.add_argument("--kd-alpha", type=float, default=0.5)
     p.add_argument("--kd-temp", type=float, default=2.0)
     p.add_argument("--lora-rank", type=int, default=0, help="공유 MLP 층별 LoRA rank(0=끔)")
@@ -59,6 +63,7 @@ def main():
     p.add_argument("--vs", default=None, help="compare에서 tied vs tied 비교할 상대 태그")
     p.add_argument("--mlp-group", type=int, default=None, help="MLP 타잉 g 오버라이드(프리셋값 대체, g-스윕용)")
     p.add_argument("--mlp-film", action="store_true", help="공유 MLP에 층별 FiLM(거의 공짜 조건화)")
+    p.add_argument("--center-weights", action="store_true", help="(실험) g128 그룹 latent weight centering")
     p.add_argument("--force-dense", action="store_true", help="all 실행 시 dense 재학습 강제(기본은 재사용)")
     # lrfind
     p.add_argument("--method", choices=["range", "grid", "both"], default="range")
@@ -79,6 +84,7 @@ def main():
     tokstr = f"{n_tok//1_000_000}M" if n_tok >= 10**6 else str(n_tok)
     base = f"{preset}_{a.data}_{tokstr}"        # 스케일별 이름 프리픽스
     dense_ck = paths.RUNS / "ckpt" / f"{base}_dense.pt"
+    dense_best_ck = paths.RUNS / "ckpt" / f"{base}_dense_best.pt"   # P3: 더 강한 교사 옵션
 
     if a.cmd == "prepare":
         from .data import prepare
@@ -90,9 +96,11 @@ def main():
               a.lr, a.eval_every, a.resume, ckpt, a.compile,
               sched=a.sched, ema=a.ema, early_stop=a.early_stop,
               init_from=(str(dense_ck) if a.init_from else None),
-              kd=(str(dense_ck) if a.kd else False), kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
+              kd=((str(dense_best_ck) if a.kd_best else str(dense_ck)) if a.kd else False),
+              kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
               lora_rank=a.lora_rank, lora_bits=a.lora_bits, mlp_film=a.mlp_film,
-              tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode, mlp_group=a.mlp_group)
+              tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode, mlp_group=a.mlp_group,
+              ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from)
 
     elif a.cmd == "all":
         from .train import train
@@ -125,11 +133,13 @@ def main():
                   a.lr, a.eval_every, a.resume, ckpt, a.compile,
                   sched=a.sched, ema=a.ema, early_stop=a.early_stop,
                   init_from=(str(dense_ck) if (is_tied and a.init_from) else None),
-                  kd=(str(dense_ck) if (is_tied and a.kd) else False),
+                  kd=((str(dense_best_ck) if a.kd_best else str(dense_ck)) if (is_tied and a.kd) else False),
                   kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
                   lora_rank=(a.lora_rank if is_tied else 0), lora_bits=a.lora_bits,
                   mlp_film=(a.mlp_film if is_tied else False), tokstr=tokstr,
-                  compile_mode=a.compile_mode, mlp_group=(a.mlp_group if is_tied else None))
+                  compile_mode=a.compile_mode, mlp_group=(a.mlp_group if is_tied else None),
+                  ema_start=a.ema_start, center_weights=(a.center_weights if is_tied else False),
+                  decay_from=a.decay_from)
         print(); compare(base)
 
     elif a.cmd == "eval":

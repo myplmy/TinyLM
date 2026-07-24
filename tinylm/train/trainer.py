@@ -24,10 +24,15 @@ LOGS = paths.RUNS / "logs"
 
 
 def _lr_factor(s, warm, steps, sched, decay_frac=0.2):
-    """warmup 후: cosine = 매끄러운 감쇠 / wsd = 긴 plateau + 마지막 decay_frac 감쇠."""
+    """cosine / wsd(긴 plateau+감쇠) / stable(warmup+평탄, plateau 생성용) /
+    decay(워밍업 없이 peak→0.1 cooldown, plateau에서 분기)."""
+    if sched == "decay":                          # cooldown-only (decay-branch)
+        return 0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * s / max(steps, 1)))
     if s < warm:
         return (s + 1) / warm
     p = (s - warm) / max(steps - warm, 1)
+    if sched == "stable":                         # plateau: 감쇠 없이 평탄
+        return 1.0
     if sched == "wsd":
         if p < 1.0 - decay_frac:
             return 1.0
@@ -40,7 +45,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           resume=False, ckpt=True, compile_=False, *,
           sched="cosine", ema=0.0, early_stop=0, init_from=None,
           kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
-          tag=None, tokstr=None, compile_mode="default", mlp_group=None):
+          tag=None, tokstr=None, compile_mode="default", mlp_group=None, ema_start=0.0,
+          center_weights=False, decay_from=None):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(1337)
     if device == "cuda":                        # 저비용 성능 스위치
@@ -60,6 +66,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         cfg.mlp_group = mlp_group
     cfg.mlp_lora_rank, cfg.mlp_lora_bits = lora_rank, lora_bits
     cfg.mlp_film = mlp_film
+    cfg.center_weights = center_weights
     model = TiedMLPTransformer(cfg).to(device)
 
     if init_from:
@@ -75,6 +82,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             teacher = torch.compile(teacher)   # KD 가속: 교사 forward도 컴파일(eager→컴파일)
         print(f"[kd] 교사 로드 완료 (alpha={kd_alpha}, T={kd_temp})")
 
+    if decay_from:                              # WSD decay-branch: plateau에서 분기
+        from .init_utils import _strip
+        st = torch.load(decay_from, map_location=device)
+        model.load_state_dict(_strip(st["model"]))
+        print(f"[decay] plateau 로드 -> cooldown {steps}스텝  <- {decay_from}")
+
     if compile_:
         if compile_mode == "reduce-overhead":
             print("[compile] 주의: reduce-overhead(CUDA그래프)는 임베딩 타잉과 충돌해 "
@@ -86,9 +99,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     print(f"[{label}] device={device}  {steps}step x {eff/1e3:.0f}K tok = "
           f"{steps*eff/1e6:.0f}M 토큰  (sched={sched} ema={ema} lora_r={lora_rank})\n")
 
-    opt = torch.optim.AdamW(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8)
+    opt = torch.optim.AdamW(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8,
+                            fused=(device == "cuda"))   # ①: optimizer update 단일 커널
     base_lrs = [g["lr"] for g in opt.param_groups]
-    warm = max(5, min(steps // 10, 100))
+    warm = 0 if sched == "decay" else max(5, min(steps // 10, 100))
 
     tokstr = tokstr or (f"{int(n_tokens)//1_000_000}M" if n_tokens >= 10**6 else str(int(n_tokens)))
     _base = f"{preset}_{data}_{tokstr}"                # 스케일 프리픽스
@@ -103,7 +117,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         print(f"[{arch}] step {start}에서 재개")
 
     params = [p for p in model.parameters() if p.requires_grad]
-    shadow = [p.detach().clone() for p in params] if ema > 0 else None
+    shadow = None                               # P1: 후반부(ema_start 이후)에만 지연 생성·누적
+    ema_start_step = int(ema_start * steps)
 
     def _swap_in_ema():
         backup = [p.detach().clone() for p in params]
@@ -120,6 +135,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     _cudagraph_step = (getattr(torch.compiler, "cudagraph_mark_step_begin", None)
                        if (compile_ and compile_mode == "reduce-overhead") else None)
 
+    bpt = meta.get("bytes_per_token")           # bits-per-byte용(토크나이저 무관 지표)
     tr = Loader("train", micro_bs, seq, device, meta["dir"], seed=1234)
     va = Loader("val", micro_bs, seq, device, meta["dir"], seed=99)
     hist, t0, gmax, gpeak, n_skip = [], time.time(), 0.0, 0.0, 0
@@ -127,7 +143,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
 
     def _do_eval(step, train_loss):
         nonlocal best_val, best_step, since_improve
-        m = evaluate(model, va, 50, device); m["ema"] = False   # 주 지표 = raw 모델(실제 진행)
+        m = evaluate(model, va, 50, device, bytes_per_token=bpt); m["ema"] = False   # 주 지표 = raw
         line = (f"    >> val_loss {m['val_loss']:.4f}  ppl {m['ppl']:.2f}  "
                 f"(train {train_loss:.3f}, val-train {m['val_loss']-train_loss:+.3f})")
         if shadow is not None:                                  # EMA는 부가 표시
@@ -135,6 +151,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             me = evaluate(model, va, 50, device)
             _swap_out(backup)
             m["val_ema"] = me["val_loss"]; line += f"  [ema {me['val_loss']:.4f}]"
+        if "bpb" in m: line += f"  bpb {m['bpb']:.3f}"
         m.update(step=step, train_loss=train_loss, gap=m["val_loss"] - train_loss)
         hist.append(m); print(line)
         blob = {"model": model.state_dict(), "opt": opt.state_dict(),
@@ -151,8 +168,11 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         return m
 
     for s in range(start, steps):
-        a0 = warm / steps + 0.05
-        anneal = min(1.0, max(0.0, (s / steps - a0) / max(0.60 - a0, 1e-6)))
+        if sched == "decay":                    # 이미 학습된 plateau라 완전 삼진 유지
+            anneal = 1.0
+        else:
+            a0 = warm / steps + 0.05
+            anneal = min(1.0, max(0.0, (s / steps - a0) / max(0.60 - a0, 1e-6)))
         model.set_anneal(anneal)
         f = _lr_factor(s, warm, steps, sched)
         for g, b in zip(opt.param_groups, base_lrs):
@@ -194,10 +214,13 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         if s >= warm:
             gmax = max(gmax, float(gn))
         opt.step(); opt.zero_grad(set_to_none=True)
-        if shadow is not None:
+        if ema > 0 and s >= ema_start_step:     # P1: 감쇠 구간의 좋은 가중치만 평균
             with torch.no_grad():
-                for sh, p in zip(shadow, params):
-                    sh.mul_(ema).add_(p.detach(), alpha=1 - ema)
+                if shadow is None:
+                    shadow = [p.detach().clone() for p in params]
+                else:
+                    for sh, p in zip(shadow, params):
+                        sh.mul_(ema).add_(p.detach(), alpha=1 - ema)
         model.clear_quant()
 
         if s % 10 == 0 or s == steps - 1:
@@ -211,7 +234,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                 print(f"  [early-stop] {early_stop}회 연속 개선 없음 (best {best_val:.4f} @ {best_step}). 종료.")
                 break
 
-    final = evaluate(model, va, 100, device); final["ema"] = False
+    final = evaluate(model, va, 100, device, bytes_per_token=bpt); final["ema"] = False
     if shadow is not None:
         backup = _swap_in_ema(); fe = evaluate(model, va, 100, device); _swap_out(backup)
         final["val_ema"], final["ppl_ema"] = fe["val_loss"], fe["ppl"]
