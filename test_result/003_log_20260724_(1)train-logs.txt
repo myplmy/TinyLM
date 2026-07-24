@@ -18,17 +18,17 @@ d=256 ffn=512 layers=1+4+1  MLP g=2  CLA=2  vocab=32768 E=64
 ========================================================================
 [k_off] device=cuda  40step x 1K tok = 0M 토큰  (sched=cosine ema=0.0 lora_r=0)
 
-  step     0/40  loss 10.4017  |g| 0.55  anneal 0.00  lr 1.20e-04  298 ms/step
-  step    10/40  loss 10.3728  |g| 0.51  anneal 0.18  lr 5.73e-04  103 ms/step
+  step     0/40  loss 10.4017  |g| 0.55  anneal 0.00  lr 1.20e-04  485 ms/step
+  step    10/40  loss 10.3728  |g| 0.51  anneal 0.18  lr 5.73e-04  256 ms/step
     >> val_loss 9.9925  ppl 21861.89  (train 10.021, val-train -0.029)
        best 갱신 9.9925 -> tiny_synthetic_2M_k_off_best.pt
-  step    20/40  loss 9.9863  |g| 0.76  anneal 0.76  lr 3.90e-04  122 ms/step
-  step    30/40  loss 9.5381  |g| 0.96  anneal 1.00  lr 1.62e-04  105 ms/step
-  step    39/40  loss 9.3181  |g| 1.00  anneal 1.00  lr 6.11e-05  96 ms/step
+  step    20/40  loss 9.9863  |g| 0.76  anneal 0.76  lr 3.90e-04  358 ms/step
+  step    30/40  loss 9.5381  |g| 0.96  anneal 1.00  lr 1.62e-04  315 ms/step
+  step    39/40  loss 9.3181  |g| 1.00  anneal 1.00  lr 6.11e-05  297 ms/step
     >> val_loss 9.3150  ppl 11103.33  (train 9.318, val-train -0.003)
        best 갱신 9.3150 -> tiny_synthetic_2M_k_off_best.pt
 
-[k_off] 최종 val_loss 9.3181  ppl 11138.08  best 9.3150@40  (4.6M, 0.1분, skip 0)
+[k_off] 최종 val_loss 9.3181  ppl 11138.08  best 9.3150@40  (4.6M, 0.3분, skip 0)
 
 z:\TinyLM>python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 40 --micro-bs 4 --seq 128 --accum 2 --eval-every 20 --ternary-kernel --tag k_ref
 [data] 합성 토큰 2.0M 생성 (동작 확인용, 캐시 안 함)
@@ -50,14 +50,14 @@ d=256 ffn=512 layers=1+4+1  MLP g=2  CLA=2  vocab=32768 E=64
 ========================================================================
 [k_ref] device=cuda  40step x 1K tok = 0M 토큰  (sched=cosine ema=0.0 lora_r=0)
 
-  step     0/40  loss 10.3978  |g| 0.60  anneal 0.00  lr 1.20e-04  349 ms/step
-  step    10/40  loss 10.3777  |g| 0.55  anneal 0.18  lr 5.73e-04  148 ms/step
-    >> val_loss 10.0000  ppl 22026.47  (train 10.062, val-train -0.062)
-       best 갱신 10.0000 -> tiny_synthetic_2M_k_ref_best.pt
-  step    20/40  loss 10.0107  |g| 0.76  anneal 0.76  lr 3.90e-04  178 ms/step
-  step    30/40  loss 9.5837  |g| 0.96  anneal 1.00  lr 1.62e-04  157 ms/step
-  step    39/40  loss 9.3837  |g| 0.99  anneal 1.00  lr 6.11e-05  151 ms/step
-    >> val_loss 9.3675  ppl 11701.82  (train 9.384, val-train -0.016)
-       best 갱신 9.3675 -> tiny_synthetic_2M_k_ref_best.pt
+  step     0/40  loss 10.4017  |g| 0.55  anneal 0.00  lr 1.20e-04  628 ms/step
+  step    10/40  loss 10.3726  |g| 0.50  anneal 0.18  lr 5.73e-04  379 ms/step
+    >> val_loss 9.9900  ppl 21807.30  (train 10.021, val-train -0.031)
+       best 갱신 9.9900 -> tiny_synthetic_2M_k_ref_best.pt
+  step    20/40  loss 9.9858  |g| 0.76  anneal 0.76  lr 3.90e-04  545 ms/step
+  step    30/40  loss 9.5379  |g| 0.96  anneal 1.00  lr 1.62e-04  478 ms/step
+  step    39/40  loss 9.3168  |g| 1.00  anneal 1.00  lr 6.11e-05  445 ms/step
+    >> val_loss 9.3150  ppl 11103.33  (train 9.317, val-train -0.002)
+       best 갱신 9.3150 -> tiny_synthetic_2M_k_ref_best.pt
 
-[k_ref] 최종 val_loss 9.3712  ppl 11745.79  best 9.3675@40  (4.6M, 0.2분, skip 0)
+[k_ref] 최종 val_loss 9.3169  ppl 11124.16  best 9.3150@40  (4.6M, 0.5분, skip 0)

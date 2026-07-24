@@ -98,7 +98,7 @@ def main():
     elif a.cmd == "kdcache":
         from .train.kd_cache import build_kd_cache
         teacher = str(dense_best_ck if a.kd_best else dense_ck)
-        build_kd_cache(base, teacher, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum, a.kd_topk)
+        build_kd_cache(base, teacher, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum, a.kd_topk, a.kd_temp)
 
     elif a.cmd == "train":
         from .train import train

@@ -25,7 +25,7 @@ def cache_dir(base, topk):
 
 @torch.no_grad()
 def build_kd_cache(base, teacher_path, data, n_tokens, steps, micro_bs, seq, accum,
-                   topk=16, device=None):
+                   topk=16, temp=2.0, device=None):
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     meta = prepare(data, n_tokens)
     teacher, _ = load_dense(teacher_path, device)
@@ -43,11 +43,14 @@ def build_kd_cache(base, teacher_path, data, n_tokens, steps, micro_bs, seq, acc
     for s in range(steps):
         for _ in range(accum):
             x, _y = tr()
+            import torch.nn.functional as F
             with torch.autocast(device, dtype=torch.bfloat16, enabled=(device == "cuda")):
                 logits = teacher(x)                            # [mb, seq, V]
-            tv, ti = torch.topk(logits.float(), topk, dim=-1)  # [mb, seq, K]
+            # 교사 확률 p=softmax(logits/T) 의 top-k(확률+인덱스)를 저장 (loss는 top-k KL)
+            p = F.softmax(logits.float() / temp, dim=-1)       # [mb, seq, V]
+            pv, ti = torch.topk(p, topk, dim=-1)               # [mb, seq, K]
             n = x.shape[0] * x.shape[1]
-            vals[pos:pos + n] = tv.reshape(n, topk).cpu().numpy().astype(np.float16)
+            vals[pos:pos + n] = pv.reshape(n, topk).cpu().numpy().astype(np.float16)
             idx[pos:pos + n] = ti.reshape(n, topk).cpu().numpy().astype(np.int32)
             pos += n
         if s % 50 == 0:
@@ -56,7 +59,8 @@ def build_kd_cache(base, teacher_path, data, n_tokens, steps, micro_bs, seq, acc
     vals.flush(); idx.flush()
     (d / "meta.json").write_text(json.dumps(
         {"base": base, "data": data, "steps": steps, "micro_bs": micro_bs,
-         "seq": seq, "accum": accum, "topk": topk, "total": total, "seed": 1234}, indent=2))
+         "seq": seq, "accum": accum, "topk": topk, "total": total, "seed": 1234,
+         "temp": temp}, indent=2))
     print(f"[kdcache] 완료: {pos} pos 저장")
 
 
@@ -86,10 +90,12 @@ class KdCacheReader:
         return v, i    # [n, K]
 
 
-def kd_cache_loss(logits, tv, ti, vocab, temp):
-    """top-k KD KL. logits [.., V], tv/ti [n, K] (교사 top-k 로짓/인덱스)."""
+def kd_cache_loss(logits, p_t, ti, vocab, temp):
+    """온라인 KL(p||q)=sum_V p(log p - log q) 의 top-k 제한형.
+    p_t [n,K]=교사 top-k 확률(softmax(t/T) 저장), q는 학생 softmax(s/T) 를 같은 인덱스에서.
+    교사 질량이 top-k에 집중되므로 전체 KL을 근사한다."""
     import torch.nn.functional as F
-    logp = F.log_softmax(logits.reshape(-1, vocab), dim=-1)   # [n, V]
-    s_logp = logp.gather(1, ti)                                # [n, K]
-    t_p = F.softmax(tv / temp, dim=-1)                         # [n, K]
-    return F.kl_div(s_logp, t_p, reduction="batchmean") * (temp * temp)
+    q_logp = F.log_softmax(logits.reshape(-1, vocab) / temp, dim=-1)   # [n, V]
+    q_topk = q_logp.gather(1, ti)                                       # [n, K]
+    kl = (p_t * (p_t.clamp_min(1e-9).log() - q_topk)).sum(-1).mean()
+    return kl * (temp * temp)
