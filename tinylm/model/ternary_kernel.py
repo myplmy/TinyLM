@@ -128,8 +128,10 @@ class _TernaryKernelLinear(torch.autograd.Function):
         return gx, gw, None, None, None, None, None
 
 
-def ternary_kernel_linear(x, w, cfg):
-    """TLinear.forward 진입점. cfg.quant_anneal 을 반영해 기존 경로와 동일하게 동작."""
+def ternary_kernel_linear(x, w, cfg, anneal_t=None):
+    """TLinear.forward 진입점. 어닐은 스칼라 텐서(anneal_t)를 우선 사용해 torch.compile 가드를 피한다.
+    (anneal_t 미제공 시 cfg.quant_anneal 폴백 — compile 없이 실행하는 경우엔 무해.)"""
+    anneal = anneal_t if anneal_t is not None else float(cfg.quant_anneal)
     return _TernaryKernelLinear.apply(
         x, w, cfg.micro_group, cfg.twn_thr_ratio, cfg.ste_clip,
-        float(cfg.quant_anneal), getattr(cfg, "ternary_kernel_triton", False))
+        anneal, getattr(cfg, "ternary_kernel_triton", False))

@@ -90,6 +90,9 @@ def main():
     p.add_argument("--ckpt-path", default=None)
     a = p.parse_args()
 
+    import sys as _sys                           # 실행 인자 로그(배치파일에서 어떤 조건인지 추적)
+    print("[cmd] python " + " ".join(_sys.argv))
+
     n_tok = _tok(a.tokens)
     preset, ckpt = _preset(a), not a.no_ckpt
     tokstr = f"{n_tok//1_000_000}M" if n_tok >= 10**6 else str(n_tok)

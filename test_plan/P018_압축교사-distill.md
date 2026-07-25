@@ -26,13 +26,34 @@
 크게 벌어지면 "교사 상한" 확인(압축 교사 자체 품질이 병목).
 
 ## 실행 (사용자 대리 수행)
+> 토큰 예산: `--accum 16`(유효배치 131K) = 300M. 생략(accum8)하면 150M만 학습되니 주의(P017 005 교훈).
 ```
-python run100m.py train --arch tied --data ko-en --tokens 300M --steps 2289 ^
+python run100m.py train --arch tied --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 ^
   --lr 1e-3 --compile --kd --init-from --mlp-group 8 --kd-teacher-tag t_kdinit --tag t_kd8_ct
-python run100m.py train --arch tied --data ko-en --tokens 300M --steps 2289 ^
+python run100m.py train --arch tied --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 ^
   --lr 1e-3 --compile --kd --init-from --mlp-group 8 --kd-teacher-tag t_kdinit --kd-every 2 --tag t_kd8_ct_k2
 python run100m.py compare --tag t_kd8_ct
 python run100m.py compare --tag t_kd8_ct_k2
+```
+
+### run100m_test.bat (순수 ASCII)
+```
+@echo off
+REM ===== P018 compressed-teacher distill (teacher = t_kdinit tied ckpt) =====
+echo [1/2] t_kd8_ct (compressed teacher, full KD)
+python run100m.py train --arch tied --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --lr 1e-3 --compile --kd --init-from --mlp-group 8 --kd-teacher-tag t_kdinit --tag t_kd8_ct
+if errorlevel 1 goto ERROR
+echo [2/2] t_kd8_ct_k2 (compressed teacher + skip-forward K=2)
+python run100m.py train --arch tied --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --lr 1e-3 --compile --kd --init-from --mlp-group 8 --kd-teacher-tag t_kdinit --kd-every 2 --tag t_kd8_ct_k2
+if errorlevel 1 goto ERROR
+python run100m.py compare --tag t_kd8_ct
+python run100m.py compare --tag t_kd8_ct_k2
+echo done.
+pause
+exit /b 0
+:ERROR
+echo [WARN] stopped: error during run.
+pause
 ```
 
 ## 비판/리스크

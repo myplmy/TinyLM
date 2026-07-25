@@ -42,6 +42,14 @@ def compare(base=None, tied_tag=None, vs_tag=None):
     MB = lambda n: n * 1.95 / 8 / 1024**2
     dl, tl = d["final"]["val_loss"], t["final"]["val_loss"]
 
+    # 긴 태그명이 컬럼(16)을 넘쳐 서로 붙는 문제 방지: base 프리픽스 제거 + 15자 절단(≥1칸 여백 보장).
+    def _short(lab):
+        lab = str(lab)
+        if base and lab.startswith(f"{base}_"):
+            lab = lab[len(base) + 1:]
+        return lab if len(lab) <= 15 else lab[:13] + ".."
+    llabel, rlabel = _short(llabel), _short(rlabel)
+
     print(f"  (좌={lname}.json  우={rname}.json)")
     print("=" * 68)
     print(f"  {llabel} 기준 vs {rlabel}   (동일 토큰·동일 시드)")

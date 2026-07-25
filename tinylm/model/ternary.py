@@ -52,6 +52,7 @@ class TLinear(nn.Module):
             self.mode_b = nn.Parameter(torch.zeros(out_f, r))
             self.mode_gain = nn.Parameter(torch.ones(cfg.n_modes, r) + 0.02*torch.randn(cfg.n_modes, r))
         self._wq = None
+        self._anneal_t = None            # refresh_quant가 채우는 어닐 스칼라 텐서(커널 경로 재컴파일 방지용)
 
     def _w(self):
         """(옵션) g128 그룹별 mean-centering 후 latent weight 반환."""
@@ -64,6 +65,7 @@ class TLinear(nn.Module):
 
     def refresh_quant(self, anneal):
         # torch.compile 안전: Python 분기 없이 항상 STE 항을 더한다(anneal은 스칼라 텐서).
+        self._anneal_t = anneal          # 커널 경로가 float(cfg.quant_anneal) 대신 이 텐서를 쓰게 함
         w = self._w()
         wq = ternary(w, self.cfg)
         self._wq = wq + (1.0 - anneal) * (w - wq).detach()
@@ -73,7 +75,7 @@ class TLinear(nn.Module):
 
     def forward(self, x, mode_p=None):
         if getattr(self.cfg, "use_ternary_kernel", False):   # 분리된 커스텀 커널 경로(기본 off)
-            y = ternary_kernel_linear(x, self._w(), self.cfg)
+            y = ternary_kernel_linear(x, self._w(), self.cfg, self._anneal_t)
         else:
             wq = self._wq if self._wq is not None else ternary(self._w(), self.cfg)
             y = F.linear(x, wq)
