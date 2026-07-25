@@ -99,10 +99,18 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         model.load_state_dict(_strip(st["model"]))
         print(f"[decay] plateau 로드 -> cooldown {steps}스텝  <- {decay_from}")
 
-    if compile_ and ternary_kernel_triton:
-        print("[compile] 경고: 삼진 커널(Triton)+torch.compile 동시 사용은 "
-              "quant_anneal 값 가드로 recompile 폭주(재컴파일 한도 초과)를 유발해 크게 느려집니다. "
-              "커널 벤치마크는 --compile 없이 실행하세요(커널 자체가 별도 최적화 경로).")
+    if compile_ and (use_ternary_kernel or ternary_kernel_triton):
+        # 커널 경로는 torch.compile 과 근본적으로 상성이 나쁘다:
+        #   - Triton 커스텀 커널은 dynamo 의 identify_mutated_tensors 가 커널 IR 을 파싱하다
+        #     CompilationError(IndexError: Function argument index out of range) 로 크래시.
+        #   - anneal>=1.0 데이터 의존 분기 → 그래프 브레이크 + quant_anneal 값 가드 재컴파일 폭주.
+        # 따라서 두 옵션 동시 사용은 조용히 느려지거나 크래시하므로 **여기서 학습을 중단**한다.
+        raise SystemExit(
+            "[중단] --ternary-kernel[-triton] 은 --compile 과 함께 쓸 수 없습니다.\n"
+            "  이유: dynamo 가 커스텀 Triton 커널 IR 파싱 중 크래시(IndexError)하거나, anneal 데이터의존\n"
+            "        분기로 재컴파일 폭주가 발생합니다(커널은 별도 최적화 경로라 compile 대상이 아님).\n"
+            "  조치: 커널 벤치는 --compile 을 빼고 실행하세요. 예)\n"
+            "        python run100m.py train ... --ternary-kernel --ternary-kernel-triton   (--compile 제거)")
     if compile_:
         if compile_mode == "reduce-overhead":
             print("[compile] 주의: reduce-overhead(CUDA그래프)는 임베딩 타잉과 충돌해 "
