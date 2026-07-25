@@ -10,12 +10,21 @@ import torch.nn.functional as F
 
 class _TernarySTE(torch.autograd.Function):
     @staticmethod
-    def forward(ctx, w, group, thr_ratio, ste_clip):
+    def forward(ctx, w, group, thr_ratio, ste_clip, sparse34=False):
         O, I = w.shape
         G = I // group
         wg = w.reshape(O, G, group)
         aw = wg.abs()
-        mask = (aw >= thr_ratio * aw.mean(dim=2, keepdim=True)).to(w.dtype)
+        if sparse34:
+            # (P016) 3:4 희소: group 을 4-블록으로 쪼개 각 블록에서 |w|최소 1개를 0강제.
+            #   → 정확히 3/4 유지(C(4,3)·2^3=32=2^5 → 1.25bpw 무낭비 패킹). TWN threshold 미적용
+            #   (nonzero 개수를 4당 3으로 고정해야 5비트 코드공간과 정합).
+            b = aw.reshape(O, G, group // 4, 4)
+            keep = torch.ones_like(b)
+            keep.scatter_(3, b.argmin(dim=3, keepdim=True), 0.0)   # 최소 |w| 위치만 0
+            mask = keep.reshape(O, G, group)
+        else:
+            mask = (aw >= thr_ratio * aw.mean(dim=2, keepdim=True)).to(w.dtype)
         cnt = mask.sum(dim=2, keepdim=True).clamp_min(1.0)
         alpha = (aw * mask).sum(dim=2, keepdim=True) / cnt
         ctx.save_for_backward(aw, alpha)
@@ -27,11 +36,12 @@ class _TernarySTE(torch.autograd.Function):
         aw, alpha = ctx.saved_tensors
         O, I, G, group, clip = ctx.meta
         win = 1.0 / (1.0 + (aw / (clip * alpha).clamp_min(1e-8)).pow(4))
-        return (g.reshape(O, G, group) * win).reshape(O, I), None, None, None
+        return (g.reshape(O, G, group) * win).reshape(O, I), None, None, None, None
 
 
 def ternary(w, cfg):
-    return _TernarySTE.apply(w, cfg.micro_group, cfg.twn_thr_ratio, cfg.ste_clip)
+    return _TernarySTE.apply(w, cfg.micro_group, cfg.twn_thr_ratio, cfg.ste_clip,
+                             getattr(cfg, "sparse34", False))
 
 
 from .ternary_kernel import ternary_kernel_linear  # noqa: E402  (커스텀 커널 진입점, 기본 off)
@@ -86,8 +96,9 @@ class TLinear(nn.Module):
 
 
 def ternary_g(w, group, cfg):
-    """명시적 group 으로 삼진화(LoRA용). group 은 w 의 마지막 차원을 나눠야 한다."""
-    return _TernarySTE.apply(w, group, cfg.twn_thr_ratio, cfg.ste_clip)
+    """명시적 group 으로 삼진화(LoRA용). group 은 w 의 마지막 차원을 나눠야 한다.
+    LoRA 보정은 3:4 대상 아님 → sparse34=False 고정(backward 인자 수 정합 위해 명시)."""
+    return _TernarySTE.apply(w, group, cfg.twn_thr_ratio, cfg.ste_clip, False)
 
 
 class LoRA(nn.Module):

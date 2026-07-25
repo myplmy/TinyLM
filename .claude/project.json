@@ -1,0 +1,26 @@
+{
+  "name": "TinyLM",
+  "description": "저사양 CPU·엣지·모바일용 초경량 LLM 아키텍처. 1순위 목표는 연산이 아니라 메모리 최적화(연산 증가 감수). 지향점: dense 대비 절반 이하 메모리로 유사 품질.",
+  "language": "ko",
+  "conventions": {
+    "prose": "ko",
+    "identifiers": "en",
+    "params_single_source": "tinylm/config.py (TMTConfig/PRESETS)"
+  },
+  "execution": {
+    "ai_runs_training": false,
+    "note": "AI는 사용자 환경에서 학습/GPU 코드를 직접 실행하지 않는다. 코드 수정만 하고, 실행은 명령어·순서를 제시해 사용자가 대리 수행 후 로그를 회신한다.",
+    "git": "사용자가 Windows 셸에서 수행(Cowork 마운트에서 rename/unlink 차단)",
+    "bat_files": "순수 ASCII만(한글/chcp/<>|% 금지)"
+  },
+  "entrypoints": {
+    "cli": "python run100m.py <prepare|train|eval|compare|all|lrfind|generate|kdcache>",
+    "canonical_code": "tinylm/"
+  },
+  "docs": {
+    "handoff": "handoff/",
+    "methods": "docs/METHODS.md + docs/methods/",
+    "plans": "test_plan/",
+    "results": "test_result/"
+  }
+}

@@ -39,7 +39,10 @@ def compare(base=None, tied_tag=None, vs_tag=None):
             print(f"[compare] {p} 없음. 먼저 학습하세요."); return
         out[role] = json.loads(p.read_text())
     d, t = out["L"], out["R"]
-    MB = lambda n: n * 1.95 / 8 / 1024**2
+    # 배포 메모리 = params × bpw (coarse). 3:4 희소(P016)면 bpw=1.25, 아니면 1.95.
+    # 주: 임베딩/기타(fp16)까지 동일 bpw로 근사하는 관행 유지(정밀 분해는 report() 참조).
+    MB = lambda n, bpw=1.95: n * bpw / 8 / 1024**2
+    dbpw, tbpw = d.get("bpw", 1.95), t.get("bpw", 1.95)
     dl, tl = d["final"]["val_loss"], t["final"]["val_loss"]
 
     # 긴 태그명이 컬럼(16)을 넘쳐 서로 붙는 문제 방지: base 프리픽스 제거 + 15자 절단(≥1칸 여백 보장).
@@ -58,8 +61,8 @@ def compare(base=None, tied_tag=None, vs_tag=None):
     print("  " + "-" * 62)
     print(f"  {'파라미터':<18}{d['params']/1e6:>15.1f}M{t['params']/1e6:>15.1f}M"
           f"{d['params']/t['params']:>13.2f}x")
-    print(f"  {'배포 메모리':<18}{MB(d['params']):>14.1f}MB{MB(t['params']):>14.1f}MB"
-          f"{MB(d['params'])/MB(t['params']):>13.2f}x")
+    print(f"  {'배포 메모리':<18}{MB(d['params'],dbpw):>14.1f}MB{MB(t['params'],tbpw):>14.1f}MB"
+          f"{MB(d['params'],dbpw)/MB(t['params'],tbpw):>13.2f}x")
     print(f"  {'val loss':<18}{dl:>16.4f}{tl:>16.4f}{tl-dl:>+14.4f}")
     print(f"  {'perplexity':<18}{d['final']['ppl']:>16.2f}{t['final']['ppl']:>16.2f}"
           f"{t['final']['ppl']/d['final']['ppl']:>13.2f}x")

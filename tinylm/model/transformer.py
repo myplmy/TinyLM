@@ -158,6 +158,7 @@ class TiedMLPTransformer(nn.Module):
     def report(self, bpw=1.95, l3_mb=32.0):
         cfg = self.cfg
         MB = lambda n, b: n * b / 8 / 1024 ** 2
+        bpw_t = 1.25 if getattr(cfg, "sparse34", False) else bpw   # (P016) 3:4 삼진 = 1.25bpw
         tern = sum(m.weight.numel() for m in self._tlinears())
         mode = sum(p.numel() for m in self._tlinears() if m.use_mode
                    for p in (m.mode_a, m.mode_b, m.mode_gain))
@@ -165,9 +166,9 @@ class TiedMLPTransformer(nn.Module):
         lora = sum(p.numel() for m in self.modules() if isinstance(m, LoRA) for p in m.parameters())
         other = sum(p.numel() for p in self.parameters()) - tern - mode - emb - lora
         total = tern + mode + emb + other + lora
-        e_bits = bpw if cfg.quantize_embedding else 16
+        e_bits = bpw if cfg.quantize_embedding else 16   # 임베딩은 3:4 대상 아님(1.95 유지)
         l_bits = cfg.mlp_lora_bits
-        mem = MB(tern, bpw) + MB(mode, 16) + MB(emb, e_bits) + MB(other, 16) + MB(lora, l_bits)
+        mem = MB(tern, bpw_t) + MB(mode, 16) + MB(emb, e_bits) + MB(other, 16) + MB(lora, l_bits)
 
         per_l = (cfg.dim*cfg.dim*2 + cfg.kv_dim*cfg.dim*2) + 3*cfg.dim*cfg.ffn_dim
         flops = 2 * cfg.n_layers * per_l / 1e9
@@ -181,7 +182,8 @@ class TiedMLPTransformer(nn.Module):
           f"  MLP g={cfg.mlp_group if cfg.tie_mlp else 1}  CLA={cfg.cla_group}"
           f"  vocab={cfg.vocab_size} E={cfg.emb_rank or cfg.dim}")
         A("=" * 72)
-        A(f"  {'삼진 가중치':<24}{tern/1e6:>9.1f}M{MB(tern,bpw):>10.1f} MB")
+        _tlbl = '삼진 가중치(3:4 1.25bpw)' if getattr(cfg, "sparse34", False) else '삼진 가중치'
+        A(f"  {_tlbl:<24}{tern/1e6:>9.1f}M{MB(tern,bpw_t):>10.1f} MB")
         if mode: A(f"  {'모드 delta (fp16)':<24}{mode/1e6:>9.1f}M{MB(mode,16):>10.1f} MB")
         if lora: A(f"  {'LoRA(r='+str(cfg.mlp_lora_rank)+', '+str(l_bits)+'bit)':<24}{lora/1e6:>9.1f}M{MB(lora,l_bits):>10.1f} MB")
         A(f"  {'임베딩(factorized)':<24}{emb/1e6:>9.1f}M{MB(emb,e_bits):>10.1f} MB")

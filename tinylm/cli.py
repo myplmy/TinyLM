@@ -75,6 +75,7 @@ def main():
     p.add_argument("--center-weights", action="store_true", help="(실험) g128 그룹 latent weight centering")
     p.add_argument("--ternary-kernel", action="store_true", help="(실험) 커스텀 삼진 커널 경로(레퍼런스)")
     p.add_argument("--ternary-kernel-triton", action="store_true", help="커널 Triton forward(검증 후에만)")
+    p.add_argument("--sparse34", action="store_true", help="(P016) 3:4 희소 삼진 1.25bpw(각 4-블록 |w|최소 1개 0강제)")
     p.add_argument("--force-dense", action="store_true", help="all 실행 시 dense 재학습 강제(기본은 재사용)")
     # lrfind
     p.add_argument("--method", choices=["range", "grid", "both"], default="range")
@@ -128,7 +129,7 @@ def main():
               snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None),
               use_ternary_kernel=a.ternary_kernel, ternary_kernel_triton=a.ternary_kernel_triton,
               kd_cache=a.kd_cache, kd_topk=a.kd_topk,
-              kd_every=a.kd_every, kd_dynamic=a.kd_dynamic)
+              kd_every=a.kd_every, kd_dynamic=a.kd_dynamic, sparse34=a.sparse34)
 
     elif a.cmd == "all":
         from .train import train

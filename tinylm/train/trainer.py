@@ -48,7 +48,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, ema_start=0.0,
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
-          kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False):
+          kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(1337)
     if device == "cuda":                        # 저비용 성능 스위치
@@ -71,6 +71,13 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     cfg.center_weights = center_weights
     cfg.use_ternary_kernel = use_ternary_kernel
     cfg.ternary_kernel_triton = ternary_kernel_triton
+    cfg.sparse34 = sparse34
+    if sparse34:
+        assert cfg.micro_group % 4 == 0, "sparse34 는 micro_group 이 4의 배수여야 함"
+        if use_ternary_kernel:
+            raise SystemExit("[sparse34] 커스텀 삼진 커널 경로는 3:4 미구현 — "
+                             "--sparse34 는 표준(F.linear) 경로에서만 사용하세요(커널 병용 금지).")
+        print("[sparse34] 3:4 희소 삼진(1.25bpw) 활성 — 각 4-블록 |w|최소 1개 0강제")
     model = TiedMLPTransformer(cfg).to(device)
 
     if init_from:
@@ -287,7 +294,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "history": hist, "grad_max": gmax, "grad_peak_warmup": gpeak, "n_skip": n_skip,
            "sched": sched, "ema": ema, "kd": bool(kd), "init_from": bool(init_from),
            "kd_every": kd_every, "kd_dynamic": bool(kd_dynamic), "kd_fwd_steps": n_kd_fwd,
-           "lora_rank": lora_rank, "wall_sec": time.time() - t0}
+           "lora_rank": lora_rank, "wall_sec": time.time() - t0,
+           "sparse34": bool(sparse34), "bpw": 1.25 if sparse34 else 1.95}
     res["tag"] = name
     (LOGS / f"{name}.json").write_text(json.dumps(res, indent=2))
     kd_note = ""

@@ -24,6 +24,11 @@ DATASETS = {
     # 이름: [(hf_id, config, split, text_key, 혼합 비율), ...]
     "ko-en": [("wikimedia/wikipedia", "20231101.ko", "train", "text", 0.5),
               ("HuggingFaceFW/fineweb-edu", "sample-10BT", "train", "text", 0.5)],
+    # (P012) 큐레이션 대칭 믹스: ko=Korean-webtext-edu(FineWeb-Edu 방식 교육필터, Qwen3-80B 채점 ≥3.0),
+    #   en=FineWeb-Edu. ko-en(원시 위키)과 공존하며 같은 토큰에서 데이터효율(bpb) 비교용.
+    #   config=None(기본 subset), text_key="text". 비교는 반드시 같은 토크나이저로.
+    "ko-edu-en": [("eliceai/korean-webtext-edu", None, "train", "text", 0.5),
+                  ("HuggingFaceFW/fineweb-edu", "sample-10BT", "train", "text", 0.5)],
     "ko":    [("wikimedia/wikipedia", "20231101.ko", "train", "text", 1.0)],
     "en":    [("Salesforce/wikitext", "wikitext-103-raw-v1", "train", "text", 1.0)],
 }

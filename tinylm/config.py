@@ -37,6 +37,7 @@ class TMTConfig:
     ste_clip: float = 2.5
     quant_anneal: float = 1.0
     quantize_embedding: bool = True
+    sparse34: bool = False            # (P016) 3:4 희소 삼진(4개마다 |w|최소 1개 0강제) = 1.25bpw
 
     # --- relaxation: RRT식 층별 LoRA (공유 MLP 위, 배포 메모리 최소) ---
     mlp_lora_rank: int = 0            # 0이면 비활성
@@ -59,6 +60,8 @@ class TMTConfig:
         assert self.n_q_heads % self.n_kv_heads == 0
         assert self.dim % self.micro_group == 0 and self.ffn_dim % self.micro_group == 0
         assert self.n_middle % self.mlp_group == 0
+        if self.sparse34:
+            assert self.micro_group % 4 == 0, "sparse34 는 group 이 4의 배수여야 함(3:4 블록)"
 
     @property
     def head_dim(self): return self.dim // self.n_q_heads

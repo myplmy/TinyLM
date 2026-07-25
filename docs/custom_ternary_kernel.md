@@ -4,6 +4,12 @@
 > 현재는 삼진을 bf16로 dequant한 뒤 **풀 bf16 GEMM**을 돌려, 학습 중 삼진의 연산 이득이 0이다.
 > backward는 STE(window)를 보존해야 한다. **이 문서는 준비용 — 커널 작성은 아직 대기.**
 
+> **참고(SplitK, arXiv:2402.00025)**: IBM/Meta의 W4A16 융합 dequant+GEMM은 SplitK atomic 분해로
+> **스키니 M=1–16(추론 decode) 메모리바운드** GEMM을 naive Triton DP 대비 65%(A100)~124%(H100)
+> 가속한다. **우리 학습(M=micro_bs×seq=8192, 연산바운드)엔 무관** — SplitK 이득은 작은 M에 집중.
+> 다만 **GPU decode(generate.py, M=1)** 를 언젠가 가속하려면 현재 naive DP 삼진 커널을 SplitK/StreamK로
+> 업그레이드하는 것이 정확한 경로다(P014 결과의 "10× 느림" 원인=naive DP·recompile과 정합). 학습용이 아님.
+
 ## 왜 필요한가 (현 병목)
 - 현재 `TLinear.forward`: `F.linear(x, wq)` 에서 `wq`는 dequant된 삼진(bf16) → **bf16 GEMM 풀 비용**.
 - 100M/300M 학습 ~100~200분의 대부분이 이 GEMM(연산 바운드). 삼진의 **메모리 이점은 배포에만**, 학습 속도엔 미반영.
