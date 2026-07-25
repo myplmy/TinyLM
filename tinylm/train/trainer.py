@@ -48,7 +48,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, ema_start=0.0,
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
-          kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False):
+          kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
+          pool_tokens=None, exact_cache=False):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(1337)
     if device == "cuda":                        # 저비용 성능 스위치
@@ -61,7 +62,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             pass
     CKPT.mkdir(parents=True, exist_ok=True); LOGS.mkdir(parents=True, exist_ok=True)
 
-    meta = prepare(data, n_tokens)
+    # 데이터 풀(캐시)은 pool_tokens 로 학습길이·이름과 분리 가능. 미지정이면 기존처럼 n_tokens.
+    #   토큰스윕(P007 클린): 모든 예산을 동일 600M 풀에서 샘플 → pool_tokens=600M, exact_cache=True.
+    meta = prepare(data, int(pool_tokens) if pool_tokens else n_tokens, exact=exact_cache)
     cfg = build_config(preset, arch, seq, ckpt)
     if mlp_group and arch == "tied":            # g 스윕용 오버라이드(P003)
         assert cfg.n_middle % mlp_group == 0, f"n_middle {cfg.n_middle} % g {mlp_group} != 0"

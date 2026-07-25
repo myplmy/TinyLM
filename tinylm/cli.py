@@ -53,6 +53,9 @@ def main():
     p.add_argument("--ema", type=float, default=0.0, help="EMA decay(0=끔, 예: 0.999)")
     p.add_argument("--early-stop", type=int, default=0, help="val 개선 없이 N회 eval시 종료(0=끔)")
     p.add_argument("--init-from", action="store_true", help="tied를 dense.pt로 부모초기화")
+    p.add_argument("--init-from-tag", default=None,
+                   help="부모초기화를 base_dense.pt 대신 base_{TAG}.pt 로(태그된 dense에서 초기화). "
+                        "토큰스윕 클린판처럼 정본 dense 를 덮지 않고 별도 태그 dense 를 쓸 때.")
     p.add_argument("--kd", action="store_true", help="dense.pt를 교사로 KD")
     p.add_argument("--kd-best", action="store_true", help="KD 교사를 dense_best.pt로(더 강한 교사)")
     p.add_argument("--kd-cache", action="store_true", help="오프라인 KD(캐시 top-k, 교사 forward 없음)")
@@ -76,6 +79,11 @@ def main():
     p.add_argument("--ternary-kernel", action="store_true", help="(실험) 커스텀 삼진 커널 경로(레퍼런스)")
     p.add_argument("--ternary-kernel-triton", action="store_true", help="커널 Triton forward(검증 후에만)")
     p.add_argument("--sparse34", action="store_true", help="(P016) 3:4 희소 삼진 1.25bpw(각 4-블록 |w|최소 1개 0강제)")
+    p.add_argument("--pool-tokens", default=None,
+                   help="데이터 풀(캐시) 크기를 학습길이·이름과 분리 지정(예: 600M). "
+                        "미지정이면 --tokens 사용. 토큰스윕 클린판: 모든 예산을 같은 풀에서 샘플.")
+    p.add_argument("--exact-cache", action="store_true",
+                   help="상위호환 캐시를 고르지 않고 정확히 {data}_{요청토큰} 캐시만 사용/생성.")
     p.add_argument("--force-dense", action="store_true", help="all 실행 시 dense 재학습 강제(기본은 재사용)")
     # lrfind
     p.add_argument("--method", choices=["range", "grid", "both"], default="range")
@@ -101,9 +109,11 @@ def main():
     dense_ck = paths.RUNS / "ckpt" / f"{base}_dense.pt"
     dense_best_ck = paths.RUNS / "ckpt" / f"{base}_dense_best.pt"   # P3: 더 강한 교사 옵션
 
+    pool_tok = _tok(a.pool_tokens) if a.pool_tokens else None
+
     if a.cmd == "prepare":
         from .data import prepare
-        prepare(a.data, n_tok)
+        prepare(a.data, pool_tok if pool_tok else n_tok, exact=a.exact_cache)
 
     elif a.cmd == "kdcache":
         from .train.kd_cache import build_kd_cache
@@ -117,10 +127,13 @@ def main():
             kd_teacher = str(paths.RUNS / "ckpt" / f"{base}_{a.kd_teacher_tag}.pt")
         else:
             kd_teacher = str(dense_best_ck if a.kd_best else dense_ck)
+        # 부모초기화 소스: --init-from-tag 주면 base_{TAG}.pt, 아니면 base_dense.pt
+        init_src = (str(paths.RUNS / "ckpt" / f"{base}_{a.init_from_tag}.pt") if a.init_from_tag
+                    else (str(dense_ck) if a.init_from else None))
         train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
               a.lr, a.eval_every, a.resume, ckpt, a.compile,
               sched=a.sched, ema=a.ema, early_stop=a.early_stop,
-              init_from=(str(dense_ck) if a.init_from else None),
+              init_from=init_src,
               kd=(kd_teacher if a.kd else False),
               kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
               lora_rank=a.lora_rank, lora_bits=a.lora_bits, mlp_film=a.mlp_film,
@@ -129,7 +142,8 @@ def main():
               snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None),
               use_ternary_kernel=a.ternary_kernel, ternary_kernel_triton=a.ternary_kernel_triton,
               kd_cache=a.kd_cache, kd_topk=a.kd_topk,
-              kd_every=a.kd_every, kd_dynamic=a.kd_dynamic, sparse34=a.sparse34)
+              kd_every=a.kd_every, kd_dynamic=a.kd_dynamic, sparse34=a.sparse34,
+              pool_tokens=pool_tok, exact_cache=a.exact_cache)
 
     elif a.cmd == "all":
         from .train import train
@@ -168,7 +182,7 @@ def main():
                   mlp_film=(a.mlp_film if is_tied else False), tokstr=tokstr,
                   compile_mode=a.compile_mode, mlp_group=(a.mlp_group if is_tied else None),
                   ema_start=a.ema_start, center_weights=(a.center_weights if is_tied else False),
-                  decay_from=a.decay_from)
+                  decay_from=a.decay_from, pool_tokens=pool_tok, exact_cache=a.exact_cache)
         print(); compare(base)
 
     elif a.cmd == "eval":

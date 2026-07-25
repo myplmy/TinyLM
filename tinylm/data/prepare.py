@@ -117,16 +117,27 @@ def _ensure_bpt(meta):
     return meta
 
 
-def prepare(name, n_tokens, val_frac=0.005):
+def prepare(name, n_tokens, val_frac=0.005, exact=False):
+    """exact=True 면 상위호환(_find_reusable)을 쓰지 않고 **정확히 {name}_{n_tokens}** 캐시만 사용한다.
+    (있으면 그 캐시, 없으면 정확히 그 크기로 신규 생성.) 토큰스윕처럼 '모든 예산이 같은 풀에서 샘플'해야
+    할 때, 더 큰 캐시가 존재해도 특정 크기를 콕 집어 요청하는 용도."""
     n_tokens = int(n_tokens)
     DATA_CACHE.mkdir(parents=True, exist_ok=True)
 
     if name != "synthetic":
-        reuse = _find_reusable(name, n_tokens)
-        if reuse:
-            print(f"[data] 캐시 재사용: {reuse['tokens']/1e6:.1f}M 토큰 ({name}) "
-                  f"-> {reuse['dir']}")
-            return _ensure_bpt(reuse)
+        if exact:
+            d = DATA_CACHE / f"{name}_{n_tokens}"
+            if (d / "meta.json").exists() and (d / "train.bin").exists():
+                m = json.loads((d / "meta.json").read_text()); m["dir"] = str(d)
+                print(f"[data] 정확 캐시 사용(exact, 상위호환 무시): {n_tokens/1e6:.1f}M ({name}) -> {d}")
+                return _ensure_bpt(m)
+            print(f"[data] 정확 캐시({name}_{n_tokens}) 없음 → 정확히 그 크기로 신규 생성(상위호환 무시)")
+        else:
+            reuse = _find_reusable(name, n_tokens)
+            if reuse:
+                print(f"[data] 캐시 재사용: {reuse['tokens']/1e6:.1f}M 토큰 ({name}) "
+                      f"-> {reuse['dir']}")
+                return _ensure_bpt(reuse)
 
     cache_dir = DATA_CACHE / f"{name}_{n_tokens}"
     cache_dir.mkdir(parents=True, exist_ok=True)

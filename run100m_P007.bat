@@ -1,38 +1,61 @@
 @echo off
-REM ===== P007 Token sweep (100/300/600M): dense-vs-tied gap & quality curve =====
-REM steps = tokens / 131072  (100M->763, 300M->2289, 600M->4578). eff-batch mbs8*accum16*seq1024=131K.
-REM 300M reuses existing dense; 100M/600M are new. Tied variant = default g4 (t_base via 'all', t_kdinit=+KD-init+EMA).
-REM NOTE: 600M triggers a one-time re-tokenization of the ko-en cache (~3h/model). Ensure disk space.
+REM ===== P007 Token sweep (CLEAN pool) : 100/300/600M all sampled from the SAME 600M pool =====
+REM WHY: Loader draws random offsets over the WHOLE cache, so "X tokens from a 300M cache" and
+REM      "X tokens from a 600M cache" are DIFFERENT conditions (different pool = different data seen).
+REM      To isolate the single variable (tokens TRAINED), every budget must sample the same pool.
+REM      -> build the 600M cache once, then train all budgets with --pool-tokens 600M --exact-cache.
+REM
+REM SEED NOTE: same pool + same seed => the 100M run's crops are an exact prefix of the 300M run's,
+REM            which are a prefix of the 600M run's. Cleanest possible tokens-trained scaling curve.
+REM
+REM NAMING: all runs are TAGGED (p6d/p6t/p6tk) so they NEVER overwrite canonical m100_ko-en_*_dense
+REM         logs/checkpoints. tied variants init/distill from the tagged dense via --init-from-tag /
+REM         --kd-teacher-tag p6d (NOT the canonical dense). Fixed tied config = g8 across all budgets.
+REM
+REM COST: ~9 full trainings (dense+tied+kd x 3 budgets). 100M~0.5h, 300M~2.5h, 600M~3h each => heavy.
+REM       If you only want dense-vs-KD, comment out the p6t (plain tied) lines.
 
-echo === 100M ===
-echo [100M a] dense + tied(t_base) via all
-python run100m.py all --data ko-en --tokens 100M --steps 763 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile
-if errorlevel 1 goto ERROR
-echo [100M b] tied + KD-init + EMA (t_kdinit)
-python run100m.py train --arch tied --data ko-en --tokens 100M --steps 763 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --ema 0.999 --init-from --kd --tag t_kdinit
+echo [0] Build the 600M pool once (exact, one-time re-tokenization)
+python run100m.py prepare --data ko-en --tokens 600M --exact-cache
 if errorlevel 1 goto ERROR
 
-echo === 600M (one-time re-tokenization) ===
-echo [600M a] dense + tied(t_base) via all
-python run100m.py all --data ko-en --tokens 600M --steps 4578 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile
+REM ---- helper pattern per budget: dense(p6d) -> tied plain(p6t) -> tied KD-init(p6tk) ----
+
+echo === 100M trained (pool=600M) ===
+python run100m.py train --arch dense --data ko-en --tokens 100M --steps 763 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --pool-tokens 600M --exact-cache --tag p6d
 if errorlevel 1 goto ERROR
-echo [600M b] tied + KD-init + EMA (t_kdinit)
-python run100m.py train --arch tied --data ko-en --tokens 600M --steps 4578 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --ema 0.999 --init-from --kd --tag t_kdinit
+python run100m.py train --arch tied  --data ko-en --tokens 100M --steps 763 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --pool-tokens 600M --exact-cache --mlp-group 8 --tag p6t
+if errorlevel 1 goto ERROR
+python run100m.py train --arch tied  --data ko-en --tokens 100M --steps 763 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --pool-tokens 600M --exact-cache --mlp-group 8 --init-from-tag p6d --kd --kd-teacher-tag p6d --ema 0.999 --tag p6tk
 if errorlevel 1 goto ERROR
 
-echo === 300M optional t_kdinit(g4) for a consistent curve (skip if reusing existing g8 line) ===
-REM python run100m.py train --arch tied --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --ema 0.999 --init-from --kd --tag t_kdinit
+echo === 300M trained (pool=600M) ===
+python run100m.py train --arch dense --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --pool-tokens 600M --exact-cache --tag p6d
+if errorlevel 1 goto ERROR
+python run100m.py train --arch tied  --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --pool-tokens 600M --exact-cache --mlp-group 8 --tag p6t
+if errorlevel 1 goto ERROR
+python run100m.py train --arch tied  --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --pool-tokens 600M --exact-cache --mlp-group 8 --init-from-tag p6d --kd --kd-teacher-tag p6d --ema 0.999 --tag p6tk
+if errorlevel 1 goto ERROR
 
-echo === Compares (dense vs tied, dense vs KD-tied) per budget ===
-python run100m.py compare --data ko-en --tokens 100M
-python run100m.py compare --data ko-en --tokens 100M --tag t_kdinit
-python run100m.py compare --data ko-en --tokens 300M
-REM python run100m.py compare --data ko-en --tokens 300M --tag t_kdinit
-python run100m.py compare --data ko-en --tokens 600M
-python run100m.py compare --data ko-en --tokens 600M --tag t_kdinit
+echo === 600M trained (pool=600M, full epoch) ===
+python run100m.py train --arch dense --data ko-en --tokens 600M --steps 4578 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --pool-tokens 600M --exact-cache --tag p6d
+if errorlevel 1 goto ERROR
+python run100m.py train --arch tied  --data ko-en --tokens 600M --steps 4578 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --pool-tokens 600M --exact-cache --mlp-group 8 --tag p6t
+if errorlevel 1 goto ERROR
+python run100m.py train --arch tied  --data ko-en --tokens 600M --steps 4578 --micro-bs 8 --seq 1024 --accum 16 --lr 1e-3 --eval-every 100 --compile --pool-tokens 600M --exact-cache --mlp-group 8 --init-from-tag p6d --kd --kd-teacher-tag p6d --ema 0.999 --tag p6tk
+if errorlevel 1 goto ERROR
+
+echo === Compares per budget (dense p6d vs tied p6t, and vs KD-init p6tk) ===
+python run100m.py compare --data ko-en --tokens 100M --tag p6d --vs p6t
+python run100m.py compare --data ko-en --tokens 100M --tag p6d --vs p6tk
+python run100m.py compare --data ko-en --tokens 300M --tag p6d --vs p6t
+python run100m.py compare --data ko-en --tokens 300M --tag p6d --vs p6tk
+python run100m.py compare --data ko-en --tokens 600M --tag p6d --vs p6t
+python run100m.py compare --data ko-en --tokens 600M --tag p6d --vs p6tk
 
 echo ================================================================
-echo Record per budget: dense val, tied val, gap, bpb, |g|max -> plot vs tokens.
+echo Record per budget: dense val, tied val, gap(=tied-dense), bpb, |g|max -> plot vs tokens.
+echo All three budgets sampled the SAME 600M pool -> only "tokens trained" varies.
 echo Check: (1) gap shrinks with more tokens? (2) val slope (diminishing returns) (3) KD closes gap?
 echo ================================================================
 echo done.

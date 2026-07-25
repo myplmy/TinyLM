@@ -52,6 +52,9 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 - **주요 실험 플래그**: `--mlp-group`(타잉 g), `--init-from`(부모초기화), `--kd`(온라인 KD),
   `--kd-every K [--kd-dynamic]`(교사 forward 1/K, skip-forward), `--kd-teacher-tag`(압축 교사),
   `--sparse34`(3:4 희소 삼진 1.25bpw, 표준 경로 전용), `--no-ckpt`(grad ckpt off, 속도).
+- **데이터 풀 제어(토큰스윕)**: `--pool-tokens N`(데이터 풀을 학습길이·이름과 분리 — Loader가 캐시
+  전체에서 랜덤 샘플하므로 모든 예산을 같은 풀에서 뽑아야 공정), `--exact-cache`(상위호환 무시, 정확한
+  크기 캐시), `--init-from-tag TAG`(정본 dense 대신 태그된 dense에서 초기화).
 - **AI는 사용자 환경에서 코드를 직접 실행하지 않는다.** 수정만 하고, 실행이 필요하면
   명령어·순서를 제시해 대리 수행을 요청한다(GPU 사용량·시간 보호).
 - **git 은 사용자가 Windows 셸에서 수행한다.** Cowork 마운트에서 rename/unlink가 차단되어
