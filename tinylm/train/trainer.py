@@ -197,6 +197,11 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                 seed=(1234 + (seed - 1337)) % (2 ** 31))
     va = Loader("val", micro_bs, seq, device, meta["dir"], seed=99)
     hist, t0, gmax, gpeak, n_skip = [], time.time(), 0.0, 0.0, 0
+    # ★VRAM 자동 계측(P021B 교훈): 사람이 nvidia-smi 를 눈으로 보게 하면 반드시 빠뜨린다.
+    #   여기서 피크를 리셋하고 종료 시 json 에 기록한다. compile/모델 로드 뒤라 학습 피크만 잡힌다.
+    #   주의: nvidia-smi 표시값 ≈ reserved + CUDA 컨텍스트(~0.4~0.8GB) 이므로 reserved 가 하한이다.
+    if device == "cuda":
+        torch.cuda.reset_peak_memory_stats()
     best_val, best_step, since_improve = float("inf"), 0, 0
     n_kd_fwd = 0                                 # 실제 교사 forward를 수행한 스텝 수(가속 측정용)
 
@@ -341,12 +346,22 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "sparse34": bool(sparse34), "bpw": 1.25 if sparse34 else 1.95,
            "anneal_end": anneal_end, "decay_frac": decay_frac,    # (P026) 스케줄 정렬 기록
            "deploy_mb": _mem["total_mb"], "mem_parts_mb": _mem["parts_mb"],
-           "mem_params": _mem["params"]}                          # 배포메모리 정확값(compare 용)
+           "mem_params": _mem["params"],                          # 배포메모리 정확값(compare 용)
+           # ★학습 VRAM 피크(GB). nvidia-smi ≈ reserved + CUDA 컨텍스트(0.4~0.8GB).
+           "vram_alloc_gb": (torch.cuda.max_memory_allocated() / 1024 ** 3) if device == "cuda" else None,
+           "vram_reserved_gb": (torch.cuda.max_memory_reserved() / 1024 ** 3) if device == "cuda" else None,
+           "tokens_per_microbatch": micro_bs * seq}               # ★M — 속도·VRAM 의 지배 변수
     res["tag"] = name
     (LOGS / f"{name}.json").write_text(json.dumps(res, indent=2))
     kd_note = ""
     if teacher is not None and kd_every > 1:
         kd_note = f", KD forward {n_kd_fwd}/{steps}스텝(≈{n_kd_fwd/max(steps,1)*100:.0f}%)"
+    _vram = (f", VRAM {res['vram_reserved_gb']:.2f}GB(reserved)/{res['vram_alloc_gb']:.2f}GB(alloc)"
+             if res.get("vram_reserved_gb") else "")
     print(f"\n[{label}] 최종 val_loss {final['val_loss']:.4f}  ppl {final['ppl']:.2f}  "
-          f"best {best_val:.4f}@{best_step}  ({n_par/1e6:.1f}M, {(time.time()-t0)/60:.1f}분, skip {n_skip}{kd_note})")
+          f"best {best_val:.4f}@{best_step}  ({n_par/1e6:.1f}M, {(time.time()-t0)/60:.1f}분, "
+          f"skip {n_skip}{kd_note}{_vram})")
+    if res.get("vram_reserved_gb"):
+        print(f"[vram] M(=micro_bs×seq)={micro_bs*seq:,}  peak reserved {res['vram_reserved_gb']:.2f}GB"
+              f"  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)")
     return res

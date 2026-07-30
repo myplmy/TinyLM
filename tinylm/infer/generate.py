@@ -35,17 +35,21 @@ def load_model(arch="tied", ckpt_path=None, device=None):
 
 
 @torch.no_grad()
-def generate(prompt, arch="tied", data="ko-en", max_new=100, temperature=0.8,
-             top_k=40, ckpt_path=None, device=None):
-    from tokenizers import Tokenizer
-    model, cfg, device = load_model(arch, ckpt_path, device)
-    tok = Tokenizer.from_file(str(tokenizer_path(data)))
+def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, device=None):
+    """★샘플링 루프의 **단일 소스**. 이미 로드된 모델을 받아 텍스트를 이어쓴다.
 
+    `generate()`(체크포인트 경로로 매번 로드)와 여러 프롬프트를 한 모델로 돌리는 도구
+    (`scripts/probe_prompts.py`)가 **같은 코드**를 쓰도록 분리했다.
+    P029 최초판이 이 루프를 따로 구현했다가 `cfg.seq_len`(존재하지 않음, 실제는 `max_seq_len`)
+    로 크래시했다 — 중복 구현이 원인이었으므로 여기로 합쳤다.
+    """
+    device = device or next(model.parameters()).device
     ids = tok.encode(prompt).ids
     x = torch.tensor([ids], dtype=torch.long, device=device)
+    dev_type = device if isinstance(device, str) else device.type
     for _ in range(max_new):
         xin = x[:, -cfg.max_seq_len:]
-        with torch.autocast(device, dtype=torch.bfloat16, enabled=(device == "cuda")):
+        with torch.autocast(dev_type, dtype=torch.bfloat16, enabled=(dev_type == "cuda")):
             logits = model(xin)[:, -1, :].float()
         if temperature <= 0:
             nxt = logits.argmax(-1, keepdim=True)
@@ -57,6 +61,15 @@ def generate(prompt, arch="tied", data="ko-en", max_new=100, temperature=0.8,
             p = F.softmax(logits, dim=-1)
             nxt = torch.multinomial(p, 1)
         x = torch.cat([x, nxt], dim=1)
-    text = tok.decode(x[0].tolist())
+    return tok.decode(x[0].tolist())
+
+
+def generate(prompt, arch="tied", data="ko-en", max_new=100, temperature=0.8,
+             top_k=40, ckpt_path=None, device=None):
+    from tokenizers import Tokenizer
+    model, cfg, device = load_model(arch, ckpt_path, device)
+    tok = Tokenizer.from_file(str(tokenizer_path(data)))
+    text = sample(model, cfg, tok, prompt, max_new=max_new, temperature=temperature,
+                  top_k=top_k, device=device)
     print(text)
     return text
