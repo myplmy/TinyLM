@@ -94,3 +94,17 @@ python scripts/lint_bat.py run100m_P026.bat
 
 **린터 통과는 "문법이 안전하다"는 뜻이고 "실험이 옳다"는 뜻이 아니다.**
 실험설계는 `exp-preflight` 스킬이 따로 본다.
+
+## ★줄끝(CRLF) — 배치를 고친 뒤 반드시
+
+`.gitattributes` 가 `*.bat text eol=crlf` 로 선언하는데 **이 워크플로의 편집 도구는 전부 LF 로 쓴다.**
+그래서 배치를 고치면 선언과 작업트리가 어긋나고, git 이 매번 경고하며 재작성한다.
+**이 저장소에서 두 번 재발했다.**
+
+```
+python scripts/lint_bat.py --fix     # 줄끝만 CRLF 로 교정(내용 불변)
+python scripts/lint_bat.py           # E11 로 검출된다
+```
+
+`.bat` 을 LF 로 통일하지 않는 이유: cmd.exe 는 **LF-only 배치에서 `goto`/라벨이 드물게 어긋난다.**
+우리 배치는 `goto NOTIMPL`·`goto CACHEBAD` 를 실제로 쓴다 — 조용히 틀릴 위험을 지지 않는다.

@@ -12,13 +12,23 @@
   W       8  커널 + --compile 병용     코드가 SystemExit 로 막지만 배치가 무의미해진다
   W       9  pause / exit /b 누락      더블클릭 실행 시 창이 닫혀 로그를 잃는다
   I(정보) 10 꼬리 판정 안내(echo) 없음  로그를 받아도 무엇을 읽어야 할지 모른다
+  E      11  줄끝이 CRLF 가 아님       `.gitattributes` 가 `*.bat text eol=crlf` 로 선언하는데
+                                       작업트리가 LF 면 git 이 매번 재작성·경고한다(CRLF 재발 원인).
+                                       또 cmd.exe 는 LF-only 배치에서 `goto`/라벨이 드물게 어긋난다.
+                                       → `--fix` 로 일괄 교정
 
 ★한계: 문법·규약만 본다. **실험설계가 옳은지는 판단하지 않는다**(그건 exp-preflight).
 
 사용법
   python scripts/lint_bat.py                    # 루트의 모든 .bat
   python scripts/lint_bat.py run100m_P026.bat   # 특정 파일
+  python scripts/lint_bat.py --fix              # 줄끝(CRLF)만 자동 교정
   종료코드 = 에러 개수 (0 이면 통과)
+
+★왜 CRLF 검사가 여기 있나: 이 저장소에서 줄끝 문제가 **두 번 재발**했다. 원인은 사람이 아니라
+  구조였다 — `.gitattributes` 는 .bat 을 CRLF 로 선언하는데, 이 워크플로의 모든 도구
+  (샌드박스 편집·파이썬 재작성)가 LF 를 쓴다. 그래서 배치를 고칠 때마다 어긋난다.
+  **배치를 고치면 반드시 이 린터를 돌리므로**, 검사를 여기 두면 자동으로 잡힌다.
 """
 from __future__ import annotations
 import re
@@ -33,6 +43,13 @@ def lint(path: Path):
     txt = raw.decode("utf-8", errors="replace")
     lines = txt.splitlines()
     err, warn, info = [], [], []
+
+    # 11. 줄끝(CRLF) — .gitattributes 선언과 작업트리가 일치해야 한다
+    if b"\r\n" not in raw and raw.strip():
+        err.append("줄끝이 LF 다 — .bat 은 CRLF 여야 한다(`.gitattributes`). "
+                   "`python scripts/lint_bat.py --fix` 로 교정")
+    elif raw.replace(b"\r\n", b"").count(b"\n"):
+        err.append("CRLF 와 LF 가 섞여 있다 — `--fix` 로 교정")
 
     # 1. 비ASCII
     bad_lines = [(i + 1, ln) for i, ln in enumerate(lines) if any(ord(c) > 127 for c in ln)]
@@ -102,10 +119,24 @@ def lint(path: Path):
     return err, warn, info
 
 
+def fix_eol(path: Path) -> bool:
+    """줄끝을 CRLF 로 정규화. 내용은 건드리지 않는다."""
+    raw = path.read_bytes()
+    out = raw.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+    if out != raw:
+        path.write_bytes(out)
+        return True
+    return False
+
+
 def main():
-    args = sys.argv[1:]
+    args = [a for a in sys.argv[1:] if a != "--fix"]
+    do_fix = "--fix" in sys.argv[1:]
     files = [Path(a) if Path(a).is_absolute() else ROOT / a for a in args] or \
             sorted(ROOT.glob("*.bat"))
+    if do_fix:
+        n = sum(fix_eol(f) for f in files if f.exists())
+        print(f"[--fix] 줄끝을 CRLF 로 교정: {n}개 (내용 변경 없음)")
     if not files:
         print("점검할 .bat 이 없습니다.")
         return 0

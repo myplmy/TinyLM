@@ -105,6 +105,13 @@ def main():
     p.add_argument("--temp", type=float, default=0.8)
     p.add_argument("--top-k", type=int, default=40)
     p.add_argument("--ckpt-path", default=None)
+    # P030 단계1: 캐시/eos. 기본은 켜짐 — 끄는 쪽이 대조군이다.
+    p.add_argument("--no-cache", action="store_true",
+                   help="KV 캐시 off(정확성 대조용). 느리다 — 속도 측정에 쓰지 말 것")
+    p.add_argument("--no-eos-stop", action="store_true",
+                   help="<eos> 에서 멈추지 않는다(문서 경계를 넘어 생성)")
+    p.add_argument("--check-cache", action="store_true",
+                   help="캐시 유/무 그리디 출력 일치 검증만 하고 종료")
     a = p.parse_args()
 
     import sys as _sys                           # 실행 인자 로그(배치파일에서 어떤 조건인지 추적)
@@ -223,8 +230,17 @@ def main():
         if not a.prompt:
             p.error("generate 에는 --prompt 가 필요합니다")
         gckp = a.ckpt_path or str(paths.RUNS / "ckpt" / (f"{base}_{a.tag}.pt" if a.tag else f"{base}_{a.arch}.pt"))
+        if a.check_cache:
+            from tokenizers import Tokenizer
+            from .data import tokenizer_path
+            from .infer import load_model, check_cache_equivalence
+            m, cfg_, dev = load_model(a.arch, gckp)
+            tk = Tokenizer.from_file(str(tokenizer_path(a.data)))
+            ok = check_cache_equivalence(m, cfg_, tk, a.prompt, max_new=a.max_new, device=dev)
+            raise SystemExit(0 if ok else 1)
         generate(a.prompt, arch=a.arch, data=a.data, max_new=a.max_new,
-                 temperature=a.temp, top_k=a.top_k, ckpt_path=gckp)
+                 temperature=a.temp, top_k=a.top_k, ckpt_path=gckp,
+                 use_cache=not a.no_cache, stop_at_eos=not a.no_eos_stop)
 
 
 if __name__ == "__main__":

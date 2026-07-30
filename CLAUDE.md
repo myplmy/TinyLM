@@ -120,6 +120,16 @@ run100m.py            호환 래퍼 → tinylm.cli.main
   극심(JS가 train 최대의 9.9×) → **폐기·재생성 대상**. `ko-en` 도 val→train 누설 1.8% 와
   구간별 한글비율 40.7%→23.0% 표류가 있다. **단 모든 런이 같은 val 을 쓰므로 런 간 비교는 유효**,
   절대값만 낙관적이다. val 무작위 추출로 바꾸는 것은 **전 데이터셋 영향 → 별건 승인**.
+- **★계측이 재려는 양을 재고 있는지 의심할 것.** 결과 014 는 CPU "추론 속도"를 쟀다고 믿었으나
+  실제로는 **매 forward 재양자화 비용**을 쟀다(`forward()` 가 `refresh_quant()` 를 무조건 호출).
+  **FLOPs 가 같은 두 모델의 속도가 2배 차이 나는** 등 *예상 밖의 깨끗한 패턴*이 보이면
+  아키텍처가 아니라 **계측**을 먼저 의심한다. 지금은 `freeze_quant()` 로 고정한다.
+- **★메모리는 저장(packed)과 상주(runtime)가 다르다.** `mem_breakdown()` 의 11.7MB 는
+  **아직 없는 패킹 포맷의 이론값**이다. 실행 중에는 fp32 latent + fp32 dequant 사본이
+  동시에 상주한다. **인용할 때 어느 쪽인지 반드시 명시**한다(P034).
+- **★`.bat` 줄끝은 CRLF 다.** `.gitattributes` 선언과 편집도구(LF)가 어긋나 **CRLF 문제가 두 번
+  재발**했다. 배치를 고치면 `python scripts/lint_bat.py --fix`(E11 로 검출·교정).
+  LF 로 통일하지 않는 이유는 cmd.exe 가 LF-only 배치에서 `goto`/라벨을 드물게 어긋내기 때문.
 - **기존 구현을 복제하지 말 것.** P029 프로브가 `generate.py` 의 샘플링 루프를 베껴 쓰다가
   `cfg.seq_len`(실제는 `max_seq_len`)로 크래시했고 autocast 도 빠져 있었다. 지금은
   `infer/generate.py:sample()` 이 **샘플링 단일 소스**다. 새 도구는 그걸 호출한다.
@@ -131,13 +141,17 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 
 ## `.claude/skills/` — 워크플로우 스킬
 
-**이 프로젝트 전용 3종(실험 루프)** — 해당 맥락이면 반드시 적용:
+**이 프로젝트 전용 4종(실험 루프)** — 해당 맥락이면 반드시 적용:
 
 | 스킬 | 언제 | 무엇을 막는가 |
 |---|---|---|
 | **`exp-preflight`** | 새 학습 명령·배치·계획서를 만들기 **전** | 조건 중복·토큰 환산 오류·태그 충돌·무효 비교. 기준 정본 = `docs/EXPERIMENT_BASELINES.md` |
-| **`log-to-result`** | 학습 로그를 받았을 때 | 로그 인쇄값 오인용(누적평균 ms/step, 10스텝 샘플 `\|g\|`, sparse34 메모리), 연쇄 갱신 누락 |
+| **`exp-plan`** | 실험계획 문서를 **쓰거나 갱신**할 때 | 계획서 양식 제각각, **예측·한계 절 누락**, 결과 후 계획서가 낡은 채 방치(→ 끝난 실험 재설계) |
+| **`log-to-result`** | 학습 로그를 받았을 때 | 로그 인쇄값 오인용(누적평균 ms/step, 10스텝 샘플 `\|g\|`, sparse34 메모리), **계획서 본문 갱신 누락**, 연쇄 갱신 누락 |
 | **`run-batch`** | `.bat` 작성·수정 | 비ASCII·`<>\|%`·chcp, `--tag` 누락, 한 런 실패로 배치 전체 중단 |
+
+> **`exp-plan` 과 `exp-preflight` 는 대체 관계가 아니다.** 전자는 **문서 양식·절차**,
+> 후자는 **실험 조건의 정합성**을 본다. 새 계획을 쓸 때는 **둘 다** 돈다.
 
 보조 스크립트(전부 **문법·형식만** 본다 — 실험·구현이 옳은지는 보증하지 않는다):
 `check_run_registry.py`(레지스트리·중복·태그) · `lint_bat.py`(배치 린터) ·
@@ -155,7 +169,8 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 `architecture/`(단일파일 v5 이력), `spec/`(spec_v4), `util/`(rank_spectrum_v3), `handoff/`(스펙·
 설계 스냅샷), `article/`(참고 논문), `docs/`(방법론 원장 + `docs/review/` 종합 리뷰),
 `scripts/`(벤치·진단 스크립트), `test_plan/`(실험 계획), `test_result/`(실험 기록),
-루트 실행 배치: `run100m_REVIEW1.bat`(최적안 3안 + σ) · `run100m_P026.bat` · `run100m_P007B.bat`
+루트 실행 배치: `run_P001B_lrfind.bat`(LR 재탐색) · `run_P030_infer.bat`(추론속도 재측정) ·
+`run_P034_memory.bat`(실행시 메모리) · `run_P028_stage06.bat` · `run100m_P026.bat` · `run100m_P007B.bat`
 (풀 포화점) · `run100m_P021B.bat`(mb 재스윕) · `run_P022_bench.bat` · `run_P028_diag.bat`(캐시 진단) ·
 완료분 `run100m_P007.bat`·`run100m_P021.bat`(템플릿 재활용 가치가 있어 보존).
 P012·P016·P017(=`run100m_test.bat`) 배치는 **삭제됨** — 명령은 각 결과문서 §재현 명령과

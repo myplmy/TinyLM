@@ -62,6 +62,7 @@ class TiedMLPTransformer(nn.Module):
         # v5: 삼진 어닐 계수를 버퍼로 → torch.compile 재컴파일 방지.
         self.register_buffer("_anneal", torch.tensor(float(cfg.quant_anneal)), persistent=False)
         self._tlinear_cache = list(self._tlinears())   # ②: 매 forward 모듈 트리 순회 제거(plain list)
+        self._quant_frozen = False                     # freeze_quant() 참조(추론 전용 최적화)
 
     # ---------- quantization ----------
     def _tlinears(self):
@@ -78,19 +79,48 @@ class TiedMLPTransformer(nn.Module):
             m.refresh_quant(self._anneal)
 
     def clear_quant(self):
+        self._quant_frozen = False
         for m in self._tlinear_cache:
             m.clear_quant()
 
+    def freeze_quant(self):
+        """★추론용: 삼진 가중치를 **한 번만** 계산하고 이후 forward 에서 재계산하지 않는다.
+
+        `forward()` 는 매 호출마다 `refresh_quant()` 를 부른다(학습 중에는 latent weight 가
+        스텝마다 바뀌므로 **반드시 그래야 한다**). 그런데 추론에서는 가중치가 고정이라
+        그 재계산이 전부 낭비다. 결과 014 에서 이 비용이 **CPU 추론 시간의 약 79%** 를
+        차지했고, sparse34 는 `argmin`+`scatter_` 경로라 더 비쌌다(mA 가 dense 보다 느려 보인 원인).
+
+        되돌리려면 `clear_quant()` 를 부른다(학습 재개 시 필수). 그래서 `clear_quant` 가
+        플래그를 함께 내린다 — 안 그러면 얼어붙은 가중치로 학습하게 된다.
+        """
+        self.refresh_quant()
+        self._quant_frozen = True
+
     # ---------- forward ----------
-    def forward(self, tokens, mode_override=None, return_aux=False):
+    def forward(self, tokens, mode_override=None, return_aux=False,
+                past_kv=None, use_cache=False):
+        """`past_kv` 는 **owner 층 인덱스 → (k, v)** 딕셔너리다.
+
+        ★CLA 주의: KV 를 공유하는 층들은 **캐시도 공유**한다. 그래서 캐시 키는 층 인덱스가
+        아니라 `self.owner[i]`(= 그 그룹의 소유 층)이다. 층마다 캐시를 두면 같은 KV 를
+        cla_group 배로 중복 저장하게 된다.
+        """
         cfg = self.cfg
         B, T = tokens.shape
-        assert T <= cfg.max_seq_len
+        # 캐시가 있으면 이번 forward 의 토큰은 past 뒤에 붙는다 → 절대위치가 past_len 만큼 밀린다.
+        past_len = 0
+        if past_kv:
+            past_len = next(iter(past_kv.values()))[0].shape[2]   # (B, n_kv_heads, T, head_dim)
+        assert past_len + T <= cfg.max_seq_len, \
+            f"past {past_len} + 입력 {T} > max_seq_len {cfg.max_seq_len}"
         x = self.emb(tokens)
         if self.emb_up is not None:
             x = self.emb_up(x)
-        cos, sin = self.rope_cos[:T], self.rope_sin[:T]
-        self.refresh_quant()
+        # ★RoPE 는 절대위치다. 캐시 사용 시 [:T] 가 아니라 [past_len : past_len+T] 를 써야 한다.
+        cos, sin = self.rope_cos[past_len:past_len + T], self.rope_sin[past_len:past_len + T]
+        if not self._quant_frozen:
+            self.refresh_quant()
 
         kv_bank, mode_hist = {}, []
         for i, layer in enumerate(self.layers):
@@ -104,7 +134,12 @@ class TiedMLPTransformer(nn.Module):
                 mode_hist.append(mode_p)
 
             if i == self.owner[i]:
-                kv_bank[i] = layer.attn.compute_kv(x, cos, sin)
+                k_new, v_new = layer.attn.compute_kv(x, cos, sin)
+                if past_kv and i in past_kv:
+                    k_old, v_old = past_kv[i]
+                    k_new = torch.cat([k_old, k_new], dim=2)
+                    v_new = torch.cat([v_old, v_new], dim=2)
+                kv_bank[i] = (k_new, v_new)
             kv = kv_bank[self.owner[i]]
 
             if cfg.grad_checkpoint and self.training:
@@ -119,6 +154,9 @@ class TiedMLPTransformer(nn.Module):
         else:
             logits = F.linear(x, self.emb.weight)
 
+        if use_cache:
+            # kv_bank 는 owner 층만 키로 갖는다(§CLA 주의 참조) → 그대로 다음 스텝의 past 가 된다.
+            return (logits, kv_bank) if not return_aux else (logits, kv_bank, None)
         if not return_aux:
             return logits
         aux = {"router_loss": self._balance(mode_hist),

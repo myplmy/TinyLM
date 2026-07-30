@@ -17,6 +17,7 @@
   python scripts/probe_prompts.py --models mA_g4s34_k4     # 한 모델만
   python scripts/probe_prompts.py --temps 0.7              # 온도 하나만
   python scripts/probe_prompts.py --list                   # 프롬프트만 출력(모델 불필요)
+  python scripts/probe_prompts.py --check-cache            # P030 단계1 캐시 정확성 게이트
 """
 from __future__ import annotations
 import argparse
@@ -63,6 +64,10 @@ def main():
     ap.add_argument("--tokens", default="300M")
     ap.add_argument("--preset", default="m100")
     ap.add_argument("--list", action="store_true", help="프롬프트만 출력하고 종료")
+    ap.add_argument("--check-cache", action="store_true",
+                    help="P030 단계1 게이트: 캐시 유/무 그리디 출력 일치 검증만 하고 종료. "
+                         "불일치면 exit 1 (한글 프롬프트가 필요해 .bat 대신 여기 산다)")
+    ap.add_argument("--no-cache", action="store_true", help="KV 캐시 off(옛 경로 대조)")
     a = ap.parse_args()
 
     if a.list:
@@ -90,6 +95,29 @@ def main():
     tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
     base = f"{a.preset}_{a.data}_{a.tokens}"
 
+    if a.check_cache:
+        from tinylm.infer.generate import check_cache_equivalence
+        banner("P030 단계1 게이트 — KV 캐시 정확성 (그리디: 캐시 유/무가 완전히 같아야 한다)")
+        print("  틀리기 쉬운 두 곳(둘 다 조용히 틀린다):")
+        print("    1. RoPE 를 [:T] 로 자름 (캐시 시 [past_len : past_len+T] 여야 함)")
+        print("    2. q_len != kv_len 인데 is_causal=True (SDPA 마스크가 좌상단 정렬됨)")
+        allok = True
+        for tag, arch, _d in models:
+            ck = paths.RUNS / "ckpt" / f"{base}_{tag}.pt"
+            if not ck.exists():
+                print(f"  [건너뜀] 체크포인트 없음: {tag}")
+                continue
+            model, cfg, device = load_model(arch=arch, ckpt_path=str(ck))
+            print(f"\n  --- {tag} ({arch}) ---")
+            for prompt, _why, _mx in PROMPTS:
+                allok &= check_cache_equivalence(model, cfg, tok, prompt,
+                                                 max_new=24, device=device)
+            del model
+        print("\n  " + ("전부 일치 ✅ — 속도 측정으로 진행해도 된다."
+                        if allok else
+                        "불일치 ❌ — 캐시 구현이 틀렸다. 속도를 재는 의미가 없다."))
+        return 0 if allok else 1
+
     for tag, arch, desc in models:
         ck = paths.RUNS / "ckpt" / f"{base}_{tag}.pt"
         banner(f"MODEL {tag}  ({arch})", "#")
@@ -114,7 +142,8 @@ def main():
             for T in a.temps:
                 try:
                     out = sample(model, cfg, tok, prompt, max_new=mx,
-                                 temperature=T, top_k=a.top_k, device=device)
+                                 temperature=T, top_k=a.top_k, device=device,
+                                 use_cache=not a.no_cache)
                 except Exception as e:
                     print(f"\n      >>> temp={T}  [!] 생성 실패: {type(e).__name__}: {e}")
                     continue

@@ -84,7 +84,17 @@ class Attention(nn.Module):
         if n_rep > 1:
             k = k.repeat_interleave(n_rep, dim=1)
             v = v.repeat_interleave(n_rep, dim=1)
-        o = F.scaled_dot_product_attention(q, k, v, is_causal=True)
+        # ★KV 캐시가 있으면 q_len < kv_len 이다. 이때 `is_causal=True` 를 그대로 쓰면
+        #   SDPA 가 마스크를 **좌상단 정렬**해서 완전히 틀린 위치를 가린다(조용히 틀린다).
+        #   질의는 절대위치 [past_len, past_len+q_len) 에 있으므로 tril(past_len) 이 맞다.
+        q_len, kv_len = q.shape[2], k.shape[2]
+        if q_len == kv_len:                                   # 캐시 없음(=prefill 포함)
+            o = F.scaled_dot_product_attention(q, k, v, is_causal=True)
+        else:
+            past_len = kv_len - q_len
+            mask = torch.ones(q_len, kv_len, dtype=torch.bool,
+                              device=q.device).tril(past_len)
+            o = F.scaled_dot_product_attention(q, k, v, attn_mask=mask)
         return self.o_proj(o.transpose(1, 2).contiguous().view(B, T, c.dim), mode_p)
 
 
