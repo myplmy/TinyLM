@@ -205,18 +205,27 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     best_val, best_step, since_improve = float("inf"), 0, 0
     n_kd_fwd = 0                                 # 실제 교사 forward를 수행한 스텝 수(가속 측정용)
 
-    def _do_eval(step, train_loss):
+    def _do_eval(step, train_loss, train_ce=None, kd_this=False):
+        """★`train_loss` 는 KD 스텝에서 **혼합손실**(α·CE+(1-α)·KL·T²)이라 val 과 단위가 다르다.
+        그래서 `train_ce`(항상 순수 CE)를 따로 받아 **val-CE 로 비교**한다.
+        이 구분이 없던 시절 REVIEW1 로그에서 마지막 eval 만 `val-train +1.69` 로 튀어
+        과적합처럼 보였다 — 실제로는 그 스텝이 KD 스텝이라 train 이 혼합손실이었을 뿐이다.
+        (주기 eval 은 s≡3 mod 4 = 비KD 스텝, 최종 eval 은 s=2288≡0 = KD 스텝에 걸린다.)
+        """
         nonlocal best_val, best_step, since_improve
         m = evaluate(model, va, 50, device, bytes_per_token=bpt); m["ema"] = False   # 주 지표 = raw
+        ce = train_ce if train_ce is not None else train_loss
         line = (f"    >> val_loss {m['val_loss']:.4f}  ppl {m['ppl']:.2f}  "
-                f"(train {train_loss:.3f}, val-train {m['val_loss']-train_loss:+.3f})")
+                f"(train_ce {ce:.3f}, val-CE {m['val_loss']-ce:+.3f}"
+                + (f", 혼합손실 {train_loss:.3f}[KD스텝]" if kd_this else "") + ")")
         if shadow is not None:                                  # EMA는 부가 표시
             backup = _swap_in_ema()
             me = evaluate(model, va, 50, device)
             _swap_out(backup)
             m["val_ema"] = me["val_loss"]; line += f"  [ema {me['val_loss']:.4f}]"
         if "bpb" in m: line += f"  bpb {m['bpb']:.3f}"
-        m.update(step=step, train_loss=train_loss, gap=m["val_loss"] - train_loss)
+        m.update(step=step, train_loss=train_loss, train_ce=ce, kd_step=bool(kd_this),
+                 gap=m["val_loss"] - ce)   # gap 은 CE 기준(혼합손실과 섞지 않는다)
         hist.append(m); print(line)
         blob = {"model": model.state_dict(), "opt": opt.state_dict(),
                 "step": step, "cfg": cfg.__dict__}
@@ -257,7 +266,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             n_kd_fwd += 1
 
         model.train()
-        tot = 0.0
+        tot, tot_ce = 0.0, 0.0        # tot=실제 최적화 손실(KD면 혼합), tot_ce=항상 순수 CE
         for _ in range(accum):
             x, y = tr()
             if _cudagraph_step is not None:
@@ -282,6 +291,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                     loss = ce / accum
             loss.backward()
             tot += loss.item()
+            tot_ce += ce.item() / accum      # KD 여부와 무관하게 순수 CE 를 따로 누적
         gn = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
 
         if not torch.isfinite(gn):
@@ -308,11 +318,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
 
         if s % 10 == 0 or s == steps - 1:
             el = time.time() - t0
-            print(f"  step {s:>5}/{steps}  loss {tot:.4f}  |g| {gn:.2f}  "
+            print(f"  step {s:>5}/{steps}  loss {tot:.4f}{'*' if kd_this and teacher is not None else ' '}"
+                  f"  ce {tot_ce:.4f}  |g| {gn:.2f}  "
                   f"anneal {model.cfg.quant_anneal:.2f}  lr {opt.param_groups[1]['lr']:.2e}  "
                   f"{el/(s-start+1)*1000:.0f} ms/step")
         if (s + 1) % eval_every == 0 or s == steps - 1:
-            _do_eval(s + 1, tot)
+            _do_eval(s + 1, tot, train_ce=tot_ce, kd_this=kd_this)
             if early_stop and since_improve >= early_stop:
                 print(f"  [early-stop] {early_stop}회 연속 개선 없음 (best {best_val:.4f} @ {best_step}). 종료.")
                 break
