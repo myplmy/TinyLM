@@ -50,9 +50,11 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
-          pool_tokens=None, exact_cache=False, anneal_end=0.60, decay_frac=0.2):
+          pool_tokens=None, exact_cache=False, anneal_end=0.60, decay_frac=0.2, seed=1337):
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    torch.manual_seed(1337)
+    # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
+    #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
+    torch.manual_seed(seed)
     if device == "cuda":                        # 저비용 성능 스위치
         torch.backends.cuda.matmul.allow_tf32 = True
         torch.backends.cudnn.allow_tf32 = True
@@ -131,7 +133,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     _mem = model.mem_breakdown()
     eff = micro_bs * accum * seq
     print(f"[{label}] device={device}  {steps}step x {eff/1e3:.0f}K tok = "
-          f"{steps*eff/1e6:.0f}M 토큰  (sched={sched} ema={ema} lora_r={lora_rank})\n")
+          f"{steps*eff/1e6:.0f}M 토큰  (sched={sched} ema={ema} lora_r={lora_rank}"
+          f"{f' seed={seed}' if seed != 1337 else ''})\n")
 
     opt = torch.optim.AdamW(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8,
                             fused=(device == "cuda"))   # ①: optimizer update 단일 커널
@@ -186,7 +189,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                        if (compile_ and compile_mode == "reduce-overhead") else None)
 
     bpt = meta.get("bytes_per_token")           # bits-per-byte용(토크나이저 무관 지표)
-    tr = Loader("train", micro_bs, seq, device, meta["dir"], seed=1234)
+    # Loader 는 torch RNG 와 **별도** np rng 를 쓴다 → --seed 가 데이터 순서에도 반영되도록 파생시킨다.
+    #   train: 시드에 따라 크롭 순서가 바뀐다(σ 측정에서 원하는 변동).
+    #   val  : **항상 99 고정.** 여기를 흔들면 서로 다른 크롭에서 val loss 를 재게 되어 런 비교가 깨진다.
+    #   (mod 2^31 = np.random.default_rng 이 음수 시드를 거부하므로. seed=1337 이면 정확히 1234)
+    tr = Loader("train", micro_bs, seq, device, meta["dir"],
+                seed=(1234 + (seed - 1337)) % (2 ** 31))
     va = Loader("val", micro_bs, seq, device, meta["dir"], seed=99)
     hist, t0, gmax, gpeak, n_skip = [], time.time(), 0.0, 0.0, 0
     best_val, best_step, since_improve = float("inf"), 0, 0
@@ -318,7 +326,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "lr": lr, "seq": seq,
            # ★런 재구성용 조건(이게 없으면 로그만 보고 실험을 재현·중복판정할 수 없다).
            #   docs/EXPERIMENT_BASELINES.md 레지스트리와 exp-preflight 스킬이 이 필드를 읽는다.
-           "micro_bs": micro_bs, "accum": accum, "eff_batch": eff,
+           "seed": seed, "micro_bs": micro_bs, "accum": accum, "eff_batch": eff,
            "pool_tokens": int(pool_tokens) if pool_tokens else None,
            "exact_cache": bool(exact_cache),
            "mlp_group": (cfg.mlp_group if getattr(cfg, "tie_mlp", False) else 1),

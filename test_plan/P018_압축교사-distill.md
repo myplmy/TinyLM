@@ -36,7 +36,7 @@ python run100m.py compare --tag t_kd8_ct
 python run100m.py compare --tag t_kd8_ct_k2
 ```
 
-### run100m_test.bat (순수 ASCII)
+### 실행 명령 초안 (순수 ASCII. 착수 시 `run100m_P018.bat` 로 신규 작성할 것)
 ```
 @echo off
 REM ===== P018 compressed-teacher distill (teacher = t_kdinit tied ckpt) =====

@@ -1,3 +1,20 @@
+> ## 0단계 게이트 결과: ✅ **통과** (2026-07-30, [결과 010](../test_result/010_20260730130000_P022-FP8-0단계게이트-통과.md))
+>
+> 순수 GEMM **1.63~2.08×**(gate/up 1.63 · down 2.00 · attn q/o 1.86 · mb12 2.08 · large ref 1.89).
+> 판정선 1.30× 를 5개 형상 전부 통과. Ada FP8:FP16 = 2:1 비율과 일치해 측정 신뢰 확보.
+> 환경 문제 없음(torch 2.10.0 / CUDA 13.0 / sm_89 / `_scaled_mm` 존재) → **`torchao` 불필요**.
+>
+> **★그러나 end-to-end 기대는 -15% 내외다(상한 -23%)**: GEMM 이 스텝 시간의 **약 50%** 뿐이고
+> (97.5 TFLOP/step ÷ 80 TFLOPS = 1.22s vs 실측 스텝 2.467s), activation 캐스팅·amax 오버헤드가
+> 절감의 30~40% 를 잠식한다(delayed scaling + compile 융합으로 완화 가능하나 추가 구현).
+>
+> **1단계 선결조건 2건**(둘 다 없으면 결론을 못 낸다):
+> 1. **σ(재현 노이즈) 실측** — FP8 의 품질 영향이 노이즈보다 큰지 판정할 수단
+> 2. **REVIEW1 로 정본 아키텍처 확정** — 아키텍처 탐색과 activation 양자화를 동시에 하면 교락
+>
+> 1단계 범위는 결과 010 §4 참조(MLP 3 GEMM 한정, `torch._scaled_mm` 직접, 커스텀 autograd,
+> delayed scaling, 250스텝 ms/step 로 -10% 게이트).
+
 # P022 — FP8 텐서코어 학습 가속 (Ada, torchao) [도전적]
 
 근거: torchao float8 training(Ada/Blackwell 텐서코어, torch.compile 결합) — 공개 벤치에서

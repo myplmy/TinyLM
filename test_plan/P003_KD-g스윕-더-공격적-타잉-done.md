@@ -47,4 +47,5 @@ python run100m.py train --arch tied  --preset m100d ... --init-from --kd --mlp-g
 - g=16(중간16→MLP 1그룹)도 KD가 격차를 닫는가? `--mlp-group 16 --init-from --kd --tag t_kd_g16`.
   (실측 002: g=8 닫힘 → g=16 한계 탐색.)
 - **오프라인 KD 적용 가능**(P015): 동일 dense 교사로 `kdcache` 1회 → `--kd-cache`로 g16 학생을 교사 forward 없이
-  빠르게. 단 top-k 근사라 온라인 KD와 미세차 → 먼저 tiny 검증(run100m_test.bat A) 후 사용.
+  빠르게. 단 top-k 근사라 온라인 KD와 미세차 → 먼저 tiny 검증 후 사용.
+  (결과 004에서 **오프라인 top-k KD 는 부적합** 판정 — 고엔트로피 교사에서 질량 손실.)

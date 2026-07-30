@@ -51,7 +51,7 @@ python run100m.py compare --tag t_kd_g8_k4
 python run100m.py compare --tag t_kd_g8_dyn4
 ```
 
-### run100m_test.bat (순수 ASCII, --accum 16 포함)
+### 실행 명령 (구 `run100m_test.bat` — 실험 완료 후 배치는 삭제, 명령은 아래 보존)
 ```
 @echo off
 REM ===== P017 Skip-Forward / Dynamic KD : K=2, K=4, Dynamic  (300M, accum16) =====

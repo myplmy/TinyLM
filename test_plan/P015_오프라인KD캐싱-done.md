@@ -18,7 +18,8 @@ python run100m.py train --arch tied ... --init-from --kd-cache --kd-topk 32 --ta
 ```
 
 ## 검증(먼저 tiny로)
-- 온라인 KD vs 캐시 KD의 학습 loss가 **가까운지**(top-k 근사라 정확히 같진 않음). run100m_test.bat (A) 참조.
+- 온라인 KD vs 캐시 KD의 학습 loss가 **가까운지**(top-k 근사라 정확히 같진 않음).
+  → 결과 004: 가깝지 않았다. 부적합 판정.
 - 통과 시에만 m100 캐시 생성 후 실사용.
 
 ## 판정
