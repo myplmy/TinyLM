@@ -8,9 +8,12 @@
 **TinyLM** = 저사양 CPU·엣지·모바일용 **초경량 LLM 아키텍처**. 핵심 목표는 **연산이 아니라
 메모리 최적화**(연산 증가는 감수). 지향점: dense 대비 절반 이하 메모리로 유사 품질.
 
-> **현재 상태:** 아키텍처 v5(QK-norm 등 안정화), 코드 v6(`tinylm/` 패키지). 100M급에서 dense vs
-> tied 손실 격차 측정·축소 실험 중. P016 **3:4 희소 삼진(`--sparse34`, 1.25bpw) 구현 완료**.
-> P017(skip-forward/dynamic KD) 300M `--accum 16` 재측정 진행 중.
+> **현재 상태(2026-07-30, 1차 리뷰 시점):** 아키텍처 v5(QK-norm 등 안정화), 코드 v6(`tinylm/`).
+> 최적 조합 = **삼진 + MLP 타잉(g8) + 부모초기화 + KD 정적 k4**, 여기에 **3:4 희소(1.25bpw)** 로
+> **10.3MB(3.00×) / +0.061** 까지 확인(결과 008). 다음 = `run100m_REVIEW1.bat`(최적안 3개 공정풀 검증),
+> P026(구현완료·실측대기), P022(0단계 게이트 수 초).
+> **1차 리뷰 정본: [`docs/review/202607301200_1차리뷰_실험종합및최적모델3안.md`](docs/review/202607301200_1차리뷰_실험종합및최적모델3안.md)** —
+> 기법별 채택/보류/폐기 판정과 최적 모델안 3개가 여기에 있다. 새 실험 제안 전 반드시 읽는다.
 
 ## 정본 / 참고 문서
 
@@ -19,6 +22,9 @@
 - **실행 방법·실험 계획**: `test_plan/{계획번호}_{요약}.md` + `test_plan/실험계획목록.md`.
 - **방법론 원장**(기법별 상태·트레이드오프): `docs/METHODS.md` + `docs/methods/`.
 - **실험 결과**: `test_result/{번호}_{시간}_{요약}.md` + `test_result/실험목록.md`.
+- **종합 리뷰**(누적 판정·기법 채택 수준·모델안): `docs/review/`. 개별 결과보다 **상위 판단**이 여기 있다.
+- **실험 조건 기준표**: `docs/EXPERIMENT_BASELINES.md` — 표준조건·런 레지스트리·비교유효성 규칙·
+  태그 네임스페이스·VRAM 예산·확정된 사실. **새 실험 설계 시 여기와 대조**(`exp-preflight` 스킬).
 
 ## 코드 구조 — `tinylm/` 패키지 (정본)
 
@@ -50,11 +56,20 @@ run100m.py            호환 래퍼 → tinylm.cli.main
   이를 빠뜨리면(기본 accum8) 150M만 학습된다(005 혼입 사례). ms/step 은 accum 에 ~선형이라
   "accum 조정으로 step 반감"은 **총 벽시계 이득이 아니다**(연산 바운드).
 - **주요 실험 플래그**: `--mlp-group`(타잉 g), `--init-from`(부모초기화), `--kd`(온라인 KD),
-  `--kd-every K [--kd-dynamic]`(교사 forward 1/K, skip-forward), `--kd-teacher-tag`(압축 교사),
-  `--sparse34`(3:4 희소 삼진 1.25bpw, 표준 경로 전용), `--no-ckpt`(grad ckpt off, 속도).
-- **데이터 풀 제어(토큰스윕)**: `--pool-tokens N`(데이터 풀을 학습길이·이름과 분리 — Loader가 캐시
-  전체에서 랜덤 샘플하므로 모든 예산을 같은 풀에서 뽑아야 공정), `--exact-cache`(상위호환 무시, 정확한
-  크기 캐시), `--init-from-tag TAG`(정본 dense 대신 태그된 dense에서 초기화).
+  `--kd-every K [--kd-dynamic]`(교사 forward 1/K, skip-forward — **기본 권장 = 정적 k4**),
+  `--kd-teacher-tag`(압축 교사), `--sparse34`(3:4 희소 삼진 1.25bpw, 표준 경로 전용),
+  `--no-ckpt`(grad ckpt off, **-17.3%**), `--anneal-end F`·`--decay-frac F`(P026 cooldown-QAT 정렬,
+  기본값 0.60/0.2 = 종전 동작).
+- **★데이터 풀은 학습토큰의 2배 이상**(결과 006). Loader가 캐시 전체에서 랜덤 샘플하므로 풀이
+  작으면 반복 노출로 손해 — **같은 300M 학습에서 풀 300M→600M 만으로 dense가 0.12 개선됐다.**
+  신규 기준선은 `--pool-tokens 600M --exact-cache` 로. 풀이 다른 런끼리는 **직접 비교 금지.**
+  `--init-from-tag TAG`(정본 dense 대신 태그된 dense에서 초기화·증류 → 정본 미오염).
+- **VRAM 한계(16GB, 스필벽 13~14GB)**: dense+`--no-ckpt` = 13.5GB(안전). micro_bs↑는 **이득 0**이고
+  스필만 유발 → 폐기. **tied+KD+dense교사에는 `--no-ckpt` 금지**(15.7GB 이상, OOM 위험).
+- **속도 비교는 정상상태로**: 로그 `ms/step` 은 누적 평균이라 compile 첫 스텝이 섞인다.
+  `(누적평균×N − step0)/(N−1)` 로 환산하고, 유효배치가 다르면 토큰당으로 정규화한다.
+- **스윕·벤치 배치파일은 한 런 실패로 중단되지 않게** — `if errorlevel 1 echo [WARN] ... - continuing`.
+  `goto ERROR` 는 선행 의존 단계(prepare, 교사 학습)에만.
 - **AI는 사용자 환경에서 코드를 직접 실행하지 않는다.** 수정만 하고, 실행이 필요하면
   명령어·순서를 제시해 대리 수행을 요청한다(GPU 사용량·시간 보호).
 - **git 은 사용자가 Windows 셸에서 수행한다.** Cowork 마운트에서 rename/unlink가 차단되어
@@ -79,13 +94,45 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 `compare` 손실 격차: `≤ +0.07` 성립 / `+0.07~+0.15` prelude·coda↑ 또는 g↓ /
 `> +0.15` 는 `|g|max` 먼저 확인(10 이상이면 학습 문제).
 
+> **★단서(미해결)**: 이 임계값은 **재현 노이즈 σ 실측 없이** 쓰이고 있다. 따라서 **`≤0.05` 급 차이를
+> "차이 있음"으로 단정하지 말 것.** 실측(P021 추가검증 A)이 나오면 임계를 `max(0.07, 2σ)` 로 갱신한다.
+> 결과 007의 "동일 런 0.11 nats 발산"은 `grad_max` 10.8~35.4 의 **불안정 구간** 값이라 **σ 의
+> 추정치로 인용 금지**(2289스텝 런은 `grad_max` 0.5~1.2 로 안정).
+> **짧은 런(250스텝급)의 val 은 품질 비교에 쓰지 않는다** — 속도만 읽는다.
+> **안정성 판정은 인쇄된 `|g|`(10스텝 샘플) 가 아니라 json `grad_max`**(warmup 이후 전 스텝 최대)로
+> 한다. sp_base 인쇄 최대 4.51 vs 실제 10.79.
+
+## 알려진 함정 (측정·문서 신뢰도)
+
+- **`compare.py` 배포메모리 = 전체 파라미터 × 단일 bpw** 라서 **sparse34 런에서만 과소(비율 과대)**.
+  임베딩은 3:4 대상이 아니다. **정확값은 학습 로그 상단 `report()` 블록**을 쓴다(수정 예정).
+- **`docs/METHODS.md` 핵심 측정치 절이 낡았다**(tied 기준선 3.9452/+0.1178 → 로그는 3.95578/+0.132).
+  수치를 인용할 땐 `runs/logs/*.json` 을 정본으로.
+- **교차데이터셋 bpb 비교는 무효** — 토크나이저·val셋이 다르면 성립하지 않는다(결과 009).
+  공통 원문 eval 셋이 필요하다(P028).
+- **시드는 `trainer.py` 에 1337 하드코딩** — `--seed` 플래그 미구현(노이즈 실험 선결과제).
+
 ## `.claude/skills/` — 워크플로우 스킬
 
-범용 스킬 13종. 특히 유용: `session-handoff`(인수인계), `grill-with-docs`(설계 반론),
-`impact-analysis`(변경 영향). `.claude/project.json` 존재(프로젝트 메타·실행규약).
+**이 프로젝트 전용 3종(실험 루프)** — 해당 맥락이면 반드시 적용:
+
+| 스킬 | 언제 | 무엇을 막는가 |
+|---|---|---|
+| **`exp-preflight`** | 새 학습 명령·배치·계획서를 만들기 **전** | 조건 중복·토큰 환산 오류·태그 충돌·무효 비교. 기준 정본 = `docs/EXPERIMENT_BASELINES.md` |
+| **`log-to-result`** | 학습 로그를 받았을 때 | 로그 인쇄값 오인용(누적평균 ms/step, 10스텝 샘플 `\|g\|`, sparse34 메모리), 연쇄 갱신 누락 |
+| **`run-batch`** | `.bat` 작성·수정 | 비ASCII·`<>\|%`·chcp, `--tag` 누락, 한 런 실패로 배치 전체 중단 |
+
+보조 스크립트: `scripts/check_run_registry.py`(레지스트리 조회·중복·태그 점검),
+`scripts/lint_bat.py`(배치 린터). 둘 다 **문법·중복만** 본다 — 실험이 옳은지는 보증하지 않는다.
+
+범용 스킬 12종도 있다. 특히 유용: `session-handoff`(인수인계), `grill-with-docs`(설계 반론),
+`impact-analysis`(변경 영향), `check-and-verify`(산출물 검증). `.claude/project.json` 존재
+(프로젝트 메타·실행규약).
 
 ## 폴더 정리
 
 `architecture/`(단일파일 v5 이력), `spec/`(spec_v4), `util/`(rank_spectrum_v3), `handoff/`(스펙·
-설계 스냅샷), `article/`(참고 논문), `docs/`(방법론 원장), `test_plan/`(실험 계획),
-`test_result/`(실험 기록). 신규 코드 작업은 `tinylm/` 에서만 한다.
+설계 스냅샷), `article/`(참고 논문), `docs/`(방법론 원장 + `docs/review/` 종합 리뷰),
+`scripts/`(벤치·진단 스크립트), `test_plan/`(실험 계획), `test_result/`(실험 기록),
+루트 `run100m_P0*.bat`·`run100m_REVIEW1.bat`·`run_P022_bench.bat`(실행 배치).
+신규 코드 작업은 `tinylm/` 에서만 한다.

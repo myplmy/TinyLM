@@ -1,0 +1,132 @@
+#!/usr/bin/env python3
+"""실행 배치파일(.bat) 린터 — `run-batch` 스킬의 기계 검증부.
+
+검사 항목
+  E(에러) 1  비ASCII 바이트          cmd 코드페이지에서 명령이 깨진다
+  E       2  chcp 사용                파이썬 출력이 깨진다
+  E       3  escape 안 된 <>|%        리다이렉션·변수확장으로 오작동
+  E       4  train 명령에 --tag 없음  정본 dense/tied 로그·ckpt 를 조용히 덮어쓴다
+  W(경고) 5  train 명령에 --accum 없음  기본 8 이라 절반만 학습된다
+  W       6  학습 런 전부가 goto ERROR  한 런 실패로 후속 런이 죽는다(결과 007)
+  W       7  --no-ckpt + KD + 태그없는 dense 교사  VRAM 15.7GB+ (OOM 위험)
+  W       8  커널 + --compile 병용     코드가 SystemExit 로 막지만 배치가 무의미해진다
+  W       9  pause / exit /b 누락      더블클릭 실행 시 창이 닫혀 로그를 잃는다
+  I(정보) 10 꼬리 판정 안내(echo) 없음  로그를 받아도 무엇을 읽어야 할지 모른다
+
+★한계: 문법·규약만 본다. **실험설계가 옳은지는 판단하지 않는다**(그건 exp-preflight).
+
+사용법
+  python scripts/lint_bat.py                    # 루트의 모든 .bat
+  python scripts/lint_bat.py run100m_P026.bat   # 특정 파일
+  종료코드 = 에러 개수 (0 이면 통과)
+"""
+from __future__ import annotations
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+
+
+def lint(path: Path):
+    raw = path.read_bytes()
+    txt = raw.decode("utf-8", errors="replace")
+    lines = txt.splitlines()
+    err, warn, info = [], [], []
+
+    # 1. 비ASCII
+    bad_lines = [(i + 1, ln) for i, ln in enumerate(lines) if any(ord(c) > 127 for c in ln)]
+    for ln, s in bad_lines:
+        err.append(f"L{ln} 비ASCII 문자: {s.strip()[:60]}")
+
+    # 2. chcp
+    for i, ln in enumerate(lines):
+        if re.search(r"\bchcp\b", ln, re.I):
+            err.append(f"L{i+1} chcp 사용 금지: {ln.strip()[:60]}")
+
+    # 3. escape 안 된 <>|%
+    for i, ln in enumerate(lines):
+        for ch in "<>|%":
+            if ch in ln and ("^" + ch) not in ln:
+                err.append(f"L{i+1} escape 안 된 '{ch}' (echo 면 ^{ch}, 주석이면 다른 표현으로): "
+                           f"{ln.strip()[:55]}")
+                break
+
+    # train 명령 수집
+    trains = [(i + 1, ln) for i, ln in enumerate(lines)
+              if re.search(r"run100m\.py\s+train", ln)]
+    # 실험 변형을 뜻하는 플래그. 이게 하나라도 있으면 정본이 아니므로 --tag 가 필수다.
+    VARIANT = ["--mlp-group", "--sparse34", "--kd", "--init-from", "--no-ckpt", "--sched",
+               "--anneal-end", "--decay-frac", "--ema", "--lora-rank", "--mlp-film",
+               "--ternary-kernel", "--pool-tokens", "--center-weights"]
+    for ln, s in trains:
+        if "--tag" not in s:
+            variants = [v for v in VARIANT if v in s]
+            if variants:
+                err.append(f"L{ln} 변형 런({', '.join(variants)})에 --tag 없음 → "
+                           f"정본을 덮어쓴다: {s.strip()[:50]}")
+            else:
+                info.append(f"L{ln} --tag 없음. 플래그가 없으니 그 (preset,data,tokens) 의 "
+                            f"**정본 기준선**을 쓰는 것으로 봅니다. 의도한 것이면 OK, "
+                            f"아니면 --tag 를 붙이세요")
+        if "--accum" not in s:
+            warn.append(f"L{ln} train 에 --accum 없음 → 기본 8 로 절반만 학습: {s.strip()[:55]}")
+        if "--no-ckpt" in s and "--kd" in s and "--kd-teacher-tag" not in s:
+            warn.append(f"L{ln} --no-ckpt + KD + dense 교사 = VRAM 15.7GB+ (OOM 위험). "
+                        f"긴 런이면 --no-ckpt 를 빼거나 압축교사를 쓰세요")
+        if re.search(r"--ternary-kernel", s) and "--compile" in s:
+            warn.append(f"L{ln} 커널 + --compile 병용 (코드가 SystemExit 로 중단시킨다)")
+
+    # 6. errorlevel 정책
+    if trains:
+        gotos = 0
+        for ln, _ in trains:
+            nxt = lines[ln] if ln < len(lines) else ""     # train 다음 줄
+            if re.search(r"if errorlevel 1 goto ERROR", nxt):
+                gotos += 1
+        if gotos == len(trains) and len(trains) > 1:
+            warn.append(f"학습 런 {len(trains)}개 전부 'goto ERROR' → 한 런 실패로 후속이 전부 죽는다. "
+                        f"독립 런은 'if errorlevel 1 echo [WARN] ... - continuing' 로 (결과 007)")
+
+    # 9. pause / exit
+    if "pause" not in txt:
+        warn.append("pause 없음 → 더블클릭 실행 시 창이 닫혀 로그를 잃는다")
+    if "exit /b" not in txt and "goto ERROR" in txt:
+        warn.append("goto ERROR 는 있는데 'exit /b 0' 이 없음 → 정상 종료도 ERROR 블록으로 흘러간다")
+
+    # 10. 꼬리 판정 안내
+    tail = "\n".join(lines[-25:]).lower()
+    if not any(k in tail for k in ("record", "read", "decision", "compare", "gate", "verdict")):
+        info.append("꼬리에 판정/읽는 순서 안내 echo 가 없다 → 로그를 받아도 해석 기준이 없다")
+
+    return err, warn, info
+
+
+def main():
+    args = sys.argv[1:]
+    files = [Path(a) if Path(a).is_absolute() else ROOT / a for a in args] or \
+            sorted(ROOT.glob("*.bat"))
+    if not files:
+        print("점검할 .bat 이 없습니다.")
+        return 0
+    total_err = 0
+    for f in files:
+        if not f.exists():
+            print(f"[!] {f} 없음"); continue
+        err, warn, info = lint(f)
+        total_err += len(err)
+        mark = "FAIL" if err else ("WARN" if warn else "OK")
+        print(f"\n=== {f.name}  [{mark}]  (E{len(err)} W{len(warn)} I{len(info)})")
+        for m in err:
+            print(f"  [E] {m}")
+        for m in warn:
+            print(f"  [W] {m}")
+        for m in info:
+            print(f"  [i] {m}")
+    print(f"\n총 에러 {total_err}건")
+    print("주의: 이 린터는 문법·규약만 봅니다. 실험설계 검증은 exp-preflight 스킬로.")
+    return total_err
+
+
+if __name__ == "__main__":
+    sys.exit(main())

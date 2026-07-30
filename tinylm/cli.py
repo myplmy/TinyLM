@@ -49,6 +49,11 @@ def main():
     p.add_argument("--sched", choices=["cosine", "wsd", "stable", "decay"], default="cosine",
                    help="stable=plateau 생성(감쇠X), decay=plateau에서 cooldown 분기")
     p.add_argument("--decay-from", default=None, help="decay 분기 시 불러올 plateau 체크포인트 경로")
+    p.add_argument("--anneal-end", type=float, default=0.60,
+                   help="(P026) 삼진 어닐 완료 지점(진행률 0~1). 기본 0.60=종전 동작. "
+                        "cooldown-QAT 정렬은 wsd 의 1-decay_frac 과 같은 값으로 준다(예: 0.80)")
+    p.add_argument("--decay-frac", type=float, default=0.2,
+                   help="(P026) wsd 스케줄에서 마지막 LR 감쇠 구간 비율(기본 0.2)")
     p.add_argument("--snapshot-at", default=None, help="토큰 마크에서 명명 스냅샷 저장(콤마, 예: 100M,300M,600M)")
     p.add_argument("--ema", type=float, default=0.0, help="EMA decay(0=끔, 예: 0.999)")
     p.add_argument("--early-stop", type=int, default=0, help="val 개선 없이 N회 eval시 종료(0=끔)")
@@ -143,7 +148,8 @@ def main():
               use_ternary_kernel=a.ternary_kernel, ternary_kernel_triton=a.ternary_kernel_triton,
               kd_cache=a.kd_cache, kd_topk=a.kd_topk,
               kd_every=a.kd_every, kd_dynamic=a.kd_dynamic, sparse34=a.sparse34,
-              pool_tokens=pool_tok, exact_cache=a.exact_cache)
+              pool_tokens=pool_tok, exact_cache=a.exact_cache,
+              anneal_end=a.anneal_end, decay_frac=a.decay_frac)
 
     elif a.cmd == "all":
         from .train import train

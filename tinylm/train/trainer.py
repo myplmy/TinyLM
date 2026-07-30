@@ -24,6 +24,7 @@ LOGS = paths.RUNS / "logs"
 
 
 def _lr_factor(s, warm, steps, sched, decay_frac=0.2):
+    # (P026) decay_frac 은 이제 호출자(train)가 --decay-frac 으로 넘긴다. cooldown-QAT 정렬 실험용.
     """cosine / wsd(긴 plateau+감쇠) / stable(warmup+평탄, plateau 생성용) /
     decay(워밍업 없이 peak→0.1 cooldown, plateau에서 분기)."""
     if sched == "decay":                          # cooldown-only (decay-branch)
@@ -49,7 +50,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
-          pool_tokens=None, exact_cache=False):
+          pool_tokens=None, exact_cache=False, anneal_end=0.60, decay_frac=0.2):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(1337)
     if device == "cuda":                        # 저비용 성능 스위치
@@ -125,6 +126,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     name = f"{_base}_{tag}" if tag else f"{_base}_{arch}"   # 스케일별 이름(클로버·오염 방지)
     label = tag or arch                                    # 로그 표시용(예: t_kd_g8 / tied)
     print(model.report())
+    # 배포 메모리 정확값을 결과 json 에 기록 → compare 가 "전체×단일bpw" 근사를 쓰지 않게 한다.
+    #   (sparse34 는 삼진분에만 1.25bpw 라서 근사가 과소·비율 과대였다. 결과 008 §2-(6))
+    _mem = model.mem_breakdown()
     eff = micro_bs * accum * seq
     print(f"[{label}] device={device}  {steps}step x {eff/1e3:.0f}K tok = "
           f"{steps*eff/1e6:.0f}M 토큰  (sched={sched} ema={ema} lora_r={lora_rank})\n")
@@ -133,6 +137,13 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                             fused=(device == "cuda"))   # ①: optimizer update 단일 커널
     base_lrs = [g["lr"] for g in opt.param_groups]
     warm = 0 if sched == "decay" else max(5, min(steps // 10, 100))
+    # (P026) cooldown-QAT 스케줄 정렬 표시. anneal_end=완전삼진 도달, decay_start=LR 감쇠 시작.
+    assert 0.0 < anneal_end <= 1.0, f"--anneal-end 는 (0,1] 이어야 함: {anneal_end}"
+    if anneal_end != 0.60 or decay_frac != 0.2:
+        _dstart = (1.0 - decay_frac) if sched == "wsd" else (0.0 if sched != "stable" else 1.0)
+        print(f"[sched] anneal_end={anneal_end:.2f}(step~{int(anneal_end*steps)})  "
+              f"decay_frac={decay_frac:.2f}  LR감쇠시작={_dstart:.2f}(step~{int(_dstart*steps)})"
+              f"  {'정렬됨' if sched == 'wsd' and abs(anneal_end - _dstart) < 1e-6 else '미정렬'}")
     # 토큰 마크별 명명 스냅샷: {마크토큰: 라벨}. decay-branch 소스로 재사용.
     snap_steps = {}
     for tok in (snapshots or []):
@@ -211,10 +222,13 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         if sched == "decay":                    # 이미 학습된 plateau라 완전 삼진 유지
             anneal = 1.0
         else:
+            # (P026) anneal_end = 완전삼진 도달 지점(진행률). 기본 0.60 = 종전 하드코딩값.
+            #   cooldown-QAT 가설: 이 지점을 LR 감쇠 시작(wsd면 1-decay_frac)과 정렬하면
+            #   "FP 학습 후 별도 QAT" 의 중복 업데이트가 사라져 같은 val 을 더 적은 steps 에 도달.
             a0 = warm / steps + 0.05
-            anneal = min(1.0, max(0.0, (s / steps - a0) / max(0.60 - a0, 1e-6)))
+            anneal = min(1.0, max(0.0, (s / steps - a0) / max(anneal_end - a0, 1e-6)))
         model.set_anneal(anneal)
-        f = _lr_factor(s, warm, steps, sched)
+        f = _lr_factor(s, warm, steps, sched, decay_frac)
         for g, b in zip(opt.param_groups, base_lrs):
             g["lr"] = b * f
 
@@ -299,14 +313,27 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         backup = _swap_in_ema(); fe = evaluate(model, va, 100, device); _swap_out(backup)
         final["val_ema"], final["ppl_ema"] = fe["val_loss"], fe["ppl"]
     n_par = sum(p.numel() for p in model.parameters())
+    import os as _os
     res = {"arch": arch, "preset": preset, "data": data, "params": n_par, "steps": steps,
            "lr": lr, "seq": seq,
+           # ★런 재구성용 조건(이게 없으면 로그만 보고 실험을 재현·중복판정할 수 없다).
+           #   docs/EXPERIMENT_BASELINES.md 레지스트리와 exp-preflight 스킬이 이 필드를 읽는다.
+           "micro_bs": micro_bs, "accum": accum, "eff_batch": eff,
+           "pool_tokens": int(pool_tokens) if pool_tokens else None,
+           "exact_cache": bool(exact_cache),
+           "mlp_group": (cfg.mlp_group if getattr(cfg, "tie_mlp", False) else 1),
+           "grad_ckpt": bool(ckpt),
+           "kd_teacher": (_os.path.basename(str(kd)) if kd else None),
+           "init_from_src": (_os.path.basename(str(init_from)) if init_from else None),
            "tokens": steps * eff, "final": final, "best_val": best_val, "best_step": best_step,
            "history": hist, "grad_max": gmax, "grad_peak_warmup": gpeak, "n_skip": n_skip,
            "sched": sched, "ema": ema, "kd": bool(kd), "init_from": bool(init_from),
            "kd_every": kd_every, "kd_dynamic": bool(kd_dynamic), "kd_fwd_steps": n_kd_fwd,
            "lora_rank": lora_rank, "wall_sec": time.time() - t0,
-           "sparse34": bool(sparse34), "bpw": 1.25 if sparse34 else 1.95}
+           "sparse34": bool(sparse34), "bpw": 1.25 if sparse34 else 1.95,
+           "anneal_end": anneal_end, "decay_frac": decay_frac,    # (P026) 스케줄 정렬 기록
+           "deploy_mb": _mem["total_mb"], "mem_parts_mb": _mem["parts_mb"],
+           "mem_params": _mem["params"]}                          # 배포메모리 정확값(compare 용)
     res["tag"] = name
     (LOGS / f"{name}.json").write_text(json.dumps(res, indent=2))
     kd_note = ""

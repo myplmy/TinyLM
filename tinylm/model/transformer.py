@@ -155,7 +155,14 @@ class TiedMLPTransformer(nn.Module):
                 {"params": nodecay, "lr": lr, "weight_decay": 0.0}]
 
     # ---------- accounting ----------
-    def report(self, bpw=1.95, l3_mb=32.0):
+    def mem_breakdown(self, bpw=1.95):
+        """배포 메모리의 **정확한** 분해(MB). `report()` 와 `compare` 가 공유하는 단일 소스.
+
+        ★ 중요: 3:4 희소(P016)는 **삼진 가중치에만** 적용된다. 임베딩·norm·gate 는 대상이 아니다.
+        따라서 "전체 파라미터 × 단일 bpw" 로 근사하면 sparse34 런에서만 과소(=감축비율 과대)가 된다.
+        이 함수가 그 실수를 원천 차단한다. `trainer` 가 결과 json 에 `deploy_mb` 로 기록하고,
+        `compare.py` 는 그 값을 쓴다(구 로그엔 없으므로 fallback + 경고).
+        """
         cfg = self.cfg
         MB = lambda n, b: n * b / 8 / 1024 ** 2
         bpw_t = 1.25 if getattr(cfg, "sparse34", False) else bpw   # (P016) 3:4 삼진 = 1.25bpw
@@ -165,10 +172,23 @@ class TiedMLPTransformer(nn.Module):
         emb = self.emb.weight.numel() + (self.emb_up.weight.numel() if self.emb_up is not None else 0)
         lora = sum(p.numel() for m in self.modules() if isinstance(m, LoRA) for p in m.parameters())
         other = sum(p.numel() for p in self.parameters()) - tern - mode - emb - lora
-        total = tern + mode + emb + other + lora
         e_bits = bpw if cfg.quantize_embedding else 16   # 임베딩은 3:4 대상 아님(1.95 유지)
         l_bits = cfg.mlp_lora_bits
-        mem = MB(tern, bpw_t) + MB(mode, 16) + MB(emb, e_bits) + MB(other, 16) + MB(lora, l_bits)
+        parts = {"ternary": MB(tern, bpw_t), "mode": MB(mode, 16), "emb": MB(emb, e_bits),
+                 "other": MB(other, 16), "lora": MB(lora, l_bits)}
+        return {"total_mb": sum(parts.values()), "parts_mb": parts,
+                "params": {"ternary": tern, "mode": mode, "emb": emb, "other": other, "lora": lora,
+                           "total": tern + mode + emb + other + lora},
+                "bpw_ternary": bpw_t, "bpw_emb": e_bits, "sparse34": bool(getattr(cfg, "sparse34", False))}
+
+    def report(self, bpw=1.95, l3_mb=32.0):
+        cfg = self.cfg
+        MB = lambda n, b: n * b / 8 / 1024 ** 2
+        bd = self.mem_breakdown(bpw)
+        tern, mode = bd["params"]["ternary"], bd["params"]["mode"]
+        emb, other, lora = bd["params"]["emb"], bd["params"]["other"], bd["params"]["lora"]
+        total, mem = bd["params"]["total"], bd["total_mb"]
+        bpw_t, e_bits, l_bits = bd["bpw_ternary"], bd["bpw_emb"], cfg.mlp_lora_bits
 
         per_l = (cfg.dim*cfg.dim*2 + cfg.kv_dim*cfg.dim*2) + 3*cfg.dim*cfg.ffn_dim
         flops = 2 * cfg.n_layers * per_l / 1e9

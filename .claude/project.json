@@ -21,6 +21,22 @@
     "handoff": "handoff/",
     "methods": "docs/METHODS.md + docs/methods/",
     "plans": "test_plan/",
-    "results": "test_result/"
+    "results": "test_result/",
+    "baselines": "docs/EXPERIMENT_BASELINES.md (실험조건 기준표 - exp-preflight 참조 정본)",
+    "review": "docs/review/ (누적 판정·기법 채택 수준·최적 모델안)"
+  },
+  "projectSkills": {
+    "exp-preflight": "새 학습 명령·배치·계획서 작성 전 실험설계 검증(조건중복·토큰환산·태그충돌·무효비교)",
+    "log-to-result": "학습 로그 -> test_result 문서 + 실험목록/원장/기준표 연쇄 갱신",
+    "run-batch": ".bat 작성·수정·검증(ASCII, errorlevel 정책, 태그 위생)"
+  },
+  "tools": {
+    "registry_check": "python scripts/check_run_registry.py [--tag T | --plan '조건' | --steps N]",
+    "bat_lint": "python scripts/lint_bat.py [파일]",
+    "fp8_gate": "python scripts/bench_fp8_gemm.py"
+  },
+  "judgment": {
+    "gap_thresholds": "<=0.07 성립 / 0.07~0.15 대응 / >0.15 grad_max 먼저",
+    "caveat": "재현 노이즈 sigma 미측정 - <=0.05 급 차이를 단정 금지. 안정성은 json grad_max 로(인쇄 |g| 는 10스텝 샘플)"
   }
 }

@@ -1,6 +1,7 @@
 @echo off
 REM ===== P012 Korean data efficiency: ko-en (raw wiki) vs ko-edu-en (curated) =====
-REM Primary metric = bpb (bits-per-byte), which is tokenizer-invariant -> valid cross-dataset.
+REM Primary metric was bpb (bits-per-byte). SEE RESULT 009: bpb is tokenizer-invariant but NOT
+REM corpus-invariant, so this cross-dataset comparison turned out INVALID. Redo per plan P028.
 REM ko-en dense baseline is assumed to already exist (reused). This builds+trains the curated side.
 REM NOTE: each dataset trains its own tokenizer; compare bpb (NOT raw val_loss) across the two logs.
 
@@ -12,8 +13,8 @@ echo [2/3] Train dense on curated ko-edu-en (300M, same budget as ko-en dense)
 python run100m.py train --arch dense --data ko-edu-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --lr 1e-3 --compile
 if errorlevel 1 goto ERROR
 
-echo [3/3] (optional) Train tied+KD on curated data to see if gains carry to tied
-REM python run100m.py train --arch tied --data ko-edu-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --lr 1e-3 --compile --kd --init-from --mlp-group 8 --tag t_kd_g8
+echo [3/3] (optional) Train tied^+KD on curated data to see ^if gains carry to tied
+python run100m.py train --arch tied --data ko-edu-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --lr 1e-3 --compile --kd --init-from --mlp-group 8 --tag t_kd_g8
 
 echo ================================================================
 echo COMPARE bpb (lower=better) between the two dense logs:

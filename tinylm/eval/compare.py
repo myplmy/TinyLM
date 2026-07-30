@@ -21,6 +21,26 @@ def _resolve(base, kind, tagname=None):
     return cands[0]
 
 
+def _deploy_mb(res):
+    """배포 메모리(MB) — **정확값 우선**. `(값, 주석)` 반환.
+
+    ★ 왜 이 함수가 필요한가(결과 008 §2-(6) 버그 수정): 예전 구현은 `전체 파라미터 × 단일 bpw` 로
+    근사했다. 그런데 3:4 희소(P016)는 **삼진 가중치에만** 적용되고 임베딩은 대상이 아니다.
+    그래서 sparse34 런만 메모리 과소(-0.8MB)·감축비율 과대(3.26× vs 실제 3.00×)로 출력됐다.
+
+    이제 `trainer` 가 `report()` 와 같은 소스(`mem_breakdown`)로 `deploy_mb` 를 json 에 기록한다.
+    그 값이 있으면 그대로 쓰고, **없으면(구 로그)** 근사로 되돌리되 sparse34 인 경우 경고를 붙인다.
+    """
+    if res.get("deploy_mb"):
+        return float(res["deploy_mb"]), ""
+    n, bpw = res["params"], res.get("bpw", 1.95)
+    approx = n * bpw / 8 / 1024 ** 2
+    if res.get("sparse34"):
+        # 임베딩은 3:4 대상이 아니라 1.95bpw. 구 로그엔 분해가 없어 정확 복원 불가 → 명시 경고.
+        return approx, "~(근사·과소)"
+    return approx, "~"
+
+
 def compare(base=None, tied_tag=None, vs_tag=None):
     if vs_tag:                                  # tied vs tied
         llabel = tied_tag or "tied"; lname = _resolve(base, "tied", tied_tag)
@@ -39,10 +59,8 @@ def compare(base=None, tied_tag=None, vs_tag=None):
             print(f"[compare] {p} 없음. 먼저 학습하세요."); return
         out[role] = json.loads(p.read_text())
     d, t = out["L"], out["R"]
-    # 배포 메모리 = params × bpw (coarse). 3:4 희소(P016)면 bpw=1.25, 아니면 1.95.
-    # 주: 임베딩/기타(fp16)까지 동일 bpw로 근사하는 관행 유지(정밀 분해는 report() 참조).
-    MB = lambda n, bpw=1.95: n * bpw / 8 / 1024**2
-    dbpw, tbpw = d.get("bpw", 1.95), t.get("bpw", 1.95)
+    dmem, dmnote = _deploy_mb(d)
+    tmem, tmnote = _deploy_mb(t)
     dl, tl = d["final"]["val_loss"], t["final"]["val_loss"]
 
     # 긴 태그명이 컬럼(16)을 넘쳐 서로 붙는 문제 방지: base 프리픽스 제거 + 15자 절단(≥1칸 여백 보장).
@@ -61,8 +79,13 @@ def compare(base=None, tied_tag=None, vs_tag=None):
     print("  " + "-" * 62)
     print(f"  {'파라미터':<18}{d['params']/1e6:>15.1f}M{t['params']/1e6:>15.1f}M"
           f"{d['params']/t['params']:>13.2f}x")
-    print(f"  {'배포 메모리':<18}{MB(d['params'],dbpw):>14.1f}MB{MB(t['params'],tbpw):>14.1f}MB"
-          f"{MB(d['params'],dbpw)/MB(t['params'],tbpw):>13.2f}x")
+    print(f"  {'배포 메모리':<18}{dmem:>14.1f}MB{tmem:>14.1f}MB{dmem/tmem:>13.2f}x")
+    if dmnote or tmnote:
+        _who = " / ".join(f"{lab}{nt}" for lab, nt in ((llabel, dmnote), (rlabel, tmnote)) if nt)
+        print(f"  {'':<18}!! 근사값 포함 ({_who}) — 구 로그라 deploy_mb 미기록.")
+        if "과소" in dmnote + tmnote:
+            print(f"  {'':<18}   sparse34 는 임베딩까지 1.25bpw 로 세어 **과소·비율 과대**다.")
+        print(f"  {'':<18}   정확값 = 학습 로그 상단 report() 블록. 재학습 시 자동 기록.")
     print(f"  {'val loss':<18}{dl:>16.4f}{tl:>16.4f}{tl-dl:>+14.4f}")
     print(f"  {'perplexity':<18}{d['final']['ppl']:>16.2f}{t['final']['ppl']:>16.2f}"
           f"{t['final']['ppl']/d['final']['ppl']:>13.2f}x")
