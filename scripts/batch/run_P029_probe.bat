@@ -1,4 +1,12 @@
 @echo off
+REM ===== LOGGING (added 2026-07-31) =====
+REM   Every python command below is run through scripts\runlog.py, which prints to the
+REM   console in real time AND appends to test_result\log_YYYYMMDD_NAME.txt line by line,
+REM   flushing and fsync-ing as it goes. If this batch dies halfway, or the machine loses
+REM   power, everything up to the last couple of seconds is already on disk.
+REM   Losing the log of a long run costs the whole run, so this is not optional.
+REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
+
 REM ===== relocated to scripts\batch on 2026-07-31 =====
 REM   Root now holds only batches for experiments that have NOT run yet. This one is a
 REM   REUSABLE tool or a completed run kept for re-verification, so it lives here.
@@ -42,12 +50,12 @@ echo [P029] qualitative probe
 echo ============================================================
 echo.
 echo [0] prompts and what each one checks
-python scripts\probe_prompts.py --list
+python scripts\runlog.py --name P029-probe -- python scripts\probe_prompts.py --list
 if errorlevel 1 echo [WARN] listing failed - continuing
 
 echo.
 echo [1/1] generating (mA_g4s34_k4 and p6d, temps 0.7 and 1.0)
-python scripts\probe_prompts.py
+python scripts\runlog.py --name P029-probe -- python scripts\probe_prompts.py
 if errorlevel 1 echo [WARN] probe failed - see the traceback above
 
 echo.

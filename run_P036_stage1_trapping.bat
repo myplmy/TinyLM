@@ -1,4 +1,12 @@
 @echo off
+REM ===== LOGGING (added 2026-07-31) =====
+REM   Every python command below is run through scripts\runlog.py, which prints to the
+REM   console in real time AND appends to test_result\log_YYYYMMDD_NAME.txt line by line,
+REM   flushing and fsync-ing as it goes. If this batch dies halfway, or the machine loses
+REM   power, everything up to the last couple of seconds is already on disk.
+REM   Losing the log of a long run costs the whole run, so this is not optional.
+REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
+
 if not exist run100m.py cd ..\..
 if not exist run100m.py goto BADROOT
 
@@ -45,7 +53,7 @@ echo [1/2] all three models - this is the comparison that decides
 echo   mA_g4s34_k4 is the only 3:4 model. mC_g8_k4 is tied but NOT 3:4, so it separates
 echo   "tying" from "3:4". p6d is the unquantised-structure control.
 echo ============================================================
-python scripts\diag_trapping.py --models mA_g4s34_k4 mC_g8_k4 p6d --batches 4
+python scripts\runlog.py --name P036-stage1 -- python scripts\diag_trapping.py --models mA_g4s34_k4 mC_g8_k4 p6d --batches 4
 if errorlevel 2 echo [WARN] some checkpoints missing - read which ones above
 if errorlevel 1 echo [WARN] run reported a problem - continuing
 
@@ -55,7 +63,7 @@ echo [2/2] repeat with more batches - is the ER estimate stable
 echo   ER comes from a finite gradient sample. If 4 and 12 batches disagree by a lot,
 echo   the number is noise and must not be used for a decision.
 echo ============================================================
-python scripts\diag_trapping.py --models mA_g4s34_k4 mC_g8_k4 --batches 12
+python scripts\runlog.py --name P036-stage1 -- python scripts\diag_trapping.py --models mA_g4s34_k4 mC_g8_k4 --batches 12
 if errorlevel 1 echo [WARN] stability pass failed - continuing
 
 echo.

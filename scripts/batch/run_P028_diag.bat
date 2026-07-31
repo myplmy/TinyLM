@@ -1,4 +1,12 @@
 @echo off
+REM ===== LOGGING (added 2026-07-31) =====
+REM   Every python command below is run through scripts\runlog.py, which prints to the
+REM   console in real time AND appends to test_result\log_YYYYMMDD_NAME.txt line by line,
+REM   flushing and fsync-ing as it goes. If this batch dies halfway, or the machine loses
+REM   power, everything up to the last couple of seconds is already on disk.
+REM   Losing the log of a long run costs the whole run, so this is not optional.
+REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
+
 REM ===== relocated to scripts\batch on 2026-07-31 =====
 REM   Root now holds only batches for experiments that have NOT run yet. This one is a
 REM   REUSABLE tool or a completed run kept for re-verification, so it lives here.
@@ -31,21 +39,21 @@ echo [P028-0] cache diagnosis : ko-en (control) vs ko-edu-en (suspect)
 echo ============================================================
 echo.
 echo [0] caches present
-python scripts\diag_cache.py
+python scripts\runlog.py --name P028-diag -- python scripts\diag_cache.py
 if errorlevel 1 echo [WARN] listing failed - continuing
 
 echo.
 echo ============================================================
 echo [1/2] CONTROL : ko-en 300M  (this one trained normally)
 echo ============================================================
-python scripts\diag_cache.py --data ko-en --tokens 300M
+python scripts\runlog.py --name P028-diag -- python scripts\diag_cache.py --data ko-en --tokens 300M
 if errorlevel 1 echo [WARN] ko-en diag failed - continuing
 
 echo.
 echo ============================================================
 echo [2/2] SUSPECT : ko-edu-en 300M  (3.14 nats train/val gap)
 echo ============================================================
-python scripts\diag_cache.py --data ko-edu-en --tokens 300M
+python scripts\runlog.py --name P028-diag -- python scripts\diag_cache.py --data ko-edu-en --tokens 300M
 if errorlevel 1 echo [WARN] ko-edu-en diag failed - continuing
 
 echo.

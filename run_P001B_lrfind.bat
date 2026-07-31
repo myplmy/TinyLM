@@ -1,4 +1,12 @@
 @echo off
+REM ===== LOGGING (added 2026-07-31) =====
+REM   Every python command below is run through scripts\runlog.py, which prints to the
+REM   console in real time AND appends to test_result\log_YYYYMMDD_NAME.txt line by line,
+REM   flushing and fsync-ing as it goes. If this batch dies halfway, or the machine loses
+REM   power, everything up to the last couple of seconds is already on disk.
+REM   Losing the log of a long run costs the whole run, so this is not optional.
+REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
+
 REM ===== P001B : LR re-search at the CURRENT effective batch =====
 REM   Plan: test_plan\P001 section P001B
 REM
@@ -39,7 +47,7 @@ echo ============================================================
 
 echo.
 echo [pre] static attribute check
-python scripts\check_attrs.py
+python scripts\runlog.py --name P001B -- python scripts\check_attrs.py
 if errorlevel 1 echo [WARN] attribute check found problems - FIX THEM FIRST
 
 echo.
@@ -48,7 +56,7 @@ echo [1/3] DENSE at accum 16   ***THE ONE THAT MATTERS MOST***
 echo   dense is the teacher. Every KD run inherits its quality, so if any LR is wrong
 echo   this is the expensive one. Also the P033 dense baseline runs 17 hours.
 echo ============================================================
-python run100m.py lrfind --arch dense --preset m100 --data ko-en --tokens 300M --method both --micro-bs 8 --seq 1024 --accum 16 --lrs 6e-4,1e-3,2e-3,3e-3,4e-3 --lrfind-steps 150
+python scripts\runlog.py --name P001B -- python run100m.py lrfind --arch dense --preset m100 --data ko-en --tokens 300M --method both --micro-bs 8 --seq 1024 --accum 16 --lrs 6e-4,1e-3,2e-3,3e-3,4e-3 --lrfind-steps 150
 if errorlevel 1 (echo [WARN] dense lrfind failed - continuing) else (copy /Y runs\logs\lrfind.json runs\logs\lrfind_P001B_dense_a16.json)
 
 echo.
@@ -57,7 +65,7 @@ echo [2/3] TIED at accum 16
 echo   the student. Tied shares MLP weights, so per-weight gradient magnitude differs
 echo   from dense and the optimum need not be the same number.
 echo ============================================================
-python run100m.py lrfind --arch tied --preset m100 --data ko-en --tokens 300M --method both --micro-bs 8 --seq 1024 --accum 16 --lrs 6e-4,1e-3,2e-3,3e-3,4e-3 --lrfind-steps 150
+python scripts\runlog.py --name P001B -- python run100m.py lrfind --arch tied --preset m100 --data ko-en --tokens 300M --method both --micro-bs 8 --seq 1024 --accum 16 --lrs 6e-4,1e-3,2e-3,3e-3,4e-3 --lrfind-steps 150
 if errorlevel 1 (echo [WARN] tied lrfind failed - continuing) else (copy /Y runs\logs\lrfind.json runs\logs\lrfind_P001B_tied_a16.json)
 
 echo.
@@ -68,7 +76,7 @@ echo   1.7e-3 divergence and accum 16 lands HIGHER, the batch-size dependence is
 echo   demonstrated rather than assumed. If the two come out the SAME, then claim (b)
 echo   above was wrong and only claim (a) justifies any change. Either way we learn.
 echo ============================================================
-python run100m.py lrfind --arch dense --preset m100 --data ko-en --tokens 300M --method both --micro-bs 8 --seq 1024 --accum 8 --lrs 6e-4,1e-3,2e-3,3e-3,4e-3 --lrfind-steps 150
+python scripts\runlog.py --name P001B -- python run100m.py lrfind --arch dense --preset m100 --data ko-en --tokens 300M --method both --micro-bs 8 --seq 1024 --accum 8 --lrs 6e-4,1e-3,2e-3,3e-3,4e-3 --lrfind-steps 150
 if errorlevel 1 (echo [WARN] control lrfind failed - continuing) else (copy /Y runs\logs\lrfind.json runs\logs\lrfind_P001B_dense_a8.json)
 
 echo.

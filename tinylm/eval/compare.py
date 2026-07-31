@@ -31,8 +31,13 @@ def _deploy_mb(res):
     이제 `trainer` 가 `report()` 와 같은 소스(`mem_breakdown`)로 `deploy_mb` 를 json 에 기록한다.
     그 값이 있으면 그대로 쓰고, **없으면(구 로그)** 근사로 되돌리되 sparse34 인 경우 경고를 붙인다.
     """
+    # (2026-07-31) 회계 통일 후 신규 로그는 packed_mb(안 B) 를 쓴다.
+    if res.get("packed_mb"):
+        return float(res["packed_mb"]), ""
     if res.get("deploy_mb"):
-        return float(res["deploy_mb"]), ""
+        # 구 로그 — 규약이 다르다(삼진 1.95 / sparse34 1.25 = 혼합 회계).
+        note = "  [구규약]" if res.get("sparse34") else ""
+        return float(res["deploy_mb"]), note
     n, bpw = res["params"], res.get("bpw", 1.95)
     approx = n * bpw / 8 / 1024 ** 2
     if res.get("sparse34"):

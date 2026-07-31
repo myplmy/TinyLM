@@ -1,4 +1,12 @@
 @echo off
+REM ===== LOGGING (added 2026-07-31) =====
+REM   Every python command below is run through scripts\runlog.py, which prints to the
+REM   console in real time AND appends to test_result\log_YYYYMMDD_NAME.txt line by line,
+REM   flushing and fsync-ing as it goes. If this batch dies halfway, or the machine loses
+REM   power, everything up to the last couple of seconds is already on disk.
+REM   Losing the log of a long run costs the whole run, so this is not optional.
+REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
+
 REM ===== P007B : pool-saturation point + fair-pool k4 at the 600M budget =====
 REM   Follow-up to result 006. Template reused from run100m_P007.bat, but a DIFFERENT experiment
 REM   and a different file, so the original P007 record stays untouched.
@@ -35,7 +43,7 @@ REM ERRORLEVEL POLICY: the 1200M prepare is a hard prerequisite (goto ERROR). Tr
 REM   only warn, except p12d which PART 2 initialises and distills from.
 
 echo === [0] build the 1200M pool (one-time, about 30min, 2.4GB) ===
-python run100m.py prepare --data ko-en --tokens 1200M --exact-cache
+python scripts\runlog.py --name P007B -- python run100m.py prepare --data ko-en --tokens 1200M --exact-cache
 if errorlevel 1 goto ERROR
 
 echo.
@@ -44,7 +52,7 @@ echo PART 1 (Q1) : pool saturation - dense at 300M trained, pool 1200M
 echo ============================================================
 REM Same trained tokens as the two points we already have. ONLY the pool differs.
 REM grad-ckpt left ON to match how p6d and the canonical dense were run (comparability first).
-python run100m.py train --arch dense --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --eval-every 100 --compile --pool-tokens 1200M --exact-cache --tag p12d
+python scripts\runlog.py --name P007B -- python run100m.py train --arch dense --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --eval-every 100 --compile --pool-tokens 1200M --exact-cache --tag p12d
 if errorlevel 1 echo [WARN] p12d failed - PART 2 cannot run without it
 
 echo.
@@ -52,7 +60,7 @@ echo --- Q1 readout ---
 echo   pool  300M : 3.8241   (canonical dense)
 echo   pool  600M : 3.7045   (p6d, minus 0.1196)
 echo   pool 1200M : see the p12d line above
-python run100m.py compare --data ko-en --tokens 300M --tag p6d --vs p12d
+python scripts\runlog.py --name P007B -- python run100m.py compare --data ko-en --tokens 300M --tag p6d --vs p12d
 echo   INTERPRET: gain from 600M to 1200M vs the 0.1196 gain from 300M to 600M.
 echo     still large   -^> pool is the cheapest quality lever, rebuild baselines bigger
 echo     much smaller  -^> 600M pool is the standard, stop growing it

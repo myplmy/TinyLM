@@ -1,4 +1,12 @@
 @echo off
+REM ===== LOGGING (added 2026-07-31) =====
+REM   Every python command below is run through scripts\runlog.py, which prints to the
+REM   console in real time AND appends to test_result\log_YYYYMMDD_NAME.txt line by line,
+REM   flushing and fsync-ing as it goes. If this batch dies halfway, or the machine loses
+REM   power, everything up to the last couple of seconds is already on disk.
+REM   Losing the log of a long run costs the whole run, so this is not optional.
+REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
+
 REM ===== relocated to scripts\batch on 2026-07-31 =====
 REM   Root now holds only batches for experiments that have NOT run yet. This one is a
 REM   REUSABLE tool or a completed run kept for re-verification, so it lives here.
@@ -42,41 +50,41 @@ echo [pre] static attribute check - catches cfg.WRONG_NAME without loading torch
 REM   Added after the P029 incident: scripts\probe_prompts.py used cfg.seq_len (real field is
 REM   max_seq_len). Python only fails at that line, which ran AFTER loading a model on the GPU,
 REM   so the batch had to be run before anyone found out. This check is seconds and needs no GPU.
-python scripts\check_attrs.py
+python scripts\runlog.py --name smoke -- python scripts\check_attrs.py
 if errorlevel 1 echo [WARN] attribute check found problems - FIX THEM FIRST
 
 echo.
 echo === [1/6] defaults ===
-python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --tag sm_base
+python scripts\runlog.py --name smoke -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --tag sm_base
 if errorlevel 1 echo [WARN] sm_base failed - continuing
 
 echo === [2/6] --seed 4242 ===
-python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --seed 4242 --tag sm_seed
+python scripts\runlog.py --name smoke -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --seed 4242 --tag sm_seed
 if errorlevel 1 echo [WARN] sm_seed failed - continuing
 
 echo === [3/6] --sparse34 ===
-python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --sparse34 --tag sm_s34
+python scripts\runlog.py --name smoke -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --sparse34 --tag sm_s34
 if errorlevel 1 echo [WARN] sm_s34 failed - continuing
 
 echo === [4/6] --sched wsd --anneal-end 0.80  (expect the [sched] aligned line) ===
-python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --tag sm_sched
+python scripts\runlog.py --name smoke -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --tag sm_sched
 if errorlevel 1 echo [WARN] sm_sched failed - continuing
 
 echo === [5/6] --no-ckpt ===
-python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --tag sm_nockpt
+python scripts\runlog.py --name smoke -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --tag sm_nockpt
 if errorlevel 1 echo [WARN] sm_nockpt failed - continuing
 
 echo === [6/6] --kd --init-from --kd-every 4  (needs a tiny dense parent first) ===
-python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15
+python scripts\runlog.py --name smoke -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15
 if errorlevel 1 echo [WARN] tiny dense parent failed - sm_kd will be skipped
-python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --kd --init-from --mlp-group 4 --kd-every 4 --tag sm_kd
+python scripts\runlog.py --name smoke -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --kd --init-from --mlp-group 4 --kd-every 4 --tag sm_kd
 if errorlevel 1 echo [WARN] sm_kd failed - continuing
 
 echo.
 echo ============================================================
 echo [VERIFY] checking that every instrumentation field was recorded
 echo ============================================================
-python scripts\check_smoke.py
+python scripts\runlog.py --name smoke -- python scripts\check_smoke.py
 
 echo.
 echo ============================================================

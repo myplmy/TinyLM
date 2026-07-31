@@ -1,4 +1,12 @@
 @echo off
+REM ===== LOGGING (added 2026-07-31) =====
+REM   Every python command below is run through scripts\runlog.py, which prints to the
+REM   console in real time AND appends to test_result\log_YYYYMMDD_NAME.txt line by line,
+REM   flushing and fsync-ing as it goes. If this batch dies halfway, or the machine loses
+REM   power, everything up to the last couple of seconds is already on disk.
+REM   Losing the log of a long run costs the whole run, so this is not optional.
+REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
+
 REM ===== relocated to scripts\batch on 2026-07-31 =====
 REM   Root now holds only batches for experiments that have NOT run yet. This one is a
 REM   REUSABLE tool or a completed run kept for re-verification, so it lives here.
@@ -52,7 +60,7 @@ echo.
 echo ============================================================
 echo [1/2] CPU - this is the deployment target, so this is the number that counts
 echo ============================================================
-python scripts\mem_runtime.py --device cpu --max-new 32
+python scripts\runlog.py --name P034-memory -- python scripts\mem_runtime.py --device cpu --max-new 32
 if errorlevel 1 echo [WARN] CPU memory measurement failed - continuing
 
 echo.
@@ -60,7 +68,7 @@ echo ============================================================
 echo [2/2] GPU - cross-check. CUDA reports an exact allocator peak, so it validates
 echo   the tensor-sum method against a number we can trust.
 echo ============================================================
-python scripts\mem_runtime.py --device cuda --max-new 32
+python scripts\runlog.py --name P034-memory -- python scripts\mem_runtime.py --device cuda --max-new 32
 if errorlevel 1 echo [WARN] GPU memory measurement failed - continuing
 
 echo.

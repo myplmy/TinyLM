@@ -13,6 +13,7 @@ import argparse
 
 from . import paths  # noqa: F401  (HF 리다이렉트 먼저)
 from .data import DATASETS
+from .config import PRESETS
 
 
 def _tok(s):
@@ -30,7 +31,10 @@ def main():
     p.add_argument("cmd", choices=["prepare", "train", "eval", "compare", "all",
                                    "lrfind", "generate", "kdcache"])
     p.add_argument("--arch", choices=["dense", "tied"], default="tied")
-    p.add_argument("--preset", choices=["tiny", "m100"], default="m100")
+    # choices 를 PRESETS 에서 자동 유도 — 종전 하드코딩은 `m100d` 를 빠뜨리고 있었다.
+    p.add_argument("--preset", choices=list(PRESETS), default="m100",
+                   help="m100R1a/m100R1c = REVIEW1 잠정 보존 후보(2026-07-31 승격). "
+                        "아키텍처만 고정하고 KD 등 학습 조합은 명령줄이 정한다")
     p.add_argument("--data", default="ko-en", choices=list(DATASETS) + ["synthetic"])
     p.add_argument("--tokens", default="300M")
     p.add_argument("--steps", type=int, default=3000)

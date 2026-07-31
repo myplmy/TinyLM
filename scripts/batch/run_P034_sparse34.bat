@@ -1,4 +1,12 @@
 @echo off
+REM ===== LOGGING (added 2026-07-31) =====
+REM   Every python command below is run through scripts\runlog.py, which prints to the
+REM   console in real time AND appends to test_result\log_YYYYMMDD_NAME.txt line by line,
+REM   flushing and fsync-ing as it goes. If this batch dies halfway, or the machine loses
+REM   power, everything up to the last couple of seconds is already on disk.
+REM   Losing the log of a long run costs the whole run, so this is not optional.
+REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
+
 REM ===== relocated to scripts\batch on 2026-07-31 =====
 REM   Root now holds only batches for experiments that have NOT run yet. This one is a
 REM   REUSABLE tool or a completed run kept for re-verification, so it lives here.
@@ -58,7 +66,7 @@ echo.
 echo ============================================================
 echo [1/2] full audit, all three models, summary level
 echo ============================================================
-python scripts\diag_sparse34.py --models mA_g4s34_k4 mC_g8_k4 p6d
+python scripts\runlog.py --name P034-sparse34 -- python scripts\diag_sparse34.py --models mA_g4s34_k4 mC_g8_k4 p6d
 if errorlevel 2 echo [WARN] some checkpoints were missing - read which ones above
 if errorlevel 1 echo [WARN] audit reported a problem - continuing
 
@@ -69,7 +77,7 @@ echo   Watch whether the nonzero fraction is uniform across layers or whether so
 echo   are far more affected. A large spread means the single global 1.25 bpw number hides
 echo   real variation.
 echo ============================================================
-python scripts\diag_sparse34.py --models mA_g4s34_k4 --layers 8
+python scripts\runlog.py --name P034-sparse34 -- python scripts\diag_sparse34.py --models mA_g4s34_k4 --layers 8
 if errorlevel 1 echo [WARN] per-layer pass failed - continuing
 
 echo.

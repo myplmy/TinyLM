@@ -103,7 +103,33 @@ def _m100d(seq, ckpt):   # 깊고 얇게: 중간층 24, g6 (MLP 그룹 4개는 �
                      micro_group=128, max_seq_len=seq, grad_checkpoint=ckpt)
 
 
-PRESETS = {"tiny": _tiny, "m100": _m100, "m100d": _m100d}
+def _m100R1a(seq, ckpt):
+    """★REVIEW1 후보 A — g4 + 3:4 준정형. **잠정 보존 승격**(2026-07-31 사용자 결정).
+
+    `mA_g4s34_k4` 의 아키텍처를 프리셋으로 고정한 것. 학습 조합(KD k4·부모초기화)은
+    프리셋이 아니라 **명령줄**(`--kd --init-from --kd-every 4`)이 정한다.
+
+    ★왜 하나로 못 고르나: 품질 1.2σ / 저장 0.7% 차이 = **둘 다 노이즈 안**이고,
+    A 의 우위는 **5비트 패킹 커널·Arenas 가 둘 다 미구현**인 것에 의존한다(결과 016 §7.6).
+    → 승자 확정은 P034 단계2~4 · P036 이후. 그때까지 **둘 다 보존**한다.
+    """
+    return dataclasses.replace(_m100(seq, ckpt), mlp_group=4, sparse34=True)
+
+
+def _m100R1c(seq, ckpt):
+    """★REVIEW1 후보 C — g8, 3:4 없음. **잠정 보존 승격**(2026-07-31).
+
+    `mC_g8_k4` 의 아키텍처. **상주 메모리 최소**(451.5MB vs A 523.5MB, 결과 016 §1)이고
+    표준 경로만 쓰므로 **구현 리스크가 없다** → 현재 근거로는 **이쪽이 기본**이다.
+    """
+    return dataclasses.replace(_m100(seq, ckpt), mlp_group=8, sparse34=False)
+
+
+# ★새 프리셋은 **기존 프리셋을 건드리지 않는다** — `_m100` 을 dataclasses.replace 로 파생만 한다.
+#   체크포인트·로그 이름이 `{preset}_{data}_{tokens}_{tag}` 라 **네임스페이스가 자동 분리**되고,
+#   기존 런(`m100_*`)과 충돌하지 않는다.
+PRESETS = {"tiny": _tiny, "m100": _m100, "m100d": _m100d,
+           "m100R1a": _m100R1a, "m100R1c": _m100R1c}
 
 
 def build_config(preset: str, arch: str, seq: int, ckpt: bool = True) -> TMTConfig:

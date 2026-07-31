@@ -193,36 +193,89 @@ class TiedMLPTransformer(nn.Module):
                 {"params": nodecay, "lr": lr, "weight_decay": 0.0}]
 
     # ---------- accounting ----------
-    def mem_breakdown(self, bpw=1.95):
-        """배포 메모리의 **정확한** 분해(MB). `report()` 와 `compare` 가 공유하는 단일 소스.
+    # ★bpw 회계 규약 (2026-07-31 통일 — 결과 016 §7.4·§8.4, P034 §5)
+    #   종전 문제: 삼진 1.95 는 "코드 + 그룹스케일 + 컨테이너" 인데 sparse34 1.25 는
+    #   **순수 코드공간뿐**이었다. 서로 다른 규약의 두 값으로 비율을 만들어 감축비가
+    #   2.66× 로 과대됐다(동일 회계로는 2.11×).
+    #
+    #   정본 = **안 B(코드 + 그룹 스케일)**. 이유:
+    #     ① log2(3) + 16/128 = 1.7100 이 문서의 "g128 삼진 1.71" 과 정확히 일치하고
+    #        **설계 시점(가중치가 난수일 때)에 계산 가능한 고정 상수**다.
+    #        안 C 로 1.95 를 유지하려면 학습 후에만 아는 실측 엔트로피(1.554)가 필요한데
+    #        report() 는 학습 **시작 전**에 호출된다 → 계산 자체가 불가능.
+    #     ② 코드와 스케일은 **우리가 반드시 저장해야** 하는 것이다(둘 중 하나만으로는 복원 불가).
+    #        컨테이너는 **포맷 선택**의 문제이고 우리는 아직 포맷을 안 정했다.
+    #     ③ 논문(Sherry) 기준선 1.67 과 같은 층위 → 외부 비교가 성립한다.
+    #   병기 = **안 C(B + 컨테이너)**. 실제 배포 파일 크기 추정용이고 구 문서(30.9MB 계열)와 연속.
+    CODE_TERNARY = 1.5849625007211562   # log2(3) — 삼진 심볼 하나의 정보량
+    CODE_S34 = 1.25                      # C(4,3)*2^3 = 32 = 2^5, 4가중치당 5비트(무낭비)
+    SCALE_BITS = 16.0                    # 그룹 스케일 alpha 를 fp16 로 저장
+    CONTAINER_BPW = 0.274                # (안 C 전용) 1.95 - (측정엔트로피 1.554 + 0.125) 역산.
+                                         #   GGUF 가정이며 **우리 포맷이 아니다**. 참고값.
 
-        ★ 중요: 3:4 희소(P016)는 **삼진 가중치에만** 적용된다. 임베딩·norm·gate 는 대상이 아니다.
-        따라서 "전체 파라미터 × 단일 bpw" 로 근사하면 sparse34 런에서만 과소(=감축비율 과대)가 된다.
-        이 함수가 그 실수를 원천 차단한다. `trainer` 가 결과 json 에 `deploy_mb` 로 기록하고,
-        `compare.py` 는 그 값을 쓴다(구 로그엔 없으므로 fallback + 경고).
+    def _bpw(self, container=False):
+        """(삼진 bpw, sparse34 bpw, 임베딩 bpw). 규약을 한 곳에서 만든다."""
+        scale = self.SCALE_BITS / self.cfg.micro_group
+        ovh = self.CONTAINER_BPW if container else 0.0
+        b_t = self.CODE_TERNARY + scale + ovh
+        b_s = self.CODE_S34 + scale + ovh
+        return b_t, b_s, b_t          # 임베딩은 3:4 대상이 아니므로 삼진 규약을 그대로 쓴다
+
+    def mem_breakdown(self, bpw=None, container=False):
+        """저장(packed) 메모리의 **정확한** 분해(MB). `report()`·`compare` 의 단일 소스.
+
+        ★ 3:4 준정형(P016)은 **삼진 가중치에만** 적용된다. 임베딩·norm·gate 는 대상이 아니다.
+        따라서 "전체 파라미터 × 단일 bpw" 로 근사하면 sparse34 런에서만 과소가 된다.
+        이 함수가 그 실수를 원천 차단한다.
+
+        `bpw` 인자는 **구 호출부 호환용**이며 무시된다(규약은 위 상수가 정한다).
+        `container=True` 면 안 C(컨테이너 포함) 로 계산한다.
         """
         cfg = self.cfg
         MB = lambda n, b: n * b / 8 / 1024 ** 2
-        bpw_t = 1.25 if getattr(cfg, "sparse34", False) else bpw   # (P016) 3:4 삼진 = 1.25bpw
+        b_t, b_s, b_e = self._bpw(container)
+        bpw_t = b_s if getattr(cfg, "sparse34", False) else b_t
         tern = sum(m.weight.numel() for m in self._tlinears())
         mode = sum(p.numel() for m in self._tlinears() if m.use_mode
                    for p in (m.mode_a, m.mode_b, m.mode_gain))
         emb = self.emb.weight.numel() + (self.emb_up.weight.numel() if self.emb_up is not None else 0)
         lora = sum(p.numel() for m in self.modules() if isinstance(m, LoRA) for p in m.parameters())
         other = sum(p.numel() for p in self.parameters()) - tern - mode - emb - lora
-        e_bits = bpw if cfg.quantize_embedding else 16   # 임베딩은 3:4 대상 아님(1.95 유지)
+        e_bits = b_e if cfg.quantize_embedding else 16
         l_bits = cfg.mlp_lora_bits
         parts = {"ternary": MB(tern, bpw_t), "mode": MB(mode, 16), "emb": MB(emb, e_bits),
                  "other": MB(other, 16), "lora": MB(lora, l_bits)}
-        return {"total_mb": sum(parts.values()), "parts_mb": parts,
+        # ★상주(runtime) — 결과 016 실측식: 유니크 삼진 x 4B x 2벌(latent + dequant 사본) + 나머지 fp32
+        runtime_mb = ((tern + mode + lora) * 4 * 2 + (emb + other) * 4) / 1024 ** 2
+        return {"total_mb": sum(parts.values()),          # = packed_mb (구 호출부 호환 별칭)
+                "packed_mb": sum(parts.values()),
+                "runtime_mb": runtime_mb,
+                "parts_mb": parts,
                 "params": {"ternary": tern, "mode": mode, "emb": emb, "other": other, "lora": lora,
                            "total": tern + mode + emb + other + lora},
-                "bpw_ternary": bpw_t, "bpw_emb": e_bits, "sparse34": bool(getattr(cfg, "sparse34", False))}
+                "bpw_ternary": bpw_t, "bpw_emb": e_bits,
+                "bpw_convention": ("C: code + group scale + container(0.274, GGUF 가정)"
+                                   if container else
+                                   "B: code(log2 3 / 1.25) + group scale(16/micro_group)"),
+                "sparse34": bool(getattr(cfg, "sparse34", False))}
 
-    def report(self, bpw=1.95, l3_mb=32.0):
+    def mem_report_all(self):
+        """정본(B) + 병기(C) + 상주 를 한 번에. trainer 가 json 에 이걸 펼쳐 넣는다."""
+        b = self.mem_breakdown(container=False)
+        c = self.mem_breakdown(container=True)
+        return {"packed_mb": b["packed_mb"],
+                "packed_mb_container": c["packed_mb"],
+                "runtime_mb": b["runtime_mb"],
+                "bpw_convention": b["bpw_convention"],
+                "bpw_ternary": b["bpw_ternary"],
+                "mem_parts_mb": b["parts_mb"],
+                "mem_params": b["params"]}
+
+    def report(self, bpw=None, l3_mb=32.0):
         cfg = self.cfg
         MB = lambda n, b: n * b / 8 / 1024 ** 2
-        bd = self.mem_breakdown(bpw)
+        bd = self.mem_breakdown()
+        bd_c = self.mem_breakdown(container=True)
         tern, mode = bd["params"]["ternary"], bd["params"]["mode"]
         emb, other, lora = bd["params"]["emb"], bd["params"]["other"], bd["params"]["lora"]
         total, mem = bd["params"]["total"], bd["total_mb"]
@@ -249,8 +302,14 @@ class TiedMLPTransformer(nn.Module):
         A(f"  {'-'*52}")
         A(f"  {'합계':<24}{total/1e6:>9.1f}M{mem:>10.1f} MB")
         A("")
-        A(f"  L3({l3_mb:.0f}MB) 상주       : {'가능' if mem < l3_mb*0.7 else '불가'}"
-          f"   (여유 {l3_mb-mem:.1f} MB — KV·활성용)")
+        A("")
+        A(f"  {'저장(packed, 안 B)':<24}{'':>9} {mem:>10.1f} MB   {bd['bpw_convention']}")
+        A(f"  {'저장(참고, 안 C 컨테이너)':<24}{'':>9} {bd_c['packed_mb']:>10.1f} MB")
+        A(f"  {'★상주(runtime, 현 구현)':<24}{'':>9} {bd['runtime_mb']:>10.1f} MB"
+          f"   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)")
+        A(f"  L3({l3_mb:.0f}MB) 상주       : "
+          f"{'가능' if bd['runtime_mb'] < l3_mb*0.7 else '불가'}"
+          f"   ★**상주 기준**으로 판정한다 — 저장 기준은 {mem:.1f}MB 라 오해를 부른다(결과 016)")
         if cfg.tie_mlp:
             A(f"  타이드 MLP 1그룹      : {mlp_mb:.1f} MB  ({cfg.mlp_group}회 연속 재사용)")
         else:

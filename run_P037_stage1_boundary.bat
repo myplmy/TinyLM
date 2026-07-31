@@ -1,4 +1,12 @@
 @echo off
+REM ===== LOGGING (added 2026-07-31) =====
+REM   Every python command below is run through scripts\runlog.py, which prints to the
+REM   console in real time AND appends to test_result\log_YYYYMMDD_NAME.txt line by line,
+REM   flushing and fsync-ing as it goes. If this batch dies halfway, or the machine loses
+REM   power, everything up to the last couple of seconds is already on disk.
+REM   Losing the log of a long run costs the whole run, so this is not optional.
+REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
+
 REM ===== relocated-style header: this batch runs from either location =====
 if not exist run100m.py cd ..\..
 if not exist run100m.py goto BADROOT
@@ -45,7 +53,7 @@ echo [1/2] SUSPECT : ko-edu-en - the 7 huge documents
 echo   Stage 0.6 found 7 documents of 72k-88k tokens carrying 37 pct of tokens and
 echo   53 pct of the loss. Are they really ONE document each
 echo ============================================================
-python scripts\diag_val_docs.py --data ko-edu-en --tokens 300M --arch dense --tag dense --inspect 7
+python scripts\runlog.py --name P037-stage1 -- python scripts\diag_val_docs.py --data ko-edu-en --tokens 300M --arch dense --tag dense --inspect 7
 if errorlevel 1 echo [WARN] ko-edu-en inspect failed - continuing
 
 echo.
@@ -54,7 +62,7 @@ echo [2/2] CONTROL : ko-en - known healthy, so it calibrates the checks
 echo   If ko-en shows the same over-splitting signals, the signal is about the TOOL,
 echo   not about ko-edu-en.
 echo ============================================================
-python scripts\diag_val_docs.py --data ko-en --tokens 300M --arch dense --tag dense --inspect 3
+python scripts\runlog.py --name P037-stage1 -- python scripts\diag_val_docs.py --data ko-en --tokens 300M --arch dense --tag dense --inspect 3
 if errorlevel 1 echo [WARN] ko-en inspect failed - continuing
 
 echo.

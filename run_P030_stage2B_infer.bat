@@ -1,4 +1,12 @@
 @echo off
+REM ===== LOGGING (added 2026-07-31) =====
+REM   Every python command below is run through scripts\runlog.py, which prints to the
+REM   console in real time AND appends to test_result\log_YYYYMMDD_NAME.txt line by line,
+REM   flushing and fsync-ing as it goes. If this batch dies halfway, or the machine loses
+REM   power, everything up to the last couple of seconds is already on disk.
+REM   Losing the log of a long run costs the whole run, so this is not optional.
+REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
+
 REM ===== P030 stage 2B : CPU inference measurement - the FIRST valid one =====
 REM   Plan: test_plan\P030 (stage 2B)   History: test_result\014
 REM
@@ -46,7 +54,7 @@ echo [0/4] GATE : teacher-forced logit equivalence, fp32 on cpu
 echo   This replaces the old greedy-string gate. Deterministic, no autoregressive
 echo   amplification, and the error pattern localises a real bug if one appears.
 echo ============================================================
-python scripts\diag_kvcache.py --models mA_g4s34_k4 mC_g8_k4 p6d --device cpu --tol 1e-3 --max-new 24
+python scripts\runlog.py --name P030-stage2B -- python scripts\diag_kvcache.py --models mA_g4s34_k4 mC_g8_k4 p6d --device cpu --tol 1e-3 --max-new 24
 if errorlevel 1 goto CACHEBAD
 echo   [OK] logit equivalence within 1e-3. Cache is correct. Speed numbers are meaningful.
 
@@ -54,7 +62,7 @@ echo.
 echo ============================================================
 echo [1/4] GPU baseline, cache on vs off  (the cache speedup multiple)
 echo ============================================================
-python scripts\bench_infer.py --device cuda --max-new 128 --reps 3 --both-cache
+python scripts\runlog.py --name P030-stage2B -- python scripts\bench_infer.py --device cuda --max-new 128 --reps 3 --both-cache
 if errorlevel 1 echo [WARN] GPU bench failed - continuing
 
 echo.
@@ -62,21 +70,21 @@ echo ============================================================
 echo [2/4] CPU single thread - the most realistic edge number
 echo   THIS IS THE HEADLINE NUMBER of the whole project. Record it carefully.
 echo ============================================================
-python scripts\bench_infer.py --device cpu --threads 1 --max-new 128 --reps 3 --both-cache
+python scripts\runlog.py --name P030-stage2B -- python scripts\bench_infer.py --device cpu --threads 1 --max-new 128 --reps 3 --both-cache
 if errorlevel 1 echo [WARN] CPU 1-thread bench failed - continuing
 
 echo.
 echo ============================================================
 echo [3/4] CPU thread sweep (cache on only - off is characterised above)
 echo ============================================================
-python scripts\bench_infer.py --device cpu --threads 2 4 8 --max-new 128 --reps 3
+python scripts\runlog.py --name P030-stage2B -- python scripts\bench_infer.py --device cpu --threads 2 4 8 --max-new 128 --reps 3
 if errorlevel 1 echo [WARN] CPU sweep failed - continuing
 
 echo.
 echo ============================================================
 echo [4/4] eos stop, qualitative - does generation END instead of running on
 echo ============================================================
-python scripts\probe_prompts.py --models mA_g4s34_k4 --temps 0.7
+python scripts\runlog.py --name P030-stage2B -- python scripts\probe_prompts.py --models mA_g4s34_k4 --temps 0.7
 if errorlevel 1 echo [WARN] eos demo failed - continuing
 
 echo.

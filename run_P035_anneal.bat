@@ -1,4 +1,12 @@
 @echo off
+REM ===== LOGGING (added 2026-07-31) =====
+REM   Every python command below is run through scripts\runlog.py, which prints to the
+REM   console in real time AND appends to test_result\log_YYYYMMDD_NAME.txt line by line,
+REM   flushing and fsync-ing as it goes. If this batch dies halfway, or the machine loses
+REM   power, everything up to the last couple of seconds is already on disk.
+REM   Losing the log of a long run costs the whole run, so this is not optional.
+REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
+
 REM ===== P035 : anneal SHAPE - does the cooldown-QAT mechanism exist in our code at all =====
 REM   Plan: test_plan\P035    Origin: test_result\015 section 2-(1)
 REM
@@ -46,7 +54,7 @@ if errorlevel 1 echo [WARN] guard check errored - continuing anyway
 
 echo.
 echo [prep] the 600M exact pool must be the same one result 015 used
-python run100m.py prepare --data ko-en --tokens 600M --exact-cache
+python scripts\runlog.py --name P035 -- python run100m.py prepare --data ko-en --tokens 600M --exact-cache
 if errorlevel 1 goto ERROR
 
 echo.
@@ -54,7 +62,7 @@ echo ============================================================
 echo [1/2] qa_step60 : STEP anneal at 0.60, wsd decay starts 0.80  (NOT aligned)
 echo   control for this run is qb_wsd60 (3.6275) - same transition point, linear ramp
 echo ============================================================
-python run100m.py train --arch dense --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --eval-every 100 --compile --no-ckpt --pool-tokens 600M --exact-cache --sched wsd --decay-frac 0.2 --anneal-shape step --anneal-start 0.60 --tag qa_step60
+python scripts\runlog.py --name P035 -- python run100m.py train --arch dense --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --eval-every 100 --compile --no-ckpt --pool-tokens 600M --exact-cache --sched wsd --decay-frac 0.2 --anneal-shape step --anneal-start 0.60 --tag qa_step60
 if errorlevel 1 echo [WARN] qa_step60 failed - continuing to the second run
 
 echo.
@@ -62,7 +70,7 @@ echo ============================================================
 echo [2/2] qa_step80 : STEP anneal at 0.80, wsd decay starts 0.80  (ALIGNED)
 echo   control for this run is qb_wsd80 (3.6147) - same transition point, linear ramp
 echo ============================================================
-python run100m.py train --arch dense --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --eval-every 100 --compile --no-ckpt --pool-tokens 600M --exact-cache --sched wsd --decay-frac 0.2 --anneal-shape step --anneal-start 0.80 --tag qa_step80
+python scripts\runlog.py --name P035 -- python run100m.py train --arch dense --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --eval-every 100 --compile --no-ckpt --pool-tokens 600M --exact-cache --sched wsd --decay-frac 0.2 --anneal-shape step --anneal-start 0.80 --tag qa_step80
 if errorlevel 1 echo [WARN] qa_step80 failed - continuing
 
 echo.
@@ -70,13 +78,13 @@ echo ============================================================
 echo COMPARES
 echo ============================================================
 echo --- shape effect at 0.60 : linear vs step ---
-python run100m.py compare --tag qb_wsd60 --vs qa_step60
+python scripts\runlog.py --name P035 -- python run100m.py compare --tag qb_wsd60 --vs qa_step60
 if errorlevel 1 echo [WARN] compare failed - continuing
 echo --- shape effect at 0.80 : linear vs step ---
-python run100m.py compare --tag qb_wsd80 --vs qa_step80
+python scripts\runlog.py --name P035 -- python run100m.py compare --tag qb_wsd80 --vs qa_step80
 if errorlevel 1 echo [WARN] compare failed - continuing
 echo --- alignment effect INSIDE the step row (this is the paper mechanism) ---
-python run100m.py compare --tag qa_step60 --vs qa_step80
+python scripts\runlog.py --name P035 -- python run100m.py compare --tag qa_step60 --vs qa_step80
 if errorlevel 1 echo [WARN] compare failed - continuing
 
 echo.

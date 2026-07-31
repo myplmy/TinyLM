@@ -1,4 +1,12 @@
 @echo off
+REM ===== LOGGING (added 2026-07-31) =====
+REM   Every python command below is run through scripts\runlog.py, which prints to the
+REM   console in real time AND appends to test_result\log_YYYYMMDD_NAME.txt line by line,
+REM   flushing and fsync-ing as it goes. If this batch dies halfway, or the machine loses
+REM   power, everything up to the last couple of seconds is already on disk.
+REM   Losing the log of a long run costs the whole run, so this is not optional.
+REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
+
 REM ===== relocated to scripts\batch on 2026-07-31 =====
 REM   Root now holds only batches for experiments that have NOT run yet. This one is a
 REM   REUSABLE tool or a completed run kept for re-verification, so it lives here.
@@ -68,7 +76,7 @@ echo [1/3] HARD GATE : fp32 on cpu, tolerance 1e-3
 echo   All three models. mC_g8_k4 is tied but not sparse34, which separates
 echo   "tying plus CLA" from "sparse34" if something does fail.
 echo ============================================================
-python scripts\diag_kvcache.py --models mA_g4s34_k4 mC_g8_k4 p6d --device cpu --tol 1e-3 --max-new 24
+python scripts\runlog.py --name P030-cachegate -- python scripts\diag_kvcache.py --models mA_g4s34_k4 mC_g8_k4 p6d --device cpu --tol 1e-3 --max-new 24
 if errorlevel 1 goto GATEBAD
 
 echo.
@@ -76,7 +84,7 @@ echo ============================================================
 echo [2/3] SAME GATE on cuda (bf16 autocast) - measures how big the precision gap is
 echo   Failing here is not a defect. It quantifies the headroom the old gate ignored.
 echo ============================================================
-python scripts\diag_kvcache.py --models mA_g4s34_k4 mC_g8_k4 p6d --device cuda --tol 1e-3 --max-new 24
+python scripts\runlog.py --name P030-cachegate -- python scripts\diag_kvcache.py --models mA_g4s34_k4 mC_g8_k4 p6d --device cuda --tol 1e-3 --max-new 24
 if errorlevel 1 echo [INFO] bf16 exceeds the fp32 tolerance - record the number, do not treat as failure
 
 echo.
@@ -84,7 +92,7 @@ echo ============================================================
 echo [3/3] GREEDY divergence, REPORT ONLY, with the tie margin
 echo   This is the old gate, demoted. Read the top-2 gap next to each divergence.
 echo ============================================================
-python scripts\diag_kvcache.py --models mA_g4s34_k4 mC_g8_k4 p6d --device cuda --report-greedy --max-new 24
+python scripts\runlog.py --name P030-cachegate -- python scripts\diag_kvcache.py --models mA_g4s34_k4 mC_g8_k4 p6d --device cuda --report-greedy --max-new 24
 if errorlevel 1 echo [INFO] greedy strings differ - check the tie margin before calling it a bug
 
 echo.

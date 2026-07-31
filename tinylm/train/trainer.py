@@ -78,7 +78,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     cfg.center_weights = center_weights
     cfg.use_ternary_kernel = use_ternary_kernel
     cfg.ternary_kernel_triton = ternary_kernel_triton
-    cfg.sparse34 = sparse34
+    # ★프리셋이 sparse34=True 로 정의될 수 있다(m100R1a). `--sparse34` 는 **켤 수만** 있게 한다 —
+    #   그냥 대입하면 프리셋 값을 조용히 덮어써서 3:4 없이 학습된다(감지 어려운 사고).
+    cfg.sparse34 = bool(sparse34) or bool(getattr(cfg, "sparse34", False))
     if sparse34:
         assert cfg.micro_group % 4 == 0, "sparse34 는 micro_group 이 4의 배수여야 함"
         if use_ternary_kernel:
@@ -132,6 +134,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     # 배포 메모리 정확값을 결과 json 에 기록 → compare 가 "전체×단일bpw" 근사를 쓰지 않게 한다.
     #   (sparse34 는 삼진분에만 1.25bpw 라서 근사가 과소·비율 과대였다. 결과 008 §2-(6))
     _mem = model.mem_breakdown()
+    _memall = model.mem_report_all()   # (2026-07-31) packed(B)/packed_container(C)/runtime 병기
     eff = micro_bs * accum * seq
     print(f"[{label}] device={device}  {steps}step x {eff/1e3:.0f}K tok = "
           f"{steps*eff/1e6:.0f}M 토큰  (sched={sched} ema={ema} lora_r={lora_rank}"
@@ -380,8 +383,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "sparse34": bool(sparse34), "bpw": 1.25 if sparse34 else 1.95,
            "anneal_end": anneal_end, "decay_frac": decay_frac,    # (P026) 스케줄 정렬 기록
            "anneal_shape": anneal_shape, "anneal_start": a0,      # (P035) 어닐 형태·시작점
-           "deploy_mb": _mem["total_mb"], "mem_parts_mb": _mem["parts_mb"],
-           "mem_params": _mem["params"],                          # 배포메모리 정확값(compare 용)
+           # ★저장 메모리 회계 통일(2026-07-31, P034 §5): 정본=B(코드+스케일), 병기=C(+컨테이너).
+           #   `deploy_mb` 는 **구 로그 호환 별칭**이며 값은 packed_mb(B) 와 같다.
+           #   ⚠️ 2026-07-31 이전 로그의 `deploy_mb` 는 **구 규약(1.95/1.25)** 이라 직접 비교 금지.
+           "deploy_mb": _memall["packed_mb"], **_memall,
            # ★학습 VRAM 피크(GB). nvidia-smi ≈ reserved + CUDA 컨텍스트(0.4~0.8GB).
            "vram_alloc_gb": (torch.cuda.max_memory_allocated() / 1024 ** 3) if device == "cuda" else None,
            "vram_reserved_gb": (torch.cuda.max_memory_reserved() / 1024 ** 3) if device == "cuda" else None,
