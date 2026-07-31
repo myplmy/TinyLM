@@ -117,7 +117,33 @@ def _ensure_bpt(meta):
     return meta
 
 
-def prepare(name, n_tokens, val_frac=0.005, exact=False):
+def spam_signature(text, min_chars=50_000):
+    """★P037 단계2 — 결과 018 이 실측한 **SEO 스팸 문서의 서명**. 참이면 버린다.
+
+    `ko-edu-en` val 의 손실 53% 를 차지하던 거대 문서 7개는 길이 문제가 아니었다.
+    자격증 덤프 판매 문구 + 무관한 소설 + **단어 중간에 삽입된 제품 키워드** 였고,
+    언어모델이 예측할 수 있는 텍스트가 아니다. 손실 8~9.6(전체 6.09)이 난 이유가
+    난이도가 아니라 **무작위성**이라는 뜻이다.
+
+    측정된 서명(결과 018 §3.2) — 세 조건이 **함께** 성립할 때만 스팸으로 본다:
+      · 대형            : min_chars 이상
+      · 줄바꿈 ~0%      : 문서 전체가 한 줄
+      · 줄 고유율 100%  : 반복 구조가 아니라 통짜 텍스트
+    건강한 대조군(`ko-en`)은 줄바꿈 0.3~2.3% / 줄 고유율 94.8~99.6% 라 걸리지 않는다.
+
+    ★길이 상한이 아니라 **내용 필터**인 이유: 길이로 자르면 스팸이 잘린 채 남는다.
+    ★보수적으로 설계했다 — 애매하면 남긴다. 데이터를 지우는 쪽이 되돌리기 어렵다.
+    """
+    if len(text) < min_chars:
+        return False
+    lines = text.split("\n")
+    nl_frac = (len(lines) - 1) / max(len(text), 1)
+    uniq = len(set(lines)) / max(len(lines), 1)
+    return nl_frac < 1e-4 and uniq >= 0.999
+
+
+def prepare(name, n_tokens, val_frac=0.005, exact=False,
+            doc_filter=False, doc_min_chars=50_000):
     """exact=True 면 상위호환(_find_reusable)을 쓰지 않고 **정확히 {name}_{n_tokens}** 캐시만 사용한다.
     (있으면 그 캐시, 없으면 정확히 그 크기로 신규 생성.) 토큰스윕처럼 '모든 예산이 같은 풀에서 샘플'해야
     할 때, 더 큰 캐시가 존재해도 특정 크기를 콕 집어 요청하는 용도."""
@@ -126,7 +152,7 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False):
 
     if name != "synthetic":
         if exact:
-            d = DATA_CACHE / f"{name}_{n_tokens}"
+            d = DATA_CACHE / (f"{name}_{n_tokens}" + ("_filtered" if doc_filter else ""))
             if (d / "meta.json").exists() and (d / "train.bin").exists():
                 m = json.loads((d / "meta.json").read_text()); m["dir"] = str(d)
                 print(f"[data] 정확 캐시 사용(exact, 상위호환 무시): {n_tokens/1e6:.1f}M ({name}) -> {d}")
@@ -139,7 +165,10 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False):
                       f"-> {reuse['dir']}")
                 return _ensure_bpt(reuse)
 
-    cache_dir = DATA_CACHE / f"{name}_{n_tokens}"
+    # ★P037 단계2: 필터를 켜면 **다른 디렉터리**에 쓴다. 기존 캐시로 학습한 런들이
+    #   자기 로그와 계속 비교 가능해야 하므로 덮어쓰지 않는다(결과 018 §5).
+    suffix = "_filtered" if doc_filter else ""
+    cache_dir = DATA_CACHE / f"{name}_{n_tokens}{suffix}"
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     if name == "synthetic":
@@ -157,7 +186,12 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False):
         eos = tok.token_to_id("<eos>") or 2
         buf, total, total_bytes = [], 0, 0
         t0 = time.time()
+        n_drop, n_drop_chars = 0, 0
         for text in _stream(name):
+            if doc_filter and spam_signature(text, doc_min_chars):
+                n_drop += 1
+                n_drop_chars += len(text)
+                continue
             ids = tok.encode(text).ids
             buf.append(np.array(ids + [eos], dtype=np.uint16))
             total += len(ids) + 1
@@ -168,6 +202,11 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False):
                 print(f"  {total/1e6:>6.1f}M / {n_tokens/1e6:.0f}M  "
                       f"({total/max(time.time()-t0,1e-9)/1e3:.0f}K tok/s)")
         arr = np.concatenate(buf)[:n_tokens]
+        if doc_filter:
+            print(f"[filter] 스팸 서명으로 제외한 문서 {n_drop:,}개 / {n_drop_chars/1e6:.1f}M 자")
+            print(f"[filter] 서명 = 길이 {doc_min_chars:,}자 이상 AND 줄바꿈 ~0% AND 줄 고유율 100%")
+            print(f"[filter] ★제외율이 몇 퍼센트를 넘으면 무엇이 걸렸는지 먼저 확인할 것"
+                  f"(결과 018 §5).")
 
     n_val = max(1, int(len(arr) * val_frac))
     arr[:-n_val].tofile(cache_dir / "train.bin")
@@ -176,6 +215,10 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False):
             "train": int(len(arr) - n_val), "val": int(n_val), "dir": str(cache_dir)}
     if name != "synthetic":
         meta["bytes_per_token"] = total_bytes / max(total, 1)
+        meta["doc_filter"] = bool(doc_filter)
+        if doc_filter:
+            meta["doc_min_chars"] = int(doc_min_chars)
+            meta["docs_dropped"] = int(n_drop)
     (cache_dir / "meta.json").write_text(json.dumps(meta, indent=2))
     print(f"[data] train {meta['train']/1e6:.1f}M / val {meta['val']/1e3:.0f}K 토큰 저장 -> {cache_dir}")
     return meta

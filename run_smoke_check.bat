@@ -23,8 +23,14 @@ REM    `train --tiny`, which calls report() - so this batch would have caught it
 REM    minutes. Skipping the smoke was the entire cost of that incident.
 REM
 REM  READING THE OUTPUT
-REM    Only the [VERIFY] contract line matters. The losses come from 30 steps on
-REM    synthetic data: they mean NOTHING. Do not read them, compare them or record them.
+REM    The answer is the contract check that runs LAST: one block per training run,
+REM    then a final total-error-count line. Zero means every instrumentation field a
+REM    result document depends on was actually written to the json.
+REM    The [VERIFY] banner is only a SECTION TITLE, not the answer - that wording
+REM    confused things once already.
+REM    Everything else is noise. Losses from 30 steps on synthetic data mean NOTHING:
+REM    do not read them, compare them, or record them anywhere.
+REM    Logs land in smoketest_logs, deliberately NOT in test_result.
 REM
 REM  COST: a few minutes, GPU barely used. Writes sm_* tags into runs\ (throwaway).
 REM =============================================================================
@@ -38,10 +44,11 @@ if errorlevel 1 echo [WARN] smoke reported a problem - read which field is missi
 
 echo.
 echo =================================================================
-echo VERDICT: read the [VERIFY] line only.
-echo   pass -^> the instrumentation contract holds. Long runs are safe to start.
-echo   fail -^> fix the missing field FIRST. A long run that cannot be written up
-echo           is a long run thrown away.
+echo VERDICT: read the final total-error-count line of the contract check.
+echo   zero     -^> the contract holds. Long runs are safe to start.
+echo   not zero -^> fix the missing field FIRST. A long run that cannot be
+echo               written up is a long run thrown away.
+echo   The [VERIFY] banner above it is a section title, not the answer.
 echo =================================================================
 echo done.
 pause

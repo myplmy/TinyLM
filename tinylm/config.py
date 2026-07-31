@@ -66,6 +66,16 @@ class TMTConfig:
     repeat_where: str = "front"       # front | back | even
     repeat_kv_reuse: bool = False
 
+    # ── P036 단계0 : Arenas (Annealing Residual Synapse), arXiv:2601.07892 §3.2 ──
+    #   Y = X·Tα + λ_t·X·W          (논문 식 7)
+    #   ∂L/∂X = (∂L/∂Y)(Tα + λ_t·W)ᵀ (식 8)  ← latent W 가 **입력 gradient 경로**에 들어간다
+    #   우리 어닐은 `(w - wq).detach()` 라 그 경로가 **없다**(결과 016 §8.6). 그래서 별도 항이다.
+    #   λ_t 는 학습이 끝나면 0 → **추론 오버헤드 0**(배포 시 순수 삼진과 동일).
+    #   ⚠️ 논문 ablation(Fig.6)은 3:4 뿐 아니라 **1-bit·1.67-bit 순수 삼진에도** 이득이라고 한다.
+    arenas: bool = False
+    arena_lambda: float = 0.1         # λ_0 — 학습 시작 시점의 residual 계수
+    arena_end: float = 0.9            # 진행률 이 지점에서 λ_t = 0 (이후 순수 삼진)
+
     def __post_init__(self):
         assert self.dim % self.n_q_heads == 0
         assert self.n_q_heads % self.n_kv_heads == 0

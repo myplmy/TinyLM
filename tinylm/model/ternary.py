@@ -112,12 +112,18 @@ class TLinear(nn.Module):
             w = (wg - wg.mean(dim=2, keepdim=True)).reshape(O, I)
         return w
 
-    def refresh_quant(self, anneal):
+    def refresh_quant(self, anneal, arena=None):
         # torch.compile 안전: Python 분기 없이 항상 STE 항을 더한다(anneal은 스칼라 텐서).
         self._anneal_t = anneal          # 커널 경로가 float(cfg.quant_anneal) 대신 이 텐서를 쓰게 함
         w = self._w()
         wq = ternary(w, self.cfg)
         self._wq = wq + (1.0 - anneal) * (w - wq).detach()
+        # ★P036 Arenas — `Y = X·Tα + λ_t·X·W` (논문 식 7). **detach 하지 않는다**:
+        #   존재 이유가 정확히 `∂L/∂X` 에 latent W 를 넣는 것이다(식 8). 위의 어닐 항은
+        #   `.detach()` 라 그 경로가 없다 — 두 항은 **다른 일을 한다**(결과 016 §8.6).
+        #   arena 가 None 이면 기존 경로 그대로 = 비트 동일.
+        if arena is not None:
+            self._wq = self._wq + arena * w
 
     def clear_quant(self):
         self._wq = None

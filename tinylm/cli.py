@@ -65,6 +65,13 @@ def main():
     p.add_argument("--anneal-start", type=float, default=None,
                    help="(P035) 어닐 시작(step 이면 전이) 지점(진행률 0~1). "
                         "미지정이면 종전대로 warm/steps+0.05 를 쓴다(무변)")
+    # ── P036 : Arenas(annealing residual synapse). 학습 플래그, 기본 off ──
+    p.add_argument("--arenas", action="store_true",
+                   help="(P036) Y=X*Ta + lambda_t*X*W. latent W 를 입력 gradient 경로에 넣는다")
+    p.add_argument("--arena-lambda", type=float, default=0.1,
+                   help="(P036) lambda_0. 학습 시작 시점의 residual 계수")
+    p.add_argument("--arena-end", type=float, default=0.9,
+                   help="(P036) 이 진행률에서 lambda_t=0 (이후 순수 삼진 → 추론 오버헤드 0)")
     # ── P031 : 추론 시 middle 반복(깊이 외삽). eval/generate 전용, 학습 무영향 ──
     p.add_argument("--infer-repeat", type=float, default=1.0,
                    help="(P031) middle 블록 통과 배수. 1.0=학습된 그대로 / 0.5=축소 / 1.5=확장")
@@ -108,6 +115,11 @@ def main():
     p.add_argument("--pool-tokens", default=None,
                    help="데이터 풀(캐시) 크기를 학습길이·이름과 분리 지정(예: 600M). "
                         "미지정이면 --tokens 사용. 토큰스윕 클린판: 모든 예산을 같은 풀에서 샘플.")
+    p.add_argument("--doc-filter", action="store_true",
+                   help="(P037 단계2) SEO 스팸 문서를 제외하고 캐시를 만든다. 서명 = 대형 AND "
+                        "줄바꿈 ~0%% AND 줄 고유율 100%% (결과 018). **별도 디렉터리에 쓴다**")
+    p.add_argument("--doc-min-chars", type=int, default=50_000,
+                   help="(P037) 스팸 판정 최소 길이(자). 이보다 짧으면 절대 버리지 않는다")
     p.add_argument("--exact-cache", action="store_true",
                    help="상위호환 캐시를 고르지 않고 정확히 {data}_{요청토큰} 캐시만 사용/생성.")
     p.add_argument("--force-dense", action="store_true", help="all 실행 시 dense 재학습 강제(기본은 재사용)")
@@ -146,7 +158,8 @@ def main():
 
     if a.cmd == "prepare":
         from .data import prepare
-        prepare(a.data, pool_tok if pool_tok else n_tok, exact=a.exact_cache)
+        prepare(a.data, pool_tok if pool_tok else n_tok, exact=a.exact_cache,
+                doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars)
 
     elif a.cmd == "kdcache":
         from .train.kd_cache import build_kd_cache
@@ -178,7 +191,8 @@ def main():
               kd_every=a.kd_every, kd_dynamic=a.kd_dynamic, sparse34=a.sparse34,
               pool_tokens=pool_tok, exact_cache=a.exact_cache,
               anneal_end=a.anneal_end, decay_frac=a.decay_frac, seed=a.seed,
-              anneal_shape=a.anneal_shape, anneal_start=a.anneal_start)
+              anneal_shape=a.anneal_shape, anneal_start=a.anneal_start,
+              arenas=a.arenas, arena_lambda=a.arena_lambda, arena_end=a.arena_end)
 
     elif a.cmd == "all":
         from .train import train

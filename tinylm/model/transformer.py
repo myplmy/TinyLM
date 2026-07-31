@@ -63,6 +63,8 @@ class TiedMLPTransformer(nn.Module):
         self.register_buffer("_anneal", torch.tensor(float(cfg.quant_anneal)), persistent=False)
         self._tlinear_cache = list(self._tlinears())   # ②: 매 forward 모듈 트리 순회 제거(plain list)
         self._quant_frozen = False                     # freeze_quant() 참조(추론 전용 최적화)
+        self._arena = None                             # P036 Arenas λ_t (None = 항 없음)
+        self._arena_v = 0.0
 
     # ---------- quantization ----------
     def _tlinears(self):
@@ -74,9 +76,19 @@ class TiedMLPTransformer(nn.Module):
         self._anneal.fill_(float(v))
         self.cfg.quant_anneal = float(v)
 
+    def set_arena(self, v: float):
+        """P036 Arenas 의 λ_t 를 설정한다. **0 이면 항이 완전히 사라진다**(배포 상태)."""
+        self._arena_v = float(v)
+        if self._arena is None:
+            self._arena = torch.tensor(float(v), device=self.emb.weight.device)
+        else:
+            self._arena.fill_(float(v))
+
     def refresh_quant(self):
+        # ★arena 는 λ_t ^> 0 일 때만 전달한다 → 기본 학습·추론 경로는 종전과 **비트 동일**.
+        ar = self._arena if (self._arena is not None and self._arena_v > 0.0) else None
         for m in self._tlinear_cache:
-            m.refresh_quant(self._anneal)
+            m.refresh_quant(self._anneal, ar)
 
     def clear_quant(self):
         self._quant_frozen = False

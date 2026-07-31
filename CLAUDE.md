@@ -64,7 +64,10 @@ run100m.py            호환 래퍼 → tinylm.cli.main
   `--kd-teacher-tag`(압축 교사), `--sparse34`(3:4 **준정형** 삼진 — **"희소"가 아니다**, 결과 016 §7.2. 표준 경로 전용), **`--anneal-shape {linear,step}`·`--anneal-start F`**(P035 어닐 형태, 기본 linear/자동
   = 종전 동작),
   `--no-ckpt`(grad ckpt off, **-17.3%**), `--anneal-end F`·`--decay-frac F`(P026 cooldown-QAT 정렬,
-  기본값 0.60/0.2 = 종전 동작), **`--infer-repeat R`·`--repeat-where {front,back,even}`·`--repeat-kv-reuse`**(P031 단계0, **eval/generate 전용**.
+  기본값 0.60/0.2 = 종전 동작), **`--arenas`·`--arena-lambda`·`--arena-end`**(P036 단계0, `Y=X·Tα+λ_t·X·W`. **λ_t 는 학습 끝에 0**
+  → 추론 오버헤드 0. 기본 off = 종전 동작), **`--doc-filter`·`--doc-min-chars`**(P037 단계2,
+  SEO 스팸 문서 제외. **별도 캐시 디렉터리 `{data}_{N}_filtered` 에 쓴다** — 기존 캐시 무변),
+  **`--infer-repeat R`·`--repeat-where {front,back,even}`·`--repeat-kv-reuse`**(P031 단계0, **eval/generate 전용**.
   R=1.0 이면 스케줄이 `range(n_layers)` 와 **동일**해 종전 경로 그대로. 학습에서 켜면 예외),
   `--seed N`(기본 1337=종전 동작. 초기화+train 크롭 순서에 반영,
   **val 크롭은 99 고정** — 흔들면 런 비교가 깨진다. σ 측정용).
@@ -228,7 +231,7 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 > 후자는 **실험 조건의 정합성**을 본다. 새 계획을 쓸 때는 **둘 다** 돈다.
 
 보조 스크립트(전부 **문법·형식만** 본다 — 실험·구현이 옳은지는 보증하지 않는다):
-**`runlog.py`**(★실행 로그 tee — 콘솔 실시간 + `test_result/` 즉시 기록·fsync. **모든 실험 배치가 경유**. `--note "제목"` 으로 배치의 단계 제목도 같은 파일에 남긴다) ·
+**`runlog.py`**(★실행 로그 tee — 콘솔 실시간 + `test_result/` 즉시 기록·fsync. **모든 실험 배치가 경유**. `--note "제목"` 으로 배치의 단계 제목도 같은 파일에 남기고, `--outdir` 로 폴더를 바꾼다 — **스모크는 실험이 아니므로 `smoketest_logs/` 로 간다**) ·
 `check_run_registry.py`(레지스트리·중복·태그) · `lint_bat.py`(배치 린터) ·
 `check_attrs.py`(`cfg.X` 오타를 torch 없이 정적 검출) · `check_smoke.py`(계측 필드 계약) ·
 `diag_cache.py`(캐시 진단) · `eval_slices.py`(구간별 손실) · `probe_prompts.py`(정성 프로브·캐시 게이트,
@@ -258,7 +261,7 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 
 | 최상위 = **실험**(계획번호·단계가 이름에 있다) | `scripts/batch/` = **기능 모듈**(실험 아님) |
 |---|---|
-| **`run_smoke_check.bat`**(코드 수정 후 필수) · `run_P034_stage2_latent.bat` · `run_P036_stage1b_trapping.bat` · `run_P031_repeat.bat` · `run_P032_paired_eval.bat` · `run_P038_wsd_recheck.bat` · `run_P035_anneal.bat` · `run100m_P007B.bat` · `run_P036_stage2_arenas.bat`(가드) · `run_P037_stage2_regen.bat`(가드) | `tool_smoke.bat` · `tool_kvcache_gate.bat`(**캐시 정본 게이트**) · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
+| **`run_smoke_check.bat`**(코드 수정 후 필수) · `run_P034_stage2_latent.bat` · `run_P036_stage1b_trapping.bat` · `run_P031_repeat.bat` · `run_P032_paired_eval.bat` · `run_P038_wsd_recheck.bat` · `run_P035_anneal.bat` · `run100m_P007B.bat` · `run_P036_stage2_arenas.bat`(단계1B 선행) · `run_P037_stage2_regen.bat` | `tool_smoke.bat` · `tool_kvcache_gate.bat`(**캐시 정본 게이트**) · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
 
 > **★`scripts/batch/` 를 사용자에게 직접 실행하라고 안내하지 않는다**(2026-07-31 개편).
 > 그건 **도구**다 — 실험번호도, 계획서 참조도, `test_result` 상의 자리도 없다.

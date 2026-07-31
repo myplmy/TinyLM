@@ -102,6 +102,9 @@ def main():
                     help="디스크 동기화 주기(초). 0 이면 매 줄마다 — 느리지만 가장 안전")
     ap.add_argument("--no-append", action="store_true",
                     help="같은 파일이 있어도 덮어쓴다(기본은 이어쓰기 = 유실 방지)")
+    ap.add_argument("--outdir", default=None,
+                    help="로그를 쓸 폴더(저장소 기준 상대경로). 기본 test_result. "
+                         "스모크처럼 **실험 결과가 아닌** 로그는 smoketest_logs 로 보낸다")
     ap.add_argument("--note", nargs="+", default=None,
                     help="명령 대신 텍스트만 기록한다(배치의 단계 제목·판정 안내용). 여러 개면 여러 줄")
     a = ap.parse_args(own)
@@ -112,10 +115,13 @@ def main():
         print("  예) python scripts/runlog.py --name X -- python run100m.py train ...", file=sys.stderr)
         return 2
 
-    OUT.mkdir(parents=True, exist_ok=True)
+    # ★기본은 test_result 지만, 스모크는 **실험 결과가 아니다** — 같은 폴더에 두면
+    #   실험 로그 색인이 오염되고, 번호를 붙일 대상인지 매번 판단해야 한다(사용자 지적 2026-07-31).
+    out = (ROOT / a.outdir) if a.outdir else OUT
+    out.mkdir(parents=True, exist_ok=True)
     day = datetime.now().strftime("%Y%m%d")
     stem = f"{a.num}_log_{day}_{a.name}" if a.num else f"log_{day}_{a.name}"
-    path = OUT / f"{stem}.txt"
+    path = out / f"{stem}.txt"
 
     # ── --note : 명령 없이 텍스트만. 배치의 echo 블록을 로그에도 남기는 통로다. ──
     if a.note:

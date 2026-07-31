@@ -5,32 +5,25 @@ REM  run_P036_stage2_arenas.bat  --  P036 STAGE 2 : Arenas on/off, same conditio
 REM  Plan: test_plan\P036_...md    Roadmap: R5 (conditional on R4/stage 1B)
 REM =============================================================================
 REM
-REM ***THIS BATCH IS GUARDED AND WILL STOP.***
-REM   P036 stage 0 - implementing Arenas - has not been done. The guard below
-REM   checks for the flag and halts if it is absent. That is deliberate: a batch
-REM   that silently trains without the feature it is named after would produce a
-REM   clean-looking log of the WRONG experiment, and we would compare it to the
-REM   baseline and conclude Arenas does nothing.
+REM STAGE 0 IS DONE (2026-07-31). --arenas is implemented.
+REM   Y = X*Ta + lambda_t*X*W                  (paper eq 7)
+REM   dL/dX = (dL/dY)(Ta + lambda_t*W)^^T        (paper eq 8)
+REM   The formula came from the paper BODY, recorded in result 016 section 8.6 -
+REM   not from the abstract. That distinction matters here: result 016 section 7.5
+REM   records how reading this same paper at abstract level produced three
+REM   misreadings, one of which made us run 3:4 WITHOUT a required part of the method.
 REM
-REM   That is not hypothetical. Result 016 section 7.5 records exactly this class
-REM   of mistake: the paper (Sherry, 3:4) was read at abstract level, "Arenas =
-REM   our anneal" was assumed, and an experiment was run WITHOUT a required part
-REM   of the method. Three misreadings came from that one shortcut.
+REM   Our quantisation anneal is NOT this. refresh_quant computes
+REM   wq + (1-a)*(w - wq).detach(), and the detach means latent W never enters the
+REM   input-gradient path. Arenas exists precisely for that path, so it is a
+REM   separate term, added undetached, with its own schedule (lambda_t -^> 0).
+REM   lambda_t reaches 0 before training ends, so INFERENCE OVERHEAD IS ZERO.
 REM
-REM WHAT STAGE 0 MUST DELIVER BEFORE THIS RUNS
-REM   1. Read the paper BODY, not the abstract - arXiv:2601.07892. web_fetch can
-REM      retrieve the HTML. Write down, in the plan: what an Arena is, when it is
-REM      applied, and the exact baseline the paper's numbers are measured against.
-REM   2. Implement it in tinylm\ behind --arenas, with the parameter defaults in
-REM      config.py and nowhere else.
-REM   3. Run tool_smoke.bat. A new training flag that is not in the smoke
-REM      contract is a flag that can be silently ignored for 4.5 hours.
-REM   4. Only then delete the guard below.
-REM
-REM PRECONDITION ON EVIDENCE
-REM   Stage 1B must first show trapping at our scale. As of result 019 the
-REM   evidence is WEAK and the dense control had crashed, so stage 1B is the
-REM   real gate on whether these 4.5 GPU hours are worth spending at all.
+REM ***STILL GATED - ON EVIDENCE, NOT ON CODE.***
+REM   Do not spend 4.5 GPU hours until run_P036_stage1b_trapping.bat says trapping
+REM   is observable at our scale. As of result 019 the evidence is WEAK and the
+REM   dense control had crashed, so stage 1B is the real decision point.
+REM   The guard below now checks the FLAG only; the evidence check is on you.
 REM
 REM DESIGN, once unblocked - the comparison this makes
 REM   Identical conditions, Arenas the ONLY difference, on the 3:4 preset:
@@ -43,7 +36,7 @@ REM ============================================================================
 if not exist run100m.py goto BADROOT
 
 echo =============================================================
-echo [P036-2] Arenas on/off - GUARDED
+echo [P036-2] Arenas on/off - run stage 1B FIRST
 python scripts\runlog.py --name P036-stage2 --note "[P036-2] Arenas on/off - GUARDED"
 echo =============================================================
 
@@ -99,11 +92,11 @@ exit /b 0
 :NOTIMPL
 echo.
 echo =================================================================
-echo [STOP] --arenas is not implemented (P036 stage 0 is not done).
-echo   Nothing was executed, on purpose. Running these 4.5 hours without
-echo   the feature would produce a tidy log of the wrong experiment, and
-echo   we would then conclude that Arenas does nothing.
-echo   See the header for what stage 0 has to deliver first.
+echo [STOP] --arenas was not found in the CLI. It WAS implemented on
+echo   2026-07-31, so this means the working tree is older than that, or
+echo   the change was reverted. Nothing was executed.
+echo   Running 4.5 hours without the feature would produce a tidy log of
+echo   the wrong experiment and we would conclude Arenas does nothing.
 echo =================================================================
 pause
 exit /b 3

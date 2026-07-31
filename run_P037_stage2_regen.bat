@@ -25,24 +25,27 @@ REM   "random splitting is needed" for ko-en - that canned verdict fires on a
 REM   near-zero delta and should not be taken as a recommendation. CLAUDE.md
 REM   already holds that a full rewrite of the split lacks grounds.
 REM
-REM ***THIS BATCH IS GUARDED AND WILL STOP.***
-REM   The content filter is not implemented in prepare(). The guard checks for
-REM   the flag. Regenerating the cache without the filter would overwrite a cache
-REM   we can still diagnose, and buy nothing.
+REM IMPLEMENTED 2026-07-31. --doc-filter drops documents matching the signature
+REM   stage 1 actually measured (result 018 section 3.2):
+REM     large  AND  newline fraction ~0  AND  line uniqueness 100 percent
+REM   That is a CONTENT filter, not a length cap. A length cap would have truncated
+REM   the spam and left it in - which is exactly what the original stage 2 design
+REM   would have done, before stage 1 showed what those documents actually are.
+REM   The healthy control (ko-en) sits at newline 0.3-2.3 percent and uniqueness
+REM   94.8-99.6 percent, so it cannot match. Conservative by design: when in doubt,
+REM   keep the document. Deleting data is the hard direction to undo.
 REM
-REM WHAT STAGE 2 MUST IMPLEMENT FIRST (scope: ko-edu-en ONLY, per result 011)
-REM   1. --doc-filter in prepare(): drop documents whose line-uniqueness is ~100
-REM      percent AND whose newline fraction is ~0 AND that exceed a size, i.e.
-REM      the exact signature stage 1 measured. Log how many documents were cut.
-REM   2. --doc-cap: per document share of val, as a second net.
-REM   3. Write the new cache to a DIFFERENT directory. Do not overwrite - runs
-REM      trained on the current cache must stay comparable to their own logs.
+REM   The filtered cache is written to data_cache\ko-edu-en_{N}_filtered, a DIFFERENT
+REM   directory. Runs trained on the current cache must stay comparable to their own
+REM   logs, so nothing is overwritten.
+REM
+REM SCOPE: ko-edu-en only (result 011 section 0.6). ko-en is healthy and is not touched.
 REM =============================================================================
 
 if not exist run100m.py goto BADROOT
 
 echo =============================================================
-echo [P037-2] ko-edu-en regeneration with a content filter - GUARDED
+echo [P037-2] ko-edu-en regeneration with a content filter
 python scripts\runlog.py --name P037-stage2 --note "[P037-2] ko-edu-en regeneration with a content filter - GUARDED"
 echo =============================================================
 
@@ -57,7 +60,7 @@ echo =============================================================
 echo [1/2] regenerate ko-edu-en with the filter, into a new cache
 python scripts\runlog.py --name P037-stage2 --note "[1/2] regenerate ko-edu-en with the filter, into a new cache"
 echo =============================================================
-python scripts\runlog.py --name P037-stage2 -- python run100m.py prepare --data ko-edu-en --tokens 600M --exact-cache --doc-filter --doc-cap 0.01
+python scripts\runlog.py --name P037-stage2 -- python run100m.py prepare --data ko-edu-en --tokens 600M --exact-cache --doc-filter
 if errorlevel 1 goto PREPBAD
 
 echo.
@@ -95,9 +98,9 @@ exit /b 0
 :NOTIMPL
 echo.
 echo =================================================================
-echo [STOP] --doc-filter is not implemented. Nothing was executed.
-echo   Regenerating without it would overwrite a cache we can still
-echo   diagnose and gain nothing. See the header for the scope.
+echo [STOP] --doc-filter was not found in the CLI. It WAS implemented on
+echo   2026-07-31, so the working tree is older than that or the change
+echo   was reverted. Nothing was executed.
 echo =================================================================
 pause
 exit /b 3

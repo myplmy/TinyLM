@@ -51,7 +51,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           use_ternary_kernel=False, ternary_kernel_triton=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
           pool_tokens=None, exact_cache=False, anneal_end=0.60, decay_frac=0.2, seed=1337,
-          anneal_shape="linear", anneal_start=None):
+          anneal_shape="linear", anneal_start=None,
+          arenas=False, arena_lambda=0.1, arena_end=0.9):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
     #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
@@ -271,6 +272,11 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             #   a0 는 위(스케줄 진단 블록)에서 한 번만 계산한다 — --anneal-start 미지정이면 종전값.
             anneal = min(1.0, max(0.0, (s / steps - a0) / max(anneal_end - a0, 1e-6)))
         model.set_anneal(anneal)
+        if arenas:
+            # ★P036 Arenas — λ_t 를 λ_0 에서 0 으로 선형 감쇠시키고 arena_end 이후 0 으로 고정한다.
+            #   논문의 "annealing" 이 가리키는 것이 이 λ 스케줄이다(우리 quant_anneal 과 별개).
+            #   끝에서 정확히 0 이 되어야 **배포 시 순수 삼진**이 되고 추론 오버헤드가 0 이다.
+            model.set_arena(arena_lambda * max(0.0, 1.0 - (s / steps) / max(arena_end, 1e-6)))
         f = _lr_factor(s, warm, steps, sched, decay_frac)
         for g, b in zip(opt.param_groups, base_lrs):
             g["lr"] = b * f
@@ -383,6 +389,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "sparse34": bool(sparse34), "bpw": 1.25 if sparse34 else 1.95,
            "anneal_end": anneal_end, "decay_frac": decay_frac,    # (P026) 스케줄 정렬 기록
            "anneal_shape": anneal_shape, "anneal_start": a0,      # (P035) 어닐 형태·시작점
+           "arenas": bool(arenas), "arena_lambda": arena_lambda,  # (P036) Arenas residual
+           "arena_end": arena_end,
            # ★저장 메모리 회계 통일(2026-07-31, P034 §5): 정본=B(코드+스케일), 병기=C(+컨테이너).
            #   `deploy_mb` 는 **구 로그 호환 별칭**이며 값은 packed_mb(B) 와 같다.
            #   ⚠️ 2026-07-31 이전 로그의 `deploy_mb` 는 **구 규약(1.95/1.25)** 이라 직접 비교 금지.

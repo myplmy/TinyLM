@@ -105,9 +105,15 @@ if errorlevel 1 echo [WARN] contract check FAILED - read which field is missing
 
 echo.
 echo =================================================================
-echo VERDICT: the contract check is the only line that matters here.
-echo   Losses from 30 steps on synthetic data mean nothing - do not read
-echo   them, do not compare them, do not record them.
+echo VERDICT - read the LAST line of the contract check, which reports the
+echo   total error count, plus the per-run blocks above it (each is [OK] or
+echo   names the field it could not find). That is the whole result.
+echo.
+echo   The [VERIFY] banner is just a SECTION TITLE - it is not the answer.
+echo   Everything else is noise: losses from 30 steps on synthetic data mean
+echo   NOTHING. Do not read them, compare them, or record them anywhere.
+echo.
+echo   Logs are written to smoketest_logs, deliberately not test_result.
 echo =================================================================
 goto DONE
 
