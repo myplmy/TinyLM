@@ -64,7 +64,9 @@ run100m.py            호환 래퍼 → tinylm.cli.main
   `--kd-teacher-tag`(압축 교사), `--sparse34`(3:4 **준정형** 삼진 — **"희소"가 아니다**, 결과 016 §7.2. 표준 경로 전용), **`--anneal-shape {linear,step}`·`--anneal-start F`**(P035 어닐 형태, 기본 linear/자동
   = 종전 동작),
   `--no-ckpt`(grad ckpt off, **-17.3%**), `--anneal-end F`·`--decay-frac F`(P026 cooldown-QAT 정렬,
-  기본값 0.60/0.2 = 종전 동작), `--seed N`(기본 1337=종전 동작. 초기화+train 크롭 순서에 반영,
+  기본값 0.60/0.2 = 종전 동작), **`--infer-repeat R`·`--repeat-where {front,back,even}`·`--repeat-kv-reuse`**(P031 단계0, **eval/generate 전용**.
+  R=1.0 이면 스케줄이 `range(n_layers)` 와 **동일**해 종전 경로 그대로. 학습에서 켜면 예외),
+  `--seed N`(기본 1337=종전 동작. 초기화+train 크롭 순서에 반영,
   **val 크롭은 99 고정** — 흔들면 런 비교가 깨진다. σ 측정용).
 - **★REVIEW1 잠정 보존 프리셋**(2026-07-31): `--preset m100R1a`(g4+3:4) / `m100R1c`(g8).
   **아키텍처만** 고정하고 KD·부모초기화는 명령줄이 정한다. `m100` 에서 **한 필드만** 파생하므로
@@ -83,6 +85,11 @@ run100m.py            호환 래퍼 → tinylm.cli.main
   `(누적평균×N − step0)/(N−1)` 로 환산하고, 유효배치가 다르면 토큰당으로 정규화한다.
 - **스윕·벤치 배치파일은 한 런 실패로 중단되지 않게** — `if errorlevel 1 echo [WARN] ... - continuing`.
   `goto ERROR` 는 선행 의존 단계(prepare, 교사 학습)에만.
+- **★최상위 실험 배치는 "지금 돌아갈 때"만 만든다.** 구현이 선결이면 배치를 만들지 말고
+  **계획서에만 설계를 남긴다.** 최상위 `.bat` 은 문서가 아니라 실행 가능한 물건이라, 거기 있으면
+  돌려도 되는 것으로 읽힌다 — 실제로 `run_P031_repeat.bat` 이 미구현 상태로 놓여 사용자가
+  실행했고 `NOTIMPL` 로 멈췄다(2026-07-31). 가드가 있어도 **사용자 시간을 쓴 것은 사실**이다.
+  불가피하게 남겨야 하면 **헤더 첫 줄에 선결 조건**을 적고, 구현이 끝나는 즉시 가드를 지운다.
 - **AI는 사용자 환경에서 코드를 직접 실행하지 않는다.** 수정만 하고, 실행이 필요하면
   명령어·순서를 제시해 대리 수행을 요청한다(GPU 사용량·시간 보호).
 - **git 은 사용자가 Windows 셸에서 수행한다.** Cowork 마운트에서 rename/unlink가 차단되어
@@ -228,8 +235,10 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 `--device cpu` 로 fp32) · `mem_runtime.py`(상주 메모리) · `diag_val_docs.py`(문서단위 val) ·
 **`diag_kvcache.py`**(KV캐시 teacher-forced 로짓 동등성 — **캐시 정확성의 정본 게이트**) ·
 **`diag_sparse34.py`**(3:4 희소 구현·실제 희소율·bpw 회계 감사) · **`paired_eval.py`**(P032 **결정적 full-val + paired per-crop** — eval 샘플링 노이즈를 0 으로. 단 **확정 범위는 '두 체크포인트'이지 아키텍처가 아니다**).
-**신규 스크립트를 쓰기 전에 `scripts\batch\run_smoke.bat` 을 돌린다** — 계약 위반은 수 분에
-잡히지만 긴 런 뒤에 발견하면 그 시간이 통째로 날아간다.
+**★코드를 고쳤으면 긴 런 전에 `run_smoke_check.bat` 을 돌린다**(최상위 진입점 → `tool_smoke.bat` 호출).
+계약 위반은 수 분에 잡히지만 긴 런 뒤에 발견하면 그 시간이 통째로 날아간다.
+2026-07-31 에 `report()` 회귀로 **모든 학습이 죽는 상태가 몇 시간 방치**됐고, 스모크를 돌렸으면
+즉시 잡혔다. 읽을 것은 `[VERIFY]` 줄뿐 — tiny·synthetic 30스텝의 손실은 **아무 의미 없다.**
 **배치 배치(2026-07-31 개편)**: 작업폴더 최상위 = **아직 안 돌린 실험 배치만**.
 재사용 도구·완료분은 **`scripts/batch/`** 로 옮겼다(어느 위치에서 실행해도 동작 —
 `if not exist run100m.py cd ..\..` 마커 방식. `%` 금지 규약 때문에 `%~dp0` 를 쓰지 않는다).
@@ -249,7 +258,7 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 
 | 최상위 = **실험**(계획번호·단계가 이름에 있다) | `scripts/batch/` = **기능 모듈**(실험 아님) |
 |---|---|
-| `run_P034_stage2_latent.bat` · `run_P036_stage1b_trapping.bat` · `run_P032_paired_eval.bat` · `run_P038_wsd_recheck.bat` · `run_P035_anneal.bat` · `run100m_P007B.bat` · `run_P031_repeat.bat`(가드) · `run_P036_stage2_arenas.bat`(가드) · `run_P037_stage2_regen.bat`(가드) | `tool_smoke.bat` · `tool_kvcache_gate.bat`(**캐시 정본 게이트**) · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
+| **`run_smoke_check.bat`**(코드 수정 후 필수) · `run_P034_stage2_latent.bat` · `run_P036_stage1b_trapping.bat` · `run_P031_repeat.bat` · `run_P032_paired_eval.bat` · `run_P038_wsd_recheck.bat` · `run_P035_anneal.bat` · `run100m_P007B.bat` · `run_P036_stage2_arenas.bat`(가드) · `run_P037_stage2_regen.bat`(가드) | `tool_smoke.bat` · `tool_kvcache_gate.bat`(**캐시 정본 게이트**) · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
 
 > **★`scripts/batch/` 를 사용자에게 직접 실행하라고 안내하지 않는다**(2026-07-31 개편).
 > 그건 **도구**다 — 실험번호도, 계획서 참조도, `test_result` 상의 자리도 없다.

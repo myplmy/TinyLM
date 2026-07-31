@@ -1,0 +1,56 @@
+@echo off
+setlocal enabledelayedexpansion
+REM =============================================================================
+REM  run_smoke_check.bat  --  RUN THIS AFTER ANY CODE CHANGE, BEFORE ANY LONG RUN
+REM =============================================================================
+REM
+REM  WHAT IT IS
+REM    A few minutes of tiny-preset training on synthetic data, followed by a check
+REM    that every instrumentation field a result document depends on was actually
+REM    written to the json. It is the cheapest net this repo has.
+REM
+REM  WHY IT EXISTS AS A ROOT BATCH
+REM    The smoke logic lives in scripts\batch\tool_smoke.bat, which is a MODULE.
+REM    Modules are not for direct invocation - an experiment or a maintenance entry
+REM    point calls them. This file is that entry point.
+REM
+REM  WHY YOU SHOULD ACTUALLY RUN IT (2026-07-31, paid for in real time)
+REM    The bpw accounting commit changed report(self, bpw=1.95) to bpw=None but left
+REM    one line still using the raw argument. Every single training run then died with
+REM        TypeError: unsupported operand type(s) for *: 'int' and 'NoneType'
+REM    It surfaced only when P035 was launched, hours later. tool_smoke.bat runs
+REM    `train --tiny`, which calls report() - so this batch would have caught it in
+REM    minutes. Skipping the smoke was the entire cost of that incident.
+REM
+REM  READING THE OUTPUT
+REM    Only the [VERIFY] contract line matters. The losses come from 30 steps on
+REM    synthetic data: they mean NOTHING. Do not read them, compare them or record them.
+REM
+REM  COST: a few minutes, GPU barely used. Writes sm_* tags into runs\ (throwaway).
+REM =============================================================================
+
+if not exist run100m.py goto BADROOT
+
+set TL_LOGNAME=smoke
+set TL_NOPAUSE=1
+call scripts\batch\tool_smoke.bat
+if errorlevel 1 echo [WARN] smoke reported a problem - read which field is missing
+
+echo.
+echo =================================================================
+echo VERDICT: read the [VERIFY] line only.
+echo   pass -^> the instrumentation contract holds. Long runs are safe to start.
+echo   fail -^> fix the missing field FIRST. A long run that cannot be written up
+echo           is a long run thrown away.
+echo =================================================================
+echo done.
+pause
+exit /b 0
+
+:BADROOT
+echo.
+echo =================================================================
+echo [STOP] run this from the TinyLM working folder (run100m.py not found).
+echo =================================================================
+pause
+exit /b 9

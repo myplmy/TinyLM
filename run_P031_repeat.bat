@@ -41,6 +41,8 @@ echo ============================================================
 
 echo.
 echo [guard] checking whether --infer-repeat exists
+echo   (implemented 2026-07-31, P031 stage 0. Step 1 below is the identity check:
+echo    R=1.0 must reproduce the recorded val loss EXACTLY, or the schedule is wrong.)
 python scripts\runlog.py --name P031 --note "[guard] checking whether --infer-repeat exists"
 python -c "import sys; sys.path.insert(0,'.'); from tinylm.config import TMTConfig; sys.exit(0 if hasattr(TMTConfig(),'infer_repeat') else 3)"
 if errorlevel 3 goto NOTIMPL

@@ -55,6 +55,17 @@ class TMTConfig:
     grad_checkpoint: bool = False
     tie_mlp: bool = True              # False면 dense 기준선
 
+    # ── P031 단계0 : 추론 시 middle 블록 반복(깊이 외삽). **추론 전용, 학습 경로 무영향** ──
+    #   infer_repeat = middle 층 통과 횟수의 배수. 1.0 이면 학습된 그대로(기본).
+    #     0.5 → 16층 중 8층만 통과(축소·지연 절감) / 1.5 → 24회 통과(확장)
+    #   repeat_where = 분수 R 에서 **어디를** 더 돌리거나 건너뛸지. 결과가 이것에 의존하므로
+    #     한 배치만 보고 일반화하지 않는다(계획 P031 §설계).
+    #   repeat_kv_reuse = 반복 통과에서 CLA owner 의 KV 를 재계산하지 않고 첫 통과 것을 재사용.
+    #     기본 False(재계산) — '층이 늘어난 것'의 충실한 유추는 재계산 쪽이다.
+    infer_repeat: float = 1.0
+    repeat_where: str = "front"       # front | back | even
+    repeat_kv_reuse: bool = False
+
     def __post_init__(self):
         assert self.dim % self.n_q_heads == 0
         assert self.n_q_heads % self.n_kv_heads == 0
@@ -62,6 +73,9 @@ class TMTConfig:
         assert self.n_middle % self.mlp_group == 0
         if self.sparse34:
             assert self.micro_group % 4 == 0, "sparse34 는 group 이 4의 배수여야 함(3:4 블록)"
+        assert self.repeat_where in ("front", "back", "even"), \
+            f"repeat_where 는 front|back|even — 받은 값: {self.repeat_where}"
+        assert self.infer_repeat > 0, "infer_repeat 는 양수여야 한다"
 
     @property
     def head_dim(self): return self.dim // self.n_q_heads

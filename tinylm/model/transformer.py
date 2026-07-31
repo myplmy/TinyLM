@@ -115,6 +115,50 @@ class TiedMLPTransformer(nn.Module):
         self.refresh_quant()
         self._quant_frozen = True
 
+    # ---------- P031 단계0 : 층 방문 스케줄 ----------
+    def visit_schedule(self):
+        """forward 가 층을 방문할 순서. **`infer_repeat == 1.0` 이면 `range(n_layers)` 와 동일**하다.
+
+        ★왜 이렇게 정의하나(계획 P031): 공유되는 것은 **MLP 가중치뿐**이고 어텐션·norm 은 층마다
+        따로 있다. 그래서 "추론 시 g 를 늘린다"는 성립하지 않는다 — 성립하는 유일한 정의는
+        **middle 블록 전체를 R 회 통과**시키는 것이다. prelude·coda 는 건드리지 않는다.
+
+        `total = round(n_middle * R)` 이 middle 통과 횟수다.
+          R ^< 1 : middle 에서 `total` 개만 고른다(축소 — 메모리 그대로, 지연만 감소)
+          R ^> 1 : 전체를 돈 뒤 `total - n_middle` 개를 더 돈다(확장)
+        `repeat_where` 가 **어디를** 더/덜 돌지 정한다. 이 선택이 결과를 바꾸므로
+        한 배치만 보고 일반화하지 않는다.
+        """
+        cfg = self.cfg
+        n, p, m = cfg.n_layers, cfg.n_prelude, cfg.n_middle
+        R = float(getattr(cfg, "infer_repeat", 1.0) or 1.0)
+        if R == 1.0:
+            return list(range(n))                      # ★기본 경로는 종전과 완전히 같다
+        where = getattr(cfg, "repeat_where", "front")
+        mid = list(range(p, p + m))
+        total = int(round(m * R))
+        total = max(1, total)
+        if total <= m:                                  # 축소
+            k = total
+            if where == "front":
+                sel = mid[:k]
+            elif where == "back":
+                sel = mid[-k:]
+            else:                                       # even — 균등 간격으로 남긴다
+                sel = [mid[round(i * (m - 1) / max(k - 1, 1))] for i in range(k)] if k > 1 else [mid[m // 2]]
+            body = sel
+        else:                                           # 확장
+            extra = total - m
+            if where == "front":
+                body = mid + mid[:extra] if extra <= m else mid * (total // m) + mid[:total % m]
+            elif where == "back":
+                body = mid + mid[-extra:] if extra <= m else mid * (total // m) + mid[:total % m]
+            else:                                       # even — 균등 간격 층을 제자리에서 한 번 더
+                dup = {mid[round(i * (m - 1) / max(extra - 1, 1))] for i in range(extra)} \
+                    if extra > 1 else {mid[m // 2]}
+                body = [j for jj in mid for j in ((jj, jj) if jj in dup else (jj,))]
+        return list(range(p)) + body + list(range(p + m, n))
+
     # ---------- forward ----------
     def forward(self, tokens, mode_override=None, return_aux=False,
                 past_kv=None, use_cache=False):
@@ -140,8 +184,17 @@ class TiedMLPTransformer(nn.Module):
         if not self._quant_frozen:
             self.refresh_quant()
 
+        # ★P031: 기본(infer_repeat=1.0)이면 schedule == range(n_layers) 라 종전과 동일하다.
+        schedule = self.visit_schedule()
+        repeating = len(schedule) != cfg.n_layers
+        if repeating and self.training:
+            raise RuntimeError("infer_repeat 는 **추론 전용**이다. 학습 경로에서 켜지 않는다 "
+                               "(층 반복은 학습된 깊이 분포 밖이고, grad checkpoint 와도 섞인다).")
+        seen = {}                                       # owner -> 그 owner 를 몇 번째 통과 중인가
+
         kv_bank, mode_hist = {}, []
-        for i, layer in enumerate(self.layers):
+        for step_idx, i in enumerate(schedule):
+            layer = self.layers[i]
             mode_p = None
             if cfg.n_modes > 1:
                 if mode_override is not None:
@@ -151,14 +204,38 @@ class TiedMLPTransformer(nn.Module):
                     mode_p = F.softmax(self.router(x) + self.router_bias[i], dim=-1)
                 mode_hist.append(mode_p)
 
-            if i == self.owner[i]:
+            # ★캐시 키 — R=1.0 이면 종전처럼 **정수 owner 인덱스**다(비트 동일성 보존).
+            #   반복 중이면 같은 owner 를 여러 번 지나므로 (owner, 통과번호) 로 분리한다.
+            #   그렇게 안 하면 두 번째 통과가 첫 통과의 KV 를 덮어써서 캐시가 조용히 틀려진다.
+            own = self.owner[i]
+            if i == own:
+                pas = seen.get(own, 0)
+                seen[own] = pas + 1
+            else:
+                pas = seen.get(own, 1) - 1
+            key = own if not repeating else (own, pas)
+
+            if i == own:
+                reuse = repeating and cfg.repeat_kv_reuse and pas > 0
+                if reuse:
+                    kv_bank[key] = kv_bank[(own, 0)]     # 첫 통과 KV 재사용(대조 조건)
+                else:
+                    k_new, v_new = layer.attn.compute_kv(x, cos, sin)
+                    if past_kv and key in past_kv:
+                        k_old, v_old = past_kv[key]
+                        k_new = torch.cat([k_old, k_new], dim=2)
+                        v_new = torch.cat([v_old, v_new], dim=2)
+                    kv_bank[key] = (k_new, v_new)
+            elif key not in kv_bank:
+                # ★축소(R^<1)에서 CLA 그룹 경계가 잘리면 owner 가 스케줄에 없을 수 있다.
+                #   그때는 이 층이 스스로 KV 를 계산한다(조용한 KeyError 대신 명시적 폴백).
                 k_new, v_new = layer.attn.compute_kv(x, cos, sin)
-                if past_kv and i in past_kv:
-                    k_old, v_old = past_kv[i]
+                if past_kv and key in past_kv:
+                    k_old, v_old = past_kv[key]
                     k_new = torch.cat([k_old, k_new], dim=2)
                     v_new = torch.cat([v_old, v_new], dim=2)
-                kv_bank[i] = (k_new, v_new)
-            kv = kv_bank[self.owner[i]]
+                kv_bank[key] = (k_new, v_new)
+            kv = kv_bank[key]
 
             if cfg.grad_checkpoint and self.training:
                 x = checkpoint(lambda inp, L=layer, k=kv, mp=mode_p:

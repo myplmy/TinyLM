@@ -65,6 +65,13 @@ def main():
     p.add_argument("--anneal-start", type=float, default=None,
                    help="(P035) 어닐 시작(step 이면 전이) 지점(진행률 0~1). "
                         "미지정이면 종전대로 warm/steps+0.05 를 쓴다(무변)")
+    # ── P031 : 추론 시 middle 반복(깊이 외삽). eval/generate 전용, 학습 무영향 ──
+    p.add_argument("--infer-repeat", type=float, default=1.0,
+                   help="(P031) middle 블록 통과 배수. 1.0=학습된 그대로 / 0.5=축소 / 1.5=확장")
+    p.add_argument("--repeat-where", choices=["front", "back", "even"], default="front",
+                   help="(P031) 분수 R 에서 어디를 더/덜 돌지. 결과가 이것에 의존한다")
+    p.add_argument("--repeat-kv-reuse", action="store_true",
+                   help="(P031) 반복 통과에서 KV 를 재계산하지 않고 첫 통과 것을 재사용(대조 조건)")
     p.add_argument("--seed", type=int, default=1337,
                    help="시드(기본 1337=종전 동작). 가중치 초기화 + train 크롭 순서에 반영. "
                         "val 크롭은 항상 고정(99)이라 런 간 비교가 유지된다. 재현 노이즈 측정용")
@@ -221,6 +228,16 @@ def main():
         meta = prepare(a.data, n_tok)
         ckp = a.ckpt_path or str(paths.RUNS / "ckpt" / (f"{base}_{a.tag}.pt" if a.tag else f"{base}_{a.arch}.pt"))
         model, cfg, device = load_model(a.arch, ckp)
+        # ★P031 — 체크포인트의 cfg 위에 **추론 전용** 설정만 덮어쓴다. 가중치는 그대로다.
+        if a.infer_repeat != 1.0 or a.repeat_kv_reuse:
+            cfg.infer_repeat = a.infer_repeat
+            cfg.repeat_where = a.repeat_where
+            cfg.repeat_kv_reuse = a.repeat_kv_reuse
+            sch = model.visit_schedule()
+            print(f"[P031] infer_repeat={a.infer_repeat} where={a.repeat_where} "
+                  f"kv_reuse={a.repeat_kv_reuse} -> 층 통과 {len(sch)}회"
+                  f"(기준 {cfg.n_layers}회), middle {len(sch) - cfg.n_prelude - cfg.n_coda}회")
+            print("[P031] 메모리는 R 과 무관하게 동일하다 — 늘어나는 것은 연산과 지연뿐이다.")
         print(model.report())
         va = Loader("val", a.micro_bs, a.seq, device, meta["dir"], seed=99)
         print(evaluate(model, va, 100, device))
