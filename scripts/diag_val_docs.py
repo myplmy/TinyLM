@@ -25,6 +25,76 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 
+def _charstats(s: str) -> str:
+    """문서 성격을 한 줄로. 왜 어려운지의 단서(표·코드·나열·비한국어)를 본다."""
+    if not s:
+        return "(빈 문자열)"
+    n = len(s)
+    ko = sum(1 for c in s if "\uac00" <= c <= "\ud7a3")
+    ascii_ = sum(1 for c in s if ord(c) < 128)
+    digit = sum(1 for c in s if c.isdigit())
+    nl = s.count("\n")
+    pipe = s.count("|")
+    # 반복도: 서로 다른 줄의 비율(작을수록 표·나열처럼 반복적)
+    lines = [ln.strip() for ln in s.split("\n") if ln.strip()]
+    uniq = len(set(lines)) / max(len(lines), 1)
+    return (f"한글 {ko/n:5.1%}  ASCII {ascii_/n:5.1%}  숫자 {digit/n:5.1%}  "
+            f"줄바꿈 {nl/n:5.1%}  '|' {pipe/n:5.1%}  줄 고유율 {uniq:5.1%}")
+
+
+def _inspect(arr, docs, rows_by_contrib, tok, eos, a):
+    """P037 단계1 — 0.6 의 경계 판정이 믿을 만한지 A~D 로 검사한다."""
+    import numpy as np
+    print("\n  " + "#" * 74)
+    print("  (P037 단계1) 경계 판정 신뢰도 검사 — 0.5 가 도구 결함이었으므로 0.6 도 검증한다")
+    print("  " + "#" * 74)
+
+    # --- A. 원문에 <eos> 리터럴이 섞일 수 있는가 ---
+    print("\n  [A] `<eos>` 리터럴이 문서를 과분할할 수 있는가")
+    lit = tok.encode("<eos>").ids
+    print(f"      tok.encode('<eos>').ids = {lit}")
+    if lit == [eos]:
+        print(f"      ⚠️ 원문에 '<eos>' 라는 **문자열**이 있으면 경계 토큰과 **구분되지 않는다**.")
+        print(f"         → 그 문서는 과분할된다. 아래 [C] 에서 실제로 그런지 본다.")
+    else:
+        print(f"      ✅ '<eos>' 문자열은 eos({eos}) 로 인코딩되지 않는다 → 과분할 위험 없음.")
+
+    # --- B. 경계 개수·길이 분포 sanity ---
+    lens = np.array([e - s for s, e in docs])
+    print(f"\n  [B] 경계 판정 sanity")
+    print(f"      eos 출현 {int((arr == eos).sum()):,}회 → 문서 {len(docs):,}개 "
+          f"(차이는 길이<2 문서 제외 + 마지막 꼬리)")
+    print(f"      문서 길이: 중위 {int(np.median(lens)):,}  평균 {lens.mean():,.0f}  "
+          f"최대 {lens.max():,}  최소 {lens.min():,}")
+    tiny = int((lens < 16).sum())
+    print(f"      16토큰 미만 문서 {tiny:,}개 ({tiny/len(lens):.1%})"
+          + ("  ⚠️ 과분할 신호 — [A] 와 함께 볼 것" if tiny / len(lens) > 0.05 else "  ✅ 정상 범위"))
+
+    # --- C·D. 상위 문서를 실제로 디코딩해서 본다 ---
+    k = a.inspect
+    print(f"\n  [C][D] 기여 상위 {k}개 문서 — 앞/뒤 {a.inspect_chars}자 + 문자통계")
+    print(f"        ★볼 것: ① 중간에 새 문서의 서두가 또 나오는가(=경계 누락)")
+    print(f"                ② 표·나열·코드·비한국어인가(=길이가 아니라 내용이 원인)")
+    for i, (s, e, n, tot) in enumerate(rows_by_contrib[:k], 1):
+        ids = arr[s:e].tolist()
+        txt = tok.decode(ids)
+        print("\n  " + "-" * 74)
+        print(f"  [{i}] 토큰 {n:,}  문서손실 {tot/n:.4f}  (val 의 {n/len(arr):.1%})")
+        print(f"      {_charstats(txt)}")
+        head = txt[:a.inspect_chars].replace("\n", " / ")
+        tail = txt[-a.inspect_chars:].replace("\n", " / ")
+        print(f"      앞: {head}")
+        print(f"      뒤: {tail}")
+
+    print("\n  " + "=" * 74)
+    print("  판정 가이드")
+    print("""    A 가 ⚠️ 이고 B 에 16토큰 미만이 많다  → **과분할**. prepare() 에서 특수토큰 문자열
+                                              이스케이프 후 0.6 재실행
+    C 에서 문서 중간에 서두가 또 나온다     → **경계 누락**. 원인이 길이가 아니다
+    D 가 표·나열·코드·비한국어를 가리킨다   → 길이 상한이 아니라 **내용 필터**가 필요
+    전부 정상                               → 0.6 확정. P037 단계2(재생성)로""")
+
+
 def main():
     ap = argparse.ArgumentParser(description="P028 단계0.6 문서단위 val 손실 분해")
     ap.add_argument("--data", default="ko-edu-en")
@@ -35,6 +105,10 @@ def main():
     ap.add_argument("--seq", type=int, default=1024)
     ap.add_argument("--max-docs", type=int, default=0, help="0=전부")
     ap.add_argument("--top", type=int, default=15, help="기여 상위 몇 개를 인쇄할지")
+    ap.add_argument("--inspect", type=int, default=0,
+                    help="(P037 단계1) 상위 N개 문서를 **디코딩해서** 앞/뒤 텍스트와 문자통계를 "
+                         "출력하고, eos 경계 판정의 신뢰도를 검사한다. 0=끔")
+    ap.add_argument("--inspect-chars", type=int, default=300, help="앞/뒤 몇 자를 볼지")
     a = ap.parse_args()
 
     import numpy as np
@@ -151,6 +225,14 @@ def main():
         print(f"    → 단일 문서로 설명되지 않는다({drop:.3f}).")
         print("       **전 문서가 고르게 어렵다** = 분포 자체의 문제.")
         print("       → 무작위 분할(P028 부록 A, 전 데이터셋 영향)이 필요하다.")
+    # =====================================================================
+    # (P037 단계1) --inspect : 경계 판정 자체를 검사한다
+    #   단계 0.5 의 문서통계가 **도구 결함**으로 틀렸다(eos 를 빈도로 추정).
+    #   그러니 이 도구(0.6)도 검증 없이 믿으면 안 된다. 아래 A~D 가 그 검증이다.
+    # =====================================================================
+    if a.inspect:
+        _inspect(arr, docs, rows_by_contrib, tok, eos, a)
+
     print("""
   ★한계
     · 문서 경계를 <eos> 로 잡는다. prepare() 가 문서마다 eos 를 붙이므로 타당하지만,
