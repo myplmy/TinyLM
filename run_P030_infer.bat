@@ -102,17 +102,22 @@ exit /b 0
 :CACHEBAD
 echo.
 echo ================================================================
-echo [STOP] KV cache output does NOT match the no-cache path.
+echo [STOP] greedy output differs between the cache and no-cache paths.
 echo.
-echo   The cache is wrong. Speed numbers would be meaningless, so nothing else ran.
-echo   Look at these two places first - both fail SILENTLY:
-echo     1. transformer.forward : rope_cos/rope_sin must be sliced
-echo        [past_len : past_len+T], not [:T]
-echo     2. modules.Attention.forward : when q_len is not kv_len you must build
-echo        tril(kv_len - q_len), NOT pass is_causal=True
+echo   Nothing else ran. But DO NOT go straight to RoPE and the mask - that advice was
+echo   in this file until 2026-07-31 and it was wrong. Here is what is already known
+echo   (test_result\014 section 8):
 echo.
-echo   Reproduce a single case with:
-echo     python scripts\probe_prompts.py --check-cache
+echo     - RoPE slicing and the SDPA mask are SHARED by dense and tied. p6d passed 5 of 5,
+echo       so neither can be the cause on its own.
+echo     - This gate compares DECODED STRINGS, which is not the invariant P030 asked for.
+echo       It runs bf16 on cuda and feeds 24 autoregressive steps, so ONE argmax flip at a
+echo       near-tie rewrites the whole continuation. That is a plausible false alarm.
+echo.
+echo   Do this instead, in order:
+echo     1. run_P030_cachecheck.bat   fp32 on cpu. Separates precision from a real bug.
+echo     2. run_P030_cachegate.bat    teacher-forced logit equivalence. This is the proof.
+echo     3. come back here only after 2 is green.
 echo.
 echo   Nothing was measured. No files were written.
 echo ================================================================

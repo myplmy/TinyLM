@@ -138,8 +138,16 @@ def main():
     if a.docstats:
         print("\n  " + "-" * 74)
         print("  val 문서 길이 통계 (단계0 도구의 사각지대 — 거대 문서 1개가 val 을 지배할 수 있다)")
-        sample = np.asarray(tr[:5_000_000])
-        eos = int(np.argmax(np.bincount(sample, minlength=8)[:8]))
+        # ★2026-07-31 수정: eos 를 **추정하지 않고 토크나이저에 조회**한다.
+        #   종전: sample=train 앞 5M 에서 id 0~7 최빈값을 eos 로 추측 → 문서 경계를 절반만 찾아
+        #   "val 의 23.5% 가 단일 문서(352,399토큰)" 라는 **틀린 경보**를 냈다(결과 011 §0.6-1).
+        #   train 앞 5M 과 val 은 분포가 다르다 — 이 도구가 발견한 현상이 이 도구를 망가뜨렸다.
+        from tinylm.data import tokenizer_path as _tp
+        from tokenizers import Tokenizer as _Tk
+        eos = _Tk.from_file(str(_tp(a.data))).token_to_id("<eos>")
+        if eos is None:
+            eos = 2
+        print(f"    (eos id={eos}, 토크나이저 조회)")
         pos = np.flatnonzero(np.asarray(va) == eos)
         if len(pos) > 1:
             lens = np.diff(np.concatenate(([-1], pos)))

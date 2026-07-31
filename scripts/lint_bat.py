@@ -133,7 +133,7 @@ def main():
     args = [a for a in sys.argv[1:] if a != "--fix"]
     do_fix = "--fix" in sys.argv[1:]
     files = [Path(a) if Path(a).is_absolute() else ROOT / a for a in args] or \
-            sorted(ROOT.glob("*.bat"))
+            sorted(list(ROOT.glob('*.bat')) + list((ROOT / 'scripts' / 'batch').glob('*.bat')))
     if do_fix:
         n = sum(fix_eol(f) for f in files if f.exists())
         print(f"[--fix] 줄끝을 CRLF 로 교정: {n}개 (내용 변경 없음)")

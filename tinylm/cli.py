@@ -54,6 +54,13 @@ def main():
                         "cooldown-QAT 정렬은 wsd 의 1-decay_frac 과 같은 값으로 준다(예: 0.80)")
     p.add_argument("--decay-frac", type=float, default=0.2,
                    help="(P026) wsd 스케줄에서 마지막 LR 감쇠 구간 비율(기본 0.2)")
+    p.add_argument("--anneal-shape", choices=["linear", "step"], default="linear",
+                   help="(P035) 삼진 어닐의 형태. linear=종전 램프(기본, 무변). "
+                        "step=--anneal-start 까지 FP(anneal 0), 그 지점에서 1.0 으로 급전이. "
+                        "논문이 상정한 'FP 학습 후 별도 QAT' 를 인위적으로 재현해 기전 유무를 본다")
+    p.add_argument("--anneal-start", type=float, default=None,
+                   help="(P035) 어닐 시작(step 이면 전이) 지점(진행률 0~1). "
+                        "미지정이면 종전대로 warm/steps+0.05 를 쓴다(무변)")
     p.add_argument("--seed", type=int, default=1337,
                    help="시드(기본 1337=종전 동작). 가중치 초기화 + train 크롭 순서에 반영. "
                         "val 크롭은 항상 고정(99)이라 런 간 비교가 유지된다. 재현 노이즈 측정용")
@@ -159,7 +166,8 @@ def main():
               kd_cache=a.kd_cache, kd_topk=a.kd_topk,
               kd_every=a.kd_every, kd_dynamic=a.kd_dynamic, sparse34=a.sparse34,
               pool_tokens=pool_tok, exact_cache=a.exact_cache,
-              anneal_end=a.anneal_end, decay_frac=a.decay_frac, seed=a.seed)
+              anneal_end=a.anneal_end, decay_frac=a.decay_frac, seed=a.seed,
+              anneal_shape=a.anneal_shape, anneal_start=a.anneal_start)
 
     elif a.cmd == "all":
         from .train import train

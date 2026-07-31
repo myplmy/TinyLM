@@ -50,7 +50,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
-          pool_tokens=None, exact_cache=False, anneal_end=0.60, decay_frac=0.2, seed=1337):
+          pool_tokens=None, exact_cache=False, anneal_end=0.60, decay_frac=0.2, seed=1337,
+          anneal_shape="linear", anneal_start=None):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
     #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
@@ -142,11 +143,22 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     warm = 0 if sched == "decay" else max(5, min(steps // 10, 100))
     # (P026) cooldown-QAT 스케줄 정렬 표시. anneal_end=완전삼진 도달, decay_start=LR 감쇠 시작.
     assert 0.0 < anneal_end <= 1.0, f"--anneal-end 는 (0,1] 이어야 함: {anneal_end}"
-    if anneal_end != 0.60 or decay_frac != 0.2:
+    # (P035) 어닐 시작점. 미지정이면 종전 하드코딩식 그대로 → 기본 동작 무변.
+    a0 = (warm / steps + 0.05) if anneal_start is None else float(anneal_start)
+    assert anneal_shape in ("linear", "step"), f"--anneal-shape: {anneal_shape}"
+    assert 0.0 <= a0 < 1.0, f"--anneal-start 는 [0,1) 이어야 함: {a0}"
+    if anneal_shape == "linear":
+        assert a0 < anneal_end, (f"linear 어닐은 anneal_start({a0:.3f}) < anneal_end({anneal_end}) "
+                                 f"여야 램프가 성립한다")
+    if anneal_end != 0.60 or decay_frac != 0.2 or anneal_shape != "linear" or anneal_start is not None:
         _dstart = (1.0 - decay_frac) if sched == "wsd" else (0.0 if sched != "stable" else 1.0)
-        print(f"[sched] anneal_end={anneal_end:.2f}(step~{int(anneal_end*steps)})  "
+        # step 어닐의 '완전삼진 도달'은 anneal_end 가 아니라 전이점(a0)이다 — 정렬 판정도 그쪽이다.
+        _full = a0 if anneal_shape == "step" else anneal_end
+        print(f"[sched] shape={anneal_shape}  anneal_start={a0:.2f}(step~{int(a0*steps)})  "
+              f"anneal_end={anneal_end:.2f}(step~{int(anneal_end*steps)})  "
+              f"완전삼진={_full:.2f}(step~{int(_full*steps)})  "
               f"decay_frac={decay_frac:.2f}  LR감쇠시작={_dstart:.2f}(step~{int(_dstart*steps)})"
-              f"  {'정렬됨' if sched == 'wsd' and abs(anneal_end - _dstart) < 1e-6 else '미정렬'}")
+              f"  {'정렬됨' if sched == 'wsd' and abs(_full - _dstart) < 1e-6 else '미정렬'}")
     # 토큰 마크별 명명 스냅샷: {마크토큰: 라벨}. decay-branch 소스로 재사용.
     snap_steps = {}
     for tok in (snapshots or []):
@@ -243,11 +255,17 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     for s in range(start, steps):
         if sched == "decay":                    # 이미 학습된 plateau라 완전 삼진 유지
             anneal = 1.0
+        elif anneal_shape == "step":
+            # (P035) 계단 어닐: a0 까지 full-precision(anneal 0), 그 지점에서 1.0 으로 급전이.
+            #   논문(arXiv:2509.22935)이 상정한 "FP 학습 → 별도 QAT" 를 **인위적으로 재현**한다.
+            #   P026(결과 015)은 끝점만 옮겨 정렬 효과를 못 봤는데, 우리 선형 램프에는
+            #   제거할 중복이 애초에 없었을 수 있다. 그 가설을 검정하려면 중복을 만들어야 한다.
+            anneal = 1.0 if (s / steps) >= a0 else 0.0
         else:
             # (P026) anneal_end = 완전삼진 도달 지점(진행률). 기본 0.60 = 종전 하드코딩값.
             #   cooldown-QAT 가설: 이 지점을 LR 감쇠 시작(wsd면 1-decay_frac)과 정렬하면
             #   "FP 학습 후 별도 QAT" 의 중복 업데이트가 사라져 같은 val 을 더 적은 steps 에 도달.
-            a0 = warm / steps + 0.05
+            #   a0 는 위(스케줄 진단 블록)에서 한 번만 계산한다 — --anneal-start 미지정이면 종전값.
             anneal = min(1.0, max(0.0, (s / steps - a0) / max(anneal_end - a0, 1e-6)))
         model.set_anneal(anneal)
         f = _lr_factor(s, warm, steps, sched, decay_frac)
@@ -318,8 +336,13 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
 
         if s % 10 == 0 or s == steps - 1:
             el = time.time() - t0
-            print(f"  step {s:>5}/{steps}  loss {tot:.4f}{'*' if kd_this and teacher is not None else ' '}"
-                  f"  ce {tot_ce:.4f}  |g| {gn:.2f}  "
+            # ★비KD 스텝에서는 loss 와 ce 가 **구조적으로 같은 값**이다(loss = ce/accum 을 합산).
+            #   그래서 두 열을 항상 찍으면 정보가 0 인 열이 하나 생기고, KD k4 런에서는 loss 열이
+            #   4스텝마다 혼합손실 ↔ CE 로 진동해 과적합처럼 보였다(결과 012 §4 의 'loss 2↔4 진동').
+            #   → **런 간 비교 가능한 ce 를 항상 앞에** 두고, 최적화 손실은 **다를 때만** 표기한다.
+            _mix = (f"  loss {tot:.4f}[KD혼합]"
+                    if (kd_this and teacher is not None) or kd_reader is not None else "")
+            print(f"  step {s:>5}/{steps}  ce {tot_ce:.4f}{_mix}  |g| {gn:.2f}  "
                   f"anneal {model.cfg.quant_anneal:.2f}  lr {opt.param_groups[1]['lr']:.2e}  "
                   f"{el/(s-start+1)*1000:.0f} ms/step")
         if (s + 1) % eval_every == 0 or s == steps - 1:
@@ -356,6 +379,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "lora_rank": lora_rank, "wall_sec": time.time() - t0,
            "sparse34": bool(sparse34), "bpw": 1.25 if sparse34 else 1.95,
            "anneal_end": anneal_end, "decay_frac": decay_frac,    # (P026) 스케줄 정렬 기록
+           "anneal_shape": anneal_shape, "anneal_start": a0,      # (P035) 어닐 형태·시작점
            "deploy_mb": _mem["total_mb"], "mem_parts_mb": _mem["parts_mb"],
            "mem_params": _mem["params"],                          # 배포메모리 정확값(compare 용)
            # ★학습 VRAM 피크(GB). nvidia-smi ≈ reserved + CUDA 컨텍스트(0.4~0.8GB).

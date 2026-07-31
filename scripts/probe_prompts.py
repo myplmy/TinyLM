@@ -68,6 +68,10 @@ def main():
                     help="P030 단계1 게이트: 캐시 유/무 그리디 출력 일치 검증만 하고 종료. "
                          "불일치면 exit 1 (한글 프롬프트가 필요해 .bat 대신 여기 산다)")
     ap.add_argument("--no-cache", action="store_true", help="KV 캐시 off(옛 경로 대조)")
+    ap.add_argument("--device", default=None,
+                    help="cpu / cuda. 미지정이면 GPU 가 보일 때 cuda. "
+                         "★cpu 는 sample() 의 autocast 가 꺼져 **fp32** 로 돈다 — "
+                         "P030 단계1.5-A 가 bf16 정밀도와 실제 캐시 버그를 가르는 수단이 이것이다")
     a = ap.parse_args()
 
     if a.list:
@@ -98,24 +102,36 @@ def main():
     if a.check_cache:
         from tinylm.infer.generate import check_cache_equivalence
         banner("P030 단계1 게이트 — KV 캐시 정확성 (그리디: 캐시 유/무가 완전히 같아야 한다)")
-        print("  틀리기 쉬운 두 곳(둘 다 조용히 틀린다):")
-        print("    1. RoPE 를 [:T] 로 자름 (캐시 시 [past_len : past_len+T] 여야 함)")
-        print("    2. q_len != kv_len 인데 is_causal=True (SDPA 마스크가 좌상단 정렬됨)")
+        print("  ★이 게이트는 '로짓 동등성'이 아니라 '그리디 문자열 일치'를 본다(결과 014 §8).")
+        print("    bf16(cuda) + 자기회귀 24스텝이면 near-tie 한 번 뒤집힘이 이후 전부를 바꾼다.")
+        print("    --device cpu 로 돌리면 autocast 가 꺼져 fp32 가 되고, 정밀도 요인이 사라진다.")
+        print("    RoPE 슬라이스·SDPA 마스크는 dense 와 공유 코드이고 p6d 가 통과했으므로 이미 무죄다.")
+        print("    확정 판정은 teacher-forced 로짓 비교(scripts/diag_kvcache.py)가 한다.")
         allok = True
         for tag, arch, _d in models:
             ck = paths.RUNS / "ckpt" / f"{base}_{tag}.pt"
             if not ck.exists():
                 print(f"  [건너뜀] 체크포인트 없음: {tag}")
                 continue
-            model, cfg, device = load_model(arch=arch, ckpt_path=str(ck))
-            print(f"\n  --- {tag} ({arch}) ---")
+            model, cfg, device = load_model(arch=arch, ckpt_path=str(ck), device=a.device)
+            print(f"\n  --- {tag} ({arch})  device={device} "
+                  f"{'fp32(autocast off)' if str(device) != 'cuda' else 'bf16 autocast'} ---")
             for prompt, _why, _mx in PROMPTS:
                 allok &= check_cache_equivalence(model, cfg, tok, prompt,
                                                  max_new=24, device=device)
             del model
-        print("\n  " + ("전부 일치 ✅ — 속도 측정으로 진행해도 된다."
+        _dev = a.device or "cuda(자동)"
+        print("\n  " + ("전부 일치 ✅"
+                        + (" (fp32) — 정밀도 요인 배제. 단 이것은 '증거'지 '증명'이 아니다. "
+                           "확정은 scripts/diag_kvcache.py"
+                           if str(a.device) == "cpu" else
+                           " (bf16) — 이 조건에서 통과했으면 정밀도 여유가 충분한 것이다.")
                         if allok else
-                        "불일치 ❌ — 캐시 구현이 틀렸다. 속도를 재는 의미가 없다."))
+                        f"불일치 ❌ (device={_dev}) — "
+                        + ("fp32 에서도 다르다면 **실제 버그**다. dense 가 통과했으므로 "
+                           "RoPE·마스크가 아니라 CLA owner 키 캐시 경로를 본다."
+                           if str(a.device) == "cpu" else
+                           "bf16 이므로 **아직 버그로 단정할 수 없다**. --device cpu 로 다시 돌려라.")))
         return 0 if allok else 1
 
     for tag, arch, desc in models:
@@ -128,7 +144,7 @@ def main():
             print("      아직 학습이 안 끝났거나 태그가 다릅니다. 건너뜁니다.")
             continue
         try:
-            model, cfg, device = load_model(arch=arch, ckpt_path=str(ck))
+            model, cfg, device = load_model(arch=arch, ckpt_path=str(ck), device=a.device)
         except Exception as e:
             print(f"  [!] 로드 실패: {e}")
             continue
