@@ -11,7 +11,17 @@
    (2) **KV 캐시가 없어** 매 토큰 전체 시퀀스를 재계산했다(O(T²)).
        → `use_cache=True` 가 기본. `--no-cache` 로 옛 경로와 대조할 수 있다.
    여전히 남는 한계: 삼진 가중치는 추론 시 **dequant 후 fp/bf16 GEMM** 이라
-   11.7MB 는 "저장" 크기다. **실행시 메모리는 P034 가 따로 잰다.**
+   저장 MB 는 "저장" 크기다. **실행시 메모리는 P034 가 따로 잰다.**
+
+★2026-07-31 2차 수정 — **표의 MB 가 하드코딩이었다**
+   `DEFAULT_MODELS` 에 30.9 / 14.9 / 11.7 이 **리터럴로 박혀** 있었다. 그래서
+     · 같은 배치 안에서 이 스크립트는 30.9/14.9/11.7 을, `mem_runtime.py` 는
+       27.1/13.1/12.4 를 찍어 **한 로그에 두 개의 진실**이 남았고
+     · `--models` 를 주면 mb=0.0 이 되어 비율 절이 통째로 사라졌으며
+     · 그 값들이 **2026-07-31 이전 구 규약**이라 회계 통일(안 B)과 어긋났다.
+   → 이제 **로드한 모델의 `mem_report_all()` 에서 계산**한다(`CLAUDE.md` 파라미터
+     단일 소스 규약). 저장(packed)·상주(runtime)를 **둘 다** 찍는다 — 결과 016 이
+     "속도는 저장이 아니라 상주를 따라갈 것"이라고 예측했으므로 둘 다 있어야 읽힌다.
 
 사용법
   python scripts/bench_infer.py                                   # 기본 3모델, CPU+GPU
@@ -28,10 +38,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+# ★MB 를 여기 적지 않는다 — 모델을 로드한 뒤 mem_report_all() 로 계산한다.
 DEFAULT_MODELS = [
-    ("p6d", "dense", 30.9),
-    ("mC_g8_k4", "tied", 14.9),
-    ("mA_g4s34_k4", "tied", 11.7),
+    ("p6d", "dense"),
+    ("mC_g8_k4", "tied"),
+    ("mA_g4s34_k4", "tied"),
 ]
 PROMPT = "대한민국의 수도 서울은"          # 학습 분포 안. 길이는 --prompt-tokens 로 패딩
 
@@ -90,6 +101,8 @@ def main():
     ap.add_argument("--data", default="ko-en")
     ap.add_argument("--tokens", default="300M")
     ap.add_argument("--preset", default="m100")
+    ap.add_argument("--drop-latent", action="store_true",
+                    help="P034 단계2 — latent 해제 상태로 잰다. 상주가 절반이면 속도가 따라오는가")
     a = ap.parse_args()
 
     import torch
@@ -98,7 +111,7 @@ def main():
     from tinylm.data import tokenizer_path
     from tokenizers import Tokenizer
 
-    models = ([(t, "dense" if t.startswith(("p6d", "dense", "p12d")) else "tied", 0.0)
+    models = ([(t, "dense" if t.startswith(("p6d", "dense", "p12d")) else "tied")
                for t in a.models] if a.models else DEFAULT_MODELS)
     tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
     base = f"{a.preset}_{a.data}_{a.tokens}"
@@ -109,7 +122,10 @@ def main():
     print(f"  max_new={a.max_new}  reps={a.reps}(중위값)  프롬프트={PROMPT!r}")
     print(f"  캐시 모드={['on' if m else 'off' for m in modes]}   (off = 결과 014 조건)")
     print("=" * 92)
-    print(f"\n{'device':>8} {'threads':>8} {'model':>16} {'배포MB':>7} {'캐시':>5} "
+    print("  ★MB 는 하드코딩이 아니라 로드한 모델에서 계산한다(회계 = 안 B, 2026-07-31 통일).")
+    print("    저장 = packed_mb(아직 없는 패킹 포맷의 이론값) / 상주 = runtime_mb(결과 016 실측식).")
+    print("=" * 92)
+    print(f"\n{'device':>8} {'threads':>8} {'model':>16} {'저장MB':>7} {'상주MB':>8} {'캐시':>5} "
           f"{'tok/s':>9} {'TTFT ms':>9}")
     print("-" * 92)
 
@@ -122,16 +138,20 @@ def main():
         for nt in thread_list:
             if dev == "cpu" and nt > 0:
                 torch.set_num_threads(nt)
-            for tag, arch, mb in models:
+            for tag, arch in models:
                 ck = paths.RUNS / "ckpt" / f"{base}_{tag}.pt"
                 if not ck.exists():
                     print(f"{dev:>8} {nt:>8} {tag:>16}  체크포인트 없음 — 건너뜀")
                     continue
                 try:
-                    model, cfg, _ = load_model(arch=arch, ckpt_path=str(ck), device=dev)
+                    model, cfg, _ = load_model(arch=arch, ckpt_path=str(ck), device=dev,
+                                               drop_latent=a.drop_latent)
                 except Exception as e:
                     print(f"{dev:>8} {nt:>8} {tag:>16}  로드 실패: {type(e).__name__}: {e}")
                     continue
+                # ★단일 소스: 표에 찍는 MB 는 여기서 계산된다(리터럴 금지).
+                _mr = model.mem_report_all()
+                mb, rt = _mr["packed_mb"], _mr["runtime_mb"]
                 if a.check_cache:
                     from tinylm.infer.generate import check_cache_equivalence
                     if not check_cache_equivalence(model, cfg, tok, PROMPT, 16, dev):
@@ -143,37 +163,47 @@ def main():
                     except Exception as e:
                         print(f"{dev:>8} {nt:>8} {tag:>16}  실패: {type(e).__name__}: {e}")
                         continue
-                    print(f"{dev:>8} {nt if nt else '기본':>8} {tag:>16} {mb:>7.1f} "
+                    print(f"{dev:>8} {nt if nt else '기본':>8} {tag:>16} {mb:>7.1f} {rt:>8.1f} "
                           f"{'on' if use_c else 'off':>5} {r:>9.2f} {t:>9.1f}")
-                    rows.append((dev, nt, tag, mb, r, t, use_c))
+                    rows.append((dev, nt, tag, mb, r, t, use_c, rt))
                 del model
                 if dev == "cuda":
                     torch.cuda.empty_cache()
 
-    print("-" * 84)
+    print("-" * 92)
     if rows:
         print("\n★핵심 질문: 메모리를 줄이면 CPU 추론이 빨라지는가?")
-        for dev in {r[0] for r in rows}:
-            sub = [r for r in rows if r[0] == dev and r[3] > 0 and r[6]]   # 캐시 on 만
-            if len(sub) < 2:
-                continue
-            sub.sort(key=lambda r: -r[3])          # 메모리 큰 것부터
-            base_rate = sub[0][4]
-            print(f"\n  [{dev}] 기준 = {sub[0][2]}({sub[0][3]:.1f}MB) {base_rate:.2f} tok/s")
-            for _, nt, tag, mb, r, _t, _c in sub[1:]:
-                print(f"    {tag:16} {mb:5.1f}MB  {r:7.2f} tok/s  = {r/base_rate:5.2f}x "
-                      f"(메모리는 {sub[0][3]/mb:.2f}x 작음)")
-        print("\n  해석: 속도비 ≈ 메모리비 면 '메모리→속도 전이'가 성립.")
-        print("        속도비 ≈ 1.0 이면 전이가 없다 → 5비트 패킹 커널(P030 단계3)이 필요하다는 근거.")
+        print("  ★결과 016 의 예측: 속도가 메모리를 따라간다면 **저장이 아니라 상주**를 따라간다.")
+        print("    저장 순위(mA<mC<p6d)와 상주 순위(mC<mA<p6d)가 역전돼 있으므로 둘을 갈라 읽는다.")
+        for dev in sorted({r[0] for r in rows}):
+            for nt in sorted({r[1] for r in rows if r[0] == dev}):
+                sub = [r for r in rows if r[0] == dev and r[1] == nt and r[3] > 0 and r[6]]
+                if len(sub) < 2:
+                    continue
+                sub.sort(key=lambda r: -r[3])      # 저장 큰 것부터 = 기준선이 dense
+                base_rate, base_pk, base_rt = sub[0][4], sub[0][3], sub[0][7]
+                print(f"\n  [{dev} t{nt if nt else '기본'}] 기준 = {sub[0][2]}"
+                      f"(저장 {base_pk:.1f}MB / 상주 {base_rt:.1f}MB) {base_rate:.2f} tok/s")
+                print(f"    {'모델':16} {'저장비':>7} {'상주비':>7} {'속도비':>7}   판정")
+                for _, _nt, tag, mb, r, _t, _c, rt in sub[1:]:
+                    sp, st, rr = base_pk / mb, base_rt / rt, r / base_rate
+                    # 어느 축을 따라가는지 기계적으로 판정한다(눈대중 금지)
+                    d_pk, d_rt, d_1 = abs(rr - sp), abs(rr - st), abs(rr - 1.0)
+                    verdict = ("전이 없음(속도비~1.0)" if d_1 <= min(d_pk, d_rt)
+                               else "상주를 따라감" if d_rt < d_pk else "저장을 따라감")
+                    print(f"    {tag:16} {sp:6.2f}x {st:6.2f}x {rr:6.2f}x   {verdict}")
+        print("\n  읽는 법: 속도비가 1.0 근처면 **전이 없음** — 가중치가 GEMM 직전에 fp32 로")
+        print("           dequant 되기 때문이다. 그것이 P034 단계2~4 가 존재하는 이유이고,")
+        print("           음성 결과이지 실패가 아니다.")
         if a.both_cache:
             print("\n★캐시 이득(같은 모델, on/off):")
-            for dev, nt, tag, mb, r, _t, c in rows:
+            for dev, nt, tag, mb, r, _t, c, _rt in rows:
                 if not c:
                     on = [q for q in rows if q[:4] == (dev, nt, tag, mb) and q[6]]
                     if on:
                         print(f"    [{dev} t{nt}] {tag:16} off {r:6.2f} -> on {on[0][4]:6.2f} "
                               f"tok/s = {on[0][4]/r:5.2f}x")
-    print("\n★한계: 삼진은 dequant 후 GEMM(저장≠실행 크기 — 실행시 메모리는 P034) /")
+    print("\n★한계: 삼진은 dequant 후 GEMM(저장≠실행 크기 — 상주는 같은 표의 상주MB 열) /")
     print("        Windows CPU 측정은 노이즈 큼(중위값 사용, 1~2% 차이는 읽지 않는다) /")
     print("        batch 1 단일요청. 서버 처리량은 다른 주제다.")
     return 0

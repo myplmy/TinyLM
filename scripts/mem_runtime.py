@@ -17,10 +17,17 @@
    텐서합산 — 우리가 의도적으로 들고 있는 텐서의 바이트 합. 할당자 영향 없음 → 과소 가능
    진실은 두 값 사이에 있다. **한쪽만 보고 결론 내지 말 것.**
 
+★2026-07-31 추가 — `--drop-latent` (P034 **단계2**)
+   추론에는 backward 가 없으므로 fp32 latent `weight` 는 **죽은 무게**다. 이 플래그는
+   `freeze_quant()` 직후 그것을 해제하고, **같은 표에서 해제 전/후를 나란히** 찍는다.
+   함께 **로짓 동등성 게이트**를 돌린다 — 해제가 출력을 바꾸면 그건 최적화가 아니라 버그다.
+   기대: 상주가 절반 근처로. 저장 MB 는 **변하지 않는다**(저장은 패킹 포맷의 이론값이다).
+
 사용법
   python scripts/mem_runtime.py                       # 기본 3모델, CPU
   python scripts/mem_runtime.py --device cuda
   python scripts/mem_runtime.py --models mA_g4s34_k4
+  python scripts/mem_runtime.py --drop-latent         # P034 단계2 (해제 전/후 대조)
 """
 from __future__ import annotations
 import argparse
@@ -73,6 +80,8 @@ def main():
     ap.add_argument("--tokens", default="300M")
     ap.add_argument("--preset", default="m100")
     ap.add_argument("--max-new", type=int, default=32)
+    ap.add_argument("--drop-latent", action="store_true",
+                    help="P034 단계2 — freeze 후 fp32 latent 해제. 해제 전/후를 나란히 잰다")
     a = ap.parse_args()
 
     import torch
@@ -120,6 +129,25 @@ def main():
         peak_cuda = (torch.cuda.max_memory_allocated() / 1024 ** 2
                      if a.device == "cuda" else float("nan"))
 
+        # ── P034 단계2 : latent 해제 (게이트 먼저, 그다음 재측정) ─────────────
+        drop = None
+        if a.drop_latent:
+            ids = torch.tensor([tok.encode(PROMPT).ids], dtype=torch.long, device=dev)
+            with torch.no_grad():
+                before = model(ids).float().clone()
+            model.drop_latent()
+            gc.collect()
+            if a.device == "cuda":
+                torch.cuda.empty_cache()
+            with torch.no_grad():
+                after = model(ids).float()
+            dmax = float((before - after).abs().max())
+            lat2, wq2, oth2 = tensor_mb(model)
+            bd2 = model.mem_breakdown()
+            r3 = rss_mb()
+            drop = (lat2, wq2, oth2, lat2 + wq2 + oth2, bd2["packed_mb"], dmax, r3)
+            del before, after, ids
+
         print(f"\n  ── {tag} ({arch}) " + "─" * 60)
         print(f"     저장(이론·패킹)   {packed:8.1f} MB     삼진 파라미터 {nt/1e6:6.2f}M "
               f"@ {bd['bpw_ternary']}bpw")
@@ -130,7 +158,20 @@ def main():
         if a.device == "cuda":
             print(f"     CUDA 피크          {peak_cuda:8.1f} MB")
         print(f"     ★저장 대비 상주    {(lat+wq+oth)/packed:8.1f} 배")
-        rows.append((tag, packed, lat, wq, oth, lat + wq + oth, r2 - r0, nt))
+        if drop is not None:
+            lat2, wq2, oth2, res2, pk2, dmax, r3 = drop
+            gate = "통과" if dmax == 0.0 else ("경계" if dmax < 1e-4 else "★실패")
+            print(f"     ── P034 단계2 (latent 해제) " + "─" * 34)
+            print(f"     로짓 동등성 게이트  max|dlogit| = {dmax:.3e}   {gate}"
+                  f"   (해제는 계산을 바꾸지 않으므로 0 이어야 한다)")
+            print(f"     텐서합산 상주     {res2:8.1f} MB  "
+                  f"= latent {lat2:.1f} + dequant사본 {wq2:.1f} + 기타 {oth2:.1f}")
+            print(f"     RSS 해제후        {r3:8.1f} MB")
+            print(f"     ★상주 감축        {(lat+wq+oth)/max(res2,1e-9):8.2f} 배"
+                  f"   (저장 {packed:.1f} -^> {pk2:.1f} MB — 저장은 변하지 않는 것이 정상)"
+                  .replace("-^>", "→"))
+        rows.append((tag, packed, lat, wq, oth, lat + wq + oth, r2 - r0, nt,
+                     drop[3] if drop else None, drop[5] if drop else None))
         del model
         gc.collect()
         if a.device == "cuda":
@@ -146,7 +187,7 @@ def main():
     print(f"  기준 = {b[0]}  저장 {b[1]:.1f}MB  상주(텐서합산) {b[5]:.1f}MB\n")
     print(f"  {'모델':>16} {'저장MB':>8} {'저장감축':>9} {'상주MB':>9} {'상주감축':>9} {'전이율':>8}")
     print("  " + "-" * 68)
-    for tag, packed, _l, _w, _o, res, _d, _n in rows:
+    for tag, packed, _l, _w, _o, res, _d, _n, _r2, _g in rows:
         s_red, r_red = b[1] / packed, b[5] / res
         print(f"  {tag:>16} {packed:8.1f} {s_red:8.2f}x {res:9.1f} {r_red:8.2f}x "
               f"{(r_red - 1) / (s_red - 1) if s_red > 1.001 else float('nan'):7.0%}")
@@ -166,8 +207,31 @@ def main():
         print("     예측대로다: 상주는 bpw 가 아니라 유니크 파라미터 수를 따라간다.")
         print("     (타잉은 둘 다 줄이고, 삼진·희소는 저장만 줄인다)")
     print(f"\n  {'모델':>16} {'삼진파라미터':>12} {'저장MB':>8} {'상주MB':>9}")
-    for tag, packed, _l, _w, _o, res, _d, nt in sorted(rows, key=lambda r: r[7]):
+    for tag, packed, _l, _w, _o, res, _d, nt, _r2, _g in sorted(rows, key=lambda r: r[7]):
         print(f"  {tag:>16} {nt/1e6:11.2f}M {packed:8.1f} {res:9.1f}")
+
+    if a.drop_latent and any(r[8] for r in rows):
+        print("\n" + "=" * 96)
+        print("  ★핵심 질문 3 — latent 해제(P034 단계2)가 상주를 얼마나 줄이는가")
+        print("=" * 96)
+        print(f"  {'모델':>16} {'해제전':>9} {'해제후':>9} {'감축':>8} {'게이트':>12}")
+        print("  " + "-" * 60)
+        for tag, _p, _l, _w, _o, res, _d, _n, res2, dmax in rows:
+            if res2 is None:
+                continue
+            print(f"  {tag:>16} {res:9.1f} {res2:9.1f} {res/res2:7.2f}x "
+                  f"{('통과' if dmax == 0.0 else '★실패'):>12}")
+        print("\n  · 이론 상한은 2.00배다(latent + dequant 두 벌 중 한 벌을 없앤다).")
+        print("    2.00 에 못 미치는 부분이 임베딩·norm·gate 등 **삼진이 아닌** 파라미터다.")
+        print("  · 게이트가 하나라도 실패하면 **감축 수치를 인용하지 말 것** — 다른 모델을 잰 것이다.")
+        # ★순위가 바뀌는지 다시 본다. 로드맵 R2 가 묻는 것이 정확히 이 질문이다.
+        o1 = [r[0] for r in sorted([r for r in rows if r[8]], key=lambda r: r[5])]
+        o2 = [r[0] for r in sorted([r for r in rows if r[8]], key=lambda r: r[8])]
+        print(f"\n  상주 순위 해제 전: {' < '.join(o1)}")
+        print(f"  상주 순위 해제 후: {' < '.join(o2)}")
+        print("  → " + ("순위 유지. 예측대로 둘 다 유니크 파라미터에 비례한다."
+                        if o1 == o2 else
+                        "★순위 변동. 예측이 빗나갔다 — 원인을 먼저 찾고 결론을 쓴다."))
 
     print("""
   ★한계

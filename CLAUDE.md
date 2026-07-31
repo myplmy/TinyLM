@@ -8,10 +8,12 @@
 **TinyLM** = 저사양 CPU·엣지·모바일용 **초경량 LLM 아키텍처**. 핵심 목표는 **연산이 아니라
 메모리 최적화**(연산 증가는 감수). 지향점: dense 대비 절반 이하 메모리로 유사 품질.
 
-> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202607311800_HANDOFF.md`](handoff/202607311800_HANDOFF.md).
+> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202607312030_HANDOFF.md`](handoff/202607312030_HANDOFF.md).
 > **새 세션은 그 문서를 먼저 읽는다.** 아래는 바뀌지 않는 규범만 남긴다.
 >
 > 요약 한 줄: 코드 v6(`tinylm/`), 아키텍처 v5. **σ = 0.012 / 분해능 0.024.**
+>
+> **2026-07-31 추가**: CPU 추론 첫 실측 완료(**1스레드 31~35 tok/s**, 결과 014 §10) — **메모리→속도 전이는 거의 없다**(전이율 3.4~9.4%). P034 단계2(latent 해제) 구현 완료·실행 대기.
 > **REVIEW1 승자는 보류**(5비트 패킹 커널·Arenas 미구현). 표준 스케줄은 **`--sched wsd`**.
 >
 > **1차 리뷰 정본: [`docs/review/202607301200_1차리뷰_실험종합및최적모델3안.md`](docs/review/202607301200_1차리뷰_실험종합및최적모델3안.md)**
@@ -175,6 +177,21 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 - **구 로그의 데이터 풀은 `bytes_per_token` 역산으로 판별 가능**(결과 012):
   `bpt = val_loss / ln2 / bpb`. **600M 풀 = 4.3750 / 300M 풀 = 4.4778**. `pool_tokens` 가
   없는 구 로그도 이 값으로 어느 캐시를 썼는지 확정할 수 있다.
+- **★크기·배수를 코드나 문구에 리터럴로 적지 말 것(결과 014 §10.7).** `bench_infer.py` 가
+  `DEFAULT_MODELS` 에 **30.9/14.9/11.7 을 박아** 두어, 같은 배치 로그 안에서 `mem_runtime.py` 의
+  27.1/13.1/12.4 와 **두 개의 진실**이 찍혔다(게다가 구 규약). `--models` 를 주면 0.0 이 되어
+  비율 절이 통째로 사라지기까지 했다. **크기는 `mem_report_all()` 이 유일한 소스다.**
+- **★`torch.quantile` 은 입력 2²⁴(16.7M) 초과에서 죽는다(결과 019).** dense 는 TLinear 가 많아
+  층당 20만 표본만 모아도 30M 을 넘겼고, **타잉 모델만 통과하고 dense 대조군이 골라져 죽었다**
+  — 혼란요인 제거 장치가 사라진 채 비교가 진행됐다. 대용량 분위 계산은 **표본을 한 번 더 줄인다.**
+- **★모델마다 다른 층을 뽑아 놓고 평균을 비교하지 말 것(결과 019).** 유효랭크(ER)는 **차원으로
+  상한**되므로, 균등간격 층 선택이 g 에 따라 어긋나면 평균 ER 은 아키텍처가 아니라 **뽑기 결과**를
+  잰다. **차원 정규화 + shape 일치 쌍**으로만 비교한다.
+- **★구조가 정한 값을 지표로 읽지 말 것(결과 019).** 3:4 모델의 "0 비율 25.00%" 는 측정이 아니라
+  **정의**다(4개마다 1개를 0 으로 강제). 이걸 근거로 삼으면 순환논증이 된다.
+- **★자동 판정문을 결과문서에 옮기지 말 것(결과 018).** `diag_val_docs.py` 가 `ko-en` 에
+  "**무작위 분할이 필요하다**"를 출력했으나 그건 **−0.001 이라는 거의 0 인 델타에서 발화**한 것이고,
+  실제 신호는 정반대였다(상위 기여 문서를 빼면 손실이 **오른다** = 그 문서들이 평균보다 쉽다).
 - **구 로그(2026-07-30 이전)에는 `pool_tokens`·`mlp_group`·`micro_bs`·`accum`·`deploy_mb`·`seed` 가
   없다** → 로그만으로 조건 복원 불가. 과거 조건은 `docs/EXPERIMENT_BASELINES.md` §2 레지스트리로 본다.
 
@@ -199,7 +216,7 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 `diag_cache.py`(캐시 진단) · `eval_slices.py`(구간별 손실) · `probe_prompts.py`(정성 프로브·캐시 게이트,
 `--device cpu` 로 fp32) · `mem_runtime.py`(상주 메모리) · `diag_val_docs.py`(문서단위 val) ·
 **`diag_kvcache.py`**(KV캐시 teacher-forced 로짓 동등성 — **캐시 정확성의 정본 게이트**) ·
-**`diag_sparse34.py`**(3:4 희소 구현·실제 희소율·bpw 회계 감사).
+**`diag_sparse34.py`**(3:4 희소 구현·실제 희소율·bpw 회계 감사) · **`paired_eval.py`**(P032 **결정적 full-val + paired per-crop** — eval 샘플링 노이즈를 0 으로. 단 **확정 범위는 '두 체크포인트'이지 아키텍처가 아니다**).
 **신규 스크립트를 쓰기 전에 `scripts\batch\run_smoke.bat` 을 돌린다** — 계약 위반은 수 분에
 잡히지만 긴 런 뒤에 발견하면 그 시간이 통째로 날아간다.
 **배치 배치(2026-07-31 개편)**: 작업폴더 최상위 = **아직 안 돌린 실험 배치만**.
@@ -219,9 +236,22 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 
 **★2026-07-31 개편**: 최상위 = **아직 안 돌린 실험 배치만**. 재사용 도구·완료분은 `scripts/batch/`.
 
-| 최상위(미실행 실험) | `scripts/batch/`(재사용·완료) |
+| 최상위 = **실험**(계획번호·단계가 이름에 있다) | `scripts/batch/` = **기능 모듈**(실험 아님) |
 |---|---|
-| **`run_P030_stage2B_infer.bat`** · `run_P035_anneal.bat` · `run_P001B_lrfind.bat` · `run100m_P007B.bat` · `run_P031_repeat.bat`(가드) | `run_smoke.bat`(상시) · `run_P030_cachegate.bat`(**캐시 정본 게이트**) · `run_P034_sparse34.bat` · `run_P034_memory.bat` · `run_P028_diag.bat` · `run_P028_stage05.bat` · `run_P028_stage06.bat` · `run_P029_probe.bat` |
+| `run_P034_stage2_latent.bat` · `run_P036_stage1b_trapping.bat` · `run_P032_paired_eval.bat` · `run_P038_wsd_recheck.bat` · `run_P035_anneal.bat` · `run100m_P007B.bat` · `run_P031_repeat.bat`(가드) · `run_P036_stage2_arenas.bat`(가드) · `run_P037_stage2_regen.bat`(가드) | `tool_smoke.bat` · `tool_kvcache_gate.bat`(**캐시 정본 게이트**) · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
+
+> **★`scripts/batch/` 를 사용자에게 직접 실행하라고 안내하지 않는다**(2026-07-31 개편).
+> 그건 **도구**다 — 실험번호도, 계획서 참조도, `test_result` 상의 자리도 없다.
+> 특정 실험에 재사용하려면 **최상위에 새 실험 배치를 만들어 `call` 한다.** 규약은
+> [`scripts/batch/README.md`](scripts/batch/README.md).
+>
+> **인자는 환경변수**(`TL_LOGNAME`·`TL_MODELS`·`TL_NOPAUSE`·…)로 준다. `%` 금지 규약 때문에
+> `%1`·`%*`·`%~dp0` 은 물론 **`for` 반복변수도 못 쓴다** → 목록형 입력은 `TL_DATA1`/`TL_DATA2`
+> 처럼 **번호 슬롯**. 도구 내부는 `setlocal enabledelayedexpansion` + `!TL_X!`(`!` 는 금지문자 아님).
+>
+> **★모든 경로가 `exit /b` 로 끝나야 한다.** 구 배치 6개는 본문 끝에 `exit /b 0` 이 없어
+> **정상 종료 후 `:BADROOT` 로 흘러들어가** `[STOP] could not locate the repo root` 를 찍었다
+> (2026-07-31 사용자 보고). 재작성본에서 수정.
 
 `scripts/batch/` 의 배치는 **어느 위치에서 실행해도 동작**한다(`if not exist run100m.py cd ..\..`
 마커 방식 — `%` 금지 규약 때문에 `%~dp0` 를 쓰지 않는다). `lint_bat.py` 가 두 폴더를 모두 검사한다.

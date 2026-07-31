@@ -96,12 +96,20 @@ def weight_stats(model, TLinear):
             r = (aw / alpha).reshape(-1)
             tot["n"] += r.numel()
             tot["valley"] += int((r < 0.5).sum())          # 가운데가 비면 양극화
-            q_all.append(r[torch.randperm(r.numel())[:200_000]].cpu())
+            q_all.append(r[torch.randperm(r.numel(), device=r.device)[:200_000]].cpu())
             z = wq.reshape(-1)
             tot["zero"] += int((z == 0).sum())
             tot["neg"] += int((z < 0).sum())
             tot["pos"] += int((z > 0).sum())
     r = torch.cat(q_all)
+    # ★2026-07-31 수정 — `torch.quantile` 은 입력이 2^24(=16,777,216) 를 넘으면
+    #   "input tensor is too large" 로 **죽는다**. dense(p6d)는 TLinear 가 많아
+    #   층당 200k 표본만 모아도 30M 을 넘겼고, 그래서 결과 019 에서 **dense 대조군이
+    #   통째로 빠졌다**(타잉 두 모델만 비교됨 = 3:4 귀속이 더 약해졌다).
+    #   층별 표본을 이미 뽑았으므로 여기서 한 번 더 줄여도 분위 추정은 그대로다.
+    QMAX = 8_000_000
+    if r.numel() > QMAX:
+        r = r[torch.randperm(r.numel())[:QMAX]]
     qs = torch.quantile(r, torch.tensor([0.10, 0.25, 0.50, 0.75, 0.90]))
     return tot, [float(x) for x in qs]
 
@@ -115,10 +123,15 @@ def grad_effective_rank(model, cfg, loader, device, batches, TLinear, topk=6):
     import torch
     import torch.nn.functional as F
 
-    tls = [m for m in model.modules() if isinstance(m, TLinear)]
+    tls = [(n, m) for n, m in model.named_modules() if isinstance(m, TLinear)]
     # 중간층 MLP 쪽을 균등 간격으로 topk 개 고른다(전부 보면 느리고 정보도 중복)
-    picks = [tls[i] for i in
-             (range(0, len(tls), max(1, len(tls) // topk)))][:topk]
+    # ★2026-07-31 주의(결과 019): 균등 간격은 **모델마다 다른 층을 고른다**. g4 와 g8 은
+    #   TLinear 개수가 달라 뽑히는 shape 집합이 달라졌고, 그래서 **raw 평균 ER 을 모델 간
+    #   비교에 쓰면 안 된다**. 이름을 함께 돌려주어 무엇이 뽑혔는지 로그에 남긴다.
+    picked = [tls[i] for i in
+              (range(0, len(tls), max(1, len(tls) // topk)))][:topk]
+    picks = [m for _n, m in picked]
+    names = [n for n, _m in picked]
     store = {id(m): [] for m in picks}
     handles = []
 
@@ -152,7 +165,7 @@ def grad_effective_rank(model, cfg, loader, device, batches, TLinear, topk=6):
             continue
         M = torch.cat(chunks, dim=0)
         er, d = effective_rank(M)
-        out.append((i, tuple(m.weight.shape), er, d, er / max(d, 1)))
+        out.append((names[i], tuple(m.weight.shape), er, d, er / max(d, 1)))
     return out
 
 
@@ -214,14 +227,16 @@ def main():
         va = Loader("val", a.micro_bs, a.seq, dev, meta["dir"], seed=99)
         ers = grad_effective_rank(model, cfg, va, dev, a.batches, TLinear)
         print(f"\n  [3] ★gradient 유효랭크 (dL/dX, 논문 Fig.4 대응)")
-        print(f"      {'층':>5} {'shape':>16} {'ER':>9} {'차원':>6} {'ER/차원':>9}")
-        for i, shp, er, d, ratio in ers:
-            print(f"      {i:>5} {str(shp):>16} {er:>9.1f} {d:>6} {ratio:>8.2%}")
+        print(f"      {'층(이름)':<28} {'shape':>16} {'ER':>9} {'차원':>6} {'ER/차원':>9}")
+        for nm, shp, er, d, ratio in ers:
+            print(f"      {nm[-28:]:<28} {str(shp):>16} {er:>9.1f} {d:>6} {ratio:>8.2%}")
         er_mean = sum(e[2] for e in ers) / max(len(ers), 1)
         ratio_mean = sum(e[4] for e in ers) / max(len(ers), 1)
         print(f"      평균 ER {er_mean:.1f}  평균 ER/차원 {ratio_mean:.2%}")
+        print(f"      ★평균 ER 은 **모델 간 비교용이 아니다**(뽑힌 shape 이 다르다). "
+              f"판정은 ER/차원 과 shape 일치 쌍으로 한다.")
 
-        rows.append((tag, s34, valley, zero, er_mean, ratio_mean))
+        rows.append((tag, s34, valley, zero, er_mean, ratio_mean, ers))
         del model
         if dev == "cuda":
             torch.cuda.empty_cache()
@@ -230,21 +245,46 @@ def main():
         return 2
 
     banner("★모델 간 비교 — 이것이 판정의 근거다", "#")
-    print(f"  {'모델':<16}{'s34':>6}{'골짜기<0.5a':>12}{'0 비율':>9}{'평균 ER':>10}{'ER/차원':>9}")
-    print("  " + "-" * 64)
-    for tag, s34, valley, zero, er, ratio in rows:
-        print(f"  {tag:<16}{str(s34):>6}{valley:>11.2%}{zero:>9.2%}{er:>10.1f}{ratio:>8.2%}")
+    print(f"  {'모델':<16}{'s34':>6}{'골짜기<0.5a':>12}{'0 비율':>9}{'평균ER(참고)':>13}{'ER/차원':>9}")
+    print("  " + "-" * 68)
+    for tag, s34, valley, zero, er, ratio, _e in rows:
+        print(f"  {tag:<16}{str(s34):>6}{valley:>11.2%}{zero:>9.2%}{er:>12.1f}{ratio:>8.2%}")
+
+    # ★'0 비율'은 3:4 모델에서 **측정값이 아니라 제약값**이다 — 4개마다 정확히 1개를 0 으로
+    #   강제하므로 25.00% 가 구조적으로 확정된다. 지표로 읽으면 순환논증이 된다.
+    if any(r[1] for r in rows):
+        print("\n  ⚠️ '0 비율' 은 3:4 모델에서 **구조가 정한 값(25.00%)** 이다. 관측 지표가 아니므로")
+        print("     '3:4 가 0 을 덜 쓴다'는 식으로 읽지 말 것 — 그건 3:4 의 정의 그 자체다.")
+
+    # ★shape 일치 쌍 비교 — 뽑힌 층 집합이 모델마다 달라 raw 평균 ER 은 비교 불가다.
+    if len(rows) >= 2:
+        banner("shape 일치 층만 골라낸 ER/차원 비교 (raw 평균 ER 의 대체)")
+        by_shape = {}
+        for tag, s34, _v, _z, _e, _r, ers in rows:
+            for _nm, shp, er, d, ratio in ers:
+                by_shape.setdefault(shp, {}).setdefault(tag, []).append(ratio)
+        shared = [s for s, d in by_shape.items() if len(d) == len(rows)]
+        if not shared:
+            print("  공통 shape 이 없다 — 이 체크포인트 조합으로는 ER 을 모델 간 비교할 수 없다.")
+        else:
+            tags = [r[0] for r in rows]
+            print(f"  {'shape':>16} " + " ".join(f"{t:>14}" for t in tags))
+            for s in sorted(shared, key=lambda x: -x[0]):
+                cells = [sum(by_shape[s][t]) / len(by_shape[s][t]) for t in tags]
+                print(f"  {str(s):>16} " + " ".join(f"{c:>13.2%}" for c in cells))
+            print("  ★이 표만이 ER 의 모델 간 비교로 유효하다.")
 
     s34rows = [r for r in rows if r[1]]
     other = [r for r in rows if not r[1]]
     print()
     if s34rows and other:
         v_s, v_o = s34rows[0][2], sum(r[2] for r in other) / len(other)
-        e_s, e_o = s34rows[0][4], sum(r[4] for r in other) / len(other)
+        # ★판정은 raw 평균 ER 이 아니라 **차원 정규화한 ER/차원** 으로 한다(위 경고 참조).
+        e_s, e_o = s34rows[0][5], sum(r[5] for r in other) / len(other)
         print(f"  3:4 모델 vs 비-3:4 평균")
         print(f"    골짜기 지표 {v_s:.2%} vs {v_o:.2%}  "
               f"({'3:4 가 더 양극화' if v_s < v_o else '차이 없음/반대'})")
-        print(f"    평균 ER     {e_s:.1f} vs {e_o:.1f}  "
+        print(f"    ER/차원     {e_s:.2%} vs {e_o:.2%}  "
               f"({'3:4 가 더 낮음 = 균질화' if e_s < e_o * 0.9 else '차이 없음/반대'})")
         print()
         if v_s < v_o * 0.85 and e_s < e_o * 0.9:
@@ -258,10 +298,13 @@ def main():
     print("""  · ER 은 배치 몇 개의 gradient 표본이다. 논문의 학습 전 구간 추적과 다르다.
   · ER 은 차원으로 상한되므로 **절대값을 논문(4096차원)과 직접 비교하지 말 것**
     — 우리는 d=768 / ffn=2048 이다. 읽을 것은 **모델 간 비율**이다.
+  · ★뽑는 층이 모델마다 다르다(TLinear 개수가 g 에 따라 달라 균등간격이 어긋난다).
+    그래서 **raw 평균 ER 은 참고값**이고, 판정은 ER/차원 과 위의 shape 일치 표로 한다.
   · 이 세 모델은 **학습 조건이 조금씩 다르다**(g4/g8, s34 유무). 차이를 3:4 단독에
     귀속하려면 g 를 맞춘 대조가 필요하지만, 지금 있는 체크포인트로는 불가능하다.
     → **단계2 가 그 대조를 학습으로 만든다**(같은 조건에 Arenas 만 on/off).
-  · 골짜기 지표의 임계(0.5·alpha)는 **우리가 정한 것**이지 논문 값이 아니다.""")
+  · 골짜기 지표의 임계(0.5·alpha)는 **우리가 정한 것**이지 논문 값이 아니다.
+  · '0 비율' 은 3:4 에서 구조가 정한 25.00% — 관측 지표가 아니다.""")
     return 0
 
 

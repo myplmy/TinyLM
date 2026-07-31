@@ -63,6 +63,45 @@ class TLinear(nn.Module):
             self.mode_gain = nn.Parameter(torch.ones(cfg.n_modes, r) + 0.02*torch.randn(cfg.n_modes, r))
         self._wq = None
         self._anneal_t = None            # refresh_quant가 채우는 어닐 스칼라 텐서(커널 경로 재컴파일 방지용)
+        self._latent_shape = None        # drop_latent() 후에도 파라미터 수를 알기 위한 기록
+
+    # ---------- P034 단계2: 추론 시 latent 해제 ----------
+    def latent_dropped(self):
+        return self._latent_shape is not None
+
+    def weight_numel(self):
+        """★`weight.numel()` 대신 이걸 쓴다. latent 를 해제해도 **파라미터 수 회계가 유지**된다.
+
+        해제 후 `weight` 는 빈 텐서가 되므로 `mem_breakdown()` 이 삼진 파라미터를 0 으로 세고
+        저장 MB 가 갑자기 0 이 된다 — 그러면 P034 단계2 의 효과를 잴 수가 없다.
+        """
+        if self._latent_shape is not None:
+            n = 1
+            for d in self._latent_shape:
+                n *= d
+            return n
+        return self.weight.numel()
+
+    def drop_latent(self):
+        """freeze 후 fp32 latent `weight` 의 저장공간을 해제한다(추론 전용, 되돌릴 수 없다).
+
+        ★근거(결과 016): 상주 = 유니크삼진 × 4B × **2벌**(latent + dequant 사본) + 나머지.
+          추론에는 backward 가 없으므로 latent 는 **죽은 무게**다. 이 한 줄이 상주의 절반을
+          없앤다 — 커스텀 커널 없이 오늘 가능한 **가장 큰 단일 레버**다(P034 §단계2).
+
+        ★`_wq` 를 detach 하는 이유: `refresh_quant()` 는 autograd Function 을 타므로 `_wq` 가
+          grad_fn 으로 `weight` 를 **붙잡고 있다**. detach 하지 않으면 저장공간을 비워도
+          그래프가 참조를 유지해 실제 해제가 일어나지 않는다.
+        """
+        if self._wq is None:
+            raise RuntimeError("drop_latent() 전에 freeze_quant() 가 필요하다 "
+                               "(_wq 가 없으면 forward 가 latent 를 다시 읽는다).")
+        if self._latent_shape is None:
+            self._latent_shape = tuple(self.weight.shape)
+        self._wq = self._wq.detach()
+        # 파라미터 객체는 유지하고 저장공간만 비운다(state_dict 키 구조를 깨지 않기 위해).
+        self.weight.data = self.weight.data.new_empty(0)
+        self.weight.requires_grad_(False)
 
     def _w(self):
         """(옵션) g128 그룹별 mean-centering 후 latent weight 반환."""
@@ -85,6 +124,9 @@ class TLinear(nn.Module):
 
     def forward(self, x, mode_p=None):
         if getattr(self.cfg, "use_ternary_kernel", False):   # 분리된 커스텀 커널 경로(기본 off)
+            if self._latent_shape is not None:
+                raise RuntimeError("latent 해제 상태에서는 커스텀 커널 경로를 쓸 수 없다 "
+                                   "(커널이 latent weight 를 직접 읽는다).")
             y = ternary_kernel_linear(x, self._w(), self.cfg, self._anneal_t)
         else:
             wq = self._wq if self._wq is not None else ternary(self._w(), self.cfg)

@@ -83,6 +83,24 @@ class TiedMLPTransformer(nn.Module):
         for m in self._tlinear_cache:
             m.clear_quant()
 
+    def latent_dropped(self):
+        """P034 단계2 가 적용됐는지. `mem_breakdown()` 의 상주 계산이 이 값을 본다."""
+        return any(m.latent_dropped() for m in self._tlinear_cache)
+
+    def drop_latent(self):
+        """★P034 단계2 — 추론 시 fp32 latent 가중치를 해제한다(되돌릴 수 없다).
+
+        `freeze_quant()` 이후에만 유효하다. backward 가 없는 추론에서 latent 는 죽은 무게이고,
+        결과 016 의 실측식(상주 = 유니크삼진 × 4B × **2벌** + 나머지)에서 그 2벌 중 한 벌이다.
+        커스텀 커널 없이 **상주를 약 절반**으로 줄이는 오늘 가능한 최대 레버다.
+
+        ⚠️ 학습 재개 불가. `clear_quant()` 로도 되돌아오지 않는다 — 다시 쓰려면 재로드한다.
+        """
+        if not self._quant_frozen:
+            raise RuntimeError("drop_latent() 전에 freeze_quant() 가 필요하다.")
+        for m in self._tlinear_cache:
+            m.drop_latent()
+
     def freeze_quant(self):
         """★추론용: 삼진 가중치를 **한 번만** 계산하고 이후 forward 에서 재계산하지 않는다.
 
@@ -235,21 +253,32 @@ class TiedMLPTransformer(nn.Module):
         MB = lambda n, b: n * b / 8 / 1024 ** 2
         b_t, b_s, b_e = self._bpw(container)
         bpw_t = b_s if getattr(cfg, "sparse34", False) else b_t
-        tern = sum(m.weight.numel() for m in self._tlinears())
+        # ★`weight.numel()` 이 아니라 `weight_numel()` — P034 단계2(latent 해제) 후에도
+        #   파라미터 수 회계가 유지된다(해제하면 weight 는 빈 텐서가 된다).
+        tern = sum(m.weight_numel() for m in self._tlinears())
         mode = sum(p.numel() for m in self._tlinears() if m.use_mode
                    for p in (m.mode_a, m.mode_b, m.mode_gain))
         emb = self.emb.weight.numel() + (self.emb_up.weight.numel() if self.emb_up is not None else 0)
         lora = sum(p.numel() for m in self.modules() if isinstance(m, LoRA) for p in m.parameters())
-        other = sum(p.numel() for p in self.parameters()) - tern - mode - emb - lora
+        # ★`parameters()` 합에서 빼는 방식은 P034 단계2 후에 **깨진다** — latent 를 해제하면
+        #   `parameters()` 합만 줄고 `tern`(=weight_numel)은 그대로라 `other` 가 **음수**가 된다.
+        #   그래서 해제분을 되돌려 더한 뒤 뺀다. 해제 전에는 값이 종전과 완전히 같다.
+        dropped = sum(m.weight_numel() - m.weight.numel() for m in self._tlinears())
+        total_live = sum(p.numel() for p in self.parameters()) + dropped
+        other = total_live - tern - mode - emb - lora
         e_bits = b_e if cfg.quantize_embedding else 16
         l_bits = cfg.mlp_lora_bits
         parts = {"ternary": MB(tern, bpw_t), "mode": MB(mode, 16), "emb": MB(emb, e_bits),
                  "other": MB(other, 16), "lora": MB(lora, l_bits)}
         # ★상주(runtime) — 결과 016 실측식: 유니크 삼진 x 4B x 2벌(latent + dequant 사본) + 나머지 fp32
-        runtime_mb = ((tern + mode + lora) * 4 * 2 + (emb + other) * 4) / 1024 ** 2
+        #   P034 단계2 로 latent 를 해제하면 **1벌**이 된다(= 이 값이 절반 근처로 떨어진다).
+        copies = 1 if self.latent_dropped() else 2
+        runtime_mb = ((tern + mode + lora) * 4 * copies + (emb + other) * 4) / 1024 ** 2
         return {"total_mb": sum(parts.values()),          # = packed_mb (구 호출부 호환 별칭)
                 "packed_mb": sum(parts.values()),
                 "runtime_mb": runtime_mb,
+                "runtime_copies": copies,        # 2 = latent + dequant / 1 = P034 단계2 적용
+                "latent_dropped": copies == 1,
                 "parts_mb": parts,
                 "params": {"ternary": tern, "mode": mode, "emb": emb, "other": other, "lora": lora,
                            "total": tern + mode + emb + other + lora},
