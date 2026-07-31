@@ -64,15 +64,18 @@ REM ERRORLEVEL POLICY: the guard is a hard stop. The fp32 gate is a hard stop. b
 
 echo ============================================================
 echo [P030 1.5-B] teacher-forced logit equivalence gate
+python scripts\runlog.py --name P030-cachegate --note "[P030 1.5-B] teacher-forced logit equivalence gate"
 echo ============================================================
 
 echo.
 echo [guard] checking whether scripts\diag_kvcache.py exists
+python scripts\runlog.py --name P030-cachegate --note "[guard] checking whether scripts\diag_kvcache.py exists"
 if not exist scripts\diag_kvcache.py goto NOTIMPL
 
 echo.
 echo ============================================================
 echo [1/3] HARD GATE : fp32 on cpu, tolerance 1e-3
+python scripts\runlog.py --name P030-cachegate --note "[1/3] HARD GATE : fp32 on cpu, tolerance 1e-3"
 echo   All three models. mC_g8_k4 is tied but not sparse34, which separates
 echo   "tying plus CLA" from "sparse34" if something does fail.
 echo ============================================================
@@ -82,6 +85,7 @@ if errorlevel 1 goto GATEBAD
 echo.
 echo ============================================================
 echo [2/3] SAME GATE on cuda (bf16 autocast) - measures how big the precision gap is
+python scripts\runlog.py --name P030-cachegate --note "[2/3] SAME GATE on cuda (bf16 autocast) - measures how big the precision gap is"
 echo   Failing here is not a defect. It quantifies the headroom the old gate ignored.
 echo ============================================================
 python scripts\runlog.py --name P030-cachegate -- python scripts\diag_kvcache.py --models mA_g4s34_k4 mC_g8_k4 p6d --device cuda --tol 1e-3 --max-new 24
@@ -90,6 +94,7 @@ if errorlevel 1 echo [INFO] bf16 exceeds the fp32 tolerance - record the number,
 echo.
 echo ============================================================
 echo [3/3] GREEDY divergence, REPORT ONLY, with the tie margin
+python scripts\runlog.py --name P030-cachegate --note "[3/3] GREEDY divergence, REPORT ONLY, with the tie margin"
 echo   This is the old gate, demoted. Read the top-2 gap next to each divergence.
 echo ============================================================
 python scripts\runlog.py --name P030-cachegate -- python scripts\diag_kvcache.py --models mA_g4s34_k4 mC_g8_k4 p6d --device cuda --report-greedy --max-new 24

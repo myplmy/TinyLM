@@ -41,6 +41,7 @@ REM ERRORLEVEL POLICY: the gate is a hard stop. Everything after it only warns.
 
 echo ============================================================
 echo [P030-2B] CPU inference - first valid measurement
+python scripts\runlog.py --name P030-stage2B --note "[P030-2B] CPU inference - first valid measurement"
 echo ============================================================
 
 echo.
@@ -51,6 +52,7 @@ if errorlevel 1 echo [WARN] wmic failed - note your CPU model manually
 echo.
 echo ============================================================
 echo [0/4] GATE : teacher-forced logit equivalence, fp32 on cpu
+python scripts\runlog.py --name P030-stage2B --note "[0/4] GATE : teacher-forced logit equivalence, fp32 on cpu"
 echo   This replaces the old greedy-string gate. Deterministic, no autoregressive
 echo   amplification, and the error pattern localises a real bug if one appears.
 echo ============================================================
@@ -61,6 +63,7 @@ echo   [OK] logit equivalence within 1e-3. Cache is correct. Speed numbers are m
 echo.
 echo ============================================================
 echo [1/4] GPU baseline, cache on vs off  (the cache speedup multiple)
+python scripts\runlog.py --name P030-stage2B --note "[1/4] GPU baseline, cache on vs off  (the cache speedup multiple)"
 echo ============================================================
 python scripts\runlog.py --name P030-stage2B -- python scripts\bench_infer.py --device cuda --max-new 128 --reps 3 --both-cache
 if errorlevel 1 echo [WARN] GPU bench failed - continuing
@@ -68,6 +71,7 @@ if errorlevel 1 echo [WARN] GPU bench failed - continuing
 echo.
 echo ============================================================
 echo [2/4] CPU single thread - the most realistic edge number
+python scripts\runlog.py --name P030-stage2B --note "[2/4] CPU single thread - the most realistic edge number"
 echo   THIS IS THE HEADLINE NUMBER of the whole project. Record it carefully.
 echo ============================================================
 python scripts\runlog.py --name P030-stage2B -- python scripts\bench_infer.py --device cpu --threads 1 --max-new 128 --reps 3 --both-cache
@@ -76,6 +80,7 @@ if errorlevel 1 echo [WARN] CPU 1-thread bench failed - continuing
 echo.
 echo ============================================================
 echo [3/4] CPU thread sweep (cache on only - off is characterised above)
+python scripts\runlog.py --name P030-stage2B --note "[3/4] CPU thread sweep (cache on only - off is characterised above)"
 echo ============================================================
 python scripts\runlog.py --name P030-stage2B -- python scripts\bench_infer.py --device cpu --threads 2 4 8 --max-new 128 --reps 3
 if errorlevel 1 echo [WARN] CPU sweep failed - continuing
@@ -83,6 +88,7 @@ if errorlevel 1 echo [WARN] CPU sweep failed - continuing
 echo.
 echo ============================================================
 echo [4/4] eos stop, qualitative - does generation END instead of running on
+python scripts\runlog.py --name P030-stage2B --note "[4/4] eos stop, qualitative - does generation END instead of running on"
 echo ============================================================
 python scripts\runlog.py --name P030-stage2B -- python scripts\probe_prompts.py --models mA_g4s34_k4 --temps 0.7
 if errorlevel 1 echo [WARN] eos demo failed - continuing

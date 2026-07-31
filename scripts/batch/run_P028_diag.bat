@@ -36,15 +36,18 @@ REM COST: minutes, CPU only, read-only on data_cache. Writes nothing, trains not
 
 echo ============================================================
 echo [P028-0] cache diagnosis : ko-en (control) vs ko-edu-en (suspect)
+python scripts\runlog.py --name P028-diag --note "[P028-0] cache diagnosis : ko-en (control) vs ko-edu-en (suspect)"
 echo ============================================================
 echo.
 echo [0] caches present
+python scripts\runlog.py --name P028-diag --note "[0] caches present"
 python scripts\runlog.py --name P028-diag -- python scripts\diag_cache.py
 if errorlevel 1 echo [WARN] listing failed - continuing
 
 echo.
 echo ============================================================
 echo [1/2] CONTROL : ko-en 300M  (this one trained normally)
+python scripts\runlog.py --name P028-diag --note "[1/2] CONTROL : ko-en 300M  (this one trained normally)"
 echo ============================================================
 python scripts\runlog.py --name P028-diag -- python scripts\diag_cache.py --data ko-en --tokens 300M
 if errorlevel 1 echo [WARN] ko-en diag failed - continuing
@@ -52,6 +55,7 @@ if errorlevel 1 echo [WARN] ko-en diag failed - continuing
 echo.
 echo ============================================================
 echo [2/2] SUSPECT : ko-edu-en 300M  (3.14 nats train/val gap)
+python scripts\runlog.py --name P028-diag --note "[2/2] SUSPECT : ko-edu-en 300M  (3.14 nats train/val gap)"
 echo ============================================================
 python scripts\runlog.py --name P028-diag -- python scripts\diag_cache.py --data ko-edu-en --tokens 300M
 if errorlevel 1 echo [WARN] ko-edu-en diag failed - continuing

@@ -33,15 +33,18 @@ if not exist run100m.py goto BADROOT
 
 echo =============================================================
 echo [P032] deterministic full-val + paired per-crop comparison
+python scripts\runlog.py --name P032-paired --note "[P032] deterministic full-val + paired per-crop comparison"
 echo =============================================================
 
 echo.
 echo [guard] scripts\paired_eval.py present
+python scripts\runlog.py --name P032-paired --note "[guard] scripts\paired_eval.py present"
 if not exist scripts\paired_eval.py goto NOSCRIPT
 
 echo.
 echo =============================================================
 echo [1/3] GPU pass, bf16 autocast - fast, and the headline table
+python scripts\runlog.py --name P032-paired --note "[1/3] GPU pass, bf16 autocast - fast, and the headline table"
 echo =============================================================
 python scripts\runlog.py --name P032-paired -- python scripts\paired_eval.py --models mA_g4s34_k4 mC_g8_k4 p6d --seq 1024 --micro-bs 8
 if errorlevel 1 echo [WARN] cuda paired eval failed - continuing
@@ -49,6 +52,7 @@ if errorlevel 1 echo [WARN] cuda paired eval failed - continuing
 echo.
 echo =============================================================
 echo [2/3] REPEAT the same command - determinism check
+python scripts\runlog.py --name P032-paired --note "[2/3] REPEAT the same command - determinism check"
 echo   If full-val is deterministic, both runs print IDENTICAL numbers. If they
 echo   do not, the pairing rests on sand and nothing below it can be read.
 echo =============================================================
@@ -58,6 +62,7 @@ if errorlevel 1 echo [WARN] repeat failed - continuing
 echo.
 echo =============================================================
 echo [3/3] CPU pass, fp32 - removes bf16 ULP noise from the crop losses
+python scripts\runlog.py --name P032-paired --note "[3/3] CPU pass, fp32 - removes bf16 ULP noise from the crop losses"
 echo   Slower. Worth it because the difference we are chasing is 0.004.
 echo =============================================================
 python scripts\runlog.py --name P032-paired -- python scripts\paired_eval.py --models mA_g4s34_k4 p6d --seq 1024 --micro-bs 4 --device cpu

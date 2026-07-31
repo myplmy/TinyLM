@@ -44,6 +44,7 @@ if not defined TL_LOGNAME set TL_LOGNAME=smoke
 
 echo =============================================================
 echo [tool] instrumentation contract smoke test
+python scripts\runlog.py --name !TL_LOGNAME! --note "[tool] instrumentation contract smoke test"
 echo   Runs the tiny preset on synthetic data and then verifies that every
 echo   field a result document depends on was actually written to the json.
 echo   Minutes here, versus discovering a missing field after a long run.
@@ -52,36 +53,43 @@ echo =============================================================
 
 echo.
 echo [pre] static attribute check - catches cfg.WRONG_NAME without loading torch
+python scripts\runlog.py --name !TL_LOGNAME! --note "[pre] static attribute check - catches cfg.WRONG_NAME without loading torch"
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_attrs.py
 if errorlevel 1 echo [WARN] attribute check found problems - FIX THEM FIRST
 
 echo.
 echo [1] baseline
+python scripts\runlog.py --name !TL_LOGNAME! --note "[1] baseline"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --tag sm_base
 if errorlevel 1 echo [WARN] sm_base failed - continuing
 
 echo.
 echo [2] seed path
+python scripts\runlog.py --name !TL_LOGNAME! --note "[2] seed path"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --seed 4242 --tag sm_seed
 if errorlevel 1 echo [WARN] sm_seed failed - continuing
 
 echo.
 echo [3] 3:4 path
+python scripts\runlog.py --name !TL_LOGNAME! --note "[3] 3:4 path"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --sparse34 --tag sm_s34
 if errorlevel 1 echo [WARN] sm_s34 failed - continuing
 
 echo.
 echo [4] wsd schedule path
+python scripts\runlog.py --name !TL_LOGNAME! --note "[4] wsd schedule path"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --tag sm_sched
 if errorlevel 1 echo [WARN] sm_sched failed - continuing
 
 echo.
 echo [5] no grad checkpoint path
+python scripts\runlog.py --name !TL_LOGNAME! --note "[5] no grad checkpoint path"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --tag sm_nockpt
 if errorlevel 1 echo [WARN] sm_nockpt failed - continuing
 
 echo.
 echo [6] KD path - needs a tiny dense parent first
+python scripts\runlog.py --name !TL_LOGNAME! --note "[6] KD path - needs a tiny dense parent first"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15
 if errorlevel 1 echo [WARN] tiny dense parent failed - sm_kd will be skipped
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --kd --init-from --mlp-group 4 --kd-every 4 --tag sm_kd
@@ -90,6 +98,7 @@ if errorlevel 1 echo [WARN] sm_kd failed - continuing
 echo.
 echo =============================================================
 echo [VERIFY] every instrumentation field was recorded
+python scripts\runlog.py --name !TL_LOGNAME! --note "[VERIFY] every instrumentation field was recorded"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_smoke.py
 if errorlevel 1 echo [WARN] contract check FAILED - read which field is missing

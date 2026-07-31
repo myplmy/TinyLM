@@ -53,6 +53,7 @@ if not defined TL_ARCH set TL_ARCH=dense
 
 echo =============================================================
 echo [tool] slice loss - front of train vs back of train vs val
+python scripts\runlog.py --name !TL_LOGNAME! --note "[tool] slice loss - front of train vs back of train vs val"
 echo   Separates "the model never saw it" from "val is harder than train".
 echo   data1=!TL_DATA1!  data2=!TL_DATA2!  tag=!TL_TAG!  arch=!TL_ARCH!
 echo =============================================================
@@ -60,6 +61,7 @@ echo =============================================================
 echo.
 echo =============================================================
 echo [1] !TL_DATA1!
+python scripts\runlog.py --name !TL_LOGNAME! --note "[1] !TL_DATA1!"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\eval_slices.py --data !TL_DATA1! --tokens !TL_TOKENS! --tag !TL_TAG! --arch !TL_ARCH! --docstats
 if errorlevel 1 echo [WARN] first dataset slice eval failed - continuing
@@ -68,6 +70,7 @@ if not defined TL_DATA2 goto NODATA2
 echo.
 echo =============================================================
 echo [2] !TL_DATA2!
+python scripts\runlog.py --name !TL_LOGNAME! --note "[2] !TL_DATA2!"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\eval_slices.py --data !TL_DATA2! --tokens !TL_TOKENS! --tag !TL_TAG! --arch !TL_ARCH! --docstats
 if errorlevel 1 echo [WARN] second dataset slice eval failed - continuing

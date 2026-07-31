@@ -43,16 +43,19 @@ REM ERRORLEVEL POLICY: independent measurements, failures only warn.
 
 echo ============================================================
 echo [P001B] LR re-search at accum 16 (effective batch 131K)
+python scripts\runlog.py --name P001B --note "[P001B] LR re-search at accum 16 (effective batch 131K)"
 echo ============================================================
 
 echo.
 echo [pre] static attribute check
+python scripts\runlog.py --name P001B --note "[pre] static attribute check"
 python scripts\runlog.py --name P001B -- python scripts\check_attrs.py
 if errorlevel 1 echo [WARN] attribute check found problems - FIX THEM FIRST
 
 echo.
 echo ============================================================
 echo [1/3] DENSE at accum 16   ***THE ONE THAT MATTERS MOST***
+python scripts\runlog.py --name P001B --note "[1/3] DENSE at accum 16   ***THE ONE THAT MATTERS MOST***"
 echo   dense is the teacher. Every KD run inherits its quality, so if any LR is wrong
 echo   this is the expensive one. Also the P033 dense baseline runs 17 hours.
 echo ============================================================
@@ -62,6 +65,7 @@ if errorlevel 1 (echo [WARN] dense lrfind failed - continuing) else (copy /Y run
 echo.
 echo ============================================================
 echo [2/3] TIED at accum 16
+python scripts\runlog.py --name P001B --note "[2/3] TIED at accum 16"
 echo   the student. Tied shares MLP weights, so per-weight gradient magnitude differs
 echo   from dense and the optimum need not be the same number.
 echo ============================================================
@@ -71,6 +75,7 @@ if errorlevel 1 (echo [WARN] tied lrfind failed - continuing) else (copy /Y runs
 echo.
 echo ============================================================
 echo [3/3] CONTROL - dense at accum 8, reproducing P001's condition
+python scripts\runlog.py --name P001B --note "[3/3] CONTROL - dense at accum 8, reproducing P001's condition"
 echo   This is what validates the whole exercise. If accum 8 lands near P001's
 echo   1.7e-3 divergence and accum 16 lands HIGHER, the batch-size dependence is
 echo   demonstrated rather than assumed. If the two come out the SAME, then claim (b)

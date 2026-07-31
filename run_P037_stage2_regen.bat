@@ -43,16 +43,19 @@ if not exist run100m.py goto BADROOT
 
 echo =============================================================
 echo [P037-2] ko-edu-en regeneration with a content filter - GUARDED
+python scripts\runlog.py --name P037-stage2 --note "[P037-2] ko-edu-en regeneration with a content filter - GUARDED"
 echo =============================================================
 
 echo.
 echo [guard] is --doc-filter implemented
+python scripts\runlog.py --name P037-stage2 --note "[guard] is --doc-filter implemented"
 python -c "import sys; sys.exit(0 if '--doc-filter' in open('tinylm/cli.py',encoding='utf-8').read() else 7)"
 if errorlevel 1 goto NOTIMPL
 
 echo.
 echo =============================================================
 echo [1/2] regenerate ko-edu-en with the filter, into a new cache
+python scripts\runlog.py --name P037-stage2 --note "[1/2] regenerate ko-edu-en with the filter, into a new cache"
 echo =============================================================
 python scripts\runlog.py --name P037-stage2 -- python run100m.py prepare --data ko-edu-en --tokens 600M --exact-cache --doc-filter --doc-cap 0.01
 if errorlevel 1 goto PREPBAD
@@ -60,6 +63,7 @@ if errorlevel 1 goto PREPBAD
 echo.
 echo =============================================================
 echo [2/2] re-diagnose - the same measurement that found the problem
+python scripts\runlog.py --name P037-stage2 --note "[2/2] re-diagnose - the same measurement that found the problem"
 echo =============================================================
 set TL_LOGNAME=P037-stage2
 set TL_NOPAUSE=1

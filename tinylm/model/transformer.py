@@ -314,7 +314,11 @@ class TiedMLPTransformer(nn.Module):
         flops = 2 * cfg.n_layers * per_l / 1e9
         n_kv = sum(1 for i in range(cfg.n_layers) if i == self.owner[i])
         kv_kb = n_kv * 2 * cfg.kv_dim * 2 / 1024
-        mlp_mb = MB(3*cfg.dim*cfg.ffn_dim, bpw)
+        # ★2026-07-31 수정 — `bpw`(함수 인자)를 그대로 쓰고 있었다. 회계 통일 커밋(7b123fc)이
+        #   기본값을 `1.95` → `None` 으로 바꾸면서 **이 줄만 따라오지 않아** 모든 학습이
+        #   `report()` 에서 죽었다(TypeError: int * NoneType). 정본은 규약이 정한 `bpw_t` 다.
+        #   `bpw` 인자는 구 호출부 호환용으로만 남아 있고 무시되는 것이 맞다.
+        mlp_mb = MB(3*cfg.dim*cfg.ffn_dim, bpw_t)
 
         L = []; A = L.append
         A("=" * 72)

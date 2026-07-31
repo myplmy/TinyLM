@@ -51,6 +51,7 @@ if defined TL_MODELS set TL_MARG=--models !TL_MODELS!
 
 echo =============================================================
 echo [tool] resident memory profile
+python scripts\runlog.py --name !TL_LOGNAME! --note "[tool] resident memory profile"
 echo   Stored MB is a packing THEORY number. Resident MB is what the
 echo   process actually holds. Result 016 measured them 31 to 45 times
 echo   apart and in a DIFFERENT ORDER, so never quote one alone.
@@ -59,6 +60,7 @@ echo =============================================================
 
 echo.
 echo [pre] psutil availability
+python scripts\runlog.py --name !TL_LOGNAME! --note "[pre] psutil availability"
 python -c "import psutil; print('  psutil OK', psutil.__version__)"
 if errorlevel 1 echo [WARN] psutil missing - RSS will be nan. Run: pip install psutil
 
@@ -66,6 +68,7 @@ if defined TL_SKIP_CPU goto SKIPCPU
 echo.
 echo =============================================================
 echo [run] device cpu - the deployment target, so this is the number that counts
+python scripts\runlog.py --name !TL_LOGNAME! --note "[run] device cpu - the deployment target, so this is the number that counts"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\mem_runtime.py --device cpu --max-new !TL_MAXNEW! !TL_MARG! !TL_EXTRA!
 if errorlevel 1 echo [WARN] cpu measurement failed - continuing
@@ -75,6 +78,7 @@ if defined TL_SKIP_CUDA goto SKIPCUDA
 echo.
 echo =============================================================
 echo [run] device cuda - cross-check against an exact allocator peak
+python scripts\runlog.py --name !TL_LOGNAME! --note "[run] device cuda - cross-check against an exact allocator peak"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\mem_runtime.py --device cuda --max-new !TL_MAXNEW! !TL_MARG! !TL_EXTRA!
 if errorlevel 1 echo [WARN] cuda measurement failed - continuing

@@ -49,6 +49,7 @@ if defined TL_TEMPS set TL_TARG=--temps !TL_TEMPS!
 
 echo =============================================================
 echo [tool] qualitative probe
+python scripts\runlog.py --name !TL_LOGNAME! --note "[tool] qualitative probe"
 echo   This does NOT choose an architecture. val_loss and REVIEW1 do that.
 echo   Five samples is an impression, not a statistic. At 2.3 tokens per
 echo   parameter and no SFT, wrong facts are the EXPECTED outcome; what is
@@ -58,11 +59,13 @@ echo =============================================================
 
 echo.
 echo [0] prompts and what each one checks
+python scripts\runlog.py --name !TL_LOGNAME! --note "[0] prompts and what each one checks"
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\probe_prompts.py --list
 if errorlevel 1 echo [WARN] listing failed - continuing
 
 echo.
 echo [1] generating
+python scripts\runlog.py --name !TL_LOGNAME! --note "[1] generating"
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\probe_prompts.py !TL_MARG! !TL_TARG!
 if errorlevel 1 echo [WARN] probe failed - see the traceback above
 

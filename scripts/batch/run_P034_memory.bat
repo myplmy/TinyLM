@@ -49,16 +49,19 @@ REM ERRORLEVEL POLICY: independent measurements, failures only warn.
 
 echo ============================================================
 echo [P034-1] resident memory : storage MB is not working-set MB
+python scripts\runlog.py --name P034-memory --note "[P034-1] resident memory : storage MB is not working-set MB"
 echo ============================================================
 
 echo.
 echo [pre] psutil availability
+python scripts\runlog.py --name P034-memory --note "[pre] psutil availability"
 python -c "import psutil; print('  psutil OK', psutil.__version__)"
 if errorlevel 1 echo [WARN] psutil missing - RSS will be nan. Run: pip install psutil
 
 echo.
 echo ============================================================
 echo [1/2] CPU - this is the deployment target, so this is the number that counts
+python scripts\runlog.py --name P034-memory --note "[1/2] CPU - this is the deployment target, so this is the number that counts"
 echo ============================================================
 python scripts\runlog.py --name P034-memory -- python scripts\mem_runtime.py --device cpu --max-new 32
 if errorlevel 1 echo [WARN] CPU memory measurement failed - continuing
@@ -66,6 +69,7 @@ if errorlevel 1 echo [WARN] CPU memory measurement failed - continuing
 echo.
 echo ============================================================
 echo [2/2] GPU - cross-check. CUDA reports an exact allocator peak, so it validates
+python scripts\runlog.py --name P034-memory --note "[2/2] GPU - cross-check. CUDA reports an exact allocator peak, so it validates"
 echo   the tensor-sum method against a number we can trust.
 echo ============================================================
 python scripts\runlog.py --name P034-memory -- python scripts\mem_runtime.py --device cuda --max-new 32

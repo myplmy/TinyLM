@@ -41,15 +41,18 @@ REM ERRORLEVEL POLICY: nothing here is a hard stop.
 
 echo ============================================================
 echo [P036-1] weight trapping - does the mechanism exist at our scale
+python scripts\runlog.py --name P036-stage1 --note "[P036-1] weight trapping - does the mechanism exist at our scale"
 echo ============================================================
 
 echo.
 echo [guard] checking whether scripts\diag_trapping.py exists
+python scripts\runlog.py --name P036-stage1 --note "[guard] checking whether scripts\diag_trapping.py exists"
 if not exist scripts\diag_trapping.py goto NOTIMPL
 
 echo.
 echo ============================================================
 echo [1/2] all three models - this is the comparison that decides
+python scripts\runlog.py --name P036-stage1 --note "[1/2] all three models - this is the comparison that decides"
 echo   mA_g4s34_k4 is the only 3:4 model. mC_g8_k4 is tied but NOT 3:4, so it separates
 echo   "tying" from "3:4". p6d is the unquantised-structure control.
 echo ============================================================
@@ -60,6 +63,7 @@ if errorlevel 1 echo [WARN] run reported a problem - continuing
 echo.
 echo ============================================================
 echo [2/2] repeat with more batches - is the ER estimate stable
+python scripts\runlog.py --name P036-stage1 --note "[2/2] repeat with more batches - is the ER estimate stable"
 echo   ER comes from a finite gradient sample. If 4 and 12 batches disagree by a lot,
 echo   the number is noise and must not be used for a decision.
 echo ============================================================

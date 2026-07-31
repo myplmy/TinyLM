@@ -20,9 +20,25 @@
      UTF-8 로 고정하고, 파일은 UTF-8, 콘솔은 파이썬이 콘솔 API 로 직접 쓴다.
      (파이프일 때 파이썬 기본 인코딩은 locale=cp949 라 한글이 깨질 수 있다)
 
+★2026-07-31 수정 — **콘솔과 로그파일이 달랐다**(사용자 보고)
+  이 래퍼는 **감싼 파이썬 명령의 출력만** 기록한다. 그래서 배치의 `echo` 로 찍히는
+  **단계 제목·판정 안내·WHAT TO RECORD 블록이 로그파일에 전혀 남지 않았다.**
+  콘솔에는 있고 파일에는 없으니 두 개가 다르게 보이는 것이 당연했다 — 사용자가 계속
+  콘솔을 복사해 붙여 온 이유가 이것이다. 세 가지를 고쳤다.
+
+  1. **`--note`** — 명령을 실행하지 않고 **텍스트만** 콘솔과 로그에 동시에 남긴다.
+     배치의 단계 제목·판정 안내를 이걸로 흘려보내면 **로그파일만 읽어도 맥락이 산다.**
+       python scripts/runlog.py --name P035 --note "[1/2] step anneal at 0.60"
+  2. **줄끝을 os.linesep 으로** — 종전에는 `newline=""` 라 파일이 **LF 전용**이었다.
+     Windows 메모장·일부 편집기에서 **한 줄로 붙어 보였다**(콘솔과 또 다르게 보이는 원인).
+  3. **기록 후 검증** — 닫은 뒤 파일 존재·크기를 다시 확인하고 콘솔에 찍는다.
+     0바이트거나 사라졌으면 **경고한다**. "로그 파일: ..." 만 찍고 실제로는 없는
+     상황을 조용히 넘기지 않는다.
+
 사용법 — `--` 뒤가 실행할 명령이다
   python scripts/runlog.py --name P030-stage2B -- python scripts/diag_kvcache.py --device cpu
   python scripts/runlog.py --name P036-trapping --num 018 -- python scripts/diag_trapping.py
+  python scripts/runlog.py --name P035 --note "[1/2] ..." "control = qb_wsd60"
 
 파일명
   `test_result/{num}_log_{YYYYMMDD}_{name}.txt`   (--num 있을 때)
@@ -55,6 +71,28 @@ def _split_argv(argv):
     return argv[:i], argv[i + 1:]
 
 
+def _verify(path):
+    """★기록 후 실제로 파일이 남았는지 확인한다.
+
+    종전에는 `finally` 가 "로그 파일: ..." 를 **무조건** 찍었다. 그래서 파일이 만들어지지
+    않았거나 곧바로 사라져도(동기화 지연·백신·수동 삭제) **콘솔은 성공한 것처럼 보였다.**
+    경로만 믿지 말고 크기까지 찍는다.
+    """
+    try:
+        if not path.exists():
+            sys.stdout.write(f"[runlog] ★경고: 로그 파일이 존재하지 않는다 — {path}\n"
+                             f"[runlog]   경로 권한·동기화·백신을 확인할 것. "
+                             f"콘솔 출력이 유일한 사본이다.\n")
+            return
+        n = path.stat().st_size
+        sys.stdout.write(f"[runlog] 로그 파일: {path}  ({n:,} bytes)\n")
+        if n == 0:
+            sys.stdout.write("[runlog] ★경고: 0바이트다. 기록이 실패했다.\n")
+    except OSError as e:                     # noqa: BLE001
+        sys.stdout.write(f"[runlog] ★경고: 로그 파일 확인 실패 — {type(e).__name__}: {e}\n")
+    sys.stdout.flush()
+
+
 def main():
     own, cmd = _split_argv(sys.argv[1:])
     ap = argparse.ArgumentParser(description="실행 로그 tee (콘솔 + test_result 즉시 기록)")
@@ -64,10 +102,13 @@ def main():
                     help="디스크 동기화 주기(초). 0 이면 매 줄마다 — 느리지만 가장 안전")
     ap.add_argument("--no-append", action="store_true",
                     help="같은 파일이 있어도 덮어쓴다(기본은 이어쓰기 = 유실 방지)")
+    ap.add_argument("--note", nargs="+", default=None,
+                    help="명령 대신 텍스트만 기록한다(배치의 단계 제목·판정 안내용). 여러 개면 여러 줄")
     a = ap.parse_args(own)
 
-    if not cmd:
-        print("[runlog] 실행할 명령이 없습니다. `--` 뒤에 명령을 주세요.", file=sys.stderr)
+    if not cmd and not a.note:
+        print("[runlog] 실행할 명령이 없습니다. `--` 뒤에 명령을 주거나 --note 를 쓰세요.",
+              file=sys.stderr)
         print("  예) python scripts/runlog.py --name X -- python run100m.py train ...", file=sys.stderr)
         return 2
 
@@ -76,6 +117,18 @@ def main():
     stem = f"{a.num}_log_{day}_{a.name}" if a.num else f"log_{day}_{a.name}"
     path = OUT / f"{stem}.txt"
 
+    # ── --note : 명령 없이 텍스트만. 배치의 echo 블록을 로그에도 남기는 통로다. ──
+    if a.note:
+        body = "".join(f"{ln}\n" for ln in a.note)
+        with open(path, "a", encoding="utf-8", newline=os.linesep) as nf:
+            nf.write(body)
+            nf.flush()
+            os.fsync(nf.fileno())
+        sys.stdout.write(body)
+        sys.stdout.flush()
+        _verify(path)
+        return 0
+
     started = datetime.now()
     t0 = time.time()
     # 자식이 파이프로 출력하면 파이썬 기본 인코딩이 locale(cp949) 이 되어 한글이 깨진다.
@@ -83,8 +136,11 @@ def main():
     env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONUNBUFFERED="1")
 
     mode = "w" if a.no_append else "a"
-    # newline="" : 자식이 이미 개행을 포함해 보내므로 파이썬이 추가 변환하지 않게 한다
-    f = open(path, mode, encoding="utf-8", newline="")
+    # ★newline=os.linesep — 종전 `newline=""` 는 자식이 보낸 `\n` 을 그대로 써서 파일이
+    #   **LF 전용**이 됐다. Windows 메모장에서 전부 한 줄로 붙어 보이고, 콘솔과 또 다르게
+    #   보이는 원인이었다. universal-newlines 로 이미 `\n` 로 정규화된 뒤이므로 여기서
+    #   플랫폼 줄끝으로 되돌리는 것이 맞다.
+    f = open(path, mode, encoding="utf-8", newline=os.linesep)
     rc = -1
     try:
         head = (f"\n{'=' * 78}\n"
@@ -123,13 +179,13 @@ def main():
         tail = (f"{'-' * 78}\n"
                 f"[runlog] 종료코드 {rc}  소요 {el/60:.1f}분  "
                 f"({datetime.now():%Y-%m-%d %H:%M:%S})\n"
-                f"[runlog] 로그 파일: {path}\n"
                 f"{'=' * 78}\n")
         try:
             f.write(tail); f.flush(); os.fsync(f.fileno())
         finally:
             f.close()
         sys.stdout.write(tail); sys.stdout.flush()
+        _verify(path)                    # ★경로만 찍지 않는다 — 실제로 남았는지 본다
     return rc
 
 

@@ -47,6 +47,7 @@ echo [SMOKE] instrumentation contract check (tiny preset, synthetic)
 echo ============================================================
 echo.
 echo [pre] static attribute check - catches cfg.WRONG_NAME without loading torch
+python scripts\runlog.py --name smoke --note "[pre] static attribute check - catches cfg.WRONG_NAME without loading torch"
 REM   Added after the P029 incident: scripts\probe_prompts.py used cfg.seq_len (real field is
 REM   max_seq_len). Python only fails at that line, which ran AFTER loading a model on the GPU,
 REM   so the batch had to be run before anyone found out. This check is seconds and needs no GPU.
@@ -83,6 +84,7 @@ if errorlevel 1 echo [WARN] sm_kd failed - continuing
 echo.
 echo ============================================================
 echo [VERIFY] checking that every instrumentation field was recorded
+python scripts\runlog.py --name smoke --note "[VERIFY] checking that every instrumentation field was recorded"
 echo ============================================================
 python scripts\runlog.py --name smoke -- python scripts\check_smoke.py
 

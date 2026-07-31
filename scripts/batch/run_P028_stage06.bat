@@ -41,11 +41,13 @@ REM ERRORLEVEL POLICY: independent measurements, failures only warn.
 
 echo ============================================================
 echo [P028-0.6] per-document val loss decomposition
+python scripts\runlog.py --name P028-stage06 --note "[P028-0.6] per-document val loss decomposition"
 echo ============================================================
 
 echo.
 echo ============================================================
 echo [1/2] SUSPECT : ko-edu-en  (val minus back was +2.198)
+python scripts\runlog.py --name P028-stage06 --note "[1/2] SUSPECT : ko-edu-en  (val minus back was +2.198)"
 echo ============================================================
 python scripts\runlog.py --name P028-stage06 -- python scripts\diag_val_docs.py --data ko-edu-en --tokens 300M --arch dense
 if errorlevel 1 echo [WARN] ko-edu-en decomposition failed - continuing
@@ -53,6 +55,7 @@ if errorlevel 1 echo [WARN] ko-edu-en decomposition failed - continuing
 echo.
 echo ============================================================
 echo [2/2] CONTROL : ko-en  (val minus back was +0.153 - the healthy number)
+python scripts\runlog.py --name P028-stage06 --note "[2/2] CONTROL : ko-en  (val minus back was +0.153 - the healthy number)"
 echo   Needed to calibrate. If ko-en ALSO has a dominant document, then a skewed
 echo   document-size distribution is normal for our pipeline and the ko-edu-en
 echo   number means something else.

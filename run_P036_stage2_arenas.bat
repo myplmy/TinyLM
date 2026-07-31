@@ -44,16 +44,19 @@ if not exist run100m.py goto BADROOT
 
 echo =============================================================
 echo [P036-2] Arenas on/off - GUARDED
+python scripts\runlog.py --name P036-stage2 --note "[P036-2] Arenas on/off - GUARDED"
 echo =============================================================
 
 echo.
 echo [guard] is --arenas implemented in the CLI
+python scripts\runlog.py --name P036-stage2 --note "[guard] is --arenas implemented in the CLI"
 python -c "import sys; sys.exit(0 if '--arenas' in open('tinylm/cli.py',encoding='utf-8').read() else 7)"
 if errorlevel 1 goto NOTIMPL
 
 echo.
 echo =============================================================
 echo [1/2] baseline : m100R1a, Arenas OFF
+python scripts\runlog.py --name P036-stage2 --note "[1/2] baseline : m100R1a, Arenas OFF"
 echo =============================================================
 python scripts\runlog.py --name P036-stage2 -- python run100m.py train --preset m100R1a --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --kd --kd-every 4 --init-from --tag ar_off
 if errorlevel 1 echo [WARN] ar_off failed - continuing
@@ -61,6 +64,7 @@ if errorlevel 1 echo [WARN] ar_off failed - continuing
 echo.
 echo =============================================================
 echo [2/2] treatment : same command plus --arenas
+python scripts\runlog.py --name P036-stage2 --note "[2/2] treatment : same command plus --arenas"
 echo =============================================================
 python scripts\runlog.py --name P036-stage2 -- python run100m.py train --preset m100R1a --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --kd --kd-every 4 --init-from --arenas --tag ar_on
 if errorlevel 1 echo [WARN] ar_on failed - read the traceback above
@@ -68,6 +72,7 @@ if errorlevel 1 echo [WARN] ar_on failed - read the traceback above
 echo.
 echo =============================================================
 echo [post] trapping indicators on the two NEW checkpoints
+python scripts\runlog.py --name P036-stage2 --note "[post] trapping indicators on the two NEW checkpoints"
 echo =============================================================
 python scripts\runlog.py --name P036-stage2 -- python scripts\diag_trapping.py --models ar_on ar_off --batches 12
 if errorlevel 1 echo [WARN] trapping diagnosis failed - the training logs still stand

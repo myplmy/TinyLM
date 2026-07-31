@@ -44,10 +44,12 @@ REM ERRORLEVEL POLICY: guard and prepare are hard stops. The runs and compares o
 
 echo ============================================================
 echo [P035] anneal shape : linear ramp vs step transition
+python scripts\runlog.py --name P035 --note "[P035] anneal shape : linear ramp vs step transition"
 echo ============================================================
 
 echo.
 echo [guard] checking whether --anneal-shape is wired
+python scripts\runlog.py --name P035 --note "[guard] checking whether --anneal-shape is wired"
 python -c "import sys,pathlib; s=pathlib.Path('tinylm/cli.py').read_text(encoding='utf-8'); sys.exit(0 if '--anneal-shape' in s else 3)"
 if errorlevel 3 goto NOTIMPL
 if errorlevel 1 echo [WARN] guard check errored - continuing anyway
@@ -60,6 +62,7 @@ if errorlevel 1 goto ERROR
 echo.
 echo ============================================================
 echo [1/2] qa_step60 : STEP anneal at 0.60, wsd decay starts 0.80  (NOT aligned)
+python scripts\runlog.py --name P035 --note "[1/2] qa_step60 : STEP anneal at 0.60, wsd decay starts 0.80  (NOT aligned)"
 echo   control for this run is qb_wsd60 (3.6275) - same transition point, linear ramp
 echo ============================================================
 python scripts\runlog.py --name P035 -- python run100m.py train --arch dense --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --eval-every 100 --compile --no-ckpt --pool-tokens 600M --exact-cache --sched wsd --decay-frac 0.2 --anneal-shape step --anneal-start 0.60 --tag qa_step60
@@ -68,6 +71,7 @@ if errorlevel 1 echo [WARN] qa_step60 failed - continuing to the second run
 echo.
 echo ============================================================
 echo [2/2] qa_step80 : STEP anneal at 0.80, wsd decay starts 0.80  (ALIGNED)
+python scripts\runlog.py --name P035 --note "[2/2] qa_step80 : STEP anneal at 0.80, wsd decay starts 0.80  (ALIGNED)"
 echo   control for this run is qb_wsd80 (3.6147) - same transition point, linear ramp
 echo ============================================================
 python scripts\runlog.py --name P035 -- python run100m.py train --arch dense --data ko-en --tokens 300M --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --eval-every 100 --compile --no-ckpt --pool-tokens 600M --exact-cache --sched wsd --decay-frac 0.2 --anneal-shape step --anneal-start 0.80 --tag qa_step80
@@ -133,7 +137,7 @@ echo   exactly, or every existing log becomes incomparable.
 echo.
 echo   Suggested order:
 echo     1. wire the flags
-echo     2. run run_smoke.bat  (defaults must give the same val as before)
+echo     2. run the smoke tool  (defaults must give the same val as before)
 echo     3. re-run THIS batch
 echo.
 echo   Nothing was measured. No files were written.

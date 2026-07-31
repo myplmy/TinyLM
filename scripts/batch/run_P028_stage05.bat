@@ -41,11 +41,13 @@ REM ERRORLEVEL POLICY: independent runs, failures only warn.
 
 echo ============================================================
 echo [P028-0.5] causal check : front vs back of train, vs val
+python scripts\runlog.py --name P028-stage05 --note "[P028-0.5] causal check : front vs back of train, vs val"
 echo ============================================================
 
 echo.
 echo ============================================================
 echo [1/2] CONTROL : ko-en (healthy - val minus train was about 0)
+python scripts\runlog.py --name P028-stage05 --note "[1/2] CONTROL : ko-en (healthy - val minus train was about 0)"
 echo ============================================================
 python scripts\runlog.py --name P028-stage05 -- python scripts\eval_slices.py --data ko-en --tokens 300M --tag dense --arch dense --docstats
 if errorlevel 1 echo [WARN] ko-en slice eval failed - continuing
@@ -53,6 +55,7 @@ if errorlevel 1 echo [WARN] ko-en slice eval failed - continuing
 echo.
 echo ============================================================
 echo [2/2] SUSPECT : ko-edu-en (the 3.14 nats gap)
+python scripts\runlog.py --name P028-stage05 --note "[2/2] SUSPECT : ko-edu-en (the 3.14 nats gap)"
 echo ============================================================
 python scripts\runlog.py --name P028-stage05 -- python scripts\eval_slices.py --data ko-edu-en --tokens 300M --tag dense --arch dense --docstats
 if errorlevel 1 echo [WARN] ko-edu-en slice eval failed - continuing

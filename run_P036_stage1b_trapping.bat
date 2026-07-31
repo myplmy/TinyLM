@@ -32,15 +32,18 @@ if not exist run100m.py goto BADROOT
 
 echo =============================================================
 echo [P036-1B] weight trapping, with the dense control restored
+python scripts\runlog.py --name P036-stage1b --note "[P036-1B] weight trapping, with the dense control restored"
 echo =============================================================
 
 echo.
 echo [guard] scripts\diag_trapping.py present
+python scripts\runlog.py --name P036-stage1b --note "[guard] scripts\diag_trapping.py present"
 if not exist scripts\diag_trapping.py goto NOSCRIPT
 
 echo.
 echo =============================================================
 echo [1/2] all three models - the dense control is the point of this rerun
+python scripts\runlog.py --name P036-stage1b --note "[1/2] all three models - the dense control is the point of this rerun"
 echo =============================================================
 python scripts\runlog.py --name P036-stage1b -- python scripts\diag_trapping.py --models mA_g4s34_k4 mC_g8_k4 p6d --batches 4
 if errorlevel 1 echo [WARN] run reported a problem - continuing
@@ -48,6 +51,7 @@ if errorlevel 1 echo [WARN] run reported a problem - continuing
 echo.
 echo =============================================================
 echo [2/2] more batches - is the ER estimate stable
+python scripts\runlog.py --name P036-stage1b --note "[2/2] more batches - is the ER estimate stable"
 echo   Stage 1 already showed 4 vs 12 agreeing to about 1 percent, so this is a
 echo   confirmation, not a discovery. If it disagrees NOW, suspect the fix.
 echo =============================================================

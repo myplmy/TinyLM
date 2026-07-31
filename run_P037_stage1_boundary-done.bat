@@ -40,16 +40,19 @@ REM ERRORLEVEL POLICY: nothing here is a hard stop.
 
 echo ============================================================
 echo [P037-1] document boundary trustworthiness
+python scripts\runlog.py --name P037-stage1 --note "[P037-1] document boundary trustworthiness"
 echo ============================================================
 
 echo.
 echo [guard] checking whether diag_val_docs.py accepts --inspect
+python scripts\runlog.py --name P037-stage1 --note "[guard] checking whether diag_val_docs.py accepts --inspect"
 python -c "import sys,pathlib; s=pathlib.Path('scripts/diag_val_docs.py').read_text(encoding='utf-8'); sys.exit(0 if '--inspect' in s else 3)"
 if errorlevel 3 goto NOTIMPL
 
 echo.
 echo ============================================================
 echo [1/2] SUSPECT : ko-edu-en - the 7 huge documents
+python scripts\runlog.py --name P037-stage1 --note "[1/2] SUSPECT : ko-edu-en - the 7 huge documents"
 echo   Stage 0.6 found 7 documents of 72k-88k tokens carrying 37 pct of tokens and
 echo   53 pct of the loss. Are they really ONE document each
 echo ============================================================
@@ -59,6 +62,7 @@ if errorlevel 1 echo [WARN] ko-edu-en inspect failed - continuing
 echo.
 echo ============================================================
 echo [2/2] CONTROL : ko-en - known healthy, so it calibrates the checks
+python scripts\runlog.py --name P037-stage1 --note "[2/2] CONTROL : ko-en - known healthy, so it calibrates the checks"
 echo   If ko-en shows the same over-splitting signals, the signal is about the TOOL,
 echo   not about ko-edu-en.
 echo ============================================================

@@ -38,11 +38,13 @@ set TL_NOPAUSE=1
 
 echo =============================================================
 echo [P034-2] latent release : resident memory and whether speed follows
+python scripts\runlog.py --name P034-stage2 --note "[P034-2] latent release : resident memory and whether speed follows"
 echo =============================================================
 
 echo.
 echo =============================================================
 echo [0/3] GATE : the cache path must still be correct
+python scripts\runlog.py --name P034-stage2 --note "[0/3] GATE : the cache path must still be correct"
 echo   Cheap, and it means a surprise later cannot be blamed on the cache.
 echo =============================================================
 set TL_LOGNAME=P034-stage2
@@ -53,6 +55,7 @@ if errorlevel 1 goto GATEBAD
 echo.
 echo =============================================================
 echo [1/3] BASELINE : resident memory WITHOUT the latent release
+python scripts\runlog.py --name P034-stage2 --note "[1/3] BASELINE : resident memory WITHOUT the latent release"
 echo   Same numbers as result 016. Re-measured here so the before and after
 echo   sit in ONE log - comparing across logs is how conventions drift.
 echo =============================================================
@@ -65,6 +68,7 @@ if errorlevel 1 echo [WARN] baseline memory profile failed - continuing
 echo.
 echo =============================================================
 echo [2/3] STAGE 2 : same measurement WITH --drop-latent
+python scripts\runlog.py --name P034-stage2 --note "[2/3] STAGE 2 : same measurement WITH --drop-latent"
 echo   The script runs a logit equivalence gate per model before and after the
 echo   release. It must read 0.000e+00. Releasing a tensor we no longer read
 echo   cannot change arithmetic - anything else means we released too much.
@@ -78,6 +82,7 @@ if errorlevel 1 echo [WARN] drop-latent memory profile failed - continuing
 echo.
 echo =============================================================
 echo [3/3] SPEED : does halved resident memory buy CPU tokens per second
+python scripts\runlog.py --name P034-stage2 --note "[3/3] SPEED : does halved resident memory buy CPU tokens per second"
 echo   Single thread is the honest edge number. Cache on.
 echo =============================================================
 python scripts\runlog.py --name P034-stage2 -- python scripts\bench_infer.py --device cpu --threads 1 --max-new 128 --reps 3

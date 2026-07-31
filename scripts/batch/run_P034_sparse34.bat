@@ -56,15 +56,18 @@ REM ERRORLEVEL POLICY: nothing here is a hard stop - every check only warns.
 
 echo ============================================================
 echo [P034-1.5] 3:4 sparse ternary audit
+python scripts\runlog.py --name P034-sparse34 --note "[P034-1.5] 3:4 sparse ternary audit"
 echo ============================================================
 
 echo.
 echo [guard] checking whether scripts\diag_sparse34.py exists
+python scripts\runlog.py --name P034-sparse34 --note "[guard] checking whether scripts\diag_sparse34.py exists"
 if not exist scripts\diag_sparse34.py goto NOTIMPL
 
 echo.
 echo ============================================================
 echo [1/2] full audit, all three models, summary level
+python scripts\runlog.py --name P034-sparse34 --note "[1/2] full audit, all three models, summary level"
 echo ============================================================
 python scripts\runlog.py --name P034-sparse34 -- python scripts\diag_sparse34.py --models mA_g4s34_k4 mC_g8_k4 p6d
 if errorlevel 2 echo [WARN] some checkpoints were missing - read which ones above
@@ -73,6 +76,7 @@ if errorlevel 1 echo [WARN] audit reported a problem - continuing
 echo.
 echo ============================================================
 echo [2/2] per-layer detail for the sparse model, first 8 layers
+python scripts\runlog.py --name P034-sparse34 --note "[2/2] per-layer detail for the sparse model, first 8 layers"
 echo   Watch whether the nonzero fraction is uniform across layers or whether some layers
 echo   are far more affected. A large spread means the single global 1.25 bpw number hides
 echo   real variation.

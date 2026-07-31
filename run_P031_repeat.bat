@@ -36,16 +36,19 @@ REM COST: eval only. 3 models x 6 R values x a few seconds each = tens of minute
 
 echo ============================================================
 echo [P031] depth extrapolation : middle block x R at inference
+python scripts\runlog.py --name P031 --note "[P031] depth extrapolation : middle block x R at inference"
 echo ============================================================
 
 echo.
 echo [guard] checking whether --infer-repeat exists
+python scripts\runlog.py --name P031 --note "[guard] checking whether --infer-repeat exists"
 python -c "import sys; sys.path.insert(0,'.'); from tinylm.config import TMTConfig; sys.exit(0 if hasattr(TMTConfig(),'infer_repeat') else 3)"
 if errorlevel 3 goto NOTIMPL
 if errorlevel 1 echo [WARN] guard check errored - continuing anyway
 
 echo.
 echo [0] sanity: R=1.0 must reproduce the known value exactly
+python scripts\runlog.py --name P031 --note "[0] sanity: R=1.0 must reproduce the known value exactly"
 REM   mA_g4s34_k4 val must come out 3.7003. If it does not, STOP - the loop is wrong.
 python scripts\runlog.py --name P031 -- python run100m.py eval --arch tied --data ko-en --tokens 300M --tag mA_g4s34_k4 --infer-repeat 1.0
 if errorlevel 1 echo [WARN] R=1.0 check failed - do NOT trust anything below
@@ -133,9 +136,10 @@ echo   and test_plan\P031 for exactly what to implement (3 small changes).
 echo.
 echo   Suggested order:
 echo     1. implement TMTConfig.infer_repeat + the forward() loop + the CLI flags
-echo     2. run run_smoke.bat  (R=1.0 must be bit-identical to before)
+echo     2. run the smoke tool  (R=1.0 must be bit-identical to before)
 echo     3. re-run THIS batch
 echo.
 echo   Nothing was measured. No files were written.
 echo ================================================================
 pause
+exit /b 3

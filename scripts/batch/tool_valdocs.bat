@@ -56,6 +56,7 @@ if defined TL_INSPECT set TL_IARG=--inspect !TL_INSPECT!
 
 echo =============================================================
 echo [tool] per-document val loss decomposition
+python scripts\runlog.py --name !TL_LOGNAME! --note "[tool] per-document val loss decomposition"
 echo   Answers: is the val number carried by a handful of documents.
 echo   With TL_INSPECT it also dumps the head and tail of the worst
 echo   documents plus character statistics, which is what separates a
@@ -66,6 +67,7 @@ echo =============================================================
 echo.
 echo =============================================================
 echo [1] !TL_DATA1!
+python scripts\runlog.py --name !TL_LOGNAME! --note "[1] !TL_DATA1!"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_val_docs.py --data !TL_DATA1! --tokens !TL_TOKENS! --arch !TL_ARCH! --tag !TL_TAG! !TL_IARG!
 if errorlevel 1 echo [WARN] first dataset decomposition failed - continuing
@@ -74,6 +76,7 @@ if not defined TL_DATA2 goto NODATA2
 echo.
 echo =============================================================
 echo [2] !TL_DATA2!
+python scripts\runlog.py --name !TL_LOGNAME! --note "[2] !TL_DATA2!"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_val_docs.py --data !TL_DATA2! --tokens !TL_TOKENS! --arch !TL_ARCH! --tag !TL_TAG! !TL_IARG!
 if errorlevel 1 echo [WARN] second dataset decomposition failed - continuing

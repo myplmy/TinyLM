@@ -49,6 +49,7 @@ if not defined TL_LAYERS set TL_LAYERS=8
 
 echo =============================================================
 echo [tool] 3:4 ternary audit - implementation, real sparsity, bpw accounting
+python scripts\runlog.py --name !TL_LOGNAME! --note "[tool] 3:4 ternary audit - implementation, real sparsity, bpw accounting"
 echo   Reminder (result 016 section 7.2): plain TWN already zeroes 43 to 46
 echo   percent of weights. 3:4 REDUCES zeros to 25 percent. It is not a
 echo   sparsification. The only gain is 5-bit aligned packing, and both the
@@ -58,11 +59,13 @@ echo =============================================================
 
 echo.
 echo [guard] scripts\diag_sparse34.py present
+python scripts\runlog.py --name !TL_LOGNAME! --note "[guard] scripts\diag_sparse34.py present"
 if not exist scripts\diag_sparse34.py goto NOTIMPL
 
 echo.
 echo =============================================================
 echo [1/2] full audit, summary level
+python scripts\runlog.py --name !TL_LOGNAME! --note "[1/2] full audit, summary level"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_sparse34.py --models !TL_MODELS!
 if errorlevel 2 echo [WARN] some checkpoints were missing - read which ones above
@@ -71,6 +74,7 @@ if errorlevel 1 echo [WARN] audit reported a problem - continuing
 echo.
 echo =============================================================
 echo [2/2] per layer detail for the 3:4 model
+python scripts\runlog.py --name !TL_LOGNAME! --note "[2/2] per layer detail for the 3:4 model"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_sparse34.py --models !TL_S34MODEL! --layers !TL_LAYERS!
 if errorlevel 1 echo [WARN] per-layer pass failed - continuing

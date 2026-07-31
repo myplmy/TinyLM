@@ -50,6 +50,7 @@ if not defined TL_MAXNEW set TL_MAXNEW=24
 
 echo =============================================================
 echo [tool] KV cache correctness gate - teacher forced logits, fp32, cpu
+python scripts\runlog.py --name !TL_LOGNAME! --note "[tool] KV cache correctness gate - teacher forced logits, fp32, cpu"
 echo   This is the CANONICAL gate. Do not gate on greedy strings: bf16 ULP
 echo   plus autoregressive feedback makes near-tie models fail while the
 echo   noisiest model passes (result 014 section 9).
@@ -58,11 +59,13 @@ echo =============================================================
 
 echo.
 echo [guard] scripts\diag_kvcache.py present
+python scripts\runlog.py --name !TL_LOGNAME! --note "[guard] scripts\diag_kvcache.py present"
 if not exist scripts\diag_kvcache.py goto NOTIMPL
 
 echo.
 echo =============================================================
 echo [1] HARD GATE : fp32 on cpu
+python scripts\runlog.py --name !TL_LOGNAME! --note "[1] HARD GATE : fp32 on cpu"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_kvcache.py --models !TL_MODELS! --device cpu --tol !TL_TOL! --max-new !TL_MAXNEW!
 if errorlevel 1 goto GATEBAD
@@ -73,6 +76,7 @@ if not defined TL_FULL goto TAIL
 echo.
 echo =============================================================
 echo [2] same gate on cuda (bf16 autocast) - sizes the precision gap
+python scripts\runlog.py --name !TL_LOGNAME! --note "[2] same gate on cuda (bf16 autocast) - sizes the precision gap"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_kvcache.py --models !TL_MODELS! --device cuda --tol !TL_TOL! --max-new !TL_MAXNEW!
 if errorlevel 1 echo [INFO] bf16 exceeds the fp32 tolerance - record it, this is not a failure
@@ -80,6 +84,7 @@ if errorlevel 1 echo [INFO] bf16 exceeds the fp32 tolerance - record it, this is
 echo.
 echo =============================================================
 echo [3] greedy divergence, REPORT ONLY, with the tie margin
+python scripts\runlog.py --name !TL_LOGNAME! --note "[3] greedy divergence, REPORT ONLY, with the tie margin"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_kvcache.py --models !TL_MODELS! --device cuda --report-greedy --max-new !TL_MAXNEW!
 if errorlevel 1 echo [INFO] greedy strings differ - check the tie margin before calling it a bug

@@ -47,14 +47,17 @@ REM NOTE: generate has no KV cache (recomputes the full sequence each step). Do 
 
 echo ============================================================
 echo [P029] qualitative probe
+python scripts\runlog.py --name P029-probe --note "[P029] qualitative probe"
 echo ============================================================
 echo.
 echo [0] prompts and what each one checks
+python scripts\runlog.py --name P029-probe --note "[0] prompts and what each one checks"
 python scripts\runlog.py --name P029-probe -- python scripts\probe_prompts.py --list
 if errorlevel 1 echo [WARN] listing failed - continuing
 
 echo.
 echo [1/1] generating (mA_g4s34_k4 and p6d, temps 0.7 and 1.0)
+python scripts\runlog.py --name P029-probe --note "[1/1] generating (mA_g4s34_k4 and p6d, temps 0.7 and 1.0)"
 python scripts\runlog.py --name P029-probe -- python scripts\probe_prompts.py
 if errorlevel 1 echo [WARN] probe failed - see the traceback above
 

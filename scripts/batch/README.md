@@ -45,6 +45,23 @@ if errorlevel 1 echo [WARN] mem profile reported a problem - continuing
 
 각 도구의 고유 변수는 파일 상단 `CONTRACT` 블록에 있다.
 
+## 로그에 단계 제목을 남기는 법 (`--note`)
+
+`runlog.py` 는 **감싼 파이썬 명령의 출력만** 기록한다. 배치의 `echo` 는 콘솔에만 나오고
+로그파일에는 **안 남는다** — 그래서 콘솔과 파일이 달라 보인다(2026-07-31 사용자 보고).
+
+단계 제목은 이렇게 **양쪽에** 남긴다.
+
+```bat
+echo [1/2] baseline
+python scripts\runlog.py --name !TL_LOGNAME! --note "[1/2] baseline"
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\mem_runtime.py --device cpu
+```
+
+`--note` 는 명령을 실행하지 않고 텍스트만 쓴다(여러 개 주면 여러 줄). **errorlevel 을 건드리지
+않도록 실제 명령 앞에 둔다.** 현재 모든 배치가 `[N/M]`·`[run]`·`[pre]`·`[guard]` 표지에 대해
+자동으로 이 줄을 갖고 있다.
+
 ## 도구 목록
 
 | 파일 | 기능 | 부르는 스크립트 |

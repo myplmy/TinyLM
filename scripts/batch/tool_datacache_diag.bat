@@ -49,17 +49,20 @@ if not defined TL_TOKENS set TL_TOKENS=300M
 
 echo =============================================================
 echo [tool] token cache diagnosis
+python scripts\runlog.py --name !TL_LOGNAME! --note "[tool] token cache diagnosis"
 echo   data1=!TL_DATA1!  data2=!TL_DATA2!  tokens=!TL_TOKENS!
 echo =============================================================
 
 echo.
 echo [0] caches present on disk
+python scripts\runlog.py --name !TL_LOGNAME! --note "[0] caches present on disk"
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_cache.py
 if errorlevel 1 echo [WARN] listing failed - continuing
 
 echo.
 echo =============================================================
 echo [1] !TL_DATA1! !TL_TOKENS!
+python scripts\runlog.py --name !TL_LOGNAME! --note "[1] !TL_DATA1! !TL_TOKENS!"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_cache.py --data !TL_DATA1! --tokens !TL_TOKENS!
 if errorlevel 1 echo [WARN] first dataset diag failed - continuing
@@ -68,6 +71,7 @@ if not defined TL_DATA2 goto NODATA2
 echo.
 echo =============================================================
 echo [2] !TL_DATA2! !TL_TOKENS!
+python scripts\runlog.py --name !TL_LOGNAME! --note "[2] !TL_DATA2! !TL_TOKENS!"
 echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_cache.py --data !TL_DATA2! --tokens !TL_TOKENS!
 if errorlevel 1 echo [WARN] second dataset diag failed - continuing

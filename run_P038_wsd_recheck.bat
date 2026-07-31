@@ -42,6 +42,7 @@ echo =============================================================
 echo.
 echo =============================================================
 echo [1/3] data pool - shared by both runs, so do this once
+python scripts\runlog.py --name P038-wsd --note "[1/3] data pool - shared by both runs, so do this once"
 echo =============================================================
 python scripts\runlog.py --name P038-wsd -- python run100m.py prepare --data ko-en --tokens 600M --exact-cache
 if errorlevel 1 goto DATABAD
@@ -49,6 +50,7 @@ if errorlevel 1 goto DATABAD
 echo.
 echo =============================================================
 echo [2/3] candidate C : m100R1c (g8, no 3:4) on wsd
+python scripts\runlog.py --name P038-wsd --note "[2/3] candidate C : m100R1c (g8, no 3:4) on wsd"
 echo =============================================================
 python scripts\runlog.py --name P038-wsd -- python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --kd --kd-every 4 --init-from --tag mC_wsd
 if errorlevel 1 echo [WARN] mC_wsd failed - continuing to the next run
@@ -56,6 +58,7 @@ if errorlevel 1 echo [WARN] mC_wsd failed - continuing to the next run
 echo.
 echo =============================================================
 echo [3/3] candidate A : m100R1a (g4 + 3:4) on wsd
+python scripts\runlog.py --name P038-wsd --note "[3/3] candidate A : m100R1a (g4 + 3:4) on wsd"
 echo =============================================================
 python scripts\runlog.py --name P038-wsd -- python run100m.py train --preset m100R1a --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --kd --kd-every 4 --init-from --tag mA_wsd
 if errorlevel 1 echo [WARN] mA_wsd failed - read the traceback above
@@ -63,6 +66,7 @@ if errorlevel 1 echo [WARN] mA_wsd failed - read the traceback above
 echo.
 echo =============================================================
 echo [post] paired comparison of the two new checkpoints
+python scripts\runlog.py --name P038-wsd --note "[post] paired comparison of the two new checkpoints"
 echo =============================================================
 python scripts\runlog.py --name P038-wsd -- python scripts\paired_eval.py --models mA_wsd mC_wsd --seq 1024 --micro-bs 8
 if errorlevel 1 echo [WARN] paired eval failed - the training logs still stand
