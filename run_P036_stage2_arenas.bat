@@ -71,20 +71,7 @@ python scripts\runlog.py --name P036-stage2 -- python scripts\diag_trapping.py -
 if errorlevel 1 echo [WARN] trapping diagnosis failed - the training logs still stand
 
 echo.
-echo =================================================================
-echo WHAT TO RECORD
-echo   1. final val loss for both - 'final', never 'best'
-echo   2. the valley fraction and ER/dim shift between ar_on and ar_off
-echo   3. whether a quality recovery, if any, exceeds the 0.024 resolution
-echo.
-echo VERDICT
-echo   ar_on better by more than 0.024, and the trapping indicators move
-echo       -^> the 3:4 quality cost was partly OUR missing implementation.
-echo          Candidate A must be re-evaluated - REVIEW1 inputs change.
-echo   no difference beyond resolution
-echo       -^> Arenas does not help at our scale. Record it and CLOSE R5. The
-echo          3:4 cost is then structural, and A rests entirely on R8.
-echo =================================================================
+python scripts\runlog.py --name P036-stage2 --note "=================================================================" "WHAT TO RECORD" "  1. final val loss for both - 'final', never 'best'" "  2. the valley fraction and ER/dim shift between ar_on and ar_off" "  3. whether a quality recovery, if any, exceeds the 0.024 resolution" "" "VERDICT" "  ar_on better by more than 0.024, and the trapping indicators move" "      -^> the 3:4 quality cost was partly OUR missing implementation." "         Candidate A must be re-evaluated - REVIEW1 inputs change." "  no difference beyond resolution" "      -^> Arenas does not help at our scale. Record it and CLOSE R5. The" "         3:4 cost is then structural, and A rests entirely on R8." "================================================================="
 echo done.
 pause
 exit /b 0

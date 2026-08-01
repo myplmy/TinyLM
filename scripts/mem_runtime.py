@@ -103,7 +103,7 @@ def main():
 
     rows = []
     for tag, arch in models:
-        ck = paths.RUNS / "ckpt" / f"{base}_{tag}.pt"
+        ck = paths.resolve_ckpt(a.preset, a.data, a.tokens, tag)
         if not ck.exists():
             print(f"\n  [건너뜀] 체크포인트 없음: {tag}")
             continue

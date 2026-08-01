@@ -68,27 +68,14 @@ echo =============================================================
 echo [post] paired comparison of the two new checkpoints
 python scripts\runlog.py --name P038-wsd --note "[post] paired comparison of the two new checkpoints"
 echo =============================================================
-python scripts\runlog.py --name P038-wsd -- python scripts\paired_eval.py --models mA_wsd mC_wsd --seq 1024 --micro-bs 8
+REM   The two runs use DIFFERENT presets (m100R1a / m100R1c), so their checkpoint
+REM   names are namespaced apart. resolve_ckpt falls back to a global tag search,
+REM   but naming a preset here keeps the condition visible in the log.
+python scripts\runlog.py --name P038-wsd -- python scripts\paired_eval.py --models mA_wsd mC_wsd --preset m100R1a --seq 1024 --micro-bs 8
 if errorlevel 1 echo [WARN] paired eval failed - the training logs still stand
 
 echo.
-echo =================================================================
-echo WHAT TO RECORD
-echo   1. final val loss for each run - the 'final' line, never 'best'
-echo   2. grad_max from the json, not the printed 10-step sample
-echo   3. packed_mb and runtime_mb for each (both, never one alone)
-echo   4. the paired mean difference and SE from the post step
-echo.
-echo HOW TO READ IT
-echo   gap within 0.024  -^> indistinguishable. Keep both candidates; the choice
-echo       must then be made on memory and on R8, not on quality.
-echo   gap over 0.024    -^> the first quality separation we have. Compare it
-echo       against the cosine numbers in result 012 before concluding, because a
-echo       schedule change can move both runs together.
-echo.
-echo LIMITS: one seed per arm, so this decides these two RUNS. Sigma is 0.012 and
-echo   the resolution is 0.024 - do not rank differences below that.
-echo =================================================================
+python scripts\runlog.py --name P038-wsd --note "=================================================================" "WHAT TO RECORD" "  1. final val loss for each run - the 'final' line, never 'best'" "  2. grad_max from the json, not the printed 10-step sample" "  3. packed_mb and runtime_mb for each (both, never one alone)" "  4. the paired mean difference and SE from the post step" "" "HOW TO READ IT" "  gap within 0.024  -^> indistinguishable. Keep both candidates; the choice" "      must then be made on memory and on R8, not on quality." "  gap over 0.024    -^> the first quality separation we have. Compare it" "      against the cosine numbers in result 012 before concluding, because a" "      schedule change can move both runs together." "" "LIMITS: one seed per arm, so this decides these two RUNS. Sigma is 0.012 and" "  the resolution is 0.024 - do not rank differences below that." "================================================================="
 echo done.
 pause
 exit /b 0

@@ -151,8 +151,11 @@ def main():
     preset, ckpt = _preset(a), not a.no_ckpt
     tokstr = f"{n_tok//1_000_000}M" if n_tok >= 10**6 else str(n_tok)
     base = f"{preset}_{a.data}_{tokstr}"        # 스케일별 이름 프리픽스
-    dense_ck = paths.RUNS / "ckpt" / f"{base}_dense.pt"
-    dense_best_ck = paths.RUNS / "ckpt" / f"{base}_dense_best.pt"   # P3: 더 강한 교사 옵션
+    # ★부모 dense 는 프리셋을 넘어 찾는다(2026-08-01). `m100R1a/c` 는 `m100` 에서 한 필드만
+    #   바꾼 파생이라 **부모가 하나뿐**인데, 종전에는 `m100R1a_..._dense.pt` 를 찾다 즉사했다
+    #   (P038·P036 단계2 실패). 쓰기 경로는 그대로 `{preset}_...` 라 네임스페이스는 유지된다.
+    dense_ck = paths.resolve_ckpt(preset, a.data, tokstr, "dense")
+    dense_best_ck = paths.resolve_ckpt(preset, a.data, tokstr, "dense_best")
 
     pool_tok = _tok(a.pool_tokens) if a.pool_tokens else None
 
@@ -170,11 +173,11 @@ def main():
         from .train import train
         # KD 교사 경로: 압축 교사(--kd-teacher-tag) > dense_best > dense
         if a.kd_teacher_tag:
-            kd_teacher = str(paths.RUNS / "ckpt" / f"{base}_{a.kd_teacher_tag}.pt")
+            kd_teacher = str(paths.resolve_ckpt(preset, a.data, tokstr, a.kd_teacher_tag))
         else:
             kd_teacher = str(dense_best_ck if a.kd_best else dense_ck)
         # 부모초기화 소스: --init-from-tag 주면 base_{TAG}.pt, 아니면 base_dense.pt
-        init_src = (str(paths.RUNS / "ckpt" / f"{base}_{a.init_from_tag}.pt") if a.init_from_tag
+        init_src = (str(paths.resolve_ckpt(preset, a.data, tokstr, a.init_from_tag)) if a.init_from_tag
                     else (str(dense_ck) if a.init_from else None))
         train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
               a.lr, a.eval_every, a.resume, ckpt, a.compile,
@@ -240,7 +243,8 @@ def main():
         from .eval import evaluate
         from .infer import load_model
         meta = prepare(a.data, n_tok)
-        ckp = a.ckpt_path or str(paths.RUNS / "ckpt" / (f"{base}_{a.tag}.pt" if a.tag else f"{base}_{a.arch}.pt"))
+        ckp = a.ckpt_path or str(paths.resolve_ckpt(preset, a.data, tokstr,
+                                                    a.tag if a.tag else a.arch))
         model, cfg, device = load_model(a.arch, ckp)
         # ★P031 — 체크포인트의 cfg 위에 **추론 전용** 설정만 덮어쓴다. 가중치는 그대로다.
         if a.infer_repeat != 1.0 or a.repeat_kv_reuse:

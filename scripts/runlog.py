@@ -125,7 +125,14 @@ def main():
 
     # ── --note : 명령 없이 텍스트만. 배치의 echo 블록을 로그에도 남기는 통로다. ──
     if a.note:
-        body = "".join(f"{ln}\n" for ln in a.note)
+        # ★배치는 `^>`·`^<`·`^|` 로 써야 한다(lint_bat.py E3 가 escape 안 된 것을 막는다).
+        #   cmd 는 큰따옴표 안의 `^` 를 그대로 넘기므로 여기서 풀어 준다 — 안 그러면
+        #   로그에 `-^>` 가 찍힌다. 배치 원문과 로그가 또 달라지는 것을 막는 처리다.
+        def _unescape(t):
+            for ch in "<>|&^":
+                t = t.replace("^" + ch, ch)
+            return t
+        body = "".join(f"{_unescape(ln)}\n" for ln in a.note)
         with open(path, "a", encoding="utf-8", newline=os.linesep) as nf:
             nf.write(body)
             nf.flush()
