@@ -35,6 +35,11 @@ REM    TL_TAG      checkpoint tag             default: dense
 REM    TL_ARCH     dense or tied              default: dense
 REM    TL_INSPECT  how many top documents to dump text for  default: none
 REM    TL_DOCFILTER set to anything to read the FILTERED cache (P037 stage 2)
+REM    TL_CKPTTOKENS training-budget label for the checkpoint name, if it DIFFERS
+REM                 from the pool size. Result 023 section 7: one flag meant both,
+REM                 so a 600M pool went looking for a 600M-budget checkpoint.
+REM    TL_DATA2=none  skips the second dataset. Plain 'set TL_DATA2=' does NOT
+REM                 work - cmd UNDEFINES the variable and the default comes back.
 REM    TL_NOPAUSE  set to anything to skip the pause    (callers should set it)
 REM
 REM  EXIT CODES: 0 ok / 9 could not find the repo root / see below for others.
@@ -48,6 +53,8 @@ if not exist run100m.py goto BADROOT
 
 set TL_DFARG=
 if defined TL_DOCFILTER set TL_DFARG=--doc-filter
+set TL_CKARG=
+if defined TL_CKPTTOKENS set TL_CKARG=--ckpt-tokens !TL_CKPTTOKENS!
 
 if not defined TL_LOGNAME set TL_LOGNAME=valdocs
 if not defined TL_DATA1 set TL_DATA1=ko-edu-en
@@ -73,16 +80,17 @@ echo =============================================================
 echo [1] !TL_DATA1!
 python scripts\runlog.py --name !TL_LOGNAME! --note "[1] !TL_DATA1!"
 echo =============================================================
-python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_val_docs.py --data !TL_DATA1! --tokens !TL_TOKENS! --arch !TL_ARCH! --tag !TL_TAG! !TL_IARG! !TL_DFARG!
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_val_docs.py --data !TL_DATA1! --tokens !TL_TOKENS! --arch !TL_ARCH! --tag !TL_TAG! !TL_IARG! !TL_DFARG! !TL_CKARG!
 if errorlevel 1 echo [WARN] first dataset decomposition failed - continuing
 
 if not defined TL_DATA2 goto NODATA2
+if /i "!TL_DATA2!"=="none" goto NODATA2
 echo.
 echo =============================================================
 echo [2] !TL_DATA2!
 python scripts\runlog.py --name !TL_LOGNAME! --note "[2] !TL_DATA2!"
 echo =============================================================
-python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_val_docs.py --data !TL_DATA2! --tokens !TL_TOKENS! --arch !TL_ARCH! --tag !TL_TAG! !TL_IARG! !TL_DFARG!
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_val_docs.py --data !TL_DATA2! --tokens !TL_TOKENS! --arch !TL_ARCH! --tag !TL_TAG! !TL_IARG! !TL_DFARG! !TL_CKARG!
 if errorlevel 1 echo [WARN] second dataset decomposition failed - continuing
 :NODATA2
 

@@ -105,6 +105,10 @@ def main():
                     help="P034 단계2 — latent 해제 상태로 잰다. 상주가 절반이면 속도가 따라오는가")
     ap.add_argument("--int8-store", action="store_true",
                     help="P034 단계3 — int8 저장. **느려질 것으로 예상**(forward 마다 되돌린다)")
+    ap.add_argument("--infer-repeat", type=float, default=1.0,
+                    help="(P030 단계4) middle 통과 배수. **층 수만 바꾸고 파라미터는 고정**한다 — "
+                         "결과 016 §10.4 의 '속도는 파라미터가 아니라 층 수를 따라간다' 가설 검정용")
+    ap.add_argument("--repeat-where", choices=["front", "back", "even"], default="front")
     a = ap.parse_args()
 
     import torch
@@ -152,6 +156,13 @@ def main():
                 except Exception as e:
                     print(f"{dev:>8} {nt:>8} {tag:>16}  로드 실패: {type(e).__name__}: {e}")
                     continue
+                # ★P030 단계4: 층 수만 바꾼다(파라미터·메모리 고정). 1.0 이면 종전 경로.
+                if a.infer_repeat != 1.0:
+                    cfg.infer_repeat = a.infer_repeat
+                    cfg.repeat_where = a.repeat_where
+                    _n = len(model.visit_schedule())
+                    print(f"  [P030-4] {tag}: 층 통과 {_n}회(기준 {cfg.n_layers}회) "
+                          f"— 파라미터·메모리는 그대로다")
                 # ★단일 소스: 표에 찍는 MB 는 여기서 계산된다(리터럴 금지).
                 _mr = model.mem_report_all()
                 mb, rt = _mr["packed_mb"], _mr["runtime_mb"]

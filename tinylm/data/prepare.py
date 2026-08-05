@@ -55,7 +55,11 @@ def _stream(name):
         except StopIteration:
             continue
         if t and len(t) > 64:
-            yield t
+            # ★L1(2026-08-06): 소스 인덱스를 함께 낸다. `rng.choice` 는 **문서**를 고르므로
+            #   문서 길이가 소스마다 다르면 **토큰 비율은 설정한 ratio 가 아니다.**
+            #   지금까지 "한국어 50%" 라고 적어 온 모든 문서가 미확인이었다
+            #   (docs/methods/07_corpus_selection.md §4.3). 이제 실측해서 meta 에 남긴다.
+            yield t, i
 
 
 def build_tokenizer(name, vocab_size=VOCAB):
@@ -69,7 +73,8 @@ def build_tokenizer(name, vocab_size=VOCAB):
     tok = ByteLevelBPETokenizer()
     src = _stream(name)
     def sample():
-        for i, t in enumerate(src):
+        # ★_stream 이 (텍스트, 소스인덱스) 를 낸다(L1, 2026-08-06). 토크나이저는 텍스트만 쓴다.
+        for i, (t, _src_i) in enumerate(src):
             if i >= 200_000:
                 break
             yield t
@@ -187,7 +192,10 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
         buf, total, total_bytes = [], 0, 0
         t0 = time.time()
         n_drop, n_drop_chars = 0, 0
-        for text in _stream(name):
+        n_src = len(DATASETS[name])
+        src_tok = [0] * n_src            # ★L1: 소스별 실제 토큰 수
+        src_doc = [0] * n_src            # ★L1: 소스별 문서 수
+        for text, src_i in _stream(name):
             if doc_filter and spam_signature(text, doc_min_chars):
                 n_drop += 1
                 n_drop_chars += len(text)
@@ -195,6 +203,8 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
             ids = tok.encode(text).ids
             buf.append(np.array(ids + [eos], dtype=np.uint16))
             total += len(ids) + 1
+            src_tok[src_i] += len(ids) + 1
+            src_doc[src_i] += 1
             total_bytes += len(text.encode("utf-8"))
             if total >= n_tokens:
                 break
@@ -202,6 +212,17 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
                 print(f"  {total/1e6:>6.1f}M / {n_tokens/1e6:.0f}M  "
                       f"({total/max(time.time()-t0,1e-9)/1e3:.0f}K tok/s)")
         arr = np.concatenate(buf)[:n_tokens]
+        # ★L1 실측 보고 — 설정 비율과 실제 토큰 비율이 다르면 여기서 드러난다.
+        print("[mix] 소스별 실제 비율 (설정 비율은 DATASETS 의 ratio)")
+        _specs = DATASETS[name]
+        for _i, (_hf, _c, _sp, _k, _r) in enumerate(_specs):
+            _tp = src_tok[_i] / max(total, 1)
+            _dp = src_doc[_i] / max(sum(src_doc), 1)
+            _flag = "  <-- 설정과 5%p 이상 차이" if abs(_tp - _r / sum(x[4] for x in _specs)) > 0.05 else ""
+            print(f"      {_hf:38} 설정 {_r:.2f} | 문서 {_dp:6.1%} | ★토큰 {_tp:6.1%}"
+                  f" ({src_tok[_i]/1e6:.1f}M){_flag}")
+        print("      ★문서 비율과 토큰 비율이 다른 이유: rng 가 **문서**를 고르는데 "
+              "소스마다 문서 길이가 다르다(L1).")
         if doc_filter:
             print(f"[filter] 스팸 서명으로 제외한 문서 {n_drop:,}개 / {n_drop_chars/1e6:.1f}M 자")
             print(f"[filter] 서명 = 길이 {doc_min_chars:,}자 이상 AND 줄바꿈 ~0% AND 줄 고유율 100%")
@@ -216,6 +237,12 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
     if name != "synthetic":
         meta["bytes_per_token"] = total_bytes / max(total, 1)
         meta["doc_filter"] = bool(doc_filter)
+        # ★L1: 소스별 실측 비율을 meta 에 남긴다 — 이후 어떤 문서도 "50%" 를 추정으로 쓰지 않는다.
+        meta["mix_sources"] = [x[0] for x in DATASETS[name]]
+        meta["mix_ratio_cfg"] = [x[4] for x in DATASETS[name]]
+        meta["mix_tokens"] = src_tok
+        meta["mix_docs"] = src_doc
+        meta["mix_token_frac"] = [t / max(total, 1) for t in src_tok]
         if doc_filter:
             meta["doc_min_chars"] = int(doc_min_chars)
             meta["docs_dropped"] = int(n_drop)

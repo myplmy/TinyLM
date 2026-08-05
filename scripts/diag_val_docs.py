@@ -101,7 +101,12 @@ def main():
     ap.add_argument("--doc-filter", action="store_true",
 
                     help="(P037 단계2) 필터된 캐시({data}_{N}_filtered)를 읽는다. 결과 023: 이 플래그가 없어 검증이 옛 캐시를 쟀다")
-    ap.add_argument("--tokens", default="300M")
+    ap.add_argument("--tokens", default="300M",
+                    help="**데이터 풀** 크기. 필터 캐시는 600M 인데 학습 예산은 300M 일 수 있다")
+    ap.add_argument("--ckpt-tokens", default=None,
+                    help="**학습 토큰 예산**(체크포인트 이름에 쓰이는 값). 미지정이면 --tokens 를 쓴다. "
+                         "★결과 023 §7: 이 둘이 한 플래그라서 600M 풀을 지정하니 "
+                         "존재하지 않는 m100_..._600M_dense.pt 를 찾다 죽었다")
     ap.add_argument("--arch", default="dense", choices=["dense", "tied"])
     ap.add_argument("--tag", default=None)
     ap.add_argument("--preset", default="m100")
@@ -130,8 +135,11 @@ def main():
     if eos is None:
         eos = 2
 
-    base = f"{a.preset}_{a.data}_{a.tokens}"
-    ck = paths.RUNS / "ckpt" / f"{base}_{a.tag or a.arch}.pt"
+    # ★풀 크기(--tokens)와 학습 예산(--ckpt-tokens)은 다른 값이다(결과 023 §7).
+    ck_tok = a.ckpt_tokens or a.tokens
+    ck = paths.resolve_ckpt(a.preset, a.data, ck_tok, a.tag or a.arch)
+    if ck_tok != a.tokens:
+        print(f"[ckpt] 풀 {a.tokens} / 학습예산 {ck_tok} 로 분리 지정 -> {ck.name}")
     if not ck.exists():
         print(f"[!] 체크포인트 없음: {ck}")
         return 1
