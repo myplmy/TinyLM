@@ -65,6 +65,10 @@ def tensor_mb(model):
             lat += m.weight.numel() * m.weight.element_size()
             if getattr(m, "_wq", None) is not None:
                 wq += m._wq.numel() * m._wq.element_size()
+            # ★P034 단계3: fp32 사본 대신 int8 코드 + fp32 α 를 든다. 둘 다 세야 한다.
+            if getattr(m, "_i8", None) is not None:
+                wq += m._i8.numel() * m._i8.element_size()
+                wq += m._alpha.numel() * m._alpha.element_size()
     for p in model.parameters():
         if id(p) not in tl:
             other += p.numel() * p.element_size()
@@ -82,6 +86,8 @@ def main():
     ap.add_argument("--max-new", type=int, default=32)
     ap.add_argument("--drop-latent", action="store_true",
                     help="P034 단계2 — freeze 후 fp32 latent 해제. 해제 전/후를 나란히 잰다")
+    ap.add_argument("--int8-store", action="store_true",
+                    help="P034 단계3 — 삼진 사본을 int8 코드+α 로. --drop-latent 와 함께 쓴다")
     a = ap.parse_args()
 
     import torch
@@ -136,6 +142,8 @@ def main():
             with torch.no_grad():
                 before = model(ids).float().clone()
             model.drop_latent()
+            if a.int8_store:
+                model.to_int8()        # ★단계3 — 단계2 위에 얹는다(fp32 사본 → int8 코드+α)
             gc.collect()
             if a.device == "cuda":
                 torch.cuda.empty_cache()
@@ -160,12 +168,13 @@ def main():
         print(f"     ★저장 대비 상주    {(lat+wq+oth)/packed:8.1f} 배")
         if drop is not None:
             lat2, wq2, oth2, res2, pk2, dmax, r3 = drop
-            gate = "통과" if dmax == 0.0 else ("경계" if dmax < 1e-4 else "★실패")
-            print(f"     ── P034 단계2 (latent 해제) " + "─" * 34)
+            gate = "통과" if dmax == 0.0 else ("경계" if dmax < 1e-5 else "★실패")
+            _stg = "단계2+3 (latent 해제 + int8 저장)" if a.int8_store else "단계2 (latent 해제)"
+            print(f"     ── P034 {_stg} " + "─" * 30)
             print(f"     로짓 동등성 게이트  max|dlogit| = {dmax:.3e}   {gate}"
                   f"   (해제는 계산을 바꾸지 않으므로 0 이어야 한다)")
             print(f"     텐서합산 상주     {res2:8.1f} MB  "
-                  f"= latent {lat2:.1f} + dequant사본 {wq2:.1f} + 기타 {oth2:.1f}")
+                  f"= latent {lat2:.1f} + 삼진사본 {wq2:.1f} + 기타 {oth2:.1f}")
             print(f"     RSS 해제후        {r3:8.1f} MB")
             print(f"     ★상주 감축        {(lat+wq+oth)/max(res2,1e-9):8.2f} 배"
                   f"   (저장 {packed:.1f} -^> {pk2:.1f} MB — 저장은 변하지 않는 것이 정상)"

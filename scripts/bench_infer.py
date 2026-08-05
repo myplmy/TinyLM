@@ -103,6 +103,8 @@ def main():
     ap.add_argument("--preset", default="m100")
     ap.add_argument("--drop-latent", action="store_true",
                     help="P034 단계2 — latent 해제 상태로 잰다. 상주가 절반이면 속도가 따라오는가")
+    ap.add_argument("--int8-store", action="store_true",
+                    help="P034 단계3 — int8 저장. **느려질 것으로 예상**(forward 마다 되돌린다)")
     a = ap.parse_args()
 
     import torch
@@ -145,7 +147,8 @@ def main():
                     continue
                 try:
                     model, cfg, _ = load_model(arch=arch, ckpt_path=str(ck), device=dev,
-                                               drop_latent=a.drop_latent)
+                                               drop_latent=a.drop_latent,
+                                               int8_store=a.int8_store)
                 except Exception as e:
                     print(f"{dev:>8} {nt:>8} {tag:>16}  로드 실패: {type(e).__name__}: {e}")
                     continue

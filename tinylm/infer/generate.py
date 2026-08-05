@@ -26,7 +26,7 @@ def _strip(sd):
     return {k.replace("_orig_mod.", ""): v for k, v in sd.items()}
 
 
-def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False):
+def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8_store=False):
     """`drop_latent=True` 면 P034 단계2 — fp32 latent 를 해제해 **상주를 약 절반**으로 줄인다.
 
     되돌릴 수 없으므로 **추론 전용**이다. 학습·진단(gradient 필요)에서는 절대 켜지 않는다.
@@ -42,6 +42,8 @@ def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False):
     model.freeze_quant()                        # ★삼진화 1회만(결과 014: 재계산이 CPU 시간의 ~79%)
     if drop_latent:
         model.drop_latent()                     # ★P034 단계2
+    if int8_store:
+        model.to_int8()                         # ★P034 단계3
     return model, cfg, device
 
 

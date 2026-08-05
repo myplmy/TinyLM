@@ -8,7 +8,7 @@
 **TinyLM** = 저사양 CPU·엣지·모바일용 **초경량 LLM 아키텍처**. 핵심 목표는 **연산이 아니라
 메모리 최적화**(연산 증가는 감수). 지향점: dense 대비 절반 이하 메모리로 유사 품질.
 
-> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202607312030_HANDOFF.md`](handoff/202607312030_HANDOFF.md).
+> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608021200_HANDOFF.md`](handoff/202608021200_HANDOFF.md).
 > **새 세션은 그 문서를 먼저 읽는다.** 아래는 바뀌지 않는 규범만 남긴다.
 >
 > 요약 한 줄: 코드 v6(`tinylm/`), 아키텍처 v5. **σ = 0.012 / 분해능 0.024.**
@@ -25,6 +25,7 @@
 - **확정 스펙·설계 근거·안정화 이력**: `handoff/` 의 최신 메모(참고용 스냅샷).
 - **실행 방법·실험 계획**: `test_plan/{계획번호}_{요약}.md` + `test_plan/실험계획목록.md`.
 - **방법론 원장**(기법별 상태·트레이드오프): `docs/METHODS.md` + `docs/methods/`.
+  **코퍼스 채택/기각 근거는 `docs/methods/07_corpus_selection.md`** — 새 데이터셋을 검토하면 여기 행을 추가한다.
 - **실험 결과**: `test_result/{번호}_{시간}_{요약}.md` + `test_result/실험목록.md`.
 - **종합 리뷰**(누적 판정·기법 채택 수준·모델안): `docs/review/`. 개별 결과보다 **상위 판단**이 여기 있다.
 - **실험 조건 기준표**: `docs/EXPERIMENT_BASELINES.md` — 표준조건·런 레지스트리·비교유효성 규칙·
@@ -198,6 +199,13 @@ run100m.py            호환 래퍼 → tinylm.cli.main
   같은 함수 안에 이미 규약값 `bpw_t` 가 있었는데 그걸 안 썼다. **스모크(`tool_smoke.bat`)가
   `train --tiny` 로 `report()` 를 부르므로 돌렸으면 수 분 만에 잡혔다** — 코드 수정 후 스모크를
   건너뛴 것이 실제 비용이었다.
+- **★분리해서 쓰는 것과 분리한 것을 읽는 것은 별개 작업이다(결과 023).** `--doc-filter` 가
+  필터 캐시를 `{data}_{N}_filtered` 로 **안전하게 분리**했는데, 진단 도구에 그걸 가리키는
+  방법을 안 만들어서 **검증이 옛 캐시를 쟀다.** 출력이 결과 018 과 소수점까지 같아서 겨우 잡혔다.
+  **결과문서에 값을 적을 때 `[data] ... -> 경로` 줄을 함께 대조한다.**
+- **★상주 메모리가 안 줄어드는 이유는 비트폭 하나다(P034 §단계3·4 표).** 타잉분(2.26×)은
+  이미 실현돼 있다. 삼진 값을 **fp32 로 들고 있는 것**이 20배 격차 전부다. 그리고 이론값
+  `packed_mb` 는 **임베딩까지 패킹한다고 가정**하므로, 삼진만 패킹해도 거기 닿지 않는다.
 - **★크기·배수를 코드나 문구에 리터럴로 적지 말 것(결과 014 §10.7).** `bench_infer.py` 가
   `DEFAULT_MODELS` 에 **30.9/14.9/11.7 을 박아** 두어, 같은 배치 로그 안에서 `mem_runtime.py` 의
   27.1/13.1/12.4 와 **두 개의 진실**이 찍혔다(게다가 구 규약). `--models` 를 주면 0.0 이 되어
@@ -261,7 +269,7 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 
 | 최상위 = **실험**(계획번호·단계가 이름에 있다) | `scripts/batch/` = **기능 모듈**(실험 아님) |
 |---|---|
-| **`run_smoke_check.bat`**(코드 수정 후 필수) · `run_P034_stage2_latent.bat` · `run_P036_stage1b_trapping.bat` · `run_P031_repeat.bat` · `run_P032_paired_eval.bat` · `run_P038_wsd_recheck.bat` · `run_P035_anneal.bat` · `run100m_P007B.bat` · `run_P036_stage2_arenas.bat`(단계1B 선행) · `run_P037_stage2_regen.bat` | `tool_smoke.bat` · `tool_kvcache_gate.bat`(**캐시 정본 게이트**) · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
+| **`run_smoke_check.bat`**(코드 수정 후 필수) · `run_P034_stage2_latent.bat` · `run_P036_stage1b_trapping.bat` · `run_P031_repeat.bat` · `run_P032_paired_eval.bat` · `run_P038_wsd_recheck.bat` · `run_P035_anneal.bat` · `run100m_P007B.bat` | `tool_smoke.bat` · `tool_kvcache_gate.bat`(**캐시 정본 게이트**) · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
 
 > **★`scripts/batch/` 를 사용자에게 직접 실행하라고 안내하지 않는다**(2026-07-31 개편).
 > 그건 **도구**다 — 실험번호도, 계획서 참조도, `test_result` 상의 자리도 없다.

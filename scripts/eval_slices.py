@@ -69,6 +69,9 @@ def slice_loss(model, arr, lo, hi, seq, n_crops, device, rng):
 def main():
     ap = argparse.ArgumentParser(description="P028 단계0.5 구간별 손실")
     ap.add_argument("--data", required=True)
+    ap.add_argument("--doc-filter", action="store_true",
+
+                    help="(P037 단계2) 필터된 캐시({data}_{N}_filtered)를 읽는다. 결과 023: 이 플래그가 없어 검증이 옛 캐시를 쟀다")
     ap.add_argument("--tokens", default="300M")
     ap.add_argument("--tag", default="dense")
     ap.add_argument("--arch", default="dense", choices=["dense", "tied"])
@@ -82,7 +85,9 @@ def main():
     from tinylm import paths
     from tinylm.infer.generate import load_model
 
-    cache = paths.DATA_CACHE / f"{a.data}_{_tok(a.tokens)}"
+    # ★P037 단계2: 필터 캐시는 별도 디렉터리다(결과 023 — 이걸 안 봐서 옛 캐시를 쟀다)
+    _suf = "_filtered" if a.doc_filter else ""
+    cache = paths.DATA_CACHE / f"{a.data}_{_tok(a.tokens)}{_suf}"
     if not (cache / "train.bin").exists():
         print(f"[!] 캐시 없음: {cache}")
         return 1

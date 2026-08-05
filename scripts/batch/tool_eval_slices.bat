@@ -33,6 +33,7 @@ REM    TL_DATA2    second dataset, blank to skip  default: ko-edu-en
 REM    TL_TOKENS   pool size label            default: 300M
 REM    TL_TAG      checkpoint tag             default: dense
 REM    TL_ARCH     dense or tied              default: dense
+REM    TL_DOCFILTER set to anything to read the FILTERED cache (P037 stage 2)
 REM    TL_NOPAUSE  set to anything to skip the pause    (callers should set it)
 REM
 REM  EXIT CODES: 0 ok / 9 could not find the repo root / see below for others.
@@ -43,6 +44,9 @@ REM  Locate the repo root. Works from the root or from this folder (double-click
 REM  A marker file is used because the percent sign is banned here.
 if not exist run100m.py cd ..\..
 if not exist run100m.py goto BADROOT
+
+set TL_DFARG=
+if defined TL_DOCFILTER set TL_DFARG=--doc-filter
 
 if not defined TL_LOGNAME set TL_LOGNAME=eval-slices
 if not defined TL_DATA1 set TL_DATA1=ko-en
@@ -63,7 +67,7 @@ echo =============================================================
 echo [1] !TL_DATA1!
 python scripts\runlog.py --name !TL_LOGNAME! --note "[1] !TL_DATA1!"
 echo =============================================================
-python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\eval_slices.py --data !TL_DATA1! --tokens !TL_TOKENS! --tag !TL_TAG! --arch !TL_ARCH! --docstats
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\eval_slices.py --data !TL_DATA1! --tokens !TL_TOKENS! --tag !TL_TAG! --arch !TL_ARCH! --docstats !TL_DFARG!
 if errorlevel 1 echo [WARN] first dataset slice eval failed - continuing
 
 if not defined TL_DATA2 goto NODATA2
@@ -72,7 +76,7 @@ echo =============================================================
 echo [2] !TL_DATA2!
 python scripts\runlog.py --name !TL_LOGNAME! --note "[2] !TL_DATA2!"
 echo =============================================================
-python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\eval_slices.py --data !TL_DATA2! --tokens !TL_TOKENS! --tag !TL_TAG! --arch !TL_ARCH! --docstats
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\eval_slices.py --data !TL_DATA2! --tokens !TL_TOKENS! --tag !TL_TAG! --arch !TL_ARCH! --docstats !TL_DFARG!
 if errorlevel 1 echo [WARN] second dataset slice eval failed - continuing
 :NODATA2
 

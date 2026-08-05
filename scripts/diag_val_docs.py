@@ -98,6 +98,9 @@ def _inspect(arr, docs, rows_by_contrib, tok, eos, a):
 def main():
     ap = argparse.ArgumentParser(description="P028 단계0.6 문서단위 val 손실 분해")
     ap.add_argument("--data", default="ko-edu-en")
+    ap.add_argument("--doc-filter", action="store_true",
+
+                    help="(P037 단계2) 필터된 캐시({data}_{N}_filtered)를 읽는다. 결과 023: 이 플래그가 없어 검증이 옛 캐시를 쟀다")
     ap.add_argument("--tokens", default="300M")
     ap.add_argument("--arch", default="dense", choices=["dense", "tied"])
     ap.add_argument("--tag", default=None)
@@ -120,7 +123,7 @@ def main():
     from tokenizers import Tokenizer
 
     n_tok = int(float(a.tokens.rstrip("MmBb")) * (1e9 if a.tokens[-1] in "Bb" else 1e6))
-    meta = prepare(a.data, n_tok)
+    meta = prepare(a.data, n_tok, doc_filter=a.doc_filter)
     val = np.memmap(Path(meta["dir"]) / "val.bin", dtype=np.uint16, mode="r")
     tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
     eos = tok.token_to_id("<eos>")

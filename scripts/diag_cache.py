@@ -231,6 +231,9 @@ def diagnose(meta):
 def main():
     ap = argparse.ArgumentParser(description="P028 단계0 캐시 진단(GPU 불필요)")
     ap.add_argument("--data")
+    ap.add_argument("--doc-filter", action="store_true",
+
+                    help="(P037 단계2) 필터된 캐시({data}_{N}_filtered)를 읽는다. 결과 023: 이 플래그가 없어 검증이 옛 캐시를 쟀다")
     ap.add_argument("--tokens")
     ap.add_argument("--all", action="store_true")
     a = ap.parse_args()
@@ -242,7 +245,9 @@ def main():
     if a.all:
         targets = caches
     elif a.data:
-        want = f"{a.data}_{_tok(a.tokens)}" if a.tokens else None
+        # ★P037 단계2: 필터 캐시 별도 디렉터리(결과 023)
+        _suf = "_filtered" if a.doc_filter else ""
+        want = f"{a.data}_{_tok(a.tokens)}{_suf}" if a.tokens else None
         targets = [m for m in caches
                    if m["data"] == a.data and (want is None or Path(m["dir"]).name == want)]
         if not targets:

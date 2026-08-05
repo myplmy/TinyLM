@@ -63,6 +63,7 @@ class TiedMLPTransformer(nn.Module):
         self.register_buffer("_anneal", torch.tensor(float(cfg.quant_anneal)), persistent=False)
         self._tlinear_cache = list(self._tlinears())   # ②: 매 forward 모듈 트리 순회 제거(plain list)
         self._quant_frozen = False                     # freeze_quant() 참조(추론 전용 최적화)
+        self._int8_store = False                       # P034 단계3
         self._arena = None                             # P036 Arenas λ_t (None = 항 없음)
         self._arena_v = 0.0
 
@@ -112,6 +113,21 @@ class TiedMLPTransformer(nn.Module):
             raise RuntimeError("drop_latent() 전에 freeze_quant() 가 필요하다.")
         for m in self._tlinear_cache:
             m.drop_latent()
+
+    def to_int8(self):
+        """★P034 단계3 — 삼진 dequant 사본을 int8 코드 + fp32 α 로 저장한다.
+
+        `drop_latent()` 와 함께 쓰는 것이 정상 순서다(latent 해제 → int8 저장).
+        되돌릴 수 없다. 추론 전용.
+        """
+        if not self._quant_frozen:
+            raise RuntimeError("to_int8() 전에 freeze_quant() 가 필요하다.")
+        for m in self._tlinear_cache:
+            m.to_int8()
+        self._int8_store = True
+
+    def int8_stored(self):
+        return getattr(self, "_int8_store", False)
 
     def freeze_quant(self):
         """★추론용: 삼진 가중치를 **한 번만** 계산하고 이후 forward 에서 재계산하지 않는다.
@@ -362,11 +378,17 @@ class TiedMLPTransformer(nn.Module):
         # ★상주(runtime) — 결과 016 실측식: 유니크 삼진 x 4B x 2벌(latent + dequant 사본) + 나머지 fp32
         #   P034 단계2 로 latent 를 해제하면 **1벌**이 된다(= 이 값이 절반 근처로 떨어진다).
         copies = 1 if self.latent_dropped() else 2
-        runtime_mb = ((tern + mode + lora) * 4 * copies + (emb + other) * 4) / 1024 ** 2
+        # ★P034 단계3: 삼진 사본이 int8(1바이트) + 그룹 α(fp32, 파라미터당 4/micro_group 바이트)
+        if self.int8_stored():
+            tern_bytes = tern * (1 + 4 / cfg.micro_group)
+            runtime_mb = (tern_bytes + (mode + lora) * 4 + (emb + other) * 4) / 1024 ** 2
+        else:
+            runtime_mb = ((tern + mode + lora) * 4 * copies + (emb + other) * 4) / 1024 ** 2
         return {"total_mb": sum(parts.values()),          # = packed_mb (구 호출부 호환 별칭)
                 "packed_mb": sum(parts.values()),
                 "runtime_mb": runtime_mb,
                 "runtime_copies": copies,        # 2 = latent + dequant / 1 = P034 단계2 적용
+                "int8_stored": self.int8_stored(),   # P034 단계3
                 "latent_dropped": copies == 1,
                 "parts_mb": parts,
                 "params": {"ternary": tern, "mode": mode, "emb": emb, "other": other, "lora": lora,

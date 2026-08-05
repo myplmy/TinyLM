@@ -64,6 +64,8 @@ class TLinear(nn.Module):
         self._wq = None
         self._anneal_t = None            # refresh_quant가 채우는 어닐 스칼라 텐서(커널 경로 재컴파일 방지용)
         self._latent_shape = None        # drop_latent() 후에도 파라미터 수를 알기 위한 기록
+        self._i8 = None                  # P034 단계3: 삼진 코드(int8)
+        self._alpha = None               # P034 단계3: 그룹 스케일(fp32)
 
     # ---------- P034 단계2: 추론 시 latent 해제 ----------
     def latent_dropped(self):
@@ -81,6 +83,49 @@ class TLinear(nn.Module):
                 n *= d
             return n
         return self.weight.numel()
+
+    def to_int8(self):
+        """★P034 단계3 — dequant 사본을 **fp32 → int8 코드 + fp32 α** 로 바꾼다.
+
+        삼진 값은 {−α, 0, +α} 세 개뿐이므로 **코드는 int8 하나로 충분**하다. 지금은 그걸
+        fp32(4바이트)로 들고 있어 파라미터당 32비트를 쓴다 — **이론값 1.375~1.71bpw 의 20배 이상**이다.
+        여기서 8비트로 내리면 삼진 항이 **정확히 1/4** 이 된다.
+
+        ★대가: forward 마다 `code * alpha` 로 **되돌려야 한다**(fp32 버퍼 1개). 즉 이건
+        **메모리를 연산과 바꾸는 것**이다. 결과 014 §10·016 §9 가 우리는 **연산 바운드**라고
+        했으므로 **속도는 나빠질 가능성이 높다** — 그래서 배치가 속도도 함께 잰다.
+        기대를 미리 적어 두는 이유는, 느려졌을 때 그것을 실패가 아니라 **예측된 트레이드오프**로
+        읽기 위해서다.
+
+        ★단계4 와의 관계: 단계4(5비트/1.375bpw 패킹)는 여기서 int8 을 **더 쪼개는** 것이고,
+        `code*alpha` 를 fp32 로 되돌리지 않고 **커널이 직접 읽어야** 비로소 이론값에 닿는다.
+        단계3 만으로는 이론값의 7.6배에서 멈춘다(계획 P034 §단계3·4 표).
+        """
+        if self._wq is None:
+            raise RuntimeError("to_int8() 전에 freeze_quant() 가 필요하다.")
+        if self._i8 is not None:
+            return
+        import torch
+        w = self._wq.detach()
+        O, I = w.shape
+        g = self.cfg.micro_group
+        wg = w.reshape(O, I // g, g)
+        alpha = wg.abs().amax(dim=2, keepdim=True)              # 그룹 스케일
+        code = torch.zeros_like(wg, dtype=torch.int8)
+        nz = alpha > 0
+        # 코드는 {-1,0,+1}. alpha 가 0 인 그룹(전부 0)은 코드도 0 이다.
+        ratio = torch.where(nz, wg / alpha.clamp_min(1e-12), torch.zeros_like(wg))
+        code = torch.where(ratio > 0.5, 1, torch.where(ratio < -0.5, -1, 0)).to(torch.int8)
+        self._i8 = code.reshape(O, I)
+        self._alpha = alpha.squeeze(-1).contiguous()            # (O, I//g) fp32
+        self._wq = None                                         # ★fp32 사본 해제 = 이 단계의 전부
+
+    def _wq_from_i8(self):
+        """int8 코드 + α 를 fp32 로 되돌린다(forward 마다 1회, 층당 버퍼 1개)."""
+        O, I = self._i8.shape
+        g = self.cfg.micro_group
+        return (self._i8.reshape(O, I // g, g).to(self._alpha.dtype)
+                * self._alpha.unsqueeze(-1)).reshape(O, I)
 
     def drop_latent(self):
         """freeze 후 fp32 latent `weight` 의 저장공간을 해제한다(추론 전용, 되돌릴 수 없다).
@@ -127,6 +172,7 @@ class TLinear(nn.Module):
 
     def clear_quant(self):
         self._wq = None
+        self._i8 = self._alpha = None        # int8 저장도 해제(학습 재개 시 필수)
 
     def forward(self, x, mode_p=None):
         if getattr(self.cfg, "use_ternary_kernel", False):   # 분리된 커스텀 커널 경로(기본 off)
@@ -135,7 +181,10 @@ class TLinear(nn.Module):
                                    "(커널이 latent weight 를 직접 읽는다).")
             y = ternary_kernel_linear(x, self._w(), self.cfg, self._anneal_t)
         else:
-            wq = self._wq if self._wq is not None else ternary(self._w(), self.cfg)
+            if self._i8 is not None:                 # P034 단계3: int8 저장 → 매번 되돌린다
+                wq = self._wq_from_i8()
+            else:
+                wq = self._wq if self._wq is not None else ternary(self._w(), self.cfg)
             y = F.linear(x, wq)
         if self.use_mode and mode_p is not None:
             h = F.linear(x, self.mode_a) * (mode_p @ self.mode_gain)

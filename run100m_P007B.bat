@@ -8,6 +8,26 @@ REM   Losing the log of a long run costs the whole run, so this is not optional.
 REM   Exit codes pass through unchanged, so every `if errorlevel` below still works.
 
 REM ===== P007B : pool-saturation point + fair-pool k4 at the 600M budget =====
+REM ===== STATUS CHECK 2026-08-02 (asked: does this still run, and should it) =====
+REM   RUNS AS-IS. Every flag it uses still exists in the CLI (checked against
+REM   tinylm\cli.py). Nothing is broken. Two things a future reader must NOT "fix":
+REM
+REM   1. IT DELIBERATELY DOES NOT PASS --sched wsd.
+REM      The standard changed to wsd on 2026-07-31 (result 015). This batch compares
+REM      against p6d, which was trained on COSINE in result 006. Adding --sched wsd
+REM      here would make the comparison meaningless. Same for --seed and --no-ckpt:
+REM      p6d did not use them. Comparability beats currency.
+REM
+REM   2. RECOMMENDATION: DEFER until P037 stage 3 lands.
+REM      docs\methods\07_corpus_selection.md section 4.3 found that the loader does
+REM      NOT shuffle - streaming yields in file order, so a "600M pool" is literally
+REM      the FIRST 600M tokens of the stream. That means the 300M -^> 600M gain of
+REM      0.12 nats (result 006) may be partly a DISTRIBUTION effect, not the
+REM      repetition effect we attributed it to. Growing the pool to 1200M would
+REM      confound in exactly the same way, so the answer would be hard to read.
+REM      Cost is real: preparing a 1200M cache plus a 117 minute run.
+REM      Run it AFTER the loader question is settled, and the answer is clean.
+REM
 REM   Follow-up to result 006. Template reused from run100m_P007.bat, but a DIFFERENT experiment
 REM   and a different file, so the original P007 record stays untouched.
 REM
