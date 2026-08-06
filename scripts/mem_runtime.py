@@ -69,6 +69,13 @@ def tensor_mb(model):
             if getattr(m, "_i8", None) is not None:
                 wq += m._i8.numel() * m._i8.element_size()
                 wq += m._alpha.numel() * m._alpha.element_size()
+            # ★★P034 단계3C(결과 016 §13): 언팩 캐시 버퍼. **이걸 안 세서 사고를 못 잡았다.**
+            #   1차 구현이 dense 에서 fp32 20층분(472.5MB)을 들고 있었는데 이 함수는
+            #   `parameters()` 와 `_wq`/`_i8` 만 보고 **86.9MB 라고 보고했다.**
+            #   상주 회계는 "의도적으로 들고 있는 텐서" 전부여야 한다 — 파이썬 속성도 포함이다.
+            c = getattr(m, "_i8_cache", None)
+            if c is not None:
+                wq += c.numel() * c.element_size()
     for p in model.parameters():
         if id(p) not in tl:
             other += p.numel() * p.element_size()

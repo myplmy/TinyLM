@@ -240,6 +240,14 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
                 print(f"  {total/1e6:>6.1f}M / {n_tokens/1e6:.0f}M  "
                       f"({total/max(time.time()-t0,1e-9)/1e3:.0f}K tok/s)")
         arr = np.concatenate(buf)[:n_tokens]
+        # ★L4 후속: 전 소스가 고갈되면 `_stream()` 이 종료하므로 **요청보다 적은 캐시**가 만들어진다.
+        #   `meta["tokens"]` 에는 실제 수가 들어가므로 재사용 판정은 옳지만, **디렉터리 이름이
+        #   거짓말을 한다**(`ko_400000000` 인데 300M). 조용히 넘기지 않는다.
+        if len(arr) < n_tokens:
+            print(f"[data] ★★경고: 요청 {n_tokens/1e6:.1f}M 인데 **{len(arr)/1e6:.1f}M 만** 만들어졌다 "
+                  f"— 전 소스 고갈(L4).")
+            print(f"[data] ★디렉터리 이름({cache_dir.name})과 실제 토큰 수가 다르다. "
+                  f"meta.json 의 'tokens' 가 정본이다.")
         # ★L1 실측 보고 — 설정 비율과 실제 토큰 비율이 다르면 여기서 드러난다.
         print("[mix] 소스별 실제 비율 (설정 비율은 DATASETS 의 ratio)")
         _specs = DATASETS[name]

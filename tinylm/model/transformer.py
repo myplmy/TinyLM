@@ -131,6 +131,30 @@ class TiedMLPTransformer(nn.Module):
     def int8_stored(self):
         return getattr(self, "_int8_store", False)
 
+    # ---------- P034 단계5 : 임베딩 (★설계 미완 — 구현하지 않는다) ----------
+    #
+    # ★★2026-08-06 발견 — **임베딩은 지금까지 한 번도 양자화된 적이 없다.**
+    #   `cfg.quantize_embedding=True` 는 `mem_breakdown()` 의 **저장(packed) 계산에만** 쓰이고
+    #   (`e_bits = b_e if cfg.quantize_embedding else 16`), `self.emb` 는 평범한
+    #   `nn.Embedding`(fp32) 이다. 즉 `packed_mb` 27.1MB 는 삼진뿐 아니라 **임베딩 쪽에서도
+    #   아직 없는 포맷을 가정**하고 있다. 상주 33.0MB 중 32.8MB 가 이것이다(mC 상주의 38%).
+    #
+    # ★그런데 단순 int8 화가 **성립하지 않는다** — 임베딩이 **출력 헤드와 묶여 있기 때문**이다:
+    #       logits = F.linear(F.linear(x, emb_up.weight.t()), self.emb.weight)
+    #   조회(lookup)는 행 몇 개만 되돌리면 되지만, **헤드는 (32768, 256) 전체를 GEMM 에 넣는다.**
+    #   int8 로 저장하고 헤드에서 fp32 로 되돌리면 **forward 마다 32.8MB 를 쓰고 읽는다** —
+    #   결과 016 §13 에서 실측한 대가(0.1035 ms/tok per MB)로 환산하면 **+3.4ms/토큰(약 +5%)** 이고,
+    #   무엇보다 **§13 이 방금 저지른 것과 같은 종류의 트레이드**다. 설계를 마치기 전에는 넣지 않는다.
+    #
+    # 선택지(계획 P034 §단계5 에 기록):
+    #   (a) 헤드를 임베딩에서 분리(untie) — 파라미터 +8.4M. **메모리 목표와 정면 충돌**
+    #   (b) 헤드를 int8 GEMM 으로(`torch._int_mm`) — 활성값도 int8 여야 한다. 연구 과제
+    #   (c) 어휘 축소 — P039(어휘 활용도 진단)가 **미학습 토큰을 찾으면** 32,768 을 줄일 수 있다.
+    #       ★같은 33MB 를 **양자화 없이** 줄이는 유일한 경로이고, **선결 실험이 이미 설계돼 있다**
+    #   (d) 임베딩 랭크 축소(E=256 → 128) — 재학습 필요. 품질 영향 미지
+    #
+    # → **(c) 가 가장 값싸고 위험이 낮다. P039 를 먼저 돌린다.**
+
     def enable_unpack_cache(self, on=True):
         """★P034 단계3C — int8 언팩 결과를 **유니크 모듈당 1회**로 줄인다(타잉 전용 이득).
 
@@ -139,13 +163,50 @@ class TiedMLPTransformer(nn.Module):
         공유한다. 그런데 `_wq_from_i8()` 은 호출마다 fp32 로 되돌리므로 g8 이면 **같은 언팩을
         16번** 한다. 세대 카운터로 한 번만 돌게 만든다.
 
+        ★★2차 구현(2026-08-06, 결과 016 §13 의 사고 대응). 1차는 두 가지가 틀렸다:
+
+          ① **공유되지 않는 모듈까지 캐시했다.** dense 는 모든 TLinear 가 층당 1회라 적중이
+             0 인데 버퍼만 20층분(472.5MB) 남았다 → `p6d` 가 **40% 느려졌다.**
+             지금은 **층이 2회 이상 참조하는 MLP 의 TLinear 에만** 캐시를 켠다.
+             **dense 는 켤 대상이 하나도 없어 종전 경로와 완전히 동일하다.**
+          ② **버퍼를 다음 forward 까지 들고 있었다.** 지금은 `forward()` 가 **그룹을 벗어나는
+             순간** 해제한다(층 스케줄이 `mid_mlps[j//g]` 라 같은 MLP 가 연속으로 온다)
+             → 동시에 사는 버퍼는 **MLP 한 벌(약 18.9MB)** 이 상한이다.
+
         ⚠️ **`to_int8()` 을 쓴 추론 경로 전용**이다. 학습에는 의미가 없다(latent 가 매 스텝 바뀐다).
         ⚠️ 기본 off. 켜도 **결과는 비트 동일**해야 한다 — 다르면 구현이 틀린 것이고,
            `scripts/mem_runtime.py` 의 로짓 동등성 게이트가 `0.000e+00` 로 그것을 확인한다.
+           **그리고 그 도구는 캐시 바이트도 함께 센다** — §13 은 안 세서 못 잡았다.
         """
+        from collections import Counter
         self._unpack_cache = bool(on)
-        for m in self._tlinear_cache:
-            m.set_unpack_gen(0 if on else None)
+        for m in self._tlinear_cache:                 # 항상 전부 끄고 시작(재호출 안전)
+            m.set_unpack_gen(None)
+        self._cacheable_mlps = []
+        if not on:
+            return
+        # ★공유 판정 = "몇 개의 층이 이 MLP 객체를 참조하는가". 1이면 캐시할 이유가 없다.
+        cnt = Counter(id(l.mlp[0]) for l in self.layers)
+        seen = set()
+        for l in self.layers:
+            k = id(l.mlp[0])
+            if cnt[k] > 1 and k not in seen:
+                seen.add(k)
+                self._cacheable_mlps.append(l.mlp[0])
+        for mlp in self._cacheable_mlps:
+            for sub in mlp.modules():
+                if isinstance(sub, TLinear):
+                    sub.set_unpack_gen(0)
+
+    @staticmethod
+    def _clear_mlp_unpack(mlp):
+        for sub in mlp.modules():
+            if isinstance(sub, TLinear):
+                sub.clear_unpack_cache()
+
+    def unpack_cache_mb(self):
+        """언팩 캐시가 지금 쥐고 있는 MB. **상주 회계에 반드시 포함**한다(결과 016 §13)."""
+        return sum(m.unpack_cache_bytes() for m in self._tlinear_cache) / 1024 ** 2
 
     def unpack_cached(self):
         return getattr(self, "_unpack_cache", False)
@@ -297,6 +358,13 @@ class TiedMLPTransformer(nn.Module):
                                L(inp, k, cos, sin, mp), x, use_reentrant=False)
             else:
                 x = layer(x, kv, cos, sin, mode_p)
+
+            # ★P034 단계3C — 이 MLP 를 쓰는 연속 구간이 끝나면 **즉시 버퍼를 버린다.**
+            #   1차 구현은 이걸 안 해서 dense 가 20층분 fp32 를 들고 40% 느려졌다(§13).
+            if getattr(self, "_unpack_cache", False):
+                _nxt = schedule[step_idx + 1] if step_idx + 1 < len(schedule) else None
+                if _nxt is None or self.layers[_nxt].mlp[0] is not layer.mlp[0]:
+                    self._clear_mlp_unpack(layer.mlp[0])
 
         x = self.norm_f(x) * self.norm_f_scale
         if self.emb_up is not None:

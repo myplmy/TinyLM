@@ -158,6 +158,22 @@ class TLinear(nn.Module):
         if gen is None:
             self._i8_cache = self._i8_cache_gen = None
 
+    def clear_unpack_cache(self):
+        """★버퍼만 즉시 해제한다(기능은 켜진 채로).
+
+        결과 016 §13 의 사고: 1차 구현은 캐시를 **다음 forward 까지 들고 있었다.**
+        그래서 dense 는 적중이 0 인데 **20층분 fp32 버퍼(472.5MB)가 전부 상주**했고
+        `p6d` 가 13.85 → 8.26 tok/s 로 **40% 느려졌다**(대조군이 잡았다).
+        지금은 `transformer.forward()` 가 **그룹을 벗어나는 순간** 이걸 부른다 →
+        동시에 사는 버퍼는 **MLP 한 벌**뿐이다.
+        """
+        self._i8_cache = self._i8_cache_gen = None
+
+    def unpack_cache_bytes(self):
+        """캐시가 지금 쥐고 있는 바이트. **계측 도구가 이걸 세야 한다**(결과 016 §13)."""
+        c = self._i8_cache
+        return 0 if c is None else c.numel() * c.element_size()
+
     def drop_latent(self):
         """freeze 후 fp32 latent `weight` 의 저장공간을 해제한다(추론 전용, 되돌릴 수 없다).
 
