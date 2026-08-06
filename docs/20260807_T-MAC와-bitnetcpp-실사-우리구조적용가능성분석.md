@@ -309,3 +309,327 @@ REVIEW1 은 **`m100R1c`(mC) 기본 확정 권고** 상태였고(결과 024), `mA
   실제는 더 낮다.
 - **모델 크기 효과**(§6.2-1)가 이 분석의 가장 큰 미지수다. 논문들은 3B급에서 잰다.
 - 우리 측정은 **Windows·x86·1스레드**, 논문은 M2-Ultra·Raspberry Pi 다. **직접 비교 금지.**
+
+---
+
+# §13. **단계0 실사 결과 — 코드를 직접 읽었다** (2026-08-07 추가)
+
+> **§0 의 "읽은 범위" 가 바뀌었다.** 사용자가 U1~U4 를 완료해 논문 PDF 2건과
+> 두 저장소의 핵심 파일을 `article/lut_ref/` 에 넣어 주었다. **이제 추정이 아니라 코드다.**
+
+## 13.1 확보된 자료
+
+| 자료 | 경로 |
+|---|---|
+| bitnet.cpp 논문 | `article/Bitnet cpp Efficient Edge Inference for Ternary LLMs.pdf` |
+| T-MAC 논문 | `article/T-MAC CPU Renaissance via Table Lookup...pdf` |
+| BitNet 코드 | `article/lut_ref/BitNet/` — `LICENSE` · `README.md` · `include/ggml-bitnet.h` · `include/gemm-config.h` · `include/kernel_config.ini` · `include/bitnet-lut-kernels.h` · `src/ggml-bitnet-{mad,lut}.cpp` · `src/CMakeLists.txt` |
+| T-MAC 코드 | `article/lut_ref/T-MAC/` — `LICENSE` · `README.md` · `include/t-mac/` · `python/t_mac/`(ops·intrins·weights) |
+
+---
+
+## 13.2 ★★U2 판정 — **부정. 그리고 예측보다 나쁘다**
+
+**질문**: 커널이 우리 `micro_group=128` 그룹 스케일을 받는가?
+
+### I2_S 경로 (`src/ggml-bitnet-mad.cpp:51`)
+
+```c
+size_t quantize_i2_s(const float * src, void * dst, int64_t nrow, int64_t n_per_row, ...) {
+    int n = nrow * n_per_row;                       // ← 텐서 전체
+    double max = 0;
+    for (int i = 0; i < n; ++i)
+        max = fmax(max, fabs((double)src[i]));      // ← 전체에서 최대 1개
+    double i2_scale = max;
+    ...
+    float* scale_ptr = (float*)((char*)i2_weight + n / 4);
+    scale_ptr[0] = i2_scale;                         // ← ★스케일 딱 하나
+}
+```
+
+### TL 경로 (`include/bitnet-lut-kernels.h`, `ggml_bitnet_transform_tensor`)
+
+```c
+const int lut_scales_size = 1;
+...
+scales = (bitnet_float_type *) aligned_malloc(sizeof(bitnet_float_type));   // ← 1개분만 할당
+float * i2_scales = (float *)(qweights + nbytes);
+scales[0] = (bitnet_float_type) i2_scales[0];                                // ← [0] 하나만 읽는다
+```
+
+| | 스케일 개수 |
+|---|---|
+| **I2_S** | **텐서당 1개** |
+| **TL1 / TL2** | **텐서당 1개**(I2_S 가 쓴 그 값을 그대로 읽는다) |
+| **우리(`mC`)** | `54.85M / 128` = **약 428,000개** |
+
+> **★U2 = 부정 확정.** 예측 P2 는 "텐서 단위일 가능성이 높다" 였고 **맞았다.**
+> 단 예상보다 나쁘다 — **행 단위조차 아니고 텐서 단위 하나**다.
+
+### ★왜 이게 치명적인가 — 접을 수도 없다
+
+우리 `_alpha` 는 `to_int8()` 에서 `wg = w.reshape(O, I//g, g)` → `amax(dim=2)` 로 만들어져
+**shape 이 `(O, I//g)`** 다. 즉 **출력 행마다·입력 그룹마다** 다르다.
+
+- 활성값 쪽으로 접기(pre-scale)? 🚫 **불가** — α 가 입력 열뿐 아니라 **출력 행에도** 의존한다
+- 출력 쪽으로 접기? 🚫 **불가** — 같은 이유(입력 그룹에도 의존)
+- 텐서 하나로 뭉개기? → `sign × max_g(α_g)` 가 되어 **α 가 작은 그룹이 전부 과대**해진다
+
+> **→ I2_S/TL 을 쓰려면 우리 모델을 "텐서당 α 하나" 로 재양자화해야 하고,
+> 그건 가중치를 바꾸는 것이므로 재학습 또는 최소한 품질 재검증이 필요하다.**
+> **G1(로짓 동등성)은 원리적으로 통과 불가**다. P014B §단계1 의 "허용 오차를 미리 정한다" 가
+> 선택이 아니라 필수가 됐다.
+
+---
+
+## 13.3 ★U3 판정 — **경로에 따라 다르다. 그리고 TL 쪽은 좋은 소식이다**
+
+`src/ggml-bitnet-lut.cpp:51`:
+
+```c
+bool ggml_bitnet_can_mul_mat(const struct ggml_tensor * src0, ...) {
+    if (is_type_supported(src0->type) &&
+        src1->type == GGML_TYPE_F32 &&     // ★활성값이 F32 다
+        dst->type == GGML_TYPE_F32) {
+        if (src1->ne[1] <= 1) {             // ★배치 1(디코드) 에서만 켜진다
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+| 경로 | 활성값 | 비고 |
+|---|---|---|
+| **TL1 / TL2** | **F32** ✅ | 활성값 양자화 **불필요**. 단 **배치 1 전용** |
+| **I2_S** | **int8**(W2A8) | `ggml_vec_dot_i2_i8_s` — **i2 가중치 × i8 활성값**. `src/README.md` 가 "W2A8 vet_dot kernel" 이라고 명시 |
+
+> **★U3: TL 은 활성값을 안 건드린다.** 예측은 "요구할 가능성" 을 걱정했는데 **TL 쪽은 아니다.**
+> 그리고 **`src1->ne[1] <= 1` = 배치 1 전용**인데, **우리 벤치가 정확히 배치 1 디코드**다.
+> 조건이 우연히 딱 맞는다.
+> ⚠️ 반대로 **prefill(다중 토큰)에는 LUT 가 안 걸린다** — TTFT 는 안 빨라진다.
+
+---
+
+## 13.4 ★★U1 에 새 사실 — **우리 shape 의 커널이 존재하지 않는다**
+
+`include/kernel_config.ini` **전문**:
+
+```ini
+[Kernels_0]  m = 3200   k = 8640   bm = 160   bk = 96   bmm = 32
+[Kernels_1]  m = 3200   k = 3200   bm = 320   bk = 96   bmm = 32
+[Kernels_2]  m = 8640   k = 3200   bm = 320   bk = 96   bmm = 32
+```
+
+그리고 `ggml_bitnet_transform_tensor` 가 **그 값들로 분기**한다:
+
+```c
+if (m == 3200 && k == 8640)      { bm = BM3200_8640; bk = BBK3200_8640; }
+else if (m == 3200 && k == 3200) { bm = BM3200_3200; ... }
+else if (m == 8640 && k == 3200) { bm = BM8640_3200; ... }
+```
+
+**이건 BitNet-3B 의 shape 다.** 우리는 **768×2048 · 768×768 · 2048×768** 이고 **어디에도 없다.**
+
+| 항목 | 결론 |
+|---|---|
+| **TL1/TL2** | **shape 별로 코드 생성**된다(T-MAC 의 TVM 기반 codegen). 우리 shape 용 커널을 **생성해야 한다** |
+| **I2_S** | ✅ **shape 무관.** `include/gemm-config.h` 의 `ROW_BLOCK_SIZE 4 / COL_BLOCK_SIZE 128 / PARALLEL_SIZE 4` 로 도는 **일반 블록 GEMM** 이다 |
+
+> **★그래서 U1(우리 크기에서 이득인가)의 답이 두 갈래가 됐다.**
+> **I2_S 는 지금 당장 임의 shape 에서 돈다.** TL 은 codegen 이 선결이다.
+> → **단계2 속도 게이트는 I2_S 로 먼저 한다.**
+
+---
+
+## 13.5 ★★그리고 U1 을 **변환 없이** 답하는 길을 찾았다
+
+`README.md:375`:
+
+```
+python utils/generate-dummy-bitnet-model.py models/bitnet_b1_58-large \
+       --outfile models/dummy-bitnet-125m.tl1.gguf --outtype tl1 --model-size 125M
+python utils/e2e_benchmark.py -m models/dummy-bitnet-125m.tl1.gguf -p 512 -n 128
+```
+
+**임의 크기의 더미 모델을 만들어 벤치할 수 있다. `--model-size 125M` 이 우리 132M 과 거의 같다.**
+
+> **★이것이 P014B 의 판을 바꾼다.**
+> 종전 설계는 **단계1(포맷 변환기 구현) → 단계2(속도)** 였고, 변환기가 반나절짜리였다.
+> 이제 **변환 없이, 우리 체크포인트를 건드리지 않고, U1 을 먼저 답할 수 있다.**
+> **"우리 크기에서 LUT/I2_S 가 이득인가" 는 단계1 을 하기 전에 알 수 있다.**
+>
+> → **P014B 에 단계0.5(더미 벤치)를 신설**하고 **단계1·2 를 그 뒤로** 민다.
+> 이득이 없으면 **변환기를 아예 안 만든다.**
+
+⚠️ **한계**: 더미 모델은 **무작위 가중치**다. 속도는 유효하고 **품질은 무의미**하다.
+그리고 `dummy-bitnet-125m` 의 층 구성이 우리와 다를 수 있다(우리는 **MLP 타잉 + CLA**).
+**절대 tok/s 를 우리 값과 직접 비교하지 말고, 같은 기계에서 잰 우리 값과 나란히 놓는다.**
+
+---
+
+## 13.6 라이선스·빌드 — G0 판정
+
+| 항목 | 결과 |
+|---|---|
+| **라이선스** | **양쪽 다 MIT (Microsoft)** ✅ 제약 없음 |
+| 요구 | python≥3.10 · cmake≥3.22 · **clang≥18** · conda 권장 |
+| 사용자 환경 | **clang-cl 19.1.5**(VS2022), cmake OK, AVX512 선택됨 | ✅ 요구 충족 |
+| **빌드** | ⚠️ **실패 — 그러나 원인은 환경이 아니다**(§14) |
+
+---
+
+## 13.7 §5.2 "확인 필요" 표 → **확정표**
+
+| 항목 | 우리 | **그쪽(확정)** | 판정 |
+|---|---|---|---|
+| **스케일 단위** | `micro_group=128`, `(O, I//g)` 약 428K개 | **텐서당 1개**(I2_S·TL 공통) | 🚫 **불일치. 접을 수도 없다** |
+| **활성값 정밀도** | fp32/bf16 | **TL = F32** ✅ / **I2_S = int8(W2A8)** | ⚠️ 경로별로 다르다 |
+| **가중치 포맷** | PyTorch `state_dict` | **GGUF**(`ggml-model-i2_s.gguf`) | 변환 필요 |
+| **shape 의존** | 768/2048 | **TL 은 3200/8640 하드코딩** / **I2_S 는 무관** | ⚠️ **I2_S 로 간다** |
+| **배치 조건** | 배치 1 디코드 | **TL 은 `ne[1] <= 1` 전용** | ✅ **우리와 일치** |
+| **라이선스** | — | **MIT** | ✅ |
+
+---
+
+## 13.8 ★판정 갱신 — 무엇이 바뀌었나
+
+| 항목 | §8(추정) | **지금(코드 확인)** |
+|---|---|---|
+| 우리 삼진을 받는가 | ✅ 받는다 | ⚠️ **값은 받지만 스케일 규약이 다르다.** 재양자화 필요 |
+| 그룹 스케일 | ⚠️ 미확인 | 🚫 **부정 확정. 우회 불가** |
+| 활성값 | ⚠️ 미확인 | ✅ **TL 은 F32**(좋은 소식) |
+| 우리 크기 | ⚠️ 미확인 | ⚠️ **TL 은 codegen 필요 / I2_S 는 지금 돈다** |
+| 착수 경로 | 안 A(GGUF 변환) | ★**더미 벤치 먼저**(변환 0) |
+| 라이선스 | ⚠️ 미확인 | ✅ **MIT** |
+
+> **★가장 큰 변화 두 가지**
+> 1. **G1(로짓 동등성)은 원리적으로 통과 불가**다 — 스케일 규약이 다르므로 **품질이 바뀐다.**
+>    P014 를 진행하려면 **"얼마나 나빠지는가" 를 재는 단계가 추가로 필요**하다.
+> 2. **그런데 U1 을 변환 없이 먼저 답할 수 있다**(더미 벤치). **순서를 뒤집는 것이 이득**이다 —
+>    속도 이득이 없으면 ①의 품질 문제를 논할 필요조차 없다.
+
+---
+
+# §14. U5 빌드 실패 — **원인은 BitNet 저장소의 CMake 버그로 보인다**
+
+## 14.1 증상
+
+```
+lld-link : error : undefined symbol: quantize_i2_s
+  >>> referenced by ggml-base.dir\Release\ggml.c.obj:(ggml_quantize_chunk)
+lld-link : error : undefined symbol: dequantize_row_i2_s
+  >>> referenced by ggml-base.dir\Release\ggml.c.obj:(type_traits)
+```
+
+**configure 는 성공했다**(`generate_build_files.log` 마지막 줄 `Build files have been written`).
+컴파일도 대부분 성공했고 **링크에서만** 죽었다.
+
+## 14.2 ★원인 — `src/CMakeLists.txt` 의 두 줄
+
+```cmake
+set(GGML_SOURCES_BITNET ggml-bitnet-mad.cpp)
+set(GGML_SOURCES_BITNET ggml-bitnet-lut.cpp)   # ← ★덮어쓴다 (list(APPEND) 가 아니다)
+```
+
+**두 번째 `set()` 이 첫 번째를 덮어쓴다.** 결과적으로 `GGML_SOURCES_BITNET` 에는
+**`ggml-bitnet-lut.cpp` 만** 남고 **`ggml-bitnet-mad.cpp` 는 컴파일되지 않는다.**
+
+그리고 **`quantize_i2_s` 는 정확히 `ggml-bitnet-mad.cpp:51` 에 있다.**
+→ **링커가 못 찾는 것이 당연하다.**
+
+## 14.3 `dequantize_row_i2_s` 는 어디에도 없다
+
+`src/` 와 `include/` 전체를 검색해도 **`dequant` 문자열 자체가 없다.**
+`ggml.c` 의 `type_traits` 테이블이 참조하는데 **정의가 어디에도 없다.**
+
+**두 가지 가능성**:
+
+| 가설 | 내용 | 어떻게 확인 |
+|---|---|---|
+| **H1** | `3rdparty/llama.cpp` 서브모듈이 **BitNet 이 고정한 커밋보다 최신**이라, BitNet 의 패치가 상정한 파일 구조와 어긋났다 | `git submodule status` |
+| **H2** | 정의가 **llama.cpp 쪽 패치 파일**에 있는데 그 패치가 적용되지 않았다 | `git -C 3rdparty/llama.cpp log -1` |
+
+**H1 을 뒷받침하는 정황**: 로그의 `ggml version: 0.15.3`, `ggml commit: 390c30775` 는
+**꽤 최신 llama.cpp** 다. 그리고 최신 llama.cpp 는 ggml 을 **`ggml-base` + `ggml-cpu` 백엔드**로
+쪼갰다(로그에 `Including CPU backend`, `Adding CPU backend variant ggml-cpu` 가 보인다).
+**BitNet 의 패치는 그 분리 이전 구조를 상정했을 가능성이 크다** — 그러면 `ggml.c`(→`ggml-base`)가
+참조하는 심볼의 정의가 **다른 타깃(`ggml-cpu`)에 들어가** 링크가 깨진다.
+
+## 14.4 ★제안하는 해결 순서 (값싼 것부터)
+
+| 순 | 조치 | 명령 | 왜 |
+|---|---|---|---|
+| **1** | **서브모듈을 고정 커밋으로** | `git submodule update --init --recursive --force` | H1 이 맞으면 이것으로 끝난다. **가장 값싸고 가장 유력** |
+| **2** | 클론을 `--recursive` 로 다시 | `git clone --recursive https://github.com/microsoft/BitNet.git` | 1번이 안 되면. 서브모듈 상태가 꼬였을 때 |
+| **3** | **CMake 한 줄 수정** | `src/CMakeLists.txt` 의 두 `set` 을 하나로: `set(GGML_SOURCES_BITNET ggml-bitnet-mad.cpp ggml-bitnet-lut.cpp)` | `quantize_i2_s` 는 이걸로 해결된다. **`dequantize_row_i2_s` 는 별개** |
+| **4** | **`-q tl2` 로 시도** | `python setup_env.py -md ... -q tl2` | I2_S 경로를 아예 안 타면 그 심볼이 필요 없을 수 있다 |
+| 5 | 이슈 검색·보고 | GitHub Issues | 저장소 버그면 우리가 고칠 일이 아니다 |
+
+## 14.5 ★사용자에게 요청하는 정보 (진단에 필요하다)
+
+지금 내가 가진 것은 **`src/` 와 `include/` 의 일부 파일뿐**이라 위 H1/H2 를 못 가른다.
+다음을 주면 확정할 수 있다:
+
+| # | 요청 | 명령 |
+|---|---|---|
+| **A** | **서브모듈 상태** | `git -C Z:\TinyLM_supplement\BitNet submodule status` |
+| **B** | BitNet 커밋 | `git -C Z:\TinyLM_supplement\BitNet log -1 --oneline` |
+| **C** | llama.cpp 커밋 | `git -C Z:\TinyLM_supplement\BitNet\3rdparty\llama.cpp log -1 --oneline` |
+| **D** | **`GGML_SOURCES_BITNET` 를 누가 쓰는지** | `3rdparty/llama.cpp/ggml/src/CMakeLists.txt` 에서 그 변수를 grep 한 결과 |
+| E | `dequantize_row_i2_s` 가 어디 있는지 | 저장소 전체에서 `grep -rn "dequantize_row_i2_s"` |
+
+> **★D 가 특히 중요하다.** `src/CMakeLists.txt` 의 `set()` 은 **`PARENT_SCOPE` 가 없다.**
+> 이 파일이 `include()` 되면 상위 스코프에 반영되지만 `add_subdirectory()` 되면 **반영되지 않는다.**
+> 둘 중 어느 쪽인지에 따라 §14.2 진단이 확정되거나 기각된다.
+
+## 14.6 ⚠️ 빌드 로그에서 발견한 부수 사항 두 가지
+
+| # | 관측 | 왜 중요한가 |
+|---|---|---|
+| **1** | `Adding CPU backend variant ggml-cpu: /arch:AVX512 GGML_AVX512` | CMake 의 `HAS_AVX512_2 - Success` 는 **컴파일러가 그 플래그를 받는다**는 뜻이지 **CPU 가 AVX512 를 지원한다**는 뜻이 아니다. **CPU 가 미지원이면 실행 시 잘못된 명령(SIGILL)으로 죽는다.** 빌드가 성공해도 **먼저 CPU 를 확인**해야 한다 |
+| **2** | `Could NOT find OpenMP` / `OpenMP not found` | 병렬화가 빠진다. **우리 벤치는 1스레드라 무관**하지만, 다중 스레드 수치를 인용하려면 문제가 된다 |
+
+**★1번 확인 요청**: 사용자 CPU 모델명. (인텔 12~14세대 컨슈머는 AVX512 가 **비활성**이고,
+AMD Zen4/5 는 지원한다. 이 차이가 **T-MAC/bitnet.cpp 성능에 직접 영향**을 준다.)
+
+## 14.7 ★그런데 — **빌드는 단계0 의 필수 조건이 아니다**
+
+P014B §단계0 의 게이트 G0 는 *"라이선스 + Windows 빌드 가능"* 이었다.
+**라이선스는 통과**(MIT)했고 **빌드는 미결**이다.
+
+**그러나 §13 의 코드 실사만으로 U2·U3 와 shape 문제가 이미 답이 나왔고, 그게 단계0 의 본 목적이었다.**
+빌드는 **단계0.5(더미 벤치)와 단계2(속도 게이트)에 필요**하다.
+
+> **→ 빌드가 막혀도 단계0 은 완료로 볼 수 있다.**
+> 그리고 **§13.2 의 U2 부정**이 이미 P014 의 비용을 크게 올렸으므로,
+> **빌드에 며칠을 쓰기 전에 §15 의 재판정을 먼저 읽는 것이 맞다.**
+
+---
+
+# §15. ★재판정 — P014 를 계속할 것인가
+
+## 15.1 실사가 바꾼 손익
+
+| 축 | 실사 전 | **실사 후** |
+|---|---|---|
+| 라이선스 | 미확인 | ✅ **MIT, 문제 없음** |
+| 활성값 | 미확인 | ✅ **TL 은 F32** |
+| 배치 조건 | 미확인 | ✅ **배치 1 전용 = 우리와 일치** |
+| **스케일 규약** | 미확인 | 🚫 **텐서당 1개. 우리 428K 개와 불일치, 우회 불가** |
+| **shape** | 미확인 | ⚠️ TL 은 codegen 필요 / **I2_S 는 무관** |
+| **품질 보존** | "로짓 동등성 게이트" | 🚫 **원리적으로 불가.** 재양자화가 품질을 바꾼다 |
+| 검증 경로 | 변환기 선구현(반나절) | ✅ **더미 벤치로 변환 없이 U1 선답** |
+
+## 15.2 판정
+
+> **★계속한다. 단 순서를 바꾼다.**
+>
+> **가장 값싼 질문(“우리 크기에서 이득이 있는가”)을 가장 먼저 답한다** — 더미 벤치는
+> 변환기도, 우리 체크포인트도, 품질 논의도 필요 없다. **이득이 없으면 거기서 끝난다.**
+>
+> 이득이 있으면 그때 **비싼 질문**(텐서당 스케일로 재양자화했을 때 품질이 얼마나 나빠지는가)을
+> 연다. 그 답이 나쁘면 **P014 는 "우리가 커널을 직접 만든다"(안 C)로 되돌아간다** —
+> 우리 g128 규약을 그대로 쓰는 커널을 만드는 것이고, 그건 원래 P014 의 정의였다.
+
+**→ P014B 단계 재설계는 계획서 §4 에 반영했다.**
