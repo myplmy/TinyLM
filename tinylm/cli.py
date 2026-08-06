@@ -165,8 +165,7 @@ def main():
     if a.cmd == "prepare":
         from .data import prepare
         prepare(a.data, pool_tok if pool_tok else n_tok, exact=a.exact_cache,
-                doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars,
-              lora_decay=a.lora_decay)
+                doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars)
 
     elif a.cmd == "kdcache":
         from .train.kd_cache import build_kd_cache
@@ -200,7 +199,8 @@ def main():
               anneal_end=a.anneal_end, decay_frac=a.decay_frac, seed=a.seed,
               anneal_shape=a.anneal_shape, anneal_start=a.anneal_start,
               arenas=a.arenas, arena_lambda=a.arena_lambda, arena_end=a.arena_end,
-              doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars)
+              doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars,
+              lora_decay=a.lora_decay)
 
     elif a.cmd == "all":
         from .train import train

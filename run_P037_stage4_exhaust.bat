@@ -34,6 +34,14 @@ REM   [data] a second warning that the cache is smaller than the directory name
 REM   meta.json with a non-empty mix_exhausted
 REM   If NONE of those appear, the callback is not wired and the fix is fake.
 REM
+REM ***FIRST ATTEMPT FAILED FOR AN UNRELATED REASON (2026-08-06).***
+REM   TypeError: prepare() got an unexpected keyword argument 'lora_decay'
+REM   A --lora-decay edit to cli.py landed on the prepare() call instead of the
+REM   train() call, because the string used to locate it was not unique. This
+REM   batch was simply the first thing to run afterwards. Fixed, and
+REM   scripts/check_call_kwargs.py now catches that class of edit statically.
+REM   Nothing about THIS experiment was wrong.
+REM
 REM COST: about 20 to 30 minutes of tokenising. GPU 0.
 REM   Writes data_cache\ko_400000000 - a NEW directory. Touches nothing existing.
 REM ERRORLEVEL POLICY: single step, failure stops.
@@ -47,6 +55,12 @@ echo =============================================================
 python scripts\runlog.py --name P037-stage4 --note "[P037-4] force source exhaustion - does the L4 warning fire"
 
 echo.
+echo.
+echo [guard] cli.py call-keyword sanity (this is what broke the first attempt)
+python scripts\runlog.py --name P037-stage4 --note "[guard] cli.py call-keyword sanity"
+python scripts\check_call_kwargs.py
+if errorlevel 1 goto BADKWARGS
+
 echo =============================================================
 echo [1/2] ko alone, 400M requested from a roughly 300M source
 echo       WATCH FOR THE [mix] WARNING - that is the whole experiment
@@ -67,6 +81,15 @@ python scripts\runlog.py --name P037-stage4 --note "============================
 echo done.
 pause
 exit /b 0
+
+:BADKWARGS
+echo.
+echo =================================================================
+echo [STOP] cli.py passes a keyword its target function does not accept.
+echo        Fix that first - it will break unrelated commands.
+echo =================================================================
+pause
+exit /b 6
 
 :PREPBAD
 echo.
