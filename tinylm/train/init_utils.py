@@ -32,9 +32,20 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device):
     teacher, _ = load_dense(dense_path, device)
     g = student.cfg.mlp_group
 
-    student.emb.load_state_dict(teacher.emb.state_dict())
-    if student.emb_up is not None:
-        student.emb_up.load_state_dict(teacher.emb_up.state_dict())
+    # ★2026-08-07(P046) — `--emb-rank` 로 E 를 바꾸면 임베딩 shape 이 교사와 다르다.
+    #   종전에는 `load_state_dict` 가 **strict 라 즉사**했다. 지금은 **건너뛰고 크게 알린다** —
+    #   조용히 넘기면 "부모초기화했다" 고 믿는 채로 임베딩만 난수인 런이 생긴다.
+    #   어텐션·MLP shape 은 E 에 의존하지 않으므로 그쪽 이식은 그대로 유효하다.
+    if student.emb.weight.shape == teacher.emb.weight.shape:
+        student.emb.load_state_dict(teacher.emb.state_dict())
+        if student.emb_up is not None:
+            student.emb_up.load_state_dict(teacher.emb_up.state_dict())
+    else:
+        print(f"[init] ★★경고: 임베딩 shape 불일치 — 학생 {tuple(student.emb.weight.shape)} vs "
+              f"교사 {tuple(teacher.emb.weight.shape)}")
+        print(f"[init] ★임베딩·emb_up 은 **부모초기화하지 않고 난수로 시작**한다"
+              f"(어텐션·MLP 는 정상 이식). `--emb-rank` 를 바꾼 런이면 의도된 동작이다.")
+        print(f"[init] ⚠️ 이 런을 E 가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.")
     student.norm_f_scale.data.copy_(teacher.norm_f_scale.data)
 
     for ls, lt in zip(student.layers, teacher.layers):

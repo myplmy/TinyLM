@@ -110,6 +110,9 @@ def main():
     p.add_argument("--tag", default=None, help="체크포인트/로그 파일명(실험 조건 구분용)")
     p.add_argument("--vs", default=None, help="compare에서 tied vs tied 비교할 상대 태그")
     p.add_argument("--mlp-group", type=int, default=None, help="MLP 타잉 g 오버라이드(프리셋값 대체, g-스윕용)")
+    p.add_argument("--emb-rank", type=int, default=None,
+                   help="(P046) factorized embedding 병목 E 오버라이드(프리셋 256). "
+                        "E 를 줄이면 임베딩이 선형으로 줄지만 **로짓 랭크가 E 로 제한**된다")
     p.add_argument("--mlp-film", action="store_true", help="공유 MLP에 층별 FiLM(거의 공짜 조건화)")
     p.add_argument("--center-weights", action="store_true", help="(실험) g128 그룹 latent weight centering")
     p.add_argument("--ternary-kernel", action="store_true", help="(실험) 커스텀 삼진 커널 경로(레퍼런스)")
@@ -200,7 +203,7 @@ def main():
               anneal_shape=a.anneal_shape, anneal_start=a.anneal_start,
               arenas=a.arenas, arena_lambda=a.arena_lambda, arena_end=a.arena_end,
               doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars,
-              lora_decay=a.lora_decay)
+              lora_decay=a.lora_decay, emb_rank=a.emb_rank)
 
     elif a.cmd == "all":
         from .train import train

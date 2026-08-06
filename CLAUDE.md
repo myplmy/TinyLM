@@ -14,7 +14,7 @@
 **TinyLM** = 저사양 CPU·엣지·모바일용 **초경량 LLM 아키텍처**. 핵심 목표는 **연산이 아니라
 메모리 최적화**(연산 증가는 감수). 지향점: dense 대비 절반 이하 메모리로 유사 품질.
 
-> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608080200_HANDOFF.md`](handoff/202608080200_HANDOFF.md).
+> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608071400_HANDOFF.md`](handoff/202608071400_HANDOFF.md).
 > **새 세션은 그 문서를 먼저 읽는다.** 아래는 바뀌지 않는 규범만 남긴다.
 >
 > 요약 한 줄: 코드 v6(`tinylm/`), 아키텍처 v5. **σ = 0.012 / 분해능 0.024**(bpb 로는 약 0.008).
@@ -215,6 +215,7 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 **`check_batch_flags.py`**(★배치가 쓰는 CLI 플래그가 **실제로 파서에 있는지** — 미구현 배치 2회 재발 차단) ·
 **`check_call_kwargs.py`**(★`cli.py` 가 넘기는 키워드가 **대상 함수에 있는지** — 2026-08-06 오편집 차단) ·
 **`common_bpb.py`**(공통 원문 bpb — **토크나이저 무관**, 데이터셋·모델 교차비교의 유일한 유효 경로) ·
+**`diag_alpha_group.py`**(★α 그룹 규약별 품질 대가 — **커널 자체제작 여부의 분기**. 학습 0) ·
 **`diag_val_lang.py`**(★캐시의 **언어 구성** — 풀 크기가 val 셋을 바꾸는지. torch 없이 돈다) ·
 `diag_cache.py`(캐시 진단) · `eval_slices.py`(구간별 손실) · `probe_prompts.py`(정성 프로브·캐시 게이트,
 `--device cpu` 로 fp32) · `mem_runtime.py`(상주 메모리) · `diag_val_docs.py`(문서단위 val) ·

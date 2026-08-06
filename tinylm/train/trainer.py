@@ -53,7 +53,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           pool_tokens=None, exact_cache=False, anneal_end=0.60, decay_frac=0.2, seed=1337,
           anneal_shape="linear", anneal_start=None,
           arenas=False, arena_lambda=0.1, arena_end=0.9,
-          doc_filter=False, doc_min_chars=50_000, lora_decay=0.0):
+          doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
     #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
@@ -79,6 +79,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     if mlp_group and arch == "tied":            # g 스윕용 오버라이드(P003)
         assert cfg.n_middle % mlp_group == 0, f"n_middle {cfg.n_middle} % g {mlp_group} != 0"
         cfg.mlp_group = mlp_group
+    if emb_rank is not None:                    # (P046) 임베딩 병목 E 오버라이드
+        assert emb_rank > 0, "--emb-rank 는 양수여야 한다(0=비활성은 지원하지 않는다)"
+        # ★로짓 랭크가 E 로 제한된다. 임베딩·lm_head 가 선형으로 줄고 품질 영향은 미지다.
+        cfg.emb_rank = emb_rank
+        print(f"[emb] emb_rank 오버라이드 {emb_rank} (프리셋 기본 256) — "
+              f"임베딩 파라미터 {(32768*emb_rank + emb_rank*cfg.dim)/1e6:.2f}M")
     cfg.mlp_lora_rank, cfg.mlp_lora_bits = lora_rank, lora_bits
     cfg.mlp_film = mlp_film
     cfg.center_weights = center_weights
@@ -408,6 +414,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "anneal_end": anneal_end, "decay_frac": decay_frac,    # (P026) 스케줄 정렬 기록
            "anneal_shape": anneal_shape, "anneal_start": a0,      # (P035) 어닐 형태·시작점
            "lora_decay": float(lora_decay),                       # (P008) LoRA 스케일 어닐
+           "emb_rank": int(cfg.emb_rank),                          # (P046) 임베딩 병목 E
            "arenas": bool(arenas), "arena_lambda": arena_lambda,  # (P036) Arenas residual
            "arena_end": arena_end,
            # ★저장 메모리 회계 통일(2026-07-31, P034 §5): 정본=B(코드+스케일), 병기=C(+컨테이너).
