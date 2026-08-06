@@ -66,6 +66,8 @@ class TiedMLPTransformer(nn.Module):
         self._int8_store = False                       # P034 단계3
         self._unpack_cache = False                     # P034 단계3C (기본 off = 종전 경로)
         self._unpack_gen = 0
+        self._cacheable_mlps = []
+        self._armed_tlinears = []
         self._arena = None                             # P036 Arenas λ_t (None = 항 없음)
         self._arena_v = 0.0
 
@@ -78,6 +80,24 @@ class TiedMLPTransformer(nn.Module):
     def set_anneal(self, v: float):
         self._anneal.fill_(float(v))
         self.cfg.quant_anneal = float(v)
+
+    def set_lora_scale(self, v: float):
+        """★P008 — 층별 LoRA 의 출력 스케일 s(t) 를 설정한다.
+
+        **s=1 이면 고정 LoRA(종전), s=0 이면 LoRA 가 완전히 사라진다.**
+        학습 중 1 → 0 으로 어닐하면 **초반에는 층별 특화(≈untied), 종료 시 순수 타잉**이 된다.
+        그리고 s=0 이므로 **배포 메모리 대가가 0** 이다 — 이것이 고정 LoRA(1.82×→1.71×)와
+        결정적으로 다른 점이다.
+
+        ★삼진 어닐(`set_anneal`)과 **같은 원리·같은 구현 패턴**이다:
+        제약을 처음부터 걸지 않고 학습이 진행되며 점진적으로 조인다.
+
+        적용 대상은 **모든 `LoRA` 모듈 하나의 집합**으로만 정한다 — 결과 016 §14 의 교훈
+        ("적용 대상 집합을 두 곳에서 따로 정하면 한쪽만 고쳐도 통과한다").
+        """
+        for m in self.modules():
+            if isinstance(m, LoRA):
+                m._scale.fill_(float(v))
 
     def set_arena(self, v: float):
         """P036 Arenas 의 λ_t 를 설정한다. **0 이면 항이 완전히 사라진다**(배포 상태)."""
@@ -183,6 +203,7 @@ class TiedMLPTransformer(nn.Module):
         for m in self._tlinear_cache:                 # 항상 전부 끄고 시작(재호출 안전)
             m.set_unpack_gen(None)
         self._cacheable_mlps = []
+        self._armed_tlinears = []                     # ★3차 수정(§14): 무장된 것만 따로 든다
         if not on:
             return
         # ★공유 판정 = "몇 개의 층이 이 MLP 객체를 참조하는가". 1이면 캐시할 이유가 없다.
@@ -197,6 +218,7 @@ class TiedMLPTransformer(nn.Module):
             for sub in mlp.modules():
                 if isinstance(sub, TLinear):
                     sub.set_unpack_gen(0)
+                    self._armed_tlinears.append(sub)
 
     @staticmethod
     def _clear_mlp_unpack(mlp):
@@ -295,9 +317,13 @@ class TiedMLPTransformer(nn.Module):
             self.refresh_quant()
 
         # ★P034 단계3C: 언팩 캐시 세대 갱신. 기본 off 면 이 블록이 통째로 건너뛰어진다.
+        #   ★★3차 수정(결과 016 §14) — 종전에는 `self._tlinear_cache`(전부)를 돌며 세대를
+        #   심어서 `enable_unpack_cache` 가 꺼 둔 **어텐션 모듈까지 되살렸다.**
+        #   어텐션은 층당 1회 호출이라 적중이 0인데 버퍼만 남는다(dense 112.5MB / 타잉 101.3MB).
+        #   지금은 **무장된 목록만** 돈다.
         if getattr(self, "_unpack_cache", False):
             self._unpack_gen += 1
-            for _m in self._tlinear_cache:
+            for _m in getattr(self, "_armed_tlinears", ()):
                 _m._unpack_gen = self._unpack_gen
 
         # ★P031: 기본(infer_repeat=1.0)이면 schedule == range(n_layers) 라 종전과 동일하다.

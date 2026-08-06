@@ -256,6 +256,10 @@ class LoRA(nn.Module):
         self.D = nn.Parameter(torch.randn(r, in_f) / math.sqrt(in_f))
         self.U = nn.Parameter(torch.zeros(out_f, r))
         self.bits = cfg.mlp_lora_bits
+        # ★P008 — LoRA 출력 스케일 s(t). **버퍼**로 두는 이유는 `set_anneal` 과 같다:
+        #   파이썬 float 로 두면 값이 바뀔 때마다 torch.compile 이 재컴파일한다.
+        #   기본 1.0 = 종전 동작(고정 LoRA). `--lora-decay` 를 안 주면 끝까지 1.0 이다.
+        self.register_buffer("_scale", torch.tensor(1.0), persistent=False)
 
     def forward(self, x):
         D, U = self.D, self.U
@@ -263,4 +267,6 @@ class LoRA(nn.Module):
             gD = self.cfg.micro_group if self.in_f % self.cfg.micro_group == 0 else self.in_f
             D = ternary_g(D, gD, self.cfg)
             U = ternary_g(U, self.r, self.cfg)      # r개를 한 그룹으로(출력 행별 스케일)
-        return F.linear(F.linear(x, D), U)
+        # ★s(t)=1 이면 곱셈 하나만 늘고 값은 종전과 동일하다(비트 동일 아님 — 부동소수점
+        #   곱 1.0 은 값을 안 바꾸지만 연산이 추가된다. 대조 실험은 --lora-rank 0 로 한다).
+        return F.linear(F.linear(x, D), U) * self._scale

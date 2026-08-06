@@ -104,6 +104,9 @@ def main():
     p.add_argument("--kd-temp", type=float, default=2.0)
     p.add_argument("--lora-rank", type=int, default=0, help="공유 MLP 층별 LoRA rank(0=끔)")
     p.add_argument("--lora-bits", type=int, default=2, choices=[2, 16])
+    p.add_argument("--lora-decay", type=float, default=0.0,
+                   help="(P008) LoRA 출력 스케일 s(t) 를 1->0 으로 어닐. 진행률 이 지점에서 0. "
+                        "0=끔(고정 LoRA, 종전 동작). 0 이 되면 배포 메모리 대가가 사라진다")
     p.add_argument("--tag", default=None, help="체크포인트/로그 파일명(실험 조건 구분용)")
     p.add_argument("--vs", default=None, help="compare에서 tied vs tied 비교할 상대 태그")
     p.add_argument("--mlp-group", type=int, default=None, help="MLP 타잉 g 오버라이드(프리셋값 대체, g-스윕용)")
@@ -162,7 +165,8 @@ def main():
     if a.cmd == "prepare":
         from .data import prepare
         prepare(a.data, pool_tok if pool_tok else n_tok, exact=a.exact_cache,
-                doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars)
+                doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars,
+              lora_decay=a.lora_decay)
 
     elif a.cmd == "kdcache":
         from .train.kd_cache import build_kd_cache
