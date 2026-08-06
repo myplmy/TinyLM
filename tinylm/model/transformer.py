@@ -64,6 +64,8 @@ class TiedMLPTransformer(nn.Module):
         self._tlinear_cache = list(self._tlinears())   # ②: 매 forward 모듈 트리 순회 제거(plain list)
         self._quant_frozen = False                     # freeze_quant() 참조(추론 전용 최적화)
         self._int8_store = False                       # P034 단계3
+        self._unpack_cache = False                     # P034 단계3C (기본 off = 종전 경로)
+        self._unpack_gen = 0
         self._arena = None                             # P036 Arenas λ_t (None = 항 없음)
         self._arena_v = 0.0
 
@@ -128,6 +130,25 @@ class TiedMLPTransformer(nn.Module):
 
     def int8_stored(self):
         return getattr(self, "_int8_store", False)
+
+    def enable_unpack_cache(self, on=True):
+        """★P034 단계3C — int8 언팩 결과를 **유니크 모듈당 1회**로 줄인다(타잉 전용 이득).
+
+        근거: `docs/20260806_레이어타이잉-메모리와속도-원인분석.md` §5.
+        `forward()` 는 층마다 `TLinear.forward()` 를 부르고, 타이된 층들은 **같은 객체**를
+        공유한다. 그런데 `_wq_from_i8()` 은 호출마다 fp32 로 되돌리므로 g8 이면 **같은 언팩을
+        16번** 한다. 세대 카운터로 한 번만 돌게 만든다.
+
+        ⚠️ **`to_int8()` 을 쓴 추론 경로 전용**이다. 학습에는 의미가 없다(latent 가 매 스텝 바뀐다).
+        ⚠️ 기본 off. 켜도 **결과는 비트 동일**해야 한다 — 다르면 구현이 틀린 것이고,
+           `scripts/mem_runtime.py` 의 로짓 동등성 게이트가 `0.000e+00` 로 그것을 확인한다.
+        """
+        self._unpack_cache = bool(on)
+        for m in self._tlinear_cache:
+            m.set_unpack_gen(0 if on else None)
+
+    def unpack_cached(self):
+        return getattr(self, "_unpack_cache", False)
 
     def freeze_quant(self):
         """★추론용: 삼진 가중치를 **한 번만** 계산하고 이후 forward 에서 재계산하지 않는다.
@@ -211,6 +232,12 @@ class TiedMLPTransformer(nn.Module):
         cos, sin = self.rope_cos[past_len:past_len + T], self.rope_sin[past_len:past_len + T]
         if not self._quant_frozen:
             self.refresh_quant()
+
+        # ★P034 단계3C: 언팩 캐시 세대 갱신. 기본 off 면 이 블록이 통째로 건너뛰어진다.
+        if getattr(self, "_unpack_cache", False):
+            self._unpack_gen += 1
+            for _m in self._tlinear_cache:
+                _m._unpack_gen = self._unpack_gen
 
         # ★P031: 기본(infer_repeat=1.0)이면 schedule == range(n_layers) 라 종전과 동일하다.
         schedule = self.visit_schedule()

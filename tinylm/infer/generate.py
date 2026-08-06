@@ -26,10 +26,14 @@ def _strip(sd):
     return {k.replace("_orig_mod.", ""): v for k, v in sd.items()}
 
 
-def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8_store=False):
+def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8_store=False,
+               unpack_cache=False):
     """`drop_latent=True` 면 P034 단계2 — fp32 latent 를 해제해 **상주를 약 절반**으로 줄인다.
 
     되돌릴 수 없으므로 **추론 전용**이다. 학습·진단(gradient 필요)에서는 절대 켜지 않는다.
+
+    `unpack_cache=True` 는 P034 **단계3C** — int8 언팩을 **유니크 모듈당 1회**로 줄인다.
+    `int8_store=True` 일 때만 의미가 있고, 결과는 **비트 동일**해야 한다.
     """
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     path = Path(ckpt_path) if ckpt_path else CKPT / f"{arch}.pt"
@@ -44,6 +48,11 @@ def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8
         model.drop_latent()                     # ★P034 단계2
     if int8_store:
         model.to_int8()                         # ★P034 단계3
+    if unpack_cache:
+        if not int8_store:
+            raise ValueError("unpack_cache 는 int8_store 와 함께만 의미가 있다 "
+                             "(fp32 경로에는 언팩이 없다).")
+        model.enable_unpack_cache(True)         # ★P034 단계3C
     return model, cfg, device
 
 

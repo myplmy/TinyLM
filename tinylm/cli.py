@@ -195,7 +195,8 @@ def main():
               pool_tokens=pool_tok, exact_cache=a.exact_cache,
               anneal_end=a.anneal_end, decay_frac=a.decay_frac, seed=a.seed,
               anneal_shape=a.anneal_shape, anneal_start=a.anneal_start,
-              arenas=a.arenas, arena_lambda=a.arena_lambda, arena_end=a.arena_end)
+              arenas=a.arenas, arena_lambda=a.arena_lambda, arena_end=a.arena_end,
+              doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars)
 
     elif a.cmd == "all":
         from .train import train

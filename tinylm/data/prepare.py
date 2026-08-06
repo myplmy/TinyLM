@@ -38,7 +38,17 @@ def tokenizer_path(name, vocab_size=VOCAB):
     return DATA_CACHE / f"tok-{name}-{vocab_size}.json"
 
 
-def _stream(name):
+def _stream(name, exhausted_cb=None):
+    """★L4(2026-08-06, 결과 023 §9.3) — **소스 고갈을 조용히 넘기지 않는다.**
+
+    종전에는 `StopIteration` 을 그냥 `continue` 했다. 한국어 위키가 약 300M 토큰에서
+    소진되면 그 뒤로는 fineweb 만 나오는데 **아무 신호도 없었다** — `ko-en` 1200M 풀의
+    실제 믹스가 **25.0 / 75.0** 이 된 것을 아무도 몰랐고, `prepare()` 의 말미 val 분할과
+    만나 **val 셋에 한국어가 0.0%** 가 됐다(결과 006 §5.3).
+
+    `exhausted_cb(i)` 는 소스 i 가 **처음** 고갈된 순간 1회 불린다.
+    동작(뽑은 순서·내용)은 **종전과 완전히 같다** — 신호만 추가한다.
+    """
     from datasets import load_dataset
     specs = DATASETS[name]
     iters, ratios = [], []
@@ -47,12 +57,19 @@ def _stream(name):
         iters.append((iter(ds), key)); ratios.append(r)
     rng = np.random.default_rng(0)
     p = np.array(ratios) / sum(ratios)
+    dead = set()
     while True:
         i = rng.choice(len(iters), p=p)
         it, key = iters[i]
         try:
             t = next(it)[key]
         except StopIteration:
+            if i not in dead:
+                dead.add(i)
+                if exhausted_cb is not None:
+                    exhausted_cb(i)
+            if len(dead) == len(iters):
+                return                      # 전부 고갈 — 무한루프 대신 정상 종료
             continue
         if t and len(t) > 64:
             # ★L1(2026-08-06): 소스 인덱스를 함께 낸다. `rng.choice` 는 **문서**를 고르므로
@@ -195,7 +212,18 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
         n_src = len(DATASETS[name])
         src_tok = [0] * n_src            # ★L1: 소스별 실제 토큰 수
         src_doc = [0] * n_src            # ★L1: 소스별 문서 수
-        for text, src_i in _stream(name):
+        exhausted = {}                   # ★L4: 소스 -> 고갈 시점의 누적 토큰 수
+
+        def _on_exhausted(i):
+            exhausted[i] = total
+            _hf = DATASETS[name][i][0]
+            print(f"[mix] ★경고: 소스 고갈 — {_hf} 가 {total/1e6:.1f}M 토큰 지점에서 소진됐다.")
+            print(f"[mix] ★이 지점 이후 **믹스 비율이 바뀐다**(남은 소스가 조용히 채운다). "
+                  f"L4 결함, 결과 023 §9.3.")
+            print(f"[mix] ★그리고 val 은 **스트림 말미 0.5%** 라 "
+                  f"**val 셋의 구성도 함께 바뀐다**(L5, 결과 006 §5.3).")
+
+        for text, src_i in _stream(name, exhausted_cb=_on_exhausted):
             if doc_filter and spam_signature(text, doc_min_chars):
                 n_drop += 1
                 n_drop_chars += len(text)
@@ -223,6 +251,11 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
                   f" ({src_tok[_i]/1e6:.1f}M){_flag}")
         print("      ★문서 비율과 토큰 비율이 다른 이유: rng 가 **문서**를 고르는데 "
               "소스마다 문서 길이가 다르다(L1).")
+        if exhausted:
+            print("      ★★L4: 아래 소스가 고갈됐다 — **이 캐시의 믹스는 풀 크기의 함수다.**")
+            for _i, _at in sorted(exhausted.items()):
+                print(f"         {DATASETS[name][_i][0]:38} 고갈 지점 {_at/1e6:.1f}M 토큰")
+            print("      ★다른 풀 크기로 만든 캐시와 **비교하지 말 것**(결과 006 §5.4).")
         if doc_filter:
             print(f"[filter] 스팸 서명으로 제외한 문서 {n_drop:,}개 / {n_drop_chars/1e6:.1f}M 자")
             print(f"[filter] 서명 = 길이 {doc_min_chars:,}자 이상 AND 줄바꿈 ~0% AND 줄 고유율 100%")
@@ -236,7 +269,23 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
             "train": int(len(arr) - n_val), "val": int(n_val), "dir": str(cache_dir)}
     if name != "synthetic":
         meta["bytes_per_token"] = total_bytes / max(total, 1)
+        # ★2026-08-06(결과 006 §5.5) — `bytes_per_token` 은 **스트림 전체** 평균인데
+        #   `bpb = loss / ln2 / bytes_per_token` 의 loss 는 **val 에서만** 잰다. 구성이 다르면
+        #   bpb 가 최대 1.9% 틀어지고, 그 크기는 bpb 분해능(0.008)의 3배다. → val 기준도 함께 남긴다.
+        #   기존 필드는 **건드리지 않는다**(구 로그·구 문서와의 연속성).
+        try:
+            from tokenizers import Tokenizer as _Tok
+            _t = _Tok.from_file(str(tokenizer_path(name)))
+            _v = arr[-n_val:].tolist()
+            meta["bytes_per_token_val"] = len(_t.decode(_v).encode("utf-8")) / max(len(_v), 1)
+            print(f"[bpb] bytes_per_token  스트림 {meta['bytes_per_token']:.4f} / "
+                  f"★val {meta['bytes_per_token_val']:.4f} "
+                  f"(차이 {100*(meta['bytes_per_token_val']/meta['bytes_per_token']-1):+.1f}%)")
+        except Exception as _e:
+            print(f"[bpb] bytes_per_token_val 계산 실패(무시): {_e}")
         meta["doc_filter"] = bool(doc_filter)
+        # ★L4: 고갈 기록. 없으면 빈 dict = "이 풀에서는 고갈 없음" 이라는 정보다.
+        meta["mix_exhausted"] = {str(k): int(v) for k, v in exhausted.items()}
         # ★L1: 소스별 실측 비율을 meta 에 남긴다 — 이후 어떤 문서도 "50%" 를 추정으로 쓰지 않는다.
         meta["mix_sources"] = [x[0] for x in DATASETS[name]]
         meta["mix_ratio_cfg"] = [x[4] for x in DATASETS[name]]

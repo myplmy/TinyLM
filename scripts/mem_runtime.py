@@ -88,6 +88,9 @@ def main():
                     help="P034 단계2 — freeze 후 fp32 latent 해제. 해제 전/후를 나란히 잰다")
     ap.add_argument("--int8-store", action="store_true",
                     help="P034 단계3 — 삼진 사본을 int8 코드+α 로. --drop-latent 와 함께 쓴다")
+    ap.add_argument("--unpack-cache", action="store_true",
+                    help="P034 단계3C — int8 언팩을 유니크 모듈당 1회로. **로짓 게이트가 이걸 검증한다** "
+                         "(캐시는 직전 텐서를 그대로 재사용하므로 0.000e+00 이 나와야 한다)")
     a = ap.parse_args()
 
     import torch
@@ -144,6 +147,8 @@ def main():
             model.drop_latent()
             if a.int8_store:
                 model.to_int8()        # ★단계3 — 단계2 위에 얹는다(fp32 사본 → int8 코드+α)
+                if a.unpack_cache:
+                    model.enable_unpack_cache(True)   # ★단계3C — 게이트가 비트 동일성을 본다
             gc.collect()
             if a.device == "cuda":
                 torch.cuda.empty_cache()

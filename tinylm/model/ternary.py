@@ -66,6 +66,12 @@ class TLinear(nn.Module):
         self._latent_shape = None        # drop_latent() 후에도 파라미터 수를 알기 위한 기록
         self._i8 = None                  # P034 단계3: 삼진 코드(int8)
         self._alpha = None               # P034 단계3: 그룹 스케일(fp32)
+        # ★P034 단계3C(2026-08-06): 언팩 결과 캐시. 같은 forward 안에서 **같은 객체가 g 번**
+        #   불리므로(타잉) 한 번만 되돌리고 재사용한다. `_unpack_gen` 이 None 이면 기능 off =
+        #   종전 경로와 **비트 동일**. 세대(gen)가 바뀌면 버린다 → 버퍼는 항상 1개만 산다.
+        self._i8_cache = None
+        self._i8_cache_gen = None
+        self._unpack_gen = None          # transformer 가 forward 마다 갱신하는 세대 카운터(정수)
 
     # ---------- P034 단계2: 추론 시 latent 해제 ----------
     def latent_dropped(self):
@@ -121,11 +127,36 @@ class TLinear(nn.Module):
         self._wq = None                                         # ★fp32 사본 해제 = 이 단계의 전부
 
     def _wq_from_i8(self):
-        """int8 코드 + α 를 fp32 로 되돌린다(forward 마다 1회, 층당 버퍼 1개)."""
+        """int8 코드 + α 를 fp32 로 되돌린다.
+
+        ★P034 단계3C — `_unpack_gen` 이 설정돼 있으면 **같은 세대 안에서 결과를 재사용**한다.
+        타잉 모델은 `Layer` 들이 **같은 MLP 객체**를 참조하므로(`transformer.py` 의
+        `mid_mlps[j // mlp_group]`), 이 함수가 **forward 호출당**이 아니라 **유니크 모듈당**
+        한 번만 돌면 된다. g8 이면 중간 16층에서 언팩이 16회 → **2회**가 된다.
+
+        메모리 무손상 근거: 층 스케줄이 `mid_mlps[j//g]` 라 **같은 MLP 가 연속 g 층**에
+        나타난다. 세대가 바뀌면(다음 토큰) 캐시를 버리므로 **동시에 사는 fp32 버퍼는
+        타잉 그룹 하나분**이고, 이는 캐시가 없을 때의 임시버퍼와 같은 크기다.
+
+        비트 동일성: 재사용하는 값은 **직전에 계산한 그 텐서**이므로 수치가 바뀔 여지가 없다
+        (로짓 동등성 게이트가 `0.000e+00` 이어야 하고, 아니면 구현이 틀린 것이다).
+        """
+        gen = self._unpack_gen
+        if gen is not None and self._i8_cache is not None and self._i8_cache_gen == gen:
+            return self._i8_cache
         O, I = self._i8.shape
         g = self.cfg.micro_group
-        return (self._i8.reshape(O, I // g, g).to(self._alpha.dtype)
-                * self._alpha.unsqueeze(-1)).reshape(O, I)
+        wq = (self._i8.reshape(O, I // g, g).to(self._alpha.dtype)
+              * self._alpha.unsqueeze(-1)).reshape(O, I)
+        if gen is not None:
+            self._i8_cache, self._i8_cache_gen = wq, gen
+        return wq
+
+    def set_unpack_gen(self, gen):
+        """언팩 캐시 세대 설정. `None` 이면 기능 off(종전 경로)."""
+        self._unpack_gen = gen
+        if gen is None:
+            self._i8_cache = self._i8_cache_gen = None
 
     def drop_latent(self):
         """freeze 후 fp32 latent `weight` 의 저장공간을 해제한다(추론 전용, 되돌릴 수 없다).
@@ -173,6 +204,7 @@ class TLinear(nn.Module):
     def clear_quant(self):
         self._wq = None
         self._i8 = self._alpha = None        # int8 저장도 해제(학습 재개 시 필수)
+        self._i8_cache = self._i8_cache_gen = None   # P034 단계3C 캐시도 함께
 
     def forward(self, x, mode_p=None):
         if getattr(self.cfg, "use_ternary_kernel", False):   # 분리된 커스텀 커널 경로(기본 off)

@@ -52,7 +52,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
           pool_tokens=None, exact_cache=False, anneal_end=0.60, decay_frac=0.2, seed=1337,
           anneal_shape="linear", anneal_start=None,
-          arenas=False, arena_lambda=0.1, arena_end=0.9):
+          arenas=False, arena_lambda=0.1, arena_end=0.9,
+          doc_filter=False, doc_min_chars=50_000):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
     #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
@@ -69,7 +70,11 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
 
     # 데이터 풀(캐시)은 pool_tokens 로 학습길이·이름과 분리 가능. 미지정이면 기존처럼 n_tokens.
     #   토큰스윕(P007 클린): 모든 예산을 동일 600M 풀에서 샘플 → pool_tokens=600M, exact_cache=True.
-    meta = prepare(data, int(pool_tokens) if pool_tokens else n_tokens, exact=exact_cache)
+    # ★2026-08-06 — `doc_filter` 를 학습 경로에도 전달한다. 종전에는 `prepare` 서브커맨드만
+    #   이 인자를 받아, **필터 캐시를 만들 수는 있는데 그것으로 학습할 방법이 없었다**
+    #   (결과 023 §2 의 "분리해서 쓰는 것과 분리한 것을 읽는 것은 별개 작업" 과 같은 계열).
+    meta = prepare(data, int(pool_tokens) if pool_tokens else n_tokens, exact=exact_cache,
+                   doc_filter=doc_filter, doc_min_chars=doc_min_chars)
     cfg = build_config(preset, arch, seq, ckpt)
     if mlp_group and arch == "tied":            # g 스윕용 오버라이드(P003)
         assert cfg.n_middle % mlp_group == 0, f"n_middle {cfg.n_middle} % g {mlp_group} != 0"
@@ -377,6 +382,13 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "seed": seed, "micro_bs": micro_bs, "accum": accum, "eff_batch": eff,
            "pool_tokens": int(pool_tokens) if pool_tokens else None,
            "exact_cache": bool(exact_cache),
+           "doc_filter": bool(doc_filter),
+           # ★L1/L4 (결과 023 §9) — 이 런이 실제로 본 소스별 토큰 비율. "한국어 50%" 를
+           #   추정으로 쓰지 않기 위해 런 로그에 박아 둔다. 구 캐시에는 없어 None 이 된다.
+           "mix_token_frac": meta.get("mix_token_frac"),
+           "mix_exhausted": meta.get("mix_exhausted"),
+           "bytes_per_token": meta.get("bytes_per_token"),
+           "bytes_per_token_val": meta.get("bytes_per_token_val"),
            "mlp_group": (cfg.mlp_group if getattr(cfg, "tie_mlp", False) else 1),
            "grad_ckpt": bool(ckpt),
            "kd_teacher": (_os.path.basename(str(kd)) if kd else None),

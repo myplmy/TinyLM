@@ -105,6 +105,9 @@ def main():
                     help="P034 단계2 — latent 해제 상태로 잰다. 상주가 절반이면 속도가 따라오는가")
     ap.add_argument("--int8-store", action="store_true",
                     help="P034 단계3 — int8 저장. **느려질 것으로 예상**(forward 마다 되돌린다)")
+    ap.add_argument("--unpack-cache", action="store_true",
+                    help="P034 단계3C — int8 언팩을 **유니크 모듈당 1회**로. 타잉 모델만 이득이고 "
+                         "**dense 는 안 변해야 한다(대조군)**. --int8-store 와 함께 쓴다")
     ap.add_argument("--infer-repeat", type=float, default=1.0,
                     help="(P030 단계4) middle 통과 배수. **층 수만 바꾸고 파라미터는 고정**한다 — "
                          "결과 016 §10.4 의 '속도는 파라미터가 아니라 층 수를 따라간다' 가설 검정용")
@@ -152,7 +155,8 @@ def main():
                 try:
                     model, cfg, _ = load_model(arch=arch, ckpt_path=str(ck), device=dev,
                                                drop_latent=a.drop_latent,
-                                               int8_store=a.int8_store)
+                                               int8_store=a.int8_store,
+                                               unpack_cache=a.unpack_cache)
                 except Exception as e:
                     print(f"{dev:>8} {nt:>8} {tag:>16}  로드 실패: {type(e).__name__}: {e}")
                     continue
