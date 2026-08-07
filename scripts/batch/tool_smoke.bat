@@ -40,6 +40,12 @@ REM  A marker file is used because the percent sign is banned here.
 if not exist run100m.py cd ..\..
 if not exist run100m.py goto BADROOT
 
+REM ***A smoke is NEVER an experiment, so its log NEVER belongs in test_result.***
+REM   Until 2026-08-07 this file passed no --outdir at all and all 13 runlog calls
+REM   wrote to test_result, while run_smoke_check.bat's header claimed otherwise.
+REM   The caller normally sets TL_OUTDIR; this default makes the module correct on
+REM   its own too, so the invariant does not depend on who calls it.
+if not defined TL_OUTDIR set TL_OUTDIR=smoketest_logs
 if not defined TL_LOGNAME set TL_LOGNAME=smoke
 
 echo =============================================================

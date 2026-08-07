@@ -221,7 +221,12 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 > 후자는 **실험 조건의 정합성**을 본다. 새 계획을 쓸 때는 **둘 다** 돈다.
 
 보조 스크립트(전부 **문법·형식만** 본다 — 실험·구현이 옳은지는 보증하지 않는다):
-**`runlog.py`**(★실행 로그 tee — 콘솔 실시간 + `test_result/` 즉시 기록·fsync. **모든 실험 배치가 경유**. `--note "제목"` 으로 배치의 단계 제목도 같은 파일에 남기고, `--outdir` 로 폴더를 바꾼다 — **스모크는 실험이 아니므로 `smoketest_logs/` 로 간다**) ·
+**`runlog.py`**(★실행 로그 tee — 콘솔 실시간 + 즉시 기록·fsync. **모든 실험 배치가 경유**.
+**★2026-08-07 규약 강제**: `test_result/` 는 **실험 로그 전용** — `--name` 이 `P0NN` 으로
+시작하지 않으면 **거절한다**(exit 2). 비실험 로그는 `TL_OUTDIR=smoketest_logs`(진입 배치에서
+한 번만 설정하면 그 아래 전부에 걸린다) → 파일명이 **`{YYYYMMDDHHMM}_{name}_{sha7}.txt`**.
+**모든 로그 최상단에 `[commit] sha7 +dirty N개` 배너** — 어느 커밋에서 돌렸는지 알기 위한 것이고,
+**dirty≠0 이면 "그 커밋으로 검증" 이 아니다.** `--note "제목"` 과 실행 명령은 **함께 못 준다**) ·
 `check_run_registry.py`(레지스트리·중복·태그) · `lint_bat.py`(배치 린터) ·
 `check_attrs.py`(`cfg.X` 오타를 torch 없이 정적 검출) · `check_smoke.py`(계측 필드 계약) ·
 **`check_batch_flags.py`**(★배치가 쓰는 CLI 플래그가 **실제로 파서에 있는지** — 미구현 배치 2회 재발 차단) ·
@@ -258,7 +263,7 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 
 | 최상위 = **실험**(계획번호·단계가 이름에 있다) | `scripts/batch/` = **기능 모듈**(실험 아님) |
 |---|---|
-| **`run_smoke_check.bat`**(코드 수정 후 필수) · **`run_night_queue.bat`**(★야간 시퀀서 v3 — `TL_NOPAUSE=1` 을 깔고 자식을 `call`. 경고하고 계속) · **`run_P047_stage0_spam_rate.bat`**(GPU 0) · **`run_P048_stage2_stack_g16.bat`** · **`run_P048_prelude_coda.bat`**(단계1 완료, `-done` 후보) · `run_P045_g16_ceiling.bat`·`run_P046_emb_rank128.bat`(완료, `-done` 후보) · **`run_P040_tying_trainspeed.bat`**(⚠️**단독·직전 5분 유휴 필수 — 야간큐에 넣지 말 것**) · **`run_P034_stage3c_unpackcache.bat`** · **`run_P007B_stage2_commonbpb.bat`** · **`run_P028_stage3_filtered_retrain.bat`** | `tool_smoke.bat` · `tool_kvcache_gate.bat`(**캐시 정본 게이트**) · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
+| **`run_smoke_check.bat`**(코드 수정 후 필수) · **`run_night_queue_v3.bat`**(★야간 시퀀서 v3 — `TL_NOPAUSE=1` 을 깔고 자식을 `call`. 경고하고 계속) · **`run_P047_stage0_spam_rate.bat`**(GPU 0) · **`run_P048_stage2_stack_g16.bat`** · `run_P046_emb_rank128.bat`(**판정 불가 → 재실행 대기**, SVD 이식 후) · **`run_P040_tying_trainspeed.bat`**(⚠️**단독·직전 5분 유휴 필수 — 야간큐에 넣지 말 것**) · **`run_P034_stage3c_unpackcache.bat`** · **`run_P007B_stage2_commonbpb.bat`** · **`run_P028_stage3_filtered_retrain.bat`** — **완료분은 `-done`** | `tool_smoke.bat` · `tool_kvcache_gate.bat`(**캐시 정본 게이트**) · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
 
 > **★`scripts/batch/` 를 사용자에게 직접 실행하라고 안내하지 않는다**(2026-07-31 개편).
 > 그건 **도구**다 — 실험번호도, 계획서 참조도, `test_result` 상의 자리도 없다.

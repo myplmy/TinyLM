@@ -40,12 +40,22 @@
   python scripts/runlog.py --name P036-trapping --num 018 -- python scripts/diag_trapping.py
   python scripts/runlog.py --name P035 --note "[1/2] ..." "control = qb_wsd60"
 
-파일명
-  `test_result/{num}_log_{YYYYMMDD}_{name}.txt`   (--num 있을 때)
-  `test_result/log_{YYYYMMDD}_{name}.txt`         (없을 때 — 결과문서 쓸 때 번호를 붙인다)
+파일명 — **목적지에 따라 규약이 다르다**(2026-08-07)
+  실험(`test_result/`):
+    `{num}_log_{YYYYMMDD}_{name}.txt`   (--num 있을 때)
+    `log_{YYYYMMDD}_{name}.txt`         (없을 때 — 결과문서 쓸 때 번호를 붙인다)
+    **`--name` 은 `P0NN` 으로 시작해야 한다 — 아니면 거절한다.**
+    같은 날 같은 이름이면 **한 파일에 이어 붙는다**(한 배치의 여러 단계가 한 파일에).
+  비실험(`smoketest_logs/` 등, `--outdir` 또는 `TL_OUTDIR`):
+    **`{YYYYMMDDHHMM}_{name}_{sha7}.txt`** — **분 정밀도 + 커밋 SHA7.**
+    "어느 커밋에서 돌린 스모크인가" 를 파일명만으로 알아야 한다(사용자 요구).
+    ⚠️ 분 정밀도를 그대로 쓰면 한 배치의 13번 호출이 13개 파일이 된다 →
+      같은 이름의 최근 파일이 `--stamp-reuse-min`(기본 30) 분 안에 수정됐으면 **이어쓴다.**
+      완전히 고정하려면 `TL_STAMP=202608071017`.
 
-★같은 날 같은 이름이면 **한 파일에 이어 붙는다**. 세션 배너로 구분되므로
-  재실행해도 이전 로그가 사라지지 않는다.
+★모든 로그 **최상단에 커밋 배너**를 쓴다: `[commit] 5e063b1  +dirty 13개`.
+  스모크는 코드를 고친 직후 돌리므로 작업트리가 거의 항상 더럽다 — SHA 만 적으면
+  "이 커밋에서 검증했다" 로 **잘못 읽힌다.** 그래서 dirty 개수를 함께 적는다.
 
 종료코드 = 자식 프로세스의 종료코드 그대로(배치의 `if errorlevel` 이 그대로 동작한다).
 """
@@ -70,6 +80,61 @@ def _split_argv(argv):
         return argv, []
     i = argv.index("--")
     return argv[:i], argv[i + 1:]
+
+
+def _git_state():
+    """(sha7, dirty_count). git 이 없거나 저장소가 아니면 (None, None).
+
+    ★왜 dirty 개수도 같이 보나 (2026-08-07)
+      스모크는 **코드를 고친 직후** 돌린다 — 즉 작업트리는 거의 항상 더럽다.
+      그래서 SHA 만 적으면 *"이 커밋에서 검증했다"* 로 **잘못 읽힌다.**
+      정확한 진술은 *"이 커밋 + 커밋 안 된 변경 N개에서 돌렸다"* 다.
+      함정 13("문서의 조치 기록은 코드 변경의 증거가 아니다")과 같은 계열의 정직성이다.
+    """
+    import subprocess as sp
+    try:
+        sha = sp.run(["git", "rev-parse", "--short=7", "HEAD"], cwd=ROOT,
+                     capture_output=True, text=True, timeout=10)
+        if sha.returncode != 0:
+            return None, None
+        st = sp.run(["git", "status", "--porcelain"], cwd=ROOT,
+                    capture_output=True, text=True, timeout=20)
+        n = len([l for l in st.stdout.splitlines() if l.strip()]) if st.returncode == 0 else None
+        return sha.stdout.strip(), n
+    except Exception:                            # noqa: BLE001 — 로그를 못 쓰게 만들면 안 된다
+        return None, None
+
+
+def _stamped_path(out, name, sha, forced_stamp, reuse_min):
+    """비실험 로그 경로. `{YYYYMMDDHHMM}_{name}_{sha7}.txt`, 최근 파일이면 이어쓴다."""
+    tag = sha or "nogit"
+    if forced_stamp:
+        return out / f"{forced_stamp}_{name}_{tag}.txt"
+    now = time.time()
+    hits = [p for p in out.glob(f"*_{name}_*.txt")
+            if now - p.stat().st_mtime <= reuse_min * 60]
+    if hits:
+        newest = max(hits, key=lambda p: p.stat().st_mtime)
+        sys.stdout.write(f"[runlog] 같은 이름의 최근 로그에 이어쓴다 -> {newest.name}  "
+                         f"({(now - newest.stat().st_mtime)/60:.1f}분 전, "
+                         f"--stamp-reuse-min {reuse_min})\n")
+        sys.stdout.flush()
+        return newest
+    return out / f"{datetime.now():%Y%m%d%H%M}_{name}_{tag}.txt"
+
+
+def _header(path, sha, dirty):
+    """파일 최상단에 **한 번만** 커밋 배너를 쓴다. 이미 내용이 있으면 안 쓴다."""
+    if path.exists() and path.stat().st_size > 0:
+        return
+    d = "" if dirty in (None, 0) else f"  +dirty {dirty}개(커밋 안 된 변경)"
+    line = (f"[commit] {sha or '(git 없음)'}{d}\n"
+            f"[commit] ⚠️ dirty 가 0 이 아니면 **이 커밋 상태로 검증한 것이 아니다** — "
+            f"커밋 + 미커밋 변경의 합이다.\n"
+            f"{'=' * 78}\n")
+    with open(path, "a", encoding="utf-8", newline=os.linesep) as f:
+        f.write(line); f.flush(); os.fsync(f.fileno())
+    sys.stdout.write(line); sys.stdout.flush()
 
 
 def _verify(path):
@@ -106,6 +171,10 @@ def main():
     ap.add_argument("--outdir", default=None,
                     help="로그를 쓸 폴더(저장소 기준 상대경로). 기본 test_result. "
                          "스모크처럼 **실험 결과가 아닌** 로그는 smoketest_logs 로 보낸다")
+    ap.add_argument("--stamp-reuse-min", type=float, default=30.0,
+                    help="비실험 로그(smoketest_logs 등)에서 같은 이름의 파일이 이 분 안에 "
+                         "수정됐으면 새 파일을 만들지 않고 이어쓴다. 한 배치의 여러 호출이 "
+                         "한 파일에 모이게 하려는 것 (TL_STAMP 로 완전 고정 가능)")
     ap.add_argument("--note", nargs="+", default=None,
                     help="명령 대신 텍스트만 기록한다(배치의 단계 제목·판정 안내용). 여러 개면 여러 줄")
     a = ap.parse_args(own)
@@ -132,23 +201,60 @@ def main():
         print("[runlog]     python scripts/runlog.py --name X -- python ...", file=sys.stderr)
         return 2
 
-    # ★2026-08-07 — 로그 파일명에 **실험계획 번호**가 없으면 나중에 어느 실험인지 못 찾는다.
-    #   야간큐 v2 가 `--name mC_g16` 로 돌아 `log_20260807_mC_g16.txt` 가 됐고, 사용자가
-    #   `029_log_20260807_P045_mC_g16.txt` 로 **손수 고쳐야** 했다(2026-08-07 지적).
-    #   막지는 않는다(도구 로그·진단은 P번호가 없을 수 있다) — 다만 **크게 알린다**.
-    if not re.match(r"^P\d{3}", a.name):
-        sys.stdout.write(f"[runlog] ⚠️ --name '{a.name}' 에 실험계획 번호(P0NN)가 없다. "
-                         f"파일명만 보고 어느 실험인지 알 수 없다.\n"
-                         f"[runlog]   실험 배치라면 `--name P045_{a.name}` 처럼 쓰세요.\n")
-        sys.stdout.flush()
-
-    # ★기본은 test_result 지만, 스모크는 **실험 결과가 아니다** — 같은 폴더에 두면
-    #   실험 로그 색인이 오염되고, 번호를 붙일 대상인지 매번 판단해야 한다(사용자 지적 2026-07-31).
-    out = (ROOT / a.outdir) if a.outdir else OUT
+    # ★★기본은 test_result 지만, 스모크·도구 로그는 **실험 결과가 아니다.**
+    #   2026-08-07 사용자 보고: `run_smoke_check.bat` 을 돌렸는데 로그가 `test_result/` 로 갔다.
+    #   원인 — `tool_smoke.bat` 이 `--outdir` 을 **한 번도 주지 않았다.**
+    #   `run_smoke_check.bat` 헤더는 *"Logs land in smoketest_logs, deliberately NOT in
+    #   test_result"* 라고 **적어만 뒀고 구현이 없었다**(함정 13: 문서의 조치 기록은
+    #   코드 변경의 증거가 아니다).
+    #   → 13곳에 `--outdir` 을 손으로 붙이는 대신 **환경변수 `TL_OUTDIR`** 을 읽는다.
+    #     한 곳(진입 배치)에서 정하면 그 아래 전부에 걸린다 = "적용 대상을 한 곳에서
+    #     정한다"(함정 18)의 적용.
+    out = (ROOT / a.outdir) if a.outdir else \
+          ((ROOT / os.environ["TL_OUTDIR"]) if os.environ.get("TL_OUTDIR") else OUT)
     out.mkdir(parents=True, exist_ok=True)
-    day = datetime.now().strftime("%Y%m%d")
-    stem = f"{a.num}_log_{day}_{a.name}" if a.num else f"log_{day}_{a.name}"
-    path = out / f"{stem}.txt"
+    is_experiment_dir = (out.resolve() == OUT.resolve())
+
+    # ★2026-08-07 — `test_result/` 는 **실험 로그만** 담는다. 이제 규약이 아니라 **강제**다.
+    #   종전에는 경고였고, 경고는 야간큐 v2 에서 무시됐다(로그 3개를 손으로 개명해야 했다).
+    if not re.match(r"^P\d{3}", a.name):
+        if is_experiment_dir:
+            print(f"[runlog] ★거절: --name '{a.name}' 에 실험계획 번호(P0NN)가 없는데 "
+                  f"목적지가 test_result 다.", file=sys.stderr)
+            print(f"[runlog]   test_result 는 **실험 로그 전용**이다(번호를 붙여 결과문서와 "
+                  f"짝을 맞춘다).", file=sys.stderr)
+            print(f"[runlog]   실험이면  --name P0NN_{a.name}", file=sys.stderr)
+            print(f"[runlog]   실험이 아니면  --outdir smoketest_logs  또는 "
+                  f"set TL_OUTDIR=smoketest_logs", file=sys.stderr)
+            return 2
+        # 실험 폴더가 아니면 P번호가 없어도 정상이다(스모크·도구 로그).
+
+    # ── 파일명 ────────────────────────────────────────────────────────────────
+    #   실험(test_result): `{num}_log_{YYYYMMDD}_{name}.txt` — **종전과 동일**.
+    #     같은 날 같은 이름이면 이어쓰기라 한 배치의 여러 단계가 한 파일에 모인다(설계).
+    #   비실험(smoketest_logs 등): **`{YYYYMMDDHHMM}_{name}_{sha7}.txt`**
+    #     ★분(minute) 정밀도 + 커밋 SHA7 — "어느 커밋에서 돌린 스모크인가" 를
+    #       파일명만으로 알 수 있어야 한다(사용자 요구 2026-08-07).
+    #     ⚠️ 분 정밀도를 그대로 쓰면 **한 배치의 13번 호출이 13개 파일로 쪼개진다.**
+    #       그래서 **같은 이름의 최근 파일이 `--stamp-reuse-min` 분 안에 수정됐으면
+    #       그 파일에 이어쓴다.** 스모크 한 판은 수 분이라 한 파일에 모이고,
+    #       다음 판은(보통 그 사이에 로그를 읽으므로) 새 파일이 된다.
+    #     `TL_STAMP` 를 주면 그 값을 그대로 쓴다(완전 결정적으로 하고 싶을 때).
+    sha, dirty = _git_state()
+    if is_experiment_dir:
+        day = datetime.now().strftime("%Y%m%d")
+        stem = f"{a.num}_log_{day}_{a.name}" if a.num else f"log_{day}_{a.name}"
+        path = out / f"{stem}.txt"
+    else:
+        path = _stamped_path(out, a.name, sha, os.environ.get("TL_STAMP"),
+                             a.stamp_reuse_min)
+
+    # ★커밋 배너는 **비실험 로그 전용**이다(사용자 확인 2026-08-07).
+    #   실험 로그는 조건 재현에 필요한 것이 이미 `runs/logs/*.json`(정본)과 헤더에 있고,
+    #   결과문서가 커밋을 따로 적는다. 스모크는 **"어느 코드 상태를 검증했나" 자체가 목적**이라
+    #   배너가 필요하다 — 목적이 다르므로 규약도 다르다.
+    if not is_experiment_dir:
+        _header(path, sha, dirty)      # 파일이 새로 만들어질 때만 쓴다
 
     # ── --note : 명령 없이 텍스트만. 배치의 echo 블록을 로그에도 남기는 통로다. ──
     if a.note:

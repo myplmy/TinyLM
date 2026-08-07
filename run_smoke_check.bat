@@ -30,13 +30,22 @@ REM    The [VERIFY] banner is only a SECTION TITLE, not the answer - that wordin
 REM    confused things once already.
 REM    Everything else is noise. Losses from 30 steps on synthetic data mean NOTHING:
 REM    do not read them, compare them, or record them anywhere.
-REM    Logs land in smoketest_logs, deliberately NOT in test_result.
+REM    Logs land in smoketest_logs (via TL_OUTDIR below), NOT in test_result.
+REM    Filename carries the minute and the commit sha7.
 REM
 REM  COST: a few minutes, GPU barely used. Writes sm_* tags into runs\ (throwaway).
 REM =============================================================================
 
 if not exist run100m.py goto BADROOT
 
+REM ***2026-08-07: TL_OUTDIR is the fix for logs landing in test_result.***
+REM   This header used to CLAIM logs land in smoketest_logs while tool_smoke.bat
+REM   never passed --outdir, so all 13 runlog calls wrote to test_result.
+REM   Documented but not implemented (trap 13). runlog.py now reads TL_OUTDIR, so
+REM   setting it HERE covers every call below it - one place, not thirteen.
+REM   Filenames become {YYYYMMDDHHMM}_{name}_{sha7}.txt and every log opens with a
+REM   [commit] banner, so you can tell WHICH COMMIT a smoke ran against.
+set TL_OUTDIR=smoketest_logs
 set TL_LOGNAME=smoke
 set TL_NOPAUSE=1
 call scripts\batch\tool_smoke.bat

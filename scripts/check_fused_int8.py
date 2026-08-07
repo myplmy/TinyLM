@@ -97,9 +97,11 @@ def main():
 
     for n in ("_int_mm", "_scaled_mm"):
         print(f"  torch.{n:21s}: {'있음' if getattr(torch, n, None) else '없음'}")
-    obq = getattr(torch.backends, "mkldnn", None)
-    print(f"  torch.backends.mkldnn  : {'사용가능' if obq is not None and obq.is_available() else '아니오'}"
-          f"   (oneDNN — CPU 융합 경로)")
+    try:                                     # 버전에 따라 속성 구성이 다르다 — 죽지 않게
+        ok = bool(torch.backends.mkldnn.is_available())
+        print(f"  torch.backends.mkldnn  : {'사용가능' if ok else '아니오'}   (oneDNN — CPU 융합 경로)")
+    except Exception as e:                                       # noqa: BLE001
+        print(f"  torch.backends.mkldnn  : 확인 실패 ({type(e).__name__})")
 
     # ── 판정 ──────────────────────────────────────────────────────────────
     head("★어떻게 읽는가 — 게이트 G1")
