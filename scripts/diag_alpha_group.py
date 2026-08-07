@@ -54,30 +54,43 @@ def regroup_alpha(wq, gran):
     """`_wq`(sign×α_g)의 **부호를 보존**하고 α 를 `gran` 단위로 L2 최적 재추정한다.
 
     gran: 정수 = 그 그룹 크기 / None = per-row / 0 = per-tensor
-    반환: 같은 shape 의 새 텐서. 0 위치는 0 으로 유지된다.
+    반환: (새 텐서, fell_back). `fell_back=True` 면 `I % gran != 0` 이라
+          **그 텐서만 per-row 로 대체**했다는 뜻이다.
+
+    ★2026-08-07 수정 — 1차 실행(결과 028)에서 **g512 행이 전부 `—` 로 비었다.**
+      `I % 512 != 0` 인 텐서 하나(어텐션 `q/o_proj`, I=768)를 만나면 `None` 을 돌려
+      호출부가 **granularity 전체를 버렸다.** 판정은 per-row 로 이미 갈렸으므로 결론에는
+      영향이 없었지만, "재려던 양을 못 잰" 것은 사실이다(함정 1의 계열).
+      → 나눠지지 않는 텐서만 per-row 로 내려가고, **몇 개가 내려갔는지 표에 적는다.**
+
+    ★`.detach()` 이유 — `freeze_quant()` 가 만든 `_wq` 는 `ternary()` autograd Function 을
+      타고 나온 값이라 `requires_grad=True` 다. 그대로 `float(...)` 하면 1차 실행처럼
+      UserWarning 이 뜬다(경고 자체는 무해했지만 **그래프를 붙들어 메모리를 쓴다**).
     """
     import torch
+    wq = wq.detach()
     O, I = wq.shape
     sign = torch.sign(wq)
     aw = wq.abs()
     nz = (aw > 0)
 
+    def _per_row():
+        cnt = nz.sum(dim=1, keepdim=True).clamp_min(1)
+        return sign * (aw.sum(dim=1, keepdim=True) / cnt)
+
     if gran == 0:                                   # per-tensor
         cnt = nz.sum().clamp_min(1)
-        A = aw.sum() / cnt
-        return sign * A
+        return sign * (aw.sum() / cnt), False
     if gran is None:                                # per-row
-        cnt = nz.sum(dim=1, keepdim=True).clamp_min(1)
-        A = aw.sum(dim=1, keepdim=True) / cnt
-        return sign * A
-    if I % gran != 0:                               # 나눠지지 않으면 건너뛴다
-        return None
+        return _per_row(), False
+    if I % gran != 0:                               # ★버리지 않고 per-row 로 내린다
+        return _per_row(), True
     G = I // gran
     awg = aw.reshape(O, G, gran)
     nzg = (awg > 0)
     cnt = nzg.sum(dim=2, keepdim=True).clamp_min(1)
     A = awg.sum(dim=2, keepdim=True) / cnt
-    return (sign.reshape(O, G, gran) * A).reshape(O, I)
+    return (sign.reshape(O, G, gran) * A).reshape(O, I), False
 
 
 def main():
@@ -141,23 +154,23 @@ def main():
             model.set_anneal(1.0); model.eval(); model.freeze_quant()
 
             tls = [m for m in model.modules() if isinstance(m, TLinear)]
-            n_alpha, num, den, skipped = 0, 0.0, 0.0, False
-            for m in tls:
-                wq = m._wq
-                new = regroup_alpha(wq, gran)
-                if new is None:
-                    skipped = True
-                    break
-                num += float((new - wq).pow(2).sum())
-                den += float(wq.pow(2).sum())
-                O, I = wq.shape
-                n_alpha += (1 if gran == 0 else (O if gran is None else O * (I // gran)))
-                m._wq = new
-            if skipped:
-                print(f"     {name:<14}{'—':>12}{'(shape 불일치로 건너뜀)':>16}")
-                del model
-                continue
+            n_alpha, num, den, n_fb = 0, 0.0, 0.0, 0
+            with torch.no_grad():                    # ★그래프를 만들지 않는다
+                for m in tls:
+                    wq = m._wq.detach()
+                    new, fell_back = regroup_alpha(wq, gran)
+                    num += float((new - wq).pow(2).sum())
+                    den += float(wq.pow(2).sum())
+                    O, I = wq.shape
+                    if fell_back:                    # 이 텐서만 per-row 로 내려갔다
+                        n_fb += 1
+                        n_alpha += O
+                    else:
+                        n_alpha += (1 if gran == 0 else (O if gran is None else O * (I // gran)))
+                    m._wq = new
             rel = math.sqrt(num / max(den, 1e-12))
+            if n_fb:                                 # 표에 정직하게 적는다
+                name = f"{name}*{n_fb}"
 
             n_crop = (len(ids) - 1) // a.seq
             tot, cnt = 0.0, 0
@@ -200,6 +213,9 @@ def main():
     print("  ★per-tensor 열은 bitnet.cpp I2_S/TL 규약이다 — 그 값이 곧 '지금 BitNet 에 넣으면")
     print("    품질이 이만큼 나빠진다' 이다(실사 §13.2).")
     print()
+    print("  ★표 읽기 — `g512*8` 처럼 `*N` 이 붙으면 그 granularity 에서 **N개 텐서가")
+    print("    나눠지지 않아 per-row 로 내려갔다**는 뜻이다(어텐션 q/o_proj 는 I=768).")
+    print("    그 행은 순수한 g512 가 아니라 **혼합**이므로 서열 판단에 쓰지 않는다.")
     print("  ★한계")
     print("   · 영문 전용(SQuAD). 한국어 쪽 대가는 이 진단으로 안 나온다")
     print("   · 재학습하지 않았다. **재학습하면 거친 α 에 적응해 대가가 줄어들 수 있다**")

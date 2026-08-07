@@ -14,13 +14,17 @@
 **TinyLM** = 저사양 CPU·엣지·모바일용 **초경량 LLM 아키텍처**. 핵심 목표는 **연산이 아니라
 메모리 최적화**(연산 증가는 감수). 지향점: dense 대비 절반 이하 메모리로 유사 품질.
 
-> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608071400_HANDOFF.md`](handoff/202608071400_HANDOFF.md).
+> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608080600_HANDOFF.md`](handoff/202608080600_HANDOFF.md).
 > **새 세션은 그 문서를 먼저 읽는다.** 아래는 바뀌지 않는 규범만 남긴다.
 >
 > 요약 한 줄: 코드 v6(`tinylm/`), 아키텍처 v5. **σ = 0.012 / 분해능 0.024**(bpb 로는 약 0.008).
 >
 > **표준 스케줄 `--sched wsd`.** REVIEW1 은 **`m100R1c`(mC) 기본 확정 권고**(결과 024).
 > **CPU 1스레드 36 tok/s** / **메모리→속도 전이는 거의 없다** / **R8 의 값어치는 메모리뿐**(결과 014 §11).
+>
+> **★메모리 레버 가격표가 실측됐다(결과 029·032, 기준표 §2.2c)**: g16 **0.0167** vs
+> prelude/coda 1+1 **0.0199 nats/MB(packed)** — **같은 효율선**. 국소 법칙 **약 0.0037
+> nats per 유니크삼진 100만**(적용범위 4.7~12.1M). **레버 인용 시 배포 경로(fp32/int8) 명시.**
 >
 > **1차 리뷰 정본: [`docs/review/202607301200_1차리뷰_실험종합및최적모델3안.md`](docs/review/202607301200_1차리뷰_실험종합및최적모델3안.md)**
 > (⚠️ 승자 선정 절은 **보류 배너** 참조). 새 실험 제안 전 반드시 읽는다.
@@ -47,7 +51,7 @@
 ```
 tinylm/
   paths.py            작업폴더 기준 경로 + HF 캐시 리다이렉트(import 부작용)
-  config.py           TMTConfig + PRESETS(tiny/m100/m100d/**m100R1a**/**m100R1c**) + build_config
+  config.py           TMTConfig + PRESETS(tiny/m100/m100d/**m100R1a**/**m100R1c**/**m100R1p**/**m100R1q**) + build_config
   model/              ternary.py · modules.py(RMSNorm/RoPE/Attention[QK-norm]/MLP/Layer) · transformer.py
   data/               prepare.py(토큰화+크기별 캐시) · loader.py
   train/              trainer.py(어닐·NaN가드·EMA·WSD·베스트ckpt·KD) · lr_finder.py · init_utils.py
@@ -152,6 +156,10 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 > 읽으면 +0.005(무승부)로 **부호가 뒤집혔다**. `best.pt` 는 체크포인트 선택용이지 판정용이 아니다.
 > **안정성 판정은 인쇄된 `|g|`(10스텝 샘플) 가 아니라 json `grad_max`**(warmup 이후 전 스텝 최대)로
 > 한다. sp_base 인쇄 최대 4.51 vs 실제 10.79.
+> **★★2026-08-07 이 규칙이 처음으로 판정을 뒤집었다(결과 030)**: `mC_e128` 의 인쇄 `|g|` 는
+> **0.43 으로 그날 가장 안전**해 보였는데 json `grad_max` 는 **19.32**(기준선 0.847)였다.
+> Δ +0.1768 이 "> +0.15" 문을 지나 규칙이 발화 → **"E=128 기각" 이 "판정 불가" 로 바뀌었다.**
+> 원인은 아키텍처가 아니라 **초기화**(step 0 `ce` = ln(32768) = 난수 임베딩).
 
 ## 알려진 함정 — **요약.** 전체는 [`ai_dev_tool/01_계측함정_원장.md`](ai_dev_tool/01_계측함정_원장.md)
 
@@ -181,6 +189,10 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 | 18 | **적용 대상 집합을 두 곳에서 정의** | 016 §13·§14 가 **같은 실수 2회** — 1차는 무장 범위, 2차는 세대 심는 범위. **한 곳에서만 정한다**(`_armed_tlinears`) |
 | 19 | **`val_loss` 교차 비교** | 필터·풀·캐시가 다르면 **val 셋이 다르다**. 판정은 **공통 원문 bpb**(`common_bpb.py`)로 — 011 §2 가 그렇게 −0.296 nats 를 유효하게 얻었다 |
 | 20 | **문자열 치환 편집** | 패턴이 **유일한지** 확인. `cli.py` 에서 같은 꼬리가 `prepare`·`train` 양쪽에 있어 엉뚱한 곳이 고쳐졌고 **무관한 실험이 죽었다**. → `python scripts/check_call_kwargs.py` |
+| 21 | **`--note` + 명령 동시** | `runlog.py` 가 **명령을 조용히 버리고 종료코드 0**. 결과 031 이 84바이트 로그. 두 줄로 나눈다. 이제 도구가 거절하고 `lint_bat` 9c 가 잡는다 |
+| 22 | **무방비 `pause`** | 야간큐(`TL_NOPAUSE=1`)가 멈춘다. 결과 028 §8 이 하룻밤. `if not defined TL_NOPAUSE pause` — `lint_bat` 9b 가 **에러**로 잡는다 |
+| 23 | **로그 파일명에 계획번호 누락** | 나중에 어느 실험인지 못 찾는다. `--name P0NN_태그`. `lint_bat` 9d + runlog 경고 |
+| 24 | **fp32 상주 ≠ int8 상주** | 함정 1 의 3번째 얼굴. E=128 은 **int8 에서만** 1위(−18.8%)이고 fp32 는 −3.6%. **레버 순위가 경로에 따라 뒤집힌다**(결과 032 §4.3) |
 
 ### 아키텍처 사실 (자주 잘못 기대하는 것)
 
@@ -214,6 +226,8 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 `check_attrs.py`(`cfg.X` 오타를 torch 없이 정적 검출) · `check_smoke.py`(계측 필드 계약) ·
 **`check_batch_flags.py`**(★배치가 쓰는 CLI 플래그가 **실제로 파서에 있는지** — 미구현 배치 2회 재발 차단) ·
 **`check_call_kwargs.py`**(★`cli.py` 가 넘기는 키워드가 **대상 함수에 있는지** — 2026-08-06 오편집 차단) ·
+**`diag_spam_rate.py`**(★표준 코퍼스 스팸률 — `spam_signature()` 를 **호출**한다. 학습 0·GPU 0) ·
+**`check_fused_int8.py`**(★P014C 단계1 — per-row 융합 int8 matmul 존재 확인. **속도는 일부러 안 잰다**) ·
 **`common_bpb.py`**(공통 원문 bpb — **토크나이저 무관**, 데이터셋·모델 교차비교의 유일한 유효 경로) ·
 **`diag_alpha_group.py`**(★α 그룹 규약별 품질 대가 — **커널 자체제작 여부의 분기**. 학습 0) ·
 **`diag_val_lang.py`**(★캐시의 **언어 구성** — 풀 크기가 val 셋을 바꾸는지. torch 없이 돈다) ·
@@ -244,7 +258,7 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 
 | 최상위 = **실험**(계획번호·단계가 이름에 있다) | `scripts/batch/` = **기능 모듈**(실험 아님) |
 |---|---|
-| **`run_smoke_check.bat`**(코드 수정 후 필수) · **`run_P034_stage3c_unpackcache.bat`** · **`run_P007B_stage2_commonbpb.bat`** · **`run_P040_tying_trainspeed.bat`** · **`run_P028_stage3_filtered_retrain.bat`** · ⚠️`run_P022_stage1_fp8.bat`(**`--fp8` 미구현 — 최상위에서 내릴 것**) | `tool_smoke.bat` · `tool_kvcache_gate.bat`(**캐시 정본 게이트**) · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
+| **`run_smoke_check.bat`**(코드 수정 후 필수) · **`run_night_queue.bat`**(★야간 시퀀서 v3 — `TL_NOPAUSE=1` 을 깔고 자식을 `call`. 경고하고 계속) · **`run_P047_stage0_spam_rate.bat`**(GPU 0) · **`run_P048_stage2_stack_g16.bat`** · **`run_P048_prelude_coda.bat`**(단계1 완료, `-done` 후보) · `run_P045_g16_ceiling.bat`·`run_P046_emb_rank128.bat`(완료, `-done` 후보) · **`run_P040_tying_trainspeed.bat`**(⚠️**단독·직전 5분 유휴 필수 — 야간큐에 넣지 말 것**) · **`run_P034_stage3c_unpackcache.bat`** · **`run_P007B_stage2_commonbpb.bat`** · **`run_P028_stage3_filtered_retrain.bat`** | `tool_smoke.bat` · `tool_kvcache_gate.bat`(**캐시 정본 게이트**) · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
 
 > **★`scripts/batch/` 를 사용자에게 직접 실행하라고 안내하지 않는다**(2026-07-31 개편).
 > 그건 **도구**다 — 실험번호도, 계획서 참조도, `test_result` 상의 자리도 없다.

@@ -48,7 +48,7 @@ if not exist runs\ckpt\m100R1c_ko-en_300M_mC_wsd.pt goto NOCTRL
 echo =============================================================
 echo [P045] tying ceiling g16 : closes the tying axis
 echo =============================================================
-python scripts\runlog.py --name mC_g16 --note "[P045] tying ceiling g16 : closes the tying axis"
+python scripts\runlog.py --name P045_mC_g16 --note "[P045] tying ceiling g16 : closes the tying axis"
 
 echo.
 echo [guard] cli.py call-keyword sanity
@@ -59,19 +59,19 @@ echo.
 echo =============================================================
 echo [1/2] train
 echo =============================================================
-python scripts\runlog.py --name mC_g16 --note "[1/2] train"
-python scripts\runlog.py --name mC_g16 -- python run100m.py train --preset m100R1c --arch tied --mlp-group 16 --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --kd --kd-every 4 --init-from --tag mC_g16
+python scripts\runlog.py --name P045_mC_g16 --note "[1/2] train"
+python scripts\runlog.py --name P045_mC_g16 -- python run100m.py train --preset m100R1c --arch tied --mlp-group 16 --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --kd --kd-every 4 --init-from --tag mC_g16
 if errorlevel 1 goto TRAINBAD
 
 echo.
 echo =============================================================
 echo [2/2] paired comparison against mC_wsd
 echo =============================================================
-python scripts\runlog.py --name mC_g16 --note "[2/2] paired comparison against mC_wsd"
-python scripts\runlog.py --name mC_g16 -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_wsd mC_g16
+python scripts\runlog.py --name P045_mC_g16 --note "[2/2] paired comparison against mC_wsd"
+python scripts\runlog.py --name P045_mC_g16 -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_wsd mC_g16
 if errorlevel 1 echo [WARN] paired_eval failed - checkpoint is on disk, re-run this step alone
 
-python scripts\runlog.py --name mC_g16 --note "=================================================================" "WHAT TO RECORD" "  1. final val, NOT best." "  2. the paired_eval delta and t value against mC_wsd." "  3. grad_max from the json." "  4. the report() block - the ternary/embedding parameter counts." "  5. the header conditions. If any differ from mC_wsd the delta is INVALID." "" "HOW TO READ IT" "  delta under +0.024" "      -^> ACCEPT for review. packed 2.07x -^> 2.24x, residency -5.3 percent." "  +0.024 to +0.05" "      -^> only for memory-constrained deployment targets." "  above +0.05" "      -^> g8 IS the ceiling. Close the tying axis - that is a real answer." "  ***ALSO CHECK*** the header says MLP g=16 and report() shows ternary 50.1M." "  If it still says g=8 the override did not take and the run is worthless." "" "LIMITS: one seed / g16 only (it is already the ceiling) / parent init averages" "  all 16 middle layers, which is mixed into the g effect / prelude and coda stay" "  independent and are NOT touched - result 002 called that the single largest" "  gain / the -5.3 percent is COMPUTED." "================================================================="
+python scripts\runlog.py --name P045_mC_g16 --note "=================================================================" "WHAT TO RECORD" "  1. final val, NOT best." "  2. the paired_eval delta and t value against mC_wsd." "  3. grad_max from the json." "  4. the report() block - the ternary/embedding parameter counts." "  5. the header conditions. If any differ from mC_wsd the delta is INVALID." "" "HOW TO READ IT" "  delta under +0.024" "      -^> ACCEPT for review. packed 2.07x -^> 2.24x, residency -5.3 percent." "  +0.024 to +0.05" "      -^> only for memory-constrained deployment targets." "  above +0.05" "      -^> g8 IS the ceiling. Close the tying axis - that is a real answer." "  ***ALSO CHECK*** the header says MLP g=16 and report() shows ternary 50.1M." "  If it still says g=8 the override did not take and the run is worthless." "" "LIMITS: one seed / g16 only (it is already the ceiling) / parent init averages" "  all 16 middle layers, which is mixed into the g effect / prelude and coda stay" "  independent and are NOT touched - result 002 called that the single largest" "  gain / the -5.3 percent is COMPUTED." "================================================================="
 echo done.
 if not defined TL_NOPAUSE pause
 exit /b 0

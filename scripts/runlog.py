@@ -53,6 +53,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import subprocess
 import sys
 import time
@@ -114,6 +115,32 @@ def main():
               file=sys.stderr)
         print("  예) python scripts/runlog.py --name X -- python run100m.py train ...", file=sys.stderr)
         return 2
+
+    # ★★2026-08-07 — **`--note` 와 명령을 같이 주면 명령이 조용히 버려졌다.**
+    #   아래 `if a.note: ... return 0` 이 먼저 걸려 `cmd` 가 실행되지 않고, 그런데도
+    #   **종료코드 0** 을 돌려주므로 배치의 `if errorlevel 1` 이 발화하지 않는다.
+    #   → `run_P047_stage0_spam_rate.bat`(2026-08-07)이 정확히 이 형태였다:
+    #     두 단계가 "성공" 으로 끝났는데 로그는 **84바이트(제목 두 줄)뿐**이었다.
+    #     P045·P046·P048 은 `--note` 와 `--` 를 **별도 호출**로 나눠서 정상 동작했다.
+    #   **조용한 무동작이 가장 나쁜 실패**이므로 여기서 거절한다(함정 10·13 계열).
+    if cmd and a.note:
+        print("[runlog] ★거절: `--note` 와 실행 명령을 함께 줄 수 없습니다.", file=sys.stderr)
+        print("[runlog]   종전 구현은 note 만 쓰고 **명령을 조용히 버렸다** — "
+              "그리고 종료코드 0 이라 배치가 성공으로 읽었다.", file=sys.stderr)
+        print("[runlog]   두 줄로 나누세요:", file=sys.stderr)
+        print('[runlog]     python scripts/runlog.py --name X --note "[1/2] 제목"', file=sys.stderr)
+        print("[runlog]     python scripts/runlog.py --name X -- python ...", file=sys.stderr)
+        return 2
+
+    # ★2026-08-07 — 로그 파일명에 **실험계획 번호**가 없으면 나중에 어느 실험인지 못 찾는다.
+    #   야간큐 v2 가 `--name mC_g16` 로 돌아 `log_20260807_mC_g16.txt` 가 됐고, 사용자가
+    #   `029_log_20260807_P045_mC_g16.txt` 로 **손수 고쳐야** 했다(2026-08-07 지적).
+    #   막지는 않는다(도구 로그·진단은 P번호가 없을 수 있다) — 다만 **크게 알린다**.
+    if not re.match(r"^P\d{3}", a.name):
+        sys.stdout.write(f"[runlog] ⚠️ --name '{a.name}' 에 실험계획 번호(P0NN)가 없다. "
+                         f"파일명만 보고 어느 실험인지 알 수 없다.\n"
+                         f"[runlog]   실험 배치라면 `--name P045_{a.name}` 처럼 쓰세요.\n")
+        sys.stdout.flush()
 
     # ★기본은 test_result 지만, 스모크는 **실험 결과가 아니다** — 같은 폴더에 두면
     #   실험 로그 색인이 오염되고, 번호를 붙일 대상인지 매번 판단해야 한다(사용자 지적 2026-07-31).

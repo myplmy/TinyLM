@@ -51,7 +51,7 @@ echo               written up is a long run thrown away.
 echo   The [VERIFY] banner above it is a section title, not the answer.
 echo =================================================================
 echo done.
-pause
+if not defined TL_NOPAUSE pause
 exit /b 0
 
 :BADROOT
@@ -59,5 +59,5 @@ echo.
 echo =================================================================
 echo [STOP] run this from the TinyLM working folder (run100m.py not found).
 echo =================================================================
-pause
+if not defined TL_NOPAUSE pause
 exit /b 9

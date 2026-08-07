@@ -79,7 +79,7 @@ if errorlevel 1 echo [WARN] m100R1c scan failed - continuing
 
 python scripts\runlog.py --name P014C-stage0 --note "=================================================================" "WHAT TO RECORD" "  1. ***the g128 row's relative error.*** It must be 0.000000. This is the" "     tool's own correctness check - it should recover the original alpha." "     If it is not zero, stop and report that instead of the other rows." "  2. the per-row Delta-bpb. That is the fork." "  3. the per-tensor Delta-bpb. That number IS 'how much worse we get if we" "     put this model into bitnet.cpp today'." "  4. whether the three models agree. mA has sparse34 so its alpha structure" "     differs - if it behaves very differently, say so." "" "HOW TO READ IT" "  per-row under 0.008 bpb" "      -^> no custom kernel needed. Stage 1 next: does PyTorch have a per-row" "         fused int8 matmul. One command, one minute." "  per-row 0.008 to 0.05" "      -^> borderline. Retraining may absorb it - this table is a PESSIMISTIC" "         bound since we did not retrain. Stage 3 decides." "  per-row above 0.05" "      -^> build our own g128 kernel. This table becomes the quantitative" "         justification for not reusing external implementations." "" "LIMITS: ENGLISH ONLY (SQuAD) / no retraining, so pessimistic / weight relative" "  error is a reference column, NOT monotone with quality / one seed per model." "================================================================="
 echo done.
-pause
+if not defined TL_NOPAUSE pause
 exit /b 0
 
 :BADKWARGS
@@ -87,7 +87,7 @@ echo.
 echo =================================================================
 echo [STOP] cli.py passes a keyword its target function does not accept.
 echo =================================================================
-pause
+if not defined TL_NOPAUSE pause
 exit /b 6
 
 :NOSQUAD
@@ -95,7 +95,7 @@ echo.
 echo =================================================================
 echo [STOP] datasets\squad\train-v2.0.json not found.
 echo =================================================================
-pause
+if not defined TL_NOPAUSE pause
 exit /b 3
 
 :BADROOT
@@ -103,5 +103,5 @@ echo.
 echo =================================================================
 echo [STOP] run this from the TinyLM working folder (run100m.py not found).
 echo =================================================================
-pause
+if not defined TL_NOPAUSE pause
 exit /b 9

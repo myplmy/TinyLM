@@ -79,7 +79,7 @@ if errorlevel 1 echo [WARN] readback failed - the meta.json is still on disk
 
 python scripts\runlog.py --name P037-stage4 --note "=================================================================" "WHAT TO RECORD" "  1. the [mix] exhaustion warning text and the token count it names." "     That number is the ACTUAL size of our Korean corpus - it is the single" "     most important figure for P041 and it has never been measured directly." "  2. the [data] size warning: requested 400M, actually written how much." "  3. mix_exhausted from the readback." "" "HOW TO READ IT" "  warnings fire and the count is around 300M" "      -^> L4 detection works AND we now know the Korean corpus size. Feed it" "         into P041 section 5 stage 0 as the baseline to beat." "  warnings do not fire" "      -^> the callback is not wired. The fix is cosmetic. Fix it before" "         trusting any future [mix] block." "  the count is much larger than 300M" "      -^> then ko-en's 300.2M ceiling came from the MIXER, not the source," "         and P041's premise needs rechecking. That would be good news." "" "LIMITS: ko is wikipedia only - ko-edu-en uses a different Korean source whose" "  size is still unmeasured / this builds a cache we do not train on, so it is" "  pure diagnostic cost / streaming order is fixed, so the count is repeatable." "================================================================="
 echo done.
-pause
+if not defined TL_NOPAUSE pause
 exit /b 0
 
 :BADKWARGS
@@ -88,7 +88,7 @@ echo =================================================================
 echo [STOP] cli.py passes a keyword its target function does not accept.
 echo        Fix that first - it will break unrelated commands.
 echo =================================================================
-pause
+if not defined TL_NOPAUSE pause
 exit /b 6
 
 :PREPBAD
@@ -97,7 +97,7 @@ echo =================================================================
 echo [STOP] prepare failed. Check whether the ko dataset config is
 echo        reachable (wikimedia/wikipedia 20231101.ko).
 echo =================================================================
-pause
+if not defined TL_NOPAUSE pause
 exit /b 3
 
 :BADROOT
@@ -105,5 +105,5 @@ echo.
 echo =================================================================
 echo [STOP] run this from the TinyLM working folder (run100m.py not found).
 echo =================================================================
-pause
+if not defined TL_NOPAUSE pause
 exit /b 9

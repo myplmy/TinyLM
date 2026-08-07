@@ -50,7 +50,7 @@ if not exist runs\ckpt\m100R1c_ko-en_300M_mC_wsd.pt goto NOCTRL
 echo =============================================================
 echo [P046] embedding rank 256 -^> 128 : the largest remaining residency item
 echo =============================================================
-python scripts\runlog.py --name mC_e128 --note "[P046] embedding rank 256 -^> 128 : the largest remaining residency item"
+python scripts\runlog.py --name P046_mC_e128 --note "[P046] embedding rank 256 -^> 128 : the largest remaining residency item"
 
 echo.
 echo [guard] cli.py call-keyword sanity
@@ -61,19 +61,19 @@ echo.
 echo =============================================================
 echo [1/2] train
 echo =============================================================
-python scripts\runlog.py --name mC_e128 --note "[1/2] train"
-python scripts\runlog.py --name mC_e128 -- python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --kd --kd-every 4 --init-from --emb-rank 128 --tag mC_e128
+python scripts\runlog.py --name P046_mC_e128 --note "[1/2] train"
+python scripts\runlog.py --name P046_mC_e128 -- python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --kd --kd-every 4 --init-from --emb-rank 128 --tag mC_e128
 if errorlevel 1 goto TRAINBAD
 
 echo.
 echo =============================================================
 echo [2/2] paired comparison against mC_wsd
 echo =============================================================
-python scripts\runlog.py --name mC_e128 --note "[2/2] paired comparison against mC_wsd"
-python scripts\runlog.py --name mC_e128 -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_wsd mC_e128
+python scripts\runlog.py --name P046_mC_e128 --note "[2/2] paired comparison against mC_wsd"
+python scripts\runlog.py --name P046_mC_e128 -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_wsd mC_e128
 if errorlevel 1 echo [WARN] paired_eval failed - checkpoint is on disk, re-run this step alone
 
-python scripts\runlog.py --name mC_e128 --note "=================================================================" "WHAT TO RECORD" "  1. final val, NOT best." "  2. the paired_eval delta and t value against mC_wsd." "  3. grad_max from the json." "  4. the report() block - the ternary/embedding parameter counts." "  5. the header conditions. If any differ from mC_wsd the delta is INVALID." "" "HOW TO READ IT" "  delta under +0.024" "      -^> ACCEPT for review. residency -18.8 percent for free." "  +0.024 to +0.08" "      -^> a real tradeoff. Worth it only if the deployment target is memory" "         constrained (see 08_paper_review section 3, the ESP32 table)." "  above +0.08" "      -^> reject at E=128. Try E=192 (-9.4 percent residency) or close the axis." "  ***ALSO CHECK*** the [emb] and [init] warning lines. If the [init] warning is" "  absent, the shape guard did not fire and something is wrong." "" "LIMITS: one seed / E=128 only / ***the parent-init confound above*** / the" "  -18.8 percent is COMPUTED, confirm with mem_runtime.py separately / the" "  logit-rank penalty depends on vocab size, and result 025 closed vocab" "  reduction so vocab stays at 32,768." "================================================================="
+python scripts\runlog.py --name P046_mC_e128 --note "=================================================================" "WHAT TO RECORD" "  1. final val, NOT best." "  2. the paired_eval delta and t value against mC_wsd." "  3. grad_max from the json." "  4. the report() block - the ternary/embedding parameter counts." "  5. the header conditions. If any differ from mC_wsd the delta is INVALID." "" "HOW TO READ IT" "  delta under +0.024" "      -^> ACCEPT for review. residency -18.8 percent for free." "  +0.024 to +0.08" "      -^> a real tradeoff. Worth it only if the deployment target is memory" "         constrained (see 08_paper_review section 3, the ESP32 table)." "  above +0.08" "      -^> reject at E=128. Try E=192 (-9.4 percent residency) or close the axis." "  ***ALSO CHECK*** the [emb] and [init] warning lines. If the [init] warning is" "  absent, the shape guard did not fire and something is wrong." "" "LIMITS: one seed / E=128 only / ***the parent-init confound above*** / the" "  -18.8 percent is COMPUTED, confirm with mem_runtime.py separately / the" "  logit-rank penalty depends on vocab size, and result 025 closed vocab" "  reduction so vocab stays at 32,768." "================================================================="
 echo done.
 if not defined TL_NOPAUSE pause
 exit /b 0

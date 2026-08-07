@@ -81,7 +81,7 @@ if errorlevel 1 echo [WARN] tied run failed - continuing
 
 python scripts\runlog.py --name P040-trainspeed --note "=================================================================" "WHAT TO RECORD" "  1. wall clock minutes for each run, from the runlog footer." "  2. STEADY-STATE ms/step, converted: (printed mean x N - step0) / (N - 1)." "     The printed number is a cumulative mean and includes the compile step." "  3. the toklen-per-FLOPs line from each report() header. It should read" "     0.248 GFLOP for BOTH - that is the point." "  4. peak VRAM. Tying should cut optimiser state roughly in half; that is a" "     CAPACITY win and it is real even if the time win is not." "" "***DO NOT RECORD val_loss.*** 250 steps is a speed probe only." "" "HOW TO READ IT" "  gap under 2 percent" "      -^> EXPERIMENT_BASELINES section 2.1 was noise. Correct the wording" "         everywhere: tying buys memory, not training time." "  gap 5 to 10 percent, same direction as g" "      -^> real. Attribute it to CACHE LOCALITY, not parameter count - the" "         AdamW step is only 0.13 percent of a step, so it cannot be the cause." "         Then a g4 arm is worth adding to see if it is monotone in g." "  tied SLOWER" "      -^> also informative. Gradient accumulation into a shared tensor is" "         extra work that dense does not do." "" "LIMITS: one seed / 250 steps / one machine / grad-ckpt ON for both (with" "  --no-ckpt the answer could differ, and -17.3 percent would swamp it)." "================================================================="
 echo done.
-pause
+if not defined TL_NOPAUSE pause
 exit /b 0
 
 :BADROOT
@@ -89,5 +89,5 @@ echo.
 echo =================================================================
 echo [STOP] run this from the TinyLM working folder (run100m.py not found).
 echo =================================================================
-pause
+if not defined TL_NOPAUSE pause
 exit /b 9

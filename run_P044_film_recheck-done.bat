@@ -73,7 +73,7 @@ if errorlevel 1 echo [WARN] paired_eval failed - the checkpoint is on disk, re-r
 
 python scripts\runlog.py --name P044-film --note "=================================================================" "WHAT TO RECORD" "  1. final val for mC_film, NOT best. Result 015 flipped a sign that way." "  2. the paired_eval delta against mC_wsd (3.6442) and its t value." "  3. grad_max from the json, not the printed 10-step sample." "  4. the report() block - what FiLM costs and whether it is charged where" "     you expect. Result 026 found annealed LoRA being charged at scale zero." "  5. the header conditions. If sched or anneal_end or kd_every differ from" "     mC_wsd, the comparison is INVALID - say so instead of reporting a delta." "" "HOW TO READ IT" "  delta below -0.010 and t significant" "      -^> ACCEPT. 0.13 MB bought real quality. Consider promoting mlp_film" "         into the m100R1c preset." "  between -0.010 and 0" "      -^> record the observation, hold the decision. One seed means sigma" "         0.012 still applies even though paired removes eval noise." "  zero or worse" "      -^> KD already occupies that role. Close the line - that is an answer." "" "LIMITS: one seed / g8 only / the control was trained in a different session so" "  wall-clock is NOT comparable (quality is) / this says nothing about FiLM at" "  other tying strengths." "================================================================="
 echo done.
-pause
+if not defined TL_NOPAUSE pause
 exit /b 0
 
 :NOCTRL
@@ -82,7 +82,7 @@ echo =================================================================
 echo [STOP] control checkpoint runs\ckpt\m100R1c_ko-en_300M_mC_wsd.pt
 echo        is missing. Without it there is nothing to compare against.
 echo =================================================================
-pause
+if not defined TL_NOPAUSE pause
 exit /b 5
 
 :TRAINBAD
@@ -90,7 +90,7 @@ echo.
 echo =================================================================
 echo [STOP] training failed. Nothing to compare.
 echo =================================================================
-pause
+if not defined TL_NOPAUSE pause
 exit /b 4
 
 :BADROOT
@@ -98,5 +98,5 @@ echo.
 echo =================================================================
 echo [STOP] run this from the TinyLM working folder (run100m.py not found).
 echo =================================================================
-pause
+if not defined TL_NOPAUSE pause
 exit /b 9

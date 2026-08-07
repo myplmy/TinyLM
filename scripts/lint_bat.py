@@ -108,8 +108,48 @@ def lint(path: Path):
     # 9. pause / exit
     if "pause" not in txt:
         warn.append("pause 없음 → 더블클릭 실행 시 창이 닫혀 로그를 잃는다")
+
+    # ★9b. 무방비 pause — 2026-08-07 야간큐가 여기서 밤새 멈췄다.
+    #   `run_night_queue.bat` 은 `TL_NOPAUSE=1` 을 깔고 자식을 `call` 하는데,
+    #   자식의 pause 가 그 변수를 안 보면 **키 입력을 기다리며 큐가 정지**한다.
+    #   P045·P046 에는 가드가 있었고 P014C 에만 없었다 — 3개 중 1개를 빠뜨린 것이
+    #   7시간짜리 무인 실행을 1시간으로 만들었다. 사람이 기억하는 대신 린터가 본다.
+    #   **모든 경로의 pause 가 대상이다**(:BADROOT 같은 오류 경로도 큐를 멈춘다).
+    for i, ln in enumerate(lines):
+        s = ln.strip()
+        if re.fullmatch(r"(?i)pause", s):
+            err.append(f"L{i+1} 무방비 `pause` → 야간큐(`TL_NOPAUSE=1`)가 여기서 멈춘다. "
+                       f"`if not defined TL_NOPAUSE pause` 로 바꾸세요")
+        elif re.search(r"(?i)\bpause\b", s) and "TL_NOPAUSE" not in s and not s.startswith("REM"):
+            warn.append(f"L{i+1} pause 가 TL_NOPAUSE 가드 없이 쓰였다: {s[:55]}")
     if "exit /b" not in txt and "goto ERROR" in txt:
         warn.append("goto ERROR 는 있는데 'exit /b 0' 이 없음 → 정상 종료도 ERROR 블록으로 흘러간다")
+
+    # ★9c. runlog.py 에 `--note` 와 실행 명령을 **한 줄에** 준 것.
+    #   2026-08-07 `run_P047_stage0_spam_rate.bat` 이 이 형태였고, runlog 가 note 만 쓰고
+    #   **명령을 조용히 버렸다.** 종료코드 0 이라 `if errorlevel 1` 도 안 걸려
+    #   **두 단계가 "성공" 으로 끝났는데 로그는 84바이트뿐**이었다.
+    #   runlog.py 쪽에도 거절을 넣었지만(이중 방어), 배치 작성 시점에 잡는 게 더 값싸다.
+    for i, ln in enumerate(lines):
+        if ln.strip().upper().startswith("REM"):
+            continue          # 주석은 이 규칙의 대상이 아니다(사고를 서술한 문장이 걸렸다)
+        if "runlog.py" in ln and "--note" in ln and re.search(r"\s--\s", ln):
+            err.append(f"L{i+1} runlog.py 에 --note 와 실행 명령을 함께 줬다 → "
+                       f"**명령이 실행되지 않는다**(조용한 무동작). 두 줄로 나누세요: "
+                       f"{ln.strip()[:45]}")
+
+    # ★9d. runlog `--name` 에 실험계획 번호가 없다.
+    #   야간큐 v2 가 `--name mC_g16` 로 돌아 로그가 `log_20260807_mC_g16.txt` 가 됐고
+    #   사용자가 `029_log_..._P045_mC_g16.txt` 로 손수 고쳐야 했다(2026-08-07 지적).
+    #   `scripts/batch/` 의 도구는 `!TL_LOGNAME!` 로 **호출자가** 이름을 주므로 대상 아님.
+    if path.name.startswith("run_"):
+        for i, ln in enumerate(lines):
+            if ln.strip().upper().startswith("REM"):
+                continue
+            m = re.search(r"--name\s+([^\s\"]+)", ln)
+            if m and not re.match(r"^(P\d{3}|!)", m.group(1)):
+                warn.append(f"L{i+1} runlog --name '{m.group(1)}' 에 계획번호(P0NN)가 없다 → "
+                            f"로그 파일명만 보고 어느 실험인지 알 수 없다")
 
     # 10. 꼬리 판정 안내
     tail = "\n".join(lines[-25:]).lower()
