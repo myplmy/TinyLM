@@ -46,7 +46,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           resume=False, ckpt=True, compile_=False, *,
           sched="cosine", ema=0.0, early_stop=0, init_from=None,
           kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
-          tag=None, tokstr=None, compile_mode="default", mlp_group=None, ema_start=0.0,
+          tag=None, tokstr=None, compile_mode="default", mlp_group=None, micro_group=None,
+          ema_start=0.0,
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
@@ -80,6 +81,21 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     if mlp_group and arch == "tied":            # g 스윕용 오버라이드(P003)
         assert cfg.n_middle % mlp_group == 0, f"n_middle {cfg.n_middle} % g {mlp_group} != 0"
         cfg.mlp_group = mlp_group
+    if micro_group is not None:                 # (P051) 삼진 alpha 그룹 크기 오버라이드
+        # ★`__post_init__` 은 프리셋 값으로 이미 돌았으므로 **여기서 같은 불변식을 다시 검사**한다.
+        #   빠뜨리면 TLinear 생성 시점의 assert 로 죽는데, 그때는 어느 층인지가 안 보인다.
+        assert micro_group > 0 and cfg.dim % micro_group == 0, \
+            f"dim {cfg.dim} % micro_group {micro_group} != 0"
+        assert cfg.ffn_dim % micro_group == 0, \
+            f"ffn_dim {cfg.ffn_dim} % micro_group {micro_group} != 0"
+        if getattr(cfg, "sparse34", False):
+            assert micro_group % 4 == 0, "sparse34 는 micro_group 이 4의 배수여야 함(3:4 블록)"
+        old_g = cfg.micro_group
+        cfg.micro_group = micro_group
+        # 저장 bpw 의 scale 항 = SCALE_BITS(16) / g. 코드 항(log2 3 또는 1.25)은 안 바뀐다.
+        print(f"[micro_group] alpha 그룹 {old_g} -> {micro_group} — "
+              f"scale 항 {16/old_g:.4f} -> {16/micro_group:.4f} bpw "
+              f"(코드 항은 불변). ★KD 교사는 자기 cfg 로 로드되므로 g{old_g} 그대로다")
     if emb_rank is not None:                    # (P046) 임베딩 병목 E 오버라이드
         assert emb_rank > 0, "--emb-rank 는 양수여야 한다(0=비활성은 지원하지 않는다)"
         # ★로짓 랭크가 E 로 제한된다. 임베딩·lm_head 가 선형으로 줄고 품질 영향은 미지다.
@@ -417,6 +433,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "bytes_per_token": meta.get("bytes_per_token"),
            "bytes_per_token_val": meta.get("bytes_per_token_val"),
            "mlp_group": (cfg.mlp_group if getattr(cfg, "tie_mlp", False) else 1),
+           "micro_group": int(cfg.micro_group),                    # (P051) 삼진 alpha 그룹 크기
            "grad_ckpt": bool(ckpt),
            "kd_teacher": (_os.path.basename(str(kd)) if kd else None),
            "init_from_src": (_os.path.basename(str(init_from)) if init_from else None),

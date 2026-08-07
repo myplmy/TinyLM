@@ -14,7 +14,7 @@
 **TinyLM** = 저사양 CPU·엣지·모바일용 **초경량 LLM 아키텍처**. 핵심 목표는 **연산이 아니라
 메모리 최적화**(연산 증가는 감수). 지향점: dense 대비 절반 이하 메모리로 유사 품질.
 
-> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608080900_HANDOFF.md`](handoff/202608080900_HANDOFF.md).
+> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608081200_HANDOFF.md`](handoff/202608081200_HANDOFF.md).
 > **새 세션은 그 문서를 먼저 읽는다.** 아래는 바뀌지 않는 규범만 남긴다.
 >
 > 요약 한 줄: 코드 v6(`tinylm/`), 아키텍처 v5. **σ = 0.012 / 분해능 0.024**(bpb 로는 약 0.008).
@@ -79,7 +79,9 @@ run100m.py            호환 래퍼 → tinylm.cli.main
   **매번 틀리는 것만**: `--mlp-group`(타잉 g) · `--init-from`(부모초기화) · `--kd --kd-every 4`(정적 k4 권장) ·
   `--pool-tokens 600M --exact-cache`(풀 ≥ 2×) · `--sched wsd --anneal-end 0.80 --decay-frac 0.2`(표준) ·
   `--seed 1337`(기본. **val 크롭은 99 고정**) · `--tag`(**변형 런에 필수** — 없으면 정본을 덮어쓴다).
-  ★신규: `--emb-rank`(P046) · **`--kd-teacher-infer`**(P042, 교사 freeze+drop_latent, **기본 off=비트동일**).
+  ★신규: `--emb-rank`(P046) · **`--kd-teacher-infer`**(P042, 교사 freeze+drop_latent, **기본 off=비트동일**.
+  ✅**결과 034 로 비트 동일성 확인됨**) · **`--micro-group`**(P051, 삼진 α 그룹 크기. 미지정=프리셋 128=비트동일.
+  **packed 전용 레버** — 상주식에 bpw 가 없다).
   ⚠️ **`--sparse34` 는 "희소" 가 아니라 3:4 준정형**이고 표준 경로 전용이다.
 
 - **★REVIEW1 잠정 보존 프리셋**(2026-07-31): `--preset m100R1a`(g4+3:4) / `m100R1c`(g8).
@@ -197,6 +199,8 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 **`check_fused_int8.py`**(★P014C 단계1 — per-row 융합 int8 matmul 존재 확인. **속도는 일부러 안 잰다**) ·
 **`common_bpb.py`**(공통 원문 bpb — **토크나이저 무관**, 데이터셋·모델 교차비교의 유일한 유효 경로) ·
 **`diag_alpha_group.py`**(★α 그룹 규약별 품질 대가 — **커널 자체제작 여부의 분기**. 학습 0) ·
+**`diag_fp8_precision.py`**(★P022B 단계0 — `_scaled_mm` 이 **실제로 받는** 스케일 입도 조사 +
+E4M3 왕복 Δbpb 를 가중치·활성·동시로. **자기검증 = g128 상대오차 0.00000**. 학습 0) ·
 **`diag_val_lang.py`**(★캐시의 **언어 구성** — 풀 크기가 val 셋을 바꾸는지. torch 없이 돈다) ·
 `diag_cache.py`(캐시 진단) · `eval_slices.py`(구간별 손실) · `probe_prompts.py`(정성 프로브·캐시 게이트,
 `--device cpu` 로 fp32) · `mem_runtime.py`(상주 메모리) · `diag_val_docs.py`(문서단위 val) ·
@@ -225,7 +229,7 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 
 | 최상위 = **실험**(계획번호·단계가 이름에 있다) | `scripts/batch/` = **기능 모듈**(실험 아님) |
 |---|---|
-| `run_smoke_check.bat`(코드 수정 후 필수) · **`run_P042_stage0_gate.bat`**(수 분) · **`run_P048_stage2_stack_g16.bat`** · **`run_P050_parent_ablation.bat`**(9.5h) · `run_P046_emb_rank128.bat`(**판정 불가 → SVD 이식 후 재실행**) · **완료분은 `-done`** | `tool_smoke.bat` · `tool_kvcache_gate.bat` · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
+| **`run_night_queue_v4.bat`**(스케줄러 = `call` 만. 약 18h. **완료 후 삭제**) · **`run_P022B_stage0_fp8_probe.bat`**(수 분, 학습 0) · **`run_P042_stage1_speed_vram.bat`**(60분, 단독) · **`run_P042_stage2_nockpt.bat`**(20분) · **`run_P050_parent_ablation.bat`**(9.5h) · **`run_P051_micro_group256.bat`**(3.5h) · `run_P046_emb_rank128.bat`(3.5h, **SVD 이식 재측정**) · `run_smoke_check.bat`(코드 수정 후 필수) · **완료분은 `-done`** | `tool_smoke.bat` · `tool_kvcache_gate.bat` · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
 
 
 > **★`scripts/batch/` 를 사용자에게 직접 실행하라고 안내하지 않는다**(2026-07-31 개편).
