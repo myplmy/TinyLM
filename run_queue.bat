@@ -41,36 +41,36 @@ echo.
 echo    id  batch                                  time    what it answers
 echo    --  -------------------------------------  ------  -----------------------------
 echo     0  run_smoke_check.bat                    min     code sanity. ABORTS on failure
-echo     1  run_P022B_stage0_fp8_probe.bat         min     can FP8 hold our ternary alpha
-echo     2  run_P042_stage1_speed_vram.bat         60 min  teacher infer mode: speed, VRAM
-echo     3  run_P042_stage2_nockpt.bat             20 min  does --no-ckpt open for tied+KD
-echo     4  run_P050_parent_ablation.bat           9.5 h   how much does the parent buy
-echo     5  run_P051_micro_group256.bat            3.5 h   alpha group 128 to 256
-echo     6  run_P046_emb_rank128.bat               3.5 h   E=128 re-measured with SVD
-echo     7  run_P052_seed_replicate.bat            7 h     does the g16 verdict survive seed 2
-echo     8  run_P018_compressed_teacher.bat        4.2 h   distil from mC_wsd, not dense
-echo     9  run_P022B_stage2_optstate.bat          4.2 h   AdamW state in BF16, -254 MB
+echo     1  run_P018_stage2_teacher_infer.bat      40 min  do the two teacher levers ADD
+echo     2  run_P050_parent_ablation.bat           9.5 h   how much does the parent buy
+echo     3  run_P052_seed_replicate.bat            7 h     does the g16 verdict survive seed 2
+echo     4  run_P022B_stage2_optstate.bat          4.2 h   AdamW state in BF16, -254 MB
+echo     5  run_P046_emb_rank128.bat               3.5 h   E=128 re-measured with SVD
+echo.
+echo   done and renamed -done: P022B-0, P042-1, P042-2, P051, P018-1.
+echo   Their ids are gone. A missing file is skipped, never an error.
 echo.
 echo   SUGGESTED BUNDLES -- type the digits into the slots, one digit per slot
 echo.
-echo    A  short night, about 1.5 h      0 1 2 3
-echo         the three cheap gates. Do this first if you only have one evening.
-echo    B  one full night, about 11 h    0 1 2 3 4
-echo         bundle A plus P050, the highest value run on the board.
-echo    C  memory axes, about 8 h        0 5 9 8
-echo         everything that buys bytes: alpha group, optimizer state, teacher.
-echo    D  review preparation, 16.5 h    0 4 7
-echo         what REVIEW2 needs before it can name a winner.
-echo    E  the lot, about 33 h           0 1 2 3 4 5 7 8
-echo         leave 6 and 9 out of an unattended run - see the note below.
+echo    A  short night, about 40 min     0 1
+echo         cheapest and most decision-relevant thing left. Do this first.
+echo    B  one full night, about 10 h    0 1 2
+echo         bundle A plus P050 - it corrects how P046/P048/P049 should be read.
+echo    C  review preparation, 17 h      0 1 2 3
+echo         everything REVIEW2 needs before it can name a winner.
+echo    D  memory axes, about 5 h        0 1 4
+echo         teacher levers plus the BF16 optimizer state. ***Watch 4.***
+echo    E  the lot, about 25 h           0 1 2 3 4 5
 echo.
-echo   NOTE ***9, P022B stage 2, is the one to babysit.*** A low precision
+echo   NOTE ***4, P022B stage 2, is the one to babysit.*** A low precision
 echo   optimizer can drift quietly instead of failing loudly. Its parts 1 and 2
 echo   are cheap gates - look at them before letting part 3 spend 3.5 hours.
 echo   The watch list is in test_plan\P022B section 2.3.
 echo.
-echo   NOTE 2 is a SPEED measurement and wants the machine to itself. A
-echo   sequential queue gives it that, but do not start other GPU work.
+echo   NOTE 1 is a VRAM+SPEED measurement and wants the machine to itself.
+echo   ***Set the NVIDIA 'CUDA - System Memory Fallback' to PREFER NO FALLBACK***
+echo   before running it, or its main question cannot be answered.
+echo   See docs\methods\09_training_memory.md section 4.
 echo.
 
 set TL_J1=
@@ -104,6 +104,109 @@ echo   plan
 echo =================================================================
 set TL_CUR=!TL_J1!
 call :SHOW
+set TL_CUR=!TL_J2!
+call :SHOW
+set TL_CUR=!TL_J3!
+call :SHOW
+set TL_CUR=!TL_J4!
+call :SHOW
+set TL_CUR=!TL_J5!
+call :SHOW
+set TL_CUR=!TL_J6!
+call :SHOW
+set TL_CUR=!TL_J7!
+call :SHOW
+set TL_CUR=!TL_J8!
+call :SHOW
+echo.
+set TL_GO=
+set /p TL_GO=start now, y or n:
+if /i not "!TL_GO!"=="y" goto ABORT
+
+REM child batches must not pause, or the queue stalls overnight
+set TL_NOPAUSE=1
+set TL_ABORT=
+
+echo.
+echo [queue] started
+date /t
+time /t
+
+set TL_CUR=!TL_J1!
+call :RUN
+if defined TL_ABORT goto SMOKEHALT
+set TL_CUR=!TL_J2!
+call :RUN
+if defined TL_ABORT goto SMOKEHALT
+set TL_CUR=!TL_J3!
+call :RUN
+if defined TL_ABORT goto SMOKEHALT
+set TL_CUR=!TL_J4!
+call :RUN
+if defined TL_ABORT goto SMOKEHALT
+set TL_CUR=!TL_J5!
+call :RUN
+if defined TL_ABORT goto SMOKEHALT
+set TL_CUR=!TL_J6!
+call :RUN
+if defined TL_ABORT goto SMOKEHALT
+set TL_CUR=!TL_J7!
+call :RUN
+if defined TL_ABORT goto SMOKEHALT
+set TL_CUR=!TL_J8!
+call :RUN
+
+echo.
+echo =================================================================
+echo [queue] finished
+date /t
+time /t
+echo.
+echo   Logs: test_result for experiment runs, smoketest_logs for gates.
+echo   Each batch printed its own WHAT TO RECORD block at the end. Read that
+echo   before reading any number out of the run itself - several of these
+echo   batches deliberately tell you which numbers are NOT to be trusted.
+echo =================================================================
+set TL_NOPAUSE=
+if not defined TL_NOPAUSE pause
+exit /b 0
+
+REM ---------------------------------------------------------------- subroutines
+
+:RESOLVE
+REM  in: TL_CUR (an id)   out: TL_BAT (filename or empty) and TL_WHAT (label)
+REM  ***Parenthesised blocks, not the ampersand form.*** In cmd,
+REM      if COND set A=x^& set B=y
+REM  runs the second set UNCONDITIONALLY - the ampersand splits at parser level.
+set TL_BAT=
+set TL_WHAT=
+if "!TL_CUR!"=="0" (
+  set TL_BAT=run_smoke_check.bat
+  set TL_WHAT=smoke check - ABORTS the queue on failure
+)
+if "!TL_CUR!"=="1" (
+  set TL_BAT=run_P018_stage2_teacher_infer.bat
+  set TL_WHAT=P018 stage 2 - compressed teacher + infer mode, 40 min, wants the machine alone
+)
+if "!TL_CUR!"=="2" (
+  set TL_BAT=run_P050_parent_ablation.bat
+  set TL_WHAT=P050 - parent dependency ablation, 9.5 h
+)
+if "!TL_CUR!"=="3" (
+  set TL_BAT=run_P052_seed_replicate.bat
+  set TL_WHAT=P052 - second seed for the g16 verdict, 7 h
+)
+if "!TL_CUR!"=="4" (
+  set TL_BAT=run_P022B_stage2_optstate.bat
+  set TL_WHAT=P022B stage 2 - AdamW state in BF16, 4.2 h, babysit parts 1 and 2
+)
+if "!TL_CUR!"=="5" (
+  set TL_BAT=run_P046_emb_rank128.bat
+  set TL_WHAT=P046 - embedding E=128 re-measured with SVD, 3.5 h
+)
+exit /b 0
+
+:SHOW
 set TL_CUR=!TL_J2!
 call :SHOW
 set TL_CUR=!TL_J3!
