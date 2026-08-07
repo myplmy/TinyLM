@@ -110,6 +110,11 @@ def main():
     p.add_argument("--tag", default=None, help="체크포인트/로그 파일명(실험 조건 구분용)")
     p.add_argument("--vs", default=None, help="compare에서 tied vs tied 비교할 상대 태그")
     p.add_argument("--mlp-group", type=int, default=None, help="MLP 타잉 g 오버라이드(프리셋값 대체, g-스윕용)")
+    p.add_argument("--opt-dtype", choices=["fp32", "fp32c", "bf16"], default="fp32",
+                   help="(P022B 단계2) AdamW **상태**(exp_avg/exp_avg_sq) 정밀도. "
+                        "fp32=종전 torch fused AdamW(기본, 비트 동일) / "
+                        "fp32c=우리 구현·fp32 상태(자기검증) / bf16=상태만 bf16(약 254MB 절감). "
+                        "master weight·gradient·산술은 어느 모드에서도 fp32 다")
     p.add_argument("--micro-group", type=int, default=None,
                    help="(P051) 삼진 alpha 그룹 크기 오버라이드(프리셋 기본 128). 저장 bpw 의 "
                         "scale 항이 16/g 이므로 g 를 키우면 packed 가 준다. 미지정=프리셋값=비트동일")
@@ -200,7 +205,7 @@ def main():
               kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
               lora_rank=a.lora_rank, lora_bits=a.lora_bits, mlp_film=a.mlp_film,
               tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode, mlp_group=a.mlp_group,
-              micro_group=a.micro_group,
+              micro_group=a.micro_group, opt_dtype=a.opt_dtype,
               ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from,
               snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None),
               use_ternary_kernel=a.ternary_kernel, ternary_kernel_triton=a.ternary_kernel_triton,

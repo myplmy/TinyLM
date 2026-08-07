@@ -14,7 +14,7 @@
 **TinyLM** = 저사양 CPU·엣지·모바일용 **초경량 LLM 아키텍처**. 핵심 목표는 **연산이 아니라
 메모리 최적화**(연산 증가는 감수). 지향점: dense 대비 절반 이하 메모리로 유사 품질.
 
-> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608081200_HANDOFF.md`](handoff/202608081200_HANDOFF.md).
+> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608081800_HANDOFF.md`](handoff/202608081800_HANDOFF.md).
 > **새 세션은 그 문서를 먼저 읽는다.** 아래는 바뀌지 않는 규범만 남긴다.
 >
 > 요약 한 줄: 코드 v6(`tinylm/`), 아키텍처 v5. **σ = 0.012 / 분해능 0.024**(bpb 로는 약 0.008).
@@ -81,7 +81,9 @@ run100m.py            호환 래퍼 → tinylm.cli.main
   `--seed 1337`(기본. **val 크롭은 99 고정**) · `--tag`(**변형 런에 필수** — 없으면 정본을 덮어쓴다).
   ★신규: `--emb-rank`(P046) · **`--kd-teacher-infer`**(P042, 교사 freeze+drop_latent, **기본 off=비트동일**.
   ✅**결과 034 로 비트 동일성 확인됨**) · **`--micro-group`**(P051, 삼진 α 그룹 크기. 미지정=프리셋 128=비트동일.
-  **packed 전용 레버** — 상주식에 bpw 가 없다).
+  **packed 전용 레버** — 상주식에 bpw 가 없다) · **`--opt-dtype {fp32,fp32c,bf16}`**(P022B 단계2,
+  AdamW **상태** 정밀도. 기본 fp32=비트동일. `fp32c` 는 **자기검증 모드**. master weight·gradient·산술은
+  어느 모드에서도 fp32).
   ⚠️ **`--sparse34` 는 "희소" 가 아니라 3:4 준정형**이고 표준 경로 전용이다.
 
 - **★REVIEW1 잠정 보존 프리셋**(2026-07-31): `--preset m100R1a`(g4+3:4) / `m100R1c`(g8).
@@ -104,8 +106,10 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 - **★최상위 실험 배치는 "지금 돌아갈 때"만 만든다 — 2회 재발.** 구현이 선결이면 **계획서에만 설계를 남긴다.**
   배치를 만든 직후 **반드시** `python scripts/check_batch_flags.py` + `python scripts/lint_bat.py --fix`.
   ⚠️ 전자는 **이름만** 본다 — **파서 → 함수 → 동작 경로를 눈으로 따라가고**, 코드를 고쳤으면 `run_smoke_check.bat`.
-- **★야간큐는 `call` 만 한다.** 실험 하나 = 배치 하나. 큐에 명령을 직접 쓰면 **개별 완료 판정이 안 된다**
-  (2026-08-07 사용자 지시). 큐는 실험 자산이 아니라 스케줄러이고 **완료되면 삭제 대상**이다.
+- **★큐는 `call` 만 한다.** 실험 하나 = 배치 하나. 큐에 명령을 직접 쓰면 **개별 완료 판정이 안 된다**
+  (2026-08-07 사용자 지시). ★**정본 큐 = `run_queue.bat`(대화형·영구 보존)** — 메뉴에서 순서를 고르면
+  그 뒤는 무인이다. **순서를 배치에 하드코딩하지 않는다**(고치려면 잠자리에서 배치를 편집해야 했다).
+  일회성 하드코딩 큐를 만들었다면 그건 스케줄러이고 **완료되면 삭제 대상**이다.
 - **★실험은 서로 독립이게 설계한다.** 태그로 체크포인트 분리 / 캐시가 달라지면 디렉터리 분리 /
   새 플래그는 **기본 off·비트 동일** / 선행 의존이 있으면 헤더에 명시하고 `goto ERROR`.
   **이유 둘** — 하나가 실패해도 나머지가 살아야 하고, **AI 사용량 소진 중에 사용자가 혼자 돌릴 수 있어야** 한다.
@@ -229,7 +233,7 @@ E4M3 왕복 Δbpb 를 가중치·활성·동시로. **자기검증 = g128 상대
 
 | 최상위 = **실험**(계획번호·단계가 이름에 있다) | `scripts/batch/` = **기능 모듈**(실험 아님) |
 |---|---|
-| **`run_night_queue_v4.bat`**(스케줄러 = `call` 만. 약 18h. **완료 후 삭제**) · **`run_P022B_stage0_fp8_probe.bat`**(수 분, 학습 0) · **`run_P042_stage1_speed_vram.bat`**(60분, 단독) · **`run_P042_stage2_nockpt.bat`**(20분) · **`run_P050_parent_ablation.bat`**(9.5h) · **`run_P051_micro_group256.bat`**(3.5h) · `run_P046_emb_rank128.bat`(3.5h, **SVD 이식 재측정**) · `run_smoke_check.bat`(코드 수정 후 필수) · **완료분은 `-done`** | `tool_smoke.bat` · `tool_kvcache_gate.bat` · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
+| **★`run_queue.bat`**(**대화형 스케줄러** — 메뉴에서 순서를 고르면 그 뒤는 무인. `call` 만 한다. **영구 보존**) · **`run_P022B_stage0_fp8_probe.bat`**(수 분, 학습 0) · **`run_P042_stage1_speed_vram.bat`**(60분, 단독) · **`run_P042_stage2_nockpt.bat`**(20분) · **`run_P050_parent_ablation.bat`**(9.5h) · **`run_P051_micro_group256.bat`**(3.5h) · **`run_P052_seed_replicate.bat`**(7h) · **`run_P018_compressed_teacher.bat`**(4.2h) · **`run_P022B_stage2_optstate.bat`**(4.2h, **감시 필요**) · `run_P046_emb_rank128.bat`(3.5h, SVD 재측정) · `run_smoke_check.bat`(코드 수정 후 필수) · **완료분은 `-done`** | `tool_smoke.bat` · `tool_kvcache_gate.bat` · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
 
 
 > **★`scripts/batch/` 를 사용자에게 직접 실행하라고 안내하지 않는다**(2026-07-31 개편).

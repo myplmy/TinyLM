@@ -47,7 +47,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           sched="cosine", ema=0.0, early_stop=0, init_from=None,
           kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, micro_group=None,
-          ema_start=0.0,
+          opt_dtype="fp32", ema_start=0.0,
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
@@ -183,8 +183,32 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           f"{steps*eff/1e6:.0f}M 토큰  (sched={sched} ema={ema} lora_r={lora_rank}"
           f"{f' seed={seed}' if seed != 1337 else ''})\n")
 
-    opt = torch.optim.AdamW(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8,
-                            fused=(device == "cuda"))   # ①: optimizer update 단일 커널
+    # ★★P022B 단계2(2026-08-07) — 옵티마이저 상태 정밀도.
+    #   DeepSeek-V3 §3.3.3 은 AdamW 1·2차 모멘트를 **BF16** 으로 들고 master weight·gradient 는
+    #   FP32 로 유지해 *"관측 가능한 성능 저하 없음"* 을 1T 토큰 규모로 보고했다.
+    #   우리 학습 파라미터 약 63.5M × 2벌 × 4B = **약 508MB** → bf16 이면 **약 254MB 회수**.
+    #   ⚠️ **기본 `fp32` = 종전 `torch.optim.AdamW(fused=True)` = 비트 동일.**
+    #     `fp32c` 는 **같은 수식의 우리 구현**(자기검증용) — 구현 위험과 dtype 위험을 분리한다.
+    if opt_dtype == "fp32":
+        opt = torch.optim.AdamW(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8,
+                                fused=(device == "cuda"))   # ①: optimizer update 단일 커널
+    else:
+        from .adamw_bf16 import AdamWLowPrec
+        _sd = torch.bfloat16 if opt_dtype == "bf16" else torch.float32
+        opt = AdamWLowPrec(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8, state_dtype=_sd)
+        _n = sum(p.numel() for g in opt.param_groups for p in g["params"])
+        print(f"[opt] ★AdamWLowPrec state_dtype={opt_dtype} (P022B 단계2) — 학습 파라미터 "
+              f"{_n/1e6:.2f}M, 상태 2벌 예상 {_n*2*_sd.itemsize/1e6:.1f}MB "
+              f"(fp32 대비 {_n*2*(4-_sd.itemsize)/1e6:+.1f}MB)")
+        if opt_dtype == "bf16":
+            print(f"[opt] ⚠️ master weight·gradient 는 fp32 유지, **산술도 fp32**. "
+                  f"상태만 bf16 으로 저장한다(결정론적 반올림, stochastic 아님)")
+        else:
+            print(f"[opt] ⚠️ fp32c 는 **자기검증 모드**다 — 융합 커널이 아니라 파이썬 루프이고, "
+                  f"`fp32` 와 인쇄 4자리가 맞아야 bf16 결과를 dtype 탓으로 귀속할 수 있다")
+        if resume:
+            print(f"[opt] ⚠️ --resume 은 권장하지 않는다 — load_state_dict 가 상태를 파라미터 "
+                  f"dtype 으로 캐스팅한다(오버라이드로 되돌리지만 조건이 흐려진다)")
     base_lrs = [g["lr"] for g in opt.param_groups]
     warm = 0 if sched == "decay" else max(5, min(steps // 10, 100))
     # (P026) cooldown-QAT 스케줄 정렬 표시. anneal_end=완전삼진 도달, decay_start=LR 감쇠 시작.
@@ -434,6 +458,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "bytes_per_token_val": meta.get("bytes_per_token_val"),
            "mlp_group": (cfg.mlp_group if getattr(cfg, "tie_mlp", False) else 1),
            "micro_group": int(cfg.micro_group),                    # (P051) 삼진 alpha 그룹 크기
+           "opt_dtype": str(opt_dtype),                            # (P022B 단계2) 옵티마이저 상태 정밀도
+           "opt_state_mb": (opt.state_bytes() / 1e6                # ★계산값이 아니라 실측(결과 026 교훈)
+                            if hasattr(opt, "state_bytes") else None),
            "grad_ckpt": bool(ckpt),
            "kd_teacher": (_os.path.basename(str(kd)) if kd else None),
            "init_from_src": (_os.path.basename(str(init_from)) if init_from else None),
