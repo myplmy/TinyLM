@@ -53,7 +53,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           pool_tokens=None, exact_cache=False, anneal_end=0.60, decay_frac=0.2, seed=1337,
           anneal_shape="linear", anneal_start=None,
           arenas=False, arena_lambda=0.1, arena_end=0.9,
-          doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None):
+          doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None,
+          kd_teacher_infer=False):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
     #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
@@ -110,6 +111,20 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         teacher.eval(); teacher.set_anneal(1.0)
         for p in teacher.parameters():
             p.requires_grad_(False)
+        # ★★P042(2026-08-07) — **교사는 학습하지 않는데 학습하는 것처럼 돌고 있었다.**
+        #   `forward()` 는 매 호출 `refresh_quant()` 로 삼진 가중치를 다시 만든다. 학생은
+        #   latent 가 스텝마다 바뀌므로 **반드시 그래야 하지만**, 교사는 가중치가 고정이다.
+        #   추론용으로 이미 구현이 끝난 두 함수를 붙인다:
+        #     `freeze_quant()`  — 삼진 가중치를 **한 번만** 계산하고 재사용
+        #     `drop_latent()`   — fp32 latent 해제(상주 2벌 → 1벌). dense 교사 기준 약 472.5MB
+        #   ⚠️ **기본 on 이 아니다.** `--kd-teacher-infer` 로 켠다 — 기본 off = 비트 동일.
+        #     결과가 달라지면 그건 구현 버그이고, P042 단계0 이 그것만 검사한다.
+        if kd_teacher_infer:
+            teacher.freeze_quant()
+            teacher.drop_latent()
+            print(f"[kd] ★교사 추론 모드(P042): freeze_quant + drop_latent 적용 — "
+                  f"매 스텝 refresh_quant 를 건너뛰고 latent 를 해제한다")
+            print(f"[kd] ⚠️ 로짓은 **비트 동일해야 한다**. 다르면 구현 버그다(게이트 G0)")
         if compile_:
             teacher = torch.compile(teacher)   # KD 가속: 교사 forward도 컴파일(eager→컴파일)
         print(f"[kd] 교사 로드 완료 (alpha={kd_alpha}, T={kd_temp})")
@@ -415,6 +430,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "anneal_shape": anneal_shape, "anneal_start": a0,      # (P035) 어닐 형태·시작점
            "lora_decay": float(lora_decay),                       # (P008) LoRA 스케일 어닐
            "emb_rank": int(cfg.emb_rank),                          # (P046) 임베딩 병목 E
+           "kd_teacher_infer": bool(kd_teacher_infer),            # (P042) 교사 추론 모드
            "arenas": bool(arenas), "arena_lambda": arena_lambda,  # (P036) Arenas residual
            "arena_end": arena_end,
            # ★저장 메모리 회계 통일(2026-07-31, P034 §5): 정본=B(코드+스케일), 병기=C(+컨테이너).
