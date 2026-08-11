@@ -58,11 +58,11 @@ def _svd_emb_init(student, teacher) -> bool:
     if k >= k_t:                                # E 를 **키운** 경우는 절단이 아니다 → 난수
         return False
 
-    W = (te.float() @ teacher.emb_up.weight.float())          # (V, dim), 랭크 ≤ k_t
+    W = (te.float() @ teacher.emb_up.weight.float().T)          # (V, dim), 랭크 ≤ k_t
     U, S, Vh = torch.linalg.svd(W, full_matrices=False)
     r = torch.sqrt(S[:k].clamp_min(0))
     student.emb.weight.data.copy_((U[:, :k] * r).to(se.dtype))
-    student.emb_up.weight.data.copy_((r[:, None] * Vh[:k]).to(student.emb_up.weight.dtype))
+    student.emb_up.weight.data.copy_((r[:, None] * Vh[:k]).T.to(student.emb_up.weight.dtype))
 
     kept = float((S[:k] ** 2).sum() / (S ** 2).sum().clamp_min(1e-12))
     print(f"[init] ★임베딩 SVD 절단 이식 — E {k_t} -> {k}  (난수 아님, P046 단계2)")
