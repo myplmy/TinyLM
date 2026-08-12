@@ -12,6 +12,7 @@
   W       8  커널 + --compile 병용     코드가 SystemExit 로 막지만 배치가 무의미해진다
   W       9  pause / exit /b 누락      더블클릭 실행 시 창이 닫혀 로그를 잃는다
   I(정보) 10 꼬리 판정 안내(echo) 없음  로그를 받아도 무엇을 읽어야 할지 모른다
+  W      12  --no-ckpt 런 앞에 timeout 없음   직전 런의 VRAM 이 안 풀려 CUBLAS 오류(결과 037)
   E      11  줄끝이 CRLF 가 아님       `.gitattributes` 가 `*.bat text eol=crlf` 로 선언하는데
                                        작업트리가 LF 면 git 이 매번 재작성·경고한다(CRLF 재발 원인).
                                        또 cmd.exe 는 LF-only 배치에서 `goto`/라벨이 드물게 어긋난다.
@@ -104,6 +105,24 @@ def lint(path: Path):
         if gotos == len(trains) and len(trains) > 1:
             warn.append(f"학습 런 {len(trains)}개 전부 'goto ERROR' → 한 런 실패로 후속이 전부 죽는다. "
                         f"독립 런은 'if errorlevel 1 echo [WARN] ... - continuing' 로 (결과 007)")
+
+    # ★12. --no-ckpt 런 앞에 정착 대기가 없다 (결과 037 §7.3, 2026-08-13 신설)
+    #   run_P018_compressed_teacher.bat 은 직전 런 종료 1초 뒤에 --no-ckpt 런을 시작해
+    #   CUBLAS_STATUS_EXECUTION_FAILED 로 죽었다. 대기를 넣은 배치는 죽지 않았다.
+    #   ⚠️ 이건 "메모리 부족이 다른 창구로 나온 것"이고 OOM 만 찾으면 못 알아본다(함정 29).
+    nockpt = [(i + 1, ln) for i, ln in enumerate(lines)
+              if re.search(r"run100m\.py\s+train", ln) and "--no-ckpt" in ln]
+    if nockpt and len(trains) > 1:
+        first_nc = nockpt[0][0]
+        prev_train = [ln for ln, _ in trains if ln < first_nc]
+        if prev_train:
+            between = "\n".join(lines[prev_train[-1]:first_nc - 1])
+            if "timeout" not in between:
+                warn.append(
+                    f"L{first_nc} --no-ckpt 런 앞에 `timeout` 정착 대기가 없다. 직전 학습 런은 "
+                    f"L{prev_train[-1]} 이다. Windows/WDDM 이 VRAM 을 수 초 붙잡으므로 여유가 "
+                    f"1GB 급인 런은 CUBLAS_STATUS_EXECUTION_FAILED 로 죽는다(결과 037 §7.3). "
+                    f"`timeout /t 15 /nobreak` 을 넣으세요")
 
     # 9. pause / exit
     if "pause" not in txt:

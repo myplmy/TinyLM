@@ -39,6 +39,20 @@ if not exist run100m.py cd ..\..
 if not exist run100m.py goto BADROOT
 if not exist experiments.tsv goto NOTSV
 
+REM ---- CUBLAS / OOM countermeasure B  (OPT-IN, default OFF) ----------------
+REM   Set TL_EXPAND=1 before running this to enable
+REM       PYTORCH_ALLOC_CONF=expandable_segments:True
+REM   ***It is NOT on by default and that is deliberate.*** It changes how the
+REM   caching allocator reserves memory, so `peak reserved` stops being
+REM   comparable with every number already in EXPERIMENT_BASELINES section 5.1.
+REM   Turn it on only when a run actually OOMs - result 034 section 10.1 showed
+REM   1.71 GiB sitting reserved-but-unallocated, and the OOM message itself
+REM   recommended this flag. ***Then mark that run's VRAM as non-comparable.***
+if defined TL_EXPAND set PYTORCH_ALLOC_CONF=expandable_segments:True
+if defined TL_EXPAND echo [queue] PYTORCH_ALLOC_CONF=expandable_segments:True is ON
+if defined TL_EXPAND echo [queue] ***peak reserved from this session is NOT comparable to the table.***
+
+
 python scripts\queue_menu.py --list
 if errorlevel 1 goto MENUBAD
 
