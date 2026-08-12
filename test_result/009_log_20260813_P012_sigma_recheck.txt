@@ -1,0 +1,129 @@
+[P012] paired_eval on p6d vs p6d_s2. Result 012 measured 0.011875 with the OLD estimator; result 039 got +0.0006 on mC with paired_eval. This separates eval noise from training noise.
+[1/2] paired(p6d, p6d_s2). Both are dense, cosine, 600M pool, no parent, no teacher.
+
+==============================================================================
+[runlog] 2026-08-13 01:16:51  name=P012_sigma_recheck
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\paired_eval.py --preset m100 --data ko-en --tokens 300M --models p6d p6d_s2
+==============================================================================
+
+############################################################################################
+  P032 — 결정적 full-val + paired per-crop 비교 (학습 없음)
+############################################################################################
+  device=cuda  seq=1024  micro_bs=8  data=ko-en 300M
+  ★val 을 겹치지 않게 전부 순회한다 → eval 샘플링 노이즈 성분 = 0.
+  ★크롭별 손실을 저장해 두 모델을 **같은 크롭 위에서** 뺀다.
+  ⚠️ 이것은 **체크포인트 간** 비교다. 아키텍처 우열은 여기서 나오지 않는다.
+[data] 캐시 재사용: 300.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+
+  p6d              full-val 3.7608   크롭 1464개 / 1,499,136 토큰
+
+  p6d_s2           full-val 3.7499   크롭 1464개 / 1,499,136 토큰
+
+============================================================================================
+  결정적 full-val (같은 체크포인트면 재실행해도 동일한 값)
+============================================================================================
+  모델                full-val       크롭 표준편차
+  --------------------------------------------
+  p6d_s2              3.7499        0.4617
+  p6d                 3.7608        0.4631
+
+============================================================================================
+  ★paired per-crop 비교 — 이것이 판정의 근거다
+============================================================================================
+  A vs B                           mean(A-B)       SE       t     A 승률  판정
+  ----------------------------------------------------------------------------------------
+  p6d vs p6d_s2                      +0.0109   0.0014    7.52   40.6%  차이 유의하나 분해능(0.024) 미만 — 실무상 동급
+
+  읽는 법
+    · SE 가 결과 012 의 σ=0.012 보다 **한 자릿수 작다**면 paired 설계가 의도대로 작동한 것이다.
+    · |t| ^> 2 는 "이 두 **체크포인트**가 다르다"만 말한다. 시드가 하나이므로
+      **아키텍처 우열의 근거가 아니다.** 그 주장에는 여러 시드가 필요하다(P032 §2.2).
+    · 'A 승률' 은 크롭 중 A 가 이긴 비율이다. 평균이 작아도 승률이 한쪽으로 크게 쏠리면
+      일관된 차이이고, 50% 근처면 큰 크롭 몇 개가 평균을 끌고 있는 것이다 — 둘은 다르다.
+
+  한계
+    · full-val 은 **결정적**이지만 **여전히 이 val 셋**이다. 데이터 문제(P037)는 그대로 남는다.
+    · 크롭 경계에서 컨텍스트가 끊긴다(긴 문서에 약간 불리). 두 모델에 공통이라 차이에서는 상쇄된다.
+    · bf16 autocast(cuda)면 크롭별 손실에 ULP 노이즈가 섞인다. 정밀 비교는 --device cpu 로
+      한 번 더 확인한다(느리지만 fp32).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.5분  (2026-08-13 01:17:23)
+==============================================================================
+[2/2] paired(mC_wsd, mC_wsd_s2) again, so both numbers sit in ONE log and cannot be blamed on a session difference.
+
+==============================================================================
+[runlog] 2026-08-13 01:17:24  name=P012_sigma_recheck
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_wsd mC_wsd_s2
+==============================================================================
+
+############################################################################################
+  P032 — 결정적 full-val + paired per-crop 비교 (학습 없음)
+############################################################################################
+  device=cuda  seq=1024  micro_bs=8  data=ko-en 300M
+  ★val 을 겹치지 않게 전부 순회한다 → eval 샘플링 노이즈 성분 = 0.
+  ★크롭별 손실을 저장해 두 모델을 **같은 크롭 위에서** 뺀다.
+  ⚠️ 이것은 **체크포인트 간** 비교다. 아키텍처 우열은 여기서 나오지 않는다.
+[data] 캐시 재사용: 300.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+
+  mC_wsd           full-val 3.6984   크롭 1464개 / 1,499,136 토큰
+
+  mC_wsd_s2        full-val 3.6978   크롭 1464개 / 1,499,136 토큰
+
+============================================================================================
+  결정적 full-val (같은 체크포인트면 재실행해도 동일한 값)
+============================================================================================
+  모델                full-val       크롭 표준편차
+  --------------------------------------------
+  mC_wsd_s2           3.6978        0.4539
+  mC_wsd              3.6984        0.4536
+
+============================================================================================
+  ★paired per-crop 비교 — 이것이 판정의 근거다
+============================================================================================
+  A vs B                           mean(A-B)       SE       t     A 승률  판정
+  ----------------------------------------------------------------------------------------
+  mC_wsd vs mC_wsd_s2                +0.0006   0.0011    0.53   50.5%  구분 불가(체크포인트 수준에서도)
+
+  읽는 법
+    · SE 가 결과 012 의 σ=0.012 보다 **한 자릿수 작다**면 paired 설계가 의도대로 작동한 것이다.
+    · |t| ^> 2 는 "이 두 **체크포인트**가 다르다"만 말한다. 시드가 하나이므로
+      **아키텍처 우열의 근거가 아니다.** 그 주장에는 여러 시드가 필요하다(P032 §2.2).
+    · 'A 승률' 은 크롭 중 A 가 이긴 비율이다. 평균이 작아도 승률이 한쪽으로 크게 쏠리면
+      일관된 차이이고, 50% 근처면 큰 크롭 몇 개가 평균을 끌고 있는 것이다 — 둘은 다르다.
+
+  한계
+    · full-val 은 **결정적**이지만 **여전히 이 val 셋**이다. 데이터 문제(P037)는 그대로 남는다.
+    · 크롭 경계에서 컨텍스트가 끊긴다(긴 문서에 약간 불리). 두 모델에 공통이라 차이에서는 상쇄된다.
+    · bf16 autocast(cuda)면 크롭별 손실에 ULP 노이즈가 섞인다. 정밀 비교는 --device cpu 로
+      한 번 더 확인한다(느리지만 fp32).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.5분  (2026-08-13 01:17:55)
+==============================================================================
+=================================================================
+WHAT TO RECORD
+  1. paired delta, SE and t for p6d vs p6d_s2.
+  2. the same for mC_wsd vs mC_wsd_s2 - ***in this same log***, so the
+     comparison cannot be blamed on a session difference.
+  3. both full-val values, to compare against result 012's printed 3.704531
+     and 3.692656. ***They will NOT match*** - different estimator.
+
+HOW TO READ IT
+  p6d delta near 0.012
+      -> explanation (2). sigma is CONDITION DEPENDENT. Keep two rows in
+         EXPERIMENT_BASELINES: dense-no-parent-no-teacher vs mC-KD-parent-init.
+         The resolution 0.024 stays justified for the dense condition.
+  p6d delta near 0.001
+      -> explanation (1). ***sigma = 0.012 was largely the old estimator.***
+         Then every 'below resolution, effectively equal' verdict in this repo
+         needs re-reading - result 039 section 3.2 already lists which ones.
+  in between (the prediction)
+      -> both effects are real. Report the split and stop; do not re-derive
+         the decision rule from one pair.
+
+LIMITS: ONE pair per condition. This is not an estimate of sigma with useful
+  precision - it is a comparison of two instruments on the same pair.
+  ***And the resolution 0.024 is a decision rule, not a statistical bound.***
+  Changing it is a REVIEW2 judgement, not this run's output.
+=================================================================
