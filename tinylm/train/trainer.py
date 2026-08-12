@@ -23,6 +23,31 @@ CKPT = paths.RUNS / "ckpt"
 LOGS = paths.RUNS / "logs"
 
 
+def _step_stats(step_ms, warm=100):
+    """★T-1 — 순수 스텝 시간의 중앙값과 p90/p10 변동폭. `check_spill.py` 와 같은 지표.
+
+    ⚠️ **인쇄되는 `ms/step` 과 다른 양이다.** 인쇄값은 t0 기준 누적 평균이라 eval·베스트
+    체크포인트 저장·EMA 가 섞인다. 여기 값은 **스텝 본체만**이다.
+    ★그래서 **두 값을 비교하지 않는다** — 과거 로그와 비교할 때는 여전히 인쇄값 규약
+    `(누적평균×N − step0)/(N−1)` 을 쓴다.
+
+    warmup 을 버리는 이유: `--compile` 의 첫 스텝이 수십 초라 중앙값은 몰라도
+    p90/p10 을 통째로 망친다.
+    """
+    v = sorted(step_ms[warm:]) if len(step_ms) > warm + 8 else sorted(step_ms[1:])
+    if len(v) < 4:
+        return {"ms_step_median": None, "ms_step_spread": None, "ms_step_n": len(v)}
+
+    def pct(q):
+        i = (len(v) - 1) * q
+        lo = int(i); hi = min(lo + 1, len(v) - 1)
+        return v[lo] + (v[hi] - v[lo]) * (i - lo)
+
+    return {"ms_step_median": pct(0.5),
+            "ms_step_spread": pct(0.9) / max(pct(0.1), 1e-9) - 1.0,
+            "ms_step_n": len(v)}
+
+
 def _lr_factor(s, warm, steps, sched, decay_frac=0.2):
     # (P026) decay_frac 은 이제 호출자(train)가 --decay-frac 으로 넘긴다. cooldown-QAT 정렬 실험용.
     """cosine / wsd(긴 plateau+감쇠) / stable(warmup+평탄, plateau 생성용) /
@@ -279,6 +304,14 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                 seed=(1234 + (seed - 1337)) % (2 ** 31))
     va = Loader("val", micro_bs, seq, device, meta["dir"], seed=99)
     hist, t0, gmax, gpeak, n_skip = [], time.time(), 0.0, 0.0, 0
+    # ★T-1(2026-08-13) — **순수 스텝 시간**을 따로 잰다. 기존 `ms/step` 인쇄는 건드리지 않는다.
+    #   인쇄값은 `time.time()-t0` 를 스텝 수로 나눈 **누적 평균**이라 eval·베스트 저장·EMA 가
+    #   전부 섞인다. 그 자체는 규약(`(누적평균×N − step0)/(N−1)`)으로 다뤄 왔지만,
+    #   ★결과 037 §11.4 가 **세션 간 드리프트 7.5%** 를 밝힌 뒤로 계측을 더 정직하게 만들
+    #   값어치가 올라갔다. 그리고 `check_spill.py` 가 로그에서 하던 복원을 **런타임이 직접**
+    #   하면 스필 판정이 자동이 된다(결과 037 §4.1).
+    #   ⚠️ **인쇄를 바꾸지 않는 이유**: 과거 로그와의 비교 가능성을 깨지 않기 위해서다.
+    step_ms = []                      # 스텝 순수 소요(ms). eval·ckpt 저장 **제외**
     # ★VRAM 자동 계측(P021B 교훈): 사람이 nvidia-smi 를 눈으로 보게 하면 반드시 빠뜨린다.
     #   여기서 피크를 리셋하고 종료 시 json 에 기록한다. compile/모델 로드 뒤라 학습 피크만 잡힌다.
     #   주의: nvidia-smi 표시값 ≈ reserved + CUDA 컨텍스트(~0.4~0.8GB) 이므로 reserved 가 하한이다.
@@ -365,6 +398,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             n_kd_fwd += 1
 
         model.train()
+        _t_step = time.time()         # ★T-1: 순수 스텝 시작(eval·저장은 이 뒤에 온다)
         tot, tot_ce = 0.0, 0.0        # tot=실제 최적화 손실(KD면 혼합), tot_ce=항상 순수 CE
         for _ in range(accum):
             x, y = tr()
@@ -414,6 +448,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                     for sh, p in zip(shadow, params):
                         sh.mul_(ema).add_(p.detach(), alpha=1 - ema)
         model.clear_quant()
+        step_ms.append((time.time() - _t_step) * 1000.0)   # ★T-1: eval·ckpt 저장 전에 찍는다
 
         if s % 10 == 0 or s == steps - 1:
             el = time.time() - t0
@@ -458,6 +493,11 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "bytes_per_token_val": meta.get("bytes_per_token_val"),
            "mlp_group": (cfg.mlp_group if getattr(cfg, "tie_mlp", False) else 1),
            "micro_group": int(cfg.micro_group),                    # (P051) 삼진 alpha 그룹 크기
+           # ★T-1 — 순수 스텝 시간 통계. **인쇄 ms/step 과 다른 양이다**(eval·저장 제외).
+           #   `ms_step_median` 은 정상상태 대용, `ms_step_spread` 는 p90/p10−1 로
+           #   `check_spill.py` 와 **같은 지표**다(정상 6.5~15.4% vs 스필 48.5%).
+           #   warmup 100스텝을 버린다 — compile 첫 스텝이 여기 섞이면 안 된다.
+           **_step_stats(step_ms),
            "opt_dtype": str(opt_dtype),                            # (P022B 단계2) 옵티마이저 상태 정밀도
            "opt_state_mb": (opt.state_bytes() / 1e6                # ★계산값이 아니라 실측(결과 026 교훈)
                             if hasattr(opt, "state_bytes") else None),
