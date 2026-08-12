@@ -199,7 +199,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         _n = sum(p.numel() for g in opt.param_groups for p in g["params"])
         print(f"[opt] ★AdamWLowPrec state_dtype={opt_dtype} (P022B 단계2) — 학습 파라미터 "
               f"{_n/1e6:.2f}M, 상태 2벌 예상 {_n*2*_sd.itemsize/1e6:.1f}MB "
-              f"(fp32 대비 {_n*2*(4-_sd.itemsize)/1e6:+.1f}MB)")
+              f"(fp32 대비 {-_n*2*(4-_sd.itemsize)/1e6:+.1f}MB)")   # ★절감이므로 음수
         if opt_dtype == "bf16":
             print(f"[opt] ⚠️ master weight·gradient 는 fp32 유지, **산술도 fp32**. "
                   f"상태만 bf16 으로 저장한다(결정론적 반올림, stochastic 아님)")

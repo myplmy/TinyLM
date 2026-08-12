@@ -1,0 +1,24 @@
+# TinyLM 실험 배치 메타데이터 (run_queue.bat 의 유일한 진실 원천)
+#
+# ★규약 (ai_dev_tool/03 §6.2)
+#   1. 새 실험 배치를 만들면 **여기 한 줄 추가**한다. run_queue.bat 은 고치지 않는다.
+#   2. 배치가 `-done` 으로 바뀌면 메뉴에서 자동으로 사라진다 — 이 표는 안 고쳐도 된다.
+#      (완전히 폐기하면 그때 줄을 지운다)
+#   3. `scripts/queue_menu.py --audit` 가 **표에 없는 배치**와 **표에만 있는 배치**를 둘 다 잡는다.
+#   4. 열은 TAB 구분. `#` 로 시작하는 줄은 주석.
+#
+# prio  : 권장 우선순위(1 이 먼저). 같은 숫자면 표 순서
+# plan  : 실험계획 번호 (test_plan/ 의 P번호). 도구는 `-`
+# batch : 배치 파일명(최상위)
+# gpu   : Y=GPU 학습 / D=GPU 진단(학습 0) / N=GPU 미사용
+# hours : 추정 소요(시간). 0.1 = 6분
+# alone : Y 면 **단독 실행 필요**(속도·VRAM 측정). 다른 GPU 작업 금지
+# watch : Y 면 **사람이 앞부분을 봐야 한다**(조용히 실패할 수 있는 실험)
+# note  : 무엇에 답하는가 (한 줄)
+#
+prio	plan	batch	gpu	hours	alone	watch	note
+0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단
+1	P050	run_P050_kd_removal_confirm.bat	Y	3.6	N	N	KD 제거가 정말 이득인가 - 시드 2 로 확인. VRAM -7.41 GiB 가 걸려 있다
+2	P012	run_P012_sigma_recheck.bat	D	0.2	N	N	결과 012 의 sigma 0.012 가 eval 노이즈였나 - 학습 0, 수 분
+3	P049	run_P049_depth_g16x2.bat	Y	5.8	N	N	타잉으로 깊이를 사는가. ★선결 구현(깊이 확장 이식) 필요 - 배치 미작성
+4	P046	run_P046_emb_rank192.bat	Y	3.5	N	N	E=192 - 스펙트럼 에너지 88.76 퍼센트가 E=128 대가를 예측했다. 배치 미작성
