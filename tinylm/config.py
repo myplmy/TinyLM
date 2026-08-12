@@ -32,7 +32,7 @@ class TMTConfig:
     mode_rank: int = 0
 
     # --- ternary ---
-    micro_group: int = 128
+    micro_group: int = 128            # ★0 = per-row 센티널(그룹 = in_f 전체). P014C 단계2/3
     twn_thr_ratio: float = 0.7
     ste_clip: float = 2.5
     quant_anneal: float = 1.0
@@ -44,6 +44,16 @@ class TMTConfig:
     mlp_lora_bits: int = 2           # 2=삼진(저비트), 16=fp16
     mlp_film: bool = False           # 층별 FiLM(공유 MLP 은닉 변조, 거의 공짜)
     attn_kind: str = "softmax_cla"   # 어텐션 종류(컴포넌트 선택). 신규는 register_attention 로 등록
+    # ── F-1 (2026-08-14) : GQA 를 SDPA 에 맡긴다 ──────────────────────────────
+    #   기본 False = **종전 `repeat_interleave` 경로 = 비트 동일**. True 면 K/V 를 물리적으로
+    #   n_rep 배 복제하지 않고 `enable_gqa=True` 로 커널에 넘긴다(활성 메모리 절감).
+    #   ⚠️ 커널 경로가 달라지므로 **로짓이 비트 동일하지 않을 수 있다** — 게이트가 잰다.
+    sdpa_gqa: bool = False
+    # ── P014C 단계2 (2026-08-14) : per-row 융합 int8 matmul ────────────────────
+    #   기본 False = 종전 경로. True 면 `_i8` 저장 + **per-row α**(micro_group=0) 일 때만
+    #   `torch._weight_int8pack_mm` 로 **fp32 복원 없이** 곱한다. 조건 미충족이면 조용히
+    #   종전 경로로 떨어지지 **않고** 크게 알린다(조용한 무동작 금지).
+    fused_int8: bool = False
     center_weights: bool = False     # (실험) g128 그룹별 latent weight mean-centering
     use_ternary_kernel: bool = False # (실험) 커스텀 삼진 커널 경로 사용(기본 off = 기존 경로)
     ternary_kernel_triton: bool = False  # 커널 내부에서 Triton forward(검증 후에만 True)
@@ -79,10 +89,15 @@ class TMTConfig:
     def __post_init__(self):
         assert self.dim % self.n_q_heads == 0
         assert self.n_q_heads % self.n_kv_heads == 0
-        assert self.dim % self.micro_group == 0 and self.ffn_dim % self.micro_group == 0
+        # ★micro_group == 0 은 **per-row 센티널**이다(그룹 = 층마다 다른 in_f).
+        #   프리셋 필드 하나로 "층마다 다른 값" 을 표현할 수 없어서 0 을 약속어로 쓴다.
+        #   P014C 단계3 §"선결 구현(소)". 0 이면 나눗셈 검사가 성립하지 않으므로 건너뛴다.
+        if self.micro_group:
+            assert self.dim % self.micro_group == 0 and self.ffn_dim % self.micro_group == 0
         assert self.n_middle % self.mlp_group == 0
         if self.sparse34:
-            assert self.micro_group % 4 == 0, "sparse34 는 group 이 4의 배수여야 함(3:4 블록)"
+            assert self.micro_group and self.micro_group % 4 == 0, \
+                "sparse34 는 group 이 4의 배수여야 함(3:4 블록). per-row(0)와는 함께 못 쓴다"
         assert self.repeat_where in ("front", "back", "even"), \
             f"repeat_where 는 front|back|even — 받은 값: {self.repeat_where}"
         assert self.infer_repeat > 0, "infer_repeat 는 양수여야 한다"
@@ -157,7 +172,8 @@ def _m100R1c(seq, ckpt):
 #   --init-from` 이 `m100R1a_..._dense.pt` 를 찾다 죽었다(P038·P036 단계2, 2026-08-01).
 #   체크포인트 네임스페이스 분리는 의도한 것이고, 부모 탐색이 그걸 못 따라간 것이 버그였다.
 PRESET_PARENT = {"m100R1a": "m100", "m100R1c": "m100", "m100d": "m100",
-                 "m100R1p": "m100", "m100R1q": "m100"}   # ★P048: 부모는 m100 dense(20층) — 깊이가 달라 부분 이식된다
+                 "m100R1p": "m100", "m100R1q": "m100",
+                 "m100R1d": "m100"}   # ★P048/P049: 부모는 m100 dense(20층) — 깊이가 달라 부분/확장 이식된다
 
 def _m100R1p(seq, ckpt):
     """★P048 — `m100R1c`(g8) 에서 **prelude/coda 를 2+2 → 1+1** 로만 줄인 것.
@@ -196,9 +212,33 @@ def _m100R1q(seq, ckpt):
     return dataclasses.replace(_m100R1p(seq, ckpt), mlp_group=16)
 
 
+def _m100R1d(seq, ckpt):
+    """★P049 — **타잉으로 깊이를 사는가**. `m100R1c`(g8, 중간 16) 에서 중간층을 **32**,
+    `mlp_group` 을 **16** 으로. **유니크 MLP 개수는 6 으로 그대로**(2+2+2)다.
+
+    | | `m100R1c` | **`m100R1d`** |
+    |---|---:|---:|
+    | 깊이 | 20 | **36** |
+    | 유니크 MLP | 6 | **6**(동일) |
+    | MLP 삼진 | 28.31M | **28.31M**(완전 동일) |
+    | **어텐션 삼진** | 26.54M | **47.78M**(+80.0%) |
+    | 총 삼진 | 54.85M | **76.09M**(+38.7%) |
+
+    ★**MLP 는 공짜고 어텐션 값을 낸다.** 어텐션은 타잉 대상이 아니라 층마다 독립이기 때문이다.
+    그래서 이 프리셋이 묻는 것은 *"상주 +35.9% 를 내고 깊이 20→36 을 사면 그만큼 좋아지는가"* 다.
+    **채택 임계는 결과 전에 못 박았다 — paired Δ < −0.075**(계획 P049 §3).
+
+    ⚠️ **부모 dense 는 20층**이라 36층 학생에 그대로 이식할 수 없다. `init_from_dense` 의
+    **깊이 확장 이식**(2026-08-14 구현)이 선결이고, 그 동작은 **`run_P049_stage0_init_gate.bat`
+    이 먼저 검정**한다. 게이트를 통과하기 전에는 단계1 을 돌리지 않는다(결과 030 의 교훈).
+    """
+    return dataclasses.replace(_m100R1c(seq, ckpt), n_middle=32, mlp_group=16)
+
+
 PRESETS = {"tiny": _tiny, "m100": _m100, "m100d": _m100d,
            "m100R1a": _m100R1a, "m100R1c": _m100R1c,
-           "m100R1p": _m100R1p, "m100R1q": _m100R1q}
+           "m100R1p": _m100R1p, "m100R1q": _m100R1q,
+           "m100R1d": _m100R1d}
 
 
 def build_config(preset: str, arch: str, seq: int, ckpt: bool = True) -> TMTConfig:

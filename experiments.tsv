@@ -18,7 +18,11 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단
-1	P050	run_P050_kd_removal_confirm.bat	Y	3.6	N	N	KD 제거가 정말 이득인가 - 시드 2 로 확인. VRAM -7.41 GiB 가 걸려 있다
-2	P012	run_P012_sigma_recheck.bat	D	0.2	N	N	결과 012 의 sigma 0.012 가 eval 노이즈였나 - 학습 0, 수 분
-3	P049	run_P049_depth_g16x2.bat	Y	5.8	N	N	타잉으로 깊이를 사는가. ★선결 구현(깊이 확장 이식) 필요 - 배치 미작성
-4	P046	run_P046_emb_rank192.bat	Y	3.5	N	N	E=192 - 스펙트럼 에너지 88.76 퍼센트가 E=128 대가를 예측했다. 배치 미작성
+1	P049	run_P049_stage0_init_gate.bat	D	0.1	N	Y	★깊이 확장 이식 게이트. 학습 0, 수 분. **단계1 앞에 반드시**
+2	P049	run_P049_depth_g16x2.bat	Y	5.8	N	N	타잉으로 깊이를 사는가(36층). ★단계0 통과 필수 - 배치가 스스로 거부한다
+3	F1	run_F1_gqa_equivalence.bat	Y	0.8	Y	Y	enable_gqa 동등성 + VRAM(-0.4~0.5 GiB 기대). 단독 실행
+4	P046	run_P046_emb_rank192.bat	Y	3.5	N	N	E=192 - 스펙트럼 88.76 퍼센트가 E=128 대가(+0.1123)를 예측했다
+5	P014C	run_P014C_stage2_fused_speed.bat	N	0.2	Y	N	per-row 융합 int8 이 언팩 캐시(19.07 tok/s)를 넘는가. CPU, 학습 0
+9	-	run_recover_dense_best.bat	Y	1.7	N	Y	★실수 삭제된 dense_best 재생성. **선택 사항** - 지금 깨진 것은 없다
+9	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 44.5 GB 회수. YES 를 직접 입력해야 지운다
+9	P053	run_P053_kd_chunk.bat	Y	1.0	Y	N	★KD 손실 청크 VRAM. **REVIEW2 가 KD 를 유지할 때만 의미가 있다**

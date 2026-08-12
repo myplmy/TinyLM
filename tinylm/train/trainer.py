@@ -23,6 +23,40 @@ CKPT = paths.RUNS / "ckpt"
 LOGS = paths.RUNS / "logs"
 
 
+def _kd_kl(slog, tlog, T, chunk=0):
+    """★T-2 / P053 (2026-08-14) — **KD KL 을 행 청크로 나눠 계산한다.** 기본 `chunk=0` = off.
+
+    ## 왜
+    결과 038·`docs/methods/09_training_memory.md`: 학습 VRAM 의 최대 항목은 모델이 아니라
+    **어휘 전체 위의 KD 손실 계산**이다(+5.48 GiB alloc). 정확히는 `8192 x 32768 x 4B =
+    1024 MiB` 짜리 fp32 텐서가 **동시에 여러 벌** 산다:
+
+        logits/T  ·  log_softmax(...)  ·  tlog/T  ·  softmax(tlog/T)
+
+    ## 무엇이 실제로 줄어드나 — **정직하게**
+    청킹은 **backward 를 위해 저장돼야 하는 것**(학생 `log_softmax` 출력)은 **못 줄인다.**
+    줄어드는 것은 **동시에 살아 있는 임시 텐서**다:
+      - `tlog/T` 와 `softmax(tlog/T)` 는 **grad 가 필요 없다** → 청크마다 즉시 해제된다
+      - `logits/T` 도 청크 단위로만 산다
+    → **기대 절감은 전체 4벌 중 2~3벌**, 대략 **−2~3 GiB**. **"KD 메모리가 사라진다" 가 아니다.**
+
+    ## 비트 동일성
+    `chunk <= 0` 이면 **종전 식 그대로** 부른다 → 비트 동일. 켜면 합산 순서가 달라져
+    **비트 동일이 아니다**(부동소수 결합법칙). 그래서 기본 off 이고 게이트가 필요하다.
+    `batchmean` = (전체 합) / N 이므로 청크 `sum` 을 모아 N 으로 나누면 **수학적으로 동일**하다.
+    """
+    if chunk is None or chunk <= 0 or chunk >= slog.shape[0]:
+        return F.kl_div(F.log_softmax(slog / T, -1), F.softmax(tlog / T, -1),
+                        reduction="batchmean") * (T * T)
+    N = slog.shape[0]
+    acc = None
+    for i in range(0, N, chunk):
+        s, t = slog[i:i + chunk], tlog[i:i + chunk]
+        part = F.kl_div(F.log_softmax(s / T, -1), F.softmax(t / T, -1), reduction="sum")
+        acc = part if acc is None else acc + part
+    return acc / N * (T * T)
+
+
 def _step_stats(step_ms, warm=100):
     """★T-1 — 순수 스텝 시간의 중앙값과 p90/p10 변동폭. `check_spill.py` 와 같은 지표.
 
@@ -80,7 +114,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           anneal_shape="linear", anneal_start=None,
           arenas=False, arena_lambda=0.1, arena_end=0.9,
           doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None,
-          kd_teacher_infer=False):
+          kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop"):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
     #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
@@ -109,18 +143,27 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     if micro_group is not None:                 # (P051) 삼진 alpha 그룹 크기 오버라이드
         # ★`__post_init__` 은 프리셋 값으로 이미 돌았으므로 **여기서 같은 불변식을 다시 검사**한다.
         #   빠뜨리면 TLinear 생성 시점의 assert 로 죽는데, 그때는 어느 층인지가 안 보인다.
-        assert micro_group > 0 and cfg.dim % micro_group == 0, \
-            f"dim {cfg.dim} % micro_group {micro_group} != 0"
-        assert cfg.ffn_dim % micro_group == 0, \
-            f"ffn_dim {cfg.ffn_dim} % micro_group {micro_group} != 0"
+        # ★micro_group == 0 은 **per-row 센티널**(그룹 = 층마다의 in_f). P014C 단계2/3.
+        assert micro_group >= 0, "--micro-group 은 0(per-row) 또는 양의 약수"
+        if micro_group:
+            assert cfg.dim % micro_group == 0, \
+                f"dim {cfg.dim} % micro_group {micro_group} != 0"
+            assert cfg.ffn_dim % micro_group == 0, \
+                f"ffn_dim {cfg.ffn_dim} % micro_group {micro_group} != 0"
         if getattr(cfg, "sparse34", False):
-            assert micro_group % 4 == 0, "sparse34 는 micro_group 이 4의 배수여야 함(3:4 블록)"
+            assert micro_group and micro_group % 4 == 0, \
+                "sparse34 는 micro_group 이 4의 배수여야 함(3:4 블록). per-row(0)와 병용 불가"
         old_g = cfg.micro_group
         cfg.micro_group = micro_group
         # 저장 bpw 의 scale 항 = SCALE_BITS(16) / g. 코드 항(log2 3 또는 1.25)은 안 바뀐다.
-        print(f"[micro_group] alpha 그룹 {old_g} -> {micro_group} — "
-              f"scale 항 {16/old_g:.4f} -> {16/micro_group:.4f} bpw "
-              f"(코드 항은 불변). ★KD 교사는 자기 cfg 로 로드되므로 g{old_g} 그대로다")
+        if micro_group == 0:
+            print(f"[micro_group] ★per-row 센티널(0) — 그룹이 층마다의 in_f(768/2048)다. "
+                  f"scale 항 {16/old_g:.4f} -> 0.0208/0.0078 bpw. "
+                  f"★품질 대가는 결과 028 이 +0.0050~0.0063 bpb 로 이미 쟀다(분해능 0.008 미만).")
+        else:
+            print(f"[micro_group] alpha 그룹 {old_g} -> {micro_group} — "
+                  f"scale 항 {16/old_g:.4f} -> {16/micro_group:.4f} bpw "
+                  f"(코드 항은 불변). ★KD 교사는 자기 cfg 로 로드되므로 g{old_g} 그대로다")
     if emb_rank is not None:                    # (P046) 임베딩 병목 E 오버라이드
         assert emb_rank > 0, "--emb-rank 는 양수여야 한다(0=비활성은 지원하지 않는다)"
         # ★로짓 랭크가 E 로 제한된다. 임베딩·lm_head 가 선형으로 줄고 품질 영향은 미지다.
@@ -130,6 +173,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     cfg.mlp_lora_rank, cfg.mlp_lora_bits = lora_rank, lora_bits
     cfg.mlp_film = mlp_film
     cfg.center_weights = center_weights
+    # ★F-1(2026-08-14) — 기본 False = 종전 `repeat_interleave` 경로 = 비트 동일.
+    cfg.sdpa_gqa = bool(sdpa_gqa)
+    if sdpa_gqa:
+        print(f"[sdpa] ★enable_gqa=True — K/V 를 물리 복제(x{cfg.n_q_heads // cfg.n_kv_heads})하지 "
+              f"않고 커널에 맡긴다. ⚠️커널 경로가 바뀌므로 **로짓 비트 동일을 가정하지 않는다** "
+              f"(게이트: scripts/diag_gqa_equiv.py)")
     cfg.use_ternary_kernel = use_ternary_kernel
     cfg.ternary_kernel_triton = ternary_kernel_triton
     # ★프리셋이 sparse34=True 로 정의될 수 있다(m100R1a). `--sparse34` 는 **켤 수만** 있게 한다 —
@@ -144,7 +193,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     model = TiedMLPTransformer(cfg).to(device)
 
     if init_from:
-        init_from_dense(model, init_from, device)
+        init_from_dense(model, init_from, device, depth_init=depth_init)
 
     teacher = None
     if kd and not kd_cache:
@@ -415,10 +464,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                 elif teacher is not None and kd_this:   # 온라인 KD(교사 forward, skip-forward 반영)
                     with torch.no_grad():
                         tlog = teacher(x)
-                    T = kd_temp
-                    kl = F.kl_div(F.log_softmax(logits.reshape(-1, cfg.vocab_size) / T, -1),
-                                  F.softmax(tlog.reshape(-1, cfg.vocab_size) / T, -1),
-                                  reduction="batchmean") * (T * T)
+                    kl = _kd_kl(logits.reshape(-1, cfg.vocab_size),
+                                tlog.reshape(-1, cfg.vocab_size), kd_temp, kd_chunk)
                     loss = ((1 - kd_alpha) * ce + kd_alpha * kl) / accum
                 else:
                     loss = ce / accum
@@ -515,6 +562,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "lora_decay": float(lora_decay),                       # (P008) LoRA 스케일 어닐
            "emb_rank": int(cfg.emb_rank),                          # (P046) 임베딩 병목 E
            "kd_teacher_infer": bool(kd_teacher_infer),            # (P042) 교사 추론 모드
+           "sdpa_gqa": bool(cfg.sdpa_gqa),                        # (F-1) enable_gqa 경로
+           "kd_chunk": int(kd_chunk or 0),                        # (T-2/P053) KD 손실 청크 행수
+           "depth_init": str(depth_init),                         # (P049) 깊이 확장 이식 방식
+           "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용
            "arenas": bool(arenas), "arena_lambda": arena_lambda,  # (P036) Arenas residual
            "arena_end": arena_end,
            # ★저장 메모리 회계 통일(2026-07-31, P034 §5): 정본=B(코드+스케일), 병기=C(+컨테이너).

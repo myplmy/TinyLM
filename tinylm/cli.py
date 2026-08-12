@@ -118,6 +118,20 @@ def main():
     p.add_argument("--micro-group", type=int, default=None,
                    help="(P051) 삼진 alpha 그룹 크기 오버라이드(프리셋 기본 128). 저장 bpw 의 "
                         "scale 항이 16/g 이므로 g 를 키우면 packed 가 준다. 미지정=프리셋값=비트동일")
+    p.add_argument("--sdpa-gqa", action="store_true",
+                   help="(F-1) GQA K/V 물리복제 대신 SDPA enable_gqa 사용. 기본 off=비트동일. "
+                        "게이트: scripts/diag_gqa_equiv.py")
+    p.add_argument("--kd-chunk", type=int, default=0,
+                   help="(T-2/P053) KD KL 을 이 행수씩 나눠 계산(0=off=비트동일). "
+                        "동시 임시텐서를 줄인다 — backward 저장분은 안 줄어든다")
+    p.add_argument("--depth-init", choices=["prop", "gate_scale", "role"], default="prop",
+                   help="(P049) 부모초기화 층 대응. prop=기본(깊어질 때만 역할정렬 비례, "
+                        "얕으면 종전 zip=비트동일) / gate_scale=prop + 복제횟수로 gate 나눔 / "
+                        "role=얕을 때도 역할정렬 강제(⚠️결과 032 와 조건이 달라진다)")
+# ★`--fused-int8` 을 여기 두지 않는다(2026-08-14). `cfg.fused_int8` 은 **추론 경로 옵션**이고
+#   `--int8-store`·`--unpack-cache`·`--drop-latent` 와 같은 계열이라 **CLI 가 아니라 진단
+#   스크립트가 켠다**(`scripts/bench_fused_int8.py`). 여기 두면 학습 명령이 받아들이는데
+#   train() 은 쓰지 않는 **조용한 무동작 플래그**가 된다 — 결과 031 계열.
     p.add_argument("--kd-teacher-infer", action="store_true",
                    help="(P042) KD 교사에 freeze_quant()+drop_latent() 를 적용한다. 교사는 "
                         "가중치가 고정인데 매 스텝 refresh_quant 를 돌고 fp32 latent 도 든다. "
@@ -217,7 +231,8 @@ def main():
               arenas=a.arenas, arena_lambda=a.arena_lambda, arena_end=a.arena_end,
               doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars,
               lora_decay=a.lora_decay, emb_rank=a.emb_rank,
-              kd_teacher_infer=a.kd_teacher_infer)
+              kd_teacher_infer=a.kd_teacher_infer,
+              sdpa_gqa=a.sdpa_gqa, kd_chunk=a.kd_chunk, depth_init=a.depth_init)
 
     elif a.cmd == "all":
         from .train import train

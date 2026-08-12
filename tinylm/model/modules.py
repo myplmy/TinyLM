@@ -81,15 +81,30 @@ class Attention(nn.Module):
         q = apply_rope(q, cos, sin)
         k, v = kv
         n_rep = c.n_q_heads // c.n_kv_heads
-        if n_rep > 1:
-            k = k.repeat_interleave(n_rep, dim=1)
-            v = v.repeat_interleave(n_rep, dim=1)
+        # ── F-1 (2026-08-14) — GQA 복제를 SDPA 에 맡긴다 ─────────────────────────
+        #   종전: K/V 를 `repeat_interleave` 로 **물리적으로 n_rep(=4) 배 복제**한다.
+        #   즉 (B, 3, T, 64) 를 (B, 12, T, 64) 로 만들어 **활성 메모리를 4배** 쓴다.
+        #   `enable_gqa=True` 는 커널이 **복제 없이** 같은 KV 헤드를 여러 Q 헤드에 태운다.
+        #   ⚠️ **기본 off = 종전 경로 = 비트 동일.** 커널 경로가 바뀌므로 로짓이 완전히
+        #      같다고 가정하지 않는다 — `scripts/diag_gqa_equiv.py` 가 잰다.
+        #   ⚠️ **학습 경로(q_len == kv_len)에만 적용한다.** KV 캐시 경로는 `attn_mask` 를
+        #      쓰는데 그쪽은 Flash 백엔드가 아니고, 캐시 정확성 게이트(`diag_kvcache.py`)가
+        #      이미 확정한 경로라 건드릴 이유가 없다.
+        use_gqa = bool(getattr(c, "sdpa_gqa", False)) and n_rep > 1
+        q_len, kv_len = q.shape[2], k.shape[2]
+        if not (use_gqa and q_len == kv_len):
+            if n_rep > 1:
+                k = k.repeat_interleave(n_rep, dim=1)
+                v = v.repeat_interleave(n_rep, dim=1)
+            kv_len = k.shape[2]
         # ★KV 캐시가 있으면 q_len < kv_len 이다. 이때 `is_causal=True` 를 그대로 쓰면
         #   SDPA 가 마스크를 **좌상단 정렬**해서 완전히 틀린 위치를 가린다(조용히 틀린다).
         #   질의는 절대위치 [past_len, past_len+q_len) 에 있으므로 tril(past_len) 이 맞다.
-        q_len, kv_len = q.shape[2], k.shape[2]
         if q_len == kv_len:                                   # 캐시 없음(=prefill 포함)
-            o = F.scaled_dot_product_attention(q, k, v, is_causal=True)
+            if use_gqa:
+                o = F.scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
+            else:
+                o = F.scaled_dot_product_attention(q, k, v, is_causal=True)
         else:
             past_len = kv_len - q_len
             mask = torch.ones(q_len, kv_len, dtype=torch.bool,

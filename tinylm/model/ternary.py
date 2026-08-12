@@ -39,8 +39,19 @@ class _TernarySTE(torch.autograd.Function):
         return (g.reshape(O, G, group) * win).reshape(O, I), None, None, None, None
 
 
+def _group_of(cfg, in_f):
+    """★per-row 센티널 해석. `cfg.micro_group == 0` 이면 그룹 = `in_f` 전체(= 행당 α 1개).
+
+    왜 센티널인가: per-row 는 **층마다 in_f 가 다르다**(768 / 2048). 프리셋 필드 하나로는
+    표현이 안 되므로 0 을 약속어로 쓴다(계획 P014C 단계3 "선결 구현(소)").
+    **`micro_group` 이 0 이 아니면 종전과 완전히 같은 값**을 돌려준다 = 비트 동일.
+    """
+    g = getattr(cfg, "micro_group", 128)
+    return in_f if not g else g
+
+
 def ternary(w, cfg):
-    return _TernarySTE.apply(w, cfg.micro_group, cfg.twn_thr_ratio, cfg.ste_clip,
+    return _TernarySTE.apply(w, _group_of(cfg, w.shape[1]), cfg.twn_thr_ratio, cfg.ste_clip,
                              getattr(cfg, "sparse34", False))
 
 
@@ -52,7 +63,7 @@ class TLinear(nn.Module):
 
     def __init__(self, cfg, in_f, out_f, out_scale=1.0, mode_delta=False):
         super().__init__()
-        assert in_f % cfg.micro_group == 0, f"{in_f} % {cfg.micro_group} != 0"
+        assert in_f % _group_of(cfg, in_f) == 0, f"{in_f} % {_group_of(cfg, in_f)} != 0"
         self.cfg, self.in_f, self.out_f = cfg, in_f, out_f
         self.weight = nn.Parameter(torch.randn(out_f, in_f) * (out_scale / math.sqrt(in_f)))
         self.use_mode = mode_delta and cfg.n_modes > 1 and cfg.mode_rank > 0
@@ -114,7 +125,7 @@ class TLinear(nn.Module):
         import torch
         w = self._wq.detach()
         O, I = w.shape
-        g = self.cfg.micro_group
+        g = _group_of(self.cfg, I)
         wg = w.reshape(O, I // g, g)
         alpha = wg.abs().amax(dim=2, keepdim=True)              # 그룹 스케일
         code = torch.zeros_like(wg, dtype=torch.int8)
@@ -145,12 +156,42 @@ class TLinear(nn.Module):
         if gen is not None and self._i8_cache is not None and self._i8_cache_gen == gen:
             return self._i8_cache
         O, I = self._i8.shape
-        g = self.cfg.micro_group
+        g = _group_of(self.cfg, I)
         wq = (self._i8.reshape(O, I // g, g).to(self._alpha.dtype)
               * self._alpha.unsqueeze(-1)).reshape(O, I)
         if gen is not None:
             self._i8_cache, self._i8_cache_gen = wq, gen
         return wq
+
+    def _fused_int8_linear(self, x):
+        """★P014C 단계2 — **fp32 복원을 없앤다.** `torch._weight_int8pack_mm(A, B, scales)`.
+
+        ## 왜 이게 병목인가
+        결과 014 §11.4: `_wq_from_i8()` 의 fp32 복원이 **층당 2.1~2.2ms × 20층 ≈ 43ms/토큰**.
+        CPU 배포에서 int8 저장이 −62~67% 느린 이유가 정확히 이것이다. 융합 연산은
+        int8 코드를 **그대로 읽고** 스케일을 누산 뒤에 곱한다 → 복원 텐서가 아예 안 생긴다.
+
+        ## 규약 — **per-row 여야 한다**
+        `_weight_int8pack_mm` 은 **행(출력 채널)당 스케일 하나**를 받는다(`scales` shape `(O,)`).
+        우리 기본은 `micro_group=128`(행 하나에 α 가 I/128 개)이라 **그대로는 못 쓴다**.
+        `--micro-group 0`(per-row 센티널)일 때만 조건이 맞고, 그 품질 대가는
+        **결과 028 이 +0.0050~0.0063 bpb = 분해능(0.008) 미만**으로 이미 쟀다.
+
+        ⚠️ **조건이 안 맞으면 조용히 종전 경로로 떨어지지 않는다.** 그러면 "융합을 켰다" 고
+        믿는 채로 종전 속도를 재게 된다 — 결과 031 계열(조용한 무동작)의 형태다. **즉사시킨다.**
+        """
+        if self._alpha.shape[-1] != 1:
+            raise RuntimeError(
+                f"fused_int8 은 **per-row α** 를 요구한다 — 지금 행당 α 가 {self._alpha.shape[-1]}개다. "
+                f"`--micro-group 0` 으로 학습·양자화한 체크포인트에서만 쓸 수 있다(P014C 단계2). "
+                f"조용히 종전 경로로 떨어지면 '융합을 켰다' 고 믿는 채로 종전 속도를 재게 된다.")
+        w8 = self._i8                                  # (O, I) int8, contiguous
+        sc = self._alpha.reshape(-1)                   # (O,) fp32
+        shp = x.shape
+        x2 = x.reshape(-1, shp[-1])
+        # 이 연산은 A 가 bf16/fp32, B 가 int8 (O, I), scales 가 A 와 같은 dtype 이어야 한다.
+        y = torch._weight_int8pack_mm(x2.contiguous(), w8, sc.to(x2.dtype))
+        return y.reshape(*shp[:-1], w8.shape[0])
 
     def set_unpack_gen(self, gen):
         """언팩 캐시 세대 설정. `None` 이면 기능 off(종전 경로)."""
@@ -199,7 +240,7 @@ class TLinear(nn.Module):
         """(옵션) g128 그룹별 mean-centering 후 latent weight 반환."""
         w = self.weight
         if getattr(self.cfg, "center_weights", False):
-            O, I = w.shape; g = self.cfg.micro_group
+            O, I = w.shape; g = _group_of(self.cfg, I)
             wg = w.reshape(O, I // g, g)
             w = (wg - wg.mean(dim=2, keepdim=True)).reshape(O, I)
         return w
@@ -228,6 +269,8 @@ class TLinear(nn.Module):
                 raise RuntimeError("latent 해제 상태에서는 커스텀 커널 경로를 쓸 수 없다 "
                                    "(커널이 latent weight 를 직접 읽는다).")
             y = ternary_kernel_linear(x, self._w(), self.cfg, self._anneal_t)
+        elif self._i8 is not None and getattr(self.cfg, "fused_int8", False):
+            y = self._fused_int8_linear(x)           # ★P014C 단계2: fp32 복원 없이 곱한다
         else:
             if self._i8 is not None:                 # P034 단계3: int8 저장 → 매번 되돌린다
                 wq = self._wq_from_i8()
