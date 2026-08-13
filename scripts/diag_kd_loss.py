@@ -132,19 +132,43 @@ def main():
 
     # ── A4 : bf16 log_softmax ───────────────────────────────────────────────
     _hdr("A4  ★autocast(bf16) 아래 log_softmax 가 tail 을 뭉개는가")
+    # ★★2026-08-13 정정 (결과 042 §10) — **종전 A4 는 공허한 검사였다.**
+    #   `torch.autocast` 의 **fp32 강제 목록**에 `log_softmax`·`softmax`·`kl_div` 가 들어 있다.
+    #   즉 autocast 블록 안에서도 이 셋은 **fp32 로 실행된다.** 그래서 상대차가
+    #   `0.000e+00` 로 **정확히 0** 이 나왔고, 이 검사는 **어떤 경우에도 실패할 수 없었다.**
+    #   → ①autocast 가 실제로 fp32 를 쓰는지 **dtype 을 인쇄해 증명**하고
+    #     ②**명시적 bf16** 경로를 대조군으로 둬서 검사에 실패 가능성을 만든다.
     with torch.no_grad():
         f32 = kd_kl(slog.detach().float(), tlog.float(), T).item()
+
+        # (1) 증명: autocast 아래 log_softmax 의 실제 출력 dtype
+        probe = slog.detach()[:2].float()
         if dev == "cuda":
             with torch.autocast("cuda", dtype=torch.bfloat16):
-                bf = kd_kl(slog.detach(), tlog, T).item()
+                ac_dtype = F.log_softmax(probe / T, -1).dtype
+                bf_ac = kd_kl(slog.detach(), tlog, T).item()
         else:
-            bf = kd_kl(slog.detach().bfloat16().float(), tlog.bfloat16().float(), T).item()
-    rel = abs(bf - f32) / max(abs(f32), 1e-12)
-    print(f"  fp32 KL {f32:.6f}   bf16 경로 KL {bf:.6f}   상대차 {rel:.3e}")
-    if rel < 1e-2:
+            ac_dtype = torch.float32
+            bf_ac = f32
+        # (2) 대조군: **강제로** bf16 에서 log_softmax/softmax 를 돌린다
+        bf_hard = kd_kl(slog.detach().bfloat16(), tlog.bfloat16(), T).float().item()
+
+    rel_ac = abs(bf_ac - f32) / max(abs(f32), 1e-12)
+    rel_hard = abs(bf_hard - f32) / max(abs(f32), 1e-12)
+    print(f"  autocast 아래 log_softmax 출력 dtype = **{ac_dtype}**")
+    print(f"    -^> torch 의 autocast 는 log_softmax·softmax·kl_div 를 **fp32 목록**에 둔다.")
+    print(f"  fp32 KL      {f32:.6f}")
+    print(f"  autocast KL  {bf_ac:.6f}   상대차 {rel_ac:.3e}")
+    print(f"  ★강제 bf16 KL {bf_hard:.6f}   상대차 {rel_hard:.3e}   ^<- **이게 진짜 검사다**")
+    if ac_dtype == torch.float32 and rel_ac == 0.0:
+        print("  ✅ A4 통과 — **우리 학습 경로에는 위험이 없다.** autocast 가 fp32 로 지킨다")
+        if rel_hard >= 1e-2:
+            print(f"  ★참고: 강제 bf16 이면 KL 이 {rel_hard*100:.1f}% 바뀐다 — "
+                  f"직접 `.bfloat16()` 캐스팅을 넣지 말 것")
+    elif rel_ac < 1e-2:
         print("  ✅ A4 통과 — bf16 이 KL 을 1% 안에서 재현한다")
     else:
-        print(f"  ⚠️★A4 주의 — bf16 경로가 KL 을 {rel*100:.1f}% 바꾼다. "
+        print(f"  ⚠️★A4 주의 — autocast 경로가 KL 을 {rel_ac*100:.1f}% 바꾼다. "
               f"soft target 의 tail 이 KD 의 핵심이므로 무시할 수 없다.")
         notes.append("A4")
 

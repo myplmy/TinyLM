@@ -20,6 +20,7 @@
   E      15  실험 배치가 smoketest_logs 로     게이트는 스모크가 아니다. test_result 가 맞다 (2026-08-13)
   E      16  TL_OUTDIR 을 깔면서 안 치운다      뒤 배치로 새어 나가 로그 폴더가 오염된다 (2026-08-13)
   W      17  재실행본인데 단계명이 그대로      로그가 이전 측정과 한 파일에 섞인다. stage0b 로 (2026-08-13)
+  E      18  빈 배치 / 실행문 없음             ★0바이트 파일이 모든 검사를 통과해 큐가 조용히 건너뛴다 (2026-08-13)
   E      11  줄끝이 CRLF 가 아님       `.gitattributes` 가 `*.bat text eol=crlf` 로 선언하는데
                                        작업트리가 LF 면 git 이 매번 재작성·경고한다(CRLF 재발 원인).
                                        또 cmd.exe 는 LF-only 배치에서 `goto`/라벨이 드물게 어긋난다.
@@ -51,6 +52,26 @@ def lint(path: Path):
     txt = raw.decode("utf-8", errors="replace")
     lines = txt.splitlines()
     err, warn, info = [], [], []
+
+    # ★★18. **빈 배치 / 실행문 없음** (2026-08-13 실사고)
+    #   `run_smoke_check.bat` 이 **0바이트**가 됐는데 **모든 검사를 통과**했다.
+    #   빈 파일에서는 비ASCII도, `%`도, `--tag` 누락도 **아무것도 걸리지 않는다.**
+    #   그리고 `queue_menu.py` 는 **파일 존재만** 보므로 메뉴에 정상 표시되고,
+    #   큐는 `call` 후 즉시 반환해 **`[queue] done` 을 찍는다** — 조용히 건너뛴다.
+    #
+    #   ★원인은 내 편집 도구였다: `pathlib.Path.write_text()` 는 **먼저 truncate 하고**
+    #     그 다음에 인코딩한다. `encoding="ascii"` 로 비ASCII 문자를 쓰려다 실패하면
+    #     **파일이 0바이트로 남는다.** 그리고 그 상태가 커밋까지 됐다.
+    #   → 규칙: **인코딩을 먼저 검증하고(`.encode()`), 성공했을 때만 `write_bytes()`.**
+    if not raw.strip():
+        err.append("★**빈 파일이다(0바이트).** 큐가 조용히 건너뛰고 `[queue] done` 을 찍는다. "
+                   "편집 도구가 파일을 파괴했을 수 있다(`write_text` 는 먼저 truncate 한다) — "
+                   "`git show <commit>:<path>` 로 복원할 것")
+        return err, warn, info
+    if not [ln for ln in lines
+            if ln.strip() and not ln.strip().upper().startswith("REM")
+            and not ln.strip().startswith("@")]:
+        err.append("★**실행문이 하나도 없다**(주석·`@echo off` 뿐). 큐가 조용히 건너뛴다")
 
     # 11. 줄끝(CRLF) — .gitattributes 선언과 작업트리가 일치해야 한다
     if b"\r\n" not in raw and raw.strip():

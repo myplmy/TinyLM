@@ -25,6 +25,18 @@ REM    5.06 GiB; 1.8x is about 9.1 GiB before the teacher. This is close to the
 REM    spill wall. Grad checkpointing stays ON. If it OOMs, the message may
 REM    arrive as CUBLAS_STATUS_EXECUTION_FAILED (trap 29), not as OOM.
 REM
+REM  *** 2026-08-13  depth_init changed identity to gate_scale (result 041 s13) ***
+REM    Stage 0b measured: random 10.4280 / prop 7.3719 / gate_scale 5.6449 /
+REM    identity 5.6529. gate_scale and identity differ by 0.0080, which is one
+REM    third of the 0.024 resolution - they are a TIE on score. gate_scale wins
+REM    on RISK: identity starts the duplicated gates at exactly 0, so gradient
+REM    reaches those layers through the gate alone and they may never wake up.
+REM
+REM  *** WHAT THIS RUN MUST RECORD (result 041 s13.4) ***
+REM    The gate values of the duplicated layers after training. If they stayed
+REM    near their init, then 36 layers are effectively 20 and P049 cannot answer
+REM    its own question. Read runs/logs json for the gate stats.
+REM
 REM  STANDARD CONDITIONS - identical to mC_wsd so the pair is valid:
 REM    ko-en, 600M pool exact, 2289 steps, mb8 x accum16 x seq1024, lr 1e-3,
 REM    wsd 0.80/0.2, seed 1337, KD k4 + parent init.
@@ -48,7 +60,7 @@ if not defined TL_NOPAUSE pause
 
 python scripts\runlog.py --name P049_depth_g16x2 --note "[P049 stage 1] m100R1d 2+32+2 g16, KD k4 + parent init, wsd. Threshold fixed in advance at -0.075 vs mC_wsd."
 
-python scripts\runlog.py --name P049_depth_g16x2 -- python run100m.py train --preset m100R1d --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --init-from --kd --kd-every 4 --depth-init identity --tag mC_d36
+python scripts\runlog.py --name P049_depth_g16x2 -- python run100m.py train --preset m100R1d --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --init-from --kd --kd-every 4 --depth-init gate_scale --tag mC_d36
 if errorlevel 1 goto TRAINBAD
 
 echo.

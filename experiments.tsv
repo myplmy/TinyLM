@@ -20,8 +20,8 @@ prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단
 1	P055	run_P055_stage0b_kd_audit.bat	N	0.1	N	Y	★단계0b(재실행) — 감사 도구를 고쳤다(독립 분포+퇴화 감지). 결과 042 에서 A2/A4 가 무효였다
 1	P049	run_P049_stage0b_init_gate.bat	D	0.1	N	Y	★단계0b(재실행) — 게이트가 난수 정답을 썼다(결과 041 §11). 실제 val 데이터로 고쳤다
-1	P049B	run_P049B_stage0_repeat_gate.bat	D	0.1	N	Y	★학습 시 재귀의 출발 대가. GPU 소. **G0-c(R=1 이 3.8080 근처)가 계측 건강 검사**
-3	P049	run_P049_depth_g16x2.bat	Y	5.8	N	N	타잉으로 깊이를 사는가(36층). ★단계0 재통과 필수
+1	P049B	run_P049B_stage0_repeat_gate.bat	D	0.1	N	Y	★학습 시 재귀의 출발 대가. ✅완료(결과 043). ⚠️G0-c 기준값이 틀렸었다(3.8080 -> 7.7742, 함정 34)
+2	P049	run_P049_depth_g16x2.bat	Y	5.8	N	N	타잉으로 깊이를 사는가(36층). ✅단계0b 통과(결과 041 §13). --depth-init gate_scale 확정. ★복제층 gate 가 깨어나는지 기록 필수
 3	F1	run_F1_gqa_equivalence.bat	Y	0.8	Y	Y	enable_gqa 동등성 + VRAM(-0.4~0.5 GiB 기대). 단독 실행
 4	P046	run_P046_emb_rank192.bat	Y	3.5	N	N	E=192 - 스펙트럼 88.76 퍼센트가 E=128 대가(+0.1123)를 예측했다
 5	P014C	run_P014C_stage2_fused_speed.bat	N	0.2	Y	N	per-row 융합 int8 이 언팩 캐시(19.07 tok/s)를 넘는가. CPU, 학습 0

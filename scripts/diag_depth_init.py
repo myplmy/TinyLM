@@ -95,7 +95,8 @@ def main():
     #   13.4887 을 찍었고 그것을 "실패" 로 읽었다. 13.4887 은 **교사 자신의 점수**다.
     #
     #   → **실제 데이터와 next-token 정답**을 쓴다. 그러면 CE 가 의미를 갖는다:
-    #     난수 ≈ ln(V), 이식 성공 ≈ 교사의 val(약 3.8).
+    #     난수 ≈ ln(V) = 10.40, **이식 성공 ≈ 부모초기화 타잉의 7.77**(결과 030 §2).
+    #     ⚠️★"교사의 val 3.8 근처" 가 아니다 — 중간 MLP 가 평균되므로 **도달 불가**다(함정 34).
     from tinylm.data import prepare, Loader                      # noqa: E402
     meta = prepare(a.data, int(float(a.tokens.rstrip("Mm")) * 1e6), exact=True)
     va = Loader("val", a.bs, a.seq, dev, meta["dir"], seed=99)   # ★val 시드 99 고정 = 표준
@@ -104,8 +105,15 @@ def main():
     thr = ln_v - 1.0
     print(f"\n  ★실제 val 데이터 사용(next-token 정답). 난수 토큰이 아니다 — 결과 041 §11 참조")
     print(f"  기준: ln(vocab={sc.vocab_size}) = {ln_v:.4f}  -^>  G0-c 통과선 CE ^< {thr:.4f}")
-    print(f"  ★참고: 교사 dense 의 결정적 full-val 은 **3.8080**(결과 040). "
-          f"이식이 제대로 됐으면 그 근처여야 한다.")
+    # ★★2026-08-13 교정 (함정 34) — 종전 문구는 *"이식이 제대로 됐으면 3.8080 근처"* 였다. **틀렸다.**
+    #   `init_from_dense` 는 중간 MLP 를 **타잉 그룹별로 평균**한다. 부모초기화된 타잉 학생은
+    #   교사가 아니고 교사 점수를 낼 수 **없다**. 옳은 앵커는 결과 030 §2 의 **7.7742**
+    #   (`mC_g16` 부모초기화 step0 ce)다.
+    print(f"  ★앵커: 부모초기화 **타잉** 학생의 step0 ce = **7.7742**(결과 030 §2)")
+    print(f"     ⚠️교사 full-val 3.8080 은 **도달 불가**다 — 중간 MLP 가 g층 평균이라 학생 ^!= 교사")
+    print(f"  ⚠️크롭 {a.bs}x{a.seq} = {a.bs*a.seq}토큰 **단일 표본**이다 — "
+          f"ko-en 혼합이라 크롭이 다르면 CE 가 1 nat 단위로 흔들린다.")
+    print(f"     **다른 스크립트(diag_train_repeat 는 4x1024)의 CE 와 직접 비교하지 않는다**")
 
     results = {}
     # 대조군: 이식 없음(난수) — **이식이 뭘 걷어내는지 크기를 보기 위해서**

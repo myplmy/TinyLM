@@ -21,7 +21,7 @@ P049(깊이 확장)는 **학생이 36 물리층**이라 이식 자체가 새 기
 |---|---|---|---|
 | **G0-a** | 죽지 않는다 | 예외 없음 | KV 뱅크가 `(owner, 통과번호)` 로 갈라지는지 |
 | **G0-b** | ★**삼진 파라미터 불변** | `report()` 삼진이 R=1 과 **완전히 같다** | 반복이 파라미터를 늘리면 이 축의 존재 이유가 사라진다 |
-| **G0-c** | ★**step0 CE 가 교사 근처** | R=1 이 **3.8080 근처**(결과 040 §2) | ★**이게 계측 건강 확인이다.** 여기가 어긋나면 나머지를 읽지 않는다 |
+| **G0-c** | ★**step0 CE 가 부모초기화 대역** | R=1 이 **5.0 ~ 9.40** (앵커 **7.77**, 결과 030 §2) | ★**이게 계측 건강 확인이다.** 여기가 어긋나면 나머지를 읽지 않는다 |
 | **G0-d** | **반복의 대가** | R=2 의 CE − R=1 의 CE | ★**이 값이 P049B 의 출발 핸디캡**이다 |
 | **G0-e** | 스케줄 길이 | R=2 면 방문 36회 | 모드가 실제로 적용됐는가 |
 
@@ -50,7 +50,21 @@ from tinylm.data import prepare, Loader                         # noqa: E402
 from tinylm.model.transformer import TiedMLPTransformer         # noqa: E402
 from tinylm.train.init_utils import init_from_dense             # noqa: E402
 
-TEACHER_FULLVAL = 3.8080          # 결과 040 §2 — dense 의 결정적 full-val
+# ★★기준값 3종 (2026-08-13 교정 — 함정 34)
+#
+#   **처음 이 게이트는 R=1.0 의 step0 CE 가 `TEACHER_FULLVAL` 3.8080 근처여야 한다고 썼다.
+#   그건 틀렸다.** `init_from_dense` 는 중간 MLP 를 **타잉 그룹별로 평균**한다
+#   (`mid_mlps[j//g]` ← 교사 MLP g 개의 평균). 그래서 **부모초기화된 타잉 학생은
+#   교사가 아니다** — 교사 점수를 낼 수 **없다**. 낸다면 오히려 타잉이 안 걸린 것이다.
+#
+#   ★결과 030 §2 에 옳은 앵커가 이미 있었다:
+#     *"출력이 완전 무작위 … 같은 밤 `mC_g16` 은 **7.7742** 로 부모초기화 이득이 살아 있었다"*
+#
+#   → 게이트를 **점 검사에서 대역 검사로** 바꾼다. 바닥은 "교사보다 좋을 수 없다",
+#     천장은 "난수보다는 나아야 한다". 앵커 7.77 로부터의 거리는 **정보로만** 인쇄한다.
+TEACHER_FULLVAL = 3.8080          # 결과 040 §2 — dense 의 결정적 full-val. **도달 불가 하한**
+PARENT_TIED_ANCHOR = 7.7742       # ★결과 030 §2 — mC_g16 부모초기화 step0 ce. **이게 옳은 앵커**
+FLOOR = 5.0                       # 이보다 낮으면 타잉 평균화가 안 걸렸다는 뜻 (교사에 너무 가깝다)
 
 
 def _hdr(s):
@@ -82,7 +96,13 @@ def main():
     print(f"  학생 {a.preset} / 교사 {a.teacher_preset} ({Path(ck).name})")
     print(f"  모드 {a.mode}" + (f" block={a.block}" if a.mode == "block" else ""))
     print(f"  ★실제 val 데이터(next-token 정답). 난수 토큰이 아니다 — 계측 함정 31")
-    print(f"  ★참고: 교사 dense 결정적 full-val = **{TEACHER_FULLVAL}** (결과 040 §2)")
+    print(f"  ★G0-c 기준(2026-08-13 교정, 함정 34):")
+    print(f"     하한 {FLOOR}  ^< CE ^<  천장 {math.log(32768)-1.0:.4f}(=ln V − 1)")
+    print(f"     앵커 **{PARENT_TIED_ANCHOR}** = 부모초기화 타잉 step0 (결과 030 §2)")
+    print(f"     ⚠️교사 full-val {TEACHER_FULLVAL} 은 **도달 불가**다 — 중간 MLP 가 g층 평균이라")
+    print(f"       부모초기화 타잉 학생은 교사가 아니다. 종전 게이트가 여기서 틀렸다.")
+    print(f"  ⚠️크롭 {a.bs}x{a.seq} = {a.bs*a.seq}토큰 **단일 표본**이다 — "
+          f"다른 스크립트/다른 크롭의 CE 와 직접 비교하지 않는다")
 
     meta = prepare(a.data, int(float(a.tokens.rstrip("Mm")) * 1e6), exact=True)
     va = Loader("val", a.bs, a.seq, dev, meta["dir"], seed=99)   # ★val 시드 99 고정
@@ -152,14 +172,23 @@ def main():
         notes.append("no-baseline")
     else:
         b_ce = base[3]
-        print(f"\n  ★G0-c 계측 건강: R=1.0 의 CE {b_ce:.4f} vs 교사 full-val {TEACHER_FULLVAL}")
-        if abs(b_ce - TEACHER_FULLVAL) > 0.5:
-            print(f"  🚫★어긋난다({abs(b_ce-TEACHER_FULLVAL):.3f}). **나머지를 읽지 말 것** — "
-                  f"결과 041 §11 과 같은 계측 사고일 수 있다.")
-            print(f"     (크롭 표본이라 full-val 과 정확히 같을 수는 없지만 0.5 이내여야 한다)")
-            fails.append("G0-c")
+        ceil_ = math.log(32768) - 1.0
+        print(f"\n  ★G0-c 계측 건강: R=1.0 의 CE {b_ce:.4f}")
+        print(f"     대역 [{FLOOR}, {ceil_:.4f}]   앵커 {PARENT_TIED_ANCHOR}(결과 030 §2) "
+              f"로부터 {b_ce - PARENT_TIED_ANCHOR:+.4f}")
+        if b_ce > ceil_:
+            print(f"  🚫★난수 수준이다(천장 {ceil_:.4f} 초과). 부모초기화가 안 걸렸다 — "
+                  f"**나머지를 읽지 말 것**")
+            fails.append("G0-c[천장]")
+        elif b_ce < FLOOR:
+            print(f"  🚫★너무 좋다(하한 {FLOOR} 미만). **타잉 평균화가 안 걸렸을 수 있다** — "
+                  f"부모초기화 타잉 학생은 교사({TEACHER_FULLVAL})에 근접할 수 없다")
+            fails.append("G0-c[하한]")
         else:
-            print(f"  ✅ 같은 자릿수 — 계측이 건강하다. 이제 대가를 읽을 수 있다.")
+            print(f"  ✅ 부모초기화 대역 안이다 — 계측이 건강하다. 이제 대가를 읽을 수 있다.")
+            if abs(b_ce - PARENT_TIED_ANCHOR) > 1.0:
+                print(f"  ⚠️ 앵커에서 1.0 이상 떨어져 있다. 통과이긴 하나 "
+                      f"**프리셋·크롭이 030 과 다르다는 것을 결과문서에 적을 것**")
             print(f"\n  ★G0-d 반복의 출발 대가:")
             for R, n, t, ce, pk in rows:
                 if R == 1.0:

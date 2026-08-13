@@ -14,7 +14,7 @@
 **TinyLM** = 저사양 CPU·엣지·모바일용 **초경량 LLM 아키텍처**. 핵심 목표는 **연산이 아니라
 메모리 최적화**(연산 증가는 감수). 지향점: dense 대비 절반 이하 메모리로 유사 품질.
 
-> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608190600_HANDOFF.md`](handoff/202608190600_HANDOFF.md).
+> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608200600_HANDOFF.md`](handoff/202608200600_HANDOFF.md).
 > **새 세션은 그 문서를 먼저 읽는다.** 아래는 바뀌지 않는 규범만 남긴다.
 >
 > 요약 한 줄: 코드 v6(`tinylm/`), 아키텍처 v5.
@@ -171,7 +171,7 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 >
 > **근거·사례 전문은 [`ai_dev_tool/01`](ai_dev_tool/01_계측함정_원장.md) 말미.**
 
-## 알려진 함정 — **8행만 남긴다.** 전체(27건)는 [`ai_dev_tool/01_계측함정_원장.md`](ai_dev_tool/01_계측함정_원장.md)
+## 알려진 함정 — **10행만 남긴다.** 전체(35건)는 [`ai_dev_tool/01_계측함정_원장.md`](ai_dev_tool/01_계측함정_원장.md)
 
 > **★"내가 재려던 양을 정말 재고 있는가" 를 항상 먼저 의심한다.** 이 저장소 사고의 대다수는
 > 아키텍처가 아니라 **계측**이었다. **예상 밖으로 깨끗한 패턴**이 보이면 계측을 먼저 의심한다.
@@ -190,6 +190,8 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 | 28 | **같은 단어가 다른 규약** | `per-tensor`(α 재추정, +0.0862) vs `per-tensor`(FP8 스케일, **+0.0005**) = **173배**. 예측 근거로 섞어 썼다(결과 035) |
 | 29 | **OOM 이 OOM 이라는 이름으로 안 온다** | cuBLAS·cuDNN 이 자기 workspace 를 못 잡으면 **`CUBLAS_STATUS_EXECUTION_FAILED`**. `torch.OutOfMemoryError` 만 찾으면 못 알아본다(결과 037 §7.2) |
 | 30 | **스필은 조용하다** | 종료코드 0·`skip 0`·손실 정상인데 **+26% 느렸다**. 판별은 **순간 ms/step p90/p10** — `scripts/check_spill.py`(결과 037 §4.1) |
+| 34 | ★**기준값을 적는 것 ≠ 옳은 값을 적는 것** | 게이트가 실패를 찍으면 **모델보다 기준값을 먼저 의심**한다(3번 중 3번 다 게이트 잘못). step0 앵커: dense **3.8080** / **타잉+부모초기화 7.7742** / 난수 **10.3972** |
+| 35 | ★**`Path.write_text` 는 먼저 지운다** | 인코딩 실패 시 **0바이트**가 남고, 빈 배치는 **린터를 공허 통과**한다. **encode-first + `write_bytes` + 크기 단언** |
 | 24 | **fp32 상주 ≠ int8 상주** | 함정 1 의 3번째 얼굴. E=128 은 **int8 에서만** 1위(−18.8%)이고 fp32 는 −3.6%. **레버 순위가 경로에 따라 뒤집힌다**(결과 032 §4.3) |
 
 ### 아키텍처 사실 — **전문은 [`ai_dev_tool/01`](ai_dev_tool/01_계측함정_원장.md) 말미**
@@ -263,7 +265,7 @@ E4M3 왕복 Δbpb 를 가중치·활성·동시로. **자기검증 = g128 상대
 
 | 최상위 = **실험**(계획번호·단계가 이름에 있다) | `scripts/batch/` = **기능 모듈**(실험 아님) |
 |---|---|
-| **★`run_queue.bat`**(**대화형 스케줄러** — 메뉴에서 순서를 고르면 그 뒤는 무인. `call` 만 한다. **영구 보존**) · **`run_P022B_stage0_fp8_probe.bat`**(수 분, 학습 0) · **`run_P042_stage1_speed_vram.bat`**(60분, 단독) · **`run_P042_stage2_nockpt.bat`**(20분) · **`run_P050_parent_ablation.bat`**(9.5h) · **`run_P051_micro_group256.bat`**(3.5h) · **`run_P052_seed_replicate.bat`**(7h) · **`run_P018_compressed_teacher.bat`**(4.2h) · **`run_P022B_stage2_optstate.bat`**(4.2h, **감시 필요**) · `run_P046_emb_rank128.bat`(3.5h, SVD 재측정) · `run_smoke_check.bat`(코드 수정 후 필수) · **완료분은 `-done`** | `tool_smoke.bat` · `tool_kvcache_gate.bat` · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
+| ★**목록을 여기 적지 않는다**(2026-08-13 — 이 표가 **9개 항목 낡은 채** 방치됐다). **정본 = `experiments.tsv`**(메타데이터) + 디스크. **`python scripts/queue_menu.py --audit` 가 표↔디스크를 양방향 대조**한다. · **★`run_queue.bat`**(대화형 스케줄러 — 메뉴에서 순서를 고르면 그 뒤는 무인. `call` 만 한다. **영구 보존**) · `run_smoke_check.bat`(코드 수정 후 필수. ⚠️**0바이트가 된 적이 있다** — 함정 35) · `run_cleanup_checkpoints.bat` · **완료분은 `-done`** | `tool_smoke.bat` · `tool_kvcache_gate.bat` · `tool_mem_profile.bat` · `tool_sparse34_audit.bat` · `tool_datacache_diag.bat` · `tool_eval_slices.bat` · `tool_valdocs.bat` · `tool_qual_probe.bat` |
 
 
 > **★`scripts/batch/` 를 사용자에게 직접 실행하라고 안내하지 않는다**(2026-07-31 개편).
@@ -285,5 +287,5 @@ E4M3 왕복 Δbpb 를 가중치·활성·동시로. **자기검증 = g128 상대
 삭제 규칙 = ① 실험 완료 ② **재현 명령이 결과문서 §재현 명령에 보존** ③ **재실행 예정 없음**.
 **대조 시 결과문서의 재현 명령이 배치와 문자열 일치하는지 확인한다** — 011 §0.5-7 이
 `--tag dense --docstats` 를 빠뜨리고 있었고, 그대로 지웠으면 원래 명령이 소실될 뻔했다.
-새 배치를 만들면 이 표를 갱신한다.
+새 배치를 만들면 **`experiments.tsv` 에 한 줄 추가**한다(이 표가 아니다 — 목록을 두 곳에 두면 낡는다. **함정 18: 적용 대상 집합을 두 곳에서 정의**의 재발이었다).
 신규 코드 작업은 `tinylm/` 에서만 한다.
