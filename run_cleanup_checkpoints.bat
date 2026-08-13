@@ -1,6 +1,15 @@
 @echo off
+setlocal enabledelayedexpansion
 REM =============================================================================
 REM  CLEANUP  runs\ckpt   -   GPU 0, seconds
+REM
+REM  ***2026-08-13 BUG FIX.*** The first version compared "!TL_OK!"=="YES" without
+REM  `setlocal enabledelayedexpansion`, so cmd compared the LITERAL string
+REM  "!TL_OK!" against "YES". That never matches, so typing YES went to CANCEL
+REM  and nothing was ever deleted. Silent no-op, the worst kind of failure.
+REM  This repo bans PERCENT SIGN, so !VAR! is the only expansion we have and the
+REM  missing setlocal is structural, not careless. lint_bat.py rule 14 now
+REM  catches it.
 REM
 REM  Source of truth = docs\20260813_checkpoint list (Korean filename).
 REM  ***The file names are NOT written in this batch on purpose.***

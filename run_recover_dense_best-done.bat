@@ -43,15 +43,11 @@ if not exist run100m.py cd ..\..
 if not exist run100m.py goto BADROOT
 
 echo.
-echo =============================================================================
-echo  RECOVER dense_best  -  about 100 minutes
-echo =============================================================================
-echo  This does NOT overwrite runs\ckpt\m100_ko-en_300M_dense.pt
-echo  It writes            runs\ckpt\m100_ko-en_300M_denseb.pt
-echo  and                  runs\ckpt\m100_ko-en_300M_denseb_best.pt
 echo.
-echo  Reference from the registry:  val 3.8241  /  best 3.7797
-echo =============================================================================
+python scripts\runlog.py --name P000_recover_dense_best --note "=============================================================================" "RECOVER dense_best  -  about 100 minutes" "=============================================================================" "This does NOT overwrite runs\ckpt\m100_ko-en_300M_dense.pt" "It writes            runs\ckpt\m100_ko-en_300M_denseb.pt" "and                  runs\ckpt\m100_ko-en_300M_denseb_best.pt"
+echo.
+echo.
+python scripts\runlog.py --name P000_recover_dense_best --note "Reference from the registry:  val 3.8241  /  best 3.7797" "============================================================================="
 echo.
 if not defined TL_NOPAUSE pause
 
@@ -64,22 +60,23 @@ python scripts\runlog.py --name P000_recover_dense_best -- python run100m.py tra
 if errorlevel 1 goto TRAINBAD
 
 echo.
-echo =============================================================================
-echo  DONE. Now decide, do not automate this part.
-echo =============================================================================
 echo.
-echo  Compare the printed best value with 3.7797.
+python scripts\runlog.py --name P000_recover_dense_best --note "=============================================================================" "DONE. Now decide, do not automate this part." "============================================================================="
 echo.
-echo   - close  (within about 0.02)  the artefact is a fair stand-in. To install:
 echo.
-echo       copy runs\ckpt\m100_ko-en_300M_denseb_best.pt runs\ckpt\m100_ko-en_300M_dense_best.pt
+python scripts\runlog.py --name P000_recover_dense_best --note "Compare the printed best value with 3.7797."
 echo.
-echo   - far off                      DO NOT install it under the old name.
-echo                                  Keep it as `denseb` and add a registry row.
 echo.
-echo  Either way runs\ckpt\m100_ko-en_300M_dense.pt is untouched, so nothing
-echo  that already works can break.
-echo =============================================================================
+python scripts\runlog.py --name P000_recover_dense_best --note "- close  (within about 0.02)  the artefact is a fair stand-in. To install:"
+echo.
+echo.
+python scripts\runlog.py --name P000_recover_dense_best --note "copy runs\ckpt\m100_ko-en_300M_denseb_best.pt runs\ckpt\m100_ko-en_300M_dense_best.pt"
+echo.
+echo.
+python scripts\runlog.py --name P000_recover_dense_best --note "- far off                      DO NOT install it under the old name." "Keep it as `denseb` and add a registry row."
+echo.
+echo.
+python scripts\runlog.py --name P000_recover_dense_best --note "Either way runs\ckpt\m100_ko-en_300M_dense.pt is untouched, so nothing" "that already works can break." "============================================================================="
 if not defined TL_NOPAUSE pause
 exit /b 0
 

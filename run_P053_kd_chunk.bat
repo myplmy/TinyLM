@@ -34,12 +34,11 @@ if not exist run100m.py cd ..\..
 if not exist run100m.py goto BADROOT
 
 echo.
-echo =============================================================================
-echo  P053   KD loss chunking   3 x 250 steps   about 60 minutes
 echo.
-echo  !! Has REVIEW2 decided to KEEP KD in the standard condition?
-echo    If not, stop here - result 038 makes this measurement moot.
-echo =============================================================================
+python scripts\runlog.py --name P053_kd_chunk --note "=============================================================================" "P053   KD loss chunking   3 x 250 steps   about 60 minutes"
+echo.
+echo.
+python scripts\runlog.py --name P053_kd_chunk --note "!! Has REVIEW2 decided to KEEP KD in the standard condition?" "If not, stop here - result 038 makes this measurement moot." "============================================================================="
 echo.
 if not defined TL_NOPAUSE pause
 
@@ -49,29 +48,24 @@ python scripts\runlog.py --name P053_kd_chunk -- python run100m.py train --prese
 if errorlevel 1 echo [WARN] chunk off run returned an error - continuing
 
 echo.
-echo [queue] settling 15 s - WDDM holds VRAM after a process exits (result 037 s7)
+echo.
+python scripts\runlog.py --name P053_kd_chunk --note "[queue] settling 15 s - WDDM holds VRAM after a process exits (result 037 s7)"
 timeout /t 15 /nobreak
 
 python scripts\runlog.py --name P053_kd_chunk -- python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --compile --init-from --kd --kd-every 4 --kd-chunk 2048 --tag mC_kdc_2048_250
 if errorlevel 1 echo [WARN] chunk 2048 run returned an error - continuing
 
 echo.
-echo [queue] settling 15 s
+echo.
+python scripts\runlog.py --name P053_kd_chunk --note "[queue] settling 15 s"
 timeout /t 15 /nobreak
 
 python scripts\runlog.py --name P053_kd_chunk -- python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --compile --init-from --kd --kd-every 4 --kd-chunk 1024 --tag mC_kdc_1024_250
 if errorlevel 1 echo [WARN] chunk 1024 run returned an error - continuing
 
 echo.
-echo =============================================================================
-echo  Read from runs\logs\*.json:
-echo    peak_reserved_gib   off vs 2048 vs 1024    expect -2 to -3, not -5.48
-echo    kd_chunk            0 / 2048 / 1024        else the flag did nothing
-echo    ms_step_median      smaller chunk = more python loop iterations = slower
-echo    the first eval loss of the three runs should agree to about 1e-3
-echo      - that is the numerical equivalence check, not the 250-step val
-echo  Do NOT read val as quality. 250 steps decides nothing (baselines s2.3).
-echo =============================================================================
+echo.
+python scripts\runlog.py --name P053_kd_chunk --note "=============================================================================" "Read from runs\logs\*.json:" "peak_reserved_gib   off vs 2048 vs 1024    expect -2 to -3, not -5.48" "kd_chunk            0 / 2048 / 1024        else the flag did nothing" "ms_step_median      smaller chunk = more python loop iterations = slower" "the first eval loss of the three runs should agree to about 1e-3" "- that is the numerical equivalence check, not the 250-step val" "Do NOT read val as quality. 250 steps decides nothing (baselines s2.3)." "============================================================================="
 if not defined TL_NOPAUSE pause
 exit /b 0
 

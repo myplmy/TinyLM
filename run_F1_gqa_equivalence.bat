@@ -31,7 +31,8 @@ if not exist run100m.py goto BADROOT
 set TL_OUTDIR=smoketest_logs
 
 echo.
-echo ================= STAGE A  equivalence gate (no training) ==================
+echo.
+python scripts\runlog.py --name P000_F1_gqa --note "================= STAGE A  equivalence gate (no training) =================="
 python scripts\runlog.py --name P000_F1_gqa --note "[F-1 stage A] enable_gqa equivalence gate - logits, backends, kv-cache path"
 python scripts\runlog.py --name P000_F1_gqa -- python scripts\diag_gqa_equiv.py --preset m100R1c
 if errorlevel 1 goto GATEBAD
@@ -39,8 +40,8 @@ if errorlevel 1 goto GATEBAD
 set TL_OUTDIR=
 
 echo.
-echo ================= STAGE B  VRAM pair  250 steps x 2 ========================
-echo  About 40 minutes. Do not run anything else on the GPU.
+echo.
+python scripts\runlog.py --name P000_F1_gqa --note "================= STAGE B  VRAM pair  250 steps x 2 ========================" "About 40 minutes. Do not run anything else on the GPU."
 echo.
 
 python scripts\runlog.py --name P000_F1_gqa_vram --note "[F-1 stage B] 250-step VRAM pair, sdpa_gqa off vs on. Read reserved only, not val."
@@ -49,23 +50,16 @@ python scripts\runlog.py --name P000_F1_gqa_vram -- python run100m.py train --pr
 if errorlevel 1 echo [WARN] gqa off run returned an error - continuing
 
 echo.
-echo [queue] settling 15 s - WDDM holds VRAM for a few seconds after exit
-echo   (result 037 s7: the next run started 1 second later and died with
-echo    CUBLAS_STATUS_EXECUTION_FAILED, which is an OOM under another name)
+echo.
+python scripts\runlog.py --name P000_F1_gqa --note "[queue] settling 15 s - WDDM holds VRAM for a few seconds after exit" "(result 037 s7: the next run started 1 second later and died with" "CUBLAS_STATUS_EXECUTION_FAILED, which is an OOM under another name)"
 timeout /t 15 /nobreak
 
 python scripts\runlog.py --name P000_F1_gqa_vram -- python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --compile --init-from --sdpa-gqa --tag mC_gqa_on250
 if errorlevel 1 echo [WARN] gqa on run returned an error - continuing
 
 echo.
-echo =============================================================================
-echo  Read from runs\logs\*.json, not from the console:
-echo    peak_reserved_gib   off vs on      expect about -0.4 to -0.5
-echo    ms_step_median      off vs on      NEW field from T-1, same session only
-echo    ms_step_spread      both           normal band is 0.065 to 0.154
-echo    sdpa_gqa            must be false then true, else the flag did nothing
-echo  Do NOT read val - 250 steps decides nothing about quality.
-echo =============================================================================
+echo.
+python scripts\runlog.py --name P000_F1_gqa --note "=============================================================================" "Read from runs\logs\*.json, not from the console:" "peak_reserved_gib   off vs on      expect about -0.4 to -0.5" "ms_step_median      off vs on      NEW field from T-1, same session only" "ms_step_spread      both           normal band is 0.065 to 0.154" "sdpa_gqa            must be false then true, else the flag did nothing" "Do NOT read val - 250 steps decides nothing about quality." "============================================================================="
 if not defined TL_NOPAUSE pause
 exit /b 0
 

@@ -69,34 +69,33 @@ if not exist run100m.py goto BADROOT
 if not exist runs\ckpt\m100R1c_ko-en_300M_mC_wsd.pt goto NOCTRL
 if not exist runs\ckpt\m100_ko-en_300M_dense.pt goto NOPARENT
 
-echo =============================================================
-echo [P046] embedding rank 256 to 128, re-measured with SVD transplant
-echo =============================================================
+echo.
+python scripts\runlog.py --name P046_mC_e128svd --note "=============================================================" "[P046] embedding rank 256 to 128, re-measured with SVD transplant" "============================================================="
 python scripts\runlog.py --name P046_mC_e128svd --note "[P046] embedding rank 256 to 128, RE-MEASURED. Result 030 was VERDICT IMPOSSIBLE because the embedding started from random. Gate G-init below."
 
 echo.
-echo [guard] cli.py call-keyword sanity
+echo.
+python scripts\runlog.py --name P046_mC_e128svd --note "[guard] cli.py call-keyword sanity"
 python scripts\check_call_kwargs.py
 if errorlevel 1 goto BADKWARGS
 
 echo.
-echo =============================================================
-echo [1/2] train
-echo =============================================================
+echo.
+python scripts\runlog.py --name P046_mC_e128svd --note "=============================================================" "[1/2] train" "============================================================="
 python scripts\runlog.py --name P046_mC_e128svd --note "[1/2] train : --emb-rank 128 with SVD truncation transplant"
 python scripts\runlog.py --name P046_mC_e128svd -- python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --kd --kd-every 4 --init-from --emb-rank 128 --tag mC_e128svd
 if errorlevel 1 goto TRAINBAD
 
 echo.
-echo =============================================================
-echo [2/2] paired comparison against mC_wsd and against the broken first run
-echo =============================================================
+echo.
+python scripts\runlog.py --name P046_mC_e128svd --note "=============================================================" "[2/2] paired comparison against mC_wsd and against the broken first run" "============================================================="
 python scripts\runlog.py --name P046_mC_e128svd --note "[2/2] paired comparison : mC_wsd is the control, mC_e128 is the random-init version"
 python scripts\runlog.py --name P046_mC_e128svd -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_wsd mC_e128svd
 if errorlevel 1 echo [WARN] paired_eval failed - checkpoint is on disk, re-run this step alone
 
 python scripts\runlog.py --name P046_mC_e128svd --note "=================================================================" "WHAT TO RECORD" "  0. ***GATE G-init, all three.*** SVD transplant line present / step 0 ce" "     below 8.5 / grad_max below 3. Any one failing means VERDICT IMPOSSIBLE" "     again and the delta must NOT be quoted." "  1. the 'spectrum energy retained' percentage. New information." "  2. final val, NOT best." "  3. the paired_eval delta, SE and t against mC_wsd." "  4. the report() block - ternary and embedding parameter counts." "  5. the header conditions against mC_wsd." "" "HOW TO READ IT" "  delta under +0.024" "      -^> ACCEPT for review. int8 residency -18.8 percent for free." "         ***But say 'int8'.*** On fp32 it is only -3.6 percent and on packed" "         it is the worst lever we have (result 032 section 4.3, trap 24)." "  +0.024 to +0.08" "      -^> a real trade. Worth it only if the deployment target is memory" "         constrained AND int8 is the chosen path." "  above +0.08" "      -^> reject at E=128. Try E=192 (-9.4 percent) or close the axis." "" "  ***ALSO COMPARE against result 030.*** The gap between +0.1768 (random init)" "  and this delta is the SIZE OF THE INITIALISATION HANDICAP, and that number" "  matters far beyond P046 - P048 and P049 carry the same handicap wherever" "  --init-from cannot transplant cleanly. ***P050 measures the same thing from" "  the other side.*** Read the two together." "" "LIMITS: one seed / E=128 only / the -18.8 percent is COMPUTED, confirm with" "  mem_runtime.py separately / vocab stays at 32,768 (result 025 closed vocab" "  reduction)." "================================================================="
-echo done.
+echo.
+python scripts\runlog.py --name P046_mC_e128svd --note "done."
 if not defined TL_NOPAUSE pause
 exit /b 0
 

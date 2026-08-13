@@ -108,3 +108,43 @@ python scripts/lint_bat.py           # E11 로 검출된다
 
 `.bat` 을 LF 로 통일하지 않는 이유: cmd.exe 는 **LF-only 배치에서 `goto`/라벨이 드물게 어긋난다.**
 우리 배치는 `goto NOTIMPL`·`goto CACHEBAD` 를 실제로 쓴다 — 조용히 틀릴 위험을 지지 않는다.
+
+---
+
+## ★2026-08-13 추가 규칙 두 개 (실사고 기반)
+
+### R13. **콘솔에만 뜨고 로그에 안 남는 `echo` 를 쓰지 않는다**
+
+**사고**: `run_recover_dense_best.bat`(P054)이 cmd 창에 *"정본 dense 를 덮어쓰지 않는다 /
+best 를 3.7797 과 비교하라 / 설치는 이 `copy` 명령으로"* 를 전부 찍었는데,
+**로그 309줄 어디에도 그 문장이 없다.** `runlog.py` 는 **자기가 실행한 것**만 기록하기 때문이다.
+
+→ 로그를 나중에 읽는 사람(**대개 다음 세션의 AI**)은 **판정 기준을 못 본다.**
+   그러면 log-to-result 절차가 배치 원문을 따로 찾아 읽어야 하고, 배치가 `-done` 으로
+   지워졌으면 **영영 못 찾는다.**
+
+**규칙**: 실험 배치에서 정보가 담긴 `echo` 는 **전부 `runlog.py --note` 로 쓴다.**
+
+```
+REM 나쁨 - 콘솔에만 뜬다
+echo  Read: paired delta vs mC_wsd against the -0.075 threshold
+
+REM 좋음 - 로그와 콘솔 **양쪽**에 쓴다
+python scripts\runlog.py --name P049_x --note "Read: paired delta vs mC_wsd against -0.075"
+```
+
+★**이건 같은 말을 두 번 적는 것이 아니다.** `runlog.py --note` 는 파일에 쓴 뒤
+`sys.stdout.write(body)` 로 **콘솔에도 그대로 흘린다.** 1:1 치환이므로 함정 18
+("적용 대상을 두 곳에서 정의")에 걸리지 않는다.
+
+**허용**: `echo.`(빈 줄) · 구분선(`====`) · **실패 라벨 블록 안**(자식이 이미 죽은 뒤라
+runlog 를 못 태울 수 있다). `lint_bat.py` 규칙 13 이 나머지를 잡는다.
+
+### R14. **`!VAR!` 를 쓰면 파일 앞에 `setlocal enabledelayedexpansion`**
+
+**사고**: `run_cleanup_checkpoints.bat` 이 `if not "!TL_OK!"=="YES" goto CANCEL` 을 썼는데
+지연확장이 꺼져 있어 cmd 가 **문자열 `"!TL_OK!"` 와 `"YES"` 를 비교**했다. 항상 불일치 →
+**사용자가 YES 를 입력해도 CANCEL 로 갔고 44.5GB 가 안 지워졌다.**
+
+★**이건 부주의가 아니라 구조다.** 이 저장소는 `%` 를 금지하므로 **`!VAR!` 가 유일한 변수
+확장 수단**이고, 따라서 `setlocal` 누락은 **반드시 재발한다.** `lint_bat.py` 규칙 14 가 잡는다.

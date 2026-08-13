@@ -13,6 +13,8 @@
   W       9  pause / exit /b 누락      더블클릭 실행 시 창이 닫혀 로그를 잃는다
   I(정보) 10 꼬리 판정 안내(echo) 없음  로그를 받아도 무엇을 읽어야 할지 모른다
   W      12  --no-ckpt 런 앞에 timeout 없음   직전 런의 VRAM 이 안 풀려 CUBLAS 오류(결과 037)
+  W      13  echo 내용이 로그에 안 남는다      콘솔에만 뜨고 runlog 파일엔 없다 → --note 로 (2026-08-13)
+  E      14  !VAR! 인데 지연확장 미설정        변수가 안 풀려 입력 비교가 항상 실패한다 (2026-08-13)
   E      11  줄끝이 CRLF 가 아님       `.gitattributes` 가 `*.bat text eol=crlf` 로 선언하는데
                                        작업트리가 LF 면 git 이 매번 재작성·경고한다(CRLF 재발 원인).
                                        또 cmd.exe 는 LF-only 배치에서 `goto`/라벨이 드물게 어긋난다.
@@ -174,6 +176,50 @@ def lint(path: Path):
     tail = "\n".join(lines[-25:]).lower()
     if not any(k in tail for k in ("record", "read", "decision", "compare", "gate", "verdict")):
         info.append("꼬리에 판정/읽는 순서 안내 echo 가 없다 → 로그를 받아도 해석 기준이 없다")
+
+    # ★★13. **콘솔에만 나오고 로그에는 안 남는 내용** (2026-08-13 사용자 지적)
+    #   `runlog.py` 는 자기가 **실행한 것**만 기록한다. 배치가 `echo` 로 찍는 헤더·경고·
+    #   "읽는 순서" 는 **cmd 창에만 뜨고 로그에는 한 줄도 안 남는다.**
+    #   → `run_recover_dense_best.bat`(P054)이 정확히 그랬다: 콘솔에는 "정본을 덮어쓰지
+    #     않는다 / 3.7797 과 비교하라 / copy 명령" 이 다 떴는데 **로그 309줄 어디에도 없다.**
+    #   그러면 로그를 나중에 읽는 사람(=다음 세션의 AI)은 **판정 기준을 못 본다.**
+    #
+    #   ★고칠 방법은 중복이 아니다. `runlog.py --note` 는 **로그와 콘솔에 동시에** 쓴다
+    #   (`sys.stdout.write(body)`). 즉 `echo X` → `--note "X"` 는 **1:1 치환**이고
+    #   같은 문장을 두 곳에 적는 것이 아니다(그건 함정 18 이 된다).
+    #
+    #   허용: `echo.`(빈 줄) · 구분선(`=`,`-`) · `@echo off` · 실패 라벨 블록 안
+    #   (실패 안내는 자식 프로세스가 이미 죽은 뒤라 runlog 를 못 태울 수 있다)
+    if path.name.startswith("run_") and "runlog.py" in txt:
+        in_fail_label = False
+        for i, raw in enumerate(lines):
+            s = raw.strip()
+            if re.match(r"^:\w+", s):
+                in_fail_label = True          # 라벨 이후는 대개 실패 경로
+            if in_fail_label or s.upper().startswith("REM") or s.startswith("@"):
+                continue
+            m = re.match(r"^echo\s+(.*)$", s, re.I)
+            if not m:
+                continue
+            body = m.group(1)
+            # 구분선·장식만 있는 줄은 정보가 아니다
+            if not re.sub(r"[=\-_*.!\s^<>]", "", body):
+                continue
+            warn.append(
+                f"L{i+1} 이 echo 내용은 **콘솔에만 뜨고 로그에 안 남는다**: {body[:52]!r} → "
+                f"`python scripts\\runlog.py --name P0NN_x --note \"...\"` 로 바꾸세요"
+                f"(--note 는 로그와 콘솔에 동시에 쓴다 = 중복 아님)")
+
+    # ★14. `!VAR!` 를 쓰는데 `setlocal enabledelayedexpansion` 이 없다
+    #   2026-08-13 실사고: `run_cleanup_checkpoints.bat` 이 `if not "!TL_OK!"=="YES"` 를 썼는데
+    #   지연확장이 꺼져 있어 **문자열 "!TL_OK!" 와 "YES" 를 비교**했다. 항상 불일치 →
+    #   **YES 를 입력해도 CANCEL 로 갔다.** 조용히 아무것도 안 하는 실패다.
+    #   이 저장소는 `%` 를 금지하므로 `!VAR!` 가 **유일한 변수 확장 수단**이고, 따라서
+    #   `setlocal enabledelayedexpansion` 누락은 **구조적으로 재발한다.**
+    if re.search(r"![A-Za-z_]\w*!", txt) and "enabledelayedexpansion" not in txt.lower():
+        err.append("`!VAR!` 를 쓰는데 `setlocal enabledelayedexpansion` 이 없다 → "
+                   "변수가 안 풀려 **문자열 그대로 비교**된다(입력이 항상 불일치). "
+                   "파일 앞에 `setlocal enabledelayedexpansion` 을 넣으세요")
 
     return err, warn, info
 

@@ -52,14 +52,7 @@ call scripts\batch\tool_smoke.bat
 if errorlevel 1 echo [WARN] smoke reported a problem - read which field is missing
 
 echo.
-echo =================================================================
-echo VERDICT: read the final total-error-count line of the contract check.
-echo   zero     -^> the contract holds. Long runs are safe to start.
-echo   not zero -^> fix the missing field FIRST. A long run that cannot be
-echo               written up is a long run thrown away.
-echo   The [VERIFY] banner above it is a section title, not the answer.
-echo =================================================================
-echo done.
+python scripts\runlog.py --name smoke --note "=================================================================" "VERDICT: read the final total-error-count line of the contract check." "  zero     -^> the contract holds. Long runs are safe to start." "  not zero -^> fix the missing field FIRST. A long run that cannot be" "              written up is a long run thrown away." "  The [VERIFY] banner above it is a section title, not the answer." "=================================================================" "done."
 if not defined TL_NOPAUSE pause
 exit /b 0
 

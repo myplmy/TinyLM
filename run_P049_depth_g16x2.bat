@@ -42,10 +42,8 @@ python -c "import glob,sys; sys.exit(0 if glob.glob('smoketest_logs/*P049_stage0
 if errorlevel 1 goto NOGATE
 
 echo.
-echo =============================================================================
-echo  P049 stage 1   about 5.8 hours   -   tag mC_d36
-echo  36 layers vs 20. Adoption threshold was fixed in advance: better than -0.075
-echo =============================================================================
+echo.
+python scripts\runlog.py --name P049_depth_g16x2 --note "=============================================================================" "P049 stage 1   about 5.8 hours   -   tag mC_d36" "36 layers vs 20. Adoption threshold was fixed in advance: better than -0.075" "============================================================================="
 echo.
 if not defined TL_NOPAUSE pause
 
@@ -55,22 +53,16 @@ python scripts\runlog.py --name P049_depth_g16x2 -- python run100m.py train --pr
 if errorlevel 1 goto TRAINBAD
 
 echo.
-echo [queue] settling 15 s before the evaluation process starts
+echo.
+python scripts\runlog.py --name P049_depth_g16x2 --note "[queue] settling 15 s before the evaluation process starts"
 timeout /t 15 /nobreak
 
 python scripts\runlog.py --name P049_depth_g16x2 -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_wsd mC_g16 mC_d36
 if errorlevel 1 echo [WARN] paired_eval returned an error - the training run is still valid
 
 echo.
-echo =============================================================================
-echo  Read, in this order:
-echo    1. the [init] lines at the top - how many layers were duplicated
-echo    2. json n_layers = 36 and depth_init, or the preset did not apply
-echo    3. json grad_max ^< 10, else judgement is not possible (result 030)
-echo    4. paired delta vs mC_wsd against the -0.075 threshold
-echo    5. peak_reserved_gib and ms_step_spread (spill band 0.065 to 0.154)
-echo  !! mC_d36 is NOT comparable to a 20-layer run on speed - different depth.
-echo =============================================================================
+echo.
+python scripts\runlog.py --name P049_depth_g16x2 --note "=============================================================================" "Read, in this order:" "1. the [init] lines at the top - how many layers were duplicated" "2. json n_layers = 36 and depth_init, or the preset did not apply" "3. json grad_max ^< 10, else judgement is not possible (result 030)" "4. paired delta vs mC_wsd against the -0.075 threshold" "5. peak_reserved_gib and ms_step_spread (spill band 0.065 to 0.154)" "!! mC_d36 is NOT comparable to a 20-layer run on speed - different depth." "============================================================================="
 if not defined TL_NOPAUSE pause
 exit /b 0
 

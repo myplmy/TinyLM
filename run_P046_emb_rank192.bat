@@ -33,10 +33,8 @@ if not exist run100m.py cd ..\..
 if not exist run100m.py goto BADROOT
 
 echo.
-echo =============================================================================
-echo  P046 stage 3   E = 192   about 3.5 hours   -   tag mC_e192svd
-echo  Reference: mC_wsd 3.6984 / mC_e128svd +0.1123
-echo =============================================================================
+echo.
+python scripts\runlog.py --name P046_emb_rank192 --note "=============================================================================" "P046 stage 3   E = 192   about 3.5 hours   -   tag mC_e192svd" "Reference: mC_wsd 3.6984 / mC_e128svd +0.1123" "============================================================================="
 echo.
 if not defined TL_NOPAUSE pause
 
@@ -46,21 +44,16 @@ python scripts\runlog.py --name P046_emb_rank192 -- python run100m.py train --pr
 if errorlevel 1 goto TRAINBAD
 
 echo.
-echo [queue] settling 15 s before the evaluation process starts
+echo.
+python scripts\runlog.py --name P046_emb_rank192 --note "[queue] settling 15 s before the evaluation process starts"
 timeout /t 15 /nobreak
 
 python scripts\runlog.py --name P046_emb_rank192 -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_wsd mC_e128svd mC_e192svd
 if errorlevel 1 echo [WARN] paired_eval returned an error - the training run is still valid
 
 echo.
-echo =============================================================================
-echo  Read:
-echo    1. the [init] SVD line - preserved spectrum energy percent
-echo    2. json emb_rank = 192, else the flag did nothing
-echo    3. grad_max ^< 3 (G-init), grad_max ^< 10 (judgeable at all)
-echo    4. paired delta vs mC_wsd, and vs mC_e128svd (+0.1123)
-echo    5. mem_breakdown - and say WHICH path (fp32 or int8) when you quote it
-echo =============================================================================
+echo.
+python scripts\runlog.py --name P046_emb_rank192 --note "=============================================================================" "Read:" "1. the [init] SVD line - preserved spectrum energy percent" "2. json emb_rank = 192, else the flag did nothing" "3. grad_max ^< 3 (G-init), grad_max ^< 10 (judgeable at all)" "4. paired delta vs mC_wsd, and vs mC_e128svd (+0.1123)" "5. mem_breakdown - and say WHICH path (fp32 or int8) when you quote it" "============================================================================="
 if not defined TL_NOPAUSE pause
 exit /b 0
 

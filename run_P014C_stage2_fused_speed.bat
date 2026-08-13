@@ -32,10 +32,8 @@ if not exist run100m.py goto BADROOT
 set TL_OUTDIR=smoketest_logs
 
 echo.
-echo =============================================================================
-echo  P014C stage 2   CPU decode speed gate   G2 = 19.07 tok/s
-echo  Close other CPU-heavy programs before continuing.
-echo =============================================================================
+echo.
+python scripts\runlog.py --name P014C_stage2_fused --note "=============================================================================" "P014C stage 2   CPU decode speed gate   G2 = 19.07 tok/s" "Close other CPU-heavy programs before continuing." "============================================================================="
 echo.
 if not defined TL_NOPAUSE pause
 
@@ -44,11 +42,8 @@ python scripts\runlog.py --name P014C_stage2_fused -- python scripts\bench_fused
 if errorlevel 1 goto GATEMISS
 
 echo.
-echo =============================================================================
-echo  G2 passed. The fused path removes the fp32 rebuild AND is faster than the
-echo  unpack cache. Next: stage 3 measures what per-row costs when TRAINED that
-echo  way (--micro-group 0), which is the only honest quality number.
-echo =============================================================================
+echo.
+python scripts\runlog.py --name P014C_stage2_fused --note "=============================================================================" "G2 passed. The fused path removes the fp32 rebuild AND is faster than the" "unpack cache. Next: stage 3 measures what per-row costs when TRAINED that" "way (--micro-group 0), which is the only honest quality number." "============================================================================="
 if not defined TL_NOPAUSE pause
 exit /b 0
 

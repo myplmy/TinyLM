@@ -26,16 +26,15 @@ if not exist run100m.py goto BADROOT
 set TL_OUTDIR=smoketest_logs
 
 echo.
-echo ================= P049 stage 0  init gate ==================================
+echo.
+python scripts\runlog.py --name P049_stage0_init --note "================= P049 stage 0  init gate =================================="
 python scripts\runlog.py --name P049_stage0_init --note "[P049 stage 0] depth-expanding transplant gate - 20 layer parent into 36 layer student, prop vs gate_scale"
 python scripts\runlog.py --name P049_stage0_init -- python scripts\diag_depth_init.py --preset m100R1d --teacher-preset m100
 if errorlevel 1 goto GATEBAD
 
 echo.
-echo =============================================================================
-echo  Gate passed. run_P049_depth_g16x2.bat can now run (about 5.8 h).
-echo  Put the recommended depth_init into that batch first if it is not `prop`.
-echo =============================================================================
+echo.
+python scripts\runlog.py --name P049_stage0_init --note "=============================================================================" "Gate passed. run_P049_depth_g16x2.bat can now run (about 5.8 h)." "Put the recommended depth_init into that batch first if it is not `prop`." "============================================================================="
 if not defined TL_NOPAUSE pause
 exit /b 0
 
