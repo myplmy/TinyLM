@@ -10,8 +10,9 @@
   "execution": {
     "ai_runs_training": false,
     "note": "AI는 사용자 환경에서 학습/GPU 코드를 직접 실행하지 않는다. 코드 수정만 하고, 실행은 명령어·순서를 제시해 사용자가 대리 수행 후 로그를 회신한다.",
-    "git": "사용자가 Windows 셸에서 수행(Cowork 마운트에서 rename/unlink 차단)",
-    "bat_files": "순수 ASCII만(한글/chcp/<>|% 금지)"
+    "git": "사용자가 Windows 셸에서 수행. mv(개명)는 AI 가능, rm(삭제)은 AI 절대 금지",
+    "bat_files": "순수 ASCII만(한글/chcp/<>| 금지). %는 2026-08-13 해제 - %VAR% 즉시확장만 금지",
+    "file_delete": "금지. AI 는 어떤 파일도 지우지 않고 삭제 권한도 요청하지 않는다. 지울 것은 핸드오프 '사용자에게 부탁하는 것' 절에 목록으로만 적는다. 능력이 아니라 정책이다(2026-08-14 위반 1회, 의사결정함정 D11)"
   },
   "entrypoints": {
     "cli": "python run100m.py <prepare|train|eval|compare|all|lrfind|generate|kdcache>",

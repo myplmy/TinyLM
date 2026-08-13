@@ -151,6 +151,74 @@ def lint(path: Path):
             if need not in seg:
                 warn.append(f"권장순서 절에 **{why}** 가 안 보인다(규약 §4)")
 
+    # ── ★7b. 큐 입력 줄의 id 가 **실제 큐 id 와 맞는가** (2026-08-14 실사고) ──
+    #
+    #   핸드오프 §권장순서 표의 **순위 열**(0,1,2,3…)과 **큐 메뉴 id** 는 **다른 번호**다.
+    #   전자는 AI 가 매긴 우선순위, 후자는 `experiments.tsv` 행 순서(-done 제외 후)다.
+    #   내가 둘을 섞어 `0 2 3` 을 권장했는데 실제로는 `0 1 2` 였다 —
+    #   그대로 넣었으면 **1순위를 건너뛰고 최하위 실험에 3.5시간을 태울 뻔했다.**
+    #
+    #   → 큐 입력 줄이 있으면 **`queue_menu` 의 실제 id 와 대조**한다.
+    #     핸드오프는 `python scripts/queue_menu.py --ids <배치들>` 출력을 붙여야 한다.
+    #   세 가지 표기를 다 받는다:
+    #     (a) `run_queue.bat` 다음 줄에 `0 1 2`
+    #     (b) `입력할 줄` 다음 줄에 `0 1 2`      (queue_menu --ids 출력)
+    #     (c) ★`run_queue.bat -> 0(smoke) 2(P049...) 3(F-1)`  ← **실제로 틀렸던 형태**
+    # ★2026-08-14 — **권장순서 절 안에서만** 찾는다.
+    #   초판은 문서 전체를 뒤졌고, §큐사고 절에 **인용해 둔 잘못된 예시**
+    #   (`내가 쓴 것: run_queue.bat -> 0(smoke) 2(P049 단계1) …`)를 잡아 오탐했다.
+    #   ★**과거 사고를 기록하는 것과 지금 권장하는 것은 다르다.**
+    #   실행 지시는 권장순서 절에만 있으므로 검사 범위를 거기로 좁힌다.
+    m_sec = re.search(r"^##.*(다음 권장 실험|권장 순서).*$", txt, re.M)
+    scope = txt[m_sec.end():].split("\n## ")[0] if m_sec else txt
+    m_q, ids, raw = None, [], ""
+    m_c = re.search(r"run_queue\.bat[^\n]*?(?:->|→|:)\s*((?:\d+\s*\([^)]*\)\s*)+)", scope)
+    if m_c:
+        m_q, raw = m_c, m_c.group(1)
+        ids = [int(x) for x in re.findall(r"(\d+)\s*\(", raw)]
+    else:
+        m_q = (re.search(r"run_queue\.bat[^\n]*\n+\s*([\d ]{3,})\n", scope)
+               or re.search(r"입력할 줄[^\n]*\n+\s*([\d ]{3,})\n", scope)
+               or re.search(r"```\s*\n\s*([\d ]{3,})\s*\n\s*```", scope))
+        if m_q:
+            raw = m_q.group(1)
+            ids = [int(x) for x in raw.split()]
+    if m_q and ids:
+        try:
+            sys.path.insert(0, str(ROOT / "scripts"))
+            from queue_menu import load as _qload, available as _qav
+            av = _qav(_qload()[0])
+            if any(i >= len(av) or i < 0 for i in ids):
+                err.append(f"★큐 입력 줄 `{raw.strip()}` 에 **범위를 벗어난 id** 가 있다 "
+                           f"(현재 메뉴 0~{len(av)-1})")
+            else:
+                named = [av[i]["batch"] for i in ids]
+                # ★(c) 형태면 `N(라벨)` 의 **라벨이 그 id 의 배치와 맞는지** 본다.
+                #   이게 핵심이다 — 2026-08-14 사고에서 id 는 전부 유효 범위였고
+                #   **라벨만 어긋났다.** "본문에 이름이 나오는가" 로는 못 잡는다
+                #   (권장순서 표에 전부 나오기 때문이다).
+                pairs = re.findall(r"(\d+)\s*\(([^)]*)\)", raw)
+                mismatch = []
+                for sid, label in pairs:
+                    b = av[int(sid)]["batch"]
+                    plan = (av[int(sid)].get("plan") or "").strip()
+                    keys = [k for k in re.findall(r"[A-Za-z]\w*", label) if len(k) > 1]
+                    if "smoke" in label.lower() or "스모크" in label:
+                        keys.append("smoke")
+                    ok = any(k.lower() in b.lower() for k in keys) or \
+                         (plan and plan not in ("-",) and plan.lower() in label.lower())
+                    if keys and not ok:
+                        mismatch.append(f"id {sid} = `{b}` 인데 라벨은 '{label.strip()}'")
+                if mismatch:
+                    err.append("★★**큐 id 와 라벨이 어긋난다** — 순위 번호와 큐 id 를 "
+                               "섞은 것이다(2026-08-14 사고: 1순위를 건너뛰고 최하위 실험에 "
+                               "3.5h 를 태울 뻔했다). " + " / ".join(mismatch) +
+                               ". ★`python scripts/queue_menu.py --ids <배치들>` 출력을 붙일 것")
+                else:
+                    info.append(f"큐 입력 줄 `{raw.strip()}` -> {named} (id 대조 통과)")
+        except Exception as e:                              # 큐 메타데이터가 없으면 건너뛴다
+            info.append(f"큐 id 대조를 못 했다: {type(e).__name__}")
+
     # ── 8. CLAUDE.md 가 이 파일을 가리키는가 ─────────────────────────────────
     cm = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
     if path.name not in cm:

@@ -18,14 +18,15 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단
-1	P055	run_P055_stage0b_kd_audit.bat	N	0.1	N	Y	★단계0b(재실행) — 감사 도구를 고쳤다(독립 분포+퇴화 감지). 결과 042 에서 A2/A4 가 무효였다
-1	P049	run_P049_stage0b_init_gate.bat	D	0.1	N	Y	★단계0b(재실행) — 게이트가 난수 정답을 썼다(결과 041 §11). 실제 val 데이터로 고쳤다
-1	P049B	run_P049B_stage0_repeat_gate.bat	D	0.1	N	Y	★학습 시 재귀의 출발 대가. ✅완료(결과 043). ⚠️G0-c 기준값이 틀렸었다(3.8080 -> 7.7742, 함정 34)
 2	P049	run_P049_depth_g16x2.bat	Y	5.8	N	N	타잉으로 깊이를 사는가(36층). ✅단계0b 통과(결과 041 §13). --depth-init gate_scale 확정. ★복제층 gate 가 깨어나는지 기록 필수
 3	F1	run_F1_gqa_equivalence.bat	Y	0.8	Y	Y	enable_gqa 동등성 + VRAM(-0.4~0.5 GiB 기대). 단독 실행
 4	P046	run_P046_emb_rank192.bat	Y	3.5	N	N	E=192 - 스펙트럼 88.76 퍼센트가 E=128 대가(+0.1123)를 예측했다
 5	P014C	run_P014C_stage2_fused_speed.bat	N	0.2	Y	N	per-row 융합 int8 이 언팩 캐시(19.07 tok/s)를 넘는가. CPU, 학습 0
 9	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 44.5 GB 회수. YES 를 직접 입력해야 지운다
 9	P053	run_P053_kd_chunk.bat	Y	1.0	Y	N	★KD 손실 청크 VRAM. **REVIEW2 가 KD 를 유지할 때만 의미가 있다**
-# ★2026-08-13 — run_P049_stage0_init_gate.bat / run_P055_stage0_kd_audit.bat 은
-#   stage0b 로 대체됐다(ai_dev_tool/03 §7). 사용자 삭제 대기 중이라 표에서 뺀다.
+# ★2026-08-14 — 완료·삭제된 단계0/0b 행 3개를 제거했다(결과 041 §13 · 042 §10 · 043 에
+#   재현 명령이 보존돼 있다). 표에만 남기면 메뉴가 "배치 미작성" 으로 오인 표시한다.
+1	P055	run_P055_stage0c_kd_audit.bat	D	0.1	N	Y	★단계0c — A4 를 실패 가능한 검사로 고쳤다(autocast=fp32 증명 + 강제 bf16 대조군) + A5 + --real. ★단계1(12h) 의 α 격자가 이 결과에 달렸다
+1	P057	run_P057_stage0_attn_gate.bat	D	0.1	N	Y	★어텐션 그룹평균 이식이 사는가. 삼진의 48.4%가 어텐션인데 한 번도 안 묶었다. 통과대역 5.0~9.3972(앵커 7.7742)
+1	P061	run_P061_stage0_split_gate.bat	D	0.1	N	Y	★불균등 타잉 형상 게이트. A(12+4)/B(4+12) — 유니크 2개로 메모리 동일. B 는 대조군이라 필수
+2	P049B	run_P049B_stage1_repeat.bat	Y	7.0	N	N	★학습이 반복의 출발 대가(+0.1025)를 회수하는가. 격자 축소로 12h→7h. 채택선 -0.024 사전 고정. ⚠️학습 VRAM 기록 필수

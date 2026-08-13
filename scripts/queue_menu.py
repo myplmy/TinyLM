@@ -255,15 +255,74 @@ def cmd_audit(rows, warn):
     return err
 
 
+def cmd_ids(rows, names):
+    """★배치 **파일명** 목록 -> 큐에 입력할 **id 줄**. (2026-08-14 신설)
+
+    ## 왜 이 명령이 생겼나 — 실사고
+
+    핸드오프 §권장순서 표의 **순위 열**(0,1,2,3…)과 **큐 메뉴 id** 는 **다른 번호**다.
+    전자는 내가 매긴 우선순위, 후자는 `experiments.tsv` 행 순서(‑done 제외 후)다.
+    2026-08-14 에 내가 **둘을 섞어** `0 2 3` 을 권장했는데, 실제 id 로는
+
+        0=smoke  1=P049단계1  2=F-1  3=P046
+
+    이라서 사용자가 그대로 넣었으면 **1순위 P049 단계1 을 건너뛰고
+    최하위 P046 에 3.5시간을 태울 뻔했다.**
+
+    → **id 를 손으로 쓰지 않는다. 이 명령이 계산한다.**
+       핸드오프에는 이 출력을 **그대로 붙인다.**
+    """
+    av = available(rows)
+    idx = {r["batch"]: i for i, r in enumerate(av)}
+    out, miss = [], []
+    for n in names:
+        n = n if n.endswith(".bat") else n + ".bat"
+        hit = idx.get(n)
+        if hit is None:
+            # 부분 일치 허용(사람이 줄여 쓰는 것을 받아 준다)
+            cand = [b for b in idx if n.rstrip(".bat") in b]
+            if len(cand) == 1:
+                hit = idx[cand[0]]
+                n = cand[0]
+            else:
+                miss.append(n)
+                continue
+        out.append((hit, n, av[hit]))
+    W = 100
+    print("=" * W)
+    print("  큐 입력 줄 생성 — ★id 는 손으로 쓰지 않는다(2026-08-14 사고)")
+    print("=" * W)
+    if miss:
+        print("  🚫 메뉴에 없는 배치:")
+        for m in miss:
+            print(f"    {m}   -> 파일이 없거나 experiments.tsv 에 없다")
+    if out:
+        print(f"\n  {'id':>4}  {'배치':44s} {'시간':>7}  근거")
+        print("  " + "-" * (W - 4))
+        tot = 0.0
+        for i, n, r in out:
+            tot += float(r.get("hours") or 0)
+            print(f"  {i:>4}  {n:44s} {r.get('hours',''):>7}  {str(r.get('note',''))[:34]}")
+        print("  " + "-" * (W - 4))
+        print(f"\n  ★run_queue.bat 에 입력할 줄:\n\n      {' '.join(str(i) for i, _, _ in out)}\n")
+        print(f"  합계 약 {tot:.1f}시간")
+    print("=" * W)
+    return len(miss)
+
+
 def main():
     ap = argparse.ArgumentParser(description="run_queue.bat 의 메타데이터 기반 두뇌")
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--build", metavar="IDS")
     ap.add_argument("--audit", action="store_true")
+    ap.add_argument("--ids", nargs="+", metavar="BATCH",
+                    help="★배치 파일명 -> 큐 id 줄. 핸드오프에 붙일 것을 계산한다")
     a = ap.parse_args()
     rows, warn = load()
     if a.audit:
         return cmd_audit(rows, warn)
+    if a.ids:
+        return cmd_ids(rows, a.ids)
     if a.build is not None:
         return cmd_build(rows, a.build)
     return cmd_list(rows, warn)
