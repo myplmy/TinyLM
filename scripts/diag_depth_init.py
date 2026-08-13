@@ -15,7 +15,15 @@ P049 는 학생 36층 vs 교사 20층이라 **종전 코드로는 `mid_mlps` 에
 | # | 무엇 | 통과 조건 | 왜 이 값인가 |
 |---|---|---|---|
 | **G0-a** | 죽지 않는다 | 예외 없음 | 종전 코드는 IndexError 였다 |
-| **G0-b** | 알린다 | `[init] ★★` 경고 출력 | 조용한 부분 이식이 이 저장소 사고의 형태다 |
+| **G0-b** | 알린다 | **켠 구조 변경마다** 대응 알림 출력 | 조용한 부분 이식이 이 저장소 사고의 형태다 |
+
+★★**2026-08-14 G0-b 재정의**(계측함정 34, 4번째). 종전 조건은 `"★★" in out` 하나였는데
+그 `★★` 는 **깊이 확장(ns ≠ nt)** 일 때만 나온다. 이 스크립트를 P057·P061 로 일반화하면서
+그 사실이 따라오지 않아, **구조 변경이 하나도 없는 P061 기준선(8+8, 20층 vs 20층)까지**
+G0-b 로 실패 처리되고 종료코드 1 이 나왔다(로그 045, 3팔 전부).
+**기준선이 실패하면 모델보다 기준값을 먼저 의심한다** — 3번 중 3번 다 게이트가 틀렸고 이번이 4번째다.
+지금은 **켠 축마다 요구 토큰을 만들고**(깊이→`★★` / `--attn-group`→`★P057` / `--mlp-split`→`★P061`)
+**요구가 하나도 없으면 검사 대상이 아니다**(빈 요구 = 자동 통과).
 | **G0-c** | **이식이 실제로 돕는다** | **step0 CE < ln(vocab) − 1.0** | 난수 초기화면 CE ≈ ln(V). 그보다 확실히 낮아야 "이식됐다" |
 
 ★**추가로 `prop` 과 `gate_scale` 을 둘 다 재서 어느 쪽이 나은지 고른다.**
@@ -142,6 +150,19 @@ def main():
           f"ko-en 혼합이라 크롭이 다르면 CE 가 1 nat 단위로 흔들린다.")
     print(f"     **다른 스크립트(diag_train_repeat 는 4x1024)의 CE 와 직접 비교하지 않는다**")
 
+    # ★★2026-08-14 — G0-b 는 **지금 켠 구조 변경마다** 대응 알림을 요구한다(위 docstring).
+    #   종전처럼 `★★` 하나를 무조건 요구하면 **깊이가 같은 축**(P057·P061)이 전부 오탐이다.
+    expect = []
+    if sc.n_layers != tc.n_layers:
+        expect.append(("★★", f"깊이 불일치 {tc.n_layers}->{sc.n_layers}"))
+    if int(getattr(sc, "attn_group", 1) or 1) > 1:
+        expect.append(("★P057", f"어텐션 타잉 g={sc.attn_group}"))
+    if tuple(getattr(sc, "mlp_split", ()) or ()):
+        expect.append(("★P061", f"불균등 타잉 {sc.mlp_split}"))
+    print(f"\n  ★G0-b 가 요구하는 알림: "
+          + (", ".join(f"{t}({w})" for t, w in expect) if expect else
+             "**없음** — 이 런은 구조 변경이 0건(기준선)이라 검사 대상이 아니다"))
+
     results = {}
     # 대조군: 이식 없음(난수) — **이식이 뭘 걷어내는지 크기를 보기 위해서**
     _modes = tuple(a.modes) if a.modes else ("prop", "gate_scale", "identity")
@@ -149,7 +170,6 @@ def main():
         _hdr(f"모드 {mode}")
         torch.manual_seed(1337)
         m = TiedMLPTransformer(sc).to(dev)
-        warned = True
         if mode != "(난수 대조군)":
             buf = io.StringIO()
             try:
@@ -161,10 +181,12 @@ def main():
                 continue
             out = buf.getvalue()
             print("  " + "\n  ".join(out.strip().splitlines()))
-            warned = "★★" in out
-            if not warned:
-                print("  🚫 G0-b 실패 — 구조 불일치인데 경고를 안 찍었다")
+            missing = [f"{t}({w})" for t, w in expect if t not in out]
+            if missing:
+                print(f"  🚫 G0-b 실패 — 구조를 바꿨는데 알림이 없다: {', '.join(missing)}")
                 fails.append(f"G0-b[{mode}]")
+            elif expect:
+                print(f"  ✅ G0-b 통과 — 요구 알림 {len(expect)}건 전부 확인")
         m.eval()
         with torch.no_grad():
             with torch.autocast(dev, dtype=torch.bfloat16, enabled=(dev == "cuda")):

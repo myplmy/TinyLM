@@ -104,6 +104,12 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     "sm_sched":  {"anneal_end": 0.80, "sched": "wsd", "decay_frac": 0.2},
     "sm_nockpt": {"grad_ckpt": False},
     "sm_kd":     {"kd": True, "init_from": True, "kd_every": 4},
+    # ★2026-08-14 추가 (계측함정 37) — P057·P061 은 **구성 경로 자체가 한 번도 안 돌았다.**
+    #   `attn_group=1`·`mlp_split=()` 만 스모크에 있었기 때문에 `transformer.py` 의
+    #   `build_attention` 미import 가 **스모크 0에러를 통과**하고 실험 로그(044)에서 죽었다.
+    #   이 두 줄은 "필드가 실렸는가" 뿐 아니라 **그 경로로 모델이 지어지는가**를 산다.
+    "sm_ag":     {"attn_group": 2, "init_from": True},
+    "sm_split":  {"mlp_split": [1], "init_from": True},
 }
 
 
@@ -116,10 +122,21 @@ def main():
         print(f"[!] 검사할 스모크 로그가 없습니다({LOGS}). 먼저 run_smoke.bat 을 돌리세요.")
         return 1
     total = 0
+    seen_tags = set()
     for p in files:
         d = json.loads(p.read_text())
         exp = next((v for k, v in EXPECT.items() if p.stem.endswith(k)), None)
+        seen_tags.update(k for k in EXPECT if p.stem.endswith(k))
         total += check(p.stem, d, exp)
+    # ★2026-08-14 (계측함정 37) — **팔이 죽으면 json 이 아예 안 생긴다.**
+    #   종전 로직은 `glob` 한 것만 돌았으므로 **죽은 팔이 조용히 사라졌다** — 결과 044 가
+    #   지불한 "조용한 무동작" 과 정확히 같은 형태다. 기대 태그가 통째로 없으면 **에러**로 센다.
+    if not a.tag:
+        for k in EXPECT:
+            if k not in seen_tags:
+                print(f"\n=== {k}  [FAIL]\n  [E] 이 태그의 json 이 **없다** — 그 팔이 죽었거나 "
+                      f"tool_smoke.bat 에서 빠졌다. 로그의 `[WARN] {k} failed` 줄을 볼 것")
+                total += 1
     print(f"\n{'='*60}\n총 에러 {total}건 — 0 이면 계측 계약이 지켜지고 있습니다.")
     print("주의: 이 검사는 '필드가 기록되는가'만 본다. 값이 물리적으로 옳은지(예: VRAM 절대값)는")
     print("      실제 장기 런과 nvidia-smi 로 1회 대조해야 한다.")

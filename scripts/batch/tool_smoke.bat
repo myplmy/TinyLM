@@ -111,6 +111,32 @@ if errorlevel 1 echo [WARN] tiny dense parent failed - sm_kd will be skipped
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --kd --init-from --mlp-group 4 --kd-every 4 --tag sm_kd
 if errorlevel 1 echo [WARN] sm_kd failed - continuing
 
+REM =============================================================================
+REM  ARMS 7 AND 8 EXIST BECAUSE OF A REAL INCIDENT (2026-08-14).
+REM    transformer.py called build_attention() without importing it. Only the
+REM    branch taken when attn_group is 2 or more calls it, so every arm above
+REM    passed and the contract
+REM    check reported 0 errors - then P057 stage 0 died three times with
+REM    NameError in the experiment log (044). The smoke was run. It was clean.
+REM    It simply never CONSTRUCTED a model on the new axes.
+REM    Lesson: a field being recorded is not the same as a code path being taken.
+REM    These two arms take the path. --init-from also covers the group-average
+REM    transplant in init_utils, which is the other half of P057/P061.
+REM    They need the tiny dense parent that arm [6] creates, so they come after it.
+REM =============================================================================
+
+echo.
+echo [7] P057 attention tying path - construction plus group-average transplant
+python scripts\runlog.py --name !TL_LOGNAME! --note "[7] P057 attention tying path - construction plus group-average transplant"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --attn-group 2 --init-from --tag sm_ag
+if errorlevel 1 echo [WARN] sm_ag failed - continuing
+
+echo.
+echo [8] P061 uneven tying path - split boundary plus per-group transplant
+python scripts\runlog.py --name !TL_LOGNAME! --note "[8] P061 uneven tying path - split boundary plus per-group transplant"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --mlp-split 1 --init-from --tag sm_split
+if errorlevel 1 echo [WARN] sm_split failed - continuing
+
 echo.
 echo =============================================================
 echo [VERIFY] every instrumentation field was recorded

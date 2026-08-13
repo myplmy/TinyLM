@@ -311,4 +311,16 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
     if device == "cuda":
         torch.cuda.empty_cache()
     _extra = f", 깊이 확장 {nt}->{ns} 층 depth_init={depth_init}" if deeper else ""
-    print(f"[init] dense 부모초기화 완료 (중간 MLP는 {g}층 평균{_extra})  <- {Path(dense_path).name}")
+    # ★2026-08-14 — `mlp_split` 일 때 종전 문구가 **틀린 숫자**를 찍고 있었다.
+    #   그룹이 실제로는 12+4 인데 `g`(=`mlp_group`=8)를 그대로 인쇄해서
+    #   *"중간 MLP는 8층 평균"* 이라고 남겼다(로그 045, A·B 두 팔 모두).
+    #   **평균 자체는 `mlp_group_members` 로 옳게 했다** — 틀린 것은 인쇄값뿐이다.
+    #   그런데 인쇄값은 결과문서로 그대로 옮겨진다(계측함정 4: 인쇄값 ≠ 정본).
+    from ..config import mlp_group_members as _mgm
+    _sp = tuple(getattr(sc, "mlp_split", ()) or ())
+    if _sp:
+        _sizes = [len(_mgm(sc, gi)) for gi in range(sc.n_mlp_groups)]
+        _avg = f"★P061 불균등 그룹 {_sizes} 평균"
+    else:
+        _avg = f"{g}층 평균"
+    print(f"[init] dense 부모초기화 완료 (중간 MLP는 {_avg}{_extra})  <- {Path(dense_path).name}")

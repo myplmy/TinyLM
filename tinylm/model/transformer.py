@@ -13,7 +13,12 @@ from torch.utils.checkpoint import checkpoint
 from ..config import TMTConfig, dense_baseline  # noqa: F401  (재export)
 from ..config import mlp_group_index as _mlp_gi   # ★P061 그룹 인덱스 단일 소스
 from .ternary import TLinear, ternary  # noqa: F401
-from .modules import RMSNorm, Attention, MLP, Layer, build_rope, apply_rope  # noqa: F401
+# ★2026-08-14 — `build_attention` 이 **import 목록에 없었다.** `attn_group > 1` 경로만
+#   그것을 부르므로(아래 `mid_attns`), 기본 경로는 멀쩡하고 **P057 을 켠 순간에만**
+#   `NameError: name 'build_attention' is not defined` 로 죽었다(로그 044, 3팔 전부).
+#   스모크는 `attn_group=1` 만 돌아서 통과했다 — 계측함정 37.
+from .modules import (RMSNorm, Attention, MLP, Layer, build_attention,  # noqa: F401
+                      build_rope, apply_rope)
 from .ternary import LoRA  # noqa: F401
 
 
