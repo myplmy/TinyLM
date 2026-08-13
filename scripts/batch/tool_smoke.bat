@@ -61,6 +61,7 @@ echo.
 echo [pre] static attribute check - catches cfg.WRONG_NAME without loading torch
 python scripts\runlog.py --name !TL_LOGNAME! --note "[pre] static attribute check - catches cfg.WRONG_NAME without loading torch"
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_attrs.py
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_diag_data.py
 if errorlevel 1 echo [WARN] attribute check found problems - FIX THEM FIRST
 
 echo.

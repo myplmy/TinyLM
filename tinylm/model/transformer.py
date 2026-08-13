@@ -298,6 +298,13 @@ class TiedMLPTransformer(nn.Module):
         if mode == "uniform":
             reps = int(round(R))
             assert reps >= 1, "train_repeat 는 uniform 에서 1 이상 정수로 반올림돼야 한다"
+            # ★2026-08-13 — `uniform` 은 **정수 반올림**이라 R=1.5 가 R=2.0 과 같다.
+            #   조용히 다른 값을 쓰면 결과문서에 "R=1.5 를 쟀다" 고 적히고 **그건 거짓**이다.
+            if abs(R - reps) > 1e-9 and not getattr(self, "_warned_round", False):
+                self._warned_round = True
+                print(f"[repeat] ⚠️★uniform 은 정수 반올림이다 — **train_repeat {R} -^> {reps} 로 "
+                      f"동작한다.** 분수 배수가 필요하면 `--repeat-mode progressive` 를 쓸 것. "
+                      f"결과문서에 반드시 {reps} 로 적는다.")
             for _ in range(reps):
                 out += mid
         elif mode == "block":

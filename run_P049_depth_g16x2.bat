@@ -2,7 +2,7 @@
 REM =============================================================================
 REM  P049 stage 1  -  does tying buy depth?   m100R1d = 36 layers, g16, 2 groups
 REM
-REM  ***PREREQUISITE: run_P049_stage0_init_gate.bat must have passed.***
+REM  ***PREREQUISITE: run_P049_stage0b_init_gate.bat must have passed.***
 REM  Without it the transplant is unverified and 5.8 hours are at risk.
 REM  This batch checks for the gate log and refuses to start if it is absent.
 REM
@@ -37,8 +37,7 @@ REM ---- refuse to run without the stage 0 gate --------------------------------
 REM   The gate log name is {YYYYMMDDHHMM}_{name}_{sha7}.txt, so the timestamp is
 REM   unknown here. Ask python for the answer - a wildcard test in cmd would
 REM   need a redirect, and unescaped redirects are a lint error in this repo.
-if not exist smoketest_logs goto NOGATE
-python -c "import glob,sys; sys.exit(0 if glob.glob('smoketest_logs/*P049_stage0_identity*.txt') else 1)"
+python -c "import glob,sys; sys.exit(0 if glob.glob('test_result/*P049_stage0b_identity*.txt') else 1)"
 if errorlevel 1 goto NOGATE
 
 echo.
@@ -69,7 +68,7 @@ exit /b 0
 :NOGATE
 echo.
 echo [STOP] stage 0 gate log not found in test_result.
-echo        Run run_P049_stage0_init_gate.bat first. It takes minutes and it is
+echo        Run run_P049_stage0b_init_gate.bat first. It takes minutes and it is
 echo        the only thing standing between you and 5.8 hours through a broken
 echo        transplant (result 030).
 if not defined TL_NOPAUSE pause

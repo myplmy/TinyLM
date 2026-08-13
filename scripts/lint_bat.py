@@ -19,6 +19,7 @@
   E      14  !VAR! 인데 지연확장 미설정        변수가 안 풀려 입력 비교가 항상 실패한다 (2026-08-13)
   E      15  실험 배치가 smoketest_logs 로     게이트는 스모크가 아니다. test_result 가 맞다 (2026-08-13)
   E      16  TL_OUTDIR 을 깔면서 안 치운다      뒤 배치로 새어 나가 로그 폴더가 오염된다 (2026-08-13)
+  W      17  재실행본인데 단계명이 그대로      로그가 이전 측정과 한 파일에 섞인다. stage0b 로 (2026-08-13)
   E      11  줄끝이 CRLF 가 아님       `.gitattributes` 가 `*.bat text eol=crlf` 로 선언하는데
                                        작업트리가 LF 면 git 이 매번 재작성·경고한다(CRLF 재발 원인).
                                        또 cmd.exe 는 LF-only 배치에서 `goto`/라벨이 드물게 어긋난다.
@@ -281,6 +282,23 @@ def lint(path: Path):
     #   id 0(`run_smoke_check.bat`)이 깐 값이 뒤로 새어 나간 것이다.
     #   `setlocal` 이 있었는데도 그랬으므로 **`setlocal` 만으로는 부족하다.**
     #   ⚠️ 조용한 실패다 — 로그는 잘 써지고 종료코드도 0 이다. 폴더만 틀리다.
+    # ★17. **재실행본인데 단계명이 그대로다** (2026-08-13 사용자 지시)
+    #   `runlog.py` 의 실험 로그는 `{번호}_log_{YYYYMMDD}_{name}.txt` 이고 **같은 날 같은
+    #   이름이면 이어쓴다**(한 배치의 여러 단계를 모으려는 설계). 그래서 **도구를 고치고
+    #   같은 이름으로 다시 돌리면 두 측정이 한 파일에 섞인다.**
+    #   실제로 P049 stage0(난수 정답, 무효)과 P055 stage0(퇴화 데이터, 무효)이 그랬다.
+    #   → 재실행본은 `stage0b` 처럼 **단계명에 b/c 를 붙인다**(ai_dev_tool/03 §7).
+    #
+    #   판정: 헤더에 RE-RUN 계열 단어가 있는데 `--name` 의 단계 토큰에 b/c 가 없으면 경고.
+    if path.name.startswith("run_") and re.search(r"(?i)\bRE-?RUN\b|재실행", txt):
+        names = re.findall(r"--name\s+(\S+)", txt)
+        bad = [n for n in names
+               if re.search(r"stage\d+(?![a-z])", n, re.I) and not re.search(r"stage\d+[b-z]", n, re.I)]
+        if bad:
+            warn.append(f"재실행본으로 보이는데 단계명이 그대로다: {sorted(set(bad))} → "
+                        f"`stage0b` 처럼 구분되는 이름을 쓰세요. 안 그러면 **같은 날 로그가 "
+                        f"이전 측정과 한 파일에 섞인다**(ai_dev_tool/03 §7)")
+
     if re.search(r"(?im)^\s*set\s+TL_OUTDIR\s*=\s*\S", txt):
         if not re.search(r"(?im)^\s*set\s+TL_OUTDIR\s*=\s*$", txt):
             err.append("`TL_OUTDIR` 을 설정하는데 **비우는 줄(`set TL_OUTDIR=`)이 없다** → "

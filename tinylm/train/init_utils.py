@@ -196,6 +196,20 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
                   f"어느 쪽이 맞는지는 추측하지 않는다. **단계0 게이트가 잰다.**")
         print(f"[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.")
 
+    # ★★P057 가드 (2026-08-13) — **공유 어텐션에 층별 이식을 하면 조용히 틀린다.**
+    #   `attn_group > 1` 이면 여러 학생 층이 **같은 어텐션 객체**를 참조한다. 아래 루프는
+    #   층마다 `ls.attn_mod ← lt.attn_mod` 로 복사하므로 **마지막 교사 층 값만 남는다**
+    #   (앞의 복사가 전부 덮인다). 그런데 예외도 경고도 안 난다 —
+    #   **"이식했다고 믿는데 사실은 안 됐다"** 가 되고, 그건 결과 041 이 방금 지불한 형태다.
+    #   → `mid_mlps` 처럼 **그룹 평균 이식**을 구현하기 전까지 **즉사시킨다.**
+    if int(getattr(sc, "attn_group", 1) or 1) > 1:
+        raise NotImplementedError(
+            f"attn_group={sc.attn_group} 인 학생에 --init-from 을 쓸 수 없다(P057 선결 미구현).\n"
+            f"  공유 어텐션에 층별 이식을 하면 **마지막 교사 층 값만 남고 앞것이 조용히 덮인다.**\n"
+            f"  `mid_mlps` 와 같은 **그룹 평균 이식**이 필요하다 — 계획 P057 §4.1.\n"
+            f"  임시로 재려면 `--init-from` 없이 돌리되, 결과 038 이 부모초기화의 몫을\n"
+            f"  +0.1386 으로 쟀으므로 **그 값이 아키텍처 델타에 섞인다**는 것을 결과문서에 적을 것.")
+
     seen = {}                    # 교사 층 ti 가 몇 번째로 쓰였나 (identity 모드용)
     for si, ti in enumerate(lmap):
         ls, lt = student.layers[si], teacher.layers[ti]

@@ -30,7 +30,14 @@ REQUIRED = ["seed", "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cach
             "mlp_group", "grad_ckpt", "kd_teacher", "init_from_src", "anneal_end",
             "decay_frac", "deploy_mb", "mem_parts_mb", "mem_params",
             "vram_alloc_gb", "vram_reserved_gb", "tokens_per_microbatch",
-            "sparse34", "bpw", "grad_max", "grad_peak_warmup"]
+            "sparse34", "bpw", "grad_max", "grad_peak_warmup",
+            # ★2026-08-13 추가 — 신규 축이 json 에 안 실리면 결과문서를 쓸 수 없다.
+            #   계약을 늦게 갱신하면 **긴 런을 돌리고 나서** 필드가 없는 것을 안다.
+            "ms_step_median", "ms_step_spread",        # T-1 계측
+            "sdpa_gqa", "kd_chunk",                    # F-1 / T-2
+            "depth_init", "n_layers",                  # P049
+            "attn_group", "train_repeat", "repeat_mode",  # P057 / P049B
+            "save_every"]                              # P058
 
 
 def check(name, d, expect=None):

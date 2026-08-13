@@ -14,7 +14,7 @@
 **TinyLM** = 저사양 CPU·엣지·모바일용 **초경량 LLM 아키텍처**. 핵심 목표는 **연산이 아니라
 메모리 최적화**(연산 증가는 감수). 지향점: dense 대비 절반 이하 메모리로 유사 품질.
 
-> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608180600_HANDOFF.md`](handoff/202608180600_HANDOFF.md).
+> **현재 상태는 최신 핸드오프에 있다** — [`handoff/202608190600_HANDOFF.md`](handoff/202608190600_HANDOFF.md).
 > **새 세션은 그 문서를 먼저 읽는다.** 아래는 바뀌지 않는 규범만 남긴다.
 >
 > 요약 한 줄: 코드 v6(`tinylm/`), 아키텍처 v5.
@@ -224,7 +224,8 @@ run100m.py            호환 래퍼 → tinylm.cli.main
 **모든 로그 최상단에 `[commit] sha7 +dirty N개` 배너** — 어느 커밋에서 돌렸는지 알기 위한 것이고,
 **dirty≠0 이면 "그 커밋으로 검증" 이 아니다.** `--note "제목"` 과 실행 명령은 **함께 못 준다**) ·
 `check_run_registry.py`(레지스트리·중복·태그) · `lint_bat.py`(배치 린터) ·
-`check_attrs.py`(`cfg.X` 오타를 torch 없이 정적 검출) · `check_smoke.py`(계측 필드 계약) ·
+`check_attrs.py`(`cfg.X` 오타를 torch 없이 정적 검출) ·
+**`check_diag_data.py`**(★진단 도구의 **계측 건강** — 절대 지표(CE·bpb)에 **난수 정답**을 쓰면 에러, **성공 기준값**이 없으면 경고. 함정 31·32 를 하루에 두 번 물어서 만들었다) · `check_smoke.py`(계측 필드 계약) ·
 **`check_batch_flags.py`**(★배치가 쓰는 CLI 플래그가 **실제로 파서에 있는지** — 미구현 배치 2회 재발 차단) ·
 **`check_call_kwargs.py`**(★`cli.py` 가 넘기는 키워드가 **대상 함수에 있는지** — 2026-08-06 오편집 차단) ·
 **`diag_spam_rate.py`**(★표준 코퍼스 스팸률 — `spam_signature()` 를 **호출**한다. 학습 0·GPU 0) ·
