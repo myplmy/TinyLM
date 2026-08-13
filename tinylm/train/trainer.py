@@ -106,6 +106,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           sched="cosine", ema=0.0, early_stop=0, init_from=None,
           kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, micro_group=None,
+          mlp_split=None,
           opt_dtype="fp32", ema_start=0.0,
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
@@ -142,6 +143,20 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     if mlp_group and arch == "tied":            # g 스윕용 오버라이드(P003)
         assert cfg.n_middle % mlp_group == 0, f"n_middle {cfg.n_middle} % g {mlp_group} != 0"
         cfg.mlp_group = mlp_group
+    # ★P061(2026-08-13) — **불균등 타잉.** 경계 목록. 미지정이면 위 균등 그대로 = 비트 동일.
+    if mlp_split and arch == "tied":
+        sp = tuple(sorted(int(x) for x in mlp_split))
+        assert all(0 < x < cfg.n_middle for x in sp), \
+            f"mlp_split {sp} 은 1..{cfg.n_middle-1} 범위여야 한다"
+        assert len(set(sp)) == len(sp), f"mlp_split {sp} 에 중복이 있다"
+        cfg.mlp_split = sp
+        sizes = [len([j for j in range(cfg.n_middle)
+                      if (__import__("bisect").bisect_right(sp, j)) == gi])
+                 for gi in range(len(sp) + 1)]
+        print(f"[P061] ★불균등 타잉 mlp_split={sp} -^> 그룹 크기 {sizes}, "
+              f"유니크 MLP {len(sizes)}개")
+        print(f"[P061] ⚠️유니크 개수가 기준선과 같아야 **메모리가 동일**하다 — "
+              f"g{cfg.mlp_group} 균등은 {cfg.n_middle // cfg.mlp_group}개")
     if micro_group is not None:                 # (P051) 삼진 alpha 그룹 크기 오버라이드
         # ★`__post_init__` 은 프리셋 값으로 이미 돌았으므로 **여기서 같은 불변식을 다시 검사**한다.
         #   빠뜨리면 TLinear 생성 시점의 assert 로 죽는데, 그때는 어느 층인지가 안 보인다.
@@ -387,6 +402,19 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     best_val, best_step, since_improve = float("inf"), 0, 0
     n_kd_fwd = 0                                 # 실제 교사 forward를 수행한 스텝 수(가속 측정용)
 
+    # ★★A3 (P055, 2026-08-13) — **KD 스텝과 비KD 스텝의 손실 스케일을 따로 누적한다.**
+    #
+    #   왜 필요한가: `history` 는 **eval 시점의 순간값**만 남긴다. 그런데
+    #   **eval 격자와 KD 격자가 구조적으로 어긋나 있다** — eval 은 `s ≡ 99 (mod 100)`,
+    #   KD 는 `s ≡ 0 (mod kd_every)` 이고 `100 ≡ 0 (mod 4)` 이므로 **99 mod 4 = 3** 이
+    #   항상 나온다. 즉 **주기 eval 은 전부 비KD 스텝**이고 **마지막 eval 하나만 KD 스텝**이다.
+    #   → 감사 A3 가 `history` 에서 표본을 못 모아 **3회 연속 "미측정"** 이었다.
+    #     원인은 *"로깅이 없다"* 가 아니라 *"두 격자가 만나지 않는다"* 였다.
+    #
+    #   ⚠️**계산에는 아무 영향이 없다**(합계만 센다) — 비트 동일이다.
+    _acc = {"kd_l": 0.0, "kd_ce": 0.0, "kd_n": 0,
+            "no_l": 0.0, "no_ce": 0.0, "no_n": 0}
+
     def _do_eval(step, train_loss, train_ce=None, kd_this=False):
         """★`train_loss` 는 KD 스텝에서 **혼합손실**(α·CE+(1-α)·KL·T²)이라 val 과 단위가 다르다.
         그래서 `train_ce`(항상 순수 CE)를 따로 받아 **val-CE 로 비교**한다.
@@ -408,6 +436,14 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         if "bpb" in m: line += f"  bpb {m['bpb']:.3f}"
         m.update(step=step, train_loss=train_loss, train_ce=ce, kd_step=bool(kd_this),
                  gap=m["val_loss"] - ce)   # gap 은 CE 기준(혼합손실과 섞지 않는다)
+        # ★A3: 순간값이 아니라 **여기까지의 누적 평균**을 함께 남긴다(격자 어긋남 우회)
+        if _acc["kd_n"]:
+            m["kd_loss_mean"] = _acc["kd_l"] / _acc["kd_n"]
+            m["kd_ce_mean"] = _acc["kd_ce"] / _acc["kd_n"]
+        if _acc["no_n"]:
+            m["nokd_loss_mean"] = _acc["no_l"] / _acc["no_n"]
+            m["nokd_ce_mean"] = _acc["no_ce"] / _acc["no_n"]
+        m["kd_n"], m["nokd_n"] = _acc["kd_n"], _acc["no_n"]
         hist.append(m); print(line)
         # ★P058(2026-08-13) — **eval 과 체크포인트 저장을 분리한다.**
         #   종전에는 eval 마다 model+optimizer 를 통째로 직렬화했다. `eval_every 100` 이면
@@ -526,6 +562,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         model.clear_quant()
         step_ms.append((time.time() - _t_step) * 1000.0)   # ★T-1: eval·ckpt 저장 전에 찍는다
 
+        # ★A3 누적 — 이 스텝이 KD 스텝인지에 따라 갈라 담는다(계산 불변)
+        if kd_this and teacher is not None:
+            _acc["kd_l"] += float(tot); _acc["kd_ce"] += float(tot_ce); _acc["kd_n"] += 1
+        else:
+            _acc["no_l"] += float(tot); _acc["no_ce"] += float(tot_ce); _acc["no_n"] += 1
+
         if s % 10 == 0 or s == steps - 1:
             el = time.time() - t0
             # ★비KD 스텝에서는 loss 와 ce 가 **구조적으로 같은 값**이다(loss = ce/accum 을 합산).
@@ -568,6 +610,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "bytes_per_token": meta.get("bytes_per_token"),
            "bytes_per_token_val": meta.get("bytes_per_token_val"),
            "mlp_group": (cfg.mlp_group if getattr(cfg, "tie_mlp", False) else 1),
+           "mlp_split": list(getattr(cfg, "mlp_split", ()) or ()),      # ★P061
            "micro_group": int(cfg.micro_group),                    # (P051) 삼진 alpha 그룹 크기
            # ★T-1 — 순수 스텝 시간 통계. **인쇄 ms/step 과 다른 양이다**(eval·저장 제외).
            #   `ms_step_median` 은 정상상태 대용, `ms_step_spread` 는 p90/p10−1 로
@@ -584,6 +627,13 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "history": hist, "grad_max": gmax, "grad_peak_warmup": gpeak, "n_skip": n_skip,
            "sched": sched, "ema": ema, "kd": bool(kd), "init_from": bool(init_from),
            "kd_every": kd_every, "kd_dynamic": bool(kd_dynamic), "kd_fwd_steps": n_kd_fwd,
+           # ★A3(P055) — KD/비KD 스텝의 손실 스케일. **감사가 읽는 정본**이다.
+           #   `history` 의 순간값은 격자가 어긋나 표본이 안 모인다(위 _acc 주석 참조).
+           "kd_step_loss_mean": (_acc["kd_l"] / _acc["kd_n"]) if _acc["kd_n"] else None,
+           "kd_step_ce_mean": (_acc["kd_ce"] / _acc["kd_n"]) if _acc["kd_n"] else None,
+           "nokd_step_loss_mean": (_acc["no_l"] / _acc["no_n"]) if _acc["no_n"] else None,
+           "nokd_step_ce_mean": (_acc["no_ce"] / _acc["no_n"]) if _acc["no_n"] else None,
+           "kd_step_n": _acc["kd_n"], "nokd_step_n": _acc["no_n"],
            "lora_rank": lora_rank, "wall_sec": time.time() - t0,
            "sparse34": bool(sparse34), "bpw": 1.25 if sparse34 else 1.95,
            "anneal_end": anneal_end, "decay_frac": decay_frac,    # (P026) 스케줄 정렬 기록

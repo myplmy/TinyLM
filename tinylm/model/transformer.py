@@ -11,6 +11,7 @@ import torch.nn.functional as F
 from torch.utils.checkpoint import checkpoint
 
 from ..config import TMTConfig, dense_baseline  # noqa: F401  (재export)
+from ..config import mlp_group_index as _mlp_gi   # ★P061 그룹 인덱스 단일 소스
 from .ternary import TLinear, ternary  # noqa: F401
 from .modules import RMSNorm, Attention, MLP, Layer, build_rope, apply_rope  # noqa: F401
 from .ternary import LoRA  # noqa: F401
@@ -61,7 +62,9 @@ class TiedMLPTransformer(nn.Module):
                 mlp = self.pre_mlps[i]
             elif i < cfg.n_prelude + cfg.n_middle:
                 j = i - cfg.n_prelude
-                mlp = self.mid_mlps[j // cfg.mlp_group if cfg.tie_mlp else j]
+                # ★P061: 그룹 인덱스는 `config.mlp_group_index` 가 **단일 소스**다.
+                #   `mlp_split` 이 비면 `j // mlp_group` 과 동일 = 비트 동일.
+                mlp = self.mid_mlps[_mlp_gi(cfg, j) if cfg.tie_mlp else j]
                 if self.mid_attns is not None:
                     shared_attn = self.mid_attns[j // ag]
             else:

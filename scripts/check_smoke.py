@@ -36,7 +36,7 @@ REQUIRED = ["seed", "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cach
             "ms_step_median", "ms_step_spread",        # T-1 계측
             "sdpa_gqa", "kd_chunk",                    # F-1 / T-2
             "depth_init", "n_layers",                  # P049
-            "attn_group", "train_repeat", "repeat_mode",  # P057 / P049B
+            "attn_group", "train_repeat", "mlp_split", "repeat_mode",  # P057 / P049B
             "save_every"]                              # P058
 
 

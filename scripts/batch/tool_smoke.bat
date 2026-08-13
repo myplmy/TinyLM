@@ -62,6 +62,15 @@ echo [pre] static attribute check - catches cfg.WRONG_NAME without loading torch
 python scripts\runlog.py --name !TL_LOGNAME! --note "[pre] static attribute check - catches cfg.WRONG_NAME without loading torch"
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_attrs.py
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_diag_data.py
+if errorlevel 1 echo [WARN] check_diag_data found problems - continuing
+
+REM  check_handoff - the handoff format drifted (4 fixed sections missing in the
+REM  latest one, 2026-08-13). Convention lives in ai_dev_tool/02; this checks it.
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_handoff.py
+
+REM  check_links - result docs get RENAMED when their conclusion changes
+REM  (ai_dev_tool/03 s8). 26 broken links were found on 2026-08-13.
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_links.py
 if errorlevel 1 echo [WARN] attribute check found problems - FIX THEM FIRST
 
 echo.

@@ -25,6 +25,11 @@ class TMTConfig:
     n_middle: int = 16                # 어텐션 독립 + MLP 타잉
     n_coda: int = 2                   # 완전 독립
     mlp_group: int = 4                # 중간층 MLP를 몇 층씩 묶을지
+    # ★P061(2026-08-13) — **불균등 타잉.** 균등 `mlp_group` 대신 **경계 목록**을 준다.
+    #   비어 있으면 종전 균등 = **비트 동일.**  `(12,)` → [0..11][12..15] / `(4,)` → [0..3][4..15]
+    #   ★유니크 MLP 개수(=len(split)+1)를 기준선과 같게 두면 **메모리가 완전히 동일**하고
+    #     "층의 역할이 다른가" 만 남는다. 그게 이 축의 설계 의도다.
+    mlp_split: tuple = ()
     cla_group: int = 2                # K/V를 몇 층이 공유할지 (1이면 비활성)
     # ★P057(2026-08-13) — **어텐션 타잉.** 중간층 g 개가 어텐션 하나를 공유한다.
     #   1 = 층마다 독립 = 종전 = **비트 동일**. 삼진의 48.4% 가 어텐션인데 한 번도 안 묶었다.
@@ -123,7 +128,12 @@ class TMTConfig:
     @property
     def n_layers(self): return self.n_prelude + self.n_middle + self.n_coda
     @property
-    def n_mlp_groups(self): return self.n_middle // self.mlp_group if self.tie_mlp else self.n_middle
+    def n_mlp_groups(self):
+        # ★P061: `mlp_split` 이 있으면 유니크 개수 = len(split)+1. 비면 종전 = 비트 동일.
+        if not self.tie_mlp:
+            return self.n_middle
+        sp = tuple(getattr(self, "mlp_split", ()) or ())
+        return (len(sp) + 1) if sp else (self.n_middle // self.mlp_group)
 
 
 def dense_baseline(cfg: TMTConfig) -> TMTConfig:
@@ -253,6 +263,31 @@ PRESETS = {"tiny": _tiny, "m100": _m100, "m100d": _m100d,
            "m100R1a": _m100R1a, "m100R1c": _m100R1c,
            "m100R1p": _m100R1p, "m100R1q": _m100R1q,
            "m100R1d": _m100R1d}
+
+
+def mlp_group_index(cfg, j: int) -> int:
+    """중간층 `j` 가 속한 **유니크 MLP 인덱스**. ★`mlp_split` 규약의 단일 소스.
+
+    ⚠️**여기서만 정한다.** 종전에 `transformer.py` 와 `init_utils.py` 가 각자
+    `j // g` 를 쓰고 있었는데, 불균등이 들어오면 **두 곳이 어긋나는 순간
+    "이식했다고 믿는데 안 된"** 상태가 된다 — 결과 041·P057 이 지불한 형태다
+    (계측함정 18: 적용 대상 집합을 두 곳에서 정의).
+    """
+    split = tuple(getattr(cfg, "mlp_split", ()) or ())
+    if not split:
+        return j // cfg.mlp_group                      # 종전 = 비트 동일
+    import bisect
+    return bisect.bisect_right(split, j)
+
+
+def mlp_group_members(cfg, gi: int):
+    """유니크 MLP `gi` 가 덮는 **중간층 인덱스 목록**. `mlp_group_index` 의 역함수."""
+    return [j for j in range(cfg.n_middle) if mlp_group_index(cfg, j) == gi]
+
+
+def n_unique_mid_mlp(cfg) -> int:
+    split = tuple(getattr(cfg, "mlp_split", ()) or ())
+    return (len(split) + 1) if split else (cfg.n_middle // cfg.mlp_group)
 
 
 def build_config(preset: str, arch: str, seq: int, ckpt: bool = True) -> TMTConfig:

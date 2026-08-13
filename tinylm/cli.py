@@ -110,6 +110,10 @@ def main():
     p.add_argument("--tag", default=None, help="체크포인트/로그 파일명(실험 조건 구분용)")
     p.add_argument("--vs", default=None, help="compare에서 tied vs tied 비교할 상대 태그")
     p.add_argument("--mlp-group", type=int, default=None, help="MLP 타잉 g 오버라이드(프리셋값 대체, g-스윕용)")
+    # ★P061(2026-08-13) — 불균등 타잉. 경계 목록. 미지정=균등=비트 동일.
+    #   예: `--mlp-split 12` -^> [0..11][12..15] / `--mlp-split 4` -^> [0..3][4..15]
+    p.add_argument("--mlp-split", type=int, nargs="*", default=None,
+                    help="중간 MLP 타잉 경계(불균등). 미지정이면 --mlp-group 균등")
     p.add_argument("--opt-dtype", choices=["fp32", "fp32c", "bf16"], default="fp32",
                    help="(P022B 단계2) AdamW **상태**(exp_avg/exp_avg_sq) 정밀도. "
                         "fp32=종전 torch fused AdamW(기본, 비트 동일) / "
@@ -232,6 +236,7 @@ def main():
               kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
               lora_rank=a.lora_rank, lora_bits=a.lora_bits, mlp_film=a.mlp_film,
               tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode, mlp_group=a.mlp_group,
+              mlp_split=a.mlp_split,
               micro_group=a.micro_group, opt_dtype=a.opt_dtype,
               ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from,
               snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None),

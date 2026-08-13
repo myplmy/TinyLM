@@ -63,10 +63,37 @@ def main():
     ap.add_argument("--seq", type=int, default=512)
     ap.add_argument("--bs", type=int, default=2)
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    # ★★2026-08-13 일반화 — 이 스크립트는 원래 P049(깊이 확장)용이었지만, 하는 일이
+    #   **"이식 후 step0 CE 를 난수 대조군과 비교한다"** 라서 다른 축에도 그대로 쓰인다.
+    #   P057(어텐션 타잉)·P061(불균등 타잉)용으로 **near-duplicate 스크립트를 두 개 더
+    #   만드는 대신** 여기에 두 플래그를 뚫는다. 규약이 하나로 유지된다(함정 18).
+    ap.add_argument("--attn-group", type=int, default=None,
+                    help="★P057 어텐션 타잉 g. 그룹평균 이식이 사는지 잰다")
+    ap.add_argument("--mlp-split", type=int, nargs="*", default=None,
+                    help="★P061 불균등 타잉 경계. 예: --mlp-split 12")
+    ap.add_argument("--modes", nargs="*", default=None,
+                    help="잴 depth_init 모드. 기본 prop/gate_scale/identity")
     a = ap.parse_args()
     dev, fails = a.device, []
 
     sc = build_config(a.preset, "tied", a.seq, True)
+    # ★축 오버라이드 — 미지정이면 프리셋 그대로 = **비트 동일**
+    if a.attn_group:
+        assert sc.n_middle % a.attn_group == 0, \
+            f"n_middle {sc.n_middle} % attn_group {a.attn_group} != 0"
+        sc.attn_group = a.attn_group
+        print(f"[axis] ★P057 attn_group={a.attn_group} -^> 공유 어텐션 "
+              f"{sc.n_middle // a.attn_group}개 (그룹평균 이식)")
+    if a.mlp_split:
+        sp = tuple(sorted(int(x) for x in a.mlp_split))
+        assert all(0 < x < sc.n_middle for x in sp), f"mlp_split {sp} 범위 오류"
+        sc.mlp_split = sp
+        import bisect as _b
+        sizes = [sum(1 for j in range(sc.n_middle) if _b.bisect_right(sp, j) == gi)
+                 for gi in range(len(sp) + 1)]
+        print(f"[axis] ★P061 mlp_split={sp} -^> 그룹 크기 {sizes}, 유니크 {len(sizes)}개")
+        print(f"[axis] ⚠️유니크 개수가 기준선과 같아야 **메모리 동일**하다 "
+              f"(g{sc.mlp_group} 균등 = {sc.n_middle // sc.mlp_group}개)")
     tc = build_config(a.teacher_preset, "dense", a.seq, True)
     _hdr("구조 · 대응표")
     print(f"  학생 {a.preset}: {sc.n_prelude}+{sc.n_middle}+{sc.n_coda} = {sc.n_layers}층, "
@@ -117,7 +144,8 @@ def main():
 
     results = {}
     # 대조군: 이식 없음(난수) — **이식이 뭘 걷어내는지 크기를 보기 위해서**
-    for mode in ("(난수 대조군)", "prop", "gate_scale", "identity"):
+    _modes = tuple(a.modes) if a.modes else ("prop", "gate_scale", "identity")
+    for mode in ("(난수 대조군)",) + _modes:
         _hdr(f"모드 {mode}")
         torch.manual_seed(1337)
         m = TiedMLPTransformer(sc).to(dev)

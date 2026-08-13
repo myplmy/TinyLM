@@ -56,6 +56,69 @@ def kd_kl(slog, tlog, T):
                     reduction="batchmean") * (T * T)
 
 
+def _load(ckpt_name, dev):
+    """체크포인트 → (model, cfg). ★`cfg` 는 저장된 것을 그대로 쓴다 — 재구성하지 않는다."""
+    from tinylm.config import TMTConfig
+    from tinylm.model.transformer import TiedMLPTransformer
+    from tinylm import paths
+    ck = Path(paths.RUNS) / "ckpt" / ckpt_name if not Path(ckpt_name).exists() else Path(ckpt_name)
+    st = torch.load(ck, map_location=dev)
+    cfg = TMTConfig(**st["cfg"])
+    m = TiedMLPTransformer(cfg).to(dev)
+    m.load_state_dict(st["model"], strict=False)
+    m.eval()
+    return m, cfg, ck
+
+
+def _real_logits(a, dev):
+    """★A2·A4 를 **실제 분포**에서 재기 위한 로짓. 학습 0, forward 만."""
+    _hdr("--real : 실제 체크포인트 로짓")
+    from tinylm.data import prepare, Loader
+    tm, tcfg, tck = _load(a.teacher, dev)
+    sm, scfg, sck = _load(a.student, dev)
+    print(f"  교사 {tck.name}  ({tcfg.n_prelude}+{tcfg.n_middle}+{tcfg.n_coda}, "
+          f"g{tcfg.mlp_group})")
+    print(f"  학생 {sck.name}  ({scfg.n_prelude}+{scfg.n_middle}+{scfg.n_coda}, "
+          f"g{scfg.mlp_group})")
+
+    # ── ★A5 : 교사·학생의 양자화 규약이 같은가 ──────────────────────────────
+    _hdr("A5  ★교사와 학생의 양자화 규약이 같은가 (2026-08-13 구현)")
+    diffs = []
+    for k in ("vocab_size", "quant_anneal", "micro_group", "twn_thr_ratio",
+              "ste_clip", "quantize_embedding", "sparse34", "emb_rank"):
+        tv, sv = getattr(tcfg, k, None), getattr(scfg, k, None)
+        same = (tv == sv)
+        print(f"    {k:20s} 교사 {str(tv):>8}   학생 {str(sv):>8}   "
+              f"{'같다' if same else '★다르다'}")
+        if not same:
+            diffs.append((k, tv, sv))
+    if not diffs:
+        print("  ✅ A5 통과 — 규약이 같다. soft target 이 학생과 같은 좌표계에 있다")
+    else:
+        print(f"  ⚠️★A5 주의 — {len(diffs)}개가 다르다.")
+        print("     ★`vocab_size` 가 다르면 KL 자체가 무효다(치명).")
+        print("     `quant_anneal`·`micro_group` 이 다르면 교사 로짓이 **학생이 도달할 수 없는")
+        print("     정밀도**에서 나온 것이라 soft target 이 체계적으로 어긋난다.")
+        if any(d[0] == "vocab_size" for d in diffs):
+            print("  🚫 **어휘가 다르다 — 아래 A2·A4 를 읽지 말 것**")
+
+    meta = prepare(a.data, int(float(a.tokens.rstrip("Mm")) * 1e6), exact=True)
+    va = Loader("val", a.bs, a.seq, dev, meta["dir"], seed=99)     # ★val 시드 99 고정
+    x, y = va()
+    with torch.no_grad():
+        tl = tm(x).reshape(-1, tcfg.vocab_size).float()
+        sl = sm(x).reshape(-1, scfg.vocab_size).float()
+    N = sl.shape[0]
+    print(f"\n  크롭 {a.bs}x{a.seq} = {N} 토큰 (val 시드 99)")
+    tvd = 0.5 * (F.softmax(sl, -1) - F.softmax(tl, -1)).abs().sum(-1).mean().item()
+    print(f"  ★실제 교사·학생 총변동거리 = {tvd:.4f}   "
+          f"(합성 난수는 0.5206 이었다 — **비교하면 합성의 편향이 보인다**)")
+    del tm, sm
+    if dev == "cuda":
+        torch.cuda.empty_cache()
+    return sl.detach().clone(), tl, y.reshape(-1), N
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--vocab", type=int, default=32768)
@@ -63,6 +126,15 @@ def main():
     ap.add_argument("--temp", type=float, default=2.0)
     ap.add_argument("--alpha", type=float, default=0.5)
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    # ★2026-08-13 구현 — 종전에는 docstring 에만 있고 없었다(결과 042 §4)
+    ap.add_argument("--real", action="store_true",
+                    help="★실제 체크포인트 로짓으로 A2·A4 를 다시 잰다(합성 편향 제거)")
+    ap.add_argument("--teacher", default="m100_ko-en_300M_dense.pt")
+    ap.add_argument("--student", default="m100R1c_ko-en_300M_mC_wsd.pt")
+    ap.add_argument("--data", default="ko-en")
+    ap.add_argument("--tokens", default="300M")
+    ap.add_argument("--bs", type=int, default=4)
+    ap.add_argument("--seq", type=int, default=1024)
     a = ap.parse_args()
     V, N, T, al = a.vocab, a.rows, a.temp, a.alpha
     dev = a.device
@@ -81,6 +153,9 @@ def main():
     tlog = torch.randn(N, V, device=dev) * 1.0                    # ★독립 난수 = 다른 분포
     slog[torch.arange(N), tgt] += 4.0                             # 학생이 정답을 더 확신
     tlog[torch.arange(N), tgt] += 3.2                             # 교사가 조금 못하다
+    if a.real:
+        slog, tlog, tgt, N = _real_logits(a, dev)
+        V = tlog.shape[-1]
     slog.requires_grad_(True)
     with torch.no_grad():
         _js = 0.5 * (F.softmax(slog, -1) - F.softmax(tlog, -1)).abs().sum(-1).mean().item()
@@ -184,17 +259,34 @@ def main():
             continue
         if not j.get("kd"):
             continue
-        hist = j.get("history") or j.get("metrics") or []
-        kdv = [h["train_loss"] for h in hist if isinstance(h, dict) and h.get("kd_step")]
-        nov = [h["train_loss"] for h in hist if isinstance(h, dict) and h.get("kd_step") is False]
-        if len(kdv) >= 3 and len(nov) >= 3:
-            mk, mn = sum(kdv) / len(kdv), sum(nov) / len(nov)
-            print(f"  {p.name[:46]:48s} KD스텝 {mk:.4f} / 비KD {mn:.4f}  차 {mk-mn:+.4f}")
+        # ★2026-08-13 정정 — 종전에는 `history` 의 **순간값**만 봤고 표본이 안 모였다.
+        #   원인은 "로깅이 없다" 가 아니라 ★**eval 격자와 KD 격자가 만나지 않는다** 였다:
+        #     eval  s ≡ 99 (mod 100)   ·   KD  s ≡ 0 (mod kd_every=4)
+        #     100 ≡ 0 (mod 4) 이므로 **99 mod 4 = 3 이 항상** — 주기 eval 은 **전부 비KD**,
+        #     마지막 eval(s=steps−1) 하나만 KD 스텝에 걸린다. 23개 중 1개.
+        #   → `trainer.py` 가 이제 **런 전체 누적 평균**을 json 최상위에 남긴다.
+        mk = j.get("kd_step_loss_mean"); mn = j.get("nokd_step_loss_mean")
+        ck = j.get("kd_step_ce_mean");   cn = j.get("nokd_step_ce_mean")
+        if mk is not None and mn is not None:
+            print(f"  {p.name[:40]:42s} KD {mk:.4f} / 비KD {mn:.4f}  차 {mk-mn:+.4f}"
+                  f"   (n {j.get('kd_step_n')}/{j.get('nokd_step_n')})")
+            if ck is not None and cn is not None:
+                print(f"  {'':42s} ★순수 CE 로는 {ck:.4f} / {cn:.4f}  차 {ck-cn:+.4f}"
+                      f"  ^<- **이쪽이 같아야 정상**")
             hit += 1
+        else:
+            hist = j.get("history") or []
+            kdv = [h["train_loss"] for h in hist if isinstance(h, dict) and h.get("kd_step")]
+            nov = [h["train_loss"] for h in hist if isinstance(h, dict) and h.get("kd_step") is False]
+            print(f"  {p.name[:40]:42s} ⏸ 구 로그(누적 필드 없음). "
+                  f"history 표본 KD {len(kdv)} / 비KD {len(nov)}")
     if not hit:
-        print("  (KD 런의 스텝별 기록을 못 찾았다 — json 에 history 가 없으면 이 항목은 생략된다)")
-        print("  ⚠️ **생략은 통과가 아니다.** 다음 KD 런의 콘솔에서 `[KD혼합]` 표시가 붙은 줄과")
-        print("     안 붙은 줄의 손실 크기를 눈으로 비교할 것.")
+        print()
+        print("  ⏸ **누적 필드를 가진 KD 런이 아직 없다.** 이건 결함이 아니라 순서다 —")
+        print("     `trainer.py` 에 A3 계측을 2026-08-13 에 넣었으므로 **그 뒤의 KD 런부터** 나온다.")
+        print("  ★위 목록의 `history 표본 KD 1 / 비KD 22` 가 격자 어긋남의 증거다:")
+        print("     eval 은 s ≡ 99 (mod 100), KD 는 s ≡ 0 (mod 4) — **99 mod 4 = 3 이 항상**.")
+        print("  ⚠️ **생략은 통과가 아니다.** 다음 KD 런이 이 항목을 자동으로 채운다.")
 
     # ── 판정 ────────────────────────────────────────────────────────────────
     _hdr("판정 — H2(구현 결함)가 있는가")

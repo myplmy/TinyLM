@@ -202,22 +202,64 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
     #   (앞의 복사가 전부 덮인다). 그런데 예외도 경고도 안 난다 —
     #   **"이식했다고 믿는데 사실은 안 됐다"** 가 되고, 그건 결과 041 이 방금 지불한 형태다.
     #   → `mid_mlps` 처럼 **그룹 평균 이식**을 구현하기 전까지 **즉사시킨다.**
-    if int(getattr(sc, "attn_group", 1) or 1) > 1:
-        raise NotImplementedError(
-            f"attn_group={sc.attn_group} 인 학생에 --init-from 을 쓸 수 없다(P057 선결 미구현).\n"
-            f"  공유 어텐션에 층별 이식을 하면 **마지막 교사 층 값만 남고 앞것이 조용히 덮인다.**\n"
-            f"  `mid_mlps` 와 같은 **그룹 평균 이식**이 필요하다 — 계획 P057 §4.1.\n"
-            f"  임시로 재려면 `--init-from` 없이 돌리되, 결과 038 이 부모초기화의 몫을\n"
-            f"  +0.1386 으로 쟀으므로 **그 값이 아키텍처 델타에 섞인다**는 것을 결과문서에 적을 것.")
+    # ★★P057 그룹평균 어텐션 이식 (2026-08-13 구현 — 종전 가드를 대체한다)
+    #
+    #   **문제**: `attn_group > 1` 이면 학생 중간층 g 개가 **같은 어텐션 객체**를 참조한다.
+    #   아래 루프가 층마다 `ls.attn_mod ← lt.attn_mod` 로 복사하면 **마지막 교사 층 값만 남고
+    #   앞의 복사가 전부 조용히 덮인다.** 예외도 경고도 없다 —
+    #   *"이식했다고 믿는데 사실은 안 됐다"* 가 되고 그건 결과 041 이 지불한 형태다.
+    #
+    #   **해법**: `mid_mlps` 와 **완전히 같은 규약**을 쓴다 — 그룹이 덮는 교사 층들의
+    #   **파라미터 평균**. 코드가 대칭이라 규약이 하나로 유지된다(함정 28: 같은 단어가
+    #   다른 규약이 되는 것을 막는다).
+    #
+    #   ⚠️**평균이 옳다는 보장은 없다.** MLP 에서는 실측으로 부모초기화 이득이 살아남았지만
+    #     (결과 030 §2: step0 7.7742 vs 난수 10.4051) **어텐션은 아직 안 쟀다.**
+    #     P057 단계0 게이트가 그것을 재고, 통과선은 **step0 CE ^< 9.3972**(대역 검사, 함정 34).
+    ag = int(getattr(sc, "attn_group", 1) or 1)
+    shared_done = set()
+    if ag > 1:
+        if student.mid_attns is None:
+            raise RuntimeError(f"attn_group={ag} 인데 student.mid_attns 가 없다 — 모델 구성 불일치")
+        print(f"[init] ★P057 그룹평균 어텐션 이식: attn_group={ag}, "
+              f"공유 어텐션 {len(student.mid_attns)}개")
+        for j, at_s in enumerate(student.mid_attns):
+            # 이 공유 어텐션을 쓰는 학생 **중간층** 인덱스 → 대응표 → 교사 층
+            s_mids = [k for k in range(j * ag, (j + 1) * ag)]
+            t_layers = [teacher.layers[lmap[sc.n_prelude + k]] for k in s_mids]
+            members = [tl.attn_mod for tl in t_layers]
+            names = ["q_proj", "o_proj"] + (["k_proj", "v_proj"] if at_s.owns_kv else [])
+            for nm in names:
+                dst = getattr(at_s, nm).weight.data
+                dst.copy_(sum(getattr(mm, nm).weight.data for mm in members) / len(members))
+            # ★q/k norm 등 추가 파라미터가 있으면 함께 평균한다(빠뜨리면 조용히 난수로 남는다)
+            ref = dict(at_s.named_parameters())
+            for nm2, ps in ref.items():
+                if any(nm2.startswith(x + ".") for x in names):
+                    continue                                    # 위에서 처리했다
+                try:
+                    avg = sum(dict(mm.named_parameters())[nm2].data for mm in members)
+                except KeyError:
+                    print(f"[init] ⚠️ 공유 어텐션 파라미터 {nm2!r} 이 교사에 없다 — "
+                          f"**난수로 남는다.** 결과문서에 적을 것")
+                    continue
+                ps.data.copy_(avg / len(members))
+            shared_done.add(id(at_s))
+            print(f"[init]   공유 어텐션 {j}: 교사 층 "
+                  f"{[lmap[sc.n_prelude + k] for k in s_mids]} 평균")
+        print(f"[init] ⚠️★어텐션 평균은 **MLP 평균과 같은 규약**이지만 **효과는 미검증**이다. "
+              f"P057 단계0 게이트가 step0 CE 로 잰다(통과 대역 5.0~9.40, 함정 34)")
 
     seen = {}                    # 교사 층 ti 가 몇 번째로 쓰였나 (identity 모드용)
     for si, ti in enumerate(lmap):
         ls, lt = student.layers[si], teacher.layers[ti]
-        ls.attn_mod.q_proj.weight.data.copy_(lt.attn_mod.q_proj.weight.data)
-        ls.attn_mod.o_proj.weight.data.copy_(lt.attn_mod.o_proj.weight.data)
-        if ls.attn_mod.owns_kv:                     # 교사(dense, cla1)는 모든 층이 k/v 보유
-            ls.attn_mod.k_proj.weight.data.copy_(lt.attn_mod.k_proj.weight.data)
-            ls.attn_mod.v_proj.weight.data.copy_(lt.attn_mod.v_proj.weight.data)
+        # ★공유 어텐션은 위에서 **그룹 평균**으로 이미 채웠다. 여기서 덮으면 안 된다.
+        if id(ls.attn_mod) not in shared_done:
+            ls.attn_mod.q_proj.weight.data.copy_(lt.attn_mod.q_proj.weight.data)
+            ls.attn_mod.o_proj.weight.data.copy_(lt.attn_mod.o_proj.weight.data)
+            if ls.attn_mod.owns_kv:                 # 교사(dense, cla1)는 모든 층이 k/v 보유
+                ls.attn_mod.k_proj.weight.data.copy_(lt.attn_mod.k_proj.weight.data)
+                ls.attn_mod.v_proj.weight.data.copy_(lt.attn_mod.v_proj.weight.data)
         for a in ("a_scale", "a_shift", "m_scale", "m_shift", "gates"):
             getattr(ls, a).data.copy_(getattr(lt, a).data)
         # ★복제된 층의 잔차 중복 보정(선택). 'prop' 이면 아무것도 안 한다 = 종전 동작.
@@ -250,11 +292,16 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
     # 중간 MLP: **학생 그룹이 덮는 학생 중간층들을 대응표로 옮겨** 그 교사 MLP 들을 평균낸다.
     #   ★깊이가 같으면 members == [teacher.mid_mlps[j*g+k]] 로 **종전과 완전히 같다**.
     for j, mlp_s in enumerate(student.mid_mlps):
+        # ★P061(2026-08-13) — 멤버를 `config.mlp_group_members` 로 정한다. **단일 소스.**
+        #   `mlp_split` 이 비면 `[j*g + k]` 와 완전히 같다 = **비트 동일**.
+        #   ⚠️불균등이면 그룹마다 **크기가 다르다** — `range(g)` 를 쓰면 조용히 틀린다.
+        #     계획 P061 §2.1 이 지목한 바로 그 함정이다.
+        from ..config import mlp_group_members
+        s_mids = mlp_group_members(sc, j)
         if deeper or depth_init == "role":
-            t_ids = [min((j * g + k) * tc.n_middle // sc.n_middle, tc.n_middle - 1)
-                     for k in range(g)]
+            t_ids = [min(k * tc.n_middle // sc.n_middle, tc.n_middle - 1) for k in s_mids]
         else:
-            t_ids = [j * g + k for k in range(g)]        # 종전 = 비트 동일
+            t_ids = [min(k, tc.n_middle - 1) for k in s_mids]   # 종전 = 비트 동일
         members = [teacher.mid_mlps[t] for t in t_ids]
         ref = dict(mlp_s.named_parameters())
         for name, ps in ref.items():
