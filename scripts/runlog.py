@@ -210,8 +210,40 @@ def main():
     #   → 13곳에 `--outdir` 을 손으로 붙이는 대신 **환경변수 `TL_OUTDIR`** 을 읽는다.
     #     한 곳(진입 배치)에서 정하면 그 아래 전부에 걸린다 = "적용 대상을 한 곳에서
     #     정한다"(함정 18)의 적용.
-    out = (ROOT / a.outdir) if a.outdir else \
-          ((ROOT / os.environ["TL_OUTDIR"]) if os.environ.get("TL_OUTDIR") else OUT)
+    # ★★2026-08-13 — **그 설계가 틀렸다. 이름이 정한다.**
+    #
+    #   사용자 보고: `run_queue.bat` 으로 `0 1 2 3` 을 돌렸더니 **네 로그가 전부**
+    #   `smoketest_logs` 로 갔다. 세 실험 배치는 `TL_OUTDIR` 을 **설정하지 않는데도**.
+    #   즉 `run_smoke_check.bat`(id 0)이 깐 값이 **뒤 배치들에 새어 나갔다.**
+    #   `run_smoke_check.bat` 에 `setlocal` 이 있는데도 그랬다 —
+    #   ⚠️ **정확한 누출 경로는 파일시스템만으로 특정하지 못했다.** 그래서 경로를 고치는 대신
+    #      **경로가 있어도 상관없게** 만든다.
+    #
+    #   ★근본 원인은 설계다: **"실험 로그가 어디로 가는가" 를 공유 가변 상태(환경변수)가 정했다.**
+    #     누출·미설정·사용자 셸 잔재 중 **하나만 어긋나도 조용히 틀린 폴더**로 간다.
+    #     그리고 조용하다 — 로그는 잘 써지고 종료코드도 0 이다.
+    #
+    #   **새 규칙(우선순위 순)**
+    #     1. `--outdir` 이 명시되면 그대로   ← 사람이 직접 말한 것이 최우선
+    #     2. ★`--name` 이 `P0NN` 이면 **무조건 `test_result`.** `TL_OUTDIR` 은 **무시**한다
+    #     3. 그 외에는 `TL_OUTDIR`, 없으면 `test_result`
+    #
+    #   → **실험이냐 아니냐를 이름 하나가 정한다.** 이름은 배치 안에 적혀 있어 새어 나가지 않는다.
+    #     (함정 18 "적용 대상을 한 곳에서 정한다" 의 올바른 적용 — 종전에는 그 '한 곳' 을
+    #      **호출자 환경**으로 잡았고, 그건 한 곳이 아니라 **떠다니는 곳**이었다.)
+    is_exp_name = bool(re.match(r"^P\d{3}", a.name))
+    env_out = os.environ.get("TL_OUTDIR")
+    if a.outdir:
+        out = ROOT / a.outdir
+    elif is_exp_name:
+        out = OUT
+        if env_out and (ROOT / env_out).resolve() != OUT.resolve():
+            print(f"[runlog] ★TL_OUTDIR={env_out!r} 을 **무시**한다 — "
+                  f"--name '{a.name}' 이 실험계획 번호로 시작하므로 실험 로그다.")
+            print(f"[runlog]   실험 로그는 test_result 로 간다(2026-08-13 규칙). "
+                  f"비실험 로그로 보내려면 --outdir 을 명시할 것.")
+    else:
+        out = (ROOT / env_out) if env_out else OUT
     out.mkdir(parents=True, exist_ok=True)
     is_experiment_dir = (out.resolve() == OUT.resolve())
 

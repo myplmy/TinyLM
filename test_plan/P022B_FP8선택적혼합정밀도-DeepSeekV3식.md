@@ -2,7 +2,7 @@
 
 > **신설 2026-08-07.** [P022](P022_FP8-Ada-학습가속.md) 의 **연계 실험**.
 > 근거 문서 = [`docs/20260807_DeepSeekV3-FP8혼합정밀도-우리구조-적용가능성분석.md`](../docs/20260807_DeepSeekV3-FP8혼합정밀도-우리구조-적용가능성분석.md)
-> · [`docs/methods/08_paper_review_202608.md`](../docs/methods/08_paper_review_202608.md) §9
+> · [`docs/methods/08_paper_review.md`](../docs/methods/08_paper_review.md) §9
 > **1차 자료**: DeepSeek-V3 Technical Report(arXiv:2412.19437) §3.3 / ISCA '25 Insights §3.1
 
 **P022 와 무엇이 다른가**: P022 는 *"FP8 GEMM 이 우리 형상에서 빠른가"*(→ 결과 010, 통과)

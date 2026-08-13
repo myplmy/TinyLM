@@ -70,12 +70,25 @@ def main():
     print(f"torch {torch.__version__} / device {dev} / V={V} rows={N} T={T} alpha={al}")
 
     torch.manual_seed(1337)
-    # 학생·교사 로짓을 만든다. 교사가 **학생보다 조금 나쁜** 상황을 재현한다(결과 037 §1).
+    # ★★2026-08-13 정정 — **종전 합성 데이터가 퇴화였다.**
+    #   교사·학생 로짓을 **같은 `base`** 에서 만들고 정답 로짓만 4.0 vs 3.2 로 달리 줬다.
+    #   그러면 두 분포가 거의 같아 **KL ≈ 0**, gradient 도 ≈ 0 → A2 가 "실효비 0.000" 을
+    #   찍었다. 그건 KD 구현의 성질이 아니라 **내 테스트 데이터의 성질**이다(결과 042 §3).
+    #   → 교사와 학생을 **독립적으로 다르게** 만든다. 실제로 둘은 full-val 3.8080 vs 3.6984
+    #     로 확연히 다른 분포다(결과 037 §1·040).
     tgt = torch.randint(0, V, (N,), device=dev)
-    base = torch.randn(N, V, device=dev) * 0.5
-    slog = base.clone(); slog[torch.arange(N), tgt] += 4.0        # 학생이 더 확신
-    tlog = base.clone(); tlog[torch.arange(N), tgt] += 3.2        # 교사가 조금 못하다
+    slog = torch.randn(N, V, device=dev) * 1.0
+    tlog = torch.randn(N, V, device=dev) * 1.0                    # ★독립 난수 = 다른 분포
+    slog[torch.arange(N), tgt] += 4.0                             # 학생이 정답을 더 확신
+    tlog[torch.arange(N), tgt] += 3.2                             # 교사가 조금 못하다
     slog.requires_grad_(True)
+    with torch.no_grad():
+        _js = 0.5 * (F.softmax(slog, -1) - F.softmax(tlog, -1)).abs().sum(-1).mean().item()
+    print(f"  ★교사·학생 분포 차(총변동거리) = {_js:.4f}  "
+          f"(0 에 가까우면 이 감사는 의미가 없다 — 결과 042 §3 의 실패)")
+    if _js < 0.05:
+        print("  🚫 두 분포가 너무 비슷하다. A2·A4 를 읽지 말 것.")
+        notes.append("degenerate-data")
 
     # ── A1 : batchmean 의 분모 ───────────────────────────────────────────────
     _hdr("A1  batchmean 의 분모가 토큰 수인가")

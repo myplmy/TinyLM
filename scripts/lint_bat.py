@@ -18,6 +18,7 @@
   W      13  echo 내용이 로그에 안 남는다      콘솔에만 뜨고 runlog 파일엔 없다 → --note 로 (2026-08-13)
   E      14  !VAR! 인데 지연확장 미설정        변수가 안 풀려 입력 비교가 항상 실패한다 (2026-08-13)
   E      15  실험 배치가 smoketest_logs 로     게이트는 스모크가 아니다. test_result 가 맞다 (2026-08-13)
+  E      16  TL_OUTDIR 을 깔면서 안 치운다      뒤 배치로 새어 나가 로그 폴더가 오염된다 (2026-08-13)
   E      11  줄끝이 CRLF 가 아님       `.gitattributes` 가 `*.bat text eol=crlf` 로 선언하는데
                                        작업트리가 LF 면 git 이 매번 재작성·경고한다(CRLF 재발 원인).
                                        또 cmd.exe 는 LF-only 배치에서 `goto`/라벨이 드물게 어긋난다.
@@ -273,6 +274,18 @@ def lint(path: Path):
             err.append(f"실험 배치({', '.join(sorted(set(real)))})가 `TL_OUTDIR=smoketest_logs` 를 "
                        f"설정한다 → 게이트 로그가 스모크 폴더로 간다. **게이트는 스모크가 아니다** "
                        f"(계획서 단계이고 판정이 후속 런을 막는다). 그 줄을 지우면 test_result 로 간다")
+
+    # ★★16. `TL_OUTDIR` 을 설정하는 배치는 **끝나기 전에 반드시 비운다** (2026-08-13 실사고)
+    #   사용자 보고: `run_queue.bat` 으로 0 1 2 3 을 돌렸더니 **네 로그가 전부**
+    #   `smoketest_logs` 로 갔다. 실험 배치 셋은 `TL_OUTDIR` 을 설정하지 않는데도 그랬다 —
+    #   id 0(`run_smoke_check.bat`)이 깐 값이 뒤로 새어 나간 것이다.
+    #   `setlocal` 이 있었는데도 그랬으므로 **`setlocal` 만으로는 부족하다.**
+    #   ⚠️ 조용한 실패다 — 로그는 잘 써지고 종료코드도 0 이다. 폴더만 틀리다.
+    if re.search(r"(?im)^\s*set\s+TL_OUTDIR\s*=\s*\S", txt):
+        if not re.search(r"(?im)^\s*set\s+TL_OUTDIR\s*=\s*$", txt):
+            err.append("`TL_OUTDIR` 을 설정하는데 **비우는 줄(`set TL_OUTDIR=`)이 없다** → "
+                       "같은 cmd 세션의 뒤 배치로 새어 나가 실험 로그가 스모크 폴더로 간다. "
+                       "`setlocal` 만으로는 부족했다(2026-08-13). 종료 경로마다 비울 것")
 
     if re.search(r"![A-Za-z_]\w*!", txt) and "enabledelayedexpansion" not in txt.lower():
         err.append("`!VAR!` 를 쓰는데 `setlocal enabledelayedexpansion` 이 없다 → "

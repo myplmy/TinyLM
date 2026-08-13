@@ -195,6 +195,10 @@ def cmd_build(rows, pick: str):
               f"echo [queue] starting {b}",
               f"time /t",
               f"echo =================================================================",
+              # ★2026-08-13 방어 — 앞 배치가 깐 TL_OUTDIR 이 새어 나오면 이 배치의
+              #   실험 로그가 smoketest_logs 로 간다. 실제로 그렇게 됐다(사용자 보고).
+              #   runlog.py 가 이제 이름으로 판정하므로 이건 이중 방어다.
+              "set TL_OUTDIR=",
               f"call {b}"]
         if b == "run_smoke_check.bat":
             # ★스모크만 큐를 멈춘다 — 깨진 트리에 시간을 태우지 않는다

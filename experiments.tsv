@@ -18,9 +18,10 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단
-1	P055	run_P055_stage0_kd_audit.bat	N	0.1	N	Y	★KD 구현 감사(GPU 0). **REVIEW2 의 KD 결정 전에** — H2(버그)를 배제한다
+1	P055	run_P055_stage0_kd_audit.bat	N	0.1	N	Y	★재실행 — 감사 도구를 고쳤다(독립 분포+퇴화 감지). 결과 042 에서 A2/A4 가 무효였다
+1	P049	run_P049_stage0_init_gate.bat	D	0.1	N	Y	★재실행 — 게이트가 난수 정답을 썼다(결과 041 §11). 실제 val 데이터로 고쳤다
+1	P049B	run_P049B_stage0_repeat_gate.bat	D	0.1	N	Y	★학습 시 재귀의 출발 대가. GPU 소. **G0-c(R=1 이 3.8080 근처)가 계측 건강 검사**
 1	P054	run_P054_stage2_reproducibility.bat	N	0.1	N	Y	★같은 명령이 0.017 다른 모델을 만들었다. GPU 0. 0.024 초과면 재현성 문제
-2	P049	run_P049_stage0_init_gate.bat	D	0.1	N	Y	★재실행 — identity 모드 추가(결과 041 에서 prop/gate_scale 둘 다 실패)
 3	P049	run_P049_depth_g16x2.bat	Y	5.8	N	N	타잉으로 깊이를 사는가(36층). ★단계0 재통과 필수
 3	F1	run_F1_gqa_equivalence.bat	Y	0.8	Y	Y	enable_gqa 동등성 + VRAM(-0.4~0.5 GiB 기대). 단독 실행
 4	P046	run_P046_emb_rank192.bat	Y	3.5	N	N	E=192 - 스펙트럼 88.76 퍼센트가 E=128 대가(+0.1123)를 예측했다

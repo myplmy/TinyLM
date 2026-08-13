@@ -83,12 +83,29 @@ def main():
         return 2
     print(f"  교사 파일 {Path(ck).name}")
 
-    torch.manual_seed(1337)
-    x = torch.randint(0, sc.vocab_size, (a.bs, a.seq), device=dev)
-    y = torch.randint(0, sc.vocab_size, (a.bs, a.seq), device=dev)
+    # ★★2026-08-13 정정 — **종전에는 난수 토큰을 입력·정답으로 썼다. 그건 게이트가 아니었다.**
+    #
+    #   `x = randint(...)`, `y = randint(...)` 로 **서로 무관한 난수**를 넣고 CE 를 쟀다.
+    #   그러면:
+    #     · 난수 초기화 모델 → 균등 출력 → CE ≈ ln(V) = 10.40   (맞다)
+    #     · **학습된 가중치를 이식한 모델 → 확신을 갖고 예측 → 난수 정답과 안 맞음 → CE ≫ ln(V)**
+    #   즉 **이식이 성공할수록 이 지표가 나빠진다.** 부호가 뒤집힌 계측이다.
+    #
+    #   실제로 결과 041 이 그 함정에 걸렸다 — `identity`(수학적으로 **교사와 동일한 함수**)가
+    #   13.4887 을 찍었고 그것을 "실패" 로 읽었다. 13.4887 은 **교사 자신의 점수**다.
+    #
+    #   → **실제 데이터와 next-token 정답**을 쓴다. 그러면 CE 가 의미를 갖는다:
+    #     난수 ≈ ln(V), 이식 성공 ≈ 교사의 val(약 3.8).
+    from tinylm.data import prepare, Loader                      # noqa: E402
+    meta = prepare(a.data, int(float(a.tokens.rstrip("Mm")) * 1e6), exact=True)
+    va = Loader("val", a.bs, a.seq, dev, meta["dir"], seed=99)   # ★val 시드 99 고정 = 표준
+    x, y = va()
     ln_v = math.log(sc.vocab_size)
     thr = ln_v - 1.0
-    print(f"\n  기준: ln(vocab={sc.vocab_size}) = {ln_v:.4f}  -^>  G0-c 통과선 CE ^< {thr:.4f}")
+    print(f"\n  ★실제 val 데이터 사용(next-token 정답). 난수 토큰이 아니다 — 결과 041 §11 참조")
+    print(f"  기준: ln(vocab={sc.vocab_size}) = {ln_v:.4f}  -^>  G0-c 통과선 CE ^< {thr:.4f}")
+    print(f"  ★참고: 교사 dense 의 결정적 full-val 은 **3.8080**(결과 040). "
+          f"이식이 제대로 됐으면 그 근처여야 한다.")
 
     results = {}
     # 대조군: 이식 없음(난수) — **이식이 뭘 걷어내는지 크기를 보기 위해서**
