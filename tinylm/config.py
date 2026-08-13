@@ -26,6 +26,15 @@ class TMTConfig:
     n_coda: int = 2                   # 완전 독립
     mlp_group: int = 4                # 중간층 MLP를 몇 층씩 묶을지
     cla_group: int = 2                # K/V를 몇 층이 공유할지 (1이면 비활성)
+    # ★P057(2026-08-13) — **어텐션 타잉.** 중간층 g 개가 어텐션 하나를 공유한다.
+    #   1 = 층마다 독립 = 종전 = **비트 동일**. 삼진의 48.4% 가 어텐션인데 한 번도 안 묶었다.
+    attn_group: int = 1
+    # ★P049B(2026-08-13) — **학습 시 재귀.** 중간 블록을 몇 배로 통과할지.
+    #   1.0 = 종전 = 비트 동일. `infer_repeat`(P031, 추론 전용)과 **다른 축**이다 —
+    #   이쪽은 backward 를 통과하므로 학습 분포 자체가 반복을 본다.
+    train_repeat: float = 1.0
+    repeat_mode: str = "uniform"      # uniform=중간 전체 / block=특정 그룹만 / progressive=깊을수록 증가
+    repeat_block: int = 0             # block 모드에서 반복할 MLP 그룹 인덱스
 
     # --- mode control ---
     n_modes: int = 1
@@ -95,6 +104,11 @@ class TMTConfig:
         if self.micro_group:
             assert self.dim % self.micro_group == 0 and self.ffn_dim % self.micro_group == 0
         assert self.n_middle % self.mlp_group == 0
+        assert self.attn_group >= 1 and self.n_middle % self.attn_group == 0, \
+            f"n_middle {self.n_middle} % attn_group {self.attn_group} != 0"
+        assert self.train_repeat > 0, "train_repeat 는 양수여야 한다"
+        assert self.repeat_mode in ("uniform", "block", "progressive"), \
+            f"repeat_mode 는 uniform|block|progressive — 받은 값: {self.repeat_mode}"
         if self.sparse34:
             assert self.micro_group and self.micro_group % 4 == 0, \
                 "sparse34 는 group 이 4의 배수여야 함(3:4 블록). per-row(0)와는 함께 못 쓴다"

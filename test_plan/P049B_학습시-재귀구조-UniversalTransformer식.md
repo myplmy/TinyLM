@@ -34,8 +34,7 @@
 | **MobileLLM**(Liu et al., ICML 2024) | [`2402.14905`](https://arxiv.org/abs/2402.14905) ✅ | *"**immediate block-wise weight-sharing**, no increase in model size, marginal latency overhead"* — **125M/350M 에서 +0.7%/+0.8%**. ★**우리 규모와 같다** |
 | **Mixture-of-Depths**(Raposo et al., 2024) | [`2404.02258`](https://arxiv.org/abs/2404.02258) ✅ | token 별 동적 계산. ★**중요**: *"k is defined a priori... **static computation graph with known tensor sizes**"* — **동적 shape 이 없다** → CPU 불리 판정은 재검토 대상 |
 | PoLar / Skip a Layer or Loop It? | [`2606.06574`](https://arxiv.org/abs/2606.06574) ✅ | layer skip/loop 의 입력 의존 프로그램화 |
-
-> ⚠️ **Hyper Experts(OpenReview `cGD7Nzuihz`)는 조회하지 못했다 → 인용하지 않는다.**
+| ★**Hyper Experts**(Deriy & Cetin, Sakana AI, ICLR 2026 TTU Workshop) | OpenReview `cGD7Nzuihz` ✅ **2026-08-13 전문 읽음** | ★★**"higher-activation"(χ=1, φ>1): 모델 크기를 안 늘리고 각 expert 를 forward 당 여러 번 활성화하는 것만으로 "expanded-pool"(χ>1)의 이득을 따라잡는다.** ★**이것이 정확히 이 계획의 가설**이다. small 규모 = backbone **82M**, LR **1e-3** — **우리 규모·우리 LR 과 일치**. ⚠️단 **이득이 모델이 클수록 커진다**(medium 이 30% 적은 활성화 증가로 같은 이득) → **우리 규모에서는 작을 수 있다.** 판정: `docs/methods/08_paper_review_202608.md` §10 |
 
 ### 1.2 ★P049 와 무엇이 다른가 — **혼동하면 두 실험이 같은 것이 된다**
 
@@ -217,6 +216,8 @@ repeat_block: int = 0            # block 모드에서 반복할 그룹 인덱스
 - 결과 006 — 토큰 예산 효과(300M→600M dense −0.185)
 - 결과 032 §8.3 — 볼록성(용량을 더할 때 이득 < 뺄 때 대가)
 - 문헌: `1807.03819` · `1909.11942` · `2402.14905` · `2404.02258` · `2606.06574` (**전부 조회 확인**)
+- ★**Hyper Experts**(OpenReview `cGD7Nzuihz`, 전문 읽음) — **"파라미터 고정 + 재사용 증가 = 품질 향상"**
+  을 82M 규모에서 직접 보고. **이 계획의 가장 가까운 문헌 근거**. 판정 전문 = `08_paper_review_202608.md` §10
 - `docs/20260813_외부AI검토문서-5종-타당성분석.md` §R5 (문서 E 원칙 3)
 
 ---
@@ -228,7 +229,28 @@ repeat_block: int = 0            # block 모드에서 반복할 그룹 인덱스
 - [x] 부모초기화 위험을 **미리 지목**하고 ③(부모 없음)을 **배제**했다
 - [x] 참고문헌 **5건 실제 조회**, 미조회 1건은 **인용하지 않음**
 - [x] KV 캐시 소유 규약을 **결정 사항으로 명시**
-- [ ] `train_repeat` 구현 (선결)
-- [ ] 단계0 게이트 · 배치 — **구현 후에 만든다**(CLAUDE.md "지금 돌아갈 때만")
+- [x] ★**`train_repeat` 구현 완료 (2026-08-13)** — `config.train_repeat/repeat_mode/repeat_block`
+      + `transformer._repeat_schedule()` + CLI `--train-repeat/--repeat-mode/--repeat-block`.
+      **기본 1.0 = 종전 = 비트 동일.** `infer_repeat` 과 동시 사용은 **즉사**시킨다(함정 2)
+- [x] 세 모드 스케줄 검산 — uniform/block/progressive 가 예상 길이·순서를 낸다
+- [x] json 에 `train_repeat`·`repeat_mode` 기록
+- [ ] 단계0 게이트 배치 — **결과 041 의 교훈을 먼저 반영해야 한다**(아래)
+- [ ] 단계1
 
-> **최근 갱신 2026-08-13** — 신설. 구현 전이므로 **배치를 만들지 않았다.**
+## ★10. 결과 041 이 이 계획에 주는 경고 (2026-08-13)
+
+P049 단계0 게이트가 **깊이 복제 이식이 난수보다 나쁘다**는 것을 쟀다
+(step0 CE 난수 10.41 vs prop 12.72). **기전은 합성 불일치** — 교사가 배운 `f` 에
+`f` 자신의 출력을 먹인다.
+
+> ★★**P049B 는 그 상황을 학습 전체에 걸쳐 만든다.** 다만 **초기화가 아니라 학습**이므로
+> 모델이 적응할 기회가 있다. 그것이 이 계획의 존재 이유이기도 하다.
+>
+> ⚠️ **그래도 출발점은 같은 문제를 겪는다.** 부모초기화(`--init-from`)를 켠 채 `train_repeat > 1`
+> 을 하면 **결과 041 과 같은 상태에서 학습을 시작**한다.
+> → **단계0 이 `--depth-init identity` 와 결합해 step0 CE 를 먼저 봐야 한다.**
+
+⚠️ **uniform 모드는 R 을 정수로 반올림한다**(`int(round(R))`). `R=1.5` 는 2 와 같다.
+분수 배수가 필요하면 `progressive` 를 쓴다. **이것을 결과문서에 반드시 적는다.**
+
+> **최근 갱신 2026-08-13** — 구현 완료. **배치는 단계0 설계를 결과 041 에 맞춰 고친 뒤.**

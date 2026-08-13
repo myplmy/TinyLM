@@ -114,7 +114,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           anneal_shape="linear", anneal_start=None,
           arenas=False, arena_lambda=0.1, arena_end=0.9,
           doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None,
-          kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop"):
+          kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
+          attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
+          save_every=0):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
     #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
@@ -172,6 +174,22 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
               f"임베딩 파라미터 {(32768*emb_rank + emb_rank*cfg.dim)/1e6:.2f}M")
     cfg.mlp_lora_rank, cfg.mlp_lora_bits = lora_rank, lora_bits
     cfg.mlp_film = mlp_film
+    if attn_group is not None and arch == "tied":     # (P057) 어텐션 타잉
+        assert attn_group >= 1 and cfg.n_middle % attn_group == 0, \
+            f"n_middle {cfg.n_middle} % attn_group {attn_group} != 0"
+        cfg.attn_group = attn_group
+        if attn_group > 1:
+            print(f"[attn] ★어텐션 타잉 g={attn_group} — 중간 {cfg.n_middle}층이 "
+                  f"어텐션 {cfg.n_middle // attn_group}개를 공유한다. "
+                  f"⚠️cla_group={cfg.cla_group} 과 겹치므로 대가 귀속에 cla1 대조가 필요하다(P057)")
+    if train_repeat is not None:                       # (P049B) 학습 시 재귀
+        cfg.train_repeat = float(train_repeat)
+        cfg.repeat_mode, cfg.repeat_block = repeat_mode, int(repeat_block)
+        if cfg.train_repeat != 1.0:
+            print(f"[repeat] ★학습 시 재귀 R={cfg.train_repeat} mode={repeat_mode}"
+                  f"{f' block={repeat_block}' if repeat_mode == 'block' else ''} — "
+                  f"★상주 파라미터는 불변, 계산 깊이만 늘어난다. "
+                  f"⚠️활성 메모리와 벽시계는 반복 배수만큼 는다")
     cfg.center_weights = center_weights
     # ★F-1(2026-08-14) — 기본 False = 종전 `repeat_interleave` 경로 = 비트 동일.
     cfg.sdpa_gqa = bool(sdpa_gqa)
@@ -391,15 +409,26 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         m.update(step=step, train_loss=train_loss, train_ce=ce, kd_step=bool(kd_this),
                  gap=m["val_loss"] - ce)   # gap 은 CE 기준(혼합손실과 섞지 않는다)
         hist.append(m); print(line)
-        blob = {"model": model.state_dict(), "opt": opt.state_dict(),
-                "step": step, "cfg": cfg.__dict__}
-        if shadow is not None:
-            blob["ema"] = [sh.detach().cpu() for sh in shadow]
-        torch.save(blob, ck)
-        if m["val_loss"] < best_val - 1e-4:                     # best 판정 = raw
+        # ★P058(2026-08-13) — **eval 과 체크포인트 저장을 분리한다.**
+        #   종전에는 eval 마다 model+optimizer 를 통째로 직렬화했다. `eval_every 100` 이면
+        #   2289스텝 런에서 **23회**다. AdamW 상태까지 포함하므로 학생 모델보다 크다.
+        #   `--save-every N` 이면 N 스텝 경계에서만 저장한다(0 = 종전 = 매 eval).
+        #   ⚠️ **best 와 마지막 스텝은 항상 저장한다** — 안 그러면 판정에 쓸 체크포인트가 없다.
+        is_best = m["val_loss"] < best_val - 1e-4                # best 판정 = raw
+        due = (save_every <= 0) or (step % save_every == 0) or (step >= steps)
+        if due or is_best:
+            blob = {"model": model.state_dict(), "opt": opt.state_dict(),
+                    "step": step, "cfg": cfg.__dict__}
+            if shadow is not None:
+                blob["ema"] = [sh.detach().cpu() for sh in shadow]
+            if due:
+                torch.save(blob, ck)
+            if is_best:
+                best_val, best_step, since_improve = m["val_loss"], step, 0
+                torch.save(blob, ck_best)
+                print(f"       best 갱신 {best_val:.4f} -> {ck_best.name}")
+        elif is_best:                                            # 도달 불가(위에서 처리) — 방어
             best_val, best_step, since_improve = m["val_loss"], step, 0
-            torch.save(blob, ck_best)
-            print(f"       best 갱신 {best_val:.4f} -> {ck_best.name}")
         else:
             since_improve += 1
         return m
@@ -565,6 +594,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "sdpa_gqa": bool(cfg.sdpa_gqa),                        # (F-1) enable_gqa 경로
            "kd_chunk": int(kd_chunk or 0),                        # (T-2/P053) KD 손실 청크 행수
            "depth_init": str(depth_init),                         # (P049) 깊이 확장 이식 방식
+           "attn_group": int(getattr(cfg, "attn_group", 1)),       # (P057) 어텐션 타잉 g
+           "train_repeat": float(getattr(cfg, "train_repeat", 1.0)),   # (P049B) 학습 시 재귀 배수
+           "repeat_mode": str(getattr(cfg, "repeat_mode", "uniform")),
+           "save_every": int(save_every or 0),                     # (P058)
            "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용
            "arenas": bool(arenas), "arena_lambda": arena_lambda,  # (P036) Arenas residual
            "arena_end": arena_end,

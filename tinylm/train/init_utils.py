@@ -196,18 +196,35 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
                   f"어느 쪽이 맞는지는 추측하지 않는다. **단계0 게이트가 잰다.**")
         print(f"[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.")
 
+    seen = {}                    # 교사 층 ti 가 몇 번째로 쓰였나 (identity 모드용)
     for si, ti in enumerate(lmap):
         ls, lt = student.layers[si], teacher.layers[ti]
-        ls.attn.q_proj.weight.data.copy_(lt.attn.q_proj.weight.data)
-        ls.attn.o_proj.weight.data.copy_(lt.attn.o_proj.weight.data)
-        if ls.attn.owns_kv:                     # 교사(dense, cla1)는 모든 층이 k/v 보유
-            ls.attn.k_proj.weight.data.copy_(lt.attn.k_proj.weight.data)
-            ls.attn.v_proj.weight.data.copy_(lt.attn.v_proj.weight.data)
+        ls.attn_mod.q_proj.weight.data.copy_(lt.attn_mod.q_proj.weight.data)
+        ls.attn_mod.o_proj.weight.data.copy_(lt.attn_mod.o_proj.weight.data)
+        if ls.attn_mod.owns_kv:                     # 교사(dense, cla1)는 모든 층이 k/v 보유
+            ls.attn_mod.k_proj.weight.data.copy_(lt.attn_mod.k_proj.weight.data)
+            ls.attn_mod.v_proj.weight.data.copy_(lt.attn_mod.v_proj.weight.data)
         for a in ("a_scale", "a_shift", "m_scale", "m_shift", "gates"):
             getattr(ls, a).data.copy_(getattr(lt, a).data)
         # ★복제된 층의 잔차 중복 보정(선택). 'prop' 이면 아무것도 안 한다 = 종전 동작.
         if depth_init == "gate_scale" and lrep[si] > 1:
             ls.gates.data.div_(float(lrep[si]))
+        # ★★'identity'(2026-08-13 신설) — **복제된 층의 gate 를 0 으로 만들어 항등으로 시작**한다.
+        #   `Layer.forward` 가 `x = x + gates[k] * branch(...)` 이므로 gate 0 = **정확한 항등**이다.
+        #   → 36층 학생이 step0 에 **교사 20층과 완전히 같은 함수**가 된다.
+        #
+        #   ★왜 필요한가 (결과 041): `prop`·`gate_scale` 이 **둘 다 난수보다 나빴다**
+        #   (step0 CE 12.72 / 13.48 vs 난수 10.41). 원인은 잔차 크기가 아니라 **합성 불일치** —
+        #   교사가 배운 f 에 **f 자신의 출력**을 넣으면 본 적 없는 분포다. 크기를 반으로 줄여도
+        #   (gate_scale) 안 고쳐지고, 오히려 교사 층까지 약해져 더 나빠졌다.
+        #
+        #   문헌: 층 확장 시 **새 블록을 항등으로 초기화**하는 것이 표준이다
+        #   (bert2BERT/LLaMA Pro 계열의 zero-init block expansion).
+        #   여기서는 출력 projection 을 0 으로 만들 필요 없이 **gate 하나면 된다** —
+        #   우리 구조에 이미 층별 residual gate 가 있기 때문이다.
+        if depth_init == "identity" and seen.get(ti, 0) > 0:
+            ls.gates.data.zero_()
+        seen[ti] = seen.get(ti, 0) + 1
 
     # prelude/coda MLP 도 같은 대응표를 쓴다(구간 안 비례). 개수가 같으면 항등이다.
     for j, mlp_s in enumerate(student.pre_mlps):

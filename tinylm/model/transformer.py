@@ -32,19 +32,43 @@ class TiedMLPTransformer(nn.Module):
         self.mid_mlps = nn.ModuleList([MLP(cfg) for _ in range(cfg.n_mlp_groups)])
         self.coda_mlps = nn.ModuleList([MLP(cfg) for _ in range(cfg.n_coda)])
 
+        # ★P057(2026-08-13) — **어텐션 타잉.** `attn_group` g 면 중간층 g 개가 어텐션 하나를 공유한다.
+        #   MLP 타잉과 **완전히 같은 형태**(`mid_mlps[j // mlp_group]`)라 코드가 대칭이다.
+        #   기본 `attn_group = 1` = 층마다 독립 = **종전 = 비트 동일.**
+        #
+        #   ★왜 이 축인가: 삼진 54.85M 중 **어텐션이 26.54M = 48.4%** 인데 타잉 대상이 아니었다.
+        #   MLP 축은 P045(g16)에서 종결됐고 이쪽은 손도 안 댔다(REVIEW2 §5.2 · 외부문서 E §9).
+        #
+        #   ⚠️ **CLA 와 겹친다.** `cla_group=2` 는 이미 K/V 를 공유 중이라, 공유 어텐션이
+        #      **소유층/재사용층 양쪽에 선다.** 소유 여부는 층이 정하고 어텐션 객체는 그
+        #      호출에서 `kv` 를 받으므로 동작은 성립하지만, **대가를 귀속하려면 `cla_group=1`
+        #      대조가 필요**하다(계획 P057).
+        ag = int(getattr(cfg, "attn_group", 1) or 1)
+        self.mid_attns = None
+        if ag > 1:
+            assert cfg.n_middle % ag == 0, f"n_middle {cfg.n_middle} % attn_group {ag} != 0"
+            # 공유 어텐션은 **K/V 를 소유하는 형태**로 만든다 — 그래야 어느 위치에 서든
+            # 필요한 projection 이 다 있다. 소유 여부는 호출 시 `kv` 인자가 정한다.
+            self.mid_attns = nn.ModuleList([build_attention(cfg, True)
+                                            for _ in range(cfg.n_middle // ag)])
+
         layers, self.owner = [], []
         for i in range(cfg.n_layers):
             owns = (i % cfg.cla_group == 0)
             self.owner.append(i - (i % cfg.cla_group))
+            shared_attn = None
             if i < cfg.n_prelude:
                 mlp = self.pre_mlps[i]
             elif i < cfg.n_prelude + cfg.n_middle:
                 j = i - cfg.n_prelude
                 mlp = self.mid_mlps[j // cfg.mlp_group if cfg.tie_mlp else j]
+                if self.mid_attns is not None:
+                    shared_attn = self.mid_attns[j // ag]
             else:
                 mlp = self.coda_mlps[i - cfg.n_prelude - cfg.n_middle]
             is_mid_tied = (cfg.n_prelude <= i < cfg.n_prelude + cfg.n_middle) and cfg.tie_mlp
-            layers.append(Layer(cfg, owns, mlp, mlp_lora=is_mid_tied, mlp_film=is_mid_tied))
+            layers.append(Layer(cfg, owns, mlp, mlp_lora=is_mid_tied, mlp_film=is_mid_tied,
+                                attn=shared_attn))
         self.layers = nn.ModuleList(layers)
 
         self.norm_f = RMSNorm(cfg.dim, cfg.norm_eps)
@@ -247,6 +271,51 @@ class TiedMLPTransformer(nn.Module):
         self.refresh_quant()
         self._quant_frozen = True
 
+    # ---------- P049B : 학습 시 재귀 스케줄 ----------
+    def _repeat_schedule(self, R):
+        """★P049B(2026-08-13) — **학습 경로의 중간 블록 반복 스케줄.**
+
+        `repeat_mode` 세 가지(사용자 지시 2026-08-13):
+
+        | 모드 | 무엇 |
+        |---|---|
+        | `uniform` | 중간 16층 **전체**를 R 회 통과 (b) 전체 층 반복 |
+        | `block` | `repeat_block` 이 가리키는 **MLP 그룹만** R 회 (a) 특정 층만 반복 |
+        | `progressive` | 층이 깊을수록 반복 수가 **점진 증가** (c) 점진 조절 |
+
+        ⚠️ prelude·coda 는 **건드리지 않는다**(P031 과 같은 규약). 그쪽은 타잉 대상이 아니고
+           역할이 다르다.
+
+        ⚠️★**KV 소유 규약**: 같은 층을 두 번 지나면 `forward` 의 `(owner, 통과번호)` 키가
+           **통과마다 K/V 를 새로 만든다**(기본). `repeat_kv_reuse` 를 켜면 첫 통과 것을
+           재사용한다 — **대조 조건**이지 기본이 아니다. 두 번째 통과가 낡은 K/V 를 본다.
+        """
+        cfg = self.cfg
+        p, m, g = cfg.n_prelude, cfg.n_middle, cfg.mlp_group
+        mode = getattr(cfg, "repeat_mode", "uniform")
+        mid = list(range(p, p + m))
+        out = list(range(p))                     # prelude 그대로
+        if mode == "uniform":
+            reps = int(round(R))
+            assert reps >= 1, "train_repeat 는 uniform 에서 1 이상 정수로 반올림돼야 한다"
+            for _ in range(reps):
+                out += mid
+        elif mode == "block":
+            b = int(getattr(cfg, "repeat_block", 0))
+            lo, hi = p + b * g, p + (b + 1) * g
+            assert 0 <= b < cfg.n_mlp_groups, f"repeat_block {b} 범위 밖(0..{cfg.n_mlp_groups-1})"
+            reps = int(round(R))
+            for i in mid:
+                out += [i] * (reps if lo <= i < hi else 1)
+        else:                                     # progressive
+            # 깊이 비율 t∈[0,1) 에 대해 반복수를 1 → round(R) 로 선형 증가시킨다.
+            top = int(round(R))
+            for k, i in enumerate(mid):
+                t = k / max(m - 1, 1)
+                out += [i] * max(1, int(round(1 + (top - 1) * t)))
+        out += list(range(p + m, cfg.n_layers))   # coda 그대로
+        return out
+
     # ---------- P031 단계0 : 층 방문 스케줄 ----------
     def visit_schedule(self):
         """forward 가 층을 방문할 순서. **`infer_repeat == 1.0` 이면 `range(n_layers)` 와 동일**하다.
@@ -264,6 +333,16 @@ class TiedMLPTransformer(nn.Module):
         cfg = self.cfg
         n, p, m = cfg.n_layers, cfg.n_prelude, cfg.n_middle
         R = float(getattr(cfg, "infer_repeat", 1.0) or 1.0)
+        # ★P049B(2026-08-13) — **학습 시 재귀.** 학습 중이면 `train_repeat` 이 R 을 정한다.
+        #   `infer_repeat`(P031)은 추론 전용이고 결과 020 이 "학습 분포 mismatch" 로 종결했다.
+        #   `train_repeat` 은 **그 mismatch 를 학습으로 없애자**는 반대편 축이다.
+        #   ⚠️ 둘을 동시에 켜면 어느 것이 반복을 정했는지 알 수 없다 → 즉사시킨다.
+        TR = float(getattr(cfg, "train_repeat", 1.0) or 1.0)
+        if self.training and TR != 1.0:
+            if R != 1.0:
+                raise RuntimeError("train_repeat 와 infer_repeat 를 동시에 켤 수 없다 — "
+                                   "어느 것이 반복을 정했는지 알 수 없게 된다(함정 2).")
+            return self._repeat_schedule(TR)
         if R == 1.0:
             return list(range(n))                      # ★기본 경로는 종전과 완전히 같다
         where = getattr(cfg, "repeat_where", "front")
@@ -329,9 +408,12 @@ class TiedMLPTransformer(nn.Module):
         # ★P031: 기본(infer_repeat=1.0)이면 schedule == range(n_layers) 라 종전과 동일하다.
         schedule = self.visit_schedule()
         repeating = len(schedule) != cfg.n_layers
-        if repeating and self.training:
+        # ★P049B: 학습 중 반복은 **`train_repeat` 으로만** 허용한다. `infer_repeat` 은 여전히 금지 —
+        #   결과 020 이 그 mismatch 를 종결했고, 학습에서 켜면 grad checkpoint 와도 섞인다.
+        if repeating and self.training and float(getattr(cfg, "train_repeat", 1.0) or 1.0) == 1.0:
             raise RuntimeError("infer_repeat 는 **추론 전용**이다. 학습 경로에서 켜지 않는다 "
-                               "(층 반복은 학습된 깊이 분포 밖이고, grad checkpoint 와도 섞인다).")
+                               "(층 반복은 학습된 깊이 분포 밖이고, grad checkpoint 와도 섞인다). "
+                               "학습 시 반복은 --train-repeat 로(P049B).")
         seen = {}                                       # owner -> 그 owner 를 몇 번째 통과 중인가
 
         kv_bank, mode_hist = {}, []
@@ -362,7 +444,7 @@ class TiedMLPTransformer(nn.Module):
                 if reuse:
                     kv_bank[key] = kv_bank[(own, 0)]     # 첫 통과 KV 재사용(대조 조건)
                 else:
-                    k_new, v_new = layer.attn.compute_kv(x, cos, sin)
+                    k_new, v_new = layer.attn_mod.compute_kv(x, cos, sin)
                     if past_kv and key in past_kv:
                         k_old, v_old = past_kv[key]
                         k_new = torch.cat([k_old, k_new], dim=2)
@@ -371,7 +453,7 @@ class TiedMLPTransformer(nn.Module):
             elif key not in kv_bank:
                 # ★축소(R^<1)에서 CLA 그룹 경계가 잘리면 owner 가 스케줄에 없을 수 있다.
                 #   그때는 이 층이 스스로 KV 를 계산한다(조용한 KeyError 대신 명시적 폴백).
-                k_new, v_new = layer.attn.compute_kv(x, cos, sin)
+                k_new, v_new = layer.attn_mod.compute_kv(x, cos, sin)
                 if past_kv and key in past_kv:
                     k_old, v_old = past_kv[key]
                     k_new = torch.cat([k_old, k_new], dim=2)

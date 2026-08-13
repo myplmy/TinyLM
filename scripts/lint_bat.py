@@ -4,7 +4,9 @@
 검사 항목
   E(에러) 1  비ASCII 바이트          cmd 코드페이지에서 명령이 깨진다
   E       2  chcp 사용                파이썬 출력이 깨진다
-  E       3  escape 안 된 <>|%        리다이렉션·변수확장으로 오작동
+  E       3  escape 안 된 <>|         리다이렉션으로 오작동
+  E      3b  `%VAR%` 즉시확장          ★2026-08-13 `%` 전면금지 해제. 미정의 변수는 조용히 사라진다
+                                       리터럴 퍼센트는 `%%`. `for %%a` 도 이제 허용
   E       4  train 명령에 --tag 없음  정본 dense/tied 로그·ckpt 를 조용히 덮어쓴다
   W(경고) 5  train 명령에 --accum 없음  기본 8 이라 절반만 학습된다
   W       6  학습 런 전부가 goto ERROR  한 런 실패로 후속 런이 죽는다(결과 007)
@@ -15,6 +17,7 @@
   W      12  --no-ckpt 런 앞에 timeout 없음   직전 런의 VRAM 이 안 풀려 CUBLAS 오류(결과 037)
   W      13  echo 내용이 로그에 안 남는다      콘솔에만 뜨고 runlog 파일엔 없다 → --note 로 (2026-08-13)
   E      14  !VAR! 인데 지연확장 미설정        변수가 안 풀려 입력 비교가 항상 실패한다 (2026-08-13)
+  E      15  실험 배치가 smoketest_logs 로     게이트는 스모크가 아니다. test_result 가 맞다 (2026-08-13)
   E      11  줄끝이 CRLF 가 아님       `.gitattributes` 가 `*.bat text eol=crlf` 로 선언하는데
                                        작업트리가 LF 면 git 이 매번 재작성·경고한다(CRLF 재발 원인).
                                        또 cmd.exe 는 LF-only 배치에서 `goto`/라벨이 드물게 어긋난다.
@@ -64,13 +67,47 @@ def lint(path: Path):
         if re.search(r"\bchcp\b", ln, re.I):
             err.append(f"L{i+1} chcp 사용 금지: {ln.strip()[:60]}")
 
-    # 3. escape 안 된 <>|%
+    # 3. escape 안 된 <>|
     for i, ln in enumerate(lines):
-        for ch in "<>|%":
+        for ch in "<>|":
             if ch in ln and ("^" + ch) not in ln:
                 err.append(f"L{i+1} escape 안 된 '{ch}' (echo 면 ^{ch}, 주석이면 다른 표현으로): "
                            f"{ln.strip()[:55]}")
                 break
+
+    # ★★3b. `%` — **전면 금지를 2026-08-13 에 해제**하고 위험한 형태만 남긴다.
+    #
+    #   종전에는 `%` 를 통째로 막았다. 그 대가가 컸다:
+    #     · 퍼센트를 못 써서 주석에 "PERCENT SIGN" 같은 우회를 썼다
+    #     · `for /f` 를 못 써서 목록 읽기를 전부 파이썬으로 뺐다
+    #     · `%~dp0` 를 못 써서 `if not exist run100m.py cd ..\\..` 마커를 발명했다
+    #
+    #   ★해제해도 되는가 — **불가역적 손상은 없다.** `%` 오용의 실패 모드는
+    #   ①문자열이 조용히 사라지거나 ②변수가 안 풀리는 것이고, **둘 다 실행 시점에 드러난다.**
+    #   파일을 지우거나 체크포인트를 덮어쓰는 종류가 아니다.
+    #
+    #   ⚠️ **다만 ①이 정확히 이 저장소가 싫어하는 "조용한 실패" 다.**
+    #      `echo cost is 5%production%` 에서 `production` 이 미정의면 **그 구간이 통째로 사라진다.**
+    #      그래서 **`%VAR%` 형태만 에러로 남긴다.**
+    #
+    #   **새 규약**: 리터럴 퍼센트는 `%%` 로 쓴다(cmd 가 `%` 하나로 출력한다).
+    #                `for %%a in (...)` 도 이제 허용된다.
+    for i, ln in enumerate(lines):
+        s = ln
+        if s.strip().upper().startswith("REM"):
+            continue                      # 주석은 실행되지 않는다
+        # `%%` 를 먼저 지운다(리터럴 퍼센트 / for 반복변수 — 둘 다 안전)
+        probe = s.replace("%%", "")
+        m = re.search(r"%[A-Za-z_][A-Za-z0-9_]*%", probe)
+        if m:
+            err.append(f"L{i+1} `{m.group(0)}` 즉시확장 변수 — **미정의면 그 구간이 조용히 사라진다.** "
+                       f"`!VAR!`(+`setlocal enabledelayedexpansion`)를 쓰거나, 리터럴이면 `%%` 로: "
+                       f"{s.strip()[:50]}")
+        elif re.search(r"%~", probe):
+            warn.append(f"L{i+1} `%~`(경로 수식자) — 동작하지만 이 저장소는 "
+                        f"`if not exist run100m.py cd ..\\..` 마커를 표준으로 쓴다: {s.strip()[:45]}")
+        elif "%" in probe:
+            warn.append(f"L{i+1} 홀수 개의 `%` — 리터럴 퍼센트는 `%%` 로 쓰세요: {s.strip()[:50]}")
 
     # train 명령 수집
     trains = [(i + 1, ln) for i, ln in enumerate(lines)
@@ -216,6 +253,27 @@ def lint(path: Path):
     #   **YES 를 입력해도 CANCEL 로 갔다.** 조용히 아무것도 안 하는 실패다.
     #   이 저장소는 `%` 를 금지하므로 `!VAR!` 가 **유일한 변수 확장 수단**이고, 따라서
     #   `setlocal enabledelayedexpansion` 누락은 **구조적으로 재발한다.**
+    # ★★15. **실험 게이트 로그를 `smoketest_logs` 로 보내지 않는다** (2026-08-13 사용자 지적)
+    #   > *"실험과 관련된 게이트를 자꾸 smoke test 로 치부하여 smoketest_logs 에 저장하는데
+    #   >  실험 게이트 로그를 test_result 에 실험결과 로그 형태로 저장하도록 할 것."*
+    #
+    #   ★지적이 맞다. `TL_OUTDIR=smoketest_logs` 는 **`run_smoke_check.bat` 하나만** 쓰라고
+    #   만든 것이다(2026-08-07: 스모크 로그가 test_result 를 오염시켰다). 그런데 나는
+    #   **P049 단계0·F-1 단계A·P014C 단계2 를 "게이트니까 스모크" 로 분류**해 같은 폴더로 보냈다.
+    #
+    #   ⚠️ **그건 스모크가 아니라 실험이다.** 계획서의 단계이고, 결과문서에 자리가 있고,
+    #      **판정이 후속 런을 막거나 연다.** 실제로 P049 단계0 이 **G0-c 실패로 5.8h 를 막았고**,
+    #      그건 `test_result/041` 에 있어야 할 결과다(사용자가 손으로 옮겼다).
+    #
+    #   **구분 규칙**: `--name` 이 실험계획 번호(P0NN, P000 제외)로 시작하면 **실험 로그**다.
+    if "TL_OUTDIR=smoketest_logs" in txt.replace(" ", ""):
+        exp = re.findall(r"--name\s+(P\d{3})", txt)
+        real = [n for n in exp if n != "P000"]
+        if real:
+            err.append(f"실험 배치({', '.join(sorted(set(real)))})가 `TL_OUTDIR=smoketest_logs` 를 "
+                       f"설정한다 → 게이트 로그가 스모크 폴더로 간다. **게이트는 스모크가 아니다** "
+                       f"(계획서 단계이고 판정이 후속 런을 막는다). 그 줄을 지우면 test_result 로 간다")
+
     if re.search(r"![A-Za-z_]\w*!", txt) and "enabledelayedexpansion" not in txt.lower():
         err.append("`!VAR!` 를 쓰는데 `setlocal enabledelayedexpansion` 이 없다 → "
                    "변수가 안 풀려 **문자열 그대로 비교**된다(입력이 항상 불일치). "

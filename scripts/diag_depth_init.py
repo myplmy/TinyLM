@@ -92,7 +92,7 @@ def main():
 
     results = {}
     # 대조군: 이식 없음(난수) — **이식이 뭘 걷어내는지 크기를 보기 위해서**
-    for mode in ("(난수 대조군)", "prop", "gate_scale"):
+    for mode in ("(난수 대조군)", "prop", "gate_scale", "identity"):
         _hdr(f"모드 {mode}")
         torch.manual_seed(1337)
         m = TiedMLPTransformer(sc).to(dev)
@@ -138,14 +138,23 @@ def main():
         fails.append("G0-c")
     print()
     if rnd is not None and best_ce is not None:
-        print(f"  ★이식이 걷어낸 출발 핸디캡: {rnd - best_ce:+.4f} nats "
-              f"(난수 {rnd:.4f} -^> {best} {best_ce:.4f})")
+        d = rnd - best_ce
+        if d > 0:
+            print(f"  ★이식이 걷어낸 출발 핸디캡: {d:+.4f} nats "
+                  f"(난수 {rnd:.4f} -^> {best} {best_ce:.4f})")
+        else:
+            # ★2026-08-13 정정: 종전에는 음수도 "걷어냈다" 로 인쇄해 **정반대로 읽혔다**.
+            print(f"  🚫★이식이 출발점을 **더 나쁘게** 만들었다: {-d:.4f} nats "
+                  f"(난수 {rnd:.4f} -^> {best} {best_ce:.4f})")
+            print(f"     -^> 이건 '초기화가 안 됐다' 가 아니라 **'초기화가 해롭다'** 는 뜻이다. "
+                  f"복제된 층이 교사가 본 적 없는 입력을 받는다(합성 불일치).")
     if best:
         print(f"  ★권장 depth_init = **{best}**")
-        if "gate_scale" in results and "prop" in results:
-            d = results["prop"][0] - results["gate_scale"][0]
-            print(f"    prop − gate_scale = {d:+.4f} nats "
-                  f"({'gate_scale 이 낫다' if d > 0 else 'prop 이 낫다'})")
+        for other in ("gate_scale", "identity"):
+            if other in results and "prop" in results:
+                d = results["prop"][0] - results[other][0]
+                print(f"    prop − {other} = {d:+.4f} nats "
+                      f"({other + ' 이 낫다' if d > 0 else 'prop 이 낫다'})")
             print("    ⚠️ **이건 step0 값이다.** 학습 후에도 그 순서가 유지된다는 보장은 없다 — "
                   "단계1 은 이 값으로 하나만 고르고, 뒤집힐 가능성을 결과문서에 적는다.")
     print()

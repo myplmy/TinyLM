@@ -38,7 +38,7 @@ REM   The gate log name is {YYYYMMDDHHMM}_{name}_{sha7}.txt, so the timestamp is
 REM   unknown here. Ask python for the answer - a wildcard test in cmd would
 REM   need a redirect, and unescaped redirects are a lint error in this repo.
 if not exist smoketest_logs goto NOGATE
-python -c "import glob,sys; sys.exit(0 if glob.glob('smoketest_logs/*P049_stage0_init*.txt') else 1)"
+python -c "import glob,sys; sys.exit(0 if glob.glob('smoketest_logs/*P049_stage0_identity*.txt') else 1)"
 if errorlevel 1 goto NOGATE
 
 echo.
@@ -49,7 +49,7 @@ if not defined TL_NOPAUSE pause
 
 python scripts\runlog.py --name P049_depth_g16x2 --note "[P049 stage 1] m100R1d 2+32+2 g16, KD k4 + parent init, wsd. Threshold fixed in advance at -0.075 vs mC_wsd."
 
-python scripts\runlog.py --name P049_depth_g16x2 -- python run100m.py train --preset m100R1d --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --init-from --kd --kd-every 4 --depth-init prop --tag mC_d36
+python scripts\runlog.py --name P049_depth_g16x2 -- python run100m.py train --preset m100R1d --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --init-from --kd --kd-every 4 --depth-init identity --tag mC_d36
 if errorlevel 1 goto TRAINBAD
 
 echo.
@@ -68,7 +68,7 @@ exit /b 0
 
 :NOGATE
 echo.
-echo [STOP] stage 0 gate log not found in smoketest_logs.
+echo [STOP] stage 0 gate log not found in test_result.
 echo        Run run_P049_stage0_init_gate.bat first. It takes minutes and it is
 echo        the only thing standing between you and 5.8 hours through a broken
 echo        transplant (result 030).

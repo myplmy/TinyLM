@@ -118,15 +118,28 @@ def main():
     p.add_argument("--micro-group", type=int, default=None,
                    help="(P051) 삼진 alpha 그룹 크기 오버라이드(프리셋 기본 128). 저장 bpw 의 "
                         "scale 항이 16/g 이므로 g 를 키우면 packed 가 준다. 미지정=프리셋값=비트동일")
+    p.add_argument("--attn-group", type=int, default=None,
+                   help="(P057) 어텐션 타잉 g — 중간층 g 개가 어텐션 하나를 공유. "
+                        "미지정=프리셋(1)=층마다 독립=비트동일. 삼진의 48.4%% 가 어텐션이다")
+    p.add_argument("--train-repeat", type=float, default=None,
+                   help="(P049B) 학습 시 중간 블록 통과 배수(1.0=종전=비트동일). "
+                        "--infer-repeat 와 동시 사용 금지")
+    p.add_argument("--repeat-mode", choices=["uniform", "block", "progressive"], default="uniform",
+                   help="(P049B) uniform=중간 전체 / block=--repeat-block 그룹만 / progressive=깊을수록 증가")
+    p.add_argument("--repeat-block", type=int, default=0, help="(P049B) block 모드의 MLP 그룹 인덱스")
+    p.add_argument("--save-every", type=int, default=0,
+                   help="(P058) 체크포인트 저장 주기(스텝). 0=매 eval 마다(종전). "
+                        "eval 은 자주 하되 저장은 드물게 하려는 것 — model+optimizer 직렬화가 비싸다")
     p.add_argument("--sdpa-gqa", action="store_true",
                    help="(F-1) GQA K/V 물리복제 대신 SDPA enable_gqa 사용. 기본 off=비트동일. "
                         "게이트: scripts/diag_gqa_equiv.py")
     p.add_argument("--kd-chunk", type=int, default=0,
                    help="(T-2/P053) KD KL 을 이 행수씩 나눠 계산(0=off=비트동일). "
                         "동시 임시텐서를 줄인다 — backward 저장분은 안 줄어든다")
-    p.add_argument("--depth-init", choices=["prop", "gate_scale", "role"], default="prop",
-                   help="(P049) 부모초기화 층 대응. prop=기본(깊어질 때만 역할정렬 비례, "
-                        "얕으면 종전 zip=비트동일) / gate_scale=prop + 복제횟수로 gate 나눔 / "
+    p.add_argument("--depth-init", choices=["prop", "gate_scale", "identity", "role"],
+                   default="prop",
+                   help="(P049) 부모초기화 층 대응. prop=기본 / gate_scale=복제횟수로 gate 나눔 / "
+                        "★identity=복제층 gate 를 0 으로(=교사와 동일 함수에서 출발. 결과 041 권장) / "
                         "role=얕을 때도 역할정렬 강제(⚠️결과 032 와 조건이 달라진다)")
 # ★`--fused-int8` 을 여기 두지 않는다(2026-08-14). `cfg.fused_int8` 은 **추론 경로 옵션**이고
 #   `--int8-store`·`--unpack-cache`·`--drop-latent` 와 같은 계열이라 **CLI 가 아니라 진단
@@ -232,7 +245,10 @@ def main():
               doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars,
               lora_decay=a.lora_decay, emb_rank=a.emb_rank,
               kd_teacher_infer=a.kd_teacher_infer,
-              sdpa_gqa=a.sdpa_gqa, kd_chunk=a.kd_chunk, depth_init=a.depth_init)
+              sdpa_gqa=a.sdpa_gqa, kd_chunk=a.kd_chunk, depth_init=a.depth_init,
+              attn_group=a.attn_group, train_repeat=a.train_repeat,
+              repeat_mode=a.repeat_mode, repeat_block=a.repeat_block,
+              save_every=a.save_every)
 
     elif a.cmd == "all":
         from .train import train

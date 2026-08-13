@@ -29,7 +29,6 @@ REM ============================================================================
 if not exist run100m.py cd ..\..
 if not exist run100m.py goto BADROOT
 
-set TL_OUTDIR=smoketest_logs
 
 echo.
 echo.

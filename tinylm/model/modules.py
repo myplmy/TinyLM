@@ -141,10 +141,19 @@ class MLP(nn.Module):
 class Layer(nn.Module):
     """어텐션·정규화·게이트는 층 소유. MLP는 참조(공유 가능)."""
 
-    def __init__(self, cfg, owns_kv: bool, mlp: MLP, mlp_lora: bool = False, mlp_film: bool = False):
+    def __init__(self, cfg, owns_kv: bool, mlp: MLP, mlp_lora: bool = False, mlp_film: bool = False,
+                 attn=None):
         super().__init__()
         self.ln1, self.ln2 = RMSNorm(cfg.dim, cfg.norm_eps), RMSNorm(cfg.dim, cfg.norm_eps)
-        self.attn = build_attention(cfg, owns_kv)
+        # ★P057(2026-08-13) — `attn` 을 주면 **공유 어텐션**을 참조한다(MLP 타잉과 같은 형태).
+        #   주지 않으면 층이 자기 것을 만든다 = 종전 = 비트 동일.
+        #   ⚠️ MLP 는 `self.mlp = [mlp]` 로 **리스트에 넣어 모듈 등록을 회피**해 파라미터
+        #      이중계수를 막았다. 어텐션도 같은 문제가 있으므로 **같은 수법**을 쓴다.
+        self._shared_attn = attn is not None
+        if attn is None:
+            self.attn = build_attention(cfg, owns_kv)
+        else:
+            self._attn_ref = [attn]        # 모듈 등록 회피(파라미터 중복 계수 방지)
         self.mlp = [mlp]                       # 모듈 등록 회피: 파라미터 중복 계수 방지
         self.has_lora = mlp_lora and cfg.mlp_lora_rank > 0
         if self.has_lora:                      # 공유 MLP를 층별로 특화시키는 저랭크 보정
@@ -166,13 +175,24 @@ class Layer(nn.Module):
         g0 = 1.0 / math.sqrt(cfg.n_layers)
         self.gates = nn.Parameter(torch.tensor([g0, g0]))
 
+    @property
+    def attn_mod(self):
+        """★이 층이 실제로 쓰는 어텐션 모듈. 공유(P057)면 참조, 아니면 자기 것.
+
+        ⚠️ **`layer.attn` 을 직접 쓰는 코드가 밖에 있다**(`transformer.forward` 의
+        `compute_kv`, `init_utils` 의 이식). 공유일 때 `self.attn` 은 **존재하지 않으므로**
+        전부 이 프로퍼티를 거쳐야 한다. 그래서 속성이 아니라 프로퍼티로 만들었다 —
+        `AttributeError` 로 즉사시키는 편이 조용히 틀리는 것보다 낫다.
+        """
+        return self._attn_ref[0] if self._shared_attn else self.attn
+
     def forward(self, x, kv, cos, sin, mode_p):
         ms = None
         if self.use_mode_ln and mode_p is not None:
             ms = (mode_p @ self.mode_scale.flatten(1)).view(*mode_p.shape[:2], 2, -1)
         a = (1 + self.a_scale) if ms is None else (1 + self.a_scale + ms[..., 0, :])
         m = (1 + self.m_scale) if ms is None else (1 + self.m_scale + ms[..., 1, :])
-        x = x + self.gates[0] * self.attn(self.ln1(x) * a + self.a_shift, kv, cos, sin, mode_p)
+        x = x + self.gates[0] * self.attn_mod(self.ln1(x) * a + self.a_shift, kv, cos, sin, mode_p)
         lora = (self.lora_gate, self.lora_up, self.lora_down) if self.has_lora else None
         film = (self.film_scale, self.film_shift) if self.has_film else None
         x = x + self.gates[1] * self.mlp[0](self.ln2(x) * m + self.m_shift, mode_p, lora, film)
