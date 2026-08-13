@@ -1,0 +1,244 @@
+=============================================================================
+P055 stage 0c   KD audit, third run   about 2 minutes
+New since 0b: A4 dtype proof + forced bf16 arm, A5 contract, --real logits
+=============================================================================
+[P055 stage 0c] synthetic arm first - A1/A2/A4 with independent draws and the fixed A4.
+
+==============================================================================
+[runlog] 2026-08-14 00:31:37  name=P055_stage0c_audit
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\diag_kd_loss.py
+==============================================================================
+torch 2.10.0 / device cuda / V=32768 rows=2048 T=2.0 alpha=0.5
+  ★교사·학생 분포 차(총변동거리) = 0.5206  (0 에 가까우면 이 감사는 의미가 없다 — 결과 042 §3 의 실패)
+
+==============================================================================
+  A1  batchmean 의 분모가 토큰 수인가
+==============================================================================
+  코드 값 0.999969   손 계산(sum/N*T^2) 0.999969   차 0.00e+00
+  ✅ A1 통과 — 분모가 **행 수(=토큰 수)** 다. 표준 KD 규약과 일치
+
+==============================================================================
+  A2  ★KL 항과 CE 항의 gradient 크기 비 — alpha 가 의도한 대로인가
+==============================================================================
+  ||d(CE)/d(logit)||  = 0.022061
+  ||d(KL)/d(logit)||  = 0.000184   (T^2 포함)
+  ★크기 비 KL/CE      = 0.008
+  ★손실 `(1-a)*CE + a*KL` 의 **실효 gradient 비** = 0.008 : 1
+    (a=0.5 이면 명목상 1:1 이어야 한다)
+  ⚠️★A2 주의 — **실효 비가 0.01:1 이다.** alpha=0.5 이라고 썼지만 실제로는 alpha_eff = 0.008 로 동작한다.
+     -^> 이건 '버그' 가 아니라 **미탐색 하이퍼파라미터**다. P055 단계1(alpha 스윕)이 바로 이걸 잰다.
+
+==============================================================================
+  A4  ★autocast(bf16) 아래 log_softmax 가 tail 을 뭉개는가
+==============================================================================
+  autocast 아래 log_softmax 출력 dtype = **torch.float32**
+    -^> torch 의 autocast 는 log_softmax·softmax·kl_div 를 **fp32 목록**에 둔다.
+  fp32 KL      0.999969
+  autocast KL  0.999969   상대차 0.000e+00
+  ★강제 bf16 KL 1.000000   상대차 3.111e-05   ^<- **이게 진짜 검사다**
+  ✅ A4 통과 — **우리 학습 경로에는 위험이 없다.** autocast 가 fp32 로 지킨다
+
+==============================================================================
+  A3  KD 스텝 / 비KD 스텝의 손실 스케일 불연속 (기존 json 에서 읽는다)
+==============================================================================
+  m100_ko-edu-en_300M_t_kd_g8.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_100M_p6tk.json                  ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_mA_g4s34_k4.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_mB_g8s34_k4.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_mC_g8_k4.json              ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_mC_g8_k4_manual_tinf_noc   ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100_ko-en_300M_p6tk.json                  ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_sp_kd_k4_comp.json         ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_all.json                 ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g16.json              ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g4_s34.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g8.json               ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g8_dyn4.json          ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g8_k2.json            ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g8_k4.json            ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g8_s34.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kdinit.json              ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_600M_p6tk.json                  ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100R1a_ko-en_300M_ar_off.json             ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 9
+  m100R1a_ko-en_300M_ar_on.json              ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 9
+  m100R1a_ko-en_300M_mA_wsd.json             ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 9
+  m100R1c_ko-en_300M_mC_ct.json              ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_ct250.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_ct250_nockpt.json    ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_cti250.json          ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_cti250_nockpt.json   ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_e128.json            ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_e128svd.json         ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_film.json            ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_g16.json             ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_g16_s2.json          ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_g256a.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_kdonly.json          ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_opt32_250.json       ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_optbf16.json         ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_optbf16_250.json     ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_tinf_nockpt.json     ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_tinf_off.json        ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_tinf_off2.json       ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_tinf_on.json         ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_wsd.json             ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 9
+  m100R1c_ko-en_300M_mC_wsd_s2.json          ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1p_ko-en_300M_mC_p1c1.json            ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1q_ko-en_300M_mC_p1c1g16.json         ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  tied.json                                  ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  tiny_synthetic_2M_kc_online.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  tiny_synthetic_2M_p22b_bf16.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 2 / 비KD 0
+  tiny_synthetic_2M_p22b_fp32.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 2 / 비KD 0
+  tiny_synthetic_2M_p22b_fp32c.json          ⏸ 구 로그(누적 필드 없음). history 표본 KD 2 / 비KD 0
+  tiny_synthetic_2M_p42_off.json             ⏸ 구 로그(누적 필드 없음). history 표본 KD 2 / 비KD 0
+  tiny_synthetic_2M_p42_on.json              ⏸ 구 로그(누적 필드 없음). history 표본 KD 2 / 비KD 0
+  tiny_synthetic_2M_sm_kd.json               KD 4.7687 / 비KD 9.0934  차 -4.3247   (n 8/22)
+                                             ★순수 CE 로는 9.1485 / 9.0934  차 +0.0551  ^<- **이쪽이 같아야 정상**
+
+==============================================================================
+  판정 — H2(구현 결함)가 있는가
+==============================================================================
+  ⚠️ 주의: A2  -^> **버그는 아니지만 미탐색 축이 있다.**
+     ★P055 단계1(kd_alpha 스윕 0.5/0.3/0.1/0)이 이것을 직접 잰다.
+
+  ⚠️ **이 감사는 합성 로짓으로 했다.** 실제 분포에서 A2·A4 의 크기는 다를 수 있다.
+     단 A1 은 수식 항등이라 분포와 무관하다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-08-14 00:31:40)
+==============================================================================
+[P055 stage 0c] real arm - dense teacher vs mC_wsd student. A5 runs here. GPU forward only, no training.
+
+==============================================================================
+[runlog] 2026-08-14 00:31:40  name=P055_stage0c_audit
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\diag_kd_loss.py --real
+==============================================================================
+torch 2.10.0 / device cuda / V=32768 rows=2048 T=2.0 alpha=0.5
+
+==============================================================================
+  --real : 실제 체크포인트 로짓
+==============================================================================
+  교사 m100_ko-en_300M_dense.pt  (2+16+2, g4)
+  학생 m100R1c_ko-en_300M_mC_wsd.pt  (2+16+2, g8)
+
+==============================================================================
+  A5  ★교사와 학생의 양자화 규약이 같은가 (2026-08-13 구현)
+==============================================================================
+    vocab_size           교사    32768   학생    32768   같다
+    quant_anneal         교사      1.0   학생      1.0   같다
+    micro_group          교사      128   학생      128   같다
+    twn_thr_ratio        교사      0.7   학생      0.7   같다
+    ste_clip             교사      2.5   학생      2.5   같다
+    quantize_embedding   교사     True   학생     True   같다
+    sparse34             교사    False   학생    False   같다
+    emb_rank             교사      256   학생      256   같다
+  ✅ A5 통과 — 규약이 같다. soft target 이 학생과 같은 좌표계에 있다
+[data] 정확 캐시 사용(exact, 상위호환 무시): 300.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+
+  크롭 4x1024 = 4096 토큰 (val 시드 99)
+  ★실제 교사·학생 총변동거리 = 0.9497   (합성 난수는 0.5206 이었다 — **비교하면 합성의 편향이 보인다**)
+  ★교사·학생 분포 차(총변동거리) = 0.9497  (0 에 가까우면 이 감사는 의미가 없다 — 결과 042 §3 의 실패)
+
+==============================================================================
+  A1  batchmean 의 분모가 토큰 수인가
+==============================================================================
+  코드 값 5.742092   손 계산(sum/N*T^2) 5.742092   차 0.00e+00
+  ✅ A1 통과 — 분모가 **행 수(=토큰 수)** 다. 표준 KD 규약과 일치
+
+==============================================================================
+  A2  ★KL 항과 CE 항의 gradient 크기 비 — alpha 가 의도한 대로인가
+==============================================================================
+  ||d(CE)/d(logit)||  = 0.012595
+  ||d(KL)/d(logit)||  = 0.005086   (T^2 포함)
+  ★크기 비 KL/CE      = 0.404
+  ★손실 `(1-a)*CE + a*KL` 의 **실효 gradient 비** = 0.404 : 1
+    (a=0.5 이면 명목상 1:1 이어야 한다)
+  ⚠️★A2 주의 — **실효 비가 0.40:1 이다.** alpha=0.5 이라고 썼지만 실제로는 alpha_eff = 0.288 로 동작한다.
+     -^> 이건 '버그' 가 아니라 **미탐색 하이퍼파라미터**다. P055 단계1(alpha 스윕)이 바로 이걸 잰다.
+
+==============================================================================
+  A4  ★autocast(bf16) 아래 log_softmax 가 tail 을 뭉개는가
+==============================================================================
+  autocast 아래 log_softmax 출력 dtype = **torch.float32**
+    -^> torch 의 autocast 는 log_softmax·softmax·kl_div 를 **fp32 목록**에 둔다.
+  fp32 KL      5.742092
+  autocast KL  5.742092   상대차 0.000e+00
+  ★강제 bf16 KL 5.750000   상대차 1.377e-03   ^<- **이게 진짜 검사다**
+  ✅ A4 통과 — **우리 학습 경로에는 위험이 없다.** autocast 가 fp32 로 지킨다
+
+==============================================================================
+  A3  KD 스텝 / 비KD 스텝의 손실 스케일 불연속 (기존 json 에서 읽는다)
+==============================================================================
+  m100_ko-edu-en_300M_t_kd_g8.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_100M_p6tk.json                  ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_mA_g4s34_k4.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_mB_g8s34_k4.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_mC_g8_k4.json              ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_mC_g8_k4_manual_tinf_noc   ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100_ko-en_300M_p6tk.json                  ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_sp_kd_k4_comp.json         ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_all.json                 ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g16.json              ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g4_s34.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g8.json               ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g8_dyn4.json          ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g8_k2.json            ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g8_k4.json            ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kd_g8_s34.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_300M_t_kdinit.json              ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100_ko-en_600M_p6tk.json                  ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  m100R1a_ko-en_300M_ar_off.json             ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 9
+  m100R1a_ko-en_300M_ar_on.json              ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 9
+  m100R1a_ko-en_300M_mA_wsd.json             ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 9
+  m100R1c_ko-en_300M_mC_ct.json              ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_ct250.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_ct250_nockpt.json    ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_cti250.json          ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_cti250_nockpt.json   ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_e128.json            ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_e128svd.json         ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_film.json            ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_g16.json             ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_g16_s2.json          ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_g256a.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_kdonly.json          ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_opt32_250.json       ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_optbf16.json         ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1c_ko-en_300M_mC_optbf16_250.json     ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_tinf_nockpt.json     ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_tinf_off.json        ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_tinf_off2.json       ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_tinf_on.json         ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 3
+  m100R1c_ko-en_300M_mC_wsd.json             ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 9
+  m100R1c_ko-en_300M_mC_wsd_s2.json          ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1p_ko-en_300M_mC_p1c1.json            ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  m100R1q_ko-en_300M_mC_p1c1g16.json         ⏸ 구 로그(누적 필드 없음). history 표본 KD 1 / 비KD 22
+  tied.json                                  ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  tiny_synthetic_2M_kc_online.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 0 / 비KD 0
+  tiny_synthetic_2M_p22b_bf16.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 2 / 비KD 0
+  tiny_synthetic_2M_p22b_fp32.json           ⏸ 구 로그(누적 필드 없음). history 표본 KD 2 / 비KD 0
+  tiny_synthetic_2M_p22b_fp32c.json          ⏸ 구 로그(누적 필드 없음). history 표본 KD 2 / 비KD 0
+  tiny_synthetic_2M_p42_off.json             ⏸ 구 로그(누적 필드 없음). history 표본 KD 2 / 비KD 0
+  tiny_synthetic_2M_p42_on.json              ⏸ 구 로그(누적 필드 없음). history 표본 KD 2 / 비KD 0
+  tiny_synthetic_2M_sm_kd.json               KD 4.7687 / 비KD 9.0934  차 -4.3247   (n 8/22)
+                                             ★순수 CE 로는 9.1485 / 9.0934  차 +0.0551  ^<- **이쪽이 같아야 정상**
+
+==============================================================================
+  판정 — H2(구현 결함)가 있는가
+==============================================================================
+  ⚠️ 주의: A2  -^> **버그는 아니지만 미탐색 축이 있다.**
+     ★P055 단계1(kd_alpha 스윕 0.5/0.3/0.1/0)이 이것을 직접 잰다.
+
+  ⚠️ **이 감사는 합성 로짓으로 했다.** 실제 분포에서 A2·A4 의 크기는 다를 수 있다.
+     단 A1 은 수식 항등이라 분포와 무관하다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-08-14 00:31:45)
+==============================================================================
+=============================================================================
+READ IN THIS ORDER
+1. TVD - below 0.05 means degenerate data again, stop reading
+2. A5 - a vocab_size mismatch invalidates A2/A4 completely
+3. A4 - autocast dtype float32 is the proof stage 0b was missing
+4. A2 under --real - stage 1's alpha grid depends on this number
+=============================================================================

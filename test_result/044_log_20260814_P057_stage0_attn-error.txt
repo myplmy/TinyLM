@@ -1,0 +1,138 @@
+=============================================================================
+P057 stage 0   attention tying gate   about 1 minute   NO training
+Does the group-average attention transplant survive? Band 5.0 to 9.3972.
+=============================================================================
+[P057 stage 0] attn_group 2 - 8 shared attentions over 16 middle layers.
+
+==============================================================================
+[runlog] 2026-08-14 00:32:01  name=P057_stage0_attn
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\diag_depth_init.py --preset m100R1c --teacher-preset m100 --attn-group 2 --modes prop
+==============================================================================
+[axis] ★P057 attn_group=2 -^> 공유 어텐션 8개 (그룹평균 이식)
+
+==============================================================================
+  구조 · 대응표
+==============================================================================
+  학생 m100R1c: 2+16+2 = 20층, g=8, 유니크 MLP 6
+  교사 m100: 2+16+2 = 20층
+  대응표 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+  ★교사 층당 최대 복제 1회  -^> 잔차 기여가 그만큼 중복된다
+  교사 파일 m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 300.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+
+  ★실제 val 데이터 사용(next-token 정답). 난수 토큰이 아니다 — 결과 041 §11 참조
+  기준: ln(vocab=32768) = 10.3972  -^>  G0-c 통과선 CE ^< 9.3972
+  ★앵커: 부모초기화 **타잉** 학생의 step0 ce = **7.7742**(결과 030 §2)
+     ⚠️교사 full-val 3.8080 은 **도달 불가**다 — 중간 MLP 가 g층 평균이라 학생 ^!= 교사
+  ⚠️크롭 2x512 = 1024토큰 **단일 표본**이다 — ko-en 혼합이라 크롭이 다르면 CE 가 1 nat 단위로 흔들린다.
+     **다른 스크립트(diag_train_repeat 는 4x1024)의 CE 와 직접 비교하지 않는다**
+
+==============================================================================
+  모드 (난수 대조군)
+==============================================================================
+Traceback (most recent call last):
+  File "Z:\TinyLM\scripts\diag_depth_init.py", line 222, in <module>
+    raise SystemExit(main())
+  File "Z:\TinyLM\scripts\diag_depth_init.py", line 151, in main
+    m = TiedMLPTransformer(sc).to(dev)
+  File "Z:\TinyLM\tinylm\model\transformer.py", line 53, in __init__
+    self.mid_attns = nn.ModuleList([build_attention(cfg, True)
+  File "Z:\TinyLM\tinylm\model\transformer.py", line 53, in <listcomp>
+    self.mid_attns = nn.ModuleList([build_attention(cfg, True)
+NameError: name 'build_attention' is not defined
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-08-14 00:32:04)
+==============================================================================
+[P057 stage 0] attn_group 4 - 4 shared attentions. Harder average, larger saving.
+
+==============================================================================
+[runlog] 2026-08-14 00:32:05  name=P057_stage0_attn
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\diag_depth_init.py --preset m100R1c --teacher-preset m100 --attn-group 4 --modes prop
+==============================================================================
+[axis] ★P057 attn_group=4 -^> 공유 어텐션 4개 (그룹평균 이식)
+
+==============================================================================
+  구조 · 대응표
+==============================================================================
+  학생 m100R1c: 2+16+2 = 20층, g=8, 유니크 MLP 6
+  교사 m100: 2+16+2 = 20층
+  대응표 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+  ★교사 층당 최대 복제 1회  -^> 잔차 기여가 그만큼 중복된다
+  교사 파일 m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 300.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+
+  ★실제 val 데이터 사용(next-token 정답). 난수 토큰이 아니다 — 결과 041 §11 참조
+  기준: ln(vocab=32768) = 10.3972  -^>  G0-c 통과선 CE ^< 9.3972
+  ★앵커: 부모초기화 **타잉** 학생의 step0 ce = **7.7742**(결과 030 §2)
+     ⚠️교사 full-val 3.8080 은 **도달 불가**다 — 중간 MLP 가 g층 평균이라 학생 ^!= 교사
+  ⚠️크롭 2x512 = 1024토큰 **단일 표본**이다 — ko-en 혼합이라 크롭이 다르면 CE 가 1 nat 단위로 흔들린다.
+     **다른 스크립트(diag_train_repeat 는 4x1024)의 CE 와 직접 비교하지 않는다**
+
+==============================================================================
+  모드 (난수 대조군)
+==============================================================================
+Traceback (most recent call last):
+  File "Z:\TinyLM\scripts\diag_depth_init.py", line 222, in <module>
+    raise SystemExit(main())
+  File "Z:\TinyLM\scripts\diag_depth_init.py", line 151, in main
+    m = TiedMLPTransformer(sc).to(dev)
+  File "Z:\TinyLM\tinylm\model\transformer.py", line 53, in __init__
+    self.mid_attns = nn.ModuleList([build_attention(cfg, True)
+  File "Z:\TinyLM\tinylm\model\transformer.py", line 53, in <listcomp>
+    self.mid_attns = nn.ModuleList([build_attention(cfg, True)
+NameError: name 'build_attention' is not defined
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-08-14 00:32:08)
+==============================================================================
+[P057 stage 0] attn_group 8 - 2 shared attentions. This is the aggressive end.
+
+==============================================================================
+[runlog] 2026-08-14 00:32:09  name=P057_stage0_attn
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\diag_depth_init.py --preset m100R1c --teacher-preset m100 --attn-group 8 --modes prop
+==============================================================================
+[axis] ★P057 attn_group=8 -^> 공유 어텐션 2개 (그룹평균 이식)
+
+==============================================================================
+  구조 · 대응표
+==============================================================================
+  학생 m100R1c: 2+16+2 = 20층, g=8, 유니크 MLP 6
+  교사 m100: 2+16+2 = 20층
+  대응표 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+  ★교사 층당 최대 복제 1회  -^> 잔차 기여가 그만큼 중복된다
+  교사 파일 m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 300.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+
+  ★실제 val 데이터 사용(next-token 정답). 난수 토큰이 아니다 — 결과 041 §11 참조
+  기준: ln(vocab=32768) = 10.3972  -^>  G0-c 통과선 CE ^< 9.3972
+  ★앵커: 부모초기화 **타잉** 학생의 step0 ce = **7.7742**(결과 030 §2)
+     ⚠️교사 full-val 3.8080 은 **도달 불가**다 — 중간 MLP 가 g층 평균이라 학생 ^!= 교사
+  ⚠️크롭 2x512 = 1024토큰 **단일 표본**이다 — ko-en 혼합이라 크롭이 다르면 CE 가 1 nat 단위로 흔들린다.
+     **다른 스크립트(diag_train_repeat 는 4x1024)의 CE 와 직접 비교하지 않는다**
+
+==============================================================================
+  모드 (난수 대조군)
+==============================================================================
+Traceback (most recent call last):
+  File "Z:\TinyLM\scripts\diag_depth_init.py", line 222, in <module>
+    raise SystemExit(main())
+  File "Z:\TinyLM\scripts\diag_depth_init.py", line 151, in main
+    m = TiedMLPTransformer(sc).to(dev)
+  File "Z:\TinyLM\tinylm\model\transformer.py", line 53, in __init__
+    self.mid_attns = nn.ModuleList([build_attention(cfg, True)
+  File "Z:\TinyLM\tinylm\model\transformer.py", line 53, in <listcomp>
+    self.mid_attns = nn.ModuleList([build_attention(cfg, True)
+NameError: name 'build_attention' is not defined
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-08-14 00:32:11)
+==============================================================================
+=============================================================================
+WHAT TO READ
+1. The random control first - it should sit near ln V = 10.3972
+2. step0 CE per attn_group against the band 5.0 to 9.3972, anchor 7.7742
+3. The GAP between random and transplanted - that is what averaging bought
+4. Where the value collapses as g grows - that is the usable g
+REMINDER: this is a single small crop. Do not compare across scripts.
+=============================================================================
