@@ -1,0 +1,138 @@
+[F-1 stage B] 250-step VRAM pair, sdpa_gqa off vs on. Read reserved only, not val.
+
+==============================================================================
+[runlog] 2026-08-14 03:57:59  name=P060_gqa_vram
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --compile --init-from --tag mC_gqa_off250
+==============================================================================
+[cmd] python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --compile --init-from --tag mC_gqa_off250
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[init] dense 부모초기화 완료 (중간 MLP는 8층 평균)  <- m100_ko-en_300M_dense.pt
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           63.5M      13.1 MB
+
+
+  저장(packed, 안 B)                         13.1 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        15.1 MB
+  ★상주(runtime, 현 구현)                     451.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 13.1MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+[mC_gqa_off250] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+W0814 03:58:20.094000 50312 site-packages\torch\_inductor\utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+  step     0/250  ce 7.6792  |g| 14.85  anneal 0.00  lr 4.00e-05  48193 ms/step
+  step    10/250  ce 5.5647  |g| 1.91  anneal 0.00  lr 4.40e-04  6910 ms/step
+  step    20/250  ce 4.9602  |g| 1.31  anneal 0.00  lr 8.40e-04  4948 ms/step
+  step    30/250  ce 4.7121  |g| 0.82  anneal 0.00  lr 1.00e-03  4252 ms/step
+  step    40/250  ce 4.5636  |g| 0.42  anneal 0.02  lr 1.00e-03  3895 ms/step
+  step    50/250  ce 4.4010  |g| 0.42  anneal 0.08  lr 1.00e-03  3678 ms/step
+  step    60/250  ce 4.4407  |g| 0.40  anneal 0.14  lr 1.00e-03  3533 ms/step
+  step    70/250  ce 4.4085  |g| 0.41  anneal 0.20  lr 1.00e-03  3429 ms/step
+  step    80/250  ce 4.3085  |g| 0.43  anneal 0.26  lr 1.00e-03  3350 ms/step
+  step    90/250  ce 4.2617  |g| 0.46  anneal 0.32  lr 1.00e-03  3289 ms/step
+  step   100/250  ce 4.2787  |g| 0.38  anneal 0.38  lr 1.00e-03  3239 ms/step
+  step   110/250  ce 4.2469  |g| 0.50  anneal 0.45  lr 1.00e-03  3199 ms/step
+  step   120/250  ce 4.2350  |g| 0.39  anneal 0.51  lr 1.00e-03  3165 ms/step
+  step   130/250  ce 4.2744  |g| 0.48  anneal 0.57  lr 1.00e-03  3137 ms/step
+  step   140/250  ce 4.2434  |g| 0.37  anneal 0.63  lr 1.00e-03  3113 ms/step
+  step   150/250  ce 4.2580  |g| 0.46  anneal 0.69  lr 1.00e-03  3091 ms/step
+  step   160/250  ce 4.2440  |g| 0.38  anneal 0.75  lr 1.00e-03  3073 ms/step
+  step   170/250  ce 4.2112  |g| 0.46  anneal 0.82  lr 1.00e-03  3056 ms/step
+  step   180/250  ce 4.2597  |g| 0.46  anneal 0.88  lr 1.00e-03  3041 ms/step
+  step   190/250  ce 4.2183  |g| 0.47  anneal 0.94  lr 1.00e-03  3028 ms/step
+  step   200/250  ce 4.2366  |g| 0.40  anneal 1.00  lr 1.00e-03  3017 ms/step
+  step   210/250  ce 4.1822  |g| 0.42  anneal 1.00  lr 9.73e-04  3006 ms/step
+  step   220/250  ce 4.1821  |g| 0.36  anneal 1.00  lr 7.75e-04  2996 ms/step
+  step   230/250  ce 4.1793  |g| 0.35  anneal 1.00  lr 4.72e-04  2987 ms/step
+  step   240/250  ce 4.1682  |g| 0.31  anneal 1.00  lr 2.05e-04  2979 ms/step
+  step   249/250  ce 4.1358  |g| 0.32  anneal 1.00  lr 1.01e-04  2972 ms/step
+    >> val_loss 4.1319  ppl 62.29  (train_ce 4.136, val-CE -0.004)  bpb 1.363
+       best 갱신 4.1319 -> m100R1c_ko-en_300M_mC_gqa_off250_best.pt
+
+[mC_gqa_off250] 최종 val_loss 4.0802  ppl 59.15  best 4.1319@250  (63.5M, 12.5분, skip 0, VRAM 5.07GB(reserved)/4.55GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 5.07GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 12.7분  (2026-08-14 04:10:39)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-14 04:10:54  name=P060_gqa_vram
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --compile --init-from --sdpa-gqa --tag mC_gqa_on250
+==============================================================================
+[cmd] python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --compile --init-from --sdpa-gqa --tag mC_gqa_on250
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[sdpa] ★enable_gqa=True — K/V 를 물리 복제(x4)하지 않고 커널에 맡긴다. ⚠️커널 경로가 바뀌므로 **로짓 비트 동일을 가정하지 않는다** (게이트: scripts/diag_gqa_equiv.py)
+[init] dense 부모초기화 완료 (중간 MLP는 8층 평균)  <- m100_ko-en_300M_dense.pt
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           63.5M      13.1 MB
+
+
+  저장(packed, 안 B)                         13.1 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        15.1 MB
+  ★상주(runtime, 현 구현)                     451.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 13.1MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+[mC_gqa_on250] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+W0814 04:11:17.779000 11692 site-packages\torch\_inductor\utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+  step     0/250  ce 7.6793  |g| 14.85  anneal 0.00  lr 4.00e-05  78087 ms/step
+  step    10/250  ce 5.5646  |g| 1.91  anneal 0.00  lr 4.40e-04  12068 ms/step
+  step    20/250  ce 4.9610  |g| 1.33  anneal 0.00  lr 8.40e-04  8926 ms/step
+  step    30/250  ce 4.7011  |g| 0.61  anneal 0.00  lr 1.00e-03  7812 ms/step
+  step    40/250  ce 4.5592  |g| 0.40  anneal 0.02  lr 1.00e-03  7240 ms/step
+  step    50/250  ce 4.4012  |g| 0.44  anneal 0.08  lr 1.00e-03  6892 ms/step
+  step    60/250  ce 4.4406  |g| 0.40  anneal 0.14  lr 1.00e-03  6657 ms/step
+  step    70/250  ce 4.4084  |g| 0.39  anneal 0.20  lr 1.00e-03  6489 ms/step
+  step    80/250  ce 4.3082  |g| 0.43  anneal 0.26  lr 1.00e-03  6362 ms/step
+  step    90/250  ce 4.2588  |g| 0.41  anneal 0.32  lr 1.00e-03  6263 ms/step
+  step   100/250  ce 4.2772  |g| 0.38  anneal 0.38  lr 1.00e-03  6184 ms/step
+  step   110/250  ce 4.2452  |g| 0.43  anneal 0.45  lr 1.00e-03  6119 ms/step
+  step   120/250  ce 4.2347  |g| 0.42  anneal 0.51  lr 1.00e-03  6065 ms/step
+  step   130/250  ce 4.2708  |g| 0.43  anneal 0.57  lr 1.00e-03  6018 ms/step
+  step   140/250  ce 4.2453  |g| 0.38  anneal 0.63  lr 1.00e-03  5979 ms/step
+  step   150/250  ce 4.2576  |g| 0.45  anneal 0.69  lr 1.00e-03  5945 ms/step
+  step   160/250  ce 4.2448  |g| 0.38  anneal 0.75  lr 1.00e-03  5915 ms/step
+  step   170/250  ce 4.2143  |g| 0.46  anneal 0.82  lr 1.00e-03  5889 ms/step
+  step   180/250  ce 4.2565  |g| 0.47  anneal 0.88  lr 1.00e-03  5865 ms/step
+  step   190/250  ce 4.2119  |g| 0.41  anneal 0.94  lr 1.00e-03  5844 ms/step
+  step   200/250  ce 4.2402  |g| 0.59  anneal 1.00  lr 1.00e-03  5825 ms/step
+  step   210/250  ce 4.1828  |g| 0.43  anneal 1.00  lr 9.73e-04  5808 ms/step
+  step   220/250  ce 4.1853  |g| 0.37  anneal 1.00  lr 7.75e-04  5793 ms/step
+  step   230/250  ce 4.1794  |g| 0.36  anneal 1.00  lr 4.72e-04  5778 ms/step
+  step   240/250  ce 4.1664  |g| 0.32  anneal 1.00  lr 2.05e-04  5765 ms/step
+  step   249/250  ce 4.1340  |g| 0.31  anneal 1.00  lr 1.01e-04  5755 ms/step
+    >> val_loss 4.1322  ppl 62.31  (train_ce 4.134, val-CE -0.002)  bpb 1.363
+       best 갱신 4.1322 -> m100R1c_ko-en_300M_mC_gqa_on250_best.pt
+
+[mC_gqa_on250] 최종 val_loss 4.0797  ppl 59.13  best 4.1322@250  (63.5M, 24.5분, skip 0, VRAM 6.45GB(reserved)/4.95GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 6.45GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 24.6분  (2026-08-14 04:35:32)
+==============================================================================

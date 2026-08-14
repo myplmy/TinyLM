@@ -1,0 +1,69 @@
+================= STAGE A  equivalence gate (no training) ==================
+[F-1 stage A] enable_gqa equivalence gate - logits, backends, kv-cache path
+
+==============================================================================
+[runlog] 2026-08-14 03:57:56  name=P060_gqa
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\diag_gqa_equiv.py --preset m100R1c
+==============================================================================
+torch 2.10.0 / device cuda / preset m100R1c
+
+==============================================================================
+  G-b  enable_gqa 인자 수용
+==============================================================================
+  OK — SDPA 가 enable_gqa 를 받는다
+  커널 단독 최대 절대차 1.669e-06  (참고값 — 모델 전체는 G-a 가 본다)
+
+==============================================================================
+  G-c  Flash / mem-efficient 백엔드가 enable_gqa 를 거부하지 않는가
+==============================================================================
+Z:\TinyLM\scripts\diag_gqa_equiv.py:96: UserWarning: Memory efficient kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:960.)
+  F.scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
+Z:\TinyLM\scripts\diag_gqa_equiv.py:96: UserWarning: Memory Efficient attention has been runtime disabled. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen/native/transformers/sdp_utils_cpp.h:552.)
+  F.scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
+Z:\TinyLM\scripts\diag_gqa_equiv.py:96: UserWarning: Flash attention kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:962.)
+  F.scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
+Z:\TinyLM\scripts\diag_gqa_equiv.py:96: UserWarning: Torch was not compiled with flash attention. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:771.)
+  F.scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
+Z:\TinyLM\scripts\diag_gqa_equiv.py:96: UserWarning: cuDNN attention kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:964.)
+  F.scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
+Z:\TinyLM\scripts\diag_gqa_equiv.py:96: UserWarning: cuDNN attention has been runtime disabled. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:680.)
+  F.scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
+  FLASH          거부 — RuntimeError: No available kernel. Aborting execution.
+Z:\TinyLM\scripts\diag_gqa_equiv.py:96: UserWarning: For dense input, both fused kernels require query, key and value to have the same num_heads. Query.sizes(): [1, 12, 32, 64], Key sizes(): [1, 3, 32, 64], Value sizes(): [1, 3, 32, 64] instead. To broadcast dense inputs, try using unsqueeze and expand_to before passing them into the kernel. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen/native/transformers/sdp_utils_cpp.h:426.)
+  F.scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
+  MEM_EFFICIENT  거부 — RuntimeError: No available kernel. Aborting execution.
+  MATH           OK
+
+==============================================================================
+  G-a  모델 전체 로짓 동등성 (학습 경로, is_causal)
+==============================================================================
+  최대 절대차 2.831e-06   (상대 2.618e-06)   기준 1e-03
+  ✅ G-a 통과
+
+==============================================================================
+  G-d  KV 캐시 경로 불변 (플래그가 attn_mask 경로를 타지 않는다)
+==============================================================================
+  캐시 API 미확인 — 생략(치명 아님). 정본 게이트는 diag_kvcache.py 다.
+
+==============================================================================
+  판정
+==============================================================================
+  ✅ 전 게이트 통과 — --sdpa-gqa 를 학습에 쓸 수 있다
+  ⚠️ 단 **속도·VRAM 은 여기서 재지 않았다.** 배치가 같은 세션 안에서 잰다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-08-14 03:57:58)
+==============================================================================
+================= STAGE B  VRAM pair  250 steps x 2 ========================
+About 40 minutes. Do not run anything else on the GPU.
+[queue] settling 15 s - WDDM holds VRAM for a few seconds after exit
+(result 037 s7: the next run started 1 second later and died with
+CUBLAS_STATUS_EXECUTION_FAILED, which is an OOM under another name)
+=============================================================================
+Read from runs\logs\*.json, not from the console:
+peak_reserved_gib   off vs on      expect about -0.4 to -0.5
+ms_step_median      off vs on      NEW field from T-1, same session only
+ms_step_spread      both           normal band is 0.065 to 0.154
+sdpa_gqa            must be false then true, else the flag did nothing
+Do NOT read val - 250 steps decides nothing about quality.
+=============================================================================
