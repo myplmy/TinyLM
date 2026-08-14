@@ -320,6 +320,31 @@ def lint(path: Path):
                         f"`stage0b` 처럼 구분되는 이름을 쓰세요. 안 그러면 **같은 날 로그가 "
                         f"이전 측정과 한 파일에 섞인다**(ai_dev_tool/03 §7)")
 
+    # ★★19. **이 `--name` 으로 실행된 로그가 이미 디스크에 있다** (2026-08-14 사용자 지적)
+    #
+    #   ⚠️**규칙 17 은 배치가 스스로 "RE-RUN" 이라고 선언할 때만 발화한다** — 자기 신고에 의존한다.
+    #   2026-08-14 에 `-done` 배치를 **원래 이름으로 되돌려** 재실행하려 했을 때 17 은 조용했다.
+    #   되돌리면 *"어떤 실험을 완료했는지"* 가 디스크에서 사라지고 **같은 실험을 두 번 돌리게 된다**
+    #   (사용자 지적 · 의사결정함정 D14 · ai_dev_tool/03 §7.1).
+    #
+    #   → 선언이 아니라 **증거**로 본다: `test_result/` 에 그 `--name` 이 든 로그가 있는가.
+    #   경고(에러 아님)인 이유: 로그는 AI 가 개명하고(§8), `-done` 은 사용자가 나중에 붙인다.
+    #   **사람이 한 번 보라는 신호**다.
+    if path.name.startswith("run_") and "-done" not in path.name:
+        try:
+            _logs = [p.name for p in (ROOT / "test_result").glob("*.txt")]
+        except Exception:
+            _logs = []
+        for _nm in sorted(set(re.findall(r"--name\s+([A-Za-z0-9_.-]+)", txt))):
+            _hit = [L for L in _logs if _nm in L]
+            if _hit:
+                _more = f" 외 {len(_hit) - 1}건" if len(_hit) > 1 else ""
+                warn.append(
+                    f"`--name {_nm}` 으로 실행된 로그가 **이미 있다**({_hit[0]}{_more}). "
+                    f"★재실행이면 **단계 구분자를 올리고**(stage0 -> stage0b) `--name` 도 함께 올린다. "
+                    f"완료된 것이면 **`-done` 을 붙인다**. "
+                    f"🚫**`-done` 을 떼어 원래 이름으로 되돌리지 않는다** (ai_dev_tool/03 §7.1, D14)")
+
     if re.search(r"(?im)^\s*set\s+TL_OUTDIR\s*=\s*\S", txt):
         if not re.search(r"(?im)^\s*set\s+TL_OUTDIR\s*=\s*$", txt):
             err.append("`TL_OUTDIR` 을 설정하는데 **비우는 줄(`set TL_OUTDIR=`)이 없다** → "

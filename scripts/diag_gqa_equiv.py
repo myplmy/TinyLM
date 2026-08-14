@@ -85,9 +85,22 @@ def main():
     print(f"  커널 단독 최대 절대차 {d:.3e}  (참고값 — 모델 전체는 G-a 가 본다)")
 
     # ── G-c : 백엔드가 유지되는가 ─────────────────────────────────────────────
+    #
+    # ★★2026-08-14 수정 (실사고, 결과 046) — **이 게이트는 판정에 들어가지 않았다.**
+    #   거부를 `print` 만 하고 `fails.append` 를 안 했다. 그래서 실제로 **FLASH·
+    #   MEM_EFFICIENT 가 둘 다 거부됐는데** 판정 줄은 *"✅ 전 게이트 통과 —
+    #   --sdpa-gqa 를 학습에 쓸 수 있다"* 를 찍었다. 40분 뒤 단계 B 가 그 대가를 냈다:
+    #   **reserved +1.38 GB(+27%), ms/step +95.8%** — 예측(−0.4~0.5 GiB)의 정반대다.
+    #   ★**인쇄와 판정을 따로 짜면 갈라진다**(계측함정 38).
+    #
+    #   ⚠️**MATH 만 남는 것이 왜 치명적인가**: 물리 복제(off) 경로는 q·k·v 의 head 수가
+    #   같아 fused kernel 을 탄다. `enable_gqa=True` 는 head 수를 다르게 넘기므로
+    #   fused 가 거부하고 MATH 로 떨어진다 — MATH 는 어텐션 행렬을 전부 만든다.
+    #   **활성 메모리를 아끼려던 플래그가 활성 메모리를 늘린다.**
     _hdr("G-c  Flash / mem-efficient 백엔드가 enable_gqa 를 거부하지 않는가")
     try:
         from torch.nn.attention import SDPBackend, sdpa_kernel
+        rejected, avail = [], []
         for be, name in ((SDPBackend.FLASH_ATTENTION, "FLASH"),
                          (SDPBackend.EFFICIENT_ATTENTION, "MEM_EFFICIENT"),
                          (SDPBackend.MATH, "MATH")):
@@ -95,8 +108,22 @@ def main():
                 with sdpa_kernel(be):
                     F.scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
                 print(f"  {name:14s} OK")
+                avail.append(name)
             except Exception as e:
                 print(f"  {name:14s} 거부 — {type(e).__name__}: {str(e)[:90]}")
+                rejected.append(name)
+        # ★판정: **융합 커널이 하나도 안 남으면 실패**다. MATH 만으로는 이 축의 존재 이유
+        #   (활성 메모리 절감)가 성립하지 않는다.
+        if not (set(avail) - {"MATH"}):
+            print("  🚫 G-c 실패 — **융합 커널이 하나도 안 남는다**(MATH 단독). "
+                  "enable_gqa 는 활성 메모리를 아끼려는 플래그인데 MATH 는 "
+                  "어텐션 행렬을 전부 만든다 → **이득이 아니라 대가**가 된다.")
+            print(f"     거부된 백엔드: {', '.join(rejected) or '(없음)'}")
+            print("     ⚠️ 이 빌드에서 애초에 융합 커널이 없다면(예: flash 미컴파일) "
+                  "그건 이 플래그의 잘못이 아니다 — **off/on 쌍으로 실측해 귀속한다.**")
+            fails.append("G-c")
+        else:
+            print(f"  ✅ G-c 통과 — 융합 커널 유지: {', '.join(sorted(set(avail) - {'MATH'}))}")
     except ImportError:
         print("  torch.nn.attention 없음 — 백엔드 강제 확인 생략(치명 아님)")
 
