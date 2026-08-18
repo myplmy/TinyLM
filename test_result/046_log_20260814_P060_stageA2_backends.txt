@@ -1,0 +1,174 @@
+=============================================================================
+P060 stage A2   SDPA backend availability matrix   seconds   NO TRAINING
+Stage A only probed enable_gqa=True, so the rejection could not be attributed.
+The bigger question: is our ORDINARY training path also on MATH?
+=============================================================================
+[1/2] standard training shape - micro-bs 8, seq 1024, 12 q heads, 3 kv heads
+
+==============================================================================
+[runlog] 2026-08-14 18:55:10  name=P060_stageA2_backends
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\diag_sdpa_backends.py --bs 8 --seq 1024 --q-heads 12 --kv-heads 3 --head-dim 64
+==============================================================================
+
+==============================================================================
+  환경
+==============================================================================
+  torch 2.10.0  device cuda
+  gpu   NVIDIA GeForce RTX 4070 Ti SUPER  capability (8, 9)
+  torch.backends.cuda.flash_sdp_enabled            = True
+  torch.backends.cuda.mem_efficient_sdp_enabled    = True
+  torch.backends.cuda.math_sdp_enabled             = True
+  torch.backends.cuda.cudnn_sdp_enabled            = True
+  torch.backends.cuda.is_flash_attention_available = (존재)
+  torch.backends.cuda.can_use_flash_attention      = (존재)
+  ⚠️ 위 플래그는 **허용 여부**이지 **컴파일 여부**가 아니다. 행렬이 실제 가용성을 본다.
+
+  형상 q (8, 12, 1024, 64)  kv (8, 3, 1024, 64)  n_rep 4  dtype torch.bfloat16
+  off 팔 = K/V 물리 복제 (8, 12, 1024, 64) (**우리 학습 경로 그대로**)
+
+==============================================================================
+  ★백엔드 가용성 행렬  (off = 물리 복제 / on = enable_gqa)
+==============================================================================
+  백엔드             off(복제)                           on(enable_gqa)                    
+  --------------------------------------------------------------------------
+z:\TinyLM\scripts\diag_sdpa_backends.py:118: UserWarning: Memory efficient kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:960.)
+  return F.scaled_dot_product_attention(q, k_rep, v_rep, is_causal=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:118: UserWarning: Memory Efficient attention has been runtime disabled. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen/native/transformers/sdp_utils_cpp.h:552.)
+  return F.scaled_dot_product_attention(q, k_rep, v_rep, is_causal=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:118: UserWarning: Flash attention kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:962.)
+  return F.scaled_dot_product_attention(q, k_rep, v_rep, is_causal=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:118: UserWarning: Torch was not compiled with flash attention. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:771.)
+  return F.scaled_dot_product_attention(q, k_rep, v_rep, is_causal=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:118: UserWarning: cuDNN attention kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:964.)
+  return F.scaled_dot_product_attention(q, k_rep, v_rep, is_causal=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:118: UserWarning: cuDNN attention has been runtime disabled. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:680.)
+  return F.scaled_dot_product_attention(q, k_rep, v_rep, is_causal=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: Memory efficient kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:960.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: Memory Efficient attention has been runtime disabled. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen/native/transformers/sdp_utils_cpp.h:552.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: Flash attention kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:962.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: Torch was not compiled with flash attention. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:771.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: cuDNN attention kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:964.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: cuDNN attention has been runtime disabled. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:680.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+  FLASH           거부 No available kernel. Aborting  거부 No available kernel. Aborting  
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: For dense input, both fused kernels require query, key and value to have the same num_heads. Query.sizes(): [8, 12, 1024, 64], Key sizes(): [8, 3, 1024, 64], Value sizes(): [8, 3, 1024, 64] instead. To broadcast dense inputs, try using unsqueeze and expand_to before passing them into the kernel. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen/native/transformers/sdp_utils_cpp.h:426.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+  MEM_EFFICIENT   OK                                거부 No available kernel. Aborting  
+  CUDNN           OK                                OK                                
+  MATH            OK                                OK                                
+
+==============================================================================
+  기본 디스패치 속도 (백엔드 강제 없음)
+==============================================================================
+  off(복제)               0.246 ms / 호출
+  on(enable_gqa)        8.236 ms / 호출
+
+  ★on / off = 33.514배  (결과 046 의 학습 전체 ms/step 비는 1.958배였다)
+
+==============================================================================
+  판정
+==============================================================================
+  ✅ **off 경로에 융합 커널이 있다**: MEM_EFFICIENT, CUDNN
+     -^> 우리 학습 경로는 건강하다. 결과 046 의 대가는 **enable_gqa 의 한계**다(가능성 b).
+  ⚠️ on 에도 융합이 있다: CUDNN — 그렇다면 결과 046 의 대가는 **다른 원인**이다. 재조사할 것.
+
+  ⚠️ 이 도구는 **커널 가용성과 상대 속도**만 본다. 품질·정확성은 `diag_gqa_equiv.py` 의 G-a 가 본다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-08-14 18:55:12)
+==============================================================================
+[2/2] smaller shape - some kernels have size or alignment constraints, so a rejection at one shape is not a rejection at all shapes
+
+==============================================================================
+[runlog] 2026-08-14 18:55:13  name=P060_stageA2_backends
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\diag_sdpa_backends.py --bs 1 --seq 128 --q-heads 12 --kv-heads 3 --head-dim 64
+==============================================================================
+
+==============================================================================
+  환경
+==============================================================================
+  torch 2.10.0  device cuda
+  gpu   NVIDIA GeForce RTX 4070 Ti SUPER  capability (8, 9)
+  torch.backends.cuda.flash_sdp_enabled            = True
+  torch.backends.cuda.mem_efficient_sdp_enabled    = True
+  torch.backends.cuda.math_sdp_enabled             = True
+  torch.backends.cuda.cudnn_sdp_enabled            = True
+  torch.backends.cuda.is_flash_attention_available = (존재)
+  torch.backends.cuda.can_use_flash_attention      = (존재)
+  ⚠️ 위 플래그는 **허용 여부**이지 **컴파일 여부**가 아니다. 행렬이 실제 가용성을 본다.
+
+  형상 q (1, 12, 128, 64)  kv (1, 3, 128, 64)  n_rep 4  dtype torch.bfloat16
+  off 팔 = K/V 물리 복제 (1, 12, 128, 64) (**우리 학습 경로 그대로**)
+
+==============================================================================
+  ★백엔드 가용성 행렬  (off = 물리 복제 / on = enable_gqa)
+==============================================================================
+  백엔드             off(복제)                           on(enable_gqa)                    
+  --------------------------------------------------------------------------
+z:\TinyLM\scripts\diag_sdpa_backends.py:118: UserWarning: Memory efficient kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:960.)
+  return F.scaled_dot_product_attention(q, k_rep, v_rep, is_causal=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:118: UserWarning: Memory Efficient attention has been runtime disabled. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen/native/transformers/sdp_utils_cpp.h:552.)
+  return F.scaled_dot_product_attention(q, k_rep, v_rep, is_causal=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:118: UserWarning: Flash attention kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:962.)
+  return F.scaled_dot_product_attention(q, k_rep, v_rep, is_causal=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:118: UserWarning: Torch was not compiled with flash attention. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:771.)
+  return F.scaled_dot_product_attention(q, k_rep, v_rep, is_causal=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:118: UserWarning: cuDNN attention kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:964.)
+  return F.scaled_dot_product_attention(q, k_rep, v_rep, is_causal=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:118: UserWarning: cuDNN attention has been runtime disabled. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:680.)
+  return F.scaled_dot_product_attention(q, k_rep, v_rep, is_causal=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: Memory efficient kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:960.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: Memory Efficient attention has been runtime disabled. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen/native/transformers/sdp_utils_cpp.h:552.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: Flash attention kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:962.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: Torch was not compiled with flash attention. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:771.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: cuDNN attention kernel not used because: (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:964.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: cuDNN attention has been runtime disabled. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen\native\transformers\cuda\sdp_utils.cpp:680.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+  FLASH           거부 No available kernel. Aborting  거부 No available kernel. Aborting  
+z:\TinyLM\scripts\diag_sdpa_backends.py:117: UserWarning: For dense input, both fused kernels require query, key and value to have the same num_heads. Query.sizes(): [1, 12, 128, 64], Key sizes(): [1, 3, 128, 64], Value sizes(): [1, 3, 128, 64] instead. To broadcast dense inputs, try using unsqueeze and expand_to before passing them into the kernel. (Triggered internally at C:\bld\libtorch_1770197068560\work\aten\src\ATen/native/transformers/sdp_utils_cpp.h:426.)
+  return F.scaled_dot_product_attention(q, k0, v0, is_causal=True, enable_gqa=True)
+  MEM_EFFICIENT   OK                                거부 No available kernel. Aborting  
+  CUDNN           OK                                OK                                
+  MATH            OK                                OK                                
+
+==============================================================================
+  기본 디스패치 속도 (백엔드 강제 없음)
+==============================================================================
+  off(복제)               0.017 ms / 호출
+  on(enable_gqa)        0.232 ms / 호출
+
+  ★on / off = 13.473배  (결과 046 의 학습 전체 ms/step 비는 1.958배였다)
+
+==============================================================================
+  판정
+==============================================================================
+  ✅ **off 경로에 융합 커널이 있다**: MEM_EFFICIENT, CUDNN
+     -^> 우리 학습 경로는 건강하다. 결과 046 의 대가는 **enable_gqa 의 한계**다(가능성 b).
+  ⚠️ on 에도 융합이 있다: CUDNN — 그렇다면 결과 046 의 대가는 **다른 원인**이다. 재조사할 것.
+
+  ⚠️ 이 도구는 **커널 가용성과 상대 속도**만 본다. 품질·정확성은 `diag_gqa_equiv.py` 의 G-a 가 본다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-08-14 18:55:15)
+==============================================================================
+=============================================================================
+READ IN THIS ORDER
+1. the off column FIRST. That is our training path, not the experiment.
+   If only MATH is OK there, stop and read the verdict block - it is bigger
+   than F-1 and it needs its own plan (P060 stage C, torch build).
+2. the on column - reproduces result 046 and completes the attribution.
+3. the speed ratio against 1.958x from the 250 step pair.
+4. compare the two shapes. A kernel rejected at one shape may work at another.
+LIMIT: this measures kernel availability and relative speed only.
+Correctness is G-a in diag_gqa_equiv.py, already passed at 2.831e-06.
+=============================================================================

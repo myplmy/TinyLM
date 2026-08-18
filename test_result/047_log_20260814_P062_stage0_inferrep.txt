@@ -1,0 +1,293 @@
+=============================================================================
+P062 stage 0   recursion schedule matching   about 15 minutes   NO TRAINING
+mC_r20 was trained with 36 passes and evaluated with 20. This re-evaluates it.
+Decision line fixed in advance: arm2 minus arm1 better than -0.15.
+=============================================================================
+[1/8] mC_r20 at infer-repeat 1.0 - reproduces the number we reported. LOCAL BASELINE.
+
+==============================================================================
+[runlog] 2026-08-14 18:55:56  name=P062_stage0_inferrep
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_r20
+==============================================================================
+[cmd] python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_r20
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 캐시 재사용: 300.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           63.5M      13.1 MB
+
+
+  저장(packed, 안 B)                         13.1 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        15.1 MB
+  ★상주(runtime, 현 구현)                     451.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 13.1MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+{'val_loss': 3.8921875, 'ppl': 49.01799619649576}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.2분  (2026-08-14 18:56:06)
+==============================================================================
+[2/8] mC_r20 at infer-repeat 2.0 front - MATCHES THE TRAINING SCHEDULE. This is the experiment.
+
+==============================================================================
+[runlog] 2026-08-14 18:56:06  name=P062_stage0_inferrep
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_r20 --infer-repeat 2.0 --repeat-where front
+==============================================================================
+[cmd] python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_r20 --infer-repeat 2.0 --repeat-where front
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 캐시 재사용: 300.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+[P031] infer_repeat=2.0 where=front kv_reuse=False -> 층 통과 36회(기준 20회), middle 32회
+[P031] 메모리는 R 과 무관하게 동일하다 — 늘어나는 것은 연산과 지연뿐이다.
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           63.5M      13.1 MB
+
+
+  저장(packed, 안 B)                         13.1 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        15.1 MB
+  ★상주(runtime, 현 구현)                     451.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 13.1MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+{'val_loss': 3.64953125, 'ppl': 38.45663527561431}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.2분  (2026-08-14 18:56:21)
+==============================================================================
+[3/8] mC_r20 at infer-repeat 1.5 front - is the optimum at the trained R, or below it?
+
+==============================================================================
+[runlog] 2026-08-14 18:56:22  name=P062_stage0_inferrep
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_r20 --infer-repeat 1.5 --repeat-where front
+==============================================================================
+[cmd] python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_r20 --infer-repeat 1.5 --repeat-where front
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 캐시 재사용: 300.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+[P031] infer_repeat=1.5 where=front kv_reuse=False -> 층 통과 28회(기준 20회), middle 24회
+[P031] 메모리는 R 과 무관하게 동일하다 — 늘어나는 것은 연산과 지연뿐이다.
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           63.5M      13.1 MB
+
+
+  저장(packed, 안 B)                         13.1 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        15.1 MB
+  ★상주(runtime, 현 구현)                     451.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 13.1MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+{'val_loss': 3.8921875, 'ppl': 49.01799619649576}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.2분  (2026-08-14 18:56:35)
+==============================================================================
+[4/8] mC_r20 at infer-repeat 2.0 back - does the shape of the schedule matter?
+
+==============================================================================
+[runlog] 2026-08-14 18:56:35  name=P062_stage0_inferrep
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_r20 --infer-repeat 2.0 --repeat-where back
+==============================================================================
+[cmd] python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_r20 --infer-repeat 2.0 --repeat-where back
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 캐시 재사용: 300.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+[P031] infer_repeat=2.0 where=back kv_reuse=False -> 층 통과 36회(기준 20회), middle 32회
+[P031] 메모리는 R 과 무관하게 동일하다 — 늘어나는 것은 연산과 지연뿐이다.
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           63.5M      13.1 MB
+
+
+  저장(packed, 안 B)                         13.1 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        15.1 MB
+  ★상주(runtime, 현 구현)                     451.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 13.1MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+{'val_loss': 3.64953125, 'ppl': 38.45663527561431}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-08-14 18:56:50)
+==============================================================================
+[5/8] mC_r20 at infer-repeat 2.0 even - third shape.
+
+==============================================================================
+[runlog] 2026-08-14 18:56:51  name=P062_stage0_inferrep
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_r20 --infer-repeat 2.0 --repeat-where even
+==============================================================================
+[cmd] python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_r20 --infer-repeat 2.0 --repeat-where even
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 캐시 재사용: 300.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+[P031] infer_repeat=2.0 where=even kv_reuse=False -> 층 통과 36회(기준 20회), middle 32회
+[P031] 메모리는 R 과 무관하게 동일하다 — 늘어나는 것은 연산과 지연뿐이다.
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           63.5M      13.1 MB
+
+
+  저장(packed, 안 B)                         13.1 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        15.1 MB
+  ★상주(runtime, 현 구현)                     451.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 13.1MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+{'val_loss': 3.74875, 'ppl': 42.46796385332083}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.2분  (2026-08-14 18:57:06)
+==============================================================================
+[6/8] mC_r20 at infer-repeat 2.0 front with kv-reuse - training recomputed KV, so this should be WORSE. It is a control.
+
+==============================================================================
+[runlog] 2026-08-14 18:57:07  name=P062_stage0_inferrep
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_r20 --infer-repeat 2.0 --repeat-where front --repeat-kv-reuse
+==============================================================================
+[cmd] python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_r20 --infer-repeat 2.0 --repeat-where front --repeat-kv-reuse
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 캐시 재사용: 300.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+[P031] infer_repeat=2.0 where=front kv_reuse=True -> 층 통과 36회(기준 20회), middle 32회
+[P031] 메모리는 R 과 무관하게 동일하다 — 늘어나는 것은 연산과 지연뿐이다.
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           63.5M      13.1 MB
+
+
+  저장(packed, 안 B)                         13.1 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        15.1 MB
+  ★상주(runtime, 현 구현)                     451.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 13.1MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+{'val_loss': 3.7428125, 'ppl': 42.21655741938031}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-08-14 18:57:22)
+==============================================================================
+[7/8] mC_wsd at infer-repeat 2.0 front - CONTROL. R=1 trained, R=2 inferred. This is what P031 measured. It should be bad.
+
+==============================================================================
+[runlog] 2026-08-14 18:57:22  name=P062_stage0_inferrep
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_wsd --infer-repeat 2.0 --repeat-where front
+==============================================================================
+[cmd] python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_wsd --infer-repeat 2.0 --repeat-where front
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 캐시 재사용: 300.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+[P031] infer_repeat=2.0 where=front kv_reuse=False -> 층 통과 36회(기준 20회), middle 32회
+[P031] 메모리는 R 과 무관하게 동일하다 — 늘어나는 것은 연산과 지연뿐이다.
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           63.5M      13.1 MB
+
+
+  저장(packed, 안 B)                         13.1 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        15.1 MB
+  ★상주(runtime, 현 구현)                     451.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 13.1MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+{'val_loss': 3.96890625, 'ppl': 52.92661068992626}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.2분  (2026-08-14 18:57:37)
+==============================================================================
+[8/8] mC_wsd at infer-repeat 1.0 - the ordinary baseline anchor.
+
+==============================================================================
+[runlog] 2026-08-14 18:57:38  name=P062_stage0_inferrep
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_wsd
+==============================================================================
+[cmd] python run100m.py eval --preset m100R1c --arch tied --data ko-en --tokens 300M --tag mC_wsd
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 캐시 재사용: 300.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           63.5M      13.1 MB
+
+
+  저장(packed, 안 B)                         13.1 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        15.1 MB
+  ★상주(runtime, 현 구현)                     451.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 13.1MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+{'val_loss': 3.66609375, 'ppl': 39.09887718176144}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.2분  (2026-08-14 18:57:48)
+==============================================================================
+=============================================================================
+READ IN THIS ORDER
+1. the [P031] line in each arm - it prints how many layer passes were made.
+   Arm 2 must say 36. If it says 20 the flag did nothing and the arm is void.
+2. arm 1 val_loss - this is the LOCAL BASELINE, not the paired_eval number.
+3. arm 2 minus arm 1 against the fixed line of -0.15.
+4. arms 3/4/5 - does R or the shape matter more?
+5. arm 6 - kv reuse should be worse. If it is better, the training path is odd.
+6. arm 7 vs arm 8 - P031 reproduction on an R=1 trained model.
+REMINDER: evaluate() is 100 deterministic crops. Arm to arm is valid.
+DO NOT put these next to paired_eval full-val numbers (trap 4, trap 33).
+=============================================================================
