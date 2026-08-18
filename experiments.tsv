@@ -21,15 +21,12 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. ⚠️2026-08-14 신설 팔 sm_ag / sm_split 이 아직 한 번도 안 돌았다
-1	P060	run_P060_stageA2_sdpa_backends.bat	D	0.1	N	Y	★★단계 A2 — SDPA 백엔드 2x4 행렬(enable_gqa off/on). 단계 A 가 off(우리 학습 경로)를 안 찔러서 귀속이 미완이다. ★★off 도 MATH 면 **모든 학습이 융합 커널 없이 돌고 있다** = F-1 보다 큰 문제. 수 초
-1	P049	run_P049_stage1b_gate_probe.bat	N	0.1	N	Y	★단계 1b — 복제층 gate 가 깨어났는가(결과 041 §13.4 가 필수라 했는데 배치에 안 들어가 미측정). 안 깨어났으면 36층이 실질 20층이고 P049 판정의 뜻이 바뀐다. 학습 0 · GPU 0 · 수 초
-1	P062	run_P062_stage0_infer_repeat.bat	D	0.3	N	Y	★★★단계0 — mC_r20 은 36회 통과로 학습되고 20회 통과로 평가됐다(함정 39). --infer-repeat 2.0 으로 재평가한다. **학습 0 · 코드 변경 0.** 판정선 arm2-arm1 < -0.15 사전 고정. P049B·P031 두 축의 판정이 여기 달렸다
-1	P057	run_P057_stage0b_attn_gate.bat	D	0.1	N	Y	★★단계0b(1차는 데이터 0건 — build_attention 미import). 20층 3팔 + ★깊이결합 3팔 + 앵커 1팔. ⚙d36+attn_group4 = 상주 379.8 MiB = 기준선보다 -15.9% → P049 판정이 바뀔 수 있다. 통과대역 5.0~9.3972
-2	P045	run_P045_stage2_g16_nokd.bat	Y	1.8	N	N	★REVIEW2 확정조건 5 — 레버×KD 상호작용. g16 을 무KD 로 재측정해 +0.0161 과 비교(차 <0.024 면 기존 레버표 승계). 대조군 mC_initonly 는 이미 있다
-3	P046	run_P046_emb_rank192.bat	Y	3.5	N	N	REVIEW2 확정조건 4. E=192 - 스펙트럼 88.76 퍼센트가 E=128 대가(+0.1123)를 예측했다. ⚠️packed 최악 레버지만 int8 경로에서는 1위(함정 24)
-5	P014C	run_P014C_stage2_fused_speed.bat	N	0.2	Y	N	per-row 융합 int8 이 언팩 캐시(19.07 tok/s)를 넘는가. CPU, 학습 0
+1	P062	run_P062_stage0b_paired_repeat.bat	D	0.2	N	Y	★★단계0b — 단계0 의 헤드라인(-0.2427, 기준선 -0.0166)을 paired_eval 정본 추정량으로 확정한다. paired_eval 에 --infer-repeat 를 뚫었다(12줄, 기본 1.0=비트동일). 2콜: R=1 / R=2. 학습 0
+1	P057	run_P057_stage1_d36_attn2.bat	Y	3.3	N	N	★★단계1 — 36층 + attn_group 2. 채택선 -0.010 사전 고정(상주 +4.0% 에서 재유도). 근거: 복제층 어텐션이 스스로 꺼졌고(041 §15) 36층+g2 step0 이 앵커와 동일(044 §7). ⚙삼진 76.1M -> 약 57.2M
+9	P045	run_P045_stage2_g16_nokd.bat	Y	1.8	N	N	✅완료(결과 029 §6) — 사용자 `-done` 처리 요망. 레버×KD 상호작용 0.0002, 레버표 승계 확정
+9	P046	run_P046_emb_rank192.bat	Y	3.5	N	N	✅완료(결과 030 §10) — 사용자 `-done` 처리 요망. E=192 paired +0.0154 = 분해능 미만
+9	P053	run_P053_kd_chunk.bat	Y	1.0	Y	N	✅완료(결과 048) — 사용자 `-done` 처리 요망. --kd-chunk 1024 = reserved -3.06 GiB
 9	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수. YES 를 직접 입력해야 지운다. ⚠️mC_r20 은 지우지 말 것 — P062 단계0 이 쓴다
-9	P053	run_P053_kd_chunk.bat	Y	1.0	Y	N	★KD 손실 청크 VRAM. **REVIEW2 가 KD 를 유지할 때만 의미가 있다**
 #
 # ★완료·삭제된 배치 (2026-08-14 사용자가 -done 파일을 삭제 → 행을 제거했다)
 #   재현 명령은 전부 결과문서에 보존돼 있다:

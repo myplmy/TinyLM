@@ -111,6 +111,18 @@ def main():
     ap.add_argument("--seq", type=int, default=1024)
     ap.add_argument("--micro-bs", type=int, default=8)
     ap.add_argument("--device", default=None)
+    # ★★P062(2026-08-15) — **추론 스케줄을 명시할 수 있어야 한다.**
+    #   `visit_schedule()` 은 `self.training` 일 때만 `train_repeat` 을 보는데 이 도구는
+    #   `model.eval()` 을 부른다 → **`--train-repeat` 로 학습한 체크포인트가 학습과 다른
+    #   함수로 평가된다**(계측함정 39, 결과 043 §14 · 047).
+    #   `--models` 에 준 **모든 태그**에 같은 값이 걸린다 — 서로 다른 스케줄을 섞어 비교하는 것은
+    #   paired 설계의 전제를 깨므로 **일부러 태그별 지정을 안 만들었다.**
+    ap.add_argument("--infer-repeat", type=float, default=1.0,
+                    help="(P062) middle 블록 통과 배수. 1.0=종전=비트 동일")
+    ap.add_argument("--repeat-where", choices=["front", "back", "even"], default="front",
+                    help="(P062) 분수/확장에서 어디를 더 돌지. 학습 uniform 과 같은 것은 front")
+    ap.add_argument("--repeat-kv-reuse", action="store_true",
+                    help="(P062) 반복 통과에서 첫 통과 KV 재사용(대조 조건)")
     a = ap.parse_args()
 
     import torch
@@ -136,6 +148,19 @@ def main():
             print(f"\n  [건너뜀] 체크포인트 없음: {ck.name}")
             continue
         model, cfg, _ = load_model(arch=_arch_of(tag), ckpt_path=str(ck), device=dev)
+        # ★P062 — 추론 전용 설정만 덮어쓴다(가중치 불변). `cli.py` L308~316 과 같은 규약.
+        if a.infer_repeat != 1.0 or a.repeat_kv_reuse:
+            cfg.infer_repeat = a.infer_repeat
+            cfg.repeat_where = a.repeat_where
+            cfg.repeat_kv_reuse = a.repeat_kv_reuse
+            _sch = model.visit_schedule()
+            print(f"\n  [P062] {tag}: infer_repeat={a.infer_repeat} where={a.repeat_where} "
+                  f"kv_reuse={a.repeat_kv_reuse} -^> 층 통과 {len(_sch)}회(기준 {cfg.n_layers}회)")
+        _tr = float(getattr(cfg, "train_repeat", 1.0) or 1.0)
+        if _tr != 1.0 and a.infer_repeat == 1.0:
+            print(f"\n  🚫★{tag}: 이 체크포인트는 **train_repeat={_tr} 로 학습**됐는데 "
+                  f"`--infer-repeat` 이 1.0 이다 → **학습과 다른 함수로 평가된다**"
+                  f"(계측함정 39). `--infer-repeat {_tr} --repeat-where front` 를 줄 것.")
         losses, used = full_val_losses(model, cfg, meta["dir"], a.seq, a.micro_bs, dev)
         per[tag] = losses
         mean = sum(losses) / len(losses)
