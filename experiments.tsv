@@ -27,6 +27,11 @@ prio	plan	batch	gpu	hours	alone	watch	note
 3	P062	run_P062_stage0c_r_curve.bat	D	0.4	N	Y	★R 곡선(1.0~2.0). 학습 rounding 설명이 추론에도 적용되는가. 평평하면 P031 분수 R 전체를 다시 읽는다
 4	P064	run_P064_stage0_korean_bench.bat	D	0.9	N	Y	★KLUE/KorQuAD 보조진단(공식 metric 아님). 4모델 + 시드쌍 2개로 **이 자의 σ 까지** 잰다
 5	P063	run_P063_stage1_regen_sigma.bat	Y	5.2	Y	Y	★P063+P054 통합 — 동일 명령 dense 재생성 3회. 시드가 아니라 비결정성이 얼마인가
+2	P022B	run_P022B_stage3_dtype_map.bat	D	0.2	N	Y	★학습 dtype 지도 실측. _wq 캐스팅 횟수·refresh_quant 비중. 게이트 미달이면 bf16 축 종료
+3	P049	run_P049_stage2_attn_sim.bat	D	0.2	N	Y	★복제층 어텐션 출력이 첫 통과와 같은가(①). 041 §15 는 ②(게이트)만 쟀다. 대조군 3무리
+2	P065	run_P065_stage1_nokd_levers.bat	Y	4.4	Y	Y	★★무KD 미검증 레버 전수 — micro_group 256 / emb_rank 192 / --no-ckpt(250스텝 속도쌍). 레버표 전체가 KD 조건이었다
+3	P057	run_P057_stage2_d36ag4_nokd.bat	Y	2.8	N	Y	★★모델안 정본 무KD 재학습(mC_d36_ag4_nokd). 상주 379.7MB 가 폐기된 조건에서 학습돼 있었다
+4	P062	run_P062_stage1_nokd_repeat.bat	Y	2.7	N	Y	★★무KD+재귀(mC_r20_nokd). 메모리 0 증가로 ⚙−0.018 예상. ⚠️--infer-repeat 2.0 필수(함정 39)
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
 #   2026-08-14 삭제분: P049 단계1(041 §14.8) · P049B 단계1(043 §13.9) · F-1(046 §9)
