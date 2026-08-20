@@ -45,6 +45,52 @@ PROTECTED = {
         "정본 tied 기준선(태그 없음)",
 }
 
+# ★★2026-08-20 신설 — **G3 부모 계보 패턴 보호**
+#
+#   왜: 2026-08-20 에 `m100_ko-en_300M_denseb_best.pt` 가 TSV 에서 `delete` 로 판정됐고
+#   사용자가 손으로 고쳤다. 원인은 **규칙을 "역할" 이 아니라 "이름" 에 걸었기 때문**이다 —
+#   *"`_best` 는 하향 편향이라 판정에 안 쓴다(결과 015)"* 는 **비교용 산출물**에 대해서는
+#   옳지만, **부모/교사 계보**에는 적용되면 안 된다. `dense_best` 는 이미 한 번 사라졌고
+#   `denseb_best` 는 그 재생성본의 유일한 best 다. **지우면 재학습 말고는 복구가 없다.**
+#
+#   그래서 이름 하나를 더 적는 대신 **계보 전체를 정규식으로** 지킨다.
+#   `dense`·`denseb`·`densec`… 어느 재생성본이 생겨도 자동으로 걸린다.
+PROTECTED_RE = [
+    (r"^m100_ko-en_300M_dense[a-z]*(_best)?\.pt$",
+     "★부모 dense 계보(재생성본 포함). dense_best 가 이미 한 번 사라졌다 — 재학습 외 복구 불가"),
+]
+
+
+def derived_protection():
+    """★★G1 — **다른 런이 부모/교사로 쓴 체크포인트**를 로그에서 뽑아 자동 보호한다.
+
+    손으로 적은 목록은 늙는다(함정 18). `runs/logs/*.json` 의 `init_from_src`·`kd_teacher`
+    는 **그 런이 실제로 무엇을 읽었는지의 기록**이므로, 여기 이름이 있으면
+    **그 파일을 지우는 순간 그 런이 재현 불가능**해진다. `_best` 형제도 함께 지킨다.
+    """
+    import json as _json
+    logs = ROOT / "runs" / "logs"
+    out = {}
+    if not logs.exists():
+        return out
+    for p in logs.glob("*.json"):
+        try:
+            d = _json.loads(p.read_text(encoding="utf-8"))
+        except Exception:                                       # noqa: BLE001
+            continue
+        if not isinstance(d, dict):
+            continue
+        for k in ("init_from_src", "kd_teacher"):
+            v = d.get(k)
+            if not v:
+                continue
+            name = Path(str(v)).name
+            why = f"★{p.stem} 이 이것을 {k} 로 읽었다 — 지우면 그 런이 재현 불가"
+            out.setdefault(name, why)
+            if name.endswith(".pt") and not name.endswith("_best.pt"):
+                out.setdefault(name[:-3] + "_best.pt", why + " (best 형제)")
+    return out
+
 
 TSV = ROOT / "checkpoints.tsv"
 
@@ -113,11 +159,33 @@ def main():
         raise SystemExit(f"[STOP] {CKPT} 가 없다.")
     disk = {p.name: p.stat().st_size for p in CKPT.glob("*.pt")}
 
+    # ★보호 집합을 **세 경로에서** 모은다. 손목록 하나만 두면 늙는다(함정 18).
+    guard = dict(PROTECTED)                      # G0 손목록
+    for n, why in derived_protection().items():  # G1 로그에서 파생
+        guard.setdefault(n, why)
+    for name in list(doc):                       # G3 계보 정규식
+        for pat, why in PROTECTED_RE:
+            if re.match(pat, name):
+                guard.setdefault(name, why)
+
+    # ★★G2 — **판정 일관성**: 본체가 `hold`(미판정)인데 `_best` 만 `delete` 면 막는다.
+    #   `hold` 는 *"사람이 아직 판정 안 했다"* 는 뜻이다. 본체가 미판정이면 그 best 도 미판정이다.
+    #   ★이것이 denseb_best 사고를 **이름을 몰라도** 잡는 규칙이다.
+    inconsistent = []
+    for name, (_, v) in doc.items():
+        if v != "delete" or not name.endswith("_best.pt"):
+            continue
+        base = name[:-len("_best.pt")] + ".pt"
+        bv = doc.get(base, (0, None))[1]
+        if bv == "hold":
+            inconsistent.append((name, base))
+            guard.setdefault(name, f"★판정 불일치 — 본체 {base} 가 hold(미판정)인데 best 만 delete 다")
+
     plan, blocked, gone, unlisted = [], [], [], []
     for name, (_, v) in doc.items():
         if v != "delete":
             continue
-        if name in PROTECTED:
+        if name in guard:
             blocked.append(name)
         elif name in disk:
             plan.append(name)
@@ -140,7 +208,13 @@ def main():
     if blocked:
         print(f"\n  ★보호 규칙이 막은 것 {len(blocked)}개(목록이 삭제라 해도 안 지운다):")
         for n in blocked:
-            print(f"    {n}\n      -> {PROTECTED[n]}")
+            print(f"    {n}\n      -> {guard[n]}")
+    if inconsistent:
+        print(f"\n  🚫★★판정 불일치 {len(inconsistent)}건 — **TSV 를 고쳐야 한다.**")
+        for n, base in inconsistent:
+            print(f"    {n}  (본체 {base} = hold)")
+        print("    → 본체가 미판정이면 best 도 미판정이다. **한 런의 판정은 한 번에 정한다.**")
+        print("    → 2026-08-20 denseb_best 사고의 재발 방지 규칙(G2)이다.")
     if unlisted:
         print(f"\n  ⚠️ 목록에 없는 디스크 파일 {len(unlisted)}개 — **판정되지 않았으므로 안 건드린다.**")
         for n in sorted(unlisted)[:20]:

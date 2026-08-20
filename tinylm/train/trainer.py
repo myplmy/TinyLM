@@ -644,6 +644,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "sdpa_gqa": bool(cfg.sdpa_gqa),                        # (F-1) enable_gqa 경로
            "kd_chunk": int(kd_chunk or 0),                        # (T-2/P053) KD 손실 청크 행수
            "depth_init": str(depth_init),                         # (P049) 깊이 확장 이식 방식
+           # ★2026-08-20 — `kd_alpha`·`kd_temp` 가 **한 번도 기록되지 않았다**(P055 단계1 에서 발각).
+           #   배치 꼬리말이 *"json kd_alpha 가 0.3/0.1/0.7 인지 확인하라"* 고 적었는데
+           #   **필드 자체가 없었다.** 인쇄(`[kd] 교사 로드 완료 (alpha=...)`)로만 남아 있었고,
+           #   인쇄는 결과문서로 옮겨 적어야 하지만 json 은 기계가 읽는다(함정 4·37 계열).
+           "kd_alpha": (float(kd_alpha) if kd else None),
+           "kd_temp": (float(kd_temp) if kd else None),
            "attn_group": int(getattr(cfg, "attn_group", 1)),       # (P057) 어텐션 타잉 g
            "train_repeat": float(getattr(cfg, "train_repeat", 1.0)),   # (P049B) 학습 시 재귀 배수
            "repeat_mode": str(getattr(cfg, "repeat_mode", "uniform")),

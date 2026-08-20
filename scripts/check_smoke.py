@@ -37,6 +37,7 @@ REQUIRED = ["seed", "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cach
             "sdpa_gqa", "kd_chunk",                    # F-1 / T-2
             "depth_init", "n_layers",                  # P049
             "attn_group", "train_repeat", "mlp_split", "repeat_mode",  # P057 / P049B
+            "kd_alpha", "kd_temp",                     # ★P055(2026-08-20) — 한 번도 안 실렸다
             "save_every"]                              # P058
 
 
@@ -103,7 +104,7 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     "sm_s34":    {"sparse34": True, "bpw": 1.25},
     "sm_sched":  {"anneal_end": 0.80, "sched": "wsd", "decay_frac": 0.2},
     "sm_nockpt": {"grad_ckpt": False},
-    "sm_kd":     {"kd": True, "init_from": True, "kd_every": 4},
+    "sm_kd":     {"kd": True, "init_from": True, "kd_every": 4, "kd_alpha": 0.5},
     # ★2026-08-14 추가 (계측함정 37) — P057·P061 은 **구성 경로 자체가 한 번도 안 돌았다.**
     #   `attn_group=1`·`mlp_split=()` 만 스모크에 있었기 때문에 `transformer.py` 의
     #   `build_attention` 미import 가 **스모크 0에러를 통과**하고 실험 로그(044)에서 죽었다.

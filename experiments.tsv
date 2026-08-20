@@ -26,6 +26,11 @@ prio	plan	batch	gpu	hours	alone	watch	note
 1	P014C	run_P014C_stage2b_int8mm_paths.bat	N	0.1	Y	Y	★융합 int8 이 왜 6.5배 느린가. dtype×M×스레드×contiguous 행렬. 모델 0·학습 0·CPU. 고칠 수 있는 원인이면 한 줄 수정
 2	P057	run_P057_stage1b_d36_attn4.bat	Y	3.3	N	N	★★36층+attn_group4. ⚙상주 379.8MB = 기준선보다 -15.9% → 저장소 최초로 '36층인데 더 작다'. 채택선 +0.041 사전 고정(부호가 뒤집힌다). 단계1(g2)은 -0.0138 로 통과
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수 49GB→. ★판정 정본이 checkpoints.tsv 로 바뀌었다(TSV, keep/hold/delete). 삭제 후보 13.2GB/34개. YES 를 직접 입력해야 지운다
+1	P070	run_P070_stage0_std_controls.bat	Y	3.6	N	Y	REVIEW2 안 B·C 대조군 선제 학습(mC_std2·mC_std3). 결정을 안 기다린다 — 어느 안이든 최소 하나는 쓴다
+2	P071	run_P071_stage0_residency.bat	N	0.1	N	Y	★상주 실측 4경로(fp32/drop-latent/int8/unpack-cache) × 4모델. REVIEW3(L2+L3) 착수 전 필수 — 함정 24로 순위가 뒤집힌다
+3	P062	run_P062_stage0c_r_curve.bat	D	0.4	N	Y	★R 곡선(1.0~2.0). 학습 rounding 설명이 추론에도 적용되는가. 평평하면 P031 분수 R 전체를 다시 읽는다
+4	P064	run_P064_stage0_korean_bench.bat	D	0.6	N	Y	★KLUE/KorQuAD 우도 채점. val_loss 말고 다른 자로 REVIEW2 후보 3종 + dense 를 잰다
+5	P063	run_P063_stage1_regen_sigma.bat	Y	5.2	Y	Y	★P063+P054 통합 — 동일 명령 dense 재생성 3회. 시드가 아니라 비결정성이 얼마인가
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
 #   2026-08-14 삭제분: P049 단계1(041 §14.8) · P049B 단계1(043 §13.9) · F-1(046 §9)
@@ -36,7 +41,10 @@ prio	plan	batch	gpu	hours	alone	watch	note
 #
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
-#     P062 R 곡선 재측정      -> paired_eval 로 1.25/1.5/1.75 (047 §4·§10.6-2)
+#     ★P062 R 곡선 -> **작성 완료**(run_P062_stage0c_r_curve.bat). 선결이 없었다 — 의사결정함정 D15
 #     P050B tied 부모         -> REVIEW2 이후 + 선결 3건 미확인 (P050B §6)
-#     P034 단계5 임베딩 양자화 -> 설계 미완(헤드 tie)
+#     P034 단계5 임베딩 양자화 -> 설계 미완(헤드 tie). ★L2+L3 의 선결 둘 중 하나(P071 §3)
+#     P067 외부 토크나이저 단계0 -> 구현: HF config 조회·diag_tokenizer_compare.py 미작성
+#     P068 외부 교사 KD        -> 구현: uint16→uint32 · top-k KD · HF 교사 어댑터 (Qwen분석 §2)
+#     P065 2-tap 동적 conv     -> REVIEW2 확정 후. 어텐션 타잉 대가 상쇄 가설 (08_paper_review §11.3-2)
 #     P014 안 A/B LUT 커널     -> ★L2+L3 목표의 유일한 길. 미착수 (02_memory §M.3.3)
