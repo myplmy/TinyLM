@@ -26,6 +26,7 @@
 사용법
    python scripts/wandb_sync.py                       # dry-run, 전체
    python scripts/wandb_sync.py --tag mC_d36_ag4      # dry-run, 하나만
+   python scripts/wandb_sync.py --push --limit 3          # 먼저 3건만 올려 본다
    python scripts/wandb_sync.py --push --project tinylm
    python scripts/wandb_sync.py --check               # 키 파일·패키지만 점검
 """
@@ -107,9 +108,26 @@ def collect(tag=None):
     return out
 
 
+def _flat(prefix, v, out):
+    """★중첩 dict 를 평평하게 편다 — wandb 요약은 스칼라라야 차트가 된다.
+
+    `final` 은 `{"val_loss":…, "ppl":…, "bpb":…, "ema":…}` 이고, dict 를 그대로 넣으면
+    **정렬·필터가 안 된다.** `final_val_loss` 처럼 편다.
+    """
+    if isinstance(v, dict):
+        for k2, v2 in v.items():
+            _flat(f"{prefix}_{k2}", v2, out)
+    elif isinstance(v, (int, float, bool, str)) or v is None:
+        out[prefix] = v
+
+
 def payload(name, d):
     cfg = {k: d.get(k) for k in CONFIG_KEYS if k in d}
-    summ = {k: d.get(k) for k in SUMMARY_KEYS if d.get(k) is not None}
+    summ = {}
+    for k in SUMMARY_KEYS:
+        v = d.get(k)
+        if v is not None:
+            _flat(k, v, summ)
     hist = d.get("history") or []
     return cfg, summ, hist
 
