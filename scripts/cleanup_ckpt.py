@@ -46,10 +46,48 @@ PROTECTED = {
 }
 
 
+TSV = ROOT / "checkpoints.tsv"
+
+
+def parse_tsv():
+    """★2026-08-19 — 판정 정본을 **TSV** 로 옮겼다(사용자 지시, `experiments.tsv` 와 같은 구조).
+
+    왜: 마크다운 표는 **사람이 읽으라고** 있는 것이고 파서가 서식에 끌려다닌다.
+    그리고 `keep` 의 **이유(어느 실험이 쓰는가)** 를 적을 자리가 없었다 —
+    그게 없으면 다음 세션이 *"왜 남겼는지"* 를 모르고 지운다.
+
+    ⚠️**여기 없는 파일은 후보가 아니다**(화이트리스트). 새 체크포인트의 기본은 `hold` 다.
+    """
+    out = {}
+    if not TSV.exists():
+        return out
+    for ln in TSV.read_text(encoding="utf-8").splitlines():
+        if not ln.strip() or ln.lstrip().startswith("#"):
+            continue
+        c = ln.split("\t")
+        if len(c) < 3 or c[0] == "verdict":
+            continue
+        v = c[0].strip()
+        if v not in ("keep", "hold", "delete"):
+            continue
+        try:
+            mb = float(c[2])
+        except ValueError:
+            mb = 0.0
+        out[c[1].strip()] = (mb, v)
+    return out
+
+
 def parse_doc():
-    """판정 표를 읽어 {파일명: (MB, 판정)} 로 돌려준다."""
+    """판정 표를 읽어 {파일명: (MB, 판정)} 로 돌려준다.
+
+    ★**TSV 가 있으면 그것이 정본**이다(`parse_tsv`). 이 함수는 구 문서 호환용으로 남는다.
+    """
+    tsv = parse_tsv()
+    if tsv:
+        return tsv
     if not DOC.exists():
-        raise SystemExit(f"[STOP] 판정 문서가 없다: {DOC.name}. 집합의 정본이 없으면 안 지운다.")
+        raise SystemExit(f"[STOP] 판정 정본이 없다: {TSV.name} 도 {DOC.name} 도. 안 지운다.")
     out = {}
     for f, mb, verdict in re.findall(r"^\|\s*`([^`]+)`\s*\|\s*([\d.]+)\s*\|\s*(.+?)\s*\|",
                                      DOC.read_text(encoding="utf-8"), re.M):
