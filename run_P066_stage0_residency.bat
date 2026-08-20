@@ -1,6 +1,6 @@
 @echo off
 REM =============================================================================
-REM  P071 stage 0  -  residency of the four candidates on the DEPLOYMENT path
+REM  P066 stage 0  -  residency of the four candidates on the DEPLOYMENT path
 REM                   (NO TRAINING, CPU, a few minutes)
 REM
 REM  THE GOAL, RESTATED
@@ -29,7 +29,7 @@ REM    b  --drop-latent                       cause 2, the duplicate fp32 copy
 REM    c  --drop-latent --int8-store          cause 1, partially
 REM    d  + --unpack-cache                    unpack once per unique module
 REM
-REM  PREDICTIONS, fixed in advance (plan P071 s2.2)
+REM  PREDICTIONS, fixed in advance (plan P066 s2.2)
 REM    P1  drop-latent lands at 0.50 to 0.55 of fp32
 REM    P2  plus int8 lands at about 0.14 to 0.15 of fp32
 REM    P3  mC_d36_ag4 STILL misses 40 MB, landing near 90 MB, because the
@@ -41,48 +41,48 @@ REM  !! WHAT THIS CANNOT DECIDE
 REM    Speed - only 32 tokens are generated, nowhere near steady state.
 REM    Quality - the int8 path's loss cost needs a separate eval.
 REM    Actual cache behaviour - RSS and tensor sums are byte accounting, not
-REM    hit rates. That gap is plan P071 stage 4 and we have no tool for it.
+REM    hit rates. That gap is plan P066 stage 4 and we have no tool for it.
 REM =============================================================================
 
 if not exist run100m.py cd ..\..
 if not exist run100m.py goto BADROOT
 
 set TL_NOPAUSE=1
-set TL_LOGNAME=P071_stage0_residency
+set TL_LOGNAME=P066_stage0_residency
 set TL_MODELS=mC_wsd mC_initonly mC_d36_ag4 mC_p1c1g16
 set TL_SKIP_CUDA=1
 
 echo.
 echo.
-python scripts\runlog.py --name P071_stage0_residency --note "=============================================================================" "P071 stage 0   resident memory on the deployment path   NO TRAINING   CPU" "The target is RESIDENT, not packed. packed already fits; resident is 9.5x over." "=============================================================================="
+python scripts\runlog.py --name P066_stage0_residency --note "=============================================================================" "P066 stage 0   resident memory on the deployment path   NO TRAINING   CPU" "The target is RESIDENT, not packed. packed already fits; resident is 9.5x over." "=============================================================================="
 echo.
 
-python scripts\runlog.py --name P071_stage0_residency --note "[1/4] fp32 baseline - what deployment costs today"
+python scripts\runlog.py --name P066_stage0_residency --note "[1/4] fp32 baseline - what deployment costs today"
 set TL_EXTRA=
 call scripts\batch\tool_mem_profile.bat
 if errorlevel 1 echo [WARN] fp32 pass failed - continuing
 
 echo.
-python scripts\runlog.py --name P071_stage0_residency --note "[2/4] --drop-latent - cause 2, the duplicate fp32 copy. Logit gate must stay clean."
+python scripts\runlog.py --name P066_stage0_residency --note "[2/4] --drop-latent - cause 2, the duplicate fp32 copy. Logit gate must stay clean."
 set TL_EXTRA=--drop-latent
 call scripts\batch\tool_mem_profile.bat
 if errorlevel 1 echo [WARN] drop-latent pass failed - continuing
 
 echo.
-python scripts\runlog.py --name P071_stage0_residency --note "[3/4] --drop-latent --int8-store - cause 1, partially. Ternary 4 bytes down to 1."
+python scripts\runlog.py --name P066_stage0_residency --note "[3/4] --drop-latent --int8-store - cause 1, partially. Ternary 4 bytes down to 1."
 set TL_EXTRA=--drop-latent --int8-store
 call scripts\batch\tool_mem_profile.bat
 if errorlevel 1 echo [WARN] int8 pass failed - continuing
 
 echo.
-python scripts\runlog.py --name P071_stage0_residency --note "[4/4] plus --unpack-cache - unpack once per unique module. attn-group should raise the hit rate."
+python scripts\runlog.py --name P066_stage0_residency --note "[4/4] plus --unpack-cache - unpack once per unique module. attn-group should raise the hit rate."
 set TL_EXTRA=--drop-latent --int8-store --unpack-cache
 call scripts\batch\tool_mem_profile.bat
 if errorlevel 1 echo [WARN] unpack-cache pass failed - continuing
 
 echo.
 echo.
-python scripts\runlog.py --name P071_stage0_residency --note "=============================================================================" "READ IN THIS ORDER" "1. pass 2 and 4 logit gates. A nonzero difference means a BUG, not a saving." "2. the fp32 column for all four models. That is today's deployment cost." "3. ratio of each pass to fp32, against P1 and P2." "4. does mC_d36_ag4 reach 40 MB in pass 4? P3 says no, and says why -" "   the embedding is 34.3 MB and none of these passes touch it." "5. compare the packed winner with the resident winner. If they differ," "   trap 1 is demonstrated on our own best models." "REMINDER  RSS overstates, tensor sums understate. Read both, never one." "REMINDER  packed is reference only. The judgement number is runtime_mb." "=============================================================================="
+python scripts\runlog.py --name P066_stage0_residency --note "=============================================================================" "READ IN THIS ORDER" "1. pass 2 and 4 logit gates. A nonzero difference means a BUG, not a saving." "2. the fp32 column for all four models. That is today's deployment cost." "3. ratio of each pass to fp32, against P1 and P2." "4. does mC_d36_ag4 reach 40 MB in pass 4? P3 says no, and says why -" "   the embedding is 34.3 MB and none of these passes touch it." "5. compare the packed winner with the resident winner. If they differ," "   trap 1 is demonstrated on our own best models." "REMINDER  RSS overstates, tensor sums understate. Read both, never one." "REMINDER  packed is reference only. The judgement number is runtime_mb." "=============================================================================="
 if not defined TL_NOPAUSE pause
 exit /b 0
 

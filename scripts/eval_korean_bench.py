@@ -78,7 +78,7 @@ def load_items(task, n, seed):
         for r in d[:n]:
             p = f"다음 뉴스 제목의 분야는 무엇인가?\n제목: {r['title']}\n분야:"
             out.append((p, [" " + x for x in YNAT_LABELS],
-                        YNAT_LABELS.index(r["label"]), r["guid"]))
+                        YNAT_LABELS.index(r["label"]), r["guid"], None))
         return out
     if task == "nli":
         d = json.loads(NLI.read_text(encoding="utf-8"))
@@ -89,7 +89,7 @@ def load_items(task, n, seed):
             p = (f"전제: {r['premise']}\n가설: {r['hypothesis']}\n"
                  f"가설은 전제에 비추어 맞다/틀리다/알 수 없다 중 무엇인가?\n답:")
             out.append((p, [" " + NLI_LABELS[k] for k in keys],
-                        keys.index(r["gold_label"]), r["guid"]))
+                        keys.index(r["gold_label"]), r["guid"], None))
         return out
     if task == "korquad":
         d = json.loads(KORQUAD.read_text(encoding="utf-8"))
@@ -102,8 +102,13 @@ def load_items(task, n, seed):
         rng.shuffle(flat)
         out = []
         for ctx, q, ans, gid in flat[:n]:
-            p = f"지문: {ctx}\n질문: {q}\n답:"
-            out.append((p, [" " + ans], 0, gid))
+            # ★두 프롬프트를 함께 만든다 — 두 번째는 **지문을 뺀 것**이다(§NC).
+            #   차이 `CE(ans|q) − CE(ans|ctx,q)` 가 **문맥을 실제로 썼는가**를 잰다.
+            #   외부 검토문서 §5 가 지적한 어휘 사전지식 교락("대한민국↔서울")의 **대조군**이고,
+            #   그 문서는 문제만 적고 통제는 제안하지 않았다.
+            p_ctx = f"지문: {ctx}\n질문: {q}\n답:"
+            p_noctx = f"질문: {q}\n답:"
+            out.append((p_ctx, [" " + ans], 0, gid, p_noctx))
         return out
     raise ValueError(task)
 
@@ -136,13 +141,21 @@ def score_continuations(model, tok, device, prompt, conts, seq_max, torch, F):
 
 
 def paired_stats(a, b):
+    """(평균Δ, SD, SE, t, 95%CI 반폭, A승률, 필요 N) — 외부 검토문서 §6·§7 반영.
+
+    ★`need_n` = **목표 SE 0.002 를 얻는 데 필요한 문항 수**.
+      `SE = SD/√N` 이므로 `N* = (SD/0.002)²`. **100 이 충분한지를 이 런이 스스로 답한다**
+      (검토문서 §7 이 옳게 지적했다 — 1464 크롭의 SE 를 100문항에 옮겨 적을 수 없다).
+    """
     d = [x - y for x, y in zip(a, b)]
     m = statistics.fmean(d)
     sd = statistics.stdev(d) if len(d) > 1 else 0.0
     se = sd / math.sqrt(len(d)) if d else 0.0
     t = m / se if se else 0.0
+    ci = 1.96 * se
     win = sum(1 for v in d if v > 0) / len(d) * 100
-    return m, se, t, win
+    need = int(math.ceil((sd / 0.002) ** 2)) if sd else 0
+    return m, sd, se, t, ci, win, need
 
 
 # ---------------------------------------------------------------- main
@@ -168,7 +181,15 @@ def main():
     from tinylm.infer.generate import load_model
 
     dev = a.device or ("cuda" if torch.cuda.is_available() else "cpu")
-    banner("P064 — 한국어 벤치마크 우도 채점 (학습 0 · 생성 없음)", "#")
+    banner("P064 — 한국어 벤치마크 **보조 진단**(auxiliary diagnostic) · 학습 0 · 생성 0", "#")
+    # ★★명명 규약 (외부 검토문서 §2·§3·§4·§12 반영, 2026-08-21)
+    #   공식 metric 과 **이름을 섞지 않는다** — 공식 YNAT = macro F1(KLUE 논문 §3.1.2),
+    #   공식 NLI = accuracy(§3.3.2), 공식 KorQuAD = EM/F1. 우리가 내는 것은 전부 다른 양이다.
+    print("  🚫★이 도구가 내는 점수는 **공식 benchmark score 가 아니다.**")
+    print("     공식 YNAT = macro F1 (KLUE 논문 §3.1.2) · 공식 NLI = accuracy (§3.3.2)")
+    print("     · 공식 KorQuAD = EM/F1.  우리 것은 다음 이름으로만 부른다:")
+    print("       ynat/nli  -> label-likelihood accuracy (auxiliary)")
+    print("       korquad   -> gold-answer conditional CE (auxiliary)")
     print(f"  task={a.task}  n={a.n}  seed={a.seed}  device={dev}  seq_max={a.seq_max}")
 
     # ★규약 2 — 성공 기준값을 **먼저** 인쇄한다(함정 34: 게이트를 나중에 지어내지 않는다)
@@ -187,37 +208,55 @@ def main():
     tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
 
     per_item, acc, skipped = {}, {}, {}
+    no_ctx, ans_len = {}, {}
     for tag in a.models:
         ck = paths.resolve_ckpt(a.preset, a.data, a.tokens, tag)
         if not ck.exists():
             print(f"\n  [건너뜀] 체크포인트 없음: {ck.name}")
             continue
         model, cfg, _ = load_model(arch=_arch_of(tag), ckpt_path=str(ck), device=dev)
-        vals, hit, nskip, lens = [], 0, 0, []
-        for prompt, conts, gold, _gid in items:
+        vals, hit, nskip, lens, alens, nc = [], 0, 0, [], [], []
+        for prompt, conts, gold, _gid, p_noctx in items:
             r, tot = score_continuations(model, tok, dev, prompt, conts,
                                          a.seq_max, torch, F)
             if r is None:
                 nskip += 1
                 vals.append(None)
+                nc.append(None)
                 continue
             lens.append(tot)
             means = [m for m, _s, _n in r]
+            alens.append(r[0][2])              # ★정답(또는 라벨) 토큰 길이 — 검토문서 §8
             if a.task == "korquad":
-                vals.append(means[0])           # 정답 토큰 CE
+                vals.append(means[0])           # gold-answer conditional CE
+                # ★NC 대조군 — 지문을 뺀 같은 정답의 CE. 차이가 "문맥 이용도" 다.
+                r2, _ = score_continuations(model, tok, dev, p_noctx, conts,
+                                            a.seq_max, torch, F)
+                nc.append(float(r2[0][0]) if r2 else None)
             else:
                 pick = min(range(len(means)), key=lambda i: means[i])
                 hit += int(pick == gold)
                 vals.append(float(pick == gold))
+                nc.append(None)
         per_item[tag] = vals
+        no_ctx[tag] = nc
+        ans_len[tag] = alens
         skipped[tag] = nskip
         n_ok = len(items) - nskip
         acc[tag] = (hit / n_ok * 100) if (a.task != "korquad" and n_ok) else None
         ok_vals = [v for v in vals if v is not None]
         mean = statistics.fmean(ok_vals) if ok_vals else float("nan")
         print(f"\n  {tag:<18} n={n_ok:<4} 건너뜀={nskip:<3} "
-              f"{'정확도 %.1f%%' % acc[tag] if acc[tag] is not None else '정답CE %.4f' % mean}"
-              f"   토큰길이 중앙값 {statistics.median(lens) if lens else 0:.0f}")
+              f"{'label-LL 정확도 %.1f%%' % acc[tag] if acc[tag] is not None else 'gold-answer CE %.4f' % mean}")
+        print(f"      전체 토큰길이 중앙값 {statistics.median(lens) if lens else 0:.0f}"
+              f"  ·  정답 토큰길이 중앙값 {statistics.median(alens) if alens else 0:.0f}"
+              f"  (최대 {max(alens) if alens else 0})")
+        if a.task == "korquad":
+            pair = [(v, w) for v, w in zip(vals, nc) if v is not None and w is not None]
+            if pair:
+                gain = statistics.fmean(w - v for v, w in pair)
+                print(f"      ★문맥 이용도 CE(ans|q) − CE(ans|ctx,q) = {gain:+.4f}"
+                      f"  (양수면 지문이 실제로 도움이 됐다)")
         del model
         if dev == "cuda":
             torch.cuda.empty_cache()
@@ -233,22 +272,42 @@ def main():
     print(f"\n  ★paired 대상 공통 문항 {len(keep)}개 "
           f"(전체 {len(items)} 중 {len(items) - len(keep)}개는 어느 모델이 건너뛰어 제외)")
 
-    banner("paired 비교 — 같은 문항 위에서 문항별 차")
+    banner("paired 비교 — 같은 문항 위에서 문항별 차 (95% CI · 필요 N 포함)")
     unit = "CE(nats)" if a.task == "korquad" else "정답률"
-    print(f"  {'A':<18}{'B':<18}{'Δ(A−B) ' + unit:>18}{'SE':>10}{'t':>8}{'A승률':>9}")
-    print("  " + "-" * 82)
+    print(f"  {'A':<16}{'B':<16}{'Δ(A−B) ' + unit:>16}{'SD':>9}{'SE':>9}"
+          f"{'95%CI±':>9}{'t':>7}{'A승률':>8}{'필요N':>8}")
+    print("  " + "-" * 98)
+    needs = []
     for i in range(len(tags)):
         for j in range(i + 1, len(tags)):
             A, B = tags[i], tags[j]
             va = [per_item[A][k] for k in keep]
             vb = [per_item[B][k] for k in keep]
-            m, se, t, win = paired_stats(va, vb)
-            print(f"  {A:<18}{B:<18}{m:>+18.4f}{se:>10.4f}{t:>8.2f}{win:>8.1f}%")
-    print("\n  ⚠️ |t| < 2 는 **구분 불가**다. 부호만 보고 서열을 매기지 않는다.")
+            m, sd, se, t, ci, win, need = paired_stats(va, vb)
+            needs.append(need)
+            print(f"  {A:<16}{B:<16}{m:>+16.4f}{sd:>9.4f}{se:>9.4f}"
+                  f"{ci:>9.4f}{t:>7.2f}{win:>7.1f}%{need:>8}")
+
+    # ★★검토문서 §7 반영 — **100 은 확정 표본이 아니라 pilot 이다**
+    if needs:
+        banner("표본 크기 판정 — 이 런이 스스로 답한다")
+        print(f"  관측 SD 로 계산한 **목표 SE 0.002 를 얻는 데 필요한 문항 수**: "
+              f"최대 {max(needs)}개 (현재 {len(keep)}개)")
+        if max(needs) > len(keep):
+            print(f"  🚫★**부족하다.** 이번 런은 **pilot** 이고, 본 측정은 --n {max(needs)} 이상으로 다시 돈다.")
+        else:
+            print("  ✅ 현재 표본으로 목표 SE 를 만족한다.")
+        print("  ⚠️ 1464 크롭 full-val 의 SE(0.0011~0.0014)를 이 표본에 옮겨 적지 않는다 —")
+        print("     **모집단이 다르다**(외부 검토문서 §7 이 옳게 지적한 지점).")
+
+    print("\n  ⚠️ |t| ^< 2 는 **구분 불가**다. 부호만 보고 서열을 매기지 않는다.")
     print("  ⚠️ 이것은 **체크포인트 간** 비교다. 아키텍처 우열은 여기서 나오지 않는다"
           "(paired_eval 과 같은 한계).")
+    print("  🚫★**공식 benchmark score 가 아니다**(§명명 규약). 문서에도 그 이름으로 적지 않는다.")
     if a.task == "korquad":
         print("  ★CE 는 **낮을수록 좋다** — Δ 가 음수면 A 가 낫다.")
+        print("  ★**문맥 이용도가 0 근처면** 이 지표는 QA 가 아니라 **어휘 사전지식**을 재고 있다"
+              "(검토문서 §5).")
     return 0
 
 
