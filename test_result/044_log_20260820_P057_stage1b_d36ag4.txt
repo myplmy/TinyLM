@@ -1,0 +1,487 @@
+=============================================================================
+P057 stage 1b   36 layers + attn_group 4   about 3.3 hours   -   tag mC_d36_ag4
+Adoption line fixed in advance: better than +0.041 versus mC_wsd.
+This would be 36 layers for LESS residency than the 20-layer baseline.
+References: mC_wsd 3.6984 / mC_d36 3.6734 / mC_d36_ag2 3.6847
+=============================================================================
+[P057 stage 1b] m100R1d with attn_group 4, gate_scale transplant, KD k4. 32 middle layers share 8 attentions.
+
+==============================================================================
+[runlog] 2026-08-20 18:31:03  name=P057_stage1b_d36ag4
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1d --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --init-from --kd --kd-every 4 --depth-init gate_scale --attn-group 4 --tag mC_d36_ag4
+==============================================================================
+[cmd] python run100m.py train --preset m100R1d --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --init-from --kd --kd-every 4 --depth-init gate_scale --attn-group 4 --tag mC_d36_ag4
+[ckpt] m100R1d 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[attn] ★어텐션 타잉 g=4 — 중간 32층이 어텐션 8개를 공유한다. ⚠️cla_group=2 과 겹치므로 대가 귀속에 cla1 대조가 필요하다(P057)
+[init] ★★경고: 구조 불일치 — 학생 층 36(prelude 2/mid 32/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+[init] ★**역할 구간별 비례 대응**으로 이식한다(P049 선결, 2026-08-14) — prelude↔prelude, middle↔middle, coda↔coda. 종전의 인덱스 zip 이 아니다.
+[init] ★대응표 student->teacher: [0, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 19]
+[init] ★★학생이 교사보다 깊다(36 ^> 20). 교사 층이 최대 **2회 복제**된다.
+[init] ⚠️ **잔차 기여가 그만큼 중복된다.** depth_init='gate_scale' — 'prop'=gate 그대로 / 'gate_scale'=gate 를 복제횟수로 나눈다. 어느 쪽이 맞는지는 추측하지 않는다. **단계0 게이트가 잰다.**
+[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+[init] ★P057 그룹평균 어텐션 이식: attn_group=4, 공유 어텐션 8개
+[init]   공유 어텐션 0: 교사 층 [2, 2, 3, 3] 평균
+[init]   공유 어텐션 1: 교사 층 [4, 4, 5, 5] 평균
+[init]   공유 어텐션 2: 교사 층 [6, 6, 7, 7] 평균
+[init]   공유 어텐션 3: 교사 층 [8, 8, 9, 9] 평균
+[init]   공유 어텐션 4: 교사 층 [10, 10, 11, 11] 평균
+[init]   공유 어텐션 5: 교사 층 [12, 12, 13, 13] 평균
+[init]   공유 어텐션 6: 교사 층 [14, 14, 15, 15] 평균
+[init]   공유 어텐션 7: 교사 층 [16, 16, 17, 17] 평균
+[init] ⚠️★어텐션 평균은 **MLP 평균과 같은 규약**이지만 **효과는 미검증**이다. P057 단계0 게이트가 step0 CE 로 잰다(통과 대역 5.0~9.40, 함정 34)
+[init] dense 부모초기화 완료 (중간 MLP는 16층 평균, 깊이 확장 20->36 층 depth_init=gate_scale)  <- m100_ko-en_300M_dense.pt
+[kd] 교사 로드 완료 (alpha=0.5, T=2.0)
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+32+2  MLP g=16  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       45.4M       9.3 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.2 MB
+  ----------------------------------------------------
+  합계                           54.1M      11.2 MB
+
+
+  저장(packed, 안 B)                         11.2 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        13.0 MB
+  ★상주(runtime, 현 구현)                     379.7 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 11.2MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (16회 연속 재사용)
+  토큰당 FLOPs          : 0.446 GFLOP
+  KV 캐시               : 13.5 KB/token  (18/36 층만 소유)
+    1024 ctx 13.5 MB   2048 ctx 27.0 MB
+========================================================================
+[mC_d36_ag4] device=cuda  2289step x 131K tok = 300M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.09(step~214)  anneal_end=0.80(step~1831)  완전삼진=0.80(step~1831)  decay_frac=0.20  LR감쇠시작=0.80(step~1831)  정렬됨
+W0820 18:31:31.597000 33404 site-packages\torch\_inductor\utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+  step     0/2289  ce 7.0637  loss 5.7065[KD혼합]  |g| 18.27  anneal 0.00  lr 1.00e-05  81884 ms/step
+  step    10/2289  ce 5.6643  |g| 4.46  anneal 0.00  lr 1.10e-04  12045 ms/step
+  step    20/2289  ce 5.0180  loss 3.3580[KD혼합]  |g| 1.31  anneal 0.00  lr 2.10e-04  8786 ms/step
+  step    30/2289  ce 4.7568  |g| 0.98  anneal 0.00  lr 3.10e-04  7594 ms/step
+  step    40/2289  ce 4.5833  loss 2.8663[KD혼합]  |g| 0.74  anneal 0.00  lr 4.10e-04  7007 ms/step
+  step    50/2289  ce 4.4111  |g| 0.50  anneal 0.00  lr 5.10e-04  6621 ms/step
+  step    60/2289  ce 4.4330  loss 2.6885[KD혼합]  |g| 0.50  anneal 0.00  lr 6.10e-04  6384 ms/step
+  step    70/2289  ce 4.3985  |g| 0.57  anneal 0.00  lr 7.10e-04  6198 ms/step
+  step    80/2289  ce 4.2864  loss 2.5815[KD혼합]  |g| 0.43  anneal 0.00  lr 8.10e-04  6075 ms/step
+  step    90/2289  ce 4.2389  |g| 0.44  anneal 0.00  lr 9.10e-04  5958 ms/step
+    >> val_loss 4.8519  ppl 127.98  (train_ce 4.254, val-CE +0.598)  bpb 1.600
+       best 갱신 4.8519 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step   100/2289  ce 4.2592  loss 2.5488[KD혼합]  |g| 0.41  anneal 0.00  lr 1.00e-03  6119 ms/step
+  step   110/2289  ce 4.2261  |g| 0.45  anneal 0.00  lr 1.00e-03  6019 ms/step
+  step   120/2289  ce 4.1968  loss 2.5011[KD혼합]  |g| 0.34  anneal 0.00  lr 1.00e-03  5949 ms/step
+  step   130/2289  ce 4.2420  |g| 0.42  anneal 0.00  lr 1.00e-03  5879 ms/step
+  step   140/2289  ce 4.2061  loss 2.4934[KD혼합]  |g| 0.33  anneal 0.00  lr 1.00e-03  5829 ms/step
+  step   150/2289  ce 4.2079  |g| 0.54  anneal 0.00  lr 1.00e-03  5775 ms/step
+  step   160/2289  ce 4.1869  loss 2.4700[KD혼합]  |g| 0.35  anneal 0.00  lr 1.00e-03  5738 ms/step
+  step   170/2289  ce 4.1447  |g| 0.63  anneal 0.00  lr 1.00e-03  5696 ms/step
+  step   180/2289  ce 4.1670  loss 2.4495[KD혼합]  |g| 0.33  anneal 0.00  lr 1.00e-03  5667 ms/step
+  step   190/2289  ce 4.1121  |g| 0.38  anneal 0.00  lr 1.00e-03  5633 ms/step
+    >> val_loss 4.6250  ppl 102.00  (train_ce 4.166, val-CE +0.459)  bpb 1.525
+       best 갱신 4.6250 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step   200/2289  ce 4.1223  loss 2.4205[KD혼합]  |g| 0.32  anneal 0.00  lr 1.00e-03  5632 ms/step
+  step   210/2289  ce 4.0718  |g| 0.56  anneal 0.00  lr 1.00e-03  5603 ms/step
+  step   220/2289  ce 4.0763  loss 2.3972[KD혼합]  |g| 0.30  anneal 0.00  lr 1.00e-03  5583 ms/step
+  step   230/2289  ce 4.1163  |g| 0.57  anneal 0.01  lr 1.00e-03  5559 ms/step
+  step   240/2289  ce 4.1240  loss 2.4147[KD혼합]  |g| 0.37  anneal 0.02  lr 1.00e-03  5543 ms/step
+  step   250/2289  ce 4.0353  |g| 0.41  anneal 0.02  lr 1.00e-03  5522 ms/step
+  step   260/2289  ce 4.0704  loss 2.3781[KD혼합]  |g| 0.29  anneal 0.03  lr 1.00e-03  5509 ms/step
+  step   270/2289  ce 4.0965  |g| 0.38  anneal 0.03  lr 1.00e-03  5491 ms/step
+  step   280/2289  ce 4.0561  loss 2.3689[KD혼합]  |g| 0.33  anneal 0.04  lr 1.00e-03  5480 ms/step
+  step   290/2289  ce 4.0913  |g| 0.47  anneal 0.05  lr 1.00e-03  5464 ms/step
+    >> val_loss 4.5331  ppl 93.05  (train_ce 3.942, val-CE +0.591)  bpb 1.495
+       best 갱신 4.5331 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step   300/2289  ce 3.9825  loss 2.3294[KD혼합]  |g| 0.29  anneal 0.05  lr 1.00e-03  5469 ms/step
+  step   310/2289  ce 4.0101  |g| 0.44  anneal 0.06  lr 1.00e-03  5455 ms/step
+  step   320/2289  ce 4.1029  loss 2.3826[KD혼합]  |g| 0.34  anneal 0.07  lr 1.00e-03  5446 ms/step
+  step   330/2289  ce 4.0292  |g| 0.41  anneal 0.07  lr 1.00e-03  5433 ms/step
+  step   340/2289  ce 4.0098  loss 2.3369[KD혼합]  |g| 0.38  anneal 0.08  lr 1.00e-03  5425 ms/step
+  step   350/2289  ce 3.9336  |g| 0.37  anneal 0.08  lr 1.00e-03  5414 ms/step
+  step   360/2289  ce 4.0130  loss 2.3330[KD혼합]  |g| 0.31  anneal 0.09  lr 1.00e-03  5408 ms/step
+  step   370/2289  ce 3.9908  |g| 0.44  anneal 0.10  lr 1.00e-03  5398 ms/step
+  step   380/2289  ce 4.0211  loss 2.3426[KD혼합]  |g| 0.30  anneal 0.10  lr 1.00e-03  5392 ms/step
+  step   390/2289  ce 3.9247  |g| 0.47  anneal 0.11  lr 1.00e-03  5383 ms/step
+    >> val_loss 4.4500  ppl 85.63  (train_ce 3.991, val-CE +0.459)  bpb 1.467
+       best 갱신 4.4500 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step   400/2289  ce 3.9957  loss 2.3238[KD혼합]  |g| 0.35  anneal 0.11  lr 1.00e-03  5395 ms/step
+  step   410/2289  ce 3.8584  |g| 0.34  anneal 0.12  lr 1.00e-03  5392 ms/step
+  step   420/2289  ce 3.9731  loss 2.3105[KD혼합]  |g| 0.26  anneal 0.13  lr 1.00e-03  5391 ms/step
+  step   430/2289  ce 3.9635  |g| 0.42  anneal 0.13  lr 1.00e-03  5388 ms/step
+  step   440/2289  ce 3.9377  loss 2.2953[KD혼합]  |g| 0.28  anneal 0.14  lr 1.00e-03  5389 ms/step
+  step   450/2289  ce 3.9888  |g| 0.44  anneal 0.15  lr 1.00e-03  5386 ms/step
+  step   460/2289  ce 3.9507  loss 2.2963[KD혼합]  |g| 0.30  anneal 0.15  lr 1.00e-03  5386 ms/step
+  step   470/2289  ce 3.8819  |g| 0.37  anneal 0.16  lr 1.00e-03  5383 ms/step
+  step   480/2289  ce 3.9737  loss 2.3045[KD혼합]  |g| 0.34  anneal 0.16  lr 1.00e-03  5383 ms/step
+  step   490/2289  ce 3.9804  |g| 0.38  anneal 0.17  lr 1.00e-03  5379 ms/step
+    >> val_loss 4.4097  ppl 82.24  (train_ce 3.975, val-CE +0.435)  bpb 1.454
+       best 갱신 4.4097 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step   500/2289  ce 3.9974  loss 2.3159[KD혼합]  |g| 0.31  anneal 0.18  lr 1.00e-03  5387 ms/step
+  step   510/2289  ce 3.8298  |g| 0.34  anneal 0.18  lr 1.00e-03  5384 ms/step
+  step   520/2289  ce 3.9005  loss 2.2654[KD혼합]  |g| 0.27  anneal 0.19  lr 1.00e-03  5384 ms/step
+  step   530/2289  ce 3.9287  |g| 0.35  anneal 0.20  lr 1.00e-03  5380 ms/step
+  step   540/2289  ce 3.9097  loss 2.2700[KD혼합]  |g| 0.37  anneal 0.20  lr 1.00e-03  5380 ms/step
+  step   550/2289  ce 3.9032  |g| 0.35  anneal 0.21  lr 1.00e-03  5378 ms/step
+  step   560/2289  ce 3.8817  loss 2.2610[KD혼합]  |g| 0.31  anneal 0.21  lr 1.00e-03  5378 ms/step
+  step   570/2289  ce 3.8790  |g| 0.33  anneal 0.22  lr 1.00e-03  5374 ms/step
+  step   580/2289  ce 3.8681  loss 2.2534[KD혼합]  |g| 0.34  anneal 0.23  lr 1.00e-03  5373 ms/step
+  step   590/2289  ce 3.9257  |g| 0.37  anneal 0.23  lr 1.00e-03  5371 ms/step
+    >> val_loss 4.3288  ppl 75.85  (train_ce 3.924, val-CE +0.404)  bpb 1.427
+       best 갱신 4.3288 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step   600/2289  ce 3.9398  loss 2.2788[KD혼합]  |g| 0.31  anneal 0.24  lr 1.00e-03  5378 ms/step
+  step   610/2289  ce 3.9469  |g| 0.44  anneal 0.24  lr 1.00e-03  5376 ms/step
+  step   620/2289  ce 3.8611  loss 2.2448[KD혼합]  |g| 0.32  anneal 0.25  lr 1.00e-03  5375 ms/step
+  step   630/2289  ce 3.8672  |g| 0.33  anneal 0.26  lr 1.00e-03  5373 ms/step
+  step   640/2289  ce 3.8552  loss 2.2431[KD혼합]  |g| 0.33  anneal 0.26  lr 1.00e-03  5373 ms/step
+  step   650/2289  ce 3.9111  |g| 0.42  anneal 0.27  lr 1.00e-03  5371 ms/step
+  step   660/2289  ce 3.9102  loss 2.2711[KD혼합]  |g| 0.30  anneal 0.28  lr 1.00e-03  5371 ms/step
+  step   670/2289  ce 3.9218  |g| 0.33  anneal 0.28  lr 1.00e-03  5369 ms/step
+  step   680/2289  ce 3.9891  loss 2.3090[KD혼합]  |g| 0.32  anneal 0.29  lr 1.00e-03  5369 ms/step
+  step   690/2289  ce 3.8644  |g| 0.46  anneal 0.29  lr 1.00e-03  5367 ms/step
+    >> val_loss 4.2519  ppl 70.24  (train_ce 3.941, val-CE +0.311)  bpb 1.402
+       best 갱신 4.2519 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step   700/2289  ce 3.8498  loss 2.2393[KD혼합]  |g| 0.26  anneal 0.30  lr 1.00e-03  5373 ms/step
+  step   710/2289  ce 3.8863  |g| 0.40  anneal 0.31  lr 1.00e-03  5371 ms/step
+  step   720/2289  ce 3.9040  loss 2.2618[KD혼합]  |g| 0.28  anneal 0.31  lr 1.00e-03  5371 ms/step
+  step   730/2289  ce 3.8930  |g| 0.37  anneal 0.32  lr 1.00e-03  5369 ms/step
+  step   740/2289  ce 3.9013  loss 2.2688[KD혼합]  |g| 0.37  anneal 0.33  lr 1.00e-03  5368 ms/step
+  step   750/2289  ce 3.8373  |g| 0.36  anneal 0.33  lr 1.00e-03  5366 ms/step
+  step   760/2289  ce 3.8476  loss 2.2375[KD혼합]  |g| 0.32  anneal 0.34  lr 1.00e-03  5366 ms/step
+  step   770/2289  ce 3.8631  |g| 0.39  anneal 0.34  lr 1.00e-03  5364 ms/step
+  step   780/2289  ce 3.8034  loss 2.2245[KD혼합]  |g| 0.31  anneal 0.35  lr 1.00e-03  5363 ms/step
+  step   790/2289  ce 3.8928  |g| 0.44  anneal 0.36  lr 1.00e-03  5362 ms/step
+    >> val_loss 4.2266  ppl 68.48  (train_ce 3.843, val-CE +0.384)  bpb 1.394
+       best 갱신 4.2266 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step   800/2289  ce 3.8493  loss 2.2455[KD혼합]  |g| 0.31  anneal 0.36  lr 1.00e-03  5367 ms/step
+  step   810/2289  ce 3.8820  |g| 0.39  anneal 0.37  lr 1.00e-03  5365 ms/step
+  step   820/2289  ce 3.9000  loss 2.2651[KD혼합]  |g| 0.28  anneal 0.37  lr 1.00e-03  5365 ms/step
+  step   830/2289  ce 3.8138  |g| 0.34  anneal 0.38  lr 1.00e-03  5363 ms/step
+  step   840/2289  ce 3.8532  loss 2.2398[KD혼합]  |g| 0.27  anneal 0.39  lr 1.00e-03  5364 ms/step
+  step   850/2289  ce 3.8015  |g| 0.36  anneal 0.39  lr 1.00e-03  5362 ms/step
+  step   860/2289  ce 3.8415  loss 2.2349[KD혼합]  |g| 0.31  anneal 0.40  lr 1.00e-03  5362 ms/step
+  step   870/2289  ce 3.8588  |g| 0.38  anneal 0.41  lr 1.00e-03  5360 ms/step
+  step   880/2289  ce 3.9467  loss 2.2859[KD혼합]  |g| 0.36  anneal 0.41  lr 1.00e-03  5360 ms/step
+  step   890/2289  ce 3.8871  |g| 0.46  anneal 0.42  lr 1.00e-03  5359 ms/step
+    >> val_loss 4.1559  ppl 63.81  (train_ce 3.878, val-CE +0.278)  bpb 1.370
+       best 갱신 4.1559 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step   900/2289  ce 3.8718  loss 2.2554[KD혼합]  |g| 0.31  anneal 0.42  lr 1.00e-03  5364 ms/step
+  step   910/2289  ce 3.7747  |g| 0.35  anneal 0.43  lr 1.00e-03  5362 ms/step
+  step   920/2289  ce 3.8670  loss 2.2559[KD혼합]  |g| 0.29  anneal 0.44  lr 1.00e-03  5362 ms/step
+  step   930/2289  ce 3.8097  |g| 0.36  anneal 0.44  lr 1.00e-03  5361 ms/step
+  step   940/2289  ce 3.8443  loss 2.2416[KD혼합]  |g| 0.28  anneal 0.45  lr 1.00e-03  5361 ms/step
+  step   950/2289  ce 3.8316  |g| 0.37  anneal 0.45  lr 1.00e-03  5360 ms/step
+  step   960/2289  ce 3.8040  loss 2.2250[KD혼합]  |g| 0.33  anneal 0.46  lr 1.00e-03  5360 ms/step
+  step   970/2289  ce 3.8700  |g| 0.47  anneal 0.47  lr 1.00e-03  5359 ms/step
+  step   980/2289  ce 3.8699  loss 2.2533[KD혼합]  |g| 0.36  anneal 0.47  lr 1.00e-03  5359 ms/step
+  step   990/2289  ce 3.8266  |g| 0.36  anneal 0.48  lr 1.00e-03  5358 ms/step
+    >> val_loss 4.0841  ppl 59.39  (train_ce 3.849, val-CE +0.235)  bpb 1.347
+       best 갱신 4.0841 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step  1000/2289  ce 3.8236  loss 2.2332[KD혼합]  |g| 0.31  anneal 0.49  lr 1.00e-03  5363 ms/step
+  step  1010/2289  ce 3.8212  |g| 0.34  anneal 0.49  lr 1.00e-03  5361 ms/step
+  step  1020/2289  ce 3.8123  loss 2.2276[KD혼합]  |g| 0.31  anneal 0.50  lr 1.00e-03  5361 ms/step
+  step  1030/2289  ce 3.8265  |g| 0.50  anneal 0.50  lr 1.00e-03  5360 ms/step
+  step  1040/2289  ce 3.8516  loss 2.2419[KD혼합]  |g| 0.29  anneal 0.51  lr 1.00e-03  5359 ms/step
+  step  1050/2289  ce 3.7776  |g| 0.36  anneal 0.52  lr 1.00e-03  5358 ms/step
+  step  1060/2289  ce 3.8529  loss 2.2462[KD혼합]  |g| 0.48  anneal 0.52  lr 1.00e-03  5358 ms/step
+  step  1070/2289  ce 3.8160  |g| 0.40  anneal 0.53  lr 1.00e-03  5357 ms/step
+  step  1080/2289  ce 3.8241  loss 2.2358[KD혼합]  |g| 0.29  anneal 0.54  lr 1.00e-03  5357 ms/step
+  step  1090/2289  ce 3.8684  |g| 0.44  anneal 0.54  lr 1.00e-03  5355 ms/step
+    >> val_loss 4.0116  ppl 55.23  (train_ce 3.886, val-CE +0.126)  bpb 1.323
+       best 갱신 4.0116 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step  1100/2289  ce 3.8223  loss 2.2374[KD혼합]  |g| 0.35  anneal 0.55  lr 1.00e-03  5360 ms/step
+  step  1110/2289  ce 3.8627  |g| 0.38  anneal 0.55  lr 1.00e-03  5358 ms/step
+  step  1120/2289  ce 3.7497  loss 2.2007[KD혼합]  |g| 0.43  anneal 0.56  lr 1.00e-03  5358 ms/step
+  step  1130/2289  ce 3.8909  |g| 0.36  anneal 0.57  lr 1.00e-03  5357 ms/step
+  step  1140/2289  ce 3.8369  loss 2.2377[KD혼합]  |g| 0.28  anneal 0.57  lr 1.00e-03  5357 ms/step
+  step  1150/2289  ce 3.9045  |g| 0.33  anneal 0.58  lr 1.00e-03  5356 ms/step
+  step  1160/2289  ce 3.8948  loss 2.2657[KD혼합]  |g| 0.33  anneal 0.58  lr 1.00e-03  5356 ms/step
+  step  1170/2289  ce 3.8412  |g| 0.32  anneal 0.59  lr 1.00e-03  5355 ms/step
+  step  1180/2289  ce 3.7990  loss 2.2318[KD혼합]  |g| 0.28  anneal 0.60  lr 1.00e-03  5355 ms/step
+  step  1190/2289  ce 3.8138  |g| 0.39  anneal 0.60  lr 1.00e-03  5354 ms/step
+    >> val_loss 4.0272  ppl 56.10  (train_ce 3.852, val-CE +0.175)  bpb 1.328
+  step  1200/2289  ce 3.8518  loss 2.2568[KD혼합]  |g| 0.31  anneal 0.61  lr 1.00e-03  5357 ms/step
+  step  1210/2289  ce 3.8128  |g| 0.40  anneal 0.62  lr 1.00e-03  5356 ms/step
+  step  1220/2289  ce 3.8266  loss 2.2474[KD혼합]  |g| 0.27  anneal 0.62  lr 1.00e-03  5356 ms/step
+  step  1230/2289  ce 3.7545  |g| 0.42  anneal 0.63  lr 1.00e-03  5355 ms/step
+  step  1240/2289  ce 3.7960  loss 2.2252[KD혼합]  |g| 0.33  anneal 0.63  lr 1.00e-03  5355 ms/step
+  step  1250/2289  ce 3.8628  |g| 0.45  anneal 0.64  lr 1.00e-03  5354 ms/step
+  step  1260/2289  ce 3.8248  loss 2.2401[KD혼합]  |g| 0.29  anneal 0.65  lr 1.00e-03  5355 ms/step
+  step  1270/2289  ce 3.8714  |g| 0.41  anneal 0.65  lr 1.00e-03  5354 ms/step
+  step  1280/2289  ce 3.8076  loss 2.2340[KD혼합]  |g| 0.62  anneal 0.66  lr 1.00e-03  5354 ms/step
+  step  1290/2289  ce 3.8433  |g| 0.41  anneal 0.67  lr 1.00e-03  5354 ms/step
+    >> val_loss 3.9547  ppl 52.18  (train_ce 3.817, val-CE +0.138)  bpb 1.304
+       best 갱신 3.9547 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step  1300/2289  ce 3.7901  loss 2.2260[KD혼합]  |g| 0.32  anneal 0.67  lr 1.00e-03  5358 ms/step
+  step  1310/2289  ce 3.7880  |g| 0.42  anneal 0.68  lr 1.00e-03  5357 ms/step
+  step  1320/2289  ce 3.8825  loss 2.2725[KD혼합]  |g| 0.31  anneal 0.68  lr 1.00e-03  5358 ms/step
+  step  1330/2289  ce 3.7988  |g| 0.36  anneal 0.69  lr 1.00e-03  5358 ms/step
+  step  1340/2289  ce 3.8419  loss 2.2481[KD혼합]  |g| 0.32  anneal 0.70  lr 1.00e-03  5359 ms/step
+  step  1350/2289  ce 3.8491  |g| 0.34  anneal 0.70  lr 1.00e-03  5358 ms/step
+  step  1360/2289  ce 3.8157  loss 2.2433[KD혼합]  |g| 0.27  anneal 0.71  lr 1.00e-03  5358 ms/step
+  step  1370/2289  ce 3.8176  |g| 0.34  anneal 0.71  lr 1.00e-03  5357 ms/step
+  step  1380/2289  ce 3.7700  loss 2.2182[KD혼합]  |g| 0.43  anneal 0.72  lr 1.00e-03  5357 ms/step
+  step  1390/2289  ce 3.8392  |g| 0.49  anneal 0.73  lr 1.00e-03  5356 ms/step
+    >> val_loss 3.9422  ppl 51.53  (train_ce 3.803, val-CE +0.140)  bpb 1.300
+       best 갱신 3.9422 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step  1400/2289  ce 3.7615  loss 2.2229[KD혼합]  |g| 0.32  anneal 0.73  lr 1.00e-03  5359 ms/step
+  step  1410/2289  ce 3.7407  |g| 0.48  anneal 0.74  lr 1.00e-03  5358 ms/step
+  step  1420/2289  ce 3.7772  loss 2.2280[KD혼합]  |g| 0.29  anneal 0.75  lr 1.00e-03  5358 ms/step
+  step  1430/2289  ce 3.7980  |g| 0.45  anneal 0.75  lr 1.00e-03  5357 ms/step
+  step  1440/2289  ce 3.8831  loss 2.2804[KD혼합]  |g| 0.31  anneal 0.76  lr 1.00e-03  5357 ms/step
+  step  1450/2289  ce 3.7701  |g| 0.35  anneal 0.76  lr 1.00e-03  5356 ms/step
+  step  1460/2289  ce 3.7711  loss 2.2262[KD혼합]  |g| 0.38  anneal 0.77  lr 1.00e-03  5356 ms/step
+  step  1470/2289  ce 3.8662  |g| 0.38  anneal 0.78  lr 1.00e-03  5355 ms/step
+  step  1480/2289  ce 3.7679  loss 2.2213[KD혼합]  |g| 0.52  anneal 0.78  lr 1.00e-03  5355 ms/step
+  step  1490/2289  ce 3.7962  |g| 0.55  anneal 0.79  lr 1.00e-03  5354 ms/step
+    >> val_loss 3.8984  ppl 49.33  (train_ce 3.854, val-CE +0.045)  bpb 1.286
+       best 갱신 3.8984 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step  1500/2289  ce 3.8068  loss 2.2464[KD혼합]  |g| 0.35  anneal 0.80  lr 1.00e-03  5358 ms/step
+  step  1510/2289  ce 3.8155  |g| 0.41  anneal 0.80  lr 1.00e-03  5357 ms/step
+  step  1520/2289  ce 3.7899  loss 2.2430[KD혼합]  |g| 0.31  anneal 0.81  lr 1.00e-03  5357 ms/step
+  step  1530/2289  ce 3.8119  |g| 0.37  anneal 0.81  lr 1.00e-03  5356 ms/step
+  step  1540/2289  ce 3.8890  loss 2.2890[KD혼합]  |g| 0.43  anneal 0.82  lr 1.00e-03  5356 ms/step
+  step  1550/2289  ce 3.6977  |g| 0.39  anneal 0.83  lr 1.00e-03  5355 ms/step
+  step  1560/2289  ce 3.7510  loss 2.2270[KD혼합]  |g| 0.30  anneal 0.83  lr 1.00e-03  5355 ms/step
+  step  1570/2289  ce 3.7589  |g| 0.42  anneal 0.84  lr 1.00e-03  5354 ms/step
+  step  1580/2289  ce 3.8552  loss 2.2676[KD혼합]  |g| 0.32  anneal 0.84  lr 1.00e-03  5354 ms/step
+  step  1590/2289  ce 3.7908  |g| 0.43  anneal 0.85  lr 1.00e-03  5353 ms/step
+    >> val_loss 3.8763  ppl 48.24  (train_ce 3.850, val-CE +0.026)  bpb 1.278
+       best 갱신 3.8763 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step  1600/2289  ce 3.8127  loss 2.2497[KD혼합]  |g| 0.26  anneal 0.86  lr 1.00e-03  5356 ms/step
+  step  1610/2289  ce 3.8501  |g| 0.62  anneal 0.86  lr 1.00e-03  5356 ms/step
+  step  1620/2289  ce 3.7787  loss 2.2453[KD혼합]  |g| 0.32  anneal 0.87  lr 1.00e-03  5356 ms/step
+  step  1630/2289  ce 3.7662  |g| 0.41  anneal 0.88  lr 1.00e-03  5355 ms/step
+  step  1640/2289  ce 3.8092  loss 2.2550[KD혼합]  |g| 0.42  anneal 0.88  lr 1.00e-03  5355 ms/step
+  step  1650/2289  ce 3.7858  |g| 0.38  anneal 0.89  lr 1.00e-03  5354 ms/step
+  step  1660/2289  ce 3.8610  loss 2.2815[KD혼합]  |g| 0.32  anneal 0.89  lr 1.00e-03  5354 ms/step
+  step  1670/2289  ce 3.8944  |g| 0.39  anneal 0.90  lr 1.00e-03  5353 ms/step
+  step  1680/2289  ce 3.8345  loss 2.2702[KD혼합]  |g| 0.48  anneal 0.91  lr 1.00e-03  5353 ms/step
+  step  1690/2289  ce 3.8023  |g| 0.39  anneal 0.91  lr 1.00e-03  5353 ms/step
+    >> val_loss 3.8534  ppl 47.15  (train_ce 3.854, val-CE -0.000)  bpb 1.271
+       best 갱신 3.8534 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step  1700/2289  ce 3.9342  loss 2.3211[KD혼합]  |g| 0.28  anneal 0.92  lr 1.00e-03  5355 ms/step
+  step  1710/2289  ce 3.8571  |g| 0.40  anneal 0.93  lr 1.00e-03  5355 ms/step
+  step  1720/2289  ce 3.8505  loss 2.2786[KD혼합]  |g| 0.48  anneal 0.93  lr 1.00e-03  5355 ms/step
+  step  1730/2289  ce 3.9095  |g| 0.40  anneal 0.94  lr 1.00e-03  5354 ms/step
+  step  1740/2289  ce 3.7997  loss 2.2655[KD혼합]  |g| 0.33  anneal 0.94  lr 1.00e-03  5354 ms/step
+  step  1750/2289  ce 3.8655  |g| 0.53  anneal 0.95  lr 1.00e-03  5353 ms/step
+  step  1760/2289  ce 3.8734  loss 2.2968[KD혼합]  |g| 0.32  anneal 0.96  lr 1.00e-03  5354 ms/step
+  step  1770/2289  ce 3.9008  |g| 0.48  anneal 0.96  lr 1.00e-03  5353 ms/step
+  step  1780/2289  ce 3.8068  loss 2.2661[KD혼합]  |g| 0.40  anneal 0.97  lr 1.00e-03  5353 ms/step
+  step  1790/2289  ce 3.8578  |g| 0.48  anneal 0.97  lr 1.00e-03  5352 ms/step
+    >> val_loss 3.8709  ppl 47.99  (train_ce 3.897, val-CE -0.026)  bpb 1.276
+  step  1800/2289  ce 3.9509  loss 2.3353[KD혼합]  |g| 0.36  anneal 0.98  lr 1.00e-03  5354 ms/step
+  step  1810/2289  ce 3.8759  |g| 0.48  anneal 0.99  lr 1.00e-03  5353 ms/step
+  step  1820/2289  ce 3.8049  loss 2.2764[KD혼합]  |g| 0.32  anneal 0.99  lr 1.00e-03  5354 ms/step
+  step  1830/2289  ce 3.8840  |g| 0.43  anneal 1.00  lr 1.00e-03  5353 ms/step
+  step  1840/2289  ce 3.8674  loss 2.2944[KD혼합]  |g| 0.33  anneal 1.00  lr 1.00e-03  5353 ms/step
+  step  1850/2289  ce 3.8832  |g| 0.43  anneal 1.00  lr 1.00e-03  5352 ms/step
+  step  1860/2289  ce 3.8661  loss 2.2915[KD혼합]  |g| 0.34  anneal 1.00  lr 9.99e-04  5352 ms/step
+  step  1870/2289  ce 3.8985  |g| 0.52  anneal 1.00  lr 9.96e-04  5352 ms/step
+  step  1880/2289  ce 3.8481  loss 2.2853[KD혼합]  |g| 0.30  anneal 1.00  lr 9.90e-04  5352 ms/step
+  step  1890/2289  ce 3.7784  |g| 0.50  anneal 1.00  lr 9.83e-04  5351 ms/step
+    >> val_loss 3.8053  ppl 44.94  (train_ce 3.814, val-CE -0.009)  bpb 1.255
+       best 갱신 3.8053 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step  1900/2289  ce 3.8203  loss 2.2747[KD혼합]  |g| 0.33  anneal 1.00  lr 9.73e-04  5353 ms/step
+  step  1910/2289  ce 3.9222  |g| 0.42  anneal 1.00  lr 9.61e-04  5352 ms/step
+  step  1920/2289  ce 3.8107  loss 2.2660[KD혼합]  |g| 0.34  anneal 1.00  lr 9.46e-04  5352 ms/step
+  step  1930/2289  ce 3.8130  |g| 0.35  anneal 1.00  lr 9.30e-04  5352 ms/step
+  step  1940/2289  ce 3.8381  loss 2.2768[KD혼합]  |g| 0.56  anneal 1.00  lr 9.12e-04  5351 ms/step
+  step  1950/2289  ce 3.7793  |g| 0.45  anneal 1.00  lr 8.92e-04  5351 ms/step
+  step  1960/2289  ce 3.8398  loss 2.2797[KD혼합]  |g| 0.31  anneal 1.00  lr 8.70e-04  5351 ms/step
+  step  1970/2289  ce 3.8539  |g| 0.32  anneal 1.00  lr 8.46e-04  5350 ms/step
+  step  1980/2289  ce 3.8395  loss 2.2725[KD혼합]  |g| 0.54  anneal 1.00  lr 8.21e-04  5350 ms/step
+  step  1990/2289  ce 3.8330  |g| 0.42  anneal 1.00  lr 7.95e-04  5349 ms/step
+    >> val_loss 3.8247  ppl 45.82  (train_ce 3.833, val-CE -0.009)  bpb 1.261
+  step  2000/2289  ce 3.8307  loss 2.2592[KD혼합]  |g| 0.33  anneal 1.00  lr 7.67e-04  5351 ms/step
+  step  2010/2289  ce 3.8231  |g| 0.34  anneal 1.00  lr 7.38e-04  5351 ms/step
+  step  2020/2289  ce 3.7956  loss 2.2385[KD혼합]  |g| 0.30  anneal 1.00  lr 7.08e-04  5351 ms/step
+  step  2030/2289  ce 3.7452  |g| 0.64  anneal 1.00  lr 6.78e-04  5350 ms/step
+  step  2040/2289  ce 3.8219  loss 2.2539[KD혼합]  |g| 0.45  anneal 1.00  lr 6.46e-04  5350 ms/step
+  step  2050/2289  ce 3.7978  |g| 0.33  anneal 1.00  lr 6.15e-04  5349 ms/step
+  step  2060/2289  ce 3.6796  loss 2.1833[KD혼합]  |g| 0.35  anneal 1.00  lr 5.83e-04  5349 ms/step
+  step  2070/2289  ce 3.7813  |g| 0.39  anneal 1.00  lr 5.50e-04  5348 ms/step
+  step  2080/2289  ce 3.7600  loss 2.2132[KD혼합]  |g| 0.30  anneal 1.00  lr 5.18e-04  5348 ms/step
+  step  2090/2289  ce 3.7790  |g| 0.37  anneal 1.00  lr 4.86e-04  5348 ms/step
+    >> val_loss 3.7419  ppl 42.18  (train_ce 3.690, val-CE +0.052)  bpb 1.234
+       best 갱신 3.7419 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step  2100/2289  ce 3.7377  loss 2.1928[KD혼합]  |g| 0.31  anneal 1.00  lr 4.54e-04  5350 ms/step
+  step  2110/2289  ce 3.7335  |g| 0.31  anneal 1.00  lr 4.23e-04  5349 ms/step
+  step  2120/2289  ce 3.7753  loss 2.2048[KD혼합]  |g| 0.24  anneal 1.00  lr 3.92e-04  5349 ms/step
+  step  2130/2289  ce 3.7845  |g| 0.28  anneal 1.00  lr 3.62e-04  5348 ms/step
+  step  2140/2289  ce 3.7103  loss 2.1782[KD혼합]  |g| 0.36  anneal 1.00  lr 3.34e-04  5349 ms/step
+  step  2150/2289  ce 3.6983  |g| 0.33  anneal 1.00  lr 3.06e-04  5348 ms/step
+  step  2160/2289  ce 3.7124  loss 2.1696[KD혼합]  |g| 0.35  anneal 1.00  lr 2.79e-04  5348 ms/step
+  step  2170/2289  ce 3.6476  |g| 0.34  anneal 1.00  lr 2.54e-04  5347 ms/step
+  step  2180/2289  ce 3.7508  loss 2.1856[KD혼합]  |g| 0.44  anneal 1.00  lr 2.31e-04  5347 ms/step
+  step  2190/2289  ce 3.6843  |g| 0.33  anneal 1.00  lr 2.09e-04  5347 ms/step
+    >> val_loss 3.7269  ppl 41.55  (train_ce 3.635, val-CE +0.092)  bpb 1.229
+       best 갱신 3.7269 -> m100R1d_ko-en_300M_mC_d36_ag4_best.pt
+  step  2200/2289  ce 3.6681  loss 2.1401[KD혼합]  |g| 0.32  anneal 1.00  lr 1.89e-04  5349 ms/step
+  step  2210/2289  ce 3.7067  |g| 0.29  anneal 1.00  lr 1.70e-04  5348 ms/step
+  step  2220/2289  ce 3.6982  loss 2.1497[KD혼합]  |g| 0.44  anneal 1.00  lr 1.54e-04  5348 ms/step
+  step  2230/2289  ce 3.6855  |g| 0.28  anneal 1.00  lr 1.40e-04  5348 ms/step
+  step  2240/2289  ce 3.6723  loss 2.1335[KD혼합]  |g| 0.39  anneal 1.00  lr 1.28e-04  5348 ms/step
+  step  2250/2289  ce 3.7326  |g| 0.27  anneal 1.00  lr 1.18e-04  5347 ms/step
+  step  2260/2289  ce 3.6813  loss 2.1351[KD혼합]  |g| 0.41  anneal 1.00  lr 1.10e-04  5347 ms/step
+  step  2270/2289  ce 3.6859  |g| 0.30  anneal 1.00  lr 1.04e-04  5346 ms/step
+  step  2280/2289  ce 3.7085  loss 2.1487[KD혼합]  |g| 0.34  anneal 1.00  lr 1.01e-04  5346 ms/step
+  step  2288/2289  ce 3.6324  loss 2.1147[KD혼합]  |g| 0.35  anneal 1.00  lr 1.00e-04  5346 ms/step
+    >> val_loss 3.7278  ppl 41.59  (train_ce 3.632, val-CE +0.095, 혼합손실 2.115[KD스텝])  bpb 1.229
+
+[mC_d36_ag4] 최종 val_loss 3.6536  ppl 38.61  best 3.7269@2200  (54.1M, 204.1분, skip 0, KD forward 573/2289스텝(≈25%), VRAM 12.44GB(reserved)/10.12GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 12.44GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 204.3분  (2026-08-20 21:55:20)
+==============================================================================
+[queue] settling 15 s before the evaluation process starts
+
+==============================================================================
+[runlog] 2026-08-20 21:55:35  name=P057_stage1b_d36ag4
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_wsd mC_d36 mC_d36_ag2 mC_d36_ag4
+==============================================================================
+
+############################################################################################
+  P032 — 결정적 full-val + paired per-crop 비교 (학습 없음)
+############################################################################################
+  device=cuda  seq=1024  micro_bs=8  data=ko-en 300M
+  ★val 을 겹치지 않게 전부 순회한다 → eval 샘플링 노이즈 성분 = 0.
+  ★크롭별 손실을 저장해 두 모델을 **같은 크롭 위에서** 뺀다.
+  ⚠️ 이것은 **체크포인트 간** 비교다. 아키텍처 우열은 여기서 나오지 않는다.
+[data] 캐시 재사용: 300.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+
+  mC_wsd           full-val 3.6984   크롭 1464개 / 1,499,136 토큰
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100R1d_ko-en_300M_mC_d36.pt
+
+  mC_d36           full-val 3.6734   크롭 1464개 / 1,499,136 토큰
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100R1d_ko-en_300M_mC_d36_ag2.pt
+
+  mC_d36_ag2       full-val 3.6847   크롭 1464개 / 1,499,136 토큰
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100R1d_ko-en_300M_mC_d36_ag4.pt
+
+  mC_d36_ag4       full-val 3.7062   크롭 1464개 / 1,499,136 토큰
+
+============================================================================================
+  결정적 full-val (같은 체크포인트면 재실행해도 동일한 값)
+============================================================================================
+  모델                full-val       크롭 표준편차
+  --------------------------------------------
+  mC_d36              3.6734        0.4545
+  mC_d36_ag2          3.6847        0.4532
+  mC_wsd              3.6984        0.4536
+  mC_d36_ag4          3.7062        0.4545
+
+============================================================================================
+  ★paired per-crop 비교 — 이것이 판정의 근거다
+============================================================================================
+  A vs B                           mean(A-B)       SE       t     A 승률  판정
+  ----------------------------------------------------------------------------------------
+  mC_wsd vs mC_d36                   +0.0250   0.0005   46.58   10.2%  ★유의하고 분해능 초과
+  mC_wsd vs mC_d36_ag2               +0.0138   0.0005   26.63   24.3%  차이 유의하나 분해능(0.024) 미만 — 실무상 동급
+  mC_wsd vs mC_d36_ag4               -0.0078   0.0005  -14.72   65.8%  차이 유의하나 분해능(0.024) 미만 — 실무상 동급
+  mC_d36 vs mC_d36_ag2               -0.0113   0.0004  -28.22   77.6%  차이 유의하나 분해능(0.024) 미만 — 실무상 동급
+  mC_d36 vs mC_d36_ag4               -0.0328   0.0005  -63.61   95.4%  ★유의하고 분해능 초과
+  mC_d36_ag2 vs mC_d36_ag4           -0.0216   0.0005  -41.87   86.5%  차이 유의하나 분해능(0.024) 미만 — 실무상 동급
+
+  읽는 법
+    · SE 가 결과 012 의 σ=0.012 보다 **한 자릿수 작다**면 paired 설계가 의도대로 작동한 것이다.
+    · |t| ^> 2 는 "이 두 **체크포인트**가 다르다"만 말한다. 시드가 하나이므로
+      **아키텍처 우열의 근거가 아니다.** 그 주장에는 여러 시드가 필요하다(P032 §2.2).
+    · 'A 승률' 은 크롭 중 A 가 이긴 비율이다. 평균이 작아도 승률이 한쪽으로 크게 쏠리면
+      일관된 차이이고, 50% 근처면 큰 크롭 몇 개가 평균을 끌고 있는 것이다 — 둘은 다르다.
+
+  한계
+    · full-val 은 **결정적**이지만 **여전히 이 val 셋**이다. 데이터 문제(P037)는 그대로 남는다.
+    · 크롭 경계에서 컨텍스트가 끊긴다(긴 문서에 약간 불리). 두 모델에 공통이라 차이에서는 상쇄된다.
+    · bf16 autocast(cuda)면 크롭별 손실에 ULP 노이즈가 섞인다. 정밀 비교는 --device cpu 로
+      한 번 더 확인한다(느리지만 fp32).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.4분  (2026-08-20 21:57:01)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-20 21:57:01  name=P057_stage1b_d36ag4
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\diag_layer_gates.py --tag mC_d36_ag4 --preset m100R1d --teacher-preset m100
+==============================================================================
+
+==============================================================================
+  대상
+==============================================================================
+  학생 m100R1d_ko-en_300M_mC_d36_ag4.pt
+  구조 2+32+2 = 36층, g=16, step=2289
+  gate 를 읽은 층 36개
+  교사 m100_ko-en_300M_dense.pt  20층   depth_init=(미기록)
+
+==============================================================================
+  층별 gate  (gates[0]=어텐션 잔차, gates[1]=MLP 잔차)
+==============================================================================
+    층   복제    g_attn     g_mlp  init_attn  init_mlp  move_attn  move_mlp
+  ------------------------------------------------------------------------
+    0    1   0.19043   0.04435    0.18126   0.08104    0.05057  -0.45276
+    1    1   0.47579   0.07417    0.15964   0.08009    1.98044  -0.07394
+    2    2   0.05223  -0.12363    0.06536   0.08018   -0.20091   0.54182
+    3    2   0.06803   0.03689    0.06536   0.08018    0.04094  -0.53993
+    4    2   0.07933   0.06462    0.11678   0.08425   -0.32063  -0.23301
+    5    2   0.06698   0.14305    0.11678   0.08425   -0.42642   0.69790
+    6    2   0.04608   0.12014    0.06516   0.08800   -0.29290   0.36517
+    7    2   0.04063   0.12724    0.06516   0.08800   -0.37643   0.44583
+    8    2   0.04676   0.09896    0.08435   0.09153   -0.44571   0.08124
+    9    2   0.04810   0.10037    0.08435   0.09153   -0.42973   0.09656
+   10    2   0.08155   0.10904    0.14649   0.09988   -0.44329   0.09168
+   11    2   0.05923   0.15670    0.14649   0.09988   -0.59572   0.56891
+   12    2   0.08176   0.16332    0.11848   0.10374   -0.30994   0.57442
+   13    2   0.05678   0.19899    0.11848   0.10374   -0.52073   0.91823
+   14    2   0.10077   0.19756    0.16853   0.10947   -0.40204   0.80466
+   15    2   0.07043   0.24447    0.16853   0.10947   -0.58206   1.23314
+   16    2   0.09898   0.26209    0.20569   0.11739   -0.51879   1.23255
+   17    2   0.06482   0.30217    0.20569   0.11739   -0.68488   1.57397
+   18    2   0.08138  -0.19253    0.23218   0.13160   -0.64950   0.46305
+   19    2   0.09964   0.03376    0.23218   0.13160   -0.57083  -0.74349
+   20    2   0.12509  -0.02276    0.29435   0.14783   -0.57505  -0.84604
+   21    2   0.12702   0.16730    0.29435   0.14783   -0.56847   0.13169
+   22    2   0.11896   0.10257    0.23922   0.15890   -0.50274  -0.35451
+   23    2   0.09040   0.29290    0.23922   0.15890   -0.62210   0.84333
+   24    2   0.12647   0.12319    0.31619   0.17642   -0.60003  -0.30170
+   25    2   0.10086   0.26413    0.31619   0.17642   -0.68103   0.49716
+   26    2   0.19191   0.26823    0.39543   0.20820   -0.51469   0.28833
+   27    2   0.07403   0.53241    0.39543   0.20820   -0.81279   1.55720
+   28    2   0.20588   0.39729    0.42844   0.26007   -0.51947   0.52764
+   29    2   0.05328   0.53356    0.42844   0.26007   -0.87563   1.05159
+   30    2   0.15469   0.37791    0.35074   0.28564   -0.55896   0.32306
+   31    2   0.05975   0.56147    0.35074   0.28564   -0.82964   0.96568
+   32    2   0.15011   0.10550    0.52330   0.32332   -0.71315  -0.67368
+   33    2   0.14837   0.41685    0.52330   0.32332   -0.71647   0.28927
+   34    1   0.61096   0.23832    0.67945   0.36076   -0.10081  -0.33938
+   35    1   0.47782   0.24623    0.44832   0.35041    0.06580  -0.29731
+
+==============================================================================
+  판정 — 복제층이 깨어났는가
+==============================================================================
+
+  [어텐션]  |g| 평균   복제층 0.09282   비복제층 0.43875   비 0.212
+           move 평균  복제층 -0.5256   비복제층 +0.4990   비 -1.053
+           🚫 **안 깨어났다** — 복제층이 초기값 근처에 머물렀다
+
+  [MLP]  |g| 평균   복제층 0.21380   비복제층 0.15077   비 1.418
+           move 평균  복제층 +0.3897   비복제층 -0.2908   비 -1.340
+           🚫 **안 깨어났다** — 복제층이 초기값 근처에 머물렀다
+
+  ⚠️ **이 진단은 gate 크기만 본다.** gate 가 커도 그 층이 유용한 것을 계산한다는 증명은 아니다 — 그건 층 제거 ablation 이 답한다(더 비싸다).
+  ⚠️ 참고: 이식 직후 값은 `gate_scale` 이면 교사 gate ÷ 복제횟수, `prop` 이면 교사 gate 그대로, `identity` 면 복제층이 정확히 0 이다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-08-20 21:57:04)
+==============================================================================
+=============================================================================
+READ IN THIS ORDER
+1. report() ternary near 45.4M and residency near 379.8 MB.
+2. json attn_group = 4, n_layers = 36, grad_max under 10.
+3. paired versus mC_wsd against the fixed line of +0.041.
+4. paired versus mC_d36_ag2 - how much did halving the attention again cost?
+5. the gate probe. Attention switched itself off at g=1 and g=2. At g=4 there
+   are only 8 shared modules for 32 layers; if it STILL switches off, the
+   attention depth is doing nothing at all and that is its own finding.
+REMINDER: quote residency as fp32 or int8 explicitly (trap 24).
+=============================================================================
