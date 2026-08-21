@@ -34,6 +34,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections import Counter
 import math
 import random
 import statistics
@@ -77,8 +78,9 @@ def load_items(task, n, seed):
         out = []
         for r in d[:n]:
             p = f"다음 뉴스 제목의 분야는 무엇인가?\n제목: {r['title']}\n분야:"
+            # ★NC 프롬프트 — 제목을 뺀 것. PMI 정규화의 분모다(§NLI 사고, 결과 050 §4)
             out.append((p, [" " + x for x in YNAT_LABELS],
-                        YNAT_LABELS.index(r["label"]), r["guid"], None))
+                        YNAT_LABELS.index(r["label"]), r["guid"], "분야:"))
         return out
     if task == "nli":
         d = json.loads(NLI.read_text(encoding="utf-8"))
@@ -89,7 +91,7 @@ def load_items(task, n, seed):
             p = (f"전제: {r['premise']}\n가설: {r['hypothesis']}\n"
                  f"가설은 전제에 비추어 맞다/틀리다/알 수 없다 중 무엇인가?\n답:")
             out.append((p, [" " + NLI_LABELS[k] for k in keys],
-                        keys.index(r["gold_label"]), r["guid"], None))
+                        keys.index(r["gold_label"]), r["guid"], "답:"))
         return out
     if task == "korquad":
         d = json.loads(KORQUAD.read_text(encoding="utf-8"))
@@ -216,6 +218,7 @@ def main():
             continue
         model, cfg, _ = load_model(arch=_arch_of(tag), ckpt_path=str(ck), device=dev)
         vals, hit, nskip, lens, alens, nc = [], 0, 0, [], [], []
+        picks = Counter()                              # ★퇴화 감지(결과 050 §4.3)
         for prompt, conts, gold, _gid, p_noctx in items:
             r, tot = score_continuations(model, tok, dev, prompt, conts,
                                          a.seq_max, torch, F)
@@ -234,7 +237,18 @@ def main():
                                             a.seq_max, torch, F)
                 nc.append(float(r2[0][0]) if r2 else None)
             else:
-                pick = min(range(len(means)), key=lambda i: means[i])
+                # ★★PMI 정규화 (결과 050 §4.2) — 길이 정규화만 하면 **긴 라벨이 항상 이긴다**.
+                #   NLI 에서 여섯 모델이 전부 " 알 수 없다" 를 골라 정확도가 라벨 비율과
+                #   같아진 사고가 그것이다. 라벨 자체의 사전확률을 빼서 없앤다.
+                r2, _ = score_continuations(model, tok, dev, p_noctx, conts,
+                                            a.seq_max, torch, F)
+                if r2 is None:
+                    score = means                     # 무맥락이 길이 초과 — 종전 경로
+                else:
+                    base = [m for m, _s, _n in r2]
+                    score = [m - b for m, b in zip(means, base)]
+                pick = min(range(len(score)), key=lambda i: score[i])
+                picks[pick] += 1
                 hit += int(pick == gold)
                 vals.append(float(pick == gold))
                 nc.append(None)
@@ -251,6 +265,13 @@ def main():
         print(f"      전체 토큰길이 중앙값 {statistics.median(lens) if lens else 0:.0f}"
               f"  ·  정답 토큰길이 중앙값 {statistics.median(alens) if alens else 0:.0f}"
               f"  (최대 {max(alens) if alens else 0})")
+        if a.task != "korquad" and picks:
+            top, cnt = picks.most_common(1)[0]
+            frac = cnt / max(sum(picks.values()), 1)
+            print(f"      선택 분포 {dict(picks)}  (최빈 라벨 {frac * 100:.1f}%)")
+            if frac >= 0.90:
+                print(f"      🚫★**퇴화** — 한 라벨을 {frac * 100:.1f}% 골랐다. "
+                      f"**정확도를 읽지 말 것**(결과 050 §4). 라벨 사전확률이 문맥을 이겼다")
         if a.task == "korquad":
             pair = [(v, w) for v, w in zip(vals, nc) if v is not None and w is not None]
             if pair:

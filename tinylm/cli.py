@@ -119,6 +119,12 @@ def main():
                         "fp32=종전 torch fused AdamW(기본, 비트 동일) / "
                         "fp32c=우리 구현·fp32 상태(자기검증) / bf16=상태만 bf16(약 254MB 절감). "
                         "master weight·gradient·산술은 어느 모드에서도 fp32 다")
+    p.add_argument("--wq-dtype", choices=["fp32", "bf16"], default=None,
+                   help="(P068 A1) `_wq` 저장 dtype. 계산은 항상 fp32. "
+                        "기본 fp32=비트 동일. bf16 은 F.linear 진입 캐스팅을 없앤다")
+    p.add_argument("--emb-chunk", type=int, default=None,
+                   help="(P034 단계5) 출력 헤드를 어휘 축으로 자르는 크기. 0=끄기. "
+                        "양자화 임베딩에서만 의미가 있다(배포 전용)")
     p.add_argument("--micro-group", type=int, default=None,
                    help="(P051) 삼진 alpha 그룹 크기 오버라이드(프리셋 기본 128). 저장 bpw 의 "
                         "scale 항이 16/g 이므로 g 를 키우면 packed 가 준다. 미지정=프리셋값=비트동일")
@@ -238,6 +244,7 @@ def main():
               tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode, mlp_group=a.mlp_group,
               mlp_split=a.mlp_split,
               micro_group=a.micro_group, opt_dtype=a.opt_dtype,
+              wq_dtype=a.wq_dtype, emb_chunk=a.emb_chunk,
               ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from,
               snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None),
               use_ternary_kernel=a.ternary_kernel, ternary_kernel_triton=a.ternary_kernel_triton,

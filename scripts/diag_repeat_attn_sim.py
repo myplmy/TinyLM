@@ -191,7 +191,10 @@ def main():
             same_mod = attn_id[i] == attn_id[j]
             same_src = lmap[i] == lmap[j]
             c = cos(out_of[i], out_of[j])
-            if same_mod and same_src:
+            # ★★2026-08-21 수정 (결과 041 §17.5) — **"복제" 의 정의는 `same_src` 하나**다.
+            #   종전 `same_mod and same_src` 는 `attn_group=1` 모델에서 (a)를 통째로 비웠고,
+            #   배치가 설계한 비교("모듈 공유와 복제를 가른다")가 실행되지 않았다(함정 18).
+            if same_src:
                 grp["a_복제쌍"].append((i, j, c))
             elif same_mod:
                 grp["b_같은모듈_비복제"].append((i, j, c))

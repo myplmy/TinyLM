@@ -89,12 +89,25 @@ def banner(s, ch="="):
     print(ch * 92)
 
 
-def collect(tag=None):
-    """`runs/logs/*.json` 을 읽어 (이름, dict) 목록으로. **tiny_ 스모크는 제외**한다."""
-    out = []
+# ★올릴 자격 — 2026-08-22 사용자 보고 반영.
+#   `dense`·`tied`·`lrfind` 는 **preset 접두사가 없는 구 형식 파일**이라 필드가 거의 없고,
+#   업로드하면 **빈 런**이 생긴다(사용자가 wandb 에서 삭제했다).
+#   ★규칙: **`{preset}_{data}_{tokens}_{tag}` 형식만 올린다.**
+def _eligible(stem, d):
+    if stem.startswith(("tiny_", "lrfind_")):
+        return False, "스모크·lrfind"
+    if stem.count("_") < 3:
+        return False, "구 형식(preset 접두사 없음)"
+    for k in ("steps", "params", "tokens"):
+        if d.get(k) in (None, 0):
+            return False, f"필수 필드 없음({k})"
+    return True, ""
+
+
+def collect(tag=None, verbose=False):
+    """`runs/logs/*.json` 을 읽어 (이름, dict) 목록으로. **자격 없는 것은 제외**한다."""
+    out, skipped = [], []
     for p in sorted(LOGS.glob("*.json")):
-        if p.name.startswith(("tiny_", "lrfind_")):
-            continue
         if tag and tag not in p.stem:
             continue
         try:
@@ -102,9 +115,17 @@ def collect(tag=None):
         except Exception as e:                                  # noqa: BLE001
             print(f"  [건너뜀] {p.name}: 읽기 실패 ({type(e).__name__})")
             continue
-        if not isinstance(d, dict) or "steps" not in d:
+        if not isinstance(d, dict):
+            continue
+        ok, why = _eligible(p.stem, d)
+        if not ok:
+            skipped.append((p.stem, why))
             continue
         out.append((p.stem, d))
+    if verbose and skipped:
+        print(f"  [제외] {len(skipped)}건 — 빈 런이 생기지 않게 거른다:")
+        for n, why in skipped[:8]:
+            print(f"    {n}  ({why})")
     return out
 
 
@@ -148,7 +169,7 @@ def do_check():
         print(f"  wandb 패키지 : 설치됨 (v{wandb.__version__})")
     except ImportError:
         print("  wandb 패키지 : ★없다 → `pip install wandb`")
-    runs = collect()
+    runs = collect(verbose=True)
     print(f"  올릴 런 수   : {len(runs)}  (tiny_·lrfind_ 제외)")
     for f in ("experiments.tsv", "checkpoints.tsv"):
         print(f"  {f:<16}: {'있다' if (ROOT / f).exists() else '없다'}")
@@ -164,12 +185,15 @@ def main():
     ap.add_argument("--entity", default=None)
     ap.add_argument("--tag", default=None, help="런 이름 부분 일치 필터")
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--push-meta", action="store_true",
+                    help="experiments.tsv·checkpoints.tsv 를 아티팩트 런으로 올린다 "
+                         "(기본 off — 빈 런이 목록을 어지럽힌다)")
     a = ap.parse_args()
 
     if a.check:
         return do_check()
 
-    runs = collect(a.tag)
+    runs = collect(a.tag, verbose=True)
     if a.limit:
         runs = runs[:a.limit]
     banner(f"wandb 동기화 — {'PUSH' if a.push else 'DRY-RUN(네트워크 없음)'} · {len(runs)}런", "#")
@@ -204,7 +228,10 @@ def main():
             r.summary[k] = v
         r.finish()
 
-    if a.push:
+    # ★2026-08-22 — `meta_experiments`·`meta_checkpoints` 는 **기본 off** 다.
+    #   아티팩트만 담은 **빈 런**이 wandb 목록을 어지럽힌다(사용자가 삭제했다).
+    #   TSV 는 git 이 정본이므로 wandb 에 둘 이유가 약하다. 필요하면 `--push-meta`.
+    if a.push and a.push_meta:
         for f in ("experiments.tsv", "checkpoints.tsv"):
             p = ROOT / f
             if not p.exists():

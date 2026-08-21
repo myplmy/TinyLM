@@ -107,7 +107,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, micro_group=None,
           mlp_split=None,
-          opt_dtype="fp32", ema_start=0.0,
+          opt_dtype="fp32", ema_start=0.0, wq_dtype=None, emb_chunk=None,
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
@@ -157,6 +157,15 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
               f"유니크 MLP {len(sizes)}개")
         print(f"[P061] ⚠️유니크 개수가 기준선과 같아야 **메모리가 동일**하다 — "
               f"g{cfg.mlp_group} 균등은 {cfg.n_middle // cfg.mlp_group}개")
+    if wq_dtype:                                # ★P068 A1 — `_wq` 저장 dtype
+        cfg.wq_dtype = wq_dtype
+        if wq_dtype != "fp32":
+            print(f"[P068] ★`_wq` 저장 dtype = {wq_dtype} (계산은 fp32). "
+                  f"⚠️**비트 동일이 아니다** — F.linear 진입 캐스팅이 사라진다(결과 035 §13)")
+    if emb_chunk is not None:                   # ★P034 단계5 — 헤드 청크(배포 전용)
+        cfg.emb_chunk = int(emb_chunk)
+        print(f"[P034-5] 헤드 청크 = {cfg.emb_chunk} "
+              f"(0=끄기. 양자화 임베딩에서만 의미가 있다)")
     if micro_group is not None:                 # (P051) 삼진 alpha 그룹 크기 오버라이드
         # ★`__post_init__` 은 프리셋 값으로 이미 돌았으므로 **여기서 같은 불변식을 다시 검사**한다.
         #   빠뜨리면 TLinear 생성 시점의 assert 로 죽는데, 그때는 어느 층인지가 안 보인다.
@@ -617,6 +626,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            #   `check_spill.py` 와 **같은 지표**다(정상 6.5~15.4% vs 스필 48.5%).
            #   warmup 100스텝을 버린다 — compile 첫 스텝이 여기 섞이면 안 된다.
            **_step_stats(step_ms),
+           "wq_dtype": str(getattr(cfg, "wq_dtype", "fp32")),   # ★P068 A1
+           "emb_chunk": int(getattr(cfg, "emb_chunk", 0)),      # ★P034 단계5
            "opt_dtype": str(opt_dtype),                            # (P022B 단계2) 옵티마이저 상태 정밀도
            "opt_state_mb": (opt.state_bytes() / 1e6                # ★계산값이 아니라 실측(결과 026 교훈)
                             if hasattr(opt, "state_bytes") else None),

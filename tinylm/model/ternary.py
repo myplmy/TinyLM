@@ -251,6 +251,14 @@ class TLinear(nn.Module):
         w = self._w()
         wq = ternary(w, self.cfg)
         self._wq = wq + (1.0 - anneal) * (w - wq).detach()
+        # ★P068 A1(2026-08-22) — `_wq` **저장** dtype 만 내린다. 계산(`ternary`)은 fp32 다.
+        #   근거: 결과 035 §13 — `F.linear` 에 들어가는 가중치가 **100% fp32** 이고
+        #   autocast 가 **매 호출 캐스팅**한다(스텝당 15~27 GB). bf16 으로 저장하면 사라진다.
+        #   ⚠️ **비트 동일이 아니다.** 기본 fp32 이고 `--wq-dtype bf16` 로만 켠다.
+        _wd = getattr(self.cfg, "wq_dtype", "fp32")
+        if _wd != "fp32":
+            import torch as _t
+            self._wq = self._wq.to(_t.bfloat16 if _wd == "bf16" else _t.float16)
         # ★P036 Arenas — `Y = X·Tα + λ_t·X·W` (논문 식 7). **detach 하지 않는다**:
         #   존재 이유가 정확히 `∂L/∂X` 에 latent W 를 넣는 것이다(식 8). 위의 어닐 항은
         #   `.detach()` 라 그 경로가 없다 — 두 항은 **다른 일을 한다**(결과 016 §8.6).

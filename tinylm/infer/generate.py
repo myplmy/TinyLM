@@ -27,7 +27,7 @@ def _strip(sd):
 
 
 def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8_store=False,
-               unpack_cache=False):
+               unpack_cache=False, emb_quant=None, emb_chunk=0):
     """`drop_latent=True` 면 P034 단계2 — fp32 latent 를 해제해 **상주를 약 절반**으로 줄인다.
 
     되돌릴 수 없으므로 **추론 전용**이다. 학습·진단(gradient 필요)에서는 절대 켜지 않는다.
@@ -53,6 +53,10 @@ def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8
             raise ValueError("unpack_cache 는 int8_store 와 함께만 의미가 있다 "
                              "(fp32 경로에는 언팩이 없다).")
         model.enable_unpack_cache(True)         # ★P034 단계3C
+    if emb_quant:
+        # ★P034 단계5 — 임베딩 양자화(배포 전용, 되돌릴 수 없다)
+        cfg.emb_chunk = int(emb_chunk or 0)
+        model.quantize_embedding(emb_quant)
     return model, cfg, device
 
 

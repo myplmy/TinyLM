@@ -51,6 +51,13 @@ class TMTConfig:
     ste_clip: float = 2.5
     quant_anneal: float = 1.0
     quantize_embedding: bool = True
+    # ★P034 단계5(2026-08-22) — 임베딩 양자화. **배포 전용**이고 학습에는 영향이 없다.
+    #   `emb_chunk` 는 헤드 GEMM 을 어휘 축으로 자르는 크기(0 = 끄기).
+    #   4096 이면 동시 fp32 버퍼가 `4096 x E x 4B` = 4 MiB(E=256) 로 묶인다.
+    emb_chunk: int = 0
+    # ★P068 A1(2026-08-22) — `_wq` **저장** dtype. 계산은 fp32 로 하고 저장만 내린다.
+    #   기본 fp32 = 비트 동일. bf16 이면 `F.linear` 진입 캐스팅이 사라진다(결과 035 §13).
+    wq_dtype: str = "fp32"
     sparse34: bool = False            # (P016) 3:4 희소 삼진(4개마다 |w|최소 1개 0강제) = 1.25bpw
 
     # --- relaxation: RRT식 층별 LoRA (공유 MLP 위, 배포 메모리 최소) ---

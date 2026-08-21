@@ -38,6 +38,7 @@ REQUIRED = ["seed", "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cach
             "depth_init", "n_layers",                  # P049
             "attn_group", "train_repeat", "mlp_split", "repeat_mode",  # P057 / P049B
             "kd_alpha", "kd_temp",                     # ★P055(2026-08-20) — 한 번도 안 실렸다
+            "wq_dtype", "emb_chunk",                   # ★P068 A1 / P034 단계5 (2026-08-22)
             "save_every"]                              # P058
 
 
@@ -45,7 +46,10 @@ def check(name, d, expect=None):
     errs, warns, oks = [], [], []
 
     # 1. 필드 존재 (None 허용 필드는 키 존재만 확인)
-    nullable = {"pool_tokens", "kd_teacher", "init_from_src"}
+    # ★2026-08-22 — `kd_alpha`·`kd_temp` 는 **무KD 런에서 정당하게 None** 이다.
+    #   지난 세션에 REQUIRED 에만 넣고 nullable 에 안 넣어서 **무KD 팔 7개가 전부 에러**였다.
+    #   ⚠️필드를 필수로 만들 때는 **"언제 None 이 정상인가" 를 같이 정한다**(함정 34 계열).
+    nullable = {"pool_tokens", "kd_teacher", "init_from_src", "kd_alpha", "kd_temp"}
     for k in REQUIRED:
         if k not in d:
             errs.append(f"필드 누락: {k}")
@@ -111,6 +115,8 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     #   이 두 줄은 "필드가 실렸는가" 뿐 아니라 **그 경로로 모델이 지어지는가**를 산다.
     "sm_ag":     {"attn_group": 2, "init_from": True},
     "sm_split":  {"mlp_split": [1], "init_from": True},
+    # ★2026-08-22 (함정 37) — `_wq` bf16 저장은 **새 코드 경로**다. 필드만 넣으면 안 돈다.
+    "sm_wqbf16": {"wq_dtype": "bf16", "init_from": True},
 }
 
 

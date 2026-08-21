@@ -121,6 +121,10 @@ def main():
                     help="(P062) middle 블록 통과 배수. 1.0=종전=비트 동일")
     ap.add_argument("--repeat-where", choices=["front", "back", "even"], default="front",
                     help="(P062) 분수/확장에서 어디를 더 돌지. 학습 uniform 과 같은 것은 front")
+    ap.add_argument("--emb-quant", choices=["bf16", "fp16", "int8", "int4", "ternary"],
+                    default=None, help="(P034 단계5) 임베딩 양자화 품질 대가 측정")
+    ap.add_argument("--emb-chunk", type=int, default=0,
+                    help="(P034 단계5) 헤드 청크 크기. 0=끄기")
     ap.add_argument("--repeat-kv-reuse", action="store_true",
                     help="(P062) 반복 통과에서 첫 통과 KV 재사용(대조 조건)")
     a = ap.parse_args()
@@ -147,7 +151,8 @@ def main():
         if not ck.exists():
             print(f"\n  [건너뜀] 체크포인트 없음: {ck.name}")
             continue
-        model, cfg, _ = load_model(arch=_arch_of(tag), ckpt_path=str(ck), device=dev)
+        model, cfg, _ = load_model(arch=_arch_of(tag), ckpt_path=str(ck), device=dev,
+                                   emb_quant=a.emb_quant, emb_chunk=a.emb_chunk)
         # ★P062 — 추론 전용 설정만 덮어쓴다(가중치 불변). `cli.py` L308~316 과 같은 규약.
         if a.infer_repeat != 1.0 or a.repeat_kv_reuse:
             cfg.infer_repeat = a.infer_repeat

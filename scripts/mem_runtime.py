@@ -95,6 +95,11 @@ def main():
                     help="P034 단계2 — freeze 후 fp32 latent 해제. 해제 전/후를 나란히 잰다")
     ap.add_argument("--int8-store", action="store_true",
                     help="P034 단계3 — 삼진 사본을 int8 코드+α 로. --drop-latent 와 함께 쓴다")
+    ap.add_argument("--emb-quant", choices=["bf16", "fp16", "int8", "int4", "ternary"],
+                    default=None,
+                    help="(P034 단계5) 임베딩 양자화. ★bf16 은 복원이 없다(계산이 이미 bf16)")
+    ap.add_argument("--emb-chunk", type=int, default=0,
+                    help="(P034 단계5) 헤드를 어휘 축으로 자르는 크기. 0=끄기. 4096 이면 버퍼 4MiB")
     ap.add_argument("--unpack-cache", action="store_true",
                     help="P034 단계3C — int8 언팩을 유니크 모듈당 1회로. **로짓 게이트가 이걸 검증한다** "
                          "(캐시는 직전 텐서를 그대로 재사용하므로 0.000e+00 이 나와야 한다)")
@@ -128,7 +133,8 @@ def main():
             torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats()
         r0 = rss_mb()                                   # (a) 로드 전
         try:
-            model, cfg, dev = load_model(arch=arch, ckpt_path=str(ck), device=a.device)
+            model, cfg, dev = load_model(arch=arch, ckpt_path=str(ck), device=a.device,
+                                         emb_quant=a.emb_quant, emb_chunk=a.emb_chunk)
         except Exception as e:
             print(f"\n  [실패] {tag}: {type(e).__name__}: {e}")
             continue

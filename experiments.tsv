@@ -32,6 +32,10 @@ prio	plan	batch	gpu	hours	alone	watch	note
 2	P065	run_P065_stage1_nokd_levers.bat	Y	4.4	Y	Y	★★무KD 미검증 레버 전수 — micro_group 256 / emb_rank 192 / --no-ckpt(250스텝 속도쌍). 레버표 전체가 KD 조건이었다
 3	P057	run_P057_stage2_d36ag4_nokd.bat	Y	2.8	N	Y	★★모델안 정본 무KD 재학습(mC_d36_ag4_nokd). 상주 379.7MB 가 폐기된 조건에서 학습돼 있었다
 4	P062	run_P062_stage1_nokd_repeat.bat	Y	2.7	N	Y	★★무KD+재귀(mC_r20_nokd). 메모리 0 증가로 ⚙−0.018 예상. ⚠️--infer-repeat 2.0 필수(함정 39)
+1	P034	run_P034_stage5_emb_quant.bat	N	0.4	N	Y	★★임베딩 양자화 5종(bf16/int8/int4/ternary). 결과 052: int8 상주의 47%가 임베딩. ★bf16 은 복원이 없다
+1	P064	run_P064_stage0b_kobench_pmi.bat	D	0.7	N	Y	★NLI 도구 결함 수정(PMI 정규화+퇴화 감지). 결과 050 §4: 여섯 모델이 전부 32.2%였다
+2	P049	run_P049_stage2b_attn_sim.bat	D	0.2	N	Y	★분류기 수정 재실행(복제=same_src 하나). 결과 041 §17.5: ag1 에서 (a)가 통째로 비었다 + nokd 본 추가
+3	P068	run_P068_stage1a_wq_bf16.bat	Y	1.5	N	Y	★_wq bf16 저장. 결과 035 §13: F.linear 진입 가중치가 100% fp32, 캐스팅 15~27 GB/스텝
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
 #   2026-08-14 삭제분: P049 단계1(041 §14.8) · P049B 단계1(043 §13.9) · F-1(046 §9)

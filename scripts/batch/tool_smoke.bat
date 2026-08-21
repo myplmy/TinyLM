@@ -145,6 +145,13 @@ echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_smoke.py
 if errorlevel 1 echo [WARN] contract check FAILED - read which field is missing
 
+
+echo.
+REM [9] P068 A1 - _wq bf16 storage. Trap 37: a field that is recorded is not
+REM     a path that runs. This arm actually turns the flag on.
+python run100m.py train --preset tiny --arch tied --data synthetic --tokens 2M --steps 30 --micro-bs 2 --seq 256 --accum 2 --lr 1e-3 --eval-every 30 --init-from --wq-dtype bf16 --tag sm_wqbf16
+if errorlevel 1 echo [WARN] sm_wqbf16 failed - continuing
+
 echo.
 echo =================================================================
 echo VERDICT - read the LAST line of the contract check, which reports the

@@ -207,6 +207,94 @@ class TiedMLPTransformer(nn.Module):
     #
     # → **(c) 가 가장 값싸고 위험이 낮다. P039 를 먼저 돌린다.**
 
+    # ---------- ★P034 단계5 : 임베딩 양자화 (2026-08-22 구현) ----------
+    #
+    # ★설계 근거 = 계획 P034 §11. 요점 셋:
+    #   ① 입력 조회는 행 몇 개만, **출력 헤드는 V행 전부**를 매 스텝 GEMM 에 넣는다.
+    #   ② 그래서 순진한 int8 은 상주를 **늘린다**(저장 8.32 + 복원 32.75 > 32.75).
+    #      -> **청크 복원**으로 동시 버퍼를 `C × E × 4B` 로 묶는다(P053 이 KD 손실에 쓴 수법).
+    #   ③ ★**BF16 은 복원이 아예 필요 없다** — forward 가 이미 autocast(bf16) 안이라
+    #      `F.linear` 가 어차피 bf16 으로 캐스팅한다. 저장을 bf16 으로 바꾸면 **캐스팅이 사라진다.**
+    #
+    # ⚠️ **배포(추론) 전용**이다. `to_int8()`·`drop_latent()` 와 같은 계열이고 되돌릴 수 없다.
+    #    학습 중 `emb` 는 fp32 master 로 남는다.
+
+    def quantize_embedding(self, fmt="bf16", group=64):
+        """`emb.weight` 를 `fmt` 로 바꾼다. `fmt in {bf16, fp16, int8, int4, ternary}`.
+
+        - **bf16/fp16**: 파라미터 dtype 만 바꾼다. **복원 없음.**
+        - **int8/int4/ternary**: 코드 + 스케일로 저장하고 **헤드에서 청크 복원**한다.
+          입력 조회(`self.emb(tokens)`)도 그 경로를 거친다(행 몇 개라 싸다).
+        """
+        import torch
+        if getattr(self, "_emb_fmt", None) is not None:
+            raise RuntimeError(f"이미 양자화됐다: {self._emb_fmt} (되돌릴 수 없다)")
+        w = self.emb.weight.detach()
+        V, E = w.shape
+        if fmt in ("bf16", "fp16"):
+            dt = torch.bfloat16 if fmt == "bf16" else torch.float16
+            self.emb.weight.data = w.to(dt)
+            self._emb_fmt = fmt
+            return
+        if fmt == "int8":
+            g = E                                   # per-row (행당 스케일 1개)
+        elif fmt == "int4":
+            g = group
+            if E % g:
+                raise ValueError(f"emb_rank {E} 가 group {g} 로 안 나눠진다")
+        elif fmt == "ternary":
+            g = E
+        else:
+            raise ValueError(f"모르는 fmt: {fmt!r}")
+        wg = w.reshape(V, E // g, g)
+        if fmt == "ternary":
+            # TWN 과 같은 규약: 문턱 이상만 살리고 α = 살아남은 |w| 의 평균
+            aw = wg.abs()
+            mask = (aw >= self.cfg.twn_thr_ratio * aw.mean(dim=2, keepdim=True)).to(w.dtype)
+            cnt = mask.sum(dim=2, keepdim=True).clamp_min(1.0)
+            scale = (aw * mask).sum(dim=2, keepdim=True) / cnt
+            code = (torch.sign(wg) * mask).to(torch.int8)
+        else:
+            qmax = 127.0 if fmt == "int8" else 7.0
+            scale = wg.abs().amax(dim=2, keepdim=True) / qmax
+            code = torch.round(wg / scale.clamp_min(1e-12)).clamp(-qmax, qmax).to(torch.int8)
+        self._emb_code = code.reshape(V, E).contiguous()
+        self._emb_scale = scale.squeeze(-1).contiguous().float()      # (V, E//g)
+        self._emb_g = g
+        self._emb_fmt = fmt
+        self.emb.weight.data = torch.empty(0, device=w.device, dtype=w.dtype)  # ★fp32 해제
+
+    def _emb_rows(self, idx=None):
+        """양자화된 임베딩을 fp32 로 되돌린다. `idx=None` 이면 전체, 아니면 그 행만."""
+        code = self._emb_code if idx is None else self._emb_code[idx]
+        sc = self._emb_scale if idx is None else self._emb_scale[idx]
+        n, E = code.shape
+        g = self._emb_g
+        return (code.reshape(n, E // g, g).to(sc.dtype)
+                * sc.unsqueeze(-1)).reshape(n, E)
+
+    def embedding_quantized(self):
+        return getattr(self, "_emb_fmt", None)
+
+    def _head_logits(self, x):
+        """출력 헤드. 양자화 시 **어휘를 청크로 잘라** 동시 fp32 버퍼를 묶는다.
+
+        ★청크 크기 `cfg.emb_chunk`(기본 0 = 끄기). 4096 이면 버퍼 `4096×E×4B` = 4 MiB(E=256).
+        """
+        if self.emb_up is not None:
+            x = F.linear(x, self.emb_up.weight.t())
+        fmt = getattr(self, "_emb_fmt", None)
+        if fmt is None or fmt in ("bf16", "fp16"):
+            return F.linear(x, self.emb.weight)
+        C = int(getattr(self.cfg, "emb_chunk", 0) or 0)
+        V = self._emb_code.shape[0]
+        if C <= 0 or C >= V:
+            return F.linear(x, self._emb_rows())
+        import torch
+        outs = [F.linear(x, self._emb_rows(slice(v0, min(v0 + C, V))))
+                for v0 in range(0, V, C)]
+        return torch.cat(outs, dim=-1)
+
     def enable_unpack_cache(self, on=True):
         """★P034 단계3C — int8 언팩 결과를 **유니크 모듈당 1회**로 줄인다(타잉 전용 이득).
 
@@ -402,7 +490,10 @@ class TiedMLPTransformer(nn.Module):
             past_len = next(iter(past_kv.values()))[0].shape[2]   # (B, n_kv_heads, T, head_dim)
         assert past_len + T <= cfg.max_seq_len, \
             f"past {past_len} + 입력 {T} > max_seq_len {cfg.max_seq_len}"
-        x = self.emb(tokens)
+        if getattr(self, "_emb_fmt", None) in (None, "bf16", "fp16"):
+            x = self.emb(tokens)
+        else:                                   # ★P034 단계5 — 코드+스케일에서 행만 되돌린다
+            x = self._emb_rows(tokens.reshape(-1)).reshape(*tokens.shape, -1)
         if self.emb_up is not None:
             x = self.emb_up(x)
         # ★RoPE 는 절대위치다. 캐시 사용 시 [:T] 가 아니라 [past_len : past_len+T] 를 써야 한다.
@@ -490,10 +581,7 @@ class TiedMLPTransformer(nn.Module):
                     self._clear_mlp_unpack(layer.mlp[0])
 
         x = self.norm_f(x) * self.norm_f_scale
-        if self.emb_up is not None:
-            logits = F.linear(F.linear(x, self.emb_up.weight.t()), self.emb.weight)
-        else:
-            logits = F.linear(x, self.emb.weight)
+        logits = self._head_logits(x)          # ★P034 단계5(청크 복원 포함)
 
         if use_cache:
             # kv_bank 는 owner 층만 키로 갖는다(§CLA 주의 참조) → 그대로 다음 스텝의 past 가 된다.
