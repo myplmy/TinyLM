@@ -22,12 +22,6 @@
 prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수 49GB→. ★판정 정본이 checkpoints.tsv 로 바뀌었다(TSV, keep/hold/delete). 삭제 후보 13.2GB/34개. YES 를 직접 입력해야 지운다
-1	P065	run_P065_stage0_std_controls.bat	Y	2.0	N	Y	★임시 표준안 B2 대조군(mC_std2b, opt-dtype bf16만). micro-group·mlp-group 은 축으로 남긴다(사용자 결정 2026-08-21) + micro_group 무학습 스크리닝
-2	P066	run_P066_stage0_residency.bat	N	0.1	N	Y	★상주 실측 4경로(fp32/drop-latent/int8/unpack-cache) × 4모델. REVIEW3(L2+L3) 착수 전 필수 — 함정 24로 순위가 뒤집힌다
-3	P062	run_P062_stage0c_r_curve.bat	D	0.4	N	Y	★R 곡선(1.0~2.0). 학습 rounding 설명이 추론에도 적용되는가. 평평하면 P031 분수 R 전체를 다시 읽는다
-4	P064	run_P064_stage0_korean_bench.bat	D	0.9	N	Y	★KLUE/KorQuAD 보조진단(공식 metric 아님). 4모델 + 시드쌍 2개로 **이 자의 σ 까지** 잰다
-5	P063	run_P063_stage1_regen_sigma.bat	Y	5.2	Y	Y	★P063+P054 통합 — 동일 명령 dense 재생성 3회. 시드가 아니라 비결정성이 얼마인가
-2	P065	run_P065_stage1_nokd_levers.bat	Y	4.4	Y	Y	★★무KD 미검증 레버 전수 — micro_group 256 / emb_rank 192 / --no-ckpt(250스텝 속도쌍). 레버표 전체가 KD 조건이었다
 1	P034	run_P034_stage5_emb_quant.bat	N	0.4	N	Y	★★임베딩 양자화 5종(bf16/int8/int4/ternary). 결과 052: int8 상주의 47%가 임베딩. ★bf16 은 복원이 없다
 1	P064	run_P064_stage0b_kobench_pmi.bat	D	0.7	N	Y	★NLI 도구 결함 수정(PMI 정규화+퇴화 감지). 결과 050 §4: 여섯 모델이 전부 32.2%였다
 3	P068	run_P068_stage1a_wq_bf16.bat	Y	1.5	N	Y	★_wq bf16 저장. 결과 035 §13: F.linear 진입 가중치가 100% fp32, 캐스팅 15~27 GB/스텝
@@ -62,6 +56,15 @@ prio	plan	batch	gpu	hours	alone	watch	note
 #
 # ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
 #   3	P049	run_P049_stage2_attn_sim.bat	D	0.2	N	Y	★복제층 어텐션 출력이 첫 통과와 같은가(①). 041 §15 는 ②(게이트)만 쟀다. 대조군 3무리
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P065	run_P065_stage0_std_controls.bat	Y	2.0	N	Y	★임시 표준안 B2 대조군(mC_std2b, opt-dtype bf16만). micro-group·mlp-group 은 축으로 남긴다(사용자 결정 2026-08-21) + micro_group 무학습 스크리닝
+#   2	P066	run_P066_stage0_residency.bat	N	0.1	N	Y	★상주 실측 4경로(fp32/drop-latent/int8/unpack-cache) × 4모델. REVIEW3(L2+L3) 착수 전 필수 — 함정 24로 순위가 뒤집힌다
+#   3	P062	run_P062_stage0c_r_curve.bat	D	0.4	N	Y	★R 곡선(1.0~2.0). 학습 rounding 설명이 추론에도 적용되는가. 평평하면 P031 분수 R 전체를 다시 읽는다
+#   4	P064	run_P064_stage0_korean_bench.bat	D	0.9	N	Y	★KLUE/KorQuAD 보조진단(공식 metric 아님). 4모델 + 시드쌍 2개로 **이 자의 σ 까지** 잰다
+#   5	P063	run_P063_stage1_regen_sigma.bat	Y	5.2	Y	Y	★P063+P054 통합 — 동일 명령 dense 재생성 3회. 시드가 아니라 비결정성이 얼마인가
+#   2	P065	run_P065_stage1_nokd_levers.bat	Y	4.4	Y	Y	★★무KD 미검증 레버 전수 — micro_group 256 / emb_rank 192 / --no-ckpt(250스텝 속도쌍). 레버표 전체가 KD 조건이었다
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
