@@ -138,6 +138,24 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch t
 if errorlevel 1 echo [WARN] sm_split failed - continuing
 
 echo.
+echo [9] P068 A1 _wq bf16 storage path - trap 37: a recorded field is not a run path
+python scripts\runlog.py --name !TL_LOGNAME! --note "[9] P068 A1 _wq bf16 storage path - trap 37"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --wq-dtype bf16 --init-from --tag sm_wqbf16
+if errorlevel 1 echo [WARN] sm_wqbf16 failed - continuing
+
+echo.
+echo [10] P049 17.3 reuse-attn-on-dup - trap 37: the arm must actually TURN THE AXIS ON
+python scripts\runlog.py --name !TL_LOGNAME! --note "[10] P049 17.3 reuse-attn on dup - train-repeat 2.0 plus reuse"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --train-repeat 2.0 --reuse-attn-on-dup --init-from --tag sm_reuseattn
+if errorlevel 1 echo [WARN] sm_reuseattn failed - continuing
+
+echo.
+echo [11] P062 stage2 inplace repeat mode - the training pair of inference where=even
+python scripts\runlog.py --name !TL_LOGNAME! --note "[11] P062 stage2 repeat-mode inplace"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --train-repeat 2.0 --repeat-mode inplace --init-from --tag sm_inplace
+if errorlevel 1 echo [WARN] sm_inplace failed - continuing
+
+echo.
 echo =============================================================
 echo [VERIFY] every instrumentation field was recorded
 python scripts\runlog.py --name !TL_LOGNAME! --note "[VERIFY] every instrumentation field was recorded"
@@ -145,12 +163,6 @@ echo =============================================================
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_smoke.py
 if errorlevel 1 echo [WARN] contract check FAILED - read which field is missing
 
-
-echo.
-REM [9] P068 A1 - _wq bf16 storage. Trap 37: a field that is recorded is not
-REM     a path that runs. This arm actually turns the flag on.
-python run100m.py train --preset tiny --arch tied --data synthetic --tokens 2M --steps 30 --micro-bs 2 --seq 256 --accum 2 --lr 1e-3 --eval-every 30 --init-from --wq-dtype bf16 --tag sm_wqbf16
-if errorlevel 1 echo [WARN] sm_wqbf16 failed - continuing
 
 echo.
 echo =================================================================

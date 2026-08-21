@@ -79,6 +79,9 @@ def main():
                    help="(P031) 분수 R 에서 어디를 더/덜 돌지. 결과가 이것에 의존한다")
     p.add_argument("--repeat-kv-reuse", action="store_true",
                    help="(P031) 반복 통과에서 KV 를 재계산하지 않고 첫 통과 것을 재사용(대조 조건)")
+    p.add_argument("--reuse-attn-on-dup", action="store_true",
+                   help="★P049 §17.3 — 재귀 **두 번째 이후 통과에서 어텐션 출력을 재사용**"
+                        "(041 §17 복제층 cos 0.9882). 학습·추론 **양쪽에 같은 값**을 준다(함정 39)")
     p.add_argument("--seed", type=int, default=1337,
                    help="시드(기본 1337=종전 동작). 가중치 초기화 + train 크롭 순서에 반영. "
                         "val 크롭은 항상 고정(99)이라 런 간 비교가 유지된다. 재현 노이즈 측정용")
@@ -134,7 +137,7 @@ def main():
     p.add_argument("--train-repeat", type=float, default=None,
                    help="(P049B) 학습 시 중간 블록 통과 배수(1.0=종전=비트동일). "
                         "--infer-repeat 와 동시 사용 금지")
-    p.add_argument("--repeat-mode", choices=["uniform", "block", "progressive"], default="uniform",
+    p.add_argument("--repeat-mode", choices=["uniform", "block", "progressive", "inplace"], default="uniform",
                    help="(P049B) uniform=중간 전체 / block=--repeat-block 그룹만 / progressive=깊을수록 증가")
     p.add_argument("--repeat-block", type=int, default=0, help="(P049B) block 모드의 MLP 그룹 인덱스")
     p.add_argument("--save-every", type=int, default=0,
@@ -260,6 +263,7 @@ def main():
               sdpa_gqa=a.sdpa_gqa, kd_chunk=a.kd_chunk, depth_init=a.depth_init,
               attn_group=a.attn_group, train_repeat=a.train_repeat,
               repeat_mode=a.repeat_mode, repeat_block=a.repeat_block,
+              reuse_attn_on_dup=a.reuse_attn_on_dup,
               save_every=a.save_every)
 
     elif a.cmd == "all":
@@ -312,13 +316,14 @@ def main():
                                                     a.tag if a.tag else a.arch))
         model, cfg, device = load_model(a.arch, ckp)
         # ★P031 — 체크포인트의 cfg 위에 **추론 전용** 설정만 덮어쓴다. 가중치는 그대로다.
-        if a.infer_repeat != 1.0 or a.repeat_kv_reuse:
+        if a.infer_repeat != 1.0 or a.repeat_kv_reuse or a.reuse_attn_on_dup:
             cfg.infer_repeat = a.infer_repeat
             cfg.repeat_where = a.repeat_where
             cfg.repeat_kv_reuse = a.repeat_kv_reuse
+            cfg.reuse_attn_on_dup = a.reuse_attn_on_dup
             sch = model.visit_schedule()
             print(f"[P031] infer_repeat={a.infer_repeat} where={a.repeat_where} "
-                  f"kv_reuse={a.repeat_kv_reuse} -> 층 통과 {len(sch)}회"
+                  f"kv_reuse={a.repeat_kv_reuse} reuse_attn={a.reuse_attn_on_dup} -> 층 통과 {len(sch)}회"
                   f"(기준 {cfg.n_layers}회), middle {len(sch) - cfg.n_prelude - cfg.n_coda}회")
             print("[P031] 메모리는 R 과 무관하게 동일하다 — 늘어나는 것은 연산과 지연뿐이다.")
         print(model.report())

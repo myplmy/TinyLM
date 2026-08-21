@@ -38,7 +38,9 @@ REQUIRED = ["seed", "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cach
             "depth_init", "n_layers",                  # P049
             "attn_group", "train_repeat", "mlp_split", "repeat_mode",  # P057 / P049B
             "kd_alpha", "kd_temp",                     # ★P055(2026-08-20) — 한 번도 안 실렸다
-            "wq_dtype", "emb_chunk",                   # ★P068 A1 / P034 단계5 (2026-08-22)
+            "wq_dtype", "emb_chunk",
+            "reuse_attn_on_dup",                       # ★P049 §17.3(2026-08-22)
+                             # ★P068 A1 / P034 단계5 (2026-08-22)
             "save_every"]                              # P058
 
 
@@ -117,6 +119,11 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     "sm_split":  {"mlp_split": [1], "init_from": True},
     # ★2026-08-22 (함정 37) — `_wq` bf16 저장은 **새 코드 경로**다. 필드만 넣으면 안 돈다.
     "sm_wqbf16": {"wq_dtype": "bf16", "init_from": True},
+    # ★★2026-08-22 (함정 37) — 아래 둘은 **학습 경로를 바꾸는 축**이다.
+    #   `reuse_attn_on_dup` 은 `train_repeat != 1.0` 일 때만 살아 있으므로 **둘을 함께 켠 팔**이어야
+    #   한다. 하나만 켜면 코드가 안 돌고 필드만 실린다 — 044 가 정확히 그 사고였다.
+    "sm_reuseattn": {"train_repeat": 2.0, "reuse_attn_on_dup": True, "init_from": True},
+    "sm_inplace":   {"train_repeat": 2.0, "repeat_mode": "inplace", "init_from": True},
 }
 
 

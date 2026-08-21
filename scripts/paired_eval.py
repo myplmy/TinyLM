@@ -115,8 +115,10 @@ def main():
     #   `visit_schedule()` 은 `self.training` 일 때만 `train_repeat` 을 보는데 이 도구는
     #   `model.eval()` 을 부른다 → **`--train-repeat` 로 학습한 체크포인트가 학습과 다른
     #   함수로 평가된다**(계측함정 39, 결과 043 §14 · 047).
-    #   `--models` 에 준 **모든 태그**에 같은 값이 걸린다 — 서로 다른 스케줄을 섞어 비교하는 것은
-    #   paired 설계의 전제를 깨므로 **일부러 태그별 지정을 안 만들었다.**
+    #   ⚠️★**2026-08-22 철회** — 종전 주석은 *"서로 다른 스케줄을 섞는 것은 paired 설계의
+    #   전제를 깨므로 일부러 태그별 지정을 안 만들었다"* 였다. **그 판단이 틀렸다.**
+    #   paired 는 **크롭 대응**만 요구하지 모델 함수가 같기를 요구하지 않는다. 아래
+    #   `--infer-repeat-per-tag`·`--match-train-repeat` 를 참조.
     ap.add_argument("--infer-repeat", type=float, default=1.0,
                     help="(P062) middle 블록 통과 배수. 1.0=종전=비트 동일")
     ap.add_argument("--repeat-where", choices=["front", "back", "even"], default="front",
@@ -127,7 +129,36 @@ def main():
                     help="(P034 단계5) 헤드 청크 크기. 0=끄기")
     ap.add_argument("--repeat-kv-reuse", action="store_true",
                     help="(P062) 반복 통과에서 첫 통과 KV 재사용(대조 조건)")
+    # ★★2026-08-22 사용자 허가 6.5-2 — **태그별 추론 스케줄.**
+    #   위 주석(§114~119)이 *"일부러 안 만들었다"* 라고 적어 뒀는데, 그 판단이 틀렸다:
+    #   재귀 모델(R=2 로 학습)과 비재귀 기준선(R=1 로 학습)을 **같은 R 로 평가하면
+    #   둘 중 하나는 반드시 학습과 다른 함수**로 평가된다 = 함정 39 를 피할 수 없다.
+    #   ★**올바른 비교는 "각자 자기가 학습된 함수에서" 다.** paired 설계는 크롭 대응만
+    #   요구하고 모델 함수가 같기를 요구하지 않는다.
+    ap.add_argument("--infer-repeat-per-tag", nargs="*", default=None, metavar="TAG=R[:WHERE]",
+                    help="★(6.5-2) 태그별 추론 배수. 예: mC_r20_nokd=2.0:front mC_initonly=1.0")
+    ap.add_argument("--match-train-repeat", action="store_true",
+                    help="★★(6.5-2) **각 체크포인트의 `train_repeat`·`repeat_mode` 를 읽어** "
+                         "추론 스케줄을 자동으로 맞춘다. 함정 39 를 구조적으로 닫는다")
+    ap.add_argument("--reuse-attn-on-dup", action="store_true",
+                    help="★(P049 §17.3) 재귀 통과에서 어텐션 출력 재사용. **학습과 같은 값**을 준다")
     a = ap.parse_args()
+
+    # ── 태그별 스케줄 파싱
+    per_tag = {}
+    for spec in (a.infer_repeat_per_tag or []):
+        assert "=" in spec, f"형식은 TAG=R[:WHERE] 다: {spec}"
+        t, v = spec.split("=", 1)
+        w = a.repeat_where
+        if ":" in v:
+            v, w = v.split(":", 1)
+        assert w in ("front", "back", "even"), f"where 는 front|back|even: {w}"
+        per_tag[t.strip()] = (float(v), w)
+    if per_tag and a.match_train_repeat:
+        print("  ⚠️ `--infer-repeat-per-tag` 가 `--match-train-repeat` 보다 우선한다(명시가 이긴다)")
+
+    # ★학습 mode -> 추론 where 대응표. **여기가 단일 소스**다(함정 18: 두 곳에서 정하지 않는다)
+    MODE2WHERE = {"uniform": "front", "inplace": "even"}
 
     import torch
     from tinylm import paths
@@ -154,18 +185,45 @@ def main():
         model, cfg, _ = load_model(arch=_arch_of(tag), ckpt_path=str(ck), device=dev,
                                    emb_quant=a.emb_quant, emb_chunk=a.emb_chunk)
         # ★P062 — 추론 전용 설정만 덮어쓴다(가중치 불변). `cli.py` L308~316 과 같은 규약.
-        if a.infer_repeat != 1.0 or a.repeat_kv_reuse:
-            cfg.infer_repeat = a.infer_repeat
-            cfg.repeat_where = a.repeat_where
-            cfg.repeat_kv_reuse = a.repeat_kv_reuse
-            _sch = model.visit_schedule()
-            print(f"\n  [P062] {tag}: infer_repeat={a.infer_repeat} where={a.repeat_where} "
-                  f"kv_reuse={a.repeat_kv_reuse} -^> 층 통과 {len(_sch)}회(기준 {cfg.n_layers}회)")
         _tr = float(getattr(cfg, "train_repeat", 1.0) or 1.0)
-        if _tr != 1.0 and a.infer_repeat == 1.0:
-            print(f"\n  🚫★{tag}: 이 체크포인트는 **train_repeat={_tr} 로 학습**됐는데 "
-                  f"`--infer-repeat` 이 1.0 이다 → **학습과 다른 함수로 평가된다**"
-                  f"(계측함정 39). `--infer-repeat {_tr} --repeat-where front` 를 줄 것.")
+        _tm = str(getattr(cfg, "repeat_mode", "uniform") or "uniform")
+        # ★(6.5-2) 이 태그에 걸 R·where 를 정한다 — 우선순위: per-tag > match-train > 전역
+        if tag in per_tag:
+            _R, _W, _src = per_tag[tag][0], per_tag[tag][1], "per-tag"
+        elif a.match_train_repeat:
+            if _tr != 1.0 and _tm not in MODE2WHERE:
+                print(f"\n  🚫★{tag}: repeat_mode={_tm} 는 **추론 짝이 없다**"
+                      f"(front/back/even 중 어느 것도 아니다). 이 태그는 건너뛴다.")
+                del model
+                continue
+            _R, _W, _src = _tr, MODE2WHERE.get(_tm, "front"), f"train({_tm})"
+        else:
+            _R, _W, _src = a.infer_repeat, a.repeat_where, "전역"
+
+        # ★★(6.5-1 + 6.5-2) `--match-train-repeat` 는 **`reuse_attn_on_dup` 도 체크포인트에서 읽는다.**
+        #   "각자 자기가 학습된 함수로" 를 재귀 배수에만 적용하고 어텐션 재사용에는 안 하면
+        #   **같은 함정 39 를 다른 축에서 다시 밟는다.**
+        _RA = bool(getattr(cfg, "reuse_attn_on_dup", False)) if a.match_train_repeat \
+            else a.reuse_attn_on_dup
+        if a.match_train_repeat and _RA != a.reuse_attn_on_dup:
+            print(f"  [reuse-attn] {tag}: 체크포인트가 학습된 값 {_RA} 를 쓴다"
+                  f"(명령줄 {a.reuse_attn_on_dup} 대신)")
+        if _R != 1.0 or a.repeat_kv_reuse or _RA:
+            cfg.infer_repeat = _R
+            cfg.repeat_where = _W
+            cfg.repeat_kv_reuse = a.repeat_kv_reuse
+            cfg.reuse_attn_on_dup = _RA
+            _sch = model.visit_schedule()
+            print(f"\n  [P062] {tag}: infer_repeat={_R} where={_W} [{_src}] "
+                  f"kv_reuse={a.repeat_kv_reuse} reuse_attn={_RA} "
+                  f"-^> 층 통과 {len(_sch)}회(기준 {cfg.n_layers}회)")
+        else:
+            cfg.infer_repeat, cfg.repeat_kv_reuse = 1.0, False
+            cfg.reuse_attn_on_dup = False
+        if abs(_R - _tr) > 1e-9:
+            print(f"\n  🚫★{tag}: 학습 train_repeat={_tr}({_tm}) 인데 **추론 R={_R}({_W})** 다 "
+                  f"→ **학습과 다른 함수로 평가된다**(계측함정 39). "
+                  f"의도한 대조가 아니면 `--match-train-repeat` 를 쓸 것.")
         losses, used = full_val_losses(model, cfg, meta["dir"], a.seq, a.micro_bs, dev)
         per[tag] = losses
         mean = sum(losses) / len(losses)

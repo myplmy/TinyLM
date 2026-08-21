@@ -117,6 +117,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None,
           kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
           attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
+          reuse_attn_on_dup=False,
           save_every=0):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
@@ -206,6 +207,11 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             print(f"[attn] ★어텐션 타잉 g={attn_group} — 중간 {cfg.n_middle}층이 "
                   f"어텐션 {cfg.n_middle // attn_group}개를 공유한다. "
                   f"⚠️cla_group={cfg.cla_group} 과 겹치므로 대가 귀속에 cla1 대조가 필요하다(P057)")
+    # ★★P049 §17.3 — 학습에서도 켠다. **추론과 짝을 맞추지 않으면 함정 39**다.
+    cfg.reuse_attn_on_dup = bool(reuse_attn_on_dup)
+    if cfg.reuse_attn_on_dup:
+        print("[reuse-attn] ★재귀 두 번째 이후 통과의 어텐션 출력을 **재사용**한다"
+              "(041 §17 cos 0.9882). ⚠️평가도 --reuse-attn-on-dup 을 줘야 같은 함수다")
     if train_repeat is not None:                       # (P049B) 학습 시 재귀
         cfg.train_repeat = float(train_repeat)
         cfg.repeat_mode, cfg.repeat_block = repeat_mode, int(repeat_block)
@@ -664,6 +670,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "attn_group": int(getattr(cfg, "attn_group", 1)),       # (P057) 어텐션 타잉 g
            "train_repeat": float(getattr(cfg, "train_repeat", 1.0)),   # (P049B) 학습 시 재귀 배수
            "repeat_mode": str(getattr(cfg, "repeat_mode", "uniform")),
+           "reuse_attn_on_dup": bool(getattr(cfg, "reuse_attn_on_dup", False)),
            "save_every": int(save_every or 0),                     # (P058)
            "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용
            "arenas": bool(arenas), "arena_lambda": arena_lambda,  # (P036) Arenas residual

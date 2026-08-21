@@ -96,6 +96,13 @@ class TMTConfig:
     infer_repeat: float = 1.0
     repeat_where: str = "front"       # front | back | even
     repeat_kv_reuse: bool = False
+    # ★★P049 §17.3 (2026-08-22 사용자 허가 6.5-1) — **재귀 통과에서 어텐션 출력을 재사용.**
+    #   결과 041 §17: 복제층 어텐션 출력 **cos 0.9882** = 두 번째 통과가 거의 같은 것을
+    #   다시 계산한다. 켜면 두 번째 이후 통과에서 **어텐션(그리고 소비자가 없으면 KV 계산까지)
+    #   을 건너뛰고 첫 통과 출력을 그대로 쓴다.** ★**우리 축 중 연산이 실제로 주는 첫 레버.**
+    #   ⚠️`infer_repeat`/`train_repeat` 이 1.0 이면 **죽은 코드 = 비트 동일**.
+    #   ⚠️학습·추론 **양쪽에서 같은 값**을 써야 한다(함정 39).
+    reuse_attn_on_dup: bool = False
 
     # ── P036 단계0 : Arenas (Annealing Residual Synapse), arXiv:2601.07892 §3.2 ──
     #   Y = X·Tα + λ_t·X·W          (논문 식 7)

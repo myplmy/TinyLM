@@ -311,6 +311,49 @@ def lint(path: Path):
     #   → 재실행본은 `stage0b` 처럼 **단계명에 b/c 를 붙인다**(ai_dev_tool/03 §7).
     #
     #   판정: 헤더에 RE-RUN 계열 단어가 있는데 `--name` 의 단계 토큰에 b/c 가 없으면 경고.
+    # ★★20. **`[VERIFY]`(계약 검사) 뒤에 학습 런이 오면 안 된다** (2026-08-22 실사고)
+    #   `tool_smoke.bat` 에 팔 [9](sm_wqbf16)를 추가하면서 **패턴으로 삽입**했더니
+    #   `rindex("if errorlevel 1 echo [WARN]")` 가 **VERIFY 블록 뒤를 잡았다.**
+    #   → 팔은 돌았는데 **`check_smoke.py` 가 그 전에 실행**돼 *"json 이 없다"* 로 FAIL.
+    #   ⚠️**조용한 실패가 아니라 시끄러운 오탐**이었지만, 반대로 **팔이 죽어도 못 알아본다.**
+    #   ★규칙: **계약 검사는 언제나 마지막 학습 런 뒤**에 온다.
+    _vi = txt.find("check_smoke.py")
+    if _vi >= 0:
+        _after = txt[_vi:]
+        if re.search(r"run100m\.py\s+train", _after):
+            err.append("★`check_smoke.py`(계약 검사) **뒤에 학습 런이 있다** — 그 팔의 json 은 "
+                       "검사 시점에 존재하지 않아 **FAIL 로 오탐**된다. 학습 런을 VERIFY **앞으로** 옮기세요")
+
+    # ── 규칙 21 (2026-08-22 사용자 지시) — ★**무KD 면 `--no-ckpt` 가 기본이다**
+    #   결과 051 §2.3: KD 를 빼면 reserved 12.47 -^> 10.31 GiB(여유 5.69)이고
+    #   `--no-ckpt` 로 **12.6 -^> 10.0분(-20.6%)**. **안 쓸 이유가 없다.**
+    #   🚫**코드 기본값은 바꾸지 않는다** — `grad_ckpt` 는 함정 2 의 비교조건이라
+    #   뒤집으면 **기존 런 전부와 비교가 끊긴다.** 그래서 **배치에서** 기본으로 쓴다.
+    #   ⚠️36층·재귀는 실측이 없다 -^> 그때는 이 안내를 무시하고 VRAM 확인 런을 먼저 돌린다.
+    for _m in re.finditer(r"^.*run100m\.py\s+train\b.*$", txt, re.M):
+        _ln = _m.group(0)
+        if "--tiny" in _ln or "synthetic" in _ln:
+            continue                                   # 스모크는 대상이 아니다
+        if "--kd" in _ln or "--no-ckpt" in _ln:
+            continue
+        _no = txt[:_m.start()].count("\n") + 1
+        info.append(f"L{_no} ★**무KD 학습인데 `--no-ckpt` 가 없다.** 결과 051: "
+                   f"reserved 여유 5.69 GiB / 벽시계 **-20.6%**. 2026-08-22 사용자 지시로 "
+                   f"**무KD 의 기본은 `--no-ckpt`** 다. ⚠️36층·재귀는 VRAM 실측이 없으니 "
+                   f"P065 단계2(250스텝 확인)를 먼저 돌리고 붙이세요")
+
+    # ── 규칙 22 (2026-08-22 사용자 지시 §14) — ★**학습 배치는 wandb 로 밀어야 한다**
+    #   🚫`trainer.py` 에 훅을 넣지 않는 이유는 `tool_wandb_push.bat` 헤더에 있다:
+    #     (1) 훅이 타이밍을 흔든다 — 우리는 0.003 차이로 판정한다
+    #     (2) 학습 루프 안의 네트워크 실패가 **몇 시간짜리 런을 죽인다**
+    #   → **학습이 끝난 뒤 배치가 부른다.** 그래서 **배치마다 잊을 수 있고**, 이 규칙이 그물이다.
+    if path.name.startswith("run_") and not path.name.endswith("-done.bat"):
+        if re.search(r"run100m\.py\s+train\b", txt) and "--tiny" not in txt \
+                and "tool_wandb_push" not in txt:
+            warn.append("★**학습 배치인데 `tool_wandb_push.bat` 호출이 없다** — 이 런의 로그는 "
+                        "W&B 에 안 올라간다(2026-08-22 사용자 지시). 학습 뒤에 "
+                        "`set TL_WB_TAG=<태그>` + `call scripts\\batch\\tool_wandb_push.bat` 를 넣으세요")
+
     if path.name.startswith("run_") and re.search(r"(?i)\bRE-?RUN\b|재실행", txt):
         names = re.findall(r"--name\s+(\S+)", txt)
         bad = [n for n in names

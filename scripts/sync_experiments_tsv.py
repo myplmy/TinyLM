@@ -55,10 +55,20 @@ def norm(s):
 
 
 def batch_commands(p):
-    """배치에서 **실제로 실행되는 명령**만 뽑는다(`--note` 줄은 제외)."""
+    """배치에서 **실제로 실행되는 명령**만 뽑는다(`--note` 줄은 제외).
+
+    ★2026-08-22 — **`call scripts\\batch\\*.bat` 도 명령이다.**
+      `run_P066_stage0_residency` 는 환경변수 + `call` 로만 돌아서 종전 파서가
+      *"실행 명령을 못 찾았다"* 를 냈다. **오류가 아니라 파서가 모르는 형태**였다.
+      ⚠️`call` 은 인자를 환경변수로 받으므로 **명령 문자열만으로는 조건을 못 잰다** —
+      그래서 `call` 이 결과문서에 있는지만 본다(약한 검사임을 인쇄한다).
+    """
     out = []
     for ln in p.read_text(encoding="utf-8", errors="replace").splitlines():
         t = ln.strip()
+        if t.lower().startswith("call ") and "scripts" in t.lower():
+            out.append(t)
+            continue
         if not t.lower().startswith("python "):
             continue
         if "--note" in t and " -- " not in t:
@@ -93,6 +103,9 @@ def report_done(corpus):
         if not cmds:
             print(f"\n  ⚠️ {p.name}\n      실행 명령을 못 찾았다 — **사람이 본다**")
             continue
+        if all(c.lower().startswith("call ") for c in cmds):
+            print(f"      ⚠️ 이 배치는 `call` 로만 돈다 — **인자가 환경변수**라 "
+                  f"문자열 대조는 **약한 검사**다(사람이 조건을 본다)")
         if miss:
             print(f"\n  🚫 {p.name}   [보류]")
             print(f"      명령 {len(cmds)}개 중 {len(miss)}개가 결과문서에 없다:")

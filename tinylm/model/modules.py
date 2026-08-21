@@ -186,14 +186,28 @@ class Layer(nn.Module):
         """
         return self._attn_ref[0] if self._shared_attn else self.attn
 
-    def forward(self, x, kv, cos, sin, mode_p):
+    def forward(self, x, kv, cos, sin, mode_p, attn_out=None, want_attn=False):
+        """★P049 §17.3(`--reuse-attn-on-dup`) — `attn_out`·`want_attn` 두 인자가 추가됐다.
+
+        ⚠️**기본값이면 종전과 비트 동일**이다(`attn_out=None`·`want_attn=False`).
+        `transformer.forward` 가 **재귀 통과에서만** 이 두 인자를 쓴다.
+
+        - `attn_out` 이 주어지면 **어텐션을 계산하지 않고 그 값을 쓴다**(재사용).
+          근거는 결과 041 §17: **복제층 어텐션 출력이 cos 0.9882** 였다.
+        - `want_attn` 이면 **이번에 계산한 어텐션 출력을 함께 돌려준다**(다음 통과가 쓸 것).
+
+        🚫★**돌려주는 것은 `attn_mod(...)` 의 출력**이지 `gates[0] *` 를 곱한 값이 아니다 —
+        게이트는 층 소유라 통과마다 같지만, **곱하기 전 값을 캐시해야 게이트 학습이 산다.**
+        """
         ms = None
         if self.use_mode_ln and mode_p is not None:
             ms = (mode_p @ self.mode_scale.flatten(1)).view(*mode_p.shape[:2], 2, -1)
         a = (1 + self.a_scale) if ms is None else (1 + self.a_scale + ms[..., 0, :])
         m = (1 + self.m_scale) if ms is None else (1 + self.m_scale + ms[..., 1, :])
-        x = x + self.gates[0] * self.attn_mod(self.ln1(x) * a + self.a_shift, kv, cos, sin, mode_p)
+        if attn_out is None:
+            attn_out = self.attn_mod(self.ln1(x) * a + self.a_shift, kv, cos, sin, mode_p)
+        x = x + self.gates[0] * attn_out
         lora = (self.lora_gate, self.lora_up, self.lora_down) if self.has_lora else None
         film = (self.film_scale, self.film_shift) if self.has_film else None
         x = x + self.gates[1] * self.mlp[0](self.ln2(x) * m + self.m_shift, mode_p, lora, film)
-        return x
+        return (x, attn_out) if want_attn else x

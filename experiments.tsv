@@ -31,6 +31,12 @@ prio	plan	batch	gpu	hours	alone	watch	note
 1	P034	run_P034_stage5_emb_quant.bat	N	0.4	N	Y	★★임베딩 양자화 5종(bf16/int8/int4/ternary). 결과 052: int8 상주의 47%가 임베딩. ★bf16 은 복원이 없다
 1	P064	run_P064_stage0b_kobench_pmi.bat	D	0.7	N	Y	★NLI 도구 결함 수정(PMI 정규화+퇴화 감지). 결과 050 §4: 여섯 모델이 전부 32.2%였다
 3	P068	run_P068_stage1a_wq_bf16.bat	Y	1.5	N	Y	★_wq bf16 저장. 결과 035 §13: F.linear 진입 가중치가 100% fp32, 캐스팅 15~27 GB/스텝
+1	P065	run_P065_stage2_nockpt_vram.bat	Y	0.5	Y	Y	★★선결 게이트 — 36층·재귀에서 --no-ckpt 가 16GB 에 들어가는가(250스텝). 실패하면 P062 단계2·3 이 ckpt 를 켠 채로 간다
+1	P062	run_P062_stage2_inplace.bat	Y	2.8	N	Y	★★repeat_where 는 학습 경로에 안 들어간다 — even 은 학습된 적이 없다. --repeat-mode inplace 가 그 짝. P070 착수 여부를 이것이 정한다
+2	P049	run_P049_stage3_reuse_attn.bat	Y	2.4	N	Y	★★6.5-1. 복제층 어텐션 cos 0.9882(041 §17) → 2회차 어텐션을 재사용. 우리 축 중 **연산이 실제로 주는 첫 레버**
+2	P069	run_P069_stage0b_bench_suite.bat	D	2.5	N	Y	★★벤치마크 13종 전수(사용자 지시 — 예상 결과 무관). 선결: fetch_bench_data.py --all(네트워크). 결과는 wandb 로도 간다
+3	P062	run_P062_stage3_depth_x_recursion.bat	Y	5.0	N	Y	★REVIEW2 §7. 36층+재귀 결합 — 메모리 무료 레버 둘이 더해지는가. 선결: P065 단계2 통과
+1	P014	run_P014_stage0_lut_ref.bat	N	0.1	N	Y	★★LUT 참조 구현 게이트(정확성·메모리, 속도는 P014B). 결과 052: int8 로는 40 MiB 불가. numpy 대조는 이미 통과(L1~L4)
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
 #   2026-08-14 삭제분: P049 단계1(041 §14.8) · P049B 단계1(043 §13.9) · F-1(046 §9)

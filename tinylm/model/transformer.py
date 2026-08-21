@@ -378,6 +378,10 @@ class TiedMLPTransformer(nn.Module):
         | `uniform` | 중간 16층 **전체**를 R 회 통과 (b) 전체 층 반복 |
         | `block` | `repeat_block` 이 가리키는 **MLP 그룹만** R 회 (a) 특정 층만 반복 |
         | `progressive` | 층이 깊을수록 반복 수가 **점진 증가** (c) 점진 조절 |
+        | ★**`inplace`** | **각 층을 제자리에서 R 회** — ★**추론 `--repeat-where even` 의 학습 짝** |
+
+        ★★**`uniform` ↔ 추론 `front`/`back`(extra == m 일 때)** 이 정확히 같은 스케줄이고,
+        ★★**`inplace` ↔ 추론 `even`** 이 짝이다. **짝을 안 맞추면 함정 39 다.**
 
         ⚠️ prelude·coda 는 **건드리지 않는다**(P031 과 같은 규약). 그쪽은 타잉 대상이 아니고
            역할이 다르다.
@@ -410,6 +414,16 @@ class TiedMLPTransformer(nn.Module):
             reps = int(round(R))
             for i in mid:
                 out += [i] * (reps if lo <= i < hi else 1)
+        elif mode == "inplace":
+            # ★★2026-08-22 신설 (사용자 지적) — **추론 `--repeat-where even` 의 학습 짝.**
+            #   종전에는 학습 모드가 `uniform`(블록 전체를 R 회) 하나뿐이라
+            #   추론에서 `even`(각 층을 제자리에서 R 회)을 주면 **학습과 다른 함수**였다.
+            #   결과 047 단계0 의 `even +0.0992` 는 *"even 이 나쁘다"* 가 아니라
+            #   ***"학습 안 한 스케줄이라 나쁘다"*** 로 읽어야 한다(함정 39 계열).
+            reps = int(round(R))
+            assert reps >= 1, "train_repeat 는 inplace 에서 1 이상 정수로 반올림돼야 한다"
+            for i in mid:
+                out += [i] * reps
         else:                                     # progressive
             # 깊이 비율 t∈[0,1) 에 대해 반복수를 1 → round(R) 로 선형 증가시킨다.
             top = int(round(R))
@@ -522,6 +536,18 @@ class TiedMLPTransformer(nn.Module):
                                "학습 시 반복은 --train-repeat 로(P049B).")
         seen = {}                                       # owner -> 그 owner 를 몇 번째 통과 중인가
 
+        # ★★P049 §17.3 — `--reuse-attn-on-dup`. **재귀 통과에서만** 켜진다.
+        #   결과 041 §17 이 **복제층 어텐션 출력 cos 0.9882** 를 쟀다 = 두 번째 통과가
+        #   거의 같은 것을 다시 계산한다. **연산이 실제로 주는 첫 레버**다.
+        #   ⚠️ `repeating` 이 아니면 이 블록 전체가 죽은 코드고 **비트 동일**이다.
+        _reuse_attn = bool(getattr(cfg, "reuse_attn_on_dup", False)) and repeating
+        if _reuse_attn:
+            from collections import Counter
+            _visit_total = Counter(schedule)            # 층 인덱스 -> 총 방문 횟수
+            _visit_no, _attn_cache = {}, {}
+            # ★CLA/어텐션 타잉이면 **남이 내 KV 를 쓴다** — 그런 owner 의 KV 는 못 건너뛴다
+            _shared_owner = {self.owner[j] for j in schedule if self.owner[j] != j}
+
         kv_bank, mode_hist = {}, []
         for step_idx, i in enumerate(schedule):
             layer = self.layers[i]
@@ -534,6 +560,17 @@ class TiedMLPTransformer(nn.Module):
                     mode_p = F.softmax(self.router(x) + self.router_bias[i], dim=-1)
                 mode_hist.append(mode_p)
 
+            # ★★P049 §17.3 — 이 층을 이미 지났으면 **어텐션을 다시 계산하지 않는다.**
+            #   ⚠️**KV 블록보다 먼저** 정해야 한다 — KV 계산을 건너뛸지가 여기에 달렸다.
+            _ao, _want = None, False
+            if _reuse_attn and _visit_total[i] > 1:
+                _vn = _visit_no.get(i, 0)
+                _visit_no[i] = _vn + 1
+                if _vn == 0:
+                    _want = True                        # 첫 통과 — 출력을 받아 둔다
+                else:
+                    _ao = _attn_cache.get(i)            # 두 번째 이후 — 재사용
+
             # ★캐시 키 — R=1.0 이면 종전처럼 **정수 owner 인덱스**다(비트 동일성 보존).
             #   반복 중이면 같은 owner 를 여러 번 지나므로 (owner, 통과번호) 로 분리한다.
             #   그렇게 안 하면 두 번째 통과가 첫 통과의 KV 를 덮어써서 캐시가 조용히 틀려진다.
@@ -545,7 +582,14 @@ class TiedMLPTransformer(nn.Module):
                 pas = seen.get(own, 1) - 1
             key = own if not repeating else (own, pas)
 
-            if i == own:
+            if i == own and _ao is not None and own not in _shared_owner \
+                    and not use_cache and not past_kv:
+                # ★★P049 §17.3 — 어텐션 **출력**을 재사용하는 통과에서 이 층이 그 KV 의
+                #   **유일한 소비자**면 **KV 계산도 건너뛴다.** 그래야 *"연산이 준다"* 가
+                #   실제로 성립한다(출력만 재사용하고 KV 는 계산하면 QKV 사영이 그대로 남는다).
+                #   ⚠️`use_cache`/`past_kv` 면 건너뛰지 않는다 — 캐시에 None 이 들어간다.
+                kv_bank[key] = None
+            elif i == own:
                 reuse = repeating and cfg.repeat_kv_reuse and pas > 0
                 if reuse:
                     kv_bank[key] = kv_bank[(own, 0)]     # 첫 통과 KV 재사용(대조 조건)
@@ -568,10 +612,17 @@ class TiedMLPTransformer(nn.Module):
             kv = kv_bank[key]
 
             if cfg.grad_checkpoint and self.training:
-                x = checkpoint(lambda inp, L=layer, k=kv, mp=mode_p:
-                               L(inp, k, cos, sin, mp), x, use_reentrant=False)
+                _out = checkpoint(lambda inp, L=layer, k=kv, mp=mode_p, ao=_ao, wa=_want:
+                                  L(inp, k, cos, sin, mp, ao, wa), x, use_reentrant=False)
             else:
-                x = layer(x, kv, cos, sin, mode_p)
+                _out = layer(x, kv, cos, sin, mode_p, _ao, _want)
+            if _want:
+                x, _attn_cache[i] = _out
+            else:
+                x = _out
+            # ★마지막 방문이면 캐시를 버린다 — 안 그러면 유니크 층 수만큼 (B,T,dim) 이 상주한다
+            if _reuse_attn and _visit_total[i] > 1 and _visit_no.get(i, 0) >= _visit_total[i]:
+                _attn_cache.pop(i, None)
 
             # ★P034 단계3C — 이 MLP 를 쓰는 연속 구간이 끝나면 **즉시 버퍼를 버린다.**
             #   1차 구현은 이걸 안 해서 dense 가 20층분 fp32 를 들고 40% 느려졌다(§13).
