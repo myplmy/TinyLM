@@ -1,0 +1,454 @@
+=============================================================================
+P067 stage 0b   external teacher gate + tokenisation + VRAM probe
+The real question: was KD useless, or was OUR DENSE TEACHER useless.
+==============================================================================
+[1/4] candidate survey - config.json only, no torch, no GPU
+
+==============================================================================
+[runlog] 2026-08-22 10:43:00  name=P067_stage0b_teacher_gate
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\diag_p067_teacher.py --spec-only
+==============================================================================
+
+################################################################################################
+  교사 후보 실사 — config.json 만 읽는다. torch 0 · GPU 0
+################################################################################################
+  폴더                                arch                            텍스트전용         L  hidden    vocab     dtype  tok.json
+----------------------------------------------------------------------------------------------------------------------
+  models--Qwen3-0.6B-Base           Qwen3ForCausalLM                YES          28    1024   151936  bfloat16  True
+  models--google--gemma-3-270m      Gemma3ForCausalLM               YES          18     640   262144  bfloat16  True
+  models--google--gemma-3-1b-pt     Gemma3ForCausalLM               YES          26    1152   262144  bfloat16  True
+  models--Qwen--Qwen3.5-0.8B-Base   Qwen3_5ForConditionalGeneration 🚫NO          24    1024   248320  bfloat16  True
+  models--google--gemma-4-E2B       Gemma4ForConditionalGeneration  🚫NO          35    1536   262144  bfloat16  True
+
+  ★**텍스트전용 NO 인 둘은 `*ForConditionalGeneration`** 이다 — 비전/오디오 탑이
+    붙어 있다. `AutoModelForCausalLM` 이 텍스트 탑만 실을 수 있는지가 T1 이다.
+  ★**우리 어휘 32,768 대비**: Qwen3 4.6배 · Gemma3 8.0배. 임베딩이 그만큼 커진다.
+
+  ⚠️ `--teacher <폴더>` 를 주면 T1~T6 을 실제로 돌린다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-08-22 10:43:00)
+==============================================================================
+[2/4] T1 to T6 on Qwen3-0.6B-Base - load, forward, logit dtype, tokenizer round trip
+
+==============================================================================
+[runlog] 2026-08-22 10:43:00  name=P067_stage0b_teacher_gate
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\diag_p067_teacher.py --teacher HF\models--Qwen3-0.6B-Base
+==============================================================================
+
+################################################################################################
+  교사 후보 실사 — config.json 만 읽는다. torch 0 · GPU 0
+################################################################################################
+  폴더                                arch                            텍스트전용         L  hidden    vocab     dtype  tok.json
+----------------------------------------------------------------------------------------------------------------------
+  models--Qwen3-0.6B-Base           Qwen3ForCausalLM                YES          28    1024   151936  bfloat16  True
+  models--google--gemma-3-270m      Gemma3ForCausalLM               YES          18     640   262144  bfloat16  True
+  models--google--gemma-3-1b-pt     Gemma3ForCausalLM               YES          26    1152   262144  bfloat16  True
+  models--Qwen--Qwen3.5-0.8B-Base   Qwen3_5ForConditionalGeneration 🚫NO          24    1024   248320  bfloat16  True
+  models--google--gemma-4-E2B       Gemma4ForConditionalGeneration  🚫NO          35    1536   262144  bfloat16  True
+
+  ★**텍스트전용 NO 인 둘은 `*ForConditionalGeneration`** 이다 — 비전/오디오 탑이
+    붙어 있다. `AutoModelForCausalLM` 이 텍스트 탑만 실을 수 있는지가 T1 이다.
+  ★**우리 어휘 32,768 대비**: Qwen3 4.6배 · Gemma3 8.0배. 임베딩이 그만큼 커진다.
+
+################################################################################################
+  성공 기준값 — **결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  T1 교사 로드            기준: **성공**
+  T2 어휘 초과 id         기준: **0개**
+  T3 로짓 shape           기준: **(B, T, vocab_size)**
+  T4 로짓 dtype           기준: ★**fp32** (bf16 log_softmax 는 꼬리를 뭉갠다)
+  T5 토크나이저 왕복       기준: **표본 3종 일치**
+  T6 최대 토큰 id         기준: **65,536 초과면 캐시 dtype 이 uint32**
+
+================================================================================================
+  T5 / T6 — 토크나이저
+================================================================================================
+  ✅  17토큰  한국어 문장을 토큰화하고 되돌린다.
+  ✅  10토큰  The quick brown fox jumps over the lazy dog.
+  ✅  30토큰  삼진 양자화(ternary quantization)는 가중치를 -1, 0, 1 
+
+  최대 토큰 id **137,471**  / 교사 config vocab_size **151,936**
+  T6 캐시 dtype 요구: **uint32**  ⚠️★uint16 으로 쓰면 id 가 조용히 wrap 된다
+  ✅ T2 초과 id 0개 (여유 14,464)
+
+================================================================================================
+  T1 / T3 / T4 — 교사 로드 + forward  (device=cuda, dtype=bf16)
+================================================================================================
+
+Loading weights:   0%|          | 0/310 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 310/310 [00:00<00:00, 12864.69it/s]
+[kd-hf] 교사 로드 models--Qwen3-0.6B-Base  파라미터 596.0M  dtype=bf16  vocab=151936
+[kd-hf] ⚠️★로짓은 **fp32 로 올려서** 돌려준다 — bf16 log_softmax 는 꼬리를 뭉갠다
+  ✅ T1 로드 성공
+  T3 로짓 shape (2, 64, 151936)  기대 (2, 64, 151936)  ✅
+  T4 로짓 dtype torch.float32  기대 torch.float32  ✅
+     로짓 범위 [-13.19, 20.00]  평균 1.6904
+     ⚠️★무작위 토큰을 넣었으므로 **로짓 값 자체는 의미 없다.** shape·dtype·NaN 만 본다.
+
+  교사 VRAM: alloc 1.19 GiB / reserved 1.36 GiB
+  ⚠️★**KD 학습에서는 여기에 학생 + 어휘 전체 위의 KL 이 더해진다** — 결과 038: 어휘 위 KD 손실이 +5.48 GiB 였다. **어휘가 8배면 그것도 커진다.**
+
+================================================================================================
+  판정
+================================================================================================
+  ✅ T1~T6 전 게이트 통과. **외부 교사 경로가 실제로 돈다.**
+  ★다음: `run_P067_stage1_ext_teacher.bat`
+================================================================================================
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-08-22 10:43:08)
+==============================================================================
+[3/4] tokenise the corpus with the teacher tokenizer - SEPARATE cache directory
+
+==============================================================================
+[runlog] 2026-08-22 10:43:09  name=P067_stage0b_teacher_gate
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py prepare --data ko-en --tokens 600M --exact-cache --tokenizer-hf HF\models--Qwen3-0.6B-Base
+==============================================================================
+[cmd] python run100m.py prepare --data ko-en --tokens 600M --exact-cache --tokenizer-hf HF\models--Qwen3-0.6B-Base
+[data] 정확 캐시(ko-en_600000000) 없음 → 정확히 그 크기로 신규 생성(상위호환 무시)
+[tok] ★외부 토크나이저 사용: HF\models--Qwen3-0.6B-Base  어휘 151,665  eos=151643
+[tok] ⚠️★이 캐시는 **기존 캐시와 직접 비교 불가**다 — 토큰 경계가 다르다(함정 2). 교차비교는 `scripts/common_bpb.py` 로만.
+[tok] ★어휘 151,665 > 65,536 → 토큰 저장 dtype 을 **uint32** 로 올린다(캐시가 2배가 된다). meta.json 의 'token_dtype' 이 정본이다.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+     0.0M / 600M  (0K tok/s)
+     5.0M / 600M  (157K tok/s)
+    20.0M / 600M  (415K tok/s)
+    20.0M / 600M  (415K tok/s)
+    20.0M / 600M  (415K tok/s)
+    35.0M / 600M  (536K tok/s)
+    35.0M / 600M  (536K tok/s)
+    45.0M / 600M  (592K tok/s)
+    50.0M / 600M  (612K tok/s)
+    50.0M / 600M  (612K tok/s)
+    55.0M / 600M  (630K tok/s)
+    55.0M / 600M  (630K tok/s)
+    60.0M / 600M  (642K tok/s)
+    60.0M / 600M  (642K tok/s)
+    70.0M / 600M  (668K tok/s)
+    70.0M / 600M  (668K tok/s)
+    70.0M / 600M  (668K tok/s)
+    75.0M / 600M  (672K tok/s)
+    80.0M / 600M  (678K tok/s)
+    80.0M / 600M  (678K tok/s)
+    95.0M / 600M  (701K tok/s)
+    95.0M / 600M  (701K tok/s)
+    95.0M / 600M  (701K tok/s)
+    95.0M / 600M  (701K tok/s)
+   110.0M / 600M  (720K tok/s)
+   115.0M / 600M  (726K tok/s)
+   115.0M / 600M  (726K tok/s)
+   120.0M / 600M  (731K tok/s)
+   120.0M / 600M  (731K tok/s)
+   120.0M / 600M  (730K tok/s)
+   125.0M / 600M  (735K tok/s)
+   125.0M / 600M  (735K tok/s)
+   125.0M / 600M  (735K tok/s)
+   125.0M / 600M  (735K tok/s)
+   125.0M / 600M  (735K tok/s)
+   125.0M / 600M  (735K tok/s)
+   135.0M / 600M  (745K tok/s)
+   135.0M / 600M  (745K tok/s)
+   135.0M / 600M  (745K tok/s)
+   135.0M / 600M  (745K tok/s)
+   140.0M / 600M  (749K tok/s)
+   145.0M / 600M  (753K tok/s)
+   145.0M / 600M  (753K tok/s)
+   150.0M / 600M  (757K tok/s)
+   150.0M / 600M  (757K tok/s)
+   155.0M / 600M  (761K tok/s)
+   155.0M / 600M  (761K tok/s)
+   160.0M / 600M  (764K tok/s)
+   160.0M / 600M  (764K tok/s)
+   160.0M / 600M  (764K tok/s)
+   170.0M / 600M  (771K tok/s)
+   175.0M / 600M  (774K tok/s)
+   180.0M / 600M  (777K tok/s)
+   185.0M / 600M  (780K tok/s)
+   185.0M / 600M  (780K tok/s)
+   185.0M / 600M  (780K tok/s)
+   185.0M / 600M  (780K tok/s)
+   185.0M / 600M  (780K tok/s)
+   190.0M / 600M  (783K tok/s)
+   190.0M / 600M  (783K tok/s)
+   190.0M / 600M  (783K tok/s)
+   195.0M / 600M  (786K tok/s)
+   195.0M / 600M  (786K tok/s)
+   195.0M / 600M  (786K tok/s)
+   195.0M / 600M  (786K tok/s)
+   200.0M / 600M  (789K tok/s)
+   205.0M / 600M  (791K tok/s)
+   205.0M / 600M  (791K tok/s)
+   205.0M / 600M  (791K tok/s)
+   210.0M / 600M  (794K tok/s)
+   210.0M / 600M  (794K tok/s)
+   210.0M / 600M  (794K tok/s)
+   210.0M / 600M  (794K tok/s)
+   215.0M / 600M  (796K tok/s)
+   215.0M / 600M  (796K tok/s)
+   215.0M / 600M  (796K tok/s)
+   215.0M / 600M  (796K tok/s)
+   220.0M / 600M  (798K tok/s)
+   220.0M / 600M  (798K tok/s)
+   225.0M / 600M  (799K tok/s)
+   225.0M / 600M  (799K tok/s)
+   230.0M / 600M  (801K tok/s)
+   235.0M / 600M  (802K tok/s)
+   235.0M / 600M  (802K tok/s)
+   235.0M / 600M  (802K tok/s)
+   240.0M / 600M  (804K tok/s)
+   240.0M / 600M  (804K tok/s)
+   240.0M / 600M  (804K tok/s)
+   240.0M / 600M  (804K tok/s)
+   240.0M / 600M  (804K tok/s)
+   240.0M / 600M  (804K tok/s)
+   245.0M / 600M  (805K tok/s)
+   245.0M / 600M  (805K tok/s)
+   245.0M / 600M  (805K tok/s)
+   245.0M / 600M  (805K tok/s)
+   250.0M / 600M  (807K tok/s)
+   250.0M / 600M  (807K tok/s)
+   250.0M / 600M  (807K tok/s)
+   250.0M / 600M  (807K tok/s)
+   250.0M / 600M  (807K tok/s)
+   255.0M / 600M  (807K tok/s)
+   255.0M / 600M  (807K tok/s)
+   265.0M / 600M  (810K tok/s)
+   270.0M / 600M  (811K tok/s)
+   270.0M / 600M  (811K tok/s)
+   270.0M / 600M  (811K tok/s)
+   275.0M / 600M  (812K tok/s)
+   275.0M / 600M  (812K tok/s)
+   275.0M / 600M  (812K tok/s)
+   280.0M / 600M  (814K tok/s)
+   280.0M / 600M  (814K tok/s)
+   285.0M / 600M  (815K tok/s)
+   285.0M / 600M  (815K tok/s)
+   295.0M / 600M  (817K tok/s)
+   295.0M / 600M  (817K tok/s)
+   300.0M / 600M  (818K tok/s)
+   305.0M / 600M  (819K tok/s)
+   305.0M / 600M  (819K tok/s)
+   305.0M / 600M  (819K tok/s)
+   310.0M / 600M  (820K tok/s)
+   310.0M / 600M  (820K tok/s)
+   315.0M / 600M  (821K tok/s)
+   320.0M / 600M  (822K tok/s)
+   325.0M / 600M  (823K tok/s)
+   325.0M / 600M  (823K tok/s)
+   325.0M / 600M  (823K tok/s)
+   330.0M / 600M  (823K tok/s)
+   330.0M / 600M  (823K tok/s)
+   330.0M / 600M  (823K tok/s)
+   340.0M / 600M  (825K tok/s)
+   340.0M / 600M  (825K tok/s)
+   345.0M / 600M  (825K tok/s)
+   345.0M / 600M  (825K tok/s)
+   345.0M / 600M  (825K tok/s)
+   355.0M / 600M  (827K tok/s)
+   355.0M / 600M  (827K tok/s)
+   360.0M / 600M  (827K tok/s)
+   360.0M / 600M  (827K tok/s)
+   360.0M / 600M  (827K tok/s)
+   365.0M / 600M  (828K tok/s)
+   365.0M / 600M  (828K tok/s)
+   365.0M / 600M  (828K tok/s)
+   370.0M / 600M  (828K tok/s)
+   370.0M / 600M  (828K tok/s)
+   370.0M / 600M  (828K tok/s)
+   385.0M / 600M  (830K tok/s)
+   385.0M / 600M  (830K tok/s)
+   385.0M / 600M  (830K tok/s)
+   385.0M / 600M  (830K tok/s)
+   385.0M / 600M  (830K tok/s)
+   390.0M / 600M  (830K tok/s)
+   390.0M / 600M  (830K tok/s)
+   390.0M / 600M  (830K tok/s)
+   395.0M / 600M  (831K tok/s)
+   400.0M / 600M  (831K tok/s)
+   400.0M / 600M  (831K tok/s)
+   400.0M / 600M  (831K tok/s)
+   405.0M / 600M  (832K tok/s)
+   405.0M / 600M  (832K tok/s)
+   405.0M / 600M  (832K tok/s)
+   405.0M / 600M  (832K tok/s)
+   410.0M / 600M  (832K tok/s)
+   415.0M / 600M  (832K tok/s)
+   415.0M / 600M  (832K tok/s)
+   415.0M / 600M  (832K tok/s)
+   420.0M / 600M  (833K tok/s)
+   420.0M / 600M  (833K tok/s)
+   420.0M / 600M  (833K tok/s)
+   420.0M / 600M  (833K tok/s)
+   430.0M / 600M  (833K tok/s)
+   430.0M / 600M  (833K tok/s)
+   435.0M / 600M  (832K tok/s)
+   435.0M / 600M  (832K tok/s)
+   435.0M / 600M  (832K tok/s)
+   440.0M / 600M  (832K tok/s)
+   440.0M / 600M  (832K tok/s)
+   440.0M / 600M  (832K tok/s)
+   440.0M / 600M  (832K tok/s)
+   440.0M / 600M  (832K tok/s)
+   445.0M / 600M  (832K tok/s)
+   450.0M / 600M  (819K tok/s)
+   450.0M / 600M  (819K tok/s)
+   450.0M / 600M  (819K tok/s)
+   450.0M / 600M  (819K tok/s)
+   455.0M / 600M  (819K tok/s)
+   455.0M / 600M  (819K tok/s)
+   460.0M / 600M  (818K tok/s)
+   470.0M / 600M  (818K tok/s)
+   470.0M / 600M  (818K tok/s)
+   470.0M / 600M  (818K tok/s)
+   470.0M / 600M  (818K tok/s)
+   475.0M / 600M  (817K tok/s)
+   475.0M / 600M  (817K tok/s)
+   475.0M / 600M  (817K tok/s)
+   480.0M / 600M  (817K tok/s)
+   480.0M / 600M  (817K tok/s)
+   480.0M / 600M  (817K tok/s)
+   485.0M / 600M  (817K tok/s)
+   485.0M / 600M  (817K tok/s)
+   490.0M / 600M  (817K tok/s)
+   490.0M / 600M  (817K tok/s)
+   490.0M / 600M  (817K tok/s)
+   490.0M / 600M  (817K tok/s)
+   490.0M / 600M  (817K tok/s)
+   495.0M / 600M  (817K tok/s)
+   500.0M / 600M  (817K tok/s)
+   510.0M / 600M  (817K tok/s)
+   510.0M / 600M  (817K tok/s)
+   515.0M / 600M  (817K tok/s)
+   515.0M / 600M  (817K tok/s)
+   515.0M / 600M  (817K tok/s)
+   515.0M / 600M  (817K tok/s)
+   515.0M / 600M  (817K tok/s)
+   520.0M / 600M  (817K tok/s)
+   520.0M / 600M  (817K tok/s)
+   520.0M / 600M  (817K tok/s)
+   520.0M / 600M  (817K tok/s)
+   520.0M / 600M  (817K tok/s)
+   520.0M / 600M  (817K tok/s)
+   520.0M / 600M  (817K tok/s)
+   520.0M / 600M  (817K tok/s)
+   520.0M / 600M  (817K tok/s)
+   520.0M / 600M  (817K tok/s)
+   525.0M / 600M  (817K tok/s)
+   525.0M / 600M  (817K tok/s)
+   525.0M / 600M  (817K tok/s)
+   525.0M / 600M  (817K tok/s)
+   540.0M / 600M  (818K tok/s)
+   540.0M / 600M  (818K tok/s)
+   540.0M / 600M  (818K tok/s)
+   540.0M / 600M  (818K tok/s)
+   545.0M / 600M  (818K tok/s)
+   545.0M / 600M  (818K tok/s)
+   545.0M / 600M  (818K tok/s)
+   550.0M / 600M  (819K tok/s)
+   550.0M / 600M  (819K tok/s)
+   555.0M / 600M  (819K tok/s)
+   555.0M / 600M  (819K tok/s)
+   555.0M / 600M  (819K tok/s)
+   560.0M / 600M  (819K tok/s)
+   560.0M / 600M  (819K tok/s)
+   560.0M / 600M  (819K tok/s)
+   560.0M / 600M  (819K tok/s)
+   560.0M / 600M  (819K tok/s)
+   560.0M / 600M  (819K tok/s)
+   565.0M / 600M  (819K tok/s)
+   565.0M / 600M  (819K tok/s)
+   565.0M / 600M  (819K tok/s)
+   580.0M / 600M  (820K tok/s)
+   580.0M / 600M  (820K tok/s)
+   585.0M / 600M  (820K tok/s)
+   585.0M / 600M  (820K tok/s)
+   590.0M / 600M  (820K tok/s)
+   590.0M / 600M  (820K tok/s)
+   595.0M / 600M  (820K tok/s)
+   595.0M / 600M  (820K tok/s)
+   595.0M / 600M  (820K tok/s)
+   595.0M / 600M  (820K tok/s)
+[mix] 소스별 실제 비율 (설정 비율은 DATASETS 의 ratio)
+      wikimedia/wikipedia                    설정 0.50 | 문서  49.7% | ★토큰  46.9% (281.3M)
+      HuggingFaceFW/fineweb-edu              설정 0.50 | 문서  50.3% | ★토큰  53.1% (318.7M)
+      ★문서 비율과 토큰 비율이 다른 이유: rng 가 **문서**를 고르는데 소스마다 문서 길이가 다르다(L1).
+[bpb] bytes_per_token  스트림 3.8772 / ★val 2.9049 (차이 -25.1%)
+[data] train 597.0M / val 3000K 토큰 저장 -> Z:\TinyLM\data_cache\ko-en_600000000_tok-Qwen3-0.6B-Base
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 12.3분  (2026-08-22 10:55:25)
+==============================================================================
+[4/4] 250 step VRAM probe - reduced micro-bs and kd-chunk because the vocab is 4.6x
+
+==============================================================================
+[runlog] 2026-08-22 10:55:25  name=P067_stage0b_teacher_gate
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 4 --accum 32 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --kd --kd-every 4 --kd-chunk 1024 --tokenizer-hf HF\models--Qwen3-0.6B-Base --kd-teacher-hf HF\models--Qwen3-0.6B-Base --tag probe_q3teach
+==============================================================================
+[cmd] python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 4 --accum 32 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --kd --kd-every 4 --kd-chunk 1024 --tokenizer-hf HF\models--Qwen3-0.6B-Base --kd-teacher-hf HF\models--Qwen3-0.6B-Base --tag probe_q3teach
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000_tok-Qwen3-0.6B-Base
+[P067] ★어휘를 32,768 -> **151,936** 로 바꾼다 (출처 Qwen3ForCausalLM)
+[P067]   임베딩 파라미터 25.2M -> **116.7M** (사용자 지시: 모델 크기 증가는 감수)
+[P067] ⚠️★이 런은 **기존 런과 CE 를 직접 비교할 수 없다** — val 토큰 경계가 다르다(함정 2). 교차비교는 `scripts/common_bpb.py` 만 유효하다.
+
+Loading weights:   0%|          | 0/310 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 310/310 [00:00<00:00, 11034.27it/s]
+[kd-hf] 교사 로드 models--Qwen3-0.6B-Base  파라미터 596.0M  dtype=bf16  vocab=151936
+[kd-hf] ⚠️★로짓은 **fp32 로 올려서** 돌려준다 — bf16 log_softmax 는 꼬리를 뭉갠다
+[kd] ★외부 교사 사용 (alpha=0.5, T=2.0) — 🚫우리 dense 교사는 로드하지 않는다
+[kd] ★★이 실험이 묻는 것: 결과 038 의 'KD 무익' 이 **KD 탓인가 교사 탓인가**
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=151936 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)              39.1M       8.0 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           94.0M      19.3 MB
+
+
+  저장(packed, 안 B)                         19.3 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.3 MB
+  ★상주(runtime, 현 구현)                     567.9 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.3MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+[probe_q3teach] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+Traceback (most recent call last):
+  File "Z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "Z:\TinyLM\tinylm\cli.py", line 253, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "Z:\TinyLM\tinylm\train\trainer.py", line 575, in train
+    kl = _kd_kl(logits.reshape(-1, cfg.vocab_size),
+  File "Z:\TinyLM\tinylm\train\trainer.py", line 55, in _kd_kl
+    part = F.kl_div(F.log_softmax(s / T, -1), F.softmax(t / T, -1), reduction="sum")
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\nn\functional.py", line 3413, in kl_div
+    reduced = torch.kl_div(input, target, reduction_enum, log_target=log_target)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 594.00 MiB. GPU 0 has a total capacity of 15.99 GiB of which 0 bytes is free. Of the allocated memory 14.96 GiB is allocated by PyTorch, and 13.87 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-08-22 10:55:31)
+==============================================================================
+[wandb] push the probe
+=============================================================================
+READ IN THIS ORDER
+1. T1 in step [2]. If the teacher will not load, nothing below matters.
+2. T4. Logits MUST be fp32. bf16 log_softmax crushes the tail and the KL
+   would be measuring rounding, not the teacher.
+3. step [3] must print token_dtype uint32. Qwen3 vocab is 151936 and uint16
+   holds 65536 - writing uint16 would WRAP IDS SILENTLY and the model would
+   learn garbage while the loss looked fine.
+4. step [4] vram_reserved_gb. Gate is under 14.0. If it OOMs, halve micro-bs
+   and double accum - the effective batch must stay 131072 tokens.
+5. json vocab_size must read 151936 and kd_teacher_hf must be set.
+ DO NOT COMPARE THIS RUN's val TO ANY EXISTING RUN. Different tokenizer
+   means different val token boundaries (trap 2). Cross comparison is only
+   valid through scripts\\common_bpb.py.
+==============================================================================

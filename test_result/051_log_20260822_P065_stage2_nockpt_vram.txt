@@ -1,0 +1,140 @@
+=============================================================================
+P065 stage 2   --no-ckpt VRAM probe at 36 layers and under recursion
+250 steps each. Read VRAM and ms/step ONLY. val is meaningless here.
+==============================================================================
+[1/2] 36 layers, no-KD, --no-ckpt, 250 steps
+
+==============================================================================
+[runlog] 2026-08-22 10:42:08  name=P065_stage2_nockpt_vram
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1d --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --attn-group 4 --init-from --no-ckpt --tag probe_d36_nock
+==============================================================================
+[cmd] python run100m.py train --preset m100R1d --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --attn-group 4 --init-from --no-ckpt --tag probe_d36_nock
+[ckpt] m100R1d 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[attn] ★어텐션 타잉 g=4 — 중간 32층이 어텐션 8개를 공유한다. ⚠️cla_group=2 과 겹치므로 대가 귀속에 cla1 대조가 필요하다(P057)
+[init] ★★경고: 구조 불일치 — 학생 층 36(prelude 2/mid 32/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+[init] ★**역할 구간별 비례 대응**으로 이식한다(P049 선결, 2026-08-14) — prelude↔prelude, middle↔middle, coda↔coda. 종전의 인덱스 zip 이 아니다.
+[init] ★대응표 student->teacher: [0, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 19]
+[init] ★★학생이 교사보다 깊다(36 ^> 20). 교사 층이 최대 **2회 복제**된다.
+[init] ⚠️ **잔차 기여가 그만큼 중복된다.** depth_init='prop' — 'prop'=gate 그대로 / 'gate_scale'=gate 를 복제횟수로 나눈다. 어느 쪽이 맞는지는 추측하지 않는다. **단계0 게이트가 잰다.**
+[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+[init] ★P057 그룹평균 어텐션 이식: attn_group=4, 공유 어텐션 8개
+[init]   공유 어텐션 0: 교사 층 [2, 2, 3, 3] 평균
+[init]   공유 어텐션 1: 교사 층 [4, 4, 5, 5] 평균
+[init]   공유 어텐션 2: 교사 층 [6, 6, 7, 7] 평균
+[init]   공유 어텐션 3: 교사 층 [8, 8, 9, 9] 평균
+[init]   공유 어텐션 4: 교사 층 [10, 10, 11, 11] 평균
+[init]   공유 어텐션 5: 교사 층 [12, 12, 13, 13] 평균
+[init]   공유 어텐션 6: 교사 층 [14, 14, 15, 15] 평균
+[init]   공유 어텐션 7: 교사 층 [16, 16, 17, 17] 평균
+[init] ⚠️★어텐션 평균은 **MLP 평균과 같은 규약**이지만 **효과는 미검증**이다. P057 단계0 게이트가 step0 CE 로 잰다(통과 대역 5.0~9.40, 함정 34)
+[init] dense 부모초기화 완료 (중간 MLP는 16층 평균, 깊이 확장 20->36 층 depth_init=prop)  <- m100_ko-en_300M_dense.pt
+========================================================================
+d=768 ffn=2048 layers=2+32+2  MLP g=16  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       45.4M       9.3 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.2 MB
+  ----------------------------------------------------
+  합계                           54.1M      11.2 MB
+
+
+  저장(packed, 안 B)                         11.2 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        13.0 MB
+  ★상주(runtime, 현 구현)                     379.7 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 11.2MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (16회 연속 재사용)
+  토큰당 FLOPs          : 0.446 GFLOP
+  KV 캐시               : 13.5 KB/token  (18/36 층만 소유)
+    1024 ctx 13.5 MB   2048 ctx 27.0 MB
+========================================================================
+[probe_d36_nock] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+Traceback (most recent call last):
+  File "Z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "Z:\TinyLM\tinylm\cli.py", line 253, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "Z:\TinyLM\tinylm\train\trainer.py", line 566, in train
+    ce = F.cross_entropy(logits.reshape(-1, cfg.vocab_size), y.reshape(-1))
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\nn\functional.py", line 3504, in cross_entropy
+    return torch._C._nn.cross_entropy_loss(
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 512.00 MiB. GPU 0 has a total capacity of 15.99 GiB of which 0 bytes is free. Of the allocated memory 14.73 GiB is allocated by PyTorch, and 114.54 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-08-22 10:42:14)
+==============================================================================
+[wait] let WDDM release VRAM before the next run - result 037 s7.3
+[2/2] 20 layers, recursion R2, no-KD, --no-ckpt, 250 steps
+
+==============================================================================
+[runlog] 2026-08-22 10:42:29  name=P065_stage2_nockpt_vram
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --train-repeat 2.0 --init-from --no-ckpt --tag probe_r20_nock
+==============================================================================
+[cmd] python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --train-repeat 2.0 --init-from --no-ckpt --tag probe_r20_nock
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[repeat] ★학습 시 재귀 R=2.0 mode=uniform — ★상주 파라미터는 불변, 계산 깊이만 늘어난다. ⚠️활성 메모리와 벽시계는 반복 배수만큼 는다
+[init] dense 부모초기화 완료 (중간 MLP는 8층 평균)  <- m100_ko-en_300M_dense.pt
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           63.5M      13.1 MB
+
+
+  저장(packed, 안 B)                         13.1 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        15.1 MB
+  ★상주(runtime, 현 구현)                     451.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 13.1MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+[probe_r20_nock] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+Traceback (most recent call last):
+  File "Z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "Z:\TinyLM\tinylm\cli.py", line 253, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "Z:\TinyLM\tinylm\train\trainer.py", line 566, in train
+    ce = F.cross_entropy(logits.reshape(-1, cfg.vocab_size), y.reshape(-1))
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\nn\functional.py", line 3504, in cross_entropy
+    return torch._C._nn.cross_entropy_loss(
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 512.00 MiB. GPU 0 has a total capacity of 15.99 GiB of which 0 bytes is free. Of the allocated memory 14.84 GiB is allocated by PyTorch, and 126.45 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-08-22 10:42:34)
+==============================================================================
+[wandb] push both probes - VRAM numbers are worth keeping even at 250 steps
+[3/3] spill check on both - a spill is silent, exit code 0 and loss normal
+
+==============================================================================
+[runlog] 2026-08-22 10:42:44  name=P065_stage2_nockpt_vram
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\check_spill.py
+==============================================================================
+usage: check_spill.py [-h] [--from-step FROM_STEP] [--warn WARN] [--edge EDGE]
+                      logs [logs ...]
+check_spill.py: error: the following arguments are required: logs
+------------------------------------------------------------------------------
+[runlog] 종료코드 2  소요 0.0분  (2026-08-22 10:42:45)
+==============================================================================
+=============================================================================
+READ IN THIS ORDER
+1. did either run die. A CUBLAS_STATUS_EXECUTION_FAILED IS an OOM (trap 29).
+2. vram_reserved_gb from the json, not the console. Gate is under 14.0.
+3. check_spill p90/p10. Normal is 6.5 to 15.4 percent, a spill was 48.5.
+4. ms_step_median only for the record. Do NOT compare it to another day -
+   session drift is 7.5 percent (result 037 s11.4).
+ DO NOT READ val. 250 steps cannot rank quality.
+IF BOTH PASS  --no-ckpt becomes the default for 36 layers and recursion too.
+IF EITHER FAILS  that condition keeps grad checkpointing and pays 20 percent.
+==============================================================================
