@@ -198,9 +198,15 @@ def main():
         if drop is not None:
             lat2, wq2, oth2, res2, pk2, dmax, r3 = drop
             if a.lut:
-                # ★LUT 는 per-row alpha 로 재추정하므로 **0 이 아닌 것이 정상**이다.
-                #   기준은 결과 028 의 per-row 대가(+0.0038~0.0068 bpb).
-                gate = "통과(LUT 기준)" if dmax < 1.0 else "★실패"
+                # ★★2026-08-22 정정(함정 34) — 종전 기준 1.0 은 **내가 근거 없이 정한 값**이었고
+                #   실측 1.615 를 "★실패" 로 찍었다. 🚫**max|dlogit| 는 품질 기준이 될 수 없다** —
+                #   결과 028 이 잰 것은 **bpb** 이고 둘은 단위가 다르다. 로짓 절대차는
+                #   softmax 를 지나면 크게 줄어들고, 그 감쇠율은 로짓 스케일에 의존한다.
+                #   ★**여기서는 "죽지 않았는가" 만 본다**(NaN·발산). 품질 판정은
+                #   `paired_eval` / `common_bpb` 가 소유한다.
+                import math as _m
+                gate = ("🚫NaN/Inf" if not _m.isfinite(dmax) else
+                        "동작확인(품질 기준 아님)" if dmax < 20.0 else "⚠️비정상적으로 크다")
                 _stg = "★P014 단계1 (latent 해제 + **LUT 1.600bpw**)"
             else:
                 gate = "통과" if dmax == 0.0 else ("경계" if dmax < 1e-5 else "★실패")
@@ -209,7 +215,10 @@ def main():
             if a.lut:
                 print(f"     로짓 차이         max|dlogit| = {dmax:.3e}   {gate}")
                 print(f"     ⚠️★**0 이 아닌 것이 정상**이다 — LUT 는 per-row alpha 로 재추정한다"
-                      f"(768 에 5의 배수 약수가 없다). 대가는 결과 028: +0.0038~0.0068 bpb")
+                      f"(768 에 5의 배수 약수가 없다).")
+                print(f"     🚫★**이 숫자로 품질을 판정하지 않는다**(함정 34) — 결과 028 이 잰 것은"
+                      f" **bpb**(+0.0038~0.0068)이고 로짓 절대차와 단위가 다르다.")
+                print(f"     ★품질은 `paired_eval` 또는 `common_bpb` 로 따로 잰다.")
                 print(f"     ★LUT 상주(코드+alpha) {model.lut_bytes()/2**20:8.2f} MiB  "
                       f"= 삼진 {model.mem_breakdown()['params']['ternary']/1e6:.2f}M x 1.600 bpw")
             else:

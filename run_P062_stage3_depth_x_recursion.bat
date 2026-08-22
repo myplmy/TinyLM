@@ -13,7 +13,19 @@ REM    Nobody has run them together. If the gains add, the standard model gets
 REM    better at no memory cost. If they do not add, that tells us both levers
 REM    are buying the same thing - effective depth - and we stop stacking them.
 REM
-REM  !! PREREQUISITE  run_P065_stage2_nockpt_vram.bat MUST PASS FIRST
+REM  !!! 2026-08-22 UPDATE - THE PREREQUISITE PROBE ALREADY FAILED
+REM    run_P065_stage2 died on BOTH arms (result 054):
+REM      d36 alone with --no-ckpt        14.73 GiB allocated, needed 512 MiB more
+REM      r20 recursion with --no-ckpt    14.84 GiB allocated, needed 512 MiB more
+REM    This batch is 36 layers AND recursion at once, which is strictly larger
+REM    than either. It keeps grad checkpointing ON, which is the only reason it
+REM    is not already known to fail - but 36 layers times recursion doubles the
+REM    number of checkpoint segments and that has never been measured.
+REM    -^> RUN run_P065_stage2b_nockpt_vram.bat FIRST. Its arm 2 (d36 + ckpt)
+REM       and arm 4 (r20 recursion + ckpt) bracket this configuration.
+REM       If either control dies, do not start this five hour run.
+REM
+REM  !! PREREQUISITE  run_P065_stage2b_nockpt_vram.bat MUST PASS FIRST
 REM    36 layers times recursion is the largest activation footprint we have
 REM    ever built. Neither term has a --no-ckpt measurement. This batch keeps
 REM    grad checkpointing ON for that reason. If the probe shows headroom, add
@@ -47,7 +59,7 @@ echo.
 if not defined TL_NOPAUSE pause
 
 python scripts\runlog.py --name P062_stage3_depth_x_recursion --note "[1/2] mC_d36_ag4_r20_nokd - two flags different from mC_d36_ag4_nokd"
-python scripts\runlog.py --name P062_stage3_depth_x_recursion -- python run100m.py train --preset m100R1d --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --attn-group 4 --train-repeat 2.0 --init-from --tag mC_d36_ag4_r20_nokd
+python scripts\runlog.py --name P062_stage3_depth_x_recursion -- python run100m.py train --preset m100R1d --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --attn-group 4 --train-repeat 2.0 --ce-chunk 2048 --init-from --tag mC_d36_ag4_r20_nokd
 if errorlevel 1 echo [WARN] mC_d36_ag4_r20_nokd failed - continuing
 
 echo.

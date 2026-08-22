@@ -7,7 +7,7 @@ REM
 REM  WHY EVERY TASK AND NOT THE THREE I RECOMMENDED
 REM    2026-08-22 user instruction: implement all of them regardless of the
 REM    expected result. I had rejected IFEval, GSM8K, HE+, BFCLv3, MuSR and
-REM    MMLU-Redux in 11_benchmarks s3.2 on the grounds that they would score
+REM    MMLU-Redux in 10_benchmarks s3.2 on the grounds that they would score
 REM    zero. That is a prediction, not a reason to not measure. A prediction you
 REM    never test stays true forever. Section 6.5 records the retraction.
 REM

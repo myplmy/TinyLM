@@ -83,6 +83,10 @@ def main():
     #   목적: (1) 더 나은 교사로 학습 효율이 오르는가 (2) ★**KD 가 무익했던 것이
     #   "우리 dense 가 무능해서" 였는지** — 결과 038 은 그 둘을 구분하지 못했다.
     #   ⚠️**세 플래그 전부 기본 None = 종전 = 비트 동일.**
+    p.add_argument("--ce-chunk", type=int, default=0,
+                   help="★★(결과 054) 평균 CE 를 행 청크로. 0=끄기=비트 동일. "
+                        "**P065 두 팔이 정확히 CE 에서 OOM 났다** — --kd-chunk 는 KD 만 나눈다. "
+                        "무KD + --no-ckpt 조합에서 이 항이 노출된다. 권장 2048")
     p.add_argument("--tokenizer-hf", default=None, metavar="HF폴더",
                    help="★(P067) 외부 HF 모델의 tokenizer.json 으로 토큰화한다. "
                         "**데이터 캐시가 분리되고 vocab_size 가 그 어휘로 바뀐다**")
@@ -277,6 +281,7 @@ def main():
               attn_group=a.attn_group, train_repeat=a.train_repeat,
               repeat_mode=a.repeat_mode, repeat_block=a.repeat_block,
               reuse_attn_on_dup=a.reuse_attn_on_dup,
+              ce_chunk=a.ce_chunk,
               tokenizer_hf=a.tokenizer_hf, kd_teacher_hf=a.kd_teacher_hf,
               teacher_dtype=a.teacher_dtype,
               save_every=a.save_every)

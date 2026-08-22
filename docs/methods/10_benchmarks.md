@@ -275,3 +275,85 @@
 | ★**KLUE YNAT/NLI** | ✅**PMI 수정 후 재측정** |
 
 **→ 신규 계획 [P069](../../test_plan/P069_다지표-평가체계.md).**
+
+---
+
+# ★★§8. 데이터 확보 실측 (2026-08-22) — **12/15 성공, 그리고 두 가지를 배웠다**
+
+## 8.1 결과
+
+| 과제 | 결과 | 행 수 | 공식 규모 | 비고 |
+|---|---|---:|---:|---|
+| hellaswag | ✅ | **10,042** | 10,042 | 일치 |
+| **piqa** | 🚫**실패** | — | 1,838 | `RuntimeError: Dataset scripts are no longer supported` |
+| winogrande | ✅ | **1,267** | 1,267 | 일치 |
+| arc_easy | ✅ | **2,376** | 2,376 | 일치 |
+| arc_challenge | ✅ | **1,172** | 1,172 | 일치 |
+| boolq | ✅ | **3,270** | 3,270 | 일치 |
+| lambada | ✅ | **5,153** | 5,153 | 일치 |
+| mmlu | ✅ | **14,042** | 14,042 | 일치 |
+| **mmlu_redux** | 🚫**실패** | — | ⚙5,700 | `BuilderConfig 'all' not found` |
+| musr | ✅ | **250** | 250 | ⚠️murder_mysteries split 만 |
+| gsm8k | ✅ | **1,319** | 1,319 | 일치 |
+| ifeval | ✅ | **541** | 541 | 일치 |
+| humaneval | ✅ | **164** | 164 | 일치 |
+| humaneval_plus | ✅ | **164** | 164 | 일치 |
+| **bfcl_v3** | 🚫**실패** | — | ? | `DataFilesNotFoundError` |
+
+★★**성공한 12종의 행 수가 공식 규모와 전부 일치했다.** split 을 옳게 잡았다는 뜻이고,
+**이제 다른 논문 숫자와 같은 축 위에서 이야기할 수 있다.**
+
+## 8.2 ★실패 3종 — **전부 라이선스 게이트가 아니었다. 로더 문제였다**
+
+| 과제 | 원인 | ✅조치 |
+|---|---|---|
+| **piqa** | `ybisk/piqa` 가 **로더 스크립트**(`piqa.py`). datasets 3.x 가 스크립트를 거절한다 | ★**`revision="refs/convert/parquet"`** — HF 가 모든 스크립트 데이터셋에 자동 생성해 두는 parquet 브랜치 |
+| **mmlu_redux** | `all` config 가 **없다**. 과목별로만 나뉘어 있다 | ★**전 과목 config 를 받아 이어붙이고 `subject` 열을 붙인다** |
+| **bfcl_v3** | 레포가 **표준 데이터 디렉터리 구조가 아니다** | ★**`list_repo_files` 로 `.json` 을 직접 나열해 받는다.** ⚠️**AST 채점 가능한 것만**(`simple`·`multiple`·`parallel`), `exec_*` 제외 — **우리는 모델 생성 코드를 실행하지 않는다** |
+
+> ★**셋 다 "접근 불가" 가 아니라 "우리 로더가 몰랐다" 였다.**
+> §6.5 에서 *"데이터 없음 ≠ 구현 안 함"* 이라고 썼는데, **여기서는 그 반대**였다 —
+> **받을 수 있었는데 우리가 못 받았다.** 실패 사유를 그대로 인쇄하게 해 둔 것이 답을 줬다.
+
+## 8.3 ★★★가장 중요한 것 — **HF 캐시가 작업폴더 밖으로 갔다**
+
+사용자 보고: *"작업 경로 내 HF 폴더에 다운로드되지 않고 **환경변수의 HF 캐시폴더로**
+다운로드되어 사용자가 직접 HF 폴더로 옮겼음."*
+
+로그가 그것을 보여 준다:
+
+```
+UserWarning: ... your machine does not support them in Z:\unsloth_files\cache\datasets--Rowan--hellaswag
+```
+
+### ★원인 — **리다이렉트는 있었는데 실행되지 않았다**
+
+`tinylm/paths.py` 는 **import 부작용**으로 HF 캐시를 작업폴더 `HF/` 로 **강제**한다:
+
+```python
+os.environ["HF_HOME"] = str(HF_DIR)
+os.environ["HF_HUB_CACHE"] = str(HF_DIR / "hub")
+os.environ["HF_DATASETS_CACHE"] = str(HF_DIR / "datasets")
+```
+
+🚫**그런데 `fetch_bench_data.py` 는 `sys.path` 만 건드리고 `tinylm` 을 import 하지 않았다.**
+→ **그 부작용이 한 번도 일어나지 않았다.**
+
+★★**함정 37 의 다른 얼굴**이다 — *"리다이렉트가 존재한다 ≠ 그 경로가 실행된다."*
+그리고 **조용한 실패**였다: 다운로드는 성공했고 에러도 경고도 없었다.
+
+### ✅조치 3중
+
+| # | 무엇 | 층 |
+|---|---|---|
+| **1** | `fetch_bench_data.py` 상단에 ★**`import tinylm`**(datasets 보다 먼저) | 코드 |
+| **2** | 실행 시 ★**`HF_HOME`·`HF_DATASETS_CACHE`·저장 위치를 먼저 인쇄**하고, 작업폴더 밖이면 **중단**(exit 3) | 런타임 |
+| **3** | ★**`scripts/check_hf_redirect.py` 신설** — `scripts/*.py` 중 `datasets`·`transformers`·`huggingface_hub` 를 쓰면서 `tinylm` 을 import 안 하면 **정적 에러**. `check_static_all` 에 편입(12종) | 정적 |
+
+🚫★**사용자 환경변수는 영구 수정하지 않는다**(사용자 지시). 위 셋 다 **프로세스 안에서만** 바꾼다.
+
+## 8.4 ⚠️MuSR — **§6.1 의 C2 경고가 유효하다**
+
+받은 것은 `murder_mysteries` **250개**뿐이다(다른 split: `object_placements` 256,
+`team_allocation` 250). ★**그리고 지문이 약 1000단어**라 `seq 1024` **토큰**에서
+대부분 길이 초과로 제외될 것이다. → **N 이 거의 0 이면 그 숫자는 우리 seq 한계를 잰 것**이다.

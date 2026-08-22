@@ -13,6 +13,10 @@
 | 4 | 컨텍스트 길이 | [methods/04_context_length.md](methods/04_context_length.md) |
 | 5 | 학습 속도 | [methods/05_training_speed.md](methods/05_training_speed.md) |
 | 6 | 학습 품질·안정 | [methods/06_training_quality.md](methods/06_training_quality.md) |
+| 7 | 코퍼스 선택 | [methods/07_corpus_selection.md](methods/07_corpus_selection.md) |
+| 8 | 신규 논문·자료 판정 | [methods/08_paper_review.md](methods/08_paper_review.md) |
+| 9 | 학습 VRAM | [methods/09_training_memory.md](methods/09_training_memory.md) |
+| ★**10** | **벤치마크·평가 기법** | [methods/10_benchmarks.md](methods/10_benchmarks.md) |
 
 ## 상태 범례
 
@@ -126,4 +130,10 @@ KD 몫 −0.0032 = 43배.** 위 B 표의 *"300M 에서 +0.062"* 와 **같은 부
 새 기법을 추가/적용하면: 해당 분류 파일의 표에 **행 추가**(기법·상태·버전·작동원리·
 트레이드오프·특기) 하고, 상태/버전을 갱신한다. 측정 결과가 나오면 특기란에 수치를 남긴다.
 
-- ★**[11 벤치마크·평가 기법 원장](methods/11_benchmarks.md)**(2026-08-22 신설) — 우도 채점 vs 생성 채점, ★**PMI 정규화**(우리가 두 번 틀린 것), **퇴화 감지**, ★★**지표별 분해능**(KorQuAD CE 는 필요 N 24만). 후보 벤치마크 판정표. ⚠️arXiv id 는 **미조회 표시** 유지
+> ★**2026-08-22 개명: `11_benchmarks.md` → `10_benchmarks.md`.**
+> 🚫**10번은 원래 결번이 아니었다** — 09 다음이 11 인 줄 알고 **확인 없이 11 을 배정**했다.
+> **가짜 결번은 *"10 에 무언가 있었는데 사라졌다"* 로 읽힌다.** 계획번호 규율(D16)과 같은
+> 종류의 실수라 같은 방식으로 고친다: **개명하고 참조를 전부 갱신**한다.
+> ⚠️**과거 핸드오프의 `11_benchmarks` 표기는 고치지 않는다** — 그 시점의 기록이다.
+
+- ★**[10 벤치마크·평가 기법 원장](methods/10_benchmarks.md)**(2026-08-22 신설) — 우도 채점 vs 생성 채점, ★**PMI 정규화**(우리가 두 번 틀린 것), **퇴화 감지**, ★★**지표별 분해능**(KorQuAD CE 는 필요 N 24만). 후보 벤치마크 판정표. ⚠️arXiv id 는 **미조회 표시** 유지

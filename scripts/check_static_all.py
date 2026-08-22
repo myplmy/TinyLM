@@ -53,6 +53,8 @@ CHECKS = [
      "계획번호 ↔ 계획서 ↔ 실험계획목록 3자 정합(D16)"),
     ("check_run_registry",  ["check_run_registry.py"],
      "런 레지스트리·중복·태그 충돌"),
+    ("check_hf_redirect",   ["check_hf_redirect.py"],
+     "★HF 캐시 리다이렉트 — `tinylm` import 없이 datasets 를 쓰면 작업폴더 밖으로 받는다"),
     ("check_diag_data",     ["check_diag_data.py"],
      "진단 도구의 계측 건강 — 절대지표에 난수 정답을 쓰는가"),
     ("queue_menu --audit",  ["queue_menu.py", "--audit"],

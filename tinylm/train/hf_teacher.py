@@ -81,13 +81,24 @@ class HFTeacher(nn.Module):
         self.vocab_size = v
         n = sum(p.numel() for p in self.m.parameters())
         print(f"[kd-hf] 교사 로드 {d.name}  파라미터 {n/1e6:.1f}M  dtype={dtype}  vocab={v}")
-        print(f"[kd-hf] ⚠️★로짓은 **fp32 로 올려서** 돌려준다 — bf16 log_softmax 는 꼬리를 뭉갠다")
+        print(f"[kd-hf] ★로짓은 **원 dtype 그대로** 돌려주고 fp32 승격은 _kd_kl 이 **청크 단위로** 한다\n"
+              f"[kd-hf]   (통째 승격은 (B,T,V) fp32 = 수 GiB 단일 할당을 만든다 — 결과 054)")
 
     @torch.no_grad()
     def forward(self, x):
+        """★로짓을 **원 dtype(bf16) 그대로** 돌려준다.
+
+        🚫★**2026-08-22 정정 — 여기서 `.float()` 를 하면 OOM 이 난다.**
+        (4, 1024, 151936) 를 fp32 로 올리면 **2.32 GiB 짜리 단일 할당**이 생기고,
+        `_kd_kl` 이 청크로 나눠 계산해도 **이미 통째로 물질화된 뒤**다.
+        실측(결과 054): 이 한 줄 때문에 14.96 GiB 에서 594 MiB 를 더 못 잡고 죽었다.
+
+        ★**fp32 승격은 `_kd_kl` 이 청크 단위로** 한다 — 거기가 그것이 필요한 유일한 곳이고,
+        청크 하나는 594 MiB 가 아니라 그 1/N 이다.
+        ⚠️**KL 산술이 fp32 라는 규약은 그대로다.** 바뀐 것은 **언제 올리는가** 뿐이다.
+        """
         out = self.m(input_ids=x)
-        lg = out.logits if hasattr(out, "logits") else out[0]
-        return lg.float()                       # ★fp32 로 올린다. 위 주석 참조
+        return out.logits if hasattr(out, "logits") else out[0]
 
     # ── 우리 교사 인터페이스가 부르는 것들. HF 모델에는 없으므로 무해하게 받는다.
     def set_anneal(self, v):                     # noqa: D102

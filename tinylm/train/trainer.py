@@ -51,10 +51,51 @@ def _kd_kl(slog, tlog, T, chunk=0):
     N = slog.shape[0]
     acc = None
     for i in range(0, N, chunk):
-        s, t = slog[i:i + chunk], tlog[i:i + chunk]
+        # ★★2026-08-22(결과 054) — **fp32 승격을 청크 안에서** 한다.
+        #   교사 로짓이 bf16 으로 들어오면 여기서 청크만 올린다. 통째로 올리면
+        #   (B,T,V) fp32 단일 할당이 수 GiB 가 되고, 청킹이 무의미해진다.
+        #   ⚠️`.float()` 는 이미 fp32 면 **사본을 만들지 않는다**(no-op) → 종전 경로 비트 동일.
+        s = slog[i:i + chunk].float()
+        t = tlog[i:i + chunk].float()
         part = F.kl_div(F.log_softmax(s / T, -1), F.softmax(t / T, -1), reduction="sum")
         acc = part if acc is None else acc + part
     return acc / N * (T * T)
+
+
+def _ce_chunked(logits2d, y1d, chunk=0):
+    """★★2026-08-22(결과 054) — **평균 CE 를 행 청크로 계산한다.** 기본 `chunk=0` = off = 비트 동일.
+
+    ## 왜 — OOM 이 여기서 났다
+
+    `run_P065_stage2` 두 팔이 **모두** 이 줄에서 죽었다:
+
+        ce = F.cross_entropy(logits.reshape(-1, vocab), y.reshape(-1))
+        torch.OutOfMemoryError: Tried to allocate 512.00 MiB ... 0 bytes is free
+
+    512 MiB = `8192 x 32768 x 2B`(bf16 로짓의 reshape·contiguous). `--kd-chunk` 는
+    **KD 손실만** 나눴고 **평범한 CE 는 한 번도 나눈 적이 없었다.** 무KD 런에서는
+    KD 청킹이 아무 일도 하지 않으므로 **무KD + `--no-ckpt` 조합에서 이 항이 노출**됐다.
+
+    ## 무엇이 줄고 무엇이 안 주나 — 정직하게
+
+    ★**backward 를 위해 저장돼야 하는 것**(각 청크의 `log_softmax` 출력)은 **안 준다.**
+    줄어드는 것은 **동시에 살아 있는 임시 텐서**다 — 우리를 죽인 것이 정확히 그 512 MiB 였다.
+    ⚠️**"CE 메모리가 사라진다" 가 아니다.** 기대 절감은 **peak 의 수백 MiB 대**다.
+
+    ## 비트 동일성
+
+    `chunk <= 0` 이면 종전 호출 그대로 → **비트 동일**. 켜면 합산 순서가 달라져
+    비트 동일이 아니다(부동소수 결합법칙). 수학적으로는 동일하다
+    (`mean = sum/N`, 청크 `sum` 을 모아 N 으로 나눈다).
+    """
+    if chunk is None or chunk <= 0 or chunk >= logits2d.shape[0]:
+        return F.cross_entropy(logits2d, y1d)
+    N = logits2d.shape[0]
+    acc = None
+    for i in range(0, N, chunk):
+        part = F.cross_entropy(logits2d[i:i + chunk], y1d[i:i + chunk], reduction="sum")
+        acc = part if acc is None else acc + part
+    return acc / N
 
 
 def _step_stats(step_ms, warm=100):
@@ -117,7 +158,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None,
           kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
           attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
-          reuse_attn_on_dup=False,
+          reuse_attn_on_dup=False, ce_chunk=0,
           tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
           save_every=0):
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -563,7 +604,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                 _cudagraph_step()
             with torch.autocast(device, dtype=torch.bfloat16, enabled=(device == "cuda")):
                 logits = model(x)
-                ce = F.cross_entropy(logits.reshape(-1, cfg.vocab_size), y.reshape(-1))
+                ce = _ce_chunked(logits.reshape(-1, cfg.vocab_size), y.reshape(-1), ce_chunk)
                 if kd_reader is not None:               # 오프라인 KD(캐시 top-k)
                     from .kd_cache import kd_cache_loss
                     tv, ti = kd_reader.next(device)
@@ -702,6 +743,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "tokenizer_hf": (str(tokenizer_hf) if tokenizer_hf else None),   # ★P067
            "kd_teacher_hf": (str(kd_teacher_hf) if kd_teacher_hf else None),
            "teacher_dtype": str(teacher_dtype),
+           "ce_chunk": int(ce_chunk),   # ★결과 054
            "vocab_size": int(cfg.vocab_size),
            "save_every": int(save_every or 0),                     # (P058)
            "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용
