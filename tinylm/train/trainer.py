@@ -23,7 +23,7 @@ CKPT = paths.RUNS / "ckpt"
 LOGS = paths.RUNS / "logs"
 
 
-def _kd_kl(slog, tlog, T, chunk=0):
+def _kd_kl(slog, tlog, T, chunk=0, fp32=False):
     """★T-2 / P053 (2026-08-14) — **KD KL 을 행 청크로 나눠 계산한다.** 기본 `chunk=0` = off.
 
     ## 왜
@@ -46,17 +46,28 @@ def _kd_kl(slog, tlog, T, chunk=0):
     `batchmean` = (전체 합) / N 이므로 청크 `sum` 을 모아 N 으로 나누면 **수학적으로 동일**하다.
     """
     if chunk is None or chunk <= 0 or chunk >= slog.shape[0]:
-        return F.kl_div(F.log_softmax(slog / T, -1), F.softmax(tlog / T, -1),
+        _s = slog.float() if fp32 else slog
+        _t = tlog.float() if fp32 else tlog
+        return F.kl_div(F.log_softmax(_s / T, -1), F.softmax(_t / T, -1),
                         reduction="batchmean") * (T * T)
     N = slog.shape[0]
     acc = None
     for i in range(0, N, chunk):
-        # ★★2026-08-22(결과 054) — **fp32 승격을 청크 안에서** 한다.
-        #   교사 로짓이 bf16 으로 들어오면 여기서 청크만 올린다. 통째로 올리면
-        #   (B,T,V) fp32 단일 할당이 수 GiB 가 되고, 청킹이 무의미해진다.
-        #   ⚠️`.float()` 는 이미 fp32 면 **사본을 만들지 않는다**(no-op) → 종전 경로 비트 동일.
-        s = slog[i:i + chunk].float()
-        t = tlog[i:i + chunk].float()
+        # ★★2026-08-22 2차 정정(사용자 지적) — **`fp32` 는 opt-in 이다.**
+        #
+        #   🚫**1차 수정에서 나는 여기에 무조건 `.float()` 를 넣었다.** 그런데 종전 경로는
+        #   autocast 아래라 **학생·교사 로짓이 둘 다 bf16** 이었고, 무조건 승격은
+        #   **`--kd-chunk` 를 쓴 기존 런(P053 계열)의 수치를 바꾼다.**
+        #   ★결과 042 가 **실효 α = 0.288** 을 그 정밀도에서 쟀다 — 그것을 흔들면 안 된다.
+        #
+        #   ✅**지금은 `fp32=False` 가 기본 = 종전과 비트 동일.**
+        #   **외부 HF 교사 경로만 `fp32=True`** 로 부른다 — 그 경로에서는 교사가 bf16 을
+        #   돌려주므로(결과 054 의 2.32 GiB 단일 할당 회피) **여기서 올려 줘야** 하고,
+        #   그 경로는 **아직 발표된 결과가 없다**(바꿔도 과거를 깨지 않는다).
+        s = slog[i:i + chunk]
+        t = tlog[i:i + chunk]
+        if fp32:
+            s, t = s.float(), t.float()
         part = F.kl_div(F.log_softmax(s / T, -1), F.softmax(t / T, -1), reduction="sum")
         acc = part if acc is None else acc + part
     return acc / N * (T * T)
@@ -90,6 +101,14 @@ def _ce_chunked(logits2d, y1d, chunk=0):
     """
     if chunk is None or chunk <= 0 or chunk >= logits2d.shape[0]:
         return F.cross_entropy(logits2d, y1d)
+    # ★★사용자 지적(2026-08-22) — **`mean` 의 분모는 N 이 아니라 "무시되지 않은 타깃 수"** 다.
+    #   `ignore_index`(기본 −100)가 하나라도 있으면 `sum/N != mean` 이 되고,
+    #   그 차이는 **손실이 조금 작아지는 형태로 조용히** 나타난다.
+    #   우리 로더는 패딩을 쓰지 않으므로 지금은 전부 유효하지만, **가정을 단언으로 박는다** —
+    #   나중에 패딩이 들어오면 여기서 죽는 것이 조용히 틀리는 것보다 낫다.
+    assert bool((y1d >= 0).all()), (
+        "★`--ce-chunk` 는 **ignore_index 가 없는 타깃**을 전제한다. 음수 라벨이 있다 — "
+        "패딩이 들어왔다면 청킹 분모를 '유효 타깃 수' 로 고쳐야 한다")
     N = logits2d.shape[0]
     acc = None
     for i in range(0, N, chunk):
@@ -613,8 +632,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                 elif teacher is not None and kd_this:   # 온라인 KD(교사 forward, skip-forward 반영)
                     with torch.no_grad():
                         tlog = teacher(x)
+                    # ★외부 HF 교사면 fp32 승격을 켠다(§_kd_kl 주석). 내부 dense 교사는 종전대로.
                     kl = _kd_kl(logits.reshape(-1, cfg.vocab_size),
-                                tlog.reshape(-1, cfg.vocab_size), kd_temp, kd_chunk)
+                                tlog.reshape(-1, cfg.vocab_size), kd_temp, kd_chunk,
+                                fp32=bool(kd_teacher_hf))
                     loss = ((1 - kd_alpha) * ce + kd_alpha * kl) / accum
                 else:
                     loss = ce / accum

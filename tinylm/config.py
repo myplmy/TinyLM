@@ -9,6 +9,17 @@ from dataclasses import dataclass
 
 VOCAB = 32768
 
+# ★★2026-08-22 실사고(함정 18: 적용 대상 집합을 두 곳에서 정의) — **여기가 유일한 정본이다.**
+#
+#   `--repeat-mode inplace` 를 신설하면서 **`cli.py` 의 choices 와 `transformer._repeat_schedule`
+#   에만 넣고 아래 `__post_init__` 의 assert 를 안 고쳤다.**
+#   ★**학습은 통과했다** — `build_config` 가 만든 뒤 `trainer` 가 필드를 **대입**하므로
+#   `__post_init__` 이 다시 안 돌기 때문이다.
+#   🚫**죽은 것은 평가였다**: `load_model` 이 `TMTConfig(**st["cfg"])` 로 **재구성**하면서
+#   assert 가 터졌다. **2.8시간 학습이 끝난 뒤에.**
+#   → ★**목록을 한 곳에 두고 세 경로가 전부 이것을 import 한다.**
+REPEAT_MODES = ("uniform", "block", "progressive", "inplace")
+
 
 @dataclass
 class TMTConfig:
@@ -129,8 +140,8 @@ class TMTConfig:
         assert self.attn_group >= 1 and self.n_middle % self.attn_group == 0, \
             f"n_middle {self.n_middle} % attn_group {self.attn_group} != 0"
         assert self.train_repeat > 0, "train_repeat 는 양수여야 한다"
-        assert self.repeat_mode in ("uniform", "block", "progressive"), \
-            f"repeat_mode 는 uniform|block|progressive — 받은 값: {self.repeat_mode}"
+        assert self.repeat_mode in REPEAT_MODES, \
+            f"repeat_mode 는 {'|'.join(REPEAT_MODES)} — 받은 값: {self.repeat_mode}"
         if self.sparse34:
             assert self.micro_group and self.micro_group % 4 == 0, \
                 "sparse34 는 group 이 4의 배수여야 함(3:4 블록). per-row(0)와는 함께 못 쓴다"

@@ -14,6 +14,7 @@ import argparse
 from . import paths  # noqa: F401  (HF 리다이렉트 먼저)
 from .data import DATASETS
 from .config import PRESETS
+from .config import REPEAT_MODES
 
 
 def _tok(s):
@@ -154,7 +155,8 @@ def main():
     p.add_argument("--train-repeat", type=float, default=None,
                    help="(P049B) 학습 시 중간 블록 통과 배수(1.0=종전=비트동일). "
                         "--infer-repeat 와 동시 사용 금지")
-    p.add_argument("--repeat-mode", choices=["uniform", "block", "progressive", "inplace"], default="uniform",
+    # ★목록은 `config.REPEAT_MODES` 가 정본이다(함정 18, 2026-08-22 실사고)
+    p.add_argument("--repeat-mode", choices=list(REPEAT_MODES), default="uniform",
                    help="(P049B) uniform=중간 전체 / block=--repeat-block 그룹만 / progressive=깊을수록 증가")
     p.add_argument("--repeat-block", type=int, default=0, help="(P049B) block 모드의 MLP 그룹 인덱스")
     p.add_argument("--save-every", type=int, default=0,

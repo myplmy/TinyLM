@@ -418,6 +418,11 @@ class TiedMLPTransformer(nn.Module):
            **통과마다 K/V 를 새로 만든다**(기본). `repeat_kv_reuse` 를 켜면 첫 통과 것을
            재사용한다 — **대조 조건**이지 기본이 아니다. 두 번째 통과가 낡은 K/V 를 본다.
         """
+        # ★함정 18(2026-08-22) — 유효 목록은 `config.REPEAT_MODES` 하나뿐이다.
+        #   여기서도 대조해 **모르는 모드가 조용히 uniform 으로 떨어지는 것**을 막는다.
+        from ..config import REPEAT_MODES
+        _m = str(getattr(self.cfg, "repeat_mode", "uniform") or "uniform")
+        assert _m in REPEAT_MODES, f"repeat_mode 미등록: {_m} (정본 config.REPEAT_MODES)"
         cfg = self.cfg
         p, m, g = cfg.n_prelude, cfg.n_middle, cfg.mlp_group
         mode = getattr(cfg, "repeat_mode", "uniform")
