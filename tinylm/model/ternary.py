@@ -83,6 +83,12 @@ class TLinear(nn.Module):
         self._i8_cache = None
         self._i8_cache_gen = None
         self._unpack_gen = None          # transformer 가 forward 마다 갱신하는 세대 카운터(정수)
+        # ★★P014 단계1(2026-08-22) — **LUT 배포 경로.** `to_lut()` 가 채운다.
+        #   `_lut_codes` 는 **uint8 (O, I/5)** 이고 그 값이 **곧 LUT 인덱스**다(g=5).
+        #   int8 경로(_i8, 가중치당 8비트)와 **동시에 살지 않는다** — to_lut() 이 _i8 을 버린다.
+        self._lut_codes = None
+        self._lut_alpha = None           # (O, 1) per-row fp32
+        self._lut_ipad = 0
 
     # ---------- P034 단계2: 추론 시 latent 해제 ----------
     def latent_dropped(self):
@@ -136,6 +142,58 @@ class TLinear(nn.Module):
         self._i8 = code.reshape(O, I)
         self._alpha = alpha.squeeze(-1).contiguous()            # (O, I//g) fp32
         self._wq = None                                         # ★fp32 사본 해제 = 이 단계의 전부
+
+    def to_lut(self):
+        """★★P014 단계1 — **삼진을 LUT 코드로 바꾼다.** 가중치당 **1.600 비트**.
+
+        ## 왜 이것이 필수인가
+        결과 052 §3.1: **int8 삼진으로는 40 MiB 를 못 넘는다**(임베딩을 ternary 까지 눌러도
+        39.5 로 아슬). int8 은 가중치당 8비트인데 정보량은 **log2(3)=1.585 비트**다.
+        ★**5배를 버리고 있고, 그 5배가 L2+L3 상주의 성패를 가른다.**
+
+        ## 포맷 — **g=5. 바이트가 곧 인덱스다**
+        5트릿(0~242) = 1바이트. ★**언팩이 없다** — `_wq_from_i8()` 같은 fp32 복원 단계가
+        **아예 존재하지 않는다.** 그것이 int8 경로의 층당 2.1~2.2ms 였다(결과 014 §11.4).
+
+        ## ⚠️**per-row α 를 요구한다** — 숨기지 않는다
+        I=768 에 **5의 배수인 약수가 없다**(768 = 2^8 x 3). 그래서 `micro_group 128` 은
+        LUT 그룹 경계와 **원리적으로** 안 맞는다. per-row 로 재추정한다.
+        ★대가는 **이미 측정**됐다: 결과 028 **+0.0038~0.0068 bpb**, 분해능 0.008 미만.
+        ★`_fused_int8_linear` 도 **같은 제약**을 갖는다(P014C 단계2) — 우연이 아니라
+        **행당 스케일 하나여야 커널이 누산 뒤 한 번만 곱할 수 있기** 때문이다.
+
+        ⚠️**되돌릴 수 없다.** 추론 전용.
+        """
+        from .lut import weight_codes, TRITS_PER_BYTE
+        import torch
+        if self._i8 is None:
+            if self._wq is None:
+                raise RuntimeError("to_lut() 전에 freeze_quant() 가 필요하다.")
+            self.to_int8()
+        code = self._i8                                          # (O, I) int8 in {-1,0,1}
+        O, I = code.shape
+        g = _group_of(self.cfg, I)
+        # per-row α 재추정 — 그룹 α 를 행 하나로 접는다.
+        #   ★|w| 의 행 최대가 아니라 **L2 최적 스케일**을 쓴다: a = <|w|> over nonzero.
+        #   삼진 코드가 이미 정해져 있으므로 a* = sum(|w_orig| * |c|) / sum(c^2) 인데
+        #   여기서 원본 w 는 없다. 가진 것은 그룹 α 뿐이므로 **그룹 α 의 코드 가중 평균**이
+        #   그 근사다(코드가 0 인 자리는 기여하지 않는다).
+        cg = code.reshape(O, I // g, g).abs().to(torch.float32).sum(-1)   # (O, I/g) 비영 개수
+        num = (self._alpha.to(torch.float32) * cg).sum(-1, keepdim=True)
+        den = cg.sum(-1, keepdim=True).clamp_min(1.0)
+        self._lut_alpha = (num / den).contiguous()                        # (O, 1) fp32
+        self._lut_codes, self._lut_ipad = weight_codes(code, TRITS_PER_BYTE)
+        assert self._lut_codes.dtype == torch.uint8, "g=5 면 코드가 uint8 이어야 한다"
+        self._i8 = None                                    # ★int8 사본 해제 = 이 단계의 전부
+        self._alpha = None
+        self._i8_cache = self._i8_cache_gen = None
+        return self
+
+    def lut_bytes(self):
+        """★LUT 경로의 **상주 바이트**(코드 + per-row α). 함정 1 — 저장이 아니라 상주다."""
+        if self._lut_codes is None:
+            return 0
+        return self._lut_codes.numel() * 1 + self._lut_alpha.numel() * 4
 
     def _wq_from_i8(self):
         """int8 코드 + α 를 fp32 로 되돌린다.
@@ -269,9 +327,19 @@ class TLinear(nn.Module):
     def clear_quant(self):
         self._wq = None
         self._i8 = self._alpha = None        # int8 저장도 해제(학습 재개 시 필수)
+        self._lut_codes = self._lut_alpha = None     # ★P014 단계1 LUT 도
         self._i8_cache = self._i8_cache_gen = None   # P034 단계3C 캐시도 함께
 
     def forward(self, x, mode_p=None):
+        if self._lut_codes is not None:          # ★★P014 단계1: LUT 배포 경로(1.600 bpw)
+            from .lut import lut_linear, TRITS_PER_BYTE
+            y = lut_linear(x, self._lut_codes, TRITS_PER_BYTE, self._lut_ipad,
+                           alpha=self._lut_alpha,
+                           out_chunk=int(getattr(self.cfg, "lut_out_chunk", 0) or 0))
+            if self.use_mode and mode_p is not None:
+                h = F.linear(x, self.mode_a) * (mode_p @ self.mode_gain)
+                y = y + F.linear(h, self.mode_b)
+            return y
         if getattr(self.cfg, "use_ternary_kernel", False):   # 분리된 커스텀 커널 경로(기본 off)
             if self._latent_shape is not None:
                 raise RuntimeError("latent 해제 상태에서는 커스텀 커널 경로를 쓸 수 없다 "

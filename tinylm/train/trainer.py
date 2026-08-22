@@ -118,6 +118,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
           attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
           reuse_attn_on_dup=False,
+          tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
           save_every=0):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
@@ -139,8 +140,27 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     #   이 인자를 받아, **필터 캐시를 만들 수는 있는데 그것으로 학습할 방법이 없었다**
     #   (결과 023 §2 의 "분리해서 쓰는 것과 분리한 것을 읽는 것은 별개 작업" 과 같은 계열).
     meta = prepare(data, int(pool_tokens) if pool_tokens else n_tokens, exact=exact_cache,
-                   doc_filter=doc_filter, doc_min_chars=doc_min_chars)
+                   doc_filter=doc_filter, doc_min_chars=doc_min_chars, hf_tok=tokenizer_hf)
     cfg = build_config(preset, arch, seq, ckpt)
+    # ★★P067(2026-08-22) — **외부 토크나이저면 어휘가 바뀐다.**
+    #   ⚠️여기서 `cfg.vocab_size` 를 안 고치면 임베딩이 32,768 인 채로 id 151,935 가 들어와
+    #   **IndexError 또는 (더 나쁘게) 조용한 오참조**가 난다.
+    #   ★교사 config 의 `vocab_size` 를 **최우선 정본**으로 쓴다 — KD 의 KL 이 그 축 위에서
+    #   계산되므로 토크나이저 어휘가 아니라 **교사 임베딩 폭**과 맞아야 한다.
+    if tokenizer_hf or kd_teacher_hf:
+        from ..hf_spec import teacher_spec
+        _src = kd_teacher_hf or tokenizer_hf
+        _sp = teacher_spec(_src)
+        _v = int(_sp["vocab_size"])
+        print(f"[P067] ★어휘를 {cfg.vocab_size:,} -> **{_v:,}** 로 바꾼다 (출처 {_sp['arch']})")
+        print(f"[P067]   임베딩 파라미터 {cfg.vocab_size * cfg.dim / 1e6:.1f}M -> "
+              f"**{_v * cfg.dim / 1e6:.1f}M** (사용자 지시: 모델 크기 증가는 감수)")
+        print(f"[P067] ⚠️★이 런은 **기존 런과 CE 를 직접 비교할 수 없다** — val 토큰 경계가 "
+              f"다르다(함정 2). 교차비교는 `scripts/common_bpb.py` 만 유효하다.")
+        if _sp["text_only"] is False:
+            print(f"[P067] ⚠️★이 교사는 **멀티모달**이다({_sp['model_type']}). "
+                  f"`AutoModelForCausalLM` 이 텍스트 경로만 실을 수 있는지 확인할 것.")
+        cfg.vocab_size = _v
     if mlp_group and arch == "tied":            # g 스윕용 오버라이드(P003)
         assert cfg.n_middle % mlp_group == 0, f"n_middle {cfg.n_middle} % g {mlp_group} != 0"
         cfg.mlp_group = mlp_group
@@ -244,7 +264,15 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         init_from_dense(model, init_from, device, depth_init=depth_init)
 
     teacher = None
-    if kd and not kd_cache:
+    # ★★P067 — 외부 HF 교사가 우선한다. 우리 dense 교사와 **동시에 쓰지 않는다.**
+    if kd_teacher_hf:
+        from .hf_teacher import HFTeacher
+        assert kd, "--kd-teacher-hf 는 --kd 와 함께 준다"
+        teacher = HFTeacher(kd_teacher_hf, cfg.vocab_size, device, dtype=teacher_dtype)
+        print(f"[kd] ★외부 교사 사용 (alpha={kd_alpha}, T={kd_temp}) — "
+              f"🚫우리 dense 교사는 로드하지 않는다")
+        print(f"[kd] ★★이 실험이 묻는 것: 결과 038 의 'KD 무익' 이 **KD 탓인가 교사 탓인가**")
+    elif kd and not kd_cache:
         teacher, _ = load_dense(kd if isinstance(kd, str) else CKPT / "dense.pt", device)
         teacher.eval(); teacher.set_anneal(1.0)
         for p in teacher.parameters():
@@ -671,6 +699,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "train_repeat": float(getattr(cfg, "train_repeat", 1.0)),   # (P049B) 학습 시 재귀 배수
            "repeat_mode": str(getattr(cfg, "repeat_mode", "uniform")),
            "reuse_attn_on_dup": bool(getattr(cfg, "reuse_attn_on_dup", False)),
+           "tokenizer_hf": (str(tokenizer_hf) if tokenizer_hf else None),   # ★P067
+           "kd_teacher_hf": (str(kd_teacher_hf) if kd_teacher_hf else None),
+           "teacher_dtype": str(teacher_dtype),
+           "vocab_size": int(cfg.vocab_size),
            "save_every": int(save_every or 0),                     # (P058)
            "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용
            "arenas": bool(arenas), "arena_lambda": arena_lambda,  # (P036) Arenas residual

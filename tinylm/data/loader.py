@@ -9,7 +9,16 @@ import torch
 
 class Loader:
     def __init__(self, split, bs, seq, device, cache_dir, seed=1234):
-        self.d = np.memmap(Path(cache_dir) / f"{split}.bin", dtype=np.uint16, mode="r")
+        # ★★P067(2026-08-22) — 토큰 dtype 은 **meta.json 이 정본**이다.
+        #   외부 토크나이저(Qwen3 151,936 / Gemma3 262,144)는 uint16 을 넘어 uint32 로 저장된다.
+        #   🚫여기서 uint16 을 하드코딩하면 **바이트를 반씩 잘라 읽고** 손실은 정상처럼 보인다.
+        import json as _json
+        _mp = Path(cache_dir) / "meta.json"
+        _td = np.dtype("uint16")
+        if _mp.exists():
+            _td = np.dtype(_json.loads(_mp.read_text()).get("token_dtype", "uint16"))
+        self.token_dtype = _td
+        self.d = np.memmap(Path(cache_dir) / f"{split}.bin", dtype=_td, mode="r")
         self.bs, self.seq, self.device = bs, seq, device
         self.rng = np.random.default_rng(seed)
 

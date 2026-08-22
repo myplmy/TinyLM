@@ -79,6 +79,19 @@ def main():
                    help="(P031) 분수 R 에서 어디를 더/덜 돌지. 결과가 이것에 의존한다")
     p.add_argument("--repeat-kv-reuse", action="store_true",
                    help="(P031) 반복 통과에서 KV 를 재계산하지 않고 첫 통과 것을 재사용(대조 조건)")
+    # ★★P067(2026-08-22 사용자 지시) — **외부 토크나이저·외부 교사.**
+    #   목적: (1) 더 나은 교사로 학습 효율이 오르는가 (2) ★**KD 가 무익했던 것이
+    #   "우리 dense 가 무능해서" 였는지** — 결과 038 은 그 둘을 구분하지 못했다.
+    #   ⚠️**세 플래그 전부 기본 None = 종전 = 비트 동일.**
+    p.add_argument("--tokenizer-hf", default=None, metavar="HF폴더",
+                   help="★(P067) 외부 HF 모델의 tokenizer.json 으로 토큰화한다. "
+                        "**데이터 캐시가 분리되고 vocab_size 가 그 어휘로 바뀐다**")
+    p.add_argument("--kd-teacher-hf", default=None, metavar="HF폴더",
+                   help="★(P067) KD 교사를 외부 HF CausalLM 으로. "
+                        "⚠️**어휘가 학생과 같아야 한다** — 보통 --tokenizer-hf 와 같은 폴더")
+    p.add_argument("--teacher-dtype", choices=["bf16", "fp16", "fp32"], default="bf16",
+                   help="(P067) 외부 교사 실행 dtype. 기본 bf16(원본 dtype). "
+                        "★로짓은 어느 경우든 fp32 로 올려서 KD 에 넘긴다")
     p.add_argument("--reuse-attn-on-dup", action="store_true",
                    help="★P049 §17.3 — 재귀 **두 번째 이후 통과에서 어텐션 출력을 재사용**"
                         "(041 §17 복제층 cos 0.9882). 학습·추론 **양쪽에 같은 값**을 준다(함정 39)")
@@ -219,7 +232,7 @@ def main():
 
     if a.cmd == "prepare":
         from .data import prepare
-        prepare(a.data, pool_tok if pool_tok else n_tok, exact=a.exact_cache,
+        prepare(a.data, pool_tok if pool_tok else n_tok, exact=a.exact_cache, hf_tok=a.tokenizer_hf,
                 doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars)
 
     elif a.cmd == "kdcache":
@@ -264,6 +277,8 @@ def main():
               attn_group=a.attn_group, train_repeat=a.train_repeat,
               repeat_mode=a.repeat_mode, repeat_block=a.repeat_block,
               reuse_attn_on_dup=a.reuse_attn_on_dup,
+              tokenizer_hf=a.tokenizer_hf, kd_teacher_hf=a.kd_teacher_hf,
+              teacher_dtype=a.teacher_dtype,
               save_every=a.save_every)
 
     elif a.cmd == "all":
@@ -311,7 +326,7 @@ def main():
         from .data import prepare, Loader
         from .eval import evaluate
         from .infer import load_model
-        meta = prepare(a.data, n_tok)
+        meta = prepare(a.data, n_tok, hf_tok=getattr(a, 'tokenizer_hf', None))
         ckp = a.ckpt_path or str(paths.resolve_ckpt(preset, a.data, tokstr,
                                                     a.tag if a.tag else a.arch))
         model, cfg, device = load_model(a.arch, ckp)

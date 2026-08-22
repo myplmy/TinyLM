@@ -73,7 +73,16 @@ def main():
     ap.add_argument("--seq", type=int, default=1024)
     ap.add_argument("--micro-bs", type=int, default=8)
     ap.add_argument("--device", default=None)
+    ap.add_argument("--tokenizer-hf", nargs="*", default=None, metavar="TAG=폴더",
+                    help="★(P067) 태그별 외부 토크나이저. 예: mC_q3teach=HF/models--Qwen3-0.6B-Base")
     a = ap.parse_args()
+
+    # ★태그 -> 외부 토크나이저 폴더
+    _tokmap = {}
+    for spec in (a.tokenizer_hf or []):
+        assert "=" in spec, f"형식은 TAG=폴더 다: {spec}"
+        k, v = spec.split("=", 1)
+        _tokmap[k.strip()] = v.strip()
 
     import numpy as np
     import torch
@@ -113,7 +122,17 @@ def main():
         if not ck.exists():
             print(f"\n  [건너뜀] 체크포인트 없음: {ck.name}")
             continue
-        tok = Tokenizer.from_file(str(tokenizer_path(data)))
+        # ★★P067(2026-08-22) — 외부 토크나이저로 학습한 체크포인트는 **그 토크나이저**로 재야 한다.
+        #   `--tokenizer-hf TAG=<폴더>` 로 태그별 지정. 없으면 종전(우리 BPE) = 비트 동일.
+        #   ⚠️★**common bpb 는 P067 런을 기존 런과 비교하는 유일한 유효 경로**다 —
+        #   여기서 토크나이저를 틀리면 그 경로마저 무효가 된다.
+        _hf = _tokmap.get(tag)
+        if _hf:
+            from tinylm.hf_spec import load_hf_tokenizer
+            tok, _td = load_hf_tokenizer(_hf)
+            print(f"  [P067] {tag}: 외부 토크나이저 {_td}")
+        else:
+            tok = Tokenizer.from_file(str(tokenizer_path(data)))
         ids = tok.encode(text).ids
         n_tok = len(ids)
         bpt = n_bytes / max(n_tok, 1)            # ★이 모델 토크나이저의 bytes/token

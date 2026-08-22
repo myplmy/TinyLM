@@ -134,14 +134,32 @@ def cmd_build(rows, pick: str):
     if not ids:
         print("[queue] 입력이 없다. 취소.")
         return 2
+    # ★★2026-08-22 — **배치 이름도 받는다.** 숫자 id 만 받던 것이 함정 36 의 원인이었다:
+    #   표에 한 줄만 추가해도 **id 가 전부 밀려서** 핸드오프에 적어 둔 "0 5 3 4 7" 이
+    #   조용히 다른 실험을 가리킨다. **이름은 밀리지 않는다.**
+    #   `run_` 접두사와 `.bat` 는 생략해도 된다.
+    def _match(tok):
+        if tok.isdigit() and int(tok) < len(av):
+            return av[int(tok)]
+        t = tok if tok.endswith(".bat") else tok + ".bat"
+        t = t if t.startswith("run_") else "run_" + t
+        for r in av:
+            if r["batch"].lower() == t.lower():
+                return r
+        # 부분 일치 — 하나만 걸릴 때만 받는다(모호하면 거절)
+        cand = [r for r in av if tok.lower() in r["batch"].lower()]
+        return cand[0] if len(cand) == 1 else None
+
     chosen, bad = [], []
     for t in ids:
-        if not t.isdigit() or int(t) >= len(av):
+        r = _match(t)
+        if r is None:
             bad.append(t)
             continue
-        chosen.append(av[int(t)])
+        chosen.append(r)
     for t in bad:
-        print(f"[queue] [SKIP] 알 수 없는 id: {t}")
+        print(f"[queue] [SKIP] 알 수 없는 id/이름: {t}  "
+              f"(숫자 id · 배치 파일명 · 고유한 부분문자열 중 하나여야 한다)")
     if not chosen:
         print("[queue] 유효한 id 가 없다. 취소.")
         return 2

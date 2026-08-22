@@ -126,8 +126,13 @@ def _ensure_bpt(meta):
         return meta
     try:
         from tokenizers import Tokenizer
-        tok = Tokenizer.from_file(str(tokenizer_path(meta["data"])))
-        d = np.memmap(Path(meta["dir"]) / "val.bin", dtype=np.uint16, mode="r")
+        if meta.get("hf_tokenizer"):
+            from ..hf_spec import load_hf_tokenizer
+            tok, _ = load_hf_tokenizer(meta["hf_tokenizer"])
+        else:
+            tok = Tokenizer.from_file(str(tokenizer_path(meta["data"])))
+        _td = np.dtype(meta.get("token_dtype", "uint16"))
+        d = np.memmap(Path(meta["dir"]) / "val.bin", dtype=_td, mode="r")
         ids = d[:min(len(d), 500_000)].tolist()
         meta["bytes_per_token"] = len(tok.decode(ids).encode("utf-8")) / max(len(ids), 1)
         mp = Path(meta["dir"]) / "meta.json"
@@ -165,7 +170,14 @@ def spam_signature(text, min_chars=50_000):
 
 
 def prepare(name, n_tokens, val_frac=0.005, exact=False,
-            doc_filter=False, doc_min_chars=50_000):
+            doc_filter=False, doc_min_chars=50_000, hf_tok=None):
+    """★P067(2026-08-22) — `hf_tok` 은 **외부 HF 모델 폴더 경로**다.
+
+    주면 우리 BPE 대신 그 모델의 `tokenizer.json` 으로 토큰화하고
+    ★**캐시 디렉터리에 `_tok-<이름>` 접미사**를 붙인다.
+    🚫**기존 캐시를 덮어쓰지 않는다** — 토큰 id 가 완전히 다르므로 섞이면 재앙이다.
+    ⚠️`uint16` 저장이므로 **어휘 65,536 을 넘으면 `uint32` 로 올린다**(아래 `_dt`).
+    """
     """exact=True 면 상위호환(_find_reusable)을 쓰지 않고 **정확히 {name}_{n_tokens}** 캐시만 사용한다.
     (있으면 그 캐시, 없으면 정확히 그 크기로 신규 생성.) 토큰스윕처럼 '모든 예산이 같은 풀에서 샘플'해야
     할 때, 더 큰 캐시가 존재해도 특정 크기를 콕 집어 요청하는 용도."""
@@ -174,7 +186,10 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
 
     if name != "synthetic":
         if exact:
-            d = DATA_CACHE / (f"{name}_{n_tokens}" + ("_filtered" if doc_filter else ""))
+            _sfx = ("_filtered" if doc_filter else "")
+            if hf_tok:
+                _sfx += "_tok-" + Path(str(hf_tok)).name.replace("models--", "").replace("--", "-")
+            d = DATA_CACHE / (f"{name}_{n_tokens}" + _sfx)
             if (d / "meta.json").exists() and (d / "train.bin").exists():
                 m = json.loads((d / "meta.json").read_text()); m["dir"] = str(d)
                 print(f"[data] 정확 캐시 사용(exact, 상위호환 무시): {n_tokens/1e6:.1f}M ({name}) -> {d}")
@@ -190,6 +205,9 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
     # ★P037 단계2: 필터를 켜면 **다른 디렉터리**에 쓴다. 기존 캐시로 학습한 런들이
     #   자기 로그와 계속 비교 가능해야 하므로 덮어쓰지 않는다(결과 018 §5).
     suffix = "_filtered" if doc_filter else ""
+    # ★P067 — 외부 토크나이저면 **완전히 다른 캐시**다. 접미사로 분리한다.
+    if hf_tok:
+        suffix += "_tok-" + Path(str(hf_tok)).name.replace("models--", "").replace("--", "-")
     cache_dir = DATA_CACHE / f"{name}_{n_tokens}{suffix}"
     cache_dir.mkdir(parents=True, exist_ok=True)
 
@@ -203,9 +221,29 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
             ph = phrases[rng.integers(len(phrases))]
             out.append(ph); n += len(ph)
         arr = np.concatenate(out)[:n_tokens].astype(np.uint16)
+        _v, _dt = VOCAB, np.uint16
     else:
-        tok = build_tokenizer(name)
-        eos = tok.token_to_id("<eos>") or 2
+        if hf_tok:
+            # ★P067 — 외부 토크나이저. **우리 BPE 를 학습하지 않는다.**
+            from ..hf_spec import load_hf_tokenizer
+            tok, _tokdir = load_hf_tokenizer(hf_tok)
+            _v = tok.get_vocab_size()
+            eos = (tok.token_to_id("<eos>") or tok.token_to_id("<|endoftext|>")
+                   or tok.token_to_id("<end_of_turn>") or 1)
+            print(f"[tok] ★외부 토크나이저 사용: {_tokdir}  어휘 {_v:,}  eos={eos}")
+            print(f"[tok] ⚠️★이 캐시는 **기존 캐시와 직접 비교 불가**다 — 토큰 경계가 다르다"
+                  f"(함정 2). 교차비교는 `scripts/common_bpb.py` 로만.")
+        else:
+            tok = build_tokenizer(name)
+            _v = VOCAB
+            eos = tok.token_to_id("<eos>") or 2
+        # ★★P067 — **`uint16` 은 65,536 까지다.** Qwen3 151,936 · Gemma3 262,144 는 넘는다.
+        #   넘는데 uint16 으로 쓰면 **토큰 id 가 조용히 wrap 된다** — 손실이 정상으로 보이고
+        #   모델은 쓰레기를 배운다. 이 저장소가 가장 두려워하는 종류의 사고다.
+        _dt = np.uint16 if _v <= 65536 else np.uint32
+        if _dt is np.uint32:
+            print(f"[tok] ★어휘 {_v:,} > 65,536 → 토큰 저장 dtype 을 **uint32** 로 올린다"
+                  f"(캐시가 2배가 된다). meta.json 의 'token_dtype' 이 정본이다.")
         buf, total, total_bytes = [], 0, 0
         t0 = time.time()
         n_drop, n_drop_chars = 0, 0
@@ -229,7 +267,7 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
                 n_drop_chars += len(text)
                 continue
             ids = tok.encode(text).ids
-            buf.append(np.array(ids + [eos], dtype=np.uint16))
+            buf.append(np.array(ids + [eos], dtype=_dt))
             total += len(ids) + 1
             src_tok[src_i] += len(ids) + 1
             src_doc[src_i] += 1
@@ -273,7 +311,10 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
     n_val = max(1, int(len(arr) * val_frac))
     arr[:-n_val].tofile(cache_dir / "train.bin")
     arr[-n_val:].tofile(cache_dir / "val.bin")
-    meta = {"data": name, "tokens": int(len(arr)), "vocab": VOCAB,
+    meta = {"data": name, "tokens": int(len(arr)),
+            "vocab": (_v if name != "synthetic" else VOCAB),
+            "token_dtype": str(np.dtype(_dt if name != "synthetic" else np.uint16).name),
+            "hf_tokenizer": (str(hf_tok) if hf_tok else None),
             "train": int(len(arr) - n_val), "val": int(n_val), "dir": str(cache_dir)}
     if name != "synthetic":
         meta["bytes_per_token"] = total_bytes / max(total, 1)

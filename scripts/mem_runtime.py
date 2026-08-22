@@ -100,6 +100,11 @@ def main():
                     help="(P034 단계5) 임베딩 양자화. ★bf16 은 복원이 없다(계산이 이미 bf16)")
     ap.add_argument("--emb-chunk", type=int, default=0,
                     help="(P034 단계5) 헤드를 어휘 축으로 자르는 크기. 0=끄기. 4096 이면 버퍼 4MiB")
+    ap.add_argument("--lut", action="store_true",
+                    help="★★(P014 단계1) LUT 배포 경로 — 삼진을 **1.600 bpw** 코드로. "
+                         "int8(8비트)의 5배를 회수한다. ⚠️per-row alpha 로 재추정된다")
+    ap.add_argument("--lut-out-chunk", type=int, default=0,
+                    help="(P014) LUT gather 결과 (B,J,O) 를 출력채널로 나눈다. 0=한 번에")
     ap.add_argument("--unpack-cache", action="store_true",
                     help="P034 단계3C — int8 언팩을 유니크 모듈당 1회로. **로짓 게이트가 이걸 검증한다** "
                          "(캐시는 직전 텐서를 그대로 재사용하므로 0.000e+00 이 나와야 한다)")
@@ -158,7 +163,13 @@ def main():
             with torch.no_grad():
                 before = model(ids).float().clone()
             model.drop_latent()
-            if a.int8_store:
+            if a.lut:
+                # ★★P014 단계1 — LUT 배포 경로. **1.600 bpw.**
+                #   ⚠️로짓 동등성 게이트가 **0 이 아니다** — per-row alpha 재추정 때문이다.
+                #   그것이 이 경로의 알려진 대가이고, 아래 판정이 그 조건을 따로 인쇄한다.
+                model.cfg.lut_out_chunk = int(a.lut_out_chunk or 0)
+                model.to_lut()
+            elif a.int8_store:
                 model.to_int8()        # ★단계3 — 단계2 위에 얹는다(fp32 사본 → int8 코드+α)
                 if a.unpack_cache:
                     model.enable_unpack_cache(True)   # ★단계3C — 게이트가 비트 동일성을 본다
@@ -186,11 +197,24 @@ def main():
         print(f"     ★저장 대비 상주    {(lat+wq+oth)/packed:8.1f} 배")
         if drop is not None:
             lat2, wq2, oth2, res2, pk2, dmax, r3 = drop
-            gate = "통과" if dmax == 0.0 else ("경계" if dmax < 1e-5 else "★실패")
-            _stg = "단계2+3 (latent 해제 + int8 저장)" if a.int8_store else "단계2 (latent 해제)"
+            if a.lut:
+                # ★LUT 는 per-row alpha 로 재추정하므로 **0 이 아닌 것이 정상**이다.
+                #   기준은 결과 028 의 per-row 대가(+0.0038~0.0068 bpb).
+                gate = "통과(LUT 기준)" if dmax < 1.0 else "★실패"
+                _stg = "★P014 단계1 (latent 해제 + **LUT 1.600bpw**)"
+            else:
+                gate = "통과" if dmax == 0.0 else ("경계" if dmax < 1e-5 else "★실패")
+                _stg = "단계2+3 (latent 해제 + int8 저장)" if a.int8_store else "단계2 (latent 해제)"
             print(f"     ── P034 {_stg} " + "─" * 30)
-            print(f"     로짓 동등성 게이트  max|dlogit| = {dmax:.3e}   {gate}"
-                  f"   (해제는 계산을 바꾸지 않으므로 0 이어야 한다)")
+            if a.lut:
+                print(f"     로짓 차이         max|dlogit| = {dmax:.3e}   {gate}")
+                print(f"     ⚠️★**0 이 아닌 것이 정상**이다 — LUT 는 per-row alpha 로 재추정한다"
+                      f"(768 에 5의 배수 약수가 없다). 대가는 결과 028: +0.0038~0.0068 bpb")
+                print(f"     ★LUT 상주(코드+alpha) {model.lut_bytes()/2**20:8.2f} MiB  "
+                      f"= 삼진 {model.mem_breakdown()['params']['ternary']/1e6:.2f}M x 1.600 bpw")
+            else:
+                print(f"     로짓 동등성 게이트  max|dlogit| = {dmax:.3e}   {gate}"
+                      f"   (해제는 계산을 바꾸지 않으므로 0 이어야 한다)")
             print(f"     텐서합산 상주     {res2:8.1f} MB  "
                   f"= latent {lat2:.1f} + 삼진사본 {wq2:.1f} + 기타 {oth2:.1f}")
             print(f"     RSS 해제후        {r3:8.1f} MB")

@@ -54,10 +54,16 @@ if defined TL_EXPAND echo [queue] ***peak reserved from this session is NOT comp
 
 
 python scripts\queue_menu.py --list
+echo.
+echo   You can type NUMBERS, or batch NAMES, or unique fragments of names.
+echo   Names are safer: adding a row to experiments.tsv shifts every number,
+echo   but it does not move a name. A handoff that says P062_stage2 keeps
+echo   meaning P062_stage2 next week.
+echo   Examples:   0 5 3 4 7        or        P065_stage2 P062_stage2
 if errorlevel 1 goto MENUBAD
 
 set TL_PICK=
-set /p TL_PICK=ids to run, in order, space separated:
+set /p TL_PICK=ids OR batch names, in order, space separated:
 if not defined TL_PICK goto NOTHING
 
 python scripts\queue_menu.py --build "!TL_PICK!"

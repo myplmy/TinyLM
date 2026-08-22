@@ -1,7 +1,7 @@
 @echo off
 REM =============================================================================
 REM  P014 stage 0  -  LUT reference implementation gate. No training, no GPU.
-REM                   about 2 minutes
+REM                   plus stage 1 residency on the real model. about 20 minutes
 REM
 REM  WHY NOW  (2026-08-22 user instruction: start the LUT kernel)
 REM    Result 052 s3.1 settled it: int8 ternary cannot reach 40 MiB resident.
@@ -54,7 +54,17 @@ python scripts\runlog.py --name P014_stage0_lut_ref -- python scripts\diag_lut_k
 if errorlevel 1 echo [WARN] checkpoint pass failed - continuing
 
 echo.
-python scripts\runlog.py --name P014_stage0_lut_ref --note "=============================================================================" "READ IN THIS ORDER" "1. L1. A single mismatch means the packing format is broken and nothing" "   below it means anything." "2. L2 and L3. These are exact arithmetic - anything above 1e-6 is a bug," "   not a rounding effect." "3. L4. Expect 1.600. Result 052 assumed 1.71 - if they disagree, 052 was an" "   assumption and this is a measurement." "4. L5 part (A) must land within 1 MiB of 18.3. If it does not, say so - do" "   not quietly adopt the new number (trap 34: suspect the reference value)." "5. L5 part (B) is NEW. The standard model has a full embedding, so its LUT" "   number is larger than 18.3. That is the number that matters now." "NEXT  P014B owns the speed question (U1: is LUT a win at dim 768)." "=============================================================================="
+python scripts\runlog.py --name P014_stage0_lut_ref --note "[3/4] STAGE 1 - the LUT deployment path on the real model, resident memory"
+python scripts\runlog.py --name P014_stage0_lut_ref -- python scripts\mem_runtime.py --preset m100R1d --data ko-en --tokens 300M --models mC_d36_ag4_nokd --device cpu --drop-latent --lut --lut-out-chunk 512
+if errorlevel 1 echo [WARN] lut residency failed - continuing
+
+echo.
+python scripts\runlog.py --name P014_stage0_lut_ref --note "[4/4] the int8 path on the SAME model, so the two numbers are comparable"
+python scripts\runlog.py --name P014_stage0_lut_ref -- python scripts\mem_runtime.py --preset m100R1d --data ko-en --tokens 300M --models mC_d36_ag4_nokd --device cpu --drop-latent --int8-store
+if errorlevel 1 echo [WARN] int8 residency failed - continuing
+
+echo.
+python scripts\runlog.py --name P014_stage0_lut_ref --note "=============================================================================" "READ IN THIS ORDER" "1. L1. A single mismatch means the packing format is broken and nothing" "   below it means anything." "2. L2 and L3. These are exact arithmetic - anything above 1e-6 is a bug," "   not a rounding effect." "3. L4. Expect 1.600. Result 052 assumed 1.71 - if they disagree, 052 was an" "   assumption and this is a measurement." "4. L5 part (A) must land within 1 MiB of 18.3. If it does not, say so - do" "   not quietly adopt the new number (trap 34: suspect the reference value)." "5. L5 part (B) is NEW. The standard model has a full embedding, so its LUT" "   number is larger than 18.3. That is the number that matters now." "6. step [3] versus step [4] is THE number - LUT resident against int8 resident" "   on the SAME checkpoint. Expect about 5x on the ternary term: int8 spends 8" "   bits where the information content is 1.585." "7. step [3] logit difference is NOT zero and that is CORRECT. LUT re-estimates" "   alpha per row, because 768 has no divisor that is a multiple of 5. The cost" "   was measured in result 028: +0.0038 to 0.0068 bpb, under the 0.008 ruler." "   If it is far larger than that, the alpha re-estimation is wrong." "NEXT  P014B owns the speed question (U1: is LUT a win at dim 768)." "=============================================================================="
 if not defined TL_NOPAUSE pause
 exit /b 0
 

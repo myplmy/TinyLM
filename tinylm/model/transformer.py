@@ -96,6 +96,7 @@ class TiedMLPTransformer(nn.Module):
         self._tlinear_cache = list(self._tlinears())   # ②: 매 forward 모듈 트리 순회 제거(plain list)
         self._quant_frozen = False                     # freeze_quant() 참조(추론 전용 최적화)
         self._int8_store = False                       # P034 단계3
+        self._lut_store = False                        # ★P014 단계1 (LUT 배포 경로)
         self._unpack_cache = False                     # P034 단계3C (기본 off = 종전 경로)
         self._unpack_gen = 0
         self._cacheable_mlps = []
@@ -182,6 +183,33 @@ class TiedMLPTransformer(nn.Module):
 
     def int8_stored(self):
         return getattr(self, "_int8_store", False)
+
+    def to_lut(self):
+        """★★P014 단계1 — 삼진을 **LUT 코드(1.600 bpw)** 로 바꾼다. 되돌릴 수 없다.
+
+        정상 순서: `freeze_quant()` -> `drop_latent()` -> **`to_lut()`**.
+        `to_int8()` 을 먼저 불렀으면 그것을 이어받고, 안 불렀으면 내부에서 부른다.
+
+        ★**이것이 40 MiB 목표의 필수 조건**이다 — 결과 052 §3.1: int8 로는 임베딩을
+        ternary 까지 눌러도 39.5 로 아슬하고, LUT 면 여유가 생긴다.
+        """
+        if not self._quant_frozen:
+            raise RuntimeError("to_lut() 전에 freeze_quant() 가 필요하다.")
+        for m in self._tlinear_cache:
+            m.to_lut()
+        self._int8_store = False
+        self._lut_store = True
+        n = sum(m.lut_bytes() for m in self._tlinear_cache)
+        print(f"[lut] ★삼진 {len(self._tlinear_cache)}개 층 -> LUT 코드. "
+              f"상주 {n/2**20:.2f} MiB (코드 + per-row alpha)")
+        print(f"[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다"
+              f"(+0.0038~0.0068 bpb, 분해능 0.008 미만)")
+
+    def lut_stored(self):
+        return getattr(self, "_lut_store", False)
+
+    def lut_bytes(self):
+        return sum(m.lut_bytes() for m in self._tlinear_cache)
 
     # ---------- P034 단계5 : 임베딩 (★설계 미완 — 구현하지 않는다) ----------
     #
@@ -736,7 +764,15 @@ class TiedMLPTransformer(nn.Module):
         #   P034 단계2 로 latent 를 해제하면 **1벌**이 된다(= 이 값이 절반 근처로 떨어진다).
         copies = 1 if self.latent_dropped() else 2
         # ★P034 단계3: 삼진 사본이 int8(1바이트) + 그룹 α(fp32, 파라미터당 4/micro_group 바이트)
-        if self.int8_stored():
+        if self.lut_stored():
+            # ★★P014 단계1 — 코드 1바이트/5가중치 + **행당** alpha 4바이트.
+            #   ⚠️`micro_group` 이 식에 **없다** — per-row 이기 때문이다(함정 1 계열:
+            #   같은 이름의 항이 경로마다 다른 양을 가리킨다).
+            from .lut import packed_bytes as _pb
+            _rows = sum(m.out_f for m in self._tlinear_cache)
+            tern_bytes = _pb(tern) + _rows * 4
+            runtime_mb = (tern_bytes + (mode + lora) * 4 + (emb + other) * 4) / 1024 ** 2
+        elif self.int8_stored():
             tern_bytes = tern * (1 + 4 / cfg.micro_group)
             runtime_mb = (tern_bytes + (mode + lora) * 4 + (emb + other) * 4) / 1024 ** 2
         else:
@@ -746,6 +782,7 @@ class TiedMLPTransformer(nn.Module):
                 "runtime_mb": runtime_mb,
                 "runtime_copies": copies,        # 2 = latent + dequant / 1 = P034 단계2 적용
                 "int8_stored": self.int8_stored(),   # P034 단계3
+                "lut_stored": self.lut_stored(),     # ★P014 단계1
                 "latent_dropped": copies == 1,
                 "parts_mb": parts,
                 "params": {"ternary": tern, "mode": mode, "emb": emb, "other": other, "lora": lora,

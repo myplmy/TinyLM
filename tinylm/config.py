@@ -103,6 +103,9 @@ class TMTConfig:
     #   ⚠️`infer_repeat`/`train_repeat` 이 1.0 이면 **죽은 코드 = 비트 동일**.
     #   ⚠️학습·추론 **양쪽에서 같은 값**을 써야 한다(함정 39).
     reuse_attn_on_dup: bool = False
+    # ★★P014 단계1(2026-08-22) — LUT 배포 경로의 출력채널 청크.
+    #   0 = 한 번에. gather 결과 `(B, J, O)` 가 크면 여기서 나눈다(수학적으로 동일).
+    lut_out_chunk: int = 0
 
     # ── P036 단계0 : Arenas (Annealing Residual Synapse), arXiv:2601.07892 §3.2 ──
     #   Y = X·Tα + λ_t·X·W          (논문 식 7)

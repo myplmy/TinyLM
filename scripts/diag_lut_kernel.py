@@ -43,11 +43,13 @@ def banner(s, ch="="):
 
 def main():
     ap = argparse.ArgumentParser(description="P014 단계0 LUT 참조 구현 게이트 (학습 0)")
-    ap.add_argument("--g", type=int, default=4, help="LUT 묶음 크기. 3^g 로 폭발하므로 4 권장")
+    ap.add_argument("--g", type=int, default=5,
+                    help="LUT 묶음 크기. ★5 가 정본 — 5트릿=1바이트라 **바이트가 곧 인덱스**다")
     ap.add_argument("--dim", type=int, default=768)
     ap.add_argument("--out", type=int, default=2048)
     ap.add_argument("--batch", type=int, default=8)
-    ap.add_argument("--micro-group", type=int, default=128)
+    ap.add_argument("--micro-group", type=int, default=0,
+                    help="0 = per-row(LUT 가 요구하는 것). 128 은 g=5 와 원리적으로 안 맞는다")
     ap.add_argument("--seed", type=int, default=1337)
     ap.add_argument("--ckpt", default=None, help="실제 체크포인트로 L5 를 잰다")
     a = ap.parse_args()
@@ -101,22 +103,26 @@ def main():
         fails.append(f"L2 상대오차 {rel:.3e} >= 1e-5")
 
     # ── L3
-    banner("L3 — 그룹 스케일 수용 (P014B 게이트 U2)")
-    ng = a.dim // a.micro_group
-    if a.dim % a.micro_group:
-        print(f"  ⚠️ dim {a.dim} 이 micro_group {a.micro_group} 의 배수가 아니다 — L3 건너뜀")
-    else:
-        alpha = torch.rand(a.out, ng) * 0.05 + 0.01
-        y_lut_a = L.lut_linear(x, codes, a.g, i_pad, alpha=alpha, group=a.micro_group)
-        wf = w.to(torch.float32).reshape(a.out, ng, a.micro_group) * alpha.unsqueeze(-1)
-        y_ref_a = x @ wf.reshape(a.out, a.dim).t()
-        rel_a = float((y_lut_a - y_ref_a).abs().max() / y_ref_a.abs().max().clamp(min=1e-12))
-        print(f"  그룹 {ng}개 x {a.micro_group}원소, alpha {tuple(alpha.shape)}")
-        print(f"  최대 상대오차 **{rel_a:.3e}**   {'✅ 통과' if rel_a < 1e-5 else '🚫 실패'}")
-        print("  ★**우리 커널은 그룹 스케일을 받는다.** BitNet 원형(텐서 스케일)과 다르고,")
-        print("    이것이 외부 커널을 그대로 못 쓰는 이유의 절반이다(P014B §1.1 U2).")
-        if rel_a >= 1e-5:
-            fails.append(f"L3 그룹스케일 상대오차 {rel_a:.3e}")
+    banner("L3 — per-row alpha 수용 (P014B 게이트 U2)")
+    print("  ⚠️★**g=5 에서 그룹 alpha 는 원리적으로 불가능**하다 — I=768 = 2^8 x 3 에")
+    print("     5의 배수인 약수가 없다. per-row 로 간다. **대가는 결과 028 이 이미 쟀다**:")
+    print("     +0.0038~0.0068 bpb, 실무 분해능 0.008 **미만**.")
+    print("  ★`_fused_int8_linear`(P014C 단계2)도 **똑같이 per-row 를 요구**한다 — 우연이")
+    print("    아니라 행당 스케일 하나여야 커널이 누산 뒤 한 번만 곱할 수 있기 때문이다.")
+    alpha = torch.rand(a.out, 1) * 0.05 + 0.01
+    y_lut_a = L.lut_linear(x, codes, a.g, i_pad, alpha=alpha)
+    y_ref_a = x @ (w.to(torch.float32) * alpha).t()
+    rel_a = float((y_lut_a - y_ref_a).abs().max() / y_ref_a.abs().max().clamp(min=1e-12))
+    print(f"\n  최대 상대오차 **{rel_a:.3e}**   {'✅ 통과' if rel_a < 1e-5 else '🚫 실패'}")
+    if rel_a >= 1e-5:
+        fails.append(f"L3 per-row alpha 상대오차 {rel_a:.3e}")
+    # out_chunk 가 결과를 바꾸지 않는지
+    y_ch = L.lut_linear(x, codes, a.g, i_pad, alpha=alpha, out_chunk=256)
+    rel_c = float((y_ch - y_lut_a).abs().max() / y_lut_a.abs().max().clamp(min=1e-12))
+    print(f"  out_chunk=256 vs 한번에 상대오차 {rel_c:.3e}  "
+          f"{'✅' if rel_c < 1e-6 else '🚫'}  (출력채널은 독립 -> 같아야 한다)")
+    if rel_c >= 1e-6:
+        fails.append(f"L3b out_chunk 가 결과를 바꾼다 {rel_c:.3e}")
 
     # ── L4
     banner("L4 — packed bpw 실측")
@@ -176,6 +182,29 @@ def main():
     print("     → ★**LUT 와 임베딩 양자화는 둘 다 필요하고, 표준모델에서는 더 그렇다.**")
     print("  ⚠️★이것은 **계산**이다. 배포 경로가 생기면 `mem_runtime.py` 로 실측한다.")
     print("     ★그리고 **상주**다 — 저장(packed)과 섞지 않는다(함정 1).\n")
+
+    # ── L6  ★통합 경로: TLinear.to_lut() 이 실제로 도는가 (함정 37)
+    banner("L6 — TLinear 통합 경로 (함정 37: 필드가 있다 != 그 경로가 돈다)")
+    from tinylm.config import build_config
+    from tinylm.model.ternary import TLinear
+    cfgt = build_config("tiny", "tied", 128, True)
+    cfgt.micro_group = 0                    # per-row (LUT 요구)
+    lin = TLinear(cfgt, 256, 512)
+    xi = torch.randn(4, 256)
+    lin.refresh_quant(torch.tensor(1.0))
+    y_before = lin(xi).detach().clone()
+    lin.to_lut()
+    y_after = lin(xi).detach()
+    ok_path = lin._lut_codes is not None and lin._i8 is None
+    rel6 = float((y_after - y_before).abs().max() / y_before.abs().max().clamp(min=1e-12))
+    print(f"  to_lut() 후: _lut_codes {tuple(lin._lut_codes.shape)} {lin._lut_codes.dtype} / "
+          f"_i8 {lin._i8}  {'✅ 경로 전환됨' if ok_path else '🚫 전환 안 됨'}")
+    print(f"  상주 {lin.lut_bytes():,} 바이트  (int8 이면 {lin.in_f * lin.out_f:,} 바이트)")
+    print(f"  로짓 상대차 {rel6:.4f}  — ⚠️★**0 이 아닌 것이 정상**(per-row 재추정)")
+    if not ok_path:
+        fails.append("L6 to_lut() 후에도 LUT 경로가 아니다")
+    if rel6 > 0.5:
+        fails.append(f"L6 로짓 차 {rel6:.3f} 가 너무 크다 — alpha 재추정이 틀렸을 수 있다")
 
     banner("판정")
     if fails:

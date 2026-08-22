@@ -40,6 +40,7 @@ REQUIRED = ["seed", "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cach
             "kd_alpha", "kd_temp",                     # ★P055(2026-08-20) — 한 번도 안 실렸다
             "wq_dtype", "emb_chunk",
             "reuse_attn_on_dup",                       # ★P049 §17.3(2026-08-22)
+            "tokenizer_hf", "kd_teacher_hf", "teacher_dtype", "vocab_size",  # ★P067
                              # ★P068 A1 / P034 단계5 (2026-08-22)
             "save_every"]                              # P058
 
@@ -51,7 +52,7 @@ def check(name, d, expect=None):
     # ★2026-08-22 — `kd_alpha`·`kd_temp` 는 **무KD 런에서 정당하게 None** 이다.
     #   지난 세션에 REQUIRED 에만 넣고 nullable 에 안 넣어서 **무KD 팔 7개가 전부 에러**였다.
     #   ⚠️필드를 필수로 만들 때는 **"언제 None 이 정상인가" 를 같이 정한다**(함정 34 계열).
-    nullable = {"pool_tokens", "kd_teacher", "init_from_src", "kd_alpha", "kd_temp"}
+    nullable = {"pool_tokens", "kd_teacher", "init_from_src", "kd_alpha", "kd_temp", "tokenizer_hf", "kd_teacher_hf"}
     for k in REQUIRED:
         if k not in d:
             errs.append(f"필드 누락: {k}")

@@ -100,58 +100,111 @@ def bpw() -> float:
 
 
 # ─────────────────────────────────────────────────────── LUT matmul
-def pattern_table(g: int, device=None) -> torch.Tensor:
+def pattern_table(g: int, device=None, dtype=None):
     """`(3**g, g)` 짜리 **모든 삼진 패턴**. 원소는 {-1,0,1}.
 
-    ⚠️`g` 를 키우면 표가 **3^g 로 폭발**한다. g=4 는 81, g=8 이면 6561.
-    **T-MAC 이 g=4 를 쓰는 이유가 이것**이고, 우리도 그렇게 한다.
+    ⚠️`g` 를 키우면 표가 **3^g 로 폭발**한다. g=4 는 81, g=5 는 243, g=6 이면 729.
+
+    ★★**우리는 g=5 를 쓴다** — T-MAC 이 g=4 인 것과 다르고, **그것이 이 구현의 핵심 설계**다:
+
+        5트릿 = 1바이트 (코드 0~242 < 256)  ->  ★**패킹된 바이트가 곧 LUT 인덱스**다
+
+    g=4 면 패킹(5트릿/바이트)과 인덱싱(4트릿/그룹)이 **어긋나서** 커널이 매번 비트를
+    풀어야 한다. g=5 면 **언팩이 아예 없다.** 표가 3배(81->243) 커지지만 표는
+    **활성값당 한 번** 만들고 **출력 채널 전체가 재사용**하므로 실질 비용이 아니다.
+    ★**1.600 bpw 와 언팩 0 을 동시에 얻는다.**
     """
-    assert 1 <= g <= 5, f"g 는 1~5 (3^g 폭발). 받은 값 {g}"
+    assert 1 <= g <= 6, f"g 는 1~6 (3^g 폭발). 받은 값 {g}"
     idx = torch.arange(3 ** g, device=device)
     cols = [((idx // (3 ** k)) % 3) - 1 for k in range(g)]
-    return torch.stack(cols, dim=1).to(torch.float32)
+    return torch.stack(cols, dim=1).to(dtype or torch.float32)
 
 
-def weight_codes(w_tern: torch.Tensor, g: int) -> tuple[torch.Tensor, int]:
+def weight_codes(w_tern: torch.Tensor, g: int = TRITS_PER_BYTE):
     """삼진 가중치 `(O, I)` 를 **g개씩 묶은 패턴 인덱스** `(O, ceil(I/g))` 로.
 
-    ★**이것이 배포 시 디스크에 있는 것**이다 — 값이 아니라 **인덱스**다.
+    ★**g=5 면 이 결과가 그대로 `pack_trits` 의 출력과 같다** — uint8 한 바이트가
+    한 그룹이고 그 값이 LUT 인덱스다. **저장과 인덱싱이 같은 것**이 되는 지점이다.
+    ★배포 시 디스크에 있는 것은 **값이 아니라 인덱스**다.
     """
     O, I = w_tern.shape
     pad = (-I) % g
     w = torch.nn.functional.pad(w_tern.to(torch.int64), (0, pad))
     c = (w + 1).reshape(O, -1, g)
     p3 = torch.tensor([3 ** k for k in range(g)], dtype=torch.int64, device=w.device)
-    return (c * p3).sum(-1), I + pad
+    codes = (c * p3).sum(-1)
+    dt = torch.uint8 if 3 ** g <= 256 else torch.int16
+    return codes.to(dt), I + pad
 
 
 def lut_linear(x: torch.Tensor, codes: torch.Tensor, g: int, i_pad: int,
-               alpha: torch.Tensor | None = None, group: int = 0) -> torch.Tensor:
-    """★**참조 LUT matmul.** `x (B, I)` · codes `(O, I/g)` -> `(B, O)`.
+               alpha: torch.Tensor | None = None, group: int = 0,
+               out_chunk: int = 0) -> torch.Tensor:
+    """★★**LUT matmul.** `x (..., I)` · codes `(O, I/g)` -> `(..., O)`.
 
     `alpha` 는 **그룹 스케일**(`micro_group`). ★**P014B §1.1 의 게이트 U2 가 여기서 답해진다** —
-    *"커널이 g128 그룹 스케일을 받는가"*. **우리 구현이므로 받는다.** 외부 커널(BitNet 원형)이
-    텐서 스케일만 받는 것과 다르다. **그 차이가 이 파일을 직접 쓰는 이유의 절반**이다.
+    *"커널이 g128 그룹 스케일을 받는가"*. **우리 구현이므로 받는다.**
 
-    🚫**느리다.** 표를 `(B, I/g, 3^g)` 로 통째로 만든다. **정확성과 메모리 증명용**이다.
+    ## ★메모리 — `out_chunk` 가 이 함수의 실용성을 정한다
+
+    표를 만드는 비용은 `B x J x 3^g` 로 작다(B=1, I=768, g=5 -> 154 x 243 = 37K).
+    ⚠️★**큰 것은 gather 결과** `(B, J, O)` 다 — B=8·J=154·O=2048 이면 fp32 **10 MB**.
+    `out_chunk` 로 **출력 채널을 나눠** 그 텐서를 잘게 만든다. **수학적으로 동일**하다
+    (출력 채널끼리 독립이다). 기본 0 = 한 번에.
+
+    ## 🚫**속도에 대한 정직한 말**
+
+    이 구현은 **PyTorch 수준**이고 **GPU 에서 cuBLAS 를 못 이긴다.** 이길 수 없는 이유는
+    구현이 나빠서가 아니라 **gather 가 GEMM 보다 메모리 대역을 더 쓰기** 때문이다.
+    ★**이 경로의 값어치는 상주 메모리**다 — 우리 목적함수가 그것이다(`CLAUDE.md` 첫 줄).
+    속도는 **CPU 배포**에서 `_wq_from_i8()` 의 fp32 복원(층당 2.1~2.2ms)을 없애는 것으로
+    갚는다. **그 측정은 P014B 가 소유한다.**
     """
-    B, I = x.shape
+    shp = x.shape
+    x2 = x.reshape(-1, shp[-1])
+    B, I = x2.shape
     if i_pad > I:
-        x = torch.nn.functional.pad(x, (0, i_pad - I))
-    P = pattern_table(g, x.device).to(x.dtype)                  # (3^g, g)
-    xg = x.reshape(B, -1, g)                                    # (B, J, g)
-    lut = torch.einsum("bjg,pg->bjp", xg, P)                    # (B, J, 3^g)
-    J = xg.shape[1]
-    if alpha is None:
-        idx = codes.t().unsqueeze(0).expand(B, J, codes.shape[0])       # (B, J, O)
-        return lut.gather(2, idx).sum(1)
-    # ★그룹 스케일이 있으면 **묶음 경계마다** 곱한다. group 은 I 축의 원소 수 단위다.
-    assert group % g == 0, f"micro_group {group} 이 LUT g {g} 의 배수여야 한다"
-    per = group // g                                            # 그룹 하나에 든 LUT 묶음 수
-    idx = codes.t().unsqueeze(0).expand(B, J, codes.shape[0])
-    part = lut.gather(2, idx)                                   # (B, J, O)
-    part = part.reshape(B, -1, per, codes.shape[0]).sum(2)      # (B, n_group, O)
-    return (part * alpha.t().unsqueeze(0)).sum(1)
+        x2 = torch.nn.functional.pad(x2, (0, i_pad - I))
+    P = pattern_table(g, x2.device, x2.dtype)                   # (3^g, g)
+    lut = torch.einsum("bjg,pg->bjp", x2.reshape(B, -1, g), P)  # (B, J, 3^g)
+    J, O = lut.shape[1], codes.shape[0]
+    ci = codes.to(torch.int64)
+
+    # ★★α 규약 — **여기가 이 설계의 유일한 제약**이고 숨기지 않는다.
+    #
+    #   g=5 는 "패킹된 바이트 = LUT 인덱스" 를 주는 대신 **α 그룹이 5의 배수**여야 한다.
+    #   🚫**우리 I=768 = 2^8 x 3 에는 5의 배수인 약수가 없다.** 그러므로 g=5 에서
+    #   그룹 α(`micro_group 128`)는 **원리적으로 불가능**하다.
+    #
+    #   ✅**per-row α 는 된다** — 행 전체가 한 스케일이므로 그룹 경계 문제가 없다.
+    #   ★그리고 그 대가는 **이미 측정돼 있다**: 결과 028 per-row **+0.0038~0.0068 bpb**,
+    #   실무 분해능 0.008 **미만**. `_fused_int8_linear` 도 **똑같이 per-row 를 요구**한다
+    #   (`P014C 단계2`). ★**두 고속 경로가 같은 제약을 갖는 것은 우연이 아니다** —
+    #   행당 스케일 하나여야 커널이 누산 뒤에 한 번만 곱할 수 있다.
+    per_row = alpha is not None and alpha.shape[-1] == 1
+    if alpha is not None and not per_row:
+        assert group % g == 0, (
+            f"★LUT g={g} 에서 그룹 α 는 group % {g} == 0 을 요구한다(받은 값 {group}). "
+            f"🚫**I=768 에는 5의 배수 약수가 없으므로 g=5 + 그룹 α 는 불가능**하다. "
+            f"★`--micro-group 0`(per-row)을 쓰세요 — 대가는 결과 028 이 이미 쟀다"
+            f"(+0.0038~0.0068 bpb, 분해능 0.008 미만).")
+
+    def _slice(o0, o1):
+        idx = ci[o0:o1].t().unsqueeze(0).expand(B, J, o1 - o0)   # (B, J, o)
+        part = lut.gather(2, idx).sum(1)                         # (B, o)  <- J 를 먼저 접는다
+        if alpha is None:
+            return part
+        if per_row:
+            return part * alpha[o0:o1, 0].unsqueeze(0)
+        # 그룹 α: J 를 접기 전에 그룹 단위로 나눠야 한다
+        pt = lut.gather(2, idx)
+        per = group // g
+        return (pt.reshape(B, -1, per, o1 - o0).sum(2)
+                * alpha[o0:o1].t().unsqueeze(0)).sum(1)
+    step = out_chunk if out_chunk and out_chunk < O else O
+    ys = [_slice(o, min(o + step, O)) for o in range(0, O, step)]
+    y = ys[0] if len(ys) == 1 else torch.cat(ys, dim=1)
+    return y.reshape(*shp[:-1], O)
 
 
 def residency_bytes(n_unique_ternary: int, n_other_params: int,

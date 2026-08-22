@@ -27,7 +27,7 @@ def _strip(sd):
 
 
 def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8_store=False,
-               unpack_cache=False, emb_quant=None, emb_chunk=0):
+               unpack_cache=False, emb_quant=None, emb_chunk=0, lut=False, lut_out_chunk=0):
     """`drop_latent=True` 면 P034 단계2 — fp32 latent 를 해제해 **상주를 약 절반**으로 줄인다.
 
     되돌릴 수 없으므로 **추론 전용**이다. 학습·진단(gradient 필요)에서는 절대 켜지 않는다.
@@ -46,7 +46,12 @@ def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8
     model.freeze_quant()                        # ★삼진화 1회만(결과 014: 재계산이 CPU 시간의 ~79%)
     if drop_latent:
         model.drop_latent()                     # ★P034 단계2
-    if int8_store:
+    # ★★P014 단계1 — LUT 배포 경로. **int8 보다 뒤에** 온다(int8 을 이어받는다).
+    #   ⚠️`drop_latent` 와 함께 쓰는 것이 정상 순서다: freeze -> drop_latent -> to_lut.
+    if lut:
+        model.cfg.lut_out_chunk = int(lut_out_chunk or 0)
+        model.to_lut()
+    elif int8_store:
         model.to_int8()                         # ★P034 단계3
     if unpack_cache:
         if not int8_store:
