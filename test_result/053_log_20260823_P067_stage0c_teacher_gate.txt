@@ -1,0 +1,237 @@
+=============================================================================
+P067 stage 0c   re-probe after the teacher-logit dtype fix
+Stage 0b passed every gate and then OOMed because HFTeacher.forward called
+lg.float() on a (4,1024,151936) tensor - a 2.32 GiB single allocation.
+That was my code, not the model size.
+==============================================================================
+[1/3] the same shape that died in stage 0b - micro-bs 4, kd-chunk 1024
+
+==============================================================================
+[runlog] 2026-08-23 00:35:16  name=P067_stage0c_teacher_gate
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 4 --accum 32 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --kd --kd-every 4 --kd-chunk 1024 --ce-chunk 2048 --tokenizer-hf HF\models--Qwen3-0.6B-Base --kd-teacher-hf HF\models--Qwen3-0.6B-Base --tag pq_q3_mb4
+==============================================================================
+[cmd] python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 4 --accum 32 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --kd --kd-every 4 --kd-chunk 1024 --ce-chunk 2048 --tokenizer-hf HF\models--Qwen3-0.6B-Base --kd-teacher-hf HF\models--Qwen3-0.6B-Base --tag pq_q3_mb4
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000_tok-Qwen3-0.6B-Base
+[P067] ★어휘를 32,768 -> **151,936** 로 바꾼다 (출처 Qwen3ForCausalLM)
+[P067]   임베딩 파라미터 25.2M -> **116.7M** (사용자 지시: 모델 크기 증가는 감수)
+[P067] ⚠️★이 런은 **기존 런과 CE 를 직접 비교할 수 없다** — val 토큰 경계가 다르다(함정 2). 교차비교는 `scripts/common_bpb.py` 만 유효하다.
+W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\nn\modules\module.py:1367: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\bld\libtorch_1770197068560\work\c10/cuda/CUDAAllocatorConfig.h:39.)
+  return t.to(
+
+Loading weights:   0%|          | 0/310 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 310/310 [00:00<00:00, 8658.70it/s]
+[kd-hf] 교사 로드 models--Qwen3-0.6B-Base  파라미터 596.0M  dtype=bf16  vocab=151936
+[kd-hf] ★로짓은 **원 dtype 그대로** 돌려주고 fp32 승격은 _kd_kl 이 **청크 단위로** 한다
+[kd-hf]   (통째 승격은 (B,T,V) fp32 = 수 GiB 단일 할당을 만든다 — 결과 054)
+[kd] ★외부 교사 사용 (alpha=0.5, T=2.0) — 🚫우리 dense 교사는 로드하지 않는다
+[kd] ★★이 실험이 묻는 것: 결과 038 의 'KD 무익' 이 **KD 탓인가 교사 탓인가**
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=151936 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)              39.1M       8.0 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           94.0M      19.3 MB
+
+
+  저장(packed, 안 B)                         19.3 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.3 MB
+  ★상주(runtime, 현 구현)                     567.9 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.3MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+[pq_q3_mb4] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+Traceback (most recent call last):
+  File "Z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "Z:\TinyLM\tinylm\cli.py", line 259, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "Z:\TinyLM\tinylm\train\trainer.py", line 636, in train
+    kl = _kd_kl(logits.reshape(-1, cfg.vocab_size),
+  File "Z:\TinyLM\tinylm\train\trainer.py", line 71, in _kd_kl
+    part = F.kl_div(F.log_softmax(s / T, -1), F.softmax(t / T, -1), reduction="sum")
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\nn\functional.py", line 3413, in kl_div
+    reduced = torch.kl_div(input, target, reduction_enum, log_target=log_target)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 594.00 MiB. GPU 0 has a total capacity of 15.99 GiB of which 0 bytes is free. Of the allocated memory 14.96 GiB is allocated by PyTorch, and 13.87 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.2분  (2026-08-23 00:35:26)
+==============================================================================
+[wait] let WDDM release VRAM - result 037 s7.3
+[2/3] fallback - micro-bs 2, kd-chunk 512. Effective batch stays 131072 tokens.
+
+==============================================================================
+[runlog] 2026-08-23 00:35:41  name=P067_stage0c_teacher_gate
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 2 --accum 64 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --kd --kd-every 4 --kd-chunk 512 --ce-chunk 1024 --tokenizer-hf HF\models--Qwen3-0.6B-Base --kd-teacher-hf HF\models--Qwen3-0.6B-Base --tag pq_q3_mb2
+==============================================================================
+[cmd] python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 2 --accum 64 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --kd --kd-every 4 --kd-chunk 512 --ce-chunk 1024 --tokenizer-hf HF\models--Qwen3-0.6B-Base --kd-teacher-hf HF\models--Qwen3-0.6B-Base --tag pq_q3_mb2
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000_tok-Qwen3-0.6B-Base
+[P067] ★어휘를 32,768 -> **151,936** 로 바꾼다 (출처 Qwen3ForCausalLM)
+[P067]   임베딩 파라미터 25.2M -> **116.7M** (사용자 지시: 모델 크기 증가는 감수)
+[P067] ⚠️★이 런은 **기존 런과 CE 를 직접 비교할 수 없다** — val 토큰 경계가 다르다(함정 2). 교차비교는 `scripts/common_bpb.py` 만 유효하다.
+W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\nn\modules\module.py:1367: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\bld\libtorch_1770197068560\work\c10/cuda/CUDAAllocatorConfig.h:39.)
+  return t.to(
+
+Loading weights:   0%|          | 0/310 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 310/310 [00:00<00:00, 8449.94it/s]
+[kd-hf] 교사 로드 models--Qwen3-0.6B-Base  파라미터 596.0M  dtype=bf16  vocab=151936
+[kd-hf] ★로짓은 **원 dtype 그대로** 돌려주고 fp32 승격은 _kd_kl 이 **청크 단위로** 한다
+[kd-hf]   (통째 승격은 (B,T,V) fp32 = 수 GiB 단일 할당을 만든다 — 결과 054)
+[kd] ★외부 교사 사용 (alpha=0.5, T=2.0) — 🚫우리 dense 교사는 로드하지 않는다
+[kd] ★★이 실험이 묻는 것: 결과 038 의 'KD 무익' 이 **KD 탓인가 교사 탓인가**
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=151936 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)              39.1M       8.0 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           94.0M      19.3 MB
+
+
+  저장(packed, 안 B)                         19.3 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.3 MB
+  ★상주(runtime, 현 구현)                     567.9 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.3MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  KV 캐시               : 7.5 KB/token  (10/20 층만 소유)
+    1024 ctx 7.5 MB   2048 ctx 15.0 MB
+========================================================================
+[pq_q3_mb2] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+  step     0/250  ce 11.9475  loss 13.8169[KD혼합]  |g| 3.27  anneal 0.00  lr 4.00e-05  25139 ms/step
+  step    10/250  ce 10.7591  |g| 1.72  anneal 0.00  lr 4.40e-04  14085 ms/step
+  step    20/250  ce 7.8380  loss 8.5228[KD혼합]  |g| 1.97  anneal 0.00  lr 8.40e-04  14115 ms/step
+  step    30/250  ce 7.9867  |g| 7.26  anneal 0.00  lr 1.00e-03  13656 ms/step
+  step    40/250  ce 7.8663  loss 8.3353[KD혼합]  |g| 7.02  anneal 0.02  lr 1.00e-03  13876 ms/step
+  step    50/250  ce 7.2485  |g| 2.06  anneal 0.08  lr 1.00e-03  13733 ms/step
+  step    60/250  ce 6.9904  loss 7.3210[KD혼합]  |g| 1.94  anneal 0.14  lr 1.00e-03  13764 ms/step
+  step    70/250  ce 7.0510  |g| 2.35  anneal 0.20  lr 1.00e-03  13611 ms/step
+  step    80/250  ce 6.9038  loss 7.0128[KD혼합]  |g| 1.11  anneal 0.26  lr 1.00e-03  13664 ms/step
+  step    90/250  ce 6.7374  |g| 0.67  anneal 0.32  lr 1.00e-03  13513 ms/step
+  step   100/250  ce 6.4874  loss 6.6183[KD혼합]  |g| 1.07  anneal 0.38  lr 1.00e-03  13525 ms/step
+  step   110/250  ce 6.4532  |g| 0.78  anneal 0.45  lr 1.00e-03  13398 ms/step
+  step   120/250  ce 6.3829  loss 6.2582[KD혼합]  |g| 1.06  anneal 0.51  lr 1.00e-03  13408 ms/step
+  step   130/250  ce 6.3853  |g| 0.88  anneal 0.57  lr 1.00e-03  13316 ms/step
+  step   140/250  ce 6.2217  loss 6.0189[KD혼합]  |g| 1.19  anneal 0.63  lr 1.00e-03  13337 ms/step
+  step   150/250  ce 6.0578  |g| 0.87  anneal 0.69  lr 1.00e-03  13245 ms/step
+  step   160/250  ce 6.1201  loss 5.8570[KD혼합]  |g| 1.12  anneal 0.75  lr 1.00e-03  13257 ms/step
+  step   170/250  ce 6.1286  |g| 0.74  anneal 0.82  lr 1.00e-03  13174 ms/step
+  step   180/250  ce 5.9365  loss 5.6486[KD혼합]  |g| 1.02  anneal 0.88  lr 1.00e-03  13184 ms/step
+  step   190/250  ce 5.9206  |g| 0.57  anneal 0.94  lr 1.00e-03  13114 ms/step
+  step   200/250  ce 5.8529  loss 5.5326[KD혼합]  |g| 0.89  anneal 1.00  lr 1.00e-03  13134 ms/step
+  step   210/250  ce 5.8313  |g| 0.69  anneal 1.00  lr 9.73e-04  13085 ms/step
+  step   220/250  ce 5.6718  loss 5.3152[KD혼합]  |g| 0.75  anneal 1.00  lr 7.75e-04  13100 ms/step
+  step   230/250  ce 5.5966  |g| 0.59  anneal 1.00  lr 4.72e-04  13045 ms/step
+  step   240/250  ce 5.5460  loss 5.1297[KD혼합]  |g| 0.50  anneal 1.00  lr 2.05e-04  13056 ms/step
+  step   249/250  ce 5.6114  |g| 0.33  anneal 1.00  lr 1.01e-04  13016 ms/step
+    >> val_loss 5.6831  ppl 293.87  (train_ce 5.611, val-CE +0.072)  bpb 2.115
+       best 갱신 5.6831 -> m100R1c_ko-en_300M_pq_q3_mb2_best.pt
+
+[pq_q3_mb2] 최종 val_loss 5.7381  ppl 310.48  best 5.6831@250  (94.0M, 54.3분, skip 0, KD forward 63/250스텝(≈25%), VRAM 10.62GB(reserved)/9.82GB(alloc))
+[vram] M(=micro_bs×seq)=2,048  peak reserved 10.62GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 54.4분  (2026-08-23 01:30:06)
+==============================================================================
+[wait] let WDDM release VRAM
+[3/3] gemma-3-270m gate only - teacher is half the size but vocab is 262144
+
+==============================================================================
+[runlog] 2026-08-23 01:30:22  name=P067_stage0c_teacher_gate
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\diag_p067_teacher.py --teacher HF\models--google--gemma-3-270m
+==============================================================================
+
+################################################################################################
+  교사 후보 실사 — config.json 만 읽는다. torch 0 · GPU 0
+################################################################################################
+  폴더                                arch                            텍스트전용         L  hidden    vocab     dtype  tok.json
+----------------------------------------------------------------------------------------------------------------------
+  models--Qwen3-0.6B-Base           Qwen3ForCausalLM                YES          28    1024   151936  bfloat16  True
+  models--google--gemma-3-270m      Gemma3ForCausalLM               YES          18     640   262144  bfloat16  True
+  models--google--gemma-3-1b-pt     Gemma3ForCausalLM               YES          26    1152   262144  bfloat16  True
+  models--Qwen--Qwen3.5-0.8B-Base   Qwen3_5ForConditionalGeneration 🚫NO          24    1024   248320  bfloat16  True
+  models--google--gemma-4-E2B       Gemma4ForConditionalGeneration  🚫NO          35    1536   262144  bfloat16  True
+
+  ★**텍스트전용 NO 인 둘은 `*ForConditionalGeneration`** 이다 — 비전/오디오 탑이
+    붙어 있다. `AutoModelForCausalLM` 이 텍스트 탑만 실을 수 있는지가 T1 이다.
+  ★**우리 어휘 32,768 대비**: Qwen3 4.6배 · Gemma3 8.0배. 임베딩이 그만큼 커진다.
+
+################################################################################################
+  성공 기준값 — **결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  T1 교사 로드            기준: **성공**
+  T2 어휘 초과 id         기준: **0개**
+  T3 로짓 shape           기준: **(B, T, vocab_size)**
+  T4 로짓 dtype           기준: ★**fp32** (bf16 log_softmax 는 꼬리를 뭉갠다)
+  T5 토크나이저 왕복       기준: **표본 3종 일치**
+  T6 최대 토큰 id         기준: **65,536 초과면 캐시 dtype 이 uint32**
+
+================================================================================================
+  T5 / T6 — 토크나이저
+================================================================================================
+  ✅  13토큰  한국어 문장을 토큰화하고 되돌린다.
+  ✅  11토큰  The quick brown fox jumps over the lazy dog.
+  ✅  27토큰  삼진 양자화(ternary quantization)는 가중치를 -1, 0, 1 
+
+  최대 토큰 id **240,619**  / 교사 config vocab_size **262,144**
+  T6 캐시 dtype 요구: **uint32**  ⚠️★uint16 으로 쓰면 id 가 조용히 wrap 된다
+  ✅ T2 초과 id 0개 (여유 21,524)
+
+================================================================================================
+  T1 / T3 / T4 — 교사 로드 + forward  (device=cuda, dtype=bf16)
+================================================================================================
+
+Loading weights:   0%|          | 0/236 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 236/236 [00:00<00:00, 12712.62it/s]
+W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\nn\modules\module.py:1367: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\bld\libtorch_1770197068560\work\c10/cuda/CUDAAllocatorConfig.h:39.)
+  return t.to(
+[kd-hf] 교사 로드 9b0cfec892e2bc2afd938c98eabe4e4a7b1e0ca1  파라미터 268.1M  dtype=bf16  vocab=262144
+[kd-hf] ★로짓은 **원 dtype 그대로** 돌려주고 fp32 승격은 _kd_kl 이 **청크 단위로** 한다
+[kd-hf]   (통째 승격은 (B,T,V) fp32 = 수 GiB 단일 할당을 만든다 — 결과 054)
+  ✅ T1 로드 성공
+  T3 로짓 shape (2, 64, 262144)  기대 (2, 64, 262144)  ✅
+  T4 로짓 dtype torch.bfloat16  기대 torch.float32  🚫
+     로짓 범위 [-110.00, 34.25]  평균 -14.1250
+     ⚠️★무작위 토큰을 넣었으므로 **로짓 값 자체는 의미 없다.** shape·dtype·NaN 만 본다.
+
+  교사 VRAM: alloc 0.57 GiB / reserved 0.75 GiB
+  ⚠️★**KD 학습에서는 여기에 학생 + 어휘 전체 위의 KL 이 더해진다** — 결과 038: 어휘 위 KD 손실이 +5.48 GiB 였다. **어휘가 8배면 그것도 커진다.**
+
+================================================================================================
+  판정
+================================================================================================
+  🚫 T4 dtype torch.bfloat16
+
+  총 1건 실패 — **P067 학습을 시작하지 마세요.**
+================================================================================================
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-08-23 01:30:28)
+==============================================================================
+[wandb] push the probes
+=============================================================================
+READ IN THIS ORDER
+1. did arm 1 survive. If yes the dtype fix closed a 1.16 GiB hole and the
+   original micro-bs 4 shape is usable.
+2. if arm 1 died and arm 2 lived, the vocabulary is simply too wide for
+   M=4096 and we run P067 at M=2048. That costs wall clock, not validity -
+   effective batch is 131072 tokens in both.
+3. json must show vocab_size 151936, kd_teacher_hf set, token_dtype uint32.
+   If vocab_size reads 32768 the flag did not land and the run is a plain
+   no-KD reseed (trap 37).
+4. arm 3 tells us which term dominates. gemma-3-270m has HALF the teacher
+   weights but a WIDER vocabulary (262144 vs 151936). If its reported VRAM
+   is higher, the vocabulary dominates and a smaller teacher does not help.
+ val from this run is NOT comparable to anything (trap 2). common_bpb only.
+==============================================================================

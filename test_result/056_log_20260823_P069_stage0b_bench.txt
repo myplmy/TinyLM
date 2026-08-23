@@ -1,0 +1,1639 @@
+=============================================================================
+P069 stage 0b   every benchmark, no training
+Chance level is printed BEFORE each result. BoolQ floor is 62 not 50.
+Do NOT rank models on these - result 050 showed seed noise dominates.
+==============================================================================
+[0] verify the data first - a wrong split is worse than no data
+
+==============================================================================
+[runlog] 2026-08-23 01:33:25  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\fetch_bench_data.py --verify
+==============================================================================
+
+################################################################################################
+  받은 것 점검 — 네트워크를 쓰지 않는다
+################################################################################################
+  ✅ hellaswag          10042행
+  ✅ piqa                1838행
+  ✅ winogrande          1267행
+  ✅ arc_easy            2376행
+  ✅ arc_challenge       1172행
+  ✅ boolq               3270행
+  ✅ lambada             5153행
+  ✅ mmlu               14042행
+  ✅ mmlu_redux          5700행
+  ✅ musr                 250행
+  ✅ gsm8k               1319행
+  ✅ ifeval               541행
+  ✅ humaneval            164행
+  ✅ humaneval_plus       164행
+  ✅ bfcl_v3             2351행
+
+  받음 15 / 없음 0
+  ⚠️★행 수가 공식 규모와 다르면 **split 을 잘못 잡은 것**이고, 그대로 재면 다른 논문 숫자와 비교할 수 없다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-08-23 01:33:25)
+==============================================================================
+[1] LAMBADA first - the purest LM task we have. Accuracy AND perplexity.
+
+==============================================================================
+[runlog] 2026-08-23 01:33:26  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task lambada --n 500 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly mC_r20_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=500  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [lambada] ★마지막 단어 예측   kind=cloze   공식 metric=acc / ppl
+================================================================================================
+  전체 5,153행 중 500문항 (seed=99)  id 앞 10개: [14, 19, 20, 30, 33, 37, 54, 65, 71, 78]
+
+  mC_initonly        마지막단어acc **1.4%** [95%CI 0.7%~2.9%]  PPL 939.1  N=500 제외=0
+
+  mC_r20_nokd        마지막단어acc **0.8%** [95%CI 0.3%~2.0%]  PPL 770.5  N=500 제외=0
+
+  ── paired 정답CE 비교 (공통 500문항) ──
+    mC_initonly - mC_r20_nokd: Δ +0.1979 ± 0.1331  SD 1.5180 SE 0.0679 t +2.92  승률 55.2%  필요N(SE0.002) **576,065**
+      ⚠️★**500 문항으로는 부족하다**(필요 576,065). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  lambada         mC_initonly              1.4%  정답CE 6.8449 / PPL 939
+  lambada         mC_r20_nokd              0.8%  정답CE 6.6470 / PPL 770
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-lambada-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_013535-bench-lambada-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-lambada-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-lambada-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading wandb-summary.json
+wandb: 
+wandb: Run summary:
+wandb:     acc 0.014
+wandb: gold_ce 6.84492
+wandb:       n 500
+wandb: n_asked 500
+wandb:     ppl 939.09348
+wandb: skipped 0
+wandb:     tag mC_initonly
+wandb: 
+wandb:  View run bench-lambada-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-lambada-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_013535-bench-lambada-mC_initonly\logs
+  ✅ bench-lambada-mC_initonly
+wandb: setting up run bench-lambada-mC_r20_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_013540-bench-lambada-mC_r20_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-lambada-mC_r20_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-lambada-mC_r20_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:     acc 0.008
+wandb: gold_ce 6.64702
+wandb:       n 500
+wandb: n_asked 500
+wandb:     ppl 770.48113
+wandb: skipped 0
+wandb:     tag mC_r20_nokd
+wandb: 
+wandb:  View run bench-lambada-mC_r20_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-lambada-mC_r20_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_013540-bench-lambada-mC_r20_nokd\logs
+  ✅ bench-lambada-mC_r20_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 2.4분  (2026-08-23 01:35:47)
+==============================================================================
+[2] likelihood scored multiple choice, 20 layer models
+
+==============================================================================
+[runlog] 2026-08-23 01:35:48  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task hellaswag --n 300 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly mC_r20_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=300  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [hellaswag] 4지선다 문장완성   kind=mc   공식 metric=acc / acc_norm
+================================================================================================
+  전체 10,042행 중 300문항 (seed=99)  id 앞 10개: [38, 53, 129, 155, 161, 192, 230, 231, 256, 362]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        우도acc **30.0%** [95%CI 25.1%~35.4%]  길이정규acc 29.0%  정답CE 3.6240  N=300 제외=0
+
+  mC_r20_nokd        우도acc **33.7%** [95%CI 28.6%~39.2%]  길이정규acc 29.0%  정답CE 3.9226  N=300 제외=0
+
+  ── paired 정답CE 비교 (공통 300문항) ──
+    mC_initonly - mC_r20_nokd: Δ -0.2986 ± 0.0236  SD 0.2084 SE 0.0120 t -24.81  승률 6.0%  필요N(SE0.002) **10,859**
+      ⚠️★**300 문항으로는 부족하다**(필요 10,859). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  hellaswag       mC_initonly             30.0%  정답CE 3.6240
+  hellaswag       mC_r20_nokd             33.7%  정답CE 3.9226
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-hellaswag-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_013718-bench-hellaswag-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-hellaswag-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-hellaswag-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.3
+wandb: acc_norm 0.29
+wandb:  gold_ce 3.62403
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_initonly
+wandb: 
+wandb:  View run bench-hellaswag-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-hellaswag-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_013718-bench-hellaswag-mC_initonly\logs
+  ✅ bench-hellaswag-mC_initonly
+wandb: setting up run bench-hellaswag-mC_r20_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_013723-bench-hellaswag-mC_r20_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-hellaswag-mC_r20_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-hellaswag-mC_r20_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.33667
+wandb: acc_norm 0.29
+wandb:  gold_ce 3.92261
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_r20_nokd
+wandb: 
+wandb:  View run bench-hellaswag-mC_r20_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-hellaswag-mC_r20_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_013723-bench-hellaswag-mC_r20_nokd\logs
+  ✅ bench-hellaswag-mC_r20_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.7분  (2026-08-23 01:37:28)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-23 01:37:28  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task piqa --n 300 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly mC_r20_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=300  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [piqa] 2지선다 물리상식   kind=mc   공식 metric=acc
+================================================================================================
+  전체 1,838행 중 300문항 (seed=99)  id 앞 10개: [4, 5, 10, 13, 50, 54, 62, 77, 84, 96]
+  ★**우연 수준 = 50.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        우도acc **51.7%** [95%CI 46.0%~57.3%]  길이정규acc 55.0%  정답CE 4.4831  N=300 제외=0
+
+  mC_r20_nokd        우도acc **53.7%** [95%CI 48.0%~59.2%]  길이정규acc 58.7%  정답CE 4.7216  N=300 제외=0
+
+  ── paired 정답CE 비교 (공통 300문항) ──
+    mC_initonly - mC_r20_nokd: Δ -0.2385 ± 0.0315  SD 0.2780 SE 0.0161 t -14.86  승률 13.7%  필요N(SE0.002) **19,322**
+      ⚠️★**300 문항으로는 부족하다**(필요 19,322). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  piqa            mC_initonly             51.7%  정답CE 4.4831
+  piqa            mC_r20_nokd             53.7%  정답CE 4.7216
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-piqa-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_013816-bench-piqa-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-piqa-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-piqa-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-summary.json; uploading requirements.txt
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.51667
+wandb: acc_norm 0.55
+wandb:  gold_ce 4.48307
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_initonly
+wandb: 
+wandb:  View run bench-piqa-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-piqa-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_013816-bench-piqa-mC_initonly\logs
+  ✅ bench-piqa-mC_initonly
+wandb: setting up run bench-piqa-mC_r20_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_013821-bench-piqa-mC_r20_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-piqa-mC_r20_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-piqa-mC_r20_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.53667
+wandb: acc_norm 0.58667
+wandb:  gold_ce 4.72159
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_r20_nokd
+wandb: 
+wandb:  View run bench-piqa-mC_r20_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-piqa-mC_r20_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_013821-bench-piqa-mC_r20_nokd\logs
+  ✅ bench-piqa-mC_r20_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.0분  (2026-08-23 01:38:27)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-23 01:38:27  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task arc_easy --n 300 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly mC_r20_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=300  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [arc_easy] 4지선다 과학   kind=mc   공식 metric=acc / acc_norm
+================================================================================================
+  전체 2,376행 중 300문항 (seed=99)  id 앞 10개: [4, 15, 22, 43, 50, 56, 80, 81, 90, 101]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        우도acc **37.0%** [95%CI 31.7%~42.6%]  길이정규acc 30.7%  정답CE 6.4442  N=300 제외=0
+
+  mC_r20_nokd        우도acc **37.7%** [95%CI 32.4%~43.3%]  길이정규acc 31.3%  정답CE 6.7920  N=300 제외=0
+
+  ── paired 정답CE 비교 (공통 300문항) ──
+    mC_initonly - mC_r20_nokd: Δ -0.3479 ± 0.0719  SD 0.6351 SE 0.0367 t -9.49  승률 24.0%  필요N(SE0.002) **100,832**
+      ⚠️★**300 문항으로는 부족하다**(필요 100,832). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  arc_easy        mC_initonly             37.0%  정답CE 6.4442
+  arc_easy        mC_r20_nokd             37.7%  정답CE 6.7920
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-arc_easy-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_013952-bench-arc_easy-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-arc_easy-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-arc_easy-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.37
+wandb: acc_norm 0.30667
+wandb:  gold_ce 6.44419
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_initonly
+wandb: 
+wandb:  View run bench-arc_easy-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-arc_easy-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_013952-bench-arc_easy-mC_initonly\logs
+  ✅ bench-arc_easy-mC_initonly
+wandb: setting up run bench-arc_easy-mC_r20_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_013957-bench-arc_easy-mC_r20_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-arc_easy-mC_r20_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-arc_easy-mC_r20_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.37667
+wandb: acc_norm 0.31333
+wandb:  gold_ce 6.79205
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_r20_nokd
+wandb: 
+wandb:  View run bench-arc_easy-mC_r20_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-arc_easy-mC_r20_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_013957-bench-arc_easy-mC_r20_nokd\logs
+  ✅ bench-arc_easy-mC_r20_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.6분  (2026-08-23 01:40:04)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-23 01:40:04  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task arc_challenge --n 300 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly mC_r20_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=300  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [arc_challenge] 4지선다 과학(난)   kind=mc   공식 metric=acc / acc_norm
+================================================================================================
+  전체 1,172행 중 300문항 (seed=99)  id 앞 10개: [6, 7, 9, 14, 19, 24, 25, 26, 28, 31]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        우도acc **21.3%** [95%CI 17.1%~26.3%]  길이정규acc 21.3%  정답CE 5.7349  N=300 제외=0
+
+  mC_r20_nokd        우도acc **20.7%** [95%CI 16.5%~25.6%]  길이정규acc 22.7%  정답CE 6.0418  N=300 제외=0
+
+  ── paired 정답CE 비교 (공통 300문항) ──
+    mC_initonly - mC_r20_nokd: Δ -0.3069 ± 0.0587  SD 0.5186 SE 0.0299 t -10.25  승률 23.3%  필요N(SE0.002) **67,242**
+      ⚠️★**300 문항으로는 부족하다**(필요 67,242). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  arc_challenge   mC_initonly             21.3%  정답CE 5.7349
+  arc_challenge   mC_r20_nokd             20.7%  정답CE 6.0418
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-arc_challenge-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014131-bench-arc_challenge-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-arc_challenge-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-arc_challenge-mC_initonly
+wandb: updating run metadata
+wandb: uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt
+wandb: uploading wandb-summary.json; uploading wandb-metadata.json; uploading requirements.txt
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.21333
+wandb: acc_norm 0.21333
+wandb:  gold_ce 5.73491
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_initonly
+wandb: 
+wandb:  View run bench-arc_challenge-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-arc_challenge-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014131-bench-arc_challenge-mC_initonly\logs
+  ✅ bench-arc_challenge-mC_initonly
+wandb: setting up run bench-arc_challenge-mC_r20_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014136-bench-arc_challenge-mC_r20_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-arc_challenge-mC_r20_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-arc_challenge-mC_r20_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.20667
+wandb: acc_norm 0.22667
+wandb:  gold_ce 6.04179
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_r20_nokd
+wandb: 
+wandb:  View run bench-arc_challenge-mC_r20_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-arc_challenge-mC_r20_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014136-bench-arc_challenge-mC_r20_nokd\logs
+  ✅ bench-arc_challenge-mC_r20_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.6분  (2026-08-23 01:41:42)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-23 01:41:43  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task winogrande --n 300 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly mC_r20_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=300  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [winogrande] 2지선다 대명사해소   kind=mc   공식 metric=acc
+================================================================================================
+  전체 1,267행 중 300문항 (seed=99)  id 앞 10개: [5, 6, 14, 23, 26, 37, 38, 45, 49, 52]
+  ★**우연 수준 = 50.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        우도acc **51.0%** [95%CI 45.4%~56.6%]  길이정규acc 51.0%  정답CE 4.0855  N=300 제외=0
+
+  mC_r20_nokd        우도acc **51.7%** [95%CI 46.0%~57.3%]  길이정규acc 51.7%  정답CE 4.3314  N=300 제외=0
+
+  ── paired 정답CE 비교 (공통 300문항) ──
+    mC_initonly - mC_r20_nokd: Δ -0.2460 ± 0.0397  SD 0.3511 SE 0.0203 t -12.14  승률 20.7%  필요N(SE0.002) **30,810**
+      ⚠️★**300 문항으로는 부족하다**(필요 30,810). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  winogrande      mC_initonly             51.0%  정답CE 4.0855
+  winogrande      mC_r20_nokd             51.7%  정답CE 4.3314
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-winogrande-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014209-bench-winogrande-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-winogrande-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-winogrande-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.51
+wandb: acc_norm 0.51
+wandb:  gold_ce 4.08546
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_initonly
+wandb: 
+wandb:  View run bench-winogrande-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-winogrande-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014209-bench-winogrande-mC_initonly\logs
+  ✅ bench-winogrande-mC_initonly
+wandb: setting up run bench-winogrande-mC_r20_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014214-bench-winogrande-mC_r20_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-winogrande-mC_r20_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-winogrande-mC_r20_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.51667
+wandb: acc_norm 0.51667
+wandb:  gold_ce 4.33145
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_r20_nokd
+wandb: 
+wandb:  View run bench-winogrande-mC_r20_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-winogrande-mC_r20_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014214-bench-winogrande-mC_r20_nokd\logs
+  ✅ bench-winogrande-mC_r20_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.6분  (2026-08-23 01:42:21)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-23 01:42:21  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task boolq --n 300 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly mC_r20_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=300  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [boolq] 예/아니오 ⚠️다수결 62%   kind=mc   공식 metric=acc(vs 다수결62%)
+================================================================================================
+  전체 3,270행 중 300문항 (seed=99)  id 앞 10개: [7, 9, 30, 66, 76, 79, 86, 100, 108, 122]
+  ★**우연 수준 = 62.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        우도acc **60.0%** [95%CI 54.4%~65.4%]  길이정규acc 44.7%  정답CE 6.8261  N=300 제외=0
+  🚫★**퇴화** — 한 선택지를 100.0% 로 찍는다. 이 숫자는 능력이 아니라 **편향**이다(규약 7)
+
+  mC_r20_nokd        우도acc **60.0%** [95%CI 54.4%~65.4%]  길이정규acc 46.3%  정답CE 7.4893  N=300 제외=0
+  🚫★**퇴화** — 한 선택지를 100.0% 로 찍는다. 이 숫자는 능력이 아니라 **편향**이다(규약 7)
+
+  ── paired 정답CE 비교 (공통 300문항) ──
+    mC_initonly - mC_r20_nokd: Δ -0.6633 ± 0.0897  SD 0.7930 SE 0.0458 t -14.49  승률 19.7%  필요N(SE0.002) **157,195**
+      ⚠️★**300 문항으로는 부족하다**(필요 157,195). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  boolq           mC_initonly             60.0%  정답CE 6.8261
+  boolq           mC_r20_nokd             60.0%  정답CE 7.4893
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-boolq-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014308-bench-boolq-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-boolq-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-boolq-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.6
+wandb: acc_norm 0.44667
+wandb:  gold_ce 6.82606
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_initonly
+wandb: 
+wandb:  View run bench-boolq-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-boolq-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014308-bench-boolq-mC_initonly\logs
+  ✅ bench-boolq-mC_initonly
+wandb: setting up run bench-boolq-mC_r20_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014313-bench-boolq-mC_r20_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-boolq-mC_r20_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-boolq-mC_r20_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.6
+wandb: acc_norm 0.46333
+wandb:  gold_ce 7.48935
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_r20_nokd
+wandb: 
+wandb:  View run bench-boolq-mC_r20_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-boolq-mC_r20_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014313-bench-boolq-mC_r20_nokd\logs
+  ✅ bench-boolq-mC_r20_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.9분  (2026-08-23 01:43:18)
+==============================================================================
+[3] knowledge and reasoning - chance is the prediction, confirming it is the result
+
+==============================================================================
+[runlog] 2026-08-23 01:43:18  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task mmlu --n 300 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly mC_r20_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=300  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [mmlu] 4지선다 57과목   kind=mc   공식 metric=acc
+================================================================================================
+  전체 14,042행 중 300문항 (seed=99)  id 앞 10개: [29, 63, 131, 285, 296, 304, 313, 365, 386, 419]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        우도acc **25.0%** [95%CI 20.4%~30.2%]  길이정규acc 25.0%  정답CE 5.0596  N=300 제외=0
+
+  mC_r20_nokd        우도acc **26.3%** [95%CI 21.7%~31.6%]  길이정규acc 25.0%  정답CE 4.7949  N=300 제외=0
+
+  ── paired 정답CE 비교 (공통 300문항) ──
+    mC_initonly - mC_r20_nokd: Δ +0.2647 ± 0.0491  SD 0.4341 SE 0.0251 t +10.56  승률 74.7%  필요N(SE0.002) **47,118**
+      ⚠️★**300 문항으로는 부족하다**(필요 47,118). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  mmlu            mC_initonly             25.0%  정답CE 5.0596
+  mmlu            mC_r20_nokd             26.3%  정답CE 4.7949
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-mmlu-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014443-bench-mmlu-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-mmlu-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-mmlu-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading wandb-metadata.json; uploading wandb-summary.json; uploading config.yaml
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.25
+wandb: acc_norm 0.25
+wandb:  gold_ce 5.05957
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_initonly
+wandb: 
+wandb:  View run bench-mmlu-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-mmlu-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014443-bench-mmlu-mC_initonly\logs
+  ✅ bench-mmlu-mC_initonly
+wandb: setting up run bench-mmlu-mC_r20_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014449-bench-mmlu-mC_r20_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-mmlu-mC_r20_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-mmlu-mC_r20_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.26333
+wandb: acc_norm 0.25
+wandb:  gold_ce 4.7949
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_r20_nokd
+wandb: 
+wandb:  View run bench-mmlu-mC_r20_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-mmlu-mC_r20_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014449-bench-mmlu-mC_r20_nokd\logs
+  ✅ bench-mmlu-mC_r20_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.6분  (2026-08-23 01:44:55)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-23 01:44:55  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task mmlu_redux --n 300 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly mC_r20_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=300  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [mmlu_redux] MMLU 재라벨   kind=mc   공식 metric=acc
+================================================================================================
+  전체 5,700행 중 300문항 (seed=99)  id 앞 10개: [9, 18, 34, 47, 54, 61, 63, 67, 75, 79]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        우도acc **24.7%** [95%CI 20.1%~29.8%]  길이정규acc 26.7%  정답CE 4.9285  N=300 제외=0
+
+  mC_r20_nokd        우도acc **21.0%** [95%CI 16.8%~26.0%]  길이정규acc 26.3%  정답CE 4.6782  N=300 제외=0
+
+  ── paired 정답CE 비교 (공통 300문항) ──
+    mC_initonly - mC_r20_nokd: Δ +0.2503 ± 0.0544  SD 0.4807 SE 0.0278 t +9.02  승률 69.7%  필요N(SE0.002) **57,757**
+      ⚠️★**300 문항으로는 부족하다**(필요 57,757). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  mmlu_redux      mC_initonly             24.7%  정답CE 4.9285
+  mmlu_redux      mC_r20_nokd             21.0%  정답CE 4.6782
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-mmlu_redux-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014624-bench-mmlu_redux-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-mmlu_redux-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-mmlu_redux-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.24667
+wandb: acc_norm 0.26667
+wandb:  gold_ce 4.92852
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_initonly
+wandb: 
+wandb:  View run bench-mmlu_redux-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-mmlu_redux-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014624-bench-mmlu_redux-mC_initonly\logs
+  ✅ bench-mmlu_redux-mC_initonly
+wandb: setting up run bench-mmlu_redux-mC_r20_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014629-bench-mmlu_redux-mC_r20_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-mmlu_redux-mC_r20_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-mmlu_redux-mC_r20_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.21
+wandb: acc_norm 0.26333
+wandb:  gold_ce 4.67823
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_r20_nokd
+wandb: 
+wandb:  View run bench-mmlu_redux-mC_r20_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-mmlu_redux-mC_r20_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014629-bench-mmlu_redux-mC_r20_nokd\logs
+  ✅ bench-mmlu_redux-mC_r20_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.7분  (2026-08-23 01:46:36)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-23 01:46:37  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task musr --n 250 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly mC_r20_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=250  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [musr] 다단계추론 ⚠️1000단어   kind=mc   공식 metric=acc
+================================================================================================
+  전체 250행 중 250문항 (seed=99)  id 앞 10개: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  ★**우연 수준 = 50.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        우도acc **100.0%** [95%CI 20.7%~100.0%]  길이정규acc 0.0%  정답CE 1.9618  N=1 제외=249
+  🚫★**퇴화** — 한 선택지를 100.0% 로 찍는다. 이 숫자는 능력이 아니라 **편향**이다(규약 7)
+
+  mC_r20_nokd        우도acc **100.0%** [95%CI 20.7%~100.0%]  길이정규acc 0.0%  정답CE 2.2265  N=1 제외=249
+  🚫★**퇴화** — 한 선택지를 100.0% 로 찍는다. 이 숫자는 능력이 아니라 **편향**이다(규약 7)
+
+  ── paired 정답CE 비교 (공통 1문항) ──
+    mC_initonly - mC_r20_nokd: Δ -0.2647 ± 0.0000  SD 0.0000 SE 0.0000 t +0.00  승률 0.0%  필요N(SE0.002) **0**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  musr            mC_initonly            100.0%  정답CE 1.9618 / 제외 249
+  musr            mC_r20_nokd            100.0%  정답CE 2.2265 / 제외 249
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-musr-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014645-bench-musr-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-musr-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-musr-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 1
+wandb: acc_norm 0
+wandb:  gold_ce 1.96182
+wandb:        n 1
+wandb:  n_asked 250
+wandb:  skipped 249
+wandb:      tag mC_initonly
+wandb: 
+wandb:  View run bench-musr-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-musr-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014645-bench-musr-mC_initonly\logs
+  ✅ bench-musr-mC_initonly
+wandb: setting up run bench-musr-mC_r20_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014650-bench-musr-mC_r20_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-musr-mC_r20_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-musr-mC_r20_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: 
+wandb: Run summary:
+wandb:      acc 1
+wandb: acc_norm 0
+wandb:  gold_ce 2.22655
+wandb:        n 1
+wandb:  n_asked 250
+wandb:  skipped 249
+wandb:      tag mC_r20_nokd
+wandb: 
+wandb:  View run bench-musr-mC_r20_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-musr-mC_r20_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014650-bench-musr-mC_r20_nokd\logs
+  ✅ bench-musr-mC_r20_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-08-23 01:46:57)
+==============================================================================
+[4] the standard model, 36 layers - a different preset so a separate call
+
+==============================================================================
+[runlog] 2026-08-23 01:46:58  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task lambada --n 500 --preset m100R1d --data ko-en --tokens 300M --models mC_d36_ag4_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=500  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [lambada] ★마지막 단어 예측   kind=cloze   공식 metric=acc / ppl
+================================================================================================
+  전체 5,153행 중 500문항 (seed=99)  id 앞 10개: [14, 19, 20, 30, 33, 37, 54, 65, 71, 78]
+
+  mC_d36_ag4_nokd    마지막단어acc **1.6%** [95%CI 0.8%~3.1%]  PPL 966.9  N=500 제외=0
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  lambada         mC_d36_ag4_nokd          1.6%  정답CE 6.8741 / PPL 967
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-lambada-mC_d36_ag4_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_014852-bench-lambada-mC_d36_ag4_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-lambada-mC_d36_ag4_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-lambada-mC_d36_ag4_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:     acc 0.016
+wandb: gold_ce 6.87413
+wandb:       n 500
+wandb: n_asked 500
+wandb:     ppl 966.93647
+wandb: skipped 0
+wandb:     tag mC_d36_ag4_nokd
+wandb: 
+wandb:  View run bench-lambada-mC_d36_ag4_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-lambada-mC_d36_ag4_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_014852-bench-lambada-mC_d36_ag4_nokd\logs
+  ✅ bench-lambada-mC_d36_ag4_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 2.0분  (2026-08-23 01:49:00)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-23 01:49:00  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task hellaswag --n 300 --preset m100R1d --data ko-en --tokens 300M --models mC_d36_ag4_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=300  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [hellaswag] 4지선다 문장완성   kind=mc   공식 metric=acc / acc_norm
+================================================================================================
+  전체 10,042행 중 300문항 (seed=99)  id 앞 10개: [38, 53, 129, 155, 161, 192, 230, 231, 256, 362]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_d36_ag4_nokd    우도acc **31.3%** [95%CI 26.3%~36.8%]  길이정규acc 30.3%  정답CE 3.6426  N=300 제외=0
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  hellaswag       mC_d36_ag4_nokd         31.3%  정답CE 3.6426
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-hellaswag-mC_d36_ag4_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_015019-bench-hellaswag-mC_d36_ag4_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-hellaswag-mC_d36_ag4_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-hellaswag-mC_d36_ag4_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading config.yaml
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.31333
+wandb: acc_norm 0.30333
+wandb:  gold_ce 3.6426
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_d36_ag4_nokd
+wandb: 
+wandb:  View run bench-hellaswag-mC_d36_ag4_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-hellaswag-mC_d36_ag4_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_015019-bench-hellaswag-mC_d36_ag4_nokd\logs
+  ✅ bench-hellaswag-mC_d36_ag4_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.4분  (2026-08-23 01:50:26)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-23 01:50:26  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task piqa --n 300 --preset m100R1d --data ko-en --tokens 300M --models mC_d36_ag4_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=300  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [piqa] 2지선다 물리상식   kind=mc   공식 metric=acc
+================================================================================================
+  전체 1,838행 중 300문항 (seed=99)  id 앞 10개: [4, 5, 10, 13, 50, 54, 62, 77, 84, 96]
+  ★**우연 수준 = 50.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_d36_ag4_nokd    우도acc **56.7%** [95%CI 51.0%~62.2%]  길이정규acc 55.3%  정답CE 4.5112  N=300 제외=0
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  piqa            mC_d36_ag4_nokd         56.7%  정답CE 4.5112
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-piqa-mC_d36_ag4_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_015107-bench-piqa-mC_d36_ag4_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-piqa-mC_d36_ag4_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-piqa-mC_d36_ag4_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.56667
+wandb: acc_norm 0.55333
+wandb:  gold_ce 4.51117
+wandb:        n 300
+wandb:  n_asked 300
+wandb:  skipped 0
+wandb:      tag mC_d36_ag4_nokd
+wandb: 
+wandb:  View run bench-piqa-mC_d36_ag4_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-piqa-mC_d36_ag4_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_015107-bench-piqa-mC_d36_ag4_nokd\logs
+  ✅ bench-piqa-mC_d36_ag4_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.8분  (2026-08-23 01:51:14)
+==============================================================================
+[5] generation tasks. Expected near zero. We measure anyway - that is the point.
+
+==============================================================================
+[runlog] 2026-08-23 01:51:14  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task gsm8k --n 100 --max-new 128 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly mC_r20_nokd --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=100  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [gsm8k] 다단계 산술   kind=gen   공식 metric=EM(strict)
+================================================================================================
+  전체 1,319행 중 100문항 (seed=99)  id 앞 10개: [6, 12, 38, 53, 58, 61, 70, 83, 89, 92]
+  ★**우연 수준 = 0.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        EM **2.0%** [95%CI 0.6%~7.0%]  ★정답CE 3.5344  N=100
+  ★EM 이 0 이어도 **정답CE 는 연속값**이라 서열을 만든다(결과 050 의 수법)
+
+  mC_r20_nokd        EM **0.0%** [95%CI 0.0%~3.7%]  ★정답CE 3.7415  N=100
+  ★EM 이 0 이어도 **정답CE 는 연속값**이라 서열을 만든다(결과 050 의 수법)
+
+  ── paired 정답CE 비교 (공통 100문항) ──
+    mC_initonly - mC_r20_nokd: Δ -0.2071 ± 0.0287  SD 0.1467 SE 0.0147 t -14.12  승률 7.0%  필요N(SE0.002) **5,378**
+      ⚠️★**100 문항으로는 부족하다**(필요 5,378). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  gsm8k           mC_initonly              2.0%  정답CE 3.5344
+  gsm8k           mC_r20_nokd              0.0%  정답CE 3.7415
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-gsm8k-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_015817-bench-gsm8k-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-gsm8k-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-gsm8k-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading config.yaml
+wandb: 
+wandb: Run summary:
+wandb:      em 0.02
+wandb: gold_ce 3.53439
+wandb:       n 100
+wandb: n_asked 100
+wandb:     tag mC_initonly
+wandb: 
+wandb:  View run bench-gsm8k-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-gsm8k-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_015817-bench-gsm8k-mC_initonly\logs
+  ✅ bench-gsm8k-mC_initonly
+wandb: setting up run bench-gsm8k-mC_r20_nokd
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_015823-bench-gsm8k-mC_r20_nokd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-gsm8k-mC_r20_nokd
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-gsm8k-mC_r20_nokd
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading wandb-summary.json; uploading config.yaml
+wandb: 
+wandb: Run summary:
+wandb:      em 0
+wandb: gold_ce 3.74148
+wandb:       n 100
+wandb: n_asked 100
+wandb:     tag mC_r20_nokd
+wandb: 
+wandb:  View run bench-gsm8k-mC_r20_nokd at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-gsm8k-mC_r20_nokd
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_015823-bench-gsm8k-mC_r20_nokd\logs
+  ✅ bench-gsm8k-mC_r20_nokd
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 7.2분  (2026-08-23 01:58:29)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-23 01:58:29  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task ifeval --n 100 --max-new 192 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=100  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [ifeval] 지시 따르기(부분집합)   kind=gen   공식 metric=prompt/inst acc
+================================================================================================
+  전체 541행 중 100문항 (seed=99)  id 앞 10개: [15, 17, 21, 39, 46, 52, 61, 62, 68, 71]
+
+  mC_initonly        제약충족 **32.1%** [95%CI 21.4%~45.2%]  평가 56 / 미구현제약 92 / 전체 148
+  ⚠️★**미구현 제약은 '실패' 가 아니라 '미평가' 다.** 공식 25종 중 우리는 8종
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  ifeval          mC_initonly             32.1%  
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-ifeval-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_020357-bench-ifeval-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-ifeval-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-ifeval-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json
+wandb: 
+wandb: Run summary:
+wandb:    inst_acc 0.32143
+wandb:   inst_eval 56
+wandb: inst_unimpl 92
+wandb:           n 100
+wandb:     n_asked 100
+wandb:         tag mC_initonly
+wandb: 
+wandb:  View run bench-ifeval-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-ifeval-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_020357-bench-ifeval-mC_initonly\logs
+  ✅ bench-ifeval-mC_initonly
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 5.6분  (2026-08-23 02:04:04)
+==============================================================================
+[6] code and tool use - we GENERATE and SAVE. We do not execute model output.
+
+==============================================================================
+[runlog] 2026-08-23 02:04:05  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task humaneval --n 164 --max-new 192 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly --out-jsonl smoketest_logs\gen_humaneval.jsonl --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=164  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [humaneval] 코드 생성 🚫실행 안 함   kind=gen_save   공식 metric=pass@1
+================================================================================================
+  전체 164행 중 164문항 (seed=99)  id 앞 10개: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  ★**우연 수준 = 0.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        파싱성공 **10.4%** [95%CI 6.6%~16.0%]  정답CE 3.9459  N=164
+  🚫★**pass@1 은 여기서 안 낸다** — 생성 코드를 **실행해야** 하고 우리는 모델이 만든 코드를 실행하지 않는다.
+  ★`--out-jsonl` 로 저장한 뒤 공식 하네스(evalplus / BFCL)로 채점하세요.
+  ✅ 생성물 저장: smoketest_logs\gen_humaneval.jsonl  (공식 하네스로 채점하세요)
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  humaneval       mC_initonly             10.4%  정답CE 3.9459
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-humaneval-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_021156-bench-humaneval-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-humaneval-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-humaneval-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:  gold_ce 3.94593
+wandb:        n 164
+wandb:  n_asked 164
+wandb: parse_ok 0.10366
+wandb:      tag mC_initonly
+wandb: 
+wandb:  View run bench-humaneval-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-humaneval-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_021156-bench-humaneval-mC_initonly\logs
+  ✅ bench-humaneval-mC_initonly
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 8.0분  (2026-08-23 02:12:03)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-23 02:12:03  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task humaneval_plus --n 164 --max-new 192 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly --out-jsonl smoketest_logs\gen_humanevalplus.jsonl --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=164  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [humaneval_plus] HE+ 🚫실행 안 함   kind=gen_save   공식 metric=pass@1
+================================================================================================
+  전체 164행 중 164문항 (seed=99)  id 앞 10개: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  ★**우연 수준 = 0.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        파싱성공 **10.4%** [95%CI 6.6%~16.0%]  정답CE 4.0262  N=164
+  🚫★**pass@1 은 여기서 안 낸다** — 생성 코드를 **실행해야** 하고 우리는 모델이 만든 코드를 실행하지 않는다.
+  ★`--out-jsonl` 로 저장한 뒤 공식 하네스(evalplus / BFCL)로 채점하세요.
+  ✅ 생성물 저장: smoketest_logs\gen_humanevalplus.jsonl  (공식 하네스로 채점하세요)
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  humaneval_plus  mC_initonly             10.4%  정답CE 4.0262
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-humaneval_plus-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_022002-bench-humaneval_plus-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-humaneval_plus-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-humaneval_plus-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:  gold_ce 4.02622
+wandb:        n 164
+wandb:  n_asked 164
+wandb: parse_ok 0.10366
+wandb:      tag mC_initonly
+wandb: 
+wandb:  View run bench-humaneval_plus-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-humaneval_plus-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_022002-bench-humaneval_plus-mC_initonly\logs
+  ✅ bench-humaneval_plus-mC_initonly
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 8.1분  (2026-08-23 02:20:10)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-23 02:20:10  name=P069_stage0b_bench
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task bfcl_v3 --n 100 --max-new 128 --preset m100R1c --data ko-en --tokens 300M --models mC_initonly --out-jsonl smoketest_logs\gen_bfcl.jsonl --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=100  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [bfcl_v3] 함수 호출 🚫실행 안 함   kind=gen_save   공식 metric=AST acc
+================================================================================================
+  전체 2,351행 중 100문항 (seed=99)  id 앞 10개: [15, 50, 56, 80, 103, 113, 119, 136, 163, 224]
+  ★**우연 수준 = 0.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  mC_initonly        파싱성공 **0.0%** [95%CI 0.0%~3.7%]  정답CE 7.7613  N=100
+  🚫★**pass@1 은 여기서 안 낸다** — 생성 코드를 **실행해야** 하고 우리는 모델이 만든 코드를 실행하지 않는다.
+  ★`--out-jsonl` 로 저장한 뒤 공식 하네스(evalplus / BFCL)로 채점하세요.
+  ✅ 생성물 저장: smoketest_logs\gen_bfcl.jsonl  (공식 하네스로 채점하세요)
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  bfcl_v3         mC_initonly              0.0%  정답CE 7.7613
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run bench-bfcl_v3-mC_initonly
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in Z:\TinyLM\wandb\run-20260823_022349-bench-bfcl_v3-mC_initonly
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run bench-bfcl_v3-mC_initonly
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-bench
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-bfcl_v3-mC_initonly
+wandb: updating run metadata; uploading summary
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:  gold_ce 7.76127
+wandb:        n 100
+wandb:  n_asked 100
+wandb: parse_ok 0
+wandb:      tag mC_initonly
+wandb: 
+wandb:  View run bench-bfcl_v3-mC_initonly at: https://wandb.ai/myplmy-ir/tinylm-bench/runs/bench-bfcl_v3-mC_initonly
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-bench
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260823_022349-bench-bfcl_v3-mC_initonly\logs
+  ✅ bench-bfcl_v3-mC_initonly
+  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 **네임스페이스가 분리**된다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 3.8분  (2026-08-23 02:23:55)
+==============================================================================
+=============================================================================
+READ IN THIS ORDER
+1. the chance level printed above each result. Compare against THAT, not 0.
+   BoolQ is 62 percent, not 50.
+2. the degeneracy line. If one option is picked over 90 percent of the time
+   the accuracy is a bias, not an ability.
+3. the excluded count. MuSR will exclude most items - about 1000 word
+   narratives against a 1024 token limit. That measures our seq, not the model.
+4. gold CE and its required N. If required N is above the items we ran, the
+   delta cannot rank anything. KorQuAD needed 244040.
+5. pass@1 is NOT here for humaneval. Generated code was saved, not executed.
+   Score it with the official evalplus harness if you want pass@1.
+ seed noise 3-5 points versus a
+   9 point model gap. Ask only whether the DIRECTION disagrees with val.
+==============================================================================
