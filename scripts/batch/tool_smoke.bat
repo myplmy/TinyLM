@@ -156,6 +156,18 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch t
 if errorlevel 1 echo [WARN] sm_inplace failed - continuing
 
 echo.
+echo [12] P073 cla-group - trap 37: cla_group is set BEFORE the model is built
+python scripts\runlog.py --name !TL_LOGNAME! --note "[12] P073 cla-group 1 - the axis must actually be ON"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --cla-group 1 --init-from --tag sm_cla1
+if errorlevel 1 echo [WARN] sm_cla1 failed - continuing
+
+echo.
+echo [13] P071 ce-chunk - the plain CE path had never been chunked before 2026-08-22
+python scripts\runlog.py --name !TL_LOGNAME! --note "[13] P071 ce-chunk 256 - plain CE chunking on the common path"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --ce-chunk 256 --tag sm_cechunk
+if errorlevel 1 echo [WARN] sm_cechunk failed - continuing
+
+echo.
 echo =============================================================
 echo [VERIFY] every instrumentation field was recorded
 python scripts\runlog.py --name !TL_LOGNAME! --note "[VERIFY] every instrumentation field was recorded"

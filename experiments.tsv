@@ -22,24 +22,18 @@
 prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수 49GB→. ★판정 정본이 checkpoints.tsv 로 바뀌었다(TSV, keep/hold/delete). 삭제 후보 13.2GB/34개. YES 를 직접 입력해야 지운다
-1	P034	run_P034_stage5_emb_quant.bat	N	0.4	N	Y	★★임베딩 양자화 5종(bf16/int8/int4/ternary). 결과 052: int8 상주의 47%가 임베딩. ★bf16 은 복원이 없다
-1	P064	run_P064_stage0b_kobench_pmi.bat	D	0.7	N	Y	★NLI 도구 결함 수정(PMI 정규화+퇴화 감지). 결과 050 §4: 여섯 모델이 전부 32.2%였다
-3	P068	run_P068_stage1a_wq_bf16.bat	Y	1.5	N	Y	★_wq bf16 저장. 결과 035 §13: F.linear 진입 가중치가 100% fp32, 캐스팅 15~27 GB/스텝
-1	P065	run_P065_stage2_nockpt_vram.bat	Y	0.5	Y	Y	★★선결 게이트 — 36층·재귀에서 --no-ckpt 가 16GB 에 들어가는가(250스텝). 실패하면 P062 단계2·3 이 ckpt 를 켠 채로 간다
-1	P062	run_P062_stage2_inplace.bat	Y	2.8	N	Y	★★repeat_where 는 학습 경로에 안 들어간다 — even 은 학습된 적이 없다. --repeat-mode inplace 가 그 짝. P070 착수 여부를 이것이 정한다
-2	P049	run_P049_stage3_reuse_attn.bat	Y	2.4	N	Y	★★6.5-1. 복제층 어텐션 cos 0.9882(041 §17) → 2회차 어텐션을 재사용. 우리 축 중 **연산이 실제로 주는 첫 레버**
-2	P069	run_P069_stage0b_bench_suite.bat	D	2.5	N	Y	★★벤치마크 13종 전수(사용자 지시 — 예상 결과 무관). 선결: fetch_bench_data.py --all(네트워크). 결과는 wandb 로도 간다
 3	P062	run_P062_stage3_depth_x_recursion.bat	Y	5.0	N	Y	★REVIEW2 §7. 36층+재귀 결합 — 메모리 무료 레버 둘이 더해지는가. ⚠️★**선결: P065 단계2b 의 팔 2·4**(단계2 는 OOM 으로 실패했다 — 결과 054)
-1	P014	run_P014_stage0_lut_ref.bat	N	0.1	N	Y	★★LUT 참조 구현 게이트(정확성·메모리, 속도는 P014B). 결과 052: int8 로는 40 MiB 불가. numpy 대조는 이미 통과(L1~L4)
-2	P067	run_P067_stage0b_teacher_gate.bat	Y	1.2	Y	Y	★★외부 교사 게이트 + 교사 토크나이저로 토큰화 + 250스텝 VRAM 프로브. ★진짜 질문: KD 가 무익했던 것이 KD 탓인가 우리 dense 탓인가
-2	P054	run_P054_stage2_dense2.bat	Y	3.2	N	Y	★안 C — dense2(전 필드 기록) + mC_init2 로 **'부모를 바꿔도 되는가'** 를 3.2h 에 답한다. 안 A(부모 교체)는 13런·20h 가 걸린다
-1	P065	run_P065_stage2b_nockpt_vram.bat	Y	1.0	Y	Y	★★단계2 OOM 재프로브(결과 054). CE 청킹 후 4팔 사다리 — 1·3 은 질문(--no-ckpt), 2·4 는 대조군. **1 실패 + 2 통과면 버그가 아니라 --no-ckpt 다**
-1	P067	run_P067_stage0c_teacher_gate.bat	Y	0.5	Y	Y	★★교사 로짓 dtype 수정 후 재프로브(결과 054). 0b 는 T1~T6 전부 통과하고 **내 lg.float() 2.32GiB 단일할당** 때문에 죽었다
-1	P071	run_P071_stage0_chunk_equiv.bat	Y	0.1	N	Y	★★손실 청킹 등가성(사용자 지적). E1 은 **완전 일치** 기준 — chunk<=0 은 같은 호출이다. ★E4 가 **내 1차 수정이 학생 정밀도까지 바꾼 것을 되돌렸는지** 증명한다
-1	P062	run_P062_stage2b_inplace_eval.bat	D	0.1	N	Y	★★단계2 는 **학습 성공, 로더 실패**(함정 18: REPEAT_MODES 가 세 곳). **재학습 불필요** — 평가만 다시 한다. P070 착수 여부를 이것이 정한다
 2	P073	run_P073_stage0_cla_control.bat	Y	1.8	N	Y	★★공통경로 감사에서 나온 것 — `cla_group=2` 는 **기본으로 켜져 있는데 품질 대가가 단독 귀속된 적이 없다**. ★진짜 걸린 것은 **P057**: attn_group 을 잰 전부가 cla2 위였다
 1	P072	run_P072_stage0_layer_map.bat	D	0.4	N	Y	★★★레이어 상호작용 지도(사용자 지시). ★**U4 가 핵심** — '같은 입력·다른 일' 이면 묶으면 안 된다. **P049 가 cos 0.9882 를 대체가능으로 읽고 +0.0281 잃은 것의 사후분석**이자 P057·P070 의 사전 판별식
 1	P034	run_P034_stage5b_emb_quant.bat	D	0.4	N	Y	★★단계5 재측정 — 회계 버그(코드 미계상)로 **38.4 는 거짓**이었고 int4/ternary 가 int8 과 같았다. ★**REVIEW3 의 최대 미지**: LUT 이 삼진을 8.88 로 줄였고 **남은 것이 임베딩**이다
+1	P057	run_P057_stage3_attn_push.bat	Y	6.3	N	Y	★★어텐션 타잉 8/16 을 36층 표준모델 위에서. 어텐션은 0.00083 nats/100만 = MLP 의 1/4.1 로 **가장 싼 레버**인데 4 에서 멈춰 있었다. REVIEW3 상주의 남은 구조 레버
+2	P045	run_P045_stage3_tying_ceiling.bat	Y	3.2	N	Y	★타잉 축의 구조적 끝 — m100R1d 에서 g32 = 유니크 중간 MLP **1개**. 029 의 g16 은 20층 값이고 **볼록성(032 §8.3)** 때문에 전이되지 않는다. 평평하면 볼록성 모델이 틀린 것
+1	P046	run_P046_stage5_emb_nokd.bat	Y	5.1	N	Y	★★임베딩 랭크 128 을 **무KD 표준조건**에서 + 36층 배포모델 위에서. 기존 e128svd 는 kd=true 라 표준 밖이다. ⚠️grad_max 를 손실보다 먼저 볼 것(030 이 19.32 로 죽었다)
+2	P061	run_P061_stage1_uneven_tying.bat	Y	5.6	N	Y	★★불균등 타잉을 **학습해서** 잰다. 045 의 step0 판정은 D13 으로 철회됐다. **메모리가 세 팔 전부 동일** = 이기면 공짜 레버
+2	P062	run_P062_stage4_r3_curve.bat	Y	4.3	N	Y	★재귀 R=3. R=2 가 메모리 0 으로 −0.0202 를 벌었는데 **두 번째 점이 없다**. ⚠️uniform 은 정수 반올림이라 축은 1·2·3 뿐(043 §5). --match-train-repeat 필수
+1	P067	run_P067_stage1a_qt0.bat	Y	4.9	Y	Y	★★★교락 대조군 QT0(Qwen 토크나이저·교사 없음). 이게 없으면 '교사 때문인가 토크나이저 때문인가' 를 영원히 못 가른다. **[1] common_bpb 게이트가 goto ERROR** — 5시간 쓰기 전에 판정 경로를 증명한다
+1	P067	run_P067_stage1b_q256t.bat	Y	6.0	Y	Y	★★★**학생보다 나은 교사로 하는 첫 KD**. REVIEW2 는 037 이 '교사가 학생보다 나쁘다' 를 밝힌 뒤에도 그 교사로 잰 038 로 KD 를 제거했다. ⚠️선결: 1a 의 QT0
+2	P067	run_P067_stage1c_q64t.bat	Y	5.9	Y	Y	★강한 교사가 뭉갠 임베딩(E=64)을 갚아 주는가. ⚠️V=151936 에는 부모가 없어 **SVD 이식이 불가** — step0 ce ≈ ln V = 11.93 이 정상이다(여기서만). 선결: 1b 의 Q256T
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
 #   2026-08-14 삭제분: P049 단계1(041 §14.8) · P049B 단계1(043 §13.9) · F-1(046 §9)
@@ -74,6 +68,23 @@ prio	plan	batch	gpu	hours	alone	watch	note
 #   4	P064	run_P064_stage0_korean_bench.bat	D	0.9	N	Y	★KLUE/KorQuAD 보조진단(공식 metric 아님). 4모델 + 시드쌍 2개로 **이 자의 σ 까지** 잰다
 #   5	P063	run_P063_stage1_regen_sigma.bat	Y	5.2	Y	Y	★P063+P054 통합 — 동일 명령 dense 재생성 3회. 시드가 아니라 비결정성이 얼마인가
 #   2	P065	run_P065_stage1_nokd_levers.bat	Y	4.4	Y	Y	★★무KD 미검증 레버 전수 — micro_group 256 / emb_rank 192 / --no-ckpt(250스텝 속도쌍). 레버표 전체가 KD 조건이었다
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P034	run_P034_stage5_emb_quant.bat	N	0.4	N	Y	★★임베딩 양자화 5종(bf16/int8/int4/ternary). 결과 052: int8 상주의 47%가 임베딩. ★bf16 은 복원이 없다
+#   1	P064	run_P064_stage0b_kobench_pmi.bat	D	0.7	N	Y	★NLI 도구 결함 수정(PMI 정규화+퇴화 감지). 결과 050 §4: 여섯 모델이 전부 32.2%였다
+#   3	P068	run_P068_stage1a_wq_bf16.bat	Y	1.5	N	Y	★_wq bf16 저장. 결과 035 §13: F.linear 진입 가중치가 100% fp32, 캐스팅 15~27 GB/스텝
+#   1	P065	run_P065_stage2_nockpt_vram.bat	Y	0.5	Y	Y	★★선결 게이트 — 36층·재귀에서 --no-ckpt 가 16GB 에 들어가는가(250스텝). 실패하면 P062 단계2·3 이 ckpt 를 켠 채로 간다
+#   1	P062	run_P062_stage2_inplace.bat	Y	2.8	N	Y	★★repeat_where 는 학습 경로에 안 들어간다 — even 은 학습된 적이 없다. --repeat-mode inplace 가 그 짝. P070 착수 여부를 이것이 정한다
+#   2	P049	run_P049_stage3_reuse_attn.bat	Y	2.4	N	Y	★★6.5-1. 복제층 어텐션 cos 0.9882(041 §17) → 2회차 어텐션을 재사용. 우리 축 중 **연산이 실제로 주는 첫 레버**
+#   2	P069	run_P069_stage0b_bench_suite.bat	D	2.5	N	Y	★★벤치마크 13종 전수(사용자 지시 — 예상 결과 무관). 선결: fetch_bench_data.py --all(네트워크). 결과는 wandb 로도 간다
+#   1	P014	run_P014_stage0_lut_ref.bat	N	0.1	N	Y	★★LUT 참조 구현 게이트(정확성·메모리, 속도는 P014B). 결과 052: int8 로는 40 MiB 불가. numpy 대조는 이미 통과(L1~L4)
+#   2	P067	run_P067_stage0b_teacher_gate.bat	Y	1.2	Y	Y	★★외부 교사 게이트 + 교사 토크나이저로 토큰화 + 250스텝 VRAM 프로브. ★진짜 질문: KD 가 무익했던 것이 KD 탓인가 우리 dense 탓인가
+#   2	P054	run_P054_stage2_dense2.bat	Y	3.2	N	Y	★안 C — dense2(전 필드 기록) + mC_init2 로 **'부모를 바꿔도 되는가'** 를 3.2h 에 답한다. 안 A(부모 교체)는 13런·20h 가 걸린다
+#   1	P065	run_P065_stage2b_nockpt_vram.bat	Y	1.0	Y	Y	★★단계2 OOM 재프로브(결과 054). CE 청킹 후 4팔 사다리 — 1·3 은 질문(--no-ckpt), 2·4 는 대조군. **1 실패 + 2 통과면 버그가 아니라 --no-ckpt 다**
+#   1	P067	run_P067_stage0c_teacher_gate.bat	Y	0.5	Y	Y	★★교사 로짓 dtype 수정 후 재프로브(결과 054). 0b 는 T1~T6 전부 통과하고 **내 lg.float() 2.32GiB 단일할당** 때문에 죽었다
+#   1	P071	run_P071_stage0_chunk_equiv.bat	Y	0.1	N	Y	★★손실 청킹 등가성(사용자 지적). E1 은 **완전 일치** 기준 — chunk<=0 은 같은 호출이다. ★E4 가 **내 1차 수정이 학생 정밀도까지 바꾼 것을 되돌렸는지** 증명한다
+#   1	P062	run_P062_stage2b_inplace_eval.bat	D	0.1	N	Y	★★단계2 는 **학습 성공, 로더 실패**(함정 18: REPEAT_MODES 가 세 곳). **재학습 불필요** — 평가만 다시 한다. P070 착수 여부를 이것이 정한다
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
