@@ -93,6 +93,25 @@ def banner(s, ch="="):
 #   `dense`·`tied`·`lrfind` 는 **preset 접두사가 없는 구 형식 파일**이라 필드가 거의 없고,
 #   업로드하면 **빈 런**이 생긴다(사용자가 wandb 에서 삭제했다).
 #   ★규칙: **`{preset}_{data}_{tokens}_{tag}` 형식만 올린다.**
+# ★★2026-08-23 사용자 지시 — **짧은 프로브는 W&B 에 올리지 않는다.**
+#
+#   > *"250 step 학습도 모두 W&B 에 저장되어 실제 전체 step 학습모델과 착오발생가능성 있음.
+#   >  250 step 학습은 WanDB 전송하지 않는 것으로 할 것."*
+#
+#   ★**옳은 지적이다.** 250스텝 프로브는 **VRAM·ms/step 을 재려고** 돌리는 것이고
+#   **품질(val)은 읽지 않는다**(결과 046 이 그 용법의 모범). 그런데 W&B 에는 val 이
+#   그래프로 그려지고, **2289스텝 런 옆에 나란히 놓이면 구분이 안 된다.**
+#   ⚠️**그리고 그 착오는 조용하다** — 숫자가 그럴듯해서 틀린 줄 모른다.
+#
+#   ★★**기준은 스텝이 아니라 학습 토큰이다.**
+#   ⚠️처음에 `steps < 1000` 으로 잡았더니 **`m100_ko-en_100M_p6*`(763스텝)이 걸렸다** —
+#   그건 프로브가 아니라 **100M 토큰 예산의 진짜 실험**이다(P006 계열).
+#   ★`steps` 는 유효배치에 따라 의미가 달라진다. **토큰이 예산의 단일 소스**다
+#   (`CLAUDE.md`: *"기준 학습토큰 = steps × micro_bs × accum × seq"*).
+#   실측: 프로브 **32.8M** / 최소 실험 **100.0M** / 표준 **300.0M** → 경계 **50M** 이 깨끗하다.
+MIN_TOKENS = 50_000_000
+
+
 def _eligible(stem, d):
     if stem.startswith(("tiny_", "lrfind_")):
         return False, "스모크·lrfind"
@@ -101,6 +120,11 @@ def _eligible(stem, d):
     for k in ("steps", "params", "tokens"):
         if d.get(k) in (None, 0):
             return False, f"필수 필드 없음({k})"
+    tk = int(d.get("tokens") or 0)
+    if tk < MIN_TOKENS:
+        return False, (f"★짧은 프로브({tk/1e6:.1f}M 토큰 < {MIN_TOKENS/1e6:.0f}M) — "
+                       f"VRAM·속도 측정용이고 **품질을 읽지 않는다**. "
+                       f"전체 런과 섞이면 착오가 난다(2026-08-23 사용자 지시)")
     return True, ""
 
 

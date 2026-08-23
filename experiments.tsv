@@ -37,6 +37,9 @@ prio	plan	batch	gpu	hours	alone	watch	note
 1	P067	run_P067_stage0c_teacher_gate.bat	Y	0.5	Y	Y	★★교사 로짓 dtype 수정 후 재프로브(결과 054). 0b 는 T1~T6 전부 통과하고 **내 lg.float() 2.32GiB 단일할당** 때문에 죽었다
 1	P071	run_P071_stage0_chunk_equiv.bat	Y	0.1	N	Y	★★손실 청킹 등가성(사용자 지적). E1 은 **완전 일치** 기준 — chunk<=0 은 같은 호출이다. ★E4 가 **내 1차 수정이 학생 정밀도까지 바꾼 것을 되돌렸는지** 증명한다
 1	P062	run_P062_stage2b_inplace_eval.bat	D	0.1	N	Y	★★단계2 는 **학습 성공, 로더 실패**(함정 18: REPEAT_MODES 가 세 곳). **재학습 불필요** — 평가만 다시 한다. P070 착수 여부를 이것이 정한다
+2	P073	run_P073_stage0_cla_control.bat	Y	1.8	N	Y	★★공통경로 감사에서 나온 것 — `cla_group=2` 는 **기본으로 켜져 있는데 품질 대가가 단독 귀속된 적이 없다**. ★진짜 걸린 것은 **P057**: attn_group 을 잰 전부가 cla2 위였다
+1	P072	run_P072_stage0_layer_map.bat	D	0.4	N	Y	★★★레이어 상호작용 지도(사용자 지시). ★**U4 가 핵심** — '같은 입력·다른 일' 이면 묶으면 안 된다. **P049 가 cos 0.9882 를 대체가능으로 읽고 +0.0281 잃은 것의 사후분석**이자 P057·P070 의 사전 판별식
+1	P034	run_P034_stage5b_emb_quant.bat	D	0.4	N	Y	★★단계5 재측정 — 회계 버그(코드 미계상)로 **38.4 는 거짓**이었고 int4/ternary 가 int8 과 같았다. ★**REVIEW3 의 최대 미지**: LUT 이 삼진을 8.88 로 줄였고 **남은 것이 임베딩**이다
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
 #   2026-08-14 삭제분: P049 단계1(041 §14.8) · P049B 단계1(043 §13.9) · F-1(046 §9)

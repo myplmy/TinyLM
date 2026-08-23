@@ -262,6 +262,15 @@ class TiedMLPTransformer(nn.Module):
         if fmt in ("bf16", "fp16"):
             dt = torch.bfloat16 if fmt == "bf16" else torch.float16
             self.emb.weight.data = w.to(dt)
+            # ★★★2026-08-23 실사고 — **`emb_rank` 모델에는 `emb_up` 이 뒤따른다.**
+            #   임베딩만 bf16 으로 바꾸면 `emb_up`(fp32)과 dtype 이 안 맞아
+            #   `RuntimeError: expected m1 and m2 to have the same dtype` 로 죽는다.
+            #   ⚠️**`emb_rank=0` 인 모델에서는 안 나던 버그**라 스모크가 못 잡았다 —
+            #   `tiny` 프리셋에 `emb_rank` 가 없다(함정 37 계열: 그 축을 켠 팔이 없었다).
+            #   ★해법: **다음 층도 같이 내린다.** bf16 저장의 목적이 "복원 없음" 이므로
+            #   emb_up 을 fp32 로 되돌리면 그 목적이 사라진다.
+            if self.emb_up is not None:
+                self.emb_up.weight.data = self.emb_up.weight.data.to(dt)
             self._emb_fmt = fmt
             return
         if fmt == "int8":
@@ -286,6 +295,10 @@ class TiedMLPTransformer(nn.Module):
             qmax = 127.0 if fmt == "int8" else 7.0
             scale = wg.abs().amax(dim=2, keepdim=True) / qmax
             code = torch.round(wg / scale.clamp_min(1e-12)).clamp(-qmax, qmax).to(torch.int8)
+        # ⚠️★★**여기가 회계의 함정이다.** `code` 는 fmt 와 무관하게 **`torch.int8` 텐서**다 —
+        #   PyTorch 에 int4/ternary dtype 이 없다. 즉 **int4·ternary 는 저장이 안 준다.**
+        #   ★줄이려면 **패킹이 필요**하고 그것은 `model/lut.py` 의 일이다(P014).
+        #   🚫**"int4 로 바꿨으니 절반" 이라고 쓰면 그것은 계산이지 실측이 아니다**(함정 1).
         self._emb_code = code.reshape(V, E).contiguous()
         self._emb_scale = scale.squeeze(-1).contiguous().float()      # (V, E//g)
         self._emb_g = g

@@ -69,6 +69,10 @@ def tensor_mb(model):
             if getattr(m, "_i8", None) is not None:
                 wq += m._i8.numel() * m._i8.element_size()
                 wq += m._alpha.numel() * m._alpha.element_size()
+            # ★★P014 단계1 — LUT 코드·per-row alpha 도 상주다. 안 세면 "삼진사본 0.0" 이 된다.
+            if getattr(m, "_lut_codes", None) is not None:
+                wq += m._lut_codes.numel() * m._lut_codes.element_size()
+                wq += m._lut_alpha.numel() * m._lut_alpha.element_size()
             # ★★P034 단계3C(결과 016 §13): 언팩 캐시 버퍼. **이걸 안 세서 사고를 못 잡았다.**
             #   1차 구현이 dense 에서 fp32 20층분(472.5MB)을 들고 있었는데 이 함수는
             #   `parameters()` 와 `_wq`/`_i8` 만 보고 **86.9MB 라고 보고했다.**
@@ -79,6 +83,18 @@ def tensor_mb(model):
     for p in model.parameters():
         if id(p) not in tl:
             other += p.numel() * p.element_size()
+    # ★★★2026-08-23 실사고(결과 016 §단계5) — **임베딩 양자화 산출물이 회계에서 사라졌다.**
+    #   `quantize_embedding` 은 `emb.weight` 를 **빈 텐서로 만들고** `_emb_code`/`_emb_scale`
+    #   에 저장한다. 그런데 위 `model.parameters()` 루프는 **Parameter 만** 본다 →
+    #   코드·스케일이 **한 바이트도 안 세어졌다.**
+    #   결과: int8·int4·ternary 세 팔이 **전부 "기타 1.0 MB"** 로 같게 나왔고,
+    #   **38.4 MB 라는 거짓 숫자**가 로그에 남았다.
+    #   ⚠️★**결과 016 §13 이 이미 같은 사고를 겪었다**(언팩 캐시를 안 세서 86.9 라고 보고).
+    #   **"상주 회계는 의도적으로 들고 있는 텐서 전부" 라는 규칙을 내가 다시 어겼다.**
+    for _n in ("_emb_code", "_emb_scale"):
+        _t = getattr(model, _n, None)
+        if _t is not None:
+            other += _t.numel() * _t.element_size()
     f = 1024 ** 2
     return lat / f, wq / f, other / f
 

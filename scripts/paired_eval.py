@@ -124,7 +124,12 @@ def main():
     ap.add_argument("--repeat-where", choices=["front", "back", "even"], default="front",
                     help="(P062) 분수/확장에서 어디를 더 돌지. 학습 uniform 과 같은 것은 front")
     ap.add_argument("--emb-quant", choices=["bf16", "fp16", "int8", "int4", "ternary"],
-                    default=None, help="(P034 단계5) 임베딩 양자화 품질 대가 측정")
+                    default=None, help="(P034 단계5) 임베딩 양자화. 모든 태그에 걸린다")
+    # ★★2026-08-23 실사고 — `--emb-quant X --models A B` 는 X 를 **두 모델 모두**에 건다.
+    #   그래서 "양자화의 대가" 가 아니라 "양자화 상태에서 두 체크포인트의 차" 를 잰다.
+    #   결과 016 §단계5 에서 bf16 과 int8 이 **정확히 같은 +0.0012** 를 낸 것이 그 증거다.
+    ap.add_argument("--emb-quant-per-tag", nargs="*", default=None, metavar="TAG=FMT",
+                    help="★(P034 단계5) 태그별. 같은 체크포인트를 두 번 넣으려면 TAG#2 접미사")
     ap.add_argument("--emb-chunk", type=int, default=0,
                     help="(P034 단계5) 헤드 청크 크기. 0=끄기")
     ap.add_argument("--repeat-kv-reuse", action="store_true",
@@ -143,6 +148,14 @@ def main():
     ap.add_argument("--reuse-attn-on-dup", action="store_true",
                     help="★(P049 §17.3) 재귀 통과에서 어텐션 출력 재사용. **학습과 같은 값**을 준다")
     a = ap.parse_args()
+
+    # ★임베딩 양자화 per-tag
+    emb_map = {}
+    for spec in (a.emb_quant_per_tag or []):
+        assert "=" in spec, f"형식은 TAG=FMT 다: {spec}"
+        k, v = spec.split("=", 1)
+        emb_map[k.strip()] = (None if v.strip().lower() in ("none", "off", "-")
+                              else v.strip())
 
     # ── 태그별 스케줄 파싱
     per_tag = {}
@@ -178,12 +191,17 @@ def main():
     meta = prepare(a.data, n_tok)
     per = {}
     for tag in a.models:
-        ck = paths.resolve_ckpt(a.preset, a.data, a.tokens, tag)
+        # ★`TAG#2` 는 같은 체크포인트를 다른 설정으로 한 번 더 넣는 표기다
+        real_tag = tag.split("#", 1)[0]
+        ck = paths.resolve_ckpt(a.preset, a.data, a.tokens, real_tag)
         if not ck.exists():
             print(f"\n  [건너뜀] 체크포인트 없음: {ck.name}")
             continue
-        model, cfg, _ = load_model(arch=_arch_of(tag), ckpt_path=str(ck), device=dev,
-                                   emb_quant=a.emb_quant, emb_chunk=a.emb_chunk)
+        _eq = emb_map.get(tag, a.emb_quant)
+        if tag in emb_map:
+            print(f"\n  [emb] {tag}: 임베딩 양자화 = {_eq or '없음'} (per-tag)")
+        model, cfg, _ = load_model(arch=_arch_of(real_tag), ckpt_path=str(ck), device=dev,
+                                   emb_quant=_eq, emb_chunk=a.emb_chunk)
         # ★P062 — 추론 전용 설정만 덮어쓴다(가중치 불변). `cli.py` L308~316 과 같은 규약.
         _tr = float(getattr(cfg, "train_repeat", 1.0) or 1.0)
         _tm = str(getattr(cfg, "repeat_mode", "uniform") or "uniform")

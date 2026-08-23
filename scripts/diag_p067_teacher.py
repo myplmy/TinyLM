@@ -22,7 +22,7 @@
 | **T1** | 교사가 `AutoModelForCausalLM` 으로 로드되는가 | ★**로드된다.** 멀티모달이면 여기서 실패할 수 있다 |
 | **T2** | 교사 config `vocab_size` == 토크나이저가 낼 수 있는 최대 id + 1 이하 | ★**초과 id 0개** |
 | **T3** | forward 로짓 shape | ★**(B, T, vocab_size)** |
-| **T4** | ★**로짓 dtype** | ★**fp32** — bf16 로 log_softmax 하면 꼬리가 뭉개진다 |
+| **T4** | ★**로짓 dtype** | ★**교사 config 의 dtype 그대로**(보통 bf16). fp32 승격은 `_kd_kl` 이 청크 안에서 한다(2026-08-23 정정) |
 | **T5** | 토크나이저 왕복 | ★**한국어·영어 표본에서 decode(encode(x)) == x** |
 | **T6** | 토큰 id 최대값 | ★**65,536 초과면 캐시 dtype 이 uint32 여야 한다**(안 그러면 조용히 wrap) |
 
@@ -99,7 +99,7 @@ def main():
     print("  T1 교사 로드            기준: **성공**")
     print("  T2 어휘 초과 id         기준: **0개**")
     print("  T3 로짓 shape           기준: **(B, T, vocab_size)**")
-    print("  T4 로짓 dtype           기준: ★**fp32** (bf16 log_softmax 는 꼬리를 뭉갠다)")
+    print("  T4 로짓 dtype           기준: ★**교사 config dtype 그대로**(보통 bf16). fp32 승격은 _kd_kl 이 청크 안에서")
     print("  T5 토크나이저 왕복       기준: **표본 3종 일치**")
     print("  T6 최대 토큰 id         기준: **65,536 초과면 캐시 dtype 이 uint32**")
 
@@ -155,10 +155,19 @@ def main():
           f"{'✅' if shape_ok else '🚫'}")
     if not shape_ok:
         fails.append(f"T3 shape {tuple(lg.shape)}")
-    dt_ok = lg.dtype == torch.float32
-    print(f"  T4 로짓 dtype {lg.dtype}  기대 torch.float32  {'✅' if dt_ok else '🚫'}")
+    # ★★2026-08-23 정정(함정 34) — 종전 기준 "fp32" 는 **내 수정보다 낡았다.**
+    #   `HFTeacher.forward` 는 이제 **원 dtype 그대로** 돌려주고 fp32 승격은
+    #   `_kd_kl` 이 **청크 안에서** 한다(결과 054: 통째 승격이 2.32 GiB 단일 할당이었다).
+    #   → **bf16 이 정상**이다. 기준은 "교사 config 의 dtype 과 같은가" 로 바뀐다.
+    _want = {"bfloat16": torch.bfloat16, "float16": torch.float16,
+             "float32": torch.float32}.get(str(sp["dtype"]), torch.bfloat16)
+    dt_ok = lg.dtype == _want
+    print(f"  T4 로짓 dtype {lg.dtype}  기대 {_want}(교사 config 의 dtype)  "
+          f"{'✅' if dt_ok else '🚫'}")
+    print(f"     ★fp32 승격은 `_kd_kl` 이 **청크 단위로** 한다 — 여기서 올리면 "
+          f"(B,T,V) fp32 단일 할당이 된다(결과 054)")
     if not dt_ok:
-        fails.append(f"T4 dtype {lg.dtype}")
+        fails.append(f"T4 dtype {lg.dtype} != 교사 config {sp['dtype']}")
     print(f"     로짓 범위 [{float(lg.min()):.2f}, {float(lg.max()):.2f}]  "
           f"평균 {float(lg.mean()):.4f}")
     print("     ⚠️★무작위 토큰을 넣었으므로 **로짓 값 자체는 의미 없다.** "

@@ -177,7 +177,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None,
           kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
           attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
-          reuse_attn_on_dup=False, ce_chunk=0,
+          reuse_attn_on_dup=False, ce_chunk=0, cla_group=None,
           tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
           save_every=0):
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -221,6 +221,17 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             print(f"[P067] ⚠️★이 교사는 **멀티모달**이다({_sp['model_type']}). "
                   f"`AutoModelForCausalLM` 이 텍스트 경로만 실을 수 있는지 확인할 것.")
         cfg.vocab_size = _v
+    # ★★P073 — `cla_group` 오버라이드. 미지정이면 프리셋 그대로 = 비트 동일.
+    #   ⚠️**모델 생성 전에** 바꿔야 한다(층이 owner 를 그때 정한다).
+    if cla_group is not None:
+        assert cla_group >= 1, "cla_group 은 1 이상"
+        assert cfg.n_layers % cla_group == 0, \
+            f"n_layers {cfg.n_layers} % cla_group {cla_group} != 0"
+        if cla_group != cfg.cla_group:
+            print(f"[P073] ★cla_group {cfg.cla_group} -> {cla_group} — "
+                  f"KV 소유 층이 {cfg.n_layers // cfg.cla_group} -> {cfg.n_layers // cla_group} 개")
+            print(f"[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다")
+        cfg.cla_group = cla_group
     if mlp_group and arch == "tied":            # g 스윕용 오버라이드(P003)
         assert cfg.n_middle % mlp_group == 0, f"n_middle {cfg.n_middle} % g {mlp_group} != 0"
         cfg.mlp_group = mlp_group
@@ -765,6 +776,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "kd_teacher_hf": (str(kd_teacher_hf) if kd_teacher_hf else None),
            "teacher_dtype": str(teacher_dtype),
            "ce_chunk": int(ce_chunk),   # ★결과 054
+           "cla_group": int(cfg.cla_group),   # ★P073
            "vocab_size": int(cfg.vocab_size),
            "save_every": int(save_every or 0),                     # (P058)
            "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용
