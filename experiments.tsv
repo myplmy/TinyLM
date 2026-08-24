@@ -26,6 +26,9 @@ prio	plan	batch	gpu	hours	alone	watch	note
 2	P073	run_P073_stage0_cla_control.bat	Y	1.8	N	Y	★★공통경로 감사에서 나온 것 — `cla_group=2` 는 **기본으로 켜져 있는데 품질 대가가 단독 귀속된 적이 없다**. ★진짜 걸린 것은 **P057**: attn_group 을 잰 전부가 cla2 위였다
 1	P072	run_P072_stage0_layer_map.bat	D	0.4	N	Y	★★★레이어 상호작용 지도(사용자 지시). ★**U4 가 핵심** — '같은 입력·다른 일' 이면 묶으면 안 된다. **P049 가 cos 0.9882 를 대체가능으로 읽고 +0.0281 잃은 것의 사후분석**이자 P057·P070 의 사전 판별식
 1	P034	run_P034_stage5b_emb_quant.bat	D	0.4	N	Y	★★단계5 재측정 — 회계 버그(코드 미계상)로 **38.4 는 거짓**이었고 int4/ternary 가 int8 과 같았다. ★**REVIEW3 의 최대 미지**: LUT 이 삼진을 8.88 로 줄였고 **남은 것이 임베딩**이다
+1	P073	run_P073_stage1_cla_on_d36.bat	Y	3.2	N	Y	★★★교락 해소 — 결과 058 이 Z4 를 발동시켰다. `attn_group` 을 잰 **모든** 런(044 §9·§11, B.5 의 0.00083)이 `cla2` 위다. ★이 쌍은 **grad_ckpt 드리프트가 없다**(양쪽 다 ckpt ON)
+3	P034	run_P034_stage5c_emb_bf16.bat	N	0.2	N	Y	★bf16 임베딩 — **두 번 죽은 팔**. 08-24 수정(저장은 bf16, 계산은 fp32)의 확인. ⚠️**후순위** — int8 이 +0.0001 로 9.1 MiB 를 주는데 bf16 은 16.5 가 한계다. **결함 종결용**
+3	P072	run_P072_stage0b_layer_map_json.bat	D	0.4	N	Y	★글리프 히트맵은 10단계 양자화라 **수로 못 쓴다**. `--dump-json` 으로 정확한 행렬을 낸다 — 층별 불균등 압축(REVIEW3 §5-6)의 선결. 학습 0, **판정은 안 바뀐다**(결과 057 유효)
 1	P057	run_P057_stage3_attn_push.bat	Y	6.3	N	Y	★★어텐션 타잉 8/16 을 36층 표준모델 위에서. 어텐션은 0.00083 nats/100만 = MLP 의 1/4.1 로 **가장 싼 레버**인데 4 에서 멈춰 있었다. REVIEW3 상주의 남은 구조 레버
 2	P045	run_P045_stage3_tying_ceiling.bat	Y	3.2	N	Y	★타잉 축의 구조적 끝 — m100R1d 에서 g32 = 유니크 중간 MLP **1개**. 029 의 g16 은 20층 값이고 **볼록성(032 §8.3)** 때문에 전이되지 않는다. 평평하면 볼록성 모델이 틀린 것
 1	P046	run_P046_stage5_emb_nokd.bat	Y	5.1	N	Y	★★임베딩 랭크 128 을 **무KD 표준조건**에서 + 36층 배포모델 위에서. 기존 e128svd 는 kd=true 라 표준 밖이다. ⚠️grad_max 를 손실보다 먼저 볼 것(030 이 19.32 로 죽었다)

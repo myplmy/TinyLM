@@ -92,6 +92,11 @@ def main():
     ap.add_argument("--infer-repeat", type=float, default=1.0, help="★U6 — 재귀 통과별")
     ap.add_argument("--seed", type=int, default=99)
     ap.add_argument("--device", default=None)
+    # ★2026-08-24 — 글리프 히트맵은 10단계 양자화라 **그림은 되지만 수는 안 된다.**
+    #   `scripts/plot_results.py` 와 층별 불균등 압축 설계(REVIEW3 §5-6)에는
+    #   정확한 행렬이 필요하다. 인쇄는 그대로 두고 **json 사본만 추가**한다.
+    ap.add_argument("--dump-json", default=None, metavar="경로",
+                    help="U1·U4 행렬과 U2·U3 표를 json 으로도 저장(인쇄는 무변)")
     a = ap.parse_args()
 
     import torch
@@ -115,6 +120,7 @@ def main():
 
     meta = prepare(a.data, n_tok)
 
+    dump = {}
     for tag in a.models:
         ck = paths.resolve_ckpt(a.preset, a.data, a.tokens, tag)
         if not ck.exists():
@@ -176,6 +182,14 @@ def main():
 
         print(f"\n  ── U4 입력 유사도 cos(in_i, in_j)")
         heat(ci, lab, torch)
+        if a.dump_json:
+            dump[tag] = {"visit_layers": [int(v) for v in sch],
+                         "mlp_group": int(cfg.mlp_group or 1),
+                         "attn_group": int(getattr(cfg, "attn_group", 1) or 1),
+                         "cla_group": int(getattr(cfg, "cla_group", 1) or 1),
+                         "n_layers": int(cfg.n_layers), "n_visits": int(n_vis),
+                         "U1_delta_cos": [[round(float(v), 6) for v in row] for row in cd],
+                         "U4_input_cos": [[round(float(v), 6) for v in row] for row in ci]}
         print(f"      비대각 평균 **{float(ci[off].mean()):+.4f}**")
 
         # ★U4 판별식 — 같은 입력·다른 일
@@ -267,6 +281,10 @@ def main():
                 print(f"      ⚠️★**빼면 오히려 좋아지는 층 {len(neg)}개**: "
                       f"{[l for l, _ in neg]} — 해로운 층인가, 계측 잡음인가")
 
+        if a.dump_json and tag in dump:
+            dump[tag]["U3_dnorm"] = [round(float(v), 6) for v in nd]
+            dump[tag]["U2_ablation"] = [[int(l), round(float(d), 6)]
+                                        for l, d in deltas] if not a.skip_ablation else []
         # ── U6
         if a.infer_repeat != 1.0:
             banner("★U6 재귀 통과별 기여", "-")
@@ -285,6 +303,13 @@ def main():
         if dev == "cuda":
             torch.cuda.empty_cache()
 
+    if a.dump_json and dump:
+        import json as _json
+        _p = Path(a.dump_json)
+        _p.parent.mkdir(parents=True, exist_ok=True)
+        _p.write_text(_json.dumps(dump, ensure_ascii=False, indent=1), encoding="utf-8")
+        print(f"\n  ★행렬 json 저장 -> {_p}  (모델 {len(dump)}개)")
+        print("     ⚠️인쇄된 글리프 히트맵은 10단계 양자화다. **수는 이 json 을 쓴다.**")
     banner("판정 — ★이 지도를 P057 그룹 경계·P070 셔플·P049 재사용의 근거로 쓴다", "#")
     print("  ⚠️★**유사도는 상관이다. 인과가 아니다.**")
     print("     P049 단계3 이 정확히 그 함정에 빠졌다 — cos 0.9882 를 '대체 가능' 으로 읽고")

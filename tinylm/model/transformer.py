@@ -267,8 +267,12 @@ class TiedMLPTransformer(nn.Module):
             #   `RuntimeError: expected m1 and m2 to have the same dtype` 로 죽는다.
             #   ⚠️**`emb_rank=0` 인 모델에서는 안 나던 버그**라 스모크가 못 잡았다 —
             #   `tiny` 프리셋에 `emb_rank` 가 없다(함정 37 계열: 그 축을 켠 팔이 없었다).
-            #   ★해법: **다음 층도 같이 내린다.** bf16 저장의 목적이 "복원 없음" 이므로
-            #   emb_up 을 fp32 로 되돌리면 그 목적이 사라진다.
+            #   ★해법(2026-08-23 1차): **다음 층도 같이 내린다.**
+            #   🚫★**2026-08-24 정정 — 1차 해법은 오류를 한 층 더 깊은 곳으로 밀었을 뿐이다.**
+            #   활성값이 bf16 인 채 삼진 층에 도착해 `F.linear(x_bf16, wq_fp32)` 로 죽었다
+            #   (결과 016 §20 의 E2). ★**저장 형식과 계산 형식은 다르다** — 가중치는
+            #   bf16 으로 두되 `forward` 가 임베딩 출력을 **fp32 로 되돌린다**.
+            #   int8·ternary 는 `_emb_rows()` 가 처음부터 그렇게 하고 있었다.
             if self.emb_up is not None:
                 self.emb_up.weight.data = self.emb_up.weight.data.to(dt)
             self._emb_fmt = fmt
@@ -556,6 +560,17 @@ class TiedMLPTransformer(nn.Module):
             x = self._emb_rows(tokens.reshape(-1)).reshape(*tokens.shape, -1)
         if self.emb_up is not None:
             x = self.emb_up(x)
+        # ★★★2026-08-24 (결과 016 §20) — **저장은 bf16, 계산은 fp32 로 돌려놓는다.**
+        #   `--emb-quant bf16` 은 **임베딩 표의 저장**을 반으로 줄이는 것이 목적이다.
+        #   그런데 08-23 판은 `emb`·`emb_up` 을 bf16 으로 내려놓고 **활성값도 bf16 인 채로**
+        #   나머지 모델에 흘려보냈다. 삼진 층의 역양자화 가중치는 fp32 라
+        #   `ternary.py` 의 `F.linear(x_bf16, wq_fp32)` 에서 죽는다.
+        #   🚫**같은 오류를 두 번 고쳤다** — 1차는 `emb_up` 을 함께 내려서 **한 층 더 깊은
+        #   곳으로 밀었을 뿐**이고, 그것이 결과 016 §20 의 E2 실패다.
+        #   ★규약: 양자화 포맷은 **저장 형식**이지 계산 형식이 아니다. int8·ternary 는
+        #   `_emb_rows()` 가 이미 fp32 를 돌려주고 있었다 — bf16 만 예외였다.
+        if getattr(self, "_emb_fmt", None) in ("bf16", "fp16"):
+            x = x.float()
         # ★RoPE 는 절대위치다. 캐시 사용 시 [:T] 가 아니라 [past_len : past_len+T] 를 써야 한다.
         cos, sin = self.rope_cos[past_len:past_len + T], self.rope_sin[past_len:past_len + T]
         if not self._quant_frozen:
