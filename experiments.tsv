@@ -29,6 +29,11 @@ prio	plan	batch	gpu	hours	alone	watch	note
 1	P073	run_P073_stage1_cla_on_d36.bat	Y	3.2	N	Y	★★★교락 해소 — 결과 058 이 Z4 를 발동시켰다. `attn_group` 을 잰 **모든** 런(044 §9·§11, B.5 의 0.00083)이 `cla2` 위다. ★이 쌍은 **grad_ckpt 드리프트가 없다**(양쪽 다 ckpt ON)
 3	P034	run_P034_stage5c_emb_bf16.bat	N	0.2	N	Y	★bf16 임베딩 — **두 번 죽은 팔**. 08-24 수정(저장은 bf16, 계산은 fp32)의 확인. ⚠️**후순위** — int8 이 +0.0001 로 9.1 MiB 를 주는데 bf16 은 16.5 가 한계다. **결함 종결용**
 3	P072	run_P072_stage0b_layer_map_json.bat	D	0.4	N	Y	★글리프 히트맵은 10단계 양자화라 **수로 못 쓴다**. `--dump-json` 으로 정확한 행렬을 낸다 — 층별 불균등 압축(REVIEW3 §5-6)의 선결. 학습 0, **판정은 안 바뀐다**(결과 057 유효)
+1	P067	run_P067_stage1d_bpb_rejudge.bat	D	0.3	N	Y	★★21.5시간짜리 학습 셋의 **판정이 세 번 다 OOM** 했다(4.64GiB 단일 할당). `--ce-chunk` 로 고쳤다. 학습 0 — **가장 값싼 회수**
+1	P073	run_P073_stage2_cla1_matrix.bat	Y	3.6	N	Y	★★어텐션 축을 **깨끗한 K/V 기준선 위에서** 가격 매긴다. B.5 의 0.00083 과 결과 044 의 0.00381 이 둘 다 cla2 위였다
+2	P074	run_P074_stage1_dense_depth_curve.bat	Y	3.8	N	Y	★★★**한 번도 안 물어본 반사실** — 같은 상주를 그냥 **얕은 dense** 로 쓰면? tied 20층과 dense 9층이 상주가 같다. ⚠️**지면 프로그램 전제가 흔들린다**
+2	P065	run_P065_stage3_nockpt_twin.bat	Y	1.9	N	Y	★표준 대조군의 `--no-ckpt` 쌍둥이. 무KD 비교마다 섞이는 **−0.0016 드리프트를 실측**한다. ★§5.2 가 요구한 **깨끗한 같은배치 속도 수**도 여기서 나온다
+3	P034	run_P034_stage5d_emb_bf16.bat	N	0.2	N	Y	★bf16 임베딩 **네 번째 시도**. 접근자 단일화 + 양자화 직후 자체 시험. ⚠️**후순위**(int8 이 이미 이겼다) — **결함 종결용**. 🚫네 번째로 죽으면 경로를 지운다
 1	P057	run_P057_stage3_attn_push.bat	Y	6.3	N	Y	★★어텐션 타잉 8/16 을 36층 표준모델 위에서. 어텐션은 0.00083 nats/100만 = MLP 의 1/4.1 로 **가장 싼 레버**인데 4 에서 멈춰 있었다. REVIEW3 상주의 남은 구조 레버
 2	P045	run_P045_stage3_tying_ceiling.bat	Y	3.2	N	Y	★타잉 축의 구조적 끝 — m100R1d 에서 g32 = 유니크 중간 MLP **1개**. 029 의 g16 은 20층 값이고 **볼록성(032 §8.3)** 때문에 전이되지 않는다. 평평하면 볼록성 모델이 틀린 것
 1	P046	run_P046_stage5_emb_nokd.bat	Y	5.1	N	Y	★★임베딩 랭크 128 을 **무KD 표준조건**에서 + 36층 배포모델 위에서. 기존 e128svd 는 kd=true 라 표준 밖이다. ⚠️grad_max 를 손실보다 먼저 볼 것(030 이 19.32 로 죽었다)

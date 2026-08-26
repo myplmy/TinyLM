@@ -276,6 +276,7 @@ class TiedMLPTransformer(nn.Module):
             if self.emb_up is not None:
                 self.emb_up.weight.data = self.emb_up.weight.data.to(dt)
             self._emb_fmt = fmt
+            self._selftest_after_quant(fmt)
             return
         if fmt == "int8":
             g = E                                   # per-row (행당 스케일 1개)
@@ -309,6 +310,30 @@ class TiedMLPTransformer(nn.Module):
         self._emb_fmt = fmt
         self.emb.weight.data = torch.empty(0, device=w.device, dtype=w.dtype)  # ★fp32 해제
 
+    def _selftest_after_quant(self, fmt):
+        """★2026-08-26 — 양자화 **직후** 1토큰 forward 를 돌려 dtype 누수를 여기서 잡는다.
+
+        🚫**왜 필요한가**: `--emb-quant bf16` 은 **세 번** 죽었고 세 번 다
+        `mem_runtime.py` 의 생성 단계에서, 즉 **변이 지점에서 수십 프레임 떨어진 곳**에서
+        터졌다. 그러면 *"어디를 고쳐야 하는가"* 가 매번 새로 보인다.
+        ★**여기서 터지면 원인이 한 줄로 보인다.**
+
+        ⚠️계측 부담 0 에 가깝다(토큰 1개). ⚠️**이것은 정확성 시험이 아니다** —
+        *"경로가 도는가"* 만 본다(정확성은 `paired_eval` 의 몫).
+        """
+        import torch as _t
+        try:
+            with _t.no_grad():
+                idx = _t.zeros((1, 1), dtype=_t.long, device=self.emb.weight.device)
+                self.eval()
+                _ = self(idx)
+        except RuntimeError as e:
+            raise RuntimeError(
+                f"[emb-quant] ★양자화({fmt}) 직후 1토큰 forward 가 실패했다 — "
+                f"**저장 dtype 이 계산 경로로 샜다.** 소비 지점은 넷이고 "
+                f"`_emb_w()`·`_emb_up_w()` 접근자를 거쳐야 한다(결과 016 §21).\n"
+                f"  원본 오류: {e}") from e
+
     def _emb_rows(self, idx=None):
         """양자화된 임베딩을 fp32 로 되돌린다. `idx=None` 이면 전체, 아니면 그 행만."""
         code = self._emb_code if idx is None else self._emb_code[idx]
@@ -321,16 +346,39 @@ class TiedMLPTransformer(nn.Module):
     def embedding_quantized(self):
         return getattr(self, "_emb_fmt", None)
 
+    # ★★★2026-08-26 (결과 016 §21) — **저장 dtype 이 계산 경로로 새는 것을 여기서 막는다.**
+    #
+    #   🚫**같은 오류를 세 번 고쳤고 세 번 다 다른 곳에서 터졌다**:
+    #     1차(08-23) `emb` 만 bf16      -> `emb_up`(fp32) 과 충돌
+    #     2차(08-23) `emb_up` 도 내림   -> **삼진 층**에서 충돌(활성값이 bf16 인 채 흘렀다)
+    #     3차(08-24) forward 에서 `.float()` -> ★**출력 헤드**에서 충돌(가중치가 아직 bf16)
+    #
+    #   ★원인은 하나다: **`emb.weight`·`emb_up.weight` 는 네 곳에서 소비된다**
+    #   (입력 조회 / 입력 up / 헤드 up / 헤드 logits). **한 곳씩 고치면 영원히 끝나지 않는다.**
+    #   → ★**소비 지점을 접근자 둘로 단일화한다**(함정 18 의 처방: 정본을 한 곳에).
+    #
+    #   ★규약: **양자화 포맷은 저장 형식이다.** int8·ternary 는 `_emb_rows()` 가 fp32 를
+    #   돌려주고 있었다. bf16·fp16 도 **같은 규약**을 따른다 — 저장은 좁게, 계산은 fp32.
+    def _emb_w(self):
+        """입력·헤드가 공유하는 임베딩 표. **항상 계산 dtype(fp32)으로 돌려준다.**"""
+        w = self.emb.weight
+        return w if w.dtype == torch.float32 else w.float()
+
+    def _emb_up_w(self):
+        """`emb_rank` 병목 행렬. 위와 같은 규약."""
+        w = self.emb_up.weight
+        return w if w.dtype == torch.float32 else w.float()
+
     def _head_logits(self, x):
         """출력 헤드. 양자화 시 **어휘를 청크로 잘라** 동시 fp32 버퍼를 묶는다.
 
         ★청크 크기 `cfg.emb_chunk`(기본 0 = 끄기). 4096 이면 버퍼 `4096×E×4B` = 4 MiB(E=256).
         """
         if self.emb_up is not None:
-            x = F.linear(x, self.emb_up.weight.t())
+            x = F.linear(x, self._emb_up_w().t())          # ★2026-08-26 접근자 경유
         fmt = getattr(self, "_emb_fmt", None)
         if fmt is None or fmt in ("bf16", "fp16"):
-            return F.linear(x, self.emb.weight)
+            return F.linear(x, self._emb_w())              # ★2026-08-26 접근자 경유
         C = int(getattr(self.cfg, "emb_chunk", 0) or 0)
         V = self._emb_code.shape[0]
         if C <= 0 or C >= V:
@@ -555,22 +603,11 @@ class TiedMLPTransformer(nn.Module):
         assert past_len + T <= cfg.max_seq_len, \
             f"past {past_len} + 입력 {T} > max_seq_len {cfg.max_seq_len}"
         if getattr(self, "_emb_fmt", None) in (None, "bf16", "fp16"):
-            x = self.emb(tokens)
+            x = F.embedding(tokens, self._emb_w())         # ★2026-08-26 접근자 경유
         else:                                   # ★P034 단계5 — 코드+스케일에서 행만 되돌린다
             x = self._emb_rows(tokens.reshape(-1)).reshape(*tokens.shape, -1)
         if self.emb_up is not None:
-            x = self.emb_up(x)
-        # ★★★2026-08-24 (결과 016 §20) — **저장은 bf16, 계산은 fp32 로 돌려놓는다.**
-        #   `--emb-quant bf16` 은 **임베딩 표의 저장**을 반으로 줄이는 것이 목적이다.
-        #   그런데 08-23 판은 `emb`·`emb_up` 을 bf16 으로 내려놓고 **활성값도 bf16 인 채로**
-        #   나머지 모델에 흘려보냈다. 삼진 층의 역양자화 가중치는 fp32 라
-        #   `ternary.py` 의 `F.linear(x_bf16, wq_fp32)` 에서 죽는다.
-        #   🚫**같은 오류를 두 번 고쳤다** — 1차는 `emb_up` 을 함께 내려서 **한 층 더 깊은
-        #   곳으로 밀었을 뿐**이고, 그것이 결과 016 §20 의 E2 실패다.
-        #   ★규약: 양자화 포맷은 **저장 형식**이지 계산 형식이 아니다. int8·ternary 는
-        #   `_emb_rows()` 가 이미 fp32 를 돌려주고 있었다 — bf16 만 예외였다.
-        if getattr(self, "_emb_fmt", None) in ("bf16", "fp16"):
-            x = x.float()
+            x = F.linear(x, self._emb_up_w())              # ★2026-08-26 접근자 경유
         # ★RoPE 는 절대위치다. 캐시 사용 시 [:T] 가 아니라 [past_len : past_len+T] 를 써야 한다.
         cos, sin = self.rope_cos[past_len:past_len + T], self.rope_sin[past_len:past_len + T]
         if not self._quant_frozen:

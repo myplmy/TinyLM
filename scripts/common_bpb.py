@@ -72,6 +72,15 @@ def main():
                     help="쓸 context 개수. 기본 4000 ≈ 3MB ≈ val 의 2배. 0 이면 전부")
     ap.add_argument("--seq", type=int, default=1024)
     ap.add_argument("--micro-bs", type=int, default=8)
+    # ★★2026-08-26 (결과 053 §단계1) — **어휘가 커지면 여기가 먼저 죽는다.**
+    #   `logits.reshape(-1, V).float()` 는 `micro_bs × seq × V × 4B` 를 **한 번에** 잡는다.
+    #   V=151,936 · mb8 · seq1024 이면 **4.64 GiB 단일 할당**이고 두 번째 모델에서 OOM 했다.
+    #   🚫**M=8192 무릎은 어휘 32,768 기준의 수이지 상수가 아니다** — 우리가 결과 053 에
+    #   그렇게 적어 놓고 이 도구에는 반영하지 않았다.
+    #   ★해법은 학습 경로와 같다(P071 로 등가성이 검증된 형태): **어휘가 아니라 행을 쪼갠다.**
+    ap.add_argument("--ce-chunk", type=int, default=0, metavar="행수",
+                    help="CE 를 이 행 수로 나눠 계산(0=끄기, 종전과 비트 동일). "
+                         "어휘가 크면 4096 정도를 준다")
     ap.add_argument("--device", default=None)
     ap.add_argument("--tokenizer-hf", nargs="*", default=None, metavar="TAG=폴더",
                     help="★(P067) 태그별 외부 토크나이저. 예: mC_q3teach=HF/models--Qwen3-0.6B-Base")
@@ -151,7 +160,18 @@ def main():
                 x, y = t[:, :-1], t[:, 1:]
                 with torch.autocast(dev, dtype=torch.bfloat16, enabled=(dev == "cuda")):
                     logits = model(x)
-                l = F.cross_entropy(logits.reshape(-1, logits.size(-1)).float(), y.reshape(-1))
+                l2, y1 = logits.reshape(-1, logits.size(-1)), y.reshape(-1)
+                C = int(a.ce_chunk or 0)
+                if C <= 0 or C >= l2.shape[0]:
+                    l = F.cross_entropy(l2.float(), y1)      # ★종전 경로 = 비트 동일
+                else:
+                    # ⚠️`reduction="mean"` 의 분모는 N 이 아니라 **무시되지 않은 타깃 수**다.
+                    #   우리는 ignore_index 를 안 쓰므로 sum/N 이 mean 과 같다(P071 E-4).
+                    ssum = 0.0
+                    for i0 in range(0, l2.shape[0], C):
+                        ssum += float(F.cross_entropy(
+                            l2[i0:i0 + C].float(), y1[i0:i0 + C], reduction="sum"))
+                    l = ssum / l2.shape[0]
                 tot += float(l) * y.numel(); cnt += y.numel()
         model.clear_quant(); model.train(); model.set_anneal(was)
         loss = tot / cnt

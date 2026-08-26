@@ -75,8 +75,19 @@ def plan_files():
 def scan_refs():
     """{번호: [(파일, 원문토큰)]} — 저장소 전체에서 P0NN 참조를 긁는다."""
     refs = {}
-    for pat in ("*.md", "*.bat", "*.py", "*.tsv"):
-        for p in ROOT.rglob(pat):
+    # ★2026-08-26 — `ROOT.rglob` 은 **거르기 전에 걷는다.** `HF/`·`data_cache/`·`runs/` 를
+    #   전부 훑고 나서 `SKIP_DIRS` 로 버리므로, 네트워크 드라이브에서는 이 한 검사만
+    #   40초를 넘겨 **AI 가 13종 중 12종만 완주하는 상태**가 계속됐다(사용자 지시 7).
+    #   ★검사 대상 집합은 그대로 두고 **걷는 범위만** 좁힌다 — 없는 곳을 안 걷는 것이
+    #   거르는 것보다 싸다. `SKIP_DIRS` 는 이중 그물로 남겨 둔다.
+    def _walk():
+        for pat in ("*.md", "*.bat", "*.py", "*.tsv"):
+            yield from ROOT.glob(pat)                 # 최상위
+        for d in sorted(x for x in ROOT.iterdir()
+                        if x.is_dir() and x.name not in SKIP_DIRS):
+            for pat in ("*.md", "*.bat", "*.py", "*.tsv"):
+                yield from d.rglob(pat)
+    for p in _walk():
             rel = str(p.relative_to(ROOT)).replace("\\", "/")
             if any(d in p.parts for d in SKIP_DIRS) or rel in SKIP_FILES:
                 continue

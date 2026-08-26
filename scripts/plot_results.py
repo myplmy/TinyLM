@@ -52,7 +52,18 @@ TABLE = {
     "mC_d36_ag16_nokd": (3.7220, 312.2, 69.1, 4917.7, "044"),
     "mC_d36_ag4_e128":  (3.7501, 363.3, None, 4944.0, "030"),
     "mC_r20_nokd":      (3.6573, 451.5, 86.9, 4729.4, "041/047"),
+    # ★2026-08-26 추가
+    "mC_d36_ag4_g32":   (3.6995, 343.7, None, 5329.0, "029"),
+    "mC_d36_ag4_r20_nokd": (3.6691, 379.7, None, 8815.8, "047"),
+    "mC_d36_ag4_cla1":  (3.6712, 384.2, None, 5480.6, "058"),
 }
+
+# ★P067 단계1 — common_bpb(SQuAD, 641,795 토큰). 🚫**위 표와 단위가 다르다**(bpb vs nats)
+P067_BPB = [("mC_initonly", 1.3075, "V=32,768 · 교사 없음"),
+            ("QT0", 1.3440, "Qwen V=151,936 · 교사 없음"),
+            ("Q256T", 1.3362, "Qwen 교사"),
+            ("Q64T", 1.3999, "Qwen 교사 + E=64")]
+BPB_RES = 0.008          # 실무 분해능(0.024 nats 환산, 결과 053)
 
 # 임베딩 양자화 (mC_initonly 위에서) — 결과 016 §20
 EMB_QUANT = [
@@ -253,6 +264,64 @@ def _parse_layermap(path):
     return out
 
 
+def fig_p067(plt):
+    """P067 단계1 — 좋은 교사가 KD 를 살렸는가."""
+    fig, ax = plt.subplots(figsize=(7.8, 4.3))
+    names = [n for n, _v, _w in P067_BPB]
+    vals = [v for _n, v, _w in P067_BPB]
+    base = dict((n, v) for n, v, _w in P067_BPB)["QT0"]
+    cols = ["0.55"] + ["#1f5673", "#1f7a4d", "#a8202a"]
+    b = ax.bar(names, vals, color=cols, width=0.55)
+    ax.set_ylim(1.28, 1.42)
+    for r_, (n, v, w) in zip(b, P067_BPB):
+        ax.annotate(f"{v:.4f}", (r_.get_x() + r_.get_width()/2, v),
+                    ha="center", va="bottom", fontsize=9,
+                    xytext=(0, 3), textcoords="offset points")
+        ax.annotate(w, (r_.get_x() + r_.get_width()/2, 1.285),
+                    ha="center", va="bottom", fontsize=7, color="0.3", rotation=90)
+    ax.axhline(base, ls="--", lw=1, color="#1f5673")
+    ax.axhspan(base - BPB_RES, base + BPB_RES, color="#1f5673", alpha=0.10)
+    ax.annotate(f"QT0 band = practical resolution {BPB_RES} bpb",
+                (len(names) - 0.4, base + BPB_RES), fontsize=7.5, color="#1f5673",
+                ha="right", va="bottom")
+    ax.set_ylabel("common bpb (SQuAD context) - lower is better")
+    ax.set_title("P067 stage 1 - a teacher better than its student wins by 0.0078 bpb,\n"
+                 "which is JUST under the 0.008 practical resolution (result 053)",
+                 fontsize=10)
+    return _save(plt, fig, "P067_teacher_quality.png")
+
+
+def fig_decomp(plt):
+    """P074 의 좌표평면 — 네 요소를 한 그림에(dense 팔은 아직 없다)."""
+    fig, ax = plt.subplots(figsize=(8.4, 5.2))
+    groups = {
+        "B  tying (20L)": ["mC_initonly", "mC_cla1"],
+        "B  tying (36L)": ["mC_d36_ag4_nokd", "mC_d36_ag8_nokd", "mC_d36_ag16_nokd",
+                           "mC_d36_ag4_g32", "mC_d36_ag4_cla1"],
+        "D  recursion": ["mC_r20_nokd", "mC_d36_ag4_r20_nokd"],
+    }
+    mk = {"B  tying (20L)": "o", "B  tying (36L)": "s", "D  recursion": "^"}
+    for g, tags in groups.items():
+        xs = [TABLE[t][1] for t in tags]; ys = [TABLE[t][0] for t in tags]
+        ax.scatter(xs, ys, s=80, marker=mk[g], label=g, zorder=3)
+        for t, x, y in zip(tags, xs, ys):
+            ax.annotate(t.replace("mC_", ""), (x, y), textcoords="offset points",
+                        xytext=(6, 4), fontsize=7)
+    for x, lab in ((317, "d6"), (411, "d8"), (505, "d10"), (600, "d12")):
+        ax.axvline(x, color="#a8202a", ls=":", lw=1, alpha=0.6)
+        ax.annotate(f"A {lab}?", (x, ax.get_ylim()[1]), fontsize=7.5, color="#a8202a",
+                    rotation=90, va="top", ha="right")
+    ax.axhline(CTRL, ls="--", lw=1, color="0.45")
+    ax.axhspan(CTRL - SIGMA2, CTRL + SIGMA2, color="0.5", alpha=0.13, zorder=0)
+    ax.set_xlabel("resident memory, fp32 path (MiB)  -  lower is better")
+    ax.set_ylabel("paired full-val (nats)  -  lower is better")
+    ax.set_title("P074 decomposition frame - A (shallow dense) is the MISSING axis\n"
+                 "dotted lines are where the four dense arms will land (estimated)",
+                 fontsize=10)
+    ax.legend(fontsize=8, loc="lower left")
+    return _save(plt, fig, "P074_decomposition_frame.png")
+
+
 def fig_layermap(plt, logpath):
     models = _parse_layermap(logpath)
     if not models:
@@ -292,7 +361,8 @@ def fig_layermap(plt, logpath):
 # ──────────────────────────────────────────────────────────────────────────────
 def main():
     ap = argparse.ArgumentParser(description="결과 그림 생성기(사용자용 png)")
-    ap.add_argument("--fig", choices=["levers", "attn", "emb", "uneven", "layermap"])
+    ap.add_argument("--fig", choices=["levers", "attn", "emb", "uneven", "layermap",
+                                  "p067", "decomp"])
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--layermap-log", default=None,
                     help="P072 로그 경로(미지정이면 test_result 에서 최신을 찾는다)")
@@ -305,7 +375,7 @@ def main():
         print("[STOP] matplotlib 이 없다. `pip install matplotlib` 후 다시 실행.")
         return 2
 
-    want = ["levers", "attn", "emb", "uneven", "layermap"] if a.all else [a.fig]
+    want = ["levers", "attn", "emb", "uneven", "p067", "decomp", "layermap"] if a.all else [a.fig]
     print("=" * 96)
     print("  결과 그림 생성 — ★라벨은 ASCII 다(한글 폰트가 없는 기계에서 깨지지 않게)")
     print("  ⚠️수치 정본은 runs/logs/*.json 과 결과문서다. 이 표는 사본이고 출처를 캡션에 적었다.")
@@ -315,6 +385,8 @@ def main():
         elif w == "attn":  fig_attn(plt)
         elif w == "emb":   fig_emb(plt)
         elif w == "uneven": fig_uneven(plt)
+        elif w == "p067":  fig_p067(plt)
+        elif w == "decomp": fig_decomp(plt)
         elif w == "layermap":
             lp = a.layermap_log
             if not lp:

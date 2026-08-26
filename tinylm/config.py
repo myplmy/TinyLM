@@ -224,6 +224,10 @@ def _m100R1c(seq, ckpt):
 #   --init-from` 이 `m100R1a_..._dense.pt` 를 찾다 죽었다(P038·P036 단계2, 2026-08-01).
 #   체크포인트 네임스페이스 분리는 의도한 것이고, 부모 탐색이 그걸 못 따라간 것이 버그였다.
 PRESET_PARENT = {"m100R1a": "m100", "m100R1c": "m100", "m100d": "m100",
+                 # ★P074 얕은 dense 4종 — 부모는 m100 dense(20층). **얕은 쪽 이식**이라
+                 #   `--depth-init role` 이 필수다(init_utils §116).
+                 "m100s2": "m100", "m100s4": "m100",
+                 "m100s6": "m100", "m100s8": "m100",
                  "m100R1p": "m100", "m100R1q": "m100",
                  "m100R1d": "m100"}   # ★P048/P049: 부모는 m100 dense(20층) — 깊이가 달라 부분/확장 이식된다
 
@@ -287,7 +291,28 @@ def _m100R1d(seq, ckpt):
     return dataclasses.replace(_m100R1c(seq, ckpt), n_middle=32, mlp_group=16)
 
 
+def _m100s(n_mid):
+    """★P074(2026-08-26) — **얕은 dense 대조군**. `m100` 에서 `n_middle` **한 필드만** 바꾼다.
+
+    ★왜 필요한가(사용자 지시 2026-08-26): 우리 논지는 *"타잉으로 상주를 줄인다"* 인데
+    **한 번도 물어본 적 없는 반사실**이 있다 — 🚫*"같은 상주를 그냥 **얕은 dense** 로 쓰면?"*
+    타잉 20층과 dense 9층의 상주가 비슷하다면, **타잉이 얕음보다 나은지**를 보여야 한다.
+
+    ⚠️**층수를 바꾸면 `--init-from` 이 얕은 쪽으로 이식해야 한다** — `_depth_map` 이
+    지원하지만 **`--depth-init role` 을 명시**해야 한다(`init_utils.py` §116).
+    """
+    # ⚠️★**`mlp_group` 도 함께 내린다.** `m100` 은 `mlp_group=4` 인데 `__post_init__` 이
+    #   `n_middle % mlp_group == 0` 을 단언한다 — `n_middle` 만 2 나 6 으로 바꾸면
+    #   **프리셋 생성 시점에 죽는다.** `--arch dense` 는 `tie_mlp=False` 라 이 값을 안 쓰지만
+    #   단언은 그보다 먼저 돈다. ★2 로 두면 2·4·6·8 을 전부 나눈다.
+    #   🚫**이 프리셋들은 `--arch dense` 전용이다** — tied 로 쓰면 g2 라는 뜻이 된다.
+    return lambda seq, ckpt: dataclasses.replace(_m100(seq, ckpt),
+                                                 n_middle=n_mid, mlp_group=2)
+
+
 PRESETS = {"tiny": _tiny, "m100": _m100, "m100d": _m100d,
+           "m100s2": _m100s(2), "m100s4": _m100s(4),
+           "m100s6": _m100s(6), "m100s8": _m100s(8),
            "m100R1a": _m100R1a, "m100R1c": _m100R1c,
            "m100R1p": _m100R1p, "m100R1q": _m100R1q,
            "m100R1d": _m100R1d}

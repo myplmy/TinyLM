@@ -176,6 +176,7 @@ def main():
     import torch
     from tinylm import paths
     from tinylm.data import prepare
+    META = {}                     # ★2026-08-26 태그 -> 런 json(분해능 자동 선택)
     from tinylm.infer.generate import load_model
 
     dev = a.device or ("cuda" if torch.cuda.is_available() else "cpu")
@@ -202,6 +203,15 @@ def main():
             print(f"\n  [emb] {tag}: 임베딩 양자화 = {_eq or '없음'} (per-tag)")
         model, cfg, _ = load_model(arch=_arch_of(real_tag), ckpt_path=str(ck), device=dev,
                                    emb_quant=_eq, emb_chunk=a.emb_chunk)
+        # ★2026-08-26 (지시 12) — **분해능 자동 선택용 조건**을 여기서 모은다.
+        #   ⚠️`cfg` 가 아니라 **런 json** 이 정본이다 — `kd`·`init_from_src` 는 학습 조건이고
+        #   체크포인트 cfg 에는 안 실릴 수 있다.
+        try:
+            import json as _json
+            _jp = ROOT / "runs" / "logs" / f"{ck.stem}.json"
+            META[tag] = _json.loads(_jp.read_text(encoding="utf-8")) if _jp.exists() else {}
+        except Exception:                                            # noqa: BLE001
+            META[tag] = {}
         # ★P062 — 추론 전용 설정만 덮어쓴다(가중치 불변). `cli.py` L308~316 과 같은 규약.
         _tr = float(getattr(cfg, "train_repeat", 1.0) or 1.0)
         _tm = str(getattr(cfg, "repeat_mode", "uniform") or "uniform")
@@ -268,17 +278,46 @@ def main():
     banner("★paired per-crop 비교 — 이것이 판정의 근거다")
     print(f"  {'A vs B':<30}{'mean(A-B)':>12}{'SE':>9}{'t':>8}{'A 승률':>9}  판정")
     print("  " + "-" * 88)
-    RES = 0.024                                    # 실무 분해능(2σ, CLAUDE.md)
+    # ★★★2026-08-26 (사용자 지시 12) — **분해능은 조건 의존이다.** 4세션 미구현이었다.
+    #
+    #   🚫**무엇이 문제였나**: 이 도구는 조건과 무관하게 **0.024** 를 찍어 왔다.
+    #   그런데 0.024 는 **dense·부모 없음** 조건의 2σ 다(결과 012). 현 표준조건은
+    #   **무KD + 부모초기화**이고 그 2σ 는 **0.0034**(결과 049) — **7배 예민**하다.
+    #   ★실사고: 결과 040·047 이 무KD 비교에 0.024 를 찍어 *"동급"* 이라 적었다.
+    #
+    #   ★규약: **체크포인트의 조건에서 자를 고른다**(사람이 고르지 않는다).
+    #     · 두 모델이 **둘 다 무KD + 부모초기화** -> **0.0034**
+    #     · 그 외(dense·부모없음·KD 섞임)          -> **0.024**
+    #   ⚠️**이것은 통계 검정력이 아니라 실무 의사결정 규칙**이다. `t` 는 따로 인쇄된다.
+    def _sigma_band(tag_a, tag_b):
+        def cond(t):
+            m = META.get(t) or {}
+            return (not bool(m.get("kd", False))) and bool(m.get("init_from_src"))
+        both_nokd = cond(tag_a) and cond(tag_b)
+        return (0.0034, "무KD+부모초기화 2σ(결과 049)") if both_nokd \
+            else (0.024, "dense·부모없음 2σ(결과 012)")
+    _bands = set()
     for x, y in itertools.combinations(per, 2):
         m, sd, se, t, nn, win = paired_stats(per[x], per[y])
+        RES, _why = _sigma_band(x, y)
+        _bands.add((RES, _why))
         # |t| ^> 2 면 "이 두 체크포인트는 다르다". 크기 판정은 분해능과 따로 본다.
         if abs(t) < 2:
             verdict = "구분 불가(체크포인트 수준에서도)"
         elif abs(m) < RES:
-            verdict = "차이 유의하나 분해능(0.024) 미만 — 실무상 동급"
+            verdict = (f"차이 유의하나 분해능({RES}) 미만 — 실무상 동급"
+                       + (" ⚠️통계적으로는 유의" if abs(t) > 2 else ""))
         else:
             verdict = "★유의하고 분해능 초과"
         print(f"  {x + ' vs ' + y:<30}{m:>+12.4f}{se:>9.4f}{t:>8.2f}{win/nn:>8.1%}  {verdict}")
+    print()
+    for _r, _w in sorted(_bands):
+        print(f"  ★쓴 자: **{_r}** — {_w}")
+    if len(_bands) > 1:
+        print("  ⚠️★**쌍마다 자가 다르다.** 조건이 섞여 있다는 뜻이므로 한 표에 나란히 적을 때")
+        print("     반드시 **어느 쌍이 어느 자였는지** 함께 적을 것(함정 28).")
+    print("  ⚠️분해능은 **실무 의사결정 규칙**이지 통계 검정력이 아니다 — `t` 를 함께 읽는다.")
+    print("  ⚠️'실무상 동급' 이라고 적을 때는 **통계적으로는 유의**를 함께 적는다(CLAUDE.md).")
 
     print("""
   읽는 법
