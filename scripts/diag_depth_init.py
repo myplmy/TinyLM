@@ -107,9 +107,27 @@ def main():
     print(f"  학생 {a.preset}: {sc.n_prelude}+{sc.n_middle}+{sc.n_coda} = {sc.n_layers}층, "
           f"g={sc.mlp_group}, 유니크 MLP {sc.n_prelude + sc.n_mlp_groups + sc.n_coda}")
     print(f"  교사 {a.teacher_preset}: {tc.n_prelude}+{tc.n_middle}+{tc.n_coda} = {tc.n_layers}층")
-    lmap, lrep = _depth_map(sc, tc)
-    print(f"  대응표 {lmap}")
-    print(f"  ★교사 층당 최대 복제 {max(lrep)}회  -^> 잔차 기여가 그만큼 중복된다")
+    # ★★2026-08-27 — **종전에 이 줄이 거짓말을 했다.**
+    #   여기서는 늘 `_depth_map`(역할 비례)을 찍었는데, `init_from_dense` 는
+    #   **학생이 더 얕으면 `depth_init == "role"` 일 때만** 그 표를 쓰고
+    #   나머지 모드는 앞에서 자르는 zip 을 쓴다. P074 단계1 게이트가 role 을
+    #   찍어 놓고 zip 을 재고 통과시킨 형태다(로그 059). 계측함정 4: 인쇄값 != 정본.
+    #   → **두 표를 함께 찍고, 어느 모드가 어느 표를 쓰는지 이름으로 말한다.**
+    _role_map, _role_rep = _depth_map(sc, tc)
+    _deeper = sc.n_layers > tc.n_layers
+    _n = min(sc.n_layers, tc.n_layers)
+    _zip_map = list(range(_n))
+    print(f"  대응표(role, 역할 구간 비례) {_role_map}")
+    if _deeper:
+        print("  ★학생이 더 깊다 -^> **모든 모드가 role 표를 쓴다**(init_from_dense)")
+        lmap, lrep = _role_map, _role_rep
+    else:
+        print(f"  대응표(zip,  앞에서 자름)   {_zip_map}")
+        print("  ⚠️★학생이 더 얕거나 같다 -^> **`--depth-init role` 만 role 표를 쓰고, "
+              "prop/gate_scale/identity 는 zip 표를 쓴다.**")
+        print("     배치가 role 로 학습한다면 이 게이트도 role 모드를 재야 한다.")
+        lmap, lrep = _zip_map, [1] * _n
+    print(f"  ★교사 층당 최대 복제 {max(_role_rep)}회  -^> 잔차 기여가 그만큼 중복된다")
 
     ck = paths.resolve_ckpt(a.teacher_preset, a.data, a.tokens, "dense")
     if not Path(ck).exists():
@@ -165,7 +183,11 @@ def main():
 
     results = {}
     # 대조군: 이식 없음(난수) — **이식이 뭘 걷어내는지 크기를 보기 위해서**
-    _modes = tuple(a.modes) if a.modes else ("prop", "gate_scale", "identity")
+    # ★2026-08-27 — 학생이 더 얕으면 **role 을 기본 모드에 넣는다.** 그 경우
+    #   실제 배치가 쓰는 표(role)를 게이트가 한 번도 안 재는 상태였다(로그 059).
+    _modes = tuple(a.modes) if a.modes else (
+        ("role", "prop", "gate_scale", "identity") if not _deeper
+        else ("prop", "gate_scale", "identity"))
     for mode in ("(난수 대조군)",) + _modes:
         _hdr(f"모드 {mode}")
         torch.manual_seed(1337)

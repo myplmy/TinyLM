@@ -141,13 +141,19 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
     #   종전에는 `load_state_dict` 가 **strict 라 즉사**했다. 지금은 **건너뛰고 크게 알린다** —
     #   조용히 넘기면 "부모초기화했다" 고 믿는 채로 임베딩만 난수인 런이 생긴다.
     #   어텐션·MLP shape 은 E 에 의존하지 않으므로 그쪽 이식은 그대로 유효하다.
+    # ★★2026-08-27 (자백 A13) — **어느 갈래를 탔는지 json 에 남긴다.**
+    #   `mC_e128` 과 `mC_e128svd` 는 임베딩 초기화가 다른데 **json 으로 구분할 수 없었다.**
+    #   같은 (preset, data, tokens) 에 두 태그가 있는데 무엇이 다른지 기계가 못 읽으면
+    #   실험목록·결과문서만이 정본이 되고, 그건 사람이 옮겨 적는 순간 틀린다(계측함정 4).
     if student.emb.weight.shape == teacher.emb.weight.shape:
         student.emb.load_state_dict(teacher.emb.state_dict())
         if student.emb_up is not None:
             student.emb_up.load_state_dict(teacher.emb_up.state_dict())
+        student._emb_init = "copy"                # shape 동일 = 교사 임베딩 그대로
     elif _svd_emb_init(student, teacher):
-        pass                                   # ★아래 함수가 알린다
+        student._emb_init = "svd"                 # ★아래 함수가 알린다
     else:
+        student._emb_init = "random"
         print(f"[init] ★★경고: 임베딩 shape 불일치 — 학생 {tuple(student.emb.weight.shape)} vs "
               f"교사 {tuple(teacher.emb.weight.shape)}")
         print(f"[init] ★임베딩·emb_up 은 **부모초기화하지 않고 난수로 시작**한다"
@@ -303,6 +309,18 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
         else:
             t_ids = [min(k, tc.n_middle - 1) for k in s_mids]   # 종전 = 비트 동일
         members = [teacher.mid_mlps[t] for t in t_ids]
+        # ★★2026-08-27 — **빈 목록이면 여기서 이름을 붙여 죽는다.**
+        #   종전에는 바로 아래 `/ len(members)` 가 `ZeroDivisionError` 를 던졌고,
+        #   역추적은 `mlp_group_index` 가 `tie_mlp` 를 안 본다는 사실까지 가야 했다
+        #   (P074 단계1 네 팔 전부 사망, 로그 059). 원인을 **호출 지점에서** 말한다.
+        if not members:
+            raise RuntimeError(
+                f"[init] ★유니크 MLP {j} 를 덮는 학생 중간층이 **없다**. "
+                f"`config.mlp_group_index` 와 `n_mlp_groups` 가 서로 다른 규약을 쓰고 있다.\n"
+                f"  학생 tie_mlp={getattr(sc,'tie_mlp',None)} n_middle={sc.n_middle} "
+                f"mlp_group={sc.mlp_group} n_mlp_groups={sc.n_mlp_groups} "
+                f"mlp_split={tuple(getattr(sc,'mlp_split',()) or ())}\n"
+                f"  정적 게이트 `check_group_map.py` 가 이 불일치를 프리셋 전수로 잡는다.")
         ref = dict(mlp_s.named_parameters())
         for name, ps in ref.items():
             avg = sum(dict(mm.named_parameters())[name].data for mm in members) / len(members)
@@ -318,7 +336,9 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
     #   그런데 인쇄값은 결과문서로 그대로 옮겨진다(계측함정 4: 인쇄값 ≠ 정본).
     from ..config import mlp_group_members as _mgm
     _sp = tuple(getattr(sc, "mlp_split", ()) or ())
-    if _sp:
+    if not getattr(sc, "tie_mlp", True):
+        _avg = "dense — 층당 1개, 평균 없음"       # ★2026-08-27: dense 에 `g층 평균` 은 거짓말이다
+    elif _sp:
         _sizes = [len(_mgm(sc, gi)) for gi in range(sc.n_mlp_groups)]
         _avg = f"★P061 불균등 그룹 {_sizes} 평균"
     else:

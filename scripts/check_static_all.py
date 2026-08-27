@@ -63,6 +63,14 @@ CHECKS = [
      "`experiments.tsv` ↔ 디스크 양방향 대조"),
     ("sync_experiments_tsv", ["sync_experiments_tsv.py"],
      "`-done` 삭제 가능 판정 + TSV 고아 행(보고만)"),
+    ("check_group_map",     ["check_group_map.py"],
+     "★설정이 파생하는 집합 ↔ 모델이 만드는 개수 (P074 네 팔 전멸, 로그 059)"),
+    ("check_smoke_coverage", ["check_smoke_coverage.py"],
+     "★배치가 쓰는 축을 스모크가 실제로 돌리는가 — **새 기능이 아니라 새 조합**에서 죽는다"),
+    ("plot_results --verify", ["plot_results.py", "--verify"],
+     "★그림 도구의 수치 표 ↔ 정본(json) 대조 (자백 A7 — 사본이 정본을 이중화한다)"),
+    ("check_rules_sync",    ["check_rules_sync.py"],
+     "작업규약 영문 정본 ↔ 한글 대조본의 규칙 번호·강제 주체 일치"),
 ]
 
 

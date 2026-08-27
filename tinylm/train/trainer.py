@@ -762,6 +762,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "sdpa_gqa": bool(cfg.sdpa_gqa),                        # (F-1) enable_gqa 경로
            "kd_chunk": int(kd_chunk or 0),                        # (T-2/P053) KD 손실 청크 행수
            "depth_init": str(depth_init),                         # (P049) 깊이 확장 이식 방식
+           # ★★2026-08-27 (자백 A13) — 임베딩 초기화 갈래. `copy`/`svd`/`random`/`none`.
+           #   `mC_e128`(난수)과 `mC_e128svd`(SVD)가 **json 으로 구분되지 않던** 것을 닫는다.
+           "emb_init": str(getattr(model, "_emb_init", "none")),
            # ★2026-08-20 — `kd_alpha`·`kd_temp` 가 **한 번도 기록되지 않았다**(P055 단계1 에서 발각).
            #   배치 꼬리말이 *"json kd_alpha 가 0.3/0.1/0.7 인지 확인하라"* 고 적었는데
            #   **필드 자체가 없었다.** 인쇄(`[kd] 교사 로드 완료 (alpha=...)`)로만 남아 있었고,

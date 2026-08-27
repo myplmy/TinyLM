@@ -44,6 +44,7 @@ REQUIRED = ["seed", "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cach
             #   계약에도 팔에도 없었다. `--cla-group` 은 P073(1.8h)이 통째로 걸려 있고
             #   `--ce-chunk` 는 무KD + `--no-ckpt` 조합에서 실제로 쓰인다.
             "cla_group", "ce_chunk",
+            "emb_init",                                # ★자백 A13(2026-08-27) — 임베딩 초기화 갈래
             "tokenizer_hf", "kd_teacher_hf", "teacher_dtype", "vocab_size",  # ★P067
                              # ★P068 A1 / P034 단계5 (2026-08-22)
             "save_every"]                              # P058
@@ -134,6 +135,17 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     #   `cla_group` 은 **모델 생성 전에** 개입하므로 기본값 팔로는 그 경로가 안 돈다.
     "sm_cla1":      {"cla_group": 1, "init_from": True},
     "sm_cechunk":   {"ce_chunk": 256},
+    # ★★2026-08-27 (함정 37 · 함정 18) — **dense 학생 + 부모초기화.**
+    #   `--arch dense --init-from` 조합이 이 저장소에 한 번도 없었다 — dense 는 늘
+    #   scratch 부모였다. 그래서 `mlp_group_index` 가 `tie_mlp` 를 안 보는 버그가
+    #   **모든 dense 프리셋에서** 잠자다가 P074 단계1 의 학습 팔 네 개를 전부 죽였다.
+    #   정적 게이트 14(`check_group_map.py`)가 프리셋 전수로 같은 것을 보지만,
+    #   **정적은 동적을 대체하지 않는다** — 이 팔은 그 경로가 실제로 도는지를 산다.
+    "sm_denseinit": {"arch": "dense", "init_from": True, "depth_init": "role",
+                     "mlp_group": 1, "grad_ckpt": False, "ce_chunk": 256},
+    # ★2026-08-27 — dense x 재귀. P074 단계2 의 E3 팔이 쓰는 조합이고,
+    #   재귀는 여태 tied 에서만 돌았다. 게이트 15 가 배치 작성 당일 지적했다.
+    "sm_denserep": {"arch": "dense", "train_repeat": 2.0, "init_from": True},
 }
 
 

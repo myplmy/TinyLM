@@ -354,7 +354,14 @@ def lint(path: Path):
                         "W&B 에 안 올라간다(2026-08-22 사용자 지시). 학습 뒤에 "
                         "`set TL_WB_TAG=<태그>` + `call scripts\\batch\\tool_wandb_push.bat` 를 넣으세요")
 
-    if path.name.startswith("run_") and re.search(r"(?i)\bRE-?RUN\b|재실행", txt):
+    # ★2026-08-27 오탐 정정 — 종전에는 **파일 어디에든** RE-RUN 이 있으면 발화했다.
+    #   그래서 *"run_P074_stage1 을 먼저 re-run 하라"* 처럼 **다른 배치를 가리키는 문장**에도
+    #   걸렸다(2회 오탐). 이 규칙이 잡으려는 것은 *"이 배치가 자기 자신의 재실행"* 인 경우다.
+    #   → **다른 `run_*.bat` 이름이 같은 줄에 있으면 그 줄은 세지 않는다.**
+    _rr = [ln for ln in txt.splitlines()
+           if re.search(r"(?i)\bRE-?RUN\b|재실행", ln)
+           and not re.search(r"run_[A-Za-z0-9_]+\.bat", ln.replace(path.name, ""))]
+    if path.name.startswith("run_") and _rr:
         names = re.findall(r"--name\s+(\S+)", txt)
         bad = [n for n in names
                if re.search(r"stage\d+(?![a-z])", n, re.I) and not re.search(r"stage\d+[b-z]", n, re.I)]

@@ -326,6 +326,14 @@ def mlp_group_index(cfg, j: int) -> int:
     "이식했다고 믿는데 안 된"** 상태가 된다 — 결과 041·P057 이 지불한 형태다
     (계측함정 18: 적용 대상 집합을 두 곳에서 정의).
     """
+    # ★★2026-08-27 — **`tie_mlp=False`(dense) 에서는 층마다 자기 MLP 다.**
+    #   지금까지 이 함수는 `tie_mlp` 를 안 봤고, 바로 위 `n_mlp_groups` 는 봤다.
+    #   그래서 **같은 파일 안에서 둘이 서로 다른 규약을 말하고 있었다** —
+    #   dense 학생을 부모초기화하는 순간 `mlp_group_members` 가 빈 목록을 돌려
+    #   `ZeroDivisionError` 로 죽었다(P074 단계1, 로그 059 — 네 팔 전부).
+    #   계측함정 18 그대로다: **적용 대상 집합을 두 곳에서 정의했다.**
+    if not getattr(cfg, "tie_mlp", True):
+        return j                                       # dense = 층당 하나. `n_mlp_groups` 와 같은 규약
     split = tuple(getattr(cfg, "mlp_split", ()) or ())
     if not split:
         return j // cfg.mlp_group                      # 종전 = 비트 동일
@@ -339,6 +347,9 @@ def mlp_group_members(cfg, gi: int):
 
 
 def n_unique_mid_mlp(cfg) -> int:
+    # ★동일 사유로 `tie_mlp` 를 먼저 본다(2026-08-27). `n_mlp_groups` 와 항상 같아야 한다.
+    if not getattr(cfg, "tie_mlp", True):
+        return cfg.n_middle
     split = tuple(getattr(cfg, "mlp_split", ()) or ())
     return (len(split) + 1) if split else (cfg.n_middle // cfg.mlp_group)
 

@@ -143,11 +143,12 @@ def main():
     print("  ★RSS 는 할당자 때문에 과대, 텐서합산은 임시버퍼를 빼서 과소. 둘을 함께 읽는다.")
     print("=" * 96)
 
-    rows = []
+    rows, skipped = [], []
     for tag, arch in models:
         ck = paths.resolve_ckpt(a.preset, a.data, a.tokens, tag)
         if not ck.exists():
             print(f"\n  [건너뜀] 체크포인트 없음: {tag}")
+            skipped.append(tag)
             continue
         gc.collect()
         if a.device == "cuda":
@@ -253,6 +254,20 @@ def main():
         if a.device == "cuda":
             torch.cuda.empty_cache()
 
+    # ★★2026-08-27 — **한 건도 못 쟀으면 조용히 0 으로 끝내지 않는다.**
+    #   P074 단계1 의 [6/6] 이 네 태그 전부 "체크포인트 없음" 을 찍고 **종료코드 0** 을 냈다.
+    #   배치는 성공으로 보였고, 로그를 눈으로 훑기 전까지 측정 0 건인 줄 몰랐다.
+    #   결과 031 이 이미 같은 형태를 적어 뒀다 — *"runlog 가 명령을 조용히 버렸다"*.
+    if not rows:
+        print("\n" + "=" * 96)
+        print(f"  🚫★**측정 0 건.** 요청한 {len(models)} 개 태그가 전부 없다: "
+              f"{', '.join(skipped) if skipped else '(로드 실패)'}")
+        print("  선행 학습 팔이 실패했거나 태그·프리셋이 틀렸다. **이 단계는 실패다.**")
+        print("=" * 96)
+        return 1
+    if skipped:
+        print(f"\n  ⚠️★건너뛴 태그 {len(skipped)} 개: {', '.join(skipped)} "
+              f"— 아래 표는 **부분 측정**이다")
     if len(rows) < 2:
         return 0
 

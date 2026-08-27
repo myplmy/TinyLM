@@ -56,7 +56,70 @@ TABLE = {
     "mC_d36_ag4_g32":   (3.6995, 343.7, None, 5329.0, "029"),
     "mC_d36_ag4_r20_nokd": (3.6691, 379.7, None, 8815.8, "047"),
     "mC_d36_ag4_cla1":  (3.6712, 384.2, None, 5480.6, "058"),
+    # ★2026-08-27 추가
+    "mC_r30_nokd":      (3.6505, 451.5, 86.9, 6878.8, "047"),
+    "mC_initonly_nc":   (3.6762, 451.5, 86.9, 2485.4, "051"),
+    "mC_cla1_ag4":      (3.6867, 339.0, 72.4, 2595.9, "058"),
+    "mC_d36_ag8_cla1":  (3.6911, None, None, 5030.9, "058"),
 }
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+#  ★★2026-08-27 — 자백 A7 조치. **이 표가 정본을 이중화한다**는 문제는
+#  주석을 다는 것으로 해결되지 않는다(그렇게 해 두고 "조치" 라고 적었다).
+#  이제 **정본과 대조하는 코드**를 둔다. `--verify` 는 matplotlib 을 쓰지 않는다.
+#  🚫paired full-val 은 json 에 없으므로 **여기서 검증 불가**다 — 그 한계를 인쇄한다.
+# ──────────────────────────────────────────────────────────────────────────────
+def verify_table() -> int:
+    logs = {}
+    for fp in sorted((ROOT / "runs" / "logs").glob("*.json")):
+        try:
+            d = json.loads(fp.read_text(encoding="utf-8"))
+        except Exception:                                   # noqa: BLE001
+            continue
+        tag = d.get("tag") or fp.stem.split("_")[-1]
+        logs[tag] = d
+        logs[fp.stem] = d
+
+    print("=" * 96)
+    print("  plot_results TABLE 대 정본(runs/logs/*.json) 대조  — 자백 A7")
+    print("=" * 96)
+    bad, nojson, noms, ok = [], [], [], 0
+    for tag, (fv, res32, res8, ms, src) in sorted(TABLE.items()):
+        d = logs.get(tag) or next((v for k, v in logs.items() if k.endswith(tag)), None)
+        if d is None:
+            nojson.append(tag)
+            continue
+        j_ms = d.get("ms_step_median")
+        if j_ms and abs(j_ms - ms) > max(1.0, 0.02 * j_ms):
+            bad.append(f"{tag:<22} ms/step 표 {ms} vs json ms_step_median {j_ms:.1f}")
+        elif not j_ms:
+            noms.append(tag)
+        # ★★상주를 **정본 파라미터 수에서 다시 계산**한다.
+        #   상주 = 유니크 삼진 x 4B x **2벌**(latent + dequant 사본) + 나머지 fp32.
+        #   🚫`deploy_mb` 를 쓰면 안 된다 — 그 필드는 **packed 저장**이다(§아래 주의).
+        mp = d.get("mem_params") or {}
+        if mp.get("ternary") and res32:
+            calc = (mp["ternary"] * 8
+                    + sum(mp.get(k, 0) for k in ("emb", "other", "mode", "lora")) * 4) / 2 ** 20
+            if abs(calc - res32) > max(0.2, 0.005 * calc):
+                bad.append(f"{tag:<22} 상주 표 {res32} vs 정본 재계산 {calc:.1f}")
+        if not bad or not bad[-1].startswith(tag):
+            ok += 1
+    print(f"  표 {len(TABLE)}행 · 대조 성공 {ok} · json 없음 {len(nojson)} · ms_step_median 없음 {len(noms)} · 불일치 {len(bad)}")
+    for t in nojson:
+        print(f"    - json 없음: {t}  (구 런이거나 태그 표기가 다르다)")
+    for b in bad:
+        print(f"    🚫 {b}")
+    print()
+    if noms:
+        print(f"    - ms_step_median 이 None 인 구 런 {len(noms)}개: {', '.join(noms[:6])}"
+              f"{' ...' if len(noms) > 6 else ''} (계약 추가 이전 런이다)")
+    print("  ⚠️★**paired full-val 은 json 에 없다** — 이 도구로 검증할 수 없다.")
+    print("     그 열의 정본은 결과문서이고, 출처 번호를 표의 마지막 열에 박아 둔다.")
+    print("  🚫★**json 의 `deploy_mb` 는 상주가 아니라 packed 저장이다**"
+          " — 이름이 배포를 말하지만 값은 저장이다(계측함정 1). 상주는 위처럼 재계산한다.")
+    return 1 if bad else 0
 
 # ★P067 단계1 — common_bpb(SQuAD, 641,795 토큰). 🚫**위 표와 단위가 다르다**(bpb vs nats)
 P067_BPB = [("mC_initonly", 1.3075, "V=32,768 · 교사 없음"),
@@ -366,7 +429,11 @@ def main():
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--layermap-log", default=None,
                     help="P072 로그 경로(미지정이면 test_result 에서 최신을 찾는다)")
+    ap.add_argument("--verify", action="store_true",
+                    help="★TABLE 을 runs/logs/*.json 과 대조만 한다(matplotlib 불필요)")
     a = ap.parse_args()
+    if a.verify:
+        return verify_table()
     if not a.fig and not a.all:
         ap.error("--fig 또는 --all 중 하나가 필요하다")
     try:

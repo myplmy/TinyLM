@@ -21,7 +21,7 @@
 | # | 검사 | 판정 |
 |---|---|---|
 | **R1** | `NNN_log_*.txt` 가 있는데 **같은 번호의 결과문서(`NNN_*.md`)가 없다** | 🚫**에러** |
-| **R2** | 같은 번호의 결과문서가 **둘 이상** | ⚠️경고(분할은 규약 위반은 아니나 의도 확인) |
+| **R2** | 같은 번호의 결과문서가 **둘 이상** | 🚫**에러**(2026-08-27 승격 — 아래 참조) |
 | **R3** | `실험목록.md` 에 없는 결과문서 번호 | ⚠️경고 |
 | **R4** | 번호 없는 `.md`(`_삭제바람_` 등) | ℹ️정보 — 개명 대기로 본다 |
 
@@ -37,6 +37,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "test_result"
 NUM = re.compile(r"^(\d{3})_")
+
+
+# ★의도한 분할만 여기 적는다. 비워 두는 것이 정상이다.  {번호: "사유"}
+EXEMPT: dict[str, str] = {}
 
 
 def main():
@@ -65,9 +69,19 @@ def main():
                        f"— 로그 파일명이 번호를 말하고 있다: {ls[0]}")
 
     # R2 — 같은 번호 문서 여럿
+    # ★★2026-08-27 경고 -> 에러로 승격.
+    #   031 이 **20일 동안** 두 문서로 갈라져 있었고, 경고라서 매 세션 통과했다.
+    #   실험목록에도 031 행이 두 줄이라 어느 쪽을 인용해야 하는지 알 수 없었다.
+    #   스킬(`log-to-result`)은 *"같은 실험군이면 기존 번호에 이어 쓴다"* 고 적어만 뒀고
+    #   **"먼저 있는지 본다" 는 절차가 없었다.** 절차는 `scripts/new_result.py` 가 대신한다.
+    #   ⚠️의도한 분할이면 아래 EXEMPT 에 번호와 사유를 적는다 — 침묵으로 넘기지 않는다.
     for n, ds in sorted(docs.items()):
         if len(ds) > 1:
-            warn.append(f"R2 {n}번 결과문서가 {len(ds)}개다: {ds}")
+            (info if n in EXEMPT else err).append(
+                f"R2 {n}번 결과문서가 {len(ds)}개다: {ds}"
+                + (f"  (허용: {EXEMPT[n]})" if n in EXEMPT else
+                   "  -> 하나로 병합하고 나머지는 `test_result/attic/` 로 옮긴다"
+                   " (**삭제 금지**). 새로 쓰기 전에 `python scripts/new_result.py <로그파일>`"))
 
     # R3 — 실험목록 누락
     for n in sorted(docs):

@@ -168,6 +168,41 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch t
 if errorlevel 1 echo [WARN] sm_cechunk failed - continuing
 
 echo.
+echo [14] P074 dense student parent-init - the arm that P074 stage 1 died on
+REM  ------------------------------------------------------------------------
+REM  2026-08-27. run_P074_stage1_dense_depth_curve.bat lost ALL FOUR training
+REM  arms to a ZeroDivisionError inside init_from_dense. Cause: config.py
+REM  answered the grouping question two different ways - n_mlp_groups honoured
+REM  tie_mlp, mlp_group_index did not. Every dense preset was affected.
+REM  It survived every smoke run to date because no batch had ever combined
+REM  --arch dense with --init-from: dense was always the scratch PARENT.
+REM  This arm makes a dense student adopt the dense parent, which is the
+REM  exact shape that died. --depth-init role is the mapping P074 used.
+REM  ------------------------------------------------------------------------
+REM  Flags match what run_P074_stage1 actually runs: gate 15 (check_smoke_coverage)
+REM  reported --no-ckpt and --ce-chunk as never having been exercised under
+REM  arch=dense. One arm covers the whole combination rather than the one flag
+REM  that happened to break.
+timeout /t 15 /nobreak
+python scripts\runlog.py --name !TL_LOGNAME! --note "[14] P074 dense student + parent init - the ZeroDivisionError shape"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --init-from --depth-init role --tag sm_denseinit
+if errorlevel 1 echo [WARN] sm_denseinit failed - continuing
+
+echo.
+echo [15] P074 stage 2 - dense student WITH recursion. Never combined before.
+REM  ------------------------------------------------------------------------
+REM  Gate 15 (check_smoke_coverage) flagged arch=dense with --train-repeat as
+REM  an axis pair no smoke arm had ever run, on the day run_P074_stage2 was
+REM  written and before it was queued. That is the gate doing its job.
+REM  Recursion has only ever been exercised on tied models; P074 stage 2 needs
+REM  it on a shallow dense one, where visit order is cycle-wise rather than
+REM  block-wise.
+REM  ------------------------------------------------------------------------
+python scripts\runlog.py --name !TL_LOGNAME! --note "[15] P074 dense student + recursion - cycle-wise visit order"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --train-repeat 2.0 --init-from --depth-init role --tag sm_denserep
+if errorlevel 1 echo [WARN] sm_denserep failed - continuing
+
+echo.
 echo =============================================================
 echo [VERIFY] every instrumentation field was recorded
 python scripts\runlog.py --name !TL_LOGNAME! --note "[VERIFY] every instrumentation field was recorded"
