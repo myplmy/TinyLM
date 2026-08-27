@@ -1,0 +1,74 @@
+=============================================================================
+P067 stage 1d   re-run the judgement that OOMed
+Three training runs finished; all three judgement steps died on a 4.64 GiB
+single allocation. --ce-chunk fixes it. No training. About 15 minutes.
+==============================================================================
+[1/1] the whole stage 1 matrix in ONE call, chunked CE, micro-bs 2
+
+==============================================================================
+[runlog] 2026-08-27 02:36:07  name=P067_stage1d_bpb_rejudge
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\common_bpb.py --preset m100R1c --data ko-en --tokens 300M --micro-bs 2 --ce-chunk 4096 --models Q64T Q256T QT0 mC_initonly --tokenizer-hf Q64T=HF\models--Qwen3-0.6B-Base Q256T=HF\models--Qwen3-0.6B-Base QT0=HF\models--Qwen3-0.6B-Base
+==============================================================================
+############################################################################################
+  P028 단계1 — 공통 원문 bpb (SQuAD v2 context)
+############################################################################################
+  device=cuda  문서 4,000개  **2.97 MB**  seq=1024
+  ★같은 원문·같은 바이트에 서로 다른 토크나이저의 모델을 통과시킨다.
+    bpb = loss / ln2 / (bytes/token) 이므로 **토크나이저가 달라도 비교가 성립**한다.
+  ⚠️ 영문 전용이다. 한국어 공통 원문은 아직 없다(07_corpus_selection §3).
+  [P067] Q64T: 외부 토크나이저 HF\models--Qwen3-0.6B-Base
+
+  ── Q64T (ko-en, tied)
+     토큰 641,795  bytes/token 4.6219  손실 4.4850  **bpb 1.3999**
+  [P067] Q256T: 외부 토크나이저 HF\models--Qwen3-0.6B-Base
+
+  ── Q256T (ko-en, tied)
+     토큰 641,795  bytes/token 4.6219  손실 4.2810  **bpb 1.3363**
+  [P067] QT0: 외부 토크나이저 HF\models--Qwen3-0.6B-Base
+
+  ── QT0 (ko-en, tied)
+     토큰 641,795  bytes/token 4.6219  손실 4.3056  **bpb 1.3440**
+
+  ── mC_initonly (ko-en, tied)
+     토큰 679,424  bytes/token 4.3660  손실 3.9569  **bpb 1.3075**
+
+============================================================================================
+  ★공통 원문 bpb — 이것이 데이터셋 간 비교로 유효한 유일한 수치다
+============================================================================================
+  모델                데이터셋                 토큰수   B/tok       손실      bpb
+  ------------------------------------------------------------------------
+  mC_initonly       ko-en            679,424   4.366   3.9569   1.3075
+  Q256T             ko-en            641,795   4.622   4.2810   1.3363
+  QT0               ko-en            641,795   4.622   4.3056   1.3440
+  Q64T              ko-en            641,795   4.622   4.4850   1.3999
+
+  최저 bpb = mC_initonly (ko-en) 1.3075
+
+  읽는 법
+    · **bpb 만** 비교한다. '손실' 열은 토크나이저마다 토큰 수가 달라 **비교 불가**다.
+      (일부러 함께 찍는다 — 둘이 다른 이야기를 한다는 것이 이 실험의 요점이다)
+    · bpb 차이가 실무 분해능(0.024 nats 를 bpb 로 환산하면 대략 0.008)보다 작으면
+      **서열을 매기지 않는다.**
+    · 토큰 수가 크게 다르면 그 자체가 정보다 — 토크나이저가 이 원문을 얼마나 잘 압축하는가.
+
+  한계
+    · **영문 전용.** 한국어 쪽 결론은 이 실험으로 나오지 않는다.
+    · SQuAD context 는 영문 위키다. 두 모델 다 영문을 절반 학습했으므로 조건은 공정하지만,
+      **한국어 능력은 전혀 반영되지 않는다.**
+    · 문서를 `\n\n` 로 이어붙여 하나의 스트림으로 만든다 — 문서 경계에서 컨텍스트가 섞인다.
+      모든 모델에 동일하게 적용되므로 비교에는 영향이 없다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.8분  (2026-08-27 02:36:57)
+==============================================================================
+=============================================================================
+READ IN THIS ORDER
+1. R1 - do the four bpb values match what the three crashed logs printed
+   (1.3999 / 1.3362 / 1.3440 / 1.3075). They should, to four decimals.
+2. Q256T MINUS QT0 is the answer to the whole P067 question. That is the
+   teacher's contribution with a teacher genuinely better than its student.
+   Everything else in the table answers a different question.
+3. the tool prints 0.008 bpb as the practical resolution. If the delta is
+   under it, write UNRESOLVED - do not rank.
+4. Q64T minus Q256T is the rank price WITH a good teacher.
+==============================================================================

@@ -1,0 +1,246 @@
+=============================================================================
+P074 stage 1   shallow dense - the counterfactual we never ran
+Tied 20 layers and dense 9 layers cost the same resident memory.
+Nobody has ever asked which one is better. About 3.8 hours.
+==============================================================================
+[1/6] GATE - does the shallow transplant work at all. step0 must land in 5.0 to 9.3972
+
+==============================================================================
+[runlog] 2026-08-27 02:38:09  name=P074_stage1_dense_depth_curve
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\diag_depth_init.py --preset m100s4 --teacher-preset m100
+==============================================================================
+
+==============================================================================
+  구조 · 대응표
+==============================================================================
+  학생 m100s4: 2+4+2 = 8층, g=2, 유니크 MLP 6
+  교사 m100: 2+16+2 = 20층
+  대응표 [0, 1, 2, 6, 10, 14, 18, 19]
+  ★교사 층당 최대 복제 1회  -^> 잔차 기여가 그만큼 중복된다
+  교사 파일 m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 300.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+
+  ★실제 val 데이터 사용(next-token 정답). 난수 토큰이 아니다 — 결과 041 §11 참조
+  기준: ln(vocab=32768) = 10.3972  -^>  G0-c 통과선 CE ^< 9.3972
+  ★앵커: 부모초기화 **타잉** 학생의 step0 ce = **7.7742**(결과 030 §2)
+     ⚠️교사 full-val 3.8080 은 **도달 불가**다 — 중간 MLP 가 g층 평균이라 학생 ^!= 교사
+  ⚠️크롭 2x512 = 1024토큰 **단일 표본**이다 — ko-en 혼합이라 크롭이 다르면 CE 가 1 nat 단위로 흔들린다.
+     **다른 스크립트(diag_train_repeat 는 4x1024)의 CE 와 직접 비교하지 않는다**
+
+  ★G0-b 가 요구하는 알림: ★★(깊이 불일치 20->8)
+
+==============================================================================
+  모드 (난수 대조군)
+==============================================================================
+
+  step0 CE 10.4280   |logit|max 0.93
+
+==============================================================================
+  모드 prop
+==============================================================================
+  [init] ★★경고: 구조 불일치 — 학생 층 8(prelude 2/mid 4/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+  [init] ★**종전 인덱스 zip** 으로 앞 8층만 이식한다 — 학생의 coda 가 교사의 중간층에서 값을 받는다(역할 불일치). 기존 런(결과 032 등)과 **재현 가능하도록 일부러 유지**한다. 역할 정렬을 쓰려면 `--depth-init role`.
+  [init] ★대응표 student->teacher: [0, 1, 2, 3, 4, 5, 6, 7]
+  [init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+  [init] dense 부모초기화 완료 (중간 MLP는 2층 평균)  <- m100_ko-en_300M_dense.pt
+  ✅ G0-b 통과 — 요구 알림 1건 전부 확인
+
+  step0 CE 6.0535   |logit|max 14.44
+
+==============================================================================
+  모드 gate_scale
+==============================================================================
+  [init] ★★경고: 구조 불일치 — 학생 층 8(prelude 2/mid 4/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+  [init] ★**종전 인덱스 zip** 으로 앞 8층만 이식한다 — 학생의 coda 가 교사의 중간층에서 값을 받는다(역할 불일치). 기존 런(결과 032 등)과 **재현 가능하도록 일부러 유지**한다. 역할 정렬을 쓰려면 `--depth-init role`.
+  [init] ★대응표 student->teacher: [0, 1, 2, 3, 4, 5, 6, 7]
+  [init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+  [init] dense 부모초기화 완료 (중간 MLP는 2층 평균)  <- m100_ko-en_300M_dense.pt
+  ✅ G0-b 통과 — 요구 알림 1건 전부 확인
+
+  step0 CE 6.0535   |logit|max 14.44
+
+==============================================================================
+  모드 identity
+==============================================================================
+  [init] ★★경고: 구조 불일치 — 학생 층 8(prelude 2/mid 4/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+  [init] ★**종전 인덱스 zip** 으로 앞 8층만 이식한다 — 학생의 coda 가 교사의 중간층에서 값을 받는다(역할 불일치). 기존 런(결과 032 등)과 **재현 가능하도록 일부러 유지**한다. 역할 정렬을 쓰려면 `--depth-init role`.
+  [init] ★대응표 student->teacher: [0, 1, 2, 3, 4, 5, 6, 7]
+  [init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+  [init] dense 부모초기화 완료 (중간 MLP는 2층 평균)  <- m100_ko-en_300M_dense.pt
+  ✅ G0-b 통과 — 요구 알림 1건 전부 확인
+
+  step0 CE 6.0535   |logit|max 14.44
+
+==============================================================================
+  판정
+==============================================================================
+  모드                  step0 CE   |logit|max   G0-c
+  ------------------------------------------------------------
+  (난수 대조군)             10.4280         0.93   🚫
+  prop                  6.0535        14.44   ✅
+  gate_scale            6.0535        14.44   ✅
+  identity              6.0535        14.44   ✅
+
+  ★이식이 걷어낸 출발 핸디캡: +4.3745 nats (난수 10.4280 -^> prop 6.0535)
+  ★권장 depth_init = **prop**
+    prop − gate_scale = +0.0000 nats (prop 이 낫다)
+    ⚠️ **이건 step0 값이다.** 학습 후에도 그 순서가 유지된다는 보장은 없다 — 단계1 은 이 값으로 하나만 고르고, 뒤집힐 가능성을 결과문서에 적는다.
+    prop − identity = +0.0000 nats (prop 이 낫다)
+    ⚠️ **이건 step0 값이다.** 학습 후에도 그 순서가 유지된다는 보장은 없다 — 단계1 은 이 값으로 하나만 고르고, 뒤집힐 가능성을 결과문서에 적는다.
+
+  ✅ G0 전부 통과 — run_P049_depth_g16x2.bat 을 돌릴 수 있다
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-08-27 02:38:16)
+==============================================================================
+[2/6] d6_dense - 6 layers, the shallow end
+
+==============================================================================
+[runlog] 2026-08-27 02:38:16  name=P074_stage1_dense_depth_curve
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100s2 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --tag d6_dense
+==============================================================================
+[cmd] python run100m.py train --preset m100s2 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --tag d6_dense
+[ckpt] m100s2 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[init] ★★경고: 구조 불일치 — 학생 층 6(prelude 2/mid 2/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+[init] ★**역할 구간별 비례 대응**으로 이식한다(P049 선결, 2026-08-14) — prelude↔prelude, middle↔middle, coda↔coda. 종전의 인덱스 zip 이 아니다.
+[init] ★대응표 student->teacher: [0, 1, 2, 10, 18, 19]
+[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+Traceback (most recent call last):
+  File "Z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "Z:\TinyLM\tinylm\cli.py", line 267, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "Z:\TinyLM\tinylm\train\trainer.py", line 335, in train
+    init_from_dense(model, init_from, device, depth_init=depth_init)
+  File "Z:\TinyLM\tinylm\train\init_utils.py", line 308, in init_from_dense
+    avg = sum(dict(mm.named_parameters())[name].data for mm in members) / len(members)
+ZeroDivisionError: division by zero
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-08-27 02:38:19)
+==============================================================================
+[wandb] push d6_dense
+[3/6] d8_dense - the arm that brackets mC_d36_ag4_nokd
+
+==============================================================================
+[runlog] 2026-08-27 02:38:42  name=P074_stage1_dense_depth_curve
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100s4 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --tag d8_dense
+==============================================================================
+[cmd] python run100m.py train --preset m100s4 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --tag d8_dense
+[ckpt] m100s4 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[init] ★★경고: 구조 불일치 — 학생 층 8(prelude 2/mid 4/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+[init] ★**역할 구간별 비례 대응**으로 이식한다(P049 선결, 2026-08-14) — prelude↔prelude, middle↔middle, coda↔coda. 종전의 인덱스 zip 이 아니다.
+[init] ★대응표 student->teacher: [0, 1, 2, 6, 10, 14, 18, 19]
+[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+Traceback (most recent call last):
+  File "Z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "Z:\TinyLM\tinylm\cli.py", line 267, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "Z:\TinyLM\tinylm\train\trainer.py", line 335, in train
+    init_from_dense(model, init_from, device, depth_init=depth_init)
+  File "Z:\TinyLM\tinylm\train\init_utils.py", line 308, in init_from_dense
+    avg = sum(dict(mm.named_parameters())[name].data for mm in members) / len(members)
+ZeroDivisionError: division by zero
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-08-27 02:38:45)
+==============================================================================
+[wandb] push d8_dense
+[4/6] d10_dense - the arm that brackets mC_initonly
+
+==============================================================================
+[runlog] 2026-08-27 02:39:07  name=P074_stage1_dense_depth_curve
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100s6 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --tag d10_dense
+==============================================================================
+[cmd] python run100m.py train --preset m100s6 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --tag d10_dense
+[ckpt] m100s6 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[init] ★★경고: 구조 불일치 — 학생 층 10(prelude 2/mid 6/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+[init] ★**역할 구간별 비례 대응**으로 이식한다(P049 선결, 2026-08-14) — prelude↔prelude, middle↔middle, coda↔coda. 종전의 인덱스 zip 이 아니다.
+[init] ★대응표 student->teacher: [0, 1, 2, 4, 7, 10, 12, 15, 18, 19]
+[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+Traceback (most recent call last):
+  File "Z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "Z:\TinyLM\tinylm\cli.py", line 267, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "Z:\TinyLM\tinylm\train\trainer.py", line 335, in train
+    init_from_dense(model, init_from, device, depth_init=depth_init)
+  File "Z:\TinyLM\tinylm\train\init_utils.py", line 308, in init_from_dense
+    avg = sum(dict(mm.named_parameters())[name].data for mm in members) / len(members)
+ZeroDivisionError: division by zero
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-08-27 02:39:10)
+==============================================================================
+[wandb] push d10_dense
+[5/6] d12_dense - the deep end of the curve
+
+==============================================================================
+[runlog] 2026-08-27 02:39:31  name=P074_stage1_dense_depth_curve
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100s8 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --tag d12_dense
+==============================================================================
+[cmd] python run100m.py train --preset m100s8 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --tag d12_dense
+[ckpt] m100s8 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[init] ★★경고: 구조 불일치 — 학생 층 12(prelude 2/mid 8/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+[init] ★**역할 구간별 비례 대응**으로 이식한다(P049 선결, 2026-08-14) — prelude↔prelude, middle↔middle, coda↔coda. 종전의 인덱스 zip 이 아니다.
+[init] ★대응표 student->teacher: [0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 19]
+[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+Traceback (most recent call last):
+  File "Z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "Z:\TinyLM\tinylm\cli.py", line 267, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "Z:\TinyLM\tinylm\train\trainer.py", line 335, in train
+    init_from_dense(model, init_from, device, depth_init=depth_init)
+  File "Z:\TinyLM\tinylm\train\init_utils.py", line 308, in init_from_dense
+    avg = sum(dict(mm.named_parameters())[name].data for mm in members) / len(members)
+ZeroDivisionError: division by zero
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-08-27 02:39:34)
+==============================================================================
+[wandb] push d12_dense
+[6/6] residency for all four - the x axis of the whole plot
+
+==============================================================================
+[runlog] 2026-08-27 02:39:41  name=P074_stage1_dense_depth_curve
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100s4 --models d6_dense d8_dense d10_dense d12_dense --drop-latent --int8-store
+==============================================================================
+================================================================================================
+  P034 단계1 — 실행시 메모리 실측 (저장 MB 는 이론·패킹 가정, 상주 MB 는 실측)
+  device=cpu  max_new=32
+  ★RSS 는 할당자 때문에 과대, 텐서합산은 임시버퍼를 빼서 과소. 둘을 함께 읽는다.
+================================================================================================
+
+  [건너뜀] 체크포인트 없음: d6_dense
+
+  [건너뜀] 체크포인트 없음: d8_dense
+
+  [건너뜀] 체크포인트 없음: d10_dense
+
+  [건너뜀] 체크포인트 없음: d12_dense
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-08-27 02:39:43)
+==============================================================================
+=============================================================================
+READ IN THIS ORDER
+1. step [1] and every arm's step0 ce. Band is 5.0 to 9.3972. Outside it the
+   role transplant failed and that arm measured transplant, not depth.
+2. grad_max under 10 on all four. Shallow dense has a different LR optimum
+   and we did NOT redo lrfind - result 017 says batch changes move it.
+3. json n_layers must read 6, 8, 10, 12. If any reads 20 the preset did not
+   land and that arm is a reseed of p6d.
+4. plot the four against mC_initonly (451.5 / 3.6776) and mC_d36_ag4_nokd
+   (379.7 / 3.6848). N2 says tied wins at equal resident.
+5. SUBTRACT the CLA confound before judging N2 - dense runs cla_group 1 and
+   tied runs 2. Result 058 puts that at 0.0268 at 20 layers.
+IF TIED WINS  the program premise holds and we can finally say so with a
+  counterfactual instead of an assumption.
+IF DENSE WINS AT EQUAL MEMORY  stop and read REVIEW3 again from the top.
+==============================================================================
