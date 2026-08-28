@@ -22,14 +22,7 @@
 prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수 49GB→. ★판정 정본이 checkpoints.tsv 로 바뀌었다(TSV, keep/hold/delete). 삭제 후보 13.2GB/34개. YES 를 직접 입력해야 지운다
-1	P067	run_P067_stage1d_bpb_rejudge.bat	D	0.3	N	Y	★★21.5시간짜리 학습 셋의 **판정이 세 번 다 OOM** 했다(4.64GiB 단일 할당). `--ce-chunk` 로 고쳤다. 학습 0 — **가장 값싼 회수**
-1	P073	run_P073_stage2_cla1_matrix.bat	Y	3.6	N	Y	★★어텐션 축을 **깨끗한 K/V 기준선 위에서** 가격 매긴다. B.5 의 0.00083 과 결과 044 의 0.00381 이 둘 다 cla2 위였다
 2	P074	run_P074_stage1_dense_depth_curve.bat	Y	3.8	N	Y	★★★**한 번도 안 물어본 반사실** — 같은 상주를 그냥 **얕은 dense** 로 쓰면? tied 20층과 dense 9층이 상주가 같다. ⚠️**지면 프로그램 전제가 흔들린다**
-2	P065	run_P065_stage3_nockpt_twin.bat	Y	1.9	N	Y	★표준 대조군의 `--no-ckpt` 쌍둥이. 무KD 비교마다 섞이는 **−0.0016 드리프트를 실측**한다. ★§5.2 가 요구한 **깨끗한 같은배치 속도 수**도 여기서 나온다
-3	P034	run_P034_stage5d_emb_bf16.bat	N	0.2	N	Y	★bf16 임베딩 **네 번째 시도**. 접근자 단일화 + 양자화 직후 자체 시험. ⚠️**후순위**(int8 이 이미 이겼다) — **결함 종결용**. 🚫네 번째로 죽으면 경로를 지운다
-2	P062	run_P062_stage4_r3_curve.bat	Y	4.3	N	Y	★재귀 R=3. R=2 가 메모리 0 으로 −0.0202 를 벌었는데 **두 번째 점이 없다**. ⚠️uniform 은 정수 반올림이라 축은 1·2·3 뿐(043 §5). --match-train-repeat 필수
-1	P030	run_P030_stage2C_cpu_current.bat	N	0.5	N	Y	★★REVIEW3 §5-5 가 5세션째 기다린 그 측정. ⚠️단계2B 는 2026-07-31 에 이미 돌았고(결과 014 §10, CPU 1스레드 31~35 tok/s) 계획서의 낡은 ⏸ 표시를 내가 읽고 있었다. 진짜로 없는 것은 **지금 모델들의 CPU 수치**다 — 재귀 R2·R3 의 디코드 대가와 mC_cla1_ag4(상주 339.0) vs 표준모델(379.7)의 속도. GPU 불필요
-2	P074	run_P074_stage2_equivalence.bat	D	4.8	N	Y	★★타잉=층수감소인가에 **숫자로** 답한다. 세 팔의 **유니크 파라미터가 완전히 같다**(유니크 MLP 4 · 유니크 어텐션 4 · cla1) — 다른 것은 **방문 횟수**(8 vs 20)와 **방문 순서**(블록별 1112223334 vs 순환 1234 1234)뿐. E2 vs E3 는 파라미터·방문수 고정에서 **순서만** 보는 순수 실험이고 저장소에 전례가 없다. 선결: 단계1 재실행 통과
 1	P074	run_P074_stage1b_dense_depth_curve.bat	D	3.8	N	Y	★단계1 재실행. 2026-08-27 에 학습 팔 **네 개가 전부** `ZeroDivisionError` 로 즉사했다(결과 059) — `config.mlp_group_index` 가 `tie_mlp` 를 안 봤고 **dense 프리셋 12개 전부**가 그 상태였다. 배치는 내용이 그대로이고 고친 것은 전부 라이브러리다. 선결: **run_smoke_check.bat 의 새 팔 [14] sm_denseinit 통과**
 1	P074	run_P074_stage1c_paired_curve.bat	D	0.1	N	Y	★**학습 0.** 단계1b 가 깊이 곡선을 그리려고 네 모델을 학습해 놓고 **자를 안 넣었다**(학습로그 val 은 판정 근거가 아니다, R10). 결과 059 §10.2.1 의 ⚙환산 세 개를 **실측으로 교체**한다. 3분. ★부수로 `d8_dense` vs `eq_d8_dense` **동일 구성 재현 검증**이 된다
 2	P075	run_P075_stage3_emb128_nokd.bat	D	1.8	N	Y	★P075 네 단계 중 **선결이 없는 유일한 것**(어휘를 안 바꾸므로 `paired_eval` 로 판정된다). ALBERT Table 3 은 **E=128 이 E=256 보다 파라미터 25% 적고 점수 0.5 높다**고 보고했는데 우리 구 측정(결과 030)은 **KD 조건 + `grad_max` 19.32 = 판정 불가**였다. 무KD 표준조건에서 처음 잰다. ⚙int8 임베딩 9.1 → 4.9
@@ -101,6 +94,16 @@ prio	plan	batch	gpu	hours	alone	watch	note
 #   1	P067	run_P067_stage1a_qt0.bat	Y	4.9	Y	Y	★★★교락 대조군 QT0(Qwen 토크나이저·교사 없음). 이게 없으면 '교사 때문인가 토크나이저 때문인가' 를 영원히 못 가른다. **[1] common_bpb 게이트가 goto ERROR** — 5시간 쓰기 전에 판정 경로를 증명한다
 #   1	P067	run_P067_stage1b_q256t.bat	Y	6.0	Y	Y	★★★**학생보다 나은 교사로 하는 첫 KD**. REVIEW2 는 037 이 '교사가 학생보다 나쁘다' 를 밝힌 뒤에도 그 교사로 잰 038 로 KD 를 제거했다. ⚠️선결: 1a 의 QT0
 #   2	P067	run_P067_stage1c_q64t.bat	Y	5.9	Y	Y	★강한 교사가 뭉갠 임베딩(E=64)을 갚아 주는가. ⚠️V=151936 에는 부모가 없어 **SVD 이식이 불가** — step0 ce ≈ ln V = 11.93 이 정상이다(여기서만). 선결: 1b 의 Q256T
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P067	run_P067_stage1d_bpb_rejudge.bat	D	0.3	N	Y	★★21.5시간짜리 학습 셋의 **판정이 세 번 다 OOM** 했다(4.64GiB 단일 할당). `--ce-chunk` 로 고쳤다. 학습 0 — **가장 값싼 회수**
+#   1	P073	run_P073_stage2_cla1_matrix.bat	Y	3.6	N	Y	★★어텐션 축을 **깨끗한 K/V 기준선 위에서** 가격 매긴다. B.5 의 0.00083 과 결과 044 의 0.00381 이 둘 다 cla2 위였다
+#   2	P065	run_P065_stage3_nockpt_twin.bat	Y	1.9	N	Y	★표준 대조군의 `--no-ckpt` 쌍둥이. 무KD 비교마다 섞이는 **−0.0016 드리프트를 실측**한다. ★§5.2 가 요구한 **깨끗한 같은배치 속도 수**도 여기서 나온다
+#   3	P034	run_P034_stage5d_emb_bf16.bat	N	0.2	N	Y	★bf16 임베딩 **네 번째 시도**. 접근자 단일화 + 양자화 직후 자체 시험. ⚠️**후순위**(int8 이 이미 이겼다) — **결함 종결용**. 🚫네 번째로 죽으면 경로를 지운다
+#   2	P062	run_P062_stage4_r3_curve.bat	Y	4.3	N	Y	★재귀 R=3. R=2 가 메모리 0 으로 −0.0202 를 벌었는데 **두 번째 점이 없다**. ⚠️uniform 은 정수 반올림이라 축은 1·2·3 뿐(043 §5). --match-train-repeat 필수
+#   1	P030	run_P030_stage2C_cpu_current.bat	N	0.5	N	Y	★★REVIEW3 §5-5 가 5세션째 기다린 그 측정. ⚠️단계2B 는 2026-07-31 에 이미 돌았고(결과 014 §10, CPU 1스레드 31~35 tok/s) 계획서의 낡은 ⏸ 표시를 내가 읽고 있었다. 진짜로 없는 것은 **지금 모델들의 CPU 수치**다 — 재귀 R2·R3 의 디코드 대가와 mC_cla1_ag4(상주 339.0) vs 표준모델(379.7)의 속도. GPU 불필요
+#   2	P074	run_P074_stage2_equivalence.bat	D	4.8	N	Y	★★타잉=층수감소인가에 **숫자로** 답한다. 세 팔의 **유니크 파라미터가 완전히 같다**(유니크 MLP 4 · 유니크 어텐션 4 · cla1) — 다른 것은 **방문 횟수**(8 vs 20)와 **방문 순서**(블록별 1112223334 vs 순환 1234 1234)뿐. E2 vs E3 는 파라미터·방문수 고정에서 **순서만** 보는 순수 실험이고 저장소에 전례가 없다. 선결: 단계1 재실행 통과
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
