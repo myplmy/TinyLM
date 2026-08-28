@@ -35,6 +35,18 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
+# ★★2026-08-28 (사용자 지적) — **보고 전용 게이트는 `--quiet` 에서도 반드시 인쇄한다.**
+#
+#   `sync_experiments_tsv` 는 설계상 **항상 종료코드 0** 이다(삭제 후보를 "보고" 만 한다).
+#   그런데 나는 매번 `check_static_all.py --quiet` 로 돌렸고, `--quiet` 는 **통과한 게이트의
+#   출력을 아예 안 찍는다.** 그래서 *"삭제 가능 후보 N건"* 이라는 줄이 **한 번도 내 눈에
+#   들어오지 않았다.** 사용자가 `-done` 6건을 붙여 뒀는데 나는 "삭제 후보 없음" 이라고 보고했다.
+#
+#   ★원인은 게으름이 아니라 **인터페이스**다 — *"통과 = 볼 것 없음"* 이라는 가정이
+#   보고 전용 도구에는 성립하지 않는다. 그래서 목록으로 예외를 만든다.
+#   ⚠️새 보고 전용 게이트를 만들면 **여기에 이름을 넣는다.**
+ALWAYS_SHOW = {"sync_experiments_tsv"}
+
 # (표시이름, 인자, 무엇을 막는가)  — ★목록을 두 곳에 두지 않는다. 여기가 정본이다.
 CHECKS = [
     ("check_attrs",         ["check_attrs.py"],
@@ -93,7 +105,7 @@ def main():
         rows.append((name, ok, r.returncode, why))
         if not ok:
             bad += 1
-        if (not ok) or (not a.quiet):
+        if (not ok) or (not a.quiet) or (name in ALWAYS_SHOW):
             print(f"\n{'=' * 100}\n  [{'OK ' if ok else 'FAIL'}] {name}   (exit {r.returncode})\n{'=' * 100}")
             out = (r.stdout or "") + (r.stderr or "")
             tail = out.strip().splitlines()
@@ -106,7 +118,14 @@ def main():
         print(f"  {'✅' if ok else '🚫'} {name:<22} exit {rc:<3}  {why}")
     print(f"\n  {'✅ 정적 게이트 전부 통과' if bad == 0 else f'🚫 {bad}건 실패'} "
           f"— 검사 {len(rows)}종")
-    print("  ⚠️★**다음은 사용자 차례**: 코드를 고쳤으면 `run_smoke_check.bat`(torch·GPU).")
+    if ALWAYS_SHOW:
+        print(f"  ★보고 전용 게이트({', '.join(sorted(ALWAYS_SHOW))})는 통과해도 출력을 인쇄한다 — "
+              f"**통과 = 볼 것 없음 이 아니다**(2026-08-28).")
+    # ★2026-08-28 (사용자 지적) — 종전 문구가 *"다음은 사용자 차례"* 로 시작해서
+    #   **정적 게이트까지 사용자 몫으로 읽힐 여지**가 있었다. 실제로 나는 매 세션
+    #   *"정적검사를 돌려 주세요"* 라고 보고했다. 🚫**정적은 torch·GPU 를 안 쓰므로 AI 가 직접 돈다.**
+    print("  ★**이 스위트는 AI 가 직접 돌린다** — torch·GPU 를 쓰지 않으므로 위임할 이유가 없다.")
+    print("  ⚠️★**사용자에게 요청할 것은 `run_smoke_check.bat`(torch·GPU) 하나뿐**이다.")
     print("     정적은 *'이름이 있는가'*, 동적은 *'그 경로가 실제로 도는가'* 를 본다(함정 37).")
     return 1 if bad else 0
 

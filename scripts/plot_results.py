@@ -95,15 +95,22 @@ def verify_table() -> int:
             bad.append(f"{tag:<22} ms/step 표 {ms} vs json ms_step_median {j_ms:.1f}")
         elif not j_ms:
             noms.append(tag)
-        # ★★상주를 **정본 파라미터 수에서 다시 계산**한다.
-        #   상주 = 유니크 삼진 x 4B x **2벌**(latent + dequant 사본) + 나머지 fp32.
-        #   🚫`deploy_mb` 를 쓰면 안 된다 — 그 필드는 **packed 저장**이다(§아래 주의).
+        # ★★2026-08-28 정정 — **상주는 이미 json 에 있다: `runtime_mb`.**
+        #   종전에 나는 *"deploy_mb 가 packed 이니 상주는 재계산해야 한다"* 고 적고
+        #   `mem_params` 에서 손으로 다시 계산했다. **절반만 맞았다** — 이름이 오해를 부르는 것은
+        #   사실이지만 `packed_mb`·`runtime_mb` 가 **처음부터 따로 실려 있었고**
+        #   `deploy_mb` 는 trainer.py 가 명시한 **구 로그 호환 별칭**일 뿐이다.
+        #   → **정본을 먼저 쓰고**, 없을 때만(구 런) 재계산으로 물러난다.
         mp = d.get("mem_params") or {}
-        if mp.get("ternary") and res32:
+        j_res = d.get("runtime_mb")
+        if res32 and j_res:
+            if abs(j_res - res32) > max(0.2, 0.005 * j_res):
+                bad.append(f"{tag:<22} 상주 표 {res32} vs json runtime_mb {j_res:.1f}")
+        elif mp.get("ternary") and res32:
             calc = (mp["ternary"] * 8
                     + sum(mp.get(k, 0) for k in ("emb", "other", "mode", "lora")) * 4) / 2 ** 20
             if abs(calc - res32) > max(0.2, 0.005 * calc):
-                bad.append(f"{tag:<22} 상주 표 {res32} vs 정본 재계산 {calc:.1f}")
+                bad.append(f"{tag:<22} 상주 표 {res32} vs 재계산 {calc:.1f} (구 런: runtime_mb 없음)")
         if not bad or not bad[-1].startswith(tag):
             ok += 1
     print(f"  표 {len(TABLE)}행 · 대조 성공 {ok} · json 없음 {len(nojson)} · ms_step_median 없음 {len(noms)} · 불일치 {len(bad)}")
@@ -117,8 +124,8 @@ def verify_table() -> int:
               f"{' ...' if len(noms) > 6 else ''} (계약 추가 이전 런이다)")
     print("  ⚠️★**paired full-val 은 json 에 없다** — 이 도구로 검증할 수 없다.")
     print("     그 열의 정본은 결과문서이고, 출처 번호를 표의 마지막 열에 박아 둔다.")
-    print("  🚫★**json 의 `deploy_mb` 는 상주가 아니라 packed 저장이다**"
-          " — 이름이 배포를 말하지만 값은 저장이다(계측함정 1). 상주는 위처럼 재계산한다.")
+    print("  ⚠️★**`deploy_mb` 는 `packed_mb` 의 구 로그 호환 별칭**이다 — 이름이 배포를 말하지만"
+          " 값은 **저장**이다. ★**상주는 같은 json 의 `runtime_mb`** 이고 재계산할 필요가 없다(2026-08-28 정정).")
     return 1 if bad else 0
 
 # ★P067 단계1 — common_bpb(SQuAD, 641,795 토큰). 🚫**위 표와 단위가 다르다**(bpb vs nats)

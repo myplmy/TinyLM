@@ -67,10 +67,34 @@ SUCCESS_REF = re.compile(r"3\.80|3\.69|3\.7[0-9]|TEACHER_|기준값|참고값|�
 RAND_TENSOR = re.compile(r"(\w+)\s*=\s*torch\.randint")
 
 
+# ★★2026-08-28 (사용자 지적: "경고를 확인 안 하는 건지") — **경고 6건을 전수 판정했다.**
+#   결론: **네 도구는 이 검사의 대상이 아니다.** `ABS_METRIC` 정규식이 `bpb`·`ce` 같은
+#   단어를 파일 어디에서든 잡기 때문에, **CE 를 계산하지 않고 인쇄만 하는 도구**까지 걸린다.
+#   경고를 매 세션 무시하면 **진짜 경고도 함께 죽는다** — 그래서 사유를 적고 면제한다.
+#   ⚠️면제는 **파일명 단위**다. 그 도구가 나중에 진짜 CE 를 계산하게 되면 **이 줄을 지운다.**
+EXEMPT = {
+    "diag_spam_rate.py":
+        "스팸 서명(줄바꿈률·고유율)만 센다. CE 를 계산하지 않는다. 실데이터는 "
+        "`prepare._stream` 으로 읽는데 REAL_DATA 정규식이 그 경로를 모른다(결과 031 이 실데이터로 돌았다)",
+    "diag_val_docs.py":
+        "val 셋의 **문서 구성**을 센다. 절대 지표가 아니라 분포 통계다",
+    "diag_val_lang.py":
+        "val 셋의 **언어 비율**을 센다. 절대 지표가 아니다",
+    "bench_fused_int8.py":
+        "CPU 디코드 tok/s 벤치다. 파일 머리말이 **\"안 재는 것: 품질\"** 이라고 명시한다. "
+        "`bpb` 는 결과 028 을 인용하는 주석에만 등장한다",
+    "diag_lut_kernel.py":
+        "LUT 커널의 **수치 동등성**(max|dlogit|)을 재는 단위시험이다. 합성 텐서가 정상이고 "
+        "퇴화할 대상 자체가 없다",
+}
+
+
 def audit(p: Path):
     """(치명, 경고, 정보) 목록."""
     txt = p.read_text(encoding="utf-8", errors="replace")
     err, warn, info = [], [], []
+    if p.name in EXEMPT:
+        return err, warn, [f"면제 — {EXEMPT[p.name]}"]
 
     if not ABS_METRIC.search(txt):
         return err, warn, ["절대 지표 없음 — 이 검사의 대상이 아니다(차이 지표 도구)"]

@@ -98,6 +98,10 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch t
 if errorlevel 1 echo [WARN] sm_sched failed - continuing
 
 echo.
+REM  Rule 5 (result 037 s7.3): Windows/WDDM holds VRAM for a few seconds after a
+REM  run exits, so a --no-ckpt arm started immediately can die with
+REM  CUBLAS_STATUS_EXECUTION_FAILED. Let the previous run settle first.
+timeout /t 15 /nobreak
 echo [5] no grad checkpoint path
 python scripts\runlog.py --name !TL_LOGNAME! --note "[5] no grad checkpoint path"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --tag sm_nockpt
@@ -201,6 +205,19 @@ REM  ------------------------------------------------------------------------
 python scripts\runlog.py --name !TL_LOGNAME! --note "[15] P074 dense student + recursion - cycle-wise visit order"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --train-repeat 2.0 --init-from --depth-init role --tag sm_denserep
 if errorlevel 1 echo [WARN] sm_denserep failed - continuing
+
+echo.
+echo [16] P075 emb-rank - the embedding factorisation rank axis
+REM  ------------------------------------------------------------------------
+REM  Gate 15 flagged --emb-rank as an axis that batches use but smoke has never
+REM  run, on the day run_P075_stage3 was written. It also exercises the branch
+REM  where the student embedding shape differs from the parent, which is where
+REM  emb_init becomes svd or random - the field added on 2026-08-27 for
+REM  confession A13. One arm covers both.
+REM  ------------------------------------------------------------------------
+python scripts\runlog.py --name !TL_LOGNAME! --note "[16] P075 emb-rank 64 + parent init - shape mismatch branch, emb_init field"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --emb-rank 64 --init-from --tag sm_embrank
+if errorlevel 1 echo [WARN] sm_embrank failed - continuing
 
 echo.
 echo =============================================================

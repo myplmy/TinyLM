@@ -44,6 +44,7 @@ REQUIRED = ["seed", "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cach
             #   계약에도 팔에도 없었다. `--cla-group` 은 P073(1.8h)이 통째로 걸려 있고
             #   `--ce-chunk` 는 무KD + `--no-ckpt` 조합에서 실제로 쓰인다.
             "cla_group", "ce_chunk",
+            "packed_mb", "runtime_mb",                 # ★2026-08-28 저장/상주 분리 명시
             "emb_init",                                # ★자백 A13(2026-08-27) — 임베딩 초기화 갈래
             "tokenizer_hf", "kd_teacher_hf", "teacher_dtype", "vocab_size",  # ★P067
                              # ★P068 A1 / P034 단계5 (2026-08-22)
@@ -65,6 +66,15 @@ def check(name, d, expect=None):
             errs.append(f"필드가 None: {k}")
     if not errs:
         oks.append(f"필수 필드 {len(REQUIRED)}개 모두 존재")
+
+    # ★2026-08-28 — `deploy_mb` 는 `packed_mb` 의 별칭이다. **둘이 갈라지면 회계가 깨진 것**이다.
+    #   그리고 `runtime_mb`(상주)와 `packed_mb`(저장)를 **혼동하지 않도록 둘 다 필수로 둔다**.
+    if all(k in d for k in ("deploy_mb", "packed_mb")) and d["deploy_mb"] is not None:
+        (oks if abs(d["deploy_mb"] - d["packed_mb"]) < 1e-9 else errs).append(
+            "deploy_mb == packed_mb (별칭 정합)")
+    if d.get("runtime_mb") and d.get("packed_mb") and d["runtime_mb"] <= d["packed_mb"]:
+        errs.append(f"runtime_mb {d['runtime_mb']:.1f} <= packed_mb {d['packed_mb']:.1f} — "
+                    f"상주가 저장보다 작을 수 없다(상주는 fp32 2벌이다)")
 
     # 2. 정합성
     if all(k in d for k in ("micro_bs", "accum", "seq", "eff_batch")):
@@ -146,6 +156,10 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     # ★2026-08-27 — dense x 재귀. P074 단계2 의 E3 팔이 쓰는 조합이고,
     #   재귀는 여태 tied 에서만 돌았다. 게이트 15 가 배치 작성 당일 지적했다.
     "sm_denserep": {"arch": "dense", "train_repeat": 2.0, "init_from": True},
+    # ★2026-08-28 — `--emb-rank`. 게이트 15 가 배치 작성 당일 지적했다.
+    #   부모와 임베딩 shape 이 달라지는 갈래이기도 해서 **`emb_init` 이 svd/random 이 된다**
+    #   (자백 A13 로 추가한 필드). 팔 하나가 두 가지를 산다.
+    "sm_embrank": {"emb_rank": 64, "init_from": True},
 }
 
 

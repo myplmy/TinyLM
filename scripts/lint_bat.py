@@ -47,6 +47,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 
+# ★설계상 매 세션 같은 이름으로 다시 도는 배치 — 규칙 9d·19 의 대상이 아니다(2026-08-28).
+_RERUN_BY_DESIGN = {"run_smoke_check.bat"}
+
+
 def lint(path: Path):
     raw = path.read_bytes()
     txt = raw.decode("utf-8", errors="replace")
@@ -223,7 +227,10 @@ def lint(path: Path):
     #   야간큐 v2 가 `--name mC_g16` 로 돌아 로그가 `log_20260807_mC_g16.txt` 가 됐고
     #   사용자가 `029_log_..._P045_mC_g16.txt` 로 손수 고쳐야 했다(2026-08-07 지적).
     #   `scripts/batch/` 의 도구는 `!TL_LOGNAME!` 로 **호출자가** 이름을 주므로 대상 아님.
-    if path.name.startswith("run_"):
+    # ★2026-08-28 — 규칙 9d 는 **실험 배치**를 위한 것이다. 스모크는 계획번호가 없는 것이
+    #   맞고(도구다), 규칙 본문도 *"도구·진단 로그는 P번호가 없을 수 있다"* 고 적고 있다.
+    #   그런데 검사가 그 예외를 구현하지 않아 **매 세션 경고 1건**을 냈다.
+    if path.name.startswith("run_") and path.name not in _RERUN_BY_DESIGN:
         for i, ln in enumerate(lines):
             if ln.strip().upper().startswith("REM"):
                 continue
@@ -380,7 +387,12 @@ def lint(path: Path):
     #   → 선언이 아니라 **증거**로 본다: `test_result/` 에 그 `--name` 이 든 로그가 있는가.
     #   경고(에러 아님)인 이유: 로그는 AI 가 개명하고(§8), `-done` 은 사용자가 나중에 붙인다.
     #   **사람이 한 번 보라는 신호**다.
-    if path.name.startswith("run_") and "-done" not in path.name:
+    # ★2026-08-28 — **스모크는 매 세션 같은 이름으로 다시 도는 것이 설계**다.
+    #   규칙 19(로그가 이미 있다)와 9d(--name 에 계획번호)가 그것을 실험 재실행으로 오해해
+    #   **매 세션 경고 2건**을 냈고, 나는 그것을 매번 넘겼다. 경고를 넘기는 습관이
+    #   **진짜 경고까지 죽인다** — 그래서 설계상 예외인 것은 이름으로 면제한다.
+    if (path.name.startswith("run_") and "-done" not in path.name
+            and path.name not in _RERUN_BY_DESIGN):
         try:
             _logs = [p.name for p in (ROOT / "test_result").glob("*.txt")]
         except Exception:

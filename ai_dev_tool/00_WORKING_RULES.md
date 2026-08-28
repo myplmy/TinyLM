@@ -31,8 +31,11 @@ stories live in the Korean ledgers (01–08) and `CLAUDE.md`; this file only say
 ## B. Comparison validity — this is where numbers go wrong
 
 - **R05** `[human]` **Resident ≠ storage.** `resident = unique ternary params × 4B × 2
-  copies + everything else as fp32`. **bpw is not in that formula.** ⚠️The json field
-  named `deploy_mb` holds **packed storage**, not resident — the name lies.
+  copies + everything else as fp32`. **bpw is not in that formula.** The json already
+  separates them: **`packed_mb` = storage, `runtime_mb` = resident.** ⚠️`deploy_mb` is a
+  legacy **alias for `packed_mb`** — the name says deploy, the value is storage. Read
+  `runtime_mb`; do not recompute. (Corrected 2026-08-28 — the previous wording told you
+  to recompute, which was wrong.)
 - **R06** `[human]` **Resolution is condition-dependent.** no-KD + parent-init 2σ =
   **0.0034**; dense / no-parent = **0.024**; bpb = **0.008**. Always name the ruler used.
   `paired_eval` prints which one it picked.
