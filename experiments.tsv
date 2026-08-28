@@ -22,8 +22,6 @@
 prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수 49GB→. ★판정 정본이 checkpoints.tsv 로 바뀌었다(TSV, keep/hold/delete). 삭제 후보 13.2GB/34개. YES 를 직접 입력해야 지운다
-2	P074	run_P074_stage1_dense_depth_curve.bat	Y	3.8	N	Y	★★★**한 번도 안 물어본 반사실** — 같은 상주를 그냥 **얕은 dense** 로 쓰면? tied 20층과 dense 9층이 상주가 같다. ⚠️**지면 프로그램 전제가 흔들린다**
-1	P074	run_P074_stage1b_dense_depth_curve.bat	D	3.8	N	Y	★단계1 재실행. 2026-08-27 에 학습 팔 **네 개가 전부** `ZeroDivisionError` 로 즉사했다(결과 059) — `config.mlp_group_index` 가 `tie_mlp` 를 안 봤고 **dense 프리셋 12개 전부**가 그 상태였다. 배치는 내용이 그대로이고 고친 것은 전부 라이브러리다. 선결: **run_smoke_check.bat 의 새 팔 [14] sm_denseinit 통과**
 1	P030	run_P030_stage2D_cpu_clean.bat	N	0.6	Y	Y	★★**CPU 오염 감시 재측정**(사용자 지적). `bench_infer --cpu-watch --cpu-ext-limit 25` 신설 — 측정 창의 외부 CPU 부하를 재고 한계 초과 반복은 **다시 잰다**. ⚠️**다른 프로그램을 닫고 돌릴 것**. 부수: **얕은 dense 4종 + eq_d8_r40 의 CPU 속도 최초 실측** — 결과 059 §12.5 의 *"d8_dense 가 1.86배 빠르다"* 주장이 지금 **모형 예측뿐**이다. GPU 불필요
 1	P034	run_P034_stage6_planB_assemble.bat	N	0.3	N	Y	★★**REVIEW3 안 B 를 실제로 조립해 잰다.** 18.4 MiB 는 **따로 잰 세 항의 덧셈**이고 합계를 측정한 적이 없다 — 결과 016 §16 이 이미 *"int4·int8·ternary 가 전부 같은 수"* 회계 결함을 잡았다. ★**목표 확정**(사용자 2026-08-29): L2+L3 = 40 MB, **L2 는 코어별 사설이라 4스레드 실효 36 MiB**. GPU 불필요
 2	P074	run_P074_stage3_visit_curve.bat	D	3.8	N	Y	★★★**파라미터·상주를 고정하고 방문 수만 바꾸는 곡선.** R=2·3·6 을 더해 8/12/16/20/28 방문 5점. 결과 014 §12.2 가 **디코드 시간 = a + b×방문** 을 실측했으므로 이 곡선이 곧 **고정 메모리에서의 품질 대 속도 프론티어**다. 선결 없음
@@ -113,6 +111,11 @@ prio	plan	batch	gpu	hours	alone	watch	note
 # ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
 #   1	P074	run_P074_stage1c_paired_curve.bat	D	0.1	N	Y	★**학습 0.** 단계1b 가 깊이 곡선을 그리려고 네 모델을 학습해 놓고 **자를 안 넣었다**(학습로그 val 은 판정 근거가 아니다, R10). 결과 059 §10.2.1 의 ⚙환산 세 개를 **실측으로 교체**한다. 3분. ★부수로 `d8_dense` vs `eq_d8_dense` **동일 구성 재현 검증**이 된다
 #   2	P075	run_P075_stage3_emb128_nokd.bat	D	1.8	N	Y	★P075 네 단계 중 **선결이 없는 유일한 것**(어휘를 안 바꾸므로 `paired_eval` 로 판정된다). ALBERT Table 3 은 **E=128 이 E=256 보다 파라미터 25% 적고 점수 0.5 높다**고 보고했는데 우리 구 측정(결과 030)은 **KD 조건 + `grad_max` 19.32 = 판정 불가**였다. 무KD 표준조건에서 처음 잰다. ⚙int8 임베딩 9.1 → 4.9
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   2	P074	run_P074_stage1_dense_depth_curve.bat	Y	3.8	N	Y	★★★**한 번도 안 물어본 반사실** — 같은 상주를 그냥 **얕은 dense** 로 쓰면? tied 20층과 dense 9층이 상주가 같다. ⚠️**지면 프로그램 전제가 흔들린다**
+#   1	P074	run_P074_stage1b_dense_depth_curve.bat	D	3.8	N	Y	★단계1 재실행. 2026-08-27 에 학습 팔 **네 개가 전부** `ZeroDivisionError` 로 즉사했다(결과 059) — `config.mlp_group_index` 가 `tie_mlp` 를 안 봤고 **dense 프리셋 12개 전부**가 그 상태였다. 배치는 내용이 그대로이고 고친 것은 전부 라이브러리다. 선결: **run_smoke_check.bat 의 새 팔 [14] sm_denseinit 통과**
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
