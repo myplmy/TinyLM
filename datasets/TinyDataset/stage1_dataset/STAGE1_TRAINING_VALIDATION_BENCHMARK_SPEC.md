@@ -215,22 +215,8 @@ BenchmarkRunner
 
 # 4. Train/Validation split 규칙
 
-## 4.1 900/100으로 분할해야 하는가?
 
-그렇다.
-
-원본 1,000개를 실제로:
-
-```text
-900 train
-100 val
-```
-
-로 물리적으로 분리하는 것을 권장한다.
-
-metadata만 900/100으로 나누고 원본 1,000개를 계속 학습 디렉터리에 둬서는 안 된다. 실수로 validation까지 학습시키는 사고를 방지하려면 파일 시스템 수준에서 분리하는 것이 안전하다.
-
-## 4.2 Stratified split
+## 4.1 Stratified split
 
 Validation 100개는 Stage 1의 유형 분포를 가능한 한 유지해야 한다.
 
