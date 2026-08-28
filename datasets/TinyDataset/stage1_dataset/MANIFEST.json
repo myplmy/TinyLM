@@ -1,17 +1,93 @@
 {
   "dataset_name": "Korean AI Curriculum — Stage 1 Split Manifest",
-  "version": "1.0",
+  "version": "2.1",
   "source_prototype_records": 1000,
   "splits": {
     "train": 900,
     "val": 100,
-    "held-out": 300
+    "held-out_v2": 300
+  },
+  "paths": {
+    "train": {
+      "text": "train/stage1_train_text_900.jsonl",
+      "metadata": "train/stage1_train_metadata_900.json",
+      "bundle": "train/stage1_train_900.json"
+    },
+    "val": {
+      "text": "val/stage1_val_text_100.jsonl",
+      "metadata": "val/stage1_val_metadata_100.json",
+      "bundle": "val/stage1_val_100.json"
+    },
+    "held-out_v2": {
+      "directory": "held-out_v2/",
+      "benchmark": "held-out_v2/stage1_heldout_benchmark_v2_300.json",
+      "jsonl": "held-out_v2/stage1_heldout_benchmark_v2_300.jsonl",
+      "metadata": "held-out_v2/stage1_heldout_benchmark_metadata_v2_300.json"
+    },
+    "held-out_v1_archive": {
+      "directory": "held-out_v1_archive/",
+      "role": "legacy_archive_only",
+      "description": "held-out_v2의 이전 버전 benchmark lineage를 보존하기 위한 legacy archive. 학습, validation, checkpoint selection, hyperparameter tuning, model selection, final benchmark에 사용하지 않는다."
+    }
+  },
+  "roles": {
+    "train": "Stage 1 집중학습에 사용되는 900개. 모델 가중치 업데이트에 사용한다.",
+    "val": "Stage 1 학습 중 validation 및 checkpoint/hyperparameter 선택에 사용하는 100개. gradient update에는 사용하지 않는다.",
+    "held-out_v2": "학습 및 validation과 완전히 분리된 최종 semantic benchmark 300개. benchmark v2 형식의 forced-choice / likelihood probe로 사용한다.",
+    "held-out_v1_archive": "held-out_v2의 이전 benchmark 버전을 보존하기 위한 legacy archive. 실험 데이터로 사용하지 않는다."
+  },
+  "legacy_benchmark": {
+    "dataset_split": "held-out_v1_archive",
+    "superseded_by": "held-out_v2",
+    "lineage": "held-out_v1 → held-out_v2",
+    "status": "archive_only",
+    "reusable_for_validation": false,
+    "reusable_for_final_benchmark": false,
+    "reusable_for_training": false,
+    "reusable_for_checkpoint_selection": false,
+    "reusable_for_hyperparameter_tuning": false,
+    "reusable_for_model_selection": false,
+    "reason": "held-out_v1과 held-out_v2는 동일 benchmark lineage에 있으며 v2가 v1의 내용을 확장·변환한 버전이므로, v1을 validation으로 재사용하면 v2의 최종 독립성을 훼손할 수 있다."
   },
   "rules": [
     "train + val = the original 1,000-example Stage 1 prototype.",
-    "held-out is a separate 300-example test set and is not part of the 1,000 training prototype.",
-    "held-out must not be used for checkpoint selection or hyperparameter tuning.",
-    "actual model training should read train/stage1_train_text_900.jsonl only.",
-    "validation should read val/stage1_val_text_100.jsonl only."
-  ]
+    "held-out_v2 is a separate 300-example benchmark and is not part of the 1,000-example Stage 1 prototype.",
+    "held-out_v2 must not be used for checkpoint selection, hyperparameter tuning, curriculum modification, or model selection.",
+    "actual Stage 1 training should read train/stage1_train_text_900.jsonl only.",
+    "validation should read val/stage1_val_text_100.jsonl only.",
+    "held-out_v2 benchmark evaluation should read only the held-out_v2 benchmark files after the final model/checkpoint has been fixed.",
+    "held-out_v2 benchmark results must not be fed back into training, validation, hyperparameter search, or curriculum design.",
+    "train, val, and held-out_v2 splits must have disjoint record IDs.",
+    "the held-out_v2 benchmark should use its benchmark-specific scoring schema rather than the older free-generation scoring schema.",
+    "held-out_v1_archive must not be moved into train or val and must not be used for checkpoint selection, hyperparameter tuning, model selection, or final benchmark evaluation.",
+    "held-out_v1_archive and held-out_v2 belong to the same benchmark lineage; therefore held-out_v1_archive is archival only and cannot serve as an independent validation or test split.",
+    "held-out_v2 is the only benchmark split eligible for final benchmark reporting.",
+    "once held-out_v2 results are inspected and used to change training, checkpoint selection, hyperparameters, curriculum, data composition, model architecture, or model selection, that evaluation instance is no longer a blind final test and must be treated as a development evaluation rather than a final benchmark result."
+  ],
+  "benchmark": {
+    "dataset_split": "held-out_v2",
+    "version": "2.0",
+    "purpose": "Stage 1의 새로운 개념·관계·경계 일반화 능력을 외부 LLM judge 없이 평가한다.",
+    "evaluation_mode": "forced_choice_likelihood",
+    "primary_metrics": [
+      "forced_choice_accuracy",
+      "mean_margin",
+      "paired_margin_improvement"
+    ],
+    "secondary_metrics": [
+      "concept_generalization_accuracy",
+      "relation_generalization_accuracy",
+      "boundary_accuracy",
+      "overgeneralization_error_rate",
+      "relation_confusion_rate"
+    ],
+    "external_llm_judge": false,
+    "legacy_benchmark": {
+      "dataset_split": "held-out_v1_archive",
+      "status": "archive_only",
+      "superseded_by": "held-out_v2",
+      "usable_for_final_benchmark": false,
+      "usable_for_validation": false
+    }
+  }
 }
