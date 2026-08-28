@@ -47,12 +47,62 @@ DEFAULT_MODELS = [
 PROMPT = "대한민국의 수도 서울은"          # 학습 분포 안. 길이는 --prompt-tokens 로 패딩
 
 
-def bench_one(model, cfg, tok, prompt, max_new, device, reps, use_cache=True):
-    """(tok/s, TTFT_ms) 를 reps 회 재서 중위값. 첫 회는 warmup 으로 버린다."""
+# ★★2026-08-29 (사용자 지적) — **CPU 측정이 다른 프로세스에 오염됐을 수 있다.**
+#
+#   결과 014 §12 의 배포경로 수(12.50 tok/s 등)는 **Windows 데스크톱에서 잰 것**이고,
+#   그 사이에 다른 프로그램이 코어를 쓰고 있었는지 **우리는 모른다.** 재현 불가능한 측정이
+#   결과문서에 들어가면 그 뒤 모든 판단이 그 위에 쌓인다.
+#
+#   → **측정 창(window) 동안의 시스템 CPU 사용률과 우리 프로세스 사용률을 함께 기록**한다.
+#     `외부 부하 = 시스템 - 우리` 가 임계를 넘으면 **그 반복을 버리고 다시 잰다**(최대 재시도).
+#     ⚠️`psutil` 이 없으면 **조용히 통과시키지 않고 경고를 인쇄**한다 — 계측함정 4.
+def _cpu_probe():
+    """(psutil, 프로세스핸들) 또는 (None, None)."""
+    try:
+        import psutil
+        return psutil, psutil.Process()
+    except Exception:                                        # noqa: BLE001
+        return None, None
+
+
+class _CpuWatch:
+    """측정 창 동안의 시스템/자기 CPU 사용률. `psutil` 이 없으면 전부 None 이다."""
+
+    def __init__(self):
+        self.ps, self.proc = _cpu_probe()
+        self.n_cpu = (self.ps.cpu_count() if self.ps else None)
+
+    def start(self):
+        if not self.ps:
+            return
+        self.ps.cpu_percent(None)                            # 기준점 리셋
+        self.proc.cpu_percent(None)
+
+    def stop(self):
+        """(시스템%, 우리%, 외부%) — 전부 **코어 1개 기준 백분율의 합**(예: 8코어 만재 = 800)."""
+        if not self.ps:
+            return None, None, None
+        sysp = self.ps.cpu_percent(None) * (self.n_cpu or 1)
+        selfp = self.proc.cpu_percent(None)
+        return sysp, selfp, max(0.0, sysp - selfp)
+
+
+def bench_one(model, cfg, tok, prompt, max_new, device, reps, use_cache=True,
+              watch=None, ext_limit=None, max_retry=2):
+    """(tok/s, TTFT_ms) 를 reps 회 재서 중위값. 첫 회는 warmup 으로 버린다.
+
+    `watch` 가 있으면 반복마다 외부 CPU 부하를 재고, `ext_limit`(코어 1개 기준 %)을
+    넘으면 **그 반복을 버리고 다시 잰다**. 재시도해도 넘으면 **오염 표시와 함께 채택**한다
+    — 🚫조용히 버리면 측정이 0건이 되고 그건 결과 031·059 가 지불한 실패 양식이다.
+    """
     import torch
     from tinylm.infer.generate import sample
     rates, ttfts = [], []
-    for r in range(reps + 1):
+    ext_seen, dirty = [], 0
+    r, tries = 0, 0
+    while r <= reps:
+        if watch:
+            watch.start()
         # TTFT: 프롬프트 1회 forward
         ids = tok.encode(prompt).ids
         x = torch.tensor([ids], dtype=torch.long, device=device)
@@ -76,11 +126,31 @@ def bench_one(model, cfg, tok, prompt, max_new, device, reps, use_cache=True):
         if device == "cuda":
             torch.cuda.synchronize()
         el = time.perf_counter() - t0
+
+        _sys, _self, _ext = (watch.stop() if watch else (None, None, None))
+        if r > 0 and _ext is not None:
+            ext_seen.append(_ext)
+            if ext_limit is not None and _ext > ext_limit and tries < max_retry:
+                tries += 1
+                print(f"      [cpu-watch] 외부 부하 {_ext:.0f}% ^> 한계 {ext_limit:.0f}% "
+                      f"— 이 반복을 버리고 다시 잰다({tries}/{max_retry})")
+                time.sleep(2.0)
+                continue                   # r 을 안 올린다 = 같은 반복 재측정
+            if ext_limit is not None and _ext > ext_limit:
+                dirty += 1
+
         if r == 0:
+            r += 1
             continue                       # warmup 버림
         rates.append(max_new / el)
         ttfts.append(ttft)
-    return statistics.median(rates), statistics.median(ttfts)
+        r += 1
+        tries = 0
+    info = {}
+    if ext_seen:
+        info = {"ext_med": statistics.median(ext_seen), "ext_max": max(ext_seen),
+                "dirty": dirty}
+    return statistics.median(rates), statistics.median(ttfts), info
 
 
 def main():
@@ -98,6 +168,11 @@ def main():
     ap.add_argument("--check-cache", action="store_true",
                     help="먼저 캐시 유/무 그리디 출력 일치를 검증한다(불일치면 중단)")
     ap.add_argument("--reps", type=int, default=3, help="반복(중위값). Windows 는 노이즈가 크다")
+    ap.add_argument("--cpu-watch", action="store_true",
+                    help="★측정 창의 시스템/자기 CPU 사용률을 함께 기록한다(psutil 필요)")
+    ap.add_argument("--cpu-ext-limit", type=float, default=None,
+                    help="★외부 CPU 부하(코어1개 기준 %%) 한계. 넘으면 그 반복을 다시 잰다. "
+                         "예: 25 (--cpu-watch 와 함께 쓴다)")
     ap.add_argument("--data", default="ko-en")
     ap.add_argument("--tokens", default="300M")
     ap.add_argument("--preset", default="m100")
@@ -129,6 +204,15 @@ def main():
     print("=" * 92)
     print("  P030 추론 속도 벤치 (단계1: KV 캐시 + eos + 삼진 1회계산 반영)")
     print(f"  max_new={a.max_new}  reps={a.reps}(중위값)  프롬프트={PROMPT!r}")
+    _watch = _CpuWatch() if (a.cpu_watch or a.cpu_ext_limit is not None) else None
+    dirty_rows = 0
+    if _watch is not None:
+        if _watch.ps is None:
+            print("  ⚠️★**`psutil` 이 없어 CPU 감시를 못 한다.** `pip install psutil` 후 다시 재세요 — "
+                  "🚫감시 없이 잰 수는 **다른 프로세스에 오염됐는지 알 수 없다**")
+        else:
+            print(f"  ★CPU 감시 켬 — 코어 {_watch.n_cpu}개. `ext` 열은 **우리 프로세스를 뺀 외부 부하**"
+                  f"(코어 1개 기준 %). 한계 {a.cpu_ext_limit if a.cpu_ext_limit is not None else '없음'}")
     print(f"  캐시 모드={['on' if m else 'off' for m in modes]}   (off = 결과 014 조건)")
     print("=" * 92)
     print("  ★MB 는 하드코딩이 아니라 로드한 모델에서 계산한다(회계 = 안 B, 2026-07-31 통일).")
@@ -177,18 +261,32 @@ def main():
                         return 2
                 for use_c in modes:
                     try:
-                        r, t = bench_one(model, cfg, tok, PROMPT, a.max_new, dev, a.reps, use_c)
+                        r, t, _ci = bench_one(model, cfg, tok, PROMPT, a.max_new, dev,
+                                              a.reps, use_c, watch=_watch,
+                                              ext_limit=a.cpu_ext_limit)
                     except Exception as e:
                         print(f"{dev:>8} {nt:>8} {tag:>16}  실패: {type(e).__name__}: {e}")
                         continue
+                    _cs = ""
+                    if _ci:
+                        _cs = (f" ext {_ci['ext_med']:>5.0f}%/{_ci['ext_max']:>5.0f}%"
+                               + ("  🚫오염" if _ci.get("dirty") else ""))
+                        if _ci.get("dirty"):
+                            dirty_rows += 1
                     print(f"{dev:>8} {nt if nt else '기본':>8} {tag:>16} {mb:>7.1f} {rt:>8.1f} "
-                          f"{'on' if use_c else 'off':>5} {r:>9.2f} {t:>9.1f}")
+                          f"{'on' if use_c else 'off':>5} {r:>9.2f} {t:>9.1f}{_cs}")
                     rows.append((dev, nt, tag, mb, r, t, use_c, rt))
                 del model
                 if dev == "cuda":
                     torch.cuda.empty_cache()
 
     print("-" * 92)
+    if _watch is not None and _watch.ps is not None:
+        if dirty_rows:
+            print(f"  🚫★**오염 의심 {dirty_rows}행** — 재시도 후에도 외부 부하가 한계를 넘었다. "
+                  f"**그 행의 tok/s 를 인용하지 말 것.**")
+        else:
+            print("  ✅외부 CPU 부하가 한계 안에서 유지됐다 — 이 표는 오염되지 않았다")
     if rows:
         print("\n★핵심 질문: 메모리를 줄이면 CPU 추론이 빨라지는가?")
         print("  ★결과 016 의 예측: 속도가 메모리를 따라간다면 **저장이 아니라 상주**를 따라간다.")
