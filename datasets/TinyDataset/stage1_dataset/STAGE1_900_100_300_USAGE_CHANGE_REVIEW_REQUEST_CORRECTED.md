@@ -2,616 +2,344 @@
 
 ## 1. 검토 목적
 
-현재 Stage 1 데이터는 다음과 같이 구성되어 있다.
+현재 `datasets/TinyDataset/stage1_dataset/`에는 다음 데이터가 존재한다.
+
+```text
+stage1_dataset/
+├── train/
+├── val/
+├── held-out_v1_archive/
+└── held-out_v2/
+```
+
+현재 Stage 1 prototype의 본체는 총 1,000개이며, 다음과 같이 나뉘어 있다.
 
 ```text
 Stage 1 prototype 1,000
 ├── train 900
-└── validation 100
-
-별도 held-out 300
-└── benchmark / semantic probe
+└── val 100
 ```
 
-당초에는 900개를 실제 학습 데이터, 100개를 validation, 300개를 최종 held-out benchmark로 사용하는 구조를 제안하였다.
+별도로 `held-out_v2/`에 300개 benchmark가 존재한다.
 
-그러나 현재 확인된 실제 데이터 규모와 100M 파라미터급 모델의 300M-token 표준 학습 조건을 고려하면, 900개의 텍스트를 일반적인 대규모 pretraining corpus의 train subset으로 사용하는 것은 데이터 규모 측면에서 적절하지 않다.
+본 문서에서 검토를 요청하는 것은 **폴더명이나 파일 구조를 변경하는 것이 아니라, 이 데이터들의 실험상 활용 방법을 변경하는 것**이다.
 
-이에 따라 기존 900/100/300의 역할을 변경하는 방안을 검토 요청한다.
+특히 현재 1,000개 prototype의 규모가 약 28.5K token 수준이므로, 이를 300M-token 규모의 일반적인 pretraining corpus에 포함시키는 데이터로 보는 것은 적절하지 않다.
+
+따라서 현재 1,000개는 **대규모 pretraining 데이터가 아니라 Stage 1의 소규모 집중학습 prototype**으로 활용하는 방안을 검토 요청한다.
 
 ---
 
-# 2. 현재 구조의 핵심 문제
+# 2. 현재 1,000개 prototype을 일반 pretraining 데이터로 사용하는 문제
 
-현재 1,000개 전체는 약 28.5K token 수준으로 확인된다.
+현재 1,000개 전체는 약 28.5K token 수준이다.
 
-300M-token 학습 기준:
+300M-token standard training과 비교하면:
 
 \[
 \frac{28.5K}{300M}\approx0.0095\%
 \]
 
-따라서 900 train을 그대로 일반 pretraining에 포함하더라도 전체 학습량에서 차지하는 비중은 극히 작다.
+이다.
 
-반대로 이를 반복적으로 학습시키면 전체 corpus에서 차지하는 실제 정보량에 비해 동일 문장과 동일 semantic pattern이 지나치게 많이 노출될 수 있다.
+따라서 `train/`의 900개를 300M-token standard pretraining에 단순히 포함시키는 방식은 전체 학습량에서 차지하는 비중이 너무 작다.
 
-따라서 현재 1,000개의 역할을 다음과 같이 재정의하는 것이 타당하다.
+반대로 동일한 900개를 반복적으로 많이 노출시키면 전체 정보량에 비해 특정 문장과 semantic pattern이 지나치게 반복될 수 있으며, prototype 자체에 대한 memorization 또는 overfitting 가능성이 커진다.
 
-> **1,000개 = 대규모 pretraining corpus 자체가 아니라 Stage 1 semantic curriculum prototype / specification / 집중학습 실험용 seed**
+따라서 현재 1,000개를 다음과 같이 정의하는 것이 적절한지 검토를 요청한다.
 
----
-
-# 3. 변경 제안
-
-기존:
-
-```text
-1,000 Stage 1
-├── train 900
-└── val 100
-
-held-out 300
-└── free-generation benchmark
-```
-
-를 다음과 같이 변경하는 것을 제안한다.
-
-```text
-Stage 1 prototype
-├── train 900
-│   └── Stage 1 집중학습 실험용
-│
-└── val 100
-    └── Stage 1 학습 과정의 선택/모니터링용
-
-held-out 300
-└── Stage 1 최종 semantic probe
-    └── 학습에 전혀 사용하지 않음
-```
-
-핵심은 **900/100을 폐기하지 않고, "일반 300M pretraining 데이터"가 아닌 별도의 Stage 1 집중학습 단계에 사용하는 것**이다.
+> **현재 1,000개 = Stage 1 semantic curriculum prototype이며, 300M-token standard pretraining corpus의 일부로 사용하는 데이터가 아니다.**
 
 ---
 
-# 4. Train 900의 새로운 역할
+# 3. 제안하는 현재 실험의 정확한 정의
 
-Train 900은 다음 조건에서 의미가 있다.
+## 3.1 폴더 구조는 변경하지 않는다
 
-## 4.1 사용하는 목적
+현재 디렉터리 구조를 그대로 사용한다.
 
 ```text
-Base 100M model
-        ↓
-Stage 1 concentrated training
-        ↓
-Train 900
+stage1_dataset/
+├── train/
+├── val/
+├── held-out_v1_archive/
+└── held-out_v2/
 ```
 
-즉,
+이 문서에서 제안하는 변경은 **파일 이동·이름 변경이 아니라 실험상 역할의 변경**이다.
 
-> "Stage 1에서 설계한 개념 구조가 실제로 모델 가중치에 학습될 수 있는가?"
+## 3.2 현재 prototype 실험에서 비교할 모델
 
-를 확인하는 용도다.
+현재 실험에서 비교할 모델은 정확히 두 개다.
 
-## 4.2 해석 범위
+### Model A — pretrained baseline
 
-Train 900을 집중학습하여 성능이 올라갔다고 하더라도 다음을 의미하지 않는다.
+```text
+기존 100M 모델
+→ 기존 300M-token standard pretraining 완료
+→ Stage 1 추가학습 없음
+```
 
-- 모델의 일반 지능이 증가했다.
-- 대규모 pretraining이 개선되었다.
-- 실제 자연어 전반의 능력이 향상되었다.
+### Model B — Stage 1 adapted model
 
-그 대신 다음을 의미한다.
+```text
+Model A와 동일한 100M pretrained checkpoint
+→ train/의 Stage 1 900개 추가학습
+→ val/의 100개로 validation 및 checkpoint 선택
+```
 
-> **작은 100M급 모델이 제한된 개념 curriculum을 직접 학습하고, 별도 held-out 문제에 일반화할 수 있는가?**
+그리고 **Model A와 Model B를 동일한 `held-out_v2/` 300개로 비교**한다.
 
-이 질문에 답하는 것이다.
+즉 현재 실험의 핵심 질문은 다음 하나다.
+
+> **이미 300M-token standard pretraining을 마친 동일한 100M 모델에 Stage 1의 900개를 추가로 집중학습했을 때, 추가학습을 하지 않은 동일한 pretrained baseline과 비교하여 held-out_v2 semantic benchmark에서 측정 가능한 차이가 발생하는가?**
+
+이것이 본 문서에서 제안하는 900/100/300 활용 변경의 핵심이다.
 
 ---
 
-# 5. Validation 100의 새로운 역할
+# 4. Train 900의 역할
 
-Validation 100은 그대로 유지한다.
+`train/`의 900개는 **300M-token standard pretraining에 혼입하는 데이터가 아니다.**
 
-다만 validation은 다음 용도만 가진다.
+다음과 같은 별도의 Stage 1 집중학습 단계에서 사용한다.
 
-- Stage 1 집중학습 중 loss 관찰
+```text
+Model A
+   ↓
+Stage 1 train 900
+   ↓
+Model B
+```
+
+목적은 다음을 확인하는 것이다.
+
+> **소규모로 설계된 Stage 1 semantic curriculum을 이미 pretrained된 100M 모델에 집중적으로 학습시켰을 때, 그 학습 신호가 모델에 주입되는가?**
+
+이 결과는 다음을 의미하지 않는다.
+
+- 모델의 전체 일반 지능이 향상되었다.
+- 300M-token standard pretraining 자체가 개선되었다.
+- 자연어 전반의 능력이 향상되었다.
+
+즉 **현재 실험은 Stage 1 prototype의 학습 가능성과 semantic adaptation 가능성을 확인하는 실험**이다.
+
+---
+
+# 5. Validation 100의 역할
+
+`val/`의 100개는 `train/`의 900개에 대한 별도의 validation 데이터로 사용한다.
+
+Validation은 다음 목적으로만 사용한다.
+
+- Stage 1 추가학습 중 validation loss 관찰
 - checkpoint selection
-- 학습 종료 시점 결정
+- 필요시 사전에 정한 범위 내에서 학습 종료 시점 결정
 - 필요시 제한적인 hyperparameter 비교
 
-Validation은 gradient update에 직접 사용하지 않는다.
+Validation record 자체는 gradient update에 사용하지 않는다.
+
+즉:
 
 ```text
-Train 900
+train 900
 → gradient update
 
-Val 100
-→ loss / validation evaluation
+val 100
+→ validation evaluation
 → checkpoint selection
 ```
 
-따라서 validation은 **학습 과정에 영향을 주는 데이터**이며, 그 때문에 held-out과 분리한다.
+Validation의 결과는 학습 과정의 의사결정에 사용되므로, 최종 benchmark인 `held-out_v2`와 구분한다.
 
 ---
 
-# 6. Held-out 300의 새로운 역할
+# 6. Held-out v2 300의 현재 구현 및 역할
 
-Held-out 300은 가장 중요한 변경 대상이다.
+`held-out_v2/`의 300개는 **본 실험에서 사용할 최종 semantic benchmark**다.
 
-현재 자유생성 benchmark는 base LM의 특성상 실제 semantic capability보다 generation format 실패를 측정할 위험이 있다.
+이 부분은 새로 구현할 항목이 아니다. **이미 benchmark v2 형식으로 구현되어 있는 현재 상태를 그대로 사용한다.**
 
-따라서 held-out 300을 **semantic probe**로 재설계하는 것을 제안한다.
+현재 구현된 주요 특징은 다음과 같다.
 
-## 6.1 기본 형식
+- 300개 benchmark
+- `candidates`를 이용한 4-choice contrastive evaluation
+- `correct_index`
+- `required_concepts`
+- canonicalized `required_relations`
+- canonicalized `forbidden_relations`
+- 난이도 정보
+- 외부 LLM judge를 사용하지 않는 평가 구조
+- candidate별 likelihood를 비교하는 forced-choice 방식
 
-각 문제를:
+따라서 본 문서에서는 held-out v2 자체를 다시 설계하거나 재작성하는 것을 제안하지 않는다.
+
+최종 평가에서는 동일한 benchmark item을 Model A와 Model B에 적용한다.
 
 ```text
-prompt
-candidate A
-candidate B
-candidate C
-candidate D
-correct candidate
+Model A ─┐
+         ├→ held-out_v2 300
+Model B ─┘
 ```
-
-형태로 구성한다.
-
-예:
-
-```text
-수달은 어떤 범주의 동물인가?
-
-A. 포유류
-B. 어류
-C. 파충류
-D. 조류
-```
-
-모델은 자유롭게 답변할 필요 없이 각 후보의 conditional likelihood를 계산한다.
 
 ---
 
-# 7. Held-out semantic probe의 채점
+# 7. 현재 실험에서의 benchmark 측정 방식
 
-외부 LLM judge는 사용하지 않는다.
+현재 held-out v2의 목적은 자유생성 능력을 평가하는 것이 아니라, **동일한 prompt와 후보 집합에서 모델이 어느 후보를 더 선호하는지**를 측정하는 것이다.
 
-모델의 답변 생성 결과를 의미적으로 해석하는 대신:
+후보 `y`에 대한 기본 점수는 다음과 같은 length-normalized conditional log-likelihood를 사용한다.
 
 \[
-S(y|x)
-=
-\frac{1}{|y|}
-\sum_t
-\log P(y_t|x,y_{<t})
+S(y|x)=\frac{1}{|y|}\sum_t \log P(y_t|x,y_{<t})
 \]
 
-와 같은 **length-normalized conditional log-likelihood**를 계산한다.
+각 item에서 가장 높은 후보를 모델의 선택으로 간주한다.
 
-가장 높은 점수의 후보를 모델의 선택으로 간주한다.
-
-최초 구현에서는 PMI normalization보다 이 방식을 우선하는 것을 제안한다.
-
----
-
-# 8. Paired 평가
-
-Baseline과 Stage 1 모델은 반드시 **동일한 300개 item**을 평가한다.
-
-각 item에 대해:
+또한 정답 후보와 가장 높은 오답 후보의 차이를 다음과 같이 기록한다.
 
 \[
-Margin_i =
-S(correct)-\max S(wrong)
+Margin_i = S(correct)-\max S(wrong)
 \]
 
-을 계산한다.
-
-Baseline과 Stage 1 사이의 차이는:
+Model A와 Model B의 차이는:
 
 \[
-\Delta_i =
-Margin_{Stage1,i}-Margin_{Baseline,i}
+\Delta Margin_i = Margin_{B,i}-Margin_{A,i}
 \]
 
 로 계산한다.
 
-이것을 이용해 평균 margin improvement와 confidence interval을 보고한다.
+---
 
-이 방법은 단순 accuracy보다 작은 효과를 포착하기 유리하다.
+# 8. 현재 실험에서 보고할 결과
+
+최소 다음 결과를 보고하는 것을 제안한다.
+
+### 8.1 Forced-choice accuracy
+
+동일한 300개 문항에서 정답 후보를 선택한 비율.
+
+### 8.2 Mean margin
+
+정답 후보와 가장 높은 오답 후보 사이의 평균 score 차이.
+
+### 8.3 Paired margin improvement
+
+동일한 benchmark item에서 Model B와 Model A의 margin 차이.
+
+### 8.4 Benchmark 영역별 결과
+
+held-out v2의 구성에 따라 최소 다음을 분리한다.
+
+- concept/generalization 성격의 항목
+- relation/composition 성격의 항목
+- boundary/counterexample 성격의 항목
+
+필요하면 confidence interval도 함께 보고한다.
 
 ---
 
-# 9. 900/100/300의 최종 역할
+# 9. 현재 실험에서 900/100/300이 의미하는 것
 
-권장 역할은 다음과 같다.
+최종적으로 데이터의 역할은 다음과 같다.
 
-| 데이터 | 수량 | 역할 |
+| 데이터 | 수량 | 현재 제안하는 역할 |
 |---|---:|---|
-| Train | 900 | Stage 1 집중학습 |
-| Validation | 100 | checkpoint / 학습 과정 모니터링 |
-| Held-out | 300 | 최종 semantic probe |
-| **합계** | **1,300** | |
+| `train/` | 900 | pretrained Model A에 Stage 1을 집중 추가학습하는 prototype training set |
+| `val/` | 100 | Stage 1 추가학습의 validation 및 checkpoint selection |
+| `held-out_v2/` | 300 | Model A와 Model B를 비교하는 최종 semantic benchmark |
+| `held-out_v1_archive/` | - | 보존용. 본 실험에서는 사용하지 않음 |
 
-중요한 점은 **1,300개가 하나의 학습 corpus라는 뜻이 아니다.**
+중요한 점은:
 
 ```text
-900 + 100 = Stage 1 prototype
-300       = independent benchmark
+900 + 100
+= Stage 1 prototype의 학습/validation 데이터
+
+300
+= 독립적인 최종 benchmark
 ```
 
-이다.
+이며, **1,300개 전체를 하나의 학습 corpus로 사용하는 것이 아니다.**
 
 ---
 
-# 10. 300M-token 표준 학습과의 관계
+# 10. 현재 실험의 해석 범위
 
-향후 300M-token 본 실험에서는 현재 1,000개를 그대로 넣지 않는다.
-
-대신 향후 약 3M-token Stage 1 corpus가 만들어졌을 경우:
+이 실험에서 다음 결과가 나왔다고 가정한다.
 
 ```text
-Baseline:
-300M baseline
-
-Stage1:
-297M baseline
-+ 3M Stage1
-= 300M
+Model A: held-out_v2 = 52.0%
+Model B: held-out_v2 = 57.0%
 ```
 
-형태로 비교한다.
+이 결과는 다음 정도의 결론을 지지할 수 있다.
 
-즉 현재 900/100은 **3M expansion을 만들기 전의 prototype feasibility 단계**다.
+> **300M-token pretrained 100M 모델에 Stage 1 900개를 집중적으로 추가학습한 조건에서, 추가학습하지 않은 동일 pretrained baseline보다 held-out semantic benchmark 성능이 높았다.**
+
+그러나 이것만으로 다음과 같은 결론을 내려서는 안 된다.
+
+> Stage 1이 300M-token pretraining 자체의 품질을 향상시켰다.
+
+또는:
+
+> Stage 1이 모델의 일반 지능을 향상시켰다.
+
+현재 900개 prototype은 이런 대규모 효능을 검증하기 위한 규모가 아니다.
 
 ---
 
-# 11. 실험 계층을 명확히 분리할 것
+# 11. 현재 제안과 향후 대규모 실험의 구분
 
-두 종류의 실험을 혼동하지 않는다.
+본 문서의 현재 검토 대상은 **900/100/300 prototype 실험**이다.
 
-## Experiment A — Stage 1 feasibility
+향후 Stage 1 corpus를 충분히 확장하게 되면 별도의 large-scale pretraining 실험을 설계할 수 있다. 그 실험은 현재 900개 실험과는 다른 질문을 다룬다.
 
-```text
-100M base model
-→ Train 900 집중학습
-→ Val 100
-→ Held-out 300
-```
-
-목적:
-
-> Stage 1 semantic curriculum이 학습 가능하고 일반화 가능한가?
-
-## Experiment B — Large-scale mixture experiment
-
-```text
-300M total tokens
-
-Baseline:
-300M baseline
-
-Stage1:
-297M baseline + 3M Stage1
-```
-
-목적:
-
-> 실제 large-scale pretraining mixture의 약 1%를 Stage 1 semantic corpus로 교체했을 때 효과가 있는가?
-
-A와 B는 서로 다른 질문이다.
+따라서 현재 문서에서는 향후 대규모 corpus의 구체적인 규모나 mixture 구성은 **현재 900/100/300 실험의 일부로 취급하지 않는다.**
 
 ---
 
-# 12. Held-out 300도 함께 수정해야 한다
+# 12. 권장 실험 흐름
 
-기존 held-out 300은 자유생성 평가를 전제로 한 다음 구조를 가진다.
-
-```text
-id
-split
- task
-prompt
-answer
-key_relations
-difficulty
-```
-
-이를 **contrastive semantic probe용 benchmark**로 변경할 것을 제안한다.
-
-## 12.1 변경된 기본 schema
-
-각 item은 최소 다음 정보를 갖는다.
-
-```json
-{
-  "id": "E-001",
-  "task_type": "identity",
-  "prompt": "수달은 어떤 범주의 동물인가?",
-  "candidates": [
-    "포유류",
-    "어류",
-    "파충류",
-    "조류"
-  ],
-  "correct_index": 0,
-  "required_concepts": [
-    "수달",
-    "포유류"
-  ],
-  "required_relations": [
-    {
-      "type": "is_a",
-      "subject": "수달",
-      "object": "포유류"
-    }
-  ],
-  "forbidden_relations": [
-    {
-      "type": "is_a",
-      "subject": "수달",
-      "object": "어류"
-    }
-  ],
-  "difficulty": 1
-}
-```
-
-## 12.2 `key_relations`의 역할 변경
-
-기존 `key_relations`는 semantic relation과 reasoning constraint가 섞여 있으므로 benchmark 채점용 단일 relation field로 사용하지 않는다.
-
-다음처럼 분리한다.
+현재 prototype에 대해서는 다음 순서가 가장 명확하다.
 
 ```text
-required_concepts
-required_relations
-forbidden_relations
-reasoning_constraints
+기존 300M-token pretrained 100M checkpoint
+                 │
+        ┌────────┴────────┐
+        │                 │
+        ▼                 ▼
+     Model A           Model B
+   추가학습 없음      Stage 1 train 900
+                         │
+                       val 100
+                         │
+                    checkpoint 선택
+        │                 │
+        └────────┬────────┘
+                 ▼
+          held-out_v2 300
+                 │
+                 ▼
+       paired semantic comparison
 ```
 
-예를 들어 `attribute_not_category`, `unknown_not_false`, `same_function_not_identity` 같은 항목은 실제 대상 간 relation이라기보다 **평가 제약조건 또는 오류 유형**으로 취급한다.
+이 실험으로 확인하려는 것은 단 하나다.
 
-## 12.3 후보(distractor) 설계 원칙
-
-정답 이외의 3개 후보는 단순히 무관한 단어를 넣지 않는다.
-
-좋은 distractor는 정답과 같은 semantic neighborhood에 있어야 한다.
-
-예:
-
-```text
-수달은 어떤 범주의 동물인가?
-
-A. 포유류      ← 정답
-B. 어류
-C. 파충류
-D. 조류
-```
-
-다음과 같은 distractor는 변별력이 낮다.
-
-```text
-A. 포유류
-B. 냉장고
-C. 삼각형
-D. 주전자
-```
-
-## 12.4 `forbidden_relations`
-
-개념 경계·반례 문제에서는 정답 관계뿐 아니라 명백히 잘못된 관계도 기록한다.
-
-예:
-
-```json
-{
-  "required_relations": [
-    {
-      "type": "inside",
-      "subject": "사과",
-      "object": "상자"
-    }
-  ],
-  "forbidden_relations": [
-    {
-      "type": "part_of",
-      "subject": "사과",
-      "object": "상자"
-    }
-  ]
-}
-```
-
-이를 통해 `inside → part_of`와 같은 관계 혼동을 별도로 측정할 수 있다.
-
-## 12.5 최종 평가 방식
-
-Held-out 300에서는 free-generation EM/F1을 기본 지표로 사용하지 않는다.
-
-대신:
-
-```text
-prompt
-   ↓
-4 candidate likelihoods
-   ↓
-length-normalized conditional log-likelihood
-   ↓
-argmax candidate
-   ↓
-accuracy
-   +
-correct-vs-best-wrong margin
-```
-
-을 기본으로 한다.
-
-## 12.6 Paired benchmark
-
-Baseline과 Stage 1 모델에 정확히 동일한 prompt/candidate set을 사용한다.
-
-각 item마다:
-
-\[
-M_i = S(correct)-\max(S(wrong))
-\]
-
-를 구한다.
-
-그리고:
-
-\[
-\Delta M_i = M_{Stage1,i}-M_{Baseline,i}
-\]
-
-를 계산한다.
-
-최종 결과에는 최소한:
-
-- forced-choice accuracy
-- mean margin
-- paired mean margin improvement
-- confidence interval
-- concept generalization accuracy
-- relation composition accuracy
-- boundary accuracy
-
-를 보고한다.
-
-## 12.7 Benchmark freeze 규칙
-
-Held-out 300은 최종 모델과 학습 규칙이 확정될 때까지 결과를 보지 않는다.
-
-Held-out 결과를 보고:
-
-- learning rate 변경
-- checkpoint 변경
-- corpus 변경
-- curriculum 변경
-- architecture 변경
-- tokenizer 변경
-
-등을 수행하면 해당 benchmark는 더 이상 완전한 최종 test로 취급하지 않는다.
-
-따라서 benchmark schema와 distractor는 모델 비교 전에 freeze하고, scorer version도 고정한다.
+> **Stage 1의 900개를 pretrained 100M 모델에 집중적으로 추가학습하는 것만으로, 추가학습하지 않은 동일 pretrained baseline과 비교해 held-out semantic benchmark에 측정 가능한 변화가 발생하는가?**
 
 ---
 
-# 13. Held-out benchmark와의 관계
+# 13. 검토 요청
 
-현재 300 held-out은 다음 용도로 사용한다.
+다음 사항을 비판적으로 검토해 주기 바란다.
 
-```text
-final checkpoint
-        ↓
-held-out 300
-        ↓
-semantic probe
-```
+1. **기존 300M-token pretrained 100M checkpoint를 출발점으로 하고, Model A는 추가학습하지 않으며 Model B만 Stage 1 train 900을 추가학습하는 비교 설계가 실험 목적에 적절한가?**
+2. **900개를 일반 pretraining corpus에 혼입하지 않고 별도의 집중학습 prototype으로 사용하는 것이 타당한가?**
+3. **val 100을 checkpoint selection에 사용하는 것이 적절한가? 별도의 validation 방법이 필요한가?**
+4. **이미 구현된 held-out v2의 forced-choice likelihood/paired-margin benchmark 방식이 이 prototype 실험의 목적에 적절한가?**
+5. **현재 900/100/300 규모에서 이 실험으로 주장할 수 있는 결론과 주장할 수 없는 결론의 범위가 적절한가?**
+6. **현재 실험 설계에서 추가로 필요한 control 또는 leakage 검사가 있는가?**
 
-이 benchmark는 3M corpus의 생성/확장 과정에서 절대로 사용하면 안 된다.
-
-특히 benchmark의 정답·distractor를 보고 3M corpus를 수정하면 contamination이 발생한다.
-
----
-
-# 14. Benchmark는 contrastive probe로 변경하는 것을 권장
-
-현재 free-generation 방식 대신:
-
-```text
-prompt
-A
-B
-C
-D
-```
-
-를 제공하고 각 candidate의 conditional likelihood를 비교한다.
-
-예:
-
-```text
-수달은 어떤 범주의 동물인가?
-
-A. 포유류
-B. 어류
-C. 파충류
-D. 조류
-```
-
-모델이 실제 문장을 생성할 필요가 없다.
-
----
-
-# 15. Accuracy보다 paired margin이 중요하다
-
-Baseline과 Stage 1을 동일 item에서 비교한다.
-
-\[
-\Delta_i = Margin_{Stage1,i}-Margin_{Baseline,i}
-\]
-
-을 사용한다.
-
-그리고 평균뿐 아니라 item-level distribution과 confidence interval을 함께 보고한다.
-
----
-
-# 16. 내가 권하는 최종 구조
-
-현재 prototype 단계에서는 다음 구조를 기준으로 실험을 진행한다.
-
-```text
-Stage 1 prototype
-├── train 900
-│   └── concentrated curriculum training
-│
-└── val 100
-    └── checkpoint selection
-
-Independent held-out
-└── 300
-    └── contrastive semantic probe
-```
-
-그리고 효과가 확인된 경우에만 별도의 3M-token Stage 1 corpus를 구축하여 300M-token 고정 예산 실험으로 확장한다.
-
-```text
-A: 300M baseline
-B: 297M baseline + 3M Stage1
-C: 297M baseline + 3M random/control
-```
-
----
-
-# 17. 최종 검토 요청
-
-다음 변경에 대한 검토를 요청한다.
-
-| 항목 | 기존 | 변경안 |
-|---|---|---|
-| Train 900 | 일반 학습 데이터 | **Stage 1 집중학습용 prototype** |
-| Val 100 | validation | **유지** |
-| Held-out 300 | 자유생성 benchmark | **contrastive semantic probe** |
-| Scoring | 자유생성 + 문자열/의미 채점 | **candidate likelihood + paired margin** |
-| 1,000개 역할 | 대규모 학습 corpus | **Stage 1 semantic seed/prototype** |
-| 향후 실제 혼입 | 현재 1,000개 | **약 3M-token expansion** |
-| 300M 실험 | 해당 없음 | **297M baseline + 3M Stage1** |
-| 외부 LLM judge | 고려 가능 | **사용하지 않음** |
-
-## 18. 요청하는 검토 범위
-
-특히 다음 사항을 비판적으로 검토해 주기 바란다.
-
-1. **900 train / 100 validation을 Stage 1 집중학습 prototype으로 사용하는 것이 타당한가?**
-2. **held-out 300을 자유생성 대신 contrastive likelihood probe로 바꾸는 것이 현재 100M base LM에 적절한가?**
-3. **`required_concepts / required_relations / forbidden_relations / reasoning_constraints`로 schema를 분리하는 것이 적절한가?**
-4. **4-choice distractor 설계가 실제 semantic discrimination을 제공할 수 있는가?**
-5. **paired margin을 주요 지표 중 하나로 사용하는 것이 적절한가?**
-6. **이 구조에서 별도의 deterministic scorer가 실제로 필요한가, 아니면 forced-choice likelihood만으로 충분한가?**
-7. **3M-token expansion으로 넘어가기 전에 반드시 수행해야 할 feasibility experiment가 추가로 있는가?**
-
-본 문서는 구현 승인을 의미하지 않는다. 위 사항에 대한 **타당성·수학적 적절성·실험적 독립성·구현 복잡성·기존 평가 도구와의 중복 여부를 비판적으로 검토한 후**, 필요하면 수정된 대안을 제안해 주기를 요청한다.
+본 문서는 구현 승인을 의미하지 않는다. 위 실험 정의의 **논리적 타당성, 비교 대상의 적절성, 데이터 역할의 명확성, validation/benchmark 독립성, 통계적 해석 가능성**을 비판적으로 검토해 주기 바란다.
