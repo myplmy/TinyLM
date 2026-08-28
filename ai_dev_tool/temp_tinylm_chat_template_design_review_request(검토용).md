@@ -1,0 +1,1088 @@
+# TinyLM Chat Template 설계 제안 검토 요청서
+## Qwen3 기반 Canonical vs Gemma 3 기반 Canonical 비교 및 선택 검토
+
+- 문서 목적: 외부 평가자(Claude 등)에 설계안의 타당성을 비판적으로 검토 요청
+- 대상 프로젝트: TinyLM 계열 소형 언어모델
+- 제안 비교안: **Qwen3 기반 Canonical A** / **Gemma 3 기반 Canonical B**
+- 핵심 평가 목표: 작은 모델에서의 학습 효율을 유지하면서 주요 frontier/open 모델의 채팅 구조와 높은 상호운용성을 확보할 수 있는가
+
+---
+
+# 1. 검토 배경
+
+현재 TinyLM용 instruction/chat corpus를 장기적으로 구축하기 위해, 데이터의 의미론적 구조와 실제 모델 입력 serialization을 분리하는 방안을 검토하고 있다.
+
+핵심 아이디어는 다음과 같다.
+
+```text
+Canonical conversation data
+        ↓
+Model-specific serializer
+        ↓
+Qwen / Gemma / OpenAI / Claude / TinyLM
+```
+
+그러나 canonical schema를 새로 독립적으로 설계할 경우, 실제 널리 사용되는 chat protocol과 괴리가 발생할 가능성이 있다.
+
+따라서 이번 검토에서는 다음 두 가지 전략을 비교한다.
+
+1. **Canonical A: Qwen3 계열의 chat protocol을 기반으로 확장**
+2. **Canonical B: Gemma 3 계열의 chat protocol을 기반으로 확장**
+
+목적은 특정 모델을 그대로 복제하는 것이 아니라, 어느 쪽을 canonical의 출발점으로 삼는 것이 TinyLM에 더 적절한지 평가하는 것이다.
+
+---
+
+# 2. 검토 대상
+
+최소한 다음 모델/계열과의 호환성을 고려한다.
+
+- Qwen3
+- Gemma 3
+- OpenAI frontier model 계열
+- Claude 계열
+
+중요한 전제:
+
+> OpenAI/Claude의 내부 serialized token sequence를 정확하게 복제하려는 것이 아니다.
+
+공개된 API/role/tool/reasoning 구조와 Qwen/Gemma의 공개 chat template에서 **공통적으로 존재하는 의미론을 최대한 보존**하면서 TinyLM의 serialization을 설계하는 것이 목표다.
+
+---
+
+# 3. 요구사항
+
+Canonical protocol은 가능하면 다음 요구사항을 만족해야 한다.
+
+## 3.1 기본 대화
+
+지원해야 하는 최소 semantic role:
+
+```text
+system
+developer
+user
+assistant
+tool
+```
+
+단, 실제 serialized template에서 모든 role이 반드시 독립적인 special token/turn으로 표현되어야 한다는 의미는 아니다.
+
+---
+
+## 3.2 Content block
+
+최소한 향후 다음 block을 표현할 수 있어야 한다.
+
+```text
+text
+image
+audio
+thinking
+tool_call
+tool_result
+```
+
+초기 TinyLM 학습에서는 일부만 사용할 수 있지만 schema 차원에서는 확장 가능해야 한다.
+
+---
+
+## 3.3 Reasoning
+
+reasoning은 별도의 `role`이 아니라 assistant 내부의 semantic content/state로 표현하는 방안을 우선 검토한다.
+
+예:
+
+```json
+{
+  "role": "assistant",
+  "content": [
+    {
+      "type": "thinking",
+      "text": "..."
+    },
+    {
+      "type": "text",
+      "text": "최종 답변"
+    }
+  ]
+}
+```
+
+다만 이것이 실제로 최선인지 검토자가 반박해도 좋다.
+
+특히 다음을 검토해 달라.
+
+- Qwen3의 `<think>...</think>` 접근을 canonical 구조에 얼마나 반영해야 하는가?
+- OpenAI/Claude의 구조화된 reasoning과 semantic compatibility가 충분한가?
+- reasoning을 training corpus에서 명시적으로 노출하는 것이 100M~300M급 모델에 유리한가?
+- reasoning을 별도 block으로 정의하되 TinyLM v1에서는 사용하지 않는 전략이 적절한가?
+
+---
+
+## 3.4 Tool use
+
+canonical tool call 예:
+
+```json
+{
+  "role": "assistant",
+  "content": [
+    {
+      "type": "tool_call",
+      "id": "call_001",
+      "name": "get_weather",
+      "arguments": {
+        "city": "Seoul"
+      }
+    }
+  ]
+}
+```
+
+canonical tool result 예:
+
+```json
+{
+  "role": "tool",
+  "content": [
+    {
+      "type": "tool_result",
+      "tool_call_id": "call_001",
+      "content": [
+        {
+          "type": "text",
+          "text": "27°C, sunny"
+        }
+      ]
+    }
+  ]
+}
+```
+
+검토자는 다음을 중점적으로 평가해 달라.
+
+- Qwen3 방식과 호환되는가?
+- Claude의 `tool_use` / `tool_result` 구조로 자연스럽게 변환되는가?
+- OpenAI의 function/tool call 구조로 손실 없이 변환되는가?
+- Gemma/FunctionGemma 계열에도 무리 없이 매핑 가능한가?
+- `tool_call_id`를 canonical에서 반드시 유지해야 하는가?
+
+---
+
+# 4. 공통 데이터 포맷의 기본 원칙
+
+학습 데이터 원본은 특정 모델의 문자열 template을 저장하지 않고 가능하면 다음과 같은 semantic JSON을 저장하는 것을 기본 가정으로 한다.
+
+```json
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": [
+        {
+          "type": "text",
+          "text": "You are a helpful assistant."
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "2 + 2 = ?"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "4"
+        }
+      ]
+    }
+  ]
+}
+```
+
+그 후 serializer가 실제 model-specific prompt를 생성한다.
+
+---
+
+# 5. 제안 A — Qwen3 기반 Canonical
+
+## 5.1 설계 철학
+
+Qwen3를 canonical의 출발점으로 보고 다음과 같은 장점을 활용한다.
+
+- ChatML 계열의 명확한 role boundary
+- `<|im_start|>` / `<|im_end|>` 기반 turn serialization
+- thinking / non-thinking 개념을 확장하기 쉬움
+- tool call 구조와 결합하기 쉬움
+- assistant turn을 generation boundary로 명확하게 만들 수 있음
+
+기본 serialization 제안:
+
+```text
+<|im_start|>system
+시스템 지시
+<|im_end|>
+
+<|im_start|>developer
+개발자 지시
+<|im_end|>
+
+<|im_start|>user
+질문
+<|im_end|>
+
+<|im_start|>assistant
+답변
+<|im_end|>
+```
+
+단, `developer` role이 모든 target model에 native하게 존재한다는 의미는 아니다.
+
+adapter에서 필요하면:
+
+```text
+developer
+    ↓
+system에 병합
+```
+
+등으로 변환한다.
+
+---
+
+## 5.2 Reasoning
+
+제안 A에서는 Qwen3와의 직접 호환성을 고려하여 다음 표현을 사용할 수 있다.
+
+```text
+<|im_start|>assistant
+<think>
+추론 내용
+</think>
+최종 답변
+<|im_end|>
+```
+
+또는 canonical semantic layer에서는:
+
+```json
+{
+  "role": "assistant",
+  "content": [
+    {
+      "type": "thinking",
+      "text": "..."
+    },
+    {
+      "type": "text",
+      "text": "..."
+    }
+  ]
+}
+```
+
+로 저장하고 Qwen serializer에서만 `<think>`로 변환한다.
+
+### 검토 요청
+
+다음 두 선택지 중 어느 것이 더 타당한지 평가해 달라.
+
+A-1:
+
+```text
+canonical 자체가 Qwen3식 <think> representation을 사용
+```
+
+A-2:
+
+```text
+canonical은 thinking block
+Qwen serializer가 <think>로 변환
+```
+
+---
+
+## 5.3 Tool
+
+Qwen 스타일의 명시적인 assistant tool call과 tool result를 canonical에 근접하게 유지하는 방안이다.
+
+예:
+
+```text
+<|im_start|>assistant
+<tool_call>
+{"id":"call_001","name":"get_weather","arguments":{"city":"Seoul"}}
+</tool_call>
+<|im_end|>
+
+<|im_start|>tool
+<tool_result id="call_001">
+27°C, sunny
+</tool_result>
+<|im_end|>
+```
+
+단, 실제 Qwen native template에서의 세부 표현과 완전히 동일해야 한다는 주장은 하지 않는다.
+
+---
+
+## 5.4 Qwen 기반 canonical의 기대 장점
+
+- reasoning training과 자연스럽게 연결 가능
+- tool-use protocol 확장 용이
+- 명확한 turn delimiter
+- ChatML 계열 모델과의 conceptual compatibility
+- 향후 multi-step agent protocol 확장 용이
+
+## 5.5 예상 단점
+
+- special token 수가 많아질 수 있음
+- 100M~300M 모델에서는 protocol complexity가 과할 가능성
+- `<think>`, tool 관련 syntax를 불필요하게 학습해야 할 가능성
+- Gemma 계열에 직접적인 syntax compatibility는 낮음
+- canonical 자체가 Qwen 철학에 과도하게 종속될 위험
+
+---
+
+# 6. 제안 B — Gemma 3 기반 Canonical
+
+## 6.1 설계 철학
+
+Gemma 3의 단순한 turn-based serialization을 canonical의 출발점으로 삼는다.
+
+기본 형태:
+
+```text
+<bos>
+<start_of_turn>user
+질문
+<end_of_turn>
+<start_of_turn>model
+답변
+<end_of_turn>
+```
+
+system/developer는 별도 turn으로 만들기보다는 canonical semantic layer에서 보존하고 serializer 단계에서 Gemma 규칙에 맞춰 합성할 수 있다.
+
+---
+
+## 6.2 확장형 serialization
+
+canonical semantic layer:
+
+```text
+system
+developer
+user
+assistant
+tool
+```
+
+를 유지하되 TinyLM/Gemma-like serializer에서는 필요에 따라:
+
+```text
+<start_of_turn>user
+[system/developer instruction]
+<end_of_turn>
+
+<start_of_turn>user
+질문
+<end_of_turn>
+
+<start_of_turn>model
+답변
+<end_of_turn>
+```
+
+같은 방식으로 합성한다.
+
+또는 TinyLM 전용으로 약간 확장하여:
+
+```text
+<|system|>
+...
+<|user|>
+...
+<|assistant|>
+...
+```
+
+로 단순화할 수도 있다.
+
+즉 **Gemma 3를 semantic canonical로 그대로 복사하기보다는, 그 단순한 turn boundary 철학을 계승하는 방향**이다.
+
+---
+
+## 6.3 Reasoning
+
+Gemma 3 기반 canonical에서는 reasoning을 기본 protocol에 강하게 포함하지 않는 방안을 우선 검토한다.
+
+예:
+
+```text
+<start_of_turn>model
+최종 답변
+<end_of_turn>
+```
+
+reasoning corpus에서만:
+
+```text
+<start_of_turn>model
+<thinking>
+추론
+</thinking>
+최종 답변
+<end_of_turn>
+```
+
+와 같이 확장한다.
+
+다른 대안:
+
+```text
+<start_of_turn>model
+추론 내용
+<end_of_turn>
+
+<start_of_turn>model
+최종 답변
+<end_of_turn>
+```
+
+검토자는 어떤 representation이 학습 안정성 측면에서 타당한지 평가해야 한다.
+
+---
+
+## 6.4 Tool
+
+Gemma 기반 canonical은 tool-use의 semantic layer를 유지하면서 serialization은 최소화한다.
+
+예:
+
+```text
+<start_of_turn>model
+<tool_call>
+{"name":"get_weather","arguments":{"city":"Seoul"}}
+</tool_call>
+<end_of_turn>
+
+<start_of_turn>user
+<tool_result>
+27°C, sunny
+</tool_result>
+<end_of_turn>
+
+<start_of_turn>model
+서울은 현재 27°C입니다.
+<end_of_turn>
+```
+
+단, 이 부분은 Gemma native template을 정확히 복제하려는 것이 아니며 **Gemma-like minimal turn serialization의 후보**이다.
+
+---
+
+## 6.5 Gemma 기반 canonical의 기대 장점
+
+- 매우 단순한 turn protocol
+- special token overhead를 줄이기 쉬움
+- 100M~300M 소형 모델에 적합할 가능성
+- corpus의 기본 패턴이 단순함
+- 학습 초기에 불필요한 protocol complexity를 줄일 수 있음
+
+## 6.6 예상 단점
+
+- Qwen3의 thinking protocol과 직접적인 syntax compatibility가 낮음
+- system/developer/tool을 표현할 때 adapter 로직이 복잡해질 수 있음
+- 복잡한 agent protocol로 확장할 때 추가 설계 필요
+- reasoning 표현 방식이 canonical에서 약해질 가능성
+- OpenAI/Claude의 구조적 message semantics와의 1:1 mapping이 덜 직관적일 수 있음
+
+---
+
+# 7. 두 제안의 핵심 비교표
+
+| 항목 | Canonical A: Qwen3 기반 | Canonical B: Gemma 3 기반 |
+|---|---|---|
+| 기본 turn boundary | 명시적이고 풍부함 | 단순함 |
+| role 확장성 | 높음 | 보통 |
+| reasoning | 매우 자연스러움 | 별도 확장이 필요 |
+| tool use | 매우 자연스러움 | 별도 설계 필요 |
+| special-token 비용 | 상대적으로 높을 가능성 | 낮게 유지하기 쉬움 |
+| 100M~300M 학습 난이도 | 상대적으로 높을 가능성 | 낮을 가능성 |
+| Qwen compatibility | 매우 높음 | adapter 필요 |
+| Gemma compatibility | adapter 필요 | 매우 높음 |
+| OpenAI semantic mapping | 높음 | 높음 |
+| Claude semantic mapping | 높음 | 높음 |
+| agent 확장성 | 높음 | 중간~높음 |
+| serializer 구현 난이도 | 중간 | 낮음~중간 |
+| canonical 종속성 위험 | Qwen에 종속될 가능성 | Gemma에 종속될 가능성 |
+| 장기 확장성 | 높음 | 중간~높음 |
+
+---
+
+# 8. 중요한 설계 쟁점
+
+Claude 검토에서는 아래 항목을 특히 비판적으로 평가해 달라.
+
+## 8.1 Canonical과 serializer를 완전히 분리해야 하는가?
+
+다음 구조:
+
+```text
+JSON semantic representation
+        ↓
+Canonical IR
+        ↓
+Qwen serializer
+Gemma serializer
+OpenAI adapter
+Claude adapter
+```
+
+와 단순히:
+
+```text
+JSON
+  ↓
+Qwen-like template
+```
+
+중 어느 것이 장기적으로 더 적절한가?
+
+---
+
+## 8.2 `developer` role
+
+`developer`를 canonical의 1급 role로 유지할 가치가 있는가?
+
+가능한 전략:
+
+### 전략 1
+
+```text
+system
+developer
+```
+
+를 canonical에 독립적으로 유지.
+
+### 전략 2
+
+TinyLM에서는:
+
+```text
+system
+```
+
+으로 통합하고 OpenAI adapter에서만 developer로 분리.
+
+### 전략 3
+
+semantic layer에는 유지하되 TinyLM serializer에서 system에 merge.
+
+어느 전략을 추천하는가?
+
+---
+
+## 8.3 `tool` role
+
+canonical에서 `tool`을 독립 role로 정의하는 것이 최선인가?
+
+Claude/OpenAI/Qwen에서 tool result의 실제 role serialization이 서로 다른데, 다음 구조가 충분히 일반적인가?
+
+```text
+assistant
+  └─ tool_call
+
+tool
+  └─ tool_result
+```
+
+아니면 더 일반적인 event model:
+
+```text
+assistant/tool_call
+tool/tool_result
+```
+
+또는:
+
+```text
+assistant content block:
+    tool_call
+
+external event:
+    tool_result
+```
+
+가 더 적합한가?
+
+---
+
+## 8.4 reasoning의 위치
+
+다음 중 어떤 구조가 가장 모델 중립적인가?
+
+### R1
+
+```json
+{
+  "role": "assistant",
+  "content": [
+    {"type": "thinking", "..."},
+    {"type": "text", "..."}
+  ]
+}
+```
+
+### R2
+
+```json
+{
+  "role": "assistant",
+  "thinking": "...",
+  "content": "..."
+}
+```
+
+### R3
+
+별도의 reasoning event:
+
+```json
+{
+  "type": "reasoning",
+  "content": "..."
+}
+```
+
+### R4
+
+처음부터 `<think>...</think>`를 canonical syntax로 채택.
+
+각 방식의 다음 항목을 평가해 달라.
+
+- model portability
+- training simplicity
+- parser simplicity
+- loss masking
+- reasoning/non-reasoning 혼합 학습
+- future compatibility
+
+---
+
+# 9. 100M~300M TinyLM 관점에서의 추가 평가
+
+이번 설계의 최우선 대상은 frontier model 자체가 아니라 **소형 TinyLM**이다.
+
+따라서 다음 항목을 별도로 점수화해 달라.
+
+1. protocol token overhead
+2. special token vocabulary 증가량
+3. context length 손실
+4. SFT 데이터 효율
+5. role boundary 학습 난이도
+6. tool protocol 학습 난이도
+7. reasoning protocol 학습 난이도
+8. catastrophic overfitting 위험
+9. template 변경에 대한 robustness
+10. inference-time prompt construction 복잡도
+
+특히 다음 가설을 검증해 달라.
+
+> 소형 모델에서는 protocol 표현력을 높이는 것보다, 가능한 한 적은 수의 구조 토큰으로 role boundary와 generation boundary를 명확하게 하는 것이 유리할 수 있다.
+
+이 가설이 실제로 타당한지 반박해 달라.
+
+---
+
+# 10. 상호운용성 테스트 요구사항
+
+최종 후보는 최소한 다음 변환이 가능해야 한다.
+
+```text
+Canonical
+   ↓
+Qwen3 native-like
+Gemma 3 native-like
+OpenAI API semantic representation
+Claude API semantic representation
+```
+
+그리고 역방향도 가능한 범위에서:
+
+```text
+Qwen3 representation
+Gemma representation
+OpenAI representation
+Claude representation
+        ↓
+Canonical
+```
+
+으로 변환할 수 있어야 한다.
+
+단, **완전한 lossless round-trip이 불가능한 항목은 명시적으로 표시**해야 한다.
+
+예:
+
+```text
+lossless
+lossy-but-safe
+lossy-and-semantic-risk
+unsupported
+```
+
+와 같이 분류할 것을 제안한다.
+
+---
+
+# 11. 호환성 평가표 작성 요청
+
+Claude는 최종 보고서에 아래 표를 채워 달라.
+
+| 기능 | Canonical A | Canonical B | Qwen3 변환 | Gemma3 변환 | OpenAI 변환 | Claude 변환 |
+|---|---|---|---|---|---|---|
+| system |  |  |  |  |  |  |
+| developer |  |  |  |  |  |  |
+| user |  |  |  |  |  |  |
+| assistant |  |  |  |  |  |  |
+| thinking |  |  |  |  |  |  |
+| tool_call |  |  |  |  |  |  |
+| tool_result |  |  |  |  |  |  |
+| image |  |  |  |  |  |  |
+| audio |  |  |  |  |  |  |
+| multi-turn |  |  |  |  |  |  |
+| multiple tool calls |  |  |  |  |  |  |
+
+각 셀은 가능하면 다음 중 하나로 표현:
+
+```text
+Native
+Direct mapping
+Adapter required
+Lossy mapping
+Not supported
+```
+
+---
+
+# 12. special token 설계에 대한 검토
+
+TinyLM에서 새 special token을 얼마나 도입할지 중요하다.
+
+후보 1:
+
+```text
+<|system|>
+<|developer|>
+<|user|>
+<|assistant|>
+<|tool|>
+<|thinking|>
+<|tool_call|>
+<|tool_result|>
+```
+
+후보 2:
+
+```text
+<|start|>
+<|end|>
+<|user|>
+<|assistant|>
+```
+
+후보 3:
+
+Qwen의:
+
+```text
+<|im_start|>
+<|im_end|>
+```
+
+를 최대한 재사용.
+
+후보 4:
+
+Gemma의:
+
+```text
+<start_of_turn>
+<end_of_turn>
+```
+
+를 최대한 재사용.
+
+검토자는 다음을 평가해야 한다.
+
+- token vocabulary cost
+- sequence length
+- boundary detection
+- model capacity requirement
+- compatibility
+- implementation simplicity
+
+---
+
+# 13. loss masking
+
+Canonical protocol을 SFT에 사용할 경우 prompt와 completion 중 어느 부분을 loss에 포함할지 설계해야 한다.
+
+기본 후보:
+
+```text
+system       -> no loss
+developer    -> no loss
+user         -> no loss
+tool_result  -> no loss
+assistant    -> loss
+thinking     -> 선택적 loss
+tool_call    -> loss
+```
+
+하지만 이것이 항상 맞는지는 검토가 필요하다.
+
+특히:
+
+```text
+assistant
+ └─ thinking
+ └─ final answer
+```
+
+에서 thinking을 loss에 포함시키는 전략과 제외하는 전략의 장단점을 분석해 달라.
+
+tool-call 학습에서도:
+
+```text
+assistant -> tool_call
+```
+
+을 completion target으로 학습시키는 것이 적절한지 평가해 달라.
+
+---
+
+# 14. 초기 TinyLM 단계에서의 권장 범위
+
+현재 단계에서는 다음 기능만 우선 학습할 가능성이 높다.
+
+```text
+system
+user
+assistant
+```
+
+그리고 이후 단계에서:
+
+```text
+developer
+thinking
+tool_call
+tool_result
+image
+audio
+```
+
+를 순차적으로 도입할 수 있다.
+
+따라서 검토자는 **"schema가 풍부해야 한다"와 "초기 training serialization이 단순해야 한다"를 분리해서 판단**해 달라.
+
+---
+
+# 15. 최종 선택 요청
+
+Claude는 아래 4개 중 하나의 결론을 추천해 달라.
+
+### 선택 A
+
+Qwen3 기반 Canonical을 채택.
+
+### 선택 B
+
+Gemma 3 기반 Canonical을 채택.
+
+### 선택 C
+
+Qwen/Gemma 어느 한쪽을 직접 canonical로 채택하지 않고,
+
+```text
+model-neutral semantic schema
+        +
+TinyLM minimal serializer
+```
+
+를 채택.
+
+### 선택 D
+
+C를 기본으로 하되 Qwen/Gemma의 요소를 조합하여 별도의 TinyLM Canonical v1을 설계.
+
+단순히 C 또는 D를 택하는 것보다, **왜 A/B보다 우수한지 반례와 trade-off를 포함해서 설명**해 달라.
+
+---
+
+# 16. 특히 확인해야 할 잘못된 가정
+
+아래 가정들이 틀렸을 가능성이 있으면 명확히 지적해 달라.
+
+1. Qwen3 chat template이 더 풍부하므로 canonical으로도 더 우수할 것이다.
+2. Gemma 3 template이 단순하므로 소형 모델 학습에도 항상 더 우수할 것이다.
+3. `<think>`를 사용하는 것이 reasoning 지원의 가장 일반적인 방법이다.
+4. `tool`을 독립 role로 정의하면 모든 frontier model에 쉽게 매핑된다.
+5. `developer` role은 canonical에서 반드시 별도 role이어야 한다.
+6. canonical schema가 풍부할수록 미래 확장성이 높다.
+7. special token 수가 적으면 항상 학습 효율이 높다.
+8. native template과 유사한 canonical일수록 타 모델 호환성도 높다.
+9. semantic layer와 serialization layer를 분리하는 비용이 소형 프로젝트에서는 불필요하다.
+10. OpenAI/Claude의 API-level role 구조를 canonical semantic model로 사용해도 충분하다.
+
+---
+
+# 17. 검토자가 제안해야 할 최종 산출물
+
+최종 검토 결과에는 반드시 다음을 포함해 달라.
+
+## A. 권장 아키텍처
+
+```text
+data schema
+      ↓
+canonical representation
+      ↓
+serializer
+      ↓
+model
+```
+
+을 구체적으로 제안.
+
+## B. 최종 JSON schema
+
+예를 들어:
+
+```json
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "..."
+        }
+      ]
+    }
+  ],
+  "tools": []
+}
+```
+
+보다 정교한 schema가 필요하다면 수정안을 제시.
+
+## C. TinyLM v1 serializer
+
+실제 문자열 예시를 제시.
+
+예:
+
+```text
+<...>
+...
+<...>
+```
+
+## D. Qwen3 adapter
+
+canonical → Qwen3
+
+구체적인 매핑 규칙.
+
+## E. Gemma3 adapter
+
+canonical → Gemma3
+
+구체적인 매핑 규칙.
+
+## F. OpenAI adapter
+
+canonical → OpenAI semantic/API representation.
+
+## G. Claude adapter
+
+canonical → Claude semantic/API representation.
+
+## H. loss masking 규칙
+
+각 token/block의 training loss 포함 여부.
+
+## I. special token 목록
+
+TinyLM tokenizer에 실제 추가해야 하는 token과 추가하지 않아야 하는 token을 구분.
+
+## J. migration strategy
+
+향후 TinyLM v2/v3에서 protocol을 확장하더라도 기존 corpus를 폐기하지 않는 방법.
+
+---
+
+# 18. 최종 평가 방식
+
+가능하면 각 후보를 10점 만점으로 평가해 달라.
+
+| 평가 항목 | Qwen Canonical | Gemma Canonical |
+|---|---:|---:|
+| 소형 모델 학습 효율 |  |  |
+| token overhead |  |  |
+| template simplicity |  |  |
+| reasoning extensibility |  |  |
+| tool extensibility |  |  |
+| OpenAI interoperability |  |  |
+| Claude interoperability |  |  |
+| Qwen interoperability |  |  |
+| Gemma interoperability |  |  |
+| future extensibility |  |  |
+| migration safety |  |  |
+| implementation complexity |  |  |
+| 총점 |  |  |
+
+단순 총점뿐 아니라 **가중치를 다르게 적용했을 때 결론이 바뀌는지**도 검토해 달라.
+
+---
+
+# 19. 검토 시 유의사항
+
+- 특정 구현을 무조건 채택하라는 지시가 아니다.
+- Qwen3와 Gemma 3의 native syntax를 그대로 복제하는 것이 목표가 아니다.
+- 설계안의 전제 자체를 비판해도 된다.
+- 더 나은 제3의 구조가 있으면 적극적으로 제안해 달라.
+- 실제 공개된 model/template/API 구조와 일치하지 않는 가정이 있으면 수정해 달라.
+- 소형 모델이라는 제약과 frontier model interoperability라는 두 목표를 분리해서 평가해 달라.
+- "확장성이 높다"는 추상적인 표현보다 실제 token/schema/adapter 수준의 비용을 설명해 달라.
+- reasoning은 특히 training target, hidden reasoning 노출 문제, token budget 및 loss masking까지 함께 검토해 달라.
+- tool use는 단순 문자열 포맷뿐 아니라 다중 tool call, call id, result association, 실패/에러 결과까지 고려해 달라.
+- 멀티모달은 실제로 TinyLM v1에서 지원하지 않더라도 schema가 향후 확장 가능한지만 평가해 달라.
+
+---
+
+# 20. 핵심 질문
+
+최종적으로 다음 질문에 답해 달라.
+
+> **TinyLM 100M~300M급 모델의 초기 chat/instruction 학습을 위한 canonical chat protocol을 설계할 때, Qwen3식 풍부한 protocol과 Gemma 3식 단순한 turn protocol 중 어느 쪽을 canonical의 출발점으로 삼는 것이 더 타당한가?**
+
+그리고 더 중요하게:
+
+> **둘 중 하나를 선택하는 것 자체가 최선이 아니라면, 어떤 model-neutral semantic protocol과 TinyLM-specific minimal serialization을 설계하는 것이 가장 합리적인가?**
+
+최종 답변은 "추천안 + 반대안 + trade-off + 실제 schema + 실제 serializer 예시"까지 포함해 달라.
