@@ -107,6 +107,12 @@ def main():
     ap.add_argument("--tokens", default="300M")
     ap.add_argument("--preset", default="m100")
     ap.add_argument("--max-new", type=int, default=32)
+    ap.add_argument("--kv-seq", type=int, default=1024,
+                    help="★KV 캐시 상주을 잴 컨텍스트 길이(기본 1024 = 학습 seq). "
+                         "KV 는 seq 에 선형이라 **한 수가 아니라 기울기**로 읽는다")
+    ap.add_argument("--kv-bytes", type=int, default=4, choices=[1, 2, 4],
+                    help="★KV 캐시 원소 바이트(기본 4 = fp32, 상주식과 같은 규약). "
+                         "2 = bf16/fp16 캐시, 1 = int8 캐시(미구현 — 가정값)")
     ap.add_argument("--drop-latent", action="store_true",
                     help="P034 단계2 — freeze 후 fp32 latent 해제. 해제 전/후를 나란히 잰다")
     ap.add_argument("--int8-store", action="store_true",
@@ -212,6 +218,23 @@ def main():
         if a.device == "cuda":
             print(f"     CUDA 피크          {peak_cuda:8.1f} MB")
         print(f"     ★저장 대비 상주    {(lat+wq+oth)/packed:8.1f} 배")
+        # ★★2026-08-29 신설 — KV 캐시 상주(REVIEW3 미지 8 / 핸드오프 Q1).
+        #   가중치 상주와 **더하지 않고 따로** 인쇄한다. 합치면 기존 런 전부와 비교가 끊긴다(함정 2).
+        try:
+            # ★함정 39 — `eval()` 의 `visit_schedule()` 은 `train_repeat` 을 무시한다.
+            #   재귀로 학습된 체크포인트는 **자기가 학습된 방문 수**로 재야 한다.
+            _tr = float(getattr(cfg, "train_repeat", 1.0) or 1.0)
+            _ir = float(getattr(cfg, "infer_repeat", 1.0) or 1.0)
+            _rep = _tr if (_tr != 1.0 and _ir == 1.0) else None
+            _kv = model.kv_report(seq_len=a.kv_seq, kv_bytes=a.kv_bytes, repeat=_rep)
+            _note = f" ★train_repeat {_tr:g} 로 셌다" if _rep else ""
+            print(f"     ★KV 캐시          {_kv['kv_mb']:8.1f} MB  @ seq {a.kv_seq} "
+                  f"({_kv['kv_kb_per_token']:.2f} KB/token · 엔트리 {_kv['kv_entries']}개 / "
+                  f"방문 {_kv['kv_visits']}회 · {a.kv_bytes}B){_note}")
+            print(f"                        ⚠️**seq 에 선형**이다 — 한 수가 아니라 기울기로 읽는다. "
+                  f"cla_group↓·재귀↑ 가 엔트리를 늘린다")
+        except Exception as _e:                                  # noqa: BLE001
+            print(f"     ⚠️KV 회계 실패: {type(_e).__name__}: {_e}")
         if drop is not None:
             lat2, wq2, oth2, res2, pk2, dmax, r3 = drop
             if a.lut:

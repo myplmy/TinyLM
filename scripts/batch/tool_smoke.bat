@@ -219,6 +219,20 @@ python scripts\runlog.py --name !TL_LOGNAME! --note "[16] P075 emb-rank 64 + par
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --emb-rank 64 --init-from --tag sm_embrank
 if errorlevel 1 echo [WARN] sm_embrank failed - continuing
 
+echo [17] P067 kd-chunk and teacher-dtype - the two axes gate 15 flagged
+REM  ------------------------------------------------------------------------
+REM  Gate 15 flagged --kd-chunk and --teacher-dtype on 2026-08-29, the day
+REM  run_P067_stage2a was written. Both are KD-path axes and both CAN run on
+REM  tiny/synthetic - unlike --tokenizer-hf and --kd-teacher-hf, which need real
+REM  external weights and are on the ALLOW list.
+REM  --kd-chunk splits the KD loss over the vocabulary. --teacher-dtype casts the
+REM  teacher. Neither had ever executed in smoke, so a shape bug in either would
+REM  have surfaced only after hours of a P067 run.
+REM  ------------------------------------------------------------------------
+python scriptsunlog.py --name !TL_LOGNAME! --note "[17] P067 kd-chunk 256 + teacher-dtype bf16 - both on the KD path"
+python scriptsunlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --kd --kd-every 4 --kd-chunk 256 --teacher-dtype bf16 --init-from --mlp-group 4 --tag sm_kdchunk
+if errorlevel 1 echo [WARN] sm_kdchunk failed - continuing
+
 echo.
 echo =============================================================
 echo [VERIFY] every instrumentation field was recorded

@@ -45,6 +45,9 @@ REQUIRED = ["seed", "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cach
             #   `--ce-chunk` 는 무KD + `--no-ckpt` 조합에서 실제로 쓰인다.
             "cla_group", "ce_chunk",
             "packed_mb", "runtime_mb",                 # ★2026-08-28 저장/상주 분리 명시
+            # ★★2026-08-29 (REVIEW3 미지 8 / Q1) — KV 캐시 상주 회계가 없어서
+            #   `cla_group=1` 과 재귀의 진짜 배포 비용을 몰랐다. **json 에 실리게 계약에 넣는다.**
+            "kv_entries", "kv_visits", "kv_kb_per_token", "kv_mb", "runtime_plus_kv_mb",
             "emb_init",                                # ★자백 A13(2026-08-27) — 임베딩 초기화 갈래
             "tokenizer_hf", "kd_teacher_hf", "teacher_dtype", "vocab_size",  # ★P067
                              # ★P068 A1 / P034 단계5 (2026-08-22)
@@ -75,6 +78,17 @@ def check(name, d, expect=None):
     if d.get("runtime_mb") and d.get("packed_mb") and d["runtime_mb"] <= d["packed_mb"]:
         errs.append(f"runtime_mb {d['runtime_mb']:.1f} <= packed_mb {d['packed_mb']:.1f} — "
                     f"상주가 저장보다 작을 수 없다(상주는 fp32 2벌이다)")
+    # ★★2026-08-29 — KV 회계가 **실제로 돌았는가**(함정 37: 필드가 있다 ≠ 경로가 돈다).
+    #   `kv_entries` 는 **방문 수 이하이고 1 이상**이어야 한다. 0 이면 세지 못한 것이다.
+    if d.get("kv_entries") is not None and d.get("kv_visits"):
+        if not (1 <= d["kv_entries"] <= d["kv_visits"]):
+            errs.append(f"kv_entries {d['kv_entries']} 가 1..kv_visits({d['kv_visits']}) 밖이다 — "
+                        f"KV 회계가 스케줄을 잘못 읽었다")
+        else:
+            oks.append(f"KV 회계 동작 (엔트리 {d['kv_entries']} / 방문 {d['kv_visits']})")
+    if d.get("runtime_plus_kv_mb") and d.get("runtime_mb") and \
+            d["runtime_plus_kv_mb"] < d["runtime_mb"]:
+        errs.append("runtime_plus_kv_mb 가 runtime_mb 보다 작다 — KV 항의 부호가 뒤집혔다")
 
     # 2. 정합성
     if all(k in d for k in ("micro_bs", "accum", "seq", "eff_batch")):
@@ -160,6 +174,10 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     #   부모와 임베딩 shape 이 달라지는 갈래이기도 해서 **`emb_init` 이 svd/random 이 된다**
     #   (자백 A13 로 추가한 필드). 팔 하나가 두 가지를 산다.
     "sm_embrank": {"emb_rank": 64, "init_from": True},
+    # ★2026-08-29 (함정 37) — 정적 게이트 15 가 `--kd-chunk`·`--teacher-dtype` 를
+    #   *"배치는 쓰는데 스모크가 한 번도 안 켠 축"* 으로 잡았다. 둘 다 KD 경로이고
+    #   tiny/synthetic 에서 돈다(외부 HF 가중치가 필요한 두 축과 다르다).
+    "sm_kdchunk": {"kd": True, "kd_chunk": 256, "teacher_dtype": "bf16", "kd_every": 4},
 }
 
 

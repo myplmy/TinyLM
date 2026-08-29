@@ -863,17 +863,74 @@ class TiedMLPTransformer(nn.Module):
                                    "B: code(log2 3 / 1.25) + group scale(16/micro_group)"),
                 "sparse34": bool(getattr(cfg, "sparse34", False))}
 
-    def mem_report_all(self):
-        """정본(B) + 병기(C) + 상주 를 한 번에. trainer 가 json 에 이걸 펼쳐 넣는다."""
+    def kv_report(self, seq_len=1024, kv_bytes=4, repeat=None):
+        """★KV 캐시 상주 회계 (REVIEW3 미지 8 / 핸드오프 Q1, 2026-08-29 신설).
+
+        ## 왜 필요한가
+        상주식 `유니크삼진 × 4B × 2벌 + 나머지` 에 **KV 캐시가 없다.** 그래서
+        `cla_group=1`(KV 소유 층 2배)이나 **재귀**(바퀴마다 K/V 를 따로 든다)의
+        진짜 배포 비용을 우리는 몰랐다. 결과 047 §13·059 §13 의 파레토 판정이 여기 걸려 있다.
+
+        ## 무엇을 세나
+        `forward` 의 **캐시 키 규약 `(owner, 통과번호)` 를 그대로 복제**해
+        **서로 다른 키의 개수**를 센다. 그것이 디코드 중 동시에 살아 있는 K/V 쌍의 수다.
+
+          · `cla_group ^> 1` → 여러 층이 한 owner 를 공유 → 엔트리가 준다
+          · 재귀(`train/infer_repeat ^> 1`) → 같은 owner 를 여러 번 지나며 **통과마다 새 엔트리**
+          · `repeat_kv_reuse` → 두 번째 이후 통과가 첫 통과 것을 재사용 → 엔트리가 안 는다
+
+        ⚠️**전제**: `use_cache=True` 인 디코드 경로. `reuse_attn_on_dup` 의 KV 생략은
+        `use_cache` 에서 발동하지 않으므로 여기서도 세지 않는다.
+        ⚠️**seq_len 에 선형**이다 — 한 수가 아니라 **기울기**로 읽는다.
+
+        ★`repeat` 를 주면 **그 배수의 스케줄**로 센다. 🚫**함정 39 대비**: `visit_schedule()` 은
+        `model.eval()` 에서 `train_repeat` 을 무시하므로, **재귀로 학습된 체크포인트**는
+        호출부가 `repeat=cfg.train_repeat` 를 넘겨야 **자기가 학습된 함수**를 잰다.
+        """
+        cfg = self.cfg
+        schedule = (self._repeat_schedule(float(repeat)) if repeat and float(repeat) != 1.0
+                    else self.visit_schedule())
+        repeating = len(schedule) != cfg.n_layers
+        reuse = bool(getattr(cfg, "repeat_kv_reuse", False))
+        seen, keys = {}, []
+        for i in schedule:
+            own = self.owner[i]
+            if i == own:
+                pas = seen.get(own, 0)
+                seen[own] = pas + 1
+            else:
+                pas = seen.get(own, 1) - 1
+            key = own if not repeating else (own, pas)
+            if repeating and reuse and isinstance(key, tuple) and key[1] > 0:
+                key = (own, 0)                  # 첫 통과 KV 재사용 = 새 엔트리가 아니다
+            keys.append(key)
+        entries = len(set(keys))
+        per_tok = entries * 2 * cfg.kv_dim * kv_bytes        # K 와 V 두 벌
+        return {"kv_entries": entries,
+                "kv_visits": len(schedule),
+                "kv_dim": cfg.kv_dim,
+                "kv_dtype_bytes": kv_bytes,
+                "kv_kb_per_token": per_tok / 1024,
+                "kv_seq_len": seq_len,
+                "kv_mb": per_tok * seq_len / 1024 ** 2}
+
+    def mem_report_all(self, kv_seq_len=1024, kv_bytes=4):
+        """정본(B) + 병기(C) + 상주 + ★KV 를 한 번에. trainer 가 json 에 이걸 펼쳐 넣는다.
+
+        ★**`runtime_mb` 는 종전과 같은 값이다**(가중치만) — KV 는 `kv_mb` 로 **따로** 싣는다.
+        합치면 기존 런 전부와 비교가 끊긴다(함정 2). 합계가 필요하면 `runtime_plus_kv_mb` 를 읽는다."""
         b = self.mem_breakdown(container=False)
         c = self.mem_breakdown(container=True)
+        kv = self.kv_report(seq_len=kv_seq_len, kv_bytes=kv_bytes)
         return {"packed_mb": b["packed_mb"],
                 "packed_mb_container": c["packed_mb"],
                 "runtime_mb": b["runtime_mb"],
+                "runtime_plus_kv_mb": b["runtime_mb"] + kv["kv_mb"],
                 "bpw_convention": b["bpw_convention"],
                 "bpw_ternary": b["bpw_ternary"],
                 "mem_parts_mb": b["parts_mb"],
-                "mem_params": b["params"]}
+                "mem_params": b["params"],
+                **kv}
 
     def report(self, bpw=None, l3_mb=32.0):
         cfg = self.cfg
@@ -887,8 +944,8 @@ class TiedMLPTransformer(nn.Module):
 
         per_l = (cfg.dim*cfg.dim*2 + cfg.kv_dim*cfg.dim*2) + 3*cfg.dim*cfg.ffn_dim
         flops = 2 * cfg.n_layers * per_l / 1e9
-        n_kv = sum(1 for i in range(cfg.n_layers) if i == self.owner[i])
-        kv_kb = n_kv * 2 * cfg.kv_dim * 2 / 1024
+        # ★2026-08-29 — 종전 `n_kv`/`kv_kb`(owner 만 세고 bf16 가정)는 재귀에서 틀렸다.
+        #   정본은 `kv_report()` 로 옮겼다(아래).
         # ★2026-07-31 수정 — `bpw`(함수 인자)를 그대로 쓰고 있었다. 회계 통일 커밋(7b123fc)이
         #   기본값을 `1.95` → `None` 으로 바꾸면서 **이 줄만 따라오지 않아** 모든 학습이
         #   `report()` 에서 죽었다(TypeError: int * NoneType). 정본은 규약이 정한 `bpw_t` 다.
@@ -923,7 +980,13 @@ class TiedMLPTransformer(nn.Module):
         else:
             A(f"  MLP 블록(층별 독립)    : {mlp_mb:.1f} MB  (dense: 재사용 없음)")
         A(f"  토큰당 FLOPs          : {flops:.3f} GFLOP")
-        A(f"  KV 캐시               : {kv_kb:.1f} KB/token  ({n_kv}/{cfg.n_layers} 층만 소유)")
-        A(f"    1024 ctx {kv_kb*1024/1024:.1f} MB   2048 ctx {kv_kb*2048/1024:.1f} MB")
+        # ★2026-08-29 — 종전 줄은 `owner` 만 세어 **재귀에서 틀렸다**(바퀴마다 K/V 가 따로 산다).
+        #   정본은 `kv_report()` 이고, forward 의 키 규약 `(owner, 통과번호)` 를 그대로 복제한다.
+        _kv = self.kv_report(seq_len=cfg.max_seq_len)
+        A(f"  ★KV 캐시(fp32)        : {_kv['kv_kb_per_token']:.1f} KB/token  "
+          f"(엔트리 {_kv['kv_entries']}개 / 방문 {_kv['kv_visits']}회)")
+        A(f"                          {cfg.max_seq_len} ctx {_kv['kv_mb']:.1f} MB  "
+          f"→ ★상주+KV = {bd['runtime_mb'] + _kv['kv_mb']:.1f} MB")
+        A(f"    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다")
         A("=" * 72)
         return "\n".join(L)

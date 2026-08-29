@@ -58,6 +58,9 @@ SUMMARY_KEYS = [
     "deploy_mb", "packed_mb", "runtime_mb", "mem_params", "opt_state_mb",
     "vram_alloc_gb", "vram_reserved_gb", "ms_step_median", "ms_step_spread",
     "wall_sec", "tokens_per_microbatch", "bytes_per_token",
+    # ★2026-08-29 — KV 캐시 상주(REVIEW3 미지 8). `runtime_mb` 는 **가중치만**이고
+    #   `runtime_plus_kv_mb` 가 합계다. 둘을 함께 올려 혼동을 막는다.
+    "kv_entries", "kv_visits", "kv_kb_per_token", "kv_mb", "runtime_plus_kv_mb",
 ]
 
 

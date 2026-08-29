@@ -65,40 +65,60 @@ def _cpu_probe():
         return None, None
 
 
+# ★★2026-08-29 정정 (사용자 지적) — **한계치의 단위가 지표의 단위와 달랐다**(계측함정 1 계열).
+#
+#   초판은 `ext` 를 **"코어 1개 기준 백분율의 합"**(16 논리코어 만재 = 1600)으로 냈는데
+#   배치는 `--cpu-ext-limit 25` 를 **"머신의 25%"** 라는 뜻으로 줬다.
+#   그 눈금에서 25 는 **머신의 1.6%** 이고, 유휴 Windows 데스크톱도 그 아래로 안 내려간다.
+#   → 사용자 실측: 작업관리자 **6~12%** 인데 도구는 **ext 150~250%** 를 찍고 매 반복을 재측정했다.
+#
+#   ★조치 셋
+#     1. **눈금을 작업관리자와 같은 시스템 전체 %(0~100)** 로 통일한다.
+#     2. ★**한계를 넘어도 런을 막지 않는다** — 기본 재측정 0회. `ext` 를 **평균/중위/최대로 기록**하고
+#        한계 초과는 **행에 표시만** 한다. 재측정은 `--cpu-ext-retry N` 으로 **명시적으로** 켠다.
+#     3. **코어 고정(affinity)을 하지 않는다** — OS 스케줄러가 배정하는 대로 둔다(사용자 지시).
+#        대신 **논리/물리 코어 수와 부하 분포**를 인쇄해 무엇을 쟀는지 남긴다.
 class _CpuWatch:
-    """측정 창 동안의 시스템/자기 CPU 사용률. `psutil` 이 없으면 전부 None 이다."""
+    """측정 창 동안의 시스템/자기 CPU 사용률. `psutil` 이 없으면 전부 None 이다.
+
+    ★**모든 값의 눈금 = 시스템 전체 %(0~100)** — 작업관리자와 같은 눈금이다."""
 
     def __init__(self):
         self.ps, self.proc = _cpu_probe()
-        self.n_cpu = (self.ps.cpu_count() if self.ps else None)
+        self.n_cpu = (self.ps.cpu_count() if self.ps else None)            # 논리
+        self.n_phys = (self.ps.cpu_count(logical=False) if self.ps else None)
+        self.busy_cores = 0.0        # 마지막 창에서 50% 넘게 쓴 논리코어 수
 
     def start(self):
         if not self.ps:
             return
-        self.ps.cpu_percent(None)                            # 기준점 리셋
+        self.ps.cpu_percent(None, percpu=True)               # 기준점 리셋
         self.proc.cpu_percent(None)
 
     def stop(self):
-        """(시스템%, 우리%, 외부%) — 전부 **코어 1개 기준 백분율의 합**(예: 8코어 만재 = 800)."""
+        """(시스템%, 우리%, 외부%) — 전부 **시스템 전체 기준 %(0~100)**."""
         if not self.ps:
             return None, None, None
-        sysp = self.ps.cpu_percent(None) * (self.n_cpu or 1)
-        selfp = self.proc.cpu_percent(None)
+        per = self.ps.cpu_percent(None, percpu=True) or [0.0]
+        self.busy_cores = sum(1 for c in per if c >= 50.0)
+        sysp = sum(per) / len(per)                           # 0~100
+        selfp = self.proc.cpu_percent(None) / (self.n_cpu or 1)   # 0~100 으로 환산
         return sysp, selfp, max(0.0, sysp - selfp)
 
 
 def bench_one(model, cfg, tok, prompt, max_new, device, reps, use_cache=True,
-              watch=None, ext_limit=None, max_retry=2):
-    """(tok/s, TTFT_ms) 를 reps 회 재서 중위값. 첫 회는 warmup 으로 버린다.
+              watch=None, ext_limit=None, max_retry=0):
+    """(tok/s, TTFT_ms, 부하정보) 를 reps 회 재서 중위값. 첫 회는 warmup 으로 버린다.
 
-    `watch` 가 있으면 반복마다 외부 CPU 부하를 재고, `ext_limit`(코어 1개 기준 %)을
-    넘으면 **그 반복을 버리고 다시 잰다**. 재시도해도 넘으면 **오염 표시와 함께 채택**한다
+    `watch` 가 있으면 반복마다 외부 CPU 부하를 **시스템 전체 %(0~100)** 로 재서 기록한다.
+    ★**기본은 기록만 한다**(`max_retry=0`) — 🚫**한계를 넘어도 런을 막지 않는다**(2026-08-29 사용자 지시).
+    `max_retry ^> 0` 이면 한계 초과 반복을 그만큼 다시 재고, 그래도 넘으면 **오염 표시와 함께 채택**한다
     — 🚫조용히 버리면 측정이 0건이 되고 그건 결과 031·059 가 지불한 실패 양식이다.
     """
     import torch
     from tinylm.infer.generate import sample
     rates, ttfts = [], []
-    ext_seen, dirty = [], 0
+    ext_seen, sys_seen, busy_seen, dirty = [], [], [], 0
     r, tries = 0, 0
     while r <= reps:
         if watch:
@@ -130,11 +150,14 @@ def bench_one(model, cfg, tok, prompt, max_new, device, reps, use_cache=True,
         _sys, _self, _ext = (watch.stop() if watch else (None, None, None))
         if r > 0 and _ext is not None:
             ext_seen.append(_ext)
+            sys_seen.append(_sys)
+            busy_seen.append(getattr(watch, "busy_cores", 0.0))
             if ext_limit is not None and _ext > ext_limit and tries < max_retry:
                 tries += 1
-                print(f"      [cpu-watch] 외부 부하 {_ext:.0f}% ^> 한계 {ext_limit:.0f}% "
-                      f"— 이 반복을 버리고 다시 잰다({tries}/{max_retry})")
+                print(f"      [cpu-watch] 외부 부하 {_ext:.1f}% ^> 한계 {ext_limit:.1f}% "
+                      f"(시스템 전체 기준) — 이 반복을 버리고 다시 잰다({tries}/{max_retry})")
                 time.sleep(2.0)
+                ext_seen.pop(); sys_seen.pop(); busy_seen.pop()
                 continue                   # r 을 안 올린다 = 같은 반복 재측정
             if ext_limit is not None and _ext > ext_limit:
                 dirty += 1
@@ -148,8 +171,12 @@ def bench_one(model, cfg, tok, prompt, max_new, device, reps, use_cache=True,
         tries = 0
     info = {}
     if ext_seen:
-        info = {"ext_med": statistics.median(ext_seen), "ext_max": max(ext_seen),
-                "dirty": dirty}
+        info = {"ext_med": statistics.median(ext_seen),
+                "ext_mean": statistics.fmean(ext_seen),
+                "ext_max": max(ext_seen),
+                "sys_mean": statistics.fmean(sys_seen) if sys_seen else None,
+                "busy_max": max(busy_seen) if busy_seen else None,
+                "n_win": len(ext_seen), "dirty": dirty}
     return statistics.median(rates), statistics.median(ttfts), info
 
 
@@ -171,8 +198,12 @@ def main():
     ap.add_argument("--cpu-watch", action="store_true",
                     help="★측정 창의 시스템/자기 CPU 사용률을 함께 기록한다(psutil 필요)")
     ap.add_argument("--cpu-ext-limit", type=float, default=None,
-                    help="★외부 CPU 부하(코어1개 기준 %%) 한계. 넘으면 그 반복을 다시 잰다. "
-                         "예: 25 (--cpu-watch 와 함께 쓴다)")
+                    help="★외부 CPU 부하 한계 — **시스템 전체 %%(0~100, 작업관리자와 같은 눈금)**. "
+                         "🚫**넘어도 런을 막지 않는다**(2026-08-29 정정). 그 행에 표시만 한다. "
+                         "예: 15 (--cpu-watch 와 함께 쓴다)")
+    ap.add_argument("--cpu-ext-retry", type=int, default=0,
+                    help="★한계 초과 반복을 몇 번까지 다시 잴지(기본 **0 = 재측정 안 함**). "
+                         "🚫1 이상을 주면 런이 최대 (1+N)배 길어진다")
     ap.add_argument("--data", default="ko-en")
     ap.add_argument("--tokens", default="300M")
     ap.add_argument("--preset", default="m100")
@@ -211,8 +242,13 @@ def main():
             print("  ⚠️★**`psutil` 이 없어 CPU 감시를 못 한다.** `pip install psutil` 후 다시 재세요 — "
                   "🚫감시 없이 잰 수는 **다른 프로세스에 오염됐는지 알 수 없다**")
         else:
-            print(f"  ★CPU 감시 켬 — 코어 {_watch.n_cpu}개. `ext` 열은 **우리 프로세스를 뺀 외부 부하**"
-                  f"(코어 1개 기준 %). 한계 {a.cpu_ext_limit if a.cpu_ext_limit is not None else '없음'}")
+            print(f"  ★CPU 감시 켬 — 논리 {_watch.n_cpu}개 / 물리 {_watch.n_phys}개. "
+                  f"`ext` 열 = **우리 프로세스를 뺀 외부 부하**, 눈금은 "
+                  f"★**시스템 전체 %(0~100, 작업관리자와 같다)**.")
+            print(f"    한계 {a.cpu_ext_limit if a.cpu_ext_limit is not None else '없음'} · "
+                  f"재측정 {a.cpu_ext_retry}회 — 🚫**한계를 넘어도 런을 막지 않는다**(표시만).")
+            print("    ★**코어 고정(affinity)을 하지 않는다** — OS 스케줄러가 배정하는 대로 둔다. "
+                  "`busy` 열은 그 창에서 50% 넘게 쓴 논리코어 수다.")
     print(f"  캐시 모드={['on' if m else 'off' for m in modes]}   (off = 결과 014 조건)")
     print("=" * 92)
     print("  ★MB 는 하드코딩이 아니라 로드한 모델에서 계산한다(회계 = 안 B, 2026-07-31 통일).")
@@ -263,14 +299,16 @@ def main():
                     try:
                         r, t, _ci = bench_one(model, cfg, tok, PROMPT, a.max_new, dev,
                                               a.reps, use_c, watch=_watch,
-                                              ext_limit=a.cpu_ext_limit)
+                                              ext_limit=a.cpu_ext_limit,
+                                              max_retry=a.cpu_ext_retry)
                     except Exception as e:
                         print(f"{dev:>8} {nt:>8} {tag:>16}  실패: {type(e).__name__}: {e}")
                         continue
                     _cs = ""
                     if _ci:
-                        _cs = (f" ext {_ci['ext_med']:>5.0f}%/{_ci['ext_max']:>5.0f}%"
-                               + ("  🚫오염" if _ci.get("dirty") else ""))
+                        _cs = (f"  ext {_ci['ext_mean']:>4.1f}/{_ci['ext_max']:>4.1f}%"
+                               f"  sys {_ci['sys_mean']:>4.1f}%  busy {_ci['busy_max']:>2.0f}"
+                               + ("  ⚠️한계초과" if _ci.get("dirty") else ""))
                         if _ci.get("dirty"):
                             dirty_rows += 1
                     print(f"{dev:>8} {nt if nt else '기본':>8} {tag:>16} {mb:>7.1f} {rt:>8.1f} "
@@ -282,11 +320,14 @@ def main():
 
     print("-" * 92)
     if _watch is not None and _watch.ps is not None:
+        print("  ★`ext` = 외부 부하 평균/최대(시스템 전체 %) · `sys` = 창 전체 평균 · "
+              "`busy` = 50% 넘게 쓴 논리코어 수")
         if dirty_rows:
-            print(f"  🚫★**오염 의심 {dirty_rows}행** — 재시도 후에도 외부 부하가 한계를 넘었다. "
-                  f"**그 행의 tok/s 를 인용하지 말 것.**")
-        else:
-            print("  ✅외부 CPU 부하가 한계 안에서 유지됐다 — 이 표는 오염되지 않았다")
+            print(f"  ⚠️★**한계 초과 {dirty_rows}행** — 🚫**이것은 '무효' 표시가 아니라 '조건 기록'이다.**")
+            print("     **같은 표 안의 행끼리 ext 가 비슷하면 비교는 여전히 유효**하고, "
+                  "행마다 크게 다르면 **그 차이를 속도 차이로 귀속하지 않는다**.")
+        elif a.cpu_ext_limit is not None:
+            print("  ✅외부 CPU 부하가 전 행에서 한계 안이었다")
     if rows:
         print("\n★핵심 질문: 메모리를 줄이면 CPU 추론이 빨라지는가?")
         print("  ★결과 016 의 예측: 속도가 메모리를 따라간다면 **저장이 아니라 상주**를 따라간다.")
