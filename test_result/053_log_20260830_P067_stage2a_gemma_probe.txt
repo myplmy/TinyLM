@@ -1,0 +1,433 @@
+=============================================================================
+P067 stage 2a   gemma cache and VRAM probe
+gemma-3-1b-pt and gemma-3-270m share one tokenizer - verified byte identical.
+Nothing else in stage 2 is worth starting until this fits.
+==============================================================================
+[1/3] build the gemma token cache. Q1.
+
+==============================================================================
+[runlog] 2026-08-29 22:59:24  name=P067_stage2a_gemma_probe
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py prepare --data ko-en --tokens 600M --pool-tokens 600M --exact-cache --tokenizer-hf HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+==============================================================================
+[cmd] python run100m.py prepare --data ko-en --tokens 600M --pool-tokens 600M --exact-cache --tokenizer-hf HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+[data] 정확 캐시(ko-en_600000000) 없음 → 정확히 그 크기로 신규 생성(상위호환 무시)
+[tok] ★외부 토크나이저 사용: HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29  어휘 262,145  eos=1
+[tok] ⚠️★이 캐시는 **기존 캐시와 직접 비교 불가**다 — 토큰 경계가 다르다(함정 2). 교차비교는 `scripts/common_bpb.py` 로만.
+[tok] ★어휘 262,145 > 65,536 → 토큰 저장 dtype 을 **uint32** 로 올린다(캐시가 2배가 된다). meta.json 의 'token_dtype' 이 정본이다.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+     0.0M / 600M  (0K tok/s)
+    10.0M / 600M  (234K tok/s)
+    15.0M / 600M  (316K tok/s)
+    20.0M / 600M  (382K tok/s)
+    25.0M / 600M  (432K tok/s)
+    25.0M / 600M  (432K tok/s)
+    25.0M / 600M  (432K tok/s)
+    30.0M / 600M  (472K tok/s)
+    30.0M / 600M  (472K tok/s)
+    30.0M / 600M  (472K tok/s)
+    35.0M / 600M  (511K tok/s)
+    45.0M / 600M  (571K tok/s)
+    55.0M / 600M  (610K tok/s)
+    60.0M / 600M  (628K tok/s)
+    60.0M / 600M  (628K tok/s)
+    60.0M / 600M  (628K tok/s)
+    60.0M / 600M  (628K tok/s)
+    70.0M / 600M  (657K tok/s)
+    70.0M / 600M  (657K tok/s)
+    70.0M / 600M  (657K tok/s)
+    70.0M / 600M  (657K tok/s)
+    70.0M / 600M  (657K tok/s)
+    70.0M / 600M  (657K tok/s)
+    70.0M / 600M  (657K tok/s)
+    80.0M / 600M  (683K tok/s)
+    80.0M / 600M  (683K tok/s)
+    80.0M / 600M  (683K tok/s)
+    85.0M / 600M  (694K tok/s)
+    90.0M / 600M  (704K tok/s)
+    90.0M / 600M  (704K tok/s)
+    90.0M / 600M  (704K tok/s)
+    95.0M / 600M  (714K tok/s)
+    95.0M / 600M  (714K tok/s)
+    95.0M / 600M  (714K tok/s)
+    95.0M / 600M  (714K tok/s)
+   105.0M / 600M  (730K tok/s)
+   105.0M / 600M  (730K tok/s)
+   105.0M / 600M  (730K tok/s)
+   110.0M / 600M  (735K tok/s)
+   110.0M / 600M  (735K tok/s)
+   120.0M / 600M  (744K tok/s)
+   120.0M / 600M  (744K tok/s)
+   120.0M / 600M  (744K tok/s)
+   130.0M / 600M  (752K tok/s)
+   130.0M / 600M  (752K tok/s)
+   130.0M / 600M  (752K tok/s)
+   135.0M / 600M  (755K tok/s)
+   135.0M / 600M  (755K tok/s)
+   135.0M / 600M  (755K tok/s)
+   140.0M / 600M  (759K tok/s)
+   140.0M / 600M  (759K tok/s)
+   140.0M / 600M  (759K tok/s)
+   140.0M / 600M  (759K tok/s)
+   140.0M / 600M  (759K tok/s)
+   145.0M / 600M  (762K tok/s)
+   145.0M / 600M  (762K tok/s)
+   145.0M / 600M  (762K tok/s)
+   150.0M / 600M  (765K tok/s)
+   150.0M / 600M  (765K tok/s)
+   160.0M / 600M  (770K tok/s)
+   160.0M / 600M  (770K tok/s)
+   165.0M / 600M  (773K tok/s)
+   165.0M / 600M  (773K tok/s)
+   165.0M / 600M  (773K tok/s)
+   165.0M / 600M  (773K tok/s)
+   190.0M / 600M  (785K tok/s)
+   190.0M / 600M  (785K tok/s)
+   200.0M / 600M  (789K tok/s)
+   200.0M / 600M  (789K tok/s)
+   200.0M / 600M  (789K tok/s)
+   200.0M / 600M  (789K tok/s)
+   200.0M / 600M  (789K tok/s)
+   205.0M / 600M  (791K tok/s)
+   205.0M / 600M  (791K tok/s)
+   205.0M / 600M  (791K tok/s)
+   210.0M / 600M  (792K tok/s)
+   215.0M / 600M  (794K tok/s)
+   215.0M / 600M  (794K tok/s)
+   215.0M / 600M  (794K tok/s)
+   220.0M / 600M  (796K tok/s)
+   220.0M / 600M  (796K tok/s)
+   225.0M / 600M  (797K tok/s)
+   225.0M / 600M  (797K tok/s)
+   225.0M / 600M  (797K tok/s)
+   225.0M / 600M  (797K tok/s)
+   225.0M / 600M  (797K tok/s)
+   230.0M / 600M  (798K tok/s)
+   230.0M / 600M  (798K tok/s)
+   230.0M / 600M  (798K tok/s)
+   230.0M / 600M  (798K tok/s)
+   235.0M / 600M  (799K tok/s)
+   240.0M / 600M  (800K tok/s)
+   240.0M / 600M  (800K tok/s)
+   240.0M / 600M  (800K tok/s)
+   245.0M / 600M  (801K tok/s)
+   255.0M / 600M  (801K tok/s)
+   260.0M / 600M  (803K tok/s)
+   265.0M / 600M  (804K tok/s)
+   265.0M / 600M  (804K tok/s)
+   265.0M / 600M  (804K tok/s)
+   265.0M / 600M  (804K tok/s)
+   270.0M / 600M  (804K tok/s)
+   270.0M / 600M  (804K tok/s)
+   280.0M / 600M  (804K tok/s)
+   280.0M / 600M  (804K tok/s)
+   295.0M / 600M  (807K tok/s)
+   295.0M / 600M  (807K tok/s)
+   300.0M / 600M  (808K tok/s)
+   300.0M / 600M  (808K tok/s)
+   300.0M / 600M  (808K tok/s)
+   300.0M / 600M  (808K tok/s)
+   310.0M / 600M  (809K tok/s)
+   310.0M / 600M  (809K tok/s)
+   315.0M / 600M  (809K tok/s)
+   315.0M / 600M  (809K tok/s)
+   315.0M / 600M  (809K tok/s)
+   315.0M / 600M  (809K tok/s)
+   315.0M / 600M  (809K tok/s)
+   315.0M / 600M  (809K tok/s)
+   320.0M / 600M  (810K tok/s)
+   320.0M / 600M  (810K tok/s)
+   320.0M / 600M  (810K tok/s)
+   320.0M / 600M  (810K tok/s)
+   325.0M / 600M  (811K tok/s)
+   325.0M / 600M  (811K tok/s)
+   330.0M / 600M  (811K tok/s)
+   345.0M / 600M  (812K tok/s)
+   345.0M / 600M  (812K tok/s)
+   345.0M / 600M  (812K tok/s)
+   345.0M / 600M  (812K tok/s)
+   350.0M / 600M  (812K tok/s)
+   355.0M / 600M  (812K tok/s)
+   355.0M / 600M  (812K tok/s)
+   355.0M / 600M  (812K tok/s)
+   355.0M / 600M  (812K tok/s)
+   365.0M / 600M  (813K tok/s)
+   365.0M / 600M  (813K tok/s)
+   370.0M / 600M  (813K tok/s)
+   370.0M / 600M  (813K tok/s)
+   370.0M / 600M  (813K tok/s)
+   375.0M / 600M  (813K tok/s)
+   375.0M / 600M  (813K tok/s)
+   375.0M / 600M  (813K tok/s)
+   375.0M / 600M  (813K tok/s)
+   375.0M / 600M  (813K tok/s)
+   375.0M / 600M  (813K tok/s)
+   375.0M / 600M  (813K tok/s)
+   375.0M / 600M  (813K tok/s)
+   375.0M / 600M  (813K tok/s)
+   380.0M / 600M  (813K tok/s)
+   380.0M / 600M  (813K tok/s)
+   380.0M / 600M  (813K tok/s)
+   380.0M / 600M  (813K tok/s)
+   380.0M / 600M  (813K tok/s)
+   380.0M / 600M  (813K tok/s)
+   380.0M / 600M  (813K tok/s)
+   385.0M / 600M  (813K tok/s)
+   385.0M / 600M  (813K tok/s)
+   385.0M / 600M  (813K tok/s)
+   390.0M / 600M  (813K tok/s)
+   390.0M / 600M  (813K tok/s)
+   405.0M / 600M  (813K tok/s)
+   405.0M / 600M  (813K tok/s)
+   410.0M / 600M  (813K tok/s)
+   410.0M / 600M  (813K tok/s)
+   410.0M / 600M  (813K tok/s)
+   410.0M / 600M  (813K tok/s)
+   410.0M / 600M  (813K tok/s)
+   415.0M / 600M  (813K tok/s)
+   415.0M / 600M  (813K tok/s)
+   415.0M / 600M  (813K tok/s)
+   415.0M / 600M  (813K tok/s)
+   415.0M / 600M  (813K tok/s)
+   425.0M / 600M  (788K tok/s)
+   425.0M / 600M  (788K tok/s)
+   425.0M / 600M  (788K tok/s)
+   430.0M / 600M  (788K tok/s)
+   430.0M / 600M  (788K tok/s)
+   430.0M / 600M  (788K tok/s)
+   430.0M / 600M  (788K tok/s)
+   435.0M / 600M  (789K tok/s)
+   435.0M / 600M  (789K tok/s)
+   435.0M / 600M  (789K tok/s)
+   435.0M / 600M  (789K tok/s)
+   440.0M / 600M  (790K tok/s)
+   440.0M / 600M  (790K tok/s)
+   450.0M / 600M  (790K tok/s)
+   450.0M / 600M  (790K tok/s)
+   450.0M / 600M  (790K tok/s)
+   455.0M / 600M  (791K tok/s)
+   455.0M / 600M  (791K tok/s)
+   455.0M / 600M  (791K tok/s)
+   460.0M / 600M  (792K tok/s)
+   460.0M / 600M  (792K tok/s)
+   460.0M / 600M  (792K tok/s)
+   460.0M / 600M  (792K tok/s)
+   470.0M / 600M  (791K tok/s)
+   470.0M / 600M  (791K tok/s)
+   470.0M / 600M  (791K tok/s)
+   470.0M / 600M  (791K tok/s)
+   475.0M / 600M  (792K tok/s)
+   475.0M / 600M  (792K tok/s)
+   475.0M / 600M  (792K tok/s)
+   475.0M / 600M  (792K tok/s)
+   480.0M / 600M  (791K tok/s)
+   480.0M / 600M  (791K tok/s)
+   480.0M / 600M  (791K tok/s)
+   480.0M / 600M  (791K tok/s)
+   480.0M / 600M  (791K tok/s)
+   480.0M / 600M  (791K tok/s)
+   485.0M / 600M  (792K tok/s)
+   485.0M / 600M  (792K tok/s)
+   485.0M / 600M  (792K tok/s)
+   485.0M / 600M  (792K tok/s)
+   485.0M / 600M  (792K tok/s)
+   485.0M / 600M  (792K tok/s)
+   490.0M / 600M  (791K tok/s)
+   490.0M / 600M  (791K tok/s)
+   490.0M / 600M  (791K tok/s)
+   490.0M / 600M  (791K tok/s)
+   495.0M / 600M  (792K tok/s)
+   495.0M / 600M  (792K tok/s)
+   495.0M / 600M  (792K tok/s)
+   500.0M / 600M  (792K tok/s)
+   500.0M / 600M  (792K tok/s)
+   500.0M / 600M  (792K tok/s)
+   505.0M / 600M  (792K tok/s)
+   505.0M / 600M  (792K tok/s)
+   505.0M / 600M  (792K tok/s)
+   505.0M / 600M  (792K tok/s)
+   510.0M / 600M  (793K tok/s)
+   510.0M / 600M  (793K tok/s)
+   515.0M / 600M  (793K tok/s)
+   515.0M / 600M  (793K tok/s)
+   515.0M / 600M  (793K tok/s)
+   520.0M / 600M  (794K tok/s)
+   520.0M / 600M  (794K tok/s)
+   520.0M / 600M  (794K tok/s)
+   540.0M / 600M  (794K tok/s)
+   540.0M / 600M  (794K tok/s)
+   540.0M / 600M  (794K tok/s)
+   540.0M / 600M  (794K tok/s)
+   540.0M / 600M  (794K tok/s)
+   550.0M / 600M  (794K tok/s)
+   560.0M / 600M  (794K tok/s)
+   560.0M / 600M  (794K tok/s)
+   580.0M / 600M  (793K tok/s)
+   580.0M / 600M  (793K tok/s)
+   585.0M / 600M  (793K tok/s)
+   585.0M / 600M  (793K tok/s)
+   585.0M / 600M  (793K tok/s)
+   585.0M / 600M  (793K tok/s)
+   590.0M / 600M  (793K tok/s)
+   590.0M / 600M  (793K tok/s)
+   590.0M / 600M  (793K tok/s)
+   590.0M / 600M  (793K tok/s)
+   590.0M / 600M  (793K tok/s)
+[mix] 소스별 실제 비율 (설정 비율은 DATASETS 의 ratio)
+      wikimedia/wikipedia                    설정 0.50 | 문서  49.6% | ★토큰  42.8% (256.6M)  <-- 설정과 5%p 이상 차이
+      HuggingFaceFW/fineweb-edu              설정 0.50 | 문서  50.4% | ★토큰  57.2% (343.4M)  <-- 설정과 5%p 이상 차이
+      ★문서 비율과 토큰 비율이 다른 이유: rng 가 **문서**를 고르는데 소스마다 문서 길이가 다르다(L1).
+[bpb] bytes_per_token  스트림 4.1385 / ★val 2.6223 (차이 -36.6%)
+[data] train 597.0M / val 3000K 토큰 저장 -> Z:\TinyLM\data_cache\ko-en_600000000_tok-fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+'[WinError 10038] 소켓 이외의 개체에 작업을 시도했습니다' thrown while requesting GET https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu/resolve/87f09149ef4734204d70ed1d046ddc9ca3f2b8f9/sample/10BT/000_00000.parquet
+Retrying in 1s [Retry 1/5].
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 12.7분  (2026-08-29 23:12:08)
+==============================================================================
+[2/3] 250-step probe, no teacher. Q2 and Q4.
+
+==============================================================================
+[runlog] 2026-08-29 23:12:23  name=P067_stage2a_gemma_probe
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 2 --accum 64 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --ce-chunk 1024 --tokenizer-hf HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29 --tag GT0probe
+==============================================================================
+[cmd] python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 2 --accum 64 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --ce-chunk 1024 --tokenizer-hf HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29 --tag GT0probe
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000_tok-fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+[P067] ★어휘를 32,768 -> **262,144** 로 바꾼다 (출처 Gemma3ForCausalLM)
+[P067]   임베딩 파라미터 25.2M -> **201.3M** (사용자 지시: 모델 크기 증가는 감수)
+[P067] ⚠️★이 런은 **기존 런과 CE 를 직접 비교할 수 없다** — val 토큰 경계가 다르다(함정 2). 교차비교는 `scripts/common_bpb.py` 만 유효하다.
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=262144 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)              67.3M      13.7 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                          122.2M      25.0 MB
+
+
+  저장(packed, 안 B)                         25.0 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        29.0 MB
+  ★상주(runtime, 현 구현)                     675.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 25.0MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  ★KV 캐시(fp32)        : 15.0 KB/token  (엔트리 10개 / 방문 20회)
+                          1024 ctx 15.0 MB  → ★상주+KV = 690.5 MB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[GT0probe] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+  step     0/250  ce 12.4917  |g| 4.53  anneal 0.00  lr 4.00e-05  13027 ms/step
+  step    10/250  ce 11.1774  |g| 2.05  anneal 0.00  lr 4.40e-04  12685 ms/step
+  step    20/250  ce 7.9607  |g| 4.27  anneal 0.00  lr 8.40e-04  12691 ms/step
+  step    30/250  ce 8.0142  |g| 2.45  anneal 0.00  lr 1.00e-03  12689 ms/step
+  step    40/250  ce 8.1979  |g| 6.18  anneal 0.02  lr 1.00e-03  12690 ms/step
+  step    50/250  ce 7.7000  |g| 2.08  anneal 0.08  lr 1.00e-03  12674 ms/step
+  step    60/250  ce 7.0967  |g| 0.73  anneal 0.14  lr 1.00e-03  12704 ms/step
+  step    70/250  ce 6.9447  |g| 0.78  anneal 0.20  lr 1.00e-03  12675 ms/step
+  step    80/250  ce 6.8689  |g| 0.70  anneal 0.26  lr 1.00e-03  12553 ms/step
+  step    90/250  ce 6.6718  |g| 1.09  anneal 0.32  lr 1.00e-03  12429 ms/step
+  step   100/250  ce 6.4680  |g| 0.77  anneal 0.38  lr 1.00e-03  12334 ms/step
+  step   110/250  ce 6.4468  |g| 0.61  anneal 0.45  lr 1.00e-03  12264 ms/step
+  step   120/250  ce 6.3584  |g| 0.75  anneal 0.51  lr 1.00e-03  12188 ms/step
+  step   130/250  ce 6.1871  |g| 0.66  anneal 0.57  lr 1.00e-03  12126 ms/step
+  step   140/250  ce 6.1454  |g| 0.62  anneal 0.63  lr 1.00e-03  12073 ms/step
+  step   150/250  ce 6.0418  |g| 0.50  anneal 0.69  lr 1.00e-03  12025 ms/step
+  step   160/250  ce 6.0552  |g| 0.65  anneal 0.75  lr 1.00e-03  11979 ms/step
+  step   170/250  ce 5.9373  |g| 0.53  anneal 0.82  lr 1.00e-03  11941 ms/step
+  step   180/250  ce 5.9196  |g| 0.47  anneal 0.88  lr 1.00e-03  11903 ms/step
+  step   190/250  ce 5.8581  |g| 0.62  anneal 0.94  lr 1.00e-03  11874 ms/step
+  step   200/250  ce 5.7952  |g| 0.58  anneal 1.00  lr 1.00e-03  11854 ms/step
+  step   210/250  ce 5.7512  |g| 0.65  anneal 1.00  lr 9.73e-04  11855 ms/step
+  step   220/250  ce 5.6857  |g| 0.51  anneal 1.00  lr 7.75e-04  11831 ms/step
+  step   230/250  ce 5.5750  |g| 0.34  anneal 1.00  lr 4.72e-04  11813 ms/step
+  step   240/250  ce 5.5904  |g| 0.35  anneal 1.00  lr 2.05e-04  11794 ms/step
+  step   249/250  ce 5.6586  |g| 0.25  anneal 1.00  lr 1.01e-04  11775 ms/step
+    >> val_loss 5.6712  ppl 290.40  (train_ce 5.659, val-CE +0.013)  bpb 1.977
+       best 갱신 5.6712 -> m100R1c_ko-en_300M_GT0probe_best.pt
+
+[GT0probe] 최종 val_loss 5.7438  ppl 312.23  best 5.6712@250  (122.2M, 49.2분, skip 0, VRAM 8.27GB(reserved)/7.52GB(alloc))
+[vram] M(=micro_bs×seq)=2,048  peak reserved 8.27GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 49.3분  (2026-08-30 00:01:38)
+==============================================================================
+
+[3/3] 250-step probe with the 1b teacher. Q3 - the hard one.
+
+==============================================================================
+[runlog] 2026-08-30 00:01:53  name=P067_stage2a_gemma_probe
+[runlog] cwd=Z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 2 --accum 64 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --ce-chunk 1024 --kd --kd-every 4 --kd-chunk 512 --teacher-dtype bf16 --tokenizer-hf HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29 --kd-teacher-hf HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29 --tag G1BTprobe
+==============================================================================
+[cmd] python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 2 --accum 64 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --ce-chunk 1024 --kd --kd-every 4 --kd-chunk 512 --teacher-dtype bf16 --tokenizer-hf HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29 --kd-teacher-hf HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29 --tag G1BTprobe
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000_tok-fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+[P067] ★어휘를 32,768 -> **262,144** 로 바꾼다 (출처 Gemma3ForCausalLM)
+[P067]   임베딩 파라미터 25.2M -> **201.3M** (사용자 지시: 모델 크기 증가는 감수)
+[P067] ⚠️★이 런은 **기존 런과 CE 를 직접 비교할 수 없다** — val 토큰 경계가 다르다(함정 2). 교차비교는 `scripts/common_bpb.py` 만 유효하다.
+
+Loading weights:   0%|          | 0/340 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 340/340 [00:00<00:00, 5129.72it/s]
+[kd-hf] 교사 로드 fcf18a2a879aab110ca39f8bffbccd5d49d8eb29  파라미터 999.9M  dtype=bf16  vocab=262144
+[kd-hf] ★로짓은 **원 dtype 그대로** 돌려주고 fp32 승격은 _kd_kl 이 **청크 단위로** 한다
+[kd-hf]   (통째 승격은 (B,T,V) fp32 = 수 GiB 단일 할당을 만든다 — 결과 054)
+[kd] ★외부 교사 사용 (alpha=0.5, T=2.0) — 🚫우리 dense 교사는 로드하지 않는다
+[kd] ★★이 실험이 묻는 것: 결과 038 의 'KD 무익' 이 **KD 탓인가 교사 탓인가**
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=262144 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)              67.3M      13.7 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                          122.2M      25.0 MB
+
+
+  저장(packed, 안 B)                         25.0 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        29.0 MB
+  ★상주(runtime, 현 구현)                     675.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 25.0MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  ★KV 캐시(fp32)        : 15.0 KB/token  (엔트리 10개 / 방문 20회)
+                          1024 ctx 15.0 MB  → ★상주+KV = 690.5 MB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[G1BTprobe] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+Traceback (most recent call last):
+  File "Z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "Z:\TinyLM\tinylm\cli.py", line 267, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "Z:\TinyLM\tinylm\train\trainer.py", line 653, in train
+    loss.backward()
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\_tensor.py", line 630, in backward
+    torch.autograd.backward(
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\autograd\__init__.py", line 364, in backward
+    _engine_run_backward(
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\autograd\graph.py", line 865, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+torch.AcceleratorError: CUDA error: out of memory
+Search for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.3분  (2026-08-30 00:02:08)
+==============================================================================
+=============================================================================
+READ IN THIS ORDER
+1. Q1 - the cache directory name and meta.json token dtype.
+2. Q2 and Q3 - reserved GiB. Under 15.0 means stage 2 can run at this shape.
+3. Q4 - step0 ce near 12.48. Trap 34 - suspect the reference value before the
+   model. There is no parent at vocabulary 262,144.
+4. do NOT read val from a 250-step run. Speed and VRAM only.
+5. if step 3 OOMs, the fix is micro-bs 1 accum 128, and the Qwen arms are then
+   not comparable on ms per step.
+==============================================================================
