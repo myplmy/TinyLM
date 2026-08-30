@@ -90,8 +90,39 @@ def main():
                 f"{p.name}: **{','.join(sorted(uses))} 를 쓰는데 `import tinylm` 이 없다** "
                 f"-> HF 캐시가 작업폴더 밖으로 간다(2026-08-22 실사고). "
                 f"파일 상단 `sys.path.insert` 바로 뒤에 `import tinylm  # noqa: F401` 을 넣으세요")
+    # ★★2026-08-30 신설 — **`import tinylm` 이 있다 ≠ 그 import 가 성공한다.**
+    #
+    #   🚫**실사고**: `scripts/diag_dataset_tokens.py` 는 위 검사를 통과했다
+    #   (`import tinylm` 이 있었다). 그런데 **`sys.path.insert` 가 없어서**
+    #   실행하면 `ModuleNotFoundError: No module named 'tinylm'` 로 죽었다.
+    #   P075 단계0b 가 그렇게 **두 팔 모두 0.0분 만에 실패**했다(2026-08-30).
+    #
+    #   스크립트를 `python scripts/x.py` 로 직접 실행하면 `sys.path[0]` 은
+    #   **`scripts/` 디렉터리**이지 저장소 루트가 아니다. 루트를 넣지 않으면
+    #   `tinylm` 은 보이지 않는다.
+    #
+    #   ★위 검사와 이 검사는 **다른 층**이다: 위는 *"리다이렉트를 걸 의도가 있는가"*,
+    #   이것은 *"그 의도가 실행될 수 있는가"*. 함정 37 그대로다.
+    path_err = []
+    for p in sorted(ROOT.glob("scripts/*.py")):
+        if p.name in EXEMPT:
+            continue
+        src = p.read_text(encoding="utf-8")
+        _, has_tl, bad = scan(p)
+        if bad or not has_tl:
+            continue
+        if "sys.path.insert" not in src and "sys.path.append" not in src:
+            path_err.append(
+                f"{p.name}: **`import tinylm` 은 있는데 `sys.path.insert` 가 없다** "
+                f"-> 직접 실행하면 ModuleNotFoundError 로 죽는다(P075 단계0b 실사고). "
+                f"`ROOT = Path(__file__).resolve().parent.parent` 바로 뒤에 "
+                f"`sys.path.insert(0, str(ROOT))` 를 넣으세요")
+    err += path_err
+
     for e in err:
         print(f"  🚫 {e}")
+    if not path_err:
+        print("  ✅ `import tinylm` 하는 스크립트 전부가 `sys.path` 를 먼저 세운다")
     print(f"\n  대상 {ok + len(err)}개 (HF 미사용 {skip}개 제외) — "
           f"{'✅ 전부 통과' if not err else f'🚫 {len(err)}건 실패'}")
     print("  ⚠️ 정적 검사다. **import 가 있다** 는 것만 보고 **환경변수가 실제로 바뀌었는지**는")

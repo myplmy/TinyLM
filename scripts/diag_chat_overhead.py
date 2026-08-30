@@ -24,6 +24,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))   # ★2026-08-30 — 이 줄이 없어 P075 단계0b 가 죽었다.
+#   스크립트를 직접 실행하면 sys.path[0] 은 scripts/ 라 tinylm 을 못 찾는다.
 
 # ★★2026-08-30 — 직렬화 정의를 **`tinylm.chat` 하나로** 옮겼다(R14: one concept, one definition).
 #   종전에는 이 파일이 자기만의 `build()` 를 갖고 있었고, `tinylm/chat/serialize.py` 가

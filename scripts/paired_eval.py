@@ -105,6 +105,11 @@ def paired_stats(a, b):
 def main():
     ap = argparse.ArgumentParser(description="P032 결정적 full-val + paired 비교")
     ap.add_argument("--models", nargs="*", default=DEFAULT_MODELS)
+    ap.add_argument("--dump-crops", default=None, metavar="OUT.json",
+                   help="★P078 단계0 — 크롭별 손실을 json 으로 저장한다. "
+                        "{tag: [손실...]} 구조이고 `diag_visit_selectivity.py` 가 읽는다. "
+                        "평균만 보면 재귀 이득이 **골고루 퍼진 것인지 일부 크롭에 몰린 것인지** "
+                        "구분되지 않는다 — 그것이 P078 의 H1(용량설) vs H2(선택설)다")
     ap.add_argument("--data", default="ko-en")
     ap.add_argument("--tokens", default="300M")
     ap.add_argument("--preset", default="m100")
@@ -362,6 +367,31 @@ def main():
     · 크롭 경계에서 컨텍스트가 끊긴다(긴 문서에 약간 불리). 두 모델에 공통이라 차이에서는 상쇄된다.
     · bf16 autocast(cuda)면 크롭별 손실에 ULP 노이즈가 섞인다. 정밀 비교는 --device cpu 로
       한 번 더 확인한다(느리지만 fp32).""")
+
+    # ★★P078 단계0 (2026-08-31) — 크롭별 손실을 그대로 남긴다.
+    #
+    #   왜: 위 표는 **평균과 승률**만 준다. 그런데 P078 의 질문은
+    #   *"재귀의 이득이 모든 크롭에 조금씩 퍼져 있는가(H1 용량설), 아니면
+    #   일부 크롭에 몰려 있는가(H2 선택설)"* 다. 평균으로는 그 둘이 구분되지 않는다.
+    #   ★분포를 보려면 **원자료**가 필요하고, 그것을 여기서 저장한다.
+    #   그 다음 분석은 `scripts/diag_visit_selectivity.py` 가 **torch 없이** 한다.
+    if a.dump_crops:
+        import json as _json
+        _out = Path(a.dump_crops)
+        _out.parent.mkdir(parents=True, exist_ok=True)
+        _payload = {
+            "meta": {"preset": a.preset, "data": a.data, "tokens": a.tokens,
+                     "seq": a.seq, "micro_bs": a.micro_bs, "device": dev,
+                     "match_train_repeat": bool(a.match_train_repeat),
+                     "infer_repeat": a.infer_repeat,
+                     "n_crops": len(next(iter(per.values()))) if per else 0},
+            "crops": {k: [float(x) for x in v] for k, v in per.items()},
+        }
+        _out.write_bytes((_json.dumps(_payload, ensure_ascii=False)).encode("utf-8"))
+        print(f"\n  ★크롭별 손실을 저장했다: {_out}  "
+              f"(모델 {len(per)}개 x 크롭 {_payload['meta']['n_crops']}개)")
+        print("     분석: python scripts/diag_visit_selectivity.py "
+              f"--crops {_out} --base <기준태그> --deep <재귀태그>")
     return 0
 
 

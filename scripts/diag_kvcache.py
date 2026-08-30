@@ -147,6 +147,10 @@ def greedy_tie_margin(model, cfg, tok, prompt, max_new, device, use_autocast):
 
 def main():
     ap = argparse.ArgumentParser(description="KV 캐시 teacher-forced 로짓 동등성 게이트")
+    ap.add_argument("--kv-dtype", choices=["fp32", "bf16", "fp16"], default="fp32",
+                    help="★P077 단계1 — KV **저장** 정밀도. 이 게이트가 바로 그 대가를 잰다. "
+                         "fp32 = 종전 = 비트 동일. bf16 이면 편차가 **작지만 0 이 아니어야** 한다 — "
+                         "정확히 0 이면 플래그가 아무것도 안 한 것이다(함정 37)")
     ap.add_argument("--models", nargs="*", help="태그 목록(기본 mA_g4s34_k4 mC_g8_k4 p6d)")
     ap.add_argument("--device", default="cpu",
                     help="cpu 면 autocast 가 꺼져 fp32(하드 게이트용). cuda 는 bf16")
@@ -184,6 +188,14 @@ def main():
             missing.append(tag)
             continue
         model, cfg, device = load_model(arch=arch, ckpt_path=str(ck), device=a.device)
+        # ★★P077 단계1 — KV **저장** 정밀도. 이 게이트가 바로 그 대가를 잰다.
+        #   ⚠️`fp32` 면 아무것도 안 한다 = 비트 동일. bf16 이면 편차가 **작지만 0 이 아니어야**
+        #   한다 — 정확히 0 이면 플래그가 캐시에 안 닿은 것이다(함정 37).
+        if a.kv_dtype != "fp32":
+            cfg.kv_dtype = a.kv_dtype
+            model.cfg.kv_dtype = a.kv_dtype
+            print(f"  ★KV 저장 dtype = {a.kv_dtype} (계산은 fp32 로 되올린다). "
+                  f"편차가 0 이면 플래그가 안 닿은 것이다")
         print(f"\n  ── {tag} ({arch}, cla_group={cfg.cla_group}, "
               f"mlp_group={cfg.mlp_group if cfg.tie_mlp else 1}, "
               f"sparse34={bool(getattr(cfg, 'sparse34', False))}) "

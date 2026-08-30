@@ -193,6 +193,11 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch d
 if errorlevel 1 echo [WARN] sm_denseinit failed - continuing
 
 echo.
+echo [19] --arch tied with --depth-init  (P079 - tied plus shrinking transplant)
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --init-from --depth-init role --mlp-group 2 --tag sm_tieddepth
+if errorlevel 1 echo [WARN] sm_tieddepth failed - continuing
+
+echo.
 echo [15] P074 stage 2 - dense student WITH recursion. Never combined before.
 REM  ------------------------------------------------------------------------
 REM  Gate 15 (check_smoke_coverage) flagged arch=dense with --train-repeat as

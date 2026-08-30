@@ -558,6 +558,21 @@ class TiedMLPTransformer(nn.Module):
                 raise RuntimeError("train_repeat 와 infer_repeat 를 동시에 켤 수 없다 — "
                                    "어느 것이 반복을 정했는지 알 수 없게 된다(함정 2).")
             return self._repeat_schedule(TR)
+        # ★★★함정 39 (2026-08-30 수정) — **학습 경로 ≠ 평가 경로.**
+        #
+        #   🚫**실사고**: `train_repeat=2.0`(36회 통과)으로 학습한 체크포인트를
+        #   `eval()` 에서 재면 위 `self.training` 이 False 라 `TR` 이 무시되고
+        #   **20회 통과로 평가**됐다. 결과 043 §14 가 그것이고, 재귀 14런 중 **11런이
+        #   `val - train_ce` 0.3 을 넘었다**(비재귀 78런은 0건).
+        #
+        #   ★규약: **평가는 자기가 학습된 함수를 돈다.** 다르게 재고 싶으면
+        #   `--infer-repeat` 를 **명시**한다 — 그러면 아래 `R != 1.0` 경로로 간다.
+        #   ⚠️**비재귀 체크포인트(TR == 1.0)에는 아무 영향이 없다** = 비트 동일.
+        #   ⚠️`_eval_ignores_train_repeat = True` 를 모델에 세우면 옛 거동으로 돌아간다
+        #      (그 거동으로 잰 과거 수치를 재현할 때만 쓴다).
+        if (not self.training) and TR != 1.0 and R == 1.0 \
+                and not getattr(self, "_eval_ignores_train_repeat", False):
+            return self._repeat_schedule(TR)
         if R == 1.0:
             return list(range(n))                      # ★기본 경로는 종전과 완전히 같다
         where = getattr(cfg, "repeat_where", "front")
@@ -695,8 +710,10 @@ class TiedMLPTransformer(nn.Module):
                     k_new, v_new = layer.attn_mod.compute_kv(x, cos, sin)
                     if past_kv and key in past_kv:
                         k_old, v_old = past_kv[key]
-                        k_new = torch.cat([k_old, k_new], dim=2)
-                        v_new = torch.cat([v_old, v_new], dim=2)
+                        # ★P077 단계1 — 저장된 KV 가 낮은 dtype 일 수 있다. **계산 dtype 으로
+                        #   되올려서** 잇는다. 그래야 어텐션 산술이 종전과 같다.
+                        k_new = torch.cat([k_old.to(k_new.dtype), k_new], dim=2)
+                        v_new = torch.cat([v_old.to(v_new.dtype), v_new], dim=2)
                     kv_bank[key] = (k_new, v_new)
             elif key not in kv_bank:
                 # ★축소(R^<1)에서 CLA 그룹 경계가 잘리면 owner 가 스케줄에 없을 수 있다.
@@ -704,8 +721,8 @@ class TiedMLPTransformer(nn.Module):
                 k_new, v_new = layer.attn_mod.compute_kv(x, cos, sin)
                 if past_kv and key in past_kv:
                     k_old, v_old = past_kv[key]
-                    k_new = torch.cat([k_old, k_new], dim=2)
-                    v_new = torch.cat([v_old, v_new], dim=2)
+                    k_new = torch.cat([k_old.to(k_new.dtype), k_new], dim=2)   # ★P077 단계1
+                    v_new = torch.cat([v_old.to(v_new.dtype), v_new], dim=2)
                 kv_bank[key] = (k_new, v_new)
             kv = kv_bank[key]
 
@@ -734,6 +751,21 @@ class TiedMLPTransformer(nn.Module):
 
         if use_cache:
             # kv_bank 는 owner 층만 키로 갖는다(§CLA 주의 참조) → 그대로 다음 스텝의 past 가 된다.
+            # ★★P077 단계1 (2026-08-30) — **KV 를 저장할 때만 dtype 을 낮춘다.**
+            #
+            #   왜 여기인가: `--repeat-kv-reuse` 가 기각된 뒤(결과 062) **엔트리 수를 줄이는
+            #   길이 닫혔다.** 남은 KV 레버는 **엔트리당 바이트**뿐이다.
+            #   fp32 -> bf16 이면 KV 가 정확히 절반이 된다(15.0 -> 7.5 MiB @ seq 1024).
+            #
+            #   ⚠️★**계산은 손대지 않는다.** 어텐션에 들어가기 직전에 다시 올린다(아래
+            #   `_kv_cast_in`). 그래서 이 플래그는 **저장 정밀도만** 바꾼다 — 활성값·
+            #   그래디언트·마스터 가중치는 어느 모드에서도 그대로다.
+            #   ⚠️**기본 `fp32` 는 캐스팅 자체를 건너뛴다** = 종전 경로와 **비트 동일**.
+            _kvd = getattr(cfg, "kv_dtype", "fp32")
+            if _kvd != "fp32":
+                _dt = {"bf16": torch.bfloat16, "fp16": torch.float16}[_kvd]
+                kv_bank = {k: (None if v is None else (v[0].to(_dt), v[1].to(_dt)))
+                           for k, v in kv_bank.items()}
             return (logits, kv_bank) if not return_aux else (logits, kv_bank, None)
         if not return_aux:
             return logits

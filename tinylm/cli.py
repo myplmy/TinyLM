@@ -78,6 +78,9 @@ def main():
                    help="(P031) middle 블록 통과 배수. 1.0=학습된 그대로 / 0.5=축소 / 1.5=확장")
     p.add_argument("--repeat-where", choices=["front", "back", "even"], default="front",
                    help="(P031) 분수 R 에서 어디를 더/덜 돌지. 결과가 이것에 의존한다")
+    p.add_argument("--kv-dtype", choices=["fp32", "bf16", "fp16"], default="fp32",
+                   help="★KV 캐시 **저장** 정밀도(P077 단계1). bf16 이면 KV 가 절반이 된다. "
+                        "계산은 fp32 로 되올리므로 산술은 안 바뀐다. 기본 fp32 = 비트 동일")
     p.add_argument("--repeat-kv-reuse", action="store_true",
                    help="(P031) 반복 통과에서 KV 를 재계산하지 않고 첫 통과 것을 재사용(대조 조건)")
     # ★★P067(2026-08-22 사용자 지시) — **외부 토크나이저·외부 교사.**
@@ -346,6 +349,11 @@ def main():
                                                     a.tag if a.tag else a.arch))
         model, cfg, device = load_model(a.arch, ckp)
         # ★P031 — 체크포인트의 cfg 위에 **추론 전용** 설정만 덮어쓴다. 가중치는 그대로다.
+        if a.kv_dtype != "fp32":
+            cfg.kv_dtype = a.kv_dtype
+            print(f"[P077] ★KV 저장 dtype = {a.kv_dtype} (계산은 fp32로 되올린다). "
+                  f"KV 상주가 절반이 된다 — 예: seq 1024 에서 15.0 -> 7.5 MiB. "
+                  f"⚠️품질 대가는 diag_kvcache.py 가 잰다")
         if a.infer_repeat != 1.0 or a.repeat_kv_reuse or a.reuse_attn_on_dup:
             cfg.infer_repeat = a.infer_repeat
             cfg.repeat_where = a.repeat_where

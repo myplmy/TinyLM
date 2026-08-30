@@ -113,6 +113,9 @@ def main():
     ap.add_argument("--kv-bytes", type=int, default=4, choices=[1, 2, 4],
                     help="★KV 캐시 원소 바이트(기본 4 = fp32, 상주식과 같은 규약). "
                          "2 = bf16/fp16 캐시, 1 = int8 캐시(미구현 — 가정값)")
+    ap.add_argument("--kv-dtype", choices=["fp32", "bf16", "fp16"], default=None,
+                   help="★P077 단계1 — 주면 `--kv-bytes` 를 그 dtype 에 맞춘다(bf16/fp16 = 2). "
+                        "구현된 축이므로 가정값이 아니다")
     ap.add_argument("--repeat-kv-reuse", action="store_true",
                     help="★재귀 통과 2회차 이후가 **첫 통과의 K/V 를 재사용**한다(P077 단계0). "
                          "엔트리가 `(owner, 통과)` 에서 `(owner, 0)` 으로 접혀 **KV 가 준다**. "
@@ -235,13 +238,23 @@ def main():
             if a.repeat_kv_reuse:
                 cfg.repeat_kv_reuse = True
                 model.cfg.repeat_kv_reuse = True
-            _kv = model.kv_report(seq_len=a.kv_seq, kv_bytes=a.kv_bytes, repeat=_rep)
+            # ★P077 단계1 — `--kv-dtype` 를 주면 바이트 수를 그 dtype 으로 맞춘다.
+            #   🚫`--kv-bytes 2` 를 손으로 주는 것과 다르다 — 그건 **가정값**이었고
+            #   이건 **구현된 축**이다(`cfg.kv_dtype`, transformer.forward 의 저장 캐스팅).
+            _kvb = a.kv_bytes
+            if getattr(a, "kv_dtype", None):
+                _kvb = 4 if a.kv_dtype == "fp32" else 2
+                cfg.kv_dtype = a.kv_dtype
+                model.cfg.kv_dtype = a.kv_dtype
+            _kv = model.kv_report(seq_len=a.kv_seq, kv_bytes=_kvb, repeat=_rep)
             _note = f" ★train_repeat {_tr:g} 로 셌다" if _rep else ""
             if a.repeat_kv_reuse:
                 _note += " ★**KV 재사용 켬**"
+            if getattr(a, "kv_dtype", None):
+                _note += f" ★**저장 dtype {a.kv_dtype}**(구현된 축)"
             print(f"     ★KV 캐시          {_kv['kv_mb']:8.1f} MB  @ seq {a.kv_seq} "
                   f"({_kv['kv_kb_per_token']:.2f} KB/token · 엔트리 {_kv['kv_entries']}개 / "
-                  f"방문 {_kv['kv_visits']}회 · {a.kv_bytes}B){_note}")
+                  f"방문 {_kv['kv_visits']}회 · {_kvb}B){_note}")
             print(f"                        ⚠️**seq 에 선형**이다 — 한 수가 아니라 기울기로 읽는다. "
                   f"cla_group↓·재귀↑ 가 엔트리를 늘린다")
         except Exception as _e:                                  # noqa: BLE001

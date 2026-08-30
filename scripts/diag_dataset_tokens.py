@@ -34,6 +34,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))   # ★2026-08-30 — 이 줄이 없어 P075 단계0b 가 죽었다.
+#   스크립트를 직접 실행하면 sys.path[0] 은 scripts/ 라 tinylm 을 못 찾는다.
 
 
 def load(patterns):

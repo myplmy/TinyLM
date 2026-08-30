@@ -181,6 +181,10 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     # ★2026-08-30 (P044B) — FiLM 은 KD 조건에서 기각됐고 REVIEW2 가 KD 를 뺐다.
     #   그 축을 다시 여는데 **스모크가 한 번도 안 켰다**(함정 37).
     "sm_film": {"mlp_film": True, "init_from": True, "mlp_group": 4},
+    # ★2026-08-31 (P079, 함정 37) — **타잉 x --depth-init 조합이 한 번도 안 돌았다.**
+    #   `sm_denseinit` 은 dense 에서만 그 경로를 산다. P079 단계1·2 는 얕은 몸통에
+    #   타잉을 걸면서 20층 부모에서 **축소 이식**을 한다 — 그 조합이 처음이다.
+    "sm_tieddepth": {"depth_init": "role", "init_from": True, "mlp_group": 2},
 }
 
 

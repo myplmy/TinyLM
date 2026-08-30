@@ -26,7 +26,7 @@
 사용:
     python scripts/check_handoff.py              # 최신 1개
     python scripts/check_handoff.py --all        # 전부
-    python scripts/check_handoff.py handoff/202608200600_HANDOFF.md
+    python scripts/check_handoff.py handoff/202608132327_HANDOFF.md
     종료코드 = 에러 개수
 """
 from __future__ import annotations
@@ -73,6 +73,23 @@ def lint(path: Path):
     if not re.match(r"^#\s*HANDOFF\s+\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}\s*[—-]", lines[0]):
         err.append(f"L1 첫 줄 형식 위반 — `# HANDOFF YYYY-MM-DD HH:MM — 한 줄` 이어야 한다: "
                    f"{lines[0][:60]}")
+    # ★★2026-08-30 신설 — **파일명 날짜 == 본문 첫 줄 날짜**.
+    #
+    #   🚫**실사고**: 핸드오프 날짜가 **실제 작성일이 아니라 하루씩 증가하는 순번**이었다.
+    #   `202608150600` 부터 드리프트가 시작돼 마지막 판은 **실제보다 84일 앞섰다.**
+    #   61건 중 **21건이 파일명과 본문조차 서로 달랐고**, 그중 8건은 목적지가
+    #   다른 파일에 점유돼 단순 개명이 불가능했다(2026-08-30 사용자 지적).
+    #
+    #   ★종전 검사는 **첫 줄의 형식**만 봤다. *"그 날짜가 파일명과 같은가"* 는 아무도 안 봤다.
+    #   함정 37 계열: *"형식이 맞다 ≠ 값이 맞다"*.
+    #
+    #   ⚠️**날짜(일)만 본다.** 시·분은 세션 종료 시각과 커밋 시각의 반올림 차이가 정상이다.
+    _fs = re.match(r"(\d{8})", path.name)
+    _bs = re.search(r"#\s*HANDOFF\s+(\d{4})-(\d{2})-(\d{2})", lines[0])
+    if _fs and _bs and _fs.group(1) != "".join(_bs.groups()):
+        err.append(f"L1 **파일명 날짜 {_fs.group(1)} != 본문 날짜 {''.join(_bs.groups())}** — "
+                   f"핸드오프 파일명은 **실제 작성일**이다. 순번으로 쓰지 않는다"
+                   f"(2026-08-30 실사고: 최대 84일 오차)")
 
     # ── 2. 머리말 3요소 (규약 §3) ────────────────────────────────────────────
     head = "\n".join(lines[:12])
