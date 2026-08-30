@@ -1,159 +1,2681 @@
 {
-  "dataset_name": "Korean AI Curriculum — Stage 1 Attribute High-Density Train v02",
-  "version": "1.0",
-  "range": "S1-ATH-0151~0300",
-  "theme": "능력·성능·행동 특성의 속성군",
-  "purpose": "사물·시스템·사람의 능력과 성능, 행동 특성 및 그 정도와 변이를 구분하여 학습시키기 위한 수작업 고밀도 속성 corpus",
+  "dataset_name": "Korean AI Curriculum — Stage 1 Attribute High-Density Train 150 v02",
+  "version": "2",
+  "purpose": "Stage 1 속성·정도·변이 영역의 시스템 능력·성능·행동·효율·복원 특성 corpus 150개",
+  "split": "train",
+  "record_count": 150,
+  "range": "S1-ATH-0151 ~ S1-ATH-0300",
+  "design_note": "능력의 존재, 수행 수준, 조건 변화에 따른 성능 변이를 서로 구분한다.",
   "records": [
-    {"id":"S1-ATH-0151","type":"attribute_packet","text":"정확성은 수행이나 결과가 기준에 얼마나 잘 맞는지를 나타내는 속성이다. 정확성은 결과의 속도와 동일하지 않다.","concepts":["정확성","수행","결과","기준"],"relations":["attribute_of","evaluation_dimension","contrast"]},
-    {"id":"S1-ATH-0152","type":"attribute_packet","text":"신뢰성은 일정한 조건에서 기능이나 결과를 안정적으로 제공하는 정도다. 신뢰성은 단 한 번의 성공만으로 판단되는 속성이 아니다.","concepts":["신뢰성","기능","결과","안정성"],"relations":["attribute_of","degree","boundary"]},
-    {"id":"S1-ATH-0153","type":"attribute_packet","text":"안정성은 외부 변화나 교란이 있어도 상태나 성능이 크게 흔들리지 않는 정도다. 안정성은 변화가 전혀 없다는 뜻은 아니다.","concepts":["안정성","변화","교란","성능"],"relations":["attribute_of","degree","boundary"]},
-    {"id":"S1-ATH-0154","type":"attribute_packet","text":"효율성은 투입한 자원에 비해 원하는 산출을 얼마나 잘 얻는지를 나타내는 속성이다. 효율성은 산출량 자체와 다르다.","concepts":["효율성","투입","산출","자원"],"relations":["attribute_of","ratio","boundary"]},
-    {"id":"S1-ATH-0155","type":"attribute_packet","text":"생산성은 일정한 자원이나 시간으로 만들어 내는 유용한 산출의 수준을 나타내는 속성이다. 생산성은 작업량과 같은 개념이 아니다.","concepts":["생산성","자원","시간","산출"],"relations":["attribute_of","measurement","contrast"]},
-    {"id":"S1-ATH-0156","type":"attribute_packet","text":"처리능력은 시스템이나 사람이 일정한 시간이나 조건에서 처리할 수 있는 작업량의 능력이다. 처리능력은 실제 처리량과 구분된다.","concepts":["처리능력","처리량","시간","능력"],"relations":["capability","potential_vs_actual","boundary"]},
-    {"id":"S1-ATH-0157","type":"attribute_packet","text":"처리속도는 일정한 양의 작업을 얼마나 빠르게 처리하는지를 나타내는 성능 속성이다. 처리속도는 처리능력의 총량과 동일하지 않다.","concepts":["처리속도","처리능력","작업","시간"],"relations":["performance_attribute","rate","contrast"]},
-    {"id":"S1-ATH-0158","type":"attribute_packet","text":"응답성은 요청이나 자극에 적절하고 빠르게 반응하는 정도다. 응답성은 응답 결과의 정확성과 별개의 속성 축이 될 수 있다.","concepts":["응답성","요청","반응","정확성"],"relations":["attribute_of","degree","contrast"]},
-    {"id":"S1-ATH-0159","type":"attribute_packet","text":"반응성은 외부 자극이나 입력에 변화가 일어나는 정도다. 반응성은 변화의 방향이 긍정적인지 여부를 직접 의미하지 않는다.","concepts":["반응성","자극","입력","변화"],"relations":["attribute_of","degree","boundary"]},
-    {"id":"S1-ATH-0160","type":"attribute_packet","text":"민첩성은 상황 변화에 맞춰 빠르게 판단하거나 행동을 전환하는 능력이다. 민첩성은 단순한 이동 속도와 동일하지 않다.","concepts":["민첩성","판단","행동","전환"],"relations":["capability","behavioral_attribute","contrast"]},
-    {"id":"S1-ATH-0161","type":"attribute_packet","text":"유연성은 조건이나 요구가 달라졌을 때 행동이나 기능을 적절히 바꿀 수 있는 정도다. 유연성은 무원칙한 변화를 뜻하지 않는다.","concepts":["유연성","조건","요구","변화"],"relations":["attribute_of","adaptation","boundary"]},
-    {"id":"S1-ATH-0162","type":"attribute_packet","text":"적응성은 새로운 환경이나 조건에 맞추어 기능이나 행동을 조정할 수 있는 능력이다. 적응성은 현재 상태가 좋은지를 직접 뜻하지 않는다.","concepts":["적응성","환경","조건","조정"],"relations":["capability","adaptation","boundary"]},
-    {"id":"S1-ATH-0163","type":"attribute_packet","text":"지속성은 기능이나 행동이 일정 기간 동안 유지되는 정도다. 지속성은 지속시간이라는 측정값 그 자체와 다르다.","concepts":["지속성","기능","행동","지속시간"],"relations":["attribute_of","duration_related","boundary"]},
-    {"id":"S1-ATH-0164","type":"attribute_packet","text":"회복성은 손상이나 중단 이후 원래의 기능이나 성능 수준으로 돌아가는 능력이다. 회복성은 복구 작업 자체가 아니다.","concepts":["회복성","손상","기능","성능"],"relations":["capability","recovery","boundary"]},
-    {"id":"S1-ATH-0165","type":"attribute_packet","text":"견고성은 외부 교란이나 오류가 있어도 기능이나 결과가 크게 무너지지 않는 정도다. 견고성은 안정성과 관련되지만 같은 속성은 아니다.","concepts":["견고성","교란","오류","기능"],"relations":["attribute_of","robustness","contrast"]},
-    {"id":"S1-ATH-0166","type":"attribute_packet","text":"내구성은 반복적인 사용이나 시간 경과에도 기능과 구조를 유지하는 정도다. 내구성은 사용 기간 자체와 동일하지 않다.","concepts":["내구성","사용","시간","기능"],"relations":["attribute_of","durability","boundary"]},
-    {"id":"S1-ATH-0167","type":"attribute_packet","text":"용량은 시스템이나 용기가 받아들이거나 저장하거나 처리할 수 있는 양의 한계 또는 수준이다. 용량은 실제 사용량과 다르다.","concepts":["용량","한계","저장량","처리량"],"relations":["capacity_attribute","potential_vs_actual"]},
-    {"id":"S1-ATH-0168","type":"attribute_packet","text":"가용성은 필요한 시점에 기능이나 자원을 실제로 사용할 수 있는 정도다. 가용성은 존재 여부와 동일하지 않다.","concepts":["가용성","기능","자원","사용 가능성"],"relations":["availability_attribute","degree","boundary"]},
-    {"id":"S1-ATH-0169","type":"attribute_packet","text":"접근성은 사용자가 기능이나 정보, 공간에 접근하고 이용하기 쉬운 정도다. 접근성은 접근 권한 자체와 다른 속성이다.","concepts":["접근성","사용자","접근","이용"],"relations":["attribute_of","degree","contrast"]},
-    {"id":"S1-ATH-0170","type":"attribute_packet","text":"사용성은 사용자가 기능을 얼마나 쉽게 이해하고 효율적으로 사용할 수 있는지를 나타내는 속성이다. 사용성은 기능의 존재 자체와 다르다.","concepts":["사용성","사용자","기능","이해"],"relations":["attribute_of","usability","boundary"]},
-    {"id":"S1-ATH-0171","type":"attribute_packet","text":"편의성은 사용자가 목표를 수행할 때 필요한 노력이나 불편이 얼마나 적은지를 나타내는 속성이다. 편의성은 사용성 전체와 동일하지 않다.","concepts":["편의성","노력","불편","사용성"],"relations":["attribute_of","degree","contrast"]},
-    {"id":"S1-ATH-0172","type":"attribute_packet","text":"조작성은 사람이 장치나 시스템을 조작해 원하는 결과를 만들기 쉬운 정도다. 조작성은 시스템의 내부 성능과 동일하지 않다.","concepts":["조작성","조작","사용자","결과"],"relations":["attribute_of","interaction","boundary"]},
-    {"id":"S1-ATH-0173","type":"attribute_packet","text":"학습용이성은 새로운 사용자가 기능이나 규칙을 얼마나 쉽게 익힐 수 있는지를 나타내는 속성이다. 학습용이성은 학습자의 현재 능력과 동일하지 않다.","concepts":["학습용이성","학습","사용자","기능"],"relations":["attribute_of","learnability","boundary"]},
-    {"id":"S1-ATH-0174","type":"attribute_packet","text":"명확성은 정보나 지시의 의미가 얼마나 모호하지 않고 분명하게 전달되는지를 나타내는 속성이다. 명확성은 정보량의 많고 적음과 다르다.","concepts":["명확성","정보","지시","모호성"],"relations":["attribute_of","communication_quality","contrast"]},
-    {"id":"S1-ATH-0175","type":"attribute_packet","text":"복잡성은 어떤 대상이나 절차가 얼마나 많은 요소와 관계를 포함해 이해하거나 처리하기 어려운지를 나타내는 속성이다. 복잡성은 단순히 크기가 크다는 뜻이 아니다.","concepts":["복잡성","요소","관계","절차"],"relations":["attribute_of","degree","boundary"]},
-    {"id":"S1-ATH-0176","type":"attribute_packet","text":"난이도는 특정 과제나 기능을 수행하는 데 요구되는 노력이나 사고의 수준이다. 난이도는 수행자의 능력과 독립적으로 고정된 값이라고 단정할 수 없다.","concepts":["난이도","과제","노력","능력"],"relations":["attribute_of","context_dependent","boundary"]},
-    {"id":"S1-ATH-0177","type":"attribute_packet","text":"자동화도는 사람이 직접 개입하지 않고 기능이 자동으로 수행되는 정도다. 자동화도는 자동화 기능의 존재 여부와 구별되는 정도의 속성이다.","concepts":["자동화도","자동화","개입","기능"],"relations":["degree_attribute","automation","boundary"]},
-    {"id":"S1-ATH-0178","type":"attribute_packet","text":"자율성은 외부의 직접적인 지시나 통제 없이 목표를 위해 판단하고 행동할 수 있는 정도다. 자율성은 통제 불가능성을 뜻하지 않는다.","concepts":["자율성","지시","통제","행동"],"relations":["attribute_of","degree","boundary"]},
-    {"id":"S1-ATH-0179","type":"attribute_packet","text":"협업성은 여러 주체가 정보를 공유하고 행동을 조정하여 공동의 결과를 만들기 쉬운 정도다. 협업성은 참여자 수와 동일하지 않다.","concepts":["협업성","주체","정보공유","조정"],"relations":["attribute_of","interaction","boundary"]},
-    {"id":"S1-ATH-0180","type":"attribute_packet","text":"의사소통능력은 정보를 이해하고 적절한 표현으로 전달하며 상대의 반응에 맞추어 조정할 수 있는 능력이다. 의사소통량과 동일하지 않다.","concepts":["의사소통능력","정보","표현","조정"],"relations":["capability","communication","boundary"]},
-    {"id":"S1-ATH-0181","type":"attribute_packet","text":"설명가능성은 어떤 결과나 판단이 왜 나왔는지를 이해할 수 있도록 설명할 수 있는 정도다. 설명가능성은 결과의 정확성을 직접 보장하지 않는다.","concepts":["설명가능성","결과","판단","설명"],"relations":["attribute_of","communication_quality","boundary"]},
-    {"id":"S1-ATH-0182","type":"attribute_packet","text":"추적가능성은 결과나 데이터가 어떤 출처와 처리 과정을 거쳤는지 따라갈 수 있는 정도다. 추적가능성은 데이터가 반드시 정확하다는 뜻은 아니다.","concepts":["추적가능성","데이터","출처","처리과정"],"relations":["attribute_of","traceability","boundary"]},
-    {"id":"S1-ATH-0183","type":"attribute_packet","text":"재현성은 같은 방법과 조건에서 비슷한 결과를 다시 얻을 수 있는 정도다. 재현성은 결과가 반드시 참이라는 의미와 다르다.","concepts":["재현성","조건","결과","방법"],"relations":["attribute_of","reproducibility","boundary"]},
-    {"id":"S1-ATH-0184","type":"attribute_packet","text":"반복가능성은 동일한 절차나 입력을 반복했을 때 결과가 일정한 수준으로 유지되는 정도다. 반복가능성은 재현성의 모든 의미를 완전히 대체하지 않는다.","concepts":["반복가능성","절차","입력","결과"],"relations":["attribute_of","repeatability","contrast"]},
-    {"id":"S1-ATH-0185","type":"attribute_packet","text":"확장성은 사용자 수나 데이터량, 작업량이 증가해도 시스템이나 절차를 확장해 대응할 수 있는 정도다. 확장성은 현재 처리능력과 다르다.","concepts":["확장성","사용자수","데이터량","처리능력"],"relations":["attribute_of","scalability","boundary"]},
-    {"id":"S1-ATH-0186","type":"attribute_packet","text":"호환성은 서로 다른 시스템이나 부품이 함께 사용되거나 상호작용할 수 있는 정도다. 호환성은 두 시스템이 동일하다는 뜻이 아니다.","concepts":["호환성","시스템","부품","상호작용"],"relations":["attribute_of","compatibility","boundary"]},
-    {"id":"S1-ATH-0187","type":"attribute_packet","text":"상호운용성은 서로 다른 시스템이 정보를 교환하고 그 정보를 활용하여 함께 기능할 수 있는 정도다. 상호운용성은 단순한 연결 가능성보다 넓다.","concepts":["상호운용성","시스템","정보교환","기능"],"relations":["attribute_of","interoperability","broader_than"]},
-    {"id":"S1-ATH-0188","type":"attribute_packet","text":"이식성은 한 환경에서 사용하던 소프트웨어나 기능을 다른 환경으로 옮겨 사용할 수 있는 정도다. 이식성은 이동 행위와 같은 개념이 아니다.","concepts":["이식성","소프트웨어","환경","사용"],"relations":["attribute_of","portability","boundary"]},
-    {"id":"S1-ATH-0189","type":"attribute_packet","text":"유지보수성은 시스템이나 제품을 점검하고 수리하거나 변경하기 쉬운 정도다. 유지보수성은 현재 정상 작동 여부와 다른 속성이다.","concepts":["유지보수성","점검","수리","변경"],"relations":["attribute_of","maintainability","boundary"]},
-    {"id":"S1-ATH-0190","type":"attribute_packet","text":"검사성은 상태나 결함을 점검하고 확인하기 쉬운 정도다. 검사성은 검사 결과의 정확성과 동일하지 않다.","concepts":["검사성","상태","결함","점검"],"relations":["attribute_of","inspectability","boundary"]},
-    {"id":"S1-ATH-0191","type":"attribute_packet","text":"진단성은 문제의 원인이나 상태를 파악하기 쉬운 정도다. 진단성이 높아도 실제 진단 결과가 자동으로 정확해지는 것은 아니다.","concepts":["진단성","문제","원인","상태"],"relations":["attribute_of","diagnosability","boundary"]},
-    {"id":"S1-ATH-0192","type":"attribute_packet","text":"보안성은 허가되지 않은 접근이나 변경, 공개를 얼마나 잘 방지하는지를 나타내는 속성이다. 보안성은 비밀성 하나로만 구성되지 않는다.","concepts":["보안성","접근","변경","공개"],"relations":["attribute_of","security","component_relation"]},
-    {"id":"S1-ATH-0193","type":"attribute_packet","text":"회복탄력성은 충격이나 장애를 겪은 뒤 핵심 기능을 유지하거나 회복할 수 있는 정도다. 회복탄력성은 단순한 복구 속도 하나와 동일하지 않다.","concepts":["회복탄력성","충격","장애","기능"],"relations":["attribute_of","resilience","boundary"]},
-    {"id":"S1-ATH-0194","type":"attribute_packet","text":"결함허용성은 일부 구성요소가 고장 나도 전체 기능을 계속 수행할 수 있는 정도다. 결함허용성은 고장이 발생하지 않는다는 의미가 아니다.","concepts":["결함허용성","고장","구성요소","기능"],"relations":["attribute_of","fault_tolerance","boundary"]},
-    {"id":"S1-ATH-0195","type":"attribute_packet","text":"안전성은 정해진 사용 조건에서 위험으로 인한 피해 가능성을 낮게 유지하는 정도다. 안전성은 위험이 전혀 없다는 뜻이 아니다.","concepts":["안전성","위험","피해","사용조건"],"relations":["attribute_of","degree","boundary"]},
-    {"id":"S1-ATH-0196","type":"attribute_packet","text":"위험민감도는 위험 요인이나 환경 변화에 성능이나 행동이 얼마나 영향을 받는지를 나타내는 속성이다. 위험민감도가 높다는 말은 반드시 성능이 나쁘다는 뜻은 아니다.","concepts":["위험민감도","위험요인","환경변화","성능"],"relations":["attribute_of","sensitivity","context"]},
-    {"id":"S1-ATH-0197","type":"attribute_packet","text":"환경적응성은 온도나 습도, 장소 등의 환경 조건이 달라져도 기능을 조정해 유지할 수 있는 정도다. 환경적응성은 특정 환경의 좋고 나쁨과 다르다.","concepts":["환경적응성","환경","조건","기능"],"relations":["attribute_of","adaptability","boundary"]},
-    {"id":"S1-ATH-0198","type":"attribute_packet","text":"에너지효율성은 사용한 에너지에 비해 얻은 유용한 산출의 비율을 나타내는 속성이다. 에너지 사용량이 적다는 사실만으로 높은 효율성을 보장하지는 않는다.","concepts":["에너지효율성","에너지","산출","비율"],"relations":["attribute_of","ratio","boundary"]},
-    {"id":"S1-ATH-0199","type":"attribute_packet","text":"자원효율성은 물질이나 시간, 인력 등의 자원을 얼마나 낭비하지 않고 목적에 사용하는지를 나타내는 속성이다. 자원효율성은 자원 사용량과 동일하지 않다.","concepts":["자원효율성","자원","낭비","목적"],"relations":["attribute_of","efficiency","boundary"]},
-    {"id":"S1-ATH-0200","type":"attribute_packet","text":"비용효율성은 비용에 비해 얻는 유용한 결과의 수준을 나타내는 속성이다. 비용효율성이 높다고 해서 비용 자체가 항상 낮은 것은 아니다.","concepts":["비용효율성","비용","결과","효율성"],"relations":["attribute_of","ratio","boundary"]},
-    {"id":"S1-ATH-0201","type":"attribute_packet","text":"시간효율성은 투입한 시간에 비해 원하는 결과를 얼마나 효과적으로 얻는지를 나타내는 속성이다. 시간효율성은 단순한 작업 속도와 다르다.","concepts":["시간효율성","시간","결과","작업속도"],"relations":["attribute_of","efficiency","contrast"]},
-    {"id":"S1-ATH-0202","type":"attribute_packet","text":"정밀도는 반복 측정이나 수행 결과가 서로 얼마나 가깝게 모이는지를 나타내는 속성이다. 정밀도는 참값에 가까운 정도인 정확도와 구분된다.","concepts":["정밀도","정확도","반복","측정"],"relations":["attribute_of","contrast","measurement_quality"]},
-    {"id":"S1-ATH-0203","type":"attribute_packet","text":"일관성은 반복되는 상황에서 행동이나 결과가 비슷한 기준과 구조를 유지하는 정도다. 일관성이 높다고 해서 결과가 반드시 정답인 것은 아니다.","concepts":["일관성","반복","행동","결과"],"relations":["attribute_of","degree","boundary"]},
-    {"id":"S1-ATH-0204","type":"attribute_packet","text":"완전성은 요구된 정보나 구성요소가 빠짐없이 포함된 정도다. 완전성은 정보가 정확하다는 뜻과 다르다.","concepts":["완전성","정보","구성요소","정확성"],"relations":["attribute_of","degree","contrast"]},
-    {"id":"S1-ATH-0205","type":"attribute_packet","text":"충족도는 요구사항이나 목표를 얼마나 많이 만족했는지를 나타내는 정도다. 충족도는 목표 자체와 동일하지 않다.","concepts":["충족도","요구사항","목표","만족"],"relations":["attribute_of","degree","boundary"]},
-    {"id":"S1-ATH-0206","type":"attribute_packet","text":"적합성은 정해진 목적이나 조건에 얼마나 잘 맞는지를 나타내는 속성이다. 적합성과 품질은 관련되지만 같은 평가 기준은 아니다.","concepts":["적합성","목적","조건","품질"],"relations":["attribute_of","fitness","contrast"]},
-    {"id":"S1-ATH-0207","type":"attribute_packet","text":"유효성은 의도한 목적이나 효과가 실제로 달성되는지를 나타내는 속성이다. 유효성은 과정이 효율적인지 여부와 별개로 평가될 수 있다.","concepts":["유효성","목적","효과","달성"],"relations":["attribute_of","effectiveness","contrast"]},
-    {"id":"S1-ATH-0208","type":"attribute_packet","text":"정당성은 어떤 판단이나 행동이 정해진 원칙이나 기준에 비추어 정당하다고 인정될 수 있는 정도다. 정당성은 결과의 효율성과 동일하지 않다.","concepts":["정당성","판단","행동","기준"],"relations":["attribute_of","normative_quality","contrast"]},
-    {"id":"S1-ATH-0209","type":"attribute_packet","text":"공정성은 관련된 사람이나 선택지에 대해 부당한 차별 없이 적절한 기준을 적용하는 정도다. 공정성은 모든 사람에게 동일한 결과를 주는 것과 동일하지 않다.","concepts":["공정성","차별","기준","결과"],"relations":["attribute_of","normative_quality","boundary"]},
-    {"id":"S1-ATH-0210","type":"attribute_packet","text":"투명성은 의사결정이나 처리 과정이 외부에서 이해하고 확인할 수 있도록 드러나는 정도다. 투명성이 높다고 해서 정보가 모두 공개되는 것은 아니다.","concepts":["투명성","의사결정","과정","정보"],"relations":["attribute_of","visibility","boundary"]},
-    {"id":"S1-ATH-0211","type":"attribute_packet","text":"책임성은 행동이나 결정의 결과에 대해 설명하고 책임을 질 수 있는 정도다. 책임성은 단순한 권한 보유와 동일하지 않다.","concepts":["책임성","행동","결정","권한"],"relations":["attribute_of","accountability","boundary"]},
-    {"id":"S1-ATH-0212","type":"attribute_packet","text":"예측가능성은 주어진 조건과 정보 아래에서 결과나 행동의 방향을 미리 예상하기 쉬운 정도다. 예측가능성은 결과가 반드시 정확히 예측된다는 뜻이 아니다.","concepts":["예측가능성","조건","정보","결과"],"relations":["attribute_of","predictability","boundary"]},
-    {"id":"S1-ATH-0213","type":"attribute_packet","text":"통제가능성은 원하는 범위 안에서 상태나 행동을 조정할 수 있는 정도다. 통제가능성은 자율성이 낮다는 뜻과 반드시 같은 것은 아니다.","concepts":["통제가능성","상태","행동","조정"],"relations":["attribute_of","control","contrast"]},
-    {"id":"S1-ATH-0214","type":"attribute_packet","text":"조절가능성은 입력이나 환경의 변화에 맞춰 출력이나 상태를 세밀하게 조정할 수 있는 정도다. 조절가능성은 통제의 존재 여부보다 미세한 조정 능력을 강조한다.","concepts":["조절가능성","입력","출력","조정"],"relations":["attribute_of","control","distinction"]},
-    {"id":"S1-ATH-0215","type":"attribute_packet","text":"민감도는 입력이나 조건이 조금 변할 때 결과가 얼마나 크게 변하는지를 나타내는 속성이다. 민감도가 높다는 사실은 변화의 방향을 의미하지 않는다.","concepts":["민감도","입력","조건","결과"],"relations":["attribute_of","sensitivity","degree"]},
-    {"id":"S1-ATH-0216","type":"attribute_packet","text":"탄력성은 어떤 변화나 압박에 대응한 뒤 원래 수준이나 기능으로 돌아가는 경향 또는 능력이다. 탄력성은 탄성이라는 물리적 물성과 동일하지 않을 수 있다.","concepts":["탄력성","회복","변화","탄성"],"relations":["attribute_of","recovery","contrast"]},
-    {"id":"S1-ATH-0217","type":"attribute_packet","text":"성능수준은 특정 조건에서 시스템이나 사람이 수행하는 기능의 현재 수준이다. 성능수준은 성능능력의 최대치와 동일하지 않다.","concepts":["성능수준","성능","현재수준","최대치"],"relations":["attribute_of","state_vs_capacity","boundary"]},
-    {"id":"S1-ATH-0218","type":"attribute_packet","text":"성능여유는 현재 성능과 허용되거나 가능한 최대 성능 사이에 남아 있는 여유의 정도다. 성능여유는 현재 처리량 자체가 아니다.","concepts":["성능여유","현재성능","최대성능","여유"],"relations":["derived_attribute","capacity_margin","boundary"]},
-    {"id":"S1-ATH-0219","type":"attribute_packet","text":"처리한계는 정해진 조건에서 더 이상 처리하기 어려워지는 작업량이나 수준의 경계다. 처리한계는 현재 처리량과 동일하지 않다.","concepts":["처리한계","처리량","경계","조건"],"relations":["limit_attribute","boundary","capacity"]},
-    {"id":"S1-ATH-0220","type":"attribute_packet","text":"최대처리량은 주어진 조건과 기간에서 처리할 수 있는 가장 큰 작업량이다. 최대처리량은 평균적으로 실제 처리하는 양과 다르다.","concepts":["최대처리량","처리량","조건","기간"],"relations":["measurement","upper_bound","potential_vs_actual"]},
-    {"id":"S1-ATH-0221","type":"attribute_packet","text":"평균처리량은 일정 기간의 전체 처리량을 그 기간의 기준에 따라 평균낸 값이다. 평균처리량은 최대처리량과 다르다.","concepts":["평균처리량","처리량","평균","기간"],"relations":["measurement","aggregation","contrast"]},
-    {"id":"S1-ATH-0222","type":"attribute_packet","text":"처리지연은 요청이나 입력이 발생한 뒤 실제 처리 결과가 나오기까지 추가로 발생하는 시간이다. 처리지연은 처리시간 전체와 동일하지 않을 수 있다.","concepts":["처리지연","요청","처리","시간"],"relations":["temporal_attribute","delay","boundary"]},
-    {"id":"S1-ATH-0223","type":"attribute_packet","text":"대기시간은 요청이나 작업이 실제 처리되기 전에 기다리는 시간의 양이다. 대기시간과 처리시간은 서로 다른 시간 구성요소다.","concepts":["대기시간","처리시간","요청","시간"],"relations":["temporal_attribute","component_relation","contrast"]},
-    {"id":"S1-ATH-0224","type":"attribute_packet","text":"응답시간은 요청을 받은 시점부터 응답이 제공될 때까지 걸리는 전체 시간을 나타내는 지표다. 응답시간에는 대기와 처리 등이 함께 포함될 수 있다.","concepts":["응답시간","요청","응답","대기시간"],"relations":["measurement","aggregate_duration"]},
-    {"id":"S1-ATH-0225","type":"attribute_packet","text":"성공률은 전체 시도 중 성공한 시도의 비율이다. 성공률은 성공한 사건 하나의 결과와 동일하지 않다.","concepts":["성공률","시도","성공","비율"],"relations":["measurement","ratio","boundary"]},
-    {"id":"S1-ATH-0226","type":"attribute_packet","text":"실패율은 전체 시도 중 실패한 시도의 비율이다. 실패율과 실패 사건은 측정값과 사건이라는 다른 유형이다.","concepts":["실패율","실패","시도","비율"],"relations":["measurement","ratio","boundary"]},
-    {"id":"S1-ATH-0227","type":"attribute_packet","text":"오류율은 전체 처리나 측정 중 오류가 발생한 비율이다. 오류율은 오류 하나의 크기나 심각도를 직접 나타내지 않는다.","concepts":["오류율","오류","처리","비율"],"relations":["measurement","ratio","boundary"]},
-    {"id":"S1-ATH-0228","type":"attribute_packet","text":"가동률은 전체 관찰 기간 중 시스템이나 설비가 작동 가능한 상태로 운영된 시간의 비율이다. 가동률은 성능 수준 자체와 다르다.","concepts":["가동률","운영","시간","성능"],"relations":["measurement","ratio","contrast"]},
-    {"id":"S1-ATH-0229","type":"attribute_packet","text":"중단률은 전체 관찰 기간이나 시도 중 기능이 중단된 비율이다. 중단률은 중단 시간만으로 결정되는 지표가 아닐 수 있다.","concepts":["중단률","중단","기간","비율"],"relations":["measurement","ratio","boundary"]},
-    {"id":"S1-ATH-0230","type":"attribute_packet","text":"재시도성은 실패나 오류가 발생했을 때 같은 작업을 다시 수행해 결과를 얻기 쉬운 정도다. 재시도성은 성공률과 다른 속성이다.","concepts":["재시도성","실패","재시도","성공률"],"relations":["attribute_of","recoverability","contrast"]},
-    {"id":"S1-ATH-0231","type":"attribute_packet","text":"복원시간은 장애나 손상 이후 기능을 다시 사용할 수 있게 되는 데 걸리는 시간이다. 복원시간은 회복성이라는 능력과 구분된다.","concepts":["복원시간","장애","기능","회복성"],"relations":["measurement","temporal_attribute","contrast"]},
-    {"id":"S1-ATH-0232","type":"attribute_packet","text":"가동시간은 시스템이나 장비가 실제로 작동한 시간의 양이다. 가동시간과 가동률은 절대 시간과 비율이라는 차이가 있다.","concepts":["가동시간","가동률","작동","시간"],"relations":["measurement","contrast"]},
-    {"id":"S1-ATH-0233","type":"attribute_packet","text":"평균수명은 여러 대상의 수명 데이터를 평균하여 얻은 대표값이다. 평균수명은 개별 대상 하나의 실제 수명과 동일하지 않다.","concepts":["평균수명","수명","평균","대표값"],"relations":["measurement","aggregation","boundary"]},
-    {"id":"S1-ATH-0234","type":"attribute_packet","text":"수용능력은 사람이나 작업, 데이터를 받아들여 처리할 수 있는 최대 또는 적절한 수준의 능력이다. 수용능력은 현재 점유량과 다르다.","concepts":["수용능력","수용","처리","점유량"],"relations":["capability","capacity","boundary"]},
-    {"id":"S1-ATH-0235","type":"attribute_packet","text":"동시처리능력은 여러 작업을 동시에 처리할 수 있는 능력이다. 동시처리능력은 단일 작업의 처리속도와 구분된다.","concepts":["동시처리능력","작업","처리속도","병렬"],"relations":["capability","parallelism","contrast"]},
-    {"id":"S1-ATH-0236","type":"attribute_packet","text":"병렬처리성은 여러 작업이나 데이터 흐름을 동시에 나누어 처리하기 쉬운 정도다. 병렬처리성은 실제 병렬 처리량과 다르다.","concepts":["병렬처리성","작업","데이터","처리"],"relations":["attribute_of","parallelism","potential_vs_actual"]},
-    {"id":"S1-ATH-0237","type":"attribute_packet","text":"호출가능성은 기능이나 인터페이스를 외부 요청으로 실행할 수 있는 정도다. 호출가능성은 호출이 실제로 성공했다는 결과와 다르다.","concepts":["호출가능성","기능","인터페이스","요청"],"relations":["attribute_of","accessibility","potential_vs_actual"]},
-    {"id":"S1-ATH-0238","type":"attribute_packet","text":"축소가능성은 수요나 자원 규모가 줄어들 때 기능이나 시스템 규모를 줄여 운영하기 쉬운 정도다. 축소가능성은 확장성과 반대 방향을 가진 별도 속성이다.","concepts":["축소가능성","수요","자원","규모"],"relations":["attribute_of","scalability","contrast"]},
-    {"id":"S1-ATH-0239","type":"attribute_packet","text":"설정가능성은 사용자가 목적이나 조건에 맞게 기능과 동작을 변경할 수 있는 정도다. 설정가능성은 수정 가능성 전체와 동일하지 않다.","concepts":["설정가능성","사용자","기능","조건"],"relations":["attribute_of","configurability","boundary"]},
-    {"id":"S1-ATH-0240","type":"attribute_packet","text":"맞춤가능성은 사용자나 상황의 차이에 맞춰 결과나 기능을 조정할 수 있는 정도다. 맞춤가능성은 개인화된 결과 하나와 동일하지 않다.","concepts":["맞춤가능성","사용자","상황","조정"],"relations":["attribute_of","customizability","boundary"]},
-    {"id":"S1-ATH-0241","type":"attribute_packet","text":"재사용성은 같은 자원이나 구성요소를 다른 작업이나 상황에서도 다시 활용하기 쉬운 정도다. 재사용성은 실제 재사용 횟수와 다르다.","concepts":["재사용성","자원","구성요소","활용"],"relations":["attribute_of","reusability","potential_vs_actual"]},
-    {"id":"S1-ATH-0242","type":"attribute_packet","text":"재활용성은 사용한 제품이나 재료를 새로운 자원으로 되돌려 활용하기 쉬운 정도다. 재활용성은 실제 재활용률과 동일하지 않다.","concepts":["재활용성","제품","재료","재활용률"],"relations":["attribute_of","recyclability","boundary"]},
-    {"id":"S1-ATH-0243","type":"attribute_packet","text":"수리가능성은 고장이나 손상이 생긴 제품을 분해하고 수리해 다시 사용할 수 있는 정도다. 수리가능성과 실제 수리는 구분된다.","concepts":["수리가능성","고장","수리","제품"],"relations":["attribute_of","repairability","potential_vs_actual"]},
-    {"id":"S1-ATH-0244","type":"attribute_packet","text":"교체가능성은 부품이나 구성요소를 다른 것으로 바꾸어 기능을 유지하기 쉬운 정도다. 교체가능성은 실제 교체 행위가 아니다.","concepts":["교체가능성","부품","기능","교체"],"relations":["attribute_of","replaceability","boundary"]},
-    {"id":"S1-ATH-0245","type":"attribute_packet","text":"모듈성은 시스템이 비교적 독립적인 모듈들로 나뉘어 구성되고 변경되기 쉬운 정도다. 모듈성은 모듈 하나의 존재와 동일하지 않다.","concepts":["모듈성","모듈","시스템","구성"],"relations":["attribute_of","modularity","boundary"]},
-    {"id":"S1-ATH-0246","type":"attribute_packet","text":"분해가능성은 복합적인 제품이나 구조를 구성요소로 나누기 쉬운 정도다. 분해가능성은 실제 분해 작업과 다르다.","concepts":["분해가능성","구성요소","제품","분해"],"relations":["attribute_of","disassemblability","potential_vs_actual"]},
-    {"id":"S1-ATH-0247","type":"attribute_packet","text":"조립가능성은 여러 구성요소를 정해진 방식으로 결합해 기능하는 하나의 구조를 만들기 쉬운 정도다. 조립가능성은 조립 결과와 다르다.","concepts":["조립가능성","구성요소","결합","구조"],"relations":["attribute_of","assemblability","boundary"]},
-    {"id":"S1-ATH-0248","type":"attribute_packet","text":"재설정가능성은 시스템이나 장치를 새로운 조건에 맞게 설정 상태를 바꿀 수 있는 정도다. 재설정가능성은 실제 재설정 횟수와 다르다.","concepts":["재설정가능성","시스템","설정","조건"],"relations":["attribute_of","reconfigurability","potential_vs_actual"]},
-    {"id":"S1-ATH-0249","type":"attribute_packet","text":"복구가능성은 오류나 손상 이후 이전 또는 허용 가능한 상태로 돌아갈 수 있는 정도다. 복구가능성은 복구가 실제 완료되었다는 결과와 다르다.","concepts":["복구가능성","오류","손상","상태"],"relations":["attribute_of","recoverability","potential_vs_actual"]},
-    {"id":"S1-ATH-0250","type":"attribute_packet","text":"가역성은 어떤 변화가 반대 방향의 과정으로 다시 원래 상태에 가까워질 수 있는 정도다. 가역성은 실제 원상복구가 항상 이루어진다는 뜻은 아니다.","concepts":["가역성","변화","원래상태","복구"],"relations":["attribute_of","reversibility","boundary"]},
-    {"id":"S1-ATH-0251","type":"attribute_packet","text":"불가역성은 일단 일어난 변화가 같은 경로로 되돌리기 어려운 정도다. 불가역성은 변화가 절대로 되돌릴 수 없다는 주장과 항상 동일하지 않다.","concepts":["불가역성","변화","되돌림","경로"],"relations":["attribute_of","irreversibility","boundary"]},
-    {"id":"S1-ATH-0252","type":"attribute_packet","text":"품질수준은 대상이나 서비스가 정해진 품질 기준을 얼마나 충족하는지를 나타내는 현재 수준이다. 품질수준은 품질 기준 자체와 다르다.","concepts":["품질수준","품질","기준","현재수준"],"relations":["attribute_of","evaluation_level","boundary"]},
-    {"id":"S1-ATH-0253","type":"attribute_packet","text":"만족도는 사용자가 경험한 결과가 기대나 요구를 얼마나 충족한다고 느끼는지를 나타내는 정도다. 만족도는 객관적인 성능값과 동일하지 않다.","concepts":["만족도","사용자","기대","성능"],"relations":["attribute_of","subjective_measure","boundary"]},
-    {"id":"S1-ATH-0254","type":"attribute_packet","text":"선호도는 여러 선택지 가운데 특정 선택지를 더 좋아하거나 선택하려는 정도다. 선호도는 선택 빈도와 동일하지 않을 수 있다.","concepts":["선호도","선택지","선택","빈도"],"relations":["attribute_of","preference","boundary"]},
-    {"id":"S1-ATH-0255","type":"attribute_packet","text":"사용빈도는 일정 기간 동안 어떤 기능이나 자원이 사용되는 횟수나 빈도다. 사용빈도는 사용 가능성이나 성능을 직접 의미하지 않는다.","concepts":["사용빈도","사용","기간","성능"],"relations":["measurement","frequency","boundary"]},
-    {"id":"S1-ATH-0256","type":"attribute_packet","text":"활용도는 가진 자원이나 기능이 실제 목적에 얼마나 폭넓게 활용되는지를 나타내는 정도다. 활용도는 자원의 존재 여부와 다르다.","concepts":["활용도","자원","기능","목적"],"relations":["attribute_of","utilization","boundary"]},
-    {"id":"S1-ATH-0257","type":"attribute_packet","text":"집중도는 활동이나 자원이 특정 대상이나 영역에 얼마나 몰려 있는지를 나타내는 정도다. 집중도는 총량과 동일하지 않다.","concepts":["집중도","활동","자원","분포"],"relations":["measurement","distribution_attribute"]},
-    {"id":"S1-ATH-0258","type":"attribute_packet","text":"분산도는 자원이나 활동이 여러 대상이나 공간에 얼마나 퍼져 있는지를 나타내는 정도다. 분산도는 대상의 총량과 다른 속성이다.","concepts":["분산도","자원","활동","분포"],"relations":["measurement","distribution_attribute","contrast"]},
-    {"id":"S1-ATH-0259","type":"attribute_packet","text":"행동규칙성은 반복적인 상황에서 특정 행동 패턴이 얼마나 규칙적으로 나타나는지를 나타내는 속성이다. 행동규칙성은 행동의 옳고 그름을 판단하는 기준이 아니다.","concepts":["행동규칙성","행동","패턴","반복"],"relations":["attribute_of","behavioral_pattern","boundary"]},
-    {"id":"S1-ATH-0260","type":"attribute_packet","text":"행동일관성은 비슷한 조건에서 행동 방식이나 선택이 얼마나 안정적으로 유지되는지를 나타내는 속성이다. 행동일관성은 행동의 정확성과 동일하지 않다.","concepts":["행동일관성","행동","조건","안정성"],"relations":["attribute_of","behavioral_consistency","contrast"]},
-    {"id":"S1-ATH-0261","type":"attribute_packet","text":"행동예측가능성은 주어진 상황과 정보에서 어떤 행동이 나올지 미리 예상하기 쉬운 정도다. 예측가능성은 행동의 적절성을 의미하지 않는다.","concepts":["행동예측가능성","행동","상황","예측"],"relations":["attribute_of","predictability","boundary"]},
-    {"id":"S1-ATH-0262","type":"attribute_packet","text":"반응일관성은 비슷한 자극이나 입력에 대해 유사한 방식으로 반응하는 정도다. 반응일관성은 반응속도와 다른 속성이다.","concepts":["반응일관성","자극","입력","반응"],"relations":["attribute_of","behavioral_consistency","contrast"]},
-    {"id":"S1-ATH-0263","type":"attribute_packet","text":"행동유연성은 상황이 달라졌을 때 기존 행동을 고집하지 않고 적절한 행동으로 바꾸는 능력이다. 행동유연성은 행동이 항상 바뀐다는 뜻은 아니다.","concepts":["행동유연성","상황","행동","전환"],"relations":["capability","adaptation","boundary"]},
-    {"id":"S1-ATH-0264","type":"attribute_packet","text":"주의집중성은 관련 정보나 대상에 주의를 유지하고 불필요한 자극을 상대적으로 배제하는 정도다. 주의집중성은 관찰 범위와 동일하지 않다.","concepts":["주의집중성","주의","정보","자극"],"relations":["attribute_of","cognitive_attribute"]},
-    {"id":"S1-ATH-0265","type":"attribute_packet","text":"지속주의성은 일정 기간 동안 한 대상이나 과제에 주의를 유지할 수 있는 능력이다. 지속주의성은 주의집중성이 한 순간 높다는 것과 다르다.","concepts":["지속주의성","주의","기간","과제"],"relations":["capability","temporal_attribute","contrast"]},
-    {"id":"S1-ATH-0266","type":"attribute_packet","text":"전환능력은 하나의 과제나 규칙에서 다른 과제나 규칙으로 주의를 전환할 수 있는 능력이다. 전환능력은 작업 속도와 동일하지 않다.","concepts":["전환능력","과제","규칙","주의"],"relations":["capability","cognitive_attribute","contrast"]},
-    {"id":"S1-ATH-0267","type":"attribute_packet","text":"기억용이성은 정보를 어렵지 않게 기억하고 다시 떠올리기 쉬운 정도다. 기억용이성은 실제 회상 성공률과 다르다.","concepts":["기억용이성","정보","기억","회상"],"relations":["attribute_of","cognitive_attribute","potential_vs_actual"]},
-    {"id":"S1-ATH-0268","type":"attribute_packet","text":"학습성은 경험이나 연습을 통해 기능이나 행동을 변화시키고 개선하기 쉬운 정도다. 학습성은 현재 숙련도와 동일하지 않다.","concepts":["학습성","학습","경험","숙련도"],"relations":["attribute_of","learning_attribute","boundary"]},
-    {"id":"S1-ATH-0269","type":"attribute_packet","text":"일반화능력은 한 상황에서 학습하거나 파악한 규칙이나 지식을 다른 상황에도 적용할 수 있는 능력이다. 일반화능력은 단순 암기량과 다르다.","concepts":["일반화능력","지식","규칙","적용"],"relations":["capability","generalization","contrast"]},
-    {"id":"S1-ATH-0270","type":"attribute_packet","text":"추론능력은 주어진 정보와 관계를 이용해 직접 제시되지 않은 결론을 도출할 수 있는 능력이다. 추론능력은 보유한 정보의 양과 동일하지 않다.","concepts":["추론능력","정보","관계","결론"],"relations":["capability","reasoning","boundary"]},
-    {"id":"S1-ATH-0271","type":"attribute_packet","text":"문제해결능력은 주어진 문제의 조건을 파악하고 적절한 방법을 찾아 목표 상태에 도달하는 능력이다. 문제해결능력은 단순 지식량과 다르다.","concepts":["문제해결능력","문제","조건","목표상태"],"relations":["capability","problem_solving","contrast"]},
-    {"id":"S1-ATH-0272","type":"attribute_packet","text":"의사결정능력은 여러 선택지와 정보를 비교해 목적에 맞는 결정을 선택할 수 있는 능력이다. 의사결정능력과 결정 결과의 품질은 동일하지 않다.","concepts":["의사결정능력","선택지","정보","결정"],"relations":["capability","decision_making","boundary"]},
-    {"id":"S1-ATH-0273","type":"attribute_packet","text":"계획수행력은 정해진 계획을 실제 행동으로 옮기고 필요한 조정을 하면서 목표에 접근하는 능력이다. 계획수행력은 계획의 품질 자체와 다르다.","concepts":["계획수행력","계획","행동","목표"],"relations":["capability","execution","boundary"]},
-    {"id":"S1-ATH-0274","type":"attribute_packet","text":"우선순위설정능력은 여러 과제 중 무엇을 먼저 처리할지 목적과 제약을 고려해 판단하는 능력이다. 우선순위설정능력은 처리속도와 다르다.","concepts":["우선순위설정능력","과제","목적","제약"],"relations":["capability","decision_making","contrast"]},
-    {"id":"S1-ATH-0275","type":"attribute_packet","text":"자기조절능력은 자신의 행동이나 주의를 목표에 맞게 조정하고 충동이나 산만함을 관리하는 능력이다. 자기조절능력은 행동 억제 하나에 한정되지 않는다.","concepts":["자기조절능력","행동","주의","목표"],"relations":["capability","self_control"]},
-    {"id":"S1-ATH-0276","type":"attribute_packet","text":"충동억제능력은 즉각적인 반응을 멈추고 더 적절한 행동을 선택할 수 있는 능력이다. 충동억제능력은 반응속도가 느리다는 뜻이 아니다.","concepts":["충동억제능력","충동","반응","행동"],"relations":["capability","inhibition","contrast"]},
-    {"id":"S1-ATH-0277","type":"attribute_packet","text":"협상능력은 서로 다른 요구와 이해관계를 조정해 합의 가능한 선택지를 찾는 능력이다. 협상능력은 상대를 이기는 능력과 동일하지 않다.","concepts":["협상능력","요구","이해관계","합의"],"relations":["capability","coordination","boundary"]},
-    {"id":"S1-ATH-0278","type":"attribute_packet","text":"갈등조정능력은 충돌하는 요구나 관계를 분석하고 서로 수용할 수 있는 해결 방향으로 조정하는 능력이다. 갈등조정능력은 갈등이 없다는 상태와 다르다.","concepts":["갈등조정능력","갈등","요구","해결"],"relations":["capability","conflict_management","boundary"]},
-    {"id":"S1-ATH-0279","type":"attribute_packet","text":"공감능력은 다른 사람의 감정이나 관점을 이해하고 그에 맞게 반응할 수 있는 능력이다. 공감능력은 상대의 의견에 동의하는 것과 동일하지 않다.","concepts":["공감능력","감정","관점","반응"],"relations":["capability","social_attribute","boundary"]},
-    {"id":"S1-ATH-0280","type":"attribute_packet","text":"설명능력은 복잡하거나 추상적인 내용을 상대가 이해할 수 있도록 구조화해 전달하는 능력이다. 설명능력은 말이 많은 것과 같지 않다.","concepts":["설명능력","내용","구조화","이해"],"relations":["capability","communication","boundary"]},
-    {"id":"S1-ATH-0281","type":"attribute_packet","text":"질문명확성은 질문이 무엇을 묻는지 모호하지 않게 표현되는 정도다. 질문명확성이 높아도 질문이 반드시 좋은 질문이라는 뜻은 아니다.","concepts":["질문명확성","질문","모호성","표현"],"relations":["attribute_of","communication_quality","boundary"]},
-    {"id":"S1-ATH-0282","type":"attribute_packet","text":"지시순응성은 주어진 지시의 요구사항을 적절하게 해석하고 수행하는 정도다. 지시순응성은 지시가 타당하다는 판단을 포함하지 않는다.","concepts":["지시순응성","지시","요구사항","수행"],"relations":["attribute_of","instruction_following","boundary"]},
-    {"id":"S1-ATH-0283","type":"attribute_packet","text":"요구사항충족성은 결과가 주어진 요구사항을 어느 정도 충족하는지를 나타내는 속성이다. 요구사항충족성은 결과의 모든 품질 차원을 의미하지 않는다.","concepts":["요구사항충족성","요구사항","결과","품질"],"relations":["attribute_of","degree","boundary"]},
-    {"id":"S1-ATH-0284","type":"attribute_packet","text":"예외처리성은 정상적인 경로에서 벗어난 입력이나 상황을 적절하게 처리할 수 있는 정도다. 예외처리성은 예외가 전혀 발생하지 않는다는 뜻이 아니다.","concepts":["예외처리성","예외","입력","처리"],"relations":["attribute_of","robustness","boundary"]},
-    {"id":"S1-ATH-0285","type":"attribute_packet","text":"오류복구성은 오류가 발생한 뒤 서비스나 기능을 허용 가능한 상태로 되돌리기 쉬운 정도다. 오류복구성은 오류율과 다른 속성이다.","concepts":["오류복구성","오류","복구","기능"],"relations":["attribute_of","recoverability","contrast"]},
-    {"id":"S1-ATH-0286","type":"attribute_packet","text":"부하대응성은 작업량이나 사용자 수가 증가했을 때 성능 저하를 관리하고 기능을 유지하는 정도다. 부하대응성은 평상시 성능과 다르다.","concepts":["부하대응성","부하","사용자","성능"],"relations":["attribute_of","load_handling","boundary"]},
-    {"id":"S1-ATH-0287","type":"attribute_packet","text":"피크대응성은 일시적으로 수요가 크게 증가한 상황에서도 기능을 유지하거나 자원을 조정하는 정도다. 피크대응성은 평균 처리능력과 구분된다.","concepts":["피크대응성","수요","자원","처리능력"],"relations":["attribute_of","peak_handling","contrast"]},
-    {"id":"S1-ATH-0288","type":"attribute_packet","text":"자원가변성은 자원의 양이나 종류가 달라질 때 기능을 그에 맞게 조정할 수 있는 정도다. 자원가변성은 자원량 자체와 다르다.","concepts":["자원가변성","자원","기능","조정"],"relations":["attribute_of","adaptation","boundary"]},
-    {"id":"S1-ATH-0289","type":"attribute_packet","text":"운영유연성은 운영 조건이나 업무량이 달라졌을 때 절차와 자원 배치를 조정할 수 있는 정도다. 운영유연성은 운영 규모 자체와 동일하지 않다.","concepts":["운영유연성","운영","업무량","자원배치"],"relations":["attribute_of","operational_flexibility"]},
-    {"id":"S1-ATH-0290","type":"attribute_packet","text":"서비스일관성은 여러 시점이나 사용자에게 비슷한 기준으로 서비스를 제공하는 정도다. 서비스일관성은 서비스 품질이 높다는 뜻과 동일하지 않다.","concepts":["서비스일관성","서비스","사용자","기준"],"relations":["attribute_of","consistency","boundary"]},
-    {"id":"S1-ATH-0291","type":"attribute_packet","text":"서비스신속성은 사용자의 요청에 대해 서비스를 얼마나 빠르게 제공하는지를 나타내는 속성이다. 서비스신속성은 서비스 품질 전체와 다르다.","concepts":["서비스신속성","요청","서비스","속도"],"relations":["attribute_of","responsiveness","boundary"]},
-    {"id":"S1-ATH-0292","type":"attribute_packet","text":"서비스접근성은 사용자가 필요한 서비스에 접근하고 이용하기 쉬운 정도다. 서비스접근성은 서비스가 존재하는지 여부와 구분된다.","concepts":["서비스접근성","서비스","사용자","이용"],"relations":["attribute_of","accessibility"]},
-    {"id":"S1-ATH-0293","type":"attribute_packet","text":"서비스가용성은 서비스가 필요한 시점에 실제로 제공 가능한 정도다. 서비스가용성과 서비스의 최대 처리능력은 다른 속성이다.","concepts":["서비스가용성","서비스","제공","처리능력"],"relations":["attribute_of","availability","contrast"]},
-    {"id":"S1-ATH-0294","type":"attribute_packet","text":"사용자대응성은 사용자의 요청이나 문제 제기에 적절하고 신속하게 반응하는 정도다. 사용자대응성은 단순한 응답 속도만을 의미하지 않는다.","concepts":["사용자대응성","사용자","요청","반응"],"relations":["attribute_of","responsiveness","boundary"]},
-    {"id":"S1-ATH-0295","type":"attribute_packet","text":"업무정확성은 수행한 업무 결과가 요구되는 기준과 사실에 얼마나 잘 맞는지를 나타내는 속성이다. 업무정확성은 업무 속도와 다르다.","concepts":["업무정확성","업무","결과","기준"],"relations":["attribute_of","accuracy","contrast"]},
-    {"id":"S1-ATH-0296","type":"attribute_packet","text":"업무완결성은 필요한 업무 단계와 결과가 빠짐없이 끝난 정도다. 업무완결성은 단순히 업무를 시작했다는 사실과 구분된다.","concepts":["업무완결성","업무","단계","결과"],"relations":["attribute_of","completeness","boundary"]},
-    {"id":"S1-ATH-0297","type":"attribute_packet","text":"업무효율성은 업무에 투입한 시간과 자원에 비해 필요한 결과를 얼마나 효과적으로 얻는지를 나타내는 속성이다. 업무효율성은 업무량 자체와 다르다.","concepts":["업무효율성","업무","시간","자원"],"relations":["attribute_of","efficiency","boundary"]},
-    {"id":"S1-ATH-0298","type":"attribute_packet","text":"작업속도는 정해진 작업을 수행하는 속도의 정도다. 작업속도가 빠르더라도 정확성이나 품질이 낮을 수 있으므로 속도만으로 전체 성능을 판단할 수 없다.","concepts":["작업속도","작업","정확성","품질"],"relations":["attribute_of","rate","contrast"]},
-    {"id":"S1-ATH-0299","type":"attribute_packet","text":"작업정밀성은 작업 결과가 요구된 세부 수준과 허용 오차 안에 얼마나 잘 맞는지를 나타내는 속성이다. 작업정밀성은 작업속도와 독립적인 평가 축이 될 수 있다.","concepts":["작업정밀성","작업","오차","기준"],"relations":["attribute_of","precision","contrast"]},
-    {"id":"S1-ATH-0300","type":"attribute_packet","text":"작업일관성은 반복 작업에서 과정과 결과가 일정한 기준에 따라 안정적으로 유지되는 정도다. 작업일관성은 작업 결과가 항상 최고 품질이라는 뜻은 아니다.","concepts":["작업일관성","작업","반복","결과"],"relations":["attribute_of","consistency","boundary"]}
+    {
+      "id": "S1-ATH-0151",
+      "type": "attribute_packet",
+      "text": "시스템성능정확성은 수행이나 결과가 기준에 얼마나 잘 맞는지를 나타내는 속성이다. 시스템성능정확성은 결과의 속도와 동일하지 않다.",
+      "concepts": [
+        "시스템성능정확성",
+        "수행",
+        "결과",
+        "기준"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0152",
+      "type": "attribute_packet",
+      "text": "신뢰성은 일정한 조건에서 기능이나 결과를 안정적으로 제공하는 정도다. 신뢰성은 단 한 번의 성공만으로 판단되는 속성이 아니다.",
+      "concepts": [
+        "신뢰성",
+        "기능",
+        "결과",
+        "안정성"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0153",
+      "type": "attribute_packet",
+      "text": "시스템성능안정성은 외부 변화나 교란이 있어도 상태나 성능이 크게 흔들리지 않는 정도다. 시스템성능안정성은 변화가 전혀 없다는 뜻은 아니다.",
+      "concepts": [
+        "시스템성능안정성",
+        "변화",
+        "교란",
+        "성능"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0154",
+      "type": "attribute_packet",
+      "text": "효율성은 투입한 자원에 비해 원하는 산출을 얼마나 잘 얻는지를 나타내는 속성이다. 효율성은 산출량 자체와 다르다.",
+      "concepts": [
+        "효율성",
+        "투입",
+        "산출",
+        "자원"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0155",
+      "type": "attribute_packet",
+      "text": "생산성은 일정한 자원이나 시간으로 만들어 내는 유용한 산출의 수준을 나타내는 속성이다. 생산성은 작업량과 같은 개념이 아니다.",
+      "concepts": [
+        "생산성",
+        "자원",
+        "시간",
+        "산출"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0156",
+      "type": "attribute_packet",
+      "text": "처리능력은 시스템이나 사람이 일정한 시간이나 조건에서 처리할 수 있는 작업량의 능력이다. 처리능력은 실제 처리량과 구분된다.",
+      "concepts": [
+        "처리능력",
+        "처리량",
+        "시간",
+        "능력"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0157",
+      "type": "attribute_packet",
+      "text": "처리속도는 일정한 양의 작업을 얼마나 빠르게 처리하는지를 나타내는 성능 속성이다. 처리속도는 처리능력의 총량과 동일하지 않다.",
+      "concepts": [
+        "처리속도",
+        "처리능력",
+        "작업",
+        "시간"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0158",
+      "type": "attribute_packet",
+      "text": "응답성은 요청이나 자극에 적절하고 빠르게 반응하는 정도다. 응답성은 응답 결과의 정확성과 별개의 속성 축이 될 수 있다.",
+      "concepts": [
+        "응답성",
+        "요청",
+        "반응",
+        "정확성"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0159",
+      "type": "attribute_packet",
+      "text": "시스템성능반응성은 외부 자극이나 입력에 변화가 일어나는 정도다. 시스템성능반응성은 변화의 방향이 긍정적인지 여부를 직접 의미하지 않는다.",
+      "concepts": [
+        "시스템성능반응성",
+        "자극",
+        "입력",
+        "변화"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0160",
+      "type": "attribute_packet",
+      "text": "민첩성은 상황 변화에 맞춰 빠르게 판단하거나 행동을 전환하는 능력이다. 민첩성은 단순한 이동 속도와 동일하지 않다.",
+      "concepts": [
+        "민첩성",
+        "판단",
+        "행동",
+        "전환"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "is_a",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0161",
+      "type": "attribute_packet",
+      "text": "시스템성능유연성은 조건이나 요구가 달라졌을 때 행동이나 기능을 적절히 바꿀 수 있는 정도다. 시스템성능유연성은 무원칙한 변화를 뜻하지 않는다.",
+      "concepts": [
+        "시스템성능유연성",
+        "조건",
+        "요구",
+        "변화"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0162",
+      "type": "attribute_packet",
+      "text": "적응성은 새로운 환경이나 조건에 맞추어 기능이나 행동을 조정할 수 있는 능력이다. 적응성은 현재 상태가 좋은지를 직접 뜻하지 않는다.",
+      "concepts": [
+        "적응성",
+        "환경",
+        "조건",
+        "조정"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0163",
+      "type": "attribute_packet",
+      "text": "지속성은 기능이나 행동이 일정 기간 동안 유지되는 정도다. 지속성은 지속시간이라는 측정값 그 자체와 다르다.",
+      "concepts": [
+        "지속성",
+        "기능",
+        "행동",
+        "지속시간"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0164",
+      "type": "attribute_packet",
+      "text": "회복성은 손상이나 중단 이후 원래의 기능이나 성능 수준으로 돌아가는 능력이다. 회복성은 복구 작업 자체가 아니다.",
+      "concepts": [
+        "회복성",
+        "손상",
+        "기능",
+        "성능"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0165",
+      "type": "attribute_packet",
+      "text": "견고성은 외부 교란이나 오류가 있어도 기능이나 결과가 크게 무너지지 않는 정도다. 견고성은 안정성과 관련되지만 같은 속성은 아니다.",
+      "concepts": [
+        "견고성",
+        "교란",
+        "오류",
+        "기능"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0166",
+      "type": "attribute_packet",
+      "text": "시스템성능내구성은 장시간 운전과 반복 부하에도 요구 성능을 잃지 않는 정도다. 재료 한 조각의 강도보다 시스템 전체의 지속 수행을 평가한다.",
+      "concepts": [
+        "시스템성능내구성",
+        "사용",
+        "시간",
+        "기능"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0167",
+      "type": "attribute_packet",
+      "text": "용량은 시스템이나 용기가 받아들이거나 저장하거나 처리할 수 있는 양의 한계 또는 수준이다. 용량은 실제 사용량과 다르다.",
+      "concepts": [
+        "용량",
+        "한계",
+        "저장량",
+        "처리량"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0168",
+      "type": "attribute_packet",
+      "text": "가용성은 필요한 시점에 기능이나 자원을 실제로 사용할 수 있는 정도다. 가용성은 존재 여부와 동일하지 않다.",
+      "concepts": [
+        "가용성",
+        "기능",
+        "자원",
+        "사용 가능성"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0169",
+      "type": "attribute_packet",
+      "text": "접근성은 사용자가 기능이나 정보, 공간에 접근하고 이용하기 쉬운 정도다. 접근성은 접근 권한 자체와 다른 속성이다.",
+      "concepts": [
+        "접근성",
+        "사용자",
+        "접근",
+        "이용"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0170",
+      "type": "attribute_packet",
+      "text": "사용성은 사용자가 기능을 얼마나 쉽게 이해하고 효율적으로 사용할 수 있는지를 나타내는 속성이다. 사용성은 기능의 존재 자체와 다르다.",
+      "concepts": [
+        "사용성",
+        "사용자",
+        "기능",
+        "이해"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0171",
+      "type": "attribute_packet",
+      "text": "편의성은 사용자가 목표를 수행할 때 필요한 노력이나 불편이 얼마나 적은지를 나타내는 속성이다. 편의성은 사용성 전체와 동일하지 않다.",
+      "concepts": [
+        "편의성",
+        "노력",
+        "불편",
+        "사용성"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0172",
+      "type": "attribute_packet",
+      "text": "조작성은 사람이 장치나 시스템을 조작해 원하는 결과를 만들기 쉬운 정도다. 조작성은 시스템의 내부 성능과 동일하지 않다.",
+      "concepts": [
+        "조작성",
+        "조작",
+        "사용자",
+        "결과"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0173",
+      "type": "attribute_packet",
+      "text": "학습용이성은 새로운 사용자가 기능이나 규칙을 얼마나 쉽게 익힐 수 있는지를 나타내는 속성이다. 학습용이성은 학습자의 현재 능력과 동일하지 않다.",
+      "concepts": [
+        "학습용이성",
+        "학습",
+        "사용자",
+        "기능"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0174",
+      "type": "attribute_packet",
+      "text": "명확성은 정보나 지시의 의미가 얼마나 모호하지 않고 분명하게 전달되는지를 나타내는 속성이다. 명확성은 정보량의 많고 적음과 다르다.",
+      "concepts": [
+        "명확성",
+        "정보",
+        "지시",
+        "모호성"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0175",
+      "type": "attribute_packet",
+      "text": "복잡성은 어떤 대상이나 절차가 얼마나 많은 요소와 관계를 포함해 이해하거나 처리하기 어려운지를 나타내는 속성이다. 복잡성은 단순히 크기가 크다는 뜻이 아니다.",
+      "concepts": [
+        "복잡성",
+        "요소",
+        "관계",
+        "절차"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0176",
+      "type": "attribute_packet",
+      "text": "난이도는 특정 과제나 기능을 수행하는 데 요구되는 노력이나 사고의 수준이다. 난이도는 수행자의 능력과 독립적으로 고정된 값이라고 단정할 수 없다.",
+      "concepts": [
+        "난이도",
+        "과제",
+        "노력",
+        "능력"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0177",
+      "type": "attribute_packet",
+      "text": "자동화도는 사람이 직접 개입하지 않고 기능이 자동으로 수행되는 정도다. 자동화도는 자동화 기능의 존재 여부와 구별되는 정도의 속성이다.",
+      "concepts": [
+        "자동화도",
+        "자동화",
+        "개입",
+        "기능"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0178",
+      "type": "attribute_packet",
+      "text": "자율성은 외부의 직접적인 지시나 통제 없이 목표를 위해 판단하고 행동할 수 있는 정도다. 자율성은 통제 불가능성을 뜻하지 않는다.",
+      "concepts": [
+        "자율성",
+        "지시",
+        "통제",
+        "행동"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0179",
+      "type": "attribute_packet",
+      "text": "협업성은 여러 주체가 정보를 공유하고 행동을 조정하여 공동의 결과를 만들기 쉬운 정도다. 협업성은 참여자 수와 동일하지 않다.",
+      "concepts": [
+        "협업성",
+        "주체",
+        "정보공유",
+        "조정"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0180",
+      "type": "attribute_packet",
+      "text": "의사소통능력은 정보를 이해하고 적절한 표현으로 전달하며 상대의 반응에 맞추어 조정할 수 있는 능력이다. 의사소통량과 동일하지 않다.",
+      "concepts": [
+        "의사소통능력",
+        "정보",
+        "표현",
+        "조정"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0181",
+      "type": "attribute_packet",
+      "text": "설명가능성은 어떤 결과나 판단이 왜 나왔는지를 이해할 수 있도록 설명할 수 있는 정도다. 설명가능성은 결과의 정확성을 직접 보장하지 않는다.",
+      "concepts": [
+        "설명가능성",
+        "결과",
+        "판단",
+        "설명"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0182",
+      "type": "attribute_packet",
+      "text": "추적가능성은 결과나 데이터가 어떤 출처와 처리 과정을 거쳤는지 따라갈 수 있는 정도다. 추적가능성은 데이터가 반드시 정확하다는 뜻은 아니다.",
+      "concepts": [
+        "추적가능성",
+        "데이터",
+        "출처",
+        "처리과정"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0183",
+      "type": "attribute_packet",
+      "text": "재현성은 같은 방법과 조건에서 비슷한 결과를 다시 얻을 수 있는 정도다. 재현성은 결과가 반드시 참이라는 의미와 다르다.",
+      "concepts": [
+        "재현성",
+        "조건",
+        "결과",
+        "방법"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0184",
+      "type": "attribute_packet",
+      "text": "반복가능성은 동일한 절차나 입력을 반복했을 때 결과가 일정한 수준으로 유지되는 정도다. 반복가능성은 재현성의 모든 의미를 완전히 대체하지 않는다.",
+      "concepts": [
+        "반복가능성",
+        "절차",
+        "입력",
+        "결과"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0185",
+      "type": "attribute_packet",
+      "text": "확장성은 사용자 수나 데이터량, 작업량이 증가해도 시스템이나 절차를 확장해 대응할 수 있는 정도다. 확장성은 현재 처리능력과 다르다.",
+      "concepts": [
+        "확장성",
+        "사용자수",
+        "데이터량",
+        "처리능력"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0186",
+      "type": "attribute_packet",
+      "text": "호환성은 서로 다른 시스템이나 부품이 함께 사용되거나 상호작용할 수 있는 정도다. 호환성은 두 시스템이 동일하다는 뜻이 아니다.",
+      "concepts": [
+        "호환성",
+        "시스템",
+        "부품",
+        "상호작용"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0187",
+      "type": "attribute_packet",
+      "text": "상호운용성은 서로 다른 시스템이 정보를 교환하고 그 정보를 활용하여 함께 기능할 수 있는 정도다. 상호운용성은 단순한 연결 가능성보다 넓다.",
+      "concepts": [
+        "상호운용성",
+        "시스템",
+        "정보교환",
+        "기능"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "other"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0188",
+      "type": "attribute_packet",
+      "text": "이식성은 한 환경에서 사용하던 소프트웨어나 기능을 다른 환경으로 옮겨 사용할 수 있는 정도다. 이식성은 이동 행위와 같은 개념이 아니다.",
+      "concepts": [
+        "이식성",
+        "소프트웨어",
+        "환경",
+        "사용"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0189",
+      "type": "attribute_packet",
+      "text": "유지보수성은 시스템이나 제품을 점검하고 수리하거나 변경하기 쉬운 정도다. 유지보수성은 현재 정상 작동 여부와 다른 속성이다.",
+      "concepts": [
+        "유지보수성",
+        "점검",
+        "수리",
+        "변경"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0190",
+      "type": "attribute_packet",
+      "text": "검사성은 상태나 결함을 점검하고 확인하기 쉬운 정도다. 검사성은 검사 결과의 정확성과 동일하지 않다.",
+      "concepts": [
+        "검사성",
+        "상태",
+        "결함",
+        "점검"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0191",
+      "type": "attribute_packet",
+      "text": "진단성은 문제의 원인이나 상태를 파악하기 쉬운 정도다. 진단성이 높아도 실제 진단 결과가 자동으로 정확해지는 것은 아니다.",
+      "concepts": [
+        "진단성",
+        "문제",
+        "원인",
+        "상태"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0192",
+      "type": "attribute_packet",
+      "text": "보안성은 허가되지 않은 접근이나 변경, 공개를 얼마나 잘 방지하는지를 나타내는 속성이다. 보안성은 비밀성 하나로만 구성되지 않는다.",
+      "concepts": [
+        "보안성",
+        "접근",
+        "변경",
+        "공개"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "state",
+        "part_of"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0193",
+      "type": "attribute_packet",
+      "text": "회복탄력성은 충격이나 장애를 겪은 뒤 핵심 기능을 유지하거나 회복할 수 있는 정도다. 회복탄력성은 단순한 복구 속도 하나와 동일하지 않다.",
+      "concepts": [
+        "회복탄력성",
+        "충격",
+        "장애",
+        "기능"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0194",
+      "type": "attribute_packet",
+      "text": "결함허용성은 일부 구성요소가 고장 나도 전체 기능을 계속 수행할 수 있는 정도다. 결함허용성은 고장이 발생하지 않는다는 의미가 아니다.",
+      "concepts": [
+        "결함허용성",
+        "고장",
+        "구성요소",
+        "기능"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0195",
+      "type": "attribute_packet",
+      "text": "안전성은 정해진 사용 조건에서 위험으로 인한 피해 가능성을 낮게 유지하는 정도다. 안전성은 위험이 전혀 없다는 뜻이 아니다.",
+      "concepts": [
+        "안전성",
+        "위험",
+        "피해",
+        "사용조건"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0196",
+      "type": "attribute_packet",
+      "text": "위험민감도는 위험 요인이나 환경 변화에 성능이나 행동이 얼마나 영향을 받는지를 나타내는 속성이다. 위험민감도가 높다는 말은 반드시 성능이 나쁘다는 뜻은 아니다.",
+      "concepts": [
+        "위험민감도",
+        "위험요인",
+        "환경변화",
+        "성능"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0197",
+      "type": "attribute_packet",
+      "text": "환경적응성은 온도나 습도, 장소 등의 환경 조건이 달라져도 기능을 조정해 유지할 수 있는 정도다. 환경적응성은 특정 환경의 좋고 나쁨과 다르다.",
+      "concepts": [
+        "환경적응성",
+        "환경",
+        "조건",
+        "기능"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0198",
+      "type": "attribute_packet",
+      "text": "에너지효율성은 사용한 에너지에 비해 얻은 유용한 산출의 비율을 나타내는 속성이다. 에너지 사용량이 적다는 사실만으로 높은 효율성을 보장하지는 않는다.",
+      "concepts": [
+        "에너지효율성",
+        "에너지",
+        "산출",
+        "비율"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0199",
+      "type": "attribute_packet",
+      "text": "자원효율성은 물질이나 시간, 인력 등의 자원을 얼마나 낭비하지 않고 목적에 사용하는지를 나타내는 속성이다. 자원효율성은 자원 사용량과 동일하지 않다.",
+      "concepts": [
+        "자원효율성",
+        "자원",
+        "낭비",
+        "목적"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0200",
+      "type": "attribute_packet",
+      "text": "비용효율성은 비용에 비해 얻는 유용한 결과의 수준을 나타내는 속성이다. 비용효율성이 높다고 해서 비용 자체가 항상 낮은 것은 아니다.",
+      "concepts": [
+        "비용효율성",
+        "비용",
+        "결과",
+        "효율성"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0201",
+      "type": "attribute_packet",
+      "text": "시간효율성은 투입한 시간에 비해 원하는 결과를 얼마나 효과적으로 얻는지를 나타내는 속성이다. 시간효율성은 단순한 작업 속도와 다르다.",
+      "concepts": [
+        "시간효율성",
+        "시간",
+        "결과",
+        "작업속도"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0202",
+      "type": "attribute_packet",
+      "text": "시스템성능정밀도는 같은 입력과 절차를 반복했을 때 시스템 출력이 좁은 범위에 모이는 정도다. 참값과의 거리를 재는 정확성과 구별한다.",
+      "concepts": [
+        "시스템성능정밀도",
+        "정확도",
+        "반복",
+        "측정"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "contrast",
+        "comparison"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0203",
+      "type": "attribute_packet",
+      "text": "시스템성능일관성은 반복되는 상황에서 행동이나 결과가 비슷한 기준과 구조를 유지하는 정도다. 시스템성능일관성이 높다고 해서 결과가 반드시 정답인 것은 아니다.",
+      "concepts": [
+        "시스템성능일관성",
+        "반복",
+        "행동",
+        "결과"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0204",
+      "type": "attribute_packet",
+      "text": "시스템성능완전성은 요구된 정보나 구성요소가 빠짐없이 포함된 정도다. 시스템성능완전성은 정보가 정확하다는 뜻과 다르다.",
+      "concepts": [
+        "시스템성능완전성",
+        "정보",
+        "구성요소",
+        "정확성"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0205",
+      "type": "attribute_packet",
+      "text": "충족도는 요구사항이나 목표를 얼마나 많이 만족했는지를 나타내는 정도다. 충족도는 목표 자체와 동일하지 않다.",
+      "concepts": [
+        "충족도",
+        "요구사항",
+        "목표",
+        "만족"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0206",
+      "type": "attribute_packet",
+      "text": "적합성은 대상의 기능, 규격, 조건이 주어진 목적과 요구에 맞는 정도다. 성능이 높더라도 사용 환경의 제약을 어기면 적합하지 않다.",
+      "concepts": [
+        "적합성",
+        "목적",
+        "조건",
+        "품질"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0207",
+      "type": "attribute_packet",
+      "text": "유효성은 의도한 목적이나 효과가 실제로 달성되는지를 나타내는 속성이다. 유효성은 과정이 효율적인지 여부와 별개로 평가될 수 있다.",
+      "concepts": [
+        "유효성",
+        "목적",
+        "효과",
+        "달성"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0208",
+      "type": "attribute_packet",
+      "text": "정당성은 어떤 판단이나 행동이 정해진 원칙이나 기준에 비추어 정당하다고 인정될 수 있는 정도다. 정당성은 결과의 효율성과 동일하지 않다.",
+      "concepts": [
+        "정당성",
+        "판단",
+        "행동",
+        "기준"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0209",
+      "type": "attribute_packet",
+      "text": "공정성은 관련된 사람이나 선택지에 대해 부당한 차별 없이 적절한 기준을 적용하는 정도다. 공정성은 모든 사람에게 동일한 결과를 주는 것과 동일하지 않다.",
+      "concepts": [
+        "공정성",
+        "차별",
+        "기준",
+        "결과"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0210",
+      "type": "attribute_packet",
+      "text": "투명성은 의사결정이나 처리 과정이 외부에서 이해하고 확인할 수 있도록 드러나는 정도다. 투명성이 높다고 해서 정보가 모두 공개되는 것은 아니다.",
+      "concepts": [
+        "투명성",
+        "의사결정",
+        "과정",
+        "정보"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "state",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0211",
+      "type": "attribute_packet",
+      "text": "책임성은 행동이나 결정의 결과에 대해 설명하고 책임을 질 수 있는 정도다. 책임성은 단순한 권한 보유와 동일하지 않다.",
+      "concepts": [
+        "책임성",
+        "행동",
+        "결정",
+        "권한"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "role",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0212",
+      "type": "attribute_packet",
+      "text": "예측가능성은 주어진 조건과 정보 아래에서 결과나 행동의 방향을 미리 예상하기 쉬운 정도다. 예측가능성은 결과가 반드시 정확히 예측된다는 뜻이 아니다.",
+      "concepts": [
+        "예측가능성",
+        "조건",
+        "정보",
+        "결과"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0213",
+      "type": "attribute_packet",
+      "text": "통제가능성은 원하는 범위 안에서 상태나 행동을 조정할 수 있는 정도다. 통제가능성은 자율성이 낮다는 뜻과 반드시 같은 것은 아니다.",
+      "concepts": [
+        "통제가능성",
+        "상태",
+        "행동",
+        "조정"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0214",
+      "type": "attribute_packet",
+      "text": "조절가능성은 입력이나 환경의 변화에 맞춰 출력이나 상태를 세밀하게 조정할 수 있는 정도다. 조절가능성은 통제의 존재 여부보다 미세한 조정 능력을 강조한다.",
+      "concepts": [
+        "조절가능성",
+        "입력",
+        "출력",
+        "조정"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0215",
+      "type": "attribute_packet",
+      "text": "시스템성능민감도는 입력이나 조건이 조금 변할 때 결과가 얼마나 크게 변하는지를 나타내는 속성이다. 시스템성능민감도가 높다는 사실은 변화의 방향을 의미하지 않는다.",
+      "concepts": [
+        "시스템성능민감도",
+        "입력",
+        "조건",
+        "결과"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "comparison"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0216",
+      "type": "attribute_packet",
+      "text": "시스템성능탄력성은 어떤 변화나 압박에 대응한 뒤 원래 수준이나 기능으로 돌아가는 경향 또는 능력이다. 시스템성능탄력성은 탄성이라는 물리적 물성과 동일하지 않을 수 있다.",
+      "concepts": [
+        "시스템성능탄력성",
+        "회복",
+        "변화",
+        "탄성"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "process",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0217",
+      "type": "attribute_packet",
+      "text": "성능수준은 특정 조건에서 시스템이나 사람이 수행하는 기능의 현재 수준이다. 성능수준은 성능능력의 최대치와 동일하지 않다.",
+      "concepts": [
+        "성능수준",
+        "성능",
+        "현재수준",
+        "최대치"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "state",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0218",
+      "type": "attribute_packet",
+      "text": "성능여유는 현재 성능과 허용되거나 가능한 최대 성능 사이에 남아 있는 여유의 정도다. 성능여유는 현재 처리량 자체가 아니다.",
+      "concepts": [
+        "성능여유",
+        "현재성능",
+        "최대성능",
+        "여유"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0219",
+      "type": "attribute_packet",
+      "text": "처리한계는 정해진 조건에서 더 이상 처리하기 어려워지는 작업량이나 수준의 경계다. 처리한계는 현재 처리량과 동일하지 않다.",
+      "concepts": [
+        "처리한계",
+        "처리량",
+        "경계",
+        "조건"
+      ],
+      "relations": [
+        "attribute",
+        "boundary",
+        "other"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0220",
+      "type": "attribute_packet",
+      "text": "최대처리량은 주어진 조건과 기간에서 처리할 수 있는 가장 큰 작업량이다. 최대처리량은 평균적으로 실제 처리하는 양과 다르다.",
+      "concepts": [
+        "최대처리량",
+        "처리량",
+        "조건",
+        "기간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0221",
+      "type": "attribute_packet",
+      "text": "평균처리량은 일정 기간의 전체 처리량을 그 기간의 기준에 따라 평균낸 값이다. 평균처리량은 최대처리량과 다르다.",
+      "concepts": [
+        "평균처리량",
+        "처리량",
+        "평균",
+        "기간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "part_of",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0222",
+      "type": "attribute_packet",
+      "text": "처리지연은 요청이나 입력이 발생한 뒤 실제 처리 결과가 나오기까지 추가로 발생하는 시간이다. 처리지연은 처리시간 전체와 동일하지 않을 수 있다.",
+      "concepts": [
+        "처리지연",
+        "요청",
+        "처리",
+        "시간"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0223",
+      "type": "attribute_packet",
+      "text": "대기시간은 요청이나 작업이 실제 처리되기 전에 기다리는 시간의 양이다. 대기시간과 처리시간은 서로 다른 시간 구성요소다.",
+      "concepts": [
+        "대기시간",
+        "처리시간",
+        "요청",
+        "시간"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "part_of",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0224",
+      "type": "attribute_packet",
+      "text": "응답시간은 요청을 받은 시점부터 응답이 제공될 때까지 걸리는 전체 시간을 나타내는 지표다. 응답시간에는 대기와 처리 등이 함께 포함될 수 있다.",
+      "concepts": [
+        "응답시간",
+        "요청",
+        "응답",
+        "대기시간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0225",
+      "type": "attribute_packet",
+      "text": "성공률은 전체 시도 중 성공한 시도의 비율이다. 성공률은 성공한 사건 하나의 결과와 동일하지 않다.",
+      "concepts": [
+        "성공률",
+        "시도",
+        "성공",
+        "비율"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0226",
+      "type": "attribute_packet",
+      "text": "실패율은 전체 시도 중 실패한 시도의 비율이다. 실패율과 실패 사건은 측정값과 사건이라는 다른 유형이다.",
+      "concepts": [
+        "실패율",
+        "실패",
+        "시도",
+        "비율"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0227",
+      "type": "attribute_packet",
+      "text": "오류율은 전체 처리나 측정 중 오류가 발생한 비율이다. 오류율은 오류 하나의 크기나 심각도를 직접 나타내지 않는다.",
+      "concepts": [
+        "오류율",
+        "오류",
+        "처리",
+        "비율"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0228",
+      "type": "attribute_packet",
+      "text": "가동률은 전체 관찰 기간 중 시스템이나 설비가 작동 가능한 상태로 운영된 시간의 비율이다. 가동률은 성능 수준 자체와 다르다.",
+      "concepts": [
+        "가동률",
+        "운영",
+        "시간",
+        "성능"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0229",
+      "type": "attribute_packet",
+      "text": "중단률은 전체 관찰 기간이나 시도 중 기능이 중단된 비율이다. 중단률은 중단 시간만으로 결정되는 지표가 아닐 수 있다.",
+      "concepts": [
+        "중단률",
+        "중단",
+        "기간",
+        "비율"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0230",
+      "type": "attribute_packet",
+      "text": "재시도성은 실패나 오류가 발생했을 때 같은 작업을 다시 수행해 결과를 얻기 쉬운 정도다. 재시도성은 성공률과 다른 속성이다.",
+      "concepts": [
+        "재시도성",
+        "실패",
+        "재시도",
+        "성공률"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "process",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0231",
+      "type": "attribute_packet",
+      "text": "복원시간은 장애나 손상 이후 기능을 다시 사용할 수 있게 되는 데 걸리는 시간이다. 복원시간은 회복성이라는 능력과 구분된다.",
+      "concepts": [
+        "복원시간",
+        "장애",
+        "기능",
+        "회복성"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0232",
+      "type": "attribute_packet",
+      "text": "가동시간은 시스템이나 장비가 실제로 작동한 시간의 양이다. 가동시간과 가동률은 절대 시간과 비율이라는 차이가 있다.",
+      "concepts": [
+        "가동시간",
+        "가동률",
+        "작동",
+        "시간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0233",
+      "type": "attribute_packet",
+      "text": "평균수명은 여러 대상의 수명 데이터를 평균하여 얻은 대표값이다. 평균수명은 개별 대상 하나의 실제 수명과 동일하지 않다.",
+      "concepts": [
+        "평균수명",
+        "수명",
+        "평균",
+        "대표값"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "part_of",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0234",
+      "type": "attribute_packet",
+      "text": "수용능력은 사람이나 작업, 데이터를 받아들여 처리할 수 있는 최대 또는 적절한 수준의 능력이다. 수용능력은 현재 점유량과 다르다.",
+      "concepts": [
+        "수용능력",
+        "수용",
+        "처리",
+        "점유량"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0235",
+      "type": "attribute_packet",
+      "text": "동시처리능력은 여러 작업을 동시에 처리할 수 있는 능력이다. 동시처리능력은 단일 작업의 처리속도와 구분된다.",
+      "concepts": [
+        "동시처리능력",
+        "작업",
+        "처리속도",
+        "병렬"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0236",
+      "type": "attribute_packet",
+      "text": "병렬처리성은 여러 작업이나 데이터 흐름을 동시에 나누어 처리하기 쉬운 정도다. 병렬처리성은 실제 병렬 처리량과 다르다.",
+      "concepts": [
+        "병렬처리성",
+        "작업",
+        "데이터",
+        "처리"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "classification",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0237",
+      "type": "attribute_packet",
+      "text": "호출가능성은 기능이나 인터페이스를 외부 요청으로 실행할 수 있는 정도다. 호출가능성은 호출이 실제로 성공했다는 결과와 다르다.",
+      "concepts": [
+        "호출가능성",
+        "기능",
+        "인터페이스",
+        "요청"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0238",
+      "type": "attribute_packet",
+      "text": "축소가능성은 수요나 자원 규모가 줄어들 때 기능이나 시스템 규모를 줄여 운영하기 쉬운 정도다. 축소가능성은 확장성과 반대 방향을 가진 별도 속성이다.",
+      "concepts": [
+        "축소가능성",
+        "수요",
+        "자원",
+        "규모"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0239",
+      "type": "attribute_packet",
+      "text": "설정가능성은 사용자가 목적이나 조건에 맞게 기능과 동작을 변경할 수 있는 정도다. 설정가능성은 수정 가능성 전체와 동일하지 않다.",
+      "concepts": [
+        "설정가능성",
+        "사용자",
+        "기능",
+        "조건"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0240",
+      "type": "attribute_packet",
+      "text": "맞춤가능성은 사용자나 상황의 차이에 맞춰 결과나 기능을 조정할 수 있는 정도다. 맞춤가능성은 개인화된 결과 하나와 동일하지 않다.",
+      "concepts": [
+        "맞춤가능성",
+        "사용자",
+        "상황",
+        "조정"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0241",
+      "type": "attribute_packet",
+      "text": "재사용성은 같은 자원이나 구성요소를 다른 작업이나 상황에서도 다시 활용하기 쉬운 정도다. 재사용성은 실제 재사용 횟수와 다르다.",
+      "concepts": [
+        "재사용성",
+        "자원",
+        "구성요소",
+        "활용"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0242",
+      "type": "attribute_packet",
+      "text": "재활용성은 사용한 제품이나 재료를 새로운 자원으로 되돌려 활용하기 쉬운 정도다. 재활용성은 실제 재활용률과 동일하지 않다.",
+      "concepts": [
+        "재활용성",
+        "제품",
+        "재료",
+        "재활용률"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0243",
+      "type": "attribute_packet",
+      "text": "수리가능성은 고장이나 손상이 생긴 제품을 분해하고 수리해 다시 사용할 수 있는 정도다. 수리가능성과 실제 수리는 구분된다.",
+      "concepts": [
+        "수리가능성",
+        "고장",
+        "수리",
+        "제품"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0244",
+      "type": "attribute_packet",
+      "text": "교체가능성은 부품이나 구성요소를 다른 것으로 바꾸어 기능을 유지하기 쉬운 정도다. 교체가능성은 실제 교체 행위가 아니다.",
+      "concepts": [
+        "교체가능성",
+        "부품",
+        "기능",
+        "교체"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0245",
+      "type": "attribute_packet",
+      "text": "모듈성은 시스템이 비교적 독립적인 모듈들로 나뉘어 구성되고 변경되기 쉬운 정도다. 모듈성은 모듈 하나의 존재와 동일하지 않다.",
+      "concepts": [
+        "모듈성",
+        "모듈",
+        "시스템",
+        "구성"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0246",
+      "type": "attribute_packet",
+      "text": "분해가능성은 복합적인 제품이나 구조를 구성요소로 나누기 쉬운 정도다. 분해가능성은 실제 분해 작업과 다르다.",
+      "concepts": [
+        "분해가능성",
+        "구성요소",
+        "제품",
+        "분해"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0247",
+      "type": "attribute_packet",
+      "text": "조립가능성은 여러 구성요소를 정해진 방식으로 결합해 기능하는 하나의 구조를 만들기 쉬운 정도다. 조립가능성은 조립 결과와 다르다.",
+      "concepts": [
+        "조립가능성",
+        "구성요소",
+        "결합",
+        "구조"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0248",
+      "type": "attribute_packet",
+      "text": "재설정가능성은 시스템이나 장치를 새로운 조건에 맞게 설정 상태를 바꿀 수 있는 정도다. 재설정가능성은 실제 재설정 횟수와 다르다.",
+      "concepts": [
+        "재설정가능성",
+        "시스템",
+        "설정",
+        "조건"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0249",
+      "type": "attribute_packet",
+      "text": "복구가능성은 오류나 손상 이후 이전 또는 허용 가능한 상태로 돌아갈 수 있는 정도다. 복구가능성은 복구가 실제 완료되었다는 결과와 다르다.",
+      "concepts": [
+        "복구가능성",
+        "오류",
+        "손상",
+        "상태"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0250",
+      "type": "attribute_packet",
+      "text": "가역성은 어떤 변화가 반대 방향의 과정으로 다시 원래 상태에 가까워질 수 있는 정도다. 가역성은 실제 원상복구가 항상 이루어진다는 뜻은 아니다.",
+      "concepts": [
+        "가역성",
+        "변화",
+        "원래상태",
+        "복구"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "contrast",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0251",
+      "type": "attribute_packet",
+      "text": "불가역성은 일단 일어난 변화가 같은 경로로 되돌리기 어려운 정도다. 불가역성은 변화가 절대로 되돌릴 수 없다는 주장과 항상 동일하지 않다.",
+      "concepts": [
+        "불가역성",
+        "변화",
+        "되돌림",
+        "경로"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "contrast",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0252",
+      "type": "attribute_packet",
+      "text": "품질수준은 대상이나 서비스가 정해진 품질 기준을 얼마나 충족하는지를 나타내는 현재 수준이다. 품질수준은 품질 기준 자체와 다르다.",
+      "concepts": [
+        "품질수준",
+        "품질",
+        "기준",
+        "현재수준"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0253",
+      "type": "attribute_packet",
+      "text": "만족도는 사용자가 경험한 결과가 기대나 요구를 얼마나 충족한다고 느끼는지를 나타내는 정도다. 만족도는 객관적인 성능값과 동일하지 않다.",
+      "concepts": [
+        "만족도",
+        "사용자",
+        "기대",
+        "성능"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0254",
+      "type": "attribute_packet",
+      "text": "선호도는 여러 선택지 가운데 특정 선택지를 더 좋아하거나 선택하려는 정도다. 선호도는 선택 빈도와 동일하지 않을 수 있다.",
+      "concepts": [
+        "선호도",
+        "선택지",
+        "선택",
+        "빈도"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0255",
+      "type": "attribute_packet",
+      "text": "사용빈도는 일정 기간 동안 어떤 기능이나 자원이 사용되는 횟수나 빈도다. 사용빈도는 사용 가능성이나 성능을 직접 의미하지 않는다.",
+      "concepts": [
+        "사용빈도",
+        "사용",
+        "기간",
+        "성능"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0256",
+      "type": "attribute_packet",
+      "text": "활용도는 가진 자원이나 기능이 실제 목적에 얼마나 폭넓게 활용되는지를 나타내는 정도다. 활용도는 자원의 존재 여부와 다르다.",
+      "concepts": [
+        "활용도",
+        "자원",
+        "기능",
+        "목적"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0257",
+      "type": "attribute_packet",
+      "text": "시스템성능집중도는 활동이나 자원이 특정 대상이나 영역에 얼마나 몰려 있는지를 나타내는 정도다. 시스템성능집중도는 총량과 동일하지 않다.",
+      "concepts": [
+        "시스템성능집중도",
+        "활동",
+        "자원",
+        "분포"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "is_a"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0258",
+      "type": "attribute_packet",
+      "text": "시스템성능분산도는 자원이나 활동이 여러 대상이나 공간에 얼마나 퍼져 있는지를 나타내는 정도다. 시스템성능분산도는 대상의 총량과 다른 속성이다.",
+      "concepts": [
+        "시스템성능분산도",
+        "자원",
+        "활동",
+        "분포"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "is_a",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0259",
+      "type": "attribute_packet",
+      "text": "행동규칙성은 반복적인 상황에서 특정 행동 패턴이 얼마나 규칙적으로 나타나는지를 나타내는 속성이다. 행동규칙성은 행동의 옳고 그름을 판단하는 기준이 아니다.",
+      "concepts": [
+        "행동규칙성",
+        "행동",
+        "패턴",
+        "반복"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0260",
+      "type": "attribute_packet",
+      "text": "행동일관성은 비슷한 조건에서 행동 방식이나 선택이 얼마나 안정적으로 유지되는지를 나타내는 속성이다. 행동일관성은 행동의 정확성과 동일하지 않다.",
+      "concepts": [
+        "행동일관성",
+        "행동",
+        "조건",
+        "안정성"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "state",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0261",
+      "type": "attribute_packet",
+      "text": "행동예측가능성은 관찰한 규칙과 맥락으로 다음 행동을 일관되게 예상할 수 있는 정도다. 행동이 바람직한지와 예측하기 쉬운지는 별개다.",
+      "concepts": [
+        "행동예측가능성",
+        "행동",
+        "상황",
+        "예측"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0262",
+      "type": "attribute_packet",
+      "text": "반응일관성은 비슷한 자극이나 입력에 대해 유사한 방식으로 반응하는 정도다. 반응일관성은 반응속도와 다른 속성이다.",
+      "concepts": [
+        "반응일관성",
+        "자극",
+        "입력",
+        "반응"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "state",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0263",
+      "type": "attribute_packet",
+      "text": "행동유연성은 상황이 달라졌을 때 기존 행동을 고집하지 않고 적절한 행동으로 바꾸는 능력이다. 행동유연성은 행동이 항상 바뀐다는 뜻은 아니다.",
+      "concepts": [
+        "행동유연성",
+        "상황",
+        "행동",
+        "전환"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0264",
+      "type": "attribute_packet",
+      "text": "주의집중성은 관련 정보나 대상에 주의를 유지하고 불필요한 자극을 상대적으로 배제하는 정도다. 주의집중성은 관찰 범위와 동일하지 않다.",
+      "concepts": [
+        "주의집중성",
+        "주의",
+        "정보",
+        "자극"
+      ],
+      "relations": [
+        "attribute",
+        "is_a"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0265",
+      "type": "attribute_packet",
+      "text": "지속주의성은 일정 기간 동안 한 대상이나 과제에 주의를 유지할 수 있는 능력이다. 지속주의성은 주의집중성이 한 순간 높다는 것과 다르다.",
+      "concepts": [
+        "지속주의성",
+        "주의",
+        "기간",
+        "과제"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0266",
+      "type": "attribute_packet",
+      "text": "전환능력은 하나의 과제나 규칙에서 다른 과제나 규칙으로 주의를 전환할 수 있는 능력이다. 전환능력은 작업 속도와 동일하지 않다.",
+      "concepts": [
+        "전환능력",
+        "과제",
+        "규칙",
+        "주의"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "is_a",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0267",
+      "type": "attribute_packet",
+      "text": "기억용이성은 정보를 어렵지 않게 기억하고 다시 떠올리기 쉬운 정도다. 기억용이성은 실제 회상 성공률과 다르다.",
+      "concepts": [
+        "기억용이성",
+        "정보",
+        "기억",
+        "회상"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0268",
+      "type": "attribute_packet",
+      "text": "학습성은 경험이나 연습을 통해 기능이나 행동을 변화시키고 개선하기 쉬운 정도다. 학습성은 현재 숙련도와 동일하지 않다.",
+      "concepts": [
+        "학습성",
+        "학습",
+        "경험",
+        "숙련도"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0269",
+      "type": "attribute_packet",
+      "text": "일반화능력은 한 상황에서 학습하거나 파악한 규칙이나 지식을 다른 상황에도 적용할 수 있는 능력이다. 일반화능력은 단순 암기량과 다르다.",
+      "concepts": [
+        "일반화능력",
+        "지식",
+        "규칙",
+        "적용"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "other",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0270",
+      "type": "attribute_packet",
+      "text": "추론능력은 주어진 정보와 관계를 이용해 직접 제시되지 않은 결론을 도출할 수 있는 능력이다. 추론능력은 보유한 정보의 양과 동일하지 않다.",
+      "concepts": [
+        "추론능력",
+        "정보",
+        "관계",
+        "결론"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0271",
+      "type": "attribute_packet",
+      "text": "문제해결능력은 주어진 문제의 조건을 파악하고 적절한 방법을 찾아 목표 상태에 도달하는 능력이다. 문제해결능력은 단순 지식량과 다르다.",
+      "concepts": [
+        "문제해결능력",
+        "문제",
+        "조건",
+        "목표상태"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0272",
+      "type": "attribute_packet",
+      "text": "의사결정능력은 여러 선택지와 정보를 비교해 목적에 맞는 결정을 선택할 수 있는 능력이다. 의사결정능력과 결정 결과의 품질은 동일하지 않다.",
+      "concepts": [
+        "의사결정능력",
+        "선택지",
+        "정보",
+        "결정"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0273",
+      "type": "attribute_packet",
+      "text": "계획수행력은 정해진 계획을 실제 행동으로 옮기고 필요한 조정을 하면서 목표에 접근하는 능력이다. 계획수행력은 계획의 품질 자체와 다르다.",
+      "concepts": [
+        "계획수행력",
+        "계획",
+        "행동",
+        "목표"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0274",
+      "type": "attribute_packet",
+      "text": "우선순위설정능력은 여러 과제 중 무엇을 먼저 처리할지 목적과 제약을 고려해 판단하는 능력이다. 우선순위설정능력은 처리속도와 다르다.",
+      "concepts": [
+        "우선순위설정능력",
+        "과제",
+        "목적",
+        "제약"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "other",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0275",
+      "type": "attribute_packet",
+      "text": "자기조절능력은 자신의 행동이나 주의를 목표에 맞게 조정하고 충동이나 산만함을 관리하는 능력이다. 자기조절능력은 행동 억제 하나에 한정되지 않는다.",
+      "concepts": [
+        "자기조절능력",
+        "행동",
+        "주의",
+        "목표"
+      ],
+      "relations": [
+        "attribute",
+        "function"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0276",
+      "type": "attribute_packet",
+      "text": "충동억제능력은 즉각적인 반응을 멈추고 더 적절한 행동을 선택할 수 있는 능력이다. 충동억제능력은 반응속도가 느리다는 뜻이 아니다.",
+      "concepts": [
+        "충동억제능력",
+        "충동",
+        "반응",
+        "행동"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "other",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0277",
+      "type": "attribute_packet",
+      "text": "협상능력은 서로 다른 요구와 이해관계를 조정해 합의 가능한 선택지를 찾는 능력이다. 협상능력은 상대를 이기는 능력과 동일하지 않다.",
+      "concepts": [
+        "협상능력",
+        "요구",
+        "이해관계",
+        "합의"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "role",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0278",
+      "type": "attribute_packet",
+      "text": "갈등조정능력은 충돌하는 요구나 관계를 분석하고 서로 수용할 수 있는 해결 방향으로 조정하는 능력이다. 갈등조정능력은 갈등이 없다는 상태와 다르다.",
+      "concepts": [
+        "갈등조정능력",
+        "갈등",
+        "요구",
+        "해결"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0279",
+      "type": "attribute_packet",
+      "text": "공감능력은 다른 사람의 감정이나 관점을 이해하고 그에 맞게 반응할 수 있는 능력이다. 공감능력은 상대의 의견에 동의하는 것과 동일하지 않다.",
+      "concepts": [
+        "공감능력",
+        "감정",
+        "관점",
+        "반응"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "is_a",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0280",
+      "type": "attribute_packet",
+      "text": "설명능력은 복잡하거나 추상적인 내용을 상대가 이해할 수 있도록 구조화해 전달하는 능력이다. 설명능력은 말이 많은 것과 같지 않다.",
+      "concepts": [
+        "설명능력",
+        "내용",
+        "구조화",
+        "이해"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0281",
+      "type": "attribute_packet",
+      "text": "질문명확성은 질문이 무엇을 묻는지 모호하지 않게 표현되는 정도다. 질문명확성이 높아도 질문이 반드시 좋은 질문이라는 뜻은 아니다.",
+      "concepts": [
+        "질문명확성",
+        "질문",
+        "모호성",
+        "표현"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0282",
+      "type": "attribute_packet",
+      "text": "지시순응성은 주어진 지시의 요구사항을 적절하게 해석하고 수행하는 정도다. 지시순응성은 지시가 타당하다는 판단을 포함하지 않는다.",
+      "concepts": [
+        "지시순응성",
+        "지시",
+        "요구사항",
+        "수행"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0283",
+      "type": "attribute_packet",
+      "text": "요구사항충족성은 결과가 주어진 요구사항을 어느 정도 충족하는지를 나타내는 속성이다. 요구사항충족성은 결과의 모든 품질 차원을 의미하지 않는다.",
+      "concepts": [
+        "요구사항충족성",
+        "요구사항",
+        "결과",
+        "품질"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0284",
+      "type": "attribute_packet",
+      "text": "예외처리성은 정상적인 경로에서 벗어난 입력이나 상황을 적절하게 처리할 수 있는 정도다. 예외처리성은 예외가 전혀 발생하지 않는다는 뜻이 아니다.",
+      "concepts": [
+        "예외처리성",
+        "예외",
+        "입력",
+        "처리"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0285",
+      "type": "attribute_packet",
+      "text": "오류복구성은 오류가 발생한 뒤 서비스나 기능을 허용 가능한 상태로 되돌리기 쉬운 정도다. 오류복구성은 오류율과 다른 속성이다.",
+      "concepts": [
+        "오류복구성",
+        "오류",
+        "복구",
+        "기능"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "process",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0286",
+      "type": "attribute_packet",
+      "text": "부하대응성은 작업량이나 사용자 수가 증가했을 때 성능 저하를 관리하고 기능을 유지하는 정도다. 부하대응성은 평상시 성능과 다르다.",
+      "concepts": [
+        "부하대응성",
+        "부하",
+        "사용자",
+        "성능"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0287",
+      "type": "attribute_packet",
+      "text": "피크대응성은 일시적으로 수요가 크게 증가한 상황에서도 기능을 유지하거나 자원을 조정하는 정도다. 피크대응성은 평균 처리능력과 구분된다.",
+      "concepts": [
+        "피크대응성",
+        "수요",
+        "자원",
+        "처리능력"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0288",
+      "type": "attribute_packet",
+      "text": "자원가변성은 자원의 양이나 종류가 달라질 때 기능을 그에 맞게 조정할 수 있는 정도다. 자원가변성은 자원량 자체와 다르다.",
+      "concepts": [
+        "자원가변성",
+        "자원",
+        "기능",
+        "조정"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0289",
+      "type": "attribute_packet",
+      "text": "운영유연성은 운영 조건이나 업무량이 달라졌을 때 절차와 자원 배치를 조정할 수 있는 정도다. 운영유연성은 운영 규모 자체와 동일하지 않다.",
+      "concepts": [
+        "운영유연성",
+        "운영",
+        "업무량",
+        "자원배치"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0290",
+      "type": "attribute_packet",
+      "text": "서비스일관성은 여러 시점이나 사용자에게 비슷한 기준으로 서비스를 제공하는 정도다. 서비스일관성은 서비스 품질이 높다는 뜻과 동일하지 않다.",
+      "concepts": [
+        "서비스일관성",
+        "서비스",
+        "사용자",
+        "기준"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "state",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0291",
+      "type": "attribute_packet",
+      "text": "서비스신속성은 사용자의 요청에 대해 서비스를 얼마나 빠르게 제공하는지를 나타내는 속성이다. 서비스신속성은 서비스 품질 전체와 다르다.",
+      "concepts": [
+        "서비스신속성",
+        "요청",
+        "서비스",
+        "속도"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0292",
+      "type": "attribute_packet",
+      "text": "서비스접근성은 사용자가 필요한 서비스에 접근하고 이용하기 쉬운 정도다. 서비스접근성은 서비스가 존재하는지 여부와 구분된다.",
+      "concepts": [
+        "서비스접근성",
+        "서비스",
+        "사용자",
+        "이용"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "function"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0293",
+      "type": "attribute_packet",
+      "text": "서비스가용성은 서비스가 필요한 시점에 실제로 제공 가능한 정도다. 서비스가용성과 서비스의 최대 처리능력은 다른 속성이다.",
+      "concepts": [
+        "서비스가용성",
+        "서비스",
+        "제공",
+        "처리능력"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "state",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0294",
+      "type": "attribute_packet",
+      "text": "사용자대응성은 사용자의 요청이나 문제 제기에 적절하고 신속하게 반응하는 정도다. 사용자대응성은 단순한 응답 속도만을 의미하지 않는다.",
+      "concepts": [
+        "사용자대응성",
+        "사용자",
+        "요청",
+        "반응"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "process",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0295",
+      "type": "attribute_packet",
+      "text": "업무정확성은 작업 결과가 지시된 값, 기준, 사실과 일치하는 정도다. 빠르게 끝내는 효율이나 반복 결과의 정밀도와 혼동하지 않는다.",
+      "concepts": [
+        "업무정확성",
+        "업무",
+        "결과",
+        "기준"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0296",
+      "type": "attribute_packet",
+      "text": "업무완결성은 필요한 업무 단계와 결과가 빠짐없이 끝난 정도다. 업무완결성은 단순히 업무를 시작했다는 사실과 구분된다.",
+      "concepts": [
+        "업무완결성",
+        "업무",
+        "단계",
+        "결과"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0297",
+      "type": "attribute_packet",
+      "text": "업무효율성은 시간과 비용, 인력의 투입에 견주어 목적에 맞는 결과를 얻는 정도다. 산출량이 많아도 오류 수정 비용이 크면 낮아질 수 있다.",
+      "concepts": [
+        "업무효율성",
+        "업무",
+        "시간",
+        "자원"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "other",
+        "boundary"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0298",
+      "type": "attribute_packet",
+      "text": "작업속도는 정해진 작업을 수행하는 속도의 정도다. 작업속도가 빠르더라도 정확성이나 품질이 낮을 수 있으므로 속도만으로 전체 성능을 판단할 수 없다.",
+      "concepts": [
+        "작업속도",
+        "작업",
+        "정확성",
+        "품질"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0299",
+      "type": "attribute_packet",
+      "text": "작업정밀성은 같은 작업을 되풀이했을 때 치수나 결과가 서로 좁게 모이는 성질이다. 목표값에서 같은 방향으로 벗어난 반복은 정밀하지만 부정확할 수 있다.",
+      "concepts": [
+        "작업정밀성",
+        "작업",
+        "오차",
+        "기준"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "comparison",
+        "contrast"
+      ],
+      "split": "train"
+    },
+    {
+      "id": "S1-ATH-0300",
+      "type": "attribute_packet",
+      "text": "작업일관성은 반복 작업에서 과정과 결과가 일정한 기준에 따라 안정적으로 유지되는 정도다. 작업일관성은 작업 결과가 항상 최고 품질이라는 뜻은 아니다.",
+      "concepts": [
+        "작업일관성",
+        "작업",
+        "반복",
+        "결과"
+      ],
+      "relations": [
+        "attribute",
+        "is_a",
+        "state",
+        "boundary"
+      ],
+      "split": "train"
+    }
   ]
 }

@@ -1,23 +1,25 @@
 {
-  "dataset_name": "Korean AI Curriculum — Stage 1 Attribute High-Density Train v08",
-  "version": "1.0",
-  "range": "S1-ATH-1051~1200",
-  "theme": "사물·환경·시스템의 상태에 따른 성능 저하·복구·노화·수명 특성군",
-  "purpose": "상태 변화와 열화, 고장, 복구, 잔여수명 사이의 차이를 속성·정도·변화율·측정값으로 구분하기 위한 수작업 고밀도 attribute corpus",
+  "dataset_name": "Korean AI Curriculum — Stage 1 Attribute High-Density Train 150 v08",
+  "version": "8",
+  "purpose": "Stage 1 속성·정도·변이 영역의 열화·손상·고장·복구·잔여수명·상태 악화 corpus 150개",
+  "split": "train",
+  "record_count": 150,
+  "range": "S1-ATH-1051 ~ S1-ATH-1200",
+  "design_note": "열화 상태, 고장 사건, 복구 과정과 남은 수명을 각각 독립 속성으로 다룬다.",
   "records": [
     {
       "id": "S1-ATH-1051",
       "type": "attribute_packet",
       "split": "train",
-      "text": "노화도은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 노화도은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "노화도는 새 제품의 기준 상태와 견주어 재료나 생체 조직이 얼마나 늙었는지를 나타낸다. 사용 연수만 같아도 보관 환경에 따라 값은 달라질 수 있다.",
       "concepts": [
         "노화도",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -25,15 +27,15 @@
       "id": "S1-ATH-1052",
       "type": "attribute_packet",
       "split": "train",
-      "text": "열화도은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 열화도은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "열화도는 빛, 열, 반복 하중처럼 누적된 자극 때문에 본래 성질이 손실된 정도다. 단순한 사용 시간과 달리 실제 성능 저하를 기준으로 삼는다.",
       "concepts": [
         "열화도",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -41,15 +43,15 @@
       "id": "S1-ATH-1053",
       "type": "attribute_packet",
       "split": "train",
-      "text": "손상도은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 손상도은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "손상도는 균열, 찌그러짐, 회로 단선 등 이미 생긴 훼손의 크기를 정상 상태 대비 값으로 표시한다. 아직 기능이 남아 있어도 손상은 클 수 있다.",
       "concepts": [
         "손상도",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -57,15 +59,15 @@
       "id": "S1-ATH-1054",
       "type": "attribute_packet",
       "split": "train",
-      "text": "결함도은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 결함도은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "결함도는 허용 규격에서 벗어난 흠의 수, 크기, 중요도를 종합한 지표다. 눈에 보이는 상처뿐 아니라 내부 공극이나 논리 오류도 결함에 포함된다.",
       "concepts": [
         "결함도",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -73,15 +75,15 @@
       "id": "S1-ATH-1055",
       "type": "attribute_packet",
       "split": "train",
-      "text": "열화민감도은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 열화민감도은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "열화환경민감도는 온도나 습도 같은 외부 조건이 조금 바뀔 때 열화 속도가 얼마나 크게 달라지는지를 잰다. 값이 크면 보관 조건 관리가 특히 중요하다.",
       "concepts": [
-        "열화민감도",
+        "열화환경민감도",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -89,15 +91,15 @@
       "id": "S1-ATH-1056",
       "type": "attribute_packet",
       "split": "train",
-      "text": "열화가속도은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 열화가속도은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "열화가속도는 시간이 흐르며 열화 속도 자체가 빨라지는 정도다. 초기에는 완만하다가 어느 시점 뒤 급격히 나빠지는 재료에서 크게 나타난다.",
       "concepts": [
         "열화가속도",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -105,15 +107,15 @@
       "id": "S1-ATH-1057",
       "type": "attribute_packet",
       "split": "train",
-      "text": "열화가속률은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 열화가속률은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "열화가속률은 단위 시간마다 열화 속도가 증가한 비율이다. 열화량의 단순 증가율과 구별하여 두 번째 변화의 크기를 본다.",
       "concepts": [
         "열화가속률",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -121,15 +123,15 @@
       "id": "S1-ATH-1058",
       "type": "attribute_packet",
       "split": "train",
-      "text": "열화균일성은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 열화균일성은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "열화균일성은 표면과 내부 또는 여러 부품에서 열화가 비슷한 수준으로 진행되는 성질이다. 국부 부식이 몰리면 평균 열화가 작아도 균일성은 낮다.",
       "concepts": [
         "열화균일성",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -137,15 +139,15 @@
       "id": "S1-ATH-1059",
       "type": "attribute_packet",
       "split": "train",
-      "text": "열화편차은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 열화편차은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "열화편차는 같은 조건의 시편이나 서로 다른 위치에서 측정한 열화값이 평균에서 벌어진 폭이다. 평균값만으로 가려지는 불균일을 드러낸다.",
       "concepts": [
         "열화편차",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -153,15 +155,15 @@
       "id": "S1-ATH-1060",
       "type": "attribute_packet",
       "split": "train",
-      "text": "열화누적성은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 열화누적성은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "열화누적성은 작은 열화가 매 사용 주기 뒤 사라지지 않고 다음 주기에 보태지는 경향이다. 휴지기에 완전히 회복되면 누적성은 낮다.",
       "concepts": [
         "열화누적성",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -169,15 +171,15 @@
       "id": "S1-ATH-1061",
       "type": "attribute_packet",
       "split": "train",
-      "text": "손상누적성은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 손상누적성은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "손상누적성은 반복 충격이나 피로 하중이 남긴 손상이 차례로 쌓이는 성질을 말한다. 각각의 충격이 약해도 누적값은 파손 한계에 이를 수 있다.",
       "concepts": [
         "손상누적성",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -185,15 +187,15 @@
       "id": "S1-ATH-1062",
       "type": "attribute_packet",
       "split": "train",
-      "text": "손상집중도은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 손상집중도은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "손상집중도는 전체 손상 가운데 특정 지점이나 부품에 몰린 몫이다. 동일한 총손상이라도 한 연결부에 집중되면 구조 위험은 더 커진다.",
       "concepts": [
         "손상집중도",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -201,15 +203,15 @@
       "id": "S1-ATH-1063",
       "type": "attribute_packet",
       "split": "train",
-      "text": "손상분산도은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 손상분산도은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "손상분산도는 훼손이 여러 위치에 얼마나 넓게 흩어져 있는지를 나타낸다. 집중도와 반대 방향의 설명축이지만 반드시 그 역수인 것은 아니다.",
       "concepts": [
         "손상분산도",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -217,15 +219,15 @@
       "id": "S1-ATH-1064",
       "type": "attribute_packet",
       "split": "train",
-      "text": "결함분포균일성은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 결함분포균일성은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "결함분포균일성은 검사 구역마다 결함 밀도가 비슷한지를 평가한다. 한 구역에 불량이 몰리면 전체 결함 수가 적어도 이 값은 낮아진다.",
       "concepts": [
         "결함분포균일성",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -233,15 +235,15 @@
       "id": "S1-ATH-1065",
       "type": "attribute_packet",
       "split": "train",
-      "text": "결함집중도은 시간 경과나 반복 사용, 환경 노출에 따라 대상의 상태나 성능이 어떻게 변했는지를 나타내는 속성이다. 결함집중도은 단순한 사용기간이나 현재 성능값 자체와 동일하지 않다.",
+      "text": "결함집중도는 발견된 결함이 소수 유형, 공정 단계, 위치에 치우친 정도다. 원인 추적에서는 총개수보다 집중 지점이 더 유용할 수 있다.",
       "concepts": [
         "결함집중도",
         "노화·열화"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -249,15 +251,15 @@
       "id": "S1-ATH-1066",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장민감도은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 고장민감도은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "고장민감도는 입력, 부하, 환경의 작은 변화가 고장 발생 여부에 미치는 영향의 크기다. 민감한 장치는 허용 범위 안의 흔들림에도 멈출 수 있다.",
       "concepts": [
         "고장민감도",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -265,15 +267,15 @@
       "id": "S1-ATH-1067",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장가능성은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 고장가능성은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "고장가능성은 정해진 기간과 운전 조건에서 시스템이 기능을 잃을 개연성이다. 이미 일어난 고장의 심각도와는 별개의 속성이다.",
       "concepts": [
         "고장가능성",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -281,15 +283,15 @@
       "id": "S1-ATH-1068",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장률은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 고장률은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "고장률은 관찰 시간이나 운전 횟수당 발생한 고장 빈도다. 같은 고장 건수라도 총 노출 시간이 길면 더 낮은 값으로 계산된다.",
       "concepts": [
         "고장률",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -297,15 +299,15 @@
       "id": "S1-ATH-1069",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장률변동성은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 고장률변동성은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "장기고장률변동성은 월별·계절별 또는 수명 단계별 고장률이 평균 주위에서 흔들리는 폭이다. 일정한 고장률을 가정하기 어려운지를 보여 준다.",
       "concepts": [
-        "고장률변동성",
+        "장기고장률변동성",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -313,15 +315,15 @@
       "id": "S1-ATH-1070",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장심각도은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 고장심각도은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "고장심각도는 한 번의 고장이 안전, 비용, 서비스 중단에 끼치는 피해 수준이다. 자주 발생하지만 쉽게 복구되는 오류와 드물지만 치명적인 사고를 구분한다.",
       "concepts": [
         "고장심각도",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -329,15 +331,15 @@
       "id": "S1-ATH-1071",
       "type": "attribute_packet",
       "split": "train",
-      "text": "장애범위은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 장애범위은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "장애범위는 장애가 영향을 미친 사용자, 기능, 장비 또는 공간의 넓이다. 한 모듈의 국소 오류인지 전체 서비스 중단인지 판별할 때 쓴다.",
       "concepts": [
         "장애범위",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -345,15 +347,15 @@
       "id": "S1-ATH-1072",
       "type": "attribute_packet",
       "split": "train",
-      "text": "장애확산성은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 장애확산성은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "장애확산성은 한 지점에서 시작한 장애가 연결된 영역으로 번지기 쉬운 성질이다. 격리 장치가 제때 작동하면 최초 장애가 같아도 확산성은 낮아진다.",
       "concepts": [
         "장애확산성",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -361,15 +363,15 @@
       "id": "S1-ATH-1073",
       "type": "attribute_packet",
       "split": "train",
-      "text": "장애격리성은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 장애격리성은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "장애격리성은 문제가 생긴 구역을 정상 구역과 분리해 영향 확장을 막을 수 있는 정도다. 탐지 속도와 차단 경계의 정확성이 함께 작용한다.",
       "concepts": [
         "장애격리성",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -377,15 +379,15 @@
       "id": "S1-ATH-1074",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장전파성은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 고장전파성은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "고장전파성은 부품 하나의 실패가 의존 관계를 따라 다른 부품의 고장으로 이어지는 경향이다. 단순한 경보 전달과 실제 기능 실패의 연쇄를 구별한다.",
       "concepts": [
         "고장전파성",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -393,15 +395,15 @@
       "id": "S1-ATH-1075",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장격리성은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 고장격리성은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "고장격리성은 실패한 구성품만 떼어 내고 나머지 기능을 계속 운전할 수 있는 성질이다. 우회 경로와 독립 전원이 있으면 값이 높아질 수 있다.",
       "concepts": [
         "고장격리성",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -409,15 +411,15 @@
       "id": "S1-ATH-1076",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장재발민감도은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 고장재발민감도은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "고장재발민감도는 수리 조건이나 부하가 조금 달라졌을 때 같은 고장이 다시 나타날 확률이 얼마나 변하는지를 뜻한다. 재발률 그 자체보다 조건 의존성을 본다.",
       "concepts": [
         "고장재발민감도",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -425,15 +427,15 @@
       "id": "S1-ATH-1077",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장간격은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 고장간격은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "고장간격은 연속한 두 고장 사이의 운전 시간 또는 작업 횟수다. 달력 시간보다 실제 가동 시간을 기준으로 해야 장비 간 비교가 공정하다.",
       "concepts": [
         "고장간격",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -441,15 +443,15 @@
       "id": "S1-ATH-1078",
       "type": "attribute_packet",
       "split": "train",
-      "text": "평균고장간격은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 평균고장간격은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "평균고장간격은 여러 고장간격을 합산해 고장 횟수로 나눈 대표 운전 시간이다. 개별 간격의 들쭉날쭉함은 이 평균만으로 알 수 없다.",
       "concepts": [
         "평균고장간격",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -457,15 +459,15 @@
       "id": "S1-ATH-1079",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장간격변동성은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 고장간격변동성은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "고장간격변동성은 고장 사이 시간이 일정하지 않고 퍼져 있는 정도다. 평균 간격이 같아도 갑작스러운 군집 고장이 있으면 변동성은 커진다.",
       "concepts": [
         "고장간격변동성",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -473,15 +475,15 @@
       "id": "S1-ATH-1080",
       "type": "attribute_packet",
       "split": "train",
-      "text": "재고장률은 고장이나 장애의 발생, 영향, 재발 또는 확산과 관련된 정도를 나타낸다. 재고장률은 단순한 고장 건수나 현재 상태와 동일하지 않다.",
+      "text": "재고장률은 수리나 재가동을 마친 대상이 정해진 관찰 기간 안에 다시 고장 난 비율이다. 최초 고장률과 분리해 복구 품질을 판단한다.",
       "concepts": [
         "재고장률",
         "고장·장애"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -489,15 +491,15 @@
       "id": "S1-ATH-1081",
       "type": "attribute_packet",
       "split": "train",
-      "text": "성능유지율은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 성능유지율은 현재 성능의 절대값과 구분된다.",
+      "text": "성능유지율은 초기 성능 가운데 현재까지 남아 있는 몫을 백분율 등으로 나타낸 값이다. 순간 최고치가 아니라 동일한 시험 조건의 기준값과 비교한다.",
       "concepts": [
         "성능유지율",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -505,15 +507,15 @@
       "id": "S1-ATH-1082",
       "type": "attribute_packet",
       "split": "train",
-      "text": "성능저하율은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 성능저하율은 현재 성능의 절대값과 구분된다.",
+      "text": "경과성능저하율은 시간 또는 사용량이 늘 때 성능이 줄어드는 비율이다. 현재 성능 수준이 같더라도 저하 속도가 빠른 대상은 더 이른 정비가 필요하다.",
       "concepts": [
-        "성능저하율",
+        "경과성능저하율",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -521,15 +523,15 @@
       "id": "S1-ATH-1083",
       "type": "attribute_packet",
       "split": "train",
-      "text": "성능저하폭은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 성능저하폭은 현재 성능의 절대값과 구분된다.",
+      "text": "성능저하폭은 기준 성능과 저하 뒤 성능 사이의 절대 차이다. 감소율과 달리 원래 단위를 유지하므로 실제 손실량을 바로 보여 준다.",
       "concepts": [
         "성능저하폭",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -537,15 +539,15 @@
       "id": "S1-ATH-1084",
       "type": "attribute_packet",
       "split": "train",
-      "text": "잔여성능은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 잔여성능은 현재 성능의 절대값과 구분된다.",
+      "text": "잔여성능은 열화나 손상을 겪은 뒤에도 지금 사용할 수 있는 기능 수준이다. 설계 성능에서 손실분을 뺀 단순 계산보다 실측값이 우선한다.",
       "concepts": [
         "잔여성능",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -553,15 +555,15 @@
       "id": "S1-ATH-1085",
       "type": "attribute_packet",
       "split": "train",
-      "text": "성능편차은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 성능편차은 현재 성능의 절대값과 구분된다.",
+      "text": "성능편차는 같은 설계의 개체, 반복 시험, 운전 조건 사이에서 성능값이 벌어진 정도다. 평균 성능이 높아도 편차가 크면 결과 예측은 어렵다.",
       "concepts": [
         "성능편차",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -569,15 +571,15 @@
       "id": "S1-ATH-1086",
       "type": "attribute_packet",
       "split": "train",
-      "text": "성능균일성은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 성능균일성은 현재 성능의 절대값과 구분된다.",
+      "text": "구성품성능균일성은 여러 부품이나 채널이 서로 비슷한 성능을 내는 정도다. 가장 약한 부품만 보는 최소 성능 지표와는 관점이 다르다.",
       "concepts": [
-        "성능균일성",
+        "구성품성능균일성",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -585,15 +587,15 @@
       "id": "S1-ATH-1087",
       "type": "attribute_packet",
       "split": "train",
-      "text": "성능등급변동성은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 성능등급변동성은 현재 성능의 절대값과 구분된다.",
+      "text": "성능등급변동성은 평가 시점이나 조건에 따라 판정 등급이 오르내리는 경향이다. 경계값 부근의 작은 측정 차이도 등급 변동을 크게 만들 수 있다.",
       "concepts": [
         "성능등급변동성",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -601,15 +603,15 @@
       "id": "S1-ATH-1088",
       "type": "attribute_packet",
       "split": "train",
-      "text": "장기성능유지성은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 장기성능유지성은 현재 성능의 절대값과 구분된다.",
+      "text": "장기성능유지성은 수개월이나 수명 주기처럼 긴 기간에도 요구 성능을 지키는 성질이다. 짧은 부하 시험의 안정성과 동일하게 보지 않는다.",
       "concepts": [
         "장기성능유지성",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -617,15 +619,15 @@
       "id": "S1-ATH-1089",
       "type": "attribute_packet",
       "split": "train",
-      "text": "단기성능안정성은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 단기성능안정성은 현재 성능의 절대값과 구분된다.",
+      "text": "단기성능안정성은 짧은 관찰 구간에서 출력이 급격히 흔들리지 않는 정도다. 장기 열화가 있더라도 한 작업 주기 안에서는 안정적일 수 있다.",
       "concepts": [
         "단기성능안정성",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -633,15 +635,15 @@
       "id": "S1-ATH-1090",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태의존적성능은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 상태의존적성능은 현재 성능의 절대값과 구분된다.",
+      "text": "상태의존적성능은 온도, 충전량, 마모 상태 등에 따라 같은 장치의 수행 수준이 달라지는 특성이다. 하나의 평균값으로 모든 상태를 대표하기 어렵다.",
       "concepts": [
         "상태의존적성능",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -649,15 +651,15 @@
       "id": "S1-ATH-1091",
       "type": "attribute_packet",
       "split": "train",
-      "text": "기능손실률은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 기능손실률은 현재 성능의 절대값과 구분된다.",
+      "text": "기능손실률은 보유한 기능 가운데 고장이나 열화로 사용할 수 없게 된 비율이다. 처리 속도 저하처럼 기능은 남은 경우와 완전 손실을 구별한다.",
       "concepts": [
         "기능손실률",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -665,15 +667,15 @@
       "id": "S1-ATH-1092",
       "type": "attribute_packet",
       "split": "train",
-      "text": "핵심기능유지율은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 핵심기능유지율은 현재 성능의 절대값과 구분된다.",
+      "text": "핵심기능유지율은 전체 기능이 줄어든 상황에서도 필수 기능이 살아 있는 몫이다. 부가 기능을 포기해 안전 기능을 지킨 시스템은 이 값이 높다.",
       "concepts": [
         "핵심기능유지율",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -681,15 +683,15 @@
       "id": "S1-ATH-1093",
       "type": "attribute_packet",
       "split": "train",
-      "text": "핵심기능손실도은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 핵심기능손실도은 현재 성능의 절대값과 구분된다.",
+      "text": "핵심기능손실도는 반드시 제공해야 할 기능이 얼마나 크게 약화되거나 사라졌는지를 평가한다. 외관 손상보다 임무 수행 실패에 가중치를 둔다.",
       "concepts": [
         "핵심기능손실도",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -697,15 +699,15 @@
       "id": "S1-ATH-1094",
       "type": "attribute_packet",
       "split": "train",
-      "text": "성능저하잠재력은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 성능저하잠재력은 현재 성능의 절대값과 구분된다.",
+      "text": "성능저하잠재력은 현재 조건이 계속될 때 앞으로 성능이 더 떨어질 여지를 뜻한다. 이미 관측된 저하량이 아니라 향후 위험을 추정한 값이다.",
       "concepts": [
         "성능저하잠재력",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -713,15 +715,15 @@
       "id": "S1-ATH-1095",
       "type": "attribute_packet",
       "split": "train",
-      "text": "성능안전여유은 대상의 성능이나 기능이 기준 상태에서 얼마나 유지되거나 저하되었는지를 나타내는 속성이다. 성능안전여유은 현재 성능의 절대값과 구분된다.",
+      "text": "성능안전여유는 현재 성능과 최소 허용 성능 사이에 남은 간격이다. 여유가 작으면 작은 측정 오차나 부하 증가도 기준 미달을 일으킬 수 있다.",
       "concepts": [
         "성능안전여유",
         "성능 저하·유지"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -729,15 +731,15 @@
       "id": "S1-ATH-1096",
       "type": "attribute_packet",
       "split": "train",
-      "text": "성능회복도은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "성능회복도는 장애 전 성능과 비교해 복구 후 어느 수준까지 돌아왔는지를 나타낸다. 작동 재개만으로 완전 회복이라 판단하지 않는다.",
       "concepts": [
         "성능회복도",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -745,15 +747,15 @@
       "id": "S1-ATH-1097",
       "type": "attribute_packet",
       "split": "train",
-      "text": "성능회복률은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "성능회복률은 손실된 성능 가운데 수리나 휴지 뒤 되찾은 몫이다. 복구에 걸린 시간은 별도의 속도 지표로 평가한다.",
       "concepts": [
         "성능회복률",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -761,15 +763,15 @@
       "id": "S1-ATH-1098",
       "type": "attribute_packet",
       "split": "train",
-      "text": "복구가능성은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "손상후복구가능성은 훼손된 대상이 수리, 재생, 휴식으로 허용 상태에 돌아올 수 있는 개연성이다. 회복에 성공했을 때의 속도와는 다르다.",
       "concepts": [
-        "복구가능성",
+        "손상후복구가능성",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -777,15 +779,15 @@
       "id": "S1-ATH-1099",
       "type": "attribute_packet",
       "split": "train",
-      "text": "복구속도은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "손상후복구속도는 손상 상태에서 정상 범위로 되돌아오는 진행 속도다. 최종 회복 수준이 높아도 시간이 오래 걸리면 이 값은 낮다.",
       "concepts": [
-        "복구속도",
+        "손상후복구속도",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -793,15 +795,15 @@
       "id": "S1-ATH-1100",
       "type": "attribute_packet",
       "split": "train",
-      "text": "복구효율은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "자원대비복구효율은 투입한 시간, 인력, 에너지에 비해 되찾은 성능이 얼마나 큰지를 본다. 빠르지만 비용이 과도한 복구는 효율적이지 않을 수 있다.",
       "concepts": [
-        "복구효율",
+        "자원대비복구효율",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -809,15 +811,15 @@
       "id": "S1-ATH-1101",
       "type": "attribute_packet",
       "split": "train",
-      "text": "복구완결성은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "복구완결성은 원인 제거, 기능 회복, 잔류 결함 확인까지 복구 절차가 빠짐없이 끝난 정도다. 임시 재가동은 완결된 복구와 구분된다.",
       "concepts": [
         "복구완결성",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -825,15 +827,15 @@
       "id": "S1-ATH-1102",
       "type": "attribute_packet",
       "split": "train",
-      "text": "장애복원성은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "장애복원성은 서비스 장애를 겪은 뒤 데이터와 기능을 정상 운영 상태로 되돌리는 능력이다. 장애를 처음부터 막는 예방 능력과는 경계가 있다.",
       "concepts": [
         "장애복원성",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -841,15 +843,15 @@
       "id": "S1-ATH-1103",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장회복성은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "고장회복성은 실제 고장이 난 장비가 수리 또는 우회로 기능을 다시 제공하는 성질이다. 복구 성공률과 소요 시간을 함께 살펴야 한다.",
       "concepts": [
         "고장회복성",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -857,15 +859,15 @@
       "id": "S1-ATH-1104",
       "type": "attribute_packet",
       "split": "train",
-      "text": "교체용이성은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "교체용이성은 고장 부품을 찾아 분리하고 새 부품으로 바꾸는 작업이 간단한 정도다. 접근 공간, 표준 규격, 연결 방식이 주요 조건이다.",
       "concepts": [
         "교체용이성",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -873,15 +875,15 @@
       "id": "S1-ATH-1105",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수리용이성은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "수리용이성은 손상 원인을 고치고 성능을 되살리는 데 필요한 절차와 기술의 난이도다. 부품 교체만 가능한 제품은 교체는 쉬워도 수리는 어려울 수 있다.",
       "concepts": [
         "수리용이성",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -889,15 +891,15 @@
       "id": "S1-ATH-1106",
       "type": "attribute_packet",
       "split": "train",
-      "text": "유지보수용이성은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "유지보수용이성은 점검, 청소, 보정, 수리를 일상적으로 수행하기 편한 성질이다. 정비 접근성뿐 아니라 필요한 시간과 도구도 포함한다.",
       "concepts": [
         "유지보수용이성",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -905,15 +907,15 @@
       "id": "S1-ATH-1107",
       "type": "attribute_packet",
       "split": "train",
-      "text": "예방정비효과성은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "예방정비효과성은 고장 전에 시행한 정비가 이후 고장과 성능 저하를 얼마나 줄였는지를 뜻한다. 정비 횟수보다 미시행 조건과의 결과 차이가 핵심이다.",
       "concepts": [
         "예방정비효과성",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -921,15 +923,15 @@
       "id": "S1-ATH-1108",
       "type": "attribute_packet",
       "split": "train",
-      "text": "정비반응성은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "정비반응성은 이상 징후가 나타난 뒤 정비 체계가 얼마나 빨리 진단하고 조치하는지를 나타낸다. 부품의 물리적 복구 속도와 조직의 대응 속도를 구별한다.",
       "concepts": [
         "정비반응성",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -937,15 +939,15 @@
       "id": "S1-ATH-1109",
       "type": "attribute_packet",
       "split": "train",
-      "text": "정비성능회복률은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "정비성능회복률은 정비 전 손실 성능 중 정비를 통해 회수한 비율이다. 점검만 하고 성능이 그대로라면 작업 완료와 무관하게 낮게 평가된다.",
       "concepts": [
         "정비성능회복률",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -953,15 +955,15 @@
       "id": "S1-ATH-1110",
       "type": "attribute_packet",
       "split": "train",
-      "text": "평균복구시간은 손상이나 고장 이후 기능을 수리·복구·정비하는 과정의 용이성, 속도, 효과 또는 결과를 나타낸다. 과정의 실제 횟수나 단순 작업시간과는 구분된다.",
+      "text": "평균복구시간은 여러 장애가 발생한 시점부터 정상 서비스가 돌아올 때까지의 시간을 평균한 값이다. 긴 꼬리 사례가 있으면 중앙값도 함께 확인한다.",
       "concepts": [
         "평균복구시간",
         "복구·수리·정비"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -969,15 +971,15 @@
       "id": "S1-ATH-1111",
       "type": "attribute_packet",
       "split": "train",
-      "text": "잔여수명은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 잔여수명은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "잔여수명은 현재 열화 상태에서 허용 한계에 도달하기 전까지 사용할 수 있다고 예상되는 시간이나 주기 수다. 새 제품의 설계수명과 다르다.",
       "concepts": [
         "잔여수명",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -985,15 +987,15 @@
       "id": "S1-ATH-1112",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수명감소율은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 수명감소율은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "수명감소율은 가혹 조건이나 사용 누적에 따라 예상 잔여수명이 줄어드는 비율이다. 하루가 지났다는 달력 감소와 추가 열화로 인한 감소를 분리해야 한다.",
       "concepts": [
         "수명감소율",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1001,15 +1003,15 @@
       "id": "S1-ATH-1113",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수명변동성은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 수명변동성은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "수명변동성은 동일 규격 제품들의 실제 고장 시점이 서로 흩어진 정도다. 평균 수명만 같아도 조기 고장이 많으면 변동성은 커질 수 있다.",
       "concepts": [
         "수명변동성",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1017,15 +1019,15 @@
       "id": "S1-ATH-1114",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수명예측가능성은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 수명예측가능성은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "수명예측가능성은 관측한 상태와 이력으로 남은 수명을 일관되게 맞힐 수 있는 정도다. 수명이 길다는 뜻이 아니라 예측 오차가 작다는 뜻이다.",
       "concepts": [
         "수명예측가능성",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1033,15 +1035,15 @@
       "id": "S1-ATH-1115",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수명민감도은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 수명민감도은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "수명민감도는 온도, 부하, 사용 빈도의 작은 차이가 예상 수명을 얼마나 바꾸는지를 나타낸다. 값이 크면 운전 조건을 세밀하게 기록해야 한다.",
       "concepts": [
         "수명민감도",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1049,15 +1051,15 @@
       "id": "S1-ATH-1116",
       "type": "attribute_packet",
       "split": "train",
-      "text": "재료수명변동성은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 재료수명변동성은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "시편수명변동성은 같은 재료와 시험법을 적용한 시편들의 파손 시점이 퍼지는 폭이다. 제조 편차나 미세 결함의 영향을 드러낼 수 있다.",
       "concepts": [
-        "재료수명변동성",
+        "시편수명변동성",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1065,15 +1067,15 @@
       "id": "S1-ATH-1117",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수명이력의존성은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 수명이력의존성은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "수명이력의존성은 현재 상태가 같아 보여도 과거의 과부하, 휴지, 온도 순서에 따라 남은 수명이 달라지는 성질이다. 최종 조건만으로 설명되지 않는다.",
       "concepts": [
         "수명이력의존성",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1081,15 +1083,15 @@
       "id": "S1-ATH-1118",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수명추세일관성은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 수명추세일관성은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "수명추세일관성은 관찰을 거듭할 때 잔여수명 추정치가 합리적인 방향과 속도로 변하는 정도다. 근거 없이 크게 오르내리면 일관성이 낮다.",
       "concepts": [
         "수명추세일관성",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1097,15 +1099,15 @@
       "id": "S1-ATH-1119",
       "type": "attribute_packet",
       "split": "train",
-      "text": "부품수명편차은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 부품수명편차은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "부품수명편차는 한 시스템을 이루는 부품들의 예상 교체 시기가 벌어진 정도다. 편차가 크면 일부 부품만 반복 정비하는 일정이 생길 수 있다.",
       "concepts": [
         "부품수명편차",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1113,15 +1115,15 @@
       "id": "S1-ATH-1120",
       "type": "attribute_packet",
       "split": "train",
-      "text": "시스템수명편차은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 시스템수명편차은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "시스템수명편차는 같은 모델의 여러 시스템이 사용 한계에 도달하는 시점의 차이다. 내부 부품 간 수명 차이와 혼동하지 않는다.",
       "concepts": [
         "시스템수명편차",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1129,15 +1131,15 @@
       "id": "S1-ATH-1121",
       "type": "attribute_packet",
       "split": "train",
-      "text": "부하별수명감소율은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 부하별수명감소율은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "부하별수명감소율은 운전 부하 수준을 바꿀 때 수명이 얼마나 빠르게 줄어드는지를 비교한다. 고부하 한 시간과 저부하 한 시간을 같은 노출로 보지 않는다.",
       "concepts": [
         "부하별수명감소율",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1145,15 +1147,15 @@
       "id": "S1-ATH-1122",
       "type": "attribute_packet",
       "split": "train",
-      "text": "환경노출별수명감소율은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 환경노출별수명감소율은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "환경노출별수명감소율은 염분, 자외선, 습기 등 환경 자극의 종류와 양에 따른 수명 손실 비율이다. 서로 다른 노출 단위를 공통 기준으로 환산해야 한다.",
       "concepts": [
         "환경노출별수명감소율",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1161,15 +1163,15 @@
       "id": "S1-ATH-1123",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수명연장잠재력은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 수명연장잠재력은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "수명연장잠재력은 운전 완화, 냉각, 보수로 현재 예상 수명을 더 늘릴 수 있는 여지다. 이미 확보된 잔여수명과 개선 가능한 추가분을 나눈다.",
       "concepts": [
         "수명연장잠재력",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1177,15 +1179,15 @@
       "id": "S1-ATH-1124",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수명단축잠재력은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 수명단축잠재력은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "수명단축잠재력은 과부하나 보호 실패가 계속될 때 수명이 추가로 줄어들 위험의 크기다. 확정된 손실이 아니라 불리한 조건의 가능성을 표현한다.",
       "concepts": [
         "수명단축잠재력",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1193,15 +1195,15 @@
       "id": "S1-ATH-1125",
       "type": "attribute_packet",
       "split": "train",
-      "text": "보수적수명여유은 대상의 남은 사용기간, 예상 수명 또는 수명 변이를 나타내는 속성이나 측정값이다. 보수적수명여유은 단순한 현재 사용기간과 동일하지 않다.",
+      "text": "보수적수명여유는 불확실성을 감안해 낮게 잡은 수명 추정치와 요구 사용 기간 사이의 간격이다. 평균 예측값이 아니라 안전 쪽 경계를 사용한다.",
       "concepts": [
         "보수적수명여유",
         "수명"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1209,15 +1211,15 @@
       "id": "S1-ATH-1126",
       "type": "attribute_packet",
       "split": "train",
-      "text": "마모누적도은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 마모누적도은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "마모누적도는 접촉과 마찰이 반복되며 제거되거나 변형된 재료가 얼마나 쌓였는지를 나타낸다. 한 시점의 표면 거칠기와 누적 이력을 구별한다.",
       "concepts": [
         "마모누적도",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1225,15 +1227,15 @@
       "id": "S1-ATH-1127",
       "type": "attribute_packet",
       "split": "train",
-      "text": "마모가속성은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 마모가속성은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "마모가속성은 사용이 계속될수록 단위 시간당 마모량이 커지는 경향이다. 윤활 손실이나 접촉면 변화가 가속의 원인이 될 수 있다.",
       "concepts": [
         "마모가속성",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1241,15 +1243,15 @@
       "id": "S1-ATH-1128",
       "type": "attribute_packet",
       "split": "train",
-      "text": "마모회복가능성은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 마모회복가능성은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "마모회복가능성은 연마, 코팅, 부품 재생으로 마모된 치수나 기능을 허용 범위에 되돌릴 수 있는 정도다. 자연 회복만을 뜻하지 않는다.",
       "concepts": [
         "마모회복가능성",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1257,15 +1259,15 @@
       "id": "S1-ATH-1129",
       "type": "attribute_packet",
       "split": "train",
-      "text": "부식누적도은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 부식누적도은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "부식누적도는 화학 반응으로 잃은 두께, 질량, 강도가 시간에 따라 쌓인 수준이다. 순간 부식 전류와 최종 누적 손실은 별개다.",
       "concepts": [
         "부식누적도",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1273,15 +1275,15 @@
       "id": "S1-ATH-1130",
       "type": "attribute_packet",
       "split": "train",
-      "text": "부식가속성은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 부식가속성은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "부식가속성은 노출이 이어질수록 부식 진행 속도가 더 빨라지는 성질이다. 보호막 붕괴 뒤 속도가 뛰는 구간에서 크게 나타난다.",
       "concepts": [
         "부식가속성",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1289,15 +1291,15 @@
       "id": "S1-ATH-1131",
       "type": "attribute_packet",
       "split": "train",
-      "text": "부식회복가능성은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 부식회복가능성은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "부식회복가능성은 세척, 피막 재형성, 보강으로 부식 피해를 기능상 복구할 수 있는 정도다. 사라진 원재료가 저절로 돌아온다는 의미는 아니다.",
       "concepts": [
         "부식회복가능성",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1305,15 +1307,15 @@
       "id": "S1-ATH-1132",
       "type": "attribute_packet",
       "split": "train",
-      "text": "피로누적도은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 피로누적도은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "피로누적도는 반복 하중이 내부에 남긴 미세 손상이 파손 한계까지 얼마나 쌓였는지를 뜻한다. 단일 최대 하중만으로는 이 값을 설명하기 어렵다.",
       "concepts": [
         "피로누적도",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1321,15 +1323,15 @@
       "id": "S1-ATH-1133",
       "type": "attribute_packet",
       "split": "train",
-      "text": "피로손상률은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 피로손상률은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "피로손상률은 하중 반복 한 번 또는 단위 시간마다 피로 손상이 늘어난 비율이다. 응력 범위와 반복 순서에 따라 값이 달라진다.",
       "concepts": [
         "피로손상률",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1337,15 +1339,15 @@
       "id": "S1-ATH-1134",
       "type": "attribute_packet",
       "split": "train",
-      "text": "피로수명감소율은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 피로수명감소율은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "피로수명감소율은 반복 횟수가 증가할 때 남은 피로수명이 줄어드는 속도다. 일정 비율을 가정하기보다 하중 단계별 변화를 확인한다.",
       "concepts": [
         "피로수명감소율",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1353,15 +1355,15 @@
       "id": "S1-ATH-1135",
       "type": "attribute_packet",
       "split": "train",
-      "text": "균열누적성은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 균열누적성은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "균열누적성은 작은 균열들이 사라지지 않고 길어지거나 서로 이어지는 경향이다. 총 균열 수가 줄어도 합쳐진 주균열은 더 위험할 수 있다.",
       "concepts": [
         "균열누적성",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1369,15 +1371,15 @@
       "id": "S1-ATH-1136",
       "type": "attribute_packet",
       "split": "train",
-      "text": "균열성장속도은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 균열성장속도은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "균열성장속도는 균열 끝이 단위 시간이나 하중 주기마다 전진한 길이다. 현재 균열 길이와 앞으로 자라는 속도를 따로 측정한다.",
       "concepts": [
         "균열성장속도",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1385,15 +1387,15 @@
       "id": "S1-ATH-1137",
       "type": "attribute_packet",
       "split": "train",
-      "text": "균열회복가능성은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 균열회복가능성은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "균열회복가능성은 접합, 충전, 자기치유 재료 등으로 균열의 기능적 영향을 줄일 수 있는 정도다. 흔적이 남아도 하중 전달이 회복될 수 있다.",
       "concepts": [
         "균열회복가능성",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1401,15 +1403,15 @@
       "id": "S1-ATH-1138",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변형누적도은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 변형누적도은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "변형누적도는 반복 힘을 제거한 뒤에도 남은 형상 변화가 여러 주기에 걸쳐 쌓인 수준이다. 순간 탄성 변형은 하중 해제와 함께 사라진다.",
       "concepts": [
         "변형누적도",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1417,15 +1419,15 @@
       "id": "S1-ATH-1139",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변형회복도은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 변형회복도은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "변형회복도는 힘을 뺀 뒤 원래 치수와 형상으로 돌아온 비율이다. 회복 속도와 최종 잔류 변형을 함께 기록하면 해석이 명확해진다.",
       "concepts": [
         "변형회복도",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1433,15 +1435,15 @@
       "id": "S1-ATH-1140",
       "type": "attribute_packet",
       "split": "train",
-      "text": "영구변형증가율은 반복 사용이나 환경 노출에 따른 마모, 부식, 피로, 균열 또는 변형의 진행 정도를 나타낸다. 영구변형증가율은 단일 손상 사건이나 현재 하중과는 구분된다.",
+      "text": "영구변형증가율은 복원되지 않는 변형이 사용 주기마다 늘어나는 비율이다. 총변형 중 탄성 성분을 제외한 잔류분을 기준으로 계산한다.",
       "concepts": [
         "영구변형증가율",
         "마모·부식·피로"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1449,15 +1451,15 @@
       "id": "S1-ATH-1141",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태악화가능성은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태악화가능성은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태악화가능성은 현재 조건에서 대상이 더 나쁜 상태로 옮겨갈 개연성이다. 이미 악화된 정도가 아니라 다음 전이의 위험을 가리킨다.",
       "concepts": [
         "상태악화가능성",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1465,15 +1467,15 @@
       "id": "S1-ATH-1142",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태회복가능성은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태회복가능성은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태회복가능성은 저하된 대상이 허용 상태나 정상 상태로 되돌아갈 수 있는 개연성이다. 회복이 가능해도 필요한 시간이 지나치게 길 수 있다.",
       "concepts": [
         "상태회복가능성",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1481,15 +1483,15 @@
       "id": "S1-ATH-1143",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태악화속도은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태악화속도은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태악화속도는 건강도나 성능 상태가 나쁜 방향으로 이동하는 빠르기다. 현재 상태값이 낮다는 사실과 계속 악화 중이라는 사실을 구분한다.",
       "concepts": [
         "상태악화속도",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1497,15 +1499,15 @@
       "id": "S1-ATH-1144",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태회복잠재력은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태회복잠재력은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태회복잠재력은 아직 시행하지 않은 치료, 정비, 조건 개선으로 상태를 끌어올릴 수 있는 여지다. 관측된 회복량보다 가능한 추가 개선분에 초점을 둔다.",
       "concepts": [
         "상태회복잠재력",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1513,15 +1515,15 @@
       "id": "S1-ATH-1145",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태저하속도은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태저하속도은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태저하속도는 기준 상태와의 거리가 시간에 따라 커지는 비율이다. 악화 방향을 정의한 뒤 동일 척도에서 시점별 값을 비교한다.",
       "concepts": [
         "상태저하속도",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1529,15 +1531,15 @@
       "id": "S1-ATH-1146",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태회복속도은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태회복속도은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태회복속도는 저하 상태에서 목표 범위까지 거리가 줄어드는 빠르기다. 빠른 초기 개선 뒤 정체되는 경우 구간별 속도가 다르다.",
       "concepts": [
         "상태회복속도",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1545,15 +1547,15 @@
       "id": "S1-ATH-1147",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태저하민감도은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태저하민감도은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태저하민감도는 부하나 환경이 조금 바뀔 때 저하 속도가 얼마나 달라지는지를 본다. 민감도가 높으면 경계 조건 부근의 운전을 피해야 한다.",
       "concepts": [
         "상태저하민감도",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1561,15 +1563,15 @@
       "id": "S1-ATH-1148",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태회복민감도은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태회복민감도은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태회복민감도는 치료량, 정비 강도, 휴식 시간의 작은 차이가 회복 결과에 미치는 영향이다. 최적 조건 주변에서의 기울기로 나타낼 수 있다.",
       "concepts": [
         "상태회복민감도",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1577,15 +1579,15 @@
       "id": "S1-ATH-1149",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태변동폭은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태변동폭은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태변동폭은 관찰 기간의 최고 상태와 최저 상태 사이 간격이다. 변동 횟수가 적어도 한 번의 큰 급락이 있으면 폭은 커진다.",
       "concepts": [
         "상태변동폭",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1593,15 +1595,15 @@
       "id": "S1-ATH-1150",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태변동성은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태변동성은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태변동성은 상태값이 평균 주위에서 얼마나 불규칙하게 흔들리는지를 뜻한다. 단순 범위뿐 아니라 흔들림의 빈도와 분산도 고려할 수 있다.",
       "concepts": [
         "상태변동성",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1609,15 +1611,15 @@
       "id": "S1-ATH-1151",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태안정성은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태안정성은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태안정성은 작은 교란 뒤 상태가 허용 범위를 벗어나지 않거나 다시 돌아오는 성질이다. 변화가 전혀 없다는 뜻으로 한정되지 않는다.",
       "concepts": [
         "상태안정성",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1625,15 +1627,15 @@
       "id": "S1-ATH-1152",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태지속시간은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태지속시간은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태지속시간은 특정 상태에 진입한 뒤 다른 상태로 바뀌기 전까지 머문 시간이다. 반복 사건에서는 각 체류 시간의 분포를 함께 본다.",
       "concepts": [
         "상태지속시간",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1641,15 +1643,15 @@
       "id": "S1-ATH-1153",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태전이빈도은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태전이빈도은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태전이빈도는 관찰 구간 동안 상태 범주가 바뀐 횟수를 시간으로 나눈 값이다. 같은 두 상태를 오가는 반복도 각각 전이로 센다.",
       "concepts": [
         "상태전이빈도",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1657,15 +1659,15 @@
       "id": "S1-ATH-1154",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태전이재현성은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태전이재현성은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태전이재현성은 같은 초기 조건과 자극에서 비슷한 시점과 경로로 상태가 바뀌는 정도다. 최종 상태만 같고 경로가 다르면 재현성은 낮을 수 있다.",
       "concepts": [
         "상태전이재현성",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1673,15 +1675,15 @@
       "id": "S1-ATH-1155",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태전이임계값은 대상의 상태가 악화되거나 회복되는 가능성, 속도, 변동 또는 상태 전환과 관련된 정도를 나타낸다. 상태전이임계값은 특정 시점의 상태값과 동일하지 않다.",
+      "text": "상태전이임계값은 입력이나 내부 지표가 어느 수준을 넘을 때 상태 범주가 바뀌는 경계값이다. 전이 뒤 원상 복귀의 경계와 다를 수 있다.",
       "concepts": [
         "상태전이임계값",
         "상태·임계"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1689,15 +1691,15 @@
       "id": "S1-ATH-1156",
       "type": "attribute_packet",
       "split": "train",
-      "text": "복구한계은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "복구한계는 수리나 회복을 늘려도 더 이상 개선되지 않는 최대 복원 수준이다. 경제적 중단 기준과 물리적으로 불가능한 한계를 구별한다.",
       "concepts": [
         "복구한계",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1705,15 +1707,15 @@
       "id": "S1-ATH-1157",
       "type": "attribute_packet",
       "split": "train",
-      "text": "회복임계값은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "회복임계값은 상태가 정상 범위로 돌아왔다고 판정하는 최소 회복 수준이다. 치료 시작 기준이나 고장 발생 기준과 같은 값일 필요는 없다.",
       "concepts": [
         "회복임계값",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1721,15 +1723,15 @@
       "id": "S1-ATH-1158",
       "type": "attribute_packet",
       "split": "train",
-      "text": "열화임계값은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "열화임계값은 열화 지표가 허용 가능에서 주의 또는 교체 상태로 넘어가는 경계다. 측정 불확실성이 크면 단일 숫자 대신 완충 구간을 둔다.",
       "concepts": [
         "열화임계값",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1737,15 +1739,15 @@
       "id": "S1-ATH-1159",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장임계값은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "고장임계값은 성능이나 상태 지표가 기능 실패로 판정되는 수준이다. 경보 임계값은 사전 대응을 위해 보통 더 안전한 쪽에 놓인다.",
       "concepts": [
         "고장임계값",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1753,15 +1755,15 @@
       "id": "S1-ATH-1160",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수명임계값은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "수명임계값은 잔여수명이 이 값 아래로 내려갈 때 정비나 교체를 요구하는 운영 경계다. 실제 파손 시점보다 앞서 설정하는 것이 일반적이다.",
       "concepts": [
         "수명임계값",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1769,15 +1771,15 @@
       "id": "S1-ATH-1161",
       "type": "attribute_packet",
       "split": "train",
-      "text": "임계성능접근도은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "임계성능접근도는 현재 성능이 허용 한계에 얼마나 가까워졌는지를 정규화한 값이다. 방향을 명시해야 높은 값이 위험인지 안전인지 혼동하지 않는다.",
       "concepts": [
         "임계성능접근도",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1785,15 +1787,15 @@
       "id": "S1-ATH-1162",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장임계접근도은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "고장임계접근도는 상태 지표와 고장 경계 사이에 남은 거리를 나타낸다. 센서마다 척도가 다르면 여유를 공통 비율로 바꾸어 비교한다.",
       "concepts": [
         "고장임계접근도",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1801,15 +1803,15 @@
       "id": "S1-ATH-1163",
       "type": "attribute_packet",
       "split": "train",
-      "text": "교체판정민감도은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "교체판정민감도는 측정값이나 비용 가정을 조금 바꿨을 때 교체 결정이 얼마나 쉽게 뒤집히는지를 뜻한다. 경계 부근의 불안정한 결정을 찾아낸다.",
       "concepts": [
         "교체판정민감도",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1817,15 +1819,15 @@
       "id": "S1-ATH-1164",
       "type": "attribute_packet",
       "split": "train",
-      "text": "정비판정민감도은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "정비판정민감도는 상태 추정치나 정비 기준을 조금 바꿨을 때 작업 필요 여부가 얼마나 쉽게 달라지는지를 나타낸다. 경계 구간에는 재검사를 둘 수 있다.",
       "concepts": [
         "정비판정민감도",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1833,15 +1835,15 @@
       "id": "S1-ATH-1165",
       "type": "attribute_packet",
       "split": "train",
-      "text": "복구판정민감도은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "복구판정민감도는 정상 복귀 기준의 작은 변화가 복구 완료 비율을 얼마나 바꾸는지를 나타낸다. 결과 비교 시 사용한 완료 기준을 함께 밝혀야 한다.",
       "concepts": [
         "복구판정민감도",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1849,15 +1851,15 @@
       "id": "S1-ATH-1166",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장판정민감도은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "고장판정민감도는 임계값이나 센서 잡음의 변화에 따라 고장 판정이 달라지는 정도다. 실제 고장에 대한 탐지 민감도와 규칙의 불안정성을 구분한다.",
       "concepts": [
         "고장판정민감도",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1865,15 +1867,15 @@
       "id": "S1-ATH-1167",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태진단정확성은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "상태진단정확성은 진단한 상태 범주나 수치가 확인된 실제 상태와 일치하는 정도다. 정상·주의·고장 각 범주의 오분류를 따로 볼 수 있다.",
       "concepts": [
         "상태진단정확성",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1881,15 +1883,15 @@
       "id": "S1-ATH-1168",
       "type": "attribute_packet",
       "split": "train",
-      "text": "열화진단정확성은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "열화진단정확성은 측정 자료로 추정한 열화 수준이 분해 검사나 기준 시험 결과와 얼마나 맞는지를 평가한다. 반복 측정의 정밀도와는 다른 속성이다.",
       "concepts": [
         "열화진단정확성",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1897,15 +1899,15 @@
       "id": "S1-ATH-1169",
       "type": "attribute_packet",
       "split": "train",
-      "text": "손상진단정확성은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "손상진단정확성은 손상의 위치, 종류, 크기에 대한 진단이 실제 훼손과 일치하는 정도다. 존재 여부만 맞혀도 크기 추정은 틀릴 수 있다.",
       "concepts": [
         "손상진단정확성",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1913,15 +1915,15 @@
       "id": "S1-ATH-1170",
       "type": "attribute_packet",
       "split": "train",
-      "text": "잔여수명진단정확성은 상태·열화·고장·복구를 판단하기 위한 기준, 접근 정도 또는 판정의 정확성을 나타낸다. 기준값이나 실제 판정 결과 자체와 구분된다.",
+      "text": "잔여수명진단정확성은 예측한 남은 수명과 실제 한계 도달 시점의 차이가 작은 정도다. 아직 수명이 끝나지 않은 사례는 검열 자료로 다뤄야 한다.",
       "concepts": [
         "잔여수명진단정확성",
         "임계·판정"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1929,15 +1931,15 @@
       "id": "S1-ATH-1171",
       "type": "attribute_packet",
       "split": "train",
-      "text": "성능이력의존성은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "성능이력의존성은 현재 입력이 같아도 과거 운전 순서와 부하 때문에 성능이 달라지는 성질이다. 단일 시점의 상태 변수만으로는 설명되지 않는다.",
       "concepts": [
         "성능이력의존성",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1945,15 +1947,15 @@
       "id": "S1-ATH-1172",
       "type": "attribute_packet",
       "split": "train",
-      "text": "열화이력의존성은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "열화이력의존성은 누적 노출량이 같더라도 고온과 저온을 겪은 순서에 따라 열화 결과가 달라지는 특성이다. 노출 총합만으로 비교하면 놓칠 수 있다.",
       "concepts": [
         "열화이력의존성",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1961,15 +1963,15 @@
       "id": "S1-ATH-1173",
       "type": "attribute_packet",
       "split": "train",
-      "text": "손상이력의존성은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "손상이력의존성은 이전 균열, 충격, 수리의 순서가 이후 손상 거동에 남기는 영향이다. 현재 보이는 손상 크기가 같아도 위험도는 달라질 수 있다.",
       "concepts": [
         "손상이력의존성",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1977,15 +1979,15 @@
       "id": "S1-ATH-1174",
       "type": "attribute_packet",
       "split": "train",
-      "text": "복구이력효과은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "복구이력효과는 과거에 받은 정비나 회복 경험이 다음 복구의 속도와 완성도에 미치는 영향이다. 반복 복구가 유리한 학습 효과와 불리한 피로를 모두 포함한다.",
       "concepts": [
         "복구이력효과",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1993,15 +1995,15 @@
       "id": "S1-ATH-1175",
       "type": "attribute_packet",
       "split": "train",
-      "text": "반복수리효과은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "반복수리효과는 같은 대상을 여러 번 수리하면서 성능, 비용, 고장 간격이 어떻게 달라지는지를 나타낸다. 매번 원상복구된다는 가정을 점검하게 한다.",
       "concepts": [
         "반복수리효과",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2009,15 +2011,15 @@
       "id": "S1-ATH-1176",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수리후성능편차은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "수리후성능편차는 동일한 수리 절차를 거친 대상들의 최종 성능이 서로 벌어진 정도다. 작업자 차이와 숨은 손상으로 편차가 생길 수 있다.",
       "concepts": [
         "수리후성능편차",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2025,15 +2027,15 @@
       "id": "S1-ATH-1177",
       "type": "attribute_packet",
       "split": "train",
-      "text": "교체후성능편차은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "교체후성능편차는 새 부품으로 바꾼 뒤 여러 장치가 내는 성능의 차이다. 부품 공차뿐 아니라 조립과 보정 상태도 원인이 된다.",
       "concepts": [
         "교체후성능편차",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2041,15 +2043,15 @@
       "id": "S1-ATH-1178",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태복구재현성은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "상태복구재현성은 같은 복구 절차를 반복했을 때 도달 상태와 소요 시간이 비슷한 정도다. 평균 회복량이 커도 결과가 들쭉날쭉하면 재현성은 낮다.",
       "concepts": [
         "상태복구재현성",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2057,15 +2059,15 @@
       "id": "S1-ATH-1179",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장모드안정성은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "고장모드안정성은 운전 조건이 조금 달라져도 주된 고장 형태가 바뀌지 않는 경향이다. 발생 빈도의 안정성과 고장 유형의 일관성을 구별한다.",
       "concepts": [
         "고장모드안정성",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2073,15 +2075,15 @@
       "id": "S1-ATH-1180",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장모드변동성은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "고장모드변동성은 시점, 제품, 조건에 따라 나타나는 고장 유형의 구성이 달라지는 정도다. 한 유형의 건수 변화만을 뜻하지 않는다.",
       "concepts": [
         "고장모드변동성",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2089,15 +2091,15 @@
       "id": "S1-ATH-1181",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장모드집중도은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "고장모드집중도는 전체 고장 사례가 소수 고장 유형에 몰린 정도다. 값이 높으면 우선순위가 뚜렷하지만 단일 원인이라고 단정할 수는 없다.",
       "concepts": [
         "고장모드집중도",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2105,15 +2107,15 @@
       "id": "S1-ATH-1182",
       "type": "attribute_packet",
       "split": "train",
-      "text": "고장모드다양성은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "고장모드다양성은 관찰된 고장 유형의 수와 분포의 고름을 함께 나타낸다. 유형 수가 같아도 한 유형이 대부분이면 다양성은 낮다.",
       "concepts": [
         "고장모드다양성",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2121,15 +2123,15 @@
       "id": "S1-ATH-1183",
       "type": "attribute_packet",
       "split": "train",
-      "text": "원인별고장편차은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "원인별고장편차는 원인 범주마다 고장 횟수나 심각도가 얼마나 다른지를 보여 준다. 원인 분류의 표본 수가 다르면 노출량을 보정해야 한다.",
       "concepts": [
         "원인별고장편차",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2137,15 +2139,15 @@
       "id": "S1-ATH-1184",
       "type": "attribute_packet",
       "split": "train",
-      "text": "성능회복의재현성은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "성능회복의재현성은 복구 절차를 반복했을 때 회수되는 성능 비율이 매번 비슷한 정도다. 평균 회복률이 높아도 회차별 편차가 크면 낮다.",
       "concepts": [
         "성능회복의재현성",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2153,15 +2155,15 @@
       "id": "S1-ATH-1185",
       "type": "attribute_packet",
       "split": "train",
-      "text": "열화회복의재현성은 과거 이력이나 반복 조건이 현재 성능, 고장, 복구 결과에 미치는 영향 또는 그 변동과 재현성을 나타낸다. 현재 상태만으로 설명되는 속성과는 구분된다.",
+      "text": "열화회복의재현성은 열화와 회복 주기를 되풀이해도 회복 결과가 비슷하게 나타나는 성질이다. 재료의 기억 효과가 있으면 주기마다 달라질 수 있다.",
       "concepts": [
         "열화회복의재현성",
         "이력·재현"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2169,15 +2171,15 @@
       "id": "S1-ATH-1186",
       "type": "attribute_packet",
       "split": "train",
-      "text": "복구후고장재발률은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "복구후고장재발률은 복구 완료 뒤 정해진 기간 안에 같은 고장이 다시 생긴 사례의 비율이다. 다른 원인의 신규 고장은 별도로 센다.",
       "concepts": [
         "복구후고장재발률",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2185,15 +2187,15 @@
       "id": "S1-ATH-1187",
       "type": "attribute_packet",
       "split": "train",
-      "text": "복구후신뢰성은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "복구후신뢰성은 복구된 대상이 이후 요구 기간 동안 고장 없이 기능할 가능성이다. 복구 직후 시험 통과만으로 장기 신뢰성을 보장하지 않는다.",
       "concepts": [
         "복구후신뢰성",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2201,15 +2203,15 @@
       "id": "S1-ATH-1188",
       "type": "attribute_packet",
       "split": "train",
-      "text": "정비후신뢰성은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "정비후신뢰성은 예방 또는 사후 정비를 마친 장비가 다음 운전 구간에서 안정적으로 임무를 수행하는 정도다. 정비 전후 고장 자료로 비교한다.",
       "concepts": [
         "정비후신뢰성",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2217,15 +2219,15 @@
       "id": "S1-ATH-1189",
       "type": "attribute_packet",
       "split": "train",
-      "text": "교체후신뢰성은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "교체후신뢰성은 부품 교체 뒤 시스템이 요구 조건을 계속 만족할 가능성이다. 새 부품 자체의 품질과 장착 오류가 함께 영향을 준다.",
       "concepts": [
         "교체후신뢰성",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2233,15 +2235,15 @@
       "id": "S1-ATH-1190",
       "type": "attribute_packet",
       "split": "train",
-      "text": "장기복구신뢰성은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "장기복구신뢰성은 복구 효과가 짧게 사라지지 않고 긴 관찰 기간 동안 유지되는 정도다. 초기 성능 회복과 이후 재열화를 함께 추적한다.",
       "concepts": [
         "장기복구신뢰성",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2249,15 +2251,15 @@
       "id": "S1-ATH-1191",
       "type": "attribute_packet",
       "split": "train",
-      "text": "복구후잔류성능손실은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "복구후잔류성능손실은 수리를 마친 뒤에도 기준 성능에 미치지 못한 부족분이다. 복구 전 손실에서 되찾은 성능을 빼서 해석할 수 있다.",
       "concepts": [
         "복구후잔류성능손실",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2265,15 +2267,15 @@
       "id": "S1-ATH-1192",
       "type": "attribute_packet",
       "split": "train",
-      "text": "복구후잔류손상도은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "복구후잔류손상도는 복구 절차 뒤에도 남은 균열, 변형, 내부 결함의 수준이다. 기능이 돌아왔더라도 잔류 손상이 다음 고장의 씨앗이 될 수 있다.",
       "concepts": [
         "복구후잔류손상도",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2281,15 +2283,15 @@
       "id": "S1-ATH-1193",
       "type": "attribute_packet",
       "split": "train",
-      "text": "복구후잔류고장위험은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "복구후잔류고장위험은 수리 후 남은 결함과 불확실성 때문에 다시 고장 날 가능성이다. 현재 성능 시험의 합격 여부와 별도로 평가한다.",
       "concepts": [
         "복구후잔류고장위험",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2297,15 +2299,15 @@
       "id": "S1-ATH-1194",
       "type": "attribute_packet",
       "split": "train",
-      "text": "잔여결함도은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "잔여결함도는 검사와 수정을 마친 뒤에도 제거되지 않았거나 발견하지 못한 결함의 추정 수준이다. 확인된 결함 수만으로는 완전히 측정되지 않는다.",
       "concepts": [
         "잔여결함도",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2313,15 +2315,15 @@
       "id": "S1-ATH-1195",
       "type": "attribute_packet",
       "split": "train",
-      "text": "잔여위험도은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "잔여위험도는 완화 조치를 적용한 뒤에도 남아 있는 발생 가능성과 피해의 결합 수준이다. 조치 전의 고유 위험과 구별해 기록한다.",
       "concepts": [
         "잔여위험도",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2329,15 +2331,15 @@
       "id": "S1-ATH-1196",
       "type": "attribute_packet",
       "split": "train",
-      "text": "잔여열화도은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "잔여열화도는 정비나 회복 뒤 기준 상태와 비교해 아직 남은 열화 수준이다. 표면이 개선되어도 내부 재료의 열화가 지속될 수 있다.",
       "concepts": [
         "잔여열화도",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2345,15 +2347,15 @@
       "id": "S1-ATH-1197",
       "type": "attribute_packet",
       "split": "train",
-      "text": "기준상태거리은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "기준상태거리는 현재 측정값 묶음이 정상 기준점에서 얼마나 떨어져 있는지를 하나의 척도로 나타낸다. 변수별 단위와 상관관계를 보정해야 한다.",
       "concepts": [
         "기준상태거리",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2361,15 +2363,15 @@
       "id": "S1-ATH-1198",
       "type": "attribute_packet",
       "split": "train",
-      "text": "정상상태복귀도은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "정상상태복귀도는 장애 상태에서 정상 범위의 중심 쪽으로 얼마나 돌아왔는지를 나타낸다. 경계만 넘은 임시 복귀와 충분한 회복을 구분할 수 있다.",
       "concepts": [
         "정상상태복귀도",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2377,15 +2379,15 @@
       "id": "S1-ATH-1199",
       "type": "attribute_packet",
       "split": "train",
-      "text": "목표상태도달률은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "목표상태도달률은 복구 시도 가운데 정해 둔 목표 상태에 실제로 도착한 비율이다. 부분 개선은 별도 단계로 세어 성공률을 부풀리지 않는다.",
       "concepts": [
         "목표상태도달률",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2393,15 +2395,15 @@
       "id": "S1-ATH-1200",
       "type": "attribute_packet",
       "split": "train",
-      "text": "목표상태도달시간은 복구·정비·교체 이후의 기능, 잔류 손상, 재고장, 안정화 또는 목표 상태 도달 정도를 나타낸다. 복구 행위 자체와는 다른 속성이다.",
+      "text": "목표상태도달시간은 복구나 제어를 시작한 뒤 목표 상태에 처음 들어갈 때까지 걸린 시간이다. 이후 상태를 유지하는 능력은 별도로 평가한다.",
       "concepts": [
         "목표상태도달시간",
         "복구 후 상태"
       ],
       "relations": [
         "attribute",
-        "degradation_recovery_lifecycle",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     }

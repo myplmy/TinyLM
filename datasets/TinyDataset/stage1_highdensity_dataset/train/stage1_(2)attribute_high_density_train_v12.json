@@ -1,23 +1,24 @@
 {
-  "dataset_name": "Korean AI Curriculum — Stage 1 Attribute High-Density Train v12",
-  "version": "1.0",
-  "range": "S1-ATH-1651~1800",
-  "theme": "변화·추세·증감·속도·가속·감속·주기·안정화에 대한 범용 동역학 속성군",
-  "purpose": "시간이나 조건에 따른 변화의 방향·속도·가속·주기·수렴·안정화 특성을 구분해 학습시키기 위한 수작업 고밀도 attribute corpus",
+  "dataset_name": "Korean AI Curriculum — Stage 1 Attribute High-Density Train 150 v12",
+  "version": "12",
+  "purpose": "Stage 1 속성·정도·변이 영역의 변화 방향·속도·가속·주기·수렴·안정화 corpus 150개",
   "split": "train",
+  "record_count": 150,
+  "range": "S1-ATH-1651 ~ S1-ATH-1800",
+  "design_note": "현재값과 변화율, 가속, 주기, 수렴 과정 및 안정 상태를 분리한다.",
   "records": [
     {
       "id": "S1-ATH-1651",
       "type": "attribute_packet",
       "split": "train",
-      "text": "증가율은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "증가율은 기준값에 비해 양이 얼마나 늘었는지를 비율로 나타낸다. 100에서 120으로 변하면 증가량은 20이고 증가율은 20퍼센트다.",
       "concepts": [
         "증가율"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -25,14 +26,14 @@
       "id": "S1-ATH-1652",
       "type": "attribute_packet",
       "split": "train",
-      "text": "감소율은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "감소율은 처음 값에서 줄어든 몫을 기준값으로 나눈 비율이다. 남아 있는 비율과 혼동하지 않도록 분모가 무엇인지 함께 적는다.",
       "concepts": [
         "감소율"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -40,14 +41,14 @@
       "id": "S1-ATH-1653",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화율은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "시간변화율은 관측값의 차이를 두 시점 사이 시간으로 나눈 값이다. 같은 변화량이라도 더 짧은 구간에 일어나면 변화율은 커진다.",
       "concepts": [
-        "변화율"
+        "시간변화율"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -55,14 +56,14 @@
       "id": "S1-ATH-1654",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화속도은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "변화속도는 상태가 단위 시간마다 달라지는 빠르기와 방향을 말한다. 단순한 이동 속도뿐 아니라 온도나 농도의 변화에도 적용된다.",
       "concepts": [
         "변화속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -70,14 +71,14 @@
       "id": "S1-ATH-1655",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화량은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "시점간변화량은 나중 값에서 먼저 값을 뺀 절대 차이다. 시간 길이를 나누지 않으므로 변화율과 달리 관측 단위를 그대로 유지한다.",
       "concepts": [
-        "변화량"
+        "시점간변화량"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -85,14 +86,14 @@
       "id": "S1-ATH-1656",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상대변화량은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "상대변화량은 값의 차이를 선택한 기준값에 견주어 표현한 크기다. 규모가 다른 집단을 비교할 때 유용하지만 기준이 0이면 정의하기 어렵다.",
       "concepts": [
         "상대변화량"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -100,14 +101,14 @@
       "id": "S1-ATH-1657",
       "type": "attribute_packet",
       "split": "train",
-      "text": "절대변화량은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "절대변화량은 두 관측값 사이 차이를 원래 단위로 표시한 수치다. 시작 규모와 무관한 실제 증감분을 보여 주되 비례적 영향은 말해 주지 않는다.",
       "concepts": [
         "절대변화량"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -115,14 +116,14 @@
       "id": "S1-ATH-1658",
       "type": "attribute_packet",
       "split": "train",
-      "text": "증감폭은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "증감폭은 관찰 구간에서 위나 아래로 움직인 전체 크기를 뜻한다. 방향을 제거한 범위인지 순변화인지 계산 규칙을 명확히 해야 한다.",
       "concepts": [
         "증감폭"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -130,14 +131,14 @@
       "id": "S1-ATH-1659",
       "type": "attribute_packet",
       "split": "train",
-      "text": "증가폭은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "증가폭은 기준 시점보다 값이 위로 올라간 절대 크기다. 증가율이 같아도 원래 규모가 큰 대상은 증가폭이 더 클 수 있다.",
       "concepts": [
         "증가폭"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -145,14 +146,14 @@
       "id": "S1-ATH-1660",
       "type": "attribute_packet",
       "split": "train",
-      "text": "감소폭은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "감소폭은 출발값에서 최종값까지 줄어든 양을 원래 단위로 잰다. 감소한 방향이 확실할 때 양수로 보고하는 관례가 흔하다.",
       "concepts": [
         "감소폭"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -160,14 +161,14 @@
       "id": "S1-ATH-1661",
       "type": "attribute_packet",
       "split": "train",
-      "text": "증감균형성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "증감균형성은 상승한 양과 하락한 양이 장기적으로 서로 상쇄되는 정도다. 변화가 적어서 균형적인 경우와 큰 등락이 맞물린 경우를 구별한다.",
       "concepts": [
         "증감균형성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -175,14 +176,14 @@
       "id": "S1-ATH-1662",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화방향성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "변화방향성은 연속된 관측이 주로 증가, 감소, 또는 무방향 중 어느 쪽으로 움직이는지를 나타낸다. 한 번의 끝값 차이보다 구간 전체의 부호를 본다.",
       "concepts": [
         "변화방향성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -190,14 +191,14 @@
       "id": "S1-ATH-1663",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화강도은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "변화강도는 일정 기간에 일어난 변화의 크기와 빠르기를 종합한 정도다. 방향이 반대인 두 변화도 강도는 같을 수 있다.",
       "concepts": [
         "변화강도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -205,14 +206,14 @@
       "id": "S1-ATH-1664",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화범위은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "변화범위는 관찰 중 나타난 가장 큰 값과 가장 작은 값 사이 간격이다. 시작점과 끝점이 같아도 중간 등락이 크면 범위는 넓다.",
       "concepts": [
         "변화범위"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -220,14 +221,14 @@
       "id": "S1-ATH-1665",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화지속성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "변화지속성은 시작된 증가나 감소가 끊기지 않고 여러 시점에 걸쳐 이어지는 성질이다. 단발성 급등은 크더라도 지속성은 낮다.",
       "concepts": [
         "변화지속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -235,14 +236,14 @@
       "id": "S1-ATH-1666",
       "type": "attribute_packet",
       "split": "train",
-      "text": "추세강도은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "추세강도는 시간에 따른 일관된 상승 또는 하락 신호가 잡음보다 얼마나 뚜렷한지를 뜻한다. 기울기 크기와 적합도를 함께 볼 수 있다.",
       "concepts": [
         "추세강도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -250,14 +251,14 @@
       "id": "S1-ATH-1667",
       "type": "attribute_packet",
       "split": "train",
-      "text": "추세지속성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "추세지속성은 같은 방향의 장기 움직임이 관찰 구간을 넘어 계속되는 경향이다. 짧은 연속 상승을 곧바로 지속 추세로 단정하지 않는다.",
       "concepts": [
         "추세지속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -265,14 +266,14 @@
       "id": "S1-ATH-1668",
       "type": "attribute_packet",
       "split": "train",
-      "text": "추세안정성은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "추세안정성은 표본 구간이나 측정 시점을 조금 바꿔도 추세의 방향과 기울기가 크게 달라지지 않는 정도다. 안정된 추세에도 작은 잡음은 존재한다.",
       "concepts": [
         "추세안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -280,14 +281,14 @@
       "id": "S1-ATH-1669",
       "type": "attribute_packet",
       "split": "train",
-      "text": "추세변동성은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "추세변동성은 추정한 추세선의 기울기나 방향이 구간마다 흔들리는 폭이다. 원자료의 순간 변동성과는 다른 수준의 변화다.",
       "concepts": [
         "추세변동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -295,14 +296,14 @@
       "id": "S1-ATH-1670",
       "type": "attribute_packet",
       "split": "train",
-      "text": "단기추세성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "단기추세성은 최근 몇 시점처럼 짧은 창에서 한 방향 움직임이 나타나는 정도다. 긴 기간의 구조적 추세와 반대일 수도 있다.",
       "concepts": [
         "단기추세성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -310,14 +311,14 @@
       "id": "S1-ATH-1671",
       "type": "attribute_packet",
       "split": "train",
-      "text": "중기추세성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "중기추세성은 단기 잡음을 넘지만 장기 체제 변화보다는 짧은 기간에 유지되는 방향성을 가리킨다. 분석 목적에 맞춰 기간 경계를 먼저 정한다.",
       "concepts": [
         "중기추세성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -325,14 +326,14 @@
       "id": "S1-ATH-1672",
       "type": "attribute_packet",
       "split": "train",
-      "text": "장기추세성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "장기추세성은 계절 변동과 일시 충격을 넘어 오랜 기간 지속되는 상승이나 하락의 뚜렷함이다. 관찰 기간이 충분히 길어야 판정할 수 있다.",
       "concepts": [
         "장기추세성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -340,14 +341,14 @@
       "id": "S1-ATH-1673",
       "type": "attribute_packet",
       "split": "train",
-      "text": "추세반전성은 한 상태나 변화 방향에서 다른 상태나 방향으로 바뀌는 동적 특성이다.",
+      "text": "추세반전성은 이어지던 상승이 하락으로, 또는 하락이 상승으로 바뀌는 경향이다. 일시적 흔들림과 지속적인 방향 전환을 구별한다.",
       "concepts": [
         "추세반전성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -355,14 +356,14 @@
       "id": "S1-ATH-1674",
       "type": "attribute_packet",
       "split": "train",
-      "text": "추세반전민감도은 한 상태나 변화 방향에서 다른 상태나 방향으로 바뀌는 동적 특성이다.",
+      "text": "추세반전민감도는 입력 조건의 작은 차이가 상승과 하락의 방향 전환에 미치는 영향이다. 값이 크면 반전 시점 추정이 잡음에 취약하다.",
       "concepts": [
         "추세반전민감도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -370,14 +371,14 @@
       "id": "S1-ATH-1675",
       "type": "attribute_packet",
       "split": "train",
-      "text": "증가추세강도은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "증가추세강도는 값이 시간과 함께 올라가는 신호의 기울기와 일관성을 나타낸다. 단일 최고값이 높다는 사실만으로 강한 증가 추세는 아니다.",
       "concepts": [
         "증가추세강도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -385,14 +386,14 @@
       "id": "S1-ATH-1676",
       "type": "attribute_packet",
       "split": "train",
-      "text": "감소추세강도은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "감소추세강도는 하락 방향의 기울기가 얼마나 크고 지속적인지를 평가한다. 바닥에 가까워져 완만해지는 구간은 별도로 나누어 볼 수 있다.",
       "concepts": [
         "감소추세강도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -400,14 +401,14 @@
       "id": "S1-ATH-1677",
       "type": "attribute_packet",
       "split": "train",
-      "text": "증가추세변동성은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "증가추세변동성은 상승 추세의 기울기가 시기별로 달라지는 정도다. 전체적으로 늘어도 어떤 구간은 빠르고 다른 구간은 정체될 수 있다.",
       "concepts": [
         "증가추세변동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -415,14 +416,14 @@
       "id": "S1-ATH-1678",
       "type": "attribute_packet",
       "split": "train",
-      "text": "감소추세변동성은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "감소추세변동성은 하락 속도가 관찰 창마다 불균일한 정도를 뜻한다. 일정 비율 감소와 충격성 급락이 섞이면 크게 나타난다.",
       "concepts": [
         "감소추세변동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -430,14 +431,14 @@
       "id": "S1-ATH-1679",
       "type": "attribute_packet",
       "split": "train",
-      "text": "추세가속성은 변화속도가 시간에 따라 더 커지는 정도다. 현재 변화속도 자체와는 다르다.",
+      "text": "추세가속성은 추세선의 기울기 절댓값이 시간이 지날수록 커지는 성질이다. 상승 가속과 하락 가속은 방향을 붙여 해석한다.",
       "concepts": [
         "추세가속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -445,14 +446,14 @@
       "id": "S1-ATH-1680",
       "type": "attribute_packet",
       "split": "train",
-      "text": "추세감속성은 변화속도가 시간에 따라 작아지는 정도다. 변화량 자체와는 다르다.",
+      "text": "추세감속성은 진행 중인 상승이나 하락의 속도가 점차 느려지는 경향이다. 방향이 바뀐 반전과 같은 현상으로 보지 않는다.",
       "concepts": [
         "추세감속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -460,14 +461,14 @@
       "id": "S1-ATH-1681",
       "type": "attribute_packet",
       "split": "train",
-      "text": "가속도은 변화속도가 시간에 따라 더 커지는 정도다. 현재 변화속도 자체와는 다르다.",
+      "text": "변화가속도는 단위 시간당 변화속도가 얼마나 달라졌는지를 나타낸다. 값이 양수여도 원래 변화 방향에 따라 감소가 둔화되는 경우일 수 있다.",
       "concepts": [
-        "가속도"
+        "변화가속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -475,14 +476,14 @@
       "id": "S1-ATH-1682",
       "type": "attribute_packet",
       "split": "train",
-      "text": "감속도은 변화속도가 시간에 따라 작아지는 정도다. 변화량 자체와는 다르다.",
+      "text": "감속도는 움직임이나 상태 변화의 속력이 줄어드는 빠르기다. 부호 규약을 정하지 않으면 음의 가속도와 혼동될 수 있다.",
       "concepts": [
         "감속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -490,14 +491,14 @@
       "id": "S1-ATH-1683",
       "type": "attribute_packet",
       "split": "train",
-      "text": "가속도변동성은 변화속도가 시간에 따라 더 커지는 정도다. 현재 변화속도 자체와는 다르다.",
+      "text": "가속도변동성은 가속도의 크기와 방향이 시간에 따라 들쭉날쭉한 정도다. 평균 가속도가 0이어도 급가속과 급감속이 반복되면 값은 크다.",
       "concepts": [
         "가속도변동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -505,14 +506,14 @@
       "id": "S1-ATH-1684",
       "type": "attribute_packet",
       "split": "train",
-      "text": "가속구간지속성은 변화속도가 시간에 따라 더 커지는 정도다. 현재 변화속도 자체와는 다르다.",
+      "text": "가속구간지속성은 변화속도가 계속 커지는 구간이 얼마나 오래 이어지는지를 뜻한다. 짧은 순간의 큰 가속과 긴 완만한 가속을 구별한다.",
       "concepts": [
         "가속구간지속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -520,14 +521,14 @@
       "id": "S1-ATH-1685",
       "type": "attribute_packet",
       "split": "train",
-      "text": "감속구간지속성은 변화속도가 시간에 따라 작아지는 정도다. 변화량 자체와는 다르다.",
+      "text": "감속구간지속성은 변화가 느려지는 상태가 연속해서 유지된 시간이나 표본 수다. 중간에 재가속이 나타나면 구간을 나누어 센다.",
       "concepts": [
         "감속구간지속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -535,14 +536,14 @@
       "id": "S1-ATH-1686",
       "type": "attribute_packet",
       "split": "train",
-      "text": "급가속성은 변화속도가 시간에 따라 더 커지는 정도다. 현재 변화속도 자체와는 다르다.",
+      "text": "급가속성은 짧은 시간 안에 변화속도가 큰 폭으로 증가하는 성질이다. 정상적인 완만한 상승과 분리하려면 시간 창과 임계값이 필요하다.",
       "concepts": [
         "급가속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -550,14 +551,14 @@
       "id": "S1-ATH-1687",
       "type": "attribute_packet",
       "split": "train",
-      "text": "급감속성은 변화속도가 시간에 따라 작아지는 정도다. 변화량 자체와는 다르다.",
+      "text": "급감속성은 진행 속도가 갑자기 크게 줄어드는 경향이다. 정지 직전의 자연스러운 완화인지 외부 충격인지 맥락을 함께 본다.",
       "concepts": [
         "급감속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -565,14 +566,14 @@
       "id": "S1-ATH-1688",
       "type": "attribute_packet",
       "split": "train",
-      "text": "완만가속성은 변화속도가 시간에 따라 더 커지는 정도다. 현재 변화속도 자체와는 다르다.",
+      "text": "완만가속성은 변화속도가 작지만 꾸준한 폭으로 커지는 성질을 말한다. 순간값보다 여러 시점에 걸친 매끄러운 곡률이 중요하다.",
       "concepts": [
         "완만가속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -580,14 +581,14 @@
       "id": "S1-ATH-1689",
       "type": "attribute_packet",
       "split": "train",
-      "text": "완만감속성은 변화속도가 시간에 따라 작아지는 정도다. 변화량 자체와는 다르다.",
+      "text": "완만감속성은 움직임의 빠르기가 급격한 꺾임 없이 서서히 줄어드는 정도다. 제어 시스템에서는 승차감이나 안정성과 연결될 수 있다.",
       "concepts": [
         "완만감속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -595,14 +596,14 @@
       "id": "S1-ATH-1690",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화율안정성은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "변화율안정성은 관측 구간을 바꾸거나 잡음이 섞여도 추정 변화율이 비슷하게 유지되는 정도다. 변화율이 0에 가깝다는 뜻은 아니다.",
       "concepts": [
         "변화율안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -610,14 +611,14 @@
       "id": "S1-ATH-1691",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화율변동성은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "변화율변동성은 순간 또는 구간별 변화율이 평균 변화율 주위에서 흔들리는 폭이다. 값 자체의 분산과 변화율의 분산은 서로 다르다.",
       "concepts": [
         "변화율변동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -625,14 +626,14 @@
       "id": "S1-ATH-1692",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화율민감도은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "변화율민감도는 입력이나 환경 조건을 조금 조정했을 때 변화율이 얼마나 크게 달라지는지를 나타낸다. 조건별 기울기의 차이로 비교할 수 있다.",
       "concepts": [
         "변화율민감도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -640,14 +641,14 @@
       "id": "S1-ATH-1693",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화율비대칭성은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "변화율비대칭성은 증가할 때와 감소할 때의 속도가 서로 같지 않은 정도다. 충전과 방전처럼 방향별 메커니즘이 다르면 크게 나타난다.",
       "concepts": [
         "변화율비대칭성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -655,14 +656,14 @@
       "id": "S1-ATH-1694",
       "type": "attribute_packet",
       "split": "train",
-      "text": "초기변화민감도은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "초기변화민감도는 자극을 가한 직후 작은 입력 차이가 초기 응답 기울기에 미치는 영향이다. 정상 상태에서의 민감도와 따로 측정한다.",
       "concepts": [
         "초기변화민감도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -670,14 +671,14 @@
       "id": "S1-ATH-1695",
       "type": "attribute_packet",
       "split": "train",
-      "text": "후기변화민감도은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "후기변화민감도는 과정 말기에 남은 입력 차이가 수렴 속도나 최종 접근에 주는 영향이다. 포화에 가까우면 초기보다 낮아질 수 있다.",
       "concepts": [
         "후기변화민감도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -685,14 +686,14 @@
       "id": "S1-ATH-1696",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화지연은 조건 변화와 결과 변화 사이의 시간적 차이를 나타낸다. 변화량과는 다른 차원이다.",
+      "text": "변화지연은 원인이 작용한 시점부터 관측값이 뚜렷하게 움직이기 시작할 때까지의 시간이다. 센서 지연과 대상 자체의 반응 지연을 분리한다.",
       "concepts": [
         "변화지연"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -700,14 +701,14 @@
       "id": "S1-ATH-1697",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화선행성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "변화선행성은 한 변수의 움직임이 관련 변수보다 앞서 나타나는 성질이다. 시간상 앞선다는 사실만으로 원인 관계가 증명되지는 않는다.",
       "concepts": [
         "변화선행성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -715,14 +716,14 @@
       "id": "S1-ATH-1698",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화후행성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "변화후행성은 기준 사건이 일어난 뒤 일정 시차를 두고 반응이 나타나는 경향이다. 최적 시차는 교차 상관이나 사건 정렬로 찾을 수 있다.",
       "concepts": [
         "변화후행성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -730,14 +731,14 @@
       "id": "S1-ATH-1699",
       "type": "attribute_packet",
       "split": "train",
-      "text": "응답지연변동성은 조건 변화와 결과 변화 사이의 시간적 차이를 나타낸다. 변화량과는 다른 차원이다.",
+      "text": "응답지연변동성은 같은 자극을 반복했을 때 반응 시작 시간이 퍼지는 정도다. 평균 지연이 짧아도 편차가 크면 동기화가 어렵다.",
       "concepts": [
         "응답지연변동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -745,14 +746,14 @@
       "id": "S1-ATH-1700",
       "type": "attribute_packet",
       "split": "train",
-      "text": "지연증가성은 조건 변화와 결과 변화 사이의 시간적 차이를 나타낸다. 변화량과는 다른 차원이다.",
+      "text": "지연증가성은 시간이 흐르거나 부하가 쌓이면서 응답 지연이 점차 길어지는 성질이다. 일회성 긴 지연보다 지속적인 방향 변화를 본다.",
       "concepts": [
         "지연증가성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -760,14 +761,14 @@
       "id": "S1-ATH-1701",
       "type": "attribute_packet",
       "split": "train",
-      "text": "지연감소성은 조건 변화와 결과 변화 사이의 시간적 차이를 나타낸다. 변화량과는 다른 차원이다.",
+      "text": "지연감소성은 적응, 예열, 학습을 거치며 반응까지 걸리는 시간이 줄어드는 경향이다. 최종 처리 시간 감소와 시작 지연 감소를 구별한다.",
       "concepts": [
         "지연감소성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -775,14 +776,14 @@
       "id": "S1-ATH-1702",
       "type": "attribute_packet",
       "split": "train",
-      "text": "지연안정성은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "지연안정성은 반복 조건에서 응답 지연이 일정한 범위에 머무는 정도다. 긴 지연이라도 매번 비슷하면 예측 가능성은 높을 수 있다.",
       "concepts": [
         "지연안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -790,14 +791,14 @@
       "id": "S1-ATH-1703",
       "type": "attribute_packet",
       "split": "train",
-      "text": "지속변화성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "지속변화성은 관찰 기간 대부분에 걸쳐 값이 계속 움직이는 성질이다. 한 번 변한 뒤 새 수준에 머무르는 계단 변화와 다르다.",
       "concepts": [
         "지속변화성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -805,14 +806,14 @@
       "id": "S1-ATH-1704",
       "type": "attribute_packet",
       "split": "train",
-      "text": "일시변화성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "일시변화성은 짧게 변했다가 기준 수준으로 되돌아오는 경향을 말한다. 변화 크기와 함께 유지 시간을 지정해야 비교가 가능하다.",
       "concepts": [
         "일시변화성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -820,14 +821,14 @@
       "id": "S1-ATH-1705",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화중단성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "변화중단성은 진행 중이던 변화가 목표에 닿기 전에 멈추는 성질이다. 포화로 끝난 것인지 외부 제약 때문에 끊긴 것인지 구분한다.",
       "concepts": [
         "변화중단성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -835,14 +836,14 @@
       "id": "S1-ATH-1706",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화재개성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "변화재개성은 멈췄던 변화가 조건 회복이나 새 자극 뒤 같은 방향으로 다시 이어지는 정도다. 처음부터 새로 시작한 과정과 이력을 달리 본다.",
       "concepts": [
         "변화재개성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -850,14 +851,14 @@
       "id": "S1-ATH-1707",
       "type": "attribute_packet",
       "split": "train",
-      "text": "지연비은 조건 변화와 결과 변화 사이의 시간적 차이를 나타낸다. 변화량과는 다른 차원이다.",
+      "text": "지연비는 전체 응답 시간 가운데 변화가 시작되기 전 대기 시간이 차지하는 비율이다. 규모가 다른 과정들의 상대적 지체를 비교할 수 있다.",
       "concepts": [
         "지연비"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -865,14 +866,14 @@
       "id": "S1-ATH-1708",
       "type": "attribute_packet",
       "split": "train",
-      "text": "지속시간비은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "지속시간비는 두 상태나 두 과정의 유지 시간을 서로 나눈 값이다. 분자와 분모의 순서를 고정해야 값의 의미가 바뀌지 않는다.",
       "concepts": [
         "지속시간비"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -880,14 +881,14 @@
       "id": "S1-ATH-1709",
       "type": "attribute_packet",
       "split": "train",
-      "text": "안정화지연은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "안정화지연은 제어 또는 처리를 시작한 뒤 출력이 안정 범위로 들어가기 전까지의 지체 시간이다. 최초 반응 시점과 안정 도달 시점을 구별한다.",
       "concepts": [
         "안정화지연"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -895,14 +896,14 @@
       "id": "S1-ATH-1710",
       "type": "attribute_packet",
       "split": "train",
-      "text": "회복지연은 조건 변화와 결과 변화 사이의 시간적 차이를 나타낸다. 변화량과는 다른 차원이다.",
+      "text": "회복지연은 손상 원인을 제거한 순간부터 실제 개선이 관측되기 시작할 때까지 걸린 시간이다. 회복이 시작된 뒤의 속도는 별도 지표다.",
       "concepts": [
         "회복지연"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -910,14 +911,14 @@
       "id": "S1-ATH-1711",
       "type": "attribute_packet",
       "split": "train",
-      "text": "주기성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "주기성은 비슷한 상태나 무늬가 일정한 시간 또는 공간 간격으로 되풀이되는 성질이다. 우연한 두 번의 반복만으로는 강한 주기라 보기 어렵다.",
       "concepts": [
         "주기성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -925,14 +926,14 @@
       "id": "S1-ATH-1712",
       "type": "attribute_packet",
       "split": "train",
-      "text": "주기안정성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "주기안정성은 반복 주기의 길이와 형태가 여러 회차에서 비슷하게 유지되는 정도다. 진폭이 변해도 주기 간격은 안정적일 수 있다.",
       "concepts": [
         "주기안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -940,14 +941,14 @@
       "id": "S1-ATH-1713",
       "type": "attribute_packet",
       "split": "train",
-      "text": "주기변동성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "주기변동성은 반복 사이 간격이 평균 주기에서 흔들리는 폭이다. 일정한 장단 교대처럼 규칙적인 변조와 무작위 변동을 나누어 본다.",
       "concepts": [
         "주기변동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -955,14 +956,14 @@
       "id": "S1-ATH-1714",
       "type": "attribute_packet",
       "split": "train",
-      "text": "주기변화율은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "주기변화율은 시간 경과에 따라 한 회차의 길이가 늘거나 줄어드는 비율이다. 주파수 변화율과는 역관계이므로 표현 단위를 명시한다.",
       "concepts": [
         "주기변화율"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -970,14 +971,14 @@
       "id": "S1-ATH-1715",
       "type": "attribute_packet",
       "split": "train",
-      "text": "주기빈도은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "주기빈도는 단위 시간이나 공간 안에 완성된 반복 회수가 몇 번 들어가는지를 나타낸다. 관찰 창 끝의 불완전한 회차 처리 규칙이 필요하다.",
       "concepts": [
         "주기빈도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -985,14 +986,14 @@
       "id": "S1-ATH-1716",
       "type": "attribute_packet",
       "split": "train",
-      "text": "주기길이은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "주기길이는 같은 위상의 연속한 두 지점 사이 시간 또는 거리다. 파형의 높이가 아니라 반복 한 번이 차지하는 간격을 잰다.",
       "concepts": [
         "주기길이"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1000,14 +1001,14 @@
       "id": "S1-ATH-1717",
       "type": "attribute_packet",
       "split": "train",
-      "text": "주기진폭은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "주기진폭은 반복 신호가 중심 수준에서 위아래로 벗어나는 대표 크기다. 주기 길이가 같아도 진폭은 독립적으로 변할 수 있다.",
       "concepts": [
         "주기진폭"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1015,14 +1016,14 @@
       "id": "S1-ATH-1718",
       "type": "attribute_packet",
       "split": "train",
-      "text": "진동성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다. 반응의 크기나 위상 변화는 별도로 구분한다.",
+      "text": "진동성은 값이 평형점 주위를 번갈아 오르내리는 경향이다. 한 방향의 불규칙 변동과 달리 되돌아오는 방향 전환이 핵심이다.",
       "concepts": [
         "진동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1030,14 +1031,14 @@
       "id": "S1-ATH-1719",
       "type": "attribute_packet",
       "split": "train",
-      "text": "진동안정성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다. 반응의 크기나 위상 변화는 별도로 구분한다.",
+      "text": "진동안정성은 반복 진동의 주파수와 진폭이 허용 범위에서 유지되는 정도다. 진동이 완전히 사라지는 감쇠성과 같지 않다.",
       "concepts": [
         "진동안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1045,14 +1046,14 @@
       "id": "S1-ATH-1720",
       "type": "attribute_packet",
       "split": "train",
-      "text": "진동감쇠성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다. 반응의 크기나 위상 변화는 별도로 구분한다.",
+      "text": "진동감쇠성은 시간이 지날수록 진동 진폭이 줄어드는 성질이다. 외부 입력을 끈 뒤 각 봉우리의 감소 비율로 측정할 수 있다.",
       "concepts": [
         "진동감쇠성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1060,14 +1061,14 @@
       "id": "S1-ATH-1721",
       "type": "attribute_packet",
       "split": "train",
-      "text": "진동증폭성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다. 반응의 크기나 위상 변화는 별도로 구분한다.",
+      "text": "진동증폭성은 작은 흔들림이 반복되며 더 큰 진폭으로 자라는 경향이다. 에너지 공급이나 양의 피드백이 지속되면 불안정으로 이어질 수 있다.",
       "concepts": [
         "진동증폭성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1075,14 +1076,14 @@
       "id": "S1-ATH-1722",
       "type": "attribute_packet",
       "split": "train",
-      "text": "진동주파수안정성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다. 반응의 크기나 위상 변화는 별도로 구분한다.",
+      "text": "진동주파수안정성은 조건 변화나 반복 측정에도 진동 횟수가 일정하게 유지되는 정도다. 진폭 흔들림과 독립적으로 평가한다.",
       "concepts": [
         "진동주파수안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1090,14 +1091,14 @@
       "id": "S1-ATH-1723",
       "type": "attribute_packet",
       "split": "train",
-      "text": "진동진폭변동성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다. 반응의 크기나 위상 변화는 별도로 구분한다.",
+      "text": "진동진폭변동성은 회차마다 진동의 높이가 평균에서 벗어나는 폭이다. 전체 진폭이 감소하는 추세를 제거한 뒤 잔여 변동을 볼 수 있다.",
       "concepts": [
         "진동진폭변동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1105,14 +1106,14 @@
       "id": "S1-ATH-1724",
       "type": "attribute_packet",
       "split": "train",
-      "text": "공진성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다. 반응의 크기나 위상 변화는 별도로 구분한다.",
+      "text": "공진성은 외부 자극의 주파수가 고유 주파수와 맞을 때 응답 진폭이 크게 커지는 성질이다. 모든 큰 진동이 공진에서 생기는 것은 아니다.",
       "concepts": [
         "공진성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1120,14 +1121,14 @@
       "id": "S1-ATH-1725",
       "type": "attribute_packet",
       "split": "train",
-      "text": "공진민감도은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다. 반응의 크기나 위상 변화는 별도로 구분한다.",
+      "text": "공진민감도는 자극 주파수가 공진점 근처에서 조금 달라질 때 응답 크기가 얼마나 급하게 변하는지를 뜻한다. 봉우리가 좁을수록 민감할 수 있다.",
       "concepts": [
         "공진민감도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1135,14 +1136,14 @@
       "id": "S1-ATH-1726",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수렴성은 값이나 상태가 특정 목표나 범위에 가까워지는 특성이다. 최종값 자체와는 다르다.",
+      "text": "수렴성은 반복 계산이나 동적 상태가 시간이 지나며 하나의 값 또는 제한된 집합에 가까워지는 성질이다. 잠시 가까워졌다 다시 멀어지면 수렴이라 할 수 없다.",
       "concepts": [
         "수렴성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1150,14 +1151,14 @@
       "id": "S1-ATH-1727",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수렴속도은 값이나 상태가 특정 목표나 범위에 가까워지는 특성이다. 최종값 자체와는 다르다.",
+      "text": "수렴속도는 현재값과 목표값 사이 오차가 반복마다 줄어드는 빠르기다. 같은 최종값에 도달해도 필요한 반복 횟수로 차이를 비교한다.",
       "concepts": [
         "수렴속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1165,14 +1166,14 @@
       "id": "S1-ATH-1728",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수렴가속성은 변화속도가 시간에 따라 더 커지는 정도다. 현재 변화속도 자체와는 다르다.",
+      "text": "수렴가속성은 과정 후반으로 갈수록 오차 감소 속도가 더 빨라지는 경향이다. 초기 급감 뒤 느려지는 일반적 수렴과 반대 형태다.",
       "concepts": [
         "수렴가속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1180,14 +1181,14 @@
       "id": "S1-ATH-1729",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수렴감속성은 변화속도가 시간에 따라 작아지는 정도다. 변화량 자체와는 다르다.",
+      "text": "수렴감속성은 목표에 가까워질수록 접근 속도가 느려지는 성질이다. 남은 오차가 작아서 자연스럽게 둔화되는 경우와 정체를 구별한다.",
       "concepts": [
         "수렴감속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1195,14 +1196,14 @@
       "id": "S1-ATH-1730",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수렴한계은 값이나 상태가 특정 목표나 범위에 가까워지는 특성이다. 최종값 자체와는 다르다.",
+      "text": "수렴한계는 반복을 무한히 이어갈 때 값이 가까워지는 목표 수준이다. 유한한 마지막 관측값과 이론적 한계값이 일치하지 않을 수 있다.",
       "concepts": [
         "수렴한계"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1210,14 +1211,14 @@
       "id": "S1-ATH-1731",
       "type": "attribute_packet",
       "split": "train",
-      "text": "수렴잔차은 값이나 상태가 특정 목표나 범위에 가까워지는 특성이다. 최종값 자체와는 다르다.",
+      "text": "수렴잔차는 계산이나 안정화가 끝난 뒤에도 목표값과 실제값 사이에 남은 차이다. 종료 허용 오차와 측정 잡음을 함께 밝혀야 한다.",
       "concepts": [
         "수렴잔차"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1225,14 +1226,14 @@
       "id": "S1-ATH-1732",
       "type": "attribute_packet",
       "split": "train",
-      "text": "발산성은 값이나 상태가 기준이나 목표에서 점점 멀어지는 특성이다. 현재값과는 다르다.",
+      "text": "발산성은 반복 또는 시간 진행에 따라 값이 유한한 범위에서 계속 멀어지는 성질이다. 큰 값 하나보다 오차가 확대되는 지속 경향이 중요하다.",
       "concepts": [
         "발산성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1240,14 +1241,14 @@
       "id": "S1-ATH-1733",
       "type": "attribute_packet",
       "split": "train",
-      "text": "발산속도은 값이나 상태가 기준이나 목표에서 점점 멀어지는 특성이다. 현재값과는 다르다.",
+      "text": "발산속도는 기준 상태나 목표에서 떨어지는 거리가 단위 시간마다 늘어나는 빠르기다. 선형 증가와 지수 증가를 같은 척도로 단정하지 않는다.",
       "concepts": [
         "발산속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1255,14 +1256,14 @@
       "id": "S1-ATH-1734",
       "type": "attribute_packet",
       "split": "train",
-      "text": "발산가속성은 변화속도가 시간에 따라 더 커지는 정도다. 현재 변화속도 자체와는 다르다.",
+      "text": "발산가속성은 목표와의 거리가 커지는 속도마저 시간이 갈수록 증가하는 현상이다. 제어 실패를 조기에 감지하는 신호가 될 수 있다.",
       "concepts": [
         "발산가속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1270,14 +1271,14 @@
       "id": "S1-ATH-1735",
       "type": "attribute_packet",
       "split": "train",
-      "text": "발산임계성은 값이나 상태가 기준이나 목표에서 점점 멀어지는 특성이다. 현재값과는 다르다.",
+      "text": "발산임계성은 어떤 매개변수 경계를 넘을 때 수렴하던 과정이 발산으로 바뀌는 특성이다. 경계 주변에서는 초기값과 수치 오차의 영향도 확인한다.",
       "concepts": [
         "발산임계성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1285,14 +1286,14 @@
       "id": "S1-ATH-1736",
       "type": "attribute_packet",
       "split": "train",
-      "text": "안정화속도은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "안정화속도는 교란 뒤 출력이 허용 오차 범위에 접근하는 빠르기다. 처음 경계를 통과한 시점만 볼지 계속 머문 시점을 볼지 규칙을 정한다.",
       "concepts": [
         "안정화속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1300,14 +1301,14 @@
       "id": "S1-ATH-1737",
       "type": "attribute_packet",
       "split": "train",
-      "text": "안정화시간은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "안정화시간은 입력 변화 후 응답이 정한 허용띠 안에 들어가 다시 벗어나지 않을 때까지 걸린 시간이다. 단순 상승시간보다 엄격한 지표다.",
       "concepts": [
         "안정화시간"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1315,14 +1316,14 @@
       "id": "S1-ATH-1738",
       "type": "attribute_packet",
       "split": "train",
-      "text": "안정화후변동성은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "안정화후변동성은 안정 구간에 진입한 뒤 출력이 목표 주위에서 흔들리는 정도다. 과도 응답을 제외하므로 정상 상태의 품질을 보여 준다.",
       "concepts": [
         "안정화후변동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1330,14 +1331,14 @@
       "id": "S1-ATH-1739",
       "type": "attribute_packet",
       "split": "train",
-      "text": "안정화강도은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "안정화강도는 교란을 줄이고 목표 상태로 되돌리려는 복원 작용의 크기다. 지나치게 강하면 오버슈트나 진동을 만들 수 있다.",
       "concepts": [
         "안정화강도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1345,14 +1346,14 @@
       "id": "S1-ATH-1740",
       "type": "attribute_packet",
       "split": "train",
-      "text": "평형접근도은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "평형접근도는 현재 상태가 유입과 유출이 맞는 평형점에 얼마나 가까운지를 나타낸다. 거리 척도와 변수별 가중치를 먼저 정해야 한다.",
       "concepts": [
         "평형접근도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1360,14 +1361,14 @@
       "id": "S1-ATH-1741",
       "type": "attribute_packet",
       "split": "train",
-      "text": "평형회복속도은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "평형회복속도는 외부 교란으로 벗어난 상태가 원래 평형 부근으로 돌아오는 빠르기다. 새 평형으로 이동하는 과정과 구별한다.",
       "concepts": [
         "평형회복속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1375,14 +1376,14 @@
       "id": "S1-ATH-1742",
       "type": "attribute_packet",
       "split": "train",
-      "text": "평형이탈속도은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "평형이탈속도는 평형 상태에서 시작한 값이 교란 뒤 얼마나 빠르게 멀어지는지를 뜻한다. 최초 순간의 기울기와 장기 발산을 나누어 측정할 수 있다.",
       "concepts": [
         "평형이탈속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1390,14 +1391,14 @@
       "id": "S1-ATH-1743",
       "type": "attribute_packet",
       "split": "train",
-      "text": "평형민감도은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "평형민감도는 매개변수나 외부 조건의 작은 변화가 평형 위치를 얼마나 옮기는지를 나타낸다. 회복 속도와는 별개의 정적 특성이다.",
       "concepts": [
         "평형민감도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1405,14 +1406,14 @@
       "id": "S1-ATH-1744",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태전환속도은 한 상태나 변화 방향에서 다른 상태나 방향으로 바뀌는 동적 특성이다.",
+      "text": "상태전환속도는 한 상태를 떠나 다른 상태의 대표 범위에 도달하는 빠르기다. 전환 시작 전 대기 시간은 지연으로 따로 센다.",
       "concepts": [
         "상태전환속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1420,14 +1421,14 @@
       "id": "S1-ATH-1745",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태전환지연은 한 상태나 변화 방향에서 다른 상태나 방향으로 바뀌는 동적 특성이다.",
+      "text": "상태전환지연은 전환 신호가 주어진 뒤 기존 상태가 실제로 바뀌기 시작할 때까지의 시간이다. 전환 과정 자체의 길이와 혼동하지 않는다.",
       "concepts": [
         "상태전환지연"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1435,14 +1436,14 @@
       "id": "S1-ATH-1746",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태전환주기은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "상태전환주기는 같은 상태 전환 순서가 되풀이되는 한 회차의 길이다. 두 상태가 번갈아 나타나면 왕복 전체를 한 주기로 정의할 수 있다.",
       "concepts": [
         "상태전환주기"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1450,14 +1451,14 @@
       "id": "S1-ATH-1747",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태전환빈도은 한 상태나 변화 방향에서 다른 상태나 방향으로 바뀌는 동적 특성이다.",
+      "text": "상태전환빈도는 관찰 시간당 상태가 다른 범주로 바뀐 횟수다. 센서 잡음에 따른 경계 왕복은 최소 체류 조건으로 걸러 낸다.",
       "concepts": [
         "상태전환빈도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1465,14 +1466,14 @@
       "id": "S1-ATH-1748",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태전환가속성은 변화속도가 시간에 따라 더 커지는 정도다. 현재 변화속도 자체와는 다르다.",
+      "text": "상태전환가속성은 전환이 진행되면서 상태 변화의 속도가 점차 커지는 성질이다. 임계점 통과 뒤 급격히 움직이는 시스템에서 나타난다.",
       "concepts": [
         "상태전환가속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1480,14 +1481,14 @@
       "id": "S1-ATH-1749",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상태전환감속성은 변화속도가 시간에 따라 작아지는 정도다. 변화량 자체와는 다르다.",
+      "text": "상태전환감속성은 새 상태에 가까워질수록 변화가 서서히 느려지는 경향이다. 완전 전환 전에 멈추는 중단성과는 다르다.",
       "concepts": [
         "상태전환감속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1495,14 +1496,14 @@
       "id": "S1-ATH-1750",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변곡민감도은 한 상태나 변화 방향에서 다른 상태나 방향으로 바뀌는 동적 특성이다.",
+      "text": "변곡민감도는 자료나 매개변수의 작은 차이가 곡률 방향이 바뀌는 지점을 얼마나 이동시키는지를 뜻한다. 잡음이 크면 평활화 조건에 민감해진다.",
       "concepts": [
         "변곡민감도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1510,14 +1511,14 @@
       "id": "S1-ATH-1751",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변곡점안정성은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "변곡점안정성은 표본을 조금 바꾸거나 다시 측정해도 변곡점 위치가 비슷하게 추정되는 정도다. 단 한 곡선의 선명함만으로 판단하지 않는다.",
       "concepts": [
         "변곡점안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1525,14 +1526,14 @@
       "id": "S1-ATH-1752",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화율반전성은 한 상태나 변화 방향에서 다른 상태나 방향으로 바뀌는 동적 특성이다.",
+      "text": "변화율반전성은 양의 변화율이 음으로, 또는 음의 변화율이 양으로 바뀌는 경향이다. 값의 부호가 아니라 기울기의 부호 전환을 본다.",
       "concepts": [
         "변화율반전성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1540,14 +1541,14 @@
       "id": "S1-ATH-1753",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화율반전지연은 한 상태나 변화 방향에서 다른 상태나 방향으로 바뀌는 동적 특성이다.",
+      "text": "변화율반전지연은 반전을 유발한 사건과 실제 기울기 부호가 뒤집힌 시점 사이의 간격이다. 관측 주기가 길면 추정 오차도 커진다.",
       "concepts": [
         "변화율반전지연"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1555,14 +1556,14 @@
       "id": "S1-ATH-1754",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상승구간지속성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "상승구간지속성은 값이 연속해서 증가하는 구간의 길이와 반복성을 나타낸다. 작은 일시 하락을 허용할지는 사전에 규칙으로 정한다.",
       "concepts": [
         "상승구간지속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1570,14 +1571,14 @@
       "id": "S1-ATH-1755",
       "type": "attribute_packet",
       "split": "train",
-      "text": "하락구간지속성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "하락구간지속성은 감소 방향이 끊기지 않고 유지되는 시간 또는 표본 수다. 하락 폭이 작아도 구간은 길 수 있다.",
       "concepts": [
         "하락구간지속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1585,14 +1586,14 @@
       "id": "S1-ATH-1756",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상승구간가속성은 변화속도가 시간에 따라 더 커지는 정도다. 현재 변화속도 자체와는 다르다.",
+      "text": "상승구간가속성은 상승 중 기울기가 점차 가팔라지는 정도다. 높은 수준에 도달했다는 사실과 상승 속도의 증가를 분리해 본다.",
       "concepts": [
         "상승구간가속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1600,14 +1601,14 @@
       "id": "S1-ATH-1757",
       "type": "attribute_packet",
       "split": "train",
-      "text": "하락구간가속성은 변화속도가 시간에 따라 더 커지는 정도다. 현재 변화속도 자체와는 다르다.",
+      "text": "하락구간가속성은 감소 속도의 절댓값이 구간 후반으로 갈수록 커지는 현상이다. 음수 값의 부호 때문에 해석이 뒤집히지 않게 정의한다.",
       "concepts": [
         "하락구간가속성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1615,14 +1616,14 @@
       "id": "S1-ATH-1758",
       "type": "attribute_packet",
       "split": "train",
-      "text": "상승하강전환민감도은 한 상태나 변화 방향에서 다른 상태나 방향으로 바뀌는 동적 특성이다.",
+      "text": "상승하강전환민감도는 작은 교란이 증가 구간을 감소 구간으로 또는 그 반대로 바꾸는 정도다. 전환 경계가 불안정한지를 보여 준다.",
       "concepts": [
         "상승하강전환민감도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1630,14 +1631,14 @@
       "id": "S1-ATH-1759",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변동폭감소성은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "변동폭감소성은 시간 경과에 따라 최고값과 최저값의 간격이 점차 좁아지는 성질이다. 평균 수준이 이동해도 폭 자체는 줄 수 있다.",
       "concepts": [
         "변동폭감소성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1645,14 +1646,14 @@
       "id": "S1-ATH-1760",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변동폭증가성은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "변동폭증가성은 관찰이 이어질수록 값의 상하 범위가 넓어지는 경향이다. 장기 추세를 제거한 뒤에도 확대되는지 확인한다.",
       "concepts": [
         "변동폭증가성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1660,14 +1661,14 @@
       "id": "S1-ATH-1761",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변동성수렴성은 값이나 상태가 특정 목표나 범위에 가까워지는 특성이다. 최종값 자체와는 다르다.",
+      "text": "변동성수렴성은 구간별 변동성 추정치가 점차 일정한 수준에 가까워지는 성질이다. 원자료가 특정 값으로 수렴한다는 뜻은 아니다.",
       "concepts": [
         "변동성수렴성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1675,14 +1676,14 @@
       "id": "S1-ATH-1762",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변동성발산성은 값이나 상태가 기준이나 목표에서 점점 멀어지는 특성이다. 현재값과는 다르다.",
+      "text": "변동성발산성은 시간이 갈수록 흔들림의 크기가 제한 없이 커지는 경향이다. 평균의 이동과 분산의 확대를 분리해 분석한다.",
       "concepts": [
         "변동성발산성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1690,14 +1691,14 @@
       "id": "S1-ATH-1763",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변동성안정성은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "변동성안정성은 표본 창이나 기간이 달라져도 변동 폭의 통계적 수준이 비슷하게 유지되는 정도다. 개별 값이 고정되어야 하는 것은 아니다.",
       "concepts": [
         "변동성안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1705,14 +1706,14 @@
       "id": "S1-ATH-1764",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변동주기성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "변동주기성은 큰 흔들림과 작은 흔들림이 일정한 간격으로 되풀이되는 성질이다. 값 자체의 주기와 변동 크기의 주기는 다를 수 있다.",
       "concepts": [
         "변동주기성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1720,14 +1721,14 @@
       "id": "S1-ATH-1765",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변동비대칭성은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "변동비대칭성은 평균보다 위쪽과 아래쪽의 흔들림 크기나 빈도가 서로 다른 정도다. 상승 충격이 크고 하락이 완만한 분포에서 드러난다.",
       "concepts": [
         "변동비대칭성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1735,14 +1736,14 @@
       "id": "S1-ATH-1766",
       "type": "attribute_packet",
       "split": "train",
-      "text": "극값발생빈도은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "극값발생빈도는 정한 상한 또는 하한을 넘는 최고·최저 사건이 단위 기간에 몇 번 나타나는지 센 값이다. 임계값 선택에 따라 빈도가 달라진다.",
       "concepts": [
         "극값발생빈도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1750,14 +1751,14 @@
       "id": "S1-ATH-1767",
       "type": "attribute_packet",
       "split": "train",
-      "text": "극값간격안정성은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "극값간격안정성은 연속한 극값 사건 사이 시간이 일정하게 유지되는 정도다. 극값 크기의 안정성과는 별도로 평가한다.",
       "concepts": [
         "극값간격안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1765,14 +1766,14 @@
       "id": "S1-ATH-1768",
       "type": "attribute_packet",
       "split": "train",
-      "text": "극값간격변동성은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "극값간격변동성은 최고점이나 최저점 사이 시간 간격이 퍼지는 폭이다. 사건이 드물면 관찰 기간 부족으로 추정이 불안정할 수 있다.",
       "concepts": [
         "극값간격변동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1780,14 +1781,14 @@
       "id": "S1-ATH-1769",
       "type": "attribute_packet",
       "split": "train",
-      "text": "최대값갱신성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "최대값갱신성은 이전 최고 기록을 넘는 새 최대값이 계속 나타나는 경향이다. 단순 최대값 크기보다 기록 갱신의 빈도와 방향을 본다.",
       "concepts": [
         "최대값갱신성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1795,14 +1796,14 @@
       "id": "S1-ATH-1770",
       "type": "attribute_packet",
       "split": "train",
-      "text": "최소값갱신성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "최소값갱신성은 관찰이 진행될수록 더 낮은 최저 기록이 생기는 성질이다. 하락 추세가 없어도 표본 수 증가만으로 기록이 바뀔 수 있음을 고려한다.",
       "concepts": [
         "최소값갱신성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1810,14 +1811,14 @@
       "id": "S1-ATH-1771",
       "type": "attribute_packet",
       "split": "train",
-      "text": "최대값수렴성은 값이나 상태가 특정 목표나 범위에 가까워지는 특성이다. 최종값 자체와는 다르다.",
+      "text": "최대값수렴성은 구간별 최고값이 시간이 지나며 하나의 상한 부근에 모이는 정도다. 전체 자료의 평균 수렴과 구별되는 극값 특성이다.",
       "concepts": [
         "최대값수렴성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1825,14 +1826,14 @@
       "id": "S1-ATH-1772",
       "type": "attribute_packet",
       "split": "train",
-      "text": "최소값수렴성은 값이나 상태가 특정 목표나 범위에 가까워지는 특성이다. 최종값 자체와는 다르다.",
+      "text": "최소값수렴성은 각 구간에서 관측한 최저값이 일정한 하한에 가까워지는 경향이다. 하한 밖의 이상치를 어떻게 처리했는지 밝혀야 한다.",
       "concepts": [
         "최소값수렴성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1840,14 +1841,14 @@
       "id": "S1-ATH-1773",
       "type": "attribute_packet",
       "split": "train",
-      "text": "증감주기비대칭성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "증감주기비대칭성은 한 주기 안에서 증가에 걸린 시간과 감소에 걸린 시간 또는 기울기가 서로 다른 정도다. 톱니 모양 파형에서 뚜렷하다.",
       "concepts": [
         "증감주기비대칭성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1855,14 +1856,14 @@
       "id": "S1-ATH-1774",
       "type": "attribute_packet",
       "split": "train",
-      "text": "목표접근속도은 입력이나 조건 변화에 따른 시간적 반응의 특성이다. 입력값 자체와는 다르다.",
+      "text": "목표접근속도는 현재 상태와 목표 사이 거리가 단위 시간마다 줄어드는 빠르기다. 직선거리와 비용 기반 거리 중 어떤 척도를 썼는지 명시한다.",
       "concepts": [
         "목표접근속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1870,14 +1871,14 @@
       "id": "S1-ATH-1775",
       "type": "attribute_packet",
       "split": "train",
-      "text": "목표이탈속도은 입력이나 조건 변화에 따른 시간적 반응의 특성이다. 입력값 자체와는 다르다.",
+      "text": "목표이탈속도는 목표 상태에서 벗어나는 거리가 커지는 빠르기다. 교란 직후의 순간 이탈과 지속적인 표류를 나누어 볼 수 있다.",
       "concepts": [
         "목표이탈속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1885,14 +1886,14 @@
       "id": "S1-ATH-1776",
       "type": "attribute_packet",
       "split": "train",
-      "text": "목표접근안정성은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "목표접근안정성은 목표로 다가가는 동안 방향이 자주 뒤집히거나 크게 흔들리지 않는 정도다. 빠른 접근이라도 오버슈트가 잦으면 안정적이지 않다.",
       "concepts": [
         "목표접근안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1900,14 +1901,14 @@
       "id": "S1-ATH-1777",
       "type": "attribute_packet",
       "split": "train",
-      "text": "동적수렴안정성은 값이나 상태가 특정 목표나 범위에 가까워지는 특성이다. 최종값 자체와는 다르다.",
+      "text": "동적수렴안정성은 초기값이나 작은 교란이 달라도 시간이 지나면 같은 동적 궤도 또는 평형에 가까워지는 성질이다. 일시적 접근만으로 판정하지 않는다.",
       "concepts": [
         "동적수렴안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1915,14 +1916,14 @@
       "id": "S1-ATH-1778",
       "type": "attribute_packet",
       "split": "train",
-      "text": "동적발산불안정성은 값이나 상태가 기준이나 목표에서 점점 멀어지는 특성이다. 현재값과는 다르다.",
+      "text": "동적발산불안정성은 작은 상태 차이가 시간과 함께 증폭되어 궤적이 서로 멀어지는 성질이다. 큰 초기 오차가 만든 단순 차이와 구별한다.",
       "concepts": [
         "동적발산불안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1930,14 +1931,14 @@
       "id": "S1-ATH-1779",
       "type": "attribute_packet",
       "split": "train",
-      "text": "과도응답성은 입력이나 조건 변화에 따른 시간적 반응의 특성이다. 입력값 자체와는 다르다.",
+      "text": "과도응답성은 입력이 바뀐 직후 정상 상태에 이르기 전까지 나타나는 일시적 반응의 형태와 크기다. 정착 이후의 출력 특성과 따로 다룬다.",
       "concepts": [
         "과도응답성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1945,14 +1946,14 @@
       "id": "S1-ATH-1780",
       "type": "attribute_packet",
       "split": "train",
-      "text": "과도응답시간은 입력이나 조건 변화에 따른 시간적 반응의 특성이다. 입력값 자체와는 다르다.",
+      "text": "과도응답시간은 입력 변화 뒤 일시 반응이 가라앉고 정상 범위에 들어갈 때까지 걸린 시간이다. 시작 지연만을 재는 지표는 아니다.",
       "concepts": [
         "과도응답시간"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1960,14 +1961,14 @@
       "id": "S1-ATH-1781",
       "type": "attribute_packet",
       "split": "train",
-      "text": "과도응답진폭은 입력이나 조건 변화에 따른 시간적 반응의 특성이다. 입력값 자체와는 다르다.",
+      "text": "과도응답진폭은 전환 직후 출력이 최종 수준에서 가장 크게 벗어난 크기다. 정상 상태의 작은 잡음과 분리해 계산한다.",
       "concepts": [
         "과도응답진폭"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1975,14 +1976,14 @@
       "id": "S1-ATH-1782",
       "type": "attribute_packet",
       "split": "train",
-      "text": "과도응답감쇠성은 입력이나 조건 변화에 따른 시간적 반응의 특성이다. 입력값 자체와는 다르다.",
+      "text": "과도응답감쇠성은 입력 변화로 생긴 흔들림이 회차마다 줄어드는 정도다. 감쇠가 부족하면 목표 주변의 진동이 오래 남는다.",
       "concepts": [
         "과도응답감쇠성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -1990,14 +1991,14 @@
       "id": "S1-ATH-1783",
       "type": "attribute_packet",
       "split": "train",
-      "text": "정착오차은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "정착오차는 과도 과정이 끝난 뒤 실제 출력과 목표값 사이에 지속해서 남는 차이다. 순간 최고 오차나 측정 잡음과는 구별된다.",
       "concepts": [
         "정착오차"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2005,14 +2006,14 @@
       "id": "S1-ATH-1784",
       "type": "attribute_packet",
       "split": "train",
-      "text": "오버슈트성은 입력이나 조건 변화에 따른 시간적 반응의 특성이다. 입력값 자체와는 다르다.",
+      "text": "오버슈트성은 응답이 목표 수준을 지나 반대편으로 초과하는 경향이다. 초과량과 발생 횟수, 회복 시간을 함께 기록할 수 있다.",
       "concepts": [
         "오버슈트성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2020,14 +2021,14 @@
       "id": "S1-ATH-1785",
       "type": "attribute_packet",
       "split": "train",
-      "text": "언더슈트성은 입력이나 조건 변화에 따른 시간적 반응의 특성이다. 입력값 자체와는 다르다.",
+      "text": "언더슈트성은 응답이 목표 아래쪽으로 과도하게 내려가는 성질이다. 상승 명령의 초기 부족과 하강 명령 뒤의 지나친 하락을 맥락별로 해석한다.",
       "concepts": [
         "언더슈트성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2035,14 +2036,14 @@
       "id": "S1-ATH-1786",
       "type": "attribute_packet",
       "split": "train",
-      "text": "오버슈트회복속도은 입력이나 조건 변화에 따른 시간적 반응의 특성이다. 입력값 자체와는 다르다.",
+      "text": "오버슈트회복속도는 목표를 넘은 출력이 허용 범위로 되돌아오는 빠르기다. 최초 초과 크기가 다르면 정규화한 속도로 비교한다.",
       "concepts": [
         "오버슈트회복속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2050,14 +2051,14 @@
       "id": "S1-ATH-1787",
       "type": "attribute_packet",
       "split": "train",
-      "text": "언더슈트회복속도은 입력이나 조건 변화에 따른 시간적 반응의 특성이다. 입력값 자체와는 다르다.",
+      "text": "언더슈트회복속도는 목표보다 낮게 내려간 응답이 다시 목표 근처로 올라오는 빠르기다. 추가 진동 없이 복귀하는지도 함께 살핀다.",
       "concepts": [
         "언더슈트회복속도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2065,14 +2066,14 @@
       "id": "S1-ATH-1788",
       "type": "attribute_packet",
       "split": "train",
-      "text": "동적응답민감도은 입력이나 조건 변화에 따른 시간적 반응의 특성이다. 입력값 자체와는 다르다.",
+      "text": "동적응답민감도는 입력 파형이나 매개변수의 작은 변화가 시간 응답 궤적을 얼마나 바꾸는지를 나타낸다. 최종값만 같은 두 응답도 민감도는 다를 수 있다.",
       "concepts": [
         "동적응답민감도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2080,14 +2081,14 @@
       "id": "S1-ATH-1789",
       "type": "attribute_packet",
       "split": "train",
-      "text": "응답형태안정성은 시간이나 조건이 변해도 상태나 동적 특성이 허용 범위 안에 유지되는 정도다.",
+      "text": "응답형태안정성은 반복 시험과 조건 변화에도 상승, 진동, 정착 같은 시간 응답 모양이 비슷하게 유지되는 정도다. 크기 차이와 형태 차이를 나눈다.",
       "concepts": [
         "응답형태안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2095,14 +2096,14 @@
       "id": "S1-ATH-1790",
       "type": "attribute_packet",
       "split": "train",
-      "text": "응답형태변동성은 입력이나 조건 변화에 따른 시간적 반응의 특성이다. 입력값 자체와는 다르다.",
+      "text": "응답형태변동성은 같은 입력에 대한 시간 곡선의 봉우리 수, 기울기, 굽음이 회차마다 달라지는 정도다. 단일 시점 오차로는 포착하기 어렵다.",
       "concepts": [
         "응답형태변동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2110,14 +2111,14 @@
       "id": "S1-ATH-1791",
       "type": "attribute_packet",
       "split": "train",
-      "text": "다중주기안정성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "다중주기안정성은 빠른 주기와 느린 주기가 함께 있을 때 각 주기의 간격과 결합 관계가 유지되는 정도다. 한 주기만 안정적이어도 전체는 불안정할 수 있다.",
       "concepts": [
         "다중주기안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2125,14 +2126,14 @@
       "id": "S1-ATH-1792",
       "type": "attribute_packet",
       "split": "train",
-      "text": "주기동조성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "주기동조성은 두 진동 과정의 주기나 위상이 상호작용 뒤 일정한 비율로 맞춰지는 성질이다. 우연히 한 번 겹친 경우와 지속 동조를 구별한다.",
       "concepts": [
         "주기동조성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2140,14 +2141,14 @@
       "id": "S1-ATH-1793",
       "type": "attribute_packet",
       "split": "train",
-      "text": "주기동조민감도은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다.",
+      "text": "주기동조민감도는 결합 강도나 고유 주기의 작은 차이가 동조 성립 여부를 얼마나 바꾸는지를 뜻한다. 경계 부근에서 값이 커진다.",
       "concepts": [
         "주기동조민감도"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2155,14 +2156,14 @@
       "id": "S1-ATH-1794",
       "type": "attribute_packet",
       "split": "train",
-      "text": "위상변동성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다. 반응의 크기나 위상 변화는 별도로 구분한다.",
+      "text": "위상변동성은 반복 신호의 봉우리나 기준점이 예상 시각에서 앞뒤로 흔들리는 정도다. 주파수가 같아도 위상 잡음은 존재할 수 있다.",
       "concepts": [
         "위상변동성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2170,14 +2171,14 @@
       "id": "S1-ATH-1795",
       "type": "attribute_packet",
       "split": "train",
-      "text": "위상안정성은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다. 반응의 크기나 위상 변화는 별도로 구분한다.",
+      "text": "위상안정성은 기준 신호와의 시간적 어긋남이 오랜 기간 일정한 범위에 머무는 정도다. 위상차가 0이어야만 안정적인 것은 아니다.",
       "concepts": [
         "위상안정성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2185,14 +2186,14 @@
       "id": "S1-ATH-1796",
       "type": "attribute_packet",
       "split": "train",
-      "text": "위상지연은 변화나 상태가 시간 간격을 두고 반복되는 특성이다. 한 번의 변화량과는 다르다. 반응의 크기나 위상 변화는 별도로 구분한다.",
+      "text": "위상지연은 한 주기 신호가 기준 신호보다 늦게 나타나는 각도 또는 시간 차이다. 주기 길이가 변하면 시간 지연과 위상각의 관계도 달라진다.",
       "concepts": [
         "위상지연"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2200,14 +2201,14 @@
       "id": "S1-ATH-1797",
       "type": "attribute_packet",
       "split": "train",
-      "text": "동적대칭성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "동적대칭성은 시간 진행을 뒤집거나 상승과 하강을 맞바꿨을 때 응답 궤적이 비슷하게 대응하는 정도다. 정적 형상의 좌우 대칭과 다르다.",
       "concepts": [
         "동적대칭성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2215,14 +2216,14 @@
       "id": "S1-ATH-1798",
       "type": "attribute_packet",
       "split": "train",
-      "text": "동적비대칭성은 값이나 상태의 변화 특성이 시간이나 조건에 따라 달라지는 정도다. 특정 시점의 값과는 다르다.",
+      "text": "동적비대칭성은 증가와 감소, 가열과 냉각처럼 반대 방향 과정의 속도와 경로가 같지 않은 정도다. 히스테리시스가 한 원인이 될 수 있다.",
       "concepts": [
         "동적비대칭성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2230,14 +2231,14 @@
       "id": "S1-ATH-1799",
       "type": "attribute_packet",
       "split": "train",
-      "text": "변화경로의존성은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "변화경로의존성은 시작점과 끝점이 같아도 중간에 거친 순서에 따라 최종 상태나 비용이 달라지는 성질이다. 단순한 현재값 의존과 구별한다.",
       "concepts": [
         "변화경로의존성"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     },
@@ -2245,14 +2246,14 @@
       "id": "S1-ATH-1800",
       "type": "attribute_packet",
       "split": "train",
-      "text": "동적이력효과은 시간이나 조건에 따른 값 또는 상태의 변화 특성을 나타낸다. 변화의 절대 크기와 변화율, 방향은 서로 구분된다.",
+      "text": "동적이력효과는 과거 입력과 상태 전환이 현재의 시간 응답에 남기는 영향이다. 동일한 현재 조건에서도 이전 경로 때문에 반응이 달라질 수 있다.",
       "concepts": [
         "동적이력효과"
       ],
       "relations": [
         "attribute",
-        "dynamic_change",
-        "measurement",
+        "process",
+        "comparison",
         "boundary"
       ]
     }
