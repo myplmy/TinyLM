@@ -28,13 +28,16 @@ REM        Here Q is recomputed. Do not carry 041 over to this.
 REM    K3  slightly faster - half the K/V projections disappear.
 REM
 REM  RULER
-REM    Tied 2 sigma = 0.0010 (result 039 s8). There is no recursion ruler yet;
-REM    run_P052_stage3_recursion_seed measures it. Say "borrowed" when quoting.
+REM    Recursion 2 sigma = 0.0006, MEASURED (result 039 s10). The line that
+REM    used to stand here said there was no recursion ruler and to write
+REM    "borrowed" - that is now false. run_P052_stage3_recursion_seed ran.
+REM    Tied is also 0.0006 on three seeds (039 s9), not the old 0.0010.
 REM
 REM  DECISION
-REM    cost ^< 0.0010            adopt. The recursion line gets -24.0 MiB free.
-REM    0.0010 to 0.0107         partial - still a net gain against the -0.0107
-REM                             recursion benefit.
+REM    cost ^< 0.0006            adopt. The recursion line gets -24.0 MiB free.
+REM    0.0006 to 0.0107         partial - still a net gain against the -0.0107
+REM                             recursion benefit. Note 058 s14 measured -0.0172
+REM                             on the cla2 body, so the margin is body-dependent.
 REM    ^> 0.0107                reject. Same fate as --reuse-attn-on-dup.
 REM =============================================================================
 
@@ -67,7 +70,7 @@ python scripts\runlog.py --name P077_stage0_kv_reuse_probe -- python scripts\dia
 if errorlevel 1 echo [WARN] step 4 failed - continuing
 
 echo.
-python scripts\runlog.py --name P077_stage0_kv_reuse_probe --note "=============================================================================" "READ IN THIS ORDER" "1. step 3 FIRST. If kv_entries does not go 36 to 20, stop. The flag is" "   recorded but the code path is dead, and step 2 measured nothing." "2. step 2 against step 1, same model, same crops. That delta is the cost." "3. compare it to the recursion benefit of -0.0107. Smaller means net gain." "4. quote the ruler as BORROWED - the recursion family ruler is unmeasured." "5. if the cost is under the ruler, mC_cla1_ag4_r20 drops from 70.9 to 46.9" "   MiB, and cla2 plus reuse would be 31.8 which fits the four-thread budget." "=============================================================================="
+python scripts\runlog.py --name P077_stage0_kv_reuse_probe --note "=============================================================================" "READ IN THIS ORDER" "1. step 3 FIRST. If kv_entries does not go 36 to 20, stop. The flag is" "   recorded but the code path is dead, and step 2 measured nothing." "2. step 2 against step 1, same model, same crops. That delta is the cost." "3. compare it to the recursion benefit of -0.0107. Smaller means net gain." "4. the recursion ruler is 0.0006 and it is MEASURED (039 s10). Do not" "   write BORROWED - that instruction was withdrawn on 2026-08-30." "5. if the cost is under the ruler, mC_cla1_ag4_r20 drops from 70.9 to 46.9" "   MiB, and cla2 plus reuse would be 31.8 which fits the four-thread budget." "=============================================================================="
 if not defined TL_NOPAUSE pause
 exit /b 0
 

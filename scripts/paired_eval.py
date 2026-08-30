@@ -286,16 +286,46 @@ def main():
     #   ★실사고: 결과 040·047 이 무KD 비교에 0.024 를 찍어 *"동급"* 이라 적었다.
     #
     #   ★규약: **체크포인트의 조건에서 자를 고른다**(사람이 고르지 않는다).
-    #     · 두 모델이 **둘 다 무KD + 부모초기화** -> **0.0034**
-    #     · 그 외(dense·부모없음·KD 섞임)          -> **0.024**
     #   ⚠️**이것은 통계 검정력이 아니라 실무 의사결정 규칙**이다. `t` 는 따로 인쇄된다.
+    #
+    # ★★★2026-08-30 갱신 — **자를 세 시드로 다시 쟀고 계열별로 갈렸다**(결과 039 §9·§10).
+    #
+    #   🚫**0.0034 는 시드 한 쌍으로 얻은 값**이었다. 그런데 **두 점의 차는 σ 가 아니라
+    #   σ√2 의 기댓값**에 가깝다 — 그 규약이 **체계적으로 과대평가**했다.
+    #   세 시드로 다시 재니 **절반이 됐다**:
+    #
+    #       타잉  3.6762 / 3.6768 / 3.6765  ->  2σ = 0.0006   (종전 0.0010)
+    #       dense 3.6776 / 3.6755 / 3.6762  ->  2σ = 0.0021   (종전 0.0042)
+    #       재귀  3.6750 / 3.6747           ->  2σ = 0.0006   ★실측. 더는 빌리지 않는다
+    #
+    #   ★그래서 결과 059 §13 의 **"R=6 기각" 이 철회**됐다(059 §15) — 20→28 방문
+    #   −0.0036 이 빌린 자로는 0.86배였는데 실측 자로는 **6.0배 유의**다.
+    #   🚫**이 도구가 0.0034 를 계속 찍으면 같은 종류의 오판이 다시 난다**(5.7배 과대).
+    #
+    #   ★계열 판정: 재귀(train_repeat>1) · 타잉(mlp_group>1) · dense. **계열이 갈리면
+    #   큰 자(dense 0.0021)를 쓴다** — 보수적 선택이고 종전 규칙 2 와 같은 취지다.
+    _RULER = {"재귀": (0.0006, "재귀 2σ 실측(결과 039 §10)"),
+              "타잉": (0.0006, "타잉 2σ 3시드(결과 039 §9)"),
+              "dense": (0.0021, "dense 2σ 3시드(결과 039 §9)")}
+
+    def _family(t):
+        m = META.get(t) or {}
+        if float(m.get("train_repeat") or 1.0) > 1.0:
+            return "재귀"
+        return "타잉" if int(m.get("mlp_group") or 1) > 1 else "dense"
+
     def _sigma_band(tag_a, tag_b):
         def cond(t):
             m = META.get(t) or {}
             return (not bool(m.get("kd", False))) and bool(m.get("init_from_src"))
-        both_nokd = cond(tag_a) and cond(tag_b)
-        return (0.0034, "무KD+부모초기화 2σ(결과 049)") if both_nokd \
-            else (0.024, "dense·부모없음 2σ(결과 012)")
+        if not (cond(tag_a) and cond(tag_b)):
+            # KD 가 섞였거나 부모초기화가 없다 — 계열 자를 잰 조건이 아니다.
+            return (0.024, "dense·부모없음 2σ(결과 012) — 계열 자 적용 밖")
+        fa, fb = _family(tag_a), _family(tag_b)
+        if fa == fb:
+            return _RULER[fa]
+        band, why = max((_RULER[fa], _RULER[fb]), key=lambda x: x[0])
+        return (band, f"{why} — 계열 교차({fa}↔{fb})라 큰 자를 쓴다")
     _bands = set()
     for x, y in itertools.combinations(per, 2):
         m, sd, se, t, nn, win = paired_stats(per[x], per[y])

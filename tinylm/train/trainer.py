@@ -727,6 +727,14 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "bytes_per_token_val": meta.get("bytes_per_token_val"),
            "mlp_group": (cfg.mlp_group if getattr(cfg, "tie_mlp", False) else 1),
            "mlp_split": list(getattr(cfg, "mlp_split", ()) or ()),      # ★P061
+           # ★★2026-08-30 (P044B, 스모크 팔 sm_film 이 잡았다) — `mlp_film` 이 **한 번도
+           #   기록되지 않았다.** `--mlp-film` 은 2026-07 부터 있었고 실런도 둘 있는데
+           #   (`mC_film`·`t_film`) **json 으로는 FiLM 런과 아닌 런이 구분되지 않았다.**
+           #   `kd_alpha`(2026-08-20)·`emb_init`(자백 A13)과 같은 계열이다 —
+           #   **인쇄로만 남고 기계가 읽는 곳에는 없던 축.**
+           #   ⚠️`cfg.mlp_film` 이 정본이다. 실제 발현은 `Layer.has_film` 이고
+           #   그것은 **중간 타잉 층에서만** 켜진다(`transformer.py:78`) — dense 는 항상 False.
+           "mlp_film": bool(getattr(cfg, "mlp_film", False)),           # ★P044B
            "micro_group": int(cfg.micro_group),                    # (P051) 삼진 alpha 그룹 크기
            # ★T-1 — 순수 스텝 시간 통계. **인쇄 ms/step 과 다른 양이다**(eval·저장 제외).
            #   `ms_step_median` 은 정상상태 대용, `ms_step_spread` 는 p90/p10−1 로
