@@ -29,12 +29,12 @@ python scripts\runlog.py --name P075_stage0b_dataset_tokens --note "============
 
 echo.
 python scripts\runlog.py --name P075_stage0b_dataset_tokens --note "[1/2] text field only - this is the training decision as of 2026-08-30"
-python scripts\runlog.py --name P075_stage0b_dataset_tokens -- python scripts\diag_dataset_tokens.py --train "datasets/TinyDataset/stage1_highdensity_dataset/train/stage1_identity_high_density_train_add_150_v*.json" --val "datasets/TinyDataset/stage1_highdensity_dataset/val/stage1_identity_high_density_val_add_150_v*.json" --fields text
+python scripts\runlog.py --name P075_stage0b_dataset_tokens -- python scripts\diag_dataset_tokens.py --train "datasets/TinyDataset/stage1_highdensity_dataset/train/stage1_(1)identity_high_density_train_v*.json" --val "datasets/TinyDataset/stage1_highdensity_dataset/val/stage1_(1)identity_high_density_val_v*.json" --fields text
 if errorlevel 1 echo [WARN] step 1 failed - continuing
 
 echo.
 python scripts\runlog.py --name P075_stage0b_dataset_tokens --note "[2/2] all fields - the alternative we are NOT taking, for the record"
-python scripts\runlog.py --name P075_stage0b_dataset_tokens -- python scripts\diag_dataset_tokens.py --train "datasets/TinyDataset/stage1_highdensity_dataset/train/stage1_identity_high_density_train_add_150_v*.json" --val "datasets/TinyDataset/stage1_highdensity_dataset/val/stage1_identity_high_density_val_add_150_v*.json" --fields all
+python scripts\runlog.py --name P075_stage0b_dataset_tokens -- python scripts\diag_dataset_tokens.py --train "datasets/TinyDataset/stage1_highdensity_dataset/train/stage1_(1)identity_high_density_train_v*.json" --val "datasets/TinyDataset/stage1_highdensity_dataset/val/stage1_(1)identity_high_density_val_v*.json" --fields all
 if errorlevel 1 echo [WARN] step 2 failed - continuing
 
 echo.

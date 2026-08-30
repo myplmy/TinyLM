@@ -38,7 +38,7 @@ if errorlevel 1 echo [WARN] step 1 failed - continuing
 
 echo.
 python scripts\runlog.py --name P030_stage2E_cpu_baseline --note "[2/2] the recursion winner at its trained schedule, for the frontier table"
-python scripts\runlog.py --name P030_stage2E_cpu_baseline -- python scripts\bench_infer.py --preset m100R1c --data ko-en --tokens 300M --models mC_cla1_ag4_r20nc --device cpu --threads 1 4 --max-new 128 --reps 5 --drop-latent --int8-store --infer-repeat 2.0 --cpu-watch --cpu-ext-limit 15 --cpu-baseline 10
+python scripts\runlog.py --name P030_stage2E_cpu_baseline -- python scripts\bench_infer.py --preset m100R1c --data ko-en --tokens 300M --models mC_cla1_ag4_r20nc mC_cla2_ag4_r20 --device cpu --threads 1 4 --max-new 128 --reps 5 --drop-latent --int8-store --infer-repeat 2.0 --cpu-watch --cpu-ext-limit 15 --cpu-baseline 10
 if errorlevel 1 echo [WARN] step 2 failed - continuing
 
 echo.

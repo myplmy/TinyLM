@@ -217,6 +217,54 @@ def cmd_plan(runs, text):
     return 0
 
 
+def cmd_batch_tag_dup():
+    """★★배치끼리 같은 `--tag`·같은 학습 명령을 쓰는가 (2026-08-30 신설).
+
+    🚫사고: `run_P073_stage5_cla2_ag4_r20.bat` 이 `stage4` 와 **학습 명령이
+    바이트 동일**했고 `--tag` 까지 같았다. 게이트 19종이 전부 통과했다 —
+    **아무도 배치끼리 대조하지 않았기 때문**이다.
+
+    ★같은 태그를 두 배치가 쓰면 둘 중 하나는 ①중복 실험이거나
+    ②앞서 만든 체크포인트를 덮어쓴다. **둘 다 사고다.**
+    """
+    import re
+    by_tag, by_cmd = {}, {}
+    for p in sorted(ROOT.glob("run_*.bat")):
+        txt = p.read_text(encoding="utf-8", errors="replace")
+        for c in re.findall(r"python run100m\.py train [^\r\n]*", txt):
+            c = " ".join(c.split())
+            by_cmd.setdefault(c, set()).add(p.name)
+            m = re.search(r"--tag (\S+)", c)
+            if m:
+                by_tag.setdefault(m.group(1), set()).add(p.name)
+
+    print()
+    print("== 7. ★배치끼리 태그·명령 중복 (2026-08-30 신설) ==")
+    bad = 0
+    dup_cmd_files = set()
+    for c, ns in sorted(by_cmd.items()):
+        if len(ns) > 1:
+            bad += 1
+            dup_cmd_files |= ns
+            m = re.search(r"--tag (\S+)", c)
+            print("  🚫★학습 명령이 **바이트 동일** (tag=%s):"
+                  % (m.group(1) if m else "?"))
+            for n in sorted(ns):
+                print("       %s" % n)
+            print("     → ★하나는 지울 대상이다. "
+                  "핵드오프 '사용자에게 부탁하는 것' 에 적는다")
+    for t, ns in sorted(by_tag.items()):
+        if len(ns) > 1 and not (ns <= dup_cmd_files):
+            bad += 1
+            print("  🚫★같은 --tag 인데 명령이 다르다 (tag=%s) "
+                  "— **나중에 도는 쪽이 앞 체크포인트를 덮어쓴다**:" % t)
+            for n in sorted(ns):
+                print("       %s" % n)
+    if not bad:
+        print("  ✅ 배치끼리 중복 없다.")
+    return bad
+
+
 def main():
     ap = argparse.ArgumentParser(description="런 레지스트리 점검(exp-preflight 보조)")
     ap.add_argument("--tag", help="이 태그가 이미 쓰였는지 확인")
@@ -234,7 +282,9 @@ def main():
         return cmd_tag(runs, a.tag)
     if a.plan:
         return cmd_plan(runs, a.plan)
-    return cmd_audit(runs)
+    rc = cmd_audit(runs)
+    # ★배치끼리 중복은 **인자 없이 돌 때마다** 본다(2026-08-30).
+    return 1 if cmd_batch_tag_dup() else rc
 
 
 if __name__ == "__main__":

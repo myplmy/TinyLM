@@ -103,6 +103,21 @@ def lint(path: Path):
             err.append(f"L{i+1} 제어문자 {names} — 파이썬 패치가 백슬래시 이스케이프를 "
                        f"해석한 흔적이다: {ln.strip()[:50]!r}")
 
+    # 1c. ★★홀로 있는 CR (2026-08-30 신설) — **규칙 1b 가 못 잡는다**
+    #   🚫`tool_smoke.bat` 의 팔 [17]·[18] 이 `python scripts` + CR + `unlog.py` 였다.
+    #   파이썬 패치가 역슬래시-r 을 **CR 로 해석**한 것이고, 그 둘은 통째로 죽었다.
+    #   ★규칙 1b 는 `splitlines()` 된 문자열을 보는데, **그 CR 이 바로 줄을 잘라**
+    #   잘린 두 조각에는 제어문자가 없었다. → **원본 바이트를 따로 본다.**
+    #   CRLF 는 정상이고 **홀로 있는 CR 만** 에러다.
+    _raw = raw          # 54행에서 이미 읽었다
+    _lone = [k for k, ch in enumerate(_raw)
+             if ch == 13 and (k + 1 >= len(_raw) or _raw[k + 1] != 10)]
+    if _lone:
+        _ln = _raw[:_lone[0]].count(b"\n") + 1
+        err.append(f"L{_ln} 홀로 있는 CR {len(_lone)}개(offset {_lone[:3]}) — "
+                   "파이썬 패치가 역슬래시-r 을 CR 로 해석했다. "
+                   "`scripts` + CR + `unlog.py` 가 전형적인 모양이다")
+
     # 2. chcp
     for i, ln in enumerate(lines):
         if re.search(r"\bchcp\b", ln, re.I):

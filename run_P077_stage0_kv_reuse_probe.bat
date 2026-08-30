@@ -46,19 +46,19 @@ python scripts\runlog.py --name P077_stage0_kv_reuse_probe --note "=============
 
 echo.
 python scripts\runlog.py --name P077_stage0_kv_reuse_probe --note "[1/4] baseline - the trained schedule, 36 entries"
-python scripts\runlog.py --name P077_stage0_kv_reuse_probe -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_cla1_ag4_r20nc mC_cla1_ag4_r20 mC_initonly_nc --match-train-repeat
+python scripts\runlog.py --name P077_stage0_kv_reuse_probe -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_cla1_ag4_r20nc mC_cla1_ag4_r20 mC_cla2_ag4_r20 mC_initonly_nc --match-train-repeat
 if errorlevel 1 echo [WARN] step 1 failed - continuing
 
 echo.
 python scripts\runlog.py --name P077_stage0_kv_reuse_probe --note "[2/4] the same checkpoints with KV reuse on. This is the whole experiment."
-python scripts\runlog.py --name P077_stage0_kv_reuse_probe -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_cla1_ag4_r20nc mC_cla1_ag4_r20 mC_initonly_nc --match-train-repeat --repeat-kv-reuse
+python scripts\runlog.py --name P077_stage0_kv_reuse_probe -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_cla1_ag4_r20nc mC_cla1_ag4_r20 mC_cla2_ag4_r20 mC_initonly_nc --match-train-repeat --repeat-kv-reuse
 if errorlevel 1 echo [WARN] step 2 failed - continuing
 
 echo.
 python scripts\runlog.py --name P077_stage0_kv_reuse_probe --note "[3/4] K1 - do the entries actually drop. Trap 37 gate."
-python scripts\runlog.py --name P077_stage0_kv_reuse_probe -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100R1c --models mC_cla1_ag4_r20nc --drop-latent --lut --emb-quant int8 --kv-seq 1024
+python scripts\runlog.py --name P077_stage0_kv_reuse_probe -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100R1c --models mC_cla1_ag4_r20nc mC_cla2_ag4_r20 --drop-latent --lut --emb-quant int8 --kv-seq 1024
 if errorlevel 1 echo [WARN] step 3a failed - continuing
-python scripts\runlog.py --name P077_stage0_kv_reuse_probe -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100R1c --models mC_cla1_ag4_r20nc --drop-latent --lut --emb-quant int8 --kv-seq 1024 --repeat-kv-reuse
+python scripts\runlog.py --name P077_stage0_kv_reuse_probe -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100R1c --models mC_cla1_ag4_r20nc mC_cla2_ag4_r20 --drop-latent --lut --emb-quant int8 --kv-seq 1024 --repeat-kv-reuse
 if errorlevel 1 echo [WARN] step 3b failed - continuing
 
 echo.

@@ -229,13 +229,13 @@ REM  --kd-chunk splits the KD loss over the vocabulary. --teacher-dtype casts th
 REM  teacher. Neither had ever executed in smoke, so a shape bug in either would
 REM  have surfaced only after hours of a P067 run.
 REM  ------------------------------------------------------------------------
-python scriptsunlog.py --name !TL_LOGNAME! --note "[17] P067 kd-chunk 256 + teacher-dtype bf16 - both on the KD path"
-python scriptsunlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --kd --kd-every 4 --kd-chunk 256 --teacher-dtype bf16 --init-from --mlp-group 4 --tag sm_kdchunk
+python scripts\runlog.py --name !TL_LOGNAME! --note "[17] P067 kd-chunk 256 + teacher-dtype bf16 - both on the KD path"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --kd --kd-every 4 --kd-chunk 256 --teacher-dtype bf16 --init-from --mlp-group 4 --tag sm_kdchunk
 if errorlevel 1 echo [WARN] sm_kdchunk failed - continuing
 
 echo.
 echo [18] --mlp-film  (P044B - FiLM was rejected under KD; REVIEW2 removed KD)
-python scriptsunlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --init-from --mlp-group 4 --mlp-film --tag sm_film
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --init-from --mlp-group 4 --mlp-film --tag sm_film
 if errorlevel 1 echo [WARN] sm_film failed - continuing
 
 echo.

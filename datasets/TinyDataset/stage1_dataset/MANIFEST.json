@@ -1,113 +1,180 @@
 {
-  "dataset_name": "Korean AI Curriculum — Stage 1 Split Manifest",
-  "version": "2.2",
-  "source_prototype_records": 1000,
-  "splits": {
-    "train": 900,
-    "val": 100,
-    "held-out_v2.1": 300
+ "dataset_name": "Korean AI Curriculum — Stage 1 Split Manifest",
+ "version": "2.3",
+ "source_prototype_records": 1000,
+ "splits": {
+  "train": 900,
+  "val": 100,
+  "held-out_v2.1": 300,
+  "held-out_v2.2": 300
+ },
+ "paths": {
+  "train": {
+   "text": "train/stage1_train_text_900.jsonl",
+   "metadata": "train/stage1_train_metadata_900.json",
+   "bundle": "train/stage1_train_900.json"
   },
-  "paths": {
-    "train": {
-      "text": "train/stage1_train_text_900.jsonl",
-      "metadata": "train/stage1_train_metadata_900.json",
-      "bundle": "train/stage1_train_900.json"
-    },
-    "val": {
-      "text": "val/stage1_val_text_100.jsonl",
-      "metadata": "val/stage1_val_metadata_100.json",
-      "bundle": "val/stage1_val_100.json"
-    },
-    "held-out_v2.1": {
-      "directory": "held-out_v2.1/",
-      "benchmark": "held-out_v2.1/stage1_heldout_benchmark_v2_1_300_final.json",
-      "jsonl": "held-out_v2.1/stage1_heldout_benchmark_v2_1_300_final.jsonl",
-      "metadata": "held-out_v2.1/stage1_heldout_benchmark_metadata_v2_1_300_final.json"
-    },
-    "held-out_v2_archive": {
-      "directory": "held-out_v2_archive/",
-      "role": "legacy_archive_only",
-      "description": "이전 held-out_v2 benchmark의 보존용 archive. 현재 실험 및 최종 benchmark에 사용하지 않는다."
-    },
-    "held-out_v1_archive": {
-      "directory": "held-out_v1_archive/",
-      "role": "legacy_archive_only",
-      "description": "이전 held-out_v1 benchmark의 보존용 archive. 현재 실험 및 최종 benchmark에 사용하지 않는다."
-    }
+  "val": {
+   "text": "val/stage1_val_text_100.jsonl",
+   "metadata": "val/stage1_val_metadata_100.json",
+   "bundle": "val/stage1_val_100.json"
   },
-  "roles": {
-    "train": "Stage 1 추가 학습에 사용되는 900개. 기존 300M-token standard pretraining에 혼입하지 않고, 기존 pretrained 100M 모델에 별도로 추가 학습한다.",
-    "val": "Stage 1 추가 학습 중 validation 및 checkpoint 선택에 사용하는 100개. gradient update에는 사용하지 않는다.",
-    "held-out_v2.1": "train/ 및 val/과 완전히 분리된 현재 최종 semantic benchmark 300개. 이미 구현된 benchmark v2.1의 forced-choice likelihood / paired-margin 평가에 사용한다.",
-    "held-out_v2_archive": "이전 held-out_v2 benchmark의 보존용 archive. 실험 데이터로 사용하지 않는다.",
-    "held-out_v1_archive": "이전 held-out_v1 benchmark의 보존용 archive. 실험 데이터로 사용하지 않는다."
+  "held-out_v2.1": {
+   "directory": "held-out_v2.1/",
+   "benchmark": "held-out_v2.1/stage1_heldout_benchmark_v2_1_300_final.json",
+   "jsonl": "held-out_v2.1/stage1_heldout_benchmark_v2_1_300_final.jsonl",
+   "metadata": "held-out_v2.1/stage1_heldout_benchmark_metadata_v2_1_300_final.json",
+   "role": "superseded_by_v2.2",
+   "description": "held-out v2.2 로 대체됨(2026-08-30). correct_index 위치 편향(chi2=50.1) 때문이며, 후보 내용은 v2.2 와 동일하다 — 순서만 다르다. 재현·이력 확인용으로 보존한다."
   },
-  "legacy_benchmarks": [
-    {
-      "dataset_split": "held-out_v2_archive",
-      "superseded_by": "held-out_v2.1",
-      "lineage": "held-out_v2_archive → held-out_v2.1",
-      "status": "archive_only",
-      "reusable_for_validation": false,
-      "reusable_for_final_benchmark": false,
-      "reusable_for_training": false,
-      "reusable_for_checkpoint_selection": false,
-      "reusable_for_hyperparameter_tuning": false,
-      "reusable_for_model_selection": false,
-      "reason": "이전 held-out_v2는 현재 held-out_v2_archive에 보존되어 있으며, held-out_v2.1과 benchmark lineage가 이어지므로 validation이나 다른 실험 split으로 재사용하지 않는다."
-    },
-    {
-      "dataset_split": "held-out_v1_archive",
-      "superseded_by": "held-out_v2.1",
-      "lineage": "held-out_v1_archive → held-out_v2_archive → held-out_v2.1",
-      "status": "archive_only",
-      "reusable_for_validation": false,
-      "reusable_for_final_benchmark": false,
-      "reusable_for_training": false,
-      "reusable_for_checkpoint_selection": false,
-      "reusable_for_hyperparameter_tuning": false,
-      "reusable_for_model_selection": false,
-      "reason": "이전 benchmark 버전의 보존용 데이터이므로 현재 실험에 사용하지 않는다."
-    }
-  ],
-  "rules": [
-    "train + val = the original 1,000-example Stage 1 prototype.",
-    "held-out_v2.1 is a separate 300-example benchmark and is not part of the 1,000-example Stage 1 prototype.",
-    "actual Stage 1 additional training should read train/stage1_train_text_900.jsonl only for gradient updates.",
-    "validation should read val/stage1_val_text_100.jsonl only and must not be used for gradient updates.",
-    "the current prototype comparison is Model A versus Model B: Model A is the existing 300M-token pretrained 100M checkpoint with no Stage 1 additional training; Model B starts from the same checkpoint and receives Stage 1 train/900 additional training.",
-    "held-out_v2.1 benchmark evaluation should be performed only after the Model B checkpoint has been fixed using the train/ and val/ process.",
-    "held-out_v2.1 must not be used for checkpoint selection, hyperparameter tuning, curriculum modification, training, or model selection.",
-    "held-out_v2.1 is the only benchmark split eligible for final benchmark reporting in the current experiment.",
-    "held-out_v2_archive and held-out_v1_archive are archive-only directories and must not be used for training, validation, checkpoint selection, hyperparameter tuning, model selection, or final benchmark evaluation.",
-    "the archived held-out_v2 and held-out_v1 data must not be moved into train or val because they are part of the benchmark lineage leading to held-out_v2.1.",
-    "the held-out_v2.1 benchmark uses its already implemented benchmark-specific forced-choice likelihood and paired-margin scoring schema; no older free-generation scoring schema is used.",
-    "once held-out_v2.1 results are inspected and used to change training, checkpoint selection, hyperparameters, curriculum, data composition, model architecture, tokenizer, or model selection, that evaluation is no longer treated as a blind final test and must be treated as development evaluation."
-  ],
-  "benchmark": {
-    "dataset_split": "held-out_v2.1",
-    "version": "2.1",
-    "purpose": "Stage 1의 새로운 개념·관계·경계 일반화 능력을 외부 LLM judge 없이 평가한다.",
-    "evaluation_mode": "forced_choice_likelihood",
-    "primary_metrics": [
-      "forced_choice_accuracy",
-      "mean_margin",
-      "paired_margin_improvement"
-    ],
-    "secondary_metrics": [
-      "concept_generalization_accuracy",
-      "relation_generalization_accuracy",
-      "boundary_accuracy",
-      "overgeneralization_error_rate",
-      "relation_confusion_rate"
-    ],
-    "external_llm_judge": false,
-    "legacy_benchmark": {
-      "dataset_split": "held-out_v2_archive",
-      "status": "archive_only",
-      "superseded_by": "held-out_v2.1",
-      "usable_for_final_benchmark": false,
-      "usable_for_validation": false
-    }
+  "held-out_v2_archive": {
+   "directory": "held-out_v2_archive/",
+   "role": "legacy_archive_only",
+   "description": "이전 held-out_v2 benchmark의 보존용 archive. 현재 실험 및 최종 benchmark에 사용하지 않는다."
+  },
+  "held-out_v1_archive": {
+   "directory": "held-out_v1_archive/",
+   "role": "legacy_archive_only",
+   "description": "이전 held-out_v1 benchmark의 보존용 archive. 현재 실험 및 최종 benchmark에 사용하지 않는다."
+  },
+  "held-out_v2.2": {
+   "directory": "held-out_v2.2/",
+   "benchmark": "held-out_v2.2/stage1_heldout_benchmark_v2.2_300.json",
+   "jsonl": "held-out_v2.2/stage1_heldout_benchmark_v2.2_300.jsonl",
+   "metadata": "held-out_v2.2/stage1_heldout_benchmark_metadata_v2.2_300.json",
+   "role": "current_final_benchmark"
   }
+ },
+ "roles": {
+  "train": "Stage 1 추가 학습에 사용되는 900개. 기존 300M-token standard pretraining에 혼입하지 않고, 기존 pretrained 100M 모델에 별도로 추가 학습한다.",
+  "val": "Stage 1 추가 학습 중 validation 및 checkpoint 선택에 사용하는 100개. gradient update에는 사용하지 않는다.",
+  "held-out_v2.1": "held-out v2.2 로 대체됨(2026-08-30). 위치 편향 때문. 보존용이며 새 실험에 쓰지 않는다.",
+  "held-out_v2_archive": "이전 held-out_v2 benchmark의 보존용 archive. 실험 데이터로 사용하지 않는다.",
+  "held-out_v1_archive": "이전 held-out_v1 benchmark의 보존용 archive. 실험 데이터로 사용하지 않는다.",
+  "held-out_v2.2": "train/ 및 val/과 완전히 분리된 **현재 최종** semantic benchmark 300개. forced-choice likelihood / paired-margin 평가에 사용한다. v2.1 대비 후보 순서만 무작위 재배열됐고 내용은 동일하다."
+ },
+ "legacy_benchmarks": [
+  {
+   "dataset_split": "held-out_v2_archive",
+   "superseded_by": "held-out_v2.1",
+   "lineage": "held-out_v2_archive → held-out_v2.1",
+   "status": "archive_only",
+   "reusable_for_validation": false,
+   "reusable_for_final_benchmark": false,
+   "reusable_for_training": false,
+   "reusable_for_checkpoint_selection": false,
+   "reusable_for_hyperparameter_tuning": false,
+   "reusable_for_model_selection": false,
+   "reason": "이전 held-out_v2는 현재 held-out_v2_archive에 보존되어 있으며, held-out_v2.1과 benchmark lineage가 이어지므로 validation이나 다른 실험 split으로 재사용하지 않는다."
+  },
+  {
+   "dataset_split": "held-out_v1_archive",
+   "superseded_by": "held-out_v2.1",
+   "lineage": "held-out_v1_archive → held-out_v2_archive → held-out_v2.1",
+   "status": "archive_only",
+   "reusable_for_validation": false,
+   "reusable_for_final_benchmark": false,
+   "reusable_for_training": false,
+   "reusable_for_checkpoint_selection": false,
+   "reusable_for_hyperparameter_tuning": false,
+   "reusable_for_model_selection": false,
+   "reason": "이전 benchmark 버전의 보존용 데이터이므로 현재 실험에 사용하지 않는다."
+  },
+  {
+   "dataset_split": "held-out_v2.1",
+   "superseded_by": "held-out_v2.2",
+   "lineage": "held-out_v2_archive -> held-out_v2.1 -> held-out_v2.2",
+   "status": "superseded",
+   "reason": "correct_index position bias: {0:27, 1:73, 2:110, 3:90}, chi2(3)=50.1, always-index-2 strategy scored 36.7% against 25% chance",
+   "reusable_for_validation": false,
+   "reusable_for_final_benchmark": false,
+   "reusable_for_training": false,
+   "reusable_for_checkpoint_selection": false,
+   "reusable_for_hyperparameter_tuning": false,
+   "reusable_for_model_selection": false
+  }
+ ],
+ "rules": [
+  "train + val = the original 1,000-example Stage 1 prototype.",
+  "held-out_v2.1 is a separate 300-example benchmark and is not part of the 1,000-example Stage 1 prototype.",
+  "actual Stage 1 additional training should read train/stage1_train_text_900.jsonl only for gradient updates.",
+  "validation should read val/stage1_val_text_100.jsonl only and must not be used for gradient updates.",
+  "the current prototype comparison is Model A versus Model B: Model A is the existing 300M-token pretrained 100M checkpoint with no Stage 1 additional training; Model B starts from the same checkpoint and receives Stage 1 train/900 additional training.",
+  "held-out_v2.1 benchmark evaluation should be performed only after the Model B checkpoint has been fixed using the train/ and val/ process.",
+  "held-out_v2.1 must not be used for checkpoint selection, hyperparameter tuning, curriculum modification, training, or model selection.",
+  "held-out_v2.1 is the only benchmark split eligible for final benchmark reporting in the current experiment.",
+  "held-out_v2_archive and held-out_v1_archive are archive-only directories and must not be used for training, validation, checkpoint selection, hyperparameter tuning, model selection, or final benchmark evaluation.",
+  "the archived held-out_v2 and held-out_v1 data must not be moved into train or val because they are part of the benchmark lineage leading to held-out_v2.1.",
+  "the held-out_v2.1 benchmark uses its already implemented benchmark-specific forced-choice likelihood and paired-margin scoring schema; no older free-generation scoring schema is used.",
+  "once held-out_v2.1 results are inspected and used to change training, checkpoint selection, hyperparameters, curriculum, data composition, model architecture, tokenizer, or model selection, that evaluation is no longer treated as a blind final test and must be treated as development evaluation."
+ ],
+ "benchmark": {
+  "dataset_split": "held-out_v2.1",
+  "version": "2.1",
+  "purpose": "Stage 1의 새로운 개념·관계·경계 일반화 능력을 외부 LLM judge 없이 평가한다.",
+  "evaluation_mode": "forced_choice_likelihood",
+  "primary_metrics": [
+   "forced_choice_accuracy",
+   "mean_margin",
+   "paired_margin_improvement"
+  ],
+  "secondary_metrics": [
+   "concept_generalization_accuracy",
+   "relation_generalization_accuracy",
+   "boundary_accuracy",
+   "overgeneralization_error_rate",
+   "relation_confusion_rate"
+  ],
+  "external_llm_judge": false,
+  "legacy_benchmark": {
+   "dataset_split": "held-out_v2_archive",
+   "status": "archive_only",
+   "superseded_by": "held-out_v2.1",
+   "usable_for_final_benchmark": false,
+   "usable_for_validation": false
+  }
+ },
+ "manifest_updated": "2026-08-30",
+ "manifest_updated_by": "position-bias fix; held-out v2.2 promoted to current benchmark",
+ "v2.2_audit_2026_08_30": {
+  "G1_correct_index_uniform": {
+   "counts": {
+    "0": 75,
+    "1": 75,
+    "2": 75,
+    "3": 75
+   },
+   "chi2": 0.0,
+   "threshold": 7.81,
+   "verdict": "PASS"
+  },
+  "G2_candidate_sets_unchanged_vs_v2.1": {
+   "matched": 300,
+   "of": 300,
+   "verdict": "PASS"
+  },
+  "G3_candidate_forbidden_relation_pairing": {
+   "matched": 300,
+   "of": 300,
+   "verdict": "PASS"
+  },
+  "G4_correct_is_longest": {
+   "pct": 58.0,
+   "chance": 25.0,
+   "verdict": "FAIL",
+   "note": "pre-existing; identical in v2.1 (58.0%). v2.2 changed order only."
+  },
+  "G5_trivial_baseline_max": {
+   "pct": 39.0,
+   "strategy": "pick longest",
+   "threshold": 30.0,
+   "verdict": "FAIL",
+   "note": "position strategies now exactly 25.0% each; length is the binding term"
+  },
+  "G6_verbatim_leak_into_train": {
+   "count": 0,
+   "verdict": "PASS"
+  },
+  "conclusion": "v2.2 fixed position bias completely and preserved content exactly. Length bias remains and needs v2.3 or a scorer-side length control."
+ }
 }
