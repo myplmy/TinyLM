@@ -1,166 +1,2396 @@
 {
-  "dataset_name":"Korean AI Curriculum — Stage 1 Identity High-Density Train v15",
-  "version":"1.0",
-  "range":"S1-IDH-2201~2350",
-  "theme":"시간·사건·과정·일상적 변화",
-  "purpose":"시간적 순서와 지속, 사건과 과정, 상태 변화와 일상적 변화를 대상·정체성·분류 관점에서 학습시키기 위한 수작업 고밀도 corpus",
-  "records":[
-    {"id":"S1-IDH-2201","type":"identity_packet","text":"시작은 어떤 활동이나 사건이 처음 이루어지는 시점이나 상태를 가리키는 개념이다. 시작은 활동 자체와 동일한 대상이 아니라 시간적 경계다.","concepts":["시작","활동","사건","시점"],"relations":["temporal_concept","boundary","not_entity"]},
-    {"id":"S1-IDH-2202","type":"identity_packet","text":"종료는 어떤 활동이나 사건이 더 이상 진행되지 않게 되는 시점이나 상태다. 종료는 활동 자체의 이름이 아니라 시간적 끝을 나타낸다.","concepts":["종료","활동","사건","상태"],"relations":["temporal_concept","boundary","state"]},
-    {"id":"S1-IDH-2203","type":"identity_packet","text":"발생은 사건이나 현상이 일어나기 시작하는 것을 가리킨다. 발생은 사건 자체와 관련되지만 사건의 이름과 같은 개념은 아니다.","concepts":["발생","사건","현상","시작"],"relations":["event_relation","state_change"]},
-    {"id":"S1-IDH-2204","type":"identity_packet","text":"지속은 어떤 상태나 활동이 일정한 시간 동안 계속되는 성질이나 과정을 뜻한다. 지속은 활동이나 상태 자체가 아니라 시간적 특성이다.","concepts":["지속","상태","활동","시간"],"relations":["temporal_attribute","process"]},
-    {"id":"S1-IDH-2205","type":"identity_packet","text":"지속시간은 사건이나 활동이 시작된 뒤 종료될 때까지 걸린 시간의 양이다. 지속시간은 사건 자체가 아니라 사건의 시간적 길이를 나타내는 값이다.","concepts":["지속시간","사건","시간","길이"],"relations":["measurement","temporal_attribute"]},
-    {"id":"S1-IDH-2206","type":"identity_packet","text":"순서는 여러 사건이나 활동이 어떤 앞뒤 관계를 가지는지를 나타내는 구조다. 순서는 사건 하나와 동일하지 않고 사건들 사이의 관계다.","concepts":["순서","사건","활동","앞뒤 관계"],"relations":["relation","temporal_structure"]},
-    {"id":"S1-IDH-2207","type":"identity_packet","text":"선행은 한 사건이나 과정이 다른 사건이나 과정보다 먼저 일어나는 관계다. 선행은 특정 사건 자체의 속성이 아니라 사건 사이의 시간 관계다.","concepts":["선행","사건","과정","시간 관계"],"relations":["temporal_relation","relation"]},
-    {"id":"S1-IDH-2208","type":"identity_packet","text":"후행은 한 사건이나 과정이 다른 사건이나 과정보다 나중에 일어나는 관계다. 후행과 사건 자체를 동일시해서는 안 된다.","concepts":["후행","사건","과정","시간 관계"],"relations":["temporal_relation","relation"]},
-    {"id":"S1-IDH-2209","type":"identity_packet","text":"동시는 둘 이상의 사건이 같은 시간에 일어나는 관계를 가리킨다. 동시는 사건이나 시간 자체가 아니라 사건들 사이의 관계다.","concepts":["동시","사건","시간","관계"],"relations":["temporal_relation","relation"]},
-    {"id":"S1-IDH-2210","type":"identity_packet","text":"지연은 예정되거나 기대된 시점보다 사건이나 활동의 진행이 늦어지는 상태 또는 과정이다. 지연은 지연된 사건 자체가 아니다.","concepts":["지연","사건","활동","예정 시점"],"relations":["state_change","temporal_attribute","boundary"]},
-    {"id":"S1-IDH-2211","type":"identity_packet","text":"진행은 사건이나 활동이 시작된 뒤 아직 끝나지 않은 상태를 가리킨다. 진행은 활동 자체와 관련되지만 활동의 시간적 상태를 나타낸다.","concepts":["진행","활동","상태","시간"],"relations":["state","temporal_status","boundary"]},
-    {"id":"S1-IDH-2212","type":"identity_packet","text":"완료는 필요한 과정이 끝나 목적한 상태에 도달한 것을 가리키는 상태다. 완료는 과정 자체와 동일하지 않다.","concepts":["완료","과정","상태","목표"],"relations":["state","process_outcome","boundary"]},
-    {"id":"S1-IDH-2213","type":"identity_packet","text":"재개는 중단되었던 활동이나 과정이 다시 시작되는 사건이다. 재개는 원래 활동 전체와 동일하지 않고 다시 시작되는 상태 변화다.","concepts":["재개","중단","활동","상태 변화"],"relations":["state_change","event"]},
-    {"id":"S1-IDH-2214","type":"identity_packet","text":"중단은 진행되던 활동이나 과정이 일시적으로 또는 영구적으로 멈추는 사건이나 상태다. 중단은 활동의 부재와 완전히 같은 개념은 아니다.","concepts":["중단","활동","과정","상태"],"relations":["state_change","event","boundary"]},
-    {"id":"S1-IDH-2215","type":"identity_packet","text":"반복은 같은 유형의 활동이나 사건이 여러 번 다시 일어나는 구조다. 반복은 한 번의 사건과 구분되는 과정적 특성이다.","concepts":["반복","사건","활동","과정"],"relations":["process_pattern","temporal_attribute"]},
-    {"id":"S1-IDH-2216","type":"identity_packet","text":"주기는 비슷한 사건이나 상태 변화가 일정한 간격으로 반복되는 시간적 패턴이다. 주기는 반복되는 사건 자체가 아니라 반복의 시간 구조다.","concepts":["주기","반복","시간 간격","패턴"],"relations":["temporal_pattern","measurement_relation"]},
-    {"id":"S1-IDH-2217","type":"identity_packet","text":"주기성은 어떤 현상이 일정하거나 비교적 일정한 간격으로 되풀이되는 성질이다. 주기성과 주기라는 실제 시간 간격은 서로 다른 개념이다.","concepts":["주기성","현상","반복","시간 간격"],"relations":["attribute","temporal_pattern","boundary"]},
-    {"id":"S1-IDH-2218","type":"identity_packet","text":"단계는 복잡한 과정에서 특정 역할이나 순서를 가진 하나의 부분이다. 단계는 과정 전체와 동일하지 않다.","concepts":["단계","과정","순서","부분"],"relations":["part_of","process_structure","hierarchy"]},
-    {"id":"S1-IDH-2219","type":"identity_packet","text":"절차는 어떤 목표를 달성하기 위해 정해진 순서로 수행하는 여러 단계의 집합이다. 절차는 한 단계의 행동보다 넓은 과정 개념이다.","concepts":["절차","단계","순서","목표"],"relations":["is_a","process","has_parts"]},
-    {"id":"S1-IDH-2220","type":"identity_packet","text":"과정은 어떤 상태가 다른 상태로 바뀌거나 어떤 결과에 이르는 동안 진행되는 연속적인 변화다. 과정은 결과나 시작 시점 하나와 동일하지 않다.","concepts":["과정","상태 변화","결과","연속성"],"relations":["is_a","process","state_change"]},
-
-    {"id":"S1-IDH-2221","type":"identity_packet","text":"변화는 대상의 상태나 성질, 위치 등이 시간에 따라 달라지는 것을 가리키는 넓은 개념이다. 변화는 특정 결과 하나와 동일하지 않다.","concepts":["변화","상태","성질","시간"],"relations":["abstract_concept","process","supercategory"]},
-    {"id":"S1-IDH-2222","type":"identity_packet","text":"상태 변화는 대상이 한 상태에서 다른 상태로 전환되는 과정이다. 상태 변화는 대상 자체의 이름이 아니라 시간에 따른 변화 관계다.","concepts":["상태 변화","상태","전환","시간"],"relations":["is_a","process","relation"]},
-    {"id":"S1-IDH-2223","type":"identity_packet","text":"증가는 어떤 양이나 수준이 이전보다 커지는 변화다. 증가는 값 자체가 아니라 두 시점 사이의 변화 방향을 나타낸다.","concepts":["증가","양","수준","변화 방향"],"relations":["change_relation","comparison"]},
-    {"id":"S1-IDH-2224","type":"identity_packet","text":"감소는 어떤 양이나 수준이 이전보다 작아지는 변화다. 감소는 작은 값이라는 정적 상태와 구분되는 시간적 변화 개념이다.","concepts":["감소","양","수준","변화"],"relations":["change_relation","comparison"]},
-    {"id":"S1-IDH-2225","type":"identity_packet","text":"증가율은 어떤 양이 기준 시점에 비해 얼마나 증가했는지를 비율로 나타낸 값이다. 증가율은 증가라는 변화와 달리 정량적 측정값이다.","concepts":["증가율","증가","비율","측정값"],"relations":["measurement","change_attribute"]},
-    {"id":"S1-IDH-2226","type":"identity_packet","text":"감소율은 기준값에 비해 양이 얼마나 감소했는지를 비율로 나타낸 값이다. 감소율은 감소 과정 자체와 동일하지 않다.","concepts":["감소율","감소","비율","측정값"],"relations":["measurement","change_attribute"]},
-    {"id":"S1-IDH-2227","type":"identity_packet","text":"유지는 일정 기간 동안 어떤 상태나 수준이 크게 달라지지 않도록 계속되는 상태다. 유지는 변화가 전혀 존재한다는 뜻이 아니라 기준 상태가 계속되는 것을 뜻한다.","concepts":["유지","상태","수준","변화"],"relations":["state","temporal_status","boundary"]},
-    {"id":"S1-IDH-2228","type":"identity_packet","text":"회복은 손상되거나 감소한 기능이나 상태가 이전의 더 나은 상태를 향해 돌아가는 변화 과정이다. 회복은 반드시 원래 상태와 완전히 동일해졌다는 뜻은 아니다.","concepts":["회복","기능","상태","변화"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2229","type":"identity_packet","text":"악화는 어떤 상태나 성질이 이전보다 나빠지는 방향으로 변하는 과정이다. 악화는 나쁜 상태 자체와 동일하지 않고 상태의 변화 방향을 나타낸다.","concepts":["악화","상태","변화 방향","과정"],"relations":["change_relation","process","boundary"]},
-    {"id":"S1-IDH-2230","type":"identity_packet","text":"개선은 어떤 상태나 성능이 더 나은 방향으로 변화하는 과정이다. 개선은 개선된 결과와 구분되는 변화 과정이다.","concepts":["개선","상태","성능","과정"],"relations":["process","change_relation","boundary"]},
-    {"id":"S1-IDH-2231","type":"identity_packet","text":"성장은 크기나 기능, 능력 등이 시간에 따라 증가하는 변화 과정이다. 성장은 성장한 결과물과 동일하지 않다.","concepts":["성장","크기","기능","능력","시간"],"relations":["process","change_relation"]},
-    {"id":"S1-IDH-2232","type":"identity_packet","text":"발달은 생물이나 시스템의 구조와 기능이 시간에 따라 변화하며 성숙해지는 과정이다. 발달은 성숙이라는 최종 상태만을 뜻하지 않는다.","concepts":["발달","성숙","구조","기능","과정"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2233","type":"identity_packet","text":"노화는 시간이 지나면서 생물이나 재료의 구조와 기능이 변화하는 자연스러운 과정이다. 노화는 특정 질병과 동일하지 않다.","concepts":["노화","시간","생물","재료","과정"],"relations":["process","natural_change","boundary"]},
-    {"id":"S1-IDH-2234","type":"identity_packet","text":"숙성은 시간이 지나면서 음식이나 재료의 성질이 원하는 방향으로 변화하는 과정이다. 숙성은 단순한 보관과 같은 개념이 아니다.","concepts":["숙성","음식","재료","보관","변화"],"relations":["process","state_change","contrast"]},
-    {"id":"S1-IDH-2235","type":"identity_packet","text":"부패는 생물성 물질이 미생물 등의 작용으로 분해되어 원하지 않는 방향으로 변화하는 과정이다. 부패는 단순히 오래된 상태와 같은 뜻이 아니다.","concepts":["부패","분해","미생물","변화"],"relations":["process","natural_change","boundary"]},
-    {"id":"S1-IDH-2236","type":"identity_packet","text":"건조는 물질이나 재료에서 수분이 줄어들도록 하는 변화 과정이다. 건조는 건조된 결과 상태와 동일하지 않다.","concepts":["건조","수분","재료","변화"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2237","type":"identity_packet","text":"냉각은 물체나 공간의 열에너지가 줄어들어 온도가 낮아지는 과정이다. 냉각은 차가운 상태 자체와 구분된다.","concepts":["냉각","열에너지","온도","과정"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2238","type":"identity_packet","text":"가열은 물체나 공간에 에너지가 전달되어 온도가 높아지는 과정이다. 가열은 뜨거운 상태와 같은 의미가 아니다.","concepts":["가열","에너지","온도","과정"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2239","type":"identity_packet","text":"충전은 배터리나 저장 장치에 에너지가 저장되도록 전기 에너지를 공급하는 과정이다. 충전은 배터리의 충전된 상태와 구분된다.","concepts":["충전","배터리","에너지","과정","상태"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2240","type":"identity_packet","text":"방전은 저장되어 있던 에너지가 외부 회로 등에 공급되면서 저장량이 감소하는 과정이다. 방전은 배터리 자체와 동일하지 않다.","concepts":["방전","배터리","에너지","저장량","과정"],"relations":["process","state_change"]},
-
-    {"id":"S1-IDH-2241","type":"identity_packet","text":"사용은 물건이나 서비스를 목적에 맞게 이용하는 활동이다. 사용은 사용자라는 사람이나 사용 대상과 다른 행위 개념이다.","concepts":["사용","물건","서비스","활동"],"relations":["event","activity","boundary"]},
-    {"id":"S1-IDH-2242","type":"identity_packet","text":"소비는 자원이나 상품을 사용하여 그 양이나 가치가 줄어드는 행위 또는 과정을 뜻한다. 소비는 상품 자체와 동일하지 않다.","concepts":["소비","상품","자원","사용"],"relations":["process","event","boundary"]},
-    {"id":"S1-IDH-2243","type":"identity_packet","text":"생산은 원재료나 자원을 이용해 새로운 제품이나 가치를 만들어 내는 과정이다. 생산은 생산된 제품과 동일하지 않다.","concepts":["생산","원재료","제품","가치","과정"],"relations":["process","result_distinction"]},
-    {"id":"S1-IDH-2244","type":"identity_packet","text":"이동은 물체나 사람이 한 위치에서 다른 위치로 바뀌는 과정이다. 이동은 이동한 위치나 이동 수단과 같은 대상이 아니다.","concepts":["이동","위치","사람","물체","과정"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2245","type":"identity_packet","text":"도착은 이동하는 대상이 목적지에 이르는 사건이나 상태다. 도착은 목적지라는 장소와 동일하지 않다.","concepts":["도착","이동","목적지","사건"],"relations":["event","temporal_boundary","boundary"]},
-    {"id":"S1-IDH-2246","type":"identity_packet","text":"출발은 이동이나 활동이 시작되어 출발 지점에서 벗어나기 시작하는 사건이다. 출발은 출발지라는 장소와 동일하지 않다.","concepts":["출발","이동","출발지","사건"],"relations":["event","temporal_boundary","boundary"]},
-    {"id":"S1-IDH-2247","type":"identity_packet","text":"대기는 원하는 사건이 일어날 때까지 활동을 하지 않거나 준비된 상태로 시간을 보내는 과정이다. 대기는 기다리는 대상이나 장소와 동일하지 않다.","concepts":["대기","사건","시간","상태"],"relations":["process","temporal_status"]},
-    {"id":"S1-IDH-2248","type":"identity_packet","text":"예약은 미래의 특정 시간에 서비스나 자원을 이용할 수 있도록 미리 확보하는 행위다. 예약은 예약된 시간이나 서비스 자체와 동일하지 않다.","concepts":["예약","미래","시간","서비스","자원"],"relations":["event","planning","boundary"]},
-    {"id":"S1-IDH-2249","type":"identity_packet","text":"취소는 예정되거나 합의된 활동이나 거래를 진행하지 않기로 하는 행위다. 취소는 원래의 활동 자체가 아니다.","concepts":["취소","활동","거래","행위"],"relations":["event","state_change","boundary"]},
-    {"id":"S1-IDH-2250","type":"identity_packet","text":"변경은 기존의 계획이나 설정, 내용, 상태를 다른 것으로 바꾸는 행위 또는 과정이다. 변경은 변경 대상 자체와 동일하지 않다.","concepts":["변경","계획","설정","상태","과정"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2251","type":"identity_packet","text":"업데이트는 시스템이나 정보의 내용을 새로운 버전이나 최신 상태로 바꾸는 과정이다. 업데이트와 업데이트된 결과는 서로 다른 개념이다.","concepts":["업데이트","시스템","정보","버전"],"relations":["process","state_change","result_distinction"]},
-    {"id":"S1-IDH-2252","type":"identity_packet","text":"설정 변경은 장치나 프로그램의 작동 조건이나 값을 다른 조건으로 바꾸는 행위다. 설정 변경은 새로운 설정값 자체가 아니라 변경 과정이다.","concepts":["설정 변경","장치","프로그램","설정값"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2253","type":"identity_packet","text":"재시작은 작동을 멈춘 시스템이나 프로그램을 다시 시작하는 사건이다. 재시작은 시스템 전체와 같은 대상이 아니다.","concepts":["재시작","시스템","프로그램","시작"],"relations":["event","state_change"]},
-    {"id":"S1-IDH-2254","type":"identity_packet","text":"종료는 프로그램이나 시스템의 작동이 끝나는 사건이나 상태다. 종료는 시스템 자체의 소멸을 반드시 의미하지 않는다.","concepts":["종료","프로그램","시스템","상태"],"relations":["event","state_change","boundary"]},
-    {"id":"S1-IDH-2255","type":"identity_packet","text":"설치는 제품이나 소프트웨어를 사용할 수 있는 상태로 만들기 위해 연결하고 배치하는 과정이다. 설치는 설치된 제품이나 프로그램과 동일하지 않다.","concepts":["설치","제품","소프트웨어","과정"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2256","type":"identity_packet","text":"삭제는 파일이나 정보, 프로그램 등을 시스템에서 제거하는 행위다. 삭제는 삭제된 대상과 동일한 개념이 아니다.","concepts":["삭제","파일","정보","프로그램"],"relations":["event","state_change","boundary"]},
-    {"id":"S1-IDH-2257","type":"identity_packet","text":"저장은 데이터를 나중에 사용할 수 있도록 기록 매체에 보존하는 과정이다. 저장은 데이터 자체나 저장 장치와 동일하지 않다.","concepts":["저장","데이터","기록 매체","과정"],"relations":["process","information_operation","boundary"]},
-    {"id":"S1-IDH-2258","type":"identity_packet","text":"불러오기는 저장된 데이터나 문서를 현재 작업 환경으로 가져오는 과정이다. 불러오기와 불러온 데이터는 각각 행위와 대상이라는 다른 개념이다.","concepts":["불러오기","데이터","문서","과정"],"relations":["process","information_operation","boundary"]},
-    {"id":"S1-IDH-2259","type":"identity_packet","text":"전송은 데이터나 물리적 물체를 한 위치나 시스템에서 다른 위치나 시스템으로 보내는 과정이다. 전송은 전송 대상과 동일하지 않다.","concepts":["전송","데이터","물체","과정"],"relations":["process","movement","boundary"]},
-    {"id":"S1-IDH-2260","type":"identity_packet","text":"수신은 보내진 물체나 정보를 목적지에서 받아들이는 사건이나 과정이다. 수신은 수신된 정보나 물건 자체와 구분된다.","concepts":["수신","정보","물건","사건"],"relations":["event","process","boundary"]},
-
-    {"id":"S1-IDH-2261","type":"identity_packet","text":"발급은 증명서, 카드, 문서, 자격 등의 정식 대상을 만들어 특정 주체에게 제공하는 행위다. 발급은 발급된 문서나 카드 자체와 다르다.","concepts":["발급","문서","카드","행위"],"relations":["process","result_distinction"]},
-    {"id":"S1-IDH-2262","type":"identity_packet","text":"갱신은 기존의 자격이나 문서, 설정 등을 계속 사용할 수 있도록 기간이나 내용을 새롭게 하는 과정이다. 갱신은 갱신된 결과와 구분된다.","concepts":["갱신","기간","문서","자격"],"relations":["process","state_change"]},
-    {"id":"S1-IDH-2263","type":"identity_packet","text":"만료는 문서나 권리, 기간 등이 정해진 시점에 이르러 더 이상 기존 효력을 유지하지 못하는 상태다. 만료는 문서 자체의 소멸과 동일하지 않다.","concepts":["만료","기간","권리","효력","상태"],"relations":["state","temporal_status","boundary"]},
-    {"id":"S1-IDH-2264","type":"identity_packet","text":"효력 발생은 어떤 법률행위나 결정이 정해진 조건에서 법적 효과를 가지기 시작하는 시점이나 사건이다. 효력 발생은 문서 작성과 반드시 같은 시점은 아니다.","concepts":["효력 발생","법률행위","결정","시점"],"relations":["temporal_event","legal_concept","boundary"]},
-    {"id":"S1-IDH-2265","type":"identity_packet","text":"효력 종료는 권리나 계약, 결정 등이 더 이상 법적 효과를 발생시키지 않게 되는 시점이나 상태다. 효력 종료와 대상의 물리적 소멸은 다른 개념이다.","concepts":["효력 종료","권리","계약","상태"],"relations":["temporal_status","legal_concept","boundary"]},
-    {"id":"S1-IDH-2266","type":"identity_packet","text":"제출은 문서나 자료를 정해진 기관이나 사람에게 공식적으로 전달하는 행위다. 제출은 제출된 자료와 다른 과정 개념이다.","concepts":["제출","문서","자료","행위"],"relations":["process","administrative_action","boundary"]},
-    {"id":"S1-IDH-2267","type":"identity_packet","text":"접수는 제출된 신청이나 문서를 받아 공식적으로 처리 대상으로 기록하는 행위다. 접수는 신청 내용이나 접수증과 동일하지 않다.","concepts":["접수","신청","문서","접수증"],"relations":["process","administrative_action","boundary"]},
-    {"id":"S1-IDH-2268","type":"identity_packet","text":"심사는 제출된 자료나 신청의 조건과 내용을 검토하는 과정이다. 심사는 심사 결과와 구분되는 절차적 과정이다.","concepts":["심사","신청","자료","결과"],"relations":["process","evaluation","boundary"]},
-    {"id":"S1-IDH-2269","type":"identity_packet","text":"승인은 신청이나 계획 등을 검토한 뒤 진행을 허용하는 결정이다. 승인은 승인서라는 문서나 신청 행위와 다른 법적·행정적 결과다.","concepts":["승인","신청","결정","승인서"],"relations":["event_or_result","administrative_action","boundary"]},
-    {"id":"S1-IDH-2270","type":"identity_packet","text":"거절은 신청이나 요청을 받아들이지 않기로 결정하는 행위나 결과다. 거절과 요청 자체는 서로 다른 단계의 개념이다.","concepts":["거절","요청","결정","결과"],"relations":["event_or_result","decision","boundary"]},
-    {"id":"S1-IDH-2271","type":"identity_packet","text":"승낙은 제안이나 요청을 받아들이겠다는 결정이나 의사표시다. 승낙은 제안이나 최종 계약과 동일하지 않을 수 있다.","concepts":["승낙","제안","계약","의사표시"],"relations":["event","legal_concept","boundary"]},
-    {"id":"S1-IDH-2272","type":"identity_packet","text":"협상은 서로 다른 요구나 조건을 조정해 합의점을 찾는 과정이다. 협상은 합의 결과와 동일하지 않으며 합의에 이르지 못할 수도 있다.","concepts":["협상","요구","조건","합의"],"relations":["process","communication","boundary"]},
-    {"id":"S1-IDH-2273","type":"identity_packet","text":"합의는 둘 이상의 주체가 어떤 조건이나 내용에 대해 의견을 일치시키는 상태나 결과다. 합의는 협상이라는 과정과 구분된다.","concepts":["합의","주체","조건","협상"],"relations":["state_or_result","boundary"]},
-    {"id":"S1-IDH-2274","type":"identity_packet","text":"결정은 여러 가능성 가운데 하나를 선택해 행동 방향이나 상태를 정하는 행위 또는 결과다. 결정은 결정된 내용과 동일한 개념이 아니다.","concepts":["결정","선택","행동 방향","결과"],"relations":["event_or_result","abstract_concept"]},
-    {"id":"S1-IDH-2275","type":"identity_packet","text":"선택은 여러 가능성 가운데 하나 이상을 고르는 행위다. 선택은 선택된 대상 자체와 구분되는 의사결정 과정이다.","concepts":["선택","가능성","행위","대상"],"relations":["process","decision","boundary"]},
-    {"id":"S1-IDH-2276","type":"identity_packet","text":"시행은 정해진 규칙이나 계획, 제도를 실제로 적용하기 시작하는 행위다. 시행은 계획이나 규칙 자체가 아니라 실제 적용 과정이다.","concepts":["시행","규칙","계획","적용"],"relations":["process","implementation","boundary"]},
-    {"id":"S1-IDH-2277","type":"identity_packet","text":"중지은 진행 중인 활동이나 제도의 실행을 멈추는 행위나 상태다. 중지는 원래 활동의 종료와 항상 같은 범위를 가지는 것은 아니다.","concepts":["중지","활동","제도","상태"],"relations":["state_change","boundary"]},
-    {"id":"S1-IDH-2278","type":"identity_packet","text":"재개는 중단된 활동이나 운영이 다시 시작되는 사건이다. 재개는 이전 활동과 연속성을 가지지만 새로운 상태 변화로 볼 수 있다.","concepts":["재개","중단","운영","사건"],"relations":["event","state_change","continuation"]},
-    {"id":"S1-IDH-2279","type":"identity_packet","text":"완료율은 전체 과정이나 작업 가운데 완료된 부분의 비율을 나타내는 측정값이다. 완료율은 완료라는 상태 자체가 아니다.","concepts":["완료율","과정","작업","비율"],"relations":["measurement","process_attribute"]},
-    {"id":"S1-IDH-2280","type":"identity_packet","text":"진행률은 전체 작업이나 과정 가운데 현재까지 진행된 정도를 비율로 나타내는 값이다. 진행률은 진행이라는 상태와 구분되는 측정값이다.","concepts":["진행률","작업","과정","비율"],"relations":["measurement","process_attribute"]},
-
-    {"id":"S1-IDH-2281","type":"identity_packet","text":"예정은 어떤 사건이나 활동이 미래의 특정 시점에 일어나도록 계획된 상태다. 예정은 실제 사건이 발생했다는 뜻이 아니다.","concepts":["예정","사건","활동","미래"],"relations":["planned_state","temporal_status","not_actual_event"]},
-    {"id":"S1-IDH-2282","type":"identity_packet","text":"계획은 미래에 수행할 활동과 순서, 자원 등을 미리 정리한 정보나 과정이다. 계획과 실제 실행은 서로 다른 개념이다.","concepts":["계획","활동","순서","자원","실행"],"relations":["abstract_plan","representation","boundary"]},
-    {"id":"S1-IDH-2283","type":"identity_packet","text":"예측은 현재의 정보나 규칙을 바탕으로 미래의 상태나 사건을 추정하는 행위나 결과다. 예측은 실제 미래 사건과 동일하지 않다.","concepts":["예측","미래","정보","사건"],"relations":["process_or_result","inference","boundary"]},
-    {"id":"S1-IDH-2284","type":"identity_packet","text":"기대는 미래에 특정 사건이나 결과가 일어날 것이라고 보는 상태나 예상이다. 기대는 실제 발생을 보장하지 않는다.","concepts":["기대","예상","사건","결과"],"relations":["mental_state","temporal_concept","uncertainty"]},
-    {"id":"S1-IDH-2285","type":"identity_packet","text":"예고는 앞으로 일어날 사건이나 변화를 미리 알리는 행위나 정보다. 예고는 실제 사건 발생과 다른 선행 정보다.","concepts":["예고","사건","변화","정보"],"relations":["communication","temporal_relation","boundary"]},
-    {"id":"S1-IDH-2286","type":"identity_packet","text":"알림은 특정 사건이나 상태 변화를 사용자에게 알려 주는 정보 전달 행위다. 알림은 알림의 원인이 되는 사건 자체와 동일하지 않다.","concepts":["알림","사건","상태 변화","정보 전달"],"relations":["event","communication","boundary"]},
-    {"id":"S1-IDH-2287","type":"identity_packet","text":"기록은 이미 발생한 사건이나 상태를 나중에 확인할 수 있도록 정보로 남기는 행위나 결과물이다. 기록 행위와 기록물은 서로 다른 수준의 개념이다.","concepts":["기록","사건","상태","정보","기록물"],"relations":["process_or_artifact","representation","boundary"]},
-    {"id":"S1-IDH-2288","type":"identity_packet","text":"로그는 시스템이나 활동에서 발생한 사건과 상태 변화를 시간 순서로 남긴 기록의 집합이다. 로그는 사건 자체가 아니라 사건의 기록이다.","concepts":["로그","사건","상태 변화","기록"],"relations":["record","representation","temporal_order"]},
-    {"id":"S1-IDH-2289","type":"identity_packet","text":"이력은 대상이나 주체에 관해 과거에 발생했던 사건과 상태 변화를 시간 순으로 정리한 정보다. 이력은 과거 사건 자체가 아니라 그 기록이다.","concepts":["이력","과거 사건","상태 변화","정보"],"relations":["representation","temporal_sequence","boundary"]},
-    {"id":"S1-IDH-2290","type":"identity_packet","text":"경과는 일정한 시간 동안 사건이나 상태가 어떻게 진행되었는지를 나타내는 정보나 과정이다. 경과는 단일 사건보다 넓은 시간적 범위를 가질 수 있다.","concepts":["경과","시간","사건","상태"],"relations":["process_or_record","temporal_extent"]},
-    {"id":"S1-IDH-2291","type":"identity_packet","text":"지연 시간은 예정된 시점과 실제 발생 시점 사이의 차이를 나타내는 시간량이다. 지연 시간은 지연이라는 상태의 정량적 표현이다.","concepts":["지연 시간","예정 시점","실제 시점","시간량"],"relations":["measurement","temporal_attribute"]},
-    {"id":"S1-IDH-2292","type":"identity_packet","text":"반응 시간은 자극이나 사건이 발생한 뒤 특정 반응이 나타날 때까지 걸리는 시간이다. 반응 시간은 반응 자체가 아니라 반응까지의 시간적 길이이다.","concepts":["반응 시간","자극","반응","시간"],"relations":["measurement","temporal_attribute"]},
-    {"id":"S1-IDH-2293","type":"identity_packet","text":"대기 시간은 어떤 서비스나 사건이 시작되기를 기다리는 데 걸린 시간이다. 대기 시간은 대기라는 활동이나 상태와 구분되는 측정값이다.","concepts":["대기 시간","대기","서비스","시간"],"relations":["measurement","temporal_attribute"]},
-    {"id":"S1-IDH-2294","type":"identity_packet","text":"처리 시간은 특정 작업이나 과정이 시작되어 완료될 때까지 걸린 시간이다. 처리 시간은 작업 자체가 아니라 작업의 지속시간을 나타낸다.","concepts":["처리 시간","작업","과정","완료"],"relations":["measurement","temporal_attribute"]},
-    {"id":"S1-IDH-2295","type":"identity_packet","text":"소요 시간은 어떤 활동이나 과정에 실제로 사용된 시간을 나타내는 일반적인 측정 개념이다. 소요 시간은 활동 자체와 동일하지 않다.","concepts":["소요 시간","활동","과정","시간"],"relations":["measurement","temporal_attribute"]},
-    {"id":"S1-IDH-2296","type":"identity_packet","text":"시점은 사건이나 상태가 어느 특정 순간에 존재하는지를 나타내는 시간적 위치다. 시점은 사건 자체와 구분된다.","concepts":["시점","사건","상태","시간"],"relations":["temporal_location","boundary"]},
-    {"id":"S1-IDH-2297","type":"identity_packet","text":"기간은 시작과 끝 사이의 시간 범위를 나타내는 개념이다. 기간은 하나의 시점과 달리 지속적인 범위를 가진다.","concepts":["기간","시작","끝","시간 범위"],"relations":["temporal_extent","contrast"]},
-    {"id":"S1-IDH-2298","type":"identity_packet","text":"마감은 어떤 작업이나 제출, 행사 등이 완료되어야 하는 최종 시점이다. 마감은 작업 자체와 동일하지 않다.","concepts":["마감","작업","제출","최종 시점"],"relations":["temporal_boundary","deadline","boundary"]},
-    {"id":"S1-IDH-2299","type":"identity_packet","text":"기한은 특정 의무나 행동을 수행할 수 있거나 수행해야 하는 정해진 시간적 한계다. 기한은 한순간의 사건과 같은 개념은 아니다.","concepts":["기한","의무","행동","시간적 한계"],"relations":["temporal_condition","deadline"]},
-    {"id":"S1-IDH-2300","type":"identity_packet","text":"연기는 예정된 사건이나 활동의 시점을 뒤로 미루는 행위다. 연기와 취소는 모두 일정에 영향을 주지만 연기는 활동을 계속 예정할 수 있다는 점에서 다르다.","concepts":["연기","취소","일정","사건"],"relations":["state_change","temporal_relation","contrast"]},
-
-    {"id":"S1-IDH-2301","type":"identity_packet","text":"대체는 기존의 대상이나 방법을 다른 대상이나 방법으로 바꾸어 사용하는 과정이다. 대체와 삭제는 기존 대상의 역할을 없애는 방식에서 다르다.","concepts":["대체","대상","방법","변경"],"relations":["process","state_change","contrast"]},
-    {"id":"S1-IDH-2302","type":"identity_packet","text":"교체는 기존의 물건이나 구성요소를 새로운 것으로 바꾸는 행위다. 교체는 기존 대상의 기능적 위치를 유지하면서 물리적 대상을 바꾸는 경우가 많다.","concepts":["교체","물건","구성요소","변경"],"relations":["process","state_change"]},
-    {"id":"S1-IDH-2303","type":"identity_packet","text":"추가은 기존의 집합이나 구성에 새로운 항목을 더하는 과정이다. 추가는 전체 집합을 새롭게 만드는 것과 달리 기존 구성에 요소를 더한다.","concepts":["추가","집합","항목","구성"],"relations":["process","state_change","part_relation"]},
-    {"id":"S1-IDH-2304","type":"identity_packet","text":"제거는 기존의 집합이나 구조에서 특정 요소를 없애는 과정이다. 제거는 대상 전체를 파괴한다는 의미와 항상 같지 않다.","concepts":["제거","집합","요소","과정"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2305","type":"identity_packet","text":"증설은 기존 시설이나 시스템의 규모나 기능을 더 크게 만드는 과정이다. 증설은 기존 시설 전체의 교체와 구분된다.","concepts":["증설","시설","시스템","규모","기능"],"relations":["process","state_change","contrast"]},
-    {"id":"S1-IDH-2306","type":"identity_packet","text":"축소는 규모나 범위, 수량 등을 이전보다 작게 만드는 변화 과정이다. 축소는 소멸이나 완전한 제거와 동일하지 않다.","concepts":["축소","규모","범위","수량","변화"],"relations":["process","change_relation","boundary"]},
-    {"id":"S1-IDH-2307","type":"identity_packet","text":"확장은 기존의 기능이나 범위, 공간을 더 넓히는 변화 과정이다. 확장은 전체를 새로 만드는 것과 항상 같은 것은 아니다.","concepts":["확장","기능","범위","공간","변화"],"relations":["process","state_change"]},
-    {"id":"S1-IDH-2308","type":"identity_packet","text":"전환은 하나의 방식이나 상태, 체계에서 다른 방식이나 상태로 바꾸는 과정이다. 전환은 전환 이후의 상태 자체와 구분된다.","concepts":["전환","방식","상태","과정"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2309","type":"identity_packet","text":"변환은 어떤 대상의 형식이나 구조, 표현을 다른 형태로 바꾸는 과정이다. 변환은 변환 결과물과 같은 개념이 아니다.","concepts":["변환","형식","구조","표현","결과"],"relations":["process","transformation","boundary"]},
-    {"id":"S1-IDH-2310","type":"identity_packet","text":"가공은 원재료나 반제품의 형태나 성질을 바꾸어 원하는 결과를 만드는 처리 과정이다. 가공은 가공된 제품과 동일하지 않다.","concepts":["가공","원재료","반제품","제품","과정"],"relations":["process","transformation","result_distinction"]},
-    {"id":"S1-IDH-2311","type":"identity_packet","text":"조립은 여러 부품을 결합해 하나의 제품이나 구조를 만드는 과정이다. 조립과 조립된 결과물은 각각 과정과 산출물이라는 다른 개념이다.","concepts":["조립","부품","제품","구조"],"relations":["process","has_parts","result_distinction"]},
-    {"id":"S1-IDH-2312","type":"identity_packet","text":"분해는 하나의 물체나 구조를 여러 부분으로 나누는 과정이다. 분해 과정과 분해된 부품은 서로 다른 개념이다.","concepts":["분해","물체","구조","부품"],"relations":["process","state_change","result_distinction"]},
-    {"id":"S1-IDH-2313","type":"identity_packet","text":"정리은 흩어져 있는 물건이나 정보, 활동을 일정한 기준에 따라 배열하고 관리 가능한 상태로 만드는 과정이다. 정리는 정리된 결과와 구분된다.","concepts":["정리","물건","정보","기준","과정"],"relations":["process","state_change","result_distinction"]},
-    {"id":"S1-IDH-2314","type":"identity_packet","text":"분류는 여러 대상을 공통된 기준에 따라 여러 집단으로 나누는 과정이다. 분류와 분류 결과인 범주는 서로 다른 개념이다.","concepts":["분류","대상","기준","범주"],"relations":["process","classification","result_distinction"]},
-    {"id":"S1-IDH-2315","type":"identity_packet","text":"병합은 둘 이상의 집합이나 문서, 데이터 등을 하나의 단위로 합치는 과정이다. 병합은 합쳐진 결과물과 동일하지 않다.","concepts":["병합","집합","문서","데이터","과정"],"relations":["process","combination","result_distinction"]},
-    {"id":"S1-IDH-2316","type":"identity_packet","text":"분할은 하나의 대상이나 범위를 둘 이상의 부분으로 나누는 과정이다. 분할은 분할된 부분의 집합과 동일하지 않다.","concepts":["분할","대상","부분","범위"],"relations":["process","partition","result_distinction"]},
-    {"id":"S1-IDH-2317","type":"identity_packet","text":"동기화는 둘 이상의 시스템이나 정보의 상태를 서로 맞추어 일치시키는 과정이다. 동기화는 일치한 상태와 구분되는 처리 과정이다.","concepts":["동기화","시스템","정보","상태"],"relations":["process","state_alignment","boundary"]},
-    {"id":"S1-IDH-2318","type":"identity_packet","text":"복제는 기존의 데이터나 객체와 같은 내용을 새롭게 만들어 내는 과정이다. 복제본은 과정의 결과물이며 복제와 동일하지 않다.","concepts":["복제","데이터","객체","복제본"],"relations":["process","result_distinction"]},
-    {"id":"S1-IDH-2319","type":"identity_packet","text":"백업은 데이터를 별도의 위치에 복사해 나중에 복구할 수 있도록 보존하는 과정이다. 백업은 백업 데이터 자체와 동일하지 않다.","concepts":["백업","데이터","복구","보존"],"relations":["process","information_operation","result_distinction"]},
-    {"id":"S1-IDH-2320","type":"identity_packet","text":"복구는 손상되거나 손실된 데이터나 상태를 이전의 사용 가능한 상태로 되돌리는 과정이다. 복구와 복구된 결과 상태는 구분된다.","concepts":["복구","데이터","상태","과정"],"relations":["process","state_change","result_distinction"]},
-
-    {"id":"S1-IDH-2321","type":"identity_packet","text":"고장 발생은 장치나 시스템이 정상적인 기능을 수행하지 못하는 상태로 전환되는 사건이다. 고장 발생은 고장 상태와 관련되지만 발생이라는 사건 자체를 포함한다.","concepts":["고장 발생","장치","시스템","고장 상태"],"relations":["event","state_change","boundary"]},
-    {"id":"S1-IDH-2322","type":"identity_packet","text":"수리는 고장난 대상의 기능을 회복시키기 위한 작업 과정이다. 수리와 수리된 상태는 서로 다른 개념이다.","concepts":["수리","고장","기능 회복","과정"],"relations":["process","state_change"]},
-    {"id":"S1-IDH-2323","type":"identity_packet","text":"점검은 대상의 현재 상태를 확인하고 이상 여부를 찾는 과정이다. 점검은 문제를 고치는 수리와 목적에서 구분된다.","concepts":["점검","상태","이상 여부","수리"],"relations":["process","inspection","contrast"]},
-    {"id":"S1-IDH-2324","type":"identity_packet","text":"진단은 관찰이나 측정 결과를 바탕으로 현재 상태나 원인을 판단하는 과정이다. 진단은 검사 결과 그 자체와 동일하지 않다.","concepts":["진단","관찰","측정","원인","판단"],"relations":["process","inference","boundary"]},
-    {"id":"S1-IDH-2325","type":"identity_packet","text":"조치는 특정 문제나 상황에 대응하기 위해 취하는 행동이나 처리다. 조치는 문제 자체나 목표 상태와 동일하지 않다.","concepts":["조치","문제","상황","행동"],"relations":["event","response","boundary"]},
-    {"id":"S1-IDH-2326","type":"identity_packet","text":"처리는 입력된 대상이나 정보를 정해진 절차에 따라 변화시키는 작업이다. 처리는 처리 결과와 구분되는 과정이다.","concepts":["처리","입력","정보","결과","작업"],"relations":["process","transformation","result_distinction"]},
-    {"id":"S1-IDH-2327","type":"identity_packet","text":"승인은 요청이나 계획을 검토한 뒤 허용하는 결과다. 승인이라는 결과와 승인 절차는 각각 판단 결과와 그 이전의 과정으로 구분된다.","concepts":["승인","요청","계획","절차","결과"],"relations":["result","process_relation","boundary"]},
-    {"id":"S1-IDH-2328","type":"identity_packet","text":"거절은 요청을 받아들이지 않기로 한 결과나 결정이다. 거절은 요청 행위와 구분되며 특정 절차의 결과가 될 수 있다.","concepts":["거절","요청","결정","결과"],"relations":["result","decision","boundary"]},
-    {"id":"S1-IDH-2329","type":"identity_packet","text":"완료 통지는 어떤 작업이나 과정이 끝났음을 알리는 정보 전달 사건이다. 완료 통지와 실제 완료 상태는 같은 것이 아니다.","concepts":["완료 통지","완료","정보","사건"],"relations":["communication","result_distinction"]},
-    {"id":"S1-IDH-2330","type":"identity_packet","text":"변경 이력은 대상의 설정이나 내용이 언제 어떻게 바뀌었는지를 기록한 정보다. 변경 이력은 실제 변경 사건들의 기록이지 사건 자체가 아니다.","concepts":["변경 이력","변경","기록","사건"],"relations":["representation","temporal_sequence","boundary"]},
-    {"id":"S1-IDH-2331","type":"identity_packet","text":"버전 변경은 소프트웨어나 문서가 이전 버전에서 다른 버전으로 바뀌는 사건이다. 버전은 결과 상태를 나타내고 변경은 상태 변화 과정을 나타낸다.","concepts":["버전 변경","버전","소프트웨어","문서"],"relations":["state_change","result_distinction"]},
-    {"id":"S1-IDH-2332","type":"identity_packet","text":"업그레이드는 기존 시스템이나 제품을 더 높은 사양이나 기능을 가진 상태로 바꾸는 변화 과정이다. 업그레이드는 새로운 상태와 구분되는 과정이다.","concepts":["업그레이드","시스템","제품","사양","기능"],"relations":["process","state_change","improvement"]},
-    {"id":"S1-IDH-2333","type":"identity_packet","text":"다운그레이드는 시스템이나 제품을 더 낮은 사양이나 기능의 상태로 되돌리거나 바꾸는 변화 과정이다. 다운그레이드는 낮은 상태 자체와 동일하지 않다.","concepts":["다운그레이드","시스템","제품","사양","기능"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2334","type":"identity_packet","text":"전환 완료는 한 방식이나 상태에서 다른 방식이나 상태로 바꾸는 과정이 끝난 상태다. 전환 완료는 전환 과정과 구분된다.","concepts":["전환 완료","전환","상태","과정"],"relations":["state","process_outcome","boundary"]},
-    {"id":"S1-IDH-2335","type":"identity_packet","text":"적응은 새로운 환경이나 조건에 맞도록 대상의 행동이나 기능이 조정되는 과정이다. 적응은 적응된 상태나 환경 자체와 동일하지 않다.","concepts":["적응","환경","조건","행동","기능"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2336","type":"identity_packet","text":"조정은 여러 요소의 차이나 상태를 맞추어 원하는 수준이나 관계에 이르게 하는 과정이다. 조정은 조정된 최종 상태와 구분된다.","concepts":["조정","요소","상태","관계"],"relations":["process","state_alignment","boundary"]},
-    {"id":"S1-IDH-2337","type":"identity_packet","text":"균형 회복은 서로 달라진 힘이나 양, 상태를 다시 균형에 가까운 방향으로 변화시키는 과정이다. 균형 회복은 균형 상태 자체가 아니다.","concepts":["균형 회복","균형","상태","변화"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2338","type":"identity_packet","text":"안정화는 변동이 큰 상태를 줄이고 일정한 범위 안에 유지되도록 만드는 과정이다. 안정화와 안정된 최종 상태는 구분된다.","concepts":["안정화","변동","상태","과정"],"relations":["process","state_change","result_distinction"]},
-    {"id":"S1-IDH-2339","type":"identity_packet","text":"정상화는 비정상적이거나 달라진 상태를 기준이 되는 정상 상태에 가까워지도록 바꾸는 과정이다. 정상화는 정상 상태 자체와 다른 과정 개념이다.","concepts":["정상화","정상 상태","변화","과정"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2340","type":"identity_packet","text":"일상적 변화는 생활 속 대상과 활동, 환경의 상태가 시간에 따라 달라지는 현상을 넓게 묶은 개념이다. 일상적 변화는 특정한 한 사건이나 물건을 뜻하지 않는다.","concepts":["일상적 변화","생활","상태","시간","현상"],"relations":["supercategory","process","abstract_concept"]},
-
-    {"id":"S1-IDH-2341","type":"identity_packet","text":"예약 시간 변경은 이미 정해진 서비스 이용 시점을 다른 시점으로 바꾸는 행위다. 변경은 예약 자체의 존재와 구분된다.","concepts":["예약 시간 변경","예약","시간","행위"],"relations":["event","state_change","boundary"]},
-    {"id":"S1-IDH-2342","type":"identity_packet","text":"주소 변경은 기존 주소 정보를 새로운 주소 정보로 바꾸는 행위다. 주소 변경과 새로운 주소는 과정과 결과 정보라는 다른 개념이다.","concepts":["주소 변경","주소","정보","행위"],"relations":["process","state_change","representation"]},
-    {"id":"S1-IDH-2343","type":"identity_packet","text":"상태 업데이트는 시스템이나 기록에서 현재 상태 정보를 새로운 값으로 바꾸는 과정이다. 상태 업데이트는 업데이트된 값과 동일하지 않다.","concepts":["상태 업데이트","상태","정보","값"],"relations":["process","state_change","boundary"]},
-    {"id":"S1-IDH-2344","type":"identity_packet","text":"자동 저장은 작업 중인 정보를 일정한 조건이나 주기에 따라 자동으로 저장하는 과정이다. 자동 저장과 저장된 파일은 서로 다른 개념이다.","concepts":["자동 저장","정보","파일","과정"],"relations":["process","automation","result_distinction"]},
-    {"id":"S1-IDH-2345","type":"identity_packet","text":"자동 업데이트는 소프트웨어나 정보가 정해진 조건에 따라 사람의 추가 조작 없이 새로운 상태로 바뀌는 과정이다. 자동 업데이트는 최신 버전 그 자체가 아니다.","concepts":["자동 업데이트","소프트웨어","버전","과정"],"relations":["process","automation","state_change"]},
-    {"id":"S1-IDH-2346","type":"identity_packet","text":"알람 발생은 정해진 조건이나 시간이 되었을 때 알림 신호가 나타나는 사건이다. 알람 발생은 알람 장치나 알림음 그 자체와 구분된다.","concepts":["알람 발생","조건","시간","알림 신호"],"relations":["event","temporal_condition","boundary"]},
-    {"id":"S1-IDH-2347","type":"identity_packet","text":"점검 일정은 장치나 시설을 확인하기 위해 예정한 시간과 활동을 정리한 계획 정보다. 점검 일정과 실제 점검은 계획과 실행이라는 다른 수준의 개념이다.","concepts":["점검 일정","점검","시간","계획"],"relations":["planned_state","representation","boundary"]},
-    {"id":"S1-IDH-2348","type":"identity_packet","text":"운영 시간은 시설이나 서비스가 정상적으로 이용 가능하도록 운영되는 시간 범위다. 운영 시간과 실제 운영 활동은 시간 범위와 사건이라는 다른 개념이다.","concepts":["운영 시간","시설","서비스","시간 범위"],"relations":["temporal_attribute","scope","boundary"]},
-    {"id":"S1-IDH-2349","type":"identity_packet","text":"휴식은 활동을 잠시 멈추거나 줄여 몸이나 마음의 부담을 회복하는 시간적 활동이다. 휴식은 단순한 아무것도 하지 않는 상태와 항상 동일하지 않다.","concepts":["휴식","활동","회복","시간"],"relations":["activity","temporal_process","boundary"]},
-    {"id":"S1-IDH-2350","type":"identity_packet","text":"일과는 하루나 일정한 기간 동안 수행하도록 정해진 활동의 순서와 내용의 묶음이다. 일과는 개별 활동 하나와 동일하지 않고 여러 활동이 시간 순서로 구성된 구조다.","concepts":["일과","활동","순서","시간","구조"],"relations":["is_a","process_structure","has_parts"]}
+  "dataset_name": "Korean AI Curriculum — Stage 1 Identity High-Density Train v15",
+  "version": "1.0",
+  "range": "S1-IDH-2201~2350",
+  "theme": "시간·사건·과정·일상적 변화",
+  "purpose": "시간적 순서와 지속, 사건과 과정, 상태 변화와 일상적 변화를 대상·정체성·분류 관점에서 학습시키기 위한 수작업 고밀도 corpus",
+  "records": [
+    {
+      "id": "S1-IDH-2201",
+      "type": "identity_packet",
+      "text": "시작은 어떤 활동이나 사건이 처음 이루어지는 시점이나 상태를 가리키는 개념이다. 시작은 활동 자체와 동일한 대상이 아니라 시간적 경계다.",
+      "concepts": [
+        "시작",
+        "활동",
+        "사건",
+        "시점"
+      ],
+      "relations": [
+        "temporal_concept",
+        "boundary",
+        "not_entity"
+      ]
+    },
+    {
+      "id": "S1-IDH-2202",
+      "type": "identity_packet",
+      "text": "종료는 어떤 활동이나 사건이 더 이상 진행되지 않게 되는 시점이나 상태다. 종료는 활동 자체의 이름이 아니라 시간적 끝을 나타낸다.",
+      "concepts": [
+        "종료",
+        "활동",
+        "사건",
+        "상태"
+      ],
+      "relations": [
+        "temporal_concept",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-IDH-2203",
+      "type": "identity_packet",
+      "text": "발생은 사건이나 현상이 일어나기 시작하는 것을 가리킨다. 발생은 사건 자체와 관련되지만 사건의 이름과 같은 개념은 아니다.",
+      "concepts": [
+        "발생",
+        "사건",
+        "현상",
+        "시작"
+      ],
+      "relations": [
+        "event_relation",
+        "state_change"
+      ]
+    },
+    {
+      "id": "S1-IDH-2204",
+      "type": "identity_packet",
+      "text": "지속은 어떤 상태나 활동이 일정한 시간 동안 계속되는 성질이나 과정을 뜻한다. 지속은 활동이나 상태 자체가 아니라 시간적 특성이다.",
+      "concepts": [
+        "지속",
+        "상태",
+        "활동",
+        "시간"
+      ],
+      "relations": [
+        "temporal_attribute",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-IDH-2205",
+      "type": "identity_packet",
+      "text": "지속시간은 사건이나 활동이 시작된 뒤 종료될 때까지 걸린 시간의 양이다. 지속시간은 사건 자체가 아니라 사건의 시간적 길이를 나타내는 값이다.",
+      "concepts": [
+        "지속시간",
+        "사건",
+        "시간",
+        "길이"
+      ],
+      "relations": [
+        "measurement",
+        "temporal_attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-2206",
+      "type": "identity_packet",
+      "text": "순서는 여러 사건이나 활동이 어떤 앞뒤 관계를 가지는지를 나타내는 구조다. 순서는 사건 하나와 동일하지 않고 사건들 사이의 관계다.",
+      "concepts": [
+        "순서",
+        "사건",
+        "활동",
+        "앞뒤 관계"
+      ],
+      "relations": [
+        "relation",
+        "temporal_structure"
+      ]
+    },
+    {
+      "id": "S1-IDH-2207",
+      "type": "identity_packet",
+      "text": "선행은 한 사건이나 과정이 다른 사건이나 과정보다 먼저 일어나는 관계다. 선행은 특정 사건 자체의 속성이 아니라 사건 사이의 시간 관계다.",
+      "concepts": [
+        "선행",
+        "사건",
+        "과정",
+        "시간 관계"
+      ],
+      "relations": [
+        "temporal_relation",
+        "relation"
+      ]
+    },
+    {
+      "id": "S1-IDH-2208",
+      "type": "identity_packet",
+      "text": "후행은 한 사건이나 과정이 다른 사건이나 과정보다 나중에 일어나는 관계다. 후행과 사건 자체를 동일시해서는 안 된다.",
+      "concepts": [
+        "후행",
+        "사건",
+        "과정",
+        "시간 관계"
+      ],
+      "relations": [
+        "temporal_relation",
+        "relation"
+      ]
+    },
+    {
+      "id": "S1-IDH-2209",
+      "type": "identity_packet",
+      "text": "동시는 둘 이상의 사건이 같은 시간에 일어나는 관계를 가리킨다. 동시는 사건이나 시간 자체가 아니라 사건들 사이의 관계다.",
+      "concepts": [
+        "동시",
+        "사건",
+        "시간",
+        "관계"
+      ],
+      "relations": [
+        "temporal_relation",
+        "relation"
+      ]
+    },
+    {
+      "id": "S1-IDH-2210",
+      "type": "identity_packet",
+      "text": "지연은 예정되거나 기대된 시점보다 사건이나 활동의 진행이 늦어지는 상태 또는 과정이다. 지연은 지연된 사건 자체가 아니다.",
+      "concepts": [
+        "지연",
+        "사건",
+        "활동",
+        "예정 시점"
+      ],
+      "relations": [
+        "state_change",
+        "temporal_attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2211",
+      "type": "identity_packet",
+      "text": "진행은 사건이나 활동이 시작된 뒤 아직 끝나지 않은 상태를 가리킨다. 진행은 활동 자체와 관련되지만 활동의 시간적 상태를 나타낸다.",
+      "concepts": [
+        "진행",
+        "활동",
+        "상태",
+        "시간"
+      ],
+      "relations": [
+        "state",
+        "temporal_status",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2212",
+      "type": "identity_packet",
+      "text": "완료는 필요한 과정이 끝나 목적한 상태에 도달한 것을 가리키는 상태다. 완료는 과정 자체와 동일하지 않다.",
+      "concepts": [
+        "완료",
+        "과정",
+        "상태",
+        "목표"
+      ],
+      "relations": [
+        "state",
+        "process_outcome",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2213",
+      "type": "identity_packet",
+      "text": "재개는 중단되었던 활동이나 과정이 다시 시작되는 사건이다. 재개는 원래 활동 전체와 동일하지 않고 다시 시작되는 상태 변화다.",
+      "concepts": [
+        "재개",
+        "중단",
+        "활동",
+        "상태 변화"
+      ],
+      "relations": [
+        "state_change",
+        "event"
+      ]
+    },
+    {
+      "id": "S1-IDH-2214",
+      "type": "identity_packet",
+      "text": "중단은 진행되던 활동이나 과정이 일시적으로 또는 영구적으로 멈추는 사건이나 상태다. 중단은 활동의 부재와 완전히 같은 개념은 아니다.",
+      "concepts": [
+        "중단",
+        "활동",
+        "과정",
+        "상태"
+      ],
+      "relations": [
+        "state_change",
+        "event",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2215",
+      "type": "identity_packet",
+      "text": "반복은 같은 유형의 활동이나 사건이 여러 번 다시 일어나는 구조다. 반복은 한 번의 사건과 구분되는 과정적 특성이다.",
+      "concepts": [
+        "반복",
+        "사건",
+        "활동",
+        "과정"
+      ],
+      "relations": [
+        "process_pattern",
+        "temporal_attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-2216",
+      "type": "identity_packet",
+      "text": "주기는 비슷한 사건이나 상태 변화가 일정한 간격으로 반복되는 시간적 패턴이다. 주기는 반복되는 사건 자체가 아니라 반복의 시간 구조다.",
+      "concepts": [
+        "주기",
+        "반복",
+        "시간 간격",
+        "패턴"
+      ],
+      "relations": [
+        "temporal_pattern",
+        "measurement_relation"
+      ]
+    },
+    {
+      "id": "S1-IDH-2217",
+      "type": "identity_packet",
+      "text": "주기성은 어떤 현상이 일정하거나 비교적 일정한 간격으로 되풀이되는 성질이다. 주기성과 주기라는 실제 시간 간격은 서로 다른 개념이다.",
+      "concepts": [
+        "주기성",
+        "현상",
+        "반복",
+        "시간 간격"
+      ],
+      "relations": [
+        "attribute",
+        "temporal_pattern",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2218",
+      "type": "identity_packet",
+      "text": "단계는 복잡한 과정에서 특정 역할이나 순서를 가진 하나의 부분이다. 단계는 과정 전체와 동일하지 않다.",
+      "concepts": [
+        "단계",
+        "과정",
+        "순서",
+        "부분"
+      ],
+      "relations": [
+        "part_of",
+        "process_structure",
+        "hierarchy"
+      ]
+    },
+    {
+      "id": "S1-IDH-2219",
+      "type": "identity_packet",
+      "text": "절차는 어떤 목표를 달성하기 위해 정해진 순서로 수행하는 여러 단계의 집합이다. 절차는 한 단계의 행동보다 넓은 과정 개념이다.",
+      "concepts": [
+        "절차",
+        "단계",
+        "순서",
+        "목표"
+      ],
+      "relations": [
+        "is_a",
+        "process",
+        "has_parts"
+      ]
+    },
+    {
+      "id": "S1-IDH-2220",
+      "type": "identity_packet",
+      "text": "과정은 어떤 상태가 다른 상태로 바뀌거나 어떤 결과에 이르는 동안 진행되는 연속적인 변화다. 과정은 결과나 시작 시점 하나와 동일하지 않다.",
+      "concepts": [
+        "과정",
+        "상태 변화",
+        "결과",
+        "연속성"
+      ],
+      "relations": [
+        "is_a",
+        "process",
+        "state_change"
+      ]
+    },
+    {
+      "id": "S1-IDH-2221",
+      "type": "identity_packet",
+      "text": "변화는 대상의 상태나 성질, 위치 등이 시간에 따라 달라지는 것을 가리키는 넓은 개념이다. 변화는 특정 결과 하나와 동일하지 않다.",
+      "concepts": [
+        "변화",
+        "상태",
+        "성질",
+        "시간"
+      ],
+      "relations": [
+        "abstract_concept",
+        "process",
+        "supercategory"
+      ]
+    },
+    {
+      "id": "S1-IDH-2222",
+      "type": "identity_packet",
+      "text": "상태 변화는 대상이 한 상태에서 다른 상태로 전환되는 과정이다. 상태 변화는 대상 자체의 이름이 아니라 시간에 따른 변화 관계다.",
+      "concepts": [
+        "상태 변화",
+        "상태",
+        "전환",
+        "시간"
+      ],
+      "relations": [
+        "is_a",
+        "process",
+        "relation"
+      ]
+    },
+    {
+      "id": "S1-IDH-2223",
+      "type": "identity_packet",
+      "text": "증가는 어떤 양이나 수준이 이전보다 커지는 변화다. 증가는 값 자체가 아니라 두 시점 사이의 변화 방향을 나타낸다.",
+      "concepts": [
+        "증가",
+        "양",
+        "수준",
+        "변화 방향"
+      ],
+      "relations": [
+        "change_relation",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-IDH-2224",
+      "type": "identity_packet",
+      "text": "감소는 어떤 양이나 수준이 이전보다 작아지는 변화다. 감소는 작은 값이라는 정적 상태와 구분되는 시간적 변화 개념이다.",
+      "concepts": [
+        "감소",
+        "양",
+        "수준",
+        "변화"
+      ],
+      "relations": [
+        "change_relation",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-IDH-2225",
+      "type": "identity_packet",
+      "text": "증가율은 어떤 양이 기준 시점에 비해 얼마나 증가했는지를 비율로 나타낸 값이다. 증가율은 증가라는 변화와 달리 정량적 측정값이다.",
+      "concepts": [
+        "증가율",
+        "증가",
+        "비율",
+        "측정값"
+      ],
+      "relations": [
+        "measurement",
+        "change_attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-2226",
+      "type": "identity_packet",
+      "text": "감소율은 기준값에 비해 양이 얼마나 감소했는지를 비율로 나타낸 값이다. 감소율은 감소 과정 자체와 동일하지 않다.",
+      "concepts": [
+        "감소율",
+        "감소",
+        "비율",
+        "측정값"
+      ],
+      "relations": [
+        "measurement",
+        "change_attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-2227",
+      "type": "identity_packet",
+      "text": "유지는 일정 기간 동안 어떤 상태나 수준이 크게 달라지지 않도록 계속되는 상태다. 유지는 변화가 전혀 존재한다는 뜻이 아니라 기준 상태가 계속되는 것을 뜻한다.",
+      "concepts": [
+        "유지",
+        "상태",
+        "수준",
+        "변화"
+      ],
+      "relations": [
+        "state",
+        "temporal_status",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2228",
+      "type": "identity_packet",
+      "text": "회복은 손상되거나 감소한 기능이나 상태가 이전의 더 나은 상태를 향해 돌아가는 변화 과정이다. 회복은 반드시 원래 상태와 완전히 동일해졌다는 뜻은 아니다.",
+      "concepts": [
+        "회복",
+        "기능",
+        "상태",
+        "변화"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2229",
+      "type": "identity_packet",
+      "text": "악화는 어떤 상태나 성질이 이전보다 나빠지는 방향으로 변하는 과정이다. 악화는 나쁜 상태 자체와 동일하지 않고 상태의 변화 방향을 나타낸다.",
+      "concepts": [
+        "악화",
+        "상태",
+        "변화 방향",
+        "과정"
+      ],
+      "relations": [
+        "change_relation",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2230",
+      "type": "identity_packet",
+      "text": "개선은 어떤 상태나 성능이 더 나은 방향으로 변화하는 과정이다. 개선은 개선된 결과와 구분되는 변화 과정이다.",
+      "concepts": [
+        "개선",
+        "상태",
+        "성능",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "change_relation",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2231",
+      "type": "identity_packet",
+      "text": "성장은 크기나 기능, 능력 등이 시간에 따라 증가하는 변화 과정이다. 성장은 성장한 결과물과 동일하지 않다.",
+      "concepts": [
+        "성장",
+        "크기",
+        "기능",
+        "능력",
+        "시간"
+      ],
+      "relations": [
+        "process",
+        "change_relation"
+      ]
+    },
+    {
+      "id": "S1-IDH-2232",
+      "type": "identity_packet",
+      "text": "발달은 생물이나 시스템의 구조와 기능이 시간에 따라 변화하며 성숙해지는 과정이다. 발달은 성숙이라는 최종 상태만을 뜻하지 않는다.",
+      "concepts": [
+        "발달",
+        "성숙",
+        "구조",
+        "기능",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2233",
+      "type": "identity_packet",
+      "text": "노화는 시간이 지나면서 생물이나 재료의 구조와 기능이 변화하는 자연스러운 과정이다. 노화는 특정 질병과 동일하지 않다.",
+      "concepts": [
+        "노화",
+        "시간",
+        "생물",
+        "재료",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "natural_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2234",
+      "type": "identity_packet",
+      "text": "숙성은 시간이 지나면서 음식이나 재료의 성질이 원하는 방향으로 변화하는 과정이다. 숙성은 단순한 보관과 같은 개념이 아니다.",
+      "concepts": [
+        "숙성",
+        "음식",
+        "재료",
+        "보관",
+        "변화"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-IDH-2235",
+      "type": "identity_packet",
+      "text": "부패는 생물성 물질이 미생물 등의 작용으로 분해되어 원하지 않는 방향으로 변화하는 과정이다. 부패는 단순히 오래된 상태와 같은 뜻이 아니다.",
+      "concepts": [
+        "부패",
+        "분해",
+        "미생물",
+        "변화"
+      ],
+      "relations": [
+        "process",
+        "natural_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2236",
+      "type": "identity_packet",
+      "text": "건조는 물질이나 재료에서 수분이 줄어들도록 하는 변화 과정이다. 건조는 건조된 결과 상태와 동일하지 않다.",
+      "concepts": [
+        "건조",
+        "수분",
+        "재료",
+        "변화"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2237",
+      "type": "identity_packet",
+      "text": "냉각은 물체나 공간의 열에너지가 줄어들어 온도가 낮아지는 과정이다. 냉각은 차가운 상태 자체와 구분된다.",
+      "concepts": [
+        "냉각",
+        "열에너지",
+        "온도",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2238",
+      "type": "identity_packet",
+      "text": "가열은 물체나 공간에 에너지가 전달되어 온도가 높아지는 과정이다. 가열은 뜨거운 상태와 같은 의미가 아니다.",
+      "concepts": [
+        "가열",
+        "에너지",
+        "온도",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2239",
+      "type": "identity_packet",
+      "text": "충전은 배터리나 저장 장치에 에너지가 저장되도록 전기 에너지를 공급하는 과정이다. 충전은 배터리의 충전된 상태와 구분된다.",
+      "concepts": [
+        "충전",
+        "배터리",
+        "에너지",
+        "과정",
+        "상태"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2240",
+      "type": "identity_packet",
+      "text": "방전은 저장되어 있던 에너지가 외부 회로 등에 공급되면서 저장량이 감소하는 과정이다. 방전은 배터리 자체와 동일하지 않다.",
+      "concepts": [
+        "방전",
+        "배터리",
+        "에너지",
+        "저장량",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change"
+      ]
+    },
+    {
+      "id": "S1-IDH-2241",
+      "type": "identity_packet",
+      "text": "사용은 물건이나 서비스를 목적에 맞게 이용하는 활동이다. 사용은 사용자라는 사람이나 사용 대상과 다른 행위 개념이다.",
+      "concepts": [
+        "사용",
+        "물건",
+        "서비스",
+        "활동"
+      ],
+      "relations": [
+        "event",
+        "activity",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2242",
+      "type": "identity_packet",
+      "text": "소비는 자원이나 상품을 사용하여 그 양이나 가치가 줄어드는 행위 또는 과정을 뜻한다. 소비는 상품 자체와 동일하지 않다.",
+      "concepts": [
+        "소비",
+        "상품",
+        "자원",
+        "사용"
+      ],
+      "relations": [
+        "process",
+        "event",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2243",
+      "type": "identity_packet",
+      "text": "생산은 원재료나 자원을 이용해 새로운 제품이나 가치를 만들어 내는 과정이다. 생산은 생산된 제품과 동일하지 않다.",
+      "concepts": [
+        "생산",
+        "원재료",
+        "제품",
+        "가치",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2244",
+      "type": "identity_packet",
+      "text": "이동은 물체나 사람이 한 위치에서 다른 위치로 바뀌는 과정이다. 이동은 이동한 위치나 이동 수단과 같은 대상이 아니다.",
+      "concepts": [
+        "이동",
+        "위치",
+        "사람",
+        "물체",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2245",
+      "type": "identity_packet",
+      "text": "도착은 이동하는 대상이 목적지에 이르는 사건이나 상태다. 도착은 목적지라는 장소와 동일하지 않다.",
+      "concepts": [
+        "도착",
+        "이동",
+        "목적지",
+        "사건"
+      ],
+      "relations": [
+        "event",
+        "temporal_boundary",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2246",
+      "type": "identity_packet",
+      "text": "출발은 이동이나 활동이 시작되어 출발 지점에서 벗어나기 시작하는 사건이다. 출발은 출발지라는 장소와 동일하지 않다.",
+      "concepts": [
+        "출발",
+        "이동",
+        "출발지",
+        "사건"
+      ],
+      "relations": [
+        "event",
+        "temporal_boundary",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2247",
+      "type": "identity_packet",
+      "text": "대기는 원하는 사건이 일어날 때까지 활동을 하지 않거나 준비된 상태로 시간을 보내는 과정이다. 대기는 기다리는 대상이나 장소와 동일하지 않다.",
+      "concepts": [
+        "대기",
+        "사건",
+        "시간",
+        "상태"
+      ],
+      "relations": [
+        "process",
+        "temporal_status"
+      ]
+    },
+    {
+      "id": "S1-IDH-2248",
+      "type": "identity_packet",
+      "text": "예약은 미래의 특정 시간에 서비스나 자원을 이용할 수 있도록 미리 확보하는 행위다. 예약은 예약된 시간이나 서비스 자체와 동일하지 않다.",
+      "concepts": [
+        "예약",
+        "미래",
+        "시간",
+        "서비스",
+        "자원"
+      ],
+      "relations": [
+        "event",
+        "planning",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2249",
+      "type": "identity_packet",
+      "text": "취소는 예정되거나 합의된 활동이나 거래를 진행하지 않기로 하는 행위다. 취소는 원래의 활동 자체가 아니다.",
+      "concepts": [
+        "취소",
+        "활동",
+        "거래",
+        "행위"
+      ],
+      "relations": [
+        "event",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2250",
+      "type": "identity_packet",
+      "text": "변경은 기존의 계획이나 설정, 내용, 상태를 다른 것으로 바꾸는 행위 또는 과정이다. 변경은 변경 대상 자체와 동일하지 않다.",
+      "concepts": [
+        "변경",
+        "계획",
+        "설정",
+        "상태",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2251",
+      "type": "identity_packet",
+      "text": "업데이트는 시스템이나 정보의 내용을 새로운 버전이나 최신 상태로 바꾸는 과정이다. 업데이트와 업데이트된 결과는 서로 다른 개념이다.",
+      "concepts": [
+        "업데이트",
+        "시스템",
+        "정보",
+        "버전"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2252",
+      "type": "identity_packet",
+      "text": "설정 변경은 장치나 프로그램의 작동 조건이나 값을 다른 조건으로 바꾸는 행위다. 설정 변경은 새로운 설정값 자체가 아니라 변경 과정이다.",
+      "concepts": [
+        "설정 변경",
+        "장치",
+        "프로그램",
+        "설정값"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2253",
+      "type": "identity_packet",
+      "text": "재시작은 작동을 멈춘 시스템이나 프로그램을 다시 시작하는 사건이다. 재시작은 시스템 전체와 같은 대상이 아니다.",
+      "concepts": [
+        "재시작",
+        "시스템",
+        "프로그램",
+        "시작"
+      ],
+      "relations": [
+        "event",
+        "state_change"
+      ]
+    },
+    {
+      "id": "S1-IDH-2254",
+      "type": "identity_packet",
+      "text": "종료는 프로그램이나 시스템의 작동이 끝나는 사건이나 상태다. 종료는 시스템 자체의 소멸을 반드시 의미하지 않는다.",
+      "concepts": [
+        "종료",
+        "프로그램",
+        "시스템",
+        "상태"
+      ],
+      "relations": [
+        "event",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2255",
+      "type": "identity_packet",
+      "text": "설치는 제품이나 소프트웨어를 사용할 수 있는 상태로 만들기 위해 연결하고 배치하는 과정이다. 설치는 설치된 제품이나 프로그램과 동일하지 않다.",
+      "concepts": [
+        "설치",
+        "제품",
+        "소프트웨어",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2256",
+      "type": "identity_packet",
+      "text": "삭제는 파일이나 정보, 프로그램 등을 시스템에서 제거하는 행위다. 삭제는 삭제된 대상과 동일한 개념이 아니다.",
+      "concepts": [
+        "삭제",
+        "파일",
+        "정보",
+        "프로그램"
+      ],
+      "relations": [
+        "event",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2257",
+      "type": "identity_packet",
+      "text": "저장은 데이터를 나중에 사용할 수 있도록 기록 매체에 보존하는 과정이다. 저장은 데이터 자체나 저장 장치와 동일하지 않다.",
+      "concepts": [
+        "저장",
+        "데이터",
+        "기록 매체",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "information_operation",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2258",
+      "type": "identity_packet",
+      "text": "불러오기는 저장된 데이터나 문서를 현재 작업 환경으로 가져오는 과정이다. 불러오기와 불러온 데이터는 각각 행위와 대상이라는 다른 개념이다.",
+      "concepts": [
+        "불러오기",
+        "데이터",
+        "문서",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "information_operation",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2259",
+      "type": "identity_packet",
+      "text": "전송은 데이터나 물리적 물체를 한 위치나 시스템에서 다른 위치나 시스템으로 보내는 과정이다. 전송은 전송 대상과 동일하지 않다.",
+      "concepts": [
+        "전송",
+        "데이터",
+        "물체",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "movement",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2260",
+      "type": "identity_packet",
+      "text": "수신은 보내진 물체나 정보를 목적지에서 받아들이는 사건이나 과정이다. 수신은 수신된 정보나 물건 자체와 구분된다.",
+      "concepts": [
+        "수신",
+        "정보",
+        "물건",
+        "사건"
+      ],
+      "relations": [
+        "event",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2261",
+      "type": "identity_packet",
+      "text": "발급은 증명서, 카드, 문서, 자격 등의 정식 대상을 만들어 특정 주체에게 제공하는 행위다. 발급은 발급된 문서나 카드 자체와 다르다.",
+      "concepts": [
+        "발급",
+        "문서",
+        "카드",
+        "행위"
+      ],
+      "relations": [
+        "process",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2262",
+      "type": "identity_packet",
+      "text": "갱신은 기존의 자격이나 문서, 설정 등을 계속 사용할 수 있도록 기간이나 내용을 새롭게 하는 과정이다. 갱신은 갱신된 결과와 구분된다.",
+      "concepts": [
+        "갱신",
+        "기간",
+        "문서",
+        "자격"
+      ],
+      "relations": [
+        "process",
+        "state_change"
+      ]
+    },
+    {
+      "id": "S1-IDH-2263",
+      "type": "identity_packet",
+      "text": "만료는 문서나 권리, 기간 등이 정해진 시점에 이르러 더 이상 기존 효력을 유지하지 못하는 상태다. 만료는 문서 자체의 소멸과 동일하지 않다.",
+      "concepts": [
+        "만료",
+        "기간",
+        "권리",
+        "효력",
+        "상태"
+      ],
+      "relations": [
+        "state",
+        "temporal_status",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2264",
+      "type": "identity_packet",
+      "text": "효력 발생은 어떤 법률행위나 결정이 정해진 조건에서 법적 효과를 가지기 시작하는 시점이나 사건이다. 효력 발생은 문서 작성과 반드시 같은 시점은 아니다.",
+      "concepts": [
+        "효력 발생",
+        "법률행위",
+        "결정",
+        "시점"
+      ],
+      "relations": [
+        "temporal_event",
+        "legal_concept",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2265",
+      "type": "identity_packet",
+      "text": "효력 종료는 권리나 계약, 결정 등이 더 이상 법적 효과를 발생시키지 않게 되는 시점이나 상태다. 효력 종료와 대상의 물리적 소멸은 다른 개념이다.",
+      "concepts": [
+        "효력 종료",
+        "권리",
+        "계약",
+        "상태"
+      ],
+      "relations": [
+        "temporal_status",
+        "legal_concept",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2266",
+      "type": "identity_packet",
+      "text": "제출은 문서나 자료를 정해진 기관이나 사람에게 공식적으로 전달하는 행위다. 제출은 제출된 자료와 다른 과정 개념이다.",
+      "concepts": [
+        "제출",
+        "문서",
+        "자료",
+        "행위"
+      ],
+      "relations": [
+        "process",
+        "administrative_action",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2267",
+      "type": "identity_packet",
+      "text": "접수는 제출된 신청이나 문서를 받아 공식적으로 처리 대상으로 기록하는 행위다. 접수는 신청 내용이나 접수증과 동일하지 않다.",
+      "concepts": [
+        "접수",
+        "신청",
+        "문서",
+        "접수증"
+      ],
+      "relations": [
+        "process",
+        "administrative_action",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2268",
+      "type": "identity_packet",
+      "text": "심사는 제출된 자료나 신청의 조건과 내용을 검토하는 과정이다. 심사는 심사 결과와 구분되는 절차적 과정이다.",
+      "concepts": [
+        "심사",
+        "신청",
+        "자료",
+        "결과"
+      ],
+      "relations": [
+        "process",
+        "evaluation",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2269",
+      "type": "identity_packet",
+      "text": "승인은 신청이나 계획 등을 검토한 뒤 진행을 허용하는 결정이다. 승인은 승인서라는 문서나 신청 행위와 다른 법적·행정적 결과다.",
+      "concepts": [
+        "승인",
+        "신청",
+        "결정",
+        "승인서"
+      ],
+      "relations": [
+        "event_or_result",
+        "administrative_action",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2270",
+      "type": "identity_packet",
+      "text": "거절은 신청이나 요청을 받아들이지 않기로 결정하는 행위나 결과다. 거절과 요청 자체는 서로 다른 단계의 개념이다.",
+      "concepts": [
+        "거절",
+        "요청",
+        "결정",
+        "결과"
+      ],
+      "relations": [
+        "event_or_result",
+        "decision",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2271",
+      "type": "identity_packet",
+      "text": "승낙은 제안이나 요청을 받아들이겠다는 결정이나 의사표시다. 승낙은 제안이나 최종 계약과 동일하지 않을 수 있다.",
+      "concepts": [
+        "승낙",
+        "제안",
+        "계약",
+        "의사표시"
+      ],
+      "relations": [
+        "event",
+        "legal_concept",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2272",
+      "type": "identity_packet",
+      "text": "협상은 서로 다른 요구나 조건을 조정해 합의점을 찾는 과정이다. 협상은 합의 결과와 동일하지 않으며 합의에 이르지 못할 수도 있다.",
+      "concepts": [
+        "협상",
+        "요구",
+        "조건",
+        "합의"
+      ],
+      "relations": [
+        "process",
+        "communication",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2273",
+      "type": "identity_packet",
+      "text": "합의는 둘 이상의 주체가 어떤 조건이나 내용에 대해 의견을 일치시키는 상태나 결과다. 합의는 협상이라는 과정과 구분된다.",
+      "concepts": [
+        "합의",
+        "주체",
+        "조건",
+        "협상"
+      ],
+      "relations": [
+        "state_or_result",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2274",
+      "type": "identity_packet",
+      "text": "결정은 여러 가능성 가운데 하나를 선택해 행동 방향이나 상태를 정하는 행위 또는 결과다. 결정은 결정된 내용과 동일한 개념이 아니다.",
+      "concepts": [
+        "결정",
+        "선택",
+        "행동 방향",
+        "결과"
+      ],
+      "relations": [
+        "event_or_result",
+        "abstract_concept"
+      ]
+    },
+    {
+      "id": "S1-IDH-2275",
+      "type": "identity_packet",
+      "text": "선택은 여러 가능성 가운데 하나 이상을 고르는 행위다. 선택은 선택된 대상 자체와 구분되는 의사결정 과정이다.",
+      "concepts": [
+        "선택",
+        "가능성",
+        "행위",
+        "대상"
+      ],
+      "relations": [
+        "process",
+        "decision",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2276",
+      "type": "identity_packet",
+      "text": "시행은 정해진 규칙이나 계획, 제도를 실제로 적용하기 시작하는 행위다. 시행은 계획이나 규칙 자체가 아니라 실제 적용 과정이다.",
+      "concepts": [
+        "시행",
+        "규칙",
+        "계획",
+        "적용"
+      ],
+      "relations": [
+        "process",
+        "implementation",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2277",
+      "type": "identity_packet",
+      "text": "중지는 진행 중인 활동이나 제도의 실행을 멈추는 행위나 상태다. 중지는 원래 활동의 종료와 항상 같은 범위를 가지는 것은 아니다.",
+      "concepts": [
+        "중지",
+        "활동",
+        "제도",
+        "상태"
+      ],
+      "relations": [
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2278",
+      "type": "identity_packet",
+      "text": "재개는 중단된 활동이나 운영이 다시 시작되는 사건이다. 재개는 이전 활동과 연속성을 가지지만 새로운 상태 변화로 볼 수 있다.",
+      "concepts": [
+        "재개",
+        "중단",
+        "운영",
+        "사건"
+      ],
+      "relations": [
+        "event",
+        "state_change",
+        "continuation"
+      ]
+    },
+    {
+      "id": "S1-IDH-2279",
+      "type": "identity_packet",
+      "text": "완료율은 전체 과정이나 작업 가운데 완료된 부분의 비율을 나타내는 측정값이다. 완료율은 완료라는 상태 자체가 아니다.",
+      "concepts": [
+        "완료율",
+        "과정",
+        "작업",
+        "비율"
+      ],
+      "relations": [
+        "measurement",
+        "process_attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-2280",
+      "type": "identity_packet",
+      "text": "진행률은 전체 작업이나 과정 가운데 현재까지 진행된 정도를 비율로 나타내는 값이다. 진행률은 진행이라는 상태와 구분되는 측정값이다.",
+      "concepts": [
+        "진행률",
+        "작업",
+        "과정",
+        "비율"
+      ],
+      "relations": [
+        "measurement",
+        "process_attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-2281",
+      "type": "identity_packet",
+      "text": "예정은 어떤 사건이나 활동이 미래의 특정 시점에 일어나도록 계획된 상태다. 예정은 실제 사건이 발생했다는 뜻이 아니다.",
+      "concepts": [
+        "예정",
+        "사건",
+        "활동",
+        "미래"
+      ],
+      "relations": [
+        "planned_state",
+        "temporal_status",
+        "not_actual_event"
+      ]
+    },
+    {
+      "id": "S1-IDH-2282",
+      "type": "identity_packet",
+      "text": "계획은 미래에 수행할 활동과 순서, 자원 등을 미리 정리한 정보나 과정이다. 계획과 실제 실행은 서로 다른 개념이다.",
+      "concepts": [
+        "계획",
+        "활동",
+        "순서",
+        "자원",
+        "실행"
+      ],
+      "relations": [
+        "abstract_plan",
+        "representation",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2283",
+      "type": "identity_packet",
+      "text": "예측은 현재의 정보나 규칙을 바탕으로 미래의 상태나 사건을 추정하는 행위나 결과다. 예측은 실제 미래 사건과 동일하지 않다.",
+      "concepts": [
+        "예측",
+        "미래",
+        "정보",
+        "사건"
+      ],
+      "relations": [
+        "process_or_result",
+        "inference",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2284",
+      "type": "identity_packet",
+      "text": "기대는 미래에 특정 사건이나 결과가 일어날 것이라고 보는 상태나 예상이다. 기대는 실제 발생을 보장하지 않는다.",
+      "concepts": [
+        "기대",
+        "예상",
+        "사건",
+        "결과"
+      ],
+      "relations": [
+        "mental_state",
+        "temporal_concept",
+        "uncertainty"
+      ]
+    },
+    {
+      "id": "S1-IDH-2285",
+      "type": "identity_packet",
+      "text": "예고는 앞으로 일어날 사건이나 변화를 미리 알리는 행위나 정보다. 예고는 실제 사건 발생과 다른 선행 정보다.",
+      "concepts": [
+        "예고",
+        "사건",
+        "변화",
+        "정보"
+      ],
+      "relations": [
+        "communication",
+        "temporal_relation",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2286",
+      "type": "identity_packet",
+      "text": "알림은 특정 사건이나 상태 변화를 사용자에게 알려 주는 정보 전달 행위다. 알림은 알림의 원인이 되는 사건 자체와 동일하지 않다.",
+      "concepts": [
+        "알림",
+        "사건",
+        "상태 변화",
+        "정보 전달"
+      ],
+      "relations": [
+        "event",
+        "communication",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2287",
+      "type": "identity_packet",
+      "text": "기록은 이미 발생한 사건이나 상태를 나중에 확인할 수 있도록 정보로 남기는 행위나 결과물이다. 기록 행위와 기록물은 서로 다른 수준의 개념이다.",
+      "concepts": [
+        "기록",
+        "사건",
+        "상태",
+        "정보",
+        "기록물"
+      ],
+      "relations": [
+        "process_or_artifact",
+        "representation",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2288",
+      "type": "identity_packet",
+      "text": "로그는 시스템이나 활동에서 발생한 사건과 상태 변화를 시간 순서로 남긴 기록의 집합이다. 로그는 사건 자체가 아니라 사건의 기록이다.",
+      "concepts": [
+        "로그",
+        "사건",
+        "상태 변화",
+        "기록"
+      ],
+      "relations": [
+        "record",
+        "representation",
+        "temporal_order"
+      ]
+    },
+    {
+      "id": "S1-IDH-2289",
+      "type": "identity_packet",
+      "text": "이력은 대상이나 주체에 관해 과거에 발생했던 사건과 상태 변화를 시간 순으로 정리한 정보다. 이력은 과거 사건 자체가 아니라 그 기록이다.",
+      "concepts": [
+        "이력",
+        "과거 사건",
+        "상태 변화",
+        "정보"
+      ],
+      "relations": [
+        "representation",
+        "temporal_sequence",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2290",
+      "type": "identity_packet",
+      "text": "경과는 일정한 시간 동안 사건이나 상태가 어떻게 진행되었는지를 나타내는 정보나 과정이다. 경과는 단일 사건보다 넓은 시간적 범위를 가질 수 있다.",
+      "concepts": [
+        "경과",
+        "시간",
+        "사건",
+        "상태"
+      ],
+      "relations": [
+        "process_or_record",
+        "temporal_extent"
+      ]
+    },
+    {
+      "id": "S1-IDH-2291",
+      "type": "identity_packet",
+      "text": "지연 시간은 예정된 시점과 실제 발생 시점 사이의 차이를 나타내는 시간량이다. 지연 시간은 지연이라는 상태의 정량적 표현이다.",
+      "concepts": [
+        "지연 시간",
+        "예정 시점",
+        "실제 시점",
+        "시간량"
+      ],
+      "relations": [
+        "measurement",
+        "temporal_attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-2292",
+      "type": "identity_packet",
+      "text": "반응 시간은 자극이나 사건이 발생한 뒤 특정 반응이 나타날 때까지 걸리는 시간이다. 반응 시간은 반응 자체가 아니라 반응까지의 시간적 길이이다.",
+      "concepts": [
+        "반응 시간",
+        "자극",
+        "반응",
+        "시간"
+      ],
+      "relations": [
+        "measurement",
+        "temporal_attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-2293",
+      "type": "identity_packet",
+      "text": "대기 시간은 어떤 서비스나 사건이 시작되기를 기다리는 데 걸린 시간이다. 대기 시간은 대기라는 활동이나 상태와 구분되는 측정값이다.",
+      "concepts": [
+        "대기 시간",
+        "대기",
+        "서비스",
+        "시간"
+      ],
+      "relations": [
+        "measurement",
+        "temporal_attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-2294",
+      "type": "identity_packet",
+      "text": "처리 시간은 특정 작업이나 과정이 시작되어 완료될 때까지 걸린 시간이다. 처리 시간은 작업 자체가 아니라 작업의 지속시간을 나타낸다.",
+      "concepts": [
+        "처리 시간",
+        "작업",
+        "과정",
+        "완료"
+      ],
+      "relations": [
+        "measurement",
+        "temporal_attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-2295",
+      "type": "identity_packet",
+      "text": "소요 시간은 어떤 활동이나 과정에 실제로 사용된 시간을 나타내는 일반적인 측정 개념이다. 소요 시간은 활동 자체와 동일하지 않다.",
+      "concepts": [
+        "소요 시간",
+        "활동",
+        "과정",
+        "시간"
+      ],
+      "relations": [
+        "measurement",
+        "temporal_attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-2296",
+      "type": "identity_packet",
+      "text": "시점은 사건이나 상태가 어느 특정 순간에 존재하는지를 나타내는 시간적 위치다. 시점은 사건 자체와 구분된다.",
+      "concepts": [
+        "시점",
+        "사건",
+        "상태",
+        "시간"
+      ],
+      "relations": [
+        "temporal_location",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2297",
+      "type": "identity_packet",
+      "text": "기간은 시작과 끝 사이의 시간 범위를 나타내는 개념이다. 기간은 하나의 시점과 달리 지속적인 범위를 가진다.",
+      "concepts": [
+        "기간",
+        "시작",
+        "끝",
+        "시간 범위"
+      ],
+      "relations": [
+        "temporal_extent",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-IDH-2298",
+      "type": "identity_packet",
+      "text": "마감은 어떤 작업이나 제출, 행사 등이 완료되어야 하는 최종 시점이다. 마감은 작업 자체와 동일하지 않다.",
+      "concepts": [
+        "마감",
+        "작업",
+        "제출",
+        "최종 시점"
+      ],
+      "relations": [
+        "temporal_boundary",
+        "deadline",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2299",
+      "type": "identity_packet",
+      "text": "기한은 특정 의무나 행동을 수행할 수 있거나 수행해야 하는 정해진 시간적 한계다. 기한은 한순간의 사건과 같은 개념은 아니다.",
+      "concepts": [
+        "기한",
+        "의무",
+        "행동",
+        "시간적 한계"
+      ],
+      "relations": [
+        "temporal_condition",
+        "deadline"
+      ]
+    },
+    {
+      "id": "S1-IDH-2300",
+      "type": "identity_packet",
+      "text": "연기는 예정된 사건이나 활동의 시점을 뒤로 미루는 행위다. 연기와 취소는 모두 일정에 영향을 주지만 연기는 활동을 계속 예정할 수 있다는 점에서 다르다.",
+      "concepts": [
+        "연기",
+        "취소",
+        "일정",
+        "사건"
+      ],
+      "relations": [
+        "state_change",
+        "temporal_relation",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-IDH-2301",
+      "type": "identity_packet",
+      "text": "대체는 기존의 대상이나 방법을 다른 대상이나 방법으로 바꾸어 사용하는 과정이다. 대체와 삭제는 기존 대상의 역할을 없애는 방식에서 다르다.",
+      "concepts": [
+        "대체",
+        "대상",
+        "방법",
+        "변경"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-IDH-2302",
+      "type": "identity_packet",
+      "text": "교체는 기존의 물건이나 구성요소를 새로운 것으로 바꾸는 행위다. 교체는 기존 대상의 기능적 위치를 유지하면서 물리적 대상을 바꾸는 경우가 많다.",
+      "concepts": [
+        "교체",
+        "물건",
+        "구성요소",
+        "변경"
+      ],
+      "relations": [
+        "process",
+        "state_change"
+      ]
+    },
+    {
+      "id": "S1-IDH-2303",
+      "type": "identity_packet",
+      "text": "추가는 기존의 집합이나 구성에 새로운 항목을 더하는 과정이다. 추가는 전체 집합을 새롭게 만드는 것과 달리 기존 구성에 요소를 더한다.",
+      "concepts": [
+        "추가",
+        "집합",
+        "항목",
+        "구성"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "part_relation"
+      ]
+    },
+    {
+      "id": "S1-IDH-2304",
+      "type": "identity_packet",
+      "text": "제거는 기존의 집합이나 구조에서 특정 요소를 없애는 과정이다. 제거는 대상 전체를 파괴한다는 의미와 항상 같지 않다.",
+      "concepts": [
+        "제거",
+        "집합",
+        "요소",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2305",
+      "type": "identity_packet",
+      "text": "증설은 기존 시설이나 시스템의 규모나 기능을 더 크게 만드는 과정이다. 증설은 기존 시설 전체의 교체와 구분된다.",
+      "concepts": [
+        "증설",
+        "시설",
+        "시스템",
+        "규모",
+        "기능"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-IDH-2306",
+      "type": "identity_packet",
+      "text": "축소는 규모나 범위, 수량 등을 이전보다 작게 만드는 변화 과정이다. 축소는 소멸이나 완전한 제거와 동일하지 않다.",
+      "concepts": [
+        "축소",
+        "규모",
+        "범위",
+        "수량",
+        "변화"
+      ],
+      "relations": [
+        "process",
+        "change_relation",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2307",
+      "type": "identity_packet",
+      "text": "확장은 기존의 기능이나 범위, 공간을 더 넓히는 변화 과정이다. 확장은 전체를 새로 만드는 것과 항상 같은 것은 아니다.",
+      "concepts": [
+        "확장",
+        "기능",
+        "범위",
+        "공간",
+        "변화"
+      ],
+      "relations": [
+        "process",
+        "state_change"
+      ]
+    },
+    {
+      "id": "S1-IDH-2308",
+      "type": "identity_packet",
+      "text": "전환은 하나의 방식이나 상태, 체계에서 다른 방식이나 상태로 바꾸는 과정이다. 전환은 전환 이후의 상태 자체와 구분된다.",
+      "concepts": [
+        "전환",
+        "방식",
+        "상태",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2309",
+      "type": "identity_packet",
+      "text": "변환은 어떤 대상의 형식이나 구조, 표현을 다른 형태로 바꾸는 과정이다. 변환은 변환 결과물과 같은 개념이 아니다.",
+      "concepts": [
+        "변환",
+        "형식",
+        "구조",
+        "표현",
+        "결과"
+      ],
+      "relations": [
+        "process",
+        "transformation",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2310",
+      "type": "identity_packet",
+      "text": "가공은 원재료나 반제품의 형태나 성질을 바꾸어 원하는 결과를 만드는 처리 과정이다. 가공은 가공된 제품과 동일하지 않다.",
+      "concepts": [
+        "가공",
+        "원재료",
+        "반제품",
+        "제품",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "transformation",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2311",
+      "type": "identity_packet",
+      "text": "조립은 여러 부품을 결합해 하나의 제품이나 구조를 만드는 과정이다. 조립과 조립된 결과물은 각각 과정과 산출물이라는 다른 개념이다.",
+      "concepts": [
+        "조립",
+        "부품",
+        "제품",
+        "구조"
+      ],
+      "relations": [
+        "process",
+        "has_parts",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2312",
+      "type": "identity_packet",
+      "text": "분해는 하나의 물체나 구조를 여러 부분으로 나누는 과정이다. 분해 과정과 분해된 부품은 서로 다른 개념이다.",
+      "concepts": [
+        "분해",
+        "물체",
+        "구조",
+        "부품"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2313",
+      "type": "identity_packet",
+      "text": "정리는 흩어져 있는 물건이나 정보, 활동을 일정한 기준에 따라 배열하고 관리 가능한 상태로 만드는 과정이다. 정리는 정리된 결과와 구분된다.",
+      "concepts": [
+        "정리",
+        "물건",
+        "정보",
+        "기준",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2314",
+      "type": "identity_packet",
+      "text": "분류는 여러 대상을 공통된 기준에 따라 여러 집단으로 나누는 과정이다. 분류와 분류 결과인 범주는 서로 다른 개념이다.",
+      "concepts": [
+        "분류",
+        "대상",
+        "기준",
+        "범주"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2315",
+      "type": "identity_packet",
+      "text": "병합은 둘 이상의 집합이나 문서, 데이터 등을 하나의 단위로 합치는 과정이다. 병합은 합쳐진 결과물과 동일하지 않다.",
+      "concepts": [
+        "병합",
+        "집합",
+        "문서",
+        "데이터",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "combination",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2316",
+      "type": "identity_packet",
+      "text": "분할은 하나의 대상이나 범위를 둘 이상의 부분으로 나누는 과정이다. 분할은 분할된 부분의 집합과 동일하지 않다.",
+      "concepts": [
+        "분할",
+        "대상",
+        "부분",
+        "범위"
+      ],
+      "relations": [
+        "process",
+        "partition",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2317",
+      "type": "identity_packet",
+      "text": "동기화는 둘 이상의 시스템이나 정보의 상태를 서로 맞추어 일치시키는 과정이다. 동기화는 일치한 상태와 구분되는 처리 과정이다.",
+      "concepts": [
+        "동기화",
+        "시스템",
+        "정보",
+        "상태"
+      ],
+      "relations": [
+        "process",
+        "state_alignment",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2318",
+      "type": "identity_packet",
+      "text": "복제는 기존의 데이터나 객체와 같은 내용을 새롭게 만들어 내는 과정이다. 복제본은 과정의 결과물이며 복제와 동일하지 않다.",
+      "concepts": [
+        "복제",
+        "데이터",
+        "객체",
+        "복제본"
+      ],
+      "relations": [
+        "process",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2319",
+      "type": "identity_packet",
+      "text": "백업은 데이터를 별도의 위치에 복사해 나중에 복구할 수 있도록 보존하는 과정이다. 백업은 백업 데이터 자체와 동일하지 않다.",
+      "concepts": [
+        "백업",
+        "데이터",
+        "복구",
+        "보존"
+      ],
+      "relations": [
+        "process",
+        "information_operation",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2320",
+      "type": "identity_packet",
+      "text": "복구는 손상되거나 손실된 데이터나 상태를 이전의 사용 가능한 상태로 되돌리는 과정이다. 복구와 복구된 결과 상태는 구분된다.",
+      "concepts": [
+        "복구",
+        "데이터",
+        "상태",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2321",
+      "type": "identity_packet",
+      "text": "고장 발생은 장치나 시스템이 정상적인 기능을 수행하지 못하는 상태로 전환되는 사건이다. 고장 발생은 고장 상태와 관련되지만 발생이라는 사건 자체를 포함한다.",
+      "concepts": [
+        "고장 발생",
+        "장치",
+        "시스템",
+        "고장 상태"
+      ],
+      "relations": [
+        "event",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2322",
+      "type": "identity_packet",
+      "text": "수리는 고장난 대상의 기능을 회복시키기 위한 작업 과정이다. 수리와 수리된 상태는 서로 다른 개념이다.",
+      "concepts": [
+        "수리",
+        "고장",
+        "기능 회복",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change"
+      ]
+    },
+    {
+      "id": "S1-IDH-2323",
+      "type": "identity_packet",
+      "text": "점검은 대상의 현재 상태를 확인하고 이상 여부를 찾는 과정이다. 점검은 문제를 고치는 수리와 목적에서 구분된다.",
+      "concepts": [
+        "점검",
+        "상태",
+        "이상 여부",
+        "수리"
+      ],
+      "relations": [
+        "process",
+        "inspection",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-IDH-2324",
+      "type": "identity_packet",
+      "text": "진단은 관찰이나 측정 결과를 바탕으로 현재 상태나 원인을 판단하는 과정이다. 진단은 검사 결과 그 자체와 동일하지 않다.",
+      "concepts": [
+        "진단",
+        "관찰",
+        "측정",
+        "원인",
+        "판단"
+      ],
+      "relations": [
+        "process",
+        "inference",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2325",
+      "type": "identity_packet",
+      "text": "조치는 특정 문제나 상황에 대응하기 위해 취하는 행동이나 처리다. 조치는 문제 자체나 목표 상태와 동일하지 않다.",
+      "concepts": [
+        "조치",
+        "문제",
+        "상황",
+        "행동"
+      ],
+      "relations": [
+        "event",
+        "response",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2326",
+      "type": "identity_packet",
+      "text": "처리는 입력된 대상이나 정보를 정해진 절차에 따라 변화시키는 작업이다. 처리는 처리 결과와 구분되는 과정이다.",
+      "concepts": [
+        "처리",
+        "입력",
+        "정보",
+        "결과",
+        "작업"
+      ],
+      "relations": [
+        "process",
+        "transformation",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2327",
+      "type": "identity_packet",
+      "text": "승인은 요청이나 계획을 검토한 뒤 허용하는 결과다. 승인이라는 결과와 승인 절차는 각각 판단 결과와 그 이전의 과정으로 구분된다.",
+      "concepts": [
+        "승인",
+        "요청",
+        "계획",
+        "절차",
+        "결과"
+      ],
+      "relations": [
+        "result",
+        "process_relation",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2328",
+      "type": "identity_packet",
+      "text": "거절은 요청을 받아들이지 않기로 한 결과나 결정이다. 거절은 요청 행위와 구분되며 특정 절차의 결과가 될 수 있다.",
+      "concepts": [
+        "거절",
+        "요청",
+        "결정",
+        "결과"
+      ],
+      "relations": [
+        "result",
+        "decision",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2329",
+      "type": "identity_packet",
+      "text": "완료 통지는 어떤 작업이나 과정이 끝났음을 알리는 정보 전달 사건이다. 완료 통지와 실제 완료 상태는 같은 것이 아니다.",
+      "concepts": [
+        "완료 통지",
+        "완료",
+        "정보",
+        "사건"
+      ],
+      "relations": [
+        "communication",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2330",
+      "type": "identity_packet",
+      "text": "변경 이력은 대상의 설정이나 내용이 언제 어떻게 바뀌었는지를 기록한 정보다. 변경 이력은 실제 변경 사건들의 기록이지 사건 자체가 아니다.",
+      "concepts": [
+        "변경 이력",
+        "변경",
+        "기록",
+        "사건"
+      ],
+      "relations": [
+        "representation",
+        "temporal_sequence",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2331",
+      "type": "identity_packet",
+      "text": "버전 변경은 소프트웨어나 문서가 이전 버전에서 다른 버전으로 바뀌는 사건이다. 버전은 결과 상태를 나타내고 변경은 상태 변화 과정을 나타낸다.",
+      "concepts": [
+        "버전 변경",
+        "버전",
+        "소프트웨어",
+        "문서"
+      ],
+      "relations": [
+        "state_change",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2332",
+      "type": "identity_packet",
+      "text": "업그레이드는 기존 시스템이나 제품을 더 높은 사양이나 기능을 가진 상태로 바꾸는 변화 과정이다. 업그레이드는 새로운 상태와 구분되는 과정이다.",
+      "concepts": [
+        "업그레이드",
+        "시스템",
+        "제품",
+        "사양",
+        "기능"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "improvement"
+      ]
+    },
+    {
+      "id": "S1-IDH-2333",
+      "type": "identity_packet",
+      "text": "다운그레이드는 시스템이나 제품을 더 낮은 사양이나 기능의 상태로 되돌리거나 바꾸는 변화 과정이다. 다운그레이드는 낮은 상태 자체와 동일하지 않다.",
+      "concepts": [
+        "다운그레이드",
+        "시스템",
+        "제품",
+        "사양",
+        "기능"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2334",
+      "type": "identity_packet",
+      "text": "전환 완료는 한 방식이나 상태에서 다른 방식이나 상태로 바꾸는 과정이 끝난 상태다. 전환 완료는 전환 과정과 구분된다.",
+      "concepts": [
+        "전환 완료",
+        "전환",
+        "상태",
+        "과정"
+      ],
+      "relations": [
+        "state",
+        "process_outcome",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2335",
+      "type": "identity_packet",
+      "text": "적응은 새로운 환경이나 조건에 맞도록 대상의 행동이나 기능이 조정되는 과정이다. 적응은 적응된 상태나 환경 자체와 동일하지 않다.",
+      "concepts": [
+        "적응",
+        "환경",
+        "조건",
+        "행동",
+        "기능"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2336",
+      "type": "identity_packet",
+      "text": "조정은 여러 요소의 차이나 상태를 맞추어 원하는 수준이나 관계에 이르게 하는 과정이다. 조정은 조정된 최종 상태와 구분된다.",
+      "concepts": [
+        "조정",
+        "요소",
+        "상태",
+        "관계"
+      ],
+      "relations": [
+        "process",
+        "state_alignment",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2337",
+      "type": "identity_packet",
+      "text": "균형 회복은 서로 달라진 힘이나 양, 상태를 다시 균형에 가까운 방향으로 변화시키는 과정이다. 균형 회복은 균형 상태 자체가 아니다.",
+      "concepts": [
+        "균형 회복",
+        "균형",
+        "상태",
+        "변화"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2338",
+      "type": "identity_packet",
+      "text": "안정화는 변동이 큰 상태를 줄이고 일정한 범위 안에 유지되도록 만드는 과정이다. 안정화와 안정된 최종 상태는 구분된다.",
+      "concepts": [
+        "안정화",
+        "변동",
+        "상태",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2339",
+      "type": "identity_packet",
+      "text": "정상화는 비정상적이거나 달라진 상태를 기준이 되는 정상 상태에 가까워지도록 바꾸는 과정이다. 정상화는 정상 상태 자체와 다른 과정 개념이다.",
+      "concepts": [
+        "정상화",
+        "정상 상태",
+        "변화",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2340",
+      "type": "identity_packet",
+      "text": "일상적 변화는 생활 속 대상과 활동, 환경의 상태가 시간에 따라 달라지는 현상을 넓게 묶은 개념이다. 일상적 변화는 특정한 한 사건이나 물건을 뜻하지 않는다.",
+      "concepts": [
+        "일상적 변화",
+        "생활",
+        "상태",
+        "시간",
+        "현상"
+      ],
+      "relations": [
+        "supercategory",
+        "process",
+        "abstract_concept"
+      ]
+    },
+    {
+      "id": "S1-IDH-2341",
+      "type": "identity_packet",
+      "text": "예약 시간 변경은 이미 정해진 서비스 이용 시점을 다른 시점으로 바꾸는 행위다. 변경은 예약 자체의 존재와 구분된다.",
+      "concepts": [
+        "예약 시간 변경",
+        "예약",
+        "시간",
+        "행위"
+      ],
+      "relations": [
+        "event",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2342",
+      "type": "identity_packet",
+      "text": "주소 변경은 기존 주소 정보를 새로운 주소 정보로 바꾸는 행위다. 주소 변경과 새로운 주소는 과정과 결과 정보라는 다른 개념이다.",
+      "concepts": [
+        "주소 변경",
+        "주소",
+        "정보",
+        "행위"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "representation"
+      ]
+    },
+    {
+      "id": "S1-IDH-2343",
+      "type": "identity_packet",
+      "text": "상태 업데이트는 시스템이나 기록에서 현재 상태 정보를 새로운 값으로 바꾸는 과정이다. 상태 업데이트는 업데이트된 값과 동일하지 않다.",
+      "concepts": [
+        "상태 업데이트",
+        "상태",
+        "정보",
+        "값"
+      ],
+      "relations": [
+        "process",
+        "state_change",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2344",
+      "type": "identity_packet",
+      "text": "자동 저장은 작업 중인 정보를 일정한 조건이나 주기에 따라 자동으로 저장하는 과정이다. 자동 저장과 저장된 파일은 서로 다른 개념이다.",
+      "concepts": [
+        "자동 저장",
+        "정보",
+        "파일",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "automation",
+        "result_distinction"
+      ]
+    },
+    {
+      "id": "S1-IDH-2345",
+      "type": "identity_packet",
+      "text": "자동 업데이트는 소프트웨어나 정보가 정해진 조건에 따라 사람의 추가 조작 없이 새로운 상태로 바뀌는 과정이다. 자동 업데이트는 최신 버전 그 자체가 아니다.",
+      "concepts": [
+        "자동 업데이트",
+        "소프트웨어",
+        "버전",
+        "과정"
+      ],
+      "relations": [
+        "process",
+        "automation",
+        "state_change"
+      ]
+    },
+    {
+      "id": "S1-IDH-2346",
+      "type": "identity_packet",
+      "text": "알람 발생은 정해진 조건이나 시간이 되었을 때 알림 신호가 나타나는 사건이다. 알람 발생은 알람 장치나 알림음 그 자체와 구분된다.",
+      "concepts": [
+        "알람 발생",
+        "조건",
+        "시간",
+        "알림 신호"
+      ],
+      "relations": [
+        "event",
+        "temporal_condition",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2347",
+      "type": "identity_packet",
+      "text": "점검 일정은 장치나 시설을 확인하기 위해 예정한 시간과 활동을 정리한 계획 정보다. 점검 일정과 실제 점검은 계획과 실행이라는 다른 수준의 개념이다.",
+      "concepts": [
+        "점검 일정",
+        "점검",
+        "시간",
+        "계획"
+      ],
+      "relations": [
+        "planned_state",
+        "representation",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2348",
+      "type": "identity_packet",
+      "text": "운영 시간은 시설이나 서비스가 정상적으로 이용 가능하도록 운영되는 시간 범위다. 운영 시간과 실제 운영 활동은 시간 범위와 사건이라는 다른 개념이다.",
+      "concepts": [
+        "운영 시간",
+        "시설",
+        "서비스",
+        "시간 범위"
+      ],
+      "relations": [
+        "temporal_attribute",
+        "scope",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2349",
+      "type": "identity_packet",
+      "text": "휴식은 활동을 잠시 멈추거나 줄여 몸이나 마음의 부담을 회복하는 시간적 활동이다. 휴식은 단순한 아무것도 하지 않는 상태와 항상 동일하지 않다.",
+      "concepts": [
+        "휴식",
+        "활동",
+        "회복",
+        "시간"
+      ],
+      "relations": [
+        "activity",
+        "temporal_process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-2350",
+      "type": "identity_packet",
+      "text": "일과는 하루나 일정한 기간 동안 수행하도록 정해진 활동의 순서와 내용의 묶음이다. 일과는 개별 활동 하나와 동일하지 않고 여러 활동이 시간 순서로 구성된 구조다.",
+      "concepts": [
+        "일과",
+        "활동",
+        "순서",
+        "시간",
+        "구조"
+      ],
+      "relations": [
+        "is_a",
+        "process_structure",
+        "has_parts"
+      ]
+    }
   ]
 }

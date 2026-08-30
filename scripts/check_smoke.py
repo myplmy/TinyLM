@@ -178,6 +178,9 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     #   *"배치는 쓰는데 스모크가 한 번도 안 켠 축"* 으로 잡았다. 둘 다 KD 경로이고
     #   tiny/synthetic 에서 돈다(외부 HF 가중치가 필요한 두 축과 다르다).
     "sm_kdchunk": {"kd": True, "kd_chunk": 256, "teacher_dtype": "bf16", "kd_every": 4},
+    # ★2026-08-30 (P044B) — FiLM 은 KD 조건에서 기각됐고 REVIEW2 가 KD 를 뺐다.
+    #   그 축을 다시 여는데 **스모크가 한 번도 안 켰다**(함정 37).
+    "sm_film": {"mlp_film": True, "init_from": True, "mlp_group": 4},
 }
 
 

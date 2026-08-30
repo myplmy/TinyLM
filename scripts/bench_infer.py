@@ -88,12 +88,44 @@ class _CpuWatch:
         self.n_cpu = (self.ps.cpu_count() if self.ps else None)            # 논리
         self.n_phys = (self.ps.cpu_count(logical=False) if self.ps else None)
         self.busy_cores = 0.0        # 마지막 창에서 50% 넘게 쓴 논리코어 수
+        self.base = None             # ★추론 전 배경 부하(기준값). baseline() 이 채운다
 
     def start(self):
         if not self.ps:
             return
         self.ps.cpu_percent(None, percpu=True)               # 기준점 리셋
         self.proc.cpu_percent(None)
+
+    def baseline(self, seconds=10.0, slice_s=1.0):
+        """★**추론 전 배경 부하**를 `seconds` 초 동안 잰다 — 기준값을 만드는 것이 목적이다.
+
+        왜 필요한가(2026-08-30 사용자 지시): `ext` 는 **우리 프로세스를 뺀** 값이지만
+        *"뺀 뒤에 남은 10~15% 가 진짜 배경인가, 아니면 뺄셈이 못 잡은 우리 몫인가"* 를
+        **`ext` 만 보고는 구분할 수 없다.** 추론이 **하나도 안 도는 동안** 같은 눈금으로
+        재 두면 그 물음이 뺄셈이 아니라 **대조**로 답해진다.
+
+        🚫**이 값은 런을 막지 않는다.** 표에 기준선으로 인쇄될 뿐이다.
+        ⚠️**우리 프로세스는 이미 떠 있다**(모델 로드 전이라도 파이썬·torch import 는 끝났다) —
+        그래서 이것은 *"완전히 빈 기계"* 가 아니라 **"이 벤치가 추론을 안 돌 때의 기계"** 다.
+        비교 대상이 바로 그것이므로 이 정의가 맞다.
+        """
+        if not self.ps or seconds <= 0:
+            return None
+        import time as _t
+        exts, syss, busys = [], [], []
+        n = max(1, int(round(seconds / slice_s)))
+        self.start()
+        for _ in range(n):
+            _t.sleep(slice_s)
+            s, sf, e = self.stop()
+            if e is None:
+                return None
+            exts.append(e); syss.append(s); busys.append(self.busy_cores)
+            self.start()
+        self.base = {"ext_mean": statistics.fmean(exts), "ext_max": max(exts),
+                     "ext_min": min(exts), "sys_mean": statistics.fmean(syss),
+                     "busy_max": max(busys), "n_win": len(exts), "seconds": seconds}
+        return self.base
 
     def stop(self):
         """(시스템%, 우리%, 외부%) — 전부 **시스템 전체 기준 %(0~100)**."""
@@ -195,6 +227,9 @@ def main():
     ap.add_argument("--check-cache", action="store_true",
                     help="먼저 캐시 유/무 그리디 출력 일치를 검증한다(불일치면 중단)")
     ap.add_argument("--reps", type=int, default=3, help="반복(중위값). Windows 는 노이즈가 크다")
+    ap.add_argument("--cpu-baseline", type=float, default=10.0,
+                    help="★추론 전 배경 CPU 부하를 이 초만큼 먼저 잰다(기준값). 0=끔. "
+                         "--cpu-watch 가 켜져 있을 때만 동작한다")
     ap.add_argument("--cpu-watch", action="store_true",
                     help="★측정 창의 시스템/자기 CPU 사용률을 함께 기록한다(psutil 필요)")
     ap.add_argument("--cpu-ext-limit", type=float, default=None,
@@ -249,6 +284,19 @@ def main():
                   f"재측정 {a.cpu_ext_retry}회 — 🚫**한계를 넘어도 런을 막지 않는다**(표시만).")
             print("    ★**코어 고정(affinity)을 하지 않는다** — OS 스케줄러가 배정하는 대로 둔다. "
                   "`busy` 열은 그 창에서 50% 넘게 쓴 논리코어 수다.")
+            # ★★기준값 — 추론이 하나도 안 도는 동안의 같은 눈금(2026-08-30 사용자 지시)
+            if a.cpu_baseline and a.cpu_baseline > 0:
+                print(f"    ★배경 부하 측정 중 — {a.cpu_baseline:.0f}초(추론 없음)...", flush=True)
+                _b = _watch.baseline(a.cpu_baseline)
+                if _b:
+                    print(f"    ★★**기준값(배경 부하)**  ext {_b['ext_mean']:.1f}% "
+                          f"(최소 {_b['ext_min']:.1f} / 최대 {_b['ext_max']:.1f}) · "
+                          f"sys {_b['sys_mean']:.1f}% · busy 최대 {_b['busy_max']:.0f} "
+                          f"· 창 {_b['n_win']}개")
+                    print("      ★읽는 법: 아래 행의 `ext` 를 **이 값과 비교**한다. "
+                          "비슷하면 그 행의 부하는 **배경**이고, 크게 높으면 "
+                          "**우리 런이 유발했으나 프로세스에 안 잡힌 몫**(커널·페이지폴트·할당자)이다.")
+                    print("      🚫**이 값은 런을 막지 않는다.** 판정의 근거가 아니라 **읽는 눈금**이다.")
     print(f"  캐시 모드={['on' if m else 'off' for m in modes]}   (off = 결과 014 조건)")
     print("=" * 92)
     print("  ★MB 는 하드코딩이 아니라 로드한 모델에서 계산한다(회계 = 안 B, 2026-07-31 통일).")
@@ -306,8 +354,13 @@ def main():
                         continue
                     _cs = ""
                     if _ci:
+                        # ★배경 기준값이 있으면 그 차이를 함께 인쇄한다(2026-08-30)
+                        _bs = ""
+                        if _watch is not None and getattr(_watch, "base", None):
+                            _bs = f"  dbase {_ci['ext_mean'] - _watch.base['ext_mean']:>+5.1f}"
                         _cs = (f"  ext {_ci['ext_mean']:>4.1f}/{_ci['ext_max']:>4.1f}%"
                                f"  sys {_ci['sys_mean']:>4.1f}%  busy {_ci['busy_max']:>2.0f}"
+                               + _bs
                                + ("  ⚠️한계초과" if _ci.get("dirty") else ""))
                         if _ci.get("dirty"):
                             dirty_rows += 1
@@ -322,6 +375,12 @@ def main():
     if _watch is not None and _watch.ps is not None:
         print("  ★`ext` = 외부 부하 평균/최대(시스템 전체 %) · `sys` = 창 전체 평균 · "
               "`busy` = 50% 넘게 쓴 논리코어 수")
+        if getattr(_watch, "base", None):
+            print(f"  ★★`dbase` = `ext` - 배경 기준값({_watch.base['ext_mean']:.1f}%). "
+                  "**0 근처면 그 행의 부하는 배경**이고, 크게 양수면 "
+                  "**우리 런이 유발했으나 프로세스에 안 잡힌 몫**이다.")
+            print("     🚫`dbase` 가 커도 런은 유효하다 — 다만 그 행의 `ext` 를 "
+                  "*'남이 방해했다'* 로 읽으면 안 된다는 뜻이다.")
         if dirty_rows:
             print(f"  ⚠️★**한계 초과 {dirty_rows}행** — 🚫**이것은 '무효' 표시가 아니라 '조건 기록'이다.**")
             print("     **같은 표 안의 행끼리 ext 가 비슷하면 비교는 여전히 유효**하고, "

@@ -25,45 +25,35 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# ★후보 직렬화 — 같은 대화를 네 가지로 쓴다. **내용은 동일**하다.
+# ★★2026-08-30 — 직렬화 정의를 **`tinylm.chat` 하나로** 옮겼다(R14: one concept, one definition).
+#   종전에는 이 파일이 자기만의 `build()` 를 갖고 있었고, `tinylm/chat/serialize.py` 가
+#   생기면서 **같은 규약이 두 곳에 정의**됐다 — 그것이 정확히 함정 18 이다.
 SYS = "너는 도움이 되는 한국어 어시스턴트다."
 USER = "대한민국의 수도는 어디인가?"
 ASSIST = "대한민국의 수도는 서울이다."
 
 
 def build(kind: str, turns: int) -> str:
-    """네 후보 직렬화. `turns` = user/assistant 왕복 횟수."""
-    if kind == "chatml":                       # 안 A (Qwen 계열)
-        s = f"<|im_start|>system\n{SYS}<|im_end|>\n"
-        for _ in range(turns):
-            s += f"<|im_start|>user\n{USER}<|im_end|>\n"
-            s += f"<|im_start|>assistant\n{ASSIST}<|im_end|>\n"
-        return s
-    if kind == "gemma":                        # 안 B (Gemma 계열)
-        s = f"<start_of_turn>user\n{SYS}\n{USER}<end_of_turn>\n"
-        for _ in range(turns - 1):
-            s += f"<start_of_turn>user\n{USER}<end_of_turn>\n"
-        s += f"<start_of_turn>model\n{ASSIST}<end_of_turn>\n" * turns
-        return s
-    if kind == "minimal":                      # 안 D — 역할 이름도 토큰으로
-        s = f"<|sys|>{SYS}<|end|>"
-        for _ in range(turns):
-            s += f"<|user|>{USER}<|end|><|asst|>{ASSIST}<|end|>"
-        return s
-    if kind == "plain":                        # 대조군 — 특수토큰 0
-        s = f"[시스템] {SYS}\n"
-        for _ in range(turns):
-            s += f"[사용자] {USER}\n[어시스턴트] {ASSIST}\n"
-        return s
-    raise ValueError(kind)
+    """`turns` 왕복 대화를 canonical 로 만들고 `kind` 로 직렬화한다."""
+    import tinylm  # noqa: F401  (HF 캐시 리다이렉트 — 먼저 부른다, R40)
+    from tinylm.chat import serialize
+    msgs = [{"role": "system", "content": SYS}]
+    for _ in range(turns):
+        msgs.append({"role": "user", "content": USER})
+        msgs.append({"role": "assistant", "content": ASSIST})
+    return serialize({"messages": msgs}, kind)
 
 
-MARKERS = {
-    "chatml": ["<|im_start|>", "<|im_end|>"],
-    "gemma": ["<start_of_turn>", "<end_of_turn>"],
-    "minimal": ["<|sys|>", "<|user|>", "<|asst|>", "<|end|>"],
-    "plain": ["[시스템]", "[사용자]", "[어시스턴트]"],
-}
+def markers(kind: str):
+    """그 규약이 쓰는 경계 문자열. ★정본은 `tinylm.chat.serialize.SPECS` 다."""
+    from tinylm.chat.serialize import SPECS
+    sp = SPECS[kind]
+    out = [sp["end"]]
+    if sp["start"]:
+        out.insert(0, sp["start"])
+    else:
+        out = list(dict.fromkeys(list(sp["roles"].values()) + out))
+    return [m for m in out if m and m.strip()]
 
 
 def main() -> int:
@@ -97,8 +87,9 @@ def main() -> int:
     print("\n## 1. 경계 마커 하나가 몇 토큰인가 — ★이것이 전부다")
     print(f"  {'마커':22} {'토큰수':>6}  분해")
     seen = set()
-    for ms in MARKERS.values():
-        for m in ms:
+    from tinylm.chat.serialize import SERIALIZERS
+    for kind in SERIALIZERS:
+        for m in markers(kind):
             if m in seen:
                 continue
             seen.add(m)
@@ -111,7 +102,7 @@ def main() -> int:
     base = len(tok.encode(build("plain", a.turns)).ids)
     print(f"  {'후보':10} {'총 토큰':>8} {'오버헤드':>8} {'턴당':>7} {'seq 대비':>9}")
     rows = {}
-    for kind in ("chatml", "gemma", "minimal", "plain"):
+    for kind in SERIALIZERS:
         n = len(tok.encode(build(kind, a.turns)).ids)
         rows[kind] = n
         # 내용만의 토큰 = 마커를 뺀 것 — 근사로 plain 의 대괄호 마커를 뺀 값을 쓴다
@@ -121,15 +112,19 @@ def main() -> int:
     print("  ⚠️`plain`(0) 기준 상대값이다. plain 도 `[사용자]` 같은 문자열을 쓰므로 **절대 오버헤드가 아니다**.")
 
     print("\n## 3. ★슬롯을 예약하면 어떻게 되나 (⚙계산)")
-    for kind in ("chatml", "gemma", "minimal"):
-        ms = MARKERS[kind]
+    for kind in [k for k in SERIALIZERS if k != "plain"]:
+        ms = markers(kind)
         cur = sum(len(tok.encode(m).ids) for m in ms) / len(ms)
         n_marks = 2 * (a.turns * 2 + 1) if kind != "minimal" else (a.turns * 2 + 1) * 2
         save = (cur - 1) * n_marks
         print(f"  {kind:10} 마커 평균 {cur:4.1f}토큰 → 1토큰이면 **{save:,.0f} 토큰 절약** "
               f"({save/a.seq*100:.1f}% of seq {a.seq})")
     print("  ★슬롯 예약 비용 = 어휘 행 하나 = `emb_rank`(입력) + `emb_rank`(출력) 파라미터.")
-    print("    E=256 이면 토큰당 512 파라미터 = fp32 2 KB. **16개 예약해도 0.03 MiB.**")
+    from tinylm.chat import slot_report
+    _r = slot_report()
+    print(f"    E={_r['emb_rank']} 이면 토큰당 {_r['emb_rank']*2} 파라미터. "
+          f"★**승인된 {_r['slots']}개 = fp32 {_r['fp32_mib']:.4f} MiB "
+          f"= 어휘의 {_r['vocab_frac_pct']:.3f}%**(사용자 승인 2026-08-30).")
     return 0
 
 

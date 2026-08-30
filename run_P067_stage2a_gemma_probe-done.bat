@@ -51,7 +51,7 @@ echo.
 REM  250-step probes are below wandb_sync MIN_TOKENS so this reports a skip.
 REM  The call is here so the batch obeys the 2026-08-22 rule, not to upload.
 set TL_WB_TAG=GT0probe
-call scriptsatch	ool_wandb_push.bat
+call scripts\batch\tool_wandb_push.bat
 if errorlevel 1 echo [WARN] wandb push failed - continuing
 
 echo.

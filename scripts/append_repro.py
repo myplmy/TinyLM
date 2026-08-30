@@ -35,6 +35,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "test_result"
 TODAY = _dt.date.today().isoformat()
+
+#: ★이 도구가 남기는 **유일한 서명**. 건너뛸지 여부는 오직 이것으로 판단한다.
+#: 🚫배치 이름이 본문 어딘가에 있다는 것은 서명이 아니다(2026-08-30 결함).
+MARKER = "## ★부록 — 재현 명령 정본"
+
+
+def _norm(t):
+    """공백을 접는다. ★`sync_experiments_tsv.norm` 과 **같은 규약**이어야 한다 —
+    두 도구가 같은 질문에 다른 답을 내면 `-done` 판정이 영원히 안 끝난다."""
+    return " ".join(str(t).split())
 CMD = re.compile(r"runlog\.py\s+--name\s+\S+\s+--\s+(python\s+.+?)\s*$")
 STAGE = re.compile(r"run_(P\d{3})_(stage[0-9A-Za-z]*)", re.I)
 
@@ -84,8 +94,16 @@ def main() -> int:
             skip.append((bat.name, "결과문서 또는 명령을 못 찾았다"))
             continue
         txt = doc.read_text(encoding="utf-8")
-        if bat.name in txt:
-            skip.append((bat.name, f"이미 {doc.name} 에 있다"))
+        # ★★2026-08-30 결함 수정 (2차) — 종전 조건은 `bat.name in txt` 였다.
+        #   🚫**배치 이름을 본문에서 언급만 해도 건너뛰었다.** 결과문서 6건에 배치명을
+        #   인용했더니 **여섯 건 전부 조용히 건너뛰어졌는데**, 같은 시각
+        #   `sync_experiments_tsv` 는 *"명령이 결과문서에 없다"* 로 **보류**를 찍고 있었다.
+        #   → 🚫★**두 도구가 같은 질문에 다른 정의를 쓰고 있었다**(R14 위반).
+        #
+        #   ★**이제 둘 다 "명령이 문서에 있는가" 를 본다.** 판정 함수는
+        #   `sync_experiments_tsv.norm` 과 같은 규약이다 — 그것이 정본이고 여기가 따라간다.
+        if all(_norm(c) in _norm(txt) for c in cmds):
+            skip.append((bat.name, f"이미 {doc.name} 에 명령이 다 있다"))
             continue
         todo.append((bat, doc, cmds, num))
 
@@ -101,8 +119,8 @@ def main() -> int:
             # 문서가 **1단에서 마지막으로 읽힌 문서의 본문**으로 덮였다(결과문서 7건 파괴,
             # 커밋 1c3f87e·a01f32f). 같은 문서에 부록이 둘 붙는 경우도 이 재읽기가 살린다.
             body = doc.read_text(encoding="utf-8")
-            if bat.name in body:          # 같은 실행 안에서 이미 붙은 경우
-                print("      [skip] 이미 붙어 있다")
+            if all(_norm(c) in _norm(body) for c in cmds):
+                print("      [skip] 이미 명령이 다 있다")
                 continue
             block = ["\n\n---\n",
                      f"\n## ★부록 — 재현 명령 정본 (`{bat.name}` 추출, {TODAY})\n",

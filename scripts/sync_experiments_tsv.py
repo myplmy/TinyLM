@@ -99,7 +99,14 @@ def report_done(corpus):
     ok = []
     for p in dones:
         cmds = batch_commands(p)
-        miss = [c for c in cmds if norm(c) not in corpus]
+        # ★2026-08-30 — `scripts\batch\` 의 **재사용 도구 호출은 보존 대상이 아니다**.
+        #   그 도구는 영구 보존되는 파일이고(개편 규약, `scripts/batch/README.md`),
+        #   인자도 환경변수라 **문자열로 결과문서에 남길 것이 없다**.
+        #   🚫종전에는 `call scripts\batch	ool_wandb_push.bat` 하나 때문에
+        #   `run_P067_stage2a_gemma_probe-done.bat` 이 영원히 [보류]였다.
+        _keep = [c for c in cmds
+                 if not c.lower().replace("/", "\\").startswith("call scripts\batch\\")]
+        miss = [c for c in _keep if norm(c) not in corpus]
         if not cmds:
             print(f"\n  ⚠️ {p.name}\n      실행 명령을 못 찾았다 — **사람이 본다**")
             continue
@@ -108,12 +115,12 @@ def report_done(corpus):
                   f"문자열 대조는 **약한 검사**다(사람이 조건을 본다)")
         if miss:
             print(f"\n  🚫 {p.name}   [보류]")
-            print(f"      명령 {len(cmds)}개 중 {len(miss)}개가 결과문서에 없다:")
+            print(f"      명령 {len(_keep)}개 중 {len(miss)}개가 결과문서에 없다:")
             for c in miss[:3]:
                 print(f"        {c[:110]}")
             print("      → ★**지우면 이 명령이 소실된다.** 결과문서 §재현 명령을 먼저 채운다")
         else:
-            print(f"\n  ✅ {p.name}   [삭제 가능]  (명령 {len(cmds)}개 전부 결과문서에 보존)")
+            print(f"\n  ✅ {p.name}   [삭제 가능]  (명령 {len(_keep)}개 전부 결과문서에 보존)")
             ok.append(p.name)
     print("\n  ⚠️ ③'재실행 예정 없음' 은 **사람이 판단한다.** 이 도구는 ①②만 본다.")
     return ok

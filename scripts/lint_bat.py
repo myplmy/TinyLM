@@ -89,6 +89,20 @@ def lint(path: Path):
     for ln, s in bad_lines:
         err.append(f"L{ln} 비ASCII 문자: {s.strip()[:60]}")
 
+    # 1b. ★제어문자 (2026-08-30 신설) — **ASCII 이지만 명령을 깨뜨린다**
+    #   🚫`run_P067_stage2a_gemma_probe-done.bat` 에 **백스페이스(0x08)와 탭(0x09)** 이 박혀 있었다.
+    #   부르려던 것은 `scripts` + 역슬래시 + `batch` + 역슬래시 + `tool_wandb_push.bat` 인데,
+    #   파이썬 패치 스크립트가 그 역슬래시 둘을 **이스케이프로 해석**해 제어문자로 바꿔 버렸다.
+    #   ★**결과: 그 배치의 wandb push 가 한 번도 안 돌았다** — 종료코드는 정상이었다.
+    #   🚫**규칙 1(비ASCII)은 이것을 못 잡는다.** 0x08·0x09 는 ASCII 다.
+    #   ⚠️탭도 금지한다 — 배치에서 쓸 이유가 없고 위와 같은 사고의 흔적이다.
+    for i, ln in enumerate(lines):
+        bad = [(j, ord(c)) for j, c in enumerate(ln) if ord(c) < 32]
+        if bad:
+            names = ", ".join(f"0x{o:02x}@{j}" for j, o in bad[:4])
+            err.append(f"L{i+1} 제어문자 {names} — 파이썬 패치가 백슬래시 이스케이프를 "
+                       f"해석한 흔적이다: {ln.strip()[:50]!r}")
+
     # 2. chcp
     for i, ln in enumerate(lines):
         if re.search(r"\bchcp\b", ln, re.I):

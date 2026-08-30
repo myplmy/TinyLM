@@ -113,6 +113,10 @@ def main():
     ap.add_argument("--kv-bytes", type=int, default=4, choices=[1, 2, 4],
                     help="★KV 캐시 원소 바이트(기본 4 = fp32, 상주식과 같은 규약). "
                          "2 = bf16/fp16 캐시, 1 = int8 캐시(미구현 — 가정값)")
+    ap.add_argument("--repeat-kv-reuse", action="store_true",
+                    help="★재귀 통과 2회차 이후가 **첫 통과의 K/V 를 재사용**한다(P077 단계0). "
+                         "엔트리가 `(owner, 통과)` 에서 `(owner, 0)` 으로 접혀 **KV 가 준다**. "
+                         "기본 off = 비트 동일. ⚠️품질 대가는 `paired_eval` 이 잰다")
     ap.add_argument("--drop-latent", action="store_true",
                     help="P034 단계2 — freeze 후 fp32 latent 해제. 해제 전/후를 나란히 잰다")
     ap.add_argument("--int8-store", action="store_true",
@@ -226,8 +230,15 @@ def main():
             _tr = float(getattr(cfg, "train_repeat", 1.0) or 1.0)
             _ir = float(getattr(cfg, "infer_repeat", 1.0) or 1.0)
             _rep = _tr if (_tr != 1.0 and _ir == 1.0) else None
+            # ★P077 단계0 — `--repeat-kv-reuse` 는 **cfg 를 통해** kv_report 에 전달된다.
+            #   🚫여기서만 켜면 `forward` 와 회계가 갈라진다(함정 40 계열) — cfg 를 바꾼다.
+            if a.repeat_kv_reuse:
+                cfg.repeat_kv_reuse = True
+                model.cfg.repeat_kv_reuse = True
             _kv = model.kv_report(seq_len=a.kv_seq, kv_bytes=a.kv_bytes, repeat=_rep)
             _note = f" ★train_repeat {_tr:g} 로 셌다" if _rep else ""
+            if a.repeat_kv_reuse:
+                _note += " ★**KV 재사용 켬**"
             print(f"     ★KV 캐시          {_kv['kv_mb']:8.1f} MB  @ seq {a.kv_seq} "
                   f"({_kv['kv_kb_per_token']:.2f} KB/token · 엔트리 {_kv['kv_entries']}개 / "
                   f"방문 {_kv['kv_visits']}회 · {a.kv_bytes}B){_note}")
