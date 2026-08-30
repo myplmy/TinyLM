@@ -1,0 +1,172 @@
+=============================================================================
+P067 stage 2b   the smaller gemma teacher
+2a died in backward with the 1B teacher. Same tokenizer, smaller teacher.
+Speed and VRAM only - do not read val from 250 steps.
+==============================================================================
+[1/2] 270m teacher at the 2a shape - the direct retry
+
+==============================================================================
+[runlog] 2026-08-30 19:40:29  name=P067_stage2b_gemma270m_teacher
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 2 --accum 64 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --ce-chunk 1024 --kd --kd-every 4 --kd-chunk 512 --teacher-dtype bf16 --tokenizer-hf HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29 --kd-teacher-hf HF\models--google--gemma-3-270m --tag G270Tprobe
+==============================================================================
+[cmd] python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 2 --accum 64 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --ce-chunk 1024 --kd --kd-every 4 --kd-chunk 512 --teacher-dtype bf16 --tokenizer-hf HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29 --kd-teacher-hf HF\models--google--gemma-3-270m --tag G270Tprobe
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000_tok-fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+[P067] ★어휘를 32,768 -> **262,144** 로 바꾼다 (출처 Gemma3ForCausalLM)
+[P067]   임베딩 파라미터 25.2M -> **201.3M** (사용자 지시: 모델 크기 증가는 감수)
+[P067] ⚠️★이 런은 **기존 런과 CE 를 직접 비교할 수 없다** — val 토큰 경계가 다르다(함정 2). 교차비교는 `scripts/common_bpb.py` 만 유효하다.
+
+Loading weights:   0%|          | 0/236 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 236/236 [00:00<00:00, 10627.73it/s]
+[kd-hf] 교사 로드 9b0cfec892e2bc2afd938c98eabe4e4a7b1e0ca1  파라미터 268.1M  dtype=bf16  vocab=262144
+[kd-hf] ★로짓은 **원 dtype 그대로** 돌려주고 fp32 승격은 _kd_kl 이 **청크 단위로** 한다
+[kd-hf]   (통째 승격은 (B,T,V) fp32 = 수 GiB 단일 할당을 만든다 — 결과 054)
+[kd] ★외부 교사 사용 (alpha=0.5, T=2.0) — 🚫우리 dense 교사는 로드하지 않는다
+[kd] ★★이 실험이 묻는 것: 결과 038 의 'KD 무익' 이 **KD 탓인가 교사 탓인가**
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=262144 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)              67.3M      13.7 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                          122.2M      25.0 MB
+
+
+  저장(packed, 안 B)                         25.0 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        29.0 MB
+  ★상주(runtime, 현 구현)                     675.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 25.0MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  ★KV 캐시(fp32)        : 15.0 KB/token  (엔트리 10개 / 방문 20회)
+                          1024 ctx 15.0 MB  → ★상주+KV = 690.5 MB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[G270Tprobe] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+  step     0/250  ce 12.4917  loss 15.0095[KD혼합]  |g| 3.71  anneal 0.00  lr 4.00e-05  27418 ms/step
+  step    10/250  ce 11.1764  |g| 2.08  anneal 0.00  lr 4.40e-04  15274 ms/step
+  step    20/250  ce 8.4300  loss 9.1148[KD혼합]  |g| 53.59  anneal 0.00  lr 8.40e-04  14595 ms/step
+  step    30/250  ce 8.1036  |g| 1.99  anneal 0.00  lr 1.00e-03  14418 ms/step
+  step    40/250  ce 7.9534  loss 9.0027[KD혼합]  |g| 8.65  anneal 0.02  lr 1.00e-03  14637 ms/step
+  step    50/250  ce 11.0839  |g| 14.38  anneal 0.08  lr 1.00e-03  14428 ms/step
+  step    60/250  ce 8.3067  loss 9.3329[KD혼합]  |g| 2.03  anneal 0.14  lr 1.00e-03  14375 ms/step
+  step    70/250  ce 8.1317  |g| 2.75  anneal 0.20  lr 1.00e-03  14144 ms/step
+  step    80/250  ce 8.2661  loss 8.7612[KD혼합]  |g| 1.50  anneal 0.26  lr 1.00e-03  14103 ms/step
+  step    90/250  ce 8.0414  |g| 2.68  anneal 0.32  lr 1.00e-03  14041 ms/step
+  step   100/250  ce 7.7931  loss 8.7399[KD혼합]  |g| 1.12  anneal 0.38  lr 1.00e-03  14215 ms/step
+  step   110/250  ce 7.8941  |g| 0.97  anneal 0.45  lr 1.00e-03  14228 ms/step
+  step   120/250  ce 7.8518  loss 8.7513[KD혼합]  |g| 1.46  anneal 0.51  lr 1.00e-03  14238 ms/step
+  step   130/250  ce 7.8193  |g| 0.46  anneal 0.57  lr 1.00e-03  14124 ms/step
+  step   140/250  ce 7.8155  loss 8.7821[KD혼합]  |g| 1.30  anneal 0.63  lr 1.00e-03  14110 ms/step
+  step   150/250  ce 7.8385  |g| 1.02  anneal 0.69  lr 1.00e-03  14021 ms/step
+  step   160/250  ce 7.8618  loss 8.7607[KD혼합]  |g| 1.78  anneal 0.75  lr 1.00e-03  14018 ms/step
+  step   170/250  ce 7.8183  |g| 0.50  anneal 0.82  lr 1.00e-03  13947 ms/step
+  step   180/250  ce 7.8654  loss 8.7447[KD혼합]  |g| 1.33  anneal 0.88  lr 1.00e-03  13933 ms/step
+  step   190/250  ce 7.8986  |g| 1.41  anneal 0.94  lr 1.00e-03  13865 ms/step
+  step   200/250  ce 7.8326  loss 8.7503[KD혼합]  |g| 1.94  anneal 1.00  lr 1.00e-03  13881 ms/step
+  step   210/250  ce 7.8199  |g| 0.32  anneal 1.00  lr 9.73e-04  13854 ms/step
+  step   220/250  ce 7.6713  loss 8.5032[KD혼합]  |g| 2.27  anneal 1.00  lr 7.75e-04  13867 ms/step
+  step   230/250  ce 7.4559  |g| 0.54  anneal 1.00  lr 4.72e-04  13828 ms/step
+  step   240/250  ce 7.4291  loss 8.0324[KD혼합]  |g| 1.30  anneal 1.00  lr 2.05e-04  13844 ms/step
+  step   249/250  ce 7.4675  |g| 0.40  anneal 1.00  lr 1.01e-04  13822 ms/step
+    >> val_loss 7.4725  ppl 1759.00  (train_ce 7.468, val-CE +0.005)  bpb 2.605
+       best 갱신 7.4725 -> m100R1c_ko-en_300M_G270Tprobe_best.pt
+
+[G270Tprobe] 최종 val_loss 7.5100  ppl 1826.21  best 7.4725@250  (122.2M, 57.7분, skip 0, KD forward 63/250스텝(≈25%), VRAM 14.77GB(reserved)/14.52GB(alloc))
+[vram] M(=micro_bs×seq)=2,048  peak reserved 14.77GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 57.8분  (2026-08-30 20:38:18)
+==============================================================================
+[2/2] if step 1 died, the narrower shape. ms/step is NOT comparable to 2a.
+
+==============================================================================
+[runlog] 2026-08-30 20:38:18  name=P067_stage2b_gemma270m_teacher
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 1 --accum 128 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --ce-chunk 512 --kd --kd-every 4 --kd-chunk 256 --teacher-dtype bf16 --tokenizer-hf HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29 --kd-teacher-hf HF\models--google--gemma-3-270m --tag G270Tnarrow
+==============================================================================
+[cmd] python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 1 --accum 128 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --ce-chunk 512 --kd --kd-every 4 --kd-chunk 256 --teacher-dtype bf16 --tokenizer-hf HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29 --kd-teacher-hf HF\models--google--gemma-3-270m --tag G270Tnarrow
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000_tok-fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+[P067] ★어휘를 32,768 -> **262,144** 로 바꾼다 (출처 Gemma3ForCausalLM)
+[P067]   임베딩 파라미터 25.2M -> **201.3M** (사용자 지시: 모델 크기 증가는 감수)
+[P067] ⚠️★이 런은 **기존 런과 CE 를 직접 비교할 수 없다** — val 토큰 경계가 다르다(함정 2). 교차비교는 `scripts/common_bpb.py` 만 유효하다.
+
+Loading weights:   0%|          | 0/236 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 236/236 [00:00<00:00, 10566.24it/s]
+[kd-hf] 교사 로드 9b0cfec892e2bc2afd938c98eabe4e4a7b1e0ca1  파라미터 268.1M  dtype=bf16  vocab=262144
+[kd-hf] ★로짓은 **원 dtype 그대로** 돌려주고 fp32 승격은 _kd_kl 이 **청크 단위로** 한다
+[kd-hf]   (통째 승격은 (B,T,V) fp32 = 수 GiB 단일 할당을 만든다 — 결과 054)
+[kd] ★외부 교사 사용 (alpha=0.5, T=2.0) — 🚫우리 dense 교사는 로드하지 않는다
+[kd] ★★이 실험이 묻는 것: 결과 038 의 'KD 무익' 이 **KD 탓인가 교사 탓인가**
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=262144 E=256
+========================================================================
+  삼진 가중치                       54.9M      11.2 MB
+  임베딩(factorized)              67.3M      13.7 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                          122.2M      25.0 MB
+
+
+  저장(packed, 안 B)                         25.0 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        29.0 MB
+  ★상주(runtime, 현 구현)                     675.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 25.0MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  ★KV 캐시(fp32)        : 15.0 KB/token  (엔트리 10개 / 방문 20회)
+                          1024 ctx 15.0 MB  → ★상주+KV = 690.5 MB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[G270Tnarrow] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+  step     0/250  ce 12.4917  loss 15.0095[KD혼합]  |g| 3.71  anneal 0.00  lr 4.00e-05  30759 ms/step
+  step    10/250  ce 11.1766  |g| 2.08  anneal 0.00  lr 4.40e-04  20239 ms/step
+  step    20/250  ce 9.0659  loss 10.1550[KD혼합]  |g| 614.80  anneal 0.00  lr 8.40e-04  20309 ms/step
+  step    30/250  ce 8.4850  |g| 4.26  anneal 0.00  lr 1.00e-03  19856 ms/step
+  step    40/250  ce 8.0721  loss 8.7954[KD혼합]  |g| 1.76  anneal 0.02  lr 1.00e-03  19980 ms/step
+  step    50/250  ce 7.9923  |g| 1.39  anneal 0.08  lr 1.00e-03  19811 ms/step
+  step    60/250  ce 7.9097  loss 8.9577[KD혼합]  |g| 2.89  anneal 0.14  lr 1.00e-03  19906 ms/step
+  step    70/250  ce 7.8843  |g| 0.49  anneal 0.20  lr 1.00e-03  19781 ms/step
+  step    80/250  ce 7.9368  loss 8.7344[KD혼합]  |g| 1.21  anneal 0.26  lr 1.00e-03  19872 ms/step
+  step    90/250  ce 7.8412  |g| 0.63  anneal 0.32  lr 1.00e-03  19801 ms/step
+  step   100/250  ce 7.7638  loss 8.8335[KD혼합]  |g| 1.84  anneal 0.38  lr 1.00e-03  19879 ms/step
+  step   110/250  ce 7.8728  |g| 0.71  anneal 0.45  lr 1.00e-03  19812 ms/step
+  step   120/250  ce 7.8452  loss 8.7929[KD혼합]  |g| 2.10  anneal 0.51  lr 1.00e-03  19930 ms/step
+  step   130/250  ce 7.8098  |g| 0.55  anneal 0.57  lr 1.00e-03  20017 ms/step
+  step   140/250  ce 7.8112  loss 8.7941[KD혼합]  |g| 1.94  anneal 0.63  lr 1.00e-03  20174 ms/step
+  step   150/250  ce 7.8059  |g| 0.73  anneal 0.69  lr 1.00e-03  20117 ms/step
+  step   160/250  ce 7.8484  loss 8.7612[KD혼합]  |g| 1.87  anneal 0.75  lr 1.00e-03  20158 ms/step
+  step   170/250  ce 7.8051  |g| 0.32  anneal 0.82  lr 1.00e-03  20132 ms/step
+  step   180/250  ce 7.8559  loss 8.7276[KD혼합]  |g| 1.42  anneal 0.88  lr 1.00e-03  20163 ms/step
+  step   190/250  ce 7.8299  |g| 0.55  anneal 0.94  lr 1.00e-03  20130 ms/step
+  step   200/250  ce 7.8232  loss 8.7065[KD혼합]  |g| 1.72  anneal 1.00  lr 1.00e-03  20223 ms/step
+  step   210/250  ce 7.8445  |g| 0.58  anneal 1.00  lr 9.73e-04  20277 ms/step
+  step   220/250  ce 8.1377  loss 9.1215[KD혼합]  |g| 20.67  anneal 1.00  lr 7.75e-04  20402 ms/step
+  step   230/250  ce 7.7106  |g| 0.96  anneal 1.00  lr 4.72e-04  20442 ms/step
+  step   240/250  ce 7.5892  loss 8.4680[KD혼합]  |g| 1.97  anneal 1.00  lr 2.05e-04  20540 ms/step
+  step   249/250  ce 7.6207  |g| 0.65  anneal 1.00  lr 1.01e-04  20581 ms/step
+    >> val_loss 7.6056  ppl 2009.47  (train_ce 7.621, val-CE -0.015)  bpb 2.651
+       best 갱신 7.6056 -> m100R1c_ko-en_300M_G270Tnarrow_best.pt
+
+[G270Tnarrow] 최종 val_loss 7.6522  ppl 2105.25  best 7.6056@250  (122.2M, 85.9분, skip 0, KD forward 63/250스텝(≈25%), VRAM 8.97GB(reserved)/8.72GB(alloc))
+[vram] M(=micro_bs×seq)=1,024  peak reserved 8.97GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 86.0분  (2026-08-30 22:04:16)
+==============================================================================
+=============================================================================
+READ IN THIS ORDER
+1. did step 1 survive backward. That is the whole question.
+2. reserved GiB against 15.0. Under it means stage 2 can run at this shape.
+3. step0 CE near 12.4766. Trap 34 - suspect the reference before the model.
+4. ms/step per token, against 0.0898 from 2a. If step 1 died and step 2 ran,
+   that number is NOT comparable - the shape changed.
+5. do not read val. 250 steps.
+6. if BOTH steps die, the teacher axis is closed at this vocabulary and the
+   remaining option is top-k truncation of the KD loss, a new axis.
+==============================================================================
