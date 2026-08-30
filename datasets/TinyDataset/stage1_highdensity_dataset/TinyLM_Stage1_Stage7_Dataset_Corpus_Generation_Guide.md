@@ -216,6 +216,7 @@ stage1_highdensity_dataset/
 ```text
 (1) identity  = 대상·정체성·분류
 (2) attribute = 속성·정도·변이
+(3) function  = 기능·용도·목적
 ```
 
 ### Train 파일명
@@ -223,6 +224,7 @@ stage1_highdensity_dataset/
 ```text
 stage1_(1)identity_high_density_train_v01.json
 stage1_(2)attribute_high_density_train_v01.json
+stage1_(3)function_high_density_train_v01.json
 ```
 
 ### Validation 파일명
@@ -230,6 +232,7 @@ stage1_(2)attribute_high_density_train_v01.json
 ```text
 stage1_(1)identity_high_density_val_v01.json
 stage1_(2)attribute_high_density_val_v01.json
+stage1_(3)function_high_density_val_v01.json
 ```
 
 규칙:
@@ -255,6 +258,14 @@ S1-ATH-0001 ... S1-ATH-4650
 ```text
 S1-ATV-0001 ...
 ```
+
+### Function train
+
+```text
+S1-FNH-0001 ... S1-FNH-4050
+```
+
+`FNH`는 Function High-density train 전용 접두사다. 기존 prototype의 `S1-FUNC-*`와 충돌시키지 않는다. Function validation을 만들 때는 별도 `S1-FNV-*` 접두사를 사용하고 train ID를 재사용하지 않는다.
 
 현재 확정된 attribute validation 600개는 다음 범위를 쓴다.
 
@@ -323,7 +334,7 @@ Top-level 필수 검사:
 
 ---
 
-## 8. Attribute record schema
+## 8. Attribute와 Function record schema
 
 ### Train record
 
@@ -352,9 +363,23 @@ Top-level 필수 검사:
 }
 ```
 
+### Function train record
+
+```json
+{
+  "id": "S1-FNH-0001",
+  "type": "function_packet",
+  "split": "train",
+  "text": "대상이 수행하는 기능, 사용 목적, 작동 조건과 경계를 설명한 한국어 문장",
+  "concepts": ["핵심개념"],
+  "relations": ["function", "process", "boundary"]
+}
+```
+
 필드 규칙:
 
 - `type`은 attribute train/val 모두 `attribute_packet`이다.
+- Function train/val의 `type`은 `function_packet`이다.
 - `split`은 파일과 record에서 모두 동일해야 한다.
 - `text`는 비어 있지 않은 실제 UTF-8 한국어다.
 - 한국어를 `\uXXXX` escape로 저장하지 않는다.
@@ -362,6 +387,7 @@ Top-level 필수 검사:
 - primary concept는 전체 해당 split에서 중복시키지 않는 것을 원칙으로 한다.
 - `relations`는 아래 13개 통제 어휘만 사용한다.
 - 새 validation record에는 `unseen_relation` boolean이 반드시 존재한다.
+- Function train record에는 `unseen_relation`을 붙이지 않는다.
 
 ---
 
@@ -869,11 +895,138 @@ python stage1_highdensity_dataset\tools\audit_attribute_validation.py stage1_hig
 
 ---
 
-## 20. 수정 금지와 안전 규칙
+## 20. Stage 1 Function train 324K 생성 규약과 27개 예약 concept family
+
+### 20.1 목표와 의미 경계
+
+```text
+영역: Stage 1 (3) 기능·용도·목적
+train 설계량: 약 324K tokens
+packet 목표: 4,050 records
+파일 목표: 27 files × 150 records
+파일명: stage1_(3)function_high_density_train_v00.json 형식
+ID: S1-FNH-0001 ~ S1-FNH-4050
+```
+
+packet 수는 설계 환산 기준이며 실제 tokenizer token 수와 동일하다고 단정하지 않는다. Function corpus는 다음 질문을 중심으로 한다.
+
+```text
+무엇을 하는가?
+무엇에 사용하는가?
+어떤 결과를 만들기 위해 존재하는가?
+어떤 조건에서는 그 기능을 수행하지 못하거나 다른 도구와 역할이 갈리는가?
+```
+
+모든 record는 `function` relation을 반드시 포함하고 통제 어휘에서 1~4개를 더 골라 총 2~5개로 만든다. `use_for`, `used_to`, `purpose`, `enables`, `protect`, `transport`, `contain` 같은 자유 relation 이름을 만들지 않는다.
+
+- `function`: 대상이 수행하는 작용이나 설계 목적
+- `role`: 특정 작업·시스템·상황에서 맡는 몫
+- `process`: 기능이 시간 순서나 변화 과정으로 구현됨
+- `part_of`: 부품 기능이 더 큰 장치·절차의 일부임
+- `boundary`: 비슷한 도구와의 용도 경계 또는 수행하지 않는 일
+- `comparison`·`contrast`: 대안 도구와 성능·용도 차이를 실제로 서술함
+- `state`: 작동·대기·잠금·해제처럼 현재 상태가 기능을 바꿈
+- `attribute`: 재료·형상·구조 특성이 기능 수행에 직접 기여함
+- `classification`, `is_a`, `subclass_of`: 실제 분류 문장이 있을 때만 사용함
+- `other`: 나머지 12개로 정직하게 표현할 수 없는 관계만 보수적으로 표시함
+
+단순히 `X는 Y에 사용된다`만 4,050번 반복하지 않는다. 대상, 입력, 작용, 결과, 조건, 경계 가운데 필요한 요소를 자연스럽게 조합하고, 기능과 우연한 사용 사례를 구분한다. 자동화는 ID·JSON 포장·감사에만 사용하며 의미 `text`와 primary concept는 record별로 직접 작성한다.
+
+기존 `stage1_dataset`의 저밀도 `S1-FUNC-*` prototype은 참고·중복 검사 대상으로만 사용한다. exact text는 재사용하지 않고, 가능한 경우 primary concept도 더 구체적인 대상이나 부품으로 이동한다. 고밀도 Function split 안에서는 primary concept 중복 0을 유지한다.
+
+### 20.2 27개 concept family 예약표
+
+아래 표는 context 압축이나 새 세션에서도 버전 주제가 재선정되지 않게 하는 현행 예약 원장이다. `reserved`인 행을 임의로 다른 family로 바꾸지 않는다. 변경이 꼭 필요하면 기존 전체 concept와의 중복 감사를 먼저 하고, 이유와 대체 범위를 이 표에 기록한 뒤 작성한다.
+
+| 버전 | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 수동 작업·정비·제작 공구의 기능 | 체결, 파지, 절단, 성형, 표면 마감, 타격, 인출, 천공, 나사 가공 | 확정 (2026-08-30) |
+| v02 | 0151~0300 | 식재료 준비·조리·제공 기구의 기능 | 세척, 계량, 분할, 혼합, 성형, 가열, 뒤집기, 따르기, 제공 | reserved |
+| v03 | 0301~0450 | 식품 보존·포장·위생·품질 관리 장치의 기능 | 냉장·냉동, 건조, 밀봉, 살균, 표시, 산소·수분 차단, 검사 | reserved |
+| v04 | 0451~0600 | 의복·신발·착용 보호·휴대 구성품의 기능 | 체온 조절, 충격·날씨 보호, 여밈, 지지, 수납, 착용 조절 | reserved |
+| v05 | 0601~0750 | 청소·세탁·건조·생활 폐기물 처리 도구의 기능 | 포집, 분리, 세정, 탈수, 건조, 탈취, 압축, 배출 | reserved |
+| v06 | 0751~0900 | 건물 외피·개구부·실내 마감·공간 조절 구성품의 기능 | 지지, 차폐, 채광, 출입, 단열, 방수, 흡음, 공간 분할 | reserved |
+| v07 | 0901~1050 | 급배수·위생·환기·냉난방 실내 설비의 기능 | 공급, 배출, 여과, 열교환, 압력 조절, 공기 순환, 위생 유지 | reserved |
+| v08 | 1051~1200 | 농림·축산·수산 생산 도구와 설비의 기능 | 토양 준비, 파종, 관개, 급이, 보호, 수확, 양식, 어획 | reserved |
+| v09 | 1201~1350 | 육상·항공·해상 교통수단과 부품의 기능 | 추진, 조향, 제동, 현가, 부양, 항법, 계류, 탑승자 보호 | reserved |
+| v10 | 1351~1500 | 포장·하역·운반·분류·보관 물류 장비의 기능 | 적재, 결속, 완충, 이송, 승강, 분류, 추적, 재고 보존 | reserved |
+| v11 | 1501~1650 | 제조 성형·절삭·접합·조립 생산 설비의 기능 | 주조, 압연, 절삭, 연삭, 용접, 체결, 정렬, 자동 조립 | reserved |
+| v12 | 1651~1800 | 품질검사·공정제어·설비진단·유지보수 장치의 기능 | 검출, 비교, 피드백, 보정, 윤활, 진단, 교체, 안전 정지 | reserved |
+| v13 | 1801~1950 | 도로·교량·철도·터널·배수 공공 인프라의 기능 | 하중 전달, 통행 유도, 선형 유지, 배수, 환기, 충돌 방호 | reserved |
+| v14 | 1951~2100 | 물 공급·하수처리·위생·자원회수 도시 서비스의 기능 | 취수, 정수, 저장, 압송, 침전, 소독, 슬러지 처리, 회수 | reserved |
+| v15 | 2101~2250 | 에너지 생산·변환·저장·송배전·보호 장치의 기능 | 발전, 변압, 정류, 축전, 열저장, 개폐, 차단, 계통 보호 | reserved |
+| v16 | 2251~2400 | 전자회로·센서·신호처리·구동 부품의 기능 | 감지, 변환, 증폭, 필터링, 발진, 스위칭, 구동, 피드백 | reserved |
+| v17 | 2401~2550 | 컴퓨팅 처리·기억·저장·입출력 장치의 기능 | 연산, 명령 제어, 캐시, 영구 저장, 입력, 표시, 주변장치 연결 | reserved |
+| v18 | 2551~2700 | 네트워크·소프트웨어·데이터 서비스의 기능 | 주소 지정, 라우팅, 인증, 직렬화, 검색, 동기화, 백업, 복구 | reserved |
+| v19 | 2701~2850 | 통신·미디어 기록·편집·전송·표현 도구의 기능 | 촬영, 녹음, 부호화, 편집, 송수신, 재생, 자막, 배포 | reserved |
+| v20 | 2851~3000 | 실험실 채취·분리·반응·계량·교정 장비의 기능 | 시료 채취, 여과, 원심분리, 배양, 적정, 검출, 표준화 | reserved |
+| v21 | 3001~3150 | 의료 진단·치료·모니터링·재활·감염관리 기구의 기능 | 관찰, 검사, 투약, 절개, 봉합, 생체신호 감시, 재활 보조, 멸균 | reserved |
+| v22 | 3151~3300 | 생물 기관·세포 구조·생태계 구성원의 기능 | 흡수, 수송, 호흡, 방어, 감각, 번식, 분해, 서식처 제공 | reserved |
+| v23 | 3301~3450 | 환경 감시·오염 정화·자원 순환·생태 복원 시설의 기능 | 대기·수질 감시, 집진, 흡착, 중화, 재활용, 서식처 복원 | reserved |
+| v24 | 3451~3600 | 안전·재난·보안·구조·접근성 보조 장치의 기능 | 경보, 차단, 대피, 소화, 구조, 신원 확인, 침입 방지, 감각·이동 보조 | reserved |
+| v25 | 3601~3750 | 교육·학습·도서관·문서화 도구의 기능 | 설명, 연습, 평가, 색인, 인용, 기록, 버전 관리, 지식 검색 | reserved |
+| v26 | 3751~3900 | 상업·금융·거래·고객 서비스 체계의 기능 | 가격 제시, 주문, 결제, 정산, 신용 평가, 환불, 상담, 분쟁 접수 | reserved |
+| v27 | 3901~4050 | 공공행정·법률·복지·지역사회·문화 서비스의 기능 | 신청, 심사, 허가, 권리 보호, 돌봄 연계, 공공 안내, 보존, 참여 지원 | reserved |
+
+### 20.3 v01 확정 누적과 감사 기준점
+
+2026-08-30 재개·재감사에서 다음 정본을 확정했다.
+
+```text
+파일: train/stage1_(3)function_high_density_train_v01.json
+SHA-256: 02b8974c56b7733b57c94f742c88a4bb170fc55c5ede83f76038e673620cb2e7
+record: 150
+ID: S1-FNH-0001 ~ S1-FNH-0150
+현재 누적: 150 / 4,050 records, 1 / 27 files
+잔여: 3,900 records, 26 files
+다음 작성 대상: v02 식재료 준비·조리·제공 기구의 기능
+```
+
+v01은 150개 primary concept와 `text`를 record별로 직접 작성했다. 자동화는 literal의 ID·metadata·JSON 포장과 읽기 전용 감사에만 사용했다. JSON·UTF-8·schema·metadata·ID·relations 오류, exact ID/concept/text 중복, 반복 5어절, 반복 도입부, 실제 조사 오류는 모두 0이다. 문자 3~5-gram TF-IDF 기준 내부 최대 유사도는 `0.187422`, 저밀도 `S1-FUNC-*` 120개와의 교차 최대 유사도는 `0.090128`이다. prototype과 exact primary concept·exact text·반복 5어절 교집합도 모두 0이다.
+
+| relation | v01 횟수 | relation | v01 횟수 |
+|---|---:|---|---:|
+| `is_a` | 1 | `subclass_of` | 5 |
+| `part_of` | 2 | `classification` | 6 |
+| `boundary` | 17 | `contrast` | 10 |
+| `comparison` | 7 | `function` | 150 |
+| `role` | 50 | `process` | 45 |
+| `state` | 3 | `attribute` | 79 |
+| `other` | 0 |  |  |
+
+`other`는 0건이므로 자주 나온 개념 유형 5가지는 해당 없음이다. 12개 명명 관계로 정직하게 설명되는 사례에 `other`를 억지로 붙이지 않았으며, 반대로 향후 어느 관계에도 맞지 않는 사례가 생기면 0을 유지하려고 왜곡하지 않는다.
+
+재현 명령은 repository root에서 실행한다. 인수로 `stage1_highdensity_dataset` 자체를 넘기면 경로가 한 번 더 중첩되므로 반드시 `.`을 사용한다.
+
+```powershell
+python stage1_highdensity_dataset\tools\build_function_train.py .
+python stage1_highdensity_dataset\tools\audit_function_corpus.py . --output stage1_highdensity_dataset\TinyLM_Stage1_Function_Train_v01_Audit_2026-08-30.json
+```
+
+### 20.4 누적·상태 갱신 규칙
+
+한 파일이 생성·감사를 통과하면 해당 행의 상태를 `확정`으로 바꾸고 다음을 함께 기록한다.
+
+- 실제 파일명과 SHA-256
+- 150개 record와 ID 범위
+- concept family와 하위 축
+- 전체 누적과 4,050개 중 잔여 수
+- relations 13개 전체·버전별 분포
+- `other`의 자주 나온 개념 유형 5개
+- exact text·primary concept·5어절·도입부·유사도·조사 감사 결과
+- 저밀도 `S1-FUNC-*` prototype과의 exact text·primary concept 교집합
+- 수정 금지 파일의 전후 해시 일치 여부
+
+새 세션은 표에서 마지막 `확정` 다음의 첫 `reserved` 버전만 선택한다. 이미 `착수` 또는 `확정`인 family와 비슷한 주제를 새 버전으로 다시 만들지 않는다.
+
+---
+
+## 21. 수정 금지와 안전 규칙
 
 - 사용자가 수정 금지한 영역은 열람·해시 계산 외에 쓰지 않는다.
 - 현재 attribute 작업에서 `stage1_(1)identity_high_density_*` 파일은 수정하지 않는다.
-- 기존 attribute train v01~v31은 validation 생성 중 수정하지 않는다.
+- `stage1_(2)attribute_high_density_*` train·validation 확정 파일은 수정하지 않는다.
+- 사용자 지시에 따라 `stage2_(2)attribute_high_density_*`와 일치하는 모든 확정 파일도 수정하지 않는다. 현재 경로에서 발견되지 않더라도 이름 패턴 자체를 보호 규칙으로 유지하고, 다른 위치가 연결되면 먼저 해시를 저장한 뒤 읽기 전용으로 취급한다.
 - held-out benchmark는 corpus source로 사용하지 않는다.
 - dirty worktree의 사용자 변경과 외부 프로세스 산출물을 임의 정리하지 않는다.
 - 임시 감사 파일은 최종 산출물과 구분하고 완료 후 제거한다.
@@ -881,7 +1034,7 @@ python stage1_highdensity_dataset\tools\audit_attribute_validation.py stage1_hig
 
 ---
 
-## 21. 현재 감사·연속성 산출물
+## 22. 현재 감사·연속성 산출물
 
 현행 참고 파일:
 
@@ -893,12 +1046,17 @@ TinyLM_Stage1_Attribute_Train_v01_v17_Legacy_Audit_After_Fix_2026-08-30.json
 TinyLM_Stage1_Attribute_Train_v18_v31_Audit_2026-08-30.json
 TinyLM_Stage1_Attribute_Validation_v01_v04_Audit_2026-08-30.json
 TinyLM_Stage1_Attribute_Validation_v01_v04_Final_Report_2026-08-30.md
+train/stage1_(3)function_high_density_train_v01.json
+tools/build_function_train.py
+tools/audit_function_corpus.py
+TinyLM_Stage1_Function_Train_v01_Audit_2026-08-30.json
+TinyLM_Stage1_Function_Train_v01_Progress_Audit_2026-08-30.md
 ```
 
 과거 `TinyLM_Stage1_Attribute_Train_Codex_Handoff_2026-08-30.md`의 v18 재작성 전 상태와 `TinyLM_Stage1_Stage7_Master_Continuity_Summary.md`의 v17 누적 수치는 역사적 handoff다. 현재 정본 상태는 실제 train v01~v31과 최신 감사 결과다.
 
 ---
 
-## 22. 새 세션용 핵심 재개 지시
+## 23. 새 세션용 핵심 재개 지시
 
-> 실제 파일을 먼저 감사하고, 한 파일 150개·새 concept family·13개 통제 relations·직접 작성 text·split 독립 규칙을 지킨다. 자동화는 포장과 검증에만 사용한다. 생성 후 JSON/ID/concept/text/n-gram/유사도/조사/relations 분포를 전수 검사하고, validation이면 train과의 exact text·primary concept·객체–관계 조합 및 10~15% `unseen_relation` 비율까지 보고한다.
+> 실제 파일을 먼저 감사하고, 한 파일 150개·새 concept family·13개 통제 relations·직접 작성 text·split 독립 규칙을 지킨다. 자동화는 포장과 검증에만 사용한다. 생성 후 JSON/ID/concept/text/n-gram/유사도/조사/relations 분포를 전수 검사하고, validation이면 train과의 exact text·primary concept·객체–관계 조합 및 10~15% `unseen_relation` 비율까지 보고한다. Function train은 v01이 확정되었으므로 예약표의 첫 `reserved`인 v02와 `S1-FNH-0151`부터 재개하고, v01 family나 concept를 다시 선정하지 않는다.
