@@ -1,0 +1,161 @@
+# concept<TAB>relations<TAB>unseen_relation<TAB>other_category_or_dash<TAB>directly_authored_text
+# 01. 공항 표면과 시설의 경계
+활주로점유상태	boundary,process,state	false	-	활주로점유상태는 항공기가 포장면에 보인다는 사실만으로 성립하지 않는다. 이륙·착륙에 쓰이는 구간을 실제로 점유하는 시점과 해제된 시점을 구분해야 한다.
+유도로진입허가	boundary,classification,state	false	-	유도로진입허가는 이동 경로를 알려 주는 안내와 다르다. 관제사가 특정 유도로 구간에 들어가도 된다고 명시한 상태여야 허가로 분류한다.
+정지선통과	boundary,process,state	false	-	정지선통과는 항공기 기수가 선에 가까워진 경우가 아니라 기체의 기준 부분이 지정 선을 넘어선 과정이다. 선 앞에서 멈추면 통과가 아니다.
+활주로침범판정	boundary,classification,other	false	necessary_sufficient_logic	활주로침범판정은 허가가 없었다는 조건 하나로 자동 확정되지 않는다. 보호구역 안에 항공기·차량·사람이 잘못 존재했는지까지 함께 확인해야 한다.
+활주로표면오염등급	attribute,boundary,classification,process	true	-	활주로표면오염등급은 눈이 내린다는 관찰과 같지 않다. 덮인 면적과 물질의 깊이, 제거 뒤의 변화를 정해진 절차로 평가해 등급을 갱신한다.
+계류장운동구역경계	boundary,classification,part_of	false	-	계류장운동구역경계는 공항 울타리 전체와 일치하지 않는다. 항공기 이동을 관제하는 운동지역과 주기·조업 중심의 계류장을 시설 안에서 나누는 선이다.
+착륙대와활주로구분	boundary,contrast,part_of	false	-	착륙대와활주로구분에서는 포장된 활주로만 착륙대라고 부르면 안 된다. 착륙대는 활주로와 주변 보호 구역을 포함하는 더 넓은 시설 부분이다.
+활주로말단안전구역	boundary,function,part_of	false	-	활주로말단안전구역은 이륙 활주를 계속하는 정상 사용 구간이 아니다. 활주로를 벗어난 항공기의 손상을 줄이도록 말단 바깥에 마련한 보호 부분이다.
+임계점이설활주로	attribute,boundary,classification	false	-	임계점이설활주로는 활주로 길이가 짧아졌다는 말과 동일하지 않다. 착륙 시작점만 안쪽으로 옮겨졌으며 반대 방향 이륙에 쓸 수 있는 길이는 따로 판단한다.
+폐쇄유도로표지	boundary,function,state	false	-	폐쇄유도로표지는 단순한 도색 흔적이 아니라 해당 구간을 이동에 쓰지 못한다는 상태를 알린다. 임시 공사 표지와 영구 폐쇄 표지는 적용 기간이 다르다.
+제빙방빙구역	boundary,classification,function	false	-	제빙방빙구역은 눈이 쌓인 모든 계류 장소를 뜻하지 않는다. 항공기 표면의 얼음을 제거하고 재결빙을 늦추는 작업이 승인된 지정 구역이다.
+공항이동지역관리주체	boundary,classification,other,role	true	normative_authority_scope	공항이동지역관리주체는 현장에서 차량을 운전하는 사람과 같지 않다. 구역별 규정과 위임 범위에 따라 통행 승인과 안전 조정 책임을 맡는 주체를 판별한다.
+유도로대기위치	boundary,classification,state	false	-	유도로대기위치는 아무 정지선이나 가리키지 않는다. 교차 활주로나 보호 구역에 들어가기 전에 허가를 기다리도록 지정된 위치와 대기 상태를 함께 뜻한다.
+활주로가시거리측정지점	attribute,boundary,part_of	false	-	활주로가시거리측정지점은 관제탑에서 보이는 거리와 동일한 값의 출처가 아니다. 활주로의 접지·중간·말단 부근 장비가 각 구간 시정을 따로 측정한다.
+공항소방대응구역	boundary,classification,function	false	-	공항소방대응구역은 행정상 공항 부지와 반드시 일치하지 않는다. 항공기 사고에 정해진 시간 안에 출동하도록 소방 자원과 접근 경로가 배정된 범위다.
+# 02. 비행 단계와 지상 이동의 경계
+푸시백개시시점	boundary,process,state	false	-	푸시백개시시점은 견인차가 연결된 순간이 아니다. 주기 브레이크가 풀리고 항공기가 승인된 방향으로 실제 이동하기 시작한 때부터 과정이 시작된다.
+자력지상이동	boundary,function,process	false	-	자력지상이동은 엔진이 켜져 있다는 사실만으로 성립하지 않는다. 항공기가 자체 추력을 사용해 지상 경로를 이동할 때이며 견인차가 끄는 이동은 제외한다.
+견인지상이동	boundary,contrast,process	false	-	견인지상이동은 조종사가 방향을 확인해도 자력 이동으로 바뀌지 않는다. 외부 차량이 항공기를 끌거나 밀어 위치를 옮기는 과정이라는 점이 경계다.
+이륙활주개시	boundary,process,state	false	-	이륙활주개시는 활주로에 정렬한 상태와 구별된다. 이륙을 목적으로 추력을 올리고 항공기가 가속하기 시작해야 활주 과정에 들어간다.
+이륙중단결정상태	boundary,function,process,state	true	-	이륙중단결정상태는 속도가 줄었다는 결과만을 뜻하지 않는다. 이상을 인지한 승무원이 이륙을 계속하지 않기로 결정하고 감속 절차를 수행하는 상태다.
+회전속도통과	attribute,boundary,state	false	-	회전속도통과는 기수가 이미 들렸다는 관찰과 다르다. 계산된 회전 기준 속도에 도달한 상태를 말하며 실제 기수 올림 동작은 그 뒤에 시작될 수 있다.
+양력발생이륙경계	boundary,process,state	false	-	양력발생이륙경계는 바퀴 하중이 조금 가벼워진 때와 같지 않다. 주 착륙장치가 활주로를 떠나 지속적인 공중 비행으로 전환되는 시점을 판별한다.
+초기상승단계	boundary,classification,process	false	-	초기상승단계는 이륙 뒤 모든 상승을 포괄하지 않는다. 이륙 직후 장애물 회피와 형상 변경이 집중되는 제한된 비행 단계로 분류한다.
+순항단계진입	boundary,classification,state	false	-	순항단계진입은 상승률이 잠시 영이 된 순간만으로 확정하지 않는다. 계획 고도와 순항 출력, 항로 운용이 안정된 상태인지 함께 본다.
+강하개시점	boundary,process,state	false	-	강하개시점은 목적지까지 남은 거리만으로 정하지 않는다. 순항 고도에서 계획된 하강으로 실제 전환해 고도가 지속적으로 낮아지는 지점이다.
+최종접근구간	boundary,classification,part_of	false	-	최종접근구간은 공항을 눈으로 본 때부터 시작하는 구간이 아니다. 정해진 최종접근지점에서 착륙 또는 실패접근 지점까지 이어지는 접근 절차의 일부다.
+착륙과복행분기	boundary,contrast,process,state	true	-	착륙과복행분기는 활주로 위에 있다는 위치만으로 판정할 수 없다. 접지를 계속하려는 과정과 추력을 올려 다시 상승하는 과정이 갈리는 의사결정 상태다.
+접지와착륙완료	boundary,contrast,state	false	-	접지와착륙완료는 같은 순간이 아니다. 바퀴가 활주로에 닿아도 감속과 방향 통제가 이어지며 활주로를 안전하게 벗어나야 착륙 운용이 완료된다.
+착륙활주종료	boundary,process,state	false	-	착륙활주종료는 속도가 걷는 수준으로 낮아진 때가 아니다. 착륙을 위한 감속이 끝나고 지정 유도로로 전환하여 지상 이동 상태가 된 시점이다.
+주기완료상태	boundary,process,state	false	-	주기완료상태는 항공기가 주기선 안에 들어왔다는 사실만으로 부족하다. 정지 위치 확인과 브레이크 설정, 안전 장비 배치가 끝나야 완료로 본다.
+# 03. 운항 역할과 권한의 경계
+기장최종권한	boundary,role,state	false	-	기장최종권한은 모든 업무를 기장이 직접 수행한다는 뜻이 아니다. 비행 안전에 관한 최종 결정을 맡되 각 승무원의 전문 역할과 관제 지시는 별도로 존중한다.
+부기장조종담당	boundary,function,role	false	-	부기장조종담당은 기장이 책임을 포기한 상태가 아니다. 합의된 구간에서 조종 입력과 절차 수행을 맡는 역할이며 기장의 총괄 책임은 유지된다.
+관제허가와조종판단	boundary,contrast,role	false	-	관제허가와조종판단은 서로 대신할 수 없다. 관제사는 교통 흐름에 맞는 허가를 제공하고 조종사는 항공기가 그 허가를 안전하게 수행할 수 있는지 판단한다.
+램프관제책임	boundary,classification,role	false	-	램프관제책임은 활주로 관제 권한까지 포함하지 않는다. 계류장 안의 주기·푸시백·차량 흐름을 조정하는 역할로 공항별 위임 범위를 확인해야 한다.
+운항관리사비행감시	boundary,classification,role,state	true	-	운항관리사비행감시는 조종실의 실시간 조종과 다르다. 지상에서 기상·연료·항로 상태를 추적하고 변경 필요성을 기장과 협의하는 역할이다.
+객실승무원비상지휘	boundary,function,role	false	-	객실승무원비상지휘는 항공기 전체 지휘권을 넘겨받는다는 의미가 아니다. 객실 안 대피와 승객 보호 기능을 맡고 비행 운항 결정은 기장 체계에 남는다.
+지상조업감독역할	boundary,function,role	false	-	지상조업감독역할은 모든 장비를 직접 운전하는 업무가 아니다. 급유·수하물·기내식 작업의 순서와 안전 간격을 조정하고 완료 여부를 확인한다.
+정비확인서명권	boundary,other,role	false	normative_authority_scope	정비확인서명권은 정비 작업에 참여했다는 사실만으로 생기지 않는다. 자격과 회사 승인 범위 안에서 감항성 관련 확인을 공식 기록할 수 있는 역할이다.
+유도원수신호책임	boundary,function,role	false	-	유도원수신호책임은 조종사의 조종 권한을 대신하지 않는다. 주기장 장애물과 정지 지점을 시각 신호로 안내하며 최종 제동은 조종 승무원이 수행한다.
+항공교통관제권	boundary,classification,role	false	-	항공교통관제권은 영공 전체를 소유한다는 개념이 아니다. 지정 공역과 업무 시간 안에서 항공기 간 분리와 허가 발부를 맡는 운영 역할이다.
+공항운영자안전책임	boundary,function,role	false	-	공항운영자안전책임은 항공사의 기체 운항 책임과 구별된다. 활주로·유도로·시설 상태를 관리하고 공항 차원의 위험을 통제하는 기능을 맡는다.
+의료이송비행우선권	boundary,contrast,process,state	true	-	의료이송비행우선권은 다른 항공기를 무조건 배제하는 절대 특권이 아니다. 환자 상태와 교통 여건을 고려해 처리 순서를 앞당기는 운용 상태로 이해해야 한다.
+조종이양시점	boundary,process,role	false	-	조종이양시점은 상대가 조종간을 잡았다고 추측한 때가 아니다. 인계 선언과 수락 응답이 오가고 실제 조종 담당이 바뀐 순간부터 역할이 전환된다.
+관제구역인계	boundary,part_of,process	false	-	관제구역인계는 무선 주파수만 바꾸는 행동과 같지 않다. 항공기 정보와 관제 책임이 다음 관제 기관으로 넘어가는 전체 절차의 일부다.
+비행추적담당범위	boundary,role,state	false	-	비행추적담당범위는 항공기가 보이는 모든 구간이 아니다. 배정된 항공편과 시간대에 대해 위치·연료·기상 상태를 감시하도록 정한 책임 범위다.
+# 04. 고도·위치·항법의 경계
+기압고도와진고도	attribute,boundary,comparison	false	-	기압고도와진고도는 계기에 같은 숫자가 나타나도 동일한 속성이 아니다. 표준 기압을 기준으로 한 값과 실제 해수면 위 높이를 구분해 비교해야 한다.
+전이고도기준	boundary,classification,state	false	-	전이고도기준은 모든 나라에서 같은 고정 높이가 아니다. 지역 절차에 따라 고도계 기준을 지역 기압에서 표준 기압으로 바꾸는 경계 상태다.
+비행준위사용조건	boundary,classification,state	false	-	비행준위사용조건은 높은 고도라는 이유만으로 충족되지 않는다. 전이고도 위에서 표준 기압으로 표시한 수직 위치일 때 비행준위로 분류한다.
+최저안전고도	boundary,comparison,state	false	-	최저안전고도는 항공기가 실제로 비행한 가장 낮은 고도와 다르다. 장애물 여유와 절차 기준을 충족해야 하는 하한 상태로 비교해야 한다.
+지상고도판독	attribute,boundary,classification,process	true	-	지상고도판독은 해수면 기준 고도계 수치와 같지 않다. 전파나 지형 자료로 항공기와 바로 아래 지면 사이의 거리를 산출하는 과정을 구별한다.
+방위와항적구분	boundary,contrast,state	false	-	방위와항적구분에서는 기수가 가리키는 방향을 실제 이동선으로 오인하면 안 된다. 바람 때문에 기수 방향과 지상 항적은 서로 다른 상태가 될 수 있다.
+기수방향과진로	boundary,contrast,state	false	-	기수방향과진로는 모두 각도로 표현되지만 기준이 다르다. 기체 세로축이 향한 방향과 계획하거나 실제로 따라가는 경로 방향을 나누어야 한다.
+대기속도와지상속도	attribute,boundary,comparison	false	-	대기속도와지상속도는 순풍이 없을 때만 비슷해질 뿐 같은 측정값이 아니다. 공기 덩어리에 대한 속도와 지표에 대한 이동 속도를 비교한다.
+항법점통과판정	boundary,process,state	false	-	항법점통과판정은 화면의 기호 위를 정확히 덮은 한 순간만 뜻하지 않는다. 정해진 허용 범위와 경로 전환 논리에 따라 통과 상태를 결정한다.
+위치보고점	boundary,function,part_of	false	-	위치보고점은 항로 위의 모든 항법점과 동일하지 않다. 항공기가 위치와 시각을 보고하도록 지정된 지점이며 항로 절차의 일부 기능을 맡는다.
+계기접근최종지점	boundary,classification,part_of	false	-	계기접근최종지점은 활주로 임계점이 아니다. 중간 접근에서 최종 접근으로 넘어가는 절차상 지점이며 실제 착륙 지점과 떨어져 있다.
+위성항법무결성상태	boundary,comparison,other,state	true	evidence_inference_scope	위성항법무결성상태는 위성 신호가 잡힌다는 사실과 동일하지 않다. 계산 위치의 오차 한계를 믿을 수 있는지 감시 결과와 경보 기준을 함께 평가한다.
+복행지점고도	attribute,boundary,state	false	-	복행지점고도는 조종사가 활주로를 처음 본 높이가 아니다. 시각 참조가 없을 때 접근을 중단해야 하는 절차상 지점과 고도 조건을 결합한 상태다.
+경로이탈허용폭	attribute,boundary,comparison	false	-	경로이탈허용폭은 항공기가 벗어날 수 있는 목표치가 아니다. 유도 성능과 공역 보호를 위해 설정한 최대 편차를 실제 오차와 비교하는 기준이다.
+항법성능등급	attribute,boundary,classification	false	-	항법성능등급은 장비 이름만으로 정해지지 않는다. 정확도와 무결성, 연속성 요건을 만족하는 운항 능력을 수치 기준에 따라 분류한다.
+# 05. 기상과 운항 한계의 경계
+시정과운고차이	attribute,boundary,contrast	false	-	시정과운고차이는 둘 다 날씨가 나쁘다는 표현으로 뭉갤 수 없다. 수평으로 식별 가능한 거리와 하늘을 덮은 최저 구름층의 높이를 따로 측정한다.
+공항기상최저치	boundary,comparison,state	false	-	공항기상최저치는 현재 기상 관측값 자체가 아니다. 특정 접근과 이륙을 허용하기 위해 시정과 운고가 넘어야 하는 하한을 현재 상태와 비교한다.
+측풍제한값	attribute,boundary,comparison	false	-	측풍제한값은 바람 전체 속도의 상한과 다르다. 활주로 방향에 직각인 성분을 계산해 기종·노면별 허용값과 비교해야 한다.
+돌풍과평균풍	boundary,contrast,state	false	-	돌풍과평균풍은 관측 시간 안의 같은 바람을 서로 다른 방식으로 나타낸다. 짧게 치솟은 최대 변화와 일정 기간 평균 상태를 구분해야 한다.
+착빙조건판정	boundary,classification,part_of,state	true	-	착빙조건판정은 기온이 영하라는 한 조건만으로 끝나지 않는다. 과냉각 수분과 노출 위치를 확인하고 운항 위험 체계 안에서 상태를 분류한다.
+난기류등급	boundary,classification,comparison	false	-	난기류등급은 승객이 불편하다고 느낀 정도만으로 정하지 않는다. 고도·자세 변화와 조종 가능성, 기체 반응을 기준 사례와 비교해 분류한다.
+적란운회피구역	boundary,function,state	false	-	적란운회피구역은 구름 윤곽선과 정확히 일치하지 않는다. 번개·우박·강한 상승류 영향을 피하도록 구름 주변에 여유를 둔 운항 상태 범위다.
+뇌우경보유효시간	boundary,process,state	false	-	뇌우경보유효시간은 경보를 읽은 시각부터 계산하지 않는다. 발효 시각과 종료 시각 사이에 예상 위험이 적용되며 갱신되면 새 구간으로 바뀐다.
+활주로제동상태	attribute,boundary,state	false	-	활주로제동상태는 노면이 젖었다는 외관과 같지 않다. 감속 성능이나 마찰 보고를 통해 항공기가 멈출 수 있는 상태를 평가한 속성이다.
+젖은활주로판정	boundary,classification,state	false	-	젖은활주로판정은 빗방울이 한 번 닿은 경우를 모두 포함하지 않는다. 사용 구간에 물기가 퍼져 반사되거나 정해진 피복 기준을 넘은 상태로 분류한다.
+저시정절차발동	boundary,function,process	false	-	저시정절차발동은 안개가 보이면 자동으로 시작되는 행동이 아니다. 관측값이 기준 아래로 내려가면 차량과 항공기 이동 보호 절차를 단계적으로 가동한다.
+기상회피우회상태	boundary,part_of,process,role	true	-	기상회피우회상태는 조종사 혼자 경로를 바꾼 결과로만 보지 않는다. 회피 요청과 관제 조정, 새 허가가 이어지는 운항 과정에서 각 역할을 구분한다.
+윈드시어경보와예보	boundary,contrast,function	false	-	윈드시어경보와예보는 위험을 알린다는 기능은 같지만 시간 기준이 다르다. 현재 탐지된 급변을 알리는 경보와 앞으로의 가능성을 알리는 예보를 나눈다.
+눈제거완료기준	boundary,process,state	false	-	눈제거완료기준은 제설차가 한 번 지나갔다는 뜻이 아니다. 필요한 폭과 마찰, 표지 가시성이 회복되어 작업 상태를 종료할 수 있는지 확인한다.
+운항가능기상창	boundary,other,state	false	context_convention_dependence	운항가능기상창은 하늘이 맑은 모든 시간을 말하지 않는다. 공항·기종·승무원 자격에 따른 최저치를 동시에 만족하는 제한된 시간 구간이다.
+# 06. 관제·분리·통신의 경계
+관제허가와정보제공	boundary,contrast,function	false	-	관제허가와정보제공은 같은 무선 문장에 포함돼도 효력이 다르다. 따라야 할 행동을 승인하는 기능과 판단에 참고할 사실을 알려 주는 기능을 구별한다.
+고도배정과권고	boundary,contrast,role	false	-	고도배정과권고는 숫자가 함께 제시돼도 동일하지 않다. 관제사가 준수할 고도를 지정하는 역할과 안전을 위해 선택지를 제안하는 역할이 다르다.
+레이더식별상태	boundary,classification,state	false	-	레이더식별상태는 화면에 표적이 나타났다는 사실만으로 성립하지 않는다. 표시된 항적이 특정 항공기와 확실히 연결된 상태여야 식별로 분류한다.
+분리최저치적용	boundary,function,state	false	-	분리최저치적용은 두 항공기가 멀어 보인다는 직관이 아니다. 공역·감시장비·비행 단계에 맞는 수평 또는 수직 기준을 유지하는 상태다.
+관제공역등급전환	boundary,classification,contrast,other	true	context_convention_dependence	관제공역등급전환은 지도 선을 넘는 순간 모든 규칙이 똑같이 바뀐다는 뜻이 아니다. 새 등급의 통신·허가·분리 요건과 기존 요건을 절차별로 대조한다.
+시계비행과계기비행	boundary,contrast,classification	false	-	시계비행과계기비행은 창밖을 보느냐 계기를 보느냐만으로 나뉘지 않는다. 적용 비행규칙과 기상 조건, 관제 절차에 따라 운항 방식을 분류한다.
+비행정보업무범위	boundary,function,role	false	-	비행정보업무범위는 관제 허가를 대신 발부하는 업무가 아니다. 기상·공항·교통 정보를 제공해 안전한 판단을 돕는 기능과 역할에 한정된다.
+긴급통신우선순위	boundary,classification,state	false	-	긴급통신우선순위는 목소리가 큰 호출부터 처리하는 순서가 아니다. 조난·긴급·일반 통신의 상태와 위험도를 기준으로 전파 사용 순위를 분류한다.
+호출부호오인식	boundary,other,state	false	representation_referent_gap	호출부호오인식은 무선 잡음이 있었다는 사실 자체가 아니다. 들은 기호열을 다른 항공기의 식별자와 연결해 잘못된 대상으로 이해한 상태를 뜻한다.
+항적융합표시	boundary,function,process	false	-	항적융합표시는 여러 점을 한 화면에 겹치는 것과 다르다. 레이더와 위성 보고를 동일 항공기의 연속 이동으로 연결해 하나의 항적으로 갱신하는 과정이다.
+예상접근시간	boundary,process,state	false	-	예상접근시간은 실제 착륙 시각의 약속이 아니다. 대기와 관제 흐름을 고려해 접근을 시작할 것으로 계산한 시각이며 상황 변화에 따라 갱신된다.
+착륙순서와착륙허가	boundary,classification,role,state	true	-	착륙순서와착륙허가는 항공기가 첫 번째라는 이유만으로 함께 성립하지 않는다. 순서 배정 상태와 관제사가 활주로 사용을 승인하는 역할을 따로 확인한다.
+조건부허가효력	boundary,other,state	false	normative_authority_scope	조건부허가효력은 조건 문구를 들은 즉시 행동해도 된다는 뜻이 아니다. 지정 항공기나 사건이 먼저 확인된 뒤에만 허가가 유효한 상태가 된다.
+공중대기지시	boundary,function,state	false	-	공중대기지시는 속도를 조금 늦추라는 요청과 다르다. 지정 지점과 방향, 고도에서 반복 경로를 유지하도록 하는 관제 기능과 상태를 뜻한다.
+관제이양완료	boundary,process,state	false	-	관제이양완료는 다음 주파수를 알려 준 순간이 아니다. 항공기가 새 기관과 통신하고 그 기관이 식별과 책임을 받아들여야 인계 과정이 끝난다.
+# 07. 항공기 장치와 경보의 경계
+자동조종장치결합상태	boundary,function,state	false	-	자동조종장치결합상태는 모드 버튼에 불이 켜졌다는 사실만으로 판단하지 않는다. 선택한 축의 조종 기능이 실제로 기체 명령을 수행하는 상태여야 한다.
+비행지시계와자동조종	boundary,contrast,function	false	-	비행지시계와자동조종은 같은 목표 자세를 계산해도 기능이 다르다. 하나는 조종할 방향을 표시하고 다른 하나는 조종면에 명령을 보내 자동으로 따른다.
+실속경보와실속상태	boundary,contrast,state	false	-	실속경보와실속상태는 반드시 동시에 생기지 않는다. 경보는 임계 받음각 접근을 알리고 실속은 날개 양력이 실제로 급격히 줄어든 상태다.
+지상근접경보범위	boundary,function,state	false	-	지상근접경보범위는 모든 낮은 비행을 위험으로 선언하지 않는다. 지형 접근률과 형상, 비행 단계가 위험 조합일 때 경고 기능이 작동하는 범위다.
+충돌회피권고단계	boundary,classification,other,role	true	normative_authority_scope	충돌회피권고단계는 관제사의 교통 정보와 같은 효력이 아니다. 장비가 회피 기동을 요구하는 단계에서는 조종사의 대응 역할과 관제 지시의 우선 관계가 달라진다.
+엔진화재경보확인	boundary,other,state	false	evidence_inference_scope	엔진화재경보확인은 경고등 하나만으로 실제 화재를 단정하는 일이 아니다. 센서 조합과 온도·연기 징후를 대조해 경보 상태와 화재 증거를 구별한다.
+착륙장치잠금표시	boundary,part_of,state	false	-	착륙장치잠금표시는 바퀴가 아래에서 보인다는 관찰과 다르다. 전개 과정 중 잠금 장치가 체결되어 하중을 받을 준비가 끝난 상태를 표시한다.
+플랩설정위치	attribute,boundary,state	false	-	플랩설정위치는 레버가 가리키는 숫자만을 뜻하지 않는다. 명령 위치와 날개 장치의 실제 전개 각도가 일치하는지 확인해야 유효한 상태 속성이다.
+추력역전장치작동	boundary,function,process	false	-	추력역전장치작동은 엔진 출력이 낮아진 것과 다르다. 착륙 뒤 배기나 팬 흐름을 바꾸어 감속력을 만드는 기능이 전개되는 과정이다.
+항공전자장비고장구분	boundary,classification,state	false	-	항공전자장비고장구분은 화면이 잠시 꺼졌다는 현상만으로 정하지 않는다. 전원·센서·표시장치 중 기능을 잃은 계통과 지속 상태를 찾아 분류한다.
+주전원과비상전원	boundary,contrast,function	false	-	주전원과비상전원은 전압이 같아도 사용 목적이 다르다. 정상 계통 전체를 공급하는 기능과 고장 뒤 필수 장비만 제한적으로 유지하는 기능을 나눈다.
+비행기록장치자료상태	boundary,function,process,state	true	-	비행기록장치자료상태는 장치 외형이 온전하다는 사실로 판단할 수 없다. 기록 기능이 수행된 과정과 회수 뒤 판독 가능한 상태를 각각 확인해야 한다.
+객실고도경보	attribute,boundary,state	false	-	객실고도경보는 항공기의 비행 고도가 높다는 이유로 울리지 않는다. 여압된 객실의 등가 고도가 정한 한계를 넘은 상태를 감지하는 경보다.
+연료량지시오차	attribute,boundary,comparison	false	-	연료량지시오차는 표시값 자체가 아니라 실제 또는 계산 기준량과의 차이다. 센서 허용오차와 비교해 정상 편차인지 고장 징후인지 경계를 정한다.
+결함이월허용항목	boundary,classification,state	false	-	결함이월허용항목은 고친 뒤에도 기록을 남긴 부품이 아니다. 정해진 조건과 기간 동안 수리를 미뤄도 운항할 수 있도록 승인된 결함 상태로 분류한다.
+# 08. 승객·수하물·보안 절차의 경계
+탑승완료판정	boundary,process,state	false	-	탑승완료판정은 마지막 승객이 탑승교를 건넌 순간만을 뜻하지 않는다. 명부 대조와 문 폐쇄 준비, 미탑승 수하물 처리가 끝난 상태를 확인한다.
+탑승권과신분확인	boundary,contrast,function	false	-	탑승권과신분확인은 모두 승객을 확인하지만 기능이 다르다. 하나는 특정 항공편 이용 권한을, 다른 하나는 제시한 사람이 본인인지를 검증한다.
+위탁수하물과휴대수하물	boundary,contrast,classification	false	-	위탁수하물과휴대수하물은 크기만으로 나누지 않는다. 운송 중 항공사가 화물칸에서 관리하는지 승객이 객실에 가지고 타는지에 따라 분류한다.
+위험물신고대상	boundary,classification,state	false	-	위험물신고대상은 냄새가 강하거나 무거운 물품의 목록이 아니다. 운송 중 화재·폭발·독성 위험을 일으킬 수 있어 규정상 신고가 필요한 상태로 분류한다.
+보안검색과안전점검	boundary,classification,contrast,other	true	normative_authority_scope	보안검색과안전점검은 장비를 살펴본다는 외형만으로 같아지지 않는다. 불법 반입을 막는 규정상 검사와 운항 결함을 찾는 기술 점검의 권한을 구별한다.
+탑승구마감시각	boundary,process,state	false	-	탑승구마감시각은 항공권에 적힌 출발 시각과 다르다. 승객 처리를 끝내고 좌석·수하물 자료를 확정하기 위해 탑승 접수를 중단하는 경계 시각이다.
+환승수하물인계	boundary,part_of,process	false	-	환승수하물인계는 가방을 다음 카트에 싣는 동작 하나가 아니다. 도착편 식별에서 분류·보안 확인을 거쳐 출발편 관리로 넘기는 연결 과정의 일부다.
+유아승객좌석조건	boundary,classification,state	false	-	유아승객좌석조건은 나이가 어리다는 이유로 언제나 무릎 탑승을 허용하지 않는다. 연령·체중·좌석 장치 규정에 따라 필요한 보호 상태를 분류한다.
+기내반입제한품	boundary,classification,other	false	normative_authority_scope	기내반입제한품은 위험해 보이는 모든 물건이 아니다. 객실 반입, 위탁 운송, 조건부 허용을 구분한 보안 규정에 따라 범주가 결정된다.
+비상구좌석배정	boundary,function,state	false	-	비상구좌석배정은 다리 공간을 선호하는 승객에게 주는 편의가 아니다. 비상시 출구 개방을 도울 능력과 의사를 확인한 뒤 부여되는 기능적 배정 상태다.
+탑승거절과운송거부	boundary,contrast,state	false	-	탑승거절과운송거부는 비행기에 타지 못했다는 결과만 같을 뿐 범위가 다르다. 특정 편의 좌석 제한과 계약상 운송 자체의 거부를 구별해야 한다.
+지연승객연결보호	boundary,function,role	false	-	지연승객연결보호는 다음 항공편이 무조건 기다린다는 보장이 아니다. 환승 가능 시간과 대체편을 살펴 연결 실패를 줄이는 운영 기능과 담당 역할이다.
+수하물미탑재상태	boundary,part_of,state	false	-	수하물미탑재상태는 가방이 탑승구에 보이지 않는다는 뜻이 아니다. 승객과 연결된 위탁물이 출발 항공기의 화물 적재 목록에 포함되지 않은 상태다.
+승객명부확정	boundary,process,state	false	-	승객명부확정은 예약 명단을 출력한 때가 아니다. 실제 탑승·미탑승과 승무원 정보를 대조하고 더 이상 변경하지 않도록 운항 자료를 닫는 과정이다.
+보안구역재진입	boundary,classification,part_of,state	true	-	보안구역재진입은 같은 공항 건물로 돌아온다는 위치 표현과 다르다. 통제구역 밖으로 나온 사람이 다시 검사 절차를 거쳐 제한 구역 일부에 들어간 상태다.
+# 09. 지연·회항·비상 상태의 경계
+출발지연과운항취소	boundary,contrast,state	false	-	출발지연과운항취소는 예정 시각에 뜨지 못했다는 점만 같다. 운항 의사가 남아 새 시각을 기다리는 상태와 해당 편을 더 수행하지 않는 상태를 나눈다.
+회항과우회착륙	boundary,contrast,process	false	-	회항과우회착륙은 계획 목적지에 내리지 않는다는 결과만으로 같지 않다. 출발지로 돌아가는 과정과 다른 공항을 선택해 착륙하는 과정을 구별한다.
+목적지변경결정	boundary,process,state	false	-	목적지변경결정은 항로를 잠시 옆으로 튼 상황이 아니다. 원래 목적지 착륙을 포기하고 대체 공항을 새로운 도착지로 확정하는 의사결정 상태다.
+기술회항상태	boundary,classification,state	false	-	기술회항상태는 기내 불편 때문에 돌아오는 모든 비행을 뜻하지 않는다. 기체나 장비의 기술적 이상을 이유로 출발지 또는 정비 가능 공항으로 향하는 상태다.
+의료비상착륙	boundary,classification,process	false	-	의료비상착륙은 승객이 아프다고 말한 모든 경우가 아니다. 즉각적 치료 필요성이 운항 계획 변경과 우선 착륙 절차를 촉발한 경우로 분류한다.
+비상선언등급	boundary,classification,state	false	-	비상선언등급은 승무원의 불안 정도를 나타내지 않는다. 안전 위협의 긴급성과 지원 필요 범위에 따라 조난·긴급 등의 통신 상태를 분류한다.
+조난과긴급상태	boundary,contrast,state	false	-	조난과긴급상태는 모두 우선 통신 대상이지만 심각도가 다르다. 즉각적이고 중대한 위험이 있는 상태와 신속한 도움이 필요하나 당장 파국적이지 않은 상태를 나눈다.
+연료최저상태	boundary,classification,state	false	-	연료최저상태는 법정 예비연료를 이미 모두 썼다는 선언이 아니다. 추가 지연을 받아들이기 어려워 관제에 상황을 알리는 제한 상태로 분류한다.
+잔여연료비상선언	attribute,boundary,state	false	-	잔여연료비상선언은 연료계 숫자가 특정 값 아래라는 조건 하나로 정하지 않는다. 가장 가까운 안전 착륙 뒤 남을 연료가 요구량보다 부족할 상태를 뜻한다.
+통신두절단계	boundary,classification,process	false	-	통신두절단계는 한 번 응답하지 않은 순간 곧바로 확정되지 않는다. 주파수·장비·중계 수단을 차례로 확인해 양방향 교신 실패가 지속되는 과정을 분류한다.
+항공기수색단계	boundary,classification,process	false	-	항공기수색단계는 예정 시각을 넘긴 사실만으로 최고 수준을 선언하지 않는다. 연락 확인과 위치 불확실성, 위험 단서가 누적되는 순서에 따라 대응 과정을 분류한다.
+사고와준사고구분	boundary,contrast,classification	false	-	사고와준사고구분은 뉴스 보도의 표현에 따르지 않는다. 인명 피해나 기체 손상 결과와 안전에 중대한 영향을 준 사건 조건을 기준으로 분류한다.
+운항재개승인	boundary,process,state	false	-	운항재개승인은 정비 작업이 끝났다는 말만으로 성립하지 않는다. 검사와 문서 확인을 거쳐 기체가 다시 운항 가능한 상태로 공식 전환되는 과정이다.
+예비공항사용상태	boundary,function,state	false	-	예비공항사용상태는 비행계획에 이름이 적힌 것만으로 현재 목적지가 되지 않는다. 원 목적지 사용이 곤란해 대체 착륙 기능이 실제로 활성화된 상태다.
+결항사유분류책임	boundary,classification,other,role	true	normative_authority_scope	결항사유분류책임은 현장 직원 개인의 인상에 맡기지 않는다. 기상·정비·운영 원인을 증거로 나누고 보상 규정에 맞게 기록할 권한과 역할을 확인한다.
+# 10. 사고 조사와 안전 판단의 경계
+비행자료와음성자료	boundary,contrast,function	false	-	비행자료와음성자료는 같은 기록장치에서 회수돼도 기능이 다르다. 수치화된 기체 상태와 조종실 대화·소리를 서로 다른 증거로 해석한다.
+사고현장보존범위	boundary,function,part_of	false	-	사고현장보존범위는 눈에 보이는 잔해 주변만 뜻하지 않는다. 충돌 흔적과 분산 부품, 접근 기록을 지키도록 조사 구역의 필요한 부분을 설정한다.
+잔해위치와충돌순서	boundary,contrast,process	false	-	잔해위치와충돌순서는 서로 관련돼도 같은 정보가 아니다. 최종적으로 발견된 공간 배치와 기체가 지면·물체에 닿은 시간적 과정을 나누어 추론한다.
+사실정보와분석의견	boundary,contrast,classification	false	-	사실정보와분석의견은 보고서 문장이라는 이유로 같은 증거가 아니다. 관측·기록으로 확인된 내용과 그 의미를 설명한 판단을 별도 범주로 분류한다.
+안전권고와행정명령	boundary,contrast,other	false	normative_authority_scope	안전권고와행정명령은 개선을 요구한다는 표현이 비슷해도 구속력이 다르다. 조사기관의 예방 제안과 권한기관이 내린 의무 조치를 구별해야 한다.
+원인과기여요인	boundary,contrast,classification	false	-	원인과기여요인은 사건에 영향을 주었다는 공통점만으로 합치지 않는다. 사고를 직접 설명하는 핵심 조건과 위험을 키웠지만 단독으로 충분하지 않은 조건을 분류한다.
+운항규정위반판단	boundary,classification,other	false	normative_authority_scope	운항규정위반판단은 결과가 나빴다는 이유로 소급해 정하지 않는다. 당시 적용된 규정과 예외, 승무원이 알 수 있었던 조건을 기준으로 행위를 분류한다.
+목격진술신뢰범위	boundary,other,state	false	evidence_inference_scope	목격진술신뢰범위는 말한 사람이 확신한다는 태도와 같지 않다. 관찰 거리와 시야, 시간 경과, 다른 기록과의 일치 정도 안에서 증거 상태를 평가한다.
+레이더항적해석	boundary,other,process	false	evidence_inference_scope	레이더항적해석은 화면의 선을 실제 비행 경로와 완전히 동일시하지 않는다. 표본 간격과 위치 오차를 고려해 이동 과정을 제한적으로 복원한다.
+경보미응답추론	boundary,comparison,other,state	true	evidence_inference_scope	경보미응답추론은 조종사가 경보를 듣지 못했다고 곧바로 결론내리는 일이 아니다. 기록 경보·조작 반응·청취 여건을 서로 대조해 증거가 허용하는 판단까지만 남긴다.
+재현비행시험경계	boundary,function,other	false	evidence_inference_scope	재현비행시험경계는 사고 비행을 완전히 반복하는 실험이 아니다. 안전한 조건에서 일부 변수의 기능만 검증하며 실제 사건의 모든 원인을 입증하지 않는다.
+조종실절차준수판정	boundary,classification,state	false	-	조종실절차준수판정은 체크리스트를 펼쳤다는 사실과 다르다. 필요한 시점에 항목을 확인하고 상호 점검까지 수행한 상태인지 기록으로 분류한다.
+안전문화지표한계	attribute,boundary,other	false	evidence_inference_scope	안전문화지표한계는 설문 점수가 조직의 모든 행동을 직접 보여 준다는 뜻이 아니다. 응답 편향과 표본 범위를 고려해 측정 속성이 설명할 수 있는 경계를 정한다.
+위험평가와사고예측	boundary,contrast,function	false	-	위험평가와사고예측은 미래를 다룬다는 이유로 같지 않다. 위험평가는 가능성과 피해를 비교해 통제 우선순위를 정하며 특정 사고 시점을 맞히는 기능은 아니다.
+조사종결과책임판정	boundary,contrast,process	false	-	조사종결과책임판정은 같은 보고서 발표로 동시에 끝나는 절차가 아니다. 안전 원인 조사의 종료와 법적·징계상 책임을 정하는 별도 과정을 구별한다.

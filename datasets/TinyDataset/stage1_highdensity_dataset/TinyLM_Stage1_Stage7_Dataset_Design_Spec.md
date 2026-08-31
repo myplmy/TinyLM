@@ -247,6 +247,8 @@ Relations: `is_a` 0, `subclass_of` 0, `part_of` 73, `classification` 18, `bounda
 - `stage2_(2)attribute_high_density_*`와 일치하는 모든 확정 파일; 현재 경로에 없어도 pattern을 보호
 - `stage1_(3)function_high_density_train_v01.json`~`v27.json`
 - `stage1_(3)function_high_density_val_v01.json`~`v03.json`
+- `stage1_(4)boundary_high_density_train_v01.json`~`v31.json`
+- `stage1_(4)boundary_high_density_val_v01.json`~`v04.json`
 - held-out benchmark는 source로 사용하지 않고 열람 결과로 corpus를 고치지 않는다.
 
 새 영역 작업은 위 정본의 시작·종료 SHA-256을 비교한다. legacy 형식이 다르다는 이유로 재직렬화하지 않는다.
@@ -279,6 +281,11 @@ tools/build_boundary_train.py
 tools/audit_boundary_corpus.py
 TinyLM_Stage1_Boundary_Train_v01_v31_Full_Audit_2026-08-31.json
 TinyLM_Stage1_Boundary_Train_v01_v31_Final_Audit_2026-08-31.md
+tools/boundary_validation_sources/v01.tsv ... v04.tsv
+tools/build_boundary_validation.py
+tools/audit_boundary_validation.py
+TinyLM_Stage1_Boundary_Validation_v01_v04_Audit_2026-08-31.json
+TinyLM_Stage1_Boundary_Validation_v01_v04_Final_Report_2026-08-31.md
 ```
 
 과거 handoff의 v18 재작성 전 상태와 삭제 예정이던 continuity summary의 v17 누적은 역사적 기록이다. 현재 상태는 실제 파일과 위 최신 감사가 기준이다.
@@ -289,6 +296,7 @@ TinyLM_Stage1_Boundary_Train_v01_v31_Final_Audit_2026-08-31.md
 - Attribute train v01~v31, validation v01~v04: 완료·수정 금지
 - Function train v01~v27, validation v01~v03: 완료·수정 금지
 - Stage1 (4) Boundary train v01~v31: 4,650 records 완료·감사 통과·수정 금지
+- Stage1 (4) Boundary validation v01~v04: 600 records 완료·감사 통과·수정 금지
 - 다음 영역은 사용자 승인과 별도 family 원장 없이 시작하지 않는다.
 
 ## 12. Stage1 (4) 개념 경계·반례 train 설계 원장
@@ -402,3 +410,83 @@ Relations 전체 분포는 다음과 같다.
 최종 통합 감사 결과 schema·metadata·ID·source↔JSON·통제 relation 오류가 모두 0건이며 exact ID·primary concept·text·concept–relation-set 중복도 모두 0건이다. 내부/기존 고밀도 교차 5어절 반복과 4어절 도입부 반복은 0건이다. 1차 조사 후보에서 고친 실제 오류 뒤 primary concept 조사 오류는 0건이고, 광범위 탐지 79건은 전수 문맥 확인 결과 어간·명사를 조사 결합으로 잘못 잡은 false positive였다. 내부 최대 문자 3~5-gram TF-IDF cosine은 `0.353981`, 기존 고밀도 train/validation과의 최대값은 `0.382725`이며 상위 쌍은 인접 개념을 서로 다른 교육 목적으로 서술한 정상 쌍이다. 기존 고밀도와 exact concept·text·concept–relation-set 교집합은 모두 0건이다. 수학·논리 표기에 쓰인 특수문자 후보 17건은 모두 의미상 정상이고 control character 및 Unicode escape 파일은 0건이다.
 
 작업 시작 시 고정한 Identity·Attribute·Function train/validation 보호 파일 110개의 SHA-256은 종료 시 110/110 모두 일치했다. 다른 밀도의 데이터는 생성·중복 비교·감사 기준에서 제외했다. 파일별 SHA-256과 버전별 relation 분포는 `TinyLM_Stage1_Boundary_Train_v01_v31_Final_Audit_2026-08-31.md`와 기계 판독 정본 `TinyLM_Stage1_Boundary_Train_v01_v31_Full_Audit_2026-08-31.json`에 보존한다.
+
+## 13. Stage1 (4) 개념 경계·반례 validation 설계 원장
+
+### 13.1 목표·schema·분리 해석
+
+```text
+설계량: 사용자 지정 약 36K
+목표: 600 records = 4 files × 150
+train 대비 record 비율: 600/4,650 = 12.90%
+파일명: stage1_(4)boundary_high_density_val_v01.json ... v04.json
+ID: S1-BNV-0001 ... S1-BNV-0600
+type: boundary_packet
+split: val
+unseen_relation: 모든 record에 boolean으로 포함
+일반화 slice: 72/600 = 12.00%, 파일별 18/150
+상태: v01~v04 확정·수정 금지
+```
+
+Boundary train v01~v31에는 통제 relation 이름 13개가 모두 관측되었다. 따라서 통제 어휘 밖 label을 만들지 않고, `unseen_relation: true`는 **train의 51개 정렬 relation-set에 없던 통제 label 조합**을 사용하는 compositional unseen record로 정의한다. false 528개는 train에서 관측된 정렬 relation-set만 사용하고, true 72개는 train에 없던 정렬 relation-set만 사용한다. true와 false 모두 개별 relation 이름은 train에 이미 등장한 13개 통제 어휘로 제한한다.
+
+Validation 문장은 Boundary train의 exact text, primary concept, `(primary concept, sorted relation-set)`, 5어절 이상 문구를 재사용하지 않는다. train 문장의 단순 바꿔쓰기도 금지하고, 새 전문 맥락에서 겉보기 유사성·인접 범주·상태와 정체성·필요충분·증거 범위·규범 범위의 경계를 판정하게 한다.
+
+### 13.2 4개 예약 concept family
+
+| 버전 | ID 범위 | 새 concept family | 일반화 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 고고학·문화유산·박물관 수집·해석·보존 경계 | 유물/복제품, 출토 맥락/소유 이력, 보존/복원/재현, 연대/시대 판정, 전시/연구/윤리 | 확정 |
+| v02 | 0151~0300 | 항공운항·공항·항공교통·비행안전 경계 | 활주로/유도로, 지연/결항, 관제/조종, 고도/고도계, 경보/비상, 승객/수하물 | 확정 |
+| v03 | 0301~0450 | 해양항해·선박운항·항만작업·해상안전 경계 | 항로/항적, 정박/계류, 좌초/침몰, 선장/도선사, 조난/긴급, 화물/선용품 | 확정 |
+| v04 | 0451~0600 | 심리·인지·행동·상담·심리측정 경계 | 기분/감정, 기억/회상, 주의/의식, 성향/상태, 검사/진단, 상담/치료/윤리 | 확정 |
+
+### 13.3 `other` 편집 분류와 확정 조건
+
+`other`가 필요한 record는 JSON relation 이름을 늘리지 않고 source 원장에서 다음 다섯 편집 유형 중 하나로만 기록한다: `evidence_inference_scope`, `representation_referent_gap`, `normative_authority_scope`, `context_convention_dependence`, `necessary_sufficient_logic`. 이 값은 감사·보고용이며 JSON record의 relation으로 노출하지 않는다.
+
+각 파일은 150개, unseen 18개, ID 범위, 신규 concept, train 분리, 통제 relation, 문장 품질과 전체 감사가 모두 통과한 뒤에만 `확정`으로 바꾼다. 실제 tokenizer가 지정되지 않았으므로 약 36K는 설계 환산량으로 보존하고, 완료 시 문자 수와 `[0-9A-Za-z가-힣]+` 분리 단위를 별도로 보고한다.
+
+### 13.4 2026-08-31 생성·수정·최종 감사 이력
+
+```text
+상태: v01~v04 확정·수정 금지
+파일/record: 4 files × 150 = 600 records
+ID: S1-BNV-0001 ~ S1-BNV-0600
+text: 48,932자 / 정규식 분리 단위 11,646개
+길이: 최소 66자 / 중앙값 81자 / 평균 81.553자 / 최대 111자
+원문: tools/boundary_validation_sources/v01.tsv ... v04.tsv
+패키징: tools/build_boundary_validation.py
+감사: tools/audit_boundary_validation.py
+```
+
+| version | 파일 | ID 범위 | records | unseen | concept family | SHA-256 |
+|---|---|---|---:|---:|---|---|
+| v01 | `stage1_(4)boundary_high_density_val_v01.json` | 0001~0150 | 150 | 18 | 고고학·문화유산·박물관 수집·해석·보존 경계 | `a61585e24263a191c432300c7bab6566198e2190e92c640b04b4cbe36dc92bda` |
+| v02 | `stage1_(4)boundary_high_density_val_v02.json` | 0151~0300 | 150 | 18 | 항공운항·공항·항공교통·비행안전 경계 | `255611dcc98cc08ee8ff3c7389c1876a80837a3121131370064a3471f59ba486` |
+| v03 | `stage1_(4)boundary_high_density_val_v03.json` | 0301~0450 | 150 | 18 | 해양항해·선박운항·항만작업·해상안전 경계 | `5fb8a80b9ba996b02ac7890513bebf453dde3219a731f63c4066d0cbc6cc1df0` |
+| v04 | `stage1_(4)boundary_high_density_val_v04.json` | 0451~0600 | 150 | 18 | 심리·인지·행동·상담·심리측정 경계 | `a7e308c35389e4487e2bbc476d92f5009a611b51d331ff1f5d69ad3717e6430a` |
+
+Relations 전체 분포는 다음과 같다.
+
+| relation | 횟수 | relation | 횟수 |
+|---|---:|---|---:|
+| `is_a` | 0 | `subclass_of` | 0 |
+| `part_of` | 39 | `classification` | 186 |
+| `boundary` | 600 | `contrast` | 173 |
+| `comparison` | 47 | `function` | 121 |
+| `role` | 61 | `process` | 140 |
+| `state` | 308 | `attribute` | 66 |
+| `other` | 131 |  |  |
+
+`other` 131건의 편집상 상위 5유형은 증거·추론 범위 63건, 규범·권한 범위 41건, 표현–지시대상 간극 11건, 문맥·관례 의존 10건, 필요·충분 논리 6건이다. 대표 concept는 각각 `작가서명과진위증명`, `소장기록과소유권`, `색맞춤과원색복원`, `분류명과실제용도`, `양식유사성과동시대성`이다.
+
+일반화 slice는 `unseen_relation: true` 72건과 false 528건으로 전체 12.00%이며 각 파일은 true 18건, false 132건이다. true에서 사용한 12개 고유 정렬 relation-set은 모두 Boundary train의 51개 set에 없고, false의 모든 set은 train에 관측되었다. 개별 relation 이름은 true/false 전부 train에서 관측된 13개 통제 어휘만 사용했으며 train 미관측 개별 label은 0건이다.
+
+1차 통합 감사에서 내부 반복 5어절 6개, Boundary train 공통 5어절 2개, 기존 다른 고밀도 train과 겹친 primary concept 4개를 발견해 validation source만 직접 고쳤다. 이어 교차 유사도 상위 문장을 사람이 대조하여 train 교육 객체와 실질적으로 겹친 `조류/해류`, `무작위배정/표집`, `상관/인과`, 인접한 `맹검/기만` 문항을 각각 `조석류/취송류`, `개별/군집 무작위화`, `기제설명/통계예측`, `조건은폐/불완전고지` 판정으로 다시 설계했다.
+
+최종 통합 감사 결과 JSON·UTF-8·metadata·schema·ID·source↔JSON·통제 relation·unseen 선언 오류는 모두 0건이다. 내부 exact ID·primary concept·text·concept–relation-set 중복, 반복 5어절, 반복 4어절 도입부도 모두 0건이다. Boundary train 및 기존 고밀도 전체와 exact primary concept·text·concept–relation-set·5어절 교집합은 모두 0건이다. 내부 최대 문자 3~5-gram TF-IDF cosine은 `0.265277`, Boundary train 교차 최대는 `0.207517`, 기존 고밀도 전체 교차 최대는 `0.212943`이다. 상위 pair를 문장까지 직접 검토했으며 서로 다른 판정 축 또는 전문 영역의 정상적인 인접 개념이었다.
+
+Primary concept 직후 조사 오류는 0건이다. 문장 전체의 기계 조사 후보 5건은 `전문가`의 어휘 말음과 `붙잡는`, `넘겨받는`, `보고받는`, `평가받는`의 활용 어미를 조사로 오인한 false positive로 확인되어 실제 오류는 0건이다. control character, Unicode escape, 비정상 문자 후보도 0건이다.
+
+작업 시작 시 고정한 Identity·Attribute·Function train/validation, Stage2 Attribute 확정 파일, Boundary train 보호 파일 141개의 SHA-256은 종료 시 141/141 모두 일치했다. 다른 밀도와 held-out은 생성·중복 비교·감사 기준에서 제외했다. 상세 수치와 version별 relation 분포는 `TinyLM_Stage1_Boundary_Validation_v01_v04_Final_Report_2026-08-31.md`와 기계 판독 정본 `TinyLM_Stage1_Boundary_Validation_v01_v04_Audit_2026-08-31.json`에 보존한다.
