@@ -1,0 +1,40 @@
+[1/2] the dense parent that every tied run initialises from
+
+==============================================================================
+[runlog] 2026-08-31 01:26:20  name=P076_stage0_group_agg
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\diag_group_agg.py --preset m100R1c --data ko-en --tokens 300M --tag dense
+==============================================================================
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+Traceback (most recent call last):
+  File "z:\TinyLM\scripts\diag_group_agg.py", line 172, in <module>
+    sys.exit(main())
+  File "z:\TinyLM\scripts\diag_group_agg.py", line 70, in main
+    cfg = build_config(a.preset, arch="tied")
+TypeError: build_config() missing 1 required positional argument: 'seq'
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-08-31 01:26:22)
+==============================================================================
+[2/2] g=4 as well - the shrink ratio may depend on group size
+
+==============================================================================
+[runlog] 2026-08-31 01:26:22  name=P076_stage0_group_agg
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\diag_group_agg.py --preset m100R1c --data ko-en --tokens 300M --tag dense --group 4
+==============================================================================
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+Traceback (most recent call last):
+  File "z:\TinyLM\scripts\diag_group_agg.py", line 172, in <module>
+    sys.exit(main())
+  File "z:\TinyLM\scripts\diag_group_agg.py", line 70, in main
+    cfg = build_config(a.preset, arch="tied")
+TypeError: build_config() missing 1 required positional argument: 'seq'
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-08-31 01:26:24)
+==============================================================================
+READ IN THIS ORDER
+1. the shrink ratio per kind (mlp / attn). That is the whole experiment.
+2. mean cosine. Low cosine explains a low shrink ratio.
+3. the verdict line. It decides whether stage 2 (2.7h per arm) opens at all.
+4. this measures INITIALISATION geometry only. How much training washes it
+   out is not answered here - that is stage 2.

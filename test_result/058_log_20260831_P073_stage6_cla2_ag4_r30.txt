@@ -1,0 +1,268 @@
+=============================================================================
+P073 stage 6   R=3 on the cheap-KV body
+Stage 4 showed recursion pays 1.61x more on this body than on cla1.
+The recursion ruler is now measured, not borrowed.
+==============================================================================
+[1/3] train - mC_cla2_ag4 plus --train-repeat 3.0
+
+==============================================================================
+[runlog] 2026-08-31 07:19:17  name=P073_stage6_cla2_ag4_r30
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --attn-group 4 --train-repeat 3.0 --init-from --tag mC_cla2_ag4_r30
+==============================================================================
+[cmd] python run100m.py train --preset m100R1c --arch tied --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --attn-group 4 --train-repeat 3.0 --init-from --tag mC_cla2_ag4_r30
+[ckpt] m100R1c 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[attn] ★어텐션 타잉 g=4 — 중간 16층이 어텐션 4개를 공유한다. ⚠️cla_group=2 과 겹치므로 대가 귀속에 cla1 대조가 필요하다(P057)
+[repeat] ★학습 시 재귀 R=3.0 mode=uniform — ★상주 파라미터는 불변, 계산 깊이만 늘어난다. ⚠️활성 메모리와 벽시계는 반복 배수만큼 는다
+[init] ★P057 그룹평균 어텐션 이식: attn_group=4, 공유 어텐션 4개
+[init]   공유 어텐션 0: 교사 층 [2, 3, 4, 5] 평균
+[init]   공유 어텐션 1: 교사 층 [6, 7, 8, 9] 평균
+[init]   공유 어텐션 2: 교사 층 [10, 11, 12, 13] 평균
+[init]   공유 어텐션 3: 교사 층 [14, 15, 16, 17] 평균
+[init] ⚠️★어텐션 평균은 **MLP 평균과 같은 규약**이지만 **효과는 미검증**이다. P057 단계0 게이트가 step0 CE 로 잰다(통과 대역 5.0~9.40, 함정 34)
+[init] dense 부모초기화 완료 (중간 MLP는 8층 평균)  <- m100_ko-en_300M_dense.pt
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+16+2  MLP g=8  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       39.5M       8.1 MB
+  임베딩(factorized)               8.6M       1.8 MB
+  기타(norm/gate/router)          0.1M       0.1 MB
+  ----------------------------------------------------
+  합계                           48.2M       9.9 MB
+
+
+  저장(packed, 안 B)                          9.9 MB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        11.5 MB
+  ★상주(runtime, 현 구현)                     334.5 MB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 9.9MB 라 오해를 부른다(결과 016)
+  타이드 MLP 1그룹      : 1.0 MB  (8회 연속 재사용)
+  토큰당 FLOPs          : 0.248 GFLOP
+  ★KV 캐시(fp32)        : 39.0 KB/token  (엔트리 26개 / 방문 52회)
+                          1024 ctx 39.0 MB  → ★상주+KV = 373.5 MB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[mC_cla2_ag4_r30] device=cuda  2289step x 131K tok = 300M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.09(step~214)  anneal_end=0.80(step~1831)  완전삼진=0.80(step~1831)  decay_frac=0.20  LR감쇠시작=0.80(step~1831)  정렬됨
+W0831 07:19:48.901000 29544 site-packages\torch\_inductor\utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+Traceback (most recent call last):
+  File "z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "z:\TinyLM\tinylm\cli.py", line 270, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "z:\TinyLM\tinylm\train\trainer.py", line 653, in train
+    loss.backward()
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\_tensor.py", line 630, in backward
+    torch.autograd.backward(
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\autograd\__init__.py", line 364, in backward
+    _engine_run_backward(
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\autograd\graph.py", line 865, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 256.00 MiB. GPU 0 has a total capacity of 15.99 GiB of which 0 bytes is free. Of the allocated memory 14.67 GiB is allocated by PyTorch, and 322.10 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 1.4분  (2026-08-31 07:20:42)
+==============================================================================
+[2/3] paired - match the trained schedule, trap 39
+
+==============================================================================
+[runlog] 2026-08-31 07:20:50  name=P073_stage6_cla2_ag4_r30
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_cla2_ag4_r30 mC_cla2_ag4_r20 mC_cla2_ag4 mC_initonly_nc --match-train-repeat
+==============================================================================
+
+############################################################################################
+  P032 — 결정적 full-val + paired per-crop 비교 (학습 없음)
+############################################################################################
+  device=cuda  seq=1024  micro_bs=8  data=ko-en 300M
+  ★val 을 겹치지 않게 전부 순회한다 → eval 샘플링 노이즈 성분 = 0.
+  ★크롭별 손실을 저장해 두 모델을 **같은 크롭 위에서** 뺀다.
+  ⚠️ 이것은 **체크포인트 간** 비교다. 아키텍처 우열은 여기서 나오지 않는다.
+[data] 캐시 재사용: 300.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+
+  [건너뜀] 체크포인트 없음: m100R1c_ko-en_300M_mC_cla2_ag4_r30.pt
+
+  [P062] mC_cla2_ag4_r20: infer_repeat=2.0 where=front [train(uniform)] kv_reuse=False reuse_attn=False -^> 층 통과 36회(기준 20회)
+
+  mC_cla2_ag4_r20  full-val 3.6889   크롭 1464개 / 1,499,136 토큰
+
+  mC_cla2_ag4      full-val 3.7061   크롭 1464개 / 1,499,136 토큰
+
+  mC_initonly_nc   full-val 3.6762   크롭 1464개 / 1,499,136 토큰
+
+============================================================================================
+  결정적 full-val (같은 체크포인트면 재실행해도 동일한 값)
+============================================================================================
+  모델                full-val       크롭 표준편차
+  --------------------------------------------
+  mC_initonly_nc      3.6762        0.4583
+  mC_cla2_ag4_r20     3.6889        0.4584
+  mC_cla2_ag4         3.7061        0.4587
+
+============================================================================================
+  ★paired per-crop 비교 — 이것이 판정의 근거다
+============================================================================================
+  A vs B                           mean(A-B)       SE       t     A 승률  판정
+  ----------------------------------------------------------------------------------------
+  mC_cla2_ag4_r20 vs mC_cla2_ag4     -0.0172   0.0006  -30.29   77.2%  ★유의하고 분해능 초과
+  mC_cla2_ag4_r20 vs mC_initonly_nc     +0.0127   0.0006   20.59   29.7%  ★유의하고 분해능 초과
+  mC_cla2_ag4 vs mC_initonly_nc      +0.0299   0.0006   50.73    8.8%  ★유의하고 분해능 초과
+
+  ★쓴 자: **0.0006** — 재귀 2σ 실측(결과 039 §10) — 계열 교차(재귀↔타잉)라 큰 자를 쓴다
+  ★쓴 자: **0.0006** — 타잉 2σ 3시드(결과 039 §9)
+  ⚠️★**쌍마다 자가 다르다.** 조건이 섞여 있다는 뜻이므로 한 표에 나란히 적을 때
+     반드시 **어느 쌍이 어느 자였는지** 함께 적을 것(함정 28).
+  ⚠️분해능은 **실무 의사결정 규칙**이지 통계 검정력이 아니다 — `t` 를 함께 읽는다.
+  ⚠️'실무상 동급' 이라고 적을 때는 **통계적으로는 유의**를 함께 적는다(CLAUDE.md).
+
+  읽는 법
+    · SE 가 결과 012 의 σ=0.012 보다 **한 자릿수 작다**면 paired 설계가 의도대로 작동한 것이다.
+    · |t| ^> 2 는 "이 두 **체크포인트**가 다르다"만 말한다. 시드가 하나이므로
+      **아키텍처 우열의 근거가 아니다.** 그 주장에는 여러 시드가 필요하다(P032 §2.2).
+    · 'A 승률' 은 크롭 중 A 가 이긴 비율이다. 평균이 작아도 승률이 한쪽으로 크게 쏠리면
+      일관된 차이이고, 50% 근처면 큰 크롭 몇 개가 평균을 끌고 있는 것이다 — 둘은 다르다.
+
+  한계
+    · full-val 은 **결정적**이지만 **여전히 이 val 셋**이다. 데이터 문제(P037)는 그대로 남는다.
+    · 크롭 경계에서 컨텍스트가 끊긴다(긴 문서에 약간 불리). 두 모델에 공통이라 차이에서는 상쇄된다.
+    · bf16 autocast(cuda)면 크롭별 손실에 ULP 노이즈가 섞인다. 정밀 비교는 --device cpu 로
+      한 번 더 확인한다(느리지만 fp32).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.8분  (2026-08-31 07:21:40)
+==============================================================================
+[3/3] T1 and T2 - weights unchanged, entries 26, and what reuse would give
+
+==============================================================================
+[runlog] 2026-08-31 07:21:40  name=P073_stage6_cla2_ag4_r30
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100R1c --models mC_cla2_ag4_r30 mC_cla2_ag4_r20 mC_cla2_ag4 --drop-latent --lut --emb-quant int8 --kv-seq 1024
+==============================================================================
+================================================================================================
+  P034 단계1 — 실행시 메모리 실측 (저장 MB 는 이론·패킹 가정, 상주 MB 는 실측)
+  device=cpu  max_new=32
+  ★RSS 는 할당자 때문에 과대, 텐서합산은 임시버퍼를 빼서 과소. 둘을 함께 읽는다.
+================================================================================================
+
+  [건너뜀] 체크포인트 없음: mC_cla2_ag4_r30
+[lut] ★삼진 46개 층 -> LUT 코드. 상주 7.72 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+
+  ── mC_cla2_ag4_r20 (tied) ────────────────────────────────────────────────────────────
+     저장(이론·패킹)        8.2 MB     삼진 파라미터  39.52M @ 1.7099625007211563bpw
+     텐서합산 상주        310.6 MB  = latent 150.8 + dequant사본 150.8 + 기타 9.1
+     RSS 로드전/로드후/생성후     387.0 /   1519.9 /   1505.5 MB (증가 +1118.4)
+     ★저장 대비 상주        37.8 배
+     ★KV 캐시              27.0 MB  @ seq 1024 (27.00 KB/token · 엔트리 18개 / 방문 36회 · 4B) ★train_repeat 2 로 셌다
+                        ⚠️**seq 에 선형**이다 — 한 수가 아니라 기울기로 읽는다. cla_group↓·재귀↑ 가 엔트리를 늘린다
+     ── P034 ★P014 단계1 (latent 해제 + **LUT 1.600bpw**) ──────────────────────────────
+     로짓 차이         max|dlogit| = 2.298e+00   동작확인(품질 기준 아님)
+     ⚠️★**0 이 아닌 것이 정상**이다 — LUT 는 per-row alpha 로 재추정한다(768 에 5의 배수 약수가 없다).
+     🚫★**이 숫자로 품질을 판정하지 않는다**(함정 34) — 결과 028 이 잰 것은 **bpb**(+0.0038~0.0068)이고 로짓 절대차와 단위가 다르다.
+     ★품질은 `paired_eval` 또는 `common_bpb` 로 따로 잰다.
+     ★LUT 상주(코드+alpha)     7.72 MiB  = 삼진 39.52M x 1.600 bpw
+     텐서합산 상주         16.8 MB  = latent 0.0 + 삼진사본 7.7 + 기타 9.1
+     RSS 해제후          1150.9 MB
+     ★상주 감축           18.45 배   (저장 8.2 → 8.2 MB — 저장은 변하지 않는 것이 정상)
+[lut] ★삼진 46개 층 -> LUT 코드. 상주 7.72 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+
+  ── mC_cla2_ag4 (tied) ────────────────────────────────────────────────────────────
+     저장(이론·패킹)        8.2 MB     삼진 파라미터  39.52M @ 1.7099625007211563bpw
+     텐서합산 상주        310.6 MB  = latent 150.8 + dequant사본 150.8 + 기타 9.1
+     RSS 로드전/로드후/생성후    1091.5 /   1614.2 /   1518.1 MB (증가 +426.6)
+     ★저장 대비 상주        37.8 배
+     ★KV 캐시              15.0 MB  @ seq 1024 (15.00 KB/token · 엔트리 10개 / 방문 20회 · 4B)
+                        ⚠️**seq 에 선형**이다 — 한 수가 아니라 기울기로 읽는다. cla_group↓·재귀↑ 가 엔트리를 늘린다
+     ── P034 ★P014 단계1 (latent 해제 + **LUT 1.600bpw**) ──────────────────────────────
+     로짓 차이         max|dlogit| = 1.809e+00   동작확인(품질 기준 아님)
+     ⚠️★**0 이 아닌 것이 정상**이다 — LUT 는 per-row alpha 로 재추정한다(768 에 5의 배수 약수가 없다).
+     🚫★**이 숫자로 품질을 판정하지 않는다**(함정 34) — 결과 028 이 잰 것은 **bpb**(+0.0038~0.0068)이고 로짓 절대차와 단위가 다르다.
+     ★품질은 `paired_eval` 또는 `common_bpb` 로 따로 잰다.
+     ★LUT 상주(코드+alpha)     7.72 MiB  = 삼진 39.52M x 1.600 bpw
+     텐서합산 상주         16.8 MB  = latent 0.0 + 삼진사본 7.7 + 기타 9.1
+     RSS 해제후          1268.0 MB
+     ★상주 감축           18.45 배   (저장 8.2 → 8.2 MB — 저장은 변하지 않는 것이 정상)
+
+  ⚠️★건너뛴 태그 1 개: mC_cla2_ag4_r30 — 아래 표는 **부분 측정**이다
+
+================================================================================================
+  ★핵심 질문 1 — 저장 감축이 상주 감축으로 이어지는가
+================================================================================================
+  기준 = mC_cla2_ag4_r20  저장 8.2MB  상주(텐서합산) 310.6MB
+
+                모델     저장MB      저장감축      상주MB      상주감축      전이율
+  --------------------------------------------------------------------
+   mC_cla2_ag4_r20      8.2     1.00x     310.6     1.00x    nan%
+       mC_cla2_ag4      8.2     1.00x     310.6     1.00x    nan%
+
+  전이율 = (상주감축-1)/(저장감축-1). 100% 면 저장 감축이 그대로 상주 감축이 된다.
+
+================================================================================================
+  ★핵심 질문 2 — 저장 순위와 상주 순위가 뒤집히는가 (단조성 검정)
+================================================================================================
+  저장 작은 순: mC_cla2_ag4_r20 < mC_cla2_ag4
+  상주 작은 순: mC_cla2_ag4_r20 < mC_cla2_ag4
+
+  → 순위 일치. **저장↓ 이 상주↓ 와 단조**다(비례까지는 위 전이율로 판단).
+
+                모델       삼진파라미터     저장MB      상주MB
+   mC_cla2_ag4_r20       39.52M      8.2     310.6
+       mC_cla2_ag4       39.52M      8.2     310.6
+
+================================================================================================
+  ★핵심 질문 3 — latent 해제(P034 단계2)가 상주를 얼마나 줄이는가
+================================================================================================
+                모델       해제전       해제후       감축          게이트
+  ------------------------------------------------------------
+   mC_cla2_ag4_r20     310.6      16.8   18.45x          ★실패
+       mC_cla2_ag4     310.6      16.8   18.45x          ★실패
+
+  · 이론 상한은 2.00배다(latent + dequant 두 벌 중 한 벌을 없앤다).
+    2.00 에 못 미치는 부분이 임베딩·norm·gate 등 **삼진이 아닌** 파라미터다.
+  · 게이트가 하나라도 실패하면 **감축 수치를 인용하지 말 것** — 다른 모델을 잰 것이다.
+
+  상주 순위 해제 전: mC_cla2_ag4_r20 < mC_cla2_ag4
+  상주 순위 해제 후: mC_cla2_ag4_r20 < mC_cla2_ag4
+  → 순위 유지. 예측대로 둘 다 유니크 파라미터에 비례한다.
+
+  ★한계
+    · RSS 는 파이썬·torch 런타임을 포함하므로 '증가분'만 의미가 있다.
+    · 텐서합산은 활성값·KV 캐시·임시버퍼를 제외한다 → 짧은 프롬프트 기준의 하한이다.
+    · 이 측정은 **현재 구현**의 상주량이다. P034 단계2(latent 해제)·단계3(int8)·
+      단계4(5비트 패킹)이 바로 이 수치를 줄이려는 작업이고, 여기가 그 기준선이다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-08-31 07:21:46)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-08-31 07:21:46  name=P073_stage6_cla2_ag4_r30
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100R1c --models mC_cla2_ag4_r30 --drop-latent --lut --emb-quant int8 --kv-seq 1024 --repeat-kv-reuse
+==============================================================================
+================================================================================================
+  P034 단계1 — 실행시 메모리 실측 (저장 MB 는 이론·패킹 가정, 상주 MB 는 실측)
+  device=cpu  max_new=32
+  ★RSS 는 할당자 때문에 과대, 텐서합산은 임시버퍼를 빼서 과소. 둘을 함께 읽는다.
+================================================================================================
+
+  [건너뜀] 체크포인트 없음: mC_cla2_ag4_r30
+
+================================================================================================
+  🚫★**측정 0 건.** 요청한 1 개 태그가 전부 없다: mC_cla2_ag4_r30
+  선행 학습 팔이 실패했거나 태그·프리셋이 틀렸다. **이 단계는 실패다.**
+================================================================================================
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-08-31 07:21:48)
+==============================================================================
+=============================================================================
+READ IN THIS ORDER
+1. T2 first - kv_entries must be 26. Anything else and the schedule is wrong.
+2. T1 - weights identical to mC_cla2_ag4. Recursion stores nothing.
+3. T3 - the paired delta against mC_cla2_ag4_r20, on the MEASURED recursion
+   ruler 0.0006. Not the borrowed dense ruler.
+4. plot the three points 20, 36, 52 visits against quality. That is the visit
+   curve for this body, and 059 s13 has the same curve for eq_d8.
+5. step 3b - entries with reuse. If reuse is cheap this arm is deployable;
+   if not, it is a quality result only.
+==============================================================================
