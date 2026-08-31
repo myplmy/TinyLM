@@ -84,10 +84,16 @@ def main() -> int:
     ratios, rank_of_correct, tok_lens = [], collections.Counter(), []
     used = collections.Counter()
     trivial_short = trivial_long = 0.0        # ★자명 선택기의 기대 정답률(동점=무작위)
+    # ★★2026-08-31 — **문자 축도 함께 인쇄한다**(결과 068 §7.1).
+    #   v2.3 은 문자 기준으로 최단·최장 둘 다 **정확히 25.0%** 인데 토큰 기준은 52.0% 였다.
+    #   두 축을 한 출력에 나란히 두지 않으면 *"데이터셋 팀이 실패했다"* 로 잘못 읽는다 —
+    #   실제로는 **시킨 것을 정확히 해냈고 두 축이 독립**이다.
+    char_short = char_long = 0.0
     for r in recs:
         cands = r["candidates"]
         ids = [tok.encode(c).ids for c in cands]
         L = [len(x) for x in ids]
+        C = [len(c) for c in cands]
         tok_lens += L
         ci = r["correct_index"]
         w = [x for i, x in enumerate(L) if i != ci]
@@ -97,6 +103,10 @@ def main() -> int:
             trivial_short += 1.0 / L.count(min(L))
         if L[ci] == max(L):
             trivial_long += 1.0 / L.count(max(L))
+        if C[ci] == min(C):
+            char_short += 1.0 / C.count(min(C))
+        if C[ci] == max(C):
+            char_long += 1.0 / C.count(max(C))
         for x in ids:
             used.update(x)
 
@@ -119,10 +129,17 @@ def main() -> int:
     sd = (chance * (1 - chance) / n) ** 0.5
     zs = (trivial_short / n - chance) / sd
     zl = (trivial_long / n - chance) / sd
-    print(f"\n  [자명] ★**토큰 길이만 보는 선택기**의 정답률 (우연 {chance:.1%}, "
+    print(f"\n  [자명] ★**길이만 보는 선택기**의 정답률 (우연 {chance:.1%}, "
           f"1σ {sd:.1%}, 동점은 무작위)")
-    print(f"         최단 선택 {trivial_short / n:.1%}  z = {zs:+.1f}σ")
-    print(f"         최장 선택 {trivial_long / n:.1%}  z = {zl:+.1f}σ")
+    print(f"         {'축':<8}{'최단':>10}{'z':>9}{'최장':>10}{'z':>9}")
+    print(f"         {'문자':<8}{char_short / n:>10.1%}"
+          f"{(char_short / n - chance) / sd:>+8.1f}σ{char_long / n:>10.1%}"
+          f"{(char_long / n - chance) / sd:>+8.1f}σ")
+    print(f"         {'★토큰':<8}{trivial_short / n:>10.1%}{zs:>+8.1f}σ"
+          f"{trivial_long / n:>10.1%}{zl:>+8.1f}σ")
+    print("         ⚠️★**두 축은 독립이다** — 문자를 맞춰도 토큰이 쏠릴 수 있다"
+          "(결과 068 §7.1: v2.3 은 문자 25.0/25.0 인데 토큰 52.0 이었다).")
+    print("         ★**판정은 토큰 축으로 한다** — 모델이 보는 것이 그쪽이다.")
     ok_triv = abs(zs) <= TRIVIAL_MAX_SIGMA and abs(zl) <= TRIVIAL_MAX_SIGMA
     if ok_triv:
         print(f"         -> ✅자명 선택기가 안 산다  (기준 |z| ^<= {TRIVIAL_MAX_SIGMA:g})")

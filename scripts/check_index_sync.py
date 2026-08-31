@@ -33,6 +33,7 @@
   [W2] 결과문서 머리말에 계획서 링크가 없다 / 계획서가 자기 결과를 참조하지 않는다
   [W3] 색인 **최근갱신 열**과 실제 최종 수정일(git ∪ mtime) 차이가 크다
   [W4] 결과문서 **첫 줄 제목**과 **파일명 요약**의 어휘가 전혀 안 겹친다(개명 누락 의심)
+  [W5] 색인 표의 셀 안에 **이스케이프 안 된 파이프** — 다음 번 표 재작성 때 뒤가 잘린다
 
 ⚠️★**한계**: 이 도구는 **"행이 있는가" 를 본다. "행 내용이 옳은가" 는 모른다.**
    계측함정 42(본문이 남의 것)를 이 도구가 잡지는 못한다.
@@ -186,6 +187,38 @@ def check_result_index(err: list, warn: dict, stale_days: int) -> None:
         if num not in seen:
             err.append(f"[E4] `{p.name}` 에 대응하는 실험목록 행이 **0개**다")
 
+    # ── ★[W5] 셀 안의 **이스케이프 안 된 파이프** (2026-08-31 신설) ─────────────
+    #   실사고: 요약에 `|z| ^<= 3` 을 적었더니 그 파이프가 **칸 구분자**로 읽혀
+    #   `stamp_index_dates.py` 가 뒤를 잘라냈다. **728자 -> 455자, 약 700자 소실.**
+    #   🚫**이 검사기를 포함해 모든 게이트가 통과했다** — 행이 *있는지*만 봤기 때문이다.
+    #   ⚠️손상은 **프로그램이 표를 다시 쓸 때** 일어난다. 지금 멀쩡한 행도 다음 번에 죽는다.
+    #   → **헤더보다 파이프가 많은 행**을 전부 신고한다. `\\|` 로 이스케이프하면 된다.
+    BAR, BS = chr(124), chr(92)
+
+    def _bars(t):
+        return [k for k, c in enumerate(t) if c == BAR and (k == 0 or t[k - 1] != BS)]
+
+    for idx_path in (RES_INDEX, PLAN_INDEX):
+        if not idx_path.exists():
+            continue
+        rows = idx_path.read_text(encoding="utf-8").splitlines()
+        hdr = None
+        for i, ln in enumerate(rows, 1):
+            if not ln.startswith(BAR):
+                hdr = None                                  # 표가 끝났다
+                continue
+            body = ln.replace(BAR, "").replace("-", "").replace(":", "").strip()
+            if body == "":
+                # ★구분선이다 -> **바로 위 줄이 그 표의 헤더**다. 표마다 열 수가 다르므로
+                #   "파일의 첫 표" 로 고정하면 뒤 표가 전부 오탐이 된다(초안이 그랬다: 220건).
+                hdr = len(_bars(rows[i - 2])) if i >= 2 else None
+                continue
+            if hdr is not None and len(_bars(ln)) > hdr:
+                warn["W5"].append(
+                    f"{idx_path.name} L{i}: 파이프 {len(_bars(ln))} ^> 헤더 {hdr} — "
+                    f"셀 안의 파이프가 **다음 번 표 재작성 때 뒤를 잘라낸다**. "
+                    f"`{BS}{BAR}` 로 이스케이프할 것: {ln[:40]}")
+
     for lg in sorted(RES.glob("*_log_*.txt")):
         num = lg.name[:3]
         sm = STAGE.search(lg.name)
@@ -268,9 +301,11 @@ def main() -> int:
         "W2": "결과 ↔ 계획 상호참조 누락",
         "W3": "색인 최근갱신 열이 낡았다 — `python scripts/stamp_index_dates.py --write`",
         "W4": "파일명 ↔ 첫 줄 제목 어휘 불일치(개명 누락 의심)",
+        "W5": "★셀 안에 **이스케이프 안 된 파이프** — 프로그램이 표를 다시 쓸 때 "
+              "**그 뒤가 잘린다**(2026-08-31 실사고: 728자 -^> 455자)",
     }
     if not a.quiet:
-        for k in ("W1", "W2", "W3", "W4"):
+        for k in ("W1", "W2", "W3", "W4", "W5"):
             if not warn[k]:
                 continue
             print(f"  ⚠️ [{k}] {LABEL[k]} — **{len(warn[k])}건**")
