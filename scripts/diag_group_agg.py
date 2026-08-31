@@ -50,6 +50,8 @@ def main() -> int:
     ap.add_argument("--data", default="ko-en")
     ap.add_argument("--tokens", default="300M")
     ap.add_argument("--tag", default="dense", help="dense 부모의 태그")
+    ap.add_argument("--seq", type=int, default=1024,
+                    help="build_config 가 요구한다. 이 도구의 결과에는 영향이 없다(층 구조만 읽는다)")
     ap.add_argument("--group", type=int, default=None,
                     help="타잉 그룹 크기 g. 미지정이면 프리셋의 mlp_group")
     a = ap.parse_args()
@@ -67,7 +69,7 @@ def main() -> int:
     sd = torch.load(ck, map_location="cpu", weights_only=False)
     sd = sd.get("model", sd)
 
-    cfg = build_config(a.preset, arch="tied")
+    cfg = build_config(a.preset, "tied", a.seq, True)
     g = a.group or int(getattr(cfg, "mlp_group", 8))
     p, m = int(cfg.n_prelude), int(cfg.n_middle)
 

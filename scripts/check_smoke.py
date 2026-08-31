@@ -185,6 +185,10 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     #   `sm_denseinit` 은 dense 에서만 그 경로를 산다. P079 단계1·2 는 얕은 몸통에
     #   타잉을 걸면서 20층 부모에서 **축소 이식**을 한다 — 그 조합이 처음이다.
     "sm_tieddepth": {"depth_init": "role", "init_from": True, "mlp_group": 2},
+    # ★2026-08-31 — P079 단계3·4 가 dense 몸통에 CLA 를 켠다. 축도 arch 도 있었지만
+    #   **한 번도 같이 안 돌았다** — P074 네 팔이 죽은 형태가 정확히 그것이다(함정 37).
+    #   ⚠️`cla_group` 2 를 **값으로** 확인한다. 필드 존재만 보면 기본값 1 이 통과한다.
+    "sm_densecla": {"cla_group": 2, "grad_ckpt": False},
 }
 
 

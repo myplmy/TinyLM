@@ -99,6 +99,27 @@ def tensor_mb(model):
     return lat / f, wq / f, other / f
 
 
+def _drop_gate(dmax: float, lut: bool) -> str:
+    """★latent 해제 뒤 로짓 차이의 판정 — **한 곳에서만 정의한다**(함정 18).
+
+    2026-08-22 에 LUT 예외를 모델별 절에만 넣고 요약표를 빼먹어서,
+    `--lut` 런이 *"0 이 아닌 것이 정상"* 과 *"★실패"* 를 **같은 출력 안에서**
+    동시에 찍었다(결과 065·063·061·058 네 로그 전부). 함정 38.
+
+    · `--lut` 없음 : 해제는 **계산을 바꾸지 않는다** → 0 이어야 한다.
+    · `--lut` 있음 : per-row alpha 재추정이므로 **0 이 아닌 것이 정상**이다.
+      여기서는 *"죽지 않았는가"* 만 본다. 품질은 `paired_eval`/`common_bpb` 소유.
+    """
+    import math as _m
+    if not _m.isfinite(dmax):
+        return "🚫NaN/Inf"
+    if lut:
+        return "동작확인(품질 기준 아님)" if dmax < 20.0 else "⚠️비정상적으로 크다"
+    if dmax == 0.0:
+        return "통과"
+    return "경계" if dmax < 1e-5 else "★실패"
+
+
 def main():
     ap = argparse.ArgumentParser(description="P034 단계1 실행시 메모리 실측")
     ap.add_argument("--models", nargs="*")
@@ -261,19 +282,10 @@ def main():
             print(f"     ⚠️KV 회계 실패: {type(_e).__name__}: {_e}")
         if drop is not None:
             lat2, wq2, oth2, res2, pk2, dmax, r3 = drop
+            gate = _drop_gate(dmax, a.lut)
             if a.lut:
-                # ★★2026-08-22 정정(함정 34) — 종전 기준 1.0 은 **내가 근거 없이 정한 값**이었고
-                #   실측 1.615 를 "★실패" 로 찍었다. 🚫**max|dlogit| 는 품질 기준이 될 수 없다** —
-                #   결과 028 이 잰 것은 **bpb** 이고 둘은 단위가 다르다. 로짓 절대차는
-                #   softmax 를 지나면 크게 줄어들고, 그 감쇠율은 로짓 스케일에 의존한다.
-                #   ★**여기서는 "죽지 않았는가" 만 본다**(NaN·발산). 품질 판정은
-                #   `paired_eval` / `common_bpb` 가 소유한다.
-                import math as _m
-                gate = ("🚫NaN/Inf" if not _m.isfinite(dmax) else
-                        "동작확인(품질 기준 아님)" if dmax < 20.0 else "⚠️비정상적으로 크다")
                 _stg = "★P014 단계1 (latent 해제 + **LUT 1.600bpw**)"
             else:
-                gate = "통과" if dmax == 0.0 else ("경계" if dmax < 1e-5 else "★실패")
                 _stg = "단계2+3 (latent 해제 + int8 저장)" if a.int8_store else "단계2 (latent 해제)"
             print(f"     ── P034 {_stg} " + "─" * 30)
             if a.lut:
@@ -358,10 +370,19 @@ def main():
             if res2 is None:
                 continue
             print(f"  {tag:>16} {res:9.1f} {res2:9.1f} {res/res2:7.2f}x "
-                  f"{('통과' if dmax == 0.0 else '★실패'):>12}")
-        print("\n  · 이론 상한은 2.00배다(latent + dequant 두 벌 중 한 벌을 없앤다).")
-        print("    2.00 에 못 미치는 부분이 임베딩·norm·gate 등 **삼진이 아닌** 파라미터다.")
-        print("  · 게이트가 하나라도 실패하면 **감축 수치를 인용하지 말 것** — 다른 모델을 잰 것이다.")
+                  f"{_drop_gate(dmax, a.lut):>18}")
+        if a.lut:
+            # ★★2026-08-31 정정 — 종전에는 이 표가 `dmax == 0.0` 을 그대로 물어
+            #   `--lut` 런에서 **언제나 ★실패**를 찍었다. 바로 위 모델별 절이
+            #   *"0 이 아닌 것이 정상"* 이라고 인쇄하는 동안이다(함정 18 · 함정 38).
+            print("\n  · ★**LUT 경로이므로 이론 상한 2.00배가 적용되지 않는다** — "
+                  "삼진 항이 4B x 2벌에서 1.600bpw 로 바뀌므로 감축이 2 를 크게 넘는 것이 정상이다.")
+            print("  · 🚫**로짓 차이로 품질을 판정하지 않는다** — 품질은 "
+                  "`paired_eval`/`common_bpb` 가 소유한다(함정 34).")
+        else:
+            print("\n  · 이론 상한은 2.00배다(latent + dequant 두 벌 중 한 벌을 없앤다).")
+            print("    2.00 에 못 미치는 부분이 임베딩·norm·gate 등 **삼진이 아닌** 파라미터다.")
+            print("  · 게이트가 하나라도 실패하면 **감축 수치를 인용하지 말 것** — 다른 모델을 잰 것이다.")
         # ★순위가 바뀌는지 다시 본다. 로드맵 R2 가 묻는 것이 정확히 이 질문이다.
         o1 = [r[0] for r in sorted([r for r in rows if r[8]], key=lambda r: r[5])]
         o2 = [r[0] for r in sorted([r for r in rows if r[8]], key=lambda r: r[8])]

@@ -154,7 +154,9 @@ def main():
     ap.add_argument("--models", nargs="*", help="태그 목록(기본 mA_g4s34_k4 mC_g8_k4 p6d)")
     ap.add_argument("--device", default="cpu",
                     help="cpu 면 autocast 가 꺼져 fp32(하드 게이트용). cuda 는 bf16")
-    ap.add_argument("--tol", type=float, default=1e-3, help="fp32 하드 게이트 허용 max|Δlogit|")
+    ap.add_argument("--tol", type=float, default=None,
+                    help="허용 max|Δlogit|. 생략하면 **KV dtype 이 정한다**(아래 KV_TOL). "
+                         "명시하면 그 값이 이긴다")
     ap.add_argument("--max-new", type=int, default=24, help="teacher-forced 스텝 수")
     ap.add_argument("--report-greedy", action="store_true",
                     help="그리디 분기 위치와 top-2 간격을 함께 보고(판정에는 쓰지 않는다)")
@@ -173,12 +175,28 @@ def main():
     base = f"{a.preset}_{a.data}_{a.tokens}"
     use_ac = (a.device == "cuda")
 
+    # ★★2026-08-31 신설 — **허용오차는 KV 저장 dtype 이 정한다**(결과 065 §오류 E4).
+    #   종전에는 tol 이 1e-3 고정이라 `--kv-dtype bf16` 런이 **exit 1** 로 끝나고
+    #   *"fp32 에서 초과 = 실제 버그다"* 라는 **fp32 용 진단문**을 찍었다. 함정 38 계열
+    #   (인쇄와 판정이 갈라진다) + 함정 40(지표가 조건을 잰다).
+    #   근거: 가수 비트수 → 상대오차. bf16 = 8비트(2^-8 = 3.9e-3), fp16 = 11비트(4.9e-4).
+    #   로짓 규모가 O(10) 이므로 절대 편차 상한을 그 곱의 한 자릿수 여유로 잡는다.
+    tol_map = {"fp32": 1.0e-3, "bf16": 5.0e-2, "fp16": 5.0e-3}
+    tol = a.tol if a.tol is not None else tol_map[a.kv_dtype]
+    lossy_kv = (a.kv_dtype != "fp32")
+
     banner(f"P030 1.5-B — teacher-forced 로짓 동등성  device={a.device}  "
-           f"{'bf16 autocast' if use_ac else 'fp32(autocast off)'}  tol={a.tol:g}")
+           f"{'bf16 autocast' if use_ac else 'fp32(autocast off)'}  "
+           f"KV={a.kv_dtype}  tol={tol:g}")
     print("  ★자기회귀 피드백을 끊었으므로 이 수치는 결정론적이다.")
     print("  ★오차 패턴 읽는 법: 위치증가=RoPE / prefill 이후 균일=마스크 / tied만=CLA / 평탄 1e-6=정상")
     if use_ac:
         print("  ※ cuda 는 bf16 이라 tol 을 넘는 것이 정상일 수 있다. **하드 게이트는 cpu(fp32)** 다.")
+    if lossy_kv:
+        print(f"  ★★KV 저장이 **손실 dtype**({a.kv_dtype}) 이므로 통과 조건이 셋이다 —")
+        print(f"     ① 편차 ^> 0 (0 이면 플래그가 캐시에 안 닿았다 · 함정 37)")
+        print(f"     ② 편차 ^< tol {tol:g} (가수 비트수에서 유도)")
+        print(f"     ③ ★**argmax 불일치 0** — 결정이 안 바뀌는 것이 캐시가 지켜야 할 계약이다")
 
     worst, missing, rows = {}, [], []
     for tag, arch in models:
@@ -201,6 +219,7 @@ def main():
               f"sparse34={bool(getattr(cfg, 'sparse34', False))}) "
               + "─" * 20)
         m_all = 0.0
+        nag_all = 0                                  # ★argmax 불일치 총합 — 손실 KV 의 본 게이트
         for prompt in PROMPTS:
             per_max, per_mean, agree, T, T0 = teacher_forced_delta(
                 model, cfg, tok, prompt, a.max_new, device, use_ac)
@@ -212,7 +231,8 @@ def main():
             d2 = float(per_max[half:].max()) if T > half else 0.0
             nag = int((~agree).sum())
             m_all = max(m_all, dec, pre)
-            flag = "OK " if max(pre, dec) < a.tol else "!! "
+            nag_all += nag
+            flag = "OK " if max(pre, dec) < tol else "!! "
             print(f"    {flag}{prompt[:22]:<24} prefill {pre:.2e}  decode {dec:.2e}  "
                   f"(전반 {d1:.2e} / 후반 {d2:.2e})  argmax불일치 {nag}/{T}")
             if a.report_greedy:
@@ -223,34 +243,63 @@ def main():
                     verdict = ("타이브레이크(간격 < 로짓오차)" if gap is not None and gap < dec
                                else "간격이 로짓오차보다 크다 — 조사 필요")
                     print(f"        그리디: 스텝 {idx} 에서 분기, 그 지점 top-2 간격 {gap:.4f}  → {verdict}")
-        worst[tag] = m_all
-        rows.append((tag, arch, cfg, m_all))
+        worst[tag] = (m_all, nag_all)
+        rows.append((tag, arch, cfg, m_all, nag_all))
         del model
 
+    def verdict_of(m: float, nag: int) -> str:
+        """★손실 KV 는 통과 조건이 셋이다(편차^>0 · 편차^<tol · argmax 0)."""
+        if lossy_kv and m == 0.0:
+            return "무반응"                          # 함정 37 — 플래그가 안 닿았다
+        if m >= tol:
+            return "초과"
+        if lossy_kv and nag:
+            return "결정변경"
+        return "통과"
+
     banner("요약")
-    print(f"    {'모델':<16}{'arch':>7}{'cla':>5}{'g':>4}{'s34':>7}{'max|dlogit|':>14}  판정")
-    print("    " + "-" * 62)
-    for tag, arch, cfg, m in rows:
+    print(f"    {'모델':<16}{'arch':>7}{'cla':>5}{'g':>4}{'s34':>7}"
+          f"{'max|dlogit|':>14}{'argmax≠':>9}  판정")
+    print("    " + "-" * 72)
+    for tag, arch, cfg, m, nag in rows:
         print(f"    {tag:<16}{arch:>7}{cfg.cla_group:>5}"
               f"{(cfg.mlp_group if cfg.tie_mlp else 1):>4}"
-              f"{str(bool(getattr(cfg, 'sparse34', False))):>7}{m:>14.3e}  "
-              f"{'통과' if m < a.tol else '초과'}")
+              f"{str(bool(getattr(cfg, 'sparse34', False))):>7}{m:>14.3e}{nag:>9}  "
+              f"{verdict_of(m, nag)}")
     print("    ★cla=1 인 모델(dense)만 통과하고 cla=2 가 초과하면 CLA 캐시 경로다.")
     if missing:
         print(f"\n    [건너뜀] {', '.join(missing)}")
         if not rows:
             return 2
 
-    bad = [t for t, m in worst.items() if m >= a.tol]
+    bad = [t for t, (m, nag) in worst.items() if verdict_of(m, nag) != "통과"]
     if not bad:
-        print(f"\n  ✅ 전 모델 max|Δlogit| < {a.tol:g}"
-              + ("  — **캐시 구현 정확성 확인.** 속도 측정으로 진행 가능."
-                 if not use_ac else
-                 "  — bf16 에서도 통과. 정밀도 여유가 충분하다는 뜻."))
+        if lossy_kv:
+            mx = max(m for m, _ in worst.values())
+            print(f"\n  ✅ **KV {a.kv_dtype} 통과** — 편차 {mx:.3e} (0 ^< x ^< {tol:g}) 이고 "
+                  f"**argmax 불일치 0**.")
+            print("     ★편차가 0 이 아니므로 플래그가 캐시에 닿았고(함정 37), "
+                  "결정은 하나도 안 바뀌었다.")
+            print("     ⚠️★**이것은 품질 대가가 아니다** — teacher-forced 평가는 "
+                  "자기회귀 피드백이 없다. 진짜 대가는 생성 기반 평가가 잰다(P077 단계2).")
+        else:
+            print(f"\n  ✅ 전 모델 max|Δlogit| < {tol:g}"
+                  + ("  — **캐시 구현 정확성 확인.** 속도 측정으로 진행 가능."
+                     if not use_ac else
+                     "  — bf16 에서도 통과. 정밀도 여유가 충분하다는 뜻."))
         return 0
 
-    print(f"\n  ❌ 허용오차 초과: {', '.join(bad)}")
-    if use_ac:
+    print(f"\n  ❌ 통과하지 못함: {', '.join(bad)}")
+    zero = [t for t, (m, _) in worst.items() if lossy_kv and m == 0.0]
+    if zero:
+        print(f"     ★★**편차가 정확히 0 이다**: {', '.join(zero)}")
+        print("     → `--kv-dtype` 가 캐시에 **안 닿았다**(함정 37). 뒤따르는 회계는 전부 허구다.")
+        print("        볼 곳: transformer.forward 의 use_cache 반환 시 캐스팅, cfg 전파 경로")
+    elif lossy_kv:
+        print(f"     ★손실 KV({a.kv_dtype}) 에서 초과 — 이것은 **양자화 오차이지 버그가 아닐 수 있다.**")
+        print("       argmax 불일치가 0 이면 결정은 안 바뀐 것이므로 tol 을 의심한다(함정 34).")
+        print("       argmax 불일치가 있으면 그 dtype 은 이 모델에 부족하다 — 축을 닫는다.")
+    elif use_ac:
         print("     단 이것은 **bf16** 이다. 하드 게이트는 `--device cpu`(fp32) 로 판정한다.")
     else:
         print("     fp32 에서 초과 = **실제 버그**다. 위의 prefill/decode/전반·후반 분해로 위치를 좁혀라.")

@@ -48,6 +48,13 @@ sys.path.insert(0, str(ROOT))
 LEN_LO, LEN_HI = 0.95, 1.05
 RARE_OK, RARE_BAD = 0.05, 0.15
 RARE_PCT = 0.001                    # 하위 0.1%
+# ★★2026-08-31 신설 — **자명 선택기 게이트**(결과 068 §오류 E3).
+#   종전에는 비율 중위(0.9712)만 보고 ✅ 를 찍었는데, 같은 출력의 순위 분포가
+#   156/41/73/30 이었다. **최단 선택 52.0% = 우연 25% 에서 10.8σ** 다.
+#   비율 중위는 **크기**를 재고 순위 분포는 **방향의 일관성**을 잰다 — 다른 양이다(함정 40).
+#   ⚠️동점 처리: "최단이 여럿이면 무작위" 를 가정해 1/동점수 로 센다.
+#     그래야 데이터셋팀이 문자 길이로 쓰던 *"최장선택 39.0% -> 25.0%"* 와 같은 단위가 된다.
+TRIVIAL_MAX_SIGMA = 3.0             # |z| 이 이 값을 넘으면 자명 선택기가 산다
 
 
 def main() -> int:
@@ -76,6 +83,7 @@ def main() -> int:
     # ── ① 후보 토큰 길이 ────────────────────────────────────────────
     ratios, rank_of_correct, tok_lens = [], collections.Counter(), []
     used = collections.Counter()
+    trivial_short = trivial_long = 0.0        # ★자명 선택기의 기대 정답률(동점=무작위)
     for r in recs:
         cands = r["candidates"]
         ids = [tok.encode(c).ids for c in cands]
@@ -85,6 +93,10 @@ def main() -> int:
         w = [x for i, x in enumerate(L) if i != ci]
         ratios.append(L[ci] / (sum(w) / len(w)))
         rank_of_correct[sum(1 for x in L if x < L[ci]) + 1] += 1
+        if L[ci] == min(L):
+            trivial_short += 1.0 / L.count(min(L))
+        if L[ci] == max(L):
+            trivial_long += 1.0 / L.count(max(L))
         for x in ids:
             used.update(x)
 
@@ -97,9 +109,32 @@ def main() -> int:
     print(f"         정답의 토큰 길이 순위(짧은 쪽부터) 1/2/3/4 = "
           f"{rank_of_correct[1]}/{rank_of_correct[2]}/{rank_of_correct[3]}/{rank_of_correct[4]}"
           f"   (균등이면 각 {n//4})")
-    ok_len = LEN_LO <= med <= LEN_HI
-    print(f"         -> {'✅토크나이저 길이 편향 없음' if ok_len else '⚠️편향 있음 — 슬라이스로 분리한다'}"
+    ok_ratio = LEN_LO <= med <= LEN_HI
+    print(f"         -> {'✅길이비 통과' if ok_ratio else '⚠️길이비 편향'}"
           f"  (기준 {LEN_LO}~{LEN_HI})")
+
+    # ── ①-b ★자명 선택기 — **비율 중위가 통과해도 여기서 죽을 수 있다** ────────
+    k = max(len(r["candidates"]) for r in recs)
+    chance = 1.0 / k
+    sd = (chance * (1 - chance) / n) ** 0.5
+    zs = (trivial_short / n - chance) / sd
+    zl = (trivial_long / n - chance) / sd
+    print(f"\n  [자명] ★**토큰 길이만 보는 선택기**의 정답률 (우연 {chance:.1%}, "
+          f"1σ {sd:.1%}, 동점은 무작위)")
+    print(f"         최단 선택 {trivial_short / n:.1%}  z = {zs:+.1f}σ")
+    print(f"         최장 선택 {trivial_long / n:.1%}  z = {zl:+.1f}σ")
+    ok_triv = abs(zs) <= TRIVIAL_MAX_SIGMA and abs(zl) <= TRIVIAL_MAX_SIGMA
+    if ok_triv:
+        print(f"         -> ✅자명 선택기가 안 산다  (기준 |z| ^<= {TRIVIAL_MAX_SIGMA:g})")
+    else:
+        print(f"         -> 🚫★**자명 선택기가 산다** (기준 |z| ^<= {TRIVIAL_MAX_SIGMA:g})")
+        print(f"            ★**문자 길이를 맞춘 것으로는 부족하다** — 모델은 토큰을 본다.")
+        print(f"            🚫**이 벤치마크의 절대 정답률을 능력으로 인용하지 않는다.**")
+        print(f"            기준선을 우연 {chance:.1%} 가 아니라 "
+              f"**{max(trivial_short, trivial_long) / n:.1%}** 로 적는다.")
+    ok_len = ok_ratio and ok_triv
+    print(f"\n  [길이 종합] -> "
+          f"{'✅토크나이저 길이 편향 없음' if ok_len else '⚠️편향 있음 — 슬라이스로 분리한다'}")
 
     # ── ② 학습 빈도 ─────────────────────────────────────────────────
     n_tok = int(float(a.tokens.rstrip("MmBb")) * (1e9 if a.tokens[-1] in "Bb" else 1e6))
@@ -134,9 +169,30 @@ def main() -> int:
           f"(어휘의 {len(used)/tok.get_vocab_size():.1%})")
     print("         🚫**임베딩 노름은 판정에 쓰지 않는다** — 결과 025 §2 가 우리 tie 구조에서")
     print("            Magikarp 휴리스틱의 **부호 역전**을 실측했다(미사용 노름이 1.599배 크다).")
+    # ── ★종료코드 — **인쇄와 판정이 갈라지지 않게**(함정 38) ─────────────
+    #   2026-08-31 이전에는 무조건 0 이었다. 결과 068 이 자명 선택기 52.0% 를
+    #   인쇄하면서 exit 0 · ✅ 를 함께 찍었고, 배치는 성공으로 넘어갔다.
+    fails = []
+    if not ok_ratio:
+        fails.append(f"길이비 중위 {med:.4f} 가 {LEN_LO}~{LEN_HI} 밖")
+    if not ok_triv:
+        fails.append(f"자명 선택기 최단 {trivial_short / n:.1%}(z {zs:+.1f}) "
+                     f"· 최장 {trivial_long / n:.1%}(z {zl:+.1f})")
+    if fr > RARE_BAD:
+        fails.append(f"희귀 토큰 문항 {fr:.1%} ^> {RARE_BAD:.0%}")
+    if n_zero:
+        fails.append(f"빈도 0 토큰 문항 {n_zero}건")
+
     print("=" * 96)
     print("  ⚠️이 도구는 **토크나이저와 빈도**만 본다. 문항이 좋은 문항인지는 안 본다.")
     print("  ⚠️빈도는 캐시 **앞쪽 표본**이다 — 전량이 아니면 희귀 토큰이 과대 집계될 수 있다.")
+    if fails:
+        print("\n  🚫**실패 " + str(len(fails)) + "건**")
+        for f in fails:
+            print(f"     · {f}")
+        print("  ★이 벤치마크를 지금 쓰면 **점수가 능력이 아니라 형식을 잰다.**")
+        return 1
+    print("\n  ✅전 게이트 통과 — 이 벤치마크는 토크나이저 쪽에서 깨끗하다.")
     return 0
 
 

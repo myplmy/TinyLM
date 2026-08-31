@@ -254,6 +254,14 @@ def cmd_batch_tag_dup():
             print("     → ★하나는 지울 대상이다. "
                   "핵드오프 '사용자에게 부탁하는 것' 에 적는다")
     for t, ns in sorted(by_tag.items()):
+        # ⚠️★**`-done` 이 섞인 짝은 덮어쓸 수 없다** (2026-08-31).
+        #   `-done` 은 이미 돌아간 배치이고 큐 메뉴에서도 빠진다. 재시도본이 같은 태그를
+        #   쓰는 것은 **정상**이다 — 실패한 런(P073 단계6 OOM)은 체크포인트를 안 남겼고,
+        #   태그는 아키텍처를 가리키므로 바꾸면 오히려 `check_tag_arch` 와 어긋난다.
+        #   ★단 `-done` 끼리 겹치면 그건 과거의 실제 덮어쓰기이므로 그대로 신고한다.
+        live = {n for n in ns if not n.endswith("-done.bat")}
+        if len(live) <= 1 and len(ns) > 1:
+            continue
         if len(ns) > 1 and not (ns <= dup_cmd_files):
             bad += 1
             print("  🚫★같은 --tag 인데 명령이 다르다 (tag=%s) "

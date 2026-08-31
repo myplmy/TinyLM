@@ -21,6 +21,7 @@
   E      16  TL_OUTDIR 을 깔면서 안 치운다      뒤 배치로 새어 나가 로그 폴더가 오염된다 (2026-08-13)
   W      17  재실행본인데 단계명이 그대로      로그가 이전 측정과 한 파일에 섞인다. stage0b 로 (2026-08-13)
   E      18  빈 배치 / 실행문 없음             ★0바이트 파일이 모든 검사를 통과해 큐가 조용히 건너뛴다 (2026-08-13)
+  E      23  --no-ckpt + --train-repeat ^> 2.0   ★실측(방문 36회) 밖 외삽. 결과 058 이 OOM (2026-08-31)
   E      11  줄끝이 CRLF 가 아님       `.gitattributes` 가 `*.bat text eol=crlf` 로 선언하는데
                                        작업트리가 LF 면 git 이 매번 재작성·경고한다(CRLF 재발 원인).
                                        또 cmd.exe 는 LF-only 배치에서 `goto`/라벨이 드물게 어긋난다.
@@ -49,6 +50,55 @@ ROOT = Path(__file__).resolve().parent.parent
 
 # ★설계상 매 세션 같은 이름으로 다시 도는 배치 — 규칙 9d·19 의 대상이 아니다(2026-08-28).
 _RERUN_BY_DESIGN = {"run_smoke_check.bat"}
+
+# ★★규칙 23 — `--no-ckpt` 활성 예산은 **방문 수가 아니라 `M x 방문`** 이다.
+#   `M = micro_bs x seq` 가 속도·VRAM 을 동시에 정한다(결과 007). 활성값은 그 곱에 붙는다.
+#
+#   실측 세 점(cla2 몸통, 무KD, `--no-ckpt`):
+#     M 8192 x 20방문 = 163,840  ->  reserved  8.89 GB
+#     M 8192 x 36방문 = 294,912  ->  reserved 12.59 GB   <- ★확인된 최대
+#     M 8192 x 52방문 = 425,984  ->  🚫OOM(14.67 GiB 에서 실패, 결과 058)
+#   기울기 (12.59-8.89)/(294,912-163,840) = 2.82e-5 GB per token-visit.
+#
+#   🚫**중간값을 예측하지 않는다**(함정 34) — **확인된 최대 294,912 를 문턱으로 쓴다.**
+#   ⚠️절편(가중치·옵티마이저)은 M 에 안 붙으므로 이 곱은 **근사**다. 린터의 안전선이지
+#      VRAM 모형이 아니다. 정확한 모형은 기준표 B.13 에 있다.
+NOCKPT_MAX_MV = 294_912
+DEFAULT_MICRO_BS, DEFAULT_SEQ = 8, 1024
+
+
+def _visits(preset: str, repeat: float):
+    """prelude + middle x R + coda. 프리셋을 못 읽으면 None.
+
+    🚫**층수를 여기 하드코딩하지 않는다**(함정 18) — `tinylm/config.py` 가 정본이다.
+    패키지 `__init__` 을 거치지 않고 파일에서 직접 로드해 **torch 의존을 만들지 않는다.**
+    """
+    global _PRESETS
+    if _PRESETS is None:
+        try:
+            import importlib.util
+            name = "_tinylm_cfg_for_lint"
+            spec = importlib.util.spec_from_file_location(
+                name, ROOT / "tinylm" / "config.py")
+            mod = importlib.util.module_from_spec(spec)
+            # ⚠️`@dataclass` 는 `sys.modules[cls.__module__]` 를 읽는다 —
+            #   등록 전에 exec 하면 AttributeError 로 조용히 실패한다.
+            sys.modules[name] = mod
+            spec.loader.exec_module(mod)
+            _PRESETS = mod.PRESETS
+        except Exception:                                 # noqa: BLE001
+            _PRESETS = {}
+    fn = _PRESETS.get(preset)
+    if fn is None:
+        return None
+    try:
+        c = fn(1024, True)
+        return int(c.n_prelude + round(c.n_middle * repeat) + c.n_coda)
+    except Exception:                                     # noqa: BLE001
+        return None
+
+
+_PRESETS = None
 
 
 def lint(path: Path):
@@ -189,6 +239,38 @@ def lint(path: Path):
                         f"긴 런이면 --no-ckpt 를 빼거나 압축교사를 쓰세요")
         if re.search(r"--ternary-kernel", s) and "--compile" in s:
             warn.append(f"L{ln} 커널 + --compile 병용 (코드가 SystemExit 로 중단시킨다)")
+        # ── ★규칙 23 (2026-08-31 신설) — **`--no-ckpt` 를 실측 방문 수 밖으로 외삽하지 않는다**
+        #   결과 058: `--no-ckpt --train-repeat 3.0` 이 **1.4분 만에 CUDA OOM**(14.67 GiB).
+        #   실측은 `--train-repeat 2.0`(m100 계열 -> 방문 36회, 13.73 GiB)까지뿐인데
+        #   그 여유를 **방문 52회에 그대로 옮겨 적었다.** 🚫*"볼록성은 법칙이 아니다 —
+        #   안 잰 점을 예측하지 않는다"*(2026-08-26) 의 정확한 재발이다.
+        #
+        #   ★**세는 것은 배수가 아니라 방문 수**다: prelude + middle x R + coda.
+        #   얇은 몸통(m100s8)에서 R=3.0 은 방문 28회로 **실측 안**이다 —
+        #   배수로 자르면 그 배치를 헛되이 막는다(이 규칙의 첫 초안이 실제로 그랬다).
+        #   ⚠️이 규칙은 **에러**다. 3.6시간짜리 런이 통째로 날아가는 값이라 경고로 두지 않는다.
+        # ⚠️`-done` 은 **이미 돌아간 배치**다. 규칙 23 은 *돌리기 전* 규칙이므로 건너뛴다 —
+        #   실패한 런의 배치는 기록으로 남기는 것이 규약이고(결과 058·060), 그것이
+        #   영구히 빨간불이면 **새 위반을 가린다**(경보 피로).
+        m_tr = re.search(r"--train-repeat\s+([0-9.]+)", s)
+        if "--no-ckpt" in s and m_tr and not path.name.endswith("-done.bat"):
+            m_ps = re.search(r"--preset\s+(\S+)", s)
+            v = _visits(m_ps.group(1) if m_ps else "m100", float(m_tr.group(1)))
+            m_mb = re.search(r"--micro-bs\s+(\d+)", s)
+            m_sq = re.search(r"--seq\s+(\d+)", s)
+            M = (int(m_mb.group(1)) if m_mb else DEFAULT_MICRO_BS) * \
+                (int(m_sq.group(1)) if m_sq else DEFAULT_SEQ)
+            if v is None:
+                warn.append(f"L{ln} --no-ckpt + --train-repeat 인데 프리셋 층수를 못 읽었다 "
+                            f"— `M x 방문` 을 손으로 확인하세요(실측 한계 {NOCKPT_MAX_MV:,})")
+            elif M * v > NOCKPT_MAX_MV:
+                err.append(
+                    f"L{ln} --no-ckpt 활성 예산 초과: M {M:,} x 방문 {v}회 = "
+                    f"**{M * v:,}** ^> 확인된 최대 {NOCKPT_MAX_MV:,} = **실측 밖 외삽**. "
+                    f"294,912(=8192x36) 가 12.59 GB 였고 425,984(=8192x52) 는 "
+                    f"결과 058 에서 OOM 했다. ★**M 을 줄이면 통과한다** — "
+                    f"`--micro-bs` 를 반으로 하고 `--accum` 을 두 배로 하면 "
+                    f"유효배치가 그대로다. 아니면 --no-ckpt 를 빼거나 250스텝 프로브로 재세요")
 
     # 6. errorlevel 정책
     if trains:

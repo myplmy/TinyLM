@@ -110,6 +110,32 @@ class Attention(nn.Module):
             mask = torch.ones(q_len, kv_len, dtype=torch.bool,
                               device=q.device).tril(past_len)
             o = F.scaled_dot_product_attention(q, k, v, attn_mask=mask)
+        # ── ★★P081 선결 (2026-08-31) — **어텐션 확률을 밖으로 내보낸다** ──────────────
+        #   🚫SDPA 는 확률을 안 돌려준다. Flash 백엔드에서는 물질화조차 안 된다.
+        #   그래서 어텐션 싱크(StreamingLLM)를 **한 번도 못 봤다**.
+        #
+        #   ★**훅으로 밖에서 재계산하지 않는다** — 그러면 RoPE·QK-norm·GQA 복제·마스크
+        #   규약을 **두 곳에서 정의**하게 되고(함정 18), 그렇게 만든 수치가 실제와
+        #   달라도 **조용히 틀린다**. 여기서는 위에서 이미 만든 q·k·mask 를 그대로 쓴다.
+        #
+        #   ⚠️★**출력 경로에 안 들어간다.** `o` 는 위 SDPA 가 만든 그대로이고
+        #   아래 블록은 **읽기만** 한다 → 기본 off 는 물론 **on 이어도 로짓이 비트 동일**하다.
+        #   ⚠️메모리 (B, H, q_len, kv_len) x 4B — B=1·1024 면 50 MB, 학습 배치면 400 MB.
+        #   → **학습에서는 켤 수 없다**(아래 assert).
+        if getattr(c, "return_probs", False):
+            assert not self.training, \
+                "return_probs 는 진단 전용이다 — 학습에서 켜면 활성 메모리가 배치x헤드로 늘어난다"
+            with torch.no_grad():
+                # ⚠️`use_gqa` 경로에서는 k 가 **복제되지 않았다**(커널이 대신 한다).
+                #   확률을 손으로 만들 때는 헤드 수를 맞춰야 하므로 여기서만 복제한다.
+                kp = k.repeat_interleave(n_rep, dim=1) if k.shape[1] != q.shape[1] else k
+                att = (q.float() @ kp.float().transpose(-2, -1)) / math.sqrt(c.head_dim)
+                if q_len == kv_len:
+                    m = torch.ones(q_len, kv_len, dtype=torch.bool, device=q.device).tril()
+                else:
+                    m = mask                         # 위에서 만든 그 마스크 그대로
+                att = att.masked_fill(~m, float("-inf"))
+                self.last_probs = att.softmax(-1).detach()
         return self.o_proj(o.transpose(1, 2).contiguous().view(B, T, c.dim), mode_p)
 
 

@@ -49,23 +49,28 @@ python scripts\runlog.py --name P079_stage1_thin_tied -- python run100m.py train
 if errorlevel 1 echo [WARN] step failed - continuing
 echo.
 python scripts\runlog.py --name P079_stage1_thin_tied --note "[4/4] paired - against the 20-layer tied baseline"
-python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\paired_eval.py --preset m100s4 --data ko-en --tokens 300M --models d8_g2
+python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\paired_eval.py --preset m100s4 --data ko-en --tokens 300M --models d8_g2 --dump-crops runs/logs/p079_s1_d08.json
 if errorlevel 1 echo [WARN] step failed - continuing
-python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\paired_eval.py --preset m100s8 --data ko-en --tokens 300M --models d12_g4
+python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\paired_eval.py --preset m100s8 --data ko-en --tokens 300M --models d12_g4 --dump-crops runs/logs/p079_s1_d12.json
 if errorlevel 1 echo [WARN] step failed - continuing
-python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\paired_eval.py --preset m100s12 --data ko-en --tokens 300M --models d16_g4
+python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\paired_eval.py --preset m100s12 --data ko-en --tokens 300M --models d16_g4 --dump-crops runs/logs/p079_s1_d16.json
 if errorlevel 1 echo [WARN] step failed - continuing
-python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_initonly_nc
+python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_initonly_nc --dump-crops runs/logs/p079_s1_tied.json
 if errorlevel 1 echo [WARN] step failed - continuing
 echo.
 python scripts\runlog.py --name P079_stage1_thin_tied --note "[5/5] weights plus KV - quality alone does not decide this"
-python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100s4 --models d8_g2 --drop-latent --lut --emb-quant int8 --kv-seq 1024
+python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100s4 --models d8_g2 --drop-latent --lut --emb-quant int8 --kv-seq 1024 --kv-dtype bf16
 if errorlevel 1 echo [WARN] step failed - continuing
-python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100s8 --models d12_g4 --drop-latent --lut --emb-quant int8 --kv-seq 1024
+python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100s8 --models d12_g4 --drop-latent --lut --emb-quant int8 --kv-seq 1024 --kv-dtype bf16
 if errorlevel 1 echo [WARN] step failed - continuing
-python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100s12 --models d16_g4 --drop-latent --lut --emb-quant int8 --kv-seq 1024
+python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100s12 --models d16_g4 --drop-latent --lut --emb-quant int8 --kv-seq 1024 --kv-dtype bf16
 if errorlevel 1 echo [WARN] step failed - continuing
-python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100R1c --models mC_initonly_nc --drop-latent --lut --emb-quant int8 --kv-seq 1024
+python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100R1c --models mC_initonly_nc --drop-latent --lut --emb-quant int8 --kv-seq 1024 --kv-dtype bf16
+if errorlevel 1 echo [WARN] step failed - continuing
+
+echo.
+python scripts\runlog.py --name P079_stage1_thin_tied --note "[JOIN] cross-preset paired stats - stage 0 could not do this"
+python scripts\runlog.py --name P079_stage1_thin_tied -- python scripts\paired_join.py --crops runs/logs/p079_s1_d08.json runs/logs/p079_s1_d12.json runs/logs/p079_s1_d16.json runs/logs/p079_s1_tied.json --pairs d8_g2:mC_initonly_nc d12_g4:mC_initonly_nc d16_g4:mC_initonly_nc d8_g2:d12_g4 d12_g4:d16_g4
 if errorlevel 1 echo [WARN] step failed - continuing
 echo.
 python scripts\runlog.py --name P079_stage1_thin_tied --note "READ IN THIS ORDER" "1. step0 CE per arm. The tied plus parent-init anchor is 7.7742." "2. paired against mC_initonly_nc, cross-family ruler 0.0021." "3. THEN memory. An arm that wins on quality but costs more resident memory" "   has not won - that was the mC_cla1_ag4_r20 trap (best quality, 70.9 MiB," "   twice the budget)." "4. unique middle blocks per arm: d8 g2 gives 2, d12 g4 gives 2, d16 g4 gives 3." "   Read the results against 059 s14, which says fewer unique blocks means a" "   smaller recurrent advantage." "5. do not rank arms whose gap is under the ruler."

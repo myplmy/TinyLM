@@ -22,6 +22,7 @@
 | 수정 금지 구체 목록·현재 산출물 | §9~§10 | 보호 pattern·감사/빌더/원고 목록 |
 | 새 세션 현재 재개 상태 | §11 | 완료·진행·다음 작업 상태 |
 | Stage1 (4) 신규 설계·31개 예약표 | §12 | boundary schema·ID·family·상태 원장 |
+| Stage1 (5)~(10) 신규 train 설계·97개 예약표 | §14~§20 | 신규 slug·ID·필수 관계·family·생성 상태 원장 |
 
 범용 relation 규칙, JSON schema, 직접 작성 원칙, split 격리, 자동 감사 항목, 보고 양식과 작업 순서는 작업지침서에 남긴다. 이관 과정에서 완료 수치나 family 원장을 삭제하지 않고 본 문서에 보존한다.
 
@@ -249,6 +250,7 @@ Relations: `is_a` 0, `subclass_of` 0, `part_of` 73, `classification` 18, `bounda
 - `stage1_(3)function_high_density_val_v01.json`~`v03.json`
 - `stage1_(4)boundary_high_density_train_v01.json`~`v31.json`
 - `stage1_(4)boundary_high_density_val_v01.json`~`v04.json`
+- `stage1_(5)partwhole_high_density_train_v01.json`~`v12.json`
 - held-out benchmark는 source로 사용하지 않고 열람 결과로 corpus를 고치지 않는다.
 
 새 영역 작업은 위 정본의 시작·종료 SHA-256을 비교한다. legacy 형식이 다르다는 이유로 재직렬화하지 않는다.
@@ -286,6 +288,59 @@ tools/build_boundary_validation.py
 tools/audit_boundary_validation.py
 TinyLM_Stage1_Boundary_Validation_v01_v04_Audit_2026-08-31.json
 TinyLM_Stage1_Boundary_Validation_v01_v04_Final_Report_2026-08-31.md
+tools/build_stage1_relational_train.py
+tools/audit_stage1_relational_train.py
+tools/stage1_relational_sources/partwhole/v01.tsv
+tools/stage1_relational_sources/partwhole/v02.tsv
+tools/stage1_relational_sources/partwhole/v03.tsv
+tools/stage1_relational_sources/partwhole/v04.tsv
+tools/stage1_relational_sources/partwhole/v05.tsv
+tools/stage1_relational_sources/partwhole/v06.tsv
+tools/stage1_relational_sources/partwhole/v07.tsv
+tools/stage1_relational_sources/partwhole/v08.tsv
+tools/stage1_relational_sources/partwhole/v09.tsv
+tools/stage1_relational_sources/partwhole/v10.tsv
+tools/stage1_relational_sources/partwhole/v11.tsv
+tools/stage1_relational_sources/partwhole/v12.tsv
+tools/stage1_relational_sources/partwhole/v13.tsv
+tools/stage1_relational_sources/partwhole/v14.tsv
+tools/stage1_relational_sources/partwhole/v15.tsv
+tools/stage1_relational_sources/partwhole/v16.tsv
+tools/stage1_relational_sources/partwhole/v17.tsv
+tools/stage1_relational_sources/partwhole/v18.tsv
+tools/stage1_relational_sources/partwhole/v19.tsv
+tools/stage1_relational_sources/partwhole/v20.tsv
+tools/stage1_relational_sources/partwhole/v21.tsv
+tools/stage1_relational_sources/partwhole/v22.tsv
+tools/stage1_relational_sources/partwhole/v23.tsv
+TinyLM_Stage1_PartWhole_Train_v01_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v02_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v03_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v04_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v05_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v06_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v07_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v08_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v09_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v10_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v11_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v12_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v13_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v14_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v15_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v16_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v17_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v18_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v19_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v20_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v21_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v22_Progress_Audit_2026-08-31.json
+TinyLM_Stage1_PartWhole_Train_v01_v23_Final_Audit_2026-08-31.json
+TinyLM_Stage1_5_10_Train_Reservation_and_PartWhole_v01_Progress_Report_2026-08-31.md
+TinyLM_Stage1_5_10_Train_PartWhole_v01_v03_Progress_Report_2026-08-31.md
+TinyLM_Stage1_5_10_Train_PartWhole_v01_v05_Progress_Report_2026-08-31.md
+TinyLM_Stage1_5_10_Train_PartWhole_v01_v08_Progress_Report_2026-08-31.md
+TinyLM_Stage1_5_10_Train_PartWhole_v01_v10_Progress_Report_2026-08-31.md
 ```
 
 과거 handoff의 v18 재작성 전 상태와 삭제 예정이던 continuity summary의 v17 누적은 역사적 기록이다. 현재 상태는 실제 파일과 위 최신 감사가 기준이다.
@@ -297,7 +352,8 @@ TinyLM_Stage1_Boundary_Validation_v01_v04_Final_Report_2026-08-31.md
 - Function train v01~v27, validation v01~v03: 완료·수정 금지
 - Stage1 (4) Boundary train v01~v31: 4,650 records 완료·감사 통과·수정 금지
 - Stage1 (4) Boundary validation v01~v04: 600 records 완료·감사 통과·수정 금지
-- 다음 영역은 사용자 승인과 별도 family 원장 없이 시작하지 않는다.
+- Stage1 (5)~(10) train: §14~§20의 97개 family 예약 완료; Stage1 (5) v01~v23 3,450 records 완료·감사 통과·수정 금지, 다음은 Stage1 (6) v01
+- 다음 미확정 Stage·validation은 사용자 승인과 별도 family 원장 없이 시작하지 않는다.
 
 ## 12. Stage1 (4) 개념 경계·반례 train 설계 원장
 
@@ -490,3 +546,248 @@ Relations 전체 분포는 다음과 같다.
 Primary concept 직후 조사 오류는 0건이다. 문장 전체의 기계 조사 후보 5건은 `전문가`의 어휘 말음과 `붙잡는`, `넘겨받는`, `보고받는`, `평가받는`의 활용 어미를 조사로 오인한 false positive로 확인되어 실제 오류는 0건이다. control character, Unicode escape, 비정상 문자 후보도 0건이다.
 
 작업 시작 시 고정한 Identity·Attribute·Function train/validation, Stage2 Attribute 확정 파일, Boundary train 보호 파일 141개의 SHA-256은 종료 시 141/141 모두 일치했다. 다른 밀도와 held-out은 생성·중복 비교·감사 기준에서 제외했다. 상세 수치와 version별 relation 분포는 `TinyLM_Stage1_Boundary_Validation_v01_v04_Final_Report_2026-08-31.md`와 기계 판독 정본 `TinyLM_Stage1_Boundary_Validation_v01_v04_Audit_2026-08-31.json`에 보존한다.
+
+## 14. Stage1 (5)~(10) train 공통 등록
+
+사용자 지정 총량은 14,550 records, 97 files, 설계 환산 1,260K다. 각 파일은 정확히 150 records이며 아래 예약 family 하나만 담당한다. 이 수치는 train에 대한 직접 지정값이고, validation 수량·family·ID는 아직 승인되지 않았으므로 만들지 않는다.
+
+| 영역 | slug / type | ID prefix | 목표 | 설계량 | 영역 관계 규약 |
+|---|---|---|---:|---:|---|
+| (5) 부분–전체 | `partwhole` / `partwhole_packet` | `S1-PWH-` | 3,450 = 23×150 | 300K | 모든 record에 `part_of` 필수 |
+| (6) 상태·상태 변화 | `statechange` / `statechange_packet` | `S1-SCH-` | 3,450 = 23×150 | 300K | 모든 record에 `state`, `process` 필수; 전후 상태와 전이 조건 명시 |
+| (7) 공간 관계 | `spatial` / `spatial_packet` | `S1-SPH-` | 2,400 = 16×150 | 210K | 전용 통제 label이 없으므로 모든 record에 `other` 필수; `part_of`는 실제 부분 관계에만 사용 |
+| (8) 비교·대조 | `comparison` / `comparison_packet` | `S1-COH-` | 2,100 = 14×150 | 180K | 모든 record에 `comparison` 또는 `contrast` 중 하나 이상 필수 |
+| (9) 문맥 통합 | `context` / `context_packet` | `S1-CTH-` | 1,800 = 12×150 | 150K | 3~6개 명시 concept, 3~5개 의미 일치 relation, 단일 필수 label은 강제하지 않음 |
+| (10) 타입·부정·불확실성 | `type_uncertainty` / `type_uncertainty_packet` | `S1-TUH-` | 1,350 = 9×150 | 120K | 모든 record에 `other`와 `classification`·`boundary`·`state` 중 하나 이상 필수 |
+
+파일명은 `stage1_(N)<slug>_high_density_train_vNN.json` 형식을 쓴다. ID는 각 영역에서 `0001`부터 독립적으로 연속 증가한다. train record에는 `unseen_relation`을 넣지 않는다. 모든 relation은 13개 통제 어휘 안에서 2~5개를 중복 없이 쓰며, text에 실제로 드러난 의미만 label로 부여한다.
+
+### 14.1 공간·타입 영역의 `other` 해석
+
+공간의 안/밖·위/아래·좌/우·접촉·거리·방향·좌표는 기존 12개 이름 중 정확히 맞는 relation이 없으므로 R2에 따라 `other`를 사용한다. source 편집 원장에서는 JSON relation을 늘리지 않고 `containment_location`, `directional_order`, `adjacency_connectivity`, `distance_proximity`, `reference_frame_projection` 다섯 유형으로만 분류한다.
+
+타입·부정·불확실성의 명제 부정, 부재, 미관측, 가능성, 메타타입도 전용 relation 이름을 만들지 않고 `other`로 보수적으로 기록한다. source 편집 유형은 `metatype_reference`, `negation_scope`, `absence_nonexistence`, `unknown_unobserved`, `uncertainty_evidence` 다섯 가지다. 이 편집 유형은 감사·보고용이며 JSON relation 값이 아니다.
+
+### 14.2 생성·확정 순서
+
+영역 순서는 (5)→(6)→(7)→(8)→(9)→(10), 각 영역 안에서는 v01부터 오름차순이다. 한 source 150개를 직접 작성하고 JSON 포장·전수 감사를 통과한 뒤에만 해당 row를 `확정`으로 바꾼다. 중단되면 실제 source 행 수, JSON, 감사 결과를 대조하고 마지막 `확정` 다음 row부터 재개한다. 예약 row의 family 이름과 축은 context 압축 뒤에도 바꾸거나 재사용하지 않는다.
+
+## 15. Stage1 (5) 부분–전체 train 설계 원장
+
+```text
+목표: 3,450 records = 23 files × 150 / 약 300K
+파일: stage1_(5)partwhole_high_density_train_v01.json ... v23.json
+ID: S1-PWH-0001 ... S1-PWH-3450
+type/split: partwhole_packet / train
+핵심 오류 억제: 부분→전체 속성의 무조건 상속, 구성요소와 소유물·내용물·구성원의 혼동, 전체와 부분의 방향 반전
+```
+
+| version | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 인체 기관계·기관·조직·세포의 구성 계층 | 기관계/기관, 기관/조직, 조직/세포, 좌우 쌍, 층·막·관 구조 | 확정 |
+| v02 | 0151~0300 | 식물 뿌리·줄기·잎·꽃·열매·종자의 구성 | 기관/조직, 꽃 기관, 열매/씨, 관다발, 생장점 | 확정 |
+| v03 | 0301~0450 | 동물 골격·근육·외피·감각기관의 구성 | 뼈/골격, 근육군, 체절, 껍질·깃·비늘, 감각 구조 | 확정 |
+| v04 | 0451~0600 | 세포 소기관·막계·분자복합체의 구성 | 핵·막·소기관, 세포골격, 리보솜, 단백질 복합체, 분자 하위단위 | 확정 |
+| v05 | 0601~0750 | 생태계·먹이망·서식지·물질순환의 구성 | 개체군/군집, 영양 단계, 서식지 모자이크, 탄소·질소 저장고 | 확정 |
+| v06 | 0751~0900 | 지층·암석·토양단면·유역·하천망의 구성 | 광물/암석, 지층/층서, 토양층위, 지류/본류, 소유역/유역 | 확정 |
+| v07 | 0901~1050 | 은하·항성계·행성계·천체 내부의 구성 | 은하 구조, 항성계, 행성/위성, 대기층, 핵·맨틀·지각 | 확정 |
+| v08 | 1051~1200 | 건축 구조·외피·실내·설비의 구성 | 기초/골조, 벽·지붕 외피, 방·동선, 전기·급배수·환기 설비 | 확정 |
+| v09 | 1201~1350 | 도로·교량·터널·상하수도 도시망의 구성 | 차로/도로, 교량 경간, 터널 단면, 관망, 맨홀·밸브·배수구 | 확정 |
+| v10 | 1351~1500 | 자동차·철도차량·자전거의 조립 계층 | 차체/섀시, 동력계, 제동·조향, 대차, 차륜·구동 부품 | 확정 |
+| v11 | 1501~1650 | 항공기·헬리콥터·우주선의 조립 계층 | 동체/날개, 회전익, 추진·조종면, 항공전자, 탑재체·단계 | 확정 |
+| v12 | 1651~1800 | 선박·해양플랜트·항만설비의 구성 | 선체 구획, 갑판·기관, 계류계, 하역장치, 방파제·선석 | 확정 |
+| v13 | 1801~1950 | 기계요소·동력전달·생산라인의 구성 | 축·기어·베어링, 링크, 유압회로, 공정 셀, 라인 모듈 | 확정 |
+| v14 | 1951~2100 | 전기회로·전자기기·전력설비의 구성 | 소자/회로, 기판/모듈, 전원부, 배선·접지, 변전·보호 계통 | 확정 |
+| v15 | 2101~2250 | 컴퓨터 하드웨어·저장장치·네트워크의 구성 | CPU 하위부, 메모리 계층, 디스크 블록, 포트·링크·노드 | 확정 |
+| v16 | 2251~2400 | 소프트웨어·코드·데이터·문서의 논리 구성 | 패키지/모듈, 함수/문장, 객체/필드, 표/행·열, 문서/절·문단 | 확정 |
+| v17 | 2401~2550 | 담화·문장·구·단어·형태소의 언어 구성 | 담화 단위, 문장 성분, 구·절, 합성어, 어근·접사 | 확정 |
+| v18 | 2551~2700 | 집합·식·증명·도형의 수학적 구성 | 집합/원소, 식/항, 행렬/성분, 증명/보조정리, 도형/면·변·꼭짓점 | 확정 |
+| v19 | 2701~2850 | 지도·지형구역·행정구역·필지의 공간 계층 | 도엽, 지형 단위, 국가/지방, 구역/필지, 경계·내부 단위 | 확정 |
+| v20 | 2851~3000 | 조직·부서·팀·위원회·프로젝트의 구성 | 조직 단위, 직위와 구성원, 위원회, 작업반, 프로젝트 작업분해 | 확정 |
+| v21 | 3001~3150 | 법령·계약·사건기록·증거 묶음의 문서 구성 | 장·절·조·항, 계약 조항, 사건기록, 첨부, 증거목록 | 확정 |
+| v22 | 3151~3300 | 회화·조각·음악·공연·영상 작품의 구성 | 화면 요소, 조각 부재, 악장·구절, 장면·막, 숏·트랙 | 확정 |
+| v23 | 3301~3450 | 식재료·조리법·한 끼·포장·생산묶음의 구성 | 재료/요리, 단계/조리법, 메뉴/식사, 용기/포장, 로트/단위품 | 확정 |
+
+### 15.1 2026-08-31 v01~v22 생성·감사 이력
+
+```text
+상태: v01~v22 확정·수정 금지 / v23 예약
+파일/record: 22 files × 150 = 3,300 records
+ID: S1-PWH-0001 ~ S1-PWH-3300
+concept family: v01 인체 구성 계층 / v02 식물 기관·조직·생식구조 구성 / v03 동물 골격·근육·외피·감각기관 구성 / v04 세포 소기관·막계·분자복합체 구성 / v05 생태계·먹이망·서식지·물질순환 구성 / v06 지층·암석·토양·유역·하천망 구성 / v07 은하·항성계·행성계·천체 내부 구성 / v08 건축 구조·외피·실내·설비 구성 / v09 도로·교량·터널·상하수도 도시망 구성 / v10 자동차·철도차량·자전거 조립 계층 / v11 항공기·헬리콥터·우주선 조립 계층 / v12 선박·해양플랜트·항만설비 구성 / v13 기계요소·동력전달·생산라인 구성 / v14 전기회로·전자기기·전력설비 구성 / v15 컴퓨터 하드웨어·저장장치·네트워크 구성 / v16 소프트웨어·코드·데이터·문서 논리 구성 / v17 담화·문장·구·단어·형태소 언어 구성 / v18 집합·식·증명·도형 수학 구성 / v19 지도·지형구역·행정구역·필지 공간 계층 / v20 조직·부서·팀·위원회·프로젝트 구성 / v21 법령·계약·사건기록·증거 문서 구성 / v22 회화·조각·음악·공연·영상 작품 구성
+text: 296,441자 / 정규식 분리 단위 64,990개
+길이: 최소 75자 / 중앙값 90자 / 평균 89.831자 / 최대 130자
+Stage1 (5) 잔여: 150 records = 1 file
+Stage1 (5)~(10) 전체 잔여: 11,250 records = 75 files
+v01 JSON SHA-256: BA06BCC5660CBF9BF297741EC923D2B08B5FCFC5E1A92098DCA0C6AEC22C265A
+v02 JSON SHA-256: D3F104D88CE9E937678298304FA72D6C30DC2F14EFBF8EE58C3E2F5E9F1AD4D5
+v03 JSON SHA-256: B23E0CD731BD1705DBDB20116AFE847A365C207408B7752B45E4A6CCEBFDF8C0
+v04 JSON SHA-256: 4A300DA1D3A98908D3C7755A099B0441F7FF9587ACAEABBB5734DFEC8CD25763
+v05 JSON SHA-256: 81E61680850661343C0E3516804571CB5241F295F7E248CB96FEB348EF7A2975
+v06 JSON SHA-256: 6E0237695758F93DDB16DD4A3F37C684ACAFD0C9C322857293B6003FE04E3614
+v07 JSON SHA-256: 0BA6A9608D6CA99D17F9B426D6371D82943755E21FE33CC665FC210D364E7485
+v08 JSON SHA-256: AA92D45F7613759751414F1B830C24D1BD37FE725CE5F723299B3BB44422867E
+v09 JSON SHA-256: 872387810213933B90A83E9DDA921B015BC651E813B8CDE5917CE42839D8A539
+v10 JSON SHA-256: 6D0C193216FF6E13940FAA9AAF6A85FA4903AB71DF75DA2B374C03AEC5FF9031
+v11 JSON SHA-256: ED1057DC86D934794151460C1E138ED88E4A07D7B9BFF80AD0791529B9754A88
+v12 JSON SHA-256: 6BAB91828A513ACCC000CD346CB16D19A637B30418CE17454ED3ABE7BC50818A
+v13 JSON SHA-256: C702240D2D7D7A1AAD025F77C77D7AB5FDA371210C5194A195ECA4CDB9BC64C5
+v14 JSON SHA-256: 3E0B71BDED77894A2C78D6BD5418BEDF0FBB36E537A739A54074B8657B77BC39
+v15 JSON SHA-256: 5B5622011C6A7198FABEF385729D1BEB0437676BFC3235321AA0C619FC236D74
+v16 JSON SHA-256: EE2193034CDCBB355D98B0BDC5466E79C3672985C8663AC8E80F8A1CBFFFF844
+v17 JSON SHA-256: E9C92133AAC8DFA2DF8CEA3C1F536E23C7B3B5441D6CB149179D35F3AE337EE5
+v18 JSON SHA-256: 0477813010795136D6274905687CE4B0291C4BB065A3F576449650A0FF490529
+v19 JSON SHA-256: 19B82DE0A4C5F67FCF926E14EEF63AEB092D239F61DB40A129874E9DFF0CA8BD
+v20 JSON SHA-256: 01C70946CEC4608AA8F110DC18CEB1F26347904FF37733E6C973199E59E0E937
+v21 JSON SHA-256: CB551CE4FDEDB577CA1E2D82428681F8B513EBB68B2F78FB1B708B7A0FF8D950
+v22 JSON SHA-256: C9860444C1D8F8316C0F2359C9AD5C6E0F250CBF5508393FD09B97C463D62966
+```
+
+Relations 누적은 `is_a` 21, `subclass_of` 30, `part_of` 3,300, `classification` 1,100, `boundary` 745, `contrast` 214, `comparison` 80, `function` 2,119, `role` 268, `process` 834, `state` 521, `attribute` 260, `other` 398이다. v22 단독은 각각 0, 0, 150, 41, 12, 9, 8, 57, 39, 73, 23, 30, 8이다. 실제 의미가 없는 상하위·비교 label은 분포 채우기 목적으로 추가하지 않았다.
+
+`other` 누적 편집 유형 상위 5개는 추상 구획·과정 구조 162, 집합 정체성 133, 물질적 몫 43, 구성원·구조부품 경계 34, 공통 발생 기원 묶음 26이다. 이 유형명은 source 감사용이고 JSON에는 통제 relation `other`만 기록한다.
+
+JSON·UTF-8·schema·metadata·ID·source 대응·relations 오류는 0건이다. exact ID/concept/text/concept–relation-set 중복은 내부 및 기존 고밀도 21,700 records와의 교차 비교에서 모두 0건이고, 내부·교차 반복 5어절과 반복 4어절 도입부도 0건이다. primary concept 직후 조사 오류와 실제 광역 조사 오류는 0건이다. 광역 조사 후보 30건은 모두 실제 조사 오류가 아닌 어휘 말음 오탐이다. 내부 최대 문자 3~5-gram TF-IDF cosine은 `0.339122`, 기존 고밀도 대비 최대는 `0.324295`다. v22는 감사용 논리 패턴이 relation 열에 잘못 들어간 초안 19건을 통제 어휘로 교정하고 외국어 오기 1건을 고쳤다. 첫 감사의 교차 반복 5어절 1건은 해당 원문을 직접 다시 쓴 뒤 0건이 되었다.
+
+상세 결과는 `TinyLM_Stage1_PartWhole_Train_v01_v22_Progress_Audit_2026-08-31.json`에 보존한다. 전체 생성 시작 시 고정한 기존 정본 146개는 v19 checkpoint에서 146/146 SHA-256이 일치했고, 빌더는 Part–Whole v01~v21의 source 재구성 기대 bytes와 기존 JSON 일치를 확인한 뒤 v22만 기록했다. v01~v22는 이 절과 §9의 정본이며 다음 재개점은 v23 `식재료·조리법·한 끼·포장·생산묶음의 구성`이다.
+
+## 16. Stage1 (6) 상태·상태 변화 train 설계 원장
+
+```text
+목표: 3,450 records = 23 files × 150 / 약 300K
+파일: stage1_(6)statechange_high_density_train_v01.json ... v23.json
+ID: S1-SCH-0001 ... S1-SCH-3450
+type/split: statechange_packet / train
+핵심 오류 억제: 대상과 상태의 동일시, 한 시점 관찰을 영구 속성으로 일반화, 전이 조건·가역성·중간 상태 누락
+```
+
+| version | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 물질 상·용해·결정화·응고·기화 상태 전이 | 고체/액체/기체, 용해/석출, 결정/비정질, 상평형, 과냉각 | 예약 |
+| v02 | 0151~0300 | 온도·열평형·가열·냉각·열저장 상태 변화 | 승온/강온, 열평형, 과열, 축열·방열, 단열 뒤 완화 | 예약 |
+| v03 | 0301~0450 | 화학 반응·농도·산염기·산화환원 상태 변화 | 반응 진행, 농도, pH, 산화수, 평형 이동, 촉매 전후 | 예약 |
+| v04 | 0451~0600 | 운동·정지·진동·변형·파손·마모 상태 변화 | 속도 상태, 진동 모드, 탄성/소성, 균열, 피로·마모 | 예약 |
+| v05 | 0601~0750 | 전기회로 전원·충전·스위칭·고장·복구 상태 | 통전/차단, 충방전, 논리 상태, 과부하, 보호 동작·복귀 | 예약 |
+| v06 | 0751~0900 | 운영체제 프로세스·작업·자원 잠금 생명주기 | 생성/준비/실행/대기/종료, 중단, 교착, 재시작 | 예약 |
+| v07 | 0901~1050 | 데이터·문서·버전·승인·보관 생명주기 | 초안/검토/승인, 유효/폐기, 버전 분기, 보관·복원 | 예약 |
+| v08 | 1051~1200 | 네트워크 연결·세션·동기화·장애 상태 전이 | 탐색/연결/인증, 정상/저하/단절, 재전송, 재동기화 | 예약 |
+| v09 | 1201~1350 | 기기 전원모드·배터리·충전·열제한 상태 변화 | 켜짐/대기/절전, 충전 단계, 잔량, 과열 제한, 정상 복귀 | 예약 |
+| v10 | 1351~1500 | 건물 점유·출입·방재·보안 운용 상태 변화 | 개방/폐쇄, 점유, 경계, 화재모드, 대피, 시설 복구 | 예약 |
+| v11 | 1501~1650 | 차량·열차·항공기·선박 운항 단계와 상태 전이 | 준비/출발/순항/정차, 지연, 우회, 비상, 운항 종료 | 예약 |
+| v12 | 1651~1800 | 주문·포장·운송·인도·반품 물류 상태 변화 | 접수/할당, 포장, 출고, 이동, 인도 실패, 반품·회수 | 예약 |
+| v13 | 1801~1950 | 제조 공정품·설비·품질 판정 상태 변화 | 원재료/재공/완성, 가동/정지, 검사대기, 합격/보류/재작업 | 예약 |
+| v14 | 1951~2100 | 식품 조리·발효·숙성·저장·변질 상태 변화 | 익힘, 유화, 발효 단계, 숙성, 냉각, 산패·부패 경계 | 예약 |
+| v15 | 2101~2250 | 식물 발아·생장·개화·결실·휴면·스트레스 변화 | 종자 상태, 영양생장, 생식전환, 낙엽, 휴면, 회복 | 예약 |
+| v16 | 2251~2400 | 동물 활동·섭식·이동·번식·휴식 행동 상태 | 경계/탐색, 섭식, 이동, 둥지, 번식 단계, 휴식 전환 | 예약 |
+| v17 | 2401~2550 | 사람 수면·각성·운동·피로·회복의 일반 생리 상태 | 수면 단계, 각성, 운동 강도, 피로 누적, 휴식·회복 | 예약 |
+| v18 | 2551~2700 | 대기·구름·전선·강수·폭풍의 발달과 소멸 | 기단 변화, 구름 발달, 전선 통과, 강수 전환, 폭풍 약화 | 예약 |
+| v19 | 2701~2850 | 하천·호수·지하수·홍수·가뭄 수문 상태 변화 | 수위·유량, 저수, 침투, 범람, 갈수, 회복 | 예약 |
+| v20 | 2851~3000 | 풍화·침식·퇴적·사면·지각변형 상태 변화 | 풍화 단계, 운반/퇴적, 사면 안정, 단층 운동, 지형 재편 | 예약 |
+| v21 | 3001~3150 | 회의·협업·프로젝트·결정·갈등 상태 변화 | 제안/논의/합의, 작업 진행, 보류, 충돌, 조정·종료 | 예약 |
+| v22 | 3151~3300 | 계좌·거래·청구·계약·심사 상태 생명주기 | 개설/활성/정지, 승인/거절, 결제, 연체, 해지·복구 | 예약 |
+| v23 | 3301~3450 | 학습·주의·기억·정서·과제진행 상태 변화 | 준비/집중/전환, 습득/망각, 확신, 정서 조절, 완료·재시도 | 예약 |
+
+## 17. Stage1 (7) 공간 관계 train 설계 원장
+
+```text
+목표: 2,400 records = 16 files × 150 / 약 210K
+파일: stage1_(7)spatial_high_density_train_v01.json ... v16.json
+ID: S1-SPH-0001 ... S1-SPH-2400
+type/split: spatial_packet / train
+핵심 오류 억제: 안에 있음과 부분임의 혼동, 관찰자 기준 좌우와 대상 기준 좌우의 혼동, 접촉·인접·연결·거리의 과잉 동일시
+```
+
+| version | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 가정 실내 물체·가구·용기의 배치 관계 | 안/밖, 위/아래, 표면, 사이, 모서리, 겹침·접촉 | 예약 |
+| v02 | 0151~0300 | 건물 층·방·복도·계단·출입구의 공간 위상 | 층간, 방 연결, 복도 분기, 출입 경계, 수직 동선 | 예약 |
+| v03 | 0301~0450 | 도시 블록·도로·교차로·공원·시설의 배치 | 블록 내부, 맞은편, 교차, 인접 필지, 중심/외곽 | 예약 |
+| v04 | 0451~0600 | 도로 차량·차로·교차로·진출입의 상대 위치 | 선행/후행, 좌우 차로, 합류, 교차점 전후, 안전 간격 | 예약 |
+| v05 | 0601~0750 | 철도역·승강장·선로·분기기·차량의 배치 | 상하행 기준, 플랫폼 면, 선로 사이, 분기, 정차 위치 | 예약 |
+| v06 | 0751~0900 | 공항 활주로·유도로·계류장·게이트 공간 관계 | 평행/교차, 대기 위치, 보호구역, 게이트 인접, 이동 경로 | 예약 |
+| v07 | 0901~1050 | 항만·선박·선석·항로·정박지 공간 관계 | 접안면, 선수/선미 기준, 항로 안팎, 정박 간격, 수역 경계 | 예약 |
+| v08 | 1051~1200 | 산지·하천·유역·해안·섬의 지리 공간 관계 | 상류/하류, 능선/계곡, 내륙/연안, 포위·연결, 인접 수역 | 예약 |
+| v09 | 1201~1350 | 지도 좌표·축척·방위·투영·기준계 관계 | 좌표축, 절대/상대 위치, 축척 거리, 방위, 투영 왜곡 | 예약 |
+| v10 | 1351~1500 | 천구·궤도·행성·위성·관측자의 상대 위치 | 전경/배경, 합·충, 공전면, 가림, 관측자 기준 방향 | 예약 |
+| v11 | 1501~1650 | 인체 자세·해부 방향·기관의 상대 위치 | 앞/뒤, 안쪽/가쪽, 몸쪽/먼쪽, 표면/깊이, 좌우 기준 | 예약 |
+| v12 | 1651~1800 | 생물 서식지·둥지·영역·군집의 미소공간 | 영역 내부, 경계, 층상 분포, 군집 간격, 은신처 접근 | 예약 |
+| v13 | 1801~1950 | 분자·결정·세포·조직의 미시 공간 배열 | 결합 위치, 격자 이웃, 막 안팎, 극성 방향, 층·구획 | 예약 |
+| v14 | 1951~2100 | 공장 작업셀·생산선·창고·적치의 공간 배치 | 공정 순서 위치, 통로, 적치 높이, 구역, 장비 간격 | 예약 |
+| v15 | 2101~2250 | 메모리 주소·파일 경로·네트워크 위상의 논리 공간 | 주소 범위, 상위/하위 경로, 인접 블록, 링크, 논리 거리 | 예약 |
+| v16 | 2251~2400 | 화면·페이지·도표·영상 레이어의 시각 배치 | 정렬, 여백, 전후 레이어, 캡션 위치, 좌표·자르기 | 예약 |
+
+## 18. Stage1 (8) 비교·대조 train 설계 원장
+
+```text
+목표: 2,100 records = 14 files × 150 / 약 180K
+파일: stage1_(8)comparison_high_density_train_v01.json ... v14.json
+ID: S1-COH-0001 ... S1-COH-2100
+type/split: comparison_packet / train
+핵심 오류 억제: 비교 기준 누락, 단위·모집단·시점이 다른 값의 직접 비교, 한 축의 우위를 전체 우위로 확대
+```
+
+| version | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 길이·면적·부피·질량·밀도의 기준화 비교 | 단위 변환, 절대/상대 차이, 형상 효과, 질량/밀도 분리 | 예약 |
+| v02 | 0151~0300 | 시각·기간·속도·빈도·지연의 시간 비교 | 시작점, 경과시간, 평균/순간 속도, 주기, 지연 분포 | 예약 |
+| v03 | 0301~0450 | 온도·열량·에너지·동력·효율의 비교 | 상태량/이동량, 에너지/동력, 입력/출력, 효율 기준 | 예약 |
+| v04 | 0451~0600 | 재료 강도·강성·연성·인성·내구성의 비교 | 시험 조건, 방향성, 파손 모드, 초기 성능/수명 | 예약 |
+| v05 | 0601~0750 | 생물 형태·성장·대사·생리 지표의 비교 | 체격 보정, 성장 단계, 종내/종간, 환경 조건 | 예약 |
+| v06 | 0751~0900 | 생태 개체수·밀도·다양성·생산성의 비교 | 조사 면적, 표본 노력, 풍부도/균등도, 계절·서식지 | 예약 |
+| v07 | 0901~1050 | 통계 분포·중심·산포·비율·위험의 비교 | 평균/중앙값, 분산, 기저율, 효과크기, 불확실성 | 예약 |
+| v08 | 1051~1200 | 측정법·센서·검사의 정확도·정밀도 비교 | 기준값, 반복성, 민감도/특이도, 검출한계, 교정 | 예약 |
+| v09 | 1201~1350 | 알고리즘·시스템의 시간·메모리·확장성 비교 | 입력 크기, 처리량, 지연, 메모리, 최악/평균 조건 | 예약 |
+| v10 | 1351~1500 | 제품·도구의 기능·사용성·비용·유지보수 비교 | 과업 적합성, 사용자 조건, 총비용, 수리·교체 | 예약 |
+| v11 | 1501~1650 | 교통수단의 속도·용량·안전·에너지 비교 | 노선·거리, 탑승률, 사고 노출, 단위수송 에너지 | 예약 |
+| v12 | 1651~1800 | 언어·문서의 명료성·격식·응집성·정보밀도 대조 | 독자, 목적, 어휘·문장, 근거 구조, 요약 손실 | 예약 |
+| v13 | 1801~1950 | 정책·서비스의 도달률·효과·형평·비용 대조 | 대상 집단, 기준선, 결과 지표, 분배 효과, 기간 | 예약 |
+| v14 | 1951~2100 | 의사결정 대안의 효용·위험·가역성·제약 비교 | 다기준, trade-off, 최악 결과, 되돌림 비용, 자원 제약 | 예약 |
+
+## 19. Stage1 (9) 문맥 통합 train 설계 원장
+
+```text
+목표: 1,800 records = 12 files × 150 / 약 150K
+파일: stage1_(9)context_high_density_train_v01.json ... v12.json
+ID: S1-CTH-0001 ... S1-CTH-1800
+type/split: context_packet / train
+핵심 능력: 사람·대상·위치·도구·행동·상태·시간을 한 상황에서 동시에 유지하고 지시 대상과 결과를 연결
+```
+
+각 record의 `concepts`는 primary 상황 concept 뒤에 문장에 실제 등장하는 핵심 객체 2~5개를 더해 총 3~6개다. 같은 객체를 다른 표기로 중복하지 않으며, 대명사·생략이 있더라도 선행 대상을 문장 안에서 복원할 수 있어야 한다.
+
+| version | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 가정의 준비·정리·세탁·수리 일상 상황 | 사람, 방, 물건, 도구, 순서, 완료·미완료 상태 | 예약 |
+| v02 | 0151~0300 | 주방의 재료 준비·조리·보관·제공 상황 | 재료, 기구, 온도, 시간, 용기, 조리 상태 | 예약 |
+| v03 | 0301~0450 | 교실의 설명·질문·과제·피드백·평가 상황 | 교사/학습자, 자료, 문제, 답, 피드백, 진행 상태 | 예약 |
+| v04 | 0451~0600 | 진료·예약·검사·결과 안내·추적관리 상황 | 이용자, 의료진, 일정, 검사, 기록, 다음 조치 | 예약 |
+| v05 | 0601~0750 | 작업장의 주문·재료·기계·검사·재작업 상황 | 작업자, 설비, 공정품, 작업지시, 측정, 품질 상태 | 예약 |
+| v06 | 0751~0900 | 상점의 재고·주문·결제·교환·고객응대 상황 | 고객/직원, 상품, 재고, 영수증, 결제, 처리 상태 | 예약 |
+| v07 | 0901~1050 | 창고·배송의 입고·분류·상차·이동·인도 상황 | 화물, 위치, 작업자, 차량, 수취인, 추적 상태 | 예약 |
+| v08 | 1051~1200 | 대중교통의 승차·환승·지연·우회·도착 상황 | 승객, 노선, 정류장, 시간, 연결편, 운행 상태 | 예약 |
+| v09 | 1201~1350 | 건물 경보·대피·신고·구조·복구 상황 | 경보, 점유자, 출구, 담당자, 위험 구역, 복구 상태 | 예약 |
+| v10 | 1351~1500 | 환경 현장조사의 지점·센서·시료·기상·기록 상황 | 조사자, 위치, 장비, 시료, 조건, 측정 기록 | 예약 |
+| v11 | 1501~1650 | 협업 소프트웨어의 이슈·변경·검토·시험·배포 상황 | 사용자/개발자, 이슈, 분기, 변경, 테스트, 릴리스 | 예약 |
+| v12 | 1651~1800 | 공공행정의 신청·서류·심사·보완·결정 상황 | 신청인, 담당자, 양식, 증빙, 기한, 처리 결과 | 예약 |
+
+## 20. Stage1 (10) 타입·부정·불확실성 train 설계 원장
+
+```text
+목표: 1,350 records = 9 files × 150 / 약 120K
+파일: stage1_(10)type_uncertainty_high_density_train_v01.json ... v09.json
+ID: S1-TUH-0001 ... S1-TUH-1350
+type/split: type_uncertainty_packet / train
+핵심 오류 억제: 타입과 값의 혼동, 부정 범위 오독, 부재·0·빈 값·비존재의 동일시, 미관측을 거짓으로 단정, 가능성을 사실로 승격
+```
+
+| version | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 클래스·인스턴스·토큰·식별자·메타타입 구분 | 유형/사례, 대상/이름, 값/표현, 스키마, 메타 수준 | 예약 |
+| v02 | 0151~0300 | Entity·Attribute·Quantity·Relation·State·Action 타입 구분 | 대상, 속성, 수량, 관계, 상태, 행동의 정보형 판정 | 예약 |
+| v03 | 0301~0450 | 한국어 명제 부정·부분 부정·양화·범위 해석 | 아니다/않다, 모두 아님, 하나도 없음, 오직, 이중 부정 | 예약 |
+| v04 | 0451~0600 | 부재·비존재·빈값·0·삭제·접근불가 구분 | 없음의 종류, 빈 용기, 영 수량, 삭제 상태, 권한·접근 실패 | 예약 |
+| v05 | 0601~0750 | 미관측·미측정·미기록·미응답·알수없음 구분 | 센서 공백, 조사 누락, 기록 부재, 응답 거절, 지식 한계 | 예약 |
+| v06 | 0751~0900 | 가능성·확률·확신·추정·증거 강도의 구분 | 가능/개연, 확률값, 신뢰구간, 주관 확신, 근거 수준 | 예약 |
+| v07 | 0901~1050 | 상충·불완전·모호·오래된 출처의 불확실성 통합 | 출처 충돌, 누락, 용어 모호성, 시점 불일치, 갱신 필요 | 예약 |
+| v08 | 1051~1200 | 센서·검사·탐지의 양성·음성·오탐·미탐·검출한계 | 참/거짓 양성·음성, 민감도, 기저율, 경계값, 불확정 | 예약 |
+| v09 | 1201~1350 | 계획·예측·가정·시뮬레이션·반사실과 실제 사건 구분 | 예정/발생, 예측/관측, 가정 조건, 모의 결과, 반사실 | 예약 |

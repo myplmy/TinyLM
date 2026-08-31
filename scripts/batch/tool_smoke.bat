@@ -244,6 +244,24 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch t
 if errorlevel 1 echo [WARN] sm_film failed - continuing
 
 echo.
+echo [21] --arch dense with --cla-group  (P079 stage 3 - CLA on a dense body, never smoked)
+REM  ------------------------------------------------------------------------
+REM  The axis exists and the arch exists, but never together. That is exactly
+REM  the shape in which the four P074 arms died (log 059).
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --cla-group 2 --tag sm_densecla
+if errorlevel 1 echo [WARN] sm_densecla failed - continuing
+
+echo.
+echo [20] return_probs diagnostic path  (P081 - SDPA does not hand back probs)
+REM  ------------------------------------------------------------------------
+REM  This axis CANNOT be a training arm - return_probs is blocked in train()
+REM  by an assert, because the probability matrix is batch x heads x T x T.
+REM  So the trap-37 arm for this axis is a standalone check instead.
+REM  It asserts the whole claim: logits are BIT IDENTICAL with it on.
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_return_probs.py
+if errorlevel 1 echo [WARN] return_probs check FAILED - the diagnostic path leaks into output
+
+echo.
 echo =============================================================
 echo [VERIFY] every instrumentation field was recorded
 python scripts\runlog.py --name !TL_LOGNAME! --note "[VERIFY] every instrumentation field was recorded"

@@ -50,19 +50,24 @@ python scripts\runlog.py --name P079_stage2_thin_recursive -- python run100m.py 
 if errorlevel 1 echo [WARN] step failed - continuing
 echo.
 python scripts\runlog.py --name P079_stage2_thin_recursive --note "[4/5] paired - each checkpoint on its own trained schedule"
-python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\paired_eval.py --preset m100s8 --data ko-en --tokens 300M --models d12_g4_r20 d12_g4_r30 --match-train-repeat
+python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\paired_eval.py --preset m100s8 --data ko-en --tokens 300M --models d12_g4_r20 d12_g4_r30 --match-train-repeat --dump-crops runs/logs/p079_s2_d12.json
 if errorlevel 1 echo [WARN] step failed - continuing
-python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\paired_eval.py --preset m100s12 --data ko-en --tokens 300M --models d16_g4_r20 --match-train-repeat
+python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\paired_eval.py --preset m100s12 --data ko-en --tokens 300M --models d16_g4_r20 --match-train-repeat --dump-crops runs/logs/p079_s2_d16.json
 if errorlevel 1 echo [WARN] step failed - continuing
-python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_initonly_nc mC_cla1_ag4_r20 --match-train-repeat
+python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\paired_eval.py --preset m100R1c --data ko-en --tokens 300M --models mC_initonly_nc mC_cla1_ag4_r20 --match-train-repeat --dump-crops runs/logs/p079_s2_tied.json
 if errorlevel 1 echo [WARN] step failed - continuing
 echo.
 python scripts\runlog.py --name P079_stage2_thin_recursive --note "[5/5] weights plus KV, and the visit count that sets decode speed"
-python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100s8 --models d12_g4_r20 d12_g4_r30 --drop-latent --lut --emb-quant int8 --kv-seq 1024
+python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100s8 --models d12_g4_r20 d12_g4_r30 --drop-latent --lut --emb-quant int8 --kv-seq 1024 --kv-dtype bf16
 if errorlevel 1 echo [WARN] step failed - continuing
-python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100s12 --models d16_g4_r20 --drop-latent --lut --emb-quant int8 --kv-seq 1024
+python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100s12 --models d16_g4_r20 --drop-latent --lut --emb-quant int8 --kv-seq 1024 --kv-dtype bf16
 if errorlevel 1 echo [WARN] step failed - continuing
-python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100R1c --models mC_initonly_nc mC_cla1_ag4_r20 --drop-latent --lut --emb-quant int8 --kv-seq 1024
+python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\mem_runtime.py --device cpu --max-new 32 --preset m100R1c --models mC_initonly_nc mC_cla1_ag4_r20 --drop-latent --lut --emb-quant int8 --kv-seq 1024 --kv-dtype bf16
+if errorlevel 1 echo [WARN] step failed - continuing
+
+echo.
+python scripts\runlog.py --name P079_stage2_thin_recursive --note "[JOIN] cross-preset paired stats"
+python scripts\runlog.py --name P079_stage2_thin_recursive -- python scripts\paired_join.py --crops runs/logs/p079_s2_d12.json runs/logs/p079_s2_d16.json runs/logs/p079_s2_tied.json --pairs d12_g4_r20:mC_initonly_nc d12_g4_r20:mC_cla1_ag4_r20 d16_g4_r20:mC_initonly_nc d12_g4_r30:d12_g4_r20
 if errorlevel 1 echo [WARN] step failed - continuing
 echo.
 python scripts\runlog.py --name P079_stage2_thin_recursive --note "READ IN THIS ORDER" "1. --match-train-repeat is on, so each checkpoint runs the function it was" "   trained with. Check the printed visit counts against 20 / 28 / 28." "   If they differ, trap 39 is back and the numbers are void." "2. quality against mC_initonly_nc on the cross-family ruler 0.0021." "3. kv_entries. Recursion multiplies entries, and result 062 closed the only" "   way of folding them back. Whatever KV these arms carry, they carry." "4. the win condition needs BOTH columns. Report the loss of either plainly." "5. decode speed follows visits, not layers (014 s13.1). A 28-visit arm is" "   about 40 percent slower than a 20-visit one whatever its depth."

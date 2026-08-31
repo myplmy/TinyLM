@@ -265,8 +265,34 @@ def main():
         if dev == "cuda":
             torch.cuda.empty_cache()
 
+    if a.dump_crops:
+        import json as _json
+        _out = Path(a.dump_crops)
+        _out.parent.mkdir(parents=True, exist_ok=True)
+        # ⚠️2026-08-31 — 이 블록이 `len(per) ^< 2` 조기 반환 **앞으로** 옮겨졌다.
+        #   모델 하나짜리 호출(프리셋이 다른 팔은 그렇게밖에 못 부른다)에서도
+        #   덤프가 나와야 `paired_join` 이 프리셋을 가로지를 수 있다(결과 067 §8).
+        #   ★아래 잘라내기는 종전 위치에서 하던 것을 여기로 함께 가져온 것이다 —
+        #   안 하면 길이가 다른 리스트가 저장돼 소비 도구가 조용히 잘라 쓴다.
+        _n = min((len(v) for v in per.values()), default=0)
+        _payload = {
+            "meta": {"preset": a.preset, "data": a.data, "tokens": a.tokens,
+                     "seq": a.seq, "micro_bs": a.micro_bs, "device": dev,
+                     "match_train_repeat": bool(a.match_train_repeat),
+                     "infer_repeat": a.infer_repeat,
+                     "n_crops": _n},
+            "crops": {k: [float(x) for x in v[:_n]] for k, v in per.items()},
+        }
+        _out.write_bytes((_json.dumps(_payload, ensure_ascii=False)).encode("utf-8"))
+        print(f"\n  ★크롭별 손실을 저장했다: {_out}  "
+              f"(모델 {len(per)}개 x 크롭 {_payload['meta']['n_crops']}개)")
+        print("     분석: python scripts/diag_visit_selectivity.py "
+              f"--crops {_out} --base <기준태그> --deep <재귀태그>")
+
     if len(per) < 2:
         print("\n  비교할 모델이 2개 미만이다.")
+        print("  ★단 크롭 덤프는 위에서 이미 저장했다 - `scripts/paired_join.py` 가")
+        print("     **프리셋이 다른 파일끼리** 짝을 지어 준다(결과 067 sec 8).")
         return 2
 
     # 크롭 수가 다르면 대응이 깨진다. 같은 data/seq 면 같아야 하므로 방어적으로 자른다.
@@ -375,23 +401,6 @@ def main():
     #   일부 크롭에 몰려 있는가(H2 선택설)"* 다. 평균으로는 그 둘이 구분되지 않는다.
     #   ★분포를 보려면 **원자료**가 필요하고, 그것을 여기서 저장한다.
     #   그 다음 분석은 `scripts/diag_visit_selectivity.py` 가 **torch 없이** 한다.
-    if a.dump_crops:
-        import json as _json
-        _out = Path(a.dump_crops)
-        _out.parent.mkdir(parents=True, exist_ok=True)
-        _payload = {
-            "meta": {"preset": a.preset, "data": a.data, "tokens": a.tokens,
-                     "seq": a.seq, "micro_bs": a.micro_bs, "device": dev,
-                     "match_train_repeat": bool(a.match_train_repeat),
-                     "infer_repeat": a.infer_repeat,
-                     "n_crops": len(next(iter(per.values()))) if per else 0},
-            "crops": {k: [float(x) for x in v] for k, v in per.items()},
-        }
-        _out.write_bytes((_json.dumps(_payload, ensure_ascii=False)).encode("utf-8"))
-        print(f"\n  ★크롭별 손실을 저장했다: {_out}  "
-              f"(모델 {len(per)}개 x 크롭 {_payload['meta']['n_crops']}개)")
-        print("     분석: python scripts/diag_visit_selectivity.py "
-              f"--crops {_out} --base <기준태그> --deep <재귀태그>")
     return 0
 
 
