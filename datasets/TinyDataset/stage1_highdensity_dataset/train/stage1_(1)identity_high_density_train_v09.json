@@ -1,167 +1,3474 @@
 {
-  "dataset_name":"Korean AI Curriculum — Stage 1 Identity High Density Train v8",
-  "version":"1.0",
-  "range":"S1-IDH-1151~1300",
-  "theme":"일상생활·교육·기술·환경·생활 과학",
-  "purpose":"새로운 개념군의 대상·정체성·분류를 고밀도 concept packet으로 학습시키기 위한 수작업 corpus",
-  "records":[
-    {"id":"S1-IDH-1151","type":"identity_packet","text":"아침 식사는 하루를 시작할 때 먹는 첫 끼니를 가리키는 일상적 식사 범주다. 시간대와 문화에 따라 음식의 종류는 달라질 수 있다. 아침에 먹었다는 사실만으로 특정 음식이 아침 식사가 되는 것은 아니다.","concepts":["아침 식사","식사","시간대"],"relations":["is_a","context","classification_basis"],"boundaries":["식사 시간만으로 음식 종류가 고정되지 않는다"]},
-    {"id":"S1-IDH-1152","type":"identity_packet","text":"간식은 주된 식사 사이에 먹는 음식이나 음료를 가리킨다. 간식은 특정한 한 음식의 이름이 아니라 식사 맥락에 따른 범주다. 같은 음식도 상황에 따라 간식이 될 수 있다.","concepts":["간식","음식","식사 맥락"],"relations":["is_a","context","classification_basis"],"boundaries":["음식 종류만으로 간식 여부가 결정되지 않는다"]},
-    {"id":"S1-IDH-1153","type":"identity_packet","text":"식기는 음식을 담거나 먹는 데 사용하는 물건을 묶어 부르는 범주다. 접시와 숟가락은 서로 다른 식기지만 같은 상위 범주에 속한다. 따라서 식기라는 범주는 하나의 특정 물건을 뜻하지 않는다.","concepts":["식기","접시","숟가락"],"relations":["category","subclass_of","classification"],"boundaries":["상위 범주와 개별 물건을 구분한다"]},
-    {"id":"S1-IDH-1154","type":"identity_packet","text":"조리 도구는 음식을 준비하거나 익히는 과정에서 사용하는 도구의 범주다. 칼과 주걱은 기능이 다르지만 모두 조리 과정에 사용될 수 있다. 조리에 사용된다는 사실만으로 모든 도구의 구체적 용도가 같아지는 것은 아니다.","concepts":["조리 도구","칼","주걱"],"relations":["category","subclass_of","function"],"boundaries":["공통 용도와 세부 기능을 구분한다"]},
-    {"id":"S1-IDH-1155","type":"identity_packet","text":"식품 포장은 내용물을 외부 환경으로부터 보호하고 운반하거나 보관하기 위한 포장재나 포장 형태를 가리킨다. 종이 상자와 비닐 봉지는 서로 다른 포장 유형이다. 포장과 그 안의 식품은 같은 대상이 아니다.","concepts":["식품 포장","포장재","식품"],"relations":["category","containment","boundary"],"boundaries":["포장과 내용물을 구분한다"]},
-    {"id":"S1-IDH-1156","type":"identity_packet","text":"냉장 보관은 식품이나 물건을 낮은 온도에서 보관하는 방법이다. 냉장 보관은 물건의 종류가 아니라 보관 상태나 방법을 가리킨다. 모든 냉장 보관 대상이 같은 온도를 필요로 하는 것은 아니다.","concepts":["냉장 보관","보관 방법","온도"],"relations":["abstract_concept","state","classification"],"boundaries":["보관 방법과 대상의 종류를 구분한다"]},
-    {"id":"S1-IDH-1157","type":"identity_packet","text":"재활용품은 사용 후 분리·수거되어 재활용 과정에 들어갈 수 있는 물건이나 재료를 가리키는 일상적 범주다. 재질과 지역의 처리 기준에 따라 재활용 여부가 달라질 수 있다. 따라서 특정 재질이라는 사실만으로 모든 지역에서 재활용품으로 취급된다고 할 수는 없다.","concepts":["재활용품","재질","처리 기준"],"relations":["category","context_dependence"],"boundaries":["재활용 여부는 처리 체계에 의존한다"]},
-    {"id":"S1-IDH-1158","type":"identity_packet","text":"재사용품은 한 번 사용한 뒤 버리지 않고 다시 사용할 수 있도록 쓰이는 물건을 가리킨다. 재사용 가능성은 물건의 재질뿐 아니라 상태와 사용 방식에도 영향을 받는다. 일회용품과 재사용품은 사용 횟수에 관한 범주가 다르다.","concepts":["재사용품","일회용품","사용 방식"],"relations":["category","contrast","function"],"boundaries":["재질만으로 재사용 여부를 결정하지 않는다"]},
-    {"id":"S1-IDH-1159","type":"identity_packet","text":"세탁 바구니는 세탁할 옷이나 천을 모아 담아 두는 용기다. 바구니 자체는 세탁기와 같은 세탁 기기가 아니다. 담는 기능과 세탁 기능은 서로 다른 분류 기준이다.","concepts":["세탁 바구니","세탁기","용기"],"relations":["is_a","function","boundary"],"boundaries":["보관 기능과 세탁 기능을 구분한다"]},
-    {"id":"S1-IDH-1160","type":"identity_packet","text":"수납장은 물건을 넣어 정리하고 보관하기 위한 가구다. 서랍장과 책장은 서로 다른 종류의 수납장이 될 수 있다. 수납장은 내부에 넣는 물건의 종류에 따라 세부 유형이 달라질 수 있다.","concepts":["수납장","서랍장","책장","가구"],"relations":["is_a","subclass_of","function"],"boundaries":["상위 가구 범주와 하위 유형을 구분한다"]},
-    {"id":"S1-IDH-1161","type":"identity_packet","text":"현관은 건물의 출입과 내부 공간을 연결하는 영역을 가리킨다. 현관문은 현관의 일부 구성요소일 수 있지만 현관과 같은 대상은 아니다. 공간과 그 공간을 이루는 물체를 구분할 필요가 있다.","concepts":["현관","현관문","공간"],"relations":["category","part_whole","spatial"],"boundaries":["공간과 구성요소를 구분한다"]},
-    {"id":"S1-IDH-1162","type":"identity_packet","text":"침구는 잠을 자거나 누워 쉴 때 사용하는 천이나 물품을 묶어 부르는 범주다. 이불과 베개는 서로 다른 침구다. 침구라는 상위 범주는 개별 물품의 이름과 동일하지 않다.","concepts":["침구","이불","베개"],"relations":["category","subclass_of","classification"],"boundaries":["상위 범주와 개별 물품을 구분한다"]},
-    {"id":"S1-IDH-1163","type":"identity_packet","text":"세면도구는 얼굴이나 몸을 씻고 관리할 때 사용하는 물건을 묶어 부르는 범주다. 비누와 칫솔은 서로 다른 세면도구다. 하나의 사용 목적이 동일한 구조를 요구하는 것은 아니다.","concepts":["세면도구","비누","칫솔"],"relations":["category","subclass_of","function"],"boundaries":["공통 목적과 물체 동일성을 구분한다"]},
-    {"id":"S1-IDH-1164","type":"identity_packet","text":"생활 폐기물은 일상생활에서 발생해 버려지는 물질이나 물건을 가리키는 범주다. 음식물 쓰레기와 일반 쓰레기는 서로 다른 하위 범주가 될 수 있다. 폐기물이라는 분류는 하나의 재질만을 의미하지 않는다.","concepts":["생활 폐기물","음식물 쓰레기","일반 쓰레기"],"relations":["category","subclass_of","classification"],"boundaries":["폐기물과 특정 재질을 동일시하지 않는다"]},
-    {"id":"S1-IDH-1165","type":"identity_packet","text":"공공시설은 많은 사람이 공동으로 이용하도록 제공되는 시설을 가리킨다. 도서관과 공원은 기능이 다르지만 모두 공공시설로 분류될 수 있다. 공공시설이라는 범주만으로 구체적 기능을 확정할 수는 없다.","concepts":["공공시설","도서관","공원"],"relations":["category","subclass_of","classification"],"boundaries":["상위 범주가 세부 기능을 결정하지 않는다"]},
-    {"id":"S1-IDH-1166","type":"identity_packet","text":"교실은 수업과 학습 활동이 이루어지는 공간이다. 교실 안의 책상이나 학생은 교실의 구조적 일부와 동일하지 않다. 공간 안에 존재하는 것과 공간을 구성하는 것은 구분될 수 있다.","concepts":["교실","학생","책상"],"relations":["is_a","spatial","boundary"],"boundaries":["공간 포함과 부분 관계를 구분한다"]},
-    {"id":"S1-IDH-1167","type":"identity_packet","text":"교과서는 특정 교과의 학습을 위해 구성된 교육용 책이다. 교과서와 일반 참고서는 모두 책이지만 사용 목적과 구성 방식이 다르다. 책이라는 상위 범주가 동일한 세부 기능을 보장하지는 않는다.","concepts":["교과서","책","참고서"],"relations":["is_a","subclass_of","function"],"boundaries":["동일 상위 범주와 동일 기능을 구분한다"]},
-    {"id":"S1-IDH-1168","type":"identity_packet","text":"문제집은 연습 문제를 풀도록 구성된 학습 자료다. 문제집은 교과서와 같은 책 형태일 수 있지만 목적이 다르다. 책이라는 형태와 교육적 기능을 구분해야 한다.","concepts":["문제집","학습 자료","교과서"],"relations":["is_a","function","comparison"],"boundaries":["형태와 기능을 동일시하지 않는다"]},
-    {"id":"S1-IDH-1169","type":"identity_packet","text":"시험지는 평가를 위한 문항과 답안 공간이 포함된 문서다. 시험지는 시험이라는 평가 활동과 관련되지만 시험 자체와 동일한 개념은 아니다. 문서와 활동을 구분한다.","concepts":["시험지","시험","평가","문서"],"relations":["artifact_of","event_relation","type_distinction"],"boundaries":["문서와 활동을 구분한다"]},
-    {"id":"S1-IDH-1170","type":"identity_packet","text":"성적표는 학습이나 평가 결과를 정리해 보여 주는 기록 문서다. 성적표에 적힌 점수와 성적표라는 문서는 서로 다른 개념이다. 결과 정보와 정보 매체를 구분한다.","concepts":["성적표","점수","기록 문서"],"relations":["is_a","contains_information","boundary"],"boundaries":["기록물과 기록된 정보를 구분한다"]},
-    {"id":"S1-IDH-1171","type":"identity_packet","text":"숙제는 학습자가 수업 밖에서 수행하도록 주어진 학습 과제다. 숙제는 특정 종이나 파일 자체가 아니라 수행해야 할 과업을 가리킬 수 있다. 과제와 그 과제를 기록한 자료는 서로 다르다.","concepts":["숙제","학습 과제","자료"],"relations":["abstract_concept","task","boundary"],"boundaries":["과업과 과업을 담은 자료를 구분한다"]},
-    {"id":"S1-IDH-1172","type":"identity_packet","text":"수업은 교사와 학습자가 정해진 학습 목표를 중심으로 상호작용하는 교육 활동이다. 교실은 수업이 이루어질 수 있는 공간이지만 수업과 같은 개념은 아니다. 활동과 공간을 구분한다.","concepts":["수업","교사","학습자","교실"],"relations":["event","context","boundary"],"boundaries":["교육 활동과 공간을 구분한다"]},
-    {"id":"S1-IDH-1173","type":"identity_packet","text":"교육과정은 교육 기관이나 교육 프로그램에서 무엇을 어떤 순서와 범위로 가르칠지 정리한 체계다. 교육과정은 하나의 교과서와 동일하지 않다. 여러 자료와 활동을 포괄할 수 있는 추상적 구조다.","concepts":["교육과정","교과서","교육 체계"],"relations":["abstract_concept","system","boundary"],"boundaries":["계획 체계와 개별 자료를 구분한다"]},
-    {"id":"S1-IDH-1174","type":"identity_packet","text":"학년은 교육 과정에서 학생을 나누는 연령이나 진급 단계의 범주다. 학년은 특정 교실이나 특정 학생 한 명과 같은 것이 아니다. 여러 학생이 같은 학년에 속할 수 있다.","concepts":["학년","학생","교육 단계"],"relations":["category","classification","many_to_one"],"boundaries":["분류 기준과 개별 대상을 구분한다"]},
-    {"id":"S1-IDH-1175","type":"identity_packet","text":"학급은 학교에서 함께 수업하는 학생들의 조직 단위다. 학급은 학생 개개인의 단순한 합과 동일하지 않으며 정해진 운영 규칙을 가질 수 있다. 학생과 학급은 서로 다른 수준의 개념이다.","concepts":["학급","학생","조직"],"relations":["group","member_of","level_distinction"],"boundaries":["구성원과 조직을 구분한다"]},
-    {"id":"S1-IDH-1176","type":"identity_packet","text":"실험은 어떤 현상을 관찰하거나 가설을 검토하기 위해 조건을 정해 수행하는 절차적 활동이다. 실험 장비는 실험을 수행하는 도구이고 실험 자체와 동일하지 않다. 활동과 도구를 구분한다.","concepts":["실험","실험 장비","절차"],"relations":["event","tool_relation","boundary"],"boundaries":["실험과 장비를 구분한다"]},
-    {"id":"S1-IDH-1177","type":"identity_packet","text":"현미경 슬라이드는 현미경으로 관찰할 시료를 올려놓는 얇은 판이다. 슬라이드는 현미경 자체가 아니라 현미경과 함께 사용하는 관찰용 소모품이다. 구성요소와 사용 도구를 구분한다.","concepts":["현미경 슬라이드","현미경","시료"],"relations":["tool_relation","associated_object","boundary"],"boundaries":["장비와 보조용품을 구분한다"]},
-    {"id":"S1-IDH-1178","type":"identity_packet","text":"실험 기록지는 실험 과정과 결과를 적어 두기 위한 기록 문서다. 기록지에 쓰인 결과와 기록지라는 물리적 문서는 서로 다른 대상이다. 정보와 매체를 구분한다.","concepts":["실험 기록지","결과","문서"],"relations":["is_a","contains_information","boundary"],"boundaries":["정보와 정보를 담는 문서를 구분한다"]},
-    {"id":"S1-IDH-1179","type":"identity_packet","text":"발표 자료는 발표 내용을 전달하기 위해 준비한 문서나 슬라이드 묶음이다. 발표 자료는 발표 활동을 돕지만 발표 그 자체는 아니다. 자료와 행위를 구분한다.","concepts":["발표 자료","발표","슬라이드"],"relations":["artifact_of","event_relation","boundary"],"boundaries":["자료와 활동을 구분한다"]},
-    {"id":"S1-IDH-1180","type":"identity_packet","text":"교구는 학습 개념을 이해하거나 연습하는 데 사용하는 교육용 물건이나 자료다. 교구는 장난감처럼 보일 수도 있지만 교육 목적에 따라 분류되는 경우가 많다. 외형과 사용 목적을 구분한다.","concepts":["교구","교육 자료","장난감"],"relations":["category","function","boundary"],"boundaries":["외형만으로 교육용 여부를 결정하지 않는다"]},
-    {"id":"S1-IDH-1181","type":"identity_packet","text":"노트북은 휴대할 수 있도록 설계된 컴퓨터다. 노트북은 데스크톱과 같은 컴퓨터 범주에 속할 수 있지만 구조와 사용 환경이 다르다. 컴퓨터라는 상위 범주는 특정 형태를 뜻하지 않는다.","concepts":["노트북","컴퓨터","데스크톱"],"relations":["is_a","subclass_of","comparison"],"boundaries":["상위 범주와 형태를 구분한다"]},
-    {"id":"S1-IDH-1182","type":"identity_packet","text":"태블릿은 화면을 직접 터치해 조작하는 휴대용 컴퓨팅 장치의 범주다. 태블릿은 스마트폰과 비슷한 기능을 가질 수 있지만 일반적으로 화면 크기와 사용 방식에서 차이가 있다. 비슷한 기능이 같은 종류를 뜻하지는 않는다.","concepts":["태블릿","스마트폰","컴퓨팅 장치"],"relations":["is_a","comparison","boundary"],"boundaries":["기능 유사성과 기기 동일성을 구분한다"]},
-    {"id":"S1-IDH-1183","type":"identity_packet","text":"라우터는 서로 다른 네트워크 사이에서 데이터의 전달 경로를 결정하는 네트워크 장비다. 공유기는 일상적으로 라우터를 가리키는 말로 사용되기도 하지만 모든 네트워크 장비가 동일한 기능 구성을 가지는 것은 아니다.","concepts":["라우터","네트워크 장비","데이터"],"relations":["is_a","function","terminology"],"boundaries":["일상 명칭과 기술적 범주를 구분한다"]},
-    {"id":"S1-IDH-1184","type":"identity_packet","text":"모뎀은 특정 통신망과 사용자 장비 사이에서 신호를 변환하거나 연결하는 장비다. 모뎀과 라우터는 한 장치에 함께 들어갈 수도 있지만 개념적으로 같은 기능만을 뜻하지 않는다.","concepts":["모뎀","라우터","통신 장비"],"relations":["is_a","comparison","subfunction"],"boundaries":["결합된 장치와 기능 개념을 구분한다"]},
-    {"id":"S1-IDH-1185","type":"identity_packet","text":"USB 메모리는 데이터를 저장하고 다른 장치에 연결해 옮길 수 있는 휴대용 저장 장치다. 저장 장치라는 상위 범주에는 여러 형태의 제품이 포함된다. 휴대 가능하다는 한 가지 특성만으로 저장 장치의 종류를 결정할 수는 없다.","concepts":["USB 메모리","저장 장치","데이터"],"relations":["is_a","subclass_of","function"],"boundaries":["상위 범주와 제품 형태를 구분한다"]},
-    {"id":"S1-IDH-1186","type":"identity_packet","text":"외장 하드디스크는 컴퓨터 내부가 아닌 외부에서 연결해 사용하는 저장 장치다. 외장이라는 말은 저장 장치의 위치나 연결 방식을 설명하는 것이며 데이터의 종류를 뜻하지 않는다. 저장 장치와 저장 내용은 서로 다른 대상이다.","concepts":["외장 하드디스크","저장 장치","데이터"],"relations":["is_a","attribute","boundary"],"boundaries":["장치와 저장 데이터를 구분한다"]},
-    {"id":"S1-IDH-1187","type":"identity_packet","text":"운영체제는 컴퓨터의 자원과 프로그램 실행을 관리하는 기본 소프트웨어다. 운영체제와 특정 응용 프로그램은 모두 소프트웨어지만 역할이 다르다. 소프트웨어라는 상위 범주가 동일 기능을 의미하지는 않는다.","concepts":["운영체제","소프트웨어","응용 프로그램"],"relations":["is_a","subclass_of","comparison"],"boundaries":["상위 범주와 역할을 구분한다"]},
-    {"id":"S1-IDH-1188","type":"identity_packet","text":"응용 프로그램은 사용자가 특정 작업을 수행하도록 만든 소프트웨어다. 문서 편집기와 게임은 서로 다른 응용 프로그램이지만 모두 응용 프로그램이라는 상위 범주에 속한다. 목적이 다르다고 소프트웨어가 아닌 것은 아니다.","concepts":["응용 프로그램","문서 편집기","게임"],"relations":["category","subclass_of","function"],"boundaries":["상위 소프트웨어 범주와 세부 용도를 구분한다"]},
-    {"id":"S1-IDH-1189","type":"identity_packet","text":"웹 브라우저는 웹 문서와 서비스를 요청하고 표시하는 응용 프로그램이다. 브라우저에서 보는 웹페이지와 브라우저 프로그램은 서로 다른 대상이다. 표시하는 소프트웨어와 표시되는 정보의 관계를 구분한다.","concepts":["웹 브라우저","웹페이지","응용 프로그램"],"relations":["is_a","display_relation","boundary"],"boundaries":["프로그램과 표시되는 내용을 구분한다"]},
-    {"id":"S1-IDH-1190","type":"identity_packet","text":"검색 엔진은 입력된 검색어와 관련된 정보를 찾아 제공하는 정보 서비스다. 검색 엔진은 웹페이지 자체가 아니라 여러 정보원을 탐색하는 서비스다. 정보 제공 서비스와 정보의 원문을 구분한다.","concepts":["검색 엔진","정보 서비스","웹페이지"],"relations":["is_a","service","boundary"],"boundaries":["정보 서비스와 원문을 구분한다"]},
-    {"id":"S1-IDH-1191","type":"identity_packet","text":"데이터베이스는 구조화된 데이터를 저장하고 검색하거나 관리하기 위한 데이터 조직 체계다. 데이터베이스와 그 안에 저장된 한 레코드는 같은 수준의 대상이 아니다. 전체 저장 체계와 개별 데이터를 구분한다.","concepts":["데이터베이스","레코드","데이터"],"relations":["system","contains","level_distinction"],"boundaries":["저장 체계와 저장 항목을 구분한다"]},
-    {"id":"S1-IDH-1192","type":"identity_packet","text":"알고리즘은 문제를 해결하기 위한 단계적 절차나 규칙의 집합이다. 알고리즘은 컴퓨터 프로그램과 관련될 수 있지만 프로그램 파일 자체와 동일한 개념은 아니다. 절차와 구현물을 구분한다.","concepts":["알고리즘","절차","프로그램"],"relations":["abstract_concept","procedure","boundary"],"boundaries":["절차와 구현물을 구분한다"]},
-    {"id":"S1-IDH-1193","type":"identity_packet","text":"파일은 컴퓨터 저장 장치에서 하나의 정보 단위로 관리되는 데이터의 묶음이다. 파일 이름은 파일 자체와 같지 않으며 파일 내용도 파일 이름과 다르다. 식별 정보와 실질 내용을 구분한다.","concepts":["파일","파일 이름","파일 내용"],"relations":["is_a","identifier","boundary"],"boundaries":["식별자와 대상을 구분한다"]},
-    {"id":"S1-IDH-1194","type":"identity_packet","text":"폴더는 여러 파일이나 다른 폴더를 묶어 정리하기 위한 저장 구조다. 폴더 안에 파일이 있다고 해서 파일이 폴더의 물리적 부품인 것은 아니다. 논리적 포함과 물리적 부분을 구분한다.","concepts":["폴더","파일","저장 구조"],"relations":["container","contains","not_part_of"],"boundaries":["논리적 포함과 물리적 부분을 구분한다"]},
-    {"id":"S1-IDH-1195","type":"identity_packet","text":"스마트워치는 손목에 착용해 시간, 운동 정보, 알림 등을 제공하는 휴대용 전자기기다. 스마트워치와 일반 손목시계는 모두 손목에 착용할 수 있지만 기능과 구조가 다르다. 착용 위치만으로 같은 범주가 되는 것은 아니다.","concepts":["스마트워치","손목시계","전자기기"],"relations":["is_a","comparison","boundary"],"boundaries":["공통 사용 위치와 기기 범주를 구분한다"]},
-    {"id":"S1-IDH-1196","type":"identity_packet","text":"디지털 카메라는 이미지를 전자적 데이터로 기록하는 촬영 장치다. 카메라는 사진이라는 결과물과 동일하지 않으며 촬영 장치의 종류도 여러 가지다. 기록 장치와 기록된 결과를 구분한다.","concepts":["디지털 카메라","사진","촬영 장치"],"relations":["is_a","records","boundary"],"boundaries":["장치와 결과물을 구분한다"]},
-    {"id":"S1-IDH-1197","type":"identity_packet","text":"전자책은 전자 기기에서 읽을 수 있도록 디지털 형태로 제공되는 책이나 그 콘텐츠를 가리킨다. 전자책 파일과 이를 읽는 전자책 리더기는 서로 다른 대상이다. 콘텐츠와 재생 장치를 구분한다.","concepts":["전자책","전자책 리더기","콘텐츠"],"relations":["is_a","content_device","boundary"],"boundaries":["콘텐츠와 장치를 구분한다"]},
-    {"id":"S1-IDH-1198","type":"identity_packet","text":"클라우드 저장소는 인터넷을 통해 데이터를 저장하고 접근할 수 있도록 제공되는 원격 저장 서비스다. 저장소 서비스와 그 안의 파일은 서로 다른 수준의 개념이다. 서비스와 저장된 정보를 구분한다.","concepts":["클라우드 저장소","파일","서비스"],"relations":["is_a","service","contains_information"],"boundaries":["서비스와 데이터 항목을 구분한다"]},
-    {"id":"S1-IDH-1199","type":"identity_packet","text":"알림은 사용자에게 특정 사건이나 상태를 알려 주기 위한 정보 신호다. 알림은 소리, 진동, 화면 표시 등 여러 방식으로 전달될 수 있다. 전달 방식과 알림이라는 정보 기능은 같은 개념이 아니다.","concepts":["알림","정보 신호","소리","진동"],"relations":["abstract_concept","signal","many_to_one"],"boundaries":["정보와 전달 매체를 구분한다"]},
-    {"id":"S1-IDH-1200","type":"identity_packet","text":"비밀번호는 시스템이나 서비스에 접근할 때 사용자를 확인하기 위해 입력하는 비밀 정보다. 비밀번호와 자물쇠는 모두 접근을 제한하는 데 관련되지만 하나는 정보이고 다른 하나는 물리적 장치다.","concepts":["비밀번호","자물쇠","인증 정보"],"relations":["is_a","comparison","boundary"],"boundaries":["정보 기반 보안과 물리적 보안을 구분한다"]},
-    {"id":"S1-IDH-1201","type":"identity_packet","text":"센서는 주변 환경의 물리적 양이나 변화를 감지해 정보로 제공하는 장치다. 온도 센서와 빛 센서는 같은 상위 범주에 속하지만 감지 대상이 다르다. 센서라는 범주만으로 특정 측정 대상을 정할 수 없다.","concepts":["센서","온도 센서","빛 센서"],"relations":["category","subclass_of","classification"],"boundaries":["상위 범주와 감지 대상을 구분한다"]},
-    {"id":"S1-IDH-1202","type":"identity_packet","text":"카메라 센서는 빛을 감지해 영상 형성에 이용되는 센서다. 센서는 카메라 전체의 일부일 수 있지만 카메라 자체와 같은 대상은 아니다. 구성요소와 완성된 장치를 구분한다.","concepts":["카메라 센서","센서","카메라"],"relations":["part_whole","is_a","function"],"boundaries":["센서와 장치 전체를 구분한다"]},
-    {"id":"S1-IDH-1203","type":"identity_packet","text":"배터리는 화학적 에너지를 전기적 에너지로 공급할 수 있는 전지 장치다. 여러 종류의 배터리가 있으며 크기와 전압이 같다고 해서 같은 제품은 아니다. 전기 공급이라는 기능만으로 정체성을 결정하지 않는다.","concepts":["배터리","전지","전기 에너지"],"relations":["is_a","function","category"],"boundaries":["기능과 제품 동일성을 구분한다"]},
-    {"id":"S1-IDH-1204","type":"identity_packet","text":"충전기는 배터리나 전자기기에 전기 에너지를 공급하기 위한 장치다. 충전기는 전원 공급 장치의 한 종류이지만 모든 전원 공급 장치가 휴대전화 충전기는 아니다. 사용 대상과 장치 범위를 구분한다.","concepts":["충전기","전원 공급 장치","전자기기"],"relations":["is_a","subclass_of","function"],"boundaries":["상위 장치와 특정 용도의 제품을 구분한다"]},
-    {"id":"S1-IDH-1205","type":"identity_packet","text":"케이블은 전력이나 신호를 전달하는 연결 부품의 범주다. 전원 케이블과 데이터 케이블은 비슷한 외형을 가질 수 있지만 용도가 다를 수 있다. 연결한다는 공통 기능만으로 세부 유형을 결정하지 않는다.","concepts":["케이블","전원 케이블","데이터 케이블"],"relations":["category","subclass_of","function"],"boundaries":["외형과 기능의 세부 차이를 구분한다"]},
-    {"id":"S1-IDH-1206","type":"identity_packet","text":"프린터 카트리지는 프린터에서 잉크나 토너를 공급하는 교체 부품이다. 카트리지 자체와 프린터 전체는 서로 다른 대상이다. 교체 가능한 부품도 제품 전체의 정체성과 구분해야 한다.","concepts":["프린터 카트리지","프린터","부품"],"relations":["part_whole","function","boundary"],"boundaries":["소모 부품과 완성 기기를 구분한다"]},
-    {"id":"S1-IDH-1207","type":"identity_packet","text":"키보드는 문자나 명령을 입력하는 컴퓨터 입력 장치다. 기계식 키보드와 멤브레인 키보드는 같은 상위 범주에 속할 수 있지만 내부 작동 방식이 다르다. 입력 장치라는 기능과 세부 구조를 구분한다.","concepts":["키보드","기계식 키보드","멤브레인 키보드"],"relations":["is_a","subclass_of","comparison"],"boundaries":["상위 기능과 작동 구조를 구분한다"]},
-    {"id":"S1-IDH-1208","type":"identity_packet","text":"마우스는 화면의 포인터를 조작하기 위한 입력 장치다. 광학 마우스와 트랙볼 마우스는 모두 마우스 범주에 속하지만 움직임을 감지하는 방식이 다르다. 이름의 상위 범주와 기술적 하위 유형을 구분한다.","concepts":["마우스","광학 마우스","트랙볼"],"relations":["is_a","subclass_of","comparison"],"boundaries":["공통 기능과 감지 방식을 구분한다"]},
-    {"id":"S1-IDH-1209","type":"identity_packet","text":"모니터는 디지털 영상 정보를 화면에 표시하는 출력 장치다. 모니터와 화면이라는 표현은 문맥에 따라 장치 전체와 표시 부분을 각각 가리킬 수 있다. 장치와 구성요소를 문맥에 맞게 구분해야 한다.","concepts":["모니터","화면","출력 장치"],"relations":["is_a","part_whole","linguistic_context"],"boundaries":["전체 장치와 표시 면을 구분한다"]},
-    {"id":"S1-IDH-1210","type":"identity_packet","text":"프레젠테이션은 내용을 청중에게 설명하거나 보여 주는 발표 활동이다. 프레젠테이션 파일은 그 활동을 지원하는 자료이지 활동 자체와 동일하지 않다. 행위와 자료를 구분한다.","concepts":["프레젠테이션","발표 활동","프레젠테이션 파일"],"relations":["event","artifact_of","boundary"],"boundaries":["활동과 자료를 구분한다"]},
-
-    {"id":"S1-IDH-1211","type":"identity_packet","text":"온라인 수업은 인터넷을 통해 진행되는 교육 활동이다. 온라인 수업과 온라인 강의 영상은 관련되지만 동일한 것은 아니다. 실시간 상호작용과 녹화 자료는 서로 다른 교육 형식일 수 있다.","concepts":["온라인 수업","강의 영상","교육 활동"],"relations":["is_a","comparison","boundary"],"boundaries":["활동과 기록 자료를 구분한다"]},
-    {"id":"S1-IDH-1212","type":"identity_packet","text":"학습 플랫폼은 교육 자료와 과제, 평가 기능 등을 제공하는 디지털 서비스다. 플랫폼과 그 안에서 제공되는 한 강좌는 다른 수준의 개념이다. 서비스와 콘텐츠를 구분한다.","concepts":["학습 플랫폼","강좌","교육 서비스"],"relations":["is_a","contains_content","level_distinction"],"boundaries":["플랫폼과 콘텐츠를 구분한다"]},
-    {"id":"S1-IDH-1213","type":"identity_packet","text":"강좌는 일정한 학습 목표와 내용을 중심으로 구성된 교육 단위다. 한 강좌는 여러 수업이나 자료로 구성될 수 있다. 강좌와 개별 수업은 같은 수준의 단위가 아니다.","concepts":["강좌","수업","교육 단위"],"relations":["is_a","has_part","hierarchy"],"boundaries":["교육 단위의 계층을 구분한다"]},
-    {"id":"S1-IDH-1214","type":"identity_packet","text":"학습 목표는 학습자가 교육 활동 후 무엇을 알고 하게 될지를 설명하는 기준이다. 학습 목표는 교과서의 한 문장이나 시험 문제 자체와 동일한 대상이 아니다. 목표와 평가·자료를 구분한다.","concepts":["학습 목표","교육 활동","시험 문제"],"relations":["abstract_concept","goal","boundary"],"boundaries":["목표와 자료·평가를 구분한다"]},
-    {"id":"S1-IDH-1215","type":"identity_packet","text":"평가 문항은 학습자의 지식이나 능력을 확인하기 위해 제시하는 하나의 질문 또는 과제다. 평가 문항과 시험지는 같은 관계에 있을 수 있지만 하나의 문항이 전체 시험지는 아니다. 부분과 전체를 구분한다.","concepts":["평가 문항","시험지","평가"],"relations":["part_whole","artifact_of","boundary"],"boundaries":["문항과 시험 전체를 구분한다"]},
-    {"id":"S1-IDH-1216","type":"identity_packet","text":"채점 기준은 답변이나 수행 결과를 어떤 조건으로 평가할지 정한 기준이다. 채점 기준은 실제 점수와 동일하지 않다. 기준과 결과를 구분한다.","concepts":["채점 기준","점수","평가"],"relations":["abstract_concept","evaluation_rule","boundary"],"boundaries":["평가 규칙과 평가 결과를 구분한다"]},
-    {"id":"S1-IDH-1217","type":"identity_packet","text":"성취도는 학습 목표를 어느 정도 달성했는지를 나타내는 평가 개념이다. 성취도와 점수는 관련될 수 있지만 항상 같은 정보를 뜻하지 않는다. 질적 판단과 수치 결과를 구분한다.","concepts":["성취도","점수","학습 목표"],"relations":["abstract_concept","evaluation","distinction"],"boundaries":["성취도와 점수를 동일시하지 않는다"]},
-    {"id":"S1-IDH-1218","type":"identity_packet","text":"수료는 정해진 교육 과정이나 활동의 요구 조건을 충족했다는 상태나 결과를 가리킨다. 수료증은 그 사실을 증명하는 문서다. 상태와 문서를 구분한다.","concepts":["수료","수료증","교육 과정"],"relations":["state","document","boundary"],"boundaries":["수료 상태와 증명 문서를 구분한다"]},
-    {"id":"S1-IDH-1219","type":"identity_packet","text":"졸업은 교육 과정의 정해진 요건을 마치고 해당 기관의 과정을 끝내는 사건이나 상태다. 졸업장은 졸업 사실을 증명하는 문서다. 사건·상태와 증빙 문서를 구분한다.","concepts":["졸업","졸업장","교육 과정"],"relations":["event","document","boundary"],"boundaries":["졸업과 졸업장을 구분한다"]},
-    {"id":"S1-IDH-1220","type":"identity_packet","text":"학위는 일정한 교육 과정의 이수와 요건 충족을 인정하는 자격의 한 형태다. 학위증은 학위 사실을 기록하거나 증명하는 문서다. 자격과 증명서를 구분한다.","concepts":["학위","학위증","자격"],"relations":["is_a","document","boundary"],"boundaries":["자격과 문서를 구분한다"]},
-
-    {"id":"S1-IDH-1221","type":"identity_packet","text":"도서관 소장자료는 도서관이 보관하고 이용자에게 제공하는 자료의 범주다. 책뿐 아니라 지도나 전자 자료도 포함될 수 있다. 소장자료라는 상위 범주가 종이책만을 뜻하는 것은 아니다.","concepts":["도서관 소장자료","책","전자 자료"],"relations":["category","subclass_of","classification"],"boundaries":["매체와 상위 자료 범주를 구분한다"]},
-    {"id":"S1-IDH-1222","type":"identity_packet","text":"대출은 도서관 자료를 이용자가 일정 기간 빌리는 행위나 제도다. 대출증은 이 이용을 확인하거나 처리하는 수단이고 대출 자체와 같은 대상이 아니다. 행위와 도구를 구분한다.","concepts":["대출","대출증","도서관 자료"],"relations":["event","tool_relation","boundary"],"boundaries":["행위와 처리 수단을 구분한다"]},
-    {"id":"S1-IDH-1223","type":"identity_packet","text":"반납은 빌린 물건을 원래의 제공자나 지정된 장소에 돌려주는 행위다. 반납 장소와 반납 행위는 서로 다른 개념이다. 장소와 사건을 구분한다.","concepts":["반납","반납 장소","행위"],"relations":["event","location","boundary"],"boundaries":["행위와 장소를 구분한다"]},
-    {"id":"S1-IDH-1224","type":"identity_packet","text":"예약은 특정 시간이나 자원을 미리 확보하는 행위 또는 상태다. 예약 확인서는 예약 내용을 나타내는 기록물이다. 예약과 증빙 자료는 같은 것이 아니다.","concepts":["예약","예약 확인서","자원"],"relations":["event_or_state","document","boundary"],"boundaries":["행위·상태와 기록물을 구분한다"]},
-    {"id":"S1-IDH-1225","type":"identity_packet","text":"대기열은 어떤 서비스나 순서를 기다리는 사람이나 작업의 배열이다. 대기번호는 그 배열에서의 위치를 나타내는 정보다. 집단과 위치 정보는 서로 다르다.","concepts":["대기열","대기번호","순서"],"relations":["category","identifier","boundary"],"boundaries":["집단과 위치 정보를 구분한다"]},
-    {"id":"S1-IDH-1226","type":"identity_packet","text":"영수증은 거래의 내용과 금액 등을 기록해 제공하는 증빙 문서다. 영수증의 금액은 문서 안에 기록된 정보이지 영수증 자체가 아니다. 문서와 정보를 구분한다.","concepts":["영수증","금액","증빙 문서"],"relations":["is_a","contains_information","boundary"],"boundaries":["문서와 기록 정보를 구분한다"]},
-    {"id":"S1-IDH-1227","type":"identity_packet","text":"상품은 판매나 거래를 위해 제공되는 물건이나 서비스의 단위다. 물건과 서비스 모두 상품이라는 넓은 범주에 들어갈 수 있지만 둘은 같은 유형의 대상이 아니다. 거래 범주와 구체적 대상을 구분한다.","concepts":["상품","물건","서비스"],"relations":["category","subclass_of","classification"],"boundaries":["상품의 세부 유형을 구분한다"]},
-    {"id":"S1-IDH-1228","type":"identity_packet","text":"영수증의 거래번호는 해당 거래를 식별하기 위한 정보다. 거래번호와 실제 거래는 서로 다른 개념이다. 식별자와 사건을 구분한다.","concepts":["거래번호","거래","식별자"],"relations":["identifier","event","boundary"],"boundaries":["식별 정보와 식별 대상 사건을 구분한다"]},
-    {"id":"S1-IDH-1229","type":"identity_packet","text":"할인은 표시된 원래 가격에서 일정한 금액이나 비율을 줄이는 판매 조건이다. 할인율은 그 조건을 수치로 나타내는 정보다. 조건과 수치 표현을 구분한다.","concepts":["할인","할인율","가격"],"relations":["abstract_concept","quantity","boundary"],"boundaries":["판매 조건과 수치 정보를 구분한다"]},
-    {"id":"S1-IDH-1230","type":"identity_packet","text":"환불은 이미 지급한 돈을 일정한 조건에 따라 돌려주는 거래 행위다. 환불 금액은 그 행위에서 반환되는 금액을 뜻한다. 거래 행위와 금액 정보를 구분한다.","concepts":["환불","환불 금액","거래"],"relations":["event","quantity","boundary"],"boundaries":["행위와 결과 수치를 구분한다"]},
-
-    {"id":"S1-IDH-1231","type":"identity_packet","text":"전기는 전자기기와 조명 등에 에너지를 공급하는 데 이용되는 에너지의 한 형태다. 전기는 전선이나 전원 장치와 동일한 물건이 아니다. 에너지 개념과 에너지를 전달하는 물체를 구분한다.","concepts":["전기","에너지","전선"],"relations":["abstract_concept","function","boundary"],"boundaries":["에너지와 전달 매체를 구분한다"]},
-    {"id":"S1-IDH-1232","type":"identity_packet","text":"열은 온도 차이 때문에 한 물체에서 다른 물체로 이동하는 에너지다. 뜨거운 물체 자체와 열은 같은 개념이 아니다. 에너지 이동과 물체의 상태를 구분한다.","concepts":["열","에너지","온도"],"relations":["abstract_concept","energy_transfer","boundary"],"boundaries":["열과 뜨거운 물체를 동일시하지 않는다"]},
-    {"id":"S1-IDH-1233","type":"identity_packet","text":"온도계는 온도를 측정하는 장치이고 온도는 뜨겁고 차가운 정도를 나타내는 물리량이다. 측정 장치와 측정 대상의 속성은 서로 다른 개념이다.","concepts":["온도계","온도","물리량"],"relations":["device_measurement","attribute","boundary"],"boundaries":["측정 도구와 측정량을 구분한다"]},
-    {"id":"S1-IDH-1234","type":"identity_packet","text":"밀도는 물질의 질량이 일정한 부피 안에 얼마나 분포하는지를 나타내는 물리량이다. 밀도는 물체 자체가 아니라 물체의 성질을 나타내는 정보다. 물리량과 대상의 타입을 구분한다.","concepts":["밀도","질량","부피","물체"],"relations":["abstract_concept","derived_quantity","attribute"],"boundaries":["물리량과 물체를 구분한다"]},
-    {"id":"S1-IDH-1235","type":"identity_packet","text":"압력은 단위 면적에 작용하는 힘의 크기를 나타내는 물리량이다. 압력은 물건이나 물질 자체의 이름이 아니다. 힘과 면적의 관계로 정의되는 추상적 측정 개념이다.","concepts":["압력","힘","면적"],"relations":["abstract_concept","derived_quantity","relation"],"boundaries":["물리량과 대상의 구분"]},
-    {"id":"S1-IDH-1236","type":"identity_packet","text":"마찰은 서로 접촉한 표면 사이에서 운동을 방해하는 힘과 관련된 현상이다. 마찰은 하나의 물건이 아니라 두 표면과 운동 상태에 관련된 물리적 관계다.","concepts":["마찰","표면","운동","힘"],"relations":["phenomenon","relation","abstract_concept"],"boundaries":["관계적 현상과 물체를 구분한다"]},
-    {"id":"S1-IDH-1237","type":"identity_packet","text":"중력은 질량을 가진 물체 사이에 작용하는 인력이다. 중력은 물체 하나의 고유한 이름이 아니라 물체 사이의 상호작용을 나타내는 개념이다.","concepts":["중력","질량","물체","인력"],"relations":["phenomenon","relation","abstract_concept"],"boundaries":["상호작용과 개별 물체를 구분한다"]},
-    {"id":"S1-IDH-1238","type":"identity_packet","text":"전도체는 전류가 비교적 잘 흐를 수 있는 물질의 범주다. 구리와 알루미늄은 전도체의 예지만 모든 전도체가 같은 전기적 성질을 가지는 것은 아니다. 상위 범주와 정도의 차이를 구분한다.","concepts":["전도체","구리","알루미늄"],"relations":["category","subclass_example","property_variation"],"boundaries":["범주와 정량적 성질을 구분한다"]},
-    {"id":"S1-IDH-1239","type":"identity_packet","text":"절연체는 전류가 쉽게 흐르지 않는 물질의 범주다. 고무와 유리는 절연체의 예가 될 수 있지만 절연 성능은 물질과 조건에 따라 달라질 수 있다. 범주와 절대적 성질을 구분한다.","concepts":["절연체","고무","유리"],"relations":["category","property_variation"],"boundaries":["절연체라고 해서 성질이 완전히 동일하지 않다"]},
-    {"id":"S1-IDH-1240","type":"identity_packet","text":"반도체는 전기 전도성이 도체와 절연체의 중간적 특성을 보이며 조건에 따라 달라질 수 있는 물질군이다. 반도체라는 범주와 특정 반도체 부품은 동일하지 않다. 물질 범주와 제품을 구분한다.","concepts":["반도체","물질","부품"],"relations":["category","subclass_of","boundary"],"boundaries":["물질 범주와 실제 부품을 구분한다"]},
-
-    {"id":"S1-IDH-1241","type":"identity_packet","text":"공기는 지표 주변을 이루는 여러 기체의 혼합물이다. 공기는 하나의 순수한 원소가 아니며 산소와 공기를 같은 개념으로 볼 수 없다. 혼합물과 구성 기체를 구분한다.","concepts":["공기","혼합물","산소"],"relations":["is_a","contains","boundary"],"boundaries":["혼합물과 구성 물질을 구분한다"]},
-    {"id":"S1-IDH-1242","type":"identity_packet","text":"물은 순수한 상태에서 일정한 화학적 조성을 갖는 화합물이다. 수돗물이나 바닷물처럼 여러 물질이 섞인 물은 혼합물이다. 일상적인 '물'이라는 표현과 순수한 물의 과학적 범주를 구분해야 한다.","concepts":["물","화합물","수돗물","바닷물"],"relations":["is_a","mixture","classification_context"],"boundaries":["일상 명칭과 과학적 분류를 구분한다"]},
-    {"id":"S1-IDH-1243","type":"identity_packet","text":"용액은 하나 이상의 물질이 다른 물질에 균일하게 섞여 있는 혼합물이다. 소금물은 용액의 예이고, 소금은 용질이며 물은 용매다. 전체 용액과 구성 성분의 역할을 구분한다.","concepts":["용액","소금물","용질","용매"],"relations":["is_a","has_component","role_distinction"],"boundaries":["혼합물 전체와 구성 성분을 구분한다"]},
-    {"id":"S1-IDH-1244","type":"identity_packet","text":"산성 물질은 수용액에서 수소 이온의 농도와 관련된 산성 특성을 보이는 물질의 범주다. 산성이라는 성질은 물질의 이름 자체와 동일하지 않다. 속성과 대상의 타입을 구분한다.","concepts":["산성 물질","산성","물질"],"relations":["category","attribute","boundary"],"boundaries":["성질과 물질 범주를 구분한다"]},
-    {"id":"S1-IDH-1245","type":"identity_packet","text":"알칼리성 물질은 산과 반대되는 화학적 성질을 나타내는 물질의 범주다. 알칼리성은 하나의 특정 물질 이름이 아니다. 공통 성질을 가진 여러 물질을 묶는 분류다.","concepts":["알칼리성 물질","알칼리성","물질"],"relations":["category","attribute","classification"],"boundaries":["성질과 개별 물질을 구분한다"]},
-    {"id":"S1-IDH-1246","type":"identity_packet","text":"pH는 수용액의 산성 또는 염기성 정도를 나타내는 척도다. pH 값은 물질의 이름이나 물체가 아니라 측정 가능한 수치 정보다. 수치와 대상의 타입을 구분한다.","concepts":["pH","산성","염기성","수치"],"relations":["abstract_concept","measurement_scale"],"boundaries":["척도와 측정 대상을 구분한다"]},
-    {"id":"S1-IDH-1247","type":"identity_packet","text":"원자는 화학 원소의 기본적인 구성 단위다. 원자와 원소는 관련되지만 같은 의미가 아니다. 원소는 종류를 나타내고 원자는 그 종류에 속하는 개별 입자다.","concepts":["원자","원소","입자"],"relations":["part_of_category","concept_distinction"],"boundaries":["원소와 원자를 구분한다"]},
-    {"id":"S1-IDH-1248","type":"identity_packet","text":"분자는 둘 이상의 원자가 화학적으로 결합해 이루어진 입자다. 분자와 원자는 서로 다른 수준의 구조 개념이다. 원자가 결합한다고 해서 원자와 분자가 같은 단위가 되는 것은 아니다.","concepts":["분자","원자","결합"],"relations":["has_part","structure","boundary"],"boundaries":["구성 단위와 복합 입자를 구분한다"]},
-    {"id":"S1-IDH-1249","type":"identity_packet","text":"화합물은 서로 다른 원소의 원자들이 일정한 비율로 화학적으로 결합한 물질이다. 화합물과 혼합물은 모두 둘 이상의 물질과 관련될 수 있지만 결합 방식이 다르다. 화학적 결합과 단순 혼합을 구분한다.","concepts":["화합물","혼합물","원소"],"relations":["category","contrast","classification"],"boundaries":["화합물과 혼합물을 구분한다"]},
-    {"id":"S1-IDH-1250","type":"identity_packet","text":"혼합물은 둘 이상의 물질이 화학적으로 하나의 새로운 물질이 되지 않은 채 함께 존재하는 조합이다. 혼합물의 성분은 원래의 성질을 어느 정도 유지할 수 있다. 혼합물과 화합물을 같은 범주로 보아서는 안 된다.","concepts":["혼합물","성분","화합물"],"relations":["category","contrast","component"],"boundaries":["혼합과 화학적 결합을 구분한다"]},
-    {"id":"S1-IDH-1251","type":"identity_packet","text":"식물의 잎은 빛을 이용해 유기물을 만드는 광합성에 관여하는 기관이다. 잎은 식물 전체와 같은 대상이 아니라 식물을 이루는 기관 중 하나다. 기관의 기능과 생물 전체의 정체성을 구분한다.","concepts":["잎","식물","광합성","기관"],"relations":["part_whole","function","boundary"],"boundaries":["기관과 생물 전체를 구분한다"]},
-    {"id":"S1-IDH-1252","type":"identity_packet","text":"뿌리는 식물의 지하 부분으로 물과 무기양분을 흡수하고 식물을 지지하는 데 관여한다. 뿌리와 식물 전체는 서로 다른 수준의 개념이다. 지하에 있다는 위치만으로 뿌리의 모든 기능을 정의할 수는 없다.","concepts":["뿌리","식물","물","무기양분"],"relations":["part_whole","function"],"boundaries":["위치와 기능을 구분한다"]},
-    {"id":"S1-IDH-1253","type":"identity_packet","text":"줄기는 잎과 뿌리 사이에서 물질을 이동시키고 식물의 구조를 지지하는 기관이다. 줄기는 식물의 일부이지 식물 전체와 동일하지 않다. 한 기관의 기능이 생물 전체의 기능과 같지는 않다.","concepts":["줄기","식물","기관","지지"],"relations":["part_whole","function"],"boundaries":["부분의 기능과 전체의 기능을 구분한다"]},
-    {"id":"S1-IDH-1254","type":"identity_packet","text":"씨앗은 식물이 새로운 개체로 발달할 수 있는 구조를 포함하는 식물의 번식 단위다. 씨앗과 열매는 관련되지만 같은 개념은 아니다. 번식 구조와 그것을 둘러싼 식물 조직을 구분한다.","concepts":["씨앗","열매","식물","번식"],"relations":["category","part_relation","boundary"],"boundaries":["씨앗과 열매를 구분한다"]},
-    {"id":"S1-IDH-1255","type":"identity_packet","text":"과일은 식물의 씨앗을 둘러싸는 구조에서 발달한 기관을 일상적 또는 식물학적으로 부르는 범주다. 일상적인 음식 분류와 식물학적 분류는 경우에 따라 차이가 있다. 하나의 단어가 모든 분류 체계에서 같은 범위를 가지는 것은 아니다.","concepts":["과일","씨앗","식물학적 분류","일상 분류"],"relations":["category","classification_context"],"boundaries":["분류 체계에 따라 범위가 달라질 수 있다"]},
-    {"id":"S1-IDH-1256","type":"identity_packet","text":"토양은 암석이 풍화된 물질과 유기물, 물, 공기 등이 섞여 식물이 자랄 수 있는 지표의 층을 이루는 물질이다. 토양은 단일한 순수 물질이 아니라 여러 성분이 섞인 복합 환경이다. 흙이라는 일상어와 과학적 토양 개념의 범위도 다를 수 있다.","concepts":["토양","유기물","물","공기","혼합물"],"relations":["category","contains","boundary"],"boundaries":["토양과 단일 물질을 구분한다"]},
-    {"id":"S1-IDH-1257","type":"identity_packet","text":"퇴비는 유기성 물질이 분해되어 만들어진 물질로 토양의 유기물 공급에 사용할 수 있다. 퇴비는 단순한 쓰레기와 같지 않으며 목적과 처리 과정을 포함하는 범주다. 물질과 처리된 자원의 개념을 구분한다.","concepts":["퇴비","유기성 물질","토양","분해"],"relations":["is_a","process_result","function"],"boundaries":["원료와 처리 결과를 구분한다"]},
-    {"id":"S1-IDH-1258","type":"identity_packet","text":"부식질은 토양 속에서 분해된 유기물의 일부로 토양의 성질에 영향을 주는 물질이다. 부식질과 토양 전체는 같은 범주의 대상이 아니다. 구성 성분과 전체 환경을 구분한다.","concepts":["부식질","토양","유기물"],"relations":["part_of_material","property"],"boundaries":["성분과 전체를 구분한다"]},
-    {"id":"S1-IDH-1259","type":"identity_packet","text":"생태계는 특정 지역의 생물과 비생물 환경이 상호작용하는 체계다. 생태계에는 개별 생물뿐 아니라 물, 빛, 토양 같은 환경 요소도 포함된다. 생태계와 그 안의 한 생물을 동일시해서는 안 된다.","concepts":["생태계","생물","비생물 환경"],"relations":["system","contains","interaction"],"boundaries":["생태계 전체와 구성 요소를 구분한다"]},
-    {"id":"S1-IDH-1260","type":"identity_packet","text":"서식지는 특정 생물이 살아가는 장소나 환경을 가리킨다. 서식지는 생물 자체가 아니라 생물이 생활하는 공간이다. 같은 생물이 생활 단계에 따라 서로 다른 장소를 이용할 수도 있다.","concepts":["서식지","생물","환경"],"relations":["category","spatial_context"],"boundaries":["생물과 서식지를 구분한다"]},
-
-    {"id":"S1-IDH-1261","type":"identity_packet","text":"재료는 물건을 만들 때 사용하는 물질을 가리킨다. 나무와 금속은 서로 다른 재료일 수 있고 같은 재료로 여러 종류의 제품을 만들 수 있다. 재료와 완성품을 구분한다.","concepts":["재료","나무","금속","제품"],"relations":["category","many_to_many","boundary"],"boundaries":["재료와 제품의 정체성을 구분한다"]},
-    {"id":"S1-IDH-1262","type":"identity_packet","text":"합금은 둘 이상의 원소가 결합하거나 섞여 금속적 성질을 나타내도록 만든 재료다. 합금은 단순히 원소 하나와 같은 물질이 아니다. 재료의 상위 범주와 구성 원소를 구분한다.","concepts":["합금","원소","금속","재료"],"relations":["is_a","composition","classification"],"boundaries":["합금과 단일 원소를 구분한다"]},
-    {"id":"S1-IDH-1263","type":"identity_packet","text":"강철은 철을 주된 성분으로 하면서 탄소 등을 포함한 금속 재료다. 강철과 순수한 철은 관련되지만 같은 물질로 단순화할 수 없다. 재료의 조성과 제품의 명칭을 구분한다.","concepts":["강철","철","탄소","금속"],"relations":["is_a","composition","boundary"],"boundaries":["합금 재료와 순수 원소를 구분한다"]},
-    {"id":"S1-IDH-1264","type":"identity_packet","text":"스테인리스강은 부식에 대한 저항성을 높이기 위해 특정 합금 조성을 가진 강철의 범주다. 이름에 '강'이 들어가지만 순수한 철 자체를 뜻하지 않는다. 제품의 일반 명칭과 화학적 조성을 구분한다.","concepts":["스테인리스강","강철","합금"],"relations":["subclass_of","property","classification"],"boundaries":["하위 재료와 기본 재료를 구분한다"]},
-    {"id":"S1-IDH-1265","type":"identity_packet","text":"플라스틱은 여러 고분자 재료와 첨가제로 만든 합성 재료의 넓은 범주다. 플라스틱은 하나의 단일 물질이 아니며 종류에 따라 성질이 다르다. 상위 재료 범주와 개별 고분자를 구분한다.","concepts":["플라스틱","고분자","합성 재료"],"relations":["category","subclass_variation","classification"],"boundaries":["상위 재료 범주를 단일 물질로 취급하지 않는다"]},
-    {"id":"S1-IDH-1266","type":"identity_packet","text":"고무는 탄성이 큰 재료를 가리키는 범주로 천연고무와 합성고무를 포함할 수 있다. 고무라는 말은 하나의 화학 물질만을 뜻하지 않는다. 공통 기능과 물질 조성을 구분한다.","concepts":["고무","천연고무","합성고무"],"relations":["category","subclass_of","property"],"boundaries":["기능적 범주와 단일 물질을 구분한다"]},
-    {"id":"S1-IDH-1267","type":"identity_packet","text":"섬유는 길고 가는 형태의 재료를 이용해 실이나 직물 등을 만드는 데 쓰이는 재료의 범주다. 면과 폴리에스터는 서로 다른 섬유 재료다. 섬유라는 상위 범주는 하나의 원료를 뜻하지 않는다.","concepts":["섬유","면","폴리에스터"],"relations":["category","subclass_of","material"],"boundaries":["상위 재료 범주와 종류를 구분한다"]},
-    {"id":"S1-IDH-1268","type":"identity_packet","text":"직물은 실이나 섬유를 일정한 방식으로 엮어 만든 재료 또는 천을 가리킨다. 직물은 섬유 자체와 동일하지 않으며 여러 종류의 섬유로 만들 수 있다. 원료와 가공 결과를 구분한다.","concepts":["직물","섬유","실"],"relations":["is_a","made_from","boundary"],"boundaries":["재료 원료와 가공된 재료를 구분한다"]},
-    {"id":"S1-IDH-1269","type":"identity_packet","text":"종이는 식물 섬유 등을 가공해 얇은 시트 형태로 만든 재료다. 종이는 문서의 내용과 같지 않으며 문서를 담는 매체가 될 수 있다. 매체와 그 안의 정보를 구분한다.","concepts":["종이","식물 섬유","문서","매체"],"relations":["material","made_from","medium"],"boundaries":["재료와 정보 내용을 구분한다"]},
-    {"id":"S1-IDH-1270","type":"identity_packet","text":"유리는 무기질 재료를 녹여 만들어지는 비결정질 고체 재료의 범주다. 창문은 유리로 만들 수 있지만 창문과 유리는 같은 대상이 아니다. 재료와 제품을 구분한다.","concepts":["유리","창문","재료","제품"],"relations":["category","material_of","boundary"],"boundaries":["재료와 완성품을 구분한다"]},
-
-    {"id":"S1-IDH-1271","type":"identity_packet","text":"도구는 사람이 특정 작업을 수행하기 위해 사용하는 물건의 넓은 범주다. 망치와 자는 모두 도구지만 수행하는 작업이 다르다. 상위 범주와 세부 용도를 구분한다.","concepts":["도구","망치","자"],"relations":["category","subclass_of","function"],"boundaries":["도구라는 상위 범주가 단일 기능을 의미하지 않는다"]},
-    {"id":"S1-IDH-1272","type":"identity_packet","text":"측정기는 길이, 온도, 시간처럼 어떤 양을 측정하기 위한 기기의 범주다. 자와 온도계는 같은 상위 범주에 포함될 수 있지만 측정 대상이 다르다. 공통 기능과 측정량의 차이를 구분한다.","concepts":["측정기","자","온도계","측정량"],"relations":["category","subclass_of","different_target"],"boundaries":["상위 기능과 구체적 측정 대상을 구분한다"]},
-    {"id":"S1-IDH-1273","type":"identity_packet","text":"보호 장비는 사람을 위험이나 충격 등으로부터 보호하기 위해 착용하거나 사용하는 물건의 범주다. 헬멧과 안전화는 보호 장비지만 보호하는 신체 부위와 방식이 다르다. 상위 기능과 하위 유형을 구분한다.","concepts":["보호 장비","헬멧","안전화"],"relations":["category","subclass_of","function"],"boundaries":["공통 목적과 보호 방식의 차이를 구분한다"]},
-    {"id":"S1-IDH-1274","type":"identity_packet","text":"운동 장비는 운동 활동을 수행하거나 보조하기 위해 사용하는 물건의 범주다. 공과 라켓은 모두 운동 장비가 될 수 있지만 각각의 기능과 구조가 다르다. 운동 장비라는 말만으로 특정 스포츠를 정할 수는 없다.","concepts":["운동 장비","공","라켓"],"relations":["category","subclass_of","function"],"boundaries":["상위 범주와 구체적 활동을 구분한다"]},
-    {"id":"S1-IDH-1275","type":"identity_packet","text":"가정용품은 가정에서 생활을 위해 사용하는 물건을 넓게 묶는 범주다. 수건, 조명, 청소 도구가 모두 가정용품일 수 있지만 서로 다른 물건이다. 사용 장소만으로 동일한 기능을 부여해서는 안 된다.","concepts":["가정용품","수건","조명","청소 도구"],"relations":["category","context","classification"],"boundaries":["공통 사용 장소와 기능 차이를 구분한다"]},
-    {"id":"S1-IDH-1276","type":"identity_packet","text":"사무용품은 문서 작성, 정리, 기록 등 사무 활동에 사용하는 물건의 범주다. 스테이플러와 클립은 같은 상위 범주지만 기능과 구조가 다르다. 상위 범주와 개별 도구를 구분한다.","concepts":["사무용품","스테이플러","클립"],"relations":["category","subclass_of","function"],"boundaries":["상위 범주와 세부 기능을 구분한다"]},
-    {"id":"S1-IDH-1277","type":"identity_packet","text":"문구류는 글쓰기, 그림, 기록 등에 사용하는 물건을 묶어 부르는 일상적 범주다. 연필과 자는 모두 문구류로 취급될 수 있지만 기능이 다르다. 일상 범주와 전문적 기능 분류는 완전히 같지 않다.","concepts":["문구류","연필","자"],"relations":["category","subclass_of","classification"],"boundaries":["일상적 상위 범주와 기능별 하위 분류를 구분한다"]},
-    {"id":"S1-IDH-1278","type":"identity_packet","text":"교통수단은 사람이나 물건을 이동시키는 수단의 넓은 범주다. 자전거와 자동차는 모두 교통수단이지만 동력과 이동 방식이 다르다. 하나의 상위 기능이 동일한 구조를 요구하지 않는다.","concepts":["교통수단","자전거","자동차"],"relations":["category","subclass_of","function"],"boundaries":["상위 기능과 작동 방식의 차이를 구분한다"]},
-    {"id":"S1-IDH-1279","type":"identity_packet","text":"대중교통은 불특정 다수의 승객이 공동으로 이용하는 교통 서비스나 수단을 가리킨다. 버스와 지하철은 서로 다른 형태지만 대중교통에 포함될 수 있다. 공개적으로 이용 가능하다는 특징만으로 이동 방식은 결정되지 않는다.","concepts":["대중교통","버스","지하철"],"relations":["category","subclass_of","service"],"boundaries":["서비스 범주와 개별 교통수단을 구분한다"]},
-    {"id":"S1-IDH-1280","type":"identity_packet","text":"택배는 물건을 발송지에서 수취인에게 운송하는 배송 서비스의 범주다. 택배 상자는 배송에 사용하는 포장물이고 택배 서비스 자체와는 다르다. 서비스와 물리적 물건을 구분한다.","concepts":["택배","배송 서비스","택배 상자"],"relations":["service","artifact_relation","boundary"],"boundaries":["서비스와 서비스에 사용되는 물건을 구분한다"]},
-
-    {"id":"S1-IDH-1281","type":"identity_packet","text":"환경 보호 활동은 환경에 미치는 부정적 영향을 줄이거나 자연을 보전하기 위한 행동이나 활동의 범주다. 재활용, 에너지 절약, 보전 활동은 서로 다른 방법일 수 있다. 같은 목적이 같은 행동을 의미하지 않는다.","concepts":["환경 보호 활동","재활용","에너지 절약"],"relations":["category","subclass_of","goal"],"boundaries":["목적과 구체적 행동을 구분한다"]},
-    {"id":"S1-IDH-1282","type":"identity_packet","text":"재생에너지는 자연적으로 보충되는 에너지원에서 얻는 에너지의 범주다. 태양광과 풍력은 서로 다른 에너지원이지만 재생에너지에 포함된다. 재생 가능성은 특정 기술 하나의 이름이 아니다.","concepts":["재생에너지","태양광","풍력"],"relations":["category","subclass_of","energy_source"],"boundaries":["상위 에너지 범주와 개별 발전 방식을 구분한다"]},
-    {"id":"S1-IDH-1283","type":"identity_packet","text":"태양광 발전은 햇빛을 이용해 전기를 생산하는 발전 방식이다. 태양광은 에너지원이고 태양광 발전은 그 에너지를 이용하는 기술이다. 자연 자원과 기술적 과정을 구분한다.","concepts":["태양광","태양광 발전","기술"],"relations":["energy_source","technology","boundary"],"boundaries":["에너지원과 기술을 구분한다"]},
-    {"id":"S1-IDH-1284","type":"identity_packet","text":"풍력 발전은 바람의 운동 에너지를 이용해 전기를 생산하는 발전 방식이다. 바람과 발전기는 서로 다른 대상이며 풍력 발전은 그 둘을 연결하는 기술 체계다. 자연현상과 기술 체계를 구분한다.","concepts":["풍력 발전","바람","발전기","기술"],"relations":["technology","uses","boundary"],"boundaries":["자연현상과 기술 장치를 구분한다"]},
-    {"id":"S1-IDH-1285","type":"identity_packet","text":"정수기는 물을 여과하거나 처리해 마실 수 있는 물의 상태를 개선하는 장치다. 정수기와 정수된 물은 서로 다른 대상이다. 처리 장치와 처리 결과를 구분한다.","concepts":["정수기","물","정수된 물"],"relations":["is_a","process_device","boundary"],"boundaries":["처리 장치와 처리 결과를 구분한다"]},
-    {"id":"S1-IDH-1286","type":"identity_packet","text":"필터는 특정 성분이나 입자를 통과시키거나 걸러내기 위한 장치나 재료다. 공기 필터와 물 필터는 같은 상위 개념이지만 처리 대상이 다르다. 필터라는 범주와 적용 대상의 차이를 구분한다.","concepts":["필터","공기 필터","물 필터"],"relations":["category","subclass_of","different_target"],"boundaries":["상위 범주와 적용 대상을 구분한다"]},
-    {"id":"S1-IDH-1287","type":"identity_packet","text":"단열재는 열의 이동을 줄이기 위해 사용하는 재료다. 단열재는 열 자체가 아니며 건물이나 기기의 일부에 적용될 수 있다. 재료와 물리적 현상을 구분한다.","concepts":["단열재","열","건축 재료"],"relations":["is_a","function","boundary"],"boundaries":["보호 재료와 에너지 이동 현상을 구분한다"]},
-    {"id":"S1-IDH-1288","type":"identity_packet","text":"보온병은 내부의 액체가 주변과 열을 덜 주고받도록 만든 용기다. 보온 기능은 용기의 목적이고 온도는 내용물의 상태다. 기능과 상태를 구분한다.","concepts":["보온병","용기","열","온도"],"relations":["is_a","function","state"],"boundaries":["용기의 기능과 내용물의 상태를 구분한다"]},
-    {"id":"S1-IDH-1289","type":"identity_packet","text":"온실은 식물이 자랄 수 있는 환경의 온도와 빛 등을 조절하기 위해 만든 시설이다. 온실과 그 안에서 자라는 식물은 다른 대상이다. 시설과 이용 대상의 관계를 구분한다.","concepts":["온실","식물","시설","환경"],"relations":["is_a","contains","boundary"],"boundaries":["시설과 내부 대상의 정체성을 구분한다"]},
-    {"id":"S1-IDH-1290","type":"identity_packet","text":"재난은 사람과 사회 또는 환경에 큰 피해를 줄 수 있는 사건이나 상황을 가리킨다. 홍수와 지진은 서로 다른 재난 유형이다. 재난이라는 상위 범주와 구체적인 발생 원인을 구분한다.","concepts":["재난","홍수","지진","사건"],"relations":["category","subclass_of","event"],"boundaries":["상위 사건 범주와 구체적 유형을 구분한다"]},
-
-    {"id":"S1-IDH-1291","type":"identity_packet","text":"응급상황은 즉각적인 대응이 필요할 수 있는 위험한 상태나 사건이다. 응급상황은 특정 질병이나 한 종류의 사건만을 뜻하지 않는다. 상태의 긴급성과 사건의 구체적 유형을 구분한다.","concepts":["응급상황","상태","사건"],"relations":["category","state_or_event","classification"],"boundaries":["긴급성 범주와 특정 사건을 구분한다"]},
-    {"id":"S1-IDH-1292","type":"identity_packet","text":"응급키트는 응급 상황에서 사용할 수 있도록 기본적인 도구나 물품을 모아 둔 꾸러미다. 응급키트와 그 안의 개별 물품은 다른 수준의 대상이다. 묶음과 구성품을 구분한다.","concepts":["응급키트","도구","물품"],"relations":["is_a","has_part","bundle"],"boundaries":["묶음과 개별 물품을 구분한다"]},
-    {"id":"S1-IDH-1293","type":"identity_packet","text":"의약품은 질병을 치료하거나 증상을 완화하거나 예방하는 데 사용되는 물질이나 제제의 범주다. 같은 의약품 범주 안에서도 성분과 용도가 다를 수 있다. 의약품이라는 상위 범주는 단일 성분을 뜻하지 않는다.","concepts":["의약품","성분","치료","예방"],"relations":["category","subclass_variation","function"],"boundaries":["상위 의료 제품 범주와 개별 성분을 구분한다"]},
-    {"id":"S1-IDH-1294","type":"identity_packet","text":"백신은 특정 감염병에 대한 면역 반응을 유도하도록 설계된 의약품의 한 범주다. 백신은 치료제와 같은 넓은 의료 제품 범주에 관련될 수 있지만 목적과 작용 방식이 다르다. 의료 제품의 하위 범주를 구분한다.","concepts":["백신","의약품","면역","치료제"],"relations":["subclass_of","function","comparison"],"boundaries":["예방과 치료의 목적을 구분한다"]},
-    {"id":"S1-IDH-1295","type":"identity_packet","text":"증상은 질병이나 상태가 있을 때 나타날 수 있는 관찰 가능한 변화나 불편을 가리킨다. 증상과 질병 자체는 같은 개념이 아니다. 결과로 나타나는 정보와 원인이 되는 상태를 구분한다.","concepts":["증상","질병","상태"],"relations":["effect_of","boundary","classification"],"boundaries":["증상과 질병을 동일시하지 않는다"]},
-    {"id":"S1-IDH-1296","type":"identity_packet","text":"진단은 관찰과 검사 결과를 바탕으로 질병이나 상태를 판단하는 과정이나 결론이다. 검사 결과는 진단을 위한 근거일 수 있지만 검사 결과 자체가 항상 진단과 같은 것은 아니다. 근거와 판단을 구분한다.","concepts":["진단","검사 결과","판단"],"relations":["process","evidence","boundary"],"boundaries":["근거와 결론을 구분한다"]},
-    {"id":"S1-IDH-1297","type":"identity_packet","text":"처치는 질병이나 상태를 개선하기 위해 수행하는 의료적 행동이나 방법이다. 처치와 처치에 사용하는 의료기기는 같은 대상이 아니다. 행위와 도구를 구분한다.","concepts":["처치","의료기기","의료 행위"],"relations":["event","tool_relation","boundary"],"boundaries":["행위와 도구를 구분한다"]},
-    {"id":"S1-IDH-1298","type":"identity_packet","text":"교육 자료는 학습을 돕기 위해 사용하는 글, 그림, 영상, 문제 등의 자료를 묶어 부르는 범주다. 교과서와 영상은 서로 다른 형태의 교육 자료가 될 수 있다. 자료의 매체와 교육적 역할을 구분한다.","concepts":["교육 자료","교과서","영상","학습"],"relations":["category","subclass_of","function"],"boundaries":["교육 자료의 형태와 역할을 구분한다"]},
-    {"id":"S1-IDH-1299","type":"identity_packet","text":"온라인 계정은 특정 서비스에서 사용자를 식별하고 설정이나 데이터에 접근할 수 있도록 관리되는 디지털 주체다. 계정과 계정을 사용하는 사람은 같은 대상이 아니다. 디지털 식별자와 실제 사용자를 구분한다.","concepts":["온라인 계정","사용자","디지털 식별"],"relations":["is_a","identifier","boundary"],"boundaries":["계정과 사용자를 동일시하지 않는다"]},
-    {"id":"S1-IDH-1300","type":"identity_packet","text":"디지털 신원은 온라인 환경에서 개인이나 조직을 식별하거나 그와 관련된 정보를 나타내는 디지털 정보의 집합이다. 디지털 신원과 실제 사람은 서로 다른 개념이며 여러 서비스의 기록이 하나의 사람과 연결될 수 있다. 표현된 정보와 실제 대상을 구분한다.","concepts":["디지털 신원","사람","디지털 정보","식별"],"relations":["abstract_concept","represents","boundary"],"boundaries":["디지털 표현과 실제 대상을 구분한다"]}
+  "dataset_name": "Korean AI Curriculum — Stage 1 Identity High Density Train v8",
+  "version": "1.0",
+  "range": "S1-IDH-1151~1300",
+  "theme": "일상생활·교육·기술·환경·생활 과학",
+  "purpose": "새로운 개념군의 대상·정체성·분류를 고밀도 concept packet으로 학습시키기 위한 수작업 corpus",
+  "records": [
+    {
+      "id": "S1-IDH-1151",
+      "type": "identity_packet",
+      "text": "아침 식사는 하루를 시작할 때 먹는 첫 끼니를 가리키는 일상적 식사 범주다. 시간대와 문화에 따라 음식의 종류는 달라질 수 있다. 아침에 먹었다는 사실만으로 특정 음식이 아침 식사가 되는 것은 아니다.",
+      "concepts": [
+        "아침 식사",
+        "식사",
+        "시간대"
+      ],
+      "relations": [
+        "is_a",
+        "context",
+        "classification_basis"
+      ],
+      "boundaries": [
+        "식사 시간만으로 음식 종류가 고정되지 않는다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1152",
+      "type": "identity_packet",
+      "text": "간식은 주된 식사 사이에 먹는 음식이나 음료를 가리킨다. 간식은 특정한 한 음식의 이름이 아니라 식사 맥락에 따른 범주다. 같은 음식도 상황에 따라 간식이 될 수 있다.",
+      "concepts": [
+        "간식",
+        "음식",
+        "식사 맥락"
+      ],
+      "relations": [
+        "is_a",
+        "context",
+        "classification_basis"
+      ],
+      "boundaries": [
+        "음식 종류만으로 간식 여부가 결정되지 않는다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1153",
+      "type": "identity_packet",
+      "text": "식기는 음식을 담거나 먹는 데 사용하는 물건을 묶어 부르는 범주다. 접시와 숟가락은 서로 다른 식기지만 같은 상위 범주에 속한다. 따라서 식기라는 범주는 하나의 특정 물건을 뜻하지 않는다.",
+      "concepts": [
+        "식기",
+        "접시",
+        "숟가락"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "classification"
+      ],
+      "boundaries": [
+        "상위 범주와 개별 물건을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1154",
+      "type": "identity_packet",
+      "text": "조리 도구는 음식을 준비하거나 익히는 과정에서 사용하는 도구의 범주다. 칼과 주걱은 기능이 다르지만 모두 조리 과정에 사용될 수 있다. 조리에 사용된다는 사실만으로 모든 도구의 구체적 용도가 같아지는 것은 아니다.",
+      "concepts": [
+        "조리 도구",
+        "칼",
+        "주걱"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "공통 용도와 세부 기능을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1155",
+      "type": "identity_packet",
+      "text": "식품 포장은 내용물을 외부 환경으로부터 보호하고 운반하거나 보관하기 위한 포장재나 포장 형태를 가리킨다. 종이 상자와 비닐 봉지는 서로 다른 포장 유형이다. 포장과 그 안의 식품은 같은 대상이 아니다.",
+      "concepts": [
+        "식품 포장",
+        "포장재",
+        "식품"
+      ],
+      "relations": [
+        "category",
+        "containment",
+        "boundary"
+      ],
+      "boundaries": [
+        "포장과 내용물을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1156",
+      "type": "identity_packet",
+      "text": "냉장 보관은 식품이나 물건을 낮은 온도에서 보관하는 방법이다. 냉장 보관은 물건의 종류가 아니라 보관 상태나 방법을 가리킨다. 모든 냉장 보관 대상이 같은 온도를 필요로 하는 것은 아니다.",
+      "concepts": [
+        "냉장 보관",
+        "보관 방법",
+        "온도"
+      ],
+      "relations": [
+        "abstract_concept",
+        "state",
+        "classification"
+      ],
+      "boundaries": [
+        "보관 방법과 대상의 종류를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1157",
+      "type": "identity_packet",
+      "text": "재활용품은 사용 후 분리·수거되어 재활용 과정에 들어갈 수 있는 물건이나 재료를 가리키는 일상적 범주다. 재질과 지역의 처리 기준에 따라 재활용 여부가 달라질 수 있다. 따라서 특정 재질이라는 사실만으로 모든 지역에서 재활용품으로 취급된다고 할 수는 없다.",
+      "concepts": [
+        "재활용품",
+        "재질",
+        "처리 기준"
+      ],
+      "relations": [
+        "category",
+        "context_dependence"
+      ],
+      "boundaries": [
+        "재활용 여부는 처리 체계에 의존한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1158",
+      "type": "identity_packet",
+      "text": "재사용품은 한 번 사용한 뒤 버리지 않고 다시 사용할 수 있도록 쓰이는 물건을 가리킨다. 재사용 가능성은 물건의 재질뿐 아니라 상태와 사용 방식에도 영향을 받는다. 일회용품과 재사용품은 사용 횟수에 관한 범주가 다르다.",
+      "concepts": [
+        "재사용품",
+        "일회용품",
+        "사용 방식"
+      ],
+      "relations": [
+        "category",
+        "contrast",
+        "function"
+      ],
+      "boundaries": [
+        "재질만으로 재사용 여부를 결정하지 않는다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "contrast",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1159",
+      "type": "identity_packet",
+      "text": "세탁 바구니는 세탁할 옷이나 천을 모아 담아 두는 용기다. 바구니 자체는 세탁기와 같은 세탁 기기가 아니다. 담는 기능과 세탁 기능은 서로 다른 분류 기준이다.",
+      "concepts": [
+        "세탁 바구니",
+        "세탁기",
+        "용기"
+      ],
+      "relations": [
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "boundaries": [
+        "보관 기능과 세탁 기능을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1160",
+      "type": "identity_packet",
+      "text": "수납장은 물건을 넣어 정리하고 보관하기 위한 가구다. 서랍장과 책장은 서로 다른 종류의 수납장이 될 수 있다. 수납장은 내부에 넣는 물건의 종류에 따라 세부 유형이 달라질 수 있다.",
+      "concepts": [
+        "수납장",
+        "서랍장",
+        "책장",
+        "가구"
+      ],
+      "relations": [
+        "is_a",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "상위 가구 범주와 하위 유형을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1161",
+      "type": "identity_packet",
+      "text": "현관은 건물의 출입과 내부 공간을 연결하는 영역을 가리킨다. 현관문은 현관의 일부 구성요소일 수 있지만 현관과 같은 대상은 아니다. 공간과 그 공간을 이루는 물체를 구분할 필요가 있다.",
+      "concepts": [
+        "현관",
+        "현관문",
+        "공간"
+      ],
+      "relations": [
+        "category",
+        "part_whole",
+        "spatial"
+      ],
+      "boundaries": [
+        "공간과 구성요소를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "part_of",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1162",
+      "type": "identity_packet",
+      "text": "침구는 잠을 자거나 누워 쉴 때 사용하는 천이나 물품을 묶어 부르는 범주다. 이불과 베개는 서로 다른 침구다. 침구라는 상위 범주는 개별 물품의 이름과 동일하지 않다.",
+      "concepts": [
+        "침구",
+        "이불",
+        "베개"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "classification"
+      ],
+      "boundaries": [
+        "상위 범주와 개별 물품을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1163",
+      "type": "identity_packet",
+      "text": "세면도구는 얼굴이나 몸을 씻고 관리할 때 사용하는 물건을 묶어 부르는 범주다. 비누와 칫솔은 서로 다른 세면도구다. 하나의 사용 목적이 동일한 구조를 요구하는 것은 아니다.",
+      "concepts": [
+        "세면도구",
+        "비누",
+        "칫솔"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "공통 목적과 물체 동일성을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1164",
+      "type": "identity_packet",
+      "text": "생활 폐기물은 일상생활에서 발생해 버려지는 물질이나 물건을 가리키는 범주다. 음식물 쓰레기와 일반 쓰레기는 서로 다른 하위 범주가 될 수 있다. 폐기물이라는 분류는 하나의 재질만을 의미하지 않는다.",
+      "concepts": [
+        "생활 폐기물",
+        "음식물 쓰레기",
+        "일반 쓰레기"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "classification"
+      ],
+      "boundaries": [
+        "폐기물과 특정 재질을 동일시하지 않는다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1165",
+      "type": "identity_packet",
+      "text": "공공시설은 많은 사람이 공동으로 이용하도록 제공되는 시설을 가리킨다. 도서관과 공원은 기능이 다르지만 모두 공공시설로 분류될 수 있다. 공공시설이라는 범주만으로 구체적 기능을 확정할 수는 없다.",
+      "concepts": [
+        "공공시설",
+        "도서관",
+        "공원"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "classification"
+      ],
+      "boundaries": [
+        "상위 범주가 세부 기능을 결정하지 않는다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1166",
+      "type": "identity_packet",
+      "text": "교실은 수업과 학습 활동이 이루어지는 공간이다. 교실 안의 책상이나 학생은 교실의 구조적 일부와 동일하지 않다. 공간 안에 존재하는 것과 공간을 구성하는 것은 구분될 수 있다.",
+      "concepts": [
+        "교실",
+        "학생",
+        "책상"
+      ],
+      "relations": [
+        "is_a",
+        "spatial",
+        "boundary"
+      ],
+      "boundaries": [
+        "공간 포함과 부분 관계를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1167",
+      "type": "identity_packet",
+      "text": "교과서는 특정 교과의 학습을 위해 구성된 교육용 책이다. 교과서와 일반 참고서는 모두 책이지만 사용 목적과 구성 방식이 다르다. 책이라는 상위 범주가 동일한 세부 기능을 보장하지는 않는다.",
+      "concepts": [
+        "교과서",
+        "책",
+        "참고서"
+      ],
+      "relations": [
+        "is_a",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "동일 상위 범주와 동일 기능을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1168",
+      "type": "identity_packet",
+      "text": "문제집은 연습 문제를 풀도록 구성된 학습 자료다. 문제집은 교과서와 같은 책 형태일 수 있지만 목적이 다르다. 책이라는 형태와 교육적 기능을 구분해야 한다.",
+      "concepts": [
+        "문제집",
+        "학습 자료",
+        "교과서"
+      ],
+      "relations": [
+        "is_a",
+        "function",
+        "comparison"
+      ],
+      "boundaries": [
+        "형태와 기능을 동일시하지 않는다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-IDH-1169",
+      "type": "identity_packet",
+      "text": "시험지는 평가를 위한 문항과 답안 공간이 포함된 문서다. 시험지는 시험이라는 평가 활동과 관련되지만 시험 자체와 동일한 개념은 아니다. 문서와 활동을 구분한다.",
+      "concepts": [
+        "시험지",
+        "시험",
+        "평가",
+        "문서"
+      ],
+      "relations": [
+        "artifact_of",
+        "event_relation",
+        "type_distinction"
+      ],
+      "boundaries": [
+        "문서와 활동을 구분한다"
+      ],
+      "relations_controlled": [
+        "other",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1170",
+      "type": "identity_packet",
+      "text": "성적표는 학습이나 평가 결과를 정리해 보여 주는 기록 문서다. 성적표에 적힌 점수와 성적표라는 문서는 서로 다른 개념이다. 결과 정보와 정보 매체를 구분한다.",
+      "concepts": [
+        "성적표",
+        "점수",
+        "기록 문서"
+      ],
+      "relations": [
+        "is_a",
+        "contains_information",
+        "boundary"
+      ],
+      "boundaries": [
+        "기록물과 기록된 정보를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1171",
+      "type": "identity_packet",
+      "text": "숙제는 학습자가 수업 밖에서 수행하도록 주어진 학습 과제다. 숙제는 특정 종이나 파일 자체가 아니라 수행해야 할 과업을 가리킬 수 있다. 과제와 그 과제를 기록한 자료는 서로 다르다.",
+      "concepts": [
+        "숙제",
+        "학습 과제",
+        "자료"
+      ],
+      "relations": [
+        "abstract_concept",
+        "task",
+        "boundary"
+      ],
+      "boundaries": [
+        "과업과 과업을 담은 자료를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1172",
+      "type": "identity_packet",
+      "text": "수업은 교사와 학습자가 정해진 학습 목표를 중심으로 상호작용하는 교육 활동이다. 교실은 수업이 이루어질 수 있는 공간이지만 수업과 같은 개념은 아니다. 활동과 공간을 구분한다.",
+      "concepts": [
+        "수업",
+        "교사",
+        "학습자",
+        "교실"
+      ],
+      "relations": [
+        "event",
+        "context",
+        "boundary"
+      ],
+      "boundaries": [
+        "교육 활동과 공간을 구분한다"
+      ],
+      "relations_controlled": [
+        "process",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1173",
+      "type": "identity_packet",
+      "text": "교육과정은 교육 기관이나 교육 프로그램에서 무엇을 어떤 순서와 범위로 가르칠지 정리한 체계다. 교육과정은 하나의 교과서와 동일하지 않다. 여러 자료와 활동을 포괄할 수 있는 추상적 구조다.",
+      "concepts": [
+        "교육과정",
+        "교과서",
+        "교육 체계"
+      ],
+      "relations": [
+        "abstract_concept",
+        "system",
+        "boundary"
+      ],
+      "boundaries": [
+        "계획 체계와 개별 자료를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1174",
+      "type": "identity_packet",
+      "text": "학년은 교육 과정에서 학생을 나누는 연령이나 진급 단계의 범주다. 학년은 특정 교실이나 특정 학생 한 명과 같은 것이 아니다. 여러 학생이 같은 학년에 속할 수 있다.",
+      "concepts": [
+        "학년",
+        "학생",
+        "교육 단계"
+      ],
+      "relations": [
+        "category",
+        "classification",
+        "many_to_one"
+      ],
+      "boundaries": [
+        "분류 기준과 개별 대상을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "classification",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1175",
+      "type": "identity_packet",
+      "text": "학급은 학교에서 함께 수업하는 학생들의 조직 단위다. 학급은 학생 개개인의 단순한 합과 동일하지 않으며 정해진 운영 규칙을 가질 수 있다. 학생과 학급은 서로 다른 수준의 개념이다.",
+      "concepts": [
+        "학급",
+        "학생",
+        "조직"
+      ],
+      "relations": [
+        "group",
+        "member_of",
+        "level_distinction"
+      ],
+      "boundaries": [
+        "구성원과 조직을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1176",
+      "type": "identity_packet",
+      "text": "실험은 어떤 현상을 관찰하거나 가설을 검토하기 위해 조건을 정해 수행하는 절차적 활동이다. 실험 장비는 실험을 수행하는 도구이고 실험 자체와 동일하지 않다. 활동과 도구를 구분한다.",
+      "concepts": [
+        "실험",
+        "실험 장비",
+        "절차"
+      ],
+      "relations": [
+        "event",
+        "tool_relation",
+        "boundary"
+      ],
+      "boundaries": [
+        "실험과 장비를 구분한다"
+      ],
+      "relations_controlled": [
+        "process",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1177",
+      "type": "identity_packet",
+      "text": "현미경 슬라이드는 현미경으로 관찰할 시료를 올려놓는 얇은 판이다. 슬라이드는 현미경 자체가 아니라 현미경과 함께 사용하는 관찰용 소모품이다. 구성요소와 사용 도구를 구분한다.",
+      "concepts": [
+        "현미경 슬라이드",
+        "현미경",
+        "시료"
+      ],
+      "relations": [
+        "tool_relation",
+        "associated_object",
+        "boundary"
+      ],
+      "boundaries": [
+        "장비와 보조용품을 구분한다"
+      ],
+      "relations_controlled": [
+        "other",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1178",
+      "type": "identity_packet",
+      "text": "실험 기록지는 실험 과정과 결과를 적어 두기 위한 기록 문서다. 기록지에 쓰인 결과와 기록지라는 물리적 문서는 서로 다른 대상이다. 정보와 매체를 구분한다.",
+      "concepts": [
+        "실험 기록지",
+        "결과",
+        "문서"
+      ],
+      "relations": [
+        "is_a",
+        "contains_information",
+        "boundary"
+      ],
+      "boundaries": [
+        "정보와 정보를 담는 문서를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1179",
+      "type": "identity_packet",
+      "text": "발표 자료는 발표 내용을 전달하기 위해 준비한 문서나 슬라이드 묶음이다. 발표 자료는 발표 활동을 돕지만 발표 그 자체는 아니다. 자료와 행위를 구분한다.",
+      "concepts": [
+        "발표 자료",
+        "발표",
+        "슬라이드"
+      ],
+      "relations": [
+        "artifact_of",
+        "event_relation",
+        "boundary"
+      ],
+      "boundaries": [
+        "자료와 활동을 구분한다"
+      ],
+      "relations_controlled": [
+        "other",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1180",
+      "type": "identity_packet",
+      "text": "교구는 학습 개념을 이해하거나 연습하는 데 사용하는 교육용 물건이나 자료다. 교구는 장난감처럼 보일 수도 있지만 교육 목적에 따라 분류되는 경우가 많다. 외형과 사용 목적을 구분한다.",
+      "concepts": [
+        "교구",
+        "교육 자료",
+        "장난감"
+      ],
+      "relations": [
+        "category",
+        "function",
+        "boundary"
+      ],
+      "boundaries": [
+        "외형만으로 교육용 여부를 결정하지 않는다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1181",
+      "type": "identity_packet",
+      "text": "노트북은 휴대할 수 있도록 설계된 컴퓨터다. 노트북은 데스크톱과 같은 컴퓨터 범주에 속할 수 있지만 구조와 사용 환경이 다르다. 컴퓨터라는 상위 범주는 특정 형태를 뜻하지 않는다.",
+      "concepts": [
+        "노트북",
+        "컴퓨터",
+        "데스크톱"
+      ],
+      "relations": [
+        "is_a",
+        "subclass_of",
+        "comparison"
+      ],
+      "boundaries": [
+        "상위 범주와 형태를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "subclass_of",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-IDH-1182",
+      "type": "identity_packet",
+      "text": "태블릿은 화면을 직접 터치해 조작하는 휴대용 컴퓨팅 장치의 범주다. 태블릿은 스마트폰과 비슷한 기능을 가질 수 있지만 일반적으로 화면 크기와 사용 방식에서 차이가 있다. 비슷한 기능이 같은 종류를 뜻하지는 않는다.",
+      "concepts": [
+        "태블릿",
+        "스마트폰",
+        "컴퓨팅 장치"
+      ],
+      "relations": [
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "boundaries": [
+        "기능 유사성과 기기 동일성을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1183",
+      "type": "identity_packet",
+      "text": "라우터는 서로 다른 네트워크 사이에서 데이터의 전달 경로를 결정하는 네트워크 장비다. 공유기는 일상적으로 라우터를 가리키는 말로 사용되기도 하지만 모든 네트워크 장비가 동일한 기능 구성을 가지는 것은 아니다.",
+      "concepts": [
+        "라우터",
+        "네트워크 장비",
+        "데이터"
+      ],
+      "relations": [
+        "is_a",
+        "function",
+        "terminology"
+      ],
+      "boundaries": [
+        "일상 명칭과 기술적 범주를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "function",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1184",
+      "type": "identity_packet",
+      "text": "모뎀은 특정 통신망과 사용자 장비 사이에서 신호를 변환하거나 연결하는 장비다. 모뎀과 라우터는 한 장치에 함께 들어갈 수도 있지만 개념적으로 같은 기능만을 뜻하지 않는다.",
+      "concepts": [
+        "모뎀",
+        "라우터",
+        "통신 장비"
+      ],
+      "relations": [
+        "is_a",
+        "comparison",
+        "subfunction"
+      ],
+      "boundaries": [
+        "결합된 장치와 기능 개념을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "comparison",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1185",
+      "type": "identity_packet",
+      "text": "USB 메모리는 데이터를 저장하고 다른 장치에 연결해 옮길 수 있는 휴대용 저장 장치다. 저장 장치라는 상위 범주에는 여러 형태의 제품이 포함된다. 휴대 가능하다는 한 가지 특성만으로 저장 장치의 종류를 결정할 수는 없다.",
+      "concepts": [
+        "USB 메모리",
+        "저장 장치",
+        "데이터"
+      ],
+      "relations": [
+        "is_a",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "상위 범주와 제품 형태를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1186",
+      "type": "identity_packet",
+      "text": "외장 하드디스크는 컴퓨터 내부가 아닌 외부에서 연결해 사용하는 저장 장치다. 외장이라는 말은 저장 장치의 위치나 연결 방식을 설명하는 것이며 데이터의 종류를 뜻하지 않는다. 저장 장치와 저장 내용은 서로 다른 대상이다.",
+      "concepts": [
+        "외장 하드디스크",
+        "저장 장치",
+        "데이터"
+      ],
+      "relations": [
+        "is_a",
+        "attribute",
+        "boundary"
+      ],
+      "boundaries": [
+        "장치와 저장 데이터를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1187",
+      "type": "identity_packet",
+      "text": "운영체제는 컴퓨터의 자원과 프로그램 실행을 관리하는 기본 소프트웨어다. 운영체제와 특정 응용 프로그램은 모두 소프트웨어지만 역할이 다르다. 소프트웨어라는 상위 범주가 동일 기능을 의미하지는 않는다.",
+      "concepts": [
+        "운영체제",
+        "소프트웨어",
+        "응용 프로그램"
+      ],
+      "relations": [
+        "is_a",
+        "subclass_of",
+        "comparison"
+      ],
+      "boundaries": [
+        "상위 범주와 역할을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "subclass_of",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-IDH-1188",
+      "type": "identity_packet",
+      "text": "응용 프로그램은 사용자가 특정 작업을 수행하도록 만든 소프트웨어다. 문서 편집기와 게임은 서로 다른 응용 프로그램이지만 모두 응용 프로그램이라는 상위 범주에 속한다. 목적이 다르다고 소프트웨어가 아닌 것은 아니다.",
+      "concepts": [
+        "응용 프로그램",
+        "문서 편집기",
+        "게임"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "상위 소프트웨어 범주와 세부 용도를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1189",
+      "type": "identity_packet",
+      "text": "웹 브라우저는 웹 문서와 서비스를 요청하고 표시하는 응용 프로그램이다. 브라우저에서 보는 웹페이지와 브라우저 프로그램은 서로 다른 대상이다. 표시하는 소프트웨어와 표시되는 정보의 관계를 구분한다.",
+      "concepts": [
+        "웹 브라우저",
+        "웹페이지",
+        "응용 프로그램"
+      ],
+      "relations": [
+        "is_a",
+        "display_relation",
+        "boundary"
+      ],
+      "boundaries": [
+        "프로그램과 표시되는 내용을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1190",
+      "type": "identity_packet",
+      "text": "검색 엔진은 입력된 검색어와 관련된 정보를 찾아 제공하는 정보 서비스다. 검색 엔진은 웹페이지 자체가 아니라 여러 정보원을 탐색하는 서비스다. 정보 제공 서비스와 정보의 원문을 구분한다.",
+      "concepts": [
+        "검색 엔진",
+        "정보 서비스",
+        "웹페이지"
+      ],
+      "relations": [
+        "is_a",
+        "service",
+        "boundary"
+      ],
+      "boundaries": [
+        "정보 서비스와 원문을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1191",
+      "type": "identity_packet",
+      "text": "데이터베이스는 구조화된 데이터를 저장하고 검색하거나 관리하기 위한 데이터 조직 체계다. 데이터베이스와 그 안에 저장된 한 레코드는 같은 수준의 대상이 아니다. 전체 저장 체계와 개별 데이터를 구분한다.",
+      "concepts": [
+        "데이터베이스",
+        "레코드",
+        "데이터"
+      ],
+      "relations": [
+        "system",
+        "contains",
+        "level_distinction"
+      ],
+      "boundaries": [
+        "저장 체계와 저장 항목을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1192",
+      "type": "identity_packet",
+      "text": "알고리즘은 문제를 해결하기 위한 단계적 절차나 규칙의 집합이다. 알고리즘은 컴퓨터 프로그램과 관련될 수 있지만 프로그램 파일 자체와 동일한 개념은 아니다. 절차와 구현물을 구분한다.",
+      "concepts": [
+        "알고리즘",
+        "절차",
+        "프로그램"
+      ],
+      "relations": [
+        "abstract_concept",
+        "procedure",
+        "boundary"
+      ],
+      "boundaries": [
+        "절차와 구현물을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1193",
+      "type": "identity_packet",
+      "text": "파일은 컴퓨터 저장 장치에서 하나의 정보 단위로 관리되는 데이터의 묶음이다. 파일 이름은 파일 자체와 같지 않으며 파일 내용도 파일 이름과 다르다. 식별 정보와 실질 내용을 구분한다.",
+      "concepts": [
+        "파일",
+        "파일 이름",
+        "파일 내용"
+      ],
+      "relations": [
+        "is_a",
+        "identifier",
+        "boundary"
+      ],
+      "boundaries": [
+        "식별자와 대상을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1194",
+      "type": "identity_packet",
+      "text": "폴더는 여러 파일이나 다른 폴더를 묶어 정리하기 위한 저장 구조다. 폴더 안에 파일이 있다고 해서 파일이 폴더의 물리적 부품인 것은 아니다. 논리적 포함과 물리적 부분을 구분한다.",
+      "concepts": [
+        "폴더",
+        "파일",
+        "저장 구조"
+      ],
+      "relations": [
+        "container",
+        "contains",
+        "not_part_of"
+      ],
+      "boundaries": [
+        "논리적 포함과 물리적 부분을 구분한다"
+      ],
+      "relations_controlled": [
+        "part_of",
+        "part_of",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1195",
+      "type": "identity_packet",
+      "text": "스마트워치는 손목에 착용해 시간, 운동 정보, 알림 등을 제공하는 휴대용 전자기기다. 스마트워치와 일반 손목시계는 모두 손목에 착용할 수 있지만 기능과 구조가 다르다. 착용 위치만으로 같은 범주가 되는 것은 아니다.",
+      "concepts": [
+        "스마트워치",
+        "손목시계",
+        "전자기기"
+      ],
+      "relations": [
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "boundaries": [
+        "공통 사용 위치와 기기 범주를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1196",
+      "type": "identity_packet",
+      "text": "디지털 카메라는 이미지를 전자적 데이터로 기록하는 촬영 장치다. 카메라는 사진이라는 결과물과 동일하지 않으며 촬영 장치의 종류도 여러 가지다. 기록 장치와 기록된 결과를 구분한다.",
+      "concepts": [
+        "디지털 카메라",
+        "사진",
+        "촬영 장치"
+      ],
+      "relations": [
+        "is_a",
+        "records",
+        "boundary"
+      ],
+      "boundaries": [
+        "장치와 결과물을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1197",
+      "type": "identity_packet",
+      "text": "전자책은 전자 기기에서 읽을 수 있도록 디지털 형태로 제공되는 책이나 그 콘텐츠를 가리킨다. 전자책 파일과 이를 읽는 전자책 리더기는 서로 다른 대상이다. 콘텐츠와 재생 장치를 구분한다.",
+      "concepts": [
+        "전자책",
+        "전자책 리더기",
+        "콘텐츠"
+      ],
+      "relations": [
+        "is_a",
+        "content_device",
+        "boundary"
+      ],
+      "boundaries": [
+        "콘텐츠와 장치를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1198",
+      "type": "identity_packet",
+      "text": "클라우드 저장소는 인터넷을 통해 데이터를 저장하고 접근할 수 있도록 제공되는 원격 저장 서비스다. 저장소 서비스와 그 안의 파일은 서로 다른 수준의 개념이다. 서비스와 저장된 정보를 구분한다.",
+      "concepts": [
+        "클라우드 저장소",
+        "파일",
+        "서비스"
+      ],
+      "relations": [
+        "is_a",
+        "service",
+        "contains_information"
+      ],
+      "boundaries": [
+        "서비스와 데이터 항목을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "function",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1199",
+      "type": "identity_packet",
+      "text": "알림은 사용자에게 특정 사건이나 상태를 알려 주기 위한 정보 신호다. 알림은 소리, 진동, 화면 표시 등 여러 방식으로 전달될 수 있다. 전달 방식과 알림이라는 정보 기능은 같은 개념이 아니다.",
+      "concepts": [
+        "알림",
+        "정보 신호",
+        "소리",
+        "진동"
+      ],
+      "relations": [
+        "abstract_concept",
+        "signal",
+        "many_to_one"
+      ],
+      "boundaries": [
+        "정보와 전달 매체를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "function",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1200",
+      "type": "identity_packet",
+      "text": "비밀번호는 시스템이나 서비스에 접근할 때 사용자를 확인하기 위해 입력하는 비밀 정보다. 비밀번호와 자물쇠는 모두 접근을 제한하는 데 관련되지만 하나는 정보이고 다른 하나는 물리적 장치다.",
+      "concepts": [
+        "비밀번호",
+        "자물쇠",
+        "인증 정보"
+      ],
+      "relations": [
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "boundaries": [
+        "정보 기반 보안과 물리적 보안을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1201",
+      "type": "identity_packet",
+      "text": "센서는 주변 환경의 물리적 양이나 변화를 감지해 정보로 제공하는 장치다. 온도 센서와 빛 센서는 같은 상위 범주에 속하지만 감지 대상이 다르다. 센서라는 범주만으로 특정 측정 대상을 정할 수 없다.",
+      "concepts": [
+        "센서",
+        "온도 센서",
+        "빛 센서"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "classification"
+      ],
+      "boundaries": [
+        "상위 범주와 감지 대상을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1202",
+      "type": "identity_packet",
+      "text": "카메라 센서는 빛을 감지해 영상 형성에 이용되는 센서다. 센서는 카메라 전체의 일부일 수 있지만 카메라 자체와 같은 대상은 아니다. 구성요소와 완성된 장치를 구분한다.",
+      "concepts": [
+        "카메라 센서",
+        "센서",
+        "카메라"
+      ],
+      "relations": [
+        "part_whole",
+        "is_a",
+        "function"
+      ],
+      "boundaries": [
+        "센서와 장치 전체를 구분한다"
+      ],
+      "relations_controlled": [
+        "part_of",
+        "is_a",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1203",
+      "type": "identity_packet",
+      "text": "배터리는 화학적 에너지를 전기적 에너지로 공급할 수 있는 전지 장치다. 여러 종류의 배터리가 있으며 크기와 전압이 같다고 해서 같은 제품은 아니다. 전기 공급이라는 기능만으로 정체성을 결정하지 않는다.",
+      "concepts": [
+        "배터리",
+        "전지",
+        "전기 에너지"
+      ],
+      "relations": [
+        "is_a",
+        "function",
+        "category"
+      ],
+      "boundaries": [
+        "기능과 제품 동일성을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1204",
+      "type": "identity_packet",
+      "text": "충전기는 배터리나 전자기기에 전기 에너지를 공급하기 위한 장치다. 충전기는 전원 공급 장치의 한 종류이지만 모든 전원 공급 장치가 휴대전화 충전기는 아니다. 사용 대상과 장치 범위를 구분한다.",
+      "concepts": [
+        "충전기",
+        "전원 공급 장치",
+        "전자기기"
+      ],
+      "relations": [
+        "is_a",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "상위 장치와 특정 용도의 제품을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1205",
+      "type": "identity_packet",
+      "text": "케이블은 전력이나 신호를 전달하는 연결 부품의 범주다. 전원 케이블과 데이터 케이블은 비슷한 외형을 가질 수 있지만 용도가 다를 수 있다. 연결한다는 공통 기능만으로 세부 유형을 결정하지 않는다.",
+      "concepts": [
+        "케이블",
+        "전원 케이블",
+        "데이터 케이블"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "외형과 기능의 세부 차이를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1206",
+      "type": "identity_packet",
+      "text": "프린터 카트리지는 프린터에서 잉크나 토너를 공급하는 교체 부품이다. 카트리지 자체와 프린터 전체는 서로 다른 대상이다. 교체 가능한 부품도 제품 전체의 정체성과 구분해야 한다.",
+      "concepts": [
+        "프린터 카트리지",
+        "프린터",
+        "부품"
+      ],
+      "relations": [
+        "part_whole",
+        "function",
+        "boundary"
+      ],
+      "boundaries": [
+        "소모 부품과 완성 기기를 구분한다"
+      ],
+      "relations_controlled": [
+        "part_of",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1207",
+      "type": "identity_packet",
+      "text": "키보드는 문자나 명령을 입력하는 컴퓨터 입력 장치다. 기계식 키보드와 멤브레인 키보드는 같은 상위 범주에 속할 수 있지만 내부 작동 방식이 다르다. 입력 장치라는 기능과 세부 구조를 구분한다.",
+      "concepts": [
+        "키보드",
+        "기계식 키보드",
+        "멤브레인 키보드"
+      ],
+      "relations": [
+        "is_a",
+        "subclass_of",
+        "comparison"
+      ],
+      "boundaries": [
+        "상위 기능과 작동 구조를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "subclass_of",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-IDH-1208",
+      "type": "identity_packet",
+      "text": "마우스는 화면의 포인터를 조작하기 위한 입력 장치다. 광학 마우스와 트랙볼 마우스는 모두 마우스 범주에 속하지만 움직임을 감지하는 방식이 다르다. 이름의 상위 범주와 기술적 하위 유형을 구분한다.",
+      "concepts": [
+        "마우스",
+        "광학 마우스",
+        "트랙볼"
+      ],
+      "relations": [
+        "is_a",
+        "subclass_of",
+        "comparison"
+      ],
+      "boundaries": [
+        "공통 기능과 감지 방식을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "subclass_of",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-IDH-1209",
+      "type": "identity_packet",
+      "text": "모니터는 디지털 영상 정보를 화면에 표시하는 출력 장치다. 모니터와 화면이라는 표현은 문맥에 따라 장치 전체와 표시 부분을 각각 가리킬 수 있다. 장치와 구성요소를 문맥에 맞게 구분해야 한다.",
+      "concepts": [
+        "모니터",
+        "화면",
+        "출력 장치"
+      ],
+      "relations": [
+        "is_a",
+        "part_whole",
+        "linguistic_context"
+      ],
+      "boundaries": [
+        "전체 장치와 표시 면을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "part_of",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1210",
+      "type": "identity_packet",
+      "text": "프레젠테이션은 내용을 청중에게 설명하거나 보여 주는 발표 활동이다. 프레젠테이션 파일은 그 활동을 지원하는 자료이지 활동 자체와 동일하지 않다. 행위와 자료를 구분한다.",
+      "concepts": [
+        "프레젠테이션",
+        "발표 활동",
+        "프레젠테이션 파일"
+      ],
+      "relations": [
+        "event",
+        "artifact_of",
+        "boundary"
+      ],
+      "boundaries": [
+        "활동과 자료를 구분한다"
+      ],
+      "relations_controlled": [
+        "process",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1211",
+      "type": "identity_packet",
+      "text": "온라인 수업은 인터넷을 통해 진행되는 교육 활동이다. 온라인 수업과 온라인 강의 영상은 관련되지만 동일한 것은 아니다. 실시간 상호작용과 녹화 자료는 서로 다른 교육 형식일 수 있다.",
+      "concepts": [
+        "온라인 수업",
+        "강의 영상",
+        "교육 활동"
+      ],
+      "relations": [
+        "is_a",
+        "comparison",
+        "boundary"
+      ],
+      "boundaries": [
+        "활동과 기록 자료를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1212",
+      "type": "identity_packet",
+      "text": "학습 플랫폼은 교육 자료와 과제, 평가 기능 등을 제공하는 디지털 서비스다. 플랫폼과 그 안에서 제공되는 한 강좌는 다른 수준의 개념이다. 서비스와 콘텐츠를 구분한다.",
+      "concepts": [
+        "학습 플랫폼",
+        "강좌",
+        "교육 서비스"
+      ],
+      "relations": [
+        "is_a",
+        "contains_content",
+        "level_distinction"
+      ],
+      "boundaries": [
+        "플랫폼과 콘텐츠를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1213",
+      "type": "identity_packet",
+      "text": "강좌는 일정한 학습 목표와 내용을 중심으로 구성된 교육 단위다. 한 강좌는 여러 수업이나 자료로 구성될 수 있다. 강좌와 개별 수업은 같은 수준의 단위가 아니다.",
+      "concepts": [
+        "강좌",
+        "수업",
+        "교육 단위"
+      ],
+      "relations": [
+        "is_a",
+        "has_part",
+        "hierarchy"
+      ],
+      "boundaries": [
+        "교육 단위의 계층을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "part_of",
+        "subclass_of"
+      ]
+    },
+    {
+      "id": "S1-IDH-1214",
+      "type": "identity_packet",
+      "text": "학습 목표는 학습자가 교육 활동 후 무엇을 알고 하게 될지를 설명하는 기준이다. 학습 목표는 교과서의 한 문장이나 시험 문제 자체와 동일한 대상이 아니다. 목표와 평가·자료를 구분한다.",
+      "concepts": [
+        "학습 목표",
+        "교육 활동",
+        "시험 문제"
+      ],
+      "relations": [
+        "abstract_concept",
+        "goal",
+        "boundary"
+      ],
+      "boundaries": [
+        "목표와 자료·평가를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1215",
+      "type": "identity_packet",
+      "text": "평가 문항은 학습자의 지식이나 능력을 확인하기 위해 제시하는 하나의 질문 또는 과제다. 평가 문항과 시험지는 같은 관계에 있을 수 있지만 하나의 문항이 전체 시험지는 아니다. 부분과 전체를 구분한다.",
+      "concepts": [
+        "평가 문항",
+        "시험지",
+        "평가"
+      ],
+      "relations": [
+        "part_whole",
+        "artifact_of",
+        "boundary"
+      ],
+      "boundaries": [
+        "문항과 시험 전체를 구분한다"
+      ],
+      "relations_controlled": [
+        "part_of",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1216",
+      "type": "identity_packet",
+      "text": "채점 기준은 답변이나 수행 결과를 어떤 조건으로 평가할지 정한 기준이다. 채점 기준은 실제 점수와 동일하지 않다. 기준과 결과를 구분한다.",
+      "concepts": [
+        "채점 기준",
+        "점수",
+        "평가"
+      ],
+      "relations": [
+        "abstract_concept",
+        "evaluation_rule",
+        "boundary"
+      ],
+      "boundaries": [
+        "평가 규칙과 평가 결과를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1217",
+      "type": "identity_packet",
+      "text": "성취도는 학습 목표를 어느 정도 달성했는지를 나타내는 평가 개념이다. 성취도와 점수는 관련될 수 있지만 항상 같은 정보를 뜻하지 않는다. 질적 판단과 수치 결과를 구분한다.",
+      "concepts": [
+        "성취도",
+        "점수",
+        "학습 목표"
+      ],
+      "relations": [
+        "abstract_concept",
+        "evaluation",
+        "distinction"
+      ],
+      "boundaries": [
+        "성취도와 점수를 동일시하지 않는다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1218",
+      "type": "identity_packet",
+      "text": "수료는 정해진 교육 과정이나 활동의 요구 조건을 충족했다는 상태나 결과를 가리킨다. 수료증은 그 사실을 증명하는 문서다. 상태와 문서를 구분한다.",
+      "concepts": [
+        "수료",
+        "수료증",
+        "교육 과정"
+      ],
+      "relations": [
+        "state",
+        "document",
+        "boundary"
+      ],
+      "boundaries": [
+        "수료 상태와 증명 문서를 구분한다"
+      ],
+      "relations_controlled": [
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1219",
+      "type": "identity_packet",
+      "text": "졸업은 교육 과정의 정해진 요건을 마치고 해당 기관의 과정을 끝내는 사건이나 상태다. 졸업장은 졸업 사실을 증명하는 문서다. 사건·상태와 증빙 문서를 구분한다.",
+      "concepts": [
+        "졸업",
+        "졸업장",
+        "교육 과정"
+      ],
+      "relations": [
+        "event",
+        "document",
+        "boundary"
+      ],
+      "boundaries": [
+        "졸업과 졸업장을 구분한다"
+      ],
+      "relations_controlled": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1220",
+      "type": "identity_packet",
+      "text": "학위는 일정한 교육 과정의 이수와 요건 충족을 인정하는 자격의 한 형태다. 학위증은 학위 사실을 기록하거나 증명하는 문서다. 자격과 증명서를 구분한다.",
+      "concepts": [
+        "학위",
+        "학위증",
+        "자격"
+      ],
+      "relations": [
+        "is_a",
+        "document",
+        "boundary"
+      ],
+      "boundaries": [
+        "자격과 문서를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1221",
+      "type": "identity_packet",
+      "text": "도서관 소장자료는 도서관이 보관하고 이용자에게 제공하는 자료의 범주다. 책뿐 아니라 지도나 전자 자료도 포함될 수 있다. 소장자료라는 상위 범주가 종이책만을 뜻하는 것은 아니다.",
+      "concepts": [
+        "도서관 소장자료",
+        "책",
+        "전자 자료"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "classification"
+      ],
+      "boundaries": [
+        "매체와 상위 자료 범주를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1222",
+      "type": "identity_packet",
+      "text": "대출은 도서관 자료를 이용자가 일정 기간 빌리는 행위나 제도다. 대출증은 이 이용을 확인하거나 처리하는 수단이고 대출 자체와 같은 대상이 아니다. 행위와 도구를 구분한다.",
+      "concepts": [
+        "대출",
+        "대출증",
+        "도서관 자료"
+      ],
+      "relations": [
+        "event",
+        "tool_relation",
+        "boundary"
+      ],
+      "boundaries": [
+        "행위와 처리 수단을 구분한다"
+      ],
+      "relations_controlled": [
+        "process",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1223",
+      "type": "identity_packet",
+      "text": "반납은 빌린 물건을 원래의 제공자나 지정된 장소에 돌려주는 행위다. 반납 장소와 반납 행위는 서로 다른 개념이다. 장소와 사건을 구분한다.",
+      "concepts": [
+        "반납",
+        "반납 장소",
+        "행위"
+      ],
+      "relations": [
+        "event",
+        "location",
+        "boundary"
+      ],
+      "boundaries": [
+        "행위와 장소를 구분한다"
+      ],
+      "relations_controlled": [
+        "process",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1224",
+      "type": "identity_packet",
+      "text": "예약은 특정 시간이나 자원을 미리 확보하는 행위 또는 상태다. 예약 확인서는 예약 내용을 나타내는 기록물이다. 예약과 증빙 자료는 같은 것이 아니다.",
+      "concepts": [
+        "예약",
+        "예약 확인서",
+        "자원"
+      ],
+      "relations": [
+        "event_or_state",
+        "document",
+        "boundary"
+      ],
+      "boundaries": [
+        "행위·상태와 기록물을 구분한다"
+      ],
+      "relations_controlled": [
+        "other",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1225",
+      "type": "identity_packet",
+      "text": "대기열은 어떤 서비스나 순서를 기다리는 사람이나 작업의 배열이다. 대기번호는 그 배열에서의 위치를 나타내는 정보다. 집단과 위치 정보는 서로 다르다.",
+      "concepts": [
+        "대기열",
+        "대기번호",
+        "순서"
+      ],
+      "relations": [
+        "category",
+        "identifier",
+        "boundary"
+      ],
+      "boundaries": [
+        "집단과 위치 정보를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1226",
+      "type": "identity_packet",
+      "text": "영수증은 거래의 내용과 금액 등을 기록해 제공하는 증빙 문서다. 영수증의 금액은 문서 안에 기록된 정보이지 영수증 자체가 아니다. 문서와 정보를 구분한다.",
+      "concepts": [
+        "영수증",
+        "금액",
+        "증빙 문서"
+      ],
+      "relations": [
+        "is_a",
+        "contains_information",
+        "boundary"
+      ],
+      "boundaries": [
+        "문서와 기록 정보를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1227",
+      "type": "identity_packet",
+      "text": "상품은 판매나 거래를 위해 제공되는 물건이나 서비스의 단위다. 물건과 서비스 모두 상품이라는 넓은 범주에 들어갈 수 있지만 둘은 같은 유형의 대상이 아니다. 거래 범주와 구체적 대상을 구분한다.",
+      "concepts": [
+        "상품",
+        "물건",
+        "서비스"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "classification"
+      ],
+      "boundaries": [
+        "상품의 세부 유형을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1228",
+      "type": "identity_packet",
+      "text": "영수증의 거래번호는 해당 거래를 식별하기 위한 정보다. 거래번호와 실제 거래는 서로 다른 개념이다. 식별자와 사건을 구분한다.",
+      "concepts": [
+        "거래번호",
+        "거래",
+        "식별자"
+      ],
+      "relations": [
+        "identifier",
+        "event",
+        "boundary"
+      ],
+      "boundaries": [
+        "식별 정보와 식별 대상 사건을 구분한다"
+      ],
+      "relations_controlled": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1229",
+      "type": "identity_packet",
+      "text": "할인은 표시된 원래 가격에서 일정한 금액이나 비율을 줄이는 판매 조건이다. 할인율은 그 조건을 수치로 나타내는 정보다. 조건과 수치 표현을 구분한다.",
+      "concepts": [
+        "할인",
+        "할인율",
+        "가격"
+      ],
+      "relations": [
+        "abstract_concept",
+        "quantity",
+        "boundary"
+      ],
+      "boundaries": [
+        "판매 조건과 수치 정보를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1230",
+      "type": "identity_packet",
+      "text": "환불은 이미 지급한 돈을 일정한 조건에 따라 돌려주는 거래 행위다. 환불 금액은 그 행위에서 반환되는 금액을 뜻한다. 거래 행위와 금액 정보를 구분한다.",
+      "concepts": [
+        "환불",
+        "환불 금액",
+        "거래"
+      ],
+      "relations": [
+        "event",
+        "quantity",
+        "boundary"
+      ],
+      "boundaries": [
+        "행위와 결과 수치를 구분한다"
+      ],
+      "relations_controlled": [
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1231",
+      "type": "identity_packet",
+      "text": "전기는 전자기기와 조명 등에 에너지를 공급하는 데 이용되는 에너지의 한 형태다. 전기는 전선이나 전원 장치와 동일한 물건이 아니다. 에너지 개념과 에너지를 전달하는 물체를 구분한다.",
+      "concepts": [
+        "전기",
+        "에너지",
+        "전선"
+      ],
+      "relations": [
+        "abstract_concept",
+        "function",
+        "boundary"
+      ],
+      "boundaries": [
+        "에너지와 전달 매체를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1232",
+      "type": "identity_packet",
+      "text": "열은 온도 차이 때문에 한 물체에서 다른 물체로 이동하는 에너지다. 뜨거운 물체 자체와 열은 같은 개념이 아니다. 에너지 이동과 물체의 상태를 구분한다.",
+      "concepts": [
+        "열",
+        "에너지",
+        "온도"
+      ],
+      "relations": [
+        "abstract_concept",
+        "energy_transfer",
+        "boundary"
+      ],
+      "boundaries": [
+        "열과 뜨거운 물체를 동일시하지 않는다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1233",
+      "type": "identity_packet",
+      "text": "온도계는 온도를 측정하는 장치이고 온도는 뜨겁고 차가운 정도를 나타내는 물리량이다. 측정 장치와 측정 대상의 속성은 서로 다른 개념이다.",
+      "concepts": [
+        "온도계",
+        "온도",
+        "물리량"
+      ],
+      "relations": [
+        "device_measurement",
+        "attribute",
+        "boundary"
+      ],
+      "boundaries": [
+        "측정 도구와 측정량을 구분한다"
+      ],
+      "relations_controlled": [
+        "other",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1234",
+      "type": "identity_packet",
+      "text": "밀도는 물질의 질량이 일정한 부피 안에 얼마나 분포하는지를 나타내는 물리량이다. 밀도는 물체 자체가 아니라 물체의 성질을 나타내는 정보다. 물리량과 대상의 타입을 구분한다.",
+      "concepts": [
+        "밀도",
+        "질량",
+        "부피",
+        "물체"
+      ],
+      "relations": [
+        "abstract_concept",
+        "derived_quantity",
+        "attribute"
+      ],
+      "boundaries": [
+        "물리량과 물체를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "attribute",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-1235",
+      "type": "identity_packet",
+      "text": "압력은 단위 면적에 작용하는 힘의 크기를 나타내는 물리량이다. 압력은 물건이나 물질 자체의 이름이 아니다. 힘과 면적의 관계로 정의되는 추상적 측정 개념이다.",
+      "concepts": [
+        "압력",
+        "힘",
+        "면적"
+      ],
+      "relations": [
+        "abstract_concept",
+        "derived_quantity",
+        "relation"
+      ],
+      "boundaries": [
+        "물리량과 대상의 구분"
+      ],
+      "relations_controlled": [
+        "classification",
+        "attribute",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1236",
+      "type": "identity_packet",
+      "text": "마찰은 서로 접촉한 표면 사이에서 운동을 방해하는 힘과 관련된 현상이다. 마찰은 하나의 물건이 아니라 두 표면과 운동 상태에 관련된 물리적 관계다.",
+      "concepts": [
+        "마찰",
+        "표면",
+        "운동",
+        "힘"
+      ],
+      "relations": [
+        "phenomenon",
+        "relation",
+        "abstract_concept"
+      ],
+      "boundaries": [
+        "관계적 현상과 물체를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1237",
+      "type": "identity_packet",
+      "text": "중력은 질량을 가진 물체 사이에 작용하는 인력이다. 중력은 물체 하나의 고유한 이름이 아니라 물체 사이의 상호작용을 나타내는 개념이다.",
+      "concepts": [
+        "중력",
+        "질량",
+        "물체",
+        "인력"
+      ],
+      "relations": [
+        "phenomenon",
+        "relation",
+        "abstract_concept"
+      ],
+      "boundaries": [
+        "상호작용과 개별 물체를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1238",
+      "type": "identity_packet",
+      "text": "전도체는 전류가 비교적 잘 흐를 수 있는 물질의 범주다. 구리와 알루미늄은 전도체의 예지만 모든 전도체가 같은 전기적 성질을 가지는 것은 아니다. 상위 범주와 정도의 차이를 구분한다.",
+      "concepts": [
+        "전도체",
+        "구리",
+        "알루미늄"
+      ],
+      "relations": [
+        "category",
+        "subclass_example",
+        "property_variation"
+      ],
+      "boundaries": [
+        "범주와 정량적 성질을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-1239",
+      "type": "identity_packet",
+      "text": "절연체는 전류가 쉽게 흐르지 않는 물질의 범주다. 고무와 유리는 절연체의 예가 될 수 있지만 절연 성능은 물질과 조건에 따라 달라질 수 있다. 범주와 절대적 성질을 구분한다.",
+      "concepts": [
+        "절연체",
+        "고무",
+        "유리"
+      ],
+      "relations": [
+        "category",
+        "property_variation"
+      ],
+      "boundaries": [
+        "절연체라고 해서 성질이 완전히 동일하지 않다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-1240",
+      "type": "identity_packet",
+      "text": "반도체는 전기 전도성이 도체와 절연체의 중간적 특성을 보이며 조건에 따라 달라질 수 있는 물질군이다. 반도체라는 범주와 특정 반도체 부품은 동일하지 않다. 물질 범주와 제품을 구분한다.",
+      "concepts": [
+        "반도체",
+        "물질",
+        "부품"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "boundary"
+      ],
+      "boundaries": [
+        "물질 범주와 실제 부품을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1241",
+      "type": "identity_packet",
+      "text": "공기는 지표 주변을 이루는 여러 기체의 혼합물이다. 공기는 하나의 순수한 원소가 아니며 산소와 공기를 같은 개념으로 볼 수 없다. 혼합물과 구성 기체를 구분한다.",
+      "concepts": [
+        "공기",
+        "혼합물",
+        "산소"
+      ],
+      "relations": [
+        "is_a",
+        "contains",
+        "boundary"
+      ],
+      "boundaries": [
+        "혼합물과 구성 물질을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1242",
+      "type": "identity_packet",
+      "text": "물은 순수한 상태에서 일정한 화학적 조성을 갖는 화합물이다. 수돗물이나 바닷물처럼 여러 물질이 섞인 물은 혼합물이다. 일상적인 '물'이라는 표현과 순수한 물의 과학적 범주를 구분해야 한다.",
+      "concepts": [
+        "물",
+        "화합물",
+        "수돗물",
+        "바닷물"
+      ],
+      "relations": [
+        "is_a",
+        "mixture",
+        "classification_context"
+      ],
+      "boundaries": [
+        "일상 명칭과 과학적 분류를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "part_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1243",
+      "type": "identity_packet",
+      "text": "용액은 하나 이상의 물질이 다른 물질에 균일하게 섞여 있는 혼합물이다. 소금물은 용액의 예이고, 소금은 용질이며 물은 용매다. 전체 용액과 구성 성분의 역할을 구분한다.",
+      "concepts": [
+        "용액",
+        "소금물",
+        "용질",
+        "용매"
+      ],
+      "relations": [
+        "is_a",
+        "has_component",
+        "role_distinction"
+      ],
+      "boundaries": [
+        "혼합물 전체와 구성 성분을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1244",
+      "type": "identity_packet",
+      "text": "산성 물질은 수용액에서 수소 이온의 농도와 관련된 산성 특성을 보이는 물질의 범주다. 산성이라는 성질은 물질의 이름 자체와 동일하지 않다. 속성과 대상의 타입을 구분한다.",
+      "concepts": [
+        "산성 물질",
+        "산성",
+        "물질"
+      ],
+      "relations": [
+        "category",
+        "attribute",
+        "boundary"
+      ],
+      "boundaries": [
+        "성질과 물질 범주를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1245",
+      "type": "identity_packet",
+      "text": "알칼리성 물질은 산과 반대되는 화학적 성질을 나타내는 물질의 범주다. 알칼리성은 하나의 특정 물질 이름이 아니다. 공통 성질을 가진 여러 물질을 묶는 분류다.",
+      "concepts": [
+        "알칼리성 물질",
+        "알칼리성",
+        "물질"
+      ],
+      "relations": [
+        "category",
+        "attribute",
+        "classification"
+      ],
+      "boundaries": [
+        "성질과 개별 물질을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "attribute",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1246",
+      "type": "identity_packet",
+      "text": "pH는 수용액의 산성 또는 염기성 정도를 나타내는 척도다. pH 값은 물질의 이름이나 물체가 아니라 측정 가능한 수치 정보다. 수치와 대상의 타입을 구분한다.",
+      "concepts": [
+        "pH",
+        "산성",
+        "염기성",
+        "수치"
+      ],
+      "relations": [
+        "abstract_concept",
+        "measurement_scale"
+      ],
+      "boundaries": [
+        "척도와 측정 대상을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-IDH-1247",
+      "type": "identity_packet",
+      "text": "원자는 화학 원소의 기본적인 구성 단위다. 원자와 원소는 관련되지만 같은 의미가 아니다. 원소는 종류를 나타내고 원자는 그 종류에 속하는 개별 입자다.",
+      "concepts": [
+        "원자",
+        "원소",
+        "입자"
+      ],
+      "relations": [
+        "part_of_category",
+        "concept_distinction"
+      ],
+      "boundaries": [
+        "원소와 원자를 구분한다"
+      ],
+      "relations_controlled": [
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1248",
+      "type": "identity_packet",
+      "text": "분자는 둘 이상의 원자가 화학적으로 결합해 이루어진 입자다. 분자와 원자는 서로 다른 수준의 구조 개념이다. 원자가 결합한다고 해서 원자와 분자가 같은 단위가 되는 것은 아니다.",
+      "concepts": [
+        "분자",
+        "원자",
+        "결합"
+      ],
+      "relations": [
+        "has_part",
+        "structure",
+        "boundary"
+      ],
+      "boundaries": [
+        "구성 단위와 복합 입자를 구분한다"
+      ],
+      "relations_controlled": [
+        "part_of",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1249",
+      "type": "identity_packet",
+      "text": "화합물은 서로 다른 원소의 원자들이 일정한 비율로 화학적으로 결합한 물질이다. 화합물과 혼합물은 모두 둘 이상의 물질과 관련될 수 있지만 결합 방식이 다르다. 화학적 결합과 단순 혼합을 구분한다.",
+      "concepts": [
+        "화합물",
+        "혼합물",
+        "원소"
+      ],
+      "relations": [
+        "category",
+        "contrast",
+        "classification"
+      ],
+      "boundaries": [
+        "화합물과 혼합물을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "contrast",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1250",
+      "type": "identity_packet",
+      "text": "혼합물은 둘 이상의 물질이 화학적으로 하나의 새로운 물질이 되지 않은 채 함께 존재하는 조합이다. 혼합물의 성분은 원래의 성질을 어느 정도 유지할 수 있다. 혼합물과 화합물을 같은 범주로 보아서는 안 된다.",
+      "concepts": [
+        "혼합물",
+        "성분",
+        "화합물"
+      ],
+      "relations": [
+        "category",
+        "contrast",
+        "component"
+      ],
+      "boundaries": [
+        "혼합과 화학적 결합을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "contrast",
+        "part_of"
+      ]
+    },
+    {
+      "id": "S1-IDH-1251",
+      "type": "identity_packet",
+      "text": "식물의 잎은 빛을 이용해 유기물을 만드는 광합성에 관여하는 기관이다. 잎은 식물 전체와 같은 대상이 아니라 식물을 이루는 기관 중 하나다. 기관의 기능과 생물 전체의 정체성을 구분한다.",
+      "concepts": [
+        "잎",
+        "식물",
+        "광합성",
+        "기관"
+      ],
+      "relations": [
+        "part_whole",
+        "function",
+        "boundary"
+      ],
+      "boundaries": [
+        "기관과 생물 전체를 구분한다"
+      ],
+      "relations_controlled": [
+        "part_of",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1252",
+      "type": "identity_packet",
+      "text": "뿌리는 식물의 지하 부분으로 물과 무기양분을 흡수하고 식물을 지지하는 데 관여한다. 뿌리와 식물 전체는 서로 다른 수준의 개념이다. 지하에 있다는 위치만으로 뿌리의 모든 기능을 정의할 수는 없다.",
+      "concepts": [
+        "뿌리",
+        "식물",
+        "물",
+        "무기양분"
+      ],
+      "relations": [
+        "part_whole",
+        "function"
+      ],
+      "boundaries": [
+        "위치와 기능을 구분한다"
+      ],
+      "relations_controlled": [
+        "part_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1253",
+      "type": "identity_packet",
+      "text": "줄기는 잎과 뿌리 사이에서 물질을 이동시키고 식물의 구조를 지지하는 기관이다. 줄기는 식물의 일부이지 식물 전체와 동일하지 않다. 한 기관의 기능이 생물 전체의 기능과 같지는 않다.",
+      "concepts": [
+        "줄기",
+        "식물",
+        "기관",
+        "지지"
+      ],
+      "relations": [
+        "part_whole",
+        "function"
+      ],
+      "boundaries": [
+        "부분의 기능과 전체의 기능을 구분한다"
+      ],
+      "relations_controlled": [
+        "part_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1254",
+      "type": "identity_packet",
+      "text": "씨앗은 식물이 새로운 개체로 발달할 수 있는 구조를 포함하는 식물의 번식 단위다. 씨앗과 열매는 관련되지만 같은 개념은 아니다. 번식 구조와 그것을 둘러싼 식물 조직을 구분한다.",
+      "concepts": [
+        "씨앗",
+        "열매",
+        "식물",
+        "번식"
+      ],
+      "relations": [
+        "category",
+        "part_relation",
+        "boundary"
+      ],
+      "boundaries": [
+        "씨앗과 열매를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1255",
+      "type": "identity_packet",
+      "text": "과일은 식물의 씨앗을 둘러싸는 구조에서 발달한 기관을 일상적 또는 식물학적으로 부르는 범주다. 일상적인 음식 분류와 식물학적 분류는 경우에 따라 차이가 있다. 하나의 단어가 모든 분류 체계에서 같은 범위를 가지는 것은 아니다.",
+      "concepts": [
+        "과일",
+        "씨앗",
+        "식물학적 분류",
+        "일상 분류"
+      ],
+      "relations": [
+        "category",
+        "classification_context"
+      ],
+      "boundaries": [
+        "분류 체계에 따라 범위가 달라질 수 있다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1256",
+      "type": "identity_packet",
+      "text": "토양은 암석이 풍화된 물질과 유기물, 물, 공기 등이 섞여 식물이 자랄 수 있는 지표의 층을 이루는 물질이다. 토양은 단일한 순수 물질이 아니라 여러 성분이 섞인 복합 환경이다. 흙이라는 일상어와 과학적 토양 개념의 범위도 다를 수 있다.",
+      "concepts": [
+        "토양",
+        "유기물",
+        "물",
+        "공기",
+        "혼합물"
+      ],
+      "relations": [
+        "category",
+        "contains",
+        "boundary"
+      ],
+      "boundaries": [
+        "토양과 단일 물질을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1257",
+      "type": "identity_packet",
+      "text": "퇴비는 유기성 물질이 분해되어 만들어진 물질로 토양의 유기물 공급에 사용할 수 있다. 퇴비는 단순한 쓰레기와 같지 않으며 목적과 처리 과정을 포함하는 범주다. 물질과 처리된 자원의 개념을 구분한다.",
+      "concepts": [
+        "퇴비",
+        "유기성 물질",
+        "토양",
+        "분해"
+      ],
+      "relations": [
+        "is_a",
+        "process_result",
+        "function"
+      ],
+      "boundaries": [
+        "원료와 처리 결과를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1258",
+      "type": "identity_packet",
+      "text": "부식질은 토양 속에서 분해된 유기물의 일부로 토양의 성질에 영향을 주는 물질이다. 부식질과 토양 전체는 같은 범주의 대상이 아니다. 구성 성분과 전체 환경을 구분한다.",
+      "concepts": [
+        "부식질",
+        "토양",
+        "유기물"
+      ],
+      "relations": [
+        "part_of_material",
+        "property"
+      ],
+      "boundaries": [
+        "성분과 전체를 구분한다"
+      ],
+      "relations_controlled": [
+        "other",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-1259",
+      "type": "identity_packet",
+      "text": "생태계는 특정 지역의 생물과 비생물 환경이 상호작용하는 체계다. 생태계에는 개별 생물뿐 아니라 물, 빛, 토양 같은 환경 요소도 포함된다. 생태계와 그 안의 한 생물을 동일시해서는 안 된다.",
+      "concepts": [
+        "생태계",
+        "생물",
+        "비생물 환경"
+      ],
+      "relations": [
+        "system",
+        "contains",
+        "interaction"
+      ],
+      "boundaries": [
+        "생태계 전체와 구성 요소를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-IDH-1260",
+      "type": "identity_packet",
+      "text": "서식지는 특정 생물이 살아가는 장소나 환경을 가리킨다. 서식지는 생물 자체가 아니라 생물이 생활하는 공간이다. 같은 생물이 생활 단계에 따라 서로 다른 장소를 이용할 수도 있다.",
+      "concepts": [
+        "서식지",
+        "생물",
+        "환경"
+      ],
+      "relations": [
+        "category",
+        "spatial_context"
+      ],
+      "boundaries": [
+        "생물과 서식지를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1261",
+      "type": "identity_packet",
+      "text": "재료는 물건을 만들 때 사용하는 물질을 가리킨다. 나무와 금속은 서로 다른 재료일 수 있고 같은 재료로 여러 종류의 제품을 만들 수 있다. 재료와 완성품을 구분한다.",
+      "concepts": [
+        "재료",
+        "나무",
+        "금속",
+        "제품"
+      ],
+      "relations": [
+        "category",
+        "many_to_many",
+        "boundary"
+      ],
+      "boundaries": [
+        "재료와 제품의 정체성을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1262",
+      "type": "identity_packet",
+      "text": "합금은 둘 이상의 원소가 결합하거나 섞여 금속적 성질을 나타내도록 만든 재료다. 합금은 단순히 원소 하나와 같은 물질이 아니다. 재료의 상위 범주와 구성 원소를 구분한다.",
+      "concepts": [
+        "합금",
+        "원소",
+        "금속",
+        "재료"
+      ],
+      "relations": [
+        "is_a",
+        "composition",
+        "classification"
+      ],
+      "boundaries": [
+        "합금과 단일 원소를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "part_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1263",
+      "type": "identity_packet",
+      "text": "강철은 철을 주된 성분으로 하면서 탄소 등을 포함한 금속 재료다. 강철과 순수한 철은 관련되지만 같은 물질로 단순화할 수 없다. 재료의 조성과 제품의 명칭을 구분한다.",
+      "concepts": [
+        "강철",
+        "철",
+        "탄소",
+        "금속"
+      ],
+      "relations": [
+        "is_a",
+        "composition",
+        "boundary"
+      ],
+      "boundaries": [
+        "합금 재료와 순수 원소를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1264",
+      "type": "identity_packet",
+      "text": "스테인리스강은 부식에 대한 저항성을 높이기 위해 특정 합금 조성을 가진 강철의 범주다. 이름에 '강'이 들어가지만 순수한 철 자체를 뜻하지 않는다. 제품의 일반 명칭과 화학적 조성을 구분한다.",
+      "concepts": [
+        "스테인리스강",
+        "강철",
+        "합금"
+      ],
+      "relations": [
+        "subclass_of",
+        "property",
+        "classification"
+      ],
+      "boundaries": [
+        "하위 재료와 기본 재료를 구분한다"
+      ],
+      "relations_controlled": [
+        "subclass_of",
+        "attribute",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1265",
+      "type": "identity_packet",
+      "text": "플라스틱은 여러 고분자 재료와 첨가제로 만든 합성 재료의 넓은 범주다. 플라스틱은 하나의 단일 물질이 아니며 종류에 따라 성질이 다르다. 상위 재료 범주와 개별 고분자를 구분한다.",
+      "concepts": [
+        "플라스틱",
+        "고분자",
+        "합성 재료"
+      ],
+      "relations": [
+        "category",
+        "subclass_variation",
+        "classification"
+      ],
+      "boundaries": [
+        "상위 재료 범주를 단일 물질로 취급하지 않는다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1266",
+      "type": "identity_packet",
+      "text": "고무는 탄성이 큰 재료를 가리키는 범주로 천연고무와 합성고무를 포함할 수 있다. 고무라는 말은 하나의 화학 물질만을 뜻하지 않는다. 공통 기능과 물질 조성을 구분한다.",
+      "concepts": [
+        "고무",
+        "천연고무",
+        "합성고무"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "property"
+      ],
+      "boundaries": [
+        "기능적 범주와 단일 물질을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-1267",
+      "type": "identity_packet",
+      "text": "섬유는 길고 가는 형태의 재료를 이용해 실이나 직물 등을 만드는 데 쓰이는 재료의 범주다. 면과 폴리에스터는 서로 다른 섬유 재료다. 섬유라는 상위 범주는 하나의 원료를 뜻하지 않는다.",
+      "concepts": [
+        "섬유",
+        "면",
+        "폴리에스터"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "material"
+      ],
+      "boundaries": [
+        "상위 재료 범주와 종류를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-IDH-1268",
+      "type": "identity_packet",
+      "text": "직물은 실이나 섬유를 일정한 방식으로 엮어 만든 재료 또는 천을 가리킨다. 직물은 섬유 자체와 동일하지 않으며 여러 종류의 섬유로 만들 수 있다. 원료와 가공 결과를 구분한다.",
+      "concepts": [
+        "직물",
+        "섬유",
+        "실"
+      ],
+      "relations": [
+        "is_a",
+        "made_from",
+        "boundary"
+      ],
+      "boundaries": [
+        "재료 원료와 가공된 재료를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1269",
+      "type": "identity_packet",
+      "text": "종이는 식물 섬유 등을 가공해 얇은 시트 형태로 만든 재료다. 종이는 문서의 내용과 같지 않으며 문서를 담는 매체가 될 수 있다. 매체와 그 안의 정보를 구분한다.",
+      "concepts": [
+        "종이",
+        "식물 섬유",
+        "문서",
+        "매체"
+      ],
+      "relations": [
+        "material",
+        "made_from",
+        "medium"
+      ],
+      "boundaries": [
+        "재료와 정보 내용을 구분한다"
+      ],
+      "relations_controlled": [
+        "attribute",
+        "part_of",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1270",
+      "type": "identity_packet",
+      "text": "유리는 무기질 재료를 녹여 만들어지는 비결정질 고체 재료의 범주다. 창문은 유리로 만들 수 있지만 창문과 유리는 같은 대상이 아니다. 재료와 제품을 구분한다.",
+      "concepts": [
+        "유리",
+        "창문",
+        "재료",
+        "제품"
+      ],
+      "relations": [
+        "category",
+        "material_of",
+        "boundary"
+      ],
+      "boundaries": [
+        "재료와 완성품을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1271",
+      "type": "identity_packet",
+      "text": "도구는 사람이 특정 작업을 수행하기 위해 사용하는 물건의 넓은 범주다. 망치와 자는 모두 도구지만 수행하는 작업이 다르다. 상위 범주와 세부 용도를 구분한다.",
+      "concepts": [
+        "도구",
+        "망치",
+        "자"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "도구라는 상위 범주가 단일 기능을 의미하지 않는다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1272",
+      "type": "identity_packet",
+      "text": "측정기는 길이, 온도, 시간처럼 어떤 양을 측정하기 위한 기기의 범주다. 자와 온도계는 같은 상위 범주에 포함될 수 있지만 측정 대상이 다르다. 공통 기능과 측정량의 차이를 구분한다.",
+      "concepts": [
+        "측정기",
+        "자",
+        "온도계",
+        "측정량"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "different_target"
+      ],
+      "boundaries": [
+        "상위 기능과 구체적 측정 대상을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1273",
+      "type": "identity_packet",
+      "text": "보호 장비는 사람을 위험이나 충격 등으로부터 보호하기 위해 착용하거나 사용하는 물건의 범주다. 헬멧과 안전화는 보호 장비지만 보호하는 신체 부위와 방식이 다르다. 상위 기능과 하위 유형을 구분한다.",
+      "concepts": [
+        "보호 장비",
+        "헬멧",
+        "안전화"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "공통 목적과 보호 방식의 차이를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1274",
+      "type": "identity_packet",
+      "text": "운동 장비는 운동 활동을 수행하거나 보조하기 위해 사용하는 물건의 범주다. 공과 라켓은 모두 운동 장비가 될 수 있지만 각각의 기능과 구조가 다르다. 운동 장비라는 말만으로 특정 스포츠를 정할 수는 없다.",
+      "concepts": [
+        "운동 장비",
+        "공",
+        "라켓"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "상위 범주와 구체적 활동을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1275",
+      "type": "identity_packet",
+      "text": "가정용품은 가정에서 생활을 위해 사용하는 물건을 넓게 묶는 범주다. 수건, 조명, 청소 도구가 모두 가정용품일 수 있지만 서로 다른 물건이다. 사용 장소만으로 동일한 기능을 부여해서는 안 된다.",
+      "concepts": [
+        "가정용품",
+        "수건",
+        "조명",
+        "청소 도구"
+      ],
+      "relations": [
+        "category",
+        "context",
+        "classification"
+      ],
+      "boundaries": [
+        "공통 사용 장소와 기능 차이를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1276",
+      "type": "identity_packet",
+      "text": "사무용품은 문서 작성, 정리, 기록 등 사무 활동에 사용하는 물건의 범주다. 스테이플러와 클립은 같은 상위 범주지만 기능과 구조가 다르다. 상위 범주와 개별 도구를 구분한다.",
+      "concepts": [
+        "사무용품",
+        "스테이플러",
+        "클립"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "상위 범주와 세부 기능을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1277",
+      "type": "identity_packet",
+      "text": "문구류는 글쓰기, 그림, 기록 등에 사용하는 물건을 묶어 부르는 일상적 범주다. 연필과 자는 모두 문구류로 취급될 수 있지만 기능이 다르다. 일상 범주와 전문적 기능 분류는 완전히 같지 않다.",
+      "concepts": [
+        "문구류",
+        "연필",
+        "자"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "classification"
+      ],
+      "boundaries": [
+        "일상적 상위 범주와 기능별 하위 분류를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1278",
+      "type": "identity_packet",
+      "text": "교통수단은 사람이나 물건을 이동시키는 수단의 넓은 범주다. 자전거와 자동차는 모두 교통수단이지만 동력과 이동 방식이 다르다. 하나의 상위 기능이 동일한 구조를 요구하지 않는다.",
+      "concepts": [
+        "교통수단",
+        "자전거",
+        "자동차"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "상위 기능과 작동 방식의 차이를 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1279",
+      "type": "identity_packet",
+      "text": "대중교통은 불특정 다수의 승객이 공동으로 이용하는 교통 서비스나 수단을 가리킨다. 버스와 지하철은 서로 다른 형태지만 대중교통에 포함될 수 있다. 공개적으로 이용 가능하다는 특징만으로 이동 방식은 결정되지 않는다.",
+      "concepts": [
+        "대중교통",
+        "버스",
+        "지하철"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "service"
+      ],
+      "boundaries": [
+        "서비스 범주와 개별 교통수단을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1280",
+      "type": "identity_packet",
+      "text": "택배는 물건을 발송지에서 수취인에게 운송하는 배송 서비스의 범주다. 택배 상자는 배송에 사용하는 포장물이고 택배 서비스 자체와는 다르다. 서비스와 물리적 물건을 구분한다.",
+      "concepts": [
+        "택배",
+        "배송 서비스",
+        "택배 상자"
+      ],
+      "relations": [
+        "service",
+        "artifact_relation",
+        "boundary"
+      ],
+      "boundaries": [
+        "서비스와 서비스에 사용되는 물건을 구분한다"
+      ],
+      "relations_controlled": [
+        "function",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1281",
+      "type": "identity_packet",
+      "text": "환경 보호 활동은 환경에 미치는 부정적 영향을 줄이거나 자연을 보전하기 위한 행동이나 활동의 범주다. 재활용, 에너지 절약, 보전 활동은 서로 다른 방법일 수 있다. 같은 목적이 같은 행동을 의미하지 않는다.",
+      "concepts": [
+        "환경 보호 활동",
+        "재활용",
+        "에너지 절약"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "goal"
+      ],
+      "boundaries": [
+        "목적과 구체적 행동을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1282",
+      "type": "identity_packet",
+      "text": "재생에너지는 자연적으로 보충되는 에너지원에서 얻는 에너지의 범주다. 태양광과 풍력은 서로 다른 에너지원이지만 재생에너지에 포함된다. 재생 가능성은 특정 기술 하나의 이름이 아니다.",
+      "concepts": [
+        "재생에너지",
+        "태양광",
+        "풍력"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "energy_source"
+      ],
+      "boundaries": [
+        "상위 에너지 범주와 개별 발전 방식을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "other"
+      ]
+    },
+    {
+      "id": "S1-IDH-1283",
+      "type": "identity_packet",
+      "text": "태양광 발전은 햇빛을 이용해 전기를 생산하는 발전 방식이다. 태양광은 에너지원이고 태양광 발전은 그 에너지를 이용하는 기술이다. 자연 자원과 기술적 과정을 구분한다.",
+      "concepts": [
+        "태양광",
+        "태양광 발전",
+        "기술"
+      ],
+      "relations": [
+        "energy_source",
+        "technology",
+        "boundary"
+      ],
+      "boundaries": [
+        "에너지원과 기술을 구분한다"
+      ],
+      "relations_controlled": [
+        "other",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1284",
+      "type": "identity_packet",
+      "text": "풍력 발전은 바람의 운동 에너지를 이용해 전기를 생산하는 발전 방식이다. 바람과 발전기는 서로 다른 대상이며 풍력 발전은 그 둘을 연결하는 기술 체계다. 자연현상과 기술 체계를 구분한다.",
+      "concepts": [
+        "풍력 발전",
+        "바람",
+        "발전기",
+        "기술"
+      ],
+      "relations": [
+        "technology",
+        "uses",
+        "boundary"
+      ],
+      "boundaries": [
+        "자연현상과 기술 장치를 구분한다"
+      ],
+      "relations_controlled": [
+        "other",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1285",
+      "type": "identity_packet",
+      "text": "정수기는 물을 여과하거나 처리해 마실 수 있는 물의 상태를 개선하는 장치다. 정수기와 정수된 물은 서로 다른 대상이다. 처리 장치와 처리 결과를 구분한다.",
+      "concepts": [
+        "정수기",
+        "물",
+        "정수된 물"
+      ],
+      "relations": [
+        "is_a",
+        "process_device",
+        "boundary"
+      ],
+      "boundaries": [
+        "처리 장치와 처리 결과를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1286",
+      "type": "identity_packet",
+      "text": "필터는 특정 성분이나 입자를 통과시키거나 걸러내기 위한 장치나 재료다. 공기 필터와 물 필터는 같은 상위 개념이지만 처리 대상이 다르다. 필터라는 범주와 적용 대상의 차이를 구분한다.",
+      "concepts": [
+        "필터",
+        "공기 필터",
+        "물 필터"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "different_target"
+      ],
+      "boundaries": [
+        "상위 범주와 적용 대상을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1287",
+      "type": "identity_packet",
+      "text": "단열재는 열의 이동을 줄이기 위해 사용하는 재료다. 단열재는 열 자체가 아니며 건물이나 기기의 일부에 적용될 수 있다. 재료와 물리적 현상을 구분한다.",
+      "concepts": [
+        "단열재",
+        "열",
+        "건축 재료"
+      ],
+      "relations": [
+        "is_a",
+        "function",
+        "boundary"
+      ],
+      "boundaries": [
+        "보호 재료와 에너지 이동 현상을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1288",
+      "type": "identity_packet",
+      "text": "보온병은 내부의 액체가 주변과 열을 덜 주고받도록 만든 용기다. 보온 기능은 용기의 목적이고 온도는 내용물의 상태다. 기능과 상태를 구분한다.",
+      "concepts": [
+        "보온병",
+        "용기",
+        "열",
+        "온도"
+      ],
+      "relations": [
+        "is_a",
+        "function",
+        "state"
+      ],
+      "boundaries": [
+        "용기의 기능과 내용물의 상태를 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-IDH-1289",
+      "type": "identity_packet",
+      "text": "온실은 식물이 자랄 수 있는 환경의 온도와 빛 등을 조절하기 위해 만든 시설이다. 온실과 그 안에서 자라는 식물은 다른 대상이다. 시설과 이용 대상의 관계를 구분한다.",
+      "concepts": [
+        "온실",
+        "식물",
+        "시설",
+        "환경"
+      ],
+      "relations": [
+        "is_a",
+        "contains",
+        "boundary"
+      ],
+      "boundaries": [
+        "시설과 내부 대상의 정체성을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1290",
+      "type": "identity_packet",
+      "text": "재난은 사람과 사회 또는 환경에 큰 피해를 줄 수 있는 사건이나 상황을 가리킨다. 홍수와 지진은 서로 다른 재난 유형이다. 재난이라는 상위 범주와 구체적인 발생 원인을 구분한다.",
+      "concepts": [
+        "재난",
+        "홍수",
+        "지진",
+        "사건"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "event"
+      ],
+      "boundaries": [
+        "상위 사건 범주와 구체적 유형을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-IDH-1291",
+      "type": "identity_packet",
+      "text": "응급상황은 즉각적인 대응이 필요할 수 있는 위험한 상태나 사건이다. 응급상황은 특정 질병이나 한 종류의 사건만을 뜻하지 않는다. 상태의 긴급성과 사건의 구체적 유형을 구분한다.",
+      "concepts": [
+        "응급상황",
+        "상태",
+        "사건"
+      ],
+      "relations": [
+        "category",
+        "state_or_event",
+        "classification"
+      ],
+      "boundaries": [
+        "긴급성 범주와 특정 사건을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1292",
+      "type": "identity_packet",
+      "text": "응급키트는 응급 상황에서 사용할 수 있도록 기본적인 도구나 물품을 모아 둔 꾸러미다. 응급키트와 그 안의 개별 물품은 다른 수준의 대상이다. 묶음과 구성품을 구분한다.",
+      "concepts": [
+        "응급키트",
+        "도구",
+        "물품"
+      ],
+      "relations": [
+        "is_a",
+        "has_part",
+        "bundle"
+      ],
+      "boundaries": [
+        "묶음과 개별 물품을 구분한다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "part_of",
+        "part_of"
+      ]
+    },
+    {
+      "id": "S1-IDH-1293",
+      "type": "identity_packet",
+      "text": "의약품은 질병을 치료하거나 증상을 완화하거나 예방하는 데 사용되는 물질이나 제제의 범주다. 같은 의약품 범주 안에서도 성분과 용도가 다를 수 있다. 의약품이라는 상위 범주는 단일 성분을 뜻하지 않는다.",
+      "concepts": [
+        "의약품",
+        "성분",
+        "치료",
+        "예방"
+      ],
+      "relations": [
+        "category",
+        "subclass_variation",
+        "function"
+      ],
+      "boundaries": [
+        "상위 의료 제품 범주와 개별 성분을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1294",
+      "type": "identity_packet",
+      "text": "백신은 특정 감염병에 대한 면역 반응을 유도하도록 설계된 의약품의 한 범주다. 백신은 치료제와 같은 넓은 의료 제품 범주에 관련될 수 있지만 목적과 작용 방식이 다르다. 의료 제품의 하위 범주를 구분한다.",
+      "concepts": [
+        "백신",
+        "의약품",
+        "면역",
+        "치료제"
+      ],
+      "relations": [
+        "subclass_of",
+        "function",
+        "comparison"
+      ],
+      "boundaries": [
+        "예방과 치료의 목적을 구분한다"
+      ],
+      "relations_controlled": [
+        "subclass_of",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-IDH-1295",
+      "type": "identity_packet",
+      "text": "증상은 질병이나 상태가 있을 때 나타날 수 있는 관찰 가능한 변화나 불편을 가리킨다. 증상과 질병 자체는 같은 개념이 아니다. 결과로 나타나는 정보와 원인이 되는 상태를 구분한다.",
+      "concepts": [
+        "증상",
+        "질병",
+        "상태"
+      ],
+      "relations": [
+        "effect_of",
+        "boundary",
+        "classification"
+      ],
+      "boundaries": [
+        "증상과 질병을 동일시하지 않는다"
+      ],
+      "relations_controlled": [
+        "other",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-IDH-1296",
+      "type": "identity_packet",
+      "text": "진단은 관찰과 검사 결과를 바탕으로 질병이나 상태를 판단하는 과정이나 결론이다. 검사 결과는 진단을 위한 근거일 수 있지만 검사 결과 자체가 항상 진단과 같은 것은 아니다. 근거와 판단을 구분한다.",
+      "concepts": [
+        "진단",
+        "검사 결과",
+        "판단"
+      ],
+      "relations": [
+        "process",
+        "evidence",
+        "boundary"
+      ],
+      "boundaries": [
+        "근거와 결론을 구분한다"
+      ],
+      "relations_controlled": [
+        "process",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1297",
+      "type": "identity_packet",
+      "text": "처치는 질병이나 상태를 개선하기 위해 수행하는 의료적 행동이나 방법이다. 처치와 처치에 사용하는 의료기기는 같은 대상이 아니다. 행위와 도구를 구분한다.",
+      "concepts": [
+        "처치",
+        "의료기기",
+        "의료 행위"
+      ],
+      "relations": [
+        "event",
+        "tool_relation",
+        "boundary"
+      ],
+      "boundaries": [
+        "행위와 도구를 구분한다"
+      ],
+      "relations_controlled": [
+        "process",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1298",
+      "type": "identity_packet",
+      "text": "교육 자료는 학습을 돕기 위해 사용하는 글, 그림, 영상, 문제 등의 자료를 묶어 부르는 범주다. 교과서와 영상은 서로 다른 형태의 교육 자료가 될 수 있다. 자료의 매체와 교육적 역할을 구분한다.",
+      "concepts": [
+        "교육 자료",
+        "교과서",
+        "영상",
+        "학습"
+      ],
+      "relations": [
+        "category",
+        "subclass_of",
+        "function"
+      ],
+      "boundaries": [
+        "교육 자료의 형태와 역할을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "subclass_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-IDH-1299",
+      "type": "identity_packet",
+      "text": "온라인 계정은 특정 서비스에서 사용자를 식별하고 설정이나 데이터에 접근할 수 있도록 관리되는 디지털 주체다. 계정과 계정을 사용하는 사람은 같은 대상이 아니다. 디지털 식별자와 실제 사용자를 구분한다.",
+      "concepts": [
+        "온라인 계정",
+        "사용자",
+        "디지털 식별"
+      ],
+      "relations": [
+        "is_a",
+        "identifier",
+        "boundary"
+      ],
+      "boundaries": [
+        "계정과 사용자를 동일시하지 않는다"
+      ],
+      "relations_controlled": [
+        "is_a",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-IDH-1300",
+      "type": "identity_packet",
+      "text": "디지털 신원은 온라인 환경에서 개인이나 조직을 식별하거나 그와 관련된 정보를 나타내는 디지털 정보의 집합이다. 디지털 신원과 실제 사람은 서로 다른 개념이며 여러 서비스의 기록이 하나의 사람과 연결될 수 있다. 표현된 정보와 실제 대상을 구분한다.",
+      "concepts": [
+        "디지털 신원",
+        "사람",
+        "디지털 정보",
+        "식별"
+      ],
+      "relations": [
+        "abstract_concept",
+        "represents",
+        "boundary"
+      ],
+      "boundaries": [
+        "디지털 표현과 실제 대상을 구분한다"
+      ],
+      "relations_controlled": [
+        "classification",
+        "other",
+        "boundary"
+      ]
+    }
   ]
 }

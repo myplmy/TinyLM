@@ -1,11 +1,13 @@
-# TinyLM Stage 1~Stage 7 데이터셋 설계서·확정 원장
+# TinyLM Stage 1~Stage 10 데이터셋 설계서·확정 원장
 
 - 문서 상태: 현행 설계·이력 정본
-- 기준일: 2026-08-31 KST
+- 기준일: 2026-09-01 KST
 - 대상 프로젝트: 약 100M 파라미터급 한국어 TinyLM curriculum
 - 짝 문서: `TinyLM_Stage1_Stage7_Dataset_Corpus_Generation_Guide.md`
 
 이 문서는 특정 데이터셋의 설계 방향, token·record 배분, ID 범위, 미리 선정한 concept family, 생성·감사 이력, 확정 산출물과 수정 금지 범위를 보존하는 원장이다. 범용 생성·검증 규칙은 짝 문서인 작업지침서를 따른다. 새 작업은 두 문서를 모두 읽어야 하며, 상태가 충돌하면 **실제 파일 → 최신 감사 JSON → 이 설계서 → 작업지침서 → 과거 handoff** 순으로 판정한다.
+
+파일명은 기존 링크와 자동화 호환성을 위해 `Stage1_Stage7`을 유지하지만, 본문 설계 범위는 Stage 1~10이다.
 
 ## 1. 지침서 이관 범위와 무손실 매핑
 
@@ -13,7 +15,7 @@
 
 | 분리 전 지침서 범위 | 이 설계서 위치 | 이관 내용 |
 |---|---|---|
-| Stage 1~7 역할, Stage 1 3M mixture | §2~§3 | curriculum 역할·배분·영역별 목적 |
+| Stage 1~10 역할, Stage 1 3M mixture | §2~§3 | curriculum 역할·배분·영역별 목적 |
 | Identity 현행 snapshot | §4 | 파일·record·ID·legacy 주의·family 누적 |
 | Attribute train 현행 상태 | §5 | 목표량·v01~v31 family·감사 결과 |
 | Attribute validation 확정 상태 | §6 | 목표량·family·unseen 해석·감사 결과 |
@@ -23,6 +25,7 @@
 | 새 세션 현재 재개 상태 | §11 | 완료·진행·다음 작업 상태 |
 | Stage1 (4) 신규 설계·31개 예약표 | §12 | boundary schema·ID·family·상태 원장 |
 | Stage1 (5)~(10) 신규 train 설계·97개 예약표 | §14~§20 | 신규 slug·ID·필수 관계·family·생성 상태 원장 |
+| Stage 2~10 교육영역·3M 준비 배분·family 예약 | §29~§39 및 별도 JSON 원장 | 세부영역 비율, train/val 파일 수, slug·prefix, 150-record family와 생성 준비 상태 |
 
 범용 relation 규칙, JSON schema, 직접 작성 원칙, split 격리, 자동 감사 항목, 보고 양식과 작업 순서는 작업지침서에 남긴다. 이관 과정에서 완료 수치나 family 원장을 삭제하지 않고 본 문서에 보존한다.
 
@@ -49,8 +52,11 @@ TinyLM은 단순 문장 암기보다 다음 능력을 순서대로 형성한다.
 | Stage 5 | 귀납·연역·반례 기반 일반화·새 조합·도메인 전이 |
 | Stage 6 | 장문맥·다단계 추론·복합 제약·다중 목표·정보 통합 |
 | Stage 7 | 지시 수행·다턴 대화·출력 형식·도구·안전·실전 task |
+| Stage 8 | 평가·비평·근거 검증·오류 진단·수정·확신도 보정·강건성 |
+| Stage 9 | 조사·도구 오케스트레이션·프로젝트 분해·상태 추적·협업·산출물 생명주기·의사결정 |
+| Stage 10 | 전문가 종합·신규 문제 해결·장기 실행·통합 전이·가치·안전 판단·메타 검증 |
 
-Stage 2~7은 상위 역할만 확정되어 있다. token mixture, 파일 수, ID 체계, train/val 비율은 별도 승인 없이 만들지 않는다.
+Stage 2~10은 2026-09-01 사용자 지시에 따라 세부 교육영역과 준비 원장을 설계한다. 약 3M token, train/validation 90:10, 150-record 파일 단위는 준비 기준이며, 실제 tokenizer 실측 전에는 token 수와 record 수를 동일시하지 않는다. corpus text 생성은 별도 요청 전 시작하지 않는다.
 
 ## 3. Stage 1 확정 3M-token mixture
 
@@ -94,7 +100,12 @@ Stage 2~7은 상위 역할만 확정되어 있다. token mixture, 파일 수, ID
 - train v01만 100개이고 v02~v41은 각 150개다.
 - legacy top-level metadata와 ID padding은 균일하지 않으며 일괄 재직렬화하지 않는다.
 - 누적 family: 일상 사물, 음식·조리, 의복·개인용품, 자연·생태, 과학 현상, 수학·논리, 사회·제도, 문화·언어·예술, 교육, 공학·인프라, 건강 일반, 상업·물류, 교통·지리·도시, 법률, 행정·공공서비스, 농축수산, 지식·정보·기록, 환경·기후·에너지, 건축·공간, 조직·노동, 디지털 사회, 안전·재난, 가족·인구, 재료·제품·도구, 범용 공간, 시간, 인과·조건·가능성, 집합·계층·상속, 정량, 상태전이, 관찰·증거·검증 ontology.
-- 상태: 사용자 지시에 따라 전체 수정 금지.
+- 2026-09-01 사용자 승인 예외에 따라 train 41파일의 기존 필드와 원본 `relations`를 그대로 둔 채 위치 보존 1:1 투영인 `relations_controlled`만 추가했다. validation 4파일은 변경하지 않았다.
+- 원본 relation type은 1,916종·17,001 token이며, 매핑 1,916개는 모두 13개 통제어휘 중 정확히 하나를 가리킨다. singleton 1,047종은 규칙대로 `other`로 보냈다.
+- 최종 통제 분포: `attribute` 1,208, `boundary` 3,240, `comparison` 253, `process` 1,123, `other` 3,084, `is_a` 3,210, `state` 376, `contrast` 430, `function` 763, `classification` 1,581, `part_of` 580, `role` 243, `subclass_of` 910.
+- 상위 120종과 나머지 반복형 737종을 실제 `text`·`concepts`로 대조해 의미 보정 118종을 확정했고, 판단 근거 notes 146개를 남겼다. `other` 비율은 18.1401%로 40% 상한을 통과했다. 다대일 투영과 원본 배열 길이 보존을 동시에 지키기 때문에 1,103개 legacy 레코드에서 통제 라벨 반복이 생겼으며, 이는 새 corpus의 R4를 완화한 것이 아니라 되돌릴 수 있는 위치 투영을 위한 명시적 예외다.
+- 매핑 정본: `relation_mapping_identity_v1.json`. 사람용 감사: `audit_reports/Stage1_(1)_Identity_Relation_Control_Audit.md`. 기계 감사: `audit_reports/machine/TinyLM_Stage1_Identity_Relation_Control_Audit_2026-09-01.json`.
+- 상태: 관계 통제 감사 PASS 후 train·validation 모두 다시 수정 금지.
 
 ## 5. Stage1 (2) Attribute train 정본
 
@@ -142,7 +153,7 @@ ID: S1-ATH-0001 ~ S1-ATH-4650
 
 최신 전체 감사: JSON·UTF-8·ID·metadata·schema·exact text·primary concept·5어절·4어절 도입부·조사·relations 오류/중복 모두 0, 내부 최대 문자 3~5-gram TF-IDF cosine `0.499366`.
 
-정본 감사: `TinyLM_Stage1_Attribute_Train_v01_v31_Full_Audit_2026-08-30.json`, `TinyLM_Stage1_Attribute_Train_v18_v31_Final_Audit_2026-08-30.md`.
+사람용 정본: `audit_reports/Stage1_(2)_Attribute_Consolidated_Audit.md`. 기계 정본: `audit_reports/machine/attribute/TinyLM_Stage1_Attribute_Train_v01_v31_Full_Audit_2026-08-30.json`.
 
 ## 6. Stage1 (2) Attribute validation 정본
 
@@ -168,7 +179,7 @@ Relations: `is_a` 3, `subclass_of` 4, `part_of` 49, `classification` 71, `bounda
 
 `other` 편집 유형: 조건·입력 의존/영향/선택성 22, 공간·시간 집중/분포/편향 12, 구조 저항/상태 분류/형태적 기타 7, 복합 감각/물질 이동·혼합/수용 6, 잠재성/불확실성/위험 추정 5.
 
-정본 감사: `TinyLM_Stage1_Attribute_Validation_v01_v04_Audit_2026-08-30.json`, `TinyLM_Stage1_Attribute_Validation_v01_v04_Final_Report_2026-08-30.md`.
+사람용 정본: `audit_reports/Stage1_(2)_Attribute_Consolidated_Audit.md`. 기계 정본: `audit_reports/machine/attribute/TinyLM_Stage1_Attribute_Validation_v01_v04_Audit_2026-08-30.json`.
 
 ## 7. Stage1 (3) Function train 정본
 
@@ -213,7 +224,7 @@ ID: S1-FNH-0001 ~ S1-FNH-4050
 
 Relations: `is_a` 2, `subclass_of` 42, `part_of` 340, `classification` 187, `boundary` 526, `contrast` 10, `comparison` 224, `function` 4,050, `role` 1,036, `process` 1,144, `state` 779, `attribute` 488, `other` 0. `other` 상위 유형은 해당 없음.
 
-정본 감사: `TinyLM_Stage1_Function_Train_v01_v27_Full_Audit_2026-08-30.json`, `TinyLM_Stage1_Function_Train_v02_v27_Final_Audit_2026-08-30.md`.
+사람용 정본: `audit_reports/Stage1_(3)_Function_Consolidated_Audit.md`. 기계 정본: `audit_reports/machine/function/TinyLM_Stage1_Function_Train_v01_v27_Full_Audit_2026-08-30.json`.
 
 ## 8. Stage1 (3) Function validation 정본
 
@@ -239,11 +250,12 @@ Relations: `is_a` 0, `subclass_of` 0, `part_of` 73, `classification` 18, `bounda
 
 최종 감사: 구조·unseen/category 오류·중복·누출·5어절·도입부·실제 조사 오류 0, 내부 최대 cosine `0.349621`, train–val 최대 `0.206182`.
 
-정본 감사: `TinyLM_Stage1_Function_Validation_v01_v03_Audit_2026-08-31.json`, `TinyLM_Stage1_Function_Validation_v01_v03_Final_Report_2026-08-31.md`.
+사람용 정본: `audit_reports/Stage1_(3)_Function_Consolidated_Audit.md`. 기계 정본: `audit_reports/machine/function/TinyLM_Stage1_Function_Validation_v01_v03_Audit_2026-08-31.json`.
 
 ## 9. 수정 금지 정본 원장
 
-- `stage1_(1)identity_high_density_*` 전체
+- `stage1_(1)identity_high_density_train_v01.json`~`v41.json`: 2026-09-01 승인된 positional `relations_controlled` 추가와 관계 통제 감사가 끝났으므로 기존 field·원본 `relations`·새 필드를 포함해 다시 전체 수정 금지
+- `stage1_(1)identity_high_density_val_v01.json`~`v04.json`: 변경 없이 전체 수정 금지
 - `stage1_(2)attribute_high_density_*` train·validation 전체
 - `stage2_(2)attribute_high_density_*`와 일치하는 모든 확정 파일; 현재 경로에 없어도 pattern을 보호
 - `stage1_(3)function_high_density_train_v01.json`~`v27.json`
@@ -268,45 +280,13 @@ Relations: `is_a` 0, `subclass_of` 0, `part_of` 73, `classification` 18, `bounda
 
 ## 10. 현재 감사·연속성 산출물
 
+현재 사람용 감사 진입점은 `audit_reports/README.md`다.
+
 ```text
-TinyLM_Stage1_Attribute_Train_v18_v31_Final_Audit_2026-08-30.md
-TinyLM_Stage1_Attribute_Train_v01_v31_Full_Audit_2026-08-30.json
-TinyLM_Stage1_Attribute_Train_v01_v17_Legacy_Audit_Before_Fix_2026-08-30.json
-TinyLM_Stage1_Attribute_Train_v01_v17_Legacy_Audit_After_Fix_2026-08-30.json
-TinyLM_Stage1_Attribute_Train_v18_v31_Audit_2026-08-30.json
-TinyLM_Stage1_Attribute_Validation_v01_v04_Audit_2026-08-30.json
-TinyLM_Stage1_Attribute_Validation_v01_v04_Final_Report_2026-08-30.md
-tools/build_function_train.py
-tools/build_function_train_v02_v27.py
-tools/function_sources/v02.tsv ... v27.tsv
-tools/audit_function_corpus.py
-TinyLM_Stage1_Function_Train_v01_Audit_2026-08-30.json
-TinyLM_Stage1_Function_Train_v01_Progress_Audit_2026-08-30.md
-TinyLM_Stage1_Function_Train_v01_v27_Full_Audit_2026-08-30.json
-TinyLM_Stage1_Function_Train_v02_v27_Final_Audit_2026-08-30.md
-tools/function_validation_sources/v01.tsv ... v03.tsv
-tools/build_function_validation.py
-tools/audit_function_validation.py
-TinyLM_Stage1_Function_Validation_v01_v03_Audit_2026-08-31.json
-TinyLM_Stage1_Function_Validation_v01_v03_Final_Report_2026-08-31.md
-tools/boundary_sources/v01.tsv ... v31.tsv
-tools/build_boundary_train.py
-tools/audit_boundary_corpus.py
-TinyLM_Stage1_Boundary_Train_v01_v31_Full_Audit_2026-08-31.json
-TinyLM_Stage1_Boundary_Train_v01_v31_Final_Audit_2026-08-31.md
-tools/boundary_validation_sources/v01.tsv ... v04.tsv
-tools/build_boundary_validation.py
-tools/audit_boundary_validation.py
-TinyLM_Stage1_Boundary_Validation_v01_v04_Audit_2026-08-31.json
-TinyLM_Stage1_Boundary_Validation_v01_v04_Final_Report_2026-08-31.md
-tools/build_stage1_relational_train.py
-tools/audit_stage1_relational_train.py
-tools/stage1_relational_sources/{partwhole,statechange,spatial,comparison,context,type_uncertainty}/vNN.tsv
-tools/build_stage1_relational_validation.py
-tools/audit_stage1_relational_validation.py
-tools/assemble_stage1_5_10_audit_reports.py
-tools/stage1_relational_validation_sources/{partwhole,statechange,spatial,comparison,context,type_uncertainty}/vNN.tsv
-audit_reports/README.md
+audit_reports/Stage1_(1)_Identity_Relation_Control_Audit.md
+audit_reports/Stage1_(2)_Attribute_Consolidated_Audit.md
+audit_reports/Stage1_(3)_Function_Consolidated_Audit.md
+audit_reports/Stage1_(4)_Boundary_Consolidated_Audit.md
 audit_reports/Stage1_(5-10)_CrossArea_Consolidated_Audit.md
 audit_reports/Stage1_(5)_PartWhole_Consolidated_Audit.md
 audit_reports/Stage1_(6)_StateChange_Consolidated_Audit.md
@@ -314,24 +294,25 @@ audit_reports/Stage1_(7)_Spatial_Consolidated_Audit.md
 audit_reports/Stage1_(8)_Comparison_Consolidated_Audit.md
 audit_reports/Stage1_(9)_Context_Consolidated_Audit.md
 audit_reports/Stage1_(10)_TypeUncertainty_Consolidated_Audit.md
-audit_reports/machine/TinyLM_Stage1_*_Train_*_Final_Audit_*.json
-audit_reports/machine/TinyLM_Stage1_5_10_Validation_Final_Audit_2026-09-01.json
-audit_reports/machine/TinyLM_Stage1_5_10_Validation_Protected_Baseline_Comparison_2026-09-01.json
-audit_reports/archive/<area>/... (과거 progress 감사·보고서)
 ```
+
+기계 판독 감사 정본은 `audit_reports/machine/` 아래에 둔다. Attribute·Function·Boundary의 현행 JSON은 각각 `machine/attribute/`, `machine/function/`, `machine/boundary/`에, 과거 진행 보고서와 교체된 감사는 `archive/<area>/`에 둔다. 생성·재감사 도구와 source는 `tools/` 아래의 영역별 builder·auditor·source 디렉터리에 보존한다.
+
+Identity 관계 통제의 매핑·재검증 산출물은 `relation_mapping_identity_v1.json`, `tools/build_identity_relation_control.py`, `audit_reports/machine/TinyLM_Stage1_Identity_Relation_Control_Audit_2026-09-01.json`이다. Stage 2~10 준비 산출물은 `TinyLM_Stage2_Stage10_Curriculum_and_Family_Reservation_Draft.md`, `TinyLM_Stage2_Stage10_Concept_Family_Reservation.json`, `tools/prepare_stage2_stage10_scaffold.py`, `audit_reports/machine/TinyLM_Stage2_10_Preparation_Audit_2026-09-01.json`이다.
 
 과거 handoff의 v18 재작성 전 상태와 삭제 예정이던 continuity summary의 v17 누적은 역사적 기록이다. 현재 상태는 실제 파일과 위 최신 감사가 기준이다.
 
 ## 11. 현재 재개 상태
 
-- Identity train/validation: 완료·수정 금지
+- Identity train: 6,100 records의 `relations_controlled` 추가·의미 재검토·감사 PASS, 다시 수정 금지. Identity validation 600 records는 변경 없이 수정 금지
 - Attribute train v01~v31, validation v01~v04: 완료·수정 금지
 - Function train v01~v27, validation v01~v03: 완료·수정 금지
 - Stage1 (4) Boundary train v01~v31: 4,650 records 완료·감사 통과·수정 금지
 - Stage1 (4) Boundary validation v01~v04: 600 records 완료·감사 통과·수정 금지
 - Stage1 (5)~(10) train: §14~§20의 97개 family, 14,550 records 전체 완료·감사 통과·수정 금지
 - Stage1 (5)~(10) validation: §21~§28의 13개 신규 family, 13 files·1,950 records 완료·감사 통과·수정 금지; 각 파일 18개, 전체 234개(12.00%)를 relation-set 일반화 slice로 확정
-- 다음 미확정 Stage·validation은 사용자 승인과 별도 family 원장 없이 시작하지 않는다.
+- Stage 2~10: §29~§39의 9개 Stage·54개 세부영역, primary 2,250 family와 contingency 225 family 예약 및 폴더 scaffold 준비 완료. corpus JSON은 0개이며 tokenizer pilot 전 상태다.
+- 다음 corpus 생성은 각 Stage의 3 train + 1 validation pilot에서 실제 tokenizer token/record를 측정하고 사용자와 배분을 확정한 뒤 시작한다.
 
 ## 12. Stage1 (4) 개념 경계·반례 train 설계 원장
 
@@ -342,7 +323,7 @@ Stage 1 영역: (4) 개념 경계·반례
 전체 설계량: 420K
 train 설계량: 약 378K
 train 목표: 4,650 records = 31 files × 150
-validation 예정량: 약 42K, 별도 사용자 지시 전에는 생성하지 않음
+validation 설계량: 약 42K; 현재 §13의 600 records·v01~v04 생성과 감사까지 완료
 파일명: stage1_(4)boundary_high_density_train_v01.json ... v31.json
 ID: S1-BNH-0001 ... S1-BNH-4650
 type: boundary_packet
@@ -443,7 +424,7 @@ Relations 전체 분포는 다음과 같다.
 
 최종 통합 감사 결과 schema·metadata·ID·source↔JSON·통제 relation 오류가 모두 0건이며 exact ID·primary concept·text·concept–relation-set 중복도 모두 0건이다. 내부/기존 고밀도 교차 5어절 반복과 4어절 도입부 반복은 0건이다. 1차 조사 후보에서 고친 실제 오류 뒤 primary concept 조사 오류는 0건이고, 광범위 탐지 79건은 전수 문맥 확인 결과 어간·명사를 조사 결합으로 잘못 잡은 false positive였다. 내부 최대 문자 3~5-gram TF-IDF cosine은 `0.353981`, 기존 고밀도 train/validation과의 최대값은 `0.382725`이며 상위 쌍은 인접 개념을 서로 다른 교육 목적으로 서술한 정상 쌍이다. 기존 고밀도와 exact concept·text·concept–relation-set 교집합은 모두 0건이다. 수학·논리 표기에 쓰인 특수문자 후보 17건은 모두 의미상 정상이고 control character 및 Unicode escape 파일은 0건이다.
 
-작업 시작 시 고정한 Identity·Attribute·Function train/validation 보호 파일 110개의 SHA-256은 종료 시 110/110 모두 일치했다. 다른 밀도의 데이터는 생성·중복 비교·감사 기준에서 제외했다. 파일별 SHA-256과 버전별 relation 분포는 `TinyLM_Stage1_Boundary_Train_v01_v31_Final_Audit_2026-08-31.md`와 기계 판독 정본 `TinyLM_Stage1_Boundary_Train_v01_v31_Full_Audit_2026-08-31.json`에 보존한다.
+작업 시작 시 고정한 Identity·Attribute·Function train/validation 보호 파일 110개의 SHA-256은 종료 시 110/110 모두 일치했다. 다른 밀도의 데이터는 생성·중복 비교·감사 기준에서 제외했다. 사람용 정본은 `audit_reports/Stage1_(4)_Boundary_Consolidated_Audit.md`, 기계 정본은 `audit_reports/machine/boundary/TinyLM_Stage1_Boundary_Train_v01_v31_Full_Audit_2026-08-31.json`이다.
 
 ## 13. Stage1 (4) 개념 경계·반례 validation 설계 원장
 
@@ -523,7 +504,7 @@ Relations 전체 분포는 다음과 같다.
 
 Primary concept 직후 조사 오류는 0건이다. 문장 전체의 기계 조사 후보 5건은 `전문가`의 어휘 말음과 `붙잡는`, `넘겨받는`, `보고받는`, `평가받는`의 활용 어미를 조사로 오인한 false positive로 확인되어 실제 오류는 0건이다. control character, Unicode escape, 비정상 문자 후보도 0건이다.
 
-작업 시작 시 고정한 Identity·Attribute·Function train/validation, Stage2 Attribute 확정 파일, Boundary train 보호 파일 141개의 SHA-256은 종료 시 141/141 모두 일치했다. 다른 밀도와 held-out은 생성·중복 비교·감사 기준에서 제외했다. 상세 수치와 version별 relation 분포는 `TinyLM_Stage1_Boundary_Validation_v01_v04_Final_Report_2026-08-31.md`와 기계 판독 정본 `TinyLM_Stage1_Boundary_Validation_v01_v04_Audit_2026-08-31.json`에 보존한다.
+작업 시작 시 고정한 Identity·Attribute·Function train/validation, Stage2 Attribute 확정 파일, Boundary train 보호 파일 141개의 SHA-256은 종료 시 141/141 모두 일치했다. 다른 밀도와 held-out은 생성·중복 비교·감사 기준에서 제외했다. 사람용 정본은 `audit_reports/Stage1_(4)_Boundary_Consolidated_Audit.md`, 기계 정본은 `audit_reports/machine/boundary/TinyLM_Stage1_Boundary_Validation_v01_v04_Audit_2026-08-31.json`이다.
 
 ## 14. Stage1 (5)~(10) train 공통 등록
 
@@ -965,3 +946,244 @@ validation 전체 relations 분포는 `is_a` 0, `subclass_of` 0, `part_of` 454, 
 `unseen_relation: true`의 모든 개별 label은 대응 train에 이미 있고 정렬 relation-set 조합만 train에 없다. false의 relation-set은 모두 train에 있다. 저밀도와 held-out/evaluation corpus는 생성·family 선정·유사도 비교에서 제외했다.
 
 사람용 정본은 `audit_reports/README.md`와 영역별 통합 보고서 6개다. 기계 감사는 `audit_reports/machine/TinyLM_Stage1_5_10_Validation_Final_Audit_2026-09-01.json`, 과거 진행 감사·보고서는 `audit_reports/archive/`에 보존한다. 생성 source는 `tools/stage1_relational_validation_sources/<slug>/vNN.tsv`, 패키징은 `tools/build_stage1_relational_validation.py`, 재감사는 `tools/audit_stage1_relational_validation.py`를 사용한다. §9에 등록된 새 validation 13파일은 이 절 이후 수정 금지다.
+
+
+## 29. Stage 2~10 공통 3M 준비 기준
+
+2026-09-01 사용자 지시에 따라 Stage 2~10의 상위 역할을 세부 교육영역·비율·파일 namespace·ID prefix·150-record concept-family 원장으로 구체화했다. 이 절부터 §39까지는 corpus 생성 완료 기록이 아니라 **tokenizer pilot 전 생성 준비 정본**이다.
+
+### 29.1 권고 split과 총량
+
+| 항목 | Stage별 준비값 | 판정 |
+|---|---:|---|
+| 설계 목표 | 약 3,000,000 token | 실제 tokenizer 측정 전 잠정 |
+| primary 전체 | 250 files / 37,500 records | 한 파일 150 records |
+| train | 225 files / 33,750 records | 90% |
+| validation | 25 files / 3,750 records | 10% |
+| validation 일반화 slice | 파일당 18/150 | 12.00% |
+| contingency reserve | 25 family | ID·version·filename 없음, 비활성 |
+
+90:10을 tokenizer pilot 전 생성 준비용 권고안으로 잠정 채택한다. 150-record 단위에서 정확한 비율을 유지하고 checkpoint 선택용 validation을 충분히 확보할 수 있기 때문이다. 최종 파일 수와 split 배분은 pilot의 실제 tokenizer 실측 뒤 사용자가 확정한다. 최종 blind held-out은 이 약 3M 안에 섞지 않고 별도로 동결한다. 90/8/2처럼 blind slice를 내부에 두는 안은 Guide의 held-out 경계를 바꾸므로 별도 승인 없이는 채택하지 않는다.
+
+Stage1 고밀도 실제값은 255 files, 38,200 records, text 2,886,573자, 평균 75.565자다. 250 files·37,500 records는 평균 80자일 때 3M **문자 proxy**일 뿐 tokenizer token 수가 아니다.
+
+### 29.2 tokenizer 보정 gate
+
+각 Stage에서 교육 성격이 다른 A01·A03·A06 train v01과 A01 validation v01, 총 4 files·600 records를 먼저 직접 작성·감사한다. 실제 학습 tokenizer로 평균 token/record를 잰 뒤 다음 식을 사용한다.
+
+```text
+raw_files = round(3,000,000 / measured_mean_tokens_per_record / 150)
+exact_90_10_files = 10 × round(raw_files / 10)
+```
+
+부족할 때는 ID가 없는 contingency family를 필요한 수만 사용자 승인 후 활성화한다. 과다할 때는 primary tail을 임의 삭제하지 않고 보류안을 승인받는다. 이 gate 전에는 37,500 records를 3M token이라고 보고하지 않는다.
+
+### 29.3 공통 schema·분리
+
+- 파일명은 `stageN_(M)<slug>_high_density_{train,val}_vNN.json`, version은 영역별 v01부터 시작한다.
+- Stage2 신규 영역은 보호된 legacy `stage2_(2)attribute_high_density_*`와 충돌하지 않도록 파일 slot `(11)`~`(16)`을 사용한다. legacy pattern은 새 3M mixture에서 제외하고 수정·이름변경·재생성하지 않는다.
+- Stage3~10은 파일 slot `(1)`~`(6)`을 사용한다.
+- 신규 ID는 `S<Stage>-<AreaCode>H-00001` / `S<Stage>-<AreaCode>V-00001`의 5자리 번호다.
+- relation은 Guide §9의 13개 통제 어휘에서 의미가 실제 문장에 있는 2~5개를 record 안 중복 없이 사용한다.
+- validation false는 train 관측 relation 이름·정렬 relation-set을 사용하고, true 12%는 통제 어휘를 벗어나지 않는 train 미관측 relation-set 조합을 원칙으로 한다. 실제 train에 통제 label 결측이 있으면 Guide §13에 따라 해석을 먼저 등록한다.
+- validation의 domain bank, primary concept, exact text, primary+relation-set과 5어절 문구는 train과 분리한다.
+- family 이름은 topic 경계이지 text template가 아니다. corpus 의미 문장은 record마다 직접 작성한다.
+
+## 30. Stage 2 — 복합 관계·의존·인과·조건 구조
+
+조건부 관계, 원인–결과, 의존성, 가능성, 시간적 선후, 상태 전이와 다중 관계 조합을 분리·결합한다.
+
+| 교육# / slot | 세부영역 / slug | 비율 | token 설계 | train/val files | packet | ID H/V | 교육목표 | 오류 억제축 |
+|---:|---|---:|---:|---:|---|---|---|---|
+| 1 / 11 | 원인 구조 / `causal_structure` | 20% | 600,000 | 45/5 | `causal_structure_packet` | `S2-CSH` / `S2-CSV` | 원인·결과·매개·공통 원인을 개입과 관찰의 차이까지 포함해 판정한다. | 상관을 인과로 승격, 결과 뒤 사건을 원인으로 단정, 단일 원인 과장 |
+| 2 / 12 | 조건·의존 구조 / `conditional_dependency` | 20% | 600,000 | 45/5 | `conditional_dependency_packet` | `S2-CDH` / `S2-CDV` | 필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다. | 필요와 충분의 역전, 기본값을 무조건 규칙으로 확대, 의존 방향 반전 |
+| 3 / 13 | 시간 순서·간격 / `temporal_order` | 16% | 480,000 | 36/4 | `temporal_order_packet` | `S2-TOH` / `S2-TOV` | 사건의 선후·동시성·기간·지연·관측 창을 구별한다. | 서술 순서를 사건 순서로 오독, 겹친 기간을 동일 시점으로 단정 |
+| 4 / 14 | 상태 전이·동역학 / `state_transition` | 16% | 480,000 | 36/4 | `state_transition_packet` | `S2-STH` / `S2-STV` | 전이 전후 상태, 촉발·억제 조건, 중간 상태와 가역성을 연결한다. | 상태를 정체성으로 고정, 중간 상태 생략, 가역·비가역 혼동 |
+| 5 / 15 | 가능성·양상 / `modality_possibility` | 16% | 480,000 | 36/4 | `modality_possibility_packet` | `S2-MPH` / `S2-MPV` | 가능·예정·예측·확률·확신·반사실을 실제 발생과 분리한다. | 가능성을 사실로 승격, 계획과 예측 혼동, 확신을 확률로 치환 |
+| 6 / 16 | 다중 관계 조합 / `relational_composition` | 12% | 360,000 | 27/3 | `relational_composition_packet` | `S2-RCH` / `S2-RCV` | 여러 객체와 관계를 다단 연결하면서 충돌·누락·우선순위를 보존한다. | 한 관계를 전체 경로에 전이, 국소 사실로 전역 결론, 충돌 정보 은폐 |
+
+- train 객체·상황 bank: 스마트 온실 관수·환경제어, 도시 상수도 정수·배수 운영, 클라우드 서비스 부하·장애 대응, 철도 운행 간격·환승 조정, 하천 저수지 수위·방류 관리, 식품 냉장 유통·품질 유지, 온라인 학습 진도·피드백 운영, 생태 복원지 종·서식지 관찰, 배터리 저장장치 충방전·열관리
+- validation 신규 객체·상황 bank: 문화재 수장고 온습도·보존 운영, 양봉 군체 활동·질병 관리, 해저 통신케이블 장애·복구, 공연장 입장·좌석·대피 운영, 고산 구조대 탐색·후송 상황
+- pilot 예약: `S2-A01-T-001`, `S2-A03-T-001`, `S2-A06-T-001`, `S2-A01-V-001`
+- contingency domain bank: 지하철 역사 환기·혼잡 제어, 수산 양식장 수질·급이 운영, 태양광 발전소 출력·고장 관리, 응급 콜센터 배차·인계, 도심 빗물저류·침수 대응
+- 상태: 250개 primary family와 25개 비활성 reserve family 예약 완료, corpus 미생성.
+
+## 31. Stage 3 — 절차·행동·계획·문제 해결
+
+목표, 계획, 단계, 제약, 자원, 선택, 우선순위, 실패와 복구를 행동 전후 상태와 연결한다.
+
+| 교육# / slot | 세부영역 / slug | 비율 | token 설계 | train/val files | packet | ID H/V | 교육목표 | 오류 억제축 |
+|---:|---|---:|---:|---:|---|---|---|---|
+| 1 / 1 | 목표·행동 연결 / `goal_action` | 20% | 600,000 | 45/5 | `goal_action_packet` | `S3-GAH` / `S3-GAV` | 명시 목표와 하위 목표, 행동 수단과 결과 상태를 연결한다. | 행동 자체를 목표로 오독, 수단과 성과 동일시, 부수 효과 누락 |
+| 2 / 2 | 절차·순서 / `procedure_sequence` | 20% | 600,000 | 45/5 | `procedure_sequence_packet` | `S3-PSH` / `S3-PSV` | 선행조건과 단계 순서, 병렬 가능 단계, 확인 지점을 구조화한다. | 단계 누락, 순서 임의 교환, 병렬·직렬 혼동 |
+| 3 / 3 | 계획 분해 / `planning_decomposition` | 16% | 480,000 | 36/4 | `planning_decomposition_packet` | `S3-PDH` / `S3-PDV` | 큰 목표를 검증 가능한 작업과 의존성으로 분해하고 재계획한다. | 과도하게 큰 작업, 의존 누락, 계획과 실행 로그 혼동 |
+| 4 / 4 | 제약·자원 / `constraint_resource` | 16% | 480,000 | 36/4 | `constraint_resource_packet` | `S3-CRH` / `S3-CRV` | 시간·용량·권한·안전 제약과 소모·재사용 자원을 구분한다. | 희망사항을 제약으로 오독, 자원 중복 계산, 안전 제약 완화 |
+| 5 / 5 | 선택·우선순위 / `decision_priority` | 16% | 480,000 | 36/4 | `decision_priority_packet` | `S3-DPH` / `S3-DPV` | 여러 대안의 비용·효용·위험·가역성을 기준에 맞춰 선택한다. | 한 축 우위를 전체 우위로 확대, 매몰비용 고착, 기준 변경 은폐 |
+| 6 / 6 | 실행 감시·실패 복구 / `execution_recovery` | 12% | 360,000 | 27/3 | `execution_recovery_packet` | `S3-ERH` / `S3-ERV` | 진행 상태, 실패 징후, 재시도·롤백·우회와 종료 판단을 연결한다. | 실패를 성공으로 보고, 무한 재시도, 복구 뒤 검증 생략 |
+
+- train 객체·상황 bank: 목공 가구 제작, 실험실 시료 분석, 지역 축제 운영, 전자상거래 창고 출고, 소프트웨어 릴리스, 산불 초기 대응, 다도시 여행 일정, 밭작물 파종·관개, 외래 진료 예약·검사
+- validation 신규 객체·상황 bank: 수중 다큐멘터리 촬영, 고문서 복원 작업, 드론 지형 측량, 이동식 급식소 운영, 천체 관측 캠페인
+- pilot 예약: `S3-A01-T-001`, `S3-A03-T-001`, `S3-A06-T-001`, `S3-A01-V-001`
+- contingency domain bank: 유리공예 제작, 이동형 도서관 운영, 해양 시료 채취, 야외 음악회 운영, 소형위성 조립
+- 상태: 250개 primary family와 25개 비활성 reserve family 예약 완료, corpus 미생성.
+
+## 32. Stage 4 — 문맥·담화·지시·대화
+
+장문 참조, 생략, 대화 상태, 질문–응답, 지시 추적, 화행, 암시와 맥락 의존을 다룬다.
+
+| 교육# / slot | 세부영역 / slug | 비율 | token 설계 | train/val files | packet | ID H/V | 교육목표 | 오류 억제축 |
+|---:|---|---:|---:|---:|---|---|---|---|
+| 1 / 1 | 담화 지시·참조 / `discourse_reference` | 20% | 600,000 | 45/5 | `discourse_reference_packet` | `S4-DRH` / `S4-DRV` | 명사구·대명사·지시어의 선행 대상을 거리와 담화 중심 변화 속에서 추적한다. | 가까운 명사를 무조건 선행사로 선택, 화제 전환 누락 |
+| 2 / 2 | 생략·공동지시 / `ellipsis_coreference` | 20% | 600,000 | 45/5 | `ellipsis_coreference_packet` | `S4-ECH` / `S4-ECV` | 한국어 생략 성분과 반복 명칭의 동일·비동일 대상을 문맥으로 복원한다. | 주어·목적어 임의 보충, 같은 표현을 같은 객체로 자동 합치기 |
+| 3 / 3 | 대화 상태 / `dialogue_state` | 16% | 480,000 | 36/4 | `dialogue_state_packet` | `S4-DSH` / `S4-DSV` | 참여자 목표, 합의·미합의, 열린 질문, 약속과 수정 이력을 유지한다. | 철회된 합의를 유지, 미답 질문을 완료 처리, 화자 역할 혼동 |
+| 4 / 4 | 질문–응답 적합성 / `question_answer` | 16% | 480,000 | 36/4 | `question_answer_packet` | `S4-QAH` / `S4-QAV` | 질문의 초점·범위·전제에 맞는 답과 미답·부분답·회피를 구분한다. | 관련 정보만 있으면 답으로 인정, 거짓 전제 수용, 범위 초과 |
+| 5 / 5 | 화행·대화 행위 / `speech_act_pragmatics` | 16% | 480,000 | 36/4 | `speech_act_pragmatics_packet` | `S4-SPH` / `S4-SPV` | 진술·질문·요청·약속·경고·허가의 기능과 조건을 판정한다. | 문장형만으로 화행 결정, 권고를 명령으로 확대, 권한 누락 |
+| 6 / 6 | 함축·맥락 의존 / `implicature_context` | 12% | 360,000 | 27/3 | `implicature_context_packet` | `S4-ICH` / `S4-ICV` | 말한 내용과 함축, 관례·공유 지식·상황에 의존한 해석을 분리한다. | 함축을 문자적 사실로 기록, 풍자·완곡 표현 과잉 확정 |
+
+- train 객체·상황 bank: 심리상담 초기면담, 전자제품 고객지원, 과학 수업 토론, 설비 교대 일지, 프로젝트 의사결정 회의, 온라인 기사 정정과 댓글, 국제여행 안내 창구, 행정 민원 보완 대화, 협동 게임 팀 소통
+- validation 신규 객체·상황 bank: 고고학 구술 인터뷰, 국제회의 동시통역, 미술관 도슨트 문답, 선박 해상무선 교신, 지역사 구술채록 검증
+- pilot 예약: `S4-A01-T-001`, `S4-A03-T-001`, `S4-A06-T-001`, `S4-A01-V-001`
+- contingency domain bank: 재난현장 브리핑, 항공관제 교신, 언어교환 수업, 생방송 인터뷰, 공동주택 주민회의
+- 상태: 250개 primary family와 25개 비활성 reserve family 예약 완료, corpus 미생성.
+
+## 33. Stage 5 — 일반화·추론·전이
+
+귀납·연역 구조, 반례 기반 일반화, 새로운 개념 조합, 규칙·구조의 다른 도메인 전이를 다룬다.
+
+| 교육# / slot | 세부영역 / slug | 비율 | token 설계 | train/val files | packet | ID H/V | 교육목표 | 오류 억제축 |
+|---:|---|---:|---:|---:|---|---|---|---|
+| 1 / 1 | 귀납 일반화 / `induction` | 20% | 600,000 | 45/5 | `induction_packet` | `S5-INH` / `S5-INV` | 표본에서 규칙을 제안하되 범위·대표성·불확실성을 함께 유지한다. | 소표본을 보편 법칙으로 확대, 선택 편향·기저율 무시 |
+| 2 / 2 | 연역 추론 / `deduction` | 20% | 600,000 | 45/5 | `deduction_packet` | `S5-DEH` / `S5-DEV` | 규칙·전제·조건에서 유효 결론을 도출하고 불충분 전제를 식별한다. | 결과 긍정·전건 부정, 암묵 전제 삽입, 양화 범위 오류 |
+| 3 / 3 | 반례 기반 일반화 / `counterexample_generalization` | 16% | 480,000 | 36/4 | `counterexample_generalization_packet` | `S5-CGH` / `S5-CGV` | 반례가 규칙 전체·범위·조건 중 무엇을 수정하는지 판정한다. | 예외 하나로 모든 경향 폐기, 반례를 무시, 조건을 사후 부착 |
+| 4 / 4 | 새 조합 일반화 / `compositional_novelty` | 16% | 480,000 | 36/4 | `compositional_novelty_packet` | `S5-CNH` / `S5-CNV` | 학습한 개념·관계를 새로운 조합에 적용하되 구성 요소 역할을 보존한다. | 함께 등장한 개념 동일시, 한 구성의 관계를 다른 구성에 복사 |
+| 5 / 5 | 유추 전이 / `analogical_transfer` | 16% | 480,000 | 36/4 | `analogical_transfer_packet` | `S5-ATH` / `S5-ATV` | 표면 유사성과 구조 대응을 구분하고 대응 가능한 관계만 전이한다. | 어휘 유사성만으로 전이, 관계 대응 뒤 속성까지 무조건 복사 |
+| 6 / 6 | 도메인 구조 전이 / `structural_transfer` | 12% | 360,000 | 27/3 | `structural_transfer_packet` | `S5-STH` / `S5-STV` | 한 도메인의 규칙·제약·계층을 다른 도메인에 적용하고 불변·변경 요소를 표시한다. | 도메인 고유 제약 누락, 명칭만 바꾼 모사, 단위·척도 무시 |
+
+- train 객체·상황 bank: 신소재 내구성 시험, 작물 품종 수확량 분석, 야생동물 개체군 조사, 검색 알고리즘 성능 평가, 대중교통 수요 변화, 지역 전력 사용 예측, 방언 변화 자료 분석, 소액대출 위험 분석, 제조 공정 불량 분석
+- validation 신규 객체·상황 bank: 산호초 회복 조사, 필사본 연대 추정, 외계행성 후보 분류, 전통 유약 소성 분석, 도시 열섬 완화 평가
+- pilot 예약: `S5-A01-T-001`, `S5-A03-T-001`, `S5-A06-T-001`, `S5-A01-V-001`
+- contingency domain bank: 고래 음향자료 분석, 고대 동전 분류, 화산 가스 변화 예측, 농촌 인구 이동 분석, 로봇 파지 성능 시험
+- 상태: 250개 primary family와 25개 비활성 reserve family 예약 완료, corpus 미생성.
+
+## 34. Stage 6 — 지식 통합·장문맥·복합 문제
+
+긴 문맥, 다단계 추론, 복합 제약, 다중 목표, 정보 통합과 불확실성 관리를 다룬다.
+
+| 교육# / slot | 세부영역 / slug | 비율 | token 설계 | train/val files | packet | ID H/V | 교육목표 | 오류 억제축 |
+|---:|---|---:|---:|---:|---|---|---|---|
+| 1 / 1 | 장문맥 유지 / `long_context` | 20% | 600,000 | 45/5 | `long_context_packet` | `S6-LCH` / `S6-LCV` | 긴 문서의 인물·객체·시점·정의·변경 이력을 압축 없이 유지한다. | 초반 사실 망각, 동명이인 합치기, 최신 정정 이전 정보 사용 |
+| 2 / 2 | 다단계 추론 / `multihop_inference` | 20% | 600,000 | 45/5 | `multihop_inference_packet` | `S6-MHH` / `S6-MHV` | 흩어진 전제를 연결해 중간 결론과 최종 결론의 근거 경로를 보존한다. | 중간 단계 생략, 다른 경로의 전제 혼합, 결론 순환 |
+| 3 / 3 | 복합 제약 만족 / `constraint_satisfaction` | 16% | 480,000 | 36/4 | `constraint_satisfaction_packet` | `S6-CSH` / `S6-CSV` | 동시 제약의 충돌·우선순위·완화 가능성을 판정해 가능한 해를 찾는다. | 일부 제약 누락, 선호와 강제 제약 혼동, 숨은 충돌 방치 |
+| 4 / 4 | 다중 목표·절충 / `multiobjective_tradeoff` | 16% | 480,000 | 36/4 | `multiobjective_tradeoff_packet` | `S6-MTH` / `S6-MTV` | 상충 목표의 지표·가중·하한과 절충을 언어적으로 판단한다. | 단일 점수로 모든 목표 은폐, 하한 위반, 한 집단 효용만 최적화 |
+| 5 / 5 | 다중 출처 통합 / `multisource_integration` | 16% | 480,000 | 36/4 | `multisource_integration_packet` | `S6-MIH` / `S6-MIV` | 출처별 범위·시점·신뢰도·중복·충돌을 판정해 통합한다. | 출처 수를 신뢰도로 대체, 최신성만으로 우위, 중복 증거 이중 계산 |
+| 6 / 6 | 불확실성 관리 / `uncertainty_management` | 12% | 360,000 | 27/3 | `uncertainty_management_packet` | `S6-UMH` / `S6-UMV` | 미지·누락·측정오차·모델 불확실성을 구분하고 결정에 반영한다. | 모든 불확실성을 하나로 합치기, 미관측을 0으로 치환, 과잉 확신 |
+
+- train 객체·상황 bank: 광역 재난 자원 배치, 다기관 환자 이송 조정, 국제 공급망 차질 대응, 대규모 소프트웨어 장애, 환경영향평가 통합, 복지정책 대안 검토, 복합건설 공정 조정, 다논문 연구근거 종합, 장기 법률사건 기록 통합
+- validation 신규 객체·상황 bank: 극지 탐사대 운영기록, 오페라 제작 전과정, 위성 발사 임무기록, 다년 고고학 발굴기록, 항만 준설 영향 검토
+- pilot 예약: `S6-A01-T-001`, `S6-A03-T-001`, `S6-A06-T-001`, `S6-A01-V-001`
+- contingency domain bank: 산악 철도 대수선, 백신 공급 캠페인, 해상풍력 건설, 국가기록물 디지털화, 유역 가뭄 공동대응
+- 상태: 250개 primary family와 25개 비활성 reserve family 예약 완료, corpus 미생성.
+
+## 35. Stage 7 — 지시 수행·대화·실전 사용
+
+명령 이해, 출력 형식 준수, 다턴 대화, 도구·프로토콜 확장, 안전과 불확실성 처리, 실전 task 수행을 다룬다.
+
+| 교육# / slot | 세부영역 / slug | 비율 | token 설계 | train/val files | packet | ID H/V | 교육목표 | 오류 억제축 |
+|---:|---|---:|---:|---:|---|---|---|---|
+| 1 / 1 | 지시·의도 해석 / `instruction_intent` | 20% | 600,000 | 45/5 | `instruction_intent_packet` | `S7-IIH` / `S7-IIV` | 명시 요구, 범위, 금지, 우선순위와 완료 조건을 정확히 추출한다. | 부수 설명을 명령으로 오독, 금지 누락, 범위 확대 |
+| 2 / 2 | 출력 형식 준수 / `output_format` | 20% | 600,000 | 45/5 | `output_format_packet` | `S7-OFH` / `S7-OFV` | 스키마·순서·길이·언어·금지 형식을 의미 손실 없이 지킨다. | 내용은 맞지만 형식 위반, 필드 추가, 순서·개수 오독 |
+| 3 / 3 | 다턴 대화 수행 / `multiturn_dialogue` | 16% | 480,000 | 36/4 | `multiturn_dialogue_packet` | `S7-MDH` / `S7-MDV` | 이전 결정·수정·미해결 질문·사용자 선호를 유지해 후속 행동을 정한다. | 취소된 요구 재사용, 새 지시로 전체 맥락 삭제, 확인 중복 |
+| 4 / 4 | 도구·프로토콜 / `tool_protocol` | 16% | 480,000 | 36/4 | `tool_protocol_packet` | `S7-TPH` / `S7-TPV` | 도구 선택, 입력 검증, 결과 해석, 오류·재시도·권한 경계를 준수한다. | 도구 결과 조작, 실패를 성공으로 보고, 권한 없는 실행 |
+| 5 / 5 | 안전·불확실성 처리 / `safety_uncertainty` | 16% | 480,000 | 36/4 | `safety_uncertainty_packet` | `S7-SUH` / `S7-SUV` | 위험도, 권한, 가역성, 불확실성에 따라 질문·보류·거절·안전 대안을 선택한다. | 불확실한 고위험 행동 실행, 저위험 과업 과잉 거절, 권한 추정 |
+| 6 / 6 | 실전 task 완결 / `practical_task` | 12% | 360,000 | 27/3 | `practical_task_packet` | `S7-PTH` / `S7-PTV` | 계획·실행·검증·보고를 연결해 실제 산출물의 완료 상태를 판정한다. | 준비를 완료로 보고, 검증 생략, 사용자에게 결과 위치 미고지 |
+
+- train 객체·상황 bank: 보고서 형식 변환, 표 데이터 정제, 회의 일정 조율, 소프트웨어 변경 검토, 창고 재고 조정, 여행 예약 변경, 실험실 안전 절차 수행, 고객 문의 처리, 건물 대피 훈련
+- validation 신규 객체·상황 bank: 유물 보존 점검표 실행, 스포츠 대회 운영 프로토콜, 지역 라디오 방송 편성, 임시진료소 접수 흐름, 천문관 공개관측 행사
+- pilot 예약: `S7-A01-T-001`, `S7-A03-T-001`, `S7-A06-T-001`, `S7-A01-V-001`
+- contingency domain bank: 법원 서류 제출, 학교급식 알레르기 대응, 공유자전거 정비, 전시회 발권 운영, 해안 정화 자원봉사
+- 상태: 250개 primary family와 25개 비활성 reserve family 예약 완료, corpus 미생성.
+
+## 36. Stage 8 — 평가·비판·검증·수정
+
+Stage7의 실행 결과를 근거 품질, 오류, 논증, 검증, 수정과 확신 보정의 관점에서 독립 평가한다.
+
+| 교육# / slot | 세부영역 / slug | 비율 | token 설계 | train/val files | packet | ID H/V | 교육목표 | 오류 억제축 |
+|---:|---|---:|---:|---:|---|---|---|---|
+| 1 / 1 | 근거 품질 / `evidence_quality` | 20% | 600,000 | 45/5 | `evidence_quality_packet` | `S8-EQH` / `S8-EQV` | 주장별 근거의 직접성·독립성·범위·시점·측정 한계를 평가한다. | 근거 수를 품질로 대체, 인용 존재만으로 주장 확정, 간접 근거 과장 |
+| 2 / 2 | 오류 탐지 / `error_detection` | 20% | 600,000 | 45/5 | `error_detection_packet` | `S8-EDH` / `S8-EDV` | 사실·논리·계산·범위·일관성 오류를 유형과 영향으로 식별한다. | 이견을 오류로 취급, 표면 오탈자만 고침, 연쇄 영향 누락 |
+| 3 / 3 | 논증 비판 / `argument_critique` | 16% | 480,000 | 36/4 | `argument_critique_packet` | `S8-ACH` / `S8-ACV` | 주장·전제·근거·보증·반론 구조를 복원하고 가장 약한 연결을 평가한다. | 결론 불호를 논증 실패로 대체, 숨은 전제 방치, 반론 왜곡 |
+| 4 / 4 | 검증·재현 / `verification_validation` | 16% | 480,000 | 36/4 | `verification_validation_packet` | `S8-VRH` / `S8-VRV` | 명세·테스트·독립 계산·교차 확인으로 주장을 재현 가능하게 검증한다. | 테스트 통과를 전체 정당성으로 확대, 같은 계산을 독립 검증으로 오인 |
+| 5 / 5 | 수정·교정 / `revision_correction` | 16% | 480,000 | 36/4 | `revision_correction_packet` | `S8-RCH` / `S8-RCV` | 오류 원인과 영향 범위를 최소 수정으로 교정하고 재검증한다. | 증상만 덮기, 정답까지 변경, 수정 뒤 회귀검사 누락 |
+| 6 / 6 | 확신 보정·유보 / `calibration_abstention` | 12% | 360,000 | 27/3 | `calibration_abstention_packet` | `S8-CAH` / `S8-CAV` | 증거 강도에 맞춰 확신·조건부 답·추가 확인·판단 유보를 선택한다. | 근거 없는 단정, 모든 불확실성에 회피, 정확도와 확신 혼동 |
+
+- train 객체·상황 bank: 과학 실험 보고서, 공공 데이터 대시보드, 정책 효과 메모, 소프트웨어 변경안, 탐사보도 기사, 설비 고장 진단서, 언어모델 응답, 법률 논증서, 교육 평가 문항
+- validation 신규 객체·상황 bank: 박물관 소장 이력 보고, 야생동물 카메라 판독, 오케스트라 리허설 기록, 지질도 해석 보고, 식품 관능평가 결과
+- pilot 예약: `S8-A01-T-001`, `S8-A03-T-001`, `S8-A06-T-001`, `S8-A01-V-001`
+- contingency domain bank: 임상지침 요약, 특허 신규성 검토, 교량 안전점검, 금융 공시 검토, 번역 품질 검토
+- 상태: 250개 primary family와 25개 비활성 reserve family 예약 완료, corpus 미생성.
+
+## 37. Stage 9 — 연구·도구 오케스트레이션·지속 워크플로
+
+다중 출처 조사, 여러 도구, 장기 상태, 협업 인계, 모니터링과 출처 감사를 하나의 지속 workflow로 운영한다.
+
+| 교육# / slot | 세부영역 / slug | 비율 | token 설계 | train/val files | packet | ID H/V | 교육목표 | 오류 억제축 |
+|---:|---|---:|---:|---:|---|---|---|---|
+| 1 / 1 | 조사·종합 / `research_synthesis` | 20% | 600,000 | 45/5 | `research_synthesis_packet` | `S9-RSH` / `S9-RSV` | 질문을 검색 가능한 하위 문제로 나누고 다중 출처를 비교해 출처 있는 종합을 만든다. | 검색 결과 나열, 출처 충돌 은폐, 인용과 추론 혼합 |
+| 2 / 2 | 도구 오케스트레이션 / `tool_orchestration` | 20% | 600,000 | 45/5 | `tool_orchestration_packet` | `S9-TOH` / `S9-TOV` | 여러 도구의 입력·출력·의존성·실패를 계획하고 결과를 연결한다. | 도구 순서 역전, 중간 결과 미검증, 실패 출력 재사용 |
+| 3 / 3 | 워크플로 상태 지속 / `workflow_state` | 16% | 480,000 | 36/4 | `workflow_state_packet` | `S9-WSH` / `S9-WSV` | 장기 작업의 완료·진행·대기·차단 상태와 산출물 버전을 보존한다. | 계획을 완료로 표시, 중단 뒤 중복 실행, 오래된 산출물 사용 |
+| 4 / 4 | 협업·인계 / `collaboration_handoff` | 16% | 480,000 | 36/4 | `collaboration_handoff_packet` | `S9-CHH` / `S9-CHV` | 역할·권한·결정·미해결 항목·산출물을 다른 작업자에게 무손실 인계한다. | 책임 불명, 결정과 제안 혼동, 미실행 항목 누락 |
+| 5 / 5 | 모니터링·적응 / `monitoring_adaptation` | 16% | 480,000 | 36/4 | `monitoring_adaptation_packet` | `S9-MAH` / `S9-MAV` | 관측 지표와 임계 조건을 바탕으로 기다림·알림·재계획·중단을 선택한다. | 변화 없는 상태를 실패로 오인, 과도한 polling, 기준 없는 재계획 |
+| 6 / 6 | 출처·감사 가능성 / `provenance_audit` | 12% | 360,000 | 27/3 | `provenance_audit_packet` | `S9-PAH` / `S9-PAV` | 데이터·결정·변경·도구 결과의 계보와 재현 증거를 유지한다. | 출처 누락, 생성물과 원본 혼동, 실행하지 않은 검증 보고 |
+
+- train 객체·상황 bank: 학술 조사 프로젝트, 소프트웨어 배포 프로그램, 하천 현장조사 캠페인, 공공조달 절차, 보안사고 대응, 다매체 콘텐츠 제작, 내부통제 감사, 지역복지 프로그램, 데이터센터 이전
+- validation 신규 객체·상황 bank: 남극 보급 운영, 독립영화제 운영, 습지 복원 협업, 전파망원경 유지보수, 난민지원 거점 운영
+- pilot 예약: `S9-A01-T-001`, `S9-A03-T-001`, `S9-A06-T-001`, `S9-A01-V-001`
+- contingency domain bank: 선거 관찰 임무, 오픈소스 학술대회, 산호 양묘장 운영, 비상 통신망 전개, 공공 지도 갱신
+- 상태: 250개 primary family와 25개 비활성 reserve family 예약 완료, corpus 미생성.
+
+## 38. Stage 10 — 통합 전문 수행·장기 안전 자율성
+
+도메인 지식, 추론, 도구, 협업과 검증을 장기 목표 아래 통합하면서 적대적 조건과 안전 경계를 관리한다.
+
+| 교육# / slot | 세부영역 / slug | 비율 | token 설계 | train/val files | packet | ID H/V | 교육목표 | 오류 억제축 |
+|---:|---|---:|---:|---:|---|---|---|---|
+| 1 / 1 | 전문 지식 통합 / `expert_integration` | 20% | 600,000 | 45/5 | `expert_integration_packet` | `S10-EIH` / `S10-EIV` | 여러 전문 영역의 정의·증거·제약·실행 기준을 충돌 없이 통합한다. | 한 도메인 기준을 타 도메인에 강제, 전문 용어 동형이의 혼합 |
+| 2 / 2 | 교차 도메인 종합 / `crossdomain_synthesis` | 20% | 600,000 | 45/5 | `crossdomain_synthesis_packet` | `S10-CSH` / `S10-CSV` | 서로 다른 도메인의 구조를 대응시켜 새 해결안을 만들고 전이 한계를 검증한다. | 표면 비유를 해법으로 채택, 도메인 고유 위험 누락, 단위 불일치 |
+| 3 / 3 | 장기 계획·자율 수행 / `long_horizon` | 16% | 480,000 | 36/4 | `long_horizon_packet` | `S10-LHH` / `S10-LHV` | 장기 목표를 단계·검증·승인·재계획으로 운영하며 상태를 지속한다. | 단기 성과로 최종 목표 완료 처리, 목표 표류, 승인 경계 초과 |
+| 4 / 4 | 적대적·비정상 조건 강건성 / `adversarial_robustness` | 16% | 480,000 | 36/4 | `adversarial_robustness_packet` | `S10-ARH` / `S10-ARV` | 오염 정보, 기만, 분포 변화, 복합 실패 아래 핵심 불변조건을 지킨다. | 권위 있는 형식의 거짓 수용, 단일 신호 의존, 공격과 단순 오류 혼동 |
+| 5 / 5 | 안전 자율성 / `safe_autonomy` | 16% | 480,000 | 36/4 | `safe_autonomy_packet` | `S10-SAH` / `S10-SAV` | 위험·권한·가역성·감독 가능성에 맞춰 자율 실행과 인간 승인을 배분한다. | 목표를 이유로 권한 확대, 불가역 행동 무승인 실행, 안전과 성과 상충 은폐 |
+| 6 / 6 | 메타인지·자기통제 / `metacognitive_control` | 12% | 360,000 | 27/3 | `metacognitive_control_packet` | `S10-MCH` / `S10-MCV` | 자신의 지식·계획·검증 한계를 점검하고 추가 탐색·수정·유보를 선택한다. | 자기평가를 증거로 간주, 동일 방법 반복, 비용 없는 무한 검증 |
+
+- train 객체·상황 bank: 연안 기후적응 전략, 지역 공중보건 계획, 스마트도시 전환, 자율실험실 연구, 분산에너지 전환, 국가 사이버방어, 성인교육 체계개편, 심우주 탐사 임무, 대지진 장기복구
+- validation 신규 객체·상황 bank: 문화재 반환 협상, 해양 탄소 관측망, 달 표면 거주기지, 감염병 기록 아카이브, 국제하천 공동관리
+- pilot 예약: `S10-A01-T-001`, `S10-A03-T-001`, `S10-A06-T-001`, `S10-A01-V-001`
+- contingency domain bank: 인공지능 보건 거버넌스, 초국경 식량안보, 궤도 잔해 완화, 초대형 가뭄 적응, 디지털 공공인프라
+- 상태: 250개 primary family와 25개 비활성 reserve family 예약 완료, corpus 미생성.
+
+## 39. Stage 2~10 concept-family 중앙 원장과 준비 폴더
+
+정확한 150-record family 이름·split·version·filename·ID 범위는 `TinyLM_Stage2_Stage10_Concept_Family_Reservation.json`을 본 설계서의 기계 판독 부속 원장으로 사용한다. 요약표만으로 family를 다시 선정하지 않는다.
+
+| 항목 | 실측 |
+|---|---:|
+| primary reservation | 2,250 |
+| primary train / validation | 2,025 / 225 |
+| Stage별 primary | 250 |
+| Stage별 train / validation | 225 / 25 |
+| contingency reserve | 225 = Stage별 25 |
+| reservation ID 중복 | 0 |
+| filename 중복 | 0 |
+| exact·정규화 family 중복 | 0 |
+| primary–reserve 정규화 overlap | 0 |
+| Stage별 train–validation domain overlap | 0 |
+| relation focus의 통제 어휘 밖 값 | 0 |
+| Stage2 legacy filename 충돌 | 0 |
+| corpus text 생성 | 0 |
+
+중앙 원장 SHA-256은 `823881a7d7074d2c5e3c54a9c732262004ddabf7b4fade75825a963a58346c99`다. 세부 사람이 읽는 설계·검토본은 `TinyLM_Stage2_Stage10_Curriculum_and_Family_Reservation_Draft.md`에 보존한다.
+
+TinyDataset 최상위에 `stage2_highdensity_dataset/`부터 `stage10_highdensity_dataset/`까지 만들었다. 각 폴더는 `train/`, `val/`, `sources/train/`, `sources/val/`, `tools/`, `audit_reports/machine/`, `audit_reports/archive/`, `README.md`, `PREPARATION_MANIFEST.json`을 가진다. 각 manifest는 중앙 원장의 해당 Stage 250 primary + 25 reserve row와 중앙 SHA를 보존한다. 현재 모든 Stage의 train/val corpus JSON 수는 0이며 상태는 `PREPARED_NO_CORPUS_GENERATED`다.
+
+중앙 원장이나 manifest의 family는 tokenizer gate와 사용자 승인 없이 삭제·재배치·재사용하지 않는다. contingency에는 승인 전 ID·version·filename을 부여하지 않는다.
+
+준비 상태의 기계 감사 정본은 `audit_reports/machine/TinyLM_Stage2_10_Preparation_Audit_2026-09-01.json`이며 verdict는 `PASS`다. Identity 통제 필드 추가까지 끝난 뒤 저밀도 31파일, 요청 범위 밖 Stage1 고밀도 JSON 214파일, Identity 기존 필드 투영 41파일, Identity validation 4파일과 Stage2~10 무코퍼스 상태를 다시 대조한 최종 보호 감사도 `audit_reports/machine/TinyLM_Stage2_10_Identity_Final_Protection_Comparison_2026-09-01.json`에 `PASS`로 보존한다.

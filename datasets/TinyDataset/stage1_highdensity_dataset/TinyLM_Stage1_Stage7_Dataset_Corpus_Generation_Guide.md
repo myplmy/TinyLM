@@ -1,8 +1,10 @@
-# TinyLM Stage 1~Stage 7 고밀도 데이터셋·Corpus 생성 작업지침서
+# TinyLM Stage 1~Stage 10 고밀도 데이터셋·Corpus 생성 작업지침서
 
 - 문서 역할: 재사용 가능한 생성·분리·감사·보고 규칙의 정본
-- 기준일: 2026-08-31 KST
+- 기준일: 2026-09-01 KST
 - 짝 문서: `TinyLM_Stage1_Stage7_Dataset_Design_Spec.md`
+
+파일명은 기존 링크와 자동화 호환성을 위해 `Stage1_Stage7`을 유지하지만, 이 지침의 적용 범위는 Stage 1~10 고밀도 데이터셋이다.
 
 이 문서는 특정 버전의 생성 이력이나 감사 수치를 보관하지 않는다. token 배분, 현재 완료 파일, ID 범위, 예약 concept family, relations 실측 분포, 감사 결과와 수정 금지 목록은 짝 문서인 데이터셋 설계서에서 관리한다. 새 corpus 작업자는 **작업지침서와 설계서를 모두 완독**한 뒤 실제 파일을 감사하고 시작한다.
 
@@ -92,19 +94,21 @@ TRAIN → VALIDATION → CHECKPOINT SELECTION → FINAL MODEL FIXED → HELD-OUT
 
 ## 5. 디렉터리와 파일명 규약
 
-기준 구조:
+기준 구조(각 `<S>`는 Stage 번호):
 
 ```text
-stage1_highdensity_dataset/
+stage<S>_highdensity_dataset/
 ├── train/
 ├── val/
+├── sources/train/
+├── sources/val/
 ├── tools/
-├── tools/<area>_sources/
-├── TinyLM_Stage1_Stage7_Dataset_Corpus_Generation_Guide.md
-└── TinyLM_Stage1_Stage7_Dataset_Design_Spec.md
+└── audit_reports/
 ```
 
-영역 slug:
+공통 작업지침서와 설계서는 하위 Stage 폴더마다 복제하지 않고 `stage1_highdensity_dataset/`의 정본을 참조한다. Stage 2~10의 정확한 세부영역 slug, packet type, ID prefix, 150-record concept-family 예약은 설계서와 `TinyLM_Stage2_Stage10_Concept_Family_Reservation.json`에서 관리한다.
+
+Stage 1 영역 slug:
 
 ```text
 (1) identity  = 대상·정체성·분류
@@ -113,11 +117,11 @@ stage1_highdensity_dataset/
 (4) boundary  = 개념 경계·반례
 ```
 
-파일명 pattern:
+전체 Stage 파일명 pattern:
 
 ```text
-stage1_(N)<slug>_high_density_train_vNN.json
-stage1_(N)<slug>_high_density_val_vNN.json
+stage<S>_(N)<slug>_high_density_train_vNN.json
+stage<S>_(N)<slug>_high_density_val_vNN.json
 ```
 
 강제 규칙:
@@ -127,7 +131,7 @@ stage1_(N)<slug>_high_density_val_vNN.json
 - 150개를 넘기지 않고 다음 version으로 이동한다.
 - 각 version은 예약표의 한 concept family만 담당한다.
 - filename, top-level `version`, `split`, 영역 slug가 일치해야 한다.
-- 새 영역 slug나 prefix는 설계서에 먼저 등록한 뒤 사용한다.
+- 새 Stage·영역 slug나 prefix는 설계서와 concept-family 예약 원장에 먼저 등록한 뒤 사용한다.
 
 ## 6. ID 규약
 
@@ -154,12 +158,12 @@ train prefix != validation prefix
 
 ```json
 {
-  "dataset_name": "Korean AI Curriculum — Stage 1 <Area> High-Density Train 150 v01",
+  "dataset_name": "Korean AI Curriculum — Stage <S> <Area> High-Density Train 150 v01",
   "version": "1",
   "purpose": "해당 concept family의 학습 목적",
   "split": "train",
   "record_count": 150,
-  "range": "S1-XXX-0001 ~ S1-XXX-0150",
+  "range": "S<S>-XXX-0001 ~ S<S>-XXX-0150",
   "concept_family": "설계서에 예약된 concept family",
   "design_note": "포함 축과 경계",
   "records": []
@@ -170,12 +174,12 @@ train prefix != validation prefix
 
 ```json
 {
-  "dataset_name": "Korean AI Curriculum — Stage 1 <Area> High-Density Validation 150 v01",
+  "dataset_name": "Korean AI Curriculum — Stage <S> <Area> High-Density Validation 150 v01",
   "version": "1",
   "purpose": "새 concept family에서 일반화를 검증하는 목적",
   "split": "val",
   "record_count": 150,
-  "range": "S1-XXV-0001 ~ S1-XXV-0150",
+  "range": "S<S>-XXV-0001 ~ S<S>-XXV-0150",
   "concept_family": "train과 분리된 concept family",
   "design_note": "일반화 축과 분리 기준",
   "generalization_slice": {
@@ -203,7 +207,7 @@ train prefix != validation prefix
 
 ```json
 {
-  "id": "S1-XXX-0001",
+  "id": "S<S>-XXX-0001",
   "type": "<area>_packet",
   "split": "train",
   "text": "직접 작성한 한국어 의미 문장",
@@ -216,7 +220,7 @@ train prefix != validation prefix
 
 ```json
 {
-  "id": "S1-XXV-0001",
+  "id": "S<S>-XXV-0001",
   "type": "<area>_packet",
   "split": "val",
   "text": "train과 분리된 새 문장",
@@ -247,7 +251,7 @@ train prefix != validation prefix
 | Function | `function_packet` | `function` |
 | Boundary | `boundary_packet` | `boundary` |
 
-Identity legacy schema는 실제 정본을 따르며 다른 영역 schema로 일괄 변환하지 않는다.
+Identity legacy schema는 실제 정본을 따르며 다른 영역 schema로 일괄 변환하지 않는다. 특히 Identity train v01~v41의 현재 정본에는 2026-09-01 승인·감사를 마친 `relations_controlled`가 추가되어 있다. 이 배열은 원본 `relations`와 길이·위치가 같은 1:1 투영이고 값은 13개 통제어휘만 허용한다. 다대일 투영으로 같은 통제 라벨이 한 레코드 안에 반복될 수 있는 것은 legacy 가역성 예외이며, 원본 `relations`와 모든 기존 field는 수정하지 않는다.
 
 ## 9. Relations 통제 어휘 — 13개 고정
 
@@ -280,6 +284,8 @@ Identity legacy schema는 실제 정본을 따르며 다른 영역 schema로 일
 7. record 안에서 같은 relation을 두 번 쓰지 않는다.
 8. 수량을 맞추려고 text에 없는 relation을 붙이지 않는다.
 9. relation 순서만 바꾼 것은 새 relation-set이 아니다.
+
+위 6~7번은 새 corpus 생성 규칙이다. 확정 Identity의 positional `relations_controlled`에는 §8의 가역성 예외를 적용하며, 이를 근거로 신규 record의 2~5개·중복 금지 규칙을 완화하지 않는다.
 
 과거에 쓰인 `degree`, `measurement`, `capability`, `threshold`, `anti_overgeneralization`, `attribute_vs_category`, `necessary_condition` 같은 자유 이름은 신규 고밀도 metadata에서 금지한다. 실제 의미에 따라 통제 어휘로 보수적으로 표현한다.
 
@@ -546,6 +552,7 @@ other
 - 전체 폴더를 재직렬화하거나 일괄 이동하지 않는다.
 - 대상 version 밖 파일을 builder가 덮어쓰지 않게 출력 path를 제한한다.
 - 기존 source와 겹치는 파일을 수정해야 하면 먼저 실제 diff와 권한 범위를 확인한다.
+- 사용자가 보호 파일에 대한 명시적 단일 예외를 승인하면 대상 field·파일을 좁혀 기록하고, 변경 전 기존-field canonical projection SHA를 보존하며, 허용되지 않은 split·field는 raw SHA로 보호한다. 예외 감사가 끝나면 다시 수정 금지로 돌린다.
 - 임시 감사 산출물은 정본과 구분한다.
 - destructive 명령, broad delete, reset을 사용하지 않는다.
 
