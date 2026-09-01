@@ -250,7 +250,18 @@ Relations: `is_a` 0, `subclass_of` 0, `part_of` 73, `classification` 18, `bounda
 - `stage1_(3)function_high_density_val_v01.json`~`v03.json`
 - `stage1_(4)boundary_high_density_train_v01.json`~`v31.json`
 - `stage1_(4)boundary_high_density_val_v01.json`~`v04.json`
-- `stage1_(5)partwhole_high_density_train_v01.json`~`v12.json`
+- `stage1_(5)partwhole_high_density_train_v01.json`~`v23.json`
+- `stage1_(6)statechange_high_density_train_v01.json`~`v23.json`
+- `stage1_(7)spatial_high_density_train_v01.json`~`v16.json`
+- `stage1_(8)comparison_high_density_train_v01.json`~`v14.json`
+- `stage1_(9)context_high_density_train_v01.json`~`v12.json`
+- `stage1_(10)type_uncertainty_high_density_train_v01.json`~`v09.json`
+- `stage1_(5)partwhole_high_density_val_v01.json`~`v03.json`
+- `stage1_(6)statechange_high_density_val_v01.json`~`v03.json`
+- `stage1_(7)spatial_high_density_val_v01.json`~`v02.json`
+- `stage1_(8)comparison_high_density_val_v01.json`~`v02.json`
+- `stage1_(9)context_high_density_val_v01.json`~`v02.json`
+- `stage1_(10)type_uncertainty_high_density_val_v01.json`
 - held-out benchmark는 source로 사용하지 않고 열람 결과로 corpus를 고치지 않는다.
 
 새 영역 작업은 위 정본의 시작·종료 SHA-256을 비교한다. legacy 형식이 다르다는 이유로 재직렬화하지 않는다.
@@ -290,57 +301,23 @@ TinyLM_Stage1_Boundary_Validation_v01_v04_Audit_2026-08-31.json
 TinyLM_Stage1_Boundary_Validation_v01_v04_Final_Report_2026-08-31.md
 tools/build_stage1_relational_train.py
 tools/audit_stage1_relational_train.py
-tools/stage1_relational_sources/partwhole/v01.tsv
-tools/stage1_relational_sources/partwhole/v02.tsv
-tools/stage1_relational_sources/partwhole/v03.tsv
-tools/stage1_relational_sources/partwhole/v04.tsv
-tools/stage1_relational_sources/partwhole/v05.tsv
-tools/stage1_relational_sources/partwhole/v06.tsv
-tools/stage1_relational_sources/partwhole/v07.tsv
-tools/stage1_relational_sources/partwhole/v08.tsv
-tools/stage1_relational_sources/partwhole/v09.tsv
-tools/stage1_relational_sources/partwhole/v10.tsv
-tools/stage1_relational_sources/partwhole/v11.tsv
-tools/stage1_relational_sources/partwhole/v12.tsv
-tools/stage1_relational_sources/partwhole/v13.tsv
-tools/stage1_relational_sources/partwhole/v14.tsv
-tools/stage1_relational_sources/partwhole/v15.tsv
-tools/stage1_relational_sources/partwhole/v16.tsv
-tools/stage1_relational_sources/partwhole/v17.tsv
-tools/stage1_relational_sources/partwhole/v18.tsv
-tools/stage1_relational_sources/partwhole/v19.tsv
-tools/stage1_relational_sources/partwhole/v20.tsv
-tools/stage1_relational_sources/partwhole/v21.tsv
-tools/stage1_relational_sources/partwhole/v22.tsv
-tools/stage1_relational_sources/partwhole/v23.tsv
-TinyLM_Stage1_PartWhole_Train_v01_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v02_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v03_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v04_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v05_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v06_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v07_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v08_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v09_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v10_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v11_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v12_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v13_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v14_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v15_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v16_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v17_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v18_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v19_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v20_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v21_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v22_Progress_Audit_2026-08-31.json
-TinyLM_Stage1_PartWhole_Train_v01_v23_Final_Audit_2026-08-31.json
-TinyLM_Stage1_5_10_Train_Reservation_and_PartWhole_v01_Progress_Report_2026-08-31.md
-TinyLM_Stage1_5_10_Train_PartWhole_v01_v03_Progress_Report_2026-08-31.md
-TinyLM_Stage1_5_10_Train_PartWhole_v01_v05_Progress_Report_2026-08-31.md
-TinyLM_Stage1_5_10_Train_PartWhole_v01_v08_Progress_Report_2026-08-31.md
-TinyLM_Stage1_5_10_Train_PartWhole_v01_v10_Progress_Report_2026-08-31.md
+tools/stage1_relational_sources/{partwhole,statechange,spatial,comparison,context,type_uncertainty}/vNN.tsv
+tools/build_stage1_relational_validation.py
+tools/audit_stage1_relational_validation.py
+tools/assemble_stage1_5_10_audit_reports.py
+tools/stage1_relational_validation_sources/{partwhole,statechange,spatial,comparison,context,type_uncertainty}/vNN.tsv
+audit_reports/README.md
+audit_reports/Stage1_(5-10)_CrossArea_Consolidated_Audit.md
+audit_reports/Stage1_(5)_PartWhole_Consolidated_Audit.md
+audit_reports/Stage1_(6)_StateChange_Consolidated_Audit.md
+audit_reports/Stage1_(7)_Spatial_Consolidated_Audit.md
+audit_reports/Stage1_(8)_Comparison_Consolidated_Audit.md
+audit_reports/Stage1_(9)_Context_Consolidated_Audit.md
+audit_reports/Stage1_(10)_TypeUncertainty_Consolidated_Audit.md
+audit_reports/machine/TinyLM_Stage1_*_Train_*_Final_Audit_*.json
+audit_reports/machine/TinyLM_Stage1_5_10_Validation_Final_Audit_2026-09-01.json
+audit_reports/machine/TinyLM_Stage1_5_10_Validation_Protected_Baseline_Comparison_2026-09-01.json
+audit_reports/archive/<area>/... (과거 progress 감사·보고서)
 ```
 
 과거 handoff의 v18 재작성 전 상태와 삭제 예정이던 continuity summary의 v17 누적은 역사적 기록이다. 현재 상태는 실제 파일과 위 최신 감사가 기준이다.
@@ -352,7 +329,8 @@ TinyLM_Stage1_5_10_Train_PartWhole_v01_v10_Progress_Report_2026-08-31.md
 - Function train v01~v27, validation v01~v03: 완료·수정 금지
 - Stage1 (4) Boundary train v01~v31: 4,650 records 완료·감사 통과·수정 금지
 - Stage1 (4) Boundary validation v01~v04: 600 records 완료·감사 통과·수정 금지
-- Stage1 (5)~(10) train: §14~§20의 97개 family 예약 완료; Stage1 (5) v01~v23 3,450 records 완료·감사 통과·수정 금지, 다음은 Stage1 (6) v01
+- Stage1 (5)~(10) train: §14~§20의 97개 family, 14,550 records 전체 완료·감사 통과·수정 금지
+- Stage1 (5)~(10) validation: §21~§28의 13개 신규 family, 13 files·1,950 records 완료·감사 통과·수정 금지; 각 파일 18개, 전체 234개(12.00%)를 relation-set 일반화 slice로 확정
 - 다음 미확정 Stage·validation은 사용자 승인과 별도 family 원장 없이 시작하지 않는다.
 
 ## 12. Stage1 (4) 개념 경계·반례 train 설계 원장
@@ -549,7 +527,7 @@ Primary concept 직후 조사 오류는 0건이다. 문장 전체의 기계 조�
 
 ## 14. Stage1 (5)~(10) train 공통 등록
 
-사용자 지정 총량은 14,550 records, 97 files, 설계 환산 1,260K다. 각 파일은 정확히 150 records이며 아래 예약 family 하나만 담당한다. 이 수치는 train에 대한 직접 지정값이고, validation 수량·family·ID는 아직 승인되지 않았으므로 만들지 않는다.
+사용자 지정 train 총량은 14,550 records, 97 files, 설계 환산 1,260K다. 각 파일은 정확히 150 records이며 아래 예약 family 하나만 담당한다. Stage1 (5)~(10) validation은 2026-09-01에 별도로 승인되었고 §21~§27의 신규 family와 ID를 따른다.
 
 | 영역 | slug / type | ID prefix | 목표 | 설계량 | 영역 관계 규약 |
 |---|---|---|---:|---:|---|
@@ -650,7 +628,7 @@ Relations 누적은 `is_a` 21, `subclass_of` 30, `part_of` 3,450, `classificatio
 
 최종 통합 재감사에서 JSON·UTF-8·schema·metadata·ID·source 대응·relations 오류는 모두 0건이다. exact ID/concept/text/concept–relation-set 중복은 내부 및 현 시점 기존 고밀도 32,800 records와의 교차 비교에서 모두 0건이고, 내부·교차 반복 5어절과 반복 4어절 도입부도 0건이다. primary concept 직후 조사 오류와 실제 광역 조사 오류는 0건이다. 광역 조사 후보 33건은 모두 실제 조사 오류가 아닌 어휘 말음 오탐이다. 내부 최대 문자 3~5-gram TF-IDF cosine은 `0.342280`, 기존 고밀도 대비 최대는 `0.324924`다. v23 source는 다섯 하위축 각 30행, 최소 82자를 만족했고 초안의 비통제 relation 2건을 `other`로 교정한 뒤 첫 실제 누적 감사에서 모든 항목을 통과했다.
 
-상세 결과는 `TinyLM_Stage1_PartWhole_Train_v01_v23_Final_Audit_2026-08-31.json`에 보존한다. 전체 생성 시작 시 고정한 기존 정본 146개는 v23 확정 직후 146/146 SHA-256이 일치했고, 빌더는 Part–Whole v01~v22의 source 재구성 기대 bytes와 기존 JSON 일치를 확인한 뒤 v23만 기록했다. v01~v23은 이 절과 §9의 정본이며 Stage1 (5)는 완료됐다. 다음 재개점은 Stage1 (6) v01 `물질의 고체·액체·기체·상전이 상태`다.
+상세 결과는 `audit_reports/machine/TinyLM_Stage1_PartWhole_Train_v01_v23_Final_Audit_2026-08-31.json`과 `audit_reports/Stage1_(5)_PartWhole_Consolidated_Audit.md`에 보존한다. 전체 생성 시작 시 고정한 기존 정본 146개는 v23 확정 직후 146/146 SHA-256이 일치했고, 빌더는 Part–Whole v01~v22의 source 재구성 기대 bytes와 기존 JSON 일치를 확인한 뒤 v23만 기록했다. v01~v23은 이 절과 §9의 정본이며 Stage1 (5)는 완료됐다.
 
 ## 16. Stage1 (6) 상태·상태 변화 train 설계 원장
 
@@ -695,7 +673,7 @@ type/split: statechange_packet / train
 - `other` 유형 분포: 잠재·관측 상태 121, 전이 촉발 조건 44, 생명주기 상태 25, 회복·저하 5, 가역 범위 3.
 - 최종 감사: JSON/스키마/메타데이터/통제어휘/ID/원본-JSON 대응 오류 0, 정확 개념·문장 중복 0, 내부·교차 5어절 반복 0, 반복 시작구 0, 개념 조사 오류 0.
 - 유사도 상한 관측: 내부 0.356120, 기존 고밀도 교차 0.299638. 광범위 조사 후보 44건은 문맥상 정상인 일반어 탐지 오탐이다.
-- 정본 감사 파일: `TinyLM_Stage1_StateChange_Train_v01_v23_Final_Audit_2026-09-01.json`.
+- 정본 감사 파일: `audit_reports/machine/TinyLM_Stage1_StateChange_Train_v01_v23_Final_Audit_2026-09-01.json`, 통합 보고서 `audit_reports/Stage1_(6)_StateChange_Consolidated_Audit.md`.
 - 이 절의 v01~v23 JSON과 대응 TSV는 확정 보호 대상으로 취급하며 후속 영역 생성 중 수정하지 않는다.
 
 ## 17. Stage1 (7) 공간 관계 train 설계 원장
@@ -734,7 +712,7 @@ type/split: spatial_packet / train
 - `other` 유형 분포: 포함·위치 480, 방향·순서 480, 인접·연결 480, 거리·근접 480, 기준계·투영 480.
 - 최종 감사: JSON/스키마/메타데이터/통제어휘/ID/source 대응 오류 0, 정확 개념·문장·개념-relation-set 중복 0, 내부·교차 5어절 반복 0, 반복 시작구 0, 개념 조사 오류 0.
 - 문자 3~5-gram TF-IDF cosine 상한은 내부 0.348472, 기존 고밀도 교차 0.220711이다.
-- 정본 감사 파일: `TinyLM_Stage1_Spatial_Train_v01_v16_Final_Audit_2026-09-01.json`.
+- 정본 감사 파일: `audit_reports/machine/TinyLM_Stage1_Spatial_Train_v01_v16_Final_Audit_2026-09-01.json`, 통합 보고서 `audit_reports/Stage1_(7)_Spatial_Consolidated_Audit.md`.
 - 이 절의 v01~v16 JSON과 대응 TSV는 확정 보호 대상으로 취급하며 후속 영역 생성 중 수정하지 않는다.
 
 ## 18. Stage1 (8) 비교·대조 train 설계 원장
@@ -772,7 +750,7 @@ type/split: comparison_packet / train
 - 텍스트: 168,771자 / 정규식 분리 단위 39,297개. 길이는 최소 63자, 중앙값 80자, 평균 80.367자, 최대 107자다.
 - 최종 감사: JSON/스키마/메타데이터/통제어휘/ID/source 대응 오류 0, 정확 개념·문장·개념-relation-set 중복 0, 내부·교차 5어절 반복 0, 반복 시작구 0, 개념 조사 오류 0.
 - 문자 3~5-gram TF-IDF cosine 상한은 내부 0.324903, 기존 고밀도 교차 0.418577이다.
-- 정본 감사 파일: `TinyLM_Stage1_Comparison_Train_v01_v14_Final_Audit_2026-09-01.json`.
+- 정본 감사 파일: `audit_reports/machine/TinyLM_Stage1_Comparison_Train_v01_v14_Final_Audit_2026-09-01.json`, 통합 보고서 `audit_reports/Stage1_(8)_Comparison_Consolidated_Audit.md`.
 - 이 절의 v01~v14 JSON과 대응 TSV는 확정 보호 대상으로 취급하며 후속 영역 생성 중 수정하지 않는다.
 
 ## 19. Stage1 (9) 문맥 통합 train 설계 원장
@@ -810,7 +788,7 @@ type/split: context_packet / train
 - 텍스트 규모: 140,702 characters, 29,367 whitespace word units. 길이는 최소 55자, 중앙값 79자, 평균 78.168자, 최대 97자다. 모든 record는 직접 작성 원문이며 source와 JSON 텍스트가 일치한다.
 - 최종 감사: schema·metadata·relation·source parse·source/JSON 불일치·ID/primary/text/concept-relation 중복·제어/이상 문자·5어절 반복·개념 조사 문제 모두 0건. 광범위 조사 후보 3건은 `관계없는`, `전문가`, `손상평가`의 정상 어휘 오탐이다.
 - 유사도: 현 영역 내부 최고 0.359749, 기존 고밀도 train/val과의 최고 0.184556. 저밀도와 held-out은 비교 대상에서 제외했다.
-- 확정 감사 파일: `TinyLM_Stage1_Context_Train_v01_v12_Final_Audit_2026-09-01.json`.
+- 확정 감사 파일: `audit_reports/machine/TinyLM_Stage1_Context_Train_v01_v12_Final_Audit_2026-09-01.json`, 통합 보고서 `audit_reports/Stage1_(9)_Context_Consolidated_Audit.md`.
 - 이 절의 v01~v12 JSON과 대응 TSV는 확정 보호 대상으로 취급하며 후속 영역 생성 중 수정하지 않는다.
 
 ## 20. Stage1 (10) 타입·부정·불확실성 train 설계 원장
@@ -844,5 +822,146 @@ type/split: type_uncertainty_packet / train
 - 최종 감사: schema·metadata·relation·source parse·source/JSON 불일치·ID/primary/text/concept-relation 중복·제어문자·5어절 반복·반복 시작구·개념 조사 문제 모두 0건.
 - 이상 문자 후보 1건은 오차 범위를 나타내는 정상 기호 `±`이고, 광범위 조사 후보 9건은 `뒤집는`, `비전문가`, `모르겠는가`, `무엇인가`, `영측정센서바닥효과`, `전문가`의 정상 형태에 대한 오탐이다.
 - 문자 3~5-gram TF-IDF cosine 상한은 내부 0.392918, 기존 고밀도 train/val 교차 0.289830이다. 저밀도와 held-out은 비교 대상에서 제외했다.
-- 확정 감사 파일: `TinyLM_Stage1_TypeUncertainty_Train_v01_v09_Final_Audit_2026-09-01.json`.
+- 확정 감사 파일: `audit_reports/machine/TinyLM_Stage1_TypeUncertainty_Train_v01_v09_Final_Audit_2026-09-01.json`, 통합 보고서 `audit_reports/Stage1_(10)_TypeUncertainty_Consolidated_Audit.md`.
 - 이 절의 v01~v09 JSON과 대응 TSV는 확정 보호 대상으로 취급하며 후속 영역 생성 중 수정하지 않는다.
+
+## 21. Stage1 (5)~(10) validation 공통 등록
+
+사용자 지정 validation 총량은 1,950 records, 13 files이며 모든 파일은 정확히 150 records와 하나의 신규 concept family를 담는다. 저밀도 데이터셋과 held-out benchmark는 family 선정·문장 작성·중복 비교의 근거로 쓰지 않는다. 각 영역의 train 정본과 기존 고밀도 validation만 분리 기준으로 삼는다.
+
+| 영역 | slug / type | ID prefix | 목표 | 설계량 | version |
+|---|---|---|---:|---:|---|
+| (5) 부분–전체 | `partwhole` / `partwhole_packet` | `S1-PWV-` | 450 = 3×150 | 약 30K | v01~v03 |
+| (6) 상태·상태 변화 | `statechange` / `statechange_packet` | `S1-SCV-` | 450 = 3×150 | 약 30K | v01~v03 |
+| (7) 공간 관계 | `spatial` / `spatial_packet` | `S1-SPV-` | 300 = 2×150 | 약 21K | v01~v02 |
+| (8) 비교·대조 | `comparison` / `comparison_packet` | `S1-COV-` | 300 = 2×150 | 약 18K | v01~v02 |
+| (9) 문맥 통합 | `context` / `context_packet` | `S1-CTV-` | 300 = 2×150 | 약 15K | v01~v02 |
+| (10) 타입·부정·불확실성 | `type_uncertainty` / `type_uncertainty_packet` | `S1-TUV-` | 150 = 1×150 | 약 12K | v01 |
+
+파일명은 `stage1_(N)<slug>_high_density_val_vNN.json` 형식이다. record key는 `id`, `type`, `split`, `text`, `concepts`, `relations`, `unseen_relation`만 허용하고 `split`은 `val`이다. relation은 13개 통제 어휘에서 2~5개를 중복 없이 사용하며 각 영역의 train 의미 규약도 그대로 적용한다.
+
+### 21.1 train–validation 분리와 일반화 slice
+
+- train과 정확히 같은 `text`, primary concept, `primary concept + 정렬 relation-set` 조합을 금지한다.
+- train 문장을 단순 치환·어순 변경한 문장과 공통 5어절 연쇄를 금지하고, 내부 및 기존 고밀도 전체와의 문자 3~5-gram 유사도 상위 쌍을 사람이 검토한다.
+- `unseen_relation: false`는 해당 영역 train에 관측된 정렬 relation-set만 쓴다.
+- `unseen_relation: true`는 개별 relation 이름은 해당 영역 train에 이미 관측되었지만, 그 정렬 relation-set 조합은 해당 영역 train에 없도록 한다. 이는 통제 어휘 밖의 새 이름을 뜻하지 않는다.
+- 각 파일은 true 18개, false 132개로 고정한다. 전체 true는 234/1,950 = 12.00%이며 사용자 지정 10~15% 범위 안이다.
+- true/false 어느 쪽도 train과 같은 교육 객체를 재사용하지 않는다. family가 새롭더라도 세부 primary concept가 기존 고밀도와 겹치면 직접 교체한다.
+
+## 22. Stage1 (5) 부분–전체 validation 설계 원장
+
+```text
+파일: stage1_(5)partwhole_high_density_val_v01.json ... v03.json
+ID: S1-PWV-0001 ... S1-PWV-0450
+type/split: partwhole_packet / val
+필수 의미: 모든 record에 part_of, 부분과 전체의 방향 및 상속 한계 명시
+```
+
+| version | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 도서관 장서·서지레코드·권호·대출 단위 구성 | 컬렉션/자료, 서지/판·권호, 권/복본, 청구기호, 대출 묶음 | 확정 |
+| v02 | 0151~0300 | 의류 패턴·재단 조각·봉제 부품·완제품 구성 | 패턴/조각, 몸판·소매, 여밈·안감, 봉제선, 세트/단품 | 확정 |
+| v03 | 0301~0450 | 우편물·행낭·운송편·배달구역 물류 구성 | 내용물/우편물, 묶음/행낭, 행낭/운송편, 구역/경로, 배달 단위 | 확정 |
+
+## 23. Stage1 (6) 상태·상태 변화 validation 설계 원장
+
+```text
+파일: stage1_(6)statechange_high_density_val_v01.json ... v03.json
+ID: S1-SCV-0001 ... S1-SCV-0450
+type/split: statechange_packet / val
+필수 의미: 모든 record에 state와 process, 전후 상태와 전이 조건 명시
+```
+
+| version | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 박물관 유물 보존처리·안정화·복원·수장 상태 변화 | 입수·격리, 조사, 세척·안정화, 복원, 전시·수장 전환 | 확정 |
+| v02 | 0151~0300 | 공연 제작·연습·무대전환·개막·철거 상태 변화 | 기획·캐스팅, 연습, 기술 리허설, 공연, 장면 전환·철거 | 확정 |
+| v03 | 0301~0450 | 법원 사건 접수·배당·심리·판결·종결 상태 변화 | 접수·보정, 배당, 송달, 심리, 선고·확정·종결 | 확정 |
+
+## 24. Stage1 (7) 공간 관계 validation 설계 원장
+
+```text
+파일: stage1_(7)spatial_high_density_val_v01.json ... v02.json
+ID: S1-SPV-0001 ... S1-SPV-0300
+type/split: spatial_packet / val
+필수 의미: 모든 record에 other; 부분 관계와 단순 위치를 구별
+```
+
+| version | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 스포츠 경기장·코트·선수·공·판정구역 공간 관계 | 선 안팎, 진영, 선수 기준 좌우, 공의 접촉·가림, 판정 기준면 | 확정 |
+| v02 | 0151~0300 | 지하광산 갱도·작업면·환기구·운반로 공간 관계 | 갱구 기준 깊이, 상·하부 갱도, 교차·분기, 통기 연결, 대피 거리 | 확정 |
+
+## 25. Stage1 (8) 비교·대조 validation 설계 원장
+
+```text
+파일: stage1_(8)comparison_high_density_val_v01.json ... v02.json
+ID: S1-COV-0001 ... S1-COV-0300
+type/split: comparison_packet / val
+필수 의미: 모든 record에 comparison 또는 contrast; 비교 축·단위·조건 명시
+```
+
+| version | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 음악 연주·녹음의 음높이·음량·템포·균형 비교 | 기준음, 상대 음량, 평균/순간 템포, 음색, 채널·공간 균형 | 확정 |
+| v02 | 0151~0300 | 농산물 경매·품질등급·가격·수율·보관성 비교 | 규격·등급, 단위가격, 수율, 결점률, 저장 조건·기간 | 확정 |
+
+## 26. Stage1 (9) 문맥 통합 validation 설계 원장
+
+```text
+파일: stage1_(9)context_high_density_val_v01.json ... v02.json
+ID: S1-CTV-0001 ... S1-CTV-0300
+type/split: context_packet / val
+필수 의미: 3~6개 literal concept와 3~5개 relation으로 사람·대상·위치·시간·행동·결과 연결
+```
+
+| version | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 영화 촬영 현장의 장면·배우·소품·카메라·촬영순서 상황 | 콜시트, 배우, 소품, 카메라, 테이크, 연속성·재촬영 | 확정 |
+| v02 | 0151~0300 | 선거 투표소의 유권자·명부·투표용지·투표함·참관 상황 | 신원 확인, 명부, 용지 교부, 기표·투입, 참관·마감 | 확정 |
+
+## 27. Stage1 (10) 타입·부정·불확실성 validation 설계 원장
+
+```text
+파일: stage1_(10)type_uncertainty_high_density_val_v01.json
+ID: S1-TUV-0001 ... S1-TUV-0150
+type/split: type_uncertainty_packet / val
+필수 의미: 모든 record에 other와 classification·boundary·state 중 하나 이상
+```
+
+| version | ID 범위 | 예약 concept family | 포함 축 | 상태 |
+|---|---|---|---|---|
+| v01 | 0001~0150 | 역사연구 사료·증언·연대추정·번역·복원가설 불확실성 판정 | 사료 유형/내용, 부정 범위, 침묵·부재, 연대 구간, 출처 충돌·가설 | 확정 |
+
+## 28. Stage1 (5)~(10) validation 생성·최종 감사 확정 기록 — 2026-09-01
+
+§21~§27의 예약 원장대로 13개 신규 concept family를 실제 파일로 확정했다. 총량은 13 files, 1,950 records, 154,038자, 정규식 분리 단위 34,635개다. 모든 파일은 150 records이며 `unseen_relation: true` 18개와 false 132개를 담는다. 따라서 일반화 slice는 영역별·파일별 12.00%, 전체 234/1,950 = 12.00%다.
+
+| 영역 | 파일/records | ID | 문자/단어 단위 | unseen | validation 내부 최대 cosine | train 교차 최대 cosine |
+|---|---:|---|---:|---:|---:|---:|
+| (5) 부분–전체 | 3 / 450 | `S1-PWV-0001`~`0450` | 36,250 / 8,456 | 54 | 0.262881 | 0.134686 |
+| (6) 상태·상태 변화 | 3 / 450 | `S1-SCV-0001`~`0450` | 34,439 / 7,622 | 54 | 0.267992 | 0.144340 |
+| (7) 공간 관계 | 2 / 300 | `S1-SPV-0001`~`0300` | 22,753 / 5,211 | 36 | 0.314553 | 0.184022 |
+| (8) 비교·대조 | 2 / 300 | `S1-COV-0001`~`0300` | 22,660 / 5,206 | 36 | 0.222778 | 0.174069 |
+| (9) 문맥 통합 | 2 / 300 | `S1-CTV-0001`~`0300` | 23,890 / 4,858 | 36 | 0.260654 | 0.101915 |
+| (10) 타입·부정·불확실성 | 1 / 150 | `S1-TUV-0001`~`0150` | 14,046 / 3,282 | 18 | 0.099034 | 0.130310 |
+
+validation 전체 relations 분포는 `is_a` 0, `subclass_of` 0, `part_of` 454, `classification` 470, `boundary` 698, `contrast` 153, `comparison` 304, `function` 691, `role` 238, `process` 888, `state` 1,094, `attribute` 357, `other` 1,155다. 0회 relation도 누락하지 않았고, 모든 record는 13개 통제 어휘에서 2~5개를 중복 없이 사용한다.
+
+`other` 편집 유형 상위 5개는 다음과 같다.
+
+- (5): 기록 범위·단위 6, 컬렉션 소속·묶음 5, 선택적 구성요소 5, 구성원 예외·비소속 5, 운반체·내용물 범위 4.
+- (6): 측정 한계 4, 관찰·모니터링 불확실성 3, 출처·이력 검토 2, 목록·재고 예외 2, 복원 가설 2.
+- (7): 포함·위치, 방향·순서, 인접·연결, 거리·근접, 기준계·투영이 각각 60.
+- (8): 참조 기준 정규화, 다차원 순위, 상황 의존 순위, 불확실성 구간, 질적 대조가 각각 60.
+- (9): 인과 맥락, 역할 조정, 시간 의존, 자원 제약, 지시 대상 복원이 각각 60.
+- (10): 사료 유형·참조 단위, 부정 범위, 기록의 공백·침묵, 연대 구간·시간 추정, 가설·증거 강도가 각각 30.
+
+최종 통합 감사는 JSON/UTF-8/schema/metadata/ID/source 대응/relations 오류 0, exact ID·primary concept·text·primary–relation-set 중복 0, 대응 train 및 외부 고밀도와의 exact overlap 0을 확인했다. 초안에서 발견한 validation 내부 반복 5어절 13건과 외부 고밀도 교차 5어절 2건은 해당 문장을 직접 다시 표현한 뒤 모두 0건으로 재감사했다. validation 전체 문자 3~5-gram TF-IDF cosine 최대는 0.311151이며 검토 기준 0.72 이상 쌍은 내부와 대응 train 교차 모두 0건이다. primary concept 직결 조사 오류는 0건이다. 광역 조사 후보 25건은 `맞닿는`, `가까이`, `물려받는` 등 정상 용언·복합어·외래어에 대한 자동 탐지 오탐으로 원문 확인했다.
+
+작업 시작 시 존재한 train/val JSON 242개는 종료 시점 SHA-256 대조에서 242/242가 일치했고 변경·누락은 0건이다. 새로 추가된 JSON은 §22~§27의 validation 13개뿐이다. 세부 해시 근거는 `audit_reports/machine/TinyLM_Stage1_5_10_Validation_Protected_Baseline_Comparison_2026-09-01.json`에 보존한다.
+
+`unseen_relation: true`의 모든 개별 label은 대응 train에 이미 있고 정렬 relation-set 조합만 train에 없다. false의 relation-set은 모두 train에 있다. 저밀도와 held-out/evaluation corpus는 생성·family 선정·유사도 비교에서 제외했다.
+
+사람용 정본은 `audit_reports/README.md`와 영역별 통합 보고서 6개다. 기계 감사는 `audit_reports/machine/TinyLM_Stage1_5_10_Validation_Final_Audit_2026-09-01.json`, 과거 진행 감사·보고서는 `audit_reports/archive/`에 보존한다. 생성 source는 `tools/stage1_relational_validation_sources/<slug>/vNN.tsv`, 패키징은 `tools/build_stage1_relational_validation.py`, 재감사는 `tools/audit_stage1_relational_validation.py`를 사용한다. §9에 등록된 새 validation 13파일은 이 절 이후 수정 금지다.

@@ -1,0 +1,2286 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 1 Statechange High-Density Validation 150 v03",
+  "version": "3",
+  "purpose": "새로운 법원 사건 접수·배당·심리·판결·종결 상태 변화 맥락에서 Stage1 (6) 능력의 일반화를 검증하는 validation corpus 150개",
+  "split": "val",
+  "record_count": 150,
+  "range": "S1-SCV-0301 ~ S1-SCV-0450",
+  "concept_family": "법원 사건 접수·배당·심리·판결·종결 상태 변화",
+  "design_note": "접수·보정, 배당, 송달, 심리, 선고·확정·종결",
+  "generalization_slice": {
+    "basis": "controlled relation-set composition unseen in Stage1 (6) train",
+    "unseen_records": 18,
+    "total_records": 150,
+    "ratio": 0.12
+  },
+  "records": [
+    {
+      "id": "S1-SCV-0301",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "소장작성중에서제출준비전이는 청구 취지·원인·당사자 정보와 첨부를 점검할 때 일어난다. 문서 작성 기능이 끝나도 법원 접수 상태는 아니다.",
+      "concepts": [
+        "소장작성중에서제출준비전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0302",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "제출준비에서전자제출전이는 서명과 파일 형식을 확인해 법원 시스템으로 전송할 때 진행된다. 개인 보관본과 공식 제출본의 경계를 구분한다.",
+      "concepts": [
+        "제출준비에서전자제출전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0303",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "전자제출에서수신대기전이는 파일을 보낸 뒤 서버의 접수 응답을 기다리는 단계다. 전송 완료와 법원 수신 완료는 서로 다른 상태다.",
+      "concepts": [
+        "전자제출에서수신대기전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0304",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "수신대기에서사건접수전이는 시스템이 필수 항목을 받아 접수번호를 부여할 때 발생한다. 제출 시도와 유효 접수 기록을 구분해 분류한다.",
+      "concepts": [
+        "수신대기에서사건접수전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0305",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "사건접수에서인지액확인전이는 청구 금액과 사건 유형에 따라 납부액을 계산·대조할 때 진행된다. 금액 속성이 청구의 정당성을 뜻하지 않는다.",
+      "concepts": [
+        "사건접수에서인지액확인전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0306",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "접수자료에서담당서기검토전이는 서기가 형식 요건과 파일 열림 여부를 확인할 때 일어난다. 서기의 역할은 형식 확인이며 본안 판단과 다르다.",
+      "concepts": [
+        "접수자료에서담당서기검토전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0307",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "제출시각미확인에서로그조회전이는 기한 준수 여부를 알 수 없어 서버 기록과 영수증을 확인하는 과정이다. 미확인을 지각 제출로 단정하지 않는다.",
+      "concepts": [
+        "제출시각미확인에서로그조회전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0308",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "사건접수에서형식흠결의심전이는 첨부 누락이나 서명 불일치가 발견되어 적법 접수의 경계를 다시 확인할 때 일어난다. 한 흠결 속성 때문에 청구 전체를 기각 상태로 보지 않는다.",
+      "concepts": [
+        "사건접수에서형식흠결의심전이"
+      ],
+      "relations": [
+        "attribute",
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0309",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "형식흠결의심에서보정명령검토전이는 고칠 수 있는 항목과 기한을 정하기 위해 기록을 확인하는 단계다. 검토는 절차를 보완하는 기능을 한다.",
+      "concepts": [
+        "형식흠결의심에서보정명령검토전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0310",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "보정명령검토에서보정명령발령전이는 재판부가 보완 범위와 제출기한을 문서로 확정할 때 발생한다. 내부 검토와 당사자에게 효력이 생긴 상태를 나눈다.",
+      "concepts": [
+        "보정명령검토에서보정명령발령전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0311",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "보정명령발령에서송달대기전이는 문서가 만들어졌지만 당사자에게 도달하지 않은 단계로 옮기는 과정이다. 발령과 송달 완료는 다르다.",
+      "concepts": [
+        "보정명령발령에서송달대기전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0312",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "송달대기에서보정기한진행전이는 적법한 송달일이 확인되어 기간 계산을 시작할 때 발생한다. 송달 전과 기한 진행 중 상태를 구분한다.",
+      "concepts": [
+        "송달대기에서보정기한진행전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0313",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "보정기한진행에서보정서제출전이는 요구 항목을 채운 문서가 기한 안에 접수될 때 일어난다. 제출일 속성을 계산 기준과 함께 기록한다.",
+      "concepts": [
+        "보정기한진행에서보정서제출전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0314",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "보정서제출에서흠결해소검토전이는 담당자가 명령 항목별 대응을 대조할 때 진행된다. 제출자와 확인자의 역할을 나눠 기록한다.",
+      "concepts": [
+        "보정서제출에서흠결해소검토전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0315",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "보정서충분여부미상에서재검토전이는 첨부와 설명의 충족 범위를 판단하기 어려워 원기록을 다시 대조하는 과정이다. 모호함을 불이행으로 확정하지 않는다.",
+      "concepts": [
+        "보정서충분여부미상에서재검토전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0316",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "흠결해소검토에서접수유지전이는 보완이 충분해 사건 진행 기능을 계속할 때 발생한다. 형식이 보정되었다고 본안 승소로 판정하지 않는다.",
+      "concepts": [
+        "흠결해소검토에서접수유지전이"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0317",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "보정미이행에서각하검토전이는 정당한 송달과 기한 경과를 확인한 뒤 절차 종료 가능성을 살필 때 진행된다. 검토는 즉시 각하 효력을 만들지 않는다.",
+      "concepts": [
+        "보정미이행에서각하검토전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0318",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "각하검토에서각하결정전이는 재판부가 절차 요건 미충족을 이유로 결정문을 완성할 때 일어난다. 검토 의견과 공식 결정의 경계를 둔다.",
+      "concepts": [
+        "각하검토에서각하결정전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0319",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "중복사건의심에서사건검색전이는 당사자·청구·원인을 기존 기록과 비교하는 과정이다. 유사한 사건과 같은 사건은 서로 다른 상태다.",
+      "concepts": [
+        "중복사건의심에서사건검색전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0320",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "사건검색에서병합검토전이는 관련성·진행 단계·효율을 기준으로 함께 심리할지 분류하는 단계다. 검색 결과만으로 병합하지 않는다.",
+      "concepts": [
+        "사건검색에서병합검토전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0321",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "관할미상에서관할자료확인전이는 주소·계약 이행지·사건 종류를 확인해 연결 기준을 찾는 과정이다. 장소 속성 하나로 관할을 확정하지 않는다.",
+      "concepts": [
+        "관할미상에서관할자료확인전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0322",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "관할자료확인에서이송검토전이는 담당 재판부가 자기 법원 처리 가능 여부를 판단할 때 일어난다. 접수 법원과 적정 법원의 역할을 구분한다.",
+      "concepts": [
+        "관할자료확인에서이송검토전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0323",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "관할합의존재미상에서계약서조회전이는 당사자가 재판지를 정했는지 알 수 없어 원계약을 확인하는 과정이다. 합의 미발견을 합의 부존재로 단정하지 않는다.",
+      "concepts": [
+        "관할합의존재미상에서계약서조회전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0324",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "이송검토에서관할법원이송전이는 가능한 법원들의 연결 기준을 비교해 더 적합한 법원으로 기록을 넘길 때 발생한다. 접수 유지와 이송 상태를 대비한다.",
+      "concepts": [
+        "이송검토에서관할법원이송전이"
+      ],
+      "relations": [
+        "comparison",
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0325",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "종이제출에서전자기록화전이는 원본 쪽 순서와 표식을 확인해 스캔·색인할 때 진행된다. 전자기록은 검색과 공유 기능을 제공한다.",
+      "concepts": [
+        "종이제출에서전자기록화전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0326",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "전자기록화에서원본보관전이는 스캔 검수를 마친 문서를 지정 서고에 넣을 때 일어난다. 디지털 사본과 종이 원본의 관리 경계를 구분한다.",
+      "concepts": [
+        "전자기록화에서원본보관전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0327",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "비공개정보발견에서마스킹검토전이는 주민번호·의료정보의 공개 필요 범위를 따지는 과정이다. 기록 존재와 공개 가능 상태는 다르다.",
+      "concepts": [
+        "비공개정보발견에서마스킹검토전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0328",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "마스킹검토에서열람본생성전이는 제한 정보를 가린 별도 사본을 만들어 공개용으로 분류할 때 발생한다. 원본과 열람본을 구분한다.",
+      "concepts": [
+        "마스킹검토에서열람본생성전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0329",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "접수목록초안에서일일접수마감전이는 번호·수량·수수료를 대조해 당일 기록을 잠글 때 진행된다. 목록 완성도는 관리 문서의 속성이다.",
+      "concepts": [
+        "접수목록초안에서일일접수마감전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0330",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "접수완료에서배당대기전이는 형식 요건을 갖춘 사건을 재판부 배정 기능으로 넘길 때 발생한다. 접수 완료를 심리 개시와 같은 분류 상태로 두지 않는다.",
+      "concepts": [
+        "접수완료에서배당대기전이"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0331",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "배당대기에서자동배당전이는 사건 종류와 균형 규칙에 따라 시스템이 재판부를 정할 때 일어난다. 배당은 책임 위치를 연결하는 기능을 한다.",
+      "concepts": [
+        "배당대기에서자동배당전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0332",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "자동배당에서제척사유점검전이는 담당 법관과 당사자 관계를 확인해 공정성 경계를 점검할 때 진행된다. 기계 배정과 최종 담당 확정을 구분한다.",
+      "concepts": [
+        "자동배당에서제척사유점검전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0333",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "제척사유점검에서배당확정전이는 충돌 사유가 없거나 재배당을 마쳐 담당 재판부를 고정할 때 발생한다. 잠정 배당과 확정 상태는 다르다.",
+      "concepts": [
+        "제척사유점검에서배당확정전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0334",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "배당확정에서기록인계전이는 전자·종이 기록 접근권을 담당 재판부에 부여할 때 일어난다. 배당 정보와 실제 기록 수령 상태를 나눈다.",
+      "concepts": [
+        "배당확정에서기록인계전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0335",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "기록인계에서초기검토전이는 청구 구조·당사자 수·긴급 신청 여부를 파악할 때 진행된다. 사건 복잡도 속성이 결론을 미리 정하지 않는다.",
+      "concepts": [
+        "기록인계에서초기검토전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0336",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "초기검토에서담당업무배분전이는 법관·서기·참여관의 준비 과제를 정할 때 발생한다. 각 사람의 역할 범위를 분명히 한다.",
+      "concepts": [
+        "초기검토에서담당업무배분전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0337",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "관련사건존재미상에서연결검색전이는 당사자와 법률 쟁점을 기준으로 다른 재판 기록을 찾는 과정이다. 검색 전 상태를 관련 사건 없음으로 처리하지 않는다.",
+      "concepts": [
+        "관련사건존재미상에서연결검색전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0338",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "배당확정에서집중심리후보전이는 쟁점 수와 증거량이 일정 경계를 넘어 별도 일정 관리가 필요하다고 볼 때 발생한다. 복잡도 속성이 높아도 집중심리 확정 상태는 아니다.",
+      "concepts": [
+        "배당확정에서집중심리후보전이"
+      ],
+      "relations": [
+        "attribute",
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0339",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "피고주소확인에서송달문서작성전이는 소장부본과 안내문을 수취 정보에 맞춰 준비할 때 진행된다. 문서는 통지 기능을 수행한다.",
+      "concepts": [
+        "피고주소확인에서송달문서작성전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0340",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "송달문서작성에서발송전이는 봉함·바코드·목록 대조를 마쳐 우편기관에 넘길 때 일어난다. 법원 내부 준비와 외부 운송의 경계를 둔다.",
+      "concepts": [
+        "송달문서작성에서발송전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0341",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "발송에서배달시도전이는 우편물이 주소지에 도착해 수취인을 확인하는 단계다. 법원 발송 상태와 실제 도달 상태는 다르다.",
+      "concepts": [
+        "발송에서배달시도전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0342",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "배달시도에서송달완료전이는 적법한 수취인에게 문서가 전달되고 증명이 회신될 때 발생한다. 도착과 법적 송달 완료를 구분한다.",
+      "concepts": [
+        "배달시도에서송달완료전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0343",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "송달완료에서답변기한진행전이는 기준일과 법정 기간을 계산해 마감 시각을 기록할 때 일어난다. 기한 길이는 절차 상태의 속성이다.",
+      "concepts": [
+        "송달완료에서답변기한진행전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0344",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "송달증명확인에서기록편입전이는 담당자가 수취인·시각·방법을 대조해 사건 기록에 넣을 때 진행된다. 확인자의 역할이 기간 계산을 뒷받침한다.",
+      "concepts": [
+        "송달증명확인에서기록편입전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0345",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "실거주지미상에서주소보정요청전이는 기존 주소로 도달하지 않아 원고에게 추가 정보를 요구하는 과정이다. 현재 주소를 모른다는 사실이 피고 부재를 뜻하지 않는다.",
+      "concepts": [
+        "실거주지미상에서주소보정요청전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0346",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "배달실패에서재송달명령전이는 실패 원인을 확인해 다른 시간·장소·방법으로 통지 기능을 다시 가동할 때 발생한다. 한 번의 실패를 사건 종료로 분류하지 않는다.",
+      "concepts": [
+        "배달실패에서재송달명령전이"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0347",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "재송달명령에서새주소발송전이는 보정된 주소를 문서와 시스템에 반영해 다시 보내는 과정이다. 새 발송은 송달 시도를 재개하는 기능을 한다.",
+      "concepts": [
+        "재송달명령에서새주소발송전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0348",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "새주소발송에서수취확인전이는 배달 기록과 신분 관계를 대조해 적법 수취 범위 안인지 판단할 때 진행된다. 단순 동거와 수령 권한의 경계를 본다.",
+      "concepts": [
+        "새주소발송에서수취확인전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0349",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "수취거절에서유치송달검토전이는 거절 상황과 법정 요건을 확인해 문서를 둘 수 있는지 살피는 과정이다. 거절과 송달 무효가 항상 같은 상태는 아니다.",
+      "concepts": [
+        "수취거절에서유치송달검토전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0350",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "유치송달검토에서송달효력판정전이는 장소·상대방·고지 절차가 요건을 충족하는지 분류해 결정할 때 일어난다. 사실 기록과 법적 효력을 구분한다.",
+      "concepts": [
+        "유치송달검토에서송달효력판정전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0351",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "공시송달요건미상에서소재조사전이는 주민등록·사업장·연락 이력을 확인해 통상 방법의 불가능성을 판단하는 과정이다. 조사 범위는 요건 판단의 속성이다.",
+      "concepts": [
+        "공시송달요건미상에서소재조사전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0352",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "소재조사에서공시송달결정전이는 충분한 탐색 기록을 바탕으로 재판부가 공시 방법을 허가할 때 발생한다. 조사자와 결정자의 역할을 나눈다.",
+      "concepts": [
+        "소재조사에서공시송달결정전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0353",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "공시기간충족여부미상에서게시기록확인전이는 게시 시작·종료 시각을 알 수 없어 시스템 로그를 대조하는 과정이다. 미확인을 효력 발생으로 간주하지 않는다.",
+      "concepts": [
+        "공시기간충족여부미상에서게시기록확인전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0354",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "공시송달결정에서효력발생전이는 실제 게시 기간을 법정 기준과 비교해 충족될 때 일어난다. 결정 상태와 기간 경과 뒤 효력 상태를 대비한다.",
+      "concepts": [
+        "공시송달결정에서효력발생전이"
+      ],
+      "relations": [
+        "comparison",
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0355",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "답변서미제출에서기한임박전이는 남은 기간이 관리 기준 아래로 줄어 알림이 발생할 때 진행된다. 알림은 누락 방지 기능을 한다.",
+      "concepts": [
+        "답변서미제출에서기한임박전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0356",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "기한임박에서답변서접수전이는 피고 문서가 마감 전 법원에 도달해 번호를 받을 때 발생한다. 작성 완료와 접수 완료의 경계를 구분한다.",
+      "concepts": [
+        "기한임박에서답변서접수전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0357",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "답변서접수에서원고송달전이는 반대 당사자가 주장 내용을 받을 수 있도록 부본을 보내는 과정이다. 법원 보관 상태와 당사자 인지 상태는 다르다.",
+      "concepts": [
+        "답변서접수에서원고송달전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0358",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "원고송달에서쟁점정리준비전이는 소장과 답변의 일치·다툼 항목을 분류해 다음 기일 자료를 만들 때 일어난다. 송달 완료와 쟁점 확정은 구분한다.",
+      "concepts": [
+        "원고송달에서쟁점정리준비전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0359",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "초기서면교환에서기일지정검토전이는 당사자 준비 정도와 법정 일정을 확인해 가능한 날짜를 찾는 과정이다. 일정 가용성은 절차 속성이다.",
+      "concepts": [
+        "초기서면교환에서기일지정검토전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0360",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "송달절차완료에서첫기일지정전이는 당사자 참여 조건을 갖춰 공개 심리 기능을 시작할 날짜를 정할 때 발생한다. 지정 상태를 실제 심리 개시로 분류하지 않는다.",
+      "concepts": [
+        "송달절차완료에서첫기일지정전이"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0361",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "첫기일지정에서기일통지전이는 날짜·법정·준비 사항을 당사자에게 송달할 때 일어난다. 통지는 출석 준비 기능을 제공한다.",
+      "concepts": [
+        "첫기일지정에서기일통지전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0362",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "기일통지에서출석대기전이는 송달을 마치고 예정 시각까지 당사자 응답을 기다리는 단계다. 통지됨과 실제 출석 상태의 경계를 둔다.",
+      "concepts": [
+        "기일통지에서출석대기전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0363",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "출석대기에서법정개정전이는 재판부가 입정하고 사건 번호를 불러 절차를 시작할 때 발생한다. 대기 상태와 공식 심리 상태는 다르다.",
+      "concepts": [
+        "출석대기에서법정개정전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0364",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "법정개정에서당사자확인전이는 출석자 신원과 대리 권한을 사건 역할별로 분류할 때 진행된다. 방청인과 당사자를 구분한다.",
+      "concepts": [
+        "법정개정에서당사자확인전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0365",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "당사자확인에서진술개시전이는 준비 여부와 통역 필요를 확인한 뒤 주장 설명을 허용할 때 일어난다. 진술 길이는 심리 상태의 한 속성이다.",
+      "concepts": [
+        "당사자확인에서진술개시전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0366",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "진술개시에서재판부석명전이는 불명확한 청구나 항변을 질문해 의미를 분명히 하는 과정이다. 재판부와 당사자의 역할을 구분한다.",
+      "concepts": [
+        "진술개시에서재판부석명전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0367",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "주장취지미상에서석명요구전이는 문구만으로 요구 범위를 알 수 없어 구체화를 명하는 과정이다. 불명확함을 주장 부재로 판단하지 않는다.",
+      "concepts": [
+        "주장취지미상에서석명요구전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0368",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "진술진행에서쟁점후보정리전이는 인정·부인·법률 다툼의 경계를 표시해 심리 범위를 좁힐 때 발생한다. 후보 속성이 붙었다고 최종 쟁점 확정 상태는 아니다.",
+      "concepts": [
+        "진술진행에서쟁점후보정리전이"
+      ],
+      "relations": [
+        "attribute",
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0369",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "쟁점후보에서쟁점확정전이는 당사자 의견을 듣고 증명이 필요한 사실과 법률 문제를 정할 때 일어난다. 확정 쟁점은 증거조사 방향을 안내한다.",
+      "concepts": [
+        "쟁점후보에서쟁점확정전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0370",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "쟁점확정에서증거계획전이는 각 쟁점에 필요한 문서·증인·감정을 연결할 때 진행된다. 주장과 증거의 책임 경계를 분명히 한다.",
+      "concepts": [
+        "쟁점확정에서증거계획전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0371",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "증거계획에서서증신청전이는 당사자가 문서의 입증 취지와 원본 여부를 밝혀 제출하는 과정이다. 계획된 증거와 정식 신청 상태는 다르다.",
+      "concepts": [
+        "증거계획에서서증신청전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0372",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "서증신청에서채택검토전이는 관련성·필요성·적법성을 기준으로 조사 대상을 분류할 때 일어난다. 제출됨과 채택됨을 구분한다.",
+      "concepts": [
+        "서증신청에서채택검토전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0373",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "사본진정성의심에서원본제출요구전이는 서명·날인·변경 흔적을 확인할 더 나은 자료가 필요할 때 진행된다. 의심 속성을 위조 확정으로 바꾸지 않는다.",
+      "concepts": [
+        "사본진정성의심에서원본제출요구전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0374",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "원본제출에서문서대조전이는 법원과 당사자가 사본의 내용·쪽·표식을 원본과 맞추는 과정이다. 보관자와 검토자의 역할을 나눈다.",
+      "concepts": [
+        "원본제출에서문서대조전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0375",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "문서작성자미상에서성립경위조회전이는 누가 언제 어떤 절차로 만들었는지 알 수 없어 제출자에게 설명을 요구하는 과정이다. 출처 미상을 거짓 문서로 단정하지 않는다.",
+      "concepts": [
+        "문서작성자미상에서성립경위조회전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0376",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "문서대조에서서증조사완료전이는 진정성·관련성·입증 취지를 기록해 판단 자료 기능을 갖출 때 발생한다. 조사 완료를 문서 내용 전부가 참이라는 분류로 두지 않는다.",
+      "concepts": [
+        "문서대조에서서증조사완료전이"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0377",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "증인신청에서채택결정전이는 증언 필요성과 중복 여부를 검토해 신문을 허용할 때 일어난다. 결정은 출석 절차를 여는 기능을 한다.",
+      "concepts": [
+        "증인신청에서채택결정전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0378",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "채택결정에서증인소환전이는 기일·장소·의무를 적은 문서를 적법하게 보낼 때 진행된다. 채택과 실제 출석 의무 고지의 경계를 둔다.",
+      "concepts": [
+        "채택결정에서증인소환전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0379",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "증인소환에서출석확인전이는 기일에 신원과 선서를 확인해 증언 가능한 상태로 바뀌는 과정이다. 소환됨과 출석함은 다르다.",
+      "concepts": [
+        "증인소환에서출석확인전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0380",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "출석확인에서주신문전이는 신청 당사자가 입증 취지에 따른 질문을 시작할 때 발생한다. 주신문과 반대신문을 별도 절차로 분류한다.",
+      "concepts": [
+        "출석확인에서주신문전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0381",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "주신문에서반대신문전이는 상대방이 신빙성·기억·관찰 조건을 질문하는 단계로 옮기는 과정이다. 질문 범위는 증언 평가의 속성이다.",
+      "concepts": [
+        "주신문에서반대신문전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0382",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "반대신문에서재주신문전이는 주신문 당사자가 새로 제기된 부분을 해명할 때 진행된다. 질문자 역할과 허용 범위를 지킨다.",
+      "concepts": [
+        "반대신문에서재주신문전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0383",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "증언기억불확실에서기록제시검토전이는 기억 환기에 허용되는 문서인지 확인하는 과정이다. 기억하지 못함을 사건이 없었다는 진술로 바꾸지 않는다.",
+      "concepts": [
+        "증언기억불확실에서기록제시검토전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0384",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "증인신문에서진술신빙성검토전이는 시점별 진술과 다른 증거를 비교해 일관성과 관찰 가능성을 평가할 때 일어난다. 증언 상태와 최종 사실 인정 상태를 대비한다.",
+      "concepts": [
+        "증인신문에서진술신빙성검토전이"
+      ],
+      "relations": [
+        "comparison",
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0385",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "감정신청에서감정필요검토전이는 전문지식 없이는 판단하기 어려운 쟁점인지 확인할 때 진행된다. 검토는 적절한 조사 기능을 선택한다.",
+      "concepts": [
+        "감정신청에서감정필요검토전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0386",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "감정필요검토에서감정인선정전이는 전문성·독립성·이해충돌 경계를 확인해 후보를 지정할 때 발생한다. 전문가 지위와 사건 당사자 역할을 구분한다.",
+      "concepts": [
+        "감정필요검토에서감정인선정전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0387",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "감정인선정에서감정촉탁전이는 질문·자료·기한을 공식 문서로 보내는 과정이다. 사람 선정 상태와 실제 업무 부여 상태는 다르다.",
+      "concepts": [
+        "감정인선정에서감정촉탁전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0388",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "감정촉탁에서감정서제출전이는 전문가가 방법·자료·결론·한계를 문서로 법원에 내는 때 발생한다. 초안과 제출 감정서를 구분한다.",
+      "concepts": [
+        "감정촉탁에서감정서제출전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0389",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "감정서제출에서보완질의전이는 불명확한 수치·가정·오차 범위를 확인할 질문을 정할 때 진행된다. 한계 표시는 감정서의 중요한 속성이다.",
+      "concepts": [
+        "감정서제출에서보완질의전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0390",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "증거조사진행에서변론종결검토전이는 핵심 쟁점의 주장과 증거가 충분해 판결 준비 기능으로 옮길지 판단할 때 발생한다. 증거 제출이 끝났다는 이유로 사실까지 확정된 것으로 분류하지 않는다.",
+      "concepts": [
+        "증거조사진행에서변론종결검토전이"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0391",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "변론종결검토에서최종의견요청전이는 남은 쟁점과 법률 의견을 지정 기한까지 정리하도록 당사자에게 알릴 때 일어난다. 요청은 누락 방지 기능을 한다.",
+      "concepts": [
+        "변론종결검토에서최종의견요청전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0392",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "최종의견요청에서서면제출전이는 당사자 문서가 기한 안에 접수되어 기록에 편입될 때 발생한다. 준비 중 문서와 공식 제출본의 경계를 둔다.",
+      "concepts": [
+        "최종의견요청에서서면제출전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0393",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "서면제출에서변론종결전이는 재판부가 더 받을 자료가 없다고 선언해 심리를 닫을 때 일어난다. 서면 교환 상태와 심리 종료 상태는 다르다.",
+      "concepts": [
+        "서면제출에서변론종결전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0394",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "변론종결에서판결검토전이는 인정 사실·법률 적용·주문 후보를 구조화하는 과정이다. 심리 기록과 내부 판단 문서를 구분한다.",
+      "concepts": [
+        "변론종결에서판결검토전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0395",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "판결검토에서사실인정초안전이는 증거의 신빙성과 입증 정도를 쟁점별로 기록할 때 진행된다. 확신 정도는 판단 초안의 속성이다.",
+      "concepts": [
+        "판결검토에서사실인정초안전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0396",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "사실인정초안에서법률적용전이는 인정한 사실에 해당 법규와 판례 기준을 연결하는 단계다. 사실 판단과 법률 판단의 역할을 구분한다.",
+      "concepts": [
+        "사실인정초안에서법률적용전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0397",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "손해액산정근거미상에서보완계산전이는 자료별 금액·기간·상계를 다시 대조하는 과정이다. 계산 근거를 모른 채 청구액 전부를 인정하지 않는다.",
+      "concepts": [
+        "손해액산정근거미상에서보완계산전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0398",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "법률적용에서주문초안전이는 인정 범위와 기각 범위의 경계를 금액·행위별로 문장화할 때 발생한다. 초안 속성이 완결되어도 선고 효력 상태는 아니다.",
+      "concepts": [
+        "법률적용에서주문초안전이"
+      ],
+      "relations": [
+        "attribute",
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0399",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "주문초안에서판결문작성전이는 이유와 주문을 모순 없이 연결하고 비용·가집행 부분을 정리할 때 진행된다. 판결문은 결론 설명 기능을 한다.",
+      "concepts": [
+        "주문초안에서판결문작성전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0400",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "판결문작성에서합의검토전이는 합의부 구성원이 사실·법리·문구를 검토하는 단계다. 초안 작성자 의견과 재판부 결정의 경계를 둔다.",
+      "concepts": [
+        "판결문작성에서합의검토전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0401",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "합의검토에서판결확정안전이는 필요한 수정을 마치고 선고할 내용에 동의할 때 발생한다. 내부 검토안과 선고 기준안은 다르다.",
+      "concepts": [
+        "합의검토에서판결확정안전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0402",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "판결확정안에서선고기일전이는 공개할 날짜와 법정을 정해 사건 일정에 등록할 때 일어난다. 내용 확정과 외부 선고 상태를 구분한다.",
+      "concepts": [
+        "판결확정안에서선고기일전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0403",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "선고기일에서판결선고전이는 정해진 시각에 주문을 공개하고 선고 기록을 남길 때 발생한다. 선고 시각은 효력 판단의 중요한 속성이다.",
+      "concepts": [
+        "선고기일에서판결선고전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0404",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "판결선고에서판결문송달전이는 당사자별 주소와 대리 관계를 확인해 정본을 보내는 과정이다. 법원과 송달기관의 역할을 나눈다.",
+      "concepts": [
+        "판결선고에서판결문송달전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0405",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "송달일미상에서수취기록조회전이는 불복 기간 시작일을 알 수 없어 배달 증명을 확인하는 과정이다. 미확인을 기간 경과로 처리하지 않는다.",
+      "concepts": [
+        "송달일미상에서수취기록조회전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0406",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "판결선고에서불복기간진행전이는 적법 송달 뒤 항소 제기 가능 기능이 시간 제한과 함께 시작될 때 발생한다. 선고된 판결을 곧 확정판결로 분류하지 않는다.",
+      "concepts": [
+        "판결선고에서불복기간진행전이"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0407",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "불복기간진행에서항소장접수전이는 당사자가 대상 판결과 불복 범위를 적은 문서를 제출할 때 일어난다. 접수는 상급심 절차를 여는 기능을 한다.",
+      "concepts": [
+        "불복기간진행에서항소장접수전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0408",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "항소장접수에서항소요건검토전이는 기간·당사자·수수료·불복 대상을 확인할 때 진행된다. 접수 사실과 적법한 항소 상태의 경계를 둔다.",
+      "concepts": [
+        "항소장접수에서항소요건검토전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0409",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "항소요건검토에서기록송부준비전이는 요건을 갖춘 사건의 서면·증거·조서를 정리하는 단계다. 원심 계속 상태와 상급심 이송 준비 상태는 다르다.",
+      "concepts": [
+        "항소요건검토에서기록송부준비전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0410",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "기록송부준비에서상급심송부전이는 목록과 전자 권한을 대조해 상급법원에 인계할 때 발생한다. 원심 보관 사본과 송부 기록을 구분한다.",
+      "concepts": [
+        "기록송부준비에서상급심송부전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0411",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "항소이유서미제출에서기한경고전이는 남은 기간이 관리 기준보다 짧아 알림을 생성할 때 일어난다. 남은 일수는 항소 상태의 속성이다.",
+      "concepts": [
+        "항소이유서미제출에서기한경고전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0412",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "기한경고에서항소이유서접수전이는 항소인이 원심 판단의 오류 주장을 제출하고 담당자가 기록에 편입할 때 진행된다. 제출자와 접수자의 역할을 나눈다.",
+      "concepts": [
+        "기한경고에서항소이유서접수전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0413",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "항소취하여부미상에서당사자의사확인전이는 모호한 문서가 불복 철회인지 알 수 없어 명시적 의사를 묻는 과정이다. 침묵을 취하로 간주하지 않는다.",
+      "concepts": [
+        "항소취하여부미상에서당사자의사확인전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0414",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "항소심계속에서원심확정범위판정전이는 불복한 주문과 하지 않은 부분을 비교해 효력 범위를 나눌 때 일어난다. 계속 중 부분과 확정된 부분의 상태를 대비한다.",
+      "concepts": [
+        "항소심계속에서원심확정범위판정전이"
+      ],
+      "relations": [
+        "comparison",
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0415",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "항소심심리에서판결대기전이는 필요한 주장과 증거조사를 마쳐 내부 판단 단계로 옮길 때 발생한다. 대기는 판결 준비 기능이 작동하는 상태다.",
+      "concepts": [
+        "항소심심리에서판결대기전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0416",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "항소심판결에서상고기간전이는 송달 뒤 법률심 불복 가능 기간이 시작될 때 일어난다. 항소심 종료와 전체 사건 확정의 경계를 둔다.",
+      "concepts": [
+        "항소심판결에서상고기간전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0417",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "상고장접수에서기록상송전이는 요건을 확인해 사건 기록을 최고법원으로 보내는 과정이다. 하급심 판단 상태와 상고심 계속 상태는 다르다.",
+      "concepts": [
+        "상고장접수에서기록상송전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0418",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "상고기각에서판결확정전이는 더 이상 통상 불복이 남지 않아 효력 상태를 시스템에 등록할 때 발생한다. 기각 결정과 원판결 확정을 구분한다.",
+      "concepts": [
+        "상고기각에서판결확정전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0419",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "판결확정일계산에서확정증명준비전이는 송달·불복·취하 기록을 대조해 정확한 날짜를 문서화할 때 진행된다. 확정일은 증명서의 핵심 속성이다.",
+      "concepts": [
+        "판결확정일계산에서확정증명준비전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0420",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "판결선고에서확정여부판정전이는 불복 가능성과 실제 제기 기록을 확인해 집행 기준 기능을 정할 때 발생한다. 선고 상태를 자동으로 확정 상태로 분류하지 않는다.",
+      "concepts": [
+        "판결선고에서확정여부판정전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0421",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "판결확정에서확정증명발급전이는 사건번호·당사자·주문과 확정일을 대조해 공식 문서를 만들 때 일어난다. 증명은 외부 절차를 돕는 기능을 한다.",
+      "concepts": [
+        "판결확정에서확정증명발급전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0422",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "확정증명발급에서집행문신청전이는 권리자가 집행 가능한 정본을 요구하는 단계로 옮기는 과정이다. 판결 효력과 실제 집행 개시의 경계를 둔다.",
+      "concepts": [
+        "확정증명발급에서집행문신청전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0423",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "집행문신청에서요건검토전이는 집행 대상·조건 성취·승계 여부를 확인하는 과정이다. 신청 접수와 집행문 부여 상태는 다르다.",
+      "concepts": [
+        "집행문신청에서요건검토전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0424",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "요건검토에서집행문부여전이는 필요한 조건을 갖춘 정본에 집행 가능 표시를 붙일 때 발생한다. 단순 판결 사본과 집행 정본을 구분한다.",
+      "concepts": [
+        "요건검토에서집행문부여전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0425",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "집행문부여에서채권자수령전이는 수령 권한과 문서 수량을 확인해 인계할 때 일어난다. 인계 시각과 정본 번호는 처리 속성이다.",
+      "concepts": [
+        "집행문부여에서채권자수령전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0426",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "채권자수령에서별도집행신청전이는 권리자가 집행기관에 재산·행위 대상을 지정해 새 절차를 시작할 때 진행된다. 법원과 집행기관의 역할을 나눈다.",
+      "concepts": [
+        "채권자수령에서별도집행신청전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0427",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "집행대상재산미상에서재산조회전이는 집행할 계좌나 부동산을 알 수 없어 허용된 정보 절차를 이용하는 과정이다. 재산을 모른다는 사실이 재산 부존재를 뜻하지 않는다.",
+      "concepts": [
+        "집행대상재산미상에서재산조회전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0428",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "집행가능에서집행정지신청전이는 회복하기 어려운 손해 주장과 담보 조건이 제기되어 집행 경계를 다시 검토할 때 발생한다. 신청 속성만으로 집행이 이미 정지된 상태는 아니다.",
+      "concepts": [
+        "집행가능에서집행정지신청전이"
+      ],
+      "relations": [
+        "attribute",
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0429",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "집행정지신청에서심문대기전이는 상대방 의견과 담보 자료를 받을 기일을 정할 때 일어난다. 대기 상태는 결정을 준비하는 기능을 한다.",
+      "concepts": [
+        "집행정지신청에서심문대기전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0430",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "심문대기에서정지결정전이는 법원이 조건과 기간을 명시해 집행을 잠시 멈출 때 발생한다. 신청과 효력 있는 결정의 경계를 둔다.",
+      "concepts": [
+        "심문대기에서정지결정전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0431",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "정지결정에서담보제공확인전이는 결정에 붙은 조건이 실제 이행됐는지 확인하는 과정이다. 조건부 결정과 효력 발생 상태는 다르다.",
+      "concepts": [
+        "정지결정에서담보제공확인전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0432",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "담보제공확인에서집행정지효력전이는 요구 금액과 방식이 충족되어 시스템에 정지 상태를 등록할 때 일어난다. 문서 결정과 작동하는 효력을 구분한다.",
+      "concepts": [
+        "담보제공확인에서집행정지효력전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0433",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "집행완료에서결과보고전이는 집행 금액·대상·미달 사유를 판결 기록에 연결할 때 진행된다. 집행률은 결과 상태의 속성이다.",
+      "concepts": [
+        "집행완료에서결과보고전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0434",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "결과보고에서채권만족확인전이는 당사자와 집행기관 기록을 대조해 남은 의무를 확인할 때 발생한다. 확인 주체별 역할을 구분한다.",
+      "concepts": [
+        "결과보고에서채권만족확인전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0435",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "잔여의무여부미상에서정산요청전이는 이자·비용·일부 지급 기록이 불명확해 당사자 자료를 요구하는 과정이다. 모호함을 전액 만족으로 간주하지 않는다.",
+      "concepts": [
+        "잔여의무여부미상에서정산요청전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0436",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "채권만족확인에서집행종결전이는 더 집행할 조치가 없어 사건 운영을 종결 상태로 바꾸는 전이다. 집행 종결을 원판결 기록 폐기와 같은 분류로 두지 않는다.",
+      "concepts": [
+        "채권만족확인에서집행종결전이"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0437",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "본안사건진행에서화해권고전이는 쟁점과 위험을 고려해 재판부가 합의 가능 조건을 제시할 때 일어난다. 권고는 협의를 여는 기능을 한다.",
+      "concepts": [
+        "본안사건진행에서화해권고전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0438",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "화해권고에서당사자의견대기전이는 정해진 기간 동안 수락·이의 의사를 기다리는 단계다. 권고 내용과 확정 효력의 경계를 둔다.",
+      "concepts": [
+        "화해권고에서당사자의견대기전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0439",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "의견대기에서이의제기전이는 한 당사자가 정해진 방식으로 받아들이지 않음을 표시할 때 발생한다. 합의 가능 상태와 재판 계속 상태가 갈린다.",
+      "concepts": [
+        "의견대기에서이의제기전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0440",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "이의제기에서본안심리재개전이는 멈췄던 준비·기일 일정을 다시 활성화할 때 일어난다. 화해 절차와 본안 심리를 별도 상태로 관리한다.",
+      "concepts": [
+        "이의제기에서본안심리재개전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0441",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "화해성립에서조서작성전이는 합의 조항·이행기한·비용을 정확히 기록할 때 진행된다. 문구 정확성은 효력 범위의 중요한 속성이다.",
+      "concepts": [
+        "화해성립에서조서작성전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0442",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "조서작성에서당사자확인전이는 낭독 또는 열람으로 합의 내용과 의사를 재확인하는 과정이다. 재판부는 절차를 관리하고 당사자는 내용을 확인하는 서로 다른 역할이다.",
+      "concepts": [
+        "조서작성에서당사자확인전이"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0443",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "합의범위미상에서조항해석확인전이는 일부 청구가 포함됐는지 불명확해 문언과 협의 기록을 대조하는 과정이다. 모호함을 전부 포기로 단정하지 않는다.",
+      "concepts": [
+        "합의범위미상에서조항해석확인전이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0444",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "화해조서확정에서본안종결전이는 합의 효력과 남은 청구 범위를 비교해 더 심리할 대상이 없을 때 발생한다. 판결 종결과 화해 종결의 상태를 대비한다.",
+      "concepts": [
+        "화해조서확정에서본안종결전이"
+      ],
+      "relations": [
+        "comparison",
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-SCV-0445",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "사건종결에서기록정리전이는 최종 문서·송달·증거 목록을 확인해 보존 단위를 만들 때 일어난다. 정리는 이후 검색 기능을 유지한다.",
+      "concepts": [
+        "사건종결에서기록정리전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0446",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "기록정리에서보존등급판정전이는 사건 유형과 법정 기간에 따라 보존·이관·폐기 경계를 정할 때 진행된다. 문서별 예외를 확인한다.",
+      "concepts": [
+        "기록정리에서보존등급판정전이"
+      ],
+      "relations": [
+        "boundary",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0447",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "보존등급판정에서서고이관전이는 활성 사건 공간에서 장기 보관 위치로 기록을 옮기는 과정이다. 업무 중 상태와 아카이브 상태는 다르다.",
+      "concepts": [
+        "보존등급판정에서서고이관전이"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0448",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "서고이관에서위치등록전이는 상자·선반·보존기한을 시스템에 입력할 때 발생한다. 물리 보관과 검색 가능한 등록 상태를 구분한다.",
+      "concepts": [
+        "서고이관에서위치등록전이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0449",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "보존기한경과에서폐기심사전이는 법적 중지 사유·역사 가치·관련 사건을 다시 확인하는 과정이다. 경과 기간은 심사 대상 속성일 뿐 자동 폐기 명령은 아니다.",
+      "concepts": [
+        "보존기한경과에서폐기심사전이"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-SCV-0450",
+      "type": "statechange_packet",
+      "split": "val",
+      "text": "사건종결등록에서통계마감전이는 종결 사유·처리기간·결과 코드를 검증해 집계 기능을 닫을 때 발생한다. 기록 보존은 계속된다.",
+      "concepts": [
+        "사건종결등록에서통계마감전이"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state"
+      ],
+      "unseen_relation": false
+    }
+  ]
+}

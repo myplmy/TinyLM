@@ -1,0 +1,158 @@
+# family	스포츠 경기장·코트·선수·공·판정구역 공간 관계
+# axes	선 안팎, 진영, 선수 기준 좌우, 공의 접촉·가림, 판정 기준면
+# columns	concepts	relations	unseen_relation	other_category_or_dash	logic_pattern	directly_authored_text
+# 001~030 포함·안팎·경계 위치
+축구공과터치라인안쪽위치	boundary,other,state	false	containment_location	containment_case	축구공과터치라인안쪽위치는 공 전체가 선의 경기장 쪽 공간에 놓인 상태다. 공이 선 위에 닿거나 일부가 밖으로 나가도 전체가 넘지 않으면 아웃이 아니다.
+축구공과골라인바깥위치	boundary,function,other	false	containment_location	containment_case	축구공과골라인바깥위치는 공 전체가 골라인의 바깥 평면을 통과한 관계다. 골대 사이인지 여부에 따라 득점과 골킥·코너킥 판정 기능이 갈린다.
+축구선수와페널티구역내위치	boundary,classification,other	false	containment_location	containment_case	축구선수와페널티구역내위치는 선수의 접촉 지점이 표시선이 둘러싼 영역 안에 있는 상태다. 선 자체도 구역에 포함되므로 바깥으로 분류하면 안 된다.
+축구반칙과페널티구역경계위치	attribute,boundary,other	false	containment_location	containment_case	축구반칙과페널티구역경계위치는 접촉이 시작된 정확한 지점을 기준으로 안팎을 가른다. 선수 몸의 다른 부분 위치보다 반칙 지점 속성이 판정에 중요하다.
+골키퍼손과페널티구역밖위치	boundary,other,process	false	containment_location	containment_case	골키퍼손과페널티구역밖위치는 공을 다루는 손의 접촉점이 구역 경계를 넘은 관계다. 몸이 안에 있어도 손과 공의 이동 과정이 밖에서 끝나면 제한을 받는다.
+코너아크와축구공배치위치	classification,other,state	false	containment_location	containment_case	코너아크와축구공배치위치는 공의 일부가 호가 둘러싼 작은 구역에 겹쳐 놓인 상태다. 공 중심이 완전히 안에 있어야 한다는 분류 규칙은 아니다.
+기술지역과교체선수대기위치	function,other,process	false	containment_location	containment_case	기술지역과교체선수대기위치는 허용된 팀 구역 안에서 선수 교체 절차를 기다리는 관계다. 대기 기능 때문에 경기장 안 출전 상태가 되는 것은 아니다.
+축구공과골대사이통과위치	boundary,classification,other,state	true	containment_location	containment_case	축구공과골대사이통과위치는 두 골포스트 안쪽이면서 크로스바 아래의 경계면을 공 전체가 지난 상태다. 그 위치를 선에 닿은 공이나 경기장 밖 일반 공으로 분류하면 안 된다.
+농구공과사이드라인위치	boundary,other,state	false	containment_location	containment_case	농구공과사이드라인위치는 공이 선에 닿아 있으면 코트 안쪽 경계에 있는 상태다. 선 바깥 바닥에 닿을 때 비로소 아웃 판정 근거가 된다.
+농구선수와제한구역내위치	boundary,function,other	false	containment_location	containment_case	농구선수와제한구역내위치는 발의 접촉점이 골대 아래 표시 구역 안에 있는 관계다. 공격자·수비자의 기능과 움직임에 따라 같은 위치의 의미가 달라진다.
+농구수비수와노차지반원위치	boundary,classification,other	false	containment_location	containment_case	농구수비수와노차지반원위치는 수비 발이 반원 안쪽이나 선 위에 있는지로 분류한다. 몸통이 반원 밖에 기울어도 발 기준 위치를 먼저 본다.
+농구공과림원통위치	attribute,boundary,other	false	containment_location	containment_case	농구공과림원통위치는 림을 수직으로 올린 가상 원통 안에 공이 있는 관계다. 높이와 하강 여부 속성을 함께 확인해야 간섭 판정이 가능하다.
+배구공과코트내낙하지점	boundary,other,process	false	containment_location	containment_case	배구공과코트내낙하지점은 공이 바닥에 처음 닿은 자리가 경계선 안이나 선 위인 관계다. 비행 경로가 밖을 지났어도 최종 접촉 과정이 안에서 끝날 수 있다.
+배구선수와자유지역위치	classification,other,state	false	containment_location	containment_case	배구선수와자유지역위치는 코트 표시선 바깥이지만 경기 운영을 위해 확보된 영역에 선 상태다. 관중석 통로와 같은 공간으로 분류하지 않는다.
+배구공과안테나바깥통과위치	function,other,process	false	containment_location	containment_case	배구공과안테나바깥통과위치는 공이 허용 통과 공간의 옆 경계를 넘어 이동한 관계다. 네트를 넘기는 기능이 성공해도 통과 위치가 규칙을 위반할 수 있다.
+배구선수발과센터라인경계위치	attribute,comparison,other,process	true	containment_location	containment_case	배구선수발과센터라인경계위치는 발이 선 위에 남은 정도와 상대 코트로 넘어간 정도를 비교해 판정한다. 이동 중 일부 접촉과 발 전체의 침범 상태를 구분한다.
+야구공과파울라인접촉위치	boundary,other,state	false	containment_location	containment_case	야구공과파울라인접촉위치는 공이 선 위 지면에 처음 닿은 상태다. 파울라인은 페어 구역에 포함되므로 선 접촉을 곧 파울로 보면 안 된다.
+야구주자와베이스안전구역	boundary,function,other	false	containment_location	containment_case	야구주자와베이스안전구역은 신체 일부가 베이스 표면에 닿아 태그 위험을 피하는 관계다. 베이스 주변 흙 공간 전체가 같은 보호 기능을 갖지는 않는다.
+야구공과홈런경계밖위치	boundary,classification,other	false	containment_location	containment_case	야구공과홈런경계밖위치는 페어 타구가 외야 담장 위 지정 경계를 넘어간 관계다. 파울 쪽 관중석으로 간 공과 같은 득점 유형으로 분류하지 않는다.
+야구포수와포수석위치	attribute,boundary,other	false	containment_location	containment_case	야구포수와포수석위치는 투구 순간 포수의 몸과 장비가 지정 상자 경계 안에 배치된 관계다. 발 위치 속성을 실제 접촉 시각과 함께 본다.
+테니스공과서비스박스내위치	boundary,other,process	false	containment_location	containment_case	테니스공과서비스박스내위치는 서브한 공이 대각선 서비스 구역의 선 안이나 선 위에 처음 튀는 관계다. 공중 경로보다 바닥 접촉 과정이 기준이다.
+테니스선수와복식앨리위치	classification,other,state	false	containment_location	containment_case	테니스선수와복식앨리위치는 단식선과 복식선 사이의 띠 공간에 선 상태다. 복식에서는 코트 안이지만 단식에서는 경기 구역 밖으로 분류된다.
+배드민턴셔틀과긴서비스라인위치	function,other,process	false	containment_location	containment_case	배드민턴셔틀과긴서비스라인위치는 셔틀의 코르크가 해당 선 안쪽에 처음 닿는 관계다. 복식과 단식에서 선의 서비스 제한 기능이 다르다.
+배드민턴선수라켓과네트너머위치	function,other,role,state	true	containment_location	containment_case	배드민턴선수라켓과네트너머위치는 타격 뒤 라켓이 상대편 공간으로 따라간 상태다. 공을 자기 쪽에서 맞힌 역할이 확인되면 라켓 일부의 후속 위치만으로 곧 침범으로 분류하지 않는다.
+탁구공과탁구대상판위치	boundary,other,state	false	containment_location	containment_case	탁구공과탁구대상판위치는 공이 수평 경기면 위에 닿은 상태를 뜻한다. 옆면에 맞은 공은 상판 경계 밖이므로 같은 유효 바운드가 아니다.
+탁구선수손과엔드라인밖위치	boundary,function,other	false	containment_location	containment_case	탁구선수손과엔드라인밖위치는 서비스 시작 때 공을 든 손이 자기 코트 끝선 뒤에 있는 관계다. 손의 위치가 서비스 공개 기능을 보장하는 조건 중 하나다.
+수구공과골라인통과위치	boundary,classification,other	false	containment_location	containment_case	수구공과골라인통과위치는 두 포스트 사이에서 공 전체가 기준면을 지난 관계다. 골키퍼가 건드렸다는 사실과 득점 위치 분류는 별개다.
+핸드볼선수와골에어리어위치	attribute,boundary,other	false	containment_location	containment_case	핸드볼선수와골에어리어위치는 바닥 접촉점이 골 지역 선 안에 있는 관계다. 공중에서 뛰어든 선수는 공을 놓은 시각과 착지 위치 속성을 나눠 본다.
+하키퍽과골라인통과위치	boundary,other,process	false	containment_location	containment_case	하키퍽과골라인통과위치는 퍽 전체가 포스트 사이의 선을 넘어 이동한 관계다. 골대 안에 잠시 들어갔다 나와도 통과 과정은 기록된다.
+럭비공과인골지면접촉위치	classification,function,other,state	true	containment_location	containment_case	럭비공과인골지면접촉위치는 득점 구역 안에서 선수가 공에 아래쪽 힘을 가해 땅에 댄 상태다. 단순히 공이 구역 안에 있다는 위치를 트라이 완료로 분류하지 않는다.
+# 031~060 방향·순서·진영 위치
+축구공격방향과상대골대쪽	boundary,other,state	false	directional_order	direction_case	축구공격방향과상대골대쪽은 팀이 득점을 시도하는 기준 방향과 목표 골대의 관계다. 전후반에 진영을 바꾸면 같은 절대 방위가 계속 앞쪽인 것은 아니다.
+축구수비선과최후방수비수순서	boundary,function,other	false	directional_order	direction_case	축구수비선과최후방수비수순서는 자기 골대에 가까운 선수들을 기준으로 앞뒤를 정하는 관계다. 오프사이드 판정 기능에서는 공과 두 번째 최후방 위치도 함께 본다.
+축구공과공격수앞뒤관계	boundary,classification,other	false	directional_order	direction_case	축구공과공격수앞뒤관계는 공격 방향 축에서 어느 쪽이 상대 골라인에 더 가까운지로 분류한다. 화면의 좌우 배치만으로 앞뒤를 정하면 안 된다.
+축구윙어와터치라인쪽방향	attribute,boundary,other	false	directional_order	direction_case	축구윙어와터치라인쪽방향은 선수 위치에서 바깥쪽 경계선으로 향하는 상대 방향이다. 오른쪽 윙과 왼쪽 윙은 같은 바깥쪽이라도 절대 방위 속성이 반대다.
+축구수비수와골대사이방향	boundary,other,process	false	directional_order	direction_case	축구수비수와골대사이방향은 공격수에서 자기 골대로 이어지는 선상에 수비수가 놓이는 관계다. 선수 이동 과정에 따라 사이 관계가 계속 바뀐다.
+축구교체선수와퇴장선수순서	classification,other,state	false	directional_order	direction_case	축구교체선수와퇴장선수순서는 교체 절차에서 나가는 선수가 경기장을 벗어난 뒤 들어가는 선수가 진입하는 상태다. 두 행동을 동시에 완료된 것으로 분류하지 않는다.
+축구코너킥과공격진전방배치	function,other,process	false	directional_order	direction_case	축구코너킥과공격진전방배치는 공이 골라인·터치라인 모서리에서 중앙 골문 쪽으로 전달되도록 선수들이 놓이는 관계다. 전방의 기준은 공격 방향이다.
+축구선수기준왼발쪽과오른발쪽	attribute,comparison,other,process	true	directional_order	direction_case	축구선수기준왼발쪽과오른발쪽은 관중 화면이 아니라 선수가 바라보는 몸축에서 두 방향을 비교하는 관계다. 선수가 회전하는 과정에서 경기장 절대 좌우와의 대응이 달라진다.
+농구공격팀과상대바스켓방향	boundary,other,state	false	directional_order	direction_case	농구공격팀과상대바스켓방향은 공을 운반해 득점하려는 앞쪽 기준을 정한다. 쿼터에 따라 코트를 바꾸면 전광판 기준 왼쪽이 늘 공격 앞은 아니다.
+농구포인트가드와트레일러앞뒤	boundary,function,other	false	directional_order	direction_case	농구포인트가드와트레일러앞뒤는 속공 진행축에서 먼저 전진한 선수와 뒤따르는 선수의 관계다. 트레일러는 후방 지원 기능을 하지만 수비수라는 뜻은 아니다.
+농구볼핸들러와스크리너좌우	boundary,classification,other	false	directional_order	direction_case	농구볼핸들러와스크리너좌우는 공격수가 바라보는 방향에서 스크린이 어느 쪽에 서는지로 분류한다. 중계 화면 좌우와 선수 기준 좌우를 구분한다.
+농구수비수와공사이전후	attribute,boundary,other	false	directional_order	direction_case	농구수비수와공사이전후는 자기 골대에서 공 쪽으로 이어지는 축에서 수비수가 어느 위치에 있는지 나타낸다. 발과 몸통 위치 속성이 다를 수 있다.
+배구서브순서와회전위치	boundary,other,process	false	directional_order	direction_case	배구서브순서와회전위치는 서브권을 얻을 때 선수들이 시계 방향으로 한 자리씩 이동하는 관계다. 실제 랠리 중에는 시작 위치에서 움직일 수 있다.
+배구전위와후위선수배치	classification,other,state	false	directional_order	direction_case	배구전위와후위선수배치는 센터라인에 가까운 세 자리와 엔드라인 쪽 세 자리를 시작 순간에 나눈 상태다. 공격 위치와 선수 고유 역할은 같은 분류가 아니다.
+배구세터와공격수접근순서	function,other,process	false	directional_order	direction_case	배구세터와공격수접근순서는 리시브 뒤 세터가 공을 올리고 공격수가 도움닫기와 타격을 잇는 시간·공간 배열이다. 기능 실행 순서를 유지한다.
+배구선수기준네트앞과등뒤	function,other,role,state	true	directional_order	direction_case	배구선수기준네트앞과등뒤는 선수가 어느 방향을 바라보는지에 따라 달라지는 몸 기준 위치다. 전위 역할 상태라도 몸을 돌리면 앞뒤가 코트 고정축과 반대로 대응할 수 있다.
+야구주자와다음베이스방향	boundary,other,state	false	directional_order	direction_case	야구주자와다음베이스방향은 현재 베이스에서 정규 진루 순서의 다음 지점을 향하는 방향이다. 내야 도면의 시계 방향처럼 보여도 주자 기준 앞쪽으로 읽는다.
+야구타자와포수앞뒤배치	boundary,function,other	false	directional_order	direction_case	야구타자와포수앞뒤배치는 투수에서 홈플레이트로 향하는 축에서 타자가 앞, 포수가 뒤에 놓이는 관계다. 포수는 공을 받는 기능 때문에 후방에 선다.
+야구좌익수와우익수구분	boundary,classification,other	false	directional_order	direction_case	야구좌익수와우익수구분은 홈플레이트에서 외야를 바라보는 공격 기준 좌우로 정한다. 관중이 외야에서 본 화면 좌우로 분류하면 뒤집힌다.
+야구유격수와이루수사이방향	attribute,boundary,other	false	directional_order	direction_case	야구유격수와이루수사이방향은 이베이스 왼쪽과 오른쪽 내야 공간의 상대 배열이다. 타자 성향에 따른 수비 이동 속성을 더해도 기본 기준은 홈 쪽 시점이다.
+테니스서버와리시버대각배치	boundary,other,process	false	directional_order	direction_case	테니스서버와리시버대각배치는 서브가 반대편 대각 서비스박스로 향하도록 두 선수가 마주 서는 관계다. 포인트마다 서버 쪽이 바뀌는 과정에 따라 대각 방향도 바뀐다.
+테니스듀스코트와애드코트순서	classification,other,state	false	directional_order	direction_case	테니스듀스코트와애드코트순서는 네트를 바라보는 각 선수 기준 오른쪽과 왼쪽 서비스 구역을 나눈 상태다. 관중 기준으로 같은 방향이 아니다.
+배드민턴복식앞선수와뒷선수배치	function,other,process	false	directional_order	direction_case	배드민턴복식앞선수와뒷선수배치는 공격 상황에서 한 명이 네트 쪽, 다른 한 명이 후방을 맡는 배열이다. 랠리 흐름에 따라 역할과 위치가 교대된다.
+테니스선수진행방향과크로스샷방향	attribute,comparison,other,process	true	directional_order	direction_case	테니스선수진행방향과크로스샷방향은 몸의 이동축과 공이 대각선으로 날아가는 축을 비교하는 관계다. 선수가 옆으로 달려도 샷 방향이 같은 쪽이라고 단정할 수 없다.
+탁구서버와수신자대각순서	boundary,other,state	false	directional_order	direction_case	탁구서버와수신자대각순서는 복식 서비스에서 서버의 오른쪽 반면에서 상대 오른쪽 반면으로 공이 가는 배열이다. 단식 서비스 방향과 구분한다.
+탁구복식파트너타격순서	boundary,function,other	false	directional_order	direction_case	탁구복식파트너타격순서는 한 팀의 두 선수가 번갈아 공을 치도록 정해진 순환 관계다. 위치가 가까워도 같은 선수가 연속 타격 기능을 맡을 수 없다.
+육상주자와결승선진행방향	boundary,classification,other	false	directional_order	direction_case	육상주자와결승선진행방향은 트랙 진행축에서 주자가 결승 기준면에 접근하는 앞쪽 관계다. 카메라가 반대편에서 촬영해도 진행 방향 분류는 바뀌지 않는다.
+수영선수와반환벽접근방향	attribute,boundary,other	false	directional_order	direction_case	수영선수와반환벽접근방향은 레인 축을 따라 몸이 벽 쪽으로 이동하는 관계다. 머리·손·몸통 가운데 어느 부분이 먼저 닿는지 속성을 따로 본다.
+펜싱선수와상대방향전진후퇴	boundary,other,process	false	directional_order	direction_case	펜싱선수와상대방향전진후퇴는 피스트 축에서 상대에게 가까워지거나 멀어지는 이동 관계다. 발의 앞뒤 교대 과정과 공격 의도는 구별된다.
+양궁선수기준표적앞쪽과안전선뒤쪽	classification,function,other,state	true	directional_order	direction_case	양궁선수기준표적앞쪽과안전선뒤쪽은 사대의 고정축에서 화살 진행 방향과 대기 구역을 나눈 관계다. 선수가 뒤를 돌아도 사격 기능의 앞쪽 기준은 표적 방향으로 분류된다.
+# 061~090 인접·접촉·연결
+축구공과선수발접촉관계	boundary,other,state	false	adjacency_connectivity	contact_case	축구공과선수발접촉관계는 발 표면과 공 표면이 같은 순간 맞닿은 상태다. 발이 매우 가까워도 틈이 있으면 접촉으로 판정하지 않는다.
+축구선수와어깨접촉관계	boundary,function,other	false	adjacency_connectivity	contact_case	축구선수와어깨접촉관계는 두 선수의 어깨 부위가 맞닿아 균형에 영향을 주는 관계다. 공 경합 기능 안에서도 팔로 미는 접촉과 경계를 구분한다.
+축구공과골포스트접촉관계	boundary,classification,other	false	adjacency_connectivity	contact_case	축구공과골포스트접촉관계는 공 표면이 기둥 표면에 닿는 사건이다. 맞고 경기장 안으로 돌아온 공은 골라인 통과와 다른 상태로 분류된다.
+축구화스터드와잔디접촉관계	attribute,boundary,other	false	adjacency_connectivity	contact_case	축구화스터드와잔디접촉관계는 돌기가 지면을 눌러 미끄럼을 줄이는 관계다. 접촉 면적과 깊이 속성이 선수 발 전체의 위치와 다르다.
+축구수비벽과선수간인접배치	boundary,other,process	false	adjacency_connectivity	adjacency_case	축구수비벽과선수간인접배치는 여러 선수가 옆 사람과 작은 간격을 두고 연속해 서는 관계다. 준비 과정에서 간격이 바뀌어도 신체가 반드시 접촉하는 것은 아니다.
+축구골망과골대연결관계	classification,other,state	false	adjacency_connectivity	connectivity_case	축구골망과골대연결관계는 그물이 포스트·크로스바 뒤 고정점에 이어진 상태다. 공과 잠시 맞닿는 관계와 구조 연결을 같은 것으로 분류하지 않는다.
+축구기술지역과벤치인접배치	function,other,process	false	adjacency_connectivity	adjacency_case	축구기술지역과벤치인접배치는 좌석 바로 앞 작업 구역이 연결된 배치다. 감독이 벤치에서 기술지역으로 이동하는 과정이 짧도록 놓인다.
+축구공과골키퍼장갑접촉상태	attribute,comparison,other,process	true	adjacency_connectivity	contact_case	축구공과골키퍼장갑접촉상태는 장갑 표면과 공의 맞닿는 시간·압력을 비교해 잡기와 튕김을 가르는 관계다. 접촉 과정이 있어도 공이 손에 고정된 상태와는 다를 수 있다.
+농구공과림접촉관계	boundary,other,state	false	adjacency_connectivity	contact_case	농구공과림접촉관계는 슛한 공이 금속 고리 표면에 맞닿은 상태다. 접촉 뒤 위로 튀거나 안으로 떨어지는 결과는 별도로 본다.
+농구공과백보드접촉관계	boundary,function,other	false	adjacency_connectivity	contact_case	농구공과백보드접촉관계는 공이 판 표면에 닿아 진행 방향이 바뀌는 관계다. 백보드는 반사 경로를 만드는 기능을 하지만 림과 같은 위치는 아니다.
+농구선수와스크리너접촉관계	boundary,classification,other	false	adjacency_connectivity	contact_case	농구선수와스크리너접촉관계는 움직이는 수비수와 자리 잡은 공격수의 몸이 맞닿는 사건이다. 합법 스크린과 반칙을 접촉 사실만으로 동일 분류하지 않는다.
+농구벤치와기록석인접배치	attribute,boundary,other	false	adjacency_connectivity	adjacency_case	농구벤치와기록석인접배치는 사이드라인 바깥의 서로 가까운 운영 구역 관계다. 실제 간격 속성은 경기장마다 다르며 같은 구역은 아니다.
+배구공과블로커손접촉관계	boundary,other,process	false	adjacency_connectivity	contact_case	배구공과블로커손접촉관계는 공격한 공이 네트 위 손에 닿아 경로가 바뀌는 과정이다. 미세 접촉도 이후 팀 타수 계산에 영향을 줄 수 있다.
+배구선수와네트접촉관계	classification,other,state	false	adjacency_connectivity	contact_case	배구선수와네트접촉관계는 플레이 동작 중 신체나 옷이 안테나 사이 네트에 닿은 상태다. 공과 무관한 느슨한 망 접촉은 규칙상 다르게 분류될 수 있다.
+배구안테나와네트연결관계	function,other,process	false	adjacency_connectivity	connectivity_case	배구안테나와네트연결관계는 세로 막대가 사이드밴드에 고정되어 통과 공간을 표시하는 배치다. 설치 과정에서 위치를 맞춰야 판정 기능이 정확해진다.
+배구공과네트테이프접촉상태	function,other,role,state	true	adjacency_connectivity	contact_case	배구공과네트테이프접촉상태는 서브나 랠리 공이 네트 윗부분에 닿은 순간이다. 테이프가 경계 표시 역할을 해도 접촉한 공을 자동으로 아웃으로 분류하지 않는다.
+야구공과방망이접촉관계	boundary,other,state	false	adjacency_connectivity	contact_case	야구공과방망이접촉관계는 투구가 배트 표면에 맞아 운동 방향이 바뀌는 상태다. 스윙이 가까이 지나갔다는 사실만으로 타구가 되지 않는다.
+야구주자와베이스접촉관계	boundary,function,other	false	adjacency_connectivity	contact_case	야구주자와베이스접촉관계는 손이나 발이 베이스 표면에 닿아 안전 지위를 유지하는 관계다. 베이스 근처 위치만으로 보호 기능이 생기지 않는다.
+야구수비수와주자태그접촉	boundary,classification,other	false	adjacency_connectivity	contact_case	야구수비수와주자태그접촉은 공을 가진 글러브나 손이 주자 몸에 닿는 사건이다. 공을 보유하지 않은 접촉은 같은 아웃 유형으로 분류되지 않는다.
+야구베이스와베이스고정핀연결	attribute,boundary,other	false	adjacency_connectivity	connectivity_case	야구베이스와베이스고정핀연결은 바닥 부품이 베이스 아래 결합부에 맞물린 관계다. 결합 깊이 속성은 베이스의 표면 위치와 다르다.
+테니스공과라켓줄접촉관계	boundary,other,process	false	adjacency_connectivity	contact_case	테니스공과라켓줄접촉관계는 공이 줄판에 눌렸다가 튀어나오는 짧은 과정이다. 두 번 이어 닿는 더블히트 여부는 시간 순서로 판단한다.
+테니스라켓과네트접촉관계	classification,other,state	false	adjacency_connectivity	contact_case	테니스라켓과네트접촉관계는 포인트 진행 중 선수 장비가 네트에 닿은 상태다. 공을 친 뒤였더라도 랠리 종료 전 접촉이면 다르게 분류된다.
+테니스네트와포스트연결관계	function,other,process	false	adjacency_connectivity	connectivity_case	테니스네트와포스트연결관계는 망 양끝이 기둥에 장력을 받아 고정된 배치다. 설치 과정에서 높이와 중심띠를 맞춰 경기 기능을 확보한다.
+테니스공과라인표면접촉상태	attribute,comparison,other,process	true	adjacency_connectivity	contact_case	테니스공과라인표면접촉상태는 공 자국이 선 재료와 코트 표면에 걸친 관계다. 접촉 면적을 비교하더라도 작은 일부가 선에 닿으면 인 판정이 가능하다.
+배드민턴셔틀과라켓접촉관계	boundary,other,state	false	adjacency_connectivity	contact_case	배드민턴셔틀과라켓접촉관계는 코르크나 깃 부분이 줄판에 맞닿은 순간이다. 라켓이 가까이 지나 소리만 난 경우와 실제 접촉을 구분한다.
+배드민턴선수와복식파트너인접배치	boundary,function,other	false	adjacency_connectivity	adjacency_case	배드민턴선수와복식파트너인접배치는 수비 시 두 선수가 좌우로 가까운 간격을 유지하는 관계다. 인접 배치는 코트 폭을 나누는 기능을 한다.
+탁구공과네트접촉관계	boundary,classification,other	false	adjacency_connectivity	contact_case	탁구공과네트접촉관계는 공이 망이나 지주에 닿는 사건이다. 서비스 중 네트를 맞고 올바른 코트에 가면 렛으로 분류되지만 랠리 중에는 계속될 수 있다.
+탁구대와네트지주연결관계	attribute,boundary,other	false	adjacency_connectivity	connectivity_case	탁구대와네트지주연결관계는 지주 클램프가 상판 옆에 고정된 관계다. 고정 압력 속성이 너무 크면 상판을 손상할 수 있다.
+수영선수손과터치패드접촉	boundary,other,process	false	adjacency_connectivity	contact_case	수영선수손과터치패드접촉은 결승이나 반환 때 손이 벽 센서 표면에 닿는 과정이다. 접근만 하고 틈이 남으면 기록 신호가 발생하지 않는다.
+펜싱검끝과유효면접촉상태	classification,function,other,state	true	adjacency_connectivity	contact_case	펜싱검끝과유효면접촉상태는 무기 끝이 상대의 규정 표적에 필요한 조건으로 닿은 순간이다. 전기 신호 기능이 작동해도 비유효면 접촉과 같은 득점으로 분류하지 않는다.
+# 091~120 거리·근접·간격
+축구프리킥공과수비벽거리	boundary,other,state	false	distance_proximity	distance_case	축구프리킥공과수비벽거리는 공의 중심에서 가장 가까운 수비수 위치까지 규정 최소 간격을 둔 상태다. 선수가 비스듬히 서도 최단거리를 본다.
+축구페널티킥공과골키퍼거리	boundary,function,other	false	distance_proximity	distance_case	축구페널티킥공과골키퍼거리는 페널티마크와 골라인 사이의 정해진 공간 관계다. 골키퍼의 반응 기능은 거리와 슛 속도에 함께 좌우된다.
+축구선수간마킹거리	boundary,classification,other	false	distance_proximity	distance_case	축구선수간마킹거리는 수비수가 공격수의 움직임에 대응할 수 있도록 유지하는 상대 간격이다. 가깝다는 표현을 신체 접촉 상태로 분류하지 않는다.
+축구공과터치라인최단거리	attribute,boundary,other	false	distance_proximity	distance_case	축구공과터치라인최단거리는 공 표면의 가장 가까운 점에서 선 경계까지 잰 간격이다. 공 중심 거리와 다른 측정 속성임을 구분한다.
+축구골키퍼와수비선간격	boundary,other,process	false	distance_proximity	distance_case	축구골키퍼와수비선간격은 팀이 전진하거나 후퇴하는 과정에서 함께 변하는 종방향 거리다. 순간 간격만으로 조직 상태 전체를 판단하지 않는다.
+축구코너킥수비수와공거리	classification,other,state	false	distance_proximity	distance_case	축구코너킥수비수와공거리는 재개 전 상대가 규정 간격 밖에 선 상태다. 선을 따라 잰 거리가 아니라 평면 최단거리로 분류한다.
+축구벤치와터치라인안전간격	function,other,process	false	distance_proximity	distance_case	축구벤치와터치라인안전간격은 경기 동선과 좌석 사이에 확보한 공간이다. 선수와 심판 이동 기능을 방해하지 않도록 설치 과정에서 점검한다.
+축구공과선수발접근거리변화	attribute,comparison,other,process	true	distance_proximity	distance_case	축구공과선수발접근거리변화는 드리블 중 공과 발 사이 간격을 시간별로 비교하는 관계다. 거리가 작아지는 과정과 실제 접촉 상태를 동일하게 보지 않는다.
+농구수비수와슈터공간거리	boundary,other,state	false	distance_proximity	distance_case	농구수비수와슈터공간거리는 슛 동작에 필요한 착지·팔 공간과 수비 위치 사이의 간격이다. 가까워도 수직 공간 침범 여부를 따로 본다.
+농구자유투선과림거리	boundary,function,other	false	distance_proximity	distance_case	농구자유투선과림거리는 코트 규격으로 고정된 기준 간격이다. 슈팅 기능을 비교할 때 선수 위치가 선을 넘지 않았는지 함께 확인한다.
+농구선수간도움수비거리	boundary,classification,other	false	distance_proximity	distance_case	농구선수간도움수비거리는 주 수비수와 지원 수비수가 이동 가능한 간격을 유지하는 관계다. 인접과 멀리 떨어짐의 분류는 공격 위치에 따라 달라진다.
+농구공과백보드거리변화	attribute,boundary,other	false	distance_proximity	distance_case	농구공과백보드거리변화는 뱅크슛 경로에서 공 중심과 판 사이 간격이 줄었다 늘어나는 관계다. 충돌 직전 거리와 접촉 순간을 구분한다.
+배구서버와엔드라인거리	boundary,other,process	false	distance_proximity	distance_case	배구서버와엔드라인거리는 서브 동작 중 발이 기준선 뒤 공간에 남는 간격이다. 점프 과정에서 출발 접촉 위치를 기준으로 본다.
+배구블로커와네트간격	classification,other,state	false	distance_proximity	distance_case	배구블로커와네트간격은 몸이 망에 닿지 않으면서 손을 넘길 수 있는 가까운 거리 상태다. 가까움과 접촉을 같은 분류로 두지 않는다.
+배구수비수간커버간격	function,other,process	false	distance_proximity	distance_case	배구수비수간커버간격은 튕긴 공을 이어 받을 수 있도록 선수들이 나눠 선 거리다. 공격 위치가 변하는 과정에 맞춰 간격도 조정된다.
+배구공과코트바닥높이거리	function,other,role,state	true	distance_proximity	distance_case	배구공과코트바닥높이거리는 바닥면을 기준으로 공 최저점까지 잰 수직 높이다. 리베로가 수비 역할 상태여도 거리가 영이 되기 전에는 낙구로 분류되지 않는다.
+야구투수판과홈플레이트거리	boundary,other,state	false	distance_proximity	distance_case	야구투수판과홈플레이트거리는 규격상 두 기준점 사이에 고정된 간격이다. 투수의 팔 길이나 보폭이 달라도 판 사이 거리는 바뀌지 않는다.
+야구주자와베이스최단거리	boundary,function,other	false	distance_proximity	distance_case	야구주자와베이스최단거리는 주자의 가장 가까운 신체점에서 베이스 표면까지 잰 간격이다. 태그 회피 기능과 안전 도달 가능성을 판단하는 데 쓰인다.
+야구외야수간수비간격	boundary,classification,other	false	distance_proximity	distance_case	야구외야수간수비간격은 타구 예상 구역을 겹쳐 맡을 수 있도록 세 선수 사이를 벌린 관계다. 넓은 간격을 연결 단절로 분류하지 않는다.
+야구공과담장수평거리	attribute,boundary,other	false	distance_proximity	distance_case	야구공과담장수평거리는 타구의 지면 투영점과 외야 경계 사이를 잰 간격이다. 공의 높이 속성과 수평 거리는 서로 다르다.
+테니스서버와베이스라인거리	boundary,other,process	false	distance_proximity	distance_case	테니스서버와베이스라인거리는 서비스 동작에서 발이 선 뒤에 유지하는 간격이다. 점프 과정에 발이 선에 닿으면 거리 조건이 무너진다.
+테니스선수와네트접근거리	classification,other,state	false	distance_proximity	distance_case	테니스선수와네트접근거리는 발리 준비 때 몸이 네트에서 떨어진 정도다. 가까운 위치를 네트 접촉 상태로 분류하면 안 된다.
+테니스두선수간회복간격	function,other,process	false	distance_proximity	distance_case	테니스두선수간회복간격은 복식에서 파트너가 코트를 함께 덮도록 유지하는 상대 거리다. 공 위치 변화에 따라 앞뒤 또는 좌우 배열로 바뀐다.
+테니스공과라인거리판독	attribute,comparison,other,process	true	distance_proximity	distance_case	테니스공과라인거리판독은 공 자국의 가장자리와 선의 바깥 경계 사이 간격을 비교하는 관계다. 양수가 아주 작아도 비접촉이고 겹침이면 인 상태다.
+배드민턴선수와네트거리	boundary,other,state	false	distance_proximity	distance_case	배드민턴선수와네트거리는 라켓을 뻗어 앞공을 처리하면서도 망과 접촉하지 않을 간격이다. 발 위치와 라켓 끝의 거리를 구분한다.
+배드민턴복식파트너간격	boundary,function,other	false	distance_proximity	distance_case	배드민턴복식파트너간격은 공격과 수비 배열에서 코트 빈 공간을 줄이도록 조정되는 거리다. 간격은 역할 전환 기능과 연결된다.
+탁구선수와탁구대거리	boundary,classification,other	false	distance_proximity	distance_case	탁구선수와탁구대거리는 공격 스타일과 공 깊이에 따라 몸이 엔드라인에서 떨어진 정도다. 멀리 섰다는 이유로 수비 상태로만 분류하지 않는다.
+수영선수간레인분리거리	attribute,boundary,other	false	distance_proximity	distance_case	수영선수간레인분리거리는 레인 로프가 유지하는 옆 방향 간격이다. 실제 몸 사이 거리는 각 선수의 레인 내 위치 속성에 따라 달라진다.
+양궁사대와표적거리	boundary,other,process	false	distance_proximity	distance_case	양궁사대와표적거리는 종목·라운드별 기준점 사이에 정해진 간격이다. 표적을 이동하는 과정에서는 사격을 중지하고 거리를 다시 확인한다.
+펜싱선수간교전거리	classification,other,state	false	distance_proximity	distance_case	펜싱선수간교전거리는 한 번의 전진이나 팔 뻗기로 유효 접촉이 가능한 상대 간격 상태다. 같은 수치라도 무기 길이와 자세에 따라 공격 가능 거리 분류가 달라진다.
+# 121~150 기준계·투영·판정면
+축구중계화면좌측과팀공격좌측	boundary,other,state	false	reference_frame_projection	reference_frame_case	축구중계화면좌측과팀공격좌측은 카메라 시점과 팀 진행 방향이라는 서로 다른 기준계의 방향이다. 전반과 후반에 대응이 바뀔 수 있다.
+축구선수시점앞쪽과경기장북쪽	boundary,function,other	false	reference_frame_projection	reference_frame_case	축구선수시점앞쪽과경기장북쪽은 몸 방향과 고정 방위의 관계다. 선수의 플레이 기능은 앞쪽을 따르지만 북쪽과 항상 일치하지 않는다.
+축구오프사이드선과화면세로선	boundary,classification,other	false	reference_frame_projection	projection_case	축구오프사이드선과화면세로선은 경기장 평면의 기준선과 원근이 적용된 영상 방향이다. 화면에서 수직처럼 보여도 실제 골라인 평행선으로 분류해야 한다.
+축구공위치와잔디투영점	attribute,boundary,other	false	reference_frame_projection	projection_case	축구공위치와잔디투영점은 공 중심의 삼차원 좌표와 바로 아래 평면점의 관계다. 높이 속성을 제거한 투영점만으로 골라인 통과를 판단하지 않는다.
+축구골라인과가상수직판정면	boundary,other,process	false	reference_frame_projection	projection_case	축구골라인과가상수직판정면은 바닥 선을 위로 세운 평면을 기준으로 공의 통과 과정을 보는 관계다. 선 위 접촉과 평면 전체 통과를 구분한다.
+축구VAR화면과보정경기장좌표	classification,other,state	false	reference_frame_projection	projection_case	축구VAR화면과보정경기장좌표는 여러 카메라 영상과 보정된 공통 좌표 상태의 관계다. 픽셀 위치를 곧 실제 거리로 분류하지 않는다.
+축구선수몸축과카메라수평축	function,other,process	false	reference_frame_projection	reference_frame_case	축구선수몸축과카메라수평축은 회전하는 선수 기준과 고정되지 않은 촬영 기준의 관계다. 분석 과정에서 두 축을 변환해야 좌우 기능을 제대로 읽는다.
+축구골대평면과카메라원근선	attribute,comparison,other,process	true	reference_frame_projection	projection_case	축구골대평면과카메라원근선은 실제 평행·수직 구조와 영상에서 수렴해 보이는 선을 비교하는 관계다. 원근 변환 과정 없이 화면 거리만으로 공 위치를 확정할 수 없다.
+농구선수오른쪽과관중석오른쪽	boundary,other,state	false	reference_frame_projection	reference_frame_case	농구선수오른쪽과관중석오른쪽은 선수 몸 방향과 관중이 바라보는 시점에서 정의한 방향이다. 서로 마주 보면 같은 공간이 반대로 보인다.
+농구림원통과바닥원투영	boundary,function,other	false	reference_frame_projection	projection_case	농구림원통과바닥원투영은 림 위 가상 공간과 코트에 내린 수직 그림의 관계다. 투영은 골텐딩 판단을 돕지만 공 높이 정보는 포함하지 않는다.
+농구삼점선과카메라곡선영상	boundary,classification,other	false	reference_frame_projection	projection_case	농구삼점선과카메라곡선영상은 코트의 실제 원호와 렌즈·원근에 따라 달라진 화면 모양의 관계다. 영상 곡률을 실제 규격으로 분류하지 않는다.
+농구공중심과그림자위치	attribute,boundary,other	false	reference_frame_projection	projection_case	농구공중심과그림자위치는 공의 공간 좌표와 조명 방향으로 바닥에 생긴 투영 위치다. 그림자 거리 속성은 공의 수직 아래점과 다를 수 있다.
+배구선수앞쪽과네트수직방향	boundary,other,process	false	reference_frame_projection	reference_frame_case	배구선수앞쪽과네트수직방향은 몸이 회전하는 과정에서 서로 맞거나 어긋나는 두 기준 방향이다. 항상 네트 쪽이 선수 앞은 아니다.
+배구안테나연장선과통과공간	classification,other,state	false	reference_frame_projection	projection_case	배구안테나연장선과통과공간은 두 막대를 위로 연장한 가상 경계와 그 사이 공간의 관계다. 눈에 보이지 않는 위쪽도 판정 구역으로 분류된다.
+배구공투영점과센터라인	function,other,process	false	reference_frame_projection	projection_case	배구공투영점과센터라인은 공의 수직 아래점이 양 코트 경계 어느 쪽에 있는지 나타낸다. 공중 이동 기능과 선수 침범 판정은 별개다.
+배구카메라좌우와세터몸기준좌우	function,other,role,state	true	reference_frame_projection	reference_frame_case	배구카메라좌우와세터몸기준좌우는 촬영자와 패스를 올리는 선수의 서로 다른 기준계다. 세터 역할 상태를 분석할 때 화면 오른쪽 공격수가 몸 기준 왼쪽에 있을 수 있다.
+야구타자시점좌우와포수시점좌우	boundary,other,state	false	reference_frame_projection	reference_frame_case	야구타자시점좌우와포수시점좌우는 서로 마주보는 두 사람의 몸 기준 방향이다. 같은 베이스 쪽을 각자 반대 좌우로 부를 수 있다.
+야구스트라이크존과홈플레이트투영	boundary,function,other	false	reference_frame_projection	projection_case	야구스트라이크존과홈플레이트투영은 타자 몸 높이 범위와 플레이트 위 가상 입체 공간의 관계다. 바닥 사각형만으로 존 기능을 설명할 수 없다.
+야구파울폴과지면수직투영	boundary,classification,other	false	reference_frame_projection	projection_case	야구파울폴과지면수직투영은 기둥의 공간 위치와 외야 경계점의 관계다. 공이 폴에 맞는 사건을 지면점 통과로만 분류하지 않는다.
+야구공그림자와타구실제경로	attribute,boundary,other	false	reference_frame_projection	projection_case	야구공그림자와타구실제경로는 조명에 따른 바닥 영상과 공의 삼차원 이동 관계다. 그림자 속도 속성이 공의 높이와 속도를 직접 주지 않는다.
+테니스선수시점크로스방향과코트대각선	boundary,other,process	false	reference_frame_projection	reference_frame_case	테니스선수시점크로스방향과코트대각선은 선수 위치에서 반대편 대각 구역으로 향하는 관계다. 선수가 코트 반대편으로 바뀌면 절대 방위도 바뀐다.
+테니스호크아이궤적과실제공경로	classification,other,state	false	reference_frame_projection	projection_case	테니스호크아이궤적과실제공경로는 카메라 측정으로 재구성한 모델과 물리적으로 지나간 공의 관계다. 재구성 오차를 실제 접촉점과 같은 것으로 분류하지 않는다.
+배드민턴셔틀투영점과서비스라인	function,other,process	false	reference_frame_projection	projection_case	배드민턴셔틀투영점과서비스라인은 셔틀이 공중에 있을 때 바닥 기준 어느 구역 위에 있는지 나타낸다. 최종 낙하 판정 기능은 코르크 접촉점에 따른다.
+테니스라인카메라픽셀과코트좌표	attribute,comparison,other,process	true	reference_frame_projection	projection_case	테니스라인카메라픽셀과코트좌표는 영상 점과 실제 평면 위치를 보정식으로 비교하는 관계다. 렌즈 왜곡을 거친 픽셀 거리를 곧 센티미터 거리로 쓰면 안 된다.
+탁구선수기준앞과탁구대긴축	boundary,other,state	false	reference_frame_projection	reference_frame_case	탁구선수기준앞과탁구대긴축은 선수에서 네트로 향하는 몸 방향과 탁구대의 고정 길이 방향 관계다. 선수가 옆으로 돌면 두 축이 어긋난다.
+탁구공높이와상판투영점	boundary,function,other	false	reference_frame_projection	projection_case	탁구공높이와상판투영점은 공의 수직 거리와 상판 위 아래점의 관계다. 투영점은 바운드 예상 기능에 쓰이지만 실제 접촉은 아니다.
+수영선수몸기준위아래와수면기준위아래	boundary,classification,other	false	reference_frame_projection	reference_frame_case	수영선수몸기준위아래와수면기준위아래는 회전하는 몸축과 중력·수면 기준을 비교하는 관계다. 턴 중에는 몸의 위쪽을 수면 위로 분류할 수 없다.
+양궁화살영상선과실제비행곡선	attribute,boundary,other	false	reference_frame_projection	projection_case	양궁화살영상선과실제비행곡선은 카메라 평면의 흔적과 깊이를 포함한 탄도 관계다. 한 화면의 기울기 속성만으로 표적 좌우 편차를 확정하지 않는다.
+육상결승사진픽셀과결승면통과시각	boundary,other,process	false	reference_frame_projection	projection_case	육상결승사진픽셀과결승면통과시각은 선형 카메라의 위치축과 시간축을 합친 기록 관계다. 일반 사진의 한 장면처럼 공간만으로 읽으면 안 된다.
+펜싱피스트축과중계화면수평축	classification,other,state	false	reference_frame_projection	reference_frame_case	펜싱피스트축과중계화면수평축은 실제 전후 이동 기준과 촬영 화면 기준의 관계다. 카메라가 반대편으로 바뀌어도 전진·후퇴 기능의 방향 분류는 피스트 축에 남는다.

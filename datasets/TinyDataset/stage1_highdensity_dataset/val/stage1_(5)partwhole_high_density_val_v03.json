@@ -1,0 +1,2286 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 1 Partwhole High-Density Validation 150 v03",
+  "version": "3",
+  "purpose": "새로운 우편물·행낭·운송편·배달구역 물류 구성 맥락에서 Stage1 (5) 능력의 일반화를 검증하는 validation corpus 150개",
+  "split": "val",
+  "record_count": 150,
+  "range": "S1-PWV-0301 ~ S1-PWV-0450",
+  "concept_family": "우편물·행낭·운송편·배달구역 물류 구성",
+  "design_note": "내용물/우편물, 묶음/행낭, 행낭/운송편, 구역/경로, 배달 단위",
+  "generalization_slice": {
+    "basis": "controlled relation-set composition unseen in Stage1 (5) train",
+    "unseen_records": 18,
+    "total_records": 150,
+    "ratio": 0.12
+  },
+  "records": [
+    {
+      "id": "S1-PWV-0301",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "편지봉투와편지지는 발송 단위와 그 안에 넣은 기록 매체의 관계다. 편지지는 내용을 전달하지만 봉투의 주소 표시와 봉함 기능까지 포함하지 않는다.",
+      "concepts": [
+        "편지봉투와편지지"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0302",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "편지봉투와수취인주소는 우편물 전체와 배달 목적지를 적은 정보 부분이다. 주소가 가리키는 장소는 봉투 표면의 경계를 넘어 존재하며 봉투의 물질 일부는 아니다.",
+      "concepts": [
+        "편지봉투와수취인주소"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0303",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "편지봉투와우표는 발송물과 요금 납부를 표시하는 부착 부분이다. 접수 과정에서 소인이 찍혀도 봉투 안 편지지의 내용은 변하지 않는다.",
+      "concepts": [
+        "편지봉투와우표"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0304",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "편지봉투와봉함접착부는 봉투 전체와 입구를 닫는 부분의 관계다. 접착부가 열린 상태여도 주소면과 우표가 모두 훼손된 것은 아니다.",
+      "concepts": [
+        "편지봉투와봉함접착부"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0305",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "편지봉투와창문필름은 주소를 비춰 보이는 투명한 구성 부분이다. 필름 너머의 인쇄 주소는 내용물에 속할 수 있어 필름과 같은 층으로 분류하지 않는다.",
+      "concepts": [
+        "편지봉투와창문필름"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0306",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "등기봉투와접수바코드는 추적 우편물과 고유 처리 번호를 담은 부분이다. 바코드의 인쇄 선명도는 라벨 속성이며 봉투 안 문서의 상태를 나타내지 않는다.",
+      "concepts": [
+        "등기봉투와접수바코드"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0307",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "등기봉투와배달증명표시는 발송물과 수령 확인 서비스를 알리는 요소다. 표시는 처리 역할을 지시하지만 실제 서명 기록까지 봉투에 미리 포함하지 않는다.",
+      "concepts": [
+        "등기봉투와배달증명표시"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0308",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "등기봉투와보안봉인띠는 우편물 안에서 개봉 흔적을 드러내는 하위 부분이다. 봉인띠가 손상 상태여도 내용 문서까지 같은 훼손 유형으로 분류되지는 않는다.",
+      "concepts": [
+        "등기봉투와보안봉인띠"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0309",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "소포상자와상품내용물은 운송 용기와 그 안에 든 물품의 관계다. 상자 벽은 외부 충격과 내용물의 경계를 만들지만 상품 자체를 상자 부품으로 바꾸지 않는다.",
+      "concepts": [
+        "소포상자와상품내용물"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0310",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "소포상자와완충재는 포장 전체와 빈 공간을 채우는 부분이다. 포장 과정에서 완충재를 넣어도 상품의 제조 구성까지 달라지지는 않는다.",
+      "concepts": [
+        "소포상자와완충재"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0311",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "소포상자와봉함테이프는 운송 포장과 덮개를 고정한 부분이다. 테이프가 들뜬 상태여도 상자 바닥과 내부 완충재가 모두 열린 것은 아니다.",
+      "concepts": [
+        "소포상자와봉함테이프"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0312",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "소포상자와취급주의스티커는 포장물과 작업 방법을 알리는 부착 정보다. 스티커는 소포에 속하지만 상품의 물질 구성이나 운송 용기의 골격은 아니다.",
+      "concepts": [
+        "소포상자와취급주의스티커"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0313",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "냉장소포와보냉내피는 온도 관리 포장과 안쪽 단열층의 관계다. 내피의 두께와 열전도 특성은 그 부분 속성이며 내용물의 온도를 곧바로 뜻하지 않는다.",
+      "concepts": [
+        "냉장소포와보냉내피"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0314",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "냉장소포와냉매팩은 배송 단위와 내부 열을 흡수하는 보조 물품의 관계다. 냉매팩은 냉각 역할을 하지만 식품 내용물의 일부로 섭취되는 것은 아니다.",
+      "concepts": [
+        "냉장소포와냉매팩"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0315",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "냉장소포와온도지시라벨은 포장물과 온도 이탈을 보여 주는 표시 부분이다. 라벨은 감시 구성으로 분류되며 실제 냉매나 단열재와 다르다.",
+      "concepts": [
+        "냉장소포와온도지시라벨"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0316",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "냉장소포와내부칸막이는 포장 안에서 냉매와 상품을 나누는 하위 부분이다. 포장 과정에 배치되지만 칸막이 경계를 내용물 자체의 구성 경계로 확대하면 안 된다.",
+      "concepts": [
+        "냉장소포와내부칸막이"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function",
+        "process"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0317",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "문서봉투와계약서원본은 운송 보호물과 그 안의 법률 문서 관계다. 봉투의 수취 경계와 계약 당사자의 권리 범위는 서로 다른 층위다.",
+      "concepts": [
+        "문서봉투와계약서원본"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0318",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "문서봉투와서명페이지는 발송 단위와 계약서 안에서 서명이 적힌 부분의 관계다. 서명 과정은 문서에 적용되며 봉투의 접수 절차와는 별개다.",
+      "concepts": [
+        "문서봉투와서명페이지"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0319",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "문서봉투와회신용봉투는 바깥 발송물과 내부에 접어 넣은 별도 우편물의 관계다. 회신용봉투가 미사용 상태여도 바깥 봉투는 이미 배달 완료일 수 있다.",
+      "concepts": [
+        "문서봉투와회신용봉투"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0320",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "문서봉투와동봉목록표는 발송물과 안에 든 문서를 열거하는 정보 부분이다. 목록에 적혔다는 사실과 실제로 봉투 안에 존재한다는 사실은 구별해야 한다.",
+      "concepts": [
+        "문서봉투와동봉목록표"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0321",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편엽서와사진면은 한 장짜리 우편물과 이미지를 인쇄한 한쪽 표면이다. 사진의 색과 해상도는 그 면의 속성이며 주소면의 글자 상태와 다르다.",
+      "concepts": [
+        "우편엽서와사진면"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0322",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편엽서와주소면은 엽서 전체와 수취 정보·메시지를 적는 면의 관계다. 주소면은 배달 안내 역할을 하지만 사진면을 물리적으로 포함하지 않는다.",
+      "concepts": [
+        "우편엽서와주소면"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0323",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편엽서와우편번호칸은 한 장 우편물과 숫자를 정렬해 적는 작은 부분이다. 이 칸은 주소 요소로 분류되며 전체 주소와 메시지란은 아니다.",
+      "concepts": [
+        "우편엽서와우편번호칸"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0324",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편엽서와요금별납표시는 발송물 안에서 요금 처리 방식을 밝히는 하위 정보다. 인쇄 상태와 접수 과정은 그 부분 속성이며 엽서 내용을 요금 문서로 분류하지 않는다.",
+      "concepts": [
+        "우편엽서와요금별납표시"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "classification",
+        "process"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0325",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "국제소포와세관신고서는 운송 단위와 내용·가액을 알리는 부착 문서의 관계다. 신고서의 법적 정보 경계와 상자 내부 물품의 물리 경계는 같지 않다.",
+      "concepts": [
+        "국제소포와세관신고서"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0326",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "국제소포와송장주머니는 포장물과 운송 문서를 담아 붙이는 투명 부분이다. 서류를 넣는 과정 뒤에도 소포 내용물 봉함은 별도로 확인한다.",
+      "concepts": [
+        "국제소포와송장주머니"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0327",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "국제소포와원산지증명서는 발송 단위와 상품 출처를 입증하는 문서의 관계다. 증명서가 심사 대기 상태여도 상자 자체는 운송 준비를 마쳤을 수 있다.",
+      "concepts": [
+        "국제소포와원산지증명서"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0328",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "국제소포와금지품목표시는 포장에 붙은 취급·통관 정보다. 표시가 있다고 실제 금지품이 내용물로 들어 있다는 뜻은 아니며 경고 정보로 분류한다.",
+      "concepts": [
+        "국제소포와금지품목표시"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0329",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "반송봉투와반송사유스티커는 되돌아온 우편물과 배달 실패 이유를 적은 부분이다. 사유 문구의 정확성은 라벨 속성이며 편지 내용의 진위를 말하지 않는다.",
+      "concepts": [
+        "반송봉투와반송사유스티커"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0330",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "반송봉투와미개봉편지지는 되돌아온 발송물 안의 하위 내용물이다. 편지지가 미전달 상태여도 봉투 자체는 반송 완료 우편물로 분류되고 추적 기능도 끝날 수 있다.",
+      "concepts": [
+        "반송봉투와미개봉편지지"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0331",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배묶음과일반편지는 한 배달 순서로 모은 우편물 집합과 낱통의 관계다. 한 편지의 수취 주소가 묶음 전체의 배달 지점을 대표하지 않는다.",
+      "concepts": [
+        "집배묶음과일반편지"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0332",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배묶음과등기편지는 한 구역 우편물 모음과 서명 확인이 필요한 한 통의 관계다. 등기 처리 경계는 그 항목에만 적용되며 일반편지까지 같은 확인 절차를 요구하지 않는다.",
+      "concepts": [
+        "집배묶음과등기편지"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0333",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배묶음과소형소포는 배달 단위 전체와 그 안의 부피 있는 한 항목이다. 소포를 따로 스캔하는 과정이 있어도 같은 묶음의 편지 분류는 유지된다.",
+      "concepts": [
+        "집배묶음과소형소포"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0334",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배묶음과배달순서표는 우편물 모음과 방문 순서를 기록한 정보 부분이다. 순서표가 수정 중인 상태여도 묶음 안 우편물의 실제 주소가 바뀌는 것은 아니다.",
+      "concepts": [
+        "집배묶음과배달순서표"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0335",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배묶음과오배달주의표시는 특정 항목에 주의를 주는 정보 요소다. 표시가 묶음에 속해도 모든 우편물이 과거 오배달 대상이라고 분류할 수 없다.",
+      "concepts": [
+        "집배묶음과오배달주의표시"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0336",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "등기우편묶음과개별등기물은 확인 인계 대상 전체와 한 발송물의 관계다. 개별등기물의 무게와 보험액은 낱항목 속성이며 묶음 전체에 상속되지 않는다.",
+      "concepts": [
+        "등기우편묶음과개별등기물"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0337",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "등기우편묶음과인계목록은 추적 우편물 집합과 항목을 대조하는 문서 부분이다. 인계목록은 확인 역할을 하지만 봉투와 소포 자체를 포함하는 용기는 아니다.",
+      "concepts": [
+        "등기우편묶음과인계목록"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0338",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "등기우편묶음과봉인끈은 여러 추적물을 묶어 이탈을 막는 하위 구성이다. 끈이 절단 상태여도 개별등기물 모두를 개봉 우편물로 분류할 수 없다.",
+      "concepts": [
+        "등기우편묶음과봉인끈"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0339",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "국제우편묶음과항공편항목은 국외 발송물 전체와 항공 운송으로 갈 한 항목의 관계다. 항공편 배정 경계가 선편 항목까지 포함하지 않는다.",
+      "concepts": [
+        "국제우편묶음과항공편항목"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0340",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "국제우편묶음과선편항목은 국외 우편 모음과 해상으로 보낼 한 발송물의 관계다. 선적 과정이 느려도 항공 항목의 출발 일정에는 직접 적용되지 않는다.",
+      "concepts": [
+        "국제우편묶음과선편항목"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0341",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "국제우편묶음과통관보류항목은 발송물 집합과 심사가 멈춘 한 항목의 관계다. 한 소포가 보류 상태여도 묶음의 다른 서류우편은 통관될 수 있다.",
+      "concepts": [
+        "국제우편묶음과통관보류항목"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0342",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "국제우편묶음과세관목록은 여러 발송물과 신고 정보를 모은 문서 부분이다. 목록은 묶음에 포함되지만 각 상품의 실제 내용물 집합으로 분류하지 않는다.",
+      "concepts": [
+        "국제우편묶음과세관목록"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0343",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "소포롤테이너와상단소포는 이동 용기와 그 위쪽에 적재된 한 항목의 관계다. 상단소포의 무게는 낱화물 속성이며 롤테이너 전체 하중과 다르다.",
+      "concepts": [
+        "소포롤테이너와상단소포"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0344",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "소포롤테이너와바닥소포는 운반 장비와 하중을 받는 아래쪽 항목의 관계다. 바닥소포는 위 화물을 받치는 역할을 할 수 있지만 장비의 고정 바닥판은 아니다.",
+      "concepts": [
+        "소포롤테이너와바닥소포"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0345",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "소포롤테이너와고정망은 운반 용기와 적재물이 빠지지 않게 하는 구성 부품이다. 고정망은 장비 일부로 분류되며 안에 든 소포와 소유 관계가 다르다.",
+      "concepts": [
+        "소포롤테이너와고정망"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0346",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "소포롤테이너와목적지표찰은 적재 단위 안에서 다음 처리 지점을 알리는 하위 정보다. 분류 과정에 쓰이지만 표찰이 가리키는 지역을 롤테이너의 물리적 부분으로 보면 안 된다.",
+      "concepts": [
+        "소포롤테이너와목적지표찰"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function",
+        "process"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0347",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편행낭과봉투묶음은 운송 자루와 안에 넣은 소형 우편물 단위의 관계다. 행낭 입구는 내용물 경계를 만들지만 묶음의 소속 주소 범위까지 결정하지 않는다.",
+      "concepts": [
+        "우편행낭과봉투묶음"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0348",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편행낭과등기봉투는 운송 단위와 내부의 한 추적 우편물 관계다. 행낭을 개낭하는 과정과 등기 인계 확인은 연속되지만 서로 다른 처리다.",
+      "concepts": [
+        "우편행낭과등기봉투"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0349",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편행낭과행낭자물쇠는 운송 자루와 입구를 잠그는 구성 부품이다. 자물쇠가 해제 상태여도 행낭 천이 찢어졌거나 내용물이 모두 빠졌다는 뜻은 아니다.",
+      "concepts": [
+        "우편행낭과행낭자물쇠"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0350",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편행낭과임시메모쪽지는 처리 중 자루에 붙인 작업 정보의 관계다. 메모는 현재 묶음에 딸리지만 공식 우편물이나 영구 장비 부품으로 분류하지 않는다.",
+      "concepts": [
+        "우편행낭과임시메모쪽지"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0351",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "항공우편행낭과연결편표찰은 비행 운송 자루와 환승 정보를 적은 부분이다. 표찰의 글자 선명도와 갱신 시각은 정보 요소 속성이며 행낭 무게와 무관하다.",
+      "concepts": [
+        "항공우편행낭과연결편표찰"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0352",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "항공우편행낭과보안봉인은 운송 단위와 개봉 여부를 확인하는 부품의 관계다. 봉인은 인계 검증 역할을 하지만 행낭 속 각 우편물의 개별 봉함을 대신하지 않는다.",
+      "concepts": [
+        "항공우편행낭과보안봉인"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0353",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "항공우편행낭과환적우편물은 자루 전체와 중간 공항에서 갈아탈 한 항목이다. 환적우편물은 내용물로 분류되며 행낭의 고정 표찰과 다르다.",
+      "concepts": [
+        "항공우편행낭과환적우편물"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0354",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "항공우편행낭과지연통지서는 운송 단위 안에서 일정 변화를 기록한 하위 문서다. 통지 작성 과정과 지연 시간은 문서 속성이며 모든 내용물을 지연 원인으로 분류하지 않는다.",
+      "concepts": [
+        "항공우편행낭과지연통지서"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "classification",
+        "process"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0355",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "반송행낭과주소불명우편은 되돌림용 자루와 수취처를 찾지 못한 한 항목의 관계다. 주소 불명이라는 판정 경계는 해당 우편물에만 적용된다.",
+      "concepts": [
+        "반송행낭과주소불명우편"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0356",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "반송행낭과수취거절우편은 반송 묶음과 수령이 거절된 발송물의 관계다. 거절 기록 뒤 발송인에게 보내는 과정이 진행되지만 다른 반송 사유와 구별된다.",
+      "concepts": [
+        "반송행낭과수취거절우편"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0357",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "반송행낭과파손우편은 되돌아가는 운송 단위와 손상된 한 항목의 관계다. 파손우편이 재포장 상태여도 행낭의 나머지 우편물이 수리된 것은 아니다.",
+      "concepts": [
+        "반송행낭과파손우편"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0358",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "반송행낭과사고기록표는 운송 묶음과 손상·누락 경위를 적은 정보 부분이다. 기록표는 행낭에 속하지만 반송 대상 우편물 자체로 분류되지는 않는다.",
+      "concepts": [
+        "반송행낭과사고기록표"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0359",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "빈행낭묶음과접힌행낭은 회송할 운송용기 집합과 한 자루의 관계다. 접힌행낭의 크기와 마모는 낱자루 속성이며 묶음 전체 용량을 뜻하지 않는다.",
+      "concepts": [
+        "빈행낭묶음과접힌행낭"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0360",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "빈행낭묶음과수리표찰은 회송 단위 안에서 손볼 자루를 가리키는 하위 정보다. 표찰이 대기 상태여도 빈행낭 모두를 사용 불가 장비로 분류할 수 없다.",
+      "concepts": [
+        "빈행낭묶음과수리표찰"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0361",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편운송편과행낭한개는 한 차례 이동 계획과 그 편에 실린 운송 단위의 관계다. 행낭 하나의 목적지가 운송편 전체 경유지를 대표하지 않는다.",
+      "concepts": [
+        "우편운송편과행낭한개"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0362",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편운송편과소포롤테이너는 이동 단위 전체와 적재 장비 한 대의 관계다. 롤테이너의 화물 경계와 차량 적재함의 전체 경계는 다르다.",
+      "concepts": [
+        "우편운송편과소포롤테이너"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0363",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편운송편과출발스캔목록은 이동 계획과 싣기 전에 확인한 정보 부분이다. 스캔 과정이 끝나도 차량 출발과 중간 인계는 남아 있다.",
+      "concepts": [
+        "우편운송편과출발스캔목록"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0364",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편운송편과도착예정시각은 한 이동 기록과 계획된 시간 요소다. 예정시각이 변경 상태여도 적재된 행낭들의 주소가 바뀌는 것은 아니다.",
+      "concepts": [
+        "우편운송편과도착예정시각"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0365",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편운송편과비상우회메모는 운행 단위와 임시 경로 지시 정보의 관계다. 메모는 편에 속하지만 정규 노선의 영구 구성이나 우편물 내용은 아니다.",
+      "concepts": [
+        "우편운송편과비상우회메모"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0366",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배차량과우편적재함은 배달 차량과 뒤쪽 수납 부분의 관계다. 적재함의 용량과 잠금 상태는 부분 속성이며 엔진과 운전석에 상속되지 않는다.",
+      "concepts": [
+        "집배차량과우편적재함"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0367",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배차량과경로단위상자는 차량에 실린 배달 묶음 한 개의 관계다. 상자는 구역별 분리 역할을 하지만 차량 차체의 고정 부품은 아니다.",
+      "concepts": [
+        "집배차량과경로단위상자"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0368",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배차량과휴대스캐너거치대는 차량 안에서 장비를 고정하는 하위 부품이다. 거치대가 비어 있는 상태여도 차량 전체를 스캐너 미탑재 운송편으로 분류할 수 없다.",
+      "concepts": [
+        "집배차량과휴대스캐너거치대"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0369",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배차량과반송품칸은 적재함 안에서 되가져올 우편물을 나누는 부분이다. 칸의 경계가 새 배달물 구역까지 포함하면 물품이 섞일 수 있다.",
+      "concepts": [
+        "집배차량과반송품칸"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0370",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배차량과일일운행기록은 차량 운영 단위와 이동·정차를 적은 정보 부분이다. 기록 갱신 과정은 운행을 따라가지만 실제 차량 부품은 아니다.",
+      "concepts": [
+        "집배차량과일일운행기록"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0371",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "항공운송편과출발행낭군은 비행 이동 단위와 탑재 준비된 자루 집합의 관계다. 일부 행낭이 대기 상태여도 항공편 전체가 결항된 것은 아니다.",
+      "concepts": [
+        "항공운송편과출발행낭군"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0372",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "항공운송편과환적목록은 비행 운송 기록과 다음 편으로 넘길 항목 정보다. 목록은 운송편에 속하지만 실제 행낭이나 소포의 물리적 집합은 아니다.",
+      "concepts": [
+        "항공운송편과환적목록"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0373",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "항공운송편과화물용기는 비행 단위와 여러 행낭을 넣은 적재 장비의 관계다. 용기의 자체중량은 부분 속성이며 안의 우편물 총중량과 구별된다.",
+      "concepts": [
+        "항공운송편과화물용기"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0374",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "항공운송편과보안인계서는 이동 기록과 책임 이전을 확인하는 문서 부분이다. 인계서는 증명 역할을 하지만 화물용기를 잠그는 물리 장치는 아니다.",
+      "concepts": [
+        "항공운송편과보안인계서"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0375",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "항공운송편과미탑재우편물은 계획된 적재 목록과 실제로 싣지 못한 항목의 관계다. 미탑재 항목은 계획 구성에 기록되지만 비행 중 화물에는 포함되지 않는다.",
+      "concepts": [
+        "항공운송편과미탑재우편물"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0376",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "항공운송편과대체편배정기록은 운송 단위 안에서 빠진 항목의 다음 이동을 정한 하위 정보다. 재배정 과정은 기록에 포함되지만 대체 항공기를 원래 편의 물리적 부분으로 보지 않는다.",
+      "concepts": [
+        "항공운송편과대체편배정기록"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function",
+        "process"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0377",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "철도우편운송과우편차량칸은 열차 이동 단위와 우편물을 싣는 한 칸의 관계다. 차량칸의 출입 경계가 열차 전체 승객 공간까지 닫는 것은 아니다.",
+      "concepts": [
+        "철도우편운송과우편차량칸"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0378",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "철도우편운송과역별행낭은 열차 운송 단위와 특정 역에서 내릴 한 자루의 관계다. 정차 때 내리는 과정이 있어도 다른 역 행낭은 계속 이동한다.",
+      "concepts": [
+        "철도우편운송과역별행낭"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0379",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "철도우편운송과연결열차정보는 이동 기록과 환승할 열차 요소의 관계다. 연결 정보가 지연 상태여도 현재 우편차량칸의 적재 상태는 그대로일 수 있다.",
+      "concepts": [
+        "철도우편운송과연결열차정보"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0380",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "철도우편운송과선로변경지시는 운송 계획에 딸린 임시 운행 정보다. 지시는 기록 구성에 속하지만 선로나 기관차의 물리 부품으로 분류하지 않는다.",
+      "concepts": [
+        "철도우편운송과선로변경지시"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0381",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "선박우편운송과선편행낭은 해상 이동 단위와 한 우편 자루의 관계다. 행낭의 방수 상태와 무게는 낱화물 속성이며 선박 전체 적재 성능과 다르다.",
+      "concepts": [
+        "선박우편운송과선편행낭"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0382",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "선박우편운송과컨테이너는 운송편과 여러 우편 단위를 보호하는 적재 용기의 관계다. 컨테이너는 수납 역할을 하지만 선박 선체의 고정 화물창은 아니다.",
+      "concepts": [
+        "선박우편운송과컨테이너"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0383",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "선박우편운송과항구인계목록은 해상 이동 기록과 하역 항목을 확인하는 문서다. 목록은 운송 구성으로 분류되며 실제 컨테이너와 구별된다.",
+      "concepts": [
+        "선박우편운송과항구인계목록"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0384",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "선박우편운송과기상지연기록은 이동 단위 안에서 일정 변화를 설명하는 하위 정보다. 지연 시간과 기록 과정은 문서 속성이며 행낭을 기상 현상의 일부로 분류하지 않는다.",
+      "concepts": [
+        "선박우편운송과기상지연기록"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "classification",
+        "process"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0385",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "도심자전거배달편과앞가방은 소규모 이동 단위와 핸들 쪽 수납 부분의 관계다. 가방의 적재 경계가 배달원의 개인 소지품까지 포함하지 않게 구분한다.",
+      "concepts": [
+        "도심자전거배달편과앞가방"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0386",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "도심자전거배달편과배달봉투묶음은 한 회차 이동과 주소 순으로 정리한 우편물 집합의 관계다. 경유지마다 항목이 빠져나가며 묶음 구성이 변한다.",
+      "concepts": [
+        "도심자전거배달편과배달봉투묶음"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0387",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "도심자전거배달편과휴대단말기는 배달 회차와 작업자가 지닌 장비의 관계다. 단말기가 충전 부족 상태여도 자전거와 우편물이 같은 전원 상태인 것은 아니다.",
+      "concepts": [
+        "도심자전거배달편과휴대단말기"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0388",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "도심자전거배달편과우천덮개는 운송 단위에 임시로 더한 보호물의 관계다. 덮개는 비가 올 때 포함되지만 자전거의 영구 차체 부품으로 항상 분류되지는 않는다.",
+      "concepts": [
+        "도심자전거배달편과우천덮개"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0389",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "야간우편운송편과교대기사는 한 이동 계획과 일부 구간을 맡는 사람의 관계다. 기사의 근무시간은 부분 역할의 속성이며 운송편 전체 지속시간과 다르다.",
+      "concepts": [
+        "야간우편운송편과교대기사"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0390",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "야간우편운송편과중간휴게정차는 이동 계획 안에서 잠시 멈추는 하위 단계다. 정차 중 상태여도 운송편 전체를 종료된 이동으로 분류할 수 없고 이후 구간 기능이 남는다.",
+      "concepts": [
+        "야간우편운송편과중간휴게정차"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0391",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달권역과제일집배구는 넓은 서비스 범위와 그 안의 한 담당 구역 관계다. 제일집배구의 주소 밀도가 권역 전체의 밀도와 같다고 볼 수 없다.",
+      "concepts": [
+        "배달권역과제일집배구"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0392",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달권역과외곽집배구는 전체 서비스 범위와 가장자리 담당 구역의 관계다. 외곽 경계는 인접 권역과 맞닿지만 중심 집배구를 포함하지 않는다.",
+      "concepts": [
+        "배달권역과외곽집배구"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0393",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달권역과산간특수구역은 서비스 전체와 별도 운송 절차가 필요한 하위 범위다. 기상에 따라 배달 과정이 멈춰도 권역의 평지 구역은 계속 운영될 수 있다.",
+      "concepts": [
+        "배달권역과산간특수구역"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0394",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달권역과임시제외구간은 원래 범위 안에서 접근이 막힌 한 부분의 관계다. 제외 상태는 공사 기간에만 적용되며 권역 설계에서 영구 삭제된 것은 아니다.",
+      "concepts": [
+        "배달권역과임시제외구간"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0395",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달권역과경계밖오주소는 서비스 범위와 잘못 섞인 주소 항목을 연결한다. 분류 목록에 들어 있어도 실제 권역의 구성 구역으로 소속되지는 않는다.",
+      "concepts": [
+        "배달권역과경계밖오주소"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0396",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배구와아파트단지는 담당 구역과 그 안의 한 배달 밀집 지역 관계다. 단지의 세대 수와 출입 방식은 부분 속성이며 집배구의 모든 주소에 적용되지 않는다.",
+      "concepts": [
+        "집배구와아파트단지"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0397",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배구와상가거리는 배달 구역과 점포가 모인 한 부분의 관계다. 상가거리는 다량 우편 발생 역할을 하지만 주거 골목의 배달 기능까지 포함하지 않는다.",
+      "concepts": [
+        "집배구와상가거리"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0398",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배구와공동우편함구역은 담당 범위 안에서 여러 주소를 한곳에 모으는 하위 구역이다. 우편함이 폐쇄 상태여도 집배구 전체를 배달 불가 지역으로 분류할 수 없다.",
+      "concepts": [
+        "집배구와공동우편함구역"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0399",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달경로와첫번째정차점은 이동 순서 전체와 출발 뒤 처음 방문할 지점의 관계다. 첫 지점의 위치 경계가 경로 전체 공간을 대표하지 않는다.",
+      "concepts": [
+        "배달경로와첫번째정차점"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0400",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달경로와중간회차점은 이동 계획과 방향을 바꾸는 한 지점의 관계다. 회차 과정 뒤 남은 주소를 방문하지만 앞선 구간이 경로에서 사라지는 것은 아니다.",
+      "concepts": [
+        "배달경로와중간회차점"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0401",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달경로와마지막수취지는 순서 전체와 최종 방문 주소의 관계다. 마지막 항목이 부재 상태여도 경로의 앞선 우편물은 배달 완료일 수 있다.",
+      "concepts": [
+        "배달경로와마지막수취지"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0402",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달경로와우회메모는 이동 계획에 더해진 임시 정보 부분이다. 메모가 경로에 속해도 실제 도로나 정차점을 물리적으로 구성하는 것은 아니다.",
+      "concepts": [
+        "배달경로와우회메모"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0403",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "주소문자열과우편번호는 배달 위치 정보 전체와 지역을 좁히는 숫자 부분이다. 우편번호의 자릿수와 유효성은 부분 속성이며 상세 건물명과 다르다.",
+      "concepts": [
+        "주소문자열과우편번호"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0404",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "주소문자열과도로명은 전체 위치 표현과 길을 식별하는 부분의 관계다. 도로명은 경로 탐색 역할을 하지만 건물번호와 동호수를 포함하지 않는다.",
+      "concepts": [
+        "주소문자열과도로명"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0405",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "주소문자열과건물번호는 배달 주소와 도로에서 건물을 구별하는 요소다. 건물번호는 주소 구성으로 분류되며 우편번호의 하위 숫자가 아니다.",
+      "concepts": [
+        "주소문자열과건물번호"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0406",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "주소문자열과동호수는 위치 표현 안에서 건물 내부 수취 지점을 정하는 하위 요소다. 분류 과정에 쓰이지만 동호수 경계를 도로 전체의 배달 경계로 확대하면 안 된다.",
+      "concepts": [
+        "주소문자열과동호수"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function",
+        "process"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0407",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "국제주소와국가명은 국외 배달 표현과 목적 국가를 밝히는 부분이다. 국가 경계는 주소 해석을 정하지만 도시·거리 정보까지 대신하지 않는다.",
+      "concepts": [
+        "국제주소와국가명"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0408",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "국제주소와도시명은 전체 주소와 지역 분류 단계의 한 요소다. 자동 분류 과정에서 도시명이 읽혀도 상세 번지 확인은 계속되어야 한다.",
+      "concepts": [
+        "국제주소와도시명"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0409",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "국제주소와현지우편번호는 국외 위치 표현과 현지 분류 코드를 잇는 부분이다. 코드가 미검증 상태여도 국가명과 수취인 이름은 유효할 수 있다.",
+      "concepts": [
+        "국제주소와현지우편번호"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0410",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "국제주소와번역주석은 원문 주소에 덧붙인 읽기 도움 정보다. 주석은 처리 기록에 포함되지만 현지 공식 주소의 고유 구성으로 분류하지 않는다.",
+      "concepts": [
+        "국제주소와번역주석"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0411",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "대형건물주소와층표시는 복합 위치 정보와 수직 위치를 나타내는 부분이다. 층 숫자의 정확성은 부분 속성이며 건물번호의 유효성과 별개다.",
+      "concepts": [
+        "대형건물주소와층표시"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0412",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "대형건물주소와부서명은 수취 위치 전체와 내부 전달 대상을 좁히는 요소다. 부서명은 사내 분류 역할을 하지만 도로상 건물 위치를 정하지 않는다.",
+      "concepts": [
+        "대형건물주소와부서명"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0413",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "대형건물주소와우편실표시는 전체 주소와 건물 안 첫 인계 장소 요소다. 우편실은 배달 지점으로 분류되지만 최종 수취 부서와 같지 않을 수 있다.",
+      "concepts": [
+        "대형건물주소와우편실표시"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0414",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "대형건물주소와출입제한안내는 위치 정보에 덧붙인 하위 처리 조건이다. 안내 내용과 확인 과정은 부분 속성이며 주소 자체를 배달 불가 유형으로 분류하지 않는다.",
+      "concepts": [
+        "대형건물주소와출입제한안내"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "classification",
+        "process"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0415",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "농촌주소와마을명은 배달 위치 표현과 넓은 정착지 요소의 관계다. 마을 경계 안에도 여러 집이 있어 수취인의 정확한 집까지 혼자 정하지 않는다.",
+      "concepts": [
+        "농촌주소와마을명"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0416",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "농촌주소와지번은 전체 주소와 토지 단위를 구별하는 숫자 부분이다. 분류 과정에서 지번을 지도와 대조하지만 수취인 확인은 별도로 한다.",
+      "concepts": [
+        "농촌주소와지번"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0417",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "농촌주소와이정표설명은 위치 표현과 길 찾기를 돕는 부가 요소다. 이정표가 철거된 상태여도 지번과 마을명까지 무효가 되는 것은 아니다.",
+      "concepts": [
+        "농촌주소와이정표설명"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0418",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "농촌주소와구주소병기는 새 주소에 예전 표기를 덧붙인 정보 관계다. 구주소는 참고 구성에 포함되지만 현재 공식 주소로 동일하게 분류되지 않을 수 있다.",
+      "concepts": [
+        "농촌주소와구주소병기"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0419",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배구목록과신규주소항목은 담당 주소 집합과 최근 추가된 한 항목의 관계다. 등록일과 검증 상태는 낱항목 속성이며 목록 전체의 최신성을 보장하지 않는다.",
+      "concepts": [
+        "집배구목록과신규주소항목"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0420",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "집배구목록과삭제예정주소는 주소 집합 안에서 효력을 잃을 하위 항목이다. 삭제 대기 상태여도 목록 전체를 폐지된 배달구역으로 분류할 수 없다.",
+      "concepts": [
+        "집배구목록과삭제예정주소"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0421",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달회차와배달우편물은 한 번의 현장 작업과 그 안에서 처리할 낱항목의 관계다. 한 우편물의 배달 결과가 회차 전체 성공 여부와 항상 같지는 않다.",
+      "concepts": [
+        "배달회차와배달우편물"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0422",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달회차와집배원은 작업 단위와 담당 사람의 관계다. 집배원은 회차에 참여하지만 사람의 신체나 개인 물품이 업무 기록의 구성 부분은 아니다.",
+      "concepts": [
+        "배달회차와집배원"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0423",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달회차와휴대단말기기록은 현장 작업과 각 결과를 저장한 정보 부분이다. 방문할 때마다 기록이 늘어도 우편물 자체의 내용은 바뀌지 않는다.",
+      "concepts": [
+        "배달회차와휴대단말기기록"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0424",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달회차와미배달항목은 작업 전체와 완료하지 못한 한 우편물의 관계다. 미배달 상태는 낱항목에 적용되며 회차의 모든 주소가 실패한 것은 아니다.",
+      "concepts": [
+        "배달회차와미배달항목"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0425",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달회차와개인휴대물은 업무 중 함께 이동한 물건을 가리키지만 처리 대상 구성은 아니다. 같은 가방에 있다는 이유로 우편물 묶음에 소속시키지 않는다.",
+      "concepts": [
+        "배달회차와개인휴대물"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0426",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "등기배달건과등기우편물은 서명 확인 작업과 대상 발송물의 관계다. 우편물의 보험액과 무게는 낱항목 속성이며 배달 절차 전체의 속성과 다르다.",
+      "concepts": [
+        "등기배달건과등기우편물"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0427",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "등기배달건과수취인서명은 처리 기록과 인계를 증명하는 정보 부분이다. 서명은 수령 확인 역할을 하지만 우편물 내용의 동의까지 뜻하지 않는다.",
+      "concepts": [
+        "등기배달건과수취인서명"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0428",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "등기배달건과신분확인결과는 처리 단위 안에서 수취 자격을 나타내는 하위 정보다. 결과가 확인 완료 상태여도 우편물 자체를 신분 문서로 분류할 수 없다.",
+      "concepts": [
+        "등기배달건과신분확인결과"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0429",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "부재배달건과부재안내서는 실패한 방문 기록과 다시 받을 방법을 알리는 부분이다. 안내서의 시간 범위는 재배달 선택에 적용되며 우편물 보관기한과 다를 수 있다.",
+      "concepts": [
+        "부재배달건과부재안내서"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0430",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "부재배달건과보관우체국정보는 처리 기록과 물품이 이동할 장소를 밝히는 부분이다. 방문 실패 뒤 우체국으로 옮기는 과정이 이어진다.",
+      "concepts": [
+        "부재배달건과보관우체국정보"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0431",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "부재배달건과재방문예정일은 실패 기록과 다음 시도 시간을 나타내는 요소다. 예정일이 변경 상태여도 첫 방문이 부재였다는 기록은 유지된다.",
+      "concepts": [
+        "부재배달건과재방문예정일"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0432",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "부재배달건과문앞사물은 방문 당시 관찰된 대상이지만 배달 기록의 본래 구성은 아니다. 현장에 함께 있었다는 이유로 우편물이나 증빙으로 자동 분류하지 않는다.",
+      "concepts": [
+        "부재배달건과문앞사물"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0433",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "재배달신청과대상우편물은 새 방문 요청과 그 대상 한 항목의 관계다. 우편물의 크기와 보관 상태는 신청 일부에 영향을 주지만 희망 시간과는 별개다.",
+      "concepts": [
+        "재배달신청과대상우편물"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0434",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "재배달신청과희망시간대는 요청 전체와 방문 일정을 정하는 정보 부분이다. 시간대는 배정 역할을 하지만 집배원의 실제 도착 순간을 보장하지 않는다.",
+      "concepts": [
+        "재배달신청과희망시간대"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0435",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "재배달신청과연락처는 처리 요청과 수취인에게 확인할 정보 요소다. 연락처는 신청 구성으로 분류되며 우편물의 주소 표기와 다를 수 있다.",
+      "concepts": [
+        "재배달신청과연락처"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0436",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "재배달신청과주소변경요청은 한 처리 단위 안에서 목적지를 바꾸려는 하위 요청이다. 검토 과정에 포함되지만 승인 전 새 주소를 기존 우편물의 확정 구성으로 보면 안 된다.",
+      "concepts": [
+        "재배달신청과주소변경요청"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function",
+        "process"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0437",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "반송처리건과반송우편물은 되돌림 절차와 대상 항목의 관계다. 우편물의 물리 경계와 반송 기록의 정보 경계는 서로 다르다.",
+      "concepts": [
+        "반송처리건과반송우편물"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0438",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "반송처리건과발송인주소는 처리 기록과 돌려보낼 목적지 요소다. 주소를 확인하는 과정이 끝나야 역방향 운송을 시작할 수 있다.",
+      "concepts": [
+        "반송처리건과발송인주소"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0439",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "반송처리건과반송사유는 되돌림 기록과 원인을 나타내는 부분이다. 사유가 미확정 상태여도 우편물은 임시 보관 중일 수 있다.",
+      "concepts": [
+        "반송처리건과반송사유"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0440",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "반송처리건과무관한광고지는 같은 작업대에 놓였어도 처리 구성에 속하지 않는다. 공간적 동시 존재를 반송 묶음의 소속으로 분류하지 않는다.",
+      "concepts": [
+        "반송처리건과무관한광고지"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0441",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편사고접수와분실항목은 조사 요청 전체와 찾지 못한 우편물 한 건의 관계다. 항목의 접수번호와 가액은 부분 속성이며 조사 결론과 같지 않다.",
+      "concepts": [
+        "우편사고접수와분실항목"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0442",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편사고접수와파손사진은 청구 기록과 손상 상태를 보여 주는 증거 부분이다. 사진은 확인 역할을 하지만 실제 파손 우편물의 물질 일부는 아니다.",
+      "concepts": [
+        "우편사고접수와파손사진"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0443",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편사고접수와배상청구액은 조사 단위와 요구 금액 요소의 관계다. 청구액은 기록 구성으로 분류되며 최종 지급액과 동일하지 않을 수 있다.",
+      "concepts": [
+        "우편사고접수와배상청구액"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0444",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편사고접수와조사보류사유는 사건 기록 안에서 진행을 멈춘 이유를 담는 하위 정보다. 보류 기간과 검토 과정은 부분 속성이며 접수 전체를 종결 사건으로 분류하지 않는다.",
+      "concepts": [
+        "우편사고접수와조사보류사유"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "classification",
+        "process"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-PWV-0445",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편물인계건과인계행낭은 책임 이전 기록과 넘겨진 운송 자루의 관계다. 행낭 봉인의 경계와 인계서에 적힌 수량 범위가 일치하는지 따로 확인한다.",
+      "concepts": [
+        "우편물인계건과인계행낭"
+      ],
+      "relations": [
+        "part_of",
+        "boundary",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0446",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편물인계건과인수자서명은 인계 기록과 받은 사람이 남긴 확인 부분이다. 서명 과정이 끝나도 행낭 수량 대조가 남을 수 있다.",
+      "concepts": [
+        "우편물인계건과인수자서명"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0447",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편물인계건과불일치항목은 책임 이전 단위와 목록에서 어긋난 한 부분의 관계다. 한 항목이 확인 대기 상태여도 나머지 행낭은 정상 인계될 수 있다.",
+      "concepts": [
+        "우편물인계건과불일치항목"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0448",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "우편물인계건과옆차량화물은 같은 장소에 있었지만 해당 인계 목록에 속하지 않는 대상이다. 인접해 있다는 이유만으로 처리 단위의 구성원으로 넣지 않는다.",
+      "concepts": [
+        "우편물인계건과옆차량화물"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0449",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달마감보고와완료건수는 하루 결과 문서와 성공한 항목 수를 담는 부분이다. 수치의 정확도는 보고 요소 속성이며 각 우편물의 내용과 무관하다.",
+      "concepts": [
+        "배달마감보고와완료건수"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-PWV-0450",
+      "type": "partwhole_packet",
+      "split": "val",
+      "text": "배달마감보고와미완료사유표는 결과 문서 안에서 남은 항목을 설명하는 하위 부분이다. 표가 작성 완료 상태여도 하루 배달 전체를 미완료 작업으로 분류할 수 없다.",
+      "concepts": [
+        "배달마감보고와미완료사유표"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state"
+      ],
+      "unseen_relation": false
+    }
+  ]
+}

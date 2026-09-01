@@ -1,0 +1,158 @@
+# family	박물관 유물 보존처리·안정화·복원·수장 상태 변화
+# axes	입수·격리, 조사, 세척·안정화, 복원, 전시·수장 전환
+# columns	concepts	relations	unseen_relation	other_category_or_dash	logic_pattern	directly_authored_text
+# 001~030 입수·격리·등록 전이
+신규유물입수대기에서인수완료전이	function,process,state	false	-	workflow_transition	신규유물입수대기에서인수완료전이는 운송 상자를 확인하고 인계 서명을 마칠 때 일어난다. 도착했다는 사실만으로 소유권 검토와 상태 기록까지 완료된 것은 아니다.
+기증품제안에서수증심의전이	boundary,process,state	false	-	workflow_transition	기증품제안에서수증심의전이는 제안 물건의 출처와 수집 정책 적합성을 검토할 때 시작된다. 호의적인 제안 상태와 공식 수락 상태의 경계를 지켜야 한다.
+임시보관에서등록대기전이	contrast,process,state	false	-	workflow_transition	임시보관에서등록대기전이는 물건을 안전한 장소에 옮긴 뒤 기본 인수 정보를 확보하면서 일어난다. 물리적으로 보관됨과 등록번호를 받은 상태는 서로 다르다.
+반입상자미개봉에서개봉조사전이	classification,process,state	false	-	workflow_transition	반입상자미개봉에서개봉조사전이는 담당자가 포장 상태를 촬영하고 개봉을 승인할 때 발생한다. 개봉 전후의 상태 분류를 섞으면 운송 중 손상을 판단하기 어렵다.
+반입품건조상태에서습윤의심전이	attribute,process,state	false	-	condition_transition	반입품건조상태에서습윤의심전이는 포장 안 응결과 표면 수분이 관찰될 때 판정된다. 한 지점의 수분 속성만으로 내부 전체가 젖었다고 단정하지 않는다.
+소장품인계중에서담당자수령전이	role,process,state	false	-	workflow_transition	소장품인계중에서담당자수령전이는 책임자가 수량을 대조하고 인수 기록에 서명하면서 성립한다. 운송자의 역할 종료와 보존 담당자의 책임 시작을 구분한다.
+출처미확인에서검토필요전이	other,process,state	false	provenance_review	knowledge_state	출처미확인에서검토필요전이는 문서가 없다는 사실을 확인하고 추가 조사 과제를 부여할 때 일어난다. 미확인을 불법 취득으로 곧바로 바꾸지 않는다.
+입수후일반구역에서격리구역전이	attribute,boundary,process,state	true	-	condition_transition	입수후일반구역에서격리구역전이는 해충 흔적이나 곰팡이 위험이 관찰되어 이동 경계를 설정할 때 일어난다. 위험 속성이 의심된다고 유물 전체를 감염 확정 상태로 보지는 않는다.
+격리대기에서밀폐격리전이	function,process,state	false	-	condition_transition	격리대기에서밀폐격리전이는 개별 용기와 식별표를 준비해 다른 소장품과 접촉을 차단하면서 진행된다. 공간 이동만으로 격리 기능이 완성되는 것은 아니다.
+해충의심에서트랩관찰전이	boundary,process,state	false	-	condition_transition	해충의심에서트랩관찰전이는 가루나 구멍을 발견한 뒤 포획 장치를 배치할 때 시작된다. 흔적과 현재 활동성의 경계를 구별해 판정한다.
+곰팡이의심에서표면검체채취전이	contrast,process,state	false	-	condition_transition	곰팡이의심에서표면검체채취전이는 얼룩을 육안으로 본 상태에서 분석 가능한 시료를 얻는 단계로 바뀌는 과정이다. 의심과 확인은 대비되는 증거 상태다.
+유해물질미상에서취급제한전이	classification,process,state	false	-	safety_transition	유해물질미상에서취급제한전이는 안료나 방부제 성분이 불명확해 보호구 사용 등급을 올릴 때 일어난다. 정보 부족을 안전하다는 분류로 처리하지 않는다.
+방사선의심에서차폐보관전이	attribute,process,state	false	-	safety_transition	방사선의심에서차폐보관전이는 계측값이 배경 수준을 넘을 때 별도 용기로 옮기면서 진행된다. 측정 속성과 보관 상태가 함께 변하지만 법적 판정은 별도다.
+위험표지없음에서임시경고부착전이	role,process,state	false	-	safety_transition	위험표지없음에서임시경고부착전이는 잠재 위험을 발견한 담당자가 취급자에게 알릴 표지를 붙일 때 성립한다. 경고는 예방 역할을 하며 성분 확인을 대신하지 않는다.
+반입목록불일치에서재대조전이	other,process,state	false	inventory_exception	knowledge_state	반입목록불일치에서재대조전이는 상자 수량과 문서 항목이 다를 때 포장 단위를 다시 확인하는 과정이다. 불일치가 곧 분실 확정이라는 뜻은 아니다.
+미식별물건에서임시번호부여전이	classification,function,process,state	true	-	workflow_transition	미식별물건에서임시번호부여전이는 구별 가능한 표식을 붙여 추적 기능을 만들 때 일어난다. 임시번호로 관리된다고 정식 등록 유물과 같은 분류 상태가 되는 것은 아니다.
+임시번호상태에서등록번호확정전이	function,process,state	false	-	workflow_transition	임시번호상태에서등록번호확정전이는 수증 결정과 기본 기술을 마친 뒤 영구 식별자를 부여하면서 진행된다. 번호 변경 이력은 계속 남겨야 한다.
+등록번호확정에서라벨부착전이	boundary,process,state	false	-	workflow_transition	등록번호확정에서라벨부착전이는 안전한 위치와 재료를 선택해 표식을 물건에 연결할 때 일어난다. 기록상의 번호와 물리 라벨 부착 상태의 경계를 구분한다.
+소유권검토중에서취득승인전이	contrast,process,state	false	-	workflow_transition	소유권검토중에서취득승인전이는 양도 권한과 제한 조건이 확인되어 공식 결정을 내릴 때 발생한다. 심사 중 상태와 승인 완료 상태를 같은 것으로 보지 않는다.
+취득승인에서소장등록전이	classification,process,state	false	-	workflow_transition	취득승인에서소장등록전이는 결정 문서가 관리 시스템의 영구 기록으로 편입될 때 일어난다. 승인된 대상과 실제 등록된 대상을 따로 분류한다.
+대여입수에서대여품등록전이	attribute,process,state	false	-	workflow_transition	대여입수에서대여품등록전이는 소유기관·반환일·보험가액을 기록하면서 진행된다. 대여 기간 속성은 박물관 소유 소장품의 취득 상태와 다르다.
+무보험운송에서보험효력개시전이	role,process,state	false	-	safety_transition	무보험운송에서보험효력개시전이는 약정 시각과 인수 조건이 충족될 때 발생한다. 보험은 위험 분담 역할을 하지만 물리적 손상 상태를 바꾸지는 않는다.
+통관대기에서반입허가전이	other,process,state	false	legal_clearance	workflow_transition	통관대기에서반입허가전이는 신고 문서와 반입 제한 검토가 끝날 때 일어난다. 허가 상태는 소유권이나 진품 판정과 다른 행정 전이다.
+압류우려에서법무보류전이	comparison,contrast,process,state	true	-	legal_transition	압류우려에서법무보류전이는 회수 위험이 통상 수준보다 높아 반입 절차를 멈출 때 일어난다. 위험 비교와 보류 상태는 연결되지만 압류가 이미 발생한 상태와는 다르다.
+법무보류에서반환결정전이	function,process,state	false	-	legal_transition	법무보류에서반환결정전이는 권리 검토 결과 수령 조건을 충족하지 못해 소유기관으로 돌려보내기로 할 때 진행된다. 반환 기능은 기록 보존과 함께 수행된다.
+운송진동노출에서안정대기전이	boundary,process,state	false	-	condition_transition	운송진동노출에서안정대기전이는 민감한 유물을 즉시 풀지 않고 지정 시간 동안 환경에 적응시킬 때 일어난다. 도착과 취급 가능 상태의 경계를 둔다.
+저온운송에서실내순응전이	contrast,process,state	false	-	condition_transition	저온운송에서실내순응전이는 밀봉을 유지한 채 온도를 서서히 맞추면서 발생한다. 차가운 상태와 안정된 실내 상태 사이의 급격한 전환을 피한다.
+포장압박의심에서하중해제전이	classification,process,state	false	-	condition_transition	포장압박의심에서하중해제전이는 위에 놓인 완충재와 물건을 순서대로 제거할 때 진행된다. 눌림 의심을 변형 확정으로 분류하지 않고 해제 뒤 관찰한다.
+입수기록미완성에서보완요청전이	attribute,process,state	false	-	knowledge_state	입수기록미완성에서보완요청전이는 빠진 날짜·소유 이력·운송 정보를 확인해 제공자에게 요청할 때 일어난다. 문서 완성도 속성을 유물 가치와 혼동하지 않는다.
+입수검토중에서초기등록완료전이	classification,function,process,state	true	-	workflow_transition	입수검토중에서초기등록완료전이는 식별·수량·책임 정보를 갖춰 관리 기능을 개시할 때 일어난다. 초기 등록 완료를 보존처리 완료 상태와 같은 분류로 만들지 않는다.
+# 031~060 상태 조사·기록 전이
+미촬영상태에서기준사진완료전이	function,process,state	false	-	documentation_transition	미촬영상태에서기준사진완료전이는 조명·색표·척도를 맞춰 전후 비교용 사진을 저장할 때 성립한다. 한 면 촬영만으로 전체 기록이 완료되지는 않는다.
+포장상태기록에서유물표면기록전이	boundary,process,state	false	-	documentation_transition	포장상태기록에서유물표면기록전이는 운송 외관 촬영을 마치고 유물 자체의 결함 위치를 조사할 때 일어난다. 포장 손상과 유물 손상의 경계를 지킨다.
+육안관찰에서확대관찰전이	contrast,process,state	false	-	examination_transition	육안관찰에서확대관찰전이는 표면 이상을 발견해 현미경이나 확대경으로 세부 구조를 보는 과정이다. 전체 인상과 미세 흔적은 서로 다른 관찰 상태다.
+확대관찰에서재료추정전이	classification,process,state	false	-	examination_transition	확대관찰에서재료추정전이는 섬유·입자·공구 흔적을 바탕으로 후보 재료군을 정리할 때 발생한다. 추정 분류를 분석 확정으로 기록하지 않는다.
+색변화미기록에서색도측정전이	attribute,process,state	false	-	measurement_transition	색변화미기록에서색도측정전이는 표준 위치의 수치를 얻어 기준값을 만들 때 진행된다. 측정값은 특정 지점 속성이며 전체 표면의 균일성을 보장하지 않는다.
+구조안정미상에서흔들림시험전이	role,process,state	false	-	examination_transition	구조안정미상에서흔들림시험전이는 허용 범위의 미세 움직임을 확인해 결합부 상태를 판단할 때 일어난다. 시험자는 손상을 만들지 않는 역할 범위를 지킨다.
+과거수리미상에서기록대조전이	other,process,state	false	provenance_review	knowledge_state	과거수리미상에서기록대조전이는 옛 사진과 처리서를 현재 흔적과 비교하는 과정이다. 문서가 없다는 사실을 수리가 전혀 없었다는 결론으로 바꾸지 않는다.
+표면균열의심에서균열지도작성전이	attribute,boundary,process,state	true	-	documentation_transition	표면균열의심에서균열지도작성전이는 균열의 길이·방향·경계를 도면에 옮길 때 진행된다. 표시된 속성은 관찰 범위를 명확히 하지만 내부 균열까지 모두 확정하지 않는다.
+균열지도작성에서활성균열감시전이	function,process,state	false	-	monitoring_transition	균열지도작성에서활성균열감시전이는 기준점을 정해 시간별 폭 변화를 반복 측정할 때 시작된다. 지도는 감시 기능의 기준으로 쓰인다.
+표면오염관찰에서오염유형판정전이	boundary,process,state	false	-	examination_transition	표면오염관찰에서오염유형판정전이는 먼지·기름·부식산물의 특징을 구별할 증거가 모일 때 일어난다. 비슷한 색만으로 제거 방법까지 결정하지 않는다.
+금속광택저하에서부식의심전이	contrast,process,state	false	-	condition_transition	금속광택저하에서부식의심전이는 변색과 분말 생성이 함께 보일 때 판정된다. 단순한 빛 반사 저하와 화학적 부식 상태를 대비해 살핀다.
+부식의심에서성분분석대기전이	classification,process,state	false	-	examination_transition	부식의심에서성분분석대기전이는 비파괴 측정이나 미량 시료 분석을 요청할 때 발생한다. 분석 대기 상태를 활성 부식 확정으로 분류하지 않는다.
+목재함수율미상에서다지점측정전이	attribute,process,state	false	-	measurement_transition	목재함수율미상에서다지점측정전이는 표면과 내부에 가까운 위치를 나눠 수분값을 얻는 과정이다. 한 점의 속성으로 목재 전체 상태를 대표하지 않는다.
+직물인장약화의심에서지지시험전이	role,process,state	false	-	examination_transition	직물인장약화의심에서지지시험전이는 가장자리와 중앙의 반응을 비교해 전시 지지 방식을 정할 때 일어난다. 시험은 안전한 하중 범위에서 판단을 돕는 역할을 한다.
+안료박락미상에서접촉검사전이	other,process,state	false	measurement_limit	knowledge_state	안료박락미상에서접촉검사전이는 보이지 않는 들뜸을 매우 제한된 방법으로 확인하는 과정이다. 검사를 하지 못한 부분을 안정하다고 간주하지 않는다.
+안료박락확인에서긴급표시전이	classification,function,process,state	true	-	safety_transition	안료박락확인에서긴급표시전이는 취약 부위를 도면과 표찰에 표시해 취급 제한 기능을 만들 때 일어난다. 표시 완료를 박락 안정화 완료 상태와 같은 분류로 보지 않는다.
+도자기접합부미상에서투과광조사전이	function,process,state	false	-	examination_transition	도자기접합부미상에서투과광조사전이는 빛과 확대 관찰로 옛 접착선의 연속성을 확인할 때 진행된다. 조사 결과는 처리 계획의 근거로 기능한다.
+도자기미세금에서누수검사보류전이	boundary,process,state	false	-	safety_transition	도자기미세금에서누수검사보류전이는 물 접촉이 손상을 키울 가능성이 있어 시험 경계를 설정할 때 일어난다. 검사하지 않음과 균열 없음은 다르다.
+유리표면흐림에서염류의심전이	contrast,process,state	false	-	condition_transition	유리표면흐림에서염류의심전이는 습도 이력과 결정 형태를 살펴 단순 먼지와 화학 변화 후보를 나누는 과정이다. 두 상태를 대비해 기록한다.
+유리염류의심에서환경검토전이	classification,process,state	false	-	examination_transition	유리염류의심에서환경검토전이는 진열장 습도와 오염원을 확인해 원인 후보를 분류할 때 진행된다. 환경 검토는 유리 조성 분석과 별도 단계다.
+종이산성도미상에서표면산도측정전이	attribute,process,state	false	-	measurement_transition	종이산성도미상에서표면산도측정전이는 잉크를 피한 위치에서 지시값을 얻을 때 일어난다. 측정 속성이 문서 모든 층의 산성도를 그대로 나타내지는 않는다.
+종이찢김관찰에서섬유방향기록전이	role,process,state	false	-	documentation_transition	종이찢김관찰에서섬유방향기록전이는 보강지를 놓을 방향을 정하기 위해 결을 확인할 때 진행된다. 기록은 후속 수리의 기준 역할을 한다.
+가죽경화미상에서굴곡관찰전이	other,process,state	false	measurement_limit	knowledge_state	가죽경화미상에서굴곡관찰전이는 손상을 만들지 않는 범위에서 가장자리 유연성을 살필 때 일어난다. 시험하지 못한 중앙부의 상태는 미관측으로 남긴다.
+가죽경화확인에서취급등급상향전이	comparison,contrast,process,state	true	-	safety_transition	가죽경화확인에서취급등급상향전이는 정상 유연성보다 크게 낮은 반응이 관찰되어 지지 기준을 강화할 때 일어난다. 비교 결과와 새 취급 상태를 명확히 구분한다.
+사진유제들뜸에서습식처리금지전이	function,process,state	false	-	safety_transition	사진유제들뜸에서습식처리금지전이는 표면층이 물에 민감하다는 증거가 있어 작업 계획을 바꿀 때 발생한다. 금지 상태는 손상 확대를 막는 기능을 한다.
+필름냄새관찰에서열화격리전이	boundary,process,state	false	-	condition_transition	필름냄새관찰에서열화격리전이는 산성 냄새와 수축 징후가 함께 나타나 별도 환기 용기에 둘 때 진행된다. 냄새만으로 재질을 확정하지 않는다.
+음반재질미상에서육안분류전이	contrast,process,state	false	-	examination_transition	음반재질미상에서육안분류전이는 두께·색·가장자리 모양을 비교해 셸락과 비닐 후보를 나누는 과정이다. 외관 분류와 성분 확정은 대비되는 상태다.
+테이프재생가능미상에서기기점검전이	classification,process,state	false	-	workflow_transition	테이프재생가능미상에서기기점검전이는 원본을 넣기 전에 속도·헤드·장력을 맞추는 단계로 옮기는 과정이다. 기기 준비와 매체 상태를 따로 분류한다.
+상태조사초안에서검토본전이	attribute,process,state	false	-	documentation_transition	상태조사초안에서검토본전이는 사진 번호와 용어를 대조해 누락을 고칠 때 일어난다. 문서 완성도 속성이 유물의 보존 상태와 같지는 않다.
+상태조사검토본에서승인본전이	classification,function,process,state	true	-	documentation_transition	상태조사검토본에서승인본전이는 책임자가 판정 근거와 범위를 확인해 공식 기준 기록으로 삼을 때 발생한다. 승인 문서를 처리 완료 유물과 같은 상태로 분류하지 않는다.
+# 061~090 세척·안정화·건조 전이
+표면먼지축적에서건식청소전이	function,process,state	false	-	treatment_transition	표면먼지축적에서건식청소전이는 재질이 안정하고 입자가 느슨할 때 부드러운 도구로 제거하면서 일어난다. 청소 기능은 표면 오염에만 제한한다.
+건식청소중에서잔류먼지확인전이	boundary,process,state	false	-	treatment_transition	건식청소중에서잔류먼지확인전이는 작업 구역과 미처리 구역의 경계를 조명 아래 비교할 때 진행된다. 제거 범위를 넘겨 원래 표면을 마모시키지 않는다.
+잔류먼지확인에서청소종료전이	contrast,process,state	false	-	treatment_transition	잔류먼지확인에서청소종료전이는 더 제거할 때 얻는 이익보다 손상 위험이 커졌다고 판단할 때 발생한다. 완전 무먼지 상태와 안전한 종료 상태는 다르다.
+수용성미상에서습식세척보류전이	classification,process,state	false	-	safety_transition	수용성미상에서습식세척보류전이는 색과 접착층의 반응을 모를 때 물 사용을 중지하는 과정이다. 미시험 상태를 물에 안전한 재료로 분류하지 않는다.
+세척시험전에서소구역시험전이	attribute,process,state	false	-	treatment_transition	세척시험전에서소구역시험전이는 눈에 덜 띄는 위치에서 용제 반응을 확인할 때 시작된다. 시험 지점 속성을 표면 전체 반응으로 확대하지 않는다.
+소구역시험에서방법선택전이	role,process,state	false	-	treatment_transition	소구역시험에서방법선택전이는 오염 제거량과 표면 변화의 균형을 검토해 도구·용제를 정할 때 일어난다. 시험은 선택을 돕는 역할을 한다.
+오염성분미상에서분석의뢰전이	other,process,state	false	measurement_limit	knowledge_state	오염성분미상에서분석의뢰전이는 관찰만으로 물질을 가를 수 없어 추가 측정을 요청할 때 진행된다. 모른다는 상태를 무해하다는 판정으로 바꾸지 않는다.
+습식세척중에서번짐감지전이	attribute,boundary,process,state	true	-	safety_transition	습식세척중에서번짐감지전이는 색 이동이 시험 경계를 넘어 나타날 때 즉시 판정된다. 번짐 속성과 작업 경계를 확인해 세척을 멈추되 유물 전체를 용해 상태로 보지 않는다.
+번짐감지에서흡수건조전이	function,process,state	false	-	treatment_transition	번짐감지에서흡수건조전이는 남은 수분을 번지지 않게 제거하고 평평하게 지지할 때 진행된다. 건조는 추가 이동을 억제하는 기능을 한다.
+수분잔류에서완만건조전이	boundary,process,state	false	-	treatment_transition	수분잔류에서완만건조전이는 급격한 수축을 피하도록 공기 흐름과 지지 범위를 정할 때 일어난다. 표면 건조와 내부 평형의 경계를 구별한다.
+완만건조중에서평형대기전이	contrast,process,state	false	-	condition_transition	완만건조중에서평형대기전이는 겉이 마른 뒤 내부 수분이 환경과 맞춰질 시간을 두는 과정이다. 마른 촉감과 안정된 함수 상태는 다르다.
+금속활성부식에서억제처리전이	classification,process,state	false	-	treatment_transition	금속활성부식에서억제처리전이는 분말 생성이 진행되는 부위를 확인해 적합한 억제 방법을 적용할 때 일어난다. 안정 부식층과 활성층을 나눠 처리한다.
+억제처리후에서재부식감시전이	attribute,process,state	false	-	monitoring_transition	억제처리후에서재부식감시전이는 색·분말·무게 변화를 기준값과 반복 비교하는 단계로 옮기는 과정이다. 한 번의 안정 속성이 장기 상태를 보장하지 않는다.
+철제유물염화물의심에서탈염대기전이	role,process,state	false	-	treatment_transition	철제유물염화물의심에서탈염대기전이는 분석 결과와 구조 강도를 검토해 담당자가 처리 여부를 결정할 때 진행된다. 대기 상태는 안전성 판단 역할을 한다.
+청동표면가루미상에서격리관찰전이	other,process,state	false	monitoring_uncertainty	knowledge_state	청동표면가루미상에서격리관찰전이는 생성 속도를 알 수 없어 습도를 낮추고 반복 촬영하는 과정이다. 미확인 가루를 안정 녹으로 단정하지 않는다.
+청동활성부식에서국소안정화전이	classification,function,process,state	true	-	treatment_transition	청동활성부식에서국소안정화전이는 반응 부위를 선별해 억제 기능을 적용할 때 일어난다. 국소 처리를 마쳤다고 유물 전체를 동일한 안정 등급으로 분류하지 않는다.
+목재균열열림에서가습완화전이	function,process,state	false	-	condition_transition	목재균열열림에서가습완화전이는 급격한 건조 원인을 제거하고 허용 습도 범위로 천천히 옮길 때 진행된다. 완화는 추가 벌어짐을 줄이는 기능을 한다.
+목재가습중에서치수안정전이	boundary,process,state	false	-	condition_transition	목재가습중에서치수안정전이는 기준점 사이 길이가 일정 기간 변하지 않을 때 판정한다. 표면 촉감과 내부 치수 안정의 경계를 구분한다.
+수침목재에서치환처리전이	contrast,process,state	false	-	treatment_transition	수침목재에서치환처리전이는 물로 지지되던 세포 공간을 보존제로 서서히 바꾸는 과정이다. 젖은 유연 상태와 건조 가능한 지지 상태는 다르다.
+치환처리후에서동결건조전이	classification,process,state	false	-	treatment_transition	치환처리후에서동결건조전이는 보존제 농도와 내부 평형이 기준을 충족할 때 다음 공정으로 이동한다. 준비된 목재와 미치환 목재를 구분한다.
+직물주름고정에서저장완화전이	attribute,process,state	false	-	condition_transition	직물주름고정에서저장완화전이는 섬유 강도와 염료 안정성을 확인한 뒤 낮은 하중으로 형태를 펴는 과정이다. 평탄도 속성만을 목표로 무리하게 누르지 않는다.
+직물습윤세척에서헹굼전이	role,process,state	false	-	treatment_transition	직물습윤세척에서헹굼전이는 용출 오염과 세제 잔류를 확인하며 깨끗한 용액으로 바꿀 때 진행된다. 헹굼은 잔류물을 줄이는 역할을 한다.
+직물염료미확인에서세척중지전이	other,process,state	false	measurement_limit	safety_transition	직물염료미확인에서세척중지전이는 시험천의 색 이동 여부를 판단할 수 없을 때 작업을 멈추는 과정이다. 정보 부족을 견뢰도 양호로 취급하지 않는다.
+직물세척후에서평면건조전이	comparison,contrast,process,state	true	-	condition_transition	직물세척후에서평면건조전이는 늘어진 부분과 원래 치수를 비교해 장력 없이 지지할 때 일어난다. 젖은 상태와 건조 후 치수 상태를 대비해 기록한다.
+종이접힘굳음에서가습전이	function,process,state	false	-	treatment_transition	종이접힘굳음에서가습전이는 잉크와 종이 반응을 확인한 뒤 간접 수분으로 섬유를 유연하게 할 때 시작된다. 가습은 펴기 기능을 준비한다.
+종이가습에서평탄화전이	boundary,process,state	false	-	treatment_transition	종이가습에서평탄화전이는 충분히 유연해진 뒤 흡수지와 가벼운 압력 사이에 둘 때 진행된다. 접힘선의 경계를 지우려 원래 눌림까지 없애지 않는다.
+종이평탄화에서건조고정전이	contrast,process,state	false	-	condition_transition	종이평탄화에서건조고정전이는 수분을 바꾸어 가며 형태가 유지될 때까지 지지하는 과정이다. 눌린 상태와 안정된 평면 상태를 대비한다.
+유리염류표면에서건조청소전이	classification,process,state	false	-	treatment_transition	유리염류표면에서건조청소전이는 분석으로 느슨한 침전임을 확인하고 안전한 도구를 선택할 때 진행된다. 유리 자체의 풍화층과 제거 대상 염류를 분류한다.
+세척완료에서처리기록작성전이	attribute,process,state	false	-	documentation_transition	세척완료에서처리기록작성전이는 사용 재료·농도·시간·제거 범위를 정리할 때 일어난다. 기록 완성도는 처리 결과의 재현 가능성을 좌우하는 문서 속성이다.
+안정화완료에서경과관찰전이	classification,function,process,state	true	-	monitoring_transition	안정화완료에서경과관찰전이는 즉시 결과를 장기 안정으로 확정하지 않고 점검 기능을 이어 갈 때 발생한다. 처리 완료와 감시 종료를 같은 상태로 분류하지 않는다.
+# 091~120 접합·복원·전시 전이
+파편분리상태에서가접합전이	function,process,state	false	-	restoration_transition	파편분리상태에서가접합전이는 맞는 단면과 순서를 확인해 임시 지지로 형태를 시험할 때 일어난다. 가접합은 최종 접착 전 검증 기능을 한다.
+가접합에서영구접합전이	boundary,process,state	false	-	restoration_transition	가접합에서영구접합전이는 정렬과 하중이 적절하다고 확인한 뒤 가역성 있는 접착제를 적용할 때 진행된다. 임시 지지와 영구 처리의 경계를 기록한다.
+영구접합중에서경화대기전이	contrast,process,state	false	-	condition_transition	영구접합중에서경화대기전이는 접착제가 움직이지 않도록 지그에 둔 단계로 바뀌는 과정이다. 붙어 보이는 상태와 충분히 경화된 상태는 다르다.
+경화대기에서지그해제전이	classification,process,state	false	-	restoration_transition	경화대기에서지그해제전이는 접착 강도가 기준에 도달해 외부 지지를 제거할 때 일어난다. 해제 가능한 접합과 계속 지지가 필요한 접합을 구분한다.
+접합부틈새에서충전시험전이	attribute,process,state	false	-	restoration_transition	접합부틈새에서충전시험전이는 색·강도·제거성을 맞춘 소량 재료를 시험할 때 진행된다. 시험편의 속성이 본 처리 전체에 그대로 재현되는지 확인한다.
+충전시험에서충전재선택전이	role,process,state	false	-	restoration_transition	충전시험에서충전재선택전이는 구조 지지와 시각 구분 요구를 함께 검토해 재료를 정할 때 일어난다. 충전재는 결손을 지지하는 역할을 맡는다.
+결손형태미상에서가상복원검토전이	other,process,state	false	reconstruction_hypothesis	knowledge_state	결손형태미상에서가상복원검토전이는 대칭과 과거 사진으로 여러 형태 가설을 비교하는 과정이다. 가상 모델을 원래 형태의 확정 상태로 취급하지 않는다.
+가상복원검토에서최소개입결정전이	attribute,boundary,process,state	true	-	restoration_transition	가상복원검토에서최소개입결정전이는 근거가 있는 경계까지만 보충하고 불확실한 부분을 남길 때 일어난다. 복원 범위 속성을 제한해 새 부분을 원래 재료로 보지 않는다.
+도자기결손에서가역충전전이	function,process,state	false	-	restoration_transition	도자기결손에서가역충전전이는 구조 안정과 형태 이해에 필요한 범위만 보충재로 채울 때 진행된다. 충전은 파편 가장자리를 보호하는 기능을 한다.
+가역충전에서색맞춤전이	boundary,process,state	false	-	restoration_transition	가역충전에서색맞춤전이는 가까이에서 새 부분을 구별할 수 있는 수준으로 톤을 조절하는 단계다. 보충색과 원래 유약의 경계를 지우지 않는다.
+색맞춤중에서과도한통합감지전이	contrast,process,state	false	-	safety_transition	색맞춤중에서과도한통합감지전이는 복원부가 원부재처럼 보일 정도로 차이가 사라질 때 작업을 되돌리는 과정이다. 시각 통합과 진위 혼동을 대비한다.
+과도한통합에서톤낮춤전이	classification,process,state	false	-	restoration_transition	과도한통합에서톤낮춤전이는 복원 부분을 식별할 수 있게 채도나 명도를 조정하는 과정이다. 원부재와 보충부의 분류 경계가 다시 드러난다.
+회화찢김에서임시보강전이	attribute,process,state	false	-	restoration_transition	회화찢김에서임시보강전이는 운반 중 벌어짐을 막도록 뒤쪽에 제한된 지지를 붙일 때 진행된다. 찢김 길이 속성을 기록하고 영구 수리와 구분한다.
+임시보강에서정렬접합전이	role,process,state	false	-	restoration_transition	임시보강에서정렬접합전이는 화면 선과 직물 결을 맞춘 뒤 가장자리를 연결할 때 일어난다. 보강재는 정렬을 유지하는 역할을 한다.
+회화결손색미상에서중성톤전이	other,process,state	false	reconstruction_hypothesis	restoration_transition	회화결손색미상에서중성톤전이는 원래 색을 추정할 근거가 부족해 눈에 덜 띄는 중립 보충을 선택할 때 일어난다. 모름을 임의의 원색으로 채우지 않는다.
+회화접합완료에서장력조정전이	classification,function,process,state	true	-	restoration_transition	회화접합완료에서장력조정전이는 캔버스가 고르게 지지되도록 틀의 힘을 조절하는 단계다. 접합 완료와 전시 가능 상태를 같은 분류로 두지 않고 지지 기능을 확인한다.
+액자미장착에서시험장착전이	function,process,state	false	-	display_transition	액자미장착에서시험장착전이는 작품 크기와 완충 간격을 맞춰 고정점 하중을 확인할 때 일어난다. 시험장착은 전시 지지 기능을 검증한다.
+시험장착에서전시장착완료전이	boundary,process,state	false	-	display_transition	시험장착에서전시장착완료전이는 고정점과 뒤판을 확정해 작품이 안전하게 놓일 때 발생한다. 임시 시험과 공개 전시 상태의 경계를 남긴다.
+전시장착완료에서조도점검전이	contrast,process,state	false	-	display_transition	전시장착완료에서조도점검전이는 빛의 세기와 누적 노출을 기준과 비교하는 단계다. 물리 장착 완료와 환경 적합 상태는 다르다.
+조도초과에서조명감쇄전이	classification,process,state	false	-	display_transition	조도초과에서조명감쇄전이는 민감도 등급에 맞게 광원을 줄이거나 필터를 적용할 때 진행된다. 초과 상태와 허용 상태를 분류한다.
+진열장개방에서밀폐점검전이	attribute,process,state	false	-	display_transition	진열장개방에서밀폐점검전이는 문을 닫고 틈과 패킹 압력을 확인할 때 일어난다. 밀폐성은 진열장 속성이며 유물 자체 보존 상태와 다르다.
+진열장밀폐에서내부환경평형전이	role,process,state	false	-	display_transition	진열장밀폐에서내부환경평형전이는 조절재가 작동해 습도가 목표 범위에 머물 때까지 기다리는 과정이다. 조절재는 완충 역할을 한다.
+전시환경미상에서데이터로거가동전이	other,process,state	false	monitoring_uncertainty	knowledge_state	전시환경미상에서데이터로거가동전이는 온습도 변화를 알 수 없어 측정 장치를 켜는 과정이다. 측정 전 상태를 안정하다고 추정하지 않는다.
+환경기록확보에서전시승인전이	comparison,contrast,process,state	true	-	display_transition	환경기록확보에서전시승인전이는 측정 범위가 허용 기준과 비교해 안정적일 때 결정된다. 자료가 있다는 상태와 승인된 전시 상태를 대비해 기록한다.
+전시준비에서운송고정전이	function,process,state	false	-	display_transition	전시준비에서운송고정전이는 지지대와 완충재로 움직임을 제한하고 상자에 넣을 때 일어난다. 고정은 이동 중 충격을 줄이는 기능을 한다.
+운송고정에서전시장도착전이	boundary,process,state	false	-	display_transition	운송고정에서전시장도착전이는 봉인과 충격 기록을 유지한 채 목적지에 인계될 때 진행된다. 도착과 개봉 가능 상태의 경계를 둔다.
+전시장도착에서상자순응전이	contrast,process,state	false	-	condition_transition	전시장도착에서상자순응전이는 급격한 온습도 변화를 막아 포장을 닫은 채 기다리는 과정이다. 이동 환경과 전시장 환경 사이를 완만히 바꾼다.
+상자순응에서개봉설치전이	classification,process,state	false	-	display_transition	상자순응에서개봉설치전이는 기록된 환경 차이가 허용 범위에 들 때 포장을 풀고 지지대에 옮기는 단계다. 순응 중과 설치 가능 상태를 나눈다.
+전시보류에서보완조치대기전이	attribute,process,state	false	-	display_transition	전시보류에서보완조치대기전이는 지지대·조도·보안 조건의 부족 항목을 지정할 때 일어난다. 부족 정도는 전시 계획 속성이며 유물 가치와 무관하다.
+전시보완완료에서공개상태전이	function,process,state	false	-	display_transition	전시보완완료에서공개상태전이는 안전 조건을 재확인하고 관람 기능을 시작할 때 발생한다. 공개 상태를 영구 보존 완료와 같은 분류로 두지 않는다.
+# 121~150 수장·대여·비상 복귀 전이
+전시종료에서철거대기전이	function,process,state	false	-	storage_transition	전시종료에서철거대기전이는 관람을 멈추고 작업 동선과 포장 재료를 준비할 때 일어난다. 공개 기능은 끝나지만 작품은 아직 진열장 안에 있다.
+철거대기에서포장완료전이	boundary,process,state	false	-	storage_transition	철거대기에서포장완료전이는 상태를 재확인하고 지지대에서 상자로 옮길 때 진행된다. 전시 구성과 운송 구성의 경계를 기록한다.
+포장완료에서수장고복귀전이	contrast,process,state	false	-	storage_transition	포장완료에서수장고복귀전이는 이동·인계·개봉 절차를 거쳐 지정 위치에 놓일 때 일어난다. 포장 상태와 장기 수장 상태는 다르다.
+수장고복귀에서위치등록전이	classification,process,state	false	-	storage_transition	수장고복귀에서위치등록전이는 선반·상자·칸 정보를 시스템에 갱신할 때 성립한다. 물리 복귀와 기록상 위치 확정 상태를 구분한다.
+수장위치미상에서재고조사전이	attribute,process,state	false	-	inventory_transition	수장위치미상에서재고조사전이는 마지막 이동 이력과 주변 선반을 대조해 실제 위치를 찾는 과정이다. 위치 정보의 정확성은 기록 속성이다.
+재고조사중에서위치확인전이	role,process,state	false	-	inventory_transition	재고조사중에서위치확인전이는 두 담당자가 번호와 물건을 대조해 위치를 승인할 때 일어난다. 교차 확인은 오류를 줄이는 역할을 한다.
+위치미확인에서분실의심전이	other,process,state	false	inventory_exception	knowledge_state	위치미확인에서분실의심전이는 지정 범위를 찾아도 발견되지 않아 조사 단계를 높일 때 발생한다. 찾지 못함을 즉시 영구 분실로 확정하지 않는다.
+분실의심에서이동이력추적전이	attribute,boundary,process,state	true	-	inventory_transition	분실의심에서이동이력추적전이는 마지막 서명·문·선반 기록의 경계를 따라 확인할 때 진행된다. 기록 속성이 불완전해도 유물이 박물관 밖에 있다고 단정하지 않는다.
+수장상자개방에서재밀봉전이	function,process,state	false	-	storage_transition	수장상자개방에서재밀봉전이는 점검을 끝내고 완충재 위치와 표찰을 확인한 뒤 닫을 때 일어난다. 밀봉은 먼지와 이동을 줄이는 기능을 한다.
+수장상자내습도상승에서조절재교체전이	boundary,process,state	false	-	condition_transition	수장상자내습도상승에서조절재교체전이는 값이 허용 경계를 넘고 기존 재료가 포화되었을 때 진행된다. 상자 환경과 수장고 전체 환경을 구별한다.
+조절재교체에서환경회복전이	contrast,process,state	false	-	condition_transition	조절재교체에서환경회복전이는 시간별 수치가 목표 범위로 돌아와 유지될 때 판정한다. 교체 직후와 실제 회복 상태는 다르다.
+수장선반진동에서고정점검전이	classification,process,state	false	-	safety_transition	수장선반진동에서고정점검전이는 지진·공사 뒤 앵커와 받침의 이완 여부를 확인할 때 일어난다. 유물 흔들림과 설비 결함을 따로 분류한다.
+수장품먼지증가에서덮개보완전이	attribute,process,state	false	-	storage_transition	수장품먼지증가에서덮개보완전이는 침착량과 유입 경로를 확인해 덮개 재질·틈을 조정하는 과정이다. 먼지량은 표면 속성이며 내부 열화와 같지 않다.
+수장품접근제한에서연구열람승인전이	role,process,state	false	-	access_transition	수장품접근제한에서연구열람승인전이는 연구 목적과 취급 능력을 확인해 담당 입회 조건을 정할 때 발생한다. 담당자는 감독 역할을 맡는다.
+연구열람중에서취급중지전이	other,process,state	false	safety_exception	safety_transition	연구열람중에서취급중지전이는 새 박락이나 지지 불안을 발견해 관찰을 멈추는 과정이다. 예상하지 못한 변화가 없다는 가정으로 계속 다루지 않는다.
+취급중지에서보존검토의뢰전이	classification,function,process,state	true	-	safety_transition	취급중지에서보존검토의뢰전이는 문제를 기록하고 전문 판단 기능으로 넘길 때 일어난다. 의뢰 상태를 손상 확정이나 처리 완료로 같은 분류에 넣지 않는다.
+대여가능에서대여심사전이	function,process,state	false	-	loan_transition	대여가능에서대여심사전이는 요청 기관의 시설·보험·운송 조건을 검토할 때 시작된다. 가능 표시는 심사를 여는 기능이지 승인 자체가 아니다.
+대여심사에서조건부승인전이	boundary,process,state	false	-	loan_transition	대여심사에서조건부승인전이는 조도·기간·지지대 같은 제한을 붙여 허용할 때 발생한다. 승인 범위의 경계를 계약에 명확히 적는다.
+조건부승인에서대여포장전이	contrast,process,state	false	-	loan_transition	조건부승인에서대여포장전이는 모든 선행 조건을 충족한 뒤 운송 준비로 넘어가는 과정이다. 승인 문서 상태와 물리 포장 상태는 다르다.
+대여포장중에서봉인완료전이	classification,process,state	false	-	loan_transition	대여포장중에서봉인완료전이는 상자 내부 확인과 인계표 부착 뒤 봉인번호를 기록할 때 일어난다. 포장 중과 출발 가능 상태를 나눈다.
+대여중환경경고에서기관통보전이	attribute,process,state	false	-	monitoring_transition	대여중환경경고에서기관통보전이는 원격 수치가 한계를 넘을 때 관찰 시각과 범위를 전달하는 과정이다. 경고값은 특정 기간 속성이다.
+기관통보에서전시조정전이	role,process,state	false	-	loan_transition	기관통보에서전시조정전이는 현지 담당자가 조명·공조·진열 위치를 바꿀 때 진행된다. 대여 기관과 소장 기관의 역할을 구분한다.
+대여품상태미확인에서긴급사진요청전이	other,process,state	false	monitoring_uncertainty	knowledge_state	대여품상태미확인에서긴급사진요청전이는 경고 뒤 물리 변화를 알 수 없어 근접 기록을 요구할 때 일어난다. 미확인을 무손상으로 간주하지 않는다.
+긴급사진확인에서조기회수결정전이	comparison,contrast,process,state	true	-	loan_transition	긴급사진확인에서조기회수결정전이는 출발 전 상태보다 변화가 커 안전 기준을 넘었다고 비교될 때 발생한다. 현지 유지와 회수 상태를 대비해 결정한다.
+침수경보에서수장품고지대이동전이	function,process,state	false	-	emergency_transition	침수경보에서수장품고지대이동전이는 물 유입 전 우선순위에 따라 바닥 가까운 상자를 올릴 때 일어난다. 이동은 노출 위험을 줄이는 기능을 한다.
+고지대이동에서인원대피전이	boundary,process,state	false	-	emergency_transition	고지대이동에서인원대피전이는 작업 안전 경계가 무너질 가능성이 커질 때 유물 이동을 멈추고 사람을 내보내는 과정이다. 두 우선순위를 구별한다.
+화재진압후에서연기피해격리전이	contrast,process,state	false	-	emergency_transition	화재진압후에서연기피해격리전이는 불이 꺼진 뒤 그을음·수분에 노출된 물건을 분리하는 과정이다. 화재 종료와 보존 위험 종료는 다르다.
+정전상태에서비상환경감시전이	classification,process,state	false	-	emergency_transition	정전상태에서비상환경감시전이는 공조가 멈춘 기간을 휴대 센서로 기록하고 민감 재질을 분류해 점검할 때 진행된다. 전원 복구 전 상태를 따로 관리한다.
+비상상황종료에서복구우선순위전이	attribute,process,state	false	-	emergency_transition	비상상황종료에서복구우선순위전이는 젖음·그을음·구조 불안의 정도를 기록해 처리 순서를 정할 때 일어난다. 피해 속성을 가치 순위와 혼동하지 않는다.
+복구조치완료에서정상수장복귀전이	function,process,state	false	-	storage_transition	복구조치완료에서정상수장복귀전이는 환경·지지·기록을 재확인해 장기 보관 기능을 회복할 때 발생한다. 응급 안정화만 마친 상태를 영구 복원으로 분류하지 않는다.

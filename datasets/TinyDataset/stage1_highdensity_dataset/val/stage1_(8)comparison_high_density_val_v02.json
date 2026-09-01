@@ -1,0 +1,2286 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 1 Comparison High-Density Validation 150 v02",
+  "version": "2",
+  "purpose": "새로운 농산물 경매·품질등급·가격·수율·보관성 비교 맥락에서 Stage1 (8) 능력의 일반화를 검증하는 validation corpus 150개",
+  "split": "val",
+  "record_count": 150,
+  "range": "S1-COV-0151 ~ S1-COV-0300",
+  "concept_family": "농산물 경매·품질등급·가격·수율·보관성 비교",
+  "design_note": "규격·등급, 단위가격, 수율, 결점률, 저장 조건·기간",
+  "generalization_slice": {
+    "basis": "controlled relation-set composition unseen in Stage1 (8) train",
+    "unseen_records": 18,
+    "total_records": 150,
+    "ratio": 0.12
+  },
+  "records": [
+    {
+      "id": "S1-COV-0151",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "사과상자두개의킬로그램당가격은 상자 총액을 순중량으로 나눠 같은 단위에서 비교한다. 포장 무게가 다른 상태에서 상자값만 보면 실제 단가 순위가 뒤바뀔 수 있다.",
+      "concepts": [
+        "사과상자두개의킬로그램당가격"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0152",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "배한알가격과상자단가는 개수·중량·선별 규격을 맞춘 뒤 환산해 비교한다. 한 알 크기 속성이 다르면 단순 개수당 가격은 중량당 가치와 같지 않다.",
+      "concepts": [
+        "배한알가격과상자단가"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0153",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "감자톤당가격과포대당가격은 포대의 표준 중량과 감모를 반영해 같은 질량 단가로 비교한다. 환산 기능 없이 숫자 크기만 대조하면 안 된다.",
+      "concepts": [
+        "감자톤당가격과포대당가격"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0154",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "쌀현미중량과백미수율은 도정 전 원료와 도정 후 제품의 질량 비율로 비교한다. 공정 중 수분과 겨 제거량을 기록해야 로트 간 수율이 공정하다.",
+      "concepts": [
+        "쌀현미중량과백미수율"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0155",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "포도송이무게와알평균무게는 줄기 포함 전체와 개별 알의 기준 경계를 나눠 비교한다. 큰 송이가 반드시 큰 알로 구성된 것은 아니다.",
+      "concepts": [
+        "포도송이무게와알평균무게"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0156",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "상등급과특등급명칭대조는 같은 품목·같은 기관의 기준표 안에서 의미를 대비한다. 다른 시장의 이름이 같아도 허용 결점과 크기 경계가 다를 수 있다.",
+      "concepts": [
+        "상등급과특등급명칭대조"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0157",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "토마토크기규격과지름측정은 어느 방향의 최대 또는 최소 지름을 쓰는지 정한 뒤 비교한다. 측정 규칙이 다른 등급을 같은 규격으로 분류하지 않는다.",
+      "concepts": [
+        "토마토크기규격과지름측정"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0158",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "수박한통가격과킬로그램단가는 실제 순중량 속성을 이용해 환산한 뒤 비교한다. 한통 가격이 같은 상태라도 무게가 다르면 단가가 같은 상품으로 분류되지 않는다.",
+      "concepts": [
+        "수박한통가격과킬로그램단가"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0159",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "딸기팩가격과백그램단가는 팩별 순중량과 할인 여부를 반영해 비교한다. 용기 크기가 같아 보이는 상태를 동일 중량으로 가정하지 않는다.",
+      "concepts": [
+        "딸기팩가격과백그램단가"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0160",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "양파망가격과개수당가격은 망 안 개수와 크기 분포를 함께 기록해 환산한다. 개수 속성이 같아도 총중량과 상품성은 다를 수 있다.",
+      "concepts": [
+        "양파망가격과개수당가격"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0161",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "고추한근가격과그램당가격은 지역·품목에서 사용하는 근의 실제 질량을 확인해 환산한다. 관습 단위를 표준 단위로 바꾸는 기능이 필요하다.",
+      "concepts": [
+        "고추한근가격과그램당가격"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0162",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "달걀한판가격과개당가격은 파손·누락 수량과 크기 등급을 확인해 비교한다. 선별 과정에서 제외된 알을 포함하면 단가가 왜곡된다.",
+      "concepts": [
+        "달걀한판가격과개당가격"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0163",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "우유리터당가격과유지방함량은 가격과 성분이라는 다른 축을 구분한다. 더 높은 유지방 경계를 가진 제품이 항상 리터당 더 비싼 것은 아니다.",
+      "concepts": [
+        "우유리터당가격과유지방함량"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0164",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "곡물수분보정전후중량은 실제 계근값과 표준 수분으로 환산한 건물량을 대비한다. 젖은 로트의 무게 우위를 생산량 우위로 보지 않는다.",
+      "concepts": [
+        "곡물수분보정전후중량"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0165",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "건초생중량과건물수율은 수분 제거 전 질량과 마른 물질 비율을 구분해 비교한다. 생중량이 큰 로트를 높은 건물 생산성으로 분류하지 않는다.",
+      "concepts": [
+        "건초생중량과건물수율"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0166",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "벼재배면적당수확량과총수확량은 면적을 나눈 생산성과 전체 양을 비교한다. 단위면적 지표는 효율 판단 기능을 하지만 농장 규모 경계를 포함하지 않는다.",
+      "concepts": [
+        "벼재배면적당수확량과총수확량"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0167",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "사과당도브릭스와당함량그램은 용액 농도와 과실 전체 당량을 구분해 비교한다. 같은 브릭스 상태라도 과실 크기와 수분량이 다르면 총당은 달라진다.",
+      "concepts": [
+        "사과당도브릭스와당함량그램"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0168",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "감귤산도퍼센트와당산비는 산 농도 속성과 당도에 대한 상대 비율을 나눠 비교한다. 산도가 낮아도 당도가 더 낮으면 당산비는 크지 않을 수 있다.",
+      "concepts": [
+        "감귤산도퍼센트와당산비"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0169",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "쌀완전미율과결점립률은 같은 표본 무게에서 서로 배타적인 항목인지 확인해 비교한다. 두 비율은 품질 판단 기능을 돕지만 합이 항상 백 퍼센트는 아니다.",
+      "concepts": [
+        "쌀완전미율과결점립률"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0170",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "콩백립중과종자크기등급은 표준 수분의 백 알 무게를 기준표 경계와 대조한다. 건조 과정이 다르면 같은 품종도 등급이 달라 보일 수 있다.",
+      "concepts": [
+        "콩백립중과종자크기등급"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0171",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "경매낙찰가와수수료포함정산가는 거래 표시값과 실제 지급·수취 금액의 경계를 나눠 비교한다. 운송비와 공제 항목도 기준에 명시한다.",
+      "concepts": [
+        "경매낙찰가와수수료포함정산가"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0172",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "도매가격과소매가격대조는 거래 단계·포장·수량·세금을 맞춰 대비한다. 같은 날짜의 숫자라도 유통 기능과 단위가 달라 직접 비교할 수 없다.",
+      "concepts": [
+        "도매가격과소매가격대조"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0173",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "산지가격과도착지가격은 운송·선별·손실이 포함되는 지점을 구분해 비교한다. 거래 위치를 같은 가격 유형으로 분류하지 않는다.",
+      "concepts": [
+        "산지가격과도착지가격"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0174",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "경매상자값과순상품가치는 포장·수수료·폐기 예상량을 뺀 뒤 비교한다. 낙찰 속성이 같은 상태라도 실제 판매 가능한 가치가 같다고 분류할 수 없다.",
+      "concepts": [
+        "경매상자값과순상품가치"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0175",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "무등급품과등급외품명칭은 평가하지 않은 상태와 기준을 충족하지 못한 상태를 구분해 비교한다. 둘을 같은 낮은 등급으로 묶지 않는다.",
+      "concepts": [
+        "무등급품과등급외품명칭"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0176",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "유기인증과품질등급점수는 생산 방식 속성과 외관·성분 품질 평가를 별도 축으로 비교한다. 인증이 높은 외관 등급을 보장하지 않는다.",
+      "concepts": [
+        "유기인증과품질등급점수"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0177",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "원산지표시와재배지거리는 행정 출처 정보와 시장까지의 실제 운송 거리를 나눠 비교한다. 원산지 이름은 식별 기능이지 거리 단위가 아니다.",
+      "concepts": [
+        "원산지표시와재배지거리"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0178",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "냉장보관일수와상온보관시간은 온도 구간과 시작 시각을 맞춰 누적 노출로 비교한다. 단위만 바꿔도 온도 차이를 무시하면 보관성 판단이 틀린다.",
+      "concepts": [
+        "냉장보관일수와상온보관시간"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0179",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "수확후경과일과유통기한잔여일은 서로 반대 방향으로 흐르는 시간 지표다. 기준일과 품목별 기한 경계를 밝혀야 한다.",
+      "concepts": [
+        "수확후경과일과유통기한잔여일"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0180",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "두로트의중량보정낙찰가는 순중량·수분·결점 공제를 같은 규칙으로 적용해 비교한다. 보정 전 가격이 높은 로트를 보정 후에도 우위 등급으로 분류할 수 없다.",
+      "concepts": [
+        "두로트의중량보정낙찰가"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0181",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "사과당도와경도종합순위는 두 지표의 목표 범위와 가중치를 먼저 정해 비교한다. 더 달지만 너무 무른 과실이 전체 품질에서 항상 앞서지는 않는다.",
+      "concepts": [
+        "사과당도와경도종합순위"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0182",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "배크기와모양균일도순위는 평균 지름과 개체별 편차를 별도 속성으로 비교한다. 큰 과실 로트가 규격 균일성에서도 우위라는 보장은 없다.",
+      "concepts": [
+        "배크기와모양균일도순위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0183",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "딸기색도와향기선호도는 기기 측정과 관능 평가를 함께 비교한다. 색은 성숙도 판단 기능을 돕지만 향의 강도를 직접 대신하지 않는다.",
+      "concepts": [
+        "딸기색도와향기선호도"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0184",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "토마토외관과저장성순위는 현재 결점과 시간에 따른 연화·부패 변화를 같이 비교한다. 경매 순간의 매끈함만으로 장기 우위를 정하지 않는다.",
+      "concepts": [
+        "토마토외관과저장성순위"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0185",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "수박당도와공동발생위험은 단맛 수치와 내부 갈라짐 가능성의 경계를 나눠 비교한다. 한 축이 높아도 전체 상품성이 높다고 볼 수 없다.",
+      "concepts": [
+        "수박당도와공동발생위험"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0186",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "참외향과표피결점대조는 먹는 품질과 외관 감점을 대비한다. 작은 흠집이 향미 우위를 없애는지는 거래 목적에 따라 다르다.",
+      "concepts": [
+        "참외향과표피결점대조"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0187",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "포도송이모양과알탈락률은 진열 외관 등급과 운송 내구 지표를 구분해 비교한다. 보기 좋은 송이를 낮은 탈락 유형으로 자동 분류하지 않는다.",
+      "concepts": [
+        "포도송이모양과알탈락률"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0188",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "복숭아향기와압상민감도는 관능 강도와 충격 뒤 멍 발생률을 별도 속성으로 비교한다. 향이 좋은 상태를 유통 중 손상에도 강한 품질로 분류할 수 없다.",
+      "concepts": [
+        "복숭아향기와압상민감도"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0189",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "감자크기와전분함량순위는 조리 목적별 목표 지름과 건물 비율을 함께 비교한다. 큰 괴경 상태가 가공용 전분 우위를 의미하지 않는다.",
+      "concepts": [
+        "감자크기와전분함량순위"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0190",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "고구마당도와섬유질감은 숙성 뒤 당도와 씹힘 거칠기를 별도 속성으로 비교한다. 단맛이 높아도 모든 소비자가 더 좋은 식감으로 평가하지 않는다.",
+      "concepts": [
+        "고구마당도와섬유질감"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0191",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "양파구직경과저장부패율은 크기 선호와 장기 손실을 함께 비교한다. 큰 구는 판매 기능에 유리할 수 있지만 목 마름 상태가 나쁘면 저장성이 낮다.",
+      "concepts": [
+        "양파구직경과저장부패율"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0192",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "마늘쪽수와상품중량은 한 통의 구성과 선별 후 판매 질량을 비교한다. 건조 과정에서 중량이 줄어도 쪽수는 그대로일 수 있다.",
+      "concepts": [
+        "마늘쪽수와상품중량"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0193",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "쌀향미와완전미율은 관능 결과와 외관 선별 지표의 경계를 나눠 비교한다. 완전한 모양의 쌀이 반드시 더 향기로운 것은 아니다.",
+      "concepts": [
+        "쌀향미와완전미율"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0194",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "보리단백질과발아율대조는 성분 함량과 종자의 생리 반응을 대비한다. 맥아 용도에서는 어느 하나만 높아도 최적 품질이 아니다.",
+      "concepts": [
+        "보리단백질과발아율대조"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0195",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "콩단백질과외관등급은 성분 분석과 크기·색·결점 분류를 함께 비교한다. 높은 외관 등급을 높은 단백질 유형으로 분류하지 않는다.",
+      "concepts": [
+        "콩단백질과외관등급"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0196",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "옥수수수분과파손률종합평가는 건조 비용과 취급 손실을 각각 비교한다. 수분 경계를 맞추는 기능이 있어도 파손이 많은 로트의 전체 순위는 낮아질 수 있다.",
+      "concepts": [
+        "옥수수수분과파손률종합평가"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0197",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "쇠고기마블링과연도순위는 지방 분포와 기계·관능 연도를 같은 숙성 조건에서 비교한다. 마블링이 높은 상태가 언제나 더 부드러운 것은 아니다.",
+      "concepts": [
+        "쇠고기마블링과연도순위"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0198",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "돼지고기등지방과정육수율은 지방 두께 속성과 판매 가능한 살코기 비율을 함께 비교한다. 한 지표의 증가가 다른 지표의 우위와 반대일 수 있다.",
+      "concepts": [
+        "돼지고기등지방과정육수율"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0199",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "달걀껍질강도와난황색은 운송 보호와 소비자 외관 선호라는 다른 기능 축에서 비교한다. 진한 색이 파손 저항을 높이지 않는다.",
+      "concepts": [
+        "달걀껍질강도와난황색"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0200",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "우유체세포수와유지방률은 위생 상태와 성분 가치를 시간별 검사로 비교한다. 한 지표가 좋아지는 과정이 다른 지표도 함께 좋아진다는 뜻은 아니다.",
+      "concepts": [
+        "우유체세포수와유지방률"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0201",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "생선선도와크기등급은 수확 후 상태와 개체 규격의 경계를 나눠 비교한다. 큰 생선을 높은 선도 등급으로 자동 평가하지 않는다.",
+      "concepts": [
+        "생선선도와크기등급"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0202",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "새우크기와껍질손상대조는 마리당 중량과 외관 결점률을 대비한다. 큰 규격이라도 파손이 많으면 거래 가치가 낮아질 수 있다.",
+      "concepts": [
+        "새우크기와껍질손상대조"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0203",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "인삼뿌리모양과진세노사이드함량은 외관 분류와 성분 분석을 따로 비교한다. 보기 좋은 뿌리를 고함량 유형으로 분류하지 않는다.",
+      "concepts": [
+        "인삼뿌리모양과진세노사이드함량"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0204",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "버섯갓크기와조직단단함은 지름 속성과 압축 반응을 함께 비교한다. 갓이 큰 상태가 더 단단하거나 저장에 유리하다고 분류할 수 없다.",
+      "concepts": [
+        "버섯갓크기와조직단단함"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0205",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "상추잎크기와시듦률은 진열성 규격과 보관 중 수분 손실을 비교한다. 큰 잎 상태라도 포장 조건이 좋으면 시듦은 적을 수 있다.",
+      "concepts": [
+        "상추잎크기와시듦률"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0206",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "오이곧음과가시선명도는 형태와 표면 신선 지표를 별도 속성으로 비교한다. 두 특징의 가중치는 시장 규격에 따라 달라진다.",
+      "concepts": [
+        "오이곧음과가시선명도"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0207",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "파줄기굵기와백색부길이는 조리 용도에 따른 두 규격을 함께 비교한다. 어느 축이 판매 기능에 유리한지는 구매자 요구에 달린다.",
+      "concepts": [
+        "파줄기굵기와백색부길이"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0208",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "고추색상과매운맛강도는 숙성 과정의 색 변화와 캡사이시노이드 함량을 나눠 비교한다. 붉어지는 과정만으로 매운맛 순위를 정하지 않는다.",
+      "concepts": [
+        "고추색상과매운맛강도"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0209",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "참깨색균일도와기름수율은 외관 선별 경계와 착유 결과를 별도로 비교한다. 균일한 색이 높은 수율을 보장하지 않는다.",
+      "concepts": [
+        "참깨색균일도와기름수율"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0210",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "종합등급과단일품질지표는 여러 축을 합친 분류 상태와 한 측정값을 비교한다. 당도 하나가 높아도 결점·크기·저장성이 낮으면 최고 등급으로 분류할 수 없다.",
+      "concepts": [
+        "종합등급과단일품질지표"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0211",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "가정용과가공용사과가치순위는 외관·당도·크기·손상 허용 기준을 용도별로 비교한다. 흠 있는 과실도 가공 상태에서는 높은 가치를 가질 수 있다.",
+      "concepts": [
+        "가정용과가공용사과가치순위"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0212",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "생식용과전분용감자우위는 조리 질감과 건물 함량 속성의 가중치를 달리해 비교한다. 한 품종의 우위가 모든 용도에서 유지되지는 않는다.",
+      "concepts": [
+        "생식용과전분용감자우위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0213",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "즉시판매와장기보관토마토순위는 현재 색·맛과 경도·부패 위험을 목적별로 비교한다. 유통 기능이 달라 같은 로트의 순위도 바뀐다.",
+      "concepts": [
+        "즉시판매와장기보관토마토순위"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0214",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "지역시장과수출시장배규격은 소비자 선호와 운송·검역 과정을 반영해 비교한다. 국내 상등급이 수출 규격에서도 같은 순위라는 보장은 없다.",
+      "concepts": [
+        "지역시장과수출시장배규격"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0215",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "여름경매와겨울경매상추가격은 공급량·기상·수요의 시간 경계를 맞춰 비교한다. 계절 평균을 개별 날짜 가격에 그대로 적용하지 않는다.",
+      "concepts": [
+        "여름경매와겨울경매상추가격"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0216",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "산지경매와도시경매가격대조는 운송·선별·수수료 포함 범위를 대비한다. 장소 이름만으로 생산자 수취액과 구매자 지급액을 혼동하지 않는다.",
+      "concepts": [
+        "산지경매와도시경매가격대조"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0217",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "아침경매와마감경매낙찰가는 품목별 물량과 구매자 참여 상태를 기록해 비교한다. 시간대 자체를 고가 또는 저가 유형으로 분류하지 않는다.",
+      "concepts": [
+        "아침경매와마감경매낙찰가"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0218",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "냉장창고와상온창고양파보관성은 온도·습도·환기와 초기 건조 상태를 함께 비교한다. 냉장이라는 속성만으로 모든 로트가 더 오래 가는 상태로 분류되지는 않는다.",
+      "concepts": [
+        "냉장창고와상온창고양파보관성"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0219",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "무포장과필름포장오이수분손실은 같은 온도와 기간에서 중량 감소를 비교한다. 필름 포장 상태가 응결·부패 위험까지 항상 낮추지는 않는다.",
+      "concepts": [
+        "무포장과필름포장오이수분손실"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0220",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "완숙과미숙토마토운송내구성은 초기 경도·거리·포장 하중을 함께 비교한다. 성숙도 속성 하나만으로 압상률 순위를 고정하지 않는다.",
+      "concepts": [
+        "완숙과미숙토마토운송내구성"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0221",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "건조지역과습윤지역마늘저장성은 수확 후 건조와 창고 환기 조건을 맞춰 비교한다. 재배 지역 이름은 장기 보관 기능의 직접 지표가 아니다.",
+      "concepts": [
+        "건조지역과습윤지역마늘저장성"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0222",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "고지대와평지배추단맛은 품종·수확 시기·기온 과정을 통제해 비교한다. 한 지역 평균을 모든 농가 배추의 순위로 일반화하지 않는다.",
+      "concepts": [
+        "고지대와평지배추단맛"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0223",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "관행재배와유기재배외관결점은 방제 방식과 선별 기준의 경계를 명시해 비교한다. 재배 체계만으로 결점률을 정하지 않는다.",
+      "concepts": [
+        "관행재배와유기재배외관결점"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0224",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "수작업수확과기계수확손상대조는 품목·숙도·장비 설정·작업속도를 맞춰 압상과 절단을 대비한다. 방식 이름이 결과를 확정하지 않는다.",
+      "concepts": [
+        "수작업수확과기계수확손상대조"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0225",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "소규모농가와대규모농가수율은 면적당 생산량과 품목 구성을 같은 기준으로 비교한다. 농장 규모를 생산성 등급으로 곧바로 분류하지 않는다.",
+      "concepts": [
+        "소규모농가와대규모농가수율"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0226",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "단기출하와장기저장감자경제성은 현재 가격과 저장비·감모·향후 가격을 비교한다. 저장 기능의 이익 경계는 시장 전망과 품질 손실에 따라 바뀐다.",
+      "concepts": [
+        "단기출하와장기저장감자경제성"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0227",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "학교급식과고급식당채소규격은 조리 방식·예산·외관 요구를 목적별로 비교한다. 한 구매처에서 낮은 순위인 크기도 다른 곳에서는 적합 상태다.",
+      "concepts": [
+        "학교급식과고급식당채소규격"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0228",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "잼가공과생과판매딸기등급은 당도·향·형태·압상 속성의 중요도를 달리해 비교한다. 모양이 무너진 과실도 가공용 가치가 높을 수 있다.",
+      "concepts": [
+        "잼가공과생과판매딸기등급"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0229",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "착유용과식용참깨품질우선순위는 기름 함량과 색·향·이물 기준을 용도별로 비교한다. 같은 원료가 맡는 기능에 따라 우위가 달라진다.",
+      "concepts": [
+        "착유용과식용참깨품질우선순위"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0230",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "제분용과발아용밀종자순위는 단백질·수분과 발아율·병해 상태를 각각 비교한다. 저장 과정이 한 용도에는 유리하고 다른 용도에는 불리할 수 있다.",
+      "concepts": [
+        "제분용과발아용밀종자순위"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0231",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "국내소비와수출용포도포장우위는 이동거리·검역·온도 경계를 기준으로 비교한다. 포장 비용이 큰 방식이 짧은 유통에서도 항상 우위는 아니다.",
+      "concepts": [
+        "국내소비와수출용포도포장우위"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0232",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "온라인판매와현장판매과일외관은 사진 정보와 직접 선택 가능성의 차이를 대비한다. 동일 결점도 구매 상황에 따라 수용 범위가 달라진다.",
+      "concepts": [
+        "온라인판매와현장판매과일외관"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0233",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "비수기와성수기보관비용순위는 전력·공간·회전율을 같은 기간 단위로 비교한다. 계절 이름을 비용 등급으로 고정 분류하지 않는다.",
+      "concepts": [
+        "비수기와성수기보관비용순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0234",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "무농약표시와소비자지불의향은 인증 속성과 실제 선택 확률을 구매 집단별로 비교한다. 표시가 있는 상태를 모든 소비자가 더 높은 가격을 내는 상태로 분류할 수 없다.",
+      "concepts": [
+        "무농약표시와소비자지불의향"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0235",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "저온유통과일반유통복숭아손실은 초기 숙도와 이동시간을 맞춰 압상·부패·감모를 비교한다. 저온 상태에서도 냉해가 생길 수 있다.",
+      "concepts": [
+        "저온유통과일반유통복숭아손실"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0236",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "개별포장과벌크포장배손상률은 완충재·적재 높이·운송 진동을 함께 비교한다. 포장 단위 속성만으로 손상 순위를 정하지 않는다.",
+      "concepts": [
+        "개별포장과벌크포장배손상률"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0237",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "수확직후와후숙후바나나가격은 색·경도·판매 가능 시점과 후숙 비용을 비교한다. 후숙은 시장 기능을 높일 수 있지만 폐기 위험도 만든다.",
+      "concepts": [
+        "수확직후와후숙후바나나가격"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0238",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "지역품종과보급품종시장가치는 생산량·희소성·소비자 인지 과정을 함께 비교한다. 낮은 수율을 곧 낮은 가치로 판단하지 않는다.",
+      "concepts": [
+        "지역품종과보급품종시장가치"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0239",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "도매상과가공업체결점허용도는 판매 형태와 제거 공정의 경계를 기준으로 비교한다. 같은 흠집도 구매자별 허용 범위가 다르다.",
+      "concepts": [
+        "도매상과가공업체결점허용도"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0240",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "신선도우선시장과가격우선시장은 구매 기준의 가중치를 비교해 같은 로트 순위가 어떻게 바뀌는지 본다. 시장 유형을 모든 거래자의 고정 선호 상태로 분류하지 않는다.",
+      "concepts": [
+        "신선도우선시장과가격우선시장"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0241",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "사과로트평균당도신뢰구간은 상자와 위치를 나눠 뽑은 표본의 산포를 포함해 범위로 제시한다. 몇 알의 중심값만으로 전체 로트 상태를 확정하지 않는다.",
+      "concepts": [
+        "사과로트평균당도신뢰구간"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0242",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "배결점률표본오차는 검사 개수와 결점 분류 오차를 반영해 결점 비율의 불확실 구간을 산출한다. 표본 수 속성이 작으면 소수점 순위를 신뢰하기 어렵다.",
+      "concepts": [
+        "배결점률표본오차"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0243",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "감자면적당수율추정오차는 표본 구획과 전체 재배면적의 차이를 반영해 범위를 계산한다. 추정 기능이 총수확 계근을 대신하지 않는다.",
+      "concepts": [
+        "감자면적당수율추정오차"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0244",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "쌀수분측정기두대편차는 같은 시료를 반복 측정하고 교정 과정을 확인해 비교한다. 한 번의 표시 차이를 로트 수분 변화로 보지 않는다.",
+      "concepts": [
+        "쌀수분측정기두대편차"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0245",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "경매가격일별변동구간은 같은 품목·등급·시간 경계 안에서 거래 분포를 비교한다. 최고가 한 건을 대표 가격으로 과해석하지 않는다.",
+      "concepts": [
+        "경매가격일별변동구간"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0246",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "등급판정자간불일치대조는 동일 표본에 대한 분류표와 경계 사례를 대비한다. 불일치가 크면 등급 기준의 적용 신뢰도를 따로 본다.",
+      "concepts": [
+        "등급판정자간불일치대조"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0247",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "저장실두곳부패율범위는 초기 로트와 보관 기간을 맞춰 반복 상자의 분포를 비교한다. 창고 이름만으로 성능 유형을 분류하지 않는다.",
+      "concepts": [
+        "저장실두곳부패율범위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0248",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "당도중앙값과개체간산포는 로트의 중심 속성과 균일성 범위를 함께 비교한다. 중앙값이 높은 상태라도 산포가 넓으면 모든 과실을 고당도로 분류할 수 없다.",
+      "concepts": [
+        "당도중앙값과개체간산포"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0249",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "수박내부결함비파괴검사오차는 절단 확인 표본과 예측 결과의 불확실 범위를 비교한다. 양성 표시 상태가 실제 공동을 확정하지 않는다.",
+      "concepts": [
+        "수박내부결함비파괴검사오차"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0250",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "계란파손률운송반복차이는 같은 포장과 경로의 여러 회차 결과를 비교한다. 차량 진동 속성과 적재 차이가 범위에 포함된다.",
+      "concepts": [
+        "계란파손률운송반복차이"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0251",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "우유유지방검사반복성은 동일 시료의 반복값과 장비 허용 오차를 비교한다. 검사는 성분 관리 기능을 하지만 한 값이 탱크 전체를 완전히 대표하지 않는다.",
+      "concepts": [
+        "우유유지방검사반복성"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0252",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "채소중량감모추정범위는 시작 계근·포장 수분·보관 중 증발 과정을 반영해 계산한다. 포장재 무게 변화도 분리한다.",
+      "concepts": [
+        "채소중량감모추정범위"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0253",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "농산물색도측정위치차이는 햇빛면·그늘면·꼭지 주변이라는 표면 경계를 맞춰 비교한다. 한 점의 색을 과실 전체 색으로 쓰지 않는다.",
+      "concepts": [
+        "농산물색도측정위치차이"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0254",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "관능평가자간향기점수대조는 평가자 훈련·순서·척도 사용을 기록해 분포를 대비한다. 개인 점수를 객관 성분량과 같은 것으로 보지 않는다.",
+      "concepts": [
+        "관능평가자간향기점수대조"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0255",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "경매로트표본중량편차는 상자별 순중량과 허용 범위를 비교한다. 표본 상자 하나를 전체 로트 중량 등급으로 분류하지 않는다.",
+      "concepts": [
+        "경매로트표본중량편차"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0256",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "수율평균과농가별변동성은 전체 중심과 농가 분포를 비교해 공급 예측 기능을 평가한다. 평균 경계가 같아도 위험과 안정성 순위는 달라질 수 있다.",
+      "concepts": [
+        "수율평균과농가별변동성"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0257",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "저장온도센서교정불확실성은 기준 온도와 표시값 차이를 범위로 비교한다. 표시 상태가 목표 안이어도 오차를 포함하면 경계를 넘을 수 있다.",
+      "concepts": [
+        "저장온도센서교정불확실성"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0258",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "습도기록누락구간영향은 관측된 구간만 쓴 결과와 보간한 결과를 비교한다. 누락 길이 속성이 크면 저장 조건 확신을 낮춘다.",
+      "concepts": [
+        "습도기록누락구간영향"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0259",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "가격예측모형두개의오차범위는 같은 기간·품목에서 예측값과 실제값의 분포를 비교한다. 평균 오차가 작은 모형도 급등 대응 기능은 약할 수 있다.",
+      "concepts": [
+        "가격예측모형두개의오차범위"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0260",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "결점자동분류와사람검사불일치는 동일 영상에 대한 결과와 재검토 과정을 비교한다. 불일치 항목을 한쪽 오류로 자동 지정하지 않는다.",
+      "concepts": [
+        "결점자동분류와사람검사불일치"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0261",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "병해발생률조사구역차이는 밭 가장자리와 중앙 표본 경계를 나눠 비교한다. 접근하기 쉬운 구역만 조사하면 전체 추정이 치우칠 수 있다.",
+      "concepts": [
+        "병해발생률조사구역차이"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0262",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "유통손실신고와실측대조는 거래 기록의 주장과 실제 계근·폐기 자료를 대비한다. 두 자료의 정의와 시점이 다르면 차이를 곧 허위로 보지 않는다.",
+      "concepts": [
+        "유통손실신고와실측대조"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0263",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "경매참여자선호조사오차는 응답자 수와 무응답 집단을 포함해 비율 구간을 비교한다. 한 시장 표본을 전체 구매자 유형으로 분류하지 않는다.",
+      "concepts": [
+        "경매참여자선호조사오차"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0264",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "저장기간중앙값과부패시점분포는 절반이 상품성을 잃는 시점과 개체별 범위를 함께 비교한다. 중앙 속성이 길어도 일부가 매우 일찍 부패하면 균일한 상태가 아니다.",
+      "concepts": [
+        "저장기간중앙값과부패시점분포"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0265",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "농장별생산비표본오차는 자가 노동·감가상각·임차료 포함 여부를 맞춰 범위로 비교한다. 누락된 비용 상태에서 소수점 단가를 신뢰하지 않는다.",
+      "concepts": [
+        "농장별생산비표본오차"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0266",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "운송충격센서측정불확실성은 장착 위치·범위·포화 여부를 포함해 가속도 값을 비교한다. 센서 속성이 다르면 같은 충격도 다르게 표시된다.",
+      "concepts": [
+        "운송충격센서측정불확실성"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0267",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "과실경도측정반복차이는 측정 위치와 탐침 깊이를 맞춰 분포로 비교한다. 검사는 숙도 추정 기능을 하지만 한 자국이 전체 과실을 대표하지 않는다.",
+      "concepts": [
+        "과실경도측정반복차이"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0268",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "저장성시험중중도탈락영향은 판매·파손으로 빠진 표본을 제외한 경우와 포함 추정한 경우를 비교한다. 시험 과정의 누락이 결과를 치우칠 수 있다.",
+      "concepts": [
+        "저장성시험중중도탈락영향"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0269",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "경매최고가와대표가격민감도는 극단 거래를 넣거나 뺄 때 평균·중앙값 순위가 어떻게 변하는지 비교한다. 최고가 경계를 시장 전체 가치로 보지 않는다.",
+      "concepts": [
+        "경매최고가와대표가격민감도"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0270",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "로트등급확률과판정임계값은 예측 분포와 등급 경계를 함께 비교한다. 확률이 가장 높은 상태라도 임계값에 못 미치면 확정 등급으로 분류하지 않는다.",
+      "concepts": [
+        "로트등급확률과판정임계값"
+      ],
+      "relations": [
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0271",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "큰과실과고품질과실대조는 크기 상태와 맛·결점·신선도를 합친 평가를 구분한다. 큰 규격이 항상 높은 품질을 뜻하지 않는다.",
+      "concepts": [
+        "큰과실과고품질과실대조"
+      ],
+      "relations": [
+        "contrast",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0272",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "높은가격과높은생산자가치경계는 거래 금액과 비용을 뺀 순수익을 대비한다. 판매가 경계가 높아도 생산비가 크면 가치가 낮을 수 있다.",
+      "concepts": [
+        "높은가격과높은생산자가치경계"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0273",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "유기인증과무결점외관대조는 생산 과정 분류와 현재 표면 상태를 구분한다. 인증 농산물에도 벌레 먹은 흔적이 있을 수 있다.",
+      "concepts": [
+        "유기인증과무결점외관대조"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0274",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "신선함과미숙함경계는 수확 후 열화 정도와 생리적 성숙도를 대비한다. 단단하다는 속성만으로 둘을 구별할 수 없다.",
+      "concepts": [
+        "신선함과미숙함경계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0275",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "부드러움과부패대조는 적정 후숙 과정과 조직 붕괴·이취 발생을 구분한다. 눌림 감촉이 비슷해도 향과 색 변화가 다르다.",
+      "concepts": [
+        "부드러움과부패대조"
+      ],
+      "relations": [
+        "contrast",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0276",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "저장기간과보관성기능대조는 실제로 둔 시간과 상품성을 유지하는 능력을 구분한다. 오래 보관했다는 사실만으로 보관성이 좋았다고 할 수 없다.",
+      "concepts": [
+        "저장기간과보관성기능대조"
+      ],
+      "relations": [
+        "contrast",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0277",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "수율과총생산량구분은 단위 면적 효율과 전체 면적에서 나온 양을 대비한다. 작은 농장의 높은 수율이 총량 우위를 뜻하지 않는다.",
+      "concepts": [
+        "수율과총생산량구분"
+      ],
+      "relations": [
+        "comparison",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0278",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "높은당도와좋은맛평가는 측정 속성과 산도·향·식감을 포함한 선호 상태를 비교한다. 브릭스가 높아도 모든 소비자에게 최고 맛으로 분류되지 않는다.",
+      "concepts": [
+        "높은당도와좋은맛평가"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0279",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "등급외와폐기대상대조는 표준 상품 규격 밖의 상태와 안전·부패 때문에 사용할 수 없는 상태를 구분한다. 등급외품도 가공에 쓸 수 있다.",
+      "concepts": [
+        "등급외와폐기대상대조"
+      ],
+      "relations": [
+        "contrast",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0280",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "흠집과병해피해경계는 기계적 표면 손상과 병원체에 의한 조직 변화의 원인을 대비한다. 모양만 비슷하다고 같은 처리 대상으로 보지 않는다.",
+      "concepts": [
+        "흠집과병해피해경계"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0281",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "색진함과성숙도분류대조는 한 색 속성과 여러 지표를 합친 생리 상태를 구분한다. 품종 고유 색 때문에 진해도 미숙할 수 있다.",
+      "concepts": [
+        "색진함과성숙도분류대조"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0282",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "무거운상자와충실한내용물은 총중량 속성과 상품 비율을 대비한다. 포장재·수분·폐기품이 많으면 무거워도 충실하지 않을 수 있다.",
+      "concepts": [
+        "무거운상자와충실한내용물"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0283",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "향이강함과신선함대조는 휘발성 성분의 강도와 수확 후 열화 과정을 구분한다. 과숙이나 발효로 향이 강해지는 경우도 있다.",
+      "concepts": [
+        "향이강함과신선함대조"
+      ],
+      "relations": [
+        "contrast",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0284",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "낮은가격과높은가성비대조는 지출액과 품질·양·용도 적합성을 함께 본 평가를 구분한다. 싸다는 사실만으로 구매 기능 대비 가치가 높지는 않다.",
+      "concepts": [
+        "낮은가격과높은가성비대조"
+      ],
+      "relations": [
+        "contrast",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0285",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "균일한크기와좋은선별품구분은 산포가 작은 상태와 결점·숙도까지 관리된 결과를 대비한다. 같은 크기만으로 전체 선별 순위를 정하지 않는다.",
+      "concepts": [
+        "균일한크기와좋은선별품구분"
+      ],
+      "relations": [
+        "comparison",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0286",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "외관등급과내부품질경계는 표면 판정과 당도·공동·조직 같은 내부 결과를 비교한다. 외관 분류 기능이 내부 상태의 경계까지 보장하지 않는다.",
+      "concepts": [
+        "외관등급과내부품질경계"
+      ],
+      "relations": [
+        "boundary",
+        "comparison",
+        "function",
+        "other"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0287",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "냉장품과신선품대조는 보관 방법 상태와 수확 후 품질 상태를 구분한다. 냉장고에 있었다고 반드시 신선한 것은 아니며 갓 수확한 상온품도 있다.",
+      "concepts": [
+        "냉장품과신선품대조"
+      ],
+      "relations": [
+        "contrast",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0288",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "국산표시와지역특산품경계는 국가 원산지와 특정 지역의 생산·명성 기준을 대비한다. 국내 생산이라는 사실만으로 한 지역 특산품이 되지 않는다.",
+      "concepts": [
+        "국산표시와지역특산품경계"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0289",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "친환경포장과친환경농산물대조는 용기 재료 분류와 재배 인증을 구분한다. 재활용 상자에 담겼다고 내용물이 인증 농산물은 아니다.",
+      "concepts": [
+        "친환경포장과친환경농산물대조"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0290",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "무농약과무잔류검출경계는 생산 과정 준수와 특정 검사에서 성분이 검출되지 않은 결과를 대비한다. 검출한계 속성도 함께 본다.",
+      "concepts": [
+        "무농약과무잔류검출경계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0291",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "높은수분과높은신선도대조는 조직의 물 함량과 시간에 따른 품질 유지 상태를 구분한다. 물을 흡수한 부패품도 수분이 높을 수 있다.",
+      "concepts": [
+        "높은수분과높은신선도대조"
+      ],
+      "relations": [
+        "contrast",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0292",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "오래숙성됨과오래보관됨은 의도된 품질 발달과 단순 시간 경과를 대비한다. 숙성은 조건 제어 기능이 필요하며 방치와 같지 않다.",
+      "concepts": [
+        "오래숙성됨과오래보관됨"
+      ],
+      "relations": [
+        "contrast",
+        "function",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0293",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "최고낙찰가와최고등급대조는 시장 경쟁 결과와 규격 판정을 구분한다. 희소성이나 구매자 수 때문에 낮은 등급도 더 비싸질 수 있다.",
+      "concepts": [
+        "최고낙찰가와최고등급대조"
+      ],
+      "relations": [
+        "comparison",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0294",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "결점률낮음과상품성우위는 한 감점 속성과 맛·규격·가격을 합친 상태를 비교한다. 흠이 적어도 미숙하거나 수요가 없으면 최고 상품으로 분류되지 않는다.",
+      "concepts": [
+        "결점률낮음과상품성우위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other",
+        "state"
+      ],
+      "unseen_relation": true
+    },
+    {
+      "id": "S1-COV-0295",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "규격큼과과대과실대조는 시장에서 선호하는 큰 범위와 포장·식미에 불리할 정도로 큰 상태를 구분한다. 같은 크기 축에서도 경계가 있다.",
+      "concepts": [
+        "규격큼과과대과실대조"
+      ],
+      "relations": [
+        "contrast",
+        "other",
+        "state"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0296",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "저장손실과판매손실경계는 부패·감모로 줄어든 양과 가격 할인·미판매로 줄어든 가치를 대비한다. 원인과 단위를 섞어 합산하지 않는다.",
+      "concepts": [
+        "저장손실과판매손실경계"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0297",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "수확량증가와수익증가대조는 물리 생산량과 가격·비용을 반영한 경제 결과를 구분한다. 다수확을 자동으로 고수익 유형으로 분류하지 않는다.",
+      "concepts": [
+        "수확량증가와수익증가대조"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0298",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "저온장해와부패대조는 냉해로 생긴 변색·함몰 속성과 미생물 분해를 구분한다. 두 손상이 함께 나타나도 원인과 예방 조건이 다르다.",
+      "concepts": [
+        "저온장해와부패대조"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "other"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0299",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "예쁜모양과규격적합성은 주관적 선호와 측정 가능한 크기·결점 기준을 대비한다. 선별 과정에서 모양이 독특해도 규격을 충족할 수 있다.",
+      "concepts": [
+        "예쁜모양과규격적합성"
+      ],
+      "relations": [
+        "contrast",
+        "other",
+        "process"
+      ],
+      "unseen_relation": false
+    },
+    {
+      "id": "S1-COV-0300",
+      "type": "comparison_packet",
+      "split": "val",
+      "text": "가격경쟁력과품질경쟁력은 낮은 비용 우위와 맛·안전·일관성 우위를 대비한다. 판매자는 시장별로 두 역할의 가중치를 다르게 정한다.",
+      "concepts": [
+        "가격경쟁력과품질경쟁력"
+      ],
+      "relations": [
+        "contrast",
+        "other",
+        "role"
+      ],
+      "unseen_relation": false
+    }
+  ]
+}
