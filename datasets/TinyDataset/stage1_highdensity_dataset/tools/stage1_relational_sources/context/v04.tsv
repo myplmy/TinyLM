@@ -1,0 +1,158 @@
+# family	진료·예약·검사·결과 안내·추적관리 상황
+# axes	이용자, 의료진, 일정, 검사, 기록, 다음 조치
+# columns	concepts	relations	other_category	logic_pattern	directly_authored_text
+# 001~030 환자·검체·기록·조치의 원인 맥락 추적
+진료접수표이동상황|이용자|접수표|진료창구|대기번호	other,process,state,role	causal_context	entity_tracking	진료접수표이동상황: 이용자가 진료창구에 접수표를 내자 직원이 대기번호를 발급했다. 종이가 손에 없어진 것은 접수가 취소돼서가 아니라 창구에 제출됐기 때문이다.
+예약시간변경추적상황|환자|기존예약|변경문자|새진료시간	other,process,state,attribute	causal_context	entity_tracking	예약시간변경추적상황: 환자는 기존예약을 미루고 변경문자로 새진료시간을 확인했다. 처음 받은 안내장의 시각은 더 이상 방문 기준이 아니다.
+검체라벨부착상황|간호사|혈액검체|환자라벨|운반통	other,process,state,part_of	causal_context	entity_tracking	검체라벨부착상황: 간호사는 채취 직후 혈액검체에 환자라벨을 붙여 운반통에 넣었다. 통 안의 여러 튜브는 라벨로 소유자를 구별한다.
+처방전수령추적상황|의사|전자처방전|환자|약국	other,process,state,function	causal_context	entity_tracking	처방전수령추적상황: 의사가 전자처방전을 발행하자 환자는 약국에서 조회할 수 있게 됐다. 진료실에서 종이를 받지 않았어도 처방 기록은 전송된 상태다.
+검사동의서보관상황|보호자|검사동의서|서명란|의무기록함	other,process,state,part_of	causal_context	entity_tracking	검사동의서보관상황: 보호자는 검사동의서의 서명란을 작성했고 담당자는 이를 의무기록함에 넣었다. 보호자의 사본 부재가 동의 철회를 뜻하지는 않는다.
+진찰의뢰서전달상황|일차의사|진찰의뢰서|전문진료과|접수담당	other,process,role,function	causal_context	entity_tracking	진찰의뢰서전달상황: 일차의사가 작성한 진찰의뢰서를 접수담당이 전문진료과로 보냈다. 환자 설명과 문서 전달이 함께 있어야 의뢰 목적이 이어진다.
+활력징후기록추적상황|간호사|혈압값|측정시각|진료기록	other,process,state,attribute	causal_context	entity_tracking	활력징후기록추적상황: 간호사는 혈압값과 측정시각을 진료기록에 함께 입력했다. 나중에 다시 잰 값은 같은 항목이어도 별도 시각의 관찰이다.
+대기실호출상태상황|환자|대기번호|호출화면|진료실	other,state,process,function	causal_context	entity_tracking	대기실호출상태상황: 환자의 대기번호가 호출화면에 뜬 뒤 진료실 문이 열렸다. 번호가 사라진 것은 순서가 삭제된 것이 아니라 호출 단계가 끝났기 때문이다.
+영상검사자료연결상황|방사선사|영상검사|검사번호|판독목록	other,process,state,classification	causal_context	entity_tracking	영상검사자료연결상황: 방사선사는 영상검사에 검사번호를 붙여 판독목록으로 전송했다. 화면 파일과 환자 기록은 이 번호를 통해 연결된다.
+예방접종기록갱신상황|접종자|백신명|접종일|예방접종수첩	other,process,state,attribute	causal_context	entity_tracking	예방접종기록갱신상황: 접종자는 백신명과 접종일을 확인받고 예방접종수첩에 새 항목을 받았다. 접종 사실은 빈 예약 칸이 아니라 완료 기록으로 판단한다.
+진료비영수증전달상황|수납직원|진료비영수증|결제내역|환자	other,process,state,function	causal_context	entity_tracking	진료비영수증전달상황: 수납직원은 결제내역을 확인하고 진료비영수증을 환자에게 건넸다. 영수증 발급은 진료 결과 설명과 다른 절차다.
+약물목록수정추적상황|환자|복용약물목록|중단표시|의료진	other,process,state,boundary	causal_context	entity_tracking	약물목록수정추적상황: 환자가 복용약물목록에서 끊은 약을 말하자 의료진은 그 항목에 중단표시를 남겼다. 목록에 이름이 있어도 현재 복용 중이라는 뜻은 아니다.
+검사예약표배치상황|예약담당|검사예약표|오전칸|검사실	other,process,state,part_of	causal_context	entity_tracking	검사예약표배치상황: 예약담당은 환자의 희망 시각을 확인하고 검사예약표의 오전칸에 검사실을 배정했다. 시각과 장소가 모두 정해져야 예약이 확정된다.
+진료요약서봉투상황|퇴원환자|진료요약서|밀봉봉투|외래의사	other,process,state,function	causal_context	entity_tracking	진료요약서봉투상황: 퇴원환자는 진료요약서를 밀봉봉투에 받아 외래의사에게 전달했다. 봉투가 닫혀 있어도 문서의 수신 목적은 바뀌지 않는다.
+검사결과알림추적상황|검사실|결과알림|환자앱|확인표시	other,process,state,function	causal_context	entity_tracking	검사결과알림추적상황: 검사실이 결과알림을 환자앱에 보내자 이용자가 열어 확인표시를 남겼다. 전송 완료와 환자 확인 완료는 서로 다른 상태다.
+진료카드재발급상황|접수직원|기존진료카드|새진료카드|환자번호	other,process,state,boundary	causal_context	entity_tracking	진료카드재발급상황: 접수직원은 훼손된 기존진료카드를 회수하고 같은 환자번호의 새진료카드를 발급했다. 카드가 바뀌어도 환자 기록이 새로 생긴 것은 아니다.
+검사준비안내전달상황|간호사|준비안내문|검사전날|환자	other,process,state,function	causal_context	entity_tracking	검사준비안내전달상황: 간호사는 환자에게 준비안내문을 주고 검사전날 지켜야 할 사항을 설명했다. 안내 수령은 실제 준비 이행을 보장하지 않는다.
+추적진료일정등록상황|담당의|추적진료|예약시스템|다음달	other,process,state,attribute	causal_context	entity_tracking	추적진료일정등록상황: 담당의가 다음달 추적진료를 권하자 직원이 예약시스템에 날짜를 넣었다. 권고만 있던 단계와 일정이 잡힌 단계는 구분된다.
+문진표답변보완상황|이용자|문진표|빈항목|간호사	other,process,state,role	causal_context	entity_tracking	문진표답변보완상황: 이용자는 문진표를 제출했지만 빈항목이 있어 간호사의 질문에 답해 보완했다. 첫 제출 시각보다 뒤에 완성된 정보가 진료에 쓰인다.
+검체재채취요청상황|검사기사|첫검체|재채취표시|채취실	other,process,state,boundary	causal_context	entity_tracking	검체재채취요청상황: 검사기사는 첫검체의 상태가 기준에 맞지 않아 재채취표시를 하고 채취실에 알렸다. 첫 튜브가 존재해도 유효한 결과를 낼 수 있다는 뜻은 아니다.
+진단서신청접수상황|환자|진단서신청서|발급창구|수령예정일	other,process,state,function	causal_context	entity_tracking	진단서신청접수상황: 환자는 발급창구에 진단서신청서를 내고 수령예정일을 안내받았다. 신청 직후 문서가 이미 발급된 것은 아니다.
+의료영상사본인계상황|자료실직원|의료영상사본|저장매체|본인확인	other,process,state,boundary	causal_context	entity_tracking	의료영상사본인계상황: 자료실직원은 본인확인을 마친 뒤 의료영상사본을 저장매체에 담아 건넸다. 매체 수령자가 확인된 경우에만 인계가 완료된다.
+검사결과설명메모상황|의사|검사결과|설명메모|다음조치	other,process,state,function	causal_context	entity_tracking	검사결과설명메모상황: 의사는 검사결과를 설명하며 필요한 다음조치를 설명메모에 적었다. 수치 열람만 한 상태와 후속 계획을 이해한 상태는 다르다.
+진료순서우선표시상황|간호사|상태확인|우선표시|대기목록	other,process,state,classification	causal_context	entity_tracking	진료순서우선표시상황: 간호사는 상태확인 뒤 대기목록의 한 환자에게 우선표시를 했다. 먼저 접수한 순번과 실제 진료 순서가 달라진 원인은 그 표시다.
+처치재료사용기록상황|의료진|처치재료|사용수량|처치기록	other,process,state,attribute	causal_context	entity_tracking	처치재료사용기록상황: 의료진은 처치재료의 사용수량을 처치기록에 남겼다. 창고에서 줄어든 양과 환자에게 실제 사용한 양은 기록으로 대조한다.
+예약취소자리환원상황|예약자|취소요청|빈시간대|예약목록	other,process,state,boundary	causal_context	entity_tracking	예약취소자리환원상황: 예약자가 취소요청을 완료하자 해당 시각이 빈시간대로 바뀌어 예약목록에 다시 열렸다. 환자 이름 삭제는 진료 이력 삭제와 무관하다.
+검사실팔찌확인상황|검사기사|환자팔찌|생년정보|검사주문	other,process,state,boundary	causal_context	entity_tracking	검사실팔찌확인상황: 검사기사는 환자팔찌의 생년정보를 검사주문과 대조한 뒤 절차를 시작했다. 이름이 비슷해도 두 정보가 맞지 않으면 진행하지 않는다.
+퇴원약봉투추적상황|약사|퇴원약|복약안내|약봉투	other,process,state,part_of	causal_context	entity_tracking	퇴원약봉투추적상황: 약사는 퇴원약과 복약안내를 한 약봉투에 넣어 환자에게 전달했다. 봉투에는 약뿐 아니라 복용 방법도 함께 포함된다.
+진료후연락처갱신상황|접수담당|기존연락처|새전화번호|환자기록	other,process,state,attribute	causal_context	entity_tracking	진료후연락처갱신상황: 접수담당은 환자가 알려 준 새전화번호로 환자기록의 기존연락처를 바꿨다. 이후 알림은 이전 번호가 아니라 갱신된 값으로 간다.
+검사판독상태전환상황|영상자료|판독의|검토완료|결과보고서	other,process,state,role	causal_context	entity_tracking	검사판독상태전환상황: 판독의가 영상자료를 살피고 검토완료를 누르자 결과보고서가 발행 대기 상태로 넘어갔다. 검토 완료와 환자 전달은 같은 시점이 아니다.
+# 031~060 이용자·의료진·지원 담당의 역할 조정
+진료전문진협력상황|환자|주치의|전문의|진료요약	other,role,function,process	role_coordination	role_coordination	진료전문진협력상황: 주치의는 환자의 진료요약을 전문의에게 보내 의견을 요청했다. 전문의의 회신은 참고 판단이고 최종 안내는 주치의가 환자에게 한다.
+채혈검사인계상황|채혈간호사|검사기사|검체상자|인계표	other,role,process,state	role_coordination	role_coordination	채혈검사인계상황: 채혈간호사가 검체상자와 인계표를 검사기사에게 넘겼다. 상자의 튜브 수와 표의 항목을 함께 맞춰야 인계가 완료된다.
+예약상담분담상황|상담직원|예약담당|환자희망일|가능시간표	other,role,function,state	role_coordination	role_coordination	예약상담분담상황: 상담직원은 환자희망일을 들었고 예약담당은 가능시간표에서 빈 칸을 찾았다. 희망 접수와 일정 확정은 두 담당자의 연속 업무다.
+복약설명의료협력상황|의사|약사|처방내용|복약질문	other,role,function,boundary	role_coordination	role_coordination	복약설명의료협력상황: 의사는 처방내용의 목적을 설명하고 약사는 복약질문에 사용 방법을 답했다. 서로의 설명은 보완 관계지만 역할이 동일하지 않다.
+검사준비보호자협력상황|보호자|환자|간호사|준비확인표	other,role,function,state	role_coordination	role_coordination	검사준비보호자협력상황: 보호자는 환자의 준비 과정을 도왔고 간호사는 준비확인표로 이행 여부를 점검했다. 도움을 줬다는 말만으로 모든 항목이 완료되지는 않는다.
+진료통역연결상황|통역사|의료진|이용자|설명문	other,role,function,boundary	role_coordination	role_coordination	진료통역연결상황: 통역사는 의료진의 설명문을 이용자에게 전달하고 질문을 다시 의료진에게 옮겼다. 통역사는 의미를 연결하지만 진료 결정을 내리는 주체가 아니다.
+영상촬영안내협업상황|방사선사|간호사|촬영자세|안전확인	other,role,function,process	role_coordination	role_coordination	영상촬영안내협업상황: 방사선사는 촬영자세를 안내했고 간호사는 환자의 안전확인을 도왔다. 두 역할이 준비를 마친 뒤 촬영이 시작된다.
+퇴원절차업무분담상황|담당의|병동간호사|퇴원요약|귀가안내	other,role,process,function	role_coordination	role_coordination	퇴원절차업무분담상황: 담당의는 퇴원요약을 확정하고 병동간호사는 귀가안내를 설명했다. 문서 완료와 생활 안내가 모두 끝나야 퇴원 절차가 닫힌다.
+검체운송책임연계상황|채취자|운송담당|검체가방|도착기록	other,role,process,state	role_coordination	role_coordination	검체운송책임연계상황: 채취자는 검체가방을 봉인해 운송담당에게 건넸고 도착기록은 검사실에서 남겼다. 각 시점의 담당자가 달라 이동 책임을 구분할 수 있다.
+진료기록검토분담상황|전공의|지도전문의|초기기록|확인서명	other,role,process,boundary	role_coordination	role_coordination	진료기록검토분담상황: 전공의가 초기기록을 작성하고 지도전문의가 내용을 살핀 뒤 확인서명을 했다. 서명이 있다고 작성자까지 바뀌는 것은 아니다.
+검사결과전화안내상황|상담간호사|담당의|결과요약|추가질문	other,role,function,state	role_coordination	role_coordination	검사결과전화안내상황: 상담간호사는 담당의가 확인한 결과요약을 전화로 전달하고 추가질문은 다시 담당의에게 보냈다. 안내 범위와 의학적 판단 범위를 나눈다.
+응급접수정보연계상황|접수직원|분류간호사|증상메모|우선순위표	other,role,classification,process	role_coordination	role_coordination	응급접수정보연계상황: 접수직원이 증상메모를 만들면 분류간호사가 상태를 확인해 우선순위표에 반영한다. 접수 순서만으로 진료 순위를 정하지 않는다.
+재활일정협의상황|재활치료사|환자|진료의|운동계획	other,role,function,state	role_coordination	role_coordination	재활일정협의상황: 재활치료사는 환자와 가능한 시간을 맞추고 진료의가 확인한 운동계획을 적용했다. 일정 합의가 치료 내용 결정까지 대신하지 않는다.
+검사비용안내분담상황|수납담당|검사실|예상비용|검사항목	other,role,function,attribute	role_coordination	role_coordination	검사비용안내분담상황: 검사실이 검사항목을 확정하자 수납담당이 예상비용을 안내했다. 항목이 바뀌면 비용도 다시 확인해야 한다.
+감염예방동선협력상황|안내직원|간호사|분리대기실|이동경로	other,role,function,boundary	role_coordination	role_coordination	감염예방동선협력상황: 안내직원은 환자를 분리대기실로 이끌고 간호사는 이동경로가 겹치지 않게 진료 시간을 조정했다. 장소 안내와 임상 확인의 책임은 다르다.
+수술상담자료준비상황|외래간호사|집도의|검사자료|상담목록	other,role,function,part_of	role_coordination	role_coordination	수술상담자료준비상황: 외래간호사는 검사자료를 상담목록에 맞춰 정리했고 집도의는 이를 바탕으로 환자와 선택지를 논의했다. 자료 준비자는 치료 선택을 대신하지 않는다.
+건강검진순서안내상황|안내요원|검진자|검사실직원|순서표	other,role,process,state	role_coordination	role_coordination	건강검진순서안내상황: 안내요원은 검진자에게 순서표를 주고 각 검사실직원이 완료 칸을 표시했다. 이동 안내와 검사 수행이 연결돼 전체 진행 상태를 보여 준다.
+환자이송협력상황|이송담당|병동간호사|이동침대|도착병실	other,role,process,state	role_coordination	role_coordination	환자이송협력상황: 병동간호사는 환자 상태를 이송담당에게 알렸고 이동침대로 도착병실까지 동행하게 했다. 병실에 도착한 뒤 새 담당자에게 인계한다.
+의무기록사본검토상황|자료담당|개인정보담당|사본범위|발급봉투	other,role,boundary,function	role_coordination	role_coordination	의무기록사본검토상황: 자료담당은 요청된 사본범위를 준비하고 개인정보담당은 제공 가능 항목을 확인했다. 승인된 자료만 발급봉투에 들어간다.
+진료예약문자협업상황|예약담당|문자시스템|환자|회신상태	other,role,function,state	role_coordination	role_coordination	진료예약문자협업상황: 예약담당이 날짜를 등록하면 문자시스템이 환자에게 알림을 보내고 회신상태를 저장한다. 자동 전송이 사람의 참석을 확정하지는 않는다.
+임상교육참관조정상황|환자|교육생|지도자|참관동의	other,role,boundary,state	role_coordination	role_coordination	임상교육참관조정상황: 지도자는 환자에게 참관동의를 구한 뒤 교육생의 역할을 설명했다. 동의가 없으면 교육생은 진료 공간에 참여하지 않는다.
+보호자연락분담상황|담당간호사|원무직원|보호자번호|연락메모	other,role,function,state	role_coordination	role_coordination	보호자연락분담상황: 담당간호사는 전달 내용을 연락메모에 적고 원무직원은 보호자번호를 확인해 전화를 연결했다. 번호 확인과 임상 설명은 각기 다른 업무다.
+식이안내협력상황|영양사|의료진|식사계획|환자질문	other,role,function,attribute	role_coordination	role_coordination	식이안내협력상황: 의료진이 주의 항목을 전달하면 영양사는 식사계획을 구체화하고 환자질문에 음식 선택을 설명했다. 계획은 환자 상태에 맞춰 조정된다.
+검사장비점검협업상황|장비기사|검사담당|점검표|사용승인	other,role,function,state	role_coordination	role_coordination	검사장비점검협업상황: 장비기사가 점검표의 기계 항목을 확인하고 검사담당이 시험 결과를 검토해 사용승인을 남겼다. 전원 작동만으로 검사 준비가 끝난 것은 아니다.
+진료실청소인계상황|진료팀|환경담당|사용완료표|준비표시	other,role,process,state	role_coordination	role_coordination	진료실청소인계상황: 진료팀이 사용완료표를 붙이면 환경담당이 정리한 뒤 준비표시로 바꿨다. 비어 있는 방과 다음 환자를 받을 수 있는 방은 상태가 다르다.
+입원서류확인협업상황|환자|원무담당|병동담당|입원서류	other,role,process,state	role_coordination	role_coordination	입원서류확인협업상황: 원무담당은 환자의 입원서류를 접수하고 병동담당은 배정된 방과 준비 사항을 확인했다. 행정 접수와 병동 수용이 연계돼야 입원이 진행된다.
+검사재예약조정상황|검사실|예약직원|장비중단|대체시간	other,role,process,state	role_coordination	role_coordination	검사재예약조정상황: 검사실이 장비중단을 알리자 예약직원은 환자에게 대체시간을 제시했다. 장비 담당의 통보와 일정 담당의 변경이 차례로 이어진다.
+외래처치준비분담상황|간호사|의사|처치도구|확인목록	other,role,function,part_of	role_coordination	role_coordination	외래처치준비분담상황: 간호사는 확인목록에 맞춰 처치도구를 놓고 의사는 대상과 절차를 다시 확인했다. 도구 배치가 정확해도 환자 확인 전에는 시작하지 않는다.
+의료상담예약연결상황|전화상담원|외래담당|문의내용|예약메모	other,role,function,classification	role_coordination	role_coordination	의료상담예약연결상황: 전화상담원은 문의내용을 범주로 나눠 예약메모에 적고 외래담당에게 보냈다. 외래담당은 그 메모를 보고 적절한 진료 일정을 제안한다.
+후속검사책임연계상황|담당의|예약간호사|후속검사|안내일정	other,role,process,state	role_coordination	role_coordination	후속검사책임연계상황: 담당의가 후속검사를 지시하면 예약간호사가 안내일정을 환자와 맞춘다. 지시가 존재해도 일정이 잡히기 전에는 예약 완료가 아니다.
+# 061~090 예약·검사·판독·안내·추적의 시간 의존성
+접수후진료호출상황|환자|접수완료|대기순서|진료호출	other,process,state,function	temporal_dependency	temporal_dependency	접수후진료호출상황: 환자는 접수완료 뒤 대기순서에 들어가고 진료호출을 받은 다음 진료실로 이동했다. 도착 시각만으로 호출 이전에 진료받은 것은 아니다.
+검사전준비시간상황|검진자|준비시작|검사시각|확인질문	other,process,state,boundary	temporal_dependency	temporal_dependency	검사전준비시간상황: 검진자는 안내된 때에 준비시작을 하고 검사시각 직전 확인질문에 답했다. 준비가 늦으면 예정된 순서가 조정될 수 있다.
+채취후검사접수상황|검체|채취시각|검사접수|분석시작	other,process,state,attribute	temporal_dependency	temporal_dependency	채취후검사접수상황: 검체에는 채취시각이 먼저 기록되고 검사접수 뒤 분석시작 시간이 추가됐다. 세 시점은 하나의 처리 과정에 속하지만 같은 사건이 아니다.
+판독완료후알림상황|영상검사|판독완료|결과알림|환자확인	other,process,state,function	temporal_dependency	temporal_dependency	판독완료후알림상황: 영상검사는 판독완료 상태가 된 뒤 결과알림이 발송되고 환자확인이 이어졌다. 촬영 직후 바로 결과를 읽었다고 추정하지 않는다.
+처방발행후조제상황|전자처방|발행시각|약국접수|조제완료	other,process,state,function	temporal_dependency	temporal_dependency	처방발행후조제상황: 전자처방에는 발행시각이 남고 약국접수 이후 조제완료로 바뀐다. 처방이 만들어진 때와 약을 받을 수 있는 때 사이에는 처리 시간이 있다.
+재진권고기한상황|의사|재진권고|권고기간|예약일	other,process,state,attribute	temporal_dependency	temporal_dependency	재진권고기한상황: 의사는 재진권고와 권고기간을 설명했고 환자는 그 범위 안의 예약일을 골랐다. 권고를 들은 당일이 반드시 재진일은 아니다.
+검사결과재확인상황|첫결과|재검요청|두번째결과|비교상담	other,process,state,comparison	temporal_dependency	temporal_dependency	검사결과재확인상황: 첫결과 뒤 재검요청이 나와 두번째결과를 받은 후 비교상담이 열렸다. 뒤의 결과가 나오기 전에는 변화 방향을 확정할 수 없다.
+퇴원후전화추적상황|퇴원일|추적전화|환자응답|다음방문	other,process,state,function	temporal_dependency	temporal_dependency	퇴원후전화추적상황: 퇴원일이 지난 뒤 추적전화로 환자응답을 확인하고 필요하면 다음방문을 정한다. 귀가와 추적 완료 사이에는 별도 확인 단계가 있다.
+예약변경마감상황|기존예약|변경마감|취소요청|유지상태	other,process,state,boundary	temporal_dependency	temporal_dependency	예약변경마감상황: 취소요청이 변경마감 뒤 접수돼 기존예약은 유지상태로 남았다. 요청을 보냈다는 사실과 일정이 실제 변경됐다는 결과를 나눈다.
+검사실소독대기상황|사용완료|소독과정|준비확인|다음환자	other,process,state,function	temporal_dependency	temporal_dependency	검사실소독대기상황: 사용완료 뒤 소독과정을 거쳐 준비확인이 나야 다음환자를 받을 수 있다. 방이 비어 있는 시간 전체가 이용 가능 시간은 아니다.
+문진갱신시점상황|이전문진|새증상|방문당일|갱신문진	other,process,state,attribute	temporal_dependency	temporal_dependency	문진갱신시점상황: 이전문진 이후 새증상이 생겨 환자는 방문당일 갱신문진을 작성했다. 진료에는 오래된 답보다 현재 시점의 정보가 우선된다.
+보험확인후수납상황|자격조회|확인결과|수납금액|영수증발행	other,process,state,function	temporal_dependency	temporal_dependency	보험확인후수납상황: 자격조회에서 확인결과가 나온 다음 수납금액이 정해지고 영수증발행이 이뤄졌다. 조회 중 표시된 예상액은 최종 결제값이 아니다.
+예약대기승계상황|취소자리|대기환자|연락시각|예약확정	other,process,state,role	temporal_dependency	temporal_dependency	예약대기승계상황: 취소자리가 생긴 후 대기환자에게 연락했고 수락한 연락시각에 예약확정으로 바뀌었다. 자리가 났다는 것만으로 특정 환자에게 배정되지는 않는다.
+검체보관기한상황|채취검체|보관시작|사용기한|폐기표시	other,process,state,attribute	temporal_dependency	temporal_dependency	검체보관기한상황: 채취검체는 보관시작 시각부터 사용기한을 계산하며 그 시간이 지나면 폐기표시를 한다. 냉장고 안에 남아 있어도 유효한 검체는 아닐 수 있다.
+진료기록서명순서상황|초안기록|내용검토|전자서명|공식기록	other,process,state,boundary	temporal_dependency	temporal_dependency	진료기록서명순서상황: 초안기록은 내용검토를 거쳐 전자서명이 붙은 뒤 공식기록이 된다. 작성 중 화면과 확정 문서는 법적 상태가 동일하지 않다.
+검진항목순차진행상황|신체측정|혈액검사|상담순서|완료표	other,process,state,part_of	temporal_dependency	temporal_dependency	검진항목순차진행상황: 검진자는 신체측정과 혈액검사를 마친 다음 상담순서로 이동했고 완료표에 각 칸을 받았다. 마지막 상담만 끝나도 앞 항목 누락이 있으면 전체 완료가 아니다.
+처치후관찰시간상황|처치완료|관찰구역|대기시간|귀가확인	other,process,state,boundary	temporal_dependency	temporal_dependency	처치후관찰시간상황: 처치완료 뒤 환자는 관찰구역에서 대기시간을 보낸 후 귀가확인을 받았다. 처치가 끝난 즉시 모든 절차가 종료되는 것은 아니다.
+예약문자회신기한상황|안내문자|회신기한|환자응답|자리해제	other,process,state,function	temporal_dependency	temporal_dependency	예약문자회신기한상황: 안내문자에 적힌 회신기한까지 환자응답이 없자 자리해제 처리가 되어 다른 대기자에게 열렸다. 늦은 응답은 원래 예약을 자동 복구하지 않는다.
+진단서작성발급순서상황|신청접수|의사작성|행정확인|문서수령	other,process,state,role	temporal_dependency	temporal_dependency	진단서작성발급순서상황: 신청접수 후 의사작성과 행정확인이 끝나야 환자가 문서수령을 할 수 있다. 신청 당일에도 중간 단계가 남으면 바로 받을 수 없다.
+검사재료해동시간상황|보관재료|해동시작|사용가능시각|검사준비	other,process,state,attribute	temporal_dependency	temporal_dependency	검사재료해동시간상황: 보관재료는 해동시작 뒤 정해진 사용가능시각이 되어야 검사준비에 포함된다. 겉이 녹았다는 관찰만으로 조건 충족을 단정하지 않는다.
+환자이동인계순서상황|출발병동|이송기록|도착부서|인수확인	other,process,state,role	temporal_dependency	temporal_dependency	환자이동인계순서상황: 출발병동이 이송기록을 남기고 도착부서에서 인수확인을 해야 담당 구역이 바뀐다. 이동 중에는 어느 부서가 인계했는지 시간으로 추적한다.
+외래검사결과상담상황|검사일|결과확정|상담예약|설명완료	other,process,state,function	temporal_dependency	temporal_dependency	외래검사결과상담상황: 검사일 뒤 결과확정이 되고 상담예약을 거쳐 설명완료로 기록됐다. 결과가 시스템에 있어도 상담 전에는 환자가 설명을 들었다고 하지 않는다.
+처방변경적용시점상황|이전처방|변경지시|새처방|복용시작	other,process,state,boundary	temporal_dependency	temporal_dependency	처방변경적용시점상황: 변경지시 후 새처방이 발행됐고 환자는 안내된 복용시작 때부터 적용했다. 이전처방과 새처방의 유효 기간이 겹친다고 임의로 해석하지 않는다.
+정기검진주기상황|지난검진|권장간격|다음검진|예약알림	other,process,state,attribute	temporal_dependency	temporal_dependency	정기검진주기상황: 지난검진 날짜에 권장간격을 더해 다음검진 시기를 계산하고 가까워지면 예약알림을 보낸다. 알림일과 실제 검사일은 일치하지 않을 수 있다.
+검사오류정정기록상황|초기보고|오류발견|정정보고|환자안내	other,process,state,boundary	temporal_dependency	temporal_dependency	검사오류정정기록상황: 초기보고 뒤 오류발견이 확인돼 정정보고가 발행되고 환자안내도 새로 이뤄졌다. 정정 시점 이전의 문서는 당시 상태로 보존된다.
+진료실교대인계상황|근무종료|교대자|인계메모|후속관찰	other,process,state,role	temporal_dependency	temporal_dependency	진료실교대인계상황: 담당자의 근무종료 전에 교대자에게 인계메모를 전달해야 후속관찰이 끊기지 않는다. 교대 이후 생긴 변화는 새 담당자가 기록한다.
+검사결과유효기간상황|과거검사|유효기간|새방문|재검판단	other,process,state,boundary	temporal_dependency	temporal_dependency	검사결과유효기간상황: 과거검사가 유효기간 안에 있으면 새방문에서 참고하고, 지나면 재검판단을 한다. 오래된 결과가 틀렸다는 뜻이 아니라 현재 판단에 부족할 수 있다는 뜻이다.
+진료예약도착확인상황|예약시각|도착등록|대기상태|미도착표시	other,process,state,boundary	temporal_dependency	temporal_dependency	진료예약도착확인상황: 환자가 예약시각 전에 도착등록을 하면 대기상태로 바뀐다. 시간이 지났는데 등록이 없을 때만 미도착표시를 검토한다.
+수술전검사완료연계상황|사전검사|결과검토|일정확정|입원안내	other,process,state,function	temporal_dependency	temporal_dependency	수술전검사완료연계상황: 사전검사가 끝나고 결과검토가 된 뒤 일정확정과 입원안내가 이어진다. 검사 예약만 잡힌 단계에서는 다음 절차를 확정하지 않는다.
+장기추적방문연속상황|첫방문|중간기록|추적방문|변화평가	other,process,state,comparison	temporal_dependency	temporal_dependency	장기추적방문연속상황: 첫방문과 추적방문 사이의 중간기록을 함께 봐야 변화평가가 가능하다. 한 시점의 값만으로 기간 전체의 방향을 판단하지 않는다.
+# 091~120 제한된 일정·장비·인력·공간의 배분 맥락
+외래예약칸배분상황|예약담당|오전진료칸|대기환자|취소자리	other,state,role,classification	resource_constraint	resource_constraint	외래예약칸배분상황: 예약담당은 오전진료칸이 찬 뒤 대기환자를 목록에 올리고 취소자리가 생길 때 순서대로 연락했다. 대기 등록은 확정 예약이 아니다.
+검사장비한대공유상황|일검사실|이검사실|공용장비|사용시간표	other,state,function,comparison	resource_constraint	resource_constraint	검사장비한대공유상황: 일검사실과 이검사실이 공용장비 한 대를 사용해 사용시간표를 나눴다. 한쪽이 검사하는 동안 다른 쪽은 검체를 준비한다.
+진료실공간제약상황|의료진|진료실|상담환자|대기구역	other,state,function,boundary	resource_constraint	resource_constraint	진료실공간제약상황: 진료실이 하나뿐이라 의료진은 상담환자를 한 명씩 들이고 다음 사람은 대기구역에 머물게 했다. 밖에서 기다림은 진료 거절이 아니다.
+채혈의자수량제한상황|채혈실|채혈의자|검진자|호출순번	other,state,function,classification	resource_constraint	resource_constraint	채혈의자수량제한상황: 채혈실은 채혈의자 수에 맞춰 검진자를 호출순번대로 입장시켰다. 먼저 도착했어도 준비 확인이 늦으면 다음 순번이 앞설 수 있다.
+통역시간배정상황|통역사|외국어환자|상담예약|질문메모	other,state,role,function	resource_constraint	resource_constraint	통역시간배정상황: 통역사 일정이 제한돼 외국어환자의 상담예약을 특정 시간에 모으고 질문메모를 미리 받았다. 통역이 없는 시간에는 복잡한 설명을 확정하지 않는다.
+검체보관칸제약상황|냉장보관함|검체통|우선검사|정리목록	other,state,part_of,classification	resource_constraint	resource_constraint	검체보관칸제약상황: 냉장보관함의 빈칸이 적어 검체통을 우선검사와 일반검사로 나눠 정리목록에 배치했다. 공간 부족이 검체 폐기를 자동으로 뜻하지 않는다.
+보호장비재고배분상황|물품담당|보호장비|처치실|예비상자	other,state,function,boundary	resource_constraint	resource_constraint	보호장비재고배분상황: 물품담당은 보호장비 재고를 처치실별 사용량에 맞춰 나누고 예비상자는 긴급 상황용으로 남겼다. 남긴 수량은 배분 누락이 아니다.
+병실침상대기상황|입원예정자|병실침상|퇴원완료|대기목록	other,state,process,boundary	resource_constraint	resource_constraint	병실침상대기상황: 입원예정자는 병실침상이 비기 전까지 대기목록에 있고 기존 환자의 퇴원완료 뒤 배정받는다. 입원 결정과 실제 병실 입실은 시점이 다르다.
+진료시간초과조정상황|담당의|남은진료시간|복합상담|후속예약	other,state,function,comparison	resource_constraint	resource_constraint	진료시간초과조정상황: 담당의는 남은진료시간에 다루기 어려운 복합상담을 기록하고 후속예약에서 이어 설명하기로 했다. 이번 방문이 무의미해지는 것은 아니다.
+초음파실예약충돌상황|외래환자|입원환자|초음파실|대체시각	other,state,role,contrast	resource_constraint	resource_constraint	초음파실예약충돌상황: 외래환자와 입원환자의 시간이 겹쳐 담당자가 우선 기준을 확인하고 한쪽에 대체시각을 제시했다. 같은 방을 동시에 배정하지 않는다.
+의료차트단말기공유상황|간호사|의사|공용단말기|종이메모	other,state,function,boundary	resource_constraint	resource_constraint	의료차트단말기공유상황: 공용단말기를 의사가 사용하는 동안 간호사는 종이메모에 관찰을 적고 나중에 입력했다. 전산에 늦게 보인다고 관찰 시각까지 늦은 것은 아니다.
+검사키트잔량조정상황|검사실|검사키트|예약인원|예비검사	other,state,attribute,function	resource_constraint	resource_constraint	검사키트잔량조정상황: 검사실은 검사키트 잔량과 예약인원을 대조하고 예비검사 물량을 따로 남겼다. 모든 키트를 당일 예약에 쓰면 돌발 재검에 대응할 수 없다.
+휠체어순환사용상황|이동지원자|공용휠체어|대기환자|반납지점	other,state,function,process	resource_constraint	resource_constraint	휠체어순환사용상황: 이동지원자는 공용휠체어를 사용한 뒤 반납지점으로 가져와 다음 대기환자에게 배정했다. 복도에 없을 때는 대여 중일 수 있다.
+상담실방음공간제약상황|상담사|개인상담|방음실|일반대기실	other,state,function,boundary	resource_constraint	resource_constraint	상담실방음공간제약상황: 상담사는 방음실이 비는 시간에만 개인상담을 배정하고 일반대기실에서는 민감한 내용을 묻지 않았다. 공간 조건이 상담 범위를 제한한다.
+수술실사용순서상황|수술팀|수술실|준비시간|일정표	other,state,process,classification	resource_constraint	resource_constraint	수술실사용순서상황: 수술팀은 수술실 일정표에 준비시간과 사용 시간을 함께 넣었다. 앞 절차가 끝났어도 정리 구간이 지나기 전에는 다음 팀이 들어가지 않는다.
+야간당직인력배치상황|당직의|간호인력|관찰환자|호출체계	other,state,role,function	resource_constraint	resource_constraint	야간당직인력배치상황: 제한된 간호인력을 관찰환자 수에 맞춰 배치하고 당직의에게 호출체계를 알렸다. 담당 구역이 달라도 긴급 연락 경로는 공유된다.
+검사대기공간분리상황|검진자|일반대기석|분리좌석|안내표지	other,state,part_of,boundary	resource_constraint	resource_constraint	검사대기공간분리상황: 일반대기석이 붐비자 일부 검진자를 안내표지에 따라 분리좌석으로 이동시켰다. 자리가 떨어져 있어도 같은 검사 대기 목록에 속한다.
+주차지원수량제약상황|방문환자|주차지원권|수납창구|발급기준	other,state,function,classification	resource_constraint	resource_constraint	주차지원수량제약상황: 수납창구는 주차지원권을 발급기준에 맞는 방문환자에게 제공했다. 권한이 없는 경우는 진료 자격과 관계없는 주차 지원 제한이다.
+검사예약일분산상황|예약자|검사인원한도|첫희망일|대체날짜	other,state,comparison,function	resource_constraint	resource_constraint	검사예약일분산상황: 첫희망일의 검사인원한도가 차자 예약자에게 대체날짜를 안내했다. 날짜 변경은 검사 필요성이 낮아졌다는 판단이 아니다.
+의료폐기함용량상황|처치실|의료폐기함|교체선|새용기	other,state,attribute,boundary	resource_constraint	resource_constraint	의료폐기함용량상황: 처치실의 의료폐기함이 교체선에 이르자 밀봉하고 새용기를 놓았다. 빈 공간이 조금 남아도 안전 기준상 더 사용하지 않는다.
+예약전화회선제약상황|상담센터|전화회선|대기호출|온라인신청	other,state,function,contrast	resource_constraint	resource_constraint	예약전화회선제약상황: 전화회선이 모두 사용 중일 때 상담센터는 대기호출과 온라인신청을 함께 안내했다. 통화 실패가 예약 서비스 전체의 중단은 아니다.
+판독의업무량배분상황|판독의|검사목록|긴급표시|일반자료	other,state,role,classification	resource_constraint	resource_constraint	판독의업무량배분상황: 판독의 수가 제한돼 검사목록에서 긴급표시 자료를 먼저 배정하고 일반자료는 접수 시각대로 나눴다. 우선순위는 결과의 심각도를 미리 확정하지 않는다.
+재활기구교대사용상황|치료사|재활기구|환자순서|소독표시	other,state,function,process	resource_constraint	resource_constraint	재활기구교대사용상황: 치료사는 환자순서 사이마다 재활기구에 소독표시를 확인했다. 한 사람이 사용을 마쳐도 정리 전에는 다음 차례가 시작되지 않는다.
+검체운송차량제약상황|지역진료소|운송차량|출발시각|보관상자	other,state,function,attribute	resource_constraint	resource_constraint	검체운송차량제약상황: 지역진료소는 하루 한 번 오는 운송차량의 출발시각에 맞춰 검체를 보관상자에 모았다. 늦게 채취한 것은 다음 운송까지 조건을 유지한다.
+의료영상저장공간상황|자료서버|영상파일|보존등급|이관목록	other,state,classification,part_of	resource_constraint	resource_constraint	의료영상저장공간상황: 자료서버의 공간이 줄자 영상파일을 보존등급에 따라 나누고 장기 자료는 이관목록에 올렸다. 이관은 삭제와 다른 저장 위치 변경이다.
+진료용의자우선배정상황|안내요원|진료용의자|보행곤란자|일반방문자	other,state,role,boundary	resource_constraint	resource_constraint	진료용의자우선배정상황: 안내요원은 제한된 진료용의자를 보행곤란자에게 먼저 배정하고 일반방문자에게 잠시 양보를 요청했다. 우선 사용은 진료 순번 변경과 별개다.
+검사시간단축설명상황|검사기사|남은운영시간|선택검사|필수검사	other,state,classification,boundary	resource_constraint	resource_constraint	검사시간단축설명상황: 검사기사는 남은운영시간에 맞춰 필수검사는 진행하고 선택검사는 다른 날로 옮겼다. 미룬 항목을 취소된 검사로 기록하지 않는다.
+백신재고예약조정상황|접종센터|백신재고|예약자|입고예정	other,state,attribute,process	resource_constraint	resource_constraint	백신재고예약조정상황: 접종센터는 백신재고가 예약자 수보다 적어 일부 일정을 입고예정 뒤로 조정했다. 예약 변경은 접종 완료 기록을 만들지 않는다.
+검진복수용제한상황|검진실|검진복|사용자|세탁회수함	other,state,function,process	resource_constraint	resource_constraint	검진복수용제한상황: 검진실은 사용 가능한 검진복 수에 맞춰 사용자를 입장시키고 벗은 옷은 세탁회수함으로 보냈다. 회수함의 옷은 즉시 재사용할 수 없다.
+의료상담자료한부상황|상담의|설명자료|환자|보호자	other,state,function,role	resource_constraint	resource_constraint	의료상담자료한부상황: 상담의는 설명자료 한 부를 환자와 보호자 사이에 놓고 함께 보게 했다. 종이 소유자는 한 명이어도 설명 대상은 두 사람이다.
+# 121~150 지시어·생략·대조 대상의 진료 문맥 복원
+두예약지시복원상황|오전예약|오후예약|환자|그시간	other,boundary,state,contrast	reference_resolution	reference_resolution	두예약지시복원상황: 환자에게 오전예약과 오후예약을 제시했다. 환자가 늦은 쪽을 고르며 “그시간에 가겠다”고 했으므로 그시간은 오후예약이다.
+검체두개참조상황|첫검체|재검체|검사기사|후자의것	other,boundary,state,classification	reference_resolution	reference_resolution	검체두개참조상황: 첫검체는 기준을 충족하지 못해 재검체를 받았다. 검사기사가 후자의것을 분석하라고 한 대상은 나중에 채취한 재검체다.
+진료인물대명사상황|의사|간호사|환자|그녀	other,boundary,role,state	reference_resolution	reference_resolution	진료인물대명사상황: 의사는 환자에게 결과를 설명했고 간호사는 다음 일정을 적었다. “그녀가 안내지를 건넸다”에서 그녀는 간호사다.
+약봉투지시복원상황|아침약봉투|저녁약봉투|복약표|이봉투	other,boundary,classification,state	reference_resolution	reference_resolution	약봉투지시복원상황: 아침약봉투는 흰 칸에, 저녁약봉투는 복약표의 검은 칸에 놓였다. 약사가 검은 칸을 짚으며 부른 이봉투는 저녁약봉투다.
+검사결과선행어상황|혈액결과|영상결과|담당의|앞의결과	other,boundary,contrast,state	reference_resolution	reference_resolution	검사결과선행어상황: 담당의는 혈액결과를 먼저 말하고 영상결과를 이어 설명했다. 앞의결과가 정상 범위라는 문장은 혈액결과를 가리킨다.
+진료실위치참조상황|일진료실|이진료실|대기환자|저곳	other,boundary,state,classification	reference_resolution	reference_resolution	진료실위치참조상황: 대기환자 앞에서 일진료실은 왼쪽, 이진료실은 오른쪽에 있다. 안내자가 오른쪽 문을 가리키며 “저곳으로 들어가세요”라고 했으므로 대상은 이진료실이다.
+보호자주체복원상황|환자|딸|담당자|그분	other,boundary,role,state	reference_resolution	reference_resolution	보호자주체복원상황: 환자는 연락이 어려워 딸이 담당자와 통화했다. 기록의 “그분에게 일정을 전달함”에서 그분은 통화한 딸을 뜻한다.
+두안내문참조상황|검사안내문|복약안내문|접수직원|아래문서	other,boundary,classification,function	reference_resolution	reference_resolution	두안내문참조상황: 검사안내문 위에 복약안내문이 놓였다. 접수직원이 아래문서를 검사실에 가져가라고 했으므로 대상은 검사안내문이다.
+예약취소대명사상황|민수예약|영희예약|예약담당|그것	other,boundary,state,role	reference_resolution	reference_resolution	예약취소대명사상황: 민수예약은 유지됐고 영희예약은 전화로 취소됐다. 예약담당이 “그것을 빈 칸으로 돌렸다”고 한 것은 영희예약이다.
+처방전후자복원상황|기존처방|변경처방|약사|후자	other,boundary,contrast,state	reference_resolution	reference_resolution	처방전후자복원상황: 약사는 기존처방과 변경처방을 나란히 확인하고 후자를 조제 목록에 넣었다. 후자는 더 나중에 발행된 변경처방이다.
+검사실그곳복원상황|채혈실|영상실|환자팔찌|그곳	other,boundary,state,function	reference_resolution	reference_resolution	검사실그곳복원상황: 환자팔찌에는 먼저 채혈실, 다음으로 영상실이 적혔다. 채혈이 끝난 뒤 “그곳으로 이동하라”는 안내는 다음 장소인 영상실을 뜻한다.
+진료메모이항목상황|알레르기항목|복용약항목|문진표|이항목	other,boundary,classification,state	reference_resolution	reference_resolution	진료메모이항목상황: 문진표에서 알레르기항목은 비었고 복용약항목에는 이름이 적혔다. 직원이 적힌 줄을 가리킨 이항목은 복용약항목이다.
+두의료진주체복원상황|전공의|전문의|판독보고서|그가	other,boundary,role,state	reference_resolution	reference_resolution	두의료진주체복원상황: 전공의가 판독보고서 초안을 만들고 전문의가 확인서명을 했다. 이어 “그가 최종 승인했다”에서 그는 전문의다.
+검사값후자참조상황|첫혈압값|두번째혈압값|측정표|나중값	other,boundary,attribute,comparison	reference_resolution	reference_resolution	검사값후자참조상황: 측정표에는 첫혈압값과 두번째혈압값이 시간순으로 적혔다. 나중값을 상담에 사용했다는 말은 두번째혈압값을 지칭한다.
+병실침상지시상황|창가침상|문쪽침상|입원환자|그자리	other,boundary,state,contrast	reference_resolution	reference_resolution	병실침상지시상황: 입원환자 앞에서 창가침상은 사용 중이고 문쪽침상은 비어 있다. 간호사가 빈 곳을 가리킨 그자리는 문쪽침상이다.
+결과보고대상복원상황|환자|보호자|결과보고|이분	other,boundary,role,state	reference_resolution	reference_resolution	결과보고대상복원상황: 환자가 직접 듣기 어려워 보호자가 결과보고를 받았다. 메모에서 “이분이 다시 질문함”의 이분은 보호자다.
+두검사일참조상황|첫검사일|재검사일|예약표|다음날짜	other,boundary,process,state	reference_resolution	reference_resolution	두검사일참조상황: 예약표에는 첫검사일 뒤에 재검사일이 잡혀 있다. 직원이 다음날짜를 확정했다고 한 것은 재검사일이다.
+약품용기지시복원상황|투명용기|갈색용기|보관함|그용기	other,boundary,state,classification	reference_resolution	reference_resolution	약품용기지시복원상황: 투명용기는 위 칸, 갈색용기는 보관함 아래 칸에 있다. 담당자가 빛을 피해야 한다며 말한 그용기는 갈색용기다.
+진료과선택참조상황|내과|정형외과|의뢰서|둘째과	other,boundary,classification,contrast	reference_resolution	reference_resolution	진료과선택참조상황: 의뢰서에는 내과와 정형외과가 차례로 검토 후보에 적혔다. 뼈 관련 상담을 맡을 둘째과는 정형외과다.
+검사순서생략복원상황|채혈|문진|상담|그뒤	other,boundary,process,state	reference_resolution	reference_resolution	검사순서생략복원상황: 환자는 문진을 마치고 채혈을 받은 다음 상담으로 갔다. 기록의 “그뒤 의사를 만남”에서 그뒤는 채혈 이후를 뜻한다.
+의료기록소유참조상황|민지|수호|검사기록|그의기록	other,boundary,role,state	reference_resolution	reference_resolution	의료기록소유참조상황: 민지의 결과는 인쇄됐고 수호의 검사기록은 전산에만 있다. 담당자가 수호를 가리켜 말한 그의기록은 전산 자료다.
+복약시간지시복원상황|아침복용|저녁복용|약사|그때	other,boundary,state,contrast	reference_resolution	reference_resolution	복약시간지시복원상황: 약사는 한 약을 아침복용, 다른 약을 저녁복용으로 설명했다. 어두운 색 봉투를 들며 “그때 드세요”라고 한 그때는 저녁이다.
+예약문자주체복원상황|병원|환자|확인문자|그쪽	other,boundary,role,function	reference_resolution	reference_resolution	예약문자주체복원상황: 병원이 확인문자를 보내고 환자가 변경 요청을 답장했다. 상담원이 “그쪽에서 회신했다”고 기록한 그쪽은 환자다.
+검사자료앞파일상황|원본영상|압축사본|전송목록|첫파일	other,boundary,classification,state	reference_resolution	reference_resolution	검사자료앞파일상황: 전송목록에는 원본영상 뒤에 압축사본이 표시된다. 담당자가 화질 검토에 쓴 첫파일은 원본영상이다.
+진료의견지시복원상황|주치의의견|전문의의견|상담기록|두번째의견	other,boundary,role,contrast	reference_resolution	reference_resolution	진료의견지시복원상황: 상담기록은 주치의의견을 먼저, 전문의의견을 다음에 적었다. 두번째의견을 추가 검토한다는 문장은 전문의의견을 뜻한다.
+대기번호이것복원상황|십이번|십삼번|호출화면|이번호	other,boundary,state,classification	reference_resolution	reference_resolution	대기번호이것복원상황: 호출화면에 십이번이 끝나고 십삼번이 깜박였다. 직원이 부른 이번호는 현재 표시 중인 십삼번이다.
+검사도구후자복원상황|면봉|채혈침|준비대|후자의도구	other,boundary,function,contrast	reference_resolution	reference_resolution	검사도구후자복원상황: 준비대에는 면봉과 채혈침이 차례로 놓였다. 혈액을 얻는 후자의도구는 채혈침을 가리킨다.
+추적연락대상상황|환자|보호자|연락목록|첫사람	other,boundary,role,state	reference_resolution	reference_resolution	추적연락대상상황: 연락목록에 환자 번호가 먼저, 보호자 번호가 다음에 적혔다. 첫사람에게 전화가 연결되지 않아 두 번째 번호로 넘어갔다.
+진료기록그날복원상황|첫방문일|재방문일|증상변화|그날	other,boundary,process,state	reference_resolution	reference_resolution	진료기록그날복원상황: 첫방문일에는 증상이 시작됐고 재방문일에는 증상변화가 확인됐다. “그날 상태가 나아짐”은 변화가 관찰된 재방문일을 뜻한다.
+결과표위항목복원상황|검사수치|참고범위|결과표|위항목	other,boundary,attribute,classification	reference_resolution	reference_resolution	결과표위항목복원상황: 결과표에서 검사수치는 위 줄, 참고범위는 아래 줄에 있다. 위항목을 다시 측정한다는 지시는 검사수치를 가리킨다.

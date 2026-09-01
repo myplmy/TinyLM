@@ -1,0 +1,158 @@
+# family	제조 공정품·설비·품질 판정 상태 변화
+# axes	원재료/재공/완성, 가동/정지, 검사대기, 합격/보류/재작업
+# columns	concepts	relations	other_category	logic_pattern	directly_authored_text
+# 001~030 원재료 입고·확인·투입 전 상태
+강판코일의입고검수대기	state,process,classification	-	lifecycle_stage	강판코일의입고검수대기는 자재가 하역 구역에 도착했으나 규격과 표면 손상 확인을 마치지 않은 단계다. 검사 표식 전에는 생산 투입 대상으로 보지 않는다.
+강판코일의검수합격전환	state,process,function	-	trigger_condition	강판코일의검수합격전환은 두께·폭·재질 성적서가 구매 기준과 맞아 창고 반입이 허용되는 변화다. 합격 시점과 실제 적치 시점은 따로 기록한다.
+강판코일의표면흠집보류	state,process,boundary	-	state_transition	강판코일의표면흠집보류는 국부 결함이 발견되어 사용 가능 구간과 폐기 구간을 판정할 때까지 이동이 멈춘 상태다. 전량 불합격으로 곧바로 확대하지 않는다.
+수지펠릿의수분검사중	state,process,attribute	-	lifecycle_stage	수지펠릿의수분검사중은 채취한 표본을 건조 측정해 허용 수분율 이내인지 확인하는 단계다. 봉투 외관이 건조해 보여도 내부 수분은 별도로 판단한다.
+수지펠릿의건조투입전환	state,process,function	-	trigger_condition	수지펠릿의건조투입전환은 측정값이 기준을 넘어서 원료가 성형기 대신 제습 건조기로 배정되는 변화다. 이 전환은 폐기가 아니라 전처리 선택이다.
+알루미늄잉곳의로트격리상태	state,process,role	-	lifecycle_stage	알루미늄잉곳의로트격리상태는 성분 증명서 번호가 실물 표지와 맞지 않아 해당 묶음을 다른 재료에서 분리한 단계다. 확인 전 혼합 장입을 막는다.
+알루미늄잉곳의성분확인복귀	state,process,contrast	-	degradation_recovery	알루미늄잉곳의성분확인복귀는 재분석 결과 합금 조성이 주문 규격과 일치해 격리 표지가 해제되는 과정이다. 복귀 뒤에도 원래 로트 이력은 보존한다.
+도료원액의유효기간임박표시	state,process,attribute	-	state_transition	도료원액의유효기간임박표시는 남은 사용 가능 기간이 내부 경고 구간에 들어 먼저 소비할 대상으로 바뀐 상태다. 기한 도달 전이므로 사용 금지와는 다르다.
+도료원액의점도조정대기	state,process,boundary	-	lifecycle_stage	도료원액의점도조정대기는 측정 점도가 도장 조건보다 높아 희석 비율 승인을 기다리는 단계다. 작업자가 임의로 용제를 더하지 않도록 봉인을 유지한다.
+접착필름의냉장해동중	state,process,classification	-	lifecycle_stage	접착필름의냉장해동중은 저온 보관품을 포장한 채 작업실 온도에 적응시키는 단계다. 결로를 막으려 정해진 시간이 지나기 전에는 개봉하지 않는다.
+접착필름의작업가능시간개시	state,process,attribute	-	trigger_condition	접착필름의작업가능시간개시는 해동 완료 확인으로 실온 노출 허용 시간이 계산되기 시작하는 변화다. 남은 시간은 재냉장 여부가 아니라 폐기 판단에 쓰인다.
+고무원단의배합표대조중	state,process,boundary	-	lifecycle_stage	고무원단의배합표대조중은 색상과 촉감만으로 구별하기 어려운 재료를 바코드와 제조 기록으로 확인하는 상태다. 표시가 맞기 전 절단 공정으로 넘기지 않는다.
+유리기판의청정포장해제	state,process,function	-	state_transition	유리기판의청정포장해제는 청정 구역 반입 검사가 끝나 외부 보호 포장을 제거하는 변화다. 이 순간부터 입자 노출 시간과 취급 횟수를 관리한다.
+유리기판의모서리파손격리	state,process,boundary	-	trigger_condition	유리기판의모서리파손격리는 칩이나 균열이 발견된 기판을 양품 운반함에서 빼내는 전환이다. 작은 모서리 결함이라도 후속 절단 위험을 따로 평가한다.
+전자부품릴의습도노출계수	state,process,attribute	-	lifecycle_stage	전자부품릴의습도노출계수는 방습 포장을 연 뒤 누적된 실내 노출 시간이 현재 허용 한도 중 어디인지 나타내는 상태다. 달력 날짜만으로 건조 필요성을 정하지 않는다.
+전자부품릴의재건조배정	state,process,function	-	trigger_condition	전자부품릴의재건조배정은 노출 한계를 넘은 부품이 실장 대기에서 베이킹 절차로 옮겨지는 변화다. 포장을 다시 닫는 것만으로 계수가 초기화되지는 않는다.
+구리선재의직경검사보류	state,process,boundary	-	lifecycle_stage	구리선재의직경검사보류는 여러 지점의 측정값 편차가 커 대표 규격을 확정하지 못한 단계다. 평균값이 맞더라도 국부 과소 직경을 숨기지 않는다.
+구리선재의규격창고편입	state,process,classification	-	trigger_condition	구리선재의규격창고편입은 직경·전도도·표면 검사가 끝나 지정 재고 등급으로 등록되는 변화다. 편입된 위치와 생산 로트를 함께 추적한다.
+세라믹분말의응집해체처리중	state,process,function	-	lifecycle_stage	세라믹분말의응집해체처리중은 굳은 입자 덩어리를 체질과 혼합으로 풀어 균일한 공급성을 회복하는 단계다. 입자 자체의 화학 조성은 바꾸지 않는다.
+세라믹분말의오염의심봉인	state,process,other	latent_observed_state	state_transition	세라믹분말의오염의심봉인은 색 변화가 보였지만 혼입 물질과 발생 시점을 아직 밝히지 못해 용기를 닫아 둔 상태다. 관찰만으로 오염 종류를 확정하지 않는다.
+윤활유드럼의침전재혼합대기	state,process,attribute	-	lifecycle_stage	윤활유드럼의침전재혼합대기는 장기 보관으로 첨가제가 가라앉아 균질화 작업을 앞둔 단계다. 위쪽 시료만 합격해도 드럼 전체가 균일하다고 보지 않는다.
+윤활유드럼의균질화완료	state,process,function	-	trigger_condition	윤활유드럼의균질화완료는 정해진 교반 뒤 상·중·하부 점도가 허용 편차 안에 들어 공급 가능 상태로 바뀐 결과다. 완료 표시는 검사값과 묶어 남긴다.
+목재판재의함수율안정화중	state,process,attribute	-	lifecycle_stage	목재판재의함수율안정화중은 작업장 환경에서 수분 평형에 가까워지도록 간격을 두고 적재한 상태다. 겉면 건조만 보고 가공을 서두르면 뒤틀림이 생길 수 있다.
+목재판재의뒤틀림선별전환	state,process,boundary	-	state_transition	목재판재의뒤틀림선별전환은 안정화 뒤 평탄도 기준을 벗어난 판재가 일반 투입 묶음에서 교정 후보로 이동하는 변화다. 강도 불량과 형상 불량은 구분한다.
+섬유원사의장력적응대기	state,process,attribute	-	lifecycle_stage	섬유원사의장력적응대기는 보관 장력과 권취 조건을 생산 설비 조건에 맞추기 위해 시험 공급을 기다리는 단계다. 바로 고속 운전하면 끊김 위험이 커진다.
+섬유원사의색상로트분리	state,process,classification	-	state_transition	섬유원사의색상로트분리는 육안으로 비슷해도 염색 배치가 다른 실을 별도 공급 단위로 나누는 변화다. 한 제품 안의 미세한 색차 누적을 방지한다.
+종이롤의가장자리수분격리	state,process,boundary	-	trigger_condition	종이롤의가장자리수분격리는 포장 손상 부근의 함수율 상승이 확인되어 해당 롤을 인쇄 대기에서 빼는 전환이다. 내부까지 젖었는지는 추가 측정한다.
+종이롤의재포장복귀	state,process,contrast	-	degradation_recovery	종이롤의재포장복귀는 습윤 가장자리를 절단하고 남은 폭의 수분이 안정되어 사용 가능한 규격으로 돌아오는 과정이다. 원래 폭 감소를 재고에 반영한다.
+분말안료의색좌표검사대기	state,process,attribute	-	lifecycle_stage	분말안료의색좌표검사대기는 표준 시편과의 색 차를 계측하기 전이라 배합 투입 여부가 정해지지 않은 단계다. 조명 아래 육안 판단은 참고로만 쓴다.
+분말안료의표준편차초과보류	state,process,boundary	-	trigger_condition	분말안료의표준편차초과보류는 여러 시료의 색 좌표가 넓게 흩어져 로트 균일성을 재확인하도록 멈춘 상태다. 단일 시료 합격으로 보류를 풀지 않는다.
+# 031~060 재공품 형성·이송·공정 대기
+절단강판의다음공정대기	state,process,classification	-	lifecycle_stage	절단강판의다음공정대기는 소재가 지정 치수로 잘렸지만 모서리 제거와 절곡 순서가 아직 오지 않은 재공 상태다. 완제품 재고와 섞지 않는다.
+절단강판의치수오차재절단전환	state,process,boundary	-	trigger_condition	절단강판의치수오차재절단전환은 길이 여유가 남은 부품이 측정 불일치 때문에 수정 절단 작업으로 배정되는 변화다. 여유가 없으면 동일 경로를 쓰지 않는다.
+절곡부품의스프링백안정화중	state,process,attribute	-	lifecycle_stage	절곡부품의스프링백안정화중은 금형에서 나온 뒤 각도가 탄성 회복으로 변하는 구간을 기다리는 단계다. 즉시 측정한 각도와 안정 후 각도를 분리한다.
+절곡부품의각도합격이송	state,process,function	-	trigger_condition	절곡부품의각도합격이송은 안정된 굽힘각이 허용 범위에 들어 용접 작업장으로 보내지는 전환이다. 이송 표지는 용접 완료를 의미하지 않는다.
+용접조립체의냉각대기상태	state,process,attribute	-	lifecycle_stage	용접조립체의냉각대기상태는 접합은 끝났지만 열 변형 측정에 적합한 온도까지 내려오지 않은 단계다. 뜨거운 상태의 치수로 합격을 정하지 않는다.
+용접조립체의비드수정보류	state,process,boundary	-	state_transition	용접조립체의비드수정보류는 외관 검사에서 언더컷이나 과다 돌출이 보여 연마·재용접 판단을 기다리는 상태다. 내부 결함 여부는 별도 검사를 거친다.
+주조품의금형분리완료	state,process,function	-	state_transition	주조품의금형분리완료는 응고된 부품이 주형에서 꺼내져 탕구 제거 대상으로 바뀐 시점이다. 아직 표면 처리와 내부 건전성 검사가 남아 있다.
+주조품의잔열교정가능구간	state,process,attribute	-	lifecycle_stage	주조품의잔열교정가능구간은 소재가 균열 없이 형상을 바로잡을 수 있는 온도 범위에 머무는 상태다. 구간을 벗어나면 같은 힘으로 교정하지 않는다.
+단조품의열처리투입대기	state,process,classification	-	lifecycle_stage	단조품의열처리투입대기는 형상 성형을 끝낸 부품이 로 번호와 처리 조건을 배정받고 장입을 기다리는 단계다. 냉간 완성품으로 분류하지 않는다.
+단조품의열처리중단보류	state,process,other	transition_trigger	state_transition	단조품의열처리중단보류는 설비 정지로 온도 이력이 끊겼으나 조직 영향 범위를 아직 계산하지 못한 상태다. 단순 재가열 가능 여부를 책임자가 판정한다.
+사출성형품의금형내냉각	state,process,attribute	-	lifecycle_stage	사출성형품의금형내냉각은 수지가 형상을 얻었지만 이형 시 변형되지 않을 강성까지 굳는 중인 단계다. 냉각 시간은 두께와 금형 온도에 따라 달라진다.
+사출성형품의미충전선별	state,process,boundary	-	trigger_condition	사출성형품의미충전선별은 끝단까지 수지가 닿지 않은 부품이 정상 생산 흐름에서 분석 상자로 옮겨지는 변화다. 표면 수축과 미충전은 따로 판정한다.
+압출재의인출속도안정화	state,process,attribute	-	state_transition	압출재의인출속도안정화는 시작 구간의 흔들림이 줄고 선속도가 설정 범위에 들어 연속 생산으로 넘어가는 변화다. 초기 불안정 길이는 별도 표시한다.
+압출재의단면교정중	state,process,function	-	lifecycle_stage	압출재의단면교정중은 냉각 과정에서 생긴 휨과 비틀림을 롤러로 줄이는 단계다. 교정 전 길이 측정은 최종 규격 판정에 쓰지 않는다.
+도장부품의표면세척완료	state,process,function	-	trigger_condition	도장부품의표면세척완료는 기름·먼지 제거와 건조 확인이 끝나 도료를 받을 수 있는 상태로 바뀐 결과다. 손자국이 생기면 완료 상태를 다시 평가한다.
+도장부품의도막경화중	state,process,attribute	-	lifecycle_stage	도장부품의도막경화중은 코팅층이 형성됐지만 긁힘과 용제에 견딜 물성을 아직 얻지 못한 단계다. 표면이 마른 것과 내부 경화 완료를 구별한다.
+도금부품의세척수잔류대기	state,process,boundary	-	lifecycle_stage	도금부품의세척수잔류대기는 홈에 남은 액체가 다음 욕조를 오염시킬 수 있어 배액 시간을 확보하는 상태다. 외관상 물방울 부재만으로 종료하지 않는다.
+도금부품의전류인가개시	state,process,function	-	trigger_condition	도금부품의전류인가개시는 부품과 전극 연결이 확인되어 금속 석출이 시작되는 변화다. 욕조 침지만으로 도금 진행 시간을 계산하지 않는다.
+연마축의거칠기측정대기	state,process,attribute	-	lifecycle_stage	연마축의거칠기측정대기는 표면 가공은 끝났지만 측정실 온도 적응과 세척이 남은 단계다. 손으로 매끄럽게 느끼는 판단은 합격 근거가 아니다.
+연마축의과삭재가공불가	state,process,boundary	-	state_transition	연마축의과삭재가공불가는 지름이 하한보다 작아 추가 연마로 회복할 수 없는 상태다. 표면 흠집 수리 후보와 같은 재작업 통로에 넣지 않는다.
+회로기판의솔더페이스트인쇄완료	state,process,function	-	state_transition	회로기판의솔더페이스트인쇄완료는 패드 위에 지정 두께의 재료가 놓여 부품 실장 대기 상태로 넘어간 시점이다. 인쇄 검사 전에는 양품으로 확정하지 않는다.
+회로기판의실장부품누락보류	state,process,boundary	-	trigger_condition	회로기판의실장부품누락보류는 영상 검사에서 지정 위치가 비어 있어 리플로 투입을 막은 상태다. 설계상 미사용 패드와 실제 누락을 구별한다.
+배터리셀의전해액주입후숙성	state,process,attribute	-	lifecycle_stage	배터리셀의전해액주입후숙성은 액체가 전극 기공에 고르게 스며들도록 일정 시간 정지해 둔 단계다. 주입량 확인만으로 함침 완료를 대신하지 않는다.
+배터리셀의초기충전진행중	state,process,function	-	lifecycle_stage	배터리셀의초기충전진행중은 정해진 전류와 전압 순서로 계면층을 형성하며 성능 특성을 얻는 상태다. 일반 출하 충전과 다른 관리 조건을 쓴다.
+광학렌즈의코팅전세정대기	state,process,classification	-	lifecycle_stage	광학렌즈의코팅전세정대기는 연마를 마친 렌즈가 입자·유기물 제거와 건조 검사를 기다리는 재공 단계다. 보관 먼지가 있으면 진공실로 보내지 않는다.
+광학렌즈의코팅두께안정화	state,process,attribute	-	state_transition	광학렌즈의코팅두께안정화는 증착률 변동이 줄어 목표 광학 두께가 일정하게 쌓이는 생산 상태로 들어간 변화다. 시작 구간의 시편은 따로 평가한다.
+섬유직물의염색욕평형중	state,process,attribute	-	lifecycle_stage	섬유직물의염색욕평형중은 염료 농도와 온도가 목표에 접근하면서 천 안팎의 색 흡수가 고르게 되는 단계다. 시간만 채우고 균일성을 가정하지 않는다.
+섬유직물의색차수정투입	state,process,contrast	-	degradation_recovery	섬유직물의색차수정투입은 기준보다 옅은 재공품이 추가 염료와 시간을 배정받아 목표 색으로 회복하는 과정이다. 진한 제품에는 같은 처방을 적용하지 않는다.
+종이시트의압착탈수진행	state,process,function	-	lifecycle_stage	종이시트의압착탈수진행은 젖은 섬유층이 롤 사이를 지나 물을 잃고 자체 형상을 유지할 강도를 얻는 상태다. 완전 건조 단계와 구분한다.
+종이시트의주름결함표시	state,process,boundary	-	trigger_condition	종이시트의주름결함표시는 압착 중 접힘이 생긴 구간이 절단 후 제외 대상으로 바뀌는 변화다. 롤 전체를 폐기하지 않고 위치 범위를 기록한다.
+# 061~090 설비 가동·정지·전환
+프레스기의기동전안전확인	state,process,boundary	-	lifecycle_stage	프레스기의기동전안전확인은 방호문, 비상 정지, 금형 체결, 작업 구역 비움을 점검하는 단계다. 전원 표시가 켜져도 가동 허가는 별개다.
+프레스기의자동운전개시	state,process,function	-	trigger_condition	프레스기의자동운전개시는 모든 안전 조건과 재료 공급 신호가 충족되어 반복 행정이 시작되는 변화다. 시험 한 번의 움직임과 연속 생산을 구별한다.
+프레스기의과부하정지	state,process,boundary	-	state_transition	프레스기의과부하정지는 설정 힘을 넘는 저항이 감지되어 구동이 차단된 상태다. 원인을 제거하지 않고 경보만 재설정해서는 운전을 재개하지 않는다.
+프레스기의점검후복귀	state,process,contrast	-	degradation_recovery	프레스기의점검후복귀는 금형 걸림과 재료 위치를 바로잡고 시험 행정을 통과해 자동 운전이 다시 허용되는 과정이다. 정지 이력은 지우지 않는다.
+사출기의예열진행상태	state,process,attribute	-	lifecycle_stage	사출기의예열진행상태는 실린더와 금형 온도가 재료별 설정 범위로 오르는 중인 단계다. 표시 온도 하나가 아니라 여러 구역의 안정 여부를 본다.
+사출기의재료퍼지전환	state,process,function	-	state_transition	사출기의재료퍼지전환은 색상이나 수지 종류를 바꾸기 위해 남은 용융물을 배출하는 운전 상태로 옮겨간 변화다. 퍼지품은 정상 생산 수량에 넣지 않는다.
+압출기의스크루속도안정	state,process,attribute	-	trigger_condition	압출기의스크루속도안정은 회전 변동과 토크가 허용 범위에 들어 균일 공급 상태로 판단된 시점이다. 제품 단면이 안정됐는지는 별도로 확인한다.
+압출기의원료공급중단정지	state,process,boundary	-	state_transition	압출기의원료공급중단정지는 호퍼 하한 신호로 빈 운전을 피하려 구동을 멈춘 상태다. 전기 고장 정지와 달리 공급 복구가 재개 조건이다.
+열처리로의승온단계	state,process,attribute	-	lifecycle_stage	열처리로의승온단계는 장입 뒤 내부와 제품 온도가 목표 구간으로 올라가는 과정이다. 설정값 도달과 제품 중심부 도달 시간을 혼동하지 않는다.
+열처리로의균열유지단계	state,process,function	-	lifecycle_stage	열처리로의균열유지단계는 제품 전체가 지정 온도 범위에 머물도록 열 입력을 조절하는 상태다. 승온 시간은 유지 시간에 자동 합산하지 않는다.
+열처리로의온도편차보류	state,process,other	transition_trigger	state_transition	열처리로의온도편차보류는 일부 센서가 허용 범위를 벗어났으나 실제 제품 영향이 계산되지 않아 출하 판정을 멈춘 상태다. 기록 검토가 해제 조건이다.
+열처리로의제어냉각전환	state,process,function	-	trigger_condition	열처리로의제어냉각전환은 유지 시간이 끝나 조직 변화를 맞추도록 정해진 속도로 온도를 낮추기 시작한 변화다. 문을 여는 자연 냉각과 다르다.
+조립로봇의원점복귀중	state,process,classification	-	lifecycle_stage	조립로봇의원점복귀중은 재시작 전에 각 축이 기준 위치를 찾아 좌표계를 다시 확립하는 단계다. 움직임이 있어도 생산 동작으로 세지 않는다.
+조립로봇의협동모드전환	state,process,boundary	-	state_transition	조립로봇의협동모드전환은 작업자 접근을 감지해 속도와 힘 제한이 적용되는 운전 상태로 바뀐 결과다. 정지 상태와 저속 협동 상태를 구별한다.
+조립로봇의경로오차정지	state,process,boundary	-	trigger_condition	조립로봇의경로오차정지는 실제 축 위치가 계획 궤도 허용치를 벗어나 동작이 차단된 상태다. 부품 접촉 여부를 확인한 뒤 복구 경로를 정한다.
+컨베이어의빈라인가동	state,process,function	-	lifecycle_stage	컨베이어의빈라인가동은 제품 없이 벨트와 센서 연동을 확인하려 저속으로 움직이는 시험 상태다. 생산량 집계에는 포함하지 않는다.
+컨베이어의적체감속전환	state,process,boundary	-	trigger_condition	컨베이어의적체감속전환은 하류 센서 점유가 길어져 간격 확보를 위해 공급 속도가 낮아지는 변화다. 모터 성능 저하와 제어 감속을 구분한다.
+컨베이어의비상정지유지	state,process,role	-	lifecycle_stage	컨베이어의비상정지유지는 위험 신호로 동력이 차단되고 수동 확인 전까지 재기동을 막는 상태다. 버튼 해제만으로 안전 조건이 회복되지는 않는다.
+공작기계의공구교환중	state,process,function	-	lifecycle_stage	공작기계의공구교환중은 주축이 가공 위치를 떠나 다음 작업용 공구를 장착하고 식별하는 단계다. 이 구간에는 절삭 이송을 허용하지 않는다.
+공작기계의공구수명경고	state,process,attribute	-	state_transition	공작기계의공구수명경고는 누적 절삭량이나 부하가 예방 교환 기준에 가까워진 상태다. 즉시 파손을 뜻하지 않지만 다음 작업 배정을 제한한다.
+공작기계의진동초과정지	state,process,boundary	-	trigger_condition	공작기계의진동초과정지는 가공 중 진동이 품질·안전 한계를 넘어 주축과 이송이 멈춘 전환이다. 센서 이상인지 실제 채터인지 점검한다.
+세척설비의세정액교환대기	state,process,attribute	-	lifecycle_stage	세척설비의세정액교환대기는 오염 농도나 사용 횟수가 기준에 닿아 새 작업 투입을 막은 상태다. 탱크가 차 있다는 이유로 계속 사용하지 않는다.
+세척설비의배액세척순환	state,process,function	-	lifecycle_stage	세척설비의배액세척순환은 낡은 액을 빼고 내부 배관을 헹군 뒤 새 세정액을 받을 준비를 하는 단계다. 제품 세척 운전과 유로가 다를 수 있다.
+도장부스의환기준비운전	state,process,function	-	lifecycle_stage	도장부스의환기준비운전은 분사 전에 공기 흐름과 필터 차압을 안정시키는 상태다. 팬 회전만 확인하지 않고 배기량이 기준에 드는지 본다.
+도장부스의용제농도정지	state,process,boundary	-	trigger_condition	도장부스의용제농도정지는 감지값이 안전 상한을 넘어서 분사와 점화원을 차단한 상태다. 환기로 농도가 내려가도 원인 확인 전 자동 복귀하지 않는다.
+냉각기의부하추종운전	state,process,function	-	lifecycle_stage	냉각기의부하추종운전은 공정에서 돌아오는 열량에 맞춰 압축기와 펌프 출력을 조절하는 상태다. 최대 출력 고정 운전과 에너지 사용 특성이 다르다.
+냉각기의저유량보호정지	state,process,boundary	-	trigger_condition	냉각기의저유량보호정지는 순환수가 부족해 열교환기 동결을 막으려고 압축기를 멈춘 변화다. 온도 목표 미달과 장비 고장을 곧바로 동일시하지 않는다.
+집진기의필터재생운전	state,process,function	-	lifecycle_stage	집진기의필터재생운전은 차압 상승을 줄이도록 압축 공기나 진동으로 포집 먼지를 털어내는 단계다. 이때 흡입 용량이 일시적으로 달라질 수 있다.
+집진기의호퍼만재보류	state,process,boundary	-	state_transition	집진기의호퍼만재보류는 떨어진 분진을 더 받을 공간이 없어 재생과 생산 연동을 제한한 상태다. 필터 막힘 경보와 별도 원인을 가진다.
+검사장비의교정모드진입	state,process,classification	-	state_transition	검사장비의교정모드진입은 기준 시편을 읽어 측정 편향을 조정하도록 일반 검사에서 전환된 상태다. 이때 얻은 값은 제품 합격 판정에 사용하지 않는다.
+# 091~120 검사대기·측정·판정
+가공부품의치수검사대기	state,process,classification	-	lifecycle_stage	가공부품의치수검사대기는 생산 작업은 끝났지만 측정실 접수와 온도 적응을 기다리는 단계다. 대기 표지는 합격이나 불합격 어느 쪽도 뜻하지 않는다.
+가공부품의측정실접수완료	state,process,role	-	trigger_condition	가공부품의측정실접수완료는 시료 수량과 도면 버전이 확인되어 검사 책임과 순서가 배정된 변화다. 측정 수행 완료와 구분해 기록한다.
+가공부품의첫측정합격보류	state,process,boundary	-	state_transition	가공부품의첫측정합격보류는 초기 값은 규격 안이지만 반복 측정이나 다른 방향 확인이 남아 판정을 닫지 않은 상태다. 한 번의 값만으로 출하하지 않는다.
+가공부품의치수합격확정	state,process,function	-	trigger_condition	가공부품의치수합격확정은 요구된 모든 위치의 측정값과 불확도가 허용 범위에 들어 품질 상태가 승인으로 바뀐 결과다. 검사 장비 번호도 함께 남긴다.
+가공부품의치수불합격전환	state,process,boundary	-	trigger_condition	가공부품의치수불합격전환은 재측정 뒤에도 한 치수가 규격을 벗어나 정상 출하 흐름에서 제외된 변화다. 수정 가능성은 별도 재작업 검토에서 정한다.
+용접부의비파괴검사예약	state,process,classification	-	lifecycle_stage	용접부의비파괴검사예약은 검사 방법과 촬영 구역, 작업 시간이 정해졌으나 실제 탐상이 시작되지 않은 단계다. 예약을 검사 통과로 표시하지 않는다.
+용접부의지시신호판독중	state,process,other	latent_observed_state	lifecycle_stage	용접부의지시신호판독중은 영상이나 파형에 반응이 보였지만 결함 종류와 크기를 아직 확정하지 않은 상태다. 잡음 가능성을 포함해 추가 각도를 본다.
+용접부의허용지시합격	state,process,boundary	-	trigger_condition	용접부의허용지시합격은 검출된 반응이 적용 기준의 크기와 위치 한계 안에 있어 사용 가능으로 판정된 변화다. 신호가 전혀 없었다는 뜻은 아니다.
+도막의두께검사재측정	state,process,attribute	-	lifecycle_stage	도막의두께검사재측정은 첫 측정 지점 간 편차가 커 표면 대표성을 높이도록 위치 수를 늘린 단계다. 가장 좋은 값만 골라 평균내지 않는다.
+도막의부착력시험대기	state,process,classification	-	lifecycle_stage	도막의부착력시험대기는 경화 시간은 지났지만 절개와 테이프 조건을 갖춘 시험 구역 배정을 기다리는 상태다. 외관 합격과 접착 성능을 분리한다.
+회로기판의자동광학검사진행	state,process,function	-	lifecycle_stage	회로기판의자동광학검사진행은 카메라가 부품 위치와 납땜 형상을 기준 영상과 대조하는 단계다. 기계 판정 뒤 사람 확인이 필요한 항목도 남는다.
+회로기판의의심표시검토대기	state,process,other	latent_observed_state	state_transition	회로기판의의심표시검토대기는 장비가 이상 후보를 표시했지만 그림자나 반사인지 실제 결함인지 미정인 상태다. 보드 폐기는 검토 후 결정한다.
+배터리셀의용량시험충전중	state,process,attribute	-	lifecycle_stage	배터리셀의용량시험충전중은 정해진 조건으로 에너지를 넣어 다음 방전 측정의 시작 상태를 맞추는 단계다. 이때의 전하량만으로 용량을 확정하지 않는다.
+배터리셀의용량등급분류	state,process,classification	-	trigger_condition	배터리셀의용량등급분류는 충방전 결과와 내부 저항을 묶어 정해진 성능 구간에 배치하는 변화다. 같은 제조 로트라도 등급은 달라질 수 있다.
+유리기판의입자검사보류	state,process,boundary	-	lifecycle_stage	유리기판의입자검사보류는 표면 점이 발견됐으나 먼지, 흠집, 내부 기포 중 어느 것인지 확인할 때까지 판정을 멈춘 상태다. 세정 후 재관찰한다.
+유리기판의세정후검사복귀	state,process,contrast	-	degradation_recovery	유리기판의세정후검사복귀는 제거 가능한 먼지가 사라져 영구 결함 후보에서 일반 검사 흐름으로 돌아온 과정이다. 같은 위치의 재발 여부를 기록한다.
+직물의색상검사조명적응	state,process,attribute	-	lifecycle_stage	직물의색상검사조명적응은 표준 광원 아래에서 눈과 시료가 안정될 시간을 두는 단계다. 창가 빛에서 본 인상을 공식 판정에 섞지 않는다.
+직물의경계색보류판정	state,process,boundary	-	state_transition	직물의경계색보류판정은 측정 색차가 허용선 부근에 있어 장비 오차와 관찰자 차이를 추가 확인하는 상태다. 즉시 합격 쪽으로 반올림하지 않는다.
+포장제품의밀봉검사진행	state,process,function	-	lifecycle_stage	포장제품의밀봉검사진행은 누설, 접착 폭, 주름을 확인해 내용물 보호 성능을 평가하는 단계다. 겉포장 모양만으로 밀폐성을 대신 판단하지 않는다.
+포장제품의표시누락보류	state,process,boundary	-	trigger_condition	포장제품의표시누락보류는 내용물은 정상이지만 로트나 사용기한 정보가 빠져 출고가 멈춘 상태다. 제품 기능 불량과 표시 적합성 문제를 나눠 관리한다.
+계량제품의중량표본검사	state,process,attribute	-	lifecycle_stage	계량제품의중량표본검사는 일정 간격으로 뽑은 단위품 무게를 측정해 공정 중심과 편차를 보는 상태다. 표본 합격이 모든 개체 확인을 뜻하지 않는다.
+계량제품의공정편향경고	state,process,comparison	-	state_transition	계량제품의공정편향경고는 평균 중량이 목표 한쪽으로 지속 이동해 규격 이탈 전에 조정이 필요한 상태다. 개별 불합격 발생 여부와 구별한다.
+나사체결부의토크검사대기	state,process,classification	-	lifecycle_stage	나사체결부의토크검사대기는 조립을 마친 체결점이 표본 추출과 잔류 토크 측정을 기다리는 단계다. 작업기 설정값만으로 실제 체결을 증명하지 않는다.
+나사체결부의과토크불합격	state,process,boundary	-	trigger_condition	나사체결부의과토크불합격은 측정값이 상한을 넘어 나사나 모재 손상 가능성 때문에 출하 대상에서 빠진 변화다. 더 조여서 해결할 수 있는 문제는 아니다.
+접착접합부의양생확인대기	state,process,attribute	-	lifecycle_stage	접착접합부의양생확인대기는 경과 시간은 채웠지만 온도 이력과 경도 시험 검토가 남은 상태다. 표면 끈적임 부재만으로 내부 반응 완료를 단정하지 않는다.
+접착접합부의강도시험합격	state,process,function	-	trigger_condition	접착접합부의강도시험합격은 대표 시편의 파괴 하중과 파괴 양상이 요구 기준을 만족해 사용 허가가 난 변화다. 시편 추적 번호를 제품 묶음에 연결한다.
+센서모듈의영점검사중	state,process,attribute	-	lifecycle_stage	센서모듈의영점검사중은 입력이 없는 기준 조건에서 출력 편향과 흔들림을 측정하는 단계다. 순간값 하나보다 안정 구간 통계를 사용한다.
+센서모듈의감도미달보류	state,process,boundary	-	trigger_condition	센서모듈의감도미달보류는 표준 입력 변화에 대한 출력 기울기가 하한보다 작아 교정이나 부품 확인을 기다리는 상태다. 영점 오류와 감도 오류를 분리한다.
+완성장치의기능시험진행	state,process,function	-	lifecycle_stage	완성장치의기능시험진행은 전원, 제어, 보호, 사용자 조작을 정해진 순서로 실행해 통합 동작을 확인하는 단계다. 일부 항목 통과를 전체 완료로 표시하지 않는다.
+완성장치의시험자료검토대기	state,process,other	lifecycle_status	lifecycle_stage	완성장치의시험자료검토대기는 자동 시험은 끝났지만 로그 누락과 경계값을 품질 담당자가 확인하지 않은 상태다. 장비 종료 신호와 승인 상태를 나눈다.
+# 121~150 합격·보류·재작업·완성·출하 전환
+완성품의최종합격전환	state,process,function	-	trigger_condition	완성품의최종합격전환은 요구 검사와 문서 검토가 모두 닫혀 출하 가능 재고로 등록되는 변화다. 포장과 운송 예약은 이후 별도 절차다.
+완성품의조건부승인상태	state,process,boundary	-	lifecycle_stage	완성품의조건부승인상태는 기능에는 문제가 없지만 특정 용도나 기간 제한을 붙여 사용하도록 허가한 단계다. 무제한 합격과 같은 표지를 쓰지 않는다.
+완성품의판정보류상태	state,process,other	lifecycle_status	lifecycle_stage	완성품의판정보류상태는 검사 자료가 서로 어긋나 합격과 불합격 어느 쪽도 확정하지 않은 단계다. 추가 증거가 생길 때까지 재고를 격리한다.
+완성품의불합격격리전환	state,process,boundary	-	state_transition	완성품의불합격격리전환은 적용 기준을 벗어난 항목이 확정되어 일반 창고에서 통제 구역으로 옮겨지는 변화다. 처분 방식은 아직 정해지지 않을 수 있다.
+완성품의재작업승인대기	state,process,role	-	lifecycle_stage	완성품의재작업승인대기는 결함을 고칠 기술안과 위험 평가가 제출됐지만 책임자의 허가가 나지 않은 상태다. 현장 임의 수정은 금지한다.
+완성품의재작업착수전환	state,process,function	-	trigger_condition	완성품의재작업착수전환은 승인된 지침과 추적 번호가 발급되어 격리품이 수정 공정으로 이동하는 변화다. 원래 결함 기록은 유지한다.
+완성품의재작업진행상태	state,process,classification	-	lifecycle_stage	완성품의재작업진행상태는 지정 부품 교체나 치수 수정이 실행 중이어서 정상 생산품과 분리된 단계다. 완료 전에는 출하 검사를 예약하지 않는다.
+완성품의재작업후재검대기	state,process,boundary	-	state_transition	완성품의재작업후재검대기는 수정은 끝났지만 영향받은 항목과 연계 기능을 다시 확인하기 전인 상태다. 작업 완료 서명만으로 합격을 복원하지 않는다.
+완성품의재검합격복귀	state,process,contrast	-	degradation_recovery	완성품의재검합격복귀는 수정 결과가 원래 기준과 추가 검사 조건을 만족해 출하 가능 흐름으로 돌아오는 과정이다. 재작업 이력은 품질 기록에 남는다.
+완성품의재검실패폐기검토	state,process,boundary	-	state_transition	완성품의재검실패폐기검토는 수정 후에도 결함이 남아 추가 수리, 용도 전환, 폐기 중 처분을 정하는 상태다. 곧바로 폐기됐다는 뜻은 아니다.
+완성품의등급하향전환	state,process,classification	-	trigger_condition	완성품의등급하향전환은 상위 규격은 못 맞추지만 낮은 등급의 모든 기준은 충족해 재분류되는 변화다. 라벨과 주문 연결을 함께 바꾼다.
+완성품의용도전환승인	state,process,role	-	trigger_condition	완성품의용도전환승인은 원래 목적에는 부적합한 제품을 위험이 낮은 다른 용도로 쓰도록 공식 허가한 변화다. 고객 요구와 법적 제한을 먼저 확인한다.
+완성품의편차허용검토중	state,process,other	reversibility_scope	lifecycle_stage	완성품의편차허용검토중은 규격 이탈이 기능과 안전에 미치는 영향 자료가 충분하지 않아 특채 여부를 논의하는 상태다. 판매 일정이 기술 판정을 대신하지 않는다.
+완성품의편차허용승인	state,process,boundary	-	trigger_condition	완성품의편차허용승인은 특정 로트와 조건에 한해 이탈을 받아들이기로 결정한 변화다. 다음 생산에도 자동 적용되는 규격 변경과 구별한다.
+완성품의편차허용거절	state,process,contrast	-	state_transition	완성품의편차허용거절은 제출된 근거가 위험을 해소하지 못해 합격 경로가 닫힌 상태다. 재작업이나 다른 처분 가능성까지 사라진 것은 아니다.
+완성품의출하보류전환	state,process,boundary	-	trigger_condition	완성품의출하보류전환은 품질 합격 뒤 문서, 포장, 고객 통보 문제로 물류 이동이 잠시 금지된 변화다. 품질 불합격 상태와 원인을 구별한다.
+완성품의출하보류해제	state,process,contrast	-	degradation_recovery	완성품의출하보류해제는 누락 서류나 포장 표시가 바로잡혀 출고 예약을 다시 받을 수 있게 된 과정이다. 해제 권한과 근거를 함께 기록한다.
+완성품의추적표지재발행	state,process,function	-	state_transition	완성품의추적표지재발행은 손상된 라벨 대신 동일 이력을 가리키는 새 식별표가 검증 후 붙는 변화다. 새 제품으로 생성하거나 로트를 바꾸지 않는다.
+완성품의문서불일치격리	state,process,boundary	-	trigger_condition	완성품의문서불일치격리는 실물 일련번호와 성적서 항목이 맞지 않아 출하 목록에서 제외된 상태다. 제품 성능이 정상이어도 추적성이 회복될 때까지 유지한다.
+완성품의성적서정정대기	state,process,role	-	lifecycle_stage	완성품의성적서정정대기는 원자료는 확인됐지만 승인된 문서가 다시 발행되지 않은 단계다. 비공식 수정본을 고객 전달 자료로 사용하지 않는다.
+완성품의포장적합확인	state,process,function	-	trigger_condition	완성품의포장적합확인은 방습, 완충, 봉인, 표시 조건이 운송 요구와 맞아 출하 준비 상태가 성립한 변화다. 내용물 합격 판정을 대신하지 않는다.
+완성품의보관기한감시상태	state,process,attribute	-	lifecycle_stage	완성품의보관기한감시상태는 합격 후 창고 체류 시간이 재검사 기준에 접근하는지 추적하는 단계다. 기한 전에는 정상 재고지만 선입선출 우선순위가 높다.
+완성품의보관기한초과보류	state,process,boundary	-	trigger_condition	완성품의보관기한초과보류는 허용 창고 기간이 지나 출하 자격이 일시 중지된 상태다. 재검 합격으로 복구될 수 있어 자동 폐기와 다르다.
+완성품의보관재검합격복원	state,process,contrast	-	degradation_recovery	완성품의보관재검합격복원은 장기 보관품의 기능과 외관을 다시 확인해 출하 가능 상태를 되찾는 과정이다. 새 검사일과 다음 기한을 갱신한다.
+완성품의고객입회검사대기	state,process,role	-	lifecycle_stage	완성품의고객입회검사대기는 내부 검사는 끝났지만 계약상 참관 확인을 받기 전인 단계다. 고객 일정 지연을 제품 결함으로 표시하지 않는다.
+완성품의고객입회승인	state,process,function	-	trigger_condition	완성품의고객입회승인은 합의된 시험을 참관자가 확인하고 인수 가능 상태로 서명한 변화다. 실제 운송 중 위험 이전 시점은 계약을 따른다.
+완성품의로트종결검토	state,process,classification	-	lifecycle_stage	완성품의로트종결검토는 생산량, 불량, 재작업, 출하 수량이 서로 맞는지 확인해 제조 묶음을 닫기 전인 상태다. 미해결 수량이 있으면 종결하지 않는다.
+완성품의로트종결확정	state,process,function	-	trigger_condition	완성품의로트종결확정은 모든 단위품의 최종 상태와 기록 책임이 정리되어 해당 제조 묶음이 닫히는 변화다. 이후 수정은 통제된 정정 이력으로만 남긴다.
+폐기후보품의처분승인대기	state,process,role	-	lifecycle_stage	폐기후보품의처분승인대기는 재사용 불가 근거는 모였지만 파쇄, 반환, 교육용 전환 중 방식을 허가받지 않은 상태다. 격리 구역 밖으로 내보내지 않는다.
+폐기후보품의불능화완료	state,process,function	-	trigger_condition	폐기후보품의불능화완료는 승인된 방법으로 제품 기능과 식별표가 제거되어 정상 유통으로 돌아갈 수 없게 된 변화다. 자재 회수량은 따로 계량한다.

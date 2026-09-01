@@ -1,0 +1,2862 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 1 Context Integration High-Density Train 150 v07",
+  "version": "7",
+  "purpose": "창고·배송의 입고·분류·상차·이동·인도 상황에서 영역 핵심 관계를 학습하는 train corpus 150개",
+  "split": "train",
+  "record_count": 150,
+  "range": "S1-CTH-0901 ~ S1-CTH-1050",
+  "concept_family": "창고·배송의 입고·분류·상차·이동·인도 상황",
+  "design_note": "화물, 위치, 작업자, 차량, 수취인, 추적 상태",
+  "records": [
+    {
+      "id": "S1-CTH-0901",
+      "type": "context_packet",
+      "split": "train",
+      "text": "입고팔레트배치상황: 입고원은 화물팔레트를 검수구역에 내려놓고 위치표에 칸 번호를 적었다. 차량에서 사라진 화물은 아직 창고 재고로 확정된 것이 아니다.",
+      "concepts": [
+        "입고팔레트배치상황",
+        "입고원",
+        "화물팔레트",
+        "검수구역",
+        "위치표"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "part_of"
+      ]
+    },
+    {
+      "id": "S1-CTH-0902",
+      "type": "context_packet",
+      "split": "train",
+      "text": "운송장스캔추적상황: 분류원은 운송장을 읽어 스캔시각을 남기고 목적지에 맞는 분류레인으로 상자를 보냈다. 화면 기록과 실제 이동 위치를 함께 확인한다.",
+      "concepts": [
+        "운송장스캔추적상황",
+        "분류원",
+        "운송장",
+        "스캔시각",
+        "분류레인"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0903",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송상자차량적재상황: 상차원은 배송상자를 배송차량의 적재칸에 넣고 상자 번호를 목록에 표시했다. 출고장에 없어진 것은 고객 인도가 아니라 차량 적재 때문이다.",
+      "concepts": [
+        "배송상자차량적재상황",
+        "상차원",
+        "배송상자",
+        "적재칸",
+        "배송차량"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "part_of"
+      ]
+    },
+    {
+      "id": "S1-CTH-0904",
+      "type": "context_packet",
+      "split": "train",
+      "text": "오배송상자격리상황: 창고직원은 목적지가 다른 오배송상자에 오류표시를 붙여 보류선반으로 옮겼다. 창고 안에 있어도 정상 출고 묶음에는 포함되지 않는다.",
+      "concepts": [
+        "오배송상자격리상황",
+        "창고직원",
+        "오배송상자",
+        "오류표시",
+        "보류선반"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0905",
+      "type": "context_packet",
+      "split": "train",
+      "text": "수취인주소갱신상황: 배송담당은 본인 확인 뒤 기존주소를 새주소로 바꾸고 배송기록을 갱신했다. 이미 이동한 차량에는 변경 내용을 별도로 전달한다.",
+      "concepts": [
+        "수취인주소갱신상황",
+        "배송담당",
+        "기존주소",
+        "새주소",
+        "배송기록"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-CTH-0906",
+      "type": "context_packet",
+      "split": "train",
+      "text": "냉장화물온도기록상황: 운송기사는 냉장화물의 온도값을 정차 때마다 운송일지에 남겼다. 도착 온도 하나만으로 이동 중 조건 전체를 대신하지 않는다.",
+      "concepts": [
+        "냉장화물온도기록상황",
+        "운송기사",
+        "냉장화물",
+        "온도값",
+        "운송일지"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-CTH-0907",
+      "type": "context_packet",
+      "split": "train",
+      "text": "반송화물회수상황: 배송원은 수취인에게 회수증을 주고 반송화물을 집하차량에 실었다. 고객 집에서 없어졌어도 판매자 창고에 도착한 상태는 아니다.",
+      "concepts": [
+        "반송화물회수상황",
+        "배송원",
+        "반송화물",
+        "회수증",
+        "집하차량"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0908",
+      "type": "context_packet",
+      "split": "train",
+      "text": "창고로케이션변경상황: 재고관리자는 상품상자를 이전선반에서 새보관칸으로 옮겨 위치값을 수정했다. 재고 수량은 그대로이고 저장 주소만 바뀐다.",
+      "concepts": [
+        "창고로케이션변경상황",
+        "재고관리자",
+        "상품상자",
+        "이전선반",
+        "새보관칸"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-CTH-0909",
+      "type": "context_packet",
+      "split": "train",
+      "text": "택배인도서명상황: 수취인은 배송물을 확인하고 인도서명을 남겼으며 시스템에 완료시각이 기록됐다. 문 앞 도착 사진만 있는 경우와 직접 인도를 구분한다.",
+      "concepts": [
+        "택배인도서명상황",
+        "수취인",
+        "배송물",
+        "인도서명",
+        "완료시각"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0910",
+      "type": "context_packet",
+      "split": "train",
+      "text": "파손화물사진기록상황: 검수자는 파손화물의 상태를 손상사진으로 남기고 사고기록에 상자 번호를 연결했다. 사진 촬영은 보상 결정이 아닌 증거 수집 단계다.",
+      "concepts": [
+        "파손화물사진기록상황",
+        "검수자",
+        "파손화물",
+        "손상사진",
+        "사고기록"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0911",
+      "type": "context_packet",
+      "split": "train",
+      "text": "출고목록상자대조상황: 출고원은 화물상자의 바코드를 출고목록과 대조한 뒤 상차 구역에 뒀다. 비슷한 포장이라도 목록에 없는 상자는 보내지 않는다.",
+      "concepts": [
+        "출고목록상자대조상황",
+        "출고원",
+        "출고목록",
+        "화물상자",
+        "바코드"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0912",
+      "type": "context_packet",
+      "split": "train",
+      "text": "미수취보관상황: 배송기사는 수취인을 만나지 못해 방문기록을 남기고 미수취화물을 지역보관소로 가져갔다. 배송 실패와 화물 분실은 같은 상태가 아니다.",
+      "concepts": [
+        "미수취보관상황",
+        "배송기사",
+        "미수취화물",
+        "방문기록",
+        "지역보관소"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0913",
+      "type": "context_packet",
+      "split": "train",
+      "text": "합배송묶음생성상황: 포장담당은 같은 수취인의 복수주문을 합배송상자에 넣고 묶음번호를 부여했다. 상자는 하나지만 주문 기록은 각각 유지된다.",
+      "concepts": [
+        "합배송묶음생성상황",
+        "포장담당",
+        "복수주문",
+        "합배송상자",
+        "묶음번호"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "part_of"
+      ]
+    },
+    {
+      "id": "S1-CTH-0914",
+      "type": "context_packet",
+      "split": "train",
+      "text": "차량출발상태전환상황: 배차원은 배송차량이 문을 나간 뒤 출발확인을 눌러 운행목록을 이동 중으로 바꿨다. 상차 완료만으로 출발 시각을 만들지 않는다.",
+      "concepts": [
+        "차량출발상태전환상황",
+        "배차원",
+        "배송차량",
+        "출발확인",
+        "운행목록"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0915",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송경로우회기록상황: 운송기사는 도로 통제 때문에 기존경로를 벗어나 우회도로로 이동했고 위치로그에 변화가 남았다. 경로 이탈이 곧 오배송은 아니다.",
+      "concepts": [
+        "배송경로우회기록상황",
+        "운송기사",
+        "기존경로",
+        "우회도로",
+        "위치로그"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-0916",
+      "type": "context_packet",
+      "split": "train",
+      "text": "입고수량차이상황: 검수원은 납품명세와 실제상자수를 세어 다르면 차이표시를 했다. 화물 도착과 수량 확정 사이에 검수가 필요하다.",
+      "concepts": [
+        "입고수량차이상황",
+        "검수원",
+        "납품명세",
+        "실제상자수",
+        "차이표시"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-CTH-0917",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송라벨재발행상황: 작업자는 읽히지 않는 훼손라벨을 제거하고 같은 화물번호의 새운송장을 붙였다. 라벨이 바뀌어도 화물이 새 주문으로 생성되지는 않는다.",
+      "concepts": [
+        "배송라벨재발행상황",
+        "작업자",
+        "훼손라벨",
+        "새운송장",
+        "화물번호"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0918",
+      "type": "context_packet",
+      "split": "train",
+      "text": "상차완료봉인상황: 차량관리자는 적재화물 수를 확인하고 차량문을 닫아 봉인번호를 기록했다. 봉인이 끊기기 전까지 적재 구성을 유지한다.",
+      "concepts": [
+        "상차완료봉인상황",
+        "차량관리자",
+        "적재화물",
+        "차량문",
+        "봉인번호"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "part_of"
+      ]
+    },
+    {
+      "id": "S1-CTH-0919",
+      "type": "context_packet",
+      "split": "train",
+      "text": "분류오류재배치상황: 분류원은 배송상자가 잘못된레인에 있음을 발견해 정상레인으로 옮겼다. 첫 위치 기록은 오류 이력으로 남고 목적지는 바뀌지 않는다.",
+      "concepts": [
+        "분류오류재배치상황",
+        "분류원",
+        "잘못된레인",
+        "배송상자",
+        "정상레인"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0920",
+      "type": "context_packet",
+      "split": "train",
+      "text": "수취거절반송상황: 수취인이 거절사유를 말하자 배송기사는 화물에 반송표시를 남기고 회수했다. 방문 완료와 정상 인도 완료를 구별한다.",
+      "concepts": [
+        "수취거절반송상황",
+        "수취인",
+        "배송기사",
+        "거절사유",
+        "반송표시"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0921",
+      "type": "context_packet",
+      "split": "train",
+      "text": "보관기한표시상황: 보관소직원은 미수령화물에 보관시작일과 회수기한을 적었다. 창고에 존재해도 기한 이후에는 같은 수령 절차가 유지되지 않을 수 있다.",
+      "concepts": [
+        "보관기한표시상황",
+        "보관소직원",
+        "미수령화물",
+        "보관시작일",
+        "회수기한"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-CTH-0922",
+      "type": "context_packet",
+      "split": "train",
+      "text": "하역도크배치상황: 입고관리자는 도착트럭을 빈 하역도크에 배정하고 배정표에 차량 번호를 넣었다. 부지 도착과 하역 시작은 다른 단계다.",
+      "concepts": [
+        "하역도크배치상황",
+        "입고관리자",
+        "도착트럭",
+        "하역도크",
+        "배정표"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0923",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송메모전달상황: 고객센터는 수취요청을 배송메모에 적어 기사단말기로 전송했다. 메시지 발송과 기사의 확인 완료를 별도로 추적한다.",
+      "concepts": [
+        "배송메모전달상황",
+        "고객센터",
+        "배송메모",
+        "기사단말기",
+        "수취요청"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0924",
+      "type": "context_packet",
+      "split": "train",
+      "text": "회수용기반환상황: 운송원은 빈회수용기를 반납구역에 내려놓고 용기수량표를 갱신했다. 차량 적재량 감소는 배송상품 인도와 다른 원인이다.",
+      "concepts": [
+        "회수용기반환상황",
+        "운송원",
+        "빈회수용기",
+        "반납구역",
+        "용기수량표"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-CTH-0925",
+      "type": "context_packet",
+      "split": "train",
+      "text": "위험물표지부착상황: 안전담당은 위험화물에 경고표지를 붙여 분리구역으로 옮겼다. 일반 상자와 같은 공간에 두지 않는 이유는 취급 분류 때문이다.",
+      "concepts": [
+        "위험물표지부착상황",
+        "안전담당",
+        "위험화물",
+        "경고표지",
+        "분리구역"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0926",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송완료사진연결상황: 배송기사는 문앞화물의 완료사진에 배송번호를 연결했다. 사진만 보고 수취인이 직접 받았다고 해석하지 않는다.",
+      "concepts": [
+        "배송완료사진연결상황",
+        "배송기사",
+        "문앞화물",
+        "완료사진",
+        "배송번호"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0927",
+      "type": "context_packet",
+      "split": "train",
+      "text": "재배송일정등록상황: 상담원은 첫방문실패 뒤 고객확인을 받아 재배송일을 등록했다. 실패 기록이 남아도 주문이 취소된 것은 아니다.",
+      "concepts": [
+        "재배송일정등록상황",
+        "상담원",
+        "첫방문실패",
+        "재배송일",
+        "고객확인"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0928",
+      "type": "context_packet",
+      "split": "train",
+      "text": "집하화물차량이동상황: 집하원은 회수상자를 집하차량에 싣고 터미널로 보냈다. 발송인 장소에서 사라진 시점과 터미널 입고 시점은 다르다.",
+      "concepts": [
+        "집하화물차량이동상황",
+        "집하원",
+        "회수상자",
+        "집하차량",
+        "터미널"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "part_of"
+      ]
+    },
+    {
+      "id": "S1-CTH-0929",
+      "type": "context_packet",
+      "split": "train",
+      "text": "재고상태출고전환상황: 창고시스템은 출고확정된 예약재고를 가용수량에서 뺐다. 상자가 아직 선반에 보여도 다른 주문에 배정할 수 없다.",
+      "concepts": [
+        "재고상태출고전환상황",
+        "창고시스템",
+        "예약재고",
+        "출고확정",
+        "가용수량"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0930",
+      "type": "context_packet",
+      "split": "train",
+      "text": "운송사인계추적상황: 창고원은 출고화물을 운송사기사에게 넘기고 인계시각을 기록했다. 창고 책임과 운송 책임이 바뀌는 경계가 이 기록에 남는다.",
+      "concepts": [
+        "운송사인계추적상황",
+        "창고원",
+        "출고화물",
+        "운송사기사",
+        "인계시각"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-CTH-0931",
+      "type": "context_packet",
+      "split": "train",
+      "text": "입고검수인계상황: 하역원은 입고화물을 도크에 내리고 검수원에게 검수표를 넘겼다. 차량에서 내린 수량과 문서 수량을 맞춘 뒤 보관 위치를 정한다.",
+      "concepts": [
+        "입고검수인계상황",
+        "하역원",
+        "검수원",
+        "입고화물",
+        "검수표"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0932",
+      "type": "context_packet",
+      "split": "train",
+      "text": "분류상차협업상황: 분류원은 노선화물을 구역별로 모으고 상차원은 적재목록 순서에 맞춰 차량에 실었다. 목적지 분류와 차량 배치가 이어진다.",
+      "concepts": [
+        "분류상차협업상황",
+        "분류원",
+        "상차원",
+        "노선화물",
+        "적재목록"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-CTH-0933",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배차운전정보연계상황: 배차원은 배송경로와 정차 순서를 출발표에 적어 운송기사에게 전달했다. 기사는 실제 도로 상황을 확인하며 운행 기록을 남긴다.",
+      "concepts": [
+        "배차운전정보연계상황",
+        "배차원",
+        "운송기사",
+        "배송경로",
+        "출발표"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0934",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송수취확인협력상황: 배송기사는 배송물의 이름을 확인하고 수취인은 상태를 본 뒤 수령서명을 했다. 기사 도착만으로 인도가 완료되지 않는다.",
+      "concepts": [
+        "배송수취확인협력상황",
+        "배송기사",
+        "수취인",
+        "배송물",
+        "수령서명"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0935",
+      "type": "context_packet",
+      "split": "train",
+      "text": "오배송고객센터연계상황: 수취인은 오배송신고를 했고 상담원은 주문 번호를 확인해 회수요청을 만들었다. 신고자와 물류 처리자의 역할이 연속된다.",
+      "concepts": [
+        "오배송고객센터연계상황",
+        "수취인",
+        "상담원",
+        "오배송신고",
+        "회수요청"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-CTH-0936",
+      "type": "context_packet",
+      "split": "train",
+      "text": "파손책임조사협업상황: 창고담당은 출고 전 손상기록을, 운송담당은 이동이력을 제시했다. 두 자료를 대조한 뒤 어느 구간에서 문제가 생겼는지 판단한다.",
+      "concepts": [
+        "파손책임조사협업상황",
+        "창고담당",
+        "운송담당",
+        "손상기록",
+        "이동이력"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-CTH-0937",
+      "type": "context_packet",
+      "split": "train",
+      "text": "냉장배송인계상황: 창고원은 냉장상자의 온도기록을 냉장기사와 확인하고 차량에 인계했다. 출발 조건과 운행 중 조건을 각 담당자가 이어 기록한다.",
+      "concepts": [
+        "냉장배송인계상황",
+        "창고원",
+        "냉장기사",
+        "온도기록",
+        "냉장상자"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "attribute",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0938",
+      "type": "context_packet",
+      "split": "train",
+      "text": "반송접수업무분담상황: 배송원은 회수화물을 터미널에 가져오고 반송담당은 반송번호를 부여해 목적지를 분류했다. 회수와 판매자 반환은 서로 다른 단계다.",
+      "concepts": [
+        "반송접수업무분담상황",
+        "배송원",
+        "반송담당",
+        "회수화물",
+        "반송번호"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0939",
+      "type": "context_packet",
+      "split": "train",
+      "text": "재고위치실사협력상황: 계수자는 선반화물의 수량을 읽고 위치기록자는 실사표에 칸 번호를 적었다. 두 값이 맞아야 물품 존재와 위치를 함께 확인한다.",
+      "concepts": [
+        "재고위치실사협력상황",
+        "계수자",
+        "위치기록자",
+        "선반화물",
+        "실사표"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-CTH-0940",
+      "type": "context_packet",
+      "split": "train",
+      "text": "운송장재발행승인상황: 현장작업자는 훼손운송장을 보고하고 관리자는 화물 정보를 확인해 재발행표시를 승인했다. 번호를 임의로 새 주문처럼 만들지 않는다.",
+      "concepts": [
+        "운송장재발행승인상황",
+        "현장작업자",
+        "관리자",
+        "훼손운송장",
+        "재발행표시"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0941",
+      "type": "context_packet",
+      "split": "train",
+      "text": "상차안전유도상황: 지게차기사는 화물팔레트를 들고 안전유도자의 신호에 따라 상차선을 넘었다. 운전과 보행 구역 감시는 다른 책임이다.",
+      "concepts": [
+        "상차안전유도상황",
+        "지게차기사",
+        "안전유도자",
+        "화물팔레트",
+        "상차선"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0942",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송일정상담연계상황: 상담원은 고객의 희망시간을 받고 배차담당에게 가능한 노선을 확인했다. 고객 요청을 들은 것과 차량에 일정이 배정된 것을 구분한다.",
+      "concepts": [
+        "배송일정상담연계상황",
+        "고객",
+        "상담원",
+        "배차담당",
+        "희망시간"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0943",
+      "type": "context_packet",
+      "split": "train",
+      "text": "화물보안봉인협력상황: 상차책임자는 차량문을 닫아 봉인번호를 기록하고 운송기사는 출발 전 같은 값을 확인했다. 두 확인 사이에 봉인이 바뀌면 운행을 멈춘다.",
+      "concepts": [
+        "화물보안봉인협력상황",
+        "상차책임자",
+        "운송기사",
+        "봉인번호",
+        "차량문"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0944",
+      "type": "context_packet",
+      "split": "train",
+      "text": "위험물운송정보인계상황: 안전관리자는 위험물목록과 취급안내를 운송기사에게 설명했다. 화물 분류와 도로 운전 책임을 연결하되 각각의 판단 범위를 나눈다.",
+      "concepts": [
+        "위험물운송정보인계상황",
+        "안전관리자",
+        "운송기사",
+        "위험물목록",
+        "취급안내"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0945",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송완료검증상황: 기사는 완료사진을 올리고 관제원은 위치기록과 배송 주소를 대조했다. 사진 업로드와 정상 인도 확인을 같은 클릭으로 처리하지 않는다.",
+      "concepts": [
+        "배송완료검증상황",
+        "기사",
+        "관제원",
+        "완료사진",
+        "위치기록"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0946",
+      "type": "context_packet",
+      "split": "train",
+      "text": "미수취연락분담상황: 배송기사는 부재메모를 남기고 상담원은 연락번호로 재방문 가능 시간을 물었다. 현장 방문과 후속 일정 조정이 역할별로 이어진다.",
+      "concepts": [
+        "미수취연락분담상황",
+        "배송기사",
+        "상담원",
+        "부재메모",
+        "연락번호"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0947",
+      "type": "context_packet",
+      "split": "train",
+      "text": "창고청소구역인계상황: 작업조가 빈선반을 확인해 구역을 넘기면 청소담당은 정리 뒤 준비표시를 붙였다. 화물이 없는 상태와 입고 가능한 상태는 다르다.",
+      "concepts": [
+        "창고청소구역인계상황",
+        "작업조",
+        "청소담당",
+        "빈선반",
+        "준비표시"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0948",
+      "type": "context_packet",
+      "split": "train",
+      "text": "화물재포장협업상황: 검수원은 찢어진상자의 내용 상태를 기록하고 포장원은 새포장으로 바꿨다. 겉상자 교체가 내부 상품의 합격 판정을 대신하지 않는다.",
+      "concepts": [
+        "화물재포장협업상황",
+        "검수원",
+        "포장원",
+        "찢어진상자",
+        "새포장"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0949",
+      "type": "context_packet",
+      "split": "train",
+      "text": "차량정비배차연계상황: 정비기사가 차량점검에서 운행 보류를 알리자 배차원은 대체차량에 노선을 옮겼다. 화물 배정은 바뀌어도 배송 주문은 유지된다.",
+      "concepts": [
+        "차량정비배차연계상황",
+        "정비기사",
+        "배차원",
+        "차량점검",
+        "대체차량"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0950",
+      "type": "context_packet",
+      "split": "train",
+      "text": "출고승인업무연계상황: 재고관리자는 예약화물 수량을 확인하고 출고책임자는 승인목록에 서명했다. 상차 준비가 끝나도 승인 전에는 창고 밖으로 보내지 않는다.",
+      "concepts": [
+        "출고승인업무연계상황",
+        "재고관리자",
+        "출고책임자",
+        "예약화물",
+        "승인목록"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-CTH-0951",
+      "type": "context_packet",
+      "split": "train",
+      "text": "국제화물서류협업상황: 서류담당은 통관서류에 화물번호를 적고 창고원은 실제 상자의 표시를 대조했다. 문서와 실물이 일치해야 출고 묶음에 넣는다.",
+      "concepts": [
+        "국제화물서류협업상황",
+        "서류담당",
+        "창고원",
+        "통관서류",
+        "화물번호"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0952",
+      "type": "context_packet",
+      "split": "train",
+      "text": "택배기사구역인계상황: 오전기사는 미배송목록과 차량열쇠를 오후기사에게 넘겼다. 교대 전 완료분과 이후 배송분을 시간으로 나눠 책임을 추적한다.",
+      "concepts": [
+        "택배기사구역인계상황",
+        "오전기사",
+        "오후기사",
+        "미배송목록",
+        "차량열쇠"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-CTH-0953",
+      "type": "context_packet",
+      "split": "train",
+      "text": "창고화재대응협력상황: 안전담당은 대피경로를 안내하고 작업자는 화물구역에서 즉시 빠져나왔다. 재고 이동보다 사람의 대피 확인을 먼저 수행한다.",
+      "concepts": [
+        "창고화재대응협력상황",
+        "안전담당",
+        "작업자",
+        "대피경로",
+        "화물구역"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0954",
+      "type": "context_packet",
+      "split": "train",
+      "text": "분류장오류보고상황: 스캔작업자는 오류코드를 시스템담당에게 알리고 상자를 보류했다. 시스템담당은 원인을 확인해 처리기록을 남긴 뒤 재투입을 안내한다.",
+      "concepts": [
+        "분류장오류보고상황",
+        "스캔작업자",
+        "시스템담당",
+        "오류코드",
+        "처리기록"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0955",
+      "type": "context_packet",
+      "split": "train",
+      "text": "수취인본인확인상황: 배송원은 확인정보를 묻고 수취인이 답한 뒤 인도기록을 만들었다. 이름이 비슷한 사람이 문을 열었다고 바로 건네지 않는다.",
+      "concepts": [
+        "수취인본인확인상황",
+        "배송원",
+        "수취인",
+        "확인정보",
+        "인도기록"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0956",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송클레임조정상황: 고객상담원은 배송불만을 시간과 상태별로 정리하고 물류책임자는 가능한 조치안을 확정했다. 접수 중 제안을 최종 약속으로 말하지 않는다.",
+      "concepts": [
+        "배송클레임조정상황",
+        "고객상담원",
+        "물류책임자",
+        "배송불만",
+        "조치안"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0957",
+      "type": "context_packet",
+      "split": "train",
+      "text": "터미널간이관협력상황: 출발터미널은 이관목록과 차량봉인을 확인해 보냈고 도착터미널은 같은 값을 맞춘 뒤 하역했다. 두 곳의 기록으로 구간을 닫는다.",
+      "concepts": [
+        "터미널간이관협력상황",
+        "출발터미널",
+        "도착터미널",
+        "이관목록",
+        "차량봉인"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0958",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송주소검토분담상황: 주문담당은 주소정보의 누락을 확인하고 노선담당은 해당 배달구역과 차량을 정했다. 주소 입력과 경로 배정이 연결돼야 출고된다.",
+      "concepts": [
+        "배송주소검토분담상황",
+        "주문담당",
+        "노선담당",
+        "주소정보",
+        "배달구역"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "classification",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0959",
+      "type": "context_packet",
+      "split": "train",
+      "text": "파렛트회수협업상황: 배송기사는 빈팔레트를 가져오고 창고관리자는 수량을 세어 회수기록에 더했다. 차량 반납과 창고 자산 복귀를 함께 확인한다.",
+      "concepts": [
+        "파렛트회수협업상황",
+        "배송기사",
+        "창고관리자",
+        "빈팔레트",
+        "회수기록"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "process",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-CTH-0960",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송교육동행상황: 신입기사는 배송목록을 읽고 교육기사는 실제 경로와 인도 절차를 보여 줬다. 동행기록만으로 단독 운행 자격을 확정하지 않는다.",
+      "concepts": [
+        "배송교육동행상황",
+        "신입기사",
+        "교육기사",
+        "배송목록",
+        "동행기록"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-0961",
+      "type": "context_packet",
+      "split": "train",
+      "text": "도착후입고검수상황: 화물차량의 도착시각 뒤 하역완료와 수량 확인을 거쳐 입고승인이 난다. 부지에 들어온 때를 창고 재고 확정 시점으로 쓰지 않는다.",
+      "concepts": [
+        "도착후입고검수상황",
+        "화물차량",
+        "도착시각",
+        "하역완료",
+        "입고승인"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0962",
+      "type": "context_packet",
+      "split": "train",
+      "text": "스캔후분류이동상황: 배송상자는 첫스캔으로 주소가 확인된 뒤 분류결정을 받아 해당 레인이동이 기록된다. 스캔 전에 눈대중으로 보낸 상자는 다시 점검한다.",
+      "concepts": [
+        "스캔후분류이동상황",
+        "배송상자",
+        "첫스캔",
+        "분류결정",
+        "레인이동"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0963",
+      "type": "context_packet",
+      "split": "train",
+      "text": "상차완료후출발상황: 배송차량은 상차완료 뒤 봉인확인을 하고 문을 나갈 때 출발시각을 남긴다. 적재 중인 시간을 운송 중으로 계산하지 않는다.",
+      "concepts": [
+        "상차완료후출발상황",
+        "배송차량",
+        "상차완료",
+        "봉인확인",
+        "출발시각"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0964",
+      "type": "context_packet",
+      "split": "train",
+      "text": "집하예약방문상황: 집하신청 뒤 방문예정이 정해지고 기사도착 후 물건을 받아 회수완료로 바뀐다. 예약 문자만으로 화물이 회수된 것은 아니다.",
+      "concepts": [
+        "집하예약방문상황",
+        "집하신청",
+        "방문예정",
+        "기사도착",
+        "회수완료"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0965",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송실패후재시도상황: 기사 단말에는 첫방문의 부재확인만 남아 있었다. 수취인과 합의한 재방문일에 물건을 건넨 뒤에야 추적 상태를 인도완료로 닫았다.",
+      "concepts": [
+        "배송실패후재시도상황",
+        "첫방문",
+        "부재확인",
+        "재방문일",
+        "인도완료"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0966",
+      "type": "context_packet",
+      "split": "train",
+      "text": "냉장상차전예냉상황: 냉장차량은 예냉시작 뒤 목표온도에 도달하고 나서 화물적재를 시작했다. 빈 차량이 도착했다는 사실만으로 적재 조건이 충족되지 않는다.",
+      "concepts": [
+        "냉장상차전예냉상황",
+        "냉장차량",
+        "예냉시작",
+        "목표온도",
+        "화물적재"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-CTH-0967",
+      "type": "context_packet",
+      "split": "train",
+      "text": "보관기한후반송상황: 미수령화물은 보관기한 동안 연락을 기다리고 연락마감 뒤 반송출고된다. 기한 중에는 판매자에게 돌아간 상태가 아니다.",
+      "concepts": [
+        "보관기한후반송상황",
+        "미수령화물",
+        "보관기한",
+        "연락마감",
+        "반송출고"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0968",
+      "type": "context_packet",
+      "split": "train",
+      "text": "주소변경적용시점상황: 변경접수가 분류마감 전에 이뤄지면 기존주소 대신 새주소 라벨을 붙인다. 이미 차량에 실린 뒤에는 별도 경로 조정이 필요하다.",
+      "concepts": [
+        "주소변경적용시점상황",
+        "기존주소",
+        "변경접수",
+        "분류마감",
+        "새주소"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0969",
+      "type": "context_packet",
+      "split": "train",
+      "text": "화물검수보류해제상황: 검수보류 화물은 추가서류가 도착하고 재확인을 거친 뒤 입고확정된다. 문서 제출 시각과 보류 해제 시각 사이에 판단 단계가 있다.",
+      "concepts": [
+        "화물검수보류해제상황",
+        "검수보류",
+        "추가서류",
+        "재확인",
+        "입고확정"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0970",
+      "type": "context_packet",
+      "split": "train",
+      "text": "터미널출발도착상황: 출발터미널의 출발기록 뒤 도착터미널에서 입차기록을 남긴다. 두 시점 사이 화물은 이동 중 상태다.",
+      "concepts": [
+        "터미널출발도착상황",
+        "출발터미널",
+        "출발기록",
+        "도착터미널",
+        "입차기록"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-CTH-0971",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송완료정산순서상황: 인도서명이 확인돼 완료등록을 한 뒤 운임정산과 기사마감이 이뤄진다. 고객 인도와 내부 회계 종료는 같은 시각이 아니다.",
+      "concepts": [
+        "배송완료정산순서상황",
+        "인도서명",
+        "완료등록",
+        "운임정산",
+        "기사마감"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0972",
+      "type": "context_packet",
+      "split": "train",
+      "text": "반품회수검수순서상황: 고객회수 뒤 터미널입고와 상태검수를 거쳐 판매자반송으로 보낸다. 회수한 즉시 환불 판정이 완료되지는 않는다.",
+      "concepts": [
+        "반품회수검수순서상황",
+        "고객회수",
+        "터미널입고",
+        "상태검수",
+        "판매자반송"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0973",
+      "type": "context_packet",
+      "split": "train",
+      "text": "운송장발행사용시점상황: 운송장생성 뒤 라벨부착과 첫스캔이 있어야 운송개시로 추적된다. 번호가 존재해도 상자가 창고에 남아 있을 수 있다.",
+      "concepts": [
+        "운송장발행사용시점상황",
+        "운송장생성",
+        "라벨부착",
+        "첫스캔",
+        "운송개시"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0974",
+      "type": "context_packet",
+      "split": "train",
+      "text": "차량정비후배차상황: 정비완료 뒤 안전확인과 배차승인을 받아 노선투입된다. 수리 작업이 끝났다는 말만으로 운행 가능 상태를 만들지 않는다.",
+      "concepts": [
+        "차량정비후배차상황",
+        "정비완료",
+        "안전확인",
+        "배차승인",
+        "노선투입"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0975",
+      "type": "context_packet",
+      "split": "train",
+      "text": "분류마감후상차상황: 노선분류가 마감시각에 닫히면 적재목록을 확정하고 상차시작을 기록한다. 마감 뒤 도착한 상자는 다음 운행 묶음으로 보낸다.",
+      "concepts": [
+        "분류마감후상차상황",
+        "노선분류",
+        "마감시각",
+        "적재목록",
+        "상차시작"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0976",
+      "type": "context_packet",
+      "split": "train",
+      "text": "화물예약출고상황: 재고예약을 걸어 둔 상품은 출고일에 피킹완료되고 차량배정을 받는다. 예약 시점과 창고 밖 이동 시점은 구별된다.",
+      "concepts": [
+        "화물예약출고상황",
+        "재고예약",
+        "출고일",
+        "피킹완료",
+        "차량배정"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0977",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송메모확인순서상황: 고객의 요청은 메모전송 뒤 기사수신과 확인표시를 거쳐 현장적용된다. 전송 성공만으로 기사가 읽었다고 보지 않는다.",
+      "concepts": [
+        "배송메모확인순서상황",
+        "메모전송",
+        "기사수신",
+        "확인표시",
+        "현장적용"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0978",
+      "type": "context_packet",
+      "split": "train",
+      "text": "파손신고조사순서상황: 손상발견 뒤 사진등록과 이동 이력검토를 하고 처리결정을 내린다. 발견자의 추측은 조사 완료 전 확정 원인이 아니다.",
+      "concepts": [
+        "파손신고조사순서상황",
+        "손상발견",
+        "사진등록",
+        "이력검토",
+        "처리결정"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0979",
+      "type": "context_packet",
+      "split": "train",
+      "text": "봉인해제하역순서상황: 도착차량은 기록과 봉인대조를 마친 다음 봉인해제하고 하역시작한다. 번호가 다르면 문을 열기 전에 보고한다.",
+      "concepts": [
+        "봉인해제하역순서상황",
+        "도착차량",
+        "봉인대조",
+        "봉인해제",
+        "하역시작"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0980",
+      "type": "context_packet",
+      "split": "train",
+      "text": "재배송주소확인상황: 실패기록이 생긴 뒤 고객연락으로 주소확인을 하고 나서 재배송출발한다. 첫 주소를 검토하지 않은 채 같은 경로를 반복하지 않는다.",
+      "concepts": [
+        "재배송주소확인상황",
+        "실패기록",
+        "고객연락",
+        "주소확인",
+        "재배송출발"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0981",
+      "type": "context_packet",
+      "split": "train",
+      "text": "입고예약도크배정상황: 입고예약 차량이 도착알림을 보내면 빈 도크배정을 받고 하역호출을 기다린다. 예약된 시각만으로 도크 사용이 시작되지 않는다.",
+      "concepts": [
+        "입고예약도크배정상황",
+        "입고예약",
+        "도착알림",
+        "도크배정",
+        "하역호출"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0982",
+      "type": "context_packet",
+      "split": "train",
+      "text": "합배송완료판정상황: 첫주문품과 두번째주문품이 모두 모여 합포장완료된 뒤 출고등록을 한다. 한 주문만 준비된 상태에서는 묶음이 닫히지 않는다.",
+      "concepts": [
+        "합배송완료판정상황",
+        "첫주문품",
+        "두번째주문품",
+        "합포장완료",
+        "출고등록"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "part_of"
+      ]
+    },
+    {
+      "id": "S1-CTH-0983",
+      "type": "context_packet",
+      "split": "train",
+      "text": "운송온도이탈조치상황: 정상온도에서 이탈발생이 기록되면 관리자확인 뒤 화물을 격리도착 구역으로 보낸다. 경보가 잠시 꺼져도 이탈 이력은 유지된다.",
+      "concepts": [
+        "운송온도이탈조치상황",
+        "정상온도",
+        "이탈발생",
+        "관리자확인",
+        "격리도착"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0984",
+      "type": "context_packet",
+      "split": "train",
+      "text": "수취인변경마감상황: 변경요청이 인도직전보다 앞서 확인되면 원수취인을 새수취인으로 바꾼다. 기사 앞에서 말한 이름만으로 인도 대상을 수정하지 않는다.",
+      "concepts": [
+        "수취인변경마감상황",
+        "원수취인",
+        "변경요청",
+        "인도직전",
+        "새수취인"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0985",
+      "type": "context_packet",
+      "split": "train",
+      "text": "창고실사이동정지상황: 실사시작 공지가 나오면 대상 구역에 이동정지 표찰을 건다. 계수자가 수량확정을 마쳐 표찰을 회수한 시점부터 작업재개가 허용된다.",
+      "concepts": [
+        "창고실사이동정지상황",
+        "실사시작",
+        "이동정지",
+        "수량확정",
+        "작업재개"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0986",
+      "type": "context_packet",
+      "split": "train",
+      "text": "택배함보관알림상황: 배송물을 택배함입고한 뒤 비밀번호전송을 하고 문이 열리면 수취확인으로 바뀐다. 문자 발송은 실제 회수와 다른 단계다.",
+      "concepts": [
+        "택배함보관알림상황",
+        "배송물",
+        "택배함입고",
+        "비밀번호전송",
+        "수취확인"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-CTH-0987",
+      "type": "context_packet",
+      "split": "train",
+      "text": "교대차량인계순서상황: 오전기사가 차량점검을 기록하고 인계서명을 한 뒤 오후기사가 열쇠를 받았다. 서명 전 발생한 문제는 앞 근무 기록에 남긴다.",
+      "concepts": [
+        "교대차량인계순서상황",
+        "오전기사",
+        "차량점검",
+        "인계서명",
+        "오후기사"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-CTH-0988",
+      "type": "context_packet",
+      "split": "train",
+      "text": "상차취소재고복귀상황: 차량취소가 생겨 상차예정품을 하역반환하고 위치 확인 뒤 재고복귀 처리했다. 차량에서 내린 즉시 가용 수량이 되는 것은 아니다.",
+      "concepts": [
+        "상차취소재고복귀상황",
+        "상차예정품",
+        "차량취소",
+        "하역반환",
+        "재고복귀"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0989",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송예정시간갱신상황: 교통지연이 확인되자 초기예정을 새도착예정으로 바꾸고 고객알림을 보냈다. 처음 안내된 시간은 현재 추정값이 아니다.",
+      "concepts": [
+        "배송예정시간갱신상황",
+        "초기예정",
+        "교통지연",
+        "새도착예정",
+        "고객알림"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-CTH-0990",
+      "type": "context_packet",
+      "split": "train",
+      "text": "출고마감다음회차상황: 피킹완료가 출고마감 뒤 이뤄진 상자는 대기구역에 두고 다음차량에 배정했다. 준비 완료와 당일 출발은 동일하지 않다.",
+      "concepts": [
+        "출고마감다음회차상황",
+        "피킹완료",
+        "출고마감",
+        "대기구역",
+        "다음차량"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0991",
+      "type": "context_packet",
+      "split": "train",
+      "text": "하역도크수량제약상황: 하역도크보다 도착차량이 많아 입고관리자는 예약 순서대로 배정하고 나머지를 대기구역에 세웠다. 부지 도착이 곧 하역 시작은 아니다.",
+      "concepts": [
+        "하역도크수량제약상황",
+        "입고관리자",
+        "도착차량",
+        "하역도크",
+        "대기구역"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0992",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송차량용량배분상황: 화물상자가 차량용량을 넘자 배차원은 납기와 지역을 보고 일부를 다음노선으로 옮겼다. 뒤로 간 상자의 주문 상태는 유지된다.",
+      "concepts": [
+        "배송차량용량배분상황",
+        "배차원",
+        "화물상자",
+        "차량용량",
+        "다음노선"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-CTH-0993",
+      "type": "context_packet",
+      "split": "train",
+      "text": "지게차한대공유상황: 입고팀과 출고팀은 공용지게차 사용표를 나눠 도착 시간과 출발 시간에 맞췄다. 기다리는 팀은 서류와 팔레트 위치를 먼저 준비한다.",
+      "concepts": [
+        "지게차한대공유상황",
+        "입고팀",
+        "출고팀",
+        "공용지게차",
+        "사용표"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-CTH-0994",
+      "type": "context_packet",
+      "split": "train",
+      "text": "냉장창고공간상황: 저온선반이 가득 차 일부 냉장화물을 임시냉장차에 두고 위치기록을 갱신했다. 창고 밖이지만 온도 조건을 유지한 보관이다.",
+      "concepts": [
+        "냉장창고공간상황",
+        "냉장화물",
+        "저온선반",
+        "임시냉장차",
+        "위치기록"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0995",
+      "type": "context_packet",
+      "split": "train",
+      "text": "분류레인혼잡조정상황: 주레인에 배송상자가 몰리자 분류관리자는 같은 목적지의 우회레인을 열었다. 경로가 달라도 최종 분류 구역은 같다.",
+      "concepts": [
+        "분류레인혼잡조정상황",
+        "분류관리자",
+        "배송상자",
+        "주레인",
+        "우회레인"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-0996",
+      "type": "context_packet",
+      "split": "train",
+      "text": "스캐너수량부족상황: 바코드스캐너 수가 적어 분류원은 대기상자를 수기목록에 적고 기기가 비면 순서대로 읽었다. 수기 기록을 운송 개시로 보지 않는다.",
+      "concepts": [
+        "스캐너수량부족상황",
+        "분류원",
+        "바코드스캐너",
+        "수기목록",
+        "대기상자"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-0997",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송기사인력배치상황: 관제원은 가용기사의 근무 시간을 보고 장거리노선과 근거리노선에 나눠 배치했다. 노선 길이와 배송 중요도를 같은 값으로 취급하지 않는다.",
+      "concepts": [
+        "배송기사인력배치상황",
+        "관제원",
+        "가용기사",
+        "장거리노선",
+        "근거리노선"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0998",
+      "type": "context_packet",
+      "split": "train",
+      "text": "포장완충재배분상황: 포장원은 남은 완충재를 유리화물에 우선 쓰고 의류상자는 규격 봉투로 보호했다. 재료 배분은 파손 위험 차이를 따른다.",
+      "concepts": [
+        "포장완충재배분상황",
+        "포장원",
+        "완충재",
+        "유리화물",
+        "의류상자"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-0999",
+      "type": "context_packet",
+      "split": "train",
+      "text": "보관선반용량상황: 보관선반이 차자 창고원은 미수령화물을 잠금 가능한 바닥구획에 두고 칸 번호를 남겼다. 위치 변경이 수취 기한 변경은 아니다.",
+      "concepts": [
+        "보관선반용량상황",
+        "창고원",
+        "미수령화물",
+        "보관선반",
+        "바닥구획"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-1000",
+      "type": "context_packet",
+      "split": "train",
+      "text": "택배함칸부족상황: 택배함이 모두 차 있어 배송기사는 수취인연락 후 문앞인도 가능 여부를 확인했다. 동의 없이 임의 장소에 두지 않는다.",
+      "concepts": [
+        "택배함칸부족상황",
+        "배송기사",
+        "택배함",
+        "문앞인도",
+        "수취인연락"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1001",
+      "type": "context_packet",
+      "split": "train",
+      "text": "운송팔레트순환상황: 공용팔레트가 부족해 터미널은 빈팔레트를 회수차량으로 먼저 돌려보냈다. 회수 전에는 새 화물 묶음을 같은 수만큼 만들 수 없다.",
+      "concepts": [
+        "운송팔레트순환상황",
+        "터미널",
+        "공용팔레트",
+        "빈팔레트",
+        "회수차량"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-CTH-1002",
+      "type": "context_packet",
+      "split": "train",
+      "text": "출고장공간제약상황: 출고장이 붐비자 출고책임자는 상차대기품 일부를 임시구역에 놓고 차량별 표시를 붙였다. 임시 배치된 화물도 출고 승인 상태를 유지한다.",
+      "concepts": [
+        "출고장공간제약상황",
+        "출고책임자",
+        "상차대기품",
+        "출고장",
+        "임시구역"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-1003",
+      "type": "context_packet",
+      "split": "train",
+      "text": "냉장차량부족상황: 냉장차량이 부족해 배차담당은 저온화물의 출발을 늦추고 일반차량으로 임의 대체하지 않았다. 차량 조건이 배송 시점을 제한한다.",
+      "concepts": [
+        "냉장차량부족상황",
+        "배차담당",
+        "냉장차량",
+        "일반차량",
+        "저온화물"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-1004",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송시간창배분상황: 오전시간창이 차자 상담원은 예약고객에게 오후시간창이나 다른 날을 제안했다. 희망을 접수한 것만으로 오전 배정이 확정되지 않는다.",
+      "concepts": [
+        "배송시간창배분상황",
+        "상담원",
+        "오전시간창",
+        "오후시간창",
+        "예약고객"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-CTH-1005",
+      "type": "context_packet",
+      "split": "train",
+      "text": "운송장프린터대기상황: 운송장프린터 한 대가 멈춰 출고원은 라벨목록과 포장완료품을 순서대로 쌓았다. 인쇄 대기 상자를 이미 출발한 것으로 등록하지 않는다.",
+      "concepts": [
+        "운송장프린터대기상황",
+        "출고원",
+        "운송장프린터",
+        "라벨목록",
+        "포장완료품"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-1006",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송회선처리제약상황: 전화회선이 가득 차자 고객센터는 재배송요청을 온라인접수로도 받았다. 채널이 달라도 동일 주문의 요청으로 연결한다.",
+      "concepts": [
+        "배송회선처리제약상황",
+        "고객센터",
+        "전화회선",
+        "재배송요청",
+        "온라인접수"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1007",
+      "type": "context_packet",
+      "split": "train",
+      "text": "상차인원부족상황: 상차원이 적어 현장반장은 출발 시간이 임박한 긴급차량에 먼저 배치하고 일반차량은 다음 순서로 뒀다. 대기는 운행 취소가 아니다.",
+      "concepts": [
+        "상차인원부족상황",
+        "현장반장",
+        "상차원",
+        "긴급차량",
+        "일반차량"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-1008",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배터리충전기공유상황: 충전기가 하나라 창고장비 중 전동카트의 낮은 배터리를 먼저 연결하고 예비배터리는 교대 사용했다. 충전 중 장비는 사용 가능 목록에서 뺀다.",
+      "concepts": [
+        "배터리충전기공유상황",
+        "창고장비",
+        "충전기",
+        "전동카트",
+        "예비배터리"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "part_of"
+      ]
+    },
+    {
+      "id": "S1-CTH-1009",
+      "type": "context_packet",
+      "split": "train",
+      "text": "검수대면적제약상황: 검수대에 대형화물을 올린 동안 검수원은 소형상자를 번호순 바구니에 대기시켰다. 도크에 내려온 모든 물품이 동시에 검사되지는 않는다.",
+      "concepts": [
+        "검수대면적제약상황",
+        "검수원",
+        "대형화물",
+        "소형상자",
+        "검수대"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-1010",
+      "type": "context_packet",
+      "split": "train",
+      "text": "운송봉인재고부족상황: 차량관리자는 봉인띠의 예비수량을 확인해 당일 출발차량에 배정했다. 봉인 없이 문만 닫은 차는 출발 승인하지 않는다.",
+      "concepts": [
+        "운송봉인재고부족상황",
+        "차량관리자",
+        "봉인띠",
+        "출발차량",
+        "예비수량"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-1011",
+      "type": "context_packet",
+      "split": "train",
+      "text": "반송구역용량조정상황: 판매자별칸이 가득 차 반송담당은 회수화물을 임시팔레트에 나눠 놓고 수신처 표지를 붙였다. 임시 위치에서도 목적지 분류는 유지된다.",
+      "concepts": [
+        "반송구역용량조정상황",
+        "반송담당",
+        "회수화물",
+        "판매자별칸",
+        "임시팔레트"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "classification",
+        "part_of"
+      ]
+    },
+    {
+      "id": "S1-CTH-1012",
+      "type": "context_packet",
+      "split": "train",
+      "text": "위험물차량배정상황: 허가차량 수가 적어 배차원은 위험화물에 우선 배정하고 일반화물은 다른 차량으로 보냈다. 위험 분류를 무시한 혼재는 하지 않는다.",
+      "concepts": [
+        "위험물차량배정상황",
+        "배차원",
+        "허가차량",
+        "위험화물",
+        "일반화물"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-1013",
+      "type": "context_packet",
+      "split": "train",
+      "text": "주소검토인력제약상황: 검토직원이 적어 노선팀은 불완전주소를 먼저 확인하고 정상주소는 자동 분류에 맡겼다. 검토 순서가 배송 우선순위 전체를 뜻하지 않는다.",
+      "concepts": [
+        "주소검토인력제약상황",
+        "노선팀",
+        "검토직원",
+        "불완전주소",
+        "정상주소"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-1014",
+      "type": "context_packet",
+      "split": "train",
+      "text": "차량주차면부족상황: 주차면이 차자 터미널관리자는 도착트럭 일부를 외부대기장으로 안내했다. 건물 밖에 있어도 도착 순번은 시스템에 유지된다.",
+      "concepts": [
+        "차량주차면부족상황",
+        "터미널관리자",
+        "도착트럭",
+        "주차면",
+        "외부대기장"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1015",
+      "type": "context_packet",
+      "split": "train",
+      "text": "인도확인단말공유상황: 배송가팀이 인도단말을 쓰는 동안 배송나팀은 종이확인서에 서명을 받고 복귀 후 입력했다. 입력 지연과 실제 수취 시각을 나눈다.",
+      "concepts": [
+        "인도확인단말공유상황",
+        "배송가팀",
+        "배송나팀",
+        "인도단말",
+        "종이확인서"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-CTH-1016",
+      "type": "context_packet",
+      "split": "train",
+      "text": "보호덮개수량제약상황: 방수덮개가 부족해 상차원은 노출화물에 먼저 씌우고 실내적재품은 차량 안쪽에 배치했다. 보호 방식은 비 노출 정도에 따라 달라진다.",
+      "concepts": [
+        "보호덮개수량제약상황",
+        "상차원",
+        "방수덮개",
+        "노출화물",
+        "실내적재품"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-1017",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송경로시간제약상황: 운송기사는 남은근무시간을 보고 가까운정차지를 마친 뒤 원거리정차지는 다음 기사에게 인계했다. 미방문 화물을 배송 실패로 확정하지 않는다.",
+      "concepts": [
+        "배송경로시간제약상황",
+        "운송기사",
+        "남은근무시간",
+        "원거리정차지",
+        "가까운정차지"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-CTH-1018",
+      "type": "context_packet",
+      "split": "train",
+      "text": "화물엘리베이터공유상황: 입고층과 출고층은 화물엘리베이터의 운행예약을 시간대로 나눴다. 기다리는 층은 팔레트 정렬을 먼저 끝낸다.",
+      "concepts": [
+        "화물엘리베이터공유상황",
+        "입고층",
+        "출고층",
+        "화물엘리베이터",
+        "운행예약"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-CTH-1019",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송문자발송량제약상황: 알림시스템의 발송한도가 가까워 완료문자를 우선 보내고 예정문자는 묶음 전송으로 돌렸다. 문자 지연이 배송 상태 자체를 바꾸지는 않는다.",
+      "concepts": [
+        "배송문자발송량제약상황",
+        "알림시스템",
+        "발송한도",
+        "완료문자",
+        "예정문자"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-1020",
+      "type": "context_packet",
+      "split": "train",
+      "text": "포장테이블순환상황: 포장일조와 포장이조는 공용테이블의 작업표를 나눠 서로 다른 시간에 사용했다. 자리를 기다리는 조는 운송장과 완충재를 준비한다.",
+      "concepts": [
+        "포장테이블순환상황",
+        "포장일조",
+        "포장이조",
+        "공용테이블",
+        "작업표"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-CTH-1021",
+      "type": "context_packet",
+      "split": "train",
+      "text": "두상자지시복원상황: 서울상자는 왼쪽, 부산상자는 오른쪽 레인에 있다. 분류원이 오른쪽 물건을 들며 “이것부터 싣자”고 했으므로 이것은 부산상자다.",
+      "concepts": [
+        "두상자지시복원상황",
+        "서울상자",
+        "부산상자",
+        "분류원",
+        "이것"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1022",
+      "type": "context_packet",
+      "split": "train",
+      "text": "차량두대후자상황: 배차표에는 일호차 다음에 이호차가 적혔다. 후자의차량에 냉장 화물을 배정한다는 지시는 이호차를 가리킨다.",
+      "concepts": [
+        "차량두대후자상황",
+        "일호차",
+        "이호차",
+        "배차표",
+        "후자의차량"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1023",
+      "type": "context_packet",
+      "split": "train",
+      "text": "기사대명사복원상황: 민수기사는 상자를 옮겼고 지연기사는 인도사진을 올렸다. “그녀가 완료를 등록함”에서 그녀는 지연기사다.",
+      "concepts": [
+        "기사대명사복원상황",
+        "민수기사",
+        "지연기사",
+        "인도사진",
+        "그녀"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1024",
+      "type": "context_packet",
+      "split": "train",
+      "text": "선반위치참조상황: 화물상자는 입고선반에서 검수를 마치고 출고선반으로 옮겨졌다. “그곳에서 상차를 기다림”의 그곳은 현재 위치인 출고선반이다.",
+      "concepts": [
+        "선반위치참조상황",
+        "입고선반",
+        "출고선반",
+        "화물상자",
+        "그곳"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-1025",
+      "type": "context_packet",
+      "split": "train",
+      "text": "운송장앞문서상황: 기존운송장이 훼손돼 재발행운송장을 붙였다. 작업자가 새문서의 바코드를 읽으라고 한 대상은 재발행운송장이다.",
+      "concepts": [
+        "운송장앞문서상황",
+        "기존운송장",
+        "재발행운송장",
+        "작업자",
+        "새문서"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1026",
+      "type": "context_packet",
+      "split": "train",
+      "text": "두주소둘째항목상황: 배송기록은 발송주소와 수취주소를 차례로 보여 준다. 차량이 향할 둘째주소는 수취주소다.",
+      "concepts": [
+        "두주소둘째항목상황",
+        "발송주소",
+        "수취주소",
+        "배송기록",
+        "둘째주소"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1027",
+      "type": "context_packet",
+      "split": "train",
+      "text": "수취인소유참조상황: 민지가 배송물을 주문했고 현수가 대신 수령했다. “그의것은 아니지만 위임받아 받음”에서 그는 현수를 뜻한다.",
+      "concepts": [
+        "수취인소유참조상황",
+        "민지",
+        "현수",
+        "배송물",
+        "그의것"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1028",
+      "type": "context_packet",
+      "split": "train",
+      "text": "팔레트두개지시상황: 입고팔레트는 도크 앞, 반송팔레트는 보류 구역에 있다. 창고원이 보류 쪽을 가리킨 저것은 반송팔레트다.",
+      "concepts": [
+        "팔레트두개지시상황",
+        "입고팔레트",
+        "반송팔레트",
+        "창고원",
+        "저것"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1029",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송시점그때복원상황: 위치로그에는 출발시각과 도착시각이 따로 있다. “그때 수취인에게 연락함”의 그때는 도착시각이다.",
+      "concepts": [
+        "배송시점그때복원상황",
+        "출발시각",
+        "도착시각",
+        "위치로그",
+        "그때"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "process",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-CTH-1030",
+      "type": "context_packet",
+      "split": "train",
+      "text": "두레인앞의것상황: 분류표는 동부레인과 서부레인을 순서대로 적는다. 앞의것에 서울 상자를 보낸다는 문장은 동부레인을 지칭한다.",
+      "concepts": [
+        "두레인앞의것상황",
+        "동부레인",
+        "서부레인",
+        "분류표",
+        "앞의것"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1031",
+      "type": "context_packet",
+      "split": "train",
+      "text": "직원두명주체상황: 상차원은 차량문을 열었고 검수원은 화물목록을 대조했다. “그가 수량 차이를 기록함”에서 그는 검수원이다.",
+      "concepts": [
+        "직원두명주체상황",
+        "상차원",
+        "검수원",
+        "화물목록",
+        "그가"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1032",
+      "type": "context_packet",
+      "split": "train",
+      "text": "보관상태후자복원상황: 창고화면에는 입고대기 뒤 출고대기가 표시된다. 차량 배정을 기다리는 후자는 출고대기다.",
+      "concepts": [
+        "보관상태후자복원상황",
+        "입고대기",
+        "출고대기",
+        "창고화면",
+        "후자"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1033",
+      "type": "context_packet",
+      "split": "train",
+      "text": "사진두장참조상황: 배송폴더에 상차사진과 인도사진이 시간순으로 저장됐다. 두번째사진을 고객 확인 자료로 쓴다는 말은 인도사진을 뜻한다.",
+      "concepts": [
+        "사진두장참조상황",
+        "상차사진",
+        "인도사진",
+        "배송폴더",
+        "두번째사진"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1034",
+      "type": "context_packet",
+      "split": "train",
+      "text": "도크이곳복원상황: 일번도크에는 하역 차량이 있고 이번도크는 비었다. 배정원이 빈 자리를 짚은 이곳은 이번도크다.",
+      "concepts": [
+        "도크이곳복원상황",
+        "일번도크",
+        "이번도크",
+        "배정원",
+        "이곳"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-1035",
+      "type": "context_packet",
+      "split": "train",
+      "text": "반송수취주체복원상황: 배송기사는 반송상자를 가져왔고 판매자직원은 인수서에 서명했다. “그사람이 내용물을 확인함”에서 그사람은 판매자직원이다.",
+      "concepts": [
+        "반송수취주체복원상황",
+        "배송기사",
+        "판매자직원",
+        "반송상자",
+        "그사람"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1036",
+      "type": "context_packet",
+      "split": "train",
+      "text": "온도값나중값상황: 운송일지는 출발온도와 도착온도를 순서대로 기록한다. 나중값을 입고 검사에 쓴다는 지시는 도착온도다.",
+      "concepts": [
+        "온도값나중값상황",
+        "출발온도",
+        "도착온도",
+        "운송일지",
+        "나중값"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-CTH-1037",
+      "type": "context_packet",
+      "split": "train",
+      "text": "차량문앞뒤참조상황: 앞문은 운전석에 있고 뒷문에는 봉인띠가 붙었다. 관리자가 봉인을 확인하라며 말한 그문은 뒷문이다.",
+      "concepts": [
+        "차량문앞뒤참조상황",
+        "앞문",
+        "뒷문",
+        "봉인띠",
+        "그문"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1038",
+      "type": "context_packet",
+      "split": "train",
+      "text": "두노선지시복원상황: 배차원은 직행노선과 경유노선을 차례로 설명했다. 첫노선에 긴급 화물을 싣는다는 지시는 직행노선을 선택한다.",
+      "concepts": [
+        "두노선지시복원상황",
+        "직행노선",
+        "경유노선",
+        "배차원",
+        "첫노선"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1039",
+      "type": "context_packet",
+      "split": "train",
+      "text": "화물전후상태상황: 스캔화면은 미분류화물을 처리한 뒤 분류완료화물로 바꿨다. 나중상태의 상자만 상차 구역으로 보낸다.",
+      "concepts": [
+        "화물전후상태상황",
+        "미분류화물",
+        "분류완료화물",
+        "스캔화면",
+        "나중상태"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-CTH-1040",
+      "type": "context_packet",
+      "split": "train",
+      "text": "두수취인참조상황: 인도기록에는 원수취인과 대리수취인이 함께 적혔다. 후자의사람이 서명했다는 말은 대리수취인을 가리킨다.",
+      "concepts": [
+        "두수취인참조상황",
+        "원수취인",
+        "대리수취인",
+        "인도기록",
+        "후자의사람"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1041",
+      "type": "context_packet",
+      "split": "train",
+      "text": "위치표아래칸상황: 위치표의 위 행에는 삼층선반, 아래 행에는 사층선반이 있다. 아래칸에서 상자를 찾으라는 지시는 사층선반이다.",
+      "concepts": [
+        "위치표아래칸상황",
+        "삼층선반",
+        "사층선반",
+        "위치표",
+        "아래칸"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1042",
+      "type": "context_packet",
+      "split": "train",
+      "text": "운송사둘째회사상황: 계약목록에는 가운송사 뒤에 나운송사가 적혔다. 둘째회사에 섬 지역 배송을 맡긴다는 문장은 나운송사를 뜻한다.",
+      "concepts": [
+        "운송사둘째회사상황",
+        "가운송사",
+        "나운송사",
+        "계약목록",
+        "둘째회사"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1043",
+      "type": "context_packet",
+      "split": "train",
+      "text": "상차도구후자복원상황: 작업자는 손수레와 지게차를 준비했다. 무거운 팔레트를 드는 후자의도구는 지게차다.",
+      "concepts": [
+        "상차도구후자복원상황",
+        "손수레",
+        "지게차",
+        "작업자",
+        "후자의도구"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "function",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1044",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배달메모이요청상황: 고객메모에는 문앞보관을 지우고 직접인도를 새로 적었다. 기사가 현재 문구를 가리킨 이요청은 직접인도다.",
+      "concepts": [
+        "배달메모이요청상황",
+        "문앞보관",
+        "직접인도",
+        "고객메모",
+        "이요청"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-CTH-1045",
+      "type": "context_packet",
+      "split": "train",
+      "text": "터미널앞장소상황: 이동경로는 중간터미널을 거쳐 최종터미널로 이어진다. 앞장소에서 환적한다는 말은 중간터미널을 뜻한다.",
+      "concepts": [
+        "터미널앞장소상황",
+        "중간터미널",
+        "최종터미널",
+        "이동경로",
+        "앞장소"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-CTH-1046",
+      "type": "context_packet",
+      "split": "train",
+      "text": "화물번호이항목상황: 출고표에는 백번화물 아래 백일번화물이 있다. 담당자가 아래 행을 선택한 이항목은 백일번화물이다.",
+      "concepts": [
+        "화물번호이항목상황",
+        "백번화물",
+        "백일번화물",
+        "출고표",
+        "이항목"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1047",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송기사그들상황: 오전기사는 미배송목록을 넘기고 오후기사는 남은 주소를 방문했다. “그들이 완료함”의 그들은 오후기사 쪽을 가리킨다.",
+      "concepts": [
+        "배송기사그들상황",
+        "오전기사",
+        "오후기사",
+        "미배송목록",
+        "그들"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1048",
+      "type": "context_packet",
+      "split": "train",
+      "text": "상자색상지시복원상황: 노란상자는 합격 구역에, 파란상자는 보류 구역에 있다. 검수자가 보류 쪽을 가리킨 저색상은 파란상자다.",
+      "concepts": [
+        "상자색상지시복원상황",
+        "노란상자",
+        "파란상자",
+        "검수자",
+        "저색상"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1049",
+      "type": "context_packet",
+      "split": "train",
+      "text": "배송기록첫사건상황: 추적화면은 집하완료를 먼저, 터미널도착을 다음에 보여 준다. 첫사건이 발생한 장소는 발송인 근처다.",
+      "concepts": [
+        "배송기록첫사건상황",
+        "집하완료",
+        "터미널도착",
+        "추적화면",
+        "첫사건"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-CTH-1050",
+      "type": "context_packet",
+      "split": "train",
+      "text": "두차량열쇠참조상황: 일호차열쇠는 왼쪽 고리, 이호차열쇠는 오른쪽 고리에 있다. 배차원이 오른쪽을 집은 그열쇠는 이호차열쇠다.",
+      "concepts": [
+        "두차량열쇠참조상황",
+        "일호차열쇠",
+        "이호차열쇠",
+        "배차원",
+        "그열쇠"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "classification"
+      ]
+    }
+  ]
+}

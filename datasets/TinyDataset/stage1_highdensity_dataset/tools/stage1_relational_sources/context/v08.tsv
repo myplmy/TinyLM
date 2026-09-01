@@ -1,0 +1,158 @@
+# family	대중교통의 승차·환승·지연·우회·도착 상황
+# axes	승객, 노선, 정류장, 시간, 연결편, 운행 상태
+# columns	concepts	relations	other_category	logic_pattern	directly_authored_text
+# 001~030 승객·노선·정류장·운행 상태의 원인 맥락 추적
+버스승차기록상황|승객|교통카드|승차정류장|승차시각	other,process,state,attribute	causal_context	entity_tracking	버스승차기록상황: 승객이 승차정류장에서 교통카드를 찍자 승차시각이 기록됐다. 정류장에 도착한 때와 차량에 탄 때는 다를 수 있다.
+지하철환승추적상황|이용자|일호선|삼호선|환승통로	other,process,state,classification	causal_context	entity_tracking	지하철환승추적상황: 이용자는 일호선에서 내려 환승통로를 지나 삼호선 승강장으로 갔다. 개찰구를 나가지 않았으므로 여행은 환승 중으로 이어진다.
+버스지연안내상황|운행센터|도착예정|교통정체|새예정시각	other,process,state,attribute	causal_context	entity_tracking	버스지연안내상황: 운행센터는 교통정체를 확인해 도착예정을 새예정시각으로 바꿨다. 처음 표시된 값은 현재 예측이 아니다.
+우회노선정류장상황|버스기사|기존경로|우회노선|임시정류장	other,process,state,contrast	causal_context	entity_tracking	우회노선정류장상황: 버스기사는 도로 통제로 기존경로를 벗어나 우회노선을 따라 임시정류장에 섰다. 정규 정류장을 지나지 않아도 운행 취소는 아니다.
+종점하차확인상황|승객|종점|하차태그|운행종료	other,process,state,boundary	causal_context	entity_tracking	종점하차확인상황: 승객은 종점에서 내리며 하차태그를 했고 차량은 운행종료 표시로 바뀌었다. 차량 도착과 개별 승객의 하차 기록을 나눈다.
+막차연결편상황|여행자|막차|도착승강장|연결버스	other,process,state,function	causal_context	entity_tracking	막차연결편상황: 여행자는 막차에서 내려 도착승강장의 안내를 보고 연결버스 정류장으로 이동했다. 열차 여정 종료와 전체 이동 완료는 같지 않다.
+승강장변경추적상황|역무원|기존승강장|변경승강장|안내판	other,process,state,boundary	causal_context	entity_tracking	승강장변경추적상황: 역무원은 안내판에서 기존승강장을 변경승강장으로 고쳤다. 먼저 온 승객에게도 방송으로 새 위치를 알렸다.
+교통카드잔액부족상황|승객|교통카드|잔액부족|충전기	other,process,state,boundary	causal_context	entity_tracking	교통카드잔액부족상황: 승객의 교통카드에 잔액부족이 표시돼 개찰이 멈췄고 충전기에서 금액을 보충했다. 역 안에 들어가지 못한 것은 노선 운휴 때문이 아니다.
+열차편성교체상황|운행관제|기존열차|대체열차|출발번호	other,process,state,boundary	causal_context	entity_tracking	열차편성교체상황: 운행관제는 기존열차의 점검 때문에 대체열차에 같은 출발번호를 배정했다. 차량은 달라져도 예정된 운행편은 이어진다.
+정류장통과기록상황|버스|중간정류장|위치신호|도착목록	other,process,state,function	causal_context	entity_tracking	정류장통과기록상황: 버스의 위치신호가 중간정류장을 지나자 도착목록의 다음 정류장이 갱신됐다. 화면 통과가 모든 승객의 하차를 뜻하지 않는다.
+승차권좌석배정상황|이용객|승차권|좌석번호|탑승열차	other,process,state,classification	causal_context	entity_tracking	승차권좌석배정상황: 이용객은 탑승열차와 좌석번호가 적힌 승차권을 발급받았다. 표 발급은 실제 승차 완료가 아니라 자리 예약 상태다.
+노선운휴표시상황|교통기관|운휴노선|대체교통|공지화면	other,process,state,contrast	causal_context	entity_tracking	노선운휴표시상황: 교통기관은 운휴노선을 공지화면에 표시하고 대체교통 이용 경로를 안내했다. 차량이 보이지 않는 이유가 단순 지연이 아닌 운휴다.
+환승할인적용상황|승객|첫교통편|환승시각|할인기록	other,process,state,attribute	causal_context	entity_tracking	환승할인적용상황: 승객은 첫교통편에서 내린 뒤 정해진 환승시각 안에 다음 차량을 타 할인기록을 받았다. 두 결제의 금액이 독립 요금처럼 보이지 않는다.
+버스회차이동상황|운전기사|종점정류장|회차구간|반대방향출발	other,process,state,function	causal_context	entity_tracking	버스회차이동상황: 운전기사는 종점정류장에서 승객을 내리고 회차구간을 돌아 반대방향출발을 준비했다. 같은 차량이라도 운행 방향이 바뀐다.
+열차지연증명상황|승객|지연열차|지연시간|증명서	other,process,state,attribute	causal_context	entity_tracking	열차지연증명상황: 승객은 지연열차의 실제 지연시간이 적힌 증명서를 받았다. 예정 시각과 도착 시각의 차이가 문서 근거다.
+정류장폐쇄우회상황|시내버스|폐쇄정류장|임시승차점|안내표지	other,process,state,boundary	causal_context	entity_tracking	정류장폐쇄우회상황: 시내버스는 폐쇄정류장 대신 안내표지가 있는 임시승차점에 섰다. 원래 표지에 차량이 안 와도 노선 전체가 사라진 것은 아니다.
+분실승차권재발급상황|여행객|분실승차권|예약번호|재발급표	other,process,state,boundary	causal_context	entity_tracking	분실승차권재발급상황: 여행객은 예약번호를 확인받고 분실승차권 대신 재발급표를 받았다. 종이는 바뀌어도 같은 여행 예약을 가리킨다.
+버스혼잡도갱신상황|차량센서|탑승인원|혼잡도표시|승객앱	other,process,state,attribute	causal_context	entity_tracking	버스혼잡도갱신상황: 차량센서가 탑승인원을 세어 혼잡도표시를 승객앱에 보냈다. 표시 시각 이후 사람이 내리면 실제 상태가 달라질 수 있다.
+환승통로폐쇄상황|역사관리자|환승통로|공사구역|대체동선	other,process,state,function	causal_context	entity_tracking	환승통로폐쇄상황: 역사관리자는 공사구역의 환승통로를 막고 대체동선을 안내했다. 거리가 늘어도 두 노선 사이 환승은 가능하다.
+정기권사용기록상황|통근자|정기권|개찰시각|유효구간	other,process,state,attribute	causal_context	entity_tracking	정기권사용기록상황: 통근자는 정기권으로 개찰하며 개찰시각과 유효구간 확인을 받았다. 카드 소지 자체가 당일 승차 기록은 아니다.
+도착홈변경상황|열차|원래도착홈|변경홈|역내방송	other,process,state,boundary	causal_context	entity_tracking	도착홈변경상황: 열차는 선로 사정으로 원래도착홈 대신 변경홈에 들어왔고 역내방송이 이를 알렸다. 도착역은 같아도 내리는 위치가 달라진다.
+승객호출버스정차상황|승객|요청정류장|하차벨|버스기사	other,process,state,function	causal_context	entity_tracking	승객호출버스정차상황: 승객이 요청정류장 전에 하차벨을 누르자 버스기사가 정차 준비를 했다. 버튼 입력과 실제 문이 열린 시점은 구별된다.
+열차문고장차량이동상황|승객|문고장차량|옆칸|안내방송	other,process,state,boundary	causal_context	entity_tracking	열차문고장차량이동상황: 안내방송은 문고장차량의 승객을 옆칸으로 이동시켰다. 한 칸을 비운 것이 전체 열차 운행 중단은 아니다.
+노선번호오인정정상황|승객|비슷한버스|목적노선|정류장안내	other,process,state,boundary	causal_context	entity_tracking	노선번호오인정정상황: 승객은 비슷한버스에 타려다 정류장안내를 보고 목적노선이 아님을 확인했다. 승차 전 오류를 고쳐 잘못된 이동 기록은 생기지 않았다.
+교통정보알림갱신상황|운행센터|사고알림|예상지연|앱공지	other,process,state,attribute	causal_context	entity_tracking	교통정보알림갱신상황: 운행센터는 사고알림을 받아 예상지연을 계산해 앱공지에 반영했다. 사고 발생과 개별 차량 도착 예측은 서로 다른 정보다.
+승차대기줄이동상황|승객들|대기선|도착버스|탑승문	other,process,state,classification	causal_context	entity_tracking	승차대기줄이동상황: 도착버스가 탑승문을 열자 승객들은 대기선 순서대로 이동했다. 정류장에 있던 모든 사람이 같은 차량을 탄 것은 아니다.
+운행방향표시전환상황|지하철|종착역|방향표시|회송선로	other,process,state,function	causal_context	entity_tracking	운행방향표시전환상황: 지하철은 종착역에서 회송선로를 지나 방향표시를 바꾸고 반대편 운행을 준비했다. 편성은 같아도 다음 행선이 달라진다.
+환승승강기고장상황|이동약자|환승승강기|고장표시|대체승강기	other,process,state,boundary	causal_context	entity_tracking	환승승강기고장상황: 이동약자는 환승승강기의 고장표시를 보고 직원 안내로 대체승강기를 이용했다. 원래 시설이 멈춰도 환승 경로가 완전히 끊긴 것은 아니다.
+버스배차간격변경상황|관제원|기존간격|증편차량|새배차표	other,process,state,attribute	causal_context	entity_tracking	버스배차간격변경상황: 관제원은 혼잡 시간에 증편차량을 넣어 기존간격보다 촘촘한 새배차표를 적용했다. 노선은 같지만 차량 도착 주기가 달라졌다.
+도착정보오류정정상황|승객안내판|잘못된시각|실제위치|정정표시	other,process,state,boundary	causal_context	entity_tracking	도착정보오류정정상황: 승객안내판의 잘못된시각을 실제위치 자료로 확인해 정정표시했다. 첫 화면을 본 승객에게는 방송으로 변경을 알렸다.
+# 031~060 승객·기사·역무·관제 역할의 조정
+승차지원협력상황|이동약자|역무원|경사판|탑승열차	other,role,function,state	role_coordination	role_coordination	승차지원협력상황: 역무원은 이동약자가 탑승열차에 오를 수 있도록 경사판을 놓고 문이 닫히기 전 안전을 확인했다. 승객 요청과 현장 지원이 연결된다.
+지연안내관제협업상황|관제원|역무원|지연정보|승객방송	other,role,function,process	role_coordination	role_coordination	지연안내관제협업상황: 관제원은 지연정보를 역무원에게 전달하고 역무원은 승객방송으로 대체 경로를 설명했다. 운행 판단과 현장 안내의 책임이 다르다.
+버스배차기사연계상황|배차담당|버스기사|운행표|차량번호	other,role,function,state	role_coordination	role_coordination	버스배차기사연계상황: 배차담당은 운행표와 차량번호를 버스기사에게 배정했다. 기사는 출발 전 차량 상태를 확인해 실제 운행 가능 여부를 보고한다.
+환승안내업무분담상황|안내직원|승객|연결노선|환승지도	other,role,function,classification	role_coordination	role_coordination	환승안내업무분담상황: 안내직원은 승객의 목적지를 듣고 연결노선과 환승지도를 보여 줬다. 경로를 선택하는 주체는 승객이고 직원은 정보를 제공한다.
+고장차량대체협력상황|정비기사|운행관리자|고장버스|대체버스	other,role,process,state	role_coordination	role_coordination	고장차량대체협력상황: 정비기사는 고장버스의 운행 보류를 알리고 운행관리자는 대체버스에 같은 노선을 배정했다. 수리와 배차 변경이 연속으로 이뤄진다.
+분실물인계상황|버스기사|분실물담당|습득가방|인계기록	other,role,process,state	role_coordination	role_coordination	분실물인계상황: 버스기사는 습득가방을 종점의 분실물담당에게 넘기고 인계기록에 차량과 시간을 적었다. 발견자와 보관 책임자가 구분된다.
+승객응급대응협업상황|승객|운전기사|관제센터|정차위치	other,role,function,boundary	role_coordination	role_coordination	승객응급대응협업상황: 승객 상태가 갑자기 나빠지자 운전기사는 안전한 정차위치를 잡고 관제센터에 지원을 요청했다. 운행 지속보다 현장 안전 확인을 먼저 한다.
+운임오류상담연계상황|승객|역무원|요금기록|정산담당	other,role,function,boundary	role_coordination	role_coordination	운임오류상담연계상황: 역무원은 승객의 요금기록을 확인하고 정산담당에게 수정 가능 여부를 문의했다. 현장 설명과 금액 조정 승인을 나눈다.
+승강장안전감시상황|열차기관사|안전요원|출입문|출발신호	other,role,boundary,state	role_coordination	role_coordination	승강장안전감시상황: 안전요원이 출입문 주변을 확인해 출발신호를 보내면 열차기관사가 움직인다. 시간표가 되어도 신호 전에는 출발하지 않는다.
+정류장공사안내협업상황|도로관리자|버스관제|공사구간|우회공지	other,role,process,state	role_coordination	role_coordination	정류장공사안내협업상황: 도로관리자가 공사구간을 알리자 버스관제는 우회공지와 임시 정차 위치를 정했다. 공사 결정과 승객 안내가 역할별로 이어진다.
+막차환승지원상황|역무원|막차승객|연결편기사|대기요청	other,role,function,state	role_coordination	role_coordination	막차환승지원상황: 역무원은 지연된 막차승객 수를 확인해 연결편기사에게 짧은 대기요청을 보냈다. 요청이 항상 연결편의 출발 변경을 보장하지는 않는다.
+교통약자좌석안내상황|버스기사|승객들|우선좌석|안내방송	other,role,function,boundary	role_coordination	role_coordination	교통약자좌석안내상황: 버스기사는 안내방송으로 승객들에게 우선좌석 양보를 요청했다. 기사는 협조를 안내하지만 특정 승객의 상태를 공개하지 않는다.
+열차청소인계상황|운행팀|청소팀|종착열차|준비표시	other,role,process,state	role_coordination	role_coordination	열차청소인계상황: 운행팀이 종착열차의 승객 하차를 확인한 뒤 청소팀이 객실을 정리해 준비표시를 남겼다. 빈 차량과 다음 운행 준비 차량은 상태가 다르다.
+승차권검표협업상황|승객|검표원|승차권|예약목록	other,role,boundary,state	role_coordination	role_coordination	승차권검표협업상황: 승객이 승차권을 제시하면 검표원은 예약목록의 열차와 좌석을 대조했다. 표를 소지해도 다른 날짜의 예약이면 탑승 확인이 되지 않는다.
+버스운행교대상황|오전기사|오후기사|차량일지|차량열쇠	other,role,process,state	role_coordination	role_coordination	버스운행교대상황: 오전기사는 차량일지와 차량열쇠를 오후기사에게 넘기며 이상 여부를 설명했다. 교대 시각을 기준으로 운행 책임이 바뀐다.
+도착정보시스템협업상황|차량단말|정보센터|위치자료|정류장화면	other,role,function,attribute	role_coordination	role_coordination	도착정보시스템협업상황: 차량단말이 위치자료를 보내면 정보센터가 예상 시각을 계산해 정류장화면에 표시한다. 차량과 표시 장치가 서로 다른 역할을 맡는다.
+열차운휴환불연계상황|역무원|환불담당|운휴승차권|환불기록	other,role,function,boundary	role_coordination	role_coordination	열차운휴환불연계상황: 역무원은 운휴승차권을 확인하고 환불담당은 원결제 내역에 환불기록을 남겼다. 운휴 안내와 금융 처리를 분리한다.
+행사장증편운행상황|행사담당|교통관제|예상승객|증편차량	other,role,process,comparison	role_coordination	role_coordination	행사장증편운행상황: 행사담당이 예상승객 규모를 알리자 교통관제는 시간대별 증편차량을 배치했다. 행사 정보와 실제 배차 판단이 연결된다.
+지하철문고장대응상황|기관사|역무원|고장출입문|승객이동	other,role,boundary,state	role_coordination	role_coordination	지하철문고장대응상황: 기관사는 고장출입문을 잠그고 역무원은 승객이동을 안내했다. 한 문을 사용하지 못해도 안전 확인 뒤 열차가 계속 운행할 수 있다.
+교통카드분실상담상황|이용자|상담원|분실카드|잔액이전	other,role,function,boundary	role_coordination	role_coordination	교통카드분실상담상황: 이용자는 분실카드 정보를 알렸고 상담원은 본인 확인 뒤 잔액이전 절차를 설명했다. 신고와 실제 이전 완료는 다른 업무 단계다.
+터미널승차안내상황|매표원|승강장직원|버스표|출발홈	other,role,function,classification	role_coordination	role_coordination	터미널승차안내상황: 매표원은 버스표에 출발홈을 적고 승강장직원은 차량번호를 확인해 탑승 줄을 안내했다. 표 발급과 현장 승차 확인이 이어진다.
+도로통제우회협업상황|교통경찰|버스기사|통제지점|대체경로	other,role,process,boundary	role_coordination	role_coordination	도로통제우회협업상황: 교통경찰이 통제지점을 알리자 버스기사는 대체경로를 따라 관제에 현재 위치를 보고했다. 현장 통제와 노선 운행 책임은 다르다.
+차내민원처리협력상황|승객|버스기사|민원내용|고객센터	other,role,function,state	role_coordination	role_coordination	차내민원처리협력상황: 버스기사는 운행 중 승객에게 받은 민원내용을 차량 번호와 함께 고객센터에 전달했다. 현장에서 바로 답하기 어려운 사항은 후속 담당자가 확인한다.
+환승시설점검협업상황|시설기사|역무원|이동계단|점검표시	other,role,function,state	role_coordination	role_coordination	환승시설점검협업상황: 시설기사는 이동계단을 검사하고 역무원은 점검표시와 대체 동선을 승객에게 안내했다. 수리와 이용자 흐름 관리가 함께 진행된다.
+정류장질서관리상황|안전요원|대기승객|승차선|도착버스	other,role,boundary,state	role_coordination	role_coordination	정류장질서관리상황: 안전요원은 대기승객을 승차선 뒤에 세우고 도착버스의 문 위치에 맞춰 이동시켰다. 줄 관리와 차량 운전은 다른 책임이다.
+열차회송정보연계상황|기관사|관제원|회송열차|승객안내	other,role,function,boundary	role_coordination	role_coordination	열차회송정보연계상황: 관제원은 회송열차의 통과를 기관사와 역무 현장에 알렸고 승객안내에는 탑승 불가를 표시했다. 승강장에 멈춰도 영업 운행은 아니다.
+노선변경고객응대상황|상담직원|운행담당|변경노선|승객질문	other,role,function,state	role_coordination	role_coordination	노선변경고객응대상황: 상담직원은 승객질문을 모아 운행담당에게 확인하고 변경노선의 정류장을 설명했다. 추정 경로를 확정 정보처럼 안내하지 않는다.
+승객수송통계협업상황|운전기사|자료담당|탑승수|운행보고	other,role,attribute,process	role_coordination	role_coordination	승객수송통계협업상황: 운전기사는 탑승수를 운행보고에 남기고 자료담당은 노선별 값으로 정리했다. 현장 집계와 통계 분류가 서로 다른 단계다.
+자전거승차지원상황|승객|기사|자전거거치대|고정확인	other,role,function,boundary	role_coordination	role_coordination	자전거승차지원상황: 승객이 자전거거치대에 자전거를 올리면 기사는 고정확인을 한 뒤 출발했다. 승객이 놓았다는 말만으로 안전 조건이 끝나지 않는다.
+운행종료보안인계상황|마지막기사|차고지담당|운행차량|종료점검표	other,role,process,state	role_coordination	role_coordination	운행종료보안인계상황: 마지막기사는 운행차량을 차고지담당에게 넘기고 종료점검표에 잔류 승객과 물품 여부를 적었다. 주차와 근무 종료를 함께 확인한다.
+# 061~090 승차·환승·지연·도착의 시간 의존성
+도착후승차순서상황|대기승객|차량도착|문열림|승차태그	other,process,state,boundary	temporal_dependency	temporal_dependency	도착후승차순서상황: 대기승객은 차량도착 뒤 문열림을 확인하고 차례로 승차태그를 했다. 정류장에 버스가 보였다는 사실만으로 승차 기록이 생기지는 않는다.
+하차후환승시간상황|첫버스|하차시각|환승한도|다음버스	other,process,state,attribute	temporal_dependency	temporal_dependency	하차후환승시간상황: 첫버스의 하차시각부터 환승한도를 계산해 그 안에 다음버스를 타야 할인 조건이 이어진다. 정류장 대기 시간도 이 구간에 포함된다.
+지연발생공지순서상황|운행지연|관제확인|공지갱신|승객수신	other,process,state,function	temporal_dependency	temporal_dependency	지연발생공지순서상황: 운행지연을 관제확인한 뒤 공지갱신이 이뤄지고 승객수신 화면에 새 값이 보인다. 현장 사건과 앱 표시 사이에는 처리 시간이 있다.
+우회종료원노선복귀상황|도로통제|우회운행|통제해제|원노선복귀	other,process,state,boundary	temporal_dependency	temporal_dependency	우회종료원노선복귀상황: 도로통제 중에는 우회운행을 하다가 통제해제 확인 뒤 원노선복귀했다. 도로가 열렸다는 소문만으로 경로를 즉시 바꾸지 않는다.
+막차출발마감상황|막차시간|승강장도착|출입문닫힘|다음교통편	other,process,state,boundary	temporal_dependency	temporal_dependency	막차출발마감상황: 승강장도착이 막차시간보다 늦고 출입문닫힘 뒤라면 탑승하지 못해 다음교통편을 찾아야 한다. 역에 들어온 시각과 열차 승차 가능 시각은 다르다.
+승강장변경이동시간상황|변경공지|기존홈|새홈|출발예정	other,process,state,boundary	temporal_dependency	temporal_dependency	승강장변경이동시간상황: 변경공지 뒤 승객은 기존홈에서 새홈으로 이동해 출발예정 전에 도착해야 한다. 공지를 본 것만으로 새 승강장에 도착한 것은 아니다.
+교통카드충전후개찰상황|잔액부족|충전완료|재접촉|개찰통과	other,process,state,boundary	temporal_dependency	temporal_dependency	교통카드충전후개찰상황: 잔액부족이 뜬 카드는 충전완료 뒤 단말기에 재접촉해야 개찰통과된다. 돈을 넣은 시점에 출입 기록이 자동 생성되지는 않는다.
+열차청소후승객탑승상황|회차도착|객실청소|준비확인|탑승개시	other,process,state,function	temporal_dependency	temporal_dependency	열차청소후승객탑승상황: 회차도착한 열차는 객실청소와 준비확인을 마친 뒤 탑승개시한다. 승강장에 서 있어도 준비 전에는 문을 열지 않는다.
+버스배차변경적용상황|기존배차|변경승인|새간격|적용시각	other,process,state,attribute	temporal_dependency	temporal_dependency	버스배차변경적용상황: 변경승인 뒤 기존배차가 새간격으로 바뀌며 적용시각 이후 출발편부터 반영된다. 앞서 출발한 차량의 간격을 소급해 고치지 않는다.
+승차권예약발권순서상황|좌석선택|결제완료|승차권발권|개찰확인	other,process,state,function	temporal_dependency	temporal_dependency	승차권예약발권순서상황: 좌석선택 뒤 결제완료가 되어 승차권발권을 받고 출발일에 개찰확인한다. 좌석을 화면에서 눌렀다는 행동만으로 예약이 끝나지 않는다.
+운휴결정대체안내상황|운행검토|운휴결정|대체노선|환불접수	other,process,state,boundary	temporal_dependency	temporal_dependency	운휴결정대체안내상황: 운행검토 뒤 운휴결정이 내려지면 대체노선을 알리고 필요한 승객에게 환불접수를 연다. 검토 중 상태를 확정 운휴로 전달하지 않는다.
+정류장임시이전상황|공사시작|원정류장폐쇄|임시정류장|복귀일	other,process,state,boundary	temporal_dependency	temporal_dependency	정류장임시이전상황: 공사시작과 함께 원정류장폐쇄가 되고 임시정류장을 쓰다가 복귀일 이후 원래 위치로 돌아간다. 기간별 승차 지점을 구분한다.
+도착예정실제도착상황|예상시각|위치갱신|실제도착|문열림	other,process,state,attribute	temporal_dependency	temporal_dependency	도착예정실제도착상황: 예상시각은 위치갱신에 따라 변하고 차량이 정류장에 서서 문열림이 확인될 때 실제도착으로 기록된다. 예측값과 사건값을 나눈다.
+환승통로개방시간상황|첫차도착|통로개방|연결편출발|환승완료	other,process,state,function	temporal_dependency	temporal_dependency	환승통로개방시간상황: 첫차도착 뒤 통로개방이 되어야 승객이 연결편출발 전에 이동해 환승완료할 수 있다. 통로가 닫힌 시간에는 같은 경로를 쓰지 못한다.
+버스차고지출고순서상황|차량점검|운행승인|차고지출발|첫정류장	other,process,state,boundary	temporal_dependency	temporal_dependency	버스차고지출고순서상황: 차량점검과 운행승인을 마친 뒤 차고지출발해 첫정류장으로 간다. 정비가 끝났다는 말만으로 영업 운행이 시작된 것은 아니다.
+열차고장복구재개상황|고장발생|승객대피|복구확인|운행재개	other,process,state,boundary	temporal_dependency	temporal_dependency	열차고장복구재개상황: 고장발생 뒤 승객대피와 설비 점검을 거쳐 복구확인이 나야 운행재개한다. 전원이 들어온 중간 상태를 정상 운행으로 표시하지 않는다.
+요금변경시행시점상황|이전요금|변경공지|시행일|새요금	other,process,state,attribute	temporal_dependency	temporal_dependency	요금변경시행시점상황: 변경공지에 적힌 시행일 전까지 이전요금을 쓰고 그날 첫 운행부터 새요금을 적용한다. 미리 게시된 표가 즉시 결제 기준은 아니다.
+정기권만료갱신상황|정기권시작|유효종료|갱신결제|새사용기간	other,process,state,attribute	temporal_dependency	temporal_dependency	정기권만료갱신상황: 정기권시작 뒤 유효종료까지 이용하고 갱신결제가 승인되면 새사용기간이 열린다. 만료된 카드와 충전되지 않은 카드를 같은 원인으로 보지 않는다.
+분실물등록찾기상황|습득시각|보관등록|소유자확인|반환완료	other,process,state,boundary	temporal_dependency	temporal_dependency	분실물등록찾기상황: 습득시각 뒤 보관등록을 하고 소유자확인을 거쳐 반환완료로 바뀐다. 문의 전화가 왔다는 사실만으로 물건을 넘기지 않는다.
+차량교대운행상황|첫기사근무|교대시각|차량인계|둘째기사운행	other,process,state,role	temporal_dependency	temporal_dependency	차량교대운행상황: 첫기사근무가 교대시각에 끝나면 차량인계를 하고 둘째기사운행이 시작된다. 같은 버스의 이동도 기사 책임 구간을 시간으로 나눈다.
+지연증명발급시점상황|예정도착|실제도착|지연확정|증명발급	other,process,state,attribute	temporal_dependency	temporal_dependency	지연증명발급시점상황: 예정도착과 실제도착의 차이를 계산해 지연확정된 뒤 증명발급이 가능하다. 이동 중 예상 지연만으로 최종 분을 적지 않는다.
+행사증편종료상황|행사시작|증편운행|승객감소|정상배차	other,process,state,comparison	temporal_dependency	temporal_dependency	행사증편종료상황: 행사시작에 증편운행을 하고 귀가 승객감소가 확인된 뒤 정상배차로 돌아갔다. 행사가 끝났다는 시각과 혼잡이 해소된 시각은 다를 수 있다.
+교량통제노선복귀상황|통제발령|우회출발|안전확인|정상경로	other,process,state,boundary	temporal_dependency	temporal_dependency	교량통제노선복귀상황: 통제발령 뒤 우회출발을 유지하다가 안전확인이 공식 전달되면 정상경로를 다시 쓴다. 운전자의 눈대중으로 먼저 복귀하지 않는다.
+첫차운행준비상황|차고점검|운전원도착|출발승인|첫차출발	other,process,state,role	temporal_dependency	temporal_dependency	첫차운행준비상황: 차고점검이 끝나고 운전원도착 뒤 출발승인을 받아 첫차출발한다. 시간표 시각만 됐다고 준비가 덜 된 차량을 내보내지 않는다.
+연결편대기판정상황|지연열차|환승승객수|대기결정|연결편출발	other,process,state,comparison	temporal_dependency	temporal_dependency	연결편대기판정상황: 지연열차와 환승승객수를 확인해 대기결정을 내린 뒤 연결편출발 시각을 조정한다. 승객 한 명의 요청만으로 전체 편을 자동 지연하지 않는다.
+교통앱정보정정상황|오류신고|자료확인|정정게시|이용자알림	other,process,state,boundary	temporal_dependency	temporal_dependency	교통앱정보정정상황: 오류신고를 받은 뒤 실제 자료확인과 정정게시를 하고 이용자알림을 보낸다. 신고 내용은 검토 전까지 확정 정보가 아니다.
+심야노선전환상황|일반운행종료|심야시간|심야노선|새행선표시	other,process,state,classification	temporal_dependency	temporal_dependency	심야노선전환상황: 일반운행종료 뒤 심야시간이 되면 차량은 심야노선과 새행선표시를 적용한다. 같은 번호의 차량이어도 운행 구간이 달라질 수 있다.
+승차예약좌석해제상황|좌석예약|결제마감|미결제|좌석해제	other,process,state,boundary	temporal_dependency	temporal_dependency	승차예약좌석해제상황: 좌석예약 뒤 결제마감까지 미결제이면 좌석해제되어 다른 승객에게 열린다. 선택 화면에 잠시 보인 상태를 구매 완료로 세지 않는다.
+운행보고마감상황|마지막정류장|승객하차|차고도착|운행보고	other,process,state,function	temporal_dependency	temporal_dependency	운행보고마감상황: 마지막정류장에서 승객하차를 마치고 차고도착 뒤 운행보고를 닫는다. 영업 운행 종료와 차량 근무 마감 사이에 이동이 남는다.
+정류장재개방상황|시설점검|폐쇄표시|안전승인|승차재개	other,process,state,boundary	temporal_dependency	temporal_dependency	정류장재개방상황: 시설점검 중 폐쇄표시를 유지하고 안전승인 뒤 승차재개했다. 출입문이 열렸다는 사실보다 공식 승인 시점을 기준으로 한다.
+# 091~120 제한된 차량·좌석·승강장·인력·시간의 배분 맥락
+버스차량수배분상황|배차원|가용버스|혼잡노선|일반노선	other,state,classification,comparison	resource_constraint	resource_constraint	버스차량수배분상황: 배차원은 가용버스 수를 승객이 많은 혼잡노선에 더 배치하고 일반노선의 기본 간격을 유지했다. 증편 수가 노선 중요도 전체를 뜻하지 않는다.
+승강장공간제약상황|안전요원|대기승객|승강장|대기선	other,state,function,boundary	resource_constraint	resource_constraint	승강장공간제약상황: 승강장이 붐비자 안전요원은 대기승객을 대기선 뒤 여러 줄로 나눴다. 공간에 들어오지 못한 사람도 같은 열차를 기다릴 수 있다.
+우선좌석수량상황|이동약자|우선좌석|일반좌석|승객안내	other,state,function,boundary	resource_constraint	resource_constraint	우선좌석수량상황: 우선좌석이 모두 사용 중이어서 이동약자에게 일반좌석 양보를 요청하는 승객안내가 나왔다. 표시 좌석 부족이 승차 거절은 아니다.
+환승승강기용량상황|역무원|환승승강기|휠체어승객|대기순서	other,state,function,classification	resource_constraint	resource_constraint	환승승강기용량상황: 환승승강기의 정원이 작아 역무원은 휠체어승객과 동행자를 대기순서대로 나눠 이동시켰다. 한 번에 타지 못해도 환승 지원은 이어진다.
+매표창구수제약상황|표구매자|매표창구|자동발권기|대기번호	other,state,function,contrast	resource_constraint	resource_constraint	매표창구수제약상황: 열린 매표창구가 적어 표구매자에게 대기번호를 주고 간단한 발권은 자동발권기로 안내했다. 창구 대기는 좌석 부족과 무관하다.
+막차좌석배분상황|승객|남은좌석|지정석|입석구역	other,state,classification,boundary	resource_constraint	resource_constraint	막차좌석배분상황: 남은좌석보다 승객이 많아 지정석은 예약자에게 유지하고 허용된 입석구역을 별도로 안내했다. 좌석이 없다는 사실이 열차 정원 초과와 같지는 않다.
+정류장주차면제약상황|버스기사|정차공간|앞차량|임시정차선	other,state,function,boundary	resource_constraint	resource_constraint	정류장주차면제약상황: 정차공간을 앞차량이 사용 중이어서 버스기사는 임시정차선에서 기다렸다. 정류장 근처 도착을 승객 승하차 시작으로 기록하지 않는다.
+교통카드충전기대기상황|이용자|충전기|잔액부족카드|현금창구	other,state,function,contrast	resource_constraint	resource_constraint	교통카드충전기대기상황: 충전기 한 대 앞에 줄이 생겨 이용자는 잔액부족카드를 현금창구에서도 보충할 수 있다는 안내를 받았다. 방법이 달라도 카드 계정은 같다.
+기관사근무시간제약상황|운행관리자|가용기관사|장거리편|교대지점	other,state,role,boundary	resource_constraint	resource_constraint	기관사근무시간제약상황: 운행관리자는 가용기관사의 남은 시간을 보고 장거리편에 교대지점을 넣었다. 열차는 계속 움직여도 운전 책임자는 중간에 바뀐다.
+환승시간부족대안상황|여행자|짧은환승시간|빠른통로|다음연결편	other,state,function,comparison	resource_constraint	resource_constraint	환승시간부족대안상황: 여행자는 짧은환승시간 안에 빠른통로를 이용하되 놓치면 다음연결편을 타도록 안내받았다. 첫 연결을 놓쳐도 여행 전체가 취소되지는 않는다.
+버스전용충전기상황|전기버스|충전기|배터리잔량|대체차량	other,state,function,attribute	resource_constraint	resource_constraint	버스전용충전기상황: 충전기가 한 대라 배터리잔량이 낮은 전기버스를 먼저 연결하고 그 운행에는 대체차량을 넣었다. 충전 중 차량을 고장차로 분류하지 않는다.
+지하철출입구폐쇄상황|승객|폐쇄출입구|열린출입구|우회통로	other,state,function,contrast	resource_constraint	resource_constraint	지하철출입구폐쇄상황: 공사로 폐쇄출입구를 쓸 수 없어 승객은 열린출입구와 우회통로를 이용했다. 역 접근 거리가 늘어도 역 자체가 운휴한 것은 아니다.
+혼잡열차탑승제한상황|안전요원|만원열차|대기승객|다음열차	other,state,boundary,comparison	resource_constraint	resource_constraint	혼잡열차탑승제한상황: 만원열차에 더 타기 어렵자 안전요원은 대기승객을 막고 다음열차를 안내했다. 한 편을 보내지 못한 것이 노선 이용 거절은 아니다.
+안내방송채널제약상황|역무원|방송설비|긴급안내|일반공지	other,state,function,classification	resource_constraint	resource_constraint	안내방송채널제약상황: 방송설비를 한 번에 하나만 쓸 수 있어 역무원은 긴급안내를 먼저 내보내고 일반공지는 전광판에 표시했다. 전달 수단이 달라도 정보는 유지된다.
+자전거거치대수량상황|자전거승객|거치대|다음버스|휴대승차	other,state,function,boundary	resource_constraint	resource_constraint	자전거거치대수량상황: 거치대가 가득 차 자전거승객은 허용 규칙에 따라 다음버스를 기다리거나 휴대승차 가능 여부를 확인했다. 자전거 때문에 사람의 승차권이 취소되지는 않는다.
+역무상담인력제약상황|역장|상담직원|긴급문의|노선질문	other,state,role,classification	resource_constraint	resource_constraint	역무상담인력제약상황: 상담직원이 적어 역장은 긴급문의를 현장 창구에, 노선질문은 안내판과 앱으로 분산했다. 질문 채널이 중요도 판정을 그대로 뜻하지 않는다.
+버스회차공간제약상황|운전기사|회차공간|대기버스|출발순서	other,state,function,classification	resource_constraint	resource_constraint	버스회차공간제약상황: 회차공간이 좁아 운전기사는 대기버스를 출발순서대로 한 대씩 들였다. 종점 도착 차량 모두가 동시에 방향을 바꾸지는 않는다.
+승차권프린터고장상황|매표원|표프린터|전자승차권|종이표	other,state,function,contrast	resource_constraint	resource_constraint	승차권프린터고장상황: 표프린터가 멈춰 매표원은 가능한 고객에게 전자승차권을 발급하고 종이표 요청은 다른 창구로 보냈다. 인쇄 장애가 예약 시스템 중단은 아니다.
+대체버스정원상황|운휴승객|대체버스|정원|추가차량	other,state,attribute,boundary	resource_constraint	resource_constraint	대체버스정원상황: 운휴승객 수가 대체버스 정원을 넘자 운영사는 추가차량을 요청하고 승객을 나눠 태웠다. 첫 차량을 놓친 사람도 대체 수송 대상이다.
+택시승강장대기상황|관리요원|택시승강장|대기승객|도착차량	other,state,function,classification	resource_constraint	resource_constraint	택시승강장대기상황: 도착차량보다 대기승객이 많아 관리요원은 줄 순서대로 탑승시켰다. 승강장에 선 시각과 실제 출발 시각은 다르다.
+철도선로용량상황|관제원|공용선로|급행열차|일반열차	other,state,classification,comparison	resource_constraint	resource_constraint	철도선로용량상황: 공용선로의 통과 간격 때문에 관제원은 급행열차를 먼저 보내고 일반열차를 신호 앞에 대기시켰다. 대기는 운휴가 아니다.
+환승게이트수량상황|승객들|환승게이트|열린통로|대기줄	other,state,function,boundary	resource_constraint	resource_constraint	환승게이트수량상황: 환승게이트 중 열린통로가 적어 승객들은 대기줄을 나눠 통과했다. 통로 앞 혼잡을 요금 오류로 해석하지 않는다.
+승객용충전좌석상황|여행객|충전좌석|일반좌석|배터리부족	other,state,function,contrast	resource_constraint	resource_constraint	승객용충전좌석상황: 충전좌석이 모두 차서 배터리부족인 여행객은 일반좌석에 앉아 이동식 충전기를 빌렸다. 좌석 기능과 승차 자격은 무관하다.
+버스차고정비칸상황|정비원|정비칸|고장차량|예방점검차량	other,state,classification,boundary	resource_constraint	resource_constraint	버스차고정비칸상황: 정비칸이 하나라 정비원은 고장차량을 먼저 들이고 예방점검차량은 운행 뒤로 예약했다. 점검 연기를 면제 판정으로 기록하지 않는다.
+운행정보전광판수량상황|역무원|전광판|운휴정보|일반광고	other,state,function,classification	resource_constraint	resource_constraint	운행정보전광판수량상황: 표시 공간이 제한돼 역무원은 운휴정보를 전광판에 우선 띄우고 일반광고를 잠시 내렸다. 광고 중단이 상점 운영 중단을 뜻하지 않는다.
+저상버스배차제약상황|배차원|저상버스|이용요청|대체시간	other,state,function,boundary	resource_constraint	resource_constraint	저상버스배차제약상황: 저상버스 수가 적어 배차원은 이용요청이 있는 시간에 우선 넣고 다른 편에는 대체시간을 안내했다. 차량 유형이 노선 전체의 운행 여부를 결정하지 않는다.
+공항셔틀짐칸상황|셔틀기사|짐칸|대형수하물|승객좌석	other,state,part_of,boundary	resource_constraint	resource_constraint	공항셔틀짐칸상황: 짐칸이 가득 차 셔틀기사는 대형수하물을 다음 차량으로 보내고 승객좌석 통로에는 두지 않았다. 사람의 탑승과 짐의 운송이 분리될 수 있다.
+교통통제인력배분상황|현장책임자|안전요원|혼잡출구|일반통로	other,state,role,comparison	resource_constraint	resource_constraint	교통통제인력배분상황: 현장책임자는 제한된 안전요원을 혼잡출구에 더 배치하고 일반통로는 표지로 안내했다. 인원 수 차이가 통로 폐쇄를 의미하지 않는다.
+열차급수설비공유상황|정비팀|급수설비|도착편성|출발편성	other,state,function,classification	resource_constraint	resource_constraint	열차급수설비공유상황: 급수설비가 하나라 정비팀은 출발편성부터 작업하고 도착편성은 청소를 먼저 했다. 대기 차량도 다음 운행 계획에 남는다.
+정류장대기면분할상황|시내버스|광역버스|공용정류장|노선표지	other,state,part_of,boundary	resource_constraint	resource_constraint	정류장대기면분할상황: 시내버스와 광역버스는 공용정류장을 노선표지 기준으로 나눠 섰다. 같은 공간을 쓰더라도 승차 줄과 요금 체계는 구별된다.
+# 121~150 지시어·생략·대조 대상의 교통 문맥 복원
+교통노선지시복원상황|파란노선|초록노선|승객|이노선	other,boundary,state,contrast	reference_resolution	reference_resolution	교통노선지시복원상황: 파란노선은 시청으로, 초록노선은 공원으로 간다. 승객이 공원 쪽 지도를 짚으며 말한 이노선은 초록노선이다.
+승강장두곳후자상황|일번승강장|이번승강장|안내판|후자의곳	other,boundary,classification,state	reference_resolution	reference_resolution	승강장두곳후자상황: 안내판에는 일번승강장 뒤에 이번승강장이 적혔다. 후자의곳에서 급행이 출발한다는 문장은 이번승강장을 뜻한다.
+기사대명사주체상황|민호기사|수진기사|운행일지|그녀	other,boundary,role,state	reference_resolution	reference_resolution	기사대명사주체상황: 민호기사는 오전 편을 몰고 수진기사는 운행일지를 이어 썼다. “그녀가 오후 노선을 출발함”에서 그녀는 수진기사다.
+버스두대앞의것상황|일번버스|이번버스|배차원|앞차량	other,boundary,classification,contrast	reference_resolution	reference_resolution	버스두대앞의것상황: 배차원은 일번버스와 이번버스를 순서대로 준비했다. 앞차량에 승객을 먼저 태우라는 지시는 일번버스를 가리킨다.
+정류장위치참조상황|원정류장|임시정류장|안내직원|저곳	other,boundary,state,contrast	reference_resolution	reference_resolution	정류장위치참조상황: 원정류장은 공사로 닫혔고 임시정류장은 길 건너에 있다. 안내직원이 건너편을 가리킨 저곳은 임시정류장이다.
+승차권후자의표상황|오전표|오후표|여행객|후자의표	other,boundary,state,contrast	reference_resolution	reference_resolution	승차권후자의표상황: 여행객은 오전표를 취소하고 오후표를 새로 발급받았다. 후자의표로 개찰한다는 말은 오후표를 사용한다.
+두승객소유참조상황|지민|현우|교통카드|그의것	other,boundary,role,state	reference_resolution	reference_resolution	두승객소유참조상황: 지민이 교통카드를 떨어뜨렸고 현우가 주워 역무원에게 줬다. “그의것은 아니라고 말함”의 그는 현우다.
+열차방향지시상황|상행열차|하행열차|역무원|이쪽열차	other,boundary,classification,contrast	reference_resolution	reference_resolution	열차방향지시상황: 상행열차는 왼쪽, 하행열차는 오른쪽 승강장에 들어온다. 역무원이 오른쪽을 가리킨 이쪽열차는 하행열차다.
+도착시각나중값상황|예정시각|실제시각|지연표|나중값	other,boundary,attribute,comparison	reference_resolution	reference_resolution	도착시각나중값상황: 지연표에는 예정시각과 실제시각이 차례로 적혔다. 나중값으로 지연 분을 계산한다는 지시는 실제시각을 쓴다.
+환승통로그곳상황|동쪽통로|서쪽통로|공사표지|그곳	other,boundary,state,contrast	reference_resolution	reference_resolution	환승통로그곳상황: 동쪽통로는 열려 있고 서쪽통로에는 공사표지가 있다. “그곳을 피하라”는 안내는 서쪽통로를 가리킨다.
+역무원두명주체상황|안내역무원|안전역무원|승객방송|그가	other,boundary,role,state	reference_resolution	reference_resolution	역무원두명주체상황: 안내역무원은 승객방송을 했고 안전역무원은 승강장 문을 확인했다. “그가 출발 신호를 보냄”에서 그는 안전역무원이다.
+교통편둘째수단상황|지하철|연결버스|환승안내|둘째수단	other,boundary,classification,contrast	reference_resolution	reference_resolution	교통편둘째수단상황: 환승안내는 지하철에서 내려 연결버스를 타라고 한다. 둘째수단의 정류장을 찾으라는 말은 연결버스를 뜻한다.
+차량상태후자복원상황|운행대기|운행중|관제화면|후자	other,boundary,state,contrast	reference_resolution	reference_resolution	차량상태후자복원상황: 관제화면에는 운행대기 뒤 운행중 상태가 표시된다. 위치가 계속 갱신되는 후자는 운행중이다.
+두출입문지시상황|앞문|뒷문|버스기사|그문	other,boundary,function,contrast	reference_resolution	reference_resolution	두출입문지시상황: 앞문은 승차용이고 뒷문은 하차용이다. 버스기사가 내릴 때 이용하라고 한 그문은 뒷문이다.
+승객대상대명사상황|예약승객|대기승객|남은좌석|그분	other,boundary,role,state	reference_resolution	reference_resolution	승객대상대명사상황: 예약승객에게 남은좌석을 먼저 확인하고 대기승객은 다음 차례로 뒀다. 직원이 “그분께 좌석을 배정함”이라고 한 대상은 예약승객이다.
+정류장목록아래항목상황|중앙정류장|시장정류장|노선표|아래항목	other,boundary,classification,state	reference_resolution	reference_resolution	정류장목록아래항목상황: 노선표에서 중앙정류장 아래에 시장정류장이 있다. 아래항목에서 내리라는 지시는 시장정류장을 가리킨다.
+교통카드전후상태상황|미충전상태|충전완료상태|단말화면|나중상태	other,boundary,state,process	reference_resolution	reference_resolution	교통카드전후상태상황: 단말화면은 미충전상태를 지나 충전완료상태를 표시했다. 나중상태에서 다시 개찰하라는 안내는 충전 후를 뜻한다.
+두우회로앞길상황|강변우회로|시장우회로|기사안내|앞길	other,boundary,classification,contrast	reference_resolution	reference_resolution	두우회로앞길상황: 기사안내는 강변우회로와 시장우회로를 차례로 비교했다. 앞길이 더 빠르다는 문장은 강변우회로를 지칭한다.
+연결편이것복원상황|첫연결편|다음연결편|승객|이것	other,boundary,state,contrast	reference_resolution	reference_resolution	연결편이것복원상황: 첫연결편은 이미 출발했고 다음연결편은 십 분 뒤 온다. 승객이 전광판의 다음 행을 가리킨 이것은 다음연결편이다.
+운행날짜그날상황|평일시간표|휴일시간표|운행공지|그날	other,boundary,classification,state	reference_resolution	reference_resolution	운행날짜그날상황: 운행공지에는 평일시간표와 휴일시간표가 따로 있다. “그날 간격이 길다”는 휴일 설명의 그날은 휴일이다.
+차고지두곳참조상황|동부차고지|서부차고지|배차표|둘째장소	other,boundary,classification,state	reference_resolution	reference_resolution	차고지두곳참조상황: 배차표에는 동부차고지 뒤 서부차고지가 적혔다. 둘째장소에서 대체버스가 출발한다는 말은 서부차고지를 뜻한다.
+열차좌석이자리상황|창가좌석|통로좌석|승차권|이자리	other,boundary,state,contrast	reference_resolution	reference_resolution	열차좌석이자리상황: 승차권에 창가좌석이 선택됐고 통로좌석은 취소선으로 남았다. 승객이 표를 보며 말한 이자리는 창가좌석이다.
+두방송참조상황|지연방송|승강장변경방송|승객|두번째안내	other,boundary,classification,state	reference_resolution	reference_resolution	두방송참조상황: 승객에게 지연방송 뒤 승강장변경방송이 이어졌다. 두번째안내를 따라 이동한다는 말은 승강장 변경 내용을 뜻한다.
+기사교대후자상황|오전기사|오후기사|차량열쇠|후자의사람	other,boundary,role,state	reference_resolution	reference_resolution	기사교대후자상황: 오전기사가 차량열쇠를 넘기고 오후기사가 운행을 이어받았다. 후자의사람이 다음 정류장부터 책임진다.
+노선색첫표시상황|빨간표시|노란표시|환승지도|첫표시	other,boundary,classification,contrast	reference_resolution	reference_resolution	노선색첫표시상황: 환승지도에는 빨간표시와 노란표시가 차례로 있다. 첫표시를 따라가라는 지시는 빨간 노선을 선택한다.
+버스정차지저곳상황|정규정류장|임시승차점|안내표지|저곳	other,boundary,state,contrast	reference_resolution	reference_resolution	버스정차지저곳상황: 정규정류장은 닫혔고 안내표지는 임시승차점을 길 건너에 표시했다. 승객이 건너편을 가리킨 저곳은 임시승차점이다.
+요금두값참조상황|기본요금|환승요금|결제화면|아래값	other,boundary,attribute,comparison	reference_resolution	reference_resolution	요금두값참조상황: 결제화면에는 기본요금 위에 환승요금이 별도 행으로 나온다. 아래값을 확인하라는 지시는 환승요금을 가리킨다.
+운휴노선그것상황|정상노선|운휴노선|공지판|그것	other,boundary,state,contrast	reference_resolution	reference_resolution	운휴노선그것상황: 공지판에서 정상노선은 녹색, 운휴노선은 회색으로 표시됐다. 직원이 회색 행을 짚으며 말한 그것은 운휴노선이다.
+두환승시각앞값상황|하차시각|재승차시각|이용기록|앞값	other,boundary,attribute,process	reference_resolution	reference_resolution	두환승시각앞값상황: 이용기록은 하차시각과 재승차시각을 차례로 보여 준다. 앞값부터 환승 시간을 센다는 말은 하차시각을 기준으로 한다.
+대체교통둘째방법상황|셔틀버스|택시연계|운휴안내|둘째방법	other,boundary,classification,contrast	reference_resolution	reference_resolution	대체교통둘째방법상황: 운휴안내는 셔틀버스와 택시연계를 순서대로 제시했다. 둘째방법은 택시연계를 뜻하며 비용 조건을 따로 확인한다.

@@ -1,0 +1,158 @@
+# family	주문·포장·운송·인도·반품 물류 상태 변화
+# axes	접수/할당, 포장, 출고, 이동, 인도 실패, 반품·회수
+# columns	concepts	relations	other_category	logic_pattern	directly_authored_text
+# 001~030 주문 접수·확인·할당
+온라인주문의작성중장바구니상태	state,process,classification	-	lifecycle_stage	온라인주문의작성중장바구니상태는 상품과 수량이 임시 목록에 있지만 구매 요청이 아직 제출되지 않은 단계다. 재고 예약이나 결제 의무는 생기지 않는다.
+온라인주문의제출후접수대기	state,process,boundary	-	state_transition	온라인주문의제출후접수대기는 고객 요청은 전송됐지만 판매 시스템이 번호와 처리 책임을 확정하기 전인 상태다. 화면 클릭과 서버 접수를 구분한다.
+온라인주문의접수번호발급	state,process,function	-	trigger_condition	온라인주문의접수번호발급은 형식과 기본 조건을 통과한 요청에 추적 식별자가 부여되는 변화다. 재고·결제 승인까지 완료됐다는 뜻은 아니다.
+온라인주문의결제승인대기	state,process,role	-	lifecycle_stage	온라인주문의결제승인대기는 금액과 결제 수단 정보가 넘어갔으나 발급사의 허가 회신이 도착하지 않은 단계다. 이 동안 중복 결제를 피하도록 같은 식별자를 사용한다.
+온라인주문의결제승인완료	state,process,function	-	trigger_condition	온라인주문의결제승인완료는 결제 기관이 금액 사용을 허용해 주문이 다음 처리로 갈 수 있게 된 변화다. 실제 정산과 상품 출고는 뒤에 남는다.
+온라인주문의결제거절보류	state,process,boundary	-	trigger_condition	온라인주문의결제거절보류는 잔액·인증·정책 문제로 승인이 나지 않아 주문 처리가 멈춘 상태다. 다른 수단으로 다시 시도할 수 있어 즉시 취소는 아니다.
+온라인주문의재고확인중상태	state,process,classification	-	lifecycle_stage	온라인주문의재고확인중상태는 각 품목과 옵션의 가용 수량을 창고별로 조회하는 단계다. 웹 표시 재고와 실제 할당 가능 수량이 다를 수 있다.
+온라인주문의재고예약완료	state,process,function	-	trigger_condition	온라인주문의재고예약완료는 지정 수량이 다른 주문에 배정되지 않도록 일시 보류된 변화다. 아직 물품을 선반에서 꺼냈다는 뜻은 아니다.
+온라인주문의일부품목품절전환	state,process,boundary	-	trigger_condition	온라인주문의일부품목품절전환은 전체 중 특정 품목만 할당할 수 없어 분할 배송·대체·취소 선택이 필요한 상태다. 주문 전체 실패로 자동 확대하지 않는다.
+온라인주문의대체품승인대기	state,process,role	-	lifecycle_stage	온라인주문의대체품승인대기는 원품 부족으로 제안한 다른 상품을 고객이 수락할지 기다리는 단계다. 창고가 임의로 품목을 바꾸지 않는다.
+온라인주문의대체품승인반영	state,process,contrast	-	degradation_recovery	온라인주문의대체품승인반영은 고객 동의를 확인해 주문 품목과 가격, 재고 예약을 새 상품으로 갱신하는 과정이다. 변경 이력을 보존한다.
+온라인주문의판매자확인대기	state,process,role	-	lifecycle_stage	온라인주문의판매자확인대기는 중개 플랫폼이 전달한 요청을 실제 판매자가 수락하기 전인 단계다. 플랫폼 접수와 판매자의 이행 약속은 다르다.
+온라인주문의판매자수락전환	state,process,function	-	trigger_condition	온라인주문의판매자수락전환은 판매자가 재고와 처리 기한을 확인해 주문 이행 책임을 맡는 변화다. 택배사 인계는 이후 단계다.
+온라인주문의판매자거절취소대기	state,process,boundary	-	trigger_condition	온라인주문의판매자거절취소대기는 판매자가 이행할 수 없어 결제 해제와 고객 통지가 남은 상태다. 거절 순간에 환불이 모두 끝나지는 않는다.
+주문의창고선택할당	state,process,function	-	trigger_condition	주문의창고선택할당은 재고 위치·마감 시각·배송지를 비교해 처리 거점 하나 이상을 정하는 과정이다. 고객에게 보이는 주문은 하나여도 내부 출고는 나뉠 수 있다.
+주문의다중창고분할상태	state,process,part_of	-	lifecycle_stage	주문의다중창고분할상태는 품목이 서로 다른 거점에 있어 여러 하위 출고로 구성된 단계다. 한 상자의 발송 완료를 전체 주문 완료로 기록하지 않는다.
+주문의피킹작업할당대기	state,process,role	-	lifecycle_stage	주문의피킹작업할당대기는 창고와 품목은 확정됐지만 작업자나 자동 장비가 아직 배정되지 않은 상태다. 처리 순위는 마감과 운송편에 따라 달라진다.
+주문의피킹작업자배정	state,process,role	-	state_transition	주문의피킹작업자배정은 특정 작업 목록과 동선이 작업자 단말에 전달돼 실물 수집 책임이 연결되는 변화다. 품목이 이미 집하장에 있다는 뜻은 아니다.
+긴급주문의우선순위상향	state,process,comparison	-	trigger_condition	긴급주문의우선순위상향은 약속 시간이나 필수 용도 때문에 일반 작업보다 먼저 처리하도록 큐 위치가 바뀌는 과정이다. 안전 검사와 품질 확인은 생략하지 않는다.
+대량주문의용량검토보류	state,process,boundary	-	trigger_condition	대량주문의용량검토보류는 재고는 있어도 포장·차량·하역 능력이 충분한지 확인할 때까지 확정을 멈춘 상태다. 수량 가능과 일정 가능은 다르다.
+대량주문의분할일정승인	state,process,function	-	degradation_recovery	대량주문의분할일정승인은 여러 날짜·차량으로 나눈 이행 계획을 고객과 운영자가 확정하는 과정이다. 각 회차의 수량 합이 원 주문과 맞아야 한다.
+예약주문의처리일도달대기	state,process,boundary	-	lifecycle_stage	예약주문의처리일도달대기는 주문과 결제 조건은 확정됐지만 약속된 준비 시각 전이라 창고 작업을 시작하지 않은 단계다. 일반 지연과 구분한다.
+예약주문의처리일도달활성화	state,process,function	-	trigger_condition	예약주문의처리일도달활성화는 예정 시각이 되어 주문을 실제 피킹·포장 큐로 옮기는 변화다. 재고 예약이 유효한지 다시 확인한다.
+구독주문의주기생성상태	state,process,classification	-	reversible_cycle	구독주문의주기생성상태는 정기 일정마다 새 회차 주문이 만들어지고 이전 회차와 독립된 추적 번호를 받는 과정이다. 구독 계약과 개별 배송 수명주기를 나눈다.
+구독주문의이번회차건너뜀	state,process,boundary	-	trigger_condition	구독주문의이번회차건너뜀은 고객 요청이나 결제 문제로 특정 기간의 주문 생성을 보류하는 변화다. 전체 구독 해지와 다르다.
+기업주문의구매승인대기	state,process,role	-	lifecycle_stage	기업주문의구매승인대기는 요청자가 품목을 골랐지만 예산과 권한을 가진 승인자의 결정을 기다리는 단계다. 공급자에게 아직 확정 발주가 가지 않을 수 있다.
+기업주문의구매승인완료	state,process,function	-	trigger_condition	기업주문의구매승인완료는 비용 센터와 한도 조건을 통과해 공급자 주문으로 전송 가능한 상태가 되는 변화다. 납품 완료와 비용 집행은 뒤에 남는다.
+주문중복의병합검토상태	state,process,boundary	-	lifecycle_stage	주문중복의병합검토상태는 같은 고객·품목·시간에 유사 요청이 있어 실제 두 건인지 재전송인지 확인하는 단계다. 자동 삭제 전에 식별자와 결제를 대조한다.
+주문중복확인후한건취소	state,process,contrast	-	degradation_recovery	주문중복확인후한건취소는 동일 의도의 요청임이 확인돼 하나의 재고 예약과 결제를 해제하는 과정이다. 남은 정상 주문의 추적 상태는 유지한다.
+주문접수표시의실제할당미확정	state,process,other	latent_observed_state	lifecycle_stage	주문접수표시의실제할당미확정은 번호는 발급됐지만 재고·판매자·창고 중 어느 조건이 완료됐는지 모르는 관측 상태다. 접수를 출고 약속으로 확대하지 않는다.
+# 031~060 피킹·포장·출고
+피킹목록의작업개시상태	state,process,role	-	lifecycle_stage	피킹목록의작업개시상태는 작업자가 첫 보관 위치로 이동해 주문 품목 수집을 시작한 단계다. 목록 수신과 실물 인출 시점을 구분한다.
+피킹품목의선반인출확인	state,process,function	-	trigger_condition	피킹품목의선반인출확인은 바코드와 수량이 주문 항목과 맞아 물품이 작업 용기에 들어간 변화다. 스캔만 하고 잘못된 실물을 담지 않았는지 확인한다.
+피킹품목의위치불일치예외	state,process,boundary	-	trigger_condition	피킹품목의위치불일치예외는 시스템 위치에 상품이 없어 작업이 멈추고 재고 조사나 대체 위치 탐색으로 넘어간 상태다. 즉시 품절로 확정하지 않는다.
+피킹품목의수량부족상태	state,process,boundary	-	lifecycle_stage	피킹품목의수량부족상태는 선반에 있는 실제 수가 주문 요구보다 작아 부분 수집만 가능한 단계다. 장부 오차와 다른 구역 재고를 확인한다.
+피킹완료의집하구역이동	state,process,function	-	state_transition	피킹완료의집하구역이동은 주문에 필요한 항목이 모두 모여 포장 전 검수 위치로 넘어가는 과정이다. 여러 작업 용기의 합류가 필요할 수 있다.
+다중피킹용기의주문별합류	state,process,part_of	-	lifecycle_stage	다중피킹용기의주문별합류는 서로 다른 구역에서 온 품목을 주문 식별자에 따라 한 묶음으로 모으는 단계다. 다른 주문 물품이 섞이지 않게 스캔한다.
+포장전품목검수진행	state,process,function	-	lifecycle_stage	포장전품목검수진행은 품명·옵션·수량·손상을 주문과 비교하는 단계다. 피킹 완료 표시만 믿지 않고 실제 물품을 확인한다.
+포장전검수불합격재피킹전환	state,process,contrast	-	trigger_condition	포장전검수불합격재피킹전환은 누락·오품·손상이 발견돼 문제 품목을 빼고 다시 수집하도록 작업을 되돌리는 과정이다. 정상 품목은 분리 보관한다.
+포장상자크기선정상태	state,process,comparison	-	lifecycle_stage	포장상자크기선정상태는 물품 치수·취약성·완충재와 운송 제한을 비교해 용기 규격을 정하는 단계다. 가장 작은 상자가 항상 안전하거나 저렴한 것은 아니다.
+포장완충재배치진행	state,process,function	-	lifecycle_stage	포장완충재배치진행은 물품이 상자 안에서 움직이거나 충돌하지 않도록 빈 공간과 취약 부위를 채우는 과정이다. 완충재 양보다 고정 위치가 중요할 수 있다.
+냉장품의보냉포장조립	state,process,function	-	lifecycle_stage	냉장품의보냉포장조립은 단열 용기와 냉각재, 수분 차단재를 정해진 순서로 넣어 운송 온도를 유지할 조건을 만드는 과정이다. 포장 시점의 제품 온도도 확인한다.
+위험물의규정포장검사대기	state,process,boundary	-	lifecycle_stage	위험물의규정포장검사대기는 용기·흡수재·표지·서류가 운송 기준과 맞는지 권한자가 확인하기 전인 상태다. 일반 포장 완료와 출고 허용을 구분한다.
+위험물포장검사통과봉인	state,process,function	-	trigger_condition	위험물포장검사통과봉인은 필수 조건이 확인돼 용기를 닫고 변조 여부를 알 수 있는 표시를 부착하는 과정이다. 봉인 번호를 운송 문서와 연결한다.
+포장중량측정의주문값대조	state,process,attribute	-	lifecycle_stage	포장중량측정의주문값대조는 실제 상자 질량을 예상 범위와 비교해 누락이나 추가 품목 가능성을 찾는 단계다. 무게 일치만으로 내용 정답을 보장하지 않는다.
+포장중량이상의재검수보류	state,process,boundary	-	trigger_condition	포장중량이상의재검수보류는 측정값이 허용 편차를 벗어나 봉인·출고를 멈추고 상자를 다시 확인하는 변화다. 저울 교정 상태도 함께 점검한다.
+포장완료의상자봉함전환	state,process,function	-	state_transition	포장완료의상자봉함전환은 내용 검수와 완충 배치가 끝나 테이프·결속으로 용기를 닫는 과정이다. 라벨 부착과 운송사 인계는 아직 남는다.
+배송라벨생성후포장연결	state,process,role	-	state_transition	배송라벨생성후포장연결은 수취 주소와 추적 번호가 특정 상자 식별자에 묶이는 변화다. 라벨을 출력했다는 사실만으로 상자에 올바르게 붙었다고 보지 않는다.
+배송라벨주소오류수정대기	state,process,boundary	-	lifecycle_stage	배송라벨주소오류수정대기는 우편번호·연락처·금지 구역 문제가 발견돼 새 라벨 승인을 기다리는 상태다. 잘못된 라벨을 덧붙여 두 주소가 보이게 하지 않는다.
+배송라벨재발행후기존무효화	state,process,contrast	-	degradation_recovery	배송라벨재발행후기존무효화는 수정된 추적 정보가 새 표식에 반영되고 이전 번호의 사용을 막는 과정이다. 물리 상자에는 하나의 유효 라벨만 남긴다.
+포장완료품의출고대기구역이동	state,process,classification	-	state_transition	포장완료품의출고대기구역이동은 봉함·라벨 확인을 마친 상자가 운송편별 집하 위치로 옮겨지는 과정이다. 창고 안 이동과 외부 출고는 다르다.
+출고대기품의운송편배정	state,process,role	-	lifecycle_stage	출고대기품의운송편배정은 마감 시각·목적지·서비스 수준에 맞는 차량과 노선에 상자가 연결된 단계다. 실제 상차 위치를 추가 확인한다.
+상차스캔의차량적재확인	state,process,function	-	trigger_condition	상차스캔의차량적재확인은 추적 번호와 차량 운송편을 연결해 상자가 물리적으로 실렸음을 기록하는 과정이다. 스캔 뒤 상자 하차가 생기면 상태를 되돌려야 한다.
+오상차검출의차량분리	state,process,boundary	-	trigger_condition	오상차검출의차량분리는 목적 노선과 다른 차량에서 상자를 찾아 출발 전에 내려 올바른 집하 구역으로 돌리는 변화다. 추적 이력에 예외를 남긴다.
+차량적재완료의문봉인	state,process,function	-	trigger_condition	차량적재완료의문봉인은 계획 상자가 모두 들어가고 적재 안정성을 확인한 뒤 화물칸을 닫아 봉인 번호를 기록하는 과정이다. 운전자 출발 승인은 별도다.
+출고서류완료의게이트대기	state,process,boundary	-	lifecycle_stage	출고서류완료의게이트대기는 적재와 문서는 끝났지만 차량이 창고 경계를 통과하기 전인 상태다. 상차 완료 시각을 출고 시각으로 대신하지 않는다.
+게이트통과의창고출고전환	state,process,function	-	trigger_condition	게이트통과의창고출고전환은 차량·봉인·서류를 확인해 물품 관리 책임이 운송 단계로 넘어가는 과정이다. 시스템 추적 상태도 이 시점에 갱신한다.
+출고취소의상차품하역복귀	state,process,contrast	-	degradation_recovery	출고취소의상차품하역복귀는 운송편 문제로 차량에서 상자를 내려 출고 대기나 보관 상태로 돌리는 과정이다. 이미 고객에게 보낸 예상 시각을 수정한다.
+포장파손발견의재포장전환	state,process,contrast	-	trigger_condition	포장파손발견의재포장전환은 찢김·눌림·누수가 확인돼 기존 용기를 격리하고 내용 검사 후 새 포장을 만드는 과정이다. 외피만 바꾸기 전 제품 손상을 확인한다.
+출고스캔존재의실물출발미확정	state,process,other	latent_observed_state	lifecycle_stage	출고스캔존재의실물출발미확정은 시스템에는 상차가 기록됐지만 차량 게이트 통과와 실제 상자 존재가 확인되지 않은 상태다. 한 사건으로 출고 완료를 단정하지 않는다.
+포장완료표시의내용정확성미확정	state,process,other	latent_observed_state	lifecycle_stage	포장완료표시의내용정확성미확정은 봉함 상태는 알지만 품목·수량 검수가 제대로 수행됐는지 근거가 부족한 단계다. 작업 로그와 중량을 함께 확인한다.
+# 061~090 운송·허브·추적 이동
+택배차량의출발후간선이동	state,process,classification	-	lifecycle_stage	택배차량의출발후간선이동은 출고 거점에서 분류 허브까지 여러 상자를 묶어 운송하는 단계다. 개별 주소로 배달 중인 상태와 다르다.
+택배차량의허브도착대기열	state,process,boundary	-	lifecycle_stage	택배차량의허브도착대기열은 시설 경계에는 왔지만 하역 도크가 비기 전까지 차량 안에 화물이 남은 상태다. 도착 좌표와 하역 완료를 구분한다.
+택배상자의허브하차확인	state,process,function	-	trigger_condition	택배상자의허브하차확인은 차량에서 내려 컨베이어 투입 지점에서 추적 번호가 읽힌 변화다. 허브 스캔 뒤에도 분류 목적지가 맞는지 확인한다.
+택배상자의자동분류중상태	state,process,role	-	lifecycle_stage	택배상자의자동분류중상태는 크기·주소 코드에 따라 컨베이어와 슈트가 다음 노선 구역으로 보내는 단계다. 한 번 읽기 실패하면 수동 라인으로 빠질 수 있다.
+택배상자의분류코드미인식예외	state,process,boundary	-	trigger_condition	택배상자의분류코드미인식예외는 라벨 손상이나 데이터 오류로 자동 목적지를 정하지 못해 이동이 보류된 상태다. 상자가 분실됐다는 뜻은 아니다.
+택배상자의수동주소확인복귀	state,process,contrast	-	degradation_recovery	택배상자의수동주소확인복귀는 작업자가 라벨과 주문 자료를 대조해 새 분류 코드를 붙이고 정상 노선에 다시 넣는 과정이다. 수정 이력을 기록한다.
+택배상자의간선노선재상차	state,process,function	-	state_transition	택배상자의간선노선재상차는 허브 분류 뒤 목적 지역 차량에 실려 다음 거점으로 이동할 준비가 되는 변화다. 차량 출발 전에는 여전히 허브 관리 상태다.
+택배상자의지역터미널도착	state,process,classification	-	state_transition	택배상자의지역터미널도착은 수취 주소를 담당하는 최종 분류 거점에 물품이 들어온 상태다. 배달 기사에게 인계되기 전에는 배송 출발이 아니다.
+택배상자의배송구역별분류	state,process,role	-	lifecycle_stage	택배상자의배송구역별분류는 도로 순서와 기사 구역에 따라 상자를 묶어 최종 차량 적재 순서를 만드는 단계다. 주소가 같은 동이라도 동선이 다를 수 있다.
+택배상자의기사인수확인	state,process,boundary	-	trigger_condition	택배상자의기사인수확인은 최종 배송 담당자가 상자 수와 상태를 확인해 책임을 넘겨받는 과정이다. 시스템 배정만으로 실물 인수를 확정하지 않는다.
+택배상자의배송출발상태	state,process,classification	-	lifecycle_stage	택배상자의배송출발상태는 최종 차량이 터미널을 나가 수취 주소 순회에 들어간 단계다. 당일 도착 가능성을 뜻하지만 정확한 방문 시각은 변동될 수 있다.
+택배상자의배송순서변경	state,process,function	-	trigger_condition	택배상자의배송순서변경은 교통·시간창·신선품 조건을 반영해 기사 동선에서 방문 순위가 바뀌는 과정이다. 목적 주소와 서비스 약속은 유지한다.
+택배상자의운송중주소정정대기	state,process,boundary	-	lifecycle_stage	택배상자의운송중주소정정대기는 고객이 변경을 요청해 현재 터미널과 새 담당 구역의 승인·비용 확인을 기다리는 상태다. 차량에서 즉시 방향을 바꾸지는 않는다.
+택배상자의새주소노선전환	state,process,contrast	-	degradation_recovery	택배상자의새주소노선전환은 정정이 승인돼 기존 배송 구역에서 회수하고 새 목적지 허브로 보내는 과정이다. 예상 인도일이 다시 계산된다.
+국제화물의수출통관대기	state,process,boundary	-	lifecycle_stage	국제화물의수출통관대기는 운송 예약은 됐지만 신고와 검사 결과가 나오기 전 국경 출발을 보류한 상태다. 창고 출고와 국가 반출은 다르다.
+국제화물의수출통관승인	state,process,function	-	trigger_condition	국제화물의수출통관승인은 품목·가액·허가 조건이 확인돼 국외 운송편에 적재할 수 있게 되는 변화다. 도착국 수입 승인은 별도다.
+국제화물의항공운송중상태	state,process,classification	-	lifecycle_stage	국제화물의항공운송중상태는 출발 공항에서 목적 공항으로 항공편에 실려 이동하는 단계다. 추적 갱신이 뜸해도 운송이 멈춘 것은 아닐 수 있다.
+국제화물의환적공항대기	state,process,boundary	-	lifecycle_stage	국제화물의환적공항대기는 첫 항공편에서 내려 다음 연결편의 공간과 서류를 기다리는 상태다. 최종 국가에 도착한 것으로 보지 않는다.
+국제화물의연결편누락지연	state,process,boundary	-	trigger_condition	국제화물의연결편누락지연은 전편 도착 지연이나 처리 문제로 예약 비행기에 싣지 못해 다음 편 배정을 기다리는 변화다. 화물 분실과는 다르다.
+국제화물의연결편재예약	state,process,contrast	-	degradation_recovery	국제화물의연결편재예약은 새 항공편 공간과 환적 서류가 확정돼 운송 경로가 다시 활성화되는 과정이다. 고객 예상 시각을 갱신한다.
+국제화물의목적국수입통관중	state,process,role	-	lifecycle_stage	국제화물의목적국수입통관중은 도착했지만 세금·허가·검사 절차가 진행되어 국내 배송으로 넘기지 않은 단계다. 공항 도착과 인도 가능은 다르다.
+국제화물의검사보류상태	state,process,boundary	-	trigger_condition	국제화물의검사보류상태는 서류 불일치나 표본 검사 대상으로 선정돼 통관 처리가 잠시 멈춘 단계다. 결과 전에는 압류나 반송으로 확정하지 않는다.
+국제화물의통관완료국내이관	state,process,function	-	degradation_recovery	국제화물의통관완료국내이관은 관세와 검사 조건이 해소돼 국내 운송사에게 물품이 넘어가는 과정이다. 최종 수취인 인도는 뒤에 남는다.
+냉장화물의운송온도정상유지	state,process,attribute	-	lifecycle_stage	냉장화물의운송온도정상유지는 센서값이 지정 범위 안에 있고 냉각 장치가 주기적으로 작동하는 단계다. 한 지점의 온도로 상자 내부 모두를 대표하지 않는다.
+냉장화물의온도상한이탈경보	state,process,boundary	-	trigger_condition	냉장화물의온도상한이탈경보는 측정값이 허용 상한을 정해진 시간 넘겨 품질 영향 조사가 필요한 상태로 바뀐 것이다. 순간 문 개방과 장기 노출을 구분한다.
+냉장화물의냉각복구후평가대기	state,process,contrast	-	degradation_recovery	냉장화물의냉각복구후평가대기는 온도는 다시 범위에 들어왔지만 이탈 시간과 제품 중심 상태를 검토하기 전인 단계다. 복귀가 품질 회복을 보장하지 않는다.
+화물추적의중간스캔누락상태	state,process,other	latent_observed_state	lifecycle_stage	화물추적의중간스캔누락상태는 앞·뒤 거점 기록 사이 한 사건이 없지만 실제 이동 누락인지 스캔 실패인지 모르는 관측 단계다. 즉시 분실로 판단하지 않는다.
+화물위치의마지막관측후장기공백	state,process,other	latent_observed_state	degradation_recovery	화물위치의마지막관측후장기공백은 예상 갱신 시간을 넘겨 새 위치 자료가 없어 조사 대상이 된 상태다. 마지막 스캔 장소에 계속 있다고 확정할 수 없다.
+화물운송편변경의경로재계산	state,process,function	-	state_transition	화물운송편변경의경로재계산은 차량·항공편·선박 변경을 반영해 다음 허브와 예상 시각을 다시 정하는 과정이다. 추적 번호는 유지될 수 있다.
+운송상태표시의실제물리위치미확정	state,process,other	latent_observed_state	lifecycle_stage	운송상태표시의실제물리위치미확정은 시스템 단계는 이동 중이지만 갱신 시각 이후 화물의 현재 좌표를 모르는 상태다. 상태 라벨을 실시간 위치로 오해하지 않는다.
+# 091~120 배송 시도·인도·실패
+택배기사의수취주소접근상태	state,process,classification	-	lifecycle_stage	택배기사의수취주소접근상태는 차량이 목적지 근처에 와 상자를 선택하고 출입 경로를 찾는 단계다. 주소 도착과 수취인 접촉은 다르다.
+택배기사의수취인연락시도	state,process,role	-	lifecycle_stage	택배기사의수취인연락시도는 출입이나 대면 인도 조건을 맞추기 위해 전화·호출을 보내 응답을 기다리는 단계다. 연락 발신을 인도 완료로 기록하지 않는다.
+택배의수취인대면확인	state,process,boundary	-	trigger_condition	택배의수취인대면확인은 이름·호수·신분 또는 지정 정보를 대조해 올바른 사람이 물품을 받을 조건을 확인하는 과정이다. 주소에 사람이 있다는 것만으로 충분하지 않을 수 있다.
+택배의서명후인도완료	state,process,function	-	trigger_condition	택배의서명후인도완료는 물품이 수취인 통제 아래로 넘어가고 서명·시각·위치 증거가 기록되는 변화다. 단순 배송 기사 도착과 구분한다.
+택배의사진증거비대면인도	state,process,function	-	trigger_condition	택배의사진증거비대면인도는 고객이 허용한 장소에 상자를 두고 위치 사진과 알림을 남겨 인도 상태로 바꾸는 과정이다. 금지 품목이나 안전하지 않은 장소에는 적용하지 않는다.
+택배의공동현관출입실패	state,process,boundary	-	trigger_condition	택배의공동현관출입실패는 주소에는 도착했지만 출입 코드·호출 응답이 없어 수취 문 앞에 접근하지 못한 상태다. 수취인 부재와 원인이 다르다.
+택배의수취인부재첫시도실패	state,process,boundary	-	trigger_condition	택배의수취인부재첫시도실패는 대면이 필요한 물품에서 응답자가 없어 인도하지 못하고 재시도 대상으로 바뀐 것이다. 화물은 기사나 터미널로 돌아간다.
+택배의주소불명배송실패	state,process,boundary	-	trigger_condition	택배의주소불명배송실패는 표기된 건물·호수·우편번호를 현장에서 식별할 수 없어 인도를 보류한 상태다. 고객 확인 전 임의 장소에 두지 않는다.
+택배의수취거부반송전환	state,process,contrast	-	trigger_condition	택배의수취거부반송전환은 수취인이 물품을 받지 않겠다는 의사를 밝혀 인도 대신 발송자 회수 경로로 상태가 바뀌는 과정이다. 내용 확인 전 단순 부재와 다르다.
+택배의파손발견인도보류	state,process,boundary	-	trigger_condition	택배의파손발견인도보류는 외부 손상이 커 수취인 확인이나 사고 접수 전 전달을 멈춘 상태다. 포장 흠과 내용물 손상을 각각 기록한다.
+택배의연령확인실패인도거부	state,process,function	-	trigger_condition	택배의연령확인실패인도거부는 제한 품목의 수취 자격을 확인하지 못해 물품을 넘기지 않는 변화다. 주소와 주문자 이름이 맞아도 조건은 충족되지 않는다.
+택배의본인한정수취불일치	state,process,boundary	-	trigger_condition	택배의본인한정수취불일치는 대리인이 나왔지만 정책상 지정 본인에게만 줄 수 있어 배송이 실패한 상태다. 일반 대리 수령과 규칙이 다르다.
+택배의보관함입고완료	state,process,function	-	trigger_condition	택배의보관함입고완료는 빈 칸에 상자를 넣고 문 잠금과 수취 코드를 생성해 물리 인계를 보관 장치에 맡긴 변화다. 고객이 꺼낸 상태는 아직 아니다.
+택배보관함의수취대기상태	state,process,role	-	lifecycle_stage	택배보관함의수취대기상태는 상자가 잠긴 칸 안에 있고 유효 코드 소유자의 방문을 기다리는 단계다. 배송 완료 표시와 최종 수령 시각을 나눠 볼 수 있다.
+택배보관함의코드인증수령	state,process,function	-	trigger_condition	택배보관함의코드인증수령은 올바른 코드로 문이 열리고 센서가 상자 제거를 확인해 고객 수령으로 바뀌는 과정이다. 문 개방만으로 꺼냄을 확정하지 않는다.
+택배보관함의보관기한만료	state,process,boundary	-	trigger_condition	택배보관함의보관기한만료는 고객이 가져가지 않은 채 허용 시간이 지나 회수 작업 대상으로 전환되는 변화다. 상자는 여전히 보관함 안에 있을 수 있다.
+택배의경비실대리인도	state,process,role	-	trigger_condition	택배의경비실대리인도는 고객의 허용 조건 아래 관리자가 물품을 받고 수령자·시각을 기록하는 과정이다. 최종 고객 전달은 이후 내부 절차다.
+택배의문앞인도금지품목보류	state,process,boundary	-	lifecycle_stage	택배의문앞인도금지품목보류는 비대면 장소에 둘 수 없는 물품이라 수취인 응답 전까지 기사 보관 상태로 남은 단계다. 일반 소포 정책을 적용하지 않는다.
+식품배송의온도검수후인도	state,process,attribute	-	trigger_condition	식품배송의온도검수후인도는 수취 시 포장·온도 표시가 허용 범위임을 확인하고 물품을 넘기는 과정이다. 인도 뒤 보관 책임이 수취인에게 이동한다.
+식품배송의온도이탈수취보류	state,process,boundary	-	trigger_condition	식품배송의온도이탈수취보류는 도착했지만 관리 범위를 벗어난 기록이 있어 품질 판정 전 고객에게 쓰도록 넘기지 않는 상태다. 외관만으로 안전을 확정하지 않는다.
+화물의부분인도상태	state,process,part_of	-	lifecycle_stage	화물의부분인도상태는 여러 상자 중 일부만 수취인에게 넘어가고 나머지는 이동·예외 상태로 남은 단계다. 한 서명을 주문 전체 완료로 적용하지 않는다.
+화물의잔여분추적인도대기	state,process,boundary	-	lifecycle_stage	화물의잔여분추적인도대기는 부분 인도 뒤 아직 도착하지 않은 상자들의 위치와 새 일정을 확인하는 상태다. 인도된 품목과 미인도 품목을 명확히 나눈다.
+배송실패후다음날재시도예약	state,process,contrast	-	degradation_recovery	배송실패후다음날재시도예약은 실패 사유와 고객 가능 시간을 반영해 새 방문 순서가 생성되는 과정이다. 같은 주소 오류가 남으면 재시도 전에 수정한다.
+배송실패후고객픽업전환	state,process,function	-	state_transition	배송실패후고객픽업전환은 반복 방문 대신 지정 영업소에 물품을 보관하고 고객이 찾아가도록 인도 방식을 바꾸는 과정이다. 픽업 기한과 신분 조건을 알린다.
+영업소픽업의수취인확인완료	state,process,boundary	-	trigger_condition	영업소픽업의수취인확인완료는 방문자가 추적 정보와 신분 조건을 충족해 보관 물품을 받을 수 있게 된 변화다. 확인 전에는 창고에서 꺼내도 인도하지 않는다.
+영업소픽업의물품인계완료	state,process,function	-	trigger_condition	영업소픽업의물품인계완료는 직원이 상자 상태를 확인하고 수취 서명을 받아 보관 책임을 종료하는 과정이다. 고객 예약만으로 완료 처리하지 않는다.
+배송완료오표시의조사전환	state,process,boundary	-	trigger_condition	배송완료오표시의조사전환은 고객이 미수령을 신고해 기사 위치·사진·서명을 다시 확인하는 과정이다. 시스템 완료값을 물리 인도의 절대 증거로 삼지 않는다.
+인도증거불충분의상태보류	state,process,other	latent_observed_state	lifecycle_stage	인도증거불충분의상태보류는 스캔은 있으나 서명·사진·위치가 맞지 않아 완료와 분실 중 어느 쪽인지 확정하지 않은 단계다. 조사 결과 전 고객 책임으로 넘기지 않는다.
+인도완료후수취인분실신고	state,process,boundary	-	trigger_condition	인도완료후수취인분실신고는 기록상 전달 뒤 물품을 찾지 못한다는 사건이 접수돼 보관 장소와 제3자 수령을 조사하는 상태다. 운송 중 분실과 구분한다.
+배송시도자료부재의실제방문미확정	state,process,other	latent_observed_state	lifecycle_stage	배송시도자료부재의실제방문미확정은 실패 사유만 있고 위치·연락 기록이 없어 기사의 현장 방문 여부를 판별할 수 없는 상태다. 재시도 전에 이력을 확인한다.
+# 121~150 반품·회수·환불
+고객반품요청의접수대기	state,process,boundary	-	lifecycle_stage	고객반품요청의접수대기는 사유와 품목 정보가 제출됐지만 기간·조건 심사가 끝나지 않은 단계다. 요청 버튼 클릭과 반품 승인을 구분한다.
+고객반품요청의승인전환	state,process,function	-	trigger_condition	고객반품요청의승인전환은 정책 조건을 통과해 회수 방법과 반품 번호가 발급되는 과정이다. 환불 금액은 실물 검사 뒤 확정될 수 있다.
+고객반품요청의거절상태	state,process,boundary	-	trigger_condition	고객반품요청의거절상태는 기간 초과나 제외 품목 등 이유로 회수·환불 절차가 열리지 않은 단계다. 이의 제기 경로가 남을 수 있다.
+반품상품의고객포장대기	state,process,role	-	lifecycle_stage	반품상품의고객포장대기는 승인과 라벨은 준비됐지만 고객이 물품과 구성품을 용기에 넣기 전인 상태다. 승인만으로 상품이 판매자에게 돌아오지 않는다.
+반품상품의회수예약완료	state,process,function	-	state_transition	반품상품의회수예약완료는 방문 날짜·주소·택배사가 확정돼 수거 작업이 계획된 변화다. 기사가 실제 인수하기 전까지 상품은 고객에게 있다.
+반품상품의기사인수전환	state,process,boundary	-	trigger_condition	반품상품의기사인수전환은 반품 번호와 포장 수량을 확인해 물품이 고객에서 운송사 관리로 넘어가는 과정이다. 외관 손상은 인수 시 기록한다.
+반품상품의회수운송중상태	state,process,classification	-	lifecycle_stage	반품상품의회수운송중상태는 고객 위치에서 판매자 반품 센터로 이동하는 단계다. 최초 배송 추적과 다른 방향·번호를 사용할 수 있다.
+반품상품의센터도착대기하역	state,process,boundary	-	lifecycle_stage	반품상품의센터도착대기하역은 차량은 반품 거점에 왔지만 상자가 도크에서 인수되기 전인 상태다. 위치 도착과 센터 접수를 구분한다.
+반품상품의센터접수스캔	state,process,function	-	trigger_condition	반품상품의센터접수스캔은 반품 번호와 실물 상자가 연결돼 검사 큐에 들어가는 변화다. 고객이 보낸 내용이 주문과 같은지는 아직 확인 전이다.
+반품상품의구성품검사중상태	state,process,role	-	lifecycle_stage	반품상품의구성품검사중상태는 본품·부속·포장·일련번호를 원 주문과 대조하는 단계다. 상자 도착만으로 전액 환불 조건을 확정하지 않는다.
+반품상품의미개봉검사통과	state,process,classification	-	trigger_condition	반품상품의미개봉검사통과는 봉인과 외관이 기준에 맞아 재판매 가능한 상태로 분류되는 과정이다. 내부 기능 시험이 필요한 품목은 추가 단계로 간다.
+반품상품의기능검사대기	state,process,boundary	-	lifecycle_stage	반품상품의기능검사대기는 개봉·사용 흔적이나 결함 신고 때문에 작동 확인이 남은 상태다. 외관 정상만으로 재고 복귀를 허용하지 않는다.
+반품상품의기능정상재포장	state,process,contrast	-	degradation_recovery	반품상품의기능정상재포장은 시험을 통과한 물품을 세척하고 등급에 맞는 포장으로 만들어 판매 가능 상태를 회복하는 과정이다. 새 상품과 등급은 다를 수 있다.
+반품상품의결함확인수리대기	state,process,boundary	-	trigger_condition	반품상품의결함확인수리대기는 신고 문제가 재현돼 정비 부서와 부품을 기다리는 상태다. 고객 환불 처리와 물품 수리 수명주기는 병행될 수 있다.
+반품상품의수리후재검사	state,process,contrast	-	degradation_recovery	반품상품의수리후재검사는 교체·조정 뒤 원래 결함과 기본 기능을 다시 시험해 등급을 정하는 과정이다. 수리 완료 보고만으로 재판매하지 않는다.
+반품상품의수리불가폐기판정	state,process,boundary	-	trigger_condition	반품상품의수리불가폐기판정은 안전·비용·부품 조건 때문에 다시 쓸 수 없다고 결정해 재활용이나 폐기 경로로 넘기는 변화다. 고객 반품 거절과 다른 판정이다.
+환불금액의검사결과산정	state,process,attribute	-	lifecycle_stage	환불금액의검사결과산정은 반품 사유·누락 구성품·사용 상태와 정책을 반영해 돌려줄 금액을 계산하는 단계다. 상품 도착 시각과 환불 확정 시각은 다르다.
+환불승인의지급대기전환	state,process,function	-	trigger_condition	환불승인의지급대기전환은 금액과 수취 결제 수단이 확정돼 금융 처리 큐로 넘어가는 과정이다. 승인 표시와 고객 계좌 입금은 구분한다.
+환불지급의결제기관전송	state,process,role	-	lifecycle_stage	환불지급의결제기관전송은 판매자가 취소·환급 명령을 카드사나 은행에 보낸 단계다. 기관 처리 시간 동안 고객 명세에는 아직 보이지 않을 수 있다.
+환불지급완료확정	state,process,function	-	trigger_condition	환불지급완료확정은 결제 기관이 금액 반영 성공을 알려 주문의 금융 의무가 닫히는 변화다. 상품 재고 상태는 별도로 관리한다.
+환불지급실패재처리대기	state,process,boundary	-	trigger_condition	환불지급실패재처리대기는 계좌 폐쇄나 네트워크 오류로 금액이 돌아가지 않아 다른 수단 확인이 필요한 상태다. 반품 승인 자체가 취소되는 것은 아니다.
+교환요청의반품인수완료	state,process,role	-	lifecycle_stage	교환요청의반품인수완료는 원 상품이 회수돼 검사 단계에 들어갔지만 대체 상품 출고는 아직 시작되지 않은 상태다. 반품과 새 주문 두 흐름을 연결한다.
+교환상품의재고예약전환	state,process,function	-	trigger_condition	교환상품의재고예약전환은 교환 조건을 통과해 새 옵션 수량을 고객에게 배정하는 과정이다. 원 상품 검사 결과에 따라 출고가 보류될 수 있다.
+교환상품의재출고상태	state,process,contrast	-	degradation_recovery	교환상품의재출고상태는 대체 품목이 포장돼 새 추적 번호로 고객에게 이동하기 시작한 단계다. 원 배송 완료 상태를 재사용하지 않는다.
+리콜상품의회수대상전환	state,process,boundary	-	trigger_condition	리콜상품의회수대상전환은 안전·품질 문제에 해당하는 일련번호가 판매 후라도 사용 중지와 반환 대상으로 바뀌는 과정이다. 고객 변심 반품과 사유가 다르다.
+리콜상품의고객통지완료	state,process,function	-	lifecycle_stage	리콜상품의고객통지완료는 알려진 구매자에게 위험과 중지·회수 방법을 전달한 단계다. 메시지 발송과 고객 확인을 따로 집계한다.
+리콜상품의회수율추적상태	state,process,attribute	-	lifecycle_stage	리콜상품의회수율추적상태는 판매 수량 중 실제 돌아온 수와 연락·미응답 상태를 계속 갱신하는 단계다. 통지 수를 회수 수로 간주하지 않는다.
+반품센터의소유자불명물품격리	state,process,other	latent_observed_state	lifecycle_stage	반품센터의소유자불명물품격리는 상자는 도착했지만 반품 번호나 주문 연결이 없어 누구의 처리인지 모르는 상태다. 임의 주문에 환불을 붙이지 않고 조사한다.
+반품완료표시의실제환불미확정	state,process,other	latent_observed_state	lifecycle_stage	반품완료표시의실제환불미확정은 실물 회수는 끝났지만 검사·금액 승인·금융 반영 중 어느 단계인지 알 수 없는 상태다. 물류 완료를 금융 완료로 확대하지 않는다.
+회수추적부재의상품위치미확정	state,process,other	latent_observed_state	degradation_recovery	회수추적부재의상품위치미확정은 기사 인수 뒤 새 스캔이 없어 차량·허브·분실 중 실제 상태를 모르는 단계다. 마지막 기록만으로 현재 위치를 단정하지 않는다.

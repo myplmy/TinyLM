@@ -1,0 +1,158 @@
+# family	건물 경보·대피·신고·구조·복구 상황
+# axes	경보, 점유자, 출구, 담당자, 위험 구역, 복구 상태
+# columns	concepts	relations	other_category	logic_pattern	directly_authored_text
+# 001~030 경보·점유자·위험 구역·복구 상태의 원인 맥락 추적
+연기감지경보상황|연기감지기|경보음|삼층복도|관리실	other,process,state,boundary	causal_context	entity_tracking	연기감지경보상황: 연기감지기가 삼층복도에서 신호를 보내 경보음이 울리고 관리실 화면에 위치가 떴다. 경보는 확인 필요를 뜻하며 화재 규모를 확정하지 않는다.
+비상계단대피상황|점유자들|비상계단|일층출구|집결지	other,process,state,function	causal_context	entity_tracking	비상계단대피상황: 점유자들은 승강기를 피하고 비상계단을 내려가 일층출구를 지나 집결지에 모였다. 건물 밖에 나온 뒤 인원 확인이 이어진다.
+화재신고접수상황|건물관리자|화재신고|신고번호|소방상황실	other,process,state,classification	causal_context	entity_tracking	화재신고접수상황: 건물관리자는 화재신고를 소방상황실에 전달하고 신고번호를 받았다. 번호 발급은 현장 출동 완료가 아니라 접수 상태다.
+출입통제구역설정상황|안전담당|위험구역|통제선|대체통로	other,process,state,boundary	causal_context	entity_tracking	출입통제구역설정상황: 안전담당은 위험구역 앞에 통제선을 설치하고 대체통로를 안내했다. 통제된 공간이 건물 전체의 폐쇄를 뜻하지 않는다.
+소화기사용기록상황|초기대응자|소화기|발화지점|사용표시	other,process,state,function	causal_context	entity_tracking	소화기사용기록상황: 초기대응자는 발화지점에 소화기를 사용하고 용기에 사용표시를 붙였다. 불꽃이 줄어도 전문가 확인 전에는 상황 종료로 기록하지 않는다.
+대피명부확인상황|층대표|점유자명부|집결인원|미확인자	other,process,state,comparison	causal_context	entity_tracking	대피명부확인상황: 층대표는 점유자명부와 집결인원을 대조해 보이지 않는 사람을 미확인자로 표시했다. 명단 차이는 곧 건물 안 잔류를 확정하지 않는다.
+승강기운행정지상황|시설담당|비상신호|승강기|정지층	other,process,state,boundary	causal_context	entity_tracking	승강기운행정지상황: 시설담당은 비상신호를 받은 승강기를 정지층에 세우고 운행 중지 표시를 했다. 문이 열려 있어도 대피 수단으로 사용하지 않는다.
+가스차단복구상황|설비기사|가스밸브|차단상태|복구승인	other,process,state,boundary	causal_context	entity_tracking	가스차단복구상황: 설비기사는 가스밸브를 차단상태로 두고 누출 확인 뒤 복구승인을 기다렸다. 냄새가 사라졌다는 관찰만으로 다시 열지 않는다.
+경보구역화면추적상황|방재실|경보구역|평면도|점멸표시	other,process,state,classification	causal_context	entity_tracking	경보구역화면추적상황: 방재실은 평면도에서 경보구역의 점멸표시를 확인해 현장 점검자를 보냈다. 화면 위치와 실제 위험 범위는 점검으로 구분한다.
+비상문개방상황|대피유도원|비상문|잠금해제|외부통로	other,process,state,function	causal_context	entity_tracking	비상문개방상황: 대피유도원은 비상문의 잠금해제를 확인하고 외부통로로 사람들을 보냈다. 문이 열렸다는 사실과 모든 층의 대피 완료는 별개다.
+구조요청위치상황|신고자|구조요청|오층회의실|위치메모	other,process,state,function	causal_context	entity_tracking	구조요청위치상황: 신고자는 오층회의실에 이동이 어려운 사람이 있다고 구조요청했고 위치메모가 상황판에 등록됐다. 요청 접수와 구조 완료를 구분한다.
+연기배출설비가동상황|시설기사|배연팬|연기구역|가동표시	other,process,state,function	causal_context	entity_tracking	연기배출설비가동상황: 시설기사는 연기구역의 배연팬을 켜고 가동표시를 확인했다. 팬 작동이 공기 안전 상태를 즉시 보장하지 않는다.
+비상방송갱신상황|방송담당|첫안내|변경출구|새대피방송	other,process,state,boundary	causal_context	entity_tracking	비상방송갱신상황: 방송담당은 첫안내의 출구가 막혔다는 보고를 받아 변경출구를 담은 새대피방송을 내보냈다. 이전 경로는 더 이상 유효하지 않다.
+소방차진입유도상황|경비원|소방차|진입로|건물입구	other,process,state,role	causal_context	entity_tracking	소방차진입유도상황: 경비원은 진입로의 차량을 비우고 소방차를 건물입구까지 안내했다. 부지 도착과 내부 진입은 다른 단계다.
+전기구역차단상황|전기담당|위험분전반|차단스위치|정전구역	other,process,state,part_of	causal_context	entity_tracking	전기구역차단상황: 전기담당은 위험분전반의 차단스위치를 내려 정전구역을 분리했다. 건물 다른 층의 전력까지 모두 끊긴 것은 아니다.
+응급환자이송상황|구조대원|부상자|응급들것|구급차	other,process,state,function	causal_context	entity_tracking	응급환자이송상황: 구조대원은 부상자를 응급들것에 고정해 구급차로 옮겼다. 건물 밖 이동과 의료기관 도착은 각각 추적한다.
+대피완료층표시상황|층담당자|사층|확인순찰|완료표시	other,process,state,boundary	causal_context	entity_tracking	대피완료층표시상황: 층담당자는 사층의 방을 확인순찰한 뒤 상황판에 완료표시를 남겼다. 한 층의 확인을 건물 전체 완료로 확대하지 않는다.
+오경보판정기록상황|점검자|센서오류|경보이력|오경보판정	other,process,state,boundary	causal_context	entity_tracking	오경보판정기록상황: 점검자는 센서오류를 확인해 경보이력에 오경보판정을 남겼다. 판정 전 경보 대응 기록은 삭제하지 않는다.
+침수경보대피상황|지하관리자|침수경보|지하주차장|상층출구	other,process,state,function	causal_context	entity_tracking	침수경보대피상황: 지하관리자는 침수경보를 듣고 지하주차장의 사람들을 상층출구로 유도했다. 차량 회수보다 사람의 이동을 먼저 한다.
+화재문폐쇄상황|방재설비|방화문|연기확산|폐쇄상태	other,process,state,function	causal_context	entity_tracking	화재문폐쇄상황: 방재설비가 연기확산을 늦추기 위해 방화문을 폐쇄상태로 바꿨다. 닫힌 문을 일반 출구로 밀어 열지 않는다.
+재입장금지표시상황|안전책임자|대피자|재입장금지|출입구	other,process,state,boundary	causal_context	entity_tracking	재입장금지표시상황: 안전책임자는 출입구에 재입장금지를 알리고 대피자를 집결지에 머물게 했다. 개인 물품이 남았어도 승인 전에는 돌아가지 않는다.
+누출지점표지상황|설비점검자|물누출|바닥구역|주의표지	other,process,state,boundary	causal_context	entity_tracking	누출지점표지상황: 설비점검자는 물누출이 있는 바닥구역에 주의표지를 세워 보행을 막았다. 젖은 바닥의 범위가 배관에서 실제로 고장 난 지점과 일치한다고 단정해서는 안 된다.
+복구작업진행표상황|복구팀|손상구역|작업단계|진행표	other,process,state,classification	causal_context	entity_tracking	복구작업진행표상황: 복구팀은 손상구역별 작업단계를 진행표에 갱신했다. 청소 완료와 설비 안전 확인은 서로 다른 단계로 남는다.
+경보해제방송상황|방재책임자|현장확인|경보해제|안내방송	other,process,state,boundary	causal_context	entity_tracking	경보해제방송상황: 방재책임자는 현장확인과 관계 기관의 동의를 받은 뒤 경보해제를 안내방송으로 알렸다. 경보음이 멈춘 시점만으로 해제하지 않는다.
+연락망호출추적상황|관리실|비상연락망|당직자|응답표시	other,process,state,role	causal_context	entity_tracking	연락망호출추적상황: 관리실은 비상연락망으로 당직자를 호출하고 연결된 사람에게 응답표시를 남겼다. 전화 발신과 실제 확인 완료를 나눈다.
+대피통로장애물제거상황|시설요원|대피통로|이동카트|벽쪽공간	other,process,state,function	causal_context	entity_tracking	대피통로장애물제거상황: 시설요원은 대피통로를 막은 이동카트를 벽쪽공간으로 옮겼다. 통로가 비었다고 대피가 모두 끝난 것은 아니다.
+구조완료인계상황|구조대|구조대상자|인계지점|의료팀	other,process,state,role	causal_context	entity_tracking	구조완료인계상황: 구조대는 구조대상자를 인계지점까지 데려와 의료팀에 넘겼다. 위험 구역 이탈과 의료 평가가 책임 구간으로 이어진다.
+비상조명점검상황|전기기사|비상조명|어두운계단|점검기록	other,process,state,function	causal_context	entity_tracking	비상조명점검상황: 전기기사는 어두운계단의 비상조명을 확인해 고장 여부를 점검기록에 남겼다. 불이 켜진 것과 충분한 밝기가 확보된 것을 구분한다.
+복구후구역개방상황|건물관리자|복구완료표|폐쇄구역|개방표시	other,process,state,boundary	causal_context	entity_tracking	복구후구역개방상황: 건물관리자는 복구완료표와 안전 확인을 받은 폐쇄구역에 개방표시를 붙였다. 작업자가 나온 것만으로 이용자 출입을 허용하지 않는다.
+경보장치교체추적상황|설비기사|고장감지기|새감지기|시험신호	other,process,state,boundary	causal_context	entity_tracking	경보장치교체추적상황: 설비기사는 고장감지기를 새감지기로 바꾸고 시험신호가 관리실에 도달하는지 확인했다. 설치 완료와 정상 연동 확인은 별개다.
+# 031~060 점유자·유도원·관리자·구조대 역할의 조정
+층별대피유도협력상황|층대표|대피유도원|점유자들|비상출구	other,role,function,state	role_coordination	role_coordination	층별대피유도협력상황: 층대표는 점유자들을 모으고 대피유도원은 비상출구의 안전을 확인해 이동시켰다. 인원 집계와 경로 안내가 역할별로 이어진다.
+경보확인신고분담상황|방재실직원|현장점검자|경보위치|신고결정	other,role,boundary,process	role_coordination	role_coordination	경보확인신고분담상황: 방재실직원은 경보위치를 현장점검자에게 알리고 받은 관찰을 바탕으로 신고결정을 했다. 화면 신호와 현장 확인을 구분한다.
+소방대건물인계상황|건물관리자|소방대장|평면도|위험정보	other,role,function,state	role_coordination	role_coordination	소방대건물인계상황: 건물관리자는 평면도와 위험정보를 소방대장에게 전달했다. 건물 내부 지식과 구조 지휘 권한이 서로 다른 담당자에게 있다.
+응급구조의료인계상황|구조대원|의료요원|부상자|상태메모	other,role,process,state	role_coordination	role_coordination	응급구조의료인계상황: 구조대원은 부상자를 안전 구역으로 옮기고 상태메모와 함께 의료요원에게 넘겼다. 구조와 치료의 책임 경계를 기록한다.
+비상방송현장연계상황|현장유도자|방송담당|막힌출구|변경안내	other,role,function,boundary	role_coordination	role_coordination	비상방송현장연계상황: 현장유도자는 막힌출구를 발견해 방송담당에게 알렸고 변경안내가 전 층에 송출됐다. 현장 관찰과 건물 전체 전달이 협력한다.
+전기차단소방협의상황|전기담당|소방지휘자|차단구역|작업승인	other,role,boundary,state	role_coordination	role_coordination	전기차단소방협의상황: 전기담당은 차단구역을 설명하고 소방지휘자는 구조 경로를 보고 작업승인을 요청했다. 전력 안전과 현장 작전 판단을 함께 맞춘다.
+대피자명부관리상황|접수담당|층대표|집결자|확인명부	other,role,function,classification	role_coordination	role_coordination	대피자명부관리상황: 층대표는 집결자를 불러 확인하고 접수담당은 확인명부를 전체 목록에 합쳤다. 각 층 확인과 건물 전체 집계가 분리된다.
+출입통제보안협업상황|안전관리자|경비원|통제구역|출입기록	other,role,boundary,state	role_coordination	role_coordination	출입통제보안협업상황: 안전관리자는 통제구역의 범위를 정하고 경비원은 출입기록과 신분을 확인했다. 구역 결정과 실제 문 관리가 역할별로 이어진다.
+설비복구검사협력상황|복구기사|안전검사자|수리설비|검사승인	other,role,process,boundary	role_coordination	role_coordination	설비복구검사협력상황: 복구기사는 수리설비의 작업 내역을 제출하고 안전검사자는 시험 뒤 검사승인을 남겼다. 수리를 마친 사람이 개방을 단독 결정하지 않는다.
+대피약자지원상황|지원요원|이동약자|대피의자|안전구역	other,role,function,state	role_coordination	role_coordination	대피약자지원상황: 지원요원은 이동약자를 대피의자에 고정해 안전구역으로 이동시켰다. 장비 사용과 인원 확인을 함께 기록한다.
+가스누출대응협업상황|설비담당|안전책임자|누출의심|차단명령	other,role,boundary,process	role_coordination	role_coordination	가스누출대응협업상황: 설비담당은 누출의심 지점을 보고하고 안전책임자는 차단명령과 대피 범위를 정했다. 기술 관찰과 사람 이동 판단을 나눈다.
+구조요청위치전달상황|신고접수자|구조팀|갇힌사람|방번호	other,role,function,state	role_coordination	role_coordination	구조요청위치전달상황: 신고접수자는 갇힌사람의 방번호와 마지막 연락을 구조팀에 전달했다. 접수자는 위치 정보를 정리하고 구조팀은 현장 접근을 판단한다.
+경보설비점검분담상황|방재기사|관리실직원|시험경보|수신기록	other,role,function,boundary	role_coordination	role_coordination	경보설비점검분담상황: 방재기사는 시험경보를 발생시키고 관리실직원은 수신기록과 방송 연동을 확인했다. 신호 발생과 수신 검증을 분리한다.
+대피훈련진행협업상황|훈련통제자|참가자|가상경보|관찰기록	other,role,process,boundary	role_coordination	role_coordination	대피훈련진행협업상황: 훈련통제자는 가상경보를 알리고 참가자는 정해진 길로 이동했으며 관찰기록은 실제 재난 기록과 구분됐다. 훈련 신호를 실경보로 저장하지 않는다.
+화재문관리협력상황|시설요원|대피유도원|방화문|통과확인	other,role,function,state	role_coordination	role_coordination	화재문관리협력상황: 시설요원은 방화문이 닫히는지 확인하고 대피유도원은 마지막 사람의 통과확인을 알렸다. 설비 기능과 사람 위치를 함께 살핀다.
+현장사진상황실연계상황|점검자|상황실담당|위험사진|구역지도	other,role,function,classification	role_coordination	role_coordination	현장사진상황실연계상황: 점검자는 위험사진을 보내고 상황실담당은 구역지도에 위치를 표시했다. 촬영자의 관찰과 전체 상황판 정리가 연결된다.
+복구청소안전인계상황|청소팀|안전검사자|복구구역|개방요청	other,role,boundary,state	role_coordination	role_coordination	복구청소안전인계상황: 청소팀은 복구구역의 잔여물을 치운 뒤 개방요청을 했고 안전검사자는 위험 요소를 다시 확인했다. 깨끗함과 안전 승인은 동일하지 않다.
+대피버스배정협력상황|현장책임자|버스기사|대피자명단|이동차량	other,role,function,classification	role_coordination	role_coordination	대피버스배정협력상황: 현장책임자는 대피자명단을 차량별로 나누고 버스기사는 이동차량의 승차 인원을 확인했다. 명단 배정과 실제 탑승을 대조한다.
+통제해제통보분담상황|관계기관|건물책임자|안전통보|재입장안내	other,role,boundary,process	role_coordination	role_coordination	통제해제통보분담상황: 관계기관이 안전통보를 보내면 건물책임자가 구역별 재입장안내를 결정한다. 외부 확인과 내부 운영 재개가 단계적으로 이어진다.
+누전점검대피연계상황|전기기사|층관리자|누전지점|대피범위	other,role,boundary,state	role_coordination	role_coordination	누전점검대피연계상황: 전기기사는 누전지점을 알리고 층관리자는 대피범위를 정해 사람을 옮겼다. 기술 위치와 점유 구역을 함께 고려한다.
+구급차진입유도상황|경비원|구급대|진입문|환자인계점	other,role,function,state	role_coordination	role_coordination	구급차진입유도상황: 경비원은 진입문을 열어 구급대를 환자인계점으로 안내했다. 차량 길 확보와 의료 인계는 다른 담당이 맡는다.
+임시대피소운영상황|대피소담당|물품담당|대피자|지원목록	other,role,function,state	role_coordination	role_coordination	임시대피소운영상황: 대피소담당은 대피자의 도착을 기록하고 물품담당은 지원목록에 따라 물과 담요를 나눴다. 등록과 물품 제공을 분리해 누락을 찾는다.
+경보오류정비연계상황|관리실|정비기사|반복경보|점검의뢰	other,role,process,boundary	role_coordination	role_coordination	경보오류정비연계상황: 관리실은 반복경보의 시각을 모아 점검의뢰를 만들고 정비기사는 센서와 배선을 살폈다. 경보가 잦다는 사실만으로 오경보 판정은 내리지 않는다.
+구조견현장운용상황|구조대장|구조견담당|수색구역|발견표시	other,role,function,classification	role_coordination	role_coordination	구조견현장운용상황: 구조대장은 수색구역을 배정하고 구조견담당은 탐색 결과를 발견표시로 상황판에 보냈다. 지휘와 탐색 역할을 구별한다.
+복구자재반입통제상황|복구팀|경비원|수리자재|통제출입구	other,role,function,boundary	role_coordination	role_coordination	복구자재반입통제상황: 복구팀은 수리자재 목록을 제출하고 경비원은 통제출입구에서 실제 물품을 대조했다. 작업 허가와 물건 반입이 함께 확인된다.
+대피동물지원협력상황|보호자|동물지원자|반려동물|임시보호구역	other,role,function,state	role_coordination	role_coordination	대피동물지원협력상황: 보호자는 반려동물 정보를 알리고 동물지원자는 임시보호구역에 등록했다. 사람 집결 명부와 동물 보호 기록을 따로 관리한다.
+언론문의대응분담상황|현장지휘부|공보담당|확인사실|발표문	other,role,boundary,state	role_coordination	role_coordination	언론문의대응분담상황: 현장지휘부는 확인사실만 공보담당에게 전달하고 공보담당은 발표문으로 정리했다. 미확인 소문을 공식 정보에 넣지 않는다.
+대피자귀가안내상황|안전책임자|지원요원|귀가가능구역|대피자	other,role,function,boundary	role_coordination	role_coordination	대피자귀가안내상황: 안전책임자는 귀가가능구역을 정하고 지원요원은 해당 대피자에게 이동 경로를 설명했다. 건물 일부 개방을 전체 복귀로 말하지 않는다.
+복구전력시험협업상황|전기기사|시설관리자|시험전원|설비목록	other,role,process,state	role_coordination	role_coordination	복구전력시험협업상황: 전기기사는 시험전원을 구역별로 넣고 시설관리자는 설비목록의 작동 상태를 기록했다. 전력 공급과 시설 운영 승인을 분리한다.
+사고기록작성검토상황|현장기록자|안전관리자|사고일지|검토서명	other,role,boundary,state	role_coordination	role_coordination	사고기록작성검토상황: 현장기록자는 사고일지에 시간순 사건을 적고 안전관리자는 근거를 확인해 검토서명을 했다. 작성 중 추정을 확정 원인처럼 남기지 않는다.
+# 061~090 경보·대피·구조·복구의 시간 의존성
+경보후현장확인상황|감지신호|경보발령|현장점검|위험판정	other,process,state,boundary	temporal_dependency	temporal_dependency	경보후현장확인상황: 감지신호가 들어와 경보발령이 된 뒤 현장점검을 거쳐 위험판정을 한다. 신호가 먼저 울렸다고 피해 범위를 즉시 확정하지 않는다.
+대피방송후이동상황|대피방송|점유자출발|출구통과|집결확인	other,process,state,function	temporal_dependency	temporal_dependency	대피방송후이동상황: 대피방송 뒤 점유자출발이 이어지고 각 사람이 출구통과한 뒤 집결확인을 받는다. 방송 송출 시각과 개인의 안전 구역 도착은 다르다.
+신고접수후출동상황|긴급신고|접수번호|출동지시|현장도착	other,process,state,function	temporal_dependency	temporal_dependency	신고접수후출동상황: 긴급신고에 접수번호가 생기고 출동지시 뒤 대응팀이 현장도착한다. 전화 연결만으로 현장 대응이 완료된 것은 아니다.
+통제선설치해제상황|위험확인|통제선설치|안전검사|통제해제	other,process,state,boundary	temporal_dependency	temporal_dependency	통제선설치해제상황: 위험확인 뒤 통제선설치를 하고 복구 후 안전검사를 통과해야 통제해제한다. 작업자가 떠난 시점에 바로 선을 걷지 않는다.
+승강기정지복구상황|비상정지|승객확인|설비점검|운행복구	other,process,state,boundary	temporal_dependency	temporal_dependency	승강기정지복구상황: 비상정지 뒤 승객확인과 설비점검을 마쳐야 운행복구한다. 문이 열렸다는 사실만으로 정상 운행을 재개하지 않는다.
+가스차단후재공급상황|누출의심|밸브차단|농도측정|재공급승인	other,process,state,boundary	temporal_dependency	temporal_dependency	가스차단후재공급상황: 누출의심이 있으면 밸브차단을 유지하고 농도측정 뒤 재공급승인을 받아야 한다. 냄새 감소는 승인 조건을 대신하지 않는다.
+구조요청후수색상황|마지막연락|구조요청|구역수색|발견확인	other,process,state,function	temporal_dependency	temporal_dependency	구조요청후수색상황: 마지막연락 위치로 구조요청을 등록하고 구역수색을 진행해 발견확인을 남긴다. 요청이 접수돼도 대상자의 현재 위치는 달라질 수 있다.
+소화후잔불확인상황|초기소화|불꽃감소|열점검|잔불해제	other,process,state,boundary	temporal_dependency	temporal_dependency	소화후잔불확인상황: 초기소화로 불꽃감소가 보여도 열점검을 마치고 잔불해제가 나기 전에는 현장을 떠나지 않는다. 보이는 불과 남은 열을 구분한다.
+침수배수복구상황|침수경보|전원차단|배수작업|구역개방	other,process,state,boundary	temporal_dependency	temporal_dependency	침수배수복구상황: 침수경보 뒤 전원차단을 하고 배수작업과 전기 검사를 마친 다음 구역개방한다. 바닥 물이 없어졌다고 즉시 출입시키지 않는다.
+대피명부미확인추적상황|집결명부|미확인표시|연락시도|안전확인	other,process,state,boundary	temporal_dependency	temporal_dependency	대피명부미확인추적상황: 집결명부에서 빠진 사람에게 미확인표시를 하고 연락시도 뒤 안전확인을 갱신한다. 처음 보이지 않았다는 이유로 건물 안 잔류를 단정하지 않는다.
+전력차단복구순서상황|긴급차단|배선점검|시험송전|정상공급	other,process,state,boundary	temporal_dependency	temporal_dependency	전력차단복구순서상황: 긴급차단 뒤 배선점검과 시험송전을 거쳐 정상공급으로 전환한다. 일부 조명이 켜진 중간 상태를 전체 복구로 쓰지 않는다.
+비상문점검재개방상황|폐쇄조치|문점검|잠금해제|통행재개	other,process,state,function	temporal_dependency	temporal_dependency	비상문점검재개방상황: 폐쇄조치된 문은 문점검 뒤 잠금해제하고 통행재개한다. 손잡이가 움직여도 공식 개방 표시 전에는 사용하지 않는다.
+연기배출후측정상황|배연가동|연기감소|공기측정|안전판정	other,process,state,boundary	temporal_dependency	temporal_dependency	연기배출후측정상황: 배연가동으로 연기감소가 보여도 공기측정을 마쳐 안전판정이 나야 보호구 없이 들어간다. 시야 개선과 공기 안전은 다르다.
+경보오류교체시험상황|오경보확인|감지기교체|시험신호|정상등록	other,process,state,boundary	temporal_dependency	temporal_dependency	경보오류교체시험상황: 오경보확인 뒤 감지기교체를 하고 시험신호가 수신되면 정상등록한다. 새 장치를 달았다는 말만으로 연동이 확인되지는 않는다.
+구조후의료평가상황|위험구역이탈|구조완료|의료평가|이송결정	other,process,state,function	temporal_dependency	temporal_dependency	구조후의료평가상황: 위험구역이탈로 구조완료를 기록한 뒤 의료평가를 거쳐 이송결정을 한다. 구조 종료와 의료 처치 종료는 같은 사건이 아니다.
+대피훈련종료순서상황|훈련경보|대피이동|인원집계|훈련종료	other,process,state,boundary	temporal_dependency	temporal_dependency	대피훈련종료순서상황: 훈련경보 뒤 대피이동과 인원집계를 마쳐야 훈련종료를 선언한다. 경보음을 끈 시점에 훈련이 끝나는 것은 아니다.
+건물재입장승인상황|현장진압|안전점검|재입장승인|구역별복귀	other,process,state,boundary	temporal_dependency	temporal_dependency	건물재입장승인상황: 현장진압 뒤 안전점검과 재입장승인을 받고 구역별복귀를 시작한다. 불이 꺼졌다는 관찰만으로 모든 층을 열지 않는다.
+설비복구단계상황|손상평가|수리착수|기능시험|복구완료	other,process,state,function	temporal_dependency	temporal_dependency	설비복구단계상황: 손상평가 뒤 수리착수와 기능시험을 거쳐 복구완료로 기록한다. 부품 교체 시각과 정상 기능 확인 시각을 나눈다.
+비상연락응답추적상황|연락발송|수신확인|응답회신|담당배정	other,process,state,role	temporal_dependency	temporal_dependency	비상연락응답추적상황: 연락발송 뒤 수신확인과 응답회신을 받고 담당배정을 한다. 메시지가 전달됐다는 사실과 현장 역할 수락은 다르다.
+대체출구전환상황|주출구폐쇄|우회방송|대체출구개방|대피재개	other,process,state,boundary	temporal_dependency	temporal_dependency	대체출구전환상황: 주출구폐쇄가 확인되면 우회방송을 하고 대체출구개방 뒤 대피재개한다. 새 길을 알리기 전에 사람을 막힌 쪽으로 보내지 않는다.
+구급차이송연계상황|환자인계|구급차출발|병원연락|도착확인	other,process,state,function	temporal_dependency	temporal_dependency	구급차이송연계상황: 환자인계 뒤 구급차출발과 병원연락이 이뤄지고 도착확인이 남는다. 건물 밖 이동을 병원 이송 완료로 세지 않는다.
+통제구역축소상황|초기통제|위험범위확인|통제축소|일부개방	other,process,state,boundary	temporal_dependency	temporal_dependency	통제구역축소상황: 초기통제를 넓게 두고 위험범위확인 뒤 통제축소와 일부개방을 한다. 일부 구역의 안전이 나머지 구역까지 보장하지 않는다.
+사고기록확정순서상황|현장메모|증거수집|검토회의|기록확정	other,process,state,boundary	temporal_dependency	temporal_dependency	사고기록확정순서상황: 현장메모와 증거수집 뒤 검토회의를 거쳐 기록확정한다. 초기 메모의 원인 추정을 최종 결론으로 바로 옮기지 않는다.
+복구자재반입순서상황|작업허가|자재확인|구역반입|수리시작	other,process,state,function	temporal_dependency	temporal_dependency	복구자재반입순서상황: 작업허가 뒤 자재확인과 구역반입을 마친 다음 수리시작한다. 허가서만 있다고 물품 검사를 생략하지 않는다.
+대피소운영종료상황|대피자등록|지원제공|귀가승인|대피소종료	other,process,state,boundary	temporal_dependency	temporal_dependency	대피소운영종료상황: 대피자등록과 지원제공을 이어 가다가 귀가승인과 인원 확인 뒤 대피소종료한다. 마지막 사람이 떠나기 전 운영을 닫지 않는다.
+방화문복구시험상황|손상확인|문수리|자동폐쇄시험|사용승인	other,process,state,function	temporal_dependency	temporal_dependency	방화문복구시험상황: 손상확인 뒤 문수리와 자동폐쇄시험을 거쳐 사용승인을 받는다. 문이 움직인다는 사실만으로 방화 기능을 확정하지 않는다.
+경보해제후기록상황|위험종료|경보해제|사건번호|사후보고	other,process,state,classification	temporal_dependency	temporal_dependency	경보해제후기록상황: 위험종료가 확인돼 경보해제한 뒤 사건번호에 시간과 조치를 묶어 사후보고를 작성한다. 음향 중단보다 기록 마감이 늦다.
+시설점검후영업재개상황|영업중지|시설점검|운영승인|영업재개	other,process,state,boundary	temporal_dependency	temporal_dependency	시설점검후영업재개상황: 영업중지 구역은 시설점검과 운영승인을 마친 뒤 영업재개한다. 직원이 준비를 끝냈다는 말만으로 이용객을 들이지 않는다.
+구조수색종료판정상황|수색개시|구역확인|인원대조|수색종료	other,process,state,boundary	temporal_dependency	temporal_dependency	구조수색종료판정상황: 수색개시 뒤 모든 구역확인과 인원대조를 마쳐야 수색종료한다. 한 방에서 대상자를 찾은 것이 건물 전체 확인은 아니다.
+복구상태공지갱신상황|초기피해|작업진행|복구상태|최종공지	other,process,state,attribute	temporal_dependency	temporal_dependency	복구상태공지갱신상황: 초기피해를 알린 뒤 작업진행에 맞춰 복구상태를 고치고 승인 시 최종공지를 낸다. 중간 예상 일정을 완료 사실로 표현하지 않는다.
+# 091~120 제한된 출구·장비·인력·공간·시간의 배분 맥락
+비상출구수제약상황|대피유도원|점유자들|열린출구|폐쇄출구	other,state,function,boundary	resource_constraint	resource_constraint	비상출구수제약상황: 열린출구가 하나뿐이라 대피유도원은 점유자들을 여러 줄로 나눠 보내고 폐쇄출구 접근을 막았다. 대기한 사람도 대피 대상에서 빠지지 않는다.
+구조장비배분상황|구조대장|구조장비|고위험구역|대기팀	other,state,classification,comparison	resource_constraint	resource_constraint	구조장비배분상황: 구조장비 수가 제한돼 구조대장은 고위험구역에 먼저 배정하고 대기팀은 위치 정보를 정리하게 했다. 장비 대기가 구조 요청 취소는 아니다.
+소화기수량제약상황|초기대응자|소화기|발화지점|예비용기	other,state,function,boundary	resource_constraint	resource_constraint	소화기수량제약상황: 초기대응자는 발화지점 가까운 소화기를 쓰고 예비용기는 안전한 출구 쪽에 남겼다. 모든 용기를 한곳에 가져가 대피로를 막지 않는다.
+대피계단용량상황|층담당자|비상계단|대피인원|진입순서	other,state,function,classification	resource_constraint	resource_constraint	대피계단용량상황: 비상계단에 사람이 몰리자 층담당자는 대피인원을 구역별 진입순서로 나눴다. 잠시 기다림을 방 안 잔류 지시로 해석하지 않는다.
+구급차수량부족상황|의료지휘자|구급차|중증환자|경증환자	other,state,classification,boundary	resource_constraint	resource_constraint	구급차수량부족상황: 구급차가 적어 의료지휘자는 중증환자를 먼저 이송하고 경증환자는 현장 관찰 구역에 두었다. 이송 순서는 치료 가치의 차이를 뜻하지 않는다.
+대피소공간제약상황|대피소담당|대피자|실내공간|외부천막	other,state,part_of,boundary	resource_constraint	resource_constraint	대피소공간제약상황: 실내공간이 차자 대피소담당은 추가 대피자를 외부천막에 등록했다. 장소가 달라도 지원 명부에는 함께 포함된다.
+비상조명배터리상황|시설기사|비상조명|배터리잔량|우선통로	other,state,function,attribute	resource_constraint	resource_constraint	비상조명배터리상황: 시설기사는 배터리잔량이 적은 비상조명을 확인하고 우선통로에 이동식 조명을 배치했다. 어두운 보조 공간에는 출입 통제를 걸었다.
+무전기채널제약상황|현장지휘자|무전채널|긴급보고|일반연락	other,state,function,classification	resource_constraint	resource_constraint	무전기채널제약상황: 무전채널이 한정돼 현장지휘자는 긴급보고를 우선하고 일반연락은 문자 상황판으로 받았다. 전달 방식이 달라도 사건 기록은 유지된다.
+구조인력구역배치상황|구조대장|가용대원|수색구역|안전대기조	other,state,role,classification	resource_constraint	resource_constraint	구조인력구역배치상황: 구조대장은 가용대원을 수색구역별로 나누고 일부는 안전대기조로 남겼다. 대기조는 임무가 없는 인력이 아니라 교대와 비상 지원을 맡는다.
+통제선자재부족상황|안전요원|통제띠|위험구역|안내표지	other,state,function,boundary	resource_constraint	resource_constraint	통제선자재부족상황: 통제띠가 부족해 안전요원은 위험구역 입구에 우선 설치하고 나머지 길에는 안내표지와 사람을 배치했다. 표시 방식만 다를 뿐 출입 제한은 같다.
+대피버스좌석상황|이송담당|대피버스|탑승자|다음차량	other,state,attribute,boundary	resource_constraint	resource_constraint	대피버스좌석상황: 대피버스 좌석보다 탑승자가 많아 이송담당은 명단을 나눠 다음차량을 요청했다. 첫 차량에 못 탄 사람이 지원 대상에서 제외되지는 않는다.
+방재실화면공유상황|관제원|상황화면|경보목록|종이지도	other,state,function,contrast	resource_constraint	resource_constraint	방재실화면공유상황: 상황화면 한 대에 경보목록이 몰려 관제원은 종이지도에도 현장 위치를 표시했다. 화면에 보이지 않는 구역을 확인 대상에서 빼지 않는다.
+복구자재수량제약상황|복구팀|수리자재|핵심설비|보조설비	other,state,function,classification	resource_constraint	resource_constraint	복구자재수량제약상황: 수리자재가 적어 복구팀은 핵심설비에 먼저 쓰고 보조설비는 부품 입고까지 중지 상태로 뒀다. 뒤로 미룬 장비를 정상으로 표시하지 않는다.
+임시전력용량상황|전기담당|비상발전기|필수시설|일반시설	other,state,function,classification	resource_constraint	resource_constraint	임시전력용량상황: 비상발전기 용량에 맞춰 전기담당은 필수시설에 전력을 보내고 일반시설은 차단했다. 일부 조명이 꺼져도 건물 전체 정전은 아니다.
+방독면수량배분상황|안전책임자|방독면|수색대원|외곽지원자	other,state,function,boundary	resource_constraint	resource_constraint	방독면수량배분상황: 안전책임자는 방독면을 수색대원에게 우선 지급하고 외곽지원자는 안전 구역 밖으로 들어가지 않게 했다. 보호 장비 배정이 역할 경계를 정한다.
+구조통로폭제약상황|구조대|좁은통로|들것|보행대피자	other,state,function,boundary	resource_constraint	resource_constraint	구조통로폭제약상황: 좁은통로에서 들것이 지나갈 때 구조대는 보행대피자를 잠시 옆 공간에 세웠다. 대기 지시는 대피 중단이 아니라 충돌 방지다.
+대피명부단말공유상황|층대표|등록단말|종이명부|집결자	other,state,function,contrast	resource_constraint	resource_constraint	대피명부단말공유상황: 등록단말이 하나라 층대표는 집결자를 종이명부에 먼저 표시하고 차례가 되면 입력했다. 입력 지연과 실제 도착 시각을 구분한다.
+현장사진전송용량상황|점검자|통신망|위험사진|음성보고	other,state,function,contrast	resource_constraint	resource_constraint	현장사진전송용량상황: 통신망이 느려 점검자는 위험사진 전송을 기다리며 음성보고로 핵심 위치를 먼저 알렸다. 사진 지연이 현장 확인 부재는 아니다.
+경보방송설비제약상황|방송담당|비상방송|구역스피커|휴대확성기	other,state,function,part_of	resource_constraint	resource_constraint	경보방송설비제약상황: 일부 구역스피커가 작동하지 않아 방송담당은 비상방송과 휴대확성기를 함께 사용했다. 전달 장치가 달라도 같은 대피 지시다.
+집결지면적부족상황|대피유도원|첫집결지|추가집결지|대피자	other,state,function,contrast	resource_constraint	resource_constraint	집결지면적부족상황: 첫집결지가 붐비자 대피유도원은 대피자를 추가집결지로 나누고 명부에 위치를 적었다. 장소 분산이 인원 누락을 뜻하지 않는다.
+구조용승강기우선상황|소방대|구조용승강기|장비운반|일반이동	other,state,function,boundary	resource_constraint	resource_constraint	구조용승강기우선상황: 소방대는 구조용승강기를 장비운반에 우선 쓰고 일반이동은 비상계단으로 제한했다. 승강기 사용 가능이 대피자 이용 허용은 아니다.
+복구작업공간제약상황|현장관리자|수리구역|청소팀|설비팀	other,state,role,boundary	resource_constraint	resource_constraint	복구작업공간제약상황: 수리구역이 좁아 현장관리자는 청소팀과 설비팀의 작업 시간을 나눴다. 같은 장소에서 동시에 일하지 않아도 복구 계획은 이어진다.
+응급물품재고상황|물품담당|응급키트|집결지|예비상자	other,state,function,attribute	resource_constraint	resource_constraint	응급물품재고상황: 집결지에서 필요한 물품을 센 물품담당은 응급키트를 대피자 수에 맞춰 나눴다. 구조팀이 즉시 쓸 예비상자는 봉인된 채 별도 목록에 남겼다.
+출입통제인력제약상황|경비책임자|경비원|주출입구|보조출입구	other,state,role,classification	resource_constraint	resource_constraint	출입통제인력제약상황: 경비원이 적어 경비책임자는 주출입구에 사람을 배치하고 보조출입구는 잠금과 표지로 막았다. 관리 방식이 달라도 출입 제한은 같다.
+소방호스길이제약상황|소방대원|소방호스|먼발화점|연결호스	other,state,function,part_of	resource_constraint	resource_constraint	소방호스길이제약상황: 소방호스가 먼발화점까지 닿지 않아 소방대원은 연결호스를 이어 사용했다. 한 줄의 장비가 짧다는 이유로 해당 구역 대응을 포기하지 않는다.
+대피의자수량제약상황|지원팀|대피의자|이동약자|교대운반	other,state,function,classification	resource_constraint	resource_constraint	대피의자수량제약상황: 대피의자가 부족해 지원팀은 이동약자를 위험도와 위치에 따라 나누고 교대운반했다. 먼저 이동한 순서가 사람의 가치 차이를 뜻하지 않는다.
+공기측정기공유상황|안전검사자|측정기|지하구역|상층구역	other,state,function,classification	resource_constraint	resource_constraint	공기측정기공유상황: 측정기 한 대를 안전검사자가 지하구역부터 사용하고 상층구역은 통제 상태로 기다렸다. 냄새가 없다고 측정 전 개방하지 않는다.
+비상급수량제약상황|대피소담당|생수|장기대피자|단기대기자	other,state,attribute,classification	resource_constraint	resource_constraint	비상급수량제약상황: 생수 수량이 제한돼 대피소담당은 장기대피자와 단기대기자의 체류 시간을 보고 배분했다. 지급량 차이는 지원 자격의 유무가 아니다.
+복구차량진입공간상황|현장유도자|복구차량|좁은진입로|대기차량	other,state,function,boundary	resource_constraint	resource_constraint	복구차량진입공간상황: 좁은진입로에 복구차량을 한 대씩 들이기 위해 현장유도자는 나머지를 대기차량 구역에 세웠다. 현장 도착과 작업 시작은 다르다.
+사후상담인력제약상황|지원센터|상담인력|긴급상담|예약상담	other,state,role,classification	resource_constraint	resource_constraint	사후상담인력제약상황: 상담인력이 적어 지원센터는 긴급상담을 바로 받고 예약상담은 시간대를 배정했다. 대기한 요청도 지원 목록에서 유지된다.
+# 121~150 지시어·생략·대조 대상의 재난 대응 문맥 복원
+두출구지시복원상황|동쪽출구|서쪽출구|유도원|이쪽	other,boundary,state,contrast	reference_resolution	reference_resolution	두출구지시복원상황: 동쪽출구는 막혔고 서쪽출구는 열려 있다. 유도원이 열린 문을 가리키며 말한 이쪽은 서쪽출구다.
+경보두개후자상황|연기경보|열경보|상황판|후자의신호	other,boundary,classification,state	reference_resolution	reference_resolution	경보두개후자상황: 상황판에는 연기경보와 열경보가 차례로 떴다. 후자의신호가 지하에서 왔다는 말은 열경보를 가리킨다.
+구조대원대명사상황|민수대원|지연대원|수색기록|그녀	other,boundary,role,state	reference_resolution	reference_resolution	구조대원대명사상황: 민수대원은 문을 열고 지연대원은 수색기록을 남겼다. “그녀가 발견 위치를 보고함”에서 그녀는 지연대원이다.
+두구역앞의곳상황|안전구역|위험구역|평면도|앞의곳	other,boundary,classification,contrast	reference_resolution	reference_resolution	두구역앞의곳상황: 평면도에는 안전구역과 위험구역이 순서대로 표시됐다. 앞의곳에 대피자를 모으라는 지시는 안전구역을 뜻한다.
+대피자소유물참조상황|수진|현우|가방|그의것	other,boundary,role,state	reference_resolution	reference_resolution	대피 중 수진이 가방을 놓쳤고 현우가 집결지로 가져왔다. 대피자소유물참조상황에서 “그의것이 아니다”의 그는 현우다.
+비상계단그곳상황|가계단|나계단|안내방송|그곳	other,boundary,state,contrast	reference_resolution	reference_resolution	비상계단그곳상황: 가계단은 연기로 닫혔고 나계단은 이용 가능하다. 안내방송에서 “그곳으로 내려가라”고 한 대상은 나계단이다.
+구조요청둘째방상황|회의실|창고방|신고메모|둘째방	other,boundary,classification,state	reference_resolution	reference_resolution	구조요청둘째방상황: 신고메모에는 회의실과 창고방이 차례로 적혔다. 둘째방에 사람이 있다는 문장은 창고방을 가리킨다.
+방화문이문복원상황|동쪽방화문|서쪽방화문|시설요원|이문	other,boundary,state,contrast	reference_resolution	reference_resolution	방화문이문복원상황: 동쪽방화문은 닫혔고 서쪽방화문은 점검 중이다. 시설요원이 점검 표지를 짚은 이문은 서쪽방화문이다.
+두방송나중안내상황|첫대피방송|변경방송|점유자|나중안내	other,boundary,process,state	reference_resolution	reference_resolution	두방송나중안내상황: 점유자는 첫대피방송 뒤 출구가 바뀐 변경방송을 들었다. 나중안내를 따르라는 말은 변경방송을 뜻한다.
+안전담당주체복원상황|건물관리자|안전검사자|개방서명|그가	other,boundary,role,state	reference_resolution	reference_resolution	안전담당주체복원상황: 건물관리자는 복구 일정을 알렸고 안전검사자는 개방서명을 했다. “그가 출입을 승인함”에서 그는 안전검사자다.
+측정값후자복원상황|첫농도값|재측정값|공기기록|후자	other,boundary,attribute,comparison	reference_resolution	reference_resolution	측정값후자복원상황: 공기기록에는 첫농도값과 재측정값이 순서대로 있다. 개방 판단에 쓴 후자는 재측정값이다.
+통제선저쪽복원상황|안쪽통제선|바깥통제선|경비원|저쪽	other,boundary,state,contrast	reference_resolution	reference_resolution	통제선저쪽복원상황: 안쪽통제선은 수리 구역 앞, 바깥통제선은 출입문 가까이에 있다. 경비원이 문 쪽을 가리킨 저쪽은 바깥통제선이다.
+두명부첫목록상황|층별명부|전체명부|접수담당|첫목록	other,boundary,classification,state	reference_resolution	reference_resolution	두명부첫목록상황: 접수담당은 층별명부를 먼저 확인하고 전체명부에 합쳤다. 첫목록에서 누락을 찾는다는 말은 층별명부를 뜻한다.
+대피지원대상상황|일반대피자|이동약자|지원요원|그분	other,boundary,role,state	reference_resolution	reference_resolution	대피지원대상상황: 일반대피자는 계단으로 이동했고 이동약자는 지원요원과 기다렸다. “그분을 대피의자에 태움”의 그분은 이동약자다.
+경보상태나중상태상황|경보중|해제대기|수신기|나중상태	other,boundary,state,process	reference_resolution	reference_resolution	경보상태나중상태상황: 수신기는 경보중에서 현장 확인 뒤 해제대기로 바뀌었다. 나중상태는 아직 완전 해제가 아닌 해제대기다.
+두설비지시복원상황|배연팬|비상발전기|시설기사|그설비	other,boundary,function,contrast	reference_resolution	reference_resolution	두설비지시복원상황: 배연팬은 연기를 빼고 비상발전기는 전력을 공급한다. 시설기사가 전력 계기를 보며 말한 그설비는 비상발전기다.
+구급차앞차량상황|일호구급차|이호구급차|배차표|앞차량	other,boundary,classification,state	reference_resolution	reference_resolution	구급차앞차량상황: 배차표에는 일호구급차와 이호구급차가 차례로 있다. 앞차량에 중증 환자를 태운다는 지시는 일호구급차다.
+위험사진이것상황|복도사진|기계실사진|상황요원|이것	other,boundary,classification,state	reference_resolution	reference_resolution	위험사진이것상황: 복도사진에는 연기가, 기계실사진에는 누수가 보인다. 상황요원이 누수 화면을 가리킨 이것은 기계실사진이다.
+복구팀후자의팀상황|전기팀|배관팀|작업표|후자의팀	other,boundary,role,contrast	reference_resolution	reference_resolution	복구팀후자의팀상황: 작업표는 전기팀 뒤에 배관팀 일정을 적었다. 후자의팀이 누출을 막는다는 문장은 배관팀을 가리킨다.
+대피시점그때상황|경보시각|출구통과시각|대피기록|그때	other,boundary,process,attribute	reference_resolution	reference_resolution	대피시점그때상황: 대피기록에는 경보시각과 출구통과시각이 따로 있다. “그때 안전 구역에 들어감”의 그때는 출구통과시각이다.
+두집결지둘째장소상황|운동장집결지|주차장집결지|안내표|둘째장소	other,boundary,classification,state	reference_resolution	reference_resolution	두집결지둘째장소상황: 안내표에는 운동장집결지와 주차장집결지가 순서대로 있다. 둘째장소에 이층 인원을 모은다는 말은 주차장집결지다.
+오경보이판정상황|실제경보|오경보|점검보고|이판정	other,boundary,state,contrast	reference_resolution	reference_resolution	오경보이판정상황: 점검보고에는 실제경보 가능성을 지우고 오경보를 최종 항목으로 남겼다. 담당자가 현재 줄을 가리킨 이판정은 오경보다.
+두구조대상앞사람상황|회의실대상자|옥상대상자|수색목록|앞사람	other,boundary,classification,state	reference_resolution	reference_resolution	두구조대상앞사람상황: 수색목록은 회의실대상자와 옥상대상자를 순서대로 보여 준다. 앞사람의 위치가 확인됐다는 말은 회의실대상자를 뜻한다.
+복구구역저곳상황|개방구역|폐쇄구역|안전책임자|저곳	other,boundary,state,contrast	reference_resolution	reference_resolution	복구구역저곳상황: 개방구역은 녹색 표지, 폐쇄구역은 빨간 표지로 구분됐다. 안전책임자가 빨간 쪽을 가리킨 저곳은 폐쇄구역이다.
+대피방송주체복원상황|현장유도자|방송담당|변경안내|그녀	other,boundary,role,state	reference_resolution	reference_resolution	대피방송주체복원상황: 현장유도자는 막힌 길을 보고했고 방송담당은 변경안내를 송출했다. “그녀가 전 층에 알림”에서 그녀는 방송담당이다.
+비상전원두값상황|발전기출력|필요전력|전기표|아래값	other,boundary,attribute,comparison	reference_resolution	reference_resolution	비상전원두값상황: 전기표에는 발전기출력과 필요전력이 위아래로 적혔다. 아래값을 줄여야 한다는 지시는 필요전력을 가리킨다.
+통제해제후자상황|부분해제|전체해제|상황판|후자	other,boundary,state,contrast	reference_resolution	reference_resolution	통제해제후자상황: 상황판에는 부분해제와 전체해제가 차례로 있다. 모든 점유자가 돌아갈 수 있는 후자는 전체해제다.
+사고기록첫문서상황|현장메모|확정보고서|기록함|첫문서	other,boundary,classification,state	reference_resolution	reference_resolution	사고기록첫문서상황: 기록함에는 현장메모 뒤에 확정보고서가 보관됐다. 첫문서의 추정을 검토한다는 말은 현장메모를 뜻한다.
+두대피로이경로상황|계단경로|옥상경로|유도원|이경로	other,boundary,function,contrast	reference_resolution	reference_resolution	두대피로이경로상황: 계단경로는 밖으로 이어지고 옥상경로는 구조 대기를 위한 길이다. 유도원이 외부 화살표를 짚은 이경로는 계단경로다.
+복구승인그것상황|수리완료|안전승인|관리자|그것	other,boundary,state,process	reference_resolution	reference_resolution	복구승인그것상황: 수리완료 뒤 안전승인이 별도 행에 기록됐다. 관리자가 “그것이 있어야 연다”고 한 것은 안전승인이다.

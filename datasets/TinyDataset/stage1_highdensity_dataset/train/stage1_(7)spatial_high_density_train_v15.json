@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 1 Spatial High-Density Train 150 v15",
+  "version": "15",
+  "purpose": "메모리 주소·파일 경로·네트워크 위상의 논리 공간에서 영역 핵심 관계를 학습하는 train corpus 150개",
+  "split": "train",
+  "record_count": 150,
+  "range": "S1-SPH-2101 ~ S1-SPH-2250",
+  "concept_family": "메모리 주소·파일 경로·네트워크 위상의 논리 공간",
+  "design_note": "주소 범위, 상위/하위 경로, 인접 블록, 링크, 논리 거리",
+  "records": [
+    {
+      "id": "S1-SPH-2101",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "프로세스가상주소공간안의힙영역은 동적 할당에 쓰도록 정한 연속 주소 구간이다. 물리 메모리의 한 덩어리에 그대로 포함된다는 뜻은 아니며 페이지별 대응이 다르다.",
+      "concepts": [
+        "프로세스가상주소공간안의힙영역"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2102",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "힙청크안의사용자데이터영역은 할당기가 붙인 헤더 뒤에서 프로그램에 노출되는 바이트 범위다. 청크 전체 크기와 호출자가 쓸 수 있는 구간을 구별한다.",
+      "concepts": [
+        "힙청크안의사용자데이터영역"
+      ],
+      "relations": [
+        "other",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2103",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "스택프레임내의지역변수슬롯은 한 함수 호출에 배정된 프레임 범위에서 특정 변수를 저장하는 위치다. 같은 이름의 다른 호출 변수와 주소 구획이 분리된다.",
+      "concepts": [
+        "스택프레임내의지역변수슬롯"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2104",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "메모리페이지안의캐시라인은 운영체제 페이지보다 작은 정렬 단위로 그 주소 일부를 덮는다. 캐시라인 경계가 페이지 경계를 넘는지 정렬 규칙으로 확인해야 한다.",
+      "concepts": [
+        "메모리페이지안의캐시라인"
+      ],
+      "relations": [
+        "other",
+        "part_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2105",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "배열버퍼범위안의유효원소는 할당된 바이트 중 현재 길이로 선언된 인덱스 구간을 차지한다. 예약 용량에 포함되어도 길이 밖 슬롯은 유효 원소가 아니다.",
+      "concepts": [
+        "배열버퍼범위안의유효원소"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2106",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "메모리매핑구간속의파일페이지는 파일 오프셋 일부가 가상 주소 범위에 연결된 페이지다. 매핑 창 안에 있다는 사실과 모든 바이트가 이미 물리 메모리에 적재됐다는 상태는 다르다.",
+      "concepts": [
+        "메모리매핑구간속의파일페이지"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2107",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "장치메모리창안의레지스터블록은 주변장치 제어 주소 범위에서 기능별로 나눈 작은 구간이다. 일반 RAM처럼 임의 데이터를 저장하는 공간으로 해석하지 않는다.",
+      "concepts": [
+        "장치메모리창안의레지스터블록"
+      ],
+      "relations": [
+        "other",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2108",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "데이터베이스페이지속의레코드슬롯은 한 페이지 내부에서 행 데이터나 포인터가 놓이는 번호 자리다. 삭제 표시가 있어도 슬롯 주소는 페이지 안에 남을 수 있다.",
+      "concepts": [
+        "데이터베이스페이지속의레코드슬롯"
+      ],
+      "relations": [
+        "other",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2109",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "로그세그먼트안의커밋레코드는 순차 기록 구간에서 거래 완료를 표시하는 항목이다. 세그먼트에 포함된 위치와 실제 데이터 페이지 반영 여부를 별도로 본다.",
+      "concepts": [
+        "로그세그먼트안의커밋레코드"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2110",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "압축블록내의사전테이블은 같은 블록의 기호를 해독하는 대응 정보를 담는 내부 구획이다. 압축 파일 전체 공용 사전과 블록별 사전의 범위를 혼동하지 않는다.",
+      "concepts": [
+        "압축블록내의사전테이블"
+      ],
+      "relations": [
+        "other",
+        "function",
+        "part_of"
+      ]
+    },
+    {
+      "id": "S1-SPH-2111",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "루트디렉터리아래의사용자폴더는 파일 트리의 최상위 노드에서 경로 간선 하나 이상을 따라 내려간 하위 구획이다. 저장 장치의 물리 위치와 경로 포함 관계는 별개다.",
+      "concepts": [
+        "루트디렉터리아래의사용자폴더"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2112",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "프로젝트폴더속의소스하위트리는 기준 디렉터리 아래에서 코드 파일과 더 작은 폴더들을 포함하는 경로 가지다. 이름이 같은 외부 폴더는 이 트리에 포함되지 않는다.",
+      "concepts": [
+        "프로젝트폴더속의소스하위트리"
+      ],
+      "relations": [
+        "other",
+        "part_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2113",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "압축아카이브안의가상디렉터리는 하나의 파일 내부 목차가 표현하는 논리 경로 구획이다. 운영체제 파일 트리에 실제 폴더 노드가 만들어졌다는 뜻은 아니다.",
+      "concepts": [
+        "압축아카이브안의가상디렉터리"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2114",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "컨테이너파일시스템의작업경로는 격리된 루트 아래에서 프로세스가 기본 위치로 사용하는 디렉터리다. 호스트에서 같은 문자열 경로가 가리키는 대상과 다를 수 있다.",
+      "concepts": [
+        "컨테이너파일시스템의작업경로"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2115",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "마운트지점아래의외부볼륨은 한 디렉터리 경로를 입구로 삼아 다른 파일시스템 트리를 노출한다. 경로상 하위라는 사실과 원래 저장 계층의 소유 관계를 나눠 본다.",
+      "concepts": [
+        "마운트지점아래의외부볼륨"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2116",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "심볼릭링크경로안의상대대상은 링크가 있는 디렉터리를 기준으로 해석되는 경로 문자열이다. 링크 파일 자체 내부에 대상 파일 내용이 포함되는 것은 아니다.",
+      "concepts": [
+        "심볼릭링크경로안의상대대상"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2117",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "패키지네임스페이스속의모듈은 점으로 나눈 이름 계층에서 상위 패키지 아래에 등록된 코드 단위다. 디스크 폴더 배치가 논리 이름 구조와 항상 일치하지 않는다.",
+      "concepts": [
+        "패키지네임스페이스속의모듈"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "part_of"
+      ]
+    },
+    {
+      "id": "S1-SPH-2118",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "객체저장소버킷안의키접두구역은 공통 문자열 앞부분을 가진 객체들을 논리 폴더처럼 묶은 범위다. 실제 디렉터리 컨테이너가 객체들을 물리적으로 품는 구조는 아니다.",
+      "concepts": [
+        "객체저장소버킷안의키접두구역"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2119",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "저장소파티션내의키범위는 정렬된 키 공간에서 시작값과 끝값 사이를 한 노드가 담당하는 구간이다. 데이터 파일의 연속 바이트 범위와 논리 분할을 구별한다.",
+      "concepts": [
+        "저장소파티션내의키범위"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2120",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "인덱스노드안의키포인터쌍은 탐색 트리의 한 페이지에서 경계 키와 자식 주소가 함께 놓인 항목이다. 자식 레코드 자체가 부모 노드 내부에 저장된다는 뜻은 아니다.",
+      "concepts": [
+        "인덱스노드안의키포인터쌍"
+      ],
+      "relations": [
+        "other",
+        "part_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2121",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "사설서브넷안의호스트주소는 네트워크 접두사가 정한 주소 범위에서 장치에 배정 가능한 값이다. 물리적으로 같은 방에 있는 장치가 모두 그 서브넷에 포함되는 것은 아니다.",
+      "concepts": [
+        "사설서브넷안의호스트주소"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2122",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "가상랜안의스위치포트집합은 논리 브로드캐스트 구역에 참여하도록 설정된 포트들이다. 한 스위치에 꽂혔어도 서로 다른 가상랜 포트는 같은 논리 공간이 아니다.",
+      "concepts": [
+        "가상랜안의스위치포트집합"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2123",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "라우팅도메인내의경로테이블은 격리된 전달 영역에서 목적지별 다음 홉을 담는다. 다른 도메인의 같은 주소 접두사와 규칙이 섞이지 않도록 경계를 둔다.",
+      "concepts": [
+        "라우팅도메인내의경로테이블"
+      ],
+      "relations": [
+        "other",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2124",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "터널인터페이스안의내부패킷은 바깥 전송 헤더가 감싼 페이로드 구획에 원래 네트워크 패킷이 들어 있는 상태다. 캡슐화 계층과 물리 링크 위치를 구분한다.",
+      "concepts": [
+        "터널인터페이스안의내부패킷"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2125",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "방화벽보안구역의서버노드는 같은 접근 정책이 적용되는 논리 네트워크 영역에 배치된다. 랙 위치가 가까워도 다른 인터페이스 구역이면 통신 경계가 달라진다.",
+      "concepts": [
+        "방화벽보안구역의서버노드"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-SPH-2126",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "서비스메시네임스페이스의워크로드는 공통 정책과 이름 범위 아래에 등록된 실행 단위다. 클러스터 전체에 존재해도 해당 논리 구획의 규칙으로 트래픽이 분리된다.",
+      "concepts": [
+        "서비스메시네임스페이스의워크로드"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-SPH-2127",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "클라우드가상망의서브넷구획은 큰 주소 블록을 접두사 길이로 나눈 하위 네트워크다. 가용 영역이나 물리 데이터센터 경계와 주소 포함 관계가 반드시 같지는 않다.",
+      "concepts": [
+        "클라우드가상망의서브넷구획"
+      ],
+      "relations": [
+        "other",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2128",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "로드밸런서풀안의백엔드목록은 요청을 받을 수 있도록 한 논리 집합에 등록된 서버 주소들이다. 현재 건강하지 않은 노드도 설정상 풀에 남아 있을 수 있다.",
+      "concepts": [
+        "로드밸런서풀안의백엔드목록"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2129",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "분산해시링의노드담당구간은 원형 키 공간에서 앞 토큰 다음부터 자기 토큰까지 맡는 범위다. 실제 네트워크 케이블의 원형 배치를 뜻하지 않는다.",
+      "concepts": [
+        "분산해시링의노드담당구간"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2130",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "메시지큐파티션의오프셋범위는 한 순서열 안에서 저장된 레코드 번호의 연속 구간이다. 소비 완료 지점과 서버가 아직 보존하는 시작·끝 번호를 각각 기록해야 한다.",
+      "concepts": [
+        "메시지큐파티션의오프셋범위"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2131",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "낮은주소에서높은주소로의배열순서는 연속 원소가 더 큰 메모리 위치로 놓이는 배치를 뜻한다. 값의 크기 순서와 저장 주소 증가 방향을 혼동하지 않는다.",
+      "concepts": [
+        "낮은주소에서높은주소로의배열순서"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2132",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "스택포인터감소방향의새프레임은 주소가 작은 쪽으로 스택이 자라는 규약에서 최근 호출이 차지한 구간이다. 모든 아키텍처가 같은 성장 방향을 쓰는 것은 아니다.",
+      "concepts": [
+        "스택포인터감소방향의새프레임"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2133",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "버퍼시작주소뒤의헤더필드는 첫 바이트에서 양의 오프셋만큼 이동한 위치에 놓인다. 문서 읽기 순서와 실제 바이트 배열의 앞뒤가 일치하는지 확인한다.",
+      "concepts": [
+        "버퍼시작주소뒤의헤더필드"
+      ],
+      "relations": [
+        "other",
+        "part_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2134",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "연결리스트머리다음의첫노드는 머리 포인터가 가리키는 시작점에서 다음 링크로 한 번 이동해 만나는 요소다. 메모리 주소가 더 크다는 의미는 아니다.",
+      "concepts": [
+        "연결리스트머리다음의첫노드"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2135",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "순환버퍼쓰기위치앞의읽기위치는 논리 진행 순서에서 아직 소비하지 않은 데이터의 시작을 가리킨다. 배열 끝을 넘으면 주소 크기 비교만으로 앞뒤를 정할 수 없다.",
+      "concepts": [
+        "순환버퍼쓰기위치앞의읽기위치"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2136",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "파일오프셋증가방향의다음블록은 현재 구간 뒤에 이어지는 더 큰 바이트 번호 범위다. 디스크 표면에서 물리적으로 옆에 기록된 블록일 필요는 없다.",
+      "concepts": [
+        "파일오프셋증가방향의다음블록"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2137",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "경로루트에서리프쪽의하위폴더는 상위 디렉터리 이름 뒤에 구성요소를 덧붙이며 내려가는 방향에 있다. 화면에서 아래 줄에 표시되는 것과 계층 방향은 별개다.",
+      "concepts": [
+        "경로루트에서리프쪽의하위폴더"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2138",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "현재폴더에서부모쪽상향경로는 점 두 개 구성요소를 따라 한 계층 위 노드로 이동하는 경로다. 저장 장치의 물리적 위쪽으로 이동하는 뜻이 아니다.",
+      "concepts": [
+        "현재폴더에서부모쪽상향경로"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2139",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "상대경로기준점뒤의자식파일은 기준 디렉터리에서 하위 구성요소를 순서대로 따라가 도달하는 대상이다. 실행 위치가 바뀌면 같은 문자열의 방향과 결과도 달라진다.",
+      "concepts": [
+        "상대경로기준점뒤의자식파일"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2140",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "심볼릭링크해석뒤의실제대상은 링크 노드에서 저장된 경로를 따라 이동한 끝에 만나는 객체다. 디렉터리 나열의 다음 항목과 해석 방향을 혼동하지 않는다.",
+      "concepts": [
+        "심볼릭링크해석뒤의실제대상"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2141",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "버전관리부모커밋앞의자식커밋은 이력 그래프에서 기존 상태를 부모로 참조하며 새 변경을 덧붙인 노드다. 시간상 나중과 화면에서 위쪽 배치는 같은 축이 아니다.",
+      "concepts": [
+        "버전관리부모커밋앞의자식커밋"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2142",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "로그스트림꼬리쪽의최신레코드는 순차 기록 끝에서 가장 큰 오프셋을 가진 항목이다. 소비자가 읽는 앞쪽과 서버가 추가하는 뒤쪽을 분리해 추적한다.",
+      "concepts": [
+        "로그스트림꼬리쪽의최신레코드"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2143",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "데이터파이프라인상류의원천노드는 변환과 저장 단계보다 먼저 원자료를 내보내는 위치다. 네트워크 패킷의 물리 이동 방향과 처리 의존 순서는 다를 수 있다.",
+      "concepts": [
+        "데이터파이프라인상류의원천노드"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-SPH-2144",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "처리그래프하류의집계단계는 여러 중간 결과를 받은 뒤 요약을 만드는 후속 노드다. 도면의 오른쪽에 그려졌다는 사실보다 데이터 간선 방향이 기준이다.",
+      "concepts": [
+        "처리그래프하류의집계단계"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2145",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "요청경로전방의프록시노드는 클라이언트에서 서버로 향하는 흐름에서 다음으로 거치는 중계점이다. 응답 흐름에서는 같은 노드의 앞뒤 관계가 반대로 읽힌다.",
+      "concepts": [
+        "요청경로전방의프록시노드"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-SPH-2146",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "응답흐름상류쪽의원본서버는 결과 데이터를 생성해 캐시와 클라이언트 쪽으로 보내는 출발 노드다. 요청 기준의 하류와 응답 기준의 상류가 같은 위치일 수 있다.",
+      "concepts": [
+        "응답흐름상류쪽의원본서버"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2147",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "라우터수신인터페이스의인바운드쪽은 패킷이 장치로 들어오는 링크 방향을 가리킨다. 같은 포트에서 나가는 트래픽에는 반대 전달 역할이 적용된다.",
+      "concepts": [
+        "라우터수신인터페이스의인바운드쪽"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2148",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "방화벽통과뒤의아웃바운드구역은 내부에서 외부로 향하는 세션이 정책 검사를 마친 다음 도달하는 논리 영역이다. 지리적 바깥과 보안 흐름의 바깥을 구분한다.",
+      "concepts": [
+        "방화벽통과뒤의아웃바운드구역"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2149",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "스위치업링크쪽의상위망은 액세스 포트에서 모인 트래픽이 코어 장비로 올라가는 방향에 있다. 케이블이 실제로 위층을 향한다는 뜻은 아니다.",
+      "concepts": [
+        "스위치업링크쪽의상위망"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-SPH-2150",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "액세스포트아래의단말측링크는 네트워크 계층도에서 사용자 장치로 내려가는 가장자리 연결이다. 같은 포트의 송수신 방향과 계층상 상하를 따로 본다.",
+      "concepts": [
+        "액세스포트아래의단말측링크"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S1-SPH-2151",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "라우팅경로다음홉쪽의전달방향은 목적지 접두사에 가까워지도록 선택한 이웃 라우터를 향한다. 주소 숫자가 커지는 쪽이나 지도상의 동쪽을 뜻하지 않는다.",
+      "concepts": [
+        "라우팅경로다음홉쪽의전달방향"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2152",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "최단경로트리루트쪽의역방향은 각 노드에서 계산 기준 라우터로 부모 링크를 거슬러 올라간다. 실제 패킷 전달은 목적지에 따라 자식 쪽으로 갈 수 있다.",
+      "concepts": [
+        "최단경로트리루트쪽의역방향"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2153",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "서비스체인첫필터뒤의검사노드는 정해진 정책 순서에서 초기 필터 다음에 패킷을 받는다. 물리 스위치 포트 번호의 대소가 처리 앞뒤를 정하지 않는다.",
+      "concepts": [
+        "서비스체인첫필터뒤의검사노드"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2154",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "메시지큐선두쪽의다음소비항목은 읽기 포인터가 향하는 가장 오래된 미처리 레코드다. 저장 배열의 낮은 주소가 항상 논리 선두인 것은 아니다.",
+      "concepts": [
+        "메시지큐선두쪽의다음소비항목"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2155",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "복제로그리더뒤의팔로워위치는 합의된 인덱스를 따라잡지 못한 노드의 진행 상태를 뜻한다. 서버실에서 리더 뒤편에 있다는 공간 배치와 무관하다.",
+      "concepts": [
+        "복제로그리더뒤의팔로워위치"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2156",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "분산작업그래프분기후의두후속노드는 한 결과를 서로 다른 연산으로 보내는 하류 가지들이다. 둘 사이에는 앞뒤 순서가 없어 병렬 관계로 유지된다.",
+      "concepts": [
+        "분산작업그래프분기후의두후속노드"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2157",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "패킷캡슐화바깥쪽헤더순서는 전송 프레임을 읽을 때 외부 링크 계층에서 내부 응용 데이터 쪽으로 들어가는 배열이다. 네트워크 경로의 시간 순서와 구별한다.",
+      "concepts": [
+        "패킷캡슐화바깥쪽헤더순서"
+      ],
+      "relations": [
+        "other",
+        "part_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2158",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "트리인덱스왼쪽가지의작은키범위는 부모 경계값보다 정렬 순서가 앞선 항목을 담는 자식 방향이다. 화면 좌측과 논리 비교 결과가 구현에 따라 달라질 수 있다.",
+      "concepts": [
+        "트리인덱스왼쪽가지의작은키범위"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2159",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "트라이경로다음문자쪽의하위노드는 접두사에 한 기호를 더 붙여 내려간 위치다. 문자열의 연속성과 노드들이 메모리에 연속 저장되는지는 별개다.",
+      "concepts": [
+        "트라이경로다음문자쪽의하위노드"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2160",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "의존그래프선행작업에서후속작업방향은 필요한 결과를 먼저 만든 노드에서 그것을 소비할 노드로 향한다. 도면 배치가 뒤집혀도 간선의 의미는 유지된다.",
+      "concepts": [
+        "의존그래프선행작업에서후속작업방향"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2161",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "연속주소로이어진배열원소열은 고정 크기만큼 떨어진 메모리 슬롯들이 인덱스 순서대로 인접한다. 값 사이의 의미 관계가 메모리 연속성을 보장하지는 않는다.",
+      "concepts": [
+        "연속주소로이어진배열원소열"
+      ],
+      "relations": [
+        "other",
+        "part_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2162",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "페이지경계에서갈라진버퍼구간은 논리적으로 연속된 바이트가 서로 다른 가상 페이지에 걸친 배치다. 주소는 이어져도 물리 프레임이 인접할 필요는 없다.",
+      "concepts": [
+        "페이지경계에서갈라진버퍼구간"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2163",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "연결리스트포인터로이어진노드쌍은 한 노드의 링크 값이 다른 노드 주소를 가리켜 논리 인접을 만든다. 두 할당 블록이 물리적으로 붙어 있다는 의미는 아니다.",
+      "concepts": [
+        "연결리스트포인터로이어진노드쌍"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2164",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "이중연결리스트의양방향접속은 각 요소가 이전과 다음 노드를 모두 참조하는 구조다. 한 링크가 깨져도 반대 포인터가 남을 수 있어 일관성을 따로 검사한다.",
+      "concepts": [
+        "이중연결리스트의양방향접속"
+      ],
+      "relations": [
+        "other",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2165",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "순환목록꼬리와머리의연결은 마지막 노드의 다음 포인터가 시작 노드로 돌아가 닫힌 경로를 만든다. 선형 표시의 양끝을 열린 경계로 오해하지 않는다.",
+      "concepts": [
+        "순환목록꼬리와머리의연결"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2166",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "메모리풀자유블록의연결사슬은 사용하지 않는 청크들이 포인터로 이어져 다음 할당 후보를 만든다. 주소상 사이에 사용 중 블록이 있어도 논리 사슬은 연속될 수 있다.",
+      "concepts": [
+        "메모리풀자유블록의연결사슬"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2167",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "해시버킷충돌노드의체인은 같은 인덱스를 얻은 항목들을 별도 링크로 이어 놓은 구조다. 키가 서로 비슷하거나 저장 주소가 가까워서 연결된 것은 아니다.",
+      "concepts": [
+        "해시버킷충돌노드의체인"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2168",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "트리부모자식포인터의분기는 한 노드에서 여러 하위 노드 주소로 간선이 갈라지는 관계다. 메모리 배열의 바로 다음 칸이 반드시 자식은 아니다.",
+      "concepts": [
+        "트리부모자식포인터의분기"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2169",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "그래프인접목록의이웃노드집합은 한 정점에서 직접 간선으로 도달할 수 있는 대상들을 기록한다. 목록에 가까이 나열된 정점끼리 서로 연결되었다고 보지 않는다.",
+      "concepts": [
+        "그래프인접목록의이웃노드집합"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2170",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "메모리별칭포인터의공유대상은 서로 다른 포인터 값이나 경로가 같은 객체 저장 구간에 도달하는 상태다. 이름이 둘이어도 실제 노드를 중복 객체로 세지 않는다.",
+      "concepts": [
+        "메모리별칭포인터의공유대상"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2171",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "파일하드링크의공유아이노드는 여러 디렉터리 항목이 동일한 파일 메타데이터 노드에 연결된 구조다. 한 경로를 지워도 다른 링크가 남으면 내용은 유지된다.",
+      "concepts": [
+        "파일하드링크의공유아이노드"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2172",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "심볼릭링크가가리키는경로노드는 링크 내용의 문자열을 해석해 도달하는 대상이다. 대상이 사라지면 링크 객체는 남지만 연결 경로는 끊어진다.",
+      "concepts": [
+        "심볼릭링크가가리키는경로노드"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2173",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "디렉터리트리의공통조상노드는 두 경로가 루트에서 내려오다 마지막으로 함께 거치는 폴더다. 문자열 접두사만 같고 구성요소 경계가 다르면 조상이 아니다.",
+      "concepts": [
+        "디렉터리트리의공통조상노드"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2174",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "마운트그래프의교차파일시스템간선은 한 디렉터리 노드에서 별도 저장 체계의 루트로 넘어가는 연결이다. 사용자에게는 연속 경로처럼 보여도 관리 경계가 바뀐다.",
+      "concepts": [
+        "마운트그래프의교차파일시스템간선"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2175",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "의존패키지그래프의순환참조는 여러 모듈의 필요 관계를 따라가 다시 시작 모듈로 돌아오는 고리다. 폴더가 원형으로 배치된다는 뜻이 아니며 초기화 순서를 어렵게 한다.",
+      "concepts": [
+        "의존패키지그래프의순환참조"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2176",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "분산파일조각의복제연결은 같은 논리 블록 사본들이 서로 다른 저장 노드에 대응된 관계다. 서버 간 네트워크 인접과 데이터 동일성 연결을 구별한다.",
+      "concepts": [
+        "분산파일조각의복제연결"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2177",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "스위치포트사이의물리링크는 케이블로 두 인터페이스가 직접 연결된 간선이다. 같은 가상랜에 속한 원격 포트는 논리적으로 이웃이어도 직접 케이블 이웃은 아니다.",
+      "concepts": [
+        "스위치포트사이의물리링크"
+      ],
+      "relations": [
+        "other",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2178",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "라우터간점대점연결은 하나의 링크 구간이 두 라우팅 인터페이스만 잇는 위상이다. 주소 접두사에 다른 장치가 보여도 실제 중계 노드가 있는지 구분한다.",
+      "concepts": [
+        "라우터간점대점연결"
+      ],
+      "relations": [
+        "other",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2179",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "이중화스위치의평행링크쌍은 같은 두 장비 사이에 둘 이상의 독립 연결을 둔 구조다. 하나가 끊겨도 접속이 남지만 공유 경로가 있으면 완전 독립은 아니다.",
+      "concepts": [
+        "이중화스위치의평행링크쌍"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2180",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "스패닝트리에서차단된순환간선은 물리적으로 연결되어 있으나 루프 방지를 위해 전달에 쓰지 않는 링크다. 배선 위상과 현재 활성 위상을 따로 그린다.",
+      "concepts": [
+        "스패닝트리에서차단된순환간선"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2181",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "메시네트워크의다중우회경로는 두 노드 사이에 서로 다른 중계 조합을 거치는 대체 연결들이 존재하는 구조다. 경로 수가 많아도 각 링크 용량은 별도다.",
+      "concepts": [
+        "메시네트워크의다중우회경로"
+      ],
+      "relations": [
+        "other",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2182",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "허브중심의별형접속은 여러 말단 링크가 하나의 중앙 장치에서만 만나는 위상이다. 말단끼리 화면상 가까워도 직접 간선 없이 중앙을 거쳐 통신한다.",
+      "concepts": [
+        "허브중심의별형접속"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2183",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "링네트워크의폐쇄전달경로는 각 노드가 두 이웃과 이어져 끝점 없는 고리를 만든다. 한 링크 장애가 고리를 열어 선형 경로로 바꿀 수 있다.",
+      "concepts": [
+        "링네트워크의폐쇄전달경로"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2184",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "트리네트워크의말단노드는 상위 장치로 가는 링크는 있지만 더 아래 자식 연결이 없는 끝점이다. 장치의 물리 크기나 주소 끝자리로 말단을 판정하지 않는다.",
+      "concepts": [
+        "트리네트워크의말단노드"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-SPH-2185",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "가상사설망터널의논리간선은 여러 중간 인터넷 장비를 지나도 양 끝 게이트웨이가 직접 이어진 것처럼 보이는 연결이다. 물리 홉과 논리 이웃을 분리한다.",
+      "concepts": [
+        "가상사설망터널의논리간선"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2186",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "로드밸런서와백엔드의세션연결은 선택된 서버로 한 요청 흐름을 전달하는 동적 간선이다. 설정 풀에 속한 모든 서버가 매 세션에 동시에 연결되는 것은 아니다.",
+      "concepts": [
+        "로드밸런서와백엔드의세션연결"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-SPH-2187",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "서비스디스커버리이름의주소연결은 논리 서비스 이름을 현재 사용 가능한 인스턴스 주소들에 대응한다. 이름 계층의 인접성과 실제 통신 경로를 혼동하지 않는다.",
+      "concepts": [
+        "서비스디스커버리이름의주소연결"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2188",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "방화벽규칙사슬의다음검사노드는 앞 조건이 일치하지 않을 때 제어가 넘어가는 후속 규칙이다. 파일 줄이 가까운 것보다 점프와 반환 연결이 실제 흐름을 정한다.",
+      "concepts": [
+        "방화벽규칙사슬의다음검사노드"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2189",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "분산추적의부모자식스팬연결은 한 요청 작업이 다른 서비스 작업을 호출한 인과 간선이다. 서버들의 물리 네트워크 이웃 관계와 추적 트리 구조는 다르다.",
+      "concepts": [
+        "분산추적의부모자식스팬연결"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-SPH-2190",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "이벤트토픽의생산자소비자연결은 발행 노드가 중개 로그를 거쳐 구독 노드에 데이터를 전달하는 논리 경로다. 생산자와 소비자가 직접 소켓을 맺지 않아도 연결된다.",
+      "concepts": [
+        "이벤트토픽의생산자소비자연결"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2191",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "배열첫원소에서마지막원소까지오프셋은 원소 크기에 인덱스 차를 곱한 바이트 간격이다. 저장된 값들의 수치 차와 메모리 위치 차를 같은 척도로 보지 않는다.",
+      "concepts": [
+        "배열첫원소에서마지막원소까지오프셋"
+      ],
+      "relations": [
+        "other",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-SPH-2192",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "구조체시작점에서필드까지바이트거리는 정렬 패딩을 포함해 객체 기준 주소에서 해당 멤버가 놓인 오프셋이다. 선언 순서만으로 정확한 값을 추정하지 않는다.",
+      "concepts": [
+        "구조체시작점에서필드까지바이트거리"
+      ],
+      "relations": [
+        "other",
+        "part_of",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-SPH-2193",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "두포인터사이의주소차이는 같은 배열 객체 안 위치일 때 원소 단위 간격으로 해석할 수 있다. 서로 다른 할당 객체의 주소를 빼서 논리 거리를 만들면 의미가 보장되지 않는다.",
+      "concepts": [
+        "두포인터사이의주소차이"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2194",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "캐시라인경계까지남은바이트수는 현재 주소에서 다음 정렬 배수 전까지의 여유다. 접근 크기가 이 값을 넘으면 두 캐시라인에 걸칠 수 있다.",
+      "concepts": [
+        "캐시라인경계까지남은바이트수"
+      ],
+      "relations": [
+        "other",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2195",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "페이지시작주소에서오류지점오프셋은 결함 주소의 하위 비트로 나타나는 페이지 내부 거리다. 가상 페이지 번호와 내부 바이트 위치를 분리해 기록한다.",
+      "concepts": [
+        "페이지시작주소에서오류지점오프셋"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2196",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "메모리복사구간의중첩길이는 원본과 목적 주소 범위가 함께 덮는 바이트 수다. 시작점 거리만 보지 말고 각 구간의 끝 경계를 함께 계산한다.",
+      "concepts": [
+        "메모리복사구간의중첩길이"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2197",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "파일시작점에서레코드까지오프셋은 첫 바이트에서 목표 레코드 헤더까지 건너뛴 길이다. 압축이나 가변 길이 구조에서는 레코드 번호와 선형 비례하지 않는다.",
+      "concepts": [
+        "파일시작점에서레코드까지오프셋"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-SPH-2198",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "두디렉터리의공통조상까지깊이는 각 경로에서 공유 조상 노드로 거슬러 올라가는 구성요소 수다. 문자열 글자 수보다 트리 간선 개수가 논리 거리를 나타낸다.",
+      "concepts": [
+        "두디렉터리의공통조상까지깊이"
+      ],
+      "relations": [
+        "other",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2199",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "루트에서파일까지경로단계수는 디렉터리 간선을 몇 번 내려가 대상에 도달하는지 센 값이다. 경로 이름이 길어도 계층 깊이는 얕을 수 있다.",
+      "concepts": [
+        "루트에서파일까지경로단계수"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-SPH-2200",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "상대경로의상향이동횟수는 점 두 개 구성요소가 부모 쪽으로 이동시키는 단계 수다. 실제 디스크 탐색 시간이나 파일 크기와는 무관하다.",
+      "concepts": [
+        "상대경로의상향이동횟수"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2201",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "심볼릭링크해석단계거리는 최종 파일을 찾을 때 연속해서 따라간 링크 수다. 경로 문자열 길이가 짧아도 링크 고리가 있으면 도달하지 못할 수 있다.",
+      "concepts": [
+        "심볼릭링크해석단계거리"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2202",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "두파일사이의트리간선거리는 첫 파일에서 공통 조상으로 올라갔다가 다른 파일로 내려가는 단계 합이다. 저장 블록의 물리 간격을 뜻하지 않는다.",
+      "concepts": [
+        "두파일사이의트리간선거리"
+      ],
+      "relations": [
+        "other",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2203",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "버전이력두커밋사이단계수는 부모 간선을 따라 한 상태에서 다른 상태로 이동하는 최소 횟수다. 달력 시간 차나 변경 줄 수와 같은 값이 아니다.",
+      "concepts": [
+        "버전이력두커밋사이단계수"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2204",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "의존그래프두모듈사이최단거리는 참조 간선을 따라 도달하는 최소 단계 수다. 소스 파일들이 같은 폴더에 있다는 사실은 이 논리 거리를 줄이지 않는다.",
+      "concepts": [
+        "의존그래프두모듈사이최단거리"
+      ],
+      "relations": [
+        "other",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2205",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "호스트와게이트웨이사이링크홉은 패킷이 직접 연결 구간을 몇 번 건너 기본 라우터에 이르는지 센다. 케이블 미터 거리와 홉 수는 비례하지 않는다.",
+      "concepts": [
+        "호스트와게이트웨이사이링크홉"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2206",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "라우팅경로의중계노드수는 출발지와 목적지 사이에서 전달을 수행하는 라우터 개수다. 스위치 통과를 포함할지 측정 정의를 먼저 밝혀야 한다.",
+      "concepts": [
+        "라우팅경로의중계노드수"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2207",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "두서버사이최소홉거리는 현재 활성 위상에서 가장 적은 링크 간선으로 잇는 경로 길이다. 지연이 가장 짧은 경로와 홉이 가장 적은 경로는 다를 수 있다.",
+      "concepts": [
+        "두서버사이최소홉거리"
+      ],
+      "relations": [
+        "other",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2208",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "서비스호출그래프의의존단계거리는 한 요청이 대상 서비스에 이르기까지 거치는 호출 간선 수다. 네트워크 라우터 홉과 응용 계층 호출 단계를 구분한다.",
+      "concepts": [
+        "서비스호출그래프의의존단계거리"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2209",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "분산추적루트에서오류스팬까지깊이는 최초 요청부터 실패 작업까지 부모자식 호출을 몇 단계 거쳤는지 나타낸다. 실제 발생 시간 지연과 계층 깊이는 별도 지표다.",
+      "concepts": [
+        "분산추적루트에서오류스팬까지깊이"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2210",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "가상망피어사이논리거리는 피어링 간선과 중계 허용 규칙을 따라 도달하는 단계 수다. 데이터센터 건물 간 물리 거리만으로 접근성을 판단하지 않는다.",
+      "concepts": [
+        "가상망피어사이논리거리"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2211",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "방화벽규칙목록의판정도달거리는 패킷이 최종 허용이나 거부에 이르기 전 평가한 규칙 수다. 파일 줄 번호 차보다 점프 흐름과 조건 일치가 값을 정한다.",
+      "concepts": [
+        "방화벽규칙목록의판정도달거리"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2212",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "패킷터널안쪽경로의숨은홉수는 논리 양 끝 사이에서 외부 망이 실제로 거치는 중계 장비 수다. 터널 사용자에게 한 간선처럼 보여도 물리 거리는 더 길다.",
+      "concepts": [
+        "패킷터널안쪽경로의숨은홉수"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2213",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "브로드캐스트영역의최대스위치거리는 같은 프레임이 도달할 수 있는 포트 쌍 사이 최장 간선 수다. 주소 범위 크기와 네트워크 지름을 같은 값으로 보지 않는다.",
+      "concepts": [
+        "브로드캐스트영역의최대스위치거리"
+      ],
+      "relations": [
+        "other",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2214",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "메시네트워크대체경로길이차는 주 경로와 우회 경로가 사용하는 링크 수의 차이다. 장애 회피 경로가 더 길어도 용량이나 지연은 오히려 나을 수 있다.",
+      "concepts": [
+        "메시네트워크대체경로길이차"
+      ],
+      "relations": [
+        "other",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2215",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "복제본간로그진행거리는 두 노드가 적용한 마지막 인덱스의 차이로 나타낸다. 서버의 물리 간격과 무관하며 동기화가 진행되면 값이 줄어든다.",
+      "concepts": [
+        "복제본간로그진행거리"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2216",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "분산키공간의토큰원주거리는 원형 해시 범위에서 한 토큰부터 다른 토큰까지 지정 방향으로 지난 값의 폭이다. 선형 숫자 차는 순환 경계를 제대로 반영하지 못한다.",
+      "concepts": [
+        "분산키공간의토큰원주거리"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2217",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "메시지생산오프셋과소비오프셋차는 기록된 최신 항목과 처리 완료 지점 사이의 논리 지연량이다. 시간 지연으로 바꾸려면 생산 속도와 처리율이 필요하다.",
+      "concepts": [
+        "메시지생산오프셋과소비오프셋차"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2218",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "콘텐츠전달노드까지의경로거리는 사용자의 요청이 선택된 캐시 서버에 닿기까지 거치는 네트워크 단계다. 지도상 가까운 서버가 항상 논리적으로 가까운 것은 아니다.",
+      "concepts": [
+        "콘텐츠전달노드까지의경로거리"
+      ],
+      "relations": [
+        "other",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2219",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "DNS이름에서권한서버까지위임깊이는 루트부터 하위 도메인 권한을 따라간 계층 단계 수다. 이름 문자열의 글자 수나 패킷 왕복 횟수와 구분한다.",
+      "concepts": [
+        "DNS이름에서권한서버까지위임깊이"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2220",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "접근제어역할그래프의권한거리는 사용자 역할에서 목표 권한까지 상속 간선을 몇 번 따라가는지 센다. 조직도상의 직급 차와 논리 권한 경로는 같지 않다.",
+      "concepts": [
+        "접근제어역할그래프의권한거리"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2221",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "가상주소에서물리프레임으로의사상은 페이지 번호를 표 항목으로 찾아 실제 메모리 프레임과 내부 오프셋에 대응한다. 두 주소 공간의 숫자를 직접 비교하지 않는다.",
+      "concepts": [
+        "가상주소에서물리프레임으로의사상"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2222",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "페이지기준오프셋의바이트위치는 정렬된 페이지 시작을 원점으로 하위 비트가 나타내는 상대 자리다. 페이지가 다른 프레임으로 옮겨져도 내부 좌표는 유지된다.",
+      "concepts": [
+        "페이지기준오프셋의바이트위치"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-SPH-2223",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "객체시작주소기준의필드좌표는 인스턴스 첫 바이트에서 멤버까지의 상대 오프셋이다. 객체가 재배치되면 절대 주소는 달라져도 구조 안 위치는 같다.",
+      "concepts": [
+        "객체시작주소기준의필드좌표"
+      ],
+      "relations": [
+        "other",
+        "part_of",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-SPH-2224",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "배열기준포인터의인덱스좌표는 첫 원소를 영점으로 두고 원소 크기 단위로 현재 위치를 나타낸다. 바이트 주소 차를 그대로 원소 번호로 읽지 않는다.",
+      "concepts": [
+        "배열기준포인터의인덱스좌표"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2225",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "세그먼트기준의논리주소쌍은 구간 선택자와 내부 오프셋을 결합해 위치를 표현한다. 선형 주소로 변환하려면 세그먼트 시작과 한계 규칙이 필요하다.",
+      "concepts": [
+        "세그먼트기준의논리주소쌍"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2226",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "메모리덤프화면의주소열위치는 각 행 첫 바이트 주소와 열 오프셋으로 값을 찾는 표시 좌표다. 화면에서 옆 칸이라는 사실과 자료형 필드 경계는 별개다.",
+      "concepts": [
+        "메모리덤프화면의주소열위치"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2227",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "파일상대경로의현재폴더원점은 경로 문자열을 해석하기 시작하는 디렉터리다. 같은 상대 표현도 실행 환경의 원점이 바뀌면 다른 파일에 도달한다.",
+      "concepts": [
+        "파일상대경로의현재폴더원점"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2228",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "정규화경로의점구성요소제거는 현재 위치 표식과 가능한 부모 이동을 계산해 같은 대상을 가리키는 표준 경로로 바꾼다. 링크 해석 경계에서는 결과가 달라질 수 있다.",
+      "concepts": [
+        "정규화경로의점구성요소제거"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2229",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "마운트네임스페이스기준의루트경로는 한 프로세스가 최상위로 보는 파일 트리 원점이다. 호스트 전역 루트와 문자열이 같아도 보이는 하위 노드 집합이 다르다.",
+      "concepts": [
+        "마운트네임스페이스기준의루트경로"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2230",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "컨테이너내부경로의호스트대응점은 볼륨 매핑 규칙을 통해 격리 환경의 디렉터리를 호스트 위치에 연결한 결과다. 양쪽 경로 깊이나 이름이 같을 필요는 없다.",
+      "concepts": [
+        "컨테이너내부경로의호스트대응점"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2231",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "버전관리작업트리기준의파일위치는 저장소 루트를 원점으로 한 상대 경로다. 다른 체크아웃 디렉터리에서도 같은 논리 파일을 같은 상대 좌표로 나타낼 수 있다.",
+      "concepts": [
+        "버전관리작업트리기준의파일위치"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2232",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "URL기준경로의상대참조해석은 현재 문서 주소를 원점으로 경로 구성요소를 합쳐 목표 자원을 정한다. 앞 슬래시 유무에 따라 서버 루트 기준으로 바뀐다.",
+      "concepts": [
+        "URL기준경로의상대참조해석"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2233",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "객체키접두사기준의가상폴더위치는 구분 문자를 포함한 문자열 앞부분을 기준으로 항목을 묶어 표시한다. 폴더 이름을 바꾸는 작업은 여러 키를 새로 쓰는 과정일 수 있다.",
+      "concepts": [
+        "객체키접두사기준의가상폴더위치"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2234",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "네트워크접두사기준의호스트좌표는 주소에서 공통 망 비트를 제외한 나머지 비트 위치다. 접두사 길이가 달라지면 같은 주소의 호스트 부분 값도 달라진다.",
+      "concepts": [
+        "네트워크접두사기준의호스트좌표"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-SPH-2235",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "서브넷마스크로투영한망주소는 호스트 비트를 지워 주소 공간의 구획 시작점을 얻은 값이다. 개별 인터페이스 주소와 서브넷 대표값을 구별한다.",
+      "concepts": [
+        "서브넷마스크로투영한망주소"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2236",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "라우팅테이블기준의목적지위치는 가장 긴 접두사 일치 규칙이 선택한 다음 홉 방향으로 표현된다. 지리 좌표가 아니라 전달 정책 안의 논리 자리다.",
+      "concepts": [
+        "라우팅테이블기준의목적지위치"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2237",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "터널내부좌표의원격게이트웨이는 캡슐화 사용자에게 한 링크 반대편 끝점처럼 보이는 주소다. 외부 운반망에서는 여러 라우터 뒤에 있는 별도 위치다.",
+      "concepts": [
+        "터널내부좌표의원격게이트웨이"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "function"
+      ]
+    },
+    {
+      "id": "S1-SPH-2238",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "가상랜태그기준의포트소속은 프레임 표식과 포트 설정을 이용해 논리 브로드캐스트 평면에 위치를 배정한다. 케이블이 연결된 물리 스위치만으로 소속을 정하지 않는다.",
+      "concepts": [
+        "가상랜태그기준의포트소속"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2239",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "네트워크토폴로지도상의라우터노드는 링크 관계가 잘 보이도록 화면에 놓은 기호 위치다. 그림의 선 길이나 노드 간격은 실제 케이블 거리와 무관할 수 있다.",
+      "concepts": [
+        "네트워크토폴로지도상의라우터노드"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-SPH-2240",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "계층형망도에서접힌서브넷노드는 여러 호스트와 내부 링크를 하나의 대표 기호로 축약한 위치다. 기호 하나를 실제 장비 한 대로 세지 않는다.",
+      "concepts": [
+        "계층형망도에서접힌서브넷노드"
+      ],
+      "relations": [
+        "other",
+        "part_of",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2241",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "서비스그래프화면의프록시중심점은 여러 요청 간선을 모아 한 중계 구성요소로 표시한 도식 좌표다. 화면 중심성과 트래픽 병목 여부를 같은 의미로 보지 않는다.",
+      "concepts": [
+        "서비스그래프화면의프록시중심점"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2242",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "로그인과관계그래프의가상배치좌표는 간선 교차를 줄이도록 알고리즘이 정한 시각적 위치다. 노드가 가까워 보여도 실제 호출 지연이나 주소 인접은 별도다.",
+      "concepts": [
+        "로그인과관계그래프의가상배치좌표"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2243",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "분산해시링그림의토큰각도는 순환 키 범위를 원 둘레에 투영해 토큰 위치를 나타낸 값이다. 물리 서버들이 원형으로 놓였다는 공간 정보는 포함하지 않는다.",
+      "concepts": [
+        "분산해시링그림의토큰각도"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2244",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "복제토폴로지의리더중심좌표는 모든 팔로워 연결을 보기 쉽게 중앙에 둔 도식 위치다. 실제 네트워크의 최단 경로 중심이나 데이터센터 중심을 의미하지 않는다.",
+      "concepts": [
+        "복제토폴로지의리더중심좌표"
+      ],
+      "relations": [
+        "other",
+        "role",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-SPH-2245",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "클라우드리전지도에투영된가상망은 여러 가용 구역의 논리 자원을 한 평면 도식에 배치한 것이다. 주소 구획이 지도 경계와 동일하게 나뉘지는 않는다.",
+      "concepts": [
+        "클라우드리전지도에투영된가상망"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2246",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "패킷캡처시퀀스번호기준의흐름위치는 바이트 순서축에서 한 세그먼트가 담당하는 구간을 나타낸다. 캡처 파일의 행 번호나 도착 시각 순서와 다를 수 있다.",
+      "concepts": [
+        "패킷캡처시퀀스번호기준의흐름위치"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2247",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "추적아이디공간의스팬경로좌표는 루트 호출에서 자식 호출 번호를 이어 붙여 작업 위치를 표현한다. 서버 주소와 무관하게 인과 계층을 재구성할 수 있다.",
+      "concepts": [
+        "추적아이디공간의스팬경로좌표"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-SPH-2248",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "컨테이너네임스페이스의프로세스주소는 격리된 식별자와 네트워크 관점에서 실행 단위를 나타낸다. 호스트 기준 번호와 내부 기준 번호가 같은 대상을 다르게 표시할 수 있다.",
+      "concepts": [
+        "컨테이너네임스페이스의프로세스주소"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-SPH-2249",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "논리시계기준의이벤트선후좌표는 분산 노드의 메시지 의존성을 반영해 사건 순서를 수치화한 값이다. 벽시계 시간이나 서버의 물리 위치를 나타내지 않는다.",
+      "concepts": [
+        "논리시계기준의이벤트선후좌표"
+      ],
+      "relations": [
+        "other",
+        "process",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-SPH-2250",
+      "type": "spatial_packet",
+      "split": "train",
+      "text": "주소변환뒤의공인망대표위치는 여러 내부 호스트 흐름이 외부에서 하나의 주소와 포트 조합으로 보이는 지점이다. 대표 주소를 실제 단일 내부 장치로 오해하지 않는다.",
+      "concepts": [
+        "주소변환뒤의공인망대표위치"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "process"
+      ]
+    }
+  ]
+}

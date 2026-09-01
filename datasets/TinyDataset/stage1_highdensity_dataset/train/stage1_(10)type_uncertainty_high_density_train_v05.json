@@ -1,0 +1,2228 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 1 Type Negation Uncertainty High-Density Train 150 v05",
+  "version": "5",
+  "purpose": "미관측·미측정·미기록·미응답·알수없음 구분에서 영역 핵심 관계를 학습하는 train corpus 150개",
+  "split": "train",
+  "record_count": 150,
+  "range": "S1-TUH-0601 ~ S1-TUH-0750",
+  "concept_family": "미관측·미측정·미기록·미응답·알수없음 구분",
+  "design_note": "센서 공백, 조사 누락, 기록 부재, 응답 거절, 지식 한계",
+  "records": [
+    {
+      "id": "S1-TUH-0601",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미관측비미존재구분: 관찰하지 않은 대상은 존재 여부가 알려지지 않았을 뿐 없다로 확정되지 않는다. 관측 범위와 세계 상태를 분리한다.",
+      "concepts": [
+        "미관측비미존재구분"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0602",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미측정비영값구분: 온도를 재지 않은 경우 값은 미측정이며 0 °C 관측과 다르다. 계산 편의를 위해 영으로 대치하지 않는다.",
+      "concepts": [
+        "미측정비영값구분"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0603",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미기록비무사건구분: 로그에 사건이 없다는 사실은 사건이 발생하지 않았다는 직접 관측과 다르다. 기록 체계의 포착 범위를 확인한다.",
+      "concepts": [
+        "미기록비무사건구분"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0604",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미응답비부정응답구분: 설문 공란은 ‘아니요’라는 명시 응답이 아니다. 미응답비부정응답구분은 태도와 데이터 부재를 나눈다.",
+      "concepts": [
+        "미응답비부정응답구분"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0605",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "알수없음비값없음구분: 현재 값을 모른다는 것은 실제 값이 존재하지 않는다는 뜻과 다르다. 지식 상태를 대상 상태로 투사하지 않는다.",
+      "concepts": [
+        "알수없음비값없음구분"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0606",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "표본미포함관측공백판정: 조사 표본에 뽑히지 않은 사람은 응답자가 아니라 미관측 모집단 구성원이다. 무응답자와 같은 분모에 넣지 않는다.",
+      "concepts": [
+        "표본미포함관측공백판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0607",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "센서중단자료공백판정: 전원 중단 구간의 빈 시계열은 환경값 0이 아니라 관측 장치의 상태 문제다. 자료 공백 원인을 장비 이력에 연결한다.",
+      "concepts": [
+        "센서중단자료공백판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0608",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "검출한계미만관측판정: 신호가 검출한계 아래면 정확값은 모르지만 상한 정보는 있다. ‘없음’이나 정확한 0으로 기록하지 않는다.",
+      "concepts": [
+        "검출한계미만관측판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0609",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "상한절단값판정: 측정 범위를 넘은 수치는 정확값이 아니라 최소 경계만 알려 준다. 상한절단값판정은 장비 최대 표시를 실제 값으로 쓰지 않는다.",
+      "concepts": [
+        "상한절단값판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0610",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "개인정보비공개결측판정: 보호 정책으로 가려진 값은 수집되지 않은 값과 원인이 다르다. 원자료 존재 가능성과 사용 제한을 함께 표시한다.",
+      "concepts": [
+        "개인정보비공개결측판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0611",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "응답거절명시판정: 참여자가 답변 거절을 선택하면 단순 공란보다 정보가 많다. 질문 내용의 부정 답변으로 바꾸지 않는다.",
+      "concepts": [
+        "응답거절명시판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0612",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "모름응답지식상태판정: ‘모르겠다’는 응답자의 지식 한계를 직접 나타낸다. 대상 속성이 없거나 질문이 적용되지 않는다는 뜻은 아니다.",
+      "concepts": [
+        "모름응답지식상태판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0613",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "해당없음질문비적용판정: 질문 조건에 맞지 않아 답할 수 없는 경우 ‘해당 없음’이다. 모름이나 거절과 구별해 분석 분모를 정한다.",
+      "concepts": [
+        "해당없음질문비적용판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0614",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "결과대기미확정판정: 검사가 끝나지 않아 값이 없는 상태는 일시적인 미확정이다. 음성 결과나 검사 미실시로 분류하지 않는다.",
+      "concepts": [
+        "결과대기미확정판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0615",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "자료유실기록부재판정: 수집했으나 파일 손상으로 값을 잃은 경우는 애초 미측정과 다르다. 수집 사건과 현재 이용 가능성을 따로 남긴다.",
+      "concepts": [
+        "자료유실기록부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0616",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "지연도착관측판정: 값이 아직 도착하지 않았어도 센서는 측정을 끝냈을 수 있다. 현재 공백을 영구 결측으로 확정하지 않는다.",
+      "concepts": [
+        "지연도착관측판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0617",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미수집설계누락판정: 설문 설계에 질문이 없어 값이 생성되지 않았다면 참여자 미응답과 다르다. 항목 수준의 구조적 결측으로 본다.",
+      "concepts": [
+        "미수집설계누락판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0618",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "집계값만관측판정: 평균만 제공되면 개인별 값은 미관측이지만 집단 Quantity는 존재한다. 집계에서 개별 기록을 임의 복원하지 않는다.",
+      "concepts": [
+        "집계값만관측판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0619",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "가림처리값판정: 문서의 검은 칸은 원값이 없다는 뜻보다 공개본에서 접근이 제한된 상태다. 가림처리값판정은 삭제와 비공개를 나눈다.",
+      "concepts": [
+        "가림처리값판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0620",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "판독불가관측판정: 글자가 촬영되었지만 흐려 읽지 못하면 관측 시도는 있었고 값 해석이 실패했다. 미촬영과 같은 결측으로 묶지 않는다.",
+      "concepts": [
+        "판독불가관측판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0621",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "손상파일값미상판정: 파일은 남았지만 일부 바이트가 깨져 원값을 알 수 없다. 손상파일값미상판정은 파일 비존재와 구분한다.",
+      "concepts": [
+        "손상파일값미상판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0622",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "측정시각미기록판정: 수치가 있어도 언제 잰 값인지 없으면 현재성 판단이 불가능하다. 값 존재와 시간 메타데이터 부재를 나눈다.",
+      "concepts": [
+        "측정시각미기록판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0623",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "단위정보미기록판정: 숫자는 기록됐지만 단위가 빠져 물리량을 해석하지 못한다. 숫자 자체를 결측으로 지우지 않고 의미 미상으로 둔다.",
+      "concepts": [
+        "단위정보미기록판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0624",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "출처정보미기록판정: 주장 내용은 있으나 누가 제공했는지 기록이 없다. 내용 부재가 아니라 provenance 공백으로 분류한다.",
+      "concepts": [
+        "출처정보미기록판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0625",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "공간관측범위공백판정: 조사하지 않은 구역의 값은 미관측이며 인접 구역과 같다고 할 수 없다. 지도의 흰 영역을 0으로 채우지 않는다.",
+      "concepts": [
+        "공간관측범위공백판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0626",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "침묵참여자미응답판정: 회의에 참석했지만 발언하지 않은 사람은 부재자가 아니다. 의견값만 미응답으로 두고 참여 상태는 유지한다.",
+      "concepts": [
+        "침묵참여자미응답판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0627",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "추적조사이탈판정: 후속 조사에서 빠진 참여자는 이전 값이 존재해도 현재 값은 미관측이다. 과거 상태를 그대로 이월하지 않는다.",
+      "concepts": [
+        "추적조사이탈판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0628",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "전송패킷손실판정: 센서가 보낸 패킷 일부가 사라지면 측정 여부와 서버 기록 여부가 갈린다. 전송 손실을 환경 사건 부재로 해석하지 않는다.",
+      "concepts": [
+        "전송패킷손실판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0629",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "대치값비원관측판정: 결측을 모델 예측으로 채운 수치는 원관측이 아니다. 대치값비원관측판정은 생성 방법과 불확실성을 함께 저장한다.",
+      "concepts": [
+        "대치값비원관측판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0630",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미상범주명시판정: 분류할 정보가 부족할 때 ‘미상’은 임시 범주로 쓸 수 있다. 실제 세계에 ‘미상’이라는 유형이 존재한다고 해석하지 않는다.",
+      "concepts": [
+        "미상범주명시판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0631",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미관측비부재단정판정: “보지 못했다”는 관찰 성공을 부정할 뿐 대상의 존재를 직접 부정하지 않는다. 시야 범위와 조건을 별도로 확인한다.",
+      "concepts": [
+        "미관측비부재단정판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0632",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미측정비정상판정: “이상값을 측정하지 않았다”가 측정 미실시라면 정상 확인과 다르다. 검사 Action 부재를 정상 State로 바꾸지 않는다.",
+      "concepts": [
+        "미측정비정상판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0633",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미기록비미발생판정: “사건을 기록하지 않았다”는 기록 Action의 부정이며 사건 발생 여부는 열려 있다. 두 사건을 분리해 표현한다.",
+      "concepts": [
+        "미기록비미발생판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0634",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미응답비반대판정: 응답하지 않은 참가자를 반대 표로 세면 안 된다. 미응답비반대판정은 의사 표현 부재와 부정 의견을 구별한다.",
+      "concepts": [
+        "미응답비반대판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0635",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "모름비거짓판정: “사실인지 모른다”는 참도 거짓도 확정하지 않는 지식 상태다. 화자의 무지를 명제 부정으로 바꾸지 않는다.",
+      "concepts": [
+        "모름비거짓판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0636",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미확인비불량판정: 품질을 확인하지 못한 제품은 불량으로 판정된 것이 아니다. 미확인비불량판정은 검증 대기와 실패를 나눈다.",
+      "concepts": [
+        "미확인비불량판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0637",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미탐색비반례없음판정: 반례를 찾지 않은 것과 충분히 찾아도 없었던 것은 다르다. 탐색 Action의 부정을 명제 지지로 쓰지 않는다.",
+      "concepts": [
+        "미탐색비반례없음판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0638",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미질문비무의견판정: 특정 항목을 묻지 않았다면 응답자의 의견이 없다고 결론낼 수 없다. 데이터 생성 기회 자체가 없었다.",
+      "concepts": [
+        "미질문비무의견판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0639",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미수집비영수량판정: 재고 수를 수집하지 않았다는 사실은 재고가 0이라는 뜻이 아니다. Quantity 부재를 숫자 부정으로 바꾸지 않는다.",
+      "concepts": [
+        "미수집비영수량판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0640",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미보고비무사고판정: 사고 보고가 없더라도 보고 체계 밖 사건이 있을 수 있다. 미보고비무사고판정은 기록 범위를 명시한다.",
+      "concepts": [
+        "미보고비무사고판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0641",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미관찰비불변판정: 두 시점 사이를 보지 않았다고 속성이 변하지 않은 것은 아니다. 관측 공백을 변화량 0으로 채우지 않는다.",
+      "concepts": [
+        "미관찰비불변판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0642",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미계산비영결과판정: 합계를 계산하지 않은 상태와 계산 결과 0은 다르다. 미계산비영결과판정은 연산 실행 여부를 보존한다.",
+      "concepts": [
+        "미계산비영결과판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0643",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미판독비빈문서판정: 흐린 문서를 읽지 못했어도 문서에 글자가 없다는 뜻은 아니다. 판독 실패를 내용 부재로 만들지 않는다.",
+      "concepts": [
+        "미판독비빈문서판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0644",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미전송비미측정판정: 서버에 값이 오지 않았어도 센서는 측정했을 수 있다. 전송 Action 부재와 측정 Action 부재를 구별한다.",
+      "concepts": [
+        "미전송비미측정판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0645",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "모름응답비무응답판정: ‘모름’을 선택한 사람은 실제 응답을 제출했다. 모름응답비무응답판정은 지식 한계와 공란을 따로 집계한다.",
+      "concepts": [
+        "모름응답비무응답판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0646",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "거절응답비부정답판정: 답변을 거절한 것은 질문 명제에 ‘아니다’라고 답한 것이 아니다. 정보 제공 의사만 부정한다.",
+      "concepts": [
+        "거절응답비부정답판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0647",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "비공개비무자료판정: 값이 비공개라는 것은 이용 가능성을 제한하지만 원자료 존재를 부정하지 않는다. 공개본의 공란과 수집 부재를 나눈다.",
+      "concepts": [
+        "비공개비무자료판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0648",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "대기중비실패판정: 결과가 아직 안 나왔다는 문장은 실패 결과를 뜻하지 않는다. 처리 완료의 부정만 기록하고 성공 가능성을 열어 둔다.",
+      "concepts": [
+        "대기중비실패판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0649",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미표본비무관계판정: 조사 표본에 포함되지 않은 대상이 현상과 무관하다는 결론은 나오지 않는다. 선택되지 않음과 특성 부재를 구별한다.",
+      "concepts": [
+        "미표본비무관계판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0650",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미추적비회복판정: 후속 상태를 조사하지 않았다고 환자가 회복하지 않은 것은 아니다. 관측 누락을 부정 결과로 기록하지 않는다.",
+      "concepts": [
+        "미추적비회복판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0651",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미탐지비무신호판정: 센서가 신호를 탐지하지 못해도 검출한계 아래 신호가 있을 수 있다. 탐지 결과 음성과 물리적 0을 나눈다.",
+      "concepts": [
+        "미탐지비무신호판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0652",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미출처비거짓정보판정: 출처가 기록되지 않은 정보는 검증하기 어렵지만 자동으로 거짓은 아니다. 신뢰 수준을 낮추되 진위를 확정하지 않는다.",
+      "concepts": [
+        "미출처비거짓정보판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0653",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미단위비무수량판정: 단위가 빠져도 숫자 Quantity 후보는 남는다. 미단위비무수량판정은 의미 불완전과 값 비존재를 구분한다.",
+      "concepts": [
+        "미단위비무수량판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0654",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미시각비현재아님판정: 타임스탬프가 없다고 값이 현재값이 아니라고 확정할 수 없다. 최신성만 미상으로 두고 값 자체는 보존한다.",
+      "concepts": [
+        "미시각비현재아님판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0655",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미완료비취소판정: 작업이 완료되지 않았다는 사실은 취소, 진행, 대기 중 어느 상태인지 정하지 않는다. 완료 부정만으로 취소 라벨을 붙이지 않는다.",
+      "concepts": [
+        "미완료비취소판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0656",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미분류비범주없음판정: 표본의 범주를 아직 모른다고 적절한 클래스가 존재하지 않는 것은 아니다. 정보 부족과 ontology 부재를 나눈다.",
+      "concepts": [
+        "미분류비범주없음판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-TUH-0657",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미응답전원반대오류판정: 무응답자를 모두 반대로 처리하면 반대 비율이 과장된다. 관측된 답변과 결측 분모를 분리한다.",
+      "concepts": [
+        "미응답전원반대오류판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0658",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "알수없음비불가능판정: 결과를 알 수 없다는 말은 결과 발생이 불가능하다는 뜻이 아니다. 지식 부족을 가능세계 제거로 해석하지 않는다.",
+      "concepts": [
+        "알수없음비불가능판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0659",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미검증비무효판정: 서명이 검증되지 않았어도 문서가 무효라고 판정된 것은 아니다. 검증 대기와 부정 판정을 별도 상태로 둔다.",
+      "concepts": [
+        "미검증비무효판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0660",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미관측전면부정오류판정: 관측된 사례가 없다는 이유만으로 “어떤 사례도 없다”는 전면 부정을 만들면 안 된다. 탐색 범위를 명시한다.",
+      "concepts": [
+        "미관측전면부정오류판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0661",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "강우계미측정구간판정: 배터리 교체 시간의 강우량은 측정되지 않았다. 빈 구간을 0 mm로 채우지 않고 센서 중단 표지를 남긴다.",
+      "concepts": [
+        "강우계미측정구간판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0662",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "설문무응답항목판정: 참가자가 다른 문항은 답하고 소득 칸만 비웠다면 항목 무응답이다. 설문 전체 이탈이나 소득 0과 구별한다.",
+      "concepts": [
+        "설문무응답항목판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0663",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "환자추적누락판정: 후속 방문이 없어 회복 상태를 관측하지 못했다. 마지막 진료값을 현재 결과로 복사하지 않고 추적 누락으로 둔다.",
+      "concepts": [
+        "환자추적누락판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0664",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "출입로그공백판정: 단말 장애 시간에는 출입 사건이 기록되지 않았을 수 있다. 로그 0건을 실제 통행 0명으로 단정하지 않는다.",
+      "concepts": [
+        "출입로그공백판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0665",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "위성영상구름가림판정: 구름 아래 지표는 촬영 장면에 있지만 상태를 판독할 수 없다. 지표 대상 부재가 아니라 가림에 의한 미관측이다.",
+      "concepts": [
+        "위성영상구름가림판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0666",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "토양시료미채취판정: 접근 위험 때문에 지점 시료를 채취하지 못했다. 분석값 공란은 오염 0이 아니라 수집 Action 부재를 뜻한다.",
+      "concepts": [
+        "토양시료미채취판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0667",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "전화조사연락실패판정: 여러 번 통화가 연결되지 않아 응답 자료가 없다. 거절이나 대상자 비존재로 분류하기 전에 연락 상태를 남긴다.",
+      "concepts": [
+        "전화조사연락실패판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0668",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "검사결과처리대기판정: 시료는 접수됐지만 분석이 끝나지 않아 결과가 비어 있다. 음성, 양성, 검사 미실시와 다른 일시 상태다.",
+      "concepts": [
+        "검사결과처리대기판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0669",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "기상관측소통신손실판정: 현장 장비는 측정했을 가능성이 있지만 서버 전송 자료가 없다. 원격 기록 공백과 현장 관측 부재를 분리한다.",
+      "concepts": [
+        "기상관측소통신손실판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0670",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "회의록발언자누락판정: 발언 내용은 남았지만 화자 이름이 빠져 주체를 알 수 없다. 발언 사건까지 없었던 것으로 처리하지 않는다.",
+      "concepts": [
+        "회의록발언자누락판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-TUH-0671",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "상품가격미수집판정: 조사원이 품목은 확인했지만 가격을 적지 않아 Attribute 값이 결측이다. 무료나 품절이라는 값으로 대체하지 않는다.",
+      "concepts": [
+        "상품가격미수집판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0672",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "학교출석미보고판정: 한 학급이 출석 파일을 보내지 않아 집계에서 비었다. 학생 전원이 결석했다고 계산하지 않고 보고 누락으로 둔다.",
+      "concepts": [
+        "학교출석미보고판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0673",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "교통량센서포화판정: 차량이 너무 많아 계수기가 상한에 닿으면 정확한 교통량은 미상이다. 최대 표시값을 실제 수량으로 고정하지 않는다.",
+      "concepts": [
+        "교통량센서포화판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0674",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "소음값검출미만판정: 장비 하한보다 작은 신호는 정확값을 주지 못하지만 일정 상한은 알려 준다. 완전 무음이나 미측정과 구별한다.",
+      "concepts": [
+        "소음값검출미만판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0675",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "전자서명검증미실행판정: 문서는 제출됐으나 서명 검증 절차가 아직 실행되지 않았다. 유효나 무효 어느 결과도 부여하지 않는다.",
+      "concepts": [
+        "전자서명검증미실행판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0676",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "주소조사응답거절판정: 응답자가 주소 제공 거절을 명시해 값이 비었다. 주소가 없거나 조사원이 질문하지 않은 경우와 구분한다.",
+      "concepts": [
+        "주소조사응답거절판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0677",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "재난현장접근불가관측: 위험 때문에 현장에 들어가지 못해 피해 규모를 관측하지 않았다. 피해 없음이라는 부정 결과를 생성하지 않는다.",
+      "concepts": [
+        "재난현장접근불가관측"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0678",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "어획량미신고판정: 선박이 기간 내 자료를 제출하지 않아 어획 Quantity가 결측이다. 어획량 0이나 조업 미실시로 자동 분류하지 않는다.",
+      "concepts": [
+        "어획량미신고판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0679",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "기록보존만료공백판정: 오래된 로그가 정책에 따라 삭제되어 과거 상태를 확인할 수 없다. 사건 미발생의 증거로 쓰지 않는다.",
+      "concepts": [
+        "기록보존만료공백판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0680",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "문서가림값접근제한판정: 공개본의 이름이 가려졌다면 원문 값은 있을 수 있으나 현재 독자는 접근할 수 없다. 미기록과 구별한다.",
+      "concepts": [
+        "문서가림값접근제한판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0681",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "수기표판독실패판정: 손글씨가 번져 숫자를 판독하지 못했어도 원래 작성은 이루어졌다. 판독 실패를 값 미입력으로 바꾸지 않는다.",
+      "concepts": [
+        "수기표판독실패판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0682",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "실험시료분실결측판정: 채취된 시료가 운송 중 분실되어 분석값을 만들 수 없다. 미채취와 구분해 손실 단계와 책임 범위를 남긴다.",
+      "concepts": [
+        "실험시료분실결측판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0683",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "위치신호음영구간판정: 터널 안에서 위치 신호가 끊겨 좌표가 비었다. 차량의 부재나 정지를 뜻하지 않고 추적 관측만 결측이다.",
+      "concepts": [
+        "위치신호음영구간판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0684",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "소득모름응답판정: 가구원이 정확한 소득을 모른다고 답했다면 지식 상태가 기록된 것이다. 무응답이나 소득 없음과 다르게 코딩한다.",
+      "concepts": [
+        "소득모름응답판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0685",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "백신기록출처누락판정: 접종 날짜는 있으나 의료기관 출처가 빠져 검증이 어렵다. 날짜값까지 삭제하지 않고 provenance 결측을 표시한다.",
+      "concepts": [
+        "백신기록출처누락판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0686",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "재고조사구역미방문판정: 조사원이 한 창고를 방문하지 않아 그 구역 재고는 미관측이다. 다른 창고의 평균이나 0을 대신 넣지 않는다.",
+      "concepts": [
+        "재고조사구역미방문판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0687",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "온라인시험답안미저장판정: 네트워크 오류로 선택 답안이 서버에 남지 않았다. 학생이 답하지 않았는지 전송이 실패했는지 구분해 재확인한다.",
+      "concepts": [
+        "온라인시험답안미저장판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0688",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "에너지계량기교체공백판정: 장비 교체 동안 사용량 시계열이 비어 정확한 Quantity를 모른다. 전후 누적값이 있어도 실제 경로를 임의 보간하지 않는다.",
+      "concepts": [
+        "에너지계량기교체공백판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0689",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "고객만족무응답편향판정: 만족도가 높은 사람과 낮은 사람의 응답률이 다르면 공란이 무작위가 아닐 수 있다. 응답자 평균을 전체값으로 곧바로 쓰지 않는다.",
+      "concepts": [
+        "고객만족무응답편향판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0690",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "관측기록시간대누락판정: 값과 시각은 있으나 시간대가 빠져 다른 지역 기록과 정렬할 수 없다. 시간 정보 일부의 결측으로 표시한다.",
+      "concepts": [
+        "관측기록시간대누락판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0691",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미관측개체존재미상: 숲의 조사구 밖 동물은 이번 조사로 존재 여부를 알 수 없다. 관측 표본 0건을 종 전체 부재로 확대하지 않는다.",
+      "concepts": [
+        "미관측개체존재미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0692",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미측정온도값미상: 센서가 설치되지 않은 방의 온도는 모른다. 이웃 방 수치를 복사해 관측된 Attribute처럼 표시하지 않는다.",
+      "concepts": [
+        "미측정온도값미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0693",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미기록통행여부미상: 카메라가 꺼진 시간의 문 통과 여부는 알 수 없다. 영상 공백을 통행 없음이나 있음 중 하나로 정하지 않는다.",
+      "concepts": [
+        "미기록통행여부미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0694",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미응답선호미상판정: 상품 선택 문항을 비운 응답자의 선호 방향은 알 수 없다. 평균 선호나 반대 선택을 대신 부여하지 않는다.",
+      "concepts": [
+        "미응답선호미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0695",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "가림이름정체미상판정: 공개 문서에서 이름이 지워지면 독자는 당사자의 정체를 모른다. 원본에 사람 정보가 없다고 결론내리지는 않는다.",
+      "concepts": [
+        "가림이름정체미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0696",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "손상수치원값미상판정: 숫자 마지막 자리가 번져 12인지 18인지 구별되지 않는다. 가능한 후보를 남기고 하나를 확정값으로 고르지 않는다.",
+      "concepts": [
+        "손상수치원값미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0697",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "단위누락물리량미상: 기록된 50이 길이, 질량, 시간 중 무엇인지 알 수 없다. 숫자 패턴만으로 Quantity 타입을 결정하지 않는다.",
+      "concepts": [
+        "단위누락물리량미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0698",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "무응답사유미상판정: 설문을 제출하지 않은 이유가 거절, 연락 실패, 실수 중 어느 것인지 모른다. 사유별 가중치를 임의 적용하지 않는다.",
+      "concepts": [
+        "무응답사유미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0699",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "검출미만정확값미상: 신호가 장비 하한 아래라는 사실만으로 정확한 농도는 알 수 없다. 0과 하한 사이의 검열값으로 유지한다.",
+      "concepts": [
+        "검출미만정확값미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0700",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "집계만제공개별값미상: 그룹 평균만 있으면 각 사람의 수치는 알 수 없다. 평균을 모든 개인 레코드에 복제하지 않는다.",
+      "concepts": [
+        "집계만제공개별값미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0701",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "출처누락진위미상판정: 주장 문장은 있으나 원자료와 작성자가 없어 진위를 판단하기 어렵다. 출처 부재를 즉시 거짓으로 분류하지 않는다.",
+      "concepts": [
+        "출처누락진위미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0702",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "지연자료최신값미상: 어제 전송값만 있고 오늘 패킷이 늦으면 현재 상태를 모른다. 마지막 관측을 최신 사실로 고정하지 않는다.",
+      "concepts": [
+        "지연자료최신값미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0703",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "표본이탈현재상태미상: 추적조사에서 빠진 참여자의 현재 건강 상태는 알 수 없다. 이전 상태가 유지됐다고 가정하지 않는다.",
+      "concepts": [
+        "표본이탈현재상태미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0704",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미질문태도미상판정: 설문에 정책 찬반 문항이 없었다면 참가자의 태도는 미상이다. 다른 응답으로 직접 추론하지 않는다.",
+      "concepts": [
+        "미질문태도미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0705",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "좌표공백위치미상판정: 대상 ID는 있으나 위치 측정이 빠져 현재 장소를 알 수 없다. 등록 주소를 실시간 위치로 대체하지 않는다.",
+      "concepts": [
+        "좌표공백위치미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0706",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "응답거절값미상판정: 참여자가 답을 거부했다면 값의 참상태는 알 수 없다. 거절 사실만 관측값으로 남기고 질문 답을 추정하지 않는다.",
+      "concepts": [
+        "응답거절값미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0707",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미검사감염상태미상: 검사를 받지 않은 사람의 감염 상태는 양성도 음성도 아니다. 증상만으로 확정 라벨을 부여하지 않는다.",
+      "concepts": [
+        "미검사감염상태미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0708",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "센서포화상한초과미상: 최대값에 붙은 측정은 실제 Quantity가 그 이상임만 알려 준다. 초과 폭을 모르는 상태로 저장한다.",
+      "concepts": [
+        "센서포화상한초과미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0709",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "관측자부재사건미상: 감시자가 없었던 시간에는 사건 발생 여부를 알 수 없다. 보고가 없다는 이유로 평온 상태를 확정하지 않는다.",
+      "concepts": [
+        "관측자부재사건미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0710",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "판독불가문자미상판정: 문서 줄은 존재하지만 번짐 때문에 글자값을 읽지 못한다. 빈 줄이나 삭제된 문장으로 처리하지 않는다.",
+      "concepts": [
+        "판독불가문자미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0711",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "변환손실원범주미상: 통합 과정에서 세부 라벨이 ‘기타’로 합쳐져 원래 범주를 알 수 없다. 현재 값에서 과거 분류를 임의 복원하지 않는다.",
+      "concepts": [
+        "변환손실원범주미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0712",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "익명화관계상대미상: 한쪽 식별자가 가려진 Relation은 연결 존재를 보여도 상대 Entity를 알 수 없다. 공개 범위 안에서만 해석한다.",
+      "concepts": [
+        "익명화관계상대미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0713",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "시간공백전이경로미상: 두 관측 상태 사이 로그가 없으면 어떤 중간 전이를 거쳤는지 모른다. 시작과 끝만으로 단일 경로를 만들지 않는다.",
+      "concepts": [
+        "시간공백전이경로미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0714",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미응답소득분포미상: 소득 무응답자가 특정 집단에 몰리면 전체 분포를 알기 어렵다. 응답자 값만으로 결측 집단을 동일하게 가정하지 않는다.",
+      "concepts": [
+        "미응답소득분포미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0715",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "검체분실결과미상판정: 검사 전 검체가 사라졌다면 결과는 음성이나 양성이 아니라 미상이다. 분실 사건과 생물학적 상태를 나눈다.",
+      "concepts": [
+        "검체분실결과미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0716",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미기록변경주체미상: 값이 바뀐 흔적은 있지만 감사 로그가 없어 누가 수정했는지 모른다. 현재 값과 행위자 미상을 함께 보존한다.",
+      "concepts": [
+        "미기록변경주체미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-TUH-0717",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "공개자료누락범위미상: 공개 파일에 일부 행이 없지만 비공개 조치와 원자료 누락 가운데 어느 이유인지 확인되지 않는다. 전체 크기도 확정하지 않는다.",
+      "concepts": [
+        "공개자료누락범위미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0718",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "관측해상도부족형태미상: 저해상도 영상에서 물체 존재는 보이나 세부 형태 Attribute를 알 수 없다. 흐릿한 윤곽을 특정 종류로 분류하지 않는다.",
+      "concepts": [
+        "관측해상도부족형태미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0719",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미측정기준선변화미상: 시작값이 없어 종료값만으로 변화량을 계산할 수 없다. 기준선을 평균으로 대신해 증가나 감소를 확정하지 않는다.",
+      "concepts": [
+        "미측정기준선변화미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0720",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "데이터공백무작위성미상: 누락 원인이 관측값과 관련 있는지 정보가 없어 결측 메커니즘을 정할 수 없다. 단순 무작위라고 가정하지 않는다.",
+      "concepts": [
+        "데이터공백무작위성미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-TUH-0721",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미관측존재확률판정: 인접 구역 흔적은 조사 밖 동물 존재 가능성을 높이지만 직접 관측은 아니다. 가능성과 확인 사실을 구별한다.",
+      "concepts": [
+        "미관측존재확률판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0722",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미측정값예측구간판정: 주변 센서로 빈 시점 값을 추정할 때 예측구간과 방법을 함께 남긴다. 대치 수치를 실제 측정처럼 표시하지 않는다.",
+      "concepts": [
+        "미측정값예측구간판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0723",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미기록사건발생확률: 로그 누락률이 알려지면 기록 없는 사건의 발생 가능성을 추정할 수 있다. 추정값을 개별 사건 확정으로 쓰지 않는다.",
+      "concepts": [
+        "미기록사건발생확률"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0724",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "무응답편향가능성판정: 특정 연령대의 응답률이 낮으면 전체 추정에 편향 가능성이 있다. 관측 응답만으로 무응답 집단을 대표하지 않는다.",
+      "concepts": [
+        "무응답편향가능성판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0725",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "모름응답정보량판정: ‘모름’은 대상값은 주지 않지만 응답자의 지식 상태에 관한 관측이다. 완전한 공란과 같은 정보량으로 다루지 않는다.",
+      "concepts": [
+        "모름응답정보량판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0726",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "검출미만대치분포판정: 하한 아래 값을 한 숫자로 채우기보다 가능한 분포나 검열 구간으로 유지할 수 있다. 영값 고정의 편향을 피한다.",
+      "concepts": [
+        "검출미만대치분포판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0727",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "센서공백보간신뢰판정: 짧고 변화가 완만한 공백은 보간 신뢰가 높을 수 있지만 급변 사건이 있으면 낮아진다. 조건별 불확실성을 표시한다.",
+      "concepts": [
+        "센서공백보간신뢰판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0728",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "추적이탈가중치판정: 이탈 확률을 모델링해 가중치를 조정할 수 있지만 모델 가정이 결과에 영향을 준다. 보정값을 관측값과 구별한다.",
+      "concepts": [
+        "추적이탈가중치판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0729",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "판독후보확률판정: 흐린 숫자에 3과 8 두 후보가 있으면 영상 증거에 따라 확률을 배정할 수 있다. 최고 후보만 원문으로 확정하지 않는다.",
+      "concepts": [
+        "판독후보확률판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0730",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "응답거절비대체가능성: 다른 행정 자료가 있더라도 거절한 설문값을 완전히 대체할 수 있는지는 불확실하다. 목적과 측정 정의를 대조한다.",
+      "concepts": [
+        "응답거절비대체가능성"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0731",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "지연자료도착가능성판정: 전송 대기열과 장비 상태가 정상이라면 빈값이 나중에 도착할 가능성이 있다. 그 빈칸을 영속적인 결측 상태로 잠그지 않는다.",
+      "concepts": [
+        "지연자료도착가능성판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0732",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "자료유실복구확률판정: 백업 주기와 손상 범위로 잃은 값을 되찾을 가능성을 추정한다. 복구 예정과 실제 복구 완료를 분리한다.",
+      "concepts": [
+        "자료유실복구확률판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0733",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "표본누락대표성위험: 조사하지 못한 구역이 체계적으로 다르면 관측 평균의 대표성이 낮아질 수 있다. 공간 공백을 무작위로 가정하지 않는다.",
+      "concepts": [
+        "표본누락대표성위험"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0734",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "출처미상신뢰감점판정: provenance가 없으면 주장의 신뢰를 낮출 근거가 되지만 거짓 확률을 1로 만들지는 않는다. 내용과 출처 증거를 따로 평가한다.",
+      "concepts": [
+        "출처미상신뢰감점판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0735",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "시간대누락정렬불확실성: 현지 시각만 있는 기록은 여러 UTC 시점 후보를 가진다. 후보별 정렬 결과를 유지하고 하나를 임의 선택하지 않는다.",
+      "concepts": [
+        "시간대누락정렬불확실성"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0736",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "단위미상환산위험판정: 숫자만 보고 미터나 피트를 가정하면 큰 환산 오류가 생길 수 있다. 단위 증거 전에는 계산에서 제외한다.",
+      "concepts": [
+        "단위미상환산위험판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0737",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "대치값분산과소위험: 모든 공란을 평균으로 채우면 데이터 변동성이 실제보다 작아진다. 대치값분산과소위험을 분석 보고에 포함한다.",
+      "concepts": [
+        "대치값분산과소위험"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0738",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미관측구간사건가능성: 시작과 끝 상태가 같아도 공백 동안 일시 사건이 있었을 수 있다. 관측 간격이 길수록 중간 경로 불확실성이 커진다.",
+      "concepts": [
+        "미관측구간사건가능성"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0739",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "무응답원인혼합판정: 연락 실패, 거절, 항목 누락이 한 결측 집단에 섞일 수 있다. 단일 원인 모델의 확신을 낮추고 유형별 증거를 모은다.",
+      "concepts": [
+        "무응답원인혼합판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-TUH-0740",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "검체분실결과추정금지: 비슷한 환자의 결과로 분실 검체 값을 채우면 개인 상태를 잘못 확정할 위험이 크다. 재검사가 없다면 미상으로 둔다.",
+      "concepts": [
+        "검체분실결과추정금지"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0741",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "공개가림원값가능범위: 주변 합계와 규칙으로 가려진 값의 범위를 좁힐 수 있어도 정확값은 아니다. 개인정보를 추정해 복원하지 않는다.",
+      "concepts": [
+        "공개가림원값가능범위"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0742",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미보고사건하한추정: 보고된 건수는 실제 사건 수의 하한일 수 있다. 보고율 추정이 없으면 전체 수량을 단일 값으로 제시하지 않는다.",
+      "concepts": [
+        "미보고사건하한추정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0743",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "센서이중화공백감소판정: 독립 장비가 같은 현상을 측정하면 한 센서 공백의 불확실성을 줄일 수 있다. 측정 정의와 위치 차이를 먼저 확인한다.",
+      "concepts": [
+        "센서이중화공백감소판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0744",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "응답자대리보고신뢰판정: 본인 대신 가족이 답한 값은 완전 미응답보다 정보가 있지만 정확성이 다를 수 있다. 대리 관계와 확신을 표시한다.",
+      "concepts": [
+        "응답자대리보고신뢰판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-TUH-0745",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "결측메커니즘후보판정: 공백이 값과 무관한지, 관측된 변수에 의존하는지, 숨은 값에 의존하는지 후보를 나눈다. 검증 없이 하나를 확정하지 않는다.",
+      "concepts": [
+        "결측메커니즘후보판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-TUH-0746",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미측정재검사우선판정: 의사결정에 큰 영향을 주고 불확실성이 큰 항목일수록 재측정 가치가 높다. 모든 공란을 같은 우선순위로 다루지 않는다.",
+      "concepts": [
+        "미측정재검사우선판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0747",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "관측범위외삽위험판정: 조사 구역 밖으로 패턴을 확장하면 환경 차이 때문에 오차가 커질 수 있다. 외삽 결과를 직접 관측 지도와 구분한다.",
+      "concepts": [
+        "관측범위외삽위험판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0748",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미기록검증대체증거판정: 주 로그가 없어도 영수증, 센서, 상대 시스템이 사건 발생을 간접 증명할 수 있다. 독립성을 확인해 신뢰를 결합한다.",
+      "concepts": [
+        "미기록검증대체증거판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0749",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "알수없음상태갱신판정: 새 관측이나 응답이 도착하면 미상 상태를 구체값으로 갱신한다. 과거 미상을 실제 과거값으로 소급 변경하지 않는다.",
+      "concepts": [
+        "알수없음상태갱신판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0750",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "관측공백근거등급화: 미수집, 전송 손실, 가림, 거절, 판독 실패는 서로 다른 후속 조치를 요구한다. 관측공백근거등급화는 결측 원인을 보존한다.",
+      "concepts": [
+        "관측공백근거등급화"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "classification"
+      ]
+    }
+  ]
+}

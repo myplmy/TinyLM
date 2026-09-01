@@ -1,0 +1,158 @@
+# family	작업장의 주문·재료·기계·검사·재작업 상황
+# axes	작업자, 설비, 공정품, 작업지시, 측정, 품질 상태
+# columns	concepts	relations	other_category	logic_pattern	directly_authored_text
+# 001~030 주문·부품·공정품·품질 상태의 원인 맥락 추적
+작업지시서이동상황|반장|작업지시서|절단공정|완료함	other,process,state,function	causal_context	entity_tracking	작업지시서이동상황: 반장은 작업지시서를 절단공정에 전달했고 작업이 끝난 뒤 완료함으로 옮겼다. 게시판에 문서가 없어진 것은 주문 취소가 아니라 공정 이동 때문이다.
+원자재로트추적상황|창고원|강판로트|입고표|재료선반	other,process,state,classification	causal_context	entity_tracking	원자재로트추적상황: 창고원은 강판로트의 입고표를 확인하고 지정 재료선반에 적재했다. 같은 모양의 판도 로트 번호가 다르면 생산 기록을 나눠야 한다.
+절단품바구니이동상황|작업자|절단품|노란바구니|가공대기구역	other,process,state,part_of	causal_context	entity_tracking	절단품바구니이동상황: 작업자는 절단품을 노란바구니에 담아 가공대기구역으로 보냈다. 절단기 옆이 비어도 부품은 폐기된 것이 아니라 다음 공정을 기다린다.
+불량표시부착상황|검사원|가공품|불량표시|격리선반	other,process,state,boundary	causal_context	entity_tracking	불량표시부착상황: 검사원은 기준을 벗어난 가공품에 불량표시를 붙여 격리선반에 뒀다. 생산 수량에는 존재하지만 합격 수량에는 포함되지 않는다.
+기계설정값갱신상황|설비기사|이전설정값|새설정값|제어화면	other,process,state,attribute	causal_context	entity_tracking	기계설정값갱신상황: 설비기사는 제어화면에서 이전설정값을 지우고 승인된 새설정값을 입력했다. 다음 생산분부터 바뀐 조건이 적용된다.
+부품세척상태추적상황|세척담당|오염부품|세척통|건조대	other,process,state,function	causal_context	entity_tracking	부품세척상태추적상황: 세척담당은 오염부품을 세척통에서 꺼내 헹군 뒤 건조대에 올렸다. 물기가 남아 있으므로 세척 완료와 조립 가능 상태는 다르다.
+조립품일련번호상황|조립원|완성조립품|일련번호라벨|생산기록	other,process,state,classification	causal_context	entity_tracking	조립품일련번호상황: 조립원은 완성조립품에 일련번호라벨을 붙이고 생산기록에 같은 번호를 적었다. 제품과 기록은 이 식별값으로 연결된다.
+측정게이지이력상황|검사원|두께게이지|측정값|검사표	other,process,state,attribute	causal_context	entity_tracking	측정게이지이력상황: 검사원은 두께게이지로 얻은 측정값을 검사표의 해당 부품 행에 입력했다. 다른 시각의 재측정은 별도 값으로 남긴다.
+재작업품반송상황|품질담당|재작업품|수정지시|조립라인	other,process,state,function	causal_context	entity_tracking	재작업품반송상황: 품질담당은 재작업품에 수정지시를 붙여 조립라인으로 돌려보냈다. 검사실에서 사라진 것은 합격 출하가 아니라 보완을 위한 반송이다.
+주문수량변경상황|영업담당|기존주문량|변경요청|생산계획표	other,process,state,attribute	causal_context	entity_tracking	주문수량변경상황: 영업담당이 변경요청을 보내자 생산계획표의 기존주문량이 새 수량으로 갱신됐다. 이미 만든 수량과 앞으로 만들 수량은 따로 계산한다.
+공구반납기록상황|작업자|토크렌치|공구함|반납표	other,process,state,function	causal_context	entity_tracking	공구반납기록상황: 작업자는 토크렌치를 공구함에 넣고 반납표에 시간을 적었다. 작업대에 없다는 사실은 분실보다 정상 반납 기록으로 설명된다.
+포장상자라벨추적상황|포장원|제품상자|출하라벨|적재대	other,process,state,part_of	causal_context	entity_tracking	포장상자라벨추적상황: 포장원은 제품상자에 출하라벨을 붙여 적재대의 주문별 구역에 놓았다. 상자 안 내용과 목적지는 라벨 기록으로 확인한다.
+설비정지표시상황|운전원|가공기계|정지표시|점검요청서	other,process,state,boundary	causal_context	entity_tracking	설비정지표시상황: 운전원은 이상음을 들은 뒤 가공기계를 멈추고 정지표시와 점검요청서를 남겼다. 전원이 꺼졌다고 생산 완료된 설비는 아니다.
+도면개정본배포상황|설계담당|이전도면|개정도면|현장게시판	other,process,state,boundary	causal_context	entity_tracking	도면개정본배포상황: 설계담당은 이전도면을 회수하고 개정도면을 현장게시판에 배포했다. 작업자는 발행 표시가 최신인 문서만 사용한다.
+완제품검사통과상황|검사원|완제품|합격도장|출하대기구역	other,process,state,classification	causal_context	entity_tracking	완제품검사통과상황: 검사원은 기준을 만족한 완제품에 합격도장을 찍어 출하대기구역으로 옮겼다. 생산 완료만으로 이 상태가 생기지는 않는다.
+폐기부품수량추적상황|현장관리자|폐기부품|폐기함|수량기록	other,process,state,attribute	causal_context	entity_tracking	폐기부품수량추적상황: 현장관리자는 폐기부품을 폐기함에 넣으며 수량기록을 갱신했다. 재고 감소 중 폐기 원인은 이 기록으로 구매 사용량과 구별한다.
+윤활유보충상태상황|정비원|윤활유통|설비탱크|수위표시	other,process,state,attribute	causal_context	entity_tracking	윤활유보충상태상황: 정비원은 윤활유통에서 설비탱크로 보충하고 수위표시를 확인했다. 빈 통은 누유가 아니라 정상 투입의 결과일 수 있다.
+검사용시편분리상황|품질기사|생산로트|검사용시편|시편봉투	other,process,state,part_of	causal_context	entity_tracking	검사용시편분리상황: 품질기사는 생산로트에서 검사용시편을 떼어 시편봉투에 번호와 함께 넣었다. 시편은 전체 로트의 일부지만 본품 출하 상자에는 없다.
+재료투입표확인상황|운전원|혼합재료|투입표|배합기	other,process,state,function	causal_context	entity_tracking	재료투입표확인상황: 운전원은 투입표의 순서를 보며 혼합재료를 배합기에 넣었다. 창고에서 나간 재료가 모두 같은 시점에 투입된 것은 아니다.
+검사사진연결상황|검사자|표면결함|검사사진|부품번호	other,process,state,classification	causal_context	entity_tracking	검사사진연결상황: 검사자는 표면결함을 찍은 검사사진에 부품번호를 기록했다. 사진 파일명보다 번호가 어떤 공정품의 결함인지 알려 준다.
+공정카드완료표시상황|작업자|공정카드|완료서명|다음공정	other,process,state,function	causal_context	entity_tracking	공정카드완료표시상황: 작업자는 맡은 단계가 끝나자 공정카드에 완료서명을 하고 다음공정으로 넘겼다. 서명 전 이동품은 진행 상태를 재확인한다.
+설비알람이력상황|가공기|온도알람|발생시각|운전기록	other,process,state,attribute	causal_context	entity_tracking	설비알람이력상황: 가공기에 온도알람이 뜨자 발생시각이 운전기록에 저장됐다. 현재 경보가 꺼져도 과거 사건은 이력에 남는다.
+부족자재요청상황|조립반|부족자재|추가요청서|자재창고	other,process,state,function	causal_context	entity_tracking	부족자재요청상황: 조립반은 부족자재를 확인하고 추가요청서를 자재창고에 보냈다. 요청 접수와 현장 보충 완료는 서로 다른 단계다.
+납품상자검수상황|입고검사원|납품상자|검수표|보류구역	other,process,state,boundary	causal_context	entity_tracking	납품상자검수상황: 입고검사원은 납품상자의 수량이 검수표와 달라 보류구역으로 옮겼다. 물건이 도착했어도 정식 입고로 확정되지 않았다.
+교정라벨갱신상황|계측담당|측정기|교정라벨|다음교정일	other,process,state,attribute	causal_context	entity_tracking	교정라벨갱신상황: 계측담당은 측정기 점검 후 교정라벨에 다음교정일을 적어 붙였다. 오래된 라벨을 제거한 것은 장비 폐기가 아니다.
+용접품냉각이동상황|용접원|용접품|냉각대|검사대	other,process,state,function	causal_context	entity_tracking	용접품냉각이동상황: 용접원은 뜨거운 용접품을 냉각대에 두고 온도가 내려간 뒤 검사대로 옮겼다. 용접 완료 시점과 검사 가능 시점이 다르다.
+생산수량판갱신상황|반장|완료수량|생산수량판|교대목표	other,process,state,attribute	causal_context	entity_tracking	생산수량판갱신상황: 반장은 완료수량을 생산수량판에 더하고 교대목표와 남은 차이를 확인했다. 게시값은 만든 총량이지 합격품 수만을 뜻하지 않는다.
+재작업결과기록상황|수리작업자|수정부위|재작업결과|품질기록	other,process,state,boundary	causal_context	entity_tracking	재작업결과기록상황: 수리작업자는 수정부위와 재작업결과를 품질기록에 남겼다. 고쳤다는 메모가 재검사 합격을 자동으로 의미하지 않는다.
+출하목록상자대조상황|출하담당|출하목록|포장상자|상자번호	other,process,state,classification	causal_context	entity_tracking	출하목록상자대조상황: 출하담당은 포장상자의 상자번호를 출하목록과 대조한 뒤 차량 구역에 놓았다. 목록에 없는 상자는 같은 목적지처럼 보여도 싣지 않는다.
+작업복오염교체상황|작업자|오염작업복|교체함|깨끗한작업복	other,process,state,boundary	causal_context	entity_tracking	작업복오염교체상황: 작업자는 오염작업복을 교체함에 넣고 깨끗한작업복으로 갈아입었다. 옷이 바뀌어도 작업자의 배정 공정은 그대로다.
+# 031~060 생산·품질·정비·물류 역할의 조정
+생산품질인계상황|생산작업자|검사원|완료품|인계표	other,role,process,state	role_coordination	role_coordination	생산품질인계상황: 생산작업자가 완료품과 인계표를 검사원에게 넘겼다. 수량과 작업 조건을 함께 확인한 뒤에만 품질 검사가 시작된다.
+설비고장대응협업상황|운전원|정비기사|고장표시|수리기록	other,role,function,process	role_coordination	role_coordination	설비고장대응협업상황: 운전원은 고장표시를 남겨 설비를 멈췄고 정비기사는 원인을 찾아 수리기록을 작성했다. 정지 판단과 수리 승인은 다른 책임이다.
+자재출고업무연계상황|창고원|라인담당|자재요청|출고전표	other,role,function,state	role_coordination	role_coordination	자재출고업무연계상황: 라인담당이 자재요청을 보내면 창고원은 재고를 확인해 출고전표와 함께 재료를 내준다. 요청량과 실제 출고량은 기록에서 대조한다.
+도면변경현장협의상황|설계자|공정기술자|개정도면|적용시점	other,role,process,boundary	role_coordination	role_coordination	도면변경현장협의상황: 설계자는 개정도면의 변경점을 설명하고 공정기술자는 적용시점을 생산 일정에 반영했다. 문서 발행 즉시 진행 중 제품까지 바뀌는 것은 아니다.
+용접검사역할분담상황|용접원|비파괴검사원|용접부|검사판정	other,role,function,boundary	role_coordination	role_coordination	용접검사역할분담상황: 용접원은 용접부의 작업 조건을 기록하고 비파괴검사원은 별도 절차로 검사판정을 내렸다. 만든 사람이 합격 여부를 대신 확정하지 않는다.
+포장출하연계상황|포장담당|출하담당|포장명세|운송라벨	other,role,process,function	role_coordination	role_coordination	포장출하연계상황: 포장담당은 포장명세를 상자에 넣고 출하담당은 운송라벨과 목적지를 확인했다. 내용 확인과 차량 적재가 이어져야 출하된다.
+교대근무인계상황|주간작업자|야간작업자|진행품|교대일지	other,role,state,process	role_coordination	role_coordination	교대근무인계상황: 주간작업자는 진행품의 위치와 남은 일을 교대일지에 적어 야간작업자에게 설명했다. 교대 시각에 제품 상태가 자동으로 초기화되지는 않는다.
+측정기교정협업상황|검사원|계측담당|측정기|교정증명	other,role,function,state	role_coordination	role_coordination	측정기교정협업상황: 검사원은 값의 이상을 계측담당에게 알렸고 계측담당은 측정기를 확인해 교정증명을 갱신했다. 사용자는 문제를 발견하고 담당자는 장비 상태를 판정한다.
+작업안전감시상황|기계운전자|안전감시자|보호문|가동신호	other,role,boundary,state	role_coordination	role_coordination	작업안전감시상황: 기계운전자는 가동신호를 기다렸고 안전감시자는 보호문과 주변 인원을 확인했다. 안전 확인 전에는 설비가 준비돼도 운전을 시작하지 않는다.
+재작업승인연계상황|수리담당|품질책임자|수정내역|재검승인	other,role,process,boundary	role_coordination	role_coordination	재작업승인연계상황: 수리담당은 수정내역을 기록하고 품질책임자는 재검승인을 내렸다. 수리를 마친 사람의 보고만으로 제품이 합격품이 되지는 않는다.
+구매입고검수협업상황|구매담당|입고검사원|납품명세|검수결과	other,role,function,state	role_coordination	role_coordination	구매입고검수협업상황: 구매담당은 납품명세를 전달하고 입고검사원은 실제 수량과 상태를 확인해 검수결과를 남겼다. 주문 사실과 적합 입고는 구분된다.
+공정개선시험협력상황|공정기술자|현장작업자|시험조건|관찰메모	other,role,process,attribute	role_coordination	role_coordination	공정개선시험협력상황: 공정기술자가 시험조건을 정하고 현장작업자는 설비를 운전하며 관찰메모를 남겼다. 조건 설계와 실제 반응 기록이 합쳐져 개선안을 평가한다.
+불량원인회의상황|품질기사|생산반장|불량표본|원인목록	other,role,classification,process	role_coordination	role_coordination	불량원인회의상황: 품질기사는 불량표본의 특징을 제시하고 생산반장은 당시 작업 조건을 설명했다. 두 자료를 원인목록에 연결하되 확인 전 가설을 사실로 쓰지 않는다.
+완제품수량대조상황|생산기록자|창고담당|완료수량|입고수량	other,role,comparison,state	role_coordination	role_coordination	완제품수량대조상황: 생산기록자는 완료수량을 알리고 창고담당은 실제 입고수량을 셌다. 두 값이 다르면 운반 중 위치와 보류품을 함께 확인한다.
+긴급주문조정상황|영업담당|생산계획자|긴급주문|기존일정	other,role,process,comparison	role_coordination	role_coordination	긴급주문조정상황: 영업담당이 긴급주문의 납기를 전달하자 생산계획자는 기존일정과 설비 여유를 비교했다. 요청만으로 모든 작업 순서를 바꾸지는 않는다.
+작업표준교육협력상황|교육담당|숙련작업자|작업표준서|실습평가	other,role,function,state	role_coordination	role_coordination	작업표준교육협력상황: 교육담당은 작업표준서를 설명하고 숙련작업자는 현장에서 동작을 보여 준 뒤 실습평가를 확인했다. 설명 수강과 작업 가능 판정은 다른 단계다.
+원료혼합감독상황|투입작업자|공정감독자|배합표|혼합기록	other,role,process,attribute	role_coordination	role_coordination	원료혼합감독상황: 투입작업자는 배합표대로 재료를 넣고 공정감독자는 순서와 양을 혼합기록에 확인했다. 두 서명이 있어 투입과 감독 책임을 나눈다.
+금형교체협업상황|설비기사|생산작업자|새금형|시험제품	other,role,process,state	role_coordination	role_coordination	금형교체협업상황: 설비기사가 새금형을 장착하면 생산작업자가 시험제품을 만들고 치수를 확인한다. 장착 완료만으로 정규 생산이 승인되지는 않는다.
+작업장청소인계상황|공정팀|청소담당|사용완료표|정리확인	other,role,process,state	role_coordination	role_coordination	작업장청소인계상황: 공정팀이 사용완료표를 붙인 뒤 청소담당이 바닥과 설비 주변을 정리해 정리확인을 남겼다. 빈 작업장과 안전하게 준비된 작업장은 다르다.
+재고실사분담상황|계수자|기록자|부품상자|실사표	other,role,function,attribute	role_coordination	role_coordination	재고실사분담상황: 계수자는 부품상자의 수량을 소리 내어 세고 기록자는 실사표에 입력했다. 두 사람이 값과 품목을 다시 맞춰 기록 오류를 줄인다.
+출하승인책임상황|검사책임자|물류담당|합격목록|상차지시	other,role,boundary,process	role_coordination	role_coordination	출하승인책임상황: 검사책임자가 합격목록을 확정한 뒤 물류담당이 상차지시를 냈다. 운송 준비가 끝났어도 품질 승인 없는 상자는 싣지 않는다.
+보전부품교체협력상황|정비원|부품관리자|교체부품|사용이력	other,role,function,state	role_coordination	role_coordination	보전부품교체협력상황: 부품관리자는 교체부품을 내주고 정비원은 설치 뒤 사용이력을 기록했다. 창고 출고와 설비 장착은 각 담당의 기록으로 구별된다.
+품질문서검토상황|작성자|검토자|검사절차서|승인서명	other,role,boundary,state	role_coordination	role_coordination	품질문서검토상황: 작성자가 검사절차서 초안을 만들고 검토자가 내용을 확인해 승인서명을 남겼다. 서명 전 문서는 현장 적용본으로 쓰지 않는다.
+하역안전협력상황|지게차운전자|유도자|자재팔레트|이동경로	other,role,process,boundary	role_coordination	role_coordination	하역안전협력상황: 지게차운전자는 자재팔레트를 들고 유도자의 신호에 따라 이동경로를 지났다. 운전자와 보행 감시자의 역할이 함께 있어야 안전하게 하역한다.
+공정샘플선정상황|생산반장|품질담당|생산수량|표본목록	other,role,classification,attribute	role_coordination	role_coordination	공정샘플선정상황: 생산반장은 생산수량을 알리고 품질담당은 기준에 따라 검사할 항목을 표본목록에 골랐다. 현장 편의로 표본을 임의 선택하지 않는다.
+고객불만재현협력상황|서비스담당|시험기사|불만내용|재현조건	other,role,process,boundary	role_coordination	role_coordination	고객불만재현협력상황: 서비스담당은 불만내용을 정리하고 시험기사는 재현조건을 설정해 같은 현상이 나타나는지 살폈다. 고객 설명과 시험 결과를 구분해 기록한다.
+폐기승인분담상황|현장담당|품질관리자|폐기대상|승인표	other,role,boundary,state	role_coordination	role_coordination	폐기승인분담상황: 현장담당은 폐기대상을 격리하고 품질관리자는 상태를 검토해 승인표에 결정했다. 격리된 물건을 승인 전에 버리지 않는다.
+전력중단복구협력상황|설비운전원|전기담당|중단기록|재가동확인	other,role,process,state	role_coordination	role_coordination	전력중단복구협력상황: 설비운전원은 중단기록을 남겼고 전기담당이 전원을 점검한 뒤 재가동확인을 요청했다. 전기가 돌아와도 공정품 상태를 확인하고 시작한다.
+작업자검사자대조상황|조립작업자|최종검사자|체결표|검사결과	other,role,function,boundary	role_coordination	role_coordination	작업자검사자대조상황: 조립작업자는 체결표에 작업값을 적고 최종검사자는 별도 측정으로 검사결과를 냈다. 자기 확인과 독립 검사를 같은 판정으로 합치지 않는다.
+부서간변경통보상황|생산부|품질부|변경통보서|적용목록	other,role,process,classification	role_coordination	role_coordination	부서간변경통보상황: 생산부가 변경통보서를 보내면 품질부는 영향을 받는 검사항목을 적용목록에 표시했다. 공정 변경과 검사 갱신이 함께 완료돼야 새 기준을 쓴다.
+# 061~090 입고·가공·검사·재작업·출하의 시간 의존성
+입고검사후사용상황|원자재|입고시각|검사승인|생산투입	other,process,state,boundary	temporal_dependency	temporal_dependency	입고검사후사용상황: 원자재는 입고시각이 기록된 뒤 검사승인을 받아야 생산투입으로 이동한다. 창고에 도착했다는 사실만으로 사용 가능한 재료는 아니다.
+예열완료후가공상황|가공기|예열시작|목표온도|첫제품	other,process,state,attribute	temporal_dependency	temporal_dependency	예열완료후가공상황: 가공기는 예열시작 뒤 목표온도에 도달하고 나서 첫제품을 처리했다. 온도가 오르기 전에 만든 시험품은 정규 생산량에서 분리한다.
+접착경화대기상황|조립품|접착완료|경화시간|강도검사	other,process,state,attribute	temporal_dependency	temporal_dependency	접착경화대기상황: 조립품은 접착완료 뒤 경화시간을 채우고 강도검사로 넘어갔다. 겉이 붙어 보인다고 대기 단계를 줄이지 않는다.
+도장건조후포장상황|도장품|도장시각|건조확인|포장공정	other,process,state,function	temporal_dependency	temporal_dependency	도장건조후포장상황: 도장품에는 도장시각을 적고 표면의 건조확인 뒤 포장공정으로 보냈다. 마르기 전 포장은 흔적을 남길 수 있어 완료품으로 취급하지 않는다.
+재작업후재검상황|불합격품|수정완료|재검요청|합격판정	other,process,state,boundary	temporal_dependency	temporal_dependency	재작업후재검상황: 불합격품은 수정완료 뒤 재검요청이 접수되고 새 검사에서 합격판정을 받아야 출하 목록에 들어간다. 수리 시각과 승인 시각은 다르다.
+교대전인계기한상황|주간조|인계마감|진행기록|야간조	other,process,state,role	temporal_dependency	temporal_dependency	교대전인계기한상황: 주간조는 인계마감 전에 진행기록을 갱신하고 야간조에게 남은 작업을 설명했다. 교대 뒤 적힌 메모는 앞 근무의 즉시 관찰로 보지 않는다.
+공구교정만료상황|측정공구|교정일|유효기한|사용중지	other,process,state,boundary	temporal_dependency	temporal_dependency	공구교정만료상황: 측정공구는 교정일부터 유효기한까지 쓸 수 있고 그 시점을 지나면 사용중지 표시를 한다. 작동 여부와 측정 자격은 같은 조건이 아니다.
+주문확정후생산상황|고객요청|주문확정|생산지시|착수시각	other,process,state,function	temporal_dependency	temporal_dependency	주문확정후생산상황: 고객요청이 주문확정으로 바뀐 뒤 생산지시가 발행되고 착수시각이 기록됐다. 문의 단계에서 이미 생산한 것으로 계산하지 않는다.
+부품냉각측정순서상황|열처리품|냉각시작|측정가능온도|치수검사	other,process,state,attribute	temporal_dependency	temporal_dependency	부품냉각측정순서상황: 열처리품은 냉각시작 후 측정가능온도에 이른 다음 치수검사를 받았다. 뜨거울 때 잰 값은 기준 검사값과 분리한다.
+설비점검후재가동상황|정지설비|점검완료|시험운전|정상가동	other,process,state,boundary	temporal_dependency	temporal_dependency	설비점검후재가동상황: 정지설비는 점검완료 뒤 시험운전을 거쳐 정상가동으로 전환됐다. 전원만 켜진 중간 상태를 생산 재개로 기록하지 않는다.
+재료해동사용기한상황|냉동재료|해동시각|사용기한|폐기결정	other,process,state,attribute	temporal_dependency	temporal_dependency	재료해동사용기한상황: 해동시각을 적은 냉동재료는 사용기한 안에 공정으로 보내야 한다. 작업이 밀려 한도를 넘겼다면 겉모습과 무관하게 폐기결정 대상으로 돌린다.
+도면발행적용순서상황|개정승인|도면발행|현장수령|적용제품	other,process,state,boundary	temporal_dependency	temporal_dependency	도면발행적용순서상황: 개정승인 후 도면발행이 되고 현장수령 시점부터 적용제품을 구분했다. 승인 전에 만든 제품에 새 규격을 소급하지 않는다.
+검사표작성승인상황|측정완료|검사표초안|검토서명|결과확정	other,process,state,role	temporal_dependency	temporal_dependency	검사표작성승인상황: 측정완료 뒤 검사표초안을 작성하고 검토서명을 받아 결과확정으로 바꿨다. 초안 숫자는 검토 중 수정될 수 있다.
+금형예열교체순서상황|기존금형|교체작업|예열시간|시험성형	other,process,state,function	temporal_dependency	temporal_dependency	금형예열교체순서상황: 기존금형을 내린 뒤 교체작업을 하고 예열시간을 채워 시험성형을 했다. 장착 직후 결과는 안정 조건의 제품과 구별한다.
+로트종료정산상황|생산로트|마지막제품|수량정산|로트종료	other,process,state,attribute	temporal_dependency	temporal_dependency	로트종료정산상황: 마지막제품이 공정을 빠져나간 뒤 수량정산을 해야 생산로트가 로트종료로 닫힌다. 합격과 보류를 나누지 않은 기계 정지만으로 로트가 끝나지 않는다.
+세척후잔류검사상황|혼합탱크|세척완료|잔류검사|다음배치	other,process,state,boundary	temporal_dependency	temporal_dependency	세척후잔류검사상황: 혼합탱크는 세척완료 뒤 잔류검사를 통과해야 다음배치를 받을 수 있다. 내부가 비어 있다는 관찰은 청정 확인을 대신하지 않는다.
+포장후중량확인상황|제품상자|봉함시각|중량측정|출하승인	other,process,state,attribute	temporal_dependency	temporal_dependency	포장후중량확인상황: 제품상자는 봉함시각을 남기고 중량측정을 거쳐 출하승인을 받았다. 상자가 닫혔다고 내용 수량까지 검증된 것은 아니다.
+납기변경적용상황|기존납기|변경승인|새납기|계획갱신	other,process,state,boundary	temporal_dependency	temporal_dependency	납기변경적용상황: 변경승인이 난 뒤 기존납기는 새납기로 바뀌고 계획갱신도 이뤄졌다. 승인 전 요청일은 약속된 납기로 쓰지 않는다.
+재고이동반영시점상황|현장재고|이동전표|창고입고|전산수량	other,process,state,attribute	temporal_dependency	temporal_dependency	재고이동반영시점상황: 현장재고를 보낸 뒤 이동전표가 처리되고 창고입고 확인 후 전산수량이 바뀌었다. 운반 중에는 물리 위치와 전산 위치가 잠시 다를 수 있다.
+불량통보후분석상황|불량발견|통보시각|원인분석|조치결정	other,process,state,function	temporal_dependency	temporal_dependency	불량통보후분석상황: 불량발견과 통보시각이 먼저 기록되고 원인분석을 마친 뒤 조치결정이 내려졌다. 발견 당시 추정은 최종 원인과 구별한다.
+자재예약후출고상황|생산계획|자재예약|출고시각|라인도착	other,process,state,function	temporal_dependency	temporal_dependency	자재예약후출고상황: 생산계획에 따라 자재예약을 걸고 필요한 날 출고시각을 기록해 라인도착을 확인했다. 예약 재고는 창고에 있어도 다른 주문에 쓸 수 없다.
+공정중검사대기상황|반제품|검사요청|측정완료|가공재개	other,process,state,boundary	temporal_dependency	temporal_dependency	공정중검사대기상황: 반제품은 검사요청 뒤 측정완료가 될 때까지 대기했고 승인 후 가공재개됐다. 멈춰 있는 시간은 설비 고장 때문이 아닐 수 있다.
+라벨인쇄부착순서상황|제품정보|라벨인쇄|내용검토|상자부착	other,process,state,function	temporal_dependency	temporal_dependency	라벨인쇄부착순서상황: 제품정보로 라벨인쇄를 한 뒤 내용검토를 거쳐 상자부착이 이뤄졌다. 인쇄 직후 발견한 오류 라벨은 사용하지 않는다.
+시험생산승인상황|시험로트|검사결과|양산승인|본생산	other,process,state,boundary	temporal_dependency	temporal_dependency	시험생산승인상황: 시험로트의 검사결과를 검토해 양산승인을 내린 뒤 본생산을 시작했다. 시험품이 만들어졌다는 사실만으로 대량 생산 자격이 생기지 않는다.
+부품세척건조순서상황|가공부품|세척완료|건조시간|조립투입	other,process,state,function	temporal_dependency	temporal_dependency	부품세척건조순서상황: 가공부품은 세척완료 후 건조시간을 지나 조립투입됐다. 표면 물기가 있는 부품은 조립 대기품으로 남긴다.
+유지보수예약상황|설비사용|정비예약|생산종료|점검시작	other,process,state,role	temporal_dependency	temporal_dependency	유지보수예약상황: 설비사용이 끝나는 시각에 맞춰 정비예약을 잡고 생산종료 확인 뒤 점검시작을 기록했다. 예약 시간만 됐다고 운전 중 설비를 열지 않는다.
+검사보류해제상황|보류품|추가자료|검토완료|해제시각	other,process,state,boundary	temporal_dependency	temporal_dependency	검사보류해제상황: 보류품은 추가자료가 제출되고 검토완료된 뒤 해제시각이 기록됐다. 자료 도착과 보류 해제 사이에 판단 단계가 있다.
+출하차량도착연계상황|출하품|상차준비|차량도착|상차완료	other,process,state,function	temporal_dependency	temporal_dependency	출하차량도착연계상황: 출하품은 상차준비 상태로 기다리다가 차량도착 후 적재돼 상차완료로 바뀌었다. 준비 구역 이동을 출고 완료로 세지 않는다.
+공정변경교육선행상황|새작업법|교육완료|현장적용|첫검증	other,process,state,boundary	temporal_dependency	temporal_dependency	공정변경교육선행상황: 새작업법은 작업자 교육완료 뒤 현장적용되고 첫검증을 거쳤다. 문서만 배포된 시점에는 숙련이 확인되지 않았다.
+생산마감보고상황|교대수량|불량정리|마감보고|다음조계획	other,process,state,attribute	temporal_dependency	temporal_dependency	생산마감보고상황: 교대수량과 불량정리를 끝내 마감보고를 올린 뒤 다음조계획이 확정됐다. 중간 집계는 최종 교대 실적과 다를 수 있다.
+# 091~120 제한된 설비·공구·재료·인력·시간의 배분 맥락
+가공기한대배분상황|일작업|이작업|공용가공기|작업순서표	other,state,function,classification	resource_constraint	resource_constraint	가공기한대배분상황: 일작업과 이작업이 공용가공기 한 대를 써야 해 납기 기준으로 작업순서표를 정했다. 먼저 배정되지 않은 주문도 준비 작업은 진행한다.
+토크렌치공유상황|조립일조|조립이조|토크렌치|대여기록	other,state,function,role	resource_constraint	resource_constraint	토크렌치공유상황: 조립일조가 토크렌치를 쓰는 동안 조립이조는 체결 전 부품을 맞추고 대여기록의 반환을 기다렸다. 공구 대기는 작업 중단 전체를 뜻하지 않는다.
+원자재잔량배분상황|생산반장|남은강판|긴급주문|일반주문	other,state,attribute,comparison	resource_constraint	resource_constraint	원자재잔량배분상황: 생산반장은 남은강판을 확인해 납기가 가까운 긴급주문에 먼저 배정하고 일반주문은 입고 뒤로 옮겼다. 우선 배정이 주문 취소는 아니다.
+검사대공간제약상황|검사원|검사대|대형제품|소형부품	other,state,function,boundary	resource_constraint	resource_constraint	검사대공간제약상황: 검사원에게 검사대가 하나라 대형제품을 측정할 때 소형부품은 별도 바구니에서 기다렸다. 검사실에 들어왔어도 동시에 판정되지는 않는다.
+지게차사용시간조정상황|창고팀|출하팀|지게차|운행표	other,state,function,role	resource_constraint	resource_constraint	지게차사용시간조정상황: 창고팀과 출하팀은 지게차 운행표를 나눠 오전에는 입고, 오후에는 상차에 사용했다. 장비 소유 부서와 실제 사용 시간은 구별된다.
+작업자부족공정조정상황|생산계획자|가용작업자|필수공정|보조공정	other,state,classification,function	resource_constraint	resource_constraint	작업자부족공정조정상황: 생산계획자는 가용작업자 수를 보고 필수공정에 먼저 배치하고 보조공정은 다음 교대로 미뤘다. 미룬 단계는 작업지시에서 삭제되지 않는다.
+검사시편수제약상황|품질기사|검사시편|파괴시험|보존시편	other,state,part_of,boundary	resource_constraint	resource_constraint	검사시편수제약상황: 품질기사는 제한된 검사시편 중 일부를 파괴시험에 쓰고 나머지는 보존시편으로 남겼다. 시험에 쓰지 않은 시편도 로트 추적에 필요하다.
+포장재부족대체상황|포장원|큰상자|작은상자|제품수량	other,state,contrast,function	resource_constraint	resource_constraint	포장재부족대체상황: 큰상자가 부족해 포장원은 제품수량을 나눠 작은상자 두 개에 담았다. 포장 단위가 바뀌었으므로 상자 수와 주문 수는 같지 않다.
+설비전력한도상황|운전관리자|가열기|압축기|전력한도	other,state,function,comparison	resource_constraint	resource_constraint	설비전력한도상황: 운전관리자는 전력한도 때문에 가열기와 압축기를 동시에 최고 출력으로 돌리지 않았다. 한 설비가 낮게 운전돼도 고장 상태는 아니다.
+용접부스예약충돌상황|용접일반|용접특수반|용접부스|대체시간	other,state,role,contrast	resource_constraint	resource_constraint	용접부스예약충돌상황: 용접일반과 용접특수반의 사용 시간이 겹쳐 특수 작업을 유지하고 일반 작업에는 대체시간을 배정했다. 우선순위는 위험 조건을 반영한다.
+보호구재고우선배정상황|안전담당|보호구|고위험작업|일반작업	other,state,boundary,classification	resource_constraint	resource_constraint	보호구재고우선배정상황: 안전담당은 보호구 재고가 적어 고위험작업에 먼저 지급하고 일반작업은 추가 입고까지 시작을 늦췄다. 보호구 없이 동일 작업을 진행하지 않는다.
+도면출력기대기상황|설계팀|현장팀|도면출력기|전자도면	other,state,function,contrast	resource_constraint	resource_constraint	도면출력기대기상황: 도면출력기를 설계팀이 사용하는 동안 현장팀은 전자도면으로 변경점을 확인했다. 종이 출력이 늦어도 검토 자체가 멈추는 것은 아니다.
+창고선반용량상황|창고원|완제품상자|출하예정구역|임시팔레트	other,state,part_of,boundary	resource_constraint	resource_constraint	창고선반용량상황: 선반이 가득 차 창고원은 완제품상자를 출하예정구역의 임시팔레트에 놓고 위치표를 갱신했다. 임시 배치는 재고 누락이 아니다.
+시험장비시간분배상황|품질팀|시험장비|긴급로트|정기검사	other,state,function,comparison	resource_constraint	resource_constraint	시험장비시간분배상황: 품질팀은 시험장비의 남은 시간을 긴급로트와 정기검사 사이에 나눴다. 뒤로 옮긴 정기검사는 면제된 항목이 아니다.
+냉각수용량제한상황|설비기사|냉각수탱크|가동설비|예비수량	other,state,attribute,function	resource_constraint	resource_constraint	냉각수용량제한상황: 설비기사는 냉각수탱크 용량에 맞춰 가동설비 수를 줄이고 예비수량을 비상 보충용으로 남겼다. 모든 설비를 동시에 돌리지 않는다.
+재작업자리배정상황|품질담당|재작업대|보류품|순번표	other,state,function,classification	resource_constraint	resource_constraint	재작업자리배정상황: 품질담당은 재작업대 수보다 보류품이 많아 결함 유형과 납기를 보고 순번표를 만들었다. 기다리는 제품은 폐기품으로 분류되지 않는다.
+운송상자회수제약상황|물류담당|회수상자|출하품|일회용포장	other,state,function,contrast	resource_constraint	resource_constraint	운송상자회수제약상황: 회수상자가 돌아오지 않아 물류담당은 일부 출하품에 일회용포장을 사용했다. 포장 방식은 달라도 제품의 주문 목적지는 같다.
+프레스금형공유상황|제품가|제품나|공용금형|교체시간	other,state,function,process	resource_constraint	resource_constraint	프레스금형공유상황: 제품가와 제품나가 공용금형을 사용하므로 생산 사이에 교체시간을 넣었다. 금형을 바꾸는 동안 프레스는 빈 상태여도 이용 가능하지 않다.
+품질검사인력배분상황|품질책임자|검사원|출하대기품|공정중품	other,state,role,comparison	resource_constraint	resource_constraint	품질검사인력배분상황: 품질책임자는 제한된 검사원을 출하대기품에 먼저 배치하고 공정중품은 생산 흐름에 맞춰 나눴다. 우선 검사와 합격 가능성은 무관하다.
+자재운반통순환상황|라인작업자|운반통|빈통반납|다음자재	other,state,function,process	resource_constraint	resource_constraint	자재운반통순환상황: 라인작업자는 자재를 다 쓴 뒤 운반통을 빈통반납 구역에 놓아 다음자재 포장에 쓰게 했다. 통이 돌아오기 전에는 새 묶음을 담을 수 없다.
+압축공기공급제한상황|공장관리자|압축공기|도장공정|청소작업	other,state,function,comparison	resource_constraint	resource_constraint	압축공기공급제한상황: 공급량이 부족해 공장관리자는 압축공기를 도장공정에 우선 보내고 청소작업의 사용 시간을 줄였다. 낮은 압력은 도구 자체의 고장을 뜻하지 않는다.
+검사소프트웨어좌석상황|분석기사|검사소프트웨어|접속권한|대기작업	other,state,function,boundary	resource_constraint	resource_constraint	검사소프트웨어좌석상황: 동시 접속권한이 제한돼 분석기사는 검사소프트웨어 사용 순서를 정하고 대기작업은 사진 정리로 돌렸다. 접속하지 못한 기록도 분석 대상에 남는다.
+정비예비부품수량상황|정비팀|예비모터|고장설비|예방교체	other,state,function,classification	resource_constraint	resource_constraint	정비예비부품수량상황: 예비모터가 하나뿐이라 정비팀은 멈춘 고장설비에 우선 쓰고 예방교체는 입고 이후로 연기했다. 연기는 점검 불필요 판정이 아니다.
+작업대면적분할상황|조립가조|조립나조|공용작업대|경계표시	other,state,part_of,boundary	resource_constraint	resource_constraint	작업대면적분할상황: 조립가조와 조립나조는 공용작업대에 경계표시를 하고 부품을 구역별로 놓았다. 같은 표면을 쓰더라도 로트가 섞이지 않게 관리한다.
+바코드스캐너공유상황|입고팀|출고팀|바코드스캐너|수기목록	other,state,function,contrast	resource_constraint	resource_constraint	바코드스캐너공유상황: 입고팀이 바코드스캐너를 쓰는 동안 출고팀은 수기목록으로 상자를 모으고 나중에 일괄 확인했다. 스캔 지연과 실제 이동 시각을 구분한다.
+도장색재료부족상황|도장담당|지정도료|시험판|본제품	other,state,attribute,boundary	resource_constraint	resource_constraint	도장색재료부족상황: 지정도료가 적어 도장담당은 시험판에 최소량만 쓰고 본제품 작업은 새 재료 입고까지 보류했다. 비슷한 색으로 임의 대체하지 않는다.
+생산회의시간제약상황|반장|남은회의시간|긴급문제|일반제안	other,state,classification,function	resource_constraint	resource_constraint	생산회의시간제약상황: 반장은 남은회의시간에 긴급문제를 먼저 다루고 일반제안은 회의록에 남겨 다음 회차로 넘겼다. 논의되지 않은 안건이 폐기된 것은 아니다.
+고온보관칸제약상황|공정품|보온함|우선처리품|대기품	other,state,classification,boundary	resource_constraint	resource_constraint	고온보관칸제약상황: 공정품용 보온함 자리가 부족해 우선처리품을 안에 두고 대기품은 허용 조건의 별도 구역에 놓았다. 밖에 있다는 이유만으로 불량이 되지는 않는다.
+공용청소기배분상황|가공구역|조립구역|산업청소기|사용예약	other,state,function,role	resource_constraint	resource_constraint	공용청소기배분상황: 가공구역과 조립구역은 산업청소기의 사용예약을 교대 말마다 나눴다. 한 구역이 기다리는 동안 빗자루로 큰 잔여물을 먼저 모은다.
+상차공간혼잡조정상황|물류관리자|상차공간|출하차량|대기차량	other,state,function,classification	resource_constraint	resource_constraint	상차공간혼잡조정상황: 물류관리자는 상차공간에 들어갈 출하차량 수를 제한하고 나머지를 대기차량 구역에 세웠다. 공장에 도착한 모든 차가 즉시 적재되는 것은 아니다.
+# 121~150 지시어·생략·대조 대상의 생산 문맥 복원
+두부품지시복원상황|가부품|나부품|조립원|그것	other,boundary,state,contrast	reference_resolution	reference_resolution	두부품지시복원상황: 가부품은 작업대 왼쪽, 나부품은 오른쪽에 있다. 조립원이 오른쪽을 가리켜 “그것부터 끼운다”고 했으므로 대상은 나부품이다.
+설비두대참조상황|일호기|이호기|운전기록|후자의기계	other,boundary,classification,state	reference_resolution	reference_resolution	설비두대참조상황: 운전기록은 일호기의 정지를 먼저, 이호기의 재가동을 다음에 적었다. 후자의기계는 이호기를 가리킨다.
+작업자인물대명사상황|민수|지연|검사표|그녀	other,boundary,role,state	reference_resolution	reference_resolution	작업자인물대명사상황: 민수는 부품을 가공했고 지연은 검사표에 값을 적었다. 이어진 “그녀가 보류표시를 했다”에서 그녀는 지연이다.
+두도면선행어상황|이전도면|개정도면|공정기술자|새문서	other,boundary,contrast,state	reference_resolution	reference_resolution	두도면선행어상황: 이전도면 옆에 개정도면을 놓고 공정기술자가 차이를 설명했다. 새문서로 작업하라는 지시는 개정도면을 선택한다.
+상자위치지시상황|합격상자|보류상자|검사원|저상자	other,boundary,state,classification	reference_resolution	reference_resolution	상자위치지시상황: 합격상자는 녹색 선반에, 보류상자는 노란 바닥에 있다. 검사원이 바닥을 짚으며 말한 저상자는 보류상자다.
+두로트후자복원상황|오전로트|오후로트|측정값|후자	other,boundary,contrast,attribute	reference_resolution	reference_resolution	두로트후자복원상황: 오전로트와 오후로트의 측정값이 순서대로 표에 있다. 담당자가 후자를 다시 검사하라고 했으므로 오후로트가 대상이다.
+공구소유대상상황|조립반|정비반|전동드릴|그들의것	other,boundary,role,state	reference_resolution	reference_resolution	공구소유대상상황: 조립반이 전동드릴을 정비반에 빌려줬고 수리 후 돌려받았다. “그들의것이 반환됐다”에서 그들은 조립반이다.
+불량부위지시복원상황|왼쪽모서리|오른쪽면|결함사진|이부분	other,boundary,state,part_of	reference_resolution	reference_resolution	불량부위지시복원상황: 결함사진에는 왼쪽모서리의 흠집과 오른쪽면의 얼룩이 보인다. 검사자가 흠집을 확대하며 부른 이부분은 왼쪽모서리다.
+공정순서생략복원상황|절단공정|세척공정|조립공정|그다음	other,boundary,process,state	reference_resolution	reference_resolution	공정순서생략복원상황: 절단공정 뒤 세척공정을 거쳐 조립공정으로 보낸다. 지시서의 “그다음 체결한다”에서 그다음은 세척이 끝난 뒤다.
+두검사자주체상황|초기검사자|재검사자|합격서명|그가	other,boundary,role,state	reference_resolution	reference_resolution	두검사자주체상황: 초기검사자는 보류를 남겼고 재검사자는 수정품에 합격서명을 했다. “그가 출하를 승인했다”의 그는 재검사자다.
+재료통지시복원상황|파란재료통|회색재료통|투입작업자|이통	other,boundary,classification,state	reference_resolution	reference_resolution	재료통지시복원상황: 파란재료통에는 원료가, 회색재료통에는 회수품이 있다. 투입작업자가 파란 쪽을 잡으며 말한 이통은 파란재료통이다.
+두주문앞의것상황|긴급주문|정기주문|계획표|앞의것	other,boundary,contrast,classification	reference_resolution	reference_resolution	두주문앞의것상황: 계획표에는 긴급주문과 정기주문이 차례로 적혔다. 앞의것을 오전에 끝낸다는 문장은 긴급주문을 가리킨다.
+기계알람그신호상황|온도알람|압력알람|제어화면|그신호	other,boundary,state,classification	reference_resolution	reference_resolution	기계알람그신호상황: 제어화면에 온도알람이 먼저 꺼지고 압력알람만 남았다. 운전원이 “그신호를 확인한다”고 한 대상은 압력알람이다.
+포장담당대명사상황|선우|미라|출하라벨|그녀	other,boundary,role,function	reference_resolution	reference_resolution	포장담당대명사상황: 선우는 제품을 상자에 넣고 미라는 출하라벨을 붙였다. “그녀가 목적지를 확인했다”에서 그녀는 미라다.
+측정값나중값상황|첫치수값|재측정값|검사표|나중값	other,boundary,attribute,comparison	reference_resolution	reference_resolution	측정값나중값상황: 검사표에는 첫치수값과 재측정값이 시간순으로 기록됐다. 품질회의에서 쓴 나중값은 재측정값이다.
+선반그곳복원상황|합격선반|격리선반|부품상자|그곳	other,boundary,state,classification	reference_resolution	reference_resolution	선반그곳복원상황: 부품상자는 처음 합격선반에 있었지만 흠집 발견 뒤 격리선반으로 옮겨졌다. “그곳에서 재검한다”의 그곳은 현재 위치인 격리선반이다.
+전표두장참조상황|입고전표|출고전표|창고원|아래서류	other,boundary,classification,state	reference_resolution	reference_resolution	전표두장참조상황: 입고전표 위에 출고전표가 놓였다. 창고원이 아래서류를 보관함에 넣으라고 했으므로 대상은 입고전표다.
+재작업주체복원상황|수리원|검사원|수정품|그사람	other,boundary,role,state	reference_resolution	reference_resolution	재작업주체복원상황: 수리원은 수정품을 고쳤고 검사원은 새 값을 측정했다. 기록의 “그사람이 합격을 판정함”에서 그사람은 검사원이다.
+설정값후자복원상황|이전속도|변경속도|제어기|두번째값	other,boundary,attribute,contrast	reference_resolution	reference_resolution	설정값후자복원상황: 제어기에는 이전속도와 변경속도가 함께 표시됐다. 두번째값으로 운전한다는 지시는 변경속도를 적용한다.
+두팔레트지시상황|내수팔레트|수출팔레트|출하담당|저쪽것	other,boundary,classification,state	reference_resolution	reference_resolution	두팔레트지시상황: 내수팔레트는 문 옆, 수출팔레트는 창고 안쪽에 있다. 출하담당이 안쪽을 가리킨 저쪽것은 수출팔레트다.
+작업시점그때복원상황|예열시각|가공시각|온도기록|그때	other,boundary,process,attribute	reference_resolution	reference_resolution	작업시점그때복원상황: 온도기록에는 예열시각과 가공시각이 따로 적혔다. “그때 첫 제품을 넣었다”는 문맥의 그때는 가공시각이다.
+검사사진앞파일상황|전체사진|확대사진|품질폴더|첫파일	other,boundary,classification,state	reference_resolution	reference_resolution	검사사진앞파일상황: 품질폴더에는 전체사진 다음 확대사진이 저장됐다. 첫파일에서 부품 번호를 확인했다는 말은 전체사진을 뜻한다.
+두수량지시복원상황|계획수량|실적수량|생산판|이수치	other,boundary,attribute,comparison	reference_resolution	reference_resolution	두수량지시복원상황: 생산판의 위 칸에는 계획수량, 아래 칸에는 실적수량이 있다. 반장이 아래 값을 짚어 말한 이수치는 실적수량이다.
+라인두곳참조상황|일라인|이라인|고장기록|멈춘곳	other,boundary,state,contrast	reference_resolution	reference_resolution	라인두곳참조상황: 일라인은 정상 가동하고 이라인은 고장기록 뒤 정지했다. 정비원이 확인할 멈춘곳은 이라인이다.
+부품전후상태상황|가공전부품|가공후부품|치수표|후자의상태	other,boundary,state,contrast	reference_resolution	reference_resolution	부품전후상태상황: 치수표는 가공전부품과 가공후부품을 나눠 기록한다. 후자의상태를 검사한다는 문장은 가공후부품을 가리킨다.
+작업지시이것상황|정규지시|긴급지시|반장|이것	other,boundary,classification,state	reference_resolution	reference_resolution	작업지시이것상황: 정규지시 위에 긴급지시가 새로 붙었다. 반장이 새 종이를 잡고 “이것부터 처리한다”고 했으므로 긴급지시가 대상이다.
+측정도구후자상황|버니어캘리퍼스|마이크로미터|검사원|후자의도구	other,boundary,function,contrast	reference_resolution	reference_resolution	측정도구후자상황: 검사원은 버니어캘리퍼스와 마이크로미터를 차례로 준비했다. 더 작은 두께를 잰 후자의도구는 마이크로미터다.
+교대조대명사복원상황|주간조|야간조|생산일지|그들	other,boundary,role,state	reference_resolution	reference_resolution	교대조대명사복원상황: 주간조는 생산일지를 마감했고 야간조는 남은 주문을 이어받았다. “그들이 다음 로트를 시작함”의 그들은 야간조다.
+상자번호지시복원상황|백일번상자|백이번상자|출하목록|아래번호	other,boundary,classification,state	reference_resolution	reference_resolution	상자번호지시복원상황: 출하목록에서 백일번상자 아래에 백이번상자가 적혔다. 아래번호를 차량에 싣는다는 지시는 백이번상자를 뜻한다.
+재료색상참조상황|흰원료|회색원료|혼합표|앞재료	other,boundary,contrast,state	reference_resolution	reference_resolution	재료색상참조상황: 혼합표는 흰원료를 먼저, 회색원료를 다음에 제시한다. 앞재료를 절반 넣으라는 지시는 흰원료에 적용된다.

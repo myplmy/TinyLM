@@ -1,0 +1,2221 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 1 Type Negation Uncertainty High-Density Train 150 v04",
+  "version": "4",
+  "purpose": "부재·비존재·빈값·0·삭제·접근불가 구분에서 영역 핵심 관계를 학습하는 train corpus 150개",
+  "split": "train",
+  "record_count": 150,
+  "range": "S1-TUH-0451 ~ S1-TUH-0600",
+  "concept_family": "부재·비존재·빈값·0·삭제·접근불가 구분",
+  "design_note": "없음의 종류, 빈 용기, 영 수량, 삭제 상태, 권한·접근 실패",
+  "records": [
+    {
+      "id": "S1-TUH-0451",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "부재표지유형구분: ‘없음’은 대상 비존재, 값 누락, 수량 0, 접근 실패처럼 서로 다른 상태를 가리킬 수 있다. 원인과 범위를 함께 분류한다.",
+      "concepts": [
+        "부재표지유형구분"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0452",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "비존재명제범위판정: “그 섬에는 공항이 없다”는 지정 장소의 공항 비존재를 말한다. 공항이라는 유형 전체나 다른 지역의 시설을 부정하지 않는다.",
+      "concepts": [
+        "비존재명제범위판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0453",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈용기내용부재판정: 빈 병은 용기 Entity가 존재하지만 내부 내용물 수가 0인 상태다. 용기 자체가 사라진 경우와 구별한다.",
+      "concepts": [
+        "빈용기내용부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0454",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈집합유효객체판정: 원소가 없는 집합도 정의된 집합 객체로 존재할 수 있다. 빈집합유효객체판정은 구성원 부재와 객체 비존재를 나눈다.",
+      "concepts": [
+        "빈집합유효객체판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0455",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈문자열저장값판정: 길이 0 문자열은 명시적으로 저장된 값이며 널이나 필드 누락과 다르다. 표시가 비어 보여도 저장 형태를 확인한다.",
+      "concepts": [
+        "빈문자열저장값판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0456",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "영수량유효값판정: 재고 0은 물품 수를 센 유효한 Quantity다. 집계를 하지 않아 값이 없는 상태와 분리해 계산에 사용한다.",
+      "concepts": [
+        "영수량유효값판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0457",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "영측정결과판정: 센서가 실제로 0을 측정했다면 관측 결과가 존재한다. 영측정결과판정은 센서 무응답이나 결측 코드와 같지 않다.",
+      "concepts": [
+        "영측정결과판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0458",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "삭제상태현재부재판정: 삭제 상태는 과거 객체와 제거 사건의 존재를 전제로 한다. 처음부터 생성되지 않은 대상과 같은 비존재로 묶지 않는다.",
+      "concepts": [
+        "삭제상태현재부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0459",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "논리삭제숨김판정: 논리 삭제된 레코드는 일반 조회에서 숨겨져도 저장소와 감사 이력에 남는다. 화면에 안 보인다는 이유로 물리 삭제를 주장하지 않는다.",
+      "concepts": [
+        "논리삭제숨김판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0460",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "물리삭제제거판정: 물리 삭제는 저장 매체에서 객체 본문을 제거하는 과정이다. 백업이나 색인에 사본이 남는지는 별도 범위로 확인한다.",
+      "concepts": [
+        "물리삭제제거판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0461",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "접근불가존재미정판정: 자원을 열 수 없다는 결과만으로 존재와 비존재 중 어느 쪽도 확정하지 못할 수 있다. 실패 코드를 먼저 분류한다.",
+      "concepts": [
+        "접근불가존재미정판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0462",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "권한거부접근상태판정: 권한 거부는 요청자와 자원 사이의 접근 허용이 거짓인 상태다. 자원 자체가 없다는 응답과 구별한다.",
+      "concepts": [
+        "권한거부접근상태판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0463",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "경로없음주소부재판정: 지정 경로를 찾지 못했어도 파일이 다른 이름이나 위치에 있을 수 있다. 주소 실패를 대상의 전역 비존재로 확대하지 않는다.",
+      "concepts": [
+        "경로없음주소부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0464",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "일시불가가용성판정: 서비스가 점검 중이면 현재 접근 불가이지만 서비스 정의와 데이터는 존재할 수 있다. 시간 제한 상태로 기록한다.",
+      "concepts": [
+        "일시불가가용성판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0465",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미생성대상판정: 계획에는 있으나 생성 Action이 일어나지 않은 문서는 현재 비존재다. 삭제된 문서나 빈 문서와 이력을 구별한다.",
+      "concepts": [
+        "미생성대상판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0466",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미배정역할공석판정: 담당 자리만 정의되고 사람이 연결되지 않았다면 역할은 공석이다. 조직이나 사람 전체가 없다는 뜻은 아니다.",
+      "concepts": [
+        "미배정역할공석판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0467",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "품절재고영판정: 판매 가능한 재고가 0이면 품절 상태지만 상품 유형과 주문 기록은 존재한다. 제품 비존재와 판매 가능 수량을 나눈다.",
+      "concepts": [
+        "품절재고영판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0468",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "좌석공석점유부재판정: 빈 좌석은 좌석 Entity가 있으나 현재 점유 Relation이 없는 상태다. 좌석 자체가 철거된 경우와 다르다.",
+      "concepts": [
+        "좌석공석점유부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0469",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "휴무운영부재판정: 상점이 휴무이면 해당 시간의 영업 Action이 없지만 사업체는 존재한다. 운영 상태와 조직 존재를 구분한다.",
+      "concepts": [
+        "휴무운영부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0470",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "연결끊김관계부재판정: 네트워크 링크가 끊겨도 두 장치 Entity는 남을 수 있다. Relation 부재를 끝점 비존재로 전파하지 않는다.",
+      "concepts": [
+        "연결끊김관계부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0471",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "응답없음관측부재판정: 응답이 없다는 것은 관측 결과가 비어 있음을 뜻하며 거절 답변과 다르다. 타임아웃인지 침묵인지 원인을 남긴다.",
+      "concepts": [
+        "응답없음관측부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0472",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "결측값부재코드판정: NA나 특수 숫자는 값 부재를 표시하는 코드일 수 있다. 실제 문자값이나 측정 수치와 구별해 연산에서 제외한다.",
+      "concepts": [
+        "결측값부재코드판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0473",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "해당없음비적용판정: ‘해당 없음’은 질문이나 속성이 그 사례에 적용되지 않는다는 답이다. 적용되지만 값이 모르는 경우와 다르다.",
+      "concepts": [
+        "해당없음비적용판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0474",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "알수없음지식부재판정: ‘알 수 없음’은 현재 지식이나 관측의 부재를 표시한다. 대상값이 실제로 없거나 0이라는 사실을 말하지 않는다.",
+      "concepts": [
+        "알수없음지식부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0475",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "보류결정부재판정: 심사 보류는 아직 승인이나 거절 결정이 내려지지 않은 상태다. 부정 결정이나 신청 비존재로 취급하지 않는다.",
+      "concepts": [
+        "보류결정부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0476",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "만료사용가능성부재판정: 자격이 만료되면 현재 사용 가능성이 없지만 발급 객체와 과거 효력은 남는다. 만료와 처음부터 미발급을 나눈다.",
+      "concepts": [
+        "만료사용가능성부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0477",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "폐기기록제거판정: 보존 기간 뒤 기록을 폐기해도 사건의 과거 발생까지 거짓이 되지는 않는다. 폐기 범위와 남은 색인을 구분한다.",
+      "concepts": [
+        "폐기기록제거판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0478",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "숨김표시부재판정: UI에서 숨긴 항목은 표시 목록에 없지만 원본 데이터에는 존재할 수 있다. 렌더링 부재를 저장 부재로 해석하지 않는다.",
+      "concepts": [
+        "숨김표시부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0479",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "필터제외검색부재판정: 조건에 맞지 않아 검색 결과에서 빠진 대상은 저장소에 남는다. 결과 목록의 부재를 객체 삭제로 착각하지 않는다.",
+      "concepts": [
+        "필터제외검색부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0480",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "보관이관위치부재판정: 현 폴더에서 문서가 없어도 기록고로 이관되었을 수 있다. 보관이관위치부재판정은 위치 변경과 비존재를 나눈다.",
+      "concepts": [
+        "보관이관위치부재판정"
+      ],
+      "relations": [
+        "other",
+        "classification",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0481",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈상자비무상자판정: “상자가 비었다”는 내용물 존재를 부정할 뿐 상자 Entity는 남는다. 빈상자비무상자판정은 용기와 내부를 분리한다.",
+      "concepts": [
+        "빈상자비무상자판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0482",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "재고영비상품삭제판정: “재고가 없다”는 판매 수량 0을 뜻할 수 있지만 상품 등록 삭제는 아니다. 수량과 카탈로그 존재를 따로 기록한다.",
+      "concepts": [
+        "재고영비상품삭제판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0483",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "파일미표시비삭제판정: 목록에 파일이 보이지 않는다고 삭제된 것은 아니다. 필터, 권한, 경로 변경을 확인한 뒤 파일미표시비삭제판정을 내린다.",
+      "concepts": [
+        "파일미표시비삭제판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0484",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "권한없음비자원없음판정: “접근 권한이 없다”는 요청자의 허용 관계만 부정한다. 서버의 자원 존재나 다른 사용자의 접근 가능성은 남는다.",
+      "concepts": [
+        "권한없음비자원없음판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0485",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "응답없음비거절판정: 설문 응답이 없다는 사실은 “아니요”라고 답했다는 부정 명제와 다르다. 침묵을 반대로 코딩하지 않는다.",
+      "concepts": [
+        "응답없음비거절판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0486",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "수치영비값부재판정: 값이 0이라는 진술은 수치가 기록되지 않았다는 뜻이 아니다. 수치영비값부재판정은 유효 관측과 결측을 나눈다.",
+      "concepts": [
+        "수치영비값부재판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0487",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "삭제됨비과거비존재판정: “문서가 삭제됐다”는 현재 접근 가능한 본문을 부정하지만 과거 생성 사건은 인정한다. 처음부터 없었다고 역사를 지우지 않는다.",
+      "concepts": [
+        "삭제됨비과거비존재판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0488",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "접속실패비서비스종료판정: 한 번 연결되지 않았다는 사실만으로 서비스가 영구 종료되었다고 할 수 없다. 일시 장애와 지속 비존재를 구분한다.",
+      "concepts": [
+        "접속실패비서비스종료판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0489",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "공석비조직부재판정: “팀장이 없다”는 역할 미배정을 뜻할 수 있으며 팀이나 구성원 전체의 비존재는 아니다. 부정 범위를 직책 연결에 둔다.",
+      "concepts": [
+        "공석비조직부재판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-TUH-0490",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미발급비무자격판정: 증명서가 아직 발급되지 않았다는 사실은 신청자가 자격이 없다는 거절 판정과 다르다. 처리 단계만 부정한다.",
+      "concepts": [
+        "미발급비무자격판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0491",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈문자열비널판정: “문자가 하나도 없다”는 길이 0 문자열일 수 있으며 널 객체와 같지 않다. 저장된 컨테이너의 존재를 유지한다.",
+      "concepts": [
+        "빈문자열비널판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0492",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미검색비검색실패판정: “찾지 않았다”는 검색 Action 부재이고 “찾지 못했다”는 시도 후 결과 실패다. 두 부정의 사건 구조를 구별한다.",
+      "concepts": [
+        "미검색비검색실패판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0493",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "없지않음최소존재판정: “대안이 없지는 않다”는 적어도 한 가능성을 남기지만 대안 수나 품질은 말하지 않는다. 풍부함으로 과장하지 않는다.",
+      "concepts": [
+        "없지않음최소존재판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0494",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "모두없음범위제한판정: “목록의 항목이 모두 없다”는 지정 목록에서의 전면 부정이다. 데이터베이스 다른 구역까지 빈 상태라고 확장하지 않는다.",
+      "concepts": [
+        "모두없음범위제한판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0495",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "일부누락비전부누락판정: “필드가 모두 채워진 것은 아니다”는 일부 공란을 뜻한다. 모든 값이 없거나 레코드 자체가 없다는 전면 부정은 아니다.",
+      "concepts": [
+        "일부누락비전부누락판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0496",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "접근불가비열람금지판정: 기술 오류로 열리지 않는 것과 정책상 열람하면 안 되는 것은 다르다. 현재 결과가 같아도 원인과 규범을 분리한다.",
+      "concepts": [
+        "접근불가비열람금지판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0497",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "비어있지않음내용미지판정: “가방이 비어 있지는 않다”는 내용물 최소 하나를 암시한다. 무엇이 몇 개 있는지는 부정문만으로 알 수 없다.",
+      "concepts": [
+        "비어있지않음내용미지판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0498",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미삭제비활성판정: “계정은 삭제되지 않았다”는 활성 상태를 보장하지 않는다. 정지, 잠금, 만료 같은 대안 State를 열어 둔다.",
+      "concepts": [
+        "미삭제비활성판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0499",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "무오류비검증완료판정: 오류 기록이 없다고 검증이 완료된 것은 아니다. 검사 미실행 가능성을 확인해 무오류비검증완료판정을 보수적으로 한다.",
+      "concepts": [
+        "무오류비검증완료판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0500",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "무응답비부재자판정: 연락에 답하지 않았다는 사실은 사람이 현장에 없거나 존재하지 않는다는 뜻이 아니다. 통신 결과만 부정한다.",
+      "concepts": [
+        "무응답비부재자판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0501",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "값미입력비영입력판정: 사용자가 칸을 비운 경우와 숫자 0을 입력한 경우는 행위와 값이 다르다. 공란을 자동으로 영값으로 바꾸지 않는다.",
+      "concepts": [
+        "값미입력비영입력판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0502",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미배정비불필요판정: 담당자가 배정되지 않았다는 사실은 담당 역할이 필요 없다는 뜻이 아니다. 작업 대기와 역할 비적용을 구분한다.",
+      "concepts": [
+        "미배정비불필요판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-TUH-0503",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미보관비폐기판정: 현재 보관함에 없다는 이유로 기록이 폐기됐다고 할 수 없다. 이관, 대여, 경로 변경을 먼저 확인한다.",
+      "concepts": [
+        "미보관비폐기판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0504",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "만료비미발급판정: “자격이 유효하지 않다”가 만료를 뜻한다면 과거 발급 사실은 남는다. 한 번도 발급되지 않았다는 부정과 구별한다.",
+      "concepts": [
+        "만료비미발급판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0505",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "숨김비비존재판정: 사용자가 항목을 숨겼다는 것은 표시만 부정한다. 숨김비비존재판정은 저장 객체와 검색 색인을 별도로 확인한다.",
+      "concepts": [
+        "숨김비비존재판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0506",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "품절비단종판정: 지금 살 수 있는 재고가 없더라도 상품이 단종된 것은 아닐 수 있다. 일시 수량 0과 영구 공급 종료를 나눈다.",
+      "concepts": [
+        "품절비단종판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0507",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "관계없음비대상무관판정: 두 기록 사이 참조 Relation이 없다는 말은 내용상 전혀 관련 없다는 광범위 판단과 다르다. 지정된 연결만 부정한다.",
+      "concepts": [
+        "관계없음비대상무관판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0508",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "주소없음비장소없음판정: 공식 주소가 없는 장소도 좌표나 지형으로 존재할 수 있다. 주소 필드 부재를 장소 비존재로 읽지 않는다.",
+      "concepts": [
+        "주소없음비장소없음판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0509",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "결정없음비거절판정: 아직 결정이 없다는 말은 신청이 거절되지도 승인되지도 않았음을 뜻한다. 보류를 부정 결과로 바꾸지 않는다.",
+      "concepts": [
+        "결정없음비거절판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0510",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "증거없음비반증판정: 지지 증거가 없다는 사실은 반대 명제를 입증한 반증과 다르다. 증거없음비반증판정은 미입증 상태를 보존한다.",
+      "concepts": [
+        "증거없음비반증판정"
+      ],
+      "relations": [
+        "other",
+        "boundary",
+        "state"
+      ]
+    },
+    {
+      "id": "S1-TUH-0511",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈연료탱크상태판정: 계기가 실제 0 L를 가리키면 탱크는 존재하고 연료량만 영이다. 계기 고장으로 값이 없는 경우와 구별한다.",
+      "concepts": [
+        "빈연료탱크상태판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0512",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "무승객버스상태판정: 운행 전 버스의 승객 수가 0이어도 차량과 노선은 존재한다. 승객 부재를 운행 취소로 해석하지 않는다.",
+      "concepts": [
+        "무승객버스상태판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0513",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈예약표상태판정: 특정 날짜 예약표가 비면 예약 건수가 0이라는 뜻이다. 예약 시스템이나 서비스 자체가 없다는 결론은 아니다.",
+      "concepts": [
+        "빈예약표상태판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0514",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "삭제계정복구가능판정: 복구 기간 안의 삭제 계정은 로그인할 수 없지만 백업 정보가 남아 있을 수 있다. 영구 제거와 같은 상태로 처리하지 않는다.",
+      "concepts": [
+        "삭제계정복구가능판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0515",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "차단폴더권한판정: 폴더 접근이 거부되면 요청자의 권한 Relation이 부족한 것이다. 폴더 내용이 비었다거나 경로가 없다고 추정하지 않는다.",
+      "concepts": [
+        "차단폴더권한판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-TUH-0516",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미생성청구서상태판정: 결제 전이라 청구서가 생성되지 않았다면 문서 ID도 아직 없다. 생성 후 삭제된 청구서와 이력 구조가 다르다.",
+      "concepts": [
+        "미생성청구서상태판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0517",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "널생년월일값판정: 생년월일 필드의 널은 날짜를 모른다는 표시일 수 있다. 0년이나 빈 문자열을 실제 날짜로 변환하지 않는다.",
+      "concepts": [
+        "널생년월일값판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0518",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "영매출유효집계판정: 영업일 매출 합계가 0원으로 계산됐다면 유효한 집계 결과다. 거래 자료를 불러오지 못한 결측과 분리한다.",
+      "concepts": [
+        "영매출유효집계판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0519",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "반송메일주소접근실패: 메일이 반송되면 해당 주소로 전달하는 Relation이 실패한 것이다. 수신자 사람의 비존재를 곧바로 뜻하지 않는다.",
+      "concepts": [
+        "반송메일주소접근실패"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0520",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "오프라인서버일시부재판정: 서버가 네트워크에서 보이지 않아도 전원이 꺼진 물리 장치는 존재할 수 있다. 접속 부재와 장비 비존재를 구분한다.",
+      "concepts": [
+        "오프라인서버일시부재판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0521",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "철거시설현재비존재판정: 철거 완료 시설은 현장에 존재하지 않지만 과거 위치와 기록은 남는다. 지도 표식 잔존을 현재 시설로 세지 않는다.",
+      "concepts": [
+        "철거시설현재비존재판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0522",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "품절선반빈공간판정: 선반 칸이 비고 재고 대장도 0이면 판매 단위가 현재 없다. 다른 창고 재고나 상품 정의까지 부정하지 않는다.",
+      "concepts": [
+        "품절선반빈공간판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0523",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "연락처공란값판정: 양식의 연락처 칸이 공란이면 제출된 값이 없다. 연락 수단이 실제로 없다는 사실이나 응답 거절과는 다르다.",
+      "concepts": [
+        "연락처공란값판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0524",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "좌표미제공장소판정: 장소 이름은 있으나 좌표값이 빠졌다면 위치 Attribute가 결측이다. 장소 Entity를 삭제하거나 좌표 0,0을 넣지 않는다.",
+      "concepts": [
+        "좌표미제공장소판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0525",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "종료링크관계부재판정: 연결 해제 시각 이후에는 두 계정의 현재 링크 Relation이 없다. 과거 연결 이력을 지우지 않고 종료 상태로 남긴다.",
+      "concepts": [
+        "종료링크관계부재판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0526",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈응답본문판정: 서버가 성공 코드를 보냈지만 본문 길이가 0이면 응답 객체와 빈 내용은 구별된다. 네트워크 무응답으로 분류하지 않는다.",
+      "concepts": [
+        "빈응답본문판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0527",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "경로이동원위치부재판정: 파일을 다른 폴더로 옮기면 원래 경로에는 없지만 대상은 새 경로에 존재한다. 위치 부재를 삭제로 오판하지 않는다.",
+      "concepts": [
+        "경로이동원위치부재판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0528",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "휴지통논리삭제판정: 휴지통의 문서는 일반 목록에서 제외되지만 복원 전까지 저장 객체가 남는다. 완전 파기와 별도 단계로 기록한다.",
+      "concepts": [
+        "휴지통논리삭제판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0529",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "영투표유효결과판정: 특정 선택지의 득표가 0이면 집계된 Quantity가 존재한다. 개표하지 않아 집계값이 없는 상태와 혼동하지 않는다.",
+      "concepts": [
+        "영투표유효결과판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0530",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미할당좌석상태판정: 좌석은 설비로 존재하지만 어떤 사람에게도 배정되지 않을 수 있다. 점유 Relation 부재를 좌석 삭제로 보지 않는다.",
+      "concepts": [
+        "미할당좌석상태판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-TUH-0531",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "불용장비접근제한판정: 불용 처리된 장비는 운영 접근이 막혀도 창고에 실물이 남을 수 있다. 사용 가능성 부재와 물리적 비존재를 나눈다.",
+      "concepts": [
+        "불용장비접근제한판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0532",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈장바구니유효상태판정: 상품 수 0인 장바구니 객체도 사용자 세션에 존재할 수 있다. 구성원 없음과 컨테이너 없음은 다른 상태다.",
+      "concepts": [
+        "빈장바구니유효상태판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0533",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미설치앱항목판정: 앱이 기기에 설치되지 않았어도 스토어 항목과 구매 이력은 존재할 수 있다. 로컬 부재를 전역 비존재로 바꾸지 않는다.",
+      "concepts": [
+        "미설치앱항목판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-TUH-0534",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "기한만료세션판정: 세션 토큰이 만료되면 접근에 쓸 수 없지만 계정과 과거 요청은 남는다. 세션 부재를 사용자 삭제로 해석하지 않는다.",
+      "concepts": [
+        "기한만료세션판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0535",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈첨부목록판정: 문서 레코드가 있으나 첨부 목록 길이가 0일 수 있다. 본문 문서가 없거나 첨부 조회가 실패한 경우와 구분한다.",
+      "concepts": [
+        "빈첨부목록판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0536",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "차단사용자관계판정: 차단 후에는 두 사용자 사이 메시지 허용 Relation이 없다. 상대 계정의 비존재나 과거 대화 삭제를 의미하지 않는다.",
+      "concepts": [
+        "차단사용자관계판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0537",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미응답설문값판정: 질문을 보았지만 값을 선택하지 않은 경우 응답은 결측이다. ‘없음’ 선택지를 눌렀다는 명시값과 나누어 집계한다.",
+      "concepts": [
+        "미응답설문값판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0538",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "비공개자원접근판정: 검색 결과에서 비공개 자원이 숨겨져도 권한 있는 사용자는 볼 수 있다. 요청자 관점의 부재를 전역 상태로 만들지 않는다.",
+      "concepts": [
+        "비공개자원접근판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-TUH-0539",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "폐쇄노선운행부재판정: 노선이 폐쇄되면 현재 운행 Action은 없지만 노선 정의와 과거 기록은 남는다. 미운행과 노선 비존재를 구별한다.",
+      "concepts": [
+        "폐쇄노선운행부재판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0540",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "영잔액계좌존재판정: 잔액 0원인 계좌도 유효한 금융 객체일 수 있다. 돈의 수량 부재를 계좌 삭제나 접근 불가와 혼동하지 않는다.",
+      "concepts": [
+        "영잔액계좌존재판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0541",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈화면원인미상판정: 화면에 항목이 없지만 데이터 0건, 필터 오류, 권한 제한 중 원인을 알 수 없다. 빈화면원인미상판정은 삭제를 확정하지 않는다.",
+      "concepts": [
+        "빈화면원인미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0542",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "파일미발견원인미상: 경로 조회가 실패했으나 이동, 이름 변경, 삭제 가운데 어느 사건인지 기록이 없다. 최종 위치와 이력을 추가로 확인한다.",
+      "concepts": [
+        "파일미발견원인미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0543",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "재고공란의미미상: 재고 칸이 비어 있어 0인지 미집계인지 알 수 없다. 재고공란의미미상에서는 품절 표시를 만들지 않는다.",
+      "concepts": [
+        "재고공란의미미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0544",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "응답공백원인미상: 설문 답이 비었지만 미응답, 저장 실패, 해당 없음 중 어느 상태인지 모른다. 공란 하나로 태도를 추정하지 않는다.",
+      "concepts": [
+        "응답공백원인미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0545",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "삭제표시출처미상: 레코드에 삭제 표시는 있으나 누가 언제 어떤 절차로 지웠는지 이력이 없다. 현재 숨김과 영구 파기 범위를 확정하지 않는다.",
+      "concepts": [
+        "삭제표시출처미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0546",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "접근오류코드미상: 자원 열기가 실패했지만 오류 코드가 기록되지 않아 권한, 네트워크, 비존재를 가를 수 없다. 상태를 접근 미상으로 둔다.",
+      "concepts": [
+        "접근오류코드미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0547",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "영값측정여부미상: 데이터에 0이 있지만 실제 센서값인지 결측을 치환한 기본값인지 알 수 없다. 출처를 찾기 전에는 관측으로 확정하지 않는다.",
+      "concepts": [
+        "영값측정여부미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0548",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈용기확인여부미상: 목록에는 내용물 0개로 나오지만 실제 용기를 열어 확인했는지 기록이 없다. 장부값과 물리 상태의 일치를 보류한다.",
+      "concepts": [
+        "빈용기확인여부미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0549",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "계정존재여부미상: 로그인 실패 메시지가 보안상 이유를 숨겨 계정 없음과 비밀번호 오류를 구분하지 않는다. 계정존재여부미상으로 처리한다.",
+      "concepts": [
+        "계정존재여부미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0550",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "서비스종료여부미상: 여러 날 접속되지 않았지만 공식 종료 공지나 상태 페이지를 찾지 못했다. 일시 장애와 영구 폐쇄를 확정하지 않는다.",
+      "concepts": [
+        "서비스종료여부미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0551",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미배정원인미상판정: 담당자 칸은 비었지만 신규 접수인지 인력 부족인지 배정 취소인지 모른다. 원인 Relation을 임의로 채우지 않는다.",
+      "concepts": [
+        "미배정원인미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "role"
+      ]
+    },
+    {
+      "id": "S1-TUH-0552",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "널값생성경로미상: 필드가 널이지만 사용자가 비웠는지 변환 중 손실됐는지 알 수 없다. 널값생성경로미상은 책임과 의미를 보류한다.",
+      "concepts": [
+        "널값생성경로미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0553",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "논리삭제복구여부미상: 삭제 플래그는 확인했으나 복구 기한과 백업 정책이 없다. 객체가 되살아날 가능성을 0이나 1로 확정하지 않는다.",
+      "concepts": [
+        "논리삭제복구여부미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0554",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "필터결과영원인미상: 검색 결과 0건이 진짜 불일치인지 색인 갱신 지연인지 모른다. 다른 조회 경로 전에는 대상 부재를 단정하지 않는다.",
+      "concepts": [
+        "필터결과영원인미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0555",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "주소없음기록상태미상: 주소 필드가 비어 있지만 주소 없는 장소인지 수집 누락인지 알 수 없다. 지리 Entity의 존재를 별도로 유지한다.",
+      "concepts": [
+        "주소없음기록상태미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0556",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "무응답생존여부미상: 센서가 응답하지 않아 장치가 꺼졌는지 통신만 끊겼는지 모른다. 무응답생존여부미상은 두 가설을 함께 둔다.",
+      "concepts": [
+        "무응답생존여부미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0557",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "폐기완료여부미상: 폐기 승인 문서는 있으나 파기 확인이 없어 실제 제거 여부를 알 수 없다. 승인과 실행을 같은 상태로 쓰지 않는다.",
+      "concepts": [
+        "폐기완료여부미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0558",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈폴더동기화미상: 로컬 폴더는 비었지만 원격 동기화가 끝났는지 확인되지 않았다. 원격 데이터까지 없다고 결론내리지 않는다.",
+      "concepts": [
+        "빈폴더동기화미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0559",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "예약없음조회범위미상: 화면에는 예약 0건이지만 날짜, 지점, 사용자 필터가 명시되지 않았다. 어느 범위의 부재인지 확정할 수 없다.",
+      "concepts": [
+        "예약없음조회범위미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0560",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "공석기간미상판정: 현재 직책 담당자가 없지만 언제부터 공석인지 이력이 없다. 공석기간미상판정은 장기간 미배정으로 과장하지 않는다.",
+      "concepts": [
+        "공석기간미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0561",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "비공개삭제구분미상: 링크 방문 시 항목이 안 보이지만 비공개 전환인지 삭제인지 응답이 같아 구별되지 않는다. 관리 기록을 확인한다.",
+      "concepts": [
+        "비공개삭제구분미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0562",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "재고영시점미상판정: 장부의 0이 어느 시점 값인지 날짜가 없어 현재 품절 여부를 알 수 없다. 오래된 영값을 최신 상태로 복사하지 않는다.",
+      "concepts": [
+        "재고영시점미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0563",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "데이터공백구간미상: 시계열 일부가 비어 있지만 장비 정지와 전송 누락 중 원인이 없다. 공백 구간의 실제 값이나 상태를 추정하지 않는다.",
+      "concepts": [
+        "데이터공백구간미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0564",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "만료삭제여부미상: 유효기간은 지났지만 시스템이 객체를 삭제하는지 보관하는지 정책을 찾지 못했다. 만료 후 존재 상태를 미상으로 둔다.",
+      "concepts": [
+        "만료삭제여부미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0565",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "영수량표본누락미상: 합계가 0이지만 원자료 행이 비어 있어 진짜 영값인지 집계 누락인지 모른다. 계산 성공 로그를 추가로 요구한다.",
+      "concepts": [
+        "영수량표본누락미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0566",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "접근성복구시점미상: 점검으로 닫힌 서비스가 언제 다시 열릴지 정보가 없다. 접근성복구시점미상은 영구 종료나 즉시 복구로 확정하지 않는다.",
+      "concepts": [
+        "접근성복구시점미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0567",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "내용물수량미상빈표시: 용기에 ‘빈 통’ 표시는 붙었지만 최근 검수 기록이 없다. 내용물수량미상빈표시는 라벨과 실제 상태를 구별한다.",
+      "concepts": [
+        "내용물수량미상빈표시"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0568",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "관계끊김원인미상: 두 계정 연결이 사라졌지만 사용자 해제, 만료, 시스템 오류 가운데 어느 이유인지 기록이 없다. 종료 사유를 추측하지 않는다.",
+      "concepts": [
+        "관계끊김원인미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0569",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "문서부재기간미상: 현재 폴더에 문서가 없으나 언제부터 사라졌는지 알 수 없다. 문서부재기간미상은 생성되지 않았다는 역사 주장과 다르다.",
+      "concepts": [
+        "문서부재기간미상"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0570",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "숨김범위미상판정: 항목이 특정 사용자에게만 숨겨졌는지 전체 공개에서 내려갔는지 기록이 없다. 요청자 관점의 관측만 남긴다.",
+      "concepts": [
+        "숨김범위미상판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-TUH-0571",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "대상비존재확률판정: 여러 독립 저장소에서 모두 찾지 못하면 대상 비존재 가능성이 커진다. 그래도 검색하지 않은 범위가 있으면 확정 부정으로 바꾸지 않는다.",
+      "concepts": [
+        "대상비존재확률판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0572",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈용기검사신뢰판정: 무게와 영상이 모두 내용물 0을 가리키면 빈 상태의 근거가 강해진다. 센서 오차와 가려진 작은 물체 가능성은 남긴다.",
+      "concepts": [
+        "빈용기검사신뢰판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0573",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "영수량관측신뢰판정: 교정된 계수기가 0을 보고하고 수동 집계도 같으면 영수량 신뢰가 높다. 한 장비의 기본값만으로 확정하지 않는다.",
+      "concepts": [
+        "영수량관측신뢰판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0574",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "삭제완료증거등급판정: 삭제 요청보다 저장소 확인과 파기 로그가 실제 제거를 더 강하게 뒷받침한다. 단계별 증거를 같은 완료 표지로 합치지 않는다.",
+      "concepts": [
+        "삭제완료증거등급판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0575",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "접근불가원인확률판정: 같은 자원을 다른 사용자는 열 수 있다면 권한 문제일 가능성이 높다. 자원 비존재 가능성은 낮추되 응답 증거를 기록한다.",
+      "concepts": [
+        "접근불가원인확률판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0576",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "품절지속가능성판정: 입고 예정과 과거 공급 간격으로 품절이 계속될 가능성을 추정할 수 있다. 현재 재고 0을 단종 사실로 확대하지 않는다.",
+      "concepts": [
+        "품절지속가능성판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0577",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "파일이동가능성판정: 원 경로에는 없고 같은 해시가 새 폴더에 있으면 이동 가능성이 매우 높다. 이름 유사성만으로 동일 파일을 확정하지 않는다.",
+      "concepts": [
+        "파일이동가능성판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0578",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "계정삭제가능성판정: 프로필, 로그인, 검색이 모두 실패하면 삭제 가능성이 생긴다. 일시 정지나 비공개 설정이라는 대안도 함께 검토한다.",
+      "concepts": [
+        "계정삭제가능성판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0579",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "응답부재거절가능성판정: 반복 연락에도 답이 없으면 참여 거절 가능성이 커질 수 있지만 명시 답변은 아니다. 무응답과 부정을 다른 데이터로 둔다.",
+      "concepts": [
+        "응답부재거절가능성판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0580",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "결측대치오류위험판정: 공란을 0으로 채우면 실제 영값 비율을 과장할 위험이 있다. 결측대치오류위험판정은 원래 부재 표지를 보존한다.",
+      "concepts": [
+        "결측대치오류위험판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0581",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "숨김상태추정판정: 관리자 계정에서는 보이고 일반 계정에서는 안 보이면 권한 기반 숨김이 유력하다. 사용자별 관측을 전역 존재 상태로 통합하지 않는다.",
+      "concepts": [
+        "숨김상태추정판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0582",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "백업잔존가능성판정: 운영 객체가 삭제됐어도 백업 주기가 남아 있으면 복구 사본이 존재할 수 있다. 정책 확인 전에는 완전 비존재를 확정하지 않는다.",
+      "concepts": [
+        "백업잔존가능성판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0583",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "미생성추정근거판정: 생성 번호도 로그도 없다면 문서가 만들어지지 않았을 가능성이 크다. 로그 유실 가능성을 평가해 추정 등급을 붙인다.",
+      "concepts": [
+        "미생성추정근거판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0584",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "서비스복구가능성판정: 점검 공지와 정상적인 상태 보고가 있으면 일시 접근 불가 후 복구 가능성이 높다. 예정 시각을 실제 복구 사실로 기록하지 않는다.",
+      "concepts": [
+        "서비스복구가능성판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0585",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "영측정센서바닥효과: 검출 한계 아래 값이 0으로 표시될 수 있어 실제 Quantity가 정확히 영인지 불확실하다. 센서 바닥 효과를 함께 보고한다.",
+      "concepts": [
+        "영측정센서바닥효과"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0586",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "삭제오탐위험판정: 검색 실패만으로 삭제 라벨을 붙이면 권한 제한이나 색인 지연을 오탐할 수 있다. 독립적인 삭제 이력을 요구한다.",
+      "concepts": [
+        "삭제오탐위험판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0587",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "비공개전환가능성판정: 과거 링크가 권한 요청 화면으로 바뀌었다면 삭제보다 비공개 전환 가능성이 있다. 관리 기록 없이 어느 상태도 확정하지 않는다.",
+      "concepts": [
+        "비공개전환가능성판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0588",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "재고집계누락가능성판정: 실물 사진에는 상품이 보이는데 장부가 0이면 집계 누락 가능성이 높다. 영상 시각 차이와 위치 오인도 대안으로 남긴다.",
+      "concepts": [
+        "재고집계누락가능성판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0589",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "공석종료예측판정: 채용 절차와 후보 상태로 역할 공석이 끝날 시점을 예측할 수 있다. 임용 예정일을 실제 담당 배정으로 간주하지 않는다.",
+      "concepts": [
+        "공석종료예측판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S1-TUH-0590",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "링크복구가능성판정: 일시 네트워크 단절 뒤 양 끝점이 정상이라면 Relation 복구 가능성이 높다. 재연결 확인 전에는 현재 링크를 참으로 두지 않는다.",
+      "concepts": [
+        "링크복구가능성판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0591",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "주소변경가능성판정: 옛 주소에서 대상을 못 찾고 공식 이전 공지가 있으면 위치 이동이 유력하다. 대상 비존재와 주소 갱신을 구분한다.",
+      "concepts": [
+        "주소변경가능성판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0592",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "폐기미완료위험판정: 승인만 있고 파기 확인이 없으면 민감 자료가 남았을 위험이 있다. 행정 완료 표지를 물리 제거 증거로 대신하지 않는다.",
+      "concepts": [
+        "폐기미완료위험판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0593",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "무응답장치고장확률판정: 전원과 통신 경로가 정상인데 응답만 없으면 장치 고장 가능성이 커진다. 한 번의 타임아웃으로 고장을 확정하지 않는다.",
+      "concepts": [
+        "무응답장치고장확률판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0594",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈목록필터오류가능성: 예상 항목이 모두 사라졌다면 실제 0건보다 잘못된 필터 가능성도 확인해야 한다. 쿼리 조건을 재현해 증거를 갱신한다.",
+      "concepts": [
+        "빈목록필터오류가능성"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0595",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "값부재원인사후확률: 입력 단계, 전송 로그, 변환 이력을 조합하면 공란 원인의 가능성을 갱신할 수 있다. 가장 흔한 원인을 모든 사례에 적용하지 않는다.",
+      "concepts": [
+        "값부재원인사후확률"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S1-TUH-0596",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "권한오류재현신뢰판정: 같은 역할 계정에서 반복 재현되면 접근 거부 판정의 신뢰가 높아진다. 관리자 성공 여부도 대조해 자원 존재를 확인한다.",
+      "concepts": [
+        "권한오류재현신뢰판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S1-TUH-0597",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "비존재주장검증범위판정: “없다”를 검증하려면 어느 시간과 공간, 저장소를 탐색했는지 명시해야 한다. 제한된 검색을 전역 부정으로 승격하지 않는다.",
+      "concepts": [
+        "비존재주장검증범위판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-TUH-0598",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "빈값정책의존해석판정: 같은 공란도 시스템 정책에 따라 미입력, 해당 없음, 기본값 대기로 해석될 수 있다. 스키마 규칙을 근거로 후보를 좁힌다.",
+      "concepts": [
+        "빈값정책의존해석판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S1-TUH-0599",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "복구가능삭제등급판정: 휴지통, 백업 보존, 물리 파기는 되돌릴 가능성이 서로 다르다. 복구가능삭제등급판정은 ‘삭제됨’ 한 라벨로 위험을 숨기지 않는다.",
+      "concepts": [
+        "복구가능삭제등급판정"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "process"
+      ]
+    },
+    {
+      "id": "S1-TUH-0600",
+      "type": "type_uncertainty_packet",
+      "split": "train",
+      "text": "부재판정근거통합: 직접 관찰, 장부 0, 검색 실패, 권한 응답은 부재에 서로 다른 증거를 준다. 독립성과 범위를 따져 최종 확신을 조정한다.",
+      "concepts": [
+        "부재판정근거통합"
+      ],
+      "relations": [
+        "other",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    }
+  ]
+}

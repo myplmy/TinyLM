@@ -1,0 +1,158 @@
+# family	상점의 재고·주문·결제·교환·고객응대 상황
+# axes	고객/직원, 상품, 재고, 영수증, 결제, 처리 상태
+# columns	concepts	relations	other_category	logic_pattern	directly_authored_text
+# 001~030 상품·주문·결제·반품 상태의 원인 맥락 추적
+매대상품보충추적상황|직원|진열상품|창고상자|매대	other,process,state,part_of	causal_context	entity_tracking	매대상품보충추적상황: 직원은 창고상자에서 진열상품을 꺼내 빈 매대에 채웠다. 창고 수량이 줄고 매대 수량이 늘어난 것은 판매가 아니라 위치 이동 때문이다.
+온라인주문접수상황|고객|주문번호|결제완료|준비목록	other,process,state,function	causal_context	entity_tracking	온라인주문접수상황: 고객의 결제완료 뒤 주문번호가 발급되고 상품이 준비목록에 들어갔다. 번호 생성은 수령 완료가 아닌 접수 상태를 뜻한다.
+교환상품격리상황|판매원|교환상품|확인표|반품선반	other,process,state,boundary	causal_context	entity_tracking	교환상품격리상황: 판매원은 고객이 가져온 교환상품에 확인표를 붙여 반품선반에 뒀다. 매장 안에 돌아왔어도 판매 가능 재고로 바로 합치지 않는다.
+영수증결제연결상황|계산원|영수증|승인번호|결제기록	other,process,state,classification	causal_context	entity_tracking	영수증결제연결상황: 계산원은 영수증의 승인번호를 결제기록과 대조했다. 같은 금액의 거래가 여러 건이어도 번호로 고객 구매를 구별한다.
+예약상품보관상황|고객|예약상품|보관라벨|수령대	other,process,state,function	causal_context	entity_tracking	예약상품보관상황: 고객이 예약금을 낸 예약상품에는 보관라벨이 붙어 수령대 안쪽으로 옮겨졌다. 매대에서 보이지 않아도 품절로 판매된 것은 아니다.
+가격표갱신추적상황|매장관리자|기존가격표|새판매가|진열대	other,process,state,attribute	causal_context	entity_tracking	가격표갱신추적상황: 매장관리자는 진열대의 기존가격표를 떼고 적용일이 적힌 새판매가를 붙였다. 이전 표시는 현재 계산 기준이 아니다.
+재고조정기록상황|재고담당|파손상품|조정수량|재고장부	other,process,state,attribute	causal_context	entity_tracking	재고조정기록상황: 재고담당은 파손상품을 판매 구역에서 빼고 조정수량을 재고장부에 기록했다. 장부 감소분을 모두 판매량으로 계산하면 안 된다.
+픽업주문완료상황|포장직원|픽업주문|준비완료표시|보관함	other,process,state,function	causal_context	entity_tracking	픽업주문완료상황: 포장직원은 픽업주문의 물품을 보관함에 넣고 준비완료표시를 남겼다. 고객이 방문하기 전이므로 인도 상태는 아직 아니다.
+쿠폰사용처리상황|고객|할인쿠폰|계산대|사용완료	other,process,state,function	causal_context	entity_tracking	쿠폰사용처리상황: 고객이 계산대에 할인쿠폰을 제시하자 금액이 조정되고 쿠폰은 사용완료로 바뀌었다. 화면에서 사라진 쿠폰을 미제출로 보지 않는다.
+반품환불연결상황|직원|반품영수증|환불승인|결제수단	other,process,state,boundary	causal_context	entity_tracking	반품환불연결상황: 직원은 반품영수증을 확인하고 환불승인을 원래 결제수단으로 보냈다. 승인 시각과 계좌에 반영되는 시각은 다를 수 있다.
+배송주소수정상황|구매자|기존배송지|새주소|주문서	other,process,state,attribute	causal_context	entity_tracking	배송주소수정상황: 구매자는 출고 전에 기존배송지를 새주소로 바꿨고 주문서도 갱신됐다. 처음 입력한 장소는 이후 배송 기준에서 제외된다.
+품절대체안내상황|판매직원|품절상품|대체상품|고객선택	other,process,state,contrast	causal_context	entity_tracking	품절대체안내상황: 판매직원은 품절상품 대신 기능이 비슷한 대체상품을 보여 주고 고객선택을 기다렸다. 제안만으로 주문 품목을 임의 변경하지 않는다.
+현금거스름돈기록상황|계산원|받은현금|거스름돈|현금서랍	other,process,state,attribute	causal_context	entity_tracking	현금거스름돈기록상황: 계산원은 받은현금을 현금서랍에 넣고 결제액을 뺀 거스름돈을 고객에게 줬다. 서랍 증가액은 받은 금액 전체와 같지 않다.
+상품보증서동봉상황|포장원|가전상품|보증서|포장상자	other,process,state,part_of	causal_context	entity_tracking	상품보증서동봉상황: 포장원은 가전상품과 보증서를 포장상자에 함께 넣었다. 상자를 개봉하지 않아도 구매 후 지원 문서는 안에 포함돼 있다.
+회원포인트적립상황|회원고객|구매금액|적립포인트|회원계정	other,process,state,attribute	causal_context	entity_tracking	회원포인트적립상황: 회원고객의 구매금액이 승인되자 적립포인트가 회원계정에 추가됐다. 결제 취소가 되면 해당 적립도 별도 조정된다.
+배송상품포장추적상황|주문담당|배송상품|운송장|출고상자	other,process,state,part_of	causal_context	entity_tracking	배송상품포장추적상황: 주문담당은 배송상품을 출고상자에 넣고 운송장을 붙였다. 매장 재고에서 빠졌지만 고객에게 도착한 상태는 아니다.
+진열샘플구분상황|직원|진열샘플|판매재고|샘플표시	other,process,state,boundary	causal_context	entity_tracking	진열샘플구분상황: 직원은 진열샘플에 샘플표시를 붙여 판매재고와 다른 칸에 뒀다. 진열된 물건 모두를 구매 가능한 수량으로 세지 않는다.
+카드결제취소상황|계산원|카드결제|취소전표|거래상태	other,process,state,boundary	causal_context	entity_tracking	카드결제취소상황: 계산원은 카드결제의 승인번호를 찾아 취소전표를 발행하고 거래상태를 취소로 바꿨다. 원래 영수증은 과거 거래 기록으로 남는다.
+상품문의메모전달상황|상담직원|고객문의|답변메모|판매부서	other,process,state,function	causal_context	entity_tracking	상품문의메모전달상황: 상담직원은 고객문의의 세부 내용을 답변메모에 적어 판매부서에 전달했다. 문의 접수와 최종 답변은 서로 다른 처리 단계다.
+창고로트진열상황|재고원|입고로트|진열수량|매대구역	other,process,state,classification	causal_context	entity_tracking	창고로트진열상황: 재고원은 입고로트에서 진열수량만 꺼내 지정 매대구역으로 보냈다. 남은 상품은 같은 로트지만 창고 재고로 유지된다.
+가격오류정정상황|고객|표시가격|계산가격|정정영수증	other,process,state,boundary	causal_context	entity_tracking	가격오류정정상황: 고객이 표시가격과 계산가격의 차이를 알리자 직원이 기준을 확인해 정정영수증을 발급했다. 처음 출력된 금액은 수정 전 기록이다.
+선물포장요청상황|구매자|구매상품|포장요청|선물봉투	other,process,state,function	causal_context	entity_tracking	선물포장요청상황: 구매자는 결제 후 구매상품에 포장요청을 했고 직원은 선물봉투로 마감했다. 결제 완료와 포장 완료 시점은 분리된다.
+예약취소재고복귀상황|예약고객|취소확인|보관상품|판매재고	other,process,state,boundary	causal_context	entity_tracking	예약취소재고복귀상황: 예약고객의 취소확인이 끝나자 보관상품을 수령대에서 꺼내 판매재고로 되돌렸다. 취소 요청만 받은 동안에는 다른 고객에게 팔지 않는다.
+주문분할배송상황|고객주문|준비상품|미입고상품|분할배송표시	other,process,state,part_of	causal_context	entity_tracking	주문분할배송상황: 고객주문 중 준비상품은 먼저 보내고 미입고상품은 분할배송표시와 함께 대기시켰다. 첫 상자 도착이 전체 주문 완료는 아니다.
+재고실사차이상황|직원|장부수량|실제수량|차이기록	other,process,state,comparison	causal_context	entity_tracking	재고실사차이상황: 직원은 장부수량과 실제수량을 세어 다르면 차이기록을 남겼다. 수치를 발견한 것과 원인을 확인한 것은 같은 단계가 아니다.
+결제대기주문상황|구매자|주문서|결제대기|재고예약	other,process,state,boundary	causal_context	entity_tracking	결제대기주문상황: 구매자가 주문서를 만들자 상품은 잠시 재고예약됐지만 거래는 결제대기로 남았다. 이때는 매출이 확정되지 않는다.
+상품수리접수상황|고객|수리상품|접수증|서비스보관함	other,process,state,function	causal_context	entity_tracking	상품수리접수상황: 고객은 수리상품을 맡기고 접수증을 받았으며 직원은 서비스보관함에 넣었다. 매장 보관이 수리 완료를 뜻하지 않는다.
+사은품지급기록상황|계산원|구매조건|사은품|지급표시	other,process,state,classification	causal_context	entity_tracking	사은품지급기록상황: 계산원은 구매조건을 확인해 사은품을 건네고 주문에 지급표시를 남겼다. 진열 수량 감소를 판매상품 수량과 분리할 수 있다.
+수령인변경상황|주문자|기존수령인|새수령인|본인확인	other,process,state,boundary	causal_context	entity_tracking	수령인변경상황: 주문자는 본인확인을 거쳐 기존수령인을 새수령인으로 바꿨다. 상품을 받는 사람은 달라져도 결제한 주문자는 그대로다.
+계산대마감상황|계산원|거래합계|현금잔액|마감보고서	other,process,state,attribute	causal_context	entity_tracking	계산대마감상황: 계산원은 거래합계와 현금잔액을 대조해 마감보고서를 작성했다. 서랍의 총액은 카드 거래를 포함한 매출합계와 같지 않다.
+# 031~060 고객·판매·재고·결제·배송 역할의 조정
+고객문의판매연결상황|안내직원|판매담당|고객요구|상품정보	other,role,function,state	role_coordination	role_coordination	고객문의판매연결상황: 안내직원은 고객요구를 듣고 해당 판매담당에게 연결했다. 판매담당은 상품정보를 확인해 선택지를 설명하므로 길 안내와 제품 상담의 책임이 다르다.
+결제포장인계상황|계산원|포장직원|결제상품|영수증	other,role,process,function	role_coordination	role_coordination	결제포장인계상황: 계산원은 결제상품과 영수증을 포장직원에게 넘겼다. 상품 수량과 거래 내용을 맞춘 뒤 포장이 시작된다.
+재고주문협업상황|판매원|재고담당|부족상품|발주목록	other,role,function,state	role_coordination	role_coordination	재고주문협업상황: 판매원은 부족상품을 발견해 알렸고 재고담당은 창고 수량을 확인해 발주목록에 넣었다. 현장 요청과 실제 주문 발행을 구분한다.
+교환판정업무분담상황|접수직원|매장관리자|교환요청|판정기록	other,role,boundary,state	role_coordination	role_coordination	교환판정업무분담상황: 접수직원은 교환요청과 상품 상태를 기록하고 매장관리자는 기준을 검토해 판정기록을 확정했다. 접수자가 승인까지 대신하지 않는다.
+배송준비인계상황|주문담당|물류직원|배송목록|포장상자	other,role,process,state	role_coordination	role_coordination	배송준비인계상황: 주문담당은 배송목록을 만들고 물류직원은 포장상자 번호를 대조해 출고 구역으로 옮겼다. 주문 확인과 운송 준비가 이어져야 발송된다.
+가격변경협업상황|본사담당|매장직원|가격변경표|매대라벨	other,role,process,attribute	role_coordination	role_coordination	가격변경협업상황: 본사담당이 가격변경표를 보내면 매장직원은 적용 시각에 맞춰 매대라벨을 교체한다. 통보와 현장 표시가 모두 맞아야 계산 혼선을 줄인다.
+환불결제사연계상황|고객센터|결제담당|환불사유|승인요청	other,role,function,boundary	role_coordination	role_coordination	환불결제사연계상황: 고객센터는 환불사유를 확인해 승인요청을 만들고 결제담당은 원거래를 찾아 취소 처리했다. 고객 설명과 금융 처리는 별도 책임이다.
+상품설명시연협력상황|판매직원|시연담당|관심상품|사용질문	other,role,function,state	role_coordination	role_coordination	상품설명시연협력상황: 판매직원은 관심상품의 사양을 설명하고 시연담당은 사용질문에 실제 동작으로 답했다. 설명을 들었다고 구매가 확정된 것은 아니다.
+분실물고객응대상황|안내데스크|보안직원|분실신고|확인목록	other,role,function,state	role_coordination	role_coordination	분실물고객응대상황: 안내데스크는 분실신고를 접수하고 보안직원은 확인목록과 보관 물품을 대조했다. 신고 접수자는 조사 결과를 임의로 확정하지 않는다.
+회원정보수정분담상황|상담원|회원담당|수정요청|본인확인	other,role,boundary,process	role_coordination	role_coordination	회원정보수정분담상황: 상담원은 수정요청을 받고 회원담당은 본인확인을 거쳐 계정 값을 바꿨다. 요청자의 말만으로 민감한 정보를 갱신하지 않는다.
+주문오류정정협업상황|고객|판매원|잘못된품목|정정주문	other,role,process,boundary	role_coordination	role_coordination	주문오류정정협업상황: 고객이 잘못된품목을 알리자 판매원은 출고 전 주문을 멈추고 정정주문을 만들었다. 고객 확인 후 새 품목으로 준비를 재개한다.
+매장진열분담상황|진열담당|재고원|상품상자|진열계획	other,role,function,part_of	role_coordination	role_coordination	매장진열분담상황: 재고원은 상품상자를 매장으로 보내고 진열담당은 진열계획에 맞춰 선반별로 배치했다. 이동 수량과 실제 진열 수량을 함께 기록한다.
+카드오류상담연계상황|계산원|결제상담원|카드오류|대체결제	other,role,function,state	role_coordination	role_coordination	카드오류상담연계상황: 계산원은 카드오류 화면을 결제상담원에게 알렸고 고객에게 대체결제를 제안했다. 승인 실패는 상품 구매 의사까지 취소된 것으로 보지 않는다.
+수리접수기술인계상황|서비스직원|수리기사|고장설명|접수번호	other,role,process,function	role_coordination	role_coordination	수리접수기술인계상황: 서비스직원은 고장설명과 접수번호를 수리기사에게 넘겼다. 기사는 제품을 점검해 고객 진술과 실제 원인을 구분한다.
+고객대기순서관리상황|번호표담당|상담직원|대기번호|호출상태	other,role,state,classification	role_coordination	role_coordination	고객대기순서관리상황: 번호표담당은 대기번호를 발급하고 상담직원은 호출상태를 갱신했다. 발급 순서와 상담 종료 순서는 같지 않을 수 있다.
+선물배송정보확인상황|구매자|직원|수령인정보|선물메시지	other,role,function,boundary	role_coordination	role_coordination	선물배송정보확인상황: 구매자는 수령인정보와 선물메시지를 제공하고 직원은 주소와 주문을 다시 읽어 확인했다. 결제자와 받는 사람을 구별해 기록한다.
+행사상품보충협업상황|행사담당|창고원|행사매대|보충수량	other,role,function,attribute	role_coordination	role_coordination	행사상품보충협업상황: 행사담당은 행사매대의 빈칸을 세어 보충수량을 알렸고 창고원은 해당 물품을 준비했다. 현장 필요량과 창고 출고량을 대조한다.
+반품물류회수상황|접수직원|회수기사|반품상자|회수증	other,role,process,state	role_coordination	role_coordination	반품물류회수상황: 접수직원은 반품상자에 주문 번호를 붙이고 회수기사는 회수증을 남긴 뒤 가져갔다. 매장 접수와 물류 인계가 기록으로 이어진다.
+판매보안태그해제상황|계산원|보안담당|결제확인|상품태그	other,role,function,boundary	role_coordination	role_coordination	판매보안태그해제상황: 계산원이 결제확인을 하면 보안담당이 상품태그를 제거했다. 태그 해제는 구매 승인 뒤에만 하며 단순 문의 상품에는 하지 않는다.
+재고실사역할분담상황|계수직원|기록직원|실물수량|실사표	other,role,function,attribute	role_coordination	role_coordination	재고실사역할분담상황: 계수직원은 실물수량을 읽고 기록직원은 실사표에 입력했다. 품목을 바꿀 때 두 사람이 코드를 다시 확인한다.
+영수증재발급협력상황|고객응대원|계산대관리자|거래시각|재발급영수증	other,role,function,state	role_coordination	role_coordination	영수증재발급협력상황: 고객응대원은 거래시각을 받아 검색을 요청하고 계산대관리자는 내역을 확인해 재발급영수증을 출력했다. 고객 기억만으로 거래를 선택하지 않는다.
+배송지연안내분담상황|물류담당|상담원|지연정보|고객알림	other,role,process,state	role_coordination	role_coordination	배송지연안내분담상황: 물류담당은 지연정보와 예상 시각을 상담원에게 전달했고 상담원은 고객알림을 보냈다. 내부 원인 기록과 외부 안내의 표현 범위가 다르다.
+매장청소진열인계상황|청소담당|진열직원|통로완료표|상품카트	other,role,process,state	role_coordination	role_coordination	매장청소진열인계상황: 청소담당이 통로완료표를 붙인 뒤 진열직원이 상품카트를 들여왔다. 바닥이 젖은 동안에는 진열 준비가 돼도 이동하지 않는다.
+고객불만관리협업상황|상담직원|매장책임자|불만내용|조치답변	other,role,function,boundary	role_coordination	role_coordination	고객불만관리협업상황: 상담직원은 불만내용을 사실과 요청으로 나눠 적고 매장책임자는 가능한 조치답변을 확정했다. 접수 단계의 약속을 최종 결정처럼 말하지 않는다.
+재고이동승인상황|재고담당|매니저|이동요청|승인표시	other,role,process,state	role_coordination	role_coordination	재고이동승인상황: 재고담당이 지점 간 이동요청을 만들고 매니저가 수량을 검토해 승인표시를 남겼다. 승인이 나기 전에는 상품을 차량에 싣지 않는다.
+고가상품인계상황|판매직원|보관담당|고가상품|인계서명	other,role,boundary,state	role_coordination	role_coordination	고가상품인계상황: 판매직원은 고객 상담 뒤 고가상품을 보관담당에게 돌려주고 인계서명을 받았다. 진열대에 없다고 판매된 것은 아니다.
+주문포장검수상황|포장원|검수자|주문목록|봉함라벨	other,role,function,boundary	role_coordination	role_coordination	주문포장검수상황: 포장원은 주문목록대로 물품을 넣고 검수자가 수량을 확인한 뒤 봉함라벨을 붙였다. 작성자와 확인자를 나눠 누락을 찾는다.
+행사쿠폰설정협업상황|마케팅담당|계산담당|행사쿠폰|적용조건	other,role,function,classification	role_coordination	role_coordination	행사쿠폰설정협업상황: 마케팅담당은 행사쿠폰의 적용조건을 정하고 계산담당은 시스템에서 시험 결제를 했다. 홍보 시작 전에 할인 작동을 확인한다.
+폐점마감업무분담상황|매장관리자|계산원|현금마감|문잠금	other,role,process,state	role_coordination	role_coordination	폐점마감업무분담상황: 계산원은 현금마감을 완료하고 매장관리자는 고객이 없는지 살핀 뒤 문잠금을 했다. 계산 종료와 매장 폐쇄가 연속으로 이뤄진다.
+제품교육응대협력상황|교육담당|신입판매원|제품자료|고객질문	other,role,function,state	role_coordination	role_coordination	제품교육응대협력상황: 교육담당은 제품자료를 설명하고 신입판매원은 고객질문을 가정한 답변을 연습했다. 교육 참석만으로 단독 상담 가능 상태가 되지는 않는다.
+# 061~090 주문·결제·준비·인도·교환의 시간 의존성
+결제승인후준비상황|주문서|결제승인|상품준비|수령알림	other,process,state,function	temporal_dependency	temporal_dependency	결제승인후준비상황: 주문서는 결제승인 뒤 상품준비로 넘어가고 포장이 끝나면 수령알림이 발송된다. 주문 작성 시각에 이미 물건이 준비된 것은 아니다.
+예약보관기한상황|예약상품|보관시작|수령기한|재고복귀	other,process,state,boundary	temporal_dependency	temporal_dependency	예약보관기한상황: 예약상품은 보관시작부터 수령기한까지 따로 두며 연락 없이 지나면 재고복귀 절차를 밟는다. 기한 경과 즉시 판매됐다는 뜻은 아니다.
+환불승인반영시점상황|반품접수|환불승인|카드반영|완료알림	other,process,state,boundary	temporal_dependency	temporal_dependency	환불승인반영시점상황: 반품접수 뒤 환불승인이 나고 카드반영이 확인되면 완료알림을 보낸다. 매장에서 승인한 때와 금융 내역이 바뀐 때는 다를 수 있다.
+입고후진열순서상황|납품도착|검수완료|가격부착|매대진열	other,process,state,function	temporal_dependency	temporal_dependency	입고후진열순서상황: 납품도착 뒤 검수완료와 가격부착을 거쳐 매대진열이 이뤄졌다. 상자가 매장에 왔어도 곧바로 판매 가능한 것은 아니다.
+온라인주문취소기한상황|구매주문|취소가능단계|출고확정|취소요청	other,process,state,boundary	temporal_dependency	temporal_dependency	온라인주문취소기한상황: 구매주문은 취소가능단계에 요청해야 바로 중단되며 출고확정 뒤의 취소요청은 반품 절차로 넘어갈 수 있다. 같은 요청도 시점에 따라 처리 방식이 다르다.
+상품교환재고확인상황|교환접수|대체재고|상태확인|교환완료	other,process,state,function	temporal_dependency	temporal_dependency	상품교환재고확인상황: 교환접수 후 대체재고와 가져온 물품의 상태확인을 마쳐야 교환완료로 바뀐다. 접수증 발급만으로 새 상품이 인도된 것은 아니다.
+가격행사적용시간상황|정상가격|행사시작|할인가격|행사종료	other,process,state,attribute	temporal_dependency	temporal_dependency	가격행사적용시간상황: 정상가격은 행사시작 때 할인가격으로 전환되고 행사종료 뒤 원래 기준으로 돌아간다. 장바구니에 담은 시각보다 결제 적용 시각을 확인한다.
+배송출발후추적상황|포장완료|택배인계|이동조회|배송완료	other,process,state,function	temporal_dependency	temporal_dependency	배송출발후추적상황: 포장완료 뒤 택배인계가 기록되고 이동조회 단계를 지나 수령 확인 시 배송완료가 된다. 운송장 생성만으로 출발을 단정하지 않는다.
+회원가입후포인트상황|가입완료|첫구매|포인트적립|사용가능시각	other,process,state,attribute	temporal_dependency	temporal_dependency	회원가입후포인트상황: 가입완료 뒤 첫구매가 승인돼 포인트적립이 되고 사용가능시각부터 다음 거래에 쓸 수 있다. 적립 표시와 즉시 사용 가능 여부를 구분한다.
+매장예약변경상황|기존방문일|변경요청|새방문일|확인문자	other,process,state,boundary	temporal_dependency	temporal_dependency	매장예약변경상황: 변경요청이 승인되면 기존방문일이 새방문일로 바뀌고 확인문자가 온다. 요청을 보낸 동안에는 기존 일정이 아직 유지될 수 있다.
+수리접수완료연계상황|접수일|점검시작|수리완료|고객수령	other,process,state,function	temporal_dependency	temporal_dependency	수리접수완료연계상황: 접수일 뒤 점검시작과 수리완료를 거쳐 고객수령이 기록된다. 기술 작업 완료와 물건 인도는 같은 사건이 아니다.
+재고예약만료상황|결제대기상품|예약시각|결제마감|예약해제	other,process,state,boundary	temporal_dependency	temporal_dependency	재고예약만료상황: 결제대기상품은 예약시각부터 결제마감까지 보류되고 시간이 지나면 예약해제된다. 해제 전에는 다른 주문의 가용 재고로 잡지 않는다.
+선물포장대기순서상황|결제완료|포장번호|작업시작|완성호출	other,process,state,classification	temporal_dependency	temporal_dependency	선물포장대기순서상황: 결제완료 뒤 포장번호를 받고 차례가 되면 작업시작, 마치면 완성호출이 이뤄진다. 번호를 받은 즉시 포장이 끝난 것은 아니다.
+반품검수후재판매상황|반품상품|검수완료|재포장|판매복귀	other,process,state,boundary	temporal_dependency	temporal_dependency	반품검수후재판매상황: 반품상품은 검수완료 뒤 상태에 맞게 재포장돼야 판매복귀할 수 있다. 고객에게서 회수한 즉시 새 상품 재고로 합치지 않는다.
+영수증발급후정정상황|원영수증|가격오류|정정결제|새영수증	other,process,state,boundary	temporal_dependency	temporal_dependency	영수증발급후정정상황: 원영수증 발급 뒤 가격오류를 발견해 정정결제를 하고 새영수증을 받았다. 앞 문서는 당시 거래의 취소·수정 이력으로 남는다.
+마감전주문처리상황|주문접수|당일마감|포장완료|다음날출고	other,process,state,function	temporal_dependency	temporal_dependency	마감전주문처리상황: 당일마감 전에 주문접수와 포장완료가 되면 발송 준비가 되지만 운송 일정에 따라 다음날출고될 수 있다. 포장 날짜와 출발 날짜를 나눈다.
+시식후구매결정상황|시식제공|고객평가|구매선택|결제진행	other,process,state,boundary	temporal_dependency	temporal_dependency	시식후구매결정상황: 시식제공 뒤 고객평가를 듣고 구매선택이 있을 때만 결제진행을 한다. 맛을 봤다는 행동이 구매 동의로 바뀌지는 않는다.
+쿠폰발급유효기간상황|쿠폰발급일|사용시작일|만료일|사용거절	other,process,state,attribute	temporal_dependency	temporal_dependency	쿠폰발급유효기간상황: 쿠폰발급일과 사용시작일이 다를 수 있으며 만료일을 지나면 사용거절된다. 계정에 보이는 쿠폰도 기간 밖이면 적용되지 않는다.
+배송주소마감상황|주소변경|포장단계|출고마감|기존운송장	other,process,state,boundary	temporal_dependency	temporal_dependency	배송주소마감상황: 주소변경은 포장단계 안에서 반영되지만 출고마감 뒤에는 기존운송장 처리를 먼저 확인해야 한다. 늦은 수정 입력이 실제 목적지를 바로 바꾸지 못할 수 있다.
+재입고알림순서상황|품절등록|재입고예정|실물입고|알림발송	other,process,state,function	temporal_dependency	temporal_dependency	재입고알림순서상황: 품절등록 뒤 재입고예정이 표시돼도 실물입고가 확인된 다음 알림발송을 한다. 예정 시각만으로 구매 가능 상태를 열지 않는다.
+계산대교대마감상황|근무종료|거래정산|현금인계|다음계산원	other,process,state,role	temporal_dependency	temporal_dependency	계산대교대마감상황: 근무종료 때 거래정산을 하고 현금인계를 마친 뒤 다음계산원이 서랍을 받는다. 교대 전후 거래는 담당 시각으로 구분한다.
+예약금잔금결제상황|예약금|상품도착|잔금결제|수령완료	other,process,state,attribute	temporal_dependency	temporal_dependency	예약금잔금결제상황: 예약금을 낸 뒤 상품도착 연락을 받고 잔금결제를 해야 수령완료가 된다. 첫 금액만으로 전체 대금이 끝난 것으로 계산하지 않는다.
+가격표교체적용상황|변경공지|적용시각|라벨교체|계산검증	other,process,state,boundary	temporal_dependency	temporal_dependency	가격표교체적용상황: 변경공지의 적용시각에 맞춰 라벨교체를 하고 계산검증으로 금액을 확인했다. 표만 먼저 붙여 시각 전 가격을 바꾸지 않는다.
+사전주문출시일상황|사전주문|출시일|배정완료|인도시작	other,process,state,boundary	temporal_dependency	temporal_dependency	사전주문출시일상황: 사전주문은 출시일 전에 접수되지만 재고 배정완료 뒤 인도시작 시점부터 고객에게 건넨다. 결제일과 수령 가능일이 다르다.
+고객문의답변기한상황|문의접수|담당배정|답변작성|회신완료	other,process,state,function	temporal_dependency	temporal_dependency	고객문의답변기한상황: 문의접수 뒤 담당배정이 되고 자료를 확인해 답변작성 후 회신완료로 닫힌다. 자동 접수 문자는 최종 답변이 아니다.
+재고실사판매중지상황|실사시작|판매중지|수량확정|판매재개	other,process,state,boundary	temporal_dependency	temporal_dependency	재고실사판매중지상황: 실사시작 때 해당 구역을 판매중지하고 수량확정 뒤 판매재개했다. 상품이 진열돼 있어도 집계 중에는 결제할 수 없다.
+배송실패재시도상황|첫배송|부재확인|재배송예약|인도완료	other,process,state,boundary	temporal_dependency	temporal_dependency	배송실패재시도상황: 첫배송에서 부재확인이 되자 재배송예약을 잡고 다음 방문에서 인도완료됐다. 첫 이동 기록을 최종 배달로 세지 않는다.
+교환기한판정상황|구매일|교환요청일|허용기간|판정결과	other,process,state,attribute	temporal_dependency	temporal_dependency	교환기한판정상황: 구매일과 교환요청일 사이가 허용기간 안인지 계산해 판정결과를 남긴다. 상품을 가져온 사실만으로 기한 조건이 충족되지는 않는다.
+폐점전픽업수령상황|준비알림|폐점시각|고객도착|인도기록	other,process,state,boundary	temporal_dependency	temporal_dependency	폐점전픽업수령상황: 준비알림 뒤 고객도착이 폐점시각 전에 확인돼 인도기록을 남겼다. 늦게 온 주문은 보관 상태로 다음 영업일에 이어진다.
+보증기간수리접수상황|구매시각|보증만료|고장접수|지원판정	other,process,state,attribute	temporal_dependency	temporal_dependency	보증기간수리접수상황: 구매시각을 기준으로 보증만료와 고장접수를 비교해 지원판정을 한다. 현재 고장이 있다는 사실과 무상 지원 조건은 별개다.
+# 091~120 제한된 재고·직원·계산대·공간·시간의 배분 맥락
+한정재고배분상황|매장관리자|남은상품|예약고객|현장고객	other,state,classification,comparison	resource_constraint	resource_constraint	한정재고배분상황: 매장관리자는 남은상품을 예약고객 수에 먼저 배정하고 나머지를 현장고객에게 판매했다. 먼저 보았다는 이유만으로 예약분을 꺼내지 않는다.
+계산대수량제약상황|대기고객|일번계산대|이번계산대|줄안내	other,state,function,classification	resource_constraint	resource_constraint	계산대수량제약상황: 대기고객이 많아지자 일번계산대와 이번계산대의 줄안내를 나눴다. 줄 길이가 달라도 다음 결제 순서는 각 계산대 안에서 정한다.
+판매직원시간배분상황|매장책임자|상담직원|긴상담|짧은문의	other,state,role,comparison	resource_constraint	resource_constraint	판매직원시간배분상황: 매장책임자는 상담직원 한 명에게 긴상담을 맡기고 다른 직원이 짧은문의를 처리하게 했다. 질문 길이가 고객 중요도를 뜻하지 않는다.
+피팅룸대기상황|고객|피팅룸|대기번호|반납의류	other,state,function,boundary	resource_constraint	resource_constraint	피팅룸대기상황: 피팅룸 수보다 고객이 많아 대기번호를 주고 반납의류를 정리한 뒤 다음 사람을 불렀다. 옷을 들고 있어도 방 배정 전에는 이용 중이 아니다.
+배송차량용량상황|물류담당|출고상자|배송차량|다음회차	other,state,function,part_of	resource_constraint	resource_constraint	배송차량용량상황: 출고상자가 배송차량 용량을 넘자 물류담당은 일부를 다음회차로 나눴다. 창고에 남은 상자도 발송 주문에서 취소되지 않는다.
+포장재수량부족상황|포장원|선물상자|일반봉투|포장요청	other,state,function,contrast	resource_constraint	resource_constraint	포장재수량부족상황: 선물상자가 부족해 포장원은 포장요청 고객에게 일반봉투 사용 여부를 물었다. 동의 없이 포장 방식을 바꾸지 않는다.
+할인쿠폰수량제한상황|행사담당|한정쿠폰|발급순서|대기고객	other,state,classification,boundary	resource_constraint	resource_constraint	할인쿠폰수량제한상황: 행사담당은 한정쿠폰을 발급순서대로 나눠 대기고객에게 남은 수량을 알렸다. 줄에 섰다는 사실만으로 쿠폰이 보장되지는 않는다.
+냉장진열공간제약상황|재고원|냉장상품|냉장진열대|창고냉장고	other,state,part_of,function	resource_constraint	resource_constraint	냉장진열공간제약상황: 냉장진열대가 가득 차 재고원은 일부 냉장상품을 창고냉장고에 유지했다. 보이지 않는 수량도 적정 조건의 재고다.
+주문단말기공유상황|판매가팀|판매나팀|주문단말기|수기메모	other,state,function,role	resource_constraint	resource_constraint	주문단말기공유상황: 판매가팀이 주문단말기를 쓰는 동안 판매나팀은 고객 요청을 수기메모에 적고 차례가 되면 입력했다. 입력 시각과 상담 시각이 다를 수 있다.
+창고통로혼잡조정상황|창고관리자|입고카트|출고카트|통행순서	other,state,function,boundary	resource_constraint	resource_constraint	창고통로혼잡조정상황: 창고관리자는 좁은 통로에서 입고카트와 출고카트가 마주치지 않게 통행순서를 정했다. 대기 중인 카트의 작업이 취소된 것은 아니다.
+고가상품시연제한상황|판매담당|시연기기|관심고객|예약시간	other,state,function,boundary	resource_constraint	resource_constraint	고가상품시연제한상황: 시연기기가 한 대라 판매담당은 관심고객에게 예약시간을 배정했다. 설명을 먼저 들었어도 실제 기기 사용은 정해진 차례에 한다.
+현금잔돈부족상황|계산원|잔돈수량|큰지폐|대체결제	other,state,attribute,function	resource_constraint	resource_constraint	현금잔돈부족상황: 잔돈수량이 모자라 계산원은 큰지폐를 낸 고객에게 대체결제 가능 여부를 물었다. 현금 부족은 상품 재고 부족과 무관하다.
+고객센터회선제약상황|상담센터|전화회선|대기콜|온라인문의	other,state,function,contrast	resource_constraint	resource_constraint	고객센터회선제약상황: 전화회선이 차자 상담센터는 대기콜을 순서대로 받고 급하지 않은 문의에는 온라인문의를 안내했다. 통화 지연이 문의 삭제는 아니다.
+보관함칸수제약상황|픽업담당|주문상자|보관함|임시선반	other,state,part_of,boundary	resource_constraint	resource_constraint	보관함칸수제약상황: 픽업 주문상자가 많아 보관함이 차자 픽업담당은 잠금 가능한 임시선반에 일부를 두고 위치를 기록했다. 보관 장소 변경은 준비 취소가 아니다.
+가격표출력대기상황|매장직원|가격표프린터|변경목록|수기안내	other,state,function,boundary	resource_constraint	resource_constraint	가격표출력대기상황: 가격표프린터를 사용할 수 없어 매장직원은 변경목록을 확인하고 수기안내를 붙였다. 정식 표가 늦어도 계산 기준은 적용 시각부터 바뀐다.
+수리기사업무량상황|서비스센터|수리기사|긴급수리|일반점검	other,state,role,classification	resource_constraint	resource_constraint	수리기사업무량상황: 서비스센터는 제한된 수리기사를 긴급수리에 먼저 배정하고 일반점검은 접수 순서대로 예약했다. 뒤로 간 제품도 접수 상태를 유지한다.
+시식재료잔량상황|행사직원|시식재료|샘플컵|남은시간	other,state,attribute,function	resource_constraint	resource_constraint	시식재료잔량상황: 행사직원은 시식재료와 남은시간을 보고 샘플컵의 양을 줄여 더 많은 고객에게 나눴다. 작은 시식량이 판매 상품의 규격을 뜻하지 않는다.
+매대면적분할상황|브랜드가|브랜드나|공용매대|구역표시	other,state,part_of,boundary	resource_constraint	resource_constraint	매대면적분할상황: 브랜드가와 브랜드나는 공용매대에 구역표시를 하고 상품을 각 영역에 놓았다. 같은 선반을 써도 가격표와 재고는 분리한다.
+교환재고부족상황|교환고객|동일상품|대체색상|입고대기	other,state,contrast,boundary	resource_constraint	resource_constraint	교환재고부족상황: 동일상품 재고가 없어 교환고객에게 대체색상이나 입고대기를 제시했다. 직원은 고객 선택 전 어느 쪽도 확정하지 않는다.
+주차공간안내상황|안내직원|매장주차장|대기차량|대체주차장	other,state,function,contrast	resource_constraint	resource_constraint	주차공간안내상황: 매장주차장이 찬 때 안내직원은 대기차량에 대체주차장을 설명했다. 다른 장소에 주차해도 매장 이용 자격은 달라지지 않는다.
+사물함열쇠공유제약상황|직원|보관사물함|공용열쇠|사용기록	other,state,function,boundary	resource_constraint	resource_constraint	사물함열쇠공유제약상황: 공용열쇠가 하나라 직원은 보관사물함을 열 때 사용기록을 남기고 즉시 반납했다. 열쇠 소지가 상품 소유를 뜻하지 않는다.
+택배접수마감상황|출고담당|당일접수량|택배마감|다음발송	other,state,attribute,function	resource_constraint	resource_constraint	택배접수마감상황: 당일접수량이 운송 한도를 넘자 출고담당은 택배마감 이후 주문을 다음발송으로 분류했다. 포장이 끝난 상자도 창고에서 하룻밤 기다릴 수 있다.
+결제망처리용량상황|매장|카드승인망|결제대기|현금결제	other,state,function,contrast	resource_constraint	resource_constraint	결제망처리용량상황: 카드승인망이 느려지자 매장은 결제대기 고객에게 현금결제 선택지를 설명했다. 응답 지연을 카드 거절로 단정하지 않는다.
+상품상담자료공유상황|판매원|제품설명서|고객일행|공용화면	other,state,function,role	resource_constraint	resource_constraint	상품상담자료공유상황: 제품설명서가 한 부뿐이라 판매원은 고객일행에게 공용화면도 함께 보여 줬다. 문서를 직접 든 사람만 설명 대상인 것은 아니다.
+보안태그제거기제약상황|계산원|제거기|결제상품|대기봉투	other,state,function,process	resource_constraint	resource_constraint	보안태그제거기제약상황: 제거기 한 대를 쓰기 위해 계산원은 결제상품을 대기봉투별로 놓고 순서대로 처리했다. 결제 완료와 태그 제거 완료가 잠시 어긋날 수 있다.
+반품선반용량상황|접수담당|반품상품|격리칸|회수일정	other,state,part_of,boundary	resource_constraint	resource_constraint	반품선반용량상황: 반품상품이 격리칸을 채우자 접수담당은 회수일정이 빠른 순서로 상자를 정리했다. 공간 부족을 이유로 검수 전 상품을 판매대에 돌리지 않는다.
+행사직원인원제약상황|행사책임자|안내직원|시식대|계산지원	other,state,role,classification	resource_constraint	resource_constraint	행사직원인원제약상황: 행사책임자는 제한된 안내직원을 시식대와 계산지원에 나눠 배치했다. 한 구역이 잠시 비어도 행사가 종료된 것은 아니다.
+배송용완충재부족상황|포장팀|완충재|깨지기쉬운상품|일반상품	other,state,function,classification	resource_constraint	resource_constraint	배송용완충재부족상황: 포장팀은 남은 완충재를 깨지기쉬운상품에 우선 쓰고 일반상품에는 규격 봉투를 사용했다. 보호 수준은 상품 위험에 따라 달라진다.
+카트수량순환상황|매장직원|쇼핑카트|반납구역|대기고객	other,state,function,process	resource_constraint	resource_constraint	카트수량순환상황: 쇼핑카트가 모두 사용 중이어서 매장직원은 반납구역에서 회수되는 순서대로 대기고객에게 건넸다. 카트 부재가 입장 거절을 뜻하지 않는다.
+상품사진촬영공간상황|온라인담당|촬영대|신상품|대기목록	other,state,function,classification	resource_constraint	resource_constraint	상품사진촬영공간상황: 촬영대가 하나라 온라인담당은 출시일 기준으로 신상품을 대기목록에 배열했다. 촬영 전에도 실물 입고 기록은 유지된다.
+# 121~150 지시어·생략·대조 대상의 상점 문맥 복원
+두상품지시복원상황|검은가방|갈색가방|고객|이것	other,boundary,state,contrast	reference_resolution	reference_resolution	두상품지시복원상황: 검은가방은 위 선반, 갈색가방은 아래 선반에 있다. 고객이 아래쪽을 들며 “이것을 사겠다”고 했으므로 이것은 갈색가방이다.
+영수증두장참조상황|원영수증|정정영수증|직원|후자의문서	other,boundary,state,classification	reference_resolution	reference_resolution	영수증두장참조상황: 원영수증 뒤에 가격을 고친 정정영수증이 발급됐다. 직원이 후자의문서를 반품에 쓰라고 한 대상은 정정영수증이다.
+판매원대명사상황|민지|수호|포장상자|그녀	other,boundary,role,state	reference_resolution	reference_resolution	판매원대명사상황: 수호는 결제를 도왔고 민지는 포장상자를 닫았다. “그녀가 선물띠를 붙였다”에서 그녀는 민지다.
+주문두개앞의것상황|배송주문|픽업주문|주문목록|앞의것	other,boundary,contrast,classification	reference_resolution	reference_resolution	주문두개앞의것상황: 주문목록에는 배송주문과 픽업주문이 차례로 있다. 앞의것에 운송장을 붙이라는 지시는 배송주문을 가리킨다.
+진열대위치참조상황|세일매대|신상품매대|안내원|저곳	other,boundary,state,classification	reference_resolution	reference_resolution	진열대위치참조상황: 세일매대는 입구 옆, 신상품매대는 안쪽에 있다. 안내원이 안쪽을 가리켜 말한 저곳은 신상품매대다.
+결제수단후자복원상황|현금결제|카드결제|거래기록|후자	other,boundary,contrast,state	reference_resolution	reference_resolution	결제수단후자복원상황: 거래기록은 현금결제를 먼저, 카드결제를 다음에 보여 준다. 승인번호가 있는 후자는 카드결제다.
+고객소유물참조상황|지연|민호|우산|그의것	other,boundary,role,state	reference_resolution	reference_resolution	고객소유물참조상황: 지연이 우산을 계산대에 두었고 민호가 분실물 데스크에 전달했다. “그의것이 아니라 맡긴 물건”에서 그는 민호를 가리킨다.
+상자두개지시상황|교환상자|새상품상자|직원|그상자	other,boundary,state,contrast	reference_resolution	reference_resolution	상자두개지시상황: 교환상자는 접수대에, 새상품상자는 수령대에 놓였다. 직원이 수령대 쪽을 가리킨 그상자는 새상품상자다.
+쿠폰선행어복원상황|종이쿠폰|앱쿠폰|계산원|첫쿠폰	other,boundary,classification,state	reference_resolution	reference_resolution	쿠폰선행어복원상황: 계산원은 종이쿠폰과 앱쿠폰을 순서대로 확인했다. 첫쿠폰을 사용완료 처리했다는 말은 종이쿠폰을 뜻한다.
+상품색상대상상황|빨간셔츠|파란셔츠|고객|저색	other,boundary,contrast,attribute	reference_resolution	reference_resolution	상품색상대상상황: 빨간셔츠는 마네킹에 있고 파란셔츠는 고객 손에 있다. 고객이 들고 있는 옷을 보며 말한 저색은 파란색이다.
+배송일나중날짜상황|첫배송일|변경배송일|주문서|나중날짜	other,boundary,process,state	reference_resolution	reference_resolution	배송일나중날짜상황: 주문서에는 첫배송일이 취소선으로 남고 변경배송일이 새로 적혔다. 나중날짜에 방문한다는 지시는 변경배송일을 적용한다.
+직원두명주체복원상황|판매원|재고원|상품상자|그가	other,boundary,role,state	reference_resolution	reference_resolution	직원두명주체복원상황: 판매원은 주문을 받았고 재고원은 상품상자를 창고에서 가져왔다. “그가 수량을 셌다”에서 그는 재고원을 가리킨다.
+환불거래이것상황|구매거래|취소거래|결제화면|이거래	other,boundary,state,contrast	reference_resolution	reference_resolution	환불거래이것상황: 결제화면에는 구매거래 아래에 취소거래가 표시됐다. 직원이 아래 행을 선택하며 말한 이거래는 취소거래다.
+매대가격표참조상황|정상가격표|할인가격표|매대|위표시	other,boundary,attribute,contrast	reference_resolution	reference_resolution	매대가격표참조상황: 매대에는 정상가격표 위로 할인가격표가 덧붙었다. 위표시를 적용한다는 문장은 할인가격표를 가리킨다.
+보관함그곳복원상황|일번보관함|이번보관함|픽업상자|그곳	other,boundary,state,classification	reference_resolution	reference_resolution	보관함그곳복원상황: 픽업상자는 일번보관함에서 이번보관함으로 옮겨졌다. 직원이 “그곳에서 찾아라”고 한 현재 위치는 이번보관함이다.
+배송대상대명사상황|주문자|수령인|선물상품|그분	other,boundary,role,state	reference_resolution	reference_resolution	배송대상대명사상황: 주문자는 선물상품을 결제했고 수령인이 주소를 확인했다. 기록의 “그분에게 인도함”에서 그분은 수령인이다.
+두수량앞값상황|장부수량|실물수량|실사표|앞값	other,boundary,attribute,comparison	reference_resolution	reference_resolution	두수량앞값상황: 실사표는 장부수량을 먼저, 실물수량을 다음에 적는다. 앞값을 수정한다는 지시는 장부수량을 바꾼다.
+교환상품후자상황|반품한상품|교환받을상품|고객|후자의것	other,boundary,contrast,state	reference_resolution	reference_resolution	교환상품후자상황: 고객은 반품한상품을 내고 교환받을상품을 골랐다. 후자의것을 포장해 달라는 요청은 새로 받을 물건을 뜻한다.
+결제시점그때상황|주문시각|승인시각|포인트기록|그때	other,boundary,process,attribute	reference_resolution	reference_resolution	결제시점그때상황: 포인트기록에는 주문시각과 승인시각이 따로 남았다. “그때 적립됨”이라는 설명의 그때는 거래가 승인된 시각이다.
+상품설명앞모델상황|기본모델|고급모델|판매자료|앞모델	other,boundary,classification,contrast	reference_resolution	reference_resolution	상품설명앞모델상황: 판매자료는 기본모델 뒤에 고급모델을 비교한다. 앞모델의 가격이 낮다는 문장은 기본모델을 지칭한다.
+두주소참조상황|청구주소|배송주소|주문자|둘째주소	other,boundary,classification,state	reference_resolution	reference_resolution	두주소참조상황: 주문자는 청구주소와 배송주소를 순서대로 입력했다. 택배가 갈 둘째주소는 배송주소다.
+재고상태지시복원상황|판매가능|예약보류|재고화면|이상태	other,boundary,state,contrast	reference_resolution	reference_resolution	재고상태지시복원상황: 재고화면에서 한 상품이 판매가능에서 예약보류로 바뀌었다. 직원이 현재 표시를 가리킨 이상태는 예약보류다.
+상담기록주체복원상황|고객|상담원|문의메모|그녀	other,boundary,role,state	reference_resolution	reference_resolution	상담기록주체복원상황: 고객은 크기를 물었고 상담원은 문의메모에 답을 적었다. “그녀가 재고를 확인함”에서 그녀는 상담원이다.
+택배상자앞의것상황|첫상자|둘째상자|운송장|앞의것	other,boundary,classification,state	reference_resolution	reference_resolution	택배상자앞의것상황: 첫상자에는 의류, 둘째상자에는 신발이 담겼다. 운송장을 먼저 붙일 앞의것은 첫상자다.
+수리전후상태상황|접수상태|수리완료상태|서비스화면|나중상태	other,boundary,state,process	reference_resolution	reference_resolution	수리전후상태상황: 서비스화면에는 접수상태가 지나고 수리완료상태가 표시됐다. 고객에게 알린 나중상태는 수리완료상태다.
+매장문위치참조상황|입구문|출구문|보안요원|저문	other,boundary,state,contrast	reference_resolution	reference_resolution	매장문위치참조상황: 입구문은 왼쪽, 출구문은 오른쪽에 있다. 보안요원이 오른쪽을 가리킨 저문은 출구문이다.
+상품코드둘째항목상황|가코드|나코드|주문목록|둘째항목	other,boundary,classification,state	reference_resolution	reference_resolution	상품코드둘째항목상황: 주문목록에는 가코드와 나코드가 차례로 있다. 둘째항목을 취소하라는 지시는 나코드 상품에 적용된다.
+포장재이도구상황|가위|테이프커터|포장원|이도구	other,boundary,function,contrast	reference_resolution	reference_resolution	포장재이도구상황: 가위는 끈 옆에, 테이프커터는 상자 위에 있다. 포장원이 상자 위 물건을 들며 말한 이도구는 테이프커터다.
+고객두명참조상황|예약고객|현장고객|남은상품|첫사람	other,boundary,role,classification	reference_resolution	reference_resolution	고객두명참조상황: 남은상품을 예약고객에게 먼저 확인하고 현장고객에게 다음 선택권을 줬다. 첫사람은 예약고객이다.
+판매기록그날복원상황|행사첫날|행사마지막날|판매량|그날	other,boundary,process,attribute	reference_resolution	reference_resolution	판매기록그날복원상황: 판매량은 행사첫날보다 행사마지막날에 더 높았다. “그날 재고가 소진됨”의 그날은 마지막 날을 뜻한다.
