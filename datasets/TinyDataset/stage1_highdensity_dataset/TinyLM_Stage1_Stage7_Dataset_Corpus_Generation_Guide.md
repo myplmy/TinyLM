@@ -126,7 +126,7 @@ stage<S>_(N)<slug>_high_density_val_vNN.json
 
 강제 규칙:
 
-- version은 `v01`, `v02`처럼 두 자리 0-padding을 쓴다.
+- version은 최소 두 자리다. `v01`~`v99`는 두 자리 0-padding을 쓰고, 100 이상은 `v100`, `v101`처럼 자연스럽게 자릿수를 확장한다.
 - 한 파일은 설계서에 다른 값이 명시되지 않는 한 정확히 150 records다.
 - 150개를 넘기지 않고 다음 version으로 이동한다.
 - 각 version은 예약표의 한 concept family만 담당한다.

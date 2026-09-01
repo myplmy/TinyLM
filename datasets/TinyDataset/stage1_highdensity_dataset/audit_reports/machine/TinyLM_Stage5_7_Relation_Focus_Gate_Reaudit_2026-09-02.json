@@ -1,0 +1,113 @@
+{
+  "audit_name": "TinyLM Stage5~7 relation_focus whitelist removal re-audit",
+  "date_kst": "2026-09-02",
+  "verdict": "PASS",
+  "scope": {
+    "stages": [5, 6, 7],
+    "pilot_files": 12,
+    "pilot_records": 1800,
+    "canonical_sources": 12
+  },
+  "changed_tools": [
+    {
+      "file": "stage5_highdensity_dataset/tools/build_pilot.py",
+      "sha256": "d1bbc664598429b23d16098984ada4c72db7be07e66172ec4aca3d101e1d46d0"
+    },
+    {
+      "file": "stage5_highdensity_dataset/tools/audit_pilot.py",
+      "sha256": "8c6738df0c3f205ed9332a997428628d38fc50293b46a8dc0f6a12bef4828985"
+    },
+    {
+      "file": "stage6_highdensity_dataset/tools/build_pilot.py",
+      "sha256": "ebb5db2283874d0c4565020327790a0dbb12f6433dcb3f17bfb7ffe5c65a0dd3"
+    },
+    {
+      "file": "stage7_highdensity_dataset/tools/build_pilot.py",
+      "sha256": "0779e923776f828ed5463e115d302c9aeefab83bd0f44c72aadf2a6e31fe4210"
+    }
+  ],
+  "builder_check_only": {
+    "stage5": "PASS",
+    "stage6": "PASS",
+    "stage7": "PASS"
+  },
+  "tool_static_audit": {
+    "python_files_checked": 6,
+    "syntax_errors": [],
+    "runtime_relation_focus_whitelist_references": []
+  },
+  "relation_policy": {
+    "controlled_vocabulary": [
+      "is_a",
+      "subclass_of",
+      "part_of",
+      "classification",
+      "boundary",
+      "contrast",
+      "comparison",
+      "function",
+      "role",
+      "process",
+      "state",
+      "attribute",
+      "other"
+    ],
+    "record_cardinality": "2~5",
+    "record_internal_duplicates_allowed": false,
+    "relation_focus_role": "advisory planning metadata only",
+    "outside_focus_in_unchanged_pilot_occurrences": 0,
+    "semantic_alignment_basis": "unchanged corpus/source hashes preserve the prior independent semantic PASS; future records still require author/reviewer text-entailment review"
+  },
+  "stages": {
+    "5": {
+      "files": 4,
+      "records": 600,
+      "train_records": 450,
+      "val_records": 150,
+      "relation_assignments": 1810,
+      "outside_relation_focus_occurrences": 0
+    },
+    "6": {
+      "files": 4,
+      "records": 600,
+      "train_records": 450,
+      "val_records": 150,
+      "relation_assignments": 1680,
+      "outside_relation_focus_occurrences": 0
+    },
+    "7": {
+      "files": 4,
+      "records": 600,
+      "train_records": 450,
+      "val_records": 150,
+      "relation_assignments": 1477,
+      "outside_relation_focus_occurrences": 0
+    }
+  },
+  "relation_distribution": {
+    "is_a": 0,
+    "subclass_of": 0,
+    "part_of": 0,
+    "classification": 678,
+    "boundary": 1233,
+    "contrast": 75,
+    "comparison": 312,
+    "function": 352,
+    "role": 377,
+    "process": 343,
+    "state": 853,
+    "attribute": 423,
+    "other": 321
+  },
+  "integrity": {
+    "integrated_baseline": "stage1_highdensity_dataset/audit_reports/machine/TinyLM_Stage2_10_Pilot_Integrated_Audit_2026-09-02.json",
+    "json_hash_matches": 12,
+    "json_hash_expected": 12,
+    "source_hash_matches": 12,
+    "source_hash_expected": 12,
+    "prior_semantic_audit": "stage1_highdensity_dataset/audit_reports/TinyLM_Stage5_7_Pilot_Independent_Semantic_Audit_2026-09-02.md",
+    "prior_semantic_audit_sha256": "e5ed88b6d921b73df74ddb74031a3cbe20519b6ccfcd4f98dbdccb5df2154ee6",
+    "corpus_or_source_files_modified": 0
+  },
+  "errors": []
+}
