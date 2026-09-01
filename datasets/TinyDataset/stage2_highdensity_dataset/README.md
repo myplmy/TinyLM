@@ -1,12 +1,13 @@
 # Stage 2 고밀도 데이터셋 생성 준비
 
-- 상태: `PREPARED_NO_CORPUS_GENERATED`
+- 상태: `ACTUAL_3M_FILE_COUNT_APPROVED_DESIGN_ONLY_CORPUS_AUTHORIZATION_PENDING`
 - 교육 역할: 복합 관계·의존·인과·조건 구조
-- 설계 목표: 약 3M token(실제 tokenizer pilot 전 잠정)
-- primary: 250 files × 150 = 37,500 records
-- split: train 225 files / validation 25 files = 정확히 90:10
-- validation 일반화 slice 계획: 파일당 18/150 = 12%
-- contingency: 25 family, ID·version·filename 미부여·비활성
+- 실측 승인 총량: 480 files × 150 = 72,000 records, projected 2,997,000 tokens
+- split: train 432 files / validation 48 files = 정확히 90:10
+- pilot 완료: 4 files / 600 records; 추가 생성 대기 476 files
+- 현행 primary 대비 증보 230, contingency 25 이후 최소 신규 family 205
+- validation 일반화 slice: 파일당 18/150 = 12%
+- 현행 contingency: 25 family, area·split·ID·version·filename 미부여
 - 중앙 예약 원장 SHA-256: `823881a7d7074d2c5e3c54a9c732262004ddabf7b4fade75825a963a58346c99`
 
 ## 정본
@@ -16,7 +17,7 @@
 - [Stage 2~10 concept-family 중앙 원장](../stage1_highdensity_dataset/TinyLM_Stage2_Stage10_Concept_Family_Reservation.json)
 - 이 폴더의 `PREPARATION_MANIFEST.json`은 중앙 원장에서 해당 Stage만 추출한 실행 준비 snapshot이다.
 
-## 세부 교육영역
+## 현행 primary 교육영역 snapshot
 
 | 교육# | 파일 slot | 영역 | 비율 | train/val files | packet | ID H/V |
 |---:|---:|---|---:|---:|---|---|
@@ -27,15 +28,22 @@
 | 5 | 15 | 가능성·양상 / `modality_possibility` | 16% | 36/4 | `modality_possibility_packet` | `S2-MPH` / `S2-MPV` |
 | 6 | 16 | 다중 관계 조합 / `relational_composition` | 12% | 27/3 | `relational_composition_packet` | `S2-RCH` / `S2-RCV` |
 
-## 생성 착수 gate
+## 실측 3M 승인 배분과 증보
 
-1. 별도 사용자 요청 뒤 A01·A03·A06 train v01과 A01 val v01, 총 600 records를 직접 작성한다.
-2. 실제 학습 tokenizer로 평균 token/record를 측정한다.
-3. 3M 목표·150-record 단위·90:10을 함께 만족하도록 파일 수 보정안을 승인받는다.
-4. train을 실측한 뒤 validation의 12% unseen relation-set을 확정한다.
-5. Guide의 JSON·ID·13개 relation·중복·5어절·유사도·조사·leakage·SHA 감사를 통과한다.
+| 영역 / slug | 기존 T/V | 승인 T/V | 증보 T/V | 계획 version T/V | pilot T/V | 생성 대기 T/V |
+|---|---:|---:|---:|---|---:|---:|
+| A01 `causal_structure` | 45/5 | 87/9 | +42/+4 | v46~v87 / v06~v09 | 1/1 | 86/8 |
+| A02 `conditional_dependency` | 45/5 | 86/9 | +41/+4 | v46~v86 / v06~v09 | 0/0 | 86/9 |
+| A03 `temporal_order` | 36/4 | 69/8 | +33/+4 | v37~v69 / v05~v08 | 1/0 | 68/8 |
+| A04 `state_transition` | 36/4 | 69/8 | +33/+4 | v37~v69 / v05~v08 | 0/0 | 69/8 |
+| A05 `modality_possibility` | 36/4 | 69/8 | +33/+4 | v37~v69 / v05~v08 | 0/0 | 69/8 |
+| A06 `relational_composition` | 27/3 | 52/6 | +25/+3 | v28~v52 / v04~v06 | 1/0 | 51/6 |
 
-현재 `train/`과 `val/`에는 corpus JSON이 없어야 한다. concept-family 예약은 corpus text template가 아니며, text는 record별로 직접 작성해야 한다.
+## relation·생성 경계
+
+Stage1의 13개 `relations` 통제 어휘를 유지하되, 고차 능력은 6개 `<slug>_packet` `type`으로 평가한다. `relations`는 text에 직접 근거가 있는 2~5개 기초 관계이며 relation focus는 whitelist·필수 교집합·분포 목표가 아니다. 새 relation 이름, 강제 균등화, 고차 능력을 대신하는 `other`를 금지한다.
+
+총량·배분만 승인됐고 추가 corpus 권한은 아직 없다. 다음 승인 뒤 contingency 배치와 신규 family 205개 이상을 중앙 원장·manifest에 먼저 등록·감사하고, pilot 다음 미생성 version 또는 v01부터 직접 작성한다. 현행 pilot 4 files는 보존한다.
 
 ## Stage2 legacy 보호
 

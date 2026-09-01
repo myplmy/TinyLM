@@ -1,0 +1,3492 @@
+{
+  "document": "TinyLM Stage2-10 pilot-based 3M tokenizer allocation options",
+  "date_kst": "2026-09-02",
+  "status": "PROPOSAL_ONLY_USER_APPROVAL_REQUIRED",
+  "reference_tokenizer": "tok-ko-en-32768.json",
+  "reference_tokenizer_sha256": "3a69001ecc28a5bdf1e951a1036b234c9bdcb847b310252c6d72cfc6c52c48e3",
+  "token_accounting": "text ByteLevel-BPE tokens plus one EOS per record",
+  "documented_formula": "raw_files = round(3,000,000 / measured_mean_tokens_per_record / 150); exact_90_10_files = 10 * round(raw_files / 10)",
+  "target_tokens_per_stage": 3000000,
+  "stage1_highdensity_reference_tokens_with_eos": 1479956,
+  "records_per_file": 150,
+  "split_rule": "nearest-10 options keep exact file/record train:val 90:10; area weights use largest remainder",
+  "reservation_safety": "does not modify or activate the central reservation ledger",
+  "integrated_audit_sha256": "6858cae225b58a96d05ac89fdfde8fd64a8ff57453b86d66cdadf3f5c4065fe7",
+  "central_ledger_sha256": "823881a7d7074d2c5e3c54a9c732262004ddabf7b4fade75825a963a58346c99",
+  "stages": {
+    "2": {
+      "title": "복합 관계·의존·인과·조건 구조",
+      "pilot_mean_tokens_with_eos_per_record": 41.625,
+      "unrounded_three_million_file_estimate": 480.48048,
+      "raw_files_after_documented_round": 480,
+      "exact_90_10_files_after_documented_round": 480,
+      "existing_250_file_projection_tokens": 1560938,
+      "required_mean_tokens_per_record_if_250_files": 80.0,
+      "required_length_multiplier_if_250_files": 1.921922,
+      "stage1_actual_token_equivalent_raw_files": 237.02999,
+      "stage1_actual_token_equivalent_nearest_10_option": {
+        "total_files": 240,
+        "total_records": 36000,
+        "train_files": 216,
+        "val_files": 24,
+        "train_records": 32400,
+        "val_records": 3600,
+        "validation_unseen_records": 432,
+        "projected_tokens": 1498500,
+        "projected_token_delta_from_3m": -1501500,
+        "additional_families_beyond_250_primary": 0,
+        "additional_families_beyond_250_plus_25_contingency": 0,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 11,
+            "slug": "causal_structure",
+            "target_weight_percent": 20,
+            "train_files": 43,
+            "val_files": 5,
+            "total_files": 48,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 12,
+            "slug": "conditional_dependency",
+            "target_weight_percent": 20,
+            "train_files": 43,
+            "val_files": 4,
+            "total_files": 47,
+            "actual_weight_percent": 19.583333
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 13,
+            "slug": "temporal_order",
+            "target_weight_percent": 16,
+            "train_files": 35,
+            "val_files": 4,
+            "total_files": 39,
+            "actual_weight_percent": 16.25
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 14,
+            "slug": "state_transition",
+            "target_weight_percent": 16,
+            "train_files": 35,
+            "val_files": 4,
+            "total_files": 39,
+            "actual_weight_percent": 16.25
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 15,
+            "slug": "modality_possibility",
+            "target_weight_percent": 16,
+            "train_files": 34,
+            "val_files": 4,
+            "total_files": 38,
+            "actual_weight_percent": 15.833333
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 16,
+            "slug": "relational_composition",
+            "target_weight_percent": 12,
+            "train_files": 26,
+            "val_files": 3,
+            "total_files": 29,
+            "actual_weight_percent": 12.083333
+          }
+        ]
+      },
+      "nearest_10_file_90_10_option": {
+        "total_files": 480,
+        "total_records": 72000,
+        "train_files": 432,
+        "val_files": 48,
+        "train_records": 64800,
+        "val_records": 7200,
+        "validation_unseen_records": 864,
+        "projected_tokens": 2997000,
+        "projected_token_delta_from_3m": -3000,
+        "additional_families_beyond_250_primary": 230,
+        "additional_families_beyond_250_plus_25_contingency": 205,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 11,
+            "slug": "causal_structure",
+            "target_weight_percent": 20,
+            "train_files": 87,
+            "val_files": 9,
+            "total_files": 96,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 12,
+            "slug": "conditional_dependency",
+            "target_weight_percent": 20,
+            "train_files": 86,
+            "val_files": 9,
+            "total_files": 95,
+            "actual_weight_percent": 19.791667
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 13,
+            "slug": "temporal_order",
+            "target_weight_percent": 16,
+            "train_files": 69,
+            "val_files": 8,
+            "total_files": 77,
+            "actual_weight_percent": 16.041667
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 14,
+            "slug": "state_transition",
+            "target_weight_percent": 16,
+            "train_files": 69,
+            "val_files": 8,
+            "total_files": 77,
+            "actual_weight_percent": 16.041667
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 15,
+            "slug": "modality_possibility",
+            "target_weight_percent": 16,
+            "train_files": 69,
+            "val_files": 8,
+            "total_files": 77,
+            "actual_weight_percent": 16.041667
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 16,
+            "slug": "relational_composition",
+            "target_weight_percent": 12,
+            "train_files": 52,
+            "val_files": 6,
+            "total_files": 58,
+            "actual_weight_percent": 12.083333
+          }
+        ]
+      },
+      "lower_10_file_option": {
+        "total_files": 480,
+        "total_records": 72000,
+        "train_files": 432,
+        "val_files": 48,
+        "train_records": 64800,
+        "val_records": 7200,
+        "validation_unseen_records": 864,
+        "projected_tokens": 2997000,
+        "projected_token_delta_from_3m": -3000,
+        "additional_families_beyond_250_primary": 230,
+        "additional_families_beyond_250_plus_25_contingency": 205,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 11,
+            "slug": "causal_structure",
+            "target_weight_percent": 20,
+            "train_files": 87,
+            "val_files": 9,
+            "total_files": 96,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 12,
+            "slug": "conditional_dependency",
+            "target_weight_percent": 20,
+            "train_files": 86,
+            "val_files": 9,
+            "total_files": 95,
+            "actual_weight_percent": 19.791667
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 13,
+            "slug": "temporal_order",
+            "target_weight_percent": 16,
+            "train_files": 69,
+            "val_files": 8,
+            "total_files": 77,
+            "actual_weight_percent": 16.041667
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 14,
+            "slug": "state_transition",
+            "target_weight_percent": 16,
+            "train_files": 69,
+            "val_files": 8,
+            "total_files": 77,
+            "actual_weight_percent": 16.041667
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 15,
+            "slug": "modality_possibility",
+            "target_weight_percent": 16,
+            "train_files": 69,
+            "val_files": 8,
+            "total_files": 77,
+            "actual_weight_percent": 16.041667
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 16,
+            "slug": "relational_composition",
+            "target_weight_percent": 12,
+            "train_files": 52,
+            "val_files": 6,
+            "total_files": 58,
+            "actual_weight_percent": 12.083333
+          }
+        ]
+      },
+      "upper_10_file_option": {
+        "total_files": 480,
+        "total_records": 72000,
+        "train_files": 432,
+        "val_files": 48,
+        "train_records": 64800,
+        "val_records": 7200,
+        "validation_unseen_records": 864,
+        "projected_tokens": 2997000,
+        "projected_token_delta_from_3m": -3000,
+        "additional_families_beyond_250_primary": 230,
+        "additional_families_beyond_250_plus_25_contingency": 205,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 11,
+            "slug": "causal_structure",
+            "target_weight_percent": 20,
+            "train_files": 87,
+            "val_files": 9,
+            "total_files": 96,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 12,
+            "slug": "conditional_dependency",
+            "target_weight_percent": 20,
+            "train_files": 86,
+            "val_files": 9,
+            "total_files": 95,
+            "actual_weight_percent": 19.791667
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 13,
+            "slug": "temporal_order",
+            "target_weight_percent": 16,
+            "train_files": 69,
+            "val_files": 8,
+            "total_files": 77,
+            "actual_weight_percent": 16.041667
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 14,
+            "slug": "state_transition",
+            "target_weight_percent": 16,
+            "train_files": 69,
+            "val_files": 8,
+            "total_files": 77,
+            "actual_weight_percent": 16.041667
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 15,
+            "slug": "modality_possibility",
+            "target_weight_percent": 16,
+            "train_files": 69,
+            "val_files": 8,
+            "total_files": 77,
+            "actual_weight_percent": 16.041667
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 16,
+            "slug": "relational_composition",
+            "target_weight_percent": 12,
+            "train_files": 52,
+            "val_files": 6,
+            "total_files": 58,
+            "actual_weight_percent": 12.083333
+          }
+        ]
+      },
+      "exact_weight_and_per_area_90_10_multiple_250_option": {
+        "total_files": 500,
+        "total_records": 75000,
+        "train_files": 450,
+        "val_files": 50,
+        "train_records": 67500,
+        "val_records": 7500,
+        "validation_unseen_records": 900,
+        "projected_tokens": 3121875,
+        "projected_token_delta_from_3m": 121875,
+        "additional_families_beyond_250_primary": 250,
+        "additional_families_beyond_250_plus_25_contingency": 225,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 11,
+            "slug": "causal_structure",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 12,
+            "slug": "conditional_dependency",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 13,
+            "slug": "temporal_order",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 14,
+            "slug": "state_transition",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 15,
+            "slug": "modality_possibility",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 16,
+            "slug": "relational_composition",
+            "target_weight_percent": 12,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      }
+    },
+    "3": {
+      "title": "절차·행동·계획·문제 해결",
+      "pilot_mean_tokens_with_eos_per_record": 42.883333,
+      "unrounded_three_million_file_estimate": 466.381659,
+      "raw_files_after_documented_round": 466,
+      "exact_90_10_files_after_documented_round": 470,
+      "existing_250_file_projection_tokens": 1608125,
+      "required_mean_tokens_per_record_if_250_files": 80.0,
+      "required_length_multiplier_if_250_files": 1.865527,
+      "stage1_actual_token_equivalent_raw_files": 230.074778,
+      "stage1_actual_token_equivalent_nearest_10_option": {
+        "total_files": 230,
+        "total_records": 34500,
+        "train_files": 207,
+        "val_files": 23,
+        "train_records": 31050,
+        "val_records": 3450,
+        "validation_unseen_records": 414,
+        "projected_tokens": 1479475,
+        "projected_token_delta_from_3m": -1520525,
+        "additional_families_beyond_250_primary": 0,
+        "additional_families_beyond_250_plus_25_contingency": 0,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "goal_action",
+            "target_weight_percent": 20,
+            "train_files": 42,
+            "val_files": 4,
+            "total_files": 46,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "procedure_sequence",
+            "target_weight_percent": 20,
+            "train_files": 41,
+            "val_files": 4,
+            "total_files": 45,
+            "actual_weight_percent": 19.565217
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "planning_decomposition",
+            "target_weight_percent": 16,
+            "train_files": 33,
+            "val_files": 4,
+            "total_files": 37,
+            "actual_weight_percent": 16.086957
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "constraint_resource",
+            "target_weight_percent": 16,
+            "train_files": 33,
+            "val_files": 4,
+            "total_files": 37,
+            "actual_weight_percent": 16.086957
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "decision_priority",
+            "target_weight_percent": 16,
+            "train_files": 33,
+            "val_files": 4,
+            "total_files": 37,
+            "actual_weight_percent": 16.086957
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "execution_recovery",
+            "target_weight_percent": 12,
+            "train_files": 25,
+            "val_files": 3,
+            "total_files": 28,
+            "actual_weight_percent": 12.173913
+          }
+        ]
+      },
+      "nearest_10_file_90_10_option": {
+        "total_files": 470,
+        "total_records": 70500,
+        "train_files": 423,
+        "val_files": 47,
+        "train_records": 63450,
+        "val_records": 7050,
+        "validation_unseen_records": 846,
+        "projected_tokens": 3023275,
+        "projected_token_delta_from_3m": 23275,
+        "additional_families_beyond_250_primary": 220,
+        "additional_families_beyond_250_plus_25_contingency": 195,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "goal_action",
+            "target_weight_percent": 20,
+            "train_files": 84,
+            "val_files": 9,
+            "total_files": 93,
+            "actual_weight_percent": 19.787234
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "procedure_sequence",
+            "target_weight_percent": 20,
+            "train_files": 84,
+            "val_files": 9,
+            "total_files": 93,
+            "actual_weight_percent": 19.787234
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "planning_decomposition",
+            "target_weight_percent": 16,
+            "train_files": 68,
+            "val_files": 8,
+            "total_files": 76,
+            "actual_weight_percent": 16.170213
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "constraint_resource",
+            "target_weight_percent": 16,
+            "train_files": 68,
+            "val_files": 8,
+            "total_files": 76,
+            "actual_weight_percent": 16.170213
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "decision_priority",
+            "target_weight_percent": 16,
+            "train_files": 68,
+            "val_files": 7,
+            "total_files": 75,
+            "actual_weight_percent": 15.957447
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "execution_recovery",
+            "target_weight_percent": 12,
+            "train_files": 51,
+            "val_files": 6,
+            "total_files": 57,
+            "actual_weight_percent": 12.12766
+          }
+        ]
+      },
+      "lower_10_file_option": {
+        "total_files": 460,
+        "total_records": 69000,
+        "train_files": 414,
+        "val_files": 46,
+        "train_records": 62100,
+        "val_records": 6900,
+        "validation_unseen_records": 828,
+        "projected_tokens": 2958950,
+        "projected_token_delta_from_3m": -41050,
+        "additional_families_beyond_250_primary": 210,
+        "additional_families_beyond_250_plus_25_contingency": 185,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "goal_action",
+            "target_weight_percent": 20,
+            "train_files": 83,
+            "val_files": 9,
+            "total_files": 92,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "procedure_sequence",
+            "target_weight_percent": 20,
+            "train_files": 83,
+            "val_files": 9,
+            "total_files": 92,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "planning_decomposition",
+            "target_weight_percent": 16,
+            "train_files": 66,
+            "val_files": 8,
+            "total_files": 74,
+            "actual_weight_percent": 16.086957
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "constraint_resource",
+            "target_weight_percent": 16,
+            "train_files": 66,
+            "val_files": 7,
+            "total_files": 73,
+            "actual_weight_percent": 15.869565
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "decision_priority",
+            "target_weight_percent": 16,
+            "train_files": 66,
+            "val_files": 7,
+            "total_files": 73,
+            "actual_weight_percent": 15.869565
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "execution_recovery",
+            "target_weight_percent": 12,
+            "train_files": 50,
+            "val_files": 6,
+            "total_files": 56,
+            "actual_weight_percent": 12.173913
+          }
+        ]
+      },
+      "upper_10_file_option": {
+        "total_files": 470,
+        "total_records": 70500,
+        "train_files": 423,
+        "val_files": 47,
+        "train_records": 63450,
+        "val_records": 7050,
+        "validation_unseen_records": 846,
+        "projected_tokens": 3023275,
+        "projected_token_delta_from_3m": 23275,
+        "additional_families_beyond_250_primary": 220,
+        "additional_families_beyond_250_plus_25_contingency": 195,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "goal_action",
+            "target_weight_percent": 20,
+            "train_files": 84,
+            "val_files": 9,
+            "total_files": 93,
+            "actual_weight_percent": 19.787234
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "procedure_sequence",
+            "target_weight_percent": 20,
+            "train_files": 84,
+            "val_files": 9,
+            "total_files": 93,
+            "actual_weight_percent": 19.787234
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "planning_decomposition",
+            "target_weight_percent": 16,
+            "train_files": 68,
+            "val_files": 8,
+            "total_files": 76,
+            "actual_weight_percent": 16.170213
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "constraint_resource",
+            "target_weight_percent": 16,
+            "train_files": 68,
+            "val_files": 8,
+            "total_files": 76,
+            "actual_weight_percent": 16.170213
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "decision_priority",
+            "target_weight_percent": 16,
+            "train_files": 68,
+            "val_files": 7,
+            "total_files": 75,
+            "actual_weight_percent": 15.957447
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "execution_recovery",
+            "target_weight_percent": 12,
+            "train_files": 51,
+            "val_files": 6,
+            "total_files": 57,
+            "actual_weight_percent": 12.12766
+          }
+        ]
+      },
+      "exact_weight_and_per_area_90_10_multiple_250_option": {
+        "total_files": 500,
+        "total_records": 75000,
+        "train_files": 450,
+        "val_files": 50,
+        "train_records": 67500,
+        "val_records": 7500,
+        "validation_unseen_records": 900,
+        "projected_tokens": 3216250,
+        "projected_token_delta_from_3m": 216250,
+        "additional_families_beyond_250_primary": 250,
+        "additional_families_beyond_250_plus_25_contingency": 225,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "goal_action",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "procedure_sequence",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "planning_decomposition",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "constraint_resource",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "decision_priority",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "execution_recovery",
+            "target_weight_percent": 12,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      }
+    },
+    "4": {
+      "title": "문맥·담화·지시·대화",
+      "pilot_mean_tokens_with_eos_per_record": 45.316667,
+      "unrounded_three_million_file_estimate": 441.338724,
+      "raw_files_after_documented_round": 441,
+      "exact_90_10_files_after_documented_round": 440,
+      "existing_250_file_projection_tokens": 1699375,
+      "required_mean_tokens_per_record_if_250_files": 80.0,
+      "required_length_multiplier_if_250_files": 1.765355,
+      "stage1_actual_token_equivalent_raw_files": 217.720631,
+      "stage1_actual_token_equivalent_nearest_10_option": {
+        "total_files": 220,
+        "total_records": 33000,
+        "train_files": 198,
+        "val_files": 22,
+        "train_records": 29700,
+        "val_records": 3300,
+        "validation_unseen_records": 396,
+        "projected_tokens": 1495450,
+        "projected_token_delta_from_3m": -1504550,
+        "additional_families_beyond_250_primary": 0,
+        "additional_families_beyond_250_plus_25_contingency": 0,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "discourse_reference",
+            "target_weight_percent": 20,
+            "train_files": 39,
+            "val_files": 4,
+            "total_files": 43,
+            "actual_weight_percent": 19.545455
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "ellipsis_coreference",
+            "target_weight_percent": 20,
+            "train_files": 39,
+            "val_files": 4,
+            "total_files": 43,
+            "actual_weight_percent": 19.545455
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "dialogue_state",
+            "target_weight_percent": 16,
+            "train_files": 32,
+            "val_files": 4,
+            "total_files": 36,
+            "actual_weight_percent": 16.363636
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "question_answer",
+            "target_weight_percent": 16,
+            "train_files": 32,
+            "val_files": 4,
+            "total_files": 36,
+            "actual_weight_percent": 16.363636
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "speech_act_pragmatics",
+            "target_weight_percent": 16,
+            "train_files": 32,
+            "val_files": 3,
+            "total_files": 35,
+            "actual_weight_percent": 15.909091
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "implicature_context",
+            "target_weight_percent": 12,
+            "train_files": 24,
+            "val_files": 3,
+            "total_files": 27,
+            "actual_weight_percent": 12.272727
+          }
+        ]
+      },
+      "nearest_10_file_90_10_option": {
+        "total_files": 440,
+        "total_records": 66000,
+        "train_files": 396,
+        "val_files": 44,
+        "train_records": 59400,
+        "val_records": 6600,
+        "validation_unseen_records": 792,
+        "projected_tokens": 2990900,
+        "projected_token_delta_from_3m": -9100,
+        "additional_families_beyond_250_primary": 190,
+        "additional_families_beyond_250_plus_25_contingency": 165,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "discourse_reference",
+            "target_weight_percent": 20,
+            "train_files": 79,
+            "val_files": 9,
+            "total_files": 88,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "ellipsis_coreference",
+            "target_weight_percent": 20,
+            "train_files": 79,
+            "val_files": 9,
+            "total_files": 88,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "dialogue_state",
+            "target_weight_percent": 16,
+            "train_files": 64,
+            "val_files": 7,
+            "total_files": 71,
+            "actual_weight_percent": 16.136364
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "question_answer",
+            "target_weight_percent": 16,
+            "train_files": 63,
+            "val_files": 7,
+            "total_files": 70,
+            "actual_weight_percent": 15.909091
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "speech_act_pragmatics",
+            "target_weight_percent": 16,
+            "train_files": 63,
+            "val_files": 7,
+            "total_files": 70,
+            "actual_weight_percent": 15.909091
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "implicature_context",
+            "target_weight_percent": 12,
+            "train_files": 48,
+            "val_files": 5,
+            "total_files": 53,
+            "actual_weight_percent": 12.045455
+          }
+        ]
+      },
+      "lower_10_file_option": {
+        "total_files": 440,
+        "total_records": 66000,
+        "train_files": 396,
+        "val_files": 44,
+        "train_records": 59400,
+        "val_records": 6600,
+        "validation_unseen_records": 792,
+        "projected_tokens": 2990900,
+        "projected_token_delta_from_3m": -9100,
+        "additional_families_beyond_250_primary": 190,
+        "additional_families_beyond_250_plus_25_contingency": 165,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "discourse_reference",
+            "target_weight_percent": 20,
+            "train_files": 79,
+            "val_files": 9,
+            "total_files": 88,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "ellipsis_coreference",
+            "target_weight_percent": 20,
+            "train_files": 79,
+            "val_files": 9,
+            "total_files": 88,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "dialogue_state",
+            "target_weight_percent": 16,
+            "train_files": 64,
+            "val_files": 7,
+            "total_files": 71,
+            "actual_weight_percent": 16.136364
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "question_answer",
+            "target_weight_percent": 16,
+            "train_files": 63,
+            "val_files": 7,
+            "total_files": 70,
+            "actual_weight_percent": 15.909091
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "speech_act_pragmatics",
+            "target_weight_percent": 16,
+            "train_files": 63,
+            "val_files": 7,
+            "total_files": 70,
+            "actual_weight_percent": 15.909091
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "implicature_context",
+            "target_weight_percent": 12,
+            "train_files": 48,
+            "val_files": 5,
+            "total_files": 53,
+            "actual_weight_percent": 12.045455
+          }
+        ]
+      },
+      "upper_10_file_option": {
+        "total_files": 450,
+        "total_records": 67500,
+        "train_files": 405,
+        "val_files": 45,
+        "train_records": 60750,
+        "val_records": 6750,
+        "validation_unseen_records": 810,
+        "projected_tokens": 3058875,
+        "projected_token_delta_from_3m": 58875,
+        "additional_families_beyond_250_primary": 200,
+        "additional_families_beyond_250_plus_25_contingency": 175,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "discourse_reference",
+            "target_weight_percent": 20,
+            "train_files": 81,
+            "val_files": 9,
+            "total_files": 90,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "ellipsis_coreference",
+            "target_weight_percent": 20,
+            "train_files": 81,
+            "val_files": 9,
+            "total_files": 90,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "dialogue_state",
+            "target_weight_percent": 16,
+            "train_files": 65,
+            "val_files": 7,
+            "total_files": 72,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "question_answer",
+            "target_weight_percent": 16,
+            "train_files": 65,
+            "val_files": 7,
+            "total_files": 72,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "speech_act_pragmatics",
+            "target_weight_percent": 16,
+            "train_files": 65,
+            "val_files": 7,
+            "total_files": 72,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "implicature_context",
+            "target_weight_percent": 12,
+            "train_files": 48,
+            "val_files": 6,
+            "total_files": 54,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      },
+      "exact_weight_and_per_area_90_10_multiple_250_option": {
+        "total_files": 500,
+        "total_records": 75000,
+        "train_files": 450,
+        "val_files": 50,
+        "train_records": 67500,
+        "val_records": 7500,
+        "validation_unseen_records": 900,
+        "projected_tokens": 3398750,
+        "projected_token_delta_from_3m": 398750,
+        "additional_families_beyond_250_primary": 250,
+        "additional_families_beyond_250_plus_25_contingency": 225,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "discourse_reference",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "ellipsis_coreference",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "dialogue_state",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "question_answer",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "speech_act_pragmatics",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "implicature_context",
+            "target_weight_percent": 12,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      }
+    },
+    "5": {
+      "title": "일반화·추론·전이",
+      "pilot_mean_tokens_with_eos_per_record": 33.183333,
+      "unrounded_three_million_file_estimate": 602.712211,
+      "raw_files_after_documented_round": 603,
+      "exact_90_10_files_after_documented_round": 600,
+      "existing_250_file_projection_tokens": 1244375,
+      "required_mean_tokens_per_record_if_250_files": 80.0,
+      "required_length_multiplier_if_250_files": 2.410849,
+      "stage1_actual_token_equivalent_raw_files": 297.329184,
+      "stage1_actual_token_equivalent_nearest_10_option": {
+        "total_files": 300,
+        "total_records": 45000,
+        "train_files": 270,
+        "val_files": 30,
+        "train_records": 40500,
+        "val_records": 4500,
+        "validation_unseen_records": 540,
+        "projected_tokens": 1493250,
+        "projected_token_delta_from_3m": -1506750,
+        "additional_families_beyond_250_primary": 50,
+        "additional_families_beyond_250_plus_25_contingency": 25,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "induction",
+            "target_weight_percent": 20,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "deduction",
+            "target_weight_percent": 20,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "counterexample_generalization",
+            "target_weight_percent": 16,
+            "train_files": 43,
+            "val_files": 5,
+            "total_files": 48,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "compositional_novelty",
+            "target_weight_percent": 16,
+            "train_files": 43,
+            "val_files": 5,
+            "total_files": 48,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "analogical_transfer",
+            "target_weight_percent": 16,
+            "train_files": 43,
+            "val_files": 5,
+            "total_files": 48,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "structural_transfer",
+            "target_weight_percent": 12,
+            "train_files": 33,
+            "val_files": 3,
+            "total_files": 36,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      },
+      "nearest_10_file_90_10_option": {
+        "total_files": 600,
+        "total_records": 90000,
+        "train_files": 540,
+        "val_files": 60,
+        "train_records": 81000,
+        "val_records": 9000,
+        "validation_unseen_records": 1080,
+        "projected_tokens": 2986500,
+        "projected_token_delta_from_3m": -13500,
+        "additional_families_beyond_250_primary": 350,
+        "additional_families_beyond_250_plus_25_contingency": 325,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "induction",
+            "target_weight_percent": 20,
+            "train_files": 108,
+            "val_files": 12,
+            "total_files": 120,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "deduction",
+            "target_weight_percent": 20,
+            "train_files": 108,
+            "val_files": 12,
+            "total_files": 120,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "counterexample_generalization",
+            "target_weight_percent": 16,
+            "train_files": 87,
+            "val_files": 10,
+            "total_files": 97,
+            "actual_weight_percent": 16.166667
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "compositional_novelty",
+            "target_weight_percent": 16,
+            "train_files": 86,
+            "val_files": 10,
+            "total_files": 96,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "analogical_transfer",
+            "target_weight_percent": 16,
+            "train_files": 86,
+            "val_files": 9,
+            "total_files": 95,
+            "actual_weight_percent": 15.833333
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "structural_transfer",
+            "target_weight_percent": 12,
+            "train_files": 65,
+            "val_files": 7,
+            "total_files": 72,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      },
+      "lower_10_file_option": {
+        "total_files": 600,
+        "total_records": 90000,
+        "train_files": 540,
+        "val_files": 60,
+        "train_records": 81000,
+        "val_records": 9000,
+        "validation_unseen_records": 1080,
+        "projected_tokens": 2986500,
+        "projected_token_delta_from_3m": -13500,
+        "additional_families_beyond_250_primary": 350,
+        "additional_families_beyond_250_plus_25_contingency": 325,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "induction",
+            "target_weight_percent": 20,
+            "train_files": 108,
+            "val_files": 12,
+            "total_files": 120,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "deduction",
+            "target_weight_percent": 20,
+            "train_files": 108,
+            "val_files": 12,
+            "total_files": 120,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "counterexample_generalization",
+            "target_weight_percent": 16,
+            "train_files": 87,
+            "val_files": 10,
+            "total_files": 97,
+            "actual_weight_percent": 16.166667
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "compositional_novelty",
+            "target_weight_percent": 16,
+            "train_files": 86,
+            "val_files": 10,
+            "total_files": 96,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "analogical_transfer",
+            "target_weight_percent": 16,
+            "train_files": 86,
+            "val_files": 9,
+            "total_files": 95,
+            "actual_weight_percent": 15.833333
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "structural_transfer",
+            "target_weight_percent": 12,
+            "train_files": 65,
+            "val_files": 7,
+            "total_files": 72,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      },
+      "upper_10_file_option": {
+        "total_files": 610,
+        "total_records": 91500,
+        "train_files": 549,
+        "val_files": 61,
+        "train_records": 82350,
+        "val_records": 9150,
+        "validation_unseen_records": 1098,
+        "projected_tokens": 3036275,
+        "projected_token_delta_from_3m": 36275,
+        "additional_families_beyond_250_primary": 360,
+        "additional_families_beyond_250_plus_25_contingency": 335,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "induction",
+            "target_weight_percent": 20,
+            "train_files": 110,
+            "val_files": 12,
+            "total_files": 122,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "deduction",
+            "target_weight_percent": 20,
+            "train_files": 109,
+            "val_files": 12,
+            "total_files": 121,
+            "actual_weight_percent": 19.836066
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "counterexample_generalization",
+            "target_weight_percent": 16,
+            "train_files": 88,
+            "val_files": 10,
+            "total_files": 98,
+            "actual_weight_percent": 16.065574
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "compositional_novelty",
+            "target_weight_percent": 16,
+            "train_files": 88,
+            "val_files": 10,
+            "total_files": 98,
+            "actual_weight_percent": 16.065574
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "analogical_transfer",
+            "target_weight_percent": 16,
+            "train_files": 88,
+            "val_files": 10,
+            "total_files": 98,
+            "actual_weight_percent": 16.065574
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "structural_transfer",
+            "target_weight_percent": 12,
+            "train_files": 66,
+            "val_files": 7,
+            "total_files": 73,
+            "actual_weight_percent": 11.967213
+          }
+        ]
+      },
+      "exact_weight_and_per_area_90_10_multiple_250_option": {
+        "total_files": 500,
+        "total_records": 75000,
+        "train_files": 450,
+        "val_files": 50,
+        "train_records": 67500,
+        "val_records": 7500,
+        "validation_unseen_records": 900,
+        "projected_tokens": 2488750,
+        "projected_token_delta_from_3m": -511250,
+        "additional_families_beyond_250_primary": 250,
+        "additional_families_beyond_250_plus_25_contingency": 225,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "induction",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "deduction",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "counterexample_generalization",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "compositional_novelty",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "analogical_transfer",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "structural_transfer",
+            "target_weight_percent": 12,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      }
+    },
+    "6": {
+      "title": "지식 통합·장문맥·복합 문제",
+      "pilot_mean_tokens_with_eos_per_record": 48.551667,
+      "unrounded_three_million_file_estimate": 411.932303,
+      "raw_files_after_documented_round": 412,
+      "exact_90_10_files_after_documented_round": 410,
+      "existing_250_file_projection_tokens": 1820688,
+      "required_mean_tokens_per_record_if_250_files": 80.0,
+      "required_length_multiplier_if_250_files": 1.647729,
+      "stage1_actual_token_equivalent_raw_files": 203.213894,
+      "stage1_actual_token_equivalent_nearest_10_option": {
+        "total_files": 200,
+        "total_records": 30000,
+        "train_files": 180,
+        "val_files": 20,
+        "train_records": 27000,
+        "val_records": 3000,
+        "validation_unseen_records": 360,
+        "projected_tokens": 1456550,
+        "projected_token_delta_from_3m": -1543450,
+        "additional_families_beyond_250_primary": 0,
+        "additional_families_beyond_250_plus_25_contingency": 0,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "long_context",
+            "target_weight_percent": 20,
+            "train_files": 36,
+            "val_files": 4,
+            "total_files": 40,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "multihop_inference",
+            "target_weight_percent": 20,
+            "train_files": 36,
+            "val_files": 4,
+            "total_files": 40,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "constraint_satisfaction",
+            "target_weight_percent": 16,
+            "train_files": 29,
+            "val_files": 3,
+            "total_files": 32,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "multiobjective_tradeoff",
+            "target_weight_percent": 16,
+            "train_files": 29,
+            "val_files": 3,
+            "total_files": 32,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "multisource_integration",
+            "target_weight_percent": 16,
+            "train_files": 29,
+            "val_files": 3,
+            "total_files": 32,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "uncertainty_management",
+            "target_weight_percent": 12,
+            "train_files": 21,
+            "val_files": 3,
+            "total_files": 24,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      },
+      "nearest_10_file_90_10_option": {
+        "total_files": 410,
+        "total_records": 61500,
+        "train_files": 369,
+        "val_files": 41,
+        "train_records": 55350,
+        "val_records": 6150,
+        "validation_unseen_records": 738,
+        "projected_tokens": 2985928,
+        "projected_token_delta_from_3m": -14072,
+        "additional_families_beyond_250_primary": 160,
+        "additional_families_beyond_250_plus_25_contingency": 135,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "long_context",
+            "target_weight_percent": 20,
+            "train_files": 74,
+            "val_files": 8,
+            "total_files": 82,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "multihop_inference",
+            "target_weight_percent": 20,
+            "train_files": 74,
+            "val_files": 8,
+            "total_files": 82,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "constraint_satisfaction",
+            "target_weight_percent": 16,
+            "train_files": 59,
+            "val_files": 7,
+            "total_files": 66,
+            "actual_weight_percent": 16.097561
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "multiobjective_tradeoff",
+            "target_weight_percent": 16,
+            "train_files": 59,
+            "val_files": 7,
+            "total_files": 66,
+            "actual_weight_percent": 16.097561
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "multisource_integration",
+            "target_weight_percent": 16,
+            "train_files": 59,
+            "val_files": 6,
+            "total_files": 65,
+            "actual_weight_percent": 15.853659
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "uncertainty_management",
+            "target_weight_percent": 12,
+            "train_files": 44,
+            "val_files": 5,
+            "total_files": 49,
+            "actual_weight_percent": 11.95122
+          }
+        ]
+      },
+      "lower_10_file_option": {
+        "total_files": 410,
+        "total_records": 61500,
+        "train_files": 369,
+        "val_files": 41,
+        "train_records": 55350,
+        "val_records": 6150,
+        "validation_unseen_records": 738,
+        "projected_tokens": 2985928,
+        "projected_token_delta_from_3m": -14072,
+        "additional_families_beyond_250_primary": 160,
+        "additional_families_beyond_250_plus_25_contingency": 135,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "long_context",
+            "target_weight_percent": 20,
+            "train_files": 74,
+            "val_files": 8,
+            "total_files": 82,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "multihop_inference",
+            "target_weight_percent": 20,
+            "train_files": 74,
+            "val_files": 8,
+            "total_files": 82,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "constraint_satisfaction",
+            "target_weight_percent": 16,
+            "train_files": 59,
+            "val_files": 7,
+            "total_files": 66,
+            "actual_weight_percent": 16.097561
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "multiobjective_tradeoff",
+            "target_weight_percent": 16,
+            "train_files": 59,
+            "val_files": 7,
+            "total_files": 66,
+            "actual_weight_percent": 16.097561
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "multisource_integration",
+            "target_weight_percent": 16,
+            "train_files": 59,
+            "val_files": 6,
+            "total_files": 65,
+            "actual_weight_percent": 15.853659
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "uncertainty_management",
+            "target_weight_percent": 12,
+            "train_files": 44,
+            "val_files": 5,
+            "total_files": 49,
+            "actual_weight_percent": 11.95122
+          }
+        ]
+      },
+      "upper_10_file_option": {
+        "total_files": 420,
+        "total_records": 63000,
+        "train_files": 378,
+        "val_files": 42,
+        "train_records": 56700,
+        "val_records": 6300,
+        "validation_unseen_records": 756,
+        "projected_tokens": 3058755,
+        "projected_token_delta_from_3m": 58755,
+        "additional_families_beyond_250_primary": 170,
+        "additional_families_beyond_250_plus_25_contingency": 145,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "long_context",
+            "target_weight_percent": 20,
+            "train_files": 76,
+            "val_files": 8,
+            "total_files": 84,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "multihop_inference",
+            "target_weight_percent": 20,
+            "train_files": 76,
+            "val_files": 8,
+            "total_files": 84,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "constraint_satisfaction",
+            "target_weight_percent": 16,
+            "train_files": 61,
+            "val_files": 7,
+            "total_files": 68,
+            "actual_weight_percent": 16.190476
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "multiobjective_tradeoff",
+            "target_weight_percent": 16,
+            "train_files": 60,
+            "val_files": 7,
+            "total_files": 67,
+            "actual_weight_percent": 15.952381
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "multisource_integration",
+            "target_weight_percent": 16,
+            "train_files": 60,
+            "val_files": 7,
+            "total_files": 67,
+            "actual_weight_percent": 15.952381
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "uncertainty_management",
+            "target_weight_percent": 12,
+            "train_files": 45,
+            "val_files": 5,
+            "total_files": 50,
+            "actual_weight_percent": 11.904762
+          }
+        ]
+      },
+      "exact_weight_and_per_area_90_10_multiple_250_option": {
+        "total_files": 500,
+        "total_records": 75000,
+        "train_files": 450,
+        "val_files": 50,
+        "train_records": 67500,
+        "val_records": 7500,
+        "validation_unseen_records": 900,
+        "projected_tokens": 3641375,
+        "projected_token_delta_from_3m": 641375,
+        "additional_families_beyond_250_primary": 250,
+        "additional_families_beyond_250_plus_25_contingency": 225,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "long_context",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "multihop_inference",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "constraint_satisfaction",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "multiobjective_tradeoff",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "multisource_integration",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "uncertainty_management",
+            "target_weight_percent": 12,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      }
+    },
+    "7": {
+      "title": "지시 수행·대화·실전 사용",
+      "pilot_mean_tokens_with_eos_per_record": 42.6,
+      "unrounded_three_million_file_estimate": 469.483568,
+      "raw_files_after_documented_round": 469,
+      "exact_90_10_files_after_documented_round": 470,
+      "existing_250_file_projection_tokens": 1597500,
+      "required_mean_tokens_per_record_if_250_files": 80.0,
+      "required_length_multiplier_if_250_files": 1.877934,
+      "stage1_actual_token_equivalent_raw_files": 231.605008,
+      "stage1_actual_token_equivalent_nearest_10_option": {
+        "total_files": 230,
+        "total_records": 34500,
+        "train_files": 207,
+        "val_files": 23,
+        "train_records": 31050,
+        "val_records": 3450,
+        "validation_unseen_records": 414,
+        "projected_tokens": 1469700,
+        "projected_token_delta_from_3m": -1530300,
+        "additional_families_beyond_250_primary": 0,
+        "additional_families_beyond_250_plus_25_contingency": 0,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "instruction_intent",
+            "target_weight_percent": 20,
+            "train_files": 42,
+            "val_files": 4,
+            "total_files": 46,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "output_format",
+            "target_weight_percent": 20,
+            "train_files": 41,
+            "val_files": 4,
+            "total_files": 45,
+            "actual_weight_percent": 19.565217
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "multiturn_dialogue",
+            "target_weight_percent": 16,
+            "train_files": 33,
+            "val_files": 4,
+            "total_files": 37,
+            "actual_weight_percent": 16.086957
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "tool_protocol",
+            "target_weight_percent": 16,
+            "train_files": 33,
+            "val_files": 4,
+            "total_files": 37,
+            "actual_weight_percent": 16.086957
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "safety_uncertainty",
+            "target_weight_percent": 16,
+            "train_files": 33,
+            "val_files": 4,
+            "total_files": 37,
+            "actual_weight_percent": 16.086957
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "practical_task",
+            "target_weight_percent": 12,
+            "train_files": 25,
+            "val_files": 3,
+            "total_files": 28,
+            "actual_weight_percent": 12.173913
+          }
+        ]
+      },
+      "nearest_10_file_90_10_option": {
+        "total_files": 470,
+        "total_records": 70500,
+        "train_files": 423,
+        "val_files": 47,
+        "train_records": 63450,
+        "val_records": 7050,
+        "validation_unseen_records": 846,
+        "projected_tokens": 3003300,
+        "projected_token_delta_from_3m": 3300,
+        "additional_families_beyond_250_primary": 220,
+        "additional_families_beyond_250_plus_25_contingency": 195,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "instruction_intent",
+            "target_weight_percent": 20,
+            "train_files": 84,
+            "val_files": 9,
+            "total_files": 93,
+            "actual_weight_percent": 19.787234
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "output_format",
+            "target_weight_percent": 20,
+            "train_files": 84,
+            "val_files": 9,
+            "total_files": 93,
+            "actual_weight_percent": 19.787234
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "multiturn_dialogue",
+            "target_weight_percent": 16,
+            "train_files": 68,
+            "val_files": 8,
+            "total_files": 76,
+            "actual_weight_percent": 16.170213
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "tool_protocol",
+            "target_weight_percent": 16,
+            "train_files": 68,
+            "val_files": 8,
+            "total_files": 76,
+            "actual_weight_percent": 16.170213
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "safety_uncertainty",
+            "target_weight_percent": 16,
+            "train_files": 68,
+            "val_files": 7,
+            "total_files": 75,
+            "actual_weight_percent": 15.957447
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "practical_task",
+            "target_weight_percent": 12,
+            "train_files": 51,
+            "val_files": 6,
+            "total_files": 57,
+            "actual_weight_percent": 12.12766
+          }
+        ]
+      },
+      "lower_10_file_option": {
+        "total_files": 460,
+        "total_records": 69000,
+        "train_files": 414,
+        "val_files": 46,
+        "train_records": 62100,
+        "val_records": 6900,
+        "validation_unseen_records": 828,
+        "projected_tokens": 2939400,
+        "projected_token_delta_from_3m": -60600,
+        "additional_families_beyond_250_primary": 210,
+        "additional_families_beyond_250_plus_25_contingency": 185,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "instruction_intent",
+            "target_weight_percent": 20,
+            "train_files": 83,
+            "val_files": 9,
+            "total_files": 92,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "output_format",
+            "target_weight_percent": 20,
+            "train_files": 83,
+            "val_files": 9,
+            "total_files": 92,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "multiturn_dialogue",
+            "target_weight_percent": 16,
+            "train_files": 66,
+            "val_files": 8,
+            "total_files": 74,
+            "actual_weight_percent": 16.086957
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "tool_protocol",
+            "target_weight_percent": 16,
+            "train_files": 66,
+            "val_files": 7,
+            "total_files": 73,
+            "actual_weight_percent": 15.869565
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "safety_uncertainty",
+            "target_weight_percent": 16,
+            "train_files": 66,
+            "val_files": 7,
+            "total_files": 73,
+            "actual_weight_percent": 15.869565
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "practical_task",
+            "target_weight_percent": 12,
+            "train_files": 50,
+            "val_files": 6,
+            "total_files": 56,
+            "actual_weight_percent": 12.173913
+          }
+        ]
+      },
+      "upper_10_file_option": {
+        "total_files": 470,
+        "total_records": 70500,
+        "train_files": 423,
+        "val_files": 47,
+        "train_records": 63450,
+        "val_records": 7050,
+        "validation_unseen_records": 846,
+        "projected_tokens": 3003300,
+        "projected_token_delta_from_3m": 3300,
+        "additional_families_beyond_250_primary": 220,
+        "additional_families_beyond_250_plus_25_contingency": 195,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "instruction_intent",
+            "target_weight_percent": 20,
+            "train_files": 84,
+            "val_files": 9,
+            "total_files": 93,
+            "actual_weight_percent": 19.787234
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "output_format",
+            "target_weight_percent": 20,
+            "train_files": 84,
+            "val_files": 9,
+            "total_files": 93,
+            "actual_weight_percent": 19.787234
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "multiturn_dialogue",
+            "target_weight_percent": 16,
+            "train_files": 68,
+            "val_files": 8,
+            "total_files": 76,
+            "actual_weight_percent": 16.170213
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "tool_protocol",
+            "target_weight_percent": 16,
+            "train_files": 68,
+            "val_files": 8,
+            "total_files": 76,
+            "actual_weight_percent": 16.170213
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "safety_uncertainty",
+            "target_weight_percent": 16,
+            "train_files": 68,
+            "val_files": 7,
+            "total_files": 75,
+            "actual_weight_percent": 15.957447
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "practical_task",
+            "target_weight_percent": 12,
+            "train_files": 51,
+            "val_files": 6,
+            "total_files": 57,
+            "actual_weight_percent": 12.12766
+          }
+        ]
+      },
+      "exact_weight_and_per_area_90_10_multiple_250_option": {
+        "total_files": 500,
+        "total_records": 75000,
+        "train_files": 450,
+        "val_files": 50,
+        "train_records": 67500,
+        "val_records": 7500,
+        "validation_unseen_records": 900,
+        "projected_tokens": 3195000,
+        "projected_token_delta_from_3m": 195000,
+        "additional_families_beyond_250_primary": 250,
+        "additional_families_beyond_250_plus_25_contingency": 225,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "instruction_intent",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "output_format",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "multiturn_dialogue",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "tool_protocol",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "safety_uncertainty",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "practical_task",
+            "target_weight_percent": 12,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      }
+    },
+    "8": {
+      "title": "평가·비판·검증·수정",
+      "pilot_mean_tokens_with_eos_per_record": 39.616667,
+      "unrounded_three_million_file_estimate": 504.838027,
+      "raw_files_after_documented_round": 505,
+      "exact_90_10_files_after_documented_round": 500,
+      "existing_250_file_projection_tokens": 1485625,
+      "required_mean_tokens_per_record_if_250_files": 80.0,
+      "required_length_multiplier_if_250_files": 2.019352,
+      "stage1_actual_token_equivalent_raw_files": 249.046022,
+      "stage1_actual_token_equivalent_nearest_10_option": {
+        "total_files": 250,
+        "total_records": 37500,
+        "train_files": 225,
+        "val_files": 25,
+        "train_records": 33750,
+        "val_records": 3750,
+        "validation_unseen_records": 450,
+        "projected_tokens": 1485625,
+        "projected_token_delta_from_3m": -1514375,
+        "additional_families_beyond_250_primary": 0,
+        "additional_families_beyond_250_plus_25_contingency": 0,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "evidence_quality",
+            "target_weight_percent": 20,
+            "train_files": 45,
+            "val_files": 5,
+            "total_files": 50,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "error_detection",
+            "target_weight_percent": 20,
+            "train_files": 45,
+            "val_files": 5,
+            "total_files": 50,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "argument_critique",
+            "target_weight_percent": 16,
+            "train_files": 36,
+            "val_files": 4,
+            "total_files": 40,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "verification_validation",
+            "target_weight_percent": 16,
+            "train_files": 36,
+            "val_files": 4,
+            "total_files": 40,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "revision_correction",
+            "target_weight_percent": 16,
+            "train_files": 36,
+            "val_files": 4,
+            "total_files": 40,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "calibration_abstention",
+            "target_weight_percent": 12,
+            "train_files": 27,
+            "val_files": 3,
+            "total_files": 30,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      },
+      "nearest_10_file_90_10_option": {
+        "total_files": 500,
+        "total_records": 75000,
+        "train_files": 450,
+        "val_files": 50,
+        "train_records": 67500,
+        "val_records": 7500,
+        "validation_unseen_records": 900,
+        "projected_tokens": 2971250,
+        "projected_token_delta_from_3m": -28750,
+        "additional_families_beyond_250_primary": 250,
+        "additional_families_beyond_250_plus_25_contingency": 225,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "evidence_quality",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "error_detection",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "argument_critique",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "verification_validation",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "revision_correction",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "calibration_abstention",
+            "target_weight_percent": 12,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      },
+      "lower_10_file_option": {
+        "total_files": 500,
+        "total_records": 75000,
+        "train_files": 450,
+        "val_files": 50,
+        "train_records": 67500,
+        "val_records": 7500,
+        "validation_unseen_records": 900,
+        "projected_tokens": 2971250,
+        "projected_token_delta_from_3m": -28750,
+        "additional_families_beyond_250_primary": 250,
+        "additional_families_beyond_250_plus_25_contingency": 225,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "evidence_quality",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "error_detection",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "argument_critique",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "verification_validation",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "revision_correction",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "calibration_abstention",
+            "target_weight_percent": 12,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      },
+      "upper_10_file_option": {
+        "total_files": 510,
+        "total_records": 76500,
+        "train_files": 459,
+        "val_files": 51,
+        "train_records": 68850,
+        "val_records": 7650,
+        "validation_unseen_records": 918,
+        "projected_tokens": 3030675,
+        "projected_token_delta_from_3m": 30675,
+        "additional_families_beyond_250_primary": 260,
+        "additional_families_beyond_250_plus_25_contingency": 235,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "evidence_quality",
+            "target_weight_percent": 20,
+            "train_files": 92,
+            "val_files": 11,
+            "total_files": 103,
+            "actual_weight_percent": 20.196078
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "error_detection",
+            "target_weight_percent": 20,
+            "train_files": 92,
+            "val_files": 10,
+            "total_files": 102,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "argument_critique",
+            "target_weight_percent": 16,
+            "train_files": 74,
+            "val_files": 8,
+            "total_files": 82,
+            "actual_weight_percent": 16.078431
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "verification_validation",
+            "target_weight_percent": 16,
+            "train_files": 73,
+            "val_files": 8,
+            "total_files": 81,
+            "actual_weight_percent": 15.882353
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "revision_correction",
+            "target_weight_percent": 16,
+            "train_files": 73,
+            "val_files": 8,
+            "total_files": 81,
+            "actual_weight_percent": 15.882353
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "calibration_abstention",
+            "target_weight_percent": 12,
+            "train_files": 55,
+            "val_files": 6,
+            "total_files": 61,
+            "actual_weight_percent": 11.960784
+          }
+        ]
+      },
+      "exact_weight_and_per_area_90_10_multiple_250_option": {
+        "total_files": 500,
+        "total_records": 75000,
+        "train_files": 450,
+        "val_files": 50,
+        "train_records": 67500,
+        "val_records": 7500,
+        "validation_unseen_records": 900,
+        "projected_tokens": 2971250,
+        "projected_token_delta_from_3m": -28750,
+        "additional_families_beyond_250_primary": 250,
+        "additional_families_beyond_250_plus_25_contingency": 225,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "evidence_quality",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "error_detection",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "argument_critique",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "verification_validation",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "revision_correction",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "calibration_abstention",
+            "target_weight_percent": 12,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      }
+    },
+    "9": {
+      "title": "연구·도구 오케스트레이션·지속 워크플로",
+      "pilot_mean_tokens_with_eos_per_record": 39.548333,
+      "unrounded_three_million_file_estimate": 505.710317,
+      "raw_files_after_documented_round": 506,
+      "exact_90_10_files_after_documented_round": 510,
+      "existing_250_file_projection_tokens": 1483062,
+      "required_mean_tokens_per_record_if_250_files": 80.0,
+      "required_length_multiplier_if_250_files": 2.022841,
+      "stage1_actual_token_equivalent_raw_files": 249.476339,
+      "stage1_actual_token_equivalent_nearest_10_option": {
+        "total_files": 250,
+        "total_records": 37500,
+        "train_files": 225,
+        "val_files": 25,
+        "train_records": 33750,
+        "val_records": 3750,
+        "validation_unseen_records": 450,
+        "projected_tokens": 1483062,
+        "projected_token_delta_from_3m": -1516938,
+        "additional_families_beyond_250_primary": 0,
+        "additional_families_beyond_250_plus_25_contingency": 0,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "research_synthesis",
+            "target_weight_percent": 20,
+            "train_files": 45,
+            "val_files": 5,
+            "total_files": 50,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "tool_orchestration",
+            "target_weight_percent": 20,
+            "train_files": 45,
+            "val_files": 5,
+            "total_files": 50,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "workflow_state",
+            "target_weight_percent": 16,
+            "train_files": 36,
+            "val_files": 4,
+            "total_files": 40,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "collaboration_handoff",
+            "target_weight_percent": 16,
+            "train_files": 36,
+            "val_files": 4,
+            "total_files": 40,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "monitoring_adaptation",
+            "target_weight_percent": 16,
+            "train_files": 36,
+            "val_files": 4,
+            "total_files": 40,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "provenance_audit",
+            "target_weight_percent": 12,
+            "train_files": 27,
+            "val_files": 3,
+            "total_files": 30,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      },
+      "nearest_10_file_90_10_option": {
+        "total_files": 510,
+        "total_records": 76500,
+        "train_files": 459,
+        "val_files": 51,
+        "train_records": 68850,
+        "val_records": 7650,
+        "validation_unseen_records": 918,
+        "projected_tokens": 3025447,
+        "projected_token_delta_from_3m": 25447,
+        "additional_families_beyond_250_primary": 260,
+        "additional_families_beyond_250_plus_25_contingency": 235,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "research_synthesis",
+            "target_weight_percent": 20,
+            "train_files": 92,
+            "val_files": 11,
+            "total_files": 103,
+            "actual_weight_percent": 20.196078
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "tool_orchestration",
+            "target_weight_percent": 20,
+            "train_files": 92,
+            "val_files": 10,
+            "total_files": 102,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "workflow_state",
+            "target_weight_percent": 16,
+            "train_files": 74,
+            "val_files": 8,
+            "total_files": 82,
+            "actual_weight_percent": 16.078431
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "collaboration_handoff",
+            "target_weight_percent": 16,
+            "train_files": 73,
+            "val_files": 8,
+            "total_files": 81,
+            "actual_weight_percent": 15.882353
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "monitoring_adaptation",
+            "target_weight_percent": 16,
+            "train_files": 73,
+            "val_files": 8,
+            "total_files": 81,
+            "actual_weight_percent": 15.882353
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "provenance_audit",
+            "target_weight_percent": 12,
+            "train_files": 55,
+            "val_files": 6,
+            "total_files": 61,
+            "actual_weight_percent": 11.960784
+          }
+        ]
+      },
+      "lower_10_file_option": {
+        "total_files": 500,
+        "total_records": 75000,
+        "train_files": 450,
+        "val_files": 50,
+        "train_records": 67500,
+        "val_records": 7500,
+        "validation_unseen_records": 900,
+        "projected_tokens": 2966125,
+        "projected_token_delta_from_3m": -33875,
+        "additional_families_beyond_250_primary": 250,
+        "additional_families_beyond_250_plus_25_contingency": 225,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "research_synthesis",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "tool_orchestration",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "workflow_state",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "collaboration_handoff",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "monitoring_adaptation",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "provenance_audit",
+            "target_weight_percent": 12,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      },
+      "upper_10_file_option": {
+        "total_files": 510,
+        "total_records": 76500,
+        "train_files": 459,
+        "val_files": 51,
+        "train_records": 68850,
+        "val_records": 7650,
+        "validation_unseen_records": 918,
+        "projected_tokens": 3025447,
+        "projected_token_delta_from_3m": 25447,
+        "additional_families_beyond_250_primary": 260,
+        "additional_families_beyond_250_plus_25_contingency": 235,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "research_synthesis",
+            "target_weight_percent": 20,
+            "train_files": 92,
+            "val_files": 11,
+            "total_files": 103,
+            "actual_weight_percent": 20.196078
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "tool_orchestration",
+            "target_weight_percent": 20,
+            "train_files": 92,
+            "val_files": 10,
+            "total_files": 102,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "workflow_state",
+            "target_weight_percent": 16,
+            "train_files": 74,
+            "val_files": 8,
+            "total_files": 82,
+            "actual_weight_percent": 16.078431
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "collaboration_handoff",
+            "target_weight_percent": 16,
+            "train_files": 73,
+            "val_files": 8,
+            "total_files": 81,
+            "actual_weight_percent": 15.882353
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "monitoring_adaptation",
+            "target_weight_percent": 16,
+            "train_files": 73,
+            "val_files": 8,
+            "total_files": 81,
+            "actual_weight_percent": 15.882353
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "provenance_audit",
+            "target_weight_percent": 12,
+            "train_files": 55,
+            "val_files": 6,
+            "total_files": 61,
+            "actual_weight_percent": 11.960784
+          }
+        ]
+      },
+      "exact_weight_and_per_area_90_10_multiple_250_option": {
+        "total_files": 500,
+        "total_records": 75000,
+        "train_files": 450,
+        "val_files": 50,
+        "train_records": 67500,
+        "val_records": 7500,
+        "validation_unseen_records": 900,
+        "projected_tokens": 2966125,
+        "projected_token_delta_from_3m": -33875,
+        "additional_families_beyond_250_primary": 250,
+        "additional_families_beyond_250_plus_25_contingency": 225,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "research_synthesis",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "tool_orchestration",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "workflow_state",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "collaboration_handoff",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "monitoring_adaptation",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "provenance_audit",
+            "target_weight_percent": 12,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      }
+    },
+    "10": {
+      "title": "통합 전문 수행·장기 안전 자율성",
+      "pilot_mean_tokens_with_eos_per_record": 41.06,
+      "unrounded_three_million_file_estimate": 487.09206,
+      "raw_files_after_documented_round": 487,
+      "exact_90_10_files_after_documented_round": 490,
+      "existing_250_file_projection_tokens": 1539750,
+      "required_mean_tokens_per_record_if_250_files": 80.0,
+      "required_length_multiplier_if_250_files": 1.948368,
+      "stage1_actual_token_equivalent_raw_files": 240.291606,
+      "stage1_actual_token_equivalent_nearest_10_option": {
+        "total_files": 240,
+        "total_records": 36000,
+        "train_files": 216,
+        "val_files": 24,
+        "train_records": 32400,
+        "val_records": 3600,
+        "validation_unseen_records": 432,
+        "projected_tokens": 1478160,
+        "projected_token_delta_from_3m": -1521840,
+        "additional_families_beyond_250_primary": 0,
+        "additional_families_beyond_250_plus_25_contingency": 0,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "expert_integration",
+            "target_weight_percent": 20,
+            "train_files": 43,
+            "val_files": 5,
+            "total_files": 48,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "crossdomain_synthesis",
+            "target_weight_percent": 20,
+            "train_files": 43,
+            "val_files": 4,
+            "total_files": 47,
+            "actual_weight_percent": 19.583333
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "long_horizon",
+            "target_weight_percent": 16,
+            "train_files": 35,
+            "val_files": 4,
+            "total_files": 39,
+            "actual_weight_percent": 16.25
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "adversarial_robustness",
+            "target_weight_percent": 16,
+            "train_files": 35,
+            "val_files": 4,
+            "total_files": 39,
+            "actual_weight_percent": 16.25
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "safe_autonomy",
+            "target_weight_percent": 16,
+            "train_files": 34,
+            "val_files": 4,
+            "total_files": 38,
+            "actual_weight_percent": 15.833333
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "metacognitive_control",
+            "target_weight_percent": 12,
+            "train_files": 26,
+            "val_files": 3,
+            "total_files": 29,
+            "actual_weight_percent": 12.083333
+          }
+        ]
+      },
+      "nearest_10_file_90_10_option": {
+        "total_files": 490,
+        "total_records": 73500,
+        "train_files": 441,
+        "val_files": 49,
+        "train_records": 66150,
+        "val_records": 7350,
+        "validation_unseen_records": 882,
+        "projected_tokens": 3017910,
+        "projected_token_delta_from_3m": 17910,
+        "additional_families_beyond_250_primary": 240,
+        "additional_families_beyond_250_plus_25_contingency": 215,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "expert_integration",
+            "target_weight_percent": 20,
+            "train_files": 88,
+            "val_files": 10,
+            "total_files": 98,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "crossdomain_synthesis",
+            "target_weight_percent": 20,
+            "train_files": 88,
+            "val_files": 9,
+            "total_files": 97,
+            "actual_weight_percent": 19.795918
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "long_horizon",
+            "target_weight_percent": 16,
+            "train_files": 71,
+            "val_files": 8,
+            "total_files": 79,
+            "actual_weight_percent": 16.122449
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "adversarial_robustness",
+            "target_weight_percent": 16,
+            "train_files": 71,
+            "val_files": 8,
+            "total_files": 79,
+            "actual_weight_percent": 16.122449
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "safe_autonomy",
+            "target_weight_percent": 16,
+            "train_files": 70,
+            "val_files": 8,
+            "total_files": 78,
+            "actual_weight_percent": 15.918367
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "metacognitive_control",
+            "target_weight_percent": 12,
+            "train_files": 53,
+            "val_files": 6,
+            "total_files": 59,
+            "actual_weight_percent": 12.040816
+          }
+        ]
+      },
+      "lower_10_file_option": {
+        "total_files": 480,
+        "total_records": 72000,
+        "train_files": 432,
+        "val_files": 48,
+        "train_records": 64800,
+        "val_records": 7200,
+        "validation_unseen_records": 864,
+        "projected_tokens": 2956320,
+        "projected_token_delta_from_3m": -43680,
+        "additional_families_beyond_250_primary": 230,
+        "additional_families_beyond_250_plus_25_contingency": 205,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "expert_integration",
+            "target_weight_percent": 20,
+            "train_files": 87,
+            "val_files": 9,
+            "total_files": 96,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "crossdomain_synthesis",
+            "target_weight_percent": 20,
+            "train_files": 86,
+            "val_files": 9,
+            "total_files": 95,
+            "actual_weight_percent": 19.791667
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "long_horizon",
+            "target_weight_percent": 16,
+            "train_files": 69,
+            "val_files": 8,
+            "total_files": 77,
+            "actual_weight_percent": 16.041667
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "adversarial_robustness",
+            "target_weight_percent": 16,
+            "train_files": 69,
+            "val_files": 8,
+            "total_files": 77,
+            "actual_weight_percent": 16.041667
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "safe_autonomy",
+            "target_weight_percent": 16,
+            "train_files": 69,
+            "val_files": 8,
+            "total_files": 77,
+            "actual_weight_percent": 16.041667
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "metacognitive_control",
+            "target_weight_percent": 12,
+            "train_files": 52,
+            "val_files": 6,
+            "total_files": 58,
+            "actual_weight_percent": 12.083333
+          }
+        ]
+      },
+      "upper_10_file_option": {
+        "total_files": 490,
+        "total_records": 73500,
+        "train_files": 441,
+        "val_files": 49,
+        "train_records": 66150,
+        "val_records": 7350,
+        "validation_unseen_records": 882,
+        "projected_tokens": 3017910,
+        "projected_token_delta_from_3m": 17910,
+        "additional_families_beyond_250_primary": 240,
+        "additional_families_beyond_250_plus_25_contingency": 215,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "expert_integration",
+            "target_weight_percent": 20,
+            "train_files": 88,
+            "val_files": 10,
+            "total_files": 98,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "crossdomain_synthesis",
+            "target_weight_percent": 20,
+            "train_files": 88,
+            "val_files": 9,
+            "total_files": 97,
+            "actual_weight_percent": 19.795918
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "long_horizon",
+            "target_weight_percent": 16,
+            "train_files": 71,
+            "val_files": 8,
+            "total_files": 79,
+            "actual_weight_percent": 16.122449
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "adversarial_robustness",
+            "target_weight_percent": 16,
+            "train_files": 71,
+            "val_files": 8,
+            "total_files": 79,
+            "actual_weight_percent": 16.122449
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "safe_autonomy",
+            "target_weight_percent": 16,
+            "train_files": 70,
+            "val_files": 8,
+            "total_files": 78,
+            "actual_weight_percent": 15.918367
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "metacognitive_control",
+            "target_weight_percent": 12,
+            "train_files": 53,
+            "val_files": 6,
+            "total_files": 59,
+            "actual_weight_percent": 12.040816
+          }
+        ]
+      },
+      "exact_weight_and_per_area_90_10_multiple_250_option": {
+        "total_files": 500,
+        "total_records": 75000,
+        "train_files": 450,
+        "val_files": 50,
+        "train_records": 67500,
+        "val_records": 7500,
+        "validation_unseen_records": 900,
+        "projected_tokens": 3079500,
+        "projected_token_delta_from_3m": 79500,
+        "additional_families_beyond_250_primary": 250,
+        "additional_families_beyond_250_plus_25_contingency": 225,
+        "areas": [
+          {
+            "curriculum_area_number": 1,
+            "file_area_slot": 1,
+            "slug": "expert_integration",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 2,
+            "file_area_slot": 2,
+            "slug": "crossdomain_synthesis",
+            "target_weight_percent": 20,
+            "train_files": 90,
+            "val_files": 10,
+            "total_files": 100,
+            "actual_weight_percent": 20.0
+          },
+          {
+            "curriculum_area_number": 3,
+            "file_area_slot": 3,
+            "slug": "long_horizon",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 4,
+            "file_area_slot": 4,
+            "slug": "adversarial_robustness",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 5,
+            "file_area_slot": 5,
+            "slug": "safe_autonomy",
+            "target_weight_percent": 16,
+            "train_files": 72,
+            "val_files": 8,
+            "total_files": 80,
+            "actual_weight_percent": 16.0
+          },
+          {
+            "curriculum_area_number": 6,
+            "file_area_slot": 6,
+            "slug": "metacognitive_control",
+            "target_weight_percent": 12,
+            "train_files": 54,
+            "val_files": 6,
+            "total_files": 60,
+            "actual_weight_percent": 12.0
+          }
+        ]
+      }
+    }
+  }
+}
