@@ -56,7 +56,8 @@ def git_dates():
     _GIT = {}
     try:
         out = subprocess.run(["git", "log", "--format=%ad", "--date=short", "--name-only"],
-                             cwd=ROOT, capture_output=True, text=True, timeout=120)
+                             cwd=ROOT, capture_output=True, text=True, timeout=120,
+                             encoding="utf-8", errors="replace")
         cur = None
         for ln in out.stdout.splitlines():
             s = ln.strip()

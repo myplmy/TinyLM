@@ -337,10 +337,14 @@ def main():
     print(f"  기준 = {b[0]}  저장 {b[1]:.1f}MB  상주(텐서합산) {b[5]:.1f}MB\n")
     print(f"  {'모델':>16} {'저장MB':>8} {'저장감축':>9} {'상주MB':>9} {'상주감축':>9} {'전이율':>8}")
     print("  " + "-" * 68)
+    # ★2026-09-02 — 종전에는 기준 자신과 동점 팔이 **nan%** 를 찍었다.
+    #   나눗셈이 정의되지 않는 자리에는 숫자가 아니라 `—` 를 인쇄한다(R20).
     for tag, packed, _l, _w, _o, res, _d, _n, _r2, _g in rows:
         s_red, r_red = b[1] / packed, b[5] / res
+        tr = (f"{(r_red - 1) / (s_red - 1):7.0%}" if s_red > 1.001
+              else f"{'—':>7}")
         print(f"  {tag:>16} {packed:8.1f} {s_red:8.2f}x {res:9.1f} {r_red:8.2f}x "
-              f"{(r_red - 1) / (s_red - 1) if s_red > 1.001 else float('nan'):7.0%}")
+              f"{tr}")
     print("\n  전이율 = (상주감축-1)/(저장감축-1). 100% 면 저장 감축이 그대로 상주 감축이 된다.")
 
     print("\n" + "=" * 96)
@@ -350,7 +354,16 @@ def main():
     by_res = sorted(rows, key=lambda r: r[5])           # 상주 작은 순
     print(f"  저장 작은 순: {' < '.join(r[0] for r in by_store)}")
     print(f"  상주 작은 순: {' < '.join(r[0] for r in by_res)}")
-    if [r[0] for r in by_store] == [r[0] for r in by_res]:
+    # ★★2026-09-02 — **동점이면 판정하지 않는다.**
+    #   P077 단계1b 는 재귀 팔 둘이라 저장·상주가 소수점까지 같았는데
+    #   *"순위 일치 -> 단조다"* 를 찍었다. 정보가 0인 비교에서 나온 결론은
+    #   결론이 아니다(예상 밖으로 깨끗한 패턴 = 계측을 먼저 의심).
+    _distinct = len({round(r[1], 3) for r in rows}) > 1 and len({round(r[5], 3) for r in rows}) > 1
+    if not _distinct:
+        print("\n  → ⚠️★**판정 불가 — 저장 또는 상주가 전 팔에서 같다.**")
+        print("     단조성은 서로 다른 값 사이에서만 물을 수 있다. 재귀처럼 파라미터를")
+        print("     안 바꾸는 축끼리 비교하면 이 표에는 아무 정보가 없다.")
+    elif [r[0] for r in by_store] == [r[0] for r in by_res]:
         print("\n  → 순위 일치. **저장↓ 이 상주↓ 와 단조**다(비례까지는 위 전이율로 판단).")
     else:
         print("\n  → ★순위 역전. **저장 MB 로 모델을 고르면 상주 기준으로는 틀린 선택**이 된다.")

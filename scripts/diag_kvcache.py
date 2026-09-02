@@ -107,7 +107,14 @@ def teacher_forced_delta(model, cfg, tok, prompt, max_new, device, use_autocast)
     per_max = d.max(dim=-1).values                       # (T,)
     per_mean = d.mean(dim=-1)
     agree = (logits_A.argmax(-1) == logits_B.argmax(-1))
-    return per_max, per_mean, agree, seq.shape[1], T0
+    # ★2026-09-02 — **KV 값의 절대 최댓값**을 함께 돌려준다(fp16 채택의 선결).
+    #   `past` 는 owner 층 인덱스 -> (k, v) 딕셔너리다.
+    kmax = vmax = 0.0
+    if isinstance(past, dict):
+        for _k, _v in past.values():
+            kmax = max(kmax, float(_k.abs().max()))
+            vmax = max(vmax, float(_v.abs().max()))
+    return per_max, per_mean, agree, seq.shape[1], T0, kmax, vmax
 
 
 def greedy_tie_margin(model, cfg, tok, prompt, max_new, device, use_autocast):
@@ -220,9 +227,11 @@ def main():
               + "─" * 20)
         m_all = 0.0
         nag_all = 0                                  # ★argmax 불일치 총합 — 손실 KV 의 본 게이트
+        kv_abs_max = 0.0                             # ★2026-09-02 — fp16 채택의 선결
         for prompt in PROMPTS:
-            per_max, per_mean, agree, T, T0 = teacher_forced_delta(
+            per_max, per_mean, agree, T, T0, _km, _vm = teacher_forced_delta(
                 model, cfg, tok, prompt, a.max_new, device, use_ac)
+            kv_abs_max = max(kv_abs_max, _km, _vm)
             pre = float(per_max[:T0].max())          # prefill 구간(캐시 무관 — 두 경로 동일해야 함)
             dec = float(per_max[T0:].max()) if T > T0 else 0.0
             # 위치 의존성: decode 구간 전반부 vs 후반부 (RoPE 오프셋이면 뒤로 갈수록 커진다)
@@ -245,6 +254,19 @@ def main():
                     print(f"        그리디: 스텝 {idx} 에서 분기, 그 지점 top-2 간격 {gap:.4f}  → {verdict}")
         worst[tag] = (m_all, nag_all)
         rows.append((tag, arch, cfg, m_all, nag_all))
+        # ★★KV 값 범위 — fp16 은 지수 범위가 ±65,504 뿐이다(bf16 은 ±3.4e38).
+        #   🚫오버플로는 inf -> nan 으로 **조용히** 번지므로 여유를 먼저 재야 한다.
+        _head = 65504.0 / kv_abs_max if kv_abs_max > 0 else float('inf')
+        print(f"    ★KV 값 범위: max|K|,|V| = {kv_abs_max:.4g}  "
+              f"→ fp16 상한 65,504 까지 여유 **{_head:,.0f}배**")
+        if _head < 100:
+            print("       🚫★**여유가 100배 미만이다 — fp16 을 쓰지 않는다.** "
+                  "긴 컨텍스트·다른 데이터에서 넘칠 수 있다")
+        elif _head < 1000:
+            print("       ⚠️여유 100~1000배 — fp16 이 가능하지만 **데이터·길이를 바꾸면 다시 잰다**")
+        else:
+            print("       ✅여유가 1000배 넘는다 — fp16 의 지수 범위는 **문제가 아니다**")
+        print("       ⚠️이 프롬프트 5개·이 길이에서의 값이다. **일반 보증이 아니다**")
         del model
 
     def verdict_of(m: float, nag: int) -> str:

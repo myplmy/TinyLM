@@ -39,6 +39,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _rulers                                      # noqa: E402
 
 DEFAULT_MODELS = ["mA_g4s34_k4", "mC_g8_k4", "p6d"]
 
@@ -290,9 +292,21 @@ def main():
               f"--crops {_out} --base <기준태그> --deep <재귀태그>")
 
     if len(per) < 2:
-        print("\n  비교할 모델이 2개 미만이다.")
-        print("  ★단 크롭 덤프는 위에서 이미 저장했다 - `scripts/paired_join.py` 가")
-        print("     **프리셋이 다른 파일끼리** 짝을 지어 준다(결과 067 sec 8).")
+        # ★★2026-09-02 — 종료코드가 **요청과 다른 질문에 답하고 있었다**(함정 40).
+        #   `--dump-crops` 만 주고 모델 하나로 부르는 것은 **정상 용법**이다
+        #   (프리셋이 다르면 그렇게밖에 못 부른다). 그런데 종전에는 덤프가
+        #   성공해도 항상 2 를 냈고 **2세션에 걸쳐 로그에 exit 2 가 10번** 찍혔다.
+        #   -> 요청한 산출물이 나왔으면 0, 아무것도 못 냈으면 2.
+        #   🚫계측 0 에 exit 0 은 여전히 금지다(R19) — `per` 가 비면 2 다.
+        if a.dump_crops and per:
+            print("\n  ★모델이 1개다 — **비교표는 못 만들지만 요청한 크롭 덤프는 나왔다.**")
+            print("     프리셋을 가로지르는 짝짓기는 `scripts/paired_join.py` 가 한다"
+                  "(결과 067 §8).")
+            print("  -> 종료코드 0 (요청한 산출물 = 덤프)")
+            return 0
+        print("\n  비교할 모델이 2개 미만이고 **덤프 요청도 없었다.**")
+        print("     크롭 덤프만 원하면 `--dump-crops OUT.json` 을 준다 -"
+              " 그러면 모델 1개도 정상 종료다.")
         return 2
 
     # 크롭 수가 다르면 대응이 깨진다. 같은 data/seq 면 같아야 하므로 방어적으로 자른다.
@@ -335,9 +349,10 @@ def main():
     #
     #   ★계열 판정: 재귀(train_repeat>1) · 타잉(mlp_group>1) · dense. **계열이 갈리면
     #   큰 자(dense 0.0021)를 쓴다** — 보수적 선택이고 종전 규칙 2 와 같은 취지다.
-    _RULER = {"재귀": (0.0006, "재귀 2σ 실측(결과 039 §10)"),
-              "타잉": (0.0006, "타잉 2σ 3시드(결과 039 §9)"),
-              "dense": (0.0021, "dense 2σ 3시드(결과 039 §9)")}
+    # ★★★2026-09-02 — 표를 `scripts/_rulers.py` 로 옮겼다. **두 도구가 각자
+    #   표를 들고 있다가 재귀 자 갱신을 둘 다 놓쳤다**(함정 18 재발).
+    #   ★재귀 0.0006 -> **0.0018** — 세 번째 시드가 실제로 돌자 자가 커졌다.
+    _RULER = _rulers.BAND_KR
 
     def _family(t):
         m = META.get(t) or {}

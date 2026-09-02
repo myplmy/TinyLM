@@ -132,9 +132,13 @@ def main() -> int:
         arch = "dense" if "dense" in tag else "tied"
         results = []
         for path in a.paths:
+            # ★★2026-09-02 — 여기서 죽었다(ValueError: 모르는 fmt: 'fp32').
+            #   `path` 는 **경로 이름**이고 `emb_quant` 는 **양자화 형식**이다.
+            #   같은 문자열 'fp32' 가 두 양을 가리켰다(함정 28).
+            #   임베딩을 그대로 두는 것은 `None` 이지 'fp32' 가 아니다.
             model, cfg, dev = load_model(
                 arch=arch, ckpt_path=str(ck), device="cpu",
-                emb_quant=("int8" if path != "fp32" else "fp32"))
+                emb_quant=("int8" if path != "fp32" else None))
             if path != "fp32":
                 model.drop_latent()
                 if path == "lut":

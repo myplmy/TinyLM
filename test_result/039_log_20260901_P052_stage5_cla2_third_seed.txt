@@ -407,3 +407,24 @@ READ IN THIS ORDER
 4. the fourth model is the R=1 base, so this run also re-prints the
    recursion gain on the same crops.
 5. seed-pair SE is about twice the architecture-pair SE. Read the ruler.
+
+==============================================================================
+[정정 2026-09-02 — 사용자 판단 D1] 이 로그의 태그 이름이 틀렸었다.
+==============================================================================
+  위 본문에 나오는 태그 `mC_cla1_ag4_r20_s3` 는 **이름이 거짓이었다.**
+  배치 run_P052_stage4 가 `--cla-group 1` 을 빠뜨렸고 프리셋 m100R1c 의
+  기본값이 2 라서, 실제로 학습된 것은 **cla_group=2 모델**이다.
+  json 대조: cla_group 2 · kv_entries 18 · params 48,165,672 · seed 777.
+
+  -> 체크포인트와 json 을 **`mC_cla2_ag4_r20_s3` 로 개명했다.**
+     json 안에 `tag_corrected_from` 을 남겼다.
+     이 런은 `mC_cla2_ag4_r20` 의 **세 번째 시드**로 쓴다(full-val 3.6900).
+
+  ⚠️cla1 계열의 진짜 세 번째 시드는 **`mC_cla1_ag4_r20_s3b`**(seed 777) 이고
+     그 값은 3.6758 이다. 두 이름을 섞지 않는다.
+
+  ⚠️이 로그의 **본문은 고치지 않았다** — 로그는 그날 인쇄된 것의 기록이다.
+     위에서 `mC_cla1_ag4_r20_s3` 를 보면 `mC_cla2_ag4_r20_s3` 로 읽는다.
+
+  근거: 결과 039 §11·§12 · 핸드오프 2026-09-02 · check_tag_arch.py
+==============================================================================

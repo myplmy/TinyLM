@@ -49,9 +49,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# ★계열별 자(2σ, 실측) — `paired_eval` 과 **같은 표를 쓴다**(함정 18).
-#   여기서 새로 정하지 않는다. 값이 바뀌면 두 파일을 함께 고친다.
-RULERS = {"tied": 0.0006, "dense": 0.0021, "recur": 0.0006}
+# ★계열별 자(2σ, 실측) — 정본은 `scripts/_rulers.py` **하나뿐**이다.
+#   🚫종전에는 여기에 사본이 있었고 *"값이 바뀌면 두 파일을 함께 고친다"* 는
+#   주석이 붙어 있었다. 2026-08-31 재귀 자 갱신 때 **둘 다 안 고쳐졌다.**
+#   주석은 게이트가 아니다(함정 18).
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _rulers                                      # noqa: E402
+
+RULERS = dict(_rulers.BAND_EN)
 
 
 def family(tag: str) -> str:

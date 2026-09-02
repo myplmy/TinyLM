@@ -36,9 +36,15 @@ stories live in the Korean ledgers (01–08) and `CLAUDE.md`; this file only say
   legacy **alias for `packed_mb`** — the name says deploy, the value is storage. Read
   `runtime_mb`; do not recompute. (Corrected 2026-08-28 — the previous wording told you
   to recompute, which was wrong.)
-- **R06** `[human]` **Resolution is condition-dependent.** no-KD + parent-init 2σ =
-  **0.0034**; dense / no-parent = **0.024**; bpb = **0.008**. Always name the ruler used.
-  `paired_eval` prints which one it picked.
+- **R06** `[human]` **Resolution is FAMILY-dependent and all of it is measured.**
+  tied **0.0006** / dense **0.0021** / recursion **0.0018** (2σ, 3 seeds where the
+  condition is clean). bpb **0.008**. Outside the measured conditions (KD mixed in, no
+  parent init) fall back to **0.024**. ★The single source is **`scripts/_rulers.py`** —
+  `paired_eval` and `paired_join` both read it and print which ruler they used.
+  🚫The old wording (0.0034 for no-KD + parent-init) is retired: it was one condition,
+  not one family, and it was drawn from a single seed pair.
+  ★A two-seed estimate is not biased, it is **high-variance** (relative sd ~52% at n=2,
+  ~36% at n=3). It came out 2x too big for tied and 2x too small for recursion.
 - **R07** `[human]` When writing "동급", write **"실무상 동급, 통계적으로는 유의"** if `|t| > 2`.
 - **R08** `[human]` **Compare only across matched pool / tokenizer / steps / grad_ckpt.**
   grad-ckpt drift is measured: **−0.0014** (051), below the 0.0034 ruler but not below
@@ -82,7 +88,7 @@ stories live in the Korean ledgers (01–08) and `CLAUDE.md`; this file only say
   table, map, or number it did not use. `diag_depth_init` printed the role map and
   measured the zip map for a whole session.
 - **R21** `[gate]` After editing code or docs, run `python scripts/check_static_all.py`
-  yourself — **16 gates, no torch, no GPU**. Then ask the user for
+  yourself — **22 gates, no torch, no GPU**. Then ask the user for
   `run_smoke_check.bat` if code changed. **Static never replaces dynamic.**
   On Windows prefix with `set PYTHONIOENCODING=utf-8`.
 
@@ -90,9 +96,11 @@ stories live in the Korean ledgers (01–08) and `CLAUDE.md`; this file only say
 
 - **R22** `[human]` **Build an experiment batch only when it can run today.** If
   implementation is a prerequisite, the design stays in the plan document.
-- **R23** `[gate]` Right after writing a batch: `check_batch_flags.py` + `lint_bat.py --fix`.
-  The former only checks that a flag **exists in the parser** — follow parser → function
-  → behaviour with your eyes.
+- **R23** `[gate]` Right after writing a batch: `check_batch_flags.py` + `lint_bat.py --fix`
+  + ★**`dryrun_batch.py <batch>`**. The first only checks that a flag **exists in the
+  parser**; the last prints the **effective** condition with preset defaults filled in,
+  which is where a missing `--cla-group` cost 3.6 GPU-hours. Still follow parser →
+  function → behaviour with your eyes.
 - **R24** `[human]` `.bat` files: pure ASCII, CRLF, no `%VAR%` immediate expansion, no `chcp`,
   escape `<`, `>`, `|`. `--tag` on every variant run or it overwrites the canonical one.
 - **R25** `[human]` Sweeps use `if errorlevel 1 echo [WARN] ... - continuing`. `goto ERROR`

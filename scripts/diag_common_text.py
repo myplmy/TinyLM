@@ -59,18 +59,58 @@ def load_squad_like(p: Path, key="context"):
     return out
 
 
+def _texts_from(v, out):
+    """필드 값에서 문자열을 꺼낸다. **리스트도 받는다**(후보 4개 같은 것)."""
+    if isinstance(v, str):
+        if v.strip():
+            out.append(v.strip())
+    elif isinstance(v, (list, tuple)):
+        for x in v:
+            _texts_from(x, out)
+
+
 def load_jsonl_field(p: Path, field):
+    """★2026-09-02 — JSONL **과** 일반 JSON 을 모두 읽는다.
+
+    종전에는 JSONL 만 가정해 `{"records": [...]}` 형태의 pretty JSON 에서
+    줄 하나가 `str` 로 파싱돼 `AttributeError: 'str' object has no attribute 'get'`
+    로 죽었다(P080 단계0b [3/3]). 값이 **리스트**여도 받는다 —
+    held-out 벤치의 `candidates` 가 정확히 그것이다.
+    """
+    txt = p.read_text(encoding="utf-8")
     out = []
-    for ln in p.read_text(encoding="utf-8").splitlines():
+
+    # ① 통째로 JSON 인가 (객체 또는 배열)
+    try:
+        doc = json.loads(txt)
+    except Exception:                                    # noqa: BLE001
+        doc = None
+    if doc is not None:
+        recs = None
+        if isinstance(doc, list):
+            recs = doc
+        elif isinstance(doc, dict):
+            for k in ("records", "data", "items", "examples"):
+                if isinstance(doc.get(k), list):
+                    recs = doc[k]
+                    break
+            if recs is None and field in doc:
+                recs = [doc]
+        for r in (recs or []):
+            if isinstance(r, dict):
+                _texts_from(r.get(field), out)
+        return out
+
+    # ② 줄마다 JSON (진짜 JSONL)
+    for ln in txt.splitlines():
         if not ln.strip():
             continue
         try:
             j = json.loads(ln)
-        except Exception:                                    # noqa: BLE001
+        except Exception:                                # noqa: BLE001
             continue
-        v = j.get(field)
-        if isinstance(v, str) and v.strip():
-            out.append(v.strip())
+        if isinstance(j, dict):
+            _texts_from(j.get(field), out)
     return out
 
 
@@ -157,7 +197,14 @@ def main() -> int:
         cands["KLUE-MRC (뉴스 계열)"] = load_squad_like(Path(a.klue_mrc))
     for spec in a.jsonl:
         p, _, f = spec.partition(":")
-        cands[f"{Path(p).name}:{f}"] = load_jsonl_field(Path(p), f or "text")
+        docs = load_jsonl_field(Path(p), f or "text")
+        # ★2026-09-02 — **0개면 여기서 멈춘다.** 파일 형식이나 필드 이름이
+        #   틀렸는데도 0.0% 오염으로 통과시키면 그것이 가장 나쁜 실패다(R19).
+        if not docs:
+            print(f"  🚫★{Path(p).name}:{f} 에서 원문 0개 - 파일 형식이나 "
+                  f"필드 이름이 틀렸다. 오염 0% 로 읽지 않는다.")
+            return 2
+        cands[f"{Path(p).name}:{f}"] = docs
 
     # ★O2 대조군 — 학습 캐시의 **train 구간 앞부분**을 그대로 떠서 넣는다.
     #   🚫이것이 높게 안 나오면 도구가 고장난 것이다.

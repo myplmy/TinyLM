@@ -132,8 +132,12 @@ def main():
 
     print("\n  ── 자체 검증 ──")
     for chk in ("check_links.py", "check_result_numbers.py"):
+        # ★2026-09-02 — `text=True` 만 주면 Windows 가 **cp949 로 디코드**하다
+        #   리더 스레드에서 죽고 `stdout` 가 None 이 된다. 자체 검증이 한 번도
+        #   안 돌았던 이유다. 게이트 출력에는 한글·★·🚫 가 들어간다.
         r = subprocess.run([sys.executable, str(ROOT / "scripts" / chk)],
-                           capture_output=True, text=True)
+                           capture_output=True, text=True,
+                           encoding="utf-8", errors="replace")
         tail = [l for l in r.stdout.splitlines() if l.strip()][-3:]
         print(f"   [{'OK ' if r.returncode == 0 else 'FAIL'}] {chk}")
         for l in tail:

@@ -76,8 +76,11 @@ def git_dates() -> dict[str, str]:
         return _GIT
     _GIT = {}
     try:
+        # ★encoding 을 명시한다 — 안 주면 Windows 가 cp949 로 디코드하다 죽고,
+        #   try/except 가 그것을 삼켜 **git 날짜 기능이 조용히 꺼진다**.
         out = subprocess.run(["git", "log", "--format=%ad", "--date=short", "--name-only"],
-                             cwd=ROOT, capture_output=True, text=True, timeout=180)
+                             cwd=ROOT, capture_output=True, text=True, timeout=180,
+                             encoding="utf-8", errors="replace")
         cur = None
         for ln in out.stdout.splitlines():
             s = ln.strip()

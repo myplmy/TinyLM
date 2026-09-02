@@ -87,8 +87,25 @@ def main() -> int:
                 per_layer[int(parts[i + 1])].append(k)
                 break
 
+    # ★★2026-09-02 — **MLP 를 여기서 놓치고 있었다.**
+    #   `Layer` 는 `self.mlp = [mlp]` 로 모듈 등록을 피하므로 state_dict 에
+    #   `layers.N.mlp.*` 가 **없다**. 실체는 최상위 `mid_mlps.{j}.*` 다.
+    #   dense 부모(`tie_mlp=False`)에서는 j 가 middle 인덱스이므로 층 = p + j.
+    n_mid_mlp = len({k.split('.')[1] for k in sd
+                     if k.startswith('mid_mlps.') and k.split('.')[1].isdigit()})
+    if n_mid_mlp and n_mid_mlp != m:
+        print(f'[!] 부모의 mid_mlps 가 {n_mid_mlp}개인데 middle 은 {m}층이다 '
+              f'-> 이 부모는 **이미 타잉된 것**이라 「그룹 안 상쇄」를 물을 수 없다.')
+        print('    dense 부모를 준다. 이 도구는 dense 부모 전용이다.')
+        return 1
+    for k in sd:
+        if k.startswith('mid_mlps.'):
+            j = k.split('.')[1]
+            if j.isdigit():
+                per_layer[p + int(j)].append(k)
+
     if not per_layer:
-        print("[!] state_dict 에서 `layers.N.` 형태를 못 찾았다. 키 예시:")
+        print("[!] state_dict 에서 `layers.N.` 도 `mid_mlps.N.` 도 못 찾았다. 키 예시:")
         for k in list(sd)[:6]:
             print(f"    {k}")
         return 1
@@ -116,7 +133,11 @@ def main() -> int:
         suffix = defaultdict(dict)
         for li in grp:
             for k in per_layer[li]:
-                sfx = k.split(f"layers.{li}.", 1)[-1]
+                if k.startswith('mid_mlps.'):
+                    # `mid_mlps.7.gate_proj.weight` -> `mlp.gate_proj.weight`
+                    sfx = 'mlp.' + k.split('.', 2)[2]
+                else:
+                    sfx = k.split(f"layers.{li}.", 1)[-1]
                 suffix[sfx][li] = k
         for sfx, mp in sorted(suffix.items()):
             if len(mp) < 2:
@@ -163,6 +184,15 @@ def main() -> int:
               f"평균 코사인 {cs:.4f}")
         print(f"        -> {verdict}")
     print()
+    # ★★2026-09-02 신설 — **이 실험의 주 대상은 MLP 다.**
+    #   2026-08-31 판에서는 MLP 가 0종인 채로 어텐션만 재고 exit 0 이었다.
+    #   R19: 주 지표를 0개 재고 정상 종료하는 것이 가장 나쁜 실패다.
+    n_mlp = sum(1 for r in rows if r[2] == 'mlp')
+    if n_mlp == 0:
+        print()
+        print('  🚫★**MLP 텐서를 한 종도 못 쟀다 — 이 실험의 주 대상이다.**')
+        print('     `mid_mlps.{j}.*` 키가 state_dict 에 있는지 확인한다.')
+        return 1
     print(f"  기준: 축소비 ^> {GATE_SAFE} 안전 / ^< {GATE_OPEN} 열림  (P076 §3)")
     print("  ⚠️축소비는 **초기화 시점의 기하**만 말한다 — 학습이 그것을 얼마나 씻는지는")
     print("     이 도구가 답하지 않는다. 그것이 단계2(2.7h x 팔 수)의 몫이다.")
