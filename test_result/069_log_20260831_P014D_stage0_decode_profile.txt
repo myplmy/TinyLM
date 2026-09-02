@@ -1,0 +1,60 @@
+[1/2] the budget candidate - fp32 vs int8 vs LUT on one checkpoint
+
+==============================================================================
+[runlog] 2026-08-31 23:16:42  name=P014D_stage0_decode_profile
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\diag_decode_profile.py --preset m100R1c --data ko-en --tokens 300M --models mC_cla2_ag4 --max-new 32
+==============================================================================
+================================================================================================
+  P014D 선결 — 디코드 시간 분해 (torch.profiler, CPU, 학습 0)
+  프롬프트 1개 · 새 토큰 32개 · 경로 ['fp32', 'int8', 'lut']
+  ⚠️★프로파일러가 켜져 있으면 느려진다. **비중과 순위만** 읽는다.
+================================================================================================
+Traceback (most recent call last):
+  File "z:\TinyLM\scripts\diag_decode_profile.py", line 189, in <module>
+    sys.exit(main())
+  File "z:\TinyLM\scripts\diag_decode_profile.py", line 135, in main
+    model, cfg, dev = load_model(
+  File "Z:\TinyLM\tinylm\infer\generate.py", line 64, in load_model
+    model.quantize_embedding(emb_quant)
+  File "Z:\TinyLM\tinylm\model\transformer.py", line 290, in quantize_embedding
+    raise ValueError(f"모르는 fmt: {fmt!r}")
+ValueError: 모르는 fmt: 'fp32'
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-08-31 23:16:45)
+==============================================================================
+[2/2] the recursive arm - visits multiply everything except the intercept
+
+==============================================================================
+[runlog] 2026-08-31 23:16:46  name=P014D_stage0_decode_profile
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\diag_decode_profile.py --preset m100R1c --data ko-en --tokens 300M --models mC_cla2_ag4_r20 --max-new 32
+==============================================================================
+================================================================================================
+  P014D 선결 — 디코드 시간 분해 (torch.profiler, CPU, 학습 0)
+  프롬프트 1개 · 새 토큰 32개 · 경로 ['fp32', 'int8', 'lut']
+  ⚠️★프로파일러가 켜져 있으면 느려진다. **비중과 순위만** 읽는다.
+================================================================================================
+Traceback (most recent call last):
+  File "z:\TinyLM\scripts\diag_decode_profile.py", line 189, in <module>
+    sys.exit(main())
+  File "z:\TinyLM\scripts\diag_decode_profile.py", line 135, in main
+    model, cfg, dev = load_model(
+  File "Z:\TinyLM\tinylm\infer\generate.py", line 64, in load_model
+    model.quantize_embedding(emb_quant)
+  File "Z:\TinyLM\tinylm\model\transformer.py", line 290, in quantize_embedding
+    raise ValueError(f"모르는 fmt: {fmt!r}")
+ValueError: 모르는 fmt: 'fp32'
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-08-31 23:16:49)
+==============================================================================
+READ IN THIS ORDER
+1. the unpack share for int8 and lut. That is the whole gate for P014D.
+2. the top-12 self CPU time list for fp32. Whatever is large there and NOT
+   a GEMM is a candidate for the intercept.
+3. compare arm 1 and arm 2. Visits scale the per-layer work but NOT the
+   intercept, so the intercept share should FALL in the recursive arm.
+   If it does not, it is not an intercept and 12_inference_speed section
+   12.1 needs rewriting.
+4. do not quote tok/s. The profiler distorts absolute time.
+5. this decides whether P014D opens. It does not open it.
