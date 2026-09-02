@@ -101,6 +101,12 @@ stories live in the Korean ledgers (01–08) and `CLAUDE.md`; this file only say
   parser**; the last prints the **effective** condition with preset defaults filled in,
   which is where a missing `--cla-group` cost 3.6 GPU-hours. Still follow parser →
   function → behaviour with your eyes.
+  ★**2026-09-02: none of those three catches a wrong flag *contract*.** `--tokenizer-hf`
+  exists in both `run100m.py train` (bare folder) and `common_bpb.py` (**TAG=folder**),
+  and `dryrun_batch` only reads *training* calls — the one that died was a *judging* call.
+  Copying a training command into a judging command cost **9.2 hours of headline result**.
+  `lint_bat` rule 24 is the net for that. It found the same defect in a batch that had
+  not run yet. **When a flag name is shared across tools, read the target tool's parser.**
 - **R24** `[human]` `.bat` files: pure ASCII, CRLF, no `%VAR%` immediate expansion, no `chcp`,
   escape `<`, `>`, `|`. `--tag` on every variant run or it overwrites the canonical one.
 - **R25** `[human]` Sweeps use `if errorlevel 1 echo [WARN] ... - continuing`. `goto ERROR`

@@ -138,7 +138,7 @@ def main() -> int:
     print(f"         {'★토큰':<8}{trivial_short / n:>10.1%}{zs:>+8.1f}σ"
           f"{trivial_long / n:>10.1%}{zl:>+8.1f}σ")
     print("         ⚠️★**두 축은 독립이다** — 문자를 맞춰도 토큰이 쏠릴 수 있다"
-          "(결과 068 §7.1: v2.3 은 문자 25.0/25.0 인데 토큰 52.0 이었다).")
+          "(결과 068 §7.1: v2.3 은 문자 25.0/25.0 인데 토큰 30.3 이었다).")
     print("         ★**판정은 토큰 축으로 한다** — 모델이 보는 것이 그쪽이다.")
     ok_triv = abs(zs) <= TRIVIAL_MAX_SIGMA and abs(zl) <= TRIVIAL_MAX_SIGMA
     if ok_triv:

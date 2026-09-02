@@ -391,7 +391,7 @@ sequence SFT는 token 수가 훨씬 적을 수 있으므로 “300M pretraining�
 5. §4.3.1의 현 tokenizer plain-boundary pilot과 P075 새 tokenizer 중 하나를 고정한다.
 6. Qwen/Gemma revision·tokenizer hash·공식 chat template·license/notice 체크리스트를 고정한다.
 7. §3.3과 아래 수치 gate를 protocol에 preregister한다.
-8. legacy [`run_P067_stage2_gemma270m_full.bat`](../run_P067_stage2_gemma270m_full.bat)와 현재 queue/registry entry는 `P82_G_N0`와 안정성 gate가 생길 때까지 **실행 금지·운영상 격리**한다. 사용자 요청 범위 밖이므로 이번 문서 작업에서는 batch/registry를 수정하지 않는다.
+8. legacy [`run_P067_stage2_gemma270m_full.bat`](../run_P067_stage2_gemma270m_full-done.bat)와 현재 queue/registry entry는 `P82_G_N0`와 안정성 gate가 생길 때까지 **실행 금지·운영상 격리**한다. 사용자 요청 범위 밖이므로 이번 문서 작업에서는 batch/registry를 수정하지 않는다.
 
 **STOP**: evaluator parity·checkpoint/cache/tokenizer identity·leakage·license 중 하나라도 실패하거나 legacy Gemma full이 여전히 자동 실행 가능 상태면 이후 학습 금지.
 

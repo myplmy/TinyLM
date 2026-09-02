@@ -82,14 +82,35 @@ def main():
                     help="CE 를 이 행 수로 나눠 계산(0=끄기, 종전과 비트 동일). "
                          "어휘가 크면 4096 정도를 준다")
     ap.add_argument("--device", default=None)
+    # ★★2026-09-02 E21 — SQuAD **train**-v2.0 의 8.7%(348/4,000)가 우리 학습 스트림과
+    #   축자 겹친다(로그 068 [4/4], 평균 히트율 2.92% · 최대 100%).
+    #   🚫**기본값은 종전과 비트 동일**이다 — 과거 bpb 전부가 이 4,000개 위에서 나왔고
+    #   조용히 바꾸면 그 수들과 비교가 끊긴다. 켤 때만 제외한다.
+    ap.add_argument("--drop-contaminated", action="store_true",
+                    help="P075 오염 감사에서 걸린 문서를 뺀다. 🚫기본 off = 과거 수치와 비교 가능")
     ap.add_argument("--tokenizer-hf", nargs="*", default=None, metavar="TAG=폴더",
-                    help="★(P067) 태그별 외부 토크나이저. 예: mC_q3teach=HF/models--Qwen3-0.6B-Base")
+                    help="★(P067) 태그별 외부 토크나이저. 예: mC_q3teach=HF/models--Qwen3-0.6B-Base "
+                         "⚠️`run100m.py train` 의 같은 이름 플래그는 **맨 폴더**를 받는다 — 규약이 다르다")
     a = ap.parse_args()
 
-    # ★태그 -> 외부 토크나이저 폴더
+    # ★★2026-09-02 E14 — **같은 플래그 이름이 두 도구에서 다른 규약**이다(함정 28).
+    #   `run100m.py train --tokenizer-hf <폴더>`  (맨 폴더 하나)
+    #   `common_bpb.py   --tokenizer-hf TAG=<폴더>` (태그마다 하나)
+    #   배치가 학습 형태를 복사해 넣었고, 종전에는 `assert` 가 **폴더 이름만 되풀이**해서
+    #   무엇이 틀렸는지 안 알려 줬다. 그래서 **8.8시간 런의 헤드라인 비교가 통째로 날아갔다.**
+    #   -> 거절은 유지하되(추측해서 붙이면 조용히 틀린 토크나이저로 잰다),
+    #      **고쳐 쓸 문장을 그대로 인쇄**한다.
     _tokmap = {}
     for spec in (a.tokenizer_hf or []):
-        assert "=" in spec, f"형식은 TAG=폴더 다: {spec}"
+        if "=" not in spec:
+            print("[!] ★--tokenizer-hf 는 **TAG=폴더** 형식이다. 받은 것: " + spec)
+            print("    ⚠️`run100m.py train` 의 같은 이름 플래그는 맨 폴더를 받는다 —")
+            print("      **두 도구의 규약이 다르다**(함정 28). 학습 명령을 복사하면 여기서 죽는다.")
+            _guess = (a.models[0] if a.models else "TAG")
+            print("    이렇게 쓴다:")
+            print(f"      --models {' '.join(a.models)} --tokenizer-hf {_guess}={spec}")
+            print("    🚫추측해서 붙이지 않는다 — 틀린 토크나이저로 재면 bpb 가 조용히 무효가 된다.")
+            return 2
         k, v = spec.split("=", 1)
         _tokmap[k.strip()] = v.strip()
 
@@ -117,6 +138,10 @@ def main():
     print("  ★같은 원문·같은 바이트에 서로 다른 토크나이저의 모델을 통과시킨다.")
     print("    bpb = loss / ln2 / (bytes/token) 이므로 **토크나이저가 달라도 비교가 성립**한다.")
     print("  ⚠️ 영문 전용이다. 한국어 공통 원문은 아직 없다(07_corpus_selection §3).")
+    print("  ⚠️★**이 4,000개 중 8.7%(348개)가 우리 학습 스트림과 축자 겹친다**"
+          "(로그 068 [4/4]).")
+    print("     모든 후보 모델이 **같은 스트림**으로 학습됐으므로 서로 간 비교는 유효하지만,")
+    print("     🚫**절대 bpb 는 낙관 쪽으로 치우쳐 있다** — 외부 모델과 비교할 때 특히 그렇다.")
 
     datas = a.data if a.data else [a.data_default] * len(a.models)
     if len(datas) == 1 and len(a.models) > 1:

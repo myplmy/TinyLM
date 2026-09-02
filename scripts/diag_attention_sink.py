@@ -108,7 +108,7 @@ def main() -> int:
         print(f"\n  ── {tag} ({arch}, cla_group={cfg.cla_group}, "
               f"어텐션 모듈 {len(mods)}개) " + "-" * 20)
         print(f"     {'모듈':>6}{'싱크 질량':>12}{'창 질량':>12}{'싱크+창':>12}{'중간(버릴)':>12}")
-        s_all, w_all = [], []
+        s_all, w_all, b_all = [], [], []
         for i, m in enumerate(mods):
             p = m.last_probs[0]                       # (H, T, T)
             # ★질의 위치마다 분모가 다르다(causal). **질의별로 정규화된 확률**이므로
@@ -123,11 +123,20 @@ def main() -> int:
             both = float((p * (band | (k < a.sink))).sum(-1).mean())
             s_all.append(sink)
             w_all.append(win)
+            b_all.append(both)
             print(f"     {i:>6}{sink:>11.2%}{win:>12.2%}{both:>12.2%}{1 - both:>12.2%}")
             m.last_probs = None                        # 메모리 반납
 
         s = sum(s_all) / len(s_all)
         w = sum(w_all) / len(w_all)
+        # ★★2026-09-02 E18 — **겹침을 두 번 세면 안 된다.**
+        #   질의 j 가 작을 때 `[j-W, j]` 창은 싱크(0..S-1)를 **포함한다**.
+        #   그래서 `s + w` 는 겹친 질량을 두 번 세고, 창이 커질수록 그 편향이 커진다
+        #   (실측 +1.5pp @128 -> +2.25pp @768). 창 768 에서 **-0.3%** 라는
+        #   물리적으로 불가능한 값이 나온 것이 그 증상이다.
+        #   ★표의 `중간(버릴)` 열은 처음부터 `1-both`(합집합)로 옳았다 —
+        #   갈라진 것은 **요약줄뿐**이다(함정 38 의 얼굴).
+        b = sum(b_all) / len(b_all)
         unif = a.sink / a.seq
         print(f"\n     ★평균 싱크 질량 {s:.2%}  (균등 {unif:.2%} 의 **{s / unif:.1f}배**)")
         print(f"     ★평균 창 질량   {w:.2%}")
@@ -141,7 +150,8 @@ def main() -> int:
         print(f"     -> {v}   (기준 ^>{SINK_YES:.0%} 쓸 수 있다 / ^<{SINK_NO:.0%} 못 쓴다)")
         rel = ("★균등이 아니다" if s / unif >= 2.0 else "균등과 구분 안 된다")
         print(f"     -> 분포 자체는 {rel} (균등의 {s / unif:.1f}배). 🚫**'싱크가 없다' 와 '싱크를 못 쓴다' 는 다른 말이다**")
-        print(f"     -> ★**버리게 되는 질량 {1 - (s + w):.1%}** (싱크 {a.sink}개 + 최근 {a.window}개를 남길 때)")
+        print(f"     -> ★**버리게 되는 질량 {1 - b:.1%}** (싱크 {a.sink}개 + 최근 {a.window}개를 남길 때)")
+        print(f"        (합집합 기준이다. 겹침을 두 번 세는 1-(s+w) 는 {1 - (s + w):.1%} 로 **과소평가**한다)")
         print(f"     ★깊이 추세: 앞 3개 {sum(s_all[:3]) / 3:.2%} vs "
               f"뒤 3개 {sum(s_all[-3:]) / 3:.2%} — 논문은 깊을수록 크다고 한다")
         del model

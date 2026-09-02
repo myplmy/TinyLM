@@ -216,8 +216,15 @@ def lint(path: Path):
             warn.append(f"L{i+1} 홀수 개의 `%` — 리터럴 퍼센트는 `%%` 로 쓰세요: {s.strip()[:50]}")
 
     # train 명령 수집
+    # ★★2026-09-02 — **주석은 명령이 아니다.** 종전에는 REM 에 명령 이름을 적기만 해도
+    #   규칙 5·21 이 발화했다. 배치 헤더가 설계 근거를 남기는 자리인데
+    #   거기 `run100m.py train` 이라고 쓰면 오탐이 나서 **설명을 못 쓰게** 만들었다.
+    def _is_comment(x: str) -> bool:
+        y = x.strip()
+        return y.upper().startswith("REM") or y.startswith("::")
+
     trains = [(i + 1, ln) for i, ln in enumerate(lines)
-              if re.search(r"run100m\.py\s+train", ln)]
+              if re.search(r"run100m\.py\s+train", ln) and not _is_comment(ln)]
     # 실험 변형을 뜻하는 플래그. 이게 하나라도 있으면 정본이 아니므로 --tag 가 필수다.
     VARIANT = ["--mlp-group", "--sparse34", "--kd", "--init-from", "--no-ckpt", "--sched",
                "--anneal-end", "--decay-frac", "--ema", "--lora-rank", "--mlp-film",
@@ -450,6 +457,8 @@ def lint(path: Path):
     #   ⚠️36층·재귀는 실측이 없다 -^> 그때는 이 안내를 무시하고 VRAM 확인 런을 먼저 돌린다.
     for _m in re.finditer(r"^.*run100m\.py\s+train\b.*$", txt, re.M):
         _ln = _m.group(0)
+        if _is_comment(_ln):
+            continue                                   # ★주석은 명령이 아니다
         if "--tiny" in _ln or "synthetic" in _ln:
             continue                                   # 스모크는 대상이 아니다
         if "--kd" in _ln or "--no-ckpt" in _ln:
@@ -459,6 +468,38 @@ def lint(path: Path):
                    f"reserved 여유 5.69 GiB / 벽시계 **-20.6%**. 2026-08-22 사용자 지시로 "
                    f"**무KD 의 기본은 `--no-ckpt`** 다. ⚠️36층·재귀는 VRAM 실측이 없으니 "
                    f"P065 단계2(250스텝 확인)를 먼저 돌리고 붙이세요")
+
+    # ── ★규칙 24 (2026-09-02 신설, E14/E15) — **`common_bpb` 호출 형태**
+    #   ⚠️`--tokenizer-hf` 가 두 도구에서 **다른 규약**이다(함정 28):
+    #     `run100m.py train --tokenizer-hf <폴더>`      맨 폴더 하나
+    #     `common_bpb.py   --tokenizer-hf TAG=<폴더>`   태그마다 하나
+    #   2026-09-02 배치가 학습 형태를 복사해 넣어 **9.2시간 런의 헤드라인 비교가
+    #   통째로 날아갔다.** 학습은 이미 끝난 뒤였고 재측정에 1분이면 됐다.
+    #   그리고 `common_bpb` 는 **한 호출 안에 모델이 둘 이상**일 때만 비교표를 만든다 —
+    #   호출을 나누면 각각 "비교할 모델이 2개 미만" 을 찍고 exit 0 한다(E15).
+    for _m in re.finditer(r"^.*common_bpb\.py\b.*$", txt, re.M):
+        _ln = _m.group(0)
+        if _is_comment(_ln):
+            continue                                   # ★주석은 명령이 아니다
+        _no = txt[:_m.start()].count("\n") + 1
+        _tk = re.search(r"--tokenizer-hf\s+(.+?)(?:\s+--|\s*$)", _ln)
+        if _tk:
+            for _spec in _tk.group(1).split():
+                if "=" not in _spec:
+                    # -done 은 이미 돌아간 배치다. 규칙 24 는 *돌리기 전* 규칙이라
+                    # 거기서는 기록으로만 남긴다 — 늘 빨간 게이트는 아무도 안 본다.
+                    _sink = info if path.name.endswith("-done.bat") else err
+                    _sink.append(
+                        f"L{_no} ★★`common_bpb.py --tokenizer-hf` 는 **TAG=폴더** 형식이다. "
+                        f"받은 것: `{_spec}` — 이건 **`run100m.py train` 쪽 규약**이다(함정 28). "
+                        f"`--tokenizer-hf <태그>={_spec}` 로 고치세요. "
+                        f"2026-09-02 에 이 한 글자로 9.2시간 런의 판정이 날아갔다")
+        _md = re.search(r"--models\s+(.+?)(?:\s+--|\s*$)", _ln)
+        if _md and len(_md.group(1).split()) < 2:
+            info.append(
+                f"L{_no} ★`common_bpb.py` 를 **모델 하나**로 부른다 — 그 호출은 bpb 를 "
+                f"인쇄만 하고 **비교표를 안 만든다**(exit 0). 비교가 목적이면 "
+                f"**한 호출에 모델을 전부** 넣으세요(E15)")
 
     # ── 규칙 22 (2026-08-22 사용자 지시 §14) — ★**학습 배치는 wandb 로 밀어야 한다**
     #   🚫`trainer.py` 에 훅을 넣지 않는 이유는 `tool_wandb_push.bat` 헤더에 있다:

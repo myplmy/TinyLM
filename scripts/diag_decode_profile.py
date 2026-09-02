@@ -53,6 +53,14 @@ PROMPT = "대한민국의 수도 서울은"
 #   합계가 100% 가 되게 만들려고 억지로 분류하지 않는다.
 UNPACK_HINTS = ("dequant", "unpack", "to_copy", "mul", "index_select", "gather",
                 "_weight_int8pack_mm", "convert_element_type")
+# ★★2026-09-02 E16 — **`aten::copy_` 를 놓치고 있었다.**
+#   힌트가 `"to_copy"` 라 `aten::_to_copy` 는 잡히고 `aten::copy_` 는 안 잡혔다.
+#   그런데 int8 경로에서 `copy_` 가 **386.2 ms = 35.3% 로 1위**였다(로그 065 [4/6]).
+#   🚫**인쇄된 20.3% 는 과소평가**였고, 도구는 그 과소평가에 자기 판정 규칙
+#   ("20% 아래면 다른 축을 먼저 본다")을 적용했다 — 판정 대상과 판정한 대상이 갈라졌다.
+#   ⚠️단 `copy_` 는 fp32 경로에도 9.6 ms 있다 — **순수 언팩이 아니다.**
+#   -> 하나로 못 정하므로 **대역**으로 낸다. 아래는 '언팩일 수도 있는' 집합이다.
+UNPACK_MAYBE = ("copy_",)
 GEMM_HINTS = ("addmm", "mm", "matmul", "linear", "bmm", "_weight_int8pack_mm")
 # ★성공 기준값 — `check_diag_data` 가 본다(함정 32).
 #   ⚙12_inference_speed §12.2 의 유도값. **이 도구가 그것을 검증하러 간다.**
@@ -83,10 +91,15 @@ def profile_path(model, cfg, tok, device, n_new, label):
     rows = sorted(evs, key=lambda e: -e.self_cpu_time_total)
     unpack = sum(e.self_cpu_time_total for e in evs
                  if any(h in e.key for h in UNPACK_HINTS)) / 1e3
+    # ★확실 집합에 안 든 것 중 '언팩일 수도 있는' 것 — 겹치지 않게 뺀다.
+    maybe = sum(e.self_cpu_time_total for e in evs
+                if any(h in e.key for h in UNPACK_MAYBE)
+                and not any(h in e.key for h in UNPACK_HINTS)) / 1e3
     gemm = sum(e.self_cpu_time_total for e in evs
                if any(h in e.key for h in GEMM_HINTS)) / 1e3
     return {"label": label, "total_ms": total, "per_token": total / max(n_new, 1),
-            "unpack_ms": unpack, "gemm_ms": gemm, "top": rows[:12], "n": n_new}
+            "unpack_ms": unpack, "maybe_ms": maybe, "gemm_ms": gemm,
+            "top": rows[:12], "n": n_new}
 
 
 def _accepts_cache(model) -> bool:
@@ -153,11 +166,14 @@ def main() -> int:
 
         print(f"\n  ── {tag} ({arch}) " + "-" * 40)
         print(f"     {'경로':>6}{'총 ms':>10}{'토큰당':>10}"
-              f"{'언팩계 ms':>12}{'언팩 비중':>11}{'GEMM 비중':>11}")
+              f"{'언팩(확실)':>12}{'+copy_':>10}{'★언팩 대역':>18}{'GEMM':>9}")
         for r in results:
+            lo = r['unpack_ms'] / max(r['total_ms'], 1e-9)
+            hi = (r['unpack_ms'] + r['maybe_ms']) / max(r['total_ms'], 1e-9)
             print(f"     {r['label']:>6}{r['total_ms']:>10.1f}{r['per_token']:>10.2f}"
-                  f"{r['unpack_ms']:>12.1f}{r['unpack_ms'] / max(r['total_ms'], 1e-9):>11.1%}"
-                  f"{r['gemm_ms'] / max(r['total_ms'], 1e-9):>11.1%}")
+                  f"{r['unpack_ms']:>12.1f}{r['maybe_ms']:>10.1f}"
+                  f"{lo:>9.1%} ~{hi:>7.1%}"
+                  f"{r['gemm_ms'] / max(r['total_ms'], 1e-9):>9.1%}")
         base_r = next((r for r in results if r["label"] == "fp32"), None)
         for r in results:
             if base_r and r is not base_r:
@@ -173,16 +189,28 @@ def main() -> int:
         for r in results:
             if r["label"] == "fp32":
                 continue
-            sh = r["unpack_ms"] / max(r["total_ms"], 1e-9)
-            v = ("✅⚙유도(40~55%) 대역 안" if EXPECTED_UNPACK_LO <= sh <= EXPECTED_UNPACK_HI
-                 else "🚫★**유도 대역 밖**")
-            print(f"\n     ★{r['label']} 언팩 비중 {sh:.1%} -> {v}")
+            lo = r["unpack_ms"] / max(r["total_ms"], 1e-9)
+            hi = (r["unpack_ms"] + r["maybe_ms"]) / max(r["total_ms"], 1e-9)
+            # ★대역이 유도구간과 **겹치면 판정하지 않는다.**
+            #   점 하나로 축을 닫은 적이 있다(E16) — 그때 그 점이 과소평가였다.
+            if hi < EXPECTED_UNPACK_LO:
+                v = "🚫★**유도 대역 아래**(상한으로도 못 미친다)"
+            elif lo > EXPECTED_UNPACK_HI:
+                v = "🚫★**유도 대역 위**(하한으로도 넘는다)"
+            else:
+                v = "⚠️★**판정 불가 — 대역이 유도(40~55%)와 겹친다**"
+            print(f"\n     ★{r['label']} 언팩 비중 {lo:.1%} ~ {hi:.1%} -> {v}")
             print("        (12_inference_speed §12.2 의 ⚙30~42 ms / ⚙40~55% 유도)")
+            if base_r:
+                d = r["total_ms"] - base_r["total_ms"]
+                print(f"        ★fp32 대비 증분 {d:+.1f} ms = 총시간의 "
+                      f"{d / max(r['total_ms'], 1e-9):.1%} — **가정 없이 재는 유일한 수**다")
 
     print("\n" + "=" * 96)
     print("  ★이 수가 P014D 를 여는가")
-    print("    · 언팩 비중이 유도대로 40~55% 면 LUT 커널의 상한이 실재한다 -> ⚙6h 를 쓸 만하다")
-    print("    · 20% 아래면 커널을 짜도 이론 상한이 작다 -> **다른 축을 먼저 본다**")
+    print("    · 언팩 **대역**이 유도(40~55%) 안이면 LUT 커널의 상한이 실재한다 -> ⚙6h 를 쓸 만하다")
+    print("    · 대역의 **상한**이 20% 아래면 커널을 짜도 이론 상한이 작다 -> **다른 축을 먼저 본다**")
+    print("    · 🚫대역이 걸치면 **판정하지 않는다**(E16: 점 추정 하나가 과소평가였다)")
     print("    · 어느 쪽이든 **절편의 정체**를 상위 12 목록에서 찾는다 — 그것이 §12.1 의 미해결이다")
     print("  🚫**여기서 tok/s 를 인용하지 않는다.** 프로파일러가 켜진 수치다.")
     print("=" * 96)

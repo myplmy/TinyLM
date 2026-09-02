@@ -93,7 +93,29 @@ def main() -> int:
     #   dense 부모(`tie_mlp=False`)에서는 j 가 middle 인덱스이므로 층 = p + j.
     n_mid_mlp = len({k.split('.')[1] for k in sd
                      if k.startswith('mid_mlps.') and k.split('.')[1].isdigit()})
-    if n_mid_mlp and n_mid_mlp != m:
+    # ★★2026-09-02 E17 — **0개와 '개수가 다르다' 는 서로 다른 고장이다.**
+    #   종전 조건 `if n_mid_mlp and ...` 은 **0 이면 조용히 지나갔고**,
+    #   그 뒤 수집 루프도 0건이라 도구가 '이미 타잉' 도 '못 찾음' 도 아닌
+    #   **세 번째 상태**로 끝났다. 두 세션이 그 상태를 각각 한 번씩 돌았다.
+    if n_mid_mlp == 0:
+        print('[!] ★state_dict 에 `mid_mlps.*` 키가 **하나도 없다.**')
+        print('    이 도구는 MLP 를 거기서 읽는다. 아래가 실제로 있는 것이다:')
+        _pref = defaultdict(int)
+        for k in sd:
+            _pref[k.split('.')[0]] += 1
+        for _k, _n in sorted(_pref.items(), key=lambda kv: -kv[1])[:12]:
+            print(f'      {_k:<24} {_n:>6}개')
+        print('    MLP 로 보이는 키 예시:')
+        _mlpish = [k for k in sd if 'mlp' in k.lower()
+                   or 'gate_proj' in k or 'up_proj' in k or 'down_proj' in k]
+        for k in _mlpish[:8]:
+            print(f'      {k}')
+        if not _mlpish:
+            print('      (없다) — 전체 키 예시:')
+            for k in list(sd)[:8]:
+                print(f'      {k}')
+        return 1
+    if n_mid_mlp != m:
         print(f'[!] 부모의 mid_mlps 가 {n_mid_mlp}개인데 middle 은 {m}층이다 '
               f'-> 이 부모는 **이미 타잉된 것**이라 「그룹 안 상쇄」를 물을 수 없다.')
         print('    dense 부모를 준다. 이 도구는 dense 부모 전용이다.')
@@ -191,7 +213,20 @@ def main() -> int:
     if n_mlp == 0:
         print()
         print('  🚫★**MLP 텐서를 한 종도 못 쟀다 — 이 실험의 주 대상이다.**')
-        print('     `mid_mlps.{j}.*` 키가 state_dict 에 있는지 확인한다.')
+        print('     아래가 이 체크포인트에 **실제로 있는 접미사**다 — 무엇을 못 읽었는지 보라.')
+        # ★★E17 — 종전 판은 *"mid_mlps 가 있는지 확인하라"* 고 **지시만** 하고
+        #   무엇이 있었는지는 안 찍었다. 그래서 두 번째 시도가 첫 번째와 똑같이 끝났다.
+        #   🚫**게이트는 실패를 알리는 것으로 끝나지 않는다 — 다음 수를 줘야 한다.**
+        _sfx = sorted({(r[0] if isinstance(r[0], str) else '') for r in rows})
+        _seen = sorted({k.split('.', 1)[-1] if k.startswith('mid_mlps.')
+                        else k.split('.', 2)[-1]
+                        for li in sorted(per_layer)[:1] for k in per_layer[li]})
+        for x in _seen[:16]:
+            print(f'       {x}')
+        _mlpish = [k for k in sd if 'gate_proj' in k or 'up_proj' in k
+                   or 'down_proj' in k or 'mlp' in k.lower()]
+        print(f'     ★MLP 로 보이는 키 전체 {len(_mlpish)}개'
+              + (f' — 예: {_mlpish[0]}' if _mlpish else ' — **하나도 없다**'))
         return 1
     print(f"  기준: 축소비 ^> {GATE_SAFE} 안전 / ^< {GATE_OPEN} 열림  (P076 §3)")
     print("  ⚠️축소비는 **초기화 시점의 기하**만 말한다 — 학습이 그것을 얼마나 씻는지는")
