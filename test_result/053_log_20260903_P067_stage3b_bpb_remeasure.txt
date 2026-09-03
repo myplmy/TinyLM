@@ -1,0 +1,135 @@
+[1/2] common-text bpb - ONE call, THREE models, mb2 + ce-chunk 1024
+
+==============================================================================
+[runlog] 2026-09-03 19:27:48  name=P067_stage3b_bpb_remeasure
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\common_bpb.py --preset m100R1c --models GT0full G270Tfull mC_initonly_nc --micro-bs 2 --ce-chunk 1024 --tokenizer-hf GT0full=HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29 G270Tfull=HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+==============================================================================
+############################################################################################
+  P028 단계1 — 공통 원문 bpb (SQuAD v2 context)
+############################################################################################
+  device=cuda  문서 4,000개  **2.97 MB**  seq=1024
+  ★같은 원문·같은 바이트에 서로 다른 토크나이저의 모델을 통과시킨다.
+    bpb = loss / ln2 / (bytes/token) 이므로 **토크나이저가 달라도 비교가 성립**한다.
+  ⚠️ 영문 전용이다. 한국어 공통 원문은 아직 없다(07_corpus_selection §3).
+  ⚠️★**이 4,000개 중 8.7%(348개)가 우리 학습 스트림과 축자 겹친다**(로그 068 [4/4]).
+     모든 후보 모델이 **같은 스트림**으로 학습됐으므로 서로 간 비교는 유효하지만,
+     🚫**절대 bpb 는 낙관 쪽으로 치우쳐 있다** — 외부 모델과 비교할 때 특히 그렇다.
+  [P067] GT0full: 외부 토크나이저 HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+     [E22] 어휘 262,145 · CE fp32 사본 1.07 GB + logits(bf16) 1.07 GB = **2.15 GB**
+
+  ── GT0full (ko-en, tied)
+     토큰 629,267  bytes/token 4.7140  손실 4.3128  **bpb 1.3199**
+  [P067] G270Tfull: 외부 토크나이저 HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+     [E22] 어휘 262,145 · CE fp32 사본 1.07 GB + logits(bf16) 1.07 GB = **2.15 GB**
+
+  ── G270Tfull (ko-en, tied)
+     토큰 629,267  bytes/token 4.7140  손실 4.2761  **bpb 1.3087**
+     [E22] 어휘 32,768 · CE fp32 사본 0.13 GB + logits(bf16) 0.13 GB = **0.27 GB**
+
+  ── mC_initonly_nc (ko-en, tied)
+     토큰 679,424  bytes/token 4.3660  손실 3.9611  **bpb 1.3089**
+
+============================================================================================
+  ★공통 원문 bpb — 이것이 데이터셋 간 비교로 유효한 유일한 수치다
+============================================================================================
+  모델                데이터셋                 토큰수   B/tok       손실      bpb
+  ------------------------------------------------------------------------
+  G270Tfull         ko-en            629,267   4.714   4.2761   1.3087
+  mC_initonly_nc    ko-en            679,424   4.366   3.9611   1.3089
+  GT0full           ko-en            629,267   4.714   4.3128   1.3199
+
+  최저 bpb = G270Tfull (ko-en) 1.3087
+
+  읽는 법
+    · **bpb 만** 비교한다. '손실' 열은 토크나이저마다 토큰 수가 달라 **비교 불가**다.
+      (일부러 함께 찍는다 — 둘이 다른 이야기를 한다는 것이 이 실험의 요점이다)
+    · bpb 차이가 실무 분해능(0.024 nats 를 bpb 로 환산하면 대략 0.008)보다 작으면
+      **서열을 매기지 않는다.**
+    · 토큰 수가 크게 다르면 그 자체가 정보다 — 토크나이저가 이 원문을 얼마나 잘 압축하는가.
+
+  한계
+    · **영문 전용.** 한국어 쪽 결론은 이 실험으로 나오지 않는다.
+    · SQuAD context 는 영문 위키다. 두 모델 다 영문을 절반 학습했으므로 조건은 공정하지만,
+      **한국어 능력은 전혀 반영되지 않는다.**
+    · 문서를 `\n\n` 로 이어붙여 하나의 스트림으로 만든다 — 문서 경계에서 컨텍스트가 섞인다.
+      모든 모델에 동일하게 적용되므로 비교에는 영향이 없다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.7분  (2026-09-03 19:28:31)
+==============================================================================
+[2/2] same three models with the 348 contaminated documents dropped
+
+==============================================================================
+[runlog] 2026-09-03 19:28:32  name=P067_stage3b_bpb_remeasure
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\common_bpb.py --preset m100R1c --models GT0full G270Tfull mC_initonly_nc --micro-bs 2 --ce-chunk 1024 --drop-contaminated --tokenizer-hf GT0full=HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29 G270Tfull=HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+==============================================================================
+############################################################################################
+  P028 단계1 — 공통 원문 bpb (SQuAD v2 context)
+############################################################################################
+  device=cuda  문서 4,000개  **2.97 MB**  seq=1024
+  ★같은 원문·같은 바이트에 서로 다른 토크나이저의 모델을 통과시킨다.
+    bpb = loss / ln2 / (bytes/token) 이므로 **토크나이저가 달라도 비교가 성립**한다.
+  ⚠️ 영문 전용이다. 한국어 공통 원문은 아직 없다(07_corpus_selection §3).
+  ⚠️★**이 4,000개 중 8.7%(348개)가 우리 학습 스트림과 축자 겹친다**(로그 068 [4/4]).
+     모든 후보 모델이 **같은 스트림**으로 학습됐으므로 서로 간 비교는 유효하지만,
+     🚫**절대 bpb 는 낙관 쪽으로 치우쳐 있다** — 외부 모델과 비교할 때 특히 그렇다.
+  [P067] GT0full: 외부 토크나이저 HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+     [E22] 어휘 262,145 · CE fp32 사본 1.07 GB + logits(bf16) 1.07 GB = **2.15 GB**
+
+  ── GT0full (ko-en, tied)
+     토큰 629,267  bytes/token 4.7140  손실 4.3128  **bpb 1.3199**
+  [P067] G270Tfull: 외부 토크나이저 HF\models--google--gemma-3-1b-pt\snapshots\fcf18a2a879aab110ca39f8bffbccd5d49d8eb29
+     [E22] 어휘 262,145 · CE fp32 사본 1.07 GB + logits(bf16) 1.07 GB = **2.15 GB**
+
+  ── G270Tfull (ko-en, tied)
+     토큰 629,267  bytes/token 4.7140  손실 4.2761  **bpb 1.3087**
+     [E22] 어휘 32,768 · CE fp32 사본 0.13 GB + logits(bf16) 0.13 GB = **0.27 GB**
+
+  ── mC_initonly_nc (ko-en, tied)
+     토큰 679,424  bytes/token 4.3660  손실 3.9611  **bpb 1.3089**
+
+============================================================================================
+  ★공통 원문 bpb — 이것이 데이터셋 간 비교로 유효한 유일한 수치다
+============================================================================================
+  모델                데이터셋                 토큰수   B/tok       손실      bpb
+  ------------------------------------------------------------------------
+  G270Tfull         ko-en            629,267   4.714   4.2761   1.3087
+  mC_initonly_nc    ko-en            679,424   4.366   3.9611   1.3089
+  GT0full           ko-en            629,267   4.714   4.3128   1.3199
+
+  최저 bpb = G270Tfull (ko-en) 1.3087
+
+  읽는 법
+    · **bpb 만** 비교한다. '손실' 열은 토크나이저마다 토큰 수가 달라 **비교 불가**다.
+      (일부러 함께 찍는다 — 둘이 다른 이야기를 한다는 것이 이 실험의 요점이다)
+    · bpb 차이가 실무 분해능(0.024 nats 를 bpb 로 환산하면 대략 0.008)보다 작으면
+      **서열을 매기지 않는다.**
+    · 토큰 수가 크게 다르면 그 자체가 정보다 — 토크나이저가 이 원문을 얼마나 잘 압축하는가.
+
+  한계
+    · **영문 전용.** 한국어 쪽 결론은 이 실험으로 나오지 않는다.
+    · SQuAD context 는 영문 위키다. 두 모델 다 영문을 절반 학습했으므로 조건은 공정하지만,
+      **한국어 능력은 전혀 반영되지 않는다.**
+    · 문서를 `\n\n` 로 이어붙여 하나의 스트림으로 만든다 — 문서 경계에서 컨텍스트가 섞인다.
+      모든 모델에 동일하게 적용되므로 비교에는 영향이 없다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.7분  (2026-09-03 19:29:17)
+==============================================================================
+READ IN THIS ORDER
+1. did the [E22] line print a number under 6 GB.  If the tool refused
+   instead, read the command line it printed and use that - the guard
+   is new today and this is its first real run.
+2. GT0full minus G270Tfull on common-text bpb.  The training-log val
+   already says no-KD wins by 0.00766.  If bpb disagrees in SIGN, the
+   two measurements are on different text and the val one is closer to
+   what we trained on - say so, do not average them.
+3. the bpb ruler is 0.008 and it was fixed under NATIVE conditions.
+   A gap inside 0.008 is undetermined, not negative.
+4. mC_initonly_nc against either gemma arm answers a DIFFERENT
+   question - vocabulary and parameter count moved too.  It is a
+   deployment comparison, not a KD comparison.
+5. compare call [1] against call [2].  If dropping 8.7 percent of the
+   documents moves the RANKING, the contamination is not a common
+   constant and every earlier common_bpb number needs re-reading.
+6. one seed.
