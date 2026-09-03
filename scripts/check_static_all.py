@@ -53,6 +53,11 @@ CHECKS = [
      "`cfg.X` 오타 — torch 없이 정적 검출"),
     ("check_call_kwargs",   ["check_call_kwargs.py"],
      "`cli.py` 가 넘기는 키워드가 대상 함수에 있는가"),
+    ("check_imports",       ["check_imports.py"],
+     "★★`from A import B` 의 **B 가 A 에 정말 있는가**(2026-09-03 신설). "
+     "`check_return_probs.py` 가 **없는 이름 `TMT`** 를 import 해 신설 이래 한 번도 안 돌았는데 "
+     "**정적 22종이 매번 전부 통과**했다 — 아무도 import 문을 안 봤다. "
+     "함정 37 의 새 얼굴: *'파일이 있다 ≠ 그 파일이 import 된다'*. ✅실제 결함 주입으로 검출 확인·오탐 0"),
     ("check_batch_flags",   ["check_batch_flags.py"],
      "배치가 쓰는 CLI 플래그가 **파서에 실제로 있는가**(미구현 배치 2회 재발)"),
     ("lint_bat",            ["lint_bat.py"],

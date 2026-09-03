@@ -38,7 +38,7 @@ def main() -> int:
     import torch
     import tinylm                                     # noqa: F401
     from tinylm.config import build_config
-    from tinylm.model.transformer import TMT
+    from tinylm.model.transformer import TiedMLPTransformer
 
     print("=" * 96)
     print("  check_return_probs — 어텐션 확률 진단 경로 (난수 tiny 모델, 학습 0)")
@@ -47,7 +47,7 @@ def main() -> int:
     fails = []
     torch.manual_seed(1337)
     cfg = build_config("tiny", "tied", 128, True)
-    model = TMT(cfg).eval()
+    model = TiedMLPTransformer(cfg).eval()
     ids = torch.randint(0, cfg.vocab_size, (1, 64))
 
     # ── 1. 비트 동일 ────────────────────────────────────────────────

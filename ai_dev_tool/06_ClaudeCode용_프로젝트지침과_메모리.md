@@ -72,7 +72,7 @@ uboy 는 PyTorch 로 **CPU·엣지 배포용 초경량 LLM 아키텍처(TinyLM)*
 
 | ✅ 돌려도 된다 | 🚫 안 된다 |
 |---|---|
-| `python scripts/check_static_all.py`(정적 게이트 **22종**, torch·GPU **0**) | `python run100m.py train …` (**어떤 형태로든**) |
+| `python scripts/check_static_all.py`(정적 게이트 **23종**, torch·GPU **0**) | `python run100m.py train …` (**어떤 형태로든**) |
 | `python scripts/queue_menu.py --audit` / `--ids` | `run_smoke_check.bat`·`run_*.bat` (**GPU를 쓴다**) |
 | `python scripts/lint_bat.py --fix` · `check_batch_flags.py` · ★**`dryrun_batch.py`** | `scripts/paired_eval.py`·`mem_runtime.py`·`diag_*.py` (**모델을 로드한다**) |
 | `python scripts/sync_experiments_tsv.py --apply`(표만 고친다) | `git commit`·`git push` (**사용자 몫**) |
