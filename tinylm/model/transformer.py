@@ -991,34 +991,34 @@ class TiedMLPTransformer(nn.Module):
           f"  vocab={cfg.vocab_size} E={cfg.emb_rank or cfg.dim}")
         A("=" * 72)
         _tlbl = '삼진 가중치(3:4 1.25bpw)' if getattr(cfg, "sparse34", False) else '삼진 가중치'
-        A(f"  {_tlbl:<24}{tern/1e6:>9.1f}M{MB(tern,bpw_t):>10.1f} MB")
-        if mode: A(f"  {'모드 delta (fp16)':<24}{mode/1e6:>9.1f}M{MB(mode,16):>10.1f} MB")
-        if lora: A(f"  {'LoRA(r='+str(cfg.mlp_lora_rank)+', '+str(l_bits)+'bit)':<24}{lora/1e6:>9.1f}M{MB(lora,l_bits):>10.1f} MB")
-        A(f"  {'임베딩(factorized)':<24}{emb/1e6:>9.1f}M{MB(emb,e_bits):>10.1f} MB")
-        A(f"  {'기타(norm/gate/router)':<24}{other/1e6:>9.1f}M{MB(other,16):>10.1f} MB")
+        A(f"  {_tlbl:<24}{tern/1e6:>9.1f}M{MB(tern,bpw_t):>10.1f} MiB")
+        if mode: A(f"  {'모드 delta (fp16)':<24}{mode/1e6:>9.1f}M{MB(mode,16):>10.1f} MiB")
+        if lora: A(f"  {'LoRA(r='+str(cfg.mlp_lora_rank)+', '+str(l_bits)+'bit)':<24}{lora/1e6:>9.1f}M{MB(lora,l_bits):>10.1f} MiB")
+        A(f"  {'임베딩(factorized)':<24}{emb/1e6:>9.1f}M{MB(emb,e_bits):>10.1f} MiB")
+        A(f"  {'기타(norm/gate/router)':<24}{other/1e6:>9.1f}M{MB(other,16):>10.1f} MiB")
         A(f"  {'-'*52}")
-        A(f"  {'합계':<24}{total/1e6:>9.1f}M{mem:>10.1f} MB")
+        A(f"  {'합계':<24}{total/1e6:>9.1f}M{mem:>10.1f} MiB")
         A("")
         A("")
-        A(f"  {'저장(packed, 안 B)':<24}{'':>9} {mem:>10.1f} MB   {bd['bpw_convention']}")
-        A(f"  {'저장(참고, 안 C 컨테이너)':<24}{'':>9} {bd_c['packed_mb']:>10.1f} MB")
-        A(f"  {'★상주(runtime, 현 구현)':<24}{'':>9} {bd['runtime_mb']:>10.1f} MB"
+        A(f"  {'저장(packed, 안 B)':<24}{'':>9} {mem:>10.1f} MiB   {bd['bpw_convention']}")
+        A(f"  {'저장(참고, 안 C 컨테이너)':<24}{'':>9} {bd_c['packed_mb']:>10.1f} MiB")
+        A(f"  {'★상주(runtime, 현 구현)':<24}{'':>9} {bd['runtime_mb']:>10.1f} MiB"
           f"   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)")
-        A(f"  L3({l3_mb:.0f}MB) 상주       : "
+        A(f"  L3({l3_mb:.0f}MiB) 상주       : "
           f"{'가능' if bd['runtime_mb'] < l3_mb*0.7 else '불가'}"
           f"   ★**상주 기준**으로 판정한다 — 저장 기준은 {mem:.1f}MB 라 오해를 부른다(결과 016)")
         if cfg.tie_mlp:
-            A(f"  타이드 MLP 1그룹      : {mlp_mb:.1f} MB  ({cfg.mlp_group}회 연속 재사용)")
+            A(f"  타이드 MLP 1그룹      : {mlp_mb:.1f} MiB  ({cfg.mlp_group}회 연속 재사용)")
         else:
-            A(f"  MLP 블록(층별 독립)    : {mlp_mb:.1f} MB  (dense: 재사용 없음)")
+            A(f"  MLP 블록(층별 독립)    : {mlp_mb:.1f} MiB  (dense: 재사용 없음)")
         A(f"  토큰당 FLOPs          : {flops:.3f} GFLOP")
         # ★2026-08-29 — 종전 줄은 `owner` 만 세어 **재귀에서 틀렸다**(바퀴마다 K/V 가 따로 산다).
         #   정본은 `kv_report()` 이고, forward 의 키 규약 `(owner, 통과번호)` 를 그대로 복제한다.
         _kv = self.kv_report(seq_len=cfg.max_seq_len)
         A(f"  ★KV 캐시(fp32)        : {_kv['kv_kb_per_token']:.1f} KB/token  "
           f"(엔트리 {_kv['kv_entries']}개 / 방문 {_kv['kv_visits']}회)")
-        A(f"                          {cfg.max_seq_len} ctx {_kv['kv_mb']:.1f} MB  "
-          f"→ ★상주+KV = {bd['runtime_mb'] + _kv['kv_mb']:.1f} MB")
+        A(f"                          {cfg.max_seq_len} ctx {_kv['kv_mb']:.1f} MiB "
+          f"→ ★상주+KV = {bd['runtime_mb'] + _kv['kv_mb']:.1f} MiB")
         A(f"    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다")
         A("=" * 72)
         return "\n".join(L)

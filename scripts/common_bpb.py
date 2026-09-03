@@ -171,6 +171,39 @@ def main():
         n_tok = len(ids)
         bpt = n_bytes / max(n_tok, 1)            # ★이 모델 토크나이저의 bytes/token
 
+        # ── ★E22 게이트(2026-09-03) — **모델을 로드하기 전에** CE 메모리를 계산한다.
+        #   종전 경로는 `F.cross_entropy(l2.float(), y1)` 로 어휘 전체 위에
+        #   **fp32 사본을 한 번에** 만든다: micro_bs x seq x 어휘 x 4B.
+        #   2026-09-03 에 gemma 어휘 262,144 x (8 x 1024) x 4B = **정확히 8.00 GiB**
+        #   를 요구해 OOM 으로 죽었다. 학습 400.3분이 끝난 **직후**였다.
+        #   ★그리고 이것은 회귀다 — 단계1d 가 `--micro-bs 2 --ce-chunk 4096` 으로
+        #   같은 함정을 이미 넘었는데 그 두 플래그가 새 배치로 안 옮겨왔다.
+        try:                                   # ★게이트가 게이트 대상을 깨면 안 된다
+            _V = int(tok.get_vocab_size())
+        except Exception:                      # noqa: BLE001
+            try:
+                _V = len(tok.get_vocab())
+            except Exception:                  # noqa: BLE001
+                _V = 0                         # 모르면 막지 않는다(경고만 건너뛴다)
+        _rows_ce = a.ce_chunk if a.ce_chunk and a.ce_chunk > 0 else a.micro_bs * a.seq
+        _fp32_gb = _rows_ce * _V * 4 / 1e9
+        _logit_gb = a.micro_bs * a.seq * _V * 2 / 1e9      # bf16 logits 는 청킹과 무관
+        _need = _fp32_gb + _logit_gb
+        if _V:
+            print(f"     [E22] 어휘 {_V:,} · CE fp32 사본 {_fp32_gb:.2f} GB "
+                  f"+ logits(bf16) {_logit_gb:.2f} GB = **{_need:.2f} GB**")
+        if dev == "cuda" and _V and _need > 6.0:
+            print(f"\n  🚫★**CE 메모리가 {_need:.2f} GB 다 — 이대로면 OOM 이다**(E22).")
+            print(f"     어휘가 {_V:,} 라 fp32 사본이 어휘에 정비례한다.")
+            print(f"     ★`--ce-chunk` 는 fp32 사본만 나눈다 — `logits`(bf16, "
+                  f"{_logit_gb:.2f} GB)는 **`--micro-bs` 로만** 줄어든다.")
+            print("     고쳐 쓸 명령줄:")
+            _fix = " ".join(f"--tokenizer-hf {k}={v}" for k, v in _tokmap.items())
+            print(f"       python scripts/common_bpb.py --preset {a.preset} "
+                  f"--models {' '.join(a.models)} --micro-bs 2 --ce-chunk 1024 {_fix}")
+            print("     (단계1d 정본은 `--micro-bs 2 --ce-chunk 4096` 이었다)")
+            return 2
+
         model, cfg, _ = load_model(arch=arch, ckpt_path=str(ck), device=dev)
         was = cfg.quant_anneal
         model.set_anneal(1.0); model.eval(); model.freeze_quant()

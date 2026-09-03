@@ -372,7 +372,13 @@ def main():
     ap.add_argument("--out-jsonl", default=None, help="gen_save 과제의 생성물 저장 경로")
     ap.add_argument("--wandb", action="store_true",
                     help="★결과를 W&B 온라인으로 보낸다(사용자 지시 2026-08-22)")
-    ap.add_argument("--wandb-project", default="tinylm-bench")
+    # ★2026-09-03 사용자 지시 4 — 기본을 **학습 런과 같은 프로젝트**로 바꿨다.
+    #   종전 기본 `tinylm-bench` 는 학습(`tinylm`)과 갈려서 "이 벤치가 어느 모델 것인가" 를
+    #   W&B 에서 확인할 수 없었다.
+    ap.add_argument("--wandb-project", default="tinylm")
+    ap.add_argument("--wandb-standalone", action="store_true",
+                    help="★종전 형태 - 과제마다 bench-<task>-<tag> 독립 런을 만든다. "
+                         "기본은 **학습 런에 얹는다**")
     a = ap.parse_args()
 
     tasks = list(TASKS) if a.task == "all" else [a.task]
@@ -604,8 +610,35 @@ def _final(s):
     print("     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.")
 
 
+def _run_name(a, tag):
+    """★학습 런과 **같은 이름**. `wandb_sync` 가 `runs/logs/*.json` 의 stem 을 쓰고,
+    그 stem 이 `{preset}_{data}_{tokens}_{tag}` 이므로 여기서도 그대로 만든다."""
+    return f"{a.preset}_{a.data}_{a.tokens}_{tag}"
+
+
+def _bench_eligible(a, tag):
+    """★250스텝 프로브를 W&B 에 올리지 않는다(2026-08-23 사용자 지시, 2026-09-03 재확인).
+
+    사용자가 **짧은 프로브 데이터를 이미 한 번 지웠다.** 벤치 경로에도 같은 게이트를 건다.
+    판정은 스텝이 아니라 **학습 토큰**이다 — `steps` 는 유효배치에 따라 뜻이 달라진다.
+    """
+    import json
+    p = ROOT / "runs" / "logs" / f"{_run_name(a, tag)}.json"
+    if not p.exists():
+        return False, f"학습 json 이 없다({p.name}) - 어느 런의 벤치인지 결합할 수 없다"
+    try:
+        d = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:                                        # noqa: BLE001
+        return False, f"{p.name} 을 못 읽었다"
+    tk = int(d.get("tokens") or 0)
+    if tk < 50_000_000:
+        return False, (f"★짧은 프로브({tk/1e6:.1f}M 토큰 < 50M) - 품질을 읽지 않는 런이다. "
+                       f"전체 런과 섞이면 착오가 난다")
+    return True, ""
+
+
 def _push_wandb(summary, a):
-    """★결과를 W&B 온라인으로 보낸다(사용자 지시 2026-08-22 §7).
+    """★결과를 W&B 로 보낸다. **기본은 학습 런에 얹는다**(2026-09-03 사용자 지시 4).
 
     ⚠️**키는 `wandb_sync.read_key()` 로만 읽는다** — 값을 인쇄하지도, 어디에도 남기지도 않는다.
     """
@@ -618,22 +651,61 @@ def _push_wandb(summary, a):
     sys.path.insert(0, str(ROOT / "scripts"))
     from wandb_sync import read_key
     wandb.login(key=read_key())                    # ★키는 여기서만 쓰인다
+
+    if a.wandb_standalone:                         # 종전 형태(요청 시에만)
+        for task, per in summary.items():
+            if per.get("status"):
+                continue
+            for tag, rec in per.items():
+                rid = f"bench-{task}-{tag}"
+                r = wandb.init(project=a.wandb_project, id=rid, name=rid, resume="allow",
+                               reinit=True, config={"task": task, "model": tag,
+                                                    "preset": a.preset, "n": a.n,
+                                                    "seed": a.seed, "pmi": not a.no_pmi})
+                r.summary.update({k: v for k, v in rec.items()
+                                  if isinstance(v, (int, float, str, bool)) or v is None})
+                r.finish()
+                print(f"  ✅ {rid}")
+        print("  ⚠️★독립 런 형태다 — 학습 런과 **네임스페이스가 분리**된다.")
+        return
+
+    # ── ★기본 — 태그별로 모아서 **학습 런 하나에** 얹는다
+    per_tag = {}
     for task, per in summary.items():
         if per.get("status"):
             continue
         for tag, rec in per.items():
-            rid = f"bench-{task}-{tag}"
-            r = wandb.init(project=a.wandb_project, id=rid, name=rid, resume="allow",
-                           reinit=True, config={"task": task, "model": tag,
-                                                "preset": a.preset, "n": a.n,
-                                                "seed": a.seed, "pmi": not a.no_pmi})
-            r.summary.update({k: v for k, v in rec.items()
-                              if isinstance(v, (int, float, str, bool)) or v is None})
-            r.finish()
-            print(f"  ✅ {rid}")
-    print("  ★런 이름은 `bench-{과제}-{태그}` 다 — 학습 런(`{preset}_{data}_{tokens}_{tag}`)과 "
-          "**네임스페이스가 분리**된다.")
+            per_tag.setdefault(tag, {})[task] = rec
 
+    pushed = skipped = 0
+    for tag, tasks in sorted(per_tag.items()):
+        ok, why = _bench_eligible(a, tag)
+        if not ok:
+            print(f"  [건너뜀] {tag}: {why}")
+            skipped += 1
+            continue
+        rid = _run_name(a, tag)
+        r = wandb.init(project=a.wandb_project, id=rid, name=rid, resume="allow", reinit=True)
+        flat = {}
+        for task, rec in tasks.items():
+            for k, v in rec.items():
+                if isinstance(v, (int, float, str, bool)) or v is None:
+                    flat[f"bench/{task}/{k}"] = v          # ★과제가 모델 안에 담긴다
+            flat[f"bench/{task}/n"] = a.n
+            flat[f"bench/{task}/seed"] = a.seed
+            flat[f"bench/{task}/pmi"] = not a.no_pmi
+        r.summary.update(flat)
+        r.finish()
+        pushed += 1
+        print(f"  ✅ {rid}  ({len(tasks)}과제 · summary 키 {len(flat)}개)")
+
+    print("")
+    print("  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고")
+    print(f"     프로젝트도 같은 `{a.wandb_project}` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.")
+    print(f"     키는 `bench/<과제>/<지표>` 다. 올림 {pushed}개 · 건너뜀 {skipped}개.")
+    if skipped:
+        print("  ⚠️★건너뛴 것은 **짧은 프로브이거나 학습 json 이 없는** 태그다 —")
+        print("     250스텝 데이터를 전체 런 옆에 두지 않는다(2026-08-23 사용자 지시).")
 
 if __name__ == "__main__":
     sys.exit(main())

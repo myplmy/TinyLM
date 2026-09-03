@@ -172,7 +172,7 @@ def main():
     base = f"{a.preset}_{a.data}_{a.tokens}"
 
     print("=" * 96)
-    print("  P034 단계1 — 실행시 메모리 실측 (저장 MB 는 이론·패킹 가정, 상주 MB 는 실측)")
+    print("  P034 단계1 — 실행시 메모리 실측 (저장 MiB 는 이론·패킹 가정, 상주 MiB 는 실측)  ★단위는 전부 **MiB**(1024^2)")
     print(f"  device={a.device}  max_new={a.max_new}")
     print("  ★RSS 는 할당자 때문에 과대, 텐서합산은 임시버퍼를 빼서 과소. 둘을 함께 읽는다.")
     print("=" * 96)
@@ -237,14 +237,14 @@ def main():
             del before, after, ids
 
         print(f"\n  ── {tag} ({arch}) " + "─" * 60)
-        print(f"     저장(이론·패킹)   {packed:8.1f} MB     삼진 파라미터 {nt/1e6:6.2f}M "
+        print(f"     저장(이론·패킹)   {packed:8.1f} MiB    삼진 파라미터 {nt/1e6:6.2f}M "
               f"@ {bd['bpw_ternary']}bpw")
-        print(f"     텐서합산 상주     {lat+wq+oth:8.1f} MB  "
+        print(f"     텐서합산 상주     {lat+wq+oth:8.1f} MiB "
               f"= latent {lat:.1f} + dequant사본 {wq:.1f} + 기타 {oth:.1f}")
-        print(f"     RSS 로드전/로드후/생성후  {r0:8.1f} / {r1:8.1f} / {r2:8.1f} MB "
+        print(f"     RSS 로드전/로드후/생성후  {r0:8.1f} / {r1:8.1f} / {r2:8.1f} MiB "
               f"(증가 {r2-r0:+.1f})")
         if a.device == "cuda":
-            print(f"     CUDA 피크          {peak_cuda:8.1f} MB")
+            print(f"     CUDA 피크          {peak_cuda:8.1f} MiB")
         print(f"     ★저장 대비 상주    {(lat+wq+oth)/packed:8.1f} 배")
         # ★★2026-08-29 신설 — KV 캐시 상주(REVIEW3 미지 8 / 핸드오프 Q1).
         #   가중치 상주와 **더하지 않고 따로** 인쇄한다. 합치면 기존 런 전부와 비교가 끊긴다(함정 2).
@@ -273,7 +273,7 @@ def main():
                 _note += " ★**KV 재사용 켬**"
             if getattr(a, "kv_dtype", None):
                 _note += f" ★**저장 dtype {a.kv_dtype}**(구현된 축)"
-            print(f"     ★KV 캐시          {_kv['kv_mb']:8.1f} MB  @ seq {a.kv_seq} "
+            print(f"     ★KV 캐시          {_kv['kv_mb']:8.1f} MiB @ seq {a.kv_seq} "
                   f"({_kv['kv_kb_per_token']:.2f} KB/token · 엔트리 {_kv['kv_entries']}개 / "
                   f"방문 {_kv['kv_visits']}회 · {_kvb}B){_note}")
             print(f"                        ⚠️**seq 에 선형**이다 — 한 수가 아니라 기울기로 읽는다. "
@@ -300,11 +300,11 @@ def main():
             else:
                 print(f"     로짓 동등성 게이트  max|dlogit| = {dmax:.3e}   {gate}"
                       f"   (해제는 계산을 바꾸지 않으므로 0 이어야 한다)")
-            print(f"     텐서합산 상주     {res2:8.1f} MB  "
+            print(f"     텐서합산 상주     {res2:8.1f} MiB "
                   f"= latent {lat2:.1f} + 삼진사본 {wq2:.1f} + 기타 {oth2:.1f}")
-            print(f"     RSS 해제후        {r3:8.1f} MB")
+            print(f"     RSS 해제후        {r3:8.1f} MiB")
             print(f"     ★상주 감축        {(lat+wq+oth)/max(res2,1e-9):8.2f} 배"
-                  f"   (저장 {packed:.1f} -^> {pk2:.1f} MB — 저장은 변하지 않는 것이 정상)"
+                  f"   (저장 {packed:.1f} -^> {pk2:.1f} MiB — 저장은 변하지 않는 것이 정상)"
                   .replace("-^>", "→"))
         rows.append((tag, packed, lat, wq, oth, lat + wq + oth, r2 - r0, nt,
                      drop[3] if drop else None, drop[5] if drop else None))
@@ -334,8 +334,8 @@ def main():
     print("  ★핵심 질문 1 — 저장 감축이 상주 감축으로 이어지는가")
     print("=" * 96)
     b = max(rows, key=lambda r: r[1])                   # 저장이 가장 큰 것 = dense 기준
-    print(f"  기준 = {b[0]}  저장 {b[1]:.1f}MB  상주(텐서합산) {b[5]:.1f}MB\n")
-    print(f"  {'모델':>16} {'저장MB':>8} {'저장감축':>9} {'상주MB':>9} {'상주감축':>9} {'전이율':>8}")
+    print(f"  기준 = {b[0]}  저장 {b[1]:.1f}MiB  상주(텐서합산) {b[5]:.1f}MiB\n")
+    print(f"  {'모델':>16} {'저장MiB':>8} {'저장감축':>9} {'상주MiB':>9} {'상주감축':>9} {'전이율':>8}")
     print("  " + "-" * 68)
     # ★2026-09-02 — 종전에는 기준 자신과 동점 팔이 **nan%** 를 찍었다.
     #   나눗셈이 정의되지 않는 자리에는 숫자가 아니라 `—` 를 인쇄한다(R20).
@@ -366,10 +366,10 @@ def main():
     elif [r[0] for r in by_store] == [r[0] for r in by_res]:
         print("\n  → 순위 일치. **저장↓ 이 상주↓ 와 단조**다(비례까지는 위 전이율로 판단).")
     else:
-        print("\n  → ★순위 역전. **저장 MB 로 모델을 고르면 상주 기준으로는 틀린 선택**이 된다.")
+        print("\n  → ★순위 역전. **저장 MiB 로 모델을 고르면 상주 기준으로는 틀린 선택**이 된다.")
         print("     예측대로다: 상주는 bpw 가 아니라 유니크 파라미터 수를 따라간다.")
         print("     (타잉은 둘 다 줄이고, 삼진·희소는 저장만 줄인다)")
-    print(f"\n  {'모델':>16} {'삼진파라미터':>12} {'저장MB':>8} {'상주MB':>9}")
+    print(f"\n  {'모델':>16} {'삼진파라미터':>12} {'저장MiB':>8} {'상주MiB':>9}")
     for tag, packed, _l, _w, _o, res, _d, nt, _r2, _g in sorted(rows, key=lambda r: r[7]):
         print(f"  {tag:>16} {nt/1e6:11.2f}M {packed:8.1f} {res:9.1f}")
 

@@ -501,13 +501,44 @@ def lint(path: Path):
                 f"인쇄만 하고 **비교표를 안 만든다**(exit 0). 비교가 목적이면 "
                 f"**한 호출에 모델을 전부** 넣으세요(E15)")
 
+        # ── ★규칙 24c (2026-09-03 신설, E22) — **외부 토크나이저 = 큰 어휘 = CE 폭발**
+        #   `common_bpb` 의 종전 경로는 `F.cross_entropy(l2.float(), y1)` 로
+        #   **어휘 전체 위에 fp32 사본을 한 번에** 만든다.
+        #     필요 = micro_bs x seq x 어휘 x 4B
+        #   2026-09-03 에 gemma 어휘 262,144 x (8 x 1024) x 4B = **정확히 8.00 GiB**
+        #   를 요구해 OOM 으로 죽었다(E22). ★**새 결함이 아니라 회귀다** —
+        #   단계1d 가 `--micro-bs 2 --ce-chunk 4096` 으로 같은 함정을 이미 넘었고
+        #   그 두 플래그가 새 배치로 안 옥겨왔다.
+        #   ⚠️`--ce-chunk` 만으로는 절반만 막힌다 — `logits` 자체가 bf16 로
+        #   micro_bs 8 이면 4.29 GB 다. ★**`--micro-bs` 도 함께 본다.**
+        if _tk:                                        # 외부 토크나이저를 쓰는 호출만
+            _sink24c = info if path.name.endswith("-done.bat") else err
+            if not re.search(r"--ce-chunk\s+\d+", _ln):
+                _sink24c.append(
+                    f"L{_no} ★★`common_bpb.py --tokenizer-hf` 인데 **`--ce-chunk` 가 없다**. "
+                    f"기본값 0 은 어휘 전체 위에 fp32 사본을 **한 번에** 만든다 — "
+                    f"gemma 어휘(262,144)에서는 **8.00 GiB** 로 OOM 이다(E22, 2026-09-03). "
+                    f"`--micro-bs 2 --ce-chunk 1024` 를 붙이세요")
+            _mb = re.search(r"--micro-bs\s+(\d+)", _ln)
+            if _mb and int(_mb.group(1)) > 4:
+                _sink24c.append(
+                    f"L{_no} ★`common_bpb.py --tokenizer-hf` 에 `--micro-bs {_mb.group(1)}` 은 "
+                    f"크다. 큰 어휘에서는 `logits`(bf16) 만으로도 "
+                    f"micro_bs x 1024 x 어휘 x 2B 가 된다 — **`--ce-chunk` 로는 절반만 "
+                    f"막힌다**. 단계1d 정본은 **`--micro-bs 2`** 다(E22)")
+
     # ── 규칙 22 (2026-08-22 사용자 지시 §14) — ★**학습 배치는 wandb 로 밀어야 한다**
     #   🚫`trainer.py` 에 훅을 넣지 않는 이유는 `tool_wandb_push.bat` 헤더에 있다:
     #     (1) 훅이 타이밍을 흔든다 — 우리는 0.003 차이로 판정한다
     #     (2) 학습 루프 안의 네트워크 실패가 **몇 시간짜리 런을 죽인다**
     #   → **학습이 끝난 뒤 배치가 부른다.** 그래서 **배치마다 잊을 수 있고**, 이 규칙이 그물이다.
+    #   ★2026-09-03 오탐 정정 — 이 규칙도 **주석을 명령으로 읽고 있었다.**
+    #   2026-09-02 에 규칙 5·21 을 같은 이유로 고쳤는데 **22 를 빠뜨렸다**(불완전 수정).
+    #   배치 헤더에 `run100m.py train` 이라고 **설명**만 써도 발화해서, 학습을
+    #   하나도 안 하는 측정 배치가 "학습 배치인데 wandb 가 없다" 를 받았다.
+    #   ★`trains` 는 이미 주석을 걸러 낸 목록이다 — 그것을 쓴다(함정 18: 한 곳에서만).
     if path.name.startswith("run_") and not path.name.endswith("-done.bat"):
-        if re.search(r"run100m\.py\s+train\b", txt) and "--tiny" not in txt \
+        if trains and "--tiny" not in txt \
                 and "tool_wandb_push" not in txt:
             warn.append("★**학습 배치인데 `tool_wandb_push.bat` 호출이 없다** — 이 런의 로그는 "
                         "W&B 에 안 올라간다(2026-08-22 사용자 지시). 학습 뒤에 "

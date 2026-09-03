@@ -1,5 +1,23 @@
 # P082 — **Qwen·Gemma 교사로 TinyLM의 지능을 실제로 향상시킬 수 있는가**
 
+> ★★**2026-09-03 사용자 결정 두 가지**
+>
+> **① 안 B 승인** — `C0`(compute control)를 **screen 규모로 재정의**한다(§실행 순서).
+> 종전 `C0` 는 *"승자 KD 와 같은 총 GPU-hour"* 라 **full core 뒤**에 있었다 —
+> ★**full core 를 정당화할 게이트가 자기가 지켜야 할 문 뒤에 있었다.**
+> 개정 후 비용 **약 2~3 GPU-h**, 제안 범위 합계가 **191~280 → 약 52 GPU-h** 로 준다.
+>
+> **② P083 을 P082 보다 먼저 본다.**
+>
+> | | GPU |
+> |---|---|
+> | **P083**(구동기·플랫폼) | ★**거의 0** — Stage 0~5 는 engineer-day 이고 GPU 는 선택적 |
+> | **P082**(KD) | **191~280 GPU-h**(안 B 적용 시 약 52) |
+>
+> **GPU 가 병목인 상황에서 이 차이가 결정적**이고, P083 은 *"40 MiB 에 정말 들어가는가"*
+> 라는 **1순위 목표**를 직접 연다. 🚫**P082 를 기각하는 것이 아니다 — 순서 문제다.**
+
+
 - **상태**: 🔜**계획**. 문서 작성만 완료. **코드 구현·데이터 생성·학습·평가·테스트는 미착수**
 - **제안**: 사용자 지시 2026-09-01
 - **교사 축**: `Qwen3-0.6B-Base`, `gemma-3-270m`(logit KD) + 조건부 instruct variant(sequence KD)
@@ -149,7 +167,7 @@ generic raw-text logit KD의 token gate는 task 정답률을 억지로 매핑하
 | `P82_Q_N0` | Qwen | 없음 | CE | 1337/2024/4242 | 직접 대조. 기존 `QT0` 1337은 provenance 통과 시 재사용 |
 | `P82_Q_B` | Qwen | Qwen3-0.6B-Base | 기존 FKL `.5/T2/k4` | 〃 | P067 재현. 기존 `Q256T` 1337 조건부 재사용 |
 | `P82_Q_M` | Qwen | 〃 | 단계2 최선 pretraining KD | 〃 | 개선안 본시험 |
-| `P82_Q_C0` | Qwen | 없음 | CE를 승자 KD와 같은 총 GPU-hour까지 연장 | 1337, 필요 시 3 seed | compute Pareto 대조 |
+| ★**`P82_Q_C0`** | Qwen | 없음 | ★**CE를 그 family screen 승자와 같은 GPU-hour까지 연장 (screen 규모)** | 1337 | ★**full core 진입 게이트**(안 B, 2026-09-03 승인) |
 
 #### Gemma family
 
@@ -158,7 +176,7 @@ generic raw-text logit KD의 token gate는 task 정답률을 억지로 매핑하
 | ★`P82_G_N0` | Gemma | 없음 | CE | 1337/2024/4242 | ★필수 full-budget 대조. 기존에는 probe만 있음 |
 | `P82_G_B` | Gemma | Gemma 3 270M | 기존 FKL `.5/T2/k4` | 〃 | 기존법의 교사 효과 |
 | `P82_G_M` | Gemma | 〃 | Qwen에서 선별한 modern KD | 〃 | 교사/가족 간 재현성 |
-| `P82_G_C0` | Gemma | 없음 | CE를 승자 KD와 같은 총 GPU-hour까지 연장 | 1337, 필요 시 3 seed | compute Pareto 대조 |
+| ★**`P82_G_C0`** | Gemma | 없음 | ★**CE를 그 family screen 승자와 같은 GPU-hour까지 연장 (screen 규모)** | 1337 | ★**full core 진입 게이트**(안 B, 2026-09-03 승인) |
 
 ★★Qwen과 Gemma의 **raw CE를 서로 비교하지 않는다.** 각각 `Q_B−Q_N0`, `G_B−G_N0`를 계산한 뒤 효과량과 downstream 변화만 비교한다.
 
@@ -391,7 +409,7 @@ sequence SFT는 token 수가 훨씬 적을 수 있으므로 “300M pretraining�
 5. §4.3.1의 현 tokenizer plain-boundary pilot과 P075 새 tokenizer 중 하나를 고정한다.
 6. Qwen/Gemma revision·tokenizer hash·공식 chat template·license/notice 체크리스트를 고정한다.
 7. §3.3과 아래 수치 gate를 protocol에 preregister한다.
-8. legacy [`run_P067_stage2_gemma270m_full.bat`](../run_P067_stage2_gemma270m_full-done.bat)와 현재 queue/registry entry는 `P82_G_N0`와 안정성 gate가 생길 때까지 **실행 금지·운영상 격리**한다. 사용자 요청 범위 밖이므로 이번 문서 작업에서는 batch/registry를 수정하지 않는다.
+8. legacy `run_P067_stage2_gemma270m_full.bat`(★삭제됨 — 재현 명령은 [결과 053 부록](../test_result/053_20260822_P067-단계0a-두-최신-소형모델은-KV를-버리고-있다.md)에 있다)와 현재 queue/registry entry는 `P82_G_N0`와 안정성 gate가 생길 때까지 **실행 금지·운영상 격리**한다. 사용자 요청 범위 밖이므로 이번 문서 작업에서는 batch/registry를 수정하지 않는다.
 
 **STOP**: evaluator parity·checkpoint/cache/tokenizer identity·leakage·license 중 하나라도 실패하거나 legacy Gemma full이 여전히 자동 실행 가능 상태면 이후 학습 금지.
 
@@ -434,7 +452,7 @@ sequence SFT는 token 수가 훨씬 적을 수 있으므로 “300M pretraining�
 
 ### 단계5 — 300M final-checkpoint·3 seed 확증
 
-1. Qwen과 Gemma 각각 matched `N0/B/M` 중 앞 단계 통과 팔만 seed 1337 full로 실행한다. 각 family의 승자 KD가 정해지면 `C0`를 같은 총 GPU-hour까지 학습해 효율을 비교한다.
+1. ★**2026-09-03 개정 (안 B 승인)** — `C0` 를 **full core 뒤가 아니라 screen 단계에서** 돌린다. 종전 정의는 *"승자 KD 와 같은 총 GPU-hour"* 라 **승자가 정해진 뒤에만** 실행 가능했고, 그래서 **full core(약 139 GPU-h)를 정당화해야 할 게이트가 그 뒤에** 있었다. ★**개정**: Stage 2 screen 승자의 GPU-hour 에 맞춰 `C0` 를 **약 2~3 GPU-h** 로 돌리고, 🚫**`C0` 가 screen 규모에서 KD 를 이기면 full core 를 열지 않는다.** 그다음에야 matched `N0/B/M` 중 통과 팔을 seed 1337 full 로 실행한다.
 2. seed 1337 승격 조건은 `(a)` 1차 과제 하나 이상 `≥+2%p`, equal-task macro `>0`, 어느 과제도 `<−2%p`가 아니거나, `(b)` `Δbpb≤−δ_bpb`이고 어느 1차 과제도 `<−2%p`가 아닌 경우다. 이는 추가 seed를 살 가치가 있는 screen일 뿐 최종 성공 기준이 아니다.
 3. 승격한 팔만 seed 2024/4242를 추가하고, 최종 checkpoint로 §3.4를 판정한다. seed 1337이 승격 기준에 못 미치면 자동 추가 실행하지 않는다. `C0` 추가 seed는 KD가 N0를 이기지만 C0와의 차가 미확정일 때만 연다.
 4. Qwen과 Gemma는 각각 `Q_*−Q_N0`, `G_*−G_N0`로만 인과효과를 계산한다. 두 family의 절대 CE와 teacher 크기만으로 capacity gap을 주장하지 않는다.
@@ -565,7 +583,7 @@ MMLU·ARC-c·BoolQ·BFCL은 현재 바닥/기준선 미달이라 1차 서열용�
 | Stage 2 Qwen 100M screen | 약 **14.9 GPU-h** | 15~20 GPU-h | **20 GPU-h cap** | full 실측의 1/3 선형환산으로 Wave A 6팔≈14.94h; Wave B는 신호·잔여 cap 조건부 |
 | Stage 3~4 native/Gemma screen | 10 GPU-h | 20~40 GPU-h | **40 GPU-h cap** | 생성·검증 포함; 구현 후 재산정 |
 | Track A token-matched full core | 약 **139 GPU-h** | 139~160 GPU-h | — | Qwen 3팔×3seed 약 64h + Gemma 계획 placeholder 약 75h; Gemma N0 실측 전 확정치 아님 |
-| Track A compute control | 약 **17 GPU-h** | 17~20 GPU-h | **full 합계 180 GPU-h cap** | Q/G 승자별 `C0` seed1337 placeholder; 추가 seed는 cap 안에서 조건부 |
+| ★**Track A compute control (안 B)** | ★**약 2~3 GPU-h** | 2~4 GPU-h | — | ★**2026-09-03 개정** — screen 규모로 재정의. 종전 17 GPU-h 는 full core 종속이었다. 🚫**여기서 KD 가 지면 full core 를 열지 않는다** |
 | rationale/on-policy | 10 GPU-h | 20~40 GPU-h | **40 GPU-h cap** | answer-only 통과 때만 |
 | P082 기본범위 합계 | 약 **191 GPU-h** | **211~280 GPU-h** | **280 GPU-h hard cap** | Track C 제외. 어느 단계든 별도 실행 승인 필요 |
 | 모든 선택축을 무제한 확장 | — | — | `>350 GPU-h` 가능 | 🚫P082 기본범위가 아니며 새 계획/승인 필요 |
