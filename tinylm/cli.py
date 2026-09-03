@@ -146,6 +146,15 @@ def main():
     #   예: `--mlp-split 12` -^> [0..11][12..15] / `--mlp-split 4` -^> [0..3][4..15]
     p.add_argument("--mlp-split", type=int, nargs="*", default=None,
                     help="중간 MLP 타잉 경계(불균등). 미지정이면 --mlp-group 균등")
+    # ★★P005(2026-09-03) — Muon. 🚫기본 `adamw` = 비트 동일.
+    p.add_argument("--optimizer", choices=["adamw", "muon"], default="adamw",
+                   help="★(P005) `muon` 이면 **행렬만** Muon(Newton-Schulz 5), "
+                        "임베딩·norm·bias 는 AdamW. ⚠️이점은 대배치 집중 — 우리 131K 는 작다. "
+                        "⚠️삼진 STE 상호작용 미검증")
+    # ★★P084(2026-09-03) — prelude·coda 에 CLA 를 적용하지 않는다. 🚫기본 = 비트 동일.
+    p.add_argument("--no-cla-edges", action="store_true",
+                   help="★(P084) 머리(prelude)·꼬리(coda)는 **자기 K/V 를 갖는다**. "
+                        "그룹은 middle 안에서만 묶인다. ⚠️**KV 엔트리가 늘어 상주가 커진다**")
     p.add_argument("--opt-dtype", choices=["fp32", "fp32c", "bf16"], default="fp32",
                    help="(P022B 단계2) AdamW **상태**(exp_avg/exp_avg_sq) 정밀도. "
                         "fp32=종전 torch fused AdamW(기본, 비트 동일) / "
@@ -277,6 +286,7 @@ def main():
               tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode, mlp_group=a.mlp_group,
               mlp_split=a.mlp_split,
               micro_group=a.micro_group, opt_dtype=a.opt_dtype,
+              optimizer=a.optimizer,
               wq_dtype=a.wq_dtype, emb_chunk=a.emb_chunk,
               ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from,
               snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None),
@@ -295,6 +305,7 @@ def main():
               repeat_mode=a.repeat_mode, repeat_block=a.repeat_block,
               reuse_attn_on_dup=a.reuse_attn_on_dup,
               ce_chunk=a.ce_chunk, cla_group=a.cla_group,
+              cla_edges=(not a.no_cla_edges),
               tokenizer_hf=a.tokenizer_hf, kd_teacher_hf=a.kd_teacher_hf,
               teacher_dtype=a.teacher_dtype,
               save_every=a.save_every)

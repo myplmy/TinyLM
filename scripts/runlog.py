@@ -105,6 +105,63 @@ def _git_state():
         return None, None
 
 
+def _plan_of(name):
+    """`--name` 앞머리에서 **계획번호를 접미사까지 완전 일치**로 뽑는다.
+
+    ★`P077` 이 `P077B` 를 잡으면 안 된다(제안서 §6 단계1). 그래서 문자 접미사를
+    **번호의 일부로** 읽고, 뒤에 오는 글자가 영숫자면 경계가 아니므로 거절한다.
+    """
+    m = re.match(r'^(P\d{3,}[A-Za-z]*)(?![0-9])', name or '')
+    return m.group(1) if m else None
+
+
+def _auto_num(out, name):
+    """★결과 번호를 정한다 — **1개면 그것, 0개면 max+1, 2개 이상이면 거절.**
+
+    2026-09-03 사용자 승인(`proposal/20260903_결과문서번호-자동할당.md`).
+    🚫**모호하면 만들지 않는다** — `P037`·`P077` 처럼 번호가 갈린 계획은
+    **사람이 `--num` 을 줘야 한다.** 추측해서 고르면 그게 곧 오배정이다.
+    """
+    plan = _plan_of(name)
+    if not plan:
+        return None                       # 계획번호가 아니면 종전대로 번호 없이
+
+    # ★계획서가 실재하는가 — 오타가 새 번호를 따내는 것을 막는다(단계4)
+    if not list((ROOT / 'test_plan').glob(plan + '_*.md')):
+        print(f'[runlog] ⚠️`{plan}` 계획서가 test_plan/ 에 없다 — 오타인가? '
+              f'번호를 자동 배정하지 않는다.', file=sys.stderr)
+        return None
+
+    seen, allnum = {}, set()
+    for f in out.glob('*_log_*.txt'):
+        m = re.match(r'^(\d{3})_log_\d{8}_(.+)\.txt$', f.name)
+        if not m:
+            continue
+        allnum.add(int(m.group(1)))
+        if _plan_of(m.group(2)) == plan:
+            seen.setdefault(m.group(1), []).append(f.name)
+
+    if len(seen) == 1:
+        num = next(iter(seen))
+        print(f'[runlog] ★번호 자동 배정: {plan} -> **{num}** (기존 로그 '
+              f'{len(seen[num])}건과 일치)')
+        return num
+    if len(seen) == 0:
+        num = f'{(max(allnum) + 1) if allnum else 1:03d}'
+        print(f'[runlog] ★번호 자동 배정: {plan} 은 처음이다 -> **{num}** '
+              f'(현재 최대 {max(allnum) if allnum else 0:03d} + 1)')
+        return num
+
+    # ── 2개 이상 = 오배정 위험. **여기서 멈춘다.**
+    print('[runlog] ★★번호를 정할 수 없다 — 같은 계획이 **여러 번호**에 걸쳐 있다.',
+          file=sys.stderr)
+    for k in sorted(seen):
+        print(f'[runlog]     {k} : {seen[k][0]} 외 {len(seen[k]) - 1}건', file=sys.stderr)
+    print(f'[runlog] 🚫추측하지 않는다. `--num <번호>` 를 직접 주고 다시 돌린다.',
+          file=sys.stderr)
+    sys.exit(2)
+
+
 def _stamped_path(out, name, sha, forced_stamp, reuse_min):
     """비실험 로그 경로. `{YYYYMMDDHHMM}_{name}_{sha7}.txt`, 최근 파일이면 이어쓴다."""
     tag = sha or "nogit"
@@ -275,7 +332,11 @@ def main():
     sha, dirty = _git_state()
     if is_experiment_dir:
         day = datetime.now().strftime("%Y%m%d")
-        stem = f"{a.num}_log_{day}_{a.name}" if a.num else f"log_{day}_{a.name}"
+        # ★2026-09-03 — `--num` 이 없으면 **계획번호에서 자동 배정**한다(제안서 승인).
+        #   ⚠️`--num` 이 주어지면 그것이 이긴다 — 자동은 **기본값을 채우는 것**이지
+        #   덮어쓰는 것이 아니다(제안서 §6 설계결정 3).
+        num = a.num if a.num else _auto_num(out, a.name)
+        stem = f"{num}_log_{day}_{a.name}" if num else f"log_{day}_{a.name}"
         path = out / f"{stem}.txt"
     else:
         path = _stamped_path(out, a.name, sha, os.environ.get("TL_STAMP"),

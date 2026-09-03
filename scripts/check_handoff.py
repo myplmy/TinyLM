@@ -262,6 +262,26 @@ def lint(path: Path):
         except Exception as e:                              # 큐 메타데이터가 없으면 건너뛴다
             info.append(f"큐 id 대조를 못 했다: {type(e).__name__}")
 
+    # ── ★★9. 언급한 배치가 **디스크에 있는가** (2026-09-03 사용자 지시) ────────
+    #   *"배치파일이 존재하지 않는데 기입하려고 한다면 스크립트로 경고하도록"*
+    #   ★양식을 늘려 해결할 문제가 아니다 — **규약을 지켰는지 기계가 본다.**
+    #   근거: 2026-09-03 핸드오프 §7 이 실험 7행을 실었는데 **배치가 있는 것은 1행뿐**이었다.
+    #   🚫`-done` 도 인정한다(끝난 실험을 참조할 수 있다). ⏳미작성이라고 **명시한 줄은 봐준다**.
+    for i, raw in enumerate(lines, 1):
+        for m in re.finditer(r'`(run_[A-Za-z0-9_]+\.bat)`', raw):
+            name = m.group(1)
+            if (ROOT / name).exists():
+                continue
+            stem = name[:-4]
+            if (ROOT / (stem + '-done.bat')).exists():
+                info.append(f"L{i} `{name}` 은 이미 `-done` 이다 — 참조는 유효")
+                continue
+            if any(k in raw for k in ('미작성', '작성 예정', '승인 시', '승인되면', '작성 대기')):
+                info.append(f"L{i} `{name}` 은 디스크에 없지만 **미작성이라고 밝혔다** — 통과")
+                continue
+            err.append(f"L{i} ★**`{name}` 이 디스크에 없다.** 핸드오프가 **돌릴 수 있는 것처럼** "
+                       f"적고 있다 — 배치를 만들든지, 그 줄에 **미작성**이라고 밝히든지 한다")
+
     # ── 8. CLAUDE.md 가 이 파일을 가리키는가 ─────────────────────────────────
     cm = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
     if path.name not in cm:

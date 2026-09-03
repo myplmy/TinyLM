@@ -58,6 +58,10 @@ CHECKS = [
      "`check_return_probs.py` 가 **없는 이름 `TMT`** 를 import 해 신설 이래 한 번도 안 돌았는데 "
      "**정적 22종이 매번 전부 통과**했다 — 아무도 import 문을 안 봤다. "
      "함정 37 의 새 얼굴: *'파일이 있다 ≠ 그 파일이 import 된다'*. ✅실제 결함 주입으로 검출 확인·오탐 0"),
+    ("check_flag_used",     ["check_flag_used.py"],
+     "★★**선언만 하고 아무도 안 읽는 CLI 플래그**(2026-09-03 신설). `common_bpb.py --drop-contaminated` 가 "
+     "**파서에만 있고 몸통이 0줄**이라 배치가 그 플래그를 주고 돌렸는데 출력이 **바이트 동일**이었다(결과 053 §12.3). "
+     "게이트 3(`check_batch_flags`)은 *'파서에 있는가'* 만 본다 — **함정 37 의 셋째 얼굴**. ✅실검출 2건·오탐 2건은 규칙으로 면제"),
     ("check_batch_flags",   ["check_batch_flags.py"],
      "배치가 쓰는 CLI 플래그가 **파서에 실제로 있는가**(미구현 배치 2회 재발)"),
     ("lint_bat",            ["lint_bat.py"],

@@ -149,5 +149,13 @@ stories live in the Korean ledgers (01–08) and `CLAUDE.md`; this file only say
 - **R38** `[fact]` `M = micro_bs × seq` drives speed and VRAM together. Knee **M = 8,192** —
   **and that is a vocab-32,768 number, not a constant** (A3).
 - **R39** `[fact]` Data pool ≥ 2× training tokens (`--pool-tokens 600M --exact-cache`).
+- ★**R41** `[human]` **Answer every numbered item the user gave — all of them, in full.**
+  Never silently drop, merge, shorten, or defer one. If an item cannot be done, say so
+  **as its own item**, with the reason and what would unblock it (R36 applies: numbers, not
+  adjectives). ★Evidence it was needed: on 2026-09-03 the repeat-exposure axis was **read**
+  in the source doc, carried into a proposal's alternatives, and then **dropped** from both
+  the REVIEW4 draft and `03_knowledge_quality.md` — the user had to ask why.
+  ⚠️This also governs the WIP ledger: **copy the instruction verbatim, do not summarize it.**
+
 - **R40** `[gate]` In `scripts/`, `import tinylm` **before** `datasets`/`transformers`, or the HF
   cache redirect does not apply and downloads land outside the work folder. `[gate]`

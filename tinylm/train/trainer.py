@@ -168,6 +168,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, micro_group=None,
           mlp_split=None,
           opt_dtype="fp32", ema_start=0.0, wq_dtype=None, emb_chunk=None,
+          optimizer="adamw",
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
@@ -177,7 +178,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None,
           kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
           attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
-          reuse_attn_on_dup=False, ce_chunk=0, cla_group=None,
+          reuse_attn_on_dup=False, ce_chunk=0, cla_group=None, cla_edges=True,
           tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
           save_every=0):
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -232,6 +233,18 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                   f"KV 소유 층이 {cfg.n_layers // cfg.cla_group} -> {cfg.n_layers // cla_group} 개")
             print(f"[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다")
         cfg.cla_group = cla_group
+
+    # ★★P084 — prelude·coda 에 CLA 를 적용하지 않는다. 🚫기본 True = 비트 동일.
+    #   ⚠️**모델 생성 전에** 바꿔야 한다(층이 owner 를 그때 정한다 — cla_group 과 같은 이유).
+    if not cla_edges:
+        _p, _m, _c, _g = cfg.n_prelude, cfg.n_middle, cfg.n_coda, cfg.cla_group
+        assert _m % _g == 0, \
+            f"n_middle {_m} % cla_group {_g} != 0 — middle 안에서 묶으므로 middle 이 나눠떨어져야 한다"
+        _before, _after = cfg.n_layers // _g, _p + _c + _m // _g
+        print(f"[P084] ★cla_edges=False — 머리 {_p} + 꼬리 {_c} 는 **자기 K/V** 를 갖는다")
+        print(f"[P084] ⚠️**KV 소유 층 {_before} -> {_after} 개**(+{_after - _before}). "
+              f"상주가 커진다 — 예산을 먼저 본다")
+        cfg.cla_edges = False
     if mlp_group and arch == "tied":            # g 스윕용 오버라이드(P003)
         assert cfg.n_middle % mlp_group == 0, f"n_middle {cfg.n_middle} % g {mlp_group} != 0"
         cfg.mlp_group = mlp_group
@@ -410,10 +423,24 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     #   우리 학습 파라미터 약 63.5M × 2벌 × 4B = **약 508MB** → bf16 이면 **약 254MB 회수**.
     #   ⚠️ **기본 `fp32` = 종전 `torch.optim.AdamW(fused=True)` = 비트 동일.**
     #     `fp32c` 는 **같은 수식의 우리 구현**(자기검증용) — 구현 위험과 dtype 위험을 분리한다.
-    if opt_dtype == "fp32":
+    # ★★P005(2026-09-03) — **Muon 라우팅.** 행렬은 Muon, 그 외(임베딩·norm·bias)는 AdamW.
+    #   🚫`adamw`(기본) = 종전과 **비트 동일**. `muon` 일 때만 두 옵티마이저가 선다.
+    #   ⚠️**이점은 대배치에 집중**된다(arXiv:2505.02222) — 우리 유효배치 131K 는 작다.
+    #   ⚠️★**삼진 STE 와의 상호작용은 미검증**이다(P005 선결) — fp16 팔과 함께 돌린다.
+    if optimizer == "muon":
+        from .muon import Muon, split_params
+        _mats, _others = split_params(model)
+        opt = torch.optim.AdamW([{"params": _others}], lr=lr,
+                                betas=(0.9, 0.95), eps=1e-8)
+        opt_muon = Muon(_mats, lr=lr)
+        print(f"[opt] ★Muon(P005) — 행렬 {len(_mats)}개는 Muon, "
+              f"그 외 {len(_others)}개는 AdamW. 🚫muP 는 미구현(P005 A축)")
+    elif opt_dtype == "fp32":
+        opt_muon = None
         opt = torch.optim.AdamW(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8,
                                 fused=(device == "cuda"))   # ①: optimizer update 단일 커널
     else:
+        opt_muon = None
         from .adamw_bf16 import AdamWLowPrec
         _sd = torch.bfloat16 if opt_dtype == "bf16" else torch.float32
         opt = AdamWLowPrec(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8, state_dtype=_sd)
@@ -656,7 +683,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         gn = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
 
         if not torch.isfinite(gn):
-            opt.zero_grad(set_to_none=True); model.clear_quant()
+            opt.zero_grad(set_to_none=True)
+            if opt_muon is not None:
+                opt_muon.zero_grad(set_to_none=True)
+            model.clear_quant()
             n_skip += 1
             print(f"  [skip] step {s}: non-finite grad ({n_skip}회째)  "
                   f"anneal {model.cfg.quant_anneal:.2f}  lr {opt.param_groups[1]['lr']:.2e}")
@@ -667,7 +697,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         gpeak = max(gpeak, float(gn))
         if s >= warm:
             gmax = max(gmax, float(gn))
-        opt.step(); opt.zero_grad(set_to_none=True)
+        # ★P005 — Muon 은 **행렬만** 맡는다. 두 옵티마이저가 같은 스텝에서 함께 간다.
+        opt.step()
+        if opt_muon is not None:
+            opt_muon.step()
+            opt_muon.zero_grad(set_to_none=True)
+        opt.zero_grad(set_to_none=True)
         if ema > 0 and s >= ema_start_step:     # P1: 감쇠 구간의 좋은 가중치만 평균
             with torch.no_grad():
                 if shadow is None:

@@ -60,8 +60,19 @@ class TiedMLPTransformer(nn.Module):
 
         layers, self.owner = [], []
         for i in range(cfg.n_layers):
-            owns = (i % cfg.cla_group == 0)
-            self.owner.append(i - (i % cfg.cla_group))
+            # ★★P084 — `cla_edges=False` 면 prelude·coda 는 **자기 K/V 를 갖는다.**
+            #   그룹은 **middle 안에서만** 묶는다 — 전역 인덱스로 나누면 그룹이
+            #   머리/몸통 경계를 걸쳐 *'머리 하나 + 몸통 하나'* 가 짝이 된다.
+            _p, _m = cfg.n_prelude, cfg.n_middle
+            if cfg.cla_edges or cfg.cla_group == 1:
+                _own = i - (i % cfg.cla_group)          # 종전 = 비트 동일
+            elif _p <= i < _p + _m:
+                _j = i - _p                             # middle 내부 좌표로 묶는다
+                _own = _p + (_j - (_j % cfg.cla_group))
+            else:
+                _own = i                                # 머리·꼬리는 자기 것
+            owns = (_own == i)
+            self.owner.append(_own)
             shared_attn = None
             if i < cfg.n_prelude:
                 mlp = self.pre_mlps[i]

@@ -330,7 +330,8 @@ def cmd_ids(rows, names):
 
 def main():
     ap = argparse.ArgumentParser(description="run_queue.bat 의 메타데이터 기반 두뇌")
-    ap.add_argument("--list", action="store_true")
+    ap.add_argument("--list", action="store_true",
+                    help="목록만 인쇄한다(인자 없이 실행한 것과 같다)")
     ap.add_argument("--build", metavar="IDS")
     ap.add_argument("--audit", action="store_true")
     ap.add_argument("--ids", nargs="+", metavar="BATCH",
@@ -343,6 +344,9 @@ def main():
         return cmd_ids(rows, a.ids)
     if a.build is not None:
         return cmd_build(rows, a.build)
+    # ★`--list` 는 아래 기본 경로와 같다 — **명시적으로 읽어** 죽은 플래그가 아님을 남긴다
+    #   (2026-09-03 `check_flag_used` 신설 때 발견: 선언만 있고 참조 0곳이었다)
+    _ = a.list
     return cmd_list(rows, warn)
 
 

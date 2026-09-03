@@ -87,7 +87,10 @@ def main():
     #   🚫**기본값은 종전과 비트 동일**이다 — 과거 bpb 전부가 이 4,000개 위에서 나왔고
     #   조용히 바꾸면 그 수들과 비교가 끊긴다. 켤 때만 제외한다.
     ap.add_argument("--drop-contaminated", action="store_true",
-                    help="P075 오염 감사에서 걸린 문서를 뺀다. 🚫기본 off = 과거 수치와 비교 가능")
+                    help="🚫**미구현**(2026-09-03 결과 053 §12.3 에서 무동작 확인). "
+                         "선결 = 오염 348개의 **문서 인덱스 목록**을 파일로 저장하는 것 "
+                         "— 로그 068 [4/4] 가 세기만 하고 목록을 안 남겼다. "
+                         "지금 주면 **조용히 아무 일도 안 한다**")
     ap.add_argument("--tokenizer-hf", nargs="*", default=None, metavar="TAG=폴더",
                     help="★(P067) 태그별 외부 토크나이저. 예: mC_q3teach=HF/models--Qwen3-0.6B-Base "
                          "⚠️`run100m.py train` 의 같은 이름 플래그는 **맨 폴더**를 받는다 — 규약이 다르다")

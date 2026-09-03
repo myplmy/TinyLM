@@ -51,6 +51,17 @@ set TL_NOPAUSE=1
 call scripts\batch\tool_smoke.bat
 if errorlevel 1 echo [WARN] smoke reported a problem - read which field is missing
 
+REM ***2026-09-03: exit-code summary. The contract check counts INSTRUMENTATION
+REM   fields only - it never looks at any arm's exit code. On 2026-09-03 one arm
+REM   exited 1 and the last line still said 'Long runs are safe to start'.
+REM   summarize_smoke.py reads this log back and joins BOTH verdicts into one.
+REM   PYTHONIOENCODING is set because the summary prints non-ASCII marks and the
+REM   default cp949 console kills python on them.
+set PYTHONIOENCODING=utf-8
+echo.
+python scripts\runlog.py --name smoke python scripts\summarize_smoke.py
+if errorlevel 1 echo [WARN] an arm exited non-zero - read section A above
+
 echo.
 python scripts\runlog.py --name smoke --note "=================================================================" "VERDICT: read the final total-error-count line of the contract check." "  zero     -^> the contract holds. Long runs are safe to start." "  not zero -^> fix the missing field FIRST. A long run that cannot be" "              written up is a long run thrown away." "  The [VERIFY] banner above it is a section title, not the answer." "=================================================================" "done."
 REM 2026-08-13 - clear TL_OUTDIR before returning. setlocal SHOULD scope it, but a
