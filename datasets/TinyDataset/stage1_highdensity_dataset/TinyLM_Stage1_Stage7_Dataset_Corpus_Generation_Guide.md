@@ -533,17 +533,19 @@ other
 1. 작업지침서·설계서·실제 파일을 읽는다.
 2. 보호 SHA-256과 초기 git status를 저장한다.
 3. 예약 family와 ID 범위를 확인한다.
-4. 한 version의 primary concept·relations·text를 직접 작성한다.
-5. source 행 수·열·relation을 검사한다.
-6. builder로 정확히 150 records를 포장한다.
-7. JSON·ID·schema·relations를 검사한다.
-8. concept/text duplicate, 5어절, 도입부, 유사도, 조사를 검사한다.
-9. 사람이 모든 플래그와 의미 문장을 검토한다.
-10. source를 직접 수정하고 전체를 재빌드·재감사한다.
-11. 파일 상태와 누적을 설계서에 갱신한다.
-12. 다음 예약 family로 이동한다.
+4. 한 Stage의 한 교육영역에 예약된 version들을 순서대로 직접 작성한다.
+5. 작성 중에는 JSONL parse, 150행, 필수 열, relation 통제어휘·cardinality·내부 중복, primary literal·고유성 같은 source 최소 계약만 확인한다.
+6. 해당 교육영역의 모든 source가 완성되기 전에는 파일별 token 평균·fuzzy·n-gram·조사 감사를 이유로 반복 수정하거나 corpus로 포장하지 않는다.
+7. 교육영역 source 전체가 끝나면 파일별·영역 누적 token, concept/text duplicate, 5어절, 도입부, 유사도, 조사와 relation 분포를 한 번에 감사한다.
+8. 사람이 영역 전체 플래그와 의미 문장을 검토하고, 오류 source만 직접 수정한 뒤 같은 영역 감사를 전부 재실행한다.
+9. 모든 source gate가 통과하면 builder로 각 version을 정확히 150 records의 corpus JSON으로 일괄 포장한다.
+10. 포장 뒤 JSON·ID·schema·source projection·relations와 영역 누적 split leakage를 재검사한다.
+11. 교육영역의 source/corpus/checkpoint·감사보고서를 확정하고 파일 상태와 누적을 설계서·작업원장에 갱신한다.
+12. 다음 교육영역 예약 family로 이동한다.
 13. 전체 완료 뒤 통합 감사·최종 보고서를 작성한다.
 14. 보호 SHA-256과 초기 git status를 다시 비교한다.
+
+교육영역 일괄 감사는 품질 gate를 완화하지 않는다. 파일별 token 평균 허용범위와 모든 §15 검사는 그대로 적용하며, 단지 직접 작성 도중의 반복 검사·수정을 영역 종료 시점으로 모은다. source만 있고 corpus·checkpoint가 없는 version은 작성 진행물이며 완료 통계에 넣지 않는다.
 
 ## 18. 수정 금지와 안전
 

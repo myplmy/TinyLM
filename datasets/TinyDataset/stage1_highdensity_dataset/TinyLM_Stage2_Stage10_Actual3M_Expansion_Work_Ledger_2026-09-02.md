@@ -1,9 +1,11 @@
 # TinyLM Stage2~10 실측 3M 증보 작업원장 — 2026-09-02
 
-- 문서 상태: `FULL_GENERATION_AUTHORIZED_IN_PROGRESS_DIRECT_AUTHORING`
+- 문서 상태: `FULL_GENERATION_AUTHORIZED_IN_PROGRESS`
 - 기준 시각: 2026-09-02 KST
 - 목적: 컨텍스트 압축·세션 중단 뒤에도 승인 범위, 수치, 미완료 항목과 재개점을 잃지 않게 하는 단일 작업원장
-- corpus 생성 권한: **있음**. 정본 Guide §10 직접 작성 경로는 활성화했고 Stage2 train 신규 1 file을 완료했다. 자동 semantic-composition 초안의 canonical source/train/val 쓰기 gate는 계속 닫혀 있다.
+- corpus 생성 권한: **있으나 현재 일시중단**. 정본 Guide §10 직접 작성 경로로 Stage2 train 신규 38 files를 완료했고 Stage2 A01의 나머지 source도 작성했지만, 2026-09-03 사용자 중단 요청에 따라 새 corpus 생성·포장을 멈췄다. 자동 semantic-composition 초안의 canonical source/train/val 쓰기 gate는 계속 닫혀 있다.
+- 재개 상태: 완료 통계는 v39까지의 74쌍·11,100 records다. 교육영역 일괄 작성 전환 뒤 `S2-A01-T-040~087` source 48개·7,200행을 직접 작성해 최소 계약을 통과했으나 corpus·checkpoint가 없어 완료 통계에 넣지 않는다. A01 1차 batch 감사와 일부 직접 보정까지 끝났고, 다음 재개점은 남은 5-word 반복·파일별 token·fuzzy·조사 검토를 끝낸 뒤 전면 재감사하는 단계다.
+- 감사 cadence: 2026-09-02 추가 지시에 따라 앞으로 파일별 token 평균·중복·유사도·조사 감사와 수정은 각 Stage의 **교육영역 source 전체가 완성된 뒤 일괄 수행**한다. 작성 중에는 parse·행 수·schema·relations·primary literal/고유성 최소 계약만 확인하며, batch gate 통과 전 corpus 포장과 완료 계상은 하지 않는다.
 
 ## 1. 사용자 승인과 금지 경계
 
@@ -32,7 +34,7 @@
 
 ### 1.2 canonical authoring gate
 
-전체 생성 승인은 corpus 범위와 순서를 승인한 것이며, 정본 Guide §10의 `record별 직접 작성`·`자동 의미 생성 금지`를 폐기한 승인은 아니다. 650,100 records를 자동 조합하는 초안 엔진을 독립 점검한 결과 concept 문자열 대량 조합, relation 선배정 뒤 clause 부착, 반복 template, 다수 조사 오류가 확인됐다. 따라서 이 초안은 canonical `sources/`, `train/`, `val/`에 쓰지 않는다. 현 작업은 Guide를 유지하는 직접 작성 장기 경로로 전환했고, 첫 `S2-A01-T-002`를 record별 직접 작성·감사해 확정했다.
+전체 생성 승인은 corpus 범위와 순서를 승인한 것이며, 정본 Guide §10의 `record별 직접 작성`·`자동 의미 생성 금지`를 폐기한 승인은 아니다. 650,100 records를 자동 조합하는 초안 엔진을 독립 점검한 결과 concept 문자열 대량 조합, relation 선배정 뒤 clause 부착, 반복 template, 다수 조사 오류가 확인됐다. 따라서 이 초안은 canonical `sources/`, `train/`, `val/`에 쓰지 않는다. 현 작업은 Guide를 유지하는 직접 작성 장기 경로로 전환했고, `S2-A01-T-002~033`을 record별 직접 작성·감사해 확정했다.
 
 ## 2. 정본과 시작 해시
 
@@ -130,8 +132,8 @@
 | 10 | contingency·신규 family 선정 및 원장/manifest revision | 완료 | G2·G3 PASS, 4,370 reservations와 9 manifests 동기화 |
 | 11 | semantic-composition generator preflight r1 | 실패·수정 완료 | corpus/source 쓰기 0; S2-A01-T-050에서 5×5×5=125 조합으로 primary concept 중복 발견 |
 | 12 | semantic-composition generator preflight r2~final | 구조 PASS·정본 FAIL | 9-Stage 1,350행은 token·known-grammar·primary uniqueness PASS로 개선됐으나 manual-review debt 1,350이며 Guide §10 직접 작성 판정 FAIL. `--write` hard block과 임시 파일 0을 재현 |
-| 13 | 남은 4,334파일 corpus 생성 | 착수·1 file 완료 | `S2-A01-T-002` source/JSON 1쌍·150 records 직접 작성 PASS. 남은 4,333 files; 다음 `S2-A01-T-003` |
-| 14 | 전체 통합 감사·문서 확정 | 부분 PASS | 현행 37 source/corpus pairs·5,550 records 감사 PASS. 전체 완료 감사는 4,333 files 생성 뒤 수행 |
+| 13 | 남은 4,334파일 corpus 생성 | 일시중단·38 files 완료 | `S2-A01-T-002~039` source/JSON 38쌍·5,700 records 직접 작성 PASS. `S2-A01-T-040~087` source 48개·7,200행 작성·미포장, A01 1차 batch 구조 보정 후 품질 보정 중단; 남은 완료 대상 4,296 files |
+| 14 | 전체 통합 감사·문서 확정 | 부분 PASS | 현행 74 source/corpus pairs·11,100 records 감사 PASS. 전체 완료 감사는 4,296 files 생성 뒤 수행 |
 
 ## 7. 후속 승인 전 문서 전용 감사 — 역사 snapshot
 
@@ -151,7 +153,7 @@
 | Stage manifest | 9/9 baseline SHA-256 불변 |
 | pilot corpus JSON | 36/36 integrated-audit SHA-256 일치 |
 | pilot canonical source | 36/36 integrated-audit SHA-256 일치 |
-| 당시 Stage2~10 corpus/source 수 | 36/36, 문서 전용 감사 시점에는 기존 pilot만 존재. 현행은 §9~§11의 37/37을 적용 |
+| 당시 Stage2~10 corpus/source 수 | 36/36, 문서 전용 감사 시점에는 기존 pilot만 존재. 현행은 §9~§11의 73/73을 적용 |
 | stale pre-pilot 문구 | curriculum·9 README에서 0 |
 | `git diff --check` | PASS |
 
@@ -177,9 +179,9 @@
 - 신규 family 1,895개의 정확한 이름·도메인·semantic axis — 완료
 - 중앙 family ledger와 9개 manifest revision — 완료, 중앙 SHA-256 `21804692…e5aa7`
 - 4,370개 family 의미 독립성 별도 감사 — `PASS_WITH_TAXONOMY_POLICY_NOTE`; 세분 axis 보존 정책은 §5에 기록
-- corpus 생성은 전체 train을 Stage2→10 순으로 만든 뒤 train gate를 닫고, 전체 validation을 Stage2→10 순으로 생성한다. 2026-09-02 `S2-A01-T-002` 직접 작성 파일로 실제 생성을 시작했다.
+- corpus 생성은 전체 train을 Stage2→10 순으로 만든 뒤 train gate를 닫고, 전체 validation을 Stage2→10 순으로 생성한다. 2026-09-02 `S2-A01-T-002`로 시작해 `S2-A01-T-038`까지 직접 작성·감사했다.
 
-후속 전체 작업 승인은 완료됐다. 중단 시 §6 진행 기록에서 첫 미완료 항목을 찾고, 실제 source·JSON 수와 최신 감사 결과를 함께 대조한 뒤 재개한다. 기존 pilot 36개와 보호 대상은 덮어쓰지 않는다.
+후속 전체 작업 승인은 완료됐지만 2026-09-03 사용자 요청으로 실행 목표는 일시중단 상태다. 재개 승인 전에는 새 source·corpus를 생성하지 않는다. 재개 시 §6 진행 기록에서 첫 미완료 항목을 찾고, 실제 source·JSON 수와 최신 감사 결과를 함께 대조한다. 기존 pilot 36개와 보호 대상은 덮어쓰지 않는다.
 
 ## 9. 후속 실행 체크포인트
 
@@ -188,9 +190,9 @@
 | G1 relation-focus 도구 수정 | PASS | `TinyLM_Stage5_7_Relation_Focus_Gate_Reaudit_2026-09-02.md` SHA-256 `95400763…f6378d`; 기계 보고서 `251f793b…9ccf` |
 | G2 family 4,370개 완전 예약 | PASS | primary/contingency/new `2,250/225/1,895`, exact·정규화 family 및 655,500 concrete ID 중복 0 |
 | G3 manifest 9개 동기화 | PASS | 중앙 SHA `21804692…e5aa7`, Stage별 `480/470/440/600/410/470/500/510/490` exact projection |
-| G4 train 3,933 files | 진행 중 | 기존 pilot 27 + 직접 작성 신규 1 = 28 files; 신규 train 1/3,906 완료 |
-| G5 validation 437 files | 차단 | G4 train 전수 relation-set 확정 전 생성 금지; 현재 pilot 9 files만 존재 |
-| G6 전체 655,500 records | 부분 PASS | 현행 5,550 records 감사 PASS; G4·G5 완료 뒤 전수 통합 감사 |
+| G4 train 3,933 files | 진행 중 | 기존 pilot 27 + 직접 작성 신규 38 = 65 완료 files; `S2-A01-T-040~087` source-only 48개는 미계상, 신규 train 38/3,906 완료, 3,868 files 남음 |
+| G5 validation 437 files | 순차 대기 | G4 train 전수 relation-set 확정 뒤 생성; 현재 pilot 9 files만 존재 |
+| G6 전체 655,500 records | 부분 PASS | 현행 11,100 records 감사 PASS; G4·G5 완료 뒤 전수 통합 감사 |
 
 ## 10. 실제 corpus 순차 생성 원장
 
@@ -198,7 +200,7 @@
 
 | Stage | 최종 train/val | 시작 train/val | 신규 train/val | 신규 합계 | 현재 상태 |
 |---:|---:|---:|---:|---:|---|
-| 2 | 432 / 48 | 3 / 1 | 429 / 47 | 476 | 신규 train 1 완료, Stage2 잔여 475 |
+| 2 | 432 / 48 | 3 / 1 | 429 / 47 | 476 | 신규 train 37 완료, Stage2 잔여 439 |
 | 3 | 423 / 47 | 3 / 1 | 420 / 46 | 466 | 생성 전 |
 | 4 | 396 / 44 | 3 / 1 | 393 / 43 | 436 | 생성 전 |
 | 5 | 540 / 60 | 3 / 1 | 537 / 59 | 596 | 생성 전 |
@@ -207,7 +209,7 @@
 | 8 | 450 / 50 | 3 / 1 | 447 / 49 | 496 | 생성 전 |
 | 9 | 459 / 51 | 3 / 1 | 456 / 50 | 506 | 생성 전 |
 | 10 | 441 / 49 | 3 / 1 | 438 / 48 | 486 | 생성 전 |
-| **합계** | **3,933 / 437** | **27 / 9** | **3,906 / 428** | **4,334** | **신규 1 완료, 전체 잔여 4,333** |
+| **합계** | **3,933 / 437** | **27 / 9** | **3,906 / 428** | **4,334** | **신규 38 완료, 전체 잔여 4,296** |
 
 재개 시 이 표만 믿지 않고 실제 `train/*.json`, `val/*.json`, `sources/train/*`, `sources/val/*` 수와 마지막 stage checkpoint 감사 파일을 함께 대조한다. 기존 pilot 경로가 존재하면 덮어쓰지 않고 기준 SHA와 일치할 때만 skip한다.
 
@@ -216,8 +218,9 @@
 canonical 쓰기 전에 수행한 독립 dry-run/code review 결과는 다음과 같다.
 
 - 자동 semantic-composition 경로의 canonical corpus/source 신규 쓰기: **0 files**
-- 직접 작성 경로의 canonical corpus/source 신규 쓰기: **각 1 file**
-- 현재 실파일: 기존 pilot 36쌍 + Stage2 train v02 1쌍 = JSON/source 37/37
+- 직접 작성 경로의 canonical corpus/source 신규 쓰기: **각 38 files**
+- 현재 실파일: 기존 pilot 36쌍 + Stage2 train v02~v39 38쌍 = JSON/source 74/74
+- 교육영역 batch 진행물: Stage2 A01 `S2-A01-T-040~087` source 48개·7,200행, corpus/checkpoint 없음; 완료 쌍에는 미포함. source 작성 및 1차 구조 보정은 완료했으나 5-word 반복·파일별 token·fuzzy·조사 검토가 남아 일시중단
 - 최초 primary 조합 수 오류: 125/150 unique, 사전 gate에서 차단
 - 중간 r2 역사 표본: 조사 탐지 520 rows/609 locations, 명백한 인접 반복 51 rows, 여러 Stage token 평균 이탈과 Stage5 4.489M 투영을 확인하고 수정
 - 최종 9-Stage 1,350-row 가상 표본: 전 Stage tokenizer 목표 ±10% PASS, known grammar 0, 파일별 primary 150/150 unique, provenance fingerprint 132~146종·최대 share 2%, 구조 PASS
@@ -229,12 +232,160 @@ canonical 쓰기 전에 수행한 독립 dry-run/code review 결과는 다음과
 - 직접 작성 경로의 첫 대상 `S2-A01-T-002`, `stage2_(11)causal_structure_high_density_train_v02.json`, ID `S2-CSH-00151~S2-CSH-00300`은 150행 직접 작성·포장·전수 감사 PASS. source SHA `6f42ea7f…c22462b`, corpus SHA `fc79cf4a…aa41f0`
 - 신규 v02 relations 573회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/1/28/150/16/107/29/9/95/58/80/0`; cardinality 3개 27 records, 4개 123 records
 - 신규 v02 duplicate·normalized duplicate 0, 5-word n-gram 반복 0/2,998 assignments, character similarity ≥0.80 0 pair, word Jaccard ≥0.60 0 pair, exact tokenizer 평균 45.206667(+EOS) PASS
+- 직접 작성 경로의 두 번째 대상 `S2-A01-T-003`, `stage2_(11)causal_structure_high_density_train_v03.json`, ID `S2-CSH-00301~S2-CSH-00450`은 150행 직접 작성·포장·전수 감사 PASS. source SHA `5f9204f…f97b6e`, corpus SHA `27178ea8…a7172f`
+- 신규 v03 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/15/35/147/17/72/64/32/126/46/46/0`; cardinality 4개 150 records, 고유 relation-set 45종
+- 신규 v03 exact·normalized duplicate 0, 5-word n-gram 반복 0/2,924 assignments, 내부·기존 Stage2 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 44.006667(+EOS) PASS
+- 직접 작성 경로의 세 번째 대상 `S2-A01-T-004`, `stage2_(11)causal_structure_high_density_train_v04.json`, ID `S2-CSH-00451~S2-CSH-00600`은 150행 직접 작성·포장·전수 감사 PASS. source SHA `c86c4c0a…e2d2e76`, corpus SHA `c7b98529…5d36d843`
+- 신규 v04 relations 587회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/23/39/150/35/117/21/30/71/38/63/0`; cardinality 3개 13 records, 4개 137 records, 고유 relation-set 54종
+- 신규 v04 exact·normalized duplicate 0, 5-word n-gram 반복 0/2,599 assignments, 내부·기존 Stage2 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 38.853333(+EOS) PASS
+- 직접 작성 경로의 네 번째 대상 `S2-A01-T-005`, `stage2_(11)causal_structure_high_density_train_v05.json`, ID `S2-CSH-00601~S2-CSH-00750`은 150행 직접 작성·포장·전수 감사 PASS. source SHA `a56d13b6…f25285eb`, corpus SHA `2136848c…9ab6add9`
+- 신규 v05 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/56/55/150/29/96/34/15/64/47/54/0`; cardinality 4개 150 records, 고유 relation-set 47종
+- 신규 v05 exact·normalized duplicate 0, 5-word n-gram 반복 0/2,799 assignments, 내부·기존 Stage2 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 41.966667(+EOS) PASS
+- 직접 작성 경로의 다섯 번째 대상 `S2-A01-T-006`, `stage2_(11)causal_structure_high_density_train_v06.json`, ID `S2-CSH-00751~S2-CSH-00900`은 150행 직접 작성·포장·전수 감사 PASS. source SHA `5e33e2b7…381221e`, corpus SHA `24cf8398…e7577fd7`
+- 신규 v06 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/49/37/150/22/42/42/30/111/58/59/0`; cardinality 4개 150 records, 고유 relation-set 50종
+- 신규 v06 exact·normalized duplicate 0, 5-word n-gram 반복 0/2,752 assignments, 내부·기존 Stage2 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 42.706667(+EOS) PASS
+- 직접 작성 경로의 여섯 번째 대상 `S2-A01-T-007`, `stage2_(11)causal_structure_high_density_train_v07.json`, ID `S2-CSH-00901~S2-CSH-01050`은 150행 직접 작성·포장·전수 감사 PASS. source SHA `dbbc550b…9d77243e`, corpus SHA `e582739e…52f52e92`
+- 신규 v07 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/53/53/150/32/64/18/54/75/52/49/0`; cardinality 4개 150 records, 고유 relation-set 61종
+- 신규 v07 exact·normalized duplicate 0, 5-word n-gram 반복 0/2,685 assignments, 내부·기존 Stage2 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 43.240000(+EOS) PASS
+- 직접 작성 경로의 일곱 번째 대상 `S2-A01-T-008`, `stage2_(11)causal_structure_high_density_train_v08.json`, ID `S2-CSH-01051~S2-CSH-01200`은 150행 직접 작성·포장·전수 감사 PASS. source SHA `a74c5888…924d67`, corpus SHA `cbe738bd…06ff97`
+- 신규 v08 relations 597회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/16/53/150/25/52/49/50/124/45/33/0`; cardinality 3개 3 records, 4개 147 records, 고유 relation-set 40종
+- 신규 v08 exact·normalized duplicate 0, 5-word n-gram 반복 0/2,898 assignments, 내부·기존 Stage2 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 45.240000(+EOS) PASS
+- 직접 작성 경로의 여덟 번째 대상 `S2-A01-T-009`, `stage2_(11)causal_structure_high_density_train_v09.json`, ID `S2-CSH-01201~S2-CSH-01350`은 150행 직접 작성·포장·전수 감사 PASS. source SHA `32449203…bdeb6ccc3`, corpus SHA `0588971d…af86152b`
+- 신규 v09 relations 596회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/19/79/150/33/112/47/24/34/36/62/0`; cardinality 3개 4 records, 4개 146 records, 고유 relation-set 43종
+- 신규 v09 exact·normalized duplicate 0, 5-word n-gram 반복 0/2,407 assignments, 내부·기존 Stage2 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 38.633333(+EOS) PASS
+- 직접 작성 경로의 아홉 번째 대상 `S2-A01-T-010`, `stage2_(11)causal_structure_high_density_train_v10.json`, ID `S2-CSH-01351~S2-CSH-01500`은 중단 전 133행을 보존하고 누락 17행을 직접 작성한 뒤 포장·전수 감사 PASS. source SHA `f38ff62c…6a12bed`, corpus SHA `63657393…faec13`
+- 신규 v10 relations 596회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/77/90/150/21/73/22/21/42/43/57/0`; cardinality 3개 4 records, 4개 146 records, 고유 relation-set 46종
+- 신규 v10 exact·normalized duplicate 0, 5-word n-gram 반복 0/2,603 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 42.106667(+EOS) PASS
+- 직접 작성 경로의 열 번째 대상 `S2-A01-T-011`, `stage2_(11)causal_structure_high_density_train_v11.json`, ID `S2-CSH-01501~S2-CSH-01650`은 150행 직접 작성·포장·전수 감사 PASS. source SHA `a94340dd…5fb4e3`, corpus SHA `0a374e29…c9cbb0`
+- 신규 v11 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/51/81/150/43/56/19/14/94/59/33/0`; cardinality 4개 150 records, 고유 relation-set 44종
+- 신규 v11 exact·normalized duplicate 0, 5-word n-gram 반복 0/3,156 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 45.386667(+EOS) PASS
+- 직접 작성 경로의 열한 번째 대상 `S2-A01-T-012`, `stage2_(11)causal_structure_high_density_train_v12.json`, ID `S2-CSH-01651~S2-CSH-01800`은 150행 직접 작성·포장 후 token 상한과 교차 5-word 반복을 직접 수정해 전수 감사 PASS. source SHA `aa367da7…99da5ad`, corpus SHA `2391026c…230e49`
+- 신규 v12 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/50/123/150/30/77/7/15/82/20/46/0`; cardinality 4개 150 records, 고유 relation-set 38종
+- 신규 v12 final exact·normalized duplicate 0, 5-word n-gram 반복 0/3,244 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 45.320000(+EOS) PASS
+- 직접 작성 경로의 열두 번째 대상 `S2-A01-T-013`, `stage2_(11)causal_structure_high_density_train_v13.json`, ID `S2-CSH-01801~S2-CSH-01950`은 150행 직접 작성·포장 후 교차 5-word 반복 1종을 직접 수정해 전수 감사 PASS. source SHA `e3e6f977…df6347`, corpus SHA `7210e0cc…02e180`
+- 신규 v13 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/48/90/150/26/59/36/18/124/34/15/0`; cardinality 4개 150 records, 고유 relation-set 32종
+- 신규 v13 final exact·normalized duplicate 0, 5-word n-gram 반복 0/3,002 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 44.913333(+EOS) PASS
+- 직접 작성 경로의 열세 번째 대상 `S2-A01-T-014`, `stage2_(11)causal_structure_high_density_train_v14.json`, ID `S2-CSH-01951~S2-CSH-02100`은 150행 직접 작성·포장·전수 감사 PASS. source SHA `fda7e4a3…e0722ae`, corpus SHA `dff92faf…c9d31`
+- 신규 v14 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/18/62/150/14/131/43/3/71/41/67/0`; cardinality 4개 150 records, 고유 relation-set 36종
+- 신규 v14 exact·normalized duplicate 0, 5-word n-gram 반복 0/3,098 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 44.800000(+EOS) PASS
+- 직접 작성 경로의 열네 번째 대상 `S2-A01-T-015`, `stage2_(11)causal_structure_high_density_train_v15.json`, ID `S2-CSH-02101~S2-CSH-02250`은 150행 직접 작성 후 영문·숫자 말미 primary 조사 6건과 tokenizer 상한을 직접 수정해 포장·전수 감사 PASS. source SHA `ac7638dd…51577f`, corpus SHA `52e1098c…98a2e`
+- 신규 v15 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/48/90/150/15/85/31/5/72/42/62/0`; cardinality 4개 150 records, 고유 relation-set 41종
+- 신규 v15 exact·normalized duplicate 0, 5-word n-gram 반복 0/3,008 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 최초 47.553333 차단·최종 45.220000(+EOS) PASS
+- 직접 작성 경로의 열다섯 번째 대상 `S2-A01-T-016`, `stage2_(11)causal_structure_high_density_train_v16.json`, ID `S2-CSH-02251~S2-CSH-02400`은 150행 직접 작성·포장 뒤 파일 내부 5-word 반복 1종과 v11 교차 열거 반복 4종을 직접 재서술해 전수 감사 PASS. source SHA `3f3deb0f…ba3076`, corpus SHA `12b42804…28598`
+- 신규 v16 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/43/127/150/23/30/43/29/63/61/31/0`; cardinality 4개 150 records, 고유 relation-set 40종
+- 신규 v16 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,759·0/141,385 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 40.033333(+EOS) PASS
+- 직접 작성 경로의 열여섯 번째 대상 `S2-A01-T-017`, `stage2_(11)causal_structure_high_density_train_v17.json`, ID `S2-CSH-02401~S2-CSH-02550`은 150행 직접 작성·포장 뒤 파일 내부·누적 5-word 반복 각 1종을 직접 수정해 전수 감사 PASS. source SHA `56df9cf1…f91980`, corpus SHA `9080211e…a9aa2c`
+- 신규 v17 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/35/84/150/38/73/38/27/50/49/56/0`; cardinality 4개 150 records, 고유 relation-set 56종
+- 신규 v17 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/3,261·0/144,646 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 45.733333(+EOS) PASS
+- 직접 작성 경로의 열일곱 번째 대상 `S2-A01-T-018`, `stage2_(11)causal_structure_high_density_train_v18.json`, ID `S2-CSH-02551~S2-CSH-02700`은 150행 직접 작성 중 v13 교차 primary 1건과 tokenizer 상한을 직접 수정한 뒤 포장·전수 감사 PASS. source SHA `725da8e8…d6e12e3`, corpus SHA `736e64ec…6c625cb`
+- 신규 v18 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/39/70/150/38/62/45/26/100/39/31/0`; cardinality 4개 150 records, 고유 relation-set 54종
+- 신규 v18 exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/3,082·0/147,728 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 최초 46.880000 차단·최종 45.520000(+EOS) PASS
+- 직접 작성 경로의 열여덟 번째 대상 `S2-A01-T-019`, `stage2_(11)causal_structure_high_density_train_v19.json`, ID `S2-CSH-02701~S2-CSH-02850`은 150행 직접 작성 뒤 primary literal 누락 71건과 v09 교차 primary 1건을 직접 수정해 포장·전수 감사 PASS. source SHA `cc84ef79…9bb08d`, corpus SHA `fdd213f7…3f5f52`
+- 신규 v19 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/32/81/150/25/118/42/14/39/40/59/0`; cardinality 4개 150 records, 고유 relation-set 38종
+- 신규 v19 exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,486·0/150,214 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 38.600000(+EOS) PASS
+- 직접 작성 경로의 열아홉 번째 대상 `S2-A01-T-020`, `stage2_(11)causal_structure_high_density_train_v20.json`, ID `S2-CSH-02851~S2-CSH-03000`은 171행 초안에서 중복 성격 후행 21행을 제외해 150행을 확정하고, 파일 내부 5-word 반복 1종을 직접 재서술한 뒤 포장·전수 감사 PASS. source SHA `b97e0b66…6ed3a30`, corpus SHA `6d8871a3…3aecd6`
+- 신규 v20 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 1/0/48/69/150/48/81/33/23/36/42/69/0`; cardinality 4개 150 records, 고유 relation-set 58종
+- 신규 v20 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,735·0/152,949 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 40.640000(+EOS) PASS
+- 직접 작성 경로의 스무 번째 대상 `S2-A01-T-021`, `stage2_(11)causal_structure_high_density_train_v21.json`, ID `S2-CSH-03001~S2-CSH-03150`은 162행 직접 원고에서 후행 보충 후보 12행을 제외해 150행을 확정하고, 파일 내부 5-word 반복 2종을 직접 재서술한 뒤 포장·전수 감사 PASS. source SHA `9a1bde93…a7ba605`, corpus SHA `23431d01…a95f2bf`
+- 신규 v21 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/41/82/150/25/46/41/26/77/56/56/0`; cardinality 4개 150 records, 고유 relation-set 52종
+- 신규 v21 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,657·0/155,606 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 43.000000(+EOS) PASS
+- 직접 작성 경로의 스물한 번째 대상 `S2-A01-T-022`, `stage2_(11)causal_structure_high_density_train_v22.json`, ID `S2-CSH-03151~S2-CSH-03300`은 150행을 직접 작성해 최초 source gate와 포장·전수 감사를 수정 없이 PASS. source SHA `2b9d504d…6a118`, corpus SHA `8169c71c…9819c`
+- 신규 v22 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/25/82/150/34/54/26/44/72/61/52/0`; cardinality 4개 150 records, 고유 relation-set 52종
+- 신규 v22 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,624·0/158,230 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 43.380000(+EOS) PASS
+- 직접 작성 경로의 스물두 번째 대상 `S2-A01-T-023`, `stage2_(11)causal_structure_high_density_train_v23.json`, ID `S2-CSH-03301~S2-CSH-03450`은 150행을 직접 작성해 최초 source gate와 포장·전수 감사를 수정 없이 PASS. source SHA `a21165fc…919750`, corpus SHA `9b586ddd…d577ee`
+- 신규 v23 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/19/50/150/38/63/36/44/102/61/37/0`; cardinality 4개 150 records, 고유 relation-set 46종
+- 신규 v23 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,572·0/160,802 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 44.500000(+EOS) PASS
+- 직접 작성 경로의 스물세 번째 대상 `S2-A01-T-024`, `stage2_(11)causal_structure_high_density_train_v24.json`, ID `S2-CSH-03451~S2-CSH-03600`은 150행을 직접 작성해 최초 source gate와 포장·전수 감사를 수정 없이 PASS. source SHA `78dc0d16…bf185`, corpus SHA `a6f338dd…90e82`
+- 신규 v24 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/21/70/150/19/132/28/33/56/44/47/0`; cardinality 4개 150 records, 고유 relation-set 37종
+- 신규 v24 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,304·0/163,106 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 42.906667(+EOS) PASS
+- 직접 작성 경로의 스물네 번째 대상 `S2-A01-T-025`, `stage2_(11)causal_structure_high_density_train_v25.json`, ID `S2-CSH-03601~S2-CSH-03750`은 148행 source gate 실패 뒤 누락 의미축 2개를 직접 보충하고 내부 5-word 반복 1종을 직접 수정해 PASS. source SHA `cd8b9664…e15ab`, corpus SHA `0c6beecd…8cdc9`
+- 신규 v25 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/56/74/150/20/95/34/27/49/49/46/0`; cardinality 4개 150 records, 고유 relation-set 56종
+- 신규 v25 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,289·0/165,395 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 44.340000(+EOS) PASS
+- 직접 작성 경로의 스물다섯 번째 대상 `S2-A01-T-026`, `stage2_(11)causal_structure_high_density_train_v26.json`, ID `S2-CSH-03751~S2-CSH-03900`은 156개 직접 후보 중 중심성이 낮거나 중복 성격인 6개를 제외하고 primary literal 1건과 어색한 primary 1건을 직접 수정해 PASS. source SHA `fcf4c91f…3c8b2`, corpus SHA `b117d594…31eaa`
+- 신규 v26 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/36/76/150/34/53/41/31/81/43/55/0`; cardinality 4개 150 records, 고유 relation-set 53종
+- 신규 v26 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,552·0/167,947 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 44.480000(+EOS) PASS
+- 직접 작성 경로의 스물여섯 번째 대상 `S2-A01-T-027`, `stage2_(11)causal_structure_high_density_train_v27.json`, ID `S2-CSH-03901~S2-CSH-04050`은 초기 token 평균 46.906667을 두 차례 직접 압축해 상한 안으로 낮추고 v07 교차 5-word 반복 1종을 직접 수정해 PASS. source SHA `b2ed6637…fabc12`, corpus SHA `d5f90113…d6e7a`
+- 신규 v27 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/42/142/150/54/82/21/19/38/24/28/0`; cardinality 4개 150 records, 고유 relation-set 32종
+- 신규 v27 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,441·0/170,388 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 45.500000(+EOS) PASS
+- 직접 작성 경로의 스물일곱 번째 대상 `S2-A01-T-028`, `stage2_(11)causal_structure_high_density_train_v28.json`, ID `S2-CSH-04051~S2-CSH-04200`은 최초 148행을 의미축 2개로 보충하고 token 평균 46.973333을 두 차례 직접 압축해 PASS. source SHA `161a0502…95fcb`, corpus SHA `42ff611c…e5de`
+- 신규 v28 relations 597회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/23/71/150/42/37/46/23/142/37/26/0`; cardinality 3개 3 records, 4개 147 records, 고유 relation-set 34종
+- 신규 v28 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,392·0/172,780 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 45.486667(+EOS) PASS
+- 직접 작성 경로의 스물여덟 번째 대상 `S2-A01-T-029`, `stage2_(11)causal_structure_high_density_train_v29.json`, ID `S2-CSH-04201~S2-CSH-04350`은 최초 148행을 의미축 2개로 보충하고, package 후 v12 교차 5-word 반복 2종을 직접 재서술해 PASS. source SHA `129694b8…6e335`, corpus SHA `1cf68c12…dc47e`
+- 신규 v29 relations 587회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/5/65/150/34/101/27/33/89/43/40/0`; cardinality 3개 13 records, 4개 137 records, 고유 relation-set 45종
+- 신규 v29 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,279·0/175,059 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 41.706667(+EOS) PASS
+- 직접 작성 경로의 스물아홉 번째 대상 `S2-A01-T-030`, `stage2_(11)causal_structure_high_density_train_v30.json`, ID `S2-CSH-04351~S2-CSH-04500`은 최초 148행을 의미축 2개로 보충한 뒤 source·package·전수 감사를 PASS. source SHA `71fe37bd…1f950`, corpus SHA `08dafd39…a10b7`
+- 신규 v30 relations 569회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/31/92/150/51/73/39/15/72/15/31/0`; cardinality 3개 31 records, 4개 119 records, 고유 relation-set 48종
+- 신규 v30 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,099·0/177,158 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 40.800000(+EOS) PASS
+- 직접 작성 경로의 서른 번째 대상 `S2-A01-T-031`, `stage2_(11)causal_structure_high_density_train_v31.json`, ID `S2-CSH-04501~S2-CSH-04650`은 최초 147행을 의미축 3개로 보충한 뒤 source·package·전수 감사를 PASS. source SHA `d4295506…84df09`, corpus SHA `2157d1de…17b54f`
+- 신규 v31 relations 587회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/29/90/150/37/44/61/24/74/52/26/0`; cardinality 3개 13 records, 4개 137 records, 고유 relation-set 54종
+- 신규 v31 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/1,882·0/179,040 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 38.340000(+EOS) PASS
+- 직접 작성 경로의 서른한 번째 대상 `S2-A01-T-032`, `stage2_(11)causal_structure_high_density_train_v32.json`, ID `S2-CSH-04651~S2-CSH-04800`은 최초 평균 49.173333의 token 상한 초과를 두 차례 직접 압축한 뒤 source·package·전수 감사를 PASS. source SHA `09c65399…d5dc9d4`, corpus SHA `1513b3e1…20de6`
+- 신규 v32 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/18/90/150/54/57/40/32/63/58/38/0`; cardinality 4개 150 records, 고유 relation-set 52종
+- 신규 v32 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,333·0/181,373 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 45.700000(+EOS) PASS
+- 직접 작성 경로의 서른두 번째 대상 `S2-A01-T-033`, `stage2_(11)causal_structure_high_density_train_v33.json`, ID `S2-CSH-04801~S2-CSH-04950`은 최초 primary literal 누락 1건을 직접 고친 뒤 source·package·전수 감사를 PASS. source SHA `f6a963ae…5c800f2`, corpus SHA `52733734…eb7ecd`
+- 신규 v33 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/28/94/112/38/51/57/29/132/50/9/0`; cardinality 4개 150 records, 고유 relation-set 43종
+- 신규 v33 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,014·0/183,387 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 39.073333(+EOS) PASS
+- 직접 작성 경로의 서른세 번째 대상 `S2-A01-T-034`, `stage2_(11)causal_structure_high_density_train_v34.json`, ID `S2-CSH-04951~S2-CSH-05100`은 150행을 직접 작성해 최초 source gate와 포장·전수 감사를 수정 없이 PASS. source SHA `33d384b7…a8acf79`, corpus SHA `20cf2f5f…3dfcec`
+- 신규 v34 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/27/80/120/22/88/60/12/94/37/60/0`; cardinality 4개 150 records, 고유 relation-set 56종
+- 신규 v34 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,604·0/185,991 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 41.953333(+EOS) PASS
+- 직접 작성 경로의 서른네 번째 대상 `S2-A01-T-035`, `stage2_(11)causal_structure_high_density_train_v35.json`, ID `S2-CSH-05101~S2-CSH-05250`은 150행 직접 작성 뒤 v20 교차 5-word 반복 1종을 직접 재서술해 source·package·전수 감사를 PASS. source SHA `7f7e39ec…f8a45d`, corpus SHA `41165afb…a5aeb8`
+- 신규 v35 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/63/88/119/42/73/74/15/51/30/45/0`; cardinality 4개 150 records, 고유 relation-set 63종
+- 신규 v35 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,630·0/188,621 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 43.986667(+EOS) PASS
+- 직접 작성 경로의 서른다섯 번째 대상 `S2-A01-T-036`, `stage2_(11)causal_structure_high_density_train_v36.json`, ID `S2-CSH-05251~S2-CSH-05400`은 150행을 직접 작성해 최초 source gate와 포장·전수 감사를 수정 없이 PASS. source SHA `d14f5296…28497f`, corpus SHA `a4488274…e5a044`
+- 신규 v36 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/59/83/131/38/33/56/7/109/33/51/0`; cardinality 4개 150 records, 고유 relation-set 47종
+- 신규 v36 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,594·0/191,215 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 44.840000(+EOS) PASS
+- 직접 작성 경로의 서른여섯 번째 대상 `S2-A01-T-037`, `stage2_(11)causal_structure_high_density_train_v37.json`, ID `S2-CSH-05401~S2-CSH-05550`은 source-only 누적 감사가 잡은 파일 내부 5-word 반복 1종과 기존 v07·v34 교차 반복 2종을 직접 재서술한 뒤 포장·전수 감사를 PASS. source SHA `be00d8b2…0e7169`, corpus SHA `83f057da…d180d2`
+- 신규 v37 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/46/107/145/29/52/45/19/66/23/68/0`; cardinality 4개 150 records, 고유 relation-set 48종
+- 신규 v37 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,756·0/193,971 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 45.306667(+EOS) PASS
+- 직접 작성 경로의 서른일곱 번째 대상 `S2-A01-T-038`, `stage2_(11)causal_structure_high_density_train_v38.json`, ID `S2-CSH-05551~S2-CSH-05700`은 최초 token 평균 51.013333을 두 차례 직접 압축하고, 파일 내부·v07 교차 5-word 반복 각 1종을 직접 재서술해 전수 감사 PASS. source SHA `b0666c45…1f28b8`, corpus SHA `99ead223…dddf1`
+- 신규 v38 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/37/65/86/42/58/63/67/122/26/34/0`; cardinality 4개 150 records, 고유 relation-set 74종
+- 신규 v38 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,601·0/196,572 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 45.733333(+EOS) PASS
+- 직접 작성 경로의 서른여덟 번째 대상 `S2-A01-T-039`, `stage2_(11)causal_structure_high_density_train_v39.json`, ID `S2-CSH-05701~S2-CSH-05850`은 일시중단 전 98행을 보존하고 재개 승인 뒤 52행을 직접 보충해 source·package·전수 감사를 수정 없이 PASS. source SHA `27d8e23d…57e52f`, corpus SHA `94999456…d137e6`
+- 신규 v39 relations 600회: `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/0/7/54/85/30/127/56/28/129/29/55/0`; cardinality 4개 150 records, 고유 relation-set 44종
+- 신규 v39 final exact·normalized duplicate 0, 파일 내부 및 누적 5-word n-gram 반복 0/2,504·0/199,076 assignments, 내부·기존 Stage2 train 교차 character similarity ≥0.80 및 word Jaccard ≥0.60 모두 0 pair, exact tokenizer 평균 43.653333(+EOS) PASS
+- 현행 74쌍·11,100 records 통합 감사: artifact·중복·train/validation exact leakage·cross-record 5-word n-gram·hard grammar·manual-review debt 모두 0, 5-word assignments 199,076, Stage2 누적 평균 43.078889(+EOS) PASS
 - 현재 자동 초안의 `manual_semantic_review=false`는 구조 PASS와 정본 의미 PASS를 분리하는 필수 표식이며, 한 건이라도 남으면 canonical publish를 차단한다.
 
 도구 preflight 상세는 `tools/stage2_10_tool_preflight_report_2026-09-02.md`(SHA-256 `4d94813218c68c0541d356109be52d39b6e72388cd9aef515060b05152cc43ce`)에 보존했다. 실행 예시는 `tools/README_stage2_10_corpus_engine.md`에 있으며, read-only pilot 감사는 기본 partial mode인 `--check-only --json`을 사용한다. 새 Python 도구는 저장소의 `*.py` ignore 규칙 때문에 commit 대상으로 삼을 때 `git add -f`가 필요하다.
 
 전체 체크포인트 판정은 `audit_reports/TinyLM_Stage2_10_Actual3M_Authorized_Checkpoint_Audit_2026-09-02.md`와 기계 부속 `audit_reports/machine/TinyLM_Stage2_10_Actual3M_Authorized_Checkpoint_Audit_2026-09-02.json`에 보존한다.
 
-다음 재개점은 `S2-A01-T-003`, `stage2_(11)causal_structure_high_density_train_v03.json`, ID `S2-CSH-00301~S2-CSH-00450`, family `스마트 온실 관수·환경제어 — 원인 방향·피드백·역인과 판정`이다. v02와 같은 record별 직접 작성 → source check → package → file audit → 전체 partial audit 순서로 진행한다.
+일시중단 재개점 `S2-A01-T-039`은 사용자 승인 뒤 99번째 원고부터 52행을 직접 보충해 확정했다. source/corpus/checkpoint가 모두 존재하고 source SHA-256은 `27d8e23d5e4cd82b66d5907bd223ba7c43f4e605cfa10fc6bb99f7ae6b57e52f`, corpus SHA-256은 `949994562255517567f4475500241075e138db70ac4fb7f6933c1344d5d137e6`이다.
+
+교육영역 일괄 작성으로 전환한 뒤 Stage2 A01 `S2-A01-T-040~050` source 11개·1,650행을 직접 작성했다. 열한 source 모두 parse·행 수 150·primary/text 고유 150/150·통제 relations·record당 2~5개·record 내부 관계 중복 금지·primary literal 최소 계약 오류 0이다. source SHA-256은 v40~v45가 `e0f3edfeebf9f7d19027fa301368ff47ab206a20f8b521cb860fbb6871843639`, `508a1f0b96389ca59a1a24e54559c0a7862fa0f7d075ff8fadb8180f5a8ba62b`, `066119ab81894323fbca8f82ef8f2325edc425bba93b2f282f7037e16fb8e437`, `1ce55695d452e2da7e3f45ad3c1b00469f1b7094e41861268170fe8a782df0ba`, `45eb19c7246aa63dd73e4d71320fdd83af500a185709d5047469b2d01b887932`, `0d9e23c53900488f73f3fc4c3142fa739c98145715b4d4728d4428b54fd9b9d5`, v46~v48이 `43fc6f60257b8d8fce30cc427a2a0458a18a0b71d65c5404b55b8c2add7d0eb5`, `3836f96d5cf05fd7b3308d2f080dc161a9f1d4102eb3e93dbca066e1615b7566`, `7e14ff53c3b3d407be961402a580afac6e1b3be880acd6038f967af85cd065a8`, v49~v50이 `fe82fa73241e8d79a4c21365db31b1f7e49f5655a18154cb3fda284042733fcf`, `f70afd38433fa6a4f5997b91b59429e799faccecfec68cfad47e8354a73ed1b2`다. 전환 직전 v40 예비 감사에서 확인한 tokenizer 평균 46.893333(+EOS)의 파일 gate 초과는 개별 수정하지 않고 Stage2 A01 전체 종료 batch 수정 목록에 보존했다.
+
+사용자 일시중단 시점의 `S2-A01-T-051`, `stage2_(11)causal_structure_high_density_train_v51.json`, ID `S2-CSH-07501~S2-CSH-07650`, family `반도체 클린룸 오염·수율 관리 — 매개 단계와 직접 효과의 경로 판정` source 50행을 보존하고 51~150번째 100행을 직접 보충했다. 완성 source는 parse 오류 0, primary/text 고유 150/150, 통제 밖 relation 0, cardinality·내부 중복·primary literal 최소 계약 오류 0이며 SHA-256은 `11adf713d54a596d352f4487cd23b710adfc2d1faad37719e1311bef5be703c6`이다. corpus·checkpoint entry는 없고 영역 batch 감사도 시작하지 않았다.
+
+이어 `S2-A01-T-052~054` source 3개·450행을 직접 작성했다. 각 파일은 parse·150행·primary/text 150/150 고유·통제 relations·cardinality·내부 relation 중복 금지·primary literal 최소 계약 오류 0이다. source SHA-256은 v52 `7958d7d2492c8aab60fddad530d2313689e76929562584d7134ba53454b59897`, v53 `47e11138d8c69c5d4a41b5644cf1704b828eb5043b0c31ae2b34b6d410356dc2`, v54 `c632fdcc21407e949e6ebfdccae13540363e6cc16b0fc97178ab37c10c48053f`다. v54는 최초 149행에서 누락 한 행을 직접 보충했다. 다음은 `S2-A01-T-055`, `stage2_(11)causal_structure_high_density_train_v55.json`, ID `S2-CSH-08101~S2-CSH-08250`, family `산림 병해충 예찰·방제 — 개입 변수와 자연 변동의 인과 효과 분리`의 1행부터다.
+
+이어 `S2-A01-T-055~057` source 3개·450행을 직접 작성했다. 각 파일은 parse·150행·primary/text 150/150 고유·통제 relations·cardinality·내부 relation 중복 금지·primary literal 최소 계약 오류 0이다. source SHA-256은 v55 `c42f30c7be0a8b4b2173d955b65a253e77a9e64bee01b1cec3f6bdbdfdf7d01f`, v56 `ca259750951b5b200172825c31196556b8b103af1537ffd4772a2a199de08eea`, v57 `6dae0baccb7ebecd49b00c5402257dd96c99c2e0f997be79877f48613c92ccfa`다. 다음은 `S2-A01-T-058`, `stage2_(11)causal_structure_high_density_train_v58.json`, ID `S2-CSH-08551~S2-CSH-08700`, family `데이터센터 냉각·전력 절체 — 시간 역전 가능성을 배제한 원인 방향 확인`의 1행부터다.
+
+이어 `S2-A01-T-058~060` source 3개·450행을 직접 작성했다. v58은 중단 요약과 달리 실파일이 50행임을 재확인한 뒤 기존 50행을 보존하고 100행을 보충했으며, v60은 primary literal 누락 2건을 직접 고쳐 재검사했다. 세 파일은 최종적으로 parse·150행·primary/text 150/150 고유·통제 relations·cardinality·내부 relation 중복 금지·primary literal 최소 계약 오류가 모두 0이다. source SHA-256은 v58 `077b32e1099624d45a6a73a817b8988e05eaa1e81c976c114bea91f60a36d724`, v59 `d987020fc02e9498f651aa2ccf56aa70fa5690fcf8e91ff38763078c86804d92`, v60 `7d3e66a371a8a24a2c197dde23da81d4a8c0c92cdeb9c74772a1a1de1e97b509`다. 다음은 `S2-A01-T-061`, `stage2_(11)causal_structure_high_density_train_v61.json`, ID `S2-CSH-09001~S2-CSH-09150`, family `도로 터널 배수·교통 통제 — 매개 단계와 직접 효과의 경로 판정`의 1행부터다.
+
+이어 `S2-A01-T-061~063` source 3개·450행을 직접 작성했다. v61은 최초 149행에서 1행을, v63은 최초 148행에서 2행을 직접 보충했고, v62는 최초 151행에서 의미 축 주변부 1행을 제거해 정확히 150행으로 맞췄다. 최종 세 파일은 parse·행 수·primary/text 150/150 고유·통제 relations·cardinality·내부 relation 중복 금지·primary literal 최소 계약 오류가 모두 0이다. source SHA-256은 v61 `cc8dc796e77144514ec1709fea3404057593aa8572681f42b7e35a8a219b5f2c`, v62 `d06564e79c83f86462b28cf54eb5983e18eac33f6dbdf4ae0bc928969f229990`, v63 `74475c90f2ce75bc136c4db65102d92ce014b7da2883335fb736f12a03e2e555`다. 다음은 `S2-A01-T-064`, `stage2_(11)causal_structure_high_density_train_v64.json`, ID `S2-CSH-09451~S2-CSH-09600`, family `도시 열공급망 부하·압력 조정 — 복수 원인의 결합 충분성과 기여 한계`의 1행부터다.
+
+이어 `S2-A01-T-064~066` source 3개·450행을 직접 작성했다. v64의 명백한 중복어 오탈자를 직접 고치고 최초 149행에 1행을 보충했으며, v65의 최초 148행에는 2행을 보충했다. v66은 최초 검사에서 바로 150행 계약을 통과했다. 최종 세 파일은 parse·행 수·primary/text 150/150 고유·통제 relations·cardinality·내부 relation 중복 금지·primary literal 최소 계약 오류가 모두 0이다. source SHA-256은 v64 `bcf6c8833a07d38c8103280526e1f8f6e2ae4ea63e08ea698ff1b9d5b9a93afe`, v65 `9f8ccbeb0b56fcb5f0673a3f796e22946e0317ec212ad217ff8035f939e0e90d`, v66 `89926e81e0f33375ae0b2192af6006e368dcbf164def6afb979aa5ead8aa1967`이다. 다음은 `S2-A01-T-067`, `stage2_(11)causal_structure_high_density_train_v67.json`, ID `S2-CSH-09901~S2-CSH-10050`, family `산림 병해충 예찰·방제 — 공통 원인 통제 전후 상관 변화 해석`의 1행부터다.
+
+이어 `S2-A01-T-067~069` source 3개·450행을 직접 작성했다. 중단 당시 v67의 실제 50행을 보존하고 100행을 보충했으며, v69의 최초 149행에는 대안경로 판정 1행을 보충했다. v68은 최초 완성 검사에서 바로 150행 계약을 통과했다. 최종 세 파일은 parse·행 수·primary/text 150/150 고유·통제 relations·cardinality·내부 relation 중복 금지·primary literal 최소 계약 오류가 모두 0이다. source SHA-256은 v67 `4eb624f380d3d3e4feeff3c67872598b1c17d3128eeacf7b4e4ee8a2e4e6e56f`, v68 `f8b1783be1ccf840591dab52aa63de4bbe72e58d9a5c8d4432eb32b88e2f6b7d`, v69 `2cce640aa476ee5ea1d608233c318788f33c7a5c42707e13cdcbab07d0bb2f47`이다. 다음은 `S2-A01-T-070`, `stage2_(11)causal_structure_high_density_train_v70.json`, ID `S2-CSH-10351~S2-CSH-10500`, family `데이터센터 냉각·전력 절체 — 개입 변수와 자연 변동의 인과 효과 분리`의 1행부터다.
+
+이어 `S2-A01-T-070~072` source 3개·450행을 직접 작성했다. v70은 최초 완성 검사에서 150행 계약을 통과했고, v71은 최초 149행에 매개효과의 실무중요성 판정 1행을, v72는 최초 148행에 통제 후 무상관 및 작은 효과의 해석 2행을 직접 보충했다. 최종 세 파일은 parse·행 수·primary/text 150/150 고유·통제 relations·cardinality·내부 relation 중복 금지·primary literal 최소 계약 오류가 모두 0이다. source SHA-256은 v70 `9fd8494a3ba227333945cb0d545cc1c43312d60715640272ff167c6a5f28187e`, v71 `e9aa344d0edb59c1e456ee5dfd0691d4c084889832e53fb1b10ce6e617181450`, v72 `7325958532f38f54c61337ca6fd9830ce060c09af83e0db69f6e675319462696`이다. 다음은 `S2-A01-T-073`, `stage2_(11)causal_structure_high_density_train_v73.json`, ID `S2-CSH-10801~S2-CSH-10950`, family `도로 터널 배수·교통 통제 — 시간 역전 가능성을 배제한 원인 방향 확인`의 1행부터다.
+
+이어 `S2-A01-T-073~075` source 3개·450행을 직접 작성했다. v73은 최초 148행에 2행, v74는 최초 149행에 1행을 직접 보충했고 v75는 최초 완성 검사에서 바로 150행 계약을 통과했다. 최종 세 파일은 parse·행 수·primary/text 150/150 고유·통제 relations·cardinality·내부 relation 중복 금지·primary literal 최소 계약 오류가 모두 0이다. source SHA-256은 v73 `c7b3264c16b16d0efb1cfae9b83551c4aec053bd8afc4c801d11d8131ff42a1f`, v74 `ef742bb8e569c0187984c04ee617384cdd09fbe2952714b0a4a5f7ed381c49a5`, v75 `3f4c2eae9d68011fe07b1103b74cf117f9589ab2d40500ef1507feafb131a9ce`이다. 다음은 `S2-A01-T-076`, `stage2_(11)causal_structure_high_density_train_v76.json`, ID `S2-CSH-11251~S2-CSH-11400`, family `도시 열공급망 부하·압력 조정 — 매개 단계와 직접 효과의 경로 판정`의 1행부터다.
+
+이어 `S2-A01-T-076~078` source 3개·450행을 직접 작성했다. v76은 중단 당시 실제 50행을 보존하고 100행을 보충했으며, 최초 최소 검사에서 중단 전 27번째 primary literal 불일치 1건을 검출해 의미를 보존한 문장으로 직접 수정했다. v77은 최초 149행에 1행, v78은 최초 99행 뒤 51행을 직접 보충했다. 최종 세 파일은 parse·행 수·primary/text 150/150 고유·통제 relations·cardinality·내부 relation 중복 금지·primary literal 최소 계약 오류가 모두 0이다. source SHA-256은 v76 `0a4927c565a67edecd1ad0f1e280b37141511c2cfebdacbcf89a77997ec4d36a`, v77 `d5927ee4b4b8c3ef69cd121d56c6a1486f13b09ac0b581efa138f2d625e63e8d`, v78 `cccbf34f5a034a73c4c4f19e179f56ba3156883597d8d0c1964ecff0eb900962`이다. 다음은 `S2-A01-T-079`, `stage2_(11)causal_structure_high_density_train_v79.json`, ID `S2-CSH-11701~S2-CSH-11850`, family `산림 병해충 예찰·방제 — 복수 원인의 결합 충분성과 기여 한계`의 1행부터다.
+
+이어 `S2-A01-T-079~081` source 3개·450행을 직접 작성했다. v79는 두 번째 묶음까지 101행을 작성해 남은 49행으로 정확히 닫았고, v80은 50→99→150행, v81은 50→100→150행 순으로 완결했다. v81 작성 중 발견한 명백한 `않고 않고` 중복어 1건은 즉시 직접 수정했다. 최종 세 파일은 parse·행 수·primary/text 150/150 고유·통제 relations·cardinality·내부 relation 중복 금지·primary literal 최소 계약 오류가 모두 0이다. source SHA-256은 v79 `2672a224ee01b1e7ba759dcb206036db4d963e7be246bc23255587c9db6d2d05`, v80 `6cd52003657a33fd1415b0d54f10bb11bfade917255aba016ce38b98f214e9da`, v81 `bbc61d5b5a34473032680bee7971e09fe9614d807885fdc28a05a6725d444be2`이다. 다음은 `S2-A01-T-082`, `stage2_(11)causal_structure_high_density_train_v82.json`, ID `S2-CSH-12151~S2-CSH-12300`, family `데이터센터 냉각·전력 절체 — 공통 원인 통제 전후 상관 변화 해석`의 1행부터다.
+
+이어 `S2-A01-T-082~084` source 3개·450행을 직접 작성했다. v82는 50→99→147→150행, v83은 50→100→150행, v84는 50→100→150행 순으로 완결했다. 최종 세 파일은 parse·행 수·primary/text 150/150 고유·통제 relations·cardinality·내부 relation 중복 금지·primary literal 최소 계약 오류가 모두 0이다. source SHA-256은 v82 `8e6170463576998a3aba27f4da7df8c4f92c1427bd99b35ad967ff183600e08d`, v83 `f77d0e6381bfb56d0ecb9a049b0cab3736b63601f2065e3b747af889b0440330`, v84 `1b61a8711760e34dabe9ea1223bd591ca8fe8b38b1799e8f21d0e27a17b46d70`이다. 다음은 `S2-A01-T-085`, `stage2_(11)causal_structure_high_density_train_v85.json`, ID `S2-CSH-12601~S2-CSH-12750`, family `도로 터널 배수·교통 통제 — 개입 변수와 자연 변동의 인과 효과 분리`의 1행부터다.
+
+이어 `S2-A01-T-085~087` source 3개·450행을 직접 작성해 Stage2 A01 예약 source를 모두 완성했다. v85는 최초 173행 초안에서 의미축에 충분한 선행 150행만 남겨 정확히 닫았고, v86은 50→100→150행, v87은 50→99→150행으로 완결했다. 최종 세 파일은 parse·행 수·primary/text 150/150 고유·통제 relations·cardinality·내부 relation 중복 금지·primary literal 최소 계약 오류가 모두 0이다. source SHA-256은 v85 `6d7e9a2e2903951d947f437855f9f12bd1cefd077028e2a747b2b3b368a944be`, v86 `db211804ab8306046d33989a367e94ce508a3ed3752a006f5e6e82859247929f`, v87 `0ea5ceff7cd606088df70aeb7777509f4feb28dbde6005d8245f9720b67d3352`이다. 다음 재개점은 v40~v87 source 48개·7,200행의 영역 batch 감사이며, 통과 전에는 corpus·checkpoint를 만들거나 완료 통계를 올리지 않는다.
+
+2026-09-03 A01 영역 batch 감사를 시작했다. 최초 감사에서 `other`를 포함한 276행의 `other_type` 누락, primary 계열 중복 후행 14행, hard 조사 불일치 1행을 찾았다. 276행에는 의미에 맞춰 `other_type`을 직접 부여하고, 중복 후행 14행의 primary/text를 직접 재서술했으며, `지표이면` 1건을 `지표라면`으로 고쳤다. 수정 후 read-only 전수 감사에서 13,050행의 source 구조 오류, exact/normalized/primary+relation-set 중복, hard 조사 오류는 모두 0이고 Stage2 전체 tokenizer 평균 44.582299(+EOS)은 허용범위 PASS다.
+
+다만 이것은 A01 최종 PASS가 아니다. cross-record 5-word 반복 666종·초과 record assignment 737건이 남았고, 이를 해소하기 위한 직접 재서술 대상은 현재 greedy 기준 293행이다. 파일별 token gate 재검사·fuzzy similarity·조사 warning 979건의 사람 검토도 아직 끝나지 않았다. 특히 v40의 예비 평균 46.893333(+EOS) 초과는 계속 수정 대기다. 따라서 v40~v87 corpus 포장과 checkpoint 등록은 수행하지 않았다.
+
+중단 시점 v40~v87 source-only relations 분포는 `is_a/subclass_of/part_of/classification/boundary/contrast/comparison/function/role/process/state/attribute/other = 0/4/1,010/1,956/6,039/830/2,449/1,496/749/4,707/1,836/1,996/276`이다. `other_type` 상위 5개는 `식별·인과해석 한계 136`, `미측정 교란·대안경로 59`, `선택·조건화 편향 34`, `불확실성·적용범위 30`, `측정·기록 한계 17`이다. 이는 최종 보고값이 아니라 중단 checkpoint 값이다.
+
+감사 보정으로 v51~v87의 작성 직후 SHA 기록은 역사값이 됐다. 재개 시 개별 해시는 최종 재감사 뒤 다시 산출한다. 현재 v40~v87 파일명을 정렬하고 각 파일 SHA-256을 `파일명=해시` UTF-8 행으로 연결해 SHA-256한 source-set digest는 `195e93127931c040a30109e1a82b8d374da024b21d34252868204cf02f5f89a5`다. 사용자 요청에 따라 이 지점에서 작업을 일시중단하며, 재개 순서는 **5-word 직접 재서술 → 파일별 token 보정 → fuzzy·조사 검토 → 전면 재감사 → PASS일 때만 일괄 포장**이다.
 
 semantic-composition 초안의 canonical 승격은 여전히 승인되지 않았다. 이 경로를 쓰려면 Guide §10 예외를 별도로 명시해야 하며, 현재 직접 작성 착수를 예외 승인으로 해석하지 않는다. 기존 pilot·Stage1 보호 corpus·저밀도·held-out 수정 권한도 확대되지 않는다.

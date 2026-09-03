@@ -314,7 +314,9 @@ Identity 관계 통제의 매핑·재검증 산출물은 `relation_mapping_ident
 - Stage 2~10: §29~§39의 9개 Stage·54개 세부영역, primary 2,250 family와 contingency 225 family 예약 및 폴더 scaffold 준비 완료. 각 Stage의 A01·A03·A06 train v01과 A01 validation v01을 직접 작성하여 36 files·5,400 records의 tokenizer-gate pilot을 완료했다.
 - Pilot은 통합 기계 감사와 세 구간 독립 의미 감사에서 모두 PASS다. 2026-09-02 사용자는 `tok-ko-en-32768.json` 기준 Stage별 약 3M안, 총 4,370 files·655,500 records를 승인했다.
 - Stage 2~10 후속 승인 실행: Stage5~7 `relation_focus` whitelist 강제 제거·재감사 PASS, contingency 225개 배치와 신규 family 1,895개 선정 완료, 중앙 schema 2.0 원장 4,370행과 9개 manifest exact projection 감사 PASS
-- 실제 corpus: 기존 pilot 36쌍을 보존하고 `S2-A01-T-002` train v02 150 records를 직접 작성·포장·감사해 현행 37 source/corpus pairs·5,550 records다. 다음 예약은 `S2-A01-T-003`이며 전체 잔여는 4,333 files다.
+- 실제 corpus: 기존 pilot 36쌍을 보존하고 `S2-A01-T-002~039` train v02~v39 5,700 records를 직접 작성·포장·감사해 현행 74 source/corpus pairs·11,100 records다. 완료 통계 기준 전체 잔여는 4,296 files다.
+- 일시중단 source였던 `S2-A01-T-039`은 사용자 재개 승인 뒤 99번째부터 남은 52행을 직접 보충했다. 완성 150행과 corpus·checkpoint를 전수 감사해 PASS로 확정했으며 중단 전 98행은 그대로 보존했다.
+- 교육영역 batch 전환 뒤 `S2-A01-T-040~087` source 48개·7,200행을 직접 작성했다. 모두 최소 source 계약을 통과했지만 corpus·checkpoint가 없는 진행물이므로 완료 통계에는 넣지 않는다. Stage2 A01 전체 source가 완성됐으므로 다음 단계는 v40~v87 token·중복·유사도·조사·relations 영역 batch 감사와 직접 수정이다.
 
 ## 12. Stage1 (4) 개념 경계·반례 train 설계 원장
 
@@ -1186,14 +1188,14 @@ Stage7의 실행 결과를 근거 품질, 오류, 논증, 검증, 수정과 확�
 | Stage별 train–validation domain overlap | 0 |
 | relation focus의 통제 어휘 밖 값 | 0 |
 | Stage2 legacy filename 충돌 | 0 |
-| 현행 corpus JSON | 37 files / 5,550 records |
-| 현행 canonical source | 37 files / 5,550 rows |
+| 현행 corpus JSON | 74 files / 11,100 records |
+| 현행 canonical source | 122 files / 18,300 rows; 완료 쌍 74 + 완결 source-only 48 |
 | 보존 pilot corpus/source | 36 / 36 files |
 | pilot 사용 primary reservation | 36 |
 
 준비 기준선 중앙 원장 SHA-256은 `823881a7d7074d2c5e3c54a9c732262004ddabf7b4fade75825a963a58346c99`였고, 승인 revision 현행 SHA-256은 `21804692434294b0c80774464c87d9e3d90f58ce93748c32671cf535244e5aa7`이다. 세부 사람이 읽는 설계·검토본은 `TinyLM_Stage2_Stage10_Curriculum_and_Family_Reservation_Draft.md`에 보존한다.
 
-TinyDataset 최상위에 `stage2_highdensity_dataset/`부터 `stage10_highdensity_dataset/`까지 만들었다. 각 폴더는 `train/`, `val/`, `sources/train/`, `sources/val/`, `tools/`, `audit_reports/machine/`, `audit_reports/archive/`, `README.md`, `PREPARATION_MANIFEST.json`을 가진다. 9개 manifest는 schema 2.0, status `ACTUAL_3M_FAMILY_RESERVATIONS_AUTHORIZED`로 revision했고 중앙 원장의 해당 Stage exact projection과 현행 중앙 SHA를 보존한다. 각 Stage의 pilot JSON 4개와 canonical source 4개는 그대로이며 Stage2에 직접 작성 v02 한 쌍을 추가했다.
+TinyDataset 최상위에 `stage2_highdensity_dataset/`부터 `stage10_highdensity_dataset/`까지 만들었다. 각 폴더는 `train/`, `val/`, `sources/train/`, `sources/val/`, `tools/`, `audit_reports/machine/`, `audit_reports/archive/`, `README.md`, `PREPARATION_MANIFEST.json`을 가진다. 9개 manifest는 schema 2.0, status `ACTUAL_3M_FAMILY_RESERVATIONS_AUTHORIZED`로 revision했고 중앙 원장의 해당 Stage exact projection과 현행 중앙 SHA를 보존한다. 각 Stage의 pilot JSON 4개와 canonical source 4개는 그대로이며 Stage2에 직접 작성 v02~v39 서른여덟 쌍과 v40~v87 완결 source-only 48개를 추가했다.
 
 중앙 원장이나 manifest의 family는 별도 사용자 승인 없이 삭제·재배치·재사용하지 않는다. contingency 225개는 이미 승인 배치·활성화됐으므로 primary·new와 같은 예약 불변조건을 적용한다.
 
@@ -1203,7 +1205,7 @@ TinyDataset 최상위에 `stage2_highdensity_dataset/`부터 `stage10_highdensit
 
 ### 40.1 실생성 범위와 감사 판정
 
-2026-09-02 각 Stage의 A01·A03·A06 train v01과 A01 validation v01을 직접 작성했다. 합계 36 files·5,400 records(train 4,050, validation 1,350)는 배분 결정을 위한 pilot으로 보존한다. 후속 전체 작업 승인 뒤 `S2-A01-T-002` train v02 150 records를 추가 직접 작성해 현행은 37 files·5,550 records다.
+2026-09-02 각 Stage의 A01·A03·A06 train v01과 A01 validation v01을 직접 작성했다. 합계 36 files·5,400 records(train 4,050, validation 1,350)는 배분 결정을 위한 pilot으로 보존한다. 후속 전체 작업 승인 뒤 `S2-A01-T-002~039` train v02~v39 5,700 records를 추가 직접 작성해 완료 corpus는 74 files·11,100 records다. 별도로 v40~v87 완결 source-only 7,200행은 교육영역 batch 감사 대기 진행물로 존재한다.
 
 - JSON·UTF-8·schema·metadata·ID·source 대응·relations·exact duplicate 오류: 0
 - 중앙 예약 row·area와 파일 metadata exact 대응: 36/36; 5,400 records의 type·split·연속 ID mismatch: 0
@@ -1265,7 +1267,7 @@ TinyDataset 최상위에 `stage2_highdensity_dataset/`부터 `stage10_highdensit
 - §40.5의 증보 version 범위는 중앙 schema 2.0 원장과 Stage별 manifest의 실제 예약으로 활성화했다. 중앙 원장 SHA-256은 `21804692434294b0c80774464c87d9e3d90f58ce93748c32671cf535244e5aa7`이다.
 - version은 v01부터 연속하며 v01~v99는 두 자리 0-padding, 100 이상은 v100처럼 표기한다. Stage5 A01·A02의 승인 train 상한 v108 때문에 이 규칙을 명시한다.
 - Stage5~7 builder/auditor 수정과 12 pilot files·1,800 records 재감사, 중앙 원장/9개 manifest revision과 family 독립성 감사를 완료했다.
-- corpus는 전체 train을 Stage2→10 순으로 직접 작성·파일 단위 감사한 뒤 validation을 같은 순서로 생성한다. `S2-A01-T-002`에서 시작했고 다음은 `S2-A01-T-003`이다.
+- corpus는 전체 train을 Stage2→10 순으로 직접 작성하고 validation을 같은 순서로 생성한다. 2026-09-02 추가 지침부터 파일별 반복 감사·수정 대신 **한 Stage의 교육영역 source 전체를 완성한 뒤** token·중복·유사도·조사 batch 감사와 수정을 하고 corpus를 일괄 포장한다. 실제 파일을 기준으로 v40~v87 source-only 48개를 완결했고 1차 구조 보정까지 수행했으나, 2026-09-03 사용자 요청으로 5-word·파일별 token·fuzzy·조사 품질 보정 중에 일시중단했다.
 - 저밀도, held-out/evaluation, Stage1 수정 금지 corpus와 legacy `stage2_(2)attribute_high_density_*`는 계속 source·생성·재직렬화 범위에서 제외한다.
 
 ### 40.5 Stage별·세부영역별 승인 총량과 증보 계획
@@ -1401,9 +1403,64 @@ Pilot 근거는 통제 밖 relation 0, record별 길이·중복 오류 0, 전체
 - 중앙 family 원장: schema 2.0, 4,370 reservations, train/validation 3,933/437, 655,500 records
 - family origin: primary 2,250, contingency 225, new 1,895
 - Stage manifest: 9/9 중앙 원장의 exact Stage projection, revision 감사 23개 검사 오류 0
-- 현재 corpus/source: 37/37 files, 5,550 records; 기존 pilot 36쌍과 직접 작성 신규 `S2-A01-T-002` 1쌍
+- 현재 완료 corpus/source pairs: 74/74 files, 11,100 records; 기존 pilot 36쌍과 직접 작성 신규 `S2-A01-T-002~039` 38쌍
+- 현재 source-only batch 진행물: `S2-A01-T-040~087` source 48개·7,200행, 각 source 최소 계약 오류 0, corpus/checkpoint 없음, 완료 통계 미포함
+- 중단·재개 source: `S2-A01-T-051`의 기존 50행을 보존하고 100행을 직접 보충해 150행 완결. source SHA-256 `11adf713d54a596d352f4487cd23b710adfc2d1faad37719e1311bef5be703c6`
+- 중단·재개 확정: `S2-A01-T-039`의 기존 98행을 보존하고 52행을 직접 보충해 source/corpus/checkpoint 및 독립 감사를 PASS. source SHA-256 `27d8e23d5e4cd82b66d5907bd223ba7c43f4e605cfa10fc6bb99f7ae6b57e52f`, corpus SHA-256 `949994562255517567f4475500241075e138db70ac4fb7f6933c1344d5d137e6`
 - 신규 v02 감사: relations 통제 밖 0, record당 2~5개 위반 0, exact/normalized 중복 0, 교차 5-word n-gram 반복 0, 고유사 pair 0, tokenizer 평균 45.206667(+EOS)로 Stage2 gate PASS
+- 신규 v03 감사: relations 통제 밖 0, record당 2~5개 위반 0, exact/normalized 중복 0, 교차 5-word n-gram 반복 0, 내부·기존 Stage2 교차 고유사 pair 0, tokenizer 평균 44.006667(+EOS)로 Stage2 gate PASS
+- 신규 v04 감사: relations 통제 밖 0, record당 2~5개 위반 0, exact/normalized 중복 0, 교차 5-word n-gram 반복 0, 내부·기존 Stage2 교차 고유사 pair 0, tokenizer 평균 38.853333(+EOS)로 Stage2 gate PASS
+- 신규 v05 감사: relations 통제 밖 0, record당 2~5개 위반 0, exact/normalized 중복 0, 교차 5-word n-gram 반복 0, 내부·기존 Stage2 교차 고유사 pair 0, tokenizer 평균 41.966667(+EOS)로 Stage2 gate PASS
+- 신규 v06 감사: relations 통제 밖 0, record당 2~5개 위반 0, exact/normalized 중복 0, 교차 5-word n-gram 반복 0, 내부·기존 Stage2 교차 고유사 pair 0, tokenizer 평균 42.706667(+EOS)로 Stage2 gate PASS
+- 신규 v07 감사: relations 통제 밖 0, record당 2~5개 위반 0, exact/normalized 중복 0, 교차 5-word n-gram 반복 0, 내부·기존 Stage2 교차 고유사 pair 0, tokenizer 평균 43.240000(+EOS)로 Stage2 gate PASS
+- 신규 v08 감사: relations 통제 밖 0, record당 2~5개 위반 0, exact/normalized 중복 0, 교차 5-word n-gram 반복 0, 내부·기존 Stage2 교차 고유사 pair 0, tokenizer 평균 45.240000(+EOS)로 Stage2 gate PASS
+- 신규 v09 감사: relations 통제 밖 0, record당 2~5개 위반 0, exact/normalized 중복 0, 교차 5-word n-gram 반복 0, 내부·기존 Stage2 교차 고유사 pair 0, tokenizer 평균 38.633333(+EOS)로 Stage2 gate PASS
+- 신규 v10 감사: relations 통제 밖 0, record당 2~5개 위반 0, exact/normalized 중복 0, 교차 5-word n-gram 반복 0, 내부·기존 Stage2 train 교차 고유사 pair 0, tokenizer 평균 42.106667(+EOS)로 Stage2 gate PASS
+- 신규 v11 감사: relations 통제 밖 0, record당 2~5개 위반 0, exact/normalized 중복 0, 교차 5-word n-gram 반복 0, 내부·기존 Stage2 train 교차 고유사 pair 0, tokenizer 평균 45.386667(+EOS)로 Stage2 gate PASS
+- 신규 v12 감사: 초기 token 상한 초과와 누적 5-word n-gram 반복 1종을 직접 수정해 최종 0건, relations·중복·유사도·review debt 오류 0, tokenizer 평균 45.320000(+EOS)로 Stage2 gate PASS
+- 신규 v13 감사: 초기 누적 5-word n-gram 반복 1종을 직접 수정해 최종 0건, relations·중복·유사도·review debt 오류 0, tokenizer 평균 44.913333(+EOS)로 Stage2 gate PASS
+- 신규 v14 감사: relations 통제 밖·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, tokenizer 평균 44.800000(+EOS)로 Stage2 gate PASS
+- 신규 v15 감사: 최초 tokenizer 평균 47.553333 상한 초과와 영문·숫자 말미 primary 조사 6건을 직접 수정했고, 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 45.220000(+EOS)로 Stage2 gate PASS
+- 신규 v16 감사: 파일 내부 5-word 반복 1종과 v11 교차 열거 반복 4종을 직접 재서술해 최종 0건, relations·중복·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 40.033333(+EOS)로 Stage2 gate PASS
+- 신규 v17 감사: 파일 내부·누적 5-word 반복 각 1종을 직접 재서술해 최종 0건, relations·중복·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 45.733333(+EOS)로 Stage2 gate PASS
+- 신규 v18 감사: v13과 동일한 primary 1건 및 tokenizer 최초 평균 46.880000 상한 초과를 직접 수정했고, 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 45.520000(+EOS)로 Stage2 gate PASS
+- 신규 v19 감사: primary literal 누락 71건과 v09 교차 primary 1건을 직접 수정했고, 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 38.600000(+EOS)로 Stage2 gate PASS
+- 신규 v20 감사: 171행 직접 원고에서 중복 성격 후행 21행을 제외해 150행을 확정하고 내부 5-word 반복 1종을 직접 수정했으며, 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 40.640000(+EOS)로 Stage2 gate PASS
+- 신규 v21 감사: 162행 직접 원고에서 후행 보충 후보 12행을 제외해 150행을 확정하고 내부 5-word 반복 2종을 직접 수정했으며, 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 43.000000(+EOS)로 Stage2 gate PASS
+- 신규 v22 감사: 최초 150행 source가 구조·tokenizer 계약을 통과했고 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 43.380000(+EOS)로 Stage2 gate PASS
+- 신규 v23 감사: 최초 150행 source가 구조·tokenizer 계약을 통과했고 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 44.500000(+EOS)로 Stage2 gate PASS
+- 신규 v24 감사: 최초 150행 source가 구조·tokenizer 계약을 통과했고 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 42.906667(+EOS)로 Stage2 gate PASS
+- 신규 v25 감사: 최초 직접 원고 148행을 source gate가 차단한 뒤 의미축 2개를 직접 보충했고, package 후 내부 5-word 반복 1종을 직접 수정했다. 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 44.340000(+EOS)로 Stage2 gate PASS
+- 신규 v26 감사: 156개 직접 후보 중 중심성이 낮거나 중복 성격인 6개를 제외하고 primary literal 1건과 어색한 primary 1건을 직접 수정했다. 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 44.480000(+EOS)로 Stage2 gate PASS
+- 신규 v27 감사: 최초 tokenizer 평균 46.906667 상한 초과를 두 차례 직접 압축해 해결하고, v07과 공유한 5-word n-gram 1종을 직접 재서술했다. 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 45.500000(+EOS)로 Stage2 gate PASS
+- 신규 v28 감사: 최초 직접 원고 148행을 source gate가 차단해 의미축 2개를 직접 보충했고, 완성 원고의 tokenizer 평균 46.973333 상한 초과를 두 차례 직접 압축했다. 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 45.486667(+EOS)로 Stage2 gate PASS
+- 신규 v29 감사: 최초 직접 원고 148행을 source gate가 차단해 의미축 2개를 직접 보충했고, package 후 v12와 공유한 위약검사 5-word n-gram 2종을 직접 재서술했다. 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 41.706667(+EOS)로 Stage2 gate PASS
+- 신규 v30 감사: 최초 직접 원고 148행을 source gate가 차단해 의미축 2개를 직접 보충했다. 최초 source·package와 전체 감사에서 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 40.800000(+EOS)로 Stage2 gate PASS
+- 신규 v31 감사: 최초 직접 원고 147행을 source gate가 차단해 의미축 3개를 직접 보충했다. 최초 source·package와 전체 감사에서 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 38.340000(+EOS)로 Stage2 gate PASS
+- 신규 v32 감사: 최초 직접 원고 평균 49.173333의 token 상한 초과를 두 차례 직접 압축했다. 포장 전 source-only와 최종 전체 감사에서 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 45.700000(+EOS)로 Stage2 gate PASS
+- 신규 v33 감사: 최초 source gate가 primary literal 누락 1건을 차단해 직접 고쳤다. 포장 전 source-only와 최종 전체 감사에서 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 39.073333(+EOS)로 Stage2 gate PASS
+- 신규 v34 감사: 150행 직접 원고가 최초 source gate를 수정 없이 통과했다. 포장 전 source-only와 최종 전체 감사에서 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 41.953333(+EOS)로 Stage2 gate PASS
+- 신규 v35 감사: 포장 전 source-only 감사가 v20 교차 5-word n-gram 1종을 차단해 v35 문장을 직접 재서술했다. 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 43.986667(+EOS)로 Stage2 gate PASS
+- 신규 v36 감사: 150행 직접 원고가 최초 source gate를 수정 없이 통과했다. 포장 전 source-only와 최종 전체 감사에서 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 44.840000(+EOS)로 Stage2 gate PASS
+- 신규 v37 감사: 포장 전 source-only 누적 감사가 파일 내부 5-word 반복 1종과 기존 v07·v34 교차 반복 2종을 차단해 v37 문장 3개를 직접 재서술했다. 최종 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 45.306667(+EOS)로 Stage2 gate PASS
+- 신규 v38 감사: 최초 tokenizer 평균 51.013333 상한 초과를 두 차례 직접 압축했고, 포장 전 source-only 누적 감사가 파일 내부·v07 교차 5-word n-gram 각 1종을 차단해 직접 재서술했다. 최종 relations·중복·누적 n-gram·내부 및 기존 Stage2 train 교차 고유사·review debt 오류 0, 평균 45.733333(+EOS)로 Stage2 gate PASS
+- 신규 v39 감사: 일시중단 전 source 98행을 보존하고 재개 승인 뒤 52행을 직접 보충했다. 최초 완성 source와 포장 후 file/full audit에서 relations·중복·누적 5-word n-gram·내부 및 기존 Stage2 train 6,000건 교차 고유사·review debt 오류 0, 평균 43.653333(+EOS)로 Stage2 gate PASS
 - 자동 semantic-composition 초안: 구조 preflight와 canonical 품질 승인을 분리하며 `manual_semantic_review=false`가 한 건이라도 있으면 canonical write를 차단한다.
-- 다음 재개점: `S2-A01-T-003`, `stage2_(11)causal_structure_high_density_train_v03.json`, ID `S2-CSH-00301~S2-CSH-00450`; 전체 잔여 4,333 files
+- batch 진행물 v40~v50: source 11개·1,650행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. source SHA-256은 v40~v45가 `e0f3edfeebf9f7d19027fa301368ff47ab206a20f8b521cb860fbb6871843639`, `508a1f0b96389ca59a1a24e54559c0a7862fa0f7d075ff8fadb8180f5a8ba62b`, `066119ab81894323fbca8f82ef8f2325edc425bba93b2f282f7037e16fb8e437`, `1ce55695d452e2da7e3f45ad3c1b00469f1b7094e41861268170fe8a782df0ba`, `45eb19c7246aa63dd73e4d71320fdd83af500a185709d5047469b2d01b887932`, `0d9e23c53900488f73f3fc4c3142fa739c98145715b4d4728d4428b54fd9b9d5`, v46~v48이 `43fc6f60257b8d8fce30cc427a2a0458a18a0b71d65c5404b55b8c2add7d0eb5`, `3836f96d5cf05fd7b3308d2f080dc161a9f1d4102eb3e93dbca066e1615b7566`, `7e14ff53c3b3d407be961402a580afac6e1b3be880acd6038f967af85cd065a8`, v49~v50이 `fe82fa73241e8d79a4c21365db31b1f7e49f5655a18154cb3fda284042733fcf`, `f70afd38433fa6a4f5997b91b59429e799faccecfec68cfad47e8354a73ed1b2`다. v40의 전환 직전 예비 token 평균 46.893333(+EOS) 초과는 Stage2 A01 종료 batch 수정 목록에 보존한다.
+- batch 진행물 v51: 사용자 중단 시점의 50행을 보존하고 51~150번째 100행을 직접 보충했다. 완성 source의 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류는 0이고 SHA-256은 `11adf713d54a596d352f4487cd23b710adfc2d1faad37719e1311bef5be703c6`이다.
+- batch 진행물 v52~v54: source 3개·450행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. source SHA-256은 v52 `7958d7d2492c8aab60fddad530d2313689e76929562584d7134ba53454b59897`, v53 `47e11138d8c69c5d4a41b5644cf1704b828eb5043b0c31ae2b34b6d410356dc2`, v54 `c632fdcc21407e949e6ebfdccae13540363e6cc16b0fc97178ab37c10c48053f`다. v54의 최초 149행은 누락 한 행을 직접 보충해 150행으로 맞췄다.
+- batch 진행물 v55~v57: source 3개·450행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. source SHA-256은 v55 `c42f30c7be0a8b4b2173d955b65a253e77a9e64bee01b1cec3f6bdbdfdf7d01f`, v56 `ca259750951b5b200172825c31196556b8b103af1537ffd4772a2a199de08eea`, v57 `6dae0baccb7ebecd49b00c5402257dd96c99c2e0f997be79877f48613c92ccfa`다.
+- batch 진행물 v58~v60: source 3개·450행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. v58은 실파일 50행을 보존하고 누락 100행을 직접 보충했으며, v60의 primary literal 누락 2건을 직접 수정했다. source SHA-256은 v58 `077b32e1099624d45a6a73a817b8988e05eaa1e81c976c114bea91f60a36d724`, v59 `d987020fc02e9498f651aa2ccf56aa70fa5690fcf8e91ff38763078c86804d92`, v60 `7d3e66a371a8a24a2c197dde23da81d4a8c0c92cdeb9c74772a1a1de1e97b509`다.
+- batch 진행물 v61~v63: source 3개·450행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. v61은 149→150행, v63은 148→150행으로 보충했고 v62는 151→150행으로 축소했다. source SHA-256은 v61 `cc8dc796e77144514ec1709fea3404057593aa8572681f42b7e35a8a219b5f2c`, v62 `d06564e79c83f86462b28cf54eb5983e18eac33f6dbdf4ae0bc928969f229990`, v63 `74475c90f2ce75bc136c4db65102d92ce014b7da2883335fb736f12a03e2e555`다.
+- batch 진행물 v64~v66: source 3개·450행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. v64는 중복어 오탈자 수정과 149→150행 보충, v65는 148→150행 보충을 거쳤고 v66은 최초 검사에서 통과했다. source SHA-256은 v64 `bcf6c8833a07d38c8103280526e1f8f6e2ae4ea63e08ea698ff1b9d5b9a93afe`, v65 `9f8ccbeb0b56fcb5f0673a3f796e22946e0317ec212ad217ff8035f939e0e90d`, v66 `89926e81e0f33375ae0b2192af6006e368dcbf164def6afb979aa5ead8aa1967`이다.
+- batch 진행물 v67~v69: source 3개·450행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. v67은 중단 시점의 실제 50행을 보존하고 100행을 보충했으며, v69는 149→150행으로 보충했고 v68은 최초 완성 검사에서 통과했다. source SHA-256은 v67 `4eb624f380d3d3e4feeff3c67872598b1c17d3128eeacf7b4e4ee8a2e4e6e56f`, v68 `f8b1783be1ccf840591dab52aa63de4bbe72e58d9a5c8d4432eb32b88e2f6b7d`, v69 `2cce640aa476ee5ea1d608233c318788f33c7a5c42707e13cdcbab07d0bb2f47`이다.
+- batch 진행물 v70~v72: source 3개·450행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. v70은 최초 완성 검사에서 통과했고, v71은 149→150행, v72는 148→150행으로 직접 보충했다. source SHA-256은 v70 `9fd8494a3ba227333945cb0d545cc1c43312d60715640272ff167c6a5f28187e`, v71 `e9aa344d0edb59c1e456ee5dfd0691d4c084889832e53fb1b10ce6e617181450`, v72 `7325958532f38f54c61337ca6fd9830ce060c09af83e0db69f6e675319462696`이다.
+- batch 진행물 v73~v75: source 3개·450행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. v73은 148→150행, v74는 149→150행으로 보충했고 v75는 최초 완성 검사에서 통과했다. source SHA-256은 v73 `c7b3264c16b16d0efb1cfae9b83551c4aec053bd8afc4c801d11d8131ff42a1f`, v74 `ef742bb8e569c0187984c04ee617384cdd09fbe2952714b0a4a5f7ed381c49a5`, v75 `3f4c2eae9d68011fe07b1103b74cf117f9589ab2d40500ef1507feafb131a9ce`이다.
+- batch 진행물 v76~v78: source 3개·450행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. v76은 중단 시점의 실제 50행을 보존하고 100행을 직접 보충한 뒤 기존 27번째 primary literal 불일치 1건을 직접 수정했으며, v77은 최초 149행에 1행을 보충했고 v78은 최초 99행 뒤 51행을 보충했다. source SHA-256은 v76 `0a4927c565a67edecd1ad0f1e280b37141511c2cfebdacbcf89a77997ec4d36a`, v77 `d5927ee4b4b8c3ef69cd121d56c6a1486f13b09ac0b581efa138f2d625e63e8d`, v78 `cccbf34f5a034a73c4c4f19e179f56ba3156883597d8d0c1964ecff0eb900962`이다.
+- batch 진행물 v79~v81: source 3개·450행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. v79는 두 번째 묶음까지 101행을 직접 작성한 뒤 49행으로 맞췄고, v80은 50→99→150행, v81은 50→100→150행으로 완결했다. v81의 명백한 `않고 않고` 중복어 1건은 발견 즉시 직접 수정했다. source SHA-256은 v79 `2672a224ee01b1e7ba759dcb206036db4d963e7be246bc23255587c9db6d2d05`, v80 `6cd52003657a33fd1415b0d54f10bb11bfade917255aba016ce38b98f214e9da`, v81 `bbc61d5b5a34473032680bee7971e09fe9614d807885fdc28a05a6725d444be2`이다.
+- batch 진행물 v82~v84: source 3개·450행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. v82는 두 번째 묶음 뒤 147행에 3행을 보충했고, v83과 v84는 50→100→150행으로 완결했다. source SHA-256은 v82 `8e6170463576998a3aba27f4da7df8c4f92c1427bd99b35ad967ff183600e08d`, v83 `f77d0e6381bfb56d0ecb9a049b0cab3736b63601f2065e3b747af889b0440330`, v84 `1b61a8711760e34dabe9ea1223bd591ca8fe8b38b1799e8f21d0e27a17b46d70`이다.
+- batch 진행물 v85~v87: source 3개·450행 모두 parse·행 수·primary/text 고유성·통제 relations·관계 cardinality·primary literal 최소 계약 오류 0. v85는 최초 173행 초안에서 의미축에 충분한 선행 150행만 남겨 정확히 닫았고, v86은 50→100→150행, v87은 50→99→150행으로 완결했다. source SHA-256은 v85 `6d7e9a2e2903951d947f437855f9f12bd1cefd077028e2a747b2b3b368a944be`, v86 `db211804ab8306046d33989a367e94ce508a3ed3752a006f5e6e82859247929f`, v87 `0ea5ceff7cd606088df70aeb7777509f4feb28dbde6005d8245f9720b67d3352`이다.
+- 2026-09-03 중단 checkpoint: A01 최초 batch 감사에서 `other_type` 누락 276행, 중복 후행 14행, hard 조사 불일치 1행을 찾아 직접 보정했다. 보정 후 13,050행 read-only 감사의 구조 오류·exact/normalized/primary+relation-set 중복·hard 조사 오류는 0이고 Stage2 전체 token 평균은 44.582299(+EOS) PASS다. 그러나 5-word 반복 666종·초과 assignment 737건, 직접 재서술 후보 293행, 파일별 token gate(예비 v40 46.893333 초과 포함), fuzzy와 조사 warning 979건 검토가 남아 A01 최종 PASS·포장·checkpoint 등록은 하지 않았다.
+- 다음 재개점: Stage2 A01 v40~v87에서 5-word 반복 대상 직접 재서술을 먼저 끝내고, 파일별 token 보정→fuzzy·조사 사람 검토→전면 재감사 순으로 진행한다. 모든 gate가 PASS일 때만 48개 corpus를 일괄 포장한다. 현재 source-set digest는 `195e93127931c040a30109e1a82b8d374da024b21d34252868204cf02f5f89a5`, 전체 완료 잔여는 4,296 files다.
 
 세부 진행률·artifact SHA·다음 예약은 `TinyLM_Stage2_Stage10_Actual3M_Expansion_Work_Ledger_2026-09-02.md`, 후속 실행 종합 판정은 `audit_reports/TinyLM_Stage2_10_Actual3M_Authorized_Checkpoint_Audit_2026-09-02.md`를 우선한다.

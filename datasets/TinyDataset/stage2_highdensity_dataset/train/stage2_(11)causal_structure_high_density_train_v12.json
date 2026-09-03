@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 원인 구조 High-Density Train 150 v12",
+  "version": "12",
+  "purpose": "원인·결과·매개·공통 원인을 개입과 관찰의 차이까지 포함해 판정한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CSH-01651 ~ S2-CSH-01800",
+  "concept_family": "S2-A01-T012: 클라우드 서비스 부하·장애 대응 — 공통 원인과 거짓 상관 통제",
+  "design_note": "클라우드 서비스 부하·장애 대응 영역의 공통 원인과 거짓 상관 통제 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CSH-01651",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "프로모션 유입이 만든 CPU와 오류율 동반 상승은 방문자 급증이 연산 사용량과 용량 초과 오류를 동시에 높인 경우다. CPU가 오류를 직접 만들었다는 단순 상관보다 공통 요청량을 먼저 통제한다.",
+      "concepts": [
+        "프로모션 유입이 만든 CPU와 오류율 동반 상승"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01652",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "대형 고객 배치가 만든 큐와 데이터베이스 지연 상관은 같은 대량 작업이 메시지 적체와 쿼리 부하를 함께 늘린 현상이다. 큐 길이와 저장소 지연 중 하나를 다른 하나의 원인으로 바로 정하지 않는다.",
+      "concepts": [
+        "대형 고객 배치가 만든 큐와 데이터베이스 지연 상관"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01653",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "리전 네트워크 혼잡이 만든 여러 API 동시 지연은 독립된 서비스들이 공유 전송 경로의 손실과 재전송에 함께 영향을 받은 사례다. API끼리 호출하지 않아도 지연 곡선은 비슷해질 수 있다.",
+      "concepts": [
+        "리전 네트워크 혼잡이 만든 여러 API 동시 지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01654",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "노드 메모리 압박이 만든 수집 정지와 응답 지연 동행은 같은 메모리 부족이 긴 회수 정지와 사용자 요청 대기를 함께 유발한 경우다. 두 결과 사이보다 노드 자원이라는 공통 원인을 확인한다.",
+      "concepts": [
+        "노드 메모리 압박이 만든 수집 정지와 응답 지연 동행"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01655",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "원본 저장소 지연이 만든 캐시 미스와 오류 동행은 갱신 실패로 캐시 항목이 채워지지 않고 원본 호출도 시간 초과된 현상이다. 캐시 미스가 모든 오류를 직접 만들었다고 과장하지 않는다.",
+      "concepts": [
+        "원본 저장소 지연이 만든 캐시 미스와 오류 동행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01656",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "출시 행사로 함께 늘어난 트래픽과 오류는 같은 예정 이벤트가 방문자 수와 실패 건수를 동시에 끌어올린 사례다. 시간상 동행만으로 트래픽 단위당 오류 가능성이 증가했다고 결론 내리지 않는다.",
+      "concepts": [
+        "출시 행사로 함께 늘어난 트래픽과 오류"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01657",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "월말 정산이 만든 결제와 조회 부하 동시 상승은 월말 수요가 두 기능의 요청을 함께 높인 현상이다. 서비스 간 직접 경로는 공유 저장소 호출로 별도 확인한다.",
+      "concepts": [
+        "월말 정산이 만든 결제와 조회 부하 동시 상승"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01658",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "DNS 장애가 만든 인증과 결제 실패 공변은 두 서비스가 서로 독립이어도 같은 이름 해석 계층을 사용해 함께 실패한 경우다. 인증 실패가 결제 실패를 일으킨 것처럼 보이는 거짓 방향을 피한다.",
+      "concepts": [
+        "DNS 장애가 만든 인증과 결제 실패 공변"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01659",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시간대 효과가 만든 요청량과 지연 상관은 출근 직후처럼 반복되는 수요와 정기 작업이 같은 시각에 겹친 결과다. 시각을 통제한 뒤에도 요청량 변화가 지연을 설명하는지 다시 본다.",
+      "concepts": [
+        "시간대 효과가 만든 요청량과 지연 상관"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01660",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "로그 수집 장애가 만든 지표 공백과 경보 감소는 실제 오류가 줄어서가 아니라 공통 수집 경로가 끊겨 두 관측치가 함께 낮아진 현상이다. 관측 감소와 서비스 개선을 구별한다.",
+      "concepts": [
+        "로그 수집 장애가 만든 지표 공백과 경보 감소"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01661",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "오토스케일 반응이 만든 CPU와 인스턴스 수 상관은 높은 CPU가 확장을 촉발한 결과다. 늘어난 인스턴스를 앞선 CPU 상승의 원인으로 뒤집지 않는다.",
+      "concepts": [
+        "오토스케일 반응이 만든 CPU와 인스턴스 수 상관"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01662",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재시도 폭주가 만든 요청률과 큐 길이 공증가는 최초 실패가 반복 호출과 대기 작업을 동시에 늘린 사례다. 관측 요청률을 외부 수요로만 보고 큐가 요청을 만들었다고 해석하지 않는다.",
+      "concepts": [
+        "재시도 폭주가 만든 요청률과 큐 길이 공증가"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01663",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "정기 재시작이 만든 여러 서비스 오류 동시점은 공통 유지보수 일정이 여러 인스턴스의 연결 단절을 같은 시각에 유발한 경우다. 서비스 간 직접 의존이 없어도 오류 시점은 일치할 수 있다.",
+      "concepts": [
+        "정기 재시작이 만든 여러 서비스 오류 동시점"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01664",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 인증서 만료가 만든 다중 엔드포인트 실패는 여러 주소가 같은 인증서를 써 함께 연결 거부를 받은 사례다. 엔드포인트 간 장애 전파로 오인하지 않는다.",
+      "concepts": [
+        "공유 인증서 만료가 만든 다중 엔드포인트 실패"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01665",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 데이터베이스 잠금이 만든 서비스별 지연은 서로 다른 API가 같은 잠긴 행이나 표를 기다리며 지연이 함께 오른 경우다. API 사이 호출 관계보다 공통 저장 자원의 경합을 먼저 본다.",
+      "concepts": [
+        "공유 데이터베이스 잠금이 만든 서비스별 지연"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01666",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 스레드 풀에서 생긴 작업 간 상관은 이미지 처리와 알림 전송이 같은 실행 슬롯을 경쟁해 서로의 완료시간이 함께 늘어난 현상이다. 업무 기능은 달라도 실행 자원이 두 지표를 함께 움직인다.",
+      "concepts": [
+        "공유 스레드 풀에서 생긴 작업 간 상관"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01667",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "잡음 테넌트가 만든 이웃 서비스 성능 공변은 한 고객의 대량 연산이 같은 노드의 여러 컨테이너 CPU를 압박한 사례다. 컨테이너들끼리 직접 호출한다는 증거 없이 상호 인과를 부여하지 않는다.",
+      "concepts": [
+        "잡음 테넌트가 만든 이웃 서비스 성능 공변"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01668",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 캐시 축출이 만든 조회 지연 동조는 대형 항목 유입이 여러 서비스의 인기 항목을 밀어내 원본 조회를 동시에 늘린 현상이다. 각 서비스의 코드 변경보다 공통 캐시 상태를 점검한다.",
+      "concepts": [
+        "공유 캐시 축출이 만든 조회 지연 동조"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01669",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 기능 플래그가 만든 오류율 동시 변화는 하나의 활성화 값이 웹과 배치 코드 경로를 함께 바꾸어 두 오류 지표가 같은 시각에 움직인 사례다. 두 워크로드의 상호 영향으로 해석하지 않는다.",
+      "concepts": [
+        "공유 기능 플래그가 만든 오류율 동시 변화"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01670",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "구성 전파가 만든 노드 지표 동기 이동은 중앙 설정 서비스가 여러 노드의 제한값을 한꺼번에 바꾸어 처리량과 거절률이 함께 달라진 현상이다. 노드 간 직접 영향보다 공통 제어 입력을 찾는다.",
+      "concepts": [
+        "구성 전파가 만든 노드 지표 동기 이동"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01671",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 할당량이 만든 독립 작업 실패 상관은 백업과 배포가 같은 클라우드 API 호출 한도를 소진해 모두 거부된 경우다. 두 작업 중 하나가 다른 작업의 논리적 원인이라고 보지 않는다.",
+      "concepts": [
+        "공유 할당량이 만든 독립 작업 실패 상관"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01672",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공통 인증 공급자가 만든 로그인 실패 동조는 여러 애플리케이션이 같은 외부 자격 검증 장애에 함께 영향을 받은 사례다. 애플리케이션별 실패가 서로 전염된 것이 아니라 공유 의존성이 원인이다.",
+      "concepts": [
+        "공통 인증 공급자가 만든 로그인 실패 동조"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01673",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "객체 저장소 장애가 만든 업로드와 분석 실패 공변은 두 기능이 같은 객체 읽기·쓰기 계층을 사용해 동시에 실패한 현상이다. 분석 서비스가 업로드 오류를 만들었다는 역방향 해석을 피한다.",
+      "concepts": [
+        "객체 저장소 장애가 만든 업로드와 분석 실패 공변"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01674",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "메시지 브로커 지연이 만든 생산자와 소비자 지표 상관은 기록 확인과 전달이 모두 늦어져 양쪽 대기시간이 함께 오른 사례다. 생산자와 소비자의 직접 상호작용보다 중간 브로커를 본다.",
+      "concepts": [
+        "메시지 브로커 지연이 만든 생산자와 소비자 지표 상관"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01675",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시계 오차가 만든 인증 실패와 순서 오류 공변은 같은 잘못된 노드 시간이 토큰 유효성 판정과 이벤트 정렬을 함께 흐트러뜨린 현상이다. 두 오류 유형 사이의 직접 인과를 가정하지 않는다.",
+      "concepts": [
+        "시계 오차가 만든 인증 실패와 순서 오류 공변"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01676",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "수집 누락이 만든 CPU와 지연의 거짓 역상관은 가장 느린 노드가 지표 전송도 실패해 높은 지연 구간의 CPU가 자료에서 빠진 경우다. 낮게 관측된 CPU를 보호 효과로 해석하지 않는다.",
+      "concepts": [
+        "수집 누락이 만든 CPU와 지연의 거짓 역상관"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01677",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "성공 요청 표본이 만든 오류와 지연 분리 착시는 시간 초과 요청이 추적 표본에서 제외되어 오류율은 오르는데 관측 지연은 낮아지는 현상이다. 표본 포함 조건을 공통 선택 원인으로 본다.",
+      "concepts": [
+        "성공 요청 표본이 만든 오류와 지연 분리 착시"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01678",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공통 시간 제한이 만든 여러 의존 호출 실패는 서로 다른 백엔드가 같은 짧은 제한값 때문에 동시에 취소되는 경우다. 백엔드끼리의 장애 전파보다 호출자 설정을 먼저 확인한다.",
+      "concepts": [
+        "공통 시간 제한이 만든 여러 의존 호출 실패"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01679",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "리전 전환이 만든 지연과 오류의 동시 변화는 트래픽이 먼 지역으로 옮겨지며 왕복시간과 용량 초과가 함께 달라진 사례다. 한 지표가 다른 지표를 직접 움직였다고 단정하지 않는다.",
+      "concepts": [
+        "리전 전환이 만든 지연과 오류의 동시 변화"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01680",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "로드밸런서 편향이 만든 노드별 CPU와 오류 상관은 같은 배치 불균형이 두 지표를 함께 높인 현상이다. CPU와 오류의 직접 방향은 별도 개입으로 확인한다.",
+      "concepts": [
+        "로드밸런서 편향이 만든 노드별 CPU와 오류 상관"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01681",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "사용자 반복 클릭이 만든 지연과 요청 수 공증가는 느린 응답이 재제출을 유발하고 중복 요청이 다시 지연을 늘리는 피드백이다. 외부 수요와 반응 행동을 분리하지 않으면 방향을 잘못 잡는다.",
+      "concepts": [
+        "사용자 반복 클릭이 만든 지연과 요청 수 공증가"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01682",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "봇 트래픽이 만든 캐시 적중률과 오류율 동행은 무작위 주소 요청이 캐시를 오염시키며 부재 응답도 늘린 현상이다. 봇 요청을 두 지표의 공통 원인으로 본다.",
+      "concepts": [
+        "봇 트래픽이 만든 캐시 적중률과 오류율 동행"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01683",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "검색 크롤러가 만든 대역폭과 데이터베이스 부하 상관은 같은 대량 페이지 탐색이 응답 전송과 조회 쿼리를 동시에 늘린 현상이다. 네트워크가 데이터베이스 부하를 만들었다고 바로 해석하지 않는다.",
+      "concepts": [
+        "검색 크롤러가 만든 대역폭과 데이터베이스 부하 상관"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01684",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배치 스케줄러가 만든 자원 지표 동시 상승은 정각에 시작된 여러 작업이 CPU, 디스크, 네트워크를 함께 사용한 경우다. 자원 지표끼리의 직접 인과보다 공통 시작 일정을 확인한다.",
+      "concepts": [
+        "배치 스케줄러가 만든 자원 지표 동시 상승"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01685",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "백업 창이 만든 읽기량과 응답 지연 상관은 정기 전체 읽기가 저장 장치 대역폭을 차지해 운영 요청도 늦어진 현상이다. 단순 시계열 상관을 넘어 같은 장치 경합 경로를 확인한다.",
+      "concepts": [
+        "백업 창이 만든 읽기량과 응답 지연 상관"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01686",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "색인 재구축이 만든 CPU와 검색 지연 공변은 병합 연산이 같은 노드의 조회 스레드와 캐시를 함께 압박한 사례다. CPU 상승과 지연 사이에 재구축 작업이라는 공통 입력을 둔다.",
+      "concepts": [
+        "색인 재구축이 만든 CPU와 검색 지연 공변"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01687",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "키 회전이 만든 인증 오류와 연결 재수립 동행은 새 인증 자료 배포가 일부 검증 실패와 세션 갱신을 함께 유발한 현상이다. 연결 증가가 인증 오류를 만들었다는 반대 방향을 피한다.",
+      "concepts": [
+        "키 회전이 만든 인증 오류와 연결 재수립 동행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01688",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "NAT 포트 고갈이 만든 외부 호출 실패 동조는 여러 API가 같은 변환 주소 자원을 써 함께 실패한 사례다. 외부 제공자 장애보다 공통 출구를 먼저 본다.",
+      "concepts": [
+        "NAT 포트 고갈이 만든 외부 호출 실패 동조"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01689",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공통 컨테이너 이미지 결함이 만든 서비스 재시작 상관은 여러 애플리케이션이 같은 기반 라이브러리 오류를 포함해 함께 종료된 현상이다. 서비스 간 호출 관계가 없어도 재시작 시점은 맞을 수 있다.",
+      "concepts": [
+        "공통 컨테이너 이미지 결함이 만든 서비스 재시작 상관"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01690",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "커널 회귀가 만든 네트워크와 디스크 오류 공변은 동일 노드 운영체제 변경이 서로 다른 장치 경로의 실패를 동시에 늘린 사례다. 장치 오류끼리의 직접 연쇄보다 공통 소프트웨어 층을 조사한다.",
+      "concepts": [
+        "커널 회귀가 만든 네트워크와 디스크 오류 공변"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01691",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "제어 평면 지연이 만든 배포와 확장 실패 동조는 두 작업이 같은 클라우드 관리 API를 기다리며 함께 늦어진 현상이다. 배포가 확장 실패를 일으켰다고 보기 전에 공유 제어 경로를 확인한다.",
+      "concepts": [
+        "제어 평면 지연이 만든 배포와 확장 실패 동조"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01692",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "접속 사업자 장애가 만든 지역 사용자 오류 상관은 같은 망을 이용한 여러 고객이 여러 서비스에서 동시에 실패한 경우다. 서버 지표가 정상이라면 사용자별 공통 네트워크를 원인 후보로 올린다.",
+      "concepts": [
+        "접속 사업자 장애가 만든 지역 사용자 오류 상관"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01693",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "모바일 앱 출시가 만든 API 혼합과 오류율 변화는 새 클라이언트가 특정 호출을 더 자주 보내 요청 구성과 실패 비율을 함께 바꾼 현상이다. 총 트래픽보다 버전별 호출 혼합을 통제한다.",
+      "concepts": [
+        "모바일 앱 출시가 만든 API 혼합과 오류율 변화"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01694",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "브라우저 업데이트가 만든 프런트 오류 동시 증가는 여러 사이트의 코드가 아니라 공통 브라우저 동작 변화가 같은 예외를 유발한 사례다. 사이트 간 직접 영향으로 보지 않고 사용자 에이전트를 비교한다.",
+      "concepts": [
+        "브라우저 업데이트가 만든 프런트 오류 동시 증가"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01695",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 SDK 재시도 정책이 만든 호출량 동조는 여러 서비스가 같은 라이브러리 설정을 받아 실패 시 반복 호출을 함께 늘린 현상이다. 각 서비스의 독립적인 수요 증가로 해석하지 않는다.",
+      "concepts": [
+        "공유 SDK 재시도 정책이 만든 호출량 동조"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01696",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공통 스키마 변경이 만든 생산자와 소비자 오류 상관은 한 계약 변화가 직렬화 실패와 역직렬화 실패를 동시에 늘린 경우다. 양쪽 오류가 서로를 직접 만든다는 설명보다 공유 계약을 본다.",
+      "concepts": [
+        "공통 스키마 변경이 만든 생산자와 소비자 오류 상관"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01697",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "데이터 편향이 만든 샤드 부하와 지연 상관은 특정 키 범위에 레코드가 몰려 한 파티션의 작업량과 응답시간이 함께 높아진 현상이다. 지연이 부하량을 만들었다는 역인과를 피한다.",
+      "concepts": [
+        "데이터 편향이 만든 샤드 부하와 지연 상관"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01698",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "동기화된 캐시 만료가 만든 미스와 데이터베이스 부하는 같은 만료 시각이 원본 조회와 연결 점유를 동시에 높인 사례다. 미스율과 저장소 부하 사이의 상관에 만료 정책을 공통 원인으로 포함한다.",
+      "concepts": [
+        "동기화된 캐시 만료가 만든 미스와 데이터베이스 부하"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01699",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "비용 절감 축소가 만든 용량과 오류율 동시 변화는 인스턴스 감축이 처리량을 낮추고 거절을 늘린 현상이다. 두 지표의 공통 개입을 명시한다.",
+      "concepts": [
+        "비용 절감 축소가 만든 용량과 오류율 동시 변화"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01700",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "실내 온도가 만든 팬 속도와 CPU 제한 상관은 같은 열환경이 냉각 장치 회전과 프로세서 스로틀링을 동시에 높인 경우다. 팬 속도가 CPU 성능 저하를 직접 만들었다고 해석하지 않는다.",
+      "concepts": [
+        "실내 온도가 만든 팬 속도와 CPU 제한 상관"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01701",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배포 창이 만든 변경 수와 오류 건수 상관은 같은 시간대에 여러 변경과 검증 요청이 몰려 두 수치가 함께 증가한 현상이다. 변경 하나당 위험과 단순 노출량 증가를 분리한다.",
+      "concepts": [
+        "배포 창이 만든 변경 수와 오류 건수 상관"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01702",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "요일 주기가 만든 트래픽과 장애 신고 동행은 평일 업무 시작에 사용량과 문의 가능 사용자가 함께 늘어난 사례다. 신고 증가를 기술 오류율 상승으로 바꾸기 전에 요청당 비율을 비교한다.",
+      "concepts": [
+        "요일 주기가 만든 트래픽과 장애 신고 동행"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01703",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공통 요청량이 만든 큐 길이와 오류율 상관은 처리 용량을 향한 같은 부하가 대기 작업과 거절을 함께 늘린 현상이다. 큐 길이 자체가 오류의 유일한 원인인지는 부하를 고정해 확인한다.",
+      "concepts": [
+        "공통 요청량이 만든 큐 길이와 오류율 상관"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01704",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "콘텐츠 혼합이 만든 캐시 적중과 지연 상관은 재사용 가능한 작은 객체 비중이 높을 때 적중률은 오르고 처리시간은 줄어든 사례다. 캐시 효과와 요청 종류의 공통 변화를 분리한다.",
+      "concepts": [
+        "콘텐츠 혼합이 만든 캐시 적중과 지연 상관"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01705",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "페이로드 크기가 만든 CPU와 지연 공증가는 큰 요청이 파싱 연산과 전송 시간을 동시에 늘린 현상이다. CPU 사용이 지연을 만든 몫과 입력 크기의 직접 기여를 각각 추정한다.",
+      "concepts": [
+        "페이로드 크기가 만든 CPU와 지연 공증가"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01706",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "테넌트 혼합이 만든 메모리와 지연 상관은 대형 고객 비중이 높아지며 객체 보유량과 쿼리 복잡도가 함께 증가한 사례다. 메모리 수치만 낮추면 지연이 반드시 줄 것이라고 단정하지 않는다.",
+      "concepts": [
+        "테넌트 혼합이 만든 메모리와 지연 상관"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01707",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "최초 실패가 만든 오류와 재시도 횟수 상관은 같은 장애가 실패 응답과 후속 반복 호출을 함께 늘린 결과다. 재시도 횟수를 최초 오류의 선행 원인으로 뒤집지 않는다.",
+      "concepts": [
+        "최초 실패가 만든 오류와 재시도 횟수 상관"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01708",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "영향 서비스 수가 만든 경보량과 심각도 상관은 넓은 장애가 더 많은 알림과 높은 등급을 동시에 만든 경우다. 경보 개수가 심각도를 직접 높였다기보다 영향 범위가 공통 기준이다.",
+      "concepts": [
+        "영향 서비스 수가 만든 경보량과 심각도 상관"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01709",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "부하가 만든 인스턴스 수와 지연의 역상관은 높은 수요가 확장과 지연을 함께 촉발한 뒤 확장이 지연을 낮춘 현상이다. 전후 구간을 나누어 본다.",
+      "concepts": [
+        "부하가 만든 인스턴스 수와 지연의 역상관"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01710",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "장애 심각도가 만든 완화 개입과 지속시간 상관은 큰 사고일수록 더 많은 조치가 투입되고 오래 지속되는 선택 효과다. 조치가 장애를 늘렸다는 결론 전에 초기 심각도를 통제한다.",
+      "concepts": [
+        "장애 심각도가 만든 완화 개입과 지속시간 상관"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01711",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "오류율이 만든 당직 개입 횟수 상관은 장애가 심할수록 운영자가 더 자주 조치해 두 값이 함께 오른 경우다. 개입 횟수를 오류의 원인으로 해석하려면 조치 전후 방향을 따로 본다.",
+      "concepts": [
+        "오류율이 만든 당직 개입 횟수 상관"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01712",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "관측 도구 배포가 만든 지연 지표 단절은 실제 서비스 변화 없이 계측 방식과 표본 포함 규칙이 바뀌어 평균이 이동한 현상이다. 지표 변화를 성능 원인으로 보고하기 전에 측정 revision을 확인한다.",
+      "concepts": [
+        "관측 도구 배포가 만든 지연 지표 단절"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01713",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "표본 비율 변경이 만든 오류율 이동은 희귀 실패가 포함될 가능성이 달라져 관측 비율이 변한 경우다. 실제 오류 발생과 수집 확률이라는 공통 측정 조건을 분리한다.",
+      "concepts": [
+        "표본 비율 변경이 만든 오류율 이동"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01714",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "로그 수준 변경이 만든 CPU와 오류 기록 공변은 상세 기록이 늘며 연산 비용과 보이는 예외 수가 동시에 증가한 현상이다. 실제 예외 발생률과 기록량의 차이를 구분한다.",
+      "concepts": [
+        "로그 수준 변경이 만든 CPU와 오류 기록 공변"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01715",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시계 정렬 오류가 만든 지표 선후 착시는 서로 다른 노드의 시간이 어긋나 결과 지표가 원인 후보보다 먼저 나타난 것처럼 보이는 경우다. 공통 시간 기준으로 보정한 뒤 방향을 판정한다.",
+      "concepts": [
+        "시계 정렬 오류가 만든 지표 선후 착시"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01716",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "집계창 크기가 만든 CPU와 오류 상관 변화는 짧은 폭주를 긴 평균에 섞거나 서로 다른 시점의 봉우리를 한 구간에 넣어 관계가 달라진 현상이다. 여러 창 크기에서 결과가 유지되는지 본다.",
+      "concepts": [
+        "집계창 크기가 만든 CPU와 오류 상관 변화"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01717",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "누적 계수가 만든 요청과 오류의 자동 상관은 두 값이 시간에 따라 계속 증가하기 때문에 원인 관계가 없어도 높은 상관을 보이는 현상이다. 구간별 증가량과 오류 비율로 다시 비교한다.",
+      "concepts": [
+        "누적 계수가 만든 요청과 오류의 자동 상관"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01718",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "분모 변화가 만든 성공률과 지연의 거짓 관계는 빠른 헬스체크 요청이 늘어 전체 성공률은 오르고 평균 지연은 내려간 경우다. 동일 요청 종류 안에서 두 값을 다시 계산한다.",
+      "concepts": [
+        "분모 변화가 만든 성공률과 지연의 거짓 관계"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01719",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "리전 혼합이 만든 심프슨 역전은 각 리전에서는 새 버전이 빠르지만 느린 리전에 새 버전 요청이 많아 전체 평균은 느려진 현상이다. 층별·합산 결과를 함께 본다.",
+      "concepts": [
+        "리전 혼합이 만든 심프슨 역전"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01720",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "사용자 코호트 혼합이 만든 기능 효과 착시는 고부하 고객이 새 기능군에 더 많이 배정되어 기능과 오류율이 함께 높아진 경우다. 고객 규모를 맞춘 대조로 직접 효과를 다시 잰다.",
+      "concepts": [
+        "사용자 코호트 혼합이 만든 기능 효과 착시"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01721",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "생존 인스턴스 선택이 만든 낮은 CPU 착시는 포화 노드가 먼저 종료되어 남은 정상 노드만 집계되는 현상이다. 종료된 대상의 마지막 지표를 포함하지 않으면 원인 방향이 왜곡된다.",
+      "concepts": [
+        "생존 인스턴스 선택이 만든 낮은 CPU 착시"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01722",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시간 초과 요청 누락이 만든 짧은 지연 착시는 완료된 호출만 평균에 들어가 가장 느린 실패가 빠진 경우다. 낮아진 평균을 성능 개선으로 보지 말고 검열된 요청 수를 함께 센다.",
+      "concepts": [
+        "시간 초과 요청 누락이 만든 짧은 지연 착시"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01723",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배포 노출량이 만든 변경 빈도와 사고 수 상관은 변경 기회가 많은 팀에서 절대 사고 건수도 커지는 현상이다. 배포당 사고율과 변경 규모를 통제하지 않고 빈도 자체를 원인으로 단정하지 않는다.",
+      "concepts": [
+        "배포 노출량이 만든 변경 빈도와 사고 수 상관"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01724",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "업무량이 만든 팀 규모와 장애 건수 상관은 큰 서비스를 운영하는 조직이 인원과 사고 건수를 모두 많이 갖는 경우다. 팀 규모가 장애를 만든다는 설명보다 서비스 노출량을 공통 원인으로 본다.",
+      "concepts": [
+        "업무량이 만든 팀 규모와 장애 건수 상관"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01725",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "부하 대응 정책이 만든 캐시 크기와 지연 상관은 지연이 높은 서비스에 더 큰 캐시를 배정해 큰 캐시가 오히려 높은 지연과 함께 관측되는 경우다. 정책의 역선택을 통제한다.",
+      "concepts": [
+        "부하 대응 정책이 만든 캐시 크기와 지연 상관"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01726",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "오류 반응 확장이 만든 복제본 수와 실패 상관은 장애가 커질수록 오토스케일러가 복제본을 늘려 두 값이 같이 오르는 현상이다. 많은 복제본이 최초 실패를 일으켰다고 방향을 뒤집지 않는다.",
+      "concepts": [
+        "오류 반응 확장이 만든 복제본 수와 실패 상관"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01727",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "적체 반응 증원이 만든 워커 수와 큐 상관은 긴 대기열에 대응해 소비자를 추가한 결과다. 증원 효과는 이후 큐 감소로 평가한다.",
+      "concepts": [
+        "적체 반응 증원이 만든 워커 수와 큐 상관"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01728",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공통 실패가 만든 회로 개방과 오류율 상관은 의존 서비스 오류가 호출 실패와 차단기 개방을 함께 촉발한 사례다. 차단기 상태를 최초 오류의 원인으로 오해하지 않는다.",
+      "concepts": [
+        "공통 실패가 만든 회로 개방과 오류율 상관"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01729",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "메모리 압박 대응 재시작의 역인과는 높은 메모리 사용이 재시작을 촉발해 두 사건이 상관된 경우다. 재시작 횟수가 누수를 만들었다는 방향과 복구가 메모리를 낮춘 효과를 구분한다.",
+      "concepts": [
+        "메모리 압박 대응 재시작의 역인과"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01730",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "롤백 시점의 자연 회복 혼입은 변경을 되돌릴 때 외부 부하나 의존 장애도 동시에 줄어 회복이 모두 롤백 덕분처럼 보이는 경우다. 대조 집단과 동시 조건을 확인한다.",
+      "concepts": [
+        "롤백 시점의 자연 회복 혼입"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01731",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "극단값 뒤 자연 감소의 평균 회귀는 가장 높은 오류 시점에 조치를 시작하면 원인이 없어도 다음 값이 낮아질 가능성이 큰 현상이다. 여러 이전 사건과 무조치 구간을 비교한다.",
+      "concepts": [
+        "극단값 뒤 자연 감소의 평균 회귀"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01732",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공급자 공지와 내부 경보의 동시점 착시는 널리 알려진 외부 사고 시각에 내부 이상을 모두 연결하는 경우다. 실제 의존 호출과 영향 반경이 겹치는지 확인해 우연한 동시성을 배제한다.",
+      "concepts": [
+        "공급자 공지와 내부 경보의 동시점 착시"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01733",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "사용자 기반이 만든 문의량과 장애 규모 상관은 활성 사용자가 많은 서비스에서 작은 오류율도 많은 문의를 만드는 현상이다. 티켓 수를 기술 실패율로 해석하지 않고 노출 사용자 수를 분모로 둔다.",
+      "concepts": [
+        "사용자 기반이 만든 문의량과 장애 규모 상관"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01734",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "판매 피크가 만든 매출과 지연의 양의 상관은 같은 구매 수요가 거래액과 시스템 부하를 함께 높인 경우다. 지연이 매출을 늘렸다는 거짓 방향보다 수요를 공통 원인으로 본다.",
+      "concepts": [
+        "판매 피크가 만든 매출과 지연의 양의 상관"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01735",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "지역 분포가 만든 오류율과 왕복시간 상관은 먼 지역 사용자가 느린 연결과 높은 시간 초과를 함께 경험한 현상이다. 사용자 위치를 통제한 뒤 서버 처리시간의 직접 효과를 평가한다.",
+      "concepts": [
+        "지역 분포가 만든 오류율과 왕복시간 상관"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01736",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "클라이언트 버전 혼합이 만든 API 오류 상관은 오래된 앱 비중이 높은 시간대에 특정 요청 형식 오류도 늘어난 경우다. 시간대 자체보다 버전별 실패율을 비교한다.",
+      "concepts": [
+        "클라이언트 버전 혼합이 만든 API 오류 상관"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01737",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "봇 차단이 만든 트래픽 감소와 성공률 상승은 하나의 정책 개입이 요청량과 오류 구성에 동시에 영향을 준 사례다. 트래픽 감소만이 성공률 변화의 직접 원인인지 요청 종류별로 확인한다.",
+      "concepts": [
+        "봇 차단이 만든 트래픽 감소와 성공률 상승"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01738",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "헬스체크 실패와 인스턴스 제외의 피드백은 지연이 대상 제외를 만들고 남은 노드 부하가 추가 실패를 낳는 구조다. 양방향 경로를 표시한다.",
+      "concepts": [
+        "헬스체크 실패와 인스턴스 제외의 피드백"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01739",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "부하 차단이 만든 오류 수와 CPU 동시 감소는 요청을 입구에서 버려 백엔드 연산과 내부 오류 기록이 함께 줄어든 현상이다. 사용자 실패까지 개선됐다고 보려면 차단 응답을 포함한다.",
+      "concepts": [
+        "부하 차단이 만든 오류 수와 CPU 동시 감소"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01740",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "요청 드롭이 만든 낮은 CPU와 높은 사용자 실패는 처리 전에 호출이 사라져 서버 사용률은 낮아지지만 서비스 성공은 악화된 경우다. CPU와 품질의 음의 상관을 효율 향상으로 오해하지 않는다.",
+      "concepts": [
+        "요청 드롭이 만든 낮은 CPU와 높은 사용자 실패"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01741",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시간 제한 단축이 만든 평균 지연 감소 착시는 느린 요청을 일찍 실패시켜 완료 지연 평균은 낮아진 경우다. 성공률과 검열된 실패를 함께 보지 않으면 성능이 좋아진 것처럼 보인다.",
+      "concepts": [
+        "시간 제한 단축이 만든 평균 지연 감소 착시"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01742",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "표본 수가 만든 꼬리 지연 변동은 요청이 적은 구간에서 상위 분위수가 몇 개의 값에 크게 좌우되는 현상이다. 분위수 이동과 실제 분포 변화의 확신을 표본 크기에 맞춰 조정한다.",
+      "concepts": [
+        "표본 수가 만든 꼬리 지연 변동"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01743",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "히스토그램 경계가 만든 지연 단계 착시는 실제 값이 연속적으로 움직여도 고정 버킷을 넘는 순간 대시보드가 급변해 보이는 경우다. 원시 분포와 버킷 정의를 함께 확인한다.",
+      "concepts": [
+        "히스토그램 경계가 만든 지연 단계 착시"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01744",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "대시보드 보간이 만든 지표 동조는 결측 구간을 같은 방식으로 채워 서로 다른 원시 지표가 비슷한 곡선을 보이는 현상이다. 보간 전 자료에서 상관이 유지되는지 검사한다.",
+      "concepts": [
+        "대시보드 보간이 만든 지표 동조"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01745",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "중복 텔레메트리가 만든 요청과 오류 공증가는 수집기가 같은 이벤트를 두 번 전송해 두 계수가 함께 부풀려진 경우다. 실제 서비스 사건과 계측 복제의 몫을 분리한다.",
+      "concepts": [
+        "중복 텔레메트리가 만든 요청과 오류 공증가"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01746",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "지연 도착한 텔레메트리가 만든 선후 역전은 원인 지표가 늦게 수집되어 결과보다 뒤에 기록된 것처럼 보이는 현상이다. 발생 시각과 수집 시각을 나누어 정렬한다.",
+      "concepts": [
+        "지연 도착한 텔레메트리가 만든 선후 역전"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01747",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "계수기 재설정이 만든 트래픽과 오류 급락 상관은 프로세스 재시작으로 누적 계수들이 동시에 0에 가까워진 경우다. 서비스 수요가 사라졌다는 설명보다 계측 상태 변화를 확인한다.",
+      "concepts": [
+        "계수기 재설정이 만든 트래픽과 오류 급락 상관"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01748",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "라벨 수 증가가 만든 오류 시계열 변화는 새 차원이 추가되며 집계 쿼리가 일부 계열을 빠뜨리거나 중복 합산한 경우다. 실제 장애와 지표 정의 변경을 분리한다.",
+      "concepts": [
+        "라벨 수 증가가 만든 오류 시계열 변화"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01749",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "서로 다른 서비스 롤업이 만든 평균 상관은 빠른 대량 서비스의 비중 변화가 전체 지연과 오류 평균을 함께 움직인 현상이다. 서비스별 층화 없이 합계만 비교하지 않는다.",
+      "concepts": [
+        "서로 다른 서비스 롤업이 만든 평균 상관"
+      ],
+      "relations": [
+        "comparison",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01750",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공통 경보 규칙이 만든 알림 시계열 동조는 여러 지표가 같은 임계값과 유지시간을 써 함께 켜지고 꺼진 경우다. 알림 동시성은 서비스 간 직접 인과가 아니다.",
+      "concepts": [
+        "공통 경보 규칙이 만든 알림 시계열 동조"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01751",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공통 원인을 표시한 장애 인과도는 트래픽이 CPU와 오류율을 각각 움직이는 두 경로를 그려 지표 사이의 직접 간선과 구별한다. 공유 선행 변수를 빠뜨린 단순 화살표를 피한다.",
+      "concepts": [
+        "공통 원인을 표시한 장애 인과도"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01752",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "트래픽 통제 뒤 남은 부분 상관은 요청량이 같은 구간에서 CPU와 오류율의 관계가 유지되는지 계산한 값이다. 통제 변수의 측정오차가 크면 남은 상관도 직접 인과의 확정 증거는 아니다.",
+      "concepts": [
+        "트래픽 통제 뒤 남은 부분 상관"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01753",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "부하 수준별 층화 비교는 낮음·중간·높음 요청 구간 안에서 캐시 적중률과 지연의 관계를 따로 보는 방법이다. 전체 혼합 상관이 부하 구성 때문에 생겼는지 확인한다.",
+      "concepts": [
+        "부하 수준별 층화 비교"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01754",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시간대 고정 효과로 제거한 일주기는 같은 시각대끼리 비교해 반복 수요와 정기 작업의 공통 영향을 줄이는 분석이다. 그 뒤의 차이도 비정기 사건과 연결해 해석한다.",
+      "concepts": [
+        "시간대 고정 효과로 제거한 일주기"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01755",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "유사 부하 정상창과의 대응 비교는 장애 구간을 같은 요일·요청량·사용자 구성의 정상 구간과 짝지어 지표 차이를 보는 절차다. 직전 시간만 기준으로 삼아 계절성을 놓치지 않는다.",
+      "concepts": [
+        "유사 부하 정상창과의 대응 비교"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01756",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "무작위 카나리로 분리한 버전 효과는 비슷한 요청을 새 버전과 기존 버전에 임의 배분해 사용자·시간대 차이를 줄이는 방법이다. 공유 인프라 간섭이 있으면 독립성 한계를 함께 적는다.",
+      "concepts": [
+        "무작위 카나리로 분리한 버전 효과"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01757",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시차 배포로 나눈 공통 시간 충격은 여러 리전에 같은 변경을 다른 시각에 적용해 전역 트래픽 변화와 버전 효과를 구분하는 설계다. 각 리전의 고유 추세도 대조한다.",
+      "concepts": [
+        "시차 배포로 나눈 공통 시간 충격"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01758",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "영향받지 않아야 할 음성 대조 지표는 의심된 캐시 변경과 경로상 무관한 정적 파일 응답시간처럼 공통 환경만 공유하는 측정값이다. 함께 변하면 숨은 공통 원인을 다시 찾는다.",
+      "concepts": [
+        "영향받지 않아야 할 음성 대조 지표"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01759",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "호출 경로가 없는 음성 대조 서비스는 같은 리전과 노드를 쓰지만 의심된 데이터베이스에는 접근하지 않는 기능이다. 이 서비스도 느리면 특정 쿼리보다 공통 인프라 가설이 강해진다.",
+      "concepts": [
+        "호출 경로가 없는 음성 대조 서비스"
+      ],
+      "relations": [
+        "contrast",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01760",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "독립 할당량을 이용한 원인 구분은 한 작업만 별도 API 한도를 갖는 구간에서 다른 작업과의 실패 동조가 사라지는지 보는 방법이다. 공유 한도가 공통 원인이었는지 검증한다.",
+      "concepts": [
+        "독립 할당량을 이용한 원인 구분"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01761",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시차 상관으로 확인한 원인 방향은 요청량 변화 뒤 일정 시간 후 큐와 오류가 움직이는지 살펴 동시 상관과 구별하는 분석이다. 시차 일치만으로 누락된 공통 사건을 배제하지 않는다.",
+      "concepts": [
+        "시차 상관으로 확인한 원인 방향"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01762",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "여러 지연값을 비교한 교차 상관은 캐시 미스가 데이터베이스 부하보다 앞서는 시간 간격을 탐색하는 방법이다. 반복 주기가 같은 두 계열은 우연히 봉우리가 맞을 수 있어 계절성을 제거한다.",
+      "concepts": [
+        "여러 지연값을 비교한 교차 상관"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01763",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "의심 원인만 바꾼 개입 시험은 요청량을 유지한 채 캐시 만료 정책만 분산시켜 원본 부하가 줄어드는지 확인한다. 함께 바뀐 설정이 있으면 단일 원인 판정이 약해진다.",
+      "concepts": [
+        "의심 원인만 바꾼 개입 시험"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01764",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공통 부하를 고정한 용량 실험은 동일한 재생 요청에서 CPU 제한만 달리해 오류 변화가 따르는지 보는 절차다. 입력 구성의 차이 때문에 생긴 상관을 줄인다.",
+      "concepts": [
+        "공통 부하를 고정한 용량 실험"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01765",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "캐시 정책 무작위 대조는 동등한 키 집합을 서로 다른 만료 방식에 배정해 미스율과 원본 지연의 차이를 비교한다. 인기 키 편향이 결과를 공통으로 움직이지 않게 한다.",
+      "concepts": [
+        "캐시 정책 무작위 대조"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01766",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 자원을 분리한 장애 격리 시험은 서비스마다 독립 캐시나 연결 풀을 부여해 지표 동조가 사라지는지 보는 방법이다. 분리 뒤에도 남는 관계는 다른 경로를 요구한다.",
+      "concepts": [
+        "공유 자원을 분리한 장애 격리 시험"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01767",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "실제 호출 그래프로 확인한 의존 간선은 두 서비스 사이의 요청 방향과 빈도를 추적 자료에서 확인하는 절차다. 같은 리전에 있다는 사실만으로 직접 의존을 만들어내지 않는다.",
+      "concepts": [
+        "실제 호출 그래프로 확인한 의존 간선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01768",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "분산 추적에서 찾은 공통 상위 호출은 서로 다른 하위 서비스 지연이 같은 상위 요청 유형에서만 함께 나타나는지 확인한다. 상위 호출을 통제해 하위 서비스 간 거짓 상관을 줄인다.",
+      "concepts": [
+        "분산 추적에서 찾은 공통 상위 호출"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01769",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "자원 태그로 구분한 공유 노드 효과는 오류가 같은 물리 노드나 저장 장치에 배치된 인스턴스에서만 동조하는지 보는 분석이다. 논리 서비스 이름보다 실제 배치 공통성을 확인한다.",
+      "concepts": [
+        "자원 태그로 구분한 공유 노드 효과"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01770",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "테넌트별 분할로 확인한 고객 혼입은 대형 고객을 분리했을 때 메모리와 지연의 전체 상관이 약해지는지 보는 방법이다. 고객 구성의 변화가 공통 원인이었는지 판정한다.",
+      "concepts": [
+        "테넌트별 분할로 확인한 고객 혼입"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01771",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "리전별 분할로 확인한 지리 혼입은 각 지역 안에서는 오류와 지연 관계가 같은지 비교해 전체 집계의 위치 편향을 찾는 절차다. 전역 평균 하나로 지역 경로를 대신하지 않는다.",
+      "concepts": [
+        "리전별 분할로 확인한 지리 혼입"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01772",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "클라이언트 버전별 실패율 비교는 동일 API에서도 앱 revision에 따라 입력 형식과 시간 제한이 다른 영향을 분리한다. 버전 혼합이 만든 전체 상관을 직접 서버 원인과 구별한다.",
+      "concepts": [
+        "클라이언트 버전별 실패율 비교"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01773",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "요청 종류별 지연 분해는 읽기·쓰기·대형 변환을 따로 집계해 호출 혼합이 평균 CPU와 지연을 함께 움직였는지 확인한다. 서로 다른 작업을 한 평균에 섞지 않는다.",
+      "concepts": [
+        "요청 종류별 지연 분해"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01774",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "표본 가중치로 복원한 전체 요청 분포는 성공·실패·고지연 요청의 수집 확률 차이를 반영해 지표를 다시 계산하는 방법이다. 수집기 선택이 만든 거짓 상관을 줄인다.",
+      "concepts": [
+        "표본 가중치로 복원한 전체 요청 분포"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01775",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "관측 확률 보정에 따른 상관 민감도는 누락 가능성이 큰 시간 초과 요청에 여러 가중치를 주어 결론이 얼마나 달라지는지 살핀다. 한 보정값에만 의존한 확정 판단을 피한다.",
+      "concepts": [
+        "관측 확률 보정에 따른 상관 민감도"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01776",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "결측 자료 가정별 원인 민감도는 빠진 지표가 정상 구간과 같은지, 더 나쁜 구간인지 각각 가정해 원인 순위를 다시 계산한다. 자료 부재를 자동으로 정상값으로 채우지 않는다.",
+      "concepts": [
+        "결측 자료 가정별 원인 민감도"
+      ],
+      "relations": [
+        "comparison",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01777",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "대안 공통 원인 목록의 체계적 검토는 트래픽, 시간대, 배포, 공유 자원, 계측 변경을 후보로 두고 각 경로의 증거를 확인하는 절차다. 첫 상관 설명에만 고정되지 않는다.",
+      "concepts": [
+        "대안 공통 원인 목록의 체계적 검토"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01778",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공통 결과를 조건화한 충돌 편향은 오류가 난 요청만 골라 보면 독립적인 두 원인이 서로 반대로 연관된 것처럼 보이는 현상이다. 선택 기준이 두 경로가 만나는 결과인지 확인한다.",
+      "concepts": [
+        "공통 결과를 조건화한 충돌 편향"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01779",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "매개 변수를 통제해 사라진 총효과는 트래픽이 큐를 거쳐 오류를 만들 때 큐를 고정해 전체 기여가 작게 보이는 문제다. 공통 원인과 매개 변수를 구분한다.",
+      "concepts": [
+        "매개 변수를 통제해 사라진 총효과"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01780",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "개입 뒤 변수를 통제한 과잉 보정은 새 버전이 캐시 적중을 바꾸고 적중이 지연을 바꾸는 상황에서 적중률까지 고정해 버전 효과를 지우는 경우다. 인과 순서를 먼저 정한다.",
+      "concepts": [
+        "개입 뒤 변수를 통제한 과잉 보정"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01781",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "확장된 용량을 통제한 정책 효과 왜곡은 높은 부하가 오토스케일을 촉발한 뒤 인스턴스 수를 단순 보정해 부하와 지연 관계를 잘못 줄이는 문제다. 반응 변수의 위치를 표시한다.",
+      "concepts": [
+        "확장된 용량을 통제한 정책 효과 왜곡"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01782",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "아키텍처 방향으로 제한한 인과 후보는 호출 그래프상 데이터베이스가 API 응답에 영향을 줄 수 있지만 API 지연이 과거 쿼리 계획을 바꿀 수는 없다는 구조 지식을 쓰는 방법이다. 불가능한 역방향을 제거한다.",
+      "concepts": [
+        "아키텍처 방향으로 제한한 인과 후보"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01783",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시간 선행을 요구하는 최소 인과 게이트는 원인 후보가 결과보다 먼저 변하지 않았다면 직접 원인 판정을 막는 규칙이다. 다만 먼저 일어났다는 사실만으로 충분성까지 인정하지 않는다.",
+      "concepts": [
+        "시간 선행을 요구하는 최소 인과 게이트"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01784",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "부하 단계별 용량 반응 곡선은 요청량을 늘릴수록 지연과 오류가 일관되게 변하는지 보아 단순 동시성을 넘어선 증거를 얻는 방법이다. 임계와 포화 때문에 비선형일 수 있음을 반영한다.",
+      "concepts": [
+        "부하 단계별 용량 반응 곡선"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01785",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "원인 제거 뒤 되돌아오는 회복 방향은 의심 설정을 해제했을 때 매개 지표와 결과가 예상 역순으로 정상화되는지 확인하는 절차다. 자연 회복과 동시 조치를 대조한다.",
+      "concepts": [
+        "원인 제거 뒤 되돌아오는 회복 방향"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01786",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "반복 사고에서 재현된 공통 원인 경로는 서로 다른 날짜에도 같은 트래픽 조건, 자원 포화, 오류 순서가 나타나는지 확인한 증거다. 반복 상관과 반복 가능한 작동 경로를 구별한다.",
+      "concepts": [
+        "반복 사고에서 재현된 공통 원인 경로"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01787",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "장애 밖 시간창의 반증 검사는 의심 지표가 정상 기간에도 자주 함께 움직이는지 살펴 해당 상관의 특이성을 평가한다. 정상 때도 같은 관계라면 장애 직접 원인 설명은 약해진다.",
+      "concepts": [
+        "장애 밖 시간창의 반증 검사"
+      ],
+      "relations": [
+        "contrast",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01788",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "가짜 배포 시각을 둔 위약 검사는 실제 변경이 없던 여러 시점에도 같은 분석이 큰 효과를 찾는지 확인하는 방법이다. 위약에서도 신호가 반복되면 시간 추세나 계절 혼입을 의심한다.",
+      "concepts": [
+        "가짜 배포 시각을 둔 위약 검사"
+      ],
+      "relations": [
+        "contrast",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01789",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "교대 시간 위약으로 본 조직 문맥은 장애가 없는 날의 같은 인수인계 시각에도 경보나 지연 변화가 나타나는지 비교한다. 단순한 시간 겹침을 운영 실수의 인과 증거로 삼지 않는다.",
+      "concepts": [
+        "교대 시간 위약으로 본 조직 문맥"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01790",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "이벤트 달력으로 통제한 외부 충격은 출시, 정산, 백업, 공급자 유지보수 시각을 한 표에 놓아 지표 동조의 공통 사건을 찾는 절차다. 사후에 편리한 일정만 고르지 않는다.",
+      "concepts": [
+        "이벤트 달력으로 통제한 외부 충격"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01791",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "지표 정의 revision 원장은 수집기, 표본률, 라벨, 집계식이 바뀐 시각과 내용을 보존해 시계열 단절을 설명한다. 측정 변경을 실제 시스템 원인과 혼동하지 않게 한다.",
+      "concepts": [
+        "지표 정의 revision 원장"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01792",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "가공 전 원시 사건 재검산은 대시보드 상관이 원본 로그의 발생 시각과 개별 요청 수준에서도 유지되는지 확인하는 절차다. 보간·롤업·중복 집계의 영향을 분리한다.",
+      "concepts": [
+        "가공 전 원시 사건 재검산"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01793",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공통 원인 조정치의 신뢰구간은 트래픽과 시간대를 보정한 뒤 남은 효과의 불확실한 범위를 함께 제시한다. 중앙값이 0과 다르다는 이유만으로 운영상 큰 원인이라고 단정하지 않는다.",
+      "concepts": [
+        "공통 원인 조정치의 신뢰구간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01794",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "높은 상관계수의 제한된 증거력은 두 지표가 거의 같은 곡선이어도 공유 입력, 집계 방식, 반응 정책 때문에 직접 인과가 아닐 수 있다는 원칙이다. 경로와 개입 증거를 추가한다.",
+      "concepts": [
+        "높은 상관계수의 제한된 증거력"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01795",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "낮은 선형 상관과 인과 부재의 경계는 시차, 임계, 포화, 상반된 집단 효과 때문에 실제 경로가 평균 상관에서 약하게 보일 수 있다는 점이다. 관계 형태를 바꾸어 검사한다.",
+      "concepts": [
+        "낮은 선형 상관과 인과 부재의 경계"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01796",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "비선형 공통 원인이 만든 곡선 관계는 트래픽이 낮을 때 두 지표가 안정적이다가 포화 뒤 함께 급증하는 현상이다. 전체 직선 상관만으로 공통 부하의 역할을 놓치지 않는다.",
+      "concepts": [
+        "비선형 공통 원인이 만든 곡선 관계"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01797",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "임계 공통 원인이 만든 동시 점프는 공유 연결 풀이 가득 찬 순간 여러 서비스 오류가 함께 뛰는 경우다. 서비스 사이 전파보다 같은 용량 경계 초과를 먼저 모델링한다.",
+      "concepts": [
+        "임계 공통 원인이 만든 동시 점프"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01798",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "상호작용 조건이 만든 제한적 상관은 높은 트래픽과 특정 버전이 함께 있을 때만 CPU와 오류가 동조하는 현상이다. 한 요인의 평균 효과로 조합 경로를 지우지 않는다.",
+      "concepts": [
+        "상호작용 조건이 만든 제한적 상관"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01799",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "해결되지 않은 공통 원인 후보 보고는 공유 네트워크와 계측 누락 중 어느 설명도 배제되지 않았을 때 증거와 반증을 각각 남기는 방식이다. 상관만으로 하나를 확정하지 않는다.",
+      "concepts": [
+        "해결되지 않은 공통 원인 후보 보고"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01800",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재현 가능한 거짓 상관 감사 기록은 자료 범위, 층화 기준, 시차, 대조군, 통제 변수, 제외 규칙과 결과를 함께 보존한다. 다른 검토자가 같은 분석으로 공통 원인 판정을 확인할 수 있어야 한다.",
+      "concepts": [
+        "재현 가능한 거짓 상관 감사 기록"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 원인 구조 High-Density Train 150 v15",
+  "version": "15",
+  "purpose": "원인·결과·매개·공통 원인을 개입과 관찰의 차이까지 포함해 판정한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CSH-02101 ~ S2-CSH-02250",
+  "concept_family": "S2-A01-T015: 클라우드 서비스 부하·장애 대응 — 다중 원인의 충분성·기여 범위",
+  "design_note": "클라우드 서비스 부하·장애 대응 영역의 다중 원인의 충분성·기여 범위 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CSH-02101",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "트래픽 증가와 비싼 질의가 만든 CPU 포화는 호출 수와 건당 연산비가 함께 용량을 넘은 결과다. 한 요인씩 낮춰 공동 기여를 판정한다.",
+      "concepts": [
+        "트래픽 증가와 비싼 질의가 만든 CPU 포화"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02102",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "압축과 암호화의 CPU 공동 부담은 같은 응답을 줄이고 보호하는 두 연산이 처리 시간에 각각 더해진 몫이다. 기능을 하나씩 끈 측정으로 단독 비용과 결합 비용을 나눈다.",
+      "concepts": [
+        "압축과 암호화의 CPU 공동 부담"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02103",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "메모리 누수와 낮은 상한의 결합 종료는 증가하는 사용량과 작은 제한값이 OOM을 만든 사건이다. 누수는 촉발하고 상한은 종료를 앞당긴다.",
+      "concepts": [
+        "메모리 누수와 낮은 상한의 결합 종료"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02104",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "캐시 확대와 큰 배치가 만든 메모리 압력은 장기 점유 영역과 순간 작업 공간이 동시에 커진 상태다. 각 항목만으로는 한도 아래여도 합계가 임계값을 넘으면 결합이 충분 조건이 된다.",
+      "concepts": [
+        "캐시 확대와 큰 배치가 만든 메모리 압력"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02105",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "트래픽 급증과 단편화가 겹친 OOM 재시작은 필요한 총바이트와 연속 할당 실패가 함께 발생한 결과다. 사용 가능 합계만 보지 말고 블록 배치가 실패에 기여한 범위를 따진다.",
+      "concepts": [
+        "트래픽 급증과 단편화가 겹친 OOM 재시작"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02106",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "큰 힙과 높은 할당률의 GC 정지는 탐색해야 할 객체 규모와 새 객체 생성 속도가 동시에 정지시간을 키운 경우다. 힙 크기와 할당률을 따로 바꾼 시험으로 주된 기여를 가른다.",
+      "concepts": [
+        "큰 힙과 높은 할당률의 GC 정지"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02107",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "요청 폭주와 워커 부족의 큐 지연은 유입 속도가 처리 속도를 넘는 동안 대기열이 누적된 결과다. 폭주 크기와 부족한 처리 용량이 각각 대기 증가율에 준 몫을 계산한다.",
+      "concepts": [
+        "요청 폭주와 워커 부족의 큐 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02108",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "긴 작업시간과 높은 도착률의 적체는 한 작업이 슬롯을 오래 점유하고 새 작업이 빠르게 들어올 때 생긴다. 어느 한 요인도 단독 한계를 넘지 않았다면 둘의 곱이 충분성을 만든다.",
+      "concepts": [
+        "긴 작업시간과 높은 도착률의 적체"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02109",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "큐 대기와 짧은 제한시간의 시간초과는 실행 전 소비된 시간과 남은 허용시간이 맞물린 결과다. 대기는 원인 경로이고 제한값은 같은 지연을 실패로 바꾸는 조건으로 분류한다.",
+      "concepts": [
+        "큐 대기와 짧은 제한시간의 시간초과"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02110",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "최초 오류와 공격적 재시도의 폭주는 실패 뒤 짧은 간격의 재호출이 늘어난 사건이다. 오류는 촉발하고 재시도는 규모를 키운다.",
+      "concepts": [
+        "최초 오류와 공격적 재시도의 폭주"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02111",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "높은 동시성과 느린 반환의 연결 고갈은 대여 속도가 반환 속도를 넘어 풀을 소진한 상태다. 요청 수와 보유시간을 따로 낮춰 기여를 본다.",
+      "concepts": [
+        "높은 동시성과 느린 반환의 연결 고갈"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02112",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "전체 스캔과 정렬이 합친 데이터베이스 CPU 부하는 많은 행을 읽는 비용과 결과 순서를 만드는 비용이 한 질의에 누적된 값이다. 실행 계획 단계별 시간을 이용해 두 원인의 기여 범위를 나눈다.",
+      "concepts": [
+        "전체 스캔과 정렬이 합친 데이터베이스 CPU 부하"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02113",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "체크포인트와 쓰기 폭주의 디스크 포화는 내부 플러시와 사용자 쓰기가 같은 장치 대역을 동시에 요구한 결과다. 어느 작업도 단독으로 포화시키지 못했다면 겹친 구간이 충분 조건이다.",
+      "concepts": [
+        "체크포인트와 쓰기 폭주의 디스크 포화"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02114",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "장기 트랜잭션과 핫 행의 잠금 대기는 오래 유지된 잠금에 많은 갱신이 같은 행으로 모인 사건이다. 보유시간은 노출 길이를, 접근 집중은 대기자 수를 결정한 기여로 구분한다.",
+      "concepts": [
+        "장기 트랜잭션과 핫 행의 잠금 대기"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02115",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "쓰기 급증과 느린 회선의 복제 지연은 전달해야 할 로그량이 늘고 전송 용량이 줄어 잔량이 쌓인 결과다. 두 변화가 각각 초당 미전송 바이트에 준 몫을 비교한다.",
+      "concepts": [
+        "쓰기 급증과 느린 회선의 복제 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02116",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "복제 지연과 읽기 라우팅의 오래된 응답은 최신 쓰기가 아직 도착하지 않은 복제본을 조회 경로가 선택한 경우다. 지연만으로는 사용자 노출이 충분하지 않고 해당 라우팅이 함께 필요하다.",
+      "concepts": [
+        "복제 지연과 읽기 라우팅의 오래된 응답"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02117",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "짧은 TTL과 키 분열의 캐시 미스는 객체가 빨리 만료되고 같은 내용이 여러 키로 나뉘어 재사용되지 않은 결과다. 만료와 정규화 실패가 미스 수에 준 기여를 따로 센다.",
+      "concepts": [
+        "짧은 TTL과 키 분열의 캐시 미스"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02118",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "작은 캐시와 큰 객체의 축출 증가는 저장 공간 대비 항목 크기가 커서 새 삽입마다 기존 항목을 밀어낸 상태다. 용량과 객체 분포 중 어느 요인이 축출률을 더 제한했는지 측정한다.",
+      "concepts": [
+        "작은 캐시와 큰 객체의 축출 증가"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02119",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "캐시 미스와 fan-out의 원본 과부하는 캐시를 지난 요청이 여러 내부 호출로 퍼진 결과다. 미스율과 건당 fan-out 몫을 나눈다.",
+      "concepts": [
+        "캐시 미스와 fan-out의 원본 과부하"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02120",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "엣지 미스와 먼 원본의 CDN 지연은 캐시 부재로 장거리 왕복이 필요해진 요청에서 나타난다. 원본 거리는 잠재 비용이지만 미스가 있어야 사용자 지연으로 드러나므로 두 조건을 함께 본다.",
+      "concepts": [
+        "엣지 미스와 먼 원본의 CDN 지연"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02121",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "회선 혼잡과 우회 경로의 왕복 지연은 좁아진 전송 여유와 늘어난 홉 수가 동시에 시간을 더한 결과다. 경로별 기준 지연과 혼잡 대기량을 분해해 기여를 산정한다.",
+      "concepts": [
+        "회선 혼잡과 우회 경로의 왕복 지연"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02122",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "결함 링크와 작은 버퍼의 패킷 손실은 전송 오류와 큐 초과가 같은 손실 지표를 높인 경우다. 오류 비트와 버퍼 드롭을 따로 센다.",
+      "concepts": [
+        "결함 링크와 작은 버퍼의 패킷 손실"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02123",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "짧은 연결과 무거운 암호군의 TLS CPU 비용은 핸드셰이크 횟수가 많고 회당 연산비도 큰 상황에서 발생한다. 연결 재사용과 암호군 변경을 각각 시험해 곱셈형 기여를 확인한다.",
+      "concepts": [
+        "짧은 연결과 무거운 암호군의 TLS CPU 비용"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02124",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "오래된 resolver와 잘못된 레코드의 DNS 실패는 오류 주소가 배포되고 일부 캐시가 이를 오래 보존한 사건이다. 레코드 오류는 필요 원인이고 캐시 수명은 영향 사용자와 지속시간을 넓힌다.",
+      "concepts": [
+        "오래된 resolver와 잘못된 레코드의 DNS 실패"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02125",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "업스트림 종료와 프록시 제한의 502 응답은 뒤 서버 종료나 프록시 시간 만료로 생긴다. 로그 코드로 두 대체 원인의 비중을 센다.",
+      "concepts": [
+        "업스트림 종료와 프록시 제한의 502 응답"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02126",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "입장 거절과 용량 부족의 503 오류는 보호 정책이 요청을 차단한 경우와 실제 처리 슬롯이 없는 경우를 포함한다. 같은 상태코드라도 충분 원인이 다르므로 거절 지점별로 기여를 분리한다.",
+      "concepts": [
+        "입장 거절과 용량 부족의 503 오류"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02127",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "느린 업스트림과 짧은 게이트웨이 한도의 504 오류는 실제 응답시간이 설정된 대기 한도를 넘을 때 발생한다. 업스트림 지연은 연속 원인이고 한도는 이를 오류로 바꾸는 판정 조건이다.",
+      "concepts": [
+        "느린 업스트림과 짧은 게이트웨이 한도의 504 오류"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02128",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "유휴 제한과 NAT 만료의 웹소켓 단절은 애플리케이션과 중간망이 서로 다른 시계로 연결을 정리해 생긴다. 어느 쪽이 먼저 종료했는지 패킷 기록으로 확인해 기여 범위를 가른다.",
+      "concepts": [
+        "유휴 제한과 NAT 만료의 웹소켓 단절"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02129",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "소켓 증가와 로그 파일의 핸들 고갈은 연결과 열린 로그가 같은 프로세스 한도를 채운 결과다. 유형별 열린 수로 기여를 센다.",
+      "concepts": [
+        "소켓 증가와 로그 파일의 핸들 고갈"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02130",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "차단 입출력과 작은 풀의 스레드 기아는 작업이 오래 멈춘 상태에서 사용할 실행 스레드 수도 부족해진 경우다. 차단시간과 풀 크기 중 하나만 바꿔도 회복되는지 충분성을 시험한다.",
+      "concepts": [
+        "차단 입출력과 작은 풀의 스레드 기아"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02131",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "낮은 우선순위와 CPU 경합의 스케줄 지연은 바쁜 노드에서 실행 기회가 줄어든 결과다. 우선순위는 배분을, 경합은 부족량을 정한다.",
+      "concepts": [
+        "낮은 우선순위와 CPU 경합의 스케줄 지연"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02132",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "작은 CPU quota와 burst 작업의 스로틀링은 짧은 구간의 연산 요구가 할당 토큰을 넘어서며 발생한다. quota와 burst 크기의 상대값이 충분 조건이므로 어느 한 수치만 원인으로 고정하지 않는다.",
+      "concepts": [
+        "작은 CPU quota와 burst 작업의 스로틀링"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02133",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "업무 pod와 daemon의 노드 메모리 압력은 사용자 컨테이너와 상주 시스템 작업이 같은 물리 메모리를 나눠 쓴 결과다. 두 집단의 resident 사용량을 구분해 축출에 준 기여를 센다.",
+      "concepts": [
+        "업무 pod와 daemon의 노드 메모리 압력"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02134",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "느린 지표와 긴 냉각시간의 확장 지연은 부하 탐지가 늦고 이전 조치 뒤 대기 규칙까지 남아 증설이 미뤄진 사건이다. 측정 지연과 정책 대기가 각각 전체 지연에 더한 시간을 분리한다.",
+      "concepts": [
+        "느린 지표와 긴 냉각시간의 확장 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02135",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "노이즈 지표와 짧은 냉각시간의 확장 진동은 작은 사용률 흔들림마다 정책이 즉시 반응해 증설과 축소를 반복한 결과다. 노이즈는 촉발 신호이고 짧은 냉각은 억제 부족의 기여다.",
+      "concepts": [
+        "노이즈 지표와 짧은 냉각시간의 확장 진동"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02136",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "높은 최소 복제본과 낮은 수요의 과잉 용량은 정책 하한이 실제 필요량보다 큰 기간에 나타난다. 낮은 수요는 배경 조건이고 최소값은 유휴 자원을 직접 유지하는 충분 원인이다.",
+      "concepts": [
+        "높은 최소 복제본과 낮은 수요의 과잉 용량"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02137",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "수요 예측 오차와 긴 기동시간의 용량 부족은 급증을 미리 준비하지 못하고 새 인스턴스도 늦게 투입된 결과다. 예측은 선행 여유를, 기동시간은 회복 속도를 제한한 기여다.",
+      "concepts": [
+        "수요 예측 오차와 긴 기동시간의 용량 부족"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02138",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "큰 이미지와 긴 초기화의 콜드 스타트는 다운로드·압축 해제 시간과 애플리케이션 준비 시간이 순차로 누적된 값이다. 단계별 시각을 이용해 각 구성 원인의 기여를 더한다.",
+      "concepts": [
+        "큰 이미지와 긴 초기화의 콜드 스타트"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02139",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "콜드 스타트와 느린 의존성의 함수 시간초과는 시작에 쓴 시간과 외부 호출 대기가 합쳐져 실행 한도를 넘은 사건이다. 어느 단계도 단독 한도를 넘지 않으면 결합만 충분하다.",
+      "concepts": [
+        "콜드 스타트와 느린 의존성의 함수 시간초과"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02140",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "늦은 입력과 느린 작업의 배치 마감 실패는 시작이 밀리고 처리도 길어 기한을 넘은 결과다. 입력과 실행 지연을 따로 잰다.",
+      "concepts": [
+        "늦은 입력과 느린 작업의 배치 마감 실패"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02141",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "파티션 편중과 부족한 소비자의 스트림 지연은 메시지가 몰린 파티션의 처리력도 모자란 상태다. 핫 파티션의 국소 조합이 충분 조건이다.",
+      "concepts": [
+        "파티션 편중과 부족한 소비자의 스트림 지연"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02142",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "긴 보존과 높은 유입의 브로커 디스크 고갈은 메시지가 오래 남고 새 바이트도 빠르게 쌓여 저장 한도를 채운 결과다. 보존시간과 유입률이 점유량에 준 기여를 각각 계산한다.",
+      "concepts": [
+        "긴 보존과 높은 유입의 브로커 디스크 고갈"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02143",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "생산 폭주와 작은 버퍼의 메시지 손실은 짧은 시간에 들어온 항목이 흡수 가능한 공간을 넘어선 사건이다. 폭주가 공급한 초과량과 버퍼 부족분의 경계에서 충분성이 결정된다.",
+      "concepts": [
+        "생산 폭주와 작은 버퍼의 메시지 손실"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02144",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재시도와 멱등성 부재의 중복 이벤트는 재전달된 작업을 소비자가 식별하지 못해 두 번 반영한 결과다. 재전달과 식별 부재가 함께 필요하다.",
+      "concepts": [
+        "재시도와 멱등성 부재의 중복 이벤트"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02145",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "파티션 분산과 시계 오차의 이벤트 역전은 경로별 도착 순서와 부정확한 시각이 원래 순서를 흐린 경우다. 로그 오프셋과 기준 시계로 검증한다.",
+      "concepts": [
+        "파티션 분산과 시계 오차의 이벤트 역전"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02146",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "잠금 순서 불일치와 동시 갱신의 교착은 두 작업이 반대 순서로 자원을 잡고 같은 시각에 서로를 기다릴 때 생긴다. 순서 불일치는 구조 원인이고 동시성은 이를 발현시키는 조건이다.",
+      "concepts": [
+        "잠금 순서 불일치와 동시 갱신의 교착"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02147",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 캐시와 병렬 요청의 데이터 경쟁은 보호되지 않은 상태를 둘 이상의 실행 흐름이 동시에 읽고 쓴 결과다. 공유 상태와 동시 접근이 모두 있어야 경쟁이 충분해진다.",
+      "concepts": [
+        "공유 캐시와 병렬 요청의 데이터 경쟁"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02148",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "버퍼 재사용과 비동기 전송의 응답 손상은 전송 완료 전에 같은 메모리를 다음 요청이 덮어쓴 사건이다. 재사용 자체와 늦은 전송이 겹친 시간만 손상에 기여한다.",
+      "concepts": [
+        "버퍼 재사용과 비동기 전송의 응답 손상"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02149",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "스키마 변경과 구형 클라이언트의 직렬화 실패는 새 필드 규칙을 이해하지 못하는 소비자가 변경된 payload를 받은 결과다. 변경과 구형 버전이 함께 있어야 호환 실패가 발생한다.",
+      "concepts": [
+        "스키마 변경과 구형 클라이언트의 직렬화 실패"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02150",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "큰 payload와 게이트웨이 상한의 요청 거절은 본문 크기가 설정 한도를 넘을 때 발생하는 판정이다. payload는 측정값이고 상한은 같은 요청을 허용 또는 거절로 나누는 조건이다.",
+      "concepts": [
+        "큰 payload와 게이트웨이 상한의 요청 거절"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02151",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "느린 상태검사와 DNS 캐시의 장애조치 지연은 고장 감지가 늦고 새 주소 전파도 지체되어 우회가 미뤄진 결과다. 감지와 전파가 전체 지연에 더한 시간을 각각 계산한다.",
+      "concepts": [
+        "느린 상태검사와 DNS 캐시의 장애조치 지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02152",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "복제 지연과 조기 장애조치의 지역 간 손실은 최신 쓰기가 대체 지역에 도착하기 전에 그 지역을 주 서비스로 올린 사건이다. 지연과 전환 시점이 함께 손실을 충분하게 만든다.",
+      "concepts": [
+        "복제 지연과 조기 장애조치의 지역 간 손실"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02153",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "네트워크 분할과 짧은 선출 한도의 이중 리더는 서로 보지 못한 노드가 기존 리스 만료 전 새 리더를 선택할 때 발생한다. 분할은 격리 조건이고 선출 한도는 중복 기간을 결정한다.",
+      "concepts": [
+        "네트워크 분할과 짧은 선출 한도의 이중 리더"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02154",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "불안정 회선과 짧은 선출시간의 리더 교체 반복은 순간 손실마다 새 선출이 시작된 결과다. 회선은 빈도를, 짧은 한도는 민감도를 높인다.",
+      "concepts": [
+        "불안정 회선과 짧은 선출시간의 리더 교체 반복"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02155",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "다중 노드 고장과 엄격한 쿼럼의 쓰기 불가는 남은 복제본 수가 승인에 필요한 수보다 적어진 상태다. 고장 수와 쿼럼 기준의 상대 관계가 충분 조건이므로 둘을 따로 보고한다.",
+      "concepts": [
+        "다중 노드 고장과 엄격한 쿼럼의 쓰기 불가"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02156",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "비동기 복제와 장애조치의 읽기 불일치는 늦은 사본이 새 읽기 원본이 되면서 이전 값이 노출된 결과다. 복제 방식은 잠재 격차를, 장애조치는 그 격차의 사용자 노출을 만든다.",
+      "concepts": [
+        "비동기 복제와 장애조치의 읽기 불일치"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02157",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "조기 승인과 원본 노드 고장의 데이터 손실은 복제가 끝나기 전에 성공을 알린 쓰기가 유일한 저장 노드의 고장으로 사라진 사건이다. 두 조건 중 하나라도 없으면 같은 손실은 발생하지 않는다.",
+      "concepts": [
+        "조기 승인과 원본 노드 고장의 데이터 손실"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02158",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "저장 할당량과 만료 자격증명의 백업 실패는 공간 부족과 인증 거절이라는 별도 경로가 같은 작업을 중단시킨 경우다. 실행 로그를 단계별로 나눠 대체 충분 원인의 빈도를 센다.",
+      "concepts": [
+        "저장 할당량과 만료 자격증명의 백업 실패"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02159",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "큰 스냅샷과 좁은 회선의 복원 지연은 많은 바이트를 낮은 전송률로 옮긴 결과다. 데이터량과 대역폭의 기여를 비교한다.",
+      "concepts": [
+        "큰 스냅샷과 좁은 회선의 복원 지연"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02160",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "긴 보존과 압축 실패의 저장소 가득 참은 오래된 파일이 남은 상태에서 중복 블록도 회수되지 않아 공간이 소진된 사건이다. 보존분과 미회수분을 따로 측정해 기여를 합산한다.",
+      "concepts": [
+        "긴 보존과 압축 실패의 저장소 가득 참"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02161",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 장치의 이웃 폭주와 낮은 IOPS 한도는 다른 테넌트가 대역을 쓰고 자체 할당량도 작아 요청이 대기한 결과다. 외부 경합과 내부 제한의 몫을 장치 큐별로 구분한다.",
+      "concepts": [
+        "공유 장치의 이웃 폭주와 낮은 IOPS 한도"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02162",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 호스트와 burst 테넌트의 noisy neighbor 현상은 격리되지 않은 CPU에서 한 테넌트의 순간 연산이 다른 작업의 실행 기회를 빼앗은 상태다. 공유 배치와 burst가 모두 필요한 조합이다.",
+      "concepts": [
+        "공유 호스트와 burst 테넌트의 noisy neighbor 현상"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02163",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "전원 고장과 상위망 단절의 리전 중단은 일부 시설의 전력 손실과 남은 시설의 외부 연결 상실이 함께 서비스 경로를 끊은 사건이다. 두 원인의 영향 자원을 나눠 전체 불가 범위를 계산한다.",
+      "concepts": [
+        "전원 고장과 상위망 단절의 리전 중단"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02164",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "의존성 지연과 로컬 재시도의 서비스 저하는 느린 하위 호출이 반복되며 상위 워커까지 점유한 결과다. 외부 지연은 시작 원인이고 재시도는 내부 부하를 증폭한 기여다.",
+      "concepts": [
+        "의존성 지연과 로컬 재시도의 서비스 저하"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02165",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "하위 지연과 무제한 동시성의 연쇄 장애는 완료되지 않은 호출이 계속 쌓여 연결·스레드·메모리를 차례로 소진한 사건이다. 지연과 제한 부재가 결합해 여러 자원 실패를 충분하게 만든다.",
+      "concepts": [
+        "하위 지연과 무제한 동시성의 연쇄 장애"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02166",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "핫 샤드와 테넌트 편중의 부분 장애는 무거운 요청이 특정 키 범위에 몰린 결과다. 전체가 정상이어도 국소 수요는 임계값을 넘는다.",
+      "concepts": [
+        "핫 샤드와 테넌트 편중의 부분 장애"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02167",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시계 오차와 짧은 토큰 수명의 인증 실패는 검증 노드의 시간이 앞서고 허용 수명도 작아 유효 토큰을 만료로 판정한 사건이다. 오차와 수명 여유의 차이가 충분 조건이다.",
+      "concepts": [
+        "시계 오차와 짧은 토큰 수명의 인증 실패"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02168",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "키 회전과 오래된 캐시의 로그인 중단은 서명 키가 바뀐 뒤 검증기가 이전 공개키를 계속 사용해 생긴다. 회전은 새 서명을 만들고 캐시 지연은 검증 실패의 지속 범위를 넓힌다.",
+      "concepts": [
+        "키 회전과 오래된 캐시의 로그인 중단"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02169",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "정책 갱신과 낡은 세션의 권한 오류는 서버 규칙이 바뀌었지만 세션에 저장된 역할이 갱신되지 않아 판단이 어긋난 결과다. 정책과 세션 상태가 함께 불일치를 만든다.",
+      "concepts": [
+        "정책 갱신과 낡은 세션의 권한 오류"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02170",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 IP와 낮은 할당량의 오탐 제한은 여러 정상 사용자가 하나의 주소로 집계되고 그 합계가 작은 한도를 넘은 경우다. 주소 묶음과 임계값이 함께 정상 요청을 차단한다.",
+      "concepts": [
+        "공유 IP와 낮은 할당량의 오탐 제한"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02171",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "홍보 유입과 봇 필터 부재의 자동 요청 급증은 공개 노출이 크롤러를 끌어오고 차단 계층이 없어 모두 원본에 도달한 결과다. 유입 계기와 보호 부재의 기여를 구분한다.",
+      "concepts": [
+        "홍보 유입과 봇 필터 부재의 자동 요청 급증"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02172",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공격량과 세척 전환 지연의 DDoS 영향은 악성 트래픽이 회선 용량을 넘는 동안 우회가 늦어 정상 요청까지 손실된 사건이다. 공격은 압력을, 전환 지연은 노출 시간을 결정한다.",
+      "concepts": [
+        "공격량과 세척 전환 지연의 DDoS 영향"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02173",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "광범위 규칙과 정상 payload의 WAF 차단은 느슨한 패턴이 정상 본문의 문자열과도 일치해 생긴다. 규칙 범위와 payload 특징이 동시에 있어야 해당 오탐이 충분하다.",
+      "concepts": [
+        "광범위 규칙과 정상 payload의 WAF 차단"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02174",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "인증서 만료와 자동 갱신 실패의 TLS 중단은 유효기간 종료 전에 새 인증서가 배포되지 못한 결과다. 만료 시각은 촉발 조건이고 갱신 실패는 예방 경로를 없앤 원인이다.",
+      "concepts": [
+        "인증서 만료와 자동 갱신 실패의 TLS 중단"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02175",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "비밀 회전과 낡은 pod의 의존 호출 실패는 원격 자격값이 바뀌었는데 일부 pod가 이전 값을 계속 보내 발생한다. 회전과 부분 갱신이 함께 영향 집단을 만든다.",
+      "concepts": [
+        "비밀 회전과 낡은 pod의 의존 호출 실패"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02176",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "수동 변경과 부분 배포의 설정 표류는 일부 노드만 별도 수정되고 자동 배포도 전체에 끝나지 않아 값이 갈라진 상태다. 두 변경 경로가 각 노드 차이에 준 몫을 감사한다.",
+      "concepts": [
+        "수동 변경과 부분 배포의 설정 표류"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02177",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "잘못된 세그먼트와 캐시 지연의 기능 플래그 오류는 대상 판정이 틀리고 수정된 값도 늦게 전파되어 비대상 사용자에게 기능이 남은 사건이다. 판정 오류와 지속시간 기여를 나눈다.",
+      "concepts": [
+        "잘못된 세그먼트와 캐시 지연의 기능 플래그 오류"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02178",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "희귀 경로와 낮은 노출의 카나리 미탐은 결함 요청과 새 버전 표본이 모두 적어 관측되지 않은 결과다. 희귀도와 노출률이 탐지를 함께 낮춘다.",
+      "concepts": [
+        "희귀 경로와 낮은 노출의 카나리 미탐"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02179",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "전진 쓰기와 구형 스키마의 롤백 실패는 새 버전이 만든 데이터를 옛 코드가 읽지 못해 되돌린 뒤 장애가 이어진 사건이다. 새 데이터 존재와 하위 호환 부재가 결합한 충분 원인이다.",
+      "concepts": [
+        "전진 쓰기와 구형 스키마의 롤백 실패"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02180",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "대형 테이블과 장기 잠금의 스키마 이전 중단은 변환해야 할 행이 많고 메타데이터 잠금도 오래 유지되어 요청을 막은 결과다. 작업량과 잠금시간의 기여를 별도로 잰다.",
+      "concepts": [
+        "대형 테이블과 장기 잠금의 스키마 이전 중단"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02181",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "코드 결함과 특이 트래픽의 배포 사고는 오류 경로가 새 코드에 존재하고 특정 요청 모양이 그 경로를 실행한 사건이다. 결함만으로는 발현이 충분하지 않고 해당 입력이 함께 필요하다.",
+      "concepts": [
+        "코드 결함과 특이 트래픽의 배포 사고"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02182",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "라이브러리 버전과 런타임 차이의 의존 충돌은 새 패키지가 요구하는 인터페이스를 구형 실행환경이 제공하지 못한 결과다. 패키지 요구와 환경 기능의 불일치가 충분 조건이다.",
+      "concepts": [
+        "라이브러리 버전과 런타임 차이의 의존 충돌"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02183",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "잘못된 설정과 엄격한 시작 검사의 crash loop 반복은 애플리케이션이 구성 오류로 준비되지 못하고 관리자가 계속 재시작한 결과다. 설정은 실패 원인이고 시작 정책은 반복 빈도를 키운다.",
+      "concepts": [
+        "잘못된 설정과 엄격한 시작 검사의 crash loop 반복"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02184",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "얕은 준비검사와 숨은 의존 장애는 프로세스 생존만 확인한 검사가 실제 필수 서비스 실패를 놓쳐 요청을 받은 사건이다. 의존 장애와 불충분한 검사 범위가 사용자 오류를 함께 만든다.",
+      "concepts": [
+        "얕은 준비검사와 숨은 의존 장애"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02185",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "느린 기동과 짧은 생존검사의 반복 종료는 초기화가 끝나기 전에 검사 한도가 만료되어 정상화 가능한 프로세스를 계속 죽인 결과다. 기동시간과 한도의 상대값이 충분 조건이다.",
+      "concepts": [
+        "느린 기동과 짧은 생존검사의 반복 종료"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02186",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "비싼 검사와 많은 복제본의 상태확인 부하는 한 번의 검사 비용과 호출 대상 수가 곱해져 서비스 자원을 소모한 결과다. endpoint 비용과 검사 규모의 기여를 각각 낮춰 확인한다.",
+      "concepts": [
+        "비싼 검사와 많은 복제본의 상태확인 부하"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02187",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "낮은 임계값과 상관 지표의 경보 폭주는 작은 변화도 경보가 되고 같은 사건을 여러 지표가 각각 알린 결과다. 민감도와 중복 규칙이 경보 수에 준 몫을 분리한다.",
+      "concepts": [
+        "낮은 임계값과 상관 지표의 경보 폭주"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02188",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "높은 임계값과 계측 누락의 장애 미탐은 관측값이 적게 들어온 상태에서 기준도 지나치게 높아 실제 이상이 경보로 이어지지 않은 경우다. 두 요인이 탐지 여유를 함께 소진한다.",
+      "concepts": [
+        "높은 임계값과 계측 누락의 장애 미탐"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02189",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "대시보드 지연과 카운터 초기화의 가짜 사고는 늦게 도착한 값과 재시작 뒤 0으로 돌아간 누적값이 비정상 급변처럼 표시된 결과다. 표시 지연과 지표 의미를 각각 확인한다.",
+      "concepts": [
+        "대시보드 지연과 카운터 초기화의 가짜 사고"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02190",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "낮은 표본률과 희귀 오류의 관측 사각은 드문 실패 가운데 기록 대상으로 뽑힌 건이 없어 증거가 남지 않은 경우다. 오류 희귀도와 표본률이 관측 가능성을 함께 결정한다.",
+      "concepts": [
+        "낮은 표본률과 희귀 오류의 관측 사각"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02191",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "빠른 회전과 shipper 적체의 로그 손실은 전송되지 않은 파일이 쌓인 동안 로컬 보존본이 먼저 삭제된 사건이다. 회전 정책과 전송 지연이 함께 복구 불가능한 공백을 만든다.",
+      "concepts": [
+        "빠른 회전과 shipper 적체의 로그 손실"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02192",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "추적 표본화와 문맥 전파 누락의 span 공백은 일부 요청이 처음부터 제외되거나 하위 호출에서 trace 식별자가 끊겨 생긴다. 두 대체 경로의 누락 비중을 구분해 센다.",
+      "concepts": [
+        "추적 표본화와 문맥 전파 누락의 span 공백"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02193",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "고카디널리티 라벨과 테넌트 수의 지표 폭증은 라벨 조합과 사용자 수가 곱해진 결과다. 축별 축소로 저장 기여를 계산한다.",
+      "concepts": [
+        "고카디널리티 라벨과 테넌트 수의 지표 폭증"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02194",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "짧은 scrape 주기와 많은 시계열의 감시 CPU 부하는 한 번 수집하는 항목 수와 단위시간 호출 횟수가 모두 큰 상태다. 주기와 규모의 곱이 포화를 충분하게 만든다.",
+      "concepts": [
+        "짧은 scrape 주기와 많은 시계열의 감시 CPU 부하"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02195",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "실사용 증가와 중복 집계의 과금 급증은 실제 자원 소비가 늘어난 몫과 같은 이벤트가 두 번 청구된 몫이 합쳐진 결과다. 원시 사용량과 집계 식별자를 대조해 기여를 분리한다.",
+      "concepts": [
+        "실사용 증가와 중복 집계의 과금 급증"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02196",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "과잉 복제본과 유휴 저장의 비용 이상은 필요 이상으로 켜진 연산 자원과 접근되지 않는 데이터가 동시에 비용을 만든 상태다. 비용 항목별 기여를 나눠 우선 제거 대상을 정한다.",
+      "concepts": [
+        "과잉 복제본과 유휴 저장의 비용 이상"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02197",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "꼬리 지연과 지역 사용자 구성의 SLO 위반은 느린 요청 비율이 늘고 해당 지역 트래픽 가중치도 커져 전체 백분위가 한도를 넘은 결과다. 성능과 구성 기여를 구별한다.",
+      "concepts": [
+        "꼬리 지연과 지역 사용자 구성의 SLO 위반"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02198",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "오류 증가와 트래픽 가중의 예산 소진은 실패율 상승뿐 아니라 실패 구간의 요청량이 커 허용 오류 수를 빠르게 쓴 사건이다. 비율과 분모가 소진 속도에 준 몫을 함께 본다.",
+      "concepts": [
+        "오류 증가와 트래픽 가중의 예산 소진"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02199",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "클라이언트 결함과 서버 지연의 지원 문의는 앱의 재시도 표시 오류와 실제 느린 응답이 서로 다른 사용자 불편을 만든 경우다. 문의 원문과 계측을 대조해 각 원인의 영향 범위를 나눈다.",
+      "concepts": [
+        "클라이언트 결함과 서버 지연의 지원 문의"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02200",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "느린 응답과 혼란스러운 재시도의 사용자 이탈은 기다림 비용과 불명확한 화면 상태가 함께 작업 포기를 높인 결과다. 지연만 개선한 집단과 안내만 개선한 집단을 비교해 기여를 판정한다.",
+      "concepts": [
+        "느린 응답과 혼란스러운 재시도의 사용자 이탈"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02201",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "높은 트래픽의 필요하지만 불충분한 기여는 수요가 커도 여유 용량이 있으면 오류가 없다는 판정이다. 트래픽만으로 실패는 보장되지 않는다.",
+      "concepts": [
+        "높은 트래픽의 필요하지만 불충분한 기여"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02202",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "정상 트래픽에서도 충분한 비효율 질의는 한 건의 전체 스캔이 데이터베이스 자원을 거의 모두 써 평소 수요만으로 포화를 만든 경우다. 높은 유입을 필수 원인으로 추가하지 않는다.",
+      "concepts": [
+        "정상 트래픽에서도 충분한 비효율 질의"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02203",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "각각 약한 두 원인의 공동 충분성은 캐시 미스와 느린 원본이 단독 시험에서는 한도 아래지만 함께일 때 제한시간을 넘는 상황이다. 결합 조건을 하나의 충분 원인 집합으로 기록한다.",
+      "concepts": [
+        "각각 약한 두 원인의 공동 충분성"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02204",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "용량 부족과 의존 장애의 대체 충분 경로는 로컬 포화만으로도, 외부 서비스 중단만으로도 같은 API 실패가 발생할 수 있음을 뜻한다. 상태코드가 같아도 경로별 기여를 별도 집계한다.",
+      "concepts": [
+        "용량 부족과 의존 장애의 대체 충분 경로"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02205",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "모든 성공 경로에 필요한 네트워크 도달성은 캐시·데이터베이스·대체 리전 중 무엇을 쓰더라도 최소 하나의 통신 경로가 살아 있어야 한다는 조건이다. 필요 조건을 전체 충분 원인으로 과장하지 않는다.",
+      "concepts": [
+        "모든 성공 경로에 필요한 네트워크 도달성"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02206",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "복합 지연에서 지배적인 데이터베이스 병목은 전체 응답 900밀리초 가운데 질의 대기가 700밀리초를 차지하고 다른 단계 합계가 작았던 경우다. 가장 큰 기여와 유일한 원인을 구분한다.",
+      "concepts": [
+        "복합 지연에서 지배적인 데이터베이스 병목"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02207",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "장애 지연에 작은 몫을 보탠 동기 로그는 요청마다 기록 대기 10밀리초가 추가됐지만 주된 2초 의존 지연을 설명하지 못한 원인이다. 실재 기여라도 영향 범위를 과대평가하지 않는다.",
+      "concepts": [
+        "장애 지연에 작은 몫을 보탠 동기 로그"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02208",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배포 결함의 촉발과 낮은 용량의 배경 기여는 새 코드가 오류를 시작했고 평소 빠듯한 여유가 영향 규모를 키운 사건이다. 촉발 원인과 취약 배경을 시간 역할로 나눈다.",
+      "concepts": [
+        "배포 결함의 촉발과 낮은 용량의 배경 기여"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02209",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재시도 정책의 증폭 기여는 최초 100건 실패가 추가 400건 호출을 만들어 포화 범위를 넓힌 몫이다. 정책은 첫 실패의 원인이 아니지만 이후 장애 크기에 직접 기여한다.",
+      "concepts": [
+        "재시도 정책의 증폭 기여"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02210",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "자동 확장의 회복 기여는 수요 감소 전 새 복제본이 투입되어 처리량이 늘고 큐가 줄어든 부분이다. 자연 회복과 구분해 추가 용량이 단축한 시간을 계산한다.",
+      "concepts": [
+        "자동 확장의 회복 기여"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02211",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "회로 차단기의 보호적 기여는 하위 장애를 없애지는 못했지만 반복 호출을 막아 상위 서비스의 자원 고갈을 예방한 몫이다. 원인 제거와 피해 제한의 역할을 구별한다.",
+      "concepts": [
+        "회로 차단기의 보호적 기여"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02212",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "캐시 적중이 상쇄한 원본 지연은 느린 원본이라는 악화 요인이 있었어도 일부 요청이 엣지에서 끝나 전체 지연을 낮춘 경우다. 양의 원인과 반대 방향 기여를 함께 보존한다.",
+      "concepts": [
+        "캐시 적중이 상쇄한 원본 지연"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02213",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "예비 용량에 가려진 비효율 코드는 늘어난 연산비를 남는 CPU가 흡수한 상태다. 결과가 없어도 용량 감소 때 잠재 기여가 드러난다.",
+      "concepts": [
+        "예비 용량에 가려진 비효율 코드"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02214",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "부분 배포에 잠복한 잘못된 설정은 오류 값이 일부 대기 노드에만 있어 트래픽을 받기 전까지 장애에 기여하지 않은 상태다. 잠재 원인과 발현 원인을 노출 시점으로 나눈다.",
+      "concepts": [
+        "부분 배포에 잠복한 잘못된 설정"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02215",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "게이트웨이 시간초과의 근접 원인은 한도 시계가 끝나 응답을 끊은 사건이지만, 그 시계를 넘긴 원격 지연은 더 앞선 원인이다. 마지막 사건과 전체 설명을 동일시하지 않는다.",
+      "concepts": [
+        "게이트웨이 시간초과의 근접 원인"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02216",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공유 데이터베이스 설계의 근본 기여는 여러 서비스가 한 저장 병목과 장애 범위를 함께 갖도록 만든 구조다. 당일의 무거운 질의와 구분하되 반복 사고 가능성에 준 장기 몫을 기록한다.",
+      "concepts": [
+        "공유 데이터베이스 설계의 근본 기여"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02217",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "잘못된 공통 배포의 동시 오류 원인은 서로 독립처럼 보인 여러 API가 같은 라이브러리 변경 뒤 함께 실패한 경우다. 각 API 오류를 별개 원인으로 중복 계산하지 않는다.",
+      "concepts": [
+        "잘못된 공통 배포의 동시 오류 원인"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02218",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "하위 지연을 상위 실패로 잇는 큐 매개는 느린 작업이 적체를 만들고 새 요청의 시간을 소진한 경로다. 직접 몫과 큐의 간접 몫을 나눈다.",
+      "concepts": [
+        "하위 지연을 상위 실패로 잇는 큐 매개"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02219",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "요청 구성에 따라 달라지는 캐시 기여는 반복 조회가 많은 구간에서는 적중이 부하를 크게 줄이지만 고유 키 구간에서는 효과가 작아지는 현상이다. 요청 유형을 기여의 조절 조건으로 본다.",
+      "concepts": [
+        "요청 구성에 따라 달라지는 캐시 기여"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02220",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "임계값을 넘을 때만 생기는 원인 상호작용은 CPU 70%와 재시도 20%가 합쳐 한도를 넘는 경우다. 단순 가산보다 임계 결합을 본다.",
+      "concepts": [
+        "임계값을 넘을 때만 생기는 원인 상호작용"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02221",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "포화 이후 커지는 비선형 기여는 부하가 용량 아래일 때 지연 증가가 작다가 큐가 생긴 뒤 같은 요청 증가가 훨씬 큰 지연을 만드는 현상이다. 구간별 기여율을 따로 계산한다.",
+      "concepts": [
+        "포화 이후 커지는 비선형 기여"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02222",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "용량 증설의 체감 기여 감소는 첫 두 인스턴스가 큐를 크게 줄였지만 데이터베이스가 병목이 된 뒤 추가 복제본 효과가 작아진 경우다. 자원 수와 효과를 선형으로 가정하지 않는다.",
+      "concepts": [
+        "용량 증설의 체감 기여 감소"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02223",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "캐시 미스와 재시도의 상승작용은 원본 오류의 재호출이 다시 부하를 키운 사건이다. 결합 기여를 단독 효과와 나눈다.",
+      "concepts": [
+        "캐시 미스와 재시도의 상승작용"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02224",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "서로 겹치는 두 장애 원인의 중복 기여는 네트워크 단절과 인증 실패가 같은 요청 집단을 모두 실패시킨 경우다. 각 영향 수를 단순 합하면 같은 실패를 두 번 세므로 교집합을 뺀다.",
+      "concepts": [
+        "서로 겹치는 두 장애 원인의 중복 기여"
+      ],
+      "relations": [
+        "comparison",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02225",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "대체 가능한 캐시와 복제본의 보호 기여는 둘 중 하나만 살아도 원본 장애를 우회할 수 있는 구조에서 나타난다. 두 보호 경로의 개별 성공과 동시에 필요한 범위를 구분한다.",
+      "concepts": [
+        "대체 가능한 캐시와 복제본의 보호 기여"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02226",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충분 원인 집합의 필수 구성인 라우팅 변경은 대체 리전 용량과 최신 데이터가 있어도 트래픽이 옮겨지지 않으면 회복하지 못하는 경우다. 집합 안의 필요 구성과 단독 충분성을 나눈다.",
+      "concepts": [
+        "충분 원인 집합의 필수 구성인 라우팅 변경"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02227",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "두 독립 장애가 같은 실패를 만든 과잉결정은 데이터베이스 중단과 인증 중단이 동시에 있어 어느 하나를 제거해도 요청이 여전히 실패하는 사건이다. 반사실 하나만으로 기여를 0으로 만들지 않는다.",
+      "concepts": [
+        "두 독립 장애가 같은 실패를 만든 과잉결정"
+      ],
+      "relations": [
+        "contrast",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02228",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "인증 체인의 최약 고리 기여는 키 조회·서명·권한 중 하나만 실패해도 로그인이 중단되는 구조에서 나온다. 각 단계의 필요성을 표시한다.",
+      "concepts": [
+        "인증 체인의 최약 고리 기여"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02229",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "병렬 읽기 경로의 성공 기여 분담은 캐시와 복제본 가운데 먼저 성공한 응답이 사용자 요청을 완료하는 구조에서 필요하다. 두 경로가 동시에 성공한 요청은 기여를 중복 배정하지 않는다.",
+      "concepts": [
+        "병렬 읽기 경로의 성공 기여 분담"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02230",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "순차 장애 사슬의 단계별 귀속은 느린 질의, 큐 적체, 게이트웨이 만료가 이은 사건을 단계별로 나누는 작업이다. 시작점에 모든 몫을 몰지 않는다.",
+      "concepts": [
+        "순차 장애 사슬의 단계별 귀속"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02231",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "사고 시간대에 따라 바뀐 원인 기여는 초기에는 배포 결함이 오류를 만들고 중반에는 재시도가 부하를 지배하며 후반에는 적체 소진이 회복을 늦춘 경우다. 단계별 비중을 따로 보고한다.",
+      "concepts": [
+        "사고 시간대에 따라 바뀐 원인 기여"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02232",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "리전마다 다른 네트워크 원인의 기여는 동쪽에서는 회선 손실이, 서쪽에서는 원본 거리가 지연을 높인 경우다. 전역 평균으로 지역별 충분 원인을 지우지 않는다.",
+      "concepts": [
+        "리전마다 다른 네트워크 원인의 기여"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02233",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "테넌트별로 다른 자원 경합 기여는 대형 고객의 배치 작업이 특정 샤드를 포화시켰지만 다른 고객은 정상 경로를 쓴 상황이다. 기여 범위를 전체 사용자로 확대하지 않는다.",
+      "concepts": [
+        "테넌트별로 다른 자원 경합 기여"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02234",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "요청 유형별 fan-out 기여 차이는 검색 요청은 여러 의존 호출을 만들지만 단순 조회는 하나만 호출해 같은 트래픽 수에서도 부하 몫이 다른 경우다. 건수와 유형 구성을 함께 본다.",
+      "concepts": [
+        "요청 유형별 fan-out 기여 차이"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02235",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "꼬리 백분위에 집중된 느린 원인의 기여는 평균 응답에는 영향이 작지만 일부 대형 질의가 p99를 크게 올린 경우다. 전체 평균 기여와 극단 지표 기여를 구분한다.",
+      "concepts": [
+        "꼬리 백분위에 집중된 느린 원인의 기여"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02236",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "촉발·증폭·회복 단계별 기여 범위는 코드가 시작을, 재시도가 규모를, 확장이 종료를 좌우한 사고다. 시간 역할을 하나로 합치지 않는다.",
+      "concepts": [
+        "촉발·증폭·회복 단계별 기여 범위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02237",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "요청 제한이 막은 실패 비율은 제한기가 없었다면 포화로 실패했을 요청 가운데 실제로 내부 진입을 차단해 보호한 몫이다. 거절 자체와 예방된 연쇄 오류를 별도 결과로 계산한다.",
+      "concepts": [
+        "요청 제한이 막은 실패 비율"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02238",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재시도 제거 반사실의 장애 감소분은 최초 요청은 그대로 두고 후속 호출만 없었다면 CPU·큐·오류가 얼마나 낮았을지 재생한 값이다. 재시도의 증폭 기여를 최초 원인과 분리한다.",
+      "concepts": [
+        "재시도 제거 반사실의 장애 감소분"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02239",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "추가 용량 반사실의 포화 방지분은 동일 요청 기록을 더 큰 인스턴스 집합에 적용해 한도를 넘지 않았을 구간을 추정한 값이다. 용량 부족이 설명하는 실패 범위를 나타낸다.",
+      "concepts": [
+        "추가 용량 반사실의 포화 방지분"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02240",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "스테이징 구성요소 제거 시험은 캐시·재시도·압축 중 하나씩 비활성화해 동일 부하에서 결과가 얼마나 달라지는지 보는 방법이다. 제거된 요소의 한계 기여를 직접 비교한다.",
+      "concepts": [
+        "스테이징 구성요소 제거 시험"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02241",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "동일 부하 재생으로 분리한 코드 기여는 운영 요청 순서를 옛 버전과 새 버전에 똑같이 입력해 트래픽 차이를 고정하는 시험이다. 남는 성능 차이를 코드 변경 몫으로 본다.",
+      "concepts": [
+        "동일 부하 재생으로 분리한 코드 기여"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02242",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "두 원인 요인의 교차 실험은 캐시 설정과 재시도 정책을 각각 켜고 끈 네 조합에서 오류를 측정하는 설계다. 단독 기여와 두 요인의 상호작용 기여를 함께 추정한다.",
+      "concepts": [
+        "두 원인 요인의 교차 실험"
+      ],
+      "relations": [
+        "comparison",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02243",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "원인 투입 순서를 평균한 기여 배분은 용량·캐시·제한기의 추가 순서마다 개선량을 구해 평균한다. 순서 편향을 특정 원인에 남기지 않는다.",
+      "concepts": [
+        "원인 투입 순서를 평균한 기여 배분"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02244",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "원인 기여도의 불확실성 범위는 관측 표본과 모델 가정이 달라질 때 재시도나 용량 부족의 추정 몫이 움직이는 구간이다. 단일 비율을 확정적 책임 수치로 표현하지 않는다.",
+      "concepts": [
+        "원인 기여도의 불확실성 범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02245",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "계측되지 않은 숨은 원인의 잔여 가능성은 알려진 CPU·메모리·네트워크 요인을 반영해도 오류 변동이 남는 상태다. 남은 차이를 임의의 기존 원인에 모두 배정하지 않는다.",
+      "concepts": [
+        "계측되지 않은 숨은 원인의 잔여 가능성"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02246",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "트래픽과 배포가 얽힌 교란 기여는 새 버전이 항상 피크 시간에만 노출되어 오류 증가가 코드인지 수요인지 분리되지 않는 경우다. 동시 통제나 교차 노출 없이 기여를 확정하지 않는다.",
+      "concepts": [
+        "트래픽과 배포가 얽힌 교란 기여"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02247",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "기여 주장에 필요한 증거 충분성은 시간 선후, 요청별 경로, 통제 비교, 반복 시험이 같은 방향을 지지하는 정도다. 상관 하나만으로 구체적 원인 몫을 수치화하지 않는다.",
+      "concepts": [
+        "기여 주장에 필요한 증거 충분성"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02248",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "장애 원인 목록의 설명 범위 완전성은 각 실패 요청이 적어도 하나의 검증된 경로에 포함되고 중복 영향도 표시됐는지 보는 기준이다. 항목 수가 많다는 사실만으로 완전하다고 보지 않는다.",
+      "concepts": [
+        "장애 원인 목록의 설명 범위 완전성"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02249",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "알려진 원인 뒤 남은 미설명 오류는 배포·용량·의존성 몫을 뺀 뒤에도 남는 초과 실패다. 잔여는 추가 조사 상태로 둔다.",
+      "concepts": [
+        "알려진 원인 뒤 남은 미설명 오류"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-02250",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "클라우드 사고의 다중 원인 기여 보고는 촉발·증폭·보호·회복의 범위와 겹침을 정리한 기록이다. 필요 조건과 충분 집합을 구분한다.",
+      "concepts": [
+        "클라우드 사고의 다중 원인 기여 보고"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    }
+  ]
+}

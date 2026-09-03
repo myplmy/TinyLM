@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 원인 구조 High-Density Train 150 v13",
+  "version": "13",
+  "purpose": "원인·결과·매개·공통 원인을 개입과 관찰의 차이까지 포함해 판정한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CSH-01801 ~ S2-CSH-01950",
+  "concept_family": "S2-A01-T013: 클라우드 서비스 부하·장애 대응 — 원인 방향·피드백·역인과 판정",
+  "design_note": "클라우드 서비스 부하·장애 대응 영역의 원인 방향·피드백·역인과 판정 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CSH-01801",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "요청 증가에서 CPU 상승으로 가는 방향은 처리할 호출 수가 먼저 늘고 연산 사용량이 뒤따르는 경로다. 같은 시각의 두 곡선만 보고 CPU가 외부 요청을 생성했다고 뒤집지 않는다.",
+      "concepts": [
+        "요청 증가에서 CPU 상승으로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01802",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "CPU 스로틀링에서 응답 지연으로 가는 방향은 실행 시간이 제한된 뒤 작업 완료가 늦어지는 순서다. 느린 요청이 CPU 제한값을 만들었다는 역방향은 제어 정책이 없으면 성립하지 않는다.",
+      "concepts": [
+        "CPU 스로틀링에서 응답 지연으로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01803",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "응답 지연이 재시도를 부르는 경로는 사용자의 시간 제한이 먼저 끝나 같은 호출을 다시 보내는 과정이다. 재시도 증가는 지연의 결과이면서 이후 부하의 원인이 된다.",
+      "concepts": [
+        "응답 지연이 재시도를 부르는 경로"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01804",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "최초 오류에서 재시도 증가로 가는 방향은 실패 응답을 받은 클라이언트가 정책에 따라 반복 호출하는 순서다. 재시도 수가 먼저 늘었다는 증거가 없으면 최초 촉발 원인으로 바꾸지 않는다.",
+      "concepts": [
+        "최초 오류에서 재시도 증가로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01805",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재시도 증가에서 추가 오류로 가는 증폭은 반복 호출이 남은 처리 용량을 소진해 새로운 실패를 만드는 경로다. 최초 오류와 증폭 오류를 시간 구간과 요청 식별자로 나눈다.",
+      "concepts": [
+        "재시도 증가에서 추가 오류로 가는 증폭"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01806",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "큐 적체에서 시간 초과로 가는 방향은 대기 위치가 길어져 실행 전에 요청 제한시간이 끝나는 순서다. 시간 초과가 과거 큐 길이를 만들었다고 해석하지 않는다.",
+      "concepts": [
+        "큐 적체에서 시간 초과로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01807",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "취소 증가가 점유 시간을 줄이는 역작용은 시간 초과 뒤 서버 작업까지 중단될 때 실행 슬롯이 일찍 반환되는 경로다. 취소가 많아 부하가 낮아진 관측을 보호적 피드백으로 구분한다.",
+      "concepts": [
+        "취소 증가가 점유 시간을 줄이는 역작용"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01808",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "적체가 워커 증원을 부른 역인과는 긴 대기열을 감지한 운영 정책이 소비자 수를 늘리는 상황이다. 많은 워커와 큰 큐의 양의 상관을 워커가 적체를 만들었다는 방향으로 읽지 않는다.",
+      "concepts": [
+        "적체가 워커 증원을 부른 역인과"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01809",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "트래픽이 인스턴스 수를 늘린 반응 경로는 높은 사용률이 확장 조건을 충족해 복제본 생성을 촉발하는 순서다. 인스턴스 수와 요청량의 상관에는 정책 반응 방향이 포함된다.",
+      "concepts": [
+        "트래픽이 인스턴스 수를 늘린 반응 경로"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01810",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "실패가 회로 차단기 개방을 부르는 방향은 최근 오류율이 임계값을 넘은 뒤 호출 차단 상태로 전환되는 과정이다. 열린 차단기를 최초 장애 원인으로 보고 순서를 뒤집지 않는다.",
+      "concepts": [
+        "실패가 회로 차단기 개방을 부르는 방향"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01811",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "지연이 헬스체크 제외를 부른 경로는 검사 응답이 제한시간을 넘은 뒤 로드밸런서가 인스턴스를 비정상으로 판정하는 순서다. 대상 제외는 앞선 지연의 결과다.",
+      "concepts": [
+        "지연이 헬스체크 제외를 부른 경로"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01812",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "인스턴스 제외가 남은 노드 부하를 높이는 방향은 동일 트래픽이 더 적은 대상에 배분되어 노드당 요청이 늘어나는 경로다. 앞선 헬스체크 실패와 이후 포화를 분리한다.",
+      "concepts": [
+        "인스턴스 제외가 남은 노드 부하를 높이는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01813",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "캐시 미스에서 원본 조회 증가로 가는 방향은 항목을 찾지 못한 요청이 데이터베이스나 객체 저장소로 이동하는 순서다. 원본 부하가 이미 캐시 채우기를 막는 반대 경로도 별도로 검사한다.",
+      "concepts": [
+        "캐시 미스에서 원본 조회 증가로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01814",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "데이터베이스 지연이 캐시 채우기를 막는 방향은 원본 응답이 늦어 새 항목이 저장되지 않고 후속 요청도 계속 미스가 되는 과정이다. 미스와 저장소 지연 사이의 피드백을 표시한다.",
+      "concepts": [
+        "데이터베이스 지연이 캐시 채우기를 막는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01815",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "동시 캐시 만료에서 조회 폭주로 가는 방향은 여러 인기 키가 먼저 사라지고 같은 시각에 원본 호출이 몰리는 순서다. 데이터베이스 부하가 과거 만료시각을 정했다는 역방향은 배제한다.",
+      "concepts": [
+        "동시 캐시 만료에서 조회 폭주로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01816",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "연결 풀 고갈에서 호출 실패로 가는 방향은 사용 가능한 슬롯이 먼저 0이 되고 새 요청이 대기하거나 거절되는 경로다. 실패 건수와 풀 사용률의 선후를 세밀한 시각으로 맞춘다.",
+      "concepts": [
+        "연결 풀 고갈에서 호출 실패로 가는 방향"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01817",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "느린 호출이 연결 점유를 늘리는 방향은 응답을 기다리는 동안 슬롯 반환이 늦어져 풀 사용량이 높아지는 과정이다. 높은 점유가 지연을 만들기도 하므로 양방향 간선을 구분한다.",
+      "concepts": [
+        "느린 호출이 연결 점유를 늘리는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01818",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "가비지 수집 정지에서 지연 상승으로 가는 방향은 애플리케이션 스레드가 멈춘 뒤 진행 중 요청의 완료가 밀리는 순서다. 지연 지표가 수집 정지를 발생시킨 것은 아니다.",
+      "concepts": [
+        "가비지 수집 정지에서 지연 상승으로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01819",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "객체 할당 증가에서 수집 빈도 상승으로 가는 방향은 새 객체가 힙을 빨리 채워 메모리 회수 조건을 자주 충족하는 과정이다. 수집 횟수 자체와 그 앞선 할당률을 나누어 본다.",
+      "concepts": [
+        "객체 할당 증가에서 수집 빈도 상승으로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01820",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "메모리 압박에서 프로세스 재시작으로 가는 방향은 제한량을 넘은 뒤 종료 신호나 상태 검사 실패가 발생해 새 인스턴스로 교체되는 순서다. 재시작 횟수를 누수의 선행 원인으로 보지 않는다.",
+      "concepts": [
+        "메모리 압박에서 프로세스 재시작으로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01821",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재시작이 메모리 사용량을 낮추는 방향은 기존 프로세스의 객체와 캐시가 사라져 관측 사용량이 초기값으로 돌아가는 과정이다. 낮은 메모리가 원인을 해결했다는 뜻은 아니다.",
+      "concepts": [
+        "재시작이 메모리 사용량을 낮추는 방향"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01822",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "패킷 손실에서 재전송으로 가는 방향은 확인 응답이 오지 않은 뒤 송신자가 같은 구간을 다시 보내는 순서다. 재전송 증가를 최초 손실보다 앞선 사건으로 놓지 않는다.",
+      "concepts": [
+        "패킷 손실에서 재전송으로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01823",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재전송에서 링크 혼잡으로 가는 증폭은 반복 패킷이 가용 대역폭을 더 차지해 대기와 추가 손실을 만드는 과정이다. 손실의 결과가 다음 손실의 원인이 되는 피드백이다.",
+      "concepts": [
+        "재전송에서 링크 혼잡으로 가는 증폭"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01824",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "링크 혼잡에서 추가 패킷 손실로 가는 방향은 버퍼가 가득 찬 뒤 도착 패킷이 버려지는 순서다. 손실과 혼잡이 함께 움직여도 각 반복 주기의 선후를 구분한다.",
+      "concepts": [
+        "링크 혼잡에서 추가 패킷 손실로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01825",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "DNS 지연에서 연결 시작 지연으로 가는 방향은 주소 해석이 완료되지 않아 소켓 연결 시도가 늦게 시작되는 경로다. 서버 응답 지연과 이름 해석 지연을 같은 단계로 합치지 않는다.",
+      "concepts": [
+        "DNS 지연에서 연결 시작 지연으로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01826",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "연결 실패가 DNS 재질의를 늘리는 반응은 클라이언트가 다른 주소를 얻기 위해 캐시를 비우고 다시 질의하는 과정이다. 높은 DNS 요청량은 최초 이름 해석 장애의 원인이 아니라 결과일 수 있다.",
+      "concepts": [
+        "연결 실패가 DNS 재질의를 늘리는 반응"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01827",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "인증 실패가 로그인 재시도를 부르는 방향은 사용자가 오류 응답 뒤 자격 정보를 다시 제출하는 순서다. 로그인 시도 증가가 앞선 인증서 만료를 만들었다고 해석하지 않는다.",
+      "concepts": [
+        "인증 실패가 로그인 재시도를 부르는 방향"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01828",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "로그인 재시도가 인증 부하를 높이는 방향은 반복 검증 요청이 인증 서비스의 CPU와 연결을 추가로 점유하는 과정이다. 최초 실패와 후속 포화를 별개 인과 단계로 둔다.",
+      "concepts": [
+        "로그인 재시도가 인증 부하를 높이는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01829",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "할당량 거절이 백오프를 부르는 방향은 제한 응답을 받은 클라이언트가 다음 시도까지 대기시간을 늘리는 과정이다. 긴 대기와 거절률의 상관에서 거절이 먼저인지 확인한다.",
+      "concepts": [
+        "할당량 거절이 백오프를 부르는 방향"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01830",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "백오프가 후속 부하를 낮추는 방향은 재시도 간격을 벌려 단위시간 호출 수를 줄이는 완화 경로다. 부하 하락이 외부 수요 감소 때문인지 정책 효과인지 대조한다.",
+      "concepts": [
+        "백오프가 후속 부하를 낮추는 방향"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01831",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "큐 증가가 확장 신호를 만드는 방향은 대기 작업 수가 설정 임계값을 넘은 뒤 소비자 추가 요청이 생성되는 순서다. 워커 수와 큐 길이의 동행에서 원인 방향을 보존한다.",
+      "concepts": [
+        "큐 증가가 확장 신호를 만드는 방향"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01832",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "확장 지연이 큐 적체를 지속시키는 방향은 새 워커가 준비되기 전 생산량이 소비량을 계속 넘어 대기열이 더 길어지는 과정이다. 확장 요청과 실제 용량 투입 시점을 나눈다.",
+      "concepts": [
+        "확장 지연이 큐 적체를 지속시키는 방향"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01833",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "복제본 증가가 노드당 CPU를 낮추는 방향은 같은 요청이 더 많은 인스턴스로 분산되어 각 노드의 작업량이 줄어드는 과정이다. 낮은 CPU가 과거 복제본 수를 늘렸다고 뒤집지 않는다.",
+      "concepts": [
+        "복제본 증가가 노드당 CPU를 낮추는 방향"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01834",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "낮은 CPU가 축소를 부르는 정책 방향은 일정 기간 사용률이 하한보다 낮아 제거할 인스턴스를 선택하는 과정이다. 적은 복제본과 낮은 CPU의 상관에는 축소 규칙이 개입한다.",
+      "concepts": [
+        "낮은 CPU가 축소를 부르는 정책 방향"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01835",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "축소가 남은 노드 CPU를 높이는 방향은 처리 대상이 줄어 같은 요청량이 더 적은 노드에 배분되는 과정이다. 낮은 CPU가 축소를 만들고 축소가 다시 CPU를 높이는 음성 피드백이다.",
+      "concepts": [
+        "축소가 남은 노드 CPU를 높이는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01836",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "새 배포에서 오류 증가로 가는 방향은 코드나 설정이 먼저 바뀐 뒤 해당 버전 요청에서 실패가 늘어나는 경로다. 오류가 높아 배포가 이루어졌다는 반응성 변경과 구분한다.",
+      "concepts": [
+        "새 배포에서 오류 증가로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01837",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "오류 증가가 롤백을 부르는 방향은 배포 뒤 실패율이 기준을 넘자 운영자가 이전 버전 복귀를 실행하는 순서다. 롤백과 높은 오류의 상관을 롤백 원인으로 오해하지 않는다.",
+      "concepts": [
+        "오류 증가가 롤백을 부르는 방향"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01838",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "롤백에서 오류 감소로 가는 방향은 문제 코드 경로가 제거된 뒤 실패율이 낮아지는 과정이다. 같은 시각의 트래픽 감소나 외부 복구가 있다면 효과를 따로 분해한다.",
+      "concepts": [
+        "롤백에서 오류 감소로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01839",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "자연 회복이 롤백 효과처럼 보이는 역인과는 외부 장애가 끝나는 시점에 롤백도 시행되어 회복 원인이 뒤섞인 경우다. 변경되지 않은 대조 집단과 공급자 시간선을 함께 본다.",
+      "concepts": [
+        "자연 회복이 롤백 효과처럼 보이는 역인과"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01840",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "로그 증가에서 디스크 포화로 가는 방향은 기록 바이트가 누적되어 남은 공간과 쓰기 대역폭을 먼저 소진하는 과정이다. 디스크 포화가 추가 오류 로그를 만들 수 있어 반복 경로도 표시한다.",
+      "concepts": [
+        "로그 증가에서 디스크 포화로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01841",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "디스크 지연에서 로그 백프레셔로 가는 방향은 기록 완료가 늦어져 애플리케이션 큐와 요청 스레드가 대기하는 과정이다. 로그량과 저장 지연의 양방향 영향을 분리한다.",
+      "concepts": [
+        "디스크 지연에서 로그 백프레셔로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01842",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "경보 발생에서 운영자 개입으로 가는 방향은 임계 초과 알림을 받은 뒤 트래픽 조정이나 재시작을 실행하는 순서다. 개입 횟수와 장애 심각도의 상관을 반대로 읽지 않는다.",
+      "concepts": [
+        "경보 발생에서 운영자 개입으로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01843",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "운영자 개입에서 지표 변화로 가는 방향은 제한값 수정이나 우회가 적용된 뒤 부하·지연·오류가 달라지는 경로다. 개입 전 추세와 자연 변동을 기준선으로 둔다.",
+      "concepts": [
+        "운영자 개입에서 지표 변화로 가는 방향"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01844",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "사고 심각도가 경보 수를 늘리는 방향은 영향 서비스와 실패 지표가 많아져 여러 규칙이 동시에 발동하는 과정이다. 경보량이 최초 장애를 만들었다는 역방향을 피한다.",
+      "concepts": [
+        "사고 심각도가 경보 수를 늘리는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01845",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "부하 차단이 내부 오류 기록을 줄이는 방향은 요청이 백엔드에 도달하기 전에 거부되어 내부 예외와 CPU가 함께 낮아지는 과정이다. 사용자 실패까지 줄었다고 자동 해석하지 않는다.",
+      "concepts": [
+        "부하 차단이 내부 오류 기록을 줄이는 방향"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01846",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "사용자 실패가 반복 제출을 부르는 방향은 완료 확인을 받지 못한 사용자가 같은 작업을 다시 보내는 과정이다. 중복 요청은 실패의 결과이자 다음 적체의 원인이 된다.",
+      "concepts": [
+        "사용자 실패가 반복 제출을 부르는 방향"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01847",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "반복 제출이 큐를 늘리는 방향은 동일 업무가 여러 작업으로 등록되어 소비자가 처리할 항목 수를 높이는 과정이다. 원래 수요와 재제출로 생긴 추가량을 구분한다.",
+      "concepts": [
+        "반복 제출이 큐를 늘리는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01848",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "오래된 읽기가 읽기 복구를 부르는 방향은 복제본 차이를 발견한 클라이언트나 저장소가 최신 값을 다시 쓰는 과정이다. 복구 쓰기 증가를 최초 복제 지연의 원인으로 보지 않는다.",
+      "concepts": [
+        "오래된 읽기가 읽기 복구를 부르는 방향"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01849",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "읽기 복구가 저장소 부하를 높이는 방향은 일치하지 않은 복제본을 고치는 추가 쓰기가 디스크와 네트워크를 점유하는 과정이다. 정합성 개선과 성능 부담을 함께 기록한다.",
+      "concepts": [
+        "읽기 복구가 저장소 부하를 높이는 방향"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01850",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "저장소 부하가 복제 지연을 키우는 방향은 주 노드의 변경 전송과 적용이 운영 쿼리·복구 쓰기에 밀리는 과정이다. 복제 지연이 다시 읽기 복구를 늘리는 순환을 연결한다.",
+      "concepts": [
+        "저장소 부하가 복제 지연을 키우는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01851",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "오류와 재시도가 서로 키우는 양성 피드백은 최초 실패가 반복 호출을 늘리고 그 부하가 추가 실패를 만드는 순환이다. 어느 반복에서 촉발과 증폭이 바뀌는지 요청 시각으로 나눈다.",
+      "concepts": [
+        "오류와 재시도가 서로 키우는 양성 피드백"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01852",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시간 초과와 중복 호출의 지연 피드백은 느린 응답이 재호출을 만들고 늘어난 호출이 다시 응답을 늦추는 구조다. 시간 초과를 원인 또는 결과 중 하나로만 고정하지 않는다.",
+      "concepts": [
+        "시간 초과와 중복 호출의 지연 피드백"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01853",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "캐시 스탬피드의 원본 부하 피드백은 동시 미스가 저장소를 늦추고 느린 채우기가 미스 상태를 더 오래 유지하는 순환이다. 만료는 촉발점이고 채우기 지연은 유지 요인이다.",
+      "concepts": [
+        "캐시 스탬피드의 원본 부하 피드백"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01854",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "데이터베이스 지연과 연결 고갈의 순환은 느린 쿼리가 슬롯을 오래 잡고 풀 대기가 다시 전체 호출시간을 늘리는 구조다. 각 단계의 직접 경로와 누적 효과를 분리한다.",
+      "concepts": [
+        "데이터베이스 지연과 연결 고갈의 순환"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01855",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "잠금 대기와 트랜잭션 연장의 피드백은 한 작업의 지연이 잠금 보유 시간을 늘리고 후속 작업 대기가 다시 트랜잭션 수명을 길게 하는 순환이다. 최초 장기 작업을 따로 찾는다.",
+      "concepts": [
+        "잠금 대기와 트랜잭션 연장의 피드백"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01856",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "교착 재시도가 만든 반복 충돌은 취소된 트랜잭션들이 같은 순서와 시각으로 다시 실행되어 같은 자원에서 재차 부딪히는 구조다. 교착은 결과이면서 다음 충돌의 입력이 된다.",
+      "concepts": [
+        "교착 재시도가 만든 반복 충돌"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01857",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "백프레셔가 큐를 안정시키는 음성 피드백은 소비 여유가 줄면 생산 허용량도 낮춰 대기열 증가를 완화하는 구조다. 낮아진 처리량을 장애 악화로만 해석하지 않는다.",
+      "concepts": [
+        "백프레셔가 큐를 안정시키는 음성 피드백"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01858",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "백프레셔 부재가 만든 연쇄 증폭은 하류가 느려져도 상류가 계속 전송해 큐와 메모리 고갈이 앞단으로 퍼지는 구조다. 최초 병목과 전파된 결과를 구분한다.",
+      "concepts": [
+        "백프레셔 부재가 만든 연쇄 증폭"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01859",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "오토스케일이 사용률을 낮추는 음성 피드백은 높은 부하가 복제본을 늘리고 늘어난 용량이 노드당 사용률을 낮추는 순환이다. 상관 방향이 시간에 따라 바뀐다.",
+      "concepts": [
+        "오토스케일이 사용률을 낮추는 음성 피드백"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01860",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "늦은 오토스케일이 만든 용량 진동은 과거의 높은 부하를 보고 과도하게 확장한 뒤 낮은 사용률로 급히 축소하는 반복이다. 측정 지연과 냉각 시간을 원인으로 포함한다.",
+      "concepts": [
+        "늦은 오토스케일이 만든 용량 진동"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01861",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "확장과 축소가 반복되는 플래핑은 사용률이 단일 임계 주변을 오가며 복제본 수가 자주 바뀌는 상태다. 트래픽 변동과 정책 반응이 서로 만드는 주기를 구분한다.",
+      "concepts": [
+        "확장과 축소가 반복되는 플래핑"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01862",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "헬스체크 제외가 만든 장애 연쇄는 한 노드 지연이 대상 제거를 부르고 남은 노드 포화가 추가 제거를 만드는 양성 피드백이다. 최초 노드와 후속 제외를 시간순으로 표시한다.",
+      "concepts": [
+        "헬스체크 제외가 만든 장애 연쇄"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01863",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "회로 차단기가 의존 부하를 낮추는 피드백은 오류 임계 초과 뒤 호출을 멈춰 실패한 하류의 회복 여유를 만드는 구조다. 개방 상태를 장애 원인과 혼동하지 않는다.",
+      "concepts": [
+        "회로 차단기가 의존 부하를 낮추는 피드백"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01864",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "반개방 탐색이 회복 여부를 갱신하는 경로는 제한된 시험 호출의 성공·실패가 차단기 상태를 닫힘 또는 개방으로 바꾸는 과정이다. 탐색 결과와 원래 장애를 구분한다.",
+      "concepts": [
+        "반개방 탐색이 회복 여부를 갱신하는 경로"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01865",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "부하 차단이 백엔드를 안정시키는 피드백은 입구 거절이 내부 작업량을 낮춰 대기와 오류 증폭을 멈추게 하는 구조다. 사용자 거절과 시스템 회복을 서로 다른 결과로 보고한다.",
+      "concepts": [
+        "부하 차단이 백엔드를 안정시키는 피드백"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01866",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "차단 응답 재시도가 완화를 무력화하는 순환은 거절된 클라이언트가 즉시 다시 호출해 입구 트래픽을 유지하는 구조다. 백오프 준수 여부가 피드백의 방향을 결정한다.",
+      "concepts": [
+        "차단 응답 재시도가 완화를 무력화하는 순환"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01867",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "요청 제한이 호출률을 낮추는 안정화는 초과 응답과 재시도 지침이 클라이언트 전송 속도를 줄여 처리량을 용량 안으로 되돌리는 과정이다. 외부 수요 감소와 정책 효과를 나눈다.",
+      "concepts": [
+        "요청 제한이 호출률을 낮추는 안정화"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01868",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "동기화 재시도가 만든 부하 파동은 많은 클라이언트가 같은 고정 간격으로 다시 호출해 주기적인 트래픽 봉우리를 만드는 현상이다. 원래 수요 주기와 재시도 주기를 구별한다.",
+      "concepts": [
+        "동기화 재시도가 만든 부하 파동"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01869",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "지수 백오프가 재시도 폭주를 감쇠하는 방향은 연속 실패마다 대기시간을 늘려 단위시간 반복 호출을 줄이는 과정이다. 회복 시각과 호출률 하락의 선후를 확인한다.",
+      "concepts": [
+        "지수 백오프가 재시도 폭주를 감쇠하는 방향"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01870",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "무작위 지터가 재시도 동기화를 깨는 기능은 각 클라이언트 대기시간을 흩어 호출 봉우리를 여러 시점으로 분산한다. 총 시도 수와 순간 최대 부하의 감소를 구분한다.",
+      "concepts": [
+        "무작위 지터가 재시도 동기화를 깨는 기능"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01871",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "혼잡 제어가 전송률을 낮추는 음성 피드백은 손실을 감지한 송신자가 전송 창을 줄여 링크 점유를 완화하는 구조다. 낮은 전송률이 혼잡의 최초 원인이라는 역방향을 피한다.",
+      "concepts": [
+        "혼잡 제어가 전송률을 낮추는 음성 피드백"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01872",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재전송이 혼잡을 키우는 양성 피드백은 손실된 패킷의 반복 전송이 대역폭과 버퍼를 더 점유해 추가 손실을 만드는 순환이다. 혼잡 제어의 감쇠 경로와 함께 본다.",
+      "concepts": [
+        "재전송이 혼잡을 키우는 양성 피드백"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01873",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "DNS 캐시 실패와 재질의의 반복은 잘못된 음성 캐시나 짧은 만료가 질의를 늘리고 과부하된 해석기가 다시 실패를 반환하는 구조다. 캐시 상태와 서버 부하의 방향을 분리한다.",
+      "concepts": [
+        "DNS 캐시 실패와 재질의의 반복"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01874",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "하트비트 손실과 리더 선출의 진동은 통신 지연이 임기 만료를 만들고 선출 트래픽이 다시 네트워크를 압박하는 순환이다. 원래 분할과 선출 부하를 같은 원인으로 합치지 않는다.",
+      "concepts": [
+        "하트비트 손실과 리더 선출의 진동"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01875",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "복제 지연과 읽기 복구의 순환은 오래된 값이 보일수록 보정 쓰기가 늘고 그 쓰기가 저장소 부하를 높여 복제를 더 늦추는 구조다. 각 반복의 기여를 구간별로 잰다.",
+      "concepts": [
+        "복제 지연과 읽기 복구의 순환"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01876",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "모니터링 조회가 장애 부하를 키우는 피드백은 이상 시 수집 빈도와 대시보드 조회가 늘어 관리 API에 추가 부담을 주는 구조다. 관측 도구를 항상 외부 변수로 가정하지 않는다.",
+      "concepts": [
+        "모니터링 조회가 장애 부하를 키우는 피드백"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01877",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "오류 로그 폭주가 쓰기 지연을 키우는 순환은 실패마다 상세 기록이 늘어 디스크가 느려지고 느린 기록이 다시 요청 실패를 만드는 구조다. 로그는 징후이자 증폭 원인이 될 수 있다.",
+      "concepts": [
+        "오류 로그 폭주가 쓰기 지연을 키우는 순환"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01878",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "경보 피로가 탐지 지연을 늘리는 피드백은 반복 알림이 대응자의 주의를 낮춰 중요한 사고 확인이 늦어지고 긴 사고가 더 많은 경보를 만드는 구조다. 기술 발생 원인과 운영 확산 원인을 나눈다.",
+      "concepts": [
+        "경보 피로가 탐지 지연을 늘리는 피드백"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01879",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "반복 재시작이 진단 자료를 지우는 순환은 임시 회복 뒤 원인 상태가 재발하고 매번 메모리·로그 문맥이 사라져 정확한 수정이 늦어지는 구조다. 재시작 성공률만 보지 않는다.",
+      "concepts": [
+        "반복 재시작이 진단 자료를 지우는 순환"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01880",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재시작 뒤 콜드 캐시가 부하를 높이는 방향은 메모리 항목이 사라져 초기 요청이 모두 원본 저장소로 향하는 과정이다. 재시작은 누적 상태를 낮추지만 새 부하도 만든다.",
+      "concepts": [
+        "재시작 뒤 콜드 캐시가 부하를 높이는 방향"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01881",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "콜드 캐시가 데이터베이스 지연을 키우는 경로는 낮은 적중률이 원본 조회를 늘려 연결과 디스크를 압박하는 과정이다. 캐시 회복 전후의 조회량을 비교한다.",
+      "concepts": [
+        "콜드 캐시가 데이터베이스 지연을 키우는 경로"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01882",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "데이터베이스 지연이 캐시 회복을 늦추는 순환은 원본 응답이 늦어 새 항목 저장 속도가 낮아지고 미스 기간이 길어지는 구조다. 콜드 스타트와 저장소 병목을 함께 기록한다.",
+      "concepts": [
+        "데이터베이스 지연이 캐시 회복을 늦추는 순환"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01883",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "핫샤드 감지가 재배치를 부르는 방향은 특정 파티션의 부하가 임계값을 넘은 뒤 데이터 이동 작업이 시작되는 과정이다. 재배치와 높은 부하의 상관을 반대로 읽지 않는다.",
+      "concepts": [
+        "핫샤드 감지가 재배치를 부르는 방향"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01884",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재배치 작업이 일시 부하를 더하는 방향은 데이터 복사와 색인 갱신이 네트워크·디스크를 점유해 운영 지연을 잠시 높이는 과정이다. 원래 핫샤드와 조치 부작용을 구분한다.",
+      "concepts": [
+        "재배치 작업이 일시 부하를 더하는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01885",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배치 지연이 실시간 재조회로 이어지는 피드백은 새 집계값이 제때 나오지 않아 사용자가 원시 자료를 반복 조회하고 그 부하가 배치를 더 늦추는 구조다. 사용자 반응을 매개 경로로 둔다.",
+      "concepts": [
+        "배치 지연이 실시간 재조회로 이어지는 피드백"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01886",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "오래된 화면이 수동 새로고침을 부르는 방향은 갱신되지 않은 상태를 본 사용자가 반복 요청을 보내는 과정이다. 높은 조회량이 처음부터 오래된 값을 만들었다고 보지 않는다.",
+      "concepts": [
+        "오래된 화면이 수동 새로고침을 부르는 방향"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01887",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "수동 새로고침이 조회 지연을 키우는 순환은 반복 호출이 읽기 계층을 포화시켜 최신 결과 표시를 더 늦추는 구조다. 원래 사용자 수요와 반응성 요청을 나눈다.",
+      "concepts": [
+        "수동 새로고침이 조회 지연을 키우는 순환"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01888",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "결제 시간 초과가 재결제를 부르는 방향은 승인 결과를 받지 못한 사용자가 같은 구매를 다시 제출하는 과정이다. 실제 승인 완료 여부와 화면 응답 실패를 구분한다.",
+      "concepts": [
+        "결제 시간 초과가 재결제를 부르는 방향"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01889",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "중복 결제가 보정 작업을 늘리는 방향은 같은 주문의 여러 승인 기록이 탐지되어 취소·환불·대조 작업을 생성하는 과정이다. 보정량을 최초 결제 실패 원인으로 보지 않는다.",
+      "concepts": [
+        "중복 결제가 보정 작업을 늘리는 방향"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01890",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "보정 작업이 결제 저장소 부하를 높이는 순환은 대량 취소와 조회가 운영 거래와 자원을 경쟁해 새 시간 초과를 만드는 구조다. 복구 작업의 부작용을 별도 원인으로 기록한다.",
+      "concepts": [
+        "보정 작업이 결제 저장소 부하를 높이는 순환"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01891",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재고 불일치가 대조 작업을 부르는 방향은 주문과 재고 기록의 차이를 발견한 뒤 재계산과 보정 이벤트가 시작되는 과정이다. 대조 작업 수는 불일치의 결과다.",
+      "concepts": [
+        "재고 불일치가 대조 작업을 부르는 방향"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01892",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "대조 지연이 재고 불일치를 지속시키는 순환은 보정이 늦는 동안 새 주문이 오래된 수량을 참고해 추가 차이를 만드는 구조다. 최초 전파 지연과 후속 오류를 나눈다.",
+      "concepts": [
+        "대조 지연이 재고 불일치를 지속시키는 순환"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01893",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "메시지 적체가 소비자 확장을 부르는 방향은 큐 길이나 가장 오래된 작업 시간이 기준을 넘은 뒤 워커 수가 증가하는 과정이다. 많은 소비자를 적체의 선행 원인으로 두지 않는다.",
+      "concepts": [
+        "메시지 적체가 소비자 확장을 부르는 방향"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01894",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "소비자 확장이 브로커 부하를 높이는 방향은 더 많은 워커가 동시에 가져오기와 확인 요청을 보내 관리·전송 비용을 늘리는 과정이다. 확장 효과와 브로커 부담을 함께 평가한다.",
+      "concepts": [
+        "소비자 확장이 브로커 부하를 높이는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01895",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "브로커 지연이 생산자 백프레셔를 부르는 방향은 기록 확인이 늦어 송신 슬롯이 차고 상류 전송이 대기하는 과정이다. 생산량 감소를 외부 수요 하락으로 오해하지 않는다.",
+      "concepts": [
+        "브로커 지연이 생산자 백프레셔를 부르는 방향"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01896",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "생산자 백프레셔가 상류 큐를 늘리는 방향은 브로커로 보내지 못한 작업이 애플리케이션 내부 대기열에 쌓이는 과정이다. 하류 지연이 앞단 상태로 전파되는 경로다.",
+      "concepts": [
+        "생산자 백프레셔가 상류 큐를 늘리는 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01897",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "입장 제어가 동시성을 안정시키는 피드백은 실행 중 작업 수가 한도에 닿으면 새 요청을 대기시켜 내부 경합을 줄이는 구조다. 대기 증가와 처리 안정의 두 결과를 구분한다.",
+      "concepts": [
+        "입장 제어가 동시성을 안정시키는 피드백"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01898",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "토큰 버킷 보충이 호출률을 회복시키는 방향은 시간이 지나 사용권이 다시 쌓인 뒤 대기 요청이 허용되는 과정이다. 거절 감소를 서버 용량 증가로 잘못 해석하지 않는다.",
+      "concepts": [
+        "토큰 버킷 보충이 호출률을 회복시키는 방향"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01899",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "적응형 시간 제한이 만든 위험한 피드백은 최근 지연이 길수록 제한값을 늘려 더 많은 느린 작업을 유지하고 자원 점유를 키우는 구조다. 완주율 개선과 포화 위험을 함께 본다.",
+      "concepts": [
+        "적응형 시간 제한이 만든 위험한 피드백"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01900",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "동적 동시성 제한의 안정화 방향은 지연과 오류가 높아질 때 허용 작업 수를 줄이고 회복 뒤 천천히 늘리는 과정이다. 제한값 변화는 장애 반응이며 최초 원인이 아니다.",
+      "concepts": [
+        "동적 동시성 제한의 안정화 방향"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01901",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "고해상도 시간선으로 가른 인과 방향은 요청 급증, 자원 포화, 오류, 재시도를 초 단위로 정렬해 먼저 시작된 경로를 찾는 방법이다. 분 단위 평균의 동시점만으로 방향을 확정하지 않는다.",
+      "concepts": [
+        "고해상도 시간선으로 가른 인과 방향"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01902",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "요청 식별자로 연결한 원인과 후속 호출은 최초 실패와 같은 작업의 재시도를 추적해 어느 호출이 앞섰는지 확인하는 절차다. 단순 총계 상관보다 개별 연쇄를 사용한다.",
+      "concepts": [
+        "요청 식별자로 연결한 원인과 후속 호출"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01903",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시차별 교차 상관의 방향 단서는 한 지표가 몇 초 앞설 때 다른 지표와 가장 잘 맞는지 보는 분석이다. 공통 주기와 누락 변수 때문에 예측 선후가 곧 인과는 아니다.",
+      "concepts": [
+        "시차별 교차 상관의 방향 단서"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01904",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "호출 아키텍처로 제한한 가능한 방향은 프런트엔드가 데이터베이스를 호출한다는 구조를 이용해 응답 전파 간선을 정하는 방법이다. 관측 상관만으로 존재하지 않는 역호출을 만들지 않는다.",
+      "concepts": [
+        "호출 아키텍처로 제한한 가능한 방향"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01905",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "의심 원인만 바꾼 방향 개입은 요청량을 유지한 채 CPU 제한을 높여 지연과 오류가 뒤따라 감소하는지 확인하는 시험이다. 결과 지표를 조작하지 않고 선행 변수만 바꾼다.",
+      "concepts": [
+        "의심 원인만 바꾼 방향 개입"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01906",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "결과 지표 변경이 원인에 미치는지 본 역개입은 대시보드 집계나 오류 표시만 바꾸었을 때 실제 CPU와 큐가 달라지는지 확인하는 검사다. 변화가 없으면 표시 결과의 역인과 설명은 약해진다.",
+      "concepts": [
+        "결과 지표 변경이 원인에 미치는지 본 역개입"
+      ],
+      "relations": [
+        "contrast",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01907",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "트래픽 고정 뒤 CPU 제한 효과는 같은 재생 요청에서 할당량만 달리해 처리시간 변화를 보는 실험이다. 외부 수요가 두 지표를 함께 움직인 혼입을 줄인다.",
+      "concepts": [
+        "트래픽 고정 뒤 CPU 제한 효과"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01908",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "용량 고정 뒤 요청량 효과는 복제본 수와 제한값을 유지하면서 호출률을 단계적으로 바꾸어 포화 방향을 확인하는 시험이다. 오토스케일 반응이 원인과 결과를 뒤섞지 않게 한다.",
+      "concepts": [
+        "용량 고정 뒤 요청량 효과"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01909",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "롤백으로 확인한 배포 선행 효과는 문제 버전만 제거한 뒤 같은 트래픽에서 오류가 줄어드는지 보는 판정이다. 동시에 회복한 외부 의존성은 별도 대조한다.",
+      "concepts": [
+        "롤백으로 확인한 배포 선행 효과"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01910",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재도입으로 확인한 방향 재현은 격리 환경에서 변경을 다시 적용했을 때 같은 매개 지표와 오류 순서가 나타나는지 보는 시험이다. 운영 환경 재도입은 위험 평가와 승인 뒤에만 수행한다.",
+      "concepts": [
+        "재도입으로 확인한 방향 재현"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01911",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재시도 중단으로 끊은 오류 증폭 간선은 최초 실패를 유지한 채 반복 호출만 막아 큐와 추가 오류가 줄어드는지 확인하는 개입이다. 촉발 원인과 피드백 기여를 분리한다.",
+      "concepts": [
+        "재시도 중단으로 끊은 오류 증폭 간선"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01912",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "지연 주입으로 재현한 시간 초과 방향은 한 의존 호출에 통제된 대기를 넣고 시간 초과와 재시도가 예상 순서로 발생하는지 보는 시험이다. 실제 사고와 동일한 경로인지 추적한다.",
+      "concepts": [
+        "지연 주입으로 재현한 시간 초과 방향"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01913",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "오토스케일 정지로 확인한 정책 피드백은 격리 부하에서 복제본 수를 고정해 사용률 진동이 사라지는지 보는 방법이다. 정책을 끈 위험과 실험 범위를 명시한다.",
+      "concepts": [
+        "오토스케일 정지로 확인한 정책 피드백"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01914",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "고정 용량 대조로 가른 확장 역인과는 자동 확장군과 같은 수의 고정 복제본군을 비교해 인스턴스 수가 부하 반응인지 성능 원인인지 판단하는 설계다. 초기 용량을 맞춘다.",
+      "concepts": [
+        "고정 용량 대조로 가른 확장 역인과"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01915",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "소비자 수 무작위 배정으로 본 큐 방향은 비슷한 파티션에 서로 다른 워커 수를 배정해 적체 감소가 뒤따르는지 보는 시험이다. 이미 긴 큐에 증원한 역선택을 피한다.",
+      "concepts": [
+        "소비자 수 무작위 배정으로 본 큐 방향"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01916",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "카나리 버전의 동시 대조는 같은 시간과 요청 구성에서 새·기존 버전의 오류 순서를 비교해 배포 방향을 확인한다. 전역 트래픽 변화가 공통 원인이 되지 않게 한다.",
+      "concepts": [
+        "카나리 버전의 동시 대조"
+      ],
+      "relations": [
+        "comparison",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01917",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "영향 경로 밖 음성 대조 지표는 의심된 데이터베이스와 무관한 정적 응답처럼 같은 환경만 공유하는 측정값이다. 함께 움직이면 직접 방향보다 공통 원인을 다시 검토한다.",
+      "concepts": [
+        "영향 경로 밖 음성 대조 지표"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01918",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "선행 예측력과 인과 증거의 경계는 과거 큐 길이가 미래 오류를 잘 예측해도 둘을 함께 움직이는 부하가 남을 수 있다는 점이다. 예측 검사를 개입 증거로 과장하지 않는다.",
+      "concepts": [
+        "선행 예측력과 인과 증거의 경계"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01919",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "리드와 래그를 분리한 지표 보고는 CPU가 오류보다 몇 초 앞서고 재시도가 오류보다 몇 초 뒤따르는지 각각 제시한다. 상관계수 하나에 서로 다른 방향을 합치지 않는다.",
+      "concepts": [
+        "리드와 래그를 분리한 지표 보고"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01920",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "순환 궤적으로 본 피드백 위상은 시간축을 따라 큐, 지연, 재시도가 어떤 순서로 반복되는지 상태 공간에 표시하는 방법이다. 같은 점을 오가는 진동과 단방향 추세를 구분한다.",
+      "concepts": [
+        "순환 궤적으로 본 피드백 위상"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01921",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "반복 주기와 냉각시간의 일치 검사는 오토스케일 플래핑 간격이 정책의 평가창·대기시간과 맞는지 확인하는 절차다. 외부 수요 주기와 정책 진동을 가른다.",
+      "concepts": [
+        "반복 주기와 냉각시간의 일치 검사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01922",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "추적 구간으로 확인한 매개 방향은 저장소 대기 뒤 애플리케이션 슬롯 점유와 사용자 지연이 이어지는 요청별 순서를 보는 방법이다. 총계에서는 숨은 중간 단계를 복원한다.",
+      "concepts": [
+        "추적 구간으로 확인한 매개 방향"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01923",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "피드백 한 간선 차단 시험은 재시도만 멈추거나 자동 제외만 중지해 순환의 어느 연결이 증폭을 유지하는지 확인하는 설계다. 다른 원인 경로는 그대로 관측한다.",
+      "concepts": [
+        "피드백 한 간선 차단 시험"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01924",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "백오프 간격별 감쇠 비교는 동일 실패율에서 재시도 대기시간을 달리해 순간 부하와 회복시간이 어떻게 변하는지 보는 시험이다. 총 시도와 최대 호출률을 함께 센다.",
+      "concepts": [
+        "백오프 간격별 감쇠 비교"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01925",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "지터 적용 전후 부하 파동 대조는 같은 백오프 평균에서 무작위 분산 유무에 따른 요청 봉우리 차이를 비교한다. 동기화 해소가 피드백을 완화하는지 확인한다.",
+      "concepts": [
+        "지터 적용 전후 부하 파동 대조"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01926",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "회로 차단기 임계별 회복 비교는 실패 허용 횟수와 반개방 시점을 달리해 하류 부하와 사용자 오류가 어떻게 변하는지 보는 시험이다. 보호와 과도 차단의 경계를 찾는다.",
+      "concepts": [
+        "회로 차단기 임계별 회복 비교"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01927",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "부하 차단 비율별 안정성 평가는 입구 거절 수준에 따라 백엔드 큐·오류·사용자 성공이 어떻게 변하는지 측정한다. 내부 지표 개선만으로 적정 비율을 정하지 않는다.",
+      "concepts": [
+        "부하 차단 비율별 안정성 평가"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01928",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "사고 요청을 순서대로 재생한 방향 검증은 당시 입력과 간격을 보존해 캐시 만료, 원본 부하, 시간 초과 순서가 다시 나타나는지 확인한다. 외부 상태 차이를 기록한다.",
+      "concepts": [
+        "사고 요청을 순서대로 재생한 방향 검증"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01929",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "단계별 장애 주입으로 찾은 순환 시작점은 네트워크 손실, 저장 지연, 제한 오류를 각각 넣어 어떤 조건이 같은 피드백을 시작하는지 보는 방법이다. 여러 촉발점을 구분한다.",
+      "concepts": [
+        "단계별 장애 주입으로 찾은 순환 시작점"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01930",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "반사실 시간선으로 비교한 원인 방향은 재시도가 없었거나 용량이 고정됐을 때 큐와 오류가 어떻게 변했을지를 모델로 추정한다. 관측 사실과 가정 결과를 명확히 나눈다.",
+      "concepts": [
+        "반사실 시간선으로 비교한 원인 방향"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01931",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "정책 반응 변수를 원인으로 오인하지 않는 규칙은 복제본 수, 차단기 상태, 워커 수처럼 장애에 반응해 바뀐 값을 최초 촉발 후보와 구별하는 원칙이다. 변경 규칙을 함께 본다.",
+      "concepts": [
+        "정책 반응 변수를 원인으로 오인하지 않는 규칙"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01932",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "개입 뒤 변수를 통제하지 않는 총효과 판정은 배포가 캐시 미스를 거쳐 오류를 만들 때 중간 미스를 무조건 보정해 효과를 지우지 않는 원칙이다. 매개와 공통 원인을 구분한다.",
+      "concepts": [
+        "개입 뒤 변수를 통제하지 않는 총효과 판정"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01933",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "역인과 가능성을 먼저 기록하는 감사는 높은 오류와 많은 워커처럼 반응 정책이 의심되는 관계에 가능한 반대 방향을 명시하는 절차다. 시간선과 정책 문서로 후보를 줄인다.",
+      "concepts": [
+        "역인과 가능성을 먼저 기록하는 감사"
+      ],
+      "relations": [
+        "classification",
+        "role",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01934",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "동시 측정만 있는 방향 판정의 보류는 분 단위 집계에서 두 지표가 같은 구간에만 나타나 선후를 알 수 없을 때 확정 라벨을 피하는 원칙이다. 더 세밀한 자료를 요구한다.",
+      "concepts": [
+        "동시 측정만 있는 방향 판정의 보류"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01935",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "집계 평균이 숨긴 빠른 피드백은 수 초 안에 오류와 재시도가 여러 번 반복되어 긴 시간창에서는 한 봉우리로 보이는 현상이다. 원시 사건 간격으로 순환을 복원한다.",
+      "concepts": [
+        "집계 평균이 숨긴 빠른 피드백"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01936",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시계 오차가 만든 역방향 착시는 재시도 로그의 노드 시간이 앞서 있어 최초 오류보다 먼저 기록된 것처럼 보이는 경우다. 공통 시각으로 보정한 뒤 순서를 다시 판정한다.",
+      "concepts": [
+        "시계 오차가 만든 역방향 착시"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01937",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "경보 반응이 만든 심각도 혼입은 큰 사고일수록 빠른 개입과 많은 지표 변화가 함께 나타나 조치가 악화 원인처럼 보이는 경우다. 초기 심각도와 개입 시점을 통제한다.",
+      "concepts": [
+        "경보 반응이 만든 심각도 혼입"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01938",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "운영자 선택이 만든 조치 역선택은 재시작이나 우회를 가장 나쁜 인스턴스에만 적용해 조치군의 오류가 더 높게 보이는 현상이다. 적용 전 상태가 비슷한 대조를 찾는다.",
+      "concepts": [
+        "운영자 선택이 만든 조치 역선택"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01939",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "내생적 정책이 만든 용량과 오류 상관은 오류율이 높을 때 용량을 늘리는 규칙 때문에 많은 자원과 높은 실패가 함께 관측되는 현상이다. 정책 입력과 결과를 시간순으로 분리한다.",
+      "concepts": [
+        "내생적 정책이 만든 용량과 오류 상관"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01940",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "외부 할당 변경을 이용한 자연 실험은 일부 계정의 독립 할당량만 바뀐 사건을 이용해 제한과 오류의 방향을 비교하는 방법이다. 다른 동시 차이가 없는지 확인한다.",
+      "concepts": [
+        "외부 할당 변경을 이용한 자연 실험"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01941",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시차 적용된 정책으로 본 방향 차이는 같은 제한 규칙이 리전마다 다른 시각에 도입될 때 오류 변화가 도입 순서를 따르는지 보는 설계다. 전역 추세를 대조한다.",
+      "concepts": [
+        "시차 적용된 정책으로 본 방향 차이"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01942",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "반복 사고에서 유지된 인과 순서는 여러 날짜에도 트래픽, 포화, 오류, 재시도가 같은 차례로 나타나는지 확인한 증거다. 단순한 반복 상관과 작동 경로의 재현을 구분한다.",
+      "concepts": [
+        "반복 사고에서 유지된 인과 순서"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01943",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "원인 방향의 증거 강도 등급은 개입 재현, 요청별 선후, 집계 시차, 동시 상관을 서로 다른 확신 수준으로 분류한다. 약한 자료를 확정 방향과 같은 표현으로 쓰지 않는다.",
+      "concepts": [
+        "원인 방향의 증거 강도 등급"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01944",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "대안 방향별 반증 목록은 요청이 CPU를 높였다는 설명과 CPU 제한이 요청 실패를 늘렸다는 설명에 필요한 증거와 반례를 각각 적는 방식이다. 한 방향만 검토하지 않는다.",
+      "concepts": [
+        "대안 방향별 반증 목록"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01945",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "양방향 관계의 명시적 표기는 지연이 재시도를 만들고 재시도가 지연을 키우는 경우 두 간선을 모두 기록하는 원칙이다. 하나의 단방향 라벨로 순환을 숨기지 않는다.",
+      "concepts": [
+        "양방향 관계의 명시적 표기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01946",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "촉발·증폭·회복 원인의 단계 구분은 배포 오류, 재시도 폭주, 차단기 개방처럼 사고에서 맡은 시간적 역할을 나누는 방식이다. 같은 지표가 단계마다 다른 방향을 가질 수 있다.",
+      "concepts": [
+        "촉발·증폭·회복 원인의 단계 구분"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01947",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "기술 방향과 책임 판단의 분리는 인증서 만료가 연결 실패를 만들었다는 경로와 갱신 업무의 담당·과실을 별도로 다루는 원칙이다. 인과 화살표를 책임 비율로 바꾸지 않는다.",
+      "concepts": [
+        "기술 방향과 책임 판단의 분리"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01948",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "순환 간선을 포함한 장애 인과도는 직접 원인, 매개 사건, 반응 정책과 피드백을 시간 지연이 있는 화살표로 표시한다. 관측 상관과 검증된 간선을 다른 상태로 보존한다.",
+      "concepts": [
+        "순환 간선을 포함한 장애 인과도"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01949",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "재현 가능한 방향성 감사 기록은 시각 보정, 요청 연결, 개입, 대조, 시차와 대안 방향의 결과를 함께 남기는 문서다. 다른 검토자가 같은 자료로 화살표를 다시 판단할 수 있어야 한다.",
+      "concepts": [
+        "재현 가능한 방향성 감사 기록"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-01950",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "해결되지 않은 방향의 보류 판정은 자료 해상도가 낮거나 양방향 피드백을 끊지 못했을 때 원인 방향을 확정하지 않는 결정이다. 필요한 추가 계측과 시험을 구체적으로 적는다.",
+      "concepts": [
+        "해결되지 않은 방향의 보류 판정"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "role",
+        "boundary"
+      ]
+    }
+  ]
+}
