@@ -72,6 +72,12 @@ def plan_files():
     return out
 
 
+# ★★2026-09-04 — **WIP 작업원장은 사용자 지시를 원문 그대로** 담는다(R41·wip-ledger 규칙).
+#   사용자가 예시로 든 번호(`P123` 같은)를 우리가 고칠 수 없으므로 **원장은 제외**한다.
+#   🚫대신 다른 어떤 문서에서도 예외를 두지 않는다 — 예시 번호는 `P___` 로 쓴다.
+SKIP_REF = ("handoff/WIP_",)
+
+
 def scan_refs():
     """{번호: [(파일, 원문토큰)]} — 저장소 전체에서 P0NN 참조를 긁는다."""
     refs = {}
@@ -90,6 +96,8 @@ def scan_refs():
     for p in _walk():
             rel = str(p.relative_to(ROOT)).replace("\\", "/")
             if any(d in p.parts for d in SKIP_DIRS) or rel in SKIP_FILES:
+                continue
+            if any(rel.startswith(x) for x in SKIP_REF):   # ★작업원장 = 사용자 지시 원문
                 continue
             if rel.startswith(".claude/skills/"):      # 스킬 문서의 예시 번호
                 continue

@@ -137,6 +137,9 @@ def check(name, d, expect=None):
 EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     "sm_base":   {"seed": 1337, "sparse34": False, "anneal_end": 0.60, "grad_ckpt": True},
     "sm_seed":   {"seed": 4242},
+    # ★★2026-09-04 — **값**까지 적는다. 이름만 넣으면 기본값이라 코드가 안 돈다(결과 044).
+    "sm_claedge": {"cla_group": 2, "cla_edges": False},
+    "sm_lrm":     {"mlp_lrm": True},
     "sm_s34":    {"sparse34": True, "bpw": 1.25},
     "sm_sched":  {"anneal_end": 0.80, "sched": "wsd", "decay_frac": 0.2},
     "sm_nockpt": {"grad_ckpt": False},

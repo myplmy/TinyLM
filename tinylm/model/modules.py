@@ -149,9 +149,16 @@ class MLP(nn.Module):
         self.up_proj = TLinear(cfg, cfg.dim, cfg.ffn_dim, mode_delta=True)
         self.down_proj = TLinear(cfg, cfg.ffn_dim, cfg.dim, out_scale=o_scale, mode_delta=True)
 
-    def forward(self, x, mode_p, lora=None, film=None):
+    def forward(self, x, mode_p, lora=None, film=None, lrm=None):
         g = self.gate_proj(x, mode_p)
         u = self.up_proj(x, mode_p)
+        # ★P086 — `W̄ = s·W` 를 **출력 쪽에서** 건다. TLinear 는 선형이라 동치이고,
+        #   공유 W 를 건드리지 않으므로 **층마다 다른 s** 를 줄 수 있다.
+        #   🚫gate 와 up 을 **같은 s 로 묶지 않는다** — silu(s·g)·(s·u) 는 비선형이라
+        #   하나로 묶으면 두 축이 교락된다.
+        if lrm is not None:
+            g = g * lrm[0]
+            u = u * lrm[1]
         if lora is not None:                        # 층별 LoRA 보정(gate/up/down)
             g = g + lora[0](x)
             u = u + lora[1](x)
@@ -159,6 +166,8 @@ class MLP(nn.Module):
         if film is not None:                        # 층별 FiLM: 공유 MLP 은닉을 층마다 변조(거의 공짜)
             h = h * (1.0 + film[0]) + film[1]
         d = self.down_proj(h, mode_p)
+        if lrm is not None:
+            d = d * lrm[2]
         if lora is not None:
             d = d + lora[2](h)
         return d
@@ -168,6 +177,7 @@ class Layer(nn.Module):
     """어텐션·정규화·게이트는 층 소유. MLP는 참조(공유 가능)."""
 
     def __init__(self, cfg, owns_kv: bool, mlp: MLP, mlp_lora: bool = False, mlp_film: bool = False,
+                 mlp_lrm: bool = False,
                  attn=None):
         super().__init__()
         self.ln1, self.ln2 = RMSNorm(cfg.dim, cfg.norm_eps), RMSNorm(cfg.dim, cfg.norm_eps)
@@ -187,6 +197,11 @@ class Layer(nn.Module):
             self.lora_gate = LoRA(cfg, cfg.dim, cfg.ffn_dim, r)
             self.lora_up   = LoRA(cfg, cfg.dim, cfg.ffn_dim, r)
             self.lora_down = LoRA(cfg, cfg.ffn_dim, cfg.dim, r)
+        # ★★P086 — 층별 스칼라 승수. **타잉된 중간층에만** 붙인다(공유가 문제의 원인이라서).
+        #   1.0 으로 시작하므로 켠 직후의 첫 forward 는 **끈 것과 같다.**
+        self.has_lrm = mlp_lrm and getattr(cfg, "mlp_lrm", False)
+        if self.has_lrm:
+            self.lrm = nn.Parameter(torch.ones(3))   # gate · up · down
         self.has_film = mlp_film and getattr(cfg, "mlp_film", False)
         if self.has_film:                      # 층별 FiLM 파라미터(스케일/시프트, ffn_dim)
             self.film_scale = nn.Parameter(torch.zeros(cfg.ffn_dim))
@@ -235,5 +250,6 @@ class Layer(nn.Module):
         x = x + self.gates[0] * attn_out
         lora = (self.lora_gate, self.lora_up, self.lora_down) if self.has_lora else None
         film = (self.film_scale, self.film_shift) if self.has_film else None
-        x = x + self.gates[1] * self.mlp[0](self.ln2(x) * m + self.m_shift, mode_p, lora, film)
+        lrm = self.lrm if self.has_lrm else None
+        x = x + self.gates[1] * self.mlp[0](self.ln2(x) * m + self.m_shift, mode_p, lora, film, lrm)
         return (x, attn_out) if want_attn else x

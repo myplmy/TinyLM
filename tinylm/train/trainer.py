@@ -179,6 +179,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
           attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
           reuse_attn_on_dup=False, ce_chunk=0, cla_group=None, cla_edges=True,
+          mlp_lrm=False,
           tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
           save_every=0):
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -245,6 +246,19 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         print(f"[P084] ⚠️**KV 소유 층 {_before} -> {_after} 개**(+{_after - _before}). "
               f"상주가 커진다 — 예산을 먼저 본다")
         cfg.cla_edges = False
+
+    # ★★P086 — 층별 스칼라 승수. 모델 생성 전에 심는다(Layer 가 그때 파라미터를 만든다).
+    if mlp_lrm:
+        # ★★2026-09-04 정정 — **타잉을 요구하지 않는다.** 우리 32 MiB 승자는 `--arch dense`
+        #   (tie_mlp=False)이고, 타잉을 조건으로 걸면 **플래그가 조용히 아무 일도 안 한다.**
+        #   논문(arXiv:2601.04890)도 대상은 **모든 행렬층**이지 공유층이 아니다.
+        _kind = "타잉" if cfg.tie_mlp else "dense"
+        print(f"[P086] ★mlp_lrm=True — {_kind} 중간층 {cfg.n_middle}개에 "
+              f"gate·up·down 스칼라({cfg.n_middle * 3}개). 추론 상주 증가 0")
+        if not cfg.tie_mlp:
+            print("[P086] ⚠️dense 몸통이므로 **층마다 이미 자기 W** 가 있다 — "
+                  "이 팔이 재는 것은 *'WD 가 노름을 묶는가'* 이지 *'공유가 문제인가'* 가 아니다")
+        cfg.mlp_lrm = True
     if mlp_group and arch == "tied":            # g 스윕용 오버라이드(P003)
         assert cfg.n_middle % mlp_group == 0, f"n_middle {cfg.n_middle} % g {mlp_group} != 0"
         cfg.mlp_group = mlp_group
@@ -823,6 +837,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "teacher_dtype": str(teacher_dtype),
            "ce_chunk": int(ce_chunk),   # ★결과 054
            "cla_group": int(cfg.cla_group),   # ★P073
+           # ★★2026-09-04 — 새 축은 **json 에 값으로** 남긴다. 이름만 있으면
+           #   기본값이라 코드가 안 돈 것을 못 알아챈다(결과 044).
+           "cla_edges": bool(getattr(cfg, "cla_edges", True)),     # ★P084
+           "mlp_lrm": bool(getattr(cfg, "mlp_lrm", False)),        # ★P086
            "vocab_size": int(cfg.vocab_size),
            "save_every": int(save_every or 0),                     # (P058)
            "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용

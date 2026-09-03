@@ -36,6 +36,7 @@ import re
 import sys
 from pathlib import Path
 
+NL_ = chr(10)
 ROOT = Path(__file__).resolve().parent.parent
 HANDOFF = ROOT / "handoff"
 
@@ -261,6 +262,55 @@ def lint(path: Path):
                     info.append(f"큐 입력 줄 `{raw.strip()}` -> {named} (id 대조 통과)")
         except Exception as e:                              # 큐 메타데이터가 없으면 건너뛴다
             info.append(f"큐 id 대조를 못 했다: {type(e).__name__}")
+
+    # ── ★★10. 실험 배치 **합계 시간**이 요청량에 미치는가 (2026-09-04 사용자 지시 7) ──
+    #   *"작업지시시 일반적인 경우 연산시간 합계 16시간에 해당하는 배치 작성토록 했던 것
+    #    같은데 왜 누락했는지? (…) 합계 시간이 사용자가 요청했던 작업시간이하로 작성된
+    #    경우 claude에게 **사유를 적으라고** 하는 스크립트 작성바람."*
+    #
+    #   ★시간은 **핸드오프가 아니라 `experiments.tsv`** 에서 읽는다 — 목록을 두 곳에 두면
+    #   낡는다(함정 18). 핸드오프는 **어느 배치를 권했는가**만 소유한다.
+    #   ★사유를 적으면 통과시킨다. **막는 것이 목적이 아니라 침묵을 막는 것**이 목적이다.
+    #   ⚠️★**최신 판에만 적용한다.** 지난 핸드오프는 **그때의 기록**이고, 소급해서
+    #   고치면 그 시점의 실제 상태를 알 수 없게 된다(§lint 머리의 legacy 규약과 같은 이유).
+    _all = sorted(p.name for p in path.parent.glob('*_HANDOFF.md'))
+    _newest = (path.name == _all[-1]) if _all else True
+    HOURS_TARGET = 16.0
+    REASON_MARK = "시간 미달 사유"
+    try:
+        tsv = (ROOT / "experiments.tsv").read_text(encoding="utf-8").split(NL_)
+        hours = {}
+        for row in tsv:
+            c = row.split(chr(9))
+            if len(c) > 4 and c[0].isdigit() and c[2].endswith(".bat"):
+                try:
+                    hours[c[2]] = float(c[4])
+                except ValueError:
+                    pass
+        # §7 구간만 본다
+        i7 = next((k for k, l in enumerate(lines) if re.match(r'^##\s*7\.', l)), None)
+        if i7 is not None:
+            j7 = next((k for k in range(i7 + 1, len(lines))
+                       if re.match(r'^##\s', lines[k])), len(lines))
+            seg = NL_.join(lines[i7:j7])
+            named = set(re.findall(r'(run_[A-Za-z0-9_]+\.bat)', seg))
+            live = {n for n in named if (ROOT / n).exists()}
+            total = sum(hours.get(n, 0.0) for n in live)
+            has_reason = REASON_MARK in seg
+            if live:
+                info.append(f"§7 의 실재 배치 {len(live)}개 · 합계 ⚙{total:.1f}h"
+                            f" (요청 {HOURS_TARGET:.0f}h)")
+            if total < HOURS_TARGET and not has_reason and _newest:
+                err.append(
+                    f"★★**§7 실험 배치 합계가 ⚙{total:.1f}h 로 요청 {HOURS_TARGET:.0f}h 에 못 미친다.** "
+                    f"🚫**침묵하지 말고 §7 맨 아래에 사유를 적는다** — "
+                    f"`> ★**시간 미달 사유**: ...` 한 줄이면 통과한다. "
+                    f"⚠️**불필요한 중복 실험으로 채우는 것은 금지**다(같은 파라미터의 런이 "
+                    f"이미 있는지로 판단). **못 채운 이유가 정당하면 그것을 쓰는 것이 옳다**")
+            elif total < HOURS_TARGET:
+                info.append(f"⚙{total:.1f}h 로 요청에 못 미치지만 **사유가 적혀 있다** — 통과")
+    except Exception as e:
+        info.append(f"실험 시간 합계를 못 읽었다: {type(e).__name__}")
 
     # ── ★★9. 언급한 배치가 **디스크에 있는가** (2026-09-03 사용자 지시) ────────
     #   *"배치파일이 존재하지 않는데 기입하려고 한다면 스크립트로 경고하도록"*

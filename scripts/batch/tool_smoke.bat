@@ -252,6 +252,28 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch d
 if errorlevel 1 echo [WARN] sm_densecla failed - continuing
 
 echo.
+echo [22] --no-cla-edges  (P084 - prelude and coda keep their own K/V)
+REM  ------------------------------------------------------------------------
+REM  Until 2026-09-03 owner[i] = i - (i % cla_group) ran over EVERY layer, so
+REM  the head and the tail shared K/V even though every other convention here
+REM  treats them as independent. The new flag groups inside the middle only.
+REM  What this arm proves: the KV owner count actually CHANGES. If the flag
+REM  does not reach the model the count stays put and check_smoke fails.
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --cla-group 2 --no-cla-edges --tag sm_claedge
+if errorlevel 1 echo [WARN] sm_claedge failed - continuing
+
+echo [23] --mlp-lrm  (P086 - per-layer scalar multipliers on the shared MLP)
+REM  ------------------------------------------------------------------------
+REM  Learnable multipliers (arXiv:2601.04890). The parameters live on the
+REM  LAYER, not on the shared MLP, so a tied stack can finally vary its scale
+REM  with depth. They also carry weight decay 0.01 - without it the scale
+REM  symmetry drifts and the norm grows without bound.
+REM  What this arm proves: mlp_lrm lands in the json as True, which means the
+REM  Layer actually built the parameters instead of silently skipping them.
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --mlp-lrm --tag sm_lrm
+if errorlevel 1 echo [WARN] sm_lrm failed - continuing
+
+echo.
 echo [20] return_probs diagnostic path  (P081 - SDPA does not hand back probs)
 REM  ------------------------------------------------------------------------
 REM  This axis CANNOT be a training arm - return_probs is blocked in train()

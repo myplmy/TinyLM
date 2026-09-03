@@ -151,6 +151,11 @@ def main():
                    help="★(P005) `muon` 이면 **행렬만** Muon(Newton-Schulz 5), "
                         "임베딩·norm·bias 는 AdamW. ⚠️이점은 대배치 집중 — 우리 131K 는 작다. "
                         "⚠️삼진 STE 상호작용 미검증")
+    # ★★P086(2026-09-04) — 층별 스칼라 승수(Learnable Multipliers). 🚫기본 off = 비트 동일.
+    p.add_argument("--mlp-lrm", action="store_true",
+                   help="★(P086) 타잉된 중간층마다 **gate·up·down 스칼라 승수**를 준다. "
+                        "W 는 공유한 채 **스케일만 층별로** 푼다. ★추론 상주 증가 0(per-row α 에 흡수). "
+                        "⚠️승수에는 약한 WD(0.01)가 걸린다 — 대칭성 표류 방지")
     # ★★P084(2026-09-03) — prelude·coda 에 CLA 를 적용하지 않는다. 🚫기본 = 비트 동일.
     p.add_argument("--no-cla-edges", action="store_true",
                    help="★(P084) 머리(prelude)·꼬리(coda)는 **자기 K/V 를 갖는다**. "
@@ -305,7 +310,7 @@ def main():
               repeat_mode=a.repeat_mode, repeat_block=a.repeat_block,
               reuse_attn_on_dup=a.reuse_attn_on_dup,
               ce_chunk=a.ce_chunk, cla_group=a.cla_group,
-              cla_edges=(not a.no_cla_edges),
+              cla_edges=(not a.no_cla_edges), mlp_lrm=a.mlp_lrm,
               tokenizer_hf=a.tokenizer_hf, kd_teacher_hf=a.kd_teacher_hf,
               teacher_dtype=a.teacher_dtype,
               save_every=a.save_every)

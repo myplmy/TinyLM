@@ -87,6 +87,11 @@ class TiedMLPTransformer(nn.Module):
                 mlp = self.coda_mlps[i - cfg.n_prelude - cfg.n_middle]
             is_mid_tied = (cfg.n_prelude <= i < cfg.n_prelude + cfg.n_middle) and cfg.tie_mlp
             layers.append(Layer(cfg, owns, mlp, mlp_lora=is_mid_tied, mlp_film=is_mid_tied,
+                                # ★★2026-09-04 정정 — **타잉 여부와 무관하게** 중간층에 붙인다.
+                                #   🚫우리 32 MiB 승자는 `--arch dense`(tie_mlp=False)라
+                                #   `is_mid_tied` 로 걸면 **플래그가 아무 일도 안 한다**
+                                #   (스모크 커버리지 게이트가 잡았다). 논문도 **모든 행렬층**이 대상이다.
+                                mlp_lrm=(cfg.n_prelude <= i < cfg.n_prelude + cfg.n_middle),
                                 attn=shared_attn))
         self.layers = nn.ModuleList(layers)
 
@@ -798,11 +803,16 @@ class TiedMLPTransformer(nn.Module):
     def param_groups(self, lr, weight_decay=0.1):
         import math
         tied = {id(p) for m in self.mid_mlps for p in m.parameters()} if self.cfg.tie_mlp else set()
-        gt, dense, nodecay = [], [], []
+        gt, dense, nodecay, lrm = [], [], [], []
         for n, p in self.named_parameters():
             if not p.requires_grad:
                 continue
-            if p.dim() < 2 or any(k in n for k in ("scale", "shift", "gates", "gain", "bias")):
+            # ★★P086 — 승수는 **약한 WD** 를 받는다. 0 이면 대칭성 표류로 노름이
+            #   무한히 자란다(논문 §4.1·그림 4) — bf16·삼진에서 양자화 오차가 커진다.
+            #   🚫`nodecay`(wd=0) 에 넣으면 안 된다. 그래서 **먼저** 가른다.
+            if n.endswith(".lrm"):
+                lrm.append(p)
+            elif p.dim() < 2 or any(k in n for k in ("scale", "shift", "gates", "gain", "bias")):
                 nodecay.append(p)
             elif id(p) in tied:
                 gt.append(p)
@@ -811,7 +821,8 @@ class TiedMLPTransformer(nn.Module):
         g = self.cfg.mlp_group if self.cfg.tie_mlp else 1
         return [{"params": gt, "lr": lr / math.sqrt(g), "weight_decay": weight_decay},
                 {"params": dense, "lr": lr, "weight_decay": weight_decay},
-                {"params": nodecay, "lr": lr, "weight_decay": 0.0}]
+                {"params": nodecay, "lr": lr, "weight_decay": 0.0},
+                {"params": lrm, "lr": lr, "weight_decay": 0.01}]   # ★약한 WD(P086)
 
     # ---------- accounting ----------
     # ★bpw 회계 규약 (2026-07-31 통일 — 결과 016 §7.4·§8.4, P034 §5)

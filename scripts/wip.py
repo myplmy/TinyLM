@@ -1,0 +1,194 @@
+#!/usr/bin/env python3
+"""★★WIP 작업원장의 **상태를 바꾸는 유일한 통로**. 손으로 표를 고치지 않는다.
+
+## 왜 이 도구가 생겼나 (2026-09-04 사용자 지시 6·10)
+
+`WIP_20260903b_작업원장-done.md` 는 **상황판 2~10번이 전부 ⏳대기**인 채로 `-done` 이 붙었다.
+작업은 다 끝났고 §2.x 본문도 다 썼는데 **표만 안 고쳤다.**
+
+★원인 둘 — **둘 다 사람 탓이 아니라 구조 탓이다**:
+
+1. **상태를 두 곳에 적었다**(본문 §2.x + 상황판 표) → 하나가 낡는다(함정 18).
+2. ★★**닫기 전에 확인하는 단계가 없었다.** `mv` 한 번이면 닫혔다.
+
+> 사용자 지시 10: *"작업원장의 각 항목 작업전, 작업완료후 작업항목 상태 변경할때마다
+>  해당 작업 항목 내용에 설명 문구를 작성하는 규약으로 변경. (…) 스크립트가 작동할 때
+>  **작업 상태 변경과 함께 작업내용에 대해 claude가 작성하도록 강제**하는 방식으로라도 구현할 것."*
+
+> 사용자 지시 6: *"-done 으로 바꿀때에는 진행 상황판의 작업지시 항목이 **모두 완료 혹은 막힘이
+>  아니면 변경시 오류**나도록 (…) 스크립트를 통해서만 작업원장 닫도록 할 것."*
+
+## 사용법
+
+    python scripts/wip.py --list
+    python scripts/wip.py --start 3 --note "지시서 §9 에 프롬프트 전문 챕터 신설 착수"
+    python scripts/wip.py --done  3 --note "챕터 9 신설. 복사해 붙일 수 있게 코드펜스로 감쌌다"
+    python scripts/wip.py --block 5 --note "선결: 사용자 판단 대기"
+    python scripts/wip.py --close                     # ⏳·🔄 가 있으면 거부한다
+
+★`--note` 는 **필수**다. 없으면 상태가 안 바뀐다 — 그것이 이 도구의 존재 이유다.
+"""
+from __future__ import annotations
+
+import argparse
+import io
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+HANDOFF = ROOT / "handoff"
+NL = chr(10)
+
+WAIT, RUN, DONE, BLOCK = "⏳대기", "🔄진행", "✅**완료**", "🚫**막힘**"
+OPEN_MARKS = ("⏳", "🔄")
+
+
+def find_ledger():
+    """열려 있는 원장(=`-done` 이 아닌 것) 하나를 찾는다."""
+    cands = [p for p in sorted(HANDOFF.glob("WIP_*_작업원장.md"))
+             if not p.name.endswith("-done.md")]
+    if not cands:
+        return None
+    return cands[-1]
+
+
+def rows(text):
+    """상황판 행만 뽑는다: `| **N** | 지시 | 상태 | 작업 내용 | 산출물 |`"""
+    out = []
+    for i, ln in enumerate(text.split(NL)):
+        m = re.match(r"^\|\s*\*\*(\d+)\*\*\s*\|", ln)
+        if m and ln.count("|") == 6:
+            out.append((i, m.group(1), ln))
+    return out
+
+
+def cells(ln):
+    c = ln.split("|")
+    return c                      # ['', ' **N** ', ' 지시 ', ' 상태 ', ' 작업내용 ', ' 산출물 ', '']
+
+
+def set_state(path, num, status, note, artifact=None):
+    text = io.open(path, encoding="utf-8").read()
+    hit = [(i, ln) for i, n, ln in rows(text) if n == str(num)]
+    if not hit:
+        print(f"  🚫 {num}번 항목이 상황판에 없다. `--list` 로 확인할 것.", file=sys.stderr)
+        return 2
+    i, ln = hit[0]
+    c = cells(ln)
+    prev = c[3].strip()
+    c[3] = f" {status} "
+    # ★작업 내용은 **덮어쓰지 않고 이어붙인다** — 착수 때 쓴 것과 완료 때 쓴 것이 둘 다 남아야
+    #   나중에 "무엇을 하려 했고 무엇을 했나" 를 대조할 수 있다.
+    old_note = c[4].strip()
+    stamp = {WAIT: "대기", RUN: "착수", DONE: "완료", BLOCK: "막힘"}[status]
+    add = f"**[{stamp}]** {note}"
+    c[4] = f" {add} " if old_note in ("—", "") else f" {old_note}<br>{add} "
+    if artifact:
+        c[5] = f" {artifact} "
+    lines = text.split(NL)
+    lines[i] = "|".join(c)
+
+    # 작업 로그에도 한 줄
+    log = f"- `{stamp}` **{num}번** — {note}"
+    for k in range(len(lines) - 1, -1, -1):
+        if lines[k].startswith("- `") or lines[k].startswith("## 3. 작업 로그"):
+            lines.insert(k + 1, log)
+            break
+    io.open(path, "w", encoding="utf-8", newline="").write(NL.join(lines))
+    print(f"  ✅ {num}번: {prev} -> {status}")
+    print(f"     {note}")
+    return 0
+
+
+def show(path):
+    text = io.open(path, encoding="utf-8").read()
+    rs = rows(text)
+    print("=" * 96)
+    print(f"  {path.name}  —  항목 {len(rs)}개")
+    print("=" * 96)
+    n_open = 0
+    for _, num, ln in rs:
+        c = cells(ln)
+        st = c[3].strip()
+        if any(m in st for m in OPEN_MARKS):
+            n_open += 1
+        head = re.sub(r"\s+", " ", c[2].strip())[:52]
+        note = re.sub(r"<br>", " / ", c[4].strip())
+        note = re.sub(r"\s+", " ", note)[:44]
+        print(f"  {num:>3}  {st:<10}  {head:<54}  {note}")
+    print()
+    print(f"  열린 항목 {n_open}개 · 닫힌 항목 {len(rs) - n_open}개")
+    if n_open:
+        print("  🚫 열린 항목이 있으면 `--close` 가 거부한다.")
+    return n_open
+
+
+def close(path, force_note=None):
+    n_open = show(path)
+    print()
+    if n_open:
+        print("  " + "=" * 92)
+        print(f"  🚫★**닫을 수 없다 — 열린 항목 {n_open}개.**")
+        print("     2026-09-03 에 정확히 이 상태로 `-done` 이 붙었다(2~10번 전부 ⏳대기).")
+        print("     ★작업이 끝났으면 `--done N --note \"...\"` 로 **하나씩 닫는다.**")
+        print("     ★못 하는 항목이면 `--block N --note \"사유\"` 로 **사유를 남긴다.**")
+        print("  " + "=" * 92)
+        return 1
+    # ★원문 생략 검사 — 지시를 줄여 적으면 다음 세션이 뜻을 잃는다(R41)
+    text = io.open(path, encoding="utf-8").read()
+    # ★**지시 셀(2번 칸)만** 본다 — 작업 내용 칸에 `(…)` 를 쓸 수 있다.
+    #   🚫행 전체로 보면 내가 쓴 서술이 지시문 생략으로 오인된다(2026-09-04 오탐).
+    elided = [n for _, n, ln in rows(text)
+              if any(x in cells(ln)[2] for x in ("(…)", "(...)"))]
+    if elided:
+        print(f"  ⚠️★**지시 원문이 줄어 있다** — {', '.join(elided)}번에 `(…)` 가 있다.")
+        print("     wip-ledger 규칙·R41 위반이다. 원문으로 되돌린 뒤 다시 닫는다.")
+        return 1
+    new = path.with_name(path.stem + "-done.md")
+    path.rename(new)
+    print(f"  ✅ 닫았다 -> {new.name}")
+    print("  🚫**삭제하지 않는다**(규칙 R01). 개명만 한다.")
+    return 0
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--list", action="store_true")
+    ap.add_argument("--start", type=int)
+    ap.add_argument("--done", type=int)
+    ap.add_argument("--block", type=int)
+    ap.add_argument("--wait", type=int)
+    ap.add_argument("--close", action="store_true")
+    ap.add_argument("--note", default=None,
+                    help="★필수 — 무엇을 했는지/할 것인지. 없으면 상태를 안 바꾼다")
+    ap.add_argument("--artifact", default=None, help="산출물 열에 쓸 값(선택)")
+    ap.add_argument("--file", default=None)
+    a = ap.parse_args()
+
+    path = Path(a.file) if a.file else find_ledger()
+    if path is None or not path.is_file():
+        print("  🚫 열려 있는 작업원장이 없다(`handoff/WIP_*_작업원장.md`).", file=sys.stderr)
+        return 2
+
+    if a.close:
+        return close(path)
+    if a.list or not any([a.start, a.done, a.block, a.wait]):
+        show(path)
+        return 0
+
+    if not a.note or not a.note.strip():
+        print("  🚫★**`--note` 없이는 상태를 못 바꾼다.**", file=sys.stderr)
+        print("     사용자 지시 10: *상태 변경과 함께 작업내용을 쓰도록 **강제**한다*.",
+              file=sys.stderr)
+        print("     ★한 줄이면 된다 — 무엇을 하려는지 / 무엇을 했는지.", file=sys.stderr)
+        return 2
+
+    num, status = ((a.start, RUN) if a.start else
+                   (a.done, DONE) if a.done else
+                   (a.block, BLOCK) if a.block else (a.wait, WAIT))
+    return set_state(path, num, status, a.note.strip(), a.artifact)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
