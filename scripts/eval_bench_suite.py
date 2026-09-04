@@ -435,6 +435,10 @@ def main():
             continue
 
         per_model = {}
+        # ★★2026-09-04(결과 074 §6.2) — **문항별 정오를 버리지 않는다.**
+        #   세 모델이 **같은 문항**을 풀었는데 정확도 비교만 비대응이었다.
+        #   대응(McNemar)은 같은 자료에서 필요 n 을 크게 줄인다.
+        per_ok = {}
         for tag in a.models:
             ck = paths.resolve_ckpt(a.preset, a.data, a.tokens, tag)
             if not ck.exists():
@@ -460,6 +464,7 @@ def main():
                     print(f"  🚫★**퇴화** — 한 선택지를 {frac:.1%} 로 찍는다. "
                           f"이 숫자는 능력이 아니라 **편향**이다(규약 7)")
                 per_model[tag] = ce
+                per_ok[tag] = list(ok)
 
             elif kind == "cloze":
                 ok, ces, sk = run_cloze(items, model, tok, dev, a.seq_max, torch, F)
@@ -564,9 +569,39 @@ def main():
                     print(f"    {keys[i]} - {keys[j]}: Δ {m:+.4f} ± {ci:.4f}  "
                           f"SD {sd:.4f} SE {se:.4f} t {t:+.2f}  승률 {win:.1f}%  "
                           f"필요N(SE0.002) **{need:,}**")
-                    if need > n:
-                        print(f"      ⚠️★**{n} 문항으로는 부족하다**(필요 {need:,}). "
-                              f"이 Δ 로 **서열을 매기지 않는다**")
+                    # ★★2026-09-04(결과 074 §6.1) — **`필요N` 은 정밀도 목표이지 유의성이 아니다.**
+                    #   종전에는 t = +44.23 인 쌍에도 *"서열을 매기지 않는다"* 를 찍었다.
+                    #   `need` = (sd/0.002)^2 = **SE 0.002 에 닿을 n**. 둘은 다른 질문이다(함정 28).
+                    if need > n and abs(t) < 2.0:
+                        print(f"      ⚠️★**{n} 문항으로는 부족하다**(필요 {need:,}) "
+                              f"**그리고** t {t:+.2f} 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**")
+                    elif need > n:
+                        print(f"      ★**부호는 확정이다**(t {t:+.2f}). 🚫단 정밀도 목표 SE 0.002 에는 "
+                              f"{n} 이 부족하다(필요 {need:,}) — **크기를 인용할 때 ± 를 함께 적는다**")
+
+        # ★★대응 정확도 비교(McNemar) — 결과 074 §4. 같은 문항을 푼 모델끼리만.
+        okeys = [k for k in per_ok if per_ok[k]]
+        if len(okeys) >= 2:
+            n = min(len(per_ok[k]) for k in okeys)
+            print(f"\n  ── paired 정확도 비교 · McNemar (공통 {n}문항) ──")
+            print("     ★비대응 CI 가 겹쳐도 대응 검정은 가를 수 있다. 🚫반대도 있다.")
+            for i in range(len(okeys) - 1):
+                for j in range(i + 1, len(okeys)):
+                    A, B = per_ok[okeys[i]][:n], per_ok[okeys[j]][:n]
+                    b = sum(1 for x, y in zip(A, B) if x and not y)
+                    c = sum(1 for x, y in zip(A, B) if y and not x)
+                    dacc = (b - c) / n * 100.0
+                    if b + c == 0:
+                        print(f"    {okeys[i]} - {okeys[j]}: 불일치 문항 0 — **완전히 같은 답**")
+                        continue
+                    z = (b - c) / math.sqrt(b + c)
+                    nn = int(math.ceil(n * 4.0 / (z * z))) if z else 0
+                    verdict = ("★**유의**" if abs(z) >= 2 else "🚫**못 가른다**")
+                    print(f"    {okeys[i]} - {okeys[j]}: Δacc {dacc:+.2f}pp  "
+                          f"불일치 {b}/{c}  z {z:+.2f}  {verdict}  "
+                          f"필요n(z=2) **{nn:,}** / 보유 {n:,}")
+                    if abs(z) < 2 and nn > n:
+                        print(f"      ⚠️★**이 과제로는 못 가른다.** 문항을 {nn / n:.1f}배 늘려야 한다")
 
     _final(all_summary)
     if a.wandb:
@@ -612,7 +647,27 @@ def _final(s):
 
 def _run_name(a, tag):
     """★학습 런과 **같은 이름**. `wandb_sync` 가 `runs/logs/*.json` 의 stem 을 쓰고,
-    그 stem 이 `{preset}_{data}_{tokens}_{tag}` 이므로 여기서도 그대로 만든다."""
+    그 stem 이 `{preset}_{data}_{tokens}_{tag}` 이므로 여기서도 그대로 만든다.
+
+    ★★2026-09-04 수정 — **프리셋을 CLI 가 아니라 실제 체크포인트에서 읽는다.**
+
+    🚫종전에는 `a.preset` 을 그대로 썼다. 그래서 배치가 세 모델에 `--preset m100R1c`
+    하나를 주면(실제는 `m100s8`/`m100s12`/`m100R1c`) **런 이름 둘이 틀렸고**
+    `_bench_eligible` 이 *"학습 json 이 없다"* 로 **두 모델을 건너뛰었다**
+    (사용자 보고: *"마지막 모델 데이터만 업로드된다"*, 결과 074 §5).
+
+    ★체크포인트 로딩은 **전역 검색으로 자기 복구**했으므로 **수치는 처음부터 정상**이었다 —
+    복구되지 않은 것은 이름뿐이다. 그 파일명이 곧 `{preset}_{data}_{tokens}_{tag}.pt` 이므로
+    **거기서 stem 을 떼면 이름이 언제나 맞는다.**
+    """
+    hit = sorted((ROOT / "runs" / "ckpt").glob(f"*_{a.data}_{a.tokens}_{tag}.pt"))
+    hit = [p for p in hit if not p.stem.endswith("_best")]
+    if len(hit) == 1:
+        return hit[0].stem
+    if len(hit) > 1:
+        # 🚫여러 프리셋에 같은 태그가 있으면 **추측하지 않는다** — CLI 값을 쓴다
+        print(f"  ⚠️`{tag}` 가 프리셋 {len(hit)}개에 있다 — `--preset {a.preset}` 을 그대로 쓴다: "
+              + ", ".join(p.stem.split("_")[0] for p in hit))
     return f"{a.preset}_{a.data}_{a.tokens}_{tag}"
 
 

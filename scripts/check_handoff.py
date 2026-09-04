@@ -294,7 +294,13 @@ def lint(path: Path):
                        if re.match(r'^##\s', lines[k])), len(lines))
             seg = NL_.join(lines[i7:j7])
             named = set(re.findall(r'(run_[A-Za-z0-9_]+\.bat)', seg))
-            live = {n for n in named if (ROOT / n).exists()}
+            # ★★2026-09-04 수정 — **`-done` 도 센다.**
+            #   🚫종전에는 `(ROOT/n).exists()` 만 봐서, 그 배치들이 **실제로 실행되어**
+            #   `-done` 이 붙는 순간 **과거 핸드오프가 소급해서 실패**했다(17.9h → 5.1h).
+            #   핸드오프는 **그 시점의 스냅샷**이고 규칙 9 는 이미 `-done` 을 유효 참조로 본다.
+            #   함정 34 여섯 번째 — **게이트가 실패를 찍으면 게이트를 먼저 의심한다.**
+            live = {n for n in named
+                    if (ROOT / n).exists() or (ROOT / n.replace(".bat", "-done.bat")).exists()}
             total = sum(hours.get(n, 0.0) for n in live)
             has_reason = REASON_MARK in seg
             if live:
@@ -311,6 +317,75 @@ def lint(path: Path):
                 info.append(f"⚙{total:.1f}h 로 요청에 못 미치지만 **사유가 적혀 있다** — 통과")
     except Exception as e:
         info.append(f"실험 시간 합계를 못 읽었다: {type(e).__name__}")
+
+    # ── ★★규칙 11 (2026-09-04 사용자 지시 6) — **권장 실험순서 표의 열 규정** ──
+    #   *"핸드오프 권장 실험순서 목록 표에 id 열이 사라짐. 핸드오프메모 린터에
+    #     권장실험순서 표 형식 규정 명확히 할 것."*
+    #
+    #   ★열 여섯이 규정이다: `순` · **`id`** · `실험` · `배치` · `⚙` · `근거`.
+    #   🚫**`id` 를 손으로 쓰지 않는다**(함정 36 — 표에 한 줄만 늘어도 전부 밀린다).
+    #   ★`queue_menu.py --ids <배치명>` 이 계산한 값을 붙인다. **이 규칙이 그 값과 대조**한다.
+    #   ⚠️최신 판에만 적용한다 — 지난 핸드오프는 그때의 스냅샷이다(규칙 10 과 같은 이유).
+    REQ_COLS = ("순", "id", "실험", "배치", "⚙", "근거")
+    if _newest:
+        try:
+            sys.path.insert(0, str(ROOT / "scripts"))
+            from queue_menu import load as _q_load, available as _q_avail
+            _rows, _ = _q_load()
+            _qid = {r["batch"]: i for i, r in enumerate(_q_avail(_rows))}
+        except Exception:                                    # noqa: BLE001
+            _qid = None
+        i7 = next((k for k, l in enumerate(lines) if re.match(r'^##\s*7\.', l)), None)
+        if i7 is not None:
+            j7 = next((k for k in range(i7 + 1, len(lines))
+                       if re.match(r'^##\s', lines[k])), len(lines))
+            seg7 = lines[i7:j7]
+            hdr_k = None
+            for k, ln in enumerate(seg7):
+                if ln.strip().startswith("|") and re.search(r'`?run_[A-Za-z0-9_]+\.bat', ln):
+                    # 이 행이 속한 표의 헤더를 위로 거슬러 찾는다
+                    for b in range(k - 1, -1, -1):
+                        if not seg7[b].strip().startswith("|"):
+                            break
+                        if set(seg7[b].replace("|", "").strip()) <= set("-: "):
+                            hdr_k = b - 1
+                            break
+                    break
+            if hdr_k is None or hdr_k < 0:
+                err.append("★**§7 에 권장 실험순서 표가 없다**(배치를 담은 표를 못 찾았다). "
+                           "열은 `순 | id | 실험 | 배치 파일 | ⚙ | 근거` 여섯이다")
+            else:
+                cols = [c.strip() for c in seg7[hdr_k].strip().strip("|").split("|")]
+                miss = [c for c in REQ_COLS
+                        if not any(c in x for x in cols)]
+                if miss:
+                    err.append(
+                        f"★**권장 실험순서 표에 열이 빠졌다: {', '.join(miss)}** — "
+                        f"규정은 `순 | id | 실험 | 배치 파일 | ⚙ | 근거` 여섯이다"
+                        f"(2026-09-04 사용자 지시 6). 지금 열: {' | '.join(cols)}. "
+                        f"★`id` 는 **손으로 쓰지 않는다** — "
+                        f"`python scripts/queue_menu.py --ids <배치명들>` 이 계산한다(함정 36)")
+                elif _qid is not None:
+                    ic = next(n for n, x in enumerate(cols) if "id" in x)
+                    for ln in seg7[hdr_k + 2:]:
+                        if not ln.strip().startswith("|"):
+                            break
+                        c = [x.strip() for x in ln.strip().strip("|").split("|")]
+                        if len(c) != len(cols):
+                            continue
+                        mb = re.search(r'(run_[A-Za-z0-9_]+\.bat)', ln)
+                        if not mb:
+                            continue
+                        want = _qid.get(mb.group(1))
+                        got = re.sub(r'[*`★ ]', "", c[ic])
+                        if want is None:
+                            if got not in ("—", "-", ""):
+                                err.append(f"★`{mb.group(1)}` 는 큐에 없는데(`-done` 이거나 "
+                                           f"TSV 에 없다) id 가 `{got}` 로 적혀 있다 — `—` 로")
+                        elif got != str(want):
+                            err.append(f"★**id 가 틀렸다**: `{mb.group(1)}` 는 큐 id "
+                                       f"**{want}** 인데 표에는 `{got}` 다. "
+                                       f"🚫손으로 쓰지 말고 `queue_menu.py --ids` 를 쓰세요(함정 36)")
 
     # ── ★★9. 언급한 배치가 **디스크에 있는가** (2026-09-03 사용자 지시) ────────
     #   *"배치파일이 존재하지 않는데 기입하려고 한다면 스크립트로 경고하도록"*

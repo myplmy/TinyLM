@@ -143,6 +143,40 @@ def scan(folder: Path):
     return d1, d2, d3
 
 
+# ★★D4 (2026-09-04 신설) — **부정 지름길**
+#
+#   held-out v2.5 검증 중 발견했다. 우리 문형은 대개 *"X 는 A 범주에 속한다"* 셋 +
+#   *"X 는 A 범주에 속하지 **않는다**"* 하나다. 그러면 후보만 보고 **부정형을 고르는**
+#   전략이 성립한다 — **모델이 X 도 A 도 몰라도** 된다.
+#
+#   실측(v2.5): 부정 후보가 **정확히 하나**인 문항 **90 / 300**, 그중 그것이 정답인 경우
+#   **85 (94.4%)**. 부정 선택기의 전체 기대 정답률 **31.3%**(우연 25.0, z 약 +2.4).
+#   🚫**길이 축(30.3%)보다 강한 지름길**인데 지금까지 아무도 안 쟀다.
+#
+#   ⚠️**이것은 결함 판정이 아니라 계측**이다 — |z| ^> 3 이면 그때 결함이다(결과 068 규약).
+_NEG = re.compile(r"않는다|없다|아니다|못한다")
+
+
+def d4_negation(recs):
+    """-> (부정후보 1개인 문항 수, 그중 정답인 수, 부정선택기 기대정답률%)"""
+    only = hit = 0
+    acc = 0.0
+    for r in recs:
+        cands = r.get("candidates") or []
+        ci = r.get("correct_index")
+        if not cands or ci is None:
+            continue
+        negs = [i for i, c in enumerate(cands) if _NEG.search(str(c))]
+        if len(negs) == 1:
+            only += 1
+            if negs[0] == ci:
+                hit += 1
+        if negs:
+            acc += (1.0 / len(negs)) if ci in negs else 0.0
+    n = len(recs) or 1
+    return only, hit, 100.0 * acc / n
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dir", default=None)
@@ -179,11 +213,20 @@ def main() -> int:
             from collections import Counter
             for sp, cnt in Counter(x[1] for x in d3).most_common():
                 print(f"       {sp}: {cnt}건")
+        _rs = recs_count.get(folder.name) or []
+        if _rs:
+            only, hit, rate = d4_negation(_rs)
+            _z = (rate - 25.0) / ((25.0 * 75.0 / len(_rs)) ** 0.5) if len(_rs) else 0.0
+            _m = "🚫**결함**" if abs(_z) > 3 else "⚠️정보"
+            print(f"  D4 부정 지름길           : 부정후보 1개 {only}/{len(_rs)}건 · "
+                  f"그중 정답 {hit} ({100.0*hit/max(1,only):.1f}%) · "
+                  f"부정선택기 **{rate:.1f}%**(우연 25.0, z {_z:+.1f})  {_m}")
 
     print()
     print("  ★D1 은 정확한 검사다 — **0건이어야 한다.**")
     print("  ⚠️D2 는 휴리스틱이다 — 거짓 양성이 난다. **무시하지 말고 문항 번호를 적어 회신**한다.")
     print("  🚫이 검사도 *'정답 문장이 사실인가'* 는 못 본다 — 그것은 사람 몫이다.")
+    print("  ★D4 는 **결함이 아니라 계측**이다 — |z| > 3 이면 그때 결함으로 센다(결과 068 규약).")
     return 1 if total_d1 else 0
 
 

@@ -544,6 +544,85 @@ def lint(path: Path):
                         "W&B 에 안 올라간다(2026-08-22 사용자 지시). 학습 뒤에 "
                         "`set TL_WB_TAG=<태그>` + `call scripts\\batch\\tool_wandb_push.bat` 를 넣으세요")
 
+    # ── ★★규칙 25 (2026-09-04 신설) — **플래그 화이트리스트 등급**
+    #   승인된 제안서 `proposal/done/20260904_배치-파라미터-화이트리스트-approved.md`.
+    #   `check_batch_flags` 는 *"파서에 있는가"* 만 본다 — 🚫**파서에 있다고 배치에 써도
+    #   되는 것이 아니다.** `--drop-contaminated`(미구현) · `--repeat-kv-reuse`(기각) 등이
+    #   지금까지 **아무 게이트도 안 걸렸다.**
+    #   ⚠️`scripts/batch/tool_*.bat` 은 **면제**한다 — 스모크는 기각된 축도 **일부러** 돌려
+    #   코드 경로를 살려 둔다(`sm_film` 팔).
+    if path.name.startswith("run_") and not path.name.startswith("tool_"):
+        try:
+            from check_flag_whitelist import load as _wl_load
+            _wl = _wl_load()
+        except Exception:                                    # noqa: BLE001
+            _wl = {}
+        if _wl:
+            _seen = {}
+            for _no, _ln in enumerate(lines, 1):
+                if _ln.strip().upper().startswith("REM"):
+                    continue                                  # ★주석은 명령이 아니다
+                for _fl in re.findall(r"(--[a-z0-9][a-z0-9-]*)", _ln):
+                    _seen.setdefault(_fl, _no)
+            for _fl, _no in sorted(_seen.items()):
+                _g, _ev = _wl.get(_fl, ("ok", ""))
+                if _g in ("dead", "rejected"):
+                    _m = (f"L{_no} 🚫★**`{_fl}` 는 등급 `{_g}` 다** — {_ev}. "
+                          f"등급표 `scripts/flag_whitelist.tsv`. "
+                          f"다시 열려면 **표의 등급을 먼저 고치고 근거를 적는다**")
+                    (warn if path.name.endswith("-done.bat") else err).append(_m)
+                elif _g == "exp" and not re.search(r"P\d{3}", txt):
+                    warn.append(f"L{_no} ⚠️`{_fl}` 는 실험용(`exp`)인데 배치 어디에도 "
+                                f"**계획번호(P0NN)가 없다** — {_ev}")
+
+    # ── ★★규칙 26 (2026-09-04 사용자 지시 13) — **파일명의 계획·단계 = 로그 실험명**
+    #   실사고: `run_P085_Stage1_bench_n5000.bat` 안이 `--name P079_review4_expC` 였다.
+    #   개명은 파일명만 바꾸고 **안의 로그 이름은 그대로 두기 쉽다** — `check_batch_name` 은
+    #   **파일명만** 보고, `runlog` 는 **받은 이름을 그대로** 쓴다. 그 사이가 비어 있었다.
+    #   결과: 로그가 `P079_…` 로 남고 `--num 067` 과 겹쳐 **다른 실험군에 들어갔다**.
+    #
+    #   ★사용자 요구: *"불일치시 claude에게 경고하고 **작업원장에 사유 기입 혹은 배치파일
+    #   수정**하도록"* → 면제 경로 둘을 둔다:
+    #     (a) 배치 안에 `REM  NAME-MISMATCH: <사유>`
+    #     (b) 열린 작업원장에 `실험명 불일치 사유` 와 배치 이름이 같은 줄에
+    _mn = re.match(r"^run_(P\d{3,}[A-Za-z]*)_([A-Za-z0-9]+)_", path.name)
+    if _mn:
+        _plan, _stage = _mn.group(1), _mn.group(2).lower()
+        _want = f"{_plan}_{_stage}".lower()
+        _names = [n for n in re.findall(r"--name\s+(\S+)", txt)]
+        _bad = sorted({n for n in _names if not n.lower().startswith(_want)})
+        if _bad:
+            # 🚫★2026-09-04 자기교정 — 초판은 **면제 조건이 너무 넓어** 정상 배치를 잡고
+            #   결함 배치를 통과시켰다(함정 38: 인쇄와 판정이 갈라진다).
+            #   원인 둘: ①`_want` 만 소문자로 안 낮췄다 ②원장 검사가 **배치 이름을 안 봐서**
+            #   사용자 지시문에 들어 있는 *'실험명 불일치'* 라는 낱말 하나로 전부 면제됐다.
+            #   -> **사유 줄에 배치 이름이 함께 있어야** 면제한다.
+            #   ★그리고 **콜론이 붙은 `실험명 불일치 사유:` 형태**만 사유로 인정한다 —
+            #   원장에는 사용자 지시 **원문**이 그대로 들어 있고, 그 문장에도
+            #   *"실험명 불일치 사유 기입"* 과 배치 이름이 **같은 줄에** 있다.
+            #   🚫지시문이 스스로를 면제하면 규칙이 성립하지 않는다.
+            _exempt = "NAME-MISMATCH" in txt
+            if not _exempt:
+                _stem = path.name.replace("-done.bat", ".bat")
+                for _w in sorted((ROOT / "handoff").glob("WIP_*.md")):
+                    try:
+                        _wt = _w.read_text(encoding="utf-8")
+                    except OSError:
+                        continue
+                    for _l in _wt.split(chr(10)):
+                        if "실험명 불일치 사유:" in _l and (path.name in _l or _stem in _l):
+                            _exempt = True
+                            break
+                    if _exempt:
+                        break
+            if not _exempt:
+                _m = (f"★**파일명과 로그 실험명이 다르다** — 파일은 `{_plan}` `{_stage}` 인데 "
+                      f"`--name {' / '.join(_bad)}` 이다. 로그가 **다른 실험군**으로 들어간다"
+                      f"(2026-09-04 실사고: `P085` 배치가 `P079` 로 기록됐다). "
+                      f"고치거나, 의도라면 배치에 `REM  NAME-MISMATCH: <사유>` 를 적거나, "
+                      f"작업원장에 `실험명 불일치 사유: {path.name} — <사유>` 를 남기세요")
+                (warn if path.name.endswith("-done.bat") else err).append(_m)
+
     # ★2026-08-27 오탐 정정 — 종전에는 **파일 어디에든** RE-RUN 이 있으면 발화했다.
     #   그래서 *"run_P074_stage1 을 먼저 re-run 하라"* 처럼 **다른 배치를 가리키는 문장**에도
     #   걸렸다(2회 오탐). 이 규칙이 잡으려는 것은 *"이 배치가 자기 자신의 재실행"* 인 경우다.

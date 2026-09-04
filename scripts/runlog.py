@@ -338,6 +338,29 @@ def main():
         num = a.num if a.num else _auto_num(out, a.name)
         stem = f"{num}_log_{day}_{a.name}" if num else f"log_{day}_{a.name}"
         path = out / f"{stem}.txt"
+        # ★★2026-09-04 사용자 지시 8 — **날짜가 넘어가도 이어 쓴다.**
+        #   🚫종전에는 `day` 를 **호출 시점**에 계산해서, 23:30 에 시작한 큐의 두 번째 팔이
+        #   00:10 에 돌면 **같은 배치인데 로그가 두 파일로 갈라졌다.**
+        #   ★같은 `{num}` + 같은 `{name}` 이면 **같은 실험의 같은 단계**다 —
+        #   재실행은 `lint_bat` 규칙 17 이 **단계명을 바꾸라고** 강제하므로
+        #   이름이 같다는 것은 *"이어지는 것"* 이라는 뜻이다.
+        #   ⚠️무한히 이어 붙이지는 않는다: 기본 **72시간** 안의 파일만 재사용한다
+        #   (긴 큐가 이틀을 넘길 수 있어 48h 로는 모자란다). `TL_LOG_REUSE_H` 로 바꾼다.
+        if not path.exists():
+            try:
+                _rh = float(os.environ.get("TL_LOG_REUSE_H", "72"))
+            except ValueError:
+                _rh = 72.0
+            _now = time.time()
+            _cands = [p for p in out.glob(f"{num}_log_*_{a.name}.txt")
+                      if _rh <= 0 or (_now - p.stat().st_mtime) <= _rh * 3600] if num else []
+            if _cands:
+                path = max(_cands, key=lambda p: p.stat().st_mtime)
+                _ago = (_now - path.stat().st_mtime) / 3600.0
+                sys.stdout.write(
+                    f"[runlog] ★날짜가 넘어갔다 — 같은 번호·같은 이름의 로그에 이어쓴다 "
+                    f"-> {path.name}  ({_ago:.1f}시간 전, TL_LOG_REUSE_H={_rh:g})\n")
+                sys.stdout.flush()
     else:
         path = _stamped_path(out, a.name, sha, os.environ.get("TL_STAMP"),
                              a.stamp_reuse_min)

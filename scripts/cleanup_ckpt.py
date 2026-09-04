@@ -197,7 +197,12 @@ def main():
 
     W = 78
     print("=" * W)
-    print("  체크포인트 정리 — 판정 정본:", DOC.name)
+    # ★★2026-09-04 수정 — **인쇄와 정본이 갈라져 있었다**(R20 · 함정 38).
+    #   2026-08-19 에 정본을 TSV 로 옮겼는데 **이 줄만 MD 이름을 찍고 있었다.**
+    #   `parse_doc()` 은 `parse_tsv()` 를 먼저 부르므로 실제로 읽는 것은 TSV 다.
+    #   -> **실제로 읽은 파일을 찍는다.**
+    _src = TSV.name if parse_tsv() else DOC.name
+    print("  체크포인트 정리 — 판정 정본:", _src)
     print("=" * W)
     print(f"  디스크    {len(disk):>4}개  {sum(disk.values())/2**30:8.1f} GB")
     print(f"  삭제 대상 {len(plan):>4}개  {sum(disk[n] for n in plan)/2**30:8.1f} GB")
