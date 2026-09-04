@@ -1,0 +1,299 @@
+[1/3] hellaswag n=5000
+
+==============================================================================
+[runlog] 2026-09-04 05:44:02  name=P085_review4_expC
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task hellaswag --n 5000 --preset m100R1c --models d12_cla2_r20 d16_cla2_r20 mC_cla2_ag4_r20 --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=5000  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [hellaswag] 4지선다 문장완성   kind=mc   공식 metric=acc / acc_norm
+================================================================================================
+  전체 10,042행 중 5000문항 (seed=99)  id 앞 10개: [6, 8, 10, 11, 18, 19, 20, 22, 23, 25]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s8_ko-en_300M_d12_cla2_r20.pt
+
+  d12_cla2_r20       우도acc **28.3%** [95%CI 27.1%~29.6%]  길이정규acc 26.2%  정답CE 3.6615  N=5000 제외=0
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s12_ko-en_300M_d16_cla2_r20.pt
+
+  d16_cla2_r20       우도acc **27.7%** [95%CI 26.4%~28.9%]  길이정규acc 26.4%  정답CE 3.5612  N=5000 제외=0
+
+  mC_cla2_ag4_r20    우도acc **28.1%** [95%CI 26.9%~29.4%]  길이정규acc 26.1%  정답CE 3.7108  N=5000 제외=0
+
+  ── paired 정답CE 비교 (공통 5000문항) ──
+    d12_cla2_r20 - d16_cla2_r20: Δ +0.1003 ± 0.0044  SD 0.1603 SE 0.0023 t +44.23  승률 76.2%  필요N(SE0.002) **6,428**
+      ⚠️★**5000 문항으로는 부족하다**(필요 6,428). 이 Δ 로 **서열을 매기지 않는다**
+    d12_cla2_r20 - mC_cla2_ag4_r20: Δ -0.0493 ± 0.0045  SD 0.1630 SE 0.0023 t -21.37  승률 37.6%  필요N(SE0.002) **6,642**
+      ⚠️★**5000 문항으로는 부족하다**(필요 6,642). 이 Δ 로 **서열을 매기지 않는다**
+    d16_cla2_r20 - mC_cla2_ag4_r20: Δ -0.1495 ± 0.0046  SD 0.1677 SE 0.0024 t -63.06  승률 15.6%  필요N(SE0.002) **7,030**
+      ⚠️★**5000 문항으로는 부족하다**(필요 7,030). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  hellaswag       d12_cla2_r20            28.3%  정답CE 3.6615
+  hellaswag       d16_cla2_r20            27.7%  정답CE 3.5612
+  hellaswag       mC_cla2_ag4_r20         28.1%  정답CE 3.7108
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+  [건너뜀] d12_cla2_r20: 학습 json 이 없다(m100R1c_ko-en_300M_d12_cla2_r20.json) - 어느 런의 벤치인지 결합할 수 없다
+  [건너뜀] d16_cla2_r20: 학습 json 이 없다(m100R1c_ko-en_300M_d16_cla2_r20.json) - 어느 런의 벤치인지 결합할 수 없다
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260904_062922-m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb: uploading summary; updating run metadata
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      bench/hellaswag/acc 0.2814
+wandb: bench/hellaswag/acc_norm 0.2606
+wandb:  bench/hellaswag/gold_ce 3.71076
+wandb:        bench/hellaswag/n 5000
+wandb:  bench/hellaswag/n_asked 5000
+wandb:      bench/hellaswag/pmi True
+wandb:     bench/hellaswag/seed 99
+wandb:  bench/hellaswag/skipped 0
+wandb:      bench/hellaswag/tag mC_cla2_ag4_r20
+wandb:                best_step 2200
+wandb:                      +42 ...
+wandb: 
+wandb:  View run m100R1c_ko-en_300M_mC_cla2_ag4_r20 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260904_062922-m100R1c_ko-en_300M_mC_cla2_ag4_r20\logs
+  ✅ m100R1c_ko-en_300M_mC_cla2_ag4_r20  (1과제 · summary 키 9개)
+
+  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고
+     프로젝트도 같은 `tinylm` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.
+     키는 `bench/<과제>/<지표>` 다. 올림 1개 · 건너뜀 2개.
+  ⚠️★건너뛴 것은 **짧은 프로브이거나 학습 json 이 없는** 태그다 —
+     250스텝 데이터를 전체 런 옆에 두지 않는다(2026-08-23 사용자 지시).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 45.4분  (2026-09-04 06:29:27)
+==============================================================================
+[2/3] piqa n=5000
+
+==============================================================================
+[runlog] 2026-09-04 06:29:27  name=P085_review4_expC
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task piqa --n 5000 --preset m100R1c --models d12_cla2_r20 d16_cla2_r20 mC_cla2_ag4_r20 --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=5000  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [piqa] 2지선다 물리상식   kind=mc   공식 metric=acc
+================================================================================================
+  전체 1,838행 중 1838문항 (seed=99)  id 앞 10개: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  ★**우연 수준 = 50.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s8_ko-en_300M_d12_cla2_r20.pt
+
+  d12_cla2_r20       우도acc **53.8%** [95%CI 51.5%~56.1%]  길이정규acc 56.7%  정답CE 4.4954  N=1838 제외=0
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s12_ko-en_300M_d16_cla2_r20.pt
+
+  d16_cla2_r20       우도acc **53.1%** [95%CI 50.8%~55.4%]  길이정규acc 58.3%  정답CE 4.4490  N=1838 제외=0
+
+  mC_cla2_ag4_r20    우도acc **53.4%** [95%CI 51.1%~55.6%]  길이정규acc 57.5%  정답CE 4.5992  N=1838 제외=0
+
+  ── paired 정답CE 비교 (공통 1838문항) ──
+    d12_cla2_r20 - d16_cla2_r20: Δ +0.0465 ± 0.0110  SD 0.2396 SE 0.0056 t +8.31  승률 58.2%  필요N(SE0.002) **14,357**
+      ⚠️★**1838 문항으로는 부족하다**(필요 14,357). 이 Δ 로 **서열을 매기지 않는다**
+    d12_cla2_r20 - mC_cla2_ag4_r20: Δ -0.1037 ± 0.0108  SD 0.2360 SE 0.0055 t -18.84  승률 27.9%  필요N(SE0.002) **13,929**
+      ⚠️★**1838 문항으로는 부족하다**(필요 13,929). 이 Δ 로 **서열을 매기지 않는다**
+    d16_cla2_r20 - mC_cla2_ag4_r20: Δ -0.1502 ± 0.0115  SD 0.2517 SE 0.0059 t -25.58  승률 23.7%  필요N(SE0.002) **15,839**
+      ⚠️★**1838 문항으로는 부족하다**(필요 15,839). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  piqa            d12_cla2_r20            53.8%  정답CE 4.4954
+  piqa            d16_cla2_r20            53.1%  정답CE 4.4490
+  piqa            mC_cla2_ag4_r20         53.4%  정답CE 4.5992
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+  [건너뜀] d12_cla2_r20: 학습 json 이 없다(m100R1c_ko-en_300M_d12_cla2_r20.json) - 어느 런의 벤치인지 결합할 수 없다
+  [건너뜀] d16_cla2_r20: 학습 json 이 없다(m100R1c_ko-en_300M_d16_cla2_r20.json) - 어느 런의 벤치인지 결합할 수 없다
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260904_063745-m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb: uploading summary; updating run metadata
+wandb: uploading summary
+wandb: 
+wandb: Run summary:
+wandb:      bench/hellaswag/acc 0.2814
+wandb: bench/hellaswag/acc_norm 0.2606
+wandb:  bench/hellaswag/gold_ce 3.71076
+wandb:        bench/hellaswag/n 5000
+wandb:  bench/hellaswag/n_asked 5000
+wandb:      bench/hellaswag/pmi True
+wandb:     bench/hellaswag/seed 99
+wandb:  bench/hellaswag/skipped 0
+wandb:      bench/hellaswag/tag mC_cla2_ag4_r20
+wandb:           bench/piqa/acc 0.53373
+wandb:                      +51 ...
+wandb: 
+wandb:  View run m100R1c_ko-en_300M_mC_cla2_ag4_r20 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260904_063745-m100R1c_ko-en_300M_mC_cla2_ag4_r20\logs
+  ✅ m100R1c_ko-en_300M_mC_cla2_ag4_r20  (1과제 · summary 키 9개)
+
+  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고
+     프로젝트도 같은 `tinylm` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.
+     키는 `bench/<과제>/<지표>` 다. 올림 1개 · 건너뜀 2개.
+  ⚠️★건너뛴 것은 **짧은 프로브이거나 학습 json 이 없는** 태그다 —
+     250스텝 데이터를 전체 런 옆에 두지 않는다(2026-08-23 사용자 지시).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 8.4분  (2026-09-04 06:37:50)
+==============================================================================
+[3/3] arc_easy n=5000
+
+==============================================================================
+[runlog] 2026-09-04 06:37:50  name=P085_review4_expC
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task arc_easy --n 5000 --preset m100R1c --models d12_cla2_r20 d16_cla2_r20 mC_cla2_ag4_r20 --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=5000  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [arc_easy] 4지선다 과학   kind=mc   공식 metric=acc / acc_norm
+================================================================================================
+  전체 2,376행 중 2376문항 (seed=99)  id 앞 10개: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s8_ko-en_300M_d12_cla2_r20.pt
+
+  d12_cla2_r20       우도acc **35.6%** [95%CI 33.7%~37.5%]  길이정규acc 33.1%  정답CE 6.2911  N=2376 제외=0
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s12_ko-en_300M_d16_cla2_r20.pt
+
+  d16_cla2_r20       우도acc **36.0%** [95%CI 34.1%~38.0%]  길이정규acc 35.0%  정답CE 6.2154  N=2376 제외=0
+
+  mC_cla2_ag4_r20    우도acc **34.0%** [95%CI 32.1%~35.9%]  길이정규acc 33.0%  정답CE 6.7903  N=2376 제외=0
+
+  ── paired 정답CE 비교 (공통 2376문항) ──
+    d12_cla2_r20 - d16_cla2_r20: Δ +0.0757 ± 0.0188  SD 0.4664 SE 0.0096 t +7.91  승률 59.5%  필요N(SE0.002) **54,393**
+      ⚠️★**2376 문항으로는 부족하다**(필요 54,393). 이 Δ 로 **서열을 매기지 않는다**
+    d12_cla2_r20 - mC_cla2_ag4_r20: Δ -0.4992 ± 0.0277  SD 0.6900 SE 0.0142 t -35.26  승률 20.1%  필요N(SE0.002) **119,024**
+      ⚠️★**2376 문항으로는 부족하다**(필요 119,024). 이 Δ 로 **서열을 매기지 않는다**
+    d16_cla2_r20 - mC_cla2_ag4_r20: Δ -0.5749 ± 0.0287  SD 0.7135 SE 0.0146 t -39.28  승률 16.2%  필요N(SE0.002) **127,255**
+      ⚠️★**2376 문항으로는 부족하다**(필요 127,255). 이 Δ 로 **서열을 매기지 않는다**
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  arc_easy        d12_cla2_r20            35.6%  정답CE 6.2911
+  arc_easy        d16_cla2_r20            36.0%  정답CE 6.2154
+  arc_easy        mC_cla2_ag4_r20         34.0%  정답CE 6.7903
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+  [건너뜀] d12_cla2_r20: 학습 json 이 없다(m100R1c_ko-en_300M_d12_cla2_r20.json) - 어느 런의 벤치인지 결합할 수 없다
+  [건너뜀] d16_cla2_r20: 학습 json 이 없다(m100R1c_ko-en_300M_d16_cla2_r20.json) - 어느 런의 벤치인지 결합할 수 없다
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260904_065927-m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb: uploading summary; updating run metadata
+wandb: uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json
+wandb: uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: 
+wandb: Run summary:
+wandb:      bench/arc_easy/acc 0.34007
+wandb: bench/arc_easy/acc_norm 0.32997
+wandb:  bench/arc_easy/gold_ce 6.79031
+wandb:        bench/arc_easy/n 5000
+wandb:  bench/arc_easy/n_asked 2376
+wandb:      bench/arc_easy/pmi True
+wandb:     bench/arc_easy/seed 99
+wandb:  bench/arc_easy/skipped 0
+wandb:      bench/arc_easy/tag mC_cla2_ag4_r20
+wandb:     bench/hellaswag/acc 0.2814
+wandb:                     +60 ...
+wandb: 
+wandb:  View run m100R1c_ko-en_300M_mC_cla2_ag4_r20 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100R1c_ko-en_300M_mC_cla2_ag4_r20
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260904_065927-m100R1c_ko-en_300M_mC_cla2_ag4_r20\logs
+  ✅ m100R1c_ko-en_300M_mC_cla2_ag4_r20  (1과제 · summary 키 9개)
+
+  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고
+     프로젝트도 같은 `tinylm` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.
+     키는 `bench/<과제>/<지표>` 다. 올림 1개 · 건너뜀 2개.
+  ⚠️★건너뛴 것은 **짧은 프로브이거나 학습 json 이 없는** 태그다 —
+     250스텝 데이터를 전체 런 옆에 두지 않는다(2026-08-23 사용자 지시).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 21.7분  (2026-09-04 06:59:34)
+==============================================================================
+=================================================================
+READ IN THIS ORDER
+1. compare the n=5000 ranking with the n=400 ranking in result 067 sec 12.
+   If the order flips, the n=400 downstream table was sampling noise.
+2. read the answer-CE column first. Accuracy is the column that
+   disagreed with full-val, CE was already consistent.
+3. chance is 25.0 for hellaswag and arc_easy, 50.0 for piqa.
+4. arc_easy at n=5000 may be capped by the dataset size - check the
+   printed item count, do not assume it reached 5000.
+=================================================================

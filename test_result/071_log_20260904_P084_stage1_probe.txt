@@ -1,0 +1,90 @@
+[1/1] d12 + no-cla-edges, 250-step probe
+
+==============================================================================
+[runlog] 2026-09-04 06:59:49  name=P084_stage1_probe
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100s8 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --train-repeat 2.0 --no-cla-edges --steps 250 --tokens 300M --pool-tokens 600M --exact-cache --tag d12_cla2e_r20_probe
+==============================================================================
+[cmd] python run100m.py train --preset m100s8 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --train-repeat 2.0 --no-cla-edges --steps 250 --tokens 300M --pool-tokens 600M --exact-cache --tag d12_cla2e_r20_probe
+[ckpt] m100s8 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 12 -> 6 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[P084] ★cla_edges=False — 머리 2 + 꼬리 2 는 **자기 K/V** 를 갖는다
+[P084] ⚠️**KV 소유 층 6 -> 8 개**(+2). 상주가 커진다 — 예산을 먼저 본다
+[repeat] ★학습 시 재귀 R=2.0 mode=uniform — ★상주 파라미터는 불변, 계산 깊이만 늘어난다. ⚠️활성 메모리와 벽시계는 반복 배수만큼 는다
+[init] ★★경고: 구조 불일치 — 학생 층 12(prelude 2/mid 8/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+[init] ★**역할 구간별 비례 대응**으로 이식한다(P049 선결, 2026-08-14) — prelude↔prelude, middle↔middle, coda↔coda. 종전의 인덱스 zip 이 아니다.
+[init] ★대응표 student->teacher: [0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 19]
+[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+[init] dense 부모초기화 완료 (중간 MLP는 dense — 층당 1개, 평균 없음)  <- m100_ko-en_300M_dense.pt
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+8+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       73.1M      14.9 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           81.8M      16.7 MiB
+
+
+  저장(packed, 안 B)                         16.7 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        19.4 MiB
+  ★상주(runtime, 현 구현)                     590.9 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 16.7MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.149 GFLOP
+  ★KV 캐시(fp32)        : 18.0 KB/token  (엔트리 12개 / 방문 20회)
+                          1024 ctx 18.0 MiB → ★상주+KV = 608.9 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[d12_cla2e_r20_probe] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+W0904 07:00:12.101000 48940 site-packages\torch\_inductor\utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+  step     0/250  ce 6.3558  |g| 9.34  anneal 0.00  lr 4.00e-05  47293 ms/step
+  step    10/250  ce 4.9009  |g| 0.82  anneal 0.00  lr 4.40e-04  6578 ms/step
+  step    20/250  ce 4.6142  |g| 0.64  anneal 0.00  lr 8.40e-04  4640 ms/step
+  step    30/250  ce 4.5180  |g| 0.49  anneal 0.00  lr 1.00e-03  3954 ms/step
+  step    40/250  ce 4.3691  |g| 0.43  anneal 0.02  lr 1.00e-03  3602 ms/step
+  step    50/250  ce 4.2121  |g| 0.38  anneal 0.08  lr 1.00e-03  3389 ms/step
+  step    60/250  ce 4.2537  |g| 0.37  anneal 0.14  lr 1.00e-03  3246 ms/step
+  step    70/250  ce 4.2203  |g| 0.39  anneal 0.20  lr 1.00e-03  3143 ms/step
+  step    80/250  ce 4.1278  |g| 0.35  anneal 0.26  lr 1.00e-03  3066 ms/step
+  step    90/250  ce 4.0851  |g| 0.35  anneal 0.32  lr 1.00e-03  3005 ms/step
+    >> val_loss 4.4675  ppl 87.14  (train_ce 4.118, val-CE +0.349)  bpb 1.473
+       best 갱신 4.4675 -> m100s8_ko-en_300M_d12_cla2e_r20_probe_best.pt
+  step   100/250  ce 4.1173  |g| 0.43  anneal 0.38  lr 1.00e-03  3102 ms/step
+  step   110/250  ce 4.0845  |g| 0.32  anneal 0.45  lr 1.00e-03  3051 ms/step
+  step   120/250  ce 4.0773  |g| 0.38  anneal 0.51  lr 1.00e-03  3009 ms/step
+  step   130/250  ce 4.1223  |g| 0.40  anneal 0.57  lr 1.00e-03  2973 ms/step
+  step   140/250  ce 4.1019  |g| 0.47  anneal 0.63  lr 1.00e-03  2942 ms/step
+  step   150/250  ce 4.1190  |g| 0.43  anneal 0.69  lr 1.00e-03  2915 ms/step
+  step   160/250  ce 4.1129  |g| 0.41  anneal 0.75  lr 1.00e-03  2892 ms/step
+  step   170/250  ce 4.0836  |g| 0.48  anneal 0.82  lr 1.00e-03  2871 ms/step
+  step   180/250  ce 4.1242  |g| 0.40  anneal 0.88  lr 1.00e-03  2853 ms/step
+  step   190/250  ce 4.0911  |g| 0.45  anneal 0.94  lr 1.00e-03  2837 ms/step
+    >> val_loss 4.1006  ppl 60.38  (train_ce 4.166, val-CE -0.065)  bpb 1.352
+       best 갱신 4.1006 -> m100s8_ko-en_300M_d12_cla2e_r20_probe_best.pt
+  step   200/250  ce 4.1351  |g| 0.47  anneal 1.00  lr 1.00e-03  2839 ms/step
+  step   210/250  ce 4.0701  |g| 0.38  anneal 1.00  lr 9.73e-04  2825 ms/step
+  step   220/250  ce 4.0694  |g| 0.36  anneal 1.00  lr 7.75e-04  2812 ms/step
+  step   230/250  ce 4.0632  |g| 0.33  anneal 1.00  lr 4.72e-04  2800 ms/step
+  step   240/250  ce 4.0464  |g| 0.28  anneal 1.00  lr 2.05e-04  2789 ms/step
+  step   249/250  ce 4.0118  |g| 0.26  anneal 1.00  lr 1.01e-04  2780 ms/step
+    >> val_loss 3.9691  ppl 52.93  (train_ce 4.012, val-CE -0.043)  bpb 1.309
+       best 갱신 3.9691 -> m100s8_ko-en_300M_d12_cla2e_r20_probe_best.pt
+
+[d12_cla2e_r20_probe] 최종 val_loss 3.9764  ppl 53.33  best 3.9691@250  (81.8M, 11.7분, skip 0, VRAM 9.87GB(reserved)/8.85GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 9.87GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 11.8분  (2026-09-04 07:11:39)
+==============================================================================
+=================================================================
+READ IN THIS ORDER
+1. the [P084] line - owner layers must go 10 -> 12. No line = flag did not land.
+2. deploy_mb in the json. Over 34 MiB -> STOP, do not start Stage2.
+3. VRAM peak and ms/step spread.
+4. DO NOT read val. 250 steps carries no quality signal.
+=================================================================
