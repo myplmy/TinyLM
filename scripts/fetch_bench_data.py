@@ -52,6 +52,16 @@ SPECS = [
     ("winogrande",    "allenai/winogrande",           "winogrande_xl", "validation",  1267, "2지선다 대명사"),
     ("arc_easy",      "allenai/ai2_arc",              "ARC-Easy",      "test",        2376, "4지선다 과학"),
     ("arc_challenge", "allenai/ai2_arc",              "ARC-Challenge", "test",        1172, "4지선다 과학(난)"),
+    # ★★2026-09-05 — arc_easy 를 **세 split 전부**로. 근거: McNemar 필요 n 2,451 vs test 2,376
+    #   (결과 074 §11.4). 로컬 데이터카드 실사로 train 2,251 + test 2,376 + validation 570.
+    #   ⚠️**별도 이름으로 둔다** — 기존 `arc_easy`(test 만)의 수치를 바꾸면 과거 비교가 깨진다.
+    ("arc_easy_full", "allenai/ai2_arc",              "ARC-Easy",      "train+validation+test", 5197,
+     "★arc_easy 세 split 전부. 정확도 검정력용"),
+    # ★★2026-09-05 — KoBEST(arXiv:2204.04541). 한국어 축이 0 이었다.
+    #   🚫**BoolQ·WiC·SentiNeg 는 안 받는다** — 논문 Table 4 에서 KoGPT3-39B zero-shot 이
+    #   BoolQ 33.1 · WiC 34.7 로 **우연(50) 아래**다. 39B 가 못 하는 것을 81M 에 물리지 않는다.
+    ("kobest_copa",   "skt/kobest_v1",                "copa",          "test",        1000, "★한국어 2지선다 인과"),
+    ("kobest_hellaswag", "skt/kobest_v1",             "hellaswag",     "test",         500, "★한국어 4지선다 문장완성"),
     ("boolq",         "google/boolq",                 None,            "validation",  3270, "예/아니오. ⚠️라벨 불균형"),
     ("lambada",       "EleutherAI/lambada_openai",    "en",            "test",        5153, "★마지막 단어 예측"),
     ("mmlu",          "cais/mmlu",                    "all",           "test",       14042, "4지선다 57과목"),

@@ -92,6 +92,18 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch t
 if errorlevel 1 echo [WARN] sm_s34 failed - continuing
 
 echo.
+echo [6b] 3:4 sparse on a DENSE body  (P016 Stage3 - the combination is new)
+REM  ------------------------------------------------------------------------
+REM  sm_s34 above runs --sparse34 on a TIED body, which is how result 008
+REM  measured it. Our winners are dense, and P016 Stage3 is about to spend
+REM  1.8 GPU hours on --sparse34 with --arch dense. That pairing has never
+REM  been executed. check_smoke_coverage flagged it, which is exactly the
+REM  shape that killed four P074 arms: the axis existed, the COMBINATION
+REM  did not. Failures come from new combinations, not new features (R16).
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --cla-group 2 --sparse34 --tag sm_s34_dense
+if errorlevel 1 echo [WARN] sm_s34_dense failed - continuing
+
+echo.
 echo [4] wsd schedule path
 python scripts\runlog.py --name !TL_LOGNAME! --note "[4] wsd schedule path"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --tag sm_sched
@@ -274,6 +286,21 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch d
 if errorlevel 1 echo [WARN] sm_lrm failed - continuing
 
 echo.
+echo [19b] Muon optimiser  (P005 - matrices go to Muon, the rest to AdamW)
+REM  ------------------------------------------------------------------------
+REM  Muon has been in the parser since 2026-09-03 and had never run once.
+REM  Trap 37 face 3: a flag in the parser is not a flag that does anything.
+REM  Three things this arm proves:
+REM    1. split_params does not throw on our shapes (it rejects non-2D).
+REM    2. Newton-Schulz runs in bfloat16 on this GPU without NaN.
+REM    3. the json now records optimizer, muon_lr_mult and muon_matrices,
+REM       so a Muon run can be told apart from an AdamW one afterwards.
+REM  muon-lr-mult 5 is deliberately not the default - it also proves the
+REM  multiplier reaches the optimiser instead of being parsed and dropped.
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --optimizer muon --muon-lr-mult 5 --tag sm_muon
+if errorlevel 1 echo [WARN] sm_muon failed - continuing
+
+echo.
 echo [20] return_probs diagnostic path  (P081 - SDPA does not hand back probs)
 REM  ------------------------------------------------------------------------
 REM  This axis CANNOT be a training arm - return_probs is blocked in train()
@@ -282,6 +309,18 @@ REM  So the trap-37 arm for this axis is a standalone check instead.
 REM  It asserts the whole claim: logits are BIT IDENTICAL with it on.
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_return_probs.py
 if errorlevel 1 echo [WARN] return_probs check FAILED - the diagnostic path leaks into output
+
+echo.
+echo [21b] 3:4 sparse packing  (P016 - format only, no kernel, no training)
+REM  ------------------------------------------------------------------------
+REM  --sparse34 has been in the STE since P016 and its quality cost is known
+REM  (result 008: g4_s34 +0.0364). What was never measured is what it buys
+REM  in RESIDENCY, because the residency formula has no bpw in it (trap 1).
+REM  lut.py now carries a real 3:4 packing at 5 bits per 4 weights, and this
+REM  arm buys three things: the round trip is lossless, the bpw is exactly
+REM  1.250, and a tensor that is NOT 3:4 is rejected rather than approximated.
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_sparse34_pack.py
+if errorlevel 1 echo [WARN] sparse34 packing check FAILED - read which of the three
 
 echo.
 echo =============================================================

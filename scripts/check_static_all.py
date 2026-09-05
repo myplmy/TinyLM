@@ -85,6 +85,21 @@ CHECKS = [
      "**의사결정함정 D1 을 기계로.** ✅재현 검증: 2026-09-03 핸드오프에서 **제안서가 지목한 두 행** "
      "(P084 단계0 · 유니크 토큰 축)을 정확히 잡는다. ⚠️초판이 시간칸 `—` 를 0 으로 읽어 3행을 "
      "오탐했고 고쳤다(제안서 §8 이 미리 적어 둔 위험)"),
+    ("check_lr_factor_sync", ["check_lr_factor_sync.py"],
+     "★★**`_lr_factor` 가 두 곳에 산다** — 정본은 `trainer.py`, 복제는 `diag_lrm_values.py`"
+     "(torch 없이 WD 바닥을 계산해야 해서). 함정 18 을 남기는 대신 **값을 기계로 대조**한다 — "
+     "sched 4×steps 4×decay_frac 3×점 40 = 1,992점. ✅결함 주입(0.9→0.8) 검출 확인"),
+    ("check_eval_pool",     ["check_eval_pool.py"],
+     "★★★**채점지가 답안지였는가**(2026-09-05, 결과 075 §6). `prepare()` 의 val 은 스트림 말미 0.5% 이고 "
+     "캐시는 결정적 스트림의 **접두사**라 `ko-en_300M/val.bin` 이 `ko-en_600M/train.bin` 안에 "
+     "**1,500,000 토큰 전부 바이트 일치**한다. `paired_eval` 기본값이 `--tokens 300M` 이고 표준 학습이 "
+     "`--pool-tokens 600M` 이라 **142개 런의 full-val 이 학습 데이터였다.** "
+     "✅실물 배치(`run_P084_Stage4_*`)에서 4건 검출 확인. ⚠️`-done` 은 경고로 낮춘다"),
+    ("registry --scan",     ["registry.py", "--scan"],
+     "★★**런 레지스트리에 빠진 학습 런이 있는가**(2026-09-05, 승인된 제안서 안 C). "
+     "`runs/registry.tsv` 가 정본(git·diff) · `docs/RUN_REGISTRY.md` 가 뷰 · `runs/registry.db` 가 질의 캐시. "
+     "🚫`runlog` 를 안 거치면 기록이 안 되므로 **json 쪽에서 역으로 본다** — 제안서 §7.2 가 적어 둔 약점의 그물. "
+     "✅소급 반영으로 full-train **142/142 = 100%** 에 계획번호가 붙었다"),
     ("lint_bat",            ["lint_bat.py"],
      "배치 린터 20규칙 — 비ASCII·`%VAR%`·`--tag` 누락·VERIFY 뒤 학습런"),
     ("check_links",         ["check_links.py"],

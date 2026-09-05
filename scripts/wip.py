@@ -82,6 +82,11 @@ def set_state(path, num, status, note, artifact=None):
     #   나중에 "무엇을 하려 했고 무엇을 했나" 를 대조할 수 있다.
     old_note = c[4].strip()
     stamp = {WAIT: "대기", RUN: "착수", DONE: "완료", BLOCK: "막힘"}[status]
+    # ★★2026-09-05 — 노트에 **리터럴 파이프**가 들어가면 그 행이 표에서 깨진다.
+    #   실사고: `max|s-1|` 을 적었더니 `ln.count("|") == 6` 이 안 맞아 **1번 행이
+    #   상황판에서 사라졌고**, `--list` 가 13개를 12개로 셌다(함정: 인쇄와 정본이 갈라진다).
+    #   🚫사람에게 "쓰지 마세요" 라고 적는 대신 **도구가 고친다**.
+    note = note.replace("|", "\|")
     add = f"**[{stamp}]** {note}"
     c[4] = f" {add} " if old_note in ("—", "") else f" {old_note}<br>{add} "
     if artifact:

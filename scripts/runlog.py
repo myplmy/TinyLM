@@ -448,7 +448,40 @@ def main():
             f.close()
         sys.stdout.write(tail); sys.stdout.flush()
         _verify(path)                    # ★경로만 찍지 않는다 — 실제로 남았는지 본다
+        _register(rc, a.name, path, cmd)  # ★런 레지스트리(승인 2026-09-05 지시 (2)A)
     return rc
+
+
+def _register(rc, name, path, cmd):
+    """★종료코드 0 인 **학습** 호출을 `runs/registry.tsv` 에 한 줄로 남긴다.
+
+    승인: 2026-09-05 사용자 지시 (2)A(제안서 안 C §7.1).
+    `runlog` 만이 **종료코드 · 계획번호-단계 · 로그 파일명 · 태그**를 동시에 안다.
+
+    🚫**실패해도 런을 죽이지 않는다** — 기록은 부가 기능이고, 여기서 예외가 나면
+    **6시간짜리 런의 꼬리말이 사라진다.** 그래서 통째로 try 로 감싼다.
+    ⚠️학습이 아닌 호출(진단·벤치)은 `--tag` 가 없거나 json 이 안 생기므로 **저절로 걸러진다.**
+    """
+    try:
+        if rc != 0:
+            return
+        joined = " ".join(cmd)
+        if " train " not in joined and not joined.rstrip().endswith(" train"):
+            return
+        m = re.search(r"--tag\s+(\S+)", joined)
+        if not m:
+            return
+        m2 = re.match(r"^(P\d{3,}[A-Za-z]*)_([A-Za-z0-9]+)", name or "")
+        stage = f"{m2.group(1)}/{m2.group(2).lower()}" if m2 else (name or "")
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import registry                                       # noqa: PLC0415
+        r = registry.record(m.group(1), stage, path.name)
+        if r == 0:
+            print(f"[runlog] ★런 레지스트리 기록 "
+                  f"-> runs/registry.tsv  ({m.group(1)} = {stage})")
+    except Exception as e:                                    # noqa: BLE001
+        print(f"[runlog] ⚠레지스트리 기록 실패"
+              f"(런은 정상): {type(e).__name__}: {e}")
 
 
 if __name__ == "__main__":

@@ -73,6 +73,11 @@ TASKS = {
     "piqa":           ("mc",       0.50,  "acc",              "2지선다 물리상식"),
     "winogrande":     ("mc",       0.50,  "acc",              "2지선다 대명사해소"),
     "arc_easy":       ("mc",       0.25,  "acc / acc_norm",   "4지선다 과학"),
+    # ★2026-09-05 — 검정력용(세 split 전부). 기존 `arc_easy` 와 **다른 과제로 센다**
+    "arc_easy_full":  ("mc",       0.25,  "acc / acc_norm",   "★4지선다 과학 전량 5,197"),
+    # ★★2026-09-05 — KoBEST. 논문 지표는 **F1** 이지만 🚫우리 지표에 그 이름을 쓰지 않는다(규약 2)
+    "kobest_copa":    ("mc",       0.50,  "F1(공식)",          "★한국어 2지선다 인과"),
+    "kobest_hellaswag": ("mc",     0.25,  "F1(공식)",          "★한국어 4지선다 문장완성"),
     "arc_challenge":  ("mc",       0.25,  "acc / acc_norm",   "4지선다 과학(난)"),
     # ★★0a-2 조회 정정(arXiv:1905.10044 초록) — **majority-baseline 62%**.
     #   50% 를 우연으로 쓰면 **퇴화(항상 yes)를 "우연 초과" 로 오독**한다.
@@ -210,9 +215,31 @@ def _ad_bfcl(r):
             "meta": {"id": r.get("id", "")}}
 
 
+def _ad_kobest_copa(r):
+    """KB-COPA — 전제 + 원인/결과 + 후보 2. 논문 §4.2.1 은 **최저 perplexity 후보**를 고른다.
+
+    ★`label` 은 0/1 이고 `alternative_1/2` 에 대응한다(논문 Table 2 의 `Correct Alternative: 2`
+    는 1-기반 표기다 — 데이터의 `label` 은 0-기반이다).
+    ⚠️`question` 은 **`원인` 또는 `결과`** 이고 그것이 방향을 정한다 — 문맥에 넣어야 한다.
+    """
+    q = r["question"]
+    ctx = f"{r['premise']} 그 {q}(으)로 알맞은 것은?"
+    return {"ctx": ctx,
+            "choices": [" " + r["alternative_1"], " " + r["alternative_2"]],
+            "gold": int(r["label"])}
+
+
+def _ad_kobest_hellaswag(r):
+    """KB-HellaSwag — 문맥 + 후보 4. `ending_1..4` · `label` 0-기반."""
+    return {"ctx": r["context"],
+            "choices": [" " + r[f"ending_{i}"] for i in (1, 2, 3, 4)],
+            "gold": int(r["label"])}
+
+
 ADAPTERS = {
     "hellaswag": _ad_hellaswag, "piqa": _ad_piqa, "winogrande": _ad_winogrande,
-    "arc_easy": _ad_arc, "arc_challenge": _ad_arc, "boolq": _ad_boolq,
+    "arc_easy": _ad_arc, "arc_easy_full": _ad_arc, "arc_challenge": _ad_arc, "boolq": _ad_boolq,
+    "kobest_copa": _ad_kobest_copa, "kobest_hellaswag": _ad_kobest_hellaswag,
     "mmlu": _ad_mmlu, "mmlu_redux": _ad_mmlu_redux, "musr": _ad_musr,
     "lambada": _ad_lambada, "gsm8k": _ad_gsm8k, "ifeval": _ad_ifeval,
     "humaneval": _ad_humaneval, "humaneval_plus": _ad_humaneval, "bfcl_v3": _ad_bfcl,

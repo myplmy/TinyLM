@@ -220,3 +220,114 @@ def residency_bytes(n_unique_ternary: int, n_other_params: int,
     return {"codes_MiB": code / 2 ** 20, "alpha_MiB": a / 2 ** 20,
             "other_MiB": other / 2 ** 20, "total_MiB": (code + a + other) / 2 ** 20,
             "bpw_effective": (code + a) * 8 / max(n_unique_ternary, 1)}
+# ══════════════════════════════════════════════════════════════════════════════
+# ★★3:4 준정형 패킹 (2026-09-05 신설 — 사용자 지시 *"미뤄 온 구현에 착수할 것"*)
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# ## 왜 지금 이것을 쓰나 — **숫자가 없어서 3주를 미뤘다**
+#
+# `--sparse34` 는 **학습 경로**(STE 안의 마스킹)에 이미 있고 품질 대가도 측정돼 있다
+# (결과 008: `g4_s34` +0.0364 · `g8_s34` +0.0606). 🚫**그런데 배포 상주에서 무엇을 버는지는
+# 한 번도 안 쟀다** — 상주 식에 **bpw 가 없기 때문**이다(함정 1). 그래서 *"1.25 bpw"* 라는
+# 수가 **저장(packed)** 을 말하는지 **상주(runtime)** 를 말하는지 아무도 확정하지 않았다.
+#
+# ★**이 블록이 그 구멍을 메운다.** 3:4 를 **실제로 패킹**하면 상주의 삼진 항이
+# `1.600 → 1.250 bpw` 로 줄고, 그것이 MiB 로 얼마인지 `mem_runtime` 이 잴 수 있다.
+#
+# ## 포맷 — **4가중치 = 5비트**
+#
+#     4개 묶음 안에 0 이 **정확히 하나**(3:4 준정형의 정의).
+#       · 어느 자리가 0 인가          -> 4가지  -> **2비트**
+#       · 나머지 셋의 부호 {-1,+1}    -> 2^3    -> **3비트**
+#     합 **5비트 / 4가중치 = 1.250 bpw**  (LUT 의 1.600 대비 **21.9% 절감**)
+#
+#     코드 = zero_pos * 8 + sign_bits          (0..31, 5비트)
+#     두 코드를 한 바이트에 담는다             -> **8가중치 / 1바이트**
+#
+# ★**이론 하한과의 거리**: 3:4 준정형의 엔트로피는 `log2(4) + 3 = 5.000` 비트 정확히다.
+# 🚫**낭비 0%** — LUT(1.600 vs 하한 1.585, 낭비 0.95%)보다도 촘촘하다. 조합이 2의 거듭제곱이라 그렇다.
+#
+# ## 🚫이 블록이 **하지 않는** 것
+#
+# - **빠른 커널을 안 만든다.** `unpack_sparse34` 로 되돌려 곱한다 — `_wq_from_i8()` 과 같은 모양이다.
+#   ★**속도가 목적이 아니라 상주가 목적**이다(`CLAUDE.md` 첫 줄).
+# - **3:4 를 새로 학습시키지 않는다.** 이 함수들은 **이미 3:4 인 텐서**를 받는다.
+# - ⚠️**입력이 3:4 가 아니면 거절한다.** 조용히 근사하지 않는다 — 그것이 함정 1 의 재발이다.
+
+SPARSE34_BLOCK = 4                 # 묶음 크기
+SPARSE34_BPW = 5.0 / 4.0           # ★1.250 — 이론 하한과 정확히 같다
+
+
+def is_sparse34(t: torch.Tensor, block: int = SPARSE34_BLOCK) -> bool:
+    """마지막 축을 `block` 씩 끊었을 때 **묶음마다 0 이 정확히 하나**인가."""
+    n = t.shape[-1]
+    if n % block:
+        return False
+    z = (t.reshape(-1, n // block, block) == 0).sum(-1)
+    return bool((z == 1).all())
+
+
+def pack_sparse34(t: torch.Tensor, block: int = SPARSE34_BLOCK):
+    """3:4 삼진 텐서 -> `(uint8 codes, n_orig)`. **4가중치 = 5비트.**
+
+    🚫**3:4 가 아니면 `ValueError`.** 근사하지 않는다.
+    """
+    if block != 4:
+        raise ValueError(f"★지금 포맷은 block=4 전용이다(받은 값 {block}).")
+    if not is_sparse34(t, block):
+        raise ValueError(
+            "★입력이 3:4 준정형이 아니다 — 묶음마다 0 이 정확히 하나여야 한다. "
+            "🚫조용히 근사하지 않는다(함정 1 의 재발을 막는다). "
+            "`--sparse34` 로 학습한 가중치를 `freeze_quant()` 뒤에 넘기세요.")
+    n = t.numel()
+    g = t.reshape(-1, block).to(torch.int8)
+    # ★`argmax` 는 **int64** 를 낸다 — 아래에서 `torch.cat` 에 uint8 을 섞으면 죽는다.
+    #   dtype 을 한 곳에서 못박는다.
+    zero_pos = (g == 0).to(torch.uint8).argmax(dim=1).to(torch.int64)   # (N,) 0..3
+    # 0 이 아닌 셋의 부호를 **자리 순서대로** 3비트에 담는다
+    keep = torch.ones_like(g, dtype=torch.bool)
+    keep.scatter_(1, zero_pos.long().unsqueeze(1), False)
+    signs = (g[keep].reshape(-1, block - 1) > 0).to(torch.uint8)   # (N, 3) 1=양수
+    sign_bits = (signs[:, 0].to(torch.int64) * 4
+                 + signs[:, 1].to(torch.int64) * 2
+                 + signs[:, 2].to(torch.int64))
+    code = zero_pos * 8 + sign_bits                                # int64, 0..31
+    if code.numel() % 2:                                           # 두 코드가 한 바이트
+        code = torch.cat([code, torch.zeros(1, dtype=code.dtype, device=code.device)])
+    packed = (code[0::2] * 32 + code[1::2]).to(torch.uint8)        # ★상위 5비트 + 하위 5비트
+    return packed.contiguous(), n
+
+
+def unpack_sparse34(packed: torch.Tensor, n: int, block: int = SPARSE34_BLOCK,
+                    dtype=torch.float32) -> torch.Tensor:
+    """`pack_sparse34` 의 역. **무손실이어야 한다** — 게이트가 그것을 산다."""
+    hi = (packed.to(torch.int64) // 32)
+    lo = (packed.to(torch.int64) % 32)
+    code = torch.stack([hi, lo], dim=1).reshape(-1)                # (2P,)
+    n_groups = n // block
+    code = code[:n_groups]
+    zero_pos = code // 8
+    sb = code % 8
+    signs = torch.stack([(sb // 4) % 2, (sb // 2) % 2, sb % 2], dim=1)   # (G,3) 1=양수
+    vals = (signs * 2 - 1).to(dtype)                                     # {-1,+1}
+    out = torch.zeros(n_groups, block, dtype=dtype, device=packed.device)
+    keep = torch.ones(n_groups, block, dtype=torch.bool, device=packed.device)
+    keep.scatter_(1, zero_pos.unsqueeze(1), False)
+    out[keep] = vals.reshape(-1)
+    return out.reshape(-1)[:n]
+
+
+def sparse34_bytes(n_weights: int) -> int:
+    """패킹 바이트 수. 🚫**저장이자 상주다** — 이 경로는 되돌린 사본을 안 든다."""
+    n_groups = (n_weights + SPARSE34_BLOCK - 1) // SPARSE34_BLOCK
+    return (n_groups + 1) // 2
+
+
+def sparse34_vs_lut(n_unique_ternary: int) -> dict:
+    """★두 포맷의 상주 삼진 항을 나란히 준다. **판정에 쓰라고 있는 함수다.**"""
+    lut = packed_bytes(n_unique_ternary)
+    s34 = sparse34_bytes(n_unique_ternary)
+    return {"lut_MiB": lut / 2 ** 20, "sparse34_MiB": s34 / 2 ** 20,
+            "saved_MiB": (lut - s34) / 2 ** 20,
+            "lut_bpw": lut * 8 / max(n_unique_ternary, 1),
+            "sparse34_bpw": s34 * 8 / max(n_unique_ternary, 1)}

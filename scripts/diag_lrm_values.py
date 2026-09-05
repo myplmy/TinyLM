@@ -16,18 +16,35 @@
 | 3 | 결과 053 | 플래그가 파서에 있다 ≠ 그 플래그가 무언가 한다 |
 | ★**4** | **여기** | **파라미터가 만들어졌다 ≠ 그 파라미터가 1.0 에서 움직였다** |
 
-승수에는 **WD 0.01** 이 걸려 있어 **1.0 쪽으로 당겨진다**. 전부 1.0 근처에 머물렀다면
-결과 072 의 결론은 *"LRM 이 효과 없다"* 가 아니라 ***"LRM 이 켜지지 않았다"*** 여야 한다.
-**두 문장은 다음에 할 일이 다르다** — 앞이면 축을 닫고, 뒤면 LR·WD 를 고쳐 다시 돈다.
+## 🚫★2026-09-05 정정 — **초판의 기준값이 틀렸었다**(함정 34 의 다섯 번째)
+
+초판 docstring 은 *"승수에는 WD 0.01 이 걸려 있어 **1.0 쪽으로 당겨진다**"* 라고 적었다.
+🚫**거짓이다.** AdamW 의 **decoupled** weight decay 는 `p <- p*(1 - lr_t*wd)` 라 **0 쪽으로**
+당긴다. 1.0 에서 출발한 스칼라는 **기울기가 하나도 안 와도** 아래로 내려간다.
+
+그래서 초판의 `PASS_MIN = 1e-2` 는 **미탐 구멍**이었다 — 표준 조건(2,289스텝 · lr 1e-3 ·
+wsd)에서 **순수 WD 만으로 |s-1| = 0.0202** 가 나오므로, ★**한 번도 학습되지 않은 승수가
+'✅통과' 를 찍는다.** 함정 38(인쇄와 판정이 갈라진다)이 아니라 **함정 34 의 반대 얼굴**이다:
+기준값을 *적었는데* 그 값이 **틀렸다.**
+
+★**정정된 판정 규약** — 관측값을 **WD 바닥으로 나눈 뒤** 본다:
+
+    s_wd(t) = 곱[ 1 - lr_t * wd ]          # 순수 WD 궤적. 기울기 0 일 때의 예측값
+    r       = s / s_wd                     # ★기울기가 만든 몫만 남는다
+    지표    = max |r - 1|
 
 ## 성공 기준값 (★결과 전에 고정한다 — `check_diag_data` 요구)
 
-- **PASS**: `max |s − 1| >= 1e-2` — 승수가 **1% 이상** 움직였다. 결과 072 의 판정이 유효하다.
-- **WEAK**: `1e-4 <= max |s − 1| < 1e-2` — 움직이긴 했으나 미미하다. **경고**(exit 0).
-- ★**FAIL(exit 1)**: `max |s − 1| < 1e-4` — 사실상 안 움직였다. **결과 072 §1 을 철회한다.**
+- **PASS**: `max |r - 1| >= 1e-2` — 기울기가 승수를 **1% 이상** 움직였다. 결과 072 판정 유효.
+- **WEAK**: `1e-4 <= max |r - 1| < 1e-2` — 움직이긴 했으나 미미하다. **경고**(exit 0).
+- ★**FAIL(exit 1)**: `max |r - 1| < 1e-4` — 관측된 변화가 **전부 WD 로 설명된다.**
+  **결과 072 §1 을 철회한다.**
 
-🚫**임계값의 근거는 산술이 아니라 규약**이다: fp32 학습에서 2,289 스텝 동안 lr 1e-3 을
-받은 스칼라가 1e-4 도 안 움직였다면 그것은 **기울기가 안 왔다는 뜻**이다.
+참고 상수(우리 표준 조건, 이 파일이 계산한다): 2,289스텝 **s_wd = 0.979778** ·
+250스텝 **s_wd = 0.997820** · 4,578스텝 **0.960**대 · 9,156스텝 **0.923**대.
+
+🚫**json 을 못 찾으면 `s_wd` 를 1.0 으로 두고 raw 로 판정하되 반드시 경고를 찍는다** —
+그때의 PASS 는 *"WD 를 포함해 움직였다"* 까지만 말한다.
 
 ## 사용법
 
@@ -37,6 +54,8 @@
 from __future__ import annotations
 
 import argparse
+import json
+import math
 import sys
 from pathlib import Path
 
@@ -48,15 +67,66 @@ import tinylm                                   # noqa: E402  ★R40 — HF 캐�
 _ = tinylm
 
 CKPT = ROOT / "runs" / "ckpt"
+LOGS = ROOT / "runs" / "logs"
 
-PASS_MIN = 1e-2          # ★성공 기준값 — 위 docstring 과 같은 수
+PASS_MIN = 1e-2          # ★성공 기준값 — 위 docstring 과 같은 수. **WD 보정 후**의 값이다
 WEAK_MIN = 1e-4
+LRM_WD = 0.01            # ★정본은 `tinylm/model/transformer.py` 의 param_groups() 마지막 그룹
 NAMES = ("gate", "up", "down")
 
 
 def find_ckpt(tag: str):
     hit = sorted(CKPT.glob(f"*_{tag}.pt"))
     return hit[0] if hit else None
+
+
+def _lr_factor(s, warm, steps, sched, decay_frac):
+    """🚫**정본은 `tinylm/train/trainer.py::_lr_factor`** — 여기는 그 복제다.
+
+    ⚠️복제인 이유: 이 도구는 **torch 없이도 논리를 읽을 수 있어야** 하고 trainer 를 import
+    하면 학습 모듈 전체가 딸려 온다. ★대신 `check_lr_factor_sync.py` 가 두 함수가 같은 값을
+    내는지 기계로 대조한다(함정 18 — 같은 규칙을 두 곳에 두면 하나가 낡는다).
+    """
+    if sched == "decay":
+        return 0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * s / max(steps, 1)))
+    if s < warm:
+        return (s + 1) / warm
+    p = (s - warm) / max(steps - warm, 1)
+    if sched == "stable":
+        return 1.0
+    if sched == "wsd":
+        if p < 1.0 - decay_frac:
+            return 1.0
+        q = (p - (1.0 - decay_frac)) / decay_frac
+        return 0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * q))
+    return 0.1 + 0.45 * (1 + math.cos(math.pi * p))
+
+
+def wd_floor(meta):
+    """기울기가 0 일 때 승수가 도달하는 값 `s_wd`. meta 가 없으면 None."""
+    if not meta:
+        return None
+    steps = meta.get("steps")
+    lr = meta.get("lr")
+    if not steps or not lr:
+        return None
+    sched = meta.get("sched", "wsd")
+    decay_frac = meta.get("decay_frac", 0.2)
+    warm = 0 if sched == "decay" else max(5, min(int(steps) // 10, 100))
+    s = 1.0
+    for t in range(int(steps)):
+        s *= (1.0 - float(lr) * _lr_factor(t, warm, int(steps), sched, decay_frac) * LRM_WD)
+    return s
+
+
+def load_meta(path: Path):
+    j = LOGS / (path.stem.replace("_best", "") + ".json")
+    if not j.is_file():
+        return None
+    try:
+        return json.loads(j.read_text(encoding="utf-8"))
+    except Exception:
+        return None
 
 
 def main() -> int:
@@ -77,10 +147,24 @@ def main() -> int:
     st = torch.load(path, map_location="cpu")
     sd = st.get("model", st)
 
+    meta = load_meta(path)
+    s_wd = wd_floor(meta)
+
     print("=" * 96)
     print(f"  P086 승수 진단 — {path.name}")
     print("=" * 96)
-    print(f"  ★성공 기준: max |s-1| >= {PASS_MIN:g} 이면 통과 · "
+    if s_wd is None:
+        print("  ⚠️★**학습 json 을 못 찾아 WD 바닥을 계산하지 못했다.** raw 로 판정한다 —")
+        print("     이때의 통과는 *'WD 를 포함해 움직였다'* 까지만 말한다.")
+        s_wd = 1.0
+        have_floor = False
+    else:
+        have_floor = True
+        print(f"  ★순수 WD 바닥 s_wd = **{s_wd:.6f}**  (|s-1| = {1 - s_wd:.6f})"
+              f"  [steps={meta.get('steps')} lr={meta.get('lr')} "
+              f"sched={meta.get('sched', 'wsd')} wd={LRM_WD}]")
+        print("     ★이만큼은 **기울기가 하나도 안 와도** 내려간다. 이 아래는 학습이 아니다.")
+    print(f"  ★성공 기준: **WD 보정 후** max |s/s_wd - 1| >= {PASS_MIN:g} 이면 통과 · "
           f"< {WEAK_MIN:g} 이면 **실패**(승수가 학습되지 않았다)")
 
     rows = [(k, v) for k, v in sd.items() if k.endswith(".lrm")]
@@ -90,29 +174,39 @@ def main() -> int:
               file=sys.stderr)
         return 1
 
-    worst = 0.0
-    print(f"\n  {'층':<28} {'gate':>10} {'up':>10} {'down':>10}   max|s-1|")
-    print("  " + "-" * 76)
+    worst_raw, worst = 0.0, 0.0
+    print(f"\n  {'층':<26} {'gate':>9} {'up':>9} {'down':>9} | "
+          f"{'gate/wd':>9} {'up/wd':>9} {'down/wd':>9}   max|r-1|")
+    print("  " + "-" * 104)
     for k, v in rows:
         vals = [float(x) for x in v.reshape(-1)[:3]]
-        dev = max(abs(x - 1.0) for x in vals)
+        corr = [x / s_wd for x in vals]
+        worst_raw = max(worst_raw, max(abs(x - 1.0) for x in vals))
+        dev = max(abs(x - 1.0) for x in corr)
         worst = max(worst, dev)
-        print(f"  {k[:-4]:<28} " + " ".join(f"{x:>10.5f}" for x in vals) + f"   {dev:9.6f}")
+        print(f"  {k[:-4]:<26} " + " ".join(f"{x:>9.5f}" for x in vals) + " | "
+              + " ".join(f"{x:>9.5f}" for x in corr) + f"   {dev:9.6f}")
 
     n = len(rows)
-    print("  " + "-" * 76)
-    print(f"  층 {n}개 · 스칼라 {n * 3}개 · ★**max |s-1| = {worst:.6f}**")
+    print("  " + "-" * 104)
+    print(f"  층 {n}개 · 스칼라 {n * 3}개 · raw max |s-1| = {worst_raw:.6f} · "
+          f"★**WD 보정 max |r-1| = {worst:.6f}**")
+    if have_floor:
+        print(f"  ★기울기 몫 / WD 몫 = **{worst / max(1 - s_wd, 1e-12):.1f}배**"
+              "  — 1.0 근처면 관측된 움직임이 전부 WD 다")
     print()
     if worst >= PASS_MIN:
-        print(f"  ✅**통과** — 승수가 {worst:.4f} 만큼 움직였다. 결과 072 의 판정이 유효하다.")
+        print(f"  ✅**통과** — WD 를 걷어내고도 승수가 {worst:.4f} 만큼 움직였다. "
+              "결과 072 의 판정이 유효하다.")
         print("     ★그 판정은 *'움직였는데도 품질이 안 변했다'* 이다 — 이것이 축을 닫는 근거다.")
         return 0
     if worst >= WEAK_MIN:
-        print(f"  ⚠️★**약하다** — 최대 변화가 {worst:.6f} 로 1% 미만이다.")
+        print(f"  ⚠️★**약하다** — WD 보정 후 최대 변화가 {worst:.6f} 로 1% 미만이다.")
         print("     🚫**결과 072 를 '효과 없음' 으로 읽기 전에 WD 0.01 이 과했는지 본다.**")
-        print(f"     재시도 후보: WD 를 0.001 로. ⚙3.2h.")
+        print("     재시도 후보: WD 를 0.001 로. ⚙3.2h.")
         return 0
-    print(f"  🚫★★**실패** — 최대 변화가 {worst:.2e} 로 사실상 1.0 그대로다.")
+    print(f"  🚫★★**실패** — WD 보정 후 최대 변화가 {worst:.2e} 다. "
+          "관측된 움직임이 **전부 weight decay** 로 설명된다.")
     print("     ★**결과 072 §1 의 결론을 철회한다.** 잰 것은 *'LRM 의 효과'* 가 아니라")
     print("     *'LRM 이 켜지지 않았다'* 이다(함정 37 네 번째 얼굴).")
     print("     선결: 승수가 옵티마이저 param group 에 실제로 들어갔는지 확인(`transformer.py:813`).")

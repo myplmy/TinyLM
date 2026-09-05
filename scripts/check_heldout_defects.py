@@ -177,6 +177,73 @@ def d4_negation(recs):
     return only, hit, 100.0 * acc / n
 
 
+# ★★D5·D6·D7 (2026-09-05 신설, v2.6 검증 중 발견) ─────────────────────────────
+#
+#   D5 — **양태 지름길**. v2.6 이 D4(부정 어미)를 피하려고 정답을 *"확정하기에는
+#        **부족**하다"* 로, 오답을 *"확정하기에 **충분**하다"* 로 썼다. 어미는 긍정이 됐지만
+#        ★**"약한 쪽 하나를 고르는" 전략이 그대로 성립**한다 — 실측 4/4 = 100%.
+#        🚫**D4 를 우회한 같은 결함**이다(함정 28: 한 결함이 두 얼굴).
+#        ⚠️지금은 4문항뿐이라 전체 선택기 정답률이 25.2%(z +0.1) = 무해하다.
+#        ★**그래서 지금 재 둔다** — 다음 개정이 이 방식을 12건에 더 쓰면 그때는 안 무해하다.
+#
+#   D6 — ★**정답이 둘인 문항**. `required_relations_canonical` 과
+#        `forbidden_relations_canonical` 이 **겹치면** 같은 관계가 정답이자 오답이다.
+#        실측 2건(E-157 · E-205)이고 **v2.3 부터 그대로 있었다** — 아무도 이 축을 안 봤다.
+#        🚫E-272(정답 없음)의 **거울상**이다.
+#
+#   D7 — 후보 안에 **같은 문장이 두 번**. 실측 41건(*"이는 주어진 조건에 따른 판단이다."* ×2).
+#        네 후보 모두에 있어 지름길은 아니지만 **템플릿 결함**이고 토큰을 낭비한다.
+_WEAK = ("부족", "충분하지", "불충분")
+
+
+def d5_modality(recs):
+    """'충분' 셋 + '부족' 하나 대조가 있는 문항 수와 그중 정답인 수, 전체 선택기 정답률."""
+    only = hit = 0
+    acc = 0.0
+    for r in recs:
+        cands = r.get("candidates") or []
+        ci = r.get("correct_index")
+        if not cands or ci is None:
+            continue
+        weak = [i for i, c in enumerate(cands) if any(w in str(c) for w in _WEAK)]
+        strong = [i for i, c in enumerate(cands)
+                  if "충분" in str(c) and not any(w in str(c) for w in _WEAK)]
+        if len(weak) == 1 and len(strong) == len(cands) - 1:
+            only += 1
+            if weak[0] == ci:
+                hit += 1
+        if weak:
+            acc += (1.0 / len(weak)) if ci in weak else 0.0
+        else:
+            acc += 1.0 / max(1, len(cands))
+    n = len(recs) or 1
+    return only, hit, 100.0 * acc / n
+
+
+def d6_two_answers(recs):
+    """required 와 forbidden 이 겹치는 문항 = **정답이 둘일 수 있다**."""
+    out = []
+    for r in recs:
+        req = set(r.get("required_relations_canonical") or [])
+        fb = set(r.get("forbidden_relations_canonical") or [])
+        both = sorted(req & fb)
+        if both:
+            out.append((r.get("id"), both))
+    return out
+
+
+def d7_dup_sentence(recs):
+    """한 후보 안에 같은 문장이 두 번 들어간 문항."""
+    out = []
+    for r in recs:
+        for c in (r.get("candidates") or []):
+            parts = [t.strip() for t in str(c).split(".") if t.strip()]
+            if len(parts) != len(set(parts)):
+                out.append(r.get("id"))
+                break
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dir", default=None)
@@ -190,6 +257,7 @@ def main() -> int:
     print("=" * 96)
 
     total_d1 = 0
+    total_d6 = 0
     recs_count = {}
     for folder in dirs:
         d1, d2, d3 = scan(folder)
@@ -221,13 +289,29 @@ def main() -> int:
             print(f"  D4 부정 지름길           : 부정후보 1개 {only}/{len(_rs)}건 · "
                   f"그중 정답 {hit} ({100.0*hit/max(1,only):.1f}%) · "
                   f"부정선택기 **{rate:.1f}%**(우연 25.0, z {_z:+.1f})  {_m}")
+            o5, h5, r5 = d5_modality(_rs)
+            _z5 = (r5 - 25.0) / ((25.0 * 75.0 / len(_rs)) ** 0.5)
+            _m5 = "🚫**결함**" if abs(_z5) > 3 else "⚠️정보"
+            print(f"  D5 양태 지름길(충분/부족): 대조 {o5}/{len(_rs)}건 · "
+                  f"그중 정답 {h5} ({100.0*h5/max(1,o5):.1f}%) · "
+                  f"약함선택기 **{r5:.1f}%**(우연 25.0, z {_z5:+.1f})  {_m5}")
+            d6 = d6_two_answers(_rs)
+            print(f"  D6 정답이 둘일 수 있다   : {'🚫 %d건' % len(d6) if d6 else '✅ 0건'}"
+                  + ("  " + " · ".join(f"{i}({','.join(b)})" for i, b in d6[:6]) if d6 else ""))
+            total_d6 += len(d6)
+            d7 = d7_dup_sentence(_rs)
+            print(f"  D7 후보 안 문장 중복     : {'⚠️ %d건' % len(d7) if d7 else '✅ 0건'}"
+                  + (f"  {', '.join(d7[:6])} …" if len(d7) > 6 else
+                     ("  " + ", ".join(d7) if d7 else "")))
 
     print()
     print("  ★D1 은 정확한 검사다 — **0건이어야 한다.**")
     print("  ⚠️D2 는 휴리스틱이다 — 거짓 양성이 난다. **무시하지 말고 문항 번호를 적어 회신**한다.")
     print("  🚫이 검사도 *'정답 문장이 사실인가'* 는 못 본다 — 그것은 사람 몫이다.")
-    print("  ★D4 는 **결함이 아니라 계측**이다 — |z| > 3 이면 그때 결함으로 센다(결과 068 규약).")
-    return 1 if total_d1 else 0
+    print("  ★D4·D5 는 **결함이 아니라 계측**이다 — |z| > 3 이면 그때 결함으로 센다(결과 068 규약).")
+    print("  ★★D5 는 D4 의 **두 번째 얼굴**이다 — 어미를 긍정으로 바꿔도 *'약한 쪽 고르기'* 는 남는다.")
+    print("  🚫★**D6 은 정확한 검사다 — 0건이어야 한다.** 정답이 둘이면 그 문항은 채점할 수 없다.")
+    return 1 if (total_d1 or total_d6) else 0
 
 
 if __name__ == "__main__":

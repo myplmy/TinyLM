@@ -168,7 +168,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, micro_group=None,
           mlp_split=None,
           opt_dtype="fp32", ema_start=0.0, wq_dtype=None, emb_chunk=None,
-          optimizer="adamw",
+          optimizer="adamw", muon_lr_mult=1.0,
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
@@ -441,14 +441,30 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     #   🚫`adamw`(기본) = 종전과 **비트 동일**. `muon` 일 때만 두 옵티마이저가 선다.
     #   ⚠️**이점은 대배치에 집중**된다(arXiv:2505.02222) — 우리 유효배치 131K 는 작다.
     #   ⚠️★**삼진 STE 와의 상호작용은 미검증**이다(P005 선결) — fp16 팔과 함께 돌린다.
+    _mats = []
     if optimizer == "muon":
         from .muon import Muon, split_params
         _mats, _others = split_params(model)
-        opt = torch.optim.AdamW([{"params": _others}], lr=lr,
-                                betas=(0.9, 0.95), eps=1e-8)
-        opt_muon = Muon(_mats, lr=lr)
-        print(f"[opt] ★Muon(P005) — 행렬 {len(_mats)}개는 Muon, "
+        # ★★2026-09-05 수정 — 종전에는 AdamW 에 params 하나만 넘겨
+        #   **weight decay 규약이 통째로 사라졌다**: 정상 경로는 `param_groups()` 가
+        #   dense 0.1 · norm/bias 0 · lrm 0.01 을 준다.
+        #   ★**집합을 두 곳에서 정의하지 않는다**(R14) — `param_groups()` 에서
+        #   Muon 이 가져간 것만 빼고 나머지 그룹을 **그대로** 쓴다.
+        _mat_ids = {id(p) for p in _mats}
+        _groups = []
+        for _g in model.param_groups(lr):
+            _ps = [p for p in _g["params"] if id(p) not in _mat_ids]
+            if _ps:
+                _groups.append(dict(_g, params=_ps))
+        opt = torch.optim.AdamW(_groups, betas=(0.9, 0.95), eps=1e-8)
+        # ★muon_lr_mult — Muon 의 관용 lr 은 AdamW 보다 한 자릿수 크다(원 구현 2e-2).
+        #   🚫기본 1.0 = 종전 동작 그대로. **바꾸려면 명시해야 한다.**
+        opt_muon = Muon(_mats, lr=lr * muon_lr_mult)
+        _nps = sum(p.numel() for p in _mats)
+        print(f"[opt] ★Muon(P005) — 행렬 {len(_mats)}개({_nps/1e6:.1f}M)는 Muon, "
               f"그 외 {len(_others)}개는 AdamW. 🚫muP 는 미구현(P005 A축)")
+        print(f"[opt] ★muon_lr={lr * muon_lr_mult:.2e} (= lr {lr:.2e} x {muon_lr_mult:g}) · "
+              f"AdamW 그룹 {len(_groups)}개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지")
     elif opt_dtype == "fp32":
         opt_muon = None
         opt = torch.optim.AdamW(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8,
@@ -472,6 +488,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             print(f"[opt] ⚠️ --resume 은 권장하지 않는다 — load_state_dict 가 상태를 파라미터 "
                   f"dtype 으로 캐스팅한다(오버라이드로 되돌리지만 조건이 흐려진다)")
     base_lrs = [g["lr"] for g in opt.param_groups]
+    # ★★2026-09-05 — 종전에는 이 줄이 `opt` 만 봤다. `opt_muon` 의 lr 은
+    #   **warmup 도 wsd 감쇠도 못 받고 상수로 남았다** — AdamW 팔과 Muon 팔이
+    #   **다른 스케줄을 도는 무효 비교**가 된다. 두 옥티마이저에 같은 계수를 건다.
+    base_lrs_muon = [g["lr"] for g in opt_muon.param_groups] if opt_muon is not None else []
     warm = 0 if sched == "decay" else max(5, min(steps // 10, 100))
     # (P026) cooldown-QAT 스케줄 정렬 표시. anneal_end=완전삼진 도달, decay_start=LR 감쇠 시작.
     assert 0.0 < anneal_end <= 1.0, f"--anneal-end 는 (0,1] 이어야 함: {anneal_end}"
@@ -654,6 +674,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         f = _lr_factor(s, warm, steps, sched, decay_frac)
         for g, b in zip(opt.param_groups, base_lrs):
             g["lr"] = b * f
+        if opt_muon is not None:                      # ★P005 — 같은 계수를 Muon 에도
+            for g, b in zip(opt_muon.param_groups, base_lrs_muon):
+                g["lr"] = b * f
 
         # Skip-Forward / Dynamic KD: 이 스텝에서 교사 forward를 수행할지 결정(P017).
         #   kd_every=1 → 매 스텝(기존). kd_every=K → K스텝마다 1회(교사 연산 1/K).
@@ -841,6 +864,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            #   기본값이라 코드가 안 돈 것을 못 알아챈다(결과 044).
            "cla_edges": bool(getattr(cfg, "cla_edges", True)),     # ★P084
            "mlp_lrm": bool(getattr(cfg, "mlp_lrm", False)),        # ★P086
+           # ★★P005(2026-09-05) — 플래그를 만들면 **그것을 읽는 json 필드**를
+           #   같은 커밋에 넣는다. 종전에는 `optimizer` 가 json 에 **없어서**
+           #   Muon 런과 AdamW 런을 사후에 구별할 수 없었다.
+           "optimizer": optimizer,
+           "muon_lr_mult": (float(muon_lr_mult) if optimizer == "muon" else None),
+           "muon_matrices": (len(_mats) if optimizer == "muon" else None),
            "vocab_size": int(cfg.vocab_size),
            "save_every": int(save_every or 0),                     # (P058)
            "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용

@@ -151,6 +151,10 @@ def main():
                    help="★(P005) `muon` 이면 **행렬만** Muon(Newton-Schulz 5), "
                         "임베딩·norm·bias 는 AdamW. ⚠️이점은 대배치 집중 — 우리 131K 는 작다. "
                         "⚠️삼진 STE 상호작용 미검증")
+    p.add_argument("--muon-lr-mult", type=float, default=1.0,
+                   help="★(P005, 2026-09-05) Muon 그룹의 lr 배수. Muon 의 관용 lr 은 "
+                        "AdamW 보다 한 자릿수 크다(원 구현 2e-2 vs 우리 1e-3). "
+                        "🚫기본 1.0 = 종전 동작 그대로. `--optimizer muon` 일 때만 쓴다")
     # ★★P086(2026-09-04) — 층별 스칼라 승수(Learnable Multipliers). 🚫기본 off = 비트 동일.
     p.add_argument("--mlp-lrm", action="store_true",
                    help="★(P086) 타잉된 중간층마다 **gate·up·down 스칼라 승수**를 준다. "
@@ -291,7 +295,7 @@ def main():
               tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode, mlp_group=a.mlp_group,
               mlp_split=a.mlp_split,
               micro_group=a.micro_group, opt_dtype=a.opt_dtype,
-              optimizer=a.optimizer,
+              optimizer=a.optimizer, muon_lr_mult=a.muon_lr_mult,
               wq_dtype=a.wq_dtype, emb_chunk=a.emb_chunk,
               ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from,
               snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None),

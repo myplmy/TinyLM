@@ -140,7 +140,14 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     # ★★2026-09-04 — **값**까지 적는다. 이름만 넣으면 기본값이라 코드가 안 돈다(결과 044).
     "sm_claedge": {"cla_group": 2, "cla_edges": False},
     "sm_lrm":     {"mlp_lrm": True},
+    # ★★P005(2026-09-05) — Muon 은 2026-09-03 에 파서에 들어왔는데 **한 번도 안 돌았다**.
+    #   `muon_lr_mult` 를 기본(1.0)이 아닌 5 로 주는 이유는 **배수가 실제로 전달되는지**를
+    #   같이 사기 위해서다 — 이름만 있으면 기본값이라 코드가 안 돈다(결과 044).
+    "sm_muon":    {"optimizer": "muon", "muon_lr_mult": 5.0},
     "sm_s34":    {"sparse34": True, "bpw": 1.25},
+    # ★2026-09-05 — P016 Stage3 이 **dense 몸통에서** 3:4 를 돌린다. 종전 `sm_s34` 는
+    #   tied 였고 `check_smoke_coverage` 가 그 빈 조합을 잡았다(P074 가 죽은 형태).
+    "sm_s34_dense": {"sparse34": True, "bpw": 1.25, "arch": "dense", "cla_group": 2},
     "sm_sched":  {"anneal_end": 0.80, "sched": "wsd", "decay_frac": 0.2},
     "sm_nockpt": {"grad_ckpt": False},
     "sm_kd":     {"kd": True, "init_from": True, "kd_every": 4, "kd_alpha": 0.5},
