@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 원인 구조 High-Density Train 150 v80",
+  "version": "80",
+  "purpose": "원인·결과·매개·공통 원인을 개입과 관찰의 차이까지 포함해 판정한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CSH-11851 ~ S2-CSH-12000",
+  "concept_family": "S2-A01-T080: 전기버스 충전차고 전력·배차 — 개입 변수와 자연 변동의 인과 효과 분리",
+  "design_note": "전기버스 충전차고 전력·배차 영역의 개입 변수와 자연 변동의 인과 효과 분리 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CSH-11851",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전출력 설정값과 계통전압 자연변동의 구분은 운영자가 충전기 목표를 바꾼 사건과 외부 전력망 상태가 흔들린 사건을 서로 다른 원인으로 두는 것이다. 측정전력 변화만으로 설정개입을 추정하지 않는다.",
+      "concepts": [
+        "충전출력 설정값과 계통전압 자연변동의 구분"
+      ],
+      "relations": [
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11852",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전시작 명령과 버스입고 지연의 구분은 제어기가 접속 뒤 시각을 선택한 것과 노선운행 때문에 접속 자체가 늦어진 것을 나누는 것이다. 같은 시작시각 변화라도 인과경로가 다르다.",
+      "concepts": [
+        "충전시작 명령과 버스입고 지연의 구분"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11853",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "목표충전량 개입과 입고잔량 차이의 분리는 관제에서 종료 잔량을 조정한 효과와 운행 후 남은 배터리 상태의 자연차이를 따로 비교하는 것이다. 목표가 높은 차량의 원래 잔량이 낮을 수 있다.",
+      "concepts": [
+        "목표충전량 개입과 입고잔량 차이의 분리"
+      ],
+      "relations": [
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11854",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배차순서 개입과 승객수요 변동의 분리는 어느 차량을 먼저 내보낼지 바꾼 결정과 시간대별 탑승객 수가 자연스럽게 달라진 상황을 나눈다. 운행성과 변화의 출처를 구별한다.",
+      "concepts": [
+        "배차순서 개입과 승객수요 변동의 분리"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11855",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배터리 예열명령과 외기온도 변동의 구분은 난방기를 켠 개입과 추운 날씨가 효율을 낮춘 영향을 따로 놓는 것이다.",
+      "concepts": [
+        "배터리 예열명령과 외기온도 변동의 구분"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11856",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "순차충전 스케줄과 차량도착 순서의 분리는 같은 입고집합에서 제어기가 충전차례를 바꾼 효과와 노선 종료시각이 만든 접속순서를 나눈다. 도착이 먼저였다는 사실을 스케줄 개입으로 보지 않는다.",
+      "concepts": [
+        "순차충전 스케줄과 차량도착 순서의 분리"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11857",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "피크제한 명령과 건물부하 자연감소의 분리는 충전출력을 의도적으로 낮춘 시점과 차고 조명·정비부하가 우연히 줄어든 시점을 구별하는 것이다. 총수전전력 감소를 모두 제어효과로 세지 않는다.",
+      "concepts": [
+        "피크제한 명령과 건물부하 자연감소의 분리"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11858",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전기 재할당 개입과 고장발생 변동의 분리는 관제가 차량 연결처를 바꾼 결정과 특정 충전기가 자연스럽게 고장 난 사건을 나누는 것이다. 고장 대응배정을 예방개입과 섞지 않는다.",
+      "concepts": [
+        "충전기 재할당 개입과 고장발생 변동의 분리"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11859",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "출차시각 조정과 도로혼잡 변동의 구분은 차고가 출발을 앞당긴 개입과 외부 교통상태가 운행시간을 바꾼 영향을 따로 평가하는 것이다. 늦은 도착만 보고 출차결정을 역추정하지 않는다.",
+      "concepts": [
+        "출차시각 조정과 도로혼잡 변동의 구분"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11860",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "회생제동 설정과 노선경사 차이의 분리는 차량 제어값을 바꾼 효과와 오르막·내리막 구성에서 생기는 자연 에너지차이를 나눈다. 설정군에 특정 노선이 몰리지 않게 비교한다.",
+      "concepts": [
+        "회생제동 설정과 노선경사 차이의 분리"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11861",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "냉난방 제한명령과 승객재실 변화의 분리는 공조출력을 낮춘 개입과 탑승인원이 열부하를 바꾼 자연조건을 구별한다. 전력절감과 쾌적도 결과를 모두 같은 조건에서 비교한다.",
+      "concepts": [
+        "냉난방 제한명령과 승객재실 변화의 분리"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11862",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전종료 기준 변경과 배터리온도 변동의 분리는 목표 전압이나 잔량을 조정한 개입과 온도 때문에 충전가능량이 달라진 현상을 나눈다. 실제 종료량 차이를 기준변경 하나로 돌리지 않는다.",
+      "concepts": [
+        "충전종료 기준 변경과 배터리온도 변동의 분리"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11863",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전예약 취소개입과 임시결행 변동의 구분은 전력제약 때문에 예약을 의도적으로 없앤 결정과 차량이 운행하지 않아 충전이 불필요해진 상황을 나눈다. 취소건수의 원인을 분류한다.",
+      "concepts": [
+        "충전예약 취소개입과 임시결행 변동의 구분"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11864",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "예비차 투입결정과 돌발고장 변동의 분리는 관제의 대체차 선택이 운행회복에 미친 효과와 원래 차량고장이 만든 필요를 구별하는 것이다. 심한 고장일수록 예비차가 투입되는 교란을 고려한다.",
+      "concepts": [
+        "예비차 투입결정과 돌발고장 변동의 분리"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11865",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "급속충전 전환과 배차공백 변동의 구분은 충전방식을 바꾼 개입과 우연히 다음 운행까지 시간이 짧아진 상황을 나눈다. 짧은 공백 때문에 급속을 선택한 역선택을 반영한다.",
+      "concepts": [
+        "급속충전 전환과 배차공백 변동의 구분"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11866",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전전류 제한과 배터리열화 자연차이의 분리는 제어기로 전류를 낮춘 효과와 오래된 배터리가 스스로 전류를 덜 받는 상태를 구별한다. 낮은 전류와 낮은 열화를 바로 연결하지 않는다.",
+      "concepts": [
+        "충전전류 제한과 배터리열화 자연차이의 분리"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11867",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "수요반응 참여명령과 전력가격 변동의 구분은 감축요청에 따라 충전을 미룬 개입과 시장가격이 자연스럽게 오르내린 영향을 나눈다. 요청이 고가시간에 집중되는 선택을 통제한다.",
+      "concepts": [
+        "수요반응 참여명령과 전력가격 변동의 구분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11868",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "축전지 방전명령과 태양광발전 변동의 분리는 저장전력을 꺼내 쓴 개입과 구름 때문에 현장발전이 달라진 자연조건을 따로 놓는 것이다. 수전전력 감소의 두 경로를 구별한다.",
+      "concepts": [
+        "축전지 방전명령과 태양광발전 변동의 분리"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11869",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전기 냉각설정과 차고기온 변동의 분리는 팬속도를 조정한 개입과 주변온도가 장비발열을 바꾼 자연효과를 나눈다. 더운 날 강한 냉각이 선택되는 공통원인을 고려한다.",
+      "concepts": [
+        "충전기 냉각설정과 차고기온 변동의 분리"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11870",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "출차우선순위 조정과 노선거리 차이의 분리는 잔량에 따라 차량순서를 바꾼 결정과 원래 배정된 운행거리의 차이를 구별한다.",
+      "concepts": [
+        "출차우선순위 조정과 노선거리 차이의 분리"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11871",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "완속충전 배정과 야간정차시간 변동의 구분은 충전모드를 선택한 효과와 차량별 사용가능 시간이 자연스럽게 다른 조건을 나눈다. 시간이 긴 차량에 완속이 배정되는 선택편향을 확인한다.",
+      "concepts": [
+        "완속충전 배정과 야간정차시간 변동의 구분"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11872",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배터리교체 결정과 기존성능 저하의 분리는 새 팩 투입이 효율을 바꾼 효과와 교체 전부터 나빴던 차량상태를 구별하는 것이다. 교체군의 낮은 기준성능을 보정한다.",
+      "concepts": [
+        "배터리교체 결정과 기존성능 저하의 분리"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11873",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전소프트웨어 갱신과 계절변화의 분리는 제어알고리즘이 바뀐 시점과 기온·운행수요가 달라진 시점을 나누는 것이다. 겨울 전환과 동시에 배포했다면 비교군이 필요하다.",
+      "concepts": [
+        "충전소프트웨어 갱신과 계절변화의 분리"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11874",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전케이블 예열개입과 결빙발생 변동의 구분은 히터를 켠 효과와 눈·습도 때문에 커넥터가 얼어붙은 자연사건을 나눈다. 결빙예보가 예열선택을 바꾸는 구조를 고려한다.",
+      "concepts": [
+        "충전케이블 예열개입과 결빙발생 변동의 구분"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11875",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "차량세척 일정과 강우세척 효과의 분리는 차고가 의도적으로 청소한 조치와 비가 외부 오염을 씻어낸 자연변화를 구별한다. 표면오염 감소를 모두 작업효과로 세지 않는다.",
+      "concepts": [
+        "차량세척 일정과 강우세척 효과의 분리"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11876",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "타이어공기압 조정과 외기온도 영향의 분리는 정비사가 압력을 맞춘 개입과 온도에 따라 압력측정값이 변한 현상을 나눈다. 에너지효율 비교에서 두 경로를 통제한다.",
+      "concepts": [
+        "타이어공기압 조정과 외기온도 영향의 분리"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11877",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배차간격 개입과 승하차지연 변동의 구분은 관제가 출발간격을 조정한 효과와 정류장 혼잡이 실제 간격을 벌린 영향을 나눈다. 계획간격과 실현간격을 별도 변수로 둔다.",
+      "concepts": [
+        "배차간격 개입과 승하차지연 변동의 구분"
+      ],
+      "relations": [
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11878",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "회차시간 단축명령과 교통신호 변동의 분리는 운전자에게 즉시 복귀를 지시한 효과와 신호주기 때문에 운행시간이 달라진 자연조건을 나눈다. 도착시간 변화의 출처를 분해한다.",
+      "concepts": [
+        "회차시간 단축명령과 교통신호 변동의 분리"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11879",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "노선교환 개입과 도로공사 우회변동의 구분은 차량이 맡을 노선을 바꾼 결정과 외부 공사로 경로가 달라진 사건을 나눈다. 거리와 전비 변화의 두 원인을 섞지 않는다.",
+      "concepts": [
+        "노선교환 개입과 도로공사 우회변동의 구분"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11880",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "운전자교대 개입과 운전습관 자연차이의 분리는 특정 차량에 운전자를 바꿔 배치한 효과와 사람마다 원래 가감속 특성이 다른 점을 구별한다. 임의교대와 선택교대를 나눠 본다.",
+      "concepts": [
+        "운전자교대 개입과 운전습관 자연차이의 분리"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11881",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "경제운전 교육과 노선혼잡 변동의 분리는 교육이 가감속을 바꾼 효과와 같은 기간 교통량이 달라진 영향을 구별한다. 교육 전후만 비교해 자연변동을 효과로 만들지 않는다.",
+      "concepts": [
+        "경제운전 교육과 노선혼잡 변동의 분리"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11882",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전대기열 규칙과 동시입고 변동의 분리는 우선순위 알고리즘을 바꾼 개입과 여러 차량이 우연히 함께 돌아온 수요충격을 나눈다. 대기시간 변화의 조건을 맞춘다.",
+      "concepts": [
+        "충전대기열 규칙과 동시입고 변동의 분리"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11883",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "최소잔량 규칙과 돌발노선 연장 변동의 구분은 출차기준을 높인 효과와 사고우회로 주행거리가 늘어난 상황을 나눈다. 복귀잔량의 변화만으로 규칙성과를 판단하지 않는다.",
+      "concepts": [
+        "최소잔량 규칙과 돌발노선 연장 변동의 구분"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11884",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전기 점검개입과 사용량 자연차이의 분리는 예방정비가 고장을 줄인 효과와 원래 적게 쓰인 장비가 덜 고장 나는 현상을 구별한다. 가동시간을 기준으로 비교한다.",
+      "concepts": [
+        "충전기 점검개입과 사용량 자연차이의 분리"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11885",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "펌웨어 재시작과 통신품질 변동의 구분은 장치를 재부팅한 개입과 무선망 혼잡이 자연스럽게 풀린 변화를 나눈다. 재시작 시점이 장애정점 뒤에 선택되는 점을 고려한다.",
+      "concepts": [
+        "펌웨어 재시작과 통신품질 변동의 구분"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11886",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "차고문 개방명령과 자연풍 환기의 분리는 문을 열어 열을 빼려는 조치와 풍속·풍향이 실내온도를 바꾼 자연효과를 나눈다. 같은 개방에서도 날씨별 효과가 달라질 수 있다.",
+      "concepts": [
+        "차고문 개방명령과 자연풍 환기의 분리"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11887",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "환기팬 증속과 차량발열 변동의 분리는 팬 제어가 차고온도를 낮춘 효과와 동시충전 차량수가 발열을 바꾼 영향을 구별한다. 높은 발열 때문에 증속한 역선택을 통제한다.",
+      "concepts": [
+        "환기팬 증속과 차량발열 변동의 분리"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11888",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전중단 명령과 보호차단 자연발생의 구분은 전력관리자가 의도적으로 멈춘 사건과 과열·누전 때문에 장비가 스스로 끊긴 사건을 나눈다. 중단로그의 원인코드를 확인한다.",
+      "concepts": [
+        "충전중단 명령과 보호차단 자연발생의 구분"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11889",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "요금제 전환개입과 월별 운행량 변동의 분리는 단가구조가 충전비를 바꾼 효과와 방학·행사로 주행거리가 달라진 자연변화를 구별한다. 비용차이를 사용량 기준으로 나눈다.",
+      "concepts": [
+        "요금제 전환개입과 월별 운행량 변동의 분리"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11890",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "계약전력 상향과 차량대수 증가의 분리는 전력한도를 바꾼 개입과 전기버스 증차가 충전수요를 늘린 변화를 나눈다. 증차에 대응해 계약을 올린 시간순서를 반영한다.",
+      "concepts": [
+        "계약전력 상향과 차량대수 증가의 분리"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11891",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전효율 보정개입과 전압품질 변동의 분리는 변환기 제어를 조정한 효과와 외부 전압왜곡이 손실을 바꾼 자연조건을 나눈다. 같은 기간의 계통자료를 함께 비교한다.",
+      "concepts": [
+        "충전효율 보정개입과 전압품질 변동의 분리"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11892",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배터리균형충전 명령과 셀편차 자연증가의 구분은 셀전압을 맞추려는 개입과 노화에 따라 편차가 커지는 현상을 나눈다. 편차가 큰 차량에 명령이 집중되는 선택을 고려한다.",
+      "concepts": [
+        "배터리균형충전 명령과 셀편차 자연증가의 구분"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11893",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "출차취소 결정과 기상경보 자연발생의 분리는 관제가 운행을 멈춘 조치와 폭설·태풍이라는 외부위험을 나눈다. 취소 뒤 사고가 적었다고 결정의 효과만으로 해석하지 않는다.",
+      "concepts": [
+        "출차취소 결정과 기상경보 자연발생의 분리"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11894",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "대체노선 투입과 승객우회수요 변동의 분리는 임시 차량배치가 혼잡을 낮춘 효과와 다른 노선 장애로 승객이 몰린 자연충격을 구별한다. 투입 전 수요추세를 맞춘다.",
+      "concepts": [
+        "대체노선 투입과 승객우회수요 변동의 분리"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11895",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전예약 분산개입과 야간온도 하강의 분리는 시작시각을 흩어 피크를 줄인 효과와 밤사이 배터리효율이 달라진 자연조건을 나눈다. 총전력과 충전완료를 함께 평가한다.",
+      "concepts": [
+        "충전예약 분산개입과 야간온도 하강의 분리"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11896",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "차량간 전력배분 개입과 충전기효율 차이의 분리는 같은 총한도에서 차량별 몫을 바꾼 효과와 장비마다 변환손실이 다른 점을 구별한다. 장비교차 배정으로 비교한다.",
+      "concepts": [
+        "차량간 전력배분 개입과 충전기효율 차이의 분리"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11897",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배차복구 명령과 사고해소 자연시점의 구분은 관제가 운행간격을 재조정한 효과와 도로사고가 우연히 풀린 영향을 나눈다. 회복시각이 겹쳐도 두 원인을 별도로 기록한다.",
+      "concepts": [
+        "배차복구 명령과 사고해소 자연시점의 구분"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11898",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "예비충전기 활성화와 고장군집 변동의 분리는 대기장비를 켠 개입과 폭염 등으로 여러 장비가 동시에 고장 난 자연충격을 구별한다. 처리 필요도가 큰 시점의 선택을 통제한다.",
+      "concepts": [
+        "예비충전기 활성화와 고장군집 변동의 분리"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11899",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "전력예측 갱신개입과 날씨예보 오차의 분리는 예측모형을 새로 학습한 효과와 입력예보가 우연히 더 정확해진 영향을 나눈다. 같은 고정 입력에서도 성능이 개선됐는지 본다.",
+      "concepts": [
+        "전력예측 갱신개입과 날씨예보 오차의 분리"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11900",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전관제 개입과 자연회복을 가르는 반사실 질문은 같은 시점에 명령을 내리지 않았다면 피크와 배차지연이 어떻게 변했을지를 묻는 것이다. 실제 전후차이만으로 답하지 않는다.",
+      "concepts": [
+        "충전관제 개입과 자연회복을 가르는 반사실 질문"
+      ],
+      "relations": [
+        "contrast",
+        "boundary",
+        "other"
+      ]
+    },
+    {
+      "id": "S2-CSH-11901",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "운영자가 바꿀 수 있는 충전개입 변수는 출력한도와 시작시각, 목표잔량처럼 명령으로 설정 가능한 항목이다. 외기온도나 승객수요 같은 조건변수와 분류를 나눈다.",
+      "concepts": [
+        "운영자가 바꿀 수 있는 충전개입 변수"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11902",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "운영자가 직접 바꾸지 않은 자연변동 변수는 날씨와 도로사고, 노선수요처럼 관측되지만 차고 명령으로 할당되지 않은 항목이다. 원인일 수 있어도 실험처치와 같지는 않다.",
+      "concepts": [
+        "운영자가 직접 바꾸지 않은 자연변동 변수"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11903",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전제어 배정값과 실제 실행값의 구분은 관제기가 출력제한을 지시한 것과 충전기가 그 지시를 얼마나 따랐는지를 나누는 것이다. 통신실패나 보호차단 때문에 둘이 달라질 수 있다.",
+      "concepts": [
+        "충전제어 배정값과 실제 실행값의 구분"
+      ],
+      "relations": [
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11904",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "피크제한 지시 자체의 배정효과는 명령을 실제로 수행했는지와 관계없이 제한군에 배정된 모든 차량의 결과를 비교한다. 배정 뒤 실패까지 포함한 정책효과다.",
+      "concepts": [
+        "피크제한 지시 자체의 배정효과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11905",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "피크제한을 실제 수행한 차량의 실행효과는 지시를 준수한 상태에서 전력과 출차준비가 어떻게 달라졌는지 묻는다. 준수차량만 단순 선택하면 원래 장비상태 차이가 섞일 수 있다.",
+      "concepts": [
+        "피크제한을 실제 수행한 차량의 실행효과"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11906",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "고부하 때문에 개입을 선택하는 적응적 교란은 피크가 클 것으로 예상될수록 관제가 제한명령을 내리는 구조다. 개입군 전력이 여전히 높아도 명령이 효과 없다고 바로 결론내리지 않는다.",
+      "concepts": [
+        "고부하 때문에 개입을 선택하는 적응적 교란"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11907",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "극단피크 뒤 자연감소가 만드는 평균회귀는 매우 높은 날 다음 측정이 별도 조치 없이도 보통 수준에 가까워지는 현상이다. 정점 직후 시행한 제어효과와 구별한다.",
+      "concepts": [
+        "극단피크 뒤 자연감소가 만드는 평균회귀"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11908",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "계절추세와 충전정책 효과의 분리는 겨울에서 봄으로 바뀌며 전비가 좋아진 변화와 새 스케줄의 영향을 나누는 것이다. 도입 전후에 같은 계절대조를 둔다.",
+      "concepts": [
+        "계절추세와 충전정책 효과의 분리"
+      ],
+      "relations": [
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11909",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "중단시계열로 본 출력제한 직후 피크변화는 정책시점에서 수전전력 수준이 즉시 달라졌는지 이전 추세와 비교한다. 날씨와 버스대수의 동시변화를 보정한다.",
+      "concepts": [
+        "중단시계열로 본 출력제한 직후 피크변화"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11910",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "비개입 차고를 둔 동시기 자연변동 대조는 새 제어를 쓰지 않은 유사 차고가 같은 날씨와 요금변화를 겪은 결과를 비교선으로 삼는다. 공통 시기효과를 줄인다.",
+      "concepts": [
+        "비개입 차고를 둔 동시기 자연변동 대조"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11911",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "개입차고와 대조차고의 이중차분은 정책 전후 변화에서 같은 기간 대조차고 변화를 빼 충전명령의 추가효과를 추정한다. 도입 전 추세가 비슷한지 먼저 확인한다.",
+      "concepts": [
+        "개입차고와 대조차고의 이중차분"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11912",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "출력설정값 무작위 배정으로 확인한 전력효과는 같은 입고조건의 충전기에 허용범위 안 설정을 임의로 주고 피크와 완료시간을 비교한다. 자연부하가 설정선택과 연결되는 길을 끊는다.",
+      "concepts": [
+        "출력설정값 무작위 배정으로 확인한 전력효과"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-CSH-11913",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전기 무작위 교차배정으로 분리한 장비차이는 차량을 여러 충전기에 임의 연결해 효율과 고장을 비교하는 방식이다. 특정 차량과 장비의 고정짝이 만드는 상관을 줄인다.",
+      "concepts": [
+        "충전기 무작위 교차배정으로 분리한 장비차이"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-CSH-11914",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "두 충전스케줄을 비교한 무작위 시범은 동시충전과 분산충전을 날짜나 차량군에 무작위 적용해 결과를 본다.",
+      "concepts": [
+        "두 충전스케줄을 비교한 무작위 시범"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-CSH-11915",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "같은 차량이 두 제어를 겪는 교차설계는 일정 기간 출력제한과 기준제어를 번갈아 적용해 차량고유 성능을 상쇄한다. 계절과 배터리노화의 순서효과를 확인한다.",
+      "concepts": [
+        "같은 차량이 두 제어를 겪는 교차설계"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11916",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "교차설계 사이의 충전상태 세척기간은 앞 제어가 남긴 배터리온도와 잔량이 다음 조건에 영향을 주지 않도록 운행과 휴지구간을 두는 것이다. 잔류효과를 줄인다.",
+      "concepts": [
+        "교차설계 사이의 충전상태 세척기간"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11917",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "앞선 급속충전이 다음날 효율에 남기는 이월효과는 배터리온도와 셀균형 변화가 다음 제어기간 결과에도 이어지는 현상이다. 각 날짜를 완전히 독립된 처치로 보지 않는다.",
+      "concepts": [
+        "앞선 급속충전이 다음날 효율에 남기는 이월효과"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11918",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "차고별 순차도입으로 평가한 관제정책은 여러 차고에 새 알고리즘을 다른 시기에 적용해 아직 전환하지 않은 곳을 동시기 대조로 삼는다. 도입시기 선택원인을 기록한다.",
+      "concepts": [
+        "차고별 순차도입으로 평가한 관제정책"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11919",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "계통감축 신호를 이용한 충전개입 도구변수는 외부 요청이 출력제한 실행률을 바꾸되 배차에는 충전변화를 통해서만 영향을 준다는 가정을 쓴다. 신호와 교통혼잡이 연결되면 가정이 깨진다.",
+      "concepts": [
+        "계통감축 신호를 이용한 충전개입 도구변수"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11920",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "잔량기준 경계에서 비교한 출차허용 효과는 최소잔량 바로 아래와 위 차량이 출차여부만 크게 달라지는 점을 이용한다. 운전자가 측정값을 정밀하게 조작할 수 없는지 확인한다.",
+      "concepts": [
+        "잔량기준 경계에서 비교한 출차허용 효과"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11921",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "갑작스러운 폭설을 이용한 자연변동 충격은 운영자가 만든 개입이 아니라 전비와 운행시간을 동시에 바꾸는 외생사건이다. 정책효과를 볼 때 날씨충격으로 따로 모델링한다.",
+      "concepts": [
+        "갑작스러운 폭설을 이용한 자연변동 충격"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11922",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "예고없는 충전기 정전이 만든 가용성 자연실험은 차량특성과 무관하게 일부 장비 사용이 막힌 변화를 이용해 재배정효과를 본다. 정전이 다른 차고설비도 손상했는지 확인한다.",
+      "concepts": [
+        "예고없는 충전기 정전이 만든 가용성 자연실험"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11923",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "입고잔량과 노선거리를 맞춘 차량비교는 개입선택에 영향을 주는 두 조건이 비슷한 차량끼리 충전전략 결과를 비교한다. 짝이 없는 극단 차량에는 결론을 넓히지 않는다.",
+      "concepts": [
+        "입고잔량과 노선거리를 맞춘 차량비교"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11924",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전전략 선택확률을 이용한 역확률가중은 날씨와 잔량, 출차시각으로 각 전략이 선택될 확률을 구해 가상 균형집단을 만든다. 큰 가중치의 영향과 겹침을 점검한다.",
+      "concepts": [
+        "충전전략 선택확률을 이용한 역확률가중"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11925",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "전략군 사이 공변량겹침의 확인은 같은 잔량과 기온, 정차시간 범위에 급속과 완속 사례가 모두 있는지 보는 것이다. 한 전략만 존재하는 조건의 효과를 외삽하지 않는다.",
+      "concepts": [
+        "전략군 사이 공변량겹침의 확인"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11926",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "차량고정효과로 제거한 배터리고유 차이는 같은 버스 안에서 제어가 바뀐 시점의 결과를 비교해 용량과 차종처럼 고정된 특성을 상쇄한다. 시간변화 노화는 별도로 다룬다.",
+      "concepts": [
+        "차량고정효과로 제거한 배터리고유 차이"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-CSH-11927",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "날짜고정효과로 제거한 차고공통 충격은 같은 날 모든 차량이 겪은 기온과 요금, 행사수요를 공통항으로 처리한다. 차량별 개입차이를 그 안에서 비교한다.",
+      "concepts": [
+        "날짜고정효과로 제거한 차고공통 충격"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-CSH-11928",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "정책도입 전후 효과를 펼친 사건연구는 시행 몇 주 전부터 이후까지 시점별 차이를 표시해 선행추세와 지속효과를 본다. 도입일 하나의 전후평균으로 숨기지 않는다.",
+      "concepts": [
+        "정책도입 전후 효과를 펼친 사건연구"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11929",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "관제정책 도입 전 평행추세 검사는 개입차고와 대조차고의 피크전력이 시행 전에 비슷한 방향으로 움직였는지 확인한다. 이미 갈라진 추세를 정책효과로 오인하지 않는다.",
+      "concepts": [
+        "관제정책 도입 전 평행추세 검사"
+      ],
+      "relations": [
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11930",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "가짜 정책일을 둔 충전피크 위약검사는 실제 알고리즘 배포 전 날짜를 시행점으로 놓아 효과가 미리 나타나는지 본다. 큰 선행효과는 자연추세나 선택시점을 의심하게 한다.",
+      "concepts": [
+        "가짜 정책일을 둔 충전피크 위약검사"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11931",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "미래 감축명령을 넣은 음성대조 노출은 내일의 명령이 오늘 피크를 바꿀 수 없다는 시간방향을 이용한다. 관련성이 보이면 반복 일정이나 예측부하 교란이 남은 것이다.",
+      "concepts": [
+        "미래 감축명령을 넣은 음성대조 노출"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11932",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "출력제한과 측정전력의 양성대조 경로는 명령이 정상 실행되면 충전기 입력이 즉시 낮아져야 한다는 알려진 연결이다. 이 효과가 없으면 로그정렬이나 실행상태를 재검토한다.",
+      "concepts": [
+        "출력제한과 측정전력의 양성대조 경로"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11933",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "부하예측오차가 개입선택과 결과에 주는 공통영향은 높은 예측값이 제한명령을 부르고 실제 부하와의 오차도 결과평가를 바꾸는 구조다. 예측과 실제값을 구분한다.",
+      "concepts": [
+        "부하예측오차가 개입선택과 결과에 주는 공통영향"
+      ],
+      "relations": [
+        "attribute",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11934",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "미관측 운전자행동 교란의 가능성은 급가속 습관이 입고잔량과 다음 배차선택을 함께 바꾸지만 기록되지 않는 경우다. 잔여 효과의 민감도를 평가한다.",
+      "concepts": [
+        "미관측 운전자행동 교란의 가능성"
+      ],
+      "relations": [
+        "role",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11935",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전시간을 매개자로 둔 출력제한 경로는 낮은 출력이 충전완료를 늦추고 그 지연이 출차준비에 영향을 주는 순서다. 총효과 분석에서 충전시간을 무조건 조정하지 않는다.",
+      "concepts": [
+        "충전시간을 매개자로 둔 출력제한 경로"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11936",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "출차성공 차량만 남겨 생기는 충돌자 편향은 충전전략과 차량상태가 함께 좌우하는 성공 여부를 표본 조건으로 삼을 때 나타난다.",
+      "concepts": [
+        "출차성공 차량만 남겨 생기는 충돌자 편향"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "other"
+      ]
+    },
+    {
+      "id": "S2-CSH-11937",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "개입후 잔량을 사전공변량으로 쓰는 과잉조정은 충전명령이 이미 바꾼 상태를 조정해 전력에서 배차로 가는 경로를 잘라내는 것이다. 개입 전 잔량과 구별한다.",
+      "concepts": [
+        "개입후 잔량을 사전공변량으로 쓰는 과잉조정"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11938",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "시간에 따라 바뀌는 잔량과 제어선택의 상호의존은 앞선 명령이 잔량을 바꾸고 그 잔량이 다음 명령을 결정하는 반복구조다. 한 번의 고정처치로 단순화하지 않는다.",
+      "concepts": [
+        "시간에 따라 바뀌는 잔량과 제어선택의 상호의존"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11939",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "동적 충전정책의 주변구조모형은 각 시점의 제어확률로 가중해 과거 명령의 영향을 받은 잔량교란을 다룬다.",
+      "concepts": [
+        "동적 충전정책의 주변구조모형"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11940",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "표준화 공식으로 비교한 동적 충전전략은 기온과 도착, 잔량의 가능한 경로를 따라 각 전략의 결과를 예측해 같은 기준분포로 평균낸다. 실제 관측전략 구성과 나눈다.",
+      "concepts": [
+        "표준화 공식으로 비교한 동적 충전전략"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-CSH-11941",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "외기온도별로 다른 출력제한 효과는 추운 날과 온화한 날에 같은 전력제한이 충전완료를 다르게 늦추는 현상이다. 온도를 자연조건이자 효과수정자로 분류한다.",
+      "concepts": [
+        "외기온도별로 다른 출력제한 효과"
+      ],
+      "relations": [
+        "comparison",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-CSH-11942",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배터리연식별로 다른 급속충전 효과는 노화된 팩과 새 팩에서 같은 충전모드의 온도와 효율 변화가 다르게 나타나는 현상이다. 전체 평균으로 각 연식을 대표하지 않는다.",
+      "concepts": [
+        "배터리연식별로 다른 급속충전 효과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-CSH-11943",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "노선거리별로 다른 목표잔량 효과는 긴 노선과 짧은 노선에서 높은 출차잔량이 결행위험을 줄이는 정도가 다른 현상이다. 거리 자체의 자연수요와 개입효과 변화를 나눈다.",
+      "concepts": [
+        "노선거리별로 다른 목표잔량 효과"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11944",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "공용변압기가 만드는 차량간 간섭은 한 충전기의 출력상향이 같은 설비에 연결된 다른 차량의 가용전력을 낮추는 현상이다. 차량별 결과가 서로 독립이라는 가정과 다르다.",
+      "concepts": [
+        "공용변압기가 만드는 차량간 간섭"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-CSH-11945",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "한 차량 출력제한이 이웃충전에 주는 파급효과는 비워진 전력여유가 다른 충전기의 속도를 높이는 영향이다. 제한차량의 직접효과와 주변차량의 간접효과를 나눈다.",
+      "concepts": [
+        "한 차량 출력제한이 이웃충전에 주는 파급효과"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11946",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "차고단위 개입에서 성립하는 독립성 경계는 차량 사이 전력공유는 차고 안에 포함하고 다른 변압기 차고와의 영향은 없다고 정한 분석범위다. 계통연결이 이를 깨는지 확인한다.",
+      "concepts": [
+        "차고단위 개입에서 성립하는 독립성 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-CSH-11947",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "출력제한이 해당 차량 전력에 미치는 직접효과는 다른 차량의 설정을 그대로 둔 채 대상 충전기의 소비전력이 달라지는 몫이다. 공동한도 재배분 경로와 분리한다.",
+      "concepts": [
+        "출력제한이 해당 차량 전력에 미치는 직접효과"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11948",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "전력재배분을 거쳐 배차에 미치는 간접효과는 한 차량의 제한이 다른 차량 충전을 빠르게 하고 그 차량의 출차준비를 바꾸는 경로다. 대상 차량만 본 효과와 다르다.",
+      "concepts": [
+        "전력재배분을 거쳐 배차에 미치는 간접효과"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-CSH-11949",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전정책이 차고성과에 미치는 총효과는 대상차량의 직접 전력변화와 충전시간, 차량간 재배분을 거친 모든 영향을 합친 값이다. 한 매개경로만의 기여로 축소하지 않는다.",
+      "concepts": [
+        "충전정책이 차고성과에 미치는 총효과"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11950",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전개입을 확인하는 관제명령 원본로그는 목표출력과 발행시각, 대상장비를 변경 없이 남긴 기록이다. 측정전력만 보고 명령 존재를 추정하지 않게 한다.",
+      "concepts": [
+        "충전개입을 확인하는 관제명령 원본로그"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-CSH-11951",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "자연조건을 확인하는 외부 기상관측은 차고 제어와 독립된 관측소의 기온과 강수, 풍속을 같은 시간축에 맞춘 자료다. 제어기가 계산한 내부 추정값과 구분한다.",
+      "concepts": [
+        "자연조건을 확인하는 외부 기상관측"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11952",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "명령시각과 전력계시각의 동기화는 관제지시가 실제 부하보다 앞섰는지 동일한 기준시계로 확인하는 절차다. 장치별 지연이 개입방향을 뒤집지 않게 한다.",
+      "concepts": [
+        "명령시각과 전력계시각의 동기화"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11953",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전기 수신확인으로 구분한 명령전달 상태는 서버가 보낸 지시와 장비가 실제로 받은 지시를 나누는 정보다. 미수신을 무준수와 같은 원인으로 합치지 않는다.",
+      "concepts": [
+        "충전기 수신확인으로 구분한 명령전달 상태"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11954",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "전력궤적으로 확인한 충전명령 실행은 제한시각 뒤 측정출력이 목표범위로 내려갔는지 연속자료에서 검증한 상태다. 설정파일 존재만으로 실행을 확정하지 않는다.",
+      "concepts": [
+        "전력궤적으로 확인한 충전명령 실행"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-CSH-11955",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전중단 원인코드의 세부분류는 관제제한과 보호차단, 통신오류, 차량요청을 서로 다른 사건으로 나누는 것이다. 같은 영전력 결과가 다른 인과경로를 가질 수 있다.",
+      "concepts": [
+        "충전중단 원인코드의 세부분류"
+      ],
+      "relations": [
+        "classification",
+        "boundary",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-CSH-11956",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "수동재정의가 바꾸는 자동제어 노출은 운영자가 알고리즘 명령을 취소하거나 수정해 실제 처치가 달라지는 과정이다. 자동정책 배정과 최종 실행을 별도 기록한다.",
+      "concepts": [
+        "수동재정의가 바꾸는 자동제어 노출"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11957",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "누락된 관제명령의 개입상태 불확실성은 로그가 없을 때 명령을 내리지 않은 것인지 저장에 실패한 것인지 구별할 수 없는 상태다. 임의로 비개입군에 넣지 않는다.",
+      "concepts": [
+        "누락된 관제명령의 개입상태 불확실성"
+      ],
+      "relations": [
+        "state",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11958",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "누락된 기상자료의 자연변동 불확실성은 폭설이나 통신장애 때 외부조건을 관측하지 못해 개입효과와 날씨효과를 나누기 어려운 상태다. 결측원인을 함께 모델링한다.",
+      "concepts": [
+        "누락된 기상자료의 자연변동 불확실성"
+      ],
+      "relations": [
+        "state",
+        "other",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11959",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "전력계 측정오차가 개입효과에 주는 영향은 제한 전후의 실제 소비차이가 잡음이나 교정편향으로 흐려지는 것이다. 오류가 전략군마다 다른지 확인한다.",
+      "concepts": [
+        "전력계 측정오차가 개입효과에 주는 영향"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11960",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "설정출력과 실측출력 사이의 준수오차는 충전기가 명령을 받은 뒤에도 차량요청이나 변환한계로 목표와 다른 전력을 쓰는 차이다. 개입강도를 실측으로 보조한다.",
+      "concepts": [
+        "설정출력과 실측출력 사이의 준수오차"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11961",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "관측조건을 맞춘 반사실 전력예측은 같은 날씨와 차량도착에서 출력제한이 없었다면 나타날 전력궤적을 추정한 값이다. 실제 자연변동과 모형가정을 함께 밝힌다.",
+      "concepts": [
+        "관측조건을 맞춘 반사실 전력예측"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "other"
+      ]
+    },
+    {
+      "id": "S2-CSH-11962",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "현장자료로 보정한 충전시뮬레이터는 배터리와 충전기 응답을 실제 로그에 맞춘 뒤 서로 다른 명령의 결과를 가상 실행하는 도구다. 보정범위 안에서만 인과비교를 보조한다.",
+      "concepts": [
+        "현장자료로 보정한 충전시뮬레이터"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11963",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "디지털쌍둥이 예측을 실제 개입증거로 보는 한계는 모형이 자연조건과 장비반응을 빠뜨리면 가상효과가 현실효과와 다를 수 있다는 것이다. 현장 개입자료로 검증한다.",
+      "concepts": [
+        "디지털쌍둥이 예측을 실제 개입증거로 보는 한계"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "other"
+      ]
+    },
+    {
+      "id": "S2-CSH-11964",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "여러 대조차고를 합성한 비개입 기준선은 정책 전 전력과 배차패턴이 닮도록 다른 차고의 가중합을 만든 것이다.",
+      "concepts": [
+        "여러 대조차고를 합성한 비개입 기준선"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-CSH-11965",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "날씨와 운행량을 맞춘 유사일 비교는 개입일과 기온·강수·입고대수가 비슷한 과거 날짜를 골라 피크차이를 본다. 관측되지 않은 행사나 고장은 남은 교란일 수 있다.",
+      "concepts": [
+        "날씨와 운행량을 맞춘 유사일 비교"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11966",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "기온구간 안에서 비교한 충전제어 효과는 한랭과 보통, 고온 조건을 나눠 같은 자연환경 안의 개입차이를 측정한다. 넓은 구간에 남는 기온차를 점검한다.",
+      "concepts": [
+        "기온구간 안에서 비교한 충전제어 효과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11967",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "노선유형별로 층화한 배차개입 효과는 도심단거리와 광역장거리 차량을 나눠 우선순위 변경의 결행차이를 본다. 노선구성이 효과처럼 보이는 것을 줄인다.",
+      "concepts": [
+        "노선유형별로 층화한 배차개입 효과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-CSH-11968",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "비충전 건물부하를 둔 음성대조 결과는 충전출력 제한이 직접 바꾸지 않아야 할 사무실 조명전력에서도 같은 감소가 나타나는지 본다. 나타나면 공통 시간효과를 의심한다.",
+      "concepts": [
+        "비충전 건물부하를 둔 음성대조 결과"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11969",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "다음날 명령을 넣은 역시간 음성대조는 미래 제어가 오늘의 전력피크에 영향을 줄 수 없다는 조건을 이용한다. 관계가 생기면 반복 일정이나 자연추세가 남은 것이다.",
+      "concepts": [
+        "다음날 명령을 넣은 역시간 음성대조"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11970",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전차단과 즉시전력 감소의 양성대조는 장비를 끄면 실측전력이 바로 내려가야 한다는 알려진 기능경로다. 검출되지 않으면 계측이나 시각정렬을 우선 의심한다.",
+      "concepts": [
+        "충전차단과 즉시전력 감소의 양성대조"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11971",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "출력제한 강도에 따른 용량반응은 제한폭이 커질수록 피크는 더 낮아지고 완료지연은 커지는지를 본다. 자연부하에 따라 강도가 선택되는 구조를 조정한다.",
+      "concepts": [
+        "출력제한 강도에 따른 용량반응"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11972",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "계약전력 경계에서 달라지는 피크효과는 수전전력이 기준에 가까워질 때 제어가 작동해 경계 아래와 위의 결과가 불연속적으로 달라지는 현상이다. 다른 보호로직도 확인한다.",
+      "concepts": [
+        "계약전력 경계에서 달라지는 피크효과"
+      ],
+      "relations": [
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11973",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "저출력 구간과 고출력 구간의 비선형 충전반응은 출력 한 단위 변화가 배터리 잔량과 온도에 주는 영향이 범위마다 다른 현상이다. 단일 직선효과로 전체를 대표하지 않는다.",
+      "concepts": [
+        "저출력 구간과 고출력 구간의 비선형 충전반응"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11974",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "배터리수용한계에서 포화되는 출력개입 효과는 설정값을 더 올려도 차량이 받을 수 있는 전류를 넘으면 실측전력이 증가하지 않는 상태다. 명령강도와 실제 처치를 구분한다.",
+      "concepts": [
+        "배터리수용한계에서 포화되는 출력개입 효과"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11975",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "피크제한 뒤 충전재개가 만드는 반등효과는 미뤄 둔 에너지가 제한 종료 직후 몰려 새로운 피크를 만드는 과정이다. 제한시간 안의 감소만으로 총효과를 평가하지 않는다.",
+      "concepts": [
+        "피크제한 뒤 충전재개가 만드는 반등효과"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11976",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "예고된 감축명령 전에 나타나는 선행행동은 운영자가 제한 시작 전에 미리 충전을 늘리거나 차량을 바꾸는 반응이다. 공식 개입시점만 기준으로 하면 효과 일부를 놓친다.",
+      "concepts": [
+        "예고된 감축명령 전에 나타나는 선행행동"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11977",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "전날 제어가 다음날 입고잔량에 주는 파급은 충전부족이 다음 운행과 복귀상태까지 이어지는 시간간섭이다. 날짜별 결과를 서로 독립으로 보지 않는다.",
+      "concepts": [
+        "전날 제어가 다음날 입고잔량에 주는 파급"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11978",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전명령에서 배차결과까지의 반응지연은 전력은 즉시 변해도 출차준비 여부는 충전종료와 배정시점 뒤에 결정되는 간격이다. 결과별 시차를 따로 둔다.",
+      "concepts": [
+        "충전명령에서 배차결과까지의 반응지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11979",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "여러 제한기간을 합친 누적개입량은 하루 동안 줄인 출력과 지속시간을 함께 모아 배터리와 배차에 가해진 총 제약을 나타낸다. 명령횟수만으로 강도를 대표하지 않는다.",
+      "concepts": [
+        "여러 제한기간을 합친 누적개입량"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11980",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "명령 직후에만 나타나는 일시적 전력효과는 제한 중에는 부하가 낮지만 종료와 함께 원래 수준으로 돌아가는 변화다. 장기 효율개선과 구별한다.",
+      "concepts": [
+        "명령 직후에만 나타나는 일시적 전력효과"
+      ],
+      "relations": [
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11981",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "알고리즘 학습 뒤 유지되는 지속적 배차효과는 운영자가 새 우선순위에 적응해 공식 시범이 끝난 뒤에도 지연이 낮게 남는 현상이다. 일회성 날씨호전과 비교한다.",
+      "concepts": [
+        "알고리즘 학습 뒤 유지되는 지속적 배차효과"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11982",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전개입 효과차이의 신뢰구간은 표본과 자연변동을 고려했을 때 피크감소나 지연증가가 놓일 범위를 나타낸다. 점추정 하나로 확정하지 않는다.",
+      "concepts": [
+        "충전개입 효과차이의 신뢰구간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11983",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "차고단위 군집오차로 평가한 정책불확실성은 같은 변압기와 운영팀을 공유하는 차량 결과가 서로 닮는 점을 반영한다. 차량행을 모두 독립 표본처럼 세지 않는다.",
+      "concepts": [
+        "차고단위 군집오차로 평가한 정책불확실성"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11984",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "날짜블록 재표집으로 보존한 자연변동은 연속된 기상과 운행패턴을 묶은 채 표본을 다시 뽑아 효과분포를 구하는 것이다. 시간의존성을 깨뜨리지 않는다.",
+      "concepts": [
+        "날짜블록 재표집으로 보존한 자연변동"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-CSH-11985",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "여러 관제정책 비교에서 생기는 다중검정은 많은 출력·시각·배차 조합 중 우연히 좋은 결과가 나올 가능성을 높인다. 사전 지정과 탐색 결과를 나눠 보고한다.",
+      "concepts": [
+        "여러 관제정책 비교에서 생기는 다중검정"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11986",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "개입정의와 결과창의 사전등록은 어떤 명령과 실행상태를 처치로 보고 언제까지 피크와 배차를 측정할지 분석 전에 정하는 것이다. 결과에 맞춘 경계변경을 막는다.",
+      "concepts": [
+        "개입정의와 결과창의 사전등록"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11987",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "수동결정 사유를 남긴 운영원장은 왜 특정 차량의 충전이나 배차를 바꿨는지 당시 정보와 함께 기록한 문서다. 숨은 적응적 교란을 검토하게 한다.",
+      "concepts": [
+        "수동결정 사유를 남긴 운영원장"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-CSH-11988",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "전기버스 차고의 개입인과 그래프는 날씨와 도착잔량, 관제명령, 충전실행, 배차결과의 방향을 명시한 구조다. 조정할 자연조건과 남길 매개경로를 구별한다.",
+      "concepts": [
+        "전기버스 차고의 개입인과 그래프"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-CSH-11989",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "개입효과 식별에 필요한 가정목록은 교환가능성과 양성확률, 일관성, 간섭범위를 각각 밝힌 것이다. 자료가 많다는 이유로 가정을 생략하지 않는다.",
+      "concepts": [
+        "개입효과 식별에 필요한 가정목록"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11990",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "대체 자연변동 보정에 따른 민감도는 기온을 직선과 구간, 곡선으로 다르게 조정해도 충전개입 효과가 유지되는지 본다. 한 함수형태에만 의존하지 않는다.",
+      "concepts": [
+        "대체 자연변동 보정에 따른 민감도"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11991",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "미측정 운행충격에 필요한 교란강도는 기록되지 않은 행사나 사고가 개입과 결과에 얼마나 강하게 연결돼야 추정효과가 사라지는지 나타낸다. 결론의 견고성을 평가한다.",
+      "concepts": [
+        "미측정 운행충격에 필요한 교란강도"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "other"
+      ]
+    },
+    {
+      "id": "S2-CSH-11992",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "자연변동 잔여효과를 포함한 인과상하한은 관측하지 못한 날씨와 수요충격의 가능한 영향을 가정해 개입효과가 놓일 범위를 제시한다. 정확한 한 값으로 꾸미지 않는다.",
+      "concepts": [
+        "자연변동 잔여효과를 포함한 인과상하한"
+      ],
+      "relations": [
+        "attribute",
+        "boundary",
+        "other"
+      ]
+    },
+    {
+      "id": "S2-CSH-11993",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "폭설시 결측이 만드는 선택된 완료차량 집단은 통신과 충전이 모두 성공한 차량만 남아 자연조건이 좋은 사례가 과대표집되는 현상이다. 완전사례 결과를 전체 폭설운영에 적용하지 않는다.",
+      "concepts": [
+        "폭설시 결측이 만드는 선택된 완료차량 집단"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11994",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "완전로그 사례만 분석할 때의 선택편향은 안정된 장비와 잔잔한 운영일이 명령·전력·배차 자료를 모두 남기기 쉬운 구조에서 생긴다. 결측확률을 개입군별로 비교한다.",
+      "concepts": [
+        "완전로그 사례만 분석할 때의 선택편향"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11995",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "예측성능과 개입성능의 분리평가는 피크를 잘 맞히는 모형과 그 모형의 명령을 실행했을 때 피크가 실제 줄어드는지를 다른 지표로 측정한다. 상관예측을 인과효과로 바꾸지 않는다.",
+      "concepts": [
+        "예측성능과 개입성능의 분리평가"
+      ],
+      "relations": [
+        "contrast",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11996",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "전력절감과 운행비용을 함께 본 순효과는 피크요금 감소에서 추가 지연과 배터리열화 비용을 뺀 정책가치를 뜻한다. 전력 한 결과만으로 운영개입을 승인하지 않는다.",
+      "concepts": [
+        "전력절감과 운행비용을 함께 본 순효과"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11997",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "노선별 서비스격차를 포함한 배차효과는 전체 결행이 줄어도 특정 외곽노선의 대기만 늘지 않았는지 하위집단으로 확인한다. 평균성과와 분배영향을 구별한다.",
+      "concepts": [
+        "노선별 서비스격차를 포함한 배차효과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11998",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "충전안전 결과를 포함한 개입평가는 피크감소와 함께 과열과 보호차단, 출차부족이 늘지 않았는지 확인한다. 효율효과가 안전경계를 넘으면 채택하지 않는다.",
+      "concepts": [
+        "충전안전 결과를 포함한 개입평가"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-11999",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "원시변화와 조정된 개입효과의 병렬보고는 실제 전후 피크차이와 날씨·도착·수요를 맞춘 인과추정을 나란히 제시하는 것이다.",
+      "concepts": [
+        "원시변화와 조정된 개입효과의 병렬보고"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CSH-12000",
+      "type": "causal_structure_packet",
+      "split": "train",
+      "text": "개입변수와 자연변동의 최종 분리규칙은 명령·수신·실행 증거와 동시기 자연조건, 반사실 대조, 시간방향, 민감도 검사를 모두 갖춘 경우에만 관제효과를 확정하는 것이다. 부족하면 미식별로 남긴다.",
+      "concepts": [
+        "개입변수와 자연변동의 최종 분리규칙"
+      ],
+      "relations": [
+        "classification",
+        "boundary",
+        "other"
+      ]
+    }
+  ]
+}

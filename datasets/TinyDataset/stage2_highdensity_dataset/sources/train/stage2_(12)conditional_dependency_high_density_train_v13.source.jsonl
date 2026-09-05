@@ -1,0 +1,150 @@
+{"primary":"자동확장 최대치 보호","text":"비용과 하류 용량을 넘지 않도록 자동확장 최대치 보호를 서비스별로 적용한다. 순간 부하가 높다는 이유로 계정 전체 쿼터까지 무제한 늘리는 예외는 두지 않는다.","relations":["attribute","function","classification","boundary"]}
+{"primary":"핵심기능 우선 부하차단","text":"포화가 시작되면 핵심기능 우선 부하차단으로 추천·미리보기 같은 선택 경로부터 줄인다. 인증이나 결제까지 같은 비율로 끄는 규칙으로 넓히지 않는다.","relations":["role","classification","contrast","boundary"]}
+{"primary":"하류별 회로차단 범위","text":"연속 실패가 난 대상에만 하류별 회로차단 범위를 적용한다. 한 외부 API의 장애를 모든 하류 호출의 공통 차단조건으로 쓰지 않는다.","relations":["part_of","function","classification","boundary"]}
+{"primary":"멱등요청 재시도 예외","text":"전송결과를 모를 때 멱등요청 재시도 예외는 같은 키와 내용이 보존된 호출에만 허용한다. 결제처럼 중복 효과가 있는 새 요청을 자동 반복하지 않는다.","relations":["classification","function","contrast","boundary"]}
+{"primary":"재시도횟수 상한해제 조건","text":"하류가 회복되고 대기열이 안정돼야 재시도횟수 상한해제 조건을 충족한다. 성공 응답 한 건만 보고 모든 클라이언트의 제한을 즉시 풀지 않는다.","relations":["process","comparison","classification","boundary"]}
+{"primary":"사용자별 속도제한 보호","text":"공정한 용량 배분을 위해 사용자별 속도제한 보호를 각 계정의 요청에 적용한다. 내부 점검계정의 예외를 일반 사용자에게 상속하지 않는다.","relations":["role","classification","attribute","boundary"]}
+{"primary":"긴급복구 호출의 속도예외","text":"장애를 멈추는 긴급복구 호출의 속도예외는 승인된 운영 계정과 특정 명령에만 적용한다. 대량 조회나 데이터 추출까지 한도 밖으로 허용하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"동시실행 상한 보호","text":"메모리와 하류 연결을 지키기 위해 동시실행 상한 보호로 한 번에 처리할 작업 수를 제한한다. 큐가 길다는 사실만으로 실행 한도를 우회하지 않는다.","relations":["attribute","function","state","boundary"]}
+{"primary":"대화형 요청의 예약슬롯 예외","text":"배치 작업이 몰릴 때 대화형 요청의 예약슬롯 예외로 일부 실행공간을 남긴다. 배치 전체에 높은 우선순위를 주는 예외는 아니다.","relations":["role","classification","comparison","boundary"]}
+{"primary":"대기열 만수 입력차단","text":"저장 가능한 깊이에 닿으면 대기열 만수 입력차단으로 새 생산자의 적재를 늦춘다. 소비자가 곧 늘 것이라는 기대만으로 보호를 무시하지 않는다.","relations":["attribute","function","state","boundary"]}
+{"primary":"만수해제의 감소추세 확인","text":"대기열이 여러 관찰창에서 줄어야 만수해제의 감소추세 확인을 마치고 입력률을 복원한다. 한 순간 깊이가 낮아진 것만으로 차단을 풀지 않는다.","relations":["process","comparison","state","boundary"]}
+{"primary":"메모리압박 작업거부","text":"가용 메모리가 안전선 아래면 메모리압박 작업거부로 큰 요청의 시작을 막는다. CPU가 낮다는 이유로 메모리 보호를 우회하지 않는다.","relations":["attribute","function","classification","boundary"]}
+{"primary":"진단덤프의 메모리예외 한계","text":"장애 분석을 위한 진단덤프의 메모리예외 한계는 예약된 작은 버퍼와 짧은 시간에 한정된다. 전체 힙 복사를 무조건 허용하지 않는다.","relations":["classification","attribute","role","boundary"]}
+{"primary":"메모리압박 해제의 회수확인","text":"종료된 작업의 메모리가 실제로 반환돼야 메모리압박 해제의 회수확인으로 새 요청을 받는다. 작업 수 감소만으로 사용량 회복을 추정하지 않는다.","relations":["process","state","comparison","boundary"]}
+{"primary":"CPU포화 배치감속","text":"CPU 사용이 지속 상한에 머물면 CPU포화 배치감속으로 후순위 계산량을 줄인다. 사용자 응답 스레드까지 같은 감속률로 묶지 않는다.","relations":["attribute","classification","function","boundary"]}
+{"primary":"보안패치 작업의 CPU예외","text":"긴급 취약점 검사를 위한 보안패치 작업의 CPU예외는 서비스 최소용량을 남긴 노드에만 허용한다. 모든 노드에서 동시에 높은 부하를 만들지 않는다.","relations":["role","classification","part_of","boundary"]}
+{"primary":"CPU보호 해제의 지연회복","text":"요청지연과 실행대기까지 정상 범위에 들어야 CPU보호 해제의 지연회복을 인정한다. CPU 숫자 하나의 하락만으로 배치속도를 전부 복원하지 않는다.","relations":["comparison","attribute","process","boundary"]}
+{"primary":"디스크여유 하한 쓰기차단","text":"남은 공간이 복구여유 아래면 디스크여유 하한 쓰기차단으로 비필수 파일 생성을 막는다. 데이터베이스 필수 로그까지 임의로 버리는 예외는 없다.","relations":["attribute","function","classification","boundary"]}
+{"primary":"감사로그 예약공간 예외","text":"일반 로그가 제한돼도 감사로그 예약공간 예외로 보안과 변경기록을 계속 남긴다. 응용 디버그 로그가 같은 예약공간을 쓰게 하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"공간회복 뒤 쓰기단계해제","text":"불필요 파일을 지우고 증가율이 안정돼야 공간회복 뒤 쓰기단계해제로 파일 종류별 제한을 푼다. 삭제 직후의 일시 여유만으로 전부 허용하지 않는다.","relations":["process","comparison","state","boundary"]}
+{"primary":"아이노드 고갈 생성차단","text":"빈 바이트가 남아도 파일 수 한계에 닿으면 아이노드 고갈 생성차단으로 새 로그와 임시파일을 막는다. 용량 경보만으로 이 보호를 대신하지 않는다.","relations":["attribute","function","contrast","boundary"]}
+{"primary":"파일병합의 아이노드복구 예외","text":"작은 로그를 합치는 파일병합의 아이노드복구 예외는 합친 파일의 무결성을 확인한 뒤 원본을 지울 때만 쓴다. 무검증 일괄삭제는 허용하지 않는다.","relations":["process","classification","function","boundary"]}
+{"primary":"로그보존 등급별 한도","text":"로그보존 등급별 한도는 보안·거래·디버그 기록의 필수 기간을 다르게 적용한다. 저장공간 부족을 이유로 모든 로그를 같은 순서로 삭제하지 않는다.","relations":["classification","role","attribute","boundary"]}
+{"primary":"연결풀 포화 신규거부","text":"모든 연결이 사용 중이면 연결풀 포화 신규거부로 추가 요청이 무한 대기하지 않게 한다. 현재 세션의 완료를 강제로 취소하는 규칙과는 구분한다.","relations":["state","function","contrast","boundary"]}
+{"primary":"관리진단 연결의 별도예약","text":"장애 중에도 관리진단 연결의 별도예약으로 제한된 운영 쿼리를 허용한다. 일반 사용자 질의를 관리 슬롯으로 보내는 예외는 아니다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"연결보호 해제의 하류용량","text":"데이터베이스 활성 세션과 지연이 함께 회복돼야 연결보호 해제의 하류용량을 확인한다. 응용 연결풀만 비었다고 입력을 전부 복원하지 않는다.","relations":["comparison","attribute","process","boundary"]}
+{"primary":"거래시간 상한 롤백보호","text":"잠금과 자원 점유를 줄이기 위해 거래시간 상한 롤백보호를 적용한다. 승인된 장기 배치의 예외를 대화형 거래에 그대로 주지 않는다.","relations":["attribute","function","classification","boundary"]}
+{"primary":"장기마이그레이션의 분할예외","text":"장기마이그레이션의 분할예외는 작은 범위마다 커밋하고 재개점을 남기는 작업에만 허용한다. 하나의 거대한 잠금을 유지하는 예외는 아니다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"복제지연 읽기격리","text":"복제지연이 한도를 넘으면 복제지연 읽기격리로 최신성이 필요한 요청을 주 저장소에 보낸다. 오래된 값도 허용하는 조회까지 모두 중지하지 않는다.","relations":["attribute","classification","function","boundary"]}
+{"primary":"분석조회 지연허용 예외","text":"과거 통계에는 분석조회 지연허용 예외로 약간 늦은 복제본을 쓸 수 있다. 잔액이나 권한처럼 현재값이 필요한 경로에 같은 예외를 적용하지 않는다.","relations":["classification","contrast","role","boundary"]}
+{"primary":"복제복귀의 로그위치 확인","text":"지연 복제본이 주 로그 위치를 따라잡아야 복제복귀의 로그위치 확인으로 최신 조회 풀에 다시 넣는다. 연결 가능만으로 격리를 해제하지 않는다.","relations":["process","state","comparison","boundary"]}
+{"primary":"분할상태 쓰기금지","text":"복제노드 사이 연결이 끊기고 정족수를 확인할 수 없으면 분할상태 쓰기금지로 충돌 커밋을 막는다. 읽기 가능하다는 이유로 새 쓰기를 허용하지 않는다.","relations":["state","function","classification","boundary"]}
+{"primary":"단독리더 비상운전 예외","text":"데이터 손실 위험을 명시적으로 승인한 단독리더 비상운전 예외는 격리된 업무 범위와 짧은 기간에만 쓴다. 일반 거래 전체로 확장하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"정족수복구 뒤 로그대조","text":"연결이 돌아온 뒤 정족수복구 뒤 로그대조로 갈라진 기록을 확인해야 정상 쓰기를 재개한다. 노드 수 회복만으로 보호를 풀지 않는다.","relations":["process","comparison","state","boundary"]}
+{"primary":"리더권한 세대울타리","text":"이전 리더가 뒤늦게 쓰지 못하도록 리더권한 세대울타리로 현재 세대 토큰을 요구한다. 네트워크가 다시 연결됐다는 이유로 옛 권한을 부활시키지 않는다.","relations":["role","function","state","boundary"]}
+{"primary":"스키마호환 배포차단","text":"새 코드가 현재 데이터 구조를 읽지 못하면 스키마호환 배포차단으로 운영 반영을 멈춘다. 테스트 환경의 새 스키마 성공을 현행 운영 구조의 예외로 쓰지 않는다.","relations":["classification","function","contrast","boundary"]}
+{"primary":"확장마이그레이션 선배포 예외","text":"구버전도 무시할 수 있는 열 추가에는 확장마이그레이션 선배포 예외로 코드보다 먼저 구조를 바꿀 수 있다. 열 삭제나 의미 변경까지 같은 예외로 처리하지 않는다.","relations":["process","classification","contrast","boundary"]}
+{"primary":"마이그레이션해제의 구버전검증","text":"모든 구버전 인스턴스가 새 구조와 공존함을 확인해야 마이그레이션해제의 구버전검증을 끝낸다. 새 버전 한 대의 성공만으로 차단을 해제하지 않는다.","relations":["comparison","part_of","state","boundary"]}
+{"primary":"카나리 오류율 확산차단","text":"후보 버전 오류율이 기준을 넘으면 카나리 오류율 확산차단으로 추가 배치를 멈춘다. 기존 버전 오류를 후보 탓으로 합산하지 않도록 집단을 구분한다.","relations":["attribute","function","classification","boundary"]}
+{"primary":"저표본 카나리 연장예외","text":"트래픽이 적을 때 저표본 카나리 연장예외는 배포 비율을 늘리기보다 관찰시간을 늘리는 데 쓴다. 증거 부족을 성공 판정으로 바꾸지 않는다.","relations":["classification","comparison","process","boundary"]}
+{"primary":"카나리해제의 사용자경로 확인","text":"핵심 사용자 경로와 지연이 모두 정상이어야 카나리해제의 사용자경로 확인으로 전면배포를 허용한다. 기동검사 한 항목만으로 충분하지 않다.","relations":["comparison","function","state","boundary"]}
+{"primary":"롤백자동발동 보호","text":"오류와 데이터 손상 지표가 정한 수준을 넘으면 롤백자동발동 보호로 새 버전 트래픽을 줄인다. 사람이 분석 중이라는 이유로 피해 확산을 기다리지 않는다.","relations":["attribute","function","process","boundary"]}
+{"primary":"데이터변경 뒤 코드롤백 예외한계","text":"새 스키마가 비호환이면 데이터변경 뒤 코드롤백 예외한계 때문에 이전 코드만 되돌릴 수 없다. 데이터 복구나 호환 계층 없이 자동 롤백하지 않는다.","relations":["process","contrast","classification","boundary"]}
+{"primary":"롤백해제의 정합성검사","text":"이전 버전이 정상 응답하고 데이터 제약이 맞아야 롤백해제의 정합성검사로 사건을 완화한다. 프로세스 수 회복만으로 완료하지 않는다.","relations":["comparison","state","process","boundary"]}
+{"primary":"오류예산 소진 변경동결","text":"허용 실패량을 다 쓰면 오류예산 소진 변경동결로 비필수 배포를 멈춘다. 보안·법규상 긴급조치까지 자동 차단하지 않는다.","relations":["attribute","classification","role","boundary"]}
+{"primary":"긴급보안변경의 동결예외","text":"실제 공격을 막는 긴급보안변경의 동결예외는 영향범위와 복구계획을 승인받은 경우에만 쓴다. 일반 기능 출시를 긴급으로 이름만 바꾸지 않는다.","relations":["role","classification","contrast","boundary"]}
+{"primary":"동결해제의 안정기간","text":"오류율이 목표 아래에서 유지되고 미결 고위험 사건이 없어야 동결해제의 안정기간을 충족한다. 하루의 정상만으로 변경 대기열을 한꺼번에 풀지 않는다.","relations":["process","comparison","state","boundary"]}
+{"primary":"고위험변경 이중승인","text":"데이터 삭제나 전역 권한 변경에는 고위험변경 이중승인으로 서로 다른 책임자의 확인을 요구한다. 단순 재시작까지 같은 승인수로 묶지는 않는다.","relations":["role","comparison","classification","boundary"]}
+{"primary":"사고지휘자 단독승인 예외","text":"즉시 피해를 막아야 할 때 사고지휘자 단독승인 예외는 되돌릴 수 있는 제한 조치에만 적용한다. 영구 삭제나 감사기록 변경은 포함하지 않는다.","relations":["role","classification","contrast","boundary"]}
+{"primary":"승인예외 종료의 사후검토","text":"비상조치 뒤 승인예외 종료의 사후검토로 실행 범위와 결과를 독립 검토자가 확인한다. 서비스가 회복됐다는 이유로 예외 기록을 생략하지 않는다.","relations":["process","role","state","boundary"]}
+{"primary":"비상관리계정 사용범위","text":"일반 인증이 막힌 때 비상관리계정 사용범위는 복구에 필요한 대상과 명령으로 제한한다. 모든 데이터 열람이나 정책삭제까지 자동 허용하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"비상세션 자동만료","text":"복구 창구가 끝나면 비상세션 자동만료로 임시 권한을 회수한다. 브라우저 연결이 남았다는 이유로 승인시간 뒤에도 계속 쓰게 하지 않는다.","relations":["process","state","function","boundary"]}
+{"primary":"비상계정 해제의 자격교체","text":"사용 후 암호와 토큰을 바꾸고 감사기록을 확인해야 비상계정 해제의 자격교체가 완료된다. 로그아웃 한 번만으로 노출 가능성을 닫지 않는다.","relations":["process","role","comparison","boundary"]}
+{"primary":"비밀저장소 접근격리","text":"응용은 자기 경로에만 비밀저장소 접근격리를 적용해 다른 서비스의 자격을 읽지 못하게 한다. 같은 운영팀이라는 이유로 전역 열람을 기본 허용하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"평문비밀 복사금지","text":"비밀값을 내려받을 때 평문비밀 복사금지로 일반 로그와 지원 티켓에 노출되지 않게 한다. 장애 분석이라는 이유로 전체 값을 붙이는 예외는 허용하지 않는다.","relations":["function","role","classification","boundary"]}
+{"primary":"비밀노출 대응의 서비스범위","text":"한 자격이 노출되면 비밀노출 대응의 서비스범위는 그 자격을 실제 사용한 인스턴스와 권한에 맞춰 잡는다. 모든 계정 비밀번호를 근거 없이 동시에 폐기하지 않는다.","relations":["part_of","classification","comparison","boundary"]}
+{"primary":"암호키 삭제유예 보호","text":"복호화할 자료가 남아 있으면 암호키 삭제유예 보호로 즉시 파기를 막는다. 단순 미사용 표시를 영구 삭제의 충분한 승인으로 쓰지 않는다.","relations":["state","function","role","boundary"]}
+{"primary":"침해키 긴급폐기 예외","text":"실제 유출이 확인된 침해키 긴급폐기 예외는 접근차단과 대체키 배포를 함께 수행할 때만 적용한다. 복구경로 없이 키부터 지우지 않는다.","relations":["classification","process","contrast","boundary"]}
+{"primary":"키교체 해제의 복호화검사","text":"새 키로 쓰기와 이전 자료 읽기가 모두 성공해야 키교체 해제의 복호화검사를 통과한다. 새 암호문 한 건 생성만으로 전환을 완료하지 않는다.","relations":["comparison","function","state","boundary"]}
+{"primary":"인증서 만료전 배포보호","text":"유효기간이 끝나기 전에 인증서 만료전 배포보호로 모든 종단의 교체 여유를 확보한다. 발급 완료를 실제 배포 완료와 같은 상태로 보지 않는다.","relations":["attribute","process","state","boundary"]}
+{"primary":"갱신지연의 제한유예","text":"외부 검증 지연이 있을 때 갱신지연의 제한유예는 기존 인증서가 아직 유효한 기간 안에서만 가능하다. 만료 뒤 신뢰오류를 무시하는 예외는 아니다.","relations":["classification","attribute","contrast","boundary"]}
+{"primary":"인증서교체 해제의 종단목록","text":"대상 종단들이 새 지문을 제시해야 인증서교체 해제의 종단목록 확인을 마친다. 대표 서버 한 대의 성공만으로 전체 배포를 닫지 않는다.","relations":["part_of","comparison","state","boundary"]}
+{"primary":"구형암호규약 차단","text":"취약한 통신을 막기 위해 구형암호규약 차단을 외부 종단에 적용한다. 내부 시험장비 예외를 일반 인터넷 접속까지 넓히지 않는다.","relations":["classification","function","contrast","boundary"]}
+{"primary":"레거시클라이언트 임시허용","text":"교체 일정이 확정된 레거시클라이언트 임시허용은 격리망과 제한된 API에만 적용한다. 전체 서비스의 보안수준을 낮추는 예외로 쓰지 않는다.","relations":["classification","part_of","role","boundary"]}
+{"primary":"레거시예외 해제의 접속중단 확인","text":"구형 단말의 사용이 끝나고 새 규약 접속이 확인돼야 레거시예외 해제의 접속중단 확인을 완료한다. 문서상 종료일만으로 규칙을 닫지 않는다.","relations":["process","comparison","state","boundary"]}
+{"primary":"방화벽 변경대상 제한","text":"장애복구를 위한 방화벽 변경대상 제한은 필요한 출발지·목적지·포트 조합에만 구멍을 연다. 전체 주소 대역을 임시 허용하지 않는다.","relations":["part_of","classification","function","boundary"]}
+{"primary":"진단포트 시간제한 예외","text":"짧은 분석에 쓰는 진단포트 시간제한 예외는 특정 운영 주소와 만료시각을 갖는다. 공개망에서 영구 수신하는 설정으로 남기지 않는다.","relations":["attribute","role","classification","boundary"]}
+{"primary":"임시방화벽 해제의 흐름검증","text":"정상 경로가 복구되고 임시 연결이 끊겨야 임시방화벽 해제의 흐름검증으로 예외 규칙을 지운다. 단순 작업종료 보고만으로 완료하지 않는다.","relations":["process","state","comparison","boundary"]}
+{"primary":"웹공격차단 규칙범위","text":"웹공격차단 규칙범위는 실제 악성 패턴을 가진 요청에 적용하고 정상 입력의 특수문자까지 일괄 막지 않는다. 규칙의 경계를 경로와 필드별로 둔다.","relations":["classification","function","part_of","boundary"]}
+{"primary":"정상업무 오탐의 좁은예외","text":"차단된 정상업무 오탐의 좁은예외는 확인된 경로·계정·입력형식에만 허용한다. 해당 공격 규칙 전체를 끄지 않는다.","relations":["classification","role","part_of","boundary"]}
+{"primary":"오탐예외 해제의 규칙수정","text":"근본 패턴을 고친 뒤 오탐예외 해제의 규칙수정으로 임시 허용 없이 정상 요청과 공격을 구분한다. 트래픽 감소만으로 예외를 방치하지 않는다.","relations":["process","classification","state","boundary"]}
+{"primary":"요청본문 크기차단","text":"메모리와 처리시간을 보호하려고 요청본문 크기차단을 API별 허용량에 맞춰 적용한다. 파일 업로드 한도를 짧은 JSON 요청에도 동일하게 쓰지 않는다.","relations":["attribute","function","classification","boundary"]}
+{"primary":"대용량업로드 분할예외","text":"대용량업로드 분할예외는 조각별 해시와 전체 크기 검증이 있는 경로에만 허용한다. 한 번에 메모리로 읽는 일반 API의 한도를 우회하지 않는다.","relations":["part_of","classification","function","boundary"]}
+{"primary":"업로드완료 해제의 전체해시","text":"모든 조각의 길이와 순서가 맞아야 업로드완료 해제의 전체해시 검증을 통과한다. 조각 수신 응답만으로 객체를 공개하지 않는다.","relations":["comparison","process","state","boundary"]}
+{"primary":"악성파일 격리보호","text":"검사에서 위험 신호가 나오면 악성파일 격리보호로 일반 저장경로와 다운로드에서 분리한다. 사용자 이름이 신뢰된다는 이유로 검사를 건너뛰지 않는다.","relations":["state","function","classification","boundary"]}
+{"primary":"암호화압축파일 수동검사 예외","text":"자동 검사가 내용을 열지 못하는 암호화압축파일 수동검사 예외는 별도 격리환경과 승인된 분석자에게만 허용한다. 곧바로 사용자에게 전달하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"격리해제의 재검사증거","text":"무해한 내용과 출처가 확인되고 최신 검사도구가 통과해야 격리해제의 재검사증거가 충분하다. 파일명을 바꾼 것만으로 보호를 풀지 않는다.","relations":["comparison","state","role","boundary"]}
+{"primary":"변조불가 백업삭제보호","text":"정한 기간 동안 변조불가 백업삭제보호로 운영계정도 복구사본을 지우지 못하게 한다. 저장공간 부족을 이유로 보호기간을 임의 단축하지 않는다.","relations":["role","function","attribute","boundary"]}
+{"primary":"법적보존의 만료예외","text":"조사 명령이 있는 법적보존의 만료예외는 일반 보존기간이 끝나도 해당 자료 삭제를 멈춘다. 관계없는 테넌트 자료까지 무기한 보존하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"백업보호 해제의 만료대조","text":"보존기간과 법적 요구가 모두 끝나야 백업보호 해제의 만료대조로 삭제 후보에 넣는다. 날짜 하나만 보고 자동 파기하지 않는다.","relations":["process","comparison","state","boundary"]}
+{"primary":"복원시험 격리망 보호","text":"운영 자료를 시험할 때 복원시험 격리망 보호로 외부 알림과 실제 결제를 차단한다. 운영 자격정보를 그대로 쓰는 예외는 허용하지 않는다.","relations":["part_of","function","contrast","boundary"]}
+{"primary":"긴급복원의 제한접속 예외","text":"운영 장애 중 긴급복원의 제한접속 예외는 승인된 검증자만 임시 복구본을 조회하게 한다. 일반 사용자를 검증 전 데이터에 연결하지 않는다.","relations":["role","classification","part_of","boundary"]}
+{"primary":"복원검증 해제의 업무대조","text":"핵심 레코드 수와 업무 제약이 원본 기대와 맞아야 복원검증 해제의 업무대조를 끝낸다. 데이터베이스가 열린다는 사실만으로 충분하지 않다.","relations":["comparison","attribute","state","boundary"]}
+{"primary":"재해전환 쓰기차단","text":"주 지역 상태가 불명확할 때 재해전환 쓰기차단으로 두 지역의 동시 갱신을 막는다. 읽기 성공을 주 지역의 안전한 종료 증거로 쓰지 않는다.","relations":["state","function","contrast","boundary"]}
+{"primary":"읽기전용 대체지역 예외","text":"최신성이 덜 중요한 조회에는 읽기전용 대체지역 예외로 복제된 자료를 제공할 수 있다. 결제나 권한 변경까지 같은 모드로 허용하지 않는다.","relations":["classification","role","contrast","boundary"]}
+{"primary":"전환해제의 단독쓰기 확인","text":"대체 지역만 쓰기권한을 갖고 복제상태가 안정돼야 전환해제의 단독쓰기 확인을 마친다. DNS 변경만으로 재해전환을 완료하지 않는다.","relations":["comparison","state","role","boundary"]}
+{"primary":"DNS가중치 변경보호","text":"지역전환 때 DNS가중치 변경보호로 검증된 대체주소에만 트래픽을 늘린다. 모든 지역의 가중치를 한 번에 반전하지 않는다.","relations":["attribute","part_of","function","boundary"]}
+{"primary":"캐시전파 대기예외의 범위","text":"긴급 차단에는 캐시전파 대기예외의 범위로 짧은 수명과 직접 차단경로를 함께 쓴다. 오래된 클라이언트가 남을 가능성을 무시하지 않는다.","relations":["attribute","classification","process","boundary"]}
+{"primary":"전환해제의 접속분포 확인","text":"실제 연결이 새 지역으로 충분히 이동해야 전환해제의 접속분포 확인을 통과한다. 이름조회 결과만 바뀌었다고 완료하지 않는다.","relations":["comparison","attribute","state","boundary"]}
+{"primary":"민감응답 캐시금지","text":"사용자별 비밀이 포함된 응답에는 민감응답 캐시금지로 공유 가장자리 저장을 막는다. 성능 향상을 이유로 개인정보 경로를 예외 처리하지 않는다.","relations":["classification","function","role","boundary"]}
+{"primary":"오프라인 정적자료의 장기캐시 예외","text":"버전이 주소에 포함된 공개자료에는 오프라인 정적자료의 장기캐시 예외를 허용할 수 있다. 사용자 상태가 변하는 API에는 같은 기간을 적용하지 않는다.","relations":["classification","contrast","attribute","boundary"]}
+{"primary":"캐시정책 해제의 헤더검증","text":"원본과 가장자리의 캐시 지시가 일치해야 캐시정책 해제의 헤더검증으로 변경을 완료한다. 한 지역 적중률만 보고 전역 정책을 정상으로 판정하지 않는다.","relations":["comparison","part_of","state","boundary"]}
+{"primary":"원본보호 우회금지","text":"가장자리 장애가 나도 원본보호 우회금지로 전체 사용자가 동시에 원본에 몰리지 않게 한다. 소수 운영 점검만 제한 예외로 둔다.","relations":["function","role","classification","boundary"]}
+{"primary":"제한사용자 원본접속 예외","text":"복구 확인을 위한 제한사용자 원본접속 예외는 지정 계정과 낮은 요청률에만 적용한다. 일반 공개 트래픽을 그대로 전환하지 않는다.","relations":["role","attribute","classification","boundary"]}
+{"primary":"원본복구 해제의 부하계단","text":"원본 지연이 안정되면 원본복구 해제의 부하계단으로 트래픽을 조금씩 늘린다. 첫 성공 직후 전량을 돌리지 않는다.","relations":["process","comparison","state","boundary"]}
+{"primary":"데이터거주 지역차단","text":"규정상 지역을 벗어날 수 없는 자료에는 데이터거주 지역차단을 적용한다. 재해복구라는 이유로 승인되지 않은 국가에 복제하는 예외를 만들지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"익명집계의 지역외 처리예외","text":"개인을 다시 식별할 수 없게 검증된 익명집계의 지역외 처리예외는 통계 계산에만 허용한다. 원본 식별자료까지 함께 보내지 않는다.","relations":["classification","contrast","function","boundary"]}
+{"primary":"지역복귀의 잔여복제 확인","text":"대체 지역의 새 쓰기가 주 지역에 모두 반영돼야 지역복귀의 잔여복제 확인으로 원래 경로를 되살린다. 서버 기동만으로 복귀하지 않는다.","relations":["process","comparison","state","boundary"]}
+{"primary":"배포전 트래픽배수 보호","text":"프로세스를 바꾸기 전에 배포전 트래픽배수 보호로 새 요청을 끊고 진행 중 작업을 마치게 한다. 즉시 종료가 안전한 무상태 점검에만 좁은 예외를 둔다.","relations":["process","function","classification","boundary"]}
+{"primary":"장기연결의 배수시간 예외","text":"실시간 연결에는 장기연결의 배수시간 예외로 짧은 요청보다 긴 종료기한을 준다. 무기한 연결을 이유로 배포를 영원히 막지는 않는다.","relations":["attribute","classification","comparison","boundary"]}
+{"primary":"업로드중 세션종료 차단","text":"아직 저장이 확정되지 않은 파일에는 업로드중 세션종료 차단으로 새 노드 전환 전에 완료나 안전한 재개점을 요구한다. 연결 수 감소만으로 배수를 끝내지 않는다.","relations":["state","function","process","boundary"]}
+{"primary":"정비모드 대상기능 한정","text":"정비모드 대상기능 한정은 데이터 변경 경로만 막고 상태조회나 복구안내는 유지할 수 있게 한다. 서비스 전체를 동일한 오류로 닫는 기본값은 피한다.","relations":["classification","function","contrast","boundary"]}
+{"primary":"읽기전용 정비예외","text":"스키마 변경 중 읽기전용 정비예외는 구버전 구조로 안전하게 조회되는 경로에만 허용한다. 캐시되지 않은 갱신성 조회까지 정상이라고 표시하지 않는다.","relations":["classification","state","part_of","boundary"]}
+{"primary":"정비해제의 쓰기왕복검사","text":"시험 레코드의 생성·조회·삭제가 모두 성공해야 정비해제의 쓰기왕복검사를 통과한다. 홈페이지 응답만으로 정비를 끝내지 않는다.","relations":["comparison","process","function","boundary"]}
+{"primary":"긴급정비의 사전공지 예외","text":"진행 중 피해를 즉시 막는 긴급정비의 사전공지 예외는 공지보다 차단을 먼저 할 수 있게 한다. 조치 뒤에는 영향과 복구예정을 바로 알린다.","relations":["role","classification","process","boundary"]}
+{"primary":"긴급정비 범위의 최소화","text":"긴급정비 범위의 최소화는 고장 난 구성요소와 직접 의존 경로만 멈춘다. 같은 팀 소유라는 이유로 무관한 서비스까지 함께 내리지 않는다.","relations":["part_of","classification","function","boundary"]}
+{"primary":"긴급정비 해제의 현장승인","text":"자동검사와 담당자의 위험 확인이 끝나야 긴급정비 해제의 현장승인으로 트래픽을 복원한다. 예정 종료시각만으로 자동 개방하지 않는다.","relations":["role","comparison","state","boundary"]}
+{"primary":"헬스검사 실패의 대상격리","text":"특정 인스턴스의 준비검사가 실패하면 헬스검사 실패의 대상격리로 그 대상만 라우팅에서 뺀다. 같은 그룹의 건전한 복제본까지 중지하지 않는다.","relations":["part_of","function","classification","boundary"]}
+{"primary":"검사서비스 장애의 수동예외","text":"헬스 검사기 자체가 고장 난 검사서비스 장애의 수동예외는 독립 지표와 제한 운영승인이 있을 때만 쓴다. 모든 실패 대상을 정상으로 간주하지 않는다.","relations":["classification","comparison","role","boundary"]}
+{"primary":"대상복귀의 연속건강 확인","text":"여러 검사주기와 실제 요청이 정상이어야 대상복귀의 연속건강 확인으로 라우팅에 다시 넣는다. 한 번의 성공만으로 격리를 풀지 않는다.","relations":["process","comparison","state","boundary"]}
+{"primary":"하류저하 단계적기능제한","text":"외부 의존이 느려지면 하류저하 단계적기능제한으로 선택 기능의 시간과 빈도를 먼저 줄인다. 핵심 데이터 정합성을 희생하는 예외는 두지 않는다.","relations":["attribute","classification","function","boundary"]}
+{"primary":"오래된자료 표시조회 예외","text":"최신성이 덜 중요한 화면에는 오래된자료 표시조회 예외로 마지막 갱신시각을 밝히고 캐시값을 제공할 수 있다. 거래 판단 경로에는 같은 예외를 쓰지 않는다.","relations":["state","role","classification","boundary"]}
+{"primary":"정상화해제의 하류실요청","text":"하류 지표와 실제 사용자 호출이 함께 회복돼야 정상화해제의 하류실요청 확인을 끝낸다. 공급사 상태페이지의 정상만으로 제한을 풀지 않는다.","relations":["comparison","state","part_of","boundary"]}
+{"primary":"수동재정의의 항목범위","text":"수동재정의의 항목범위는 잘못된 자동판정을 바로잡는 특정 설정에만 적용한다. 관련 없는 경보와 보호한도까지 한 번에 덮어쓰지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"수동재정의 자동만료","text":"승인시간이 끝나면 수동재정의 자동만료로 자동정책을 되살린다. 운영자가 로그아웃하지 않았다는 이유로 예외를 유지하지 않는다.","relations":["process","state","function","boundary"]}
+{"primary":"재정의해제의 원인수정 확인","text":"자동판정의 입력이나 규칙이 바로잡혀야 재정의해제의 원인수정 확인으로 임시값을 제거한다. 결과가 우연히 정상이라는 이유만으로 해제하지 않는다.","relations":["process","comparison","classification","boundary"]}
+{"primary":"계획작업 경보억제 범위","text":"계획작업 경보억제 범위는 예상되는 대상·지표·시간에만 적용한다. 같은 서비스의 보안경보나 새 오류까지 모두 숨기지 않는다.","relations":["part_of","classification","role","boundary"]}
+{"primary":"비상경보의 억제예외 금지","text":"인명·데이터 손실을 알리는 비상경보의 억제예외 금지는 정비 중에도 해당 알림을 유지한다. 반복된다는 이유로 중대도를 낮추지 않는다.","relations":["role","function","classification","boundary"]}
+{"primary":"경보억제 해제의 작업상태","text":"실제 작업이 끝나고 지표가 새 정상선에 들어야 경보억제 해제의 작업상태를 확인한다. 예정시간 종료만으로 경보를 다시 켜 혼란을 만들지 않는다.","relations":["process","state","comparison","boundary"]}
+{"primary":"침묵규칙의 최대지속시간","text":"같은 경보의 소음을 줄이는 침묵규칙의 최대지속시간을 두어 미해결 위험이 무기한 가려지지 않게 한다. 사건 상태는 계속 보이게 한다.","relations":["attribute","function","state","boundary"]}
+{"primary":"상위경보 승격예외","text":"침묵 중에도 영향이 커지면 상위경보 승격예외로 더 높은 단계의 호출을 허용한다. 기존 침묵을 모든 중대도의 공통 차단으로 쓰지 않는다.","relations":["classification","comparison","role","boundary"]}
+{"primary":"침묵해제의 담당자인계","text":"교대가 바뀌면 침묵해제의 담당자인계로 남은 기간과 원인을 새 당직자에게 확인시킨다. 만든 사람이 부재라는 이유로 규칙을 방치하지 않는다.","relations":["process","role","state","boundary"]}
+{"primary":"사고영향 서비스범위","text":"사고영향 서비스범위는 실제 실패 요청과 공유 의존성을 따라 정한다. 같은 클라우드 계정에 있다는 이유로 모든 제품을 장애로 표시하지 않는다.","relations":["part_of","classification","comparison","boundary"]}
+{"primary":"예방적 영향표시 예외","text":"곧 영향을 받을 가능성이 높은 서비스에는 예방적 영향표시 예외로 ‘위험 관찰 중’ 상태를 붙일 수 있다. 이미 실패한 상태와 구분해 알린다.","relations":["state","classification","contrast","boundary"]}
+{"primary":"영향범위 해제의 요청표본","text":"지역·사용자유형별 실제 요청이 회복돼야 영향범위 해제의 요청표본 확인을 마친다. 내부 관리자 계정의 성공만으로 모든 사용자를 정상 처리하지 않는다.","relations":["comparison","part_of","state","boundary"]}
+{"primary":"상태공지의 확인사실 한계","text":"상태공지의 확인사실 한계는 검증된 영향과 조치만 확정형으로 쓰게 한다. 아직 조사 중인 원인을 단정하는 예외는 허용하지 않는다.","relations":["role","classification","state","boundary"]}
+{"primary":"복구예정 없는 갱신예외","text":"복구시각을 알 수 없을 때 복구예정 없는 갱신예외는 억지 시간을 제시하지 않고 다음 안내시각을 밝히게 한다. 추정치를 확정 약속으로 바꾸지 않는다.","relations":["role","attribute","contrast","boundary"]}
+{"primary":"상태공지 해제의 외부확인","text":"사용자 관점의 합성검사와 문의 추세가 회복돼야 상태공지 해제의 외부확인으로 정상 표시를 한다. 내부 지표만으로 공지를 닫지 않는다.","relations":["comparison","role","state","boundary"]}
+{"primary":"자료손실 가능성 통지범위","text":"커밋 여부가 불명확한 기간에는 자료손실 가능성 통지범위를 해당 시간창과 작업유형으로 한정한다. 모든 계정의 모든 기록이 사라졌다고 과장하지 않는다.","relations":["part_of","classification","attribute","boundary"]}
+{"primary":"무손실 확인의 대조증거","text":"원본 로그·복제본·업무 합계가 일치해야 무손실 확인의 대조증거로 위험표시를 해제한다. 서버가 다시 응답한다는 사실만으로 충분하지 않다.","relations":["comparison","state","part_of","boundary"]}
+{"primary":"복구완료의 기능별 판정","text":"복구완료의 기능별 판정은 읽기·쓰기·알림·배치처럼 서로 다른 경로를 각각 확인한다. 대표 화면 하나를 전체 서비스 해제조건으로 쓰지 않는다.","relations":["classification","part_of","comparison","boundary"]}
+{"primary":"사건종료의 미결위험 예외","text":"낮은 위험의 장기 개선만 남은 사건종료의 미결위험 예외는 책임자와 기한을 별도 원장에 옮긴 경우에만 허용한다. 고위험 결함을 열린 채 사건을 닫지 않는다.","relations":["role","classification","state","boundary"]}
+{"primary":"사후분석의 비난차단 보호","text":"사후분석의 비난차단 보호는 개인 탓보다 조건·설계·판단 근거를 검토하게 한다. 고의 위반 조사를 기술 학습과 구분하지 않는 예외는 두지 않는다.","relations":["role","contrast","classification","boundary"]}
+{"primary":"개선조치의 소유자범위","text":"개선조치의 소유자범위는 실제 변경 권한과 자원을 가진 팀에 배정한다. 회의 참석자라는 이유만으로 무관한 팀에 책임을 넘기지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"개선완료 해제의 재시험","text":"원래 실패경로를 다시 실행해 막혔음을 확인해야 개선완료 해제의 재시험으로 조치를 닫는다. 코드 병합만으로 완료 처리하지 않는다.","relations":["process","comparison","state","boundary"]}
+{"primary":"서비스등급별 자원보호","text":"서비스등급별 자원보호는 약속된 지연과 중요도에 따라 예약량을 다르게 둔다. 높은 요금제라는 이름만으로 무제한 자원을 허용하지 않는다.","relations":["classification","attribute","comparison","boundary"]}
+{"primary":"재난지원 무료한도 예외","text":"공익적 재난 서비스의 재난지원 무료한도 예외는 승인된 기간과 워크로드에만 비용 제한을 완화한다. 다른 상업 작업을 같은 계정에 섞지 않는다.","relations":["role","classification","part_of","boundary"]}
+{"primary":"비용보호 해제의 예산확인","text":"추가 예산과 예상 소모가 승인돼야 비용보호 해제의 예산확인으로 확장 제한을 높인다. 잔액이 잠깐 남았다는 이유로 자동 완화하지 않는다.","relations":["attribute","role","comparison","boundary"]}
+{"primary":"외부공급사 장애우회 범위","text":"외부공급사 장애우회 범위는 호환된 대체 API와 복제 가능한 요청에만 적용한다. 공급사 고유 기능까지 같은 우회로 처리하지 않는다.","relations":["classification","function","contrast","boundary"]}
+{"primary":"대체공급사 데이터전송 예외","text":"긴급 대체공급사 데이터전송 예외는 최소 필드와 승인된 지역에만 허용한다. 원본 고객자료 전체를 새 업체로 복사하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"공급사복귀의 결과정합 확인","text":"대체 기간의 작업 결과가 주 공급사와 맞아야 공급사복귀의 결과정합 확인으로 원래 경로를 복원한다. 상태페이지 정상만으로 전환하지 않는다.","relations":["comparison","process","state","boundary"]}
+{"primary":"기능플래그 장애격리","text":"새 기능이 오류를 내면 기능플래그 장애격리로 해당 경로만 끈다. 공용 데이터 손상이 의심되면 플래그만으로 보호가 충분하다고 보지 않는다.","relations":["function","part_of","classification","boundary"]}
+{"primary":"내부시험계정 기능예외","text":"비활성 기능을 확인하는 내부시험계정 기능예외는 지정 계정과 비운영 데이터에만 적용한다. 일반 사용자에게 우연히 노출되지 않게 한다.","relations":["role","classification","part_of","boundary"]}
+{"primary":"기능재개 해제의 점진노출","text":"수정 뒤 기능재개 해제의 점진노출로 작은 사용자군부터 오류를 확인한다. 시험계정 성공 직후 전 이용자에게 열지 않는다.","relations":["process","comparison","state","boundary"]}
+{"primary":"분산공격 자동완화 보호","text":"요청원과 패턴이 공격기준에 맞으면 분산공격 자동완화 보호로 악성 흐름을 제한한다. 단순 인기 급증을 공격으로 일괄 분류하지 않는다.","relations":["attribute","classification","function","boundary"]}
+{"primary":"검증된 파트너 허용목록 예외","text":"고정 출발지와 서명이 확인된 검증된 파트너 허용목록 예외는 공격 완화 중 필수 연동을 남긴다. 주소만 같은 모든 요청을 통과시키지 않는다.","relations":["role","comparison","classification","boundary"]}
+{"primary":"완화해제의 정상분포 확인","text":"요청원·오류율·대역폭이 평상 분포로 돌아와야 완화해제의 정상분포 확인으로 제한을 줄인다. 공격량의 순간 감소만으로 전부 해제하지 않는다.","relations":["process","comparison","attribute","boundary"]}
+{"primary":"취약점패치 배포차단","text":"호환성 검사가 실패하면 취약점패치 배포차단으로 다음 환경 반영을 멈춘다. 위험도가 높다는 이유로 데이터 손상 가능성을 무시하지 않는다.","relations":["classification","function","state","boundary"]}
+{"primary":"능동공격 중 패치예외","text":"실제 악용이 진행 중인 능동공격 중 패치예외는 영향받는 서비스에 우선 배포하되 복구지점과 감시를 요구한다. 모든 시스템에 무검증 일괄 적용하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"보호해제의 종단검증","text":"네트워크·응용·데이터·사용자 경로가 모두 안정돼야 보호해제의 종단검증으로 임시 제한을 마감한다. 내부 단일 지표만 정상인 상태에서 해제하지 않는다.","relations":["comparison","part_of","state","boundary"]}

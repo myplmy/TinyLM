@@ -496,3 +496,17 @@ G1~G3는 완료됐고 G4는 직접 작성 방식으로 v39까지 확정한 뒤 S
 자동 semantic-composition generator는 계속 canonical write 차단 상태다. 향후 그 경로를 사용하려면 Guide §10에 대한 별도 명시적 예외가 필요하며, 현재 승인으로 간주하지 않는다.
 
 직접 작성 재개도 Stage1·저밀도·held-out·기존 pilot 보호 범위를 넓히지 않는다.
+
+## 10. 2026-09-05 Stage2 A01 train 영역 완료 갱신
+
+사용자 재개 승인과 교육영역 일괄 감사 지침에 따라 중단 checkpoint의 잔여 gate를 순서대로 완료했다. 반복 5어절 666종·초과 assignment 737건은 293행 직접 재서술로 0이 됐고, 파일 평균 초과 29개 source는 의미·primary·relations를 보존해 압축했다. 초기 word-set Jaccard `0.60` 이상 1쌍도 v84 문항을 다시 설계해 제거했다.
+
+최종 `--require-complete` 결과는 source/corpus 87/87, missing 0, artifact·exact/normalized/primary+relation-set·5-word·통제 relation·hard 조사·manual review debt 오류 0이다. token은 13,050 records·574,531 tokens(+EOS)·평균 44.025364이며 파일 평균 87/87이 37.4625~45.7875 안에 있다. 문자 3~5-gram TF-IDF cosine `0.72` 이상 0쌍(최고 0.618116915), word-set Jaccard `0.60` 이상 0쌍(최고 0.545454562)이다. 조사 warning 964건은 정상 어휘 내부 오탐으로 사람 검토했고 실제 오류는 0건이다.
+
+packager는 기존 v01~v39 corpus를 보존하고 v40~v87 corpus 48개를 새로 만들었다. v40~v87 source/corpus set digest는 `a157bb8ae3d08dbb3e4b205441cfb72ad9eaa2af192e5806ec124e8da925b372`, `f8eaff664a566f5fe764d2e6aee802ae288491f2de227a673861c525caf5e793`이며 checkpoint SHA-256은 `ed2ceaf2824d3aea9676bb2144dd480c7be3c7a0a0b0fe4b063dcaa2017429b6`이다. 상세 정본은 `../../stage2_highdensity_dataset/audit_reports/TinyLM_Stage2_A01_CausalStructure_Train_Consolidated_Audit_2026-09-05.md`와 machine JSON이다.
+
+현행 완료는 122 source/corpus pairs·18,300 records, 잔여 4,248 files다. 다음 작성점은 기존 A01 validation v01 pilot을 보존한 `S2-A01-V-002~009` 8 files·1,200 records다. validation source 전체 완성 뒤 token·중복·5어절·fuzzy·조사·train leakage·unseen relation-set 12%를 일괄 감사한다.
+
+추가 Stage2 부분 재감사에서 validation v01 true set과 신규 train v85의 정렬 relation-set 충돌 1건을 찾았다. 보존 validation은 수정하지 않고 train `S2-CSH-12712`의 relations만 실제 비교 의미에 맞춰 보정했으며, 재감사에서 definite leakage 0·true 18건 `PARTIAL_INCONCLUSIVE`를 확인했다. A01 validation v02~v09는 v01의 train 미관측 true set 10종만 재사용하고 이 10종을 이후 Stage2 train 전역 금지 목록으로 유지한다.
+
+validation 포장기는 해당 Stage train source 완전성을 선행조건으로 삼으므로 재개 순서는 `S2-A02-T-001`부터 A02~A06 train 영역을 먼저 완성하는 것으로 확정했다. A01 validation v02~v09의 family·ID·true set 예약은 변경하지 않고 Stage2 train 완결 뒤 실행한다.

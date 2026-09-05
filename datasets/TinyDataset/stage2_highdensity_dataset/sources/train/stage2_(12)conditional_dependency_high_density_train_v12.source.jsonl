@@ -1,0 +1,150 @@
+{"primary":"이름해석 뒤 연결시도","text":"호스트 이름을 쓰는 요청에서는 이름해석 뒤 연결시도가 이어진다. 주소를 얻기 전에는 그 이름으로 전송 연결을 열 수 없지만, 이미 캐시된 주소를 쓰는 경로는 새 조회와 독립일 수 있다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"전송연결 뒤 암호협상","text":"암호화 웹 요청은 전송연결 뒤 암호협상을 진행한다. 연결 성립과 인증서 검증은 선후 의존이지만 같은 서버의 다른 기존 연결은 새 협상 실패와 독립적으로 남을 수 있다.","relations":["process","classification","state","boundary"]}
+{"primary":"암호협상 뒤 응용요청","text":"보안 채널에서는 암호협상 뒤 응용요청을 보낸다. HTTP 본문 생성은 미리 할 수 있어도 실제 전송은 채널 확립에 의존한다.","relations":["process","function","part_of","boundary"]}
+{"primary":"토큰발급 뒤 인증호출","text":"보호 API는 토큰발급 뒤 인증호출을 허용한다. 공개 상태조회는 같은 토큰 서비스 장애와 독립일 수 있으므로 모든 경로를 한 의존사슬로 묶지 않는다.","relations":["process","role","contrast","boundary"]}
+{"primary":"신원확인 뒤 권한평가","text":"신원확인 뒤 권한평가가 이뤄져야 사용자별 작업범위를 고를 수 있다. 권한정책을 미리 적재하는 일은 개별 로그인과 독립적으로 수행될 수 있다.","relations":["role","process","classification","boundary"]}
+{"primary":"설정적재 뒤 프로세스기동","text":"필수 포트와 저장소 주소를 읽는 설정적재 뒤 프로세스기동을 시작한다. 선택 기능의 설정이 빠졌다면 핵심 프로세스는 독립적으로 뜨도록 설계할 수도 있다.","relations":["process","part_of","function","boundary"]}
+{"primary":"비밀정보 준비 뒤 외부접속","text":"데이터베이스 자격정보가 준비된 뒤 외부접속을 열 수 있다. 정적 파일 제공은 비밀정보 준비 뒤 외부접속 사슬과 독립적으로 유지될 수 있다.","relations":["process","function","contrast","boundary"]}
+{"primary":"호환스키마 뒤 코드전환","text":"호환스키마 뒤 코드전환 순서는 새 코드가 요구하는 열을 먼저 마련한다. 이전 코드도 읽을 수 있는 확장 변경이라면 구버전 요청과 새 마이그레이션 작업은 일정 기간 병행할 수 있다.","relations":["process","classification","comparison","boundary"]}
+{"primary":"이미지생성 뒤 취약점검사","text":"실행 이미지를 고정한 뒤 이미지생성 뒤 취약점검사 단계가 그 산출물을 분석한다. 서로 다른 플랫폼용 이미지는 같은 소스에서 독립적으로 빌드할 수 있다.","relations":["process","classification","part_of","boundary"]}
+{"primary":"검사통과 뒤 저장소게시","text":"배포 후보는 검사통과 뒤 저장소게시 순서를 따른다. 문서나 별도 정적 자산의 게시는 응용 이미지 검사와 독립된 승인경로를 가질 수 있다.","relations":["process","role","contrast","boundary"]}
+{"primary":"이미지게시 뒤 노드배치","text":"클러스터는 이미지게시 뒤 노드배치를 수행해 같은 식별자의 바이트를 내려받는다. 이미 캐시한 노드는 저장소의 일시 장애와 독립적으로 시작할 수 있다.","relations":["process","state","contrast","boundary"]}
+{"primary":"가용영역별 배치독립","text":"가용영역별 배치독립은 한 영역의 자원부족이 다른 영역의 스케줄링을 막지 않게 한다. 그러나 전역 쿼터를 공유하면 그 상위 한도에는 함께 의존한다.","relations":["part_of","classification","contrast","boundary"]}
+{"primary":"노드선정 뒤 이미지인출","text":"배치기가 적합한 노드를 고른 뒤 노드선정 뒤 이미지인출이 시작된다. 여러 노드의 인출은 저장소 대역폭을 공유하지 않는 범위에서 병렬로 진행할 수 있다.","relations":["process","part_of","comparison","boundary"]}
+{"primary":"초기화작업 뒤 본컨테이너","text":"데이터 준비를 맡은 초기화작업 뒤 본컨테이너가 시작된다. 관측용 보조컨테이너는 초기화 결과를 쓰지 않는다면 별도 기동순서를 가질 수 있다.","relations":["process","function","contrast","boundary"]}
+{"primary":"보조컨테이너와 본기능 분리","text":"보조컨테이너와 본기능 분리를 적용하면 로그전송 장애가 핵심 요청처리를 반드시 멈추지는 않는다. 반대로 프록시 보조장치가 통신경로를 제공한다면 본기능은 그 장치에 의존한다.","relations":["function","classification","contrast","boundary"]}
+{"primary":"초기화완료 뒤 준비검사","text":"필수 초기화가 끝난 뒤 초기화완료 뒤 준비검사가 실제 의존서비스 연결을 확인한다. 생존검사는 같은 시점에도 별도로 평가될 수 있다.","relations":["process","state","comparison","boundary"]}
+{"primary":"준비통과 뒤 경로등록","text":"새 인스턴스는 준비통과 뒤 경로등록 순서로 트래픽 후보가 된다. 다른 인스턴스의 기존 등록은 이 신규 후보의 준비 실패와 독립적으로 유지된다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"등록목록 뒤 부하분산","text":"로드밸런서는 등록목록 뒤 부하분산을 수행한다. 한 대상의 제외가 다른 건전한 대상의 처리까지 막지는 않지만 공통 수신기 장애에는 모두 의존한다.","relations":["function","part_of","classification","boundary"]}
+{"primary":"캐시누락 뒤 원본조회","text":"요청 객체가 없을 때 캐시누락 뒤 원본조회가 시작된다. 이미 저장된 다른 객체의 캐시응답은 같은 원본 조회와 독립적으로 제공될 수 있다.","relations":["process","function","contrast","boundary"]}
+{"primary":"원본응답 뒤 캐시적재","text":"검증된 원본응답 뒤 캐시적재가 이뤄져야 다음 요청이 저장본을 쓴다. 클라이언트 응답과 캐시 쓰기는 정책에 따라 병렬이거나 후행일 수 있으므로 둘의 의존을 명시한다.","relations":["process","classification","comparison","boundary"]}
+{"primary":"변경커밋 뒤 캐시무효화","text":"데이터 변경이 확정된 뒤 변경커밋 뒤 캐시무효화를 보내야 오래된 조회를 줄인다. 서로 관련 없는 키의 캐시는 그 변경과 독립적으로 남는다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"연결획득 뒤 트랜잭션시작","text":"데이터베이스 풀에서 세션을 얻은 뒤 연결획득 뒤 트랜잭션시작이 가능하다. 읽기 전용 캐시경로는 연결풀 포화와 독립적으로 처리될 수 있다.","relations":["process","function","contrast","boundary"]}
+{"primary":"검증통과 뒤 변경기록","text":"업무 제약과 권한의 검증통과 뒤 변경기록을 남긴다. 서로 다른 사용자와 키를 다루는 검증은 공유 잠금이 없다면 병렬로 진행할 수 있다.","relations":["process","role","classification","boundary"]}
+{"primary":"로그영속 뒤 커밋응답","text":"합의형 저장소는 로그영속 뒤 커밋응답을 보내 내구성을 보장한다. 복제본별 디스크 쓰기는 네트워크 전달 후 서로 독립적으로 진행될 수 있다.","relations":["process","part_of","comparison","boundary"]}
+{"primary":"주로그 뒤 복제전송","text":"비동기 구조에서는 주로그 뒤 복제전송이 따라간다. 주 응답은 복제 완료를 기다리지 않을 수 있지만 최신 복제본 읽기는 그 전송에 의존한다.","relations":["process","state","contrast","boundary"]}
+{"primary":"복제읽기의 로컬처리 독립","text":"복제읽기의 로컬처리 독립 덕분에 한 읽기 복제본은 다른 복제본의 CPU 과부하와 무관하게 응답할 수 있다. 다만 데이터 최신성은 공통 주 복제 전송에 의존한다.","relations":["part_of","function","contrast","boundary"]}
+{"primary":"샤드별 백업병렬성","text":"서로 다른 샤드는 샤드별 백업병렬성으로 동시에 복사할 수 있다. 전체 복구 시점이 일치해야 한다면 마지막 메타데이터 확정은 모든 샤드 완료에 의존한다.","relations":["part_of","process","comparison","boundary"]}
+{"primary":"메타데이터복원 뒤 데이터부착","text":"복구 구조를 만든 뒤 메타데이터복원 뒤 데이터부착 순서로 저장블록을 연결한다. 독립 테넌트의 복원은 자원을 공유하지 않는 한 병렬화할 수 있다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"다중부분 업로드의 병렬전송","text":"큰 객체는 다중부분 업로드의 병렬전송으로 조각을 독립 전송한다. 최종 객체 공개는 필요한 모든 조각과 목록 확정에 의존한다.","relations":["part_of","process","comparison","boundary"]}
+{"primary":"조각수신 뒤 전체해시 확인","text":"모든 조각을 받은 뒤 조각수신 뒤 전체해시 확인으로 순서와 내용의 완전성을 검증한다. 각 조각의 전송 성공만으로 전체 객체 완성은 확정되지 않는다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"생산자 뒤 브로커저장","text":"생산자가 요청을 보낸 뒤 생산자 뒤 브로커저장이 이뤄져야 비동기 전달이 지속된다. 서로 다른 파티션의 저장은 공통 디스크가 없으면 독립적으로 진행될 수 있다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"브로커저장 뒤 소비자인출","text":"메시지가 큐에 들어간 뒤 브로커저장 뒤 소비자인출 단계가 시작된다. 소비자 장애는 생산자의 다른 파티션 적재를 반드시 막지는 않는다.","relations":["process","function","contrast","boundary"]}
+{"primary":"소비자그룹의 파티션독립","text":"소비자그룹의 파티션독립은 각 작업자가 서로 다른 파티션을 병렬 처리하게 한다. 같은 순서키 안의 메시지는 앞선 처리가 끝나야 다음 작업이 안전할 수 있다.","relations":["part_of","classification","contrast","boundary"]}
+{"primary":"순서키 내부의 선행의존","text":"순서키 내부의 선행의존 때문에 같은 계좌나 문서의 후속 변경은 앞선 커밋을 기다린다. 다른 키의 작업까지 같은 전역 순서로 묶을 필요는 없다.","relations":["process","classification","contrast","boundary"]}
+{"primary":"업무커밋 뒤 메시지확인","text":"중복 손실을 막으려면 업무커밋 뒤 메시지확인을 보낸다. 확인 전 다른 파티션의 소비는 독립적으로 계속될 수 있다.","relations":["process","state","part_of","boundary"]}
+{"primary":"시간초과관측 뒤 재시도판정","text":"응답 기한이 지난 뒤 시간초과관측 뒤 재시도판정으로 오류 유형과 멱등성을 확인한다. 다른 요청의 성공은 이 요청의 재시도 여부와 독립이다.","relations":["process","classification","contrast","boundary"]}
+{"primary":"연속실패 뒤 회로개방","text":"정한 실패 수가 누적된 뒤 연속실패 뒤 회로개방이 하류 호출을 멈춘다. 서로 다른 하류 서비스는 회로 상태를 분리해 한 장애가 무관한 호출까지 막지 않게 한다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"반개방시험 뒤 정상복귀","text":"대기시간이 끝난 뒤 반개방시험 뒤 정상복귀 여부를 결정한다. 한 대상의 시험 성공은 다른 지역 대상의 회로 상태와 독립적으로 평가한다.","relations":["process","state","part_of","boundary"]}
+{"primary":"사용자별 제한의 독립창구","text":"사용자별 제한의 독립창구는 한 사용자의 과도한 요청이 다른 사용자의 할당량을 소비하지 않게 한다. 전역 하류 용량을 공유한다면 완전한 독립은 아니다.","relations":["part_of","classification","contrast","boundary"]}
+{"primary":"자격발급 뒤 서비스접근","text":"인증 서버가 자격을 발급한 뒤 자격발급 뒤 서비스접근이 가능하다. 이미 유효한 자격을 가진 사용자는 발급 서버의 짧은 장애와 독립적으로 접근할 수 있다.","relations":["process","role","contrast","boundary"]}
+{"primary":"키복호화 뒤 자료해석","text":"암호키를 얻어 복호화한 뒤 키복호화 뒤 자료해석이 시작된다. 암호화되지 않은 공개자료의 처리는 키 관리 서비스와 독립적이다.","relations":["process","function","contrast","boundary"]}
+{"primary":"신원검증 뒤 인증서발급","text":"인증기관은 도메인이나 주체의 신원검증 뒤 인증서발급을 수행한다. 서로 다른 도메인의 검증은 같은 승인자를 강제하지 않으면 독립적으로 진행된다.","relations":["process","role","classification","boundary"]}
+{"primary":"변경승인 뒤 배포실행","text":"운영환경에서는 변경승인 뒤 배포실행 순서를 따른다. 다른 서비스의 사전 승인된 변경은 자원 충돌이 없다면 독립된 창구에서 진행할 수 있다.","relations":["process","role","contrast","boundary"]}
+{"primary":"빌드완료 뒤 시험실행","text":"고정된 산출물이 나온 뒤 빌드완료 뒤 시험실행으로 같은 대상을 검증한다. 여러 시험 묶음은 서로 상태를 공유하지 않으면 병렬 수행할 수 있다.","relations":["process","part_of","comparison","boundary"]}
+{"primary":"단위시험 묶음의 병렬독립","text":"상태를 공유하지 않는 모듈은 단위시험 묶음의 병렬독립으로 동시에 검사한다. 공용 데이터베이스를 바꾸는 시험은 실행 순서에 의존할 수 있으므로 분리한다.","relations":["part_of","classification","contrast","boundary"]}
+{"primary":"환경준비 뒤 통합시험","text":"외부 서비스와 데이터가 준비된 환경준비 뒤 통합시험을 시작한다. 순수 계산 모듈의 단위시험은 그 환경 준비와 독립적으로 끝낼 수 있다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"후보배포 뒤 카나리관찰","text":"일부 인스턴스에 후보배포 뒤 카나리관찰로 오류와 지연을 수집한다. 기존 버전의 요청처리는 카나리 자체의 내부 실패와 독립적으로 계속돼야 한다.","relations":["process","attribute","contrast","boundary"]}
+{"primary":"신호방출 뒤 지표수집","text":"응용이 측정값을 내보낸 뒤 신호방출 뒤 지표수집이 저장소에 값을 모은다. 로그와 추적 신호는 같은 요청에서 생겨도 각 수집 파이프라인이 독립일 수 있다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"지표수집 뒤 경보평가","text":"최근 값이 저장된 뒤 지표수집 뒤 경보평가가 시간창과 임계조건을 계산한다. 다른 서비스 경보는 규칙과 저장소가 분리되면 독립적으로 동작한다.","relations":["process","function","part_of","boundary"]}
+{"primary":"경보판정 뒤 당직호출","text":"경보가 활성화된 뒤 경보판정 뒤 당직호출로 담당자에게 전달한다. 자동완화 작업은 사람 호출과 병렬로 시작할 수 있어 두 경로를 불필요하게 직렬화하지 않는다.","relations":["process","role","comparison","boundary"]}
+{"primary":"호출수신 뒤 대응확인","text":"담당자가 알림을 받은 뒤 호출수신 뒤 대응확인을 남겨 중복 호출을 조정한다. 다른 전문팀의 병렬 진단은 첫 담당자의 확인 완료를 기다릴 필요가 없을 수 있다.","relations":["process","role","part_of","boundary"]}
+{"primary":"사고접수와 원인분석 병렬성","text":"사고접수와 원인분석 병렬성을 두면 기록 담당자는 사건을 열고 기술팀은 동시에 지표를 살핀다. 공식 종료는 두 경로의 결과와 복구 확인에 의존한다.","relations":["process","role","comparison","boundary"]}
+{"primary":"절차조회 뒤 권한상승","text":"복구절차를 확인한 뒤 절차조회 뒤 권한상승으로 필요한 명령 범위를 요청한다. 읽기 전용 진단은 높은 권한 승인과 독립적으로 먼저 수행할 수 있다.","relations":["process","role","contrast","boundary"]}
+{"primary":"승인획득 뒤 변경실행","text":"위험한 운영 변경은 승인획득 뒤 변경실행 순서를 따른다. 상태수집과 영향분석은 승인 대기 중에도 독립적으로 진행할 수 있다.","relations":["process","role","classification","boundary"]}
+{"primary":"설정복사 뒤 롤백준비","text":"현재 설정과 이전 값을 보존하는 설정복사 뒤 롤백준비가 갖춰진다. 다른 서비스의 독립 설정은 같은 변경에 묶어 복사할 필요가 없다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"트래픽배제 뒤 버전복귀","text":"문제 인스턴스의 새 요청을 끊는 트래픽배제 뒤 버전복귀를 실행한다. 이미 진행 중인 요청의 배수는 버전 파일 교체와 별도 의존을 가질 수 있다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"연결배수 뒤 프로세스종료","text":"상태를 잃기 쉬운 서비스는 연결배수 뒤 프로세스종료 순서로 진행 중 작업을 마친다. 무상태 복제본은 다른 복제본의 배수와 독립적으로 종료할 수 있다.","relations":["process","state","contrast","boundary"]}
+{"primary":"배치별 배포의 선후의존","text":"배치별 배포의 선후의존은 앞선 묶음의 건강 확인 뒤 다음 묶음을 바꾸게 한다. 한 묶음 안의 서로 다른 장애영역은 병렬로 업데이트할 수 있다.","relations":["process","part_of","comparison","boundary"]}
+{"primary":"의존그래프 기반 배포순서","text":"의존그래프 기반 배포순서는 새 인터페이스를 제공하는 서비스가 소비자보다 먼저 호환 상태가 되게 한다. 서로 호출하지 않는 서비스는 독립 배포가 가능하다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"하류서비스 뒤 상류기능 활성","text":"상류 기능이 새 하류 API를 요구하면 하류서비스 뒤 상류기능 활성 순서를 따른다. 기존 API만 쓰는 상류 경로는 새 기능 배포와 독립적으로 유지된다.","relations":["process","function","contrast","boundary"]}
+{"primary":"분산호출의 병렬팬아웃","text":"서로 의존하지 않는 검색원에는 분산호출의 병렬팬아웃을 적용해 동시에 요청한다. 최종 종합은 필요한 응답들이 도착한 뒤에야 수행한다.","relations":["process","part_of","comparison","boundary"]}
+{"primary":"부분응답 뒤 결과집계","text":"필수 출처가 정해진 서비스는 부분응답 뒤 결과집계를 기다리지 않고 필요한 최소 응답을 모두 받은 뒤 시작한다. 선택 출처는 시간초과돼도 독립적으로 생략할 수 있다.","relations":["process","classification","contrast","boundary"]}
+{"primary":"하위호출별 시간초과 독립","text":"하위호출별 시간초과 독립은 한 추천원 지연이 다른 검색원의 응답 수집을 취소하지 않게 한다. 다만 종합 기한에는 모든 호출이 함께 묶인다.","relations":["part_of","attribute","contrast","boundary"]}
+{"primary":"주경로 실패 뒤 대체응답","text":"주경로가 명시적으로 실패한 뒤 주경로 실패 뒤 대체응답을 선택한다. 두 경로가 같은 데이터베이스를 공유하면 외형상 분리돼도 장애 독립성은 없다.","relations":["process","contrast","part_of","boundary"]}
+{"primary":"선택기능 실패의 단계적축소","text":"선택기능 실패의 단계적축소는 핵심 거래를 계속하면서 추천이나 장식 정보를 생략한다. 핵심 인증 실패는 같은 방식으로 독립 처리할 수 없다.","relations":["function","classification","contrast","boundary"]}
+{"primary":"결제확정 뒤 주문완료","text":"상품 주문은 결제확정 뒤 주문완료 상태로 옮겨 중복 출고를 막는다. 결제와 무관한 상품조회는 결제망 장애와 독립적으로 제공될 수 있다.","relations":["process","state","contrast","boundary"]}
+{"primary":"주문저장과 이메일발송 분리","text":"주문저장과 이메일발송 분리를 적용하면 알림 서비스 장애가 거래 커밋을 되돌리지 않는다. 이메일은 저장된 주문 사건에 의존하지만 주문 성공은 이메일 완료에 의존하지 않는다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"업무응답과 분석적재 비동기","text":"업무응답과 분석적재 비동기는 사용자 요청을 먼저 확정하고 사용기록을 큐로 보낸다. 분석 소비자는 사건 생성에 의존하지만 응답은 분석 완료와 독립이다.","relations":["process","role","contrast","boundary"]}
+{"primary":"추출 뒤 변환 뒤 적재","text":"자료 파이프라인은 추출 뒤 변환 뒤 적재 순서로 원본을 읽고 형식을 바꿔 대상 저장소에 넣는다. 날짜별 독립 묶음은 필요한 원본이 준비되면 병렬 처리할 수 있다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"파티션별 변환독립","text":"파티션별 변환독립은 서로 다른 날짜와 키 범위가 상태를 공유하지 않을 때 성립한다. 전역 사전을 갱신하는 단계는 모든 파티션 결과에 의존할 수 있다.","relations":["part_of","classification","contrast","boundary"]}
+{"primary":"수위표시 뒤 창마감","text":"늦은 사건을 기다리는 수위표시 뒤 창마감이 집계 결과를 확정한다. 다른 시간창은 각자의 수위에 따라 독립적으로 닫힐 수 있다.","relations":["process","attribute","part_of","boundary"]}
+{"primary":"사건시각과 도착시각 분리","text":"사건시각과 도착시각 분리를 하면 늦게 온 자료도 원래 발생 창에 배정할 수 있다. 도착 순서를 업무 발생 순서에 무조건 의존시키지 않는다.","relations":["contrast","classification","process","boundary"]}
+{"primary":"스키마등록 뒤 사건게시","text":"새 형식의 사건은 스키마등록 뒤 사건게시 순서를 따라 소비자가 정의를 찾게 한다. 구버전 형식의 사건 게시까지 새 등록에 의존할 필요는 없다.","relations":["process","classification","contrast","boundary"]}
+{"primary":"생산자호환 뒤 소비자전환","text":"확장 가능한 스키마에서는 생산자호환 뒤 소비자전환으로 새 필드를 선택적으로 보낸다. 새 필드를 무시하는 구소비자는 전환과 독립적으로 계속 처리할 수 있다.","relations":["process","classification","comparison","boundary"]}
+{"primary":"소비자준비 뒤 필수필드 전환","text":"새 필드가 필수가 될 때는 소비자준비 뒤 필수필드 전환을 해야 구버전 소비자가 깨지지 않는다. 선택 필드 추가와 제거는 선후 의존이 다르다.","relations":["process","classification","contrast","boundary"]}
+{"primary":"열추가 뒤 코드쓰기","text":"데이터베이스 확장 변경은 열추가 뒤 코드쓰기로 새 값을 저장한다. 이전 코드는 새 열을 무시할 수 있어 마이그레이션 중에도 독립적으로 동작한다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"새값채움과 기존읽기 병렬","text":"새값채움과 기존읽기 병렬 처리는 백필이 오래 걸려도 구경로 조회를 유지하게 한다. 새 경로 활성화는 필요한 행의 채움 완료에 의존한다.","relations":["process","comparison","contrast","boundary"]}
+{"primary":"읽기전환 뒤 구열삭제","text":"모든 소비자가 새 열을 읽도록 바뀐 읽기전환 뒤 구열삭제를 진행한다. 다른 테이블의 독립 열은 이 전환과 무관하게 유지할 수 있다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"온라인색인과 조회병행","text":"온라인색인과 조회병행을 쓰면 기존 조회는 색인 생성 중에도 계속된다. 새 색인을 전제로 한 질의 배포는 구축 완료와 통계 갱신에 의존한다.","relations":["process","function","contrast","boundary"]}
+{"primary":"기초스냅샷 뒤 복제추적","text":"새 복제본은 기초스냅샷 뒤 복제추적으로 이후 로그를 적용한다. 서로 다른 복제본의 로그 적용은 주 로그를 공유하지만 계산은 병렬일 수 있다.","relations":["process","part_of","comparison","boundary"]}
+{"primary":"파일복사 뒤 무결성검사","text":"백업 파일을 옮긴 뒤 파일복사 뒤 무결성검사로 전송 손상을 확인한다. 다른 파일의 검사는 각 해시가 독립이면 동시에 수행할 수 있다.","relations":["process","attribute","classification","boundary"]}
+{"primary":"무결성확인 뒤 복구목록 등록","text":"해시와 형식이 맞은 뒤 무결성확인 뒤 복구목록 등록으로 사용 가능한 백업에 포함한다. 검증 실패 파일은 다른 정상 백업의 등록을 막지 않는다.","relations":["process","state","contrast","boundary"]}
+{"primary":"수명대기 뒤 주소전환","text":"기존 DNS 수명이 충분히 줄어든 수명대기 뒤 주소전환을 하면 오래된 캐시 체류를 줄인다. 고정 주소를 쓰는 클라이언트는 이 순서와 독립적으로 남을 수 있다.","relations":["process","attribute","contrast","boundary"]}
+{"primary":"주소전환 뒤 클라이언트재접속","text":"새 지역 주소가 공개된 뒤 주소전환 뒤 클라이언트재접속이 이뤄져야 실제 트래픽이 이동한다. 이미 열린 장기 연결은 별도 배수조건에 의존한다.","relations":["process","part_of","state","boundary"]}
+{"primary":"부하생성기별 독립흐름","text":"서로 다른 사용자 행동은 부하생성기별 독립흐름으로 동시에 실행해 혼합 트래픽을 만든다. 종합 성능판정은 모든 흐름의 지연과 오류 수집에 의존한다.","relations":["part_of","comparison","process","boundary"]}
+{"primary":"예열완료 뒤 성능측정","text":"연결풀과 캐시가 안정된 예열완료 뒤 성능측정을 시작한다. 콜드시작 자체를 평가하는 시나리오는 예열 단계와 독립적으로 따로 수행한다.","relations":["process","attribute","contrast","boundary"]}
+{"primary":"확장요청 뒤 안정화대기","text":"인스턴스를 늘린 확장요청 뒤 안정화대기로 지표 반영을 기다린다. 다른 지역 확장은 각자 지표와 쿼터가 있으면 독립적으로 진행된다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"지표지연 뒤 확장판정 보정","text":"수집시각보다 늦게 도착한 지표지연 뒤 확장판정 보정은 이미 실행한 확장과 중복 명령을 피한다. 실시간 요청수집은 과거 지표 재처리와 병렬일 수 있다.","relations":["process","attribute","contrast","boundary"]}
+{"primary":"예산승인 뒤 예약구매","text":"장기 용량은 예산승인 뒤 예약구매 순서로 확보한다. 즉시 사용량 기반 증설은 별도 한도 안에서 이 장기 승인과 독립적으로 이뤄질 수 있다.","relations":["process","role","classification","boundary"]}
+{"primary":"정비공지 뒤 연결배수","text":"계획정비는 이용자 공지와 대체경로 준비 뒤 정비공지 뒤 연결배수를 시작한다. 다른 가용영역은 정비 대상과 분리돼 요청을 계속 처리한다.","relations":["process","role","part_of","boundary"]}
+{"primary":"인증서배포 뒤 활성전환","text":"새 인증서를 모든 종단에 놓은 인증서배포 뒤 활성전환으로 기본 제시본을 바꾼다. 종단별 배포는 서로 독립적이지만 전환은 필요한 범위의 배포 완료에 의존한다.","relations":["process","part_of","comparison","boundary"]}
+{"primary":"신구인증서 중첩기간","text":"신구인증서 중첩기간에는 갱신이 늦은 클라이언트와 새 클라이언트가 각각 호환 경로를 쓴다. 구 인증서 폐기는 전환 확인 뒤에 의존한다.","relations":["process","state","classification","boundary"]}
+{"primary":"키배포 뒤 서명전환","text":"검증자가 새 공개키를 받은 키배포 뒤 서명전환으로 발급자가 새 키를 사용한다. 서로 다른 테넌트 키는 공유 저장소가 없으면 독립적으로 교체할 수 있다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"토큰캐시와 발급서버 독립기간","text":"유효 토큰이 남은 동안 토큰캐시와 발급서버 독립기간이 생겨 발급 장애에도 기존 세션을 확인할 수 있다. 만료 뒤 접근은 다시 발급경로에 의존한다.","relations":["attribute","state","contrast","boundary"]}
+{"primary":"폐기목록 배포 뒤 접근차단","text":"문제 자격의 폐기목록 배포 뒤 접근차단이 각 검증지점에서 적용된다. 한 지역의 갱신은 다른 지역 캐시의 폐기 완료와 독립이므로 전역 상태를 따로 확인한다.","relations":["process","part_of","state","boundary"]}
+{"primary":"경보확인 뒤 역할분담","text":"사건 경보를 확인한 뒤 경보확인 뒤 역할분담으로 지휘·진단·소통을 나눈다. 각 팀의 초기 조사는 공통 사실을 공유하되 병렬로 진행할 수 있다.","relations":["process","role","comparison","boundary"]}
+{"primary":"원인격리 뒤 서비스복원","text":"고장 구성요소를 찾은 원인격리 뒤 서비스복원으로 건전 경로에 트래픽을 돌린다. 근본 수리는 사용자 복원과 독립된 후속 작업으로 이어질 수 있다.","relations":["process","state","contrast","boundary"]}
+{"primary":"사용자회복 뒤 사건종료검토","text":"성공률이 돌아온 사용자회복 뒤 사건종료검토에서 경보·데이터정합성·미결 위험을 확인한다. 문서화와 사후분석은 운영복구 뒤 별도 흐름으로 진행한다.","relations":["process","role","state","boundary"]}
+{"primary":"후속조치별 독립완료","text":"성능개선·문서수정·공급사 협의는 후속조치별 독립완료로 각각 책임자와 기한을 갖는다. 사건 전체 종결은 필수 조치의 완료상태를 모아 판단한다.","relations":["part_of","role","process","boundary"]}
+{"primary":"증거보존 뒤 보고서확정","text":"로그와 변경기록을 고정한 증거보존 뒤 보고서확정으로 사건 설명을 닫는다. 서비스 복원은 보고서 작성 완료와 독립적으로 앞서 진행할 수 있다.","relations":["process","role","contrast","boundary"]}
+{"primary":"전원안정 뒤 호스트부팅","text":"데이터센터 전원이 안정된 뒤 전원안정 뒤 호스트부팅을 순서대로 시작한다. 서로 다른 전원구역의 호스트는 각 구역 상태에 따라 독립적으로 부팅할 수 있다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"펌웨어초기화 뒤 운영체제","text":"장치 펌웨어가 CPU와 메모리를 확인한 펌웨어초기화 뒤 운영체제가 올라온다. 별도 관리제어기는 본 운영체제 기동과 독립적으로 상태를 보고할 수 있다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"운영체제 뒤 네트워크준비","text":"드라이버와 주소를 설정하는 운영체제 뒤 네트워크준비가 끝나야 노드는 외부 제어면에 접속한다. 로컬 디스크 검사는 네트워크 연결과 병렬로 진행할 수 있다.","relations":["process","function","comparison","boundary"]}
+{"primary":"노드에이전트 등록 뒤 배치허용","text":"노드에이전트가 상태를 보낸 뒤 노드에이전트 등록 뒤 배치허용으로 새 작업을 받는다. 다른 노드의 배치는 이 노드 등록 실패와 독립적이다.","relations":["process","role","contrast","boundary"]}
+{"primary":"네트워크플러그인 뒤 파드통신","text":"주소와 경로를 만든 네트워크플러그인 뒤 파드통신이 가능해진다. 호스트 내부 계산 작업은 외부 통신이 필요 없다면 그 플러그인과 독립일 수 있다.","relations":["process","function","classification","boundary"]}
+{"primary":"서비스메시 제어 뒤 프록시설정","text":"정책을 받은 서비스메시 제어 뒤 프록시설정이 각 인스턴스에 전달된다. 메시를 쓰지 않는 내부 작업은 이 제어면 장애와 독립적으로 실행된다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"프록시준비 뒤 응용트래픽","text":"프록시가 수신 포트를 연 프록시준비 뒤 응용트래픽이 본 컨테이너로 전달된다. 본 프로세스의 내부 준비는 프록시 기동과 병렬일 수 있다.","relations":["process","function","comparison","boundary"]}
+{"primary":"엔드포인트발견 뒤 연결설정","text":"호출자는 대상 목록을 얻는 엔드포인트발견 뒤 연결설정을 시도한다. 이미 유지 중인 연결은 새 발견 조회와 독립적으로 잠시 계속될 수 있다.","relations":["process","state","contrast","boundary"]}
+{"primary":"수신규칙 뒤 내부경로 선택","text":"외부 요청은 수신규칙 뒤 내부경로 선택으로 대상 서비스에 배정된다. 서로 다른 호스트 이름의 규칙은 같은 관문 안에서도 독립적으로 평가할 수 있다.","relations":["process","classification","part_of","boundary"]}
+{"primary":"인증서탑재 뒤 보안수신","text":"종단이 인증서와 키를 읽은 인증서탑재 뒤 보안수신을 시작한다. 평문 내부관리 포트는 정책이 허용하는 범위에서 인증서 로딩과 독립일 수 있다.","relations":["process","function","contrast","boundary"]}
+{"primary":"저장할당 뒤 장치부착","text":"저장계층이 볼륨을 고른 저장할당 뒤 장치부착이 대상 노드에 이뤄진다. 서로 다른 볼륨의 할당은 같은 제어잠금이 없으면 병렬이다.","relations":["process","part_of","comparison","boundary"]}
+{"primary":"장치부착 뒤 파일시스템탑재","text":"노드에 블록장치가 보인 장치부착 뒤 파일시스템탑재로 응용 경로를 만든다. 네트워크 전용 작업은 이 저장 단계와 독립적으로 시작할 수 있다.","relations":["process","function","contrast","boundary"]}
+{"primary":"일관성검사 뒤 쓰기허용","text":"비정상 종료 뒤에는 일관성검사 뒤 쓰기허용으로 손상 여부를 확인한다. 읽기 전용 진단은 검사 중에도 별도 복제본에서 독립적으로 수행할 수 있다.","relations":["process","state","classification","boundary"]}
+{"primary":"로그재생 뒤 데이터베이스개방","text":"마지막 체크포인트 이후 기록을 적용하는 로그재생 뒤 데이터베이스개방으로 새 요청을 받는다. 다른 샤드는 각자의 로그 범위에 따라 독립적으로 회복한다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"복구기록 뒤 제약검사","text":"로그를 모두 적용한 복구기록 뒤 제약검사로 내부 참조가 맞는지 확인한다. 통계 갱신은 핵심 무결성 확인과 병렬 또는 후행으로 수행할 수 있다.","relations":["process","classification","comparison","boundary"]}
+{"primary":"복제추격 뒤 리더승격","text":"대기 노드가 최신 위치에 도달한 복제추격 뒤 리더승격으로 쓰기 권한을 옮긴다. 읽기 전용 다른 복제본은 승격 과정과 독립적으로 조회를 제공할 수 있다.","relations":["process","role","contrast","boundary"]}
+{"primary":"리더발견 뒤 응용재연결","text":"새 주 노드를 찾은 리더발견 뒤 응용재연결이 연결풀을 다시 만든다. 캐시만 사용하는 요청은 데이터베이스 재연결과 독립적으로 응답할 수 있다.","relations":["process","function","contrast","boundary"]}
+{"primary":"세션저장 복구 뒤 사용자계속","text":"외부 세션 저장소가 살아난 세션저장 복구 뒤 사용자계속 상태를 되찾는다. 새 비로그인 사용자의 정적 조회는 기존 세션 복구와 독립이다.","relations":["process","state","classification","boundary"]}
+{"primary":"기초자료 적재 뒤 캐시예열","text":"원본 데이터베이스가 준비된 기초자료 적재 뒤 캐시예열로 자주 쓰는 키를 채운다. 서로 관련 없는 키 묶음은 병렬로 예열할 수 있다.","relations":["process","part_of","comparison","boundary"]}
+{"primary":"캐시예열 뒤 트래픽증가","text":"핵심 키의 적중률이 올라간 캐시예열 뒤 트래픽증가로 새 지역 비중을 높인다. 다른 지역의 기존 트래픽은 이 예열과 독립적으로 유지된다.","relations":["process","attribute","contrast","boundary"]}
+{"primary":"건강확인 뒤 경로가중치 상승","text":"오류와 지연이 기준에 든 건강확인 뒤 경로가중치 상승으로 요청을 단계적으로 옮긴다. 서비스별 가중치는 각자의 건강지표에 따라 독립적으로 조정한다.","relations":["process","comparison","classification","boundary"]}
+{"primary":"연결배수 뒤 용량축소","text":"인스턴스에서 새 요청을 뺀 연결배수 뒤 용량축소로 노드를 제거한다. 다른 가용영역의 여유 용량은 이 축소와 별도로 검증한다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"작업임대 만료 뒤 재배정","text":"기존 작업자의 임대가 끝난 작업임대 만료 뒤 재배정으로 다른 노드가 일을 이어받는다. 서로 다른 작업키는 각 임대 상태에 따라 독립적으로 재배정된다.","relations":["process","role","classification","boundary"]}
+{"primary":"예약시각 뒤 배치기동","text":"예약 조건이 맞는 예약시각 뒤 배치기동으로 정기 작업을 시작한다. 수동 긴급작업은 같은 예약기와 독립된 실행경로를 가질 수 있다.","relations":["process","classification","contrast","boundary"]}
+{"primary":"전처리완료 뒤 본계산","text":"자료를 정리한 전처리완료 뒤 본계산이 입력 묶음을 처리한다. 서로 다른 날짜의 전처리는 저장경로가 분리되면 독립적으로 진행된다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"작업그래프의 부모완료 의존","text":"작업그래프의 부모완료 의존은 자식이 부모 산출물을 실제로 사용할 때만 둔다. 같은 프로젝트에 속한다는 이유로 무관한 작업까지 직렬화하지 않는다.","relations":["part_of","classification","contrast","boundary"]}
+{"primary":"여러분기 뒤 합류계산","text":"독립 분기들이 결과를 만든 여러분기 뒤 합류계산으로 종합값을 생성한다. 선택 분기가 실패했을 때 생략 가능한지 여부를 합류조건에 명시한다.","relations":["process","part_of","comparison","boundary"]}
+{"primary":"조건분기별 독립실행","text":"입력 유형이 다르면 조건분기별 독립실행으로 필요한 처리기만 선택한다. 선택되지 않은 분기의 준비 실패가 현재 요청을 막지 않게 한다.","relations":["classification","function","contrast","boundary"]}
+{"primary":"상위취소 뒤 하위작업정리","text":"사용자 요청이 끝나면 상위취소 뒤 하위작업정리로 불필요한 계산과 임시자원을 회수한다. 이미 확정된 외부 거래는 취소신호와 독립된 보상 절차가 필요하다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"공유임시파일의 순서제약","text":"여러 작업이 같은 경로에 쓰면 공유임시파일의 순서제약 때문에 동시에 실행할 수 없다. 작업별 고유경로를 쓰는 경우에만 파일 생성이 독립적이다.","relations":["part_of","classification","comparison","boundary"]}
+{"primary":"고유작업공간의 병렬성","text":"고유작업공간의 병렬성은 각 실행이 별도 디렉터리와 이름을 사용해 서로 덮어쓰지 않게 한다. 최종 게시 위치에서는 다시 충돌 조정이 필요하다.","relations":["part_of","function","contrast","boundary"]}
+{"primary":"부분산출물 뒤 결과병합","text":"필요한 부분 파일이 모두 생긴 부분산출물 뒤 결과병합으로 하나의 결과를 만든다. 독립 보고서는 병합 완료와 무관하게 각각 배포할 수 있다.","relations":["process","part_of","contrast","boundary"]}
+{"primary":"계산완료 뒤 보고서렌더링","text":"수치와 판정이 고정된 계산완료 뒤 보고서렌더링으로 표와 문장을 만든다. 다른 형식의 렌더링은 같은 데이터에서 병렬로 수행할 수 있다.","relations":["process","function","comparison","boundary"]}
+{"primary":"검토승인 뒤 결과게시","text":"민감한 결과는 검토승인 뒤 결과게시 순서로 외부에 공개한다. 내부 임시 미리보기는 게시 승인과 독립적으로 생성할 수 있다.","relations":["process","role","contrast","boundary"]}
+{"primary":"원본게시 뒤 가장자리갱신","text":"새 파일이 원본에 놓인 원본게시 뒤 가장자리갱신으로 각 지역 캐시를 바꾼다. 지역별 갱신은 서로 독립적이어서 완료 시각이 다를 수 있다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"문서변경 뒤 검색색인","text":"문서 저장이 확정된 문서변경 뒤 검색색인으로 새 내용을 찾게 한다. 원문 조회는 색인 갱신과 독립적으로 먼저 가능할 수 있다.","relations":["process","function","contrast","boundary"]}
+{"primary":"색인반영 뒤 검색노출","text":"색인 세그먼트가 배포된 색인반영 뒤 검색노출로 새 문서가 결과에 나타난다. 문서별 반영은 같은 일괄 작업 안에서도 독립적으로 실패할 수 있다.","relations":["process","state","part_of","boundary"]}
+{"primary":"사건저장 뒤 구독자전달","text":"사건이 브로커에 지속된 사건저장 뒤 구독자전달로 여러 소비자에게 흩어진다. 구독자별 처리 결과는 서로 독립적이다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"내부커밋 뒤 외부웹훅","text":"업무 상태가 확정된 내부커밋 뒤 외부웹훅을 보내 미확정 내용을 알리지 않는다. 서로 다른 수신자의 전달은 개별 재시도 상태를 갖는다.","relations":["process","state","part_of","boundary"]}
+{"primary":"웹훅실패 뒤 개별재전송","text":"한 수신자가 응답하지 않으면 웹훅실패 뒤 개별재전송으로 그 대상만 다시 호출한다. 다른 수신자의 성공 통지를 되돌리지 않는다.","relations":["process","contrast","classification","boundary"]}
+{"primary":"외부확인 뒤 전달완료","text":"수신자가 멱등하게 저장한 외부확인 뒤 전달완료로 발신 큐에서 항목을 제거한다. 내부 작업 완료는 이 외부 확인과 독립된 상태로 이미 확정될 수 있다.","relations":["process","state","contrast","boundary"]}
+{"primary":"부분실패 뒤 보상분기","text":"여러 외부 작업 중 일부만 성공하면 부분실패 뒤 보상분기로 성공한 단계의 취소 가능성을 판단한다. 실패하지 않은 독립 작업까지 무조건 되돌리지 않는다.","relations":["process","part_of","classification","boundary"]}
+{"primary":"거래집계 뒤 회계마감","text":"모든 승인 거래와 취소를 모은 거래집계 뒤 회계마감으로 기간 장부를 고정한다. 다음 기간의 실시간 거래접수는 이전 마감 계산과 독립적으로 계속될 수 있다.","relations":["process","state","contrast","boundary"]}
+{"primary":"상태확정 뒤 사용자알림","text":"주문이나 복구 상태가 확정된 상태확정 뒤 사용자알림으로 결과를 전달한다. 알림 채널별 발송은 서로 독립이지만 메시지 내용은 같은 확정 상태에 의존한다.","relations":["process","role","part_of","boundary"]}
+{"primary":"변경실행 뒤 감사기록","text":"운영자가 명령을 수행한 변경실행 뒤 감사기록으로 주체·시각·이전값을 남긴다. 실시간 보호제어는 기록 저장 지연과 독립적으로 먼저 작동할 수 있다.","relations":["process","role","contrast","boundary"]}
+{"primary":"증거수집 뒤 준수판정","text":"필수 로그와 승인을 모은 증거수집 뒤 준수판정으로 규정 충족 여부를 평가한다. 서로 다른 통제항목은 공통 증거가 없으면 독립적으로 판정한다.","relations":["process","classification","part_of","boundary"]}
+{"primary":"초안완료 뒤 동료검토","text":"분석 초안이 끝난 초안완료 뒤 동료검토로 누락과 과잉결론을 찾는다. 여러 장의 검토는 내용 의존이 없으면 병렬로 수행할 수 있다.","relations":["process","role","comparison","boundary"]}
+{"primary":"사실확정 뒤 회고논의","text":"사건 시계열과 영향이 확인된 사실확정 뒤 회고논의로 의사결정과 개선점을 검토한다. 책임 추궁 절차는 기술 학습 흐름과 구분해 독립성을 지킨다.","relations":["process","role","contrast","boundary"]}
+{"primary":"개선구현 뒤 효과검증","text":"후속 변경을 배포한 개선구현 뒤 효과검증으로 같은 실패경로가 줄었는지 확인한다. 문서 개선과 기술 개선은 각각 독립된 증거로 완료를 판정한다.","relations":["process","comparison","classification","boundary"]}
+{"primary":"재발방지 확인 뒤 원장종료","text":"필수 개선이 실제로 작동한 재발방지 확인 뒤 원장종료로 사건의 후속 상태를 닫는다. 선택 권고의 장기 추적은 이 종료와 독립된 별도 작업으로 남길 수 있다.","relations":["process","state","role","boundary"]}

@@ -1,0 +1,150 @@
+{"primary":"작업유형별 CPU 임계값","text":"작업유형별 CPU 임계값은 대화형 요청과 배치 계산의 허용 지연을 다르게 반영한다. 서비스 전체에 하나의 사용률 기본값을 적용하지 않는다.","relations":["attribute","classification","comparison","boundary"]}
+{"primary":"부하평균창의 지속시간 범위","text":"부하평균창의 지속시간 범위는 짧은 폭주 탐지와 장기 용량판단에서 달라야 한다. 한 시간 평균을 순간 과부하 차단에도 그대로 쓰지 않는다.","relations":["attribute","process","classification","boundary"]}
+{"primary":"상위백분위의 최소표본 조건","text":"상위백분위의 최소표본 조건은 요청 수가 충분한 시간창에서만 안정적인 지연값을 만든다. 표본 몇 건의 최대값을 같은 백분위 기본값처럼 비교하지 않는다.","relations":["comparison","attribute","classification","boundary"]}
+{"primary":"오류율 분모의 요청범위","text":"오류율 분모의 요청범위는 실제 시도된 요청과 차단된 요청을 어떤 목적에서 셀지 명시한다. 캐시 성공과 백엔드 호출을 섞어 하나의 비율로 만들지 않는다.","relations":["part_of","attribute","classification","boundary"]}
+{"primary":"저트래픽 오류율 예외","text":"요청이 드문 서비스의 저트래픽 오류율 예외는 비율만 보지 않고 최소 오류 수와 시간을 함께 요구한다. 한 건 실패를 곧바로 전면 장애로 확대하지 않는다.","relations":["classification","comparison","attribute","boundary"]}
+{"primary":"결측지표의 미지상태 규칙","text":"수집값이 없을 때 결측지표의 미지상태 규칙은 정상 영점이 아니라 관측 불가로 표시한다. 확장과 경보는 마지막 값의 나이와 대체 신호를 따로 본다.","relations":["state","classification","attribute","boundary"]}
+{"primary":"누적계수 재시작 보정","text":"프로세스 재시작 때 누적계수 재시작 보정으로 값 감소를 음의 요청량으로 계산하지 않는다. 이전 인스턴스의 기준점을 새 인스턴스에 그대로 적용하지 않는다.","relations":["process","attribute","comparison","boundary"]}
+{"primary":"지표라벨별 집계경계","text":"지표라벨별 집계경계는 지역·버전·상태코드처럼 필요한 차원을 보존한다. 전체 합계만 기본 표시해 한 버전의 오류를 다른 성공으로 희석하지 않는다.","relations":["part_of","classification","comparison","boundary"]}
+{"primary":"지역별 가용성 판정","text":"지역별 가용성 판정은 해당 지역의 요청과 의존상태를 기준으로 한다. 전역 평균이 목표 안이라는 이유로 한 지역 장애를 정상으로 바꾸지 않는다.","relations":["part_of","attribute","classification","boundary"]}
+{"primary":"테넌트별 용량격리 규칙","text":"테넌트별 용량격리 규칙은 사용량과 계약한도를 각 고객에 적용한다. 대형 고객의 일시 예외를 다른 테넌트의 기본 할당량으로 상속하지 않는다.","relations":["role","classification","attribute","boundary"]}
+{"primary":"전역기본값의 지역재정의","text":"전역기본값의 지역재정의는 법규·지연·자원 차이가 확인된 지역에서만 우선한다. 지역 설정이 없다는 사실을 항상 전역값이 적합하다는 증거로 보지 않는다.","relations":["part_of","classification","contrast","boundary"]}
+{"primary":"순간폭주 허용량의 시간단위","text":"순간폭주 허용량의 시간단위는 초당·분당 요청과 저장 가능한 토큰 수를 함께 명시한다. 같은 숫자를 서로 다른 시간창의 한도로 쓰지 않는다.","relations":["attribute","comparison","classification","boundary"]}
+{"primary":"자동확장 냉각기간의 방향차이","text":"자동확장 냉각기간의 방향차이는 확장과 축소에 같은 대기시간이 적합하지 않을 수 있음을 뜻한다. 용량 부족과 과잉 제거의 위험을 따로 본다.","relations":["process","contrast","attribute","boundary"]}
+{"primary":"축소규칙의 진행작업 제외","text":"축소규칙의 진행작업 제외는 장기 연결이나 배치 작업을 가진 인스턴스를 제거 후보에서 뺀다. CPU가 낮다는 기본조건만으로 종료하지 않는다.","relations":["state","classification","function","boundary"]}
+{"primary":"최소복제본의 장애영역 범위","text":"최소복제본의 장애영역 범위는 단순 개수뿐 아니라 서로 다른 호스트와 영역에 배치됐는지 본다. 같은 노드의 프로세스 여러 개를 기본 가용수로 세지 않는다.","relations":["part_of","comparison","classification","boundary"]}
+{"primary":"최대복제본의 하류한계","text":"최대복제본의 하류한계는 데이터베이스 연결과 외부 API 할당량을 넘지 않게 정한다. 컴퓨팅 쿼터만 남았다는 이유로 상한을 올리지 않는다.","relations":["attribute","part_of","function","boundary"]}
+{"primary":"예약확장의 적용요일","text":"예약확장의 적용요일은 업무일·휴일·행사일을 구분한다. 평일 아침 규칙을 모든 달력 날짜에 기본 적용하지 않는다.","relations":["classification","attribute","comparison","boundary"]}
+{"primary":"휴일예측의 지역달력","text":"휴일예측의 지역달력은 서비스를 실제로 쓰는 국가와 시간대를 따른다. 운영팀 소재지의 휴일만으로 전 세계 수요를 계산하지 않는다.","relations":["part_of","classification","attribute","boundary"]}
+{"primary":"시간대경계의 예약실행","text":"시간대경계의 예약실행은 지역시각과 협정시각 중 기준을 명시해 같은 작업이 두 번 돌지 않게 한다. 서버 기본 시간대를 암묵적으로 상속하지 않는다.","relations":["process","classification","contrast","boundary"]}
+{"primary":"정비창구의 사용자지역 범위","text":"정비창구의 사용자지역 범위는 운영자의 밤이 아니라 실제 사용자 부하가 낮은 시간을 고려한다. 하나의 전역 시각을 모든 지역 정비 기본값으로 쓰지 않는다.","relations":["part_of","comparison","attribute","boundary"]}
+{"primary":"환경별 배포승인 규칙","text":"환경별 배포승인 규칙은 개발·시험·운영의 위험에 따라 필요한 검토를 다르게 둔다. 시험환경의 자동승인을 운영에도 그대로 적용하지 않는다.","relations":["classification","role","comparison","boundary"]}
+{"primary":"시험환경 성공의 운영한계","text":"시험환경 성공의 운영한계는 데이터량·권한·망구성이 다르면 같은 결과를 보장하지 않는다는 데 있다. 환경 이름만 바꿔 운영 판정을 대신하지 않는다.","relations":["comparison","classification","contrast","boundary"]}
+{"primary":"기능플래그 기본상태의 버전범위","text":"기능플래그 기본상태의 버전범위는 플래그를 해석하는 코드가 배포된 인스턴스에만 유효하다. 구버전까지 같은 설정으로 제어된다고 가정하지 않는다.","relations":["part_of","state","classification","boundary"]}
+{"primary":"사용자집단별 기능노출","text":"사용자집단별 기능노출은 계정 속성과 실험조건이 확인된 집단에만 적용한다. 내부 직원 예외를 일반 사용자에게 이름 유사성으로 확대하지 않는다.","relations":["role","classification","attribute","boundary"]}
+{"primary":"점진노출 비율의 모수","text":"점진노출 비율의 모수는 로그인 사용자·세션·요청 중 무엇을 나누는지 명시한다. 서로 다른 모수를 같은 10퍼센트라고 비교하지 않는다.","relations":["attribute","classification","comparison","boundary"]}
+{"primary":"카나리 집단의 트래픽대표성","text":"카나리 집단의 트래픽대표성은 지역·기기·업무 유형이 실제 분포를 충분히 포함하는지 본다. 내부 시험계정만으로 전 사용자를 대표하지 않는다.","relations":["part_of","comparison","classification","boundary"]}
+{"primary":"건강검사 경로의 기능범위","text":"건강검사 경로의 기능범위는 그 경로가 확인하는 저장소와 하류 호출까지만 보장한다. 정적 응답 검사를 복합 거래의 기본 정상판정으로 쓰지 않는다.","relations":["function","part_of","classification","boundary"]}
+{"primary":"하위호출별 시간초과 기본값","text":"하위호출별 시간초과 기본값은 예상 지연과 종단 기한에 맞춰 서비스마다 정한다. 모든 내부 호출에 같은 초 수를 복사하지 않는다.","relations":["attribute","part_of","comparison","boundary"]}
+{"primary":"연결기한과 응답기한 구분","text":"연결기한과 응답기한 구분은 주소 연결과 본문 처리에 서로 다른 제한을 둔다. 하나의 시간초과가 어느 단계를 뜻하는지 생략하지 않는다.","relations":["attribute","contrast","classification","boundary"]}
+{"primary":"재시도 상태코드 범위","text":"재시도 상태코드 범위는 일시적 과부하와 서버오류에 한정하고 잘못된 입력이나 권한거부를 제외한다. 모든 비성공 응답을 기본 재시도하지 않는다.","relations":["classification","process","contrast","boundary"]}
+{"primary":"멱등성별 재시도 정책","text":"멱등성별 재시도 정책은 조회와 동일키 갱신에는 허용해도 중복 결제 같은 작업에는 확인절차를 요구한다. HTTP 방식 이름만으로 안전성을 확정하지 않는다.","relations":["classification","function","contrast","boundary"]}
+{"primary":"대기증가의 최대상한","text":"재시도 대기증가의 최대상한을 두어 장기 장애에서 한 요청이 무한히 남지 않게 한다. 짧은 장애용 기본 곡선을 장기 복구에도 그대로 쓰지 않는다.","relations":["attribute","process","classification","boundary"]}
+{"primary":"무작위지연의 분포범위","text":"무작위지연의 분포범위는 클라이언트 수와 허용 기한에 맞춰 정한다. 임의값을 너무 좁게 두어 재시도가 다시 동기화되지 않게 한다.","relations":["attribute","comparison","process","boundary"]}
+{"primary":"회로차단 실패창의 시간범위","text":"회로차단 실패창의 시간범위는 최근 오류를 반영하되 오래전 사건이 현재 상태를 지배하지 않게 한다. 누적 전체 실패수를 기본 분모로 쓰지 않는다.","relations":["attribute","process","classification","boundary"]}
+{"primary":"반개방 시험요청의 수량한계","text":"반개방 시험요청의 수량한계는 회복 여부를 볼 최소 호출만 통과시킨다. 한 성공 뒤 모든 대기 요청을 동시에 풀지 않는다.","relations":["attribute","comparison","function","boundary"]}
+{"primary":"속도제한 주체식별 범위","text":"속도제한 주체식별 범위는 사용자·응용키·조직 중 실제 비용과 위험을 만드는 단위를 고른다. 단순 IP 주소를 모든 사용자의 기본 신원으로 쓰지 않는다.","relations":["role","classification","attribute","boundary"]}
+{"primary":"중계주소 뒤 원사용자 판정","text":"프록시를 거친 중계주소 뒤 원사용자 판정은 신뢰된 전달헤더와 중계목록을 확인해야 한다. 임의 헤더를 그대로 속도제한 키로 쓰지 않는다.","relations":["process","role","classification","boundary"]}
+{"primary":"할당량 단위의 자원구분","text":"할당량 단위의 자원구분은 요청 수·바이트·계산시간처럼 실제 소비량을 따로 센다. 한 요청을 모든 비용에서 동일한 기본 단위로 보지 않는다.","relations":["attribute","classification","contrast","boundary"]}
+{"primary":"동시성한도와 시간당한도 분리","text":"동시성한도와 시간당한도 분리는 순간 점유와 누적 사용량을 각각 제어한다. 한도 하나를 두 제약의 공통 기본값으로 쓰지 않는다.","relations":["attribute","contrast","function","boundary"]}
+{"primary":"본문크기 기준의 압축전후","text":"본문크기 기준의 압축전후는 전송 바이트와 해제 뒤 메모리 사용량을 함께 제한한다. 작은 압축파일이라는 이유로 거대한 해제 결과를 허용하지 않는다.","relations":["attribute","comparison","process","boundary"]}
+{"primary":"압축비 예외의 파일형식","text":"이미 압축된 이미지에는 압축비 예외의 파일형식으로 낮은 절감률을 허용할 수 있다. 텍스트 폭탄 같은 비정상 입력까지 같은 예외로 처리하지 않는다.","relations":["classification","contrast","attribute","boundary"]}
+{"primary":"캐시수명의 자료유형 범위","text":"캐시수명의 자료유형 범위는 정적 버전파일과 사용자별 상태를 구분한다. 가장 긴 정적 수명을 모든 API의 기본값으로 적용하지 않는다.","relations":["classification","attribute","part_of","boundary"]}
+{"primary":"민감자료 공유캐시 금지","text":"인증된 개인응답에는 민감자료 공유캐시 금지로 다른 사용자에게 재사용되지 않게 한다. 로그인 여부만 다른 비슷한 경로를 같은 캐시키로 묶지 않는다.","relations":["role","function","classification","boundary"]}
+{"primary":"부재응답 음성캐시 기간","text":"없는 객체를 저장하는 부재응답 음성캐시 기간은 새 생성 가능성이 높은 자원에서 짧게 둔다. 영구 부재를 가정한 긴 기본 수명으로 신규 자료를 숨기지 않는다.","relations":["attribute","state","classification","boundary"]}
+{"primary":"오류중 오래된캐시 허용범위","text":"원본 장애 때 오류중 오래된캐시 허용범위는 시각과 비중요 조회에 한정한다. 잔액·권한·재고처럼 현재값이 필요한 업무에는 적용하지 않는다.","relations":["classification","role","contrast","boundary"]}
+{"primary":"읽기일관성의 업무별 기본값","text":"읽기일관성의 업무별 기본값은 통계조회와 금융갱신에서 다르게 정한다. 모든 요청에 가장 약하거나 가장 강한 수준을 일괄 적용하지 않는다.","relations":["classification","comparison","attribute","boundary"]}
+{"primary":"복제지연 허용의 시점범위","text":"복제지연 허용의 시점범위는 최근 갱신을 보지 않아도 되는 조회에만 적용한다. 방금 바꾼 비밀번호 확인까지 지연 복제본으로 보내지 않는다.","relations":["attribute","classification","contrast","boundary"]}
+{"primary":"읽기경로 선택의 세션조건","text":"읽기경로 선택의 세션조건은 같은 사용자의 쓰기 직후에는 주 저장소나 세션 보장 경로를 쓰게 한다. 일반 무작위 복제 선택을 그대로 적용하지 않는다.","relations":["state","part_of","classification","boundary"]}
+{"primary":"격리수준의 거래범위","text":"격리수준의 거래범위는 재고차감과 단순 로그쓰기처럼 충돌 위험이 다른 작업에 맞춘다. 모든 거래에 가장 강한 기본수준을 강제해 불필요한 잠금을 만들지 않는다.","relations":["classification","attribute","comparison","boundary"]}
+{"primary":"잠금대기의 작업종류 한계","text":"잠금대기의 작업종류 한계는 대화형 요청은 짧게, 정해진 배치는 더 길게 둘 수 있다. 한 시간초과를 모든 거래에 복사하지 않는다.","relations":["attribute","classification","comparison","boundary"]}
+{"primary":"교착재시도의 거래범위","text":"교착재시도의 거래범위는 전체 작업을 안전하게 반복할 수 있고 외부 효과가 아직 없을 때로 한정한다. 부분 커밋된 거래를 기본 자동재시도하지 않는다.","relations":["classification","process","contrast","boundary"]}
+{"primary":"연결풀 크기의 인스턴스합계","text":"연결풀 크기의 인스턴스합계는 복제본 수를 곱한 전체 데이터베이스 연결을 본다. 인스턴스별 기본값만 적당하다고 상위 한도를 무시하지 않는다.","relations":["part_of","attribute","comparison","boundary"]}
+{"primary":"질의시간초과의 분석예외","text":"긴 분석질의의 질의시간초과의 분석예외는 읽기 전용 복제본과 자원예약이 있는 경우에만 허용한다. 운영 쓰기 데이터베이스의 일반 기한을 늘리지 않는다.","relations":["classification","role","part_of","boundary"]}
+{"primary":"쪽나눔 크기의 응답한계","text":"쪽나눔 크기의 응답한계는 네트워크 바이트와 데이터베이스 처리시간을 함께 고려한다. 모든 목록에 같은 행 수를 기본 적용하지 않는다.","relations":["attribute","comparison","function","boundary"]}
+{"primary":"일괄쓰기 크기의 롤백범위","text":"일괄쓰기 크기의 롤백범위는 실패 시 다시 처리할 수 있는 양과 잠금시간을 제한한다. 최대 전송크기까지 항상 한 거래로 묶지 않는다.","relations":["attribute","process","part_of","boundary"]}
+{"primary":"큐보존기간의 업무종류","text":"큐보존기간의 업무종류는 즉시 알림과 장기 정산처럼 재처리 가치가 다른 메시지를 구분한다. 가장 긴 기간을 모든 큐 기본값으로 쓰지 않는다.","relations":["classification","attribute","comparison","boundary"]}
+{"primary":"가시성기한의 처리시간 범위","text":"가시성기한의 처리시간 범위는 정상 작업시간보다 길되 실패 복구를 과도하게 늦추지 않게 정한다. 모든 메시지에 같은 기한을 적용하지 않는다.","relations":["attribute","process","comparison","boundary"]}
+{"primary":"격리큐 이동의 실패유형","text":"격리큐 이동의 실패유형은 영구 입력오류와 반복 한도 초과에 적용한다. 일시 네트워크오류 한 번만으로 정상 메시지를 격리하지 않는다.","relations":["classification","state","contrast","boundary"]}
+{"primary":"순서보장의 키범위","text":"순서보장의 키범위는 같은 계정이나 문서처럼 실제 선후가 필요한 묶음에만 둔다. 모든 메시지를 전역 한 줄로 직렬화하지 않는다.","relations":["part_of","classification","function","boundary"]}
+{"primary":"소비자그룹 할당의 파티션범위","text":"소비자그룹 할당의 파티션범위는 한 파티션을 한 활성 소비자가 맡도록 한다. 그룹이 다른 분석 소비자까지 같은 독점 규칙으로 막지 않는다.","relations":["part_of","role","classification","boundary"]}
+{"primary":"중복키 보존의 시간범위","text":"중복키 보존의 시간범위는 재시도가 도착할 수 있는 최대 기간보다 길게 잡는다. 키를 영구 저장하거나 너무 빨리 지우는 기본값을 피한다.","relations":["attribute","process","comparison","boundary"]}
+{"primary":"사건시각 허용지연의 원천별 범위","text":"사건시각 허용지연의 원천별 범위는 모바일 오프라인과 데이터센터 실시간 신호에서 다르게 정한다. 하나의 늦음 기준을 모든 생산자에 적용하지 않는다.","relations":["attribute","classification","comparison","boundary"]}
+{"primary":"사건스키마 버전의 소비자범위","text":"사건스키마 버전의 소비자범위는 실제로 해당 버전을 해석할 수 있는 소비자 집단을 확인한다. 최신 버전을 모든 구소비자의 기본 입력으로 보내지 않는다.","relations":["part_of","classification","function","boundary"]}
+{"primary":"결측필드 기본값의 의미한계","text":"결측필드 기본값의 의미한계는 값이 정말 기본인지 알 수 없는지 구분해 표시하는 데 있다. 빈 값을 숫자 영이나 거짓으로 자동 확정하지 않는다.","relations":["state","classification","contrast","boundary"]}
+{"primary":"미지열거값의 전방호환 처리","text":"미지열거값의 전방호환 처리는 안전한 기타 범주나 거부 중 업무위험에 맞는 동작을 고른다. 첫 열거값을 기본으로 강제 변환하지 않는다.","relations":["classification","function","contrast","boundary"]}
+{"primary":"수치정밀도의 계산단계 범위","text":"수치정밀도의 계산단계 범위는 중간 합계에서는 충분한 자리수를 보존하고 최종 표시에만 반올림한다. 각 단계마다 기본 반올림해 오차를 누적하지 않는다.","relations":["attribute","process","comparison","boundary"]}
+{"primary":"통화금액의 통화코드 조건","text":"통화금액의 통화코드 조건은 숫자와 기준통화를 함께 전달하게 한다. 같은 100이라는 값만 보고 지역 기본통화로 자동 해석하지 않는다.","relations":["attribute","classification","part_of","boundary"]}
+{"primary":"날짜경계의 사용자시간대","text":"날짜경계의 사용자시간대는 청구·보고·예약에서 어느 지역의 자정을 쓸지 명시한다. 서버 시간대의 날짜를 모든 사용자에게 기본 적용하지 않는다.","relations":["attribute","classification","contrast","boundary"]}
+{"primary":"언어기본값의 요청우선순위","text":"언어기본값의 요청우선순위는 사용자 설정·요청헤더·지역 추정을 순서대로 적용한다. 위치만으로 언어를 확정해 명시 선택을 덮지 않는다.","relations":["role","classification","comparison","boundary"]}
+{"primary":"정렬규칙의 언어별 범위","text":"정렬규칙의 언어별 범위는 글자순과 숫자·악센트 처리 차이를 반영한다. 바이트 순서를 모든 사용자 목록의 기본 정렬로 쓰지 않는다.","relations":["classification","comparison","attribute","boundary"]}
+{"primary":"대소문자 구분의 식별자종류","text":"대소문자 구분의 식별자종류는 이메일·파일키·비밀토큰에서 규칙이 다를 수 있다. 한 종류의 정규화를 모든 식별자에 적용하지 않는다.","relations":["classification","contrast","attribute","boundary"]}
+{"primary":"유니코드 정규화의 보안한계","text":"유니코드 정규화의 보안한계는 시각적으로 비슷한 글자와 실제 동일 문자를 구분해 다룬다. 표시가 같아 보인다는 이유로 계정키를 자동 병합하지 않는다.","relations":["classification","attribute","boundary"]}
+{"primary":"접근토큰 수명의 위험범위","text":"접근토큰 수명의 위험범위는 민감권한일수록 짧게 두고 재인증 비용과 균형을 맞춘다. 공개조회 토큰의 긴 기본수명을 관리자 토큰에 복사하지 않는다.","relations":["attribute","role","comparison","boundary"]}
+{"primary":"갱신토큰 재사용의 회전규칙","text":"갱신토큰 재사용의 회전규칙은 한 번 쓴 토큰을 폐기하고 새 토큰을 저장하게 한다. 병렬 요청 예외의 짧은 겹침을 무기한 허용으로 넓히지 않는다.","relations":["process","state","classification","boundary"]}
+{"primary":"권한범위의 API별 최소화","text":"권한범위의 API별 최소화는 필요한 읽기·쓰기·삭제를 자원별로 나눈다. 서비스 계정이라는 이유로 모든 범위를 기본 부여하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"역할상속의 조직경계","text":"역할상속의 조직경계는 하위 프로젝트가 상위 정책을 받되 별도 규제영역에는 자동 전파하지 않는다. 조직도 포함관계를 무제한 권한상속으로 쓰지 않는다.","relations":["part_of","role","classification","boundary"]}
+{"primary":"관리자권한의 시간제한","text":"관리자권한의 시간제한은 승인된 작업이 끝나면 일반 역할로 돌아가게 한다. 계정 직급을 영구 전역권한의 기본근거로 쓰지 않는다.","relations":["role","attribute","process","boundary"]}
+{"primary":"서비스계정의 워크로드귀속","text":"서비스계정의 워크로드귀속은 지정 응용과 환경에서만 자격을 쓰게 한다. 같은 이미지가 다른 프로젝트에 배포됐다고 권한까지 자동 상속하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"서명키 교체의 검증자범위","text":"서명키 교체의 검증자범위는 새 공개키를 받은 지역과 서비스부터 새 서명을 허용한다. 모든 검증자가 갱신되기 전에 전역 기본키를 바꾸지 않는다.","relations":["part_of","process","classification","boundary"]}
+{"primary":"인증서 이름범위의 호스트일치","text":"인증서 이름범위의 호스트일치는 실제 접속 이름이 허용목록에 있는지 확인한다. 같은 조직 인증서라는 이유로 다른 호스트에 기본 재사용하지 않는다.","relations":["classification","comparison","function","boundary"]}
+{"primary":"포괄인증서의 하위도메인 한계","text":"포괄인증서의 하위도메인 한계는 한 단계 이름만 포함하고 루트나 더 깊은 이름을 자동 포함하지 않을 수 있다. 별표를 무제한 범위로 해석하지 않는다.","relations":["part_of","classification","boundary"]}
+{"primary":"최소암호규약의 클라이언트집단","text":"최소암호규약의 클라이언트집단은 외부·내부·레거시 단말의 위험을 나눠 적용한다. 임시 구형단말 예외를 전 종단 기본값으로 낮추지 않는다.","relations":["classification","contrast","attribute","boundary"]}
+{"primary":"기본거부 방화벽의 허용목록","text":"기본거부 방화벽의 허용목록은 필요한 흐름만 출발지·목적지·포트로 명시한다. 같은 서브넷이라는 이유로 모든 통신을 자동 허용하지 않는다.","relations":["part_of","function","classification","boundary"]}
+{"primary":"보안그룹 상속의 자원경계","text":"보안그룹 상속의 자원경계는 템플릿을 공유해도 민감 데이터베이스와 공개 서버의 흐름을 따로 둔다. 공통 태그를 동일 허용규칙의 충분한 근거로 쓰지 않는다.","relations":["part_of","classification","contrast","boundary"]}
+{"primary":"공개서브넷 분류의 경로조건","text":"공개서브넷 분류의 경로조건은 실제 인터넷 경로와 공인주소가 모두 있는지 본다. 이름에 공개가 들어간다는 이유만으로 모든 인스턴스를 외부 노출로 판단하지 않는다.","relations":["classification","function","state","boundary"]}
+{"primary":"망연결 기한의 경로거리","text":"망연결 기한의 경로거리는 같은 지역 내부와 대륙 간 호출에서 다르게 설정한다. 근거리 기본값을 먼 복제 경로에 적용하지 않는다.","relations":["attribute","comparison","part_of","boundary"]}
+{"primary":"DNS수명의 레코드유형 범위","text":"DNS수명의 레코드유형 범위는 자주 바뀌는 전환주소와 안정된 검증기록을 구분한다. 모든 레코드에 같은 짧은 기본수명을 적용해 조회부하를 키우지 않는다.","relations":["classification","attribute","comparison","boundary"]}
+{"primary":"세션고정의 사용자범위","text":"세션고정의 사용자범위는 로컬 상태가 필요한 오래된 응용에만 적용한다. 무상태 API까지 같은 백엔드에 묶어 부하분산을 약화하지 않는다.","relations":["classification","role","function","boundary"]}
+{"primary":"건강실패횟수의 방향별 기준","text":"건강실패횟수의 방향별 기준은 제외에는 빠른 반응을, 복귀에는 더 많은 성공을 요구할 수 있다. 실패와 성공에 같은 횟수 기본값을 쓰지 않는다.","relations":["comparison","attribute","process","boundary"]}
+{"primary":"지역전환의 서비스별 범위","text":"지역전환의 서비스별 범위는 데이터와 의존성이 준비된 기능부터 옮긴다. 한 서비스의 전환 성공을 모든 제품의 전역 기본동작으로 확대하지 않는다.","relations":["part_of","classification","state","boundary"]}
+{"primary":"자료거주 규칙의 고객계약 범위","text":"자료거주 규칙의 고객계약 범위는 테넌트별 허용지역과 복제목적을 따른다. 조직 전체에 가장 느슨한 계약을 기본 적용하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"백업주기의 변경빈도 조건","text":"백업주기의 변경빈도 조건은 데이터가 얼마나 자주 바뀌고 허용 손실이 얼마인지에 맞춘다. 모든 저장소에 하루 한 번을 기본값으로 쓰지 않는다.","relations":["attribute","process","comparison","boundary"]}
+{"primary":"보존기간의 복구목적 범위","text":"보존기간의 복구목적 범위는 운영복구·감사·법적보존을 구분한다. 가장 긴 요구를 모든 임시 백업에 적용하지 않는다.","relations":["classification","role","attribute","boundary"]}
+{"primary":"다중볼륨 스냅샷의 시점경계","text":"다중볼륨 스냅샷의 시점경계는 응용 쓰기를 멈추거나 일관된 표식을 남겨야 한다. 각 볼륨의 기본 촬영시각을 독립적으로 합쳐 하나의 복구점으로 보지 않는다.","relations":["part_of","process","comparison","boundary"]}
+{"primary":"복원시험 환경의 외부효과 차단","text":"복원시험 환경의 외부효과 차단은 이메일·결제·웹훅을 모의 대상으로 돌린다. 운영 데이터 복사만으로 운영 권한까지 기본 상속하지 않는다.","relations":["function","contrast","classification","boundary"]}
+{"primary":"손실허용시간의 자료등급","text":"손실허용시간의 자료등급은 거래원장과 재생성 가능한 캐시에서 다르게 정한다. 전사 하나의 복구시점 목표를 모든 자료 기본값으로 쓰지 않는다.","relations":["attribute","classification","comparison","boundary"]}
+{"primary":"복구시간의 기능우선순위","text":"복구시간의 기능우선순위는 핵심 읽기·쓰기와 후순위 분석을 구분한다. 전체 시스템이 모두 끝나는 시간만을 각 기능의 기본 목표로 삼지 않는다.","relations":["role","classification","comparison","boundary"]}
+{"primary":"가용성목표의 측정대상 범위","text":"가용성목표의 측정대상 범위는 실제 사용자 요청과 제외할 계획정비를 명시한다. 내부 헬스검사 성공률을 그대로 서비스 목표로 쓰지 않는다.","relations":["attribute","role","classification","boundary"]}
+{"primary":"정비제외의 승인시간 범위","text":"목표 계산에서 정비제외의 승인시간 범위는 사전 공지되고 실제 작업한 구간에만 적용한다. 예정보다 긴 장애시간까지 자동 제외하지 않는다.","relations":["attribute","process","classification","boundary"]}
+{"primary":"사고등급의 사용자영향 기준","text":"사고등급의 사용자영향 기준은 영향 사용자 수·핵심기능·지속시간을 함께 본다. 서버 한 대의 경보를 모든 사건의 기본 중대도로 쓰지 않는다.","relations":["attribute","comparison","classification","boundary"]}
+{"primary":"사고종료의 기능별 회복범위","text":"사고종료의 기능별 회복범위는 영향받은 읽기·쓰기·알림·배치 경로를 각각 확인한다. 대표 API 하나의 성공을 전체 종료 기본조건으로 쓰지 않는다.","relations":["part_of","state","comparison","boundary"]}
+{"primary":"경보중대도의 대상별 규칙","text":"경보중대도의 대상별 규칙은 사용자 장애와 내부 예비용량 감소를 구분한다. 같은 임계 초과를 모든 서비스에서 최고등급으로 만들지 않는다.","relations":["classification","attribute","comparison","boundary"]}
+{"primary":"알림채널의 사건등급 범위","text":"알림채널의 사건등급 범위는 긴급 호출·업무시간 메시지·주간 보고를 중대도에 맞게 나눈다. 모든 경보를 전화로 보내 소음을 만들지 않는다.","relations":["role","classification","function","boundary"]}
+{"primary":"상태공지의 고객범위","text":"상태공지의 고객범위는 실제 사용지역과 제품 의존성을 기준으로 정한다. 한 테넌트 장애를 모든 고객에게 전역 장애로 알리지 않는다.","relations":["part_of","role","classification","boundary"]}
+{"primary":"공개로그의 개인정보 가림범위","text":"공개로그의 개인정보 가림범위는 토큰·주소·사용자 입력처럼 재식별 가능한 필드를 포함한다. 이름 필드 하나만 지운 것을 기본 익명화로 보지 않는다.","relations":["part_of","role","classification","boundary"]}
+{"primary":"디버그로그 표본률의 사건예외","text":"평상 디버그로그 표본률의 사건예외는 영향 서비스와 제한 시간에서만 더 많은 기록을 남긴다. 전 시스템의 민감 본문까지 무제한 수집하지 않는다.","relations":["attribute","classification","role","boundary"]}
+{"primary":"추적표본의 요청유형 범위","text":"추적표본의 요청유형 범위는 오류·고지연·희소 핵심거래를 일반 성공요청보다 우선한다. 균일한 낮은 기본률로 중요한 경로를 놓치지 않는다.","relations":["classification","comparison","attribute","boundary"]}
+{"primary":"지표차원 수의 제한범위","text":"지표차원 수의 제한범위는 사용자 ID처럼 값 종류가 무한한 라벨을 집계에서 제외한다. 진단에 필요한 지역·버전 차원까지 모두 없애지 않는다.","relations":["attribute","classification","contrast","boundary"]}
+{"primary":"대시보드 집계의 시간창","text":"대시보드 집계의 시간창은 즉시 대응과 장기 추세 화면에서 다르게 둔다. 최근 5분 기본값을 월간 용량계획에도 그대로 쓰지 않는다.","relations":["attribute","comparison","classification","boundary"]}
+{"primary":"로그조회 기간의 사고범위","text":"로그조회 기간의 사고범위는 첫 증상 전후의 충분한 여유를 포함하되 무관한 장기자료를 기본 검색하지 않는다. 시각대와 지연수집도 반영한다.","relations":["attribute","process","part_of","boundary"]}
+{"primary":"감사기록 보존의 행위등급","text":"감사기록 보존의 행위등급은 관리자 변경과 일반 조회의 법적·보안 가치를 구분한다. 가장 짧은 응용로그 기간을 모든 감사자료에 적용하지 않는다.","relations":["role","classification","attribute","boundary"]}
+{"primary":"삭제정책의 저장계층 범위","text":"삭제정책의 저장계층 범위는 주 데이터·복제본·검색색인·캐시를 모두 명시한다. 주 테이블 삭제만으로 전체 제거가 끝났다고 처리하지 않는다.","relations":["part_of","process","classification","boundary"]}
+{"primary":"법적보존의 자료대상 한정","text":"법적보존의 자료대상 한정은 사건·사용자·기간과 관련된 자료에만 적용한다. 조직 전체 백업을 무기한 보존하는 기본예외로 넓히지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"자료내보내기의 테넌트경계","text":"자료내보내기의 테넌트경계는 요청한 고객의 레코드와 공유 참조를 정확히 분리한다. 같은 데이터베이스에 있다는 이유로 다른 고객 자료를 포함하지 않는다.","relations":["part_of","role","classification","boundary"]}
+{"primary":"지역간 전송의 자료등급","text":"지역간 전송의 자료등급은 공개·내부·민감 정보를 구분해 암호화와 허용지역을 정한다. 모든 백업을 같은 전송 기본정책으로 보내지 않는다.","relations":["classification","attribute","role","boundary"]}
+{"primary":"팀별 비용예산의 공유한계","text":"팀별 비용예산의 공유한계는 공용 플랫폼 비용과 개별 워크로드 비용을 나눠 귀속한다. 한 팀의 초과를 모든 서비스의 즉시 차단 근거로 쓰지 않는다.","relations":["part_of","attribute","classification","boundary"]}
+{"primary":"비용이상 기준의 계절범위","text":"비용이상 기준의 계절범위는 정기 행사와 월말 배치를 평상 일일 지출과 구분한다. 전주 대비 증가만으로 모든 확장을 이상으로 분류하지 않는다.","relations":["attribute","comparison","classification","boundary"]}
+{"primary":"지출상한의 필수서비스 예외","text":"재난·보안 대응에는 지출상한의 필수서비스 예외로 승인된 자원을 계속 사용할 수 있다. 일반 성능개선까지 같은 예외에 포함하지 않는다.","relations":["role","classification","contrast","boundary"]}
+{"primary":"비용예외 해제의 누적확인","text":"사건 종료 뒤 실제 누적비용과 남은 예약을 확인해야 비용예외 해제의 누적확인으로 평상 상한을 복원한다. 시간 만료만으로 실행 중 자원을 방치하지 않는다.","relations":["process","comparison","state","boundary"]}
+{"primary":"공급계약의 지역가용 범위","text":"공급계약의 지역가용 범위는 서비스가 제공되는 지역과 기능을 명시한다. 전역 브랜드 계약을 모든 지역 용량의 기본 보장으로 해석하지 않는다.","relations":["role","part_of","classification","boundary"]}
+{"primary":"지원등급의 응답시간 한계","text":"지원등급의 응답시간 한계는 접수 응답과 실제 해결시간을 구분한다. 높은 지원등급을 즉시 복구의 충분한 기본조건으로 쓰지 않는다.","relations":["attribute","role","contrast","boundary"]}
+{"primary":"보상조건의 측정기간 범위","text":"서비스 보상조건의 측정기간 범위는 월간 가용성과 제외 사건을 계약대로 계산한다. 한 번의 짧은 실패를 모든 보상 규칙에 같은 방식으로 적용하지 않는다.","relations":["attribute","classification","comparison","boundary"]}
+{"primary":"시험자료의 운영사용 금지","text":"가공된 시험자료의 운영사용 금지는 모의 계정과 실제 고객 상태를 분리한다. 형식이 같다는 이유로 시험 레코드를 운영 판단의 기본 입력으로 쓰지 않는다.","relations":["classification","contrast","role","boundary"]}
+{"primary":"합성사용자의 권한범위","text":"합성사용자의 권한범위는 읽기나 되돌릴 수 있는 시험거래에만 둔다. 실제 결제·삭제 권한을 모니터링 계정에 기본 부여하지 않는다.","relations":["role","function","classification","boundary"]}
+{"primary":"그림자트래픽의 외부효과 차단","text":"그림자트래픽의 외부효과 차단은 복제 요청이 이메일·결제·쓰기 하류로 나가지 않게 한다. 응답 비교를 위해 실제 효과까지 두 번 만들지 않는다.","relations":["function","part_of","contrast","boundary"]}
+{"primary":"요청표본의 사용자층 범위","text":"요청표본의 사용자층 범위는 지역·기기·계정등급을 필요한 비율로 포함한다. 가장 많은 사용자층만 뽑아 희소 핵심경로를 기본 제외하지 않는다.","relations":["part_of","classification","comparison","boundary"]}
+{"primary":"실험집단의 사용자단위 고정","text":"실험집단의 사용자단위 고정은 같은 사람이 세션마다 다른 경험을 받지 않게 한다. 요청 단위 무작위 배정을 모든 기능의 기본값으로 쓰지 않는다.","relations":["role","state","classification","boundary"]}
+{"primary":"통계판정의 최소효과 범위","text":"통계판정의 최소효과 범위는 표본 수뿐 아니라 업무상 의미 있는 차이를 미리 정한다. 유의확률 하나만으로 모든 작은 차이를 성공으로 분류하지 않는다.","relations":["comparison","attribute","classification","boundary"]}
+{"primary":"실험조기중단의 안전조건","text":"사용자 피해가 확인된 실험조기중단의 안전조건은 통계 목표 전에도 즉시 적용한다. 긍정 결과가 잠깐 보였다는 이유로 성공 조기종료를 남발하지 않는다.","relations":["state","function","contrast","boundary"]}
+{"primary":"모델확신 기준의 업무위험","text":"모델확신 기준의 업무위험은 추천과 자동승인처럼 잘못된 판단 비용이 다른 기능에 맞춰 정한다. 하나의 확률 기본값을 모든 모델 출력에 적용하지 않는다.","relations":["attribute","classification","comparison","boundary"]}
+{"primary":"저확신 대체경로의 응답범위","text":"저확신 대체경로의 응답범위는 안전한 기본답·추가 질문·사람 검토 중 업무에 맞는 방식을 고른다. 임의 추측을 공통 기본응답으로 쓰지 않는다.","relations":["classification","function","contrast","boundary"]}
+{"primary":"사람검토의 사건우선순위","text":"사람검토의 사건우선순위는 위험도와 대기시간을 함께 반영한다. 모델 확신이 낮다는 이유만으로 모든 항목을 같은 긴급도로 보내지 않는다.","relations":["role","comparison","attribute","boundary"]}
+{"primary":"콘텐츠차단의 정책지역 범위","text":"콘텐츠차단의 정책지역 범위는 법규와 제품정책이 다른 지역을 구분한다. 한 국가의 금지범주를 전 세계 기본규칙으로 확대하지 않는다.","relations":["classification","part_of","role","boundary"]}
+{"primary":"언어별 정책해석 검증","text":"언어별 정책해석 검증은 번역된 표현과 지역 용례가 같은 의미인지 확인한다. 영어 규칙의 표면 단어를 모든 언어에 기본 대응시키지 않는다.","relations":["classification","comparison","role","boundary"]}
+{"primary":"접근성 기본설정의 사용자선택","text":"접근성 기본설정의 사용자선택은 화면읽기·고대비·동작감소를 계정 선호에 맞춰 적용한다. 한 사용자의 필요를 모든 사용자 인터페이스에 강제하지 않는다.","relations":["role","attribute","classification","boundary"]}
+{"primary":"기기별 화면크기 기준","text":"기기별 화면크기 기준은 휴대전화·태블릿·데스크톱의 입력방식과 폭을 구분한다. 데스크톱 기본 배치를 작은 화면에 그대로 적용하지 않는다.","relations":["classification","comparison","attribute","boundary"]}
+{"primary":"브라우저기능 감지의 버전한계","text":"브라우저기능 감지의 버전한계는 이름보다 실제 API 지원 여부를 확인한다. 최신 버전 문자열만으로 모든 기능이 활성이라고 기본 판단하지 않는다.","relations":["classification","function","state","boundary"]}
+{"primary":"모바일최소버전의 운영체제범위","text":"모바일최소버전의 운영체제범위는 플랫폼별 배포와 보안지원 상태를 따로 정한다. 한 플랫폼 버전번호를 다른 플랫폼에 같은 기준으로 쓰지 않는다.","relations":["classification","attribute","comparison","boundary"]}
+{"primary":"API버전 기본선택의 클라이언트범위","text":"API버전 기본선택의 클라이언트범위는 명시 버전이 없는 오래된 호출에만 적용한다. 새 클라이언트의 명시 선택을 서버 기본값으로 덮지 않는다.","relations":["classification","role","contrast","boundary"]}
+{"primary":"폐기예고의 사용량기준","text":"API 폐기예고의 사용량기준은 실제 호출 고객과 대체경로 준비상태를 확인한다. 날짜만 됐다는 이유로 아직 필수 사용자가 남은 버전을 즉시 끄지 않는다.","relations":["attribute","role","process","boundary"]}
+{"primary":"호환계층의 변환범위","text":"호환계층의 변환범위는 이름 변경이나 기본필드 추가처럼 의미를 보존하는 요청에 한정한다. 서로 다른 업무행동까지 자동 변환하지 않는다.","relations":["classification","function","contrast","boundary"]}
+{"primary":"쪽나눔 커서의 질의귀속","text":"쪽나눔 커서의 질의귀속은 필터·정렬·사용자 권한이 같은 후속 요청에서만 유효하다. 다른 목록에 이전 커서를 기본 재사용하지 않는다.","relations":["part_of","role","classification","boundary"]}
+{"primary":"멱등키 보존창의 요청종류","text":"멱등키 보존창의 요청종류는 결제와 단순 메모 저장처럼 재시도 위험이 다른 작업에 맞춘다. 하나의 시간창을 모든 API에 기본 적용하지 않는다.","relations":["attribute","classification","comparison","boundary"]}
+{"primary":"중복판정 키의 테넌트범위","text":"중복판정 키의 테넌트범위는 서로 다른 고객이 같은 문자열을 써도 충돌하지 않게 계정 경계를 포함한다. 키 문자열만 전역 기본식별자로 쓰지 않는다.","relations":["part_of","role","classification","boundary"]}
+{"primary":"기본정렬의 안정키 조건","text":"기본정렬의 안정키 조건은 같은 시각이나 점수에서도 고유 식별자로 순서를 고정한다. 불안정한 결과 순서를 쪽나눔의 기본으로 쓰지 않는다.","relations":["attribute","function","classification","boundary"]}
+{"primary":"결측값 정렬의 방향명시","text":"결측값 정렬의 방향명시는 오름차순과 내림차순에서 빈 값을 앞뒤 어디에 둘지 따로 정한다. 데이터베이스 엔진 기본값을 API 계약으로 암묵 상속하지 않는다.","relations":["state","classification","contrast","boundary"]}
+{"primary":"부분성공 응답의 항목범위","text":"일괄 요청의 부분성공 응답의 항목범위는 성공·실패를 각 대상별로 표시한다. 일부 성공을 전체 성공상태로, 일부 실패를 전체 롤백으로 기본 처리하지 않는다.","relations":["part_of","state","contrast","boundary"]}
+{"primary":"응답코드와 업무상태 구분","text":"응답코드와 업무상태 구분은 접수됨·처리 중·완료·실패를 비동기 작업 안에서 나눈다. 전송 성공 코드를 업무 완료의 기본값으로 쓰지 않는다.","relations":["state","classification","contrast","boundary"]}
+{"primary":"기본규칙 변경의 전범위 검토","text":"기본규칙 변경의 전범위 검토는 지역·테넌트·버전·모드·시간·예외가 실제로 상속되는 경로를 확인한다. 대표 환경의 성공만으로 전역 적용하지 않는다.","relations":["part_of","role","comparison","boundary"]}
+{"primary":"설정배포의 단계별 기본복원","text":"설정배포의 단계별 기본복원은 작은 집단 검증과 자동 롤백 기준을 거쳐 범위를 넓힌다. 최종 목표값을 모든 인스턴스에 한 번에 기본 적용하지 않는다.","relations":["process","classification","state","boundary"]}
