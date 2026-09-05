@@ -1,0 +1,1115 @@
+[1/1] e4 - 1200M tokens over the 300M pool = 4.0 epochs
+
+==============================================================================
+[runlog] 2026-09-05 05:39:59  name=P087_stage2_epoch4
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100s8 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --train-repeat 2.0 --steps 9156 --tokens 300M --pool-tokens 300M --exact-cache --tag d12_cla2_r20_p300_e4
+==============================================================================
+[cmd] python run100m.py train --preset m100s8 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --train-repeat 2.0 --steps 9156 --tokens 300M --pool-tokens 300M --exact-cache --tag d12_cla2_r20_p300_e4
+[ckpt] m100s8 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 300.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_300000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 12 -> 6 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[repeat] ★학습 시 재귀 R=2.0 mode=uniform — ★상주 파라미터는 불변, 계산 깊이만 늘어난다. ⚠️활성 메모리와 벽시계는 반복 배수만큼 는다
+[init] ★★경고: 구조 불일치 — 학생 층 12(prelude 2/mid 8/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+[init] ★**역할 구간별 비례 대응**으로 이식한다(P049 선결, 2026-08-14) — prelude↔prelude, middle↔middle, coda↔coda. 종전의 인덱스 zip 이 아니다.
+[init] ★대응표 student->teacher: [0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 19]
+[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+[init] dense 부모초기화 완료 (중간 MLP는 dense — 층당 1개, 평균 없음)  <- m100_ko-en_300M_dense.pt
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+8+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       72.5M      14.8 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           81.2M      16.6 MiB
+
+
+  저장(packed, 안 B)                         16.6 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        19.3 MiB
+  ★상주(runtime, 현 구현)                     586.4 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 16.6MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.149 GFLOP
+  ★KV 캐시(fp32)        : 15.0 KB/token  (엔트리 10개 / 방문 20회)
+                          1024 ctx 15.0 MiB → ★상주+KV = 601.4 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[d12_cla2_r20_p300_e4] device=cuda  9156step x 131K tok = 1200M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.06(step~557)  anneal_end=0.80(step~7324)  완전삼진=0.80(step~7324)  decay_frac=0.20  LR감쇠시작=0.80(step~7324)  정렬됨
+  step     0/9156  ce 6.4956  |g| 8.98  anneal 0.00  lr 1.00e-05  18257 ms/step
+  step    10/9156  ce 5.3970  |g| 1.30  anneal 0.00  lr 1.10e-04  3943 ms/step
+  step    20/9156  ce 4.9570  |g| 0.67  anneal 0.00  lr 2.10e-04  3263 ms/step
+  step    30/9156  ce 4.8335  |g| 0.50  anneal 0.00  lr 3.10e-04  3021 ms/step
+  step    40/9156  ce 4.5392  |g| 0.46  anneal 0.00  lr 4.10e-04  2896 ms/step
+  step    50/9156  ce 4.5365  |g| 0.46  anneal 0.00  lr 5.10e-04  2821 ms/step
+  step    60/9156  ce 4.3634  |g| 0.41  anneal 0.00  lr 6.10e-04  2770 ms/step
+  step    70/9156  ce 4.2519  |g| 0.44  anneal 0.00  lr 7.10e-04  2738 ms/step
+  step    80/9156  ce 4.1838  |g| 0.51  anneal 0.00  lr 8.10e-04  2710 ms/step
+  step    90/9156  ce 4.1540  |g| 0.44  anneal 0.00  lr 9.10e-04  2688 ms/step
+    >> val_loss 4.7387  ppl 114.29  (train_ce 4.171, val-CE +0.567)  bpb 1.527
+       best 갱신 4.7387 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step   100/9156  ce 4.2161  |g| 0.45  anneal 0.00  lr 1.00e-03  2714 ms/step
+  step   110/9156  ce 4.1951  |g| 0.39  anneal 0.00  lr 1.00e-03  2696 ms/step
+  step   120/9156  ce 4.1381  |g| 0.37  anneal 0.00  lr 1.00e-03  2681 ms/step
+  step   130/9156  ce 4.1053  |g| 0.40  anneal 0.00  lr 1.00e-03  2667 ms/step
+  step   140/9156  ce 4.1620  |g| 0.33  anneal 0.00  lr 1.00e-03  2657 ms/step
+  step   150/9156  ce 4.1019  |g| 0.35  anneal 0.00  lr 1.00e-03  2647 ms/step
+  step   160/9156  ce 4.0611  |g| 0.41  anneal 0.00  lr 1.00e-03  2638 ms/step
+  step   170/9156  ce 4.1196  |g| 0.38  anneal 0.00  lr 1.00e-03  2630 ms/step
+  step   180/9156  ce 4.0928  |g| 0.34  anneal 0.00  lr 1.00e-03  2623 ms/step
+  step   190/9156  ce 4.0137  |g| 0.35  anneal 0.00  lr 1.00e-03  2616 ms/step
+    >> val_loss 4.6125  ppl 100.74  (train_ce 4.066, val-CE +0.546)  bpb 1.486
+       best 갱신 4.6125 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step   200/9156  ce 4.1064  |g| 0.35  anneal 0.00  lr 1.00e-03  2628 ms/step
+  step   210/9156  ce 4.0984  |g| 0.31  anneal 0.00  lr 1.00e-03  2622 ms/step
+  step   220/9156  ce 4.0597  |g| 0.36  anneal 0.00  lr 1.00e-03  2616 ms/step
+  step   230/9156  ce 4.0546  |g| 0.32  anneal 0.00  lr 1.00e-03  2611 ms/step
+  step   240/9156  ce 4.0796  |g| 0.33  anneal 0.00  lr 1.00e-03  2606 ms/step
+  step   250/9156  ce 4.0627  |g| 0.34  anneal 0.00  lr 1.00e-03  2602 ms/step
+  step   260/9156  ce 4.0008  |g| 0.32  anneal 0.00  lr 1.00e-03  2598 ms/step
+  step   270/9156  ce 4.0828  |g| 0.31  anneal 0.00  lr 1.00e-03  2594 ms/step
+  step   280/9156  ce 4.0046  |g| 0.34  anneal 0.00  lr 1.00e-03  2591 ms/step
+  step   290/9156  ce 3.9507  |g| 0.37  anneal 0.00  lr 1.00e-03  2588 ms/step
+    >> val_loss 4.6075  ppl 100.23  (train_ce 4.004, val-CE +0.603)  bpb 1.484
+       best 갱신 4.6075 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step   300/9156  ce 4.0529  |g| 0.36  anneal 0.00  lr 1.00e-03  2597 ms/step
+  step   310/9156  ce 3.9810  |g| 0.30  anneal 0.00  lr 1.00e-03  2594 ms/step
+  step   320/9156  ce 4.0548  |g| 0.36  anneal 0.00  lr 1.00e-03  2590 ms/step
+  step   330/9156  ce 3.9742  |g| 0.32  anneal 0.00  lr 1.00e-03  2588 ms/step
+  step   340/9156  ce 4.0155  |g| 0.34  anneal 0.00  lr 1.00e-03  2585 ms/step
+  step   350/9156  ce 3.9262  |g| 0.31  anneal 0.00  lr 1.00e-03  2583 ms/step
+  step   360/9156  ce 4.0041  |g| 0.31  anneal 0.00  lr 1.00e-03  2580 ms/step
+  step   370/9156  ce 3.9644  |g| 0.35  anneal 0.00  lr 1.00e-03  2578 ms/step
+  step   380/9156  ce 3.9374  |g| 0.36  anneal 0.00  lr 1.00e-03  2576 ms/step
+  step   390/9156  ce 3.9216  |g| 0.32  anneal 0.00  lr 1.00e-03  2574 ms/step
+    >> val_loss 4.5169  ppl 91.55  (train_ce 3.905, val-CE +0.612)  bpb 1.455
+       best 갱신 4.5169 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step   400/9156  ce 3.9266  |g| 0.36  anneal 0.00  lr 1.00e-03  2580 ms/step
+  step   410/9156  ce 3.9336  |g| 0.32  anneal 0.00  lr 1.00e-03  2578 ms/step
+  step   420/9156  ce 3.8466  |g| 0.31  anneal 0.00  lr 1.00e-03  2576 ms/step
+  step   430/9156  ce 3.9594  |g| 0.35  anneal 0.00  lr 1.00e-03  2575 ms/step
+  step   440/9156  ce 3.9205  |g| 0.32  anneal 0.00  lr 1.00e-03  2573 ms/step
+  step   450/9156  ce 3.9258  |g| 0.28  anneal 0.00  lr 1.00e-03  2571 ms/step
+  step   460/9156  ce 3.9025  |g| 0.33  anneal 0.00  lr 1.00e-03  2570 ms/step
+  step   470/9156  ce 3.8429  |g| 0.31  anneal 0.00  lr 1.00e-03  2568 ms/step
+  step   480/9156  ce 3.8516  |g| 0.30  anneal 0.00  lr 1.00e-03  2567 ms/step
+  step   490/9156  ce 3.8284  |g| 0.31  anneal 0.00  lr 1.00e-03  2565 ms/step
+    >> val_loss 4.5531  ppl 94.93  (train_ce 3.839, val-CE +0.714)  bpb 1.467
+  step   500/9156  ce 3.9370  |g| 0.34  anneal 0.00  lr 1.00e-03  2570 ms/step
+  step   510/9156  ce 3.8894  |g| 0.30  anneal 0.00  lr 1.00e-03  2569 ms/step
+  step   520/9156  ce 3.8775  |g| 0.32  anneal 0.00  lr 1.00e-03  2568 ms/step
+  step   530/9156  ce 3.8781  |g| 0.28  anneal 0.00  lr 1.00e-03  2567 ms/step
+  step   540/9156  ce 3.8824  |g| 0.27  anneal 0.00  lr 1.00e-03  2566 ms/step
+  step   550/9156  ce 3.9324  |g| 0.32  anneal 0.00  lr 1.00e-03  2565 ms/step
+  step   560/9156  ce 3.9256  |g| 0.31  anneal 0.00  lr 1.00e-03  2564 ms/step
+  step   570/9156  ce 3.8698  |g| 0.30  anneal 0.00  lr 1.00e-03  2563 ms/step
+  step   580/9156  ce 3.8143  |g| 0.29  anneal 0.00  lr 1.00e-03  2563 ms/step
+  step   590/9156  ce 3.8816  |g| 0.34  anneal 0.00  lr 1.00e-03  2562 ms/step
+    >> val_loss 4.5100  ppl 90.92  (train_ce 3.889, val-CE +0.621)  bpb 1.453
+       best 갱신 4.5100 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step   600/9156  ce 3.8522  |g| 0.30  anneal 0.01  lr 1.00e-03  2567 ms/step
+  step   610/9156  ce 3.9113  |g| 0.30  anneal 0.01  lr 1.00e-03  2566 ms/step
+  step   620/9156  ce 3.8096  |g| 0.28  anneal 0.01  lr 1.00e-03  2565 ms/step
+  step   630/9156  ce 3.8400  |g| 0.30  anneal 0.01  lr 1.00e-03  2564 ms/step
+  step   640/9156  ce 3.8403  |g| 0.30  anneal 0.01  lr 1.00e-03  2563 ms/step
+  step   650/9156  ce 3.8487  |g| 0.33  anneal 0.01  lr 1.00e-03  2562 ms/step
+  step   660/9156  ce 3.7778  |g| 0.32  anneal 0.02  lr 1.00e-03  2562 ms/step
+  step   670/9156  ce 3.7427  |g| 0.32  anneal 0.02  lr 1.00e-03  2561 ms/step
+  step   680/9156  ce 3.8294  |g| 0.28  anneal 0.02  lr 1.00e-03  2560 ms/step
+  step   690/9156  ce 3.7910  |g| 0.29  anneal 0.02  lr 1.00e-03  2559 ms/step
+    >> val_loss 4.4644  ppl 86.87  (train_ce 3.855, val-CE +0.609)  bpb 1.438
+       best 갱신 4.4644 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step   700/9156  ce 3.8453  |g| 0.32  anneal 0.02  lr 1.00e-03  2564 ms/step
+  step   710/9156  ce 3.7994  |g| 0.33  anneal 0.02  lr 1.00e-03  2563 ms/step
+  step   720/9156  ce 3.8115  |g| 0.28  anneal 0.02  lr 1.00e-03  2562 ms/step
+  step   730/9156  ce 3.8121  |g| 0.28  anneal 0.03  lr 1.00e-03  2561 ms/step
+  step   740/9156  ce 3.8269  |g| 0.26  anneal 0.03  lr 1.00e-03  2561 ms/step
+  step   750/9156  ce 3.8046  |g| 0.35  anneal 0.03  lr 1.00e-03  2560 ms/step
+  step   760/9156  ce 3.8505  |g| 0.29  anneal 0.03  lr 1.00e-03  2559 ms/step
+  step   770/9156  ce 3.8301  |g| 0.28  anneal 0.03  lr 1.00e-03  2558 ms/step
+  step   780/9156  ce 3.7354  |g| 0.33  anneal 0.03  lr 1.00e-03  2558 ms/step
+  step   790/9156  ce 3.8501  |g| 0.31  anneal 0.03  lr 1.00e-03  2557 ms/step
+    >> val_loss 4.4119  ppl 82.42  (train_ce 3.861, val-CE +0.551)  bpb 1.421
+       best 갱신 4.4119 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step   800/9156  ce 3.8585  |g| 0.35  anneal 0.04  lr 1.00e-03  2561 ms/step
+  step   810/9156  ce 3.7538  |g| 0.29  anneal 0.04  lr 1.00e-03  2560 ms/step
+  step   820/9156  ce 3.8024  |g| 0.31  anneal 0.04  lr 1.00e-03  2559 ms/step
+  step   830/9156  ce 3.7261  |g| 0.30  anneal 0.04  lr 1.00e-03  2559 ms/step
+  step   840/9156  ce 3.7780  |g| 0.26  anneal 0.04  lr 1.00e-03  2558 ms/step
+  step   850/9156  ce 3.7133  |g| 0.32  anneal 0.04  lr 1.00e-03  2557 ms/step
+  step   860/9156  ce 3.7777  |g| 0.40  anneal 0.04  lr 1.00e-03  2557 ms/step
+  step   870/9156  ce 3.8209  |g| 0.31  anneal 0.05  lr 1.00e-03  2556 ms/step
+  step   880/9156  ce 3.8384  |g| 0.32  anneal 0.05  lr 1.00e-03  2555 ms/step
+  step   890/9156  ce 3.7439  |g| 0.36  anneal 0.05  lr 1.00e-03  2555 ms/step
+    >> val_loss 4.3800  ppl 79.84  (train_ce 3.822, val-CE +0.558)  bpb 1.411
+       best 갱신 4.3800 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step   900/9156  ce 3.7799  |g| 0.32  anneal 0.05  lr 1.00e-03  2558 ms/step
+  step   910/9156  ce 3.7286  |g| 0.35  anneal 0.05  lr 1.00e-03  2557 ms/step
+  step   920/9156  ce 3.7156  |g| 0.27  anneal 0.05  lr 1.00e-03  2557 ms/step
+  step   930/9156  ce 3.8628  |g| 0.28  anneal 0.06  lr 1.00e-03  2556 ms/step
+  step   940/9156  ce 3.8330  |g| 0.32  anneal 0.06  lr 1.00e-03  2555 ms/step
+  step   950/9156  ce 3.8077  |g| 0.27  anneal 0.06  lr 1.00e-03  2555 ms/step
+  step   960/9156  ce 3.7688  |g| 0.34  anneal 0.06  lr 1.00e-03  2554 ms/step
+  step   970/9156  ce 3.6977  |g| 0.28  anneal 0.06  lr 1.00e-03  2554 ms/step
+  step   980/9156  ce 3.7711  |g| 0.29  anneal 0.06  lr 1.00e-03  2553 ms/step
+  step   990/9156  ce 3.7949  |g| 0.30  anneal 0.06  lr 1.00e-03  2552 ms/step
+    >> val_loss 4.3981  ppl 81.30  (train_ce 3.746, val-CE +0.652)  bpb 1.417
+  step  1000/9156  ce 3.8132  |g| 0.29  anneal 0.07  lr 1.00e-03  2555 ms/step
+  step  1010/9156  ce 3.7389  |g| 0.26  anneal 0.07  lr 1.00e-03  2554 ms/step
+  step  1020/9156  ce 3.7733  |g| 0.34  anneal 0.07  lr 1.00e-03  2554 ms/step
+  step  1030/9156  ce 3.7696  |g| 0.29  anneal 0.07  lr 1.00e-03  2553 ms/step
+  step  1040/9156  ce 3.7998  |g| 0.26  anneal 0.07  lr 1.00e-03  2553 ms/step
+  step  1050/9156  ce 3.6995  |g| 0.28  anneal 0.07  lr 1.00e-03  2552 ms/step
+  step  1060/9156  ce 3.7297  |g| 0.28  anneal 0.07  lr 1.00e-03  2552 ms/step
+  step  1070/9156  ce 3.7010  |g| 0.26  anneal 0.08  lr 1.00e-03  2551 ms/step
+  step  1080/9156  ce 3.7020  |g| 0.29  anneal 0.08  lr 1.00e-03  2551 ms/step
+  step  1090/9156  ce 3.7352  |g| 0.26  anneal 0.08  lr 1.00e-03  2550 ms/step
+    >> val_loss 4.3575  ppl 78.06  (train_ce 3.727, val-CE +0.630)  bpb 1.404
+       best 갱신 4.3575 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  1100/9156  ce 3.7319  |g| 0.33  anneal 0.08  lr 1.00e-03  2553 ms/step
+  step  1110/9156  ce 3.7861  |g| 0.29  anneal 0.08  lr 1.00e-03  2553 ms/step
+  step  1120/9156  ce 3.7677  |g| 0.34  anneal 0.08  lr 1.00e-03  2552 ms/step
+  step  1130/9156  ce 3.7564  |g| 0.31  anneal 0.08  lr 1.00e-03  2552 ms/step
+  step  1140/9156  ce 3.7419  |g| 0.28  anneal 0.09  lr 1.00e-03  2551 ms/step
+  step  1150/9156  ce 3.6691  |g| 0.32  anneal 0.09  lr 1.00e-03  2551 ms/step
+  step  1160/9156  ce 3.7853  |g| 0.31  anneal 0.09  lr 1.00e-03  2550 ms/step
+  step  1170/9156  ce 3.7380  |g| 0.29  anneal 0.09  lr 1.00e-03  2550 ms/step
+  step  1180/9156  ce 3.7257  |g| 0.27  anneal 0.09  lr 1.00e-03  2550 ms/step
+  step  1190/9156  ce 3.7356  |g| 0.27  anneal 0.09  lr 1.00e-03  2549 ms/step
+    >> val_loss 4.3419  ppl 76.85  (train_ce 3.690, val-CE +0.652)  bpb 1.399
+       best 갱신 4.3419 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  1200/9156  ce 3.6790  |g| 0.38  anneal 0.09  lr 1.00e-03  2552 ms/step
+  step  1210/9156  ce 3.6899  |g| 0.31  anneal 0.10  lr 1.00e-03  2551 ms/step
+  step  1220/9156  ce 3.7593  |g| 0.31  anneal 0.10  lr 1.00e-03  2551 ms/step
+  step  1230/9156  ce 3.6769  |g| 0.30  anneal 0.10  lr 1.00e-03  2550 ms/step
+  step  1240/9156  ce 3.7432  |g| 0.27  anneal 0.10  lr 1.00e-03  2550 ms/step
+  step  1250/9156  ce 3.7129  |g| 0.26  anneal 0.10  lr 1.00e-03  2550 ms/step
+  step  1260/9156  ce 3.6750  |g| 0.27  anneal 0.10  lr 1.00e-03  2549 ms/step
+  step  1270/9156  ce 3.6285  |g| 0.33  anneal 0.11  lr 1.00e-03  2549 ms/step
+  step  1280/9156  ce 3.6573  |g| 0.28  anneal 0.11  lr 1.00e-03  2549 ms/step
+  step  1290/9156  ce 3.7267  |g| 0.27  anneal 0.11  lr 1.00e-03  2548 ms/step
+    >> val_loss 4.3422  ppl 76.88  (train_ce 3.681, val-CE +0.661)  bpb 1.399
+  step  1300/9156  ce 3.7429  |g| 0.26  anneal 0.11  lr 1.00e-03  2550 ms/step
+  step  1310/9156  ce 3.6898  |g| 0.34  anneal 0.11  lr 1.00e-03  2550 ms/step
+  step  1320/9156  ce 3.6892  |g| 0.24  anneal 0.11  lr 1.00e-03  2549 ms/step
+  step  1330/9156  ce 3.7689  |g| 0.29  anneal 0.11  lr 1.00e-03  2549 ms/step
+  step  1340/9156  ce 3.6899  |g| 0.29  anneal 0.12  lr 1.00e-03  2549 ms/step
+  step  1350/9156  ce 3.6773  |g| 0.41  anneal 0.12  lr 1.00e-03  2548 ms/step
+  step  1360/9156  ce 3.7413  |g| 0.28  anneal 0.12  lr 1.00e-03  2548 ms/step
+  step  1370/9156  ce 3.7167  |g| 0.30  anneal 0.12  lr 1.00e-03  2548 ms/step
+  step  1380/9156  ce 3.7175  |g| 0.27  anneal 0.12  lr 1.00e-03  2547 ms/step
+  step  1390/9156  ce 3.7004  |g| 0.29  anneal 0.12  lr 1.00e-03  2547 ms/step
+    >> val_loss 4.3338  ppl 76.23  (train_ce 3.727, val-CE +0.607)  bpb 1.396
+       best 갱신 4.3338 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  1400/9156  ce 3.7067  |g| 0.27  anneal 0.12  lr 1.00e-03  2549 ms/step
+  step  1410/9156  ce 3.6797  |g| 0.26  anneal 0.13  lr 1.00e-03  2549 ms/step
+  step  1420/9156  ce 3.7212  |g| 0.28  anneal 0.13  lr 1.00e-03  2549 ms/step
+  step  1430/9156  ce 3.6739  |g| 0.29  anneal 0.13  lr 1.00e-03  2548 ms/step
+  step  1440/9156  ce 3.6814  |g| 0.29  anneal 0.13  lr 1.00e-03  2548 ms/step
+  step  1450/9156  ce 3.7493  |g| 0.31  anneal 0.13  lr 1.00e-03  2548 ms/step
+  step  1460/9156  ce 3.7037  |g| 0.27  anneal 0.13  lr 1.00e-03  2548 ms/step
+  step  1470/9156  ce 3.6156  |g| 0.29  anneal 0.13  lr 1.00e-03  2548 ms/step
+  step  1480/9156  ce 3.7190  |g| 0.28  anneal 0.14  lr 1.00e-03  2547 ms/step
+  step  1490/9156  ce 3.7335  |g| 0.32  anneal 0.14  lr 1.00e-03  2547 ms/step
+    >> val_loss 4.3106  ppl 74.49  (train_ce 3.707, val-CE +0.603)  bpb 1.389
+       best 갱신 4.3106 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  1500/9156  ce 3.6859  |g| 0.31  anneal 0.14  lr 1.00e-03  2549 ms/step
+  step  1510/9156  ce 3.6384  |g| 0.29  anneal 0.14  lr 1.00e-03  2549 ms/step
+  step  1520/9156  ce 3.6458  |g| 0.30  anneal 0.14  lr 1.00e-03  2548 ms/step
+  step  1530/9156  ce 3.6585  |g| 0.38  anneal 0.14  lr 1.00e-03  2548 ms/step
+  step  1540/9156  ce 3.6758  |g| 0.35  anneal 0.15  lr 1.00e-03  2548 ms/step
+  step  1550/9156  ce 3.7322  |g| 0.29  anneal 0.15  lr 1.00e-03  2547 ms/step
+  step  1560/9156  ce 3.6545  |g| 0.25  anneal 0.15  lr 1.00e-03  2547 ms/step
+  step  1570/9156  ce 3.6414  |g| 0.27  anneal 0.15  lr 1.00e-03  2547 ms/step
+  step  1580/9156  ce 3.6781  |g| 0.31  anneal 0.15  lr 1.00e-03  2548 ms/step
+  step  1590/9156  ce 3.6710  |g| 0.32  anneal 0.15  lr 1.00e-03  2548 ms/step
+    >> val_loss 4.2453  ppl 69.78  (train_ce 3.665, val-CE +0.581)  bpb 1.368
+       best 갱신 4.2453 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  1600/9156  ce 3.6370  |g| 0.26  anneal 0.15  lr 1.00e-03  2549 ms/step
+  step  1610/9156  ce 3.6186  |g| 0.26  anneal 0.16  lr 1.00e-03  2549 ms/step
+  step  1620/9156  ce 3.6108  |g| 0.27  anneal 0.16  lr 1.00e-03  2549 ms/step
+  step  1630/9156  ce 3.6614  |g| 0.32  anneal 0.16  lr 1.00e-03  2549 ms/step
+  step  1640/9156  ce 3.6286  |g| 0.26  anneal 0.16  lr 1.00e-03  2548 ms/step
+  step  1650/9156  ce 3.6891  |g| 0.32  anneal 0.16  lr 1.00e-03  2548 ms/step
+  step  1660/9156  ce 3.6596  |g| 0.29  anneal 0.16  lr 1.00e-03  2548 ms/step
+  step  1670/9156  ce 3.6873  |g| 0.30  anneal 0.16  lr 1.00e-03  2548 ms/step
+  step  1680/9156  ce 3.6235  |g| 0.27  anneal 0.17  lr 1.00e-03  2547 ms/step
+  step  1690/9156  ce 3.6778  |g| 0.28  anneal 0.17  lr 1.00e-03  2547 ms/step
+    >> val_loss 4.2775  ppl 72.06  (train_ce 3.700, val-CE +0.578)  bpb 1.378
+  step  1700/9156  ce 3.6817  |g| 0.27  anneal 0.17  lr 1.00e-03  2549 ms/step
+  step  1710/9156  ce 3.6569  |g| 0.31  anneal 0.17  lr 1.00e-03  2548 ms/step
+  step  1720/9156  ce 3.6257  |g| 0.29  anneal 0.17  lr 1.00e-03  2548 ms/step
+  step  1730/9156  ce 3.6081  |g| 0.35  anneal 0.17  lr 1.00e-03  2548 ms/step
+  step  1740/9156  ce 3.6457  |g| 0.26  anneal 0.17  lr 1.00e-03  2548 ms/step
+  step  1750/9156  ce 3.6628  |g| 0.31  anneal 0.18  lr 1.00e-03  2548 ms/step
+  step  1760/9156  ce 3.6750  |g| 0.25  anneal 0.18  lr 1.00e-03  2547 ms/step
+  step  1770/9156  ce 3.6295  |g| 0.28  anneal 0.18  lr 1.00e-03  2547 ms/step
+  step  1780/9156  ce 3.6618  |g| 0.31  anneal 0.18  lr 1.00e-03  2547 ms/step
+  step  1790/9156  ce 3.6188  |g| 0.28  anneal 0.18  lr 1.00e-03  2547 ms/step
+    >> val_loss 4.2031  ppl 66.90  (train_ce 3.567, val-CE +0.636)  bpb 1.354
+       best 갱신 4.2031 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  1800/9156  ce 3.6762  |g| 0.29  anneal 0.18  lr 1.00e-03  2548 ms/step
+  step  1810/9156  ce 3.6428  |g| 0.28  anneal 0.19  lr 1.00e-03  2548 ms/step
+  step  1820/9156  ce 3.6101  |g| 0.26  anneal 0.19  lr 1.00e-03  2548 ms/step
+  step  1830/9156  ce 3.5978  |g| 0.27  anneal 0.19  lr 1.00e-03  2548 ms/step
+  step  1840/9156  ce 3.6487  |g| 0.28  anneal 0.19  lr 1.00e-03  2548 ms/step
+  step  1850/9156  ce 3.5974  |g| 0.30  anneal 0.19  lr 1.00e-03  2547 ms/step
+  step  1860/9156  ce 3.6528  |g| 0.27  anneal 0.19  lr 1.00e-03  2547 ms/step
+  step  1870/9156  ce 3.6305  |g| 0.28  anneal 0.19  lr 1.00e-03  2547 ms/step
+  step  1880/9156  ce 3.6194  |g| 0.40  anneal 0.20  lr 1.00e-03  2547 ms/step
+  step  1890/9156  ce 3.6741  |g| 0.48  anneal 0.20  lr 1.00e-03  2546 ms/step
+    >> val_loss 4.2231  ppl 68.25  (train_ce 3.568, val-CE +0.655)  bpb 1.361
+  step  1900/9156  ce 3.5822  |g| 0.32  anneal 0.20  lr 1.00e-03  2548 ms/step
+  step  1910/9156  ce 3.6140  |g| 0.29  anneal 0.20  lr 1.00e-03  2548 ms/step
+  step  1920/9156  ce 3.5737  |g| 0.28  anneal 0.20  lr 1.00e-03  2547 ms/step
+  step  1930/9156  ce 3.5919  |g| 0.29  anneal 0.20  lr 1.00e-03  2547 ms/step
+  step  1940/9156  ce 3.6085  |g| 0.38  anneal 0.20  lr 1.00e-03  2547 ms/step
+  step  1950/9156  ce 3.6463  |g| 0.45  anneal 0.21  lr 1.00e-03  2547 ms/step
+  step  1960/9156  ce 3.6521  |g| 0.27  anneal 0.21  lr 1.00e-03  2546 ms/step
+  step  1970/9156  ce 3.5797  |g| 0.28  anneal 0.21  lr 1.00e-03  2546 ms/step
+  step  1980/9156  ce 3.6496  |g| 0.31  anneal 0.21  lr 1.00e-03  2546 ms/step
+  step  1990/9156  ce 3.7014  |g| 0.31  anneal 0.21  lr 1.00e-03  2546 ms/step
+    >> val_loss 4.3037  ppl 73.98  (train_ce 3.598, val-CE +0.706)  bpb 1.387
+  step  2000/9156  ce 3.5942  |g| 0.26  anneal 0.21  lr 1.00e-03  2547 ms/step
+  step  2010/9156  ce 3.6446  |g| 0.31  anneal 0.21  lr 1.00e-03  2547 ms/step
+  step  2020/9156  ce 3.6005  |g| 0.35  anneal 0.22  lr 1.00e-03  2547 ms/step
+  step  2030/9156  ce 3.6526  |g| 0.30  anneal 0.22  lr 1.00e-03  2546 ms/step
+  step  2040/9156  ce 3.6244  |g| 0.33  anneal 0.22  lr 1.00e-03  2546 ms/step
+  step  2050/9156  ce 3.6425  |g| 0.27  anneal 0.22  lr 1.00e-03  2546 ms/step
+  step  2060/9156  ce 3.6404  |g| 0.29  anneal 0.22  lr 1.00e-03  2546 ms/step
+  step  2070/9156  ce 3.5780  |g| 0.31  anneal 0.22  lr 1.00e-03  2546 ms/step
+  step  2080/9156  ce 3.6117  |g| 0.32  anneal 0.22  lr 1.00e-03  2546 ms/step
+  step  2090/9156  ce 3.5945  |g| 0.33  anneal 0.23  lr 1.00e-03  2546 ms/step
+    >> val_loss 4.2038  ppl 66.94  (train_ce 3.572, val-CE +0.631)  bpb 1.354
+  step  2100/9156  ce 3.5644  |g| 0.25  anneal 0.23  lr 1.00e-03  2547 ms/step
+  step  2110/9156  ce 3.6022  |g| 0.28  anneal 0.23  lr 1.00e-03  2547 ms/step
+  step  2120/9156  ce 3.6207  |g| 0.28  anneal 0.23  lr 1.00e-03  2546 ms/step
+  step  2130/9156  ce 3.6426  |g| 0.32  anneal 0.23  lr 1.00e-03  2546 ms/step
+  step  2140/9156  ce 3.6172  |g| 0.30  anneal 0.23  lr 1.00e-03  2546 ms/step
+  step  2150/9156  ce 3.6373  |g| 0.27  anneal 0.24  lr 1.00e-03  2546 ms/step
+  step  2160/9156  ce 3.6021  |g| 0.28  anneal 0.24  lr 1.00e-03  2546 ms/step
+  step  2170/9156  ce 3.6109  |g| 0.30  anneal 0.24  lr 1.00e-03  2545 ms/step
+  step  2180/9156  ce 3.6412  |g| 0.34  anneal 0.24  lr 1.00e-03  2545 ms/step
+  step  2190/9156  ce 3.5135  |g| 0.28  anneal 0.24  lr 1.00e-03  2545 ms/step
+    >> val_loss 4.2588  ppl 70.72  (train_ce 3.592, val-CE +0.667)  bpb 1.372
+  step  2200/9156  ce 3.6381  |g| 0.55  anneal 0.24  lr 1.00e-03  2546 ms/step
+  step  2210/9156  ce 3.5642  |g| 0.25  anneal 0.24  lr 1.00e-03  2546 ms/step
+  step  2220/9156  ce 3.5864  |g| 0.26  anneal 0.25  lr 1.00e-03  2546 ms/step
+  step  2230/9156  ce 3.5772  |g| 0.26  anneal 0.25  lr 1.00e-03  2546 ms/step
+  step  2240/9156  ce 3.6487  |g| 0.27  anneal 0.25  lr 1.00e-03  2546 ms/step
+  step  2250/9156  ce 3.5750  |g| 0.30  anneal 0.25  lr 1.00e-03  2545 ms/step
+  step  2260/9156  ce 3.5822  |g| 0.30  anneal 0.25  lr 1.00e-03  2545 ms/step
+  step  2270/9156  ce 3.6248  |g| 0.25  anneal 0.25  lr 1.00e-03  2545 ms/step
+  step  2280/9156  ce 3.6290  |g| 0.32  anneal 0.25  lr 1.00e-03  2545 ms/step
+  step  2290/9156  ce 3.5846  |g| 0.35  anneal 0.26  lr 1.00e-03  2545 ms/step
+    >> val_loss 4.1609  ppl 64.13  (train_ce 3.554, val-CE +0.607)  bpb 1.341
+       best 갱신 4.1609 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  2300/9156  ce 3.6037  |g| 0.33  anneal 0.26  lr 1.00e-03  2546 ms/step
+  step  2310/9156  ce 3.4935  |g| 0.35  anneal 0.26  lr 1.00e-03  2546 ms/step
+  step  2320/9156  ce 3.6113  |g| 0.27  anneal 0.26  lr 1.00e-03  2546 ms/step
+  step  2330/9156  ce 3.5699  |g| 0.34  anneal 0.26  lr 1.00e-03  2545 ms/step
+  step  2340/9156  ce 3.5881  |g| 0.32  anneal 0.26  lr 1.00e-03  2545 ms/step
+  step  2350/9156  ce 3.6255  |g| 0.30  anneal 0.26  lr 1.00e-03  2545 ms/step
+  step  2360/9156  ce 3.6088  |g| 0.32  anneal 0.27  lr 1.00e-03  2545 ms/step
+  step  2370/9156  ce 3.5872  |g| 0.29  anneal 0.27  lr 1.00e-03  2545 ms/step
+  step  2380/9156  ce 3.5877  |g| 0.32  anneal 0.27  lr 1.00e-03  2545 ms/step
+  step  2390/9156  ce 3.6279  |g| 0.32  anneal 0.27  lr 1.00e-03  2545 ms/step
+    >> val_loss 4.1984  ppl 66.58  (train_ce 3.553, val-CE +0.646)  bpb 1.353
+  step  2400/9156  ce 3.5917  |g| 0.27  anneal 0.27  lr 1.00e-03  2546 ms/step
+  step  2410/9156  ce 3.5641  |g| 0.30  anneal 0.27  lr 1.00e-03  2545 ms/step
+  step  2420/9156  ce 3.6400  |g| 0.28  anneal 0.28  lr 1.00e-03  2545 ms/step
+  step  2430/9156  ce 3.5784  |g| 0.32  anneal 0.28  lr 1.00e-03  2545 ms/step
+  step  2440/9156  ce 3.6106  |g| 0.56  anneal 0.28  lr 1.00e-03  2545 ms/step
+  step  2450/9156  ce 3.6422  |g| 0.31  anneal 0.28  lr 1.00e-03  2545 ms/step
+  step  2460/9156  ce 3.5243  |g| 0.34  anneal 0.28  lr 1.00e-03  2545 ms/step
+  step  2470/9156  ce 3.5640  |g| 0.32  anneal 0.28  lr 1.00e-03  2544 ms/step
+  step  2480/9156  ce 3.5642  |g| 0.26  anneal 0.28  lr 1.00e-03  2544 ms/step
+  step  2490/9156  ce 3.6025  |g| 0.30  anneal 0.29  lr 1.00e-03  2544 ms/step
+    >> val_loss 4.1734  ppl 64.94  (train_ce 3.543, val-CE +0.630)  bpb 1.345
+  step  2500/9156  ce 3.5844  |g| 0.38  anneal 0.29  lr 1.00e-03  2545 ms/step
+  step  2510/9156  ce 3.5871  |g| 0.29  anneal 0.29  lr 1.00e-03  2545 ms/step
+  step  2520/9156  ce 3.5491  |g| 0.32  anneal 0.29  lr 1.00e-03  2545 ms/step
+  step  2530/9156  ce 3.6234  |g| 0.47  anneal 0.29  lr 1.00e-03  2545 ms/step
+  step  2540/9156  ce 3.6045  |g| 0.28  anneal 0.29  lr 1.00e-03  2544 ms/step
+  step  2550/9156  ce 3.5511  |g| 0.27  anneal 0.29  lr 1.00e-03  2544 ms/step
+  step  2560/9156  ce 3.5215  |g| 0.30  anneal 0.30  lr 1.00e-03  2544 ms/step
+  step  2570/9156  ce 3.5109  |g| 0.32  anneal 0.30  lr 1.00e-03  2544 ms/step
+  step  2580/9156  ce 3.5222  |g| 0.32  anneal 0.30  lr 1.00e-03  2544 ms/step
+  step  2590/9156  ce 3.5135  |g| 0.32  anneal 0.30  lr 1.00e-03  2544 ms/step
+    >> val_loss 4.1753  ppl 65.06  (train_ce 3.556, val-CE +0.619)  bpb 1.345
+  step  2600/9156  ce 3.5368  |g| 0.30  anneal 0.30  lr 1.00e-03  2544 ms/step
+  step  2610/9156  ce 3.6071  |g| 0.27  anneal 0.30  lr 1.00e-03  2544 ms/step
+  step  2620/9156  ce 3.5708  |g| 0.34  anneal 0.30  lr 1.00e-03  2544 ms/step
+  step  2630/9156  ce 3.6249  |g| 0.29  anneal 0.31  lr 1.00e-03  2544 ms/step
+  step  2640/9156  ce 3.5036  |g| 0.29  anneal 0.31  lr 1.00e-03  2544 ms/step
+  step  2650/9156  ce 3.5560  |g| 0.25  anneal 0.31  lr 1.00e-03  2544 ms/step
+  step  2660/9156  ce 3.5490  |g| 0.28  anneal 0.31  lr 1.00e-03  2544 ms/step
+  step  2670/9156  ce 3.6035  |g| 0.26  anneal 0.31  lr 1.00e-03  2543 ms/step
+  step  2680/9156  ce 3.6182  |g| 0.24  anneal 0.31  lr 1.00e-03  2543 ms/step
+  step  2690/9156  ce 3.5777  |g| 0.26  anneal 0.32  lr 1.00e-03  2543 ms/step
+    >> val_loss 4.2122  ppl 67.50  (train_ce 3.589, val-CE +0.623)  bpb 1.357
+  step  2700/9156  ce 3.5061  |g| 0.30  anneal 0.32  lr 1.00e-03  2544 ms/step
+  step  2710/9156  ce 3.3906  |g| 0.37  anneal 0.32  lr 1.00e-03  2544 ms/step
+  step  2720/9156  ce 3.5310  |g| 0.34  anneal 0.32  lr 1.00e-03  2544 ms/step
+  step  2730/9156  ce 3.5677  |g| 0.29  anneal 0.32  lr 1.00e-03  2544 ms/step
+  step  2740/9156  ce 3.6243  |g| 0.29  anneal 0.32  lr 1.00e-03  2543 ms/step
+  step  2750/9156  ce 3.4985  |g| 0.31  anneal 0.32  lr 1.00e-03  2543 ms/step
+  step  2760/9156  ce 3.5833  |g| 0.36  anneal 0.33  lr 1.00e-03  2543 ms/step
+  step  2770/9156  ce 3.5291  |g| 0.26  anneal 0.33  lr 1.00e-03  2543 ms/step
+  step  2780/9156  ce 3.6073  |g| 0.33  anneal 0.33  lr 1.00e-03  2543 ms/step
+  step  2790/9156  ce 3.5511  |g| 0.30  anneal 0.33  lr 1.00e-03  2543 ms/step
+    >> val_loss 4.1600  ppl 64.07  (train_ce 3.591, val-CE +0.569)  bpb 1.340
+       best 갱신 4.1600 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  2800/9156  ce 3.4858  |g| 0.29  anneal 0.33  lr 1.00e-03  2544 ms/step
+  step  2810/9156  ce 3.5816  |g| 0.31  anneal 0.33  lr 1.00e-03  2544 ms/step
+  step  2820/9156  ce 3.5054  |g| 0.26  anneal 0.33  lr 1.00e-03  2544 ms/step
+  step  2830/9156  ce 3.5718  |g| 0.27  anneal 0.34  lr 1.00e-03  2543 ms/step
+  step  2840/9156  ce 3.5515  |g| 0.28  anneal 0.34  lr 1.00e-03  2543 ms/step
+  step  2850/9156  ce 3.4875  |g| 0.31  anneal 0.34  lr 1.00e-03  2543 ms/step
+  step  2860/9156  ce 3.5045  |g| 0.29  anneal 0.34  lr 1.00e-03  2543 ms/step
+  step  2870/9156  ce 3.5329  |g| 0.30  anneal 0.34  lr 1.00e-03  2543 ms/step
+  step  2880/9156  ce 3.5192  |g| 0.30  anneal 0.34  lr 1.00e-03  2543 ms/step
+  step  2890/9156  ce 3.6704  |g| 0.45  anneal 0.34  lr 1.00e-03  2543 ms/step
+    >> val_loss 4.1863  ppl 65.78  (train_ce 3.550, val-CE +0.636)  bpb 1.349
+  step  2900/9156  ce 3.5437  |g| 0.27  anneal 0.35  lr 1.00e-03  2543 ms/step
+  step  2910/9156  ce 3.5448  |g| 0.30  anneal 0.35  lr 1.00e-03  2543 ms/step
+  step  2920/9156  ce 3.5569  |g| 0.38  anneal 0.35  lr 1.00e-03  2543 ms/step
+  step  2930/9156  ce 3.5977  |g| 0.27  anneal 0.35  lr 1.00e-03  2543 ms/step
+  step  2940/9156  ce 3.4921  |g| 0.34  anneal 0.35  lr 1.00e-03  2543 ms/step
+  step  2950/9156  ce 3.4880  |g| 0.30  anneal 0.35  lr 1.00e-03  2543 ms/step
+  step  2960/9156  ce 3.4800  |g| 0.32  anneal 0.35  lr 1.00e-03  2543 ms/step
+  step  2970/9156  ce 3.5417  |g| 0.30  anneal 0.36  lr 1.00e-03  2542 ms/step
+  step  2980/9156  ce 3.5351  |g| 0.36  anneal 0.36  lr 1.00e-03  2542 ms/step
+  step  2990/9156  ce 3.5048  |g| 0.27  anneal 0.36  lr 1.00e-03  2542 ms/step
+    >> val_loss 4.1419  ppl 62.92  (train_ce 3.534, val-CE +0.608)  bpb 1.334
+       best 갱신 4.1419 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  3000/9156  ce 3.4723  |g| 0.30  anneal 0.36  lr 1.00e-03  2543 ms/step
+  step  3010/9156  ce 3.5898  |g| 0.36  anneal 0.36  lr 1.00e-03  2543 ms/step
+  step  3020/9156  ce 3.5407  |g| 0.37  anneal 0.36  lr 1.00e-03  2543 ms/step
+  step  3030/9156  ce 3.5903  |g| 0.34  anneal 0.37  lr 1.00e-03  2543 ms/step
+  step  3040/9156  ce 3.4577  |g| 0.34  anneal 0.37  lr 1.00e-03  2543 ms/step
+  step  3050/9156  ce 3.5512  |g| 0.29  anneal 0.37  lr 1.00e-03  2543 ms/step
+  step  3060/9156  ce 3.5896  |g| 0.32  anneal 0.37  lr 1.00e-03  2542 ms/step
+  step  3070/9156  ce 3.5034  |g| 0.33  anneal 0.37  lr 1.00e-03  2542 ms/step
+  step  3080/9156  ce 3.5352  |g| 0.28  anneal 0.37  lr 1.00e-03  2542 ms/step
+  step  3090/9156  ce 3.4812  |g| 0.30  anneal 0.37  lr 1.00e-03  2542 ms/step
+    >> val_loss 4.1166  ppl 61.35  (train_ce 3.524, val-CE +0.592)  bpb 1.326
+       best 갱신 4.1166 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  3100/9156  ce 3.4504  |g| 0.34  anneal 0.38  lr 1.00e-03  2543 ms/step
+  step  3110/9156  ce 3.5516  |g| 0.30  anneal 0.38  lr 1.00e-03  2543 ms/step
+  step  3120/9156  ce 3.5404  |g| 0.29  anneal 0.38  lr 1.00e-03  2543 ms/step
+  step  3130/9156  ce 3.5655  |g| 0.33  anneal 0.38  lr 1.00e-03  2543 ms/step
+  step  3140/9156  ce 3.4755  |g| 0.25  anneal 0.38  lr 1.00e-03  2543 ms/step
+  step  3150/9156  ce 3.5226  |g| 0.30  anneal 0.38  lr 1.00e-03  2542 ms/step
+  step  3160/9156  ce 3.5235  |g| 0.26  anneal 0.38  lr 1.00e-03  2542 ms/step
+  step  3170/9156  ce 3.5311  |g| 0.27  anneal 0.39  lr 1.00e-03  2542 ms/step
+  step  3180/9156  ce 3.5350  |g| 0.30  anneal 0.39  lr 1.00e-03  2542 ms/step
+  step  3190/9156  ce 3.5958  |g| 0.27  anneal 0.39  lr 1.00e-03  2542 ms/step
+    >> val_loss 4.0987  ppl 60.26  (train_ce 3.467, val-CE +0.632)  bpb 1.321
+       best 갱신 4.0987 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  3200/9156  ce 3.5296  |g| 0.30  anneal 0.39  lr 1.00e-03  2543 ms/step
+  step  3210/9156  ce 3.5064  |g| 0.26  anneal 0.39  lr 1.00e-03  2543 ms/step
+  step  3220/9156  ce 3.4933  |g| 0.30  anneal 0.39  lr 1.00e-03  2543 ms/step
+  step  3230/9156  ce 3.5281  |g| 0.37  anneal 0.39  lr 1.00e-03  2543 ms/step
+  step  3240/9156  ce 3.5833  |g| 0.37  anneal 0.40  lr 1.00e-03  2542 ms/step
+  step  3250/9156  ce 3.5377  |g| 0.38  anneal 0.40  lr 1.00e-03  2542 ms/step
+  step  3260/9156  ce 3.4532  |g| 0.30  anneal 0.40  lr 1.00e-03  2542 ms/step
+  step  3270/9156  ce 3.4481  |g| 0.33  anneal 0.40  lr 1.00e-03  2542 ms/step
+  step  3280/9156  ce 3.4698  |g| 0.30  anneal 0.40  lr 1.00e-03  2542 ms/step
+  step  3290/9156  ce 3.4534  |g| 0.31  anneal 0.40  lr 1.00e-03  2542 ms/step
+    >> val_loss 4.1084  ppl 60.85  (train_ce 3.456, val-CE +0.652)  bpb 1.324
+  step  3300/9156  ce 3.5571  |g| 0.31  anneal 0.41  lr 1.00e-03  2542 ms/step
+  step  3310/9156  ce 3.5274  |g| 0.29  anneal 0.41  lr 1.00e-03  2542 ms/step
+  step  3320/9156  ce 3.5844  |g| 0.27  anneal 0.41  lr 1.00e-03  2542 ms/step
+  step  3330/9156  ce 3.4942  |g| 0.30  anneal 0.41  lr 1.00e-03  2542 ms/step
+  step  3340/9156  ce 3.5552  |g| 0.36  anneal 0.41  lr 1.00e-03  2542 ms/step
+  step  3350/9156  ce 3.5682  |g| 0.39  anneal 0.41  lr 1.00e-03  2542 ms/step
+  step  3360/9156  ce 3.5176  |g| 0.27  anneal 0.41  lr 1.00e-03  2542 ms/step
+  step  3370/9156  ce 3.5556  |g| 0.26  anneal 0.42  lr 1.00e-03  2542 ms/step
+  step  3380/9156  ce 3.5023  |g| 0.28  anneal 0.42  lr 1.00e-03  2542 ms/step
+  step  3390/9156  ce 3.5242  |g| 0.29  anneal 0.42  lr 1.00e-03  2541 ms/step
+    >> val_loss 4.0641  ppl 58.21  (train_ce 3.540, val-CE +0.524)  bpb 1.309
+       best 갱신 4.0641 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  3400/9156  ce 3.5096  |g| 0.30  anneal 0.42  lr 1.00e-03  2542 ms/step
+  step  3410/9156  ce 3.4662  |g| 0.29  anneal 0.42  lr 1.00e-03  2542 ms/step
+  step  3420/9156  ce 3.4916  |g| 0.42  anneal 0.42  lr 1.00e-03  2542 ms/step
+  step  3430/9156  ce 3.5540  |g| 0.38  anneal 0.42  lr 1.00e-03  2542 ms/step
+  step  3440/9156  ce 3.5502  |g| 0.26  anneal 0.43  lr 1.00e-03  2542 ms/step
+  step  3450/9156  ce 3.4787  |g| 0.26  anneal 0.43  lr 1.00e-03  2542 ms/step
+  step  3460/9156  ce 3.5554  |g| 0.40  anneal 0.43  lr 1.00e-03  2542 ms/step
+  step  3470/9156  ce 3.4792  |g| 0.39  anneal 0.43  lr 1.00e-03  2542 ms/step
+  step  3480/9156  ce 3.5307  |g| 0.25  anneal 0.43  lr 1.00e-03  2542 ms/step
+  step  3490/9156  ce 3.5116  |g| 0.27  anneal 0.43  lr 1.00e-03  2541 ms/step
+    >> val_loss 4.0656  ppl 58.30  (train_ce 3.582, val-CE +0.483)  bpb 1.310
+  step  3500/9156  ce 3.5721  |g| 0.31  anneal 0.43  lr 1.00e-03  2542 ms/step
+  step  3510/9156  ce 3.6080  |g| 0.29  anneal 0.44  lr 1.00e-03  2542 ms/step
+  step  3520/9156  ce 3.5319  |g| 0.45  anneal 0.44  lr 1.00e-03  2542 ms/step
+  step  3530/9156  ce 3.4937  |g| 0.33  anneal 0.44  lr 1.00e-03  2542 ms/step
+  step  3540/9156  ce 3.5345  |g| 0.30  anneal 0.44  lr 1.00e-03  2542 ms/step
+  step  3550/9156  ce 3.4726  |g| 0.27  anneal 0.44  lr 1.00e-03  2541 ms/step
+  step  3560/9156  ce 3.5663  |g| 0.50  anneal 0.44  lr 1.00e-03  2541 ms/step
+  step  3570/9156  ce 3.5206  |g| 0.35  anneal 0.45  lr 1.00e-03  2541 ms/step
+  step  3580/9156  ce 3.5486  |g| 0.32  anneal 0.45  lr 1.00e-03  2541 ms/step
+  step  3590/9156  ce 3.4885  |g| 0.32  anneal 0.45  lr 1.00e-03  2541 ms/step
+    >> val_loss 4.0228  ppl 55.86  (train_ce 3.511, val-CE +0.512)  bpb 1.296
+       best 갱신 4.0228 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  3600/9156  ce 3.5035  |g| 0.27  anneal 0.45  lr 1.00e-03  2542 ms/step
+  step  3610/9156  ce 3.4206  |g| 0.43  anneal 0.45  lr 1.00e-03  2542 ms/step
+  step  3620/9156  ce 3.5470  |g| 0.45  anneal 0.45  lr 1.00e-03  2541 ms/step
+  step  3630/9156  ce 3.4876  |g| 0.34  anneal 0.45  lr 1.00e-03  2541 ms/step
+  step  3640/9156  ce 3.4597  |g| 0.29  anneal 0.46  lr 1.00e-03  2541 ms/step
+  step  3650/9156  ce 3.4785  |g| 0.33  anneal 0.46  lr 1.00e-03  2541 ms/step
+  step  3660/9156  ce 3.4906  |g| 0.28  anneal 0.46  lr 1.00e-03  2541 ms/step
+  step  3670/9156  ce 3.4943  |g| 0.28  anneal 0.46  lr 1.00e-03  2541 ms/step
+  step  3680/9156  ce 3.5229  |g| 0.28  anneal 0.46  lr 1.00e-03  2541 ms/step
+  step  3690/9156  ce 3.4865  |g| 0.28  anneal 0.46  lr 1.00e-03  2541 ms/step
+    >> val_loss 4.0850  ppl 59.44  (train_ce 3.566, val-CE +0.519)  bpb 1.316
+  step  3700/9156  ce 3.5150  |g| 0.29  anneal 0.46  lr 1.00e-03  2541 ms/step
+  step  3710/9156  ce 3.4883  |g| 0.35  anneal 0.47  lr 1.00e-03  2541 ms/step
+  step  3720/9156  ce 3.4926  |g| 0.30  anneal 0.47  lr 1.00e-03  2541 ms/step
+  step  3730/9156  ce 3.4678  |g| 0.26  anneal 0.47  lr 1.00e-03  2541 ms/step
+  step  3740/9156  ce 3.4713  |g| 0.31  anneal 0.47  lr 1.00e-03  2541 ms/step
+  step  3750/9156  ce 3.4538  |g| 0.34  anneal 0.47  lr 1.00e-03  2541 ms/step
+  step  3760/9156  ce 3.4865  |g| 0.30  anneal 0.47  lr 1.00e-03  2540 ms/step
+  step  3770/9156  ce 3.4980  |g| 0.25  anneal 0.47  lr 1.00e-03  2540 ms/step
+  step  3780/9156  ce 3.5150  |g| 0.27  anneal 0.48  lr 1.00e-03  2540 ms/step
+  step  3790/9156  ce 3.4880  |g| 0.32  anneal 0.48  lr 1.00e-03  2540 ms/step
+    >> val_loss 4.0359  ppl 56.60  (train_ce 3.516, val-CE +0.520)  bpb 1.300
+  step  3800/9156  ce 3.4815  |g| 0.30  anneal 0.48  lr 1.00e-03  2541 ms/step
+  step  3810/9156  ce 3.4836  |g| 0.32  anneal 0.48  lr 1.00e-03  2541 ms/step
+  step  3820/9156  ce 3.4894  |g| 0.35  anneal 0.48  lr 1.00e-03  2540 ms/step
+  step  3830/9156  ce 3.5008  |g| 0.29  anneal 0.48  lr 1.00e-03  2540 ms/step
+  step  3840/9156  ce 3.4473  |g| 0.28  anneal 0.49  lr 1.00e-03  2540 ms/step
+  step  3850/9156  ce 3.5422  |g| 0.31  anneal 0.49  lr 1.00e-03  2540 ms/step
+  step  3860/9156  ce 3.5334  |g| 0.28  anneal 0.49  lr 1.00e-03  2540 ms/step
+  step  3870/9156  ce 3.4355  |g| 0.33  anneal 0.49  lr 1.00e-03  2540 ms/step
+  step  3880/9156  ce 3.5123  |g| 0.39  anneal 0.49  lr 1.00e-03  2540 ms/step
+  step  3890/9156  ce 3.5257  |g| 0.25  anneal 0.49  lr 1.00e-03  2540 ms/step
+    >> val_loss 4.0525  ppl 57.54  (train_ce 3.456, val-CE +0.597)  bpb 1.306
+  step  3900/9156  ce 3.5180  |g| 0.29  anneal 0.49  lr 1.00e-03  2540 ms/step
+  step  3910/9156  ce 3.4209  |g| 0.28  anneal 0.50  lr 1.00e-03  2540 ms/step
+  step  3920/9156  ce 3.5365  |g| 0.32  anneal 0.50  lr 1.00e-03  2540 ms/step
+  step  3930/9156  ce 3.5220  |g| 0.25  anneal 0.50  lr 1.00e-03  2540 ms/step
+  step  3940/9156  ce 3.5545  |g| 0.27  anneal 0.50  lr 1.00e-03  2540 ms/step
+  step  3950/9156  ce 3.4948  |g| 0.36  anneal 0.50  lr 1.00e-03  2540 ms/step
+  step  3960/9156  ce 3.4868  |g| 0.28  anneal 0.50  lr 1.00e-03  2540 ms/step
+  step  3970/9156  ce 3.5703  |g| 0.41  anneal 0.50  lr 1.00e-03  2539 ms/step
+  step  3980/9156  ce 3.5796  |g| 0.28  anneal 0.51  lr 1.00e-03  2539 ms/step
+  step  3990/9156  ce 3.4560  |g| 0.32  anneal 0.51  lr 1.00e-03  2539 ms/step
+    >> val_loss 4.0628  ppl 58.14  (train_ce 3.471, val-CE +0.591)  bpb 1.309
+  step  4000/9156  ce 3.5474  |g| 0.32  anneal 0.51  lr 1.00e-03  2540 ms/step
+  step  4010/9156  ce 3.4986  |g| 0.26  anneal 0.51  lr 1.00e-03  2540 ms/step
+  step  4020/9156  ce 3.5100  |g| 0.27  anneal 0.51  lr 1.00e-03  2540 ms/step
+  step  4030/9156  ce 3.4855  |g| 0.30  anneal 0.51  lr 1.00e-03  2539 ms/step
+  step  4040/9156  ce 3.4862  |g| 0.28  anneal 0.51  lr 1.00e-03  2539 ms/step
+  step  4050/9156  ce 3.4571  |g| 0.28  anneal 0.52  lr 1.00e-03  2539 ms/step
+  step  4060/9156  ce 3.5673  |g| 0.33  anneal 0.52  lr 1.00e-03  2539 ms/step
+  step  4070/9156  ce 3.4820  |g| 0.26  anneal 0.52  lr 1.00e-03  2539 ms/step
+  step  4080/9156  ce 3.4901  |g| 0.30  anneal 0.52  lr 1.00e-03  2539 ms/step
+  step  4090/9156  ce 3.6280  |g| 0.36  anneal 0.52  lr 1.00e-03  2539 ms/step
+    >> val_loss 4.0206  ppl 55.74  (train_ce 3.528, val-CE +0.492)  bpb 1.295
+       best 갱신 4.0206 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  4100/9156  ce 3.4628  |g| 0.29  anneal 0.52  lr 1.00e-03  2540 ms/step
+  step  4110/9156  ce 3.5191  |g| 0.32  anneal 0.52  lr 1.00e-03  2539 ms/step
+  step  4120/9156  ce 3.4752  |g| 0.33  anneal 0.53  lr 1.00e-03  2539 ms/step
+  step  4130/9156  ce 3.5499  |g| 0.24  anneal 0.53  lr 1.00e-03  2539 ms/step
+  step  4140/9156  ce 3.4938  |g| 0.29  anneal 0.53  lr 1.00e-03  2539 ms/step
+  step  4150/9156  ce 3.5354  |g| 0.29  anneal 0.53  lr 1.00e-03  2539 ms/step
+  step  4160/9156  ce 3.5234  |g| 0.27  anneal 0.53  lr 1.00e-03  2539 ms/step
+  step  4170/9156  ce 3.5759  |g| 0.28  anneal 0.53  lr 1.00e-03  2539 ms/step
+  step  4180/9156  ce 3.4587  |g| 0.27  anneal 0.54  lr 1.00e-03  2539 ms/step
+  step  4190/9156  ce 3.4858  |g| 0.34  anneal 0.54  lr 1.00e-03  2539 ms/step
+    >> val_loss 3.9737  ppl 53.18  (train_ce 3.487, val-CE +0.486)  bpb 1.280
+       best 갱신 3.9737 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  4200/9156  ce 3.4693  |g| 0.26  anneal 0.54  lr 1.00e-03  2539 ms/step
+  step  4210/9156  ce 3.5184  |g| 0.45  anneal 0.54  lr 1.00e-03  2539 ms/step
+  step  4220/9156  ce 3.5370  |g| 0.30  anneal 0.54  lr 1.00e-03  2539 ms/step
+  step  4230/9156  ce 3.4143  |g| 0.26  anneal 0.54  lr 1.00e-03  2539 ms/step
+  step  4240/9156  ce 3.5358  |g| 0.33  anneal 0.54  lr 1.00e-03  2539 ms/step
+  step  4250/9156  ce 3.5668  |g| 0.41  anneal 0.55  lr 1.00e-03  2539 ms/step
+  step  4260/9156  ce 3.4219  |g| 0.28  anneal 0.55  lr 1.00e-03  2539 ms/step
+  step  4270/9156  ce 3.4887  |g| 0.28  anneal 0.55  lr 1.00e-03  2539 ms/step
+  step  4280/9156  ce 3.5163  |g| 0.40  anneal 0.55  lr 1.00e-03  2538 ms/step
+  step  4290/9156  ce 3.4826  |g| 0.36  anneal 0.55  lr 1.00e-03  2538 ms/step
+    >> val_loss 3.9969  ppl 54.43  (train_ce 3.554, val-CE +0.443)  bpb 1.288
+  step  4300/9156  ce 3.5044  |g| 0.45  anneal 0.55  lr 1.00e-03  2539 ms/step
+  step  4310/9156  ce 3.5442  |g| 0.38  anneal 0.55  lr 1.00e-03  2539 ms/step
+  step  4320/9156  ce 3.5488  |g| 0.29  anneal 0.56  lr 1.00e-03  2539 ms/step
+  step  4330/9156  ce 3.4919  |g| 0.46  anneal 0.56  lr 1.00e-03  2539 ms/step
+  step  4340/9156  ce 3.4724  |g| 0.27  anneal 0.56  lr 1.00e-03  2538 ms/step
+  step  4350/9156  ce 3.4925  |g| 0.26  anneal 0.56  lr 1.00e-03  2538 ms/step
+  step  4360/9156  ce 3.5132  |g| 0.30  anneal 0.56  lr 1.00e-03  2538 ms/step
+  step  4370/9156  ce 3.4984  |g| 0.30  anneal 0.56  lr 1.00e-03  2538 ms/step
+  step  4380/9156  ce 3.4627  |g| 0.34  anneal 0.56  lr 1.00e-03  2538 ms/step
+  step  4390/9156  ce 3.4467  |g| 0.44  anneal 0.57  lr 1.00e-03  2538 ms/step
+    >> val_loss 3.9894  ppl 54.02  (train_ce 3.563, val-CE +0.426)  bpb 1.285
+  step  4400/9156  ce 3.4042  |g| 0.30  anneal 0.57  lr 1.00e-03  2539 ms/step
+  step  4410/9156  ce 3.4412  |g| 0.30  anneal 0.57  lr 1.00e-03  2538 ms/step
+  step  4420/9156  ce 3.4458  |g| 0.28  anneal 0.57  lr 1.00e-03  2538 ms/step
+  step  4430/9156  ce 3.4995  |g| 0.48  anneal 0.57  lr 1.00e-03  2538 ms/step
+  step  4440/9156  ce 3.4626  |g| 0.53  anneal 0.57  lr 1.00e-03  2538 ms/step
+  step  4450/9156  ce 3.4844  |g| 0.42  anneal 0.58  lr 1.00e-03  2538 ms/step
+  step  4460/9156  ce 3.4625  |g| 0.33  anneal 0.58  lr 1.00e-03  2538 ms/step
+  step  4470/9156  ce 3.4093  |g| 0.39  anneal 0.58  lr 1.00e-03  2538 ms/step
+  step  4480/9156  ce 3.5181  |g| 0.41  anneal 0.58  lr 1.00e-03  2538 ms/step
+  step  4490/9156  ce 3.4733  |g| 0.33  anneal 0.58  lr 1.00e-03  2538 ms/step
+    >> val_loss 3.9444  ppl 51.64  (train_ce 3.462, val-CE +0.482)  bpb 1.271
+       best 갱신 3.9444 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  4500/9156  ce 3.5120  |g| 0.26  anneal 0.58  lr 1.00e-03  2538 ms/step
+  step  4510/9156  ce 3.4984  |g| 0.26  anneal 0.58  lr 1.00e-03  2538 ms/step
+  step  4520/9156  ce 3.4942  |g| 0.33  anneal 0.59  lr 1.00e-03  2538 ms/step
+  step  4530/9156  ce 3.4503  |g| 0.26  anneal 0.59  lr 1.00e-03  2538 ms/step
+  step  4540/9156  ce 3.4925  |g| 0.28  anneal 0.59  lr 1.00e-03  2538 ms/step
+  step  4550/9156  ce 3.4574  |g| 0.35  anneal 0.59  lr 1.00e-03  2538 ms/step
+  step  4560/9156  ce 3.4316  |g| 0.28  anneal 0.59  lr 1.00e-03  2538 ms/step
+  step  4570/9156  ce 3.4237  |g| 0.34  anneal 0.59  lr 1.00e-03  2538 ms/step
+  step  4580/9156  ce 3.4868  |g| 0.39  anneal 0.59  lr 1.00e-03  2538 ms/step
+  step  4590/9156  ce 3.5408  |g| 0.28  anneal 0.60  lr 1.00e-03  2537 ms/step
+    >> val_loss 3.9466  ppl 51.76  (train_ce 3.458, val-CE +0.489)  bpb 1.272
+  step  4600/9156  ce 3.4946  |g| 0.28  anneal 0.60  lr 1.00e-03  2538 ms/step
+  step  4610/9156  ce 3.5365  |g| 0.24  anneal 0.60  lr 1.00e-03  2538 ms/step
+  step  4620/9156  ce 3.5737  |g| 0.37  anneal 0.60  lr 1.00e-03  2538 ms/step
+  step  4630/9156  ce 3.4915  |g| 0.46  anneal 0.60  lr 1.00e-03  2538 ms/step
+  step  4640/9156  ce 3.5084  |g| 0.32  anneal 0.60  lr 1.00e-03  2538 ms/step
+  step  4650/9156  ce 3.5145  |g| 0.28  anneal 0.60  lr 1.00e-03  2538 ms/step
+  step  4660/9156  ce 3.4115  |g| 0.56  anneal 0.61  lr 1.00e-03  2537 ms/step
+  step  4670/9156  ce 3.5103  |g| 0.27  anneal 0.61  lr 1.00e-03  2537 ms/step
+  step  4680/9156  ce 3.5070  |g| 0.29  anneal 0.61  lr 1.00e-03  2537 ms/step
+  step  4690/9156  ce 3.4446  |g| 0.35  anneal 0.61  lr 1.00e-03  2537 ms/step
+    >> val_loss 3.9116  ppl 49.98  (train_ce 3.462, val-CE +0.450)  bpb 1.260
+       best 갱신 3.9116 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  4700/9156  ce 3.4456  |g| 0.29  anneal 0.61  lr 1.00e-03  2538 ms/step
+  step  4710/9156  ce 3.4359  |g| 0.29  anneal 0.61  lr 1.00e-03  2538 ms/step
+  step  4720/9156  ce 3.4698  |g| 0.33  anneal 0.62  lr 1.00e-03  2538 ms/step
+  step  4730/9156  ce 3.5166  |g| 0.36  anneal 0.62  lr 1.00e-03  2538 ms/step
+  step  4740/9156  ce 3.4845  |g| 0.39  anneal 0.62  lr 1.00e-03  2537 ms/step
+  step  4750/9156  ce 3.4303  |g| 0.26  anneal 0.62  lr 1.00e-03  2537 ms/step
+  step  4760/9156  ce 3.4785  |g| 0.27  anneal 0.62  lr 1.00e-03  2537 ms/step
+  step  4770/9156  ce 3.4823  |g| 0.38  anneal 0.62  lr 1.00e-03  2537 ms/step
+  step  4780/9156  ce 3.4500  |g| 0.27  anneal 0.62  lr 1.00e-03  2537 ms/step
+  step  4790/9156  ce 3.5031  |g| 0.30  anneal 0.63  lr 1.00e-03  2537 ms/step
+    >> val_loss 3.8844  ppl 48.64  (train_ce 3.525, val-CE +0.359)  bpb 1.251
+       best 갱신 3.8844 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  4800/9156  ce 3.5491  |g| 0.32  anneal 0.63  lr 1.00e-03  2538 ms/step
+  step  4810/9156  ce 3.4675  |g| 0.34  anneal 0.63  lr 1.00e-03  2538 ms/step
+  step  4820/9156  ce 3.5003  |g| 0.32  anneal 0.63  lr 1.00e-03  2537 ms/step
+  step  4830/9156  ce 3.5268  |g| 0.29  anneal 0.63  lr 1.00e-03  2537 ms/step
+  step  4840/9156  ce 3.5038  |g| 0.26  anneal 0.63  lr 1.00e-03  2537 ms/step
+  step  4850/9156  ce 3.5037  |g| 0.30  anneal 0.63  lr 1.00e-03  2537 ms/step
+  step  4860/9156  ce 3.5096  |g| 0.30  anneal 0.64  lr 1.00e-03  2537 ms/step
+  step  4870/9156  ce 3.5109  |g| 0.29  anneal 0.64  lr 1.00e-03  2537 ms/step
+  step  4880/9156  ce 3.4699  |g| 0.31  anneal 0.64  lr 1.00e-03  2537 ms/step
+  step  4890/9156  ce 3.5145  |g| 0.31  anneal 0.64  lr 1.00e-03  2537 ms/step
+    >> val_loss 3.8378  ppl 46.42  (train_ce 3.579, val-CE +0.259)  bpb 1.236
+       best 갱신 3.8378 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  4900/9156  ce 3.4638  |g| 0.29  anneal 0.64  lr 1.00e-03  2537 ms/step
+  step  4910/9156  ce 3.4065  |g| 0.29  anneal 0.64  lr 1.00e-03  2537 ms/step
+  step  4920/9156  ce 3.3820  |g| 0.51  anneal 0.64  lr 1.00e-03  2537 ms/step
+  step  4930/9156  ce 3.4962  |g| 0.35  anneal 0.65  lr 1.00e-03  2537 ms/step
+  step  4940/9156  ce 3.5486  |g| 0.38  anneal 0.65  lr 1.00e-03  2537 ms/step
+  step  4950/9156  ce 3.5556  |g| 0.38  anneal 0.65  lr 1.00e-03  2537 ms/step
+  step  4960/9156  ce 3.5320  |g| 0.39  anneal 0.65  lr 1.00e-03  2537 ms/step
+  step  4970/9156  ce 3.4788  |g| 0.27  anneal 0.65  lr 1.00e-03  2537 ms/step
+  step  4980/9156  ce 3.5127  |g| 0.30  anneal 0.65  lr 1.00e-03  2537 ms/step
+  step  4990/9156  ce 3.4866  |g| 0.40  anneal 0.65  lr 1.00e-03  2537 ms/step
+    >> val_loss 3.8731  ppl 48.09  (train_ce 3.460, val-CE +0.413)  bpb 1.248
+  step  5000/9156  ce 3.5154  |g| 0.27  anneal 0.66  lr 1.00e-03  2537 ms/step
+  step  5010/9156  ce 3.5104  |g| 0.30  anneal 0.66  lr 1.00e-03  2537 ms/step
+  step  5020/9156  ce 3.5221  |g| 0.38  anneal 0.66  lr 1.00e-03  2537 ms/step
+  step  5030/9156  ce 3.4528  |g| 0.30  anneal 0.66  lr 1.00e-03  2537 ms/step
+  step  5040/9156  ce 3.5196  |g| 0.42  anneal 0.66  lr 1.00e-03  2537 ms/step
+  step  5050/9156  ce 3.5385  |g| 0.27  anneal 0.66  lr 1.00e-03  2537 ms/step
+  step  5060/9156  ce 3.5079  |g| 0.28  anneal 0.67  lr 1.00e-03  2537 ms/step
+  step  5070/9156  ce 3.5246  |g| 0.27  anneal 0.67  lr 1.00e-03  2537 ms/step
+  step  5080/9156  ce 3.5758  |g| 0.35  anneal 0.67  lr 1.00e-03  2537 ms/step
+  step  5090/9156  ce 3.4707  |g| 0.30  anneal 0.67  lr 1.00e-03  2537 ms/step
+    >> val_loss 3.8922  ppl 49.02  (train_ce 3.512, val-CE +0.380)  bpb 1.254
+  step  5100/9156  ce 3.5426  |g| 0.33  anneal 0.67  lr 1.00e-03  2537 ms/step
+  step  5110/9156  ce 3.5400  |g| 0.25  anneal 0.67  lr 1.00e-03  2537 ms/step
+  step  5120/9156  ce 3.4671  |g| 0.32  anneal 0.67  lr 1.00e-03  2537 ms/step
+  step  5130/9156  ce 3.5247  |g| 0.34  anneal 0.68  lr 1.00e-03  2537 ms/step
+  step  5140/9156  ce 3.5289  |g| 0.25  anneal 0.68  lr 1.00e-03  2537 ms/step
+  step  5150/9156  ce 3.5362  |g| 0.29  anneal 0.68  lr 1.00e-03  2537 ms/step
+  step  5160/9156  ce 3.4633  |g| 0.53  anneal 0.68  lr 1.00e-03  2537 ms/step
+  step  5170/9156  ce 3.4682  |g| 0.46  anneal 0.68  lr 1.00e-03  2536 ms/step
+  step  5180/9156  ce 3.4975  |g| 0.32  anneal 0.68  lr 1.00e-03  2536 ms/step
+  step  5190/9156  ce 3.4954  |g| 0.36  anneal 0.68  lr 1.00e-03  2536 ms/step
+    >> val_loss 3.8350  ppl 46.29  (train_ce 3.539, val-CE +0.296)  bpb 1.236
+       best 갱신 3.8350 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  5200/9156  ce 3.4615  |g| 0.46  anneal 0.69  lr 1.00e-03  2537 ms/step
+  step  5210/9156  ce 3.4794  |g| 0.30  anneal 0.69  lr 1.00e-03  2537 ms/step
+  step  5220/9156  ce 3.4631  |g| 0.30  anneal 0.69  lr 1.00e-03  2537 ms/step
+  step  5230/9156  ce 3.5059  |g| 0.28  anneal 0.69  lr 1.00e-03  2537 ms/step
+  step  5240/9156  ce 3.4971  |g| 0.31  anneal 0.69  lr 1.00e-03  2536 ms/step
+  step  5250/9156  ce 3.4778  |g| 0.35  anneal 0.69  lr 1.00e-03  2536 ms/step
+  step  5260/9156  ce 3.4879  |g| 0.26  anneal 0.69  lr 1.00e-03  2536 ms/step
+  step  5270/9156  ce 3.4960  |g| 0.28  anneal 0.70  lr 1.00e-03  2536 ms/step
+  step  5280/9156  ce 3.5209  |g| 0.29  anneal 0.70  lr 1.00e-03  2536 ms/step
+  step  5290/9156  ce 3.4937  |g| 0.30  anneal 0.70  lr 1.00e-03  2536 ms/step
+    >> val_loss 3.8109  ppl 45.19  (train_ce 3.504, val-CE +0.307)  bpb 1.228
+       best 갱신 3.8109 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  5300/9156  ce 3.5565  |g| 0.33  anneal 0.70  lr 1.00e-03  2537 ms/step
+  step  5310/9156  ce 3.5430  |g| 0.49  anneal 0.70  lr 1.00e-03  2537 ms/step
+  step  5320/9156  ce 3.4937  |g| 0.28  anneal 0.70  lr 1.00e-03  2537 ms/step
+  step  5330/9156  ce 3.5715  |g| 0.28  anneal 0.71  lr 1.00e-03  2536 ms/step
+  step  5340/9156  ce 3.5636  |g| 0.34  anneal 0.71  lr 1.00e-03  2536 ms/step
+  step  5350/9156  ce 3.4490  |g| 0.29  anneal 0.71  lr 1.00e-03  2536 ms/step
+  step  5360/9156  ce 3.4955  |g| 0.28  anneal 0.71  lr 1.00e-03  2536 ms/step
+  step  5370/9156  ce 3.5730  |g| 0.34  anneal 0.71  lr 1.00e-03  2536 ms/step
+  step  5380/9156  ce 3.5031  |g| 0.35  anneal 0.71  lr 1.00e-03  2536 ms/step
+  step  5390/9156  ce 3.5411  |g| 0.39  anneal 0.71  lr 1.00e-03  2536 ms/step
+    >> val_loss 3.8228  ppl 45.73  (train_ce 3.447, val-CE +0.376)  bpb 1.232
+  step  5400/9156  ce 3.4472  |g| 0.46  anneal 0.72  lr 1.00e-03  2536 ms/step
+  step  5410/9156  ce 3.5694  |g| 0.48  anneal 0.72  lr 1.00e-03  2536 ms/step
+  step  5420/9156  ce 3.4422  |g| 0.30  anneal 0.72  lr 1.00e-03  2536 ms/step
+  step  5430/9156  ce 3.4990  |g| 0.27  anneal 0.72  lr 1.00e-03  2536 ms/step
+  step  5440/9156  ce 3.4756  |g| 0.31  anneal 0.72  lr 1.00e-03  2536 ms/step
+  step  5450/9156  ce 3.4627  |g| 0.51  anneal 0.72  lr 1.00e-03  2536 ms/step
+  step  5460/9156  ce 3.5350  |g| 0.29  anneal 0.72  lr 1.00e-03  2536 ms/step
+  step  5470/9156  ce 3.5294  |g| 0.27  anneal 0.73  lr 1.00e-03  2536 ms/step
+  step  5480/9156  ce 3.5298  |g| 0.31  anneal 0.73  lr 1.00e-03  2536 ms/step
+  step  5490/9156  ce 3.5380  |g| 0.30  anneal 0.73  lr 1.00e-03  2536 ms/step
+    >> val_loss 3.8391  ppl 46.48  (train_ce 3.519, val-CE +0.320)  bpb 1.237
+  step  5500/9156  ce 3.5146  |g| 0.30  anneal 0.73  lr 1.00e-03  2536 ms/step
+  step  5510/9156  ce 3.4972  |g| 0.40  anneal 0.73  lr 1.00e-03  2536 ms/step
+  step  5520/9156  ce 3.4826  |g| 0.34  anneal 0.73  lr 1.00e-03  2536 ms/step
+  step  5530/9156  ce 3.5651  |g| 0.58  anneal 0.73  lr 1.00e-03  2536 ms/step
+  step  5540/9156  ce 3.5227  |g| 0.30  anneal 0.74  lr 1.00e-03  2536 ms/step
+  step  5550/9156  ce 3.4947  |g| 0.37  anneal 0.74  lr 1.00e-03  2536 ms/step
+  step  5560/9156  ce 3.5606  |g| 0.28  anneal 0.74  lr 1.00e-03  2536 ms/step
+  step  5570/9156  ce 3.5266  |g| 0.32  anneal 0.74  lr 1.00e-03  2536 ms/step
+  step  5580/9156  ce 3.4995  |g| 0.39  anneal 0.74  lr 1.00e-03  2536 ms/step
+  step  5590/9156  ce 3.4626  |g| 0.48  anneal 0.74  lr 1.00e-03  2535 ms/step
+    >> val_loss 3.8019  ppl 44.79  (train_ce 3.524, val-CE +0.278)  bpb 1.225
+       best 갱신 3.8019 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  5600/9156  ce 3.5201  |g| 0.31  anneal 0.75  lr 1.00e-03  2536 ms/step
+  step  5610/9156  ce 3.4387  |g| 0.43  anneal 0.75  lr 1.00e-03  2536 ms/step
+  step  5620/9156  ce 3.5264  |g| 0.26  anneal 0.75  lr 1.00e-03  2536 ms/step
+  step  5630/9156  ce 3.5503  |g| 0.27  anneal 0.75  lr 1.00e-03  2536 ms/step
+  step  5640/9156  ce 3.4608  |g| 0.35  anneal 0.75  lr 1.00e-03  2536 ms/step
+  step  5650/9156  ce 3.5320  |g| 0.28  anneal 0.75  lr 1.00e-03  2536 ms/step
+  step  5660/9156  ce 3.5619  |g| 0.48  anneal 0.75  lr 1.00e-03  2536 ms/step
+  step  5670/9156  ce 3.4877  |g| 0.50  anneal 0.76  lr 1.00e-03  2535 ms/step
+  step  5680/9156  ce 3.5571  |g| 0.41  anneal 0.76  lr 1.00e-03  2535 ms/step
+  step  5690/9156  ce 3.4400  |g| 0.35  anneal 0.76  lr 1.00e-03  2535 ms/step
+    >> val_loss 3.7816  ppl 43.88  (train_ce 3.493, val-CE +0.289)  bpb 1.218
+       best 갱신 3.7816 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  5700/9156  ce 3.5423  |g| 0.41  anneal 0.76  lr 1.00e-03  2536 ms/step
+  step  5710/9156  ce 3.5621  |g| 0.43  anneal 0.76  lr 1.00e-03  2536 ms/step
+  step  5720/9156  ce 3.4857  |g| 0.31  anneal 0.76  lr 1.00e-03  2536 ms/step
+  step  5730/9156  ce 3.5015  |g| 0.33  anneal 0.76  lr 1.00e-03  2536 ms/step
+  step  5740/9156  ce 3.4818  |g| 0.29  anneal 0.77  lr 1.00e-03  2536 ms/step
+  step  5750/9156  ce 3.5582  |g| 0.42  anneal 0.77  lr 1.00e-03  2536 ms/step
+  step  5760/9156  ce 3.5153  |g| 0.37  anneal 0.77  lr 1.00e-03  2535 ms/step
+  step  5770/9156  ce 3.5008  |g| 0.27  anneal 0.77  lr 1.00e-03  2535 ms/step
+  step  5780/9156  ce 3.5396  |g| 0.38  anneal 0.77  lr 1.00e-03  2535 ms/step
+  step  5790/9156  ce 3.5424  |g| 0.36  anneal 0.77  lr 1.00e-03  2535 ms/step
+    >> val_loss 3.7956  ppl 44.51  (train_ce 3.507, val-CE +0.288)  bpb 1.223
+  step  5800/9156  ce 3.4465  |g| 0.28  anneal 0.77  lr 1.00e-03  2536 ms/step
+  step  5810/9156  ce 3.4949  |g| 0.48  anneal 0.78  lr 1.00e-03  2536 ms/step
+  step  5820/9156  ce 3.5494  |g| 0.30  anneal 0.78  lr 1.00e-03  2536 ms/step
+  step  5830/9156  ce 3.4931  |g| 0.28  anneal 0.78  lr 1.00e-03  2535 ms/step
+  step  5840/9156  ce 3.5647  |g| 0.46  anneal 0.78  lr 1.00e-03  2535 ms/step
+  step  5850/9156  ce 3.4982  |g| 0.26  anneal 0.78  lr 1.00e-03  2535 ms/step
+  step  5860/9156  ce 3.5923  |g| 0.33  anneal 0.78  lr 1.00e-03  2535 ms/step
+  step  5870/9156  ce 3.5469  |g| 0.28  anneal 0.79  lr 1.00e-03  2535 ms/step
+  step  5880/9156  ce 3.5220  |g| 0.36  anneal 0.79  lr 1.00e-03  2535 ms/step
+  step  5890/9156  ce 3.5584  |g| 0.28  anneal 0.79  lr 1.00e-03  2535 ms/step
+    >> val_loss 3.7709  ppl 43.42  (train_ce 3.426, val-CE +0.345)  bpb 1.215
+       best 갱신 3.7709 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  5900/9156  ce 3.5460  |g| 0.33  anneal 0.79  lr 1.00e-03  2536 ms/step
+  step  5910/9156  ce 3.5538  |g| 0.41  anneal 0.79  lr 1.00e-03  2535 ms/step
+  step  5920/9156  ce 3.4538  |g| 0.36  anneal 0.79  lr 1.00e-03  2535 ms/step
+  step  5930/9156  ce 3.5198  |g| 0.31  anneal 0.79  lr 1.00e-03  2535 ms/step
+  step  5940/9156  ce 3.5112  |g| 0.62  anneal 0.80  lr 1.00e-03  2535 ms/step
+  step  5950/9156  ce 3.4798  |g| 0.27  anneal 0.80  lr 1.00e-03  2535 ms/step
+  step  5960/9156  ce 3.5160  |g| 0.31  anneal 0.80  lr 1.00e-03  2535 ms/step
+  step  5970/9156  ce 3.4979  |g| 0.30  anneal 0.80  lr 1.00e-03  2535 ms/step
+  step  5980/9156  ce 3.5044  |g| 0.29  anneal 0.80  lr 1.00e-03  2535 ms/step
+  step  5990/9156  ce 3.4654  |g| 0.31  anneal 0.80  lr 1.00e-03  2535 ms/step
+    >> val_loss 3.7672  ppl 43.26  (train_ce 3.559, val-CE +0.209)  bpb 1.214
+       best 갱신 3.7672 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  6000/9156  ce 3.4639  |g| 0.28  anneal 0.80  lr 1.00e-03  2535 ms/step
+  step  6010/9156  ce 3.5778  |g| 0.39  anneal 0.81  lr 1.00e-03  2535 ms/step
+  step  6020/9156  ce 3.4658  |g| 0.47  anneal 0.81  lr 1.00e-03  2535 ms/step
+  step  6030/9156  ce 3.5782  |g| 0.26  anneal 0.81  lr 1.00e-03  2535 ms/step
+  step  6040/9156  ce 3.5192  |g| 0.33  anneal 0.81  lr 1.00e-03  2535 ms/step
+  step  6050/9156  ce 3.5359  |g| 0.38  anneal 0.81  lr 1.00e-03  2535 ms/step
+  step  6060/9156  ce 3.5340  |g| 0.32  anneal 0.81  lr 1.00e-03  2535 ms/step
+  step  6070/9156  ce 3.5388  |g| 0.35  anneal 0.81  lr 1.00e-03  2535 ms/step
+  step  6080/9156  ce 3.5093  |g| 0.32  anneal 0.82  lr 1.00e-03  2535 ms/step
+  step  6090/9156  ce 3.4834  |g| 0.28  anneal 0.82  lr 1.00e-03  2535 ms/step
+    >> val_loss 3.7325  ppl 41.78  (train_ce 3.554, val-CE +0.179)  bpb 1.203
+       best 갱신 3.7325 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  6100/9156  ce 3.4992  |g| 0.28  anneal 0.82  lr 1.00e-03  2535 ms/step
+  step  6110/9156  ce 3.5166  |g| 0.32  anneal 0.82  lr 1.00e-03  2535 ms/step
+  step  6120/9156  ce 3.5240  |g| 0.38  anneal 0.82  lr 1.00e-03  2535 ms/step
+  step  6130/9156  ce 3.5531  |g| 0.30  anneal 0.82  lr 1.00e-03  2535 ms/step
+  step  6140/9156  ce 3.4808  |g| 0.42  anneal 0.82  lr 1.00e-03  2535 ms/step
+  step  6150/9156  ce 3.5977  |g| 0.36  anneal 0.83  lr 1.00e-03  2535 ms/step
+  step  6160/9156  ce 3.5698  |g| 0.28  anneal 0.83  lr 1.00e-03  2535 ms/step
+  step  6170/9156  ce 3.4937  |g| 0.32  anneal 0.83  lr 1.00e-03  2535 ms/step
+  step  6180/9156  ce 3.5293  |g| 0.43  anneal 0.83  lr 1.00e-03  2535 ms/step
+  step  6190/9156  ce 3.4506  |g| 0.35  anneal 0.83  lr 1.00e-03  2535 ms/step
+    >> val_loss 3.7278  ppl 41.59  (train_ce 3.505, val-CE +0.222)  bpb 1.201
+       best 갱신 3.7278 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  6200/9156  ce 3.5318  |g| 0.36  anneal 0.83  lr 1.00e-03  2535 ms/step
+  step  6210/9156  ce 3.5455  |g| 0.34  anneal 0.84  lr 1.00e-03  2535 ms/step
+  step  6220/9156  ce 3.5592  |g| 0.45  anneal 0.84  lr 1.00e-03  2535 ms/step
+  step  6230/9156  ce 3.5174  |g| 0.50  anneal 0.84  lr 1.00e-03  2535 ms/step
+  step  6240/9156  ce 3.5237  |g| 0.35  anneal 0.84  lr 1.00e-03  2535 ms/step
+  step  6250/9156  ce 3.5333  |g| 0.35  anneal 0.84  lr 1.00e-03  2535 ms/step
+  step  6260/9156  ce 3.5859  |g| 0.42  anneal 0.84  lr 1.00e-03  2535 ms/step
+  step  6270/9156  ce 3.5777  |g| 0.28  anneal 0.84  lr 1.00e-03  2535 ms/step
+  step  6280/9156  ce 3.5468  |g| 0.32  anneal 0.85  lr 1.00e-03  2535 ms/step
+  step  6290/9156  ce 3.5277  |g| 0.33  anneal 0.85  lr 1.00e-03  2535 ms/step
+    >> val_loss 3.7691  ppl 43.34  (train_ce 3.538, val-CE +0.231)  bpb 1.214
+  step  6300/9156  ce 3.5462  |g| 0.33  anneal 0.85  lr 1.00e-03  2535 ms/step
+  step  6310/9156  ce 3.5149  |g| 0.34  anneal 0.85  lr 1.00e-03  2535 ms/step
+  step  6320/9156  ce 3.5663  |g| 0.40  anneal 0.85  lr 1.00e-03  2535 ms/step
+  step  6330/9156  ce 3.4919  |g| 0.46  anneal 0.85  lr 1.00e-03  2535 ms/step
+  step  6340/9156  ce 3.5512  |g| 0.31  anneal 0.85  lr 1.00e-03  2535 ms/step
+  step  6350/9156  ce 3.5188  |g| 0.45  anneal 0.86  lr 1.00e-03  2535 ms/step
+  step  6360/9156  ce 3.5856  |g| 0.30  anneal 0.86  lr 1.00e-03  2535 ms/step
+  step  6370/9156  ce 3.5009  |g| 0.41  anneal 0.86  lr 1.00e-03  2535 ms/step
+  step  6380/9156  ce 3.4652  |g| 0.28  anneal 0.86  lr 1.00e-03  2534 ms/step
+  step  6390/9156  ce 3.5363  |g| 0.30  anneal 0.86  lr 1.00e-03  2534 ms/step
+    >> val_loss 3.7681  ppl 43.30  (train_ce 3.591, val-CE +0.177)  bpb 1.214
+  step  6400/9156  ce 3.5221  |g| 0.59  anneal 0.86  lr 1.00e-03  2535 ms/step
+  step  6410/9156  ce 3.4771  |g| 0.37  anneal 0.86  lr 1.00e-03  2535 ms/step
+  step  6420/9156  ce 3.5059  |g| 0.31  anneal 0.87  lr 1.00e-03  2535 ms/step
+  step  6430/9156  ce 3.4758  |g| 0.32  anneal 0.87  lr 1.00e-03  2535 ms/step
+  step  6440/9156  ce 3.5639  |g| 0.34  anneal 0.87  lr 1.00e-03  2535 ms/step
+  step  6450/9156  ce 3.5110  |g| 0.31  anneal 0.87  lr 1.00e-03  2534 ms/step
+  step  6460/9156  ce 3.4950  |g| 0.30  anneal 0.87  lr 1.00e-03  2534 ms/step
+  step  6470/9156  ce 3.4764  |g| 0.41  anneal 0.87  lr 1.00e-03  2534 ms/step
+  step  6480/9156  ce 3.5485  |g| 0.42  anneal 0.88  lr 1.00e-03  2534 ms/step
+  step  6490/9156  ce 3.4801  |g| 0.30  anneal 0.88  lr 1.00e-03  2534 ms/step
+    >> val_loss 3.7419  ppl 42.18  (train_ce 3.422, val-CE +0.320)  bpb 1.206
+  step  6500/9156  ce 3.5126  |g| 0.37  anneal 0.88  lr 1.00e-03  2535 ms/step
+  step  6510/9156  ce 3.5757  |g| 0.50  anneal 0.88  lr 1.00e-03  2535 ms/step
+  step  6520/9156  ce 3.5571  |g| 0.35  anneal 0.88  lr 1.00e-03  2534 ms/step
+  step  6530/9156  ce 3.5398  |g| 0.36  anneal 0.88  lr 1.00e-03  2534 ms/step
+  step  6540/9156  ce 3.5304  |g| 0.33  anneal 0.88  lr 1.00e-03  2534 ms/step
+  step  6550/9156  ce 3.5885  |g| 0.36  anneal 0.89  lr 1.00e-03  2534 ms/step
+  step  6560/9156  ce 3.5793  |g| 0.51  anneal 0.89  lr 1.00e-03  2534 ms/step
+  step  6570/9156  ce 3.5919  |g| 0.31  anneal 0.89  lr 1.00e-03  2534 ms/step
+  step  6580/9156  ce 3.5640  |g| 0.29  anneal 0.89  lr 1.00e-03  2534 ms/step
+  step  6590/9156  ce 3.5881  |g| 0.40  anneal 0.89  lr 1.00e-03  2534 ms/step
+    >> val_loss 3.7016  ppl 40.51  (train_ce 3.574, val-CE +0.128)  bpb 1.193
+       best 갱신 3.7016 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  6600/9156  ce 3.5384  |g| 0.47  anneal 0.89  lr 1.00e-03  2534 ms/step
+  step  6610/9156  ce 3.5163  |g| 0.31  anneal 0.89  lr 1.00e-03  2534 ms/step
+  step  6620/9156  ce 3.5729  |g| 0.29  anneal 0.90  lr 1.00e-03  2534 ms/step
+  step  6630/9156  ce 3.5811  |g| 0.41  anneal 0.90  lr 1.00e-03  2534 ms/step
+  step  6640/9156  ce 3.5168  |g| 0.42  anneal 0.90  lr 1.00e-03  2534 ms/step
+  step  6650/9156  ce 3.5581  |g| 0.51  anneal 0.90  lr 1.00e-03  2534 ms/step
+  step  6660/9156  ce 3.4989  |g| 0.30  anneal 0.90  lr 1.00e-03  2534 ms/step
+  step  6670/9156  ce 3.5666  |g| 0.36  anneal 0.90  lr 1.00e-03  2534 ms/step
+  step  6680/9156  ce 3.5689  |g| 0.51  anneal 0.90  lr 1.00e-03  2534 ms/step
+  step  6690/9156  ce 3.5861  |g| 0.50  anneal 0.91  lr 1.00e-03  2534 ms/step
+    >> val_loss 3.6803  ppl 39.66  (train_ce 3.557, val-CE +0.123)  bpb 1.186
+       best 갱신 3.6803 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  6700/9156  ce 3.5616  |g| 0.39  anneal 0.91  lr 1.00e-03  2534 ms/step
+  step  6710/9156  ce 3.5846  |g| 0.32  anneal 0.91  lr 1.00e-03  2534 ms/step
+  step  6720/9156  ce 3.4893  |g| 0.41  anneal 0.91  lr 1.00e-03  2534 ms/step
+  step  6730/9156  ce 3.5623  |g| 0.37  anneal 0.91  lr 1.00e-03  2534 ms/step
+  step  6740/9156  ce 3.5276  |g| 0.27  anneal 0.91  lr 1.00e-03  2534 ms/step
+  step  6750/9156  ce 3.5933  |g| 0.32  anneal 0.92  lr 1.00e-03  2534 ms/step
+  step  6760/9156  ce 3.5013  |g| 0.30  anneal 0.92  lr 1.00e-03  2534 ms/step
+  step  6770/9156  ce 3.5450  |g| 0.74  anneal 0.92  lr 1.00e-03  2534 ms/step
+  step  6780/9156  ce 3.5103  |g| 0.36  anneal 0.92  lr 1.00e-03  2534 ms/step
+  step  6790/9156  ce 3.5346  |g| 0.34  anneal 0.92  lr 1.00e-03  2534 ms/step
+    >> val_loss 3.6925  ppl 40.15  (train_ce 3.499, val-CE +0.194)  bpb 1.190
+  step  6800/9156  ce 3.5318  |g| 0.32  anneal 0.92  lr 1.00e-03  2534 ms/step
+  step  6810/9156  ce 3.5013  |g| 0.37  anneal 0.92  lr 1.00e-03  2534 ms/step
+  step  6820/9156  ce 3.5697  |g| 0.37  anneal 0.93  lr 1.00e-03  2534 ms/step
+  step  6830/9156  ce 3.5628  |g| 0.41  anneal 0.93  lr 1.00e-03  2534 ms/step
+  step  6840/9156  ce 3.5386  |g| 0.47  anneal 0.93  lr 1.00e-03  2534 ms/step
+  step  6850/9156  ce 3.5867  |g| 0.41  anneal 0.93  lr 1.00e-03  2534 ms/step
+  step  6860/9156  ce 3.5309  |g| 0.35  anneal 0.93  lr 1.00e-03  2534 ms/step
+  step  6870/9156  ce 3.5872  |g| 0.38  anneal 0.93  lr 1.00e-03  2534 ms/step
+  step  6880/9156  ce 3.5820  |g| 0.55  anneal 0.93  lr 1.00e-03  2534 ms/step
+  step  6890/9156  ce 3.5625  |g| 0.32  anneal 0.94  lr 1.00e-03  2534 ms/step
+    >> val_loss 3.6331  ppl 37.83  (train_ce 3.622, val-CE +0.012)  bpb 1.171
+       best 갱신 3.6331 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  6900/9156  ce 3.5615  |g| 0.30  anneal 0.94  lr 1.00e-03  2534 ms/step
+  step  6910/9156  ce 3.6080  |g| 0.37  anneal 0.94  lr 1.00e-03  2534 ms/step
+  step  6920/9156  ce 3.5443  |g| 0.50  anneal 0.94  lr 1.00e-03  2534 ms/step
+  step  6930/9156  ce 3.5562  |g| 0.32  anneal 0.94  lr 1.00e-03  2534 ms/step
+  step  6940/9156  ce 3.5505  |g| 0.37  anneal 0.94  lr 1.00e-03  2534 ms/step
+  step  6950/9156  ce 3.5826  |g| 0.36  anneal 0.94  lr 1.00e-03  2534 ms/step
+  step  6960/9156  ce 3.5290  |g| 0.33  anneal 0.95  lr 1.00e-03  2534 ms/step
+  step  6970/9156  ce 3.5761  |g| 0.44  anneal 0.95  lr 1.00e-03  2534 ms/step
+  step  6980/9156  ce 3.6149  |g| 0.41  anneal 0.95  lr 1.00e-03  2534 ms/step
+  step  6990/9156  ce 3.5266  |g| 0.37  anneal 0.95  lr 1.00e-03  2534 ms/step
+    >> val_loss 3.6859  ppl 39.88  (train_ce 3.581, val-CE +0.105)  bpb 1.188
+  step  7000/9156  ce 3.5514  |g| 0.44  anneal 0.95  lr 1.00e-03  2534 ms/step
+  step  7010/9156  ce 3.5755  |g| 0.29  anneal 0.95  lr 1.00e-03  2534 ms/step
+  step  7020/9156  ce 3.5603  |g| 0.31  anneal 0.95  lr 1.00e-03  2534 ms/step
+  step  7030/9156  ce 3.5996  |g| 0.36  anneal 0.96  lr 1.00e-03  2534 ms/step
+  step  7040/9156  ce 3.5664  |g| 0.27  anneal 0.96  lr 1.00e-03  2534 ms/step
+  step  7050/9156  ce 3.6301  |g| 0.44  anneal 0.96  lr 1.00e-03  2534 ms/step
+  step  7060/9156  ce 3.6241  |g| 0.29  anneal 0.96  lr 1.00e-03  2534 ms/step
+  step  7070/9156  ce 3.5608  |g| 0.40  anneal 0.96  lr 1.00e-03  2534 ms/step
+  step  7080/9156  ce 3.6122  |g| 0.33  anneal 0.96  lr 1.00e-03  2534 ms/step
+  step  7090/9156  ce 3.5947  |g| 0.45  anneal 0.97  lr 1.00e-03  2533 ms/step
+    >> val_loss 3.6616  ppl 38.92  (train_ce 3.630, val-CE +0.031)  bpb 1.180
+  step  7100/9156  ce 3.5896  |g| 0.40  anneal 0.97  lr 1.00e-03  2534 ms/step
+  step  7110/9156  ce 3.5260  |g| 0.34  anneal 0.97  lr 1.00e-03  2534 ms/step
+  step  7120/9156  ce 3.6259  |g| 0.39  anneal 0.97  lr 1.00e-03  2534 ms/step
+  step  7130/9156  ce 3.6108  |g| 0.56  anneal 0.97  lr 1.00e-03  2534 ms/step
+  step  7140/9156  ce 3.4912  |g| 0.29  anneal 0.97  lr 1.00e-03  2534 ms/step
+  step  7150/9156  ce 3.5769  |g| 0.42  anneal 0.97  lr 1.00e-03  2534 ms/step
+  step  7160/9156  ce 3.6277  |g| 0.27  anneal 0.98  lr 1.00e-03  2533 ms/step
+  step  7170/9156  ce 3.5576  |g| 0.29  anneal 0.98  lr 1.00e-03  2533 ms/step
+  step  7180/9156  ce 3.5695  |g| 0.61  anneal 0.98  lr 1.00e-03  2533 ms/step
+  step  7190/9156  ce 3.5511  |g| 0.32  anneal 0.98  lr 1.00e-03  2533 ms/step
+    >> val_loss 3.6516  ppl 38.53  (train_ce 3.557, val-CE +0.095)  bpb 1.176
+  step  7200/9156  ce 3.6368  |g| 0.41  anneal 0.98  lr 1.00e-03  2534 ms/step
+  step  7210/9156  ce 3.5544  |g| 0.47  anneal 0.98  lr 1.00e-03  2534 ms/step
+  step  7220/9156  ce 3.5753  |g| 0.36  anneal 0.98  lr 1.00e-03  2534 ms/step
+  step  7230/9156  ce 3.5188  |g| 0.42  anneal 0.99  lr 1.00e-03  2534 ms/step
+  step  7240/9156  ce 3.5504  |g| 0.30  anneal 0.99  lr 1.00e-03  2533 ms/step
+  step  7250/9156  ce 3.5345  |g| 0.44  anneal 0.99  lr 1.00e-03  2533 ms/step
+  step  7260/9156  ce 3.6240  |g| 0.36  anneal 0.99  lr 1.00e-03  2533 ms/step
+  step  7270/9156  ce 3.6124  |g| 0.37  anneal 0.99  lr 1.00e-03  2533 ms/step
+  step  7280/9156  ce 3.5679  |g| 0.40  anneal 0.99  lr 1.00e-03  2533 ms/step
+  step  7290/9156  ce 3.5763  |g| 0.72  anneal 0.99  lr 1.00e-03  2533 ms/step
+    >> val_loss 3.6572  ppl 38.75  (train_ce 3.606, val-CE +0.052)  bpb 1.178
+  step  7300/9156  ce 3.4921  |g| 0.25  anneal 1.00  lr 1.00e-03  2533 ms/step
+  step  7310/9156  ce 3.6009  |g| 0.42  anneal 1.00  lr 1.00e-03  2533 ms/step
+  step  7320/9156  ce 3.5627  |g| 0.65  anneal 1.00  lr 1.00e-03  2533 ms/step
+  step  7330/9156  ce 3.5489  |g| 0.27  anneal 1.00  lr 1.00e-03  2533 ms/step
+  step  7340/9156  ce 3.6355  |g| 0.34  anneal 1.00  lr 1.00e-03  2533 ms/step
+  step  7350/9156  ce 3.6015  |g| 0.36  anneal 1.00  lr 1.00e-03  2533 ms/step
+  step  7360/9156  ce 3.6403  |g| 0.46  anneal 1.00  lr 1.00e-03  2533 ms/step
+  step  7370/9156  ce 3.5009  |g| 0.41  anneal 1.00  lr 1.00e-03  2533 ms/step
+  step  7380/9156  ce 3.5913  |g| 0.75  anneal 1.00  lr 9.99e-04  2533 ms/step
+  step  7390/9156  ce 3.5239  |g| 0.31  anneal 1.00  lr 9.99e-04  2533 ms/step
+    >> val_loss 3.6288  ppl 37.67  (train_ce 3.530, val-CE +0.098)  bpb 1.169
+       best 갱신 3.6288 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  7400/9156  ce 3.5473  |g| 0.51  anneal 1.00  lr 9.98e-04  2533 ms/step
+  step  7410/9156  ce 3.6099  |g| 0.43  anneal 1.00  lr 9.97e-04  2533 ms/step
+  step  7420/9156  ce 3.5333  |g| 0.42  anneal 1.00  lr 9.96e-04  2533 ms/step
+  step  7430/9156  ce 3.6261  |g| 0.29  anneal 1.00  lr 9.95e-04  2533 ms/step
+  step  7440/9156  ce 3.6150  |g| 0.61  anneal 1.00  lr 9.94e-04  2533 ms/step
+  step  7450/9156  ce 3.6039  |g| 0.35  anneal 1.00  lr 9.93e-04  2533 ms/step
+  step  7460/9156  ce 3.5651  |g| 0.32  anneal 1.00  lr 9.91e-04  2533 ms/step
+  step  7470/9156  ce 3.6152  |g| 0.36  anneal 1.00  lr 9.89e-04  2533 ms/step
+  step  7480/9156  ce 3.5313  |g| 0.40  anneal 1.00  lr 9.88e-04  2533 ms/step
+  step  7490/9156  ce 3.5964  |g| 0.40  anneal 1.00  lr 9.86e-04  2533 ms/step
+    >> val_loss 3.6741  ppl 39.41  (train_ce 3.568, val-CE +0.106)  bpb 1.184
+  step  7500/9156  ce 3.6191  |g| 0.59  anneal 1.00  lr 9.84e-04  2533 ms/step
+  step  7510/9156  ce 3.5789  |g| 0.27  anneal 1.00  lr 9.82e-04  2533 ms/step
+  step  7520/9156  ce 3.5514  |g| 0.32  anneal 1.00  lr 9.79e-04  2533 ms/step
+  step  7530/9156  ce 3.5418  |g| 0.51  anneal 1.00  lr 9.77e-04  2533 ms/step
+  step  7540/9156  ce 3.5640  |g| 0.34  anneal 1.00  lr 9.74e-04  2533 ms/step
+  step  7550/9156  ce 3.6154  |g| 0.46  anneal 1.00  lr 9.72e-04  2533 ms/step
+  step  7560/9156  ce 3.5298  |g| 0.25  anneal 1.00  lr 9.69e-04  2533 ms/step
+  step  7570/9156  ce 3.5848  |g| 0.34  anneal 1.00  lr 9.66e-04  2533 ms/step
+  step  7580/9156  ce 3.5711  |g| 0.44  anneal 1.00  lr 9.63e-04  2533 ms/step
+  step  7590/9156  ce 3.6309  |g| 0.46  anneal 1.00  lr 9.60e-04  2533 ms/step
+    >> val_loss 3.6237  ppl 37.48  (train_ce 3.618, val-CE +0.005)  bpb 1.168
+       best 갱신 3.6237 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  7600/9156  ce 3.5631  |g| 0.37  anneal 1.00  lr 9.57e-04  2533 ms/step
+  step  7610/9156  ce 3.6596  |g| 0.45  anneal 1.00  lr 9.53e-04  2533 ms/step
+  step  7620/9156  ce 3.5525  |g| 0.30  anneal 1.00  lr 9.50e-04  2533 ms/step
+  step  7630/9156  ce 3.5693  |g| 0.36  anneal 1.00  lr 9.46e-04  2533 ms/step
+  step  7640/9156  ce 3.5982  |g| 0.33  anneal 1.00  lr 9.42e-04  2533 ms/step
+  step  7650/9156  ce 3.6032  |g| 0.48  anneal 1.00  lr 9.38e-04  2533 ms/step
+  step  7660/9156  ce 3.6108  |g| 0.34  anneal 1.00  lr 9.34e-04  2533 ms/step
+  step  7670/9156  ce 3.5414  |g| 0.31  anneal 1.00  lr 9.30e-04  2533 ms/step
+  step  7680/9156  ce 3.5744  |g| 0.51  anneal 1.00  lr 9.26e-04  2533 ms/step
+  step  7690/9156  ce 3.5612  |g| 0.54  anneal 1.00  lr 9.22e-04  2533 ms/step
+    >> val_loss 3.6450  ppl 38.28  (train_ce 3.518, val-CE +0.127)  bpb 1.174
+  step  7700/9156  ce 3.6321  |g| 0.50  anneal 1.00  lr 9.17e-04  2533 ms/step
+  step  7710/9156  ce 3.5264  |g| 0.31  anneal 1.00  lr 9.13e-04  2533 ms/step
+  step  7720/9156  ce 3.5088  |g| 0.50  anneal 1.00  lr 9.08e-04  2533 ms/step
+  step  7730/9156  ce 3.5784  |g| 0.32  anneal 1.00  lr 9.03e-04  2533 ms/step
+  step  7740/9156  ce 3.5778  |g| 0.29  anneal 1.00  lr 8.98e-04  2533 ms/step
+  step  7750/9156  ce 3.5570  |g| 0.31  anneal 1.00  lr 8.93e-04  2533 ms/step
+  step  7760/9156  ce 3.5074  |g| 0.33  anneal 1.00  lr 8.88e-04  2533 ms/step
+  step  7770/9156  ce 3.5834  |g| 0.39  anneal 1.00  lr 8.83e-04  2533 ms/step
+  step  7780/9156  ce 3.6071  |g| 0.55  anneal 1.00  lr 8.78e-04  2533 ms/step
+  step  7790/9156  ce 3.6227  |g| 0.45  anneal 1.00  lr 8.72e-04  2533 ms/step
+    >> val_loss 3.5878  ppl 36.15  (train_ce 3.557, val-CE +0.030)  bpb 1.156
+       best 갱신 3.5878 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  7800/9156  ce 3.5395  |g| 0.39  anneal 1.00  lr 8.67e-04  2533 ms/step
+  step  7810/9156  ce 3.5356  |g| 0.32  anneal 1.00  lr 8.61e-04  2533 ms/step
+  step  7820/9156  ce 3.5405  |g| 0.43  anneal 1.00  lr 8.56e-04  2533 ms/step
+  step  7830/9156  ce 3.4463  |g| 0.31  anneal 1.00  lr 8.50e-04  2533 ms/step
+  step  7840/9156  ce 3.4878  |g| 0.39  anneal 1.00  lr 8.44e-04  2533 ms/step
+  step  7850/9156  ce 3.5109  |g| 0.49  anneal 1.00  lr 8.38e-04  2533 ms/step
+  step  7860/9156  ce 3.5392  |g| 0.36  anneal 1.00  lr 8.32e-04  2533 ms/step
+  step  7870/9156  ce 3.5555  |g| 0.28  anneal 1.00  lr 8.26e-04  2533 ms/step
+  step  7880/9156  ce 3.5439  |g| 0.40  anneal 1.00  lr 8.20e-04  2533 ms/step
+  step  7890/9156  ce 3.6110  |g| 0.37  anneal 1.00  lr 8.13e-04  2532 ms/step
+    >> val_loss 3.6500  ppl 38.47  (train_ce 3.545, val-CE +0.105)  bpb 1.176
+  step  7900/9156  ce 3.4227  |g| 0.34  anneal 1.00  lr 8.07e-04  2533 ms/step
+  step  7910/9156  ce 3.4684  |g| 0.40  anneal 1.00  lr 8.01e-04  2533 ms/step
+  step  7920/9156  ce 3.5041  |g| 0.47  anneal 1.00  lr 7.94e-04  2533 ms/step
+  step  7930/9156  ce 3.5039  |g| 0.57  anneal 1.00  lr 7.87e-04  2533 ms/step
+  step  7940/9156  ce 3.5541  |g| 0.42  anneal 1.00  lr 7.81e-04  2533 ms/step
+  step  7950/9156  ce 3.5061  |g| 0.34  anneal 1.00  lr 7.74e-04  2533 ms/step
+  step  7960/9156  ce 3.5220  |g| 0.34  anneal 1.00  lr 7.67e-04  2532 ms/step
+  step  7970/9156  ce 3.5895  |g| 0.33  anneal 1.00  lr 7.60e-04  2532 ms/step
+  step  7980/9156  ce 3.5596  |g| 0.28  anneal 1.00  lr 7.53e-04  2532 ms/step
+  step  7990/9156  ce 3.6106  |g| 0.45  anneal 1.00  lr 7.46e-04  2532 ms/step
+    >> val_loss 3.5831  ppl 35.99  (train_ce 3.497, val-CE +0.086)  bpb 1.154
+       best 갱신 3.5831 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  8000/9156  ce 3.4601  |g| 0.37  anneal 1.00  lr 7.39e-04  2533 ms/step
+  step  8010/9156  ce 3.5236  |g| 0.27  anneal 1.00  lr 7.32e-04  2533 ms/step
+  step  8020/9156  ce 3.5264  |g| 0.44  anneal 1.00  lr 7.25e-04  2533 ms/step
+  step  8030/9156  ce 3.4512  |g| 0.37  anneal 1.00  lr 7.18e-04  2533 ms/step
+  step  8040/9156  ce 3.5058  |g| 0.37  anneal 1.00  lr 7.11e-04  2532 ms/step
+  step  8050/9156  ce 3.5075  |g| 0.34  anneal 1.00  lr 7.03e-04  2532 ms/step
+  step  8060/9156  ce 3.5909  |g| 0.28  anneal 1.00  lr 6.96e-04  2532 ms/step
+  step  8070/9156  ce 3.5227  |g| 0.26  anneal 1.00  lr 6.89e-04  2532 ms/step
+  step  8080/9156  ce 3.5374  |g| 0.67  anneal 1.00  lr 6.81e-04  2532 ms/step
+  step  8090/9156  ce 3.5151  |g| 0.40  anneal 1.00  lr 6.74e-04  2532 ms/step
+    >> val_loss 3.5962  ppl 36.46  (train_ce 3.500, val-CE +0.096)  bpb 1.159
+  step  8100/9156  ce 3.5494  |g| 0.34  anneal 1.00  lr 6.66e-04  2533 ms/step
+  step  8110/9156  ce 3.5474  |g| 0.38  anneal 1.00  lr 6.59e-04  2532 ms/step
+  step  8120/9156  ce 3.5379  |g| 0.29  anneal 1.00  lr 6.51e-04  2532 ms/step
+  step  8130/9156  ce 3.5269  |g| 0.32  anneal 1.00  lr 6.43e-04  2532 ms/step
+  step  8140/9156  ce 3.4949  |g| 0.31  anneal 1.00  lr 6.36e-04  2532 ms/step
+  step  8150/9156  ce 3.4993  |g| 0.33  anneal 1.00  lr 6.28e-04  2532 ms/step
+  step  8160/9156  ce 3.5133  |g| 0.27  anneal 1.00  lr 6.20e-04  2532 ms/step
+  step  8170/9156  ce 3.4464  |g| 0.29  anneal 1.00  lr 6.13e-04  2532 ms/step
+  step  8180/9156  ce 3.4405  |g| 0.26  anneal 1.00  lr 6.05e-04  2532 ms/step
+  step  8190/9156  ce 3.4791  |g| 0.28  anneal 1.00  lr 5.97e-04  2532 ms/step
+    >> val_loss 3.6053  ppl 36.79  (train_ce 3.534, val-CE +0.071)  bpb 1.162
+  step  8200/9156  ce 3.5083  |g| 0.44  anneal 1.00  lr 5.89e-04  2532 ms/step
+  step  8210/9156  ce 3.4997  |g| 0.51  anneal 1.00  lr 5.82e-04  2532 ms/step
+  step  8220/9156  ce 3.5077  |g| 0.27  anneal 1.00  lr 5.74e-04  2532 ms/step
+  step  8230/9156  ce 3.4377  |g| 0.28  anneal 1.00  lr 5.66e-04  2532 ms/step
+  step  8240/9156  ce 3.4133  |g| 0.29  anneal 1.00  lr 5.58e-04  2532 ms/step
+  step  8250/9156  ce 3.4596  |g| 0.39  anneal 1.00  lr 5.50e-04  2532 ms/step
+  step  8260/9156  ce 3.4594  |g| 0.31  anneal 1.00  lr 5.43e-04  2532 ms/step
+  step  8270/9156  ce 3.5052  |g| 0.33  anneal 1.00  lr 5.35e-04  2532 ms/step
+  step  8280/9156  ce 3.4911  |g| 0.39  anneal 1.00  lr 5.27e-04  2532 ms/step
+  step  8290/9156  ce 3.4693  |g| 0.32  anneal 1.00  lr 5.19e-04  2532 ms/step
+    >> val_loss 3.5572  ppl 35.06  (train_ce 3.457, val-CE +0.100)  bpb 1.146
+       best 갱신 3.5572 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  8300/9156  ce 3.5393  |g| 0.41  anneal 1.00  lr 5.11e-04  2532 ms/step
+  step  8310/9156  ce 3.4899  |g| 0.35  anneal 1.00  lr 5.04e-04  2532 ms/step
+  step  8320/9156  ce 3.5662  |g| 0.28  anneal 1.00  lr 4.96e-04  2532 ms/step
+  step  8330/9156  ce 3.3795  |g| 0.29  anneal 1.00  lr 4.88e-04  2532 ms/step
+  step  8340/9156  ce 3.4854  |g| 0.35  anneal 1.00  lr 4.80e-04  2532 ms/step
+  step  8350/9156  ce 3.4161  |g| 0.40  anneal 1.00  lr 4.73e-04  2532 ms/step
+  step  8360/9156  ce 3.4844  |g| 0.25  anneal 1.00  lr 4.65e-04  2532 ms/step
+  step  8370/9156  ce 3.5040  |g| 0.29  anneal 1.00  lr 4.57e-04  2532 ms/step
+  step  8380/9156  ce 3.4804  |g| 0.35  anneal 1.00  lr 4.50e-04  2532 ms/step
+  step  8390/9156  ce 3.4767  |g| 0.41  anneal 1.00  lr 4.42e-04  2532 ms/step
+    >> val_loss 3.5619  ppl 35.23  (train_ce 3.472, val-CE +0.090)  bpb 1.148
+  step  8400/9156  ce 3.3906  |g| 0.31  anneal 1.00  lr 4.35e-04  2532 ms/step
+  step  8410/9156  ce 3.5228  |g| 0.35  anneal 1.00  lr 4.27e-04  2532 ms/step
+  step  8420/9156  ce 3.4768  |g| 0.28  anneal 1.00  lr 4.20e-04  2532 ms/step
+  step  8430/9156  ce 3.4314  |g| 0.27  anneal 1.00  lr 4.12e-04  2532 ms/step
+  step  8440/9156  ce 3.4473  |g| 0.27  anneal 1.00  lr 4.05e-04  2532 ms/step
+  step  8450/9156  ce 3.4368  |g| 0.50  anneal 1.00  lr 3.97e-04  2532 ms/step
+  step  8460/9156  ce 3.3918  |g| 0.35  anneal 1.00  lr 3.90e-04  2532 ms/step
+  step  8470/9156  ce 3.4219  |g| 0.27  anneal 1.00  lr 3.83e-04  2532 ms/step
+  step  8480/9156  ce 3.4809  |g| 0.34  anneal 1.00  lr 3.75e-04  2532 ms/step
+  step  8490/9156  ce 3.4357  |g| 0.27  anneal 1.00  lr 3.68e-04  2532 ms/step
+    >> val_loss 3.5569  ppl 35.05  (train_ce 3.475, val-CE +0.082)  bpb 1.146
+       best 갱신 3.5569 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  8500/9156  ce 3.4155  |g| 0.26  anneal 1.00  lr 3.61e-04  2532 ms/step
+  step  8510/9156  ce 3.4219  |g| 0.31  anneal 1.00  lr 3.54e-04  2532 ms/step
+  step  8520/9156  ce 3.3873  |g| 0.26  anneal 1.00  lr 3.47e-04  2532 ms/step
+  step  8530/9156  ce 3.4610  |g| 0.39  anneal 1.00  lr 3.40e-04  2532 ms/step
+  step  8540/9156  ce 3.4471  |g| 0.35  anneal 1.00  lr 3.33e-04  2532 ms/step
+  step  8550/9156  ce 3.3600  |g| 0.34  anneal 1.00  lr 3.27e-04  2532 ms/step
+  step  8560/9156  ce 3.4619  |g| 0.37  anneal 1.00  lr 3.20e-04  2532 ms/step
+  step  8570/9156  ce 3.4603  |g| 0.29  anneal 1.00  lr 3.13e-04  2532 ms/step
+  step  8580/9156  ce 3.4331  |g| 0.33  anneal 1.00  lr 3.07e-04  2532 ms/step
+  step  8590/9156  ce 3.4966  |g| 0.26  anneal 1.00  lr 3.00e-04  2532 ms/step
+    >> val_loss 3.5206  ppl 33.81  (train_ce 3.517, val-CE +0.004)  bpb 1.134
+       best 갱신 3.5206 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  8600/9156  ce 3.5009  |g| 0.25  anneal 1.00  lr 2.94e-04  2532 ms/step
+  step  8610/9156  ce 3.3654  |g| 0.35  anneal 1.00  lr 2.87e-04  2532 ms/step
+  step  8620/9156  ce 3.4128  |g| 0.38  anneal 1.00  lr 2.81e-04  2532 ms/step
+  step  8630/9156  ce 3.4545  |g| 0.42  anneal 1.00  lr 2.75e-04  2532 ms/step
+  step  8640/9156  ce 3.5334  |g| 0.31  anneal 1.00  lr 2.69e-04  2532 ms/step
+  step  8650/9156  ce 3.4196  |g| 0.31  anneal 1.00  lr 2.62e-04  2532 ms/step
+  step  8660/9156  ce 3.4024  |g| 0.31  anneal 1.00  lr 2.57e-04  2532 ms/step
+  step  8670/9156  ce 3.4286  |g| 0.26  anneal 1.00  lr 2.51e-04  2532 ms/step
+  step  8680/9156  ce 3.3408  |g| 0.31  anneal 1.00  lr 2.45e-04  2532 ms/step
+  step  8690/9156  ce 3.4465  |g| 0.25  anneal 1.00  lr 2.39e-04  2532 ms/step
+    >> val_loss 3.5466  ppl 34.69  (train_ce 3.414, val-CE +0.132)  bpb 1.143
+  step  8700/9156  ce 3.4347  |g| 0.37  anneal 1.00  lr 2.34e-04  2532 ms/step
+  step  8710/9156  ce 3.3863  |g| 0.31  anneal 1.00  lr 2.28e-04  2532 ms/step
+  step  8720/9156  ce 3.4657  |g| 0.38  anneal 1.00  lr 2.23e-04  2532 ms/step
+  step  8730/9156  ce 3.3670  |g| 0.31  anneal 1.00  lr 2.17e-04  2532 ms/step
+  step  8740/9156  ce 3.3963  |g| 0.24  anneal 1.00  lr 2.12e-04  2532 ms/step
+  step  8750/9156  ce 3.3869  |g| 0.27  anneal 1.00  lr 2.07e-04  2532 ms/step
+  step  8760/9156  ce 3.4164  |g| 0.28  anneal 1.00  lr 2.02e-04  2532 ms/step
+  step  8770/9156  ce 3.3747  |g| 0.29  anneal 1.00  lr 1.97e-04  2532 ms/step
+  step  8780/9156  ce 3.4286  |g| 0.32  anneal 1.00  lr 1.92e-04  2532 ms/step
+  step  8790/9156  ce 3.3739  |g| 0.54  anneal 1.00  lr 1.88e-04  2532 ms/step
+    >> val_loss 3.4553  ppl 31.67  (train_ce 3.351, val-CE +0.104)  bpb 1.113
+       best 갱신 3.4553 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+  step  8800/9156  ce 3.3898  |g| 0.30  anneal 1.00  lr 1.83e-04  2532 ms/step
+  step  8810/9156  ce 3.4159  |g| 0.31  anneal 1.00  lr 1.79e-04  2532 ms/step
+  step  8820/9156  ce 3.4134  |g| 0.33  anneal 1.00  lr 1.74e-04  2532 ms/step
+  step  8830/9156  ce 3.3780  |g| 0.33  anneal 1.00  lr 1.70e-04  2532 ms/step
+  step  8840/9156  ce 3.4194  |g| 0.35  anneal 1.00  lr 1.66e-04  2532 ms/step
+  step  8850/9156  ce 3.4485  |g| 0.26  anneal 1.00  lr 1.62e-04  2532 ms/step
+  step  8860/9156  ce 3.3674  |g| 0.28  anneal 1.00  lr 1.58e-04  2532 ms/step
+  step  8870/9156  ce 3.3893  |g| 0.27  anneal 1.00  lr 1.54e-04  2532 ms/step
+  step  8880/9156  ce 3.2910  |g| 0.39  anneal 1.00  lr 1.51e-04  2532 ms/step
+  step  8890/9156  ce 3.4414  |g| 0.32  anneal 1.00  lr 1.47e-04  2532 ms/step
+    >> val_loss 3.4734  ppl 32.25  (train_ce 3.396, val-CE +0.078)  bpb 1.119
+  step  8900/9156  ce 3.3558  |g| 0.26  anneal 1.00  lr 1.44e-04  2532 ms/step
+  step  8910/9156  ce 3.3559  |g| 0.32  anneal 1.00  lr 1.40e-04  2532 ms/step
+  step  8920/9156  ce 3.3814  |g| 0.29  anneal 1.00  lr 1.37e-04  2532 ms/step
+  step  8930/9156  ce 3.3278  |g| 0.26  anneal 1.00  lr 1.34e-04  2532 ms/step
+  step  8940/9156  ce 3.3626  |g| 0.32  anneal 1.00  lr 1.31e-04  2532 ms/step
+  step  8950/9156  ce 3.3824  |g| 0.26  anneal 1.00  lr 1.28e-04  2532 ms/step
+  step  8960/9156  ce 3.3390  |g| 0.30  anneal 1.00  lr 1.26e-04  2532 ms/step
+  step  8970/9156  ce 3.2820  |g| 0.34  anneal 1.00  lr 1.23e-04  2531 ms/step
+  step  8980/9156  ce 3.3772  |g| 0.31  anneal 1.00  lr 1.21e-04  2531 ms/step
+  step  8990/9156  ce 3.4054  |g| 0.23  anneal 1.00  lr 1.19e-04  2531 ms/step
+    >> val_loss 3.4953  ppl 32.96  (train_ce 3.312, val-CE +0.183)  bpb 1.126
+  step  9000/9156  ce 3.3565  |g| 0.33  anneal 1.00  lr 1.16e-04  2532 ms/step
+  step  9010/9156  ce 3.3781  |g| 0.36  anneal 1.00  lr 1.14e-04  2532 ms/step
+  step  9020/9156  ce 3.3264  |g| 0.33  anneal 1.00  lr 1.12e-04  2532 ms/step
+  step  9030/9156  ce 3.2474  |g| 0.31  anneal 1.00  lr 1.11e-04  2532 ms/step
+  step  9040/9156  ce 3.4067  |g| 0.28  anneal 1.00  lr 1.09e-04  2531 ms/step
+  step  9050/9156  ce 3.3330  |g| 0.31  anneal 1.00  lr 1.08e-04  2531 ms/step
+  step  9060/9156  ce 3.4398  |g| 0.31  anneal 1.00  lr 1.06e-04  2531 ms/step
+  step  9070/9156  ce 3.3669  |g| 0.30  anneal 1.00  lr 1.05e-04  2531 ms/step
+  step  9080/9156  ce 3.3373  |g| 0.25  anneal 1.00  lr 1.04e-04  2531 ms/step
+  step  9090/9156  ce 3.4179  |g| 0.29  anneal 1.00  lr 1.03e-04  2531 ms/step
+    >> val_loss 3.4641  ppl 31.95  (train_ce 3.394, val-CE +0.070)  bpb 1.116
+  step  9100/9156  ce 3.3497  |g| 0.28  anneal 1.00  lr 1.02e-04  2532 ms/step
+  step  9110/9156  ce 3.3703  |g| 0.25  anneal 1.00  lr 1.01e-04  2531 ms/step
+  step  9120/9156  ce 3.3710  |g| 0.25  anneal 1.00  lr 1.01e-04  2531 ms/step
+  step  9130/9156  ce 3.3696  |g| 0.28  anneal 1.00  lr 1.00e-04  2531 ms/step
+  step  9140/9156  ce 3.3426  |g| 0.38  anneal 1.00  lr 1.00e-04  2531 ms/step
+  step  9150/9156  ce 3.4333  |g| 0.32  anneal 1.00  lr 1.00e-04  2531 ms/step
+  step  9155/9156  ce 3.3097  |g| 0.31  anneal 1.00  lr 1.00e-04  2531 ms/step
+    >> val_loss 3.4353  ppl 31.04  (train_ce 3.310, val-CE +0.126)  bpb 1.107
+       best 갱신 3.4353 -> m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt
+
+[d12_cla2_r20_p300_e4] 최종 val_loss 3.4534  ppl 31.61  best 3.4353@9156  (81.2M, 386.4분, skip 0, VRAM 9.72GB(reserved)/8.72GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 9.72GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 386.5분  (2026-09-05 12:06:29)
+==============================================================================
+=================================================================
+READ IN THIS ORDER
+1. val minus train_ce FIRST, before any quality reading. e1 and e2 both
+   sat at +0.108. If this arm is much wider, that is overfitting and the
+   axis closes here regardless of the loss number.
+2. e4 minus e2 with paired_eval. Ruler is the dense series 0.0021.
+   e1 to e2 gave -0.1155. Diminishing returns are expected, closure is not.
+3. compare the per-token price: e1 to e2 cost 300M tokens for -0.1155.
+   Divide this arm the same way before calling it a win.
+4. do NOT compare with any 600M-pool run. Different pool, trap 2.
+=================================================================
