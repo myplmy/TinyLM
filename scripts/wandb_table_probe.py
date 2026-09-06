@@ -71,12 +71,10 @@ import tinylm                                   # noqa: E402  ★R40 — HF 캐�
 
 _ = tinylm
 
-META = ["n", "n_asked", "skipped", "seed", "pmi"]
-COLS_LONG = ["model", "task", "metric", "value"] + META
-COLS_WIDE = ["model", "task", "acc", "acc_norm", "gold_ce"] + META
-
-KEY_LONG = "bench/table"
-KEY_WIDE = "bench/table_wide"
+# ★★스키마 정본은 `bench_tsv.py` 다 — 여기서 다시 적지 않는다(R14 · 함정 18).
+#   2026-09-06 이전에는 이 파일과 `eval_bench_suite` 가 각자 목록을 들고 있었다.
+from bench_tsv import (COLS_LONG, COLS_WIDE, KEY_LONG,      # noqa: E402
+                       KEY_WIDE, META)
 
 TASKS = ["hellaswag", "arc_easy", "piqa"]
 METRICS = ["acc", "acc_norm", "gold_ce"]

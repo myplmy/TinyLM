@@ -114,6 +114,18 @@ def main():
                         "구분되지 않는다 — 그것이 P078 의 H1(용량설) vs H2(선택설)다")
     ap.add_argument("--data", default="ko-en")
     ap.add_argument("--tokens", default="300M")
+    # ★★2026-09-06 — **`--tokens` 가 두 가지를 동시에 정했다**(함정 28 다섯번째 얼굴).
+    #   (a) **val 캐시 크기** — held-out 규약은 `모델의 pool_tokens <= 이 값` 을 요구한다(기준표 §5.1).
+    #   (b) **체크포인트 파일명** — `{preset}_{data}_{tokens}_{tag}.pt` 의 가운데 칸.
+    #   표준 런은 `--tokens 300M --pool-tokens 600M` 이라 이름이 `..._300M_...` 인데
+    #   held-out 이려면 (a)가 **600M** 이어야 한다 — **둘이 충돌한다.**
+    #   🚫2026-09-06 에 이것으로 **`P016 Stage4` 와 `P062 Stage7 [2/2]` 가 둘 다 exit 2** 했다
+    #   (`paths.resolve_ckpt` 의 전역 검색은 **프리셋만** 넘고 tokens 는 못 넘는다).
+    #   ★그래서 두 역할을 갈랐다. 기본값 None = `--tokens` 와 같음 = **종전과 비트 동일**.
+    ap.add_argument("--ckpt-tokens", default=None, metavar="300M",
+                   help="★체크포인트 **파일명**의 토큰 칸(학습 당시의 `--tokens`). "
+                        "생략하면 `--tokens` 와 같다. 풀 600M 로 학습한 모델을 held-out 하려면 "
+                        "`--tokens 600M --ckpt-tokens 300M` 이 된다")
     ap.add_argument("--preset", default="m100")
     ap.add_argument("--seq", type=int, default=1024)
     ap.add_argument("--micro-bs", type=int, default=8)
@@ -187,6 +199,10 @@ def main():
     from tinylm.infer.generate import load_model
 
     dev = a.device or ("cuda" if torch.cuda.is_available() else "cpu")
+    _ckpt_tok = a.ckpt_tokens or a.tokens
+    if _ckpt_tok != a.tokens:
+        print(f"  ★체크포인트 이름의 토큰 칸 = {_ckpt_tok} (val 캐시는 {a.tokens}) — "
+              "held-out 규약과 파일명 규약을 갈라 쓴다")
     base = f"{a.preset}_{a.data}_{a.tokens}"
     n_tok = int(float(a.tokens.rstrip("MmBb")) * (1e9 if a.tokens[-1] in "Bb" else 1e6))
 
@@ -201,9 +217,13 @@ def main():
     for tag in a.models:
         # ★`TAG#2` 는 같은 체크포인트를 다른 설정으로 한 번 더 넣는 표기다
         real_tag = tag.split("#", 1)[0]
-        ck = paths.resolve_ckpt(a.preset, a.data, a.tokens, real_tag)
+        ck = paths.resolve_ckpt(a.preset, a.data, _ckpt_tok, real_tag)
         if not ck.exists():
             print(f"\n  [건너뜀] 체크포인트 없음: {ck.name}")
+            if _ckpt_tok == a.tokens:
+                print("     ★`--tokens` 는 val 캐시 크기이자 체크포인트 파일명이다. "
+                      "학습이 `--tokens 300M --pool-tokens 600M` 이었다면 "
+                      f"**`--ckpt-tokens 300M`** 을 함께 준다(지금은 {a.tokens}).")
             continue
         _eq = emb_map.get(tag, a.emb_quant)
         if tag in emb_map:

@@ -62,6 +62,10 @@ CALL = re.compile(r"^\s*python\s+(?:scripts\\runlog\.py[^\n]*?--\s+python\s+)?"
 # `--no-ckpt` 예산. 정본은 `lint_bat.NOCKPT_MAX_MV` 이고 여기서는 **읽기만** 한다.
 NOCKPT_MAX_MV = 294_912
 
+# ★판정 호출 검사의 면제: 체크포인트가 **하나도 없는 기계**(새 클론·정리 직후)에서는
+#   전부 빨간불이 된다. 영구 적색이면 게이트가 아니다(2026-09-06 §6.3 과 같은 이유).
+_CKPT_ANY = any((ROOT / 'runs' / 'ckpt').glob('*.pt'))
+
 # ★인쇄할 축과 **중립값**(= "이 축을 안 건드렸다" 는 값).
 #   중립값이 아닌데 명령이 침묵하면 '프리셋이 정함' 이라 적는다.
 AXES: list[tuple[str, str, object]] = [
@@ -287,6 +291,137 @@ def show(r: dict, strict_hits: list):
                         f"{tag}: 태그가 {field}={want} 를 주장하는데 유효값은 {have}")
 
 
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# ★★판정 호출 드라이런 (2026-09-06 신설) — R23 이 적어 둔 구멍
+# ─────────────────────────────────────────────────────────────────────────
+#
+#  R23 본문: *셋 중 어느 것도 플래그의 **규약**은 못 잡는다. `dryrun_batch` 는
+#  **학습** 호출만 읽는데, 죽은 것은 **판정** 호출이었다.*
+#
+#  2026-09-06 에 정확히 그 자리에서 두 번 죽었다:
+#
+#      [건너뜀] 체크포인트 없음: m100s8_ko-en_600M_d12_cla2_r20.pt
+#
+#  `paired_eval --tokens 600M` 의 `600M` 이 **val 캐시 크기**이자 **체크포인트 파일명**이라
+#  held-out 규약(pool_tokens <= X)과 파일명 규약이 충돌했다. `P016 Stage4`(0.1h)와
+#  `P062 Stage7 [2/2]`(1.2h 학습 뒤의 판정)이 둘 다 exit 2 로 끝나 **판정이 비었다.**
+#
+#  🚫새 게이트를 만들지 않았다 — **있는 게이트의 범위를 넓혔다**(2026-09-06 §6.2 교훈).
+#  ⚠️면제 둘을 함께 넣었다:
+#    · `runs/ckpt/` 가 비어 있으면 통째로 건너뛴다(새 클론에서 전부 빨간불이 된다)
+#    · `--live-only` 가 이미 `-done` 을 뺀다 — 끝난 배치는 체크포인트가 정리됐을 수 있다
+
+
+_TRAINED_TAGS = None
+
+
+def trained_tags():
+    # ★면제용: **어떤 배치가 `--tag X` 로 학습하는가.** 큐의 앞 배치가 만들 태그를
+    #   뒤 배치가 판정하는 것은 결함이 아니라 **선결**이다(2026-09-06 §6.2: 범위를
+    #   넓히면 면제를 함께 넣는다). 🚫'아직 없다' 와 '영영 없다' 를 가른다.
+    global _TRAINED_TAGS
+    if _TRAINED_TAGS is None:
+        out = {}
+        pats = list(ROOT.glob('run_*.bat')) + list((ROOT / 'scripts' / 'batch').glob('*.bat'))
+        for f in pats:
+            try:
+                txt = f.read_text(encoding='utf-8', errors='replace')
+            except OSError:
+                continue
+            for m in CALL.finditer(txt):
+                if Path(m.group(1).replace(chr(92), '/')).name != 'run100m.py':
+                    continue
+                for t in re.findall(r'--tag\s+(\S+)', m.group(2)):
+                    out.setdefault(t, f.name)
+        _TRAINED_TAGS = out
+    return _TRAINED_TAGS
+
+def _preset_parent():
+    mod = presets()
+    return dict(getattr(mod, "PRESET_PARENT", {}) or {}) if mod else {}
+
+
+def _resolve_ckpt_names(preset, data, tok, tag):
+    # `paths.resolve_ckpt` 와 **같은 순서**로 후보를 만든다(함정 18: 한 곳에서만 정의).
+    ck = ROOT / "runs" / "ckpt"
+    tried = []
+    for pr in [preset, _preset_parent().get(preset)]:
+        if not pr:
+            continue
+        cand = ck / f"{pr}_{data}_{tok}_{tag}.pt"
+        tried.append(cand.name)
+        if cand.exists():
+            return cand.name, tried
+    hits = sorted(ck.glob(f"*_{data}_{tok}_{tag}.pt"))
+    if len(hits) == 1:
+        return hits[0].name, tried
+    if len(hits) > 1:
+        return None, tried + [f"(전역 검색 {len(hits)}건 — 사람이 정한다)"]
+    return None, tried
+
+
+def _judge_val(rest, flag, default=None):
+    m = re.search(re.escape(flag) + r"\s+([^\s-][\S]*)", rest)
+    return m.group(1) if m else default
+
+
+def judge_calls(text):
+    # `--models` 를 받는 비학습 호출. 🚫도구 이름 목록을 손으로 적지 않는다.
+    out = []
+    for m in CALL.finditer(text):
+        script, rest = m.group(1), m.group(2)
+        name = Path(script.replace(chr(92), "/")).name
+        if name == "run100m.py" or "--models" not in rest:
+            continue
+        out.append((name, rest))
+    return out
+
+
+def show_judge(name, rest, strict_hits):
+    # 이 판정 호출이 **오늘 이 기계에서** 체크포인트를 찾는가.
+    body = re.sub(r'"[^"]*"', ' ', rest)
+    preset = _judge_val(body, '--preset', 'm100')
+    data = _judge_val(body, '--data') or _judge_val(body, '--data-default', 'ko-en')
+    tok = _judge_val(body, '--tokens', '300M')
+    ctok = _judge_val(body, '--ckpt-tokens') or tok
+    mm = re.search(r'--models\s+(.*)$', body)
+    tags = []
+    if mm:
+        for t in mm.group(1).split():
+            if t.startswith('-'):
+                break
+            tags.append(t.split('#', 1)[0].split('=', 1)[-1])
+    extra = (f' ckpt-tokens={ctok}' if ctok != tok else '')
+    print(f'    {name}   preset={preset} data={data} tokens={tok}{extra}   모델 {len(tags)}개')
+    bad = []
+    for t in tags:
+        hit, tried = _resolve_ckpt_names(preset, data, ctok, t)
+        if hit is None:
+            bad.append((t, tried))
+    if not tags:
+        print('      ⚠️`--models` 뒤에서 태그를 못 읽었다 — 사람이 본다')
+        return
+    if not bad:
+        print('      ✅전부 해석된다')
+        return
+    made = trained_tags()
+    hard = [(t, tr) for t, tr in bad if t not in made]
+    soon = [(t, tr) for t, tr in bad if t in made]
+    for t, _tr in soon:
+        print(f'      ⏳{t} — 아직 없다. **{made[t]} 가 만든다**(선결). 큐 순서로 보장한다')
+    for t, tried in hard:
+        print(f'      🚫**{t}** — 해석 실패. 시도: ' + (', '.join(tried) or '(없음)'))
+        strict_hits.append(f'{name}: 체크포인트 미해석 {t} (tokens={ctok})')
+    for t, _tr in hard:
+        alt = sorted(p.name for p in (ROOT / 'runs' / 'ckpt').glob(f'*_{data}_*_{t}.pt'))
+        if alt:
+            print(f'      ★같은 태그가 **다른 토큰 칸**에 있다: ' + ', '.join(alt[:3]))
+            print('        -> `--ckpt-tokens <그 칸>` 을 준다. '
+                  '`--tokens` 는 val 캐시, `--ckpt-tokens` 는 파일명이다')
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="배치 드라이런 — 유효 실험 조건 인쇄")
     ap.add_argument("bats", nargs="*", help="비우면 최상위 run_*.bat 전부")
@@ -318,6 +453,7 @@ def main() -> int:
     takes = flag_table()
     strict_hits: list[str] = []
     n_run = 0
+    n_judge = 0
     for f in files:
         p = f if f.exists() else ROOT / f.name
         if not p.exists():
@@ -328,17 +464,25 @@ def main() -> int:
                 ((m.group(1), m.group(2)) for m in CALL.finditer(text))
                 if Path(t.replace("\\", "/")).name == "run100m.py"
                 and re.match(r"\s*train\b", rest)]
-        if not runs:
+        judges = judge_calls(text)
+        if not runs and not judges:
             continue
         print("\n" + "=" * 96)
-        print(f"  {p.name}   학습 호출 {len(runs)}개")
+        print(f"  {p.name}   학습 호출 {len(runs)}개 · 판정 호출 {len(judges)}개")
         print("=" * 96)
         for _t, rest in runs:
             n_run += 1
             show(analyse(rest, takes), strict_hits)
+        if judges and _CKPT_ANY:
+            print('  ── 판정 호출 — 체크포인트가 **오늘 이 기계에서** 해석되는가')
+            for jname, jrest in judges:
+                n_judge += 1
+                show_judge(jname, jrest, strict_hits)
+        elif judges:
+            print('  ── 판정 호출 — 🚫`runs/ckpt/` 가 비어 있어 건너뛴다')
 
     print("\n" + "=" * 96)
-    print(f"  학습 호출 {n_run}개를 읽었다.")
+    print(f"  학습 호출 {n_run}개 · 판정 호출 {n_judge}개를 읽었다.")
     if strict_hits:
         print(f"  🚫★지적 {len(strict_hits)}건")
         for h in strict_hits:
@@ -349,8 +493,8 @@ def main() -> int:
     print("  ⚠️`trainer.py` 오버라이드 다섯 줄만 반영한다 — 학습을 흉내내지 않는다.")
     print("=" * 96)
     # ★계측 0 에 exit 0 은 금지(R19). 배치를 지정했는데 학습 호출이 0이면 실패다.
-    if a.bats and n_run == 0:
-        print("  🚫지정한 배치에서 학습 호출을 하나도 못 찾았다.")
+    if a.bats and n_run == 0 and n_judge == 0:
+        print("  🚫지정한 배치에서 학습 호출도 판정 호출도 못 찾았다.")
         return 2
     return 1 if (a.strict and strict_hits) else 0
 

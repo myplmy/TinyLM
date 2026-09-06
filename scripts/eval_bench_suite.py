@@ -749,6 +749,7 @@ def _push_wandb(summary, a):
         return
     sys.path.insert(0, str(ROOT / "scripts"))
     from wandb_sync import read_key
+    import bench_tsv                                # ★정본 TSV(제안서 §5.2)
     wandb.login(key=read_key())                    # ★키는 여기서만 쓰인다
 
     if a.wandb_standalone:                         # 종전 형태(요청 시에만)
@@ -794,14 +795,31 @@ def _push_wandb(summary, a):
             flat[f"bench/{task}/seed"] = a.seed
             flat[f"bench/{task}/pmi"] = not a.no_pmi
         r.summary.update(flat)
+        # ★★표 — 정본 TSV 에 upsert 하고 **그 모델의 누적 전량**을 wide 로 다시 그린다.
+        #   🚫스칼라(위 `flat`)는 덮어쓰고 표는 누적이다 — 갱신 규약이 다르다(제안서 §3.2).
+        #   ★wide 인 이유: W&B 의 `${field:...}` 셀렉터가 **열**만 고를 수 있다.
+        #     long 에서는 `params` 셀렉터가 화면에서 안 먹었다(사용자 판정 §4.2.3).
+        long_rows = []
+        for task, rec in tasks.items():
+            long_rows += bench_tsv.rows_from_rec(tag, task, rec, a.n, a.seed,
+                                                 not a.no_pmi)
+        upd, ins = bench_tsv.upsert(long_rows)
+        wide = bench_tsv.rows_for(tag, wide=True)
+        r.log({bench_tsv.KEY_WIDE: wandb.Table(columns=bench_tsv.COLS_WIDE,
+                                               data=wide)})
         r.finish()
         pushed += 1
-        print(f"  ✅ {rid}  ({len(tasks)}과제 · summary 키 {len(flat)}개)")
+        print(f"  ✅ {rid}  ({len(tasks)}과제 · summary 키 {len(flat)}개 · "
+              f"표 {len(wide)}행 [정본 갱신 {upd} 삽입 {ins}])")
 
     print("")
     print("  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고")
     print(f"     프로젝트도 같은 `{a.wandb_project}` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.")
     print(f"     키는 `bench/<과제>/<지표>` 다. 올림 {pushed}개 · 건너뜀 {skipped}개.")
+    print(f"  ★표 키는 `{bench_tsv.KEY_WIDE}`(wide) 이고 정본은 "
+          f"`{bench_tsv.TSV.relative_to(ROOT)}` 다 — 표는 매번 **전량 재구성**한다.")
+    print("     Vega y축은 `${field:y_metric}` 하나로 acc/acc_norm/gold_ce 를 바꾼다"
+          "(제안서 §4.2.3).")
     if skipped:
         print("  ⚠️★건너뛴 것은 **짧은 프로브이거나 학습 json 이 없는** 태그다 —")
         print("     250스텝 데이터를 전체 런 옆에 두지 않는다(2026-08-23 사용자 지시).")
