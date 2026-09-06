@@ -62,6 +62,9 @@ SPECS = [
     #   BoolQ 33.1 · WiC 34.7 로 **우연(50) 아래**다. 39B 가 못 하는 것을 81M 에 물리지 않는다.
     ("kobest_copa",   "skt/kobest_v1",                "copa",          "test",        1000, "★한국어 2지선다 인과"),
     ("kobest_hellaswag", "skt/kobest_v1",             "hellaswag",     "test",         500, "★한국어 4지선다 문장완성"),
+    # ★★2026-09-06 — 우리 Stage1 held-out. 🚫**HF 가 아니라 로컬 파일**이다(SPECIAL 로 간다).
+    #   v2.7 에서 D6(정답이 둘)이 0 이 되어 처음 채점에 쓸 수 있게 됐다.
+    ("stage1_heldout", "(local)",                     None,            "(local)",      300, "★한국어 4지선다 관계추론(자체)"),
     ("boolq",         "google/boolq",                 None,            "validation",  3270, "예/아니오. ⚠️라벨 불균형"),
     ("lambada",       "EleutherAI/lambada_openai",    "en",            "test",        5153, "★마지막 단어 예측"),
     ("mmlu",          "cais/mmlu",                    "all",           "test",       14042, "4지선다 57과목"),
@@ -166,7 +169,38 @@ def _fetch_bfcl(split):
     return rows
 
 
-SPECIAL.update(piqa=_fetch_piqa, mmlu_redux=_fetch_mmlu_redux, bfcl_v3=_fetch_bfcl)
+def _fetch_stage1_heldout(split):
+    """★로컬 held-out 을 **가장 최신 판에서** 읽어 온다. HF 를 안 탄다.
+
+    🚫★**결함이 있는 판은 내보내지 않는다.** `check_heldout_defects` 의 **D1**(오답이 정답과
+    같아짐)과 **D6**(정답이 둘)은 **정확한 검사**이고 둘 중 하나라도 0 이 아니면
+    그 판으로 채점한 점수는 **뜻이 없다**. 그래서 여기서 막는다 —
+    ⚠️게이트를 사람이 따로 돌기를 기대하지 않는다(함정 38: 인쇄와 판정이 갈라진다).
+
+    ★**어느 판을 썼는지 반드시 인쇄한다.** 판이 바뀌면 점수가 바뀌는데 태그에는 안 남는다.
+    """
+    import sys as _sys
+    _sys.path.insert(0, str(ROOT / "scripts"))
+    from check_heldout_defects import BASE, load, scan, d6_two_answers   # noqa: PLC0415
+
+    cands = sorted(p for p in BASE.glob("held-out_v2.*") if p.is_dir())
+    if not cands:
+        raise RuntimeError(f"{BASE} 아래에 held-out_v2.* 폴더가 없다")
+    folder = cands[-1]
+    _, recs = load(folder)
+    d1 = scan(folder)[0] or []
+    d6 = d6_two_answers(recs)
+    print(f"  ★정본 판 = {folder.name}  ·  문항 {len(recs)}개  ·  D1 {len(d1)}건 · D6 {len(d6)}건")
+    if d1 or d6:
+        raise RuntimeError(
+            f"🚫{folder.name} 은 D1 {len(d1)}건 · D6 {len(d6)}건이다 — "
+            f"정답이 없거나 둘인 문항이 있는 판으로는 채점하지 않는다. "
+            f"`python scripts/check_heldout_defects.py` 로 확인할 것")
+    return recs
+
+
+SPECIAL.update(piqa=_fetch_piqa, mmlu_redux=_fetch_mmlu_redux, bfcl_v3=_fetch_bfcl,
+               stage1_heldout=_fetch_stage1_heldout)
 
 
 def fetch(name, hid, cfg, split):

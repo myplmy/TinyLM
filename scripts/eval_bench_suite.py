@@ -78,6 +78,9 @@ TASKS = {
     # ★★2026-09-05 — KoBEST. 논문 지표는 **F1** 이지만 🚫우리 지표에 그 이름을 쓰지 않는다(규약 2)
     "kobest_copa":    ("mc",       0.50,  "F1(공식)",          "★한국어 2지선다 인과"),
     "kobest_hellaswag": ("mc",     0.25,  "F1(공식)",          "★한국어 4지선다 문장완성"),
+    # ★★2026-09-06 — 우리가 만든 한국어 held-out. v2.7 에서 D6(정답이 둘)이 0 이 되어 열렸다.
+    #   ⚠️**공식 metric 이 없다** — 외부 벤치가 아니라 우리 문항이다. 우연 25.0%.
+    "stage1_heldout": ("mc",          0.25,  "(우리 것)",          "★한국어 4지선다 관계추론(자체)"),
     "arc_challenge":  ("mc",       0.25,  "acc / acc_norm",   "4지선다 과학(난)"),
     # ★★0a-2 조회 정정(arXiv:1905.10044 초록) — **majority-baseline 62%**.
     #   50% 를 우연으로 쓰면 **퇴화(항상 yes)를 "우연 초과" 로 오독**한다.
@@ -236,10 +239,24 @@ def _ad_kobest_hellaswag(r):
             "gold": int(r["label"])}
 
 
+def _ad_stage1_heldout(r):
+    """★우리 Stage1 held-out — `prompt` + `candidates` 4 + `correct_index`(0-기반).
+
+    🚫**외부 벤치가 아니다.** 우리가 만든 문항이라 결함이 우리 책임이고, 그래서
+    `check_heldout_defects` 가 **D1·D6 0건** 인 판만 `fetch_bench_data` 가 내보낸다.
+    ⚠️**후보가 전부 *"…판단이다"* 꼴로 끝난다** — 길이·문형이 균질해서
+    길이정규 acc 와 우도 acc 가 거의 같게 나올 것이다. 그 자체가 설계 의도다(v2.3 이 길이 편향을 없앴다).
+    """
+    return {"ctx": r["prompt"],
+            "choices": [" " + c for c in r["candidates"]],
+            "gold": int(r["correct_index"])}
+
+
 ADAPTERS = {
     "hellaswag": _ad_hellaswag, "piqa": _ad_piqa, "winogrande": _ad_winogrande,
     "arc_easy": _ad_arc, "arc_easy_full": _ad_arc, "arc_challenge": _ad_arc, "boolq": _ad_boolq,
     "kobest_copa": _ad_kobest_copa, "kobest_hellaswag": _ad_kobest_hellaswag,
+    "stage1_heldout": _ad_stage1_heldout,
     "mmlu": _ad_mmlu, "mmlu_redux": _ad_mmlu_redux, "musr": _ad_musr,
     "lambada": _ad_lambada, "gsm8k": _ad_gsm8k, "ifeval": _ad_ifeval,
     "humaneval": _ad_humaneval, "humaneval_plus": _ad_humaneval, "bfcl_v3": _ad_bfcl,

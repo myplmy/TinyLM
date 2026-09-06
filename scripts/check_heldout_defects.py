@@ -256,16 +256,25 @@ def main() -> int:
     print("  check_heldout_defects — 구조가 아니라 **뜻**을 본다 (2026-09-03 신설)")
     print("=" * 96)
 
+    # ★★2026-09-06 — **판정은 최신본 하나로 한다**(사용자 지시 (5) 처리 중 발견).
+    #   🚫종전은 `held-out_v2.*` **전부**를 합산해서 exit code 를 냈다. 옛 판(v2.3~v2.6)은
+    #   **우리가 안 고치는 기록**이라 D6 이 영원히 남고, 게이트가 **영구히 빨갛다.**
+    #   ★영구히 빨간 게이트는 게이트가 아니다 — 아무도 안 본다(알람 피로).
+    #   → **최신 판만 exit code 에 넣고 옛 판은 인쇄만** 한다.
+    latest = dirs[-1].name if dirs else None
     total_d1 = 0
     total_d6 = 0
     recs_count = {}
     for folder in dirs:
+        _judge = (folder.name == latest)
         d1, d2, d3 = scan(folder)
         if d1 is None:
             continue
         recs_count[folder.name] = load(folder)[1]
-        total_d1 += len(d1)
-        print(f"{chr(10)}=== {folder.name}")
+        if _judge:
+            total_d1 += len(d1)
+        print(f"{chr(10)}=== {folder.name}"
+              + ("   ★**정본 — 이 판만 종료코드에 들어간다**" if _judge else "   (참고·판정 제외)"))
         print(f"  D1 오답이 정답과 같아짐 : {'🚫 %d건' % len(d1) if d1 else '✅ 0건'}")
         for rid, k, c in d1:
             print(f"       {rid}  후보[{k}]  {c[:64]}")
@@ -298,7 +307,8 @@ def main() -> int:
             d6 = d6_two_answers(_rs)
             print(f"  D6 정답이 둘일 수 있다   : {'🚫 %d건' % len(d6) if d6 else '✅ 0건'}"
                   + ("  " + " · ".join(f"{i}({','.join(b)})" for i, b in d6[:6]) if d6 else ""))
-            total_d6 += len(d6)
+            if _judge:
+                total_d6 += len(d6)
             d7 = d7_dup_sentence(_rs)
             print(f"  D7 후보 안 문장 중복     : {'⚠️ %d건' % len(d7) if d7 else '✅ 0건'}"
                   + (f"  {', '.join(d7[:6])} …" if len(d7) > 6 else
@@ -311,6 +321,8 @@ def main() -> int:
     print("  ★D4·D5 는 **결함이 아니라 계측**이다 — |z| > 3 이면 그때 결함으로 센다(결과 068 규약).")
     print("  ★★D5 는 D4 의 **두 번째 얼굴**이다 — 어미를 긍정으로 바꿔도 *'약한 쪽 고르기'* 는 남는다.")
     print("  🚫★**D6 은 정확한 검사다 — 0건이어야 한다.** 정답이 둘이면 그 문항은 채점할 수 없다.")
+    print(f"  ★★**종료코드는 최신본 `{latest}` 만 본다** — 옛 판은 고치지 않는 기록이라"
+          " 합산하면 게이트가 **영구히 빨갛다**(2026-09-06 개정).")
     return 1 if (total_d1 or total_d6) else 0
 
 

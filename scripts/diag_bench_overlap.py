@@ -58,14 +58,20 @@ DIRTY_MIN = 10.0       # ★이 위면 그 과제를 쓰지 않는다
 # ★참고 눈금(실측): KorQuAD **94.8%**(결과 060) · SQuAD train **8.7%**(결과 053)
 REF = {"KorQuAD": 94.8, "SQuAD-train": 8.7}
 
-TEXT_KEYS = ("question", "ctx", "context", "premise", "goal", "sentence", "paragraph")
+# ★2026-09-06 — `prompt` 추가. 우리 Stage1 held-out 이 그 키를 쓴다.
+#   🚫없었으면 **검사 문항 0개**로 exit 1 이 났다(다행히 조용하지는 않다).
+TEXT_KEYS = ("question", "ctx", "context", "premise", "goal", "sentence",
+             "paragraph", "prompt")
 
 
 def item_text(r):
     """행에서 **문항 본문**을 뽑는다. 후보를 안 넣는다 — 후보는 대개 짧다."""
     for k in TEXT_KEYS:
         v = r.get(k)
-        if isinstance(v, str) and len(v) > 20:
+        # ★2026-09-06 — 문턱 20 -> 12 자. 우리 held-out 프롬프트가 짧아
+        #   **154/300 이 본문 없음으로 빠졌다**. 창 크기(`--k`)가 이미 진짜 게이트이므로
+        #   여기서 더 자르면 **검사 범위만 좁아진다**(느슨해지지 않는다).
+        if isinstance(v, str) and len(v) > 12:
             return v
     # ARC 는 question 이 dict 안에 있는 판본이 있다
     q = r.get("question")

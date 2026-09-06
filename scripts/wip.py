@@ -53,19 +53,38 @@ def find_ledger():
     return cands[-1]
 
 
+# ★★2026-09-06 — **이스케이프된 파이프(`\|`)는 칸 구분자가 아니다.**
+#   🚫사고: 2026-09-05 에 노트의 리터럴 파이프가 행을 깨서 `note.replace("|", "\\|")` 를 넣었는데,
+#   **파서는 여전히 raw `|` 를 셌다** → 이스케이프한 행이 `count("|") == 6` 에 걸려
+#   **상황판에서 통째로 사라졌다**(2번 행, `--list` 가 8개를 7개로 셌다).
+#   ★**렌더링을 고치고 파서를 깬 것**이다 — 한 개념(칸 구분자)을 두 곳에서 다르게 정의했다(함정 18).
+#   → 이제 **`_split_cells` 하나가 규약을 소유**하고 `rows`·`cells` 가 둘 다 그것을 쓴다.
+def _split_cells(ln):
+    """`\|`(이스케이프)를 칸 구분자로 세지 않고 자른다."""
+    out, buf, i = [], [], 0
+    while i < len(ln):
+        ch = ln[i]
+        if ch == chr(92) and i + 1 < len(ln) and ln[i + 1] == "|":
+            buf.append(chr(92)); buf.append("|"); i += 2; continue
+        if ch == "|":
+            out.append("".join(buf)); buf = []; i += 1; continue
+        buf.append(ch); i += 1
+    out.append("".join(buf))
+    return out
+
+
 def rows(text):
     """상황판 행만 뽑는다: `| **N** | 지시 | 상태 | 작업 내용 | 산출물 |`"""
     out = []
     for i, ln in enumerate(text.split(NL)):
         m = re.match(r"^\|\s*\*\*(\d+)\*\*\s*\|", ln)
-        if m and ln.count("|") == 6:
+        if m and len(_split_cells(ln)) == 7:          # 칸 5개 + 양끝 빈칸 2개
             out.append((i, m.group(1), ln))
     return out
 
 
 def cells(ln):
-    c = ln.split("|")
-    return c                      # ['', ' **N** ', ' 지시 ', ' 상태 ', ' 작업내용 ', ' 산출물 ', '']
+    return _split_cells(ln)       # ['', ' **N** ', ' 지시 ', ' 상태 ', ' 작업내용 ', ' 산출물 ', '']
 
 
 def set_state(path, num, status, note, artifact=None):
