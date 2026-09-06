@@ -234,7 +234,26 @@ def main():
                          "한 파일에 모이게 하려는 것 (TL_STAMP 로 완전 고정 가능)")
     ap.add_argument("--note", nargs="+", default=None,
                     help="명령 대신 텍스트만 기록한다(배치의 단계 제목·판정 안내용). 여러 개면 여러 줄")
-    a = ap.parse_args(own)
+    # ★★2026-09-06 — **`--` 를 빠뜨리면 argparse 가 로그를 열기도 전에 죽었다.**
+    #   `run_smoke_check.bat` 이 이랬다:
+    #       python scripts\runlog.py --name smoke python scripts\summarize_smoke.py
+    #   argparse 는 뒤 두 토큰을 모르는 인자로 보고 `error: unrecognized arguments` 를
+    #   **stderr 로** 찍고 exit 2 한다. 🚫**그 시점에는 로그 파일이 아직 없다** —
+    #   그래서 실패가 **콘솔에만 남고 로그에는 한 줄도 안 남았다.** 사용자가 보고한
+    #   *"화면과 로그가 다르다"* 의 절반이 이것이고, 그 결과
+    #   **`summarize_smoke.py` 가 신설(2026-09-03) 이래 한 번도 안 돌았다.**
+    #   → `parse_known_args` 로 받아서 **우리가** 진단한다. 메시지가 원인을 말한다.
+    a, leftover = ap.parse_known_args(own)
+    if leftover:
+        print("[runlog] ★거절: `--` 를 빠뜨린 것 같습니다. 남은 인자: %s"
+              % " ".join(leftover), file=sys.stderr)
+        print("[runlog]   실행할 명령은 반드시 `--` **뒤에** 옵니다:", file=sys.stderr)
+        print("[runlog]     python scripts/runlog.py --name X -- %s"
+              % " ".join(leftover), file=sys.stderr)
+        print("[runlog]   ⚠️이 실패는 로그 파일이 열리기 전이라 **로그에 안 남습니다** — "
+              "콘솔에서만 보입니다. `lint_bat` 규칙 26 이 배치 작성 시점에 잡습니다.",
+              file=sys.stderr)
+        return 2
 
     if not cmd and not a.note:
         print("[runlog] 실행할 명령이 없습니다. `--` 뒤에 명령을 주거나 --note 를 쓰세요.",

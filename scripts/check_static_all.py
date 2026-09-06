@@ -124,6 +124,12 @@ CHECKS = [
      "★설정이 파생하는 집합 ↔ 모델이 만드는 개수 (P074 네 팔 전멸, 로그 059)"),
     ("check_smoke_coverage", ["check_smoke_coverage.py"],
      "★배치가 쓰는 축을 스모크가 실제로 돌리는가 — **새 기능이 아니라 새 조합**에서 죽는다"),
+    ("check_smoke_diag",    ["check_smoke_diag.py"],
+     "★★스모크 **진단런**의 계약(`smoke_diag_contract.tsv`) ↔ 배치 ↔ 로그 — "
+     "2026-09-05 에 `diag_sparse34_pack` 이 exit 1 인데 *'총 에러 0건'* 이 찍혔다. "
+     "`check_smoke` 는 필드만 보고 종료코드를 안 보며, 종료코드를 보라고 만든 "
+     "`summarize_smoke` 는 배치가 `--` 를 빠뜨려 신설 이래 한 번도 안 돌았다. "
+     "★이 게이트가 *'그 팔이 무엇을 인쇄했는가'* 를 본다(로그가 코드보다 낡으면 경고)"),
     ("plot_results --verify", ["plot_results.py", "--verify"],
      "★그림 도구의 수치 표 ↔ 정본(json) 대조 (자백 A7 — 사본이 정본을 이중화한다)"),
     ("check_rules_sync",    ["check_rules_sync.py"],

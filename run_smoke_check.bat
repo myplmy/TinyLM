@@ -57,13 +57,28 @@ REM   exited 1 and the last line still said 'Long runs are safe to start'.
 REM   summarize_smoke.py reads this log back and joins BOTH verdicts into one.
 REM   PYTHONIOENCODING is set because the summary prints non-ASCII marks and the
 REM   default cp949 console kills python on them.
+REM ***2026-09-06: the `--` was MISSING on the line below and runlog.py therefore
+REM   refused the whole invocation with `unrecognized arguments`. summarize_smoke.py
+REM   was added on 2026-09-03 to close trap 38 and it HAD NEVER RUN ONCE - two smoke
+REM   sessions passed with it dead. On 2026-09-05 diag_sparse34_pack.py exited 1 and
+REM   the last line still said 'Long runs are safe to start', which is the exact
+REM   failure summarize_smoke exists to prevent.
+REM   argparse writes its error to stderr and dies BEFORE opening the log file, so
+REM   the failure was visible on the console and absent from the log - that is the
+REM   'console differs from log' the user reported. lint_bat rule 25 now catches a
+REM   runlog invocation that carries a command without the `--` separator.
 set PYTHONIOENCODING=utf-8
 echo.
-python scripts\runlog.py --name smoke python scripts\summarize_smoke.py
-if errorlevel 1 echo [WARN] an arm exited non-zero - read section A above
+python scripts\runlog.py --name smoke -- python scripts\summarize_smoke.py
+if errorlevel 1 echo [WARN] summarize_smoke reported a failing arm - read section A above
 
+REM ***2026-09-06: the old trailing block restated 'Long runs are safe to start'
+REM   UNCONDITIONALLY, so it contradicted summarize_smoke on every bad run. The
+REM   summary already joins both verdicts (exit codes AND the field contract) into
+REM   one line, so restating it here can only ever disagree with it. Point at it
+REM   instead of repeating it - one concept, one definition (R14).
 echo.
-python scripts\runlog.py --name smoke --note "=================================================================" "VERDICT: read the final total-error-count line of the contract check." "  zero     -^> the contract holds. Long runs are safe to start." "  not zero -^> fix the missing field FIRST. A long run that cannot be" "              written up is a long run thrown away." "  The [VERIFY] banner above it is a section title, not the answer." "=================================================================" "done."
+python scripts\runlog.py --name smoke --note "=================================================================" "VERDICT: the single answer is the last line of the SUMMARY above," "  which joins BOTH checks - every arm's exit code AND the field" "  contract. Neither one alone is the verdict." "  Section A lists arms that exited non-zero. Section B lists arms" "  that exited 0 with an error mark in their output - read those by" "  hand, exit codes cannot see them." "  The [VERIFY] banner further up is a section title, not the answer." "=================================================================" "done."
 REM 2026-08-13 - clear TL_OUTDIR before returning. setlocal SHOULD scope it, but a
 REM   queue run leaked it to three later batches and their experiment logs went to
 REM   smoketest_logs. The exact leak path was never pinned down, so clear it on

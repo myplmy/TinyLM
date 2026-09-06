@@ -37,6 +37,7 @@
 from __future__ import annotations
 import argparse
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -59,7 +60,18 @@ def banner(s, ch="="):
 
 
 def _arch_of(tag):
-    return "dense" if tag.startswith(("p6d", "dense", "p12d")) else "tied"
+    """태그 앞머리로 arch 를 추측한다. ⚠️★**추측이고, 우리 승자에서 틀린다.**
+
+    🚫`d12_cla2_r20_s34` 는 `--arch dense` 로 학습됐는데 앞머리가 `p6d`·`dense`·`p12d`
+    어느 것도 아니라 **"tied" 로 읽힌다.** 2026-08 이후 dense 몸통 태그가 `d<층수>_...`
+    형태로 바뀌었는데 이 함수가 안 따라왔다(함정 18 계열 — 이름 규약이 두 곳에 산다).
+    ★그래서 `--arch` 를 명시할 수 있게 했다. 명시하면 이 추측을 안 쓴다.
+    """
+    if tag.startswith(("p6d", "dense", "p12d")):
+        return "dense"
+    if re.match(r"^d\d+_", tag):          # d8_ · d12_ · d16_ = 2026-08 이후 dense 규약
+        return "dense"
+    return "tied"
 
 
 def masks_for(w, group, thr_ratio):
@@ -97,6 +109,8 @@ def recon_err(aw, sign, mask):
 def main():
     ap = argparse.ArgumentParser(description="3:4 희소 삼진 구현·회계 감사")
     ap.add_argument("--models", nargs="*")
+    ap.add_argument("--arch", default=None, choices=["dense", "tied"],
+                    help="★태그 추측을 덮어쓴다. 우리 dense 승자에서는 명시하세요")
     ap.add_argument("--data", default="ko-en")
     ap.add_argument("--tokens", default="300M")
     ap.add_argument("--preset", default="m100")
@@ -109,7 +123,7 @@ def main():
     from tinylm.infer.generate import load_model
     from tinylm.model.ternary import TLinear
 
-    models = [(t, _arch_of(t)) for t in a.models] if a.models else DEFAULT_MODELS
+    models = [(t, a.arch or _arch_of(t)) for t in a.models] if a.models else DEFAULT_MODELS
     base = f"{a.preset}_{a.data}_{a.tokens}"
 
     banner("3:4 희소 삼진 감사 — 구현 · 실제 희소율 · bpw 회계", "#")

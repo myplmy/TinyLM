@@ -229,7 +229,14 @@ def cmd_batch_tag_dup():
     """
     import re
     by_tag, by_cmd = {}, {}
-    for p in sorted(ROOT.glob("run_*.bat")):
+    # ★★2026-09-06 확대(사용자 지시 5) — 종전에는 `run_*.bat`(최상위 실험)만 봤다.
+    #   그래서 **`scripts/batch/` 의 모듈은 아무도 배치끼리 대조하지 않았다.**
+    #   `tool_smoke.bat` 하나에 학습 팔이 **25개** 있는데 그중 둘이 같은 조건이어도
+    #   조용히 두 번 돌았을 것이다 — 그것이 §7 을 만들게 한 P073 stage4/stage5 사고
+    #   (배치 둘이 바이트 동일)와 **정확히 같은 모양**이다.
+    #   ⚠️실측(2026-09-06): 25팔 · 조건 중복 0 · 태그 중복 0 — 지금은 깨끗하다.
+    #   그래도 켠다. 깨끗한 것을 확인하는 비용이 0 이고, 다음에 팔을 넣을 때가 위험하다.
+    for p in sorted(ROOT.glob("run_*.bat")) + sorted((ROOT / "scripts" / "batch").glob("*.bat")):
         txt = p.read_text(encoding="utf-8", errors="replace")
         for c in re.findall(r"python run100m\.py train [^\r\n]*", txt):
             c = " ".join(c.split())

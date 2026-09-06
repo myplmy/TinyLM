@@ -375,7 +375,19 @@ def lint(path: Path):
     #
     #   허용: `echo.`(빈 줄) · 구분선(`=`,`-`) · `@echo off` · 실패 라벨 블록 안
     #   (실패 안내는 자식 프로세스가 이미 죽은 뒤라 runlog 를 못 태울 수 있다)
-    if path.name.startswith("run_") and "runlog.py" in txt:
+    #   ★★2026-09-06 확대 — 종전 조건은 `run_` 로 시작하는 파일뿐이었다. 그래서
+    #     **모듈(`scripts/batch/tool_*.bat`)은 무엇을 인쇄하든 아무도 안 봤다.**
+    #     `tool_smoke.bat` 의 꼬리 VERDICT 11줄이 정확히 그랬다 — 콘솔에만 뜨고
+    #     로그 1,898줄 어디에도 없었다. 사용자가 *"화면과 로그가 다르다"* 고 한 것의 절반이다.
+    #     🚫**규칙이 있는데 범위가 좁아 못 잡은 것**이라 규칙을 새로 만들지 않고 범위를 넓힌다.
+    if (path.name.startswith("run_") or path.name.startswith("tool_")) and "runlog.py" in txt:
+        # 이 파일이 `--note` 로 내보내는 문장 전부. echo 와 대조해 면제를 판단한다.
+        _note_bodies = set()
+        for _ln in lines:
+            if "--note" not in _ln:
+                continue
+            for _q in re.findall(r'"([^"]*)"', _ln.split("--note", 1)[1]):
+                _note_bodies.add(_q.strip())
         in_fail_label = False
         for i, raw in enumerate(lines):
             s = raw.strip()
@@ -389,6 +401,13 @@ def lint(path: Path):
             body = m.group(1)
             # 구분선·장식만 있는 줄은 정보가 아니다
             if not re.sub(r"[=\-_*.!\s^<>]", "", body):
+                continue
+            # ★★2026-09-06 — **같은 문장이 `--note` 로도 나가면 로그에 있다.**
+            #   `tool_smoke.bat` 은 팔마다 `echo <제목>` 과 `--note "<제목>"` 을 **둘 다** 쓴다.
+            #   콘솔 즉시성 + 로그 보존을 함께 얻는 의도된 형태이고 **내용은 안 잃는다.**
+            #   🚫이 면제가 없으면 이 규칙 하나가 경고 92건을 쏟고, **아무도 안 읽는 경고는
+            #   미탐과 같다**(함정 38). 규칙은 "잃는 것" 만 신고해야 신고가 읽힌다.
+            if _note_bodies and body.strip() in _note_bodies:
                 continue
             warn.append(
                 f"L{i+1} 이 echo 내용은 **콘솔에만 뜨고 로그에 안 남는다**: {body[:52]!r} → "
@@ -679,6 +698,37 @@ def lint(path: Path):
         err.append("`!VAR!` 를 쓰는데 `setlocal enabledelayedexpansion` 이 없다 → "
                    "변수가 안 풀려 **문자열 그대로 비교**된다(입력이 항상 불일치). "
                    "파일 앞에 `setlocal enabledelayedexpansion` 을 넣으세요")
+
+    # ── ★★규칙 26 (2026-09-06 신설) — **`runlog.py` 에 명령을 주면서 `--` 를 빠뜨렸다**
+    #   실사고: `run_smoke_check.bat` 이
+    #       python scripts\runlog.py --name smoke python scripts\summarize_smoke.py
+    #   였다. argparse 는 뒤의 두 토큰을 **모르는 인자**로 보고 `error: unrecognized
+    #   arguments` 로 죽는다. 그래서 `summarize_smoke.py` 는 **2026-09-03 신설 이래
+    #   한 번도 안 돌았다** — 그리고 그것이 없어서 2026-09-05 에 `diag_sparse34_pack.py`
+    #   가 exit 1 인데 *"Long runs are safe to start"* 가 찍혔다.
+    #
+    #   ★★이 사고가 특히 나쁜 이유: argparse 는 **로그 파일을 열기 전에** stderr 로
+    #   죽는다. 그래서 실패가 **콘솔에만 있고 로그에는 한 줄도 안 남는다.**
+    #   `runlog` 를 감시하려고 만든 도구가 `runlog` 때문에 안 보인 것이다.
+    #   → 규칙 9c 의 형제다(9c 는 `--note` + 명령, 26 은 `--` 없는 명령).
+    for i, raw in enumerate(lines):
+        s = raw.strip()
+        if s.upper().startswith("REM") or "runlog.py" not in s:
+            continue
+        if "--note" in s or re.search(r"\s--\s", s):
+            continue                      # `--note` 는 9c 가 본다 / `--` 가 있으면 정상
+        # `--name X` 뒤에 남는 것이 있는가. 옵션 소비분을 걷어내고 본다.
+        tail = s.split("runlog.py", 1)[1]
+        tail = re.sub(r"--(?:name|num|fsync-sec|outdir|stamp-reuse-min)\s+\S+", "", tail)
+        tail = re.sub(r"--no-append", "", tail)
+        rest = tail.split()
+        if rest:
+            err.append(
+                f"L{i+1} `runlog.py` 에 명령을 주면서 **`--` 를 빠뜨렸다**: {' '.join(rest)[:60]!r} → "
+                f"`--name X -- python ...` 처럼 `--` 를 넣으세요. 없으면 argparse 가 "
+                f"`unrecognized arguments` 로 죽는데, **로그 파일을 열기 전이라 "
+                f"그 실패가 로그에 안 남는다**(2026-09-06 실사고: summarize_smoke 가 "
+                f"신설 이래 한 번도 안 돌았다)")
 
     return err, warn, info
 

@@ -51,10 +51,10 @@ if not defined TL_LOGNAME set TL_LOGNAME=smoke
 echo =============================================================
 echo [tool] instrumentation contract smoke test
 python scripts\runlog.py --name !TL_LOGNAME! --note "[tool] instrumentation contract smoke test"
-echo   Runs the tiny preset on synthetic data and then verifies that every
-echo   field a result document depends on was actually written to the json.
-echo   Minutes here, versus discovering a missing field after a long run.
-echo   RUN THIS BEFORE USING ANY NEW SCRIPT.
+python scripts\runlog.py --name !TL_LOGNAME! --note "Runs the tiny preset on synthetic data and then verifies that every"
+python scripts\runlog.py --name !TL_LOGNAME! --note "field a result document depends on was actually written to the json."
+python scripts\runlog.py --name !TL_LOGNAME! --note "Minutes here, versus discovering a missing field after a long run."
+python scripts\runlog.py --name !TL_LOGNAME! --note "RUN THIS BEFORE USING ANY NEW SCRIPT."
 echo =============================================================
 
 echo.
@@ -92,7 +92,7 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch t
 if errorlevel 1 echo [WARN] sm_s34 failed - continuing
 
 echo.
-echo [6b] 3:4 sparse on a DENSE body  (P016 Stage3 - the combination is new)
+python scripts\runlog.py --name !TL_LOGNAME! --note "[6b] 3:4 sparse on a DENSE body  (P016 Stage3 - the combination is new)"
 REM  ------------------------------------------------------------------------
 REM  sm_s34 above runs --sparse34 on a TIED body, which is how result 008
 REM  measured it. Our winners are dense, and P016 Stage3 is about to spend
@@ -154,37 +154,37 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch t
 if errorlevel 1 echo [WARN] sm_split failed - continuing
 
 echo.
-echo [9] P068 A1 _wq bf16 storage path - trap 37: a recorded field is not a run path
+python scripts\runlog.py --name !TL_LOGNAME! --note "[9] P068 A1 _wq bf16 storage path - trap 37: a recorded field is not a run path"
 python scripts\runlog.py --name !TL_LOGNAME! --note "[9] P068 A1 _wq bf16 storage path - trap 37"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --wq-dtype bf16 --init-from --tag sm_wqbf16
 if errorlevel 1 echo [WARN] sm_wqbf16 failed - continuing
 
 echo.
-echo [10] P049 17.3 reuse-attn-on-dup - trap 37: the arm must actually TURN THE AXIS ON
+python scripts\runlog.py --name !TL_LOGNAME! --note "[10] P049 17.3 reuse-attn-on-dup - trap 37: the arm must actually TURN THE AXIS ON"
 python scripts\runlog.py --name !TL_LOGNAME! --note "[10] P049 17.3 reuse-attn on dup - train-repeat 2.0 plus reuse"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --train-repeat 2.0 --reuse-attn-on-dup --init-from --tag sm_reuseattn
 if errorlevel 1 echo [WARN] sm_reuseattn failed - continuing
 
 echo.
-echo [11] P062 stage2 inplace repeat mode - the training pair of inference where=even
+python scripts\runlog.py --name !TL_LOGNAME! --note "[11] P062 stage2 inplace repeat mode - the training pair of inference where=even"
 python scripts\runlog.py --name !TL_LOGNAME! --note "[11] P062 stage2 repeat-mode inplace"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --train-repeat 2.0 --repeat-mode inplace --init-from --tag sm_inplace
 if errorlevel 1 echo [WARN] sm_inplace failed - continuing
 
 echo.
-echo [12] P073 cla-group - trap 37: cla_group is set BEFORE the model is built
+python scripts\runlog.py --name !TL_LOGNAME! --note "[12] P073 cla-group - trap 37: cla_group is set BEFORE the model is built"
 python scripts\runlog.py --name !TL_LOGNAME! --note "[12] P073 cla-group 1 - the axis must actually be ON"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --cla-group 1 --init-from --tag sm_cla1
 if errorlevel 1 echo [WARN] sm_cla1 failed - continuing
 
 echo.
-echo [13] P071 ce-chunk - the plain CE path had never been chunked before 2026-08-22
+python scripts\runlog.py --name !TL_LOGNAME! --note "[13] P071 ce-chunk - the plain CE path had never been chunked before 2026-08-22"
 python scripts\runlog.py --name !TL_LOGNAME! --note "[13] P071 ce-chunk 256 - plain CE chunking on the common path"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --ce-chunk 256 --tag sm_cechunk
 if errorlevel 1 echo [WARN] sm_cechunk failed - continuing
 
 echo.
-echo [14] P074 dense student parent-init - the arm that P074 stage 1 died on
+python scripts\runlog.py --name !TL_LOGNAME! --note "[14] P074 dense student parent-init - the arm that P074 stage 1 died on"
 REM  ------------------------------------------------------------------------
 REM  2026-08-27. run_P074_stage1_dense_depth_curve.bat lost ALL FOUR training
 REM  arms to a ZeroDivisionError inside init_from_dense. Cause: config.py
@@ -205,12 +205,12 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch d
 if errorlevel 1 echo [WARN] sm_denseinit failed - continuing
 
 echo.
-echo [19] --arch tied with --depth-init  (P079 - tied plus shrinking transplant)
+python scripts\runlog.py --name !TL_LOGNAME! --note "[19] --arch tied with --depth-init  (P079 - tied plus shrinking transplant)"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --init-from --depth-init role --mlp-group 2 --tag sm_tieddepth
 if errorlevel 1 echo [WARN] sm_tieddepth failed - continuing
 
 echo.
-echo [15] P074 stage 2 - dense student WITH recursion. Never combined before.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[15] P074 stage 2 - dense student WITH recursion. Never combined before."
 REM  ------------------------------------------------------------------------
 REM  Gate 15 (check_smoke_coverage) flagged arch=dense with --train-repeat as
 REM  an axis pair no smoke arm had ever run, on the day run_P074_stage2 was
@@ -224,7 +224,7 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch d
 if errorlevel 1 echo [WARN] sm_denserep failed - continuing
 
 echo.
-echo [16] P075 emb-rank - the embedding factorisation rank axis
+python scripts\runlog.py --name !TL_LOGNAME! --note "[16] P075 emb-rank - the embedding factorisation rank axis"
 REM  ------------------------------------------------------------------------
 REM  Gate 15 flagged --emb-rank as an axis that batches use but smoke has never
 REM  run, on the day run_P075_stage3 was written. It also exercises the branch
@@ -236,7 +236,7 @@ python scripts\runlog.py --name !TL_LOGNAME! --note "[16] P075 emb-rank 64 + par
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --emb-rank 64 --init-from --tag sm_embrank
 if errorlevel 1 echo [WARN] sm_embrank failed - continuing
 
-echo [17] P067 kd-chunk and teacher-dtype - the two axes gate 15 flagged
+python scripts\runlog.py --name !TL_LOGNAME! --note "[17] P067 kd-chunk and teacher-dtype - the two axes gate 15 flagged"
 REM  ------------------------------------------------------------------------
 REM  Gate 15 flagged --kd-chunk and --teacher-dtype on 2026-08-29, the day
 REM  run_P067_stage2a was written. Both are KD-path axes and both CAN run on
@@ -251,12 +251,12 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch t
 if errorlevel 1 echo [WARN] sm_kdchunk failed - continuing
 
 echo.
-echo [18] --mlp-film  (P044B - FiLM was rejected under KD; REVIEW2 removed KD)
+python scripts\runlog.py --name !TL_LOGNAME! --note "[18] --mlp-film  (P044B - FiLM was rejected under KD; REVIEW2 removed KD)"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --init-from --mlp-group 4 --mlp-film --tag sm_film
 if errorlevel 1 echo [WARN] sm_film failed - continuing
 
 echo.
-echo [21] --arch dense with --cla-group  (P079 stage 3 - CLA on a dense body, never smoked)
+python scripts\runlog.py --name !TL_LOGNAME! --note "[21] --arch dense with --cla-group  (P079 stage 3 - CLA on a dense body, never smoked)"
 REM  ------------------------------------------------------------------------
 REM  The axis exists and the arch exists, but never together. That is exactly
 REM  the shape in which the four P074 arms died (log 059).
@@ -264,7 +264,7 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch d
 if errorlevel 1 echo [WARN] sm_densecla failed - continuing
 
 echo.
-echo [22] --no-cla-edges  (P084 - prelude and coda keep their own K/V)
+python scripts\runlog.py --name !TL_LOGNAME! --note "[22] --no-cla-edges  (P084 - prelude and coda keep their own K/V)"
 REM  ------------------------------------------------------------------------
 REM  Until 2026-09-03 owner[i] = i - (i % cla_group) ran over EVERY layer, so
 REM  the head and the tail shared K/V even though every other convention here
@@ -274,7 +274,7 @@ REM  does not reach the model the count stays put and check_smoke fails.
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --cla-group 2 --no-cla-edges --tag sm_claedge
 if errorlevel 1 echo [WARN] sm_claedge failed - continuing
 
-echo [23] --mlp-lrm  (P086 - per-layer scalar multipliers on the shared MLP)
+python scripts\runlog.py --name !TL_LOGNAME! --note "[23] --mlp-lrm  (P086 - per-layer scalar multipliers on the shared MLP)"
 REM  ------------------------------------------------------------------------
 REM  Learnable multipliers (arXiv:2601.04890). The parameters live on the
 REM  LAYER, not on the shared MLP, so a tied stack can finally vary its scale
@@ -286,7 +286,7 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch d
 if errorlevel 1 echo [WARN] sm_lrm failed - continuing
 
 echo.
-echo [19b] Muon optimiser  (P005 - matrices go to Muon, the rest to AdamW)
+python scripts\runlog.py --name !TL_LOGNAME! --note "[19b] Muon optimiser  (P005 - matrices go to Muon, the rest to AdamW)"
 REM  ------------------------------------------------------------------------
 REM  Muon has been in the parser since 2026-09-03 and had never run once.
 REM  Trap 37 face 3: a flag in the parser is not a flag that does anything.
@@ -301,7 +301,7 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch d
 if errorlevel 1 echo [WARN] sm_muon failed - continuing
 
 echo.
-echo [20] return_probs diagnostic path  (P081 - SDPA does not hand back probs)
+python scripts\runlog.py --name !TL_LOGNAME! --note "[20] return_probs diagnostic path  (P081 - SDPA does not hand back probs)"
 REM  ------------------------------------------------------------------------
 REM  This axis CANNOT be a training arm - return_probs is blocked in train()
 REM  by an assert, because the probability matrix is batch x heads x T x T.
@@ -311,7 +311,7 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_return_prob
 if errorlevel 1 echo [WARN] return_probs check FAILED - the diagnostic path leaks into output
 
 echo.
-echo [21b] 3:4 sparse packing  (P016 - format only, no kernel, no training)
+python scripts\runlog.py --name !TL_LOGNAME! --note "[21b] 3:4 sparse packing  (P016 - format only, no kernel, no training)"
 REM  ------------------------------------------------------------------------
 REM  --sparse34 has been in the STE since P016 and its quality cost is known
 REM  (result 008: g4_s34 +0.0364). What was never measured is what it buys
@@ -319,7 +319,12 @@ REM  in RESIDENCY, because the residency formula has no bpw in it (trap 1).
 REM  lut.py now carries a real 3:4 packing at 5 bits per 4 weights, and this
 REM  arm buys three things: the round trip is lossless, the bpw is exactly
 REM  1.250, and a tensor that is NOT 3:4 is rejected rather than approximated.
-python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_sparse34_pack.py
+REM  ***2026-09-06: --ckpt added. Until today this arm only ever saw SYNTHETIC
+REM    tensors, so the packing format had never met a real trained weight. The
+REM    dense s34 arm above writes tiny_synthetic_2M_sm_s34_dense.pt a few steps
+REM    earlier, so the smoke can exercise the real-tensor path for free. R15:
+REM    a new axis needs a smoke arm that turns it ON - this is that arm.
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_sparse34_pack.py --ckpt sm_s34_dense --preset tiny --data synthetic --tokens 2M --arch dense
 if errorlevel 1 echo [WARN] sparse34 packing check FAILED - read which of the three
 
 echo.
@@ -331,18 +336,13 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_smoke.py
 if errorlevel 1 echo [WARN] contract check FAILED - read which field is missing
 
 
+REM ***2026-09-06: this block was 11 `echo` lines - console only, NOT in the log.
+REM   That is half of the 'console differs from log' the user reported. lint rule 13
+REM   has caught exactly this since 2026-08-13 but only ever scanned run_*.bat, so a
+REM   MODULE could print anything it liked and no gate looked. Rule 13 now scans
+REM   scripts/batch/ too, and this block is a --note (log AND console, not a copy).
 echo.
-echo =================================================================
-echo VERDICT - read the LAST line of the contract check, which reports the
-echo   total error count, plus the per-run blocks above it (each is [OK] or
-echo   names the field it could not find). That is the whole result.
-echo.
-echo   The [VERIFY] banner is just a SECTION TITLE - it is not the answer.
-echo   Everything else is noise: losses from 30 steps on synthetic data mean
-echo   NOTHING. Do not read them, compare them, or record them anywhere.
-echo.
-echo   Logs are written to smoketest_logs, deliberately not test_result.
-echo =================================================================
+python scripts\runlog.py --name !TL_LOGNAME! --note "=================================================================" "VERDICT - this banner is NOT the answer. The answer is the summary" "  that run_smoke_check.bat prints after this module returns: it joins" "  every arm's exit code with the field contract. This module cannot" "  see its own arms' exit codes, so it must not judge." "" "  The [VERIFY] banner above is a SECTION TITLE, not the answer." "  Everything else is noise: losses from 30 steps on synthetic data mean" "  NOTHING. Do not read them, compare them, or record them anywhere." "" "  Logs are written to smoketest_logs, deliberately not test_result." "================================================================="
 goto DONE
 
 :DONE

@@ -242,7 +242,7 @@ def residency_bytes(n_unique_ternary: int, n_other_params: int,
 #     합 **5비트 / 4가중치 = 1.250 bpw**  (LUT 의 1.600 대비 **21.9% 절감**)
 #
 #     코드 = zero_pos * 8 + sign_bits          (0..31, 5비트)
-#     두 코드를 한 바이트에 담는다             -> **8가중치 / 1바이트**
+#     8개 코드를 5바이트 비트스트림으로 담는다   -> **32가중치 / 5바이트**
 #
 # ★**이론 하한과의 거리**: 3:4 준정형의 엔트로피는 `log2(4) + 3 = 5.000` 비트 정확히다.
 # 🚫**낭비 0%** — LUT(1.600 vs 하한 1.585, 낭비 0.95%)보다도 촘촘하다. 조합이 2의 거듭제곱이라 그렇다.
@@ -256,6 +256,14 @@ def residency_bytes(n_unique_ternary: int, n_other_params: int,
 
 SPARSE34_BLOCK = 4                 # 묶음 크기
 SPARSE34_BPW = 5.0 / 4.0           # ★1.250 — 이론 하한과 정확히 같다
+SPARSE34_CODE_BITS = 5
+SPARSE34_CODES_PER_CHUNK = 8        # 8 codes * 5 bits = 5 bytes
+SPARSE34_BYTES_PER_CHUNK = 5
+
+
+def _sparse34_bytes_for_groups(n_groups: int) -> int:
+    """5-bit code `n_groups`개의 byte-aligned 비트스트림 크기."""
+    return (n_groups * SPARSE34_CODE_BITS + 7) // 8
 
 
 def is_sparse34(t: torch.Tensor, block: int = SPARSE34_BLOCK) -> bool:
@@ -292,19 +300,65 @@ def pack_sparse34(t: torch.Tensor, block: int = SPARSE34_BLOCK):
                  + signs[:, 1].to(torch.int64) * 2
                  + signs[:, 2].to(torch.int64))
     code = zero_pos * 8 + sign_bits                                # int64, 0..31
-    if code.numel() % 2:                                           # 두 코드가 한 바이트
-        code = torch.cat([code, torch.zeros(1, dtype=code.dtype, device=code.device)])
-    packed = (code[0::2] * 32 + code[1::2]).to(torch.uint8)        # ★상위 5비트 + 하위 5비트
-    return packed.contiguous(), n
+
+    # ★8개 5-bit code를 작은 자리부터 연속해 5바이트에 담는다.
+    # 기존 `code0 * 32 + code1 -> uint8`은 10비트를 8비트로 잘라
+    # code0의 zero-position 2비트를 잃었다. 5비트 코드 둘은 한 byte에 들어갈 수 없다.
+    n_groups = code.numel()
+    pad_groups = (-n_groups) % SPARSE34_CODES_PER_CHUNK
+    if pad_groups:
+        code = torch.cat([
+            code,
+            torch.zeros(pad_groups, dtype=code.dtype, device=code.device),
+        ])
+    c = code.reshape(-1, SPARSE34_CODES_PER_CHUNK)
+    packed = torch.stack([
+        c[:, 0] | ((c[:, 1] & 0x07) << 5),
+        (c[:, 1] >> 3) | (c[:, 2] << 2) | ((c[:, 3] & 0x01) << 7),
+        (c[:, 3] >> 1) | ((c[:, 4] & 0x0F) << 4),
+        (c[:, 4] >> 4) | (c[:, 5] << 1) | ((c[:, 6] & 0x03) << 6),
+        (c[:, 6] >> 2) | (c[:, 7] << 3),
+    ], dim=1).to(torch.uint8).reshape(-1)
+    n_bytes = _sparse34_bytes_for_groups(n_groups)
+    return packed[:n_bytes].contiguous(), n
 
 
 def unpack_sparse34(packed: torch.Tensor, n: int, block: int = SPARSE34_BLOCK,
                     dtype=torch.float32) -> torch.Tensor:
     """`pack_sparse34` 의 역. **무손실이어야 한다** — 게이트가 그것을 산다."""
-    hi = (packed.to(torch.int64) // 32)
-    lo = (packed.to(torch.int64) % 32)
-    code = torch.stack([hi, lo], dim=1).reshape(-1)                # (2P,)
+    if block != 4:
+        raise ValueError(f"★지금 포맷은 block=4 전용이다(받은 값 {block}).")
+    if n < 0 or n % block:
+        raise ValueError(f"★n은 0 이상의 4의 배수여야 한다(받은 값 {n}).")
     n_groups = n // block
+    n_bytes = _sparse34_bytes_for_groups(n_groups)
+    packed = packed.reshape(-1)
+    if packed.numel() != n_bytes:
+        raise ValueError(
+            f"★패킹 크기가 n={n}과 맞지 않는다: "
+            f"expected {n_bytes} bytes, got {packed.numel()}.")
+    if n_groups == 0:
+        return torch.empty(0, dtype=dtype, device=packed.device)
+
+    # 끝 chunk만 5바이트보다 짧을 수 있다. 0으로 채운 뒤 같은 8->5 레이아웃을 역전개한다.
+    pad_bytes = (-n_bytes) % SPARSE34_BYTES_PER_CHUNK
+    p = packed.to(torch.int64)
+    if pad_bytes:
+        p = torch.cat([
+            p,
+            torch.zeros(pad_bytes, dtype=p.dtype, device=p.device),
+        ])
+    b = p.reshape(-1, SPARSE34_BYTES_PER_CHUNK)
+    code = torch.stack([
+        b[:, 0] & 0x1F,
+        (b[:, 0] >> 5) | ((b[:, 1] & 0x03) << 3),
+        (b[:, 1] >> 2) & 0x1F,
+        (b[:, 1] >> 7) | ((b[:, 2] & 0x0F) << 1),
+        (b[:, 2] >> 4) | ((b[:, 3] & 0x01) << 4),
+        (b[:, 3] >> 1) & 0x1F,
+        (b[:, 3] >> 6) | ((b[:, 4] & 0x07) << 2),
+        (b[:, 4] >> 3) & 0x1F,
+    ], dim=1).reshape(-1)
     code = code[:n_groups]
     zero_pos = code // 8
     sb = code % 8
@@ -319,8 +373,10 @@ def unpack_sparse34(packed: torch.Tensor, n: int, block: int = SPARSE34_BLOCK,
 
 def sparse34_bytes(n_weights: int) -> int:
     """패킹 바이트 수. 🚫**저장이자 상주다** — 이 경로는 되돌린 사본을 안 든다."""
+    if n_weights < 0:
+        raise ValueError(f"n_weights는 0 이상이어야 한다(받은 값 {n_weights}).")
     n_groups = (n_weights + SPARSE34_BLOCK - 1) // SPARSE34_BLOCK
-    return (n_groups + 1) // 2
+    return _sparse34_bytes_for_groups(n_groups)
 
 
 def sparse34_vs_lut(n_unique_ternary: int) -> dict:
