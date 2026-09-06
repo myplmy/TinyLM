@@ -174,7 +174,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           opt_dtype="fp32", ema_start=0.0, wq_dtype=None, emb_chunk=None,
           optimizer="adamw", muon_lr_mult=1.0,
           center_weights=False, decay_from=None, snapshots=None,
-          use_ternary_kernel=False, ternary_kernel_triton=False,
+          use_ternary_kernel=False, ternary_kernel_triton=False, ternary_kernel_strict=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
           pool_tokens=None, exact_cache=False, anneal_end=0.60, decay_frac=0.2, seed=1337,
           anneal_shape="linear", anneal_start=None,
@@ -375,10 +375,19 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
               f"(게이트: scripts/diag_gqa_equiv.py)")
     cfg.use_ternary_kernel = use_ternary_kernel
     cfg.ternary_kernel_triton = ternary_kernel_triton
+    cfg.ternary_kernel_strict = ternary_kernel_strict
+    if ternary_kernel_triton and not use_ternary_kernel:
+        raise SystemExit(
+            "[중단] --ternary-kernel-triton 단독 지정은 아무 경로도 켜지 않는다. "
+            "--ternary-kernel을 함께 지정하세요.")
+    if ternary_kernel_strict and not (use_ternary_kernel and ternary_kernel_triton):
+        raise SystemExit(
+            "[중단] --ternary-kernel-strict는 --ternary-kernel과 "
+            "--ternary-kernel-triton을 함께 요구한다.")
     # ★프리셋이 sparse34=True 로 정의될 수 있다(m100R1a). `--sparse34` 는 **켤 수만** 있게 한다 —
     #   그냥 대입하면 프리셋 값을 조용히 덮어써서 3:4 없이 학습된다(감지 어려운 사고).
     cfg.sparse34 = bool(sparse34) or bool(getattr(cfg, "sparse34", False))
-    if sparse34:
+    if cfg.sparse34:
         assert cfg.micro_group % 4 == 0, "sparse34 는 micro_group 이 4의 배수여야 함"
         if use_ternary_kernel:
             raise SystemExit("[sparse34] 커스텀 삼진 커널 경로는 3:4 미구현 — "
