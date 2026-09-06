@@ -15,6 +15,7 @@
 | 검사 | 성공했을 때 나와야 하는 값 |
 |---|---|
 | **왕복 무손실** | ★**불일치 0** — 패킹→언패킹이 **비트 동일**이어야 한다 |
+| **codebook/tail** | 32개 코드 전수 + 1·2·7·8·9·17 group 경계의 왕복·바이트 수가 정확해야 한다 |
 | **bpw** | ★**정확히 1.250** (5비트 / 4가중치). 이론 하한 `log2(4)+3 = 5.000비트` 와 **같다** |
 | LUT 대비 | ★**1.600 → 1.250 = −21.9%** |
 | 🚫3:4 가 아닌 입력 | ★**`ValueError`** — 조용히 근사하면 함정 1 의 재발이다 |
@@ -92,12 +93,51 @@ def main() -> int:
         idx = (back != t).nonzero()[:5].reshape(-1).tolist()
         print(f"      처음 5곳 {idx}: 원본 {t[idx].tolist()} vs 복원 {back[idx].tolist()}")
 
+    # ── 1b. 32-state codebook + 5-byte chunk tail 경계 ───────────────────────────
+    # 기본 n=1,000,000은 group 수가 8의 배수라 끝 부분 잘라내기 버그를 놓칠 수 있다.
+    edge_groups = (1, 2, 7, 8, 9, 17, 32)
+    edge_errors = []
+    for groups in edge_groups:
+        codes = torch.arange(groups, dtype=torch.int64) % 32
+        zero_pos_edge = codes // 8
+        sb_edge = codes % 8
+        signs_edge = torch.stack([
+            (sb_edge // 4) % 2,
+            (sb_edge // 2) % 2,
+            sb_edge % 2,
+        ], dim=1)
+        vals_edge = (signs_edge * 2 - 1).to(torch.float32)
+        original_edge = torch.zeros(groups, 4, dtype=torch.float32)
+        keep_edge = torch.ones(groups, 4, dtype=torch.bool)
+        keep_edge.scatter_(1, zero_pos_edge.unsqueeze(1), False)
+        original_edge[keep_edge] = vals_edge.reshape(-1)
+
+        packed_edge, n_edge = pack_sparse34(original_edge)
+        restored_edge = unpack_sparse34(packed_edge, n_edge)
+        expected_bytes = sparse34_bytes(n_edge)
+        if (not torch.equal(restored_edge, original_edge.reshape(-1))
+                or packed_edge.numel() != expected_bytes):
+            edge_errors.append(
+                f"groups={groups}: bad="
+                f"{int((restored_edge != original_edge.reshape(-1)).sum())}, "
+                f"bytes={packed_edge.numel()}/{expected_bytes}")
+    edge_ok = not edge_errors
+    print("  [1b] codebook/tail — groups "
+          + ",".join(str(x) for x in edge_groups)
+          + ("  ✅" if edge_ok else "  🚫**실패**"))
+    if edge_errors:
+        fails += 1
+        for error in edge_errors:
+            print(f"      {error}")
+
     # ── 2. bpw ─────────────────────────────────────────────────────────────
-    b34 = sparse34_bytes(n)
+    b34 = packed.numel()
+    b34_formula = sparse34_bytes(n)
     bpw = b34 * 8 / n
-    ok = abs(bpw - 1.25) < 1e-9
+    ok = abs(bpw - 1.25) < 1e-9 and b34 == b34_formula
     print(f"  [2] bpw — {b34:,} 바이트 / {n:,} 가중치 = **{bpw:.6f}** "
-          f"(기준 {SPARSE34_BPW:.3f})" + ("  ✅" if ok else "  🚫**실패**"))
+          f"(기준 {SPARSE34_BPW:.3f}, 회계 {b34_formula:,} 바이트)"
+          + ("  ✅" if ok else "  🚫**실패**"))
     fails += 0 if ok else 1
 
     # ── 3. 3:4 가 아닌 입력을 거절하는가 ────────────────────────────────────
@@ -148,7 +188,7 @@ def main() -> int:
     if fails:
         print(f"  🚫★**{fails}건 실패** — 포맷이 아직 못 쓴다.")
         return 1
-    print("  ✅ 포맷 검사 3종 통과. 상주 이득은 위 표가 정본이다.")
+    print("  ✅ 포맷 검사 4종 통과. 상주 이득은 위 표가 정본이다.")
     print(f"  ★판정 요약: 최악 비율 **{worst:.2f}x** — "
           + ("선 안이라 채택 후보" if worst <= 1.0 else
              "🚫**선 밖이라 지배당한다.** 예산 천장에 걸렸을 때만 쓴다"))
