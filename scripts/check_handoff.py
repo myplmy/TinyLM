@@ -418,10 +418,17 @@ def lint(path: Path):
     for i, raw in enumerate(lines, 1):
         for m in re.finditer(r'`(run_[A-Za-z0-9_]+\.bat)`', raw):
             name = m.group(1)
-            if (ROOT / name).exists():
+            # PM 계획은 일반 큐/루트 배치와 섞지 않고 moonshot_batch/만 쓴다.
+            # 일반 P 이름까지 재귀 탐색하면 같은 basename의 엉뚱한 파일로 오염을
+            # 숨길 수 있으므로 run_PM*에만 이 두 번째 위치를 연다.
+            locations = [ROOT / name]
+            if name.startswith("run_PM"):
+                locations.append(ROOT / "moonshot_batch" / name)
+            if any(p.exists() for p in locations):
                 continue
             stem = name[:-4]
-            if (ROOT / (stem + '-done.bat')).exists():
+            done_locations = [p.with_name(stem + '-done.bat') for p in locations]
+            if any(p.exists() for p in done_locations):
                 info.append(f"L{i} `{name}` 은 이미 `-done` 이다 — 참조는 유효")
                 continue
             if any(k in raw for k in ('미작성', '작성 예정', '승인 시', '승인되면', '작성 대기')):

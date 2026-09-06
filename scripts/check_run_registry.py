@@ -38,7 +38,9 @@ NEEDED = ["pool_tokens", "mlp_group", "micro_bs", "accum", "deploy_mb", "kd_teac
 # 조건 동일성 판정에 쓰는 축. 여기 값이 모두 같으면 "같은 실험"이다.
 IDENTITY = ["preset", "data", "arch", "mlp_group", "sparse34", "steps", "micro_bs", "accum",
             "seq", "lr", "sched", "anneal_end", "decay_frac", "pool_tokens", "kd", "kd_every",
-            "kd_dynamic", "kd_teacher", "init_from_src", "ema", "lora_rank", "grad_ckpt"]
+            "kd_dynamic", "kd_teacher", "init_from_src", "ema", "lora_rank", "grad_ckpt",
+            # ★PM000 — 이 둘을 빼면 fixed/Latin/random triad 를 같은 조건 중복으로 오판한다.
+            "gqa_pass_schedule", "gqa_pass_seed"]
 
 
 def load():

@@ -7,6 +7,12 @@ from __future__ import annotations
 import dataclasses
 from dataclasses import dataclass
 
+from .moonshot.pm000_latin_gqa import (
+    GQA_PASS_SCHEDULES,
+    gqa_pass_order,
+    gqa_pass_validation_error,
+)
+
 VOCAB = 32768
 
 # ★★2026-08-22 실사고(함정 18: 적용 대상 집합을 두 곳에서 정의) — **여기가 유일한 정본이다.**
@@ -19,7 +25,6 @@ VOCAB = 32768
 #   assert 가 터졌다. **2.8시간 학습이 끝난 뒤에.**
 #   → ★**목록을 한 곳에 두고 세 경로가 전부 이것을 import 한다.**
 REPEAT_MODES = ("uniform", "block", "progressive", "inplace")
-
 
 @dataclass
 class TMTConfig:
@@ -66,6 +71,10 @@ class TMTConfig:
     train_repeat: float = 1.0
     repeat_mode: str = "uniform"      # uniform=중간 전체 / block=특정 그룹만 / progressive=깊을수록 증가
     repeat_block: int = 0             # block 모드에서 반복할 MLP 그룹 인덱스
+    # ★★PM000 — 반복 회차별 GQA KV-head 재배선. fixed = 종전 = 비트 동일.
+    #   seed 는 random 순열에만 의미가 있고 전역 학습 RNG 와 완전히 분리된다.
+    gqa_pass_schedule: str = "fixed"  # fixed | latin | random
+    gqa_pass_seed: int = 0
 
     # --- mode control ---
     n_modes: int = 1
@@ -170,6 +179,15 @@ class TMTConfig:
         assert self.train_repeat > 0, "train_repeat 는 양수여야 한다"
         assert self.repeat_mode in REPEAT_MODES, \
             f"repeat_mode 는 {'|'.join(REPEAT_MODES)} — 받은 값: {self.repeat_mode}"
+        _gqa_error = gqa_pass_validation_error(
+            schedule=self.gqa_pass_schedule,
+            seed=self.gqa_pass_seed,
+            n_q_heads=self.n_q_heads,
+            n_kv_heads=self.n_kv_heads,
+            repeat_mode=self.repeat_mode,
+            reuse_attn_on_dup=self.reuse_attn_on_dup,
+        )
+        assert _gqa_error is None, _gqa_error
         if self.sparse34:
             assert self.micro_group and self.micro_group % 4 == 0, \
                 "sparse34 는 group 이 4의 배수여야 함(3:4 블록). per-row(0)와는 함께 못 쓴다"
@@ -206,6 +224,11 @@ def _tiny(seq, ckpt):
                      emb_rank=64, n_prelude=1, n_middle=4, n_coda=1,
                      mlp_group=2, cla_group=2, n_modes=1, mode_rank=0,
                      micro_group=128, max_seq_len=seq, grad_checkpoint=ckpt)
+
+
+def _tinygqa(seq, ckpt):
+    """PM000 동적 smoke 전용. 기존 tiny 는 KV head 1개라 회전 축이 죽는다."""
+    return dataclasses.replace(_tiny(seq, ckpt), n_kv_heads=2)
 
 
 def _m100(seq, ckpt):
@@ -338,7 +361,7 @@ def _m100s(n_mid):
                                                  n_middle=n_mid, mlp_group=2)
 
 
-PRESETS = {"tiny": _tiny, "m100": _m100, "m100d": _m100d,
+PRESETS = {"tiny": _tiny, "tinygqa": _tinygqa, "m100": _m100, "m100d": _m100d,
            "m100s2": _m100s(2), "m100s4": _m100s(4),
            "m100s6": _m100s(6), "m100s8": _m100s(8),
            # ★P079(2026-08-31) — 16층 dense. `m100s*` 은 n_middle 이므로 12 + prelude/coda 4.

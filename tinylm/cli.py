@@ -15,6 +15,7 @@ from . import paths  # noqa: F401  (HF 리다이렉트 먼저)
 from .data import DATASETS
 from .config import PRESETS
 from .config import REPEAT_MODES
+from .moonshot.pm000_latin_gqa import GQA_PASS_SCHEDULES
 
 
 def _tok(s):
@@ -188,6 +189,12 @@ def main():
     p.add_argument("--repeat-mode", choices=list(REPEAT_MODES), default="uniform",
                    help="(P049B) uniform=중간 전체 / block=--repeat-block 그룹만 / progressive=깊을수록 증가")
     p.add_argument("--repeat-block", type=int, default=0, help="(P049B) block 모드의 MLP 그룹 인덱스")
+    # ★★PM000 (moonshot) — recurrent pass 별 GQA KV-head 연결. 기본 fixed = 종전 비트 동일.
+    p.add_argument("--gqa-pass-schedule", choices=list(GQA_PASS_SCHEDULES), default="fixed",
+                   help="(PM000) fixed=기존 GQA / latin=pass별 균형 순환 / "
+                        "random=seed별 결정적 균형 순열. train 전용")
+    p.add_argument("--gqa-pass-seed", type=int, default=0,
+                   help="(PM000) random GQA pass 순열 seed. 전역 학습 RNG를 소비하지 않음")
     p.add_argument("--save-every", type=int, default=0,
                    help="(P058) 체크포인트 저장 주기(스텝). 0=매 eval 마다(종전). "
                         "eval 은 자주 하되 저장은 드물게 하려는 것 — model+optimizer 직렬화가 비싸다")
@@ -249,6 +256,13 @@ def main():
     p.add_argument("--check-cache", action="store_true",
                    help="캐시 유/무 그리디 출력 일치 검증만 하고 종료")
     a = p.parse_args()
+
+    # 새 플래그가 parser 에만 있고 다른 command 에서 조용히 무시되는 상태를 금지한다.
+    if a.gqa_pass_schedule != "fixed" and a.cmd != "train":
+        p.error("--gqa-pass-schedule latin/random 은 train command 전용이다. "
+                "eval/generate 는 checkpoint cfg 의 schedule 을 자동 사용한다")
+    if a.gqa_pass_seed != 0 and a.gqa_pass_schedule != "random":
+        p.error("--gqa-pass-seed 는 --gqa-pass-schedule random 에서만 의미가 있다")
 
     import sys as _sys                           # 실행 인자 로그(배치파일에서 어떤 조건인지 추적)
     print("[cmd] python " + " ".join(_sys.argv))
@@ -315,6 +329,7 @@ def main():
               reuse_attn_on_dup=a.reuse_attn_on_dup,
               ce_chunk=a.ce_chunk, cla_group=a.cla_group,
               cla_edges=(not a.no_cla_edges), mlp_lrm=a.mlp_lrm,
+              gqa_pass_schedule=a.gqa_pass_schedule, gqa_pass_seed=a.gqa_pass_seed,
               tokenizer_hf=a.tokenizer_hf, kd_teacher_hf=a.kd_teacher_hf,
               teacher_dtype=a.teacher_dtype,
               save_every=a.save_every)

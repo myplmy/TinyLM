@@ -323,6 +323,20 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_sparse34_pac
 if errorlevel 1 echo [WARN] sparse34 packing check FAILED - read which of the three
 
 echo.
+echo [24] PM000 pass-dependent Latin GQA - nontrivial n_kv=2 and R3
+REM  ------------------------------------------------------------------------
+REM  The ordinary tiny preset has one KV head, so every head rotation is an
+REM  identity even when the flag and json field exist. tinygqa keeps the smoke
+REM  model small but has Q4/KV2. R3 therefore executes a real shift on pass 2.
+REM  The standalone diagnostic also checks R1 exact identity, cache agreement,
+REM  unchanged state keys and finite backward gradients.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[24] PM000 Latin GQA - actual KV-head rotation"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --preset tinygqa --arch dense --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --compile --cla-group 2 --train-repeat 3.0 --gqa-pass-schedule latin --gqa-pass-seed 0 --tag dense_pm000__sm_gqapass
+if errorlevel 1 echo [WARN] sm_gqapass failed - continuing
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_pm000_latin_gqa.py --device cpu
+if errorlevel 1 echo [WARN] PM000 Latin GQA contract diagnostic FAILED
+
+echo.
 echo =============================================================
 echo [VERIFY] every instrumentation field was recorded
 python scripts\runlog.py --name !TL_LOGNAME! --note "[VERIFY] every instrumentation field was recorded"

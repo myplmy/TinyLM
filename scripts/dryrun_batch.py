@@ -31,11 +31,11 @@
 
 ## 무엇을 안 하나 (정직하게)
 
-- 🚫**학습을 흉내내지 않는다.** `trainer.py` 의 오버라이드 **다섯 줄**만 반영한다
+- 🚫**학습을 흉내내지 않는다.** `trainer.py` 의 **핵심 오버라이드**만 반영한다
   (`cla_group` · `mlp_group`(tied 만) · `attn_group`(tied 만) · `train_repeat` · `ckpt`).
-  그 다섯 줄이 `trainer.py` 에 그대로 있는지 **매번 확인**하고, 모양이 바뀌면 경고한다.
+  그 핵심 줄이 `trainer.py` 에 그대로 있는지 **매번 확인**하고, 모양이 바뀌면 경고한다.
 - 🚫**품질을 예측하지 않는다.** 조건만 인쇄한다.
-- 🚫**torch·GPU 를 쓰지 않는다.** `tinylm/config.py` 를 파일에서 직접 로드한다.
+- 🚫**torch·GPU 를 쓰지 않는다.** `tinylm.config` 패키지만 로드하며 torch 유입을 검사한다.
 
 사용:
 
@@ -52,6 +52,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(ROOT))
 
 from check_tag_arch import claims                        # noqa: E402  (함정 18)
 
@@ -75,23 +76,21 @@ AXES: list[tuple[str, str, object]] = [
     ("mlp_film", "--mlp-film", False),
     ("emb_rank", "--emb-rank", None),
     ("kv_dtype", "--kv-dtype", "fp32"),
+    ("gqa_pass_schedule", "--gqa-pass-schedule", "fixed"),
+    ("gqa_pass_seed", "--gqa-pass-seed", 0),
 ]
 
 _PRESETS = None
 
 
 def presets():
-    """`tinylm/config.py` 를 **torch 없이** 파일에서 직접 로드한다(lint_bat 와 같은 수법)."""
+    """`tinylm.config` 를 package context에서 torch 없이 로드한다."""
     global _PRESETS
     if _PRESETS is None:
         try:
-            import importlib.util
-            name = "_tinylm_cfg_for_dryrun"
-            spec = importlib.util.spec_from_file_location(
-                name, ROOT / "tinylm" / "config.py")
-            mod = importlib.util.module_from_spec(spec)
-            sys.modules[name] = mod                # @dataclass 가 이걸 읽는다
-            spec.loader.exec_module(mod)
+            from tinylm import config as mod
+            if "torch" in sys.modules:
+                raise RuntimeError("tinylm.config 정적 로드가 torch를 import했다")
             _PRESETS = mod
         except Exception as e:                                # noqa: BLE001
             print(f"  [!] config.py 로드 실패: {e}")
@@ -140,7 +139,7 @@ def _num(v, cast=float):
 
 
 def trainer_override_shape_ok() -> list[str]:
-    """`trainer.py` 가 아직 이 도구가 가정한 다섯 줄대로 오버라이드하는가.
+    """`trainer.py` 가 아직 이 도구가 가정한 핵심 오버라이드 모양을 유지하는가.
 
     ★모양이 바뀌면 **이 도구가 조용히 틀린다.** 그래서 매번 확인한다(함정 18).
     """
@@ -151,6 +150,8 @@ def trainer_override_shape_ok() -> list[str]:
         ("mlp_group", r"if mlp_group and arch == \"tied\":"),
         ("attn_group", r"if attn_group is not None and arch == \"tied\":"),
         ("train_repeat", r"if train_repeat is not None:"),
+        ("gqa_pass_schedule", r"cfg\.gqa_pass_schedule = str\(gqa_pass_schedule\)"),
+        ("gqa_pass_seed", r"cfg\.gqa_pass_seed = int\(gqa_pass_seed\)"),
         ("ckpt", r"build_config\(preset, arch, seq, ckpt\)"),
     ]
     return [n for n, pat in want if not re.search(pat, src)]
@@ -169,7 +170,7 @@ def analyse(cmd: str, takes: dict) -> dict:
         try:
             base = cfgmod.build_config(preset, arch, seq, True)   # 프리셋 기본(ckpt ON)
             eff = cfgmod.build_config(preset, arch, seq, ckpt)
-            # ★trainer.py 의 오버라이드 다섯 줄을 그대로 반영한다
+            # ★trainer.py 의 핵심 오버라이드를 그대로 반영한다
             if "--cla-group" in got:
                 eff.cla_group = _num(got["--cla-group"], int)
             if "--mlp-group" in got and arch == "tied":
@@ -186,6 +187,10 @@ def analyse(cmd: str, takes: dict) -> dict:
                 eff.mlp_film = True
             if "--emb-rank" in got:
                 eff.emb_rank = _num(got["--emb-rank"], int)
+            if "--gqa-pass-schedule" in got:
+                eff.gqa_pass_schedule = got["--gqa-pass-schedule"]
+            if "--gqa-pass-seed" in got:
+                eff.gqa_pass_seed = _num(got["--gqa-pass-seed"], int)
         except Exception as e:                                    # noqa: BLE001
             return {"err": f"build_config 실패: {e}", "got": got, "preset": preset}
 
@@ -196,7 +201,7 @@ def analyse(cmd: str, takes: dict) -> dict:
 
 # ★★명령이 침묵했을 때 **KV 나 품질 귀속을 조용히 바꾸는** 축.
 #   E12 가 정확히 이 목록의 `cla_group` 이었다. 나머지 축은 인쇄만 하고 요약하지 않는다.
-SILENT_COSTLY = ("cla_group", "attn_group", "train_repeat")
+SILENT_COSTLY = ("cla_group", "attn_group", "train_repeat", "gqa_pass_schedule")
 
 
 def show(r: dict, strict_hits: list):
@@ -306,13 +311,13 @@ def main() -> int:
     missing = trainer_override_shape_ok()
     if missing:
         print(f"  ⚠️★**trainer.py 의 오버라이드 모양이 바뀌었다**: {', '.join(missing)}")
-        print("     이 도구는 그 다섯 줄을 가정한다 — 유효값이 틀릴 수 있다. 코드를 먼저 본다.")
+        print("     이 도구는 그 핵심 줄을 가정한다 — 유효값이 틀릴 수 있다. 코드를 먼저 본다.")
     else:
-        print("  ✅trainer.py 의 오버라이드 다섯 줄 확인 "
-              "(cla_group · mlp_group · attn_group · train_repeat · ckpt)")
+        print("  ✅trainer.py 의 핵심 오버라이드 확인 "
+              "(cla_group · mlp_group · attn_group · train_repeat · GQA pass · ckpt)")
 
-    files = ([Path(b) for b in a.bats] if a.bats
-             else sorted(ROOT.glob("run_*.bat")))
+    files = ([Path(b) for b in a.bats] if a.bats else sorted(
+        list(ROOT.glob("run_*.bat")) + list((ROOT / "moonshot_batch").glob("run_*.bat"))))
     if a.live_only:
         files = [f for f in files if "-done" not in f.name]
     takes = flag_table()
@@ -346,7 +351,7 @@ def main() -> int:
     else:
         print("  ✅태그 주장과 유효값이 일치하고 `--no-ckpt` 예산도 안이다.")
     print("  ⚠️★**조건만 본다.** 이 조건이 좋은 실험인지는 사람이 정한다.")
-    print("  ⚠️`trainer.py` 오버라이드 다섯 줄만 반영한다 — 학습을 흉내내지 않는다.")
+    print("  ⚠️`trainer.py` 핵심 오버라이드만 반영한다 — 학습을 흉내내지 않는다.")
     print("=" * 96)
     # ★계측 0 에 exit 0 은 금지(R19). 배치를 지정했는데 학습 호출이 0이면 실패다.
     if a.bats and n_run == 0:

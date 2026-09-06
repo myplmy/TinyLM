@@ -12,6 +12,7 @@ from torch.utils.checkpoint import checkpoint
 
 from ..config import TMTConfig, dense_baseline  # noqa: F401  (재export)
 from ..config import mlp_group_index as _mlp_gi   # ★P061 그룹 인덱스 단일 소스
+from ..moonshot.pm000_latin_gqa import next_layer_pass_id
 from .ternary import TLinear, ternary  # noqa: F401
 # ★2026-08-14 — `build_attention` 이 **import 목록에 없었다.** `attn_group > 1` 경로만
 #   그것을 부르므로(아래 `mid_attns`), 기본 경로는 멀쩡하고 **P057 을 켠 순간에만**
@@ -664,12 +665,22 @@ class TiedMLPTransformer(nn.Module):
                                "(층 반복은 학습된 깊이 분포 밖이고, grad checkpoint 와도 섞인다). "
                                "학습 시 반복은 --train-repeat 로(P049B).")
         seen = {}                                       # owner -> 그 owner 를 몇 번째 통과 중인가
+        # ★★PM000 — GQA mapping 의 t 는 **KV owner 회차가 아니라 실제 레이어 방문 회차**다.
+        #   CLA non-owner 는 owner 의 `seen` 값을 빌리므로 그것을 쓰면 층별 pass 가 어긋난다.
+        #   fixed 에서는 dict 자체를 만들지 않고 모든 pass_id 를 0 으로 둔다.
+        _gqa_dynamic = getattr(cfg, "gqa_pass_schedule", "fixed") != "fixed"
+        if _gqa_dynamic and getattr(cfg, "repeat_mode", "uniform") != "uniform":
+            raise RuntimeError("PM000 non-fixed GQA pass schedule 은 repeat_mode=uniform 에서만 허용한다")
+        _layer_visits = {} if _gqa_dynamic else None
 
         # ★★P049 §17.3 — `--reuse-attn-on-dup`. **재귀 통과에서만** 켜진다.
         #   결과 041 §17 이 **복제층 어텐션 출력 cos 0.9882** 를 쟀다 = 두 번째 통과가
         #   거의 같은 것을 다시 계산한다. **연산이 실제로 주는 첫 레버**다.
         #   ⚠️ `repeating` 이 아니면 이 블록 전체가 죽은 코드고 **비트 동일**이다.
         _reuse_attn = bool(getattr(cfg, "reuse_attn_on_dup", False)) and repeating
+        if _reuse_attn and _gqa_dynamic:
+            raise RuntimeError("non-fixed GQA pass schedule 과 reuse_attn_on_dup 은 병용할 수 없다 — "
+                               "두 번째 통과 attention 을 재사용하면 PM000 처치가 사라진다")
         if _reuse_attn:
             from collections import Counter
             _visit_total = Counter(schedule)            # 층 인덱스 -> 총 방문 횟수
@@ -680,6 +691,8 @@ class TiedMLPTransformer(nn.Module):
         kv_bank, mode_hist = {}, []
         for step_idx, i in enumerate(schedule):
             layer = self.layers[i]
+            pass_id = (0 if _layer_visits is None else
+                       next_layer_pass_id(_layer_visits, i))
             mode_p = None
             if cfg.n_modes > 1:
                 if mode_override is not None:
@@ -743,10 +756,11 @@ class TiedMLPTransformer(nn.Module):
             kv = kv_bank[key]
 
             if cfg.grad_checkpoint and self.training:
-                _out = checkpoint(lambda inp, L=layer, k=kv, mp=mode_p, ao=_ao, wa=_want:
-                                  L(inp, k, cos, sin, mp, ao, wa), x, use_reentrant=False)
+                _out = checkpoint(lambda inp, L=layer, k=kv, mp=mode_p, ao=_ao, wa=_want,
+                                  pid=pass_id: L(inp, k, cos, sin, mp, ao, wa, pid),
+                                  x, use_reentrant=False)
             else:
-                _out = layer(x, kv, cos, sin, mode_p, _ao, _want)
+                _out = layer(x, kv, cos, sin, mode_p, _ao, _want, pass_id)
             if _want:
                 x, _attn_cache[i] = _out
             else:

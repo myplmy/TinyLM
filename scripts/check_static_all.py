@@ -63,6 +63,9 @@ CHECKS = [
      "`run_REVIEW4_expC_bench_n5000.bat` 는 계획번호도 단계도 없어 **어느 계획의 몇 단계인지 파일명이 "
      "말하지 않았다.** 🚫계획서에 Stage3 가 있다고 **Stage3B** 가 되는 것이 아니다 — 단계를 먼저 쓴다. "
      "✅위반 1건 검출 후 P085 를 쓰고 개명"),
+    ("check_moonshot_namespace", ["check_moonshot_namespace.py"],
+     "★★moonshot branch 전용 PM 계획·배치·결과가 일반 test_plan/test_result/queue 로 새는 것을 막는다. "
+     "`__MOONSHOT__` 구분자·전용 outdir·현재 branch 를 torch 없이 강제"),
     ("check_heldout_defects", ["check_heldout_defects.py"],
      "★★held-out 의 **의미 결함**(2026-09-03). 구조 검사(정답 불변·중복·문자폭)는 다 통과하는데 "
      "**정답으로 표시된 후보가 거짓**인 문항이 있었다. D1=완전 일치(정확) · D2=정답 후보가 answer 의 "

@@ -33,6 +33,8 @@
     g{N}   -> mlp_group == N        r{X}{Y} -> train_repeat == X.Y
     s34    -> sparse34 is True      film  -> mlp_film is True
     nokd   -> kd is False           nc/nockpt -> grad_ckpt is False
+    gqafixed/gqalatin/gqarandom -> gqa_pass_schedule
+    gps{N} -> gqa_pass_seed == N
 
 **값이 다르면 에러.** 필드가 아예 없으면 **정보**다(그 필드를 안 찍던 시절의 런).
 
@@ -67,6 +69,10 @@ RULES: list[tuple[str, str, object]] = [
     (r"^nokd$", "kd", False),
     (r"^nc$", "grad_ckpt", False),
     (r"^nockpt$", "grad_ckpt", False),
+    (r"^gqafixed$", "gqa_pass_schedule", "fixed"),
+    (r"^gqalatin$", "gqa_pass_schedule", "latin"),
+    (r"^gqarandom$", "gqa_pass_schedule", "random"),
+    (r"^gps(\d+)$", "gqa_pass_seed", int),
 ]
 
 # ★★**인정된 오염 태그** — 이미 결과문서에 원인·파급이 적혀 있는 것.
@@ -138,8 +144,12 @@ def main() -> int:
                 continue
             n_claim += 1
             act = d[field]
-            same = (bool(act) == want) if isinstance(want, bool) else \
-                   (float(act) == float(want))
+            if isinstance(want, bool):
+                same = bool(act) == want
+            elif isinstance(want, (int, float)):
+                same = float(act) == float(want)
+            else:
+                same = str(act) == str(want)
             if not same:
                 line = (f"{tag}\n         `{tok}` 는 {field}={want} 를 주장하는데 "
                         f"**실제는 {act}** 다 — 이 체크포인트는 이름이 말하는 모델이 아니다")

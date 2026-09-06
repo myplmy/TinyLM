@@ -37,6 +37,7 @@ REQUIRED = ["seed", "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cach
             "sdpa_gqa", "kd_chunk",                    # F-1 / T-2
             "depth_init", "n_layers",                  # P049
             "attn_group", "train_repeat", "mlp_split", "repeat_mode",  # P057 / P049B
+            "gqa_pass_schedule", "gqa_pass_seed", "gqa_pass_order",      # PM000 moonshot
             "kd_alpha", "kd_temp",                     # ★P055(2026-08-20) — 한 번도 안 실렸다
             "wq_dtype", "emb_chunk",
             "reuse_attn_on_dup",                       # ★P049 §17.3(2026-08-22)
@@ -199,6 +200,11 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     #   **한 번도 같이 안 돌았다** — P074 네 팔이 죽은 형태가 정확히 그것이다(함정 37).
     #   ⚠️`cla_group` 2 를 **값으로** 확인한다. 필드 존재만 보면 기본값 1 이 통과한다.
     "sm_densecla": {"cla_group": 2, "grad_ckpt": False},
+    # ★★PM000 — 기존 tiny 는 n_kv_heads=1 이라 회전이 죽는다. tool_smoke 의 tinygqa 팔은
+    #   n_q=4, n_kv=2, R3 로 pass 1 의 실제 torch.roll 까지 실행한다.
+    "sm_gqapass": {"gqa_pass_schedule": "latin", "gqa_pass_seed": 0,
+                    "gqa_pass_order": [0, 1], "train_repeat": 3.0,
+                    "arch": "dense", "cla_group": 2},
 }
 
 
@@ -206,7 +212,8 @@ def main():
     ap = argparse.ArgumentParser(description="스모크 결과 계측필드 검증")
     ap.add_argument("--tag")
     a = ap.parse_args()
-    files = sorted(LOGS.glob(f"*{a.tag}.json")) if a.tag else sorted(LOGS.glob("tiny_*sm_*.json"))
+    files = sorted(LOGS.glob(f"*{a.tag}.json")) if a.tag else \
+            sorted(list(LOGS.glob("tiny_*sm_*.json")) + list(LOGS.glob("tinygqa_*sm_*.json")))
     if not files:
         print(f"[!] 검사할 스모크 로그가 없습니다({LOGS}). 먼저 run_smoke.bat 을 돌리세요.")
         return 1

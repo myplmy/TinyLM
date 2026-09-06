@@ -86,8 +86,9 @@ def check(bat: Path):
 
 def main():
     args = sys.argv[1:]
-    bats = ([ROOT / a for a in args] if args
-            else sorted(p for p in ROOT.glob("run*.bat") if "-done" not in p.name))
+    bats = ([ROOT / a for a in args] if args else sorted(
+        [p for p in ROOT.glob("run*.bat") if "-done" not in p.name] +
+        [p for p in (ROOT / "moonshot_batch").glob("run*.bat") if "-done" not in p.name]))
     n_e = n_w = 0
     for b in bats:
         if not b.exists():

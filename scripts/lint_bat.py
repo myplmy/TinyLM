@@ -46,6 +46,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
 
 
 # ★설계상 매 세션 같은 이름으로 다시 도는 배치 — 규칙 9d·19 의 대상이 아니다(2026-08-28).
@@ -71,20 +72,14 @@ def _visits(preset: str, repeat: float):
     """prelude + middle x R + coda. 프리셋을 못 읽으면 None.
 
     🚫**층수를 여기 하드코딩하지 않는다**(함정 18) — `tinylm/config.py` 가 정본이다.
-    패키지 `__init__` 을 거치지 않고 파일에서 직접 로드해 **torch 의존을 만들지 않는다.**
+    패키지 context로 config를 로드하되 **torch 의존을 만들지 않는다.**
     """
     global _PRESETS
     if _PRESETS is None:
         try:
-            import importlib.util
-            name = "_tinylm_cfg_for_lint"
-            spec = importlib.util.spec_from_file_location(
-                name, ROOT / "tinylm" / "config.py")
-            mod = importlib.util.module_from_spec(spec)
-            # ⚠️`@dataclass` 는 `sys.modules[cls.__module__]` 를 읽는다 —
-            #   등록 전에 exec 하면 AttributeError 로 조용히 실패한다.
-            sys.modules[name] = mod
-            spec.loader.exec_module(mod)
+            from tinylm import config as mod
+            if "torch" in sys.modules:
+                raise RuntimeError("tinylm.config 정적 로드가 torch를 import했다")
             _PRESETS = mod.PRESETS
         except Exception:                                 # noqa: BLE001
             _PRESETS = {}
@@ -353,8 +348,8 @@ def lint(path: Path):
             if ln.strip().upper().startswith("REM"):
                 continue
             m = re.search(r"--name\s+([^\s\"]+)", ln)
-            if m and not re.match(r"^(P\d{3}|!)", m.group(1)):
-                warn.append(f"L{i+1} runlog --name '{m.group(1)}' 에 계획번호(P0NN)가 없다 → "
+            if m and not re.match(r"^(P(?:M)?\d{3}|!)", m.group(1)):
+                warn.append(f"L{i+1} runlog --name '{m.group(1)}' 에 계획번호(P0NN/PM0NN)가 없다 → "
                             f"로그 파일명만 보고 어느 실험인지 알 수 없다")
 
     # 10. 꼬리 판정 안내
@@ -537,7 +532,8 @@ def lint(path: Path):
     #   배치 헤더에 `run100m.py train` 이라고 **설명**만 써도 발화해서, 학습을
     #   하나도 안 하는 측정 배치가 "학습 배치인데 wandb 가 없다" 를 받았다.
     #   ★`trains` 는 이미 주석을 걸러 낸 목록이다 — 그것을 쓴다(함정 18: 한 곳에서만).
-    if path.name.startswith("run_") and not path.name.endswith("-done.bat"):
+    _is_moonshot = "moonshot_batch" in path.parts
+    if path.name.startswith("run_") and not path.name.endswith("-done.bat") and not _is_moonshot:
         if trains and "--tiny" not in txt \
                 and "tool_wandb_push" not in txt:
             warn.append("★**학습 배치인데 `tool_wandb_push.bat` 호출이 없다** — 이 런의 로그는 "
@@ -571,7 +567,7 @@ def lint(path: Path):
                           f"등급표 `scripts/flag_whitelist.tsv`. "
                           f"다시 열려면 **표의 등급을 먼저 고치고 근거를 적는다**")
                     (warn if path.name.endswith("-done.bat") else err).append(_m)
-                elif _g == "exp" and not re.search(r"P\d{3}", txt):
+                elif _g == "exp" and not re.search(r"P(?:M)?\d{3}", txt):
                     warn.append(f"L{_no} ⚠️`{_fl}` 는 실험용(`exp`)인데 배치 어디에도 "
                                 f"**계획번호(P0NN)가 없다** — {_ev}")
 
@@ -585,10 +581,12 @@ def lint(path: Path):
     #   수정**하도록"* → 면제 경로 둘을 둔다:
     #     (a) 배치 안에 `REM  NAME-MISMATCH: <사유>`
     #     (b) 열린 작업원장에 `실험명 불일치 사유` 와 배치 이름이 같은 줄에
-    _mn = re.match(r"^run_(P\d{3,}[A-Za-z]*)_([A-Za-z0-9]+)_", path.name)
+    _mn_pm = re.match(r"^run_(PM\d{3,})__MOONSHOT__(Stage\d+[A-Za-z]?)_", path.name)
+    _mn = _mn_pm or re.match(r"^run_(P\d{3,}[A-Za-z]*)_([A-Za-z0-9]+)_", path.name)
     if _mn:
         _plan, _stage = _mn.group(1), _mn.group(2).lower()
-        _want = f"{_plan}_{_stage}".lower()
+        _want = (f"{_plan}__MOONSHOT__{_stage}_" if _mn_pm else
+                 f"{_plan}_{_stage}").lower()
         _names = [n for n in re.findall(r"--name\s+(\S+)", txt)]
         _bad = sorted({n for n in _names if not n.lower().startswith(_want)})
         if _bad:
@@ -656,7 +654,8 @@ def lint(path: Path):
     if (path.name.startswith("run_") and "-done" not in path.name
             and path.name not in _RERUN_BY_DESIGN):
         try:
-            _logs = [p.name for p in (ROOT / "test_result").glob("*.txt")]
+            _log_dir = ROOT / ("moonshot_result" if _mn_pm else "test_result")
+            _logs = [p.name for p in _log_dir.glob("*.txt")]
         except Exception:
             _logs = []
         for _nm in sorted(set(re.findall(r"--name\s+([A-Za-z0-9_.-]+)", txt))):
@@ -697,7 +696,9 @@ def main():
     args = [a for a in sys.argv[1:] if a != "--fix"]
     do_fix = "--fix" in sys.argv[1:]
     files = [Path(a) if Path(a).is_absolute() else ROOT / a for a in args] or \
-            sorted(list(ROOT.glob('*.bat')) + list((ROOT / 'scripts' / 'batch').glob('*.bat')))
+            sorted(list(ROOT.glob('*.bat')) +
+                   list((ROOT / 'scripts' / 'batch').glob('*.bat')) +
+                   list((ROOT / 'moonshot_batch').glob('*.bat')))
     if do_fix:
         n = sum(fix_eol(f) for f in files if f.exists())
         print(f"[--fix] 줄끝을 CRLF 로 교정: {n}개 (내용 변경 없음)")

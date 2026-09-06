@@ -14,6 +14,10 @@ import torch.nn.functional as F
 
 from .. import paths
 from ..config import build_config
+from ..moonshot.pm000_latin_gqa import (
+    gqa_pass_order,
+    gqa_pass_validation_error,
+)
 from ..model import TiedMLPTransformer
 from ..data import prepare, Loader
 from ..eval import evaluate
@@ -179,7 +183,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
           attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
           reuse_attn_on_dup=False, ce_chunk=0, cla_group=None, cla_edges=True,
-          mlp_lrm=False,
+          mlp_lrm=False, gqa_pass_schedule="fixed", gqa_pass_seed=0,
           tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
           save_every=0):
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -338,6 +342,30 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                   f"{f' block={repeat_block}' if repeat_mode == 'block' else ''} — "
                   f"★상주 파라미터는 불변, 계산 깊이만 늘어난다. "
                   f"⚠️활성 메모리와 벽시계는 반복 배수만큼 는다")
+    # ★★PM000 (moonshot) — pass 별 GQA 연결. 모델을 만들기 **전에** cfg 에 넣는다.
+    #   TMTConfig.__post_init__ 은 checkpoint reload 를 지키고, 이 블록은 trainer 대입 경로를
+    #   지킨다(대입 뒤 __post_init__ 이 다시 호출되지 않는 함정 18).
+    cfg.gqa_pass_schedule = str(gqa_pass_schedule)
+    cfg.gqa_pass_seed = int(gqa_pass_seed)
+    _gqa_error = gqa_pass_validation_error(
+        schedule=cfg.gqa_pass_schedule,
+        seed=cfg.gqa_pass_seed,
+        n_q_heads=cfg.n_q_heads,
+        n_kv_heads=cfg.n_kv_heads,
+        repeat_mode=cfg.repeat_mode,
+        reuse_attn_on_dup=cfg.reuse_attn_on_dup,
+    )
+    if _gqa_error is not None:
+        raise SystemExit(f"[PM000] {_gqa_error}")
+    if cfg.gqa_pass_schedule != "fixed":
+        _gqa_order = gqa_pass_order(cfg.gqa_pass_schedule, cfg.n_kv_heads,
+                                    cfg.gqa_pass_seed)
+        print(f"[PM000] ★GQA pass schedule={cfg.gqa_pass_schedule} seed={cfg.gqa_pass_seed} "
+              f"order={list(_gqa_order)} — weights/KV entries unchanged; "
+              f"torch.roll scratch/latency must be measured")
+        if float(getattr(cfg, "train_repeat", 1.0)) == 1.0:
+            print("[PM000] ⚠️train_repeat=1.0 이라 pass 0(identity)만 사용한다 — "
+                  "R1 동일성 계약 외에는 처치가 없는 조건이다")
     cfg.center_weights = center_weights
     # ★F-1(2026-08-14) — 기본 False = 종전 `repeat_interleave` 경로 = 비트 동일.
     cfg.sdpa_gqa = bool(sdpa_gqa)
@@ -855,6 +883,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "train_repeat": float(getattr(cfg, "train_repeat", 1.0)),   # (P049B) 학습 시 재귀 배수
            "repeat_mode": str(getattr(cfg, "repeat_mode", "uniform")),
            "reuse_attn_on_dup": bool(getattr(cfg, "reuse_attn_on_dup", False)),
+           # ★★PM000 — 이름이 아니라 **실제 cfg 값과 한 주기 순서**가 감사 정본이다.
+           "gqa_pass_schedule": str(getattr(cfg, "gqa_pass_schedule", "fixed")),
+           "gqa_pass_seed": int(getattr(cfg, "gqa_pass_seed", 0)),
+           "gqa_pass_order": list(gqa_pass_order(
+               getattr(cfg, "gqa_pass_schedule", "fixed"), cfg.n_kv_heads,
+               getattr(cfg, "gqa_pass_seed", 0))),
            "tokenizer_hf": (str(tokenizer_hf) if tokenizer_hf else None),   # ★P067
            "kd_teacher_hf": (str(kd_teacher_hf) if kd_teacher_hf else None),
            "teacher_dtype": str(teacher_dtype),

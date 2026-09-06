@@ -83,7 +83,8 @@ smoke_archs = {a for a, _ in smoke}
 
 # ★`-done` 도 본다. 사용자가 실행 후 개명하므로 제외하면 **볼 것이 남지 않는다**.
 #   "이 조합을 우리가 실제로 쓰는가" 의 증거는 과거 배치에 있다.
-batches = sorted(ROOT.glob("run_*.bat"))
+batches = sorted(list(ROOT.glob("run_*.bat")) +
+                 list((ROOT / "moonshot_batch").glob("run_*.bat")))
 
 missing_flag: dict[str, list[str]] = {}
 missing_pair: dict[tuple[str, str], list[str]] = {}

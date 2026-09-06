@@ -20,7 +20,7 @@
 | 검사 | 무엇 |
 |---|---|
 | **N1** | 이름이 `run_P<숫자>_<단계>_<요약>.bat` 꼴인가 |
-| **N2** | `test_plan/P<번호>_*.md` 가 **실재하는가** |
+| **N2** | 일반은 `test_plan/P...`, moonshot은 `plan/PM...__PLAN.md` 가 **실재하는가** |
 | ★**N3** | 그 계획서 본문에 **그 단계가 있는가**(`단계3` · `Stage 3` · `stage3b` 다 인정) |
 
 🚫**도구 배치는 검사하지 않는다** — `run_queue` · `run_smoke_check` · `run_cleanup_checkpoints`
@@ -45,10 +45,15 @@ ROOT = Path(__file__).resolve().parent.parent
 EXEMPT = {"run_queue.bat", "run_smoke_check.bat", "run_cleanup_checkpoints.bat"}
 
 RE_NAME = re.compile(r"^run_(P\d{3,})_([A-Za-z0-9]+)_([A-Za-z0-9_]+?)(-done)?\.bat$")
+RE_PM_NAME = re.compile(
+    r"^run_(PM\d{3,})__MOONSHOT__(Stage\d+[A-Za-z]?)_([A-Za-z0-9_]+?)(-done)?\.bat$")
 
 
 def plan_doc(pnum: str):
-    hits = sorted((ROOT / "test_plan").glob(pnum + "_*.md"))
+    if pnum.startswith("PM"):
+        hits = sorted((ROOT / "plan").glob(pnum + "__MOONSHOT__*__PLAN.md"))
+    else:
+        hits = sorted((ROOT / "test_plan").glob(pnum + "_*.md"))
     return hits[0] if hits else None
 
 
@@ -71,16 +76,17 @@ def check(name: str):
     """(errs, info) 를 돌려준다."""
     if name in EXEMPT:
         return [], [f"{name}: 도구 배치 — 검사 제외"]
-    m = RE_NAME.match(name)
+    m = RE_NAME.match(name) or RE_PM_NAME.match(name)
     if not m:
         return ([f"★**{name}** — 이름 규약 위반. "
-                 f"`run_P<번호>_<단계>_<요약>.bat` 이어야 한다 "
-                 f"(예: `run_P084_Stage0_residency.bat`). "
+                 f"일반은 `run_P<번호>_<단계>_<요약>.bat`, moonshot은 "
+                 f"`run_PM<번호>__MOONSHOT__StageX_<요약>.bat` 이어야 한다. "
                  f"🚫계획번호와 단계가 없으면 **어느 계획의 몇 단계인지 파일명이 말하지 않는다**"], [])
     pnum, stage, slug, done = m.groups()
     doc = plan_doc(pnum)
     if doc is None:
-        return ([f"★**{name}** — `test_plan/{pnum}_*.md` 가 **없다**. "
+        where = "plan/PM...__PLAN.md" if pnum.startswith("PM") else f"test_plan/{pnum}_*.md"
+        return ([f"★**{name}** — `{where}` 가 **없다**. "
                  f"🚫**계획서 없이 배치를 만들지 않는다**(사용자 지시 2026-09-04)"], [])
     if not stage_present(doc, stage):
         return ([f"★**{name}** — 계획서 `{doc.name}` 에 **`{stage}` 단계가 없다**. "
@@ -99,8 +105,9 @@ def main() -> int:
     print("  check_batch_name — 계획번호·단계 구분자가 **실재하는가** (2026-09-04 신설)")
     print("=" * 96)
 
-    names = ([a.name] if a.name else
-             sorted(p.name for p in ROOT.glob("run_*.bat")))
+    names = ([a.name] if a.name else sorted(
+        [p.name for p in ROOT.glob("run_*.bat")] +
+        [p.name for p in (ROOT / "moonshot_batch").glob("run_*.bat")]))
     errs, info = [], []
     for n in names:
         e, i = check(n)

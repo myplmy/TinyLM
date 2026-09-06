@@ -139,6 +139,10 @@ def row_from_json(path: Path):
         d = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         return None
+    # ★★PM moonshot 런은 `moonshot_result/registry.tsv` 가 정본이다. 일반 레지스트리의
+    # scan/backfill/record 에 섞으면 사용자가 요구한 branch 실험 경계가 사라진다.
+    if re.search(r"(?:^|_)pm\d{3,}__", str(d.get("tag", "")), re.I):
+        return None
     steps = d.get("steps")
     if not steps:
         return None                                  # 학습 런이 아니다

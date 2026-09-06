@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from ..moonshot.pm000_latin_gqa import gqa_pass_order_for_config, gqa_pass_shift
 from .ternary import TLinear, LoRA
 
 # ---- 어텐션 컴포넌트 레지스트리 (config.attn_kind 로 선택) ----
@@ -56,6 +57,9 @@ class Attention(nn.Module):
     def __init__(self, cfg, owns_kv: bool):
         super().__init__()
         self.cfg, self.owns_kv = cfg, owns_kv
+        # ★★PM000 — plain tuple 이라 parameter/buffer/state-dict 를 한 바이트도 늘리지 않는다.
+        #   fixed 는 None 으로 두어 기존 forward 에서 torch.roll 경로가 완전히 죽게 한다.
+        self._gqa_pass_order = gqa_pass_order_for_config(cfg)
         o_scale = 1.0 / math.sqrt(2 * cfg.n_layers)
         self.q_proj = TLinear(cfg, cfg.dim, cfg.dim, mode_delta=True)
         self.o_proj = TLinear(cfg, cfg.dim, cfg.dim, out_scale=o_scale, mode_delta=True)
@@ -73,13 +77,22 @@ class Attention(nn.Module):
         k = self.k_norm(k)                          # v5: RoPE 전에 정규화
         return apply_rope(k, cos, sin), v
 
-    def forward(self, x, kv, cos, sin, mode_p):
+    def forward(self, x, kv, cos, sin, mode_p, pass_id=0):
         B, T, _ = x.shape
         c = self.cfg
         q = self.q_proj(x, mode_p).view(B, T, c.n_q_heads, c.head_dim).transpose(1, 2)
         q = self.q_norm(q)                          # v5: RoPE 전에 정규화
         q = apply_rope(q, cos, sin)
         k, v = kv
+        # ★★PM000 — recurrent pass 에 따라 **소비 직전** KV-head 축만 순환시킨다.
+        #   new[g] = old[(g+shift) mod H_kv] 이므로 `shifts=-shift` 가 계획식과 같다.
+        #   cache/kv_bank 원본은 수정하지 않으며 K와 V에 반드시 같은 shift 를 쓴다.
+        #   pass 0 및 fixed 에서는 roll 을 호출하지 않는다 = R1 exact identity.
+        if self._gqa_pass_order is not None:
+            shift = gqa_pass_shift(self._gqa_pass_order, pass_id)
+            if shift:
+                k = torch.roll(k, shifts=-shift, dims=1)
+                v = torch.roll(v, shifts=-shift, dims=1)
         n_rep = c.n_q_heads // c.n_kv_heads
         # ── F-1 (2026-08-14) — GQA 복제를 SDPA 에 맡긴다 ─────────────────────────
         #   종전: K/V 를 `repeat_interleave` 로 **물리적으로 n_rep(=4) 배 복제**한다.
@@ -227,7 +240,8 @@ class Layer(nn.Module):
         """
         return self._attn_ref[0] if self._shared_attn else self.attn
 
-    def forward(self, x, kv, cos, sin, mode_p, attn_out=None, want_attn=False):
+    def forward(self, x, kv, cos, sin, mode_p, attn_out=None, want_attn=False,
+                pass_id=0):
         """★P049 §17.3(`--reuse-attn-on-dup`) — `attn_out`·`want_attn` 두 인자가 추가됐다.
 
         ⚠️**기본값이면 종전과 비트 동일**이다(`attn_out=None`·`want_attn=False`).
@@ -246,7 +260,8 @@ class Layer(nn.Module):
         a = (1 + self.a_scale) if ms is None else (1 + self.a_scale + ms[..., 0, :])
         m = (1 + self.m_scale) if ms is None else (1 + self.m_scale + ms[..., 1, :])
         if attn_out is None:
-            attn_out = self.attn_mod(self.ln1(x) * a + self.a_shift, kv, cos, sin, mode_p)
+            attn_out = self.attn_mod(self.ln1(x) * a + self.a_shift, kv, cos, sin,
+                                     mode_p, pass_id)
         x = x + self.gates[0] * attn_out
         lora = (self.lora_gate, self.lora_up, self.lora_down) if self.has_lora else None
         film = (self.film_scale, self.film_shift) if self.has_film else None

@@ -471,6 +471,46 @@ def _register(rc, name, path, cmd):
         m = re.search(r"--tag\s+(\S+)", joined)
         if not m:
             return
+        tag = m.group(1)
+        pm_tag = re.search(r"(?:^|_)pm(\d{3,})__", tag, re.I)
+        # ★★PM moonshot — 일반 runs/registry.tsv 와 절대 섞지 않는다.
+        #   PM 로그는 명시적 moonshot_result outdir 에 있어야 하며 전용 최소 레지스트리에만
+        #   append 한다. 검증된 방법을 main 으로 옮기는 일은 별도 사용자 작업이다.
+        pm = re.match(r"^(PM\d{3,})__MOONSHOT__(Stage\d+[A-Za-z]?)_", name or "")
+        if pm:
+            moon_dir = ROOT / "moonshot_result"
+            if path.parent.resolve() != moon_dir.resolve():
+                print("[runlog] ⚠PM 학습 로그가 moonshot_result 밖에 있어 레지스트리에 기록하지 않는다")
+                return
+            if f"_pm{pm.group(1)[2:]}__" not in tag.lower():
+                print(f"[runlog] ⚠PM tag namespace 불일치: {tag}")
+                return
+            json_hits = sorted((ROOT / "runs" / "logs").glob(f"*_{tag}.json"))
+            if not json_hits:
+                print(f"[runlog] ⚠PM 학습 json이 없어 전용 레지스트리에 기록하지 않는다: {tag}")
+                return
+            json_path = json_hits[-1]
+            reg = moon_dir / "registry.tsv"
+            header = "tag\tplan_stage\tlog_file\tjson_file\trecorded_at\n"
+            row_key = (f"{tag}\t{pm.group(1)}/{pm.group(2).lower()}\t{path.name}\t"
+                       f"{json_path.name}\t")
+            if not reg.exists():
+                reg.write_text(header, encoding="utf-8", newline="")
+            old = reg.read_text(encoding="utf-8", errors="replace")
+            if not any(line.startswith(row_key) for line in old.splitlines()):
+                with open(reg, "a", encoding="utf-8", newline="") as rf:
+                    rf.write(row_key + datetime.now().strftime("%Y-%m-%dT%H:%M:%S") + "\n")
+                    rf.flush()
+                    os.fsync(rf.fileno())
+            print(f"[runlog] ★PM 전용 런 레지스트리 기록 -> {reg.relative_to(ROOT)} "
+                  f"({tag} = {pm.group(1)}/{pm.group(2).lower()}, json={json_path.name})")
+            return
+        # 공통 smoke가 PM 경로를 실제로 밟아도 runlog name은 `smoke`다. tag만 보고도
+        # 일반 registry로 새지 않게 한다. smoke provenance는 timestamp 로그/JSON이 소유하고,
+        # 정식 PM 학습만 위의 PM Stage name + moonshot_result 조합으로 전용 registry에 기록한다.
+        if pm_tag:
+            print(f"[runlog] PM smoke/probe tag는 일반 런 레지스트리에서 제외: {tag}")
+            return
         m2 = re.match(r"^(P\d{3,}[A-Za-z]*)_([A-Za-z0-9]+)", name or "")
         stage = f"{m2.group(1)}/{m2.group(2).lower()}" if m2 else (name or "")
         sys.path.insert(0, str(Path(__file__).resolve().parent))
