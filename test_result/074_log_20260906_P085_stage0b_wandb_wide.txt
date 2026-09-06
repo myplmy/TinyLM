@@ -1,0 +1,312 @@
+[1/2] dry run - prints both schemas and the click-by-click guide, uploads nothing
+
+==============================================================================
+[runlog] 2026-09-06 17:53:24  name=P085_stage0b_wandb_wide
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\wandb_table_probe.py --project tinylm-probe --format both --dry-run
+==============================================================================
+================================================================================================
+  W&B Stage0 프로브 — 여러 런의 Table 을 한 Custom Chart 가 합쳐 읽는가
+================================================================================================
+  프로젝트 tinylm-probe  ·  형식 **both**  ·  런 6개
+  long  키 `bench/table`       스키마: model | task | metric | value | n | n_asked | skipped | seed | pmi
+        런당 3 과제 x 3 지표 = **9행**
+  wide  키 `bench/table_wide`  스키마: model | task | acc | acc_norm | gold_ce | n | n_asked | skipped | seed | pmi
+        런당 3 과제 = **3행** (지표가 열이다)
+  ★값은 전부 더미다 — acc 0.11~0.43 · gold_ce 9.1~10.3 (실측 대역 3.5~6.8 밖)
+
+  [long] probe_modelA  9행  예: ['probe_modelA', 'hellaswag', 'acc', 0.11, 5000, 5000, 0, 99, True]
+  [long] probe_modelB  9행  예: ['probe_modelB', 'hellaswag', 'acc', 0.22, 5000, 5000, 0, 99, True]
+  [long] probe_modelC  9행  예: ['probe_modelC', 'hellaswag', 'acc', 0.33, 5000, 5000, 0, 99, True]
+  [wide] probe_wide_modelA  3행  예: ['probe_wide_modelA', 'hellaswag', 0.11, 0.12, 9.1, 5000, 5000, 0, 99, True]
+  [wide] probe_wide_modelB  3행  예: ['probe_wide_modelB', 'hellaswag', 0.22, 0.23, 9.2, 5000, 5000, 0, 99, True]
+  [wide] probe_wide_modelC  3행  예: ['probe_wide_modelC', 'hellaswag', 0.33, 0.34, 9.3, 5000, 5000, 0, 99, True]
+
+  ⚠️--dry-run — 아무것도 올리지 않았다.
+
+================================================================================================
+  ★[LONG] 사용자가 화면에서 할 것 — ✅**2026-09-05 에 이미 확인된 경로**
+================================================================================================
+  1. https://wandb.ai/<entity>/tinylm-probe 를 연다.
+     런 3개가 보여야 한다: probe_modelA, probe_modelB, probe_modelC
+  2. 왼쪽 런 목록에서 **셋을 전부 선택**한다(체크박스). <- ★이것이 run set 이다
+  3. 패널 추가 -> **Custom Chart**.
+  4. 오른쪽 **Query** 에서 `summary` 를 **`summaryTable`** 로 바꾸고
+     **`tableKey`** 에 **`bench/table`** 를 넣는다.
+  5. **Chart fields**: x -> `task` · y -> `value` · color -> `model`
+  6. Vega spec 에 필터를 넣는다(acc 만 보기):
+       "transform": [{"filter": "datum.metric === 'acc'"}]
+
+  🚫★**여기가 막힌 곳이다** — 지표를 바꾸려면 이 필터 문자열을 **손으로 고쳐야** 한다.
+     Vega `params` 로 만든 셀렉터(`metric_choice`)는 W&B 화면에서 **안 먹었다**(제안서 §4.2).
+     -> 그래서 아래 WIDE 를 함께 올렸다.
+
+================================================================================================
+  ★★[WIDE] 사용자가 화면에서 할 것 — **이번에 확인할 것**
+================================================================================================
+  1. https://wandb.ai/<entity>/tinylm-probe 를 연다.
+     런 3개: probe_wide_modelA, probe_wide_modelB, probe_wide_modelC
+  2. 왼쪽에서 **셋을 전부 선택**한다.
+  3. 패널 추가 -> **Custom Chart** -> Query 를 **`summaryTable`** 로.
+  4. **`tableKey`** 에 **`bench/table_wide`** 를 넣는다. 🚫long 과 **다른 키**다.
+  5. 프리셋 아무거나 고르고 **Edit** -> Vega 편집기에 아래를 통째로 붙인다:
+
+       {
+         "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+         "title": "Benchmark metric by task and model",
+         "data": {"name": "wandb"},
+         "mark": "bar",
+         "encoding": {
+           "x":       {"field": "task",  "type": "nominal", "title": "Task"},
+           "xOffset": {"field": "model", "type": "nominal"},
+           "y":       {"field": "${field:y_metric}", "type": "quantitative", "title": "Value"},
+           "color":   {"field": "model", "type": "nominal", "title": "Model"},
+           "tooltip": [
+             {"field": "model", "type": "nominal"},
+             {"field": "task",  "type": "nominal"},
+             {"field": "${field:y_metric}", "type": "quantitative"},
+             {"field": "n",     "type": "quantitative"}
+           ]
+         }
+       }
+
+  ★★**판정 — 이 하나만 보면 된다**
+     패널 편집 화면의 **Chart fields** 에 **`y_metric`** 이라는 칸이 생기고,
+     거기 드롭다운에 **acc / acc_norm / gold_ce** 가 뜨는가?
+       ✅뜨면  -> **wide 채택.** Vega 를 안 고치고 지표를 바꾼다
+       🚫안 뜨면 -> **long 유지.** 지표마다 차트를 따로 만든다(3개)
+
+  ⚠️함께 봐 줄 것 셋
+     · `y_metric` 을 `gold_ce` 로 바꾸면 y축 눈금이 **9~10 대역**으로 따라 바뀌는가
+       (long 에서는 acc 와 gold_ce 가 **한 열에 섞여** 축이 뭉갠다)
+     · 런을 하나 더 선택/해제하면 막대가 따라 늘고 주는가
+       (그래야 **모델을 추가할 때 차트를 안 고친다**)
+     · x축에 **hellaswag / arc_easy / piqa 세 칸**이 서고 칸마다 막대 3개인가
+
+================================================================================================
+  ★결정 — **둘 중 하나를 고른다**(제안서 §6 이 이 답을 기다린다)
+================================================================================================
+  wide 가 되면 얻는 것: **하나의 차트로 세 지표**, 축 척도가 안 섞인다
+  wide 로 잃는 것:   **지표를 추가하면 열이 는다**(스키마 변경) ·
+                     **두 지표를 한 차트에 못 겹친다**
+  🚫**정본은 어느 쪽이든 `test_result/bench_results.tsv` 다**(제안서 §5.2)
+     — 표는 매번 전량 재구성하므로 **형식 전환 비용은 0.3h** 다.
+
+  🚫**더미 런은 지워도 된다** — W&B 화면에서 사용자가 지운다.
+     우리 저장소 규칙(R01)은 **디스크 파일**에 대한 것이고 W&B 는 사용자 계정이다.
+================================================================================================
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-06 17:53:24)
+==============================================================================
+[2/2] upload six dummy runs to tinylm-probe - three long, three wide
+
+==============================================================================
+[runlog] 2026-09-06 17:53:24  name=P085_stage0b_wandb_wide
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\wandb_table_probe.py --project tinylm-probe --format both
+==============================================================================
+================================================================================================
+  W&B Stage0 프로브 — 여러 런의 Table 을 한 Custom Chart 가 합쳐 읽는가
+================================================================================================
+  프로젝트 tinylm-probe  ·  형식 **both**  ·  런 6개
+  long  키 `bench/table`       스키마: model | task | metric | value | n | n_asked | skipped | seed | pmi
+        런당 3 과제 x 3 지표 = **9행**
+  wide  키 `bench/table_wide`  스키마: model | task | acc | acc_norm | gold_ce | n | n_asked | skipped | seed | pmi
+        런당 3 과제 = **3행** (지표가 열이다)
+  ★값은 전부 더미다 — acc 0.11~0.43 · gold_ce 9.1~10.3 (실측 대역 3.5~6.8 밖)
+
+  [long] probe_modelA  9행  예: ['probe_modelA', 'hellaswag', 'acc', 0.11, 5000, 5000, 0, 99, True]
+  [long] probe_modelB  9행  예: ['probe_modelB', 'hellaswag', 'acc', 0.22, 5000, 5000, 0, 99, True]
+  [long] probe_modelC  9행  예: ['probe_modelC', 'hellaswag', 'acc', 0.33, 5000, 5000, 0, 99, True]
+  [wide] probe_wide_modelA  3행  예: ['probe_wide_modelA', 'hellaswag', 0.11, 0.12, 9.1, 5000, 5000, 0, 99, True]
+  [wide] probe_wide_modelB  3행  예: ['probe_wide_modelB', 'hellaswag', 0.22, 0.23, 9.2, 5000, 5000, 0, 99, True]
+  [wide] probe_wide_modelC  3행  예: ['probe_wide_modelC', 'hellaswag', 0.33, 0.34, 9.3, 5000, 5000, 0, 99, True]
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run probe_modelA
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260906_175333-probe_modelA
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run probe_modelA
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-probe
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-probe/runs/probe_modelA
+wandb: updating run metadata; uploading artifact run-probe_modelA-benchtable-1bMhoA
+wandb: WARNING Artifact "run-probe_modelA-benchtable-1bMhoA" already exists with the same content. No new version will be created.
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_1_3fb262f74d635e370caf.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading requirements.txt; uploading config.yaml
+wandb:  View run probe_modelA at: https://wandb.ai/myplmy-ir/tinylm-probe/runs/probe_modelA
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-probe
+wandb: Synced 4 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260906_175333-probe_modelA\logs
+  ✅ 올림 [long] probe_modelA
+wandb: setting up run probe_modelB
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260906_175340-probe_modelB
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run probe_modelB
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-probe
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-probe/runs/probe_modelB
+wandb: updating run metadata; uploading artifact run-probe_modelB-benchtable-aHlNbg
+wandb: WARNING Artifact "run-probe_modelB-benchtable-aHlNbg" already exists with the same content. No new version will be created.
+wandb: uploading wandb-summary.json; uploading config.yaml; uploading requirements.txt
+wandb:  View run probe_modelB at: https://wandb.ai/myplmy-ir/tinylm-probe/runs/probe_modelB
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-probe
+wandb: Synced 4 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260906_175340-probe_modelB\logs
+  ✅ 올림 [long] probe_modelB
+wandb: setting up run probe_modelC
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260906_175344-probe_modelC
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run probe_modelC
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-probe
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-probe/runs/probe_modelC
+wandb: updating run metadata; uploading artifact run-probe_modelC-benchtable-te-U6w
+wandb: WARNING Artifact "run-probe_modelC-benchtable-te-U6w" already exists with the same content. No new version will be created.
+wandb: uploading requirements.txt; uploading media\table\bench\table_1_bd984d23cab84290b261.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 1-1, summary
+wandb:  View run probe_modelC at: https://wandb.ai/myplmy-ir/tinylm-probe/runs/probe_modelC
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-probe
+wandb: Synced 4 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260906_175344-probe_modelC\logs
+  ✅ 올림 [long] probe_modelC
+wandb: setting up run probe_wide_modelA
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260906_175348-probe_wide_modelA
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run probe_wide_modelA
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-probe
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-probe/runs/probe_wide_modelA
+wandb: updating run metadata; uploading artifact run-probe_wide_modelA-benchtable_wide--Keh4Q; uploading summary
+wandb: uploading artifact run-probe_wide_modelA-benchtable_wide--Keh4Q
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_0_af40c24bb3aaf698d1fa.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb:  View run probe_wide_modelA at: https://wandb.ai/myplmy-ir/tinylm-probe/runs/probe_wide_modelA
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-probe
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260906_175348-probe_wide_modelA\logs
+  ✅ 올림 [wide] probe_wide_modelA
+wandb: setting up run probe_wide_modelB
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260906_175353-probe_wide_modelB
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run probe_wide_modelB
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-probe
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-probe/runs/probe_wide_modelB
+wandb: updating run metadata; uploading artifact run-probe_wide_modelB-benchtable_wide-EiF8gw; uploading summary
+wandb: updating run metadata; uploading artifact run-probe_wide_modelB-benchtable_wide-EiF8gw
+wandb: uploading artifact run-probe_wide_modelB-benchtable_wide-EiF8gw
+wandb: uploading requirements.txt; uploading media\table\bench\table_wide_0_fd50166047eb9cf4adca.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 0-0, summary
+wandb:  View run probe_wide_modelB at: https://wandb.ai/myplmy-ir/tinylm-probe/runs/probe_wide_modelB
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-probe
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260906_175353-probe_wide_modelB\logs
+  ✅ 올림 [wide] probe_wide_modelB
+wandb: setting up run probe_wide_modelC
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260906_175400-probe_wide_modelC
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run probe_wide_modelC
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm-probe
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm-probe/runs/probe_wide_modelC
+wandb: updating run metadata; uploading artifact run-probe_wide_modelC-benchtable_wide-_XPKYg; uploading summary
+wandb: uploading artifact run-probe_wide_modelC-benchtable_wide-_XPKYg
+wandb: uploading media\table\bench\table_wide_0_6f6533286658afdb7a03.table.json; uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt
+wandb: uploading history steps 0-0, summary
+wandb:  View run probe_wide_modelC at: https://wandb.ai/myplmy-ir/tinylm-probe/runs/probe_wide_modelC
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm-probe
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260906_175400-probe_wide_modelC\logs
+  ✅ 올림 [wide] probe_wide_modelC
+
+================================================================================================
+  ★[LONG] 사용자가 화면에서 할 것 — ✅**2026-09-05 에 이미 확인된 경로**
+================================================================================================
+  1. https://wandb.ai/<entity>/tinylm-probe 를 연다.
+     런 3개가 보여야 한다: probe_modelA, probe_modelB, probe_modelC
+  2. 왼쪽 런 목록에서 **셋을 전부 선택**한다(체크박스). <- ★이것이 run set 이다
+  3. 패널 추가 -> **Custom Chart**.
+  4. 오른쪽 **Query** 에서 `summary` 를 **`summaryTable`** 로 바꾸고
+     **`tableKey`** 에 **`bench/table`** 를 넣는다.
+  5. **Chart fields**: x -> `task` · y -> `value` · color -> `model`
+  6. Vega spec 에 필터를 넣는다(acc 만 보기):
+       "transform": [{"filter": "datum.metric === 'acc'"}]
+
+  🚫★**여기가 막힌 곳이다** — 지표를 바꾸려면 이 필터 문자열을 **손으로 고쳐야** 한다.
+     Vega `params` 로 만든 셀렉터(`metric_choice`)는 W&B 화면에서 **안 먹었다**(제안서 §4.2).
+     -> 그래서 아래 WIDE 를 함께 올렸다.
+
+================================================================================================
+  ★★[WIDE] 사용자가 화면에서 할 것 — **이번에 확인할 것**
+================================================================================================
+  1. https://wandb.ai/<entity>/tinylm-probe 를 연다.
+     런 3개: probe_wide_modelA, probe_wide_modelB, probe_wide_modelC
+  2. 왼쪽에서 **셋을 전부 선택**한다.
+  3. 패널 추가 -> **Custom Chart** -> Query 를 **`summaryTable`** 로.
+  4. **`tableKey`** 에 **`bench/table_wide`** 를 넣는다. 🚫long 과 **다른 키**다.
+  5. 프리셋 아무거나 고르고 **Edit** -> Vega 편집기에 아래를 통째로 붙인다:
+
+       {
+         "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+         "title": "Benchmark metric by task and model",
+         "data": {"name": "wandb"},
+         "mark": "bar",
+         "encoding": {
+           "x":       {"field": "task",  "type": "nominal", "title": "Task"},
+           "xOffset": {"field": "model", "type": "nominal"},
+           "y":       {"field": "${field:y_metric}", "type": "quantitative", "title": "Value"},
+           "color":   {"field": "model", "type": "nominal", "title": "Model"},
+           "tooltip": [
+             {"field": "model", "type": "nominal"},
+             {"field": "task",  "type": "nominal"},
+             {"field": "${field:y_metric}", "type": "quantitative"},
+             {"field": "n",     "type": "quantitative"}
+           ]
+         }
+       }
+
+  ★★**판정 — 이 하나만 보면 된다**
+     패널 편집 화면의 **Chart fields** 에 **`y_metric`** 이라는 칸이 생기고,
+     거기 드롭다운에 **acc / acc_norm / gold_ce** 가 뜨는가?
+       ✅뜨면  -> **wide 채택.** Vega 를 안 고치고 지표를 바꾼다
+       🚫안 뜨면 -> **long 유지.** 지표마다 차트를 따로 만든다(3개)
+
+  ⚠️함께 봐 줄 것 셋
+     · `y_metric` 을 `gold_ce` 로 바꾸면 y축 눈금이 **9~10 대역**으로 따라 바뀌는가
+       (long 에서는 acc 와 gold_ce 가 **한 열에 섞여** 축이 뭉갠다)
+     · 런을 하나 더 선택/해제하면 막대가 따라 늘고 주는가
+       (그래야 **모델을 추가할 때 차트를 안 고친다**)
+     · x축에 **hellaswag / arc_easy / piqa 세 칸**이 서고 칸마다 막대 3개인가
+
+================================================================================================
+  ★결정 — **둘 중 하나를 고른다**(제안서 §6 이 이 답을 기다린다)
+================================================================================================
+  wide 가 되면 얻는 것: **하나의 차트로 세 지표**, 축 척도가 안 섞인다
+  wide 로 잃는 것:   **지표를 추가하면 열이 는다**(스키마 변경) ·
+                     **두 지표를 한 차트에 못 겹친다**
+  🚫**정본은 어느 쪽이든 `test_result/bench_results.tsv` 다**(제안서 §5.2)
+     — 표는 매번 전량 재구성하므로 **형식 전환 비용은 0.3h** 다.
+
+  🚫**더미 런은 지워도 된다** — W&B 화면에서 사용자가 지운다.
+     우리 저장소 규칙(R01)은 **디스크 파일**에 대한 것이고 W&B 는 사용자 계정이다.
+================================================================================================
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.7분  (2026-09-06 17:54:06)
+==============================================================================
+=================================================================
+READ IN THIS ORDER
+1. six lines saying uploaded. Three probe_model* and three
+   probe_wide_model*. Fewer than six means a wandb.init failed.
+2. then the screen work is yours - about 0.2h. The log prints the
+   Vega spec to paste and the exact fields to set.
+3. THE ONE QUESTION: does a y_metric dropdown appear in Chart
+   fields with acc / acc_norm / gold_ce in it?
+     yes gives wide is adopted, one chart serves three metrics
+     no  gives long stays, and we build three separate charts
+4. also check that switching y_metric to gold_ce moves the y axis
+   into the 9 to 10 band. That is the second thing wide buys.
+5. the dummy runs are yours to delete in the W&B UI. Our no-delete
+   rule (R01) is about files on disk, not your W&B account.
+=================================================================

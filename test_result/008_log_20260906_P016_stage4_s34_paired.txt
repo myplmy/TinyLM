@@ -1,0 +1,42 @@
+[1/1] paired_eval on the 600M cache - both models pooled 600M
+
+==============================================================================
+[runlog] 2026-09-06 17:54:44  name=P016_stage4_s34_paired
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\paired_eval.py --preset m100s8 --data ko-en --tokens 600M --models d12_cla2_r20 d12_cla2_r20_s34 --match-train-repeat
+==============================================================================
+
+############################################################################################
+  P032 — 결정적 full-val + paired per-crop 비교 (학습 없음)
+############################################################################################
+  device=cuda  seq=1024  micro_bs=8  data=ko-en 600M
+  ★val 을 겹치지 않게 전부 순회한다 → eval 샘플링 노이즈 성분 = 0.
+  ★크롭별 손실을 저장해 두 모델을 **같은 크롭 위에서** 뺀다.
+  ⚠️ 이것은 **체크포인트 간** 비교다. 아키텍처 우열은 여기서 나오지 않는다.
+[data] 캐시 재사용: 600.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+
+  [건너뜀] 체크포인트 없음: m100s8_ko-en_600M_d12_cla2_r20.pt
+
+  [건너뜀] 체크포인트 없음: m100s8_ko-en_600M_d12_cla2_r20_s34.pt
+
+  비교할 모델이 2개 미만이고 **덤프 요청도 없었다.**
+     크롭 덤프만 원하면 `--dump-crops OUT.json` 을 준다 - 그러면 모델 1개도 정상 종료다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 2  소요 0.0분  (2026-09-06 17:54:46)
+==============================================================================
+=================================================================
+READ IN THIS ORDER
+1. which ruler the tool says it used. Both arms are --arch dense
+   with --train-repeat 2.0, so it should pick the recursion ruler
+   0.0018, not the dense 0.0021. Either way the delta is far above.
+2. the paired delta. Compare it with the PRE-REGISTERED rows that
+   were written before Stage3 ran:
+     at or below +0.0225  inside the lever line
+     +0.0225 to +0.0364   grey, 40 MiB budget only
+     above +0.0364        close the axis for good
+   The training-log val said +0.04203, i.e. the third row.
+3. if paired_eval lands in the grey band instead, say so plainly
+   and reopen - do NOT keep the closed verdict because it is tidier.
+4. this does not measure the SAVING. That is arithmetic and is in
+   result 008 section 6.3 (3.027 and 4.035 MiB).
+=================================================================
