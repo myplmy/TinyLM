@@ -89,6 +89,11 @@ class TLinear(nn.Module):
         self._lut_codes = None
         self._lut_alpha = None           # (O, 1) per-row fp32
         self._lut_ipad = 0
+        # PM001 moonshot — 3:4 행별 5-bit stream + 기존 g128 alpha. 일반 LUT와 동시 상주 금지.
+        self._s34_codes = None            # uint8 (O, ceil((I/4)*5/8)) = 정확히 1.25bpw(+행 tail)
+        self._s34_alpha = None            # fp32 (O, I/micro_group), 재추정 없이 학습 scale 보존
+        self._s34_group = 0
+        self._s34_backend = "native"
 
     # ---------- P034 단계2: 추론 시 latent 해제 ----------
     def latent_dropped(self):
@@ -124,6 +129,8 @@ class TLinear(nn.Module):
         `code*alpha` 를 fp32 로 되돌리지 않고 **커널이 직접 읽어야** 비로소 이론값에 닿는다.
         단계3 만으로는 이론값의 7.6배에서 멈춘다(계획 P034 §단계3·4 표).
         """
+        if self._s34_codes is not None:
+            raise RuntimeError("이미 3:4 CPU LUT 배포형으로 변환돼 int8 경로로 되돌릴 수 없다.")
         if self._wq is None:
             raise RuntimeError("to_int8() 전에 freeze_quant() 가 필요하다.")
         if self._i8 is not None:
@@ -166,6 +173,8 @@ class TLinear(nn.Module):
         """
         from .lut import weight_codes, TRITS_PER_BYTE
         import torch
+        if self._s34_codes is not None:
+            raise RuntimeError("이미 3:4 CPU LUT 배포형으로 변환돼 일반 LUT로 되돌릴 수 없다.")
         if self._i8 is None:
             if self._wq is None:
                 raise RuntimeError("to_lut() 전에 freeze_quant() 가 필요하다.")
@@ -189,11 +198,64 @@ class TLinear(nn.Module):
         self._i8_cache = self._i8_cache_gen = None
         return self
 
+    def to_sparse34_lut(self, backend="native"):
+        """PM001 — 3:4 가중치를 **행별 1.25bpw stream + g128 alpha**로 바꾼다.
+
+        학습 중에는 쓰지 않는 비가역 추론 변환이다. 일반 g=5 LUT의 per-row alpha 재추정과
+        달리, 4가 micro_group을 나누므로 학습 때의 그룹 scale을 그대로 보존한다.
+        ``native`` backend는 CPU C++ 커널 빌드/실패를 숨기지 않는다.
+        """
+        if backend not in ("native", "reference"):
+            raise ValueError(f"backend는 native/reference 중 하나여야 한다: {backend}")
+        if not getattr(self.cfg, "sparse34", False):
+            raise RuntimeError(
+                "3:4 CPU LUT는 sparse34=True로 양자화된 가중치만 받는다. "
+                "일반 삼진을 조용히 3:4로 바꾸지 않는다.")
+        if self._lut_codes is not None:
+            raise RuntimeError("이미 일반 LUT 배포형으로 변환돼 3:4 LUT로 되돌릴 수 없다.")
+        if self._s34_codes is not None:
+            if backend != self._s34_backend:
+                raise RuntimeError(
+                    f"이미 backend={self._s34_backend}로 변환됐다; {backend}로 바꿀 수 없다.")
+            return self
+        if self._i8 is None:
+            if self._wq is None:
+                raise RuntimeError("to_sparse34_lut() 전에 freeze_quant()가 필요하다.")
+            self.to_int8()
+
+        from .lut import pack_sparse34_rows
+
+        code = self._i8.contiguous()
+        O, I = code.shape
+        group = _group_of(self.cfg, I)
+        if group % 4:
+            raise RuntimeError(f"3:4 LUT는 4의 배수 group을 요구한다: group={group}")
+        if backend == "native" and code.device.type != "cpu":
+            raise RuntimeError(
+                f"native 3:4 LUT는 CPU 배포 전용이다: code.device={code.device}")
+        packed, n = pack_sparse34_rows(code)
+        if n != I or packed.shape[0] != O:
+            raise RuntimeError(
+                f"3:4 행별 패킹 내부 계약 위반: n={n}/{I}, rows={packed.shape[0]}/{O}")
+        self._s34_codes = packed
+        self._s34_alpha = self._alpha.detach().to(torch.float32).contiguous()
+        self._s34_group = group
+        self._s34_backend = backend
+        self._i8 = self._alpha = None
+        self._i8_cache = self._i8_cache_gen = None
+        return self
+
     def lut_bytes(self):
         """★LUT 경로의 **상주 바이트**(코드 + per-row α). 함정 1 — 저장이 아니라 상주다."""
         if self._lut_codes is None:
             return 0
         return self._lut_codes.numel() * 1 + self._lut_alpha.numel() * 4
+
+    def sparse34_lut_bytes(self):
+        """3:4 CPU LUT 경로의 실제 상주 바이트: 1.25bpw 행 stream + fp32 그룹 alpha."""
+        if self._s34_codes is None:
+            return 0
+        return self._s34_codes.numel() + self._s34_alpha.numel() * 4
 
     def _wq_from_i8(self):
         """int8 코드 + α 를 fp32 로 되돌린다.
@@ -328,9 +390,23 @@ class TLinear(nn.Module):
         self._wq = None
         self._i8 = self._alpha = None        # int8 저장도 해제(학습 재개 시 필수)
         self._lut_codes = self._lut_alpha = None     # ★P014 단계1 LUT 도
+        self._s34_codes = self._s34_alpha = None     # PM001 3:4 CPU LUT 도
+        self._s34_group = 0
+        self._s34_backend = "native"
         self._i8_cache = self._i8_cache_gen = None   # P034 단계3C 캐시도 함께
 
     def forward(self, x, mode_p=None):
+        if self._s34_codes is not None:          # PM001: 3:4 전용 CPU LUT 배포 경로(1.250 bpw)
+            from .sparse34_cpu import sparse34_lut_linear
+            y = sparse34_lut_linear(
+                x, self._s34_codes, self._s34_alpha, self._s34_group,
+                backend=self._s34_backend,
+                out_chunk=int(getattr(self.cfg, "lut_out_chunk", 0) or 0),
+            )
+            if self.use_mode and mode_p is not None:
+                h = F.linear(x, self.mode_a) * (mode_p @ self.mode_gain)
+                y = y + F.linear(h, self.mode_b)
+            return y
         if self._lut_codes is not None:          # ★★P014 단계1: LUT 배포 경로(1.600 bpw)
             from .lut import lut_linear, TRITS_PER_BYTE
             y = lut_linear(x, self._lut_codes, TRITS_PER_BYTE, self._lut_ipad,

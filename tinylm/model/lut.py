@@ -249,8 +249,8 @@ def residency_bytes(n_unique_ternary: int, n_other_params: int,
 #
 # ## 🚫이 블록이 **하지 않는** 것
 #
-# - **빠른 커널을 안 만든다.** `unpack_sparse34` 로 되돌려 곱한다 — `_wq_from_i8()` 과 같은 모양이다.
-#   ★**속도가 목적이 아니라 상주가 목적**이다(`CLAUDE.md` 첫 줄).
+# - 이 파일 자체는 **포맷과 참조 언팩만** 소유한다. 1.25bpw 스트림을 직접 읽는 CPU LUT
+#   연산은 moonshot 격리 모듈 `sparse34_cpu.py`와 `csrc/sparse34_lut_cpu.cpp`가 소유한다.
 # - **3:4 를 새로 학습시키지 않는다.** 이 함수들은 **이미 3:4 인 텐서**를 받는다.
 # - ⚠️**입력이 3:4 가 아니면 거절한다.** 조용히 근사하지 않는다 — 그것이 함정 1 의 재발이다.
 
@@ -275,52 +275,117 @@ def is_sparse34(t: torch.Tensor, block: int = SPARSE34_BLOCK) -> bool:
     return bool((z == 1).all())
 
 
-def pack_sparse34(t: torch.Tensor, block: int = SPARSE34_BLOCK):
-    """3:4 삼진 텐서 -> `(uint8 codes, n_orig)`. **4가중치 = 5비트.**
-
-    🚫**3:4 가 아니면 `ValueError`.** 근사하지 않는다.
-    """
-    if block != 4:
+def _sparse34_codes(t: torch.Tensor, block: int = SPARSE34_BLOCK) -> torch.Tensor:
+    """3:4 값의 4블록을 0..31 code로 바꾼다. 마지막 축의 행 경계를 보존한다."""
+    if block != SPARSE34_BLOCK:
         raise ValueError(f"★지금 포맷은 block=4 전용이다(받은 값 {block}).")
     if not is_sparse34(t, block):
         raise ValueError(
             "★입력이 3:4 준정형이 아니다 — 묶음마다 0 이 정확히 하나여야 한다. "
             "🚫조용히 근사하지 않는다(함정 1 의 재발을 막는다). "
             "`--sparse34` 로 학습한 가중치를 `freeze_quant()` 뒤에 넘기세요.")
-    n = t.numel()
-    g = t.reshape(-1, block).to(torch.int8)
-    # ★`argmax` 는 **int64** 를 낸다 — 아래에서 `torch.cat` 에 uint8 을 섞으면 죽는다.
-    #   dtype 을 한 곳에서 못박는다.
-    zero_pos = (g == 0).to(torch.uint8).argmax(dim=1).to(torch.int64)   # (N,) 0..3
-    # 0 이 아닌 셋의 부호를 **자리 순서대로** 3비트에 담는다
-    keep = torch.ones_like(g, dtype=torch.bool)
-    keep.scatter_(1, zero_pos.long().unsqueeze(1), False)
-    signs = (g[keep].reshape(-1, block - 1) > 0).to(torch.uint8)   # (N, 3) 1=양수
-    sign_bits = (signs[:, 0].to(torch.int64) * 4
-                 + signs[:, 1].to(torch.int64) * 2
-                 + signs[:, 2].to(torch.int64))
-    code = zero_pos * 8 + sign_bits                                # int64, 0..31
+    n = t.shape[-1]
+    flat = t.reshape(-1, block).to(torch.int8)
+    zero_pos = (flat == 0).to(torch.uint8).argmax(dim=1).to(torch.int64)
+    keep = torch.ones_like(flat, dtype=torch.bool)
+    keep.scatter_(1, zero_pos.unsqueeze(1), False)
+    signs = (flat[keep].reshape(-1, block - 1) > 0).to(torch.int64)
+    sign_bits = signs[:, 0] * 4 + signs[:, 1] * 2 + signs[:, 2]
+    return (zero_pos * 8 + sign_bits).reshape(*t.shape[:-1], n // block)
 
-    # ★8개 5-bit code를 작은 자리부터 연속해 5바이트에 담는다.
-    # 기존 `code0 * 32 + code1 -> uint8`은 10비트를 8비트로 잘라
-    # code0의 zero-position 2비트를 잃었다. 5비트 코드 둘은 한 byte에 들어갈 수 없다.
-    n_groups = code.numel()
+
+def _pack_sparse34_codes(codes: torch.Tensor) -> torch.Tensor:
+    """마지막 축의 5-bit code를 행별 byte stream으로 pack한다."""
+    if codes.ndim < 1:
+        raise ValueError("★sparse34 code 텐서는 축이 하나 이상이어야 한다.")
+    n_groups = codes.shape[-1]
+    if n_groups == 0:
+        return torch.empty(*codes.shape[:-1], 0, dtype=torch.uint8, device=codes.device)
+    ci = codes.to(torch.int64)
+    if not bool(((ci >= 0) & (ci < 32)).all()):
+        raise ValueError("★sparse34 code는 0..31 범위여야 한다.")
     pad_groups = (-n_groups) % SPARSE34_CODES_PER_CHUNK
     if pad_groups:
-        code = torch.cat([
-            code,
-            torch.zeros(pad_groups, dtype=code.dtype, device=code.device),
-        ])
-    c = code.reshape(-1, SPARSE34_CODES_PER_CHUNK)
+        z = torch.zeros(*ci.shape[:-1], pad_groups, dtype=ci.dtype, device=ci.device)
+        ci = torch.cat((ci, z), dim=-1)
+    c = ci.reshape(*ci.shape[:-1], -1, SPARSE34_CODES_PER_CHUNK)
     packed = torch.stack([
-        c[:, 0] | ((c[:, 1] & 0x07) << 5),
-        (c[:, 1] >> 3) | (c[:, 2] << 2) | ((c[:, 3] & 0x01) << 7),
-        (c[:, 3] >> 1) | ((c[:, 4] & 0x0F) << 4),
-        (c[:, 4] >> 4) | (c[:, 5] << 1) | ((c[:, 6] & 0x03) << 6),
-        (c[:, 6] >> 2) | (c[:, 7] << 3),
-    ], dim=1).to(torch.uint8).reshape(-1)
+        c[..., 0] | ((c[..., 1] & 0x07) << 5),
+        (c[..., 1] >> 3) | (c[..., 2] << 2) | ((c[..., 3] & 0x01) << 7),
+        (c[..., 3] >> 1) | ((c[..., 4] & 0x0F) << 4),
+        (c[..., 4] >> 4) | (c[..., 5] << 1) | ((c[..., 6] & 0x03) << 6),
+        (c[..., 6] >> 2) | (c[..., 7] << 3),
+    ], dim=-1).to(torch.uint8).reshape(*ci.shape[:-1], -1)
+    return packed[..., :_sparse34_bytes_for_groups(n_groups)].contiguous()
+
+
+def unpack_sparse34_codes(packed: torch.Tensor, n_groups: int) -> torch.Tensor:
+    """행별 5-bit stream을 0..31 code로 푼다. 가중치 텐서는 만들지 않는다."""
+    if packed.ndim < 1:
+        raise ValueError("★sparse34 packed 텐서는 축이 하나 이상이어야 한다.")
+    if n_groups < 0:
+        raise ValueError(f"★n_groups는 0 이상이어야 한다(받은 값 {n_groups}).")
     n_bytes = _sparse34_bytes_for_groups(n_groups)
-    return packed[:n_bytes].contiguous(), n
+    if packed.shape[-1] != n_bytes:
+        raise ValueError(
+            f"★패킹 행 크기가 group={n_groups}와 맞지 않는다: "
+            f"expected {n_bytes} bytes, got {packed.shape[-1]}.")
+    if n_groups == 0:
+        return torch.empty(*packed.shape[:-1], 0, dtype=torch.int64, device=packed.device)
+    p = packed.to(torch.int64)
+    pad_bytes = (-n_bytes) % SPARSE34_BYTES_PER_CHUNK
+    if pad_bytes:
+        z = torch.zeros(*p.shape[:-1], pad_bytes, dtype=p.dtype, device=p.device)
+        p = torch.cat((p, z), dim=-1)
+    b = p.reshape(*p.shape[:-1], -1, SPARSE34_BYTES_PER_CHUNK)
+    code = torch.stack([
+        b[..., 0] & 0x1F,
+        (b[..., 0] >> 5) | ((b[..., 1] & 0x03) << 3),
+        (b[..., 1] >> 2) & 0x1F,
+        (b[..., 1] >> 7) | ((b[..., 2] & 0x0F) << 1),
+        (b[..., 2] >> 4) | ((b[..., 3] & 0x01) << 4),
+        (b[..., 3] >> 1) & 0x1F,
+        (b[..., 3] >> 6) | ((b[..., 4] & 0x07) << 2),
+        (b[..., 4] >> 3) & 0x1F,
+    ], dim=-1).reshape(*p.shape[:-1], -1)
+    return code[..., :n_groups].contiguous()
+
+
+def _sparse34_values(codes: torch.Tensor, dtype=torch.float32) -> torch.Tensor:
+    """0..31 code를 4개 {-1,0,+1} 값으로 복원한다."""
+    flat = codes.reshape(-1).to(torch.int64)
+    zero_pos = flat // 8
+    sb = flat % 8
+    signs = torch.stack([(sb // 4) % 2, (sb // 2) % 2, sb % 2], dim=1)
+    vals = (signs * 2 - 1).to(dtype)
+    out = torch.zeros(flat.numel(), SPARSE34_BLOCK, dtype=dtype, device=codes.device)
+    keep = torch.ones(flat.numel(), SPARSE34_BLOCK, dtype=torch.bool, device=codes.device)
+    keep.scatter_(1, zero_pos.unsqueeze(1), False)
+    out[keep] = vals.reshape(-1)
+    return out.reshape(*codes.shape, SPARSE34_BLOCK)
+
+
+def pack_sparse34(t: torch.Tensor, block: int = SPARSE34_BLOCK):
+    """3:4 삼진 텐서 -> `(uint8 codes, n_orig)`. **4가중치 = 5비트.**
+
+    🚫**3:4 가 아니면 `ValueError`.** 근사하지 않는다.
+    """
+    n = t.numel()
+    code = _sparse34_codes(t, block).reshape(-1)
+    return _pack_sparse34_codes(code), n
+
+
+def pack_sparse34_rows(t: torch.Tensor, block: int = SPARSE34_BLOCK):
+    """3:4 텐서의 마지막 축을 **행별 독립 stream**으로 pack한다.
+
+    CPU 커널이 출력행 `o`를 O(1)로 찾으려면 행 경계가 byte-aligned여야 한다. 기존
+    `pack_sparse34()`는 전체 텐서를 한 stream으로 보존하고, 이 함수는 `(O,row_bytes)`를 만든다.
+    """
+    if t.ndim < 2:
+        raise ValueError("★행별 패킹은 최소 2차원 (..., O, I) 텐서를 요구한다.")
+    n = t.shape[-1]
+    code = _sparse34_codes(t, block)
+    return _pack_sparse34_codes(code), n
 
 
 def unpack_sparse34(packed: torch.Tensor, n: int, block: int = SPARSE34_BLOCK,
@@ -331,44 +396,19 @@ def unpack_sparse34(packed: torch.Tensor, n: int, block: int = SPARSE34_BLOCK,
     if n < 0 or n % block:
         raise ValueError(f"★n은 0 이상의 4의 배수여야 한다(받은 값 {n}).")
     n_groups = n // block
-    n_bytes = _sparse34_bytes_for_groups(n_groups)
-    packed = packed.reshape(-1)
-    if packed.numel() != n_bytes:
-        raise ValueError(
-            f"★패킹 크기가 n={n}과 맞지 않는다: "
-            f"expected {n_bytes} bytes, got {packed.numel()}.")
-    if n_groups == 0:
-        return torch.empty(0, dtype=dtype, device=packed.device)
+    code = unpack_sparse34_codes(packed.reshape(-1), n_groups)
+    return _sparse34_values(code, dtype).reshape(-1)[:n]
 
-    # 끝 chunk만 5바이트보다 짧을 수 있다. 0으로 채운 뒤 같은 8->5 레이아웃을 역전개한다.
-    pad_bytes = (-n_bytes) % SPARSE34_BYTES_PER_CHUNK
-    p = packed.to(torch.int64)
-    if pad_bytes:
-        p = torch.cat([
-            p,
-            torch.zeros(pad_bytes, dtype=p.dtype, device=p.device),
-        ])
-    b = p.reshape(-1, SPARSE34_BYTES_PER_CHUNK)
-    code = torch.stack([
-        b[:, 0] & 0x1F,
-        (b[:, 0] >> 5) | ((b[:, 1] & 0x03) << 3),
-        (b[:, 1] >> 2) & 0x1F,
-        (b[:, 1] >> 7) | ((b[:, 2] & 0x0F) << 1),
-        (b[:, 2] >> 4) | ((b[:, 3] & 0x01) << 4),
-        (b[:, 3] >> 1) & 0x1F,
-        (b[:, 3] >> 6) | ((b[:, 4] & 0x07) << 2),
-        (b[:, 4] >> 3) & 0x1F,
-    ], dim=1).reshape(-1)
-    code = code[:n_groups]
-    zero_pos = code // 8
-    sb = code % 8
-    signs = torch.stack([(sb // 4) % 2, (sb // 2) % 2, sb % 2], dim=1)   # (G,3) 1=양수
-    vals = (signs * 2 - 1).to(dtype)                                     # {-1,+1}
-    out = torch.zeros(n_groups, block, dtype=dtype, device=packed.device)
-    keep = torch.ones(n_groups, block, dtype=torch.bool, device=packed.device)
-    keep.scatter_(1, zero_pos.unsqueeze(1), False)
-    out[keep] = vals.reshape(-1)
-    return out.reshape(-1)[:n]
+
+def unpack_sparse34_rows(packed: torch.Tensor, n: int, block: int = SPARSE34_BLOCK,
+                         dtype=torch.float32) -> torch.Tensor:
+    """`pack_sparse34_rows`의 역. leading/output 행 경계를 그대로 보존한다."""
+    if block != SPARSE34_BLOCK:
+        raise ValueError(f"★지금 포맷은 block=4 전용이다(받은 값 {block}).")
+    if n < 0 or n % block:
+        raise ValueError(f"★n은 0 이상의 4의 배수여야 한다(받은 값 {n}).")
+    code = unpack_sparse34_codes(packed, n // block)
+    return _sparse34_values(code, dtype).reshape(*packed.shape[:-1], n)
 
 
 def sparse34_bytes(n_weights: int) -> int:

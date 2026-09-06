@@ -117,3 +117,29 @@
 
 > **최근 갱신 2026-08-14** — 본문(2026-07)의 전제 5개 중 5개가 실측으로 뒤집혔다.
 > 커널 자체 제작은 보류, 남은 것은 **있는 연산을 쓰는 것**이다.
+
+---
+
+# ★2026-09-06 PM001 moonshot 갱신 — packed 3:4 CPU 커널은 별개다
+
+2026-08-14의 “커널을 짤 필요가 없다”는 결론은 **per-row int8 연산이 충분히 빠르다는 가정**에
+묶여 있었다. 이후 결과 028에서 `_weight_int8pack_mm`은 모델 전체 **2.91 tok/s**, 같은 실행의
+언팩 캐시 **24.42 tok/s**로 약 8.4배 느렸고, 36개 standalone 조합도 모두 dense 복원 matmul보다
+느렸다. 따라서 “기존 연산으로 해결”은 이 Windows/x86 빌드에서 기각됐다.
+
+현행 상태를 다시 나눈다.
+
+| 경로 | 현재 상태 | 증명된 것 | 아직 안 증명된 것 |
+|---|---|---|---|
+| GPU Triton training prototype | forward 구현·정확성 통과 | Windows에서 constexpr 수정 후 실제 실행 | packed 1.25bpw, fused backward, 학습 가속 |
+| 일반 g5 PyTorch LUT | 구현·모델 연결 | 1.600bpw, 정확성, 상주 절감 | CPU 속도(기존 profile은 fp32보다 느림) |
+| **PM001 3:4 native CPU LUT** | 소스·연결 구현, 사용자 동적 게이트 대기 | 1.25bpw 직접 입력, g128 alpha 보존 설계 | 현재 PC 빌드·수치·shape별 속도 |
+
+과거 Triton 실패의 확정 원인은 Windows library 자체가 아니라 anneal 누락, `tl.constexpr` 위반,
+Dynamo 재컴파일이라는 구현·통합 결함이었다. PM001은 `--ternary-kernel-strict`와 backend telemetry를
+추가해 현재 환경에서 import/compile/launch 실패를 reference 폴백으로 숨기지 않는다.
+
+3:4 native 구현은 `tinylm/model/sparse34_cpu.py`와
+`tinylm/model/csrc/sparse34_lut_cpu.cpp`에 격리했다. 이는 **CPU 추론 전용**이며 학습 forward를
+바꾸지 않는다. 계획·사전 기준·사용자 실행 순서는
+`plan/PM001__MOONSHOT__TERNARY_TRITON_AND_SPARSE34_CPU_LUT__PLAN.md`가 소유한다.

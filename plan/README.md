@@ -25,5 +25,10 @@ PM 산출물을 일반 실험 폴더나 일반 큐에 등재하지 않는다.
 - AI는 `.bat`, 학습, 모델 로딩, torch 진단을 실행하지 않는다. 사용자가 배치를 실행한다.
 - AI가 수행하는 검증은 torch를 import하지 않는 정적 검사에 한정한다.
 
-현재 첫 계획은 [PM000 Latin GQA](./PM000__MOONSHOT__LATIN_GQA__PLAN.md)다. 원 Stage0는
-PASS했지만 전용 모듈 격리 후 Stage0B 동적 재검증과 전체-smoke 처리 결정 전까지 Stage1은 HOLD다.
+현재 계획:
+
+- [PM000 Latin GQA](./PM000__MOONSHOT__LATIN_GQA__PLAN.md)
+- [PM001 Triton 계약·3:4 CPU LUT](./PM001__MOONSHOT__TERNARY_TRITON_AND_SPARSE34_CPU_LUT__PLAN.md)
+
+PM000의 Stage0·Stage0B와 `fdce364` 기준 sparse34 재스모크는 사용자 실행에서 PASS했다.
+PM001 이후 변경은 그 과거 로그가 검증하지 않으며 PM001 전용 Stage0/1/2를 새로 실행해야 한다.

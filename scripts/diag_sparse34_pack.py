@@ -15,7 +15,7 @@
 | 검사 | 성공했을 때 나와야 하는 값 |
 |---|---|
 | **왕복 무손실** | ★**불일치 0** — 패킹→언패킹이 **비트 동일**이어야 한다 |
-| **codebook/tail** | 32개 코드 전수 + 1·2·7·8·9·17 group 경계의 왕복·바이트 수가 정확해야 한다 |
+| **codebook/tail** | 32개 코드 전수 + 1·2·7·8·9·17 group 경계의 flat/행별 왕복·바이트 수가 정확해야 한다 |
 | **bpw** | ★**정확히 1.250** (5비트 / 4가중치). 이론 하한 `log2(4)+3 = 5.000비트` 와 **같다** |
 | LUT 대비 | ★**1.600 → 1.250 = −21.9%** |
 | 🚫3:4 가 아닌 입력 | ★**`ValueError`** — 조용히 근사하면 함정 1 의 재발이다 |
@@ -62,7 +62,8 @@ def main() -> int:
     a = ap.parse_args()
 
     import torch                                # 여기서만
-    from tinylm.model.lut import (pack_sparse34, unpack_sparse34, sparse34_bytes,
+    from tinylm.model.lut import (pack_sparse34, unpack_sparse34, pack_sparse34_rows,
+                                  unpack_sparse34_rows, unpack_sparse34_codes, sparse34_bytes,
                                   sparse34_vs_lut, is_sparse34, SPARSE34_BPW)
 
     print("=" * 96)
@@ -130,6 +131,44 @@ def main() -> int:
         for error in edge_errors:
             print(f"      {error}")
 
+    # CPU LUT는 출력행을 O(1)로 찾기 위해 **행마다** byte-align한다. flat stream 통과로는
+    # 행 경계/tail 버그를 못 잡으므로 같은 7개 경계를 3행으로 별도 검증한다.
+    row_errors = []
+    for groups in edge_groups:
+        expected_codes = torch.arange(groups, dtype=torch.int64) % 32
+        zero_pos_row = expected_codes // 8
+        sb_row = expected_codes % 8
+        signs_row = torch.stack([
+            (sb_row // 4) % 2,
+            (sb_row // 2) % 2,
+            sb_row % 2,
+        ], dim=1)
+        vals_row = (signs_row * 2 - 1).to(torch.int8)
+        one_row = torch.zeros(groups, 4, dtype=torch.int8)
+        keep_row = torch.ones(groups, 4, dtype=torch.bool)
+        keep_row.scatter_(1, zero_pos_row.unsqueeze(1), False)
+        one_row[keep_row] = vals_row.reshape(-1)
+        rows = torch.stack((one_row.reshape(-1),
+                            one_row.flip(0).reshape(-1),
+                            one_row.roll(1, 0).reshape(-1)))
+        packed_rows, n_row = pack_sparse34_rows(rows)
+        restored_rows = unpack_sparse34_rows(packed_rows, n_row, dtype=torch.int8)
+        decoded_rows = unpack_sparse34_codes(packed_rows, groups)
+        expected_row_bytes = (groups * 5 + 7) // 8
+        if (not torch.equal(restored_rows, rows)
+                or packed_rows.shape != (3, expected_row_bytes)
+                or not torch.equal(decoded_rows[0], expected_codes)):
+            row_errors.append(
+                f"groups={groups}: bad={int((restored_rows != rows).sum())}, "
+                f"shape={tuple(packed_rows.shape)}/(3,{expected_row_bytes})")
+    print("  [1c] row-stream/tail — 3 rows x groups "
+          + ",".join(str(x) for x in edge_groups)
+          + ("  ✅" if not row_errors else "  🚫**실패**"))
+    if row_errors:
+        fails += 1
+        for error in row_errors:
+            print(f"      {error}")
+
     # ── 2. bpw ─────────────────────────────────────────────────────────────
     b34 = packed.numel()
     b34_formula = sparse34_bytes(n)
@@ -188,7 +227,7 @@ def main() -> int:
     if fails:
         print(f"  🚫★**{fails}건 실패** — 포맷이 아직 못 쓴다.")
         return 1
-    print("  ✅ 포맷 검사 4종 통과. 상주 이득은 위 표가 정본이다.")
+    print("  ✅ flat/행별 포맷 검사 5종 통과. 상주 이득은 위 표가 정본이다.")
     print(f"  ★판정 요약: 최악 비율 **{worst:.2f}x** — "
           + ("선 안이라 채택 후보" if worst <= 1.0 else
              "🚫**선 밖이라 지배당한다.** 예산 천장에 걸렸을 때만 쓴다"))

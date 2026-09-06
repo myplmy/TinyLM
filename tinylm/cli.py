@@ -224,6 +224,8 @@ def main():
     p.add_argument("--center-weights", action="store_true", help="(실험) g128 그룹 latent weight centering")
     p.add_argument("--ternary-kernel", action="store_true", help="(실험) 커스텀 삼진 커널 경로(레퍼런스)")
     p.add_argument("--ternary-kernel-triton", action="store_true", help="커널 Triton forward(검증 후에만)")
+    p.add_argument("--ternary-kernel-strict", action="store_true",
+                   help="(PM001) Triton 미설치/컴파일/호출 실패를 reference 폴백으로 숨기지 않고 중단")
     p.add_argument("--sparse34", action="store_true", help="(P016) 3:4 희소 삼진 1.25bpw(각 4-블록 |w|최소 1개 0강제)")
     p.add_argument("--pool-tokens", default=None,
                    help="데이터 풀(캐시) 크기를 학습길이·이름과 분리 지정(예: 600M). "
@@ -314,6 +316,7 @@ def main():
               ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from,
               snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None),
               use_ternary_kernel=a.ternary_kernel, ternary_kernel_triton=a.ternary_kernel_triton,
+              ternary_kernel_strict=a.ternary_kernel_strict,
               kd_cache=a.kd_cache, kd_topk=a.kd_topk,
               kd_every=a.kd_every, kd_dynamic=a.kd_dynamic, sparse34=a.sparse34,
               pool_tokens=pool_tok, exact_cache=a.exact_cache,

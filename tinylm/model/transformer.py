@@ -114,6 +114,7 @@ class TiedMLPTransformer(nn.Module):
         self._quant_frozen = False                     # freeze_quant() 참조(추론 전용 최적화)
         self._int8_store = False                       # P034 단계3
         self._lut_store = False                        # ★P014 단계1 (LUT 배포 경로)
+        self._sparse34_lut_store = False               # PM001 (3:4 1.25bpw CPU LUT 배포 경로)
         self._unpack_cache = False                     # P034 단계3C (기본 off = 종전 경로)
         self._unpack_gen = 0
         self._cacheable_mlps = []
@@ -167,6 +168,9 @@ class TiedMLPTransformer(nn.Module):
         self._quant_frozen = False
         for m in self._tlinear_cache:
             m.clear_quant()
+        self._int8_store = False
+        self._lut_store = False
+        self._sparse34_lut_store = False
 
     def latent_dropped(self):
         """P034 단계2 가 적용됐는지. `mem_breakdown()` 의 상주 계산이 이 값을 본다."""
@@ -227,6 +231,38 @@ class TiedMLPTransformer(nn.Module):
 
     def lut_bytes(self):
         return sum(m.lut_bytes() for m in self._tlinear_cache)
+
+    def to_sparse34_lut(self, backend="native"):
+        """PM001 — 모든 TLinear를 3:4 1.25bpw CPU LUT 배포형으로 변환한다.
+
+        정상 순서: ``freeze_quant() -> drop_latent() -> to_sparse34_lut()``.
+        C++ 빌드는 최초 forward에서만 일어나며, ``native`` 실패는 reference로 숨기지 않는다.
+        """
+        if not self._quant_frozen:
+            raise RuntimeError("to_sparse34_lut() 전에 freeze_quant()가 필요하다.")
+        if not getattr(self.cfg, "sparse34", False):
+            raise RuntimeError(
+                "checkpoint cfg.sparse34=False — 일반 삼진 모델을 3:4로 조용히 변환하지 않는다.")
+        if not self._tlinear_cache or not all(m.latent_dropped() for m in self._tlinear_cache):
+            raise RuntimeError(
+                "to_sparse34_lut() 전에 drop_latent()가 필요하다. latent를 남기면 상주 이득 주장이 거짓이다.")
+        if self._lut_store:
+            raise RuntimeError("이미 일반 LUT 배포형으로 변환됐다.")
+        for m in self._tlinear_cache:
+            m.to_sparse34_lut(backend=backend)
+        self._int8_store = False
+        self._lut_store = False
+        self._sparse34_lut_store = True
+        n = self.sparse34_lut_bytes()
+        print(f"[PM001][s34-cpu-lut] 삼진 {len(self._tlinear_cache)}개 층 -> "
+              f"1.25bpw 행 stream + g{self.cfg.micro_group} fp32 alpha. 상주 {n/2**20:.2f} MiB")
+        print(f"[PM001][s34-cpu-lut] backend={backend}; native 빌드/호출 실패는 폴백 없이 중단")
+
+    def sparse34_lut_stored(self):
+        return getattr(self, "_sparse34_lut_store", False)
+
+    def sparse34_lut_bytes(self):
+        return sum(m.sparse34_lut_bytes() for m in self._tlinear_cache)
 
     # ---------- P034 단계5 : 임베딩 (★설계 미완 — 구현하지 않는다) ----------
     #
@@ -902,7 +938,11 @@ class TiedMLPTransformer(nn.Module):
         #   P034 단계2 로 latent 를 해제하면 **1벌**이 된다(= 이 값이 절반 근처로 떨어진다).
         copies = 1 if self.latent_dropped() else 2
         # ★P034 단계3: 삼진 사본이 int8(1바이트) + 그룹 α(fp32, 파라미터당 4/micro_group 바이트)
-        if self.lut_stored():
+        if self.sparse34_lut_stored():
+            # PM001 — 실제 행별 5-bit stream(행 tail 포함) + fp32 그룹 alpha를 직접 센다.
+            tern_bytes = self.sparse34_lut_bytes()
+            runtime_mb = (tern_bytes + (mode + lora) * 4 + (emb + other) * 4) / 1024 ** 2
+        elif self.lut_stored():
             # ★★P014 단계1 — 코드 1바이트/5가중치 + **행당** alpha 4바이트.
             #   ⚠️`micro_group` 이 식에 **없다** — per-row 이기 때문이다(함정 1 계열:
             #   같은 이름의 항이 경로마다 다른 양을 가리킨다).
@@ -921,6 +961,7 @@ class TiedMLPTransformer(nn.Module):
                 "runtime_copies": copies,        # 2 = latent + dequant / 1 = P034 단계2 적용
                 "int8_stored": self.int8_stored(),   # P034 단계3
                 "lut_stored": self.lut_stored(),     # ★P014 단계1
+                "sparse34_lut_stored": self.sparse34_lut_stored(),  # PM001
                 "latent_dropped": copies == 1,
                 "parts_mb": parts,
                 "params": {"ternary": tern, "mode": mode, "emb": emb, "other": other, "lora": lora,

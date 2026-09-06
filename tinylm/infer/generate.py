@@ -27,15 +27,28 @@ def _strip(sd):
 
 
 def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8_store=False,
-               unpack_cache=False, emb_quant=None, emb_chunk=0, lut=False, lut_out_chunk=0):
+               unpack_cache=False, emb_quant=None, emb_chunk=0, lut=False, lut_out_chunk=0,
+               sparse34_lut=False, sparse34_lut_backend="native"):
     """`drop_latent=True` 면 P034 단계2 — fp32 latent 를 해제해 **상주를 약 절반**으로 줄인다.
 
     되돌릴 수 없으므로 **추론 전용**이다. 학습·진단(gradient 필요)에서는 절대 켜지 않는다.
 
     `unpack_cache=True` 는 P034 **단계3C** — int8 언팩을 **유니크 모듈당 1회**로 줄인다.
     `int8_store=True` 일 때만 의미가 있고, 결과는 **비트 동일**해야 한다.
+
+    `sparse34_lut=True` 는 PM001 3:4 전용 CPU 배포 경로다. `drop_latent=True`와
+    sparse34 체크포인트를 요구하며 int8/일반 LUT와 동시에 켤 수 없다.
     """
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+    stores = int(bool(int8_store)) + int(bool(lut)) + int(bool(sparse34_lut))
+    if stores > 1:
+        raise ValueError("int8_store/lut/sparse34_lut 중 하나만 선택할 수 있다.")
+    if sparse34_lut:
+        if not drop_latent:
+            raise ValueError(
+                "sparse34_lut는 drop_latent=True를 요구한다. latent를 남기면 상주 이득이 아니다.")
+        if torch.device(device).type != "cpu":
+            raise ValueError(f"sparse34_lut는 CPU 배포 전용이다: device={device}")
     path = Path(ckpt_path) if ckpt_path else CKPT / f"{arch}.pt"
     st = torch.load(path, map_location=device)
     cfg = TMTConfig(**st["cfg"])
@@ -48,7 +61,10 @@ def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8
         model.drop_latent()                     # ★P034 단계2
     # ★★P014 단계1 — LUT 배포 경로. **int8 보다 뒤에** 온다(int8 을 이어받는다).
     #   ⚠️`drop_latent` 와 함께 쓰는 것이 정상 순서다: freeze -> drop_latent -> to_lut.
-    if lut:
+    if sparse34_lut:
+        model.cfg.lut_out_chunk = int(lut_out_chunk or 0)
+        model.to_sparse34_lut(backend=sparse34_lut_backend)
+    elif lut:
         model.cfg.lut_out_chunk = int(lut_out_chunk or 0)
         model.to_lut()
     elif int8_store:

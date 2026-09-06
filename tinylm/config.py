@@ -113,6 +113,7 @@ class TMTConfig:
     center_weights: bool = False     # (실험) g128 그룹별 latent weight mean-centering
     use_ternary_kernel: bool = False # (실험) 커스텀 삼진 커널 경로 사용(기본 off = 기존 경로)
     ternary_kernel_triton: bool = False  # 커널 내부에서 Triton forward(검증 후에만 True)
+    ternary_kernel_strict: bool = False  # Triton 요청 실패 시 reference 폴백 대신 즉시 중단(PM001)
 
     # --- misc ---
     max_seq_len: int = 2048
@@ -191,6 +192,12 @@ class TMTConfig:
         if self.sparse34:
             assert self.micro_group and self.micro_group % 4 == 0, \
                 "sparse34 는 group 이 4의 배수여야 함(3:4 블록). per-row(0)와는 함께 못 쓴다"
+            assert not self.use_ternary_kernel, \
+                "sparse34 학습은 커스텀 Triton 경로 미지원 — 표준 F.linear 경로만 허용"
+        assert not self.ternary_kernel_triton or self.use_ternary_kernel, \
+            "ternary_kernel_triton=True는 use_ternary_kernel=True를 함께 요구"
+        assert not self.ternary_kernel_strict or self.ternary_kernel_triton, \
+            "ternary_kernel_strict=True는 ternary_kernel_triton=True를 함께 요구"
         assert self.repeat_where in ("front", "back", "even"), \
             f"repeat_where 는 front|back|even — 받은 값: {self.repeat_where}"
         assert self.infer_repeat > 0, "infer_repeat 는 양수여야 한다"
