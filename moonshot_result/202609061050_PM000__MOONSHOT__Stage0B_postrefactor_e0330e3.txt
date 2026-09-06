@@ -1,0 +1,22 @@
+[commit] e0330e3  +dirty 48개(커밋 안 된 변경)
+[commit] ⚠️ dirty 가 0 이 아니면 **이 커밋 상태로 검증한 것이 아니다** — 커밋 + 미커밋 변경의 합이다.
+==============================================================================
+[Stage0B] Revalidate PM000 after algorithm isolation: R1, R3, cache, state, backward
+
+==============================================================================
+[runlog] 2026-09-06 10:50:34  name=PM000__MOONSHOT__Stage0B_postrefactor
+[runlog] cwd=z:\TinyLM_moonshot
+[runlog] cmd=python scripts\diag_pm000_latin_gqa.py --device cpu
+==============================================================================
+[PASS] schedule contract — random seed17=[0, 3, 2, 1, 4]
+[PASS] parameter/state contract — params=36,136, keys=47
+[PASS] R1 exact identity
+[PASS] R3 treatment is live — max_abs_delta=6.521e-03
+[PASS] cached/full agreement — max_abs=3.539e-08, kv_entries=4
+[PASS] finite backward — loss=0.000030, grad_tensors=47
+
+PM000 CONTRACT PASS — this proves wiring only, not model quality.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-06 10:50:36)
+==============================================================================
+STAGE0B PASS. Wiring only. Do not run Stage1 until the latest full-smoke disposition is recorded.
