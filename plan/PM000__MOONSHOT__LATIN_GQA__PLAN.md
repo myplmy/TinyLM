@@ -1,6 +1,6 @@
 # PM000__MOONSHOT__LATIN_GQA — 반복 회차별 균형 GQA 재배선
 
-> 상태: **Stage0·Stage0B PASS / sparse34 수정 후 공통 smoke 재검증 대기 / Stage1 HOLD**
+> 상태: **Stage0·Stage0B·sparse34 동적 계약 PASS / 전체 smoke는 check_links 1건 RED / Stage1 HOLD**
 > 브랜치: **`moonshot` 전용**
 > 작성일: 2026-09-06
 > 결과 문서: [`PM000__MOONSHOT__LATIN_GQA__RESULT.md`](../moonshot_result/PM000__MOONSHOT__LATIN_GQA__RESULT.md) — 품질 효과는 아직 미측정
@@ -362,3 +362,7 @@ AI가 수행하지 않을 검증:
   전체 smoke는 `check_links` exit 5와 수정 전 `diag_sparse34_pack` exit 1로 RED.
 - 2026-09-06: sparse34의 10비트→8비트 손실 원인을 `8 code / 5 byte` 포맷으로
   수정. AI는 torch/`.bat`을 실행하지 않았으므로 수정 후 공통 smoke 재검증 전 Stage1 HOLD.
+- 2026-09-06: 사용자 재실행 `202609061405_smoke_fdce364.txt`에서 sparse34 1,000,000개
+  왕복 불일치 0, codebook/tail, 정확히 1.250000bpw, 잘못된 입력 거부와 PM000 arm/contract가
+  모두 PASS. 다만 `summarize_smoke.py` 기준 34개 arm 중 `check_links.py` exit 5 한 건이 남아
+  전체 smoke는 RED이고 장기 Stage1 HOLD는 유지.

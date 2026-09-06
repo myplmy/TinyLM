@@ -14,4 +14,6 @@
 
 현재 결과 문서:
 
-- [`PM000__MOONSHOT__LATIN_GQA__RESULT.md`](PM000__MOONSHOT__LATIN_GQA__RESULT.md) — Stage0/Stage0B wiring PASS, 최신 전체 smoke RED(수정 전), sparse34 수정 후 재검증 대기, 품질 미측정
+- [`PM000__MOONSHOT__LATIN_GQA__RESULT.md`](PM000__MOONSHOT__LATIN_GQA__RESULT.md) — Stage0/Stage0B·sparse34 동적 계약 PASS, 전체 smoke는 check_links 1건 RED, Stage1 HOLD, 품질 미측정
+
+PM001은 아직 사용자 실행 로그가 없으므로 결과 문서를 만들지 않았다.

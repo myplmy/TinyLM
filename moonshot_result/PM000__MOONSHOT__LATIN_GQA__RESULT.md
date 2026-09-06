@@ -1,6 +1,6 @@
 # PM000__MOONSHOT__LATIN_GQA — 실행 결과
 
-> 현재 판정: **Stage0/Stage0B 배선 계약 PASS / 최신 전체 smoke RED(수정 전) / sparse34 수정 후 재검증 대기 / 품질 효과 미측정**
+> 현재 판정: **Stage0/Stage0B·sparse34 동적 계약 PASS / 최신 전체 smoke RED(check_links 1건) / Stage1 HOLD / 품질 효과 미측정**
 > 실행일: 2026-09-06 (사용자 실행)
 > 분석일: 2026-09-06
 > 계획: [`PM000__MOONSHOT__LATIN_GQA__PLAN.md`](../plan/PM000__MOONSHOT__LATIN_GQA__PLAN.md)
@@ -16,11 +16,11 @@ PM000의 pass-dependent Latin GQA 구현은 전용 모듈 격리 후에도 사�
 수행되지 않았고, 30-step synthetic loss는 배선 확인용이라 일반지능이나 제품 품질의 근거로
 사용할 수 없다.
 
-또한 09:51에 시작한 최신 저장소 전체 smoke는 34개 runlog arm 중 2개가 nonzero라서
-PASS가 아니다. PM000 arm과 instrumentation은 통과했지만 `check_links.py` exit 5와
-`diag_sparse34_pack.py` exit 1이 남았다. 로그 분석 후 sparse34의 10비트→8비트 손실
-원인을 수정했지만, AI는 torch 진단과 `.bat`을 실행하지 않았으므로 최신 관측 판정은
-여전히 **전체 smoke RED / 수정 후 재검증 대기**다.
+09:51 smoke에서 발견해 수정한 sparse34의 10비트→8비트 손실은 14:05 사용자 재실행으로
+동적 공백이 닫혔다. 1,000,000개 왕복 불일치 0, tail/codebook, 정확히 1.250000bpw,
+잘못된 입력 거부가 모두 통과했다. 다만 14:05 저장소 전체 smoke 34개 runlog arm 중
+`check_links.py` exit 5 한 건은 남았다. 따라서 **PM000 및 sparse34 기능 계약은 PASS지만
+저장소 전체 smoke는 RED**이며, 장기 Stage1은 정책상 HOLD다.
 
 ## 2. 증거와 provenance
 
@@ -30,11 +30,12 @@ PASS가 아니다. PM000 arm과 instrumentation은 통과했지만 `check_links.
 | PM000 Stage0 | [`202609060859_PM000__MOONSHOT__Stage0_contract_e0330e3.txt`](202609060859_PM000__MOONSHOT__Stage0_contract_e0330e3.txt) | `e0330e3 +dirty 28개` | PASS |
 | 최신 저장소 smoke | [`202609060951_smoke_e0330e3.txt`](../smoketest_logs/202609060951_smoke_e0330e3.txt) | `e0330e3 +dirty 47개` | 격리 후 PM arm/contract PASS, 전체 FAIL |
 | PM000 Stage0B | [`202609061050_PM000__MOONSHOT__Stage0B_postrefactor_e0330e3.txt`](202609061050_PM000__MOONSHOT__Stage0B_postrefactor_e0330e3.txt) | `e0330e3 +dirty 48개` | PASS |
+| sparse34 수정 후 공통 smoke | [`202609061405_smoke_fdce364.txt`](../smoketest_logs/202609061405_smoke_fdce364.txt) | `fdce364 +dirty 1개` | sparse34·PM arm·계측 PASS, 전체 FAIL(check_links 1건) |
 | 최신 PM smoke JSON | [`tinygqa_synthetic_2M_dense_pm000__sm_gqapass.json`](../runs/logs/tinygqa_synthetic_2M_dense_pm000__sm_gqapass.json) | 최신 smoke 실행 산출물 | 계측 계약 PASS |
 
-`+dirty`이므로 이 결과들은 커밋 `e0330e3` 단독이 아니라 **그 커밋과 각 실행 시점
-미커밋 변경의 합**을 검증한다. Stage0B는 PM000 격리 리팩터링 후 새 동적 증거이다.
-다만 그 뒤 sparse34 포맷 코드를 바꾸었으므로 수정 후 전체 smoke 증거는 아직 없다.
+첫 네 결과의 `+dirty`는 커밋 `e0330e3` 단독이 아니라 **그 커밋과 각 실행 시점
+미커밋 변경의 합**을 검증한다는 뜻이다. Stage0B는 PM000 격리 리팩터링 후 새 동적 증거다.
+14:05 smoke는 별도로 sparse34 수정이 들어간 `fdce364`와 당시 미커밋 1개의 합을 검증한다.
 
 첫 smoke는 tag 격리 보강 전에 `sm_gqapass`로 실행되어 로컬 일반 registry에도 smoke 행이
 생겼다. 역사적 실행 기록을 이 작업에서 삭제하지는 않았다. 후속 smoke는
@@ -89,7 +90,7 @@ cla_group=2, train_repeat=3.0, gqa_pass_schedule=latin, gqa_pass_seed=0
 최초 smoke의 wall `61.3089 s`와 최신의 `34.8172 s`는 compile/cache 상태를 통제한 matched
 보고가 아니므로 성능 차이로 해석하지 않는다.
 
-## 5. 전체 smoke의 두 실패
+## 5. 전체 smoke 실패와 sparse34 재검증
 
 09:51 최신 로그에 대한 `scripts/summarize_smoke.py`의 사후 판독 결과는 runlog arm 34개,
 nonzero 2개,
@@ -100,7 +101,7 @@ nonzero 2개,
 | `scripts/check_links.py` | 5 | `data_cache/*/meta.json` 로컬 상대링크 5건 결손 | 기존 환경/로컬 캐시 문제; PM 배선 PASS를 뒤집지는 않음 |
 | `scripts/diag_sparse34_pack.py` | 1 | `234,505 / 1,000,000` 왕복 mismatch, 실측 `1.000000 bpw` 대 기대 `1.250 bpw` | PM000과 독립인 기존 sparse34 경로 결함 |
 
-따라서 두 층의 판정은 분리한다.
+따라서 당시 두 층의 판정은 분리한다.
 
 - **PM000 Stage0와 PM smoke arm:** PASS
 - **저장소 전체 smoke:** FAIL
@@ -112,8 +113,19 @@ sparse34의 직접 원인은 5비트 code 두 개를 `code0 * 32 + code1`로 합
 확인한 업데이트된 `main` HEAD `486d71d`에서도 `e0330e3` 이후 해당 두 파일의 변경은
 없었고 구현이 동일했다. 따라서 main을 합치지 않고 이 branch에서 `8 code = 40 bit =
 5 byte` 연속 포맷으로 교체했다. 목표 크기는 `ceil(groups * 5 / 8)`이다. torch를 쓰지
-않는 독립 oracle 321건과 `py_compile`, 정적 import 검사는 PASS했다. 실제 tensor 왕복과
-smoke는 **수정 후 미실행**이므로 PASS를 선언하지 않는다.
+않는 독립 oracle 321건과 `py_compile`, 정적 import 검사는 PASS했다.
+
+14:05 사용자 재실행에서는 `diag_sparse34_pack.py`가 종료코드 0으로 다음을 확인했다.
+
+- 가중치 `1,000,000`개 왕복 불일치 `0`
+- group `1,2,7,8,9,17,32` codebook/tail 계약 PASS
+- `156,250 bytes / 1,000,000 weights = 1.250000 bpw`
+- 3:4가 아닌 입력 `ValueError`
+- PM000 synthetic arm 정상 종료, `PM000 CONTRACT PASS`, 계측 총 에러 `0`
+
+`summarize_smoke.py` 사후 판독은 34개 arm, nonzero 1개, exit 0 오류표지 0개다. 남은 한 건은
+09:51과 같은 로컬 cache 문서 링크 5개에 대한 `check_links.py` exit 5다. sparse34 구현 실패는
+해소됐지만 이 결과를 저장소 전체 green으로 올리지는 않는다.
 
 ## 6. 주장 가능 범위
 
@@ -137,10 +149,10 @@ smoke는 **수정 후 미실행**이므로 PASS를 선언하지 않는다.
 fixed/latin/random matched triad다. 다만 현재 즉시 실행 판정은 **HOLD**다.
 
 1. PM000 격리 후 공통 smoke PM arm과 Stage0B는 모두 PASS했다.
-2. 그러나 최신 공통 smoke는 sparse34 수정 **전** 증거다. 사용자가 수정 후
-   `run_smoke_check.bat`를 재실행해 실제 왕복 0 mismatch·1.250 bpw를 확인해야 한다.
-3. `check_links` exit 5는 sparse34와 별개로 남을 가능성이 크다. 새 smoke 로그를 받아 전체
-   정책 gate의 처리를 분리 판정하기 전에는 Stage1/Stage1E/Stage2/Stage2E를 실행하지 않는다.
+2. sparse34 수정 후 재실행도 실제 tensor 왕복 0 mismatch·1.250000bpw를 통과했다.
+3. 그러나 `check_links` exit 5가 남아 `summarize_smoke.py`의 장기 런 금지 판정이 유지된다.
+   링크 gate를 정상화하거나 프로젝트 규약상 명시적으로 처리하기 전에는
+   Stage1/Stage1E/Stage2/Stage2E를 실행하지 않는다.
 
 Stage1 정적 preflight 자체는 완료됐다. 세 tag는 모두 미사용이고, 세 팔은 각
 `763 × 8 × 16 × 1024 = 100,007,936` tokens, 20 layer visits, CLA2, grad checkpoint on으로
@@ -155,7 +167,7 @@ Stage1 정적 preflight 자체는 완료됐다. 세 tag는 모두 미사용이�
 | Stage0 contract (2026-09-06) | PASS | 없음 — wiring only |
 | post-refactor 공통 smoke (2026-09-06 09:51) | 전체 FAIL, PM arm/contract PASS | 없음 |
 | post-refactor Stage0B (2026-09-06 10:50) | PASS | 없음 — wiring only |
-| sparse34 포맷 수정 | 정적 PASS / 동적 PENDING | 없음 — PM000 품질과 독립 |
+| sparse34 포맷 수정 후 smoke (2026-09-06 14:05) | 동적 PASS, 전체 smoke는 link 1건 FAIL | 없음 — PM000 품질과 독립 |
 | Stage1 R2 matched triad | HOLD | 미측정 |
 | Stage1E paired full-val | NOT STARTED | 미측정 |
 | Stage2 R3 matched triad | NOT STARTED | 미측정 |
@@ -177,6 +189,6 @@ import/attribute/call-kwargs, PM namespace, smoke field/coverage, batch name/fla
 - 사용자 smoke가 만든 일반 `tiny_synthetic_2M_dense.json`의 일반 registry 미등재 1건
 
 이 세 건은 PM000 전용 정적 계약의 실패는 아니지만 전체 저장소 green을 뜻하지도 않는다.
-사용자의 최신 smoke와 Stage0B가 PM000 격리 후 동적 공백은 닫혔다. 그 뒤 수정한
-`tinylm/model/lut.py`의 sparse34 함수는 검색상 PM000 학습·진단 caller에서 사용되지 않지만,
-이 수정 자체의 torch 동적 검증과 수정 후 전체 smoke는 사용자 실행 대기다.
+사용자의 최신 smoke와 Stage0B가 PM000 격리 후 동적 공백을 닫았고, 14:05 smoke가
+`tinylm/model/lut.py` sparse34 수정의 torch 동적 계약도 닫았다. 전체 green과 PM000 품질 효과는
+각각 남은 링크 gate와 matched 장기 실험이 필요하므로 미확정이다.
