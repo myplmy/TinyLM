@@ -258,12 +258,32 @@ def main():
 
     best = min(rows, key=lambda r: r[5])
     print(f"\n  최저 bpb = {best[0]} ({best[1]}) {best[5]:.4f}")
+
+    # ★★2026-09-07 — **자를 실측했다**(결과 075 §15, P088 단계7). 종전에는 여기서
+    #   *"0.024 nats 를 환산하면 대략 0.008"* 이라고 찍었는데 그 0.024 는 **폐기된 fallback**
+    #   이었다. 🚫**빌린 자로 판정하면 검정력이 없는 시험을 돌린다**(결과 075 §14.2).
+    #   ★정본은 `scripts/_rulers.py` 하나다 — 여기서 표를 다시 적지 않는다(함정 18).
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import _rulers                                            # noqa: PLC0415
+        _tags = {r[0] for r in rows}
+        _hit = {t: v for t, v in _rulers.BPB_BY_SHAPE.items() if t in _tags}
+        print(f"\n  ★쓸 자(공통 원문 bpb, 실측 2σ) — 보수값 **{_rulers.BPB:.5f}** "
+              f"(전 계열 최대, 결과 075 §15)")
+        if _hit:
+            print("     이 호출에 해당하는 형상별 자: "
+                  + " · ".join(f"{t} {v:.5f}" for t, v in sorted(_hit.items())))
+        print(f"     ★환산 nats = bpb x {_rulers.BPB_TO_NATS} · "
+              f"교호작용의 자는 x{_rulers.INTERACTION:.3f}")
+        print(f"     🚫종전 인쇄값 {_rulers.BPB_LEGACY} 는 **폐기 fallback 0.024 의 환산치**다 — 인용 금지")
+    except Exception as e:                                        # noqa: BLE001
+        print(f"\n  ⚠️자를 못 읽었다({e}) — `scripts/_rulers.py` 를 직접 본다")
+
     print("""
   읽는 법
     · **bpb 만** 비교한다. '손실' 열은 토크나이저마다 토큰 수가 달라 **비교 불가**다.
       (일부러 함께 찍는다 — 둘이 다른 이야기를 한다는 것이 이 실험의 요점이다)
-    · bpb 차이가 실무 분해능(0.024 nats 를 bpb 로 환산하면 대략 0.008)보다 작으면
-      **서열을 매기지 않는다.**
+    · bpb 차이가 위에 인쇄된 **실측 자**보다 작으면 **서열을 매기지 않는다.**
     · 토큰 수가 크게 다르면 그 자체가 정보다 — 토크나이저가 이 원문을 얼마나 잘 압축하는가.
 
   한계

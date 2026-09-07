@@ -51,7 +51,7 @@ set TL_WB_TAG=
 
 python scripts\runlog.py --name P088_stage8_winner_1200M --note "[2/3] 32 MiB shape at 1200M tokens - ratio 1.0, outside the standard"
 timeout /t 15 /nobreak
-python scripts\runlog.py --name P088_stage8_winner_1200M -- python run100m.py train --preset m100s10 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --steps 9156 --tokens 1200M --pool-tokens 1200M --exact-cache --tag d14_cla2_norecur_t1200
+python scripts\runlog.py --name P088_stage8_winner_1200M -- python run100m.py train --preset m100s10 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --steps 9156 --tokens 1200M --ckpt-tokens 300M --pool-tokens 1200M --exact-cache --tag d14_cla2_norecur_t1200
 if errorlevel 1 echo [WARN] d14 t1200 failed - continuing
 set TL_WB_TAG=d14_cla2_norecur_t1200
 call scripts\batch\tool_wandb_push.bat
@@ -59,7 +59,7 @@ set TL_WB_TAG=
 
 python scripts\runlog.py --name P088_stage8_winner_1200M --note "[3/3] 40 MiB shape at 1200M tokens - the headline run"
 timeout /t 15 /nobreak
-python scripts\runlog.py --name P088_stage8_winner_1200M -- python run100m.py train --preset m100s12 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --steps 9156 --tokens 1200M --pool-tokens 1200M --exact-cache --tag d16_cla2_norecur_t1200
+python scripts\runlog.py --name P088_stage8_winner_1200M -- python run100m.py train --preset m100s12 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --steps 9156 --tokens 1200M --ckpt-tokens 300M --pool-tokens 1200M --exact-cache --tag d16_cla2_norecur_t1200
 if errorlevel 1 echo [WARN] d16 t1200 failed - continuing
 set TL_WB_TAG=d16_cla2_norecur_t1200
 call scripts\batch\tool_wandb_push.bat

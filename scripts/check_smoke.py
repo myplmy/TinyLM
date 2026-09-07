@@ -177,6 +177,17 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     #   **정적은 동적을 대체하지 않는다** — 이 팔은 그 경로가 실제로 도는지를 산다.
     "sm_denseinit": {"arch": "dense", "init_from": True, "depth_init": "role",
                      "mlp_group": 1, "grad_ckpt": False, "ce_chunk": 256},
+    # ★★2026-09-07 (함정 28 여섯째) — **읽는 토큰 칸과 쓰는 토큰 칸이 다른 팔.**
+    #   `--init-from` 이 부모 파일명을 `--tokens` 로 만들어 **실런 4팔이 0.0분에 죽었다**
+    #   (`m100sN_ko-en_600M_dense.pt` 를 찾았는데 부모는 300M 에만 있다).
+    #   ★`init_from_src` 가 이 팔의 **증거**다 — `--ckpt-tokens` 가 무시되면 그 값이
+    #   `tiny_synthetic_4M_dense.pt` 가 되거나(없어서) 런이 통째로 죽는다.
+    #   ⚠️`tokens` 는 안 본다 — synthetic 은 요청과 무관하게 30,720 을 쓴다(실측).
+    #   **쓰는 칸의 증거는 파일 이름**이다: 이 json 은 `tiny_synthetic_4M_sm_ckpttok.json` 이고
+    #   `init_from_src` 는 **2M** 이다. 그 한 쌍이 "두 칸이 실제로 갈렸다" 는 증거다.
+    "sm_ckpttok": {"arch": "dense", "init_from": True, "depth_init": "role",
+                   "init_from_src": "tiny_synthetic_2M_dense.pt",
+                   "grad_ckpt": False, "ce_chunk": 256},
     # ★2026-08-27 — dense x 재귀. P074 단계2 의 E3 팔이 쓰는 조합이고,
     #   재귀는 여태 tied 에서만 돌았다. 게이트 15 가 배치 작성 당일 지적했다.
     "sm_denserep": {"arch": "dense", "train_repeat": 2.0, "init_from": True},
@@ -199,6 +210,14 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     #   **한 번도 같이 안 돌았다** — P074 네 팔이 죽은 형태가 정확히 그것이다(함정 37).
     #   ⚠️`cla_group` 2 를 **값으로** 확인한다. 필드 존재만 보면 기본값 1 이 통과한다.
     "sm_densecla": {"cla_group": 2, "grad_ckpt": False},
+    # ★★2026-09-07 (P062 단계13) — **`block` 재귀는 51 재귀런 중 0건**이었다.
+    #   `repeat_mode` 를 이름만 넣으면 기본 `uniform` 이 통과한다 — **값으로 확인**한다(결과 044).
+    #   ⚠️`train_repeat` 을 함께 봐야 한다: R=1.0 이면 `_repeat_schedule` 자체가 안 불린다.
+    "sm_denseblock": {"arch": "dense", "repeat_mode": "block", "train_repeat": 2.0,
+                      "cla_group": 2, "init_from": True},
+    # ★★2026-09-07 (P086 단계1) — `mlp_lrm` 은 여태 **dense 에서만** 돌았는데
+    #   dense 에는 공유 MLP 가 없어 **고치려는 대상이 없다.** 타잉 몸통이 그 축의 진짜 자리다.
+    "sm_tiedlrm": {"arch": "tied", "mlp_lrm": True, "mlp_group": 2, "init_from": True},
 }
 
 

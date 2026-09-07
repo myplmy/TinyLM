@@ -1,3 +1,5 @@
+> ★★**2026-09-07 이관** — 이 문서는 `ai_dev_tool/temp_Qwen_및_gemma_토크나이저_채용_및_교사모델로_활용.md` 였다. 사용자 승인(지시 5)으로 `review_request/done/` 으로 옮기고 `-완료` 를 붙였다. 🚫**본문은 한 글자도 안 고쳤다** — 이 배너 한 줄만 더했다. 날짜 접두사는 **최초 git 커밋 날짜**에서 읽었다(지어내지 않았다).
+
 # TinyLM × Qwen/Gemma Teacher Distillation
 # Embedding Rank / Input-Output Tying 실험 검토 요청서
 #

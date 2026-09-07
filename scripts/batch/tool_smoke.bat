@@ -286,6 +286,49 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch d
 if errorlevel 1 echo [WARN] sm_lrm failed - continuing
 
 echo.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[24] --ckpt-tokens  (2026-09-07 - the parent lives at a DIFFERENT token slot)"
+REM  ------------------------------------------------------------------------
+REM  WHY THIS ARM EXISTS
+REM    On 2026-09-07 four training arms died at 0.0 minutes with
+REM      FileNotFoundError: runs\ckpt\m100sN_ko-en_600M_dense.pt
+REM    --init-from built the PARENT filename out of --tokens, so asking for
+REM    600M of data also asked for a 600M parent. The parent only exists at
+REM    300M. Trap 28, sixth face - and the same defect paired_eval had.
+REM
+REM  WHAT THIS ARM PROVES
+REM    Data cache at 4M, parent read at 2M. If --ckpt-tokens were ignored the
+REM    run would look for tiny_synthetic_4M_dense.pt and die, exactly like the
+REM    four real arms did. Arm [13] writes the 2M parent, so this must stay
+REM    AFTER it. A recorded flag is not a running code path (trap 37).
+timeout /t 15 /nobreak
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 4M --ckpt-tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --init-from --depth-init role --tag sm_ckpttok
+if errorlevel 1 echo [WARN] sm_ckpttok failed - continuing
+
+echo.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[25] block recursion on a DENSE body  (P062 stage13 - zero runs ever)"
+REM  ------------------------------------------------------------------------
+REM  Across all 51 recursion runs the mode was uniform 49 times and inplace
+REM  twice. block and progressive have NEVER run. P062 Stage13 opens that axis
+REM  on a dense body, and gate 15 flagged arch=dense with --repeat-mode as a
+REM  combination smoke had never exercised - the exact shape that killed the
+REM  four P074 arms. What this arm proves: repeat_mode lands in the json as
+REM  block AND the visit schedule is shorter than uniform would give.
+timeout /t 15 /nobreak
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --cla-group 2 --init-from --depth-init role --train-repeat 2.0 --repeat-mode block --tag sm_denseblock
+if errorlevel 1 echo [WARN] sm_denseblock failed - continuing
+
+echo.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[26] mlp_lrm on a TIED body  (P086 stage1 - lrm has only ever run on dense)"
+REM  ------------------------------------------------------------------------
+REM  Arm [23] runs --mlp-lrm on arch=dense, where there is no shared MLP, so
+REM  the parameters exist but the thing they are supposed to fix does not.
+REM  P086 Stage1 puts lrm on a TIED body, which is the only place it means
+REM  anything. Gate 15 flagged arch=tied with --mlp-lrm as never exercised.
+timeout /t 15 /nobreak
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --init-from --mlp-group 2 --mlp-lrm --tag sm_tiedlrm
+if errorlevel 1 echo [WARN] sm_tiedlrm failed - continuing
+
+echo.
 python scripts\runlog.py --name !TL_LOGNAME! --note "[19b] Muon optimiser  (P005 - matrices go to Muon, the rest to AdamW)"
 REM  ------------------------------------------------------------------------
 REM  Muon has been in the parser since 2026-09-03 and had never run once.

@@ -75,8 +75,25 @@ def _split_cells(ln):
 
 def rows(text):
     """상황판 행만 뽑는다: `| **N** | 지시 | 상태 | 작업 내용 | 산출물 |`"""
+    # ★★2026-09-07 — **상황판 절 안으로 범위를 좁힌다.**
+    #   🚫사고: 원장 본문(§4)에 `| **1** | ... |` 다섯 칸짜리 표를 쓰자
+    #   **`--list` 가 항목을 8개에서 13개로 셌다.** 모양만 보고 있었기 때문이다.
+    #   ★상황판은 `## 1. 진행 상황판` 과 **다음 `## ` 사이**에만 있다 — 그것이 정의다.
+    #   ⚠️표식을 못 찾으면(옛 원장) **종전처럼 전문을 본다** — 안 그러면 과거 원장이 통째로 빈다.
+    body = text.split(NL)
+    lo, hi = 0, len(body)
+    for i, ln in enumerate(body):
+        if ln.startswith("## ") and "진행 상황판" in ln:
+            lo = i + 1
+            for j in range(lo, len(body)):
+                if body[j].startswith("## "):
+                    hi = j
+                    break
+            break
     out = []
-    for i, ln in enumerate(text.split(NL)):
+    for i, ln in enumerate(body):
+        if not (lo <= i < hi):
+            continue
         m = re.match(r"^\|\s*\*\*(\d+)\*\*\s*\|", ln)
         if m and len(_split_cells(ln)) == 7:          # 칸 5개 + 양끝 빈칸 2개
             out.append((i, m.group(1), ln))

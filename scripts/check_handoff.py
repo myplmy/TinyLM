@@ -96,6 +96,31 @@ def lint(path: Path):
                    f"핸드오프 파일명은 **실제 작성일**이다. 순번으로 쓰지 않는다"
                    f"(2026-08-30 실사고: 최대 84일 오차)")
 
+    # ── ★★규칙 12 (2026-09-07 사용자 지시 3) — **파일명 시각을 증거와 댄다** ──
+    #
+    #   ★★위의 날짜 검사는 **자기 사본과 대조하는 게이트**다(함정 43) — 파일명과 본문 첫 줄은
+    #   같은 순간 같은 추측으로 쓰이므로 **지어내면 둘 다 같은 값**이 된다. 실측이 그것을
+    #   보여 줬다: **불일치 0/70 인데 물리적으로 불가능한 것 13/70.**
+    #
+    #   🚫**제안서가 제안한 `:00`·`:30` 통계 규칙은 사용자가 거절했다**(지시 3):
+    #   *"통계 예측으로 00분 30분과 같은 기준 사용하지 말 것"*, 대신 **최초 git 커밋 시각**
+    #   또는 **최초 작성일자**와 **10분** 기준으로 볼 것.
+    #   ✅**그 조건이 더 좋다** — `:00` 규칙은 실제 13건 중 `…2359`(:59)를 **놓쳤고**,
+    #   증거 규칙은 그것을 **잡는다**(scratchpad 재구성 6/6 검출 확인, 2026-09-07).
+    #
+    #   ★규칙은 `scripts/handoff_time.py` 하나가 소유한다(함정 18 — 두 곳에 안 둔다).
+    try:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import handoff_time as _ht                              # noqa: PLC0415
+        _st, _msg = _ht.audit_one(path)
+        if _st == "bad":
+            err.append("★★파일명 시각이 **증거와 모순**된다 — " + _msg
+                       + ". 🚫시각을 지어내지 말고 `python scripts/new_handoff.py` 가 짓게 한다")
+        elif _st == "ok":
+            info.append("파일명 시각 ↔ 존재 증거 정합 — " + _msg)
+    except Exception as _e:                                     # noqa: BLE001
+        info.append(f"파일명 시각 감사를 못 돌렸다: {type(_e).__name__}")
+
     # ── 2. 머리말 3요소 (규약 §3) ────────────────────────────────────────────
     head = "\n".join(lines[:12])
     if not re.search(r"이전\*{0,2}\s*[:：]", head):
@@ -275,7 +300,9 @@ def lint(path: Path):
     #   고치면 그 시점의 실제 상태를 알 수 없게 된다(§lint 머리의 legacy 규약과 같은 이유).
     _all = sorted(p.name for p in path.parent.glob('*_HANDOFF.md'))
     _newest = (path.name == _all[-1]) if _all else True
-    HOURS_TARGET = 16.0
+    # ★사용자가 세션마다 할당량을 준다 — 2026-09-06 은 48h, **2026-09-07 은 72h**.
+    #   ⚠️이 값은 **바닥이 아니라 그 세션의 요청**이다. 못 채우면 사유를 적으면 통과한다.
+    HOURS_TARGET = 72.0
     REASON_MARK = "시간 미달 사유"
     try:
         tsv = (ROOT / "experiments.tsv").read_text(encoding="utf-8").split(NL_)

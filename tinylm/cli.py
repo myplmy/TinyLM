@@ -118,6 +118,14 @@ def main():
     p.add_argument("--ema", type=float, default=0.0, help="EMA decay(0=끔, 예: 0.999)")
     p.add_argument("--early-stop", type=int, default=0, help="val 개선 없이 N회 eval시 종료(0=끔)")
     p.add_argument("--init-from", action="store_true", help="tied를 dense.pt로 부모초기화")
+    p.add_argument("--ckpt-tokens", default=None, metavar="300M",
+                   help="★★2026-09-07 신설(함정 28 여섯째) — **이 명령이 읽는** 체크포인트 "
+                        "파일명의 토큰 칸. `--init-from` 부모 · `--init-from-tag` · KD 교사 셋에 "
+                        "걸린다. 🚫**쓰는 체크포인트는 언제나 `--tokens`** 를 따른다(네임스페이스 유지). "
+                        "생략하면 `--tokens` 와 같다 = 종전과 비트 동일. "
+                        "부모를 300M 로 학습해 두고 600M 로 학습할 때 "
+                        "`--tokens 600M --ckpt-tokens 300M` 이 된다. "
+                        "★`paired_eval --ckpt-tokens` 와 **같은 개념·같은 이름**이다(R14)")
     p.add_argument("--init-from-tag", default=None,
                    help="부모초기화를 base_dense.pt 대신 base_{TAG}.pt 로(태그된 dense에서 초기화). "
                         "토큰스윕 클린판처럼 정본 dense 를 덮지 않고 별도 태그 dense 를 쓸 때.")
@@ -260,8 +268,18 @@ def main():
     # ★부모 dense 는 프리셋을 넘어 찾는다(2026-08-01). `m100R1a/c` 는 `m100` 에서 한 필드만
     #   바꾼 파생이라 **부모가 하나뿐**인데, 종전에는 `m100R1a_..._dense.pt` 를 찾다 즉사했다
     #   (P038·P036 단계2 실패). 쓰기 경로는 그대로 `{preset}_...` 라 네임스페이스는 유지된다.
-    dense_ck = paths.resolve_ckpt(preset, a.data, tokstr, "dense")
-    dense_best_ck = paths.resolve_ckpt(preset, a.data, tokstr, "dense_best")
+    # ★★2026-09-07 (함정 28 여섯째) — **읽는 이름과 쓰는 이름을 가른다.**
+    #   🚫사고: `--tokens 600M` 이 데이터 캐시 크기이자 **부모 체크포인트 파일명**이라
+    #   `m100s8_ko-en_600M_dense.pt` 를 찾다 즉사했다. 부모는 300M 로만 학습돼 있다.
+    #   **4팔이 죽었다**(P062 단계9 3팔 + P005 단계2 4번째 팔, 2026-09-07).
+    #   ⚠️`src_tok` 은 **읽기 전용**이다 — `base`/`tokstr` 은 그대로 두어야
+    #   쓰는 체크포인트·로그 이름의 네임스페이스가 유지된다.
+    src_tok = getattr(a, "ckpt_tokens", None) or tokstr
+    if src_tok != tokstr:
+        print(f"  ★읽는 체크포인트의 토큰 칸 = {src_tok} (쓰는 것은 {tokstr}) — "
+              "부모·교사 파일명과 학습 길이를 갈라 쓴다")
+    dense_ck = paths.resolve_ckpt(preset, a.data, src_tok, "dense")
+    dense_best_ck = paths.resolve_ckpt(preset, a.data, src_tok, "dense_best")
 
     pool_tok = _tok(a.pool_tokens) if a.pool_tokens else None
 
@@ -279,12 +297,35 @@ def main():
         from .train import train
         # KD 교사 경로: 압축 교사(--kd-teacher-tag) > dense_best > dense
         if a.kd_teacher_tag:
-            kd_teacher = str(paths.resolve_ckpt(preset, a.data, tokstr, a.kd_teacher_tag))
+            kd_teacher = str(paths.resolve_ckpt(preset, a.data, src_tok, a.kd_teacher_tag))
         else:
             kd_teacher = str(dense_best_ck if a.kd_best else dense_ck)
         # 부모초기화 소스: --init-from-tag 주면 base_{TAG}.pt, 아니면 base_dense.pt
-        init_src = (str(paths.resolve_ckpt(preset, a.data, tokstr, a.init_from_tag)) if a.init_from_tag
+        # ★`src_tok`(= `--ckpt-tokens` 또는 `--tokens`) 을 쓴다 — **읽는 이름**이기 때문이다.
+        init_src = (str(paths.resolve_ckpt(preset, a.data, src_tok, a.init_from_tag)) if a.init_from_tag
                     else (str(dense_ck) if a.init_from else None))
+        # ★★2026-09-07 — **원인을 말하고 즉시 거절한다.** 종전에는 `torch.load` 가
+        #   raw `FileNotFoundError` 를 던져 *"왜 600M 을 찾지?"* 를 사람이 풀어야 했다.
+        #   4팔이 그렇게 죽었고 넷 다 원인이 같았다.
+        import os as _os
+        _src_tag = a.init_from_tag or "dense"
+        _kd_tag = a.kd_teacher_tag or ("dense_best" if a.kd_best else "dense")
+        for _what, _p, _t in (("부모초기화", init_src, _src_tag),
+                              ("KD 교사", kd_teacher if a.kd else None, _kd_tag)):
+            if _p and not _os.path.exists(_p):
+                _alt = sorted(q.name for q in (paths.RUNS / "ckpt").glob(
+                    f"*_{a.data}_*_{_t}.pt"))
+                print(f"\n  🚫**{_what} 체크포인트가 없다**: {_os.path.basename(_p)}")
+                if _alt:
+                    print("     ★같은 태그가 **다른 토큰 칸**에 있다: " + ", ".join(_alt[:4]))
+                print(f"     ★`--tokens`({tokstr}) 는 **데이터 캐시 크기이자 쓰는 이름**이고, "
+                      "읽는 이름은 `--ckpt-tokens` 가 정한다(함정 28 여섯째).")
+                print("     부모를 300M 로 학습해 두고 600M 를 돌리려면 "
+                      "`--tokens 600M --ckpt-tokens 300M` 이다.")
+                # 🚫★`return 2` 로는 안 된다 — `run100m.py` 가 반환값을 버려서
+                #   **exit 0** 이 된다(R19: 계측 0 에 exit 0 이 최악의 실패 모드).
+                #   453줄의 기존 규약과 같이 `SystemExit` 로 던진다.
+                raise SystemExit(2)
         train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
               a.lr, a.eval_every, a.resume, ckpt, a.compile,
               sched=a.sched, ema=a.ema, early_stop=a.early_stop,

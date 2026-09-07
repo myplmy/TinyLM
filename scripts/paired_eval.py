@@ -275,7 +275,20 @@ def main():
         else:
             cfg.infer_repeat, cfg.repeat_kv_reuse = 1.0, False
             cfg.reuse_attn_on_dup = False
-        if abs(_R - _tr) > 1e-9:
+        # ★★2026-09-07 — **경보가 틀렸다.** 종전에는 `_R != _tr` 이면 무조건 함정 39 를 찍었는데,
+        #   `transformer.visit_schedule()` 이 2026-08-30 부터 **`R == 1.0` 이면 `TR` 로 되돌린다**
+        #   (그 줄이 함정 39 의 수정 자체다). 그래서 `--match-train-repeat` 없이 부른 호출도
+        #   **같은 함수를 돈다.**
+        #   ★실증: `d12_cla2_r20` 이 `--match-train-repeat` 있을 때(P016 단계4b)와
+        #   없을 때(P062 단계7b) **full-val 3.5844 로 소수 넷째 자리까지 같았다.**
+        #   🚫**틀린 경보는 미탐과 같다**(2026-09-06 §6.2) — 진짜 한 줄을 가린다.
+        _auto = (abs(_R - 1.0) < 1e-9 and abs(_tr - 1.0) > 1e-9
+                 and not _RA and not getattr(model, "_eval_ignores_train_repeat", False))
+        if _auto:
+            print(f"\n  [P062] {tag}: 추론 R 미지정 → 모델이 **학습된 R={_tr}({_tm}) 로 되돌린다** "
+                  f"(transformer.visit_schedule, 함정 39 수정). 층 통과 "
+                  f"{len(model.visit_schedule())}회(기준 {cfg.n_layers}회)")
+        elif abs(_R - _tr) > 1e-9:
             print(f"\n  🚫★{tag}: 학습 train_repeat={_tr}({_tm}) 인데 **추론 R={_R}({_W})** 다 "
                   f"→ **학습과 다른 함수로 평가된다**(계측함정 39). "
                   f"의도한 대조가 아니면 `--match-train-repeat` 를 쓸 것.")

@@ -730,6 +730,38 @@ def lint(path: Path):
                 f"그 실패가 로그에 안 남는다**(2026-09-06 실사고: summarize_smoke 가 "
                 f"신설 이래 한 번도 안 돌았다)")
 
+    # ── ★★규칙 27 (2026-09-07 신설) — **한 명령에 같은 플래그가 두 번**
+    #   실사고: `run_P062_Stage8` 3번째 팔이
+    #       ... --seed 1337 ... --steps 2289 ... --seed 2024 --tag d16_cla2_norecur_s2
+    #   였다. argparse 는 **조용히 뒤엣것을 쓴다.** 이번에는 운 좋게 뒤가 2024 라
+    #   의도대로 됐지만, **순서가 반대였으면 "시드 복제" 가 원본과 비트 동일**해지고
+    #   자가 0 으로 나온다 — 2026-08-31 의 *"세 번째 시드가 시드가 아니었다"* 와 같은 모양이다.
+    #   ★값이 같으면 무해하므로 **값이 다를 때만** 에러로 올린다.
+    _VALUED = re.compile(r"(--[a-z0-9][a-z0-9-]*)(?:[=\s]+([^\s-][\S]*))?")
+    for i, raw in enumerate(lines):
+        s = raw.strip()
+        if s.upper().startswith("REM") or not s.lower().startswith(("python", "call python")):
+            continue
+        seen: dict[str, str] = {}
+        dup_same, dup_diff = [], []
+        for m in _VALUED.finditer(s):
+            f, v = m.group(1), (m.group(2) or "(켬)")
+            if f in seen:
+                (dup_diff if seen[f] != v else dup_same).append((f, seen[f], v))
+            seen[f] = v
+        # ⚠️`-done` 은 이미 돌아간 배치다. 규칙 27 도 *돌리기 전* 규칙이라 정보로 내린다 —
+        #   🚫**고쳐서도 안 된다**: 배치는 실제로 돈 명령의 기록이고, 고치면
+        #   결과문서의 재현 명령과 갈라진다. 영구 적색은 새 위반을 가린다(경보 피로).
+        _sink27 = info if path.name.endswith("-done.bat") else err
+        for f, v1, v2 in dup_diff:
+            _sink27.append(
+                f"L{i+1} 같은 플래그가 **두 번, 값이 다르다**: `{f} {v1}` 와 `{f} {v2}` → "
+                f"argparse 는 **조용히 뒤엣것({v2})** 을 쓴다. 앞엣것을 지우세요. "
+                f"🚫값이 뒤바뀌면 실험이 통째로 다른 것이 된다"
+                f"(2026-09-07 P062 단계8: `--seed 1337` 뒤에 `--seed 2024`)")
+        for f, v1, _ in dup_same:
+            warn.append(f"L{i+1} 같은 플래그가 두 번인데 값이 같다: `{f} {v1}` — 무해하지만 지우세요")
+
     return err, warn, info
 
 

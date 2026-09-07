@@ -244,14 +244,25 @@ def show(r: dict, strict_hits: list):
     ac = _num(got.get("--accum", 8), int) or 0
     seq = r["seq"]
     M = mb * seq
-    visits = int(eff.n_prelude + round(eff.n_middle * float(eff.train_repeat))
-                 + eff.n_coda)
+    # ★★2026-09-07 — **`repeat_mode` 를 반영한다.** 종전 식은 `uniform` 전용이라
+    #   `block`·`progressive` 에서 방문을 **과대 계산**했다(d14 block 실제 16 인데 24 로 인쇄).
+    #   과대라 `--no-ckpt` 예산에는 보수적이지만, **인쇄한 수가 틀린 것**은 함정 4 다 —
+    #   그 수를 사람이 *"속도 비용"* 으로 읽는다(방문 19 가 15 tok/s 경계다).
+    #   ★`transformer._repeat_schedule` 과 **같은 분기**를 쓴다(함정 18: 한 곳에서만 정의).
+    visits = _visits(eff, got)
     kv_ent = visits // max(int(eff.cla_group), 1)
     tok = steps * mb * ac * seq
+    _mode = got.get("--repeat-mode", "uniform")
     print()
     print(f"     학습토큰  {tok / 1e6:,.1f}M  = {steps} x {mb} x {ac} x {seq}")
     print(f"     M         {M:,}  (micro_bs x seq)   방문 {visits}회  "
-          f"KV 엔트리 {kv_ent}개")
+          f"KV 엔트리 {kv_ent}개" + (f"  [repeat_mode={_mode}]" if _mode != "uniform" else ""))
+    if float(eff.train_repeat) != 1.0 or _mode != "uniform":
+        # ★속도 모형은 결과 014 §16.2 실측(같은 날 네 점, R² 0.9866).
+        _ms = 6.786 + 3.1379 * visits
+        print(f"     ⚙속도     {_ms:.1f} ms/token = **{1000/_ms:.2f} tok/s** "
+              f"(t = 6.79 + 3.138 x 방문, 결과 014 §16.2) -> "
+              f"{'✅바닥 안' if 1000/_ms >= 15 else '🚫15 tok/s 미달'}")
     # ★KV 는 `dim` 이 아니라 **`kv_dim`(GQA)** 이다. 실측 대조:
     #   mC_initonly_nc 엔트리 10개 -> 7.5 MiB @ bf16 seq1024 (결과 067 §단계0b)
     kvd = getattr(eff, "kv_dim", None)
@@ -289,6 +300,51 @@ def show(r: dict, strict_hits: list):
                 if not ok:
                     strict_hits.append(
                         f"{tag}: 태그가 {field}={want} 를 주장하는데 유효값은 {have}")
+
+    # ── ★★부모·교사 체크포인트가 **읽히는가** (2026-09-07 신설) ──────────────
+    #
+    #  🚫사고: `--tokens 600M --init-from` 이 `m100s8_ko-en_600M_dense.pt` 를 찾다 즉사했다.
+    #  부모 dense 는 300M 로만 학습돼 있다. **4팔이 죽었다**(P062 단계9 3팔 + P005 단계2 4팔째).
+    #  ★2026-09-06 에 **판정** 호출에 붙인 그물과 **같은 결함**인데 **학습** 호출에는 안 붙였다.
+    #  → 여기서 같은 `_resolve_ckpt_names` 를 쓴다(함정 18: 한 곳에서만 정의).
+    #  ⚠️면제 셋: `runs/ckpt/` 가 비면 건너뛴다 · 큐 앞 배치가 만드는 태그는 선결 ·
+    #     `--init-from` 도 `--kd` 도 없으면 읽을 것이 없다.
+    if _CKPT_ANY:
+        _data = got.get("--data", "ko-en")
+        _tokstr = _norm_tok(got.get("--tokens", "300M"))
+        _ctok = _norm_tok(got.get("--ckpt-tokens")) or _tokstr
+        srcs = []
+        if got.get("--init-from-tag"):
+            srcs.append(("부모초기화", got["--init-from-tag"]))
+        elif "--init-from" in got:
+            srcs.append(("부모초기화", "dense"))
+        if "--kd" in got:
+            srcs.append(("KD 교사", got.get("--kd-teacher-tag")
+                         or ("dense_best" if "--kd-best" in got else "dense")))
+        if srcs:
+            print()
+            made = trained_tags()
+            for what, stag in srcs:
+                hit, tried = _resolve_ckpt_names(r["preset"], _data, _ctok, stag)
+                if hit:
+                    print(f"     {what} 원본  ✅{hit}")
+                    continue
+                if stag in made:
+                    print(f"     {what} 원본  ⏳{stag} — 아직 없다. "
+                          f"**{made[stag]} 가 만든다**(선결)")
+                    continue
+                print(f"     {what} 원본  🚫**해석 실패**. 시도: "
+                      + (", ".join(tried) or "(없음)"))
+                alt = sorted(p.name for p in (ROOT / "runs" / "ckpt")
+                             .glob(f"*_{_data}_*_{stag}.pt"))
+                if alt:
+                    print("       ★같은 태그가 **다른 토큰 칸**에 있다: "
+                          + ", ".join(alt[:3]))
+                    print("         -> `--ckpt-tokens <그 칸>` 을 준다. "
+                          "`--tokens` 는 데이터 캐시이자 **쓰는** 이름, "
+                          "`--ckpt-tokens` 는 **읽는** 이름이다")
+                strict_hits.append(
+                    f"{tag}: {what} 원본 미해석 {stag} (tokens={_ctok})")
 
 
 
@@ -337,6 +393,51 @@ def trained_tags():
                     out.setdefault(t, f.name)
         _TRAINED_TAGS = out
     return _TRAINED_TAGS
+
+def _visits(eff, got):
+    """`transformer._repeat_schedule` 과 **같은 분기**로 방문 수를 센다.
+
+    🚫종전 한 줄(`p + round(m*R) + coda`)은 `uniform` 전용이었다 —
+    `block` 은 **한 그룹만** 반복하고 `progressive` 는 깊이에 따라 는다.
+    ⚠️여기서 다르게 세면 게이트가 **틀린 속도**를 인쇄한다(함정 4·18).
+    """
+    p = int(eff.n_prelude)
+    m = int(eff.n_middle)
+    g = max(int(getattr(eff, "mlp_group", 1) or 1), 1)
+    coda = int(eff.n_coda)
+    R = float(eff.train_repeat)
+    mode = str(got.get("--repeat-mode", "uniform") or "uniform")
+    reps = int(round(R))
+    if R == 1.0:
+        return p + m + coda
+    if mode == "block":
+        b = _num(got.get("--repeat-block", 0), int) or 0
+        lo, hi = p + b * g, p + (b + 1) * g
+        n = sum(reps if lo <= i < hi else 1 for i in range(p, p + m))
+    elif mode == "inplace":
+        n = m * reps
+    elif mode == "progressive":
+        n = sum(max(1, int(round(1 + (reps - 1) * (k / max(m - 1, 1)))))
+                for k in range(m))
+    else:                                   # uniform
+        n = m * reps
+    return p + n + coda
+
+
+def _norm_tok(s):
+    """`cli.py` 의 `tokstr` 규약을 **그대로** 따라간다 — `1.2B` 도 `600M` 도 `NNNM` 이 된다.
+
+    🚫여기서 다르게 정규화하면 게이트가 통과시키고 런이 죽는다(함정 18).
+    """
+    if not s or s is True:
+        return None
+    s = str(s)
+    try:
+        n = int(float(s.rstrip("MmBb")) * (1e9 if s[-1] in "Bb" else 1e6))
+    except ValueError:
+        return s
+    return f"{n // 1_000_000}M" if n >= 10 ** 6 else str(n)
+
 
 def _preset_parent():
     mod = presets()
