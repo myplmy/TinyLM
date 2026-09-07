@@ -344,6 +344,19 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch d
 if errorlevel 1 echo [WARN] sm_muon failed - continuing
 
 echo.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[27] Muon on a TIED body  (P086 Stage2 - 98 tied runs and not one used Muon)"
+REM  ------------------------------------------------------------------------
+REM  ***2026-09-08. The arm above runs Muon on a DENSE body. Every tying
+REM    measurement we own - 98 full-train runs with mlp_group above 1 - used
+REM    AdamW, and coverage gate 15 flagged arch=tied x --optimizer as a
+REM    combination that has never executed. That is the exact shape that
+REM    killed four P074 arms: the axis existed, the COMBINATION did not.
+REM    A tied matrix receives the SUM of the gradients of the g layers that
+REM    share it, and split_params has never seen that shape under Muon.
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --mlp-group 2 --optimizer muon --muon-lr-mult 5 --tag sm_tiedmuon
+if errorlevel 1 echo [WARN] sm_tiedmuon failed - continuing
+
+echo.
 python scripts\runlog.py --name !TL_LOGNAME! --note "[20] return_probs diagnostic path  (P081 - SDPA does not hand back probs)"
 REM  ------------------------------------------------------------------------
 REM  This axis CANNOT be a training arm - return_probs is blocked in train()
@@ -369,6 +382,21 @@ REM    earlier, so the smoke can exercise the real-tensor path for free. R15:
 REM    a new axis needs a smoke arm that turns it ON - this is that arm.
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_sparse34_pack.py --ckpt sm_s34_dense --preset tiny --data synthetic --tokens 2M --arch dense
 if errorlevel 1 echo [WARN] sparse34 packing check FAILED - read which of the three
+
+echo.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[21c] LUT deployment residency  (P014 - the one command every budget verdict rests on)"
+REM  ------------------------------------------------------------------------
+REM  ***2026-09-08. Every 32 and 40 MiB verdict we have comes from ONE command,
+REM    mem_runtime --drop-latent --lut. On 2026-09-07 a batch omitted
+REM    --drop-latent, the LUT switch lives inside that block, and the tool
+REM    printed three tables and exited 0 with the number missing. Nobody saw it
+REM    for a day. mem_runtime now refuses that combination, and this arm proves
+REM    the POSITIVE case: with --drop-latent the LUT line really appears.
+REM    Read: "LUT residency (codes + alpha)" must be present, and max abs
+REM    dlogit must be NON-zero (per-row alpha is re-estimated - that is normal
+REM    and is NOT a quality number, result 028).
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\mem_runtime.py --preset tiny --data synthetic --tokens 2M --models sm_base --device cpu --max-new 4 --drop-latent --lut --emb-quant int8 --kv-seq 128 --kv-dtype bf16
+if errorlevel 1 echo [WARN] LUT residency arm FAILED - the deployment number cannot be quoted
 
 echo.
 echo =============================================================

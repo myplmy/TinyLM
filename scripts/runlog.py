@@ -90,6 +90,13 @@ def _git_state():
       그래서 SHA 만 적으면 *"이 커밋에서 검증했다"* 로 **잘못 읽힌다.**
       정확한 진술은 *"이 커밋 + 커밋 안 된 변경 N개에서 돌렸다"* 다.
       함정 13("문서의 조치 기록은 코드 변경의 증거가 아니다")과 같은 계열의 정직성이다.
+
+    ★★2026-09-08 보강 — **개수만으로는 행동을 못 정한다.**
+      2026-09-07 스모크가 `+dirty 30개` 였는데 **30건이 전부 데이터셋 파일**이었다.
+      즉 코드는 그 커밋 그대로였는데 배너는 *"이 커밋으로 검증한 것이 아니다"* 라고만 했다.
+      🚫**늘 켜져 있고 아무것도 구분 못 하는 경고는 미탐과 같다**(경보 피로, 함정 38).
+      -> **코드 dirty 를 따로 센다**: `tinylm/` · `scripts/` · `run100m.py` · `*.bat` · `*.py`.
+      ★그것이 0 이면 *"코드는 이 커밋 그대로"* 라고 **말할 수 있다.**
     """
     import subprocess as sp
     try:
@@ -99,8 +106,19 @@ def _git_state():
             return None, None
         st = sp.run(["git", "status", "--porcelain"], cwd=ROOT,
                     capture_output=True, text=True, timeout=20)
-        n = len([l for l in st.stdout.splitlines() if l.strip()]) if st.returncode == 0 else None
-        return sha.stdout.strip(), n
+        if st.returncode != 0:
+            return sha.stdout.strip(), None
+        rows = [l for l in st.stdout.splitlines() if l.strip()]
+        n = len(rows)
+        code = 0
+        for l in rows:
+            # porcelain: 2칸 상태 + 공백 + 경로. 개명이면 "old -> new" 라 뒤를 본다.
+            path = l[3:].split(" -> ")[-1].strip().strip('"')
+            low = path.lower()
+            if (low.startswith(("tinylm/", "scripts/", "util/"))
+                    or low.endswith((".bat", ".py"))):
+                code += 1
+        return sha.stdout.strip(), (n, code)
     except Exception:                            # noqa: BLE001 — 로그를 못 쓰게 만들면 안 된다
         return None, None
 
@@ -184,9 +202,18 @@ def _header(path, sha, dirty):
     """파일 최상단에 **한 번만** 커밋 배너를 쓴다. 이미 내용이 있으면 안 쓴다."""
     if path.exists() and path.stat().st_size > 0:
         return
-    d = "" if dirty in (None, 0) else f"  +dirty {dirty}개(커밋 안 된 변경)"
+    # ★dirty 는 (전체, 코드) 튜플이다(2026-09-08). 구형 호출부 호환으로 int 도 받는다.
+    _tot, _code = dirty if isinstance(dirty, tuple) else (dirty, None)
+    if _tot in (None, 0):
+        d = ""
+    elif _code == 0:
+        d = f"  +dirty {_tot}개(전부 비코드 — ★**코드는 이 커밋 그대로**)"
+    elif _code is None:
+        d = f"  +dirty {_tot}개(커밋 안 된 변경)"
+    else:
+        d = f"  +dirty {_tot}개(커밋 안 된 변경) 중 ★**코드 {_code}개**"
     line = (f"[commit] {sha or '(git 없음)'}{d}\n"
-            f"[commit] ⚠️ dirty 가 0 이 아니면 **이 커밋 상태로 검증한 것이 아니다** — "
+            f"[commit] ⚠️ ★**코드 dirty** 가 0 이 아니면 이 커밋 상태로 검증한 것이 아니다 — "
             f"커밋 + 미커밋 변경의 합이다.\n"
             f"{'=' * 78}\n")
     with open(path, "a", encoding="utf-8", newline=os.linesep) as f:

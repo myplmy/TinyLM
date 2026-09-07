@@ -101,6 +101,29 @@ def _visits(preset: str, repeat: float):
 _PRESETS = None
 
 
+def _bench_task_names():
+    """★`eval_bench_suite.py` 의 `TASKS` 키를 **소스에서** 읽는다.
+
+    🚫`import eval_bench_suite` 는 torch 를 끌어온다 — 린터는 torch 0 이어야 한다.
+    🚫이름 목록을 여기 복사하지 않는다(함정 18: 적용 대상 집합을 두 곳에서 정의).
+    ★못 읽으면 **빈 집합**을 돌려줘 규칙 29 를 조용히 끈다 — 린터가 다른 파일 때문에
+      죽으면 안 되고, 미탐은 이 규칙이 없던 상태와 같다.
+    """
+    import ast as _ast
+    p = Path(__file__).with_name("eval_bench_suite.py")
+    try:
+        tree = _ast.parse(p.read_text(encoding="utf-8"))
+    except Exception:                                    # noqa: BLE001
+        return set()
+    for node in tree.body:
+        if isinstance(node, _ast.Assign) and any(
+                getattr(t, "id", None) == "TASKS" for t in node.targets):
+            if isinstance(node.value, _ast.Dict):
+                return {k.value for k in node.value.keys
+                        if isinstance(k, _ast.Constant) and isinstance(k.value, str)}
+    return set()
+
+
 def lint(path: Path):
     raw = path.read_bytes()
     txt = raw.decode("utf-8", errors="replace")
@@ -761,6 +784,70 @@ def lint(path: Path):
                 f"(2026-09-07 P062 단계8: `--seed 1337` 뒤에 `--seed 2024`)")
         for f, v1, _ in dup_same:
             warn.append(f"L{i+1} 같은 플래그가 두 번인데 값이 같다: `{f} {v1}` — 무해하지만 지우세요")
+
+    # ── ★★규칙 28 (2026-09-08 신설) — **`--lut` 는 `--drop-latent` 없이는 안 돈다**
+    #   실사고: `run_P030_Stage7_norecur_residency` 가 배포 상주를 재려고
+    #       mem_runtime.py --lut --emb-quant int8 --kv-seq 1024
+    #   를 돌렸는데, LUT 전환 코드가 `if a.drop_latent:` **블록 안**에 있다.
+    #   -> 종료코드 0 · 표 세 개 · 판정 절 두 개를 인쇄하고 **LUT 상주는 없었다**(결과 014 §17).
+    #   ★argparse 는 "쓰이지 않은 플래그" 를 모른다. **그 앞을 막는 다른 플래그**는
+    #     문법 오류가 아니므로 어떤 기존 게이트도 못 봤다(함정 37 의 새 얼굴).
+    #   ⚠️`-done` 은 이미 돌아간 기록이라 정보로 내린다(규칙 27 과 같은 이유).
+    _LUTFLAGS = ("--lut", "--int8-store", "--unpack-cache")
+    for i, raw in enumerate(lines):
+        s = raw.strip()
+        if (s.upper().startswith("REM") or "mem_runtime" not in s
+                or "--note" in s):        # ★note 는 명령이 아니다(2026-09-08 오탐 1건)
+            continue
+        _hit = [f for f in _LUTFLAGS if re.search(r"(?<!\S)" + re.escape(f) + r"(?!\S)", s)]
+        if _hit and not re.search(r"(?<!\S)--drop-latent(?!\S)", s):
+            _sink28 = info if path.name.endswith("-done.bat") else err
+            _sink28.append(
+                f"L{i+1} `mem_runtime` 에 {' / '.join(_hit)} 를 줬는데 "
+                f"**`--drop-latent` 가 없다** -> 그 전환은 **실행되지 않는다**. "
+                f"도구는 exit 0 으로 그럴듯한 표를 인쇄한다. "
+                f"★배포 상주 정본: `--device cpu --drop-latent --lut --emb-quant int8 "
+                f"--kv-seq 1024 --kv-dtype bf16`(기준표 B.22 규칙 21 · 결과 014 §17)")
+
+    # ── ★★규칙 29 (2026-09-08 신설) — **`--note` 가 안 돌린 과제를 약속한다**
+    #   실사고: `run_P085_Stage6_bench_winners` 의 note 가
+    #       "English suite - arc_easy, hellaswag, piqa"
+    #   인데 배치에 `--task piqa` 가 **없다**. 로그를 읽는 사람은 셋이 돌았다고 읽는다.
+    #   ★함정 38 계열인데 방향이 반대다 — 종전엔 판정이 인쇄를 못 따라갔고,
+    #     이번엔 **인쇄가 실행보다 앞서 갔다**.
+    #   ★과제 이름은 `eval_bench_suite.TASKS` 에서 읽는다(목록을 두 곳에 두지 않는다, 함정 18).
+    _tasks_known = _bench_task_names()
+    if _tasks_known:
+        _ran = set()
+        for raw in lines:
+            s = raw.strip()
+            if s.upper().startswith("REM"):
+                continue
+            for m in re.finditer(r"--task[=\s]+([A-Za-z0-9_]+)", s):
+                _ran.add(m.group(1))
+        if "all" not in _ran:
+            for i, raw in enumerate(lines):
+                s = raw.strip()
+                if s.upper().startswith("REM") or "--note" not in s:
+                    continue
+                _note = s.split("--note", 1)[1]
+                # ★공백·하이픈을 `_` 로 본 사본에서 **돌린 과제를 긴 것부터 지운다**.
+                #   🚫안 그러면 note 의 "kobest hellaswag" 가 `hellaswag` 로 읽힌다
+                #   (2026-09-08 오탐 1건). 지운 뒤에 남은 것만 약속으로 센다.
+                _norm = re.sub(r"[\s\-]+", "_", _note)
+                for _r in sorted(_ran, key=len, reverse=True):
+                    _norm = _norm.replace(_r, " ")
+                for name in sorted(_tasks_known):
+                    if name in _ran:
+                        continue
+                    if re.search(r"(?<![A-Za-z0-9_])" + re.escape(name) + r"(?![A-Za-z0-9_])",
+                                 _norm):
+                        _sink29 = (info if path.name.endswith("-done.bat") else err)
+                        _sink29.append(
+                            f"L{i+1} `--note` 가 **`{name}`** 을 약속하는데 이 배치에 "
+                            f"`--task {name}` 이 **없다**. 로그를 읽는 사람은 돌았다고 읽는다 "
+                            f"(2026-09-07 P085 단계6 의 `piqa`). "
+                            f"과제를 넣거나 note 에서 이름을 빼세요")
 
     return err, warn, info
 

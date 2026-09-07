@@ -47,7 +47,7 @@ if errorlevel 1 echo [WARN] arm 4 failed - continuing
 
 python scripts\runlog.py --name P085_stage8_bench_final --note "[5/5] deployment residency for depth 18 - the canonical tool"
 timeout /t 15 /nobreak
-python scripts\runlog.py --name P085_stage8_bench_final -- python scripts\mem_runtime.py --preset m100s14 --data ko-en --tokens 300M --models d18_cla2_norecur --lut --emb-quant int8 --kv-seq 1024
+python scripts\runlog.py --name P085_stage8_bench_final -- python scripts\mem_runtime.py --preset m100s14 --data ko-en --tokens 300M --models d18_cla2_norecur --drop-latent --lut --emb-quant int8 --kv-seq 1024 --kv-dtype bf16
 if errorlevel 1 echo [WARN] arm 5 failed - continuing
 
 python scripts\runlog.py --name P085_stage8_bench_final --note "DONE. Deployment residency comes from mem_runtime --lut only, not bench_infer's column."

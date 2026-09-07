@@ -391,7 +391,13 @@ def main():
         m = META.get(t) or {}
         if float(m.get("train_repeat") or 1.0) > 1.0:
             return "재귀"
-        return "타잉" if int(m.get("mlp_group") or 1) > 1 else "dense"
+        if int(m.get("mlp_group") or 1) > 1:
+            return "타잉"
+        # ★2026-09-07 신설 — `cla_group>=2` + 무재귀 + 무타잉 은 **자를 따로 쟀다**
+        #   (결과 047 §17.1, 0.0024). 종전에는 "dense"(0.0021)로 묶여 **14% 과신**했다.
+        if int(m.get("cla_group") or 1) >= 2:
+            return "무재귀"
+        return "dense"
 
     def _sigma_band(tag_a, tag_b):
         def cond(t):
@@ -403,8 +409,11 @@ def main():
         fa, fb = _family(tag_a), _family(tag_b)
         if fa == fb:
             return _RULER[fa]
-        band, why = max((_RULER[fa], _RULER[fb]), key=lambda x: x[0])
-        return (band, f"{why} — 계열 교차({fa}↔{fb})라 큰 자를 쓴다")
+        # ★2026-09-08 — 계열 교차는 **제곱합의 제곱근**이다(`_rulers.cross`).
+        #   🚫종전 `max` 는 산술적으로 작아서 유의 판정을 남발하는 쪽으로 틀렸다.
+        band = _rulers.cross(_RULER[fa][0], _RULER[fb][0])
+        return (band, f"계열 교차({fa} {_RULER[fa][0]:.4f} ↔ {fb} {_RULER[fb][0]:.4f}) "
+                      f"— 제곱합의 제곱근")
     _bands = set()
     for x, y in itertools.combinations(per, 2):
         m, sd, se, t, nn, win = paired_stats(per[x], per[y])

@@ -144,6 +144,10 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     #   `muon_lr_mult` 를 기본(1.0)이 아닌 5 로 주는 이유는 **배수가 실제로 전달되는지**를
     #   같이 사기 위해서다 — 이름만 있으면 기본값이라 코드가 안 돈다(결과 044).
     "sm_muon":    {"optimizer": "muon", "muon_lr_mult": 5.0},
+    # ★2026-09-08 — P086 Stage2 가 **타잉 몸통에서** Muon 을 돌린다. 종전 `sm_muon` 은
+    #   dense 였고 `check_smoke_coverage` 가 그 빈 조합을 잡았다(P074 가 죽은 형태).
+    #   ★타잉된 행렬은 **g 개 층 grad 의 합**을 받는다 — `split_params` 가 처음 보는 모양이다.
+    "sm_tiedmuon": {"optimizer": "muon", "muon_lr_mult": 5.0, "arch": "tied", "mlp_group": 2},
     "sm_s34":    {"sparse34": True, "bpw": 1.25},
     # ★2026-09-05 — P016 Stage3 이 **dense 몸통에서** 3:4 를 돌린다. 종전 `sm_s34` 는
     #   tied 였고 `check_smoke_coverage` 가 그 빈 조합을 잡았다(P074 가 죽은 형태).

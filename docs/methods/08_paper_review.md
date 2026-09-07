@@ -18,6 +18,39 @@
 
 ---
 
+## ★★0. 이 문서가 검토한 논문 — **한눈에 보는 표** (2026-09-08 신설, 사용자 지시 5)
+
+> 🚫★**이 문서는 여기서 동결한다.** **앞으로의 논문 리뷰는
+> [`08_paper_review2.md`](08_paper_review2.md)** 에 쓴다(1,110줄이 되어 갈랐다).
+>
+> ★**연관 방법론** 열은 `docs/methods/` 의 **12종** 중에서 고른다:
+> `architecture`(01) · `memory`(02) · `knowledge_quality`(03) · `context_length`(04) ·
+> `training_speed`(05) · `training_quality`(06) · `corpus_selection`(07) · `paper_review`(08) ·
+> `training_memory`(09) · `benchmarks`(10) · `tokenizer`(11) · `inference_speed`(12) · 그 밖이면 `other`.
+
+| § | 논문·자료 | 목적 | 방법론 | 연관 우리 방법론 | 채택 여부 | 실험계획 |
+|---|---|---|---|---|---|---|
+| **1** | **Fishing for Magikarp**(arXiv:2405.05417, Cohere) | 학습 안 된 토큰이 모델을 망가뜨리는지 찾는다 | 임베딩 통계로 미학습 토큰 자동 탐지 | `tokenizer`(11) · `knowledge_quality`(03) | ★**즉시 채택** | **P039** |
+| **2** | 선형 어텐션 4종(**GDN-2** arXiv:2605.22791 · **KDA** · **Kimi-Linear** · **DeepSeek-V4**) | 긴 컨텍스트를 선형 비용으로 | 게이트 델타룰·선형 상태 | `context_length`(04) · `architecture`(01) | 🚫**기각(현시점)** · 개념만 보존 | 없음 |
+| **3** | `slvDev/esp32-ai`(코드) | 초소형 하드웨어 배포 실사 | — | `memory`(02) | ★**현실 점검용 보존** | 없음 |
+| **5·8** | ★**T-MAC**(arXiv:2407.00088, MS) · **bitnet.cpp**(arXiv:2502.11880) · 1-bit AI Infra(arXiv:2410.16144) | 저비트 LLM 을 CPU 에서 빠르게 | **LUT 테이블 조회** 커널 | `inference_speed`(12) · `memory`(02) | ★★**즉시 채택 — 우리 LUT 경로의 참조 구현** | **P014 · P014C · P014D** |
+| **6** | **MobileLLM**(arXiv:2402.14905, Meta ICLR24) | sub-1B 온디바이스 최적 형상 | **deep-and-thin** + **즉시 블록 공유** | `architecture`(01) | ✅**우리 설계를 지지**(신규 작업 없음) | ★**P089 근거** |
+| **7** | ★**Relaxed Recursive Transformers**(arXiv:2410.20672, ICLR25) | 층 타잉의 손실을 되살린다 | **층별 LoRA 로 타잉 완화** | `architecture`(01) · `memory`(02) | 🧪**재개 근거 성립** — 🚫**표준조건 0런** | **P008**(⏸) |
+| **9** | **DeepSeek-V3**(FP8 선택적 혼합정밀도) | 학습 메모리·속도 | 블록 단위 FP8 + FP32 누적 | `training_memory`(09) · `training_speed`(05) | ⏸**부분** | **P022B** |
+| **10** | **Hyper Experts**(`63_Hyper_Experts_…`) | 전문가 하이퍼네트워크 | — | `architecture`(01) | ⏸**하나만** — 우리 구조가 이미 퇴화형 | 없음 |
+| **11** | **DFlash**(arXiv:2602.06036) + 블로그 2종 | 확산 초안 모델 가속 | 초안·검증 | `inference_speed`(12) | 🚫**초안모델 기각** · ⏸2-tap conv·위치가중 손실 보존 | 없음 |
+| **12** | ★**KLUE**(arXiv:2105.09680) · ★**KorQuAD 2.0**(2019) | 한국어 평가 | 우도 채점·정답 CE | `benchmarks`(10) | ✅**채택 — 우도 채점 한정** | **P085** |
+| **13** | **FreeToken**(엣지 MoE 서빙) | 대역폭 적응 실행 | KV 체크포인트 정책 | `context_length`(04) · `memory`(02) | ⏸**의미 경계 KV 체크포인트** 하나 | **P077 단계5**(⏸) |
+| **14** | ★**Learnable Multipliers**(Falcon LLM Team) | 배포 비용 0 인 품질 레버 | 행렬층 스칼라 승수 | `training_quality`(06) | 🚫**dense 종결**(산술적으로 무효) · ⏳**타잉 몸통 미측정** | **P086** |
+| **15** | ★**KoBEST**(SK Telecom + Oxford, 2022) | 한국어 벤치마크 | COPA·HellaSwag 등 | `benchmarks`(10) | ✅**채택** | **P085 단계3** |
+| ★ | **Sherry**(1.25비트 3:4 준정형) | 하드웨어 친화 삼진 | 세분화 희소 + Arenas | `memory`(02) | 🚫**종결**(대가 +0.04203 > 문턱) · ⚠️속도 축은 열려 있다 | **P016** |
+| ★ | **GSQ**(arXiv:2604.18556) · **RCO**(arXiv:2605.00649) · **Kimi K2** | — | — | — | ➡️**[08-2](08_paper_review2.md) 로** | — |
+
+⚠️★**"채택" 은 *"우리 실험 목록에 들어갔다"* 는 뜻이지 *"효과가 있다"* 가 아니다.**
+효과 판정은 결과문서에 있다.
+
+---
+
 ## 1. ★Fishing for Magikarp — **우리 val_loss 를 오염시키고 있을 수 있다**
 
 ### 무엇을 말하는 논문인가

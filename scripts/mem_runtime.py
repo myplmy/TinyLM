@@ -160,6 +160,26 @@ def main():
                          "(캐시는 직전 텐서를 그대로 재사용하므로 0.000e+00 이 나와야 한다)")
     a = ap.parse_args()
 
+    # ★★2026-09-08 신설 — **`--lut`/`--int8-store` 는 `--drop-latent` 없이는 아무 일도 안 한다.**
+    #   전환 코드가 `if a.drop_latent:` 블록 **안**에 있기 때문이다(아래 212행).
+    #   🚫2026-09-07 P030 단계7 이 정확히 그렇게 죽었다 — 종료코드 0, 표 세 개,
+    #   판정 절 두 개를 인쇄하고 **정작 물어본 LUT 상주는 없었다**(결과 014 §17).
+    #   ★argparse 뒤·모델 로드 전이라 여기서 죽으면 GPU 도 체크포인트도 안 건드린다.
+    #   🚫`return` 이 아니라 `SystemExit(2)` 다 — 호출부가 반환값을 버리면 exit 0 이 된다(R19).
+    _need = [f for f, on in (("--lut", a.lut),
+                             ("--int8-store", getattr(a, "int8_store", False)),
+                             ("--unpack-cache", getattr(a, "unpack_cache", False)))
+             if on]
+    if _need and not a.drop_latent:
+        print("")
+        print("  🚫**" + " / ".join(_need) + " 는 `--drop-latent` 없이는 실행되지 않는다.**")
+        print("     저장 포맷 전환은 latent 해제 뒤에만 일어난다(`mem_runtime.py` 의 "
+              "`if a.drop_latent:` 블록).")
+        print("     ★배포 상주 정본 명령: `--device cpu --drop-latent --lut "
+              "--emb-quant int8 --kv-seq 1024 --kv-dtype bf16`")
+        print("     (기준표 B.22 규칙 21 · 결과 014 §17)")
+        raise SystemExit(2)
+
     import torch
     from tinylm import paths
     from tinylm.infer.generate import load_model, sample

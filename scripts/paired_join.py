@@ -62,6 +62,11 @@ RULERS = dict(_rulers.BAND_EN)
 def family(tag: str) -> str:
     if "_r" in tag and any(c.isdigit() for c in tag.split("_r")[-1][:2]):
         return "recur"
+    # ★2026-09-07 — `*_cla2_norecur*` 계열은 자를 따로 쟀다(결과 047 §17.1).
+    #   🚫이름으로 가르는 것은 `paired_eval` 의 메타 판정보다 약하다 — 이 도구는
+    #   json 을 안 읽으므로 여기서는 태그 규약을 믿는다(태그 규약은 게이트 21 이 지킨다).
+    if "norecur" in tag or "cla2" in tag:
+        return "norecur"
     return "dense" if "dense" in tag else "tied"
 
 
@@ -69,8 +74,9 @@ def ruler_for(a: str, b: str) -> tuple[float, str]:
     fa, fb = family(a), family(b)
     if fa == fb:
         return RULERS[fa], f"{fa} 2σ"
-    r = max(RULERS[fa], RULERS[fb])
-    return r, f"계열 교차({fa}↔{fb}) — 큰 자"
+    # ★2026-09-08 — 제곱합의 제곱근(`_rulers.cross`). 🚫종전 `max` 는 너무 작았다.
+    r = _rulers.cross(RULERS[fa], RULERS[fb])
+    return r, f"계열 교차({fa}↔{fb}) — 제곱합의 제곱근"
 
 
 def load(paths):
