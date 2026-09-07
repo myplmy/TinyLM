@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v62",
+  "version": "62",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-09151 ~ S2-CDH-09300",
+  "concept_family": "S2-A02-T062: 공항 활주로 제설·운항 회복 — 보호조건 해제 시 예외 적용 범위 추적",
+  "design_note": "공항 활주로 제설·운항 회복 영역의 보호조건 해제 시 예외 적용 범위 추적 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-09151",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "활주로 폐쇄와 제설완료 해제는 제설차가 통과했다는 사실만으로 보호상태를 풀지 않고 노면검사와 관제 승인을 함께 요구한다. 해제는 검사된 활주로 구간과 공표된 시각에만 적용된다.",
+      "concepts": [
+        "활주로 폐쇄와 제설완료 해제"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09152",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "적설깊이 경보와 운항제한 시작은 측정값이 기준을 넘을 때 폐쇄 절차를 발동하되 센서 한 곳의 오차가 확인되면 현장 측정을 우선하는 규칙이다. 예외는 검증된 측정지점에 한정한다.",
+      "concepts": [
+        "적설깊이 경보와 운항제한 시작"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09153",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설중 진입금지와 검사차량 예외는 일반 항공기와 지상차량을 막으면서도 지정 검사차량에는 관제 호위 아래 제한 진입을 허용한다. 예외 권한은 검사 임무와 지정 경로 밖으로 확장되지 않는다.",
+      "concepts": [
+        "제설중 진입금지와 검사차량 예외"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09154",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "활주로 개방표시와 실제사용 승인은 현장 표지가 정상으로 바뀌어도 항공정보 공표와 관제 확인 전에는 항공기가 사용할 수 없다는 경계다. 물리적 해제와 운영상 해제를 구분한다.",
+      "concepts": [
+        "활주로 개방표시와 실제사용 승인"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09155",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부분제설 구간과 전장개방 금지는 활주로 일부가 깨끗해도 전체 길이가 확보된 것으로 공표하지 않게 한다. 단축 운항 예외는 사용 가능 거리와 항공기 성능이 별도로 승인된 경우에만 열린다.",
+      "concepts": [
+        "부분제설 구간과 전장개방 금지"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09156",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중앙선 확보와 가장자리 보호유지는 중앙부 제설이 끝나도 가장자리 적설이 엔진흡입이나 이탈위험을 만들면 폭 제한을 유지한다는 뜻이다. 해제 범위는 검사된 유효폭에만 해당한다.",
+      "concepts": [
+        "중앙선 확보와 가장자리 보호유지"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09157",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "방향별 개방과 반대방향 제한은 한 방향의 접근·제동 조건이 충족돼도 반대편 진입부와 바람 조건이 다르면 별도 보호상태를 유지한다. 활주로 번호가 같다는 이유로 해제를 공유하지 않는다.",
+      "concepts": [
+        "방향별 개방과 반대방향 제한"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09158",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설종료 시각과 재오염 유효기간은 완료 판정 뒤에도 강설이 계속되면 검사 결과의 효력이 짧아진다는 관계다. 해제는 마지막 관측시각과 다음 재점검 전까지만 유효하다.",
+      "concepts": [
+        "제설종료 시각과 재오염 유효기간"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09159",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상착륙 우선과 폐쇄활주로 사용은 정상 운항에 닫힌 활주로도 생명안전 판단 아래 최후 수단으로 선택될 수 있음을 뜻한다. 이 예외는 해당 비상항공기와 구조 지원에만 적용된다.",
+      "concepts": [
+        "비상착륙 우선과 폐쇄활주로 사용"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09160",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운항회복 선언과 보호조건 잔류는 일부 항공편이 출발해도 제설장비 대기, 감속운영, 반복검사 같은 보호조치가 계속될 수 있음을 보여 준다. 회복과 모든 제한 해제를 동일시하지 않는다.",
+      "concepts": [
+        "운항회복 선언과 보호조건 잔류"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09161",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "활주로상태코드와 구간별 판정은 세 구간의 오염과 제동정보를 따로 평가해 가장 나쁜 구간의 제한을 반영한다. 한 구간 개선을 전체 코드 해제로 확대하지 않는다.",
+      "concepts": [
+        "활주로상태코드와 구간별 판정"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09162",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "마찰측정 정상과 육안오염 잔류는 수치가 좋아도 젖은 눈이나 얼음 반점이 보이면 보호조건을 유지하게 한다. 계측 통과가 독립된 현장증거를 지우지 않는다.",
+      "concepts": [
+        "마찰측정 정상과 육안오염 잔류"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09163",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "조종사제동보고와 최신성 한계는 이전 항공편의 보고를 참고하되 강설이나 제설 뒤에는 새 상태를 대신할 만큼 최신이라고 볼 수 없다는 뜻이다. 해제 근거는 유효시간 안의 같은 조건에만 쓴다.",
+      "concepts": [
+        "조종사제동보고와 최신성 한계"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09164",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "노면온도 상승과 결빙해제 판단은 온도가 어는점 위로 올라도 잔류 수분과 그늘 구간을 확인한 뒤 보호상태를 바꾸게 한다. 온도값 하나로 모든 구간을 해제하지 않는다.",
+      "concepts": [
+        "노면온도 상승과 결빙해제 판단"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09165",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "오염면적 감소와 코드상향 범위는 기준 아래로 줄어든 구간만 상태코드를 조정하고 미검사 구간은 기존 등급을 유지한다. 평균값으로 나쁜 부분을 덮지 않는다.",
+      "concepts": [
+        "오염면적 감소와 코드상향 범위"
+      ],
+      "relations": [
+        "comparison",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09166",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시험차량 통과와 항공기 사용차이는 검사차의 접지와 속도가 항공기 제동을 완전히 대신하지 못한다는 경계다. 시험 성공은 정해진 평가절차 안에서만 해제 근거가 된다.",
+      "concepts": [
+        "시험차량 통과와 항공기 사용차이"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09167",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "검사주기 충족과 급변기상 재검은 정기 검사시간이 남아 있어도 강설강도나 기온이 급변하면 즉시 다시 측정하게 한다. 시간 기반 보호해제는 환경변화 조건에서 취소된다.",
+      "concepts": [
+        "검사주기 충족과 급변기상 재검"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09168",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "활주로표본점과 국소빙판 탐지는 지정 측정점이 정상이어도 교량부나 음영부의 얼음을 별도로 찾게 한다. 표본점 해제는 조사되지 않은 국소구역까지 보장하지 않는다.",
+      "concepts": [
+        "활주로표본점과 국소빙판 탐지"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09169",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서교정 완료와 현장대표성은 정확한 센서라도 제설더미 옆이나 열원 근처에 있으면 활주로 상태를 대표하지 못함을 뜻한다. 교정 보호조건과 설치위치 보호조건을 분리한다.",
+      "concepts": [
+        "센서교정 완료와 현장대표성"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09170",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "최종검사 서명과 후발오염 재폐쇄는 승인 뒤 눈보라나 차량 낙설이 생기면 이전 서명을 근거로 개방을 고정하지 않게 한다. 새 증거가 기존 해제를 즉시 재정의한다.",
+      "concepts": [
+        "최종검사 서명과 후발오염 재폐쇄"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09171",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설대열 진입과 관제분리 보호는 여러 장비가 활주로에 들어갈 때 항공기 이동을 막고 대열 위치를 계속 추적하게 한다. 선두차량 허가는 뒤 장비 전체에 자동 적용되지 않는다.",
+      "concepts": [
+        "제설대열 진입과 관제분리 보호"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09172",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설차 철수와 장비수량 확인은 작업완료 뒤 모든 차량과 견인물이 활주로 밖에 있는지 대조해야 개방할 수 있다는 조건이다. 무전 종료만으로 보호상태를 해제하지 않는다.",
+      "concepts": [
+        "제설차 철수와 장비수량 확인"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09173",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설날 손상과 작업완료 무효화는 장비가 구간을 지나갔어도 날이 들린 채였으면 해당 구간을 다시 검사하게 한다. 예외 재작업은 손상 시점 이후 구간에 한정한다.",
+      "concepts": [
+        "제설날 손상과 작업완료 무효화"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09174",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "회전솔 운전과 이물잔류 검사는 눈 제거 뒤 솔 조각이나 포장 파편이 남지 않았는지 확인해야 함을 뜻한다. 제설 기능 완료가 이물 보호조건까지 해제하지 않는다.",
+      "concepts": [
+        "회전솔 운전과 이물잔류 검사"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09175",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제빙제 살포와 항공기재질 제한은 승인된 농도라도 특정 재질과 환경조건에서 사용범위가 달라짐을 보여 준다. 살포 허가는 활주로 구간과 물질 종류에만 적용된다.",
+      "concepts": [
+        "제빙제 살포와 항공기재질 제한"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-CDH-09176",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고체제빙제와 배수구 보호는 살포가 결빙을 줄여도 배수구를 막을 수 있어 투입량과 청소조건을 함께 관리하게 한다. 결빙 보호해제가 배수 보호해제를 뜻하지 않는다.",
+      "concepts": [
+        "고체제빙제와 배수구 보호"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09177",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설장비 고장과 대체대열 투입은 예비차량이 같은 작업폭과 통신장비를 갖춘 경우에만 기존 임무를 승계하게 한다. 대체 승인은 고장차량의 구간과 작업에만 적용된다.",
+      "concepts": [
+        "제설장비 고장과 대체대열 투입"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09178",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연료보충 예외와 활주로 정차금지는 작업 중 연료가 부족해도 활주로 안에서 임의 보충하지 않고 지정 안전구역으로 이동하게 한다. 긴급 연료지원은 관제 격리구역에만 허용된다.",
+      "concepts": [
+        "연료보충 예외와 활주로 정차금지"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09179",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설대열 간격과 시야저하 조정은 평시 간격을 따르되 눈보라로 후속차량이 선두를 놓치면 속도와 간격을 더 보수적으로 바꾸게 한다. 조정은 해당 기상구간 동안만 유지된다.",
+      "concepts": [
+        "제설대열 간격과 시야저하 조정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09180",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "장비작업 완료와 노면검사 독립은 제설팀의 종료보고가 검사팀의 사용가능 판정을 대신하지 못한다는 역할 경계다. 각 보호조건은 권한 있는 담당자가 별도로 해제한다.",
+      "concepts": [
+        "장비작업 완료와 노면검사 독립"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09181",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중앙선등 노출과 점등시험은 눈을 치운 뒤 실제 점등과 밝기를 확인해야 시각시설 보호상태를 풀 수 있다는 관계다. 외형상 노출된 등기구만 검사한 구간에 해제를 적용한다.",
+      "concepts": [
+        "중앙선등 노출과 점등시험"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09182",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "접지대등 정상과 접근등 제한은 활주로 등화가 정상이어도 접근등이 눈에 묻히면 저시정 운항 제한을 유지하게 한다. 한 시설의 회복을 전체 접근체계로 확대하지 않는다.",
+      "concepts": [
+        "접지대등 정상과 접근등 제한"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09183",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "표지판 제설과 방향정보 확인은 표면의 눈을 제거한 뒤 문자와 조명이 읽히는지 확인해야 함을 뜻한다. 제설 완료는 해당 표지의 가시성 범위에서만 해제 근거가 된다.",
+      "concepts": [
+        "표지판 제설과 방향정보 확인"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09184",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "활주로등 고장과 주간운항 예외는 맑은 주간에 일부 운항을 허용할 수 있어도 야간과 저시정 제한은 계속된다는 범위 규칙이다. 시간과 기상 조건을 명시해 예외를 좁힌다.",
+      "concepts": [
+        "활주로등 고장과 주간운항 예외"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09185",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계기착륙시설 점검과 제설차 간섭은 민감구역 안 장비가 철수하고 신호가 정상이어야 정밀접근 보호를 해제하게 한다. 활주로 개방과 계기접근 개방을 따로 공표한다.",
+      "concepts": [
+        "계기착륙시설 점검과 제설차 간섭"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09186",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "표면이동레이더 정상과 표지 가림은 레이더로 차량을 보더라도 운전자용 표지가 가려져 있으면 지상안전 제한을 유지하게 한다. 관제 감시가 현장 시각정보를 완전히 대체하지 않는다.",
+      "concepts": [
+        "표면이동레이더 정상과 표지 가림"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09187",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "풍향등 제설과 바람정보 대체는 현장 풍향등이 묻혔을 때 계측풍 자료를 사용할 수 있지만 시각 확인이 필요한 운항에는 제한이 남음을 뜻한다. 대체정보의 적용대상을 구분한다.",
+      "concepts": [
+        "풍향등 제설과 바람정보 대체"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09188",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "거리표지 노출과 단축활주로 운영은 사용 가능한 길이를 조종사가 확인할 수 있어야 단축 운항 예외를 적용한다는 조건이다. 계산상 길이만으로 현장 표지 보호를 해제하지 않는다.",
+      "concepts": [
+        "거리표지 노출과 단축활주로 운영"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09189",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "등화회로 복구와 전구별 고장잔류는 상위 회로가 살아나도 개별 등기구 고장을 확인해 허용범위를 판단하게 한다. 전원 복구를 모든 부분의 정상으로 기록하지 않는다.",
+      "concepts": [
+        "등화회로 복구와 전구별 고장잔류"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09190",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "등화보호 해제와 재적설 감시는 열선과 제설로 불빛이 보인 뒤에도 계속 내리는 눈이 가시성을 낮추는지 추적하게 한다. 해제 상태는 다음 관측까지 조건부다.",
+      "concepts": [
+        "등화보호 해제와 재적설 감시"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09191",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유도로 개방과 활주로 개방 분리는 한 이동구역의 제설완료가 다른 구역의 사용허가를 자동으로 바꾸지 않게 한다. 각각의 검사와 관제 공표 범위를 따로 유지한다.",
+      "concepts": [
+        "유도로 개방과 활주로 개방 분리"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09192",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주유도로 폐쇄와 우회유도로 예외는 대체 경로의 폭, 곡선, 적설상태가 해당 항공기에 맞을 때만 이동을 허용한다. 우회 승인은 지정 기종과 방향에 한정한다.",
+      "concepts": [
+        "주유도로 폐쇄와 우회유도로 예외"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09193",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계류장 제설과 게이트접근 허가는 주기장 표면뿐 아니라 유도선, 장비대기구역, 날개끝 간격을 확인한 뒤 열린다. 한 지점의 깨끗함으로 전체 게이트 보호를 해제하지 않는다.",
+      "concepts": [
+        "계류장 제설과 게이트접근 허가"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09194",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유도로 가장자리 적설과 대형기 제한은 중앙 통로가 열려도 날개와 엔진 높이에 따라 기종별 제한을 유지하게 한다. 소형기 통과 예외를 대형기에 확대하지 않는다.",
+      "concepts": [
+        "유도로 가장자리 적설과 대형기 제한"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09195",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "견인경로 개방과 자력주행 제한은 저속 견인에는 허용된 노면도 엔진추력과 회전이 필요한 자력주행에는 부적합할 수 있음을 뜻한다. 이동방식별 예외 범위를 분리한다.",
+      "concepts": [
+        "견인경로 개방과 자력주행 제한"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09196",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "게이트우선 제설과 비상주기장 유지는 여객편 회복을 위해 게이트를 먼저 열어도 비상항공기용 공간을 제설장비 적치에 쓰지 않게 한다. 운영회복 예외가 안전예비 구역을 침범하지 않는다.",
+      "concepts": [
+        "게이트우선 제설과 비상주기장 유지"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09197",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제방빙액 유출과 계류장 배수제한은 항공기 처리 재개와 별개로 오염수 수거능력이 확보될 때까지 살포구역을 제한하게 한다. 비행 보호해제가 환경 보호해제를 뜻하지 않는다.",
+      "concepts": [
+        "제방빙액 유출과 계류장 배수제한"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09198",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수하물도로 개방과 항공기이동 충돌은 지상차량 경로를 열어도 항공기 견인구간과 겹치면 시간별 통제를 유지하게 한다. 공간 해제는 사용자와 시간대에 따라 달라진다.",
+      "concepts": [
+        "수하물도로 개방과 항공기이동 충돌"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09199",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원격주기장 개방과 버스운송 조건은 주기장이 깨끗해도 승객버스 경로와 승하차 안전이 확보돼야 실제 운항에 쓸 수 있음을 뜻한다. 장소 해제만으로 서비스 해제를 확정하지 않는다.",
+      "concepts": [
+        "원격주기장 개방과 버스운송 조건"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09200",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유도로교차부 검사와 구간허가는 각 직선구간이 정상이어도 교차부 빙판이 남으면 연결경로를 열지 않게 한다. 구간별 해제의 연속성을 확인한 뒤 전체 이동을 허용한다.",
+      "concepts": [
+        "유도로교차부 검사와 구간허가"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09201",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소형기 운항허용과 대형기 제한은 같은 노면에서도 필요한 이륙거리와 날개폭이 달라 기종별 보호조건이 다름을 보여 준다. 한 기종의 성공을 공항 전체 해제로 공표하지 않는다.",
+      "concepts": [
+        "소형기 운항허용과 대형기 제한"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09202",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "프로펠러기 허용과 제트기 흡입위험은 가장자리 눈더미가 엔진 위치와 추력에 따라 다른 위험을 만든다는 뜻이다. 예외는 평가된 항공기 형식에만 적용한다.",
+      "concepts": [
+        "프로펠러기 허용과 제트기 흡입위험"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09203",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "경량항공기 측풍제한과 활주로선택은 제설 상태가 같아도 바람 한계 때문에 특정 방향만 사용할 수 있음을 보여 준다. 방향별 허가를 반대 방향으로 복제하지 않는다.",
+      "concepts": [
+        "경량항공기 측풍제한과 활주로선택"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09204",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "화물기 우선회복과 여객편 안전기준은 혼잡 완화를 위해 화물편을 먼저 열어도 승객 대피와 탑승동선 조건을 생략할 수 없다는 경계다. 우선순위가 안전요건을 해제하지 않는다.",
+      "concepts": [
+        "화물기 우선회복과 여객편 안전기준"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09205",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "의료항공편 예외와 성능검토 유지는 긴급 목적이 있어도 오염활주로에서 필요한 거리와 제동능력을 확인해야 함을 뜻한다. 긴급성은 순서를 바꾸지만 물리 한계를 없애지 않는다.",
+      "concepts": [
+        "의료항공편 예외와 성능검토 유지"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09206",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "회항편 수용과 연료긴급 범위는 연료가 부족한 항공기에 우선 착륙기회를 주되 사용 가능한 활주로와 구조대응 범위 안에서만 허용한다. 예외는 후속 일반편에 승계되지 않는다.",
+      "concepts": [
+        "회항편 수용과 연료긴급 범위"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09207",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시험비행 허가와 상업운항 제한은 점검 목적의 경량 시험기가 운항해도 승객을 태운 정기편까지 개방된 것은 아님을 뜻한다. 임무와 위험노출 차이를 기준으로 범위를 나눈다.",
+      "concepts": [
+        "시험비행 허가와 상업운항 제한"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09208",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "최대이륙중량 감소와 단축운항은 항공사가 중량을 낮춰 필요한 거리를 줄일 때만 단축활주로 예외를 검토하게 한다. 계획 중량과 실제 탑재가 확인된 항공편에만 적용한다.",
+      "concepts": [
+        "최대이륙중량 감소와 단축운항"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09209",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제동성능 계산과 조종사 최종판단은 계산상 허용돼도 최신 제동보고와 기상변화를 본 조종사가 운항을 거부할 수 있음을 뜻한다. 공항 해제가 개별 운항결정을 강제하지 않는다.",
+      "concepts": [
+        "제동성능 계산과 조종사 최종판단"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09210",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운항승인과 항공사별 제한잔류는 공항이 활주로를 열어도 항공사 매뉴얼이나 기종 한계가 더 엄격하면 그 제한이 계속됨을 보여 준다. 공항 보호해제의 조직적 범위를 구분한다.",
+      "concepts": [
+        "운항승인과 항공사별 제한잔류"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "boundary",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-CDH-09211",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "강설약화와 제설보호 해제는 눈이 약해져도 누적오염과 노면온도를 확인한 뒤 제한을 바꾸게 한다. 현재 강도만으로 과거에 쌓인 위험을 해제하지 않는다.",
+      "concepts": [
+        "강설약화와 제설보호 해제"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09212",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "강설종료와 재비산눈 위험은 하늘에서 눈이 멎어도 강풍이 눈을 활주로로 다시 옮길 수 있음을 뜻한다. 바람받이 구간의 보호조건은 별도로 유지한다.",
+      "concepts": [
+        "강설종료와 재비산눈 위험"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09213",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기온상승과 재결빙 가능성은 낮에 녹은 물이 해질 무렵 다시 얼 수 있어 일시 개방 뒤 감시를 강화하게 한다. 주간 해제를 야간까지 자동 연장하지 않는다.",
+      "concepts": [
+        "기온상승과 재결빙 가능성"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09214",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "풍속감소와 제설대열 재진입은 장비 전복과 시야 위험이 기준 아래로 내려가야 작업을 재개하게 한다. 공항 전체 평균보다 활주로 현장 풍속을 적용한다.",
+      "concepts": [
+        "풍속감소와 제설대열 재진입"
+      ],
+      "relations": [
+        "attribute",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09215",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "측풍완화와 방향별 개방은 한 활주로 방향의 바람성분이 허용돼도 반대 방향 접근조건을 따로 평가하게 한다. 풍향 변화 시 기존 해제 범위를 다시 확인한다.",
+      "concepts": [
+        "측풍완화와 방향별 개방"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09216",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "안개해소와 저시정절차 종료는 시정이 좋아진 뒤 등화와 지상이동 상태까지 확인해야 특별 절차를 닫는다는 뜻이다. 기상 보호해제가 지상시설 보호를 대신하지 않는다.",
+      "concepts": [
+        "안개해소와 저시정절차 종료"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09217",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "어는비 종료와 투명빙 잔류는 강수가 멈춰도 눈에 잘 보이지 않는 얼음이 남을 수 있어 촉각·마찰검사를 요구한다. 강수종료만으로 활주로를 해제하지 않는다.",
+      "concepts": [
+        "어는비 종료와 투명빙 잔류"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09218",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "일사증가와 음영구간 제외는 햇빛 받은 구간이 녹아도 건물과 지형 그림자 아래 얼음은 유지될 수 있음을 뜻한다. 자연융해 해제는 관측된 구간에만 적용한다.",
+      "concepts": [
+        "일사증가와 음영구간 제외"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09219",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기상예보 개선과 실제관측 우선은 향후 조건이 좋아질 전망이어도 현재 오염이 확인되면 보호상태를 먼저 유지하게 한다. 예보는 준비순서를 바꾸지만 현재 사용허가를 만들지 않는다.",
+      "concepts": [
+        "기상예보 개선과 실제관측 우선"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09220",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "돌풍경보 해제와 장비안정 확인은 공식 경보가 끝난 뒤 제설차와 표지시설의 위치가 안전한지 살펴야 작업과 운항을 재개한다는 조건이다. 경보 종료의 적용범위를 구분한다.",
+      "concepts": [
+        "돌풍경보 해제와 장비안정 확인"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09221",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "건설오와 습설 구분은 같은 깊이여도 밀도와 제동영향이 달라 제거·운항 기준을 다르게 적용하게 한다. 한 오염유형의 해제기준을 다른 유형에 그대로 쓰지 않는다.",
+      "concepts": [
+        "건설오와 습설 구분"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09222",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "슬러시 제거와 잔류수막은 고형 오염을 치운 뒤에도 배수되지 않은 물이 수막현상을 만들 수 있음을 뜻한다. 제설 보호해제와 젖은노면 제한을 별도로 관리한다.",
+      "concepts": [
+        "슬러시 제거와 잔류수막"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09223",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "압설 제거와 포장손상 위험은 얼어붙은 눈을 긁을 때 포장과 등화가 손상되지 않도록 작업강도를 제한하게 한다. 빠른 제거 예외가 시설보호 조건을 해제하지 않는다.",
+      "concepts": [
+        "압설 제거와 포장손상 위험"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09224",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "검은얼음 의심과 예방폐쇄는 육안으로 깨끗해 보여도 노면온도와 수분 조건이 맞으면 확인 전까지 보호상태를 유지하게 한다. 가시적 무오염을 해제 근거로 충분히 보지 않는다.",
+      "concepts": [
+        "검은얼음 의심과 예방폐쇄"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09225",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제빙액 희석과 재살포 범위는 강수로 농도가 낮아진 구간만 확인해 추가 살포하고 이미 적정한 구간에는 과다 투입하지 않게 한다. 예외조치는 측정된 구간에 한정한다.",
+      "concepts": [
+        "제빙액 희석과 재살포 범위"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09226",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모래살포와 이물흡입 제한은 마찰을 높이는 조치가 제트엔진 이물위험을 만들 수 있어 기종과 구간을 제한하게 한다. 차량용 효과를 항공기 운항에 그대로 확대하지 않는다.",
+      "concepts": [
+        "모래살포와 이물흡입 제한"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09227",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "눈더미 높이와 날개끝 여유는 노면이 깨끗해도 가장자리 적설 높이가 기종별 장애물이 될 수 있음을 뜻한다. 유효폭 해제는 측정된 높이와 항공기 형식에만 적용한다.",
+      "concepts": [
+        "눈더미 높이와 날개끝 여유"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09228",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설잔재와 배수구 재폐색은 밀어낸 눈이 녹아 배수구를 막으면 다시 수막과 결빙을 만들 수 있는 연쇄다. 운항개방 뒤에도 배수 보호조건을 유지한다.",
+      "concepts": [
+        "제설잔재와 배수구 재폐색"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09229",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고무퇴적과 동절기 마찰평가는 눈이 없어도 젖은 고무층이 제동을 낮출 수 있어 오염원별 검사를 요구한다. 제설 완료를 모든 마찰문제 해제로 보지 않는다.",
+      "concepts": [
+        "고무퇴적과 동절기 마찰평가"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09230",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "혼합오염과 가장나쁜 조건 적용은 물, 눈, 얼음이 함께 있을 때 평균이 아니라 운항에 가장 불리한 구간을 기준으로 제한하게 한다. 일부 제거가 전체 보호해제를 만들지 않는다.",
+      "concepts": [
+        "혼합오염과 가장나쁜 조건 적용"
+      ],
+      "relations": [
+        "comparison",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09231",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설책임자 완료보고와 검사관 승인은 작업을 수행한 팀과 사용가능성을 판정하는 역할을 분리한다. 완료보고만으로 운항 보호조건을 해제하지 않는다.",
+      "concepts": [
+        "제설책임자 완료보고와 검사관 승인"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09232",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관제탑 개방승인과 공항운영 통보는 이동허가와 시설상태 공표가 서로 연결돼야 실제 운항이 재개됨을 뜻한다. 한 조직의 승인 범위를 다른 조직 기록까지 확대하지 않는다.",
+      "concepts": [
+        "관제탑 개방승인과 공항운영 통보"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09233",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장감독 부분해제와 구역표시는 작업 가능한 구간을 지도와 표지로 명확히 지정해야 예외 진입을 허용한다. 구두로 깨끗하다고 한 범위를 인접 구역까지 넓히지 않는다.",
+      "concepts": [
+        "현장감독 부분해제와 구역표시"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09234",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "조종사 거부권과 공항개방 상태는 활주로가 공식 개방돼도 기장이 성능이나 최신 보고를 근거로 이착륙을 거부할 수 있음을 뜻한다. 시설 해제가 운항 역할의 판단을 없애지 않는다.",
+      "concepts": [
+        "조종사 거부권과 공항개방 상태"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09235",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비요원 진입예외와 관제호위는 폐쇄구역 점검을 위해 지정 인원에게만 차량 호출부호와 경로를 부여한다. 예외는 임무 종료나 호위 해제와 함께 소멸한다.",
+      "concepts": [
+        "정비요원 진입예외와 관제호위"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09236",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계약업체 작업권과 최종판정 제한은 외부 제설업체가 작업을 수행해도 활주로 개방 결정을 대신할 수 없음을 보여 준다. 수행 권한과 상태변경 권한을 구분한다.",
+      "concepts": [
+        "계약업체 작업권과 최종판정 제한"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09237",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상지휘관 우선명령과 기록의무는 긴급 착륙을 위해 보호조건을 일부 바꿀 수 있어도 대상, 이유, 시작과 종료를 남겨야 함을 뜻한다. 신속한 예외가 추적성을 해제하지 않는다.",
+      "concepts": [
+        "비상지휘관 우선명령과 기록의무"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09238",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교대인계와 해제조건 승계는 근무자가 바뀌어도 남은 제한과 재검시각, 승인범위를 다음 조가 명시적으로 인수하게 한다. 사람 교체가 보호상태를 초기화하지 않는다.",
+      "concepts": [
+        "교대인계와 해제조건 승계"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09239",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승인권자 부재와 대리권 범위는 지정 대리자가 문서에 정한 활주로와 시간 안에서만 해제를 승인하게 한다. 부재가 모든 직원에게 권한을 넓히지는 않는다.",
+      "concepts": [
+        "승인권자 부재와 대리권 범위"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "boundary",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-CDH-09240",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장보고 충돌과 보수적 유지는 제설팀과 조종사의 상태보고가 다르면 재검 전까지 더 엄격한 제한을 적용하게 한다. 어느 한 역할의 낙관적 보고로 보호조건을 즉시 풀지 않는다.",
+      "concepts": [
+        "현장보고 충돌과 보수적 유지"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09241",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "노탐 폐쇄공표와 실제차단은 정보가 배포돼도 현장 신호와 관제절차가 함께 작동해야 진입을 막을 수 있음을 뜻한다. 문서상 폐쇄와 물리적 보호를 구분한다.",
+      "concepts": [
+        "노탐 폐쇄공표와 실제차단"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09242",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "노탐 취소와 구버전 잔류는 개방 공표 뒤에도 항공사 시스템에 이전 폐쇄정보가 남을 수 있어 수신확인을 요구한다. 발행기관의 해제가 모든 소비자 화면을 즉시 바꾸지는 않는다.",
+      "concepts": [
+        "노탐 취소와 구버전 잔류"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09243",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "활주로상태 전문과 구간정보는 오염종류와 깊이, 코드가 해당 관측구간과 시각에만 유효함을 명시한다. 한 전문의 정보를 다른 활주로나 이후 시간에 재사용하지 않는다.",
+      "concepts": [
+        "활주로상태 전문과 구간정보"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09244",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관제허가와 조종사 복창은 개방된 경로와 제한을 조종사가 정확히 확인해야 이동이 시작되는 통신 보호다. 응답 없는 허가를 전달완료로 보지 않는다.",
+      "concepts": [
+        "관제허가와 조종사 복창"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09245",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "데이터링크 정상과 음성백업은 전자메시지가 전달돼도 중요한 활주로 변경은 절차에 따라 음성 확인을 병행하게 한다. 한 채널 정상으로 백업 요구를 자동 해제하지 않는다.",
+      "concepts": [
+        "데이터링크 정상과 음성백업"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09246",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "상태코드 수정과 배포시각은 현장 판정이 바뀐 순간과 이용자가 새 정보를 받은 순간 사이를 구분한다. 예외 운항은 확인된 최신본 수신 이후에만 허용한다.",
+      "concepts": [
+        "상태코드 수정과 배포시각"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09247",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "무선장애와 등화신호 대체는 음성통신이 끊겼을 때 제한된 시각신호를 사용할 수 있지만 복잡한 제설구역 설명까지 대신하지 못함을 뜻한다. 대체수단의 기능 범위를 좁게 둔다.",
+      "concepts": [
+        "무선장애와 등화신호 대체"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "boundary",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-CDH-09248",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공항운영회의와 즉시폐쇄 권한은 정상 회복순서는 협의하되 급격한 재결빙은 회의를 기다리지 않고 관제가 차단하게 한다. 긴급 보호발동과 계획 해제를 다른 절차로 다룬다.",
+      "concepts": [
+        "공항운영회의와 즉시폐쇄 권한"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09249",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "항공사 통보와 승객안내 분리는 활주로 개방정보가 운항조직에 전달돼도 승객 탑승재개에는 게이트와 항공사 판단이 더 필요함을 뜻한다. 공항 해제의 서비스 범위를 구분한다.",
+      "concepts": [
+        "항공사 통보와 승객안내 분리"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09250",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통신기록 완전성과 해제감사는 누가 어떤 구간을 언제 열었는지 복창과 발행기록으로 연결하게 한다. 기록이 끊긴 해제는 사후 추정으로 확정하지 않고 보완 증거를 요구한다.",
+      "concepts": [
+        "통신기록 완전성과 해제감사"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09251",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구조소방등급 회복과 운항범위는 제설 중 소방차가 다른 구역에 묶였다면 가용 구조능력에 맞춰 기종 제한을 유지하게 한다. 차량 한 대 복귀를 전체 등급 회복으로 확대하지 않는다.",
+      "concepts": [
+        "구조소방등급 회복과 운항범위"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09252",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소방차 출동로 제설과 활주로 우선은 운항회복을 서두르더라도 비상접근 경로를 먼저 확보하게 한다. 활주로 개방 예외가 구조차량 통로를 막아서는 안 된다.",
+      "concepts": [
+        "소방차 출동로 제설과 활주로 우선"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09253",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상착륙 후 재개와 잔해검색은 항공기가 안전하게 멈췄어도 활주로 이물과 누출을 검사한 뒤 일반 운항을 열게 한다. 한 항공기의 종료가 보호상태 종료를 뜻하지 않는다.",
+      "concepts": [
+        "비상착륙 후 재개와 잔해검색"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09254",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소화포 잔류와 제동제한은 화재가 진압돼도 포말이 노면 마찰을 낮출 수 있어 세척과 측정을 요구한다. 화재 보호해제와 노면 보호해제를 분리한다.",
+      "concepts": [
+        "소화포 잔류와 제동제한"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09255",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구조훈련 예외와 실제운항 분리는 폐쇄활주로에서 훈련차량을 움직여도 항공기 사용이 허용된 것은 아님을 뜻한다. 예외 대상과 목적을 명시한다.",
+      "concepts": [
+        "구조훈련 예외와 실제운항 분리"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09256",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "응급환자 이송과 제설대열 중지는 구급차가 안전경로를 통과할 동안 해당 구간 작업을 잠시 멈추게 한다. 중지 예외는 이송이 끝난 뒤 자동으로 작업허가를 갱신하지 않고 재확인한다.",
+      "concepts": [
+        "응급환자 이송과 제설대열 중지"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09257",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연료누출 격리와 제설장비 접근은 눈 제거보다 점화원 통제와 흡착작업을 먼저 수행하게 한다. 누출구역 밖 제설 허가는 경계가 표시된 곳에만 적용된다.",
+      "concepts": [
+        "연료누출 격리와 제설장비 접근"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09258",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폭발물 의심물체와 개방취소는 노면검사가 끝난 뒤라도 새로운 보안위험이 나타나면 즉시 해제를 철회하게 한다. 제설 완료가 보안 보호조건을 덮지 않는다.",
+      "concepts": [
+        "폭발물 의심물체와 개방취소"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09259",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구조대 대기위치와 활주로 침범은 비상대응을 위해 가까이 배치하되 보호구역 경계를 넘으면 관제 승인을 다시 받게 한다. 대기 임무가 무제한 진입권은 아니다.",
+      "concepts": [
+        "구조대 대기위치와 활주로 침범"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09260",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구조상황 종료와 장비회수 확인은 사람 구조가 끝나도 호스, 조명, 차량이 이동구역에서 철수해야 운항을 재개한다는 조건이다. 임무 완료와 구역 해제를 분리한다.",
+      "concepts": [
+        "구조상황 종료와 장비회수 확인"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09261",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설장비 정비완료와 부하시험은 수리 서명 뒤 실제 눈과 비슷한 부하에서 기능을 확인해야 대열 복귀를 허용한다. 행정 완료만으로 장비 보호조건을 풀지 않는다.",
+      "concepts": [
+        "제설장비 정비완료와 부하시험"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09262",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "활주로 열선 가동과 국소고장은 상위 제어가 정상이어도 회로 일부가 끊겨 얼음구간이 남을 수 있음을 뜻한다. 회로별 검사된 구간에만 자연 해제를 적용한다.",
+      "concepts": [
+        "활주로 열선 가동과 국소고장"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09263",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배수펌프 복구와 저지대 개방은 펌프가 돌아온 뒤 집수정 수위와 노면 배수가 안정돼야 저지대 유도로를 연다는 관계다. 장비 기동을 공간 회복과 동일시하지 않는다.",
+      "concepts": [
+        "배수펌프 복구와 저지대 개방"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09264",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기상센서 교체와 자료연속성은 새 장치가 정상이어도 교체 전후 편차를 확인해야 제한 기준을 일관되게 적용할 수 있음을 뜻한다. 센서 보호해제와 자료 품질 해제를 구분한다.",
+      "concepts": [
+        "기상센서 교체와 자료연속성"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09265",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "등화발전기 기동과 회로절체는 발전기가 돌아도 실제 등화회로에 연결되지 않으면 야간 제한을 풀 수 없다는 조건이다. 기동 신호만으로 기능 복구를 공표하지 않는다.",
+      "concepts": [
+        "등화발전기 기동과 회로절체"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09266",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설차 통신고장과 대열이탈은 위치확인이 안 되는 차량을 계속 작업시키지 않고 지정 지점으로 철수하게 한다. 손신호 예외는 시야가 확보된 짧은 구간에만 허용한다.",
+      "concepts": [
+        "제설차 통신고장과 대열이탈"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09267",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비제설차와 공통연료 오염은 차량이 여러 대여도 같은 저장탱크가 오염되면 여러 차량이 한꺼번에 멈추는 의존이다. 예비차 투입 해제 전에 연료원까지 확인한다.",
+      "concepts": [
+        "예비제설차와 공통연료 오염"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09268",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "포장균열 발견과 부분폐쇄는 제설 중 드러난 손상이 있으면 해당 좌표를 닫고 나머지 구간만 성능검토 후 사용할 수 있게 한다. 손상 예외의 공간 경계를 명확히 한다.",
+      "concepts": [
+        "포장균열 발견과 부분폐쇄"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09269",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설창고 출입장애와 자재공급은 제빙제가 충분해도 문이나 도로가 막히면 현장에 전달되지 않는다는 의존이다. 다른 창고 출고는 품목과 운송경로가 확인될 때만 우회가 된다.",
+      "concepts": [
+        "제설창고 출입장애와 자재공급"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09270",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시설복구 완료와 운항통합시험은 등화, 통신, 제설, 구조 기능을 개별 수리한 뒤 함께 작동하는지 확인해야 전체 제한을 해제한다는 원칙이다. 부분 복구를 누적해 자동 개방하지 않는다.",
+      "concepts": [
+        "시설복구 완료와 운항통합시험"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09271",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "해제구간 좌표와 인접구역 제외는 검사 시작점과 끝점을 명시해 깨끗한 구간의 판정을 옆 구역에 확대하지 않게 한다. 공간 경계가 없는 부분해제는 인정하지 않는다.",
+      "concepts": [
+        "해제구간 좌표와 인접구역 제외"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09272",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "해제시각과 이전운항 소급금지는 상태변경이 승인된 시점 이후에만 효력을 갖고 앞선 취소편을 자동 정상운항으로 바꾸지 않게 한다. 시간 경계를 고정한다.",
+      "concepts": [
+        "해제시각과 이전운항 소급금지"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09273",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주간예외와 일몰종료는 등화 일부가 고장 난 상태의 운항허가를 충분한 자연광 시간에만 적용하게 한다. 일몰 뒤에는 별도 승인 없이 기본 제한으로 복귀한다.",
+      "concepts": [
+        "주간예외와 일몰종료"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09274",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기종별 예외와 동일기단 확대금지는 한 항공기 형식의 성능검토 결과를 비슷해 보이는 다른 형식에 자동 적용하지 않게 한다. 승인 문서의 정확한 형식 범위를 따른다.",
+      "concepts": [
+        "기종별 예외와 동일기단 확대금지"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09275",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "항공편별 긴급예외와 후속편 분리는 의료나 연료 비상으로 열린 사용권이 같은 항공사의 다음 항공편에는 승계되지 않음을 뜻한다. 사건 단위의 경계를 유지한다.",
+      "concepts": [
+        "항공편별 긴급예외와 후속편 분리"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09276",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "활주로방향 예외와 풍향변경 취소는 특정 방향으로 계산된 단축운항 허가가 바람이 바뀌면 다시 평가돼야 함을 뜻한다. 방향 조건이 사라지면 예외도 닫힌다.",
+      "concepts": [
+        "활주로방향 예외와 풍향변경 취소"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09277",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "작업차량 예외와 항공기 금지유지는 제설·검사 차량 진입을 허용해도 항공기 이동 보호는 계속됨을 보여 준다. 사용자 분류별 상태를 따로 표시한다.",
+      "concepts": [
+        "작업차량 예외와 항공기 금지유지"
+      ],
+      "relations": [
+        "classification",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09278",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한시적 감속운항과 정상속도 복귀는 제동정보가 개선되기 전까지 저속 지상이동을 허용하고 재검 뒤에만 평시속도로 돌아가게 한다. 예외의 종료근거를 기록한다.",
+      "concepts": [
+        "한시적 감속운항과 정상속도 복귀"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09279",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공항전체 회복과 원격구역 제한은 주 활주로와 터미널이 정상이어도 원격주기장이나 화물구역 제한이 남을 수 있음을 뜻한다. 전체라는 표현으로 잔류 부분상태를 숨기지 않는다.",
+      "concepts": [
+        "공항전체 회복과 원격구역 제한"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09280",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "조직별 해제와 계약업체 적용범위는 공항운영 지시가 외부 정비업체에 전달·확인돼야 같은 절차로 움직인다는 조건이다. 내부 승인만으로 외부 역할의 상태를 바꾸지 않는다.",
+      "concepts": [
+        "조직별 해제와 계약업체 적용범위"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09281",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "개방후 첫항공기 보고와 재평가는 실제 운항에서 제동이나 시야 문제가 보고되면 사전검사 해제를 다시 검토하게 한다. 첫 성공은 감시를 종료시키지 않는다.",
+      "concepts": [
+        "개방후 첫항공기 보고와 재평가"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09282",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재강설 시작과 자동재폐쇄는 강설강도나 누적량이 정한 기준을 넘으면 이전 개방승인과 관계없이 보호상태를 되살린다. 후발 조건이 해제 효력을 종료한다.",
+      "concepts": [
+        "재강설 시작과 자동재폐쇄"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09283",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "노면온도 하강과 야간재결빙 감시는 개방 뒤에도 온도가 임계점에 접근하면 검사주기를 줄이고 필요하면 부분폐쇄하게 한다. 해제 뒤의 예방감시 범위를 명시한다.",
+      "concepts": [
+        "노면온도 하강과 야간재결빙 감시"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09284",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제동보고 악화와 코드하향은 조종사의 최신 보고가 현장 변화와 일치하면 상태코드를 낮추고 제한을 강화하게 한다. 이전의 높은 코드를 고정값으로 쓰지 않는다.",
+      "concepts": [
+        "제동보고 악화와 코드하향"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09285",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "눈더미 이동과 유효폭 재측정은 강풍이나 추가 제설로 가장자리 눈이 안쪽으로 밀리면 개방폭을 다시 측정하게 한다. 기존 공간 해제는 경계가 변한 순간 재검 대상이 된다.",
+      "concepts": [
+        "눈더미 이동과 유효폭 재측정"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09286",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제빙제 효과감소와 재처리 판단은 시간과 강수로 농도가 낮아지면 재살포 또는 폐쇄를 선택하게 한다. 최초 살포승인을 영구 보호해제로 취급하지 않는다.",
+      "concepts": [
+        "제빙제 효과감소와 재처리 판단"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09287",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "등화가시성 저하와 저시정 제한복귀는 재적설이나 결로로 불빛이 약해지면 주간·야간과 접근방식별 제한을 다시 적용하게 한다. 운항 중이라는 이유로 재폐쇄를 미루지 않는다.",
+      "concepts": [
+        "등화가시성 저하와 저시정 제한복귀"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09288",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "장비고장 재발과 대체자원 확인은 복구했던 제설차나 펌프가 다시 멈추면 예비자원의 실제 가용성을 확인한 뒤 작업범위를 줄이게 한다. 과거 시험결과만으로 보호를 풀지 않는다.",
+      "concepts": [
+        "장비고장 재발과 대체자원 확인"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09289",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교통량 증가와 지상혼잡 재제한은 운항회복 뒤 유도로와 게이트 수용력을 넘으면 출발간격을 다시 늘리게 한다. 활주로가 깨끗하다는 사실이 지상망 제한을 해제하지 않는다.",
+      "concepts": [
+        "교통량 증가와 지상혼잡 재제한"
+      ],
+      "relations": [
+        "comparison",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09290",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "해제감시 종료와 안정시간 충족은 일정 시간 동안 강설, 노면, 등화, 배수 지표가 안정돼야 강화감시를 평시 수준으로 돌린다는 조건이다. 한 번의 정상값으로 종료하지 않는다.",
+      "concepts": [
+        "해제감시 종료와 안정시간 충족"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09291",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호조건 목록과 해제증거 연결은 폐쇄 원인마다 어떤 측정, 검사, 승인으로 상태가 바뀌었는지 한 줄씩 대응시키는 감사다. 증거 없는 조건은 해제된 것으로 기록하지 않는다.",
+      "concepts": [
+        "보호조건 목록과 해제증거 연결"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09292",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예외승인자와 권한범위 대조는 서명자가 활주로, 시간, 기종, 임무를 바꿀 실제 권한이 있었는지 확인한다. 직급만으로 무제한 해제권을 추정하지 않는다.",
+      "concepts": [
+        "예외승인자와 권한범위 대조"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09293",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부분해제 지도와 현장표지 일치는 문서에 열린 구간과 표지·차단봉의 실제 위치가 같은지 대조한다. 둘이 다르면 더 좁은 안전범위를 우선한다.",
+      "concepts": [
+        "부분해제 지도와 현장표지 일치"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09294",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예외 시작종료와 로그연속성은 발동과 철회 사이의 관측·명령 기록이 끊기지 않았는지 확인한다. 종료시각이 없는 임시 예외를 계속 유효한 상태로 남기지 않는다.",
+      "concepts": [
+        "예외 시작종료와 로그연속성"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09295",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "상위안전규칙과 운영예외 충돌은 회복 속도를 위한 예외가 구조소방, 성능, 보안 규정을 침범했는지 검토한다. 충돌하면 상위 보호조건을 유지한다.",
+      "concepts": [
+        "상위안전규칙과 운영예외 충돌"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09296",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한항공편 성공과 일반화 금지는 우연히 안전하게 운항한 결과를 다른 기종·시간·기상에 대한 해제증거로 쓰지 않게 한다. 성공 사례의 적용범위를 사건에 한정한다.",
+      "concepts": [
+        "한항공편 성공과 일반화 금지"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09297",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재폐쇄 이력과 성급한 해제 탐지는 같은 원인으로 반복 닫힌 구간의 해제기준과 감시주기가 충분했는지 되짚는다. 반복 결과를 개별 우연으로만 처리하지 않는다.",
+      "concepts": [
+        "재폐쇄 이력과 성급한 해제 탐지"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09298",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "역할별 보고와 최종판정 분리는 제설팀, 검사관, 관제, 조종사의 관찰을 보존하면서 최종 상태변경 권한이 누구에게 있었는지 명시한다. 의견과 효력 있는 결정을 섞지 않는다.",
+      "concepts": [
+        "역할별 보고와 최종판정 분리"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09299",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "잔류제한 표와 운항회복 범위는 개방 뒤에도 남은 기종, 방향, 시간, 구역, 속도 제한을 함께 제시한다. 회복이라는 단어가 부분 보호상태를 지우지 않게 한다.",
+      "concepts": [
+        "잔류제한 표와 운항회복 범위"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-09300",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "활주로 제설 예외범위 최종감사는 폐쇄 원인, 해제증거, 승인권자, 적용 구간·기종·시간, 재폐쇄 조건을 대조해 각 예외의 실제 범위를 확정한다. 공항 활주로 제설·운항 회복의 보호조건을 근거 없이 일괄 해제하지 않는다.",
+      "concepts": [
+        "활주로 제설 예외범위 최종감사"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role",
+        "boundary"
+      ]
+    }
+  ]
+}

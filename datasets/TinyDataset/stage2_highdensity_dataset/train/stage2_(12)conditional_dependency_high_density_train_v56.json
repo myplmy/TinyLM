@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v56",
+  "version": "56",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-08251 ~ S2-CDH-08400",
+  "concept_family": "S2-A02-T056: 전기버스 충전차고 전력·배차 — 선행 자원 의존과 독립 우회경로 구분",
+  "design_note": "전기버스 충전차고 전력·배차 영역의 선행 자원 의존과 독립 우회경로 구분 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-08251",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전차고의 수전모선은 외부 배전선로에서 전력을 받아야 정상 전압을 유지한다. 배전선로와 차고 수전모선 의존에서는 내부 충전기가 여러 대여도 선로가 끊기면 같은 상류 자원을 잃으므로 독립 경로가 아니다.",
+      "concepts": [
+        "배전선로와 차고 수전모선 의존"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08252",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이중인입선과 공통변전소 한계는 선로 수와 전원원의 독립성을 구분한다.",
+      "concepts": [
+        "이중인입선과 공통변전소 한계"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08253",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고압을 충전기 입력 전압으로 낮추는 수전변압기가 멈추면 그 변압기에 매달린 충전기군도 전력을 받지 못한다. 수전변압기와 충전기군 전력사슬은 여러 말단 고장의 공통 선행 자원을 가리킨다.",
+      "concepts": [
+        "수전변압기와 충전기군 전력사슬"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08254",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비변압기와 동일고압모선 공유는 장비 중복과 상류 경로 중복을 같은 것으로 보지 않는다.",
+      "concepts": [
+        "예비변압기와 동일고압모선 공유"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08255",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동절체기는 주 전원 상실을 감지해 다른 입력으로 바꾸지만 연결된 대체전원이 실제로 살아 있어야 우회가 성립한다. 자동절체기와 대체전원 실제 가용성은 전환 장치의 존재와 독립 공급원의 존재를 구분한다.",
+      "concepts": [
+        "자동절체기와 대체전원 실제 가용성"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08256",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계통 정전 때 비상발전기를 쓰려면 충분한 연료와 연료 이송 경로가 먼저 확보되어야 한다. 비상발전기와 연료공급 선행조건은 발전기 본체가 정상이어도 연료 사슬이 끊기면 우회 전원이 되지 못함을 보여 준다.",
+      "concepts": [
+        "비상발전기와 연료공급 선행조건"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08257",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상발전기의 연료가 충분해도 시동배터리가 방전되면 발전기 엔진은 기동되지 않는다. 발전기 시동배터리와 비상전원 의존은 큰 에너지원이 작은 제어·시동 자원에 의존하는 숨은 고리를 나타낸다.",
+      "concepts": [
+        "발전기 시동배터리와 비상전원 의존"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08258",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지붕 태양광은 맑은 낮에 계통 구매전력을 줄일 수 있지만 출력이 차량 충전부하보다 작으면 전체 배차를 독립적으로 떠받치지 못한다. 태양광발전과 주간충전 보조경로는 보조 기여와 완전한 우회를 구분한다.",
+      "concepts": [
+        "태양광발전과 주간충전 보조경로"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08259",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계통연계 인버터와 정전 시 태양광 정지는 발전원이 있다는 사실만으로 정전 우회가 성립하지 않음을 보여 준다.",
+      "concepts": [
+        "계통연계 인버터와 정전 시 태양광 정지"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08260",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "저장장치 배터리와 전력변환장치 사슬은 저장 자원과 전달 자원의 직렬 의존을 구분한다.",
+      "concepts": [
+        "저장장치 배터리와 전력변환장치 사슬"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08261",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "저장장치 충전율이 높아야 정전 중 더 오래 충전을 지원하지만 실제 유지시간은 허용 출력과 동시 부하에도 달려 있다. 저장장치 충전율과 정전유지시간은 에너지량을 우회경로의 지속 능력과 동일시하지 않는다.",
+      "concepts": [
+        "저장장치 충전율과 정전유지시간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08262",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고압개폐기의 인터록이 안전한 조작 순서를 허용해야 고장 구간을 분리하고 건전 구간을 재급전할 수 있다. 고압개폐기 인터록과 모선재구성은 다른 선로가 있어도 절체 순서가 막히면 우회가 실행되지 않음을 나타낸다.",
+      "concepts": [
+        "고압개폐기 인터록과 모선재구성"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08263",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호계전기가 어느 차단기를 여는지에 따라 한 충전기만 정지할 수도 있고 모선 전체가 정지할 수도 있다. 보호계전기 동작과 충전구역 정전범위는 고장 위치와 보호구간의 경계를 함께 추적하게 한다.",
+      "concepts": [
+        "보호계전기 동작과 충전구역 정전범위"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08264",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 충전기 분기에서 접지고장이 나도 선택 차단이 되지 않으면 상위 차단기가 열려 다른 충전기까지 멈출 수 있다. 접지고장과 공통차단 경로는 국소 결함이 공통 보호장치를 통해 확대되는 의존 구조다.",
+      "concepts": [
+        "접지고장과 공통차단 경로"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08265",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고조파필터와 충전출력 제한은 완전 정지 의존과 성능 저하 의존을 구분한다.",
+      "concepts": [
+        "고조파필터와 충전출력 제한"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08266",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "무효전력보상과 수전용량 활용은 정상 처리량의 선행 자원과 최소 운전의 우회조건을 분리한다.",
+      "concepts": [
+        "무효전력보상과 수전용량 활용"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08267",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차고의 동시충전량은 계약전력 한도 안에서 정해야 하지만 한도를 넘길 위험이 있다고 모든 충전을 중단할 필요는 없다. 계약전력 한도와 동시충전 조정은 총량 제약 아래 개별 충전기를 순차 운전하는 우회방식을 나타낸다.",
+      "concepts": [
+        "계약전력 한도와 동시충전 조정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08268",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중앙 피크제어기가 멈춰도 개별충전기가 안전한 고정 출력으로 운전할 수 있다면 제한된 충전은 이어갈 수 있다. 피크제어기와 개별충전기 자율출력은 중앙 최적화 의존과 현장 제어의 독립성을 구분한다.",
+      "concepts": [
+        "피크제어기와 개별충전기 자율출력"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08269",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수전계량기의 통신이 끊겨 사용량 화면이 사라져도 전력 회로가 건전하면 충전 전력은 계속 흐를 수 있다. 수전계량기 통신과 실제전력 공급은 관측 경로 장애를 에너지 경로 장애와 분리한다.",
+      "concepts": [
+        "수전계량기 통신과 실제전력 공급"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08270",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폭설로 외부 선로가 끊기면 차고 내 예비전력이 지원하는 부하만 남는다. 폭설 정전과 차고 내 예비전력 범위는 조명·제어·일부 충전 가운데 어느 회로가 실제 독립 전원에 연결됐는지 확인하게 한다.",
+      "concepts": [
+        "폭설 정전과 차고 내 예비전력 범위"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08271",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전 회선이 여러 개여도 같은 케이블트렌치를 지나면 침수 한 번에 절연 문제가 함께 생길 수 있다. 케이블트렌치 침수와 다중회선 공통고장은 전기적 회선 분리와 물리적 경로 분리를 구분한다.",
+      "concepts": [
+        "케이블트렌치 침수와 다중회선 공통고장"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08272",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모선을 구간별로 분리할 수 있어야 고장 난 부분만 떼고 건전한 충전구역에 전력을 다시 보낼 수 있다. 모선 구간 분리와 건전구역 재급전은 전체 정지 대신 부분 운전을 가능하게 하는 구조적 우회다.",
+      "concepts": [
+        "모선 구간 분리와 건전구역 재급전"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08273",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "화재감지회로가 경보를 내면 안전 논리에 따라 여러 충전기의 전원이 함께 차단될 수 있다. 화재감지회로와 충전기 긴급차단은 전력설비가 정상이어도 공통 안전 신호에 의존해 정지할 수 있음을 보여 준다.",
+      "concepts": [
+        "화재감지회로와 충전기 긴급차단"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08274",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환기설비와 충전구역 사용허가는 공간별 선행 자원과 독립 구역을 구분한다.",
+      "concepts": [
+        "환기설비와 충전구역 사용허가"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08275",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상정지 버튼 하나가 차고 전체 충전기에 연결됐는지 특정 구역에만 연결됐는지에 따라 정지 범위가 달라진다. 비상정지회로와 충전기군 연동범위는 공통 제어 의존과 구역별 독립성을 판정하게 한다.",
+      "concepts": [
+        "비상정지회로와 충전기군 연동범위"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08276",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전기 입력에 고압 전력이 있어도 제어전원이 끊기면 접촉기와 통신부가 작동하지 않아 충전을 시작하지 못한다. 충전기 제어전원과 주전력 변환은 에너지 입력과 제어 경로의 직렬 의존을 드러낸다.",
+      "concepts": [
+        "충전기 제어전원과 주전력 변환"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08277",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전기 안의 전력모듈이 병렬로 구성되면 한 모듈 고장 뒤에도 나머지 모듈로 낮은 출력의 충전을 계속할 수 있다. 전력모듈 병렬구성과 출력유지는 완전 독립 장비가 아니라 부분 성능을 남기는 내부 우회다.",
+      "concepts": [
+        "전력모듈 병렬구성과 출력유지"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08278",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고장 난 전력모듈을 격리할 수 있어도 공통 제어기가 멈추면 정상 모듈도 지령을 받지 못한다. 고장 모듈 격리와 공통제어기 의존은 모듈 수준 중복이 제어 수준 중복까지 뜻하지 않음을 보여 준다.",
+      "concepts": [
+        "고장 모듈 격리와 공통제어기 의존"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08279",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전커넥터 상태와 단일포트 가용성은 장비 외함 공유와 포트 경로 독립을 구분한다.",
+      "concepts": [
+        "충전커넥터 상태와 단일포트 가용성"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08280",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수랭케이블 펌프와 고출력충전은 정상 속도의 필수자원과 감속 우회운전을 분리한다.",
+      "concepts": [
+        "수랭케이블 펌프와 고출력충전"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08281",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "상부집전장치 정렬과 자동접속은 한 접속방식의 선행조건과 기술적으로 다른 우회경로를 구분한다.",
+      "concepts": [
+        "상부집전장치 정렬과 자동접속"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08282",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차고충전기 고장과 노선기회충전 우회는 위치만 다른 같은 전원이 아니라 상류 자원이 분리된 경로인지 확인하게 한다.",
+      "concepts": [
+        "차고충전기 고장과 노선기회충전 우회"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08283",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전인증 서버와 현장허용목록은 중앙 의존을 줄이는 제한적 우회다.",
+      "concepts": [
+        "충전인증 서버와 현장허용목록"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08284",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전관리 서버와 로컬전력제어는 최적화 기능과 안전 운전 기능의 의존 범위를 나눈다.",
+      "concepts": [
+        "충전관리 서버와 로컬전력제어"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08285",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 충전기가 하나의 네트워크스위치에 연결되면 스위치 고장이 전체 원격제어를 끊을 수 있다. 차고 네트워크스위치와 충전기 통신망은 충전기 수가 많아도 통신 경로가 공통이면 독립적이지 않음을 나타낸다.",
+      "concepts": [
+        "차고 네트워크스위치와 충전기 통신망"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08286",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유선망이 끊겼을 때 이동통신 백업이 다른 통신사 기지국과 전원 경로를 쓰면 원격관리를 이어갈 수 있다. 유선망 장애와 이동통신 백업은 매체 변경뿐 아니라 상류 통신 인프라 분리가 독립성의 조건임을 보여 준다.",
+      "concepts": [
+        "유선망 장애와 이동통신 백업"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08287",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차량위치 정보와 충전제어 독립성은 배차 관측 경로와 전력 공급 경로를 분리한다.",
+      "concepts": [
+        "차량위치 정보와 충전제어 독립성"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08288",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전기는 차량배터리 관리장치가 허용 전압과 전류를 알려 줘야 안전하게 출력을 인가한다. 차량배터리 관리장치와 충전협상은 충전기 전력이 정상이어도 차량 측 선행 제어가 없으면 충전이 시작되지 않는 사슬이다.",
+      "concepts": [
+        "차량배터리 관리장치와 충전협상"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08289",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배터리온도가 너무 낮거나 높으면 관리장치가 허용충전전류를 줄여 예정 시간 안에 충전하지 못할 수 있다. 배터리온도와 허용충전전류는 충전기 출력 능력과 차량이 실제로 받을 수 있는 능력을 구분한다.",
+      "concepts": [
+        "배터리온도와 허용충전전류"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08290",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전율 센서와 배차 가능 거리 계산은 주 측정 경로와 검증용 우회 추정을 구분한다.",
+      "concepts": [
+        "충전율 센서와 배차 가능 거리 계산"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08291",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "직류접촉기와 배터리전력 수용은 차고 설비와 차량 내부 사슬의 경계를 잇는다.",
+      "concepts": [
+        "직류접촉기와 배터리전력 수용"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08292",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고전압 접촉기를 안전하게 닫으려면 프리차지 회로가 전압차를 먼저 줄여야 한다. 프리차지 회로와 고전압연결 선행은 작은 준비 회로가 실패하면 주 배터리와 충전기가 모두 정상이어도 연결이 막힘을 보여 준다.",
+      "concepts": [
+        "프리차지 회로와 고전압연결 선행"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08293",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "견인배터리 충전율이 낮지 않아도 보조배터리가 방전되면 차량 제어기가 깨어나지 않아 충전협상을 시작하지 못할 수 있다. 보조배터리와 충전구동 제어는 큰 배터리의 가용성이 저전압 제어 자원을 대체하지 못함을 나타낸다.",
+      "concepts": [
+        "보조배터리와 충전구동 제어"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08294",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차량냉각펌프와 급속충전 지속은 전속 운전 의존과 감속 우회의 경계를 정한다.",
+      "concepts": [
+        "차량냉각펌프와 급속충전 지속"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08295",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한쪽 차량충전구가 손상돼도 반대편 포트가 별도 배선과 접촉기를 가진 차량은 다른 충전면을 쓸 수 있다. 차량충전구 손상과 반대편 포트 우회는 겉보기 중복이 실제 내부 회로까지 분리됐는지 확인하게 한다.",
+      "concepts": [
+        "차량충전구 손상과 반대편 포트 우회"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08296",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "커넥터 잠금장치가 체결돼야 충전 중 이탈을 막을 수 있으므로 잠금 확인이 없으면 전력이 인가되지 않는다. 커넥터 잠금장치와 충전개시 조건은 에너지 경로 앞에 놓인 기계적 안전 의존을 나타낸다.",
+      "concepts": [
+        "커넥터 잠금장치와 충전개시 조건"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08297",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전기와 차량의 펌웨어가 같은 표준을 구현해야 협상이 성립하지만 한 버스에서 실패했다고 모든 충전기 하드웨어가 고장 난 것은 아니다. 차량·충전기 펌웨어와 통신 호환성은 소프트웨어 조합 장애와 전력장치 장애를 분리한다.",
+      "concepts": [
+        "차량·충전기 펌웨어와 통신 호환성"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08298",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전기 재시작과 상류전원 공유는 개별 장치 회복과 경로 독립성을 구분한다.",
+      "concepts": [
+        "충전기 재시작과 상류전원 공유"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08299",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "빈 예비충전면이 있어도 기존 면과 같은 변압기 용량을 나눠 쓰면 전력 부족 때 추가 우회용량을 만들지 못한다. 예비충전면과 공통변압기 병목은 물리적 자리의 여유와 상류 전력의 여유를 구분한다.",
+      "concepts": [
+        "예비충전면과 공통변압기 병목"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08300",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "다음 운행에 필요한 충전량을 정하려면 노선 길이와 최근 소비전력 자료가 먼저 필요하다. 노선에너지 예측과 선행운행자료는 자료가 없을 때 보수적 기본값으로 배차할 수 있어도 정확한 최적화는 독립적으로 수행되지 않음을 보여 준다.",
+      "concepts": [
+        "노선에너지 예측과 선행운행자료"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08301",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "버스를 아침에 출고하려면 예정 노선을 감당할 충전율과 안전점검 상태가 모두 충족돼야 한다. 아침출고 기준과 충전완료 판정은 충전 종료 신호 하나만으로 배차 가능 상태를 확정하지 않게 한다.",
+      "concepts": [
+        "아침출고 기준과 충전완료 판정"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08302",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비충전율과 돌발우회 운행은 일반 여유 기준과 조건부 배차 우회를 구분한다.",
+      "concepts": [
+        "예비충전율과 돌발우회 운행"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08303",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "완충되지 않은 버스가 장거리노선을 맡기 어렵더라도 단거리노선에 필요한 에너지가 충분하면 대체배정할 수 있다. 장거리노선과 단거리노선 대체배정은 차량 가용성을 노선 의존 조건에 따라 다시 분류한다.",
+      "concepts": [
+        "장거리노선과 단거리노선 대체배정"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08304",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 시간에 충전을 마치지 못한 버스도 차량별 충전율을 노선 요구량과 맞추면 일부 배차를 유지할 수 있다. 차량별 충전율과 노선 맞춤 배정은 모든 차량의 완충이라는 공통 선행조건을 제거하는 운영 우회다.",
+      "concepts": [
+        "차량별 충전율과 노선 맞춤 배정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08305",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차량과 충전이 준비돼도 자격 있는 운전자가 없으면 정규 노선을 출발할 수 없다. 운전자 가용성과 차량출고 의존은 에너지 준비와 인력 준비가 직렬로 연결된 배차 사슬임을 보여 준다.",
+      "concepts": [
+        "운전자 가용성과 차량출고 의존"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08306",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전율이 충분해도 일상점검에서 안전 결함이 발견되면 해당 버스는 배차할 수 없다. 일상점검 승인과 배차허용은 에너지 상태가 기계적 운행 적합성을 대신하지 못함을 나타낸다.",
+      "concepts": [
+        "일상점검 승인과 배차허용"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08307",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "세차가 끝나지 않으면 서비스 품질에 영향을 주지만 기계적 안전점검이 통과한 차량의 운행 가능성과는 다른 의존이다. 세차완료와 기계적운행 가능성은 외관 준비와 안전 준비를 분리해 대체 우선순위를 정하게 한다.",
+      "concepts": [
+        "세차완료와 기계적운행 가능성"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08308",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비보류 표지가 붙은 차량은 충전 공간을 차지하고 있어도 다음 운행 대상으로 계산하지 않아야 한다. 정비보류 표지와 충전배정 제외는 전력 투입 전에 차량 상태 정보가 배차 사슬을 차단하는 경우다.",
+      "concepts": [
+        "정비보류 표지와 충전배정 제외"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08309",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전완료 신호가 와도 운전자 인계와 출고검사가 끝나지 않으면 차량은 노선으로 나갈 수 없다. 충전완료 신호와 실제출고 지연은 한 단계 완료가 전체 배차 완료를 뜻하지 않는 직렬 의존을 보여 준다.",
+      "concepts": [
+        "충전완료 신호와 실제출고 지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08310",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "첫차지연과 후속배차 연쇄는 차량 일정 공유와 대체 자원 경로를 구분한다.",
+      "concepts": [
+        "첫차지연과 후속배차 연쇄"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08311",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주 출고게이트가 열리지 않아도 보조출입로가 물리적으로 분리되고 안전 통제가 가능하면 차량을 내보낼 수 있다. 출고게이트 고장과 보조출입로는 충전 완료 뒤 남는 시설 의존과 독립 우회경로를 나타낸다.",
+      "concepts": [
+        "출고게이트 고장과 보조출입로"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08312",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고정시간표는 기본 출발 순서를 제공하지만 도로 통제 정보가 들어오면 다른 노선이나 회차 간격으로 조정할 수 있다. 고정시간표와 실시간교통 우회는 계획 자료 의존과 현장 판단의 독립 범위를 구분한다.",
+      "concepts": [
+        "고정시간표와 실시간교통 우회"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08313",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "등교노선처럼 출발 시간창이 좁은 운행은 같은 충전율의 일반 노선보다 먼저 충전해야 할 수 있다. 등교노선 시간창과 충전우선권은 차량 상태만이 아니라 서비스 제약이 충전 순서를 결정하는 선행조건이다.",
+      "concepts": [
+        "등교노선 시간창과 충전우선권"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08314",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "휠체어 승강설비가 필요한 노선은 충전된 아무 버스로나 대체할 수 없으며 해당 설비가 정상인 차량이 필요하다. 휠체어설비와 배차대체 한계는 에너지 기준을 충족한 차량군 안에서도 기능 의존이 남음을 보여 준다.",
+      "concepts": [
+        "휠체어설비와 배차대체 한계"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08315",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 노선이라도 냉난방부하가 커지면 필요한 배터리 여유가 증가하므로 평상시 충전율만으로 배차하기 어렵다. 냉난방부하와 노선에너지 여유는 주행거리 외의 독립 부하가 에너지 사슬에 추가됨을 나타낸다.",
+      "concepts": [
+        "냉난방부하와 노선에너지 여유"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08316",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한랭기에는 배터리가 받을 수 있는 전력과 사용할 수 있는 에너지가 줄어 같은 충전시간에도 결과가 달라질 수 있다. 한랭기 배터리성능과 충전시간은 일정표가 환경조건과 독립적이지 않음을 보여 준다.",
+      "concepts": [
+        "한랭기 배터리성능과 충전시간"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08317",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "표시 충전율이 같아도 열화된 배터리는 실제 주행가능에너지가 적을 수 있다. 배터리열화와 명목충전율 차이는 배차가 단일 표시값이 아니라 건강도 자료에도 의존함을 나타낸다.",
+      "concepts": [
+        "배터리열화와 명목충전율 차이"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08318",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "노선에너지 계산이 회생제동 회수를 전제로 해도 혼잡과 노면 때문에 실제 회수량이 달라질 수 있다. 회생제동 가정과 실제소비전력은 예측의 선행 가정과 독립적으로 변하는 운행조건을 구분한다.",
+      "concepts": [
+        "회생제동 가정과 실제소비전력"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08319",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승객하중과 잔여주행거리는 수요 정보가 차량 에너지 판단에 연결되는 의존이다.",
+      "concepts": [
+        "승객하중과 잔여주행거리"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08320",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "오르막이 많은 노선은 같은 거리의 평지 노선보다 더 많은 충전에너지가 필요할 수 있다. 노선고도차와 충전에너지 요구는 거리 자료만으로 독립된 에너지 추정을 만들 수 없음을 보여 준다.",
+      "concepts": [
+        "노선고도차와 충전에너지 요구"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08321",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "회차대기 시간이 충분해야 중간충전을 넣을 수 있지만 충전면이 다른 차량과 겹치면 실제 우회가 성립하지 않는다. 회차대기와 중간충전 기회는 시간 자원과 설비 자원이 함께 필요한 경로다.",
+      "concepts": [
+        "회차대기와 중간충전 기회"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08322",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전대기열이 길어지면 원래 도착순을 유지하기보다 출발 임박도와 필요한 에너지를 기준으로 순서를 바꿀 수 있다. 충전대기열과 출발순서 재배치는 물리적 충전기 수 제약을 운영 규칙으로 우회하는 방법이다.",
+      "concepts": [
+        "충전대기열과 출발순서 재배치"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08323",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전면을 예약해도 차량이 제때 도착하지 않으면 빈 면이 다른 차량의 충전을 막을 수 있다. 충전면 예약과 실제차량 도착은 일정 자원과 현장 상태가 직렬로 이어짐을 보여 준다.",
+      "concepts": [
+        "충전면 예약과 실제차량 도착"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08324",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배차여유시간이 있으면 짧은 충전 지연을 흡수할 수 있지만 지연이 여유를 넘으면 예비차나 노선 조정이 필요하다. 배차여유시간과 장애흡수 범위는 시간 완충과 물리적 우회자원의 경계를 정한다.",
+      "concepts": [
+        "배차여유시간과 장애흡수 범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08325",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차고운영 서버와 현장 배차판은 디지털 통합 의존과 로컬 업무 우회를 구분한다.",
+      "concepts": [
+        "차고운영 서버와 현장 배차판"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08326",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "클라우드 서비스가 끊겨 예측 기능을 잃어도 차고에 저장된 지역운영 계획과 안전 한도가 있으면 기본 충전을 수행할 수 있다. 클라우드장애와 지역운영 계획은 원격 편의 기능이 필수 현장 기능과 분리됐는지 판정한다.",
+      "concepts": [
+        "클라우드장애와 지역운영 계획"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08327",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "무선태그 인증과 수동승인 절차는 신원 확인 목적을 다른 기술 경로로 충족하는 우회다.",
+      "concepts": [
+        "무선태그 인증과 수동승인 절차"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08328",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관리시스템은 차량식별자와 충전면이 올바르게 매핑돼야 충전량을 정확히 배정한다. 차량식별자와 충전면 매핑이 틀리면 전력은 흐르더라도 잘못된 버스가 우선 충전되는 정보 의존 문제가 생긴다.",
+      "concepts": [
+        "차량식별자와 충전면 매핑"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08329",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원격측정이 결측이어도 현장계기의 전압·전류와 차량 표시를 확인하면 충전 진행 여부를 판단할 수 있다. 충전원격측정 결측과 현장계기 확인은 통신 관측 경로를 물리적 충전 경로와 분리한 우회다.",
+      "concepts": [
+        "충전원격측정 결측과 현장계기 확인"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08330",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중앙에너지계량기가 멈춰도 분기계량기가 별도 센서와 전원을 쓰면 충전기별 사용량은 남길 수 있다. 중앙에너지계량과 분기계량 독립성은 집계 경로와 현장 측정 경로의 공통 자원을 확인하게 한다.",
+      "concepts": [
+        "중앙에너지계량과 분기계량 독립성"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08331",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비관리시스템이 고장 나면 전자 작업지시는 보이지 않지만 최신 인쇄본과 현장 책임자 확인으로 긴급정비를 진행할 수 있다. 정비관리시스템과 작업지시 전달은 기록 시스템 장애와 정비 역량 자체를 분리한다.",
+      "concepts": [
+        "정비관리시스템과 작업지시 전달"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08332",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기술자가 있어도 필요한 전력모듈이나 커넥터 재고가 없으면 충전기 복구가 늦어진다. 예비부품 재고와 충전기 복구 시간은 인력과 물자가 직렬로 연결된 복구 의존을 나타낸다.",
+      "concepts": [
+        "예비부품 재고와 충전기 복구 시간"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08333",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "일반 전기 기술자가 근무해도 특정 충전기 내부 수리에 필요한 제조사 교육과 권한이 없으면 작업할 수 없다. 기술자 숙련과 장비별 수리권한은 인력 수와 실제 복구 가능 역할을 구분한다.",
+      "concepts": [
+        "기술자 숙련과 장비별 수리권한"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08334",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "작업허가서와 정비 착수 조건은 행정 절차와 물리적 안전 상태의 직렬 의존을 보여 준다.",
+      "concepts": [
+        "작업허가서와 정비 착수 조건"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08335",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "잠금표시 절차를 적용해도 무전압 측정이 없으면 회로가 완전히 격리됐다고 단정할 수 없다. 잠금표시 절차와 무전압 확인은 두 안전 단계가 서로를 대신하지 못하는 선행 사슬이다.",
+      "concepts": [
+        "잠금표시 절차와 무전압 확인"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08336",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "절연공구가 준비돼도 주변 사람이 충전구역에 들어오면 정비 위험이 남으므로 작업구역 차단이 별도로 필요하다. 절연공구와 작업구역 차단은 개인 장비와 공간 통제가 병렬이 아니라 함께 필요한 조건임을 나타낸다.",
+      "concepts": [
+        "절연공구와 작업구역 차단"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08337",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전면을 최대한 늘려도 소방진입로를 막으면 사고 때 대응 경로가 사라진다. 소방진입로와 충전면 배치는 정상 처리량과 비상 접근이라는 서로 다른 자원 의존을 조정한다.",
+      "concepts": [
+        "소방진입로와 충전면 배치"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08338",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열 이상 차량은 일반충전면이 비어 있어도 격리와 감시가 가능한 별도 면으로 옮겨야 한다. 배터리화재 격리면과 일반충전면은 공간 여유보다 위험 제어 기능이 배치 경로를 결정함을 보여 준다.",
+      "concepts": [
+        "배터리화재 격리면과 일반충전면"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08339",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열화상카메라가 고장 나도 안전하게 접근 가능한 부위는 접촉온도계와 차량 센서로 확인할 수 있다. 열화상카메라와 접촉온도계 우회는 측정 목적을 다른 센서가 독립적으로 충족하는 범위를 구분한다.",
+      "concepts": [
+        "열화상카메라와 접촉온도계 우회"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08340",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소화설비가 정상이어야 고위험 충전구역을 운영할 수 있지만 점검 통과만으로 사고 뒤 즉시 충전을 재개할 수는 없다. 소화설비 준비와 충전 재개 승인은 설비 선행조건과 현장 안전판정이 별도로 필요함을 나타낸다.",
+      "concepts": [
+        "소화설비 준비와 충전 재개 승인"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08341",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배수펌프와 지하충전구역 침수는 한 공간의 시설 의존과 다른 공간의 독립성을 구분한다.",
+      "concepts": [
+        "배수펌프와 지하충전구역 침수"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08342",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차고조명과 야간수동작업은 고정 전원 장애를 독립 조명으로 우회하는 경우다.",
+      "concepts": [
+        "차고조명과 야간수동작업"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08343",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차고 출입문 모터 전원이 끊겨도 기계식 개방 장치와 안전 인력이 있으면 차량 통로를 확보할 수 있다. 출입문 전원과 기계식 개방 우회는 자동 기능 의존과 수동 경로의 독립성을 구분한다.",
+      "concepts": [
+        "출입문 전원과 기계식 개방 우회"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08344",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보안서버가 멈춰 카드 인증이 안 돼도 현장 경비원이 승인명단을 확인하면 필수 인력의 출입을 통제할 수 있다. 보안서버 장애와 현장출입 통제는 중앙 신원확인 경로와 사람 기반 우회를 구분한다.",
+      "concepts": [
+        "보안서버 장애와 현장출입 통제"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08345",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "업무무전망과 개인통신망 분리는 단말기 종류가 아니라 상류 통신 경로를 비교한다.",
+      "concepts": [
+        "업무무전망과 개인통신망 분리"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08346",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교대인계 기록과 구두전달 보완은 기록 매체 장애가 업무 연속성을 모두 끊지 않게 하는 우회다.",
+      "concepts": [
+        "교대인계 기록과 구두전달 보완"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08347",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기상예보 입력과 보수적 충전 계획은 정밀 예측 의존과 안전 여유 기반 우회를 분리한다.",
+      "concepts": [
+        "기상예보 입력과 보수적 충전 계획"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08348",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시간대별 요금신호가 있어야 비용 최적화를 할 수 있지만 신호가 끊겨도 고정 상한과 배차 요구량으로 충전은 계속할 수 있다. 요금신호와 충전시각 최적화는 경제적 최적화와 물리적 운전의 독립 범위를 나타낸다.",
+      "concepts": [
+        "요금신호와 충전시각 최적화"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08349",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수요반응 지령과 차고 최소 운전은 외부 제어 의존과 현장 필수 서비스의 경계를 정한다.",
+      "concepts": [
+        "수요반응 지령과 차고 최소 운전"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08350",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배차제어실 비상전원과 현장 콘솔은 같은 건물 안에서도 전원과 데이터 원천이 분리돼야 우회가 성립함을 보여 준다.",
+      "concepts": [
+        "배차제어실 비상전원과 현장 콘솔"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08351",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제2인입선이 다른 경로로 들어와도 같은 변전소 차단기에 의존하면 완전한 우회가 아니다. 제2인입선과 변전소독립성 검증은 눈에 보이는 이중선로보다 전원 계통의 끝점까지 추적하게 한다.",
+      "concepts": [
+        "제2인입선과 변전소독립성 검증"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08352",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대체변압기가 준비돼도 두 변압기 출력이 같은 저압케이블을 통과하면 그 케이블 고장을 우회하지 못한다. 대체변압기와 공통케이블 병목은 장비 예비성과 전달 경로 예비성을 구분한다.",
+      "concepts": [
+        "대체변압기와 공통케이블 병목"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08353",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이동발전차가 도착해도 차고 접속반의 규격과 절체 절차가 맞아야 전력을 공급할 수 있다. 이동발전차와 접속반 선행조건은 외부 우회자원이 현장 연결 고리에 다시 의존함을 보여 준다.",
+      "concepts": [
+        "이동발전차와 접속반 선행조건"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08354",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이동형충전기가 있어도 차고의 고장 난 전원에 꽂아야 한다면 충전기 고장만 우회할 뿐 정전은 우회하지 못한다. 이동형충전기와 현장전원 의존은 장비 이동성과 에너지원 독립성을 분리한다.",
+      "concepts": [
+        "이동형충전기와 현장전원 의존"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08355",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고장버스가 충전면을 막을 때 견인차량이 있으면 정비동으로 옮겨 다른 버스의 충전 경로를 열 수 있다. 견인차량과 고장버스 이동우회는 전기적 복구 없이 공간 병목만 제거하는 독립 경로다.",
+      "concepts": [
+        "견인차량과 고장버스 이동우회"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08356",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전된 예비버스가 있어도 투입할 운전자가 기존 고장버스 운전자와 별도로 확보되지 않으면 배차 우회가 완성되지 않는다. 예비버스와 독립운전자 확보는 차량과 인력 자원이 함께 필요한 대체 사슬을 보여 준다.",
+      "concepts": [
+        "예비버스와 독립운전자 확보"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08357",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "별도 연료를 쓰는 예비차는 충전망 정전과 독립적으로 운행할 수 있지만 연료와 정비 인력이 실제 준비돼 있어야 한다. 이종 동력 예비차와 충전망 독립은 에너지원 다양성이 만드는 우회와 새 선행조건을 함께 나타낸다.",
+      "concepts": [
+        "이종 동력 예비차와 충전망 독립"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08358",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "노선 중간 충전기와 차고 정전 우회는 위치와 전원권역이 모두 분리된 경로인지 확인하게 한다.",
+      "concepts": [
+        "노선 중간 충전기와 차고 정전 우회"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08359",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "인접차고 공유와 이동거리 비용은 기술적 가용성과 운영상 실행 가능성을 구분한다.",
+      "concepts": [
+        "인접차고 공유와 이동거리 비용"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08360",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공공충전기가 살아 있어도 버스 커넥터, 전압, 진입 공간이 맞지 않으면 우회 충전에 쓸 수 없다. 공공충전기와 대형차 호환조건은 외부 설비 존재가 차량별 대체 가능성을 보장하지 않음을 보여 준다.",
+      "concepts": [
+        "공공충전기와 대형차 호환조건"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08361",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교환식 배터리와 전용설비 의존은 기술적 우회가 별도 인프라에 기대는 경우다.",
+      "concepts": [
+        "교환식 배터리와 전용설비 의존"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08362",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "출발지연과 충전시간 확보는 에너지 부족을 시간 자원으로 우회하는 범위를 정한다.",
+      "concepts": [
+        "출발지연과 충전시간 확보"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08363",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전이 부족한 차량은 노선 일부를 단축해 필요한 에너지를 줄일 수 있지만 필수 정류장 서비스가 다른 차량으로 보완돼야 한다. 단축운행과 에너지요구 감소는 전력 공급을 수요 조정으로 우회하는 운영 경로다.",
+      "concepts": [
+        "단축운행과 에너지요구 감소"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08364",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "노선교차배정과 차량대체 경로는 차량 소유 노선보다 에너지 적합성을 우선하는 우회다.",
+      "concepts": [
+        "노선교차배정과 차량대체 경로"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08365",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "버스 한 대가 부족할 때 다른 노선의 여유 차량과 환승을 조합하면 전 구간 결행을 피할 수 있다. 승객환승과 결행회피 우회는 차량 한 대의 직통 의존을 서비스 연결망으로 바꾸는 경로다.",
+      "concepts": [
+        "승객환승과 결행회피 우회"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08366",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "낮 피크에 전력이 부족하면 출발이 늦은 차량을 심야충전으로 옮겨 수전 병목을 피할 수 있다. 심야충전 이동과 피크부하 회피는 총 에너지가 아니라 시간대별 전력 의존을 재배치한다.",
+      "concepts": [
+        "심야충전 이동과 피크부하 회피"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08367",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전시작 분산과 동시수요 완화는 물리적 용량 부족을 일정 제어로 우회하는 방법이다.",
+      "concepts": [
+        "충전시작 분산과 동시수요 완화"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08368",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "역송 기능이 있는 버스도 보호설정과 계통 분리 승인이 없으면 차고 비상전원으로 사용할 수 없다. 차량전력 역송과 승인된 섬운전은 저장 에너지 존재와 안전한 우회경로 성립을 구분한다.",
+      "concepts": [
+        "차량전력 역송과 승인된 섬운전"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08369",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "저장장치가 섬운전을 지원하면 정전 중 핵심충전기만 선택해 공급할 수 있지만 전체 차고 부하를 동시에 감당하지는 못할 수 있다. 저장장치 섬운전과 핵심부하 선택은 독립 전원의 용량 경계를 나타낸다.",
+      "concepts": [
+        "저장장치 섬운전과 핵심부하 선택"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08370",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "독립운전 인버터를 갖춘 태양광은 낮 정전의 우회 전원이 될 수 있지만 구름 변화 때문에 안정 충전에는 저장장치나 출력 조정이 필요하다. 태양광 독립운전과 일사량 변동은 경로 독립성과 출력 안정성을 분리한다.",
+      "concepts": [
+        "태양광 독립운전과 일사량 변동"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08371",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동절체기가 고장 나도 수동절체 절차와 숙련운영자가 있으면 대체전원으로 바꿀 수 있다. 수동절체와 숙련운영자 의존은 자동화 장애를 사람 경로로 우회하면서 새 역할 의존을 만든다.",
+      "concepts": [
+        "수동절체와 숙련운영자 의존"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08372",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중앙시스템이 끊기면 오프라인 배차목록으로 첫 출고를 이어갈 수 있지만 마지막 차량교체가 반영됐는지 확인해야 한다. 오프라인 배차목록과 최신성 한계는 통신 독립성과 정보 노후 위험을 함께 보여 준다.",
+      "concepts": [
+        "오프라인 배차목록과 최신성 한계"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08373",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전자점검 시스템이 멈춰도 종이점검표와 책임자 서명이 있으면 안전점검을 기록할 수 있다. 종이점검표와 전자승인 우회는 점검 기능을 매체와 분리하되 사후 입력 의존을 남긴다.",
+      "concepts": [
+        "종이점검표와 전자승인 우회"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08374",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서버시각 동기화가 끊겨도 검증된 현장시계로 출발·충전 시각을 기록하면 제한 운영이 가능하다. 현장시계와 서버시각 장애는 중앙 시간원 의존을 로컬 기준으로 우회하는 범위를 나타낸다.",
+      "concepts": [
+        "현장시계와 서버시각 장애"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08375",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전운영자와 배차담당자가 교차훈련을 받으면 한 역할이 비었을 때 기본 업무를 대신할 수 있다. 교차훈련 인력과 역할공백 대체는 인원 중복이 아니라 권한과 역량이 겹칠 때 성립하는 인적 우회다.",
+      "concepts": [
+        "교차훈련 인력과 역할공백 대체"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08376",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공통원인 지도와 겉보기중복 판별은 말단 수량과 상류 자원 구조를 구분한다.",
+      "concepts": [
+        "공통원인 지도와 겉보기중복 판별"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08377",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전력 인입부터 차량 출고까지 의존그래프를 그리면 어느 노드가 끊길 때 어떤 노선이 영향을 받는지 추적할 수 있다. 의존그래프와 배차경로 추적은 직렬 고리와 병렬 우회를 같은 그림에서 구분한다.",
+      "concepts": [
+        "의존그래프와 배차경로 추적"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08378",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소수 자원의 동시 고장이 모든 충전경로를 끊는다면 그 자원들은 최소절단집합을 이룬다. 최소절단집합과 전체충전 중단은 개별 고장 건수보다 경로 연결성을 기준으로 취약성을 분류한다.",
+      "concepts": [
+        "최소절단집합과 전체충전 중단"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08379",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분기회로가 따로 보여도 공통중성선이나 공통 접지 구간의 이상이 여러 회로에 영향을 줄 수 있다. 공통중성선과 분리회로 오인은 도면의 분기와 실제 전기적 공유를 구분하게 한다.",
+      "concepts": [
+        "공통중성선과 분리회로 오인"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08380",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전관리 서버가 두 대여도 같은 네트워크와 저장장치를 쓰면 그 공통 자원 고장에 함께 접근을 잃는다. 이중서버와 공통네트워크 의존은 계산장치 중복을 서비스 경로 독립성과 구분한다.",
+      "concepts": [
+        "이중서버와 공통네트워크 의존"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08381",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전기가 여러 대여도 하나의 공통냉각회로에 연결되면 펌프 고장으로 동시에 출력이 제한될 수 있다. 충전기냉각과 공통냉각회로는 전력 경로와 열관리 경로가 별도 의존층임을 보여 준다.",
+      "concepts": [
+        "충전기냉각과 공통냉각회로"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08382",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비충전기가 있어도 같은 정비팀이 여러 고장을 차례로 처리해야 하면 동시복구 능력은 제한된다. 공통정비팀과 동시복구 병목은 장비 중복 뒤에 남는 인력 의존을 나타낸다.",
+      "concepts": [
+        "공통정비팀과 동시복구 병목"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08383",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전기별 예비부품 목록이 있어도 실제 재고가 하나뿐이면 동시 고장 두 건을 모두 우회하지 못한다. 공용예비부품과 다중고장 경쟁은 명목상 예비와 수량상 독립성을 구분한다.",
+      "concepts": [
+        "공용예비부품과 다중고장 경쟁"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08384",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장 제어기가 정상이어도 원격 라이선스 서버 확인이 필수인 소프트웨어는 통신 단절 뒤 멈출 수 있다. 숨은 라이선스 서버와 현장제어 중단은 기능 목록에 드러나지 않는 외부 의존을 찾게 한다.",
+      "concepts": [
+        "숨은 라이선스 서버와 현장제어 중단"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08385",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비충전기가 다른 하드웨어여도 동일 펌웨어 결함을 공유하면 같은 입력에서 동시에 멈출 수 있다. 동일 펌웨어 결함과 예비충전기 동시실패는 장비 다양성과 소프트웨어 다양성을 구분한다.",
+      "concepts": [
+        "동일 펌웨어 결함과 예비충전기 동시실패"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08386",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원격관리망이 침해돼도 충전기 로컬제어망이 적절히 분리되면 안전한 고정 출력 운전을 보존할 수 있다. 사이버구역 분리와 로컬운전 보존은 네트워크 경계를 통한 기능적 독립을 나타낸다.",
+      "concepts": [
+        "사이버구역 분리와 로컬운전 보존"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08387",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "최초고장 고리와 후속경보 연쇄는 말단 증상과 상류 원인을 구분한다.",
+      "concepts": [
+        "최초고장 고리와 후속경보 연쇄"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08388",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "두 충전기가 동시에 멈췄다고 반드시 같은 원인인 것은 아니며, 반대로 시간차가 있다고 독립 경로라는 뜻도 아니다. 동시고장과 독립경로 추정 한계는 시간 일치만으로 자원 공유를 판정하지 않게 한다.",
+      "concepts": [
+        "동시고장과 독립경로 추정 한계"
+      ],
+      "relations": [
+        "comparison",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08389",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 번 우회 전원으로 충전이 성공해도 장시간 부하와 공통 보호장치까지 견디는지는 별도 시험이 필요하다. 우회 성공과 독립성 시험범위는 단일 성공 사례를 전체 경로 독립의 충분한 증거로 쓰지 않는다.",
+      "concepts": [
+        "우회 성공과 독립성 시험범위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08390",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비경로는 무부하 전압 확인뿐 아니라 실제 충전부하에서 전압·온도·지속시간을 측정해야 한다. 부하시험과 예비경로 실용용량은 연결 가능성과 운영 가능한 용량을 구분한다.",
+      "concepts": [
+        "부하시험과 예비경로 실용용량"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08391",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연쇄 고장에서는 충전기 화면부터 고치기보다 전원·제어·통신의 상류자원을 먼저 복구해야 말단 재시도가 의미가 있다. 복구순서와 상류자원 우선은 의존 방향에 맞춘 효율적 복구를 나타낸다.",
+      "concepts": [
+        "복구순서와 상류자원 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08392",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재급전 우선순위와 출발임박 차량은 제한 자원 아래 배차 목적이 복구 경로를 정하는 경우다.",
+      "concepts": [
+        "재급전 우선순위와 출발임박 차량"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08393",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통신이나 냉각 일부를 잃어도 고정 저출력으로 안전하게 충전할 수 있으면 완전정지가 아니라 성능저하 운전으로 분류한다. 성능저하 운전과 완전정지 경계는 남은 독립 기능의 범위를 명확히 한다.",
+      "concepts": [
+        "성능저하 운전과 완전정지 경계"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08394",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대체전원이 전체 부하의 일부만 감당하면 우회 자체는 성공해도 모든 노선을 유지할 수는 없다. 우회용량 상한과 서비스축소는 경로 존재와 충분한 처리량을 구분한다.",
+      "concepts": [
+        "우회용량 상한과 서비스축소"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08395",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이동발전차나 수동 인력으로 몇 시간 버틸 수 있어도 연료·피로·정비 때문에 장기 운영의 독립경로가 되지는 않는다. 한시적 우회와 지속운영 제한은 시간 범위를 포함해 복원력을 평가하게 한다.",
+      "concepts": [
+        "한시적 우회와 지속운영 제한"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08396",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "의존증거 기록과 변경관리는 현재 도면과 실제 운영구조의 일치를 유지한다.",
+      "concepts": [
+        "의존증거 기록과 변경관리"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08397",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "거짓이중화와 공통단일지점은 개수 기반 중복을 경로 기반 독립성과 구분한다.",
+      "concepts": [
+        "거짓이중화와 공통단일지점"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08398",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서로 다른 통신매체나 전원기술을 조합하면 하나의 설계결함이 모든 경로를 멈출 가능성을 줄일 수 있다. 기술다양성 확보와 공통결함 감소는 단순 복제보다 독립성을 높이지만 새 인터페이스 의존도 함께 점검하게 한다.",
+      "concepts": [
+        "기술다양성 확보와 공통결함 감소"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08399",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지리적 분리와 재난 공통영향 축소는 거리만이 아니라 접근로·통신·인력까지 분리됐는지 확인하게 한다.",
+      "concepts": [
+        "지리적 분리와 재난 공통영향 축소"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08400",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "최종 우회경로 감사와 독립성 판정은 한 상류 자원이라도 공유하면 그 고장에 대한 독립 우회로 표시하지 않게 한다.",
+      "concepts": [
+        "최종 우회경로 감사와 독립성 판정"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    }
+  ]
+}

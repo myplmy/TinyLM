@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v09",
+  "version": "9",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-01201 ~ S2-CDH-01350",
+  "concept_family": "S2-A02-T009: 도시 상수도 정수·배수 운영 — 자원 의존과 연쇄 실패 경로",
+  "design_note": "도시 상수도 정수·배수 운영 영역의 자원 의존과 연쇄 실패 경로 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-01201",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "취수펌프들이 상류 변전소 하나에 의존하면 그 설비의 정전이 상류 변전소 의존 취수정지로 모든 취수계열에 번진다. 펌프 수가 여러 대라는 사실만으로 전원 독립성이 생기지 않는다.",
+      "concepts": [
+        "상류 변전소 의존 취수정지"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01202",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "두 전력선이 같은 모선에서 갈라진다면 이중인입의 공통모선 함정 때문에 한 모선 고장이 양쪽 인입을 함께 끊는다. 케이블 수와 전원원 수를 구분해야 한다.",
+      "concepts": [
+        "이중인입의 공통모선 함정"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01203",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정전이 길어질 때 비상발전기 연료연쇄는 탱크 잔량, 이송펌프, 공급도로 가운데 하나만 막혀도 발전 지속시간을 줄인다. 발전기 본체의 정상만으로 운전을 보장할 수 없다.",
+      "concepts": [
+        "비상발전기 연료연쇄"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01204",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연료가 충분해도 시동배터리 단일고장점이 방전되면 비상발전기는 돌지 않는다. 발전용 에너지와 기동에 필요한 전기 자원은 맡은 기능이 다르다.",
+      "concepts": [
+        "시동배터리 단일고장점"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01205",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "상용전원과 발전기가 모두 살아 있어도 자동절체기 실패의 이중상실이 생기면 부하에는 전력이 전달되지 않는다. 공급원이 둘인 것과 전환경로가 건전한 것은 별개다.",
+      "concepts": [
+        "자동절체기 실패의 이중상실"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01206",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제어용 무정전전원의 한계는 계측과 통신을 잠시 유지하는 데 있으며 대형 펌프를 구동하지 못한다. 화면이 켜져 있어도 정수 생산이 계속된다고 해석해서는 안 된다.",
+      "concepts": [
+        "제어용 무정전전원의 한계"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01207",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "반복된 서지가 낙뢰보호기 소진 연쇄를 일으키면 처음에는 보호기가 버티지만 뒤이은 충격은 제어반까지 도달할 수 있다. 외관상 전원 정상과 보호여력은 다르다.",
+      "concepts": [
+        "낙뢰보호기 소진 연쇄"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01208",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부하가 높을수록 변압기 냉각팬 의존이 커져 팬 정지가 권선 과열과 전력 제한으로 이어진다. 변압기 용량표는 냉각 고장 상태의 지속능력을 뜻하지 않는다.",
+      "concepts": [
+        "변압기 냉각팬 의존"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01209",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서로 다른 회로도 같은 지하 통로를 지나면 공동 케이블트렌치 침수가 전원과 통신을 동시에 끊을 수 있다. 논리적 분리와 물리적 경로 분리를 따로 확인한다.",
+      "concepts": [
+        "공동 케이블트렌치 침수"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01210",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정전 뒤 모든 펌프를 한꺼번에 켜면 전력복구 순서의 수압충격이 관망 압력과 변압기 부하를 함께 흔든다. 복구 자원이 돌아온 시점과 안전한 투입 순서는 같지 않다.",
+      "concepts": [
+        "전력복구 순서의 수압충격"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01211",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "하천 수위가 내려가면 원수위 의존 흡입여유가 줄어 취수펌프 공동과 진동이 늘어난다. 모터 출력이 남아 있어도 물리적 흡입조건은 대체되지 않는다.",
+      "concepts": [
+        "원수위 의존 흡입여유"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01212",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "스크린 세척이 늦어지면 협잡물 누적의 펌프연쇄가 차압 상승, 유입 감소, 펌프 공동으로 이어진다. 개별 펌프 고장처럼 보이더라도 상류 막힘을 먼저 살핀다.",
+      "concepts": [
+        "협잡물 누적의 펌프연쇄"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01213",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전동제어가 정상이어도 취수문 공압원 의존 때문에 압축공기가 사라지면 문 위치를 바꾸지 못할 수 있다. 명령 전달과 구동 에너지 공급은 다른 경로다.",
+      "concepts": [
+        "취수문 공압원 의존"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01214",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원수펌프 냉각수 연쇄에서는 냉각수 감소가 베어링 온도 상승과 펌프 정지를 거쳐 처리유량을 떨어뜨린다. 원수 자체가 많다고 냉각 회로까지 충분한 것은 아니다.",
+      "concepts": [
+        "원수펌프 냉각수 연쇄"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01215",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "축봉수 상실 누수확대는 작은 밀봉 누출을 베어링 오염과 회전축 손상으로 키울 수 있다. 토출유량이 유지되는 초기에도 보조수 자원 상태를 본다.",
+      "concepts": [
+        "축봉수 상실 누수확대"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01216",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비기가 따로 있어도 예비펌프 공통흡입관 의존 때문에 흡입관 파손은 모든 호기를 멈춘다. 장비 예비율과 배관 경로 예비율을 같은 수치로 보지 않는다.",
+      "concepts": [
+        "예비펌프 공통흡입관 의존"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01217",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원수관 파손의 공정기아가 시작되면 혼화조 수위 저하와 약품 과농축을 거쳐 후단 생산까지 중단될 수 있다. 파손 지점 밖 공정도 유입 자원에 묶여 있다.",
+      "concepts": [
+        "원수관 파손의 공정기아"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01218",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유입이 잠시 끊겼을 때 혼화조 체적의 완충시간은 후단이 정상처럼 보이는 기간을 만든다. 이 지연을 공급 독립으로 오해하면 뒤늦은 연쇄정지를 놓친다.",
+      "concepts": [
+        "혼화조 체적의 완충시간"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01219",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "응집제 재고 의존 생산상한은 원수량이 아니라 남은 약품으로 처리 가능한 유량을 정한다. 취수 능력이 충분해도 정수 생산량은 더 작은 자원 한계에 묶인다.",
+      "concepts": [
+        "응집제 재고 의존 생산상한"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01220",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폭설로 약품 배송도로 단절이 생기면 현장 탱크가 소진된 뒤 응집과 산도조절이 차례로 제한된다. 공급망 고장은 공정 밖에서 시작해도 생산에 들어온다.",
+      "concepts": [
+        "약품 배송도로 단절"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01221",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대체 공급업체가 약품을 가져와도 하역연결구 불일치 지연 때문에 탱크로 옮기지 못할 수 있다. 재고 도착과 사용 가능 자원 확보를 구분한다.",
+      "concepts": [
+        "하역연결구 불일치 지연"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01222",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 약품계통이 같은 물을 쓰면 공용 희석수 압력상실이 응집제와 소독제 주입을 동시에 불안정하게 만든다. 서로 다른 약품펌프가 곧 독립 계통을 뜻하지 않는다.",
+      "concepts": [
+        "공용 희석수 압력상실"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01223",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주입펌프 검량오차 전파는 잘못된 토출량을 제어 설정과 재고 예측에 함께 반영해 과주입과 조기 고갈을 부른다. 한 계측 오류가 두 판단 경로를 흐릴 수 있다.",
+      "concepts": [
+        "주입펌프 검량오차 전파"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01224",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "약품 투입부가 막히면 정적혼화기 막힘의 압력연쇄가 상류 압력 상승과 후단 혼합 불량을 동시에 만든다. 압력 문제와 수질 문제를 따로 고장 난 것으로만 보지 않는다.",
+      "concepts": [
+        "정적혼화기 막힘의 압력연쇄"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01225",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산도조절제 부족의 응집저하는 응집제 자체가 남아 있어도 반응 환경을 벗어나 플록 형성을 떨어뜨린다. 주 약품 재고만 확인해서는 의존 자원을 놓친다.",
+      "concepts": [
+        "산도조절제 부족의 응집저하"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01226",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원수 성상이 바뀌면 자 테스트 인력의 설정의존 때문에 분석 담당자가 없을 때 적정 주입량을 갱신하지 못한다. 자동펌프는 판단 자원까지 대신하지 않는다.",
+      "concepts": [
+        "자 테스트 인력의 설정의존"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01227",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "슬러지 저장용량 역류제약이 차면 침전지 인발을 멈추고 고형물 축적이 처리수 탁도를 높인다. 부산물 저장소가 후단처럼 보여도 본 공정 유량을 제한한다.",
+      "concepts": [
+        "슬러지 저장용량 역류제약"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01228",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "탈수기 정지의 저장고갈은 처음에는 저장조가 흡수하지만 시간이 지나면 인발 중지와 침전 성능 저하로 이어진다. 단기 완충과 장기 독립을 혼동하지 않는다.",
+      "concepts": [
+        "탈수기 정지의 저장고갈"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01229",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "세척 반송수가 탁해지면 반송수 고탁도의 원수부하가 취수 원수와 합쳐져 응집제 수요와 슬러지량을 함께 늘린다. 내부 재이용수도 외부 원수와 같은 부하원이 될 수 있다.",
+      "concepts": [
+        "반송수 고탁도의 원수부하"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01230",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고분자 공급중단 탈수연쇄는 케이크 함수율 증가, 운반량 초과, 저장공간 부족을 거쳐 슬러지 인발을 막는다. 보조약품 하나의 부족이 전체 생산을 제한할 수 있다.",
+      "concepts": [
+        "고분자 공급중단 탈수연쇄"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01231",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 날개가 한 감속기에 연결되면 플록형성기 감속기 단일점의 고장이 조 전체 혼화를 멈춘다. 날개 개수로 구동계통의 중복성을 판단하지 않는다.",
+      "concepts": [
+        "플록형성기 감속기 단일점"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01232",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "침전지 스크레이퍼 정지연쇄는 바닥 슬러지 축적, 재부상, 후단 여과 부하 증가로 이어진다. 출수 탁도가 아직 낮아도 제거 자원의 고장을 조기에 본다.",
+      "concepts": [
+        "침전지 스크레이퍼 정지연쇄"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01233",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 침전조가 공용 월류수로 병목에 의존하면 한 구간의 막힘이 건전한 조의 수위까지 올린다. 병렬 탱크와 공통 출구의 취약성을 분리해 계산한다.",
+      "concepts": [
+        "공용 월류수로 병목"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01234",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "조류부하의 슬러지 연쇄는 응집제 증가, 부상성 슬러지, 여과지 조기 폐색과 역세수 소비를 차례로 키운다. 원수 변화가 여러 자원 수요를 동시에 바꾼다.",
+      "concepts": [
+        "조류부하의 슬러지 연쇄"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01235",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여과지에서 여재가 유실되면 여재 재고의 복구의존 때문에 세척만으로는 설계층고를 되찾지 못한다. 장비가 정상이어도 소모재가 없으면 복귀가 늦어진다.",
+      "concepts": [
+        "여재 재고의 복구의존"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01236",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "역세수 저장량의 운전상한은 동시에 세척할 수 있는 여과지 수를 제한한다. 여과지가 많다는 이유로 역세 자원이 같은 비율로 늘지는 않는다.",
+      "concepts": [
+        "역세수 저장량의 운전상한"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01237",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모든 여과지가 한 장치에 기대면 역세펌프 공용화 연쇄가 펌프 고장 하나를 다수 여과지의 폐색 누적으로 확장한다. 세척 일정 여유도 함께 계산해야 한다.",
+      "concepts": [
+        "역세펌프 공용화 연쇄"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01238",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "미세입자가 많은 계절에는 공기세척 송풍기 의존이 커져 송풍기 정지가 물세척만으로 제거되지 않는 막힘을 남긴다. 계절 부하에 따라 보조자원의 중요도가 달라진다.",
+      "concepts": [
+        "공기세척 송풍기 의존"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01239",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배출관이 막히면 폐세척수 배출로 역압이 여과지 수위를 높이고 오염수를 깨끗한 층으로 되밀 수 있다. 세척 공급과 배출은 함께 열려야 한다.",
+      "concepts": [
+        "폐세척수 배출로 역압"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01240",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 밸브가 정상이어도 역세순서 제어기 단일점이 멈추면 올바른 개폐 순서를 실행하지 못한다. 부품별 건전성과 절차 제어 자원을 구분한다.",
+      "concepts": [
+        "역세순서 제어기 단일점"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01241",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서 본체가 정상이어도 탁도계 시료펌프 숨은의존 때문에 물이 흐르지 않으면 오래된 값만 표시될 수 있다. 표시값과 표본 갱신 상태를 함께 본다.",
+      "concepts": [
+        "탁도계 시료펌프 숨은의존"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01242",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 분석기가 한 관을 공유하면 공용 채수관 오염전파가 한 지점의 잔류물을 다른 계기의 이상처럼 보이게 한다. 분석기 수가 표본 경로의 독립성을 보장하지 않는다.",
+      "concepts": [
+        "공용 채수관 오염전파"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01243",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "염소주입기 진공수 의존으로 구동수가 끊기면 용기와 제어기는 정상이어도 약품이 공정에 들어가지 않는다. 저장 상태와 전달 기능을 나눠 점검한다.",
+      "concepts": [
+        "염소주입기 진공수 의존"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01244",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가스세정탑 정지의 소독제약은 누출 대응 능력을 잃게 해 염소 주입 설비의 운전 자체를 중단시킨다. 안전 보조설비가 생산설비의 허가조건이 될 수 있다.",
+      "concepts": [
+        "가스세정탑 정지의 소독제약"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01245",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "감지기와 환기팬이 염소실 환기 공통전원에 묶이면 정전 한 번에 경보와 가스제거 기능이 함께 사라진다. 감시와 완화 자원을 다른 회로로 둘 필요가 있다.",
+      "concepts": [
+        "염소실 환기 공통전원"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01246",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고온 보관이 길어지면 차아염소산 저장열화 연쇄가 유효농도 감소, 주입량 증가, 탱크 조기 소진으로 이어진다. 명목 재고량만으로 남은 소독능을 판단하지 않는다.",
+      "concepts": [
+        "차아염소산 저장열화 연쇄"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01247",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "생산유량이 커지면 접촉시간의 유량의존 때문에 같은 탱크에서도 실제 소독 시간이 짧아진다. 저장조 체적이 고정돼 있다는 사실은 처리능력이 무한하다는 뜻이 아니다.",
+      "concepts": [
+        "접촉시간의 유량의존"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01248",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "접촉조 흐름판 파손의 단락연쇄는 빠른 통과수 증가와 말단 잔류 불균일을 만들며 공급 제한으로 이어진다. 평균 체류시간만 보면 취약한 경로를 가릴 수 있다.",
+      "concepts": [
+        "흐름판 파손의 단락연쇄"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01249",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "생산이 멈춰도 정수지 용량의 공급완충이 일정 시간 관망 수요를 받는다. 저장수 감소를 독립 생산으로 오해하지 말고 남은 지속시간을 계산해야 한다.",
+      "concepts": [
+        "정수지 용량의 공급완충"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01250",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "두 저장조가 정수지 연결밸브의 공통고장으로 동시에 고립되면 총 저장량이 남아도 사용할 수 있는 물은 줄어든다. 보유 자원과 접근 가능한 자원을 구별한다.",
+      "concepts": [
+        "정수지 연결밸브의 공통고장"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01251",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "펌프가 여러 대여도 송수펌프 공통흡입조 병목에서 수위가 낮아지면 모든 호기의 유량을 함께 줄여야 한다. 구동기 중복과 수리 자원의 공유를 따로 센다.",
+      "concepts": [
+        "송수펌프 공통흡입조 병목"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01252",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가변속장치 냉각실패 연쇄는 반도체 온도 상승, 출력 제한, 송수압 저하로 이어진다. 모터가 정상이어도 속도 제어 자원이 멈추면 설계 유량을 내지 못한다.",
+      "concepts": [
+        "가변속장치 냉각실패 연쇄"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01253",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "압력계 도압관 막힘 의존 때문에 센서 전원과 화면이 정상이어도 실제 압력 변화가 전달되지 않을 수 있다. 계기 본체와 유체 연결부를 함께 점검한다.",
+      "concepts": [
+        "압력계 도압관 막힘 의존"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01254",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "펌프 윤활유 품질연쇄에서는 수분 혼입이 마찰 증가와 베어링 과열을 거쳐 예비호기까지 정비 대상으로 만든다. 재고량만큼이나 보관 상태가 중요하다.",
+      "concepts": [
+        "펌프 윤활유 품질연쇄"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01255",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비 임펠러가 있어도 대형부품 인양장비 의존 때문에 크레인이 고장 나면 교체 작업을 시작할 수 없다. 부품 확보와 설치 자원 확보는 서로 다른 복구조건이다.",
+      "concepts": [
+        "대형부품 인양장비 의존"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01256",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "창고에 밀봉재가 많더라도 축봉 규격재고 불일치가 있으면 대상 펌프에는 쓸 수 없다. 수량 중심 재고와 호환 가능한 복구자원을 구분한다.",
+      "concepts": [
+        "축봉 규격재고 불일치"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01257",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제어반 고장 때 전문정비인력 호출지연이 길어지면 예비부품이 현장에 있어도 복구가 멈춘다. 사람의 진단·승인 역할을 장비 재고로 대신할 수 없다.",
+      "concepts": [
+        "전문정비인력 호출지연"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01258",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "펌프장 접근도로 침수는 시설이 직접 잠기지 않아도 연료차와 정비인력의 진입을 막아 운전 지속시간을 줄인다. 부지 내부 상태만으로 외부 자원 접근성을 판단하지 않는다.",
+      "concepts": [
+        "펌프장 접근도로 침수"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01259",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주 설비가 정전되면 배수펌프 정전의 이차침수가 지하 전기실로 번져 복구 가능한 고장을 광범위한 손상으로 키울 수 있다. 물 제거 설비도 독립 전원이 필요하다.",
+      "concepts": [
+        "배수펌프 정전의 이차침수"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01260",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "집수정 수위계 오동작연쇄는 배수펌프 미기동과 수위 상승을 거쳐 케이블 접속부 침수로 이어진다. 작은 계측 고장이 에너지 계통 고장으로 확대될 수 있다.",
+      "concepts": [
+        "집수정 수위계 오동작연쇄"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01261",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서로 다른 가압장도 배수구역 변전소 공통의존에 묶이면 한 지역 정전으로 여러 압력구가 동시에 낮아진다. 시설별 발전기 유무와 상위 전원 경로를 함께 본다.",
+      "concepts": [
+        "배수구역 변전소 공통의존"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01262",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "탱크가 가득 차도 현장발전기 연료품질 의존 때문에 물과 침전물이 섞이면 출력이 떨어질 수 있다. 표시 잔량은 사용 가능한 에너지량과 같지 않다.",
+      "concepts": [
+        "현장발전기 연료품질 의존"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01263",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 배수지의 계측이 무선중계소 단일경로를 거치면 중계소 정지 한 번에 광역 상태가 보이지 않는다. 센서 수와 통신 경로 수를 구별해 중복성을 평가한다.",
+      "concepts": [
+        "무선중계소 단일경로"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01264",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정전이 계속되면 원격계측 배터리 연쇄소진이 지점마다 다른 시각에 발생해 관망 가시성을 점차 줄인다. 중앙 화면의 일부 정상값이 전체 통신 회복을 뜻하지 않는다.",
+      "concepts": [
+        "원격계측 배터리 연쇄소진"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01265",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "장치 시계가 어긋나면 시각동기 상실의 순서오판 때문에 압력저하와 밸브조작의 선후를 잘못 해석할 수 있다. 데이터 수집과 정확한 시간 자원은 별개다.",
+      "concepts": [
+        "시각동기 상실의 순서오판"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01266",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서버 두 대가 같은 저장소를 쓰면 중앙제어서버 이중화 저장소의 고장이 양쪽 제어기록을 함께 잃게 한다. 계산 장치와 상태 저장 장치의 공통점을 확인한다.",
+      "concepts": [
+        "중앙제어서버 이중화 저장소"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01267",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운전이력 디스크포화 연쇄는 새 기록 누락, 경보 추적 실패, 잘못된 복구 판단으로 이어질 수 있다. 실시간 제어가 살아 있어도 감사 정보 자원은 고갈될 수 있다.",
+      "concepts": [
+        "운전이력 디스크포화 연쇄"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01268",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유량·기온·행사 자료가 빠지면 수요예측 입력결측 의존 때문에 펌프 계획이 실제 수요와 어긋난다. 알고리즘의 실행 성공과 입력 자원의 충분성을 구분한다.",
+      "concepts": [
+        "수요예측 입력결측 의존"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01269",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재난 통신이 몰리면 무선채널 혼잡의 제어지연이 원격 밸브 응답과 상태 확인을 늦춘다. 장치 고장처럼 보이는 지연이 전송 자원 부족에서 올 수 있다.",
+      "concepts": [
+        "무선채널 혼잡의 제어지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01270",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서로 다른 통신단말이 같은 기지국에 붙어 있으면 이동통신망 동시상실로 여러 원격지 연결이 함께 끊어진다. 단말 다중화와 사업자·경로 다중화는 같지 않다.",
+      "concepts": [
+        "이동통신망 동시상실"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01271",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주 밸브가 멀쩡해도 감압밸브 파일럿관 막힘이 생기면 하류 압력을 조절하지 못해 과압이 번진다. 작은 제어 유로가 큰 관망의 동작을 좌우한다.",
+      "concepts": [
+        "감압밸브 파일럿관 막힘"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01272",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 조절밸브가 같은 압축기에 기대면 공용공압의 밸브군 정지가 압력구 제어를 동시에 잃게 한다. 밸브별 구동기 존재만으로 자원 독립을 판단하지 않는다.",
+      "concepts": [
+        "공용공압의 밸브군 정지"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01273",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "상류 압력을 끊는 감압수조 수위의 하류의존 때문에 수조 유입이 멎으면 아래 구역은 저장량만큼만 공급된다. 관로 연결과 지속 수원은 구분된다.",
+      "concepts": [
+        "감압수조 수위의 하류의존"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01274",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 가압 설정에서도 고도차 의존 압력편차가 커지면 저지대 과압과 고지대 저압이 함께 나타난다. 한 지점의 압력을 구역 전체 자원 상태로 일반화하지 않는다.",
+      "concepts": [
+        "고도차 의존 압력편차"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01275",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구역유량계 고장의 누수맹점은 물 공급을 직접 멈추지는 않지만 야간 손실을 찾는 정보 자원을 없앤다. 물리 공급과 손실 감시 기능을 나눠 평가한다.",
+      "concepts": [
+        "구역유량계 고장의 누수맹점"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01276",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "누수추정의 기준수요 의존 때문에 휴일이나 폭염 수요를 평일 기준과 비교하면 정상 사용을 파손으로 오인할 수 있다. 계산값은 비교 기준 자원의 품질에 묶인다.",
+      "concepts": [
+        "누수추정의 기준수요 의존"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01277",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "야간 공장이 가동되면 야간최소유량의 산업부하 교란이 커져 실제 누수와 정상 소비를 분리하기 어렵다. 낮은 시간대라는 사실만으로 수요가 없다고 가정하지 않는다.",
+      "concepts": [
+        "야간최소유량의 산업부하 교란"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01278",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관 파손 때 밸브대장 누락의 격리지연이 생기면 현장팀이 경계밸브를 찾지 못해 단수 범위와 누수량이 커진다. 물리 밸브와 위치 정보가 함께 필요하다.",
+      "concepts": [
+        "밸브대장 누락의 격리지연"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01279",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "작업팀이 여러 곳에 나가도 밸브키 부족의 복구병목 때문에 동시에 차단할 수 있는 현장은 제한된다. 인원 수와 사용할 수 있는 조작도구 수를 함께 계산한다.",
+      "concepts": [
+        "밸브키 부족의 복구병목"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01280",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지하관 위치가 확인돼도 굴착허가 지연의 누수확대가 계속되면 도로 손상과 물 손실이 커진다. 기술 준비와 행정 자원 승인을 별도 의존으로 본다.",
+      "concepts": [
+        "굴착허가 지연의 누수확대"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01281",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 파손 현장이 굴착기 한 대를 함께 쓰면 굴착기 공유의 현장대기가 복구 순서를 강제한다. 작업반이 따로 있어도 핵심 장비가 공통이면 병렬 복구가 되지 않는다.",
+      "concepts": [
+        "굴착기 공유의 현장대기"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01282",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "깊은 관로에서 흙막이지보 부족 작업중단이 발생하면 새 관과 인력이 있어도 굴착면에 접근할 수 없다. 안전 자원은 복구 속도와 별개로 생략할 수 없는 조건이다.",
+      "concepts": [
+        "흙막이지보 부족 작업중단"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01283",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대구경 관재고의 규격의존 때문에 지름이 맞아도 압력등급이나 접합형식이 다르면 교체에 쓰지 못한다. 재료 범주와 실제 호환성을 구분한다.",
+      "concepts": [
+        "대구경 관재고의 규격의존"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01284",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "새 관을 확보했더라도 이종관 연결구 부족이 생기면 기존 재질과 접합하지 못해 복구가 멈춘다. 주 자재와 전환 부품은 하나의 작업 사슬에 있다.",
+      "concepts": [
+        "이종관 연결구 부족"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01285",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관 복구 뒤 이동식 소독장치 약품의존 때문에 장치는 있어도 유효농도 약품이 없으면 세척수를 만들 수 없다. 설비 배치와 소모재 준비를 따로 확인한다.",
+      "concepts": [
+        "이동식 소독장치 약품의존"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01286",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "급수차가 많아도 급수차량 대수의 충전병목이 한 곳에 모이면 충전구 처리량이 배달 회전을 제한한다. 운반 자원과 적재 지점 용량 중 작은 쪽이 공급량을 정한다.",
+      "concepts": [
+        "급수차량 대수의 충전병목"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01287",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 차량이 동시에 물을 받으면 충전소화전 압력저하 연쇄가 인근 관망 저압과 충전시간 증가를 부른다. 차량 배차만 늘려서는 수원 병목을 풀지 못한다.",
+      "concepts": [
+        "충전소화전 압력저하 연쇄"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01288",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "단수 지역을 왕복하는 동안 비상차량 연료공급 의존이 커져 주유소 정전이 급수 횟수 감소로 이어질 수 있다. 물 재고만으로 운송 지속성을 계산하지 않는다.",
+      "concepts": [
+        "비상차량 연료공급 의존"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01289",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "장시간 재난에서 운전기사 교대부족 연쇄가 피로, 운행간격 증가, 배송누락으로 이어진다. 차량 수가 많아도 자격 인력이 부족하면 모두 운행하지 못한다.",
+      "concepts": [
+        "운전기사 교대부족 연쇄"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01290",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주요 교량이 닫히면 교량통제의 배송우회가 이동거리와 연료수요를 늘려 같은 차량의 하루 공급량을 줄인다. 직선거리 기준 계획은 도로 접근 자원 변화를 반영하지 못한다.",
+      "concepts": [
+        "교량통제의 배송우회"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01291",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관망 압력이 낮을 때 병원 부스터펌프 외부의존은 건물 전원과 흡입수압 중 하나만 끊겨도 필수층 급수를 멈춘다. 공공관망과 건물 설비의 책임 경계를 함께 본다.",
+      "concepts": [
+        "병원 부스터펌프 외부의존"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01292",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "건물저수조의 단기완충은 관망 단수 직후 소비를 이어주지만 수위가 줄수록 위층 공급능력도 떨어진다. 저장시설을 무기한 독립 수원으로 보지 않는다.",
+      "concepts": [
+        "건물저수조의 단기완충"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01293",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대형 수용가의 역류방지기 정비의 구역의존 때문에 장치가 열린 동안 주변 저압이 오염 유입으로 이어질 수 있다. 한 건물의 정비가 관망 보호에 미치는 경로를 끊어야 한다.",
+      "concepts": [
+        "역류방지기 정비의 구역의존"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01294",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공장이 예고 없이 대량 취수하면 산업수요 급증의 압력연쇄가 말단 저압과 저장조 수위 저하로 번진다. 총 생산량이 같아도 시간별 자원 배분은 달라진다.",
+      "concepts": [
+        "산업수요 급증의 압력연쇄"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01295",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 화재에 물을 대면 동시소방유량의 저장고갈이 필수 압력 유지시간을 빠르게 줄인다. 평상시 한 건 화재 기준의 예비량을 그대로 적용하지 않는다.",
+      "concepts": [
+        "동시소방유량의 저장고갈"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01296",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 용도의 사용을 막으면 가뭄제한의 우회수요 전이가 다른 시간대나 인접 구역 소비를 늘릴 수 있다. 공지된 절감량과 실제 관망 부하를 따로 측정한다.",
+      "concepts": [
+        "가뭄제한의 우회수요 전이"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01297",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수질사고 공지가 대량문자 발송망 의존에 묶이면 통신사 장애가 사용제한 전달을 늦춘다. 공지를 작성한 것과 주민에게 도달한 것은 같은 완료 상태가 아니다.",
+      "concepts": [
+        "대량문자 발송망 의존"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01298",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이주민이 많은 지역에서는 다국어 상담인력 병목이 생겨 같은 안내문이 있어도 행동지침 전달 속도가 달라진다. 번역 자료와 실시간 응답 역할을 구분한다.",
+      "concepts": [
+        "다국어 상담인력 병목"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01299",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사고 표본이 몰리면 확인분석 처리용량 지연이 해제 판단을 늦추고 저장·급수 자원 소모를 늘린다. 채취 속도보다 실험실 처리량이 병목이 될 수 있다.",
+      "concepts": [
+        "확인분석 처리용량 지연"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01300",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "내부 장비가 멈췄을 때 외부시험기관 운송의존 때문에 표본 보존용기와 운송시간이 확보되지 않으면 대체 분석도 실패한다. 계약 존재만으로 결과가 생기지 않는다.",
+      "concepts": [
+        "외부시험기관 운송의존"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01301",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "흐린 날이 이어지면 원수감시부이 태양광 의존 때문에 배터리가 소진되고 조류·수온 자료가 끊긴다. 수면 장비가 떠 있다는 사실과 정보 제공 상태는 다르다.",
+      "concepts": [
+        "원수감시부이 태양광 의존"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01302",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "상류 댐방류자료 지연의 취수오판은 도달 유량과 탁도 변화를 늦게 예상하게 해 약품 준비와 취수심도 전환을 어긋나게 한다. 현장 수위만으로 상류 사건을 즉시 알 수 없다.",
+      "concepts": [
+        "댐방류자료 지연의 취수오판"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01303",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폭우 대응에서 기상예보 의존 약품계획이 빗나가면 응집제와 슬러지 저장 여유를 미리 확보하지 못한다. 예보는 생산 자원 배치에 영향을 주지만 실제 원수 측정을 대신하지 않는다.",
+      "concepts": [
+        "기상예보 의존 약품계획"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01304",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대체 수원이 있어도 비상취수관 격리밸브 고착 때문에 주 관로에서 분리하거나 통수하지 못하면 사용할 수 없다. 수원 존재와 연결경로 가용성을 함께 확인한다.",
+      "concepts": [
+        "비상취수관 격리밸브 고착"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01305",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원수저수지 혼합기 정지연쇄는 수온층 형성, 저층 산소 감소, 금속 용출을 거쳐 처리약품 수요를 바꾼다. 저장량이 충분해도 수질 자원은 균일하지 않을 수 있다.",
+      "concepts": [
+        "원수저수지 혼합기 정지연쇄"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01306",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "조류차단막 계류선 파단이 생기면 막 본체가 남아 있어도 오염 수괴가 취수구로 우회한다. 차단 재료와 위치를 유지하는 계류 자원은 하나의 기능 사슬이다.",
+      "concepts": [
+        "조류차단막 계류선 파단"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01307",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "스크린이 이물질을 잘 걸러도 스크린 협잡물 반출병목으로 보관함이 차면 세척을 멈춰야 한다. 제거 기능은 폐기·운반 자원까지 이어져야 지속된다.",
+      "concepts": [
+        "스크린 협잡물 반출병목"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01308",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "응집제 공급사가 달라도 복수약품 공급사의 공통원료가 한 생산지에 묶여 있으면 원료 사고로 양쪽 납품이 함께 끊긴다. 계약 수와 공급망 기원의 수는 다르다.",
+      "concepts": [
+        "복수약품 공급사의 공통원료"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01309",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이산화탄소 배송중단 산도연쇄는 산도 보정 실패와 응집 조건 변화, 부식성 증가로 이어질 수 있다. 주입설비가 정상이어도 가스 재고가 없으면 기능하지 않는다.",
+      "concepts": [
+        "이산화탄소 배송중단 산도연쇄"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01310",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "석회사일로 건조공기 의존 때문에 제습기가 멈추면 분말이 굳어 이송스크루와 주입관을 차례로 막는다. 약품 수량과 흘러갈 수 있는 상태를 구분한다.",
+      "concepts": [
+        "석회사일로 건조공기 의존"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01311",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "압축공기 수분의 계기연쇄는 겨울철 결빙과 조절밸브 지연을 일으켜 여러 약품 유량을 동시에 흔든다. 압력만 정상이라고 공기 품질까지 정상인 것은 아니다.",
+      "concepts": [
+        "압축공기 수분의 계기연쇄"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01312",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시약냉장고 전원상실로 표준용액이 허용온도를 벗어나면 실험실은 장비가 정상이어도 검량을 수행할 수 없다. 분석 자원에는 보관환경도 포함된다.",
+      "concepts": [
+        "시약냉장고 전원상실"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01313",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "실험실 초순수 공급의존 때문에 제조장치가 멈추면 희석액과 공시험을 만들지 못해 여러 분석항목이 함께 지연된다. 수도물 공급만으로 분석용 물을 대체하지 않는다.",
+      "concepts": [
+        "실험실 초순수 공급의존"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01314",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 기기가 분석가스 실린더 공통고갈에 묶이면 한 저장 묶음의 소진으로 금속과 유기물 분석이 동시에 중단된다. 기기별 예약시간이 가스 재고를 늘리지는 않는다.",
+      "concepts": [
+        "분석가스 실린더 공통고갈"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01315",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "채수차량 냉장장치 고장이 나면 멀리서 가져온 표본의 보존시간이 줄어 재채취와 판단 지연으로 이어진다. 차량 운행 가능과 표본 운송 적합성은 다르다.",
+      "concepts": [
+        "채수차량 냉장장치 고장"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01316",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분석값이 나와도 인계서 누락의 표본무효 때문에 채취지와 보관경로를 확인하지 못하면 공식 판단에 쓰기 어렵다. 물질 표본과 출처 기록은 함께 있어야 한다.",
+      "concepts": [
+        "인계서 누락의 표본무효"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01317",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교대인계 실패의 설정충돌은 이전 작업자의 임시 주입값을 다음 근무자가 정상값으로 오해하게 만든다. 설비 상태뿐 아니라 변경 이유가 운영 자원으로 전달돼야 한다.",
+      "concepts": [
+        "교대인계 실패의 설정충돌"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01318",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고위험 약품 운전 권한이 한 사람에게만 있으면 자격운영자 단일인력점 때문에 부재 시 설비가 정상이어도 투입을 승인할 수 없다. 근무 인원과 자격 역할을 구분한다.",
+      "concepts": [
+        "자격운영자 단일인력점"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01319",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "누출복구가 길어져 보호장구 재고소진 작업중단이 발생하면 예비부품과 공구가 있어도 오염구역에 들어갈 수 없다. 사람을 보호하는 소모품도 복구 자원이다.",
+      "concepts": [
+        "보호장구 재고소진 작업중단"
+      ],
+      "relations": [
+        "attribute",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01320",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "호흡보호구 필터수명 의존을 무시하면 마스크 본체가 멀쩡해도 작업 중 보호성능이 먼저 끝날 수 있다. 장비 보유 수와 유효 사용시간을 따로 센다.",
+      "concepts": [
+        "호흡보호구 필터수명 의존"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01321",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "약품실 사고 때 비상세안수의 상수공급 의존 때문에 주 급수가 함께 끊기면 안전설비를 쓰지 못한다. 생산수 계통 고장이 작업자 보호까지 번지지 않도록 별도 저장이 필요하다.",
+      "concepts": [
+        "비상세안수의 상수공급 의존"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01322",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전기실 소화설비 제어전원이 주 배전반과 함께 고장 나면 화재 감지와 진압 명령이 동시에 사라질 수 있다. 보호 대상과 보호 장치의 전원 경로를 분리한다.",
+      "concepts": [
+        "전기실 소화설비 제어전원"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01323",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "하드웨어 예비품이 있어도 예비제어기 펌웨어 호환성이 맞지 않으면 현장 입출력과 통신을 복원할 수 없다. 물리 부품 재고와 실행 구성의 적합성은 별개다.",
+      "concepts": [
+        "예비제어기 펌웨어 호환성"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01324",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제어설정 백업의 복구의존 때문에 최신 파일이 없으면 새 제어기를 설치해도 밸브 순서와 경보값을 다시 구성해야 한다. 장비 교체만으로 운영 상태가 돌아오지는 않는다.",
+      "concepts": [
+        "제어설정 백업의 복구의존"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01325",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장 소프트웨어가 공급사 라이선스 서버 의존에 묶이면 외부 접속 장애가 진단 기능을 막을 수 있다. 로컬 제어와 유지보수 도구의 가용성을 따로 시험한다.",
+      "concepts": [
+        "공급사 라이선스 서버 의존"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01326",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "인증서 만료의 원격접속 연쇄는 로그인 실패, 장애 진단 지연, 복구시간 증가로 이어진다. 네트워크가 연결됐다는 사실만으로 접근 권한이 유효한 것은 아니다.",
+      "concepts": [
+        "인증서 만료의 원격접속 연쇄"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01327",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주소로는 닿는 서버도 이름해석 장애의 서비스오인 때문에 응용프로그램에서는 고장처럼 보일 수 있다. 통신망 상태와 이름 변환 자원의 상태를 구별한다.",
+      "concepts": [
+        "이름해석 장애의 서비스오인"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01328",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제어실 냉방고장의 서버연쇄는 실내 온도 상승과 장비 감속, 순차 정지로 확대된다. 전력이 남아 있어도 열 제거 자원이 부족하면 정보계통이 멈춘다.",
+      "concepts": [
+        "제어실 냉방고장의 서버연쇄"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01329",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 서버와 현장망이 핵심스위치 공통집중 구조를 가지면 포트가 많아도 장치 한 대의 정지가 전체 통신을 끊는다. 연결 수와 경로 다양성을 같은 것으로 보지 않는다.",
+      "concepts": [
+        "핵심스위치 공통집중"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01330",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "두 광케이블이 같은 관로에 놓이면 이중광케이블 공동관로 굴착사고가 양쪽을 함께 절단할 수 있다. 논리 회선 이중화에는 물리 경로 확인이 뒤따라야 한다.",
+      "concepts": [
+        "이중광케이블 공동관로"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01331",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "누출 감지기를 갖췄어도 가스센서 교정가스 고갈로 감도 확인을 못하면 경보 신뢰성을 보장할 수 없다. 계측 자원에는 검증용 표준도 포함된다.",
+      "concepts": [
+        "가스센서 교정가스 고갈"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01332",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배관 개조로 유량계 직관부 훼손의 편향이 생기면 센서는 정상 작동해도 난류 때문에 지속적인 오차를 낸다. 전자 상태와 설치 조건을 분리해 본다.",
+      "concepts": [
+        "유량계 직관부 훼손의 편향"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01333",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "축전지 충전기 고장의 지연상실은 처음에는 드러나지 않지만 다음 정전 때 보호계전과 통신 전원을 빠르게 끊는다. 저장 자원의 충전 경로까지 감시해야 한다.",
+      "concepts": [
+        "축전지 충전기 고장의 지연상실"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01334",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호퓨즈 규격부족 복구지연은 작은 전기고장을 장시간 설비정지로 바꾼다. 모양이 같은 퓨즈라도 차단용량이 다르면 대체품이 아니다.",
+      "concepts": [
+        "보호퓨즈 규격부족 복구지연"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01335",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "임시전원 용량의 정비제약 때문에 작업등과 공구를 함께 연결하면 전압이 떨어져 정비를 멈출 수 있다. 콘센트가 있다는 사실과 충분한 전력 자원은 다르다.",
+      "concepts": [
+        "임시전원 용량의 정비제약"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01336",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐수방류 허가의 생산의존 때문에 처리 부산물을 내보낼 수 없으면 저장조가 차고 결국 정수 생산량도 줄어든다. 제품수 공정과 폐기 경로는 하나의 운영계통이다.",
+      "concepts": [
+        "폐수방류 허가의 생산의존"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01337",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "복수 정수장이 같은 업체를 쓰면 슬러지 운반업체 동시중단이 여러 저장소의 포화를 동시에 앞당긴다. 시설별 계약이 실제 운송 자원 분리를 뜻하는지 확인한다.",
+      "concepts": [
+        "슬러지 운반업체 동시중단"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01338",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "처분장 폐쇄의 저장연쇄는 반출차 대기, 현장 적치 증가, 슬러지 인발 제한을 거쳐 수처리 부하를 높인다. 외부 종착지 상태가 내부 공정에 역으로 영향을 준다.",
+      "concepts": [
+        "처분장 폐쇄의 저장연쇄"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01339",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "탈취약품 부족의 작업제약으로 슬러지실 농도가 작업기준을 넘으면 운전자가 접근하지 못해 정비와 반출이 지연된다. 냄새 문제도 인력 자원의 사용조건을 바꾼다.",
+      "concepts": [
+        "탈취약품 부족의 작업제약"
+      ],
+      "relations": [
+        "attribute",
+        "role",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01340",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폭우 유입의 폐수용량 연쇄는 배수량 증가, 회수조 만수, 역세 일정 중단으로 이어진다. 정수 원수뿐 아니라 부지 배수가 보조계통 여유를 소비한다.",
+      "concepts": [
+        "폭우 유입의 폐수용량 연쇄"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01341",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부지 배수구가 막히면 하수역류의 약품실 접근차단으로 바닥 오염과 미끄럼 위험이 생겨 약품 보충을 멈춰야 한다. 약품 탱크가 건전해도 접근 자원이 사라질 수 있다.",
+      "concepts": [
+        "하수역류의 약품실 접근차단"
+      ],
+      "relations": [
+        "state",
+        "role",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01342",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "우수펌프 공통배전 의존 때문에 침수와 정전이 겹치면 물을 빼야 할 때 배수능력까지 함께 잃는다. 사고 원인과 완화설비의 공통 자원을 끊어야 한다.",
+      "concepts": [
+        "우수펌프 공통배전 의존"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01343",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "홍수 경보가 빨라도 방수문 설치인력 병목으로 여러 출입구를 동시에 막지 못하면 낮은 구간부터 물이 들어온다. 보호장비 수량과 배치할 사람 수를 함께 계획한다.",
+      "concepts": [
+        "방수문 설치인력 병목"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01344",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "창고에 차수벽이 있어도 이동식 차수벽 운송의존 때문에 지게차와 통로가 막히면 필요한 위치에 설치하지 못한다. 보유 상태와 배치 가능 상태를 구분한다.",
+      "concepts": [
+        "이동식 차수벽 운송의존"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01345",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "인근 기관이 같은 홍수에 피해를 입으면 상호지원 협약의 동시재난 한계 때문에 약속된 장비와 인력이 오지 못할 수 있다. 계약상 자원과 실제 가용 자원은 다르다.",
+      "concepts": [
+        "상호지원 협약의 동시재난 한계"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01346",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시중에 부품이 있어도 긴급구매 결제승인 병목이 풀리지 않으면 현장으로 주문할 수 없다. 재난 절차는 통제를 줄이는 것이 아니라 필요한 승인 경로를 짧게 만든다.",
+      "concepts": [
+        "긴급구매 결제승인 병목"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01347",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "총예산이 남아도 복구예산 항목제약 때문에 지정되지 않은 임대장비나 운송비에 바로 쓸 수 없을 수 있다. 금액과 사용 권한은 서로 다른 자원 속성이다.",
+      "concepts": [
+        "복구예산 항목제약"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01348",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상지휘권 공백의 작업충돌이 생기면 취수·수질·관망 팀이 같은 펌프나 차량을 중복 요청해 핵심 자원을 낭비한다. 책임 역할의 배치가 물리 자원 사용순서를 정한다.",
+      "concepts": [
+        "비상지휘권 공백의 작업충돌"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01349",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부정확한 공지가 반복되면 주민신뢰 저하의 수요연쇄가 사재기와 특정 시간대 사용 급증으로 나타나 저장량을 더 빨리 줄인다. 정보 품질도 관망 부하에 간접 영향을 준다.",
+      "concepts": [
+        "주민신뢰 저하의 수요연쇄"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01350",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통합복구 순서의 자원의존을 고려하면 전원·배수·통신·약품·공정·관망 가운데 선행 자원을 먼저 살려야 한다. 후단 설비를 일찍 켜도 필요한 입력이 없으면 복구시간만 늘어난다.",
+      "concepts": [
+        "통합복구 순서의 자원의존"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "role",
+        "boundary"
+      ]
+    }
+  ]
+}

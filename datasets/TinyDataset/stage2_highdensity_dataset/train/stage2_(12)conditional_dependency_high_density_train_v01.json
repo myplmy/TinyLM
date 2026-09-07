@@ -1,0 +1,2221 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v01",
+  "version": "1",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-00001 ~ S2-CDH-00150",
+  "concept_family": "S2-A02-T001: 스마트 온실 관수·환경제어 — 필요조건과 충분조건의 방향 판정",
+  "design_note": "스마트 온실 관수·환경제어 영역의 필요조건과 충분조건의 방향 판정 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-00001",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "근권 수분 측정의 필요성은 관수 판단을 내리기 전에 뿌리 주변의 실제 건조도를 알아야 한다는 뜻이다. 센서값이 확보됐다는 사실만으로 급수가 충분히 성공했다고 보지는 않는다.",
+      "concepts": [
+        "근권 수분 측정의 필요성"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00002",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "점적관 끝까지 물을 보내려면 관수 압력 확보 조건이 먼저 충족돼야 한다. 압력이 정상이어도 막힌 방울구가 남아 있으면 균일한 공급의 충분조건은 되지 못한다.",
+      "concepts": [
+        "관수 압력 확보 조건"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00003",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "펌프가 공기를 빨아들이지 않게 하는 데 양액 탱크 최소 수위는 필요한 운전 조건이다. 수위가 높다는 이유만으로 배합 농도와 유량까지 적절하다고 결론 내릴 수 없다.",
+      "concepts": [
+        "양액 탱크 최소 수위"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00004",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "흡입관 프라이밍 선행은 원심펌프가 양액을 끌어올리기 위한 전제다. 프라이밍을 마쳤더라도 전원이 끊겼거나 임펠러가 손상되면 관수 시작에는 충분하지 않다.",
+      "concepts": [
+        "흡입관 프라이밍 선행"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00005",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주필터 통수 가능 상태가 아니면 어떤 밸브 순서도 정상 유량을 만들 수 없다. 다만 필터가 깨끗한 것만으로 말단 압력과 배관 누수까지 보장되지는 않는다.",
+      "concepts": [
+        "주필터 통수 가능 상태"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00006",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "토양수분 센서 교정값은 원시 전압을 해당 배지의 수분율로 해석하기 위한 필요 자료다. 교정표가 있어도 센서가 뿌리층 밖에 꽂혔다면 올바른 관수 판단의 충분한 근거가 아니다.",
+      "concepts": [
+        "토양수분 센서 교정값"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00007",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "특정 베드에 급수하려면 그 구역의 관수 구역 밸브 개방이 필요하다. 밸브만 열고 공급펌프를 정지한 경우에는 물이 흐르지 않으므로 개방을 충분조건으로 뒤집으면 안 된다.",
+      "concepts": [
+        "관수 구역 밸브 개방"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00008",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배지의 과포화를 낮추기 위해서는 배수구 막힘 해소가 선행돼야 한다. 막힘을 제거해도 관수 시간이 계속 지나치게 길다면 정상 수분 상태가 자동으로 회복되지는 않는다.",
+      "concepts": [
+        "배수구 막힘 해소"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00009",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유량계 영점 확인은 미세 유량 변화를 비교하기 위한 필수 절차지만, 영점이 맞는다는 것만으로 센서의 전 구간 정확도가 입증되지는 않는다. 필요조건과 검증 완료를 구분한다.",
+      "concepts": [
+        "유량계 영점 확인"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00010",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "겨울철 관수를 재개하려면 급수관 동결 해제가 필요하다. 얼음이 녹았더라도 균열로 물이 새면 목표 압력이 생기지 않으므로 해제만으로 정상 공급이 충분히 성립하지 않는다.",
+      "concepts": [
+        "급수관 동결 해제"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00011",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서로 다른 원액을 투입한 뒤 양액 혼합 교반 완료가 있어야 표본 농도를 대표값으로 쓸 수 있다. 교반 완료는 목표 농도 도달의 필요조건일 수 있지만 투입량 오류까지 없애지는 않는다.",
+      "concepts": [
+        "양액 혼합 교반 완료"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00012",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전기전도도 온도 보정은 온도가 다른 양액의 농도를 같은 기준에서 비교하는 데 필요하다. 보정된 수치 하나만으로 작물별 이온 조성이 충분히 적절하다고 판단해서는 안 된다.",
+      "concepts": [
+        "전기전도도 온도 보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00013",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "목표 산도를 자동으로 맞추려면 산도 조절제 공급 가능 상태가 전제돼야 한다. 약제가 남아 있어도 주입펌프가 막히면 조절이 이뤄지지 않으므로 재고 보유는 충분조건이 아니다.",
+      "concepts": [
+        "산도 조절제 공급 가능"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00014",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원액이 상수 계통으로 되돌아가지 않게 하려면 역류방지 밸브 작동이 필요하다. 밸브가 닫힌다는 사실은 오염 방지 조건이지 양액 배합 성공 전체의 충분조건은 아니다.",
+      "concepts": [
+        "역류방지 밸브 작동"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00015",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예약 관수를 실행하려면 관수 시간표 활성화가 필요하지만, 활성화만으로 실행을 보장하지 않는다. 수분 상한 경보가 걸리거나 수조 수위가 낮으면 제어기가 예약을 건너뛸 수 있다.",
+      "concepts": [
+        "관수 시간표 활성화"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00016",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제어기 시각 동기화는 여러 구역의 예약 순서를 정확히 적용하기 위한 필요조건이다. 시간이 맞아도 잘못 저장된 시간표는 그대로 실행되므로 동기화가 적정 관수의 충분조건은 아니다.",
+      "concepts": [
+        "제어기 시각 동기화"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00017",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외부 유입수를 고려해 관수를 억제하려면 강우 감지 신호 유효 여부가 먼저 확인돼야 한다. 신호가 유효해도 지붕이 닫힌 온실에서는 강우가 배지 수분을 늘리지 않을 수 있어 억제의 충분근거가 아니다.",
+      "concepts": [
+        "강우 감지 신호 유효"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00018",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배지 수분 하한 도달은 수분 기반 제어에서 급수를 검토하게 하는 필요 신호다. 그러나 병든 뿌리나 배수 불량이 있으면 물을 더 주는 것이 적절하지 않을 수 있어 단독 충분조건으로 쓰지 않는다.",
+      "concepts": [
+        "배지 수분 하한 도달"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00019",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "증산량 추정 방식에서는 일사 누적 기준 충족이 관수 후보를 여는 조건이다. 같은 누적 일사라도 습도와 잎 면적이 다르면 실제 물 소모가 달라지므로 즉시 급수의 충분조건은 아니다.",
+      "concepts": [
+        "일사 누적 기준 충족"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00020",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "증산 추정치 신뢰 구간은 모델값을 제어 입력으로 채택하기 위한 필요 판단 범위다. 구간이 좁아도 모델에 병해로 인한 기공 폐쇄가 빠졌다면 관수량 결정에 충분하지 않다.",
+      "concepts": [
+        "증산 추정치 신뢰 구간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00021",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "점적기 최소 개방 압력보다 공급 압력이 낮으면 물방울이 나오지 않으므로 이 기준은 필요한 조건이다. 기준을 넘겨도 점적기별 막힘과 높이 차가 있으면 균일 관수는 보장되지 않는다.",
+      "concepts": [
+        "점적기 최소 개방 압력"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00022",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "긴 배관의 마지막 베드까지 물이 도달했는지 판단하려면 말단 유량 확인이 필요하다. 한 시점의 정상 유량은 전체 관수 동안 안정적으로 유지됐다는 충분한 증거가 아니다.",
+      "concepts": [
+        "말단 유량 확인"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00023",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "설정량을 작물에 전달하려면 배관 누수 부재가 필요하지만 그것만으로 충분하지는 않다. 압력 조절기가 닫혀 있으면 새는 곳이 없어도 베드에는 물이 가지 않는다.",
+      "concepts": [
+        "배관 누수 부재"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00024",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호 정지 뒤 운전을 재개하려면 펌프 과열 경보 해제가 필요하다. 경보가 사라졌더라도 베어링 손상 원인이 남아 있다면 안전한 연속 운전의 충분조건으로 볼 수 없다.",
+      "concepts": [
+        "펌프 과열 경보 해제"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00025",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "삼상 펌프가 정방향으로 돌기 위해 모터 전원 상순 정상은 필요한 전기 조건이다. 상순이 맞아도 저전압이나 축 고착이 있으면 목표 회전수에는 이르지 못한다.",
+      "concepts": [
+        "모터 전원 상순 정상"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00026",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상정지 뒤 자동 관수를 허용하려면 비상정지 회로 복귀가 선행돼야 한다. 복귀 버튼을 눌렀다는 사실은 정지 원인이 해소됐음을 뜻하지 않으므로 재가동의 충분조건과 구별한다.",
+      "concepts": [
+        "비상정지 회로 복귀"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00027",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "약제 혼합실 문이 닫힌 뒤에만 주입기를 돌리는 설계에서는 문 개방 연동 해제가 필요하다. 연동이 풀려도 환기팬이 정지했다면 혼합 허가의 모든 조건이 충족된 것은 아니다.",
+      "concepts": [
+        "문 개방 연동 해제"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00028",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공급펌프의 공회전을 막으려면 수조 저수위 경보 해소가 필요하다. 경보점 위로 잠깐 오른 수위만으로 관수 주기 전체를 감당할 저장량이 충분하다고 단정하지 않는다.",
+      "concepts": [
+        "수조 저수위 경보 해소"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00029",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예정된 배합을 끝내려면 양액 원액 재고 확보가 필요한 자원 조건이다. 모든 통이 차 있어도 잘못된 원액이 연결돼 있으면 올바른 조성의 충분조건이 되지 않는다.",
+      "concepts": [
+        "양액 원액 재고 확보"
+      ],
+      "relations": [
+        "state",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00030",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동 배합기가 목표 비율을 적용하려면 혼합비 설정 승인이 필요하다. 승인된 설정이라도 유량계 편차가 크면 실제 투입비는 달라질 수 있어 결과 적합성까지 보장하지 않는다.",
+      "concepts": [
+        "혼합비 설정 승인"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00031",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "작업 동선과 전력 부하를 제한한 온실에서는 관수 허용 창 진입이 실행의 필요조건이다. 허용 시간이 됐어도 작물 수분이 충분하면 제어기는 급수를 시작하지 않을 수 있다.",
+      "concepts": [
+        "관수 허용 창 진입"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00032",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "야간 병해 위험을 줄이는 운용에서는 야간 습도 상한 미초과가 관수 허가의 필요조건으로 쓰인다. 상한 아래라는 이유만으로 뿌리 수분 부족까지 확인된 것은 아니다.",
+      "concepts": [
+        "야간 습도 상한 미초과"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00033",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "추가 급수로 뿌리 호흡을 해치지 않으려면 근권 산소 여유가 필요하다. 산소가 충분해도 배지가 이미 젖어 있으면 급수 필요성이 성립하지 않으므로 허가와 요구를 분리한다.",
+      "concepts": [
+        "근권 산소 여유"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00034",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐액 넘침 없이 관수하려면 배액 회수 용량이 예상 배액보다 커야 한다. 용량 여유는 안전 실행의 필요조건이지만 공급량과 염류 농도가 적절하다는 충분조건은 아니다.",
+      "concepts": [
+        "배액 회수 용량"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00035",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "염류 축적을 판정하려면 배액 전도도 측정 가능 상태가 필요하다. 측정기가 켜져 있어도 대표 배액이 채취되지 않았다면 세척 관수 결정에 충분한 자료가 아니다.",
+      "concepts": [
+        "배액 전도도 측정 가능"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00036",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "축적 염을 씻어내려면 세척 관수 배출 경로가 열려 있어야 한다. 배출로 확보만으로 세척량이 충분하거나 작물의 염 스트레스가 회복된다고 보지는 않는다.",
+      "concepts": [
+        "세척 관수 배출 경로"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00037",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관수와 난방이 전력 상한을 공유할 때는 환경제어 우선순위 허가가 있어야 관수 펌프를 켤 수 있다. 허가 획득은 실행 가능 조건이지 수분 부족의 증거가 아니다.",
+      "concepts": [
+        "환경제어 우선순위 허가"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00038",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대형 펌프 기동에 필요한 전력 피크 여유가 없으면 차단기가 떨어질 수 있다. 여유가 있다는 사실은 관수가 필요하다는 뜻이 아니라 실행을 가능하게 하는 필요 자원일 뿐이다.",
+      "concepts": [
+        "전력 피크 여유"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00039",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정전 중 관수를 계속하려면 예비 발전기 절체 완료가 필요하다. 절체됐더라도 연료량과 출력이 부족하면 전체 구역을 운전할 수 없어 단독으로 충분하지 않다.",
+      "concepts": [
+        "예비 발전기 절체 완료"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00040",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원격 제어 명령이 현장 제어기에 도달하려면 통신 링크 가용 상태가 필요하다. 연결 표시가 떠도 지연된 명령이나 잘못된 주소라면 올바른 밸브 동작의 충분조건이 아니다.",
+      "concepts": [
+        "통신 링크 가용"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00041",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "허가받은 원격 명령만 실행하려면 제어 명령 서명 검증을 통과해야 한다. 서명이 유효하더라도 명령 내용이 현재 작물 조건에 맞는지는 별도로 판단한다.",
+      "concepts": [
+        "제어 명령 서명 검증"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00042",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서 데이터 최신성은 현재 상태를 근거로 관수하기 위한 필요 속성이다. 최신 시각표가 붙어 있어도 센서가 고정값에 멈췄다면 신뢰할 수 있는 판단에 충분하지 않다.",
+      "concepts": [
+        "센서 데이터 최신성"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00043",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고장 허용 제어에서 이중 센서 합의는 급수 명령을 승인하는 한 조건이다. 두 센서가 같은 편향을 공유하면 값이 일치해도 실제 수분을 맞게 나타낸다는 충분조건은 아니다.",
+      "concepts": [
+        "이중 센서 합의"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00044",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "순간 잡음으로 밸브가 열리지 않게 하려면 측정값이 이상치 필터 통과 조건을 만족해야 한다. 필터를 지난 값도 장기 드리프트를 포함할 수 있으므로 정확성 전체가 보장되지는 않는다.",
+      "concepts": [
+        "이상치 필터 통과"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00045",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 번의 낮은 측정 대신 수분 하락 지속성을 확인하는 것은 일시 잡음을 배제하는 데 필요하다. 지속 하락만으로 누수와 작물 흡수를 구분할 수 없으므로 관수 원인 판정에는 추가 근거가 필요하다.",
+      "concepts": [
+        "수분 하락 지속성"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00046",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서 이동이나 배지 균열을 의심할 때 급격한 수분 변화 배제가 필요하다. 완만한 변화라는 사실은 자연 증산과 누수를 가르는 충분조건이 아니므로 유량 기록도 함께 본다.",
+      "concepts": [
+        "급격한 수분 변화 배제"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00047",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관수 요청 최소 지속시간은 짧은 문턱 통과가 펌프를 반복 기동하지 않게 하는 필요 제어 조건이다. 시간이 찼어도 안전 연동이 열려 있지 않으면 실행은 허용되지 않는다.",
+      "concepts": [
+        "관수 요청 최소 지속시간"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00048",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모터를 보호하려면 정지 뒤 재기동 대기시간 경과가 필요하다. 대기시간이 끝났다는 것은 열이 충분히 빠졌을 가능성을 높일 뿐, 과열 원인 해소의 충분한 판정은 아니다.",
+      "concepts": [
+        "재기동 대기시간 경과"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00049",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "명령한 유로가 실제로 열렸는지 확인하려면 밸브 위치 피드백 일치가 필요하다. 위치 신호가 맞더라도 밸브 내부 파손으로 유량이 없을 수 있어 공급 성공과 동일시하지 않는다.",
+      "concepts": [
+        "밸브 위치 피드백 일치"
+      ],
+      "relations": [
+        "comparison",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00050",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "설정 유량을 만들기 위해 펌프 회전수 도달은 필요한 동작 조건이다. 회전수가 맞아도 흡입측 공기 유입이 있으면 토출량이 부족하므로 충분조건으로 취급하지 않는다.",
+      "concepts": [
+        "펌프 회전수 도달"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00051",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "짧은 기동 구간을 제외하고 공급량을 평가하려면 관수 유량 안정화를 기다려야 한다. 유량이 안정됐어도 목표값보다 낮을 수 있으므로 안정성과 적정성을 같은 조건으로 보지 않는다.",
+      "concepts": [
+        "관수 유량 안정화"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00052",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "설정 유량 허용오차 진입은 정량 관수가 계획대로 진행되는지를 인정하는 필요 기준이다. 허용범위에 잠깐 들어온 것만으로 전체 주기의 누적 공급량이 충분하다고 할 수 없다.",
+      "concepts": [
+        "설정 유량 허용오차 진입"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00053",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정해진 관수 회차를 끝내려면 누적 급수량 목표 도달이 종료 조건으로 필요하다. 목표량을 채웠더라도 배수로 빠진 비율이 크면 뿌리가 흡수할 물까지 충분했다는 뜻은 아니다.",
+      "concepts": [
+        "누적 급수량 목표 도달"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00054",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "양분 손실을 제한하는 운용에서는 배액률 상한 준수가 필요하다. 상한 아래에 있다는 사실만으로 염류 세척과 산소 공급까지 적절하다고 판정할 수는 없다.",
+      "concepts": [
+        "배액률 상한 준수"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00055",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "염류가 쌓이지 않게 하는 세척 관수에는 배액률 하한 확보가 필요하다. 하한을 넘겼어도 투입 농도가 잘못됐다면 근권 염류 상태가 충분히 개선되지 않을 수 있다.",
+      "concepts": [
+        "배액률 하한 확보"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00056",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "목표량 이후 과잉 공급을 막으려면 관수 종료 밸브 폐쇄가 필요하다. 폐쇄 신호만 확인하고 실제 누설을 보지 않으면 종료가 충분히 이뤄졌다고 오판할 수 있다.",
+      "concepts": [
+        "관수 종료 밸브 폐쇄"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00057",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비를 시작하려면 배관의 잔압 배출 완료가 필요하다. 압력계가 영을 가리켜도 막힌 분기 안에 압력이 갇힐 수 있어 단일 계기값은 안전의 충분조건이 아니다.",
+      "concepts": [
+        "잔압 배출 완료"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00058",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "일반 관수로 돌아가기 전에 약제 주입 차단 확인이 필요하다. 차단 명령이 기록됐어도 밸브 누설이 있으면 잔류 약제가 섞일 수 있으므로 명령 기록만으로 충분하지 않다.",
+      "concepts": [
+        "약제 주입 차단 확인"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00059",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비료가 없는 세척수를 보내려면 세척수 전환 유로가 올바르게 선택돼야 한다. 유로 선택은 필요조건이지만 공유 배관의 잔류 양액 제거까지 자동으로 보장하지 않는다.",
+      "concepts": [
+        "세척수 전환 유로"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00060",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산과 알칼리 원액이 동시에 들어가지 않게 하려면 원액 밸브 상호배제가 필요하다. 상호배제 논리가 정상이어도 배선이 뒤바뀌면 실제 밸브 조합은 안전하지 않을 수 있다.",
+      "concepts": [
+        "원액 밸브 상호배제"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00061",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산 주입 허가 조건군은 높은 산도, 충분한 유량, 혼합기 운전을 함께 요구한다. 이 결합이 충족되면 주입 시작에는 충분할 수 있지만 목표 산도 유지까지 보장하는 조건은 아니다.",
+      "concepts": [
+        "산 주입 허가 조건군"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00062",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "낮은 산도를 올릴 때 알칼리 주입 허가 조건군이 모두 참이면 제어기는 투입을 시작할 수 있다. 다만 센서 편향이 있으면 논리적으로 충분한 허가가 실제 교정에는 부적절할 수 있다.",
+      "concepts": [
+        "알칼리 주입 허가 조건군"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00063",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "혼합기 운전과 대표 측정의 관계에서 교반은 균일한 표본을 얻기 위한 필요조건에 가깝다. 교반 중이라는 이유만으로 채취 위치와 센서 교정까지 충분하다고 보지 않는다.",
+      "concepts": [
+        "혼합기 운전과 대표 측정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00064",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "두 원액의 원액 유량비 동시 충족은 목표 조성을 만드는 결합 충분조건으로 설계할 수 있다. 그러나 공급수의 기존 이온 농도가 바뀌면 같은 비율만으로 최종 조성이 성립하지 않는다.",
+      "concepts": [
+        "원액 유량비 동시 충족"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00065",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정해진 배합표를 그대로 적용하려면 공급수 수질 전제가 허용범위 안에 있어야 한다. 전제가 무너지면 원액 비율이 정확해도 목표 양액이 되지 않으므로 배합표의 조건 범위를 명시한다.",
+      "concepts": [
+        "공급수 수질 전제"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00066",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고농도 원액이 석출되지 않으려면 온도별 용해도 여유가 필요하다. 여유가 있다는 것은 용해 가능성을 뜻할 뿐, 실제로 교반과 용해 시간이 충분했다는 증거는 아니다.",
+      "concepts": [
+        "온도별 용해도 여유"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00067",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "투명 배관에서 침전 감지 부재는 막힘 위험이 낮다는 조건으로 쓰이지만 완전한 충분조건은 아니다. 미세 결정이 센서 검출한계 아래에 있거나 불투명 구간에 남을 수 있다.",
+      "concepts": [
+        "침전 감지 부재"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00068",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서로 반응하는 원액을 함께 쓰지 않으려면 비료 상용성 확인이 필요하다. 상용성이 확인됐더라도 농도와 혼합 순서가 틀리면 침전이 생길 수 있어 안전한 배합을 전부 보장하지 않는다.",
+      "concepts": [
+        "비료 상용성 확인"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00069",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "농축액의 국소 반응을 피하려면 혼합 순서 준수가 필요하다. 순서를 지킨 사실만으로 희석수 양과 교반 속도까지 적절했다는 충분한 판정은 아니다.",
+      "concepts": [
+        "혼합 순서 준수"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00070",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고농도 원액이 탱크 바닥에서 반응하지 않게 하는 절차에서는 희석수 선투입이 필요하다. 물을 먼저 넣었어도 양이 너무 적으면 안전한 희석의 충분조건이 되지 못한다.",
+      "concepts": [
+        "희석수 선투입"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00071",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "반응성 원액을 분리하려면 원액별 독립 주입선이 필요한 구조 조건이다. 주입선이 나뉘어도 합류 지점의 혼합이 나쁘면 국소 침전은 여전히 생길 수 있다.",
+      "concepts": [
+        "원액별 독립 주입선"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00072",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "희석된 원액을 빠르게 섞기 위해 합류부 난류 확보가 필요하다. 난류가 강하다는 사실은 투입량 비율이 옳다는 충분조건과 별개의 문제다.",
+      "concepts": [
+        "합류부 난류 확보"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00073",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "최종 농도를 확인하려면 배합 완료 표본 채취가 필요하다. 한 지점 표본이 기준을 만족해도 탱크 전체가 균일하다는 충분한 근거는 아니어서 여러 깊이를 비교한다.",
+      "concepts": [
+        "배합 완료 표본 채취"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00074",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "탱크 위아래의 다지점 농도 일치가 허용오차 안에 들면 균일 혼합을 인정하는 강한 조건이 된다. 그래도 센서들이 같은 교정 오류를 공유하면 실제 농도 적합성까지 충분히 증명하지 못한다.",
+      "concepts": [
+        "다지점 농도 일치"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00075",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이전 배합의 잔류액을 제거하려면 관수 전 배관 치환이 필요하다. 치환 시간을 채웠다는 사실만으로 모든 사각 분기의 잔류물이 없어졌다고 단정하지 않는다.",
+      "concepts": [
+        "관수 전 배관 치환"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00076",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고농도 잔류액이 작물에 닿지 않게 하려면 첫 배출액 분리가 필요하다. 초기 배출을 버렸어도 치환 유량이 낮다면 배관 전체 세척의 충분조건이 아니다.",
+      "concepts": [
+        "첫 배출액 분리"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00077",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "최소한의 세척을 위해 배관 체적 이상 치환량을 확보해야 한다. 한 체적을 흘렸다는 조건은 필요 기준이지만 혼합 확산 때문에 잔류 농도가 목표 아래라는 충분조건은 아닐 수 있다.",
+      "concepts": [
+        "배관 체적 이상 치환량"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00078",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배출수 농도가 정한 수준 아래인지 보는 치환수 농도 하한 판정은 세척 종료에 필요하다. 표본 채취 간격이 길면 순간 재상승을 놓칠 수 있어 단 한 번의 통과로 충분하지 않다.",
+      "concepts": [
+        "치환수 농도 하한 판정"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00079",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수분 부족, 압력 준비, 안전 허가를 모두 요구하는 관수 개시 조건의 논리곱은 세 입력이 참일 때 실행에 충분하도록 설계된다. 어느 하나만 참인 경우에는 필요조건 일부만 충족한 것이다.",
+      "concepts": [
+        "관수 개시 조건의 논리곱"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00080",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주 센서가 고장 나도 무게계가 유효하면 판단할 수 있게 한 대체 수분 센서 경로는 두 필요조건을 선택지로 바꾼다. 특정 센서 하나를 전체 시스템의 절대 필요조건으로 오해하면 안 된다.",
+      "concepts": [
+        "대체 수분 센서 경로"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00081",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수분 또는 일사 촉발 규칙에서는 두 신호 중 하나가 문턱을 넘으면 관수 검토가 시작된다. 각 신호는 개별적으로 충분한 촉발조건일 수 있지만 실제 급수에는 안전 연동이 추가로 필요하다.",
+      "concepts": [
+        "수분 또는 일사 촉발"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00082",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "급수 필요와 급수 가능의 결합은 작물 요구 신호와 설비 허가가 함께 있어야 실행된다는 구조다. 필요만 확인하거나 가능만 확보한 경우는 각각 충분하지 않다.",
+      "concepts": [
+        "급수 필요와 급수 가능의 결합"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00083",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수분 부족 신호의 비충분성은 낮은 센서값이 곧바로 급수 명령을 뜻하지 않는 데서 드러난다. 센서 이상과 침수 보호 상태를 배제해야 실행 조건이 완성된다.",
+      "concepts": [
+        "수분 부족 신호의 비충분성"
+      ],
+      "relations": [
+        "attribute",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-CDH-00084",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "설비 준비 신호의 비충분성은 펌프와 밸브가 쓸 수 있어도 작물이 물을 요구하지 않을 수 있다는 뜻이다. 실행 가능 조건을 관수 필요의 증거로 뒤집지 않는다.",
+      "concepts": [
+        "설비 준비 신호의 비충분성"
+      ],
+      "relations": [
+        "state",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00085",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "복합 허가의 충분 범위는 센서 유효, 수분 하한, 수조 여유, 안전회로 정상이라는 전제를 모두 포함한 운전 모드 안에서만 성립한다. 모드 밖에서는 같은 논리곱을 재사용하지 않는다.",
+      "concepts": [
+        "복합 허가의 충분 범위"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00086",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충분조건의 전제 누락은 ‘수분이 낮으면 관수한다’는 규칙에서 자동모드와 안전 허가를 생략할 때 발생한다. 숨은 전제를 복원해야 조건문의 적용 범위를 올바르게 읽을 수 있다.",
+      "concepts": [
+        "충분조건의 전제 누락"
+      ],
+      "relations": [
+        "boundary",
+        "classification",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-CDH-00087",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "필요조건의 역추론 오류는 관수가 실행됐다는 사실만으로 특정 센서가 하한을 넘었다고 단정할 때 생긴다. 수동 명령이나 대체 센서 경로가 있으면 그 센서는 절대 필요하지 않다.",
+      "concepts": [
+        "필요조건의 역추론 오류"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-CDH-00088",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충분조건의 역명제 혼동은 복합 허가가 있으면 펌프가 켜진다는 규칙을 펌프가 켜졌으면 복합 허가가 있었다고 바꾸는 오류다. 시험 운전과 수동 우회가 반례가 된다.",
+      "concepts": [
+        "충분조건의 역명제 혼동"
+      ],
+      "relations": [
+        "boundary",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-CDH-00089",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "조건 부정의 범위는 ‘수분 부족과 안전 허가’가 아닌 경우를 두 조건이 모두 거짓인 경우로만 읽지 않게 한다. 하나라도 빠지면 결합 실행조건은 성립하지 않는다.",
+      "concepts": [
+        "조건 부정의 범위"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00090",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "논리합 조건의 배제 오독은 일사 또는 시간 조건 중 하나만 충족해도 되는 규칙을 둘 다 필요하다고 해석할 때 나타난다. 선택 경로와 공동 필수조건을 구분한다.",
+      "concepts": [
+        "논리합 조건의 배제 오독"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00091",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "조건 우선순위와 진리값을 명확히 하지 않으면 수분 부족 또는 고온과 안전 허가의 결합 범위가 달라진다. 괄호 구조를 확인해야 어떤 조합이 충분한지 판정할 수 있다.",
+      "concepts": [
+        "조건 우선순위와 진리값"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00092",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사람이 혼합실에 들어간 동안에는 다른 조건이 모두 맞아도 주입을 막으므로 안전 연동의 필수성이 성립한다. 생산 목표가 급하다는 사정은 이 필요조건을 충분히 대체하지 못한다.",
+      "concepts": [
+        "안전 연동의 필수성"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00093",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수동 우회의 조건부 허용은 정비 권한, 현장 확인, 제한 시간이라는 추가 전제가 갖춰진 경우에만 자동 연동을 대신한다. 우회 스위치 존재 자체는 실행의 충분조건이 아니다.",
+      "concepts": [
+        "수동 우회의 조건부 허용"
+      ],
+      "relations": [
+        "classification",
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00094",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비 모드의 적용 경계 안에서는 일부 센서 조건을 생략할 수 있지만 작업자 확인과 저속 운전은 계속 필요하다. 이 예외를 정상 생산 모드의 일반 규칙으로 확대하지 않는다.",
+      "concepts": [
+        "정비 모드의 적용 경계"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00095",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고온 피해가 임박한 때 쓰는 비상 관수 예외 경로는 수분 센서 대신 잎 온도와 관리자 승인을 요구한다. 기존 조건 하나를 없앤 것이 아니라 다른 충분조건 묶음으로 교체한 것이다.",
+      "concepts": [
+        "비상 관수 예외 경로"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00096",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "병해 격리 구역 제외가 활성화되면 공통 관수 시간이 돼도 해당 밸브는 열리지 않는다. 시간 조건은 일반 구역에서만 충분할 수 있고 격리 상태에서는 적용되지 않는다.",
+      "concepts": [
+        "병해 격리 구역 제외"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00097",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "새 묘 정착기 예외에서는 성목용 수분 하한보다 높은 값에서도 짧게 관수할 수 있다. 성장 단계가 달라지면 기존 하한이 필요한 촉발조건이라는 해석도 함께 바뀐다.",
+      "concepts": [
+        "새 묘 정착기 예외"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00098",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "품질 조절을 위한 수확 전 건조기 규칙은 평소 관수 필요조건이 충족돼도 일정 범위에서 급수를 미룬다. 목적과 기간을 벗어나 이 예외를 적용하면 스트레스 위험이 커진다.",
+      "concepts": [
+        "수확 전 건조기 규칙"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00099",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전원이 돌아왔다는 사실은 관수 재개의 필요조건이지만 정전 복구 직후 억제가 끝나기 전에는 충분하지 않다. 센서 재초기화와 밸브 위치 확인이 먼저 완료돼야 한다.",
+      "concepts": [
+        "정전 복구 직후 억제"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00100",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정전 뒤 자동 판단을 되살리려면 센서 재초기화 완료가 필요하다. 초기화 성공 메시지만으로 측정값의 물리적 타당성까지 충분히 확인되지는 않으므로 기준 시료를 다시 본다.",
+      "concepts": [
+        "센서 재초기화 완료"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00101",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제어기가 개폐 명령을 정확히 계산하려면 밸브 기준위치 복원이 필요하다. 원점 신호가 잡혀도 기계적 유격이 크면 실제 유로 상태를 충분히 나타내지 못한다.",
+      "concepts": [
+        "밸브 기준위치 복원"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00102",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "압력 충격으로 생긴 손상을 배제하려면 복구 후 누수 점검이 선행돼야 한다. 눈에 띄는 누수가 없더라도 지중 배관의 미세 손상까지 없다는 충분한 증거는 아니다.",
+      "concepts": [
+        "복구 후 누수 점검"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00103",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "강풍 중 분무 관수를 하면 비산이 커지므로 환기창 폐쇄 확인을 실행 조건으로 둔다. 창이 닫혔다고 해서 온도와 습도가 분무에 적합하다는 충분조건까지 성립하지는 않는다.",
+      "concepts": [
+        "환기창 폐쇄 확인"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00104",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "미세 안개를 만들려면 분무 압력과 노즐 온도의 결합이 각 허용범위에 들어야 한다. 압력만 높거나 온도만 맞는 경우에는 목표 입경을 만들기에 충분하지 않다.",
+      "concepts": [
+        "분무 압력과 노즐 온도의 결합"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00105",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "잎을 과도하게 젖히지 않으면서 증발 냉각하려면 분무 입경 허용범위가 필요하다. 입경이 맞아도 공기 포화도가 높으면 냉각 효과가 충분히 나오지 않는다.",
+      "concepts": [
+        "분무 입경 허용범위"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00106",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분무수가 기화하려면 현재 습도에서 공기 포화 여유가 있어야 한다. 여유가 크다는 사실은 노즐이 정상이고 물이 공급된다는 조건을 대신하지 못한다.",
+      "concepts": [
+        "공기 포화 여유"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00107",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "병원균 발아 위험을 키우지 않으려면 잎 젖음 상한 미도달이 분무 허가에 필요하다. 상한 아래여도 야간에 곧 이슬점에 닿을 전망이면 즉시 분무가 충분히 안전하지 않다.",
+      "concepts": [
+        "잎 젖음 상한 미도달"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00108",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉각 요구와 건조 여유가 함께 있을 때 분무를 허용하는 규칙은 고온과 낮은 상대습도를 결합한다. 어느 한 조건만으로는 냉각 필요와 증발 가능을 동시에 충족하지 못한다.",
+      "concepts": [
+        "냉각 요구와 건조 여유"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00109",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차광막 전개 허가는 일사 상한, 풍속 안전범위, 구동기 준비가 모두 맞을 때 충분해진다. 일사만 높다는 이유로 강풍 속에서 막을 펼치면 안 된다.",
+      "concepts": [
+        "차광막 전개 허가"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00110",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정확한 전개율을 계산하려면 차광 구동기 원점이 필요하다. 원점 확인은 위치 제어의 전제지만 천이 찢어지지 않았다는 충분조건은 아니다.",
+      "concepts": [
+        "차광 구동기 원점"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00111",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "막과 환기창을 움직이려면 외부 풍속 안전범위가 필요한 보호조건이다. 풍속이 낮아도 적설 하중이 크면 구동이 위험할 수 있어 단독 허가로 쓰지 않는다.",
+      "concepts": [
+        "외부 풍속 안전범위"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00112",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지붕 차광막을 접거나 펼치려면 적설 하중 해소가 먼저 필요하다. 눈이 보이지 않더라도 결빙으로 레일이 고착됐을 수 있으므로 외관만으로 충분히 판단하지 않는다.",
+      "concepts": [
+        "적설 하중 해소"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00113",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "실내 온도나 습도가 상한을 넘으면 환기 요구 발생 조건이 성립한다. 요구가 생겨도 외부 공기가 더 덥거나 폭우가 들이치면 창 개방은 충분히 적절한 대응이 아니다.",
+      "concepts": [
+        "환기 요구 발생"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00114",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자연환기로 열을 빼려면 외기 엔탈피 우위가 있어 실외 공기가 실내보다 냉각에 유리해야 한다. 이 조건만으로 풍향과 강우 안전까지 보장되지는 않는다.",
+      "concepts": [
+        "외기 엔탈피 우위"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00115",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "맞통풍을 만들려면 풍상측 창 개방 가능 상태가 필요한 한 축이다. 풍상측만 열고 반대편 출구가 닫혀 있으면 충분한 공기 교환은 생기지 않는다.",
+      "concepts": [
+        "풍상측 창 개방 가능"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00116",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유입 공기가 빠져나가려면 풍하측 배출구 확보가 필요하다. 배출구만 넓어도 유입 경로와 압력차가 없으면 목표 환기량의 충분조건이 되지 못한다.",
+      "concepts": [
+        "풍하측 배출구 확보"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00117",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "풍상측 유입구와 풍하측 배출구가 함께 열려 맞통풍 경로 완성이 되면 자연환기 실행에는 충분한 구조가 된다. 무풍 상태에서는 경로만으로 실제 교환량을 보장할 수 없다.",
+      "concepts": [
+        "맞통풍 경로 완성"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00118",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "빗물이 작물과 전기설비에 닿지 않게 하려면 강우 유입 방지 조건을 충족해야 한다. 빗물 감지가 없다는 신호만으로 국지성 비가 없다고 충분히 확인되지는 않는다.",
+      "concepts": [
+        "강우 유입 방지 조건"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00119",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "강우와 풍속에 따라 측창 개방 한도를 낮추는 것은 전면 폐쇄 없이 환기를 유지하기 위한 조건부 제약이다. 한도 준수가 작물 온도 적합성의 충분조건은 아니다.",
+      "concepts": [
+        "측창 개방 한도"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00120",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기계환기팬이 공기를 끌어오려면 환기팬 흡입구 개방이 필요하다. 흡입구가 열려도 필터가 막히거나 팬이 역회전하면 설계 유량에 충분하지 않다.",
+      "concepts": [
+        "환기팬 흡입구 개방"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00121",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배기 흐름을 만들기 위해 팬 회전방향 정상은 필요한 동작 조건이다. 방향이 맞아도 벨트 미끄럼으로 속도가 낮으면 목표 환기량은 확보되지 않는다.",
+      "concepts": [
+        "팬 회전방향 정상"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00122",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "온실 압력을 허용범위에 두려면 흡배기 균형 조건이 필요하다. 총 유량이 같더라도 개구 위치가 치우치면 작물대 전체의 균일 환기에는 충분하지 않다.",
+      "concepts": [
+        "흡배기 균형 조건"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00123",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환기창을 크게 열기 전에 이산화탄소 공급 중지가 필요해 불필요한 방출을 막는다. 공급을 멈춘 사실은 환기 요구가 실제로 있다는 충분조건과는 다르다.",
+      "concepts": [
+        "이산화탄소 공급 중지"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00124",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이산화탄소 주입 허가는 창 폐쇄, 광합성 가능한 조도, 작업자 부재가 함께 성립할 때 충분하도록 구성된다. 농도 하한 하나만으로 주입을 시작하지 않는다.",
+      "concepts": [
+        "이산화탄소 주입 허가"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00125",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "작물이 이산화탄소를 활용하려면 광합성 조도 하한 이상이 필요하다. 조도가 높아도 기공이 닫힐 만큼 수분 스트레스가 크면 주입 효과의 충분조건은 아니다.",
+      "concepts": [
+        "광합성 조도 하한"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00126",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고농도 가스 주입 전에 작업자 부재 확인이 필요한 안전조건이다. 출입 기록상 사람이 없어도 문이 열린 채라면 설정 농도를 유지하기에는 충분하지 않다.",
+      "concepts": [
+        "작업자 부재 확인"
+      ],
+      "relations": [
+        "state",
+        "role",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00127",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "목표 이산화탄소 농도를 경제적으로 유지하려면 주입 공간 밀폐도가 필요하다. 밀폐도가 높다는 사실만으로 가스 혼합과 센서 위치까지 적절하다고 할 수 없다.",
+      "concepts": [
+        "주입 공간 밀폐도"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00128",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "작업 안전과 균일 혼합을 위해 농도 상승률 제한을 지켜야 한다. 상승률이 완만해도 최종 농도가 상한을 넘으면 안전의 충분조건은 성립하지 않는다.",
+      "concepts": [
+        "농도 상승률 제한"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00129",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "측정 농도가 안전 상한을 넘으면 이산화탄소 상한 차단이 주입 종료에 충분한 보호 신호로 작동한다. 다만 센서 고장 시에는 독립 경보기 조건도 필요하다.",
+      "concepts": [
+        "이산화탄소 상한 차단"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00130",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주 제어 센서의 오류를 감시하려면 독립 가스경보기 정상이 필요하다. 자체진단 통과만으로 실제 표준가스 응답까지 충분하다고 보지 않아 기능 시험을 따로 한다.",
+      "concepts": [
+        "독립 가스경보기 정상"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00131",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "실내 온도가 난방 요구 문턱 아래로 내려가면 가열 검토의 필요 신호가 생긴다. 문턱 통과만으로 보일러 점화를 허가하지 않고 연료와 순환수 조건을 함께 확인한다.",
+      "concepts": [
+        "난방 요구 문턱"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00132",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보일러 열을 배관으로 옮기려면 순환수 유량 확보가 필요하다. 유량이 있어도 수온이 낮거나 우회밸브가 열려 있으면 난방 효과에는 충분하지 않다.",
+      "concepts": [
+        "순환수 유량 확보"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00133",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "안정된 연소를 위해 연료 압력 허용범위가 필요하다. 압력이 맞더라도 점화 전 환기와 화염 감시가 없으면 안전 점화의 충분조건이 아니다.",
+      "concepts": [
+        "연료 압력 허용범위"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00134",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "남은 가스를 배출하려면 점화 전에 연소실 사전 환기를 완료해야 한다. 정해진 시간만 지났어도 팬 유량이 부족했다면 안전 상태가 충분히 만들어지지 않는다.",
+      "concepts": [
+        "연소실 사전 환기"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00135",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연료 밸브를 계속 열어 두려면 화염 감지 신뢰성이 필요하다. 신호가 참이어도 검출기가 빛 간섭을 받으면 실제 연소의 충분조건으로 사용할 수 없다.",
+      "concepts": [
+        "화염 감지 신뢰성"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00136",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사전 환기, 연료 압력, 점화 스파크, 화염 확인을 포함한 점화 성공 조건 묶음은 정상 기동에 충분하도록 설계된다. 구성 요소 하나의 통과를 전체 성공으로 확대하지 않는다.",
+      "concepts": [
+        "점화 성공 조건 묶음"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00137",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "온수가 공급됐다는 사실은 난방이 작동하기 위한 필요조건이지만 온수 공급과 실내 상승의 간극에는 외피 손실과 배관 균형이 개입한다. 공급만으로 목표 온도 도달이 충분히 보장되지 않는다.",
+      "concepts": [
+        "온수 공급과 실내 상승의 간극"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00138",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "난방출력이 외피 열손실보다 커야 온도를 올릴 수 있으므로 열손실 이하 난방출력은 상승에 충분하지 않다. 순환이 정상이어도 출력 조건이 빠지면 실내는 계속 식는다.",
+      "concepts": [
+        "열손실 이하 난방출력"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00139",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보온커튼 폐쇄 효과의 조건에는 커튼 연속성, 틈새 감소, 야간 복사손실이 포함된다. 단순히 폐쇄 명령이 내려갔다는 사실은 열손실 저감의 충분한 증거가 아니다.",
+      "concepts": [
+        "보온커튼 폐쇄 효과의 조건"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00140",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보온커튼을 오래 닫으려면 커튼 결로 안전여유가 필요하다. 표면온도가 이슬점보다 높아도 국소 냉교가 있으면 전체 면의 무결한 안전조건은 되지 못한다.",
+      "concepts": [
+        "커튼 결로 안전여유"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00141",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "습도를 낮추려면 난방 뒤 환기를 조합할 수 있는데 난방과 환기의 상호조건은 외기 수분량과 열 여유가 함께 맞아야 한다. 한 장치만 켜서는 목표 상태에 충분하지 않을 수 있다.",
+      "concepts": [
+        "난방과 환기의 상호조건"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00142",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "실내 이슬점이 표면온도에 가까울 때 제습 요구의 이슬점 조건이 성립한다. 상대습도 수치 하나가 낮아도 차가운 모서리에서는 결로할 수 있어 평균값만으로 충분하지 않다.",
+      "concepts": [
+        "제습 요구의 이슬점 조건"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00143",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환기로 수분을 빼려면 외기 절대습도 우위가 있어 실외 공기가 더 건조해야 한다. 상대습도가 낮다는 조건만으로 온도가 다른 두 공기의 수분량 우위를 충분히 판정할 수 없다.",
+      "concepts": [
+        "외기 절대습도 우위"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00144",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제습기를 연속 운전하려면 제습기 응축수 배출이 필요하다. 배수펌프가 도는 것만으로 호스 막힘과 역류가 없다는 충분조건은 아니므로 수위 추세를 확인한다.",
+      "concepts": [
+        "제습기 응축수 배출"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00145",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공기 흐름과 열교환을 회복하려면 제습기 증발기 성에 해소가 필요하다. 성에가 녹아도 필터가 막혀 있으면 제습량 정상화에는 충분하지 않다.",
+      "concepts": [
+        "제습기 증발기 성에 해소"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00146",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "잎 젖음 병해 경보와 관수 억제의 연결은 경보가 유효하고 야간 분무가 위험한 경우에만 필요하다. 토양이 심하게 마른 비상 상황까지 무조건 억제하는 충분조건으로 쓰지 않는다.",
+      "concepts": [
+        "병해 경보와 관수 억제"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00147",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고온 비상과 안전조건 유지가 함께 요구된다는 것은 피해 위험이 커도 탱크 수위와 전기 보호를 생략할 수 없다는 뜻이다. 긴급성은 필수 안전조건의 대체물이 아니다.",
+      "concepts": [
+        "고온 비상과 안전조건 유지"
+      ],
+      "relations": [
+        "contrast",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00148",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예약과 센서 규칙으로 관수하려면 자동모드 선택 상태가 필요하다. 자동모드라는 표시만으로 모든 입력이 유효하거나 출력 장치가 준비됐다는 충분조건은 아니다.",
+      "concepts": [
+        "자동모드 선택 상태"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00149",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분산 제어기가 같은 판단을 하려면 제어 규칙 버전 일치가 필요하다. 버전 번호가 같아도 설정값이 현장별로 달라졌다면 동등한 동작의 충분조건이 되지 않는다.",
+      "concepts": [
+        "제어 규칙 버전 일치"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-00150",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사후에 왜 관수가 실행됐는지 검증하려면 조건 판정 로그 완전성이 필요하다. 로그가 모두 남았더라도 센서 자체의 진실성을 보장하지는 않으므로 기록과 실제 상태를 구별한다.",
+      "concepts": [
+        "조건 판정 로그 완전성"
+      ],
+      "relations": [
+        "attribute",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    }
+  ]
+}

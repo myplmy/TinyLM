@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v73",
+  "version": "73",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-10801 ~ S2-CDH-10950",
+  "concept_family": "S2-A02-T073: 도로 터널 배수·교통 통제 — 연쇄 실패에서 최초 의존 고리 식별",
+  "design_note": "도로 터널 배수·교통 통제 영역의 연쇄 실패에서 최초 의존 고리 식별 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-10801",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "터널 저점에서 여러 경보가 이어졌다면 집수정 수위상승과 침수경보의 시각을 먼저 맞춘다. 경보 장치보다 배수량을 넘긴 유입이 앞선 고리인지 확인해야 한다.",
+      "concepts": [
+        "집수정 수위상승과 침수경보"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10802",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유입수 감지와 배수펌프 기동은 센서에서 구동으로 이어지는 의존 사슬이다. 펌프가 늦었다면 먼저 감지 신호가 제때 생성됐는지 조사한다.",
+      "concepts": [
+        "유입수 감지와 배수펌프 기동"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10803",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "집수정이 차오르는데 펌프가 멈춰 있으면 수위센서 고착과 자동기동 누락을 연결한다. 제어반보다 변화하지 않은 센서값이 최초 고리일 수 있다.",
+      "concepts": [
+        "수위센서 고착과 자동기동 누락"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10804",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "강우 초기에 배수량이 급감했다면 부유물 걸림과 유입구 막힘의 순서를 본다. 후단 펌프 이상으로 단정하기 전에 격자 앞 흐름이 먼저 끊겼는지 확인한다.",
+      "concepts": [
+        "부유물 걸림과 유입구 막힘"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10805",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "노면 물이 남지만 집수정 수위는 낮을 때 측구 퇴적과 집수정 유입감소를 살핀다. 배수펌프 정상 상태와 달리 측구의 최초 차단이 상류 원인이다.",
+      "concepts": [
+        "측구 퇴적과 집수정 유입감소"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10806",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보수 구간 뒤 탁도가 먼저 높아졌다면 배수로 균열과 토사유입을 연결한다. 펌프 마모는 토사가 들어온 뒤 생긴 하류 결과일 수 있다.",
+      "concepts": [
+        "배수로 균열과 토사유입"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10807",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "출구 쪽 차로에만 물이 고이면 우수받이 역류와 차로 물고임의 선후를 확인한다. 교통 정체보다 관외 수두 상승이 먼저였는지 본다.",
+      "concepts": [
+        "우수받이 역류와 차로 물고임"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10808",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장 수심과 관제 표시가 다르면 수위표 오차와 경보단계 오판을 연결한다. 잘못된 단계는 운영자 판단보다 입력값 편차에 의존할 수 있다.",
+      "concepts": [
+        "수위표 오차와 경보단계 오판"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10809",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관제에서 물고임을 늦게 알아챘다면 침수카메라 가림과 현장확인 지연을 조사한다. 순찰 출동 지연보다 영상 시야가 먼저 사라졌는지 확인한다.",
+      "concepts": [
+        "침수카메라 가림과 현장확인 지연"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10810",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "호우 예보가 있었는데 사전 배수가 없었다면 강우계 통신상실과 선제배수 누락의 의존 순서를 본다. 현장 펌프보다 경보 입력 전달이 최초로 끊겼을 수 있다.",
+      "concepts": [
+        "강우계 통신상실과 선제배수 누락"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10811",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "노면 잔해가 배수구에 몰렸다면 배수구 덮개 이탈과 관로 유입제한을 연결한다. 집수정 용량 부족은 실제 유입이 막힌 상황의 최초 원인이 아니다.",
+      "concepts": [
+        "배수구 덮개 이탈과 관로 유입제한"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10812",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "벽체 누수가 급증했을 때 관로 압력상승과 이음부 누수의 시작점을 비교한다. 균열 보수 전에 역류로 압력이 먼저 올랐는지 확인해야 한다.",
+      "concepts": [
+        "관로 압력상승과 이음부 누수"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10813",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한파 뒤 저점 침수가 시작되면 배수관 동결과 저점 침수를 연결한다. 펌프 기동 기록이 정상이어도 토출 경로의 최초 폐색이 연쇄를 시작할 수 있다.",
+      "concepts": [
+        "배수관 동결과 저점 침수"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10814",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "침사지 청소가 밀린 뒤 유량이 떨어졌다면 침사지 포화와 펌프흡입 저하의 순서를 본다. 모터 전류 변화는 흡입 조건 악화의 뒤쪽 징후일 수 있다.",
+      "concepts": [
+        "침사지 포화와 펌프흡입 저하"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10815",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비 뒤 반복 막힘이 생기면 집수정 덮개 개방과 이물낙하를 먼저 연결한다. 이후 임펠러 정지는 유입된 이물이 만든 결과인지 확인한다.",
+      "concepts": [
+        "집수정 덮개 개방과 이물낙하"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10816",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주배수펌프 정지와 예비펌프 과부하가 연속됐다면 최초 정지 시각을 찾는다. 예비기의 과열은 증가한 분담 부하에 의존하는 후속 결과다.",
+      "concepts": [
+        "주배수펌프 정지와 예비펌프 과부하"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10817",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모터는 돌지만 유량이 없을 때 흡입밸브 폐쇄와 펌프공회전을 연결한다. 모터 고장보다 닫힌 흡입 경로가 먼저였는지 확인한다.",
+      "concepts": [
+        "흡입밸브 폐쇄와 펌프공회전"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10818",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정지한 펌프 쪽으로 물이 되돌아오면 체크밸브 고착과 토출역류의 선후를 본다. 집수정 재상승은 역류 이후의 상태이지 별도 유입 원인으로 세지 않는다.",
+      "concepts": [
+        "체크밸브 고착과 토출역류"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10819",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "회전수는 정상인데 토출량이 줄면 임펠러 손상과 배수량 감소를 연결한다. 수위상승 경보보다 펌프 내부 성능 저하가 앞선 고리인지 조사한다.",
+      "concepts": [
+        "임펠러 손상과 배수량 감소"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10820",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "펌프실에서 누수와 진동이 이어졌다면 축봉 누수와 베어링 정지의 기록을 맞춘다. 차단기 동작보다 물 유입으로 윤활이 깨진 시점이 먼저일 수 있다.",
+      "concepts": [
+        "축봉 누수와 베어링 정지"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10821",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모터 과열과 열동계전기 차단은 보호동작의 앞뒤를 구분해야 한다. 차단을 최초 고장으로 보지 말고 냉각 불량이나 과부하가 먼저였는지 본다.",
+      "concepts": [
+        "모터 과열과 열동계전기 차단"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10822",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 펌프가 함께 멈췄다면 펌프반 침수와 다중회로 정지를 우선 연결한다. 개별 모터보다 공통 제어반에 물이 들어온 시각을 최초 고리로 조사한다.",
+      "concepts": [
+        "펌프반 침수와 다중회로 정지"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10823",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수위가 낮아져도 펌프가 계속 돌면 기동접촉기 용착과 정지명령 불응을 연결한다. 제어 논리보다 접점이 붙은 물리 상태가 앞선 원인일 수 있다.",
+      "concepts": [
+        "기동접촉기 용착과 정지명령 불응"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10824",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주펌프 고장 뒤 예비기도 움직이지 않으면 예비펌프 시험누락과 비상기동 실패의 시간 순서를 본다. 사고 당일 고장만 보지 말고 이전 검증 공백을 최초 관리 고리로 확인한다.",
+      "concepts": [
+        "예비펌프 시험누락과 비상기동 실패"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10825",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 대만 반복 기동했다면 펌프 교번설정 오류와 편중마모를 연결한다. 마모가 만든 고장보다 잘못된 운전 순서가 더 앞선 의존 고리다.",
+      "concepts": [
+        "펌프 교번설정 오류와 편중마모"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10826",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "실제 유량은 충분한데 장애 판정이 나면 토출압 센서불량과 저유량 오진을 구분한다. 펌프 교체 전에 압력 입력이 먼저 틀어졌는지 확인한다.",
+      "concepts": [
+        "토출압 센서불량과 저유량 오진"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10827",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관제 명령이 모두 먹지 않을 때 수동운전 고정과 원격제어 상실을 연결한다. 통신 장애보다 현장 선택스위치 전환이 먼저였는지 조사한다.",
+      "concepts": [
+        "수동운전 고정과 원격제어 상실"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10828",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배수 중 펌프실 수위가 더 빨리 오르면 토출관 파열과 펌프실 재유입을 본다. 외부 강우 증가와 달리 토출수가 내부로 되돌아온 시점이 최초 고리일 수 있다.",
+      "concepts": [
+        "토출관 파열과 펌프실 재유입"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10829",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비 직후 진동이 커졌다면 펌프기초 침하와 축정렬 이탈의 선후를 확인한다. 베어링 손상은 정렬 이탈에 의존한 후속 고장일 수 있다.",
+      "concepts": [
+        "펌프기초 침하와 축정렬 이탈"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10830",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "침수 뒤 설비 증설 판단이 늦어졌다면 배수량 기록누락과 용량판정 지연을 연결한다. 결과 보고서보다 계측 자료가 처음 비어 버린 지점을 찾는다.",
+      "concepts": [
+        "배수량 기록누락과 용량판정 지연"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10831",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "호우 중 전체 펌프가 동시에 멈추면 상용전원 상실과 배수계통 정지를 우선 연결한다. 개별 펌프 고장보다 수전반 차단 시각이 앞선다.",
+      "concepts": [
+        "상용전원 상실과 배수계통 정지"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10832",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정전 뒤 수위가 급상승하면 비상발전기 기동실패와 침수확대를 연결한다. 침수 경보는 발전기 승계 실패에 의존한 뒤쪽 현상일 수 있다.",
+      "concepts": [
+        "비상발전기 기동실패와 침수확대"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10833",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시동모터는 도는데 발전이 없을 때 연료밸브 폐쇄와 발전기 무기동을 본다. 배터리보다 연료 공급 차단이 최초 고리인지 확인한다.",
+      "concepts": [
+        "연료밸브 폐쇄와 발전기 무기동"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10834",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정전 직후 발전기 투입이 늦었다면 시동배터리 저전압과 비상전원 지연의 순서를 확인한다. 후단 절체반보다 시동 에너지가 먼저 부족했는지 본다.",
+      "concepts": [
+        "시동배터리 저전압과 비상전원 지연"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10835",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "발전기는 정상인데 펌프반이 꺼져 있으면 자동절체기 고착과 예비모선 무전압을 연결한다. 발전기 출력보다 절체 접점이 처음 닫히지 않은 지점이 원인이다.",
+      "concepts": [
+        "자동절체기 고착과 예비모선 무전압"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10836",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 배수구역의 펌프만 함께 멈추면 분전반 지락과 구역펌프 정지를 우선 조사한다. 각각의 모터보다 공유 분전반에서 발생한 최초 지락을 찾는다.",
+      "concepts": [
+        "분전반 지락과 구역펌프 정지"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10837",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배수설비가 차례로 꺼졌다면 케이블트레이 침수와 제어전원 단락의 시작점을 맞춘다. 수위상승이 케이블 높이를 넘은 순간이 연쇄의 앞단일 수 있다.",
+      "concepts": [
+        "케이블트레이 침수와 제어전원 단락"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10838",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "동력은 남았지만 관제와 원격기동이 사라지면 UPS 방전과 통신제어 소실을 연결한다. 제어기 고장보다 백업 지속시간이 먼저 끝났는지 확인한다.",
+      "concepts": [
+        "UPS 방전과 통신제어 소실"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10839",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "호우 때 펌프가 반복 정지하면 전압강하와 펌프접촉기 탈락의 선후를 본다. 접촉기 불량으로 단정하기 전에 모선 전압이 먼저 내려갔는지 조사한다.",
+      "concepts": [
+        "전압강하와 펌프접촉기 탈락"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10840",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "인버터 부하가 늘어난 뒤 차단이 생겼다면 고조파 증가와 보호계전 오동작을 연결한다. 실제 과전류와 구별하려면 파형 왜곡이 먼저 나타났는지 본다.",
+      "concepts": [
+        "고조파 증가와 보호계전 오동작"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10841",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "침수 중 누전 차단이 늦었다면 접지선 단선과 누전검출 실패를 확인한다. 차단기 자체보다 검출 기준을 전달하지 못한 접지 경로가 최초 고리일 수 있다.",
+      "concepts": [
+        "접지선 단선과 누전검출 실패"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10842",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배수부하가 커질수록 공급이 제한되면 변압기 과열과 배수전력 제한을 연결한다. 펌프 우선순위 조정은 과열 이후의 대응이지 최초 원인이 아니다.",
+      "concepts": [
+        "변압기 과열과 배수전력 제한"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10843",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정전 복구 직후 다시 차단되면 전원복구 순서오류와 동시기동 과부하를 본다. 개별 펌프 결함보다 부하를 한꺼번에 붙인 순서가 먼저다.",
+      "concepts": [
+        "전원복구 순서오류와 동시기동 과부하"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10844",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상발전기가 잠시 뒤 감발하면 발전기실 환기정지와 출력저하를 연결한다. 연료 부족보다 실내 온도가 먼저 상승했는지 확인한다.",
+      "concepts": [
+        "발전기실 환기정지와 출력저하"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10845",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "임시전원을 넣었는데 펌프가 살아나지 않으면 비상콘센트 오접속과 핵심부하 탈락을 조사한다. 발전용량보다 연결 대상이 처음 잘못 선택됐는지 본다.",
+      "concepts": [
+        "비상콘센트 오접속과 핵심부하 탈락"
+      ],
+      "relations": [
+        "classification",
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10846",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 구간의 물이 인접 터널로 번졌다면 차단막 미전개와 침수구간 확대를 연결한다. 배수용량 부족보다 구간 경계가 처음 닫히지 않은 시각을 찾는다.",
+      "concepts": [
+        "차단막 미전개와 침수구간 확대"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10847",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차도 수위 뒤 설비실이 침수됐다면 수방문 고착과 설비실 유입의 선후를 확인한다. 내부 누수와 달리 문 폐쇄 실패가 최초 방호 고리일 수 있다.",
+      "concepts": [
+        "수방문 고착과 설비실 유입"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10848",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "침수 경보 뒤에도 차량이 들어왔다면 진입차단 신호지연과 차량고립을 연결한다. 운전자 선택보다 차단 표시가 늦게 켜진 시점이 앞선 원인인지 본다.",
+      "concepts": [
+        "진입차단 신호지연과 차량고립"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10849",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관제는 폐쇄를 명령했지만 차량이 통과했다면 차단봉 전원상실과 통제구간 진입을 조사한다. 명령 전달보다 현장 구동 전원이 먼저 사라졌는지 확인한다.",
+      "concepts": [
+        "차단봉 전원상실과 통제구간 진입"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10850",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐쇄 구간으로 차량이 몰렸다면 가변정보표지 오류와 우회안내 실패의 순서를 본다. 우회도로 혼잡은 잘못된 안내가 만든 후속 결과일 수 있다.",
+      "concepts": [
+        "가변정보표지 오류와 우회안내 실패"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10851",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서로 다른 차로 신호가 동시에 열렸다면 차로제어등 불일치와 합류충돌 위험을 연결한다. 운전자 반응보다 표시 논리의 최초 불일치를 찾는다.",
+      "concepts": [
+        "차로제어등 불일치와 합류충돌 위험"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10852",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "침수 상황에서 차량 대피가 늦었다면 터널방송 정지와 대피개시 지연을 조사한다. 출구 정체보다 첫 대피 지시가 전달되지 않은 고리를 확인한다.",
+      "concepts": [
+        "터널방송 정지와 대피개시 지연"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10853",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관제가 침수 위치를 잘못 잡았다면 비상전화 불통과 현장정보 누락을 연결한다. 카메라 해석 오류보다 운전자 신고 경로가 먼저 끊겼을 수 있다.",
+      "concepts": [
+        "비상전화 불통과 현장정보 누락"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10854",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대피자가 연결통로를 지나쳤다면 유도등 소등과 횡단통로 미인지를 본다. 통로 잠금보다 위치 표지가 먼저 사라졌는지 확인한다.",
+      "concepts": [
+        "유도등 소등과 횡단통로 미인지"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10855",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "침수 차단 뒤 구조차가 들어오지 못하면 방재셔터 폐쇄와 구조차량 접근차단을 연결한다. 교통 통제와 별개로 셔터 위치가 먼저 접근 경로를 막았는지 본다.",
+      "concepts": [
+        "방재셔터 폐쇄와 구조차량 접근차단"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10856",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부분 통제에서 전면 폐쇄로 바뀌었다면 침수등급 상향과 전면통제 전환의 근거 시각을 맞춘다. 통제 명령은 수심 문턱 초과에 의존하는 후속 조치다.",
+      "concepts": [
+        "침수등급 상향과 전면통제 전환"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10857",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "터널을 닫은 뒤 내부까지 정체가 남으면 우회로 용량부족과 출구정체 역류를 연결한다. 차단 해제 전에 외부 도로의 최초 병목을 확인해야 한다.",
+      "concepts": [
+        "우회로 용량부족과 출구정체 역류"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10858",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수위가 낮아져도 재개통이 늦으면 견인차 배치지연과 고립차량 잔류를 본다. 배수 완료보다 차량 제거 자원이 먼저 준비되지 않은 고리인지 확인한다.",
+      "concepts": [
+        "견인차 배치지연과 고립차량 잔류"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10859",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "경찰과 도로 운영자의 지시가 엇갈리면 통제권한 충돌과 폐쇄명령 지연을 연결한다. 현장 장비보다 승인 주체가 처음 정해지지 않은 지점이 앞선다.",
+      "concepts": [
+        "통제권한 충돌과 폐쇄명령 지연"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10860",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구조차가 반대 갱도로 들어갔다면 폐쇄구간 오표기와 긴급차량 오진입을 조사한다. 운전자 실수보다 상황판의 최초 위치 오류를 확인한다.",
+      "concepts": [
+        "폐쇄구간 오표기와 긴급차량 오진입"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10861",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정체 중 공기질이 급격히 나빠지면 환기팬 정지와 배기가스 축적의 순서를 본다. 차량 수 증가와 별도로 팬 전원이 먼저 끊겼는지 확인한다.",
+      "concepts": [
+        "환기팬 정지와 배기가스 축적"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10862",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시야가 예상 반대 방향으로 악화되면 제트팬 역회전과 연무확산을 연결한다. 화재 위치 변화보다 회전 방향 설정이 처음 뒤바뀌었는지 본다.",
+      "concepts": [
+        "제트팬 역회전과 연무확산"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10863",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "팬 풍량은 나오지만 오염이 빠지지 않으면 환기댐퍼 고착과 배기경로 차단을 조사한다. 팬 용량보다 닫힌 댐퍼가 최초 고리일 수 있다.",
+      "concepts": [
+        "환기댐퍼 고착과 배기경로 차단"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10864",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장 공기질과 운전단계가 맞지 않으면 일산화탄소 센서편향과 환기단계 오선택을 연결한다. 운영자 판단보다 편향된 입력이 먼저였는지 확인한다.",
+      "concepts": [
+        "일산화탄소 센서편향과 환기단계 오선택"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10865",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정체가 심한데 가시도 경보가 늦었다면 매연센서 오염과 가시도경보 지연의 선후를 본다. 카메라 가림보다 센서 표면 오염이 최초였는지 조사한다.",
+      "concepts": [
+        "매연센서 오염과 가시도경보 지연"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10866",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "침수와 차량화재가 겹친 때 화재모드 우선과 배수환기 명령차단을 구분한다. 펌프 고장으로 보이는 정지는 상위 안전모드가 만든 결과일 수 있다.",
+      "concepts": [
+        "화재모드 우선과 배수환기 명령차단"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10867",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대피 안내가 중간에 바뀌었다면 연기제어 전환과 피난방향 변경의 순서를 확인한다. 안내 오류로 단정하기 전에 연기 흐름 제어가 먼저 바뀌었는지 본다.",
+      "concepts": [
+        "연기제어 전환과 피난방향 변경"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10868",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "강우가 약한데 수위가 급상승하면 소화수 방출과 집수정 급상승을 연결한다. 외부 유입과 달리 소화설비가 추가한 물이 최초 고리일 수 있다.",
+      "concepts": [
+        "소화수 방출과 집수정 급상승"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10869",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "화재 진압 중 펌프 부하가 커졌다면 스프링클러 밸브개방과 배수부하 증가의 시각을 맞춘다. 펌프 성능 저하보다 유입원이 늘어난 것이 먼저인지 확인한다.",
+      "concepts": [
+        "스프링클러 밸브개방과 배수부하 증가"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10870",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "방화문이 닫힌 뒤 무전이 끊겼다면 방화구획 폐쇄와 통신음영 확대를 연결한다. 중계기 고장보다 차폐 구조가 먼저 바뀐 고리인지 본다.",
+      "concepts": [
+        "방화구획 폐쇄와 통신음영 확대"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10871",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연결통로에 연기가 들어오면 피난통로 양압상실과 연기유입의 순서를 조사한다. 문 개방만 탓하기 전에 급기팬 정지가 앞섰는지 확인한다.",
+      "concepts": [
+        "피난통로 양압상실과 연기유입"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10872",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연기와 침수 경보가 모두 빠졌다면 화재수신반 장애와 복합경보 누락을 우선 연결한다. 개별 감지기보다 공유 수신반이 최초 공통 고리인지 본다.",
+      "concepts": [
+        "화재수신반 장애와 복합경보 누락"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10873",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "위험이 사라졌는데 환기가 정상으로 돌아오지 않으면 비상모드 해제지연과 정상환기 미복귀를 연결한다. 팬 고장보다 모드 상태가 먼저 남아 있는지 본다.",
+      "concepts": [
+        "비상모드 해제지연과 정상환기 미복귀"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10874",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장 설비가 멀쩡한데 모든 기동 명령이 사라지면 배수제어기 정지와 펌프명령 소실을 연결한다. 개별 출력 모듈보다 중앙 제어기의 최초 정지를 찾는다.",
+      "concepts": [
+        "배수제어기 정지와 펌프명령 소실"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10875",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 화면 값이 동시에 멈췄다면 관제서버 장애와 터널상태 미갱신을 조사한다. 현장 센서보다 수집 서버가 먼저 정지했는지 확인한다.",
+      "concepts": [
+        "관제서버 장애와 터널상태 미갱신"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10876",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장 수동기동은 되지만 중앙에서는 안 되면 광통신 단절과 원격기동 불능을 연결한다. 펌프 제어반보다 터널과 관제센터 사이 링크가 최초 고리다.",
+      "concepts": [
+        "광통신 단절과 원격기동 불능"
+      ],
+      "relations": [
+        "contrast",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10877",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 구간의 여러 센서가 함께 비었다면 네트워크 스위치 재부팅과 센서군 공백의 시각을 맞춘다. 개별 센서 고장보다 공유 통신장비를 먼저 본다.",
+      "concepts": [
+        "네트워크 스위치 재부팅과 센서군 공백"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10878",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서로 다른 기록의 시각이 충돌하면 시간동기 상실과 사건순서 역전 가능성을 먼저 확인한다. 표시된 순서만 보고 최초 고리를 정하지 않는다.",
+      "concepts": [
+        "시간동기 상실과 사건순서 역전"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10879",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서 값과 경보가 어긋나면 데이터수집 지연과 경보상관 오판을 연결한다. 실제 설비 선후보다 전송 지연이 먼저 기록을 벌렸는지 본다.",
+      "concepts": [
+        "데이터수집 지연과 경보상관 오판"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10880",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "명령한 펌프 대신 다른 장비가 돌면 제어태그 오매핑과 반대펌프 기동을 조사한다. 배선 고장보다 소프트웨어 주소가 처음 잘못 연결됐는지 확인한다.",
+      "concepts": [
+        "제어태그 오매핑과 반대펌프 기동"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10881",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 설비실의 입력과 출력이 함께 사라지면 원격입출력 전원상실과 현장신호 소실을 연결한다. 통신망보다 모듈 전원이 최초로 끊겼는지 본다.",
+      "concepts": [
+        "원격입출력 전원상실과 현장신호 소실"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10882",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수위는 올랐지만 알림이 없으면 경보억제 설정과 침수통보 누락을 조사한다. 센서 고장과 구별해 억제 규칙이 먼저 활성화됐는지 확인한다.",
+      "concepts": [
+        "경보억제 설정과 침수통보 누락"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10883",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운영자가 즉시 제어하지 못했다면 사용자권한 만료와 비상명령 거부를 연결한다. 서버 장애보다 인증 상태가 먼저 끝났는지 본다.",
+      "concepts": [
+        "사용자권한 만료와 비상명령 거부"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10884",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주서버 장애 뒤 화면이 모두 멈췄다면 이중서버 전환실패와 관제공백의 순서를 확인한다. 최초 고리는 주서버 정지 자체인지 승계 실패인지 따로 가려야 한다.",
+      "concepts": [
+        "이중서버 전환실패와 관제공백"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10885",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재시작 뒤 운전규칙이 사라지면 구성파일 손상과 제어로직 초기화를 연결한다. 현장 상태보다 잘못 불러온 설정이 먼저였는지 조사한다.",
+      "concepts": [
+        "구성파일 손상과 제어로직 초기화"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10886",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장은 일부 살아 있는데 모든 원격업무가 멈추면 관제실 침수와 통합운영 중단을 연결한다. 개별 터널 장애보다 중앙 시설의 최초 침수를 찾는다.",
+      "concepts": [
+        "관제실 침수와 통합운영 중단"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10887",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구조팀 사이 상황 인계가 끊기면 무전중계기 정지와 구조팀 인계단절을 조사한다. 인력 착오보다 공통 통신경로가 먼저 사라졌는지 확인한다.",
+      "concepts": [
+        "무전중계기 정지와 구조팀 인계단절"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10888",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사고 뒤 시작점을 찾기 어렵다면 로그저장 포화와 최초경보 증거소실을 연결한다. 최근 경보만 남은 상태에서는 마지막 증상을 최초 원인으로 오인하지 않는다.",
+      "concepts": [
+        "로그저장 포화와 최초경보 증거소실"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10889",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 터널 상태를 한꺼번에 잘못 판단했다면 영상벽 정지와 다구간 오판을 본다. 현장 센서가 아니라 표시 계층의 최초 정지가 공통 고리인지 확인한다.",
+      "concepts": [
+        "영상벽 정지와 다구간 오판"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10890",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차량이 없는데 폐쇄가 풀리지 않으면 차량검지기 오검출과 차로폐쇄 유지를 연결한다. 실제 정체보다 점유 신호가 먼저 고정됐는지 본다.",
+      "concepts": [
+        "차량검지기 오검출과 차로폐쇄 유지"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10891",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "우회로 사고 뒤 터널 경보가 늘면 교통량 급증과 배출가스 경보의 순서를 확인한다. 환기 고장으로 단정하기 전에 차량 부하가 먼저 증가했는지 본다.",
+      "concepts": [
+        "교통량 급증과 배출가스 경보"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10892",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사고 차량 때문에 청소가 늦었다면 차로사고와 배수구 접근차단을 연결한다. 배수 인력 부족보다 현장 접근이 먼저 막힌 고리인지 확인한다.",
+      "concepts": [
+        "차로사고와 배수구 접근차단"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10893",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 지점에서만 물이 번지면 대형차 정차와 측구 흐름차단을 조사한다. 관로 막힘과 달리 차량 위치가 먼저 노면 배수로를 가렸는지 본다.",
+      "concepts": [
+        "대형차 정차와 측구 흐름차단"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10894",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구조차 접근이 늦어졌다면 추돌사고와 비상차로 점유의 시작점을 맞춘다. 배차 지연보다 통로가 먼저 막혔는지 확인한다.",
+      "concepts": [
+        "추돌사고와 비상차로 점유"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10895",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "화재 구간 펌프가 뒤늦게 멈췄다면 차량화재와 배수설비 열손상을 연결한다. 전기 고장이 화재보다 먼저인지 뒤인지 사건 시각으로 가린다.",
+      "concepts": [
+        "차량화재와 배수설비 열손상"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10896",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유출 사고 뒤 펌프가 정지했다면 위험물 누출과 배수계통 격리를 연결한다. 설비 고장과 달리 오염 확산을 막는 의도적 격리가 먼저 명령됐는지 본다.",
+      "concepts": [
+        "위험물 누출과 배수계통 격리"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10897",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐쇄가 유지되지 않았다면 과속차량 진입과 차단봉 파손의 선후를 조사한다. 구동기 불량보다 차량 충돌이 먼저였는지 확인한다.",
+      "concepts": [
+        "과속차량 진입과 차단봉 파손"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10898",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "천장 케이블이 손상된 뒤 통제가 멈췄다면 높이제한 위반과 천장설비 낙하를 연결한다. 설비 노후보다 초과 차량 접촉이 최초 고리일 수 있다.",
+      "concepts": [
+        "높이제한 위반과 천장설비 낙하"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10899",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "장시간 정체 뒤 제어반이 꺼졌다면 정체열 증가와 제어반 과열을 본다. 냉각팬 고장 여부와 함께 터널 내부 열부하가 먼저 커졌는지 확인한다.",
+      "concepts": [
+        "정체열 증가와 제어반 과열"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10900",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "장비는 도착했지만 작업이 늦으면 사고현장 조명소등과 복구작업 지연을 연결한다. 인력 부족보다 안전한 시야가 먼저 확보되지 않은 고리를 찾는다.",
+      "concepts": [
+        "사고현장 조명소등과 복구작업 지연"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10901",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구조 동선이 바뀐 뒤 일반차량이 혼란을 겪으면 긴급차량 역주행과 통제선 재배치의 순서를 본다. 표지 오류보다 구조 동선 결정이 먼저였는지 확인한다.",
+      "concepts": [
+        "긴급차량 역주행과 통제선 재배치"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10902",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배수 후에도 통제가 남아 있으면 현장측정 지연과 재개통 판단보류를 연결한다. 관제 승인보다 수심·절연 측정값이 먼저 도착하지 않은 고리인지 본다.",
+      "concepts": [
+        "현장측정 지연과 재개통 판단보류"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10903",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "복구 세척 중 집수정 탁도가 다시 오르면 세척수 투입과 탁도재상승을 연결한다. 외부 토사유입과 달리 작업수가 먼저 추가됐는지 확인한다.",
+      "concepts": [
+        "세척수 투입과 탁도재상승"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10904",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "평상시 약한 비에도 물고임이 반복되면 정기청소 누락과 측구폐색을 조사한다. 호우 강도보다 누적 퇴적이 먼저 형성된 관리 고리일 수 있다.",
+      "concepts": [
+        "정기청소 누락과 측구폐색"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10905",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정기시험에서 펌프가 불량으로 보이면 펌프시험 밸브폐쇄와 무유량 판정을 연결한다. 실제 성능 고장보다 시험 경로가 먼저 닫혀 있었는지 본다.",
+      "concepts": [
+        "펌프시험 밸브폐쇄와 무유량 판정"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10906",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관제 수위가 현장 눈금과 점점 벌어지면 센서교정 만료와 수위편차 확대를 확인한다. 갑작스러운 유입보다 장기간 누적된 편향이 최초 고리인지 본다.",
+      "concepts": [
+        "센서교정 만료와 수위편차 확대"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10907",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보수공사 뒤 펌프가 멈추면 공사잔재 유입과 임펠러 잠김을 연결한다. 모터 차단은 잔재가 회전을 막은 뒤의 보호 결과일 수 있다.",
+      "concepts": [
+        "공사잔재 유입과 임펠러 잠김"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10908",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공사 완료 뒤 특정 저점만 차오르면 가설배수 철거와 저점유량 증가의 선후를 본다. 강우량보다 임시 우회경로가 먼저 사라졌는지 확인한다.",
+      "concepts": [
+        "가설배수 철거와 저점유량 증가"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10909",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비 뒤 한 펌프 명령이 다른 펌프에 가면 케이블 이설오류와 펌프신호 교차를 연결한다. 제어 프로그램보다 현장 결선이 처음 바뀐 고리인지 조사한다.",
+      "concepts": [
+        "케이블 이설오류와 펌프신호 교차"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10910",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시험 없이 운영에 복귀한 뒤 수문이 열리지 않으면 수문점검 미완료와 원격개방 실패를 연결한다. 사고 시점의 명령보다 인수 전 검증 공백을 먼저 본다.",
+      "concepts": [
+        "수문점검 미완료와 원격개방 실패"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10911",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교체 작업이 멈췄다면 예비품 규격불일치와 수리중단의 순서를 확인한다. 기술자 숙련보다 맞지 않는 부품이 먼저 발견됐는지 본다.",
+      "concepts": [
+        "예비품 규격불일치와 수리중단"
+      ],
+      "relations": [
+        "comparison",
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10912",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고장 위치를 알아도 손대지 못했다면 작업허가 지연과 배수구 복구지연을 연결한다. 공구 부족보다 차로 진입 승인이 먼저 나오지 않은 고리인지 확인한다.",
+      "concepts": [
+        "작업허가 지연과 배수구 복구지연"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10913",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비가 끝났는데도 전원이 들어오지 않으면 잠금표찰 오해와 전원복구 차단을 조사한다. 설비 고장보다 해제 권한과 대상이 처음 잘못 인식됐는지 본다.",
+      "concepts": [
+        "잠금표찰 오해와 전원복구 차단"
+      ],
+      "relations": [
+        "classification",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10914",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장팀이 우회관을 찾지 못했다면 배수도면 미갱신과 폐쇄밸브 미발견을 연결한다. 탐색 능력보다 변경 정보가 먼저 누락된 관리 고리다.",
+      "concepts": [
+        "배수도면 미갱신과 폐쇄밸브 미발견"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10915",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "막힘 위치에 도달하지 못하면 점검구 적치물과 접근불능의 선후를 확인한다. 인력 배치보다 물리적 접근로가 먼저 가려졌는지 본다.",
+      "concepts": [
+        "점검구 적치물과 접근불능"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10916",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보수 직후 유량이 사라지면 정비후 밸브미개방과 배수정지를 연결한다. 펌프 고장보다 복귀 절차에서 밸브가 처음 남겨진 지점을 찾는다.",
+      "concepts": [
+        "정비후 밸브미개방과 배수정지"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10917",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배수설비가 정상인데 수위가 오르면 외부강우 급증과 터널유입 초과의 시각을 맞춘다. 펌프 결함과 구별해 설계 유입량을 넘긴 순간을 최초 고리로 본다.",
+      "concepts": [
+        "외부강우 급증과 터널유입 초과"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10918",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "터널 출구 쪽에서 물이 거꾸로 들어오면 상류배수문 폐쇄와 터널역류를 연결한다. 내부 집수정 문제보다 외부 방류 경로가 먼저 막혔는지 확인한다.",
+      "concepts": [
+        "상류배수문 폐쇄와 터널역류"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10919",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "호우 때 토출압이 치솟으면 하천수위 상승과 방류구 잠김의 선후를 본다. 펌프 성능 저하보다 외수위가 먼저 토출구를 덮었는지 조사한다.",
+      "concepts": [
+        "하천수위 상승과 방류구 잠김"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10920",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "만조 시간에만 유량이 줄면 조위상승과 해저터널 배수역압을 연결한다. 관로 막힘과 달리 외부 수두 변화가 최초 고리인지 본다.",
+      "concepts": [
+        "조위상승과 해저터널 배수역압"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10921",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "집중호우 뒤 입구가 막히면 산사태 유입과 터널입구 폐색의 시각을 확인한다. 교통사고보다 사면 붕괴가 먼저 통로를 닫았는지 본다.",
+      "concepts": [
+        "산사태 유입과 터널입구 폐색"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10922",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가을철 약한 비에도 물이 고이면 낙엽집중과 배수격자 막힘을 연결한다. 펌프 용량보다 입구 격자의 최초 폐색을 조사한다.",
+      "concepts": [
+        "낙엽집중과 배수격자 막힘"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10923",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한파 뒤 관로가 좁아졌다면 동결융해와 배수관 변형의 순서를 본다. 토사 퇴적과 구별해 온도 변화가 먼저 구조를 밀었는지 확인한다.",
+      "concepts": [
+        "동결융해와 배수관 변형"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10924",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비가 그친 뒤에도 누수가 늘면 지하수위 상승과 벽체누수 증가를 연결한다. 노면 유입보다 주변 지반 수두가 먼저 올랐는지 조사한다.",
+      "concepts": [
+        "지하수위 상승과 벽체누수 증가"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10925",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "특정 벽체에서 새 누수가 생기면 인접공사 굴착과 지하수 경로변경을 본다. 터널 자체 균열보다 외부 굴착이 먼저 흐름을 바꿨는지 확인한다.",
+      "concepts": [
+        "인접공사 굴착과 지하수 경로변경"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10926",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "강우가 없는데 수량이 급증하면 상수관 파열과 터널급유입을 연결한다. 지하수 누수와 달리 외부 관망 압력이 먼저 떨어졌는지 함께 본다.",
+      "concepts": [
+        "상수관 파열과 터널급유입"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10927",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "방재 배관 압력이 내려간 뒤 설비실이 젖으면 소화전관 누수와 설비실 침수를 연결한다. 배수 역류보다 소화수 공급관의 최초 파손을 찾는다.",
+      "concepts": [
+        "소화전관 누수와 설비실 침수"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10928",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기온 상승 직후 입구 수위가 오르면 폭설융수와 입구부 유입증가의 선후를 확인한다. 당일 강우량만으로 판단하지 말고 적설 융해가 먼저 시작됐는지 본다.",
+      "concepts": [
+        "폭설융수와 입구부 유입증가"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10929",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유역 여러 시설이 동시에 넘쳤다면 상류저류지 월류와 터널침수를 연결한다. 터널 배수 실패보다 외부 저류 한계 초과가 앞선 공통 고리일 수 있다.",
+      "concepts": [
+        "상류저류지 월류와 터널침수"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10930",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "뇌우 직후 원격제어가 사라지면 낙뢰서지와 배수제어기 소손을 조사한다. 소프트웨어 오류보다 서지 유입 시각이 먼저였는지 확인한다.",
+      "concepts": [
+        "낙뢰서지와 배수제어기 소손"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10931",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지진 뒤 누수와 유량 손실이 함께 생기면 지진변위와 배수관 이탈을 연결한다. 노후 부식보다 구조 변위가 먼저 이음부를 벌렸는지 본다.",
+      "concepts": [
+        "지진변위와 배수관 이탈"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10932",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "터널 전력과 원격통신이 함께 꺼지면 외부정전과 통신국사 동시상실을 조사한다. 두 독립 고장으로 세기 전에 공유 배전 계통의 최초 차단을 찾는다.",
+      "concepts": [
+        "외부정전과 통신국사 동시상실"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10933",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수위 경보만 사라진 뒤 통제를 풀었다면 배수완료 판정과 잔류수 미확인을 구분한다. 센서 저점 밖 차로에 물이 남았는지 먼저 확인해야 한다.",
+      "concepts": [
+        "배수완료 판정과 잔류수 미확인"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10934",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "침수 설비를 바로 켰다가 다시 차단되면 전기절연 미측정과 조기재가동을 연결한다. 새 고장보다 복구 전 검증이 빠진 고리를 최초로 본다.",
+      "concepts": [
+        "전기절연 미측정과 조기재가동"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10935",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "물이 빠졌는데도 통행이 불가능하면 퇴수후 토사잔류와 차로개방 지연을 조사한다. 배수펌프 상태보다 노면 마찰과 장애물이 먼저 기준을 못 맞춘 것인지 본다.",
+      "concepts": [
+        "퇴수후 토사잔류와 차로개방 지연"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10936",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수심이 정상이어도 폐쇄가 남으면 벽체점검 미완료와 구간폐쇄 유지를 연결한다. 관제 지연보다 구조 안전 확인이 먼저 끝나지 않은 고리인지 확인한다.",
+      "concepts": [
+        "벽체점검 미완료와 구간폐쇄 유지"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10937",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "복구 중 전원이 다시 떨어지면 배수펌프 단계복귀와 순간부하 재상승의 순서를 본다. 전력망 결함보다 너무 빠른 재투입이 최초 고리인지 조사한다.",
+      "concepts": [
+        "배수펌프 단계복귀와 순간부하 재상승"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10938",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제어반을 우회한 뒤 수위 제어가 흔들리면 예비제어반 투입과 설정값 불일치를 연결한다. 센서 고장보다 백업 설정이 먼저 달랐는지 확인한다.",
+      "concepts": [
+        "예비제어반 투입과 설정값 불일치"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10939",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "링크가 살아난 직후 여러 장비가 동시에 움직이면 통신복구와 밀린명령 일괄실행을 연결한다. 현장 오조작보다 대기열 명령이 먼저 방출됐는지 본다.",
+      "concepts": [
+        "통신복구와 밀린명령 일괄실행"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10940",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "경보는 끝났는데 진입이 계속 막히면 침수경보 해제와 차단봉 미복귀의 의존 순서를 본다. 도로상태보다 현장 구동기의 복귀 실패가 남았는지 확인한다.",
+      "concepts": [
+        "침수경보 해제와 차단봉 미복귀"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10941",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재개통 공지 뒤에도 외곽 정체가 남으면 우회안내 종료와 잔여정체 지속을 구분한다. 터널 용량보다 이미 우회한 교통 흐름이 늦게 돌아오는 결과일 수 있다.",
+      "concepts": [
+        "우회안내 종료와 잔여정체 지속"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10942",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "본설비 복귀 직후 수위가 다시 오르면 임시펌프 철수와 잔류유입 재상승을 연결한다. 본펌프 고장보다 임시 용량이 먼저 빠진 시점을 확인한다.",
+      "concepts": [
+        "임시펌프 철수와 잔류유입 재상승"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10943",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수동값으로 운전하다 단계가 흔들리면 복구중 센서우회와 자동제어 불안정을 본다. 제어기 결함보다 실제 피드백이 먼저 제외된 고리인지 조사한다.",
+      "concepts": [
+        "복구중 센서우회와 자동제어 불안정"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10944",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재가동 뒤 곧 유량이 줄면 잔해제거 미완료와 펌프재막힘을 연결한다. 새 유입보다 처음 남겨 둔 이물이 다시 흡입됐는지 확인한다.",
+      "concepts": [
+        "잔해제거 미완료와 펌프재막힘"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10945",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "첫 침수는 막았지만 인접 구간이 취약해지면 비상자재 소진과 후속구간 방호공백을 연결한다. 두 번째 유입보다 차수 자원이 먼저 고갈된 고리인지 본다.",
+      "concepts": [
+        "비상자재 소진과 후속구간 방호공백"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10946",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "다음 근무조가 임시 조건을 모르고 설정을 바꿨다면 교대인계 누락과 임시운전 해제를 조사한다. 제어 오류보다 예외 상태 정보가 처음 전달되지 않은 지점을 찾는다.",
+      "concepts": [
+        "교대인계 누락과 임시운전 해제"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10947",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차량 진동이 돌아온 뒤 누수가 늘면 재개통후 누수증가와 후속폐쇄의 순서를 본다. 배수 실패보다 미확인 균열이 하중 아래 다시 열린 것이 앞선 고리일 수 있다.",
+      "concepts": [
+        "재개통후 누수증가와 후속폐쇄"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10948",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 대만 시험하고 전체를 정상으로 보았다면 복구시험 표본부족과 정상판정 오류를 연결한다. 후속 고장은 검사하지 않은 설비 의존성을 놓친 결과일 수 있다.",
+      "concepts": [
+        "복구시험 표본부족과 정상판정 오류"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10949",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "임시 배수 중 수위가 더 내려가지 않으면 임시우회관 누수와 복구수위 정체를 조사한다. 본관 용량보다 우회관에서 물이 되돌아간 시점이 먼저인지 본다.",
+      "concepts": [
+        "임시우회관 누수와 복구수위 정체"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10950",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 조치 뒤 수위가 갑자기 내려가면 최종배수구 개방과 수위급강하를 연결한다. 앞선 펌프 기동만으로 결과를 설명하지 말고 마지막 막힘 해제가 결정적 고리였는지 본다.",
+      "concepts": [
+        "최종배수구 개방과 수위급강하"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    }
+  ]
+}

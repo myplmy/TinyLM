@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v43",
+  "version": "43",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-06301 ~ S2-CDH-06450",
+  "concept_family": "S2-A02-T043: 배터리 저장장치 충방전·열관리 — 보호조건·예외·해제조건의 범위",
+  "design_note": "배터리 저장장치 충방전·열관리 영역의 보호조건·예외·해제조건의 범위 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-06301",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "어느 한 셀이라도 충전 상한을 넘으면 해당 셀이 속한 전류 경로의 충전을 차단한다. 최고셀 과전압의 충전차단 범위는 방전까지 무조건 금지하는 규칙이 아니라 안전하게 전압을 낮출 경로는 별도 판단한다.",
+      "concepts": [
+        "최고셀 과전압의 충전차단 범위"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06302",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "순간전압 스파이크의 지연판정 예외는 검증된 짧은 시간창과 센서 유효 조건에만 적용된다.",
+      "concepts": [
+        "순간전압 스파이크의 지연판정 예외"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06303",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "방전 중 한 셀이 하한 아래로 내려가면 더 낮아지게 만드는 방전 전류를 멈춘다. 최저셀 저전압의 방전금지 범위는 진단용 미세 충전이나 전압 회복 조치까지 막는 의미는 아니다.",
+      "concepts": [
+        "최저셀 저전압의 방전금지 범위"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06304",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "저전압 해제의 히스테리시스 조건은 안정 시간과 더 높은 해제값을 함께 요구한다.",
+      "concepts": [
+        "저전압 해제의 히스테리시스 조건"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06305",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 셀 전압을 신뢰할 수 없으면 그 셀이 정상이라고 가정해 전체 정격 전류를 허용하지 않는다. 셀전압센서 무효의 보수한도 적용은 고장 센서가 속한 랙에 한정하고 정상 랙에는 별도 한도를 계산한다.",
+      "concepts": [
+        "셀전압센서 무효의 보수한도 적용"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06306",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "팩 평균전압이 정상이어도 약한 셀 하나는 이미 상한이나 하한에 닿을 수 있다. 팩평균전압 정상의 셀예외 보호는 전체 평균이 개별 셀 보호를 덮어쓰지 못하게 한다.",
+      "concepts": [
+        "팩평균전압 정상의 셀예외 보호"
+      ],
+      "relations": [
+        "comparison",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06307",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정격을 조금 넘는 전류는 정해진 시간 동안 허용하되 초과 폭이 클수록 더 빨리 차단한다. 시간전류 곡선의 과전류 차단범위는 모든 초과를 같은 즉시 고장으로 분류하지 않는다.",
+      "concepts": [
+        "시간전류 곡선의 과전류 차단범위"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06308",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배선 단락에 해당하는 크기와 상승률이 검증되면 정상 지연시간을 기다리지 않고 차단기를 연다. 단락전류의 즉시차단 조건은 단순한 짧은 과부하와 구별되는 비상 범위다.",
+      "concepts": [
+        "단락전류의 즉시차단 조건"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06309",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "프리차지 시작 직후 설계 범위 안의 짧은 전류는 부하 단락으로 간주하지 않는다. 프리차지 돌입전류의 과전류 예외는 지정된 모드와 지속시간을 벗어나면 즉시 만료된다.",
+      "concepts": [
+        "프리차지 돌입전류의 과전류 예외"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06310",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전과 방전의 전류보호 방향분리는 한쪽 예외를 반대 방향에 자동 적용하지 않는다.",
+      "concepts": [
+        "충전과 방전의 전류보호 방향분리"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06311",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "끊어진 퓨즈는 전압과 전류, 차단용량과 시간 특성이 승인 규격과 같은 부품으로 교체해야 한다. 퓨즈교체의 동일정격 보호조건은 물리적으로 맞는다는 이유만으로 다른 특성 제품을 허용하지 않는다.",
+      "concepts": [
+        "퓨즈교체의 동일정격 보호조건"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06312",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "큰 전류에서 센서가 측정 상한에 붙으면 실제 초과량을 알 수 없으므로 정격 출력을 계속 허용하지 않는다. 전류센서 포화의 정격운전 금지는 낮은 진단 전류까지 모두 차단하는 범위와는 다르다.",
+      "concepts": [
+        "전류센서 포화의 정격운전 금지"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06313",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "직류 회로의 절연저항이 경보 한계 아래면 원인이 제거될 때까지 고전압 접촉기 투입을 잠근다. 절연저항 저하의 고전압잠금은 통신과 무전압 점검 같은 저전압 작업에는 별도 절차를 적용한다.",
+      "concepts": [
+        "절연저항 저하의 고전압잠금"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06314",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "급격한 온도 변화 뒤 결로로 절연값이 낮아졌다면 가열과 제습을 거쳐 여러 차례 안정된 측정이 나와야 한다. 결로성 절연저하의 건조후 해제는 시간이 지났다는 사실만으로 보호를 풀지 않는다.",
+      "concepts": [
+        "결로성 절연저하의 건조후 해제"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06315",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "절연감시장치 기동시험의 제한예외가 끝나면 우회 비트는 자동으로 원상 복귀해야 한다.",
+      "concepts": [
+        "절연감시장치 기동시험의 제한예외"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06316",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지락 위치가 한 랙으로 확정되고 양단이 물리적으로 분리됐다면 다른 랙은 강화 감시 아래 제한 운전할 수 있다. 지락구간 분리의 정상랙 운전예외는 공통 모선 절연이 회복된 경우에만 허용된다.",
+      "concepts": [
+        "지락구간 분리의 정상랙 운전예외"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06317",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "개방 명령 뒤에도 접촉기 양단 전압이 붙어 있어 용착이 확인되면 소프트웨어 리셋으로 다시 투입하지 못하게 잠근다. 접촉기용착의 재투입 잠금조건은 부품 교체와 무전압 검증 뒤에만 해제한다.",
+      "concepts": [
+        "접촉기용착의 재투입 잠금조건"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06318",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주접촉기 명령과 보조접점 피드백이 다르면 실제 개폐 상태를 하나로 확정하지 않는다. 보조접점 불일치의 상태확정 보류는 전압과 연속성 검사로 위치가 확인될 때까지 유지된다.",
+      "concepts": [
+        "보조접점 불일치의 상태확정 보류"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06319",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "프리차지 시간초과의 투입차단은 느린 정상 충전과 누설·단락 후보를 구분하기 위한 보호다.",
+      "concepts": [
+        "프리차지 시간초과의 투입차단"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06320",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "첫 시도가 통신 지연으로 중단됐고 회로 이상이 없다고 확인한 정비모드에서는 제한 횟수만 재시도할 수 있다. 프리차지 재시도의 정비모드 예외는 자동 반복이나 원인 미확인 상태에는 적용되지 않는다.",
+      "concepts": [
+        "프리차지 재시도의 정비모드 예외"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06321",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "직류모선 전압이 반도체 안전 상한을 넘으면 충전 스위칭을 멈추고 에너지 유입 경로를 차단한다. 직류모선 과전압의 인버터차단 범위는 안전한 방전저항 동작까지 중지시키는 규칙은 아니다.",
+      "concepts": [
+        "직류모선 과전압의 인버터차단 범위"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06322",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "직류 전압 리플이 지속 한계를 넘으면 커패시터나 접속 이상을 조사할 수 있도록 출력을 낮춘다. 직류리플 경보의 출력감축 조건은 단일 스위칭 표본이 아니라 정해진 주파수창의 실측에 적용된다.",
+      "concepts": [
+        "직류리플 경보의 출력감축 조건"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06323",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차단기가 보호 동작한 뒤에는 고장 코드와 회로 상태를 확인하고 위험 원인을 제거해야 재투입 리셋을 허용한다. 차단기 트립의 원인확인후 리셋은 단순 원격 명령 재전송으로 대체되지 않는다.",
+      "concepts": [
+        "차단기 트립의 원인확인후 리셋"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06324",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호계전기의 한 기능을 모의시험하려면 대체 보호와 현장 감시를 둔 상태에서 해당 시험 구간만 우회할 수 있다. 보호계전 우회의 정비시험 예외는 정상 출력 운전으로 넓혀서는 안 된다.",
+      "concepts": [
+        "보호계전 우회의 정비시험 예외"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06325",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승인된 시험 시간이 끝나거나 담당자가 정비모드를 종료하면 모든 보호우회가 자동으로 해제돼야 한다. 보호우회 만료의 자동복귀 조건은 기억에 의존한 수동 복구만 남기지 않는다.",
+      "concepts": [
+        "보호우회 만료의 자동복귀 조건"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06326",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계통 주파수가 높을 때 충전으로 전력을 흡수하는 규칙은 배터리 상한과 변환기 용량 안에서만 작동한다. 과주파수 충전흡수의 계통범위는 이미 가득 찬 팩에 같은 응답을 강제하지 않는다.",
+      "concepts": [
+        "과주파수 충전흡수의 계통범위"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06327",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주파수가 낮으면 방전 지원을 우선하지만 비상 예비 충전상태 아래까지 에너지를 모두 써서는 안 된다. 저주파 방전의 예비량 예외는 계통지원 규칙을 장기 정전 대비 범위와 조정한다.",
+      "concepts": [
+        "저주파 방전의 예비량 예외"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06328",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "짧은 전압 저하는 정해진 곡선 안에서 출력을 유지하되 깊이나 지속시간이 한계를 넘으면 분리한다. 전압관통운전의 시간전압 범위는 모든 저전압을 동일한 연계 유지로 처리하지 않는다.",
+      "concepts": [
+        "전압관통운전의 시간전압 범위"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06329",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외부 계통이 사라지면 일반 모드에서는 분리하지만 승인된 마이크로그리드가 형성된 경우에는 중요부하 공급을 계속할 수 있다. 단독운전차단의 의도섬운전 예외는 전용 계통형성 제어와 물리적 경계가 확인될 때만 열린다.",
+      "concepts": [
+        "단독운전차단의 의도섬운전 예외"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06330",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재동기 확인의 계통복귀 해제는 외부 전압이 잠깐 보였다는 이유만으로 승인되지 않는다.",
+      "concepts": [
+        "재동기 확인의 계통복귀 해제"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06331",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "상순서 오류의 병렬투입 금지는 단상 보조회로 검사와 다른 적용 범위다.",
+      "concepts": [
+        "상순서 오류의 병렬투입 금지"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06332",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "역전력 보호의 계획충전 예외는 계측 방향과 운전 모드가 승인됐을 때만 성립한다.",
+      "concepts": [
+        "역전력 보호의 계획충전 예외"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06333",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "접속점 고조파가 한계를 넘으면 먼저 배터리 출력을 단계적으로 낮춰 기여도를 확인한다. 고조파 초과의 단계출력 감축은 외부 부하가 원인으로 확인되면 설비 전면 정지까지 확대하지 않는다.",
+      "concepts": [
+        "고조파 초과의 단계출력 감축"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06334",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공유 변압기 온도가 보호값을 넘으면 충전과 방전 중 어느 방향이라도 통과 전류를 낮춰야 한다. 변압기 과온의 충방전 공통제한은 무전력 대기와 저전압 진단 회로에는 같은 정격 제한을 요구하지 않는다.",
+      "concepts": [
+        "변압기 과온의 충방전 공통제한"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06335",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "변압기 팬고장의 저출력운전 예외는 고온 또는 나머지 팬 고장 시 즉시 만료된다.",
+      "concepts": [
+        "변압기 팬고장의 저출력운전 예외"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06336",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "케이블온도 보호의 회로별 범위는 공통 덕트 과열이 확인되면 전체로 넓어진다.",
+      "concepts": [
+        "케이블온도 보호의 회로별 범위"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06337",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "광학과 전류 센서가 아크 특징을 함께 검출하면 정상 지연을 기다리지 않고 해당 구획의 전원을 격리한다. 아크징후의 즉시전원 격리는 사람 확인 전에도 작동하지만 대피 범위는 위치 정보와 함께 정한다.",
+      "concepts": [
+        "아크징후의 즉시전원 격리"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06338",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "광원으로 감지기를 시험하는 동안에는 승인된 채널의 차단 출력만 잠시 음소거하고 별도 감시자를 둔다. 아크감지기 시험음소거 예외는 실제 전류 이상이 함께 나타나면 즉시 취소된다.",
+      "concepts": [
+        "아크감지기 시험음소거 예외"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06339",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공통 비상정지 버튼은 같은 컨테이너 안의 충방전 출력과 고전압 접촉기를 안전 상태로 보낸다. 비상정지의 컨테이너 전체범위는 외부 소방전원이나 독립 비상조명까지 끄는 의미는 아니다.",
+      "concepts": [
+        "비상정지의 컨테이너 전체범위"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06340",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전기적으로 분리된 정비 구역의 국소 정지 버튼은 해당 랙과 연결 출력만 차단할 수 있다. 구역비상정지의 국소적용 조건은 공통 모선 위험이 생기면 전체 정지로 승격된다.",
+      "concepts": [
+        "구역비상정지의 국소적용 조건"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06341",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "도어인터록 우회의 현장정비 예외는 고전압 인가나 무인 운전에는 허용되지 않는다.",
+      "concepts": [
+        "도어인터록 우회의 현장정비 예외"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06342",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비 키스위치는 승인된 사람이 자동에서 수동 모드로 바꾸게 하지만 보호값 삭제 권한까지 주지는 않는다. 키스위치 권한의 모드전환 범위는 역할과 기능을 좁게 연결한다.",
+      "concepts": [
+        "키스위치 권한의 모드전환 범위"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06343",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "각 작업자는 자신이 노출될 에너지원에 개인 잠금을 걸고 본인이 철수한 뒤 직접 해제한다. 잠금표찰의 개인작업 경계는 한 책임자가 다른 사람의 잠금을 임의로 제거하지 못하게 한다.",
+      "concepts": [
+        "잠금표찰의 개인작업 경계"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06344",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "격리 뒤 모든 단자에서 안전전압 이하가 측정되고 시험기 자체 확인까지 끝나야 접촉 작업을 허가한다. 안전전압 확인의 접촉허가 해제는 화면의 0 표시만으로 열리지 않는다.",
+      "concepts": [
+        "안전전압 확인의 접촉허가 해제"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06345",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전원을 끈 뒤 직류링크 커패시터가 방전될 최소 시간을 지키고 실제 전압도 측정해야 한다. 커패시터 방전대기의 시간하한은 규정 시간이 지났다는 사실을 무전압 증거로 대신하지 않는다.",
+      "concepts": [
+        "커패시터 방전대기의 시간하한"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06346",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "도전성 냉각수가 고전압 부근에서 감지되면 누설 구역의 출력을 낮추고 절연 추세를 감시한다. 냉각수 누설의 전기출력 감축은 배수구의 비위험 응축수까지 같은 고장으로 분류하지 않는다.",
+      "concepts": [
+        "냉각수 누설의 전기출력 감축"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06347",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "미세누설의 제한운전 예외는 누설량 증가나 감시 상실 시 즉시 닫힌다.",
+      "concepts": [
+        "미세누설의 제한운전 예외"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06348",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "손상 분기 밸브를 닫고 잔류액을 제거한 뒤 압력시험과 절연시험이 모두 합격해야 누설 잠금을 해제한다. 냉각분기 격리의 누설보호 해제는 밸브 명령만으로 완료되지 않는다.",
+      "concepts": [
+        "냉각분기 격리의 누설보호 해제"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06349",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "셀 온도가 화학계의 안전 상한을 넘으면 열을 더하는 충전과 방전을 모두 멈춘다. 셀과온의 충방전 정지범위는 냉각펌프와 화재감시 같은 완화 기능까지 정지시키지 않는다.",
+      "concepts": [
+        "셀과온의 충방전 정지범위"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06350",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열화상 국부고온의 센서대체 예외는 방사율과 시야가 교정된 구역에만 적용된다.",
+      "concepts": [
+        "열화상 국부고온의 센서대체 예외"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06351",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모든 온도가 절대 상한 아래여도 한 모듈이 이웃보다 비정상적으로 뜨거우면 출력을 줄여 원인을 확인한다. 모듈온도편차의 출력감축 보호는 공통 주변온도 변화보다 국부 차이에 적용된다.",
+      "concepts": [
+        "모듈온도편차의 출력감축 보호"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06352",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고율 충전은 냉각수 유량과 입구 온도가 지정 범위에 있을 때만 허용한다. 고율충전의 냉각유량 보호조건은 저율 진단 충전과 동일한 최저 유량을 요구하는 규칙은 아니다.",
+      "concepts": [
+        "고율충전의 냉각유량 보호조건"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06353",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "셀 최저 온도가 금속 석출 위험 범위에 있으면 일반 충전 명령을 잠근다. 저온셀의 일반충전 잠금은 셀을 안전 온도로 올리는 히터 운전까지 막지 않는다.",
+      "concepts": [
+        "저온셀의 일반충전 잠금"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06354",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제조사가 검증한 온도와 전류 범위에서는 상태 확인을 위한 짧은 미세 충전을 허용할 수 있다. 저온진단 미세전류의 제한예외는 에너지 충전을 목적으로 지속하거나 정해진 전하량을 넘기면 종료된다.",
+      "concepts": [
+        "저온진단 미세전류의 제한예외"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06355",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "히터 표면이나 인접 셀이 가열 상한을 넘으면 해당 구역 히터를 끈다. 히터과온의 가열차단 범위는 다른 구역의 독립 히터가 정상이라는 증거가 있으면 그곳까지 자동 확대하지 않는다.",
+      "concepts": [
+        "히터과온의 가열차단 범위"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06356",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주 냉각기와 사용 가능한 예비기가 모두 정지하면 열 발생이 큰 고출력 충방전을 잠근다. 냉각기 고장의 고출력잠금은 주변 조건이 허용하는 무전류 대기와 저출력 제어에는 별도 한도를 둔다.",
+      "concepts": [
+        "냉각기 고장의 고출력잠금"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06357",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자연냉각 저출력운전의 예외범위는 외기 상승이나 풍량 저하 즉시 닫힌다.",
+      "concepts": [
+        "자연냉각 저출력운전의 예외범위"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06358",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉각펌프 상실의 랙별 제한은 공통 냉동기 고장일 때 전체 범위로 넓어진다.",
+      "concepts": [
+        "냉각펌프 상실의 랙별 제한"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06359",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비 뒤 배관 공기 때문에 유량이 낮았다면 공기를 빼고 여러 분기의 실측 유량이 안정돼야 보호를 푼다. 저유량 보호의 공기제거후 해제는 펌프 회전 신호만으로 승인되지 않는다.",
+      "concepts": [
+        "저유량 보호의 공기제거후 해제"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06360",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환기팬 고장의 구역별 출력축소는 공통 덕트가 막힌 경우와 적용 범위가 다르다.",
+      "concepts": [
+        "환기팬 고장의 구역별 출력축소"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06361",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "도어개방의 정비냉각 예외는 고전압 복귀 전에 도어 닫힘과 정상 풍량 확인으로 종료한다.",
+      "concepts": [
+        "도어개방의 정비냉각 예외"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06362",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "단자나 절연판에서 결로가 감지되면 건조와 절연 확인 전까지 고전압을 넣지 않는다. 결로감지의 고전압 투입금지는 이미 무전압인 제습기와 환경 센서 운전에는 적용되지 않는다.",
+      "concepts": [
+        "결로감지의 고전압 투입금지"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06363",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "습도가 정상 범위로 잠깐 내려온 것만으로 고습 잠금을 풀지 않고 표면 온도와 절연값도 안정됐는지 본다. 고습경보의 건조확인후 해제는 공기 상태와 전기 표면 상태를 함께 요구한다.",
+      "concepts": [
+        "고습경보의 건조확인후 해제"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06364",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배터리 구역에서 검증된 연기 경보가 발생하면 정상 운전 모드의 충전과 방전을 즉시 멈춘다. 연기경보의 충방전 즉시정지는 감지기 전원과 경보 통신까지 함께 끄는 명령은 아니다.",
+      "concepts": [
+        "연기경보의 충방전 즉시정지"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06365",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "감지기 하나를 청소하는 동안에는 그 구역에 임시 감지기와 현장 감시자를 배치해야 해당 채널을 우회할 수 있다. 연기감지기 정비의 구역감시 예외는 무인 고출력 운전에는 허용되지 않는다.",
+      "concepts": [
+        "연기감지기 정비의 구역감시 예외"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06366",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "오프가스 경보의 랙격리 범위는 공통 환기에서 여러 구역 농도가 오르면 전체 컨테이너로 확대된다.",
+      "concepts": [
+        "오프가스 경보의 랙격리 범위"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06367",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교정가스 잔류의 경보해제 조건은 교정 작업표만 끝났다고 충족되지 않는다.",
+      "concepts": [
+        "교정가스 잔류의 경보해제 조건"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06368",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열폭주의심 상태의 인원대피 범위는 원격 관제실까지 무조건 비우는 범위와는 다르다.",
+      "concepts": [
+        "열폭주의심 상태의 인원대피 범위"
+      ],
+      "relations": [
+        "state",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06369",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가스와 열, 연기가 같은 랙에서 확인되면 방화구획 출입을 금지하고 소방 대응으로 전환한다. 열폭주확정의 방화구획 통제는 승인된 비상대응 인력의 보호장비 진입에는 별도 지휘를 적용한다.",
+      "concepts": [
+        "열폭주확정의 방화구획 통제"
+      ],
+      "relations": [
+        "state",
+        "role",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06370",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동 소화약제는 경보가 확인된 방화구획에 방출하고 독립된 다른 구획까지 무조건 채우지 않는다. 소화약제 방출의 해당구획 범위는 관통부 개방으로 연기가 번지면 확대할 수 있다.",
+      "concepts": [
+        "소화약제 방출의 해당구획 범위"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06371",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "화재 뒤 물로 셀을 냉각하는 동안에는 수분과 손상 상태가 남으므로 고전압 복귀를 허용하지 않는다. 수랭냉각 중 전기복귀 금지는 소방펌프와 비상조명 전원에는 독립 공급을 유지한다.",
+      "concepts": [
+        "수랭냉각 중 전기복귀 금지"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06372",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "벽이나 관통부가 손상돼 연기 차단 기능을 잃으면 원래 구획 밖 인접 공간도 위험구역으로 포함한다. 방화구획 손상의 대피범위 확대는 도면 경계보다 실제 격리 상태를 우선한다.",
+      "concepts": [
+        "방화구획 손상의 대피범위 확대"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06373",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "무전압 상태에서 큰 장비를 반입하는 짧은 시간에는 감시자를 두고 방화문을 열 수 있다. 방화문 개방의 반입작업 예외는 화재경보 발생이나 작업 중단 즉시 문을 닫도록 제한한다.",
+      "concepts": [
+        "방화문 개방의 반입작업 예외"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06374",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "평상시 열효율을 위한 공기 재순환은 오프가스 경보가 나면 다른 구역 확산을 막기 위해 중단한다. 평상재순환의 가스사고 금지범위는 외부로 직접 배출하는 비상 환기까지 정지시키지 않는다.",
+      "concepts": [
+        "평상재순환의 가스사고 금지범위"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06375",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환기 뒤 가연성 가스와 유독성 성분이 각각 정해진 하한 아래에서 안정돼야 일반 출입을 검토한다. 가스농도 하한의 출입해제 조건은 산소 농도와 잔열 검사 없이 단독으로 충분하지 않다.",
+      "concepts": [
+        "가스농도 하한의 출입해제 조건"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06376",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구역 재진입은 여러 지점 온도가 하강 추세이고 산소와 유해가스가 안전 범위일 때 지휘자가 승인한다. 재진입의 온도와 공기질 결합조건은 어느 한 센서의 정상만으로 열리지 않는다.",
+      "concepts": [
+        "재진입의 온도와 공기질 결합조건"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06377",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열 사건을 겪은 랙은 정상 외관이어도 별도 구역에서 온도와 가스를 장기간 감시한다. 손상랙의 격리보관 범위는 사고에 노출되지 않은 정상 랙에 같은 폐기 상태를 부여하지 않는다.",
+      "concepts": [
+        "손상랙의 격리보관 범위"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06378",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "인접랙 제한운전의 강화감시 예외는 이상 추세가 한 번이라도 나타나면 종료된다.",
+      "concepts": [
+        "인접랙 제한운전의 강화감시 예외"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06379",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "바닥 수위가 케이블이나 랙 하부 위험 높이에 닿으면 해당 저위 회로와 고전압을 차단한다. 침수감지의 하부회로 전원차단은 높은 곳의 독립 비상통신 전원을 유지할 수 있다.",
+      "concepts": [
+        "침수감지의 하부회로 전원차단"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06380",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수위센서 시험의 차단우회 예외는 실제 물 감지나 다른 센서 경보가 발생하면 무효다.",
+      "concepts": [
+        "수위센서 시험의 차단우회 예외"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06381",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지붕 누수가 한 모서리에 한정돼도 고전압 부품과의 거리를 확인할 때까지 해당 구역을 격리한다. 국소빗물누입의 구역격리 조건은 건조한 독립 구역의 운영을 중단할지는 공통 경로 여부로 정한다.",
+      "concepts": [
+        "국소빗물누입의 구역격리 조건"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06382",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장 가속도가 설계 보호 기준을 넘으면 배터리 출력과 고전압 경로를 안전 정지로 보낸다. 지진신호의 자동정지 적용범위는 비상조명과 구조 모니터링 전원까지 끄지 않는다.",
+      "concepts": [
+        "지진신호의 자동정지 적용범위"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06383",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호 기준 아래의 경미한 흔들림이고 앵커와 배관에 변형이 없다면 전체 분해 없이 제한 출력으로 복귀할 수 있다. 경미지진의 외관검사후 제한복귀는 숨은 손상을 감시할 진동과 절연 추세를 요구한다.",
+      "concepts": [
+        "경미지진의 외관검사후 제한복귀"
+      ],
+      "relations": [
+        "comparison",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06384",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정상 운전 중 진동이 기준을 계속 넘으면 단자 풀림과 배관 피로를 막기 위해 출력을 낮추고 점검한다. 지속진동의 접속부 점검보호는 한 번의 문 닫힘 충격과 같은 순간값을 제외한다.",
+      "concepts": [
+        "지속진동의 접속부 점검보호"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06385",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외기 온도가 냉각 설계값에 가까워지면 충방전 출력을 단계적으로 줄여 셀 온도 여유를 남긴다. 고외기온의 출력디레이팅 범위는 야간에 외기가 충분히 내려가고 열 상태가 회복되면 다시 계산한다.",
+      "concepts": [
+        "고외기온의 출력디레이팅 범위"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06386",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "셀 온도가 충전 한계 아래여도 보조전원이 충분하면 히터와 감시만 유지하며 대기할 수 있다. 혹한대기의 보온유지 예외는 충방전 출력 허가와 구분되고 보조전력 하한에서 종료된다.",
+      "concepts": [
+        "혹한대기의 보온유지 예외"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06387",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공기 필터 차압이 막힘 기준을 넘으면 팬을 무리하게 증속하지 않고 배터리 열부하를 낮춘다. 필터차압 경보의 환기출력 제한은 센서 영점 오류가 확인되면 정비모드에서 재평가한다.",
+      "concepts": [
+        "필터차압 경보의 환기출력 제한"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06388",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "팬 두 대 중 하나가 고장 나도 남은 팬 풍량이 검증되고 온도 여유가 있으면 축소 출력 운전을 허용할 수 있다. 이중팬 단일고장의 감축운전 예외는 두 팬이 공유한 전원 이상에는 적용되지 않는다.",
+      "concepts": [
+        "이중팬 단일고장의 감축운전 예외"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06389",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부동액 농도가 규격을 벗어나면 동결점과 열전달 성능이 달라지므로 허용 외기와 출력 범위를 줄인다. 냉각수 농도이탈의 온도범위 제한은 실내가 따뜻하다는 이유로 장기 운전을 승인하지 않는다.",
+      "concepts": [
+        "냉각수 농도이탈의 온도범위 제한"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06390",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승인된 운영자는 자동 일정이 잘못됐을 때 수동 출력값을 넣을 수 있지만 셀 보호 상한은 넘을 수 없다. 수동출력 우회의 운영자 권한범위는 경제 제어만 우회하고 안전 인터록은 보존한다.",
+      "concepts": [
+        "수동출력 우회의 운영자 권한범위"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06391",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동충전 일정의 요금오류 예외는 물리 보호와 무관한 계획 계층에만 적용된다.",
+      "concepts": [
+        "자동충전 일정의 요금오류 예외"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06392",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계통 비상 선언 중에는 계약된 짧은 시간에 한해 평상 출력 목표보다 높은 지원값을 허용할 수 있다. 계통비상 지원의 평상한도 예외도 장치 절대 정격과 셀 안전 한도는 넘지 않는다.",
+      "concepts": [
+        "계통비상 지원의 평상한도 예외"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06393",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외부 전원이 모두 사라진 비상에도 냉각과 제어를 유지할 최저 에너지는 남겨야 한다. 블랙스타트의 최저예비량 예외금지는 중요부하 공급 목표가 배터리 자체 생존 조건을 없애지 못하게 한다.",
+      "concepts": [
+        "블랙스타트의 최저예비량 예외금지"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06394",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상 예비 충전상태에 도달하면 시장 가격이 높아도 추가 방전 명령을 제한한다. 예비충전상태의 시장방전 보호는 실제 계통 비상 호출에는 사전 승인된 별도 범위를 적용할 수 있다.",
+      "concepts": [
+        "예비충전상태의 시장방전 보호"
+      ],
+      "relations": [
+        "attribute",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06395",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시장운영자가 큰 출력을 요청해도 현장 제어기는 현재 셀과 변압기 한도 중 더 작은 값을 적용한다. 시장급전 지시의 현장상한 적용은 외부 역할이 물리 보호를 덮어쓰지 못하게 한다.",
+      "concepts": [
+        "시장급전 지시의 현장상한 적용"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06396",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시설 비상 때문에 수요반응 참여를 잠시 중단했다면 승인된 종료 시각이나 비상 해제 사건에 맞춰 우회를 닫아야 한다. 수요반응 우회의 만료시각 조건은 다음날까지 관성적으로 유지되지 않는다.",
+      "concepts": [
+        "수요반응 우회의 만료시각 조건"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06397",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "의도 섬운전에서는 외부 계통 기준 대신 내부 모선 전압과 주파수 한도로 보호를 운용한다. 섬운전 보호의 독립망 적용범위는 접속 차단기가 다시 닫히기 전에 종료하고 연계 규칙으로 전환한다.",
+      "concepts": [
+        "섬운전 보호의 독립망 적용범위"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06398",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비 시험에서는 센서 영점과 방향을 확인할 만큼의 낮은 전류만 짧게 흘릴 수 있다. 시험모드 전류한도의 계측예외는 용량 시험이나 상업 운전으로 확대할 수 없다.",
+      "concepts": [
+        "시험모드 전류한도의 계측예외"
+      ],
+      "relations": [
+        "attribute",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06399",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "초기 시운전에서 정격보다 낮은 임시 보호값을 쓰더라도 값과 적용 회차, 승인자를 명확히 기록한다. 시운전 보호값의 임시범위 관리는 인수 완료 뒤 정식 설정 검증으로 종료돼야 한다.",
+      "concepts": [
+        "시운전 보호값의 임시범위 관리"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06400",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비모드는 작업허가에 이름이 오른 현장 담당자만 활성화하고 원격 일반 계정에는 열지 않는다. 정비모드의 현장접근 권한은 무전압 작업 구역과 승인 시간에 한정된다.",
+      "concepts": [
+        "정비모드의 현장접근 권한"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06401",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중앙 운영자가 한 설비의 출력값을 바꿀 권한이 있어도 다른 사업장의 보호 설정까지 수정할 수 있는 것은 아니다. 원격쓰기 권한의 설비별 범위는 계정 역할과 자산 목록을 함께 제한한다.",
+      "concepts": [
+        "원격쓰기 권한의 설비별 범위"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06402",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "감사자와 분석가는 운전 자료를 볼 수 있어도 접촉기나 출력 명령을 보내지 못하는 읽기전용 계정을 사용한다. 관찰계정의 읽기전용 보호는 자료 열람을 제어 권한으로 확대하지 않는다.",
+      "concepts": [
+        "관찰계정의 읽기전용 보호"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06403",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주 인증서비스가 중단된 비상에는 봉인된 일회용 계정을 두 책임자가 함께 확인해 사용할 수 있다. 다중인증 장애의 비상계정 예외는 안전 정지와 복구에 필요한 최소 명령만 허용한다.",
+      "concepts": [
+        "다중인증 장애의 비상계정 예외"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06404",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "인증서비스가 복구되거나 비상 사건이 닫히면 일회용 계정은 즉시 폐기하고 사용 기록을 검토한다. 비상계정의 사건종료 자동만료는 평상 운영 편의를 위해 연장하지 않는다.",
+      "concepts": [
+        "비상계정의 사건종료 자동만료"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06405",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "장치 인증서가 만료되거나 신뢰 체인 검증에 실패하면 원격 쓰기 명령을 받아들이지 않는다. 제어인증서 만료의 원격쓰기 차단은 로컬 보호와 읽기 가능한 진단자료까지 중지시키지는 않는다.",
+      "concepts": [
+        "제어인증서 만료의 원격쓰기 차단"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06406",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제어기 시각이 허용 오차를 벗어나면 잘못된 요금 구간에 실행될 수 있는 예약 충방전을 잠근다. 시각동기 상실의 예약운전 잠금은 즉시 과전압 차단 같은 로컬 보호에는 영향을 주지 않는다.",
+      "concepts": [
+        "시각동기 상실의 예약운전 잠금"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06407",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중앙 화면의 배터리 값이 갱신 제한을 넘기면 그 값으로 새 출력 증가 명령을 만들지 않는다. 오래된 원격계측의 출력유지 한계는 현장 센서가 유효하면 기존 안전 출력의 감축이나 정지는 허용한다.",
+      "concepts": [
+        "오래된 원격계측의 출력유지 한계"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06408",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "필수 온도센서가 빠지면 정상 온도를 가정하지 않고 해당 열구역 출력을 보수 한도로 낮춘다. 온도입력 결측의 보수출력 적용은 독립된 다른 구역의 센서까지 결측으로 만들지 않는다.",
+      "concepts": [
+        "온도입력 결측의 보수출력 적용"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06409",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "두 센서가 서로 다른 안전 상태를 가리키면 더 편리한 값을 선택해 보호를 풀지 않는다. 중복센서 불일치의 자동해제 금지는 기준기로 원인을 확인하거나 고장 채널을 격리할 때까지 유지된다.",
+      "concepts": [
+        "중복센서 불일치의 자동해제 금지"
+      ],
+      "relations": [
+        "comparison",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06410",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제어 펌웨어는 승인된 발행자의 전자서명과 파일 해시가 모두 맞아야 현장 장치에 설치한다. 펌웨어서명 검증의 설치보호는 출처가 불명한 동일 버전 파일을 차단한다.",
+      "concepts": [
+        "펌웨어서명 검증의 설치보호"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06411",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "활성 공격을 막는 긴급패치는 정규 장기시험 전이라도 복제 환경과 한 격리 랙에서 핵심 보호를 검증한 뒤 제한 배포할 수 있다. 긴급패치의 격리시험 예외는 서명 검증과 롤백 준비를 생략하지 않는다.",
+      "concepts": [
+        "긴급패치의 격리시험 예외"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06412",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대규모 계통 행사나 성능시험 중에는 결과를 흔들 수 있는 비필수 보호 설정 변경을 동결한다. 운전안정기 설정변경 동결은 긴급 안전 수정까지 금지하지 않고 별도 승인 경로를 둔다.",
+      "concepts": [
+        "운전안정기 설정변경 동결"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06413",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "진행 중인 위험을 막기 위해 즉시 설정을 낮춰야 하면 사고지휘자와 운영책임자의 공동 승인으로 정규 회의 전 변경할 수 있다. 사고대응 긴급변경의 승인예외는 변경값과 이유를 실시간 기록해야 한다.",
+      "concepts": [
+        "사고대응 긴급변경의 승인예외"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06414",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "긴급변경 뒤 이전 버전으로 안전하게 돌아갈 수 있음을 시험하고 현행 기능이 안정돼야 추가 변경 잠금을 푼다. 롤백검증 완료의 변경잠금 해제는 단순 파일 보유만으로 승인되지 않는다.",
+      "concepts": [
+        "롤백검증 완료의 변경잠금 해제"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06415",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고장 센서를 교체하는 동안에는 그 센서 채널과 승인된 정비 시간에만 반복 경보를 억제한다. 경보억제의 채널시간 한정은 같은 구역의 연기나 전압 경보까지 묶어 숨기지 않는다.",
+      "concepts": [
+        "경보억제의 채널시간 한정"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06416",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비 시간이 끝나거나 센서가 정상으로 돌아오면 억제 상태가 자동 해제되고 시험 경보가 관제에 도착하는지 확인한다. 경보억제 만료의 자동복원은 담당자의 기억에만 의존하지 않는다.",
+      "concepts": [
+        "경보억제 만료의 자동복원"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06417",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "세부 셀 이력과 운영자 행동 로그는 정해진 보존기간 동안 감사 역할에만 원본 접근을 허용한다. 민감운전자료의 역할별 보존접근은 일반 성능 분석에는 필요한 항목만 제공한다.",
+      "concepts": [
+        "민감운전자료의 역할별 보존접근"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06418",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교육용 사고 사례를 배포할 때에는 시간 순서와 조치는 남기되 불필요한 작업자 이름과 연락처는 제거한다. 작업자로그 공유의 식별정보 축소는 내부 책임조사 원본까지 바꾸는 규칙은 아니다.",
+      "concepts": [
+        "작업자로그 공유의 식별정보 축소"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06419",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승인되지 않은 반복 쓰기 명령이나 스캔이 감지되면 해당 네트워크 구역을 중앙망에서 격리한다. 제어망 이상트래픽의 구역격리는 전기적으로 안전한 로컬 정지 기능을 계속 남긴다.",
+      "concepts": [
+        "제어망 이상트래픽의 구역격리"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06420",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "네트워크격리 중 로컬운전 예외는 시장 제어와 원격 설정 변경에는 적용되지 않는다.",
+      "concepts": [
+        "네트워크격리 중 로컬운전 예외"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06421",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "감염 후보 장치를 초기화하고 승인 이미지와 설정을 복원한 뒤 독립 검사에서 이상이 없어야 제어망에 다시 연결한다. 악성코드 검사후 제어망 재연결은 통신 핑 응답만으로 열리지 않는다.",
+      "concepts": [
+        "악성코드 검사후 제어망 재연결"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06422",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "일반적으로 제어기 USB 사용을 막되 서명된 정비 파일을 전용 검사 단말에서 확인한 경우에만 지정 포트로 반입할 수 있다. 이동식저장장치의 정비반입 예외는 개인 저장장치와 파일 복사를 허용하지 않는다.",
+      "concepts": [
+        "이동식저장장치의 정비반입 예외"
+      ],
+      "relations": [
+        "classification",
+        "role",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06423",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공급사 기술자는 내부 담당자가 연 세션에서 승인된 장치와 작업 시간에만 원격 진단을 수행한다. 공급사 원격접속의 시간창 제한은 상시 계정이나 다른 설비 탐색 권한을 주지 않는다.",
+      "concepts": [
+        "공급사 원격접속의 시간창 제한"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06424",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원격 정비가 끝나면 임시 계정과 터널을 닫고 변경 로그와 파일을 내부 담당자가 검토한다. 공급사 세션종료의 계정회수 조건은 창을 닫는 동작만으로 기록 확인을 생략하지 않는다.",
+      "concepts": [
+        "공급사 세션종료의 계정회수 조건"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06425",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "작업자와 도구가 구역 밖에 있고 덮개와 접지가 원상 복구됐음을 확인해야 개인 잠금 제거 절차를 시작한다. 정비잠금 해제의 도구회수 확인은 작업 종료 서명만으로 대체되지 않는다.",
+      "concepts": [
+        "정비잠금 해제의 도구회수 확인"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06426",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "새 모듈은 화학계와 직렬 셀 수, 전압 범위와 통신 규격이 기존 랙과 호환돼야 연결한다. 교체모듈의 전기호환 보호조건은 외형 치수가 같다는 이유만으로 충족되지 않는다.",
+      "concepts": [
+        "교체모듈의 전기호환 보호조건"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06427",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전압 곡선과 열 특성이 다른 셀 화학계를 하나의 직렬 랙에 임의로 섞지 않는다. 이종화학 셀의 동일랙 혼합금지는 별도 변환기와 보호를 갖춘 독립 랙 구성까지 금지하는 것은 아니다.",
+      "concepts": [
+        "이종화학 셀의 동일랙 혼합금지"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06428",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "새 모듈과 오래된 모듈의 용량·저항 차이가 검증 범위 안이면 가장 약한 모듈 기준의 감축 출력으로 함께 운전할 수 있다. 연령차 모듈의 감축운전 예외는 전압 불균형 증가 시 종료한다.",
+      "concepts": [
+        "연령차 모듈의 감축운전 예외"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06429",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉각수 재충전의 공기배출 조건은 저장조 수위 정상만으로 충분하지 않다.",
+      "concepts": [
+        "냉각수 재충전의 공기배출 조건"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06430",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "누설수리의 압력유지 해제증거는 바닥을 닦아 물이 보이지 않는 상태와 다르다.",
+      "concepts": [
+        "누설수리의 압력유지 해제증거"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06431",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "불꽃이 직접 닿지 않았어도 고온과 소화수에 노출된 랙은 셀·배선·절연·구조를 전면 검사한다. 화재노출 랙의 전면검사 조건은 외관만 정상인 경우에도 적용된다.",
+      "concepts": [
+        "화재노출 랙의 전면검사 조건"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06432",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "약제 보충과 밸브 시험이 끝난 뒤 자격을 가진 담당자만 소화설비의 방출 잠금을 재설정한다. 소화설비 재설정의 권한범위는 일반 운영자가 화면 경보만 지워 복귀하지 못하게 한다.",
+      "concepts": [
+        "소화설비 재설정의 권한범위"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06433",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가스감지기를 교체하면 표준가스를 주입해 응답시간과 경보 전달을 확인한 뒤 우회를 해제한다. 가스감지기 교체후 응답시험은 새 제품이라는 사실만으로 완료되지 않는다.",
+      "concepts": [
+        "가스감지기 교체후 응답시험"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06434",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수리한 연기감지기와 인접 감지기에 시험 연기를 넣어 위치 표시와 방출 연동을 함께 확인한다. 연기감지 채널의 교차확인 복원은 센서 단독 표시와 전체 안전연동을 구분한다.",
+      "concepts": [
+        "연기감지 채널의 교차확인 복원"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06435",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "앵커 변위와 랙 수직도, 배관과 케이블 손상을 검사하고 이상이 없을 때 지진 정지 상태를 해제한다. 지진정지의 구조검사후 해제는 가속도 신호가 끝났다는 사실만으로 승인되지 않는다.",
+      "concepts": [
+        "지진정지의 구조검사후 해제"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06436",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "물을 제거한 뒤 숨은 공간의 수분과 오염을 검사하고 절연 측정이 반복 합격해야 침수 잠금을 푼다. 침수잠금의 완전건조 해제조건은 표면 건조만 확인한 경우에는 성립하지 않는다.",
+      "concepts": [
+        "침수잠금의 완전건조 해제조건"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06437",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "염수에 닿은 단자와 외함, 접지 연결은 세척 뒤에도 부식과 저항 증가를 검사한다. 염수노출의 부식검사 보호범위는 직접 젖은 부품뿐 아니라 모세관으로 이어진 접속부까지 포함한다.",
+      "concepts": [
+        "염수노출의 부식검사 보호범위"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06438",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "혹한 뒤 모든 대표 셀이 최소 온도를 넘고 구역 간 편차가 줄어야 충전 잠금을 해제한다. 혹한정지의 균일가열 해제조건은 한 센서가 먼저 따뜻해진 상태로는 충분하지 않다.",
+      "concepts": [
+        "혹한정지의 균일가열 해제조건"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06439",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외기가 내려간 뒤에도 셀 온도와 상승률, 냉각수 출구 온도가 안정돼야 폭염 출력 잠금을 푼다. 폭염정지의 잔열감소 해제조건은 일몰 시각만으로 자동 해제하지 않는다.",
+      "concepts": [
+        "폭염정지의 잔열감소 해제조건"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06440",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수리한 랙은 제한 충방전 시험에서 용량과 전압 편차가 기준에 들면 검증된 수준만큼 가용등급을 회복한다. 수리후 용량시험의 가용등급 복원은 정격 전체를 자동 부여하지 않는다.",
+      "concepts": [
+        "수리후 용량시험의 가용등급 복원"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06441",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 번의 절연 측정이 아니라 지정 전압과 환경에서 반복값이 안정돼야 고전압 복귀를 승인한다. 고전압 복귀의 절연반복 합격은 간헐 누설을 정상 표본 하나로 숨기지 않는다.",
+      "concepts": [
+        "고전압 복귀의 절연반복 합격"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06442",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계통 사고 뒤에는 전압·주파수 계전 입력과 차단기 동작시간을 시험해 연동이 맞아야 연계 잠금을 해제한다. 계통보호 복귀의 계전연동 시험은 계통 자체가 정상이라는 확인과 별개다.",
+      "concepts": [
+        "계통보호 복귀의 계전연동 시험"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06443",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상정지를 누른 원인과 위험구역 상태를 현장 담당자와 관제 운영자가 함께 확인한 뒤 회로를 재설정한다. 비상정지 해제의 현장공동 확인은 어느 한쪽의 원격 버튼 조작만으로 끝나지 않는다.",
+      "concepts": [
+        "비상정지 해제의 현장공동 확인"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06444",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "인명 안전사고가 발생한 설비는 기술 수리와 별도로 조사 결과와 시정조치를 운영책임자가 승인해야 상업 운전에 복귀한다. 안전사고 후 운영책임자 재승인은 시험용 무전압 접근까지 막는 범위는 아니다.",
+      "concepts": [
+        "안전사고 후 운영책임자 재승인"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06445",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "임시출력감축의 정상복원 조건은 경보가 사라진 즉시 정격으로 뛰지 않게 한다.",
+      "concepts": [
+        "임시출력감축의 정상복원 조건"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06446",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 보호경보가 짧은 기간에 되풀이되면 매번 값이 정상으로 돌아와도 자동 복귀를 중지하고 원인조사를 요구한다. 반복경보의 자동해제 금지는 단일 일과성 사건보다 엄격한 범위를 적용한다.",
+      "concepts": [
+        "반복경보의 자동해제 금지"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06447",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운전에 불편하다는 이유가 아니라 기준 센서와 물리검사에서 위험이 없고 감지 채널 결함이 확인돼야 오경보로 분류한다. 오경보 판정의 독립증거 요건은 원래 보호 임계치를 임의로 낮추지 못하게 한다.",
+      "concepts": [
+        "오경보 판정의 독립증거 요건"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06448",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "누가 어떤 채널을 언제 왜 우회했고 어떤 대체 보호를 뒀는지 사건 종료 뒤 독립 검토한다. 보호우회 기록의 사후감사 범위는 성공한 작업도 예외 없이 포함한다.",
+      "concepts": [
+        "보호우회 기록의 사후감사 범위"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06449",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모든 임시 예외와 감축값을 닫은 뒤 승인된 정상설정 스냅샷과 실제 장치 값을 비교한다. 정상설정 스냅샷의 최종복귀 기준은 버전명 일치뿐 아니라 핵심 보호값의 내용 일치를 요구한다.",
+      "concepts": [
+        "정상설정 스냅샷의 최종복귀 기준"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06450",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비와 사고 중 사용한 예외, 해제증거와 남은 제한을 원장에 확정하고 다음 교대가 읽었음을 확인한다. 예외변경 원장의 운영인계 완료는 구두 설명만으로 보호 상태를 넘기지 않게 한다.",
+      "concepts": [
+        "예외변경 원장의 운영인계 완료"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    }
+  ]
+}

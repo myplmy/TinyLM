@@ -1,0 +1,2261 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v14",
+  "version": "14",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-01951 ~ S2-CDH-02100",
+  "concept_family": "S2-A02-T014: 클라우드 서비스 부하·장애 대응 — 자원 의존과 연쇄 실패 경로",
+  "design_note": "클라우드 서비스 부하·장애 대응 영역의 자원 의존과 연쇄 실패 경로 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-01951",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지역전력망 장애연쇄는 데이터센터 상용전원 상실에서 시작해 배터리 소모와 발전기 운전으로 이어진다. 클라우드 자원이 논리적으로 분산돼도 같은 전력지역이면 함께 영향을 받을 수 있다.",
+      "concepts": [
+        "지역전력망 장애연쇄"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01952",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정전이 길어지면 무정전전원 배터리소진이 제어장치와 네트워크의 즉시 전원 상실로 번진다. 배터리는 발전기 기동까지의 완충자원이지 무기한 전원은 아니다.",
+      "concepts": [
+        "무정전전원 배터리소진"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01953",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "발전기가 정상이어도 발전기 연료공급 병목으로 탱크와 배송 경로가 끊기면 운전시간이 제한된다. 설비 대수와 지속 가능한 에너지 자원을 구분한다.",
+      "concepts": [
+        "발전기 연료공급 병목"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01954",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉각설비 정지의 서버감속은 실내 온도 상승, 프로세서 제한, 호스트 종료로 이어진다. 전원이 살아 있어도 냉각 자원이 사라지면 계산 용량은 유지되지 않는다.",
+      "concepts": [
+        "냉각설비 정지의 서버감속"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01955",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서버들이 랙전원분배기 공통고장에 묶이면 각 장비의 이중 전원 입력도 같은 분배기에서 나올 경우 함께 꺼진다. 케이블 두 개를 독립 전원으로 세지 않는다.",
+      "concepts": [
+        "랙전원분배기 공통고장"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01956",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "상단스위치 장애의 랙격리가 생기면 서버 프로세스는 살아 있어도 외부와 통신하지 못한다. 계산 상태와 네트워크 접근 가능 상태를 따로 본다.",
+      "concepts": [
+        "상단스위치 장애의 랙격리"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01957",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통신사 회선이 달라도 공동광로 절단의 이중회선상실로 같은 관로의 케이블이 함께 끊길 수 있다. 사업자 분리와 물리 경로 분리를 구별한다.",
+      "concepts": [
+        "공동광로 절단의 이중회선상실"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01958",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "경로반사기 오류의 광역우회는 잘못된 경로정보를 여러 라우터에 퍼뜨려 건전 링크의 트래픽까지 막을 수 있다. 물리 장애가 아닌 제어정보도 연쇄 원인이 된다.",
+      "concepts": [
+        "경로반사기 오류의 광역우회"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01959",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "권한DNS 장애의 접속연쇄는 새 이름조회 실패를 거쳐 API·데이터베이스·인증 접속을 동시에 흔든다. 이미 주소를 캐시한 연결은 잠시 남아 영향이 지연될 수 있다.",
+      "concepts": [
+        "권한DNS 장애의 접속연쇄"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01960",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "인증서발급기관 의존 때문에 만료가 임박한 여러 서비스가 같은 발급장애에 묶이면 갱신 실패가 연쇄된다. 현재 연결 정상만으로 미래 갱신자원을 충분하다고 보지 않는다.",
+      "concepts": [
+        "인증서발급기관 의존"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01961",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시각동기 장애의 인증확산은 토큰 만료판정과 인증서 유효기간을 동시에 어긋나게 한다. 응용 오류처럼 보이더라도 공통 시간 자원을 확인한다.",
+      "concepts": [
+        "시각동기 장애의 인증확산"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01962",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "클라우드제어면 장애의 자원고정이 생기면 기존 인스턴스는 돌더라도 새 생성·복구·경로변경을 못할 수 있다. 데이터면 가용성과 관리능력을 구분한다.",
+      "concepts": [
+        "클라우드제어면 장애의 자원고정"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01963",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "장애 중 자동화가 몰리면 관리API 할당량의 복구지연이 인스턴스 생성과 보안규칙 수정에 함께 번진다. 평상 호출한도를 비상 복구량과 같게 보지 않는다.",
+      "concepts": [
+        "관리API 할당량의 복구지연"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01964",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "신원서비스 중단의 운영잠금은 새 로그인과 권한상승을 막아 인프라가 살아 있어도 사람이 변경하지 못하게 한다. 이미 열린 세션의 수명에 따라 영향 시점이 달라진다.",
+      "concepts": [
+        "신원서비스 중단의 운영잠금"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01965",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "암호키서비스 장애의 데이터봉쇄는 저장 객체와 데이터베이스가 존재해도 복호화를 막는다. 물리 저장 가용성을 읽기 가능한 데이터 자원과 동일시하지 않는다.",
+      "concepts": [
+        "암호키서비스 장애의 데이터봉쇄"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01966",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비밀저장소 정지의 기동연쇄는 새 인스턴스가 자격정보를 받지 못해 자동확장이 실패하게 한다. 이미 값을 메모리에 가진 인스턴스는 한동안 독립적으로 동작할 수 있다.",
+      "concepts": [
+        "비밀저장소 정지의 기동연쇄"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01967",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "컨테이너저장소 장애의 확장제한 때문에 실행 중 복제본은 정상이어도 새 노드가 이미지를 받지 못한다. 현재 용량과 복구·확장 자원을 따로 평가한다.",
+      "concepts": [
+        "컨테이너저장소 장애의 확장제한"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01968",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이미지목록 손상의 배포오인은 플랫폼별 바이트가 있어도 올바른 대상을 찾지 못하게 한다. 저장용량보다 메타데이터 정합성이 배포 경로를 좌우한다.",
+      "concepts": [
+        "이미지목록 손상의 배포오인"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01969",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "패키지저장소 중단의 빌드연쇄는 새 의존성 설치 실패와 보안패치 지연을 거쳐 배포 복구를 늦춘다. 기존 실행 서비스가 정상이어도 변경 자원은 막힐 수 있다.",
+      "concepts": [
+        "패키지저장소 중단의 빌드연쇄"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01970",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사고 수정이 몰리면 빌드실행기 부족의 배포대기가 길어져 코드가 준비돼도 산출물을 만들지 못한다. 개발 인원 수와 실행 슬롯 수를 함께 계산한다.",
+      "concepts": [
+        "빌드실행기 부족의 배포대기"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01971",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "빌드가 끝나도 산출물저장소 포화로 파일을 게시하지 못하면 배포기는 새 버전을 찾지 못한다. 계산 완료와 전달 가능한 산출물 상태를 구분한다.",
+      "concepts": [
+        "산출물저장소 포화"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01972",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 클러스터가 배포제어기 단일점에 의존하면 제어기 장애가 모든 지역의 변경과 롤백을 함께 막는다. 실행환경 분산만으로 관리경로가 분산되지는 않는다.",
+      "concepts": [
+        "배포제어기 단일점"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01973",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동확장 지표수집 의존 때문에 부하가 높아도 측정 파이프라인이 끊기면 정책은 새 용량을 요청하지 못한다. 실제 상태와 제어기가 보는 상태가 달라질 수 있다.",
+      "concepts": [
+        "자동확장 지표수집 의존"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01974",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 서비스가 같은 계정쿼터 공통병목을 쓰면 한 팀의 대규모 확장이 다른 팀의 복구 인스턴스 생성을 막는다. 서비스별 목표와 상위 자원한도를 함께 본다.",
+      "concepts": [
+        "계정쿼터 공통병목"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01975",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서브넷주소 고갈의 배치실패는 CPU 용량이 남아도 네트워크 인터페이스를 만들 수 없어 새 작업을 막는다. 계산 자원 합계만으로 확장 가능성을 판단하지 않는다.",
+      "concepts": [
+        "서브넷주소 고갈의 배치실패"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01976",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외부 호출이 몰리면 주소변환 포트고갈이 서로 다른 내부 서비스의 연결 실패로 번진다. 내부 인스턴스 수와 공유 출구 세션 용량을 구분한다.",
+      "concepts": [
+        "주소변환 포트고갈"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01977",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부하분산기 제어장애의 대상고정으로 새 복제본을 등록하지 못하면 기존 대상에 부하가 남아 과열될 수 있다. 데이터면 통과와 대상갱신 능력은 다르다.",
+      "concepts": [
+        "부하분산기 제어장애의 대상고정"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01978",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공용건강검사기의 오판전파는 검사기 네트워크 오류를 여러 정상 백엔드의 실패로 표시해 트래픽을 한쪽에 몰 수 있다. 대상 장애와 검사자 장애를 구분한다.",
+      "concepts": [
+        "공용건강검사기의 오판전파"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01979",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서비스목록 저장소 장애는 주소 발견 실패를 거쳐 내부 호출과 배포 준비를 함께 막는다. 직접 주소를 가진 기존 연결은 제한적으로 영향에서 벗어날 수 있다.",
+      "concepts": [
+        "서비스목록 저장소 장애"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01980",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "메시프록시 공통설정 오류가 전역 배포되면 각 응용은 정상이어도 서비스 간 통신이 동시에 깨진다. 공통 계층의 작은 변경이 넓은 연쇄를 만든다.",
+      "concepts": [
+        "메시프록시 공통설정 오류"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01981",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "클러스터 전체 여유가 커도 노드자원 단편화 때문에 큰 메모리 요청을 한 노드에 배치하지 못할 수 있다. 총합 자원과 배치 가능한 연속 자원을 구분한다.",
+      "concepts": [
+        "노드자원 단편화"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01982",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "메모리누수의 재시작연쇄는 한 복제본 종료, 남은 복제본 부하 증가, 추가 종료로 이어질 수 있다. 개별 재시작이 전체 용량을 더 줄이지 않는지 본다.",
+      "concepts": [
+        "메모리누수의 재시작연쇄"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01983",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 파드가 같은 호스트 저장을 쓰면 호스트디스크 지연의 다중파드 영향으로 무관한 서비스까지 느려진다. 논리 볼륨 이름이 달라도 물리 장치를 공유할 수 있다.",
+      "concepts": [
+        "호스트디스크 지연의 다중파드 영향"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01984",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "작은 로그가 쌓여 아이노드 고갈의 제어에이전트 정지가 나면 새 상태파일을 만들지 못해 노드가 준비목록에서 빠질 수 있다. 바이트 여유만 보는 감시는 원인을 놓친다.",
+      "concepts": [
+        "아이노드 고갈의 제어에이전트 정지"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01985",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "컨테이너 임시저장 포화의 퇴출연쇄는 파드 제거와 재배치를 반복해 다른 노드 공간까지 소비한다. 재시작이 자원 원인을 없애지 않으면 연쇄가 커진다.",
+      "concepts": [
+        "임시저장 포화의 퇴출연쇄"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01986",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "볼륨제어기 장애의 상태고정 때문에 디스크는 존재해도 새 노드에 떼고 붙이는 작업을 못한다. 저장 데이터와 연결 관리 자원을 분리해 본다.",
+      "concepts": [
+        "볼륨제어기 장애의 상태고정"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01987",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "백업과 운영쓰기가 같은 망을 쓰면 저장망 혼잡의 데이터베이스 지연이 커져 트랜잭션 시간초과와 재시도를 부른다. 계산망 정상만으로 저장경로를 배제하지 않는다.",
+      "concepts": [
+        "저장망 혼잡의 데이터베이스 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01988",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "객체 바이트가 남아 있어도 객체메타데이터 장애의 광역조회실패로 이름과 위치를 찾지 못하면 읽을 수 없다. 데이터 블록과 목록 자원을 함께 보호한다.",
+      "concepts": [
+        "객체메타데이터 장애의 광역조회실패"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01989",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분산 저장의 데이터블록 손상의 부분객체 실패는 특정 범위 읽기를 깨뜨리고 재구성 부하를 높인다. 메타데이터 조회 성공이 내용 무결성을 뜻하지 않는다.",
+      "concepts": [
+        "데이터블록 손상의 부분객체 실패"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01990",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "스키마 변경이 데이터베이스 메타잠금 병목을 만들면 짧은 조회와 쓰기가 함께 대기해 연결풀이 찰 수 있다. CPU가 낮은데도 서비스가 멈추는 연쇄다.",
+      "concepts": [
+        "데이터베이스 메타잠금 병목"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01991",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "쓰기로그 디스크포화는 새 커밋 중단과 복제 전송 정지를 거쳐 읽기 복제본 최신성까지 떨어뜨린다. 자료파일 여유와 로그 경로 여유를 나눠 본다.",
+      "concepts": [
+        "쓰기로그 디스크포화"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01992",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "복제망 지연의 읽기오염은 오래된 재고나 권한을 반환해 상류 캐시에 잘못된 값을 퍼뜨릴 수 있다. 단순 응답 성공이 연쇄의 끝이 아니다.",
+      "concepts": [
+        "복제망 지연의 읽기오염"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01993",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "로그보관소 장애의 복구지점 상실이 길어지면 복제본이 끊긴 뒤 따라잡을 기록이 없어 전체 복사가 필요해진다. 현재 주 노드 정상과 미래 복구능력을 구분한다.",
+      "concepts": [
+        "로그보관소 장애의 복구지점 상실"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01994",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "복제노드가 여러 개여도 정족수 저장소의 공통영역 위험 때문에 같은 가용영역 장애로 과반을 잃을 수 있다. 노드 수보다 장애영역 분포가 중요하다.",
+      "concepts": [
+        "정족수 저장소의 공통영역 위험"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01995",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모든 갱신이 한 리더로 모이면 리더노드 과부하의 쓰기집중이 지연과 선거 반복으로 번질 수 있다. 읽기 복제본 수가 쓰기 병목을 직접 줄이지는 않는다.",
+      "concepts": [
+        "리더노드 과부하의 쓰기집중"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01996",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "응용 재시작 때 연결풀 폭증의 데이터베이스 고갈이 생기면 새 인스턴스가 동시에 세션을 열어 하류 최대연결을 소모한다. 복구 동작이 추가 장애를 만들 수 있다.",
+      "concepts": [
+        "연결풀 폭증의 데이터베이스 고갈"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01997",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공용캐시 장애의 원본쇄도는 적중하던 요청을 한꺼번에 데이터베이스로 보내 하류 과부하를 만든다. 캐시만의 성능 문제로 좁혀 보지 않는다.",
+      "concepts": [
+        "공용캐시 장애의 원본쇄도"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01998",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "요청 수가 고르게 보여도 인기키 편중의 샤드과열로 특정 캐시노드와 데이터베이스 파티션만 포화될 수 있다. 전체 평균이 국소 자원고갈을 가린다.",
+      "concepts": [
+        "인기키 편중의 샤드과열"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-01999",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "메모리 부족으로 캐시축출의 재계산연쇄가 시작되면 같은 객체를 다시 만들며 CPU와 하류 읽기가 함께 증가한다. 단순 적중률 저하가 여러 자원을 소모한다.",
+      "concepts": [
+        "캐시축출의 재계산연쇄"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02000",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "세션저장소 장애의 로그인폭증은 기존 세션 상실과 재인증 요청 증가를 거쳐 신원서비스까지 과부하시킨다. 한 저장소 고장이 인증계층으로 번질 수 있다.",
+      "concepts": [
+        "세션저장소 장애의 로그인폭증"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02001",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "메시지브로커 디스크가 차면 브로커디스크 포화의 생산자정지가 상류 요청 대기와 시간초과로 번진다. 비동기 계층도 저장자원에 의존한다.",
+      "concepts": [
+        "브로커디스크 포화의 생산자정지"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02002",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "특정 큐파티션 리더상실이 생기면 다른 파티션은 정상이어도 그 키 범위의 적재와 소비가 멈춘다. 전체 브로커 평균으로 부분 장애를 숨기지 않는다.",
+      "concepts": [
+        "큐파티션 리더상실"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02003",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소비자정지의 적체연쇄는 대기열 증가, 저장공간 압박, 생산자 제한으로 상류까지 되돌아간다. 소비 단계만의 국소 문제로 끝나지 않는다.",
+      "concepts": [
+        "소비자정지의 적체연쇄"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02004",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "형식은 맞지만 처리할 수 없는 독성메시지의 반복실패가 같은 파티션을 막으면 뒤의 정상 작업도 지연된다. 격리큐가 연쇄를 끊는 자원이 된다.",
+      "concepts": [
+        "독성메시지의 반복실패"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02005",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "복구 직후 재시도폭풍의 하류고갈이 일어나면 대기하던 클라이언트가 동시에 호출해 회복 중 서비스가 다시 포화된다. 개별 복구정책이 집단 부하를 만들 수 있다.",
+      "concepts": [
+        "재시도폭풍의 하류고갈"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02006",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외부웹훅 지연의 작업자원 점유가 길어지면 전송 스레드와 큐 슬롯이 차서 다른 수신자 알림도 늦어진다. 대상별 격리가 없으면 외부 한 곳이 전체 전달을 막는다.",
+      "concepts": [
+        "외부웹훅 지연의 작업자원 점유"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02007",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외부API 할당량의 기능연쇄는 지도·결제·신원 확인처럼 한 공급사를 공유하는 여러 기능을 동시에 제한한다. 기능 이름이 달라도 상위 계약자원이 같을 수 있다.",
+      "concepts": [
+        "외부API 할당량의 기능연쇄"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02008",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "과금계량 장애의 확장차단이 생기면 컴퓨팅 여유가 있어도 비용 추적 불가를 이유로 새 자원 생성이 막힐 수 있다. 기술 용량과 상업 제어자원을 나눈다.",
+      "concepts": [
+        "과금계량 장애의 확장차단"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02009",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이메일공급사 장애의 알림누락은 비밀번호 재설정과 영수증 전송을 함께 막을 수 있다. 핵심 거래가 성공했어도 사용자 후속행동이 지연된다.",
+      "concepts": [
+        "이메일공급사 장애의 알림누락"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02010",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "문자게이트웨이 포화의 인증지연은 일회용 코드 전달을 늦춰 로그인 재시도를 늘리고 신원서비스 부하까지 키운다. 전달망 병목이 인증계층으로 번진다.",
+      "concepts": [
+        "문자게이트웨이 포화의 인증지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02011",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지표저장소 장애의 자동화맹점 때문에 실제 과부하가 있어도 확장기와 경보기는 정상으로 볼 수 있다. 관측자원 고장을 대상 상태와 구분한다.",
+      "concepts": [
+        "지표저장소 장애의 자동화맹점"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02012",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중앙 로그수집기 지연의 디스크증가는 각 인스턴스의 전송 대기파일을 키워 로컬 공간고갈로 이어진다. 관측망 장애가 응용 저장자원을 소모한다.",
+      "concepts": [
+        "로그수집기 지연의 디스크증가"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02013",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "동기 전송 설정에서는 추적수집기 과부하의 요청지연이 응용 응답시간에 직접 더해진다. 관측 기능을 독립 보조계층으로 만들지 않으면 연쇄가 생긴다.",
+      "concepts": [
+        "추적수집기 과부하의 요청지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02014",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모든 규칙이 경보관리기 단일점에 모이면 장치 정지로 지표는 남아도 당직 호출이 끊긴다. 측정과 통지 자원을 별도로 중복해야 한다.",
+      "concepts": [
+        "경보관리기 단일점"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02015",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "호출공급사 장애의 무응답확대는 전화·문자·앱 알림을 같은 업체가 맡을 때 모든 채널에 번진다. 채널 수만으로 전달 독립성을 세지 않는다.",
+      "concepts": [
+        "호출공급사 장애의 무응답확대"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02016",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "장시간 경보가 이어지면 당직인력 피로의 판단연쇄가 확인 지연과 잘못된 우회조치로 이어질 수 있다. 자동화 자원뿐 아니라 사람의 지속능력도 본다.",
+      "concepts": [
+        "당직인력 피로의 판단연쇄"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02017",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운영절차 저장소 접근상실이 나면 담당자가 있어도 최신 복구순서와 소유자 정보를 찾지 못한다. 문서 접근을 장애망과 분리하지 않으면 대응이 늦어진다.",
+      "concepts": [
+        "운영절차 저장소 접근상실"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02018",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소스저장소 중단의 긴급수정 지연은 버그 원인을 알아도 코드를 받아 빌드하는 일을 막는다. 실행 서비스와 변경 자원의 가용성은 다르다.",
+      "concepts": [
+        "소스저장소 중단의 긴급수정 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02019",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배포자격 만료의 복구정지는 산출물이 준비돼도 운영 클러스터에 반영할 권한을 없앤다. 기술 결과와 실행 권한을 함께 준비해야 한다.",
+      "concepts": [
+        "배포자격 만료의 복구정지"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02020",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산출물서명 서비스 장애로 신뢰표식을 만들지 못하면 보안정책이 새 이미지를 거부한다. 빌드 성공과 배포 가능한 신뢰상태를 구분한다.",
+      "concepts": [
+        "산출물서명 서비스 장애"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02021",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "긴급 패치가 있어도 서명키 접근불가의 패치지연 때문에 검증된 산출물로 게시하지 못한다. 키 보호와 비상 사용경로의 균형이 필요하다.",
+      "concepts": [
+        "서명키 접근불가의 패치지연"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02022",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "개발도구 라이선스 중단은 컴파일이나 진단 기능을 막아 사고 수정시간을 늘릴 수 있다. 소스와 인력이 있어도 외부 권리자원에 의존할 수 있다.",
+      "concepts": [
+        "개발도구 라이선스 중단"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02023",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "협업서비스 장애의 조정지연이 생기면 기술 시스템은 살아 있어도 역할배정과 승인 전달이 흩어진다. 별도 비상 연락경로가 연쇄를 줄인다.",
+      "concepts": [
+        "협업서비스 장애의 조정지연"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02024",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "콘텐츠전송망 장애의 원본쇄도는 가장자리 요청을 원본으로 몰아 네트워크와 응용 용량을 동시에 소모한다. 단순 정적파일 지연이 전체 서비스 부하로 번진다.",
+      "concepts": [
+        "콘텐츠전송망 장애의 원본쇄도"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02025",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "DNS공급사 설정오류가 공통 영역에 배포되면 여러 지역 서버가 정상이어도 사용자는 주소를 찾지 못한다. 계산지역 분산과 이름제어 분산을 구분한다.",
+      "concepts": [
+        "DNS공급사 설정오류"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02026",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정책상 공개기록이 필요한 경우 투명성로그 지연의 인증서발급 정체가 새 종단 개통을 막을 수 있다. 발급기관 내부 정상만으로 전체 발급경로가 완성되지는 않는다.",
+      "concepts": [
+        "투명성로그 지연의 인증서발급 정체"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02027",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가용영역 자원고갈의 지역편중은 자동확장이 한쪽에 실패하며 남은 영역으로 부하와 인스턴스를 몰아 장애위험을 키운다. 지역 총용량 평균이 편중을 가릴 수 있다.",
+      "concepts": [
+        "가용영역 자원고갈의 지역편중"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02028",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "저렴한 회수형 인스턴스 종료연쇄가 같은 시각에 발생하면 작업 재배치와 이미지 다운로드가 몰려 제어면까지 부담한다. 독립 후보처럼 보여도 시장조건을 공유한다.",
+      "concepts": [
+        "회수형 인스턴스 종료연쇄"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02029",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예약용량 계정귀속 병목 때문에 조직 전체에 여유가 있어도 다른 계정이나 지역에서는 복구에 쓰지 못할 수 있다. 계약상 자원의 사용범위를 확인한다.",
+      "concepts": [
+        "예약용량 계정귀속 병목"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02030",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "특정 가속기 부족의 모델대기가 생기면 일반 CPU가 남아도 추론 인스턴스를 늘리지 못한다. 총 계산량과 요구 장치 유형을 구분한다.",
+      "concepts": [
+        "가속기 부족의 모델대기"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02031",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시간서버 오류의 예약작업왜곡은 배치 중복 실행과 토큰 만료, 로그 순서 혼란을 함께 일으킨다. 공통 시간자원 한 곳이 여러 제어경로에 영향을 준다.",
+      "concepts": [
+        "시간서버 오류의 예약작업왜곡"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02032",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "스케줄러 정지의 빈자원고착 때문에 노드에 여유가 있어도 대기 작업이 배치되지 않는다. 물리 용량과 배치 결정을 내리는 제어자원을 구분한다.",
+      "concepts": [
+        "스케줄러 정지의 빈자원고착"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02033",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배치들이 조정잠금 서비스의 배치정체에 묶이면 잠금장애가 서로 다른 작업의 시작까지 막을 수 있다. 불필요한 전역 잠금이 연쇄범위를 넓힌다.",
+      "concepts": [
+        "조정잠금 서비스의 배치정체"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02034",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기능플래그 저장소 장애가 나면 새 정책을 읽지 못해 위험 기능을 끄거나 복구 기능을 켜지 못할 수 있다. 코드 배포와 런타임 제어자원은 별개다.",
+      "concepts": [
+        "기능플래그 저장소 장애"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02035",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "잘못된 값을 중앙에서 내리면 중앙설정 서비스의 오염전파로 여러 인스턴스가 동시에 같은 오류상태가 된다. 일관된 배포가 항상 좋은 방향의 독립성을 주지는 않는다.",
+      "concepts": [
+        "중앙설정 서비스의 오염전파"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02036",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "동적설정 구독지연은 일부 인스턴스만 오래된 한도를 써 요청처리 차이를 만든다. 설정 게시 성공과 모든 소비자 반영을 구분한다.",
+      "concepts": [
+        "동적설정 구독지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02037",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재시작한 노드가 캐시된 오래된설정의 재시작확산을 일으키면 복구 중 서로 다른 정책이 섞인다. 기동 자체가 최신설정을 보장하지 않는다.",
+      "concepts": [
+        "오래된설정의 재시작확산"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02038",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "설정일괄배포의 동시실패는 잘못된 한 값이 전 복제본을 한꺼번에 망가뜨린다. 단계적 반영과 독립 검증으로 공통 변경 위험을 줄인다.",
+      "concepts": [
+        "설정일괄배포의 동시실패"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02039",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비밀교체의 소비자불일치는 일부 인스턴스가 새 자격을, 하류는 옛 자격만 받아 인증실패를 만든다. 공급과 소비의 중첩기간이 필요하다.",
+      "concepts": [
+        "비밀교체의 소비자불일치"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02040",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "토큰발급기 장애의 로그인연쇄는 새 세션 실패와 반복 로그인 요청을 거쳐 신원 데이터베이스 부하를 높인다. 기존 토큰 캐시가 영향 시작을 지연할 수 있다.",
+      "concepts": [
+        "토큰발급기 장애의 로그인연쇄"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02041",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐기목록 저장소 장애가 나면 검증기는 취소된 토큰을 계속 허용하거나 모든 토큰을 거부하는 선택에 놓인다. 보안정보 가용성이 서비스 정책을 좌우한다.",
+      "concepts": [
+        "폐기목록 저장소 장애"
+      ],
+      "relations": [
+        "state",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02042",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "토큰검증 시계편차가 여러 노드에 다르게 생기면 같은 자격이 어떤 곳에서는 만료되고 다른 곳에서는 유효해진다. 시간자원 불일치가 인증결과를 분할한다.",
+      "concepts": [
+        "토큰검증 시계편차"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02043",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "결제공급사 장애의 주문적체는 미확정 주문과 재시도를 쌓아 데이터베이스와 고객지원 부하를 함께 높인다. 외부 거래경로가 내부 자원을 소비한다.",
+      "concepts": [
+        "결제공급사 장애의 주문적체"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02044",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사기판정 지연의 승인대기는 결제망이 정상이어도 주문 확정을 막고 예약 재고를 오래 점유한다. 보안 판단 서비스가 상업 자원 흐름에 연결된다.",
+      "concepts": [
+        "사기판정 지연의 승인대기"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02045",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재고서비스 오류의 판매과다는 오래된 수량을 여러 주문이 공유하며 취소와 환불 업무를 연쇄시킨다. 화면 가용성과 자원 정합성을 구분한다.",
+      "concepts": [
+        "재고서비스 오류의 판매과다"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02046",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "검색색인 지연의 상품은폐는 원본 상품이 있어도 사용자가 찾지 못하게 해 추천과 판매 흐름까지 바꾼다. 저장과 발견 자원이 서로 의존한다.",
+      "concepts": [
+        "검색색인 지연의 상품은폐"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02047",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "추천모델 장애의 원본조회증가는 대체 인기목록 계산과 데이터베이스 조회를 늘려 다른 경로 부하까지 키울 수 있다. 선택 기능 장애도 공유자원에 연쇄될 수 있다.",
+      "concepts": [
+        "추천모델 장애의 원본조회증가"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02048",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대량 사건을 보내는 분석수집 폭주의 업무망혼잡이 생기면 본 요청과 같은 출구대역폭을 소비해 응답을 늦춘다. 비동기 작업도 물리망을 공유한다.",
+      "concepts": [
+        "분석수집 폭주의 업무망혼잡"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02049",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "데이터레이크 장애의 보고지연은 실시간 거래를 멈추지 않아도 위험탐지·정산·용량예측의 입력을 끊는다. 현재 서비스와 후속 운영능력의 영향 시점을 구분한다.",
+      "concepts": [
+        "데이터레이크 장애의 보고지연"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02050",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분석창고 계산슬롯 고갈이 생기면 원자료가 있어도 정산과 운영보고가 대기해 의사결정이 늦어진다. 저장용량과 질의 실행자원을 따로 센다.",
+      "concepts": [
+        "분석창고 계산슬롯 고갈"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02051",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "파이프라인조정기 정지의 자료고착 때문에 각 변환 프로그램이 정상이어도 다음 단계가 시작되지 않는다. 작업 코드와 순서를 지휘하는 자원을 구분한다.",
+      "concepts": [
+        "파이프라인조정기 정지의 자료고착"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02052",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "생산자가 형식을 검증할 수 없으면 스키마목록 장애의 사건거부가 발생해 정상 내용도 게시되지 않을 수 있다. 데이터 생성과 형식 계약 조회가 연결돼 있다.",
+      "concepts": [
+        "스키마목록 장애의 사건거부"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02053",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "파일이 남아 있어도 메타데이터목록 손상의 자료미발견으로 위치·소유자·시점을 찾지 못하면 분석 입력에 넣기 어렵다. 데이터 바이트와 발견 자원은 별개다.",
+      "concepts": [
+        "메타데이터목록 손상의 자료미발견"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02054",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "품질검사 지연의 모델오염은 결측과 단위오류가 특성 저장소를 거쳐 학습·추론 결과에 번지게 한다. 자료 도착만으로 사용을 허용하면 연쇄가 넓어진다.",
+      "concepts": [
+        "품질검사 지연의 모델오염"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02055",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "특성저장소 장애의 추론실패는 모델 서버가 살아 있어도 사용자별 입력을 받지 못하게 한다. 모델 파일 가용성과 실시간 특성 가용성을 구분한다.",
+      "concepts": [
+        "특성저장소 장애의 추론실패"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02056",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모델목록 장애의 버전고정 때문에 새 가중치가 저장돼도 승인버전과 경로를 찾지 못해 배포하지 못한다. 산출물과 배포 메타데이터가 함께 필요하다.",
+      "concepts": [
+        "모델목록 장애의 버전고정"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02057",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "추론서버 포화의 요청적체는 대기시간 초과와 재시도를 거쳐 API 관문과 큐까지 부하를 되돌린다. 모델 계산 병목을 앞단 네트워크 문제로만 보지 않는다.",
+      "concepts": [
+        "추론서버 포화의 요청적체"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02058",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가속기드라이버 오류의 모델정지는 장치가 물리적으로 있어도 계산 커널을 실행하지 못하게 한다. 하드웨어 재고와 사용할 수 있는 소프트웨어 계층을 나눈다.",
+      "concepts": [
+        "가속기드라이버 오류의 모델정지"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02059",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가중치저장소 지연의 콜드시작은 새 추론 인스턴스의 준비시간을 늘려 자동확장이 부하를 따라가지 못하게 한다. 실행 슬롯이 있어도 모델자료 전송에 의존한다.",
+      "concepts": [
+        "가중치저장소 지연의 콜드시작"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02060",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전처리어휘 버전불일치는 모델 가중치가 정상이어도 입력 토큰을 다르게 만들어 품질오류를 넓힌다. 모델과 전처리 자원을 하나의 호환 묶음으로 관리한다.",
+      "concepts": [
+        "전처리어휘 버전불일치"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02061",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대량 작업이 배치추론 예약지연에 걸리면 실시간 용량은 남아도 야간 보고와 색인 갱신이 늦어진다. 실행 종류별 큐와 자원할당을 분리한다.",
+      "concepts": [
+        "배치추론 예약지연"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02062",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 작업자가 같은 버킷을 읽으면 객체저장 처리량 병목이 네트워크 대기와 작업슬롯 점유를 함께 키운다. 파일 수가 분산돼도 상위 저장 한도를 공유한다.",
+      "concepts": [
+        "객체저장 처리량 병목"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02063",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "특정 키에 요청이 몰리면 사건스트림 파티션편중이 한 소비자의 지연을 키워 실시간 판정과 알림을 늦춘다. 전체 큐 평균이 국소 적체를 숨길 수 있다.",
+      "concepts": [
+        "사건스트림 파티션편중"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02064",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사건시계 오류의 순서연쇄는 늦은 자료를 과거로 배정하고 집계창을 다시 열어 보고서와 경보를 흔든다. 시간품질도 데이터 파이프라인 자원이다.",
+      "concepts": [
+        "사건시계 오류의 순서연쇄"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02065",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사기검토 큐포화의 결제보류는 정상 주문도 오래 예약상태에 남겨 재고와 고객지원 자원을 소모한다. 보호 절차의 용량 부족이 상업 흐름에 연쇄된다.",
+      "concepts": [
+        "사기검토 큐포화의 결제보류"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02066",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계정잠금 저장소 장애가 나면 실패횟수를 공유하지 못해 공격을 허용하거나 모든 로그인을 막는 극단으로 갈 수 있다. 인증과 위험상태 저장을 함께 본다.",
+      "concepts": [
+        "계정잠금 저장소 장애"
+      ],
+      "relations": [
+        "state",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02067",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사람확인 서비스 지연은 자동가입과 비밀번호 복구를 막아 지원문의와 재시도를 증가시킨다. 남용방지 외부 자원이 정상 사용자 흐름에도 영향을 준다.",
+      "concepts": [
+        "사람확인 서비스 지연"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02068",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "메일도메인 기록오류로 발신 신뢰검증이 실패하면 이메일공급사가 정상이어도 알림이 거부될 수 있다. 전송 API와 도메인 신뢰자원을 구분한다.",
+      "concepts": [
+        "메일도메인 기록오류"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02069",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모바일푸시 공급망 장애는 앱 서버의 알림 생성이 성공해도 운영체제별 전달을 막는다. 자체 처리와 플랫폼 중개자원을 나눠 관찰한다.",
+      "concepts": [
+        "모바일푸시 공급망 장애"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02070",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "앱배포 심사지연의 수정정체 때문에 서버 수정이 끝나도 구버전 클라이언트의 문제는 계속될 수 있다. 배포경로가 통제 밖 외부 승인에 의존한다.",
+      "concepts": [
+        "앱배포 심사지연의 수정정체"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02071",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "브라우저캐시의 구버전 지속은 서버가 복구돼도 오래된 스크립트가 잘못된 API를 호출하게 한다. 원본 배포와 사용자 단말 갱신 사이에 지연자원이 있다.",
+      "concepts": [
+        "브라우저캐시의 구버전 지속"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02072",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "인터넷사업자 장애의 지역접속상실로 클라우드 서비스가 전역 정상이어도 특정 지역 사용자는 닿지 못한다. 제공자 상태와 종단 경험을 구분한다.",
+      "concepts": [
+        "인터넷사업자 장애의 지역접속상실"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02073",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "무선 기지국이나 가정망의 마지막구간 혼잡의 응답지연은 서버 측 지표에 나타나지 않을 수 있다. 종단 경로의 가장 좁은 자원이 체감 성능을 정한다.",
+      "concepts": [
+        "마지막구간 혼잡의 응답지연"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02074",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서비스 주소를 바꿔도 고객사 DNS캐시 고착으로 이전 지역을 계속 호출하면 장애가 남는다. 권한서버 변경과 소비자 갱신은 다른 단계다.",
+      "concepts": [
+        "고객사 DNS캐시 고착"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02075",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기업프록시 정책의 기능차단은 특정 경로나 파일형식을 막아 일반 사용자에게 정상인 기능을 조직 사용자만 실패하게 한다. 서버 공통장애로 확대하지 않는다.",
+      "concepts": [
+        "기업프록시 정책의 기능차단"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02076",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "단말신뢰저장소 노후화로 새 인증기관을 모르면 서버 인증서가 정상이어도 연결이 거부된다. 종단의 신뢰자원 버전이 접속성에 영향을 준다.",
+      "concepts": [
+        "단말신뢰저장소 노후화"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02077",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사고 중 상담센터 전화망 과부하가 생기면 안내 인력이 있어도 주민 문의를 받지 못하고 웹 재시도와 불만이 늘어난다. 사람과 통신 채널 용량을 함께 본다.",
+      "concepts": [
+        "상담센터 전화망 과부하"
+      ],
+      "relations": [
+        "attribute",
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02078",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지원지식베이스 접근상실이 나면 상담원이 접속해도 최신 우회방법과 사건범위를 확인하지 못한다. 좌석 수만으로 지원능력을 판단하지 않는다.",
+      "concepts": [
+        "지원지식베이스 접근상실"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02079",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 장애가 겹치면 지원인력 동시사건 분산으로 각 사건의 응답시간이 길어진다. 명목 인원보다 동시에 배정 가능한 숙련 역할이 병목이다.",
+      "concepts": [
+        "지원인력 동시사건 분산"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02080",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "언어지원 부족의 해결지연은 같은 기술 문제가 있어도 필요한 정보를 정확히 받지 못해 진단 왕복을 늘린다. 번역 역할이 지원 흐름의 자원이 된다.",
+      "concepts": [
+        "언어지원 부족의 해결지연"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02081",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "독점 장비 장애에서 공급사전문가 호출대기가 길어지면 내부 운영자는 증상을 알아도 수리 권한이나 도구가 없어 멈춘다. 외부 역할 의존을 복구시간에 포함한다.",
+      "concepts": [
+        "공급사전문가 호출대기"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02082",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비부품 운송망 단절로 창고 재고가 원격 데이터센터에 도착하지 않으면 고장 장비 교체가 지연된다. 보유 위치와 사용 위치를 구분한다.",
+      "concepts": [
+        "예비부품 운송망 단절"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02083",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "해외 장비의 통관지연의 장기복구 연쇄는 임시 우회 기간과 운영비용을 늘리고 예비용량을 소모한다. 구매 완료가 현장 가용성을 뜻하지 않는다.",
+      "concepts": [
+        "통관지연의 장기복구 연쇄"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02084",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "광역 장애에서 클라우드지원 접수폭주가 생기면 개별 계정의 한도상향과 원인확인이 늦어진다. 공급사 지원인력도 공유자원이다.",
+      "concepts": [
+        "클라우드지원 접수폭주"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02085",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모든 결정을 한 사람에게 모으면 사고지휘자 과부하의 승인병목이 기술팀의 독립 조치까지 늦춘다. 권한 위임 범위를 미리 나눠야 한다.",
+      "concepts": [
+        "사고지휘자 과부하의 승인병목"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02086",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "위험이 작은 복구도 이해관계자 동의의 복구지연에 묶이면 서비스 중단이 길어진다. 기술 승인과 사업 통보 중 무엇이 선행조건인지 구분한다.",
+      "concepts": [
+        "이해관계자 동의의 복구지연"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02087",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대응팀이 한 메신저에만 의존하면 단일대화채널 장애가 지휘·기술·공지 협업을 함께 끊는다. 별도 전화와 문서 경로가 연쇄범위를 줄인다.",
+      "concepts": [
+        "단일대화채널 장애"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02088",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 팀이 사고원장을 동시에 편집할 때 공유문서 잠금충돌이 변경 누락과 중복지시를 만들 수 있다. 쓰기권한과 병합 절차도 협업자원이다.",
+      "concepts": [
+        "공유문서 잠금충돌"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02089",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원격접속망 장애의 대응차단은 운영 시스템이 정상이어도 재택 당직자가 관리망에 닿지 못하게 한다. 서비스망과 관리접속망을 따로 중복한다.",
+      "concepts": [
+        "원격접속망 장애의 대응차단"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02090",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관리 연결이 중계호스트 단일점에 모이면 그 서버 장애로 모든 원격 명령과 진단이 막힌다. 대상 서버 수와 접근경로 수를 구분한다.",
+      "concepts": [
+        "중계호스트 단일점"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02091",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정전 중 당직노트북 전원상실이 생기면 자격과 통신이 있어도 분석도구를 실행하지 못한다. 사람의 작업단말도 복구자원에 포함된다.",
+      "concepts": [
+        "당직노트북 전원상실"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02092",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "다중인증 단말분실로 운영자가 비밀번호를 알아도 비상 권한상승을 못하면 조치가 지연된다. 보안요소와 안전한 대체 인증경로를 함께 준비한다.",
+      "concepts": [
+        "다중인증 단말분실"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02093",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전화 통신망 장애의 인증호출불가로 일회용 승인 코드가 오지 않으면 관리접속이 막힌다. 인증수단이 사고 원인과 같은 망에 묶였는지 본다.",
+      "concepts": [
+        "통신망 장애의 인증호출불가"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02094",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 화면이 관측대시보드 데이터원 공통의존에 묶이면 저장소 한 곳의 오류로 모두 빈 화면이 된다. 화면 개수를 관측 경로의 독립성으로 세지 않는다.",
+      "concepts": [
+        "관측대시보드 데이터원 공통의존"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02095",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서비스와 같은 공급사에 둔 외부상태페이지 장애의 공지상실이 생기면 본 장애 때 안내 채널도 함께 끊긴다. 공지 자원은 운영 경로와 분리한다.",
+      "concepts": [
+        "외부상태페이지 장애의 공지상실"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02096",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사고 설명에서 법무검토 병목의 공개지연이 생기면 확인된 복구정보도 늦게 나가 문의와 불신이 늘어난다. 필수 검토와 즉시 운영안내의 범위를 나눈다.",
+      "concepts": [
+        "법무검토 병목의 공개지연"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02097",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "개인정보검토의 로그분석제약 때문에 원본 로그를 넓게 공유할 수 없으면 익명화와 최소필드 추출 자원이 추가로 필요하다. 보호 절차가 분석 흐름에 의존을 만든다.",
+      "concepts": [
+        "개인정보검토의 로그분석제약"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02098",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 부서가 순차 확인하는 공지승인 체인의 시간지연은 기술상태가 바뀐 뒤에도 오래된 문구를 남길 수 있다. 중대 사고의 위임범위를 미리 정한다.",
+      "concepts": [
+        "공지승인 체인의 시간지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02099",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통합복구 자원순서는 전력·냉각·망·신원·저장·응용·관측·사람 중 후속 기능이 실제로 기대는 선행 자원을 먼저 되살린다. 독립 경로는 병렬화해 연쇄 대기를 줄인다.",
+      "concepts": [
+        "통합복구 자원순서"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02100",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정상 용량과 경로가 안정된 복구완료 뒤 임시자원 해제로 빌린 장비·권한·예산을 순서대로 돌려놓는다. 하나를 너무 일찍 회수해 다른 후속 검증을 막지 않는다.",
+      "concepts": [
+        "복구완료 뒤 임시자원 해제"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    }
+  ]
+}

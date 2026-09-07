@@ -1,14 +1,15 @@
 # Stage 2 고밀도 데이터셋 생성 준비
 
-- 상태: `ACTUAL_3M_FILE_COUNT_APPROVED_DESIGN_ONLY_CORPUS_AUTHORIZATION_PENDING`
+- 상태: `ACTUAL_3M_GENERATION_IN_PROGRESS_A01_A02_TRAIN_COMPLETE`
 - 교육 역할: 복합 관계·의존·인과·조건 구조
 - 실측 승인 총량: 480 files × 150 = 72,000 records, projected 2,997,000 tokens
 - split: train 432 files / validation 48 files = 정확히 90:10
-- pilot 완료: 4 files / 600 records; 추가 생성 대기 476 files
+- 현행 완료: 176 files / 26,400 records(A01 train 87, A02 train 86, A03 train pilot 1, A06 train pilot 1, A01 validation pilot 1)
+- 현행 잔여: 304 files / 45,600 records(train 257, validation 47)
 - 현행 primary 대비 증보 230, contingency 25 이후 최소 신규 family 205
 - validation 일반화 slice: 파일당 18/150 = 12%
 - 현행 contingency: 25 family, area·split·ID·version·filename 미부여
-- 중앙 예약 원장 SHA-256: `823881a7d7074d2c5e3c54a9c732262004ddabf7b4fade75825a963a58346c99`
+- 중앙 예약 원장 SHA-256: `21804692434294b0c80774464c87d9e3d90f58ce93748c32671cf535244e5aa7`
 
 ## 정본
 
@@ -30,10 +31,10 @@
 
 ## 실측 3M 승인 배분과 증보
 
-| 영역 / slug | 기존 T/V | 승인 T/V | 증보 T/V | 계획 version T/V | pilot T/V | 생성 대기 T/V |
+| 영역 / slug | 기존 T/V | 승인 T/V | 증보 T/V | 계획 version T/V | 현재 완료 T/V | 현재 잔여 T/V |
 |---|---:|---:|---:|---|---:|---:|
-| A01 `causal_structure` | 45/5 | 87/9 | +42/+4 | v46~v87 / v06~v09 | 1/1 | 86/8 |
-| A02 `conditional_dependency` | 45/5 | 86/9 | +41/+4 | v46~v86 / v06~v09 | 0/0 | 86/9 |
+| A01 `causal_structure` | 45/5 | 87/9 | +42/+4 | v46~v87 / v06~v09 | 87/1 | 0/8 |
+| A02 `conditional_dependency` | 45/5 | 86/9 | +41/+4 | v46~v86 / v06~v09 | 86/0 | 0/9 |
 | A03 `temporal_order` | 36/4 | 69/8 | +33/+4 | v37~v69 / v05~v08 | 1/0 | 68/8 |
 | A04 `state_transition` | 36/4 | 69/8 | +33/+4 | v37~v69 / v05~v08 | 0/0 | 69/8 |
 | A05 `modality_possibility` | 36/4 | 69/8 | +33/+4 | v37~v69 / v05~v08 | 0/0 | 69/8 |
@@ -43,7 +44,7 @@
 
 Stage1의 13개 `relations` 통제 어휘를 유지하되, 고차 능력은 6개 `<slug>_packet` `type`으로 평가한다. `relations`는 text에 직접 근거가 있는 2~5개 기초 관계이며 relation focus는 whitelist·필수 교집합·분포 목표가 아니다. 새 relation 이름, 강제 균등화, 고차 능력을 대신하는 `other`를 금지한다.
 
-총량·배분만 승인됐고 추가 corpus 권한은 아직 없다. 다음 승인 뒤 contingency 배치와 신규 family 205개 이상을 중앙 원장·manifest에 먼저 등록·감사하고, pilot 다음 미생성 version 또는 v01부터 직접 작성한다. 현행 pilot 4 files는 보존한다.
+총량·배분·family 예약과 실제 corpus 생성은 승인됐다. A01·A02 train은 영역별 직접 작성→일괄 감사·직접 교정→포장을 완료했으며 다음은 기존 A03 v01 pilot을 보존한 `S2-A03-T-002`다. `PREPARATION_MANIFEST.json`은 예약 snapshot이므로 완료율은 checkpoint·중앙 작업원장·영역 통합 감사보고서를 우선한다.
 
 ## Stage2 legacy 보호
 

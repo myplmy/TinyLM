@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v16",
+  "version": "16",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-02251 ~ S2-CDH-02400",
+  "concept_family": "S2-A02-T016: 철도 운행 간격·환승 조정 — 필요조건과 충분조건의 방향 판정",
+  "design_note": "철도 운행 간격·환승 조정 영역의 필요조건과 충분조건의 방향 판정 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-02251",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열차 진로를 설정하려면 폐색구간 비점유의 진로필요성이 충족돼야 한다. 구간이 비었다는 사실만으로 전철기와 신호까지 모두 안전하다는 충분한 보장은 아니다.",
+      "concepts": [
+        "폐색구간 비점유의 진로필요성"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02252",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "진행신호에는 전철기 쇄정과 신호개방의 방향을 구분해야 한다. 전철기가 맞게 고정된 것은 필요조건이지만 선로 점유나 건널목 조건이 남으면 충분하지 않다.",
+      "concepts": [
+        "전철기 쇄정과 신호개방"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02253",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "진로확정의 출발허가 한계 때문에 관제 진로가 잡혀도 승강장 출입문과 승무원 확인이 끝나야 출발할 수 있다. 선로 조건 하나를 전체 출발의 충분조건으로 쓰지 않는다.",
+      "concepts": [
+        "진로확정의 출발허가 한계"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02254",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "진행신호의 운행비충분성은 기관사가 제한속도와 전방 상황을 계속 확인해야 한다는 뜻이다. 녹색 신호가 모든 구간에서 최고속도를 허용하는 것은 아니다.",
+      "concepts": [
+        "진행신호의 운행비충분성"
+      ],
+      "relations": [
+        "state",
+        "role",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02255",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정지신호가 정상적으로 보이고 제동거리가 확보됐다면 정지신호의 정차충분성이 성립할 수 있다. 그러나 신호 확인만으로 실제 제동장치 성능을 대신하지 않는다.",
+      "concepts": [
+        "정지신호의 정차충분성"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02256",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "다음 폐색이 막혔을 때 제동거리의 속도감속 필요는 현재 속도와 선로 구배에 따라 결정된다. 장애물 인지만으로 안전 정지가 충분히 보장되지는 않는다.",
+      "concepts": [
+        "제동거리의 속도감속 필요"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02257",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "허용속도를 넘으면 자동열차보호의 초과속도조건이 제동 개입을 일으킨다. 시스템이 설치돼 있다는 사실만으로 모든 과속이 예방됐다고 볼 수는 없다.",
+      "concepts": [
+        "자동열차보호의 초과속도조건"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02258",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차상장치가 속도코드를 받는 것은 이동허가에 필요하지만 속도코드 수신의 이동허가 한계상 위치확정과 진로상태도 맞아야 한다. 통신 성공만으로 운행을 허용하지 않는다.",
+      "concepts": [
+        "속도코드 수신의 이동허가 한계"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02259",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "후속열차 간격을 계산하려면 열차위치 확정의 간격필요성이 먼저 충족돼야 한다. 위치가 정확해도 선행열차 속도와 제동성능을 모르면 안전 간격은 충분히 정해지지 않는다.",
+      "concepts": [
+        "열차위치 확정의 간격필요성"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02260",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐색길이의 최소간격 한계는 고정폐색에서 열차가 들어갈 수 있는 공간을 제한한다. 한 구간이 비었다는 이유로 시간간격까지 항상 충분하다고 판단하지 않는다.",
+      "concepts": [
+        "폐색길이의 최소간격 한계"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02261",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이동폐색에는 이동폐색의 연속위치 전제가 필요하다. 위치 갱신이 정상이어도 통신 지연이나 제동곡선 오류가 있으면 짧은 간격의 충분조건은 되지 않는다.",
+      "concepts": [
+        "이동폐색의 연속위치 전제"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02262",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "선행열차가 경계 밖으로 나가는 선행열차 진출의 후속진입 조건은 다음 열차 진로 개방에 필요하다. 진출 기록만으로 전철기 전환까지 완료됐다고 보지 않는다.",
+      "concepts": [
+        "선행열차 진출의 후속진입 조건"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02263",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "역간운전시분의 배차비충분성 때문에 주행시간만 알아도 전체 배차간격은 정해지지 않는다. 정차시간과 회차여유, 신호간격이 추가로 필요하다.",
+      "concepts": [
+        "역간운전시분의 배차비충분성"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02264",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연결 승객이 도착한 뒤 정차시간 확보의 환승필요성이 충족돼야 실제 환승이 가능하다. 시간이 남아도 승강장이나 통로가 멀면 충분하지 않다.",
+      "concepts": [
+        "정차시간 확보의 환승필요성"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02265",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환승통로 개방의 이동조건은 승객이 두 노선 사이를 움직이는 데 필요하다. 통로가 열려 있다는 사실만으로 혼잡과 이동시간까지 해결되지는 않는다.",
+      "concepts": [
+        "환승통로 개방의 이동조건"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02266",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지연 승객이 승강장에 도착할 때까지 연결열차가 기다리면 연결열차 대기의 환승충분성이 성립할 수 있다. 다만 승차용량이 없으면 대기만으로 충분하지 않다.",
+      "concepts": [
+        "연결열차 대기의 환승충분성"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02267",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환승승객 도착의 대기비충분성은 연결열차가 이미 출발준비 제한을 넘겼을 수 있다는 뜻이다. 승객 도착을 모든 상황에서 대기 연장의 충분조건으로 삼지 않는다.",
+      "concepts": [
+        "환승승객 도착의 대기비충분"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02268",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "막차연계를 지키려면 양쪽 노선의 막차연계의 운행필요조건으로 실제 도착과 후속 출발 가능시간을 확인해야 한다. 시간표 표기만으로 연계가 충분히 보장되지는 않는다.",
+      "concepts": [
+        "막차연계의 운행필요조건"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02269",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "종착열차가 회차하려면 회차선 비점유의 종착진입 조건이 필요하다. 선로가 비었어도 승무원과 전철기 준비가 없으면 회차는 충분히 성립하지 않는다.",
+      "concepts": [
+        "회차선 비점유의 종착진입"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02270",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운전실 교대의 회차비충분성 때문에 기관사가 반대편 운전실로 옮겼다고 즉시 출발할 수 있는 것은 아니다. 제동시험과 진로확인이 추가로 필요하다.",
+      "concepts": [
+        "운전실 교대의 회차비충분"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02271",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차량기지 출고에는 제동시험 통과의 출고필요성이 있다. 시험이 정상이더라도 운행편성·전원·승무원이 준비되지 않으면 영업운행에 충분하지 않다.",
+      "concepts": [
+        "제동시험 통과의 출고필요성"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02272",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차량검수 완료의 배차한계는 안전상 사용할 수 있음을 뜻하지만 해당 노선 규격과 편성 길이까지 맞는다는 충분조건은 아니다. 가용차량과 적합차량을 나눈다.",
+      "concepts": [
+        "차량검수 완료의 배차한계"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02273",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모든 출입문을 승강장에 맞추려면 편성길이의 승강장적합 조건이 필요하다. 길이가 맞아도 전력방식이나 신호장치가 다르면 운행에 충분하지 않다.",
+      "concepts": [
+        "편성길이의 승강장적합 조건"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02274",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "터널과 시설물 통과에는 차량한계 적합의 노선진입 조건이 필요하다. 외형 치수만 맞더라도 축중과 곡선성능이 다르면 충분히 적합하지 않을 수 있다.",
+      "concepts": [
+        "차량한계 적합의 노선진입"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02275",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전동차가 전력을 받으려면 전력방식 일치의 운행필요성이 있다. 전압이 같아도 집전장치와 보호방식이 다르면 운행의 충분조건은 아니다.",
+      "concepts": [
+        "전력방식 일치의 운행필요성"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02276",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "집전상태 정상의 견인한계 때문에 전기를 받고 있어도 견인변환기나 모터 고장이 있으면 출력을 낼 수 없다. 전력 수신과 추진기능을 구분한다.",
+      "concepts": [
+        "집전상태 정상의 견인한계"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02277",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "해당 노선을 운전하려면 승무원 자격의 운행필요성이 충족돼야 한다. 자격증이 유효해도 휴식시간과 당일 배정이 없으면 그 열차 운행에 충분하지 않다.",
+      "concepts": [
+        "승무원 자격의 운행필요성"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02278",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승무원 배치의 출발비충분성은 사람이 열차에 탑승했어도 차량·진로·신호 조건이 남는다는 뜻이다. 인력 준비를 전체 출발허가와 동일시하지 않는다.",
+      "concepts": [
+        "승무원 배치의 출발비충분"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02279",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계획된 왕복을 마치려면 근무시간 여유의 왕복조건이 필요하다. 출발 시점에 한도가 남아도 지연과 회차시간을 포함하지 않으면 충분하지 않다.",
+      "concepts": [
+        "근무시간 여유의 왕복조건"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02280",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한도에 가까운 기관사를 바꾸려면 교대승무원 도착의 계속운행 조건이 필요하다. 역에 도착했다는 사실만으로 인수인계와 자격확인이 충분히 끝난 것은 아니다.",
+      "concepts": [
+        "교대승무원 도착의 계속운행"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02281",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승강장에서 출발하려면 출입문 폐쇄의 출발필요성이 있다. 문 표시가 닫힘이어도 끼임검지와 승강장 안전확인이 남으면 충분하지 않다.",
+      "concepts": [
+        "출입문 폐쇄의 출발필요성"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02282",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "문연동 정상의 승객안전 한계 때문에 열차 문이 맞게 열려도 승강장 간격이나 혼잡이 위험할 수 있다. 장치 성공을 전체 승하차 안전의 충분조건으로 쓰지 않는다.",
+      "concepts": [
+        "문연동 정상의 승객안전 한계"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02283",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승강장 안전문을 열려면 승강장문 정렬의 개방조건으로 열차 정차위치가 허용범위에 들어야 한다. 위치가 맞아도 열차문 명령이 없으면 충분하지 않다.",
+      "concepts": [
+        "승강장문 정렬의 개방조건"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02284",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정차위치 허용의 승하차비충분성은 열차가 표식 안에 섰어도 문고장이나 승강장 폐쇄가 있을 수 있음을 뜻한다. 위치조건만으로 승하차를 허용하지 않는다.",
+      "concepts": [
+        "정차위치 허용의 승하차비충분"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02285",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차내혼잡이 지속될 때 차내혼잡 완화의 증편필요성이 생길 수 있다. 열차 한 편을 더 넣는 것만으로 승강장 병목과 회차용량까지 충분히 해결되지는 않는다.",
+      "concepts": [
+        "차내혼잡 완화의 증편필요성"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02286",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비편성 투입의 혼잡충분성 한계는 배차간격과 수요방향이 맞아야 실제 승객을 나눌 수 있다는 점이다. 차량 확보만으로 효과를 확정하지 않는다.",
+      "concepts": [
+        "예비편성 투입의 혼잡충분성 한계"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02287",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연속 열차를 받으려면 승강장용량의 정차간격 조건으로 앞 열차 승하차와 진출이 끝나야 한다. 선로 간격만 충분해도 승강장 처리가 보장되지는 않는다.",
+      "concepts": [
+        "승강장용량의 정차간격 조건"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02288",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통로용량의 환승수용 한계 때문에 연결 시간이 길어도 좁은 계단에 승객이 몰리면 환승을 완료하지 못할 수 있다. 시간여유를 공간용량의 충분조건으로 쓰지 않는다.",
+      "concepts": [
+        "통로용량의 환승수용 한계"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02289",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "에스컬레이터 가동의 이동비충분성은 출구와 개찰구가 막히면 승객흐름이 여전히 정체될 수 있다는 뜻이다. 한 설비의 정상만으로 통로 전체를 판단하지 않는다.",
+      "concepts": [
+        "에스컬레이터 가동의 이동비충분"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02290",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "도착 승객을 역사 밖으로 내보내려면 개찰처리량의 역사배출 조건이 필요하다. 개찰기가 충분해도 외부 보행공간이 막히면 전체 배출에는 충분하지 않다.",
+      "concepts": [
+        "개찰처리량의 역사배출 조건"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02291",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열차를 계획 시각에 넣으려면 시간표 슬롯의 선로배정 필요가 충족돼야 한다. 시간표에 자리가 있어도 실제 진로와 승강장이 없으면 충분하지 않다.",
+      "concepts": [
+        "시간표 슬롯의 선로배정 필요"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02292",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운행계획 존재의 실행비충분성 때문에 편성이 문서에 있어도 차량·승무원·전력·진로가 준비돼야 한다. 계획과 실행 가능한 상태를 구분한다.",
+      "concepts": [
+        "운행계획 존재의 실행비충분"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02293",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운행기록과 관제 명령에는 열차번호 배정의 운행식별 조건이 필요하다. 번호가 있다는 사실만으로 실제 편성과 운행경로가 충분히 확정되지는 않는다.",
+      "concepts": [
+        "열차번호 배정의 운행식별 조건"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02294",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "객차를 연결한 편성연결의 영업운행 한계는 전기·제동·통신의 연속시험이 남는다는 데 있다. 물리 결합만으로 영업운행에 충분하지 않다.",
+      "concepts": [
+        "편성연결의 영업운행 한계"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02295",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동연결기 잠금의 분리방지는 차량 사이 기계적 이탈을 막는 데 충분할 수 있다. 그러나 공기관과 전기연결까지 정상이라는 충분조건은 아니다.",
+      "concepts": [
+        "자동연결기 잠금의 분리방지"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02296",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "편성 전체 제동에는 공기관 연속의 제동필요성이 있다. 압력이 전달돼도 각 차량 제동장치가 고장 나면 충분한 감속은 보장되지 않는다.",
+      "concepts": [
+        "공기관 연속의 제동필요성"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02297",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차상통신 연결의 안내비충분성은 통신망이 정상이어도 안내자료와 위치정보가 틀릴 수 있다는 뜻이다. 연결 성공과 정확한 승객안내를 구분한다.",
+      "concepts": [
+        "차상통신 연결의 안내비충분"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02298",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지연 환승을 안내하려면 운행정보 갱신의 환승판단 조건이 필요하다. 최신 도착시간이 있어도 보행시간과 연결편 대기정책이 없으면 충분하지 않다.",
+      "concepts": [
+        "운행정보 갱신의 환승판단 조건"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02299",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "도착예측 정확성의 대기결정 한계는 예측이 맞아도 후속 열차 용량과 막차 규칙이 대기 여부를 바꿀 수 있다는 점이다. 예측 하나를 충분조건으로 쓰지 않는다.",
+      "concepts": [
+        "도착예측 정확성의 대기결정 한계"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02300",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "실시간 위치의 지연회복 비충분성 때문에 열차가 움직이기 시작해도 뒤엉킨 회차와 승무원 배치를 바로 정상화하지 못할 수 있다. 위치 변화와 운행망 회복을 나눈다.",
+      "concepts": [
+        "실시간 위치의 지연회복 비충분"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02301",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "단선 구간에서 반대 열차를 보내려면 교행역 도착의 단선통과 조건이 필요하다. 한 열차가 역에 들어왔어도 진로 쇄정과 승강장 수용이 없으면 충분하지 않다.",
+      "concepts": [
+        "교행역 도착의 단선통과 조건"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02302",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통표방식 구간에서는 통표확보의 단선진입 필요가 먼저 충족돼야 한다. 통표를 가진 것만으로 전방 선로와 열차 상태가 모두 안전하다는 충분조건은 아니다.",
+      "concepts": [
+        "통표확보의 단선진입 필요"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02303",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교행순서 확정의 지연회복 한계 때문에 어느 열차를 먼저 보낼지 정해도 승강장과 진로 전환시간이 부족하면 지연을 충분히 줄이지 못한다. 결정과 실행조건을 나눈다.",
+      "concepts": [
+        "교행순서 확정의 지연회복 한계"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02304",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "본선에서 지선으로 가려면 분기선 진로설정의 통과필요성이 있다. 전철기 방향이 맞아도 지선 폐색이 점유돼 있으면 진입에 충분하지 않다.",
+      "concepts": [
+        "분기선 진로설정의 통과필요성"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02305",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전철기 표시일치의 기계쇄정 한계는 화면 방향이 맞아도 실제 밀착과 잠금이 실패할 수 있다는 점이다. 표시 신호를 안전 통과의 충분조건으로 쓰지 않는다.",
+      "concepts": [
+        "전철기 표시일치의 기계쇄정 한계"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02306",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "곡선 전철기를 지날 때 분기속도 준수의 탈선방지 조건이 필요하다. 제한속도 이하여도 궤도 결함이나 차량 이상이 있으면 안전의 충분조건은 아니다.",
+      "concepts": [
+        "분기속도 준수의 탈선방지 조건"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02307",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열차가 도로와 만나는 구간에서는 건널목 차단완료의 진입필요성이 있다. 차단봉이 내려갔어도 도로 위 장애물이 남으면 충분한 안전이 아니다.",
+      "concepts": [
+        "건널목 차단완료의 진입필요성"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02308",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "장애물검지 음성의 통과비충분성은 센서 사각이나 통신오류가 있을 수 있음을 뜻한다. 검지값 하나만으로 건널목이 완전히 비었다고 확정하지 않는다.",
+      "concepts": [
+        "장애물검지 음성의 통과비충분"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02309",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "건널목 접근차량을 막으려면 도로신호 정지의 차량차단 조건이 필요하다. 적색등만 켜져도 차단봉과 경보가 없으면 충분히 통제되지 않을 수 있다.",
+      "concepts": [
+        "도로신호 정지의 차량차단 조건"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02310",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전동차 견인에는 전차선 가압의 전동차운행 필요가 있다. 전압이 정상이어도 급전구간이 분리됐거나 차량 주차단기가 열리면 충분하지 않다.",
+      "concepts": [
+        "전차선 가압의 전동차운행 필요"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02311",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "접지와 검전까지 완료된 급전구간 분리의 정비안전 충분성은 해당 구간의 감전위험을 통제할 수 있다. 인접선 유도전압과 작업장 접근위험까지 자동으로 해결하지는 않는다.",
+      "concepts": [
+        "급전구간 분리의 정비안전 충분성"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02312",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전력복구의 열차재기동 한계 때문에 전차선 전압이 돌아와도 보호장치 재설정과 제동상태 확인이 필요하다. 가압만으로 즉시 운행 재개가 충분하지 않다.",
+      "concepts": [
+        "전력복구의 열차재기동 한계"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02313",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "증편 열차를 동시에 가속하려면 변전소 용량의 증편필요조건을 만족해야 한다. 명목 정격이 충분해도 구간별 전압강하와 고장예비를 빼면 충분하지 않을 수 있다.",
+      "concepts": [
+        "변전소 용량의 증편필요조건"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02314",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "다른 열차가 같은 급전구간에서 소비할 때 회생전력 수용의 에너지절감 조건이 성립한다. 제동열차가 전력을 만든다는 사실만으로 모두 재사용되는 것은 아니다.",
+      "concepts": [
+        "회생전력 수용의 에너지절감 조건"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02315",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "신호전원 독립의 운행유지 한계는 견인전원이 끊겨도 신호를 볼 수 있지만 열차를 움직일 수는 없다는 점이다. 한 계통의 생존을 전체 운행 지속과 동일시하지 않는다.",
+      "concepts": [
+        "신호전원 독립의 운행유지 한계"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02316",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통신망 가용의 관제비충분성은 연결돼 있어도 열차위치 자료나 명령권한이 없으면 안전한 지시를 못한다는 뜻이다. 채널 존재와 정보 완전성을 구분한다.",
+      "concepts": [
+        "통신망 가용의 관제비충분"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02317",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관제사가 운전자에게 비상명령을 전달하려면 열차무선 연결의 비상지시 필요가 충족돼야 한다. 연결 성공만으로 운전자가 내용을 확인하고 실행했다는 충분한 증거는 아니다.",
+      "concepts": [
+        "열차무선 연결의 비상지시 필요"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02318",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "내용과 위치를 정확히 되풀이한 지시복창의 이해확인 충분성은 전달 오류를 줄일 수 있다. 그러나 현장 조건이 달라졌다면 복창만으로 명령 실행이 안전하지는 않다.",
+      "concepts": [
+        "지시복창의 이해확인 충분성"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02319",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관제명령 기록의 책임추적 조건은 발신자·수신자·시각·대상을 남기는 것이다. 녹음파일 존재만으로 명령이 적법하고 정확했다는 충분조건은 아니다.",
+      "concepts": [
+        "관제명령 기록의 책임추적 조건"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02320",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "영업선 작업열차에는 운행허가서 발급의 작업열차 진입 조건이 필요하다. 허가서가 있어도 선로폐쇄와 작업자 대피가 안 됐다면 충분하지 않다.",
+      "concepts": [
+        "운행허가서 발급의 작업열차 진입"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02321",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주행선에서 장비를 쓰려면 선로폐쇄의 보수작업 필요가 충족돼야 한다. 열차를 멈췄다는 사실만으로 전기 격리와 작업구역 보호까지 충분하지 않다.",
+      "concepts": [
+        "선로폐쇄의 보수작업 필요"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02322",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "작업구역 표지의 진입방지 한계 때문에 표지만 있고 신호연동이나 물리 차단이 없으면 오진입을 끝까지 막기 어렵다. 표시와 강제보호를 구분한다.",
+      "concepts": [
+        "작업구역 표지의 진입방지 한계"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02323",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보수완료의 속도회복 비충분성은 작업이 끝났어도 궤도검측과 체결상태 확인이 남는다는 뜻이다. 현장 철수만으로 정상속도 허가를 내리지 않는다.",
+      "concepts": [
+        "보수완료의 속도회복 비충분"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02324",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "궤도기하와 구조물 검사가 기준을 만족하면 검측통과의 임시제한 해제가 가능하다. 한 검사차의 통과만으로 장기 안정성까지 충분히 보장하지 않는다.",
+      "concepts": [
+        "검측통과의 임시제한 해제"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02325",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고온에서 레일온도 상한의 감속필요성이 생기면 열팽창 위험을 줄이도록 속도를 낮춘다. 온도 초과만으로 선로가 이미 변형됐다고 확정하지 않는다.",
+      "concepts": [
+        "레일온도 상한의 감속필요성"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02326",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "온도회복의 정상속도 한계 때문에 기온이 내려갔어도 레일 변형과 체결상태를 확인해야 한다. 온도값 하나를 정상속도 복원의 충분조건으로 쓰지 않는다.",
+      "concepts": [
+        "온도회복의 정상속도 한계"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02327",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교량 구간에서 강풍측정의 교량감속 조건은 순간풍과 측풍방향이 위험범위일 때 적용한다. 풍속이 높다는 사실만으로 모든 지상구간에 같은 제한을 주지는 않는다.",
+      "concepts": [
+        "강풍측정의 교량감속 조건"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02328",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "방풍벽 존재의 운행비충분성은 구조물이 있어도 설계풍속을 넘거나 열차형식이 다르면 정상속도를 보장하지 못한다는 뜻이다. 보호시설 존재만으로 충분하지 않다.",
+      "concepts": [
+        "방풍벽 존재의 운행비충분"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02329",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분기부와 궤도를 사용하려면 적설제거의 선로개방 필요가 충족돼야 한다. 눈이 치워졌어도 전철기 밀착과 제동거리 검사가 없으면 충분하지 않다.",
+      "concepts": [
+        "적설제거의 선로개방 필요"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02330",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제설열차 통과의 영업재개 한계 때문에 한 번 길을 냈어도 계속되는 눈과 승강장 결빙을 확인해야 한다. 통과기록만으로 정상운행을 충분히 보장하지 않는다.",
+      "concepts": [
+        "제설열차 통과의 영업재개 한계"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02331",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "침수수위 하강의 전기복구 비충분성은 물이 빠졌어도 절연과 케이블 손상을 검사해야 한다는 뜻이다. 외관 건조를 급전 재개의 충분조건으로 쓰지 않는다.",
+      "concepts": [
+        "침수수위 하강의 전기복구 비충분"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02332",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "터널 배수완료의 선로통과 조건은 궤도와 신호설비가 노출되고 구조검사가 가능한 상태다. 배수펌프 정지만으로 운행허가가 충분히 성립하지 않는다.",
+      "concepts": [
+        "배수완료의 선로통과 조건"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02333",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지진계 경보의 운행정지 충분성은 강한 진동이 감지될 때 예방적으로 열차를 세우는 판단에 있다. 다만 경보가 없었다는 사실은 모든 구조물에 손상이 없다는 충분한 증거가 아니다.",
+      "concepts": [
+        "지진계 경보의 운행정지 충분성"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02334",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지진 뒤 각 구간을 열려면 구조점검의 구간재개 필요가 충족돼야 한다. 한 교량의 정상 결과를 인접 터널과 노반의 충분조건으로 확대하지 않는다.",
+      "concepts": [
+        "구조점검의 구간재개 필요"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02335",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "낙석검지 신호가 활성화되면 낙석검지의 감속필요성에 따라 진입 전 정지하거나 속도를 낮춘다. 센서경보가 실제 낙석의 확정증거는 아니지만 보호조치에는 충분할 수 있다.",
+      "concepts": [
+        "낙석검지의 감속필요성"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02336",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "선로와 사면을 직접 확인한 현장확인의 낙석해제 조건이 충족돼야 통제를 푼다. 센서가 정상으로 돌아온 것만으로 충분하지 않다.",
+      "concepts": [
+        "현장확인의 낙석해제 조건"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02337",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전방 신호를 육안 확인해야 하는 구간에서는 안개시정의 속도제한 조건이 필요하다. 자동신호가 있어도 건널목이나 작업자 위험까지 모두 충분히 해결되지는 않는다.",
+      "concepts": [
+        "안개시정의 속도제한 조건"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02338",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동운전의 시정독립 한계는 궤도 검지와 통신이 정상일 때 일부 육안조건을 줄일 수 있다는 데 있다. 모든 현장 장애물에 시정이 불필요하다고 일반화하지 않는다.",
+      "concepts": [
+        "자동운전의 시정독립 한계"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02339",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연기나 유해가스가 있는 터널에 구조열차를 보내려면 터널환기 가동의 진입필요성이 있다. 팬이 돌더라도 농도측정과 대피로가 없으면 충분하지 않다.",
+      "concepts": [
+        "터널환기 가동의 진입필요성"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02340",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "화재진압의 운행재개 비충분성은 불이 꺼져도 전력·신호·구조물 손상이 남을 수 있다는 뜻이다. 소화완료를 정상운행의 충분조건으로 쓰지 않는다.",
+      "concepts": [
+        "화재진압의 운행재개 비충분"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02341",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승객이 안전구역으로 이동한 대피완료의 구조활동 조건은 위험구간 진입 인원을 줄이는 데 필요하다. 대피만으로 화재 원인과 시설 안전이 충분히 해결되지는 않는다.",
+      "concepts": [
+        "대피완료의 구조활동 조건"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02342",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상통로 개방의 대피비충분성은 조명·안내·반대선 통제가 없으면 안전 이동이 보장되지 않는다는 점이다. 문 개방만으로 대피가 끝나지 않는다.",
+      "concepts": [
+        "비상통로 개방의 대피비충분"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02343",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승객이 반대선으로 이동할 때 반대선 차단의 터널대피 필요가 충족돼야 한다. 열차 한 편이 정지했어도 다른 방향 운행까지 자동 중단된 것은 아니다.",
+      "concepts": [
+        "반대선 차단의 터널대피 필요"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02344",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고장 열차에 접근하려면 구원열차 진입의 진로필요성으로 폐색·전력·연결 방향을 확인해야 한다. 구원편성 준비만으로 현장 진입에 충분하지 않다.",
+      "concepts": [
+        "구원열차 진입의 진로필요성"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02345",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고장 편성을 끌려면 연결기 호환의 견인필요조건이 있다. 기계 결합이 가능해도 제동관과 총중량 조건이 맞지 않으면 충분하지 않다.",
+      "concepts": [
+        "연결기 호환의 견인필요조건"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02346",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제동관 연결의 구원운행 한계 때문에 제동신호가 전달돼도 고장차륜이나 선로구배가 위험하면 이동하지 못한다. 한 보조기능을 전체 견인의 충분조건으로 보지 않는다.",
+      "concepts": [
+        "제동관 연결의 구원운행 한계"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02347",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운행재개편성의 수송충분성은 복구 열차 수와 승객수요가 맞을 때 성립한다. 첫 열차가 출발했다는 사실만으로 누적 대기 승객을 충분히 수송했다고 보지 않는다.",
+      "concepts": [
+        "운행재개편성의 수송충분성"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02348",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "안전을 위해 간격을 늘리면 간격확대의 혼잡완화 한계상 승강장 대기와 차내밀집은 오히려 커질 수 있다. 운행안전 조건과 수송용량 조건을 구분한다.",
+      "concepts": [
+        "간격확대의 혼잡완화 한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02349",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "급행정차 추가의 수송비충분성은 특정 역 승객을 태워도 전체 운전시간 증가와 후속열차 간격을 악화할 수 있다는 뜻이다. 한 역 처리만으로 충분성을 판단하지 않는다.",
+      "concepts": [
+        "급행정차 추가의 수송비충분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02350",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "혼잡역을 건너뛰는 통과운전의 간격회복 조건은 승하차시간을 줄여 뒤 열차와 간격을 벌리는 것이다. 승객 대체경로가 없으면 운영 전체의 충분조건은 아니다.",
+      "concepts": [
+        "통과운전의 간격회복 조건"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02351",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "완행열차를 먼저 대피시켜야 하는 급행추월의 대피선 확보 조건은 추월 진로를 분리하는 데 필요하다. 대피선이 비어 있어도 분기기와 신호가 준비되지 않으면 급행은 통과할 수 없다.",
+      "concepts": [
+        "급행추월의 대피선 확보 조건"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02352",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "완행열차 대피완료의 급행통과 조건은 완행 편성이 본선 한계를 완전히 벗어나야 충족된다. 기관사가 정차했다고 보고한 사실만으로 본선이 비었다고 판단하지 않는다.",
+      "concepts": [
+        "완행열차 대피완료의 급행통과 조건"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02353",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "급행선 진입의 추월충분성 한계는 급행이 별도 선로에 들어가도 앞쪽 합류 지점이 막히면 추월을 마칠 수 없다는 데 있다. 진입 조건과 추월 완료 조건을 구별한다.",
+      "concepts": [
+        "급행선 진입의 추월충분성 한계"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02354",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "앞 편성이 회차선을 빠져나가는 회차선 점유해제의 후속입선 조건은 뒤 편성의 진로를 확보하는 데 필요하다. 점유 표시가 사라져도 진로가 설정되기 전에는 후속 입선을 허가하지 않는다.",
+      "concepts": [
+        "회차선 점유해제의 후속입선 조건"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02355",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "회차승무 교대완료의 재출발 조건은 새 승무원이 운전 취급을 인계받고 출발 준비를 확인하는 것이다. 교대표에 이름이 배정된 것만으로 실제 인계가 끝난 것은 아니다.",
+      "concepts": [
+        "회차승무 교대완료의 재출발 조건"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02356",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기관사 도착의 출발비충분성은 기관사가 운전실에 와도 차량 점검과 출발 진로가 갖춰지지 않으면 열차가 나갈 수 없다는 뜻이다. 인력 배치의 필요성과 운행 허가의 충분성을 분리한다.",
+      "concepts": [
+        "기관사 도착의 출발비충분성"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02357",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비편성 확보의 증편조건은 추가 열차를 편성할 수 있는 물적 전제를 제공한다. 그러나 운전 슬롯과 승무원까지 확보되어야 실제 증편에 충분하다.",
+      "concepts": [
+        "예비편성 확보의 증편조건"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02358",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비차 존재의 즉시투입 비충분은 차량이 기지에 있어도 검수 유효시간이나 본선 진입 경로가 맞지 않을 수 있음을 가리킨다. 보유 상태와 즉시 운용 가능 상태를 같은 것으로 보지 않는다.",
+      "concepts": [
+        "예비차 존재의 즉시투입 비충분"
+      ],
+      "relations": [
+        "state",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02359",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "종착역 회차여유의 정시출발 조건은 도착 지연을 흡수하고 청소와 운전실 전환을 마칠 시간이 남는 것이다. 여유시간이 있어도 작업 순서가 늦어지면 정시출발은 보장되지 않는다.",
+      "concepts": [
+        "종착역 회차여유의 정시출발 조건"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02360",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "회차시간 단축의 지연회복 한계는 안전 점검에 필요한 최소시간 아래로 줄일 수 없다는 데 있다. 몇 분을 절약할 가능성과 모든 지연을 회복한다는 충분조건을 구별한다.",
+      "concepts": [
+        "회차시간 단축의 지연회복 한계"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02361",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승객의 이동이 끝나는 승하차 종료의 정차종료 조건은 문을 닫기 위한 전제이다. 승하차가 멈췄더라도 문 끼임 확인과 출발 감시가 남아 있으면 즉시 출발할 수 없다.",
+      "concepts": [
+        "승하차 종료의 정차종료 조건"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02362",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승객취급 완료의 즉시출발 비충분은 승객 업무가 끝나도 진행신호나 출발시각이 아직 오지 않을 수 있다는 뜻이다. 역 업무 완료와 선로 운행 허가를 별도 조건으로 판단한다.",
+      "concepts": [
+        "승객취급 완료의 즉시출발 비충분"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02363",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승강장 안전확인의 출발조건은 열차 주변에 위험한 승객이나 물체가 없음을 확인하는 것이다. 이 확인은 필요하지만 앞 폐색이 점유 중이면 출발을 충분히 허용하지 못한다.",
+      "concepts": [
+        "승강장 안전확인의 출발조건"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02364",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "출발지시 표시의 이동허가 한계는 역무원이 승객 취급 완료를 알려도 신호기의 정지 지시를 대신하지 못한다는 데 있다. 서비스 절차상의 지시와 신호상 운행 허가를 구분한다.",
+      "concepts": [
+        "출발지시 표시의 이동허가 한계"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02365",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐색해제와 진로개통의 결합조건은 앞 구간이 비고 해당 열차의 경로가 올바르게 설정되어야 진입이 가능하다는 뜻이다. 둘 중 하나만 충족한 상태는 출발에 충분하지 않다.",
+      "concepts": [
+        "폐색해제와 진로개통의 결합조건"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02366",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "본선진입 승인의 합류비충분성은 지선 열차가 허가를 받아도 본선 열차와의 시간 간격이 확보되지 않으면 안전하게 합류할 수 없다는 뜻이다. 행정적 승인과 물리적 간격 조건을 분리한다.",
+      "concepts": [
+        "본선진입 승인의 합류비충분성"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02367",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대피선 길이의 편성수용 조건은 열차 전체가 한계표지 안에 들어가 본선과 분리될 수 있을 만큼 길어야 한다. 유효장이 편성보다 짧으면 대피선이 존재한다는 사실만으로 추월을 허용할 수 없다.",
+      "concepts": [
+        "대피선 길이의 편성수용 조건"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02368",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "편성길이 적합의 추월비충분성은 열차가 대피선에 들어맞아도 정차와 재출발에 필요한 시간이 부족하면 급행 간격을 확보하지 못할 수 있다는 뜻이다. 공간 적합성과 시간표 적합성을 구분한다.",
+      "concepts": [
+        "편성길이 적합의 추월비충분성"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02369",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "선로용량 여유의 증편필요성은 추가 열차가 기존 열차 사이에 안전하게 들어갈 수 있는 슬롯이 있어야 한다는 뜻이다. 수요가 많다는 사실만으로 선로상 증편 가능성이 생기지는 않는다.",
+      "concepts": [
+        "선로용량 여유의 증편필요성"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02370",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시간표 경로설정의 증편비충분은 계획표에 경로를 그려도 차량과 승무원, 승강장 용량이 없으면 실제 열차를 운행하지 못한다는 뜻이다. 계획상의 가능성과 실행 조건을 나눈다.",
+      "concepts": [
+        "시간표 경로설정의 증편비충분"
+      ],
+      "relations": [
+        "classification",
+        "role",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02371",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환승보장 대기의 성립조건은 연결 승객의 도착 가능성과 대기 열차의 후속 영향이 허용 범위 안에 함께 있어야 한다. 승객이 환승을 원한다는 사실만으로 대기 결정을 충분히 정당화하지 않는다.",
+      "concepts": [
+        "환승보장 대기의 성립조건"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02372",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "막차지연의 연계충분성 한계는 막차를 늦춰도 환승객이 통로를 지나기 전에 출입문이 닫히면 연계가 성립하지 않는다는 데 있다. 출발시각 조정과 실제 탑승 완료를 구별한다.",
+      "concepts": [
+        "막차지연의 연계충분성 한계"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02373",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "최소환승시간의 연계필요성은 두 열차의 시각 차이가 보행과 승강장 이동에 필요한 시간보다 길어야 한다는 뜻이다. 명목상 도착이 먼저여도 이동시간이 부족하면 환승은 불가능하다.",
+      "concepts": [
+        "최소환승시간의 연계필요성"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02374",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환승보행 완료의 탑승비충분성은 승객이 승강장에 도착해도 열차 용량이 차거나 승차문이 닫히면 탑승하지 못한다는 뜻이다. 공간 도달과 실제 승차 가능성을 분리한다.",
+      "concepts": [
+        "환승보행 완료의 탑승비충분성"
+      ],
+      "relations": [
+        "state",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02375",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승강장 변경 안내의 환승조건은 승객이 바뀐 위치를 제때 알고 이동하도록 정보를 제공하는 것이다. 안내가 송출됐어도 전달 시점이 늦거나 이동 통로가 막히면 성공적인 환승에 충분하지 않다.",
+      "concepts": [
+        "승강장 변경 안내의 환승조건"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02376",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "안내방송 송출의 정보수신 한계는 방송을 내보냈다는 사실이 모든 승객의 청취와 이해를 보장하지 않는다는 데 있다. 정보 제공 행위와 수신 결과를 같은 조건으로 취급하지 않는다.",
+      "concepts": [
+        "안내방송 송출의 정보수신 한계"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02377",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연결버스 도착정보의 환승판단 조건은 버스의 예상 도착시각을 열차 대기 한계와 비교할 수 있게 한다. 예측값만 있고 신뢰구간이나 갱신시각이 없으면 대기 결정에 충분하지 않다.",
+      "concepts": [
+        "연결버스 도착정보의 환승판단 조건"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02378",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "버스운행 유지의 철도연계 비충분은 버스가 운행 중이어도 정류장 위치와 출발시각이 열차 도착과 맞지 않으면 환승이 끊긴다는 뜻이다. 두 교통수단의 개별 운행과 연계 성립을 구분한다.",
+      "concepts": [
+        "버스운행 유지의 철도연계 비충분"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02379",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환승게이트 개방의 통과조건은 유효한 승차권을 가진 승객이 연결 통로로 이동할 수 있게 한다. 문이 열려 있어도 운임 매체가 인식되지 않으면 개인의 통과에는 충분하지 않다.",
+      "concepts": [
+        "환승게이트 개방의 통과조건"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02380",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운임연동의 물리환승 비충분은 요금 체계가 연결되어도 역 사이 통로와 시간표가 맞지 않으면 실제 이동이 성립하지 않는다는 뜻이다. 제도적 통합과 공간·시간 조건을 분리한다.",
+      "concepts": [
+        "운임연동의 물리환승 비충분"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02381",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운전정리 명령의 지연회복 조건은 대피·순서 변경·정차 조정을 실행 가능한 시점에 전달하는 것이다. 명령이 존재해도 현장 용량이 없으면 지연 회복의 충분조건은 되지 않는다.",
+      "concepts": [
+        "운전정리 명령의 지연회복 조건"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02382",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "회복여유시간의 정시복귀 조건은 지연량보다 충분한 여유가 뒤 구간에 배치되고 추가 방해가 없어야 한다. 여유가 일부 있다는 사실만으로 종착역 정시 도착을 보장하지 않는다.",
+      "concepts": [
+        "회복여유시간의 정시복귀 조건"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02383",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "단축운전의 반대방향 회복 한계는 지연 열차를 중간역에서 돌려보내면 반대 방향 공급은 빨라져도 잘린 구간의 수송은 회복되지 않는다는 데 있다. 한 방향의 개선을 노선 전체의 충분조건으로 보지 않는다.",
+      "concepts": [
+        "단축운전의 반대방향 회복 한계"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02384",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "역간 회복운전의 안전조건은 허용속도와 제동거리 안에서만 운전시간을 줄이는 것이다. 지연을 줄여야 한다는 목표는 제한속도 초과의 충분한 이유가 아니다.",
+      "concepts": [
+        "역간 회복운전의 안전조건"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02385",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정차시간 삭감의 출발조건 한계는 계획 정차분을 줄여도 승하차와 안전 확인이 끝나지 않으면 출발할 수 없다는 데 있다. 시간표상 정차 종료와 현장상 출발 준비를 구분한다.",
+      "concepts": [
+        "정차시간 삭감의 출발조건 한계"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02386",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정차생략의 간격회복 비충분성은 한 역을 통과해 시간을 벌어도 앞 열차가 막고 있으면 간격이 회복되지 않는다는 뜻이다. 정차시간 절약과 진행 경로 확보가 함께 필요하다.",
+      "concepts": [
+        "정차생략의 간격회복 비충분성"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02387",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "임시속도제한 해제의 정상운전 조건은 선로 상태가 기준을 회복하고 해제 지시가 운전실에 전달되는 것이다. 현장 보수가 끝났다는 보고만으로 열차가 곧바로 정상속도를 낼 수는 없다.",
+      "concepts": [
+        "임시속도제한 해제의 정상운전 조건"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02388",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제한해제 통보의 속도회복 비충분은 통보를 받아도 앞 열차 간격이나 차량 성능이 속도 상승을 막을 수 있다는 뜻이다. 규제 해제와 실제 운전 상태 변화를 분리한다.",
+      "concepts": [
+        "제한해제 통보의 속도회복 비충분"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02389",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "신호 고장 때 수신호 확인의 고장구간 진입조건은 권한 있는 담당자의 지시와 제한속도를 함께 확인하는 것이다. 손짓을 보았다는 사실만으로 정상 신호와 같은 진행 허가가 되지는 않는다.",
+      "concepts": [
+        "수신호 확인의 고장구간 진입조건"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02390",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "신호고장시 폐색확인의 통과필요성은 자동 표시가 없을 때 앞 구간의 비점유를 별도 절차로 확인해야 한다는 뜻이다. 구간이 비었다는 확인도 진로 이상까지 배제하는 충분조건은 아니다.",
+      "concepts": [
+        "신호고장시 폐색확인의 통과필요성"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02391",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공사구간 작업종료의 운행재개 조건은 작업이 끝나고 장비와 자재가 차량한계 밖으로 철수된 뒤 선로를 인계하는 것이다. 종료시각이 지났다는 사실만으로 재개 조건이 충족되지는 않는다.",
+      "concepts": [
+        "공사구간 작업종료의 운행재개 조건"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02392",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "작업자 철수의 선로개방 비충분은 사람이 빠져나와도 임시 접지와 공구가 남아 있으면 열차를 들일 수 없다는 뜻이다. 인원 안전과 시설 복구를 별도 필요조건으로 확인한다.",
+      "concepts": [
+        "작업자 철수의 선로개방 비충분"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02393",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폭우감속 해제의 배수조건은 강우가 잦아든 뒤에도 선로와 배수로의 수위가 허용 범위로 내려가야 한다는 뜻이다. 비가 멎은 순간만으로 감속 해제를 충분히 판단하지 않는다.",
+      "concepts": [
+        "폭우감속 해제의 배수조건"
+      ],
+      "relations": [
+        "state",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02394",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기상호전의 정상배차 비충분성은 날씨가 좋아져도 밀린 열차와 승무원 위치가 정리되지 않으면 계획 간격으로 즉시 돌아갈 수 없다는 뜻이다. 외부 조건 회복과 운행망 복구를 구분한다.",
+      "concepts": [
+        "기상호전의 정상배차 비충분성"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02395",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승강장 혼잡완화의 추가정차 조건은 임시 열차가 혼잡역에 실제로 정차하고 남은 수용량으로 대기 승객을 태우는 것이다. 열차를 한 대 더 보냈다는 사실만으로 혼잡 완화를 보장하지 않는다.",
+      "concepts": [
+        "승강장 혼잡완화의 추가정차 조건"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02396",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승객유입 제한의 혼잡해소 한계는 새 승객을 막아도 이미 승강장에 있는 인원이 수송되기 전에는 밀집이 계속된다는 데 있다. 유입 억제는 필요할 수 있지만 즉시 해소의 충분조건은 아니다.",
+      "concepts": [
+        "승객유입 제한의 혼잡해소 한계"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02397",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "임시열차 투입의 수송회복 조건은 추가 편성이 수요가 몰린 구간과 시각에 배치되어 유효 수송량을 늘리는 것이다. 빈 열차가 본선에 들어왔다는 사실만으로 필요한 곳의 수송이 회복되지는 않는다.",
+      "concepts": [
+        "임시열차 투입의 수송회복 조건"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02398",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열차재배치의 배차정상화 비충분은 편성을 부족 구간으로 옮겨도 승무원과 출발 슬롯이 맞지 않으면 간격을 정상화할 수 없다는 뜻이다. 차량 위치 조정과 실제 운행 성립을 분리한다.",
+      "concepts": [
+        "열차재배치의 배차정상화 비충분"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02399",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "균등간격 조정의 대기감소 조건은 연속 열차 사이 간격 편차를 줄여 승객 도착을 고르게 받아내는 것이다. 평균 간격만 같고 군집 운행이 남아 있으면 대기시간 감소에 충분하지 않다.",
+      "concepts": [
+        "균등간격 조정의 대기감소 조건"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-02400",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정상시각표 복귀의 망전체 조건은 개별 열차의 시각뿐 아니라 회차·환승·승무 교대가 후속 계획과 다시 맞물리는 것이다. 한 열차의 정시 도착을 전체 운행망 복구와 동일시하지 않는다.",
+      "concepts": [
+        "정상시각표 복귀의 망전체 조건"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    }
+  ]
+}

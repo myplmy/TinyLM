@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v53",
+  "version": "53",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-07801 ~ S2-CDH-07950",
+  "concept_family": "S2-A02-T053: 해양 부표 관측·경보 운영 — 연쇄 실패에서 최초 의존 고리 식별",
+  "design_note": "해양 부표 관측·경보 운영 영역의 연쇄 실패에서 최초 의존 고리 식별 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-07801",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부표의 여러 센서가 밤부터 멈췄다면 센서들을 각각 고장으로 보기 전에 새 배설물과 염분으로 태양전지 충전전류가 먼저 줄었는지 확인해야 한다. 태양전지 오염과 충전전류 저하는 공통 전원 연쇄의 최초 고리를 가리킨다.",
+      "concepts": [
+        "태양전지 오염과 충전전류 저하"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07802",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "태양패널 음영과 배터리방전 연쇄는 야간 결측보다 앞선 주간 원인을 찾게 한다.",
+      "concepts": [
+        "태양패널 음영과 배터리방전 연쇄"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07803",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전조절기 고장과 야간전원 상실은 발전원 정상과 저장전원 실패를 구분한다.",
+      "concepts": [
+        "충전조절기 고장과 야간전원 상실"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07804",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배터리저온과 유효용량 감소는 명목 잔량보다 온도 조건이 먼저인 전원 고리다.",
+      "concepts": [
+        "배터리저온과 유효용량 감소"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07805",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서 측정 중에는 전압이 정상이어도 위성모뎀이 큰 전류를 쓰는 순간 노화된 배터리 전압이 급락해 로거가 재부팅될 수 있다. 배터리노화와 송신시 전압강하는 통신 오류처럼 보이는 전원 원인을 분리한다.",
+      "concepts": [
+        "배터리노화와 송신시 전압강하"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07806",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "염분에 부식된 배터리 단자는 잔잔할 때 접촉하지만 파도가 흔들면 저항이 커져 부표가 간헐 재부팅될 수 있다. 배터리단자 부식과 간헐재부팅은 소프트웨어 장애보다 앞선 기계 접촉 고리를 나타낸다.",
+      "concepts": [
+        "배터리단자 부식과 간헐재부팅"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07807",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "케이블 피복 안으로 염수가 스며들면 완전 단락 전에 누설전류가 늘어 보호기가 전원을 차단할 수 있다. 전원케이블 침수와 접지누설은 센서 무응답의 최초 원인이 보호동작 뒤에 숨는 경우다.",
+      "concepts": [
+        "전원케이블 침수와 접지누설"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07808",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모든 센서가 같은 시각에 무응답이면 개별 센서보다 직류분배기 앞의 주퓨즈 단선을 먼저 확인하는 편이 타당하다. 주퓨즈 단선과 전체센서 무응답은 공통 상류 부품과 다중 하류 증상을 연결한다.",
+      "concepts": [
+        "주퓨즈 단선과 전체센서 무응답"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07809",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "직류분배기 단일고장과 공통정지는 시스템 전체 전원과 센서 계통 전원을 구분한다.",
+      "concepts": [
+        "직류분배기 단일고장과 공통정지"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07810",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서마다 독립 퓨즈가 있으면 한 채널 단락은 그 센서만 끊고 나머지 관측을 유지할 수 있다. 센서별 독립퓨즈와 부분결측은 전체 결측이 아니라면 공용 주퓨즈보다 하위 고리를 먼저 찾게 한다.",
+      "concepts": [
+        "센서별 독립퓨즈와 부분결측"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07811",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "파력 보조전원과 태양광 고장 독립성은 에너지원 수와 실제 전기 경로의 독립성을 구분한다.",
+      "concepts": [
+        "파력 보조전원과 태양광 고장 독립성"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07812",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보조발전 정류기와 공통병목은 발전원이 둘이어도 충전경로까지 이중화됐다고 볼 수 없다는 점을 밝힌다.",
+      "concepts": [
+        "보조발전 정류기와 공통병목"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07813",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "번개 뒤 과전압보호기가 정상적으로 센서 전원을 끊어 자료가 비었을 수 있으므로 결측 자체가 센서 파괴를 뜻하지는 않는다. 과전압보호와 관측자료 공백은 보호 성공과 장비 고장을 구분한다.",
+      "concepts": [
+        "과전압보호와 관측자료 공백"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07814",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "낙뢰보호기가 한 번의 서지를 흡수해 부표를 살렸어도 내부 소자가 손상되면 다음 낙뢰에 대한 보호가 사라진다. 낙뢰보호기 희생고장과 잔류위험은 현재 관측 정상과 보호기능 잔존을 구분한다.",
+      "concepts": [
+        "낙뢰보호기 희생고장과 잔류위험"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07815",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전원감시장치도 같은 배터리를 쓰면 배터리 완전 방전 때 마지막 전압과 차단 원인을 기록하지 못한다. 전원감시장치와 자체전원 의존은 감시자료 부재를 전원 정상의 증거로 쓰지 못하게 한다.",
+      "concepts": [
+        "전원감시장치와 자체전원 의존"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07816",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "십 분 평균전압이 정상이어도 송신 순간의 짧은 전압강하는 평균에 묻혀 반복 재부팅을 만들 수 있다. 평균전압 정상과 순간부하 붕괴는 시간 평균보다 부하 시점 파형이 최초 원인을 드러내는 사례다.",
+      "concepts": [
+        "평균전압 정상과 순간부하 붕괴"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07817",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전압 기반 잔량 추정은 온도·노화·최근 부하에 따라 실제 남은 에너지와 달라질 수 있다. 배터리잔량 추정과 실제용량 편차는 계산된 상태값과 물리적 지속시간을 구분한다.",
+      "concepts": [
+        "배터리잔량 추정과 실제용량 편차"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07818",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전상태 하락과 일사부족 선행은 누적 결과의 최초 외부 고리를 찾게 한다.",
+      "concepts": [
+        "충전상태 하락과 일사부족 선행"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07819",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전력절약모드와 표본간격 확대는 제어 상태와 계측 능력 저하를 구분한다.",
+      "concepts": [
+        "전력절약모드와 표본간격 확대"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07820",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "히터차단과 센서결로 연쇄는 전력 조치가 환경 고장을 만드는 중간 고리를 나타낸다.",
+      "concepts": [
+        "히터차단과 센서결로 연쇄"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07821",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "내부온도제어와 송신전력 경쟁은 두 하류 기능보다 공통 전력 여유를 먼저 확인하게 한다.",
+      "concepts": [
+        "내부온도제어와 송신전력 경쟁"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07822",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "함체가 바닷물 침투를 막을 만큼 밀봉되어도 내부 수분과 온도 변화가 있으면 오히려 결로가 빠져나가지 못할 수 있다. 방수함 밀봉과 내부결로 예외는 외부 방수와 내부 건조를 다른 보호조건으로 본다.",
+      "concepts": [
+        "방수함 밀봉과 내부결로 예외"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07823",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "파도 진동으로 케이블글랜드가 느슨해지면 염수가 케이블을 따라 함체에 들어와 전원과 통신 접점을 차례로 부식시킬 수 있다. 케이블글랜드 풀림과 염수침투는 여러 전기 증상보다 앞선 구조 고리다.",
+      "concepts": [
+        "케이블글랜드 풀림과 염수침투"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07824",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "접지선부식과 낙뢰경로 상실은 현재 기능 정상과 잠재 보호 실패를 구분한다.",
+      "concepts": [
+        "접지선부식과 낙뢰경로 상실"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07825",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수온·염분·파고가 같은 시각에 모두 비면 서로 다른 해양현상보다 공통 전원이나 로거 입력부를 먼저 의심해야 한다. 공통전원과 다중센서 결측은 동시 증상에서 상류 공유고리를 찾는 규칙이다.",
+      "concepts": [
+        "공통전원과 다중센서 결측"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07826",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주 부표가 정지했는데 독립 배터리를 쓰는 위치표지기만 송신한다면 위성망 전체보다 주 전원 계통 고장이 앞선 원인일 가능성이 높다. 독립전원센서와 부분생존 단서는 살아 있는 경로로 실패 경계를 좁힌다.",
+      "concepts": [
+        "독립전원센서와 부분생존 단서"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07827",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배터리를 교체해도 센서가 안정되기 전에 로거가 장치목록을 읽으면 일부 채널을 없는 것으로 등록할 수 있다. 전원복구와 로거부팅순서 의존은 전압 복귀 뒤 기동 순서가 다음 고리가 되는 사례다.",
+      "concepts": [
+        "전원복구와 로거부팅순서 의존"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07828",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배터리가 천천히 떨어지는 동안 로거가 저장 중 갑자기 꺼지면 전원을 복구한 뒤에도 파일시스템 손상으로 기록을 못 할 수 있다. 저전압종료와 파일시스템 손상은 현재 저장 오류의 선행 전원 사건을 연결한다.",
+      "concepts": [
+        "저전압종료와 파일시스템 손상"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07829",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "감시타이머가 멈춘 소프트웨어를 재부팅해 잠시 회복시켜도 전압 불안정이나 메모리 누수의 최초 원인은 남을 수 있다. 감시타이머 재부팅과 고장반복은 자동복구와 원인제거를 구분한다.",
+      "concepts": [
+        "감시타이머 재부팅과 고장반복"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07830",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원격전원차단과 현장복귀 의존은 안전조치가 후속 복구경로를 제한하는 사례다.",
+      "concepts": [
+        "원격전원차단과 현장복귀 의존"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07831",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "풍속계 베어링이 마모되면 강풍에서는 돌지만 약한 바람에서는 멈춰 저풍속이 0으로 기록될 수 있다. 풍속계베어링 마모와 저풍속 고정은 통신 정상 뒤 남는 기계 임계 고리를 나타낸다.",
+      "concepts": [
+        "풍속계베어링 마모와 저풍속 고정"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07832",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "풍향계 축에 염분이 굳으면 실제 바람이 변해도 한 방향값이 오래 유지된다. 풍향계축 염분고착과 일정방향값은 안정된 기상보다 센서 가동부 고정을 먼저 구분하게 한다.",
+      "concepts": [
+        "풍향계축 염분고착과 일정방향값"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07833",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기온센서 일사복사와 주간고온편향은 실제 대기 가열과 차폐 실패를 구분한다.",
+      "concepts": [
+        "기온센서 일사복사와 주간고온편향"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07834",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "습도센서 표면의 염막은 물을 끌어당겨 대기가 건조해져도 포화에 가까운 값을 만들 수 있다. 습도센서 염막과 상시포화값은 해양 습도와 센서 표면 상태의 경계를 세운다.",
+      "concepts": [
+        "습도센서 염막과 상시포화값"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07835",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기압계 통기구가 소금 결정이나 곤충으로 막히면 내부 압력이 갇혀 날씨 변화에 늦게 반응한다. 기압계 통기구 막힘과 느린응답은 대기 변화의 완만함보다 압력 전달 고리를 먼저 찾게 한다.",
+      "concepts": [
+        "기압계 통기구 막힘과 느린응답"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07836",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비가 없는데 파도 비말이 우량계로 들어가면 강수량이 기록될 수 있다. 우량계 해수비말과 허위강수는 물 감지 결과에서 대기 강수와 해양 비말의 유입 경로를 구분한다.",
+      "concepts": [
+        "우량계 해수비말과 허위강수"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07837",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "일사계 조류오염과 흐림오인은 기상 원인보다 광학창 차폐가 먼저인 경우다.",
+      "concepts": [
+        "일사계 조류오염과 흐림오인"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07838",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부표가 한쪽으로 기울면 가속도센서 축이 수직과 어긋나 동일 파도에서도 계산 파고가 달라질 수 있다. 파고센서 기울기와 수직성분 오류는 센서값보다 플랫폼 자세가 선행하는 기하 고리다.",
+      "concepts": [
+        "파고센서 기울기와 수직성분 오류"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07839",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "파고가 급증한 것처럼 보여도 계류줄이 튕기거나 선체 부품이 흔들리면 가속도에 국소 진동이 섞일 수 있다. 가속도이상과 계류진동 공통원인은 해상 상태와 플랫폼 운동을 분리한다.",
+      "concepts": [
+        "가속도이상과 계류진동 공통원인"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07840",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "파고센서가 살아 있어도 부표 위치와 자세 기준이 사라지면 파향 계산은 신뢰하기 어렵다. 위성위치손실과 파향계산 붕괴는 원시 운동 관측과 방향 산출의 선행 의존을 구분한다.",
+      "concepts": [
+        "위성위치손실과 파향계산 붕괴"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07841",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계류가 늘어나 수온센서가 평소보다 깊어지면 실제 표층이 같아도 더 차가운 값을 읽을 수 있다. 표층수온과 센서침수깊이 변화는 수온 변화보다 측정 깊이 이동을 먼저 확인하게 한다.",
+      "concepts": [
+        "표층수온과 센서침수깊이 변화"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07842",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 깊이의 수온센서가 직렬 통신할 때 중간 접속부가 끊기면 그 아래 채널이 한꺼번에 사라질 수 있다. 수온센서 사슬 접속불량과 하부채널 결측은 결측 깊이 경계로 최초 단선 위치를 좁힌다.",
+      "concepts": [
+        "수온센서 사슬 접속불량과 하부채널 결측"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07843",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전도도셀에 생물막이 자라 전극과 물의 접촉을 방해하면 실제 염분이 그대로여도 낮은 전도도가 기록될 수 있다. 전도도셀 생물막과 저염분편향은 담수 유입보다 센서 표면 오염을 구분하게 한다.",
+      "concepts": [
+        "전도도셀 생물막과 저염분편향"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07844",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전도도 자체가 정확해도 보정에 쓰는 온도센서가 틀리면 계산 염분이 함께 틀어진다. 염분계 온도보정과 공통온도센서는 최종 염분 이상보다 보조 입력 고리를 먼저 검사하게 한다.",
+      "concepts": [
+        "염분계 온도보정과 공통온도센서"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07845",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "용존산소 광학창과 생물부착은 해역 저산소와 센서 표면 반응을 구분한다.",
+      "concepts": [
+        "용존산소 광학창과 생물부착"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07846",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산소센서의 막이 찢어져도 내장 온도 채널은 정상일 수 있으므로 온도 통신 성공이 산소 측정 성공을 보장하지 않는다. 산소센서막 손상과 온도정상값은 한 장치 안의 독립 기능 경계를 나타낸다.",
+      "concepts": [
+        "산소센서막 손상과 온도정상값"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07847",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산도전극 기준접합부와 값표류는 최종 산도 추세보다 참조전극 고리를 먼저 찾게 한다.",
+      "concepts": [
+        "산도전극 기준접합부와 값표류"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07848",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부유퇴적물이 빛을 산란하면 엽록소가 늘지 않아도 형광센서 신호가 달라질 수 있다. 엽록소형광과 탁도간섭은 조류 번성과 광학 간섭을 독립 센서로 구분하게 한다.",
+      "concepts": [
+        "엽록소형광과 탁도간섭"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07849",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "파도가 강할 때 기포가 광학창을 지나면 입자 농도가 높지 않아도 탁도가 순간적으로 치솟을 수 있다. 탁도센서 기포와 순간고값은 폭풍 퇴적물과 기포 경로를 분리한다.",
+      "concepts": [
+        "탁도센서 기포와 순간고값"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07850",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "광학 질산염센서는 같은 파장대의 용존유기물이 늘면 질산염 증가처럼 읽을 수 있다. 질산염광학과 용존유기물 흡수는 계산 농도보다 스펙트럼 간섭 고리를 먼저 확인하게 한다.",
+      "concepts": [
+        "질산염광학과 용존유기물 흡수"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07851",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유류 감지 형광센서가 특정 조류나 용존물질에도 반응하면 기름 유출이 없어도 경보가 날 수 있다. 유류형광과 조류신호 혼동은 센서 반응과 대상 물질의 동일성을 구분한다.",
+      "concepts": [
+        "유류형광과 조류신호 혼동"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07852",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "음향 유속계가 계류 변형으로 기울면 빔 좌표를 수평 좌표로 바꾸는 자세 보정이 틀어질 수 있다. 유속계 기울기와 수평속도 왜곡은 해류 변화보다 센서 자세 고리를 먼저 검사하게 한다.",
+      "concepts": [
+        "유속계 기울기와 수평속도 왜곡"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07853",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "거친 파도 아래 기포층이 두꺼워지면 음향빔이 산란되어 깊은 수층의 유속 신호가 사라질 수 있다. 음향도플러 기포와 반사신호 손실은 센서 정지와 전파경로 차단을 구분한다.",
+      "concepts": [
+        "음향도플러 기포와 반사신호 손실"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07854",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수압센서가 정확해도 대기압 보정값이 틀리면 계산 수위와 파고의 기준선이 움직인다. 압력수심과 기압보정 의존은 해수 압력 채널보다 기상 보조센서가 최초 원인일 수 있음을 보여 준다.",
+      "concepts": [
+        "압력수심과 기압보정 의존"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07855",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "닻이 끌려 부표가 다른 수심으로 이동하면 조석이 같아도 압력센서 평균수위가 달라진다. 수위변화와 계류점 이동 혼동은 해면 변화와 측정 위치 변화를 구분한다.",
+      "concepts": [
+        "수위변화와 계류점 이동 혼동"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07856",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 시료펌프를 쓰는 산도·영양염·산소 채널이 함께 느려지면 센서들을 각각 교체하기 전에 흡입구 막힘을 확인해야 한다. 시료펌프 막힘과 다항목 동시저하는 공통 유체 경로의 최초 고리를 가리킨다.",
+      "concepts": [
+        "시료펌프 막힘과 다항목 동시저하"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07857",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "흡입구 깊이와 파랑중 공기유입은 수질 사건보다 채수 경로를 먼저 보게 한다.",
+      "concepts": [
+        "흡입구 깊이와 파랑중 공기유입"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07858",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서 자체가 정상이어도 방오와이퍼가 멈추면 생물막이 쌓여 며칠에 걸쳐 값이 흐를 수 있다. 방오와이퍼 고장과 점진편향은 측정소자보다 유지장치 고리가 앞선 경우다.",
+      "concepts": [
+        "방오와이퍼 고장과 점진편향"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07859",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구리 방오재는 생물부착을 줄이지만 미량금속이나 생물반응 측정에는 주변 농도를 바꿀 수 있다. 구리방오재와 미량측정 간섭은 보호 기능이 관측 대상에 개입하는 경계를 나타낸다.",
+      "concepts": [
+        "구리방오재와 미량측정 간섭"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07860",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교정표류와 교차센서 기준검증은 불일치 결과에서 기준 고리를 분리한다.",
+      "concepts": [
+        "교정표류와 교차센서 기준검증"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07861",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공용 센서버스 종단저항이 떨어지면 여러 장치의 데이터가 깨지거나 간헐적으로 사라질 수 있다. 센서버스 종단저항과 다채널 오류는 개별 센서보다 통신선 끝의 공통 고리를 먼저 찾게 한다.",
+      "concepts": [
+        "센서버스 종단저항과 다채널 오류"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07862",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "두 센서에 같은 버스 주소가 설정되면 로거가 서로 다른 값을 한 채널에서 번갈아 받을 수 있다. 장치주소 충돌과 값교대수신은 자연 변동보다 식별자 중복을 최초 원인으로 구분한다.",
+      "concepts": [
+        "장치주소 충돌과 값교대수신"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07863",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서 교체 뒤 통신 속도 설정이 로거와 다르면 전원과 배선이 정상이어도 응답을 해석하지 못한다. 직렬통신 속도불일치와 무응답은 물리 연결과 프로토콜 일치를 구분한다.",
+      "concepts": [
+        "직렬통신 속도불일치와 무응답"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07864",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서를 다른 포트에 연결했을 때 살아난다면 원래 센서보다 로거 입력포트가 먼저 끊긴 고리다. 로거입력포트 고장과 센서정상은 대체경로 시험으로 실패 경계를 좁힌다.",
+      "concepts": [
+        "로거입력포트 고장과 센서정상"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07865",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "로거 시계가 서서히 늦어지면 정확한 수위값도 조석 예측과 잘못된 위상으로 비교되어 이상처럼 보인다. 내부시계 표류와 조석위상 오류는 값 센서보다 시간 기준이 먼저인 경우다.",
+      "concepts": [
+        "내부시계 표류와 조석위상 오류"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07866",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "위성시각 상실과 다센서 동기붕괴는 공통 시간원이 연쇄 분석의 상류 고리임을 보여 준다.",
+      "concepts": [
+        "위성시각 상실과 다센서 동기붕괴"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07867",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원자료는 협정세계시인데 육상 프로그램이 현지시각으로 중복 변환하면 경보 시각이 실제보다 여러 시간 이동할 수 있다. 협정세계시와 현지시각 변환오류는 관측 시계와 표시 변환을 구분한다.",
+      "concepts": [
+        "협정세계시와 현지시각 변환오류"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07868",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통신이 오래 끊긴 동안 로거버퍼가 가득 차면 설정에 따라 오래된 자료나 최신 자료가 덮어써질 수 있다. 로거버퍼 포화와 최신자료 손실은 전송 복구 전에 저장정책을 최초 고리로 확인하게 한다.",
+      "concepts": [
+        "로거버퍼 포화와 최신자료 손실"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07869",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서는 계속 값을 만들고 화면의 현재값도 보이지만 저장장치가 가득 차면 이력자료는 남지 않을 수 있다. 저장장치 용량포화와 측정지속 착시는 실시간 표시와 기록 기능을 구분한다.",
+      "concepts": [
+        "저장장치 용량포화와 측정지속 착시"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07870",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "하나의 손상된 자료파일을 전송 프로그램이 반복 재시도하면 그 뒤의 정상 파일까지 대기열에서 막힐 수 있다. 파일손상과 후속전송 중단은 최신 결측의 최초 원인이 과거 파일 하나일 수 있음을 나타낸다.",
+      "concepts": [
+        "파일손상과 후속전송 중단"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07871",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부표 펌웨어가 새 압축형식으로 자료를 보내도 육상 해독기가 갱신되지 않으면 수신에는 성공하고 값 변환에는 실패한다. 압축형식 변경과 육상해독 실패는 통신 도착과 의미 복원을 구분한다.",
+      "concepts": [
+        "압축형식 변경과 육상해독 실패"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07872",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "로거 펌웨어가 정상 설치되어도 구형 센서 드라이버가 빠지면 특정 채널만 사라질 수 있다. 펌웨어갱신과 센서드라이버 누락은 최신 소프트웨어와 장치 호환성을 구분한다.",
+      "concepts": [
+        "펌웨어갱신과 센서드라이버 누락"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07873",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고장 복구 후 기본설정을 불러오면 고해상도 관측이 평시의 긴 표본주기로 돌아가 경보가 늦어질 수 있다. 설정복원과 기본표본주기 회귀는 시스템 기동 성공 뒤 남는 구성 고리를 나타낸다.",
+      "concepts": [
+        "설정복원과 기본표본주기 회귀"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07874",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모뎀재기동과 상류전압 불안정은 반복 복구 실패의 최초 고리를 구분한다.",
+      "concepts": [
+        "모뎀재기동과 상류전압 불안정"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07875",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모뎀은 망에 등록되지만 안테나커넥터에 염분 부식이 생기면 신호가 약해져 큰 자료만 자주 실패할 수 있다. 안테나커넥터 부식과 송신감쇠는 계정·모뎀 정상 뒤 남는 무선 경로 고리다.",
+      "concepts": [
+        "안테나커넥터 부식과 송신감쇠"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07876",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부표가 기울어 지향성 안테나가 하늘을 벗어나면 위성 서비스가 정상이어도 연결 창이 짧아진다. 안테나기울기와 위성가시성 저하는 통신 사업자보다 플랫폼 자세를 먼저 확인하게 한다.",
+      "concepts": [
+        "안테나기울기와 위성가시성 저하"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07877",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "위성저고도와 파도차폐 반복은 무작위 통신 불량과 기하 조건을 구분한다.",
+      "concepts": [
+        "위성저고도와 파도차폐 반복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07878",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "안테나·모뎀·전원이 모두 정상이어도 위성 서비스 계약이나 단말 인증이 만료되면 자료가 육상에 도착하지 않는다. 위성계약 만료와 장비정상 결측은 물리 장비와 서비스 권한의 경계를 세운다.",
+      "concepts": [
+        "위성계약 만료와 장비정상 결측"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07879",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연안 부표가 충분한 신호세기를 보여도 유심 요금제 정지나 로밍 제한이 있으면 데이터 세션을 열지 못한다. 이동통신유심 정지와 연안전송 실패는 무선 도달성과 계정 가용성을 구분한다.",
+      "concepts": [
+        "이동통신유심 정지와 연안전송 실패"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07880",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "닻이 끌려 부표가 기지국 가시권 밖으로 이동하면 동일 장비가 갑자기 통신을 잃을 수 있다. 부표표류와 통신음영 진입은 통신기 고장보다 위치 변화가 앞선 원인인 사례다.",
+      "concepts": [
+        "부표표류와 통신음영 진입"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07881",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 부표가 한 해상중계기를 거쳐 전송하면 중계기 고장 하나가 그 부표군을 동시에 오프라인으로 만든다. 해상중계기 고장과 부표군 단절은 개별 부표보다 공유 중계 고리를 먼저 찾게 한다.",
+      "concepts": [
+        "해상중계기 고장과 부표군 단절"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07882",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서로 다른 위성을 쓰는 부표까지 같은 시각에 사라지면 공통 육상게이트웨이나 수집 서버 장애일 수 있다. 육상게이트웨이 장애와 광역결측은 해상 장비와 육상 수신계통의 실패 경계를 좁힌다.",
+      "concepts": [
+        "육상게이트웨이 장애와 광역결측"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07883",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수집서버가 살아 있고 인터넷 경로도 정상이어도 이름해석 서비스가 고장 나면 부표 게이트웨이가 주소를 찾지 못할 수 있다. 이름해석 실패와 서버도달 불가는 서버 상태와 주소해석 의존을 구분한다.",
+      "concepts": [
+        "이름해석 실패와 서버도달 불가"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07884",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "네트워크 연결과 서버 포트가 열려 있어도 인증서가 만료되면 보안 통신이 거부될 수 있다. 인증서만료와 암호통신 차단은 전송경로 정상 뒤에 남는 신뢰 자격 고리를 나타낸다.",
+      "concepts": [
+        "인증서만료와 암호통신 차단"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07885",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "새 센서가 같은 이름의 값을 다른 필드와 단위로 보내면 저장에는 성공해도 경보 응용프로그램이 값을 읽지 못할 수 있다. 자료형식 변경과 응용처리 중단은 데이터 존재와 스키마 호환성을 구분한다.",
+      "concepts": [
+        "자료형식 변경과 응용처리 중단"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07886",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자료가 육상에 계속 도착해도 처리량보다 빠르게 쌓이면 최신 경보가 오래된 메시지 뒤에서 늦어질 수 있다. 메시지대기열 적체와 경보지연은 수신 성공과 실시간 처리 능력을 구분한다.",
+      "concepts": [
+        "메시지대기열 적체와 경보지연"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07887",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재전송중복과 사건건수 팽창은 패킷 수와 독립 사건 수를 구분한다.",
+      "concepts": [
+        "재전송중복과 사건건수 팽창"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07888",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서가 정상 측정했어도 무선 패킷 일부가 사라지면 육상 시계열에 규칙 없는 빈 구간이 생긴다. 패킷손실과 시계열간격 결측은 관측 실패와 전달 실패를 분리한다.",
+      "concepts": [
+        "패킷손실과 시계열간격 결측"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07889",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "송신기와 수신기가 다른 검사합 규칙을 쓰면 내용이 온전한 패킷도 손상으로 판정되어 버려질 수 있다. 검사합오류와 정상패킷 폐기는 실제 비트오류와 검증규칙 불일치를 구분한다.",
+      "concepts": [
+        "검사합오류와 정상패킷 폐기"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07890",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "음수부호나 소수점 문자가 다른 부호체계로 변환되면 원자료가 도착해도 수치 파서가 값을 결측으로 만들 수 있다. 문자부호 오류와 센서값 해석실패는 전송과 의미 변환 사이의 고리를 나타낸다.",
+      "concepts": [
+        "문자부호 오류와 센서값 해석실패"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07891",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서가 센티미터 단위 파고를 보내는데 서버가 미터로 읽으면 정상 파도가 극단 경보가 될 수 있다. 단위변환 누락과 경보임계 오판은 센서값보다 메타데이터 단위가 최초 원인인 사례다.",
+      "concepts": [
+        "단위변환 누락과 경보임계 오판"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07892",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원시 전압은 정상이어도 센서별 보정계수가 데이터베이스에서 빠지면 변환된 수질값이 계속 한 방향으로 틀어진다. 보정계수 누락과 장기편향은 측정회로와 육상 환산 고리를 구분한다.",
+      "concepts": [
+        "보정계수 누락과 장기편향"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07893",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부표식별자 중복과 자료혼합은 값 이상보다 개체 식별 고리를 먼저 확인하게 한다.",
+      "concepts": [
+        "부표식별자 중복과 자료혼합"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07894",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부표 관측은 최신인데 위치 패킷만 오래된 값이면 표류한 자료가 원래 해역 지도에 계속 표시될 수 있다. 위치정보 갱신지연과 해역오배치는 측정 시각과 위치 시각의 일치를 요구한다.",
+      "concepts": [
+        "위치정보 갱신지연과 해역오배치"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07895",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "표류부표와 타해역경보 귀속은 센서 정확성과 공간 소속을 구분한다.",
+      "concepts": [
+        "표류부표와 타해역경보 귀속"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07896",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시계동기 실패와 원인순서 역전은 연쇄 고리 식별에 공통 시간축이 필요함을 보여 준다.",
+      "concepts": [
+        "시계동기 실패와 원인순서 역전"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07897",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부표의 원자료가 정상이어도 육상 보정서비스가 멈추면 조위·염분·파향 같은 최종 산출값이 생성되지 않을 수 있다. 육상보정서비스와 최종값 의존은 원시 관측과 파생 제품을 구분한다.",
+      "concepts": [
+        "육상보정서비스와 최종값 의존"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07898",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "품질관리 규칙이 정상값을 결함으로 잘못 표시하면 원자료는 저장되어도 사용자 화면과 경보 입력에서 제외될 수 있다. 품질표지 오류와 정상값 비공개는 센서 고장과 품질분류 고장을 구분한다.",
+      "concepts": [
+        "품질표지 오류와 정상값 비공개"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07899",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장값은 도착해도 조석·파랑 예측장을 함께 요구하는 복합 경보는 외부 예측자료가 끊기면 계산되지 않을 수 있다. 예측장 입력중단과 경보계산 정지는 부표 관측과 외부 모델 의존을 구분한다.",
+      "concepts": [
+        "예측장 입력중단과 경보계산 정지"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07900",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서버에서 경보가 해제되었어도 운영자 화면의 캐시가 갱신되지 않으면 붉은 상태가 계속 보일 수 있다. 경보화면 캐시와 구상태 잔존은 처리 결과와 표시 상태를 구분한다.",
+      "concepts": [
+        "경보화면 캐시와 구상태 잔존"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07901",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계류줄 외피가 반복 굽힘으로 닳으면 완전 파단 전에 길이가 늘고 부표 위치 반경이 커질 수 있다. 계류줄 마모와 표류전조는 위치 이상보다 먼저 나타난 구조 열화 고리를 가리킨다.",
+      "concepts": [
+        "계류줄 마모와 표류전조"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07902",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "닻끌림과 다센서환경 급변은 공통 위치 변화가 여러 관측을 만드는 원인임을 보여 준다.",
+      "concepts": [
+        "닻끌림과 다센서환경 급변"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07903",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "회전고리가 부식으로 고착되면 조류와 파도 회전이 계류줄에 누적되어 피로와 센서케이블 꼬임이 이어질 수 있다. 회전고리 고착과 계류줄 비틀림은 파단보다 앞선 회전 해소 실패를 찾게 한다.",
+      "concepts": [
+        "회전고리 고착과 계류줄 비틀림"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07904",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "평시 장력에는 버티는 계류사슬도 부식으로 단면이 줄면 폭풍 첨두하중에서 끊어질 수 있다. 계류사슬 부식과 폭풍파단은 마지막 파도보다 장기 재료 열화를 최초 고리로 구분한다.",
+      "concepts": [
+        "계류사슬 부식과 폭풍파단"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07905",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "밸러스트나 계류가 변해 부표가 기울면 안테나 가시성과 기상센서 수평이 함께 나빠질 수 있다. 부표기울기와 안테나센서 동시영향은 통신·관측의 공통 구조 원인을 드러낸다.",
+      "concepts": [
+        "부표기울기와 안테나센서 동시영향"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07906",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "선체균열과 구획침수 연쇄는 최종 전원상실보다 먼저 생긴 외피 고리를 나타낸다.",
+      "concepts": [
+        "선체균열과 구획침수 연쇄"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07907",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구획이 분리된 부표에서는 센서함이 침수되어도 독립 통신구획이 위치표지를 계속 보낼 수 있다. 방수구획 침수와 부분기능 생존은 살아 있는 기능으로 침수 경계를 좁힌다.",
+      "concepts": [
+        "방수구획 침수와 부분기능 생존"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07908",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "밸러스트 이동과 센서깊이 변화는 교정문제보다 구조 배치 고리를 먼저 확인하게 한다.",
+      "concepts": [
+        "밸러스트 이동과 센서깊이 변화"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07909",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부표가 낮아져 파도가 태양패널을 반복 덮으면 즉시 단락이 없어도 염막과 부식으로 충전효율이 떨어질 수 있다. 태양패널 침수와 장기충전 저하는 자세 변화가 전원 열화로 이어지는 경로다.",
+      "concepts": [
+        "태양패널 침수와 장기충전 저하"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07910",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서마스트 균열과 풍향자료 상실은 하류 장치보다 공통 지지구조를 먼저 찾게 한다.",
+      "concepts": [
+        "센서마스트 균열과 풍향자료 상실"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07911",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "마스트가 휘어 안테나 높이가 낮아지면 모뎀 전원과 안테나 자체가 정상이어도 파도·수평선 장애가 커진다. 마스트높이 저하와 무선시야 차단은 무선장비보다 구조 높이가 선행하는 고리다.",
+      "concepts": [
+        "마스트높이 저하와 무선시야 차단"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07912",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계류줄 길이 변화로 센서가 다른 수심에 놓이면 정확한 측정도 잘못된 깊이의 자료로 해석될 수 있다. 센서깊이 이동과 수층오귀속은 값 품질과 위치 메타데이터를 구분한다.",
+      "concepts": [
+        "센서깊이 이동과 수층오귀속"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07913",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폭풍파와 전원통신 동시충격은 여러 독립 고장보다 하나의 환경 공통원인을 먼저 검토하게 한다.",
+      "concepts": [
+        "폭풍파와 전원통신 동시충격"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07914",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대기 착빙이 마스트 한쪽에 쌓이면 무게와 풍압이 늘어 센서 수평·안테나 방향·계류 자세가 함께 틀어질 수 있다. 착빙하중과 마스트자세 붕괴는 개별 센서 편향보다 구조 하중이 최초 고리인 사례다.",
+      "concepts": [
+        "착빙하중과 마스트자세 붕괴"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07915",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "해빙압력과 계류점 이동은 수질 급변보다 얼음의 기계 작용을 먼저 확인하게 한다.",
+      "concepts": [
+        "해빙압력과 계류점 이동"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07916",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "따개비와 해조류가 선체·계류줄에 자라면 유속이 같아도 항력이 커져 계류장력과 배터리 자세제어 부담이 증가한다. 생물부착 항력과 계류피로 증가는 센서 오염을 넘어 구조 고장으로 이어지는 고리다.",
+      "concepts": [
+        "생물부착 항력과 계류피로 증가"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07917",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "떠다니는 어구가 계류줄과 센서에 걸리면 추가 하중과 항력이 부표를 낮추고 센서 깊이를 바꿀 수 있다. 어구얽힘과 부표침강 편향은 다중 관측 변화의 최초 외부 물체 고리를 가리킨다.",
+      "concepts": [
+        "어구얽힘과 부표침강 편향"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07918",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "선박충돌과 지연침수는 증상 시각보다 앞선 충격 사건을 원인으로 연결한다.",
+      "concepts": [
+        "선박충돌과 지연침수"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07919",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외부 센서만 절취되면 내부 전원·로거·통신은 정상 상태로 빈 채널을 계속 보낼 수 있다. 장비절취와 정상전원 잔존은 센서 무응답과 전원 고장을 구분한다.",
+      "concepts": [
+        "장비절취와 정상전원 잔존"
+      ],
+      "relations": [
+        "state",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07920",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "새가 만든 둥지 재료가 패널만 가리는 것이 아니라 통풍구와 배수구를 막으면 과열과 침수가 연쇄적으로 생길 수 있다. 조류둥지와 통풍배수 폐색은 여러 함체 이상보다 앞선 물리 폐색 고리다.",
+      "concepts": [
+        "조류둥지와 통풍배수 폐색"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07921",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고장 위치와 부품을 알아도 파고·시정이 정비선 안전 한계를 넘으면 현장 복구를 시작할 수 없다. 정비선출항 제한과 복구지연은 진단 완료와 실행 가능성을 구분한다.",
+      "concepts": [
+        "정비선출항 제한과 복구지연"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07922",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "해상 날씨가 잠잠해져도 출항항이 폭풍피해로 닫히면 기술자와 장비가 부표에 도달하지 못한다. 항만폐쇄와 정비자원 고립은 현장 기상 회복만으로 유지보수 경로가 열리지 않음을 보여 준다.",
+      "concepts": [
+        "항만폐쇄와 정비자원 고립"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07923",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 항목을 측정하는 예비센서가 있어도 커넥터·통신·교정식이 다르면 현장에서 바로 교체할 수 없다. 예비센서 재고와 수중커넥터 호환은 재고 존재와 기능적 대체성을 구분한다.",
+      "concepts": [
+        "예비센서 재고와 수중커넥터 호환"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07924",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서를 교정실에서 정상화해도 계류·전원·로거 포트가 먼저 복구되지 않으면 부표 관측은 돌아오지 않는다. 교정실 가용과 현장복귀 순서는 부품 품질과 시스템 연결의 선행 관계를 구분한다.",
+      "concepts": [
+        "교정실 가용과 현장복귀 순서"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07925",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비선에 기술자가 탔어도 고소 마스트·잠수·전기 작업에 필요한 자격자가 모두 없으면 일부 수리를 수행할 수 없다. 기술자승선과 작업자격 조합은 사람 수와 임무 수행 능력을 구분한다.",
+      "concepts": [
+        "기술자승선과 작업자격 조합"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07926",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "크레인 정격이 부표 무게보다 커도 파랑이 만드는 동하중과 선박 운동이 한계를 넘으면 인양할 수 없다. 인양장비 용량과 파랑중 안전은 정적 용량 충족이 해상 작업의 충분조건이 아님을 보여 준다.",
+      "concepts": [
+        "인양장비 용량과 파랑중 안전"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07927",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대체부표 투입과 계측연속성 단절은 서비스 복구와 자료 연속성을 구분한다.",
+      "concepts": [
+        "대체부표 투입과 계측연속성 단절"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07928",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계류좌표 오차와 설치깊이 불일치는 지도 위치와 설치 조건을 구분한다.",
+      "concepts": [
+        "계류좌표 오차와 설치깊이 불일치"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07929",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부품 교체 뒤 공장 기본설정이 적용되면 표본주기·단위·경보임계가 현장값과 달라질 수 있다. 수리후 기본설정과 경보민감도 변화는 하드웨어 복구 뒤 구성 검증이 다음 고리임을 나타낸다.",
+      "concepts": [
+        "수리후 기본설정과 경보민감도 변화"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07930",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비후 검증표본과 전체 채널 복귀는 연결 성공과 관측 서비스 정상화를 구분한다.",
+      "concepts": [
+        "정비후 검증표본과 전체 채널 복귀"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07931",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "경보임계 초과와 센서표류 원인은 결과 경보에서 측정 고리를 역추적하게 한다.",
+      "concepts": [
+        "경보임계 초과와 센서표류 원인"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07932",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부표 자료가 없다는 사실은 파도가 잔잔하거나 오염이 없다는 뜻이 아니라 전원·센서·통신 어느 고리의 실패일 수 있다. 자료결측과 안전상태 오인은 관측 부재와 현상 부재를 구분한다.",
+      "concepts": [
+        "자료결측과 안전상태 오인"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07933",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 시간 완전히 같은 값은 매우 안정된 바다보다 센서 고착·버퍼 반복·마지막값 유지에서 생길 수 있다. 센서고정값과 해양안정 오인은 변동 부재의 최초 기술 고리를 찾게 한다.",
+      "concepts": [
+        "센서고정값과 해양안정 오인"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07934",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 무관한 센서가 같은 초에 극단값을 보이면 실제 복합재해보다 전원잡음이나 접지 변동을 먼저 확인해야 한다. 순간첨두와 전원잡음 경보는 동시성으로 공통 전기 고리를 좁힌다.",
+      "concepts": [
+        "순간첨두와 전원잡음 경보"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07935",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "다센서 동시이상과 공통시료경로는 장치 수보다 공유 물길을 먼저 검사하게 한다.",
+      "concepts": [
+        "다센서 동시이상과 공통시료경로"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07936",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서 두 대가 일치해도 나란히 설치되어 같은 생물막과 기포에 노출되면 같은 방향으로 편향될 수 있다. 이중센서 일치와 공통생물막은 측정 중복과 원인 독립성을 구분한다.",
+      "concepts": [
+        "이중센서 일치와 공통생물막"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07937",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "인접부표 비교와 수괴차이 한계는 대조 자료의 공간 적용 범위를 제한한다.",
+      "concepts": [
+        "인접부표 비교와 수괴차이 한계"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07938",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폭풍은 실제 파고를 높이는 동시에 안테나를 가리고 전원을 소모해 자료를 끊을 수 있다. 폭풍실재와 통신상실 공통원인은 경보 직전 고값과 후속 결측을 하나의 환경 고리로 연결한다.",
+      "concepts": [
+        "폭풍실재와 통신상실 공통원인"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07939",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운영자가 경보를 받지 못했어도 센서·서버에서 사건이 발생했고 알림 채널만 실패했을 수 있다. 경보미수신과 사건부재 비동일은 현상·판정·전달의 세 단계를 구분한다.",
+      "concepts": [
+        "경보미수신과 사건부재 비동일"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07940",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운영자가 경보를 확인 버튼으로 닫았다고 파고·표류·전원저하 원인이 해결된 것은 아니다. 경보확인과 원인해결 비동일은 알림 상태와 현장 상태의 경계를 세운다.",
+      "concepts": [
+        "경보확인과 원인해결 비동일"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07941",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서 교체 중 시험경보를 억제할 수 있어도 같은 부표의 계류·전원·위치 경보까지 모두 끄면 실제 사고를 놓칠 수 있다. 정비중 경보억제와 대상채널 범위는 예외를 작업 관련 채널에만 한정한다.",
+      "concepts": [
+        "정비중 경보억제와 대상채널 범위"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07942",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비가 끝나 센서가 정상값을 보내도 억제 설정이 남아 있으면 다음 실제 이상이 운영자에게 전달되지 않는다. 정비종료와 경보억제 잔존은 장비 복구 뒤 설정 원복이 마지막 의존 고리임을 보여 준다.",
+      "concepts": [
+        "정비종료와 경보억제 잔존"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07943",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "근무교대 때 확인만 하고 해결하지 않은 경보의 원인·현장조치·재확인 시각을 넘기지 않으면 새 운영자가 종결된 사건으로 오해할 수 있다. 교대인계 누락과 미처리경보 소실은 사람 사이 정보 고리를 나타낸다.",
+      "concepts": [
+        "교대인계 누락과 미처리경보 소실"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07944",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중대 경보가 한 담당자의 휴대전화에만 의존하면 부재나 배터리 방전으로 기관 대응 전체가 늦어질 수 있다. 경보상향 연락망과 단일담당자 병목은 시스템 전송 뒤 사람 연락 고리를 구분한다.",
+      "concepts": [
+        "경보상향 연락망과 단일담당자 병목"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07945",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이동전화망이 끊겨도 무전·위성문자·기관 전용망이 독립적으로 구성되어 있으면 경보를 우회 전달할 수 있다. 전화망장애와 대체통보 경로는 한 채널 실패와 전체 통보 실패를 구분한다.",
+      "concepts": [
+        "전화망장애와 대체통보 경로"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07946",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기술시스템이 위험을 정확히 탐지해도 공공경보에 승인권자 확인이 필요하면 승인 부재가 시민 통보를 늦출 수 있다. 공공경보 발령과 승인권자 의존은 자동 판정 뒤 남는 제도적 고리를 나타낸다.",
+      "concepts": [
+        "공공경보 발령과 승인권자 의존"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07947",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예측모형 입력결측과 위험과소추정은 관측 고장이 예측·경보로 전파되는 연쇄다.",
+      "concepts": [
+        "예측모형 입력결측과 위험과소추정"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07948",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전원과 통신이 가장 거친 폭풍 때 함께 끊기면 남은 자료는 부표가 견딘 잔잔한 조건에 치우친다. 최악기상 결측과 표본편향은 결측이 해상상태와 무관한 무작위가 아님을 보여 준다.",
+      "concepts": [
+        "최악기상 결측과 표본편향"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07949",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부표 경보로 선박을 미리 대피시켜 사고가 없었다면 위험이 없었던 것이 아니라 경보 개입 덕분에 사고 결과가 발생하지 않았을 수 있다. 선제대피와 피해부재 역추론은 성공한 대응과 원인 부재를 구분한다.",
+      "concepts": [
+        "선제대피와 피해부재 역추론"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-07950",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "최초고리 판정과 연쇄복구 순서는 원인 식별이 효율적 복구 순서를 결정함을 정리한다.",
+      "concepts": [
+        "최초고리 판정과 연쇄복구 순서"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    }
+  ]
+}

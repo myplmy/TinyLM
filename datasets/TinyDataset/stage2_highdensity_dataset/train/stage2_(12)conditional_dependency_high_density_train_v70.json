@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v70",
+  "version": "70",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-10351 ~ S2-CDH-10500",
+  "concept_family": "S2-A02-T070: 데이터센터 냉각·전력 절체 — 필요조건 충족과 결과 발생의 비대칭 판정",
+  "design_note": "데이터센터 냉각·전력 절체 영역의 필요조건 충족과 결과 발생의 비대칭 판정 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-10351",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "상용전원 정상과 서버가동은 같지 않다. 전력이 들어와도 분전기나 서버 전원장치가 꺼져 있으면 서비스는 시작되지 않는다. 실제 복구 순서와 남은 의존도 따로 확인해야 한다.",
+      "concepts": [
+        "상용전원 정상과 서버가동"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10352",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수전전압 확보와 부하공급 사이에는 변압·배전 경로가 필요하다. 계통 전압이 정상이어도 차단기가 열려 있으면 랙에는 전력이 닿지 않는다.",
+      "concepts": [
+        "수전전압 확보와 부하공급"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10353",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "절체명령 발행과 전원전환을 구분한다. 명령은 필요 입력이지만 자동절체개폐기가 움직이지 않으면 실제 공급원은 바뀌지 않는다.",
+      "concepts": [
+        "절체명령 발행과 전원전환"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10354",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비선로 가압과 무정전절체는 동일한 결과가 아니다. 위상·주파수가 맞지 않으면 예비전압이 있어도 순간 끊김 없이 넘길 수 없다.",
+      "concepts": [
+        "예비선로 가압과 무정전절체"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10355",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계통동기 완료와 차단기 투입 사이에는 보호계전과 투입허가가 남는다. 동기조건을 맞췄어도 인터록이 열려 있으면 병입되지 않는다.",
+      "concepts": [
+        "계통동기 완료와 차단기 투입"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10356",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이중수전 구성과 공급연속성은 공통 변전소에 의해 함께 끊길 수 있다. 회선 수가 둘이라는 사실만으로 독립 전원을 보장하지 않는다.",
+      "concepts": [
+        "이중수전 구성과 공급연속성"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10357",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전력품질 정상과 장비안정은 별도 판단이다. 전압과 주파수가 기준 안이어도 장비 내부 결함 때문에 서버가 재부팅될 수 있다.",
+      "concepts": [
+        "전력품질 정상과 장비안정"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10358",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차단기 폐로와 전류전달은 접점 상태와 하류 회로에 달려 있다. 표시가 닫힘이어도 접촉불량이나 단선이면 부하는 공급되지 않는다.",
+      "concepts": [
+        "차단기 폐로와 전류전달"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10359",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전원복구와 서비스복구는 시간축이 다르다. 전력이 돌아온 뒤에도 서버 기동, 저장장치 점검, 애플리케이션 재연결이 끝나야 서비스가 회복된다.",
+      "concepts": [
+        "전원복구와 서비스복구"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10360",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정전경보와 실제정전은 대칭이 아니다. 센서 고장으로 경보가 날 수 있고, 감시회로가 죽으면 정전이 발생해도 경보가 없을 수 있다.",
+      "concepts": [
+        "정전경보와 실제정전"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10361",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉동기 운전과 냉수생산을 동일시하지 않는다. 압축기가 돌아도 냉매 부족이나 열교환 불량이면 목표온도의 냉수가 나오지 않는다.",
+      "concepts": [
+        "냉동기 운전과 냉수생산"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10362",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉수온도 정상과 랙냉각 사이에는 유량과 공기 열교환이 필요하다. 플랜트 출구가 차가워도 코일에 물이 닿지 않으면 랙은 식지 않는다.",
+      "concepts": [
+        "냉수온도 정상과 랙냉각"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10363",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉동기 대수확보와 열부하충족은 각 장비 용량과 효율에 좌우된다. 두 대가 켜져 있어도 부분고장으로 총 냉각량이 부족할 수 있다.",
+      "concepts": [
+        "냉동기 대수확보와 열부하충족"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10364",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉매압력 정상과 성능정상은 같은 검사가 아니다. 압력이 범위 안이어도 오염된 열교환기 때문에 냉각능력이 떨어질 수 있다.",
+      "concepts": [
+        "냉매압력 정상과 성능정상"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10365",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "압축기 기동과 안정운전은 구별해야 한다. 시작에 성공해도 오일압이나 진동 조건이 나쁘면 곧 보호정지될 수 있다.",
+      "concepts": [
+        "압축기 기동과 안정운전"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10366",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉각탑 팬회전과 방열성공 사이에는 물 분포와 외기조건이 있다. 팬이 돌아도 노즐이 막히면 응축열을 충분히 버리지 못한다.",
+      "concepts": [
+        "냉각탑 팬회전과 방열성공"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10367",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외기저온과 무상냉각 가능은 습도·오염·열교환기 조건을 함께 요구한다. 기온이 낮다는 이유만으로 기계냉각을 즉시 끌 수 없다.",
+      "concepts": [
+        "외기저온과 무상냉각 가능"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10368",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉동기 예비용량과 장애내성은 배관과 전원이 독립돼야 연결된다. 예비기가 같은 고장 난 헤더에 묶여 있으면 용량표만으로 장애를 견디지 못한다.",
+      "concepts": [
+        "냉동기 예비용량과 장애내성"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10369",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉각설정값 하향과 온도개선은 필연 관계가 아니다. 밸브가 포화됐거나 공기 재순환이 있으면 설정만 낮춰도 랙 흡입온도는 내려가지 않는다.",
+      "concepts": [
+        "냉각설정값 하향과 온도개선"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10370",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉동기 경보해제와 고장해소는 다르다. 경보를 재설정해도 냉매누설이나 센서편향 원인이 남으면 다시 정지할 수 있다.",
+      "concepts": [
+        "냉동기 경보해제와 고장해소"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10371",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉수펌프 회전과 유량형성은 같은 결과가 아니다. 임펠러 손상이나 밸브폐쇄가 있으면 모터는 돌지만 물은 흐르지 않는다.",
+      "concepts": [
+        "냉수펌프 회전과 유량형성"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10372",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "펌프압력 확보와 말단유량 사이에는 배관저항과 밸브상태가 개입한다. 토출압이 정상이어도 우회밸브가 열리면 랙 코일 유량은 부족할 수 있다.",
+      "concepts": [
+        "펌프압력 확보와 말단유량"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10373",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보충수 탱크충만과 냉각지속은 수질·펌프·배관 조건을 더 요구한다. 물이 충분해도 공급밸브가 닫히면 냉각탑은 보충받지 못한다.",
+      "concepts": [
+        "보충수 탱크충만과 냉각지속"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10374",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "밸브개방 명령과 실제개도를 분리해 본다. 액추에이터가 걸리면 명령 신호가 있어도 냉수 경로는 열리지 않는다.",
+      "concepts": [
+        "밸브개방 명령과 실제개도"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10375",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배관차압 정상과 모든코일 공급은 동일하지 않다. 대표 지점의 차압이 맞아도 말단 가지가 막히면 일부 코일에는 물이 없다.",
+      "concepts": [
+        "배관차압 정상과 모든코일 공급"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10376",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "누수감지와 실제누수는 양방향 보장이 없다. 센서 결로나 오염이 경보를 만들 수 있고, 센서 밖 누수는 감지 없이 진행될 수 있다.",
+      "concepts": [
+        "누수감지와 실제누수"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10377",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이중펌프 설치와 독립운전은 같은 전원·흡입헤더를 공유하면 갈라진다. 펌프가 둘이어도 공통 밸브가 닫히면 모두 멈춘다.",
+      "concepts": [
+        "이중펌프 설치와 독립운전"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10378",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수처리 기준충족과 열교환건전은 시간범위가 다르다. 현재 수질이 좋아도 과거 스케일이 남아 있으면 열전달은 낮을 수 있다.",
+      "concepts": [
+        "수처리 기준충족과 열교환건전"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10379",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "팽창탱크 압력과 기포부재를 같게 보지 않는다. 압력이 정상이어도 국부 고점에 공기가 갇히면 순환이 방해될 수 있다.",
+      "concepts": [
+        "팽창탱크 압력과 기포부재"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10380",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배수완료와 누수원 제거는 별도 사건이다. 바닥의 물을 빼도 파손된 배관을 고치지 않으면 다시 침수된다.",
+      "concepts": [
+        "배수완료와 누수원 제거"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10381",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "CRAC 팬운전과 랙풍량 사이에는 바닥통로와 타일개구가 필요하다. 팬이 돌아도 통로가 막히면 서버 흡입구에는 공기가 닿지 않는다.",
+      "concepts": [
+        "CRAC 팬운전과 랙풍량"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10382",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차가운통로 봉쇄와 재순환차단은 밀폐완전성과 케이블개구 상태에 달려 있다. 문이 닫혀도 틈이 크면 더운 공기가 섞인다.",
+      "concepts": [
+        "차가운통로 봉쇄와 재순환차단"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10383",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공급공기 저온과 흡입온도 안전은 랙 배치·풍량·재순환의 영향을 받는다. 공조기 출구가 차가워도 상단 서버는 과열될 수 있다.",
+      "concepts": [
+        "공급공기 저온과 흡입온도 안전"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10384",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "천공타일 개방과 냉기전달은 바닥압력이 있어야 이어진다. 타일이 열려 있어도 아래 풍압이 없으면 유효 풍량은 나오지 않는다.",
+      "concepts": [
+        "천공타일 개방과 냉기전달"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10385",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "랙블랭킹패널 설치와 열점제거는 다른 누설경로가 없어야 연결된다. 빈 슬롯을 막아도 측면 틈으로 더운 공기가 돌아오면 열점은 남는다.",
+      "concepts": [
+        "랙블랭킹패널 설치와 열점제거"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10386",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서버팬 고속과 냉각충분은 같은 상태가 아니다. 흡입공기가 이미 뜨거우면 팬속도가 높아도 칩 온도는 내려가지 않는다.",
+      "concepts": [
+        "서버팬 고속과 냉각충분"
+      ],
+      "relations": [
+        "function",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10387",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "랙온도 경보와 실제열점은 센서위치와 교정에 따라 갈린다. 센서 오류로 경보가 날 수 있고, 측정하지 않은 상단 열점은 경보 없이 존재할 수 있다.",
+      "concepts": [
+        "랙온도 경보와 실제열점"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10388",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공기유량 증가와 에너지효율은 같은 방향으로만 움직이지 않는다. 냉각은 좋아져도 과도한 팬전력 때문에 전체 효율은 나빠질 수 있다.",
+      "concepts": [
+        "공기유량 증가와 에너지효율"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10389",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "핫아일 밀폐와 연기배출 가능은 방재댐퍼와 제연경로를 추가로 요구한다. 열관리 밀폐가 화재 때 안전한 배기를 자동 보장하지 않는다.",
+      "concepts": [
+        "핫아일 밀폐와 연기배출 가능"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10390",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공조기 복구와 열점해소는 지연될 수 있다. 장비가 다시 돌아도 축적된 열과 잘못된 풍량분배 때문에 랙 온도는 한동안 높다.",
+      "concepts": [
+        "공조기 복구와 열점해소"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10391",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "PDU 입력전압과 출력가용 사이에는 차단기·모선·분기회로가 있다. 입력이 정상이어도 하류 보호기가 열리면 콘센트에는 전력이 없다.",
+      "concepts": [
+        "PDU 입력전압과 출력가용"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10392",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분기차단기 투입과 서버급전은 케이블·콘센트·전원장치 조건을 더 요구한다. 차단기 표시만으로 서버의 실제 소비전력을 확인할 수 없다.",
+      "concepts": [
+        "분기차단기 투입과 서버급전"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10393",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "A계통 정상과 이중전원 서버가동은 B계통 또는 전원장치 상태에도 좌우된다. 한 입력이 살아 있어도 부하분담 설정 오류로 서버가 꺼질 수 있다.",
+      "concepts": [
+        "A계통 정상과 이중전원 서버가동"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10394",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "랙전력 여유와 신규서버 수용은 냉각·공간·네트워크 조건까지 충족해야 한다. 전력만 남았다고 장비를 안전하게 증설할 수 없다.",
+      "concepts": [
+        "랙전력 여유와 신규서버 수용"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10395",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부하균형 표시와 상불평형 부재는 측정단위가 다를 수 있다. 랙별 총량이 같아도 전원 상별 전류는 치우칠 수 있다.",
+      "concepts": [
+        "부하균형 표시와 상불평형 부재"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10396",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "버스웨이 전압과 탭오프 건전은 별도 점검이다. 주모선이 정상이어도 탭 접점이 과열되면 개별 랙 공급은 불안정하다.",
+      "concepts": [
+        "버스웨이 전압과 탭오프 건전"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10397",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전력계측 값과 실제부하는 변성기·배율·시각 동기에 의존한다. 숫자가 표시돼도 설정이 틀리면 용량판정은 잘못될 수 있다.",
+      "concepts": [
+        "전력계측 값과 실제부하"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10398",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "과전류 경보와 과부하 확정은 같지 않다. 기동돌입이나 센서편향도 경보를 만들 수 있으므로 지속시간과 독립 측정을 본다.",
+      "concepts": [
+        "과전류 경보와 과부하 확정"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10399",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부하차단 명령과 소비감소는 대상 서버가 실제로 종료돼야 연결된다. 명령 전송만으로 전력이 줄었다고 보지 않는다.",
+      "concepts": [
+        "부하차단 명령과 소비감소"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10400",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "PDU 이중화와 랙무정전은 상류 전원과 배선이 독립일 때만 가능하다. 두 PDU가 같은 차단기에 묶이면 공통고장을 피하지 못한다.",
+      "concepts": [
+        "PDU 이중화와 랙무정전"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10401",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "UPS 온라인상태와 배터리보호는 동일하지 않다. 인버터가 부하를 공급해도 배터리가 열화돼 정전 지속시간은 짧을 수 있다.",
+      "concepts": [
+        "UPS 온라인상태와 배터리보호"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10402",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배터리충전율과 방전용량은 온도·열화·방전률에 따라 다르다. 표시가 100%여도 설계시간만큼 부하를 지탱하지 못할 수 있다.",
+      "concepts": [
+        "배터리충전율과 방전용량"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10403",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "UPS 바이패스와 무정전보호를 같게 보지 않는다. 부하는 살아 있어도 전압조정과 배터리백업 기능은 우회될 수 있다.",
+      "concepts": [
+        "UPS 바이패스와 무정전보호"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10404",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "발전기 시동과 부하인수 사이에는 속도안정·전압형성·차단기 투입이 필요하다. 엔진이 돌았다는 사실만으로 데이터센터를 공급하지 않는다.",
+      "concepts": [
+        "발전기 시동과 부하인수"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10405",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "발전기 연료충분과 장시간운전은 냉각·윤활·연료품질 조건도 요구한다. 탱크가 가득해도 과열되면 운전을 계속할 수 없다.",
+      "concepts": [
+        "발전기 연료충분과 장시간운전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10406",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동시동 시험과 실제정전 대응은 부하와 환경이 다르다. 무부하 시험 성공이 최대부하 인수까지 보장하지 않는다.",
+      "concepts": [
+        "자동시동 시험과 실제정전 대응"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10407",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배터리실 온도정상과 셀건전은 시간 이력을 함께 봐야 한다. 현재 온도가 정상이어도 과거 과열로 손상된 셀은 남는다.",
+      "concepts": [
+        "배터리실 온도정상과 셀건전"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10408",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "UPS 경보부재와 고장부재는 대칭이 아니다. 감시회로가 꺼졌거나 잠복결함이 있으면 경보 없이 백업기능이 실패할 수 있다.",
+      "concepts": [
+        "UPS 경보부재와 고장부재"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10409",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "발전기 병렬운전과 용량확보는 부하분담과 각 기기의 정격출력이 맞아야 한다. 병렬표시만으로 총 유효용량을 보장하지 않는다.",
+      "concepts": [
+        "발전기 병렬운전과 용량확보"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10410",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시동공기 압력과 엔진기동 사이에는 밸브·점화·연료공급 조건이 남는다. 압력이 충분해도 다른 경로가 실패하면 시동되지 않는다.",
+      "concepts": [
+        "시동공기 압력과 엔진기동"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10411",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "온도센서 정상과 열위험 부재는 같은 명제가 아니다. 센서 밖 열점이 존재할 수 있고, 정상 센서도 잘못된 위치를 대표할 수 있다.",
+      "concepts": [
+        "온도센서 정상과 열위험 부재"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10412",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차압센서 동작과 공기분리는 실제 밀폐와 풍량이 있어야 연결된다. 숫자가 출력된다는 사실만으로 뜨거운 공기 혼합이 차단되지는 않는다.",
+      "concepts": [
+        "차압센서 동작과 공기분리"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10413",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "BMS 명령과 설비동작을 분리해 확인한다. 제어값이 전송돼도 현장 액추에이터나 로컬 인터록이 거부하면 장비는 움직이지 않는다.",
+      "concepts": [
+        "BMS 명령과 설비동작"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10414",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동제어 활성과 안정온도는 센서·제어계수·설비용량에 달려 있다. 자동모드 표시만으로 랙 온도가 안정된다고 보장하지 않는다.",
+      "concepts": [
+        "자동제어 활성과 안정온도"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10415",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "경보수신과 대응개시는 역할·우선순위·현장접근에 의해 갈린다. 담당자가 알림을 받았어도 실제 조치를 시작하지 않을 수 있다.",
+      "concepts": [
+        "경보수신과 대응개시"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10416",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서이중화와 참값확정은 공통편향 때문에 다르다. 같은 위치와 교정 절차를 공유한 두 센서는 함께 틀릴 수 있다.",
+      "concepts": [
+        "센서이중화와 참값확정"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10417",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제어기 정상과 출력신호 건전은 별도 경로다. CPU가 동작해도 출력모듈이나 통신선이 끊기면 현장에는 명령이 없다.",
+      "concepts": [
+        "제어기 정상과 출력신호 건전"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10418",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "설정값 변경과 부하반응 사이에는 지연과 설비한계가 있다. 화면 값이 바뀌어도 냉동기가 포화되면 온도는 그대로일 수 있다.",
+      "concepts": [
+        "설정값 변경과 부하반응"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10419",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "경보확인 처리와 위험해소는 같지 않다. 운영자가 알림을 닫아도 과열·누수 원인이 사라지는 것은 아니다.",
+      "concepts": [
+        "경보확인 처리와 위험해소"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10420",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "BMS 화면정상과 현장정상은 마지막 갱신시각을 확인해야 한다. 통신이 멈춘 뒤 유지된 정상값은 현재 상태를 보장하지 않는다.",
+      "concepts": [
+        "BMS 화면정상과 현장정상"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10421",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관리망 접속과 서비스가용은 다른 계층이다. 운영자가 서버에 로그인해도 이용자 애플리케이션은 데이터베이스 장애로 멈출 수 있다.",
+      "concepts": [
+        "관리망 접속과 서비스가용"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10422",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "네트워크링크 상승과 패킷전달 사이에는 라우팅·VLAN·보안정책이 필요하다. 물리 연결 표시만으로 통신 성공을 보장하지 않는다.",
+      "concepts": [
+        "네트워크링크 상승과 패킷전달"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10423",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서버전원 켜짐과 운영체제 준비는 시간과 부팅검사를 거쳐야 이어진다. 팬이 돌고 전력소비가 있어도 시스템은 사용할 수 없을 수 있다.",
+      "concepts": [
+        "서버전원 켜짐과 운영체제 준비"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10424",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "스토리지 접속과 데이터무결은 별도 조건이다. 볼륨이 마운트돼도 손상된 파일이나 복제불일치가 남을 수 있다.",
+      "concepts": [
+        "스토리지 접속과 데이터무결"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10425",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "클러스터노드 수와 처리용량은 각 노드 성능·부하분산에 좌우된다. 노드 개수가 충분해도 일부가 격리되면 목표용량을 내지 못한다.",
+      "concepts": [
+        "클러스터노드 수와 처리용량"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10426",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "복제본 존재와 장애복구 사이에는 최신성·접근권한·전환절차가 필요하다. 사본이 있다는 이유만으로 서비스를 즉시 되살릴 수 없다.",
+      "concepts": [
+        "복제본 존재와 장애복구"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10427",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "헬스체크 통과와 사용자응답은 검사 범위가 다르다. 간단한 포트 응답이 전체 거래 경로의 정상까지 보장하지 않는다.",
+      "concepts": [
+        "헬스체크 통과와 사용자응답"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10428",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부하분산기 정상과 요청성공 사이에는 백엔드·인증·데이터 경로가 있다. 앞단이 응답해도 사용자 작업은 실패할 수 있다.",
+      "concepts": [
+        "부하분산기 정상과 요청성공"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10429",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "백업완료와 복원가능은 같은 판정이 아니다. 파일 생성이 성공해도 암호키나 복원검증이 없으면 실제 복구에 쓸 수 없다.",
+      "concepts": [
+        "백업완료와 복원가능"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10430",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서비스재시작과 거래회복은 세션·대기열·외부연동이 다시 연결돼야 성립한다. 프로세스 기동만으로 업무결과가 돌아오지 않는다.",
+      "concepts": [
+        "서비스재시작과 거래회복"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10431",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연기감지와 화재확정은 대칭이 아니다. 먼지나 수증기가 경보를 만들 수 있고, 감지기 밖 초기화재는 신호 없이 진행될 수 있다.",
+      "concepts": [
+        "연기감지와 화재확정"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10432",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소화설비 충전과 진압성공 사이에는 방출·밀폐·약제농도 조건이 있다. 용기가 가득해도 밸브가 열리지 않으면 화재를 끌 수 없다.",
+      "concepts": [
+        "소화설비 충전과 진압성공"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10433",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "화재경보와 서버손상은 필연적으로 이어지지 않는다. 조기경보와 격리로 피해를 막을 수 있고, 국부 과열은 경보 없이 장비를 손상시킬 수 있다.",
+      "concepts": [
+        "화재경보와 서버손상"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10434",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상정지 버튼과 전원차단은 회로·권한·차단기 동작을 거쳐야 연결된다. 버튼을 눌렀다는 사실만으로 모든 위험전력이 제거됐다고 보지 않는다.",
+      "concepts": [
+        "비상정지 버튼과 전원차단"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10435",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "방화구획 폐쇄와 연기격리는 관통부와 압력차가 건전해야 한다. 방화문이 닫혀도 케이블 틈을 통해 연기가 이동할 수 있다.",
+      "concepts": [
+        "방화구획 폐쇄와 연기격리"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10436",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "누수감지선 정상과 침수부재는 같은 증거가 아니다. 선이 놓이지 않은 구역에서는 물이 고여도 정상표시가 유지될 수 있다.",
+      "concepts": [
+        "누수감지선 정상과 침수부재"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10437",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산소농도 정상과 작업안전은 유해가스·전기·열 위험을 따로 봐야 한다. 산소가 충분해도 배터리실 가스나 아크 위험은 남는다.",
+      "concepts": [
+        "산소농도 정상과 작업안전"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10438",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "출입통제 승인과 현장접근 사이에는 문·동선·보호구 조건이 있다. 권한이 있어도 화재구역 봉쇄 중에는 들어갈 수 없다.",
+      "concepts": [
+        "출입통제 승인과 현장접근"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10439",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대피완료와 시설안전은 별도 결과다. 사람이 빠져나갔어도 화재·전력·냉각 위험은 계속될 수 있다.",
+      "concepts": [
+        "대피완료와 시설안전"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10440",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소방훈련 통과와 실제대응은 환경과 복합고장이 다르다. 계획된 연습 성공이 야간 다중장애 대응까지 보장하지 않는다.",
+      "concepts": [
+        "소방훈련 통과와 실제대응"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10441",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비완료 표시와 설비건전은 시험결과가 연결해야 한다. 작업표를 닫았어도 부하시험이 없으면 실제 성능은 확인되지 않는다.",
+      "concepts": [
+        "정비완료 표시와 설비건전"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10442",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예방점검 수행과 고장부재는 같은 명제가 아니다. 검사 범위 밖 잠복결함이나 점검 이후 고장이 남을 수 있다.",
+      "concepts": [
+        "예방점검 수행과 고장부재"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10443",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "필터교체와 공기품질 개선 사이에는 설치방향·밀봉·풍량이 필요하다. 새 필터라도 틈이 있으면 입자농도는 낮아지지 않는다.",
+      "concepts": [
+        "필터교체와 공기품질 개선"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10444",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배터리교체와 UPS자율시간은 충전·셀균형·부하시험 뒤에 확인된다. 새 셀을 넣었다는 사실만으로 설계시간을 보장하지 않는다.",
+      "concepts": [
+        "배터리교체와 UPS자율시간"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10445",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "펌프수리와 냉수순환 복구는 밸브개방·공기빼기·제어등록이 끝나야 이어진다. 기계수리만으로 유량이 자동 돌아오지 않는다.",
+      "concepts": [
+        "펌프수리와 냉수순환 복구"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10446",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "펌웨어갱신과 제어안정은 호환성과 설정검증에 달려 있다. 설치 성공 뒤에도 통신 충돌이나 잘못된 기본값이 생길 수 있다.",
+      "concepts": [
+        "펌웨어갱신과 제어안정"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10447",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열화상 정상과 접점건전은 부하조건에 의존한다. 저부하 점검에서 차갑게 보인 접점도 최대부하에서는 과열될 수 있다.",
+      "concepts": [
+        "열화상 정상과 접점건전"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10448",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비창 확보와 수리완료 사이에는 인력·부품·격리승인이 필요하다. 일정에 시간이 있다는 사실만으로 작업결과가 나오지 않는다.",
+      "concepts": [
+        "정비창 확보와 수리완료"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10449",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉동기 예비부품 보유와 즉시복구는 규격·공구·설정자료가 맞아야 한다. 창고에 부품이 있어도 호환되지 않으면 고장 난 냉동기를 바로 대체할 수 없다.",
+      "concepts": [
+        "냉동기 예비부품 보유와 즉시복구"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10450",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "점검경보 해제와 재발방지는 다르다. 임계값을 재설정해 알림을 없애도 열화 원인이 남으면 같은 장애가 반복된다.",
+      "concepts": [
+        "점검경보 해제와 재발방지"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10451",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "CPU 이용률 하락과 열부하 감소는 시간지연과 장비구성에 따라 달라진다. 일부 서버의 계산량이 줄어도 GPU나 저장장치 열은 남을 수 있다.",
+      "concepts": [
+        "CPU 이용률 하락과 열부하 감소"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10452",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서버종료 명령과 전력감축은 종료완료와 전원상태 확인이 필요하다. 운영체제가 멈춰 명령을 받지 않으면 소비전력은 그대로다.",
+      "concepts": [
+        "서버종료 명령과 전력감축"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10453",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가상머신 이동과 랙부하 완화는 목적 호스트에 실제로 배치되고 원래 인스턴스가 종료돼야 성립한다. 복제만 하면 양쪽 부하가 늘 수 있다.",
+      "concepts": [
+        "가상머신 이동과 랙부하 완화"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10454",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전력상한 설정과 피크억제는 장치가 제한을 집행해야 이어진다. 관리화면의 상한값만으로 실제 소비가 줄지는 않는다.",
+      "concepts": [
+        "전력상한 설정과 피크억제"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10455",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비핵심부하 분류와 차단가능은 업무의존성과 안전영향을 확인해야 한다. 이름이 비핵심이어도 인증이나 냉각제어가 의존하면 함부로 끌 수 없다.",
+      "concepts": [
+        "비핵심부하 분류와 차단가능"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10456",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수요반응 참여와 무중단운영은 감축범위와 예비용량이 충분할 때만 함께 가능하다. 전력요청 수락 자체가 서비스보호를 보장하지 않는다.",
+      "concepts": [
+        "수요반응 참여와 무중단운영"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10457",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "워크로드 지연과 사용자영향 부재는 작업유형·마감시간에 달려 있다. 배치작업이라도 후속 보고가 기다리면 서비스 영향이 생길 수 있다.",
+      "concepts": [
+        "워크로드 지연과 사용자영향 부재"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10458",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉각부하 예측과 실제열량은 모델입력·장비효율·시간에 따라 다르다. 예측이 낮아도 갑작스러운 계산작업으로 열이 커질 수 있다.",
+      "concepts": [
+        "냉각부하 예측과 실제열량"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10459",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부하이전 승인과 처리이동 사이에는 네트워크·용량·상태동기화가 필요하다. 승인만으로 다른 센터가 요청을 받지는 않는다.",
+      "concepts": [
+        "부하이전 승인과 처리이동"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10460",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "랙전원 차단과 열원제거는 잔류전력·배터리·인접장비를 함께 봐야 한다. 한 PDU를 꺼도 이중전원 서버는 계속 열을 낼 수 있다.",
+      "concepts": [
+        "랙전원 차단과 열원제거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10461",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "N플러스원 표기와 장애허용은 예비장비가 독립 전원·배관·제어를 가져야 성립한다. 수량표만으로 공통고장을 피할 수 없다.",
+      "concepts": [
+        "N플러스원 표기와 장애허용"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10462",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "두개전원경로와 완전독립은 상류 변전소·연료·제어망 공유 여부에 달려 있다. 케이블 두 가닥이 같은 모선에서 나오면 독립이 아니다.",
+      "concepts": [
+        "두개전원경로와 완전독립"
+      ],
+      "relations": [
+        "part_of",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10463",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비냉동기 대기와 즉시투입 사이에는 밸브·전원·최소기동시간이 있다. 대기표시가 곧 냉각출력을 의미하지 않는다.",
+      "concepts": [
+        "예비냉동기 대기와 즉시투입"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10464",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이중제어기와 제어연속은 상태동기와 자동승계가 정상이어야 한다. 두 장치가 있어도 같은 잘못된 입력에 의존하면 함께 오동작한다.",
+      "concepts": [
+        "이중제어기와 제어연속"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10465",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "복수통신사와 경로다양성은 실제 관로와 국사까지 달라야 한다. 계약사가 둘이어도 같은 광관로를 쓰면 굴착사고에 함께 끊긴다.",
+      "concepts": [
+        "복수통신사와 경로다양성"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10466",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지역분산 센터와 서비스연속은 데이터복제·DNS·운영권한 전환이 있어야 한다. 건물이 멀리 있다는 사실만으로 서비스가 넘어가지는 않는다.",
+      "concepts": [
+        "지역분산 센터와 서비스연속"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10467",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비연료계약과 실제공급 사이에는 재고·운송·도로접근이 필요하다. 계약서가 있어도 재난 때 차량이 도착하지 못할 수 있다.",
+      "concepts": [
+        "예비연료계약과 실제공급"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10468",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공통원인 분석과 실제격리는 설계·배선·운영변경이 뒤따라야 연결된다. 위험을 문서에 적는 것만으로 의존성이 사라지지 않는다.",
+      "concepts": [
+        "공통원인 분석과 실제격리"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10469",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정기절체시험과 실전가용은 시험부하·환경·시간이 실제와 맞아야 한다. 짧은 무부하 시험 성공이 장기장애 대응을 보장하지 않는다.",
+      "concepts": [
+        "정기절체시험과 실전가용"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10470",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "설비격리와 잔여용량 충분은 별도 검증이다. 고장 장치를 분리했어도 남은 냉각·전력이 현재 부하를 감당하지 못할 수 있다.",
+      "concepts": [
+        "설비격리와 잔여용량 충분"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10471",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "복구선언과 안정운전은 시간 관찰이 필요하다. 담당자가 정상화를 선언해도 부하가 올라갈 때 다시 장애가 나타날 수 있다.",
+      "concepts": [
+        "복구선언과 안정운전"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10472",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전원투입과 순차서비스 복원은 구성된 기동순서·의존서비스에 따른다. 모든 장치를 동시에 켠다고 더 빨리 회복되는 것은 아니다.",
+      "concepts": [
+        "전원투입과 순차서비스 복원"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10473",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉각복구와 서버재가동 사이에는 온도안정·결로확인·전원점검이 필요하다. 찬 공기가 나오자마자 서버를 켜면 추가 장애가 생길 수 있다.",
+      "concepts": [
+        "냉각복구와 서버재가동"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10474",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예비계통 전환과 원계통 수리는 독립적으로 진행될 수 있다. 부하가 살아났다는 사실이 고장 난 원계통의 원인 제거를 뜻하지 않는다.",
+      "concepts": [
+        "예비계통 전환과 원계통 수리"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10475",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "데이터복제 완료와 쓰기정합은 트랜잭션 순서까지 확인해야 한다. 바이트 수가 같아도 최신 변경이 충돌하면 서비스 복구에 쓸 수 없다.",
+      "concepts": [
+        "데이터복제 완료와 쓰기정합"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10476",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "복구점 확보와 무손실복원은 같은 목표가 아니다. 마지막 백업 뒤 발생한 거래는 복구점을 써도 잃을 수 있다.",
+      "concepts": [
+        "복구점 확보와 무손실복원"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10477",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "장애격리와 경보소멸은 지연·잔류상태 때문에 다를 수 있다. 원인을 분리해도 오래된 경보가 남거나 다른 문제의 알림이 계속될 수 있다.",
+      "concepts": [
+        "장애격리와 경보소멸"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10478",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서비스시험 통과와 전체회복은 시험경로의 범위에 달려 있다. 한 API 성공이 모든 사용자·지역·기능의 정상까지 보장하지 않는다.",
+      "concepts": [
+        "서비스시험 통과와 전체회복"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10479",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "트래픽복귀와 용량안정은 부하상승 속도와 숨은 병목을 확인해야 한다. 요청을 모두 돌렸다고 응답시간이 안정되는 것은 아니다.",
+      "concepts": [
+        "트래픽복귀와 용량안정"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10480",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "장애종료와 후속감시 종료는 별도 결정이다. 서비스가 회복돼도 재발 징후를 확인하기 위해 강화감시는 계속될 수 있다.",
+      "concepts": [
+        "장애종료와 후속감시 종료"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10481",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외기온도 하락과 냉각여유는 습도·열교환기·부하에 따라 다르다. 날씨가 추워도 내부 열이 많으면 여유가 생기지 않을 수 있다.",
+      "concepts": [
+        "외기온도 하락과 냉각여유"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10482",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폭염경보와 시설과열은 필연 관계가 아니다. 충분한 설계여유로 온도를 지킬 수 있고, 폭염 없이 내부 냉각고장으로 과열될 수 있다.",
+      "concepts": [
+        "폭염경보와 시설과열"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10483",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "상수도 공급과 냉각탑 운전 사이에는 수압·수질·보충밸브가 필요하다. 물이 공급돼도 설비에 들어가지 않으면 증발냉각은 지속되지 않는다.",
+      "concepts": [
+        "상수도 공급과 냉각탑 운전"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10484",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연료배송 출발과 탱크보충은 도로·출입·이송펌프 조건을 거쳐야 한다. 차량이 출발했다는 사실만으로 현장 재고가 늘지 않는다.",
+      "concepts": [
+        "연료배송 출발과 탱크보충"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10485",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "홍수방벽 설치와 침수방지는 연결부·배수·수위상한에 달려 있다. 방벽이 있어도 관로 역류나 지하 유입으로 침수될 수 있다.",
+      "concepts": [
+        "홍수방벽 설치와 침수방지"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10486",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "미세먼지 상승과 필터막힘은 노출시간·흡입량·필터상태에 좌우된다. 외기농도가 높다는 사실만으로 즉시 막힘을 확정하지 않는다.",
+      "concepts": [
+        "미세먼지 상승과 필터막힘"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10487",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지진감지와 설비손상은 대칭이 아니다. 진동이 기록돼도 손상이 없을 수 있고, 국부 지지대 파손은 감지문턱 아래에서도 생길 수 있다.",
+      "concepts": [
+        "지진감지와 설비손상"
+      ],
+      "relations": [
+        "contrast",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10488",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통신망 장애와 현장설비 정지는 로컬제어 여부에 따라 갈린다. 중앙연결이 끊겨도 현장 제어기가 독립 운전하면 냉각은 계속될 수 있다.",
+      "concepts": [
+        "통신망 장애와 현장설비 정지"
+      ],
+      "relations": [
+        "function",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10489",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "도로봉쇄와 운영인력 부재는 원격근무·현장교대에 따라 다르다. 외부 접근이 막혀도 이미 상주한 팀이 있으면 운영을 지속할 수 있다.",
+      "concepts": [
+        "도로봉쇄와 운영인력 부재"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10490",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외부재난 종료와 시설정상은 별도 판정이다. 폭풍이 지나가도 누수·연료부족·통신손상이 남을 수 있다.",
+      "concepts": [
+        "외부재난 종료와 시설정상"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10491",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운영절차 존재와 올바른대응 사이에는 교육·판단·접근성이 필요하다. 문서가 있어도 담당자가 찾거나 적용하지 못하면 결과가 나오지 않는다.",
+      "concepts": [
+        "운영절차 존재와 올바른대응"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10492",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "경보에스컬레이션과 책임자인지는 연락망·수신기·응답 확인에 좌우된다. 단계가 자동 상승해도 결정권자가 내용을 보지 못할 수 있다.",
+      "concepts": [
+        "경보에스컬레이션과 책임자인지"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10493",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "변경승인과 안전한적용은 시험·백업·실행 정확성을 더 요구한다. 권한자가 승인했다는 사실만으로 설정오류 가능성이 사라지지 않는다.",
+      "concepts": [
+        "변경승인과 안전한적용"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10494",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교대인계 완료와 상황이해는 같은 결과가 아니다. 보고가 전달돼도 수신자가 임시 우회와 잔여위험을 오해할 수 있다.",
+      "concepts": [
+        "교대인계 완료와 상황이해"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10495",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "용량계획 충족과 실제안전여유는 측정시점·고장모드·성장률에 따라 다르다. 표 계산이 맞아도 현재 장비 열화로 여유가 없을 수 있다.",
+      "concepts": [
+        "용량계획 충족과 실제안전여유"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10496",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "감사로그 존재와 사건재구성 사이에는 시각동기·누락·설정버전 정보가 필요하다. 파일만 남았다고 절체 순서를 확정할 수 없다.",
+      "concepts": [
+        "감사로그 존재와 사건재구성"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10497",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원인조치 완료와 재발부재는 장기 부하시험과 관찰을 거쳐야 연결된다. 부품교체 직후의 정상만으로 재발하지 않는다고 보장할 수 없다.",
+      "concepts": [
+        "원인조치 완료와 재발부재"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10498",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사후검토 종료와 위험제거는 별개다. 회의와 보고서가 끝나도 예산·공사·운영변경이 실행되지 않으면 의존 위험은 남는다.",
+      "concepts": [
+        "사후검토 종료와 위험제거"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10499",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정상지표 복귀와 영향종료는 사용자 대기열·손실거래·장비열화를 함께 봐야 한다. 현재 수치가 정상이어도 과거 장애의 영향은 남을 수 있다.",
+      "concepts": [
+        "정상지표 복귀와 영향종료"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10500",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "무사고 절체와 설계검증은 한 번의 성공만으로 같아지지 않는다. 우연히 낮은 부하에서 성공했다면 최대부하와 복합고장 능력은 아직 검증되지 않았다.",
+      "concepts": [
+        "무사고 절체와 설계검증"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    }
+  ]
+}

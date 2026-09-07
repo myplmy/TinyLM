@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v57",
+  "version": "57",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-08401 ~ S2-CDH-08550",
+  "concept_family": "S2-A02-T057: 식품 발효공정 온도·품질 제어 — 보호조건 해제 시 예외 적용 범위 추적",
+  "design_note": "식품 발효공정 온도·품질 제어 영역의 보호조건 해제 시 예외 적용 범위 추적 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-08401",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원료입고 온도이탈과 수취보호 해제는 다른 원료와 이후 입고분까지 자동 허용하지 않는다.",
+      "concepts": [
+        "원료입고 온도이탈과 수취보호 해제"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08402",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "원료검사 결과가 나오기 전에는 생산 투입을 막되 표시된 격리구역 보관은 허용할 수 있다. 원료검사 대기와 제한보관 예외는 사용 금지 보호조건의 해제가 아니라 보관 단계에만 적용되는 예외다.",
+      "concepts": [
+        "원료검사 대기와 제한보관 예외"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08403",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "알레르겐 원료격리와 이동통로 예외는 이동 한 건에만 적용되며 일반 보관구역 사용을 허용하지 않는다.",
+      "concepts": [
+        "알레르겐 원료격리와 이동통로 예외"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08404",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이송배관은 세척완료 신호가 있어야 열리지만 수동 검증으로 해제할 때에는 확인된 배관 구간만 사용한다. 세척완료 신호와 원료이송 허가범위는 인접 라인까지 같은 예외가 퍼지는 것을 막는다.",
+      "concepts": [
+        "세척완료 신호와 원료이송 허가범위"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08405",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "멸균탱크 해제와 배치전용 사용은 상업 배치가 아니라 지정 시험 배치에만 한정된다.",
+      "concepts": [
+        "멸균탱크 해제와 배치전용 사용"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08406",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가열유지 미달과 후속처리 예외는 즉시 포장이나 다른 탱크 혼합까지 허용하지 않는다.",
+      "concepts": [
+        "가열유지 미달과 후속처리 예외"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08407",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주 온도센서와 보조계기가 다르면 자동 진행을 멈추되 교정된 휴대계기로 해당 탱크를 감시하며 제한 운전할 수 있다. 온도센서 불일치와 보조계기 적용은 센서가 정상인 다른 탱크의 제어방식에는 영향을 주지 않는다.",
+      "concepts": [
+        "온도센서 불일치와 보조계기 적용"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08408",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이중온도계가 같은 값을 보일 때 보호잠금을 해제하는 것이 기본이지만 한 계기가 고장 나면 검증된 대체계기로 지정 배치만 운전할 수 있다. 이중온도계 확인과 단일배치 해제는 다음 배치 시작 전 다시 승인을 요구한다.",
+      "concepts": [
+        "이중온도계 확인과 단일배치 해제"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08409",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉장시간을 초과한 원료는 격리하지만 안정성이 다른 원료까지 같은 결론으로 묶지 않는다. 냉장시간 초과와 원료별 판정은 평가가 끝난 원료 종류와 로트에만 보호 해제 효력을 준다.",
+      "concepts": [
+        "냉장시간 초과와 원료별 판정"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08410",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정규 종균은 수취 규격을 모두 통과해야 하지만 공정개발용 종균은 생산라인과 분리된 연구배치에서만 사용할 수 있다. 종균수취 기준과 연구배치 예외는 판매용 제품에 적용되는 해제가 아니다.",
+      "concepts": [
+        "종균수취 기준과 연구배치 예외"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08411",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "로트식별 스캔장애와 수기확인은 스캐너 전체 장애 동안 모든 투입을 포괄 승인하지 않는다.",
+      "concepts": [
+        "로트식별 스캔장애와 수기확인"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08412",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수기원료 확인 예외는 교육받은 승인자가 지정된 원료와 배치를 대조했을 때만 성립한다. 수기원료 확인과 승인자 범위는 다른 작업자가 같은 방식으로 독자 해제할 권한을 만들지 않는다.",
+      "concepts": [
+        "수기원료 확인과 승인자 범위"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08413",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "용수품질 경보와 비접촉 세척예외는 식품 접촉면 세정까지 확대되지 않는다.",
+      "concepts": [
+        "용수품질 경보와 비접촉 세척예외"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08414",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "증기압력 저하와 저온대기 운전은 살균 보호조건의 해제가 아니라 대기 기능의 분리다.",
+      "concepts": [
+        "증기압력 저하와 저온대기 운전"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08415",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "청정구역 압력이 낮아지면 개방 작업을 멈추되 완전히 밀폐된 탱크 내부 발효는 감시 아래 계속할 수 있다. 청정공기 압력저하와 밀폐공정 지속은 뚜껑 개방이나 샘플링을 허용하지 않는 제한 예외다.",
+      "concepts": [
+        "청정공기 압력저하와 밀폐공정 지속"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08416",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "세정전도도가 기준을 벗어나면 라인을 해제하지 않고 이탈이 확인된 구간만 재세정할 수 있다. 세정전도도 이탈과 재세정 구간지정은 이미 검증된 독립 구간을 무조건 다시 묶지 않는다.",
+      "concepts": [
+        "세정전도도 이탈과 재세정 구간지정"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08417",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "최종헹굼 판정과 부분라인 해제는 실패 구간을 건너 제품을 보내는 허가가 아니다.",
+      "concepts": [
+        "최종헹굼 판정과 부분라인 해제"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08418",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "세제잔류가 의심되면 제품 투입을 막지만 물을 이용한 비제품 시험운전은 원인 확인 목적으로 허용할 수 있다. 세제잔류 의심과 비제품 시험운전은 상업 생산이나 관능검사를 위한 예외가 아니다.",
+      "concepts": [
+        "세제잔류 의심과 비제품 시험운전"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08419",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "밸브위치 잠금과 정비조작 예외는 공정 운전 중 자유 조작으로 확대되지 않는다.",
+      "concepts": [
+        "밸브위치 잠금과 정비조작 예외"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08420",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이송펌프 공회전방지와 점검회전은 지정 시간과 무부하 시험에만 적용된다.",
+      "concepts": [
+        "이송펌프 공회전방지와 점검회전"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08421",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "탱크용량 상한과 소량시험 투입은 확인량을 넘는 연속 공급까지 허용하지 않는다.",
+      "concepts": [
+        "탱크용량 상한과 소량시험 투입"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08422",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "거품센서 경보와 관찰창 확인은 다른 탱크의 경보를 함께 무시하게 하지 않는다.",
+      "concepts": [
+        "거품센서 경보와 관찰창 확인"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08423",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "액위센서가 고장 나면 자동 투입을 금지하지만 교정된 수동계량으로 정해진 양만 넣을 수 있다. 액위센서 우회와 수동계량 한계는 상한 경보 기능이 없는 상태에서 연속 투입을 허용하지 않는다.",
+      "concepts": [
+        "액위센서 우회와 수동계량 한계"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08424",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "저울검증 지연과 독립계량 대체는 대체 저울의 허용범위와 용량 안에서만 적용된다.",
+      "concepts": [
+        "저울검증 지연과 독립계량 대체"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08425",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기본 원료가 없을 때 대체원료를 승인해도 조성·알레르겐·표시가 검토된 제품군에만 사용할 수 있다. 대체원료 승인과 제품군 한정은 이름이 비슷한 모든 발효제품에 같은 예외를 적용하지 않는다.",
+      "concepts": [
+        "대체원료 승인과 제품군 한정"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08426",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재킷온도 상한을 넘으면 가열을 차단하지만 짧은 순간이탈이 제품온도에 영향을 주지 않았다는 근거가 있으면 해당 배치를 계속할 수 있다. 재킷온도 상한과 순간이탈 평가는 장시간 이탈까지 포괄하지 않는다.",
+      "concepts": [
+        "재킷온도 상한과 순간이탈 평가"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08427",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉각수 상실 시 발열 발효를 멈추는 것이 원칙이지만 열 발생이 끝난 숙성단계 탱크는 온도 추세를 감시하며 유지할 수 있다. 냉각수 상실과 비발열단계 예외는 활성 발효 탱크에는 적용되지 않는다.",
+      "concepts": [
+        "냉각수 상실과 비발열단계 예외"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08428",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "허용온도를 짧게 벗어난 배치는 이탈 폭과 시간을 검토해 지속 여부를 정한다. 단기온도 이탈과 배치별 지속허용은 같은 방에 있던 다른 배치의 자동 해제 근거가 되지 않는다.",
+      "concepts": [
+        "단기온도 이탈과 배치별 지속허용"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08429",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "온도 이탈이 승인된 시간창을 넘으면 기존 예외는 종료되고 새 품질평가가 필요하다. 장기온도 이탈과 예외종료 경계는 짧은 이탈 승인서를 장기 운전에 재사용하지 못하게 한다.",
+      "concepts": [
+        "장기온도 이탈과 예외종료 경계"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08430",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가열상승률 저하와 목표온도 재평가는 온도 미도달 자체를 허용하지 않는다.",
+      "concepts": [
+        "가열상승률 저하와 목표온도 재평가"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08431",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교반기가 멈추면 혼합 균일성 보호가 작동하지만 허용 정지시간 안에서 수리하면 같은 배치를 재개할 수 있다. 교반정지와 정지시간 제한은 다른 탱크나 다음 배치에 영구 우회를 만들지 않는다.",
+      "concepts": [
+        "교반정지와 정지시간 제한"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08432",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "저전단 공정과 교반속도 하한예외는 전체 발효시간이나 다른 종균에 적용되지 않는다.",
+      "concepts": [
+        "저전단 공정과 교반속도 하한예외"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08433",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고전단 경보와 혼합초기 단기허용은 접종 후 배양단계까지 이어지지 않는다.",
+      "concepts": [
+        "고전단 경보와 혼합초기 단기허용"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08434",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산소공급 중단은 호기 발효를 멈추게 하지만 계획된 혐기단계는 같은 경보 아래에서도 계속될 수 있다. 산소공급 중단과 혐기단계 지속은 공정 단계에 따라 보호조건의 적용 대상을 구분한다.",
+      "concepts": [
+        "산소공급 중단과 혐기단계 지속"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08435",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "질소치환 미달과 개방금지 유지에서는 뚜껑 개방 보호가 해제되지 않는다.",
+      "concepts": [
+        "질소치환 미달과 개방금지 유지"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08436",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "탱크 압력상한이 걸리면 공급밸브를 닫지만 안전한 감압을 위해 배출밸브 조작은 허용해야 한다. 압력상한 잠금과 감압조작 예외는 압력을 더 높이는 원료 투입까지 허용하지 않는다.",
+      "concepts": [
+        "압력상한 잠금과 감압조작 예외"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08437",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "과도한 진공을 막는 정지는 유지하되 정비 후 배기계통 시험에서는 낮은 한계 안에서 지정 탱크만 운전할 수 있다. 진공보호 정지와 배기시험 범위는 제품이 든 탱크의 정상 생산에 적용되지 않는다.",
+      "concepts": [
+        "진공보호 정지와 배기시험 범위"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08438",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동 산도제어 상한을 넘으면 조절액 주입을 막지만 센서가 검증된 경우 작업자가 계산된 소량만 수동주입할 수 있다. 산도제어 상한과 수동주입 예외는 승인량과 해당 배치를 벗어나지 않는다.",
+      "concepts": [
+        "산도제어 상한과 수동주입 예외"
+      ],
+      "relations": [
+        "attribute",
+        "role",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08439",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산도센서 세척 중에는 자동제어를 멈추되 교정된 보조측정으로 한 탱크의 상태를 감시할 수 있다. 산도센서 세척과 보조측정 사용은 보조값이 없는 시간까지 제어 해제를 연장하지 않는다.",
+      "concepts": [
+        "산도센서 세척과 보조측정 사용"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08440",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수동시료 산도가 정상이어도 자동경보를 해제하려면 시료 대표성과 측정시각을 확인해야 한다. 수동시료 산도와 자동경보 해제는 한 번의 측정을 이후 전 공정의 대체센서로 사용하지 못하게 한다.",
+      "concepts": [
+        "수동시료 산도와 자동경보 해제"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08441",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "용존산소 경보와 종균별 적용차는 센서 경보의 의미를 제품군과 단계에 한정한다.",
+      "concepts": [
+        "용존산소 경보와 종균별 적용차"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08442",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소포제 투입상한과 긴급소량 승인은 반복 자동주입이나 다른 탱크로 확대되지 않는다.",
+      "concepts": [
+        "소포제 투입상한과 긴급소량 승인"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08443",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "영양원 공급펌프 잠금과 수동공급은 승인된 양과 시간창만 대체한다.",
+      "concepts": [
+        "영양원 공급펌프 잠금과 수동공급"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08444",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "넘침방지 경보가 나면 유입을 정지하지만 안전한 수위를 회복하기 위한 배출밸브는 열 수 있어야 한다. 넘침방지 경보와 배출밸브 우선권은 보호 정지가 모든 밸브에 동일하게 적용되지 않음을 보여 준다.",
+      "concepts": [
+        "넘침방지 경보와 배출밸브 우선권"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08445",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열교환기 온도차 이탈과 우회냉각은 공통 냉각수가 없는 탱크까지 허용하지 않는다.",
+      "concepts": [
+        "열교환기 온도차 이탈과 우회냉각"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08446",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "연쇄제어가 불안정하면 자동출력을 해제할 수 있지만 작업자는 미리 정한 상·하한 안에서만 가열과 냉각을 조작한다. 연쇄제어 해제와 수동출력 한계는 자동화 예외가 공정한계 예외를 뜻하지 않게 한다.",
+      "concepts": [
+        "연쇄제어 해제와 수동출력 한계"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08447",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "압축공기 백업과 밸브군 한정은 우회 자원의 적용 대상을 필수 밸브군으로 제한한다.",
+      "concepts": [
+        "압축공기 백업과 밸브군 한정"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08448",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉각탑 정비 중에는 연결 탱크를 멈추지만 독립칠러가 설치된 시험탱크는 별도 확인 후 운전할 수 있다. 냉각탑 정비와 독립칠러 사용은 냉각원 분리가 확인된 설비에만 적용된다.",
+      "concepts": [
+        "냉각탑 정비와 독립칠러 사용"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08449",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "실내온도 경보가 나도 단열된 탱크 내부온도가 안정되면 즉시 배치를 폐기하지 않고 감시를 강화할 수 있다. 실내온도 경보와 탱크내부 판정은 주변 환경 예외를 탱크 제어 해제로 오인하지 않는다.",
+      "concepts": [
+        "실내온도 경보와 탱크내부 판정"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08450",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교정기한 경과센서와 단회비교 승인은 자동제어 입력까지 허용하지 않는다.",
+      "concepts": [
+        "교정기한 경과센서와 단회비교 승인"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08451",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "접종개시 잠금과 종균확인 예외절차는 판매용 생산에 적용되지 않는다.",
+      "concepts": [
+        "접종개시 잠금과 종균확인 예외절차"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08452",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "종균순도 결과가 보류되면 생산 배치를 시작하지 않지만 원인 분석용 비생산 배양은 격리 장비에서 허용할 수 있다. 종균순도 보류와 비생산 배양은 결과물을 원료로 재투입하는 예외가 아니다.",
+      "concepts": [
+        "종균순도 보류와 비생산 배양"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08453",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "종균 생균수가 낮으면 기본 접종을 막지만 검증된 범위에서 접종량을 늘려 특정 배치를 보정할 수 있다. 생균수 부족과 접종량 조정범위는 품질이 다른 종균이나 임의 비율에 적용되지 않는다.",
+      "concepts": [
+        "생균수 부족과 접종량 조정범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08454",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "혼합종균의 기본 비율은 제품마다 정해지지만 한 균주의 활성이 낮을 때 승인된 제품에 한해 비율을 조정할 수 있다. 혼합종균 비율과 제품별 예외는 다른 제품 규격까지 동시에 바꾸지 않는다.",
+      "concepts": [
+        "혼합종균 비율과 제품별 예외"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08455",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "접종이 늦어지면 오염 위험 보호가 작동하지만 검증된 대기시간 안에서는 원료온도를 유지하며 재개할 수 있다. 접종지연 시간창과 배치폐기 경계는 시간창을 넘긴 배치에 같은 승인을 연장하지 않는다.",
+      "concepts": [
+        "접종지연 시간창과 배치폐기 경계"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08456",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "종균 증식이 늦으면 예정 종료시각을 넘길 수 있지만 오염 지표와 품질 추세가 적합한 배치만 발효시간을 연장한다. 증식지연과 발효시간 연장승인은 다른 배치의 표준시간을 변경하지 않는다.",
+      "concepts": [
+        "증식지연과 발효시간 연장승인"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08457",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산생성 기울기가 하한보다 낮으면 보호 경보가 나지만 정해진 재평가 시점까지 관찰을 지속할 수 있다. 산생성 기울기와 재평가 시점은 무기한 대기를 허용하지 않고 해당 배치의 시간창만 연다.",
+      "concepts": [
+        "산생성 기울기와 재평가 시점"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08458",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예상치 못한 가스발생은 오염 경보지만 원래 탄산을 만드는 발효유형에는 다른 기준이 적용된다. 가스발생 경보와 발효유형 구분은 제품 분류에 따라 보호 해제 범위를 제한한다.",
+      "concepts": [
+        "가스발생 경보와 발효유형 구분"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08459",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중간 향미가 기준에 못 미치면 출하를 막지만 미생물 안전이 확인된 배치는 숙성시간을 늘릴 수 있다. 향미편차와 숙성연장 예외는 안전 보류를 해제하는 것이 아니라 품질 보정 단계만 연다.",
+      "concepts": [
+        "향미편차와 숙성연장 예외"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08460",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "오염경보가 나면 배치를 격리하지만 채취 오류가 의심되면 무균샘플로 한 차례 재검사할 수 있다. 오염경보와 무균샘플 재검사는 재검사 결과 전까지 이송·혼합 보호를 해제하지 않는다.",
+      "concepts": [
+        "오염경보와 무균샘플 재검사"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08461",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "박테리오파지 검출과 탱크별 격리는 공유 배관 여부를 확인한 범위에서만 적용된다.",
+      "concepts": [
+        "박테리오파지 검출과 탱크별 격리"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08462",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "효모와 세균의 비율이 기본범위를 벗어나도 제품 특성상 허용된 폭이 다르면 해당 제품 기준으로 판정한다. 효모세균 균형이탈과 제품별 허용폭은 한 제품의 예외를 다른 발효유형에 전파하지 않는다.",
+      "concepts": [
+        "효모세균 균형이탈과 제품별 허용폭"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08463",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "염도하한 경보와 후첨보정 조건은 숙성이 끝난 제품이나 다른 탱크에 적용되지 않는다.",
+      "concepts": [
+        "염도하한 경보와 후첨보정 조건"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08464",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "초기 당도가 목표와 다르면 자동 급이를 멈추되 분석값에 따라 해당 배치의 급이곡선만 조정할 수 있다. 당도이탈과 급이조정 범위는 표준 레시피 자체를 영구 변경하지 않는다.",
+      "concepts": [
+        "당도이탈과 급이조정 범위"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08465",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수분활성 경보는 완제품 출하를 막지만 아직 건조나 농축 단계가 남은 중간공정에는 추세 확인 후 작업을 계속할 수 있다. 수분활성 경보와 중간공정 판정은 최종 규격 해제가 아니다.",
+      "concepts": [
+        "수분활성 경보와 중간공정 판정"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08466",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산화환원값 이탈과 센서위치 예외는 탱크 전체 상태를 정상으로 선언하지 않는다.",
+      "concepts": [
+        "산화환원값 이탈과 센서위치 예외"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08467",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "발효종점 지표가 미도달이면 냉각 전환을 막지만 안전성과 추세가 적합하면 승인된 시간만 연장할 수 있다. 발효종점 미도달과 제한연장은 다음 교대나 다음 배치로 자동 이어지지 않는다.",
+      "concepts": [
+        "발효종점 미도달과 제한연장"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08468",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호조건 해제로 유지시간을 늘렸더라도 최대유지시간에 도달하면 예외는 끝나고 새로운 품질판정이 필요하다. 최대유지시간과 재승인 필요는 최초 승인 범위를 반복 갱신 없이 연장하지 못하게 한다.",
+      "concepts": [
+        "최대유지시간과 재승인 필요"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08469",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "생산 일정 때문에 조기종료를 요청해도 필수 안전지표가 충족되지 않으면 발효 종료 보호를 해제할 수 없다. 조기종료 요청과 안전지표 유지는 품질 편의 예외가 안전 기준을 덮지 못하게 한다.",
+      "concepts": [
+        "조기종료 요청과 안전지표 유지"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08470",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시료포트 소독이 의심되면 그 시료 결과를 보류하고 새 포트에서 재채취할 수 있다. 시료포트 소독이탈과 재채취 범위는 배치 전체를 정상으로 승인하지 않고 문제 시료만 대체한다.",
+      "concepts": [
+        "시료포트 소독이탈과 재채취 범위"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08471",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "무균이송 조건이 깨지면 이송을 막지만 독립적으로 검증된 폐쇄회로가 있으면 지정 탱크 쌍 사이만 전송할 수 있다. 무균이송 잠금과 폐쇄회로 예외는 개방 호스 연결까지 허용하지 않는다.",
+      "concepts": [
+        "무균이송 잠금과 폐쇄회로 예외"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08472",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "실험실결과가 늦어져도 제품을 출하하지 않는 조건으로 냉각·보관 단계까지 진행할 수 있다. 실험실결과 지연과 조건부 보류운전은 판매나 다른 배치 혼합을 허용하는 해제가 아니다.",
+      "concepts": [
+        "실험실결과 지연과 조건부 보류운전"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08473",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "신속검사가 음성이어도 확정검사가 필요한 위해라면 격리를 유지하되 비접촉 후속작업만 진행할 수 있다. 신속검사 음성과 격리유지 범위는 음성 한 건이 모든 보호조건을 해제하지 않게 한다.",
+      "concepts": [
+        "신속검사 음성과 격리유지 범위"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08474",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "확정검사를 재시험하는 동안 배치의 출하잠금은 유지하며 재포장 같은 비가역 작업도 승인 없이는 진행하지 않는다. 확정검사 재시험과 출하잠금은 검사 예외와 제품 처분 예외를 분리한다.",
+      "concepts": [
+        "확정검사 재시험과 출하잠금"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08475",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 배치가 오염 의심으로 격리돼도 배관과 작업자가 분리된 인접탱크는 위험평가 후 운전할 수 있다. 배치격리와 인접탱크 운전범위는 같은 방이라는 이유만으로 전면 해제하거나 전면 중지하지 않는다.",
+      "concepts": [
+        "배치격리와 인접탱크 운전범위"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08476",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동세정 순서가 멈추면 생산 해제를 금지하지만 확인된 실패 단계만 수동으로 수행해 전체 세정을 완결할 수 있다. 자동세정 순서와 수동단계 삽입은 앞선 단계의 완료 기록까지 무효화하지 않는다.",
+      "concepts": [
+        "자동세정 순서와 수동단계 삽입"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08477",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주 세정펌프 정비 중에는 연결 라인을 막되 별도 펌프와 탱크를 쓰는 독립회로는 세정을 계속할 수 있다. 세정펌프 정비와 독립회로 사용은 공용 반환배관이 없는 경우에만 적용된다.",
+      "concepts": [
+        "세정펌프 정비와 독립회로 사용"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08478",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분사구 압력이 낮았던 탱크는 재세정하지만 정상 압력이 기록된 다른 탱크까지 자동으로 같은 조치를 적용하지 않는다. 분사구 압력저하와 탱크별 재세정은 보호조치의 대상을 실제 실패 설비로 한정한다.",
+      "concepts": [
+        "분사구 압력저하와 탱크별 재세정"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08479",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "알칼리농도가 미달이면 세정완료를 선언하지 않지만 계산된 보충 뒤 같은 회로를 추가 순환할 수 있다. 알칼리농도 미달과 보충순환 예외는 농도 확인 전 생산 사용을 허용하지 않는다.",
+      "concepts": [
+        "알칼리농도 미달과 보충순환 예외"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08480",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산세정이 누락되면 무조건 모든 라인을 재세정하지 않고 제거해야 할 무기질 오염이 있는 설비를 먼저 분류한다. 산세정 누락과 대상오염 유형은 알칼리세정만 필요한 회로까지 예외 범위를 넓히지 않는다.",
+      "concepts": [
+        "산세정 누락과 대상오염 유형"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08481",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "온수세정 온도이탈과 시간보상 한계는 온도 구간별 예외 범위를 구분한다.",
+      "concepts": [
+        "온수세정 온도이탈과 시간보상 한계"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08482",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "살균제 접촉시간이 부족한 배관구간은 추가 순환하되 충분한 시간을 확보한 독립 구간은 해제할 수 있다. 살균제 접촉시간과 배관구간 적용은 전체 라인을 하나의 실패로 간주하지 않는다.",
+      "concepts": [
+        "살균제 접촉시간과 배관구간 적용"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08483",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배수확인이 안 된 탱크는 제품 투입을 막지만 뚜껑을 닫고 건조를 기다리는 상태는 유지할 수 있다. 배수확인 실패와 건조대기 예외는 잔류액 확인 전 생산 해제를 뜻하지 않는다.",
+      "concepts": [
+        "배수확인 실패와 건조대기 예외"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08484",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배관정체구간이 의심되면 해당 구간을 표적검사하되 구조가 다른 독립라인의 보호잠금까지 자동 연동하지 않는다. 배관정체구간 의심과 표적검사는 설계 근거에 따라 조사 범위를 제한한다.",
+      "concepts": [
+        "배관정체구간 의심과 표적검사"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08485",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "개스킷 교체가 늦어지면 접촉설비를 막지만 누설이 없고 비접촉 용도인 설비는 제한적으로 사용할 수 있다. 개스킷 교체지연과 저위험설비 한정은 제품 접촉부에 적용되지 않는다.",
+      "concepts": [
+        "개스킷 교체지연과 저위험설비 한정"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08486",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "필터완전성 실패와 우회필터 사용은 같은 손상 원인을 공유하는 필터에는 적용되지 않는다.",
+      "concepts": [
+        "필터완전성 실패와 우회필터 사용"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08487",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고성능필터 경보가 나면 개방 충전을 중지하지만 밀폐 포장과 격리된 공정은 환경 측정 아래 지속할 수 있다. 고성능필터 경보와 밀폐작업 지속은 공기 노출이 있는 작업까지 허용하지 않는다.",
+      "concepts": [
+        "고성능필터 경보와 밀폐작업 지속"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08488",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "청정구역 양압이 낮으면 출입을 막되 내부 작업자가 문을 열지 않고 밀폐공정을 마무리할 수 있다. 양압저하와 출입제한 예외운전은 새 인원이나 자재 반입을 허용하지 않는다.",
+      "concepts": [
+        "양압저하와 출입제한 예외운전"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08489",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "동시개방을 막는 출입문 인터록은 유지하지만 사람의 비상탈출에는 언제나 안전 개방 경로가 우선한다. 출입문 인터록과 비상탈출 우선은 생산 편의를 위한 문 개방과 생명안전 예외를 구분한다.",
+      "concepts": [
+        "출입문 인터록과 비상탈출 우선"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08490",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "위생게이트가 고장 나면 일반 입장을 막되 검증된 대체세척·보호복 절차를 거친 지정 인력만 들어갈 수 있다. 위생게이트 장애와 대체세척 경로는 방문자 전체에 대한 출입 해제가 아니다.",
+      "concepts": [
+        "위생게이트 장애와 대체세척 경로"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08491",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "알레르겐 전환세정이 끝나도 검사된 라인과 다음 제품 조합에 대해서만 생산을 해제한다. 알레르겐 전환세정과 제품별 해제는 다른 알레르겐 조합이나 공용도구까지 포괄하지 않는다.",
+      "concepts": [
+        "알레르겐 전환세정과 제품별 해제"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08492",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "알레르겐 신속검사가 음성이면 지정 표면을 해제할 수 있지만 샘플링하지 않은 장비 내부까지 무잔류로 간주하지 않는다. 알레르겐 신속검사와 확정범위는 검사 지점과 설비 전체의 경계를 세운다.",
+      "concepts": [
+        "알레르겐 신속검사와 확정범위"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08493",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재작업물을 투입하는 예외는 원래 제품·알레르겐·배치계보가 확인된 경우에만 허용한다. 재작업물 투입과 배치계보 유지는 출처가 불명한 잔여물을 같은 방식으로 쓰지 못하게 한다.",
+      "concepts": [
+        "재작업물 투입과 배치계보 유지"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08494",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재작업 비율상한을 넘기지 않는 것이 원칙이며 단회보정 승인이 있어도 지정 배치와 계산량에만 적용된다. 재작업 비율상한과 단회보정은 다음 생산계획의 기본비율을 바꾸지 않는다.",
+      "concepts": [
+        "재작업 비율상한과 단회보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08495",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "라인비움 확인이 안 되면 새 제품을 시작하지 않지만 물리적으로 분리돼 확인이 끝난 충전설비는 먼저 재개할 수 있다. 라인비움 확인과 부분설비 재개는 공용 배관 구간까지 해제하지 않는다.",
+      "concepts": [
+        "라인비움 확인과 부분설비 재개"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08496",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "새 표시가 준비되지 않으면 포장을 막되 식별된 벌크 상태로 격리보관하는 것은 허용할 수 있다. 표시전환 지연과 무표시보관 예외는 소비자 출하나 다른 로트 혼합을 허용하지 않는다.",
+      "concepts": [
+        "표시전환 지연과 무표시보관 예외"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08497",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "도구색상 규칙과 긴급대체 사용은 대체도구를 이후 공정에 계속 쓰게 하지 않는다.",
+      "concepts": [
+        "도구색상 규칙과 긴급대체 사용"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08498",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비공구는 소독 후 청정구역에 들어가야 하며 예외 승인이 있어도 포장된 공구와 지정 작업구역에만 적용된다. 정비공구 소독과 작업구역 한정은 다른 설비 접촉을 허용하지 않는다.",
+      "concepts": [
+        "정비공구 소독과 작업구역 한정"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08499",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "해충방제 작업자가 방문해도 생산구역 전체를 열지 않고 비생산 시간과 지정 경로에서만 작업하게 한다. 방제작업 방문과 생산구역 분리는 시설관리 예외가 식품 접촉구역 출입 예외로 번지지 않게 한다.",
+      "concepts": [
+        "방제작업 방문과 생산구역 분리"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08500",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환경표면 검사에서 양성이 나오면 관련 구역을 중지하지만 배수·인력·공기가 분리된 다른 구역은 평가 후 계속할 수 있다. 환경표면 양성과 구역별 중지는 공통경로가 확인된 범위까지만 확대된다.",
+      "concepts": [
+        "환경표면 양성과 구역별 중지"
+      ],
+      "relations": [
+        "state",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08501",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "발효 후 냉각개시가 늦으면 보호경보가 나지만 지연 폭이 검증범위 안인 배치는 보상 냉각계획을 적용할 수 있다. 냉각개시 지연과 배치별 보상시간은 다음 배치의 표준 전환시간을 바꾸지 않는다.",
+      "concepts": [
+        "냉각개시 지연과 배치별 보상시간"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08502",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "품질을 위해 완만냉각을 승인할 수 있어도 미생물위험이 증가하는 제품에는 적용하지 않는다. 완만냉각 승인과 미생물위험 제외는 관능 품질 예외가 안전 냉각조건을 해제하지 않게 한다.",
+      "concepts": [
+        "완만냉각 승인과 미생물위험 제외"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08503",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전기가 멈추면 제품을 보류탱크에 둘 수 있지만 최대대기시간과 온도 범위를 지켜야 한다. 보류탱크 사용과 최대대기시간은 저장공간 확보를 무기한 보류 허가로 만들지 않는다.",
+      "concepts": [
+        "보류탱크 사용과 최대대기시간"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08504",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전온도가 기준을 벗어나면 포장을 막지만 냉장 유통용과 상온 유통용 제품의 예외 기준은 다르게 적용한다. 충전온도 이탈과 포장형태 구분은 한 제품의 허용온도를 다른 포장형태에 쓰지 않는다.",
+      "concepts": [
+        "충전온도 이탈과 포장형태 구분"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08505",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전기 살균이 지연되면 포장을 시작하지 않지만 적합한 벌크탱크에서 제품을 제한 시간 보관할 수 있다. 충전기 살균지연과 벌크보관은 살균 전 충전 예외가 아니라 공정 대기 예외다.",
+      "concepts": [
+        "충전기 살균지연과 벌크보관"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08506",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "포장재 승인이 보류되면 판매용 충전을 막되 밀봉성 시험을 위한 비출하 표본포장은 허용할 수 있다. 포장재 승인보류와 시험포장 범위는 시험 수량과 폐기 조건에만 한정된다.",
+      "concepts": [
+        "포장재 승인보류와 시험포장 범위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08507",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "밀봉검사 이탈이 생기면 해당 시간대 포장을 격리하고 확인된 로트만 재작업한다. 밀봉검사 이탈과 재작업 로트한정은 앞뒤 모든 생산분을 근거 없이 해제하거나 폐기하지 않게 한다.",
+      "concepts": [
+        "밀봉검사 이탈과 재작업 로트한정"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08508",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "금속검출 시험이 실패하면 마지막 정상시험 이후 생산분을 보류하지만 그 이전에 확인된 로트까지 자동 확대하지 않는다. 금속검출 시험실패와 생산중지 구간은 시간 경계로 보호 범위를 정한다.",
+      "concepts": [
+        "금속검출 시험실패와 생산중지 구간"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08509",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이물검사기 정비 중에는 기본 출하를 막되 검증된 대체검사와 강화 표본검사를 특정 제품에 적용할 수 있다. 이물검사기 정비와 대체검사 적용은 탐지능력이 다른 제품군에 일괄 적용되지 않는다.",
+      "concepts": [
+        "이물검사기 정비와 대체검사 적용"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08510",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중량선별기 경보가 나면 자동 통과를 막지만 작업자가 지정 빈도로 수동중량을 확인하며 제한 생산할 수 있다. 중량선별기 경보와 수동표본 확인은 전수 확인이 필요한 제품에는 적용되지 않는다.",
+      "concepts": [
+        "중량선별기 경보와 수동표본 확인"
+      ],
+      "relations": [
+        "function",
+        "role",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08511",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "날짜인쇄가 안 되면 출하를 막되 추적 가능한 격리용기에 담아 인쇄 복구 후 재처리할 수 있다. 날짜인쇄 장애와 격리포장 예외는 표시 없는 제품의 유통 허가가 아니다.",
+      "concepts": [
+        "날짜인쇄 장애와 격리포장 예외"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08512",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "표시검증이 보류된 제품은 창고 격리구역으로 이동할 수 있지만 판매 가능 재고로 전환하지 않는다. 표시검증 보류와 제품이동 제한은 물리적 이동 예외와 출하 보호 해제를 분리한다.",
+      "concepts": [
+        "표시검증 보류와 제품이동 제한"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08513",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "머리공간 산소가 기준을 넘으면 보류하지만 산소 민감도가 다른 제품은 승인된 제품별 기준으로 평가한다. 머리공간 산소이탈과 제품별 판정은 한 품목의 허용폭을 전체 제품에 확대하지 않는다.",
+      "concepts": [
+        "머리공간 산소이탈과 제품별 판정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08514",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "탄산압력 경보와 비탄산제품 제외는 기능이 관련된 제품에만 중지 범위를 둔다.",
+      "concepts": [
+        "탄산압력 경보와 비탄산제품 제외"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08515",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉장창고 경보와 독립구획 유지는 실제 설비 분리가 확인된 공간에만 적용된다.",
+      "concepts": [
+        "냉장창고 경보와 독립구획 유지"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08516",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "창고경보 통신이 끊기면 자동감시를 보완하기 위해 지정 간격의 현장순회를 허용할 수 있다. 창고경보 통신장애와 현장순회는 순회가 가능한 교대와 구역에만 한정되며 무감시 해제가 아니다.",
+      "concepts": [
+        "창고경보 통신장애와 현장순회"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08517",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운송지연과 적재온도 시간창은 다른 차량이나 더 긴 지연에 자동 적용되지 않는다.",
+      "concepts": [
+        "운송지연과 적재온도 시간창"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08518",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "격리팔레트는 조사 목적의 이동을 허용해도 출하 가능 재고와 혼재하지 않는다. 격리팔레트 이동과 혼재금지는 위치 변경 예외가 상태 분류 해제를 뜻하지 않게 한다.",
+      "concepts": [
+        "격리팔레트 이동과 혼재금지"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08519",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보관시료 재검사로 품질을 확인할 수 있지만 결과는 시료가 대표하는 해당로트에만 적용한다. 보관시료 사용과 해당로트 판정은 같은 날 생산된 모든 로트의 일괄 해제 근거가 아니다.",
+      "concepts": [
+        "보관시료 사용과 해당로트 판정"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08520",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "관능평가가 통과해도 미생물 안전검사가 보류 중이면 출하잠금을 해제하지 않는다. 관능평가 승인과 안전검사 독립은 품질 보호조건과 안전 보호조건이 서로를 대신하지 못하게 한다.",
+      "concepts": [
+        "관능평가 승인과 안전검사 독립"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08521",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "미생물검사가 적합해 제품 안전 보류를 해제해도 표시 오류 보류는 별도로 유지한다. 미생물검사 해제와 표시보류 유지는 하나의 보호조건 해제가 다른 기능의 잠금을 자동 제거하지 않게 한다.",
+      "concepts": [
+        "미생물검사 해제와 표시보류 유지"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08522",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "유통기한 근거부족과 시험시장 제한은 전국 유통이나 장기 보관을 허용하지 않는다.",
+      "concepts": [
+        "유통기한 근거부족과 시험시장 제한"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08523",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "규격이탈 제품을 재처리할 수 있어도 승인된 방법과 횟수상한 안에서 해당 배치에만 적용한다. 재처리 승인과 횟수상한은 반복 재처리로 이력을 지우거나 새 배치에 섞는 허가가 아니다.",
+      "concepts": [
+        "재처리 승인과 횟수상한"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08524",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐기 대상 배치라도 원인조사를 위한 소량 샘플 채취는 허용할 수 있다. 폐기보류와 조사샘플 채취는 샘플 외 물량의 사용·판매 보호를 해제하지 않는다.",
+      "concepts": [
+        "폐기보류와 조사샘플 채취"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08525",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "결함이 확인되면 마지막 정상 확인 이후 생산분을 회수하되 근거 없이 전 기간 제품으로 확대하지 않는다. 회수범위와 생산시간 경계는 보호조치의 시작·종료 시점을 기록으로 한정한다.",
+      "concepts": [
+        "회수범위와 생산시간 경계"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08526",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호조건 해제는 지정 권한자가 승인하고 작업자는 승인서에 적힌 조작만 수행한다. 예외승인 권한과 작업자 실행범위는 승인 권한과 실행 역할을 분리해 임의 확대를 막는다.",
+      "concepts": [
+        "예외승인 권한과 작업자 실행범위"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08527",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 탱크의 센서 이상에 승인된 예외는 그 탱크 식별번호에만 연결한다. 탱크전용 예외와 설비확대 금지는 같은 모델의 다른 탱크까지 보호를 해제하지 않는다.",
+      "concepts": [
+        "탱크전용 예외와 설비확대 금지"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08528",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배치전용 예외는 해당 로트가 공정을 끝내면 자동 종료되고 다음배치는 기본 보호조건으로 시작한다. 배치전용 예외와 다음배치 재잠금은 한 성공 사례가 상시 설정이 되는 것을 막는다.",
+      "concepts": [
+        "배치전용 예외와 다음배치 재잠금"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08529",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호 해제에는 시작·종료 시각을 두고 시간창이 끝나면 설비가 자동정지하도록 한다. 시간창 예외와 만료후 자동정지는 교대 지연을 이유로 승인 없이 연장되지 않는다.",
+      "concepts": [
+        "시간창 예외와 만료후 자동정지"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08530",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가열단계의 센서 예외가 승인돼도 냉각단계로 넘어갈 때에는 새 조건을 검증해야 한다. 공정단계 예외와 단계전환 재검증은 한 단계의 보호 해제를 전체 공정에 이어 붙이지 않는다.",
+      "concepts": [
+        "공정단계 예외와 단계전환 재검증"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08531",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "특정 숙련자에게 허용된 수동제어 예외는 교대자가 이어받기 전에 역량과 권한을 다시 확인한다. 역할한정 예외와 교대자 재승인은 설비 상태만 같다고 사람 조건도 자동 승계되지 않게 한다.",
+      "concepts": [
+        "역할한정 예외와 교대자 재승인"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08532",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "야간 교대에만 승인된 현장순회 예외는 다음근무가 시작되면 기본 자동감시 기준으로 돌아간다. 교대한정 예외와 다음근무 복귀는 인력 사정이 해소된 뒤에도 우회 절차가 남지 않게 한다.",
+      "concepts": [
+        "교대한정 예외와 다음근무 복귀"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08533",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 설비의 우회회로를 승인할 때에는 공용배관을 통해 다른 설비에 영향이 번지는지 확인한다. 설비전용 우회와 공용배관 확인은 이름상 전용인 예외를 실제 연결 범위보다 넓게 보지 않는다.",
+      "concepts": [
+        "설비전용 우회와 공용배관 확인"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08534",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 발효제품에 승인된 온도 허용폭은 종균과 레시피가 다른 제품에 적용하지 않는다. 제품전용 허용폭과 레시피분리는 제품별 근거가 없는 예외 복사를 막는다.",
+      "concepts": [
+        "제품전용 허용폭과 레시피분리"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08535",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "품질 편차를 보정하기 위한 예외가 승인돼도 미생물·알레르겐 같은 위해 보호는 그대로 유지한다. 위해유형 한정과 품질경보 독립은 해제된 보호 목적과 남은 보호 목적을 구분한다.",
+      "concepts": [
+        "위해유형 한정과 품질경보 독립"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08536",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "경미한 센서 흔들림에 허용된 예외를 압력상한이나 오염 같은 중대경보에 재사용하지 않는다. 경미경보 예외와 중대경보 비승계는 심각도 분류에 따라 해제 권한을 제한한다.",
+      "concepts": [
+        "경미경보 예외와 중대경보 비승계"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08537",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호를 해제하기 전에 대체측정·승인자·시간창·격리 상태가 모두 갖춰졌는지 확인한다. 해제전 선행조건과 조건누락 차단은 한 요건 충족만으로 예외를 시작하지 못하게 한다.",
+      "concepts": [
+        "해제전 선행조건과 조건누락 차단"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08538",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동보호를 해제하면 누가 어떤 계기로 얼마나 자주 감시할지 대체감시를 지정한다. 대체감시 지정과 무감시 운전금지는 보호 해제를 감시 자체의 제거로 오인하지 않게 한다.",
+      "concepts": [
+        "대체감시 지정과 무감시 운전금지"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08539",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예외 운전 중에는 평소보다 촘촘한 강화표본 검사를 적용하되 대상 배치가 끝나면 기본 주기로 돌아간다. 강화표본 검사와 예외배치 한정은 다른 정상 배치의 검사설계를 임의로 바꾸지 않는다.",
+      "concepts": [
+        "강화표본 검사와 예외배치 한정"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08540",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "승인된 예외는 지정 시각에 자동만료되고 계속 필요하면 새 근거로 다시 승인받는다. 예외자동만료와 수동연장 금지는 조작자가 잠금을 반복 해제해 사실상 상시운전하는 것을 막는다.",
+      "concepts": [
+        "예외자동만료와 수동연장 금지"
+      ],
+      "relations": [
+        "state",
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08541",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "대체계기 이탈이나 오염 신호처럼 복귀촉발 조건이 생기면 남은 승인시간과 관계없이 즉시 보호를 재잠근다. 복귀촉발 조건과 즉시재잠금은 예외 종료를 시간 만료에만 의존하지 않게 한다.",
+      "concepts": [
+        "복귀촉발 조건과 즉시재잠금"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08542",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교대 시에는 진행 중 예외의 대상·남은 시간·대체감시·복귀조건을 명시적으로 넘긴다. 교대인계와 예외상태 명시는 일반 작업정보만 전달하고 보호 해제 사실을 누락하는 일을 막는다.",
+      "concepts": [
+        "교대인계와 예외상태 명시"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08543",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호조건 해제 기록에는 승인 근거와 실제 조작이력을 연결해 누가 범위를 벗어났는지 확인할 수 있게 한다. 예외감사 기록과 조작이력 연결은 승인서 존재만으로 실행 적합성을 추정하지 않는다.",
+      "concepts": [
+        "예외감사 기록과 조작이력 연결"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08544",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "급박한 상황의 구두승인은 짧은 시간 동안만 효력이 있으며 정한 기한 안에 문서화되지 않으면 종료한다. 구두승인과 사후문서화 시간제한은 편의적 구두 지시가 장기 해제로 굳는 것을 막는다.",
+      "concepts": [
+        "구두승인과 사후문서화 시간제한"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08545",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "온도 예외가 승인된 중에 압력이나 오염 경보가 새로 나면 기존 예외가 새 경보를 상쇄하지 않는다. 동시경보와 예외상쇄 금지는 보호조건마다 별도의 발동·해제 판단을 요구한다.",
+      "concepts": [
+        "동시경보와 예외상쇄 금지"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08546",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 보호 해제가 반복되면 매번 임시 승인을 복사하지 않고 센서·공정한계·설비설계를 재검토한다. 반복예외와 기본조건 재검토는 예외 빈도가 기본 규칙 변경을 자동 정당화하지 않게 한다.",
+      "concepts": [
+        "반복예외와 기본조건 재검토"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08547",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 배치에서 품질이 유지됐다는 근거만으로 원료·종균·시간이 다른 배치에 같은 보호 해제를 적용하지 않는다. 교차배치 확대와 근거재사용 금지는 경험의 적용 범위를 실험 조건에 묶는다.",
+      "concepts": [
+        "교차배치 확대와 근거재사용 금지"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08548",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예외 운전한 배치가 적합해도 우연한 조건과 대체감시가 함께 작용했을 수 있어 상시허용으로 바꾸지 않는다. 예외배치 성공과 상시허용 오인은 결과 한 건을 규칙 해제의 충분한 근거로 쓰지 않게 한다.",
+      "concepts": [
+        "예외배치 성공과 상시허용 오인"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08549",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예외 종료 뒤에는 제품 결과뿐 아니라 근접 이탈과 대체감시 부담을 검토해 잔여위험을 평가한다. 사후검토와 잔여위험 재평가는 문제가 없었다는 이유만으로 범위 초과를 정상화하지 않는다.",
+      "concepts": [
+        "사후검토와 잔여위험 재평가"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-08550",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "최종해제 행렬과 범위교차 확인은 한 축의 예외가 다른 축의 보호조건까지 암묵적으로 푸는 것을 막는다.",
+      "concepts": [
+        "최종해제 행렬과 범위교차 확인"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    }
+  ]
+}

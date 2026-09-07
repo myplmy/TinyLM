@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v72",
+  "version": "72",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-10651 ~ S2-CDH-10800",
+  "concept_family": "S2-A02-T072: 스마트 축사 환기·질병 감시 — 보호조건 해제 시 예외 적용 범위 추적",
+  "design_note": "스마트 축사 환기·질병 감시 영역의 보호조건 해제 시 예외 적용 범위 추적 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-10651",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "최소환기량 유지와 정비중 감속은 팬 교체가 필요한 축사동에서 가스농도가 안전범위일 때 짧은 작업창에만 허용한다. 다른 동의 환기 기준은 그대로 둔다.",
+      "concepts": [
+        "최소환기량 유지와 정비중 감속"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10652",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "야간환기 제한과 고온개체구역 예외는 소음저감 규칙보다 열스트레스 경보가 난 돈방의 환기가 우선한다. 경보가 없는 구역까지 최대풍량으로 바꾸지 않는다.",
+      "concepts": [
+        "야간환기 제한과 고온개체구역 예외"
+      ],
+      "relations": [
+        "comparison",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10653",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외기차단과 저농도 암모니아 배출은 외부 병원체 경보 중에도 내부 암모니아가 상한에 접근한 동에만 여과배기 예외를 연다. 일반 창문 개방은 허용하지 않는다.",
+      "concepts": [
+        "외기차단과 저농도 암모니아 배출"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10654",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교차환기 금지와 비상연결덕트는 독립 배기팬이 모두 멈추고 역류방지·필터가 작동하는 격리구간에만 쓴다. 평시 공기공유 규칙으로 전환하지 않는다.",
+      "concepts": [
+        "교차환기 금지와 비상연결덕트"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10655",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "팬속도 상한과 연기배출 모드는 화재감지 구획의 대피시간 동안만 상한을 넘길 수 있다. 인접 정상동의 생물안전 압력조건까지 해제하지 않는다.",
+      "concepts": [
+        "팬속도 상한과 연기배출 모드"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10656",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "흡기셔터 폐쇄와 냉각패드 우회는 셔터 고장 구간에 독립 여과흡입구가 있을 때만 가능하다. 오염외기를 그대로 끌어들이는 임시개방은 예외가 아니다.",
+      "concepts": [
+        "흡기셔터 폐쇄와 냉각패드 우회"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10657",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "격리동 음압과 동물복지 환기는 음압을 유지하면서 산소·온도 하한을 충족할 범위에서만 풍량을 올린다. 양압 전환까지 같은 예외로 보지 않는다.",
+      "concepts": [
+        "격리동 음압과 동물복지 환기"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10658",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환기자동제어와 수동개입 시간창은 센서 검증 실패가 확인된 해당 제어구역에서만 열린다. 수동값은 독립 측정과 교대 인계를 거쳐야 한다.",
+      "concepts": [
+        "환기자동제어와 수동개입 시간창"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10659",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환기중단 출입금지와 구조진입은 사람이나 동물의 즉각 구조에 필요한 최소 인원·보호구·시간에만 허용한다. 정기 사양 관리는 포함하지 않는다.",
+      "concepts": [
+        "환기중단 출입금지와 구조진입"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10660",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "팬보호정지와 단회재기동은 과열 원인이 제거되고 현장감시자가 대기한 한 대에만 허용한다. 반복 트립 팬이나 같은 회로의 다른 팬까지 해제하지 않는다.",
+      "concepts": [
+        "팬보호정지와 단회재기동"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10661",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "온도상한 경보와 신생개체 보온은 축사 평균 냉각보다 보온구역의 연령별 하한이 우선한다. 고온 성축 구역의 냉각 예외를 신생구역에 그대로 적용하지 않는다.",
+      "concepts": [
+        "온도상한 경보와 신생개체 보온"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10662",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "습도상한과 분무냉각 제한해제는 열사 위험이 더 크고 배기능력이 확인된 돈방에만 짧게 허용한다. 결로가 생기면 즉시 분무를 중지한다.",
+      "concepts": [
+        "습도상한과 분무냉각 제한해제"
+      ],
+      "relations": [
+        "comparison",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10663",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "암모니아 경보와 작업자 단기진입은 구조·환기복구 임무에 한해 호흡보호구와 노출시간을 지정한다. 청소나 점검 편의를 위한 진입은 금지한다.",
+      "concepts": [
+        "암모니아 경보와 작업자 단기진입"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10664",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이산화탄소 상한과 밀폐보온 예외종료는 에너지절감용 밀폐가스 농도가 경계에 닿은 해당 동에서만 풀리게 한다. 외기온도가 낮아도 환기 재개가 우선한다.",
+      "concepts": [
+        "이산화탄소 상한과 밀폐보온 예외종료"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10665",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "미세먼지 상한과 사료공급 감속은 분진을 만드는 자동급이 라인만 일시 감속한다. 물·환기·다른 동의 급이까지 함께 중단하지 않는다.",
+      "concepts": [
+        "미세먼지 상한과 사료공급 감속"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10666",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "결로경보와 벽면국소가열은 젖은 외벽 구간에서만 표면온도를 올리는 예외다. 동 전체 설정온도를 높여 동물 열부하를 키우지 않는다.",
+      "concepts": [
+        "결로경보와 벽면국소가열"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10667",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "황화수소 경보와 분뇨교반 금지해제는 구조상 추가 가스방출이 없어야 하므로 정상 복귀·독립측정 뒤에만 가능하다. 단일 센서 정상만으로 해제하지 않는다.",
+      "concepts": [
+        "황화수소 경보와 분뇨교반 금지해제"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10668",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "저온경보와 외기댐퍼 최소개방은 어린 개체 구역에서 보온을 위해 풍량을 줄이더라도 산소·가스 하한을 지키는 범위에만 적용한다.",
+      "concepts": [
+        "저온경보와 외기댐퍼 최소개방"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10669",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열지수 경보와 활동제한 해제는 온도·습도가 안정된 별도 냉각구역의 개체에만 가능하다. 같은 동 안의 고온구획까지 이동을 허용하지 않는다.",
+      "concepts": [
+        "열지수 경보와 활동제한 해제"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10670",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환경경보 해제와 즉시정상운전은 독립 측정과 지속시간 조건을 마친 제어구역에서만 적용한다. 순간 정상값으로 모든 보호설정을 동시에 풀지 않는다.",
+      "concepts": [
+        "환경경보 해제와 즉시정상운전"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10671",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주온도센서 격리와 보조센서 승격은 편차가 확인된 센서가 담당한 구역에서만 허용한다. 보조센서의 위치·교정이 다른 구역까지 대표하지 않는다.",
+      "concepts": [
+        "주온도센서 격리와 보조센서 승격"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10672",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가스센서 교정만료와 휴대측정 대체는 훈련자가 정한 주기로 같은 높이·지점을 측정하는 동안만 가능하다. 연속경보기능이 필요한 무인시간에는 적용하지 않는다.",
+      "concepts": [
+        "가스센서 교정만료와 휴대측정 대체"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10673",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통신단절과 로컬제어 유지는 마지막 검증 설정과 독립 센서가 살아 있는 제어반에만 허용한다. 새 동물입식이나 설정변경은 중앙확인 전 보류한다.",
+      "concepts": [
+        "통신단절과 로컬제어 유지"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10674",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동경보 지연과 급상승 즉시알림은 순간잡음 필터보다 위험 변화율 조건이 앞서는 센서에만 적용한다. 완만한 정상변동에는 기본 지연을 유지한다.",
+      "concepts": [
+        "자동경보 지연과 급상승 즉시알림"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10675",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "카메라분석 중단과 현장순찰은 접근이 허용된 비격리 동과 정해진 순찰주기에서만 대안이 된다. 감염의심 구역은 원격감시를 복구하기 전 진입하지 않는다.",
+      "concepts": [
+        "카메라분석 중단과 현장순찰"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10676",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "체중센서 오류와 표본계측은 성장평가를 이어갈 수 있지만 치료용 개체판정까지 대신하지 않는다. 표본 결과의 적용범위를 군 단위로 제한한다.",
+      "concepts": [
+        "체중센서 오류와 표본계측"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10677",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제어기 재부팅과 수동환기는 해당 동의 댐퍼·팬을 현장에서 독립 확인할 수 있을 때만 허용한다. 다른 동의 자동제어는 계속 유지한다.",
+      "concepts": [
+        "제어기 재부팅과 수동환기"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10678",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서다수결과 고정편향 예외는 세 센서가 같은 교정오류를 공유한다는 증거가 있을 때 독립 기준계를 우선한다. 단순 소수값을 임의로 채택하지 않는다.",
+      "concepts": [
+        "센서다수결과 고정편향 예외"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10679",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "경보확인 처리와 보호동작 유지는 운영자가 알림을 읽어도 원인값이 회복될 때까지 자동차단을 풀지 않는 범위다. 화면 확인을 해제 근거로 삼지 않는다.",
+      "concepts": [
+        "경보확인 처리와 보호동작 유지"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10680",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "BMS 설정변경과 한동시험은 새 제어값을 지정 시험동에만 적용하고 안정성을 확인한 뒤 확대한다. 전체 농장에 동시에 예외를 전파하지 않는다.",
+      "concepts": [
+        "BMS 설정변경과 한동시험"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10681",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "의심축 격리와 검사동 이동은 밀폐운반구·전용동선·목적격리칸이 준비된 개체에만 허용한다. 일반 복도를 통한 이동은 보호조건을 해제하지 않는다.",
+      "concepts": [
+        "의심축 격리와 검사동 이동"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10682",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "격리동 출입금지와 수의사 진입은 진료에 필요한 최소 인원·보호구·소독 절차에만 예외를 둔다. 교육참관이나 일반점검은 포함하지 않는다.",
+      "concepts": [
+        "격리동 출입금지와 수의사 진입"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10683",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "격리기간 유지와 긴급도태 반출은 복지·방역상 즉시 처리가 필요한 개체를 봉인 차량으로 지정시설에 직송할 때만 가능하다.",
+      "concepts": [
+        "격리기간 유지와 긴급도태 반출"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10684",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "양성동 봉쇄와 음성칸 부분운영은 공기·인력·급이·분뇨 경로가 물리적으로 분리된 칸에만 허용한다. 칸막이만 있는 공간은 독립구역이 아니다.",
+      "concepts": [
+        "양성동 봉쇄와 음성칸 부분운영"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10685",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "접촉군 이동금지와 분만이동 예외는 같은 격리권 안의 전용 분만칸과 독립 장비가 있을 때만 허용한다. 다른 동으로 이동하지 않는다.",
+      "concepts": [
+        "접촉군 이동금지와 분만이동 예외"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10686",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "격리장비 전용과 소독후 공유는 공급중단 때 검증된 세척·소독·건조를 마친 비다공성 장비에만 예외를 둔다. 주사침과 흡수재는 공유하지 않는다.",
+      "concepts": [
+        "격리장비 전용과 소독후 공유"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10687",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "격리구역 음압과 동물구조 개방은 화재·질식처럼 즉각 위험이 있을 때 대피동선만 짧게 열 수 있다. 구조 뒤에는 새 임시격리구역을 지정한다.",
+      "concepts": [
+        "격리구역 음압과 동물구조 개방"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10688",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "양성검사와 전군도태 보류는 표본오염·개체식별 오류가 의심되는 경우 확인검사 동안 해당 접촉군만 봉쇄한다. 다른 동의 이동제한 범위를 자동 확대하지 않는다.",
+      "concepts": [
+        "양성검사와 전군도태 보류"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10689",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "격리해제 음성과 관찰기간 유지는 한 번 음성이어도 잠복기가 남은 개체군에 이동·접촉 제한을 계속 적용한다. 검사음성은 모든 보호조건의 즉시 해제가 아니다.",
+      "concepts": [
+        "격리해제 음성과 관찰기간 유지"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10690",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "격리동 복구와 재입식 제한은 청소·공기·표면 검사 뒤에도 지정 공백기간이 끝난 동에서만 풀린다. 설비수리 완료만으로 입식하지 않는다.",
+      "concepts": [
+        "격리동 복구와 재입식 제한"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10691",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "방문객 출입금지와 필수정비자는 생명·환기·급수 유지에 필요한 자격자만 지정 동선으로 들어가게 한다. 일반 견학이나 판매 방문은 예외가 아니다.",
+      "concepts": [
+        "방문객 출입금지와 필수정비자"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10692",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "샤워인샤워아웃과 응급대피는 화재·질식 상황에서 퇴실 샤워를 생략할 수 있으나 오염구역 분리와 후속 제염은 유지한다.",
+      "concepts": [
+        "샤워인샤워아웃과 응급대피"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10693",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호구 의무와 밀폐운전석은 양압·필터·문닫힘이 검증된 차량 내부 작업에만 호흡보호구 예외를 둘 수 있다. 하차 순간에는 다시 적용한다.",
+      "concepts": [
+        "보호구 의무와 밀폐운전석"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10694",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "동간이동 금지와 구조팀 통과는 인명·동물 구조를 위한 최소경로와 전용 소독점을 갖춘 팀에만 허용한다. 사료배송을 같은 예외로 처리하지 않는다.",
+      "concepts": [
+        "동간이동 금지와 구조팀 통과"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10695",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "직원검사 대기와 원격업무 전환은 농장 자료·통신을 다룰 수 있는 역할에만 가능하다. 현장 급이·진료 역할을 원격근무로 대체하지 않는다.",
+      "concepts": [
+        "직원검사 대기와 원격업무 전환"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10696",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "작업조 분리와 교대지원 예외는 비노출 예비조가 전용 보호구·동선을 사용할 때만 허용한다. 같은 휴게실 노출을 공유한 인력을 독립조로 보지 않는다.",
+      "concepts": [
+        "작업조 분리와 교대지원 예외"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10697",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외부기사 진입과 원격진단 우선은 현장진입 전에 영상·로그로 해결 가능한 고장을 먼저 처리하게 한다. 진입이 필요하면 해당 설비구역에만 범위를 제한한다.",
+      "concepts": [
+        "외부기사 진입과 원격진단 우선"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10698",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "휴게실폐쇄와 야외휴식은 날씨·위생·구역분리가 가능한 지정공간에만 대안이 된다. 작업동 출입제한 자체를 풀지는 않는다.",
+      "concepts": [
+        "휴게실폐쇄와 야외휴식"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10699",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "노출직원 업무배제와 음성후 복귀는 검사창·증상·접촉기간을 모두 충족한 직원으로 범위를 한정한다. 조기 음성 하나로 업무 복귀를 허용하지 않는다.",
+      "concepts": [
+        "노출직원 업무배제와 음성후 복귀"
+      ],
+      "relations": [
+        "classification",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10700",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "출입기록 중단과 수기명부는 신원·시각·동선을 이중서명으로 남기는 동안만 대안이 된다. 기록 없이 긴급성을 주장해 출입시키지 않는다.",
+      "concepts": [
+        "출입기록 중단과 수기명부"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10701",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "축사간 이동금지와 분만개체 전환은 같은 방역권 내 전용차량·분만동 격리가 있을 때만 가능하다. 일반군과 접촉하는 이동은 허용하지 않는다.",
+      "concepts": [
+        "축사간 이동금지와 분만개체 전환"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10702",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "출하중지와 긴급복지이동은 과밀·시설파손으로 개체 생명이 위협받을 때 방역기관이 지정한 격리시설로만 허용한다. 상업출하는 포함하지 않는다.",
+      "concepts": [
+        "출하중지와 긴급복지이동"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10703",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "신규입식 금지와 구조개체 수용은 별도 격리동·인력·공기가 완전히 분리된 경우에만 제한적으로 가능하다. 생산군 입식규칙은 계속 유지한다.",
+      "concepts": [
+        "신규입식 금지와 구조개체 수용"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10704",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "동물혼합 금지와 체중별 재편성은 같은 건강상태·출처의 기존 군 안에서 복지공간을 확보할 때만 허용한다. 서로 다른 접촉군은 섞지 않는다.",
+      "concepts": [
+        "동물혼합 금지와 체중별 재편성"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10705",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "개체표식 누락과 격리이동은 신원 확인 전 해당 개체를 가까운 빈 격리칸으로 옮기는 데만 허용한다. 군 전체 이력에 임의로 편입하지 않는다.",
+      "concepts": [
+        "개체표식 누락과 격리이동"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10706",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운송차량 공용금지와 소독후 전용회차는 검증된 세척·건조 뒤 동일 건강군 운송에만 예외를 둔다. 양성군 다음 음성군 운송에는 추가 공백조건을 적용한다.",
+      "concepts": [
+        "운송차량 공용금지와 소독후 전용회차"
+      ],
+      "relations": [
+        "function",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10707",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "방목금지와 실내운동구역은 외부접촉을 막는 독립 울타리·바닥·공기가 있는 경우에만 복지대안이 된다. 공용통로 사용은 허용하지 않는다.",
+      "concepts": [
+        "방목금지와 실내운동구역"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10708",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "판매이동 금지와 치료시설 이송은 수의사가 필요성을 확인하고 봉인 차량으로 지정기관에 직송할 때만 허용한다. 경매장 경유는 예외가 아니다.",
+      "concepts": [
+        "판매이동 금지와 치료시설 이송"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10709",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐사체 반출금지와 소각장 직송은 밀폐용기·전용차량·추적기록을 갖춘 단일경로에만 예외를 둔다. 임시보관소 하차는 포함하지 않는다.",
+      "concepts": [
+        "폐사체 반출금지와 소각장 직송"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10710",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "이동제한 해제와 군별단계출하는 연속 음성·잠복기 종료가 확인된 군부터 적용한다. 한 돈방 해제를 농장 전체 출하허가로 확대하지 않는다.",
+      "concepts": [
+        "이동제한 해제와 군별단계출하"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10711",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예방투약 금지와 고위험군 단기처방은 수의사가 노출·증상·약제근거를 확인한 군에만 허용한다. 성장촉진 목적의 전군투약은 예외가 아니다.",
+      "concepts": [
+        "예방투약 금지와 고위험군 단기처방"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10712",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "항생제 휴약기간과 긴급치료는 생명보호를 위해 투약할 수 있지만 해당 개체의 출하금지 기간을 새로 계산한다. 치료가 휴약의무를 없애지 않는다.",
+      "concepts": [
+        "항생제 휴약기간과 긴급치료"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10713",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "백신접종 일정과 발열개체 연기는 정규 군접종보다 현재 건강상태가 우선한다. 연기 예외는 표시된 개체에만 적용하고 회복 뒤 다시 판정한다.",
+      "concepts": [
+        "백신접종 일정과 발열개체 연기"
+      ],
+      "relations": [
+        "state",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10714",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "생백신 사용제한과 확산위험 구역은 승인 균주·연령·격리조건이 갖춰진 군에만 예외를 둔다. 면역저하 개체에는 적용하지 않는다.",
+      "concepts": [
+        "생백신 사용제한과 확산위험 구역"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10715",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "치료실 출입금지와 응급수술팀은 생명구조에 필요한 최소역할과 보호구를 갖춘 인원에게만 허용한다. 참관·교육인력은 제외한다.",
+      "concepts": [
+        "치료실 출입금지와 응급수술팀"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10716",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공용주사기 금지와 다회용기기는 개체별 멸균팁·역류방지·세척검증이 있는 승인 장비에만 예외를 둔다. 바늘 재사용은 허용하지 않는다.",
+      "concepts": [
+        "공용주사기 금지와 다회용기기"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10717",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "약품창고 격리와 긴급반출은 온도·봉인·수의사 승인 조건을 충족한 필수치료약에만 허용한다. 일반 재고정리는 예외가 아니다.",
+      "concepts": [
+        "약품창고 격리와 긴급반출"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10718",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "투약자동화 중단과 수동투약은 개체식별·용량 이중확인·기록이 가능한 치료군에만 대안이 된다. 대규모 군투약을 추정량으로 수행하지 않는다.",
+      "concepts": [
+        "투약자동화 중단과 수동투약"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10719",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "백신보관 이탈과 사용보류 해제는 제조사 안정성자료와 독립 온도이력 검토가 해당 로트의 효력을 인정할 때만 가능하다. 다른 로트까지 일괄 해제하지 않는다.",
+      "concepts": [
+        "백신보관 이탈과 사용보류 해제"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10720",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "치료종료와 격리해제 분리는 증상 개선 뒤에도 전염성 검사·잠복기 조건이 남음을 뜻한다. 약을 끝냈다는 사실만으로 이동을 허용하지 않는다.",
+      "concepts": [
+        "치료종료와 격리해제 분리"
+      ],
+      "relations": [
+        "contrast",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10721",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "급이중단과 치료식 공급은 오염사료 격리 중에도 수의사가 승인한 독립 원료·라인으로 해당 군에만 제공한다. 기존 사일로를 우회하지 못하면 예외가 아니다.",
+      "concepts": [
+        "급이중단과 치료식 공급"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10722",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자동급이 고장과 수동급이는 용량·위생·개체접근을 관리할 수 있는 소규모 구역에만 가능하다. 대형군의 균등공급을 양동이 작업으로 완전히 대체하지 않는다.",
+      "concepts": [
+        "자동급이 고장과 수동급이"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10723",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사일로사용 금지와 포대사료 전환은 추적 가능한 무오염 로트와 전용운반구가 있을 때만 대안이다. 같은 오염 오거를 사용하지 않는다.",
+      "concepts": [
+        "사일로사용 금지와 포대사료 전환"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10724",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "급수관 격리와 이동급수통은 세척된 용기·검사수·개체별 접근을 확보한 격리칸에만 단기 대안이다. 전체 동의 연속급수를 대신하지 않는다.",
+      "concepts": [
+        "급수관 격리와 이동급수통"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10725",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "음수소독 상한과 탈수위험 완화는 기호저하로 섭취가 급감한 군에서 안전최저 농도까지 조정할 수 있다. 미생물 기준을 벗어나는 희석은 허용하지 않는다.",
+      "concepts": [
+        "음수소독 상한과 탈수위험 완화"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10726",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사료배합 고정과 알레르기개체 대체는 진단된 개체·전용급이통·영양동등성이 확인될 때만 허용한다. 군 전체 레시피를 바꾸지 않는다.",
+      "concepts": [
+        "사료배합 고정과 알레르기개체 대체"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10727",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "급이시간 제한과 저혈당개체 보충은 수의사가 확인한 위험개체에게 측정량만 추가한다. 생산량을 높이기 위한 일반 추가급이는 예외가 아니다.",
+      "concepts": [
+        "급이시간 제한과 저혈당개체 보충"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10728",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "급수검사 대기와 비축수 사용은 봉인·유효기간·독립검사 이력이 있는 탱크에만 허용한다. 출처 불명 물을 긴급성만으로 공급하지 않는다.",
+      "concepts": [
+        "급수검사 대기와 비축수 사용"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10729",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사료리콜과 부분로트 사용은 생산일·사일로·운송경로가 물리적으로 분리된 안전 로트가 증명될 때만 가능하다. 포대색만으로 구분하지 않는다.",
+      "concepts": [
+        "사료리콜과 부분로트 사용"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10730",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "급이복구와 정상섭취 확인은 설비가 움직여도 개체행동·잔량·분배를 확인한 돈방에서만 보호감시를 해제한다. 모터기동만으로 완료하지 않는다.",
+      "concepts": [
+        "급이복구와 정상섭취 확인"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10731",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분뇨반출 금지와 밀폐처리장 직송은 전용차량·봉인·소독을 유지하는 경로에만 허용한다. 일반 농경지 살포는 예외가 아니다.",
+      "concepts": [
+        "분뇨반출 금지와 밀폐처리장 직송"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10732",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분뇨교반 금지와 막힘제거는 가스측정·환기·원격도구로 최소 구간만 다룰 때 허용한다. 전체 저장조 교반으로 확대하지 않는다.",
+      "concepts": [
+        "분뇨교반 금지와 막힘제거"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10733",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "퇴비장 출입제한과 온도점검은 화재·살균 확인에 필요한 최소 인원과 지정통로에만 예외를 둔다. 일반 뒤집기 작업은 포함하지 않는다.",
+      "concepts": [
+        "퇴비장 출입제한과 온도점검"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10734",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐수방류 중지와 비상저장조는 용량·차단밸브·누수감시가 독립적으로 가용할 때 단기 대안이다. 저장조가 가득 차면 예외를 종료한다.",
+      "concepts": [
+        "폐수방류 중지와 비상저장조"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10735",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "깔짚반출 금지와 소각장 운송은 밀폐포장과 지정차량로 직접 이동할 때만 허용한다. 중간 야적은 보호범위 밖이다.",
+      "concepts": [
+        "깔짚반출 금지와 소각장 운송"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10736",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐사체 냉장보관과 즉시처리 예외는 처리시설 지연 중 독립 냉장고·봉인·온도감시가 있을 때만 가능하다. 일반 사료창고에 두지 않는다.",
+      "concepts": [
+        "폐사체 냉장보관과 즉시처리 예외"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10737",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소독수 재사용과 오염상한 폐기는 절약규칙보다 유기물·병원체 기준 초과 시 전량교체가 우선한다. 정상 회로의 물까지 근거 없이 폐기하지 않는다.",
+      "concepts": [
+        "소독수 재사용과 오염상한 폐기"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10738",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분뇨차량 공용과 세척후 전환은 세척·건조 검증이 끝난 뒤 같은 건강등급 농장으로만 허용한다. 양성농장 다음 음성농장 운행에는 적용하지 않는다.",
+      "concepts": [
+        "분뇨차량 공용과 세척후 전환"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10739",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐기물구역 봉쇄와 구조접근은 가스·붕괴로 위험한 사람을 구하기 위한 최소동선만 허용한다. 자재회수나 정리작업은 예외가 아니다.",
+      "concepts": [
+        "폐기물구역 봉쇄와 구조접근"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10740",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "처리완료와 토양반입 해제는 온도·시간·병원체 음성을 충족한 로트에만 적용한다. 설비 운전종료 기록만으로 비료사용을 허용하지 않는다.",
+      "concepts": [
+        "처리완료와 토양반입 해제"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10741",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "신고전 이동금지와 진단시료 반출은 봉인·표식·지정검사실 운송에 한해 허용한다. 교육이나 자체연구용 반출은 포함하지 않는다.",
+      "concepts": [
+        "신고전 이동금지와 진단시료 반출"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10742",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "양성통보와 농장전체 공개범위는 방역에 필요한 위치·접촉정보만 공유하고 개인·상업정보는 제한한다. 한 동의 양성을 모든 개체 정보 공개로 확대하지 않는다.",
+      "concepts": [
+        "양성통보와 농장전체 공개범위"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10743",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "의심신고와 전면봉쇄 예외는 증상특이도·접촉범위가 낮을 때 해당 돈방의 임시제한으로 시작한다. 확인 전 농장 전체를 확진처럼 다루지 않는다.",
+      "concepts": [
+        "의심신고와 전면봉쇄 예외"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10744",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "검사실 지연과 현장신속검사는 검증된 질병·시료·판독자 범위에서만 임시 판단근거가 된다. 확정검사를 영구 대체하지 않는다.",
+      "concepts": [
+        "검사실 지연과 현장신속검사"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10745",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "신속검사 음성과 보호조치 유지는 민감도·잠복기 때문에 확정음성 전까지 의심군에 적용한다. 다른 무접촉군에는 불필요하게 확대하지 않는다.",
+      "concepts": [
+        "신속검사 음성과 보호조치 유지"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10746",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "확진검사 양성과 재검사 대기는 표본식별·오염 의심이 구체적으로 있을 때 해당 개체군만 기존 봉쇄 아래 재확인한다. 재검사를 이동허가로 쓰지 않는다.",
+      "concepts": [
+        "확진검사 양성과 재검사 대기"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10747",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "법정보고와 내부공지 분리는 당국 통보를 우선하되 작업자 보호에 필요한 최소정보를 즉시 내부 공유한다. 대외발표 권한까지 현장팀에 넘기지 않는다.",
+      "concepts": [
+        "법정보고와 내부공지 분리"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10748",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "역학추적 범위와 독립동 제외는 인력·차량·공기·사료 경로가 모두 분리됐다는 증거가 있는 동에만 적용한다. 거리만 멀다는 이유로 제외하지 않는다.",
+      "concepts": [
+        "역학추적 범위와 독립동 제외"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10749",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "경보건수 감소와 발생종료는 연속 검사·잠복기·신고완전성을 충족한 구역에서만 연결한다. 센서고장으로 알림이 줄었다면 보호조건을 해제하지 않는다.",
+      "concepts": [
+        "경보건수 감소와 발생종료"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10750",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상발전기 가동과 전동환기 유지는 발전용량·배전·연료가 해당 동의 필수팬을 감당할 때만 성립한다. 엔진기동만으로 모든 설비를 해제하지 않는다.",
+      "concepts": [
+        "비상발전기 가동과 전동환기 유지"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10751",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주전원 복구와 자동모드 재개는 센서·댐퍼·팬의 초기화를 확인한 동부터 적용한다. 전압이 돌아왔다고 수동보호를 즉시 전부 풀지 않는다.",
+      "concepts": [
+        "주전원 복구와 자동모드 재개"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10752",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "급수펌프 고장과 중력탱크는 용량·수질·높이가 해당 구역의 최소급수를 보장할 때 단기 대안이다. 장기 음수량 전체를 대신하지 않는다.",
+      "concepts": [
+        "급수펌프 고장과 중력탱크"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10753",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사료오거 고장과 이동급이기는 전용세척·정량·통로를 확보한 돈방에만 대안이 된다. 감염동과 음성동 사이에서 같은 장비를 공유하지 않는다.",
+      "concepts": [
+        "사료오거 고장과 이동급이기"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10754",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환기제어망 장애와 로컬패널은 현장 센서와 보호인터록이 독립적으로 살아 있는 동에만 허용한다. 중앙경보가 없는 동안 순찰주기를 강화한다.",
+      "concepts": [
+        "환기제어망 장애와 로컬패널"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10755",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉각패드 수중단과 분무대체는 습도상한·수질·배기능력을 충족한 구역에만 가능하다. 고습 동에는 같은 예외를 적용하지 않는다.",
+      "concepts": [
+        "냉각패드 수중단과 분무대체"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10756",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서전원 상실과 휴대측정 순찰은 배터리 측정기·담당자·짧은 간격을 확보한 동에만 단기 대안이다. 무인시간까지 연장하지 않는다.",
+      "concepts": [
+        "센서전원 상실과 휴대측정 순찰"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10757",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통신기지국 장애와 유선보고는 축사동 전화·수기기록이 독립 사용될 때 가능하다. 자동 경보와 실시간 제어 기능까지 대체하지 않는다.",
+      "concepts": [
+        "통신기지국 장애와 유선보고"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10758",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소독설비 정지와 이동소독기는 농도·접촉시간·오염수회수가 검증된 출입구에만 대안이 된다. 모든 차량 통로를 한 장비로 처리하지 않는다.",
+      "concepts": [
+        "소독설비 정지와 이동소독기"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10759",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "설비정비 완료와 보호설정 해제는 부하시험·센서확인·현장승인을 마친 장비에만 적용한다. 작업표 종료만으로 자동운전을 재개하지 않는다.",
+      "concepts": [
+        "설비정비 완료와 보호설정 해제"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10760",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폭염작업 제한과 급수복구팀은 동물 탈수위험을 줄이는 최소인원·교대·냉각보호 아래에만 예외를 둔다. 비필수 정비는 계속 미룬다.",
+      "concepts": [
+        "폭염작업 제한과 급수복구팀"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10761",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한파외기 차단과 가스상한 환기는 보온보다 암모니아·이산화탄소 안전선이 우선하는 동에서만 최소개방을 허용한다. 신생구역은 독립 보온을 병행한다.",
+      "concepts": [
+        "한파외기 차단과 가스상한 환기"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10762",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폭우차량 출입금지와 사료긴급반입은 안전한 포장도로·전용차량·짧은 하역이 확보된 경우에만 허용한다. 일반 출하차량은 포함하지 않는다.",
+      "concepts": [
+        "폭우차량 출입금지와 사료긴급반입"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10763",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "낙뢰경보 대피와 원격환기 유지는 독립 비상전원·서지보호·로컬제어가 작동하는 동에서만 가능하다. 원격망이 같은 낙뢰경로를 공유하면 대안이 아니다.",
+      "concepts": [
+        "낙뢰경보 대피와 원격환기 유지"
+      ],
+      "relations": [
+        "part_of",
+        "function",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10764",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "산불연기 외기차단과 내부가스 배출은 여과우회·재순환·제한환기를 구역별 가스값에 따라 적용한다. 모든 댐퍼를 한 상태로 고정하지 않는다.",
+      "concepts": [
+        "산불연기 외기차단과 내부가스 배출"
+      ],
+      "relations": [
+        "function",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10765",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "홍수저지대 대피와 고지동 이동은 고지동의 격리공간·공기·급이가 독립적으로 준비된 건강군에만 허용한다. 접촉군을 섞지 않는다.",
+      "concepts": [
+        "홍수저지대 대피와 고지동 이동"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10766",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폭설지붕 출입금지와 구조보강은 붕괴위험을 줄일 전문팀·추락방지·하부대피가 갖춰진 구역에만 예외를 둔다. 일반 제설인력은 올리지 않는다.",
+      "concepts": [
+        "폭설지붕 출입금지와 구조보강"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10767",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정전시 출하중지와 구조이동은 환기·온도 악화로 생명이 위협받는 군을 독립 전원시설로 옮길 때만 허용한다. 상업출하로 전환하지 않는다.",
+      "concepts": [
+        "정전시 출하중지와 구조이동"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10768",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기상경보 해제와 외부활동 재개는 통로·지붕·전력·환기 점검을 마친 구역부터 적용한다. 경보종료 시각만으로 보호조건을 풀지 않는다.",
+      "concepts": [
+        "기상경보 해제와 외부활동 재개"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10769",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "과밀해소 이동금지와 빈격리칸 사용은 같은 건강군·독립공기·전용동선을 갖춘 칸에만 복지 예외를 둔다. 다른 접촉군과 합치지 않는다.",
+      "concepts": [
+        "과밀해소 이동금지와 빈격리칸 사용"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10770",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "절식규칙과 허약개체 보충급이는 수의사가 확인한 개체에 전용급이통으로 측정량만 제공한다. 군 전체 절식계획을 해제하지 않는다.",
+      "concepts": [
+        "절식규칙과 허약개체 보충급이"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10771",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "소음작업 제한과 환기팬 비상운전은 가스·온도 위험을 막는 필수팬에만 우선권을 준다. 비필수 세척장비까지 야간 운전하지 않는다.",
+      "concepts": [
+        "소음작업 제한과 환기팬 비상운전"
+      ],
+      "relations": [
+        "comparison",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10772",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "조도제한과 야간치료 조명은 치료개체·작업구역·시간에만 국소조명을 허용한다. 축사동 전체의 휴식주기를 바꾸지 않는다.",
+      "concepts": [
+        "조도제한과 야간치료 조명"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10773",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운동제한과 재활개체 이동은 비전염성 진단·전용통로·감독이 있는 개체에만 허용한다. 감염격리군에는 적용하지 않는다.",
+      "concepts": [
+        "운동제한과 재활개체 이동"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10774",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "생산량감소 경보와 복지조치 우선은 사료증량보다 질병·온도·통증 원인을 먼저 확인하게 한다. 생산지표만으로 보호조건을 완화하지 않는다.",
+      "concepts": [
+        "생산량감소 경보와 복지조치 우선"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10775",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "도태기준 충족과 치료기회 예외는 회복가능성·고통·전염위험을 수의사가 개체별로 판단한 경우에만 허용한다. 경제가치만으로 범위를 정하지 않는다.",
+      "concepts": [
+        "도태기준 충족과 치료기회 예외"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10776",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분만보조 출입제한과 응급지원은 모체·신생개체의 즉각 위험에 필요한 최소인원과 전용기구에만 예외를 둔다. 일반 실습자는 제외한다.",
+      "concepts": [
+        "분만보조 출입제한과 응급지원"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10777",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "환축안정과 일반군 복귀는 증상완화 외에 전염성·섭취·행동 관찰기간을 충족한 개체에만 허용한다. 체온 정상 하나로 격리를 끝내지 않는다.",
+      "concepts": [
+        "환축안정과 일반군 복귀"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10778",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "복지경보 해제와 감시축소는 여러 지표가 지정시간 정상인 돈방부터 적용한다. 카메라 복구나 경보삭제만으로 순찰을 줄이지 않는다.",
+      "concepts": [
+        "복지경보 해제와 감시축소"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10779",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "폐사율 정상화와 발생종료는 잠복기·검사·신고완전성이 충족된 군에서만 연결한다. 개체수 감소로 분모가 바뀐 효과를 종료근거로 쓰지 않는다.",
+      "concepts": [
+        "폐사율 정상화와 발생종료"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10780",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "양성동 음성전환과 단계해제는 돈방별 연속검사·공기·인력분리를 확인한 순서로 적용한다. 한 표본음성으로 동 전체를 열지 않는다.",
+      "concepts": [
+        "양성동 음성전환과 단계해제"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10781",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "출입제한 해제와 방문객 허용은 직원 필수동선이 정상화된 뒤 별도 위험평가를 통과해야 한다. 직원 해제를 즉시 견학허가로 확대하지 않는다.",
+      "concepts": [
+        "출입제한 해제와 방문객 허용"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10782",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "차량소독 완화와 저위험구역은 외부 농장 접촉이 없는 전용차량·포장구간에만 적용한다. 사료·출하차량의 소독은 유지한다.",
+      "concepts": [
+        "차량소독 완화와 저위험구역"
+      ],
+      "relations": [
+        "classification",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10783",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "동물판매 재개와 군별승인은 출처·검사·잠복기 조건을 충족한 군에만 적용한다. 농장단위 해제 공지가 모든 개체 출하를 보장하지 않는다.",
+      "concepts": [
+        "동물판매 재개와 군별승인"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10784",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분뇨반출 재개와 처리로트 제한은 살균온도·시간·검사기록이 완결된 로트에만 허용한다. 미처리 저장조의 반출은 계속 금지한다.",
+      "concepts": [
+        "분뇨반출 재개와 처리로트 제한"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10785",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공용장비 해제와 개별검증은 장비마다 세척·건조·표면음성을 확인한 뒤 적용한다. 한 장비의 합격을 같은 창고 전체로 확대하지 않는다.",
+      "concepts": [
+        "공용장비 해제와 개별검증"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10786",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비상환기 종료와 기본제어 복귀는 가스·온도·팬상태가 안정된 동부터 순차 적용한다. 다른 동의 경보가 남으면 공통 설정을 한꺼번에 원복하지 않는다.",
+      "concepts": [
+        "비상환기 종료와 기본제어 복귀"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10787",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "치료종료와 휴약기간 유지는 임상회복 뒤에도 약제별 출하기한을 개체기록에 남긴다. 격리해제가 식품안전 제한까지 제거하지 않는다.",
+      "concepts": [
+        "치료종료와 휴약기간 유지"
+      ],
+      "relations": [
+        "contrast",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10788",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "발생종료 선언과 후속예찰은 이동·출입 제한을 풀어도 지정기간의 표본검사와 신고는 계속하게 한다. 종료가 감시의 즉시 중단은 아니다.",
+      "concepts": [
+        "발생종료 선언과 후속예찰"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10789",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보호조건 만료와 자동원복은 지정 동·개체·시간 중 하나가 끝나면 기본규칙으로 돌아가게 한다. 다른 구역 예외가 남아 있어도 연장하지 않는다.",
+      "concepts": [
+        "보호조건 만료와 자동원복"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10790",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예외승인과 전농장 적용금지는 승인서에 적힌 동·돈방·개체·설비만 보호조건을 조정한다. 같은 질병명이라는 이유로 다른 농장에 복사하지 않는다.",
+      "concepts": [
+        "예외승인과 전농장 적용금지"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10791",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장소장 권한과 방역명령 경계는 환기·인력순서를 조정할 수 있어도 법정 이동금지를 임의로 해제할 수 없다는 뜻이다.",
+      "concepts": [
+        "현장소장 권한과 방역명령 경계"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10792",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수의사 처방과 출하승인 분리는 치료권한이 약제잔류·방역검사·구매자 규칙을 자동 대체하지 않게 한다. 각 승인을 별도로 기록한다.",
+      "concepts": [
+        "수의사 처방과 출하승인 분리"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10793",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "구두허가와 사후문서화 범위는 생명·환기 안전의 즉시조치에만 먼저 적용한다. 대상·시각·종료조건을 기록하고 정해진 기한에 검토받는다.",
+      "concepts": [
+        "구두허가와 사후문서화 범위"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10794",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시험동 예외와 생산동 확장금지는 새 센서·환기·사료 조건을 지정 시험동에서 검증하기 전 다른 동의 기본규칙으로 쓰지 않게 한다.",
+      "concepts": [
+        "시험동 예외와 생산동 확장금지"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10795",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "감사표본 합격과 전체농장 합격은 공기·인력·사료 경로가 다른 동을 각각 대표해야 연결된다. 쉬운 돈방의 합격만으로 전체를 해제하지 않는다.",
+      "concepts": [
+        "감사표본 합격과 전체농장 합격"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10796",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "예외위반과 관련범위 재봉쇄는 위반 장비·인력·동선과 연결된 구역까지만 즉시 적용한다. 독립 동의 합법적 예외까지 증거 없이 취소하지 않는다.",
+      "concepts": [
+        "예외위반과 관련범위 재봉쇄"
+      ],
+      "relations": [
+        "part_of",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10797",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "재발견과 해제동 재지정은 새 확진개체의 접촉망·공기·장비 범위부터 시작한다. 과거 전체농장 봉쇄를 자동 반복하지 않는다.",
+      "concepts": [
+        "재발견과 해제동 재지정"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10798",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사후평가와 영구규칙 변경은 한 번의 예외 성공만으로 연결되지 않는다. 반복검증·복지·방역 위험평가와 승인 뒤에만 기본규칙을 수정한다.",
+      "concepts": [
+        "사후평가와 영구규칙 변경"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10799",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "종료보고 승인과 잔여위험 공개는 해제된 조건과 계속되는 감시·휴약·장비제한을 함께 적는다. 승인문서가 남은 위험을 숨기지 않게 한다.",
+      "concepts": [
+        "종료보고 승인과 잔여위험 공개"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-10800",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주환기필터 격리와 임시필터 우회는 동일 등급·밀봉·풍량을 검증한 해당 축사동에서만 허용한다. 임시필터가 없는 다른 동의 보호조건까지 해제하지 않는다.",
+      "concepts": [
+        "주환기필터 격리와 임시필터 우회"
+      ],
+      "relations": [
+        "function",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    }
+  ]
+}

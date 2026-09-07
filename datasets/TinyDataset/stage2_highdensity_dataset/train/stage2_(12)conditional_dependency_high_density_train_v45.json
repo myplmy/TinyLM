@@ -1,0 +1,2262 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 조건·의존 구조 High-Density Train 150 v45",
+  "version": "45",
+  "purpose": "필요조건·충분조건·선행 의존·예외 범위를 실제 결과와 분리한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-CDH-06601 ~ S2-CDH-06750",
+  "concept_family": "S2-A02-T045: 배터리 저장장치 충방전·열관리 — 조건문 범위와 기본 규칙의 한계",
+  "design_note": "배터리 저장장치 충방전·열관리 영역의 조건문 범위와 기본 규칙의 한계 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-CDH-06601",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "셀 공칭전압은 양극과 음극 화학계에 따라 달라 한 종류의 값을 모든 배터리에 넣을 수 없다. 공칭셀전압 기본값의 화학계 범위는 장치 라벨과 승인 사양이 확인된 셀에만 적용된다.",
+      "concepts": [
+        "공칭셀전압 기본값의 화학계 범위"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06602",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "상온에서 허용된 충전상한도 저온이나 고온에서는 수명과 안전을 위해 더 낮아질 수 있다. 충전상한 전압의 온도별 적용차이는 고정 숫자 하나를 모든 열 상태에 쓰지 못하게 한다.",
+      "concepts": [
+        "충전상한 전압의 온도별 적용차이"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06603",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "큰 방전전류에서 순간적으로 내려간 셀 전압과 휴지 상태의 낮은 전압은 의미가 다르다. 저전압 하한의 부하조건 의존 때문에 전류와 지속시간을 빼고 같은 고장 등급을 주지 않는다.",
+      "concepts": [
+        "저전압 하한의 부하조건 의존"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06604",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서 정확도 사양은 지정된 전압과 온도 범위에서 보장되며 양 끝 포화구간에는 그대로 적용되지 않는다. 전압센서 정확도표의 측정범위 한계는 범위 밖 수치를 같은 오차로 확정하지 않는다.",
+      "concepts": [
+        "전압센서 정확도표의 측정범위 한계"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06605",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "팩 평균전압은 전체 에너지 경향을 볼 수 있지만 한 셀의 과충전이나 단선을 직접 나타내지 않는다. 팩평균전압의 개별셀 제외범위는 집계값을 구성요소 보호의 기본값으로 쓰지 못하게 한다.",
+      "concepts": [
+        "팩평균전압의 개별셀 제외범위"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06606",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "초기충전상태 기본값의 저장이력 한계는 개방전압이나 인수자료로 기준점을 확인하게 한다.",
+      "concepts": [
+        "초기충전상태 기본값의 저장이력 한계"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06607",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 셀 화학계의 전압 곡선과 효율로 맞춘 추정기는 다른 화학계에서 같은 전압을 다른 잔량으로 해석할 수 있다. 충전상태 추정기의 화학계 전이한계는 모델과 대상 배터리 구성을 일치시킨다.",
+      "concepts": [
+        "충전상태 추정기의 화학계 전이한계"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06608",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "개방회로전압으로 충전상태를 찾는 표는 충방전 뒤 분극이 충분히 가라앉은 조건에 맞춰져 있다. 개방회로전압 표의 휴지시간 조건을 운전 중 단자전압에 그대로 적용하면 잔량이 치우친다.",
+      "concepts": [
+        "개방회로전압 표의 휴지시간 조건"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06609",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전 전하가 저장되는 비율은 셀 온도와 노화, 전류 크기에 따라 달라진다. 전류효율 기본값의 온도노화 한계 때문에 초기 시험값을 모든 수명 구간의 적산 상수로 두지 않는다.",
+      "concepts": [
+        "전류효율 기본값의 온도노화 한계"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06610",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "명판 정격용량은 지정 온도와 방전률에서 신품이 낼 수 있는 값이며 노후 팩의 현재 가용량은 아니다. 정격용량의 신품시험 범위는 보증 사양과 실측 상태를 구분한다.",
+      "concepts": [
+        "정격용량의 신품시험 범위"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06611",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 저장 에너지라도 높은 출력으로 짧게 쓸 때와 낮은 출력으로 오래 쓸 때 전압 손실과 효율이 다르다. 가용에너지의 출력시간 조합범위는 에너지량만으로 모든 급전 가능성을 결정하지 않는다.",
+      "concepts": [
+        "가용에너지의 출력시간 조합범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06612",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "에너지용량 건강상태가 높아도 내부저항이 커 순간 출력 건강상태는 낮을 수 있다. 건강상태 기준의 에너지출력 구분은 하나의 백분율을 모든 성능 축에 공통 적용하지 않는다.",
+      "concepts": [
+        "건강상태 기준의 에너지출력 구분"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06613",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "데이터시트의 최대 셀전류는 정해진 주변온도와 냉각 조건에서만 유지할 수 있다. 셀전류 한도의 주변온도 범위는 폭염과 냉각 고장 때 같은 정격을 보장하지 않는다.",
+      "concepts": [
+        "셀전류 한도의 주변온도 범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06614",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "1C 전류는 현재 용량을 기준으로 정해지므로 열화한 셀에 신품 정격용량을 넣으면 실제 방전 강도를 잘못 계산한다. 씨레이트 환산의 실제용량 의존은 비율과 기준 용량을 함께 명시하게 한다.",
+      "concepts": [
+        "씨레이트 환산의 실제용량 의존"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06615",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "10초 허용 펄스전류를 1분 동안 계속 흘리면 셀과 단자가 감당할 열을 넘을 수 있다. 펄스전류 정격의 지속시간 한계는 크기와 시간창을 떼어 적용하지 않는다.",
+      "concepts": [
+        "펄스전류 정격의 지속시간 한계"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06616",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "실효전류로 발열을 평가할 때 계산창이 너무 길면 짧은 과부하가 평균에 가려지고 너무 짧으면 정상 리플이 과장된다. 실효전류 열평가의 계산창 범위는 열시정수에 맞춰 정한다.",
+      "concepts": [
+        "실효전류 열평가의 계산창 범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06617",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "1초마다 읽는 전류센서는 그 사이에 생긴 짧은 단락 정점을 놓칠 수 있다. 센서표본주기의 급변탐지 한계 때문에 느린 운영 계측을 고속 보호 파형의 기본 자료로 쓰지 않는다.",
+      "concepts": [
+        "센서표본주기의 급변탐지 한계"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06618",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 센서도 화살표와 배선 방향이 반대면 양의 값을 충전 또는 방전으로 다르게 기록한다. 전류부호 기본값의 설치방향 의존은 장치별 방향 검증 없이 공통 부호를 채우지 않는다.",
+      "concepts": [
+        "전류부호 기본값의 설치방향 의존"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06619",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "셀 표면 중앙에 붙인 센서 기준을 단자와 냉각판 센서에 그대로 쓰면 서로 다른 열지연을 무시하게 된다. 온도임계치의 센서위치 범위는 측정 위치별 의미를 구분한다.",
+      "concepts": [
+        "온도임계치의 센서위치 범위"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06620",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "표면 온도는 냉각 조건의 영향을 빠르게 받지만 셀 중심은 더 뜨거울 수 있다. 셀표면온도의 내부핵심부 추정한계는 열모델 없이 두 위치를 같은 기본값으로 두지 않는다.",
+      "concepts": [
+        "셀표면온도의 내부핵심부 추정한계"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06621",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "서로 가까운 센서의 온도 차는 국부 이상을 찾는 데 유용하지만 외기 노출이 다른 먼 구역끼리 같은 편차 기준을 쓰면 안 된다. 온도편차 규칙의 인접센서 범위는 비교 대상을 같은 열환경으로 제한한다.",
+      "concepts": [
+        "온도편차 규칙의 인접센서 범위"
+      ],
+      "relations": [
+        "comparison",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06622",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외기가 서늘해도 밀폐 랙 안에서 충방전 열이 쌓이면 셀은 뜨거울 수 있다. 외기온도의 셀온도 대체한계 때문에 환경 측정만으로 배터리 열상태를 채우지 않는다.",
+      "concepts": [
+        "외기온도의 셀온도 대체한계"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06623",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉각수 입구 온도가 정상이어도 유량이 적거나 셀 열이 크면 출구 온도와 셀 표면은 높아질 수 있다. 냉각수 입구온도의 출구상태 제외는 한 지점 값의 공간 범위를 제한한다.",
+      "concepts": [
+        "냉각수 입구온도의 출구상태 제외"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06624",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 펌프 속도에서도 냉각수 농도와 온도로 점도가 바뀌면 유량스위치가 작동하는 실제 흐름이 달라질 수 있다. 유량스위치 설정의 점도조건 의존은 유체 조성이 다른 회로에 동일 기준을 복사하지 않는다.",
+      "concepts": [
+        "유량스위치 설정의 점도조건 의존"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06625",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "모든 분기 밸브가 열린 시험에서 정한 차압은 일부 분기를 닫은 운전에서 다른 값을 보인다. 냉각차압 기준의 밸브배치 범위는 회로 구성 상태를 함께 기록하게 한다.",
+      "concepts": [
+        "냉각차압 기준의 밸브배치 범위"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06626",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "절연저항 보호값은 시스템 직류전압과 접지 구조에 따라 같은 누설전류를 다르게 나타낸다. 절연저항 기준의 직류전압 범위는 저전압 시험값을 고전압 운전에 그대로 적용하지 않는다.",
+      "concepts": [
+        "절연저항 기준의 직류전압 범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06627",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "비접지 직류계통과 한 점 접지 계통은 첫 지락의 전류와 위험 의미가 다르다. 지락경보 규칙의 접지방식 차이는 계통 분류를 모르면 같은 상태 이름을 부여하지 않는다.",
+      "concepts": [
+        "지락경보 규칙의 접지방식 차이"
+      ],
+      "relations": [
+        "classification",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06628",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "평상열림 접점과 평상닫힘 접점은 같은 물리 상태를 반대 논리값으로 보낼 수 있다. 접촉기 보조접점의 논리형식 범위는 배선 정의 없이 1을 닫힘의 기본값으로 해석하지 않는다.",
+      "concepts": [
+        "접촉기 보조접점의 논리형식 범위"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06629",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "프리차지 전압비의 직류용량 의존은 다른 인버터 모델에 시간 기본값을 그대로 옮기지 않는다.",
+      "concepts": [
+        "프리차지 전압비의 직류용량 의존"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06630",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "저온에서는 저항과 커패시터 특성이 달라 상온보다 전압 상승이 느릴 수 있다. 프리차지 시간한도의 저온특성 범위는 정상 온도 기준을 혹한 시운전에 자동 적용하지 않는다.",
+      "concepts": [
+        "프리차지 시간한도의 저온특성 범위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06631",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "평일 야간 충전 규칙은 공휴일의 낮은 부하와 다른 가격표에서는 최적 시점이 아닐 수 있다. 평일충전 일정의 휴일부하 예외는 달력 유형이 바뀌면 기본 계획을 다시 계산하게 한다.",
+      "concepts": [
+        "평일충전 일정의 휴일부하 예외"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06632",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "매일 저녁 피크에 방전하는 시간표도 대규모 행사로 부하 정점이 앞당겨진 날에는 목표를 놓칠 수 있다. 방전시간표의 특별행사 제외범위는 예외 일정과 실시간 부하를 반영한다.",
+      "concepts": [
+        "방전시간표의 특별행사 제외범위"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06633",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여름 냉방 정전에 필요한 예비량과 겨울의 난방·동파 방지 예비량은 부하 특성이 달라질 수 있다. 예비충전상태의 계절별 범위는 연중 한 하한을 유일한 기본값으로 두지 않는다.",
+      "concepts": [
+        "예비충전상태의 계절별 범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06634",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "인버터 정격이 커도 접속계약과 변압기 용량이 더 작으면 계통으로 내보낼 수 있는 최대출력은 그 작은 범위다. 최대출력의 접속계약 상한은 장치 명판을 현장 허용값으로 대체하지 않는다.",
+      "concepts": [
+        "최대출력의 접속계약 상한"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06635",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "명판 최대출력은 지정 주변온도와 냉각 조건에서의 값이며 고온에서는 자동 감축 곡선을 따른다. 인버터 명판정격의 온도감축 범위는 모든 계절의 지속출력을 같게 보지 않는다.",
+      "concepts": [
+        "인버터 명판정격의 온도감축 범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06636",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "랙전류 균등배분의 저항차 예외는 실측 피드백 없는 단순 등분을 제한한다.",
+      "concepts": [
+        "랙전류 균등배분의 저항차 예외"
+      ],
+      "relations": [
+        "comparison",
+        "part_of",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06637",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운전 목록에 등록된 랙이라도 정비 잠금이나 통신 결측 상태면 가용량 합산에서 제외해야 한다. 전랙가용 기본값의 정비격리 누락은 등록 존재를 현재 사용 가능과 같게 보지 않는다.",
+      "concepts": [
+        "전랙가용 기본값의 정비격리 누락"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06638",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "양단 접촉기가 열려 모선과 분리된 랙의 저장 에너지는 계통 급전에 쓸 수 없으므로 설비 가용량에 넣지 않는다. 분리랙의 용량합산 제외조건은 물리 연결 상태가 회복되면 다시 평가한다.",
+      "concepts": [
+        "분리랙의 용량합산 제외조건"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06639",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부품 번호가 같아도 생산 편차와 보관 이력 때문에 교체모듈 실제 용량은 기존 모듈과 다를 수 있다. 교체모듈 동일용량 기본가정 한계는 인수시험 없이 균등 배분하지 않는다.",
+      "concepts": [
+        "교체모듈 동일용량 기본가정 한계"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06640",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "혼합연령 랙의 최약모듈 기준은 다른 균일 랙까지 같은 감축률로 묶지 않는다.",
+      "concepts": [
+        "혼합연령 랙의 최약모듈 기준"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06641",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전류가 흐르는 중의 셀 전압 차에는 저항과 분극 영향이 섞이므로 휴지 상태 기준과 같은 균형화 임계치를 적용하지 않는다. 균형화 임계치의 휴지상태 범위는 측정 시점의 운전 상태를 명시한다.",
+      "concepts": [
+        "균형화 임계치의 휴지상태 범위"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06642",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고충전구간 균형화의 전압곡선 조건은 화학계별 곡선 범위를 따른다.",
+      "concepts": [
+        "고충전구간 균형화의 전압곡선 조건"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06643",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "작은 충방전을 한 번의 완전 주기로 세면 깊게 사용한 팩보다 주기수가 과장될 수 있다. 주기횟수 정의의 얕은운전 제외한계는 등가 완전주기와 사건 횟수를 구분한다.",
+      "concepts": [
+        "주기횟수 정의의 얕은운전 제외한계"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06644",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "등가완전주기의 열부담 제외범위는 전하량 지표를 전체 열화로 쓰지 않는다.",
+      "concepts": [
+        "등가완전주기의 열부담 제외범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06645",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "설치 후 시간이 같아도 높은 충전상태와 온도에서 보관된 셀은 더 빨리 늙을 수 있다. 달력연령의 보관조건 누락한계는 날짜만으로 남은 수명을 채우지 않는다.",
+      "concepts": [
+        "달력연령의 보관조건 누락한계"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06646",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보증기간 안이라는 계약 상태는 셀 용량과 절연, 안전이 정상이라는 측정 결과가 아니다. 보증기간의 건강상태 대체금지는 법적 범위와 물리 상태를 구별한다.",
+      "concepts": [
+        "보증기간의 건강상태 대체금지"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06647",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 제조사의 경고 등급 2가 다른 제조사의 같은 숫자와 동일한 정지 수준을 뜻하지 않을 수 있다. 경보등급표의 제조사별 의미차이는 코드 정의를 확인한 뒤 통합 분류하게 한다.",
+      "concepts": [
+        "경보등급표의 제조사별 의미차이"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06648",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "주의 경고는 점검과 감축을 요구할 수 있지만 모든 경고가 즉시 고전압 차단을 뜻하지 않는다. 경고상태의 무조건차단 적용한계는 심각도와 대상 기능별 대응을 나눈다.",
+      "concepts": [
+        "경고상태의 무조건차단 적용한계"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06649",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "절연 저하나 접촉기 용착은 수동 확인 뒤 리셋해야 하지만 짧은 통신 경고는 자동 회복할 수 있다. 트립후 수동리셋의 고장유형 범위는 모든 상태코드에 한 복귀 규칙을 적용하지 않는다.",
+      "concepts": [
+        "트립후 수동리셋의 고장유형 범위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06650",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 숫자 코드도 펌웨어 버전이 바뀌며 다른 센서나 심각도를 가리킬 수 있다. 고장코드 해석의 펌웨어버전 의존은 최신 코드표 없이 과거 의미를 기본값으로 쓰지 않는다.",
+      "concepts": [
+        "고장코드 해석의 펌웨어버전 의존"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06651",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여름에 쓰는 낮은 냉각수 설정온도를 겨울에도 유지하면 불필요한 전력 소비와 결로 위험이 생길 수 있다. 냉각설정 기본값의 계절범위는 외기와 부하 구간에 따라 다시 정한다.",
+      "concepts": [
+        "냉각설정 기본값의 계절범위"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06652",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정격냉각유량의 유체점도 조건은 유체 상태를 빼고 고정값으로 쓰지 않는다.",
+      "concepts": [
+        "정격냉각유량의 유체점도 조건"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06653",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "냉동기 명판 용량은 표준 응축 조건의 값이어서 외기가 매우 뜨거우면 실제 제거 열량이 줄어든다. 냉동기용량 표의 외기온도 범위는 폭염기 계획에 별도 감축곡선을 요구한다.",
+      "concepts": [
+        "냉동기용량 표의 외기온도 범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06654",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "두 냉각기 중 하나가 정비로 분리된 기간에는 평상 N+1 이중화가 있다고 가정할 수 없다. 냉각기 이중화의 정비상태 예외는 실제 가용 장치와 공통 전원을 기준으로 판단한다.",
+      "concepts": [
+        "냉각기 이중화의 정비상태 예외"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06655",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "팬 없이 자연대류로 식히는 규칙은 무전류 대기나 검증된 저출력 구간에만 맞는다. 자연대류 규칙의 저열부하 한정은 고율 충방전의 강제 냉각 요구를 대신하지 않는다.",
+      "concepts": [
+        "자연대류 규칙의 저열부하 한정"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06656",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전 전 예열 목표는 저온 민감도가 다른 셀 화학계마다 달라질 수 있다. 히터설정온도의 셀화학별 범위는 한 제품의 값을 다른 랙 기본값으로 복사하지 않는다.",
+      "concepts": [
+        "히터설정온도의 셀화학별 범위"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06657",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "천장 노점센서가 안전해도 차가운 바닥과 외벽 단자에서는 먼저 결로가 생길 수 있다. 노점센서값의 설치위치 한계는 가장 취약한 표면 온도와 국소 습도를 함께 보게 한다.",
+      "concepts": [
+        "노점센서값의 설치위치 한계"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06658",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "실내 평균습도가 낮아도 냉각 배관 주변의 작은 공간에는 수증기가 응축될 수 있다. 실내평균습도의 국소결로 제외범위는 집계 환경값을 모든 부품 표면에 적용하지 않는다.",
+      "concepts": [
+        "실내평균습도의 국소결로 제외범위"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06659",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 팬 회전속도라도 필터가 막히거나 댐퍼가 닫히면 실제 공기 유량은 줄어든다. 팬속도와 풍량의 필터상태 의존은 구동값을 전달 성능의 기본값으로 쓰지 않는다.",
+      "concepts": [
+        "팬속도와 풍량의 필터상태 의존"
+      ],
+      "relations": [
+        "function",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06660",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "공조 보조전력은 배터리 출력뿐 아니라 외기 온도와 습도, 일사에 따라 달라진다. 공조보조전력의 외기조건 변동범위는 한 계절 평균을 연중 순에너지 계산에 고정하지 않는다.",
+      "concepts": [
+        "공조보조전력의 외기조건 변동범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06661",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "열폭주가 시작되는 온도와 전구 신호는 셀 화학과 충전상태에 따라 다르다. 열폭주 온도기준의 셀화학 차이는 한 종류의 절대 온도를 모든 팩 확정 기준으로 쓰지 않는다.",
+      "concepts": [
+        "열폭주 온도기준의 셀화학 차이"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06662",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "특정 전해액 분해가스에 맞춘 센서는 다른 화학계가 내는 성분을 낮게 보거나 놓칠 수 있다. 오프가스 센서의 대상물질 범위는 감응 물질 목록 밖 가스의 부재를 보장하지 않는다.",
+      "concepts": [
+        "오프가스 센서의 대상물질 범위"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06663",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "깨끗한 실내에 맞춘 연기감지 민감도는 공사 먼지가 많은 기간에 반복 오경보를 낼 수 있다. 연기감지 기본민감도의 먼지환경 예외는 임시 보정 중에도 대체 화재감시를 요구한다.",
+      "concepts": [
+        "연기감지 기본민감도의 먼지환경 예외"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06664",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "일반 전기화재에 유효한 약제가 셀 내부 반응을 충분히 냉각하거나 재발화를 막는 것은 아니다. 소화약제 선택의 배터리화재 범위는 화학계와 구획 목적에 맞춘다.",
+      "concepts": [
+        "소화약제 선택의 배터리화재 범위"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06665",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 약제 농도를 만들려면 방화구획 체적과 누설 면적에 따라 필요한 방출량이 달라진다. 소화약제량의 구획체적 의존은 작은 시험실 설계량을 큰 컨테이너에 그대로 쓰지 않는다.",
+      "concepts": [
+        "소화약제량의 구획체적 의존"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06666",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 랙 시험에서 정한 냉각수 지속시간은 여러 랙으로 전파된 화재에는 부족할 수 있다. 소방용수 시간기준의 사고규모 한계는 대상 에너지와 전파 범위를 함께 산정하게 한다.",
+      "concepts": [
+        "소방용수 시간기준의 사고규모 한계"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06667",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "외함 표면온도가 낮아져도 단열된 셀 내부에는 재발화할 잔열이 남을 수 있다. 재진입 표면온도의 내부잔열 제외 때문에 시간 추세와 가스 검사를 함께 사용한다.",
+      "concepts": [
+        "재진입 표면온도의 내부잔열 제외"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06668",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "일반 작업자에게 위험한 농도도 특수 호흡보호구를 갖춘 소방대에는 제한 진입이 허용될 수 있다. 안전가스 한계의 보호장비별 범위는 사람 역할과 장비 수준을 빼고 단일 출입값으로 쓰지 않는다.",
+      "concepts": [
+        "안전가스 한계의 보호장비별 범위"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06669",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "도면상 분리된 두 구역도 방화문이나 관통부가 열린 상태에서는 연기와 열이 같은 공간처럼 이동할 수 있다. 방화구획 도면의 개방문 예외는 실제 경계 상태를 우선한다.",
+      "concepts": [
+        "방화구획 도면의 개방문 예외"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06670",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "사고 대피반경은 고정 원만이 아니라 바람 방향과 독성가스 농도, 지형에 따라 길게 늘어날 수 있다. 대피반경의 풍향과가스 조건은 무풍 시험값을 모든 날에 적용하지 않는다.",
+      "concepts": [
+        "대피반경의 풍향과가스 조건"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06671",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "홍수위 기준의 표고기준점 의존은 기준면 없는 값을 같은 높이로 합치지 않는다.",
+      "concepts": [
+        "홍수위 기준의 표고기준점 의존"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06672",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지상 콘크리트 건물과 이동형 컨테이너는 같은 가속도에서도 앵커와 배관 응답이 다를 수 있다. 지진정지 임계치의 구조형식 범위는 설치 구조별 검증값을 사용한다.",
+      "concepts": [
+        "지진정지 임계치의 구조형식 범위"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06673",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "염무방지 등급의 해안거리 한계는 실제 침착 시험과 외함 등급을 함께 본다.",
+      "concepts": [
+        "염무방지 등급의 해안거리 한계"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06674",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "달력상 동일한 교체주기도 공사장이나 사막 지역에서는 먼지 부하가 커 더 빨리 막힐 수 있다. 필터교체 주기의 먼지부하 의존은 시간보다 차압과 현장 환경을 우선한다.",
+      "concepts": [
+        "필터교체 주기의 먼지부하 의존"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06675",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "저출력 대기 설비와 매일 고율 운전하는 설비에 같은 월간 정비주기를 적용하면 마모 차이를 놓친다. 예방정비 주기의 운전강도 한계는 시간과 누적 부하를 함께 사용한다.",
+      "concepts": [
+        "예방정비 주기의 운전강도 한계"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06676",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "블랙스타트에 필요한 충전상태는 기동할 냉각기와 변압기, 중요부하의 크기에 따라 달라진다. 블랙스타트 예비량의 현장부하 범위는 다른 사업장의 하한을 그대로 가져오지 않는다.",
+      "concepts": [
+        "블랙스타트 예비량의 현장부하 범위"
+      ],
+      "relations": [
+        "attribute",
+        "part_of",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06677",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기술적으로 계통형성이 가능해도 지역 계통규정과 접속계약이 의도 섬운전을 허용하지 않을 수 있다. 섬운전 허용규칙의 관할계통 차이는 장치 기능과 법적 적용 범위를 구분한다.",
+      "concepts": [
+        "섬운전 허용규칙의 관할계통 차이"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06678",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "과거 접속규정의 주파수와 전압 관통값을 최신 사업에 적용하면 현재 의무와 다를 수 있다. 계통규정 값의 개정버전 의존은 발효일과 설비 적용조항을 확인하게 한다.",
+      "concepts": [
+        "계통규정 값의 개정버전 의존"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06679",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정격 주파수와 지원 발동 기준은 50헤르츠 계통과 60헤르츠 계통에서 같은 숫자가 아니다. 주파수응답 임계치의 지역별 범위는 계통 유형을 모르면 기본값을 채우지 않는다.",
+      "concepts": [
+        "주파수응답 임계치의 지역별 범위"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06680",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "배전 저압측과 송전 고압측은 정상 전압변동과 보호 요구가 달라 같은 백분율이라도 지속시간 규칙이 다를 수 있다. 전압보호 한도의 접속점별 범위는 실제 연결 계층에 맞춘다.",
+      "concepts": [
+        "전압보호 한도의 접속점별 범위"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06681",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "수초 주파수응답과 수시간 에너지이동은 같은 출력값을 요구해도 필요한 에너지와 열여유가 다르다. 계통서비스 지속시간의 상품별 차이는 서비스 이름과 시간 요건을 함께 둔다.",
+      "concepts": [
+        "계통서비스 지속시간의 상품별 차이"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06682",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "5분 시장과 1시간 시장은 같은 순간 출력도 정산 에너지와 지시 준수 계산이 달라진다. 시장정산 구간의 시간단위 범위는 한 집계창을 모든 거래에 적용하지 않는다.",
+      "concepts": [
+        "시장정산 구간의 시간단위 범위"
+      ],
+      "relations": [
+        "role",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06683",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자정 가격표가 어느 시간대인지 모르면 다른 지역 설비가 한 시간 앞뒤 구간에 충전할 수 있다. 가격시각의 현지시간대 의존은 날짜와 시각대가 확인된 값만 일정에 쓴다.",
+      "concepts": [
+        "가격시각의 현지시간대 의존"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06684",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "15분 평균 최대수요 요금은 1분 순간피크를 그대로 청구값으로 쓰지 않으며 다른 계약 창에도 같지 않다. 최대수요 요금의 청구창 범위는 배터리 피크저감 목표와 계량 집계방식을 일치시킨다.",
+      "concepts": [
+        "최대수요 요금의 청구창 범위"
+      ],
+      "relations": [
+        "role",
+        "comparison",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06685",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 지역 공휴일 목록으로 만든 낮은 부하 일정을 다른 지역 사업장에 적용하면 정상 근무일을 휴일로 오인할 수 있다. 휴일기본 일정의 지역달력 차이는 사업장별 달력과 교대제를 확인하게 한다.",
+      "concepts": [
+        "휴일기본 일정의 지역달력 차이"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06686",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "현장 운영자는 경제 출력 일정을 우회할 수 있어도 보호계전 설정과 소화설비를 임의 변경할 권한은 없을 수 있다. 수동우회 권한의 직무범위는 역할마다 허용 명령을 분리한다.",
+      "concepts": [
+        "수동우회 권한의 직무범위"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06687",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "여러 사업장을 보는 관제 계정이라도 쓰기 권한은 담당 자산에만 제한하고 나머지는 읽기전용으로 둔다. 원격제어 계정의 사업장범위는 화면 가시성을 조작 권한으로 넓히지 않는다.",
+      "concepts": [
+        "원격제어 계정의 사업장범위"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06688",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "설치 공급사의 원격 계정은 보증과 정비 계약 기간, 승인 세션 안에서만 활성화한다. 공급사계정의 계약기간 한정은 계약 종료 뒤 상시 접근을 남기지 않는다.",
+      "concepts": [
+        "공급사계정의 계약기간 한정"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06689",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정규 인증 장애 때 쓰는 비상계정은 안전 정지와 제한 복구만 수행하고 보호 삭제나 사용자 생성은 막는다. 비상계정의 허용명령 범위는 긴급성 때문에 관리자 전체 권한을 주지 않는다.",
+      "concepts": [
+        "비상계정의 허용명령 범위"
+      ],
+      "relations": [
+        "role",
+        "function",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06690",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "분석가는 세부 운전자료를 조회하고 모델을 돌릴 수 있어도 현장 장치에 출력 명령을 보내지 못한다. 분석계정의 제어쓰기 제외범위는 정보 사용과 설비 조작을 분리한다.",
+      "concepts": [
+        "분석계정의 제어쓰기 제외범위"
+      ],
+      "relations": [
+        "role",
+        "contrast",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06691",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "고장 센서 한 채널을 시험하는 우회는 같은 구역의 다른 온도와 연기 보호까지 비활성화하지 않는다. 보호우회의 단일채널 적용범위는 대체 감시와 정확한 채널 식별을 요구한다.",
+      "concepts": [
+        "보호우회의 단일채널 적용범위"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06692",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비 중 반복 경보 억제는 작업허가 시작과 종료 사이에만 유효하며 교대가 바뀌면 다시 승인한다. 경보억제의 작업시간 한계는 무기한 음소거를 기본값으로 남기지 않는다.",
+      "concepts": [
+        "경보억제의 작업시간 한계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06693",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시험모드에서 허용된 전류는 센서 방향과 접촉기 동작을 확인할 만큼 낮고 짧은 범위다. 시험모드 출력의 저전력 범위는 용량 시험이나 시장 급전을 포함하지 않는다.",
+      "concepts": [
+        "시험모드 출력의 저전력 범위"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06694",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시운전에서 쓰는 낮은 임계치와 임시 장치 주소는 인수 뒤 상업운전의 정식 설정으로 자동 승격되지 않는다. 시운전 설정의 상업운전 전이금지는 승인본 대조와 연동시험을 요구한다.",
+      "concepts": [
+        "시운전 설정의 상업운전 전이금지"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06695",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 랙 정비 잠금은 그 랙과 연결 에너지원에 적용되며 물리적으로 분리된 다른 랙의 운전 상태를 자동 변경하지 않는다. 정비잠금의 대상설비 경계는 공통 모선 작업이면 더 넓어진다.",
+      "concepts": [
+        "정비잠금의 대상설비 경계"
+      ],
+      "relations": [
+        "part_of",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06696",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 교대에 발행된 고전압 작업허가는 다음 교대가 현장과 격리를 다시 확인하기 전까지 자동 연장되지 않는다. 작업허가의 교대시간 범위는 서명자의 책임시간과 일치해야 한다.",
+      "concepts": [
+        "작업허가의 교대시간 범위"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06697",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "집단 잠금함을 쓰더라도 각 작업자는 자신의 개인 자물쇠를 걸고 철수할 때 직접 해제한다. 집단잠금의 작업자별 해제규칙은 대표자 한 명의 확인을 모든 사람의 안전 상태로 대신하지 않는다.",
+      "concepts": [
+        "집단잠금의 작업자별 해제규칙"
+      ],
+      "relations": [
+        "role",
+        "part_of",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06698",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "절연보호구 등급의 회로전압 범위는 작업 대상 최대전압과 시험기한을 함께 본다.",
+      "concepts": [
+        "절연보호구 등급의 회로전압 범위"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06699",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "활선부에서 필요한 거리는 회로전압과 차폐, 작업도구에 따라 달라진다. 안전접근거리의 설비전압 의존은 한 현장의 저전압 거리를 모든 구역 기본값으로 쓰지 않는다.",
+      "concepts": [
+        "안전접근거리의 설비전압 의존"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06700",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "일반 운영자는 경보와 대피를, 소방 자격자는 진입과 냉각을 맡으므로 같은 화재교육도 수행 범위가 다르다. 화재대응 교육의 역할별 범위는 교육 이수만으로 모든 대응 권한을 주지 않는다.",
+      "concepts": [
+        "화재대응 교육의 역할별 범위"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06701",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "계량 통신이 끊긴 구간의 전력 결측은 실제 출력 0과 구별해야 한다. 결측전력의 영값대체 금지범위는 차단기 개방처럼 무출력이 별도 증거로 확인된 경우에만 0을 허용한다.",
+      "concepts": [
+        "결측전력의 영값대체 금지범위"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06702",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "통신 공백 때 마지막 온도를 잠시 유지할 수 있지만 열부하가 변하는 긴 구간까지 같은 값으로 채우면 위험하다. 오래된 센서값의 유지시간 한계는 대상 변화속도보다 짧은 시간창에만 적용된다.",
+      "concepts": [
+        "오래된 센서값의 유지시간 한계"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06703",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "결측보간의 사고구간 제외범위는 사건 표시가 있는 자료를 원결측으로 보존한다.",
+      "concepts": [
+        "결측보간의 사고구간 제외범위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06704",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "평소 분포를 크게 벗어난 전압이라도 같은 시각 보호가 작동했다면 센서 잡음으로 지우기 전에 실제 고장을 조사한다. 이상값 제거의 실제고장 예외는 통계적으로 드문 값과 물리적으로 불가능한 값을 별개로 판정한다.",
+      "concepts": [
+        "이상값 제거의 실제고장 예외"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06705",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중복시각 레코드의 최신값 기본한계는 수집순서와 원본 사건번호를 함께 본다.",
+      "concepts": [
+        "중복시각 레코드의 최신값 기본한계"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06706",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "일광절약 전환의 시간중복 범위는 고정 시간대를 쓰는 지역에는 적용되지 않는다.",
+      "concepts": [
+        "일광절약 전환의 시간중복 범위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06707",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "단위 없는 출력 500을 와트와 킬로와트 중 잘못 읽으면 계획과 보호 한도가 천 배 달라진다. 전력단위 기본값의 킬로배 오차는 메타데이터 확인 전 수치를 자동 환산하지 않게 한다.",
+      "concepts": [
+        "전력단위 기본값의 킬로배 오차"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06708",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "화씨로 기록한 86도를 섭씨로 읽으면 정상 셀을 치명적 과열로 분류한다. 온도단위 기본값의 섭씨화씨 혼동은 값 범위가 그럴듯해도 원단위를 확인하게 한다.",
+      "concepts": [
+        "온도단위 기본값의 섭씨화씨 혼동"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06709",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전력부호의 계량방향 의존은 센서 위치 없이 충전과 방전을 기본 분류하지 않는다.",
+      "concepts": [
+        "전력부호의 계량방향 의존"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06710",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "킬로와트 단위로만 반올림한 계측은 작은 제어기와 센서 대기전력을 0으로 보일 수 있다. 저해상도 계측의 미세대기전력 누락은 장기 보조에너지 계산에 더 정밀한 자료를 요구한다.",
+      "concepts": [
+        "저해상도 계측의 미세대기전력 누락"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06711",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "5분 평균전력이 정격 아래여도 그 안의 짧은 전류피크가 반도체 한도를 넘었을 수 있다. 평균전력의 순간피크 은폐한계는 집계값을 고속 보호 검증에 쓰지 않는다.",
+      "concepts": [
+        "평균전력의 순간피크 은폐한계"
+      ],
+      "relations": [
+        "comparison",
+        "attribute",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06712",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "같은 최고온도라도 한 표본만 높았던 경우와 수십 분 유지된 경우의 열부담은 다르다. 최고온도의 지속시간 제외한계는 극값과 노출시간을 함께 평가하게 한다.",
+      "concepts": [
+        "최고온도의 지속시간 제외한계"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06713",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운전 세 번의 효율 평균은 계절과 출력 범위를 충분히 포함하지 못해 연간 기본효율로 쓰기 어렵다. 소표본 효율평균의 대표성 한계는 표본 수와 조건 분포를 명시하게 한다.",
+      "concepts": [
+        "소표본 효율평균의 대표성 한계"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06714",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "새 센서가 정확해도 영점과 응답속도가 이전 장치와 달라 교체 전후 값을 그대로 이어 추세로 보면 점프가 생길 수 있다. 센서교체의 시계열 기준단절은 겹침 교정이나 보정식을 요구한다.",
+      "concepts": [
+        "센서교체의 시계열 기준단절"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06715",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "교정으로 영점이 바뀐 센서의 이전 원시값과 이후 보정값은 같은 기준인지 표시하지 않고 합치면 안 된다. 교정전후 값의 단일계열 병합한계는 원본과 변환본을 구분한다.",
+      "concepts": [
+        "교정전후 값의 단일계열 병합한계"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06716",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "제어 알고리즘이 바뀌면 같은 셀 상태에서도 출력감축 시점과 충전상태 추정이 달라질 수 있다. 펌웨어변경의 성능기준 이동은 버전이 다른 기간을 동일 제어조건으로 비교하지 않는다.",
+      "concepts": [
+        "펌웨어변경의 성능기준 이동"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06717",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "상온 자료로 학습한 충전상태 모델은 혹한에서 커진 저항과 느린 반응을 보지 못했을 수 있다. 상온모델의 혹한운전 전이한계는 학습 온도 밖 예측에 별도 검증을 요구한다.",
+      "concepts": [
+        "상온모델의 혹한운전 전이한계"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06718",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중간 출력에서 거의 일정하던 손실률도 정격 부근에는 냉각과 도통 손실로 비선형 증가할 수 있다. 선형효율 모델의 고출력 한계는 관측 범위 밖 직선 외삽을 막는다.",
+      "concepts": [
+        "선형효율 모델의 고출력 한계"
+      ],
+      "relations": [
+        "comparison",
+        "process",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06719",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 랙 시험으로 맞춘 열모델은 여러 랙의 공기 재순환과 냉각 자원 경쟁을 포함하지 않는다. 단일랙 열모델의 컨테이너 전이한계는 공간 규모가 커질 때 계수 재검증을 요구한다.",
+      "concepts": [
+        "단일랙 열모델의 컨테이너 전이한계"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06720",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "매번 같은 깊이로 충방전한 시험에서 만든 노화모델은 짧은 주파수응답과 긴 대기가 섞인 실제 운전을 잘 설명하지 못할 수 있다. 정주기 노화모델의 변동운전 한계는 사용 패턴 범위를 명시한다.",
+      "concepts": [
+        "정주기 노화모델의 변동운전 한계"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06721",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "다음 한 시간에 정확한 부하예측도 일주일 뒤 기상과 행사 변동까지 같은 오차로 보장하지 않는다. 단기예측의 장기일정 확장한계는 예측 지평마다 불확실성을 다시 계산하게 한다.",
+      "concepts": [
+        "단기예측의 장기일정 확장한계"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06722",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "도심 기상대 온도는 산지 컨테이너의 고도와 일사, 바람 차이를 반영하지 못할 수 있다. 원거리기상대의 현장온도 대체한계는 외부 관측을 현장 센서 결측의 확정값으로 쓰지 않는다.",
+      "concepts": [
+        "원거리기상대의 현장온도 대체한계"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06723",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "평일 패턴으로 학습한 부하모델은 공휴일과 설비휴무에 정상 영업시간 피크를 잘못 예측할 수 있다. 평일부하 모델의 공휴일 예외는 달력과 특별일 표지를 입력하게 한다.",
+      "concepts": [
+        "평일부하 모델의 공휴일 예외"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06724",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "높은 가격을 정확히 예측해도 그 시각 배터리가 뜨겁거나 충전상태가 낮으면 계획한 방전을 못할 수 있다. 가격예측의 물리출력 보장한계는 경제 신호를 설비 가용성으로 대체하지 않는다.",
+      "concepts": [
+        "가격예측의 물리출력 보장한계"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06725",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "어떤 설비는 통신이 끊기면 즉시 정지하고 다른 설비는 로컬 안전값으로 계속 운전하도록 설계된다. 통신상실 기본모드의 설비유형 차이는 한 실패동작을 모든 현장에 가정하지 않는다.",
+      "concepts": [
+        "통신상실 기본모드의 설비유형 차이"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06726",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "밸브 안전위치의 공정목적 의존은 모든 구동기를 일괄 닫힘으로 설정하지 않는다.",
+      "concepts": [
+        "밸브 안전위치의 공정목적 의존"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06727",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "센서와 통신은 전원 복귀 뒤 자동 시작할 수 있지만 고전압 접촉기와 냉각기는 순서 확인 없이 동시에 재기동하면 안 된다. 정전후 자동재시작의 부하유형 한계는 장치 역할별 복귀 규칙을 나눈다.",
+      "concepts": [
+        "정전후 자동재시작의 부하유형 한계"
+      ],
+      "relations": [
+        "function",
+        "classification",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06728",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "짧은 통신 오류는 자동 재접속할 수 있어도 절연 저하나 화재 경보를 같은 방식으로 지우면 위험하다. 일과성고장의 자동리셋 범위는 원인 등급과 반복 횟수에 따라 제한된다.",
+      "concepts": [
+        "일과성고장의 자동리셋 범위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06729",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한두 제어주기 결측에는 마지막 출력한도를 유지할 수 있지만 장시간 새 측정 없이 계속 운전하면 실제 상태 변화를 놓친다. 마지막값 유지의 제어주기 한계는 갱신 주기와 위험 속도를 함께 본다.",
+      "concepts": [
+        "마지막값 유지의 제어주기 한계"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06730",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전상태 미상의 중간값대체 위험은 보수 한도나 사용불가 상태를 우선하게 한다.",
+      "concepts": [
+        "충전상태 미상의 중간값대체 위험"
+      ],
+      "relations": [
+        "attribute",
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06731",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "자산 목록에 등록된 랙도 접촉기가 열리고 정비 잠금이 걸렸다면 현재 출력 자원으로 셀 수 없다. 등록랙 기본가용의 연결상태 한계는 행정 존재와 물리 가용을 분리한다.",
+      "concepts": [
+        "등록랙 기본가용의 연결상태 한계"
+      ],
+      "relations": [
+        "part_of",
+        "state",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06732",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "필수 상태를 보내지 않는 랙은 마지막 알려진 용량이 커도 설비 가용량 합산에서 보수적으로 제외한다. 미응답랙의 용량합산 제외규칙은 통신만 복구됐다고 즉시 정격을 되돌리지 않는다.",
+      "concepts": [
+        "미응답랙의 용량합산 제외규칙"
+      ],
+      "relations": [
+        "part_of",
+        "attribute",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06733",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "코드표에 없는 경보를 낮은 등급으로 임의 분류하면 새 치명 고장을 놓칠 수 있다. 미등록경보의 심각도 기본판정 금지는 공급사 정의와 현장 상태가 확인될 때까지 보수적으로 처리한다.",
+      "concepts": [
+        "미등록경보의 심각도 기본판정 금지"
+      ],
+      "relations": [
+        "classification",
+        "state",
+        "attribute",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06734",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "출처와 승인자가 확인되지 않은 설정 파일은 값이 그럴듯해도 현장 장치에 배포하지 않는다. 서명없는 설정변경의 적용거부는 비상 수정에도 추적 가능한 공동 승인을 요구한다.",
+      "concepts": [
+        "서명없는 설정변경의 적용거부"
+      ],
+      "relations": [
+        "role",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06735",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "중앙 경제 명령과 현장 안전한도가 충돌하면 현장 보호가 우선하지만 정상 범위 안에서는 중앙 일정이 출력을 정한다. 중앙과현장 설정의 우선순위 범위는 모든 로컬 값을 무조건 상위 규칙으로 만들지 않는다.",
+      "concepts": [
+        "중앙과현장 설정의 우선순위 범위"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06736",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "전역 기본값보다 장치별 승인값이 구체적이더라도 현재 펌웨어와 호환되고 유효기간 안일 때만 우선한다. 특정장치 규칙의 전역기본 우선조건은 낡은 예외가 새 기본을 영구히 덮지 못하게 한다.",
+      "concepts": [
+        "특정장치 규칙의 전역기본 우선조건"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06737",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "임시 출력상향이나 경보우회에는 종료시각 또는 정비 완료처럼 확인 가능한 만료사건을 반드시 둔다. 임시예외의 만료사건 명시조건은 목적이 사라진 뒤 예외가 기본값으로 남는 일을 막는다.",
+      "concepts": [
+        "임시예외의 만료사건 명시조건"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06738",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "운영자가 경보를 읽었다는 확인 표시는 통지 절차만 닫을 뿐 센서값과 물리 고장을 정상으로 바꾸지 않는다. 경보확인의 고장종료 대체금지는 사람 응답과 설비 상태를 구분한다.",
+      "concepts": [
+        "경보확인의 고장종료 대체금지"
+      ],
+      "relations": [
+        "role",
+        "state",
+        "contrast",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06739",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "정비 작업표가 완료돼도 도구 회수와 보호시험, 설정 복원이 끝나지 않았다면 설비를 정상 운전으로 넘길 수 없다. 작업완료 표기의 운전복귀 한계는 행정 종료와 기술 복귀를 분리한다.",
+      "concepts": [
+        "작업완료 표기의 운전복귀 한계"
+      ],
+      "relations": [
+        "role",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06740",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "부품 번호가 같아도 제조 배치와 펌웨어, 보관 손상 때문에 실제 성능이 다를 수 있다. 동일부품번호의 성능일치 가정한계는 교체품에 인수시험을 생략하지 않는다.",
+      "concepts": [
+        "동일부품번호의 성능일치 가정한계"
+      ],
+      "relations": [
+        "classification",
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06741",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "저출력 충전시험에 합격한 결과는 고출력 방전과 섬운전, 블랙스타트 성능까지 검증하지 않는다. 기능시험 합격의 적용모드 범위는 실제 시험한 방향과 출력, 지속시간을 명시한다.",
+      "concepts": [
+        "기능시험 합격의 적용모드 범위"
+      ],
+      "relations": [
+        "classification",
+        "function",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06742",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 번 정격용량이 나온 셀도 이후 반복 주기에서 빠르게 감소하거나 간헐 고장을 보일 수 있다. 단일주기 용량의 장기건강 판정한계는 반복성과 열 이력을 함께 요구한다.",
+      "concepts": [
+        "단일주기 용량의 장기건강 판정한계"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06743",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "가속노화 시험의 실사용 전이한계는 시험 조건 밖 수명을 확정하지 않는다.",
+      "concepts": [
+        "가속노화 시험의 실사용 전이한계"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06744",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "시험실 표준 온도와 깨끗한 전원에서 얻은 효율은 먼지와 고온, 전압변동이 있는 현장에서 낮아질 수 있다. 표준환경 성능의 현장보장 한계는 인증값과 실제 운전범위를 구분한다.",
+      "concepts": [
+        "표준환경 성능의 현장보장 한계"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06745",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "지난해 최대부하가 낮았어도 새 설비와 폭염으로 올해 피크가 더 커질 수 있다. 과거최대부하의 미래상한 대체금지는 관측 이력을 물리적 불변 한도로 해석하지 않는다.",
+      "concepts": [
+        "과거최대부하의 미래상한 대체금지"
+      ],
+      "relations": [
+        "attribute",
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06746",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "한 냉각기 고장만 가정한 예비전력은 계통정전과 통신장애가 겹친 사고에는 부족할 수 있다. 단일고장 예비량의 복합사고 한계는 독립 가정과 공통원인 조합을 따로 평가한다.",
+      "concepts": [
+        "단일고장 예비량의 복합사고 한계"
+      ],
+      "relations": [
+        "part_of",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06747",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "충전상태나 미래 부하가 추정값이라면 단일 숫자뿐 아니라 가능한 오차 범위를 함께 제시해야 한다. 예측불확실성의 구간표현 필요는 범위가 넓을수록 더 보수적인 출력 결정을 유도한다.",
+      "concepts": [
+        "예측불확실성의 구간표현 필요"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06748",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "보수기본값의 가용성비용 한계는 위험 정도와 대체 감시에 맞춰 단계화한다.",
+      "concepts": [
+        "보수기본값의 가용성비용 한계"
+      ],
+      "relations": [
+        "comparison",
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06749",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "기본값과 예외는 설비 변경, 사고 학습, 규정 개정 뒤 유효성 여부를 다시 검토해야 한다. 기본규칙 원장의 정기재검토 범위는 한 번 승인된 규칙을 영구 불변으로 두지 않는다.",
+      "concepts": [
+        "기본규칙 원장의 정기재검토 범위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-CDH-06750",
+      "type": "conditional_dependency_packet",
+      "split": "train",
+      "text": "설계 때 둔 안전율은 제조 편차와 예상 하중을 다루는 여유이지 현재 열화와 센서 이상을 무시하고 추가 출력할 몫이 아니다. 설계안전율의 실시간 운전여유 대체한계는 설계 가정과 현장 상태를 분리한다.",
+      "concepts": [
+        "설계안전율의 실시간 운전여유 대체한계"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "classification",
+        "boundary"
+      ]
+    }
+  ]
+}
