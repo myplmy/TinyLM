@@ -1,0 +1,97 @@
+[1/3] depth 12, 600M tokens, pool 1200M
+
+==============================================================================
+[runlog] 2026-09-07 12:17:51  name=P062_stage9_speed_tokens
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100s8 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --steps 4578 --tokens 600M --pool-tokens 1200M --exact-cache --tag d12_cla2_norecur_t600
+==============================================================================
+[cmd] python run100m.py train --preset m100s8 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --steps 4578 --tokens 600M --pool-tokens 1200M --exact-cache --tag d12_cla2_norecur_t600
+[data] 정확 캐시 사용(exact, 상위호환 무시): 1200.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_1200000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 12 -> 6 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+Traceback (most recent call last):
+  File "z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "z:\TinyLM\tinylm\cli.py", line 288, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "z:\TinyLM\tinylm\train\trainer.py", line 362, in train
+    init_from_dense(model, init_from, device, depth_init=depth_init)
+  File "z:\TinyLM\tinylm\train\init_utils.py", line 137, in init_from_dense
+    teacher, _ = load_dense(dense_path, device)
+  File "z:\TinyLM\tinylm\train\init_utils.py", line 78, in load_dense
+    st = torch.load(path, map_location=device)
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\serialization.py", line 1500, in load
+    with _open_file_like(f, "rb") as opened_file:
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\serialization.py", line 768, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\serialization.py", line 749, in __init__
+    super().__init__(open(name, mode))  # noqa: SIM115
+FileNotFoundError: [Errno 2] No such file or directory: 'Z:\\TinyLM\\runs\\ckpt\\m100s8_ko-en_600M_dense.pt'
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-09-07 12:17:53)
+==============================================================================
+[2/3] depth 14, 600M tokens, pool 1200M
+
+==============================================================================
+[runlog] 2026-09-07 12:18:13  name=P062_stage9_speed_tokens
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100s10 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --steps 4578 --tokens 600M --pool-tokens 1200M --exact-cache --tag d14_cla2_norecur_t600
+==============================================================================
+[cmd] python run100m.py train --preset m100s10 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --steps 4578 --tokens 600M --pool-tokens 1200M --exact-cache --tag d14_cla2_norecur_t600
+[data] 정확 캐시 사용(exact, 상위호환 무시): 1200.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_1200000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 14 -> 7 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+Traceback (most recent call last):
+  File "z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "z:\TinyLM\tinylm\cli.py", line 288, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "z:\TinyLM\tinylm\train\trainer.py", line 362, in train
+    init_from_dense(model, init_from, device, depth_init=depth_init)
+  File "z:\TinyLM\tinylm\train\init_utils.py", line 137, in init_from_dense
+    teacher, _ = load_dense(dense_path, device)
+  File "z:\TinyLM\tinylm\train\init_utils.py", line 78, in load_dense
+    st = torch.load(path, map_location=device)
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\serialization.py", line 1500, in load
+    with _open_file_like(f, "rb") as opened_file:
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\serialization.py", line 768, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\serialization.py", line 749, in __init__
+    super().__init__(open(name, mode))  # noqa: SIM115
+FileNotFoundError: [Errno 2] No such file or directory: 'Z:\\TinyLM\\runs\\ckpt\\m100s10_ko-en_600M_dense.pt'
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-09-07 12:18:15)
+==============================================================================
+[3/3] depth 16, 600M tokens, pool 1200M
+
+==============================================================================
+[runlog] 2026-09-07 12:18:35  name=P062_stage9_speed_tokens
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100s12 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --steps 4578 --tokens 600M --pool-tokens 1200M --exact-cache --tag d16_cla2_norecur_t600
+==============================================================================
+[cmd] python run100m.py train --preset m100s12 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --steps 4578 --tokens 600M --pool-tokens 1200M --exact-cache --tag d16_cla2_norecur_t600
+[data] 정확 캐시 사용(exact, 상위호환 무시): 1200.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_1200000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 16 -> 8 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+Traceback (most recent call last):
+  File "z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "z:\TinyLM\tinylm\cli.py", line 288, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "z:\TinyLM\tinylm\train\trainer.py", line 362, in train
+    init_from_dense(model, init_from, device, depth_init=depth_init)
+  File "z:\TinyLM\tinylm\train\init_utils.py", line 137, in init_from_dense
+    teacher, _ = load_dense(dense_path, device)
+  File "z:\TinyLM\tinylm\train\init_utils.py", line 78, in load_dense
+    st = torch.load(path, map_location=device)
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\serialization.py", line 1500, in load
+    with _open_file_like(f, "rb") as opened_file:
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\serialization.py", line 768, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\serialization.py", line 749, in __init__
+    super().__init__(open(name, mode))  # noqa: SIM115
+FileNotFoundError: [Errno 2] No such file or directory: 'Z:\\TinyLM\\runs\\ckpt\\m100s12_ko-en_600M_dense.pt'
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-09-07 12:18:37)
+==============================================================================
+DONE. These three share a pool so they compare to each other. Against the 300M runs use common_bpb only.
