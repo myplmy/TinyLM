@@ -38,6 +38,85 @@ def tokenizer_path(name, vocab_size=VOCAB):
     return DATA_CACHE / f"tok-{name}-{vocab_size}.json"
 
 
+class _SyntheticEncoding:
+    """`tokenizers.Encoding` 중 우리가 쓰는 것만 흉내낸다 — `.ids` 하나."""
+
+    __slots__ = ("ids",)
+
+    def __init__(self, ids):
+        self.ids = list(ids)
+
+
+class SyntheticTokenizer:
+    """★★2026-09-08(2차) 신설 — **`--data synthetic` 전용 스텁 토크나이저.**
+
+    ## 왜 있나
+
+    `prepare()` 는 `name == "synthetic"` 일 때 **BPE 를 학습하지 않는다**(위 §캐시 규칙).
+    그래서 `data_cache/tok-synthetic-32768.json` 은 **설계상 영원히 없다.**
+    그런데 체크포인트를 읽는 도구들은 전부 `Tokenizer.from_file(tokenizer_path(a.data))` 를
+    **무조건** 부른다 — 즉 ★**합성 체크포인트를 스모크로 검사하는 것이 구조적으로 불가능했다.**
+
+    🚫2026-09-08 스모크 팔 **[21c]**(LUT 배포 상주)가 정확히 여기서 죽었다:
+    `Exception: 지정된 파일을 찾을 수 없습니다. (os error 2)`. 실험 큐 전체가 멈췄다.
+
+    ## 무엇을 보증하나 / 무엇을 안 보증하나
+
+    - ✅**토큰 id 는 합성 학습 데이터와 같은 대역**(`[0, 4096)`)에서 나온다 — `prepare()` 의
+      `vocab_eff = min(VOCAB, 4096)` 과 맞춘 것이다. 모델이 한 번도 못 본 id 를 넣지 않는다.
+    - ✅**결정적**이다. 같은 프롬프트는 항상 같은 id 열이 된다 → 로짓 동등성 게이트가 유효하다.
+    - 🚫**의미가 없다.** 생성된 텍스트를 읽지 마라. 합성 체크포인트의 출력은 원래 의미가 없다.
+    - 🚫★**실데이터 이름에는 절대 안 붙는다**(`load_tokenizer` 가 이름으로 가른다).
+      실데이터의 토크나이저 파일이 없는 것은 **사고**이고, 사고를 스텁으로 덮으면
+      *"측정 0인데 exit 0"*(R19)이 된다.
+    """
+
+    def __init__(self, vocab_size=VOCAB, span=4096):
+        self.vocab_size = int(vocab_size)
+        self.span = min(int(span), int(vocab_size))
+
+    def encode(self, text):
+        b = str(text).encode("utf-8")
+        # ★결정적 해시. hash() 는 프로세스마다 달라지므로 쓰지 않는다.
+        ids, h = [], 0
+        for byte in b:
+            h = (h * 1315423911 + byte) & 0xFFFFFFFF
+            ids.append(h % self.span)
+        return _SyntheticEncoding(ids or [0])
+
+    def decode(self, ids):
+        return "<synthetic:" + " ".join(str(int(i)) for i in ids) + ">"
+
+    def token_to_id(self, token):
+        return None            # `<eos>` 가 없다 → 호출부가 stop_at_eos 를 끈다
+
+    def get_vocab_size(self):
+        return self.vocab_size
+
+
+def load_tokenizer(name, vocab_size=VOCAB):
+    """★**데이터 이름 하나로 토크나이저를 얻는 단일 소스**(R14).
+
+    🚫`Tokenizer.from_file(str(tokenizer_path(...)))` 를 도구마다 새로 쓰지 않는다 —
+    그렇게 하면 `synthetic` 처리가 도구 수만큼 갈라지고, 실제로 **스모크 팔 하나가
+    그 갈라짐에 빠져 죽었다**(2026-09-08).
+
+    - `synthetic` → `SyntheticTokenizer`(설계상 파일이 없다). **인쇄로 알린다.**
+    - 그 외 → 실제 파일. 없으면 **`SystemExit(2)`** 로 즉시 죽는다(R19 — 조용한 폴백 금지).
+    """
+    if name == "synthetic":
+        print("[tok] ★합성 데이터에는 토크나이저 파일이 없다 — 스텁을 쓴다"
+              " (id 대역 [0,4096), 결정적). 🚫생성 텍스트는 읽지 마라.")
+        return SyntheticTokenizer(vocab_size)
+    p = tokenizer_path(name, vocab_size)
+    if not p.exists():
+        print(f"  🚫**토크나이저가 없다: {p}**")
+        print(f"     `python run100m.py prepare --data {name} --tokens <N>` 를 먼저 돌린다.")
+        raise SystemExit(2)
+    from tokenizers import Tokenizer
+    return Tokenizer.from_file(str(p))
+
+
 def _stream(name, exhausted_cb=None):
     """★L4(2026-08-06, 결과 023 §9.3) — **소스 고갈을 조용히 넘기지 않는다.**
 

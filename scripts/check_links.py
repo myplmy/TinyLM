@@ -50,10 +50,23 @@ def _targets():
     return out
 
 
+# ★상태 접미사 정본 — `proposal/README.md` §2 와 `ai_dev_tool/03` §8 이 쓰는 것.
+#   🚫목록을 두 곳에 두지 않는다(함정 18).
+STATUS_SUFFIXES = ("done", "approved", "rejected", "conditional", "superseded", "완료")
+
+
+# ★★2026-09-08(2차) — **색인 범위는 검사 범위보다 넓다.**
+#   🚫`proposal/` 이 색인에 없어서 `-approved` 후보를 **하나도 못 찾았다** —
+#   접미사 목록을 넓혀도 그 폴더를 안 보면 소용이 없다(초판이 자동교정 0건이었던 이유).
+#   ⚠️검사 범위(`TARGET_DIRS`)는 안 넓힌다 — 넓히면 새 경고가 쏟아지고
+#   **아무도 안 읽는 경고는 미탐과 같다**(2026-09-06 사용자 지시).
+INDEX_DIRS = TARGET_DIRS + ("proposal", "review_request")
+
+
 def _index():
     """파일명 → 실제 경로. `-done` 접미사를 뗀 형태로도 찾을 수 있게 넣는다."""
     idx = {}
-    for d in TARGET_DIRS:
+    for d in INDEX_DIRS:
         for f in (ROOT / d).rglob("*"):
             if not f.is_file():
                 continue
@@ -89,21 +102,30 @@ def main():
             if cand is None:
                 base = name.rsplit(".", 1)
                 if len(base) == 2:
-                    for k, v in idx.items():
-                        if k.startswith(base[0] + "-done"):
-                            cand = v
+                    # ★★2026-09-08(2차) — **`-done` 만이 아니라 상태 접미사 전부.**
+                    #   `proposal/README.md` 는 판단이 끝난 제안서에 `-approved`·`-rejected`·
+                    #   `-conditional`·`-superseded` 를 붙이고 `done/` 으로 옮기라고 한다.
+                    #   그때마다 참조가 8건씩 깨졌고 **매번 손으로 고쳤다** — 규약이 있는
+                    #   개명은 도구가 따라가야 한다(R14: 접미사 목록은 여기 한 곳).
+                    for sfx in STATUS_SUFFIXES:
+                        cand = idx.get(f"{base[0]}-{sfx}.{base[1]}")
+                        if cand is not None:
                             break
-            if cand is not None and a.fix:
+            # ★`handoff/` 는 **그 시점의 기록**이다. 개명 뒤에도 고치지 않는다
+            #   (ai_dev_tool/03 §8.4) — 고치면 "그때 무엇을 알았나" 가 사라진다.
+            # 🚫★2026-09-08(2차) — 종전에는 이 규칙이 **보고에만** 걸려 있고
+            #   `--fix` 는 handoff 도 고쳤다. 색인에 `proposal/` 을 넣자마자
+            #   **과거 핸드오프 9개가 한 번에 고쳐졌다**(되돌렸다).
+            #   ★인쇄가 *"고치지 않는다"* 라고 말하는데 동작이 고치는 것 = 함정 38.
+            is_handoff = str(md).replace("\\", "/").find("/handoff/") >= 0
+            if cand is not None and a.fix and not is_handoff:
                 rel = os.path.relpath(cand, md.parent).replace("\\", "/")
                 txt = txt.replace(f"]({raw})", f"]({rel})")
                 fixed += 1
             else:
                 hint = f"  -> 후보: {cand.name}" if cand is not None else ""
                 line = f"{md.relative_to(ROOT)}  ->  {tgt}{hint}"
-                # ★`handoff/` 는 **그 시점의 기록**이다. 개명 뒤에도 고치지 않는다
-                #   (ai_dev_tool/03 §8.4) — 고치면 "그때 무엇을 알았나" 가 사라진다.
-                (legacy if str(md).replace("\\", "/").find("/handoff/") >= 0
-                 else bad).append(line)
+                (legacy if is_handoff else bad).append(line)
         if a.fix and txt != orig:
             md.write_text(txt, encoding="utf-8")
 

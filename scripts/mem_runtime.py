@@ -183,12 +183,17 @@ def main():
     import torch
     from tinylm import paths
     from tinylm.infer.generate import load_model, sample
-    from tinylm.data import tokenizer_path
-    from tokenizers import Tokenizer
+    # ★★2026-09-08(2차) — **`load_tokenizer` 로 바꿨다**(게이트 33).
+    #   🚫종전 `Tokenizer.from_file(str(tokenizer_path(a.data)))` 는 `--data synthetic`
+    #   에서 **반드시 죽는다** — `prepare()` 가 합성에는 BPE 를 학습하지 않으므로
+    #   `data_cache/tok-synthetic-32768.json` 이 **설계상 영원히 없다.**
+    #   그래서 스모크 팔 [21c] 가 `os error 2` 로 exit 1 이 됐고 큐가 멈췄다.
+    #   ★실데이터 이름은 동작이 **완전히 같다**(같은 파일을 연다).
+    from tinylm.data import load_tokenizer
 
     models = ([(t, "dense" if t.startswith(("p6d", "dense", "p12d")) else "tied")
                for t in a.models] if a.models else DEFAULT_MODELS)
-    tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
+    tok = load_tokenizer(a.data)
     base = f"{a.preset}_{a.data}_{a.tokens}"
 
     print("=" * 96)

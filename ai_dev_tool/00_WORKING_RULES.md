@@ -88,7 +88,7 @@ stories live in the Korean ledgers (01–08) and `CLAUDE.md`; this file only say
   table, map, or number it did not use. `diag_depth_init` printed the role map and
   measured the zip map for a whole session.
 - **R21** `[gate]` After editing code or docs, run `python scripts/check_static_all.py`
-  yourself — **22 gates, no torch, no GPU**. Then ask the user for
+  yourself — **35 gates, no torch, no GPU**. Then ask the user for
   `run_smoke_check.bat` if code changed. **Static never replaces dynamic.**
   On Windows prefix with `set PYTHONIOENCODING=utf-8`.
 
@@ -159,3 +159,16 @@ stories live in the Korean ledgers (01–08) and `CLAUDE.md`; this file only say
 
 - **R40** `[gate]` In `scripts/`, `import tinylm` **before** `datasets`/`transformers`, or the HF
   cache redirect does not apply and downloads land outside the work folder. `[gate]`
+
+- ★**R42** `[human]` **A rule written in more places does not get followed more.** The
+  "use Write/Edit, not a bash heredoc" rule lived in three places (CLAUDE.md, `06`, the
+  session-start prompt) and the accident still happened **15 times**. When a rule keeps
+  being broken, the fix is a **mechanism outside the agent's choice** (a gate, a hook),
+  never a fourth copy of the text.
+- ★**R43** `[human]` **Say what a metric measures before ranking with it.** full-val and
+  정답CE are **pass/fail gates**; likelihood accuracy is the **ranking** metric, and only
+  on a task with the power to resolve the comparison. Three tasks gave three different
+  CE orderings, and the full-val winner was at chance on our intelligence task.
+- ★**R44** `[human]` **A benchmark that is not yet validated is quoted with that caveat.**
+  Our held-out is the only high-sensitivity instrument we have and we do not yet know why
+  depth reverses on it. Never pick a deployment model on it alone.

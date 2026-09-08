@@ -362,8 +362,27 @@ def ifeval_check(iid, kw, resp):
 
 # ─────────────────────────────────────────────────────────────── 본체
 def run_mc(task, items, model, tok, dev, seq_max, torch, F, no_pmi):
-    """평균 로그우도 + ★PMI 보정. `acc_norm`(합CE/길이) 도 함께 낸다."""
+    """평균 로그우도 + ★PMI 보정. `acc_norm`(합CE/길이) 도 함께 낸다.
+
+    ★★2026-09-08(2차) 추가 — **정답 마진**(`per_margin`).
+
+    🚫**`gold_ce` 만으로는 정답CE 와 정확도가 왜 갈라지는지 알 수 없다**(결과 074 §22 ·
+    사용자 지시 6). `gold_ce` 는 *"정답 문자열이 이 모델에게 얼마나 유창한가"* 를 재는데,
+    거기에는 **모든 후보가 공유하는 유창성 항**이 섞여 있다. 더 좋은 언어모델은
+    **모든 후보**의 CE 를 함께 낮추므로 `gold_ce` 가 좋아져도 **순위는 안 바뀔 수 있다.**
+
+    ★**마진 = 오답 후보 점수의 평균 − 정답 후보 점수** 는 그 공통 항을 **뺀다.**
+
+    - `argmax` 가 쓰는 것과 **같은 `score`** 로 계산한다(PMI 보정 포함) —
+      🚫다른 양으로 재면 정확도와 마진이 다시 갈라진다(함정 40).
+    - **마진 > 0 ⇔ 정답이 평균 오답보다 선호된다.** 정오는
+      `score[gold] < min(others)` 이므로 마진은 **정오의 연속판**이다.
+    - ★**계산 비용 0** — 후보별 점수는 어차피 전부 구한다.
+    - ★**검정력**: 문항당 이진값(정오) 대신 연속값을 쓰므로 **같은 문항 수로 더 잘 가른다.**
+      🚫단 *"정확도가 유의해졌다"* 로 옮겨 적지 않는다 — **다른 양**이다.
+    """
     picks, ok, ok_norm, skipped, per_item = Counter(), [], [], 0, []
+    per_margin = []
     for it in items:
         if it.get("pairs"):                        # winogrande — 문맥이 후보마다 다르다
             rs = [seq_ce(model, tok, dev, p, c, seq_max, torch, F) for p, c in it["pairs"]]
@@ -384,7 +403,9 @@ def run_mc(task, items, model, tok, dev, seq_max, torch, F, no_pmi):
         ok.append(1 if p == it["gold"] else 0)
         ok_norm.append(1 if pn == it["gold"] else 0)
         per_item.append(rs[it["gold"]][0])         # ★정답 후보의 평균CE = paired 용 연속값
-    return picks, ok, ok_norm, skipped, per_item
+        _wrong = [s for i, s in enumerate(score) if i != it["gold"]]
+        per_margin.append((statistics.fmean(_wrong) - score[it["gold"]]) if _wrong else 0.0)
+    return picks, ok, ok_norm, skipped, per_item, per_margin
 
 
 def run_cloze(items, model, tok, dev, seq_max, torch, F):
@@ -493,15 +514,20 @@ def main():
             rec = {"tag": tag, "n_asked": len(items)}
 
             if kind == "mc":
-                picks, ok, okn, sk, ce = run_mc(task, items, model, tok, dev, a.seq_max,
-                                                torch, F, a.no_pmi)
+                picks, ok, okn, sk, ce, mg = run_mc(task, items, model, tok, dev, a.seq_max,
+                                                    torch, F, a.no_pmi)
                 p, lo, hi = wilson(sum(ok), len(ok))
                 pn, _l2, _h2 = wilson(sum(okn), len(okn))
                 rec.update(acc=p, acc_ci=[lo, hi], acc_norm=pn, n=len(ok), skipped=sk,
-                           gold_ce=statistics.fmean(ce) if ce else None)
+                           gold_ce=statistics.fmean(ce) if ce else None,
+                           gold_margin=statistics.fmean(mg) if mg else None)
+                _mg = "n/a" if rec["gold_margin"] is None else f"{rec['gold_margin']:+.4f}"
                 print(f"\n  {tag:<18} 우도acc **{p:.1%}** [95%CI {lo:.1%}~{hi:.1%}]  "
                       f"길이정규acc {pn:.1%}  정답CE {rec['gold_ce']:.4f}  "
-                      f"N={len(ok)} 제외={sk}")
+                      f"★정답마진 {_mg}  N={len(ok)} 제외={sk}")
+                print("     ★마진 = 오답 평균점수 − 정답점수(argmax 와 **같은 score**). "
+                      "**정오의 연속판**이라 같은 문항 수로 더 잘 가른다. "
+                      "🚫*'정확도가 유의하다'* 로 옮겨 적지 않는다 — 다른 양이다")
                 tot = sum(picks.values())
                 frac = max(picks.values()) / tot if tot else 0
                 if frac >= 0.90:
@@ -680,6 +706,8 @@ def _final(s):
             extra = []
             if r.get("gold_ce") is not None:
                 extra.append(f"정답CE {r['gold_ce']:.4f}")
+            if r.get("gold_margin") is not None:
+                extra.append(f"★마진 {r['gold_margin']:+.4f}")
             if r.get("ppl"):
                 extra.append(f"PPL {r['ppl']:,.0f}")
             if r.get("skipped"):

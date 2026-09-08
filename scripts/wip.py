@@ -94,7 +94,13 @@ def rows(text):
     for i, ln in enumerate(body):
         if not (lo <= i < hi):
             continue
-        m = re.match(r"^\|\s*\*\*(\d+)\*\*\s*\|", ln)
+        # ★★2026-09-08(2차) — **항목 번호에 글자 꼬리를 허용한다**(`2A`·`5B`).
+        #   사용자 지시가 `(2) A./B./C.` 처럼 오면 원장도 그 번호를 그대로 써야
+        #   R41("항목을 줄이거나 합치지 않는다")을 기계로 지킬 수 있다.
+        #   종전 정규식은 `\d+` 뿐이라 **2A~2G·5A~5C 열 행이 상황판에서 통째로 사라졌고**
+        #   `--list` 가 18개를 8개로 셌다 — 인쇄와 정본이 갈라지는 그 사고다.
+        #   🚫숫자만 쓰는 기존 원장은 영향 없다(꼬리는 선택).
+        m = re.match(r"^\|\s*\*\*(\d+[A-Za-z]?)\*\*\s*\|", ln)
         if m and len(_split_cells(ln)) == 7:          # 칸 5개 + 양끝 빈칸 2개
             out.append((i, m.group(1), ln))
     return out
@@ -196,10 +202,12 @@ def close(path, force_note=None):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--list", action="store_true")
-    ap.add_argument("--start", type=int)
-    ap.add_argument("--done", type=int)
-    ap.add_argument("--block", type=int)
-    ap.add_argument("--wait", type=int)
+    # ★2026-09-08(2차) — `type=int` 를 뗐다. 상황판이 `2A`·`5B` 를 받는데
+    #   argparse 가 먼저 거절하면 그 행은 영원히 못 바꾼다.
+    ap.add_argument("--start")
+    ap.add_argument("--done")
+    ap.add_argument("--block")
+    ap.add_argument("--wait")
     ap.add_argument("--close", action="store_true")
     ap.add_argument("--note", default=None,
                     help="★필수 — 무엇을 했는지/할 것인지. 없으면 상태를 안 바꾼다")
