@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v50",
+  "version": "50",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-07351 ~ S2-TOH-07500",
+  "concept_family": "S2-A03-T050: 도로 터널 배수·교통 통제 — 부분 겹침 구간과 완전 동시성 구별",
+  "design_note": "도로 터널 배수·교통 통제 영역의 부분 겹침 구간과 완전 동시성 구별 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-07351",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강우시간 중 일부에만 입구수로 유입이 나타난 관계가 강우와 터널유입 부분겹침이며 전 강우구간 침수는 아니다. 강우 시작·종료와 유입 센서의 양 접점을 비교해 둘의 교집합만 수문 연계시간으로 계산한다.",
+      "concepts": [
+        "강우와 터널유입 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07352",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고강도 강우와 유입경보의 시작·종료가 같으면 집중호우 유입완전동시다. 강우계와 유입센서의 표본주기를 맞춘 뒤 양쪽 시작·종료 네 접점이 모두 일치하는지 본다.",
+      "concepts": [
+        "집중호우 유입완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07353",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 강우 안에 짧은 노면수막 구간이 전부 들어간 상태가 수막발생 강우구간포함이다. 수막의 첫·마지막 유효표본이 모두 강우 경계 안에 있는지 확인해야 완전 포함이다.",
+      "concepts": [
+        "수막발생 강우구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07354",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 강우대 후반과 다음 강우대 초반이 터널구역에서 일부 겹친 관계가 두 빗물전선 교차다. 첫 전선 종료보다 둘째 시작이 앞서고 둘째 종료는 뒤라는 조건으로 실제 교차를 확인한다.",
+      "concepts": [
+        "두 빗물전선 교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07355",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강우 마지막 부분과 펌프증대 초반이 함께한 상태가 강우후반 배수증대다. 배수 증대가 강우 종료 전 시작하고 뒤까지 이어지는 경우 공통부와 후행부를 나눠 기록한다.",
+      "concepts": [
+        "강우후반 배수증대"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07356",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상류 배수가 먼저 시작해 터널강우 초기와 일부 만난 관계가 상류유출 선행겹침이다. 상류 유출 단독 선행부와 터널강우와 함께인 교집합을 분리해 원인 노출을 계산한다.",
+      "concepts": [
+        "상류유출 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07357",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강우가 끝난 뒤 별도 관파손으로 물이 들어왔다면 강우종료후 유입무겹침이다. 강우와 관파손 유입 사이 양의 빈 구간을 확인해 같은 침수회차라는 이유로 합치지 않는다.",
+      "concepts": [
+        "강우종료후 유입무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07358",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강우종료와 배수운전 시작이 한 시각만 같은 강우경계 접점공유는 지속중첩이 아니다. 동일 한 시각은 길이 없는 경계이므로 강우와 배수의 병렬 지속시간으로 더하지 않는다.",
+      "concepts": [
+        "강우경계 접점공유"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07359",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입구·환기구·배수관 유입이 폭우 일부에서 함께한 상태가 다중유입원 시간중첩이다. 세 유입원의 최대 시작과 최소 종료 사이가 양수일 때만 동시 유입으로 본다.",
+      "concepts": [
+        "다중유입원 시간중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07360",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 호우 중 유입률이 임계를 넘은 일부가 호우기간 고유입부분이다. 유입 임계 초과의 시작·종료가 호우 안에 놓이되 전체 호우와 같지 않은지 확인한다.",
+      "concepts": [
+        "호우기간 고유입부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07361",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배수로 막힘 구간 일부가 노면침수와 만난 관계가 배수로 막힘과 침수부분 겹침이다. 폐색 시작·해소와 노면수위 초과구간을 교차해 막힘이 실제 침수와 함께한 시간을 구한다.",
+      "concepts": [
+        "배수로 막힘과 침수부분 겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07362",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 집수정의 고수위 시작·종료가 같으면 집수정 고수위완전동시다. 센서 오프셋을 보정한 뒤 두 고수위 구간의 시작과 해제가 모두 같은 경우만 인정한다.",
+      "concepts": [
+        "집수정 고수위완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07363",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 유입구간 안에 짧은 이물질폐색이 모두 들어간 상태가 이물질폐색 유입구간포함이다. 폐색의 양 경계가 전체 유입 안에 들어오되 끝점 접촉만 있는 경우는 포함에서 제외한다.",
+      "concepts": [
+        "이물질폐색 유입구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07364",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주배수로 감량 말미와 보조배수로 사용 초반이 일부 함께한 관계가 주보조 배수로 교차다. 주유로 감소와 보조유로 증가가 함께인 전환구간을 유량자료로 계산해 단순 명령은 제외한다.",
+      "concepts": [
+        "주보조 배수로 교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07365",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배수로 청소마지막 구간과 유량회복 초반이 겹친 상태가 청소후반 배수회복이다. 청소와 유량회복이 함께였던 앞부분, 청소 종료 뒤 독립 회복을 서로 다른 상태로 둔다.",
+      "concepts": [
+        "청소후반 배수회복"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07366",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "토사유입이 먼저 생겨 배수능 저하 초기와 일부 겹친 관계가 토사유입 선행겹침이다. 토사 유입이 먼저인 단독구간과 배수능 저하와 겹친 부분을 나눠 선행 원인의 길이를 보존한다.",
+      "concepts": [
+        "토사유입 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07367",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막힘을 완전히 제거한 뒤 정상유량이 시작됐다면 폐색제거후 정상배수 무겹침이다. 폐색 해소와 정상유량 시작 사이의 빈 시간을 보존해 두 과정의 순차성을 확정한다.",
+      "concepts": [
+        "폐색제거후 정상배수 무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07368",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "청소종료와 정상운전 시작이 한 점인 배수로개통 접점공유는 병행작업이 아니다.",
+      "concepts": [
+        "배수로개통 접점공유"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07369",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복수 집수구의 막힘기간이 폭우 일부에서 함께한 상태가 여러집수구 폐색중첩이다. 집수구별 폐색 센서구간을 교차해 같은 폭우창에 속한다는 이유만으로 동시라 하지 않는다.",
+      "concepts": [
+        "여러집수구 폐색중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07370",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 배수장애에서 실제 물리폐색이 차지한 일부가 배수장애 중 폐색부분이다.",
+      "concepts": [
+        "배수장애 중 폐색부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07371",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "절체 중 짧은 시간만 두 펌프가 함께 운전한 관계가 주펌프와 예비펌프 부분겹침이다. 주펌프 감속 후반과 예비펌프 가속 초반의 교집합만 절체 중 공동운전으로 센다.",
+      "concepts": [
+        "주펌프와 예비펌프 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07372",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 펌프의 기동·정지 시각이 모두 같으면 두 배수펌프 완전동시다.",
+      "concepts": [
+        "두 배수펌프 완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07373",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 펌프운전 안에 짧은 진동경보가 모두 들어간 상태가 펌프경보 운전구간포함이다. 경보 발령과 해제 시각이 펌프의 실제 기동·정지 사이에 모두 들어와야 한다.",
+      "concepts": [
+        "펌프경보 운전구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07374",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주펌프 감속 말미와 예비펌프 가속 초반이 일부 겹친 관계가 펌프출력 절체교차다.",
+      "concepts": [
+        "펌프출력 절체교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07375",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시험운전 마지막 부분과 실제배수 초반이 만난 상태가 시험운전 후반배수다. 시험과 본배수의 교차구간을 계산하되 시험 유량과 대응 유량은 목적별로 구별한다.",
+      "concepts": [
+        "시험운전 후반배수"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07376",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "집수정 수위상승이 먼저 시작해 펌프기동 초기와 일부 겹친 관계가 수위상승 선행겹침이다.",
+      "concepts": [
+        "수위상승 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07377",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비가 끝난 다음 배수운전을 시작했다면 펌프정비후 운전무겹침이다. 정비 잠금 해제 뒤 별도 기동접점이 생긴 경우에만 양 활동 사이 겹침이 없다고 본다.",
+      "concepts": [
+        "펌프정비후 운전무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07378",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기동시험 종료와 실운전 시작이 한 점인 펌프기동 끝점접촉은 두 운전의 중첩이 아니다.",
+      "concepts": [
+        "펌프기동 끝점접촉"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07379",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서로 다른 펌프 세션이 최고수위 일부에서 함께한 상태가 다중펌프 운전중첩이다. 각 모터 전류의 실제 활성구간을 교차해 대기 명령이 겹친 시간은 운전량에서 뺀다.",
+      "concepts": [
+        "다중펌프 운전중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07380",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 배수회차 중 모든 펌프가 켜진 일부가 배수회차 최대출력부분이다.",
+      "concepts": [
+        "배수회차 최대출력부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07381",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차수문 이동시간 일부에 외부유입이 계속된 관계가 차수문 폐쇄와 유입부분 겹침이다. 문이 이동한 구간과 외부 유입이 지속된 구간의 교집합으로 차단 중 노출시간을 계산한다.",
+      "concepts": [
+        "차수문 폐쇄와 유입부분 겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07382",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 입구 차수문의 폐쇄구간 양 끝이 같으면 양측차수문 완전동시다.",
+      "concepts": [
+        "양측차수문 완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07383",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 폐쇄상태 안에 위치경보가 모두 들어간 상태가 차수문경보 폐쇄구간포함이다. 위치경보의 시작·종료가 닫힌 상태의 양 경계 안에 모두 있는지 장치로그로 확인한다.",
+      "concepts": [
+        "차수문경보 폐쇄구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07384",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 문 폐쇄말미와 둘째 문 이동초반이 일부 겹친 관계가 차수문 순차폐쇄교차다.",
+      "concepts": [
+        "차수문 순차폐쇄교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07385",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "압력평형 마지막 구간과 시험개방 초반이 만난 상태가 압력평형 후반개방이다. 평형 과정과 시험개방이 함께 진행된 부분을 따로 두고 완전개방은 안전조건 뒤로 제한한다.",
+      "concepts": [
+        "압력평형 후반개방"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07386",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "외부수위가 먼저 올라 차수문 폐쇄초기와 겹친 관계가 외수위상승 선행겹침이다.",
+      "concepts": [
+        "외수위상승 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07387",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차수상태를 끝낸 뒤 시험개방을 시작했다면 폐쇄종료후 개방무겹침이다. 폐쇄상태 해제와 시험개방 시작 사이가 맞닿거나 떨어진 순차구간임을 접점으로 검증한다.",
+      "concepts": [
+        "폐쇄종료후 개방무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07388",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "폐쇄상태 종료와 개방이동 시작이 한 점인 차수해제 접점공유는 동시상태가 아니다.",
+      "concepts": [
+        "차수해제 접점공유"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07389",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입구문·환기구문·배수밸브 폐쇄가 침수대응 일부에서 함께한 상태가 복수차수설비 중첩이다. 입구문·환기문·배수밸브의 실제 폐쇄 교집합만 최고 차수상태로 계산한다.",
+      "concepts": [
+        "복수차수설비 중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07390",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 차수상태 중 문이 실제 움직인 일부가 폐쇄회차 이동부분이다.",
+      "concepts": [
+        "폐쇄회차 이동부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07391",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통행구간 일부에만 수막상태가 존재한 관계가 노면수막과 차량통행 부분겹침이다. 차량 진입·이탈과 수막 임계구간을 교차해 실제 노출된 통행시간만 위험으로 센다.",
+      "concepts": [
+        "노면수막과 차량통행 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07392",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 차로 침수의 시작·종료가 같으면 두 차로 침수완전동시다.",
+      "concepts": [
+        "두 차로 침수완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07393",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 얕은침수 안에 깊이임계 초과가 모두 들어간 상태가 깊은물구간 침수포함이다. 깊이 임계 초과의 양 끝이 얕은 침수 전체 안에 놓이는지 연속 수위표본으로 본다.",
+      "concepts": [
+        "깊은물구간 침수포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07394",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상행 침수후반과 하행 침수초반이 일부 함께한 관계가 상하행 침수교차다.",
+      "concepts": [
+        "상하행 침수교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07395",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배수운전 마지막 부분과 마찰회복 초반이 만난 상태가 배수후반 노면회복이다. 펌프 운전과 마찰 회복이 겹친 앞부분, 펌프 종료 뒤 남은 건조구간을 분리한다.",
+      "concepts": [
+        "배수후반 노면회복"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07396",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "벽체누수가 먼저 시작해 노면수막 초기와 일부 겹친 관계가 누수발생 선행겹침이다.",
+      "concepts": [
+        "누수발생 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07397",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "물이 제거된 뒤 차량을 들였다면 침수종료후 통행재개 무겹침이다. 수위 정상화 뒤 차량 진입접점이 생겼는지 확인해 복구와 통행이 겹치지 않게 한다.",
+      "concepts": [
+        "침수종료후 통행재개 무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07398",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수막상태 종료와 차로개방 시작이 한 점인 수막종료 접점공유는 동시노출이 아니다.",
+      "concepts": [
+        "수막종료 접점공유"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07399",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 터널구간의 침수시간이 폭우 일부에서 함께한 상태가 다중구간 침수중첩이다. 구간별 수위 초과의 교집합을 구해 폭우 전체를 동시 침수시간으로 과장하지 않는다.",
+      "concepts": [
+        "다중구간 침수중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07400",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 통제 중 노면에 물이 있던 일부가 통제기간 실제침수부분이다.",
+      "concepts": [
+        "통제기간 실제침수부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07401",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입구차단 구간 일부가 외부 차량대기와 함께한 관계가 진입차단과 차량대기 부분겹침이다. 차단기 폐쇄와 외부 대기열 존재 구간을 교차해 실제 통제 영향시간만 계산한다.",
+      "concepts": [
+        "진입차단과 차량대기 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07402",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상·하행 진입차단의 양 끝이 같으면 양방향 차단완전동시다.",
+      "concepts": [
+        "양방향 차단완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07403",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입구폐쇄 통제구간포함은 차단봉을 닫은 때부터 다시 연 때까지가 더 긴 교통 통제 안에 완전히 놓인 관계다. 어느 접점이라도 통제 밖이면 부분 포함이다.",
+      "concepts": [
+        "입구폐쇄 통제구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07404",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 차로 폐쇄말미와 다음 차로 폐쇄초반이 일부 겹친 관계가 차로차단 순차교차다.",
+      "concepts": [
+        "차로차단 순차교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07405",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해제점검 마지막 부분과 제한진입 초반이 만난 상태가 차단해제 후반진입이다. 점검 종료 전 제한차량이 진입한 공통구간과 점검 뒤 정상화 구간을 구별한다.",
+      "concepts": [
+        "차단해제 후반진입"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07406",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "터널내 정체가 먼저 시작해 진입차단 초기와 일부 겹친 관계가 혼잡증가 선행겹침이다.",
+      "concepts": [
+        "혼잡증가 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07407",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통제를 끝낸 뒤 정상유입이 시작됐다면 차단종료후 정상진입 무겹침이다. 차단 해제 완료보다 첫 정상차량 진입이 늦거나 같아야 두 상태의 교집합이 없다.",
+      "concepts": [
+        "차단종료후 정상진입 무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07408",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차단상태 종료와 차량통과 시작이 한 점인 차단봉 개방점접촉은 지속중첩이 아니다.",
+      "concepts": [
+        "차단봉 개방점접촉"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07409",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 연결로 차단이 비상통제 일부에서 함께한 상태가 복수입구 차단중첩이다. 연결로별 실제 폐쇄구간의 최대 시작과 최소 종료를 사용해 공동 차단시간을 산출한다.",
+      "concepts": [
+        "복수입구 차단중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07410",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 통제 중 모든 입구가 닫힌 일부가 통제시간 전면차단부분이다.",
+      "concepts": [
+        "통제시간 전면차단부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07411",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차로폐쇄 구간 일부에만 펌프·청소 작업이 진행된 관계가 차로폐쇄와 배수작업 부분겹침이다. 차로 신호·차단물의 폐쇄구간과 펌프·청소 작업시간을 교차해 병렬 구간만 센다.",
+      "concepts": [
+        "차로폐쇄와 배수작업 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07412",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 차로 폐쇄완전동시는 두 차로의 차단 개시와 재개방 시각이 각각 일치한 상태다. 한쪽 경계만 같으면 성립하지 않는다.",
+      "concepts": [
+        "두 차로 폐쇄완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07413",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 차로폐쇄 안에 현장작업이 전부 들어간 상태가 작업구역 폐쇄구간포함이다. 현장 작업자의 첫 진입과 마지막 철수가 차로 폐쇄의 양 경계 안에 있어야 한다.",
+      "concepts": [
+        "작업구역 폐쇄구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07414",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기존차로 폐쇄말미와 대체차로 개방초반이 일부 겹친 관계가 차로전환 통제교차다.",
+      "concepts": [
+        "차로전환 통제교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07415",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업 마지막 부분과 저속통행 초반이 만난 상태가 작업후반 제한통행이다. 작업과 저속통행이 함께였던 구간을 표시하고 작업 종료 뒤 제한유지만 별도로 둔다.",
+      "concepts": [
+        "작업후반 제한통행"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07416",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "침수경보가 먼저 생겨 차로폐쇄 초기와 일부 겹친 관계가 침수경보 선행겹침이다.",
+      "concepts": [
+        "침수경보 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07417",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장철수가 끝난 뒤 차로를 모두 열었다면 작업종료후 전면개방 무겹침이다. 현장 철수 확인 뒤 신호가 정상으로 바뀐 경우 두 활동은 순차적이며 중첩이 없다.",
+      "concepts": [
+        "작업종료후 전면개방 무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07418",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차로폐쇄 종료와 정상통행 시작이 한 점인 폐쇄해제 접점공유는 병행상태가 아니다.",
+      "concepts": [
+        "폐쇄해제 접점공유"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07419",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서로 다른 차로의 제한구간이 대응시간 일부에서 함께한 상태가 다중차로 부분폐쇄중첩이다. 차로별 제한 시작·종료를 교차해 일부만 동시에 닫힌 실제 시간을 계산한다.",
+      "concepts": [
+        "다중차로 부분폐쇄중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07420",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 통제시간에서 실제 배수작업이 차지한 일부가 전체통제 중 작업부분이다.",
+      "concepts": [
+        "전체통제 중 작업부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07421",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "본선차단 구간 일부에만 우회로가 실제 사용된 관계가 우회운영과 본선차단 부분겹침이다. 본선 폐쇄와 우회로 실제 통행구간의 교집합을 구해 공지만 된 우회시간은 제외한다.",
+      "concepts": [
+        "우회운영과 본선차단 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07422",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 우회로 운용완전동시는 두 대체 경로를 연 시각과 닫은 시각이 모두 일치한 관계다. 일부 시간만 함께 운영한 경우는 제외한다.",
+      "concepts": [
+        "두 우회로 운용완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07423",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 비상통제 안에 우회로 혼잡이 전부 들어간 상태가 우회혼잡 통제구간포함이다. 혼잡 임계 초과가 비상통제의 시작·종료 안에 전부 들어오는지 교통량 자료로 확인한다.",
+      "concepts": [
+        "우회혼잡 통제구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07424",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 우회안 종료말미와 둘째 우회안 적용초반이 일부 겹친 관계가 우회경로 전환교차다.",
+      "concepts": [
+        "우회경로 전환교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07425",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "본선 시험개방 마지막 부분과 우회유지 초반이 함께한 상태가 본선회복 후반우회다. 본선 시험개방과 우회 유지가 함께인 전환구간, 이후 본선 단독운영을 나눠 기록한다.",
+      "concepts": [
+        "본선회복 후반우회"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07426",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "터널사고가 먼저 생겨 우회운영 초기와 일부 겹친 관계가 사고발생 선행겹침이다.",
+      "concepts": [
+        "사고발생 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07427",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "우회안이 끝난 뒤 본선 정상통행이 시작됐다면 우회종료후 정상통행 무겹침이다. 우회 안내 해제 뒤 본선 정상 흐름이 시작된 양의 빈 구간 또는 접점을 검증한다.",
+      "concepts": [
+        "우회종료후 정상통행 무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07428",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "우회운영 종료와 본선정상 시작이 한 점인 우회해제 끝점접촉은 병행경로가 아니다.",
+      "concepts": [
+        "우회해제 끝점접촉"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07429",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서로 다른 지역의 우회안이 광역통제 일부에서 함께한 상태가 복수우회로 시간중첩이다. 각 우회로 활성구간을 교차해 동일 광역대응에 속해도 시간상 겹치지 않는 경로를 가른다.",
+      "concepts": [
+        "복수우회로 시간중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07430",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 통제 중 대체경로를 안내한 일부가 통제기간 우회부분이다.",
+      "concepts": [
+        "통제기간 우회부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07431",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경고표출 구간 일부에만 차단봉이 닫힌 관계가 전광표지와 진입차단 부분겹침이다. 경고 문구가 보인 구간과 차단봉 폐쇄를 교차해 정보·물리 통제가 함께였던 시간만 센다.",
+      "concepts": [
+        "전광표지와 진입차단 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07432",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상·하행 표지의 경고 시작·종료가 같으면 양방향 경고완전동시다.",
+      "concepts": [
+        "양방향 경고완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07433",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 비상표출 안에 감속문구가 전부 들어간 상태가 감속문구 통제구간포함이다. 문구의 실제 표출 시작·종료가 비상통제 경계 안에 모두 있을 때 완전 포함이다.",
+      "concepts": [
+        "감속문구 통제구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07434",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 문구 종료말미와 다음 문구 시작초반이 일부 함께한 관계가 표지메시지 전환교차다.",
+      "concepts": [
+        "표지메시지 전환교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07435",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해제점검 마지막 부분과 정상안내 초반이 만난 상태가 통제해제 후반안내다. 해제점검 중 평시 안내가 시작된 부분과 점검 뒤 단독 안내를 구별한다.",
+      "concepts": [
+        "통제해제 후반안내"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07436",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서경보가 먼저 생겨 경고표출 초기와 일부 겹친 관계가 침수감지 선행겹침이다.",
+      "concepts": [
+        "침수감지 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07437",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상문구가 끝난 뒤 평시정보를 보이면 경고종료후 정상표출 무겹침이다. 비상문구 소거와 평시정보 표시가 순차 접점으로 이어져 공통 지속구간이 없음을 확인한다.",
+      "concepts": [
+        "경고종료후 정상표출 무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07438",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경고종료와 정상문구 시작이 한 점인 표지전환 접점공유는 두 문구의 동시표출이 아니다.",
+      "concepts": [
+        "표지전환 접점공유"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07439",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입구·터널내·우회표지의 경고가 대응시간 일부에서 함께한 상태가 다중표지 경고중첩이다. 입구·내부·우회 표지의 실제 프레임 구간을 교차해 네트워크 명령만 겹친 시간은 제외한다.",
+      "concepts": [
+        "다중표지 경고중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07440",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 경고회차 중 전면차단 문구가 나온 일부가 표출회차 최고경보부분이다.",
+      "concepts": [
+        "표출회차 최고경보부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07441",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수위상승 구간 일부에만 자동경보가 활성화된 관계가 수위센서 경보부분겹침이다. 실제 수위 초과와 자동경보 활성의 교집합을 구해 탐지 전·해제 후 공백을 따로 보존한다.",
+      "concepts": [
+        "수위센서 경보부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07442",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 수위센서의 경보 양 끝이 같으면 이중센서 경보완전동시다.",
+      "concepts": [
+        "이중센서 경보완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07443",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 침수 안에 센서결측이 전부 들어간 상태가 센서결측 침수구간포함이다. 결측 시작과 복구가 전체 침수 경계 안에 있을 때 관측 공백이 완전히 포함된다.",
+      "concepts": [
+        "센서결측 침수구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07444",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수위센서 상승말미와 영상판독 초반이 일부 겹친 관계가 수위영상 관측교차다.",
+      "concepts": [
+        "수위영상 관측교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07445",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서회복 마지막 부분과 현장검증 초반이 함께한 상태가 센서회복 후반검증이다. 센서 출력 안정화와 현장 비교가 겹친 부분, 비교 뒤 단독 감시를 분리한다.",
+      "concepts": [
+        "센서회복 후반검증"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07446",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누수발생 선행관측은 배관 누수가 센서 경보보다 먼저 진행되다가 경보 초기 구간과 잠시 교차한 관계다. 젖음 흔적과 압력 하락을 이용해 경보 이전 시작을 확인한다.",
+      "concepts": [
+        "누수발생 선행관측"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07447",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교정이 끝난 뒤 정상감시를 시작했다면 센서교정후 정상감시 무겹침이다. 교정 종료 뒤 새 유효표본이 시작됐는지 확인해 정비와 운영 구간을 겹치지 않게 한다.",
+      "concepts": [
+        "센서교정후 정상감시 무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07448",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경보종료와 정상상태 시작이 한 점인 경보해제 끝점접촉은 상태중첩이 아니다.",
+      "concepts": [
+        "경보해제 끝점접촉"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07449",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수위·유량·영상 이상이 침수회차 일부에서 함께한 상태가 다중센서 이상중첩이다. 수위·유량·영상의 이상 플래그가 동시에 활성인 교집합만 복합 장애시간으로 계산한다.",
+      "concepts": [
+        "다중센서 이상중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07450",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 침수 중 센서가 임계를 넘겨 검출한 일부가 침수기간 검출부분이다.",
+      "concepts": [
+        "침수기간 검출부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07451",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배연팬 운전 중 일부만 차량통제와 함께한 관계가 배연운전과 교통통제 부분겹침이다. 팬 실제 운전과 차량 폐쇄구간을 교차해 화재 대응에서 두 조치가 함께였던 시간을 구한다.",
+      "concepts": [
+        "배연운전과 교통통제 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07452",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 터널 배연팬의 기동·정지가 같으면 양방향 배연완전동시다.",
+      "concepts": [
+        "양방향 배연완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07453",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연기경보 배연구간포함은 연기 경보의 발령부터 해제까지가 배연팬 운전 구간 안에 전부 들어간 관계다. 경보가 팬 기동 전이나 정지 후까지 이어지면 완전 포함이 아니다.",
+      "concepts": [
+        "연기경보 배연구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07454",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "일반급기 종료말미와 배연기동 초반이 일부 겹친 관계가 급배기 절체교차다.",
+      "concepts": [
+        "급배기 절체교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07455",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "일반환기 회복말미와 제한진입 초반이 만난 상태가 터널환기회복 후반진입이다. 일반환기 안정화와 제한차량 진입이 함께인 구간을 회복 전환으로 따로 표시한다.",
+      "concepts": [
+        "터널환기회복 후반진입"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07456",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연기감지가 먼저 생겨 배연운전 초기와 일부 겹친 관계가 화재감지 선행겹침이다.",
+      "concepts": [
+        "화재감지 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07457",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배연이 끝난 다음 일반환기를 시작했다면 배연종료후 일반환기 무겹침이다. 배연 정지접점과 일반환기 기동 사이의 순차 경계를 확인해 두 모드를 동시로 세지 않는다.",
+      "concepts": [
+        "배연종료후 일반환기 무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07458",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배연종료와 일반급기 시작이 한 점인 환기전환 접점공유는 병행운전이 아니다.",
+      "concepts": [
+        "환기전환 접점공유"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07459",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 팬의 운전구간이 화재대응 일부에서 함께한 상태가 다중팬 배연중첩이다. 팬별 회전수 유효구간의 교집합만 공동 배연으로 두고 명령 대기는 제외한다.",
+      "concepts": [
+        "다중팬 배연중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07460",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 방재운전 중 최대배기 상태였던 일부가 방재기간 고배기부분이다.",
+      "concepts": [
+        "방재기간 고배기부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07461",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대피구간 일부에만 입구차단이 유지된 관계가 화재대피와 진입차단 부분겹침이다. 대피자의 이동구간과 입구 폐쇄시간을 교차해 차단이 보호한 실제 기간을 계산한다.",
+      "concepts": [
+        "화재대피와 진입차단 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07462",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 피난통로 사용구간의 양 끝이 같으면 양방향 대피완전동시다.",
+      "concepts": [
+        "양방향 대피완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07463",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 대피구간 안에 소화설비 방출이 전부 들어간 상태가 소화방출 대피구간포함이다. 약제 방출 시작·종료가 대피 발령과 마지막 탈출 사이에 모두 들어오는지 본다.",
+      "concepts": [
+        "소화방출 대피구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07464",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 통로 폐쇄말미와 대체통로 개방초반이 일부 겹친 관계가 대피통로 전환교차다.",
+      "concepts": [
+        "대피통로 전환교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07465",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진압 마지막 부분과 구조대 진입초반이 만난 상태가 진압후반 구조진입이다. 소화 진압과 구조대 진입이 함께인 앞부분, 진압 뒤 구조만 계속된 구간을 나눈다.",
+      "concepts": [
+        "진압후반 구조진입"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07466",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연기가 먼저 생겨 대피명령 초기와 일부 겹친 관계가 연기발생 선행겹침이다.",
+      "concepts": [
+        "연기발생 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07467",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사람이 모두 나간 뒤 점검을 시작했다면 대피완료후 현장점검 무겹침이다. 마지막 인원 탈출 뒤 점검팀이 진입했는지 출입접점으로 검증해 활동을 분리한다.",
+      "concepts": [
+        "대피완료후 현장점검 무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07468",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 피난자 이탈과 구조진입이 한 점인 대피종료 접점공유는 인원교차 구간이 아니다.",
+      "concepts": [
+        "대피종료 접점공유"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07469",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복수비상행동 중첩은 대피, 차단, 배연, 소화가 대응 중 같은 시간대에 병행된 상태다. 네 행동의 시작 중 가장 늦은 시점부터 종료 중 가장 이른 시점까지만 공통 구간으로 센다.",
+      "concepts": [
+        "복수비상행동 중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07470",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 통제 중 실제 소화가 진행된 일부가 화재통제 중 진압부분이다.",
+      "concepts": [
+        "화재통제 중 진압부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07471",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상발전과 배수부분 겹침은 발전기가 유효 전압을 낸 구간 중 일부에서만 배수 펌프가 함께 운전된 관계다. 두 구간의 교집합으로 비상 전력 배수시간을 계산한다.",
+      "concepts": [
+        "비상발전과 배수부분 겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07472",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "UPS 방전과 정전의 시작·종료가 같으면 터널UPS지원 정전완전동시다.",
+      "concepts": [
+        "터널UPS지원 정전완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07473",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 발전기운전 안에 차단·배수·관제가 모두 들어간 상태가 터널필수부하 발전구간포함이다. 차단·배수·관제 부하의 시작·종료가 발전기 운전 경계 안에 모두 있는지 확인한다.",
+      "concepts": [
+        "터널필수부하 발전구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07474",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "터널상용발전 절체교차는 발전기 출력이 줄어드는 말기와 상용 전원이 부하를 받기 시작한 초기가 짧게 겹친 관계다.",
+      "concepts": [
+        "터널상용발전 절체교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07475",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복전안정 마지막 부분과 펌프재투입 초반이 만난 상태가 터널복전후반 부하재개다. 상용전원 안정과 펌프 재투입이 함께였던 전환부, 이후 정상 운전을 구별한다.",
+      "concepts": [
+        "터널복전후반 부하재개"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07476",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전원상실이 먼저 생겨 발전기기동 초기와 일부 겹친 관계가 터널정전상태 선행겹침이다.",
+      "concepts": [
+        "터널정전상태 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07477",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발전종료후 상용운전 무겹침은 발전기 차단이 완료된 다음 상용 모선 부하가 시작된 순차 관계다. 두 접점을 보존해 병렬 운전과 구별한다.",
+      "concepts": [
+        "발전종료후 상용운전 무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07478",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "터널절체완료 끝점접촉은 비상 발전 공급이 끝나는 순간 상용 전원이 바로 이어지는 경계 접촉이다. 두 전원이 일정 시간 함께 부하를 담당하는 병렬 공급과는 다르다.",
+      "concepts": [
+        "터널절체완료 끝점접촉"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07479",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배수·배연·조명·관제 부하가 정전 일부에서 함께한 상태가 터널다중비상부하 중첩이다. 배수·배연·조명·관제의 실제 전력소비 구간을 교차해 동시 최대부하를 구한다.",
+      "concepts": [
+        "터널다중비상부하 중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07480",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 정전 중 발전기가 부하를 맡은 일부가 정전기간 발전부분이다.",
+      "concepts": [
+        "정전기간 발전부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07481",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비창 일부에만 실제 차로폐쇄가 적용된 관계가 터널정비와 차로통제 부분겹침이다. 정비창과 물리 차로폐쇄의 교집합만 계산해 승인된 창 전체를 통제시간으로 보지 않는다.",
+      "concepts": [
+        "터널정비와 차로통제 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07482",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 터널의 작업 시작·종료가 같으면 양방향 정비완전동시다.",
+      "concepts": [
+        "양방향 정비완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07483",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 설비정지 안에 배수로청소가 전부 들어간 상태가 배수로청소 정지구간포함이다. 청소의 첫 진입과 마지막 철수가 설비 정지의 양 경계 사이에 있어야 한다.",
+      "concepts": [
+        "배수로청소 정지구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07484",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "터널교대정비 작업교차는 앞 작업조의 마무리와 다음 작업조의 착수가 인계 시간 동안 부분적으로 겹친 관계다. 전체 근무 시간이 동일하다는 뜻은 아니다.",
+      "concepts": [
+        "터널교대정비 작업교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07485",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시험운전 마지막 부분과 제한개방 초반이 만난 상태가 시험운전 후반개방이다. 시험운전과 제한개방이 함께인 구간을 표시하고 안전 확인 전 정상개방과 구별한다.",
+      "concepts": [
+        "시험운전 후반개방"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07486",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고장진단이 먼저 시작해 격리초기와 일부 겹친 관계가 터널진단작업 선행겹침이다.",
+      "concepts": [
+        "터널진단작업 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07487",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비가 끝난 뒤 정상통행을 시작했다면 정비완료후 정상통행 무겹침이다. 잠금 해제와 시험 합격 뒤 첫 정상차량이 들어와 정비·통행 교집합이 없음을 확인한다.",
+      "concepts": [
+        "정비완료후 정상통행 무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07488",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "설비격리 종료와 시험기동이 한 점인 터널설비 격리해제 접점공유는 병행작업이 아니다.",
+      "concepts": [
+        "터널설비 격리해제 접점공유"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07489",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "펌프·센서·표지 작업이 저교통창 일부에서 함께한 상태가 다중설비 정비중첩이다. 펌프·센서·표지 작업의 실제 활동구간을 교차해 인력만 현장에 있던 시간은 뺀다.",
+      "concepts": [
+        "다중설비 정비중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07490",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 예약시간 중 현장작업이 진행된 일부가 정비창 실제작업부분이다.",
+      "concepts": [
+        "정비창 실제작업부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07491",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "노면회복 구간 일부에만 제한통행이 시행된 관계가 배수회복과 제한통행 부분겹침이다. 노면 회복구간과 저속통행을 교차해 상태 개선 중 차량 노출시간을 따로 계산한다.",
+      "concepts": [
+        "배수회복과 제한통행 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07492",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상·하행 정상화의 시작·종료가 같으면 양방향 복귀완전동시다.",
+      "concepts": [
+        "양방향 복귀완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07493",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 복구운영 안에 재침수 집중감시가 전부 들어간 상태가 집중감시 복구구간포함이다. 집중감시의 발령과 해제가 복구운영의 양 경계 안에 모두 놓일 때 완전 포함이다.",
+      "concepts": [
+        "집중감시 복구구간포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07494",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 차로 개방말미와 다음 차로 개방초반이 일부 겹친 관계가 차로순차 개방교차다.",
+      "concepts": [
+        "차로순차 개방교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07495",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "노면건조 마지막 부분과 속도제한 해제초반이 만난 상태가 노면건조 후반정상화다. 건조와 속도제한 해제가 겹친 전환부를 표시하고 완전 정상화 시점을 별도로 둔다.",
+      "concepts": [
+        "노면건조 후반정상화"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07496",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "집수정 수위가 먼저 낮아져 제한개방 초기와 일부 겹친 관계가 수위하강 선행겹침이다.",
+      "concepts": [
+        "수위하강 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07497",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "집중감시를 끝낸 뒤 평시운영으로 바뀌면 감시종료후 평시운영 무겹침이다. 집중감시 해제 뒤 평시 규칙이 활성화됐는지 상태접점으로 확인해 구간을 분리한다.",
+      "concepts": [
+        "감시종료후 평시운영 무겹침"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07498",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상상태 종료와 정상상태 시작이 한 점인 복구완료 접점공유는 두 상태의 중첩이 아니다.",
+      "concepts": [
+        "복구완료 접점공유"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07499",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배수·청소·검사·개방이 회복구간 일부에서 함께한 상태가 복구행동 시간중첩이다. 배수·청소·검사·개방 중 실제로 동시에 활성인 조합별 교집합을 따로 계산한다.",
+      "concepts": [
+        "복구행동 시간중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07500",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전체 사고회차 중 정상통행을 회복한 뒤의 일부가 사고회차 정상화부분이다.",
+      "concepts": [
+        "사고회차 정상화부분"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    }
+  ]
+}

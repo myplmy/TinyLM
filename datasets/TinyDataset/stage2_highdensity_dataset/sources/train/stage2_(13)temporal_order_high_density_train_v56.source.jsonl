@@ -1,0 +1,150 @@
+{"primary":"유인포획 반응지연","text":"해충이 유인원에 접근한 뒤 트랩에 잡힐 때까지의 생물학적 시간이 유인포획 반응지연이다. 유인원 방출과 해충 이동이 시작된 뒤 트랩 접점이 닫힐 때까지를 생물 행동 구간으로 본다.","relations":["process","state","boundary"]}
+{"primary":"트랩회수 순번대기","text":"조사팀이 여러 지점을 차례로 돌며 해당 트랩을 회수하기 전까지가 트랩회수 순번대기다. 각 지점의 실제 포획시각은 유지하고 차량 경로 때문에 늦어진 회수만 운영 지연으로 별도 계산한다.","relations":["process","attribute","comparison"]}
+{"primary":"포획발생 회수대기 구별","text":"포획발생 회수대기 구별은 해충이 잡힌 때와 사람이 표본을 가져간 때를 같은 지연으로 보지 않는다. 센서가 포획을 남긴 이후 회수 일정까지 멈춘 시간은 이미 끝난 생물 반응에 더하지 않는다.","relations":["classification","process","role"]}
+{"primary":"트랩센서 전송지연","text":"포획 접점이 생긴 뒤 산림서버에 알림이 도착할 때까지가 트랩센서 전송지연이다. 장치 접점번호와 서버 수신을 맞춰 산림 통신망의 재시도·버퍼 시간이 얼마나 더해졌는지 잰다.","relations":["part_of","process","state"]}
+{"primary":"포획경보 검토대기","text":"자동경보가 뜬 뒤 담당자가 사진을 확인할 차례를 기다린 구간이 포획경보 검토대기다. 사진은 서버에 도착했지만 담당자가 열지 못한 구간을 탐지나 전송 지연과 분리한다.","relations":["boundary","function","process"]}
+{"primary":"해충활동 포획선행","text":"야간 해충활동이 먼저 증가하고 포획이 뒤따르는 해충활동 포획선행을 관측순서로 복원한다. 활동지수의 상승과 첫 유효 포획 사이에 생물 반응 구간을 두고 사람 회수는 후속 사건으로 둔다.","relations":["classification","comparison","state"]}
+{"primary":"트랩포화 탐지지연","text":"포획통이 가득 찬 뒤 센서값으로 포화를 알아낼 때까지가 트랩포화 탐지지연이다. 용기 용량을 넘은 때와 무게센서 임계가 지속된 때의 차이로 감지 지연을 추정한다.","relations":["attribute","contrast","process"]}
+{"primary":"트랩교체 자원대기","text":"포화 확인 뒤 빈 포획통과 작업차량이 배정될 때까지를 트랩교체 자원대기로 기록한다. 빈 통과 차량이 모두 확보된 때까지는 준비 큐이며 현장 교체 작업은 도착 뒤부터 센다.","relations":["process","role","state"]}
+{"primary":"포획연표 지연분해","text":"포획연표 지연분해는 유인·포획·센서전송·검토·회수의 시간을 원인별로 나눈다. 유인 반응, 물리 포획, 센서 송신, 사람 판독, 현장 회수를 각각 다른 원인으로 연결한다.","relations":["boundary","part_of","process"]}
+{"primary":"포획증거 순서복원","text":"시각이 엇갈린 사진과 접점은 포획증거 순서복원으로 실제 사건과 후속 처리대기를 배열한다. 사진 촬영, 센서 접점, 서버 도착, 사람 검토의 원시각을 보정해 늦은 업로드의 역전을 막는다.","relations":["attribute","comparison","process"]}
+{"primary":"산림도보 이동지연","text":"임도 끝에서 조사구까지 걸어 들어가는 물리적 시간이 산림도보 이동지연이다. GPS 경로의 거리와 고도차를 써서 출발 전 차량·인력 배정대기와 실제 보행을 나눈다.","relations":["process","state","boundary"]}
+{"primary":"조사구 방문순번대기","text":"여러 조사구 중 해당 구역의 차례가 올 때까지가 조사구 방문순번대기다. 이전 조사구 완료부터 해당 구역 출발까지를 일정 큐로 두고 이동 거리와 합치지 않는다.","relations":["process","attribute","comparison"]}
+{"primary":"현장접근 방문대기 구별","text":"현장접근 방문대기 구별은 이동에 걸린 시간과 일정상 뒤로 밀린 시간을 분리한다. 일정상 출발하지 않은 정지구간은 자원 큐이고 임도 끝 이후에만 물리 접근시간이 흐른다.","relations":["classification","process","role"]}
+{"primary":"우천통과 지형지연","text":"비로 하천 수위가 내려갈 때까지 우회한 시간이 우천통과 지형지연이다. 하천 수위 자료와 GPS 우회 경로를 비교해 안전조건 회복과 실제 이동이 더한 시간을 나눈다.","relations":["part_of","process","state"]}
+{"primary":"조사허가 확인대기","text":"보호구역 출입승인을 검토하는 동안 멈춘 구간이 조사허가 확인대기다. 신청 자료가 완전해진 뒤 권한기관이 검토하지 않은 시간을 자연 지형의 이동 지연에 섞지 않는다.","relations":["boundary","function","process"]}
+{"primary":"차량도착 도보선행","text":"차량이 임도 입구에 도착한 뒤 도보조사가 시작되는 차량도착 도보선행을 기록한다. 차량 정차, 장비 하역, 조사조 출발, 첫 관측을 순서대로 기록해 접근 단계의 경계를 보존한다.","relations":["classification","comparison","state"]}
+{"primary":"경사구간 이동연장","text":"급경사 때문에 예상보다 오래 걸린 물리 이동이 경사구간 이동연장이다. 같은 거리의 평지 기준과 실제 GPS 통과시간을 비교해 경사가 더한 이동 소요를 계산한다.","relations":["attribute","contrast","process"]}
+{"primary":"조사인력 배정대기","text":"현장 위치를 정한 뒤 숙련 조사자가 배정될 때까지가 조사인력 배정대기다.","relations":["process","role","state"]}
+{"primary":"현장조사 지연사슬","text":"현장조사 지연사슬은 허가·인력배정·차량·도보·관측의 선후와 각 대기를 잇는다. 허가, 조사조 배정, 차량 이동, 도보 접근, 첫 관측을 사건 시각과 대기 원인으로 구분한다.","relations":["boundary","part_of","process"]}
+{"primary":"접근로그 순서교정","text":"GPS 수신이 늦은 기록은 접근로그 순서교정으로 실제 이동경로에 맞춰 재배열한다.","relations":["attribute","comparison","process"]}
+{"primary":"시료냉각 안정지연","text":"채취한 조직이 지정 운송온도에 도달할 때까지의 물리 시간이 시료냉각 안정지연이다. 조직 중심온도가 허용범위에 지속 진입한 때를 사용해 냉장고 투입만으로 완료라 하지 않는다.","relations":["process","state","boundary"]}
+{"primary":"시료운송 적재대기","text":"채취 뒤 냉장차의 적재 차례를 기다린 구간이 시료운송 적재대기다.","relations":["process","attribute","comparison"]}
+{"primary":"냉각시간 적재대기 분리","text":"냉각시간 적재대기 분리는 온도 안정에 필요한 시간과 차량 순번을 같은 원인으로 묶지 않는다. 온도는 이미 안정됐지만 차량 칸이 비지 않은 구간은 물류 큐이며 열전달시간이 아니다.","relations":["classification","process","role"]}
+{"primary":"산길운송 이동지연","text":"검사실까지 굽은 산길을 이동하며 소요된 시간이 산길운송 이동지연이다.","relations":["part_of","process","state"]}
+{"primary":"검사실 접수대기","text":"시료가 도착한 뒤 바코드 접수 차례를 기다린 구간이 검사실 접수대기다. 운송 도착과 바코드 접수 사이를 따로 재어 도로 이동이나 실험 처리에 포함하지 않는다.","relations":["boundary","function","process"]}
+{"primary":"채취포장 운송선행","text":"현장 포장이 끝난 다음 운송이 시작되는 채취포장 운송선행을 시간축에 남긴다.","relations":["classification","comparison","state"]}
+{"primary":"냉매교체 처리지연","text":"운송 중 냉매를 교체하느라 늘어난 작업시간이 냉매교체 처리지연이다. 용기 분리, 냉매 교환, 온도 확인, 재봉인의 실제 작업만 세며 작업자 도착대기는 뺀다.","relations":["attribute","contrast","process"]}
+{"primary":"운송차량 출발대기","text":"포장이 끝났어도 공동차량이 돌아올 때까지를 운송차량 출발대기로 기록한다.","relations":["process","role","state"]}
+{"primary":"시료물류 지연분해","text":"시료물류 지연분해는 냉각·적재대기·도로이동·접수대기를 별도 구간으로 계산한다. 채취 후 냉각, 차량 적재, 도로 운송, 검사실 도착, 접수의 시계를 표본 ID로 잇는다.","relations":["boundary","part_of","process"]}
+{"primary":"시료시각 순서복원","text":"스캔과 수기시각이 충돌하면 시료시각 순서복원으로 채취부터 접수까지의 실제 차례를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"배양반응 생물지연","text":"병원체가 배지에서 검출수준까지 자라는 시간이 배양반응 생물지연이다. 접종 뒤 대조군과 목표 신호가 검출 임계에 이르기까지를 미생물 성장 과정으로 본다.","relations":["process","state","boundary"]}
+{"primary":"검사장비 사용대기","text":"시료준비가 끝난 뒤 분석장비의 빈 회차를 기다리는 구간이 검사장비 사용대기다.","relations":["process","attribute","comparison"]}
+{"primary":"배양지연 장비대기 구별","text":"배양지연 장비대기 구별은 생물 성장시간과 검사실 자원 순번을 따로 본다. 배양기에 넣기 전 빈 슬롯을 기다린 시간은 생물 성장 전이며 반응시간에 포함하지 않는다.","relations":["classification","process","role"]}
+{"primary":"유전자증폭 처리시간","text":"추출물의 증폭과 신호판독에 실제로 걸린 공정시간이 유전자증폭 처리시간이다.","relations":["part_of","process","state"]}
+{"primary":"결과검토 승인대기","text":"장비 결과가 나온 뒤 책임진단자가 승인할 차례를 기다린 시간이 결과검토 승인대기다. 장치 판독은 끝났지만 책임자가 서명하지 않은 구간을 분석 처리와 독립된 행정 큐로 둔다.","relations":["boundary","function","process"]}
+{"primary":"시료전처리 분석선행","text":"조직분쇄와 추출이 끝난 다음 분석이 시작되는 시료전처리 분석선행을 보존한다.","relations":["classification","comparison","state"]}
+{"primary":"재검사 반응지연","text":"억제물질을 제거한 뒤 신호가 나타날 때까지 늘어난 실험시간이 재검사 반응지연이다. 억제 제거와 재접종 뒤 신호가 다시 형성되는 실제 실험 구간만 재검사 소요로 센다.","relations":["attribute","contrast","process"]}
+{"primary":"재검사 큐대기","text":"재검 결정을 내린 뒤 장비 회차가 배정될 때까지가 재검사 큐대기다.","relations":["process","role","state"]}
+{"primary":"진단연표 원인분해","text":"진단연표 원인분해는 배양·반응·장비사용·판독·승인 지연을 서로 다른 원인으로 표시한다. 배양·화학 반응·장비 회차·판독·책임 승인의 시작과 끝을 표본별로 기록한다.","relations":["boundary","part_of","process"]}
+{"primary":"진단결과 순서복원","text":"초안과 승인시각이 뒤섞이면 진단결과 순서복원으로 검사완료와 행정확정을 분리한다.","relations":["attribute","comparison","process"]}
+{"primary":"위성통과 관측지연","text":"구름이 걷혀도 위성이 대상지역을 다시 지날 때까지의 주기적 시간이 위성통과 관측지연이다. 대상지의 다음 촬영 가능 궤도까지 기다린 시간은 서버가 영상을 처리한 시간과 원인이 다르다.","relations":["process","state","boundary"]}
+{"primary":"영상다운로드 처리대기","text":"촬영이 끝난 뒤 지상국에서 파일을 받을 차례를 기다린 구간이 영상다운로드 처리대기다.","relations":["process","attribute","comparison"]}
+{"primary":"관측주기 처리대기 구별","text":"관측주기 처리대기 구별은 궤도 때문에 늦어진 시간과 서버 큐 때문에 늦어진 시간을 나눈다. 촬영 자체가 없던 궤도 공백과 촬영 후 계산 큐를 원시 영상 생성시각으로 나눈다.","relations":["classification","process","role"]}
+{"primary":"구름가림 자연지연","text":"병해 흔적이 있어도 구름으로 관측이 미뤄진 기간이 구름가림 자연지연이다.","relations":["part_of","process","state"]}
+{"primary":"영상분석 작업대기","text":"정사영상이 준비된 뒤 분석가의 검토 순번을 기다린 시간이 영상분석 작업대기다. 정사보정은 끝났지만 분석가가 지도를 열기 전까지를 원격센서 관측지연에 더하지 않는다.","relations":["boundary","function","process"]}
+{"primary":"촬영수신 분석선행","text":"센서 촬영 뒤 수신과 보정이 끝나야 분석이 시작되는 촬영수신 분석선행을 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"식생지수 계산지연","text":"대용량 타일을 처리해 식생지수를 만드는 실제 계산시간이 식생지수 계산지연이다. 타일 읽기부터 보정·지수 산출·병합 완료까지 실제 연산이 실행된 구간을 측정한다.","relations":["attribute","contrast","process"]}
+{"primary":"의심구역 확인대기","text":"모델이 후보지를 낸 뒤 현장팀 배정을 기다린 구간이 의심구역 확인대기다.","relations":["process","role","state"]}
+{"primary":"원격예찰 지연사슬","text":"원격예찰 지연사슬은 궤도·구름·수신·계산·검토·현장확인의 순서와 대기를 잇는다. 궤도 도착, 구름 조건, 지상 수신, 영상 계산, 사람 판독, 현장 확인의 의존을 잇는다.","relations":["boundary","part_of","process"]}
+{"primary":"영상기록 순서복원","text":"촬영일과 게시일이 충돌하면 영상기록 순서복원으로 관측사건과 처리사건을 재배열한다.","relations":["attribute","comparison","process"]}
+{"primary":"강우후 잎마름 지연","text":"비가 그친 뒤 잎 표면이 약제 살포에 적합하게 마를 때까지의 자연 시간이 강우후 잎마름 지연이다. 비가 그친 뒤 잎 수분센서가 살포 기준 아래로 지속 내려갈 때까지를 자연 건조로 본다.","relations":["process","state","boundary"]}
+{"primary":"기상자료 수신대기","text":"관측은 끝났지만 예보자료가 방제시스템에 들어오길 기다린 구간이 기상자료 수신대기다.","relations":["process","attribute","comparison"]}
+{"primary":"잎마름 수신대기 구별","text":"잎마름 수신대기 구별은 현장 조건 회복과 정보 도착의 지연을 같은 것으로 보지 않는다. 현장은 이미 말랐는데 기상표본 전송만 늦은 경우 통신 큐를 자연 회복에 포함하지 않는다.","relations":["classification","process","role"]}
+{"primary":"바람약화 자연지연","text":"강풍이 허용범위 아래로 내려갈 때까지 기다린 기상 시간이 바람약화 자연지연이다.","relations":["part_of","process","state"]}
+{"primary":"살포창 판정대기","text":"기상자료가 모인 뒤 담당자가 방제 가능 여부를 검토한 시간이 살포창 판정대기다. 풍속·잎수분 자료가 갖춰진 뒤 담당자가 결정을 시작하지 못한 시간을 별도 업무 큐로 둔다.","relations":["boundary","function","process"]}
+{"primary":"강우종료 습도회복선행","text":"강우가 끝난 뒤 습도가 내려가며 살포창이 열리는 강우종료 습도회복선행을 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"기온상승 생육지연","text":"저온 뒤 병원체 활동온도에 도달할 때까지 걸린 자연 시간이 기온상승 생육지연이다. 미기후 온도가 활동 임계에 도달한 뒤 해충 움직임이 나타나는 자연 반응을 연속 표본으로 잰다.","relations":["attribute","contrast","process"]}
+{"primary":"예보갱신 처리대기","text":"새 관측이 있어도 다음 예보 실행 차례까지 멈춘 구간이 예보갱신 처리대기다.","relations":["process","role","state"]}
+{"primary":"방제기상 지연분해","text":"방제기상 지연분해는 잎마름·바람약화·예보수신·판정대기를 원인별로 나눈다. 강우 종료, 잎 건조, 바람 완화, 예보 수신, 사람 판정을 서로 다른 시간층에 배치한다.","relations":["boundary","part_of","process"]}
+{"primary":"기상연표 순서복원","text":"관측과 예보 게시시각이 엇갈리면 기상연표 순서복원으로 현상·측정·발표 순서를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"확산모형 계산지연","text":"다수 조사구와 기상자료를 넣어 확산경로를 산출하는 실제 시간이 확산모형 계산지연이다. 입력 고정 뒤 격자 해석과 경로 산출이 실제 CPU에서 실행된 시간만 계산 지연이다.","relations":["process","state","boundary"]}
+{"primary":"분석작업 큐대기","text":"입력자료가 준비된 뒤 계산서버의 실행 차례를 기다린 구간이 분석작업 큐대기다.","relations":["process","attribute","comparison"]}
+{"primary":"모형계산 큐대기 구별","text":"모형계산 큐대기 구별은 연산에 필요한 시간과 실행 전 대기시간을 분리한다. 작업이 스케줄러에 머문 구간과 코어가 할당된 뒤의 연산 구간을 실행 로그로 나눈다.","relations":["classification","process","role"]}
+{"primary":"위험지도 렌더링지연","text":"모형 결과를 지도 타일로 변환해 표시하는 처리시간이 위험지도 렌더링지연이다.","relations":["part_of","process","state"]}
+{"primary":"전문가 판독대기","text":"위험지도가 나온 뒤 산림병리 전문가가 검토할 차례를 기다린 시간이 전문가 판독대기다. 위험지도는 완성됐지만 전문가 세션이 열리지 않은 시간을 모델 계산 성능과 구별한다.","relations":["boundary","function","process"]}
+{"primary":"자료정제 모형실행선행","text":"오류표본을 정리한 다음 모형을 돌리는 자료정제 모형실행선행을 분석연표에 남긴다.","relations":["classification","comparison","state"]}
+{"primary":"민감도분석 처리지연","text":"여러 조건을 반복 계산하느라 늘어난 실제 연산시간이 민감도분석 처리지연이다. 매개변수 조합별 반복 실행과 결과 집계에 실제 사용된 시간을 큐 대기에서 분리한다.","relations":["attribute","contrast","process"]}
+{"primary":"보고서 생성대기","text":"판독이 끝난 뒤 보고시스템의 문서 작업 차례를 기다린 구간이 보고서 생성대기다.","relations":["process","role","state"]}
+{"primary":"위험분석 지연사슬","text":"위험분석 지연사슬은 자료정제·큐대기·계산·렌더링·판독·보고의 순서를 연결한다. 자료 정제, 작업 제출, 큐 할당, 계산, 지도 렌더링, 전문가 판독, 보고를 순서대로 둔다.","relations":["boundary","part_of","process"]}
+{"primary":"분석시각 순서교정","text":"파일 생성과 승인시각이 뒤섞이면 분석시각 순서교정으로 계산완료와 검토완료를 나눈다.","relations":["attribute","comparison","process"]}
+{"primary":"방제계획 검토시간","text":"대상면적·약제·인력·환경제약을 실제로 살펴보는 처리시간이 방제계획 검토시간이다. 담당자가 면적과 약제 제한을 열어 대안을 비교한 실제 작업시간만 검토에 포함한다.","relations":["process","state","boundary"]}
+{"primary":"결재함 순번대기","text":"검토가 끝난 계획이 책임자의 결재 차례를 기다린 구간이 결재함 순번대기다.","relations":["process","attribute","comparison"]}
+{"primary":"검토시간 결재대기 구별","text":"검토시간 결재대기 구별은 판단에 쓴 시간과 단순 업무대기를 따로 계산한다. 판단 문서가 완성된 뒤 결재함에 머문 구간은 내용 분석이 아니라 권한 의존이다.","relations":["classification","process","role"]}
+{"primary":"환경영향 협의기간","text":"보호종과 수계 영향을 확인하는 실질 협의시간이 환경영향 협의기간이다.","relations":["part_of","process","state"]}
+{"primary":"기관회신 대기시간","text":"협의자료를 보낸 뒤 외부기관 답변을 기다린 구간이 기관회신 대기시간이다. 외부기관이 완전한 협의자료를 수신한 뒤 답변이 접수될 때까지를 별도 의존구간으로 잰다.","relations":["boundary","function","process"]}
+{"primary":"현장진단 계획검토선행","text":"현장진단 결과가 확정된 다음 방제계획 검토가 시작되는 현장진단 계획검토선행을 지킨다.","relations":["classification","comparison","state"]}
+{"primary":"계획보완 처리지연","text":"면적이나 약제 정보를 고쳐 다시 검토하는 실제 시간이 계획보완 처리지연이다. 반려 사유를 분석하고 도면·약량을 수정해 재검토본을 만든 실제 작업만 센다.","relations":["attribute","contrast","process"]}
+{"primary":"재결재 순번대기","text":"보완을 마친 뒤 승인권자의 새 차례를 기다린 구간이 재결재 순번대기다.","relations":["process","role","state"]}
+{"primary":"방제승인 지연분해","text":"방제승인 지연분해는 검토·협의·기관회신·보완·결재대기를 서로 분리한다. 기술 검토, 기관 협의, 외부 회신, 자료 보완, 권한 결재의 상태 전환을 구별한다.","relations":["boundary","part_of","process"]}
+{"primary":"승인연표 순서복원","text":"초안·회신·서명이 다른 시계로 찍히면 승인연표 순서복원으로 효력 발생 차례를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"약제혼합 안정시간","text":"약제혼합 안정시간은 원액 투입 후 탱크 상·중·하부의 농도 차이가 규정 편차보다 작아지는 데 걸린다. 교반기 가동이나 단일 센서의 정상값만으로 종료하지 않는다.","relations":["process","state","boundary"]}
+{"primary":"약제창고 출고대기","text":"방제결정 뒤 창고에서 해당 물량을 피킹할 차례를 기다린 구간이 약제창고 출고대기다.","relations":["process","attribute","comparison"]}
+{"primary":"혼합시간 출고대기 구별","text":"혼합시간 출고대기 구별은 제제 준비에 필요한 시간과 물류 순번을 나눈다. 농도는 안정됐지만 적재 차례가 오지 않은 구간을 제제 반응시간에 더하지 않는다.","relations":["classification","process","role"]}
+{"primary":"냉장약제 해동지연","text":"저온 보관한 생물약제가 사용온도에 도달할 때까지가 냉장약제 해동지연이다.","relations":["part_of","process","state"]}
+{"primary":"운송차량 배차대기","text":"약제 출고가 가능해도 운송차량을 기다린 시간이 운송차량 배차대기다. 출고 승인 뒤 적합 차량이 지정될 때까지를 산길 이동이나 현장 인수시간과 분리한다.","relations":["boundary","function","process"]}
+{"primary":"출고완료 현장운송선행","text":"창고검수와 출고가 끝난 다음 현장운송이 시작되는 출고완료 현장운송선행을 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"산길약제 운송지연","text":"현장까지 임도와 우회로를 이동하며 소요된 실제 시간이 산길약제 운송지연이다. 차량 출발부터 현장 게이트 도착까지 GPS 경로로 재어 우회·노면이 더한 물리 소요를 계산한다.","relations":["attribute","contrast","process"]}
+{"primary":"현장인수 확인대기","text":"약제가 도착한 뒤 책임자가 수량을 확인할 차례를 기다린 구간이 현장인수 확인대기다.","relations":["process","role","state"]}
+{"primary":"약제공급 지연사슬","text":"약제공급 지연사슬은 해동·혼합·출고·배차·운송·인수의 선후와 대기를 잇는다. 해동·혼합·품질확인·출고·차량 배정·운송·현장 인수를 로트번호로 연결한다.","relations":["boundary","part_of","process"]}
+{"primary":"약제물류 순서교정","text":"스캔시각이 일괄 등록되면 약제물류 순서교정으로 실제 출고·출발·도착 차례를 복원한다.","relations":["attribute","comparison","process"]}
+{"primary":"방제팀 현장이동지연","text":"기지에서 대상 산림까지 차량과 도보로 이동한 실제 시간이 방제팀 현장이동지연이다. 기지 출발 접점부터 현장 하차까지의 차량·보행 구간만 재며 출발 전 브리핑 대기는 제외한다.","relations":["process","state","boundary"]}
+{"primary":"숙련인력 배정대기","text":"방제구역이 정해진 뒤 자격을 갖춘 작업자가 배정될 때까지가 숙련인력 배정대기다.","relations":["process","attribute","comparison"]}
+{"primary":"이동지연 배정대기 구별","text":"이동지연 배정대기 구별은 현장까지 간 시간과 출발 전 인력대기를 따로 본다. 팀이 아직 지정되지 않은 시간은 자원 큐이고 배정 후 이동 로그가 생긴 때부터 물리 이동이다.","relations":["classification","process","role"]}
+{"primary":"보호구 착용시간","text":"작업자가 방제복과 호흡보호구를 정확히 착용하는 처리시간이 보호구 착용시간이다.","relations":["part_of","process","state"]}
+{"primary":"안전교육 순번대기","text":"여러 팀 중 해당 조가 안전브리핑을 받을 차례를 기다린 구간이 안전교육 순번대기다. 교육 내용은 같아도 앞 조가 끝날 때까지 기다린 시간은 현장 접근이나 작업시간이 아니다.","relations":["boundary","function","process"]}
+{"primary":"인력배정 안전교육선행","text":"작업자 명단이 확정된 다음 안전교육을 하는 인력배정 안전교육선행을 유지한다.","relations":["classification","comparison","state"]}
+{"primary":"작업구간 접근지연","text":"차량 하차 뒤 급경사 방제구간까지 접근하는 물리 시간이 작업구간 접근지연이다. 하차 위치에서 방제 경계까지 실제 보행 경로와 고도차로 접근 소요를 산정한다.","relations":["attribute","contrast","process"]}
+{"primary":"살포장비 인수대기","text":"현장에 도착한 팀이 공동 살포기를 넘겨받을 때까지가 살포장비 인수대기다.","relations":["process","role","state"]}
+{"primary":"방제팀 투입지연사슬","text":"방제팀 투입지연사슬은 인력배정·교육·이동·접근·장비인수의 순서를 연결한다. 인력 지정, 안전교육, 기지 출발, 차량 이동, 산림 접근, 장비 인수를 단계별로 잇는다.","relations":["boundary","part_of","process"]}
+{"primary":"팀출동 순서복원","text":"배차로그와 현장기록이 충돌하면 팀출동 순서복원으로 출발·도착·작업준비 차례를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"살포기 압력안정 지연","text":"살포기 압력안정 지연은 펌프 전류가 상승한 뒤 말단 노즐 압력이 작업 허용 범위에서 계속 유지되기까지 걸린다. 순간적인 기준 통과는 안정 완료로 세지 않는다.","relations":["process","state","boundary"]}
+{"primary":"장비점검 순번대기","text":"여러 방제팀이 한 정비조의 장비점검 차례를 기다린 구간이 장비점검 순번대기다.","relations":["process","attribute","comparison"]}
+{"primary":"압력안정 점검대기 구별","text":"압력안정 점검대기 구별은 기계가 준비되는 시간과 검사 전 대기시간을 나눈다. 압력은 준비됐지만 검사자가 오지 않은 구간은 점검 큐이며 펌프 성능 지연이 아니다.","relations":["classification","process","role"]}
+{"primary":"드론위치 보정시간","text":"비행 전에 기준국과 위치오차를 맞추는 실제 처리시간이 드론위치 보정시간이다.","relations":["part_of","process","state"]}
+{"primary":"배터리 충전대기","text":"비행계획이 끝났어도 충전된 배터리 묶음을 기다린 구간이 배터리 충전대기다. 임무계획 완료 뒤 적합한 충전 팩이 인계될 때까지를 드론 비행이나 조립 소요와 나눈다.","relations":["boundary","function","process"]}
+{"primary":"장비조립 기능시험선행","text":"노즐과 탱크 조립이 끝난 다음 기능시험을 하는 장비조립 기능시험선행을 지킨다.","relations":["classification","comparison","state"]}
+{"primary":"노즐세척 처리지연","text":"막힘을 제거하고 유량을 회복하는 실제 작업시간이 노즐세척 처리지연이다. 분해·세척·막힘 제거·유량 시험에 실제 투입된 시간을 부품 또는 작업자 대기에서 떼어 낸다.","relations":["attribute","contrast","process"]}
+{"primary":"예비부품 조달대기","text":"고장부위를 찾은 뒤 교체부품이 현장에 올 때까지가 예비부품 조달대기다.","relations":["process","role","state"]}
+{"primary":"방제장비 지연사슬","text":"방제장비 지연사슬은 조립·점검대기·보정·충전·세척·부품조달을 순서대로 잇는다. 조립, 안전점검, 센서 보정, 배터리 인수, 노즐 세척, 부품 조달의 의존을 연결한다.","relations":["boundary","part_of","process"]}
+{"primary":"장비준비 순서복원","text":"점검표가 후입력되면 장비준비 순서복원으로 조립·시험·승인·인수 차례를 복원한다.","relations":["attribute","comparison","process"]}
+{"primary":"약제분무 도달지연","text":"노즐에서 나온 약제가 수관 표면에 도달할 때까지의 물리 시간이 약제분무 도달지연이다. 노즐 분사와 수관 표면 센서의 첫 젖음 사이를 재어 작업구역 진입 전 대기와 구별한다.","relations":["process","state","boundary"]}
+{"primary":"살포구역 진입대기","text":"앞 구역 작업이 끝날 때까지 다음 팀이 경계 밖에서 기다린 구간이 살포구역 진입대기다.","relations":["process","attribute","comparison"]}
+{"primary":"분무도달 진입대기 구별","text":"분무도달 진입대기 구별은 약액 이동시간과 작업구역 순번대기를 같은 원인으로 묶지 않는다. 구역이 비기를 기다린 정지시간은 분사 전이며 약액 비행과 부착은 노즐 작동 뒤 시작된다.","relations":["classification","process","role"]}
+{"primary":"수관침투 작용지연","text":"약제가 잎과 수피 내부로 퍼져 목표 부위에 이르는 생물·물리 시간이 수관침투 작용지연이다.","relations":["part_of","process","state"]}
+{"primary":"급수보충 작업대기","text":"탱크가 비운 뒤 공동 급수차의 차례를 기다린 구간이 급수보충 작업대기다. 탱크가 빈 뒤 공동 급수차가 연결될 때까지를 실제 충전·혼합 작업시간에 포함하지 않는다.","relations":["boundary","function","process"]}
+{"primary":"풍속확인 살포선행","text":"현장풍속이 허용범위임을 확인한 다음 분무를 시작하는 풍속확인 살포선행을 지킨다.","relations":["classification","comparison","state"]}
+{"primary":"경사면 살포연장","text":"급경사와 복잡한 수관 때문에 실제 분무시간이 늘어난 구간이 경사면 살포연장이다. 같은 면적의 평탄지 기준과 GPS·유량 기록을 비교해 경사와 수관 복잡성이 더한 시간을 구한다.","relations":["attribute","contrast","process"]}
+{"primary":"구역검수 승인대기","text":"살포가 끝난 뒤 감독자가 피복상태를 확인할 때까지가 구역검수 승인대기다.","relations":["process","role","state"]}
+{"primary":"살포운영 지연분해","text":"살포운영 지연분해는 진입대기·분무·도달·침투·급수·검수대기를 구별한다. 구역 진입, 분사, 약액 도달, 잎 침투, 급수 보충, 품질검수의 시간을 분리한다.","relations":["boundary","part_of","process"]}
+{"primary":"살포기록 순서복원","text":"드론로그와 수기표가 어긋나면 살포기록 순서복원으로 실제 구역별 작업 차례를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"약효발현 생물지연","text":"살포 뒤 해충활동과 피해가 줄어드는 데 필요한 시간이 약효발현 생물지연이다. 살포 완료 뒤 해충 활동과 피해 지표가 지속 감소할 때까지를 약리·생물 반응으로 본다.","relations":["process","state","boundary"]}
+{"primary":"추적조사 방문대기","text":"관찰 예정일이 되었어도 조사팀의 방문 차례를 기다린 구간이 추적조사 방문대기다.","relations":["process","attribute","comparison"]}
+{"primary":"약효지연 방문대기 구별","text":"약효지연 방문대기 구별은 실제 반응시간과 사람이 관측하지 못한 대기시간을 분리한다. 효과는 이미 나타났지만 조사 일정이 늦어 확인하지 못한 시간은 생물 반응에 더하지 않는다.","relations":["classification","process","role"]}
+{"primary":"피해회복 성장지연","text":"새 잎과 조직이 회복되어 피해율이 낮아지는 생물학적 시간이 피해회복 성장지연이다.","relations":["part_of","process","state"]}
+{"primary":"표본판독 처리대기","text":"추적사진이 모인 뒤 판독자가 검토할 차례를 기다린 구간이 표본판독 처리대기다. 사진과 계수자료가 준비된 뒤 판독자가 작업을 열기 전까지를 사후 관찰 큐로 둔다.","relations":["boundary","function","process"]}
+{"primary":"살포완료 추적관찰선행","text":"방제구역 살포가 끝난 다음 추적관찰을 시작하는 살포완료 추적관찰선행을 유지한다.","relations":["classification","comparison","state"]}
+{"primary":"재발징후 탐지지연","text":"해충이 다시 늘어난 뒤 표본에서 증가를 알아낼 때까지가 재발징후 탐지지연이다. 실제 개체수 증가와 트랩·영상에서 임계가 확인된 시점의 차이를 탐지 공백으로 잰다.","relations":["attribute","contrast","process"]}
+{"primary":"재방제 결정대기","text":"재발 후보를 찾은 뒤 회의에서 조치 여부를 정할 때까지가 재방제 결정대기다.","relations":["process","role","state"]}
+{"primary":"사후관찰 지연사슬","text":"사후관찰 지연사슬은 약효·성장회복·방문·판독·재발탐지·결정대기를 잇는다. 약효 반응, 수목 회복, 현장 방문, 표본 판독, 재발 감지, 후속 결정의 순서를 연결한다.","relations":["boundary","part_of","process"]}
+{"primary":"효과연표 순서교정","text":"사진 업로드와 현장관측 시각이 바뀌면 효과연표 순서교정으로 실제 생태변화 차례를 복원한다.","relations":["attribute","comparison","process"]}
+{"primary":"주민전파 통신지연","text":"방제 안내를 발송한 뒤 산촌 주민 단말에 도착할 때까지가 주민전파 통신지연이다. 발송 서버 접수부터 주민 단말 수신확인까지를 재어 승인 전 행정대기와 분리한다.","relations":["process","state","boundary"]}
+{"primary":"공지문 승인대기","text":"내용이 완성된 뒤 책임자의 게시승인을 기다린 구간이 공지문 승인대기다.","relations":["process","attribute","comparison"]}
+{"primary":"전파지연 승인대기 구별","text":"전파지연 승인대기 구별은 메시지 이동시간과 발송 전 행정대기를 나눈다. 문안이 결재함에 머문 시간과 발송 뒤 네트워크를 이동한 시간은 시작 사건이 다르다.","relations":["classification","process","role"]}
+{"primary":"현수막 설치이동시간","text":"작업자가 마을과 등산로에 안내물을 설치하며 이동한 시간이 현수막 설치이동시간이다.","relations":["part_of","process","state"]}
+{"primary":"마을방송 편성대기","text":"방송문이 준비돼도 정해진 마을방송 시간까지 기다린 구간이 마을방송 편성대기다. 문안은 준비됐지만 정해진 방송 슬롯 전까지 멈춘 구간을 통신 장애로 분류하지 않는다.","relations":["boundary","function","process"]}
+{"primary":"방제확정 주민공지선행","text":"방제범위와 시간이 확정된 다음 주민에게 알리는 방제확정 주민공지선행을 지킨다.","relations":["classification","comparison","state"]}
+{"primary":"문의응답 처리지연","text":"주민 질문을 확인하고 현장조건에 맞게 답하는 실제 시간이 문의응답 처리지연이다. 질문을 읽고 현장 약제·출입조건을 확인해 답을 작성한 실제 업무시간만 센다.","relations":["attribute","contrast","process"]}
+{"primary":"기관게시 순번대기","text":"지자체 알림시스템에서 다른 긴급공지 뒤 차례를 기다린 구간이 기관게시 순번대기다.","relations":["process","role","state"]}
+{"primary":"방제공지 지연분해","text":"방제공지 지연분해는 승인·발송·통신·방송편성·문의처리 시간을 따로 표시한다. 문안 승인, 서버 발송, 단말 전달, 방송 슬롯, 주민 문의처리를 독립 구간으로 둔다.","relations":["boundary","part_of","process"]}
+{"primary":"공지연표 순서복원","text":"작성·승인·발송·수신시각이 충돌하면 공지연표 순서복원으로 효력 차례를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"잔류약제 감소지연","text":"살포 뒤 환경 중 약제농도가 기준 아래로 낮아질 때까지의 시간이 잔류약제 감소지연이다. 살포 뒤 강우·광분해·흡착을 거쳐 농도가 안전기준 아래에 지속 머문 때까지를 자연 과정으로 본다.","relations":["process","state","boundary"]}
+{"primary":"종료검토 회의대기","text":"효과자료가 준비된 뒤 종료회의 일정까지 기다린 구간이 종료검토 회의대기다.","relations":["process","attribute","comparison"]}
+{"primary":"잔류감소 회의대기 구별","text":"잔류감소 회의대기 구별은 자연 분해시간과 행정 일정대기를 분리한다. 측정상 기준을 이미 충족했지만 종료회의가 잡히지 않은 구간은 환경 분해시간이 아니다.","relations":["classification","process","role"]}
+{"primary":"개체군 회복관찰기간","text":"천적과 비표적 생물의 상태가 안정되는지 관찰한 실제 기간이 개체군 회복관찰기간이다.","relations":["part_of","process","state"]}
+{"primary":"종료보고 승인대기","text":"최종보고가 완성된 뒤 기관장의 승인을 기다린 구간이 종료보고 승인대기다. 최종 자료가 완성된 뒤 권한자가 검토·서명하지 않은 시간을 현장 철거나 약효 반응과 나눈다.","relations":["boundary","function","process"]}
+{"primary":"효과확인 종료검토선행","text":"방제효과와 부작용을 확인한 다음 종료 여부를 검토하는 효과확인 종료검토선행을 지킨다.","relations":["classification","comparison","state"]}
+{"primary":"경계표지 철거시간","text":"방제구역의 출입표지와 임시시설을 실제로 걷어 내는 시간이 경계표지 철거시간이다. 작업자가 표지·끈·임시시설을 회수하고 누락을 확인한 실제 현장 소요만 계산한다.","relations":["attribute","contrast","process"]}
+{"primary":"보관자료 이관대기","text":"종료결정 뒤 원시자료를 기록보관소로 넘길 차례를 기다린 구간이 보관자료 이관대기다.","relations":["process","role","state"]}
+{"primary":"방제종료 지연사슬","text":"방제종료 지연사슬은 잔류감소·회복관찰·종료검토·승인·철거·자료이관을 잇는다. 잔류 감소, 수목 회복 확인, 종료 검토, 책임 승인, 시설 철거, 자료 이관을 상태별로 잇는다.","relations":["boundary","part_of","process"]}
+{"primary":"종료사건 순서복원","text":"철거일과 승인일이 다르게 입력되면 종료사건 순서복원으로 조건충족과 행정종료를 구분한다.","relations":["attribute","comparison","process"]}

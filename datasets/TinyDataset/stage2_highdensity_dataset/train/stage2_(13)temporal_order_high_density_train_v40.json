@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v40",
+  "version": "40",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-05851 ~ S2-TOH-06000",
+  "concept_family": "S2-A03-T040: 반도체 클린룸 오염·수율 관리 — 부분 겹침 구간과 완전 동시성 구별",
+  "design_note": "반도체 클린룸 오염·수율 관리 영역의 부분 겹침 구간과 완전 동시성 구별 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-05851",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "웨이퍼가 노광기에 머문 40분 중 마지막 8분만 입자경보 구간과 만난 관계가 웨이퍼노광과 입자경보 부분겹침이며 전 공정 동시 노출은 아니다. 경보의 시작점이 노광 시작보다 늦고 종료점도 노광 종료보다 앞서므로 영향 범위는 교집합 8분으로 한정된다.",
+      "concepts": [
+        "웨이퍼노광과 입자경보 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05852",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "로트가 장비 앞에서 기다린 시작·종료가 오염주의 구간과 모두 일치한 경우를 로트대기와 오염주의 완전동시라 한다.",
+      "concepts": [
+        "로트대기와 오염주의 완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05853",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이송로봇 운전은 세정작업보다 먼저 시작해 중간에 함께 진행되고 먼저 끝났으므로 웨이퍼이송 교차구간은 일부 시간만 공유한다. 로봇의 출발 시각과 청소 종료 시각을 양 끝으로 삼으면 공통 구간만 교차하고 어느 작업도 다른 작업을 포함하지 않는다.",
+      "concepts": [
+        "웨이퍼이송 교차구간"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05854",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "로트의 클린룸 체류시간 안에 짧은 압력저하가 전부 들어간 로트체류 포함겹침은 두 구간 길이가 같은 동시성과 다르다.",
+      "concepts": [
+        "로트체류 포함겹침"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05855",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 로트가 나가기 전에 둘째 로트가 들어와 오염경보의 일부를 함께 겪은 상태가 두 로트 노출부분 중첩이다. 각 로트의 입실·반출 기록을 맞대면 동시에 오염에 놓인 구간은 둘째 로트 입실 뒤 첫 로트 반출 전뿐이다.",
+      "concepts": [
+        "두 로트 노출부분 중첩"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05856",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오염경보가 해제된 뒤 로트가 장비에 들어왔다면 로트처리 무겹침 경계로 보며 끝점이 가까워도 동시 사건으로 세지 않는다.",
+      "concepts": [
+        "로트처리 무겹침 경계"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05857",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검사 시작과 종료가 결함검출 분석창과 정확히 맞아 전체 구간을 공유한 경우가 웨이퍼검사 동시창 일치다. 두 시스템의 경계 시각이 모두 같다는 점이 단순한 일부 중첩이 아니라 완전 동시 구간이라는 판정 근거다.",
+      "concepts": [
+        "웨이퍼검사 동시창 일치"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05858",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "로트처리가 먼저 시작되고 오염사건이 후반에만 겹친 관계를 오염발생 후행겹침이라 하며 전체 원인구간으로 확대하지 않는다.",
+      "concepts": [
+        "오염발생 후행겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05859",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입자상승이 먼저 시작했지만 로트초기 처리와 잠시 겹친 뒤 사라진 관계가 오염종료 선행겹침이다. 오염 경보가 로트 처리 종료보다 먼저 해제되었으므로 겹침 뒤에는 정상 처리만 남는 시간 순서가 성립한다.",
+      "concepts": [
+        "오염종료 선행겹침"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05860",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오염경보 종료시각과 웨이퍼투입 시작시각이 같고 지속구간을 공유하지 않으면 웨이퍼노출 접점비중첩으로 판정한다.",
+      "concepts": [
+        "웨이퍼노출 접점비중첩"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05861",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "FOUP 이동 12분 중 복도청소가 진행된 3분만 겹친 관계가 FOUP 이송과 복도청소 부분겹침이다. 청소 시작과 종료가 이동 창 내부에 놓이지만 이동 전체를 덮지는 않아 노출 시간은 별도의 3분 구간으로 계산한다.",
+      "concepts": [
+        "FOUP 이송과 복도청소 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05862",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "용기대기와 양압저하의 양 끝이 모두 같은 경우를 FOUP 대기와 양압저하 완전동시로 구분한다.",
+      "concepts": [
+        "FOUP 대기와 양압저하 완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05863",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 AMHS 운행 안에 짧은 천장작업 구간이 모두 들어가지만 나머지 시간은 분리된 상태가 AMHS 운행 포함관계다. 천장 작업의 두 경계가 AMHS 가동 창 안쪽에 있으므로 부분 교차가 아니라 긴 운행이 짧은 작업을 감싼다.",
+      "concepts": [
+        "AMHS 운행 포함관계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05864",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 FOUP가 다른 시각에 출발해 중앙경로에서 잠깐 함께 이동한 구간이 이송경로 교차중첩이다.",
+      "concepts": [
+        "이송경로 교차중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05865",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "FOUP가 스톡커에 오래 머문 뒤 마지막 부분만 온도주의와 겹친 관계를 스톡커체류 후반겹침이라 한다. 온도주의가 체류 시작 뒤에 발생하고 반출 전에 끝나므로 초반 보관분까지 이상 구간으로 소급하지 않는다.",
+      "concepts": [
+        "스톡커체류 후반겹침"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05866",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "로봇정비가 먼저 시작해 FOUP 우회운행 초기와만 중첩된 상태가 로봇정비 선행겹침이다.",
+      "concepts": [
+        "로봇정비 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05867",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "AMHS 정지구간과 전원순단구간의 시작·종료가 모두 같을 때 이송정지 동시창 일치로 기록한다. 정지 개시와 복구가 전원순단의 양 끝과 각각 대응해 두 사건의 지속시간 차이는 0분이다.",
+      "concepts": [
+        "이송정지 동시창 일치"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05868",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "청소가 완전히 끝난 뒤 FOUP가 해당 경로를 지났다면 FOUP 통과 무겹침이며 인접시각을 중첩으로 세지 않는다.",
+      "concepts": [
+        "FOUP 통과 무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05869",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "스톡커문 개방구간 중 일부에만 외기오염 경보가 겹친 관계가 스톡커 개방부분 노출이다. 외기경보의 양 끝이 문 개방 창 내부에 들어와 공통 시간만 오염 가능 구간으로 분리된다.",
+      "concepts": [
+        "스톡커 개방부분 노출"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05870",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "앞 작업의 종료와 다음 이송의 시작만 같은 이송이벤트 끝점접촉은 지속시간이 없는 경계 공유다.",
+      "concepts": [
+        "이송이벤트 끝점접촉"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05871",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자 입실절차 중 에어샤워 가동시간만 오염주의와 만난 관계가 에어샤워와 입실 부분겹침이다. 입실 절차의 시작·종료보다 오염주의 창이 짧아 에어샤워 외의 대기와 문 통과 시간은 겹침에서 제외한다.",
+      "concepts": [
+        "에어샤워와 입실 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05872",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 송풍기가 같은 순간 켜지고 같은 순간 꺼진 경우를 에어샤워 운전완전동시라 하며 단순 병행과 나눈다.",
+      "concepts": [
+        "에어샤워 운전완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05873",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 입실대기 구간 안에 짧은 문인터록 오류가 모두 포함된 관계가 입실대기 포함겹침이다. 인터록 오류는 대기 시작 후 발생해 입실 허가 전에 해제되므로 긴 대기창의 진부분집합으로 읽는다.",
+      "concepts": [
+        "입실대기 포함겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05874",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "외문 개방과 내문 개방이 일부라도 겹치면 안 되는 경계를 외문내문 교차금지라 하며 끝점 공유는 별도로 본다.",
+      "concepts": [
+        "외문내문 교차금지"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05875",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "에어샤워가 끝난 뒤 내문이 열려 두 구간이 겹치지 않는 상태가 샤워종료 후행입실이다. 샤워 종료와 내문 개방 사이에 양의 간격이 있어 끝점 접촉이나 부분 중첩으로 해석할 근거도 없다.",
+      "concepts": [
+        "샤워종료 후행입실"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05876",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "양압이 회복되는 후반구간과 작업자 입실 초반만 만난 관계가 입실과 양압회복 초기겹침이다.",
+      "concepts": [
+        "입실과 양압회복 초기겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05877",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "점검원이 본 가동구간과 장치로그 구간이 완전히 일치한 경우가 에어샤워 점검동시창이다. 현장 관찰의 첫 시각과 마지막 시각이 장치 가동 기록과 각각 일치해 누락된 앞뒤 구간이 없다.",
+      "concepts": [
+        "에어샤워 점검동시창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05878",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 조가 나가기 전 다음 조가 전실에 들어와 일부 시간만 함께 있던 상태가 복수입실 교대중첩이다.",
+      "concepts": [
+        "복수입실 교대중첩"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05879",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가운착용 시간의 중간에 짧은 입자경보가 끼어든 관계를 가운착용과 경보부분 중첩이라 한다. 경보가 착용 시작 뒤 켜지고 완료 전에 꺼졌으므로 준비 전부가 아니라 중간 단계만 영향을 받는다.",
+      "concepts": [
+        "가운착용과 경보부분 중첩"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05880",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "외문이 닫힌 바로 그때 내문개방이 시작되어 지속구간을 공유하지 않으면 문폐쇄 접점분리다.",
+      "concepts": [
+        "문폐쇄 접점분리"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05881",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "한 장의 노광시간 중 일부만 바닥진동 경보와 만난 경우가 노광노출과 진동부분 겹침이며 전 노출 영향을 뜻하지 않는다. 진동의 발생·해제 시각을 노광 창에 투영하면 두 구간의 교집합만 별도 품질검토 대상으로 남는다.",
+      "concepts": [
+        "노광노출과 진동부분 겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05882",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "초점오류 상태가 노광 시작부터 종료까지 그대로 지속된 경우를 노광과 초점오류 완전동시라 한다.",
+      "concepts": [
+        "노광과 초점오류 완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05883",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 장비정지 안에 레티클교환 작업이 전부 들어간 관계가 레티클교환 포함중첩이다. 교환 시작과 완료가 장비정지의 양 경계 안에 놓여 정지 전후의 대기시간은 교환 소요시간에 포함되지 않는다.",
+      "concepts": [
+        "레티클교환 포함중첩"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05884",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "코팅과 베이크가 다른 웨이퍼에서 시차를 두고 진행되다 일부만 병행된 상태가 트랙처리 교차구간이다.",
+      "concepts": [
+        "트랙처리 교차구간"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05885",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "웨이퍼대기 후반에만 AMC 경보가 겹친 관계를 노광대기 후반오염이라 하며 전체 대기 오염으로 확대하지 않는다. AMC 상승이 대기 중간 이후 시작되어 웨이퍼 투입 전 끝났으므로 앞선 청정 대기분은 오염 노출로 세지 않는다.",
+      "concepts": [
+        "노광대기 후반오염"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05886",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "초점보정이 먼저 시작해 노광초기와만 중첩되고 종료된 관계가 초점보정 선행겹침이다.",
+      "concepts": [
+        "초점보정 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05887",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "스캔구간 동시일치는 광원 출력 경보의 발생·해제와 스캔의 개시·종료가 각각 같은 시각에 놓인 관계다. 네 표식을 공통 시계로 비교해 한쪽 경계라도 어긋나면 제외한다.",
+      "concepts": [
+        "스캔구간 동시일치"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05888",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "노광이 끝난 뒤 결함검사가 시작됐다면 노광후 검사무겹침이며 순차 작업을 동시처리로 세지 않는다.",
+      "concepts": [
+        "노광후 검사무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05889",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "광원안정화 말미와 시험노광 초반이 잠시 겹친 관계가 광원안정화 부분병행이다. 시험노광이 안정화 완료 전에 시작했지만 안정화 시작보다는 늦어 말미와 초반 사이에만 교집합이 생긴다.",
+      "concepts": [
+        "광원안정화 부분병행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05890",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "노광종료와 다음 웨이퍼 정렬시작의 시각만 같은 노광종료 끝점접촉은 면적이 없는 경계다.",
+      "concepts": [
+        "노광종료 끝점접촉"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05891",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "식각공정 중 압력경보가 잠시 지속된 관계가 식각과 압력경보 부분겹침이며 전체 공정 이상은 아니다. 압력 이상이 식각 개시 뒤 발생해 종료 전에 해제되었으므로 해당 웨이퍼의 일부 단계만 재검토한다.",
+      "concepts": [
+        "식각과 압력경보 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05892",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "RF오류가 플라즈마 점화부터 소호까지 같은 구간에 유지된 경우가 플라즈마와 RF오류 완전동시다.",
+      "concepts": [
+        "플라즈마와 RF오류 완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05893",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 예방정비 구간 안에 챔버세정이 전부 들어간 상태가 챔버세정 포함겹침이다. 세정의 시작과 끝이 모두 정비 창 내부라서 정비 중 세정하지 않은 준비·조립 시간도 따로 존재한다.",
+      "concepts": [
+        "챔버세정 포함겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05894",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서로 다른 가스공급이 전환구간에서만 잠깐 함께 열린 관계를 식각가스 교차공급이라 한다.",
+      "concepts": [
+        "식각가스 교차공급"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05895",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "챔버압력 회복의 마지막 부분과 공정준비 초반이 만난 관계가 압력회복 후반중첩이다. 공정준비가 회복 완료 전에 시작하되 회복 개시 뒤에 놓여 두 활동의 끝부분과 첫부분만 함께 진행된다.",
+      "concepts": [
+        "압력회복 후반중첩"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05896",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉각단계가 시작된 뒤 식각종료 구간과 잠시 겹친 상태가 웨이퍼냉각 선행겹침이다.",
+      "concepts": [
+        "웨이퍼냉각 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05897",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 로그가 같은 단계의 시작·종료를 완전히 공유하면 식각단계 동시창 일치로 본다. 서로 다른 로그의 단계 경계 두 쌍이 동일해 지속시간과 교집합 길이가 모두 같은 완전 일치 관계다.",
+      "concepts": [
+        "식각단계 동시창 일치"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05898",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "챔버세정이 완전히 끝난 다음 생산식각이 시작되면 세정후 공정무겹침이다.",
+      "concepts": [
+        "세정후 공정무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05899",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "식각 후반과 부산물 고배기 초반만 중첩된 관계가 부산물배기 부분병행이다. 고배기가 식각 종료 전에 켜져 식각 뒤까지 이어지므로 앞선 식각 구간과 뒤의 단독 배기 구간을 구분한다.",
+      "concepts": [
+        "부산물배기 부분병행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05900",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 가스밸브 종료와 다음 밸브 개시만 같은 밸브전환 접점분리는 동시공급 구간이 없다.",
+      "concepts": [
+        "밸브전환 접점분리"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05901",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막 증착시간 중 짧은 가스농도 경보만 만난 경우가 증착과 가스경보 부분겹침이다. 가스경보가 막 성장 도중 켜졌다가 증착 종료 전에 해제되어 경보 밖 성장시간이 앞뒤에 남는다.",
+      "concepts": [
+        "증착과 가스경보 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05902",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기판온도 이상이 증착 시작부터 종료까지 지속되면 증착과 온도이상 완전동시로 구분한다.",
+      "concepts": [
+        "증착과 온도이상 완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05903",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 장비대기 안에 질소퍼지 구간이 모두 포함된 관계가 퍼지구간 포함중첩이다. 퍼지의 개시·완료가 대기 구간 안쪽에 있어 장비대기의 전체 길이와 퍼지 지속시간을 같은 값으로 보지 않는다.",
+      "concepts": [
+        "퍼지구간 포함중첩"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05904",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전구체 A의 끝부분과 B의 시작부분이 잠깐 겹친 상태를 전구체 공급교차라고 하며 완전동시 공급과 구별한다.",
+      "concepts": [
+        "전구체 공급교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05905",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예열 후반과 시험증착 초반만 겹친 관계를 챔버가열 후반겹침이라 한다. 시험증착 개시는 예열 종료보다 이르지만 예열 시작보다 늦어 공통 구간 뒤에는 증착만 계속된다.",
+      "concepts": [
+        "챔버가열 후반겹침"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05906",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진공회복이 먼저 시작해 로트준비 초기에만 이어진 상태가 진공회복 선행중첩이다.",
+      "concepts": [
+        "진공회복 선행중첩"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05907",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "실시간 두께측정 구간이 증착구간과 양 끝에서 일치한 경우가 막성장 측정동시창이다. 두께 측정의 첫 표본과 마지막 표본이 성장의 양 경계에 맞아 측정되지 않은 막 성장 구간이 남지 않는다.",
+      "concepts": [
+        "막성장 측정동시창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05908",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증착종료 뒤 냉각이 시작돼 구간을 공유하지 않으면 증착후 냉각무겹침이다.",
+      "concepts": [
+        "증착후 냉각무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05909",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배기구간 말미와 질소퍼지 초반이 일부만 만난 관계가 배기와 퍼지 부분병행이다. 질소 주입이 배기 종료 전 시작해 그 뒤에도 이어지므로 중첩분과 퍼지만 남은 후속분을 나눠 계산한다.",
+      "concepts": [
+        "배기와 퍼지 부분병행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05910",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "A 전구체 종료시각과 B 전구체 시작시각만 같은 전구체 종료점접촉은 시간폭 없는 경계다.",
+      "concepts": [
+        "전구체 종료점접촉"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05911",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "웨이퍼 세정주기 중 일부만 입자경보와 겹친 관계가 습식세정과 입자경보 부분겹침이다. 입자상승은 세정 시작 이후에 나타나 종료 이전에 회복했기 때문에 전체 세정주기를 오염 사례로 묶지 않는다.",
+      "concepts": [
+        "습식세정과 입자경보 부분겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05912",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "초순수 수질이상이 린스의 전체 구간과 일치하면 린스와 수질이상 완전동시로 본다.",
+      "concepts": [
+        "린스와 수질이상 완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05913",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 장비정지 안에 노즐교체가 전부 들어간 관계를 세정장비 정비포함이라 한다. 노즐교체의 두 끝점이 장비정지 창 안에 들어가며 정지 초반 진단과 후반 시험은 교체 밖 시간이다.",
+      "concepts": [
+        "세정장비 정비포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05914",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 약액배출 말미와 다음 약액주입 초반이 잠시 겹친 상태가 약액전환 교차구간이다.",
+      "concepts": [
+        "약액전환 교차구간"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05915",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "건조단계 후반에만 입자상승이 만난 관계가 건조단계 후반오염이다. 입자경보가 건조 중간 이후 시작해 건조 완료와 함께 끝나므로 전반 건조분은 정상 구간으로 보존한다.",
+      "concepts": [
+        "건조단계 후반오염"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05916",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배수지연이 먼저 시작해 세정초기와 일부 겹친 관계를 배수이상 선행겹침이라 한다.",
+      "concepts": [
+        "배수이상 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05917",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "메가소닉 출력과 지정세정 단계의 시작·종료가 같을 때 메가소닉 동시운전창이다. 출력 인가와 차단 시각이 세정 단계의 진입·이탈 시각과 같아 부분 가동이나 지연 가동이 아니다.",
+      "concepts": [
+        "메가소닉 동시운전창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05918",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "건조가 끝난 뒤 표면검사가 시작되면 세정후 검사무겹침으로 기록한다.",
+      "concepts": [
+        "세정후 검사무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05919",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "생산세정 말미와 노즐자체세척 초반이 일부 겹친 관계가 노즐세척 부분병행이다. 자체세척이 생산세정 종료 전에 시작해 종료 뒤까지 지속되므로 교차분은 두 작업의 경계 사이에만 존재한다.",
+      "concepts": [
+        "노즐세척 부분병행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05920",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "린스가 끝난 순간 건조가 시작돼 지속시간을 공유하지 않으면 린스종료 접점분리다.",
+      "concepts": [
+        "린스종료 접점분리"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05921",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중앙탱크 보충시간 일부가 생산공정과 만난 관계가 약액공급과 생산부분 겹침이다. 탱크 보충은 생산 시작 후 개시되어 생산 종료 전에 끝났으므로 생산창 안의 짧은 공급분만 병행으로 센다.",
+      "concepts": [
+        "약액공급과 생산부분 겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05922",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "농도경보가 한 공급회차의 처음부터 끝까지 지속되면 약액경보 공급완전동시다.",
+      "concepts": [
+        "약액경보 공급완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05923",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 약액계통 정지 안에 탱크세정 전 과정이 들어간 상태가 탱크세정 정지포함이다. 세정 전 준비와 세정 후 검증까지 포함한 설비정지 창이 더 길어 세정 자체는 그 내부 하위 구간이다.",
+      "concepts": [
+        "탱크세정 정지포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05924",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주탱크 공급 말미와 예비탱크 공급 초반이 안정화 목적으로 잠깐 겹친 관계가 이중탱크 절체교차다.",
+      "concepts": [
+        "이중탱크 절체교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05925",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "농도조정 후반과 생산재개 초반이 일부 만난 상태를 약액농도 회복후반이라 한다. 생산재개가 농도 회복 완료보다 먼저 시작하되 조정 개시 뒤에 놓여 후반에만 두 구간이 교차한다.",
+      "concepts": [
+        "약액농도 회복후반"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05926",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누설주의가 먼저 생겨 약액격리 초기와만 겹친 관계가 누설경보 선행중첩이다.",
+      "concepts": [
+        "누설경보 선행중첩"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05927",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 펌프가 같은 순간 켜지고 꺼진 경우가 공급펌프 동시운전창이며 부분 보조운전과 구별한다. 기동과 정지의 두 시각이 펌프마다 같아 한쪽만 운전한 선행·후행 꼬리가 존재하지 않는다.",
+      "concepts": [
+        "공급펌프 동시운전창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05928",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배관약액 교체가 끝난 뒤 생산이 시작되면 약액교체 생산무겹침이다.",
+      "concepts": [
+        "약액교체 생산무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05929",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "약액이송 후반과 질소가압 초반만 겹친 관계가 질소가압 부분병행이다. 가압 개시는 약액이송 종료보다 이르고 이송 개시보다 늦어 이송 말미만 함께한 뒤 가압이 단독으로 남는다.",
+      "concepts": [
+        "질소가압 부분병행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05930",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주밸브 폐쇄와 예비밸브 개방의 한 시각만 공유한 밸브절체 끝점접촉은 동시공급 구간이 아니다.",
+      "concepts": [
+        "밸브절체 끝점접촉"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05931",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공조강화 시간 중 일부에만 입자경보가 남아 있던 관계가 공조운전과 오염부분 겹침이다. 입자경보가 강화운전 도중 해제되어 공조가 계속된 후속 구간은 오염 지속시간에 포함하지 않는다.",
+      "concepts": [
+        "공조운전과 오염부분 겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05932",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "급기와 배기가 동일한 시작·종료로 멈춘 경우를 급배기 정지완전동시라 한다.",
+      "concepts": [
+        "급배기 정지완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05933",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 공조장애 안에 양압저하 구간이 전부 들어간 관계가 클린룸양압 저하포함이다. 양압저하의 발생과 회복이 공조장애의 시작·종료 안쪽에 있어 장애 중에도 압력이 정상인 앞뒤 시간이 남는다.",
+      "concepts": [
+        "클린룸양압 저하포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05934",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주공조기 감발 말미와 예비공조기 증대 초반이 일부 겹친 상태가 공조기 절체교차운전이다.",
+      "concepts": [
+        "공조기 절체교차운전"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05935",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도회복의 마지막 구간과 생산준비 초반이 만난 관계가 온도회복 후반중첩이다. 생산준비가 온도 정상화 전에 개시되지만 회복 시작 뒤이므로 회복 말미와 준비 초반 사이만 공통이다.",
+      "concepts": [
+        "온도회복 후반중첩"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05936",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "필터교체 작업이 먼저 시작해 설비정지 초기와 일부 겹친 상태가 필터교체 선행겹침이다.",
+      "concepts": [
+        "필터교체 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05937",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입자회복 검증기간과 시험운전기간의 양 끝이 모두 같으면 공조검증 동시창일치다. 검증과 시험운전의 시작점·끝점이 모두 일치하여 한 구간이 다른 구간보다 먼저 남거나 늦게 이어지지 않는다.",
+      "concepts": [
+        "공조검증 동시창일치"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05938",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공조정비가 끝난 뒤 생산장비가 켜지면 공조정비 생산무겹침이다.",
+      "concepts": [
+        "공조정비 생산무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05939",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "급기조정 말미와 배기증대 초반이 일부만 만난 관계가 배기증대 부분병행이다. 배기 증대가 급기조정 완료 전 시작해 완료 후에도 계속되므로 중간 교차와 후속 단독운전을 나눈다.",
+      "concepts": [
+        "배기증대 부분병행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05940",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "양압회복 확인시각과 생산허가 시작시각만 같다면 양압회복 접점분리로 본다.",
+      "concepts": [
+        "양압회복 접점분리"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05941",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입자급증 구간이 한 로트 처리시간 일부만 덮은 관계가 입자급증과 로트부분 겹침이다. 급증의 시작·회복 시각이 로트 처리창 내부에 있어 노출 판단은 공통 시간대의 공정 단계에만 적용한다.",
+      "concepts": [
+        "입자급증과 로트부분 겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05942",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경보의 시작·종료가 로트처리 전체와 일치하면 입자경보 로트완전동시로 판정한다.",
+      "concepts": [
+        "입자경보 로트완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05943",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 센서결측 안에 자동경보 구간이 모두 포함된 상태가 센서결측 경보포함이다. 자동경보가 결측 시작 뒤 울리고 결측 복구 전에 해제되어 경보가 없던 결측 앞뒤 구간도 따로 남는다.",
+      "concepts": [
+        "센서결측 경보포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05944",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 센서의 이상후반과 둘째 센서의 이상초반만 함께한 관계가 두 센서 이상교차다.",
+      "concepts": [
+        "두 센서 이상교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05945",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "농도회복 후반에 다음 로트초기만 겹친 상태가 입자회복 후반노출이다. 다음 로트가 회복 완료 전에 투입되었지만 회복 개시 뒤라서 초기 처리분만 잔류 오염과 교차한다.",
+      "concepts": [
+        "입자회복 후반노출"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05946",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "흡입관 지연이 먼저 시작해 실제 오염구간 초기와 일부 겹친 관계가 샘플링지연 선행중첩이다.",
+      "concepts": [
+        "샘플링지연 선행중첩"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05947",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 기준센서의 교정구간이 완전히 같을 때 입자센서 교정동시창이라 한다. 양쪽 센서의 교정 시작과 종료 표식이 같아 어느 센서에도 추가 단독 교정 구간이 생기지 않는다.",
+      "concepts": [
+        "입자센서 교정동시창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05948",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입자경보가 끝난 뒤 웨이퍼를 넣었다면 경보해제 후 투입무겹침이다.",
+      "concepts": [
+        "경보해제 후 투입무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05949",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서세척 말미와 검증표본 수집 초반이 일부 겹친 관계가 센서세척 부분병행이다. 검증표본 수집이 세척 완료 전에 시작해 이후까지 이어지므로 오염 가능 교차분과 청정 후속분을 구별한다.",
+      "concepts": [
+        "센서세척 부분병행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05950",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경보 종료와 생산재개 시작이 한 점에서만 만난 경보종료 끝점접촉은 동시노출로 세지 않는다.",
+      "concepts": [
+        "경보종료 끝점접촉"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05951",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분자오염 상승시간 중 일부가 노광공정과 겹친 관계가 AMC 노출과 공정부분 겹침이다. 분자오염 경보가 공정 중간에 발생하고 종료 전에 회복해 노광 단계 전체가 아닌 교집합만 노출분이다.",
+      "concepts": [
+        "AMC 노출과 공정부분 겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05952",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "독성가스 경보가 한 공급회차 전체와 같은 구간이면 가스경보 공급완전동시다.",
+      "concepts": [
+        "가스경보 공급완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05953",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 가스격리 상태 안에 경보지속 구간이 모두 들어간 관계가 가스격리 경보포함이다. 경보의 발생과 해제가 격리 시작·종료 사이에 놓여 경보 전후에도 격리 상태가 유지된 시간이 존재한다.",
+      "concepts": [
+        "가스격리 경보포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05954",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 처리배기 말미와 예비배기 초반이 일부 함께한 상태가 배기가스 전환교차다.",
+      "concepts": [
+        "배기가스 전환교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05955",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "AMC 회복 후반겹침은 공기 중 분자 오염 농도가 정상으로 돌아오는 말기와 시험 생산의 초기가 일부 겹친 관계다. 시험은 회복 시작 뒤에 열리지만 정상 농도 확정 전부터 진행된다.",
+      "concepts": [
+        "AMC 회복 후반겹침"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05956",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누설의심 상태가 먼저 시작해 가스차단 초기와 만난 관계를 누설의심 선행중첩이라 한다.",
+      "concepts": [
+        "누설의심 선행중첩"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05957",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 검지기가 같은 시각부터 같은 시각까지 경보를 낸 경우가 이중검지기 동시창이다. 두 장치의 최초 경보와 최종 해제 시각이 각각 같으므로 한쪽만 감지한 추가 구간은 없다.",
+      "concepts": [
+        "이중검지기 동시창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05958",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가스배관 퍼지가 끝난 다음 생산이 시작되면 퍼지완료 후 생산무겹침이다.",
+      "concepts": [
+        "퍼지완료 후 생산무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05959",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가스차단 후반과 배관환기 초반이 일부 겹친 관계가 배관환기 부분병행이다. 환기가 가스차단 해제 전에 시작해 해제 뒤에도 계속되므로 안전 판정에서는 공통분과 환기 단독분을 분리한다.",
+      "concepts": [
+        "배관환기 부분병행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05960",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공급종료와 퍼지시작의 시각만 같은 가스차단 접점분리는 지속구간을 공유하지 않는다.",
+      "concepts": [
+        "가스차단 접점분리"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05961",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "한 챔버 정비시간 일부가 이웃챔버 생산과 겹친 관계가 장비정비와 생산부분 겹침이다. 이웃챔버 생산이 정비 시작 뒤 개시되어 정비 종료 전 끝났으므로 공유된 지원설비 위험창은 그 교집합뿐이다.",
+      "concepts": [
+        "장비정비와 생산부분 겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05962",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장비정지 시작·종료와 정비작업 구간이 모두 같으면 장비정지 작업완전동시다.",
+      "concepts": [
+        "장비정지 작업완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05963",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 설비정지 안에 예방정비가 모두 들어간 관계가 예방정비 설비정지포함이다. 예방정비의 착수·완료가 설비정지 경계 안에 있어 정지 중 진단과 재가동 준비는 정비시간과 별개다.",
+      "concepts": [
+        "예방정비 설비정지포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05964",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 정비조 작업후반과 다음 조 작업초반이 인수인계로 일부 겹친 상태가 교대정비 교차구간이다.",
+      "concepts": [
+        "교대정비 교차구간"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05965",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시험운전의 마지막 부분과 생산준비 초반이 함께한 관계가 시험운전 후반중첩이다. 생산준비가 시험 종료 전에 시작하고 시험 개시 뒤에 놓여 마지막 검증분만 준비 활동과 동시에 진행된다.",
+      "concepts": [
+        "시험운전 후반중첩"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05966",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부품점검이 먼저 시작해 장비격리 초기와 일부 겹친 상태가 부품점검 선행겹침이다.",
+      "concepts": [
+        "부품점검 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05967",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감독검수와 기능시험의 시작·종료가 같으면 정비검수 동시창일치로 기록한다. 감독 확인과 기능시험의 양 끝이 쌍으로 일치해 한 절차가 다른 절차를 포함하거나 일부만 만난 경우가 아니다.",
+      "concepts": [
+        "정비검수 동시창일치"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05968",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비가 완전히 끝난 뒤 생산로트를 투입하면 정비완료 생산무겹침이다.",
+      "concepts": [
+        "정비완료 생산무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05969",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장비조립 말미와 외부청소 초반이 일부 겹친 관계가 청소작업 부분병행이다. 외부청소가 조립 완료 전에 개시되어 완료 후까지 이어지므로 조립 말미의 교차분만 동시 작업으로 분류한다.",
+      "concepts": [
+        "청소작업 부분병행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05970",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "안전격리 종료와 시험운전 시작이 같은 한 점인 격리해제 끝점접촉은 동시작업 시간이 없다.",
+      "concepts": [
+        "격리해제 끝점접촉"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05971",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 교대조의 잔여근무와 다음 조 작업초반이 일부 겹친 관계가 교대근무와 작업부분 겹침이다. 후속 조의 작업 개시는 첫 조 퇴근보다 이르지만 첫 조 출근보다 늦어 인수인계 구간에만 인력이 겹친다.",
+      "concepts": [
+        "교대근무와 작업부분 겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05972",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 감독자의 근무 시작과 종료가 모두 같을 때 두 감독자 근무완전동시라 한다.",
+      "concepts": [
+        "두 감독자 근무완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05973",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 근무시간 안에 짧은 안전교육이 전부 들어간 관계가 교육시간 근무포함이다. 교육 시작과 종료가 근무창 내부에 놓여 교육 전후의 현장업무도 같은 근무시간 안에 별도로 존재한다.",
+      "concepts": [
+        "교육시간 근무포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05974",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "퇴근조 말미와 출근조 초반이 현장대조를 위해 일부 함께한 상태가 인수인계 교차근무다.",
+      "concepts": [
+        "인수인계 교차근무"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05975",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상소집 대기 후반과 실제 대응근무 초반이 겹친 관계가 비상소집 후반중첩이다. 대응근무가 소집대기 종료 전에 시작해 이후까지 이어지므로 대기 말미와 대응 초반만 공통 시간대다.",
+      "concepts": [
+        "비상소집 후반중첩"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05976",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "품질점검자가 먼저 들어와 생산조 준비구간 일부와 함께한 상태가 점검역할 선행겹침이다.",
+      "concepts": [
+        "점검역할 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05977",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 작업자의 출입 시작·종료가 완전히 같을 때 출입기록 동시창일치다. 두 배지의 입실·퇴실 시각이 각각 동일해 어느 작업자도 단독으로 클린룸에 남은 앞뒤 시간이 없다.",
+      "concepts": [
+        "출입기록 동시창일치"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05978",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "휴식이 끝난 뒤 교대업무가 시작되면 휴식후 작업무겹침이다.",
+      "concepts": [
+        "휴식후 작업무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05979",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보호구교체 말미와 업무설명 초반이 일부 만난 관계가 보호구교체 부분병행이다. 업무설명이 교체 완료 전에 시작해 완료 뒤까지 계속되어 교체 말미만 병행되고 설명 단독 구간이 뒤따른다.",
+      "concepts": [
+        "보호구교체 부분병행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05980",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "앞 조 근무종료와 다음 조 근무시작이 한 시각만 공유한 교대종료 접점분리는 병행근무가 아니다.",
+      "concepts": [
+        "교대종료 접점분리"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05981",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "짧은 전력순단이 장비공정 중 일부만 덮은 관계가 전력순단과 공정부분 겹침이다.",
+      "concepts": [
+        "전력순단과 공정부분 겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05982",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진공상실 구간이 한 처리회차 전체와 일치하면 진공상실 공정완전동시로 분류한다.",
+      "concepts": [
+        "진공상실 공정완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05983",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 초순수압력 저하 안에 짧은 세정공정이 전부 들어간 관계가 용수저하 생산포함이다.",
+      "concepts": [
+        "용수저하 생산포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05984",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상용전원 말미와 비상전원 초반이 무정전 절체로 일부 겹친 상태가 비상전원 절체교차다.",
+      "concepts": [
+        "비상전원 절체교차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05985",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진공회복의 마지막 구간과 장비준비 초반이 만난 관계가 진공회복 후반중첩이다.",
+      "concepts": [
+        "진공회복 후반중첩"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05986",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉각수압 저하가 먼저 시작해 장비감발 초기와 일부 겹친 상태가 냉각수저하 선행겹침이다.",
+      "concepts": [
+        "냉각수저하 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05987",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 전원이 동일한 시작·종료 동안 병행된 경우가 이중전원 동시공급창이다.",
+      "concepts": [
+        "이중전원 동시공급창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05988",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가스·용수 복구가 끝난 뒤 생산이 시작되면 유틸리티 복구후 무겹침이다.",
+      "concepts": [
+        "유틸리티 복구후 무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05989",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상용운전 말미와 발전기 부하시험 초반이 일부 겹친 관계가 발전기 시험부분 병행이다.",
+      "concepts": [
+        "발전기 시험부분 병행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05990",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상전원 종료와 상용전원 시작이 같은 한 점인 절체완료 접점분리는 동시공급 구간이 아니다.",
+      "concepts": [
+        "절체완료 접점분리"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05991",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수율저하 로트구간 일부만 입자상승 기간과 만난 관계가 수율저하와 오염부분 겹침이다.",
+      "concepts": [
+        "수율저하와 오염부분 겹침"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05992",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "결함증가가 오염경보의 시작부터 종료까지 같은 구간에 나타나면 결함증가 오염완전동시다.",
+      "concepts": [
+        "결함증가 오염완전동시"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05993",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴 원인분석 기간 안에 문제로트 처리가 모두 들어간 관계가 분석기간 로트포함이다.",
+      "concepts": [
+        "분석기간 로트포함"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05994",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 결함유형 발생후반과 둘째 유형 초반이 일부 겹친 상태가 두 결함유형 교차구간이다.",
+      "concepts": [
+        "두 결함유형 교차구간"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05995",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수율회복기간의 마지막 부분과 검증로트 생산초반이 함께한 관계가 수율회복 후반검증이다.",
+      "concepts": [
+        "수율회복 후반검증"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05996",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오염원 제거가 먼저 시작해 문제로트 종료구간 일부와 겹친 상태가 오염원 제거 선행겹침이다.",
+      "concepts": [
+        "오염원 제거 선행겹침"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05997",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검증로트 구간과 집중계측 구간이 완전히 같을 때 수율검증 동시창일치로 기록한다.",
+      "concepts": [
+        "수율검증 동시창일치"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05998",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오염이 끝난 다음 생산된 로트라면 문제로트 후속무겹침이며 같은 원인노출로 묶지 않는다.",
+      "concepts": [
+        "문제로트 후속무겹침"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05999",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원인분석 말미와 재현시험 초반이 일부 만난 관계가 재현시험 부분병행이다.",
+      "concepts": [
+        "재현시험 부분병행"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06000",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오염경보 종료와 새 로트투입이 한 시각만 공유한 오염종료 접점경계는 지속 노출이 아니다.",
+      "concepts": [
+        "오염종료 접점경계"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    }
+  ]
+}

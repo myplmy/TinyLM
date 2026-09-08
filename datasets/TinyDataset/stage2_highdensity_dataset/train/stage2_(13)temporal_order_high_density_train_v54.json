@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v54",
+  "version": "54",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-07951 ~ S2-TOH-08100",
+  "concept_family": "S2-A03-T054: 해양 부표 관측·경보 운영 — 사건 시각과 관측 기록 시각의 분리",
+  "design_note": "해양 부표 관측·경보 운영 영역의 사건 시각과 관측 기록 시각의 분리 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-07951",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해면에서 파고가 실제로 커진 파고발생 시각은 부표가 표본을 계산하고 송신한 시각보다 앞설 수 있다. 원시 가속도 창과 주변 기상자료를 맞춰 통계 산출 전에 파랑이 커진 가능한 구간을 제한한다.",
+      "concepts": [
+        "파고발생 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07952",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가속도계가 관측창을 끝낸 파고표본 측정시각은 파랑이 처음 생긴 순간이 아니라 대표값을 만든 기준이다. 관측창의 시작과 끝을 함께 남겨 대표 구간을 분명히 한다.",
+      "concepts": [
+        "파고표본 측정시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07953",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 원시진동을 유의파고로 바꾼 파고통계 산출시각은 관측 뒤에 일어나는 계산 사건이다. 사용한 관측창의 종료와 계산 완료를 분리해 결과 레코드가 생긴 때를 현상 발생으로 보지 않는다.",
+      "concepts": [
+        "파고통계 산출시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-07954",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부표 모뎀이 패킷을 보낸 파고자료 송신시각은 측정 뒤의 통신사건이며 해상 상태 변화와 같지 않다.",
+      "concepts": [
+        "파고자료 송신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07955",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해상 수신소가 패킷을 받은 파고자료 육상수신시각은 전파 지연을 포함하므로 관측시각과 구별한다. 패킷 번호와 송신시각을 대조하면 위성 대기와 재시도가 더한 지연을 계산할 수 있다.",
+      "concepts": [
+        "파고자료 육상수신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07956",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서버가 임계 초과를 확정한 파고경보 판정시각은 원시 표본 뒤에 생기는 분석 시점이다.",
+      "concepts": [
+        "파고경보 판정시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07957",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누락 구간을 나중에 채운 파고결측 보간시각은 파랑이 실제로 존재했던 때를 새로 만들지 않는다. 보간값은 양쪽 원표본 사이의 추정이며 생성시각을 과거의 직접 관측시각으로 바꾸지 않는다.",
+      "concepts": [
+        "파고결측 보간시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07958",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "메모리에서 파일을 다시 꺼낸 파고원시자료 복구시각은 자료가 관측된 당시 시각과 별개다.",
+      "concepts": [
+        "파고원시자료 복구시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07959",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "파고사건 시간사슬은 발생·관측창·산출·송신·수신·판정을 서로 다른 사건으로 연결한다. 해면 변화, 센서 창, 통계 계산, 송신, 육상 수신, 운영 판정을 독립 사건으로 배열한다.",
+      "concepts": [
+        "파고사건 시간사슬"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07960",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표본 사이에서 급변했다면 파고관측 불확실구간으로 실제 변화가 시작된 가능한 범위를 표시한다.",
+      "concepts": [
+        "파고관측 불확실구간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07961",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "바다 위 바람의 실제 세기가 달라진 해상풍속 변화시각과 풍속계가 값을 고정한 시각을 구분한다. 풍속계 응답시간을 고려해 자연 바람 전환과 첫 안정 표본 사이를 불확실 구간으로 둔다.",
+      "concepts": [
+        "해상풍속 변화시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07962",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회전수 관측창이 끝난 풍속계 표본완료시각은 돌풍의 최초 발생보다 늦게 놓일 수 있다.",
+      "concepts": [
+        "풍속계 표본완료시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07963",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서가 새 방향을 안정적으로 읽은 풍향전환 관측시각은 대기 흐름이 바뀐 순간의 관측 근사값이다. 순간 흔들림이 아닌 연속 표본이 새 방향에 머문 때를 관측 경계로 사용한다.",
+      "concepts": [
+        "풍향전환 관측시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-07964",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "풍속자료를 위성으로 올린 풍속패킷 송신시각은 측정사건이 아니라 전송 절차의 시작이다.",
+      "concepts": [
+        "풍속패킷 송신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07965",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "육상 서버가 행을 저장한 풍속자료 서버등록시각은 통신 대기와 처리 시간을 포함한다. 패킷 수신과 DB 커밋의 차이를 처리 큐로 기록해 해상 사건에 더하지 않는다.",
+      "concepts": [
+        "풍속자료 서버등록시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07966",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연속 표본을 분석해 경보를 만든 돌풍경보 생성시각은 돌풍 발생 및 센서 관측 뒤에 온다.",
+      "concepts": [
+        "돌풍경보 생성시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07967",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서값과 진단정보로 오류를 알아낸 풍속계 결빙발견시각은 실제 결빙 시작시각과 같지 않다. 진단이 늦어도 결빙 영향이 시작된 구간은 앞선 원시값과 비교계기로 별도 추정한다.",
+      "concepts": [
+        "풍속계 결빙발견시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07968",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보정계수를 적용한 풍속자료 재처리시각은 과거 관측값의 해석이 바뀐 때로 따로 남긴다.",
+      "concepts": [
+        "풍속자료 재처리시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07969",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "바람사건 다중시각표는 현상·표본·전송·수신·경보·정정의 시간 필드를 한 줄에 함께 둔다. 현상 추정, 탐침 측정, 장치 송신, 서버 저장, 경보, 사후 정정의 출처를 나란히 둔다.",
+      "concepts": [
+        "바람사건 다중시각표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07970",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 표본 사이에 방향이 달라졌다면 풍향변화 발생범위로 실제 전환의 이른 경계와 늦은 경계를 제시한다.",
+      "concepts": [
+        "풍향변화 발생범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07971",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해수가 실제로 따뜻해지거나 식기 시작한 표층수온 변화시각은 센서 기록만으로 정확히 같다고 단정하지 않는다. 센서 위치의 열용량과 표본주기를 고려해 물리 변화가 관측되기 시작한 범위를 표시한다.",
+      "concepts": [
+        "표층수온 변화시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07972",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도소자가 물과 접촉해 값을 읽은 수온표본 채취시각은 서버에 자료가 도착한 때와 분리한다.",
+      "concepts": [
+        "수온표본 채취시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07973",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 순간값을 평균한 수온평균 계산시각은 관측창 종료 뒤의 처리 사건으로 기록한다. 평균이 대표하는 관측창과 산출 작업이 실행된 시간을 분리해 두 시각의 의미를 고정한다.",
+      "concepts": [
+        "수온평균 계산시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-07974",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부표가 온도자료를 내보낸 수온패킷 발신시각은 측정 완료 이후 통신이 시작된 때다.",
+      "concepts": [
+        "수온패킷 발신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07975",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분할 패킷이 모두 도착한 수온자료 수신완료시각은 첫 측정 및 첫 수신과 각각 다르다. 분할 조각의 번호를 확인해 마지막 조각 도착이 첫 측정이나 변화 시작으로 오인되지 않게 한다.",
+      "concepts": [
+        "수온자료 수신완료시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07976",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "품질검사가 급변을 확정한 수온이상 탐지시각은 해수 변화 뒤에 놓이는 분석 결과다.",
+      "concepts": [
+        "수온이상 탐지시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07977",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장점검으로 부착생물을 확인한 수온센서 오염확인시각은 오염이 시작된 순간의 증거가 아니다. 현장 발견은 오염 존재의 상한일 뿐 시작점은 이전 교정표본과 편향곡선으로 제한한다.",
+      "concepts": [
+        "수온센서 오염확인시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07978",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교정결과를 과거 자료에 반영한 수온보정값 적용시각은 원래 측정시각을 보존한 채 별도로 남긴다.",
+      "concepts": [
+        "수온보정값 적용시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07979",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수심별 센서의 수온연직구배 시간연결은 서로 다른 표본 주기를 공통 관측창에 맞춰 비교한다. 수심별 표본을 같은 허용창에 맞춰 한 층의 늦은 측정이 가짜 구배를 만들지 않게 한다.",
+      "concepts": [
+        "수온연직구배 시간연결"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07980",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전원중단 사이에 수온이 바뀌었다면 수온변화 미관측구간으로 발생시각의 불확실성을 표시한다.",
+      "concepts": [
+        "수온변화 미관측구간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07981",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "담수 유입으로 실제 염분이 달라진 염분변화 발생시각과 전도도계의 첫 이상 표본을 구별한다. 강우·하천 유량과 전도도 반응을 연결해 센서 표본 전의 담수 유입 범위를 추정한다.",
+      "concepts": [
+        "염분변화 발생시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07982",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전도도와 온도를 함께 읽은 염분표본 측정시각은 보정식이 계산을 마친 때보다 앞선다.",
+      "concepts": [
+        "염분표본 측정시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07983",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원시 전도도를 염분으로 바꾼 염분환산 완료시각은 물리 현상이 아닌 자료 처리 사건이다. 환산식이 실행된 시각은 사용한 전도도 표본보다 뒤이며 해수 상태 자체의 사건이 아니다.",
+      "concepts": [
+        "염분환산 완료시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-07984",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부표 통신기가 환산값을 보낸 염분자료 전송시각은 측정 지연과 전송 지연을 구분하는 기준이다.",
+      "concepts": [
+        "염분자료 전송시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07985",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "데이터베이스에 행이 생긴 염분자료 저장시각은 통신 복구 뒤 한꺼번에 기록될 수 있다. 버퍼 배출로 같은 DB 시각을 가진 행도 장치 원시각과 순번으로 다시 정렬한다.",
+      "concepts": [
+        "염분자료 저장시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07986",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연속 조건을 만족해 알림이 발령된 저염분 경보시각은 첫 저염분 표본보다 늦게 정해진다.",
+      "concepts": [
+        "저염분 경보시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07987",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비교검사로 편향을 확정한 염분센서 드리프트 판정시각은 편향이 시작된 때와 나눈다. 판정 이후 과거 구간을 교정할 수 있지만 편향 발견시각을 시작시각으로 소급하지 않는다.",
+      "concepts": [
+        "염분센서 드리프트 판정시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07988",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "드리프트 보정을 반영한 염분자료 정정시각은 과거 바닷물 상태가 새로 변한 사건이 아니다.",
+      "concepts": [
+        "염분자료 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07989",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "염분관측 시간계보는 채수·측정·환산·전송·저장·검수의 시각을 출처와 함께 연결한다. 채수, 전도도 측정, 환산, 송신, 저장, 품질검수의 원시각과 수정 이력을 함께 둔다.",
+      "concepts": [
+        "염분관측 시간계보"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07990",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표본 간격 안에서 급변했다면 염분급변 발생범위로 실제 변화의 가능한 시간창을 제시한다.",
+      "concepts": [
+        "염분급변 발생범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07991",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "물살의 속도나 방향이 실제로 달라진 해류변화 발생시각은 음향계가 계산한 시각과 완전히 같지 않을 수 있다. 음향 핑의 시간창과 조석 자료를 맞춰 계산 결과보다 앞선 물살 전환 범위를 제한한다.",
+      "concepts": [
+        "해류변화 발생시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07992",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "음향신호를 발사한 해류관측 핑시각은 반사자료가 돌아오고 유속이 산출된 때보다 앞선다.",
+      "concepts": [
+        "해류관측 핑시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07993",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수심별 반사값으로 유속을 만든 해류프로파일 산출시각은 관측 뒤의 계산 단계다. 반사 신호 수집 종료 뒤 계산이 끝난 때이므로 실제 유속 변화와는 별도 처리 사건이다.",
+      "concepts": [
+        "해류프로파일 산출시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-07994",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전송량을 줄이려고 자료를 묶은 해류자료 압축시각은 해수 흐름이 발생한 시각과 관계없는 처리 기록이다.",
+      "concepts": [
+        "해류자료 압축시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07995",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "육상국이 자료를 받은 해류패킷 수신시각에는 위성 통신과 재시도 지연이 포함된다. 위성 접속 대기와 재전송을 분리해 육상 도착순서가 관측 선후를 바꾸지 않게 한다.",
+      "concepts": [
+        "해류패킷 수신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07996",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분석기가 기준 초과를 확인한 강해류 경보판정시각은 실제 흐름 및 부표 관측 뒤에 온다.",
+      "concepts": [
+        "강해류 경보판정시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07997",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자세센서로 이상을 알아낸 해류계 기울어짐 발견시각은 계기가 처음 기울어진 순간과 다르다. 자세 이상을 알아낸 때와 음향 측정이 왜곡되기 시작한 때를 따로 추정한다.",
+      "concepts": [
+        "해류계 기울어짐 발견시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-07998",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자세 보정을 적용한 해류자료 재계산시각은 원본 표본시각을 유지한 채 처리 이력으로 기록한다.",
+      "concepts": [
+        "해류자료 재계산시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07999",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해류관측 단계연표는 현상·핑·반사수신·산출·전송·경보의 선후를 하나의 흐름으로 보여 준다. 물리 흐름, 핑 송신, 반사 수신, 프로파일 계산, 패킷 송신, 경보를 한 표준시에 맞춘다.",
+      "concepts": [
+        "해류관측 단계연표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08000",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 프로파일 사이에 방향이 바뀌었다면 해류전환 불확실시간창으로 정확한 전환시각을 제한한다.",
+      "concepts": [
+        "해류전환 불확실시간창"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08001",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조석과 기압 영향으로 실제 수면이 오르기 시작한 해수면상승 발생시각은 압력계가 다음 표본을 남긴 때보다 앞설 수 있다. 조석 예측과 압력곡선을 함께 보아 다음 표본 전 수면 상승의 가능한 시작범위를 구한다.",
+      "concepts": [
+        "해수면상승 발생시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08002",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "압력소자가 값을 고정한 수압표본 측정시각은 파랑을 평균한 수면값의 관측 기준으로 쓴다.",
+      "concepts": [
+        "수압표본 측정시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08003",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "압력과 대기압을 조위로 바꾼 조위환산 계산시각은 해수면 변화가 아니라 자료 처리 단계다. 대기압 보정과 기준면 변환이 끝난 시점을 물리 수면 변화의 직접 증거로 쓰지 않는다.",
+      "concepts": [
+        "조위환산 계산시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08004",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부표가 환산값을 송신한 조위자료 발신시각은 관측 뒤 통신이 시작된 때로 별도 저장한다.",
+      "concepts": [
+        "조위자료 발신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08005",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "육상국에 도착한 조위패킷 수신시각은 재전송 지연 때문에 측정순서와 달라질 수 있다. 재전송 헤더와 원 측정시각을 보존해 늦게 온 과거 조위가 현재 표본 뒤에 놓이지 않게 한다.",
+      "concepts": [
+        "조위패킷 수신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08006",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지속조건까지 확인해 발령한 고조위 경보시각은 첫 임계 초과 표본보다 뒤에 놓인다.",
+      "concepts": [
+        "고조위 경보시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08007",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수압센서 영점이상 발견시각은 비교 검사에서 편향을 확인한 때이며 오차가 발생하기 시작한 시점과 구별한다. 직전 정상 교정 이후부터 발견 전까지를 잠재 오류 구간으로 둔다.",
+      "concepts": [
+        "수압센서 영점이상 발견시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08008",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기압 보정을 다시 적용한 조위자료 사후보정시각은 원래 측정시각을 덮어쓰지 않는다.",
+      "concepts": [
+        "조위자료 사후보정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08009",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조위사건 다단계연표는 실제 수면변화·압력측정·환산·송신·경보를 구분해 연결한다. 수면 변화, 압력 표본, 조위 환산, 장치 송신, 육상 수신, 경보 판정을 순서대로 둔다.",
+      "concepts": [
+        "조위사건 다단계연표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08010",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표본 사이에서 조위가 뛰었다면 조위급변 시간범위로 발생 가능한 이른 시각과 늦은 시각을 남긴다.",
+      "concepts": [
+        "조위급변 시간범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08011",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저기압 통과로 실제 기압이 낮아지기 시작한 기압하강 발생시각은 센서의 첫 감소 표본과 구별한다. 연속 압력곡선과 폭풍 경로를 결합해 센서 첫 감소 전의 자연 변화 범위를 추정한다.",
+      "concepts": [
+        "기압하강 발생시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08012",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장치가 순간 압력을 읽은 기압계 표본시각은 평균창 종료나 서버 저장보다 앞선다.",
+      "concepts": [
+        "기압계 표본시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08013",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 기상값으로 추정한 폭풍중심 최근접시각은 직접 측정값이 아니라 분석 결과의 기준시각이다. 모델 분석이 대표하는 기준시각과 분석을 계산한 완료시각을 서로 다른 필드로 보존한다.",
+      "concepts": [
+        "폭풍중심 최근접시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08014",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부표가 기압과 바람 자료를 묶어 보낸 기상패킷 위성발신시각은 해상 현상 뒤에 오는 통신사건이다.",
+      "concepts": [
+        "기상패킷 위성발신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08015",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서버가 레코드를 만든 폭풍자료 육상등록시각에는 위성 대기와 처리시간이 포함된다. 위성 수신 뒤 서버 큐에서 기다린 시간을 자연 폭풍의 이동시간에 포함하지 않는다.",
+      "concepts": [
+        "폭풍자료 육상등록시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08016",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기관이 위험을 확정해 알린 폭풍경보 발령시각은 관측 및 분석보다 늦게 생기는 행정 사건이다.",
+      "concepts": [
+        "폭풍경보 발령시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08017",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진단자료로 센서 이상을 확정한 기압계 침수오류 판정시각은 실제 침수 시작과 분리한다. 침수 판정은 늦게 내려질 수 있어 원시 센서 왜곡의 시작범위를 과거 자료로 다시 제한한다.",
+      "concepts": [
+        "기압계 침수오류 판정시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08018",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잘못된 위치나 세기를 고친 폭풍자료 수정게시시각은 폭풍이 다시 발생한 때가 아니다.",
+      "concepts": [
+        "폭풍자료 수정게시시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08019",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "폭풍관측 시간출처표는 자연현상·장치표본·모델추정·경보·게시의 시각을 출처별로 보여 준다. 자연현상, 장치 표본, 모델 추정, 자동 경보, 게시물의 생성과 수신 시각을 구별한다.",
+      "concepts": [
+        "폭풍관측 시간출처표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08020",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관측 공백 중 폭풍이 지나갔다면 폭풍도달 불확실구간으로 실제 최근접 시각의 범위를 표시한다.",
+      "concepts": [
+        "폭풍도달 불확실구간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08021",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해수의 산소량이 실제로 떨어지기 시작한 용존산소 변화시각은 전극이 반응한 시각보다 빠를 수 있다. 해수 혼합과 생물 활동 자료를 전극 반응곡선에 맞춰 실제 감소의 가능한 시작을 찾는다.",
+      "concepts": [
+        "용존산소 변화시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08022",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전극 신호가 안정된 산소전극 측정시각은 물속 상태를 관측한 기준이지 변화의 최초 순간은 아니다.",
+      "concepts": [
+        "산소전극 측정시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08023",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도·염분 보정을 거쳐 값을 만든 산소포화도 계산시각은 측정 뒤의 처리 사건이다. 온도·염분 표본 중 가장 늦은 값 뒤 산출되므로 산소량 변화와 같은 사건이 아니다.",
+      "concepts": [
+        "산소포화도 계산시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08024",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산소와 엽록소 자료를 묶어 보낸 생태자료 송신시각은 해양 생태 변화와 별도로 기록한다.",
+      "concepts": [
+        "생태자료 송신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08025",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신망을 거쳐 도착한 생태패킷 서버수신시각은 원격 관측이 일어난 시각보다 늦다. 부표 송신 헤더와 비교해 통신망이 더한 지연을 전극의 반응시간에서 분리한다.",
+      "concepts": [
+        "생태패킷 서버수신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08026",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연속 표본이 기준을 벗어난 뒤 확정한 저산소 경보판정시각은 첫 감소 관측과 다르다.",
+      "concepts": [
+        "저산소 경보판정시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08027",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장 비교로 반응저하를 알아낸 산소센서 막오염 발견시각은 오염 발생시각을 직접 알려 주지 않는다. 현장 확인은 오염의 상한이며 감도 저하 곡선으로 영향이 시작된 구간을 따로 추정한다.",
+      "concepts": [
+        "산소센서 막오염 발견시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08028",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탁도 영향을 제거해 값을 고친 엽록소자료 품질수정시각은 조류 변화의 새 사건이 아니다.",
+      "concepts": [
+        "엽록소자료 품질수정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08029",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해양생태 관측시간사슬은 상태변화·전극반응·계산·전송·검수·경보의 순서를 분리한다. 상태 변화, 전극 안정, 보정 계산, 전송, 품질검수, 경보의 각 시간을 독립적으로 잇는다.",
+      "concepts": [
+        "해양생태 관측시간사슬"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08030",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표본 사이에서 산소가 급락했다면 저산소발생 추정시간창으로 시작 가능한 범위를 제시한다.",
+      "concepts": [
+        "저산소발생 추정시간창"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08031",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기름이 부표 주변 해면에 실제 도달한 유막도달 발생시각과 광학센서의 탐지시각을 나눈다. 해류·풍향과 첫 광학 이상을 맞춰 센서 탐지 전 유막 도달의 불확실 범위를 줄인다.",
+      "concepts": [
+        "유막도달 발생시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08032",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유류센서 탐지시각은 형광 센서가 유류 신호를 최초로 임계치 위에서 읽은 때다. 누출원에서 액체가 나오기 시작한 실제 사건보다 지연될 수 있다.",
+      "concepts": [
+        "유류센서 탐지시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08033",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "카메라가 해면 영상을 저장한 유막영상 촬영시각은 사람이 영상을 판독한 시각과 별개다. 카메라 원본 프레임은 현장 관측이며 사람 판독과 신고 접수는 뒤의 판단 사건으로 둔다.",
+      "concepts": [
+        "유막영상 촬영시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08034",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부표가 유류와 탁도 값을 전송한 오염자료 송신시각은 탐지 뒤의 통신 단계다.",
+      "concepts": [
+        "오염자료 송신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08035",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제센터가 선박 신고를 받은 오염신고 접수시각은 해상 오염 발생시각을 대신하지 않는다. 선박이 유막을 본 때와 관제센터가 연락을 받은 때를 구별해 사람·통신 지연을 계산한다.",
+      "concepts": [
+        "오염신고 접수시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08036",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서와 영상을 검토해 경보를 확정한 유류경보 확정시각은 자동 탐지보다 뒤에 놓인다.",
+      "concepts": [
+        "유류경보 확정시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08037",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "생물막이나 햇빛 반사를 오탐으로 결론낸 오염센서 오탐판정시각은 원 신호의 관측시각과 구별한다. 사후 판정이 원 신호의 관측시각이나 해면 상태를 소급해 지우지 않도록 이력을 보존한다.",
+      "concepts": [
+        "오염센서 오탐판정시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08038",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잘못 분류한 경보를 수정한 유막자료 정정시각은 해상에 새 유막이 생긴 사건이 아니다.",
+      "concepts": [
+        "유막자료 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08039",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오염사건 증거시간표는 도달·센서탐지·촬영·신고·경보·정정의 시각을 각각 유지한다. 유막 도달 추정, 센서 탐지, 영상 촬영, 선박 신고, 경보, 정정의 시간층을 나눈다.",
+      "concepts": [
+        "오염사건 증거시간표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08040",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "최초 탐지 전 관측 공백이 있다면 유출시작 불확실범위로 누출 가능 시간대를 표시한다.",
+      "concepts": [
+        "유출시작 불확실범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08041",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "파랑이나 조류로 실제 장력이 변한 계류선 장력변화시각과 하중센서 표본시각을 구분한다. 파랑·조류의 변화와 하중계 표본을 맞춰 실제 구조 하중이 달라진 범위를 제한한다.",
+      "concepts": [
+        "계류선 장력변화시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08042",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하중계가 값을 읽은 계류하중 측정시각은 구조 변화의 관측 기준이며 원인의 시작은 아니다.",
+      "concepts": [
+        "계류하중 측정시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08043",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자세센서가 임계 각도를 기록한 부표기울기 검출시각은 계류 이상이 발생한 뒤일 수 있다. 자세 임계 도달은 계류 이상의 늦은 결과일 수 있으므로 장력 변화와 선후를 구별한다.",
+      "concepts": [
+        "부표기울기 검출시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08044",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장력과 자세를 합쳐 상태를 분류한 계류진단 계산시각은 원시 관측 뒤에 생긴다.",
+      "concepts": [
+        "계류진단 계산시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08045",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이상 코드를 육상으로 보낸 계류경보 송신시각은 실제 구조 사건과 통신사건을 나누는 기준이다. 장치 내부 진단 완료 뒤의 통신 사건이어서 구조 변화나 첫 이상표본과 합치지 않는다.",
+      "concepts": [
+        "계류경보 송신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08046",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영자가 자료를 검토해 확정한 계류이상 확인시각은 자동 감지보다 늦게 놓인다.",
+      "concepts": [
+        "계류이상 확인시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08047",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회수점검에서 손상을 본 계류부품 파손발견시각은 파손이 일어난 정확한 순간을 뜻하지 않는다. 회수점검은 파손 존재의 상한만 주며 장력 급변과 자세자료로 발생 구간을 추정한다.",
+      "concepts": [
+        "계류부품 파손발견시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08048",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "메모리 자료로 연표를 다시 만든 계류기록 재구성시각은 과거 사건시각과 별도 이력으로 남긴다.",
+      "concepts": [
+        "계류기록 재구성시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08049",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계류사건 시간증거망은 장력변화·기울기·진단·송신·현장확인의 선후와 출처를 연결한다. 장력, 자세, 진단, 경보 송신, 육상 수신, 현장 확인의 원시각과 신뢰도를 연결한다.",
+      "concepts": [
+        "계류사건 시간증거망"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08050",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 정상점검 사이에 파손이 확인되면 계류파손 추정시간창으로 실제 발생 범위를 제한한다.",
+      "concepts": [
+        "계류파손 추정시간창"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08051",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배터리 전압이 실제로 떨어진 부표전압 강하시각과 전력감시기가 다음 표본을 기록한 시각을 구분한다. 배터리 단자 원시값이 지속 하강한 첫 표본으로 계산 잔량이나 경보보다 물리 변화를 우선한다.",
+      "concepts": [
+        "부표전압 강하시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08052",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충전제어기가 발전량을 읽은 태양전지 출력측정시각은 구름이 가린 최초 순간과 같지 않을 수 있다.",
+      "concepts": [
+        "태양전지 출력측정시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08053",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전압·전류·온도로 잔량을 산출한 전력상태 계산시각은 원시 계측 뒤의 처리 사건이다. 잔량 추정은 마지막 전압·전류·온도 표본 뒤에 생성되므로 방전 시작을 직접 나타내지 않는다.",
+      "concepts": [
+        "전력상태 계산시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08054",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어기가 실제 기능을 줄인 저전력모드 진입시각은 진입 명령이나 사전 경고시각과 나눠 기록한다.",
+      "concepts": [
+        "저전력모드 진입시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08055",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배터리 이상코드를 보낸 전원경보 발신시각은 전압 하강 및 모드 전환보다 늦게 놓일 수 있다. 절전 모드 전환과 경보 송신 사이의 장치 처리시간을 배터리 열화구간과 분리한다.",
+      "concepts": [
+        "전원경보 발신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08056",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제서버가 패킷을 받은 육상전원경보 수신시각에는 위성 통신대기가 포함된다.",
+      "concepts": [
+        "육상전원경보 수신시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08057",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 충방전 기록으로 성능저하를 확정한 배터리열화 판정시각은 열화가 시작된 때와 별개다. 장기 기록으로 결론낸 분석 사건이며 성능 저하가 처음 시작된 때와 동일하지 않다.",
+      "concepts": [
+        "배터리열화 판정시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08058",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전원회복 뒤 저장자료를 올린 전력자료 복구등록시각은 각 원시 표본의 측정시각을 유지한다.",
+      "concepts": [
+        "전력자료 복구등록시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08059",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부표전력 시간사슬은 발전·충전·전압강하·절전·송신·판정을 서로 다른 시각으로 연결한다. 발전 입력, 충전, 전압 하강, 절전 전환, 경보 송신, 열화 판정을 각기 다른 시각으로 둔다.",
+      "concepts": [
+        "부표전력 시간사슬"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08060",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 정상 표본과 재기동 사이에는 전원상실 추정구간을 두어 정확한 중단시각을 열어 둔다.",
+      "concepts": [
+        "전원상실 추정구간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08061",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 센서값을 한 묶음으로 만든 관측패킷 생성시각은 각 센서의 실제 측정시각보다 뒤다. 묶음 안 센서별 측정시각을 유지해 패킷 생성이 모든 값의 동시 관측으로 오해되지 않게 한다.",
+      "concepts": [
+        "관측패킷 생성시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08062",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "모뎀이 통신망에 연결된 위성링크 접속시각은 자료가 관측된 시각과 같은 사건이 아니다.",
+      "concepts": [
+        "위성링크 접속시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08063",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 바이트가 부표를 떠난 패킷발신 완료시각은 전송 시작 및 육상 수신과 구별한다. 접속 대기·전송 시작·마지막 바이트 송신을 나눠 통신 단계별 지연을 계산한다.",
+      "concepts": [
+        "패킷발신 완료시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08064",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중계망이 메시지를 전달한 위성중계 처리시각은 통신 경로의 중간 사건으로만 사용한다.",
+      "concepts": [
+        "위성중계 처리시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08065",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트웨이가 패킷을 받은 육상게이트웨이 수신시각은 센서 관측 뒤의 늦은 증거다. 부표 발신과 육상 수신의 차이를 위성 중계 지연으로 두고 해상 관측시각을 바꾸지 않는다.",
+      "concepts": [
+        "육상게이트웨이 수신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08066",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검사 후 데이터베이스에 저장된 관측DB 적재시각은 원본 수신과도 다를 수 있다.",
+      "concepts": [
+        "관측DB 적재시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08067",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 전송 실패 뒤 도착한 통신재시도 성공시각을 원래 측정시각으로 덮어쓰지 않는다. 성공한 전송의 도착시각과 원패킷 생성시각을 모두 보존해 과거 표본의 선후를 유지한다.",
+      "concepts": [
+        "통신재시도 성공시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08068",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연결 복구 뒤 여러 패킷이 몰린 버퍼일괄 배출시각은 관측이 동시에 일어났다는 뜻이 아니다.",
+      "concepts": [
+        "버퍼일괄 배출시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08069",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신경로 시간추적표는 생성·접속·발신·중계·수신·적재 시각과 패킷 식별자를 함께 둔다. 패킷 ID로 센서 측정, 묶음 생성, 접속, 발신, 중계, 육상 수신, 적재를 이어 붙인다.",
+      "concepts": [
+        "통신경로 시간추적표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08070",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중간 로그가 없을 때는 전송지연 불확실범위로 패킷이 경로 어디에 머문 시간을 표시한다.",
+      "concepts": [
+        "전송지연 불확실범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08071",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비선 위치기록으로 확인한 정비선 부표접근시각은 작업보고서 작성시각보다 현장사건에 가깝다.",
+      "concepts": [
+        "정비선 부표접근시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08072",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잠금과 장비개봉이 시작된 정비작업 실제착수시각은 사전 작업허가가 발효된 때와 나눈다.",
+      "concepts": [
+        "정비작업 실제착수시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08073",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기존 센서가 전원과 배선에서 떨어진 센서분리 접점시각은 교체 작업의 물리 사건이다.",
+      "concepts": [
+        "센서분리 접점시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08074",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "새 장치를 연결한 새센서 연결시각은 첫 정상 표본 및 교정 완료와 각각 구별한다.",
+      "concepts": [
+        "새센서 연결시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08075",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표준용액이나 기준기로 비교값을 읽은 현장교정 측정시각은 결과 승인보다 앞선다.",
+      "concepts": [
+        "현장교정 측정시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08076",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비 뒤 장비가 다시 물에 놓인 부표재투입 수면시각은 관측서비스 회복과 같지 않을 수 있다.",
+      "concepts": [
+        "부표재투입 수면시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08077",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "육상에 돌아와 문서를 올린 정비보고 업로드시각은 현장 작업이 진행된 시각을 대표하지 않는다.",
+      "concepts": [
+        "정비보고 업로드시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08078",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감독자가 자료를 검토한 정비결과 승인시각은 교정 및 재투입 뒤의 행정 사건이다.",
+      "concepts": [
+        "정비결과 승인시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08079",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부표정비 사건연결표는 접근·착수·분리·연결·교정·재투입·승인을 출처별로 잇는다.",
+      "concepts": [
+        "부표정비 사건연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08080",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서가 분리된 때부터 정상 표본이 돌아올 때까지를 정비중 관측공백구간으로 명확히 표시한다.",
+      "concepts": [
+        "정비중 관측공백구간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08081",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선체가 부표와 접촉한 선박충돌 실제시각은 충격센서 및 선박기록의 표본으로 추정한다.",
+      "concepts": [
+        "선박충돌 실제시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08082",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가속도 급증이 저장된 충격센서 기록시각은 물리 접촉에 가장 가까운 장치 관측이다.",
+      "concepts": [
+        "충격센서 기록시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08083",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선박 위치가 가장 가까웠던 AIS 최근접 표본시각은 송신주기 때문에 충돌 순간과 정확히 같지 않다.",
+      "concepts": [
+        "AIS 최근접 표본시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08084",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충돌 뒤 자세가 달라진 부표기울기 변화시각은 계류 손상의 후속 관측으로 기록한다.",
+      "concepts": [
+        "부표기울기 변화시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08085",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장치가 이상 패킷을 내보낸 충돌경보 송신시각은 충격 및 기울기 변화 뒤에 온다.",
+      "concepts": [
+        "충돌경보 송신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08086",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선박이나 목격자의 충돌신고 접수시각은 물리 사건보다 늦은 인지 시각이다.",
+      "concepts": [
+        "충돌신고 접수시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08087",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제망이 위치 패킷을 받은 AIS자료 육상수신시각을 선박이 해당 위치에 있었던 시각과 구별한다.",
+      "concepts": [
+        "AIS자료 육상수신시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08088",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "카메라 영상을 검토해 접촉을 확정한 충돌영상 판독시각은 촬영 및 충돌 뒤의 분석 사건이다.",
+      "concepts": [
+        "충돌영상 판독시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08089",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부표충돌 증거연표는 충격·AIS·자세·경보·신고·영상의 서로 다른 시각을 공통축에 놓는다.",
+      "concepts": [
+        "부표충돌 증거연표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08090",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충격 로그가 결측이면 인접 AIS와 자세 표본 사이의 충돌발생 추정창으로 범위를 제한한다.",
+      "concepts": [
+        "충돌발생 추정창"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08091",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해수면 급변이 부표 위치에 실제 도착한 쓰나미파 도달시각은 압력계의 첫 이상 표본으로 근사한다.",
+      "concepts": [
+        "쓰나미파 도달시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08092",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해저압력 또는 표층센서가 변화를 읽은 쓰나미압력 표본시각은 파의 최초 도달과 구별한다.",
+      "concepts": [
+        "쓰나미압력 표본시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08093",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연속 표본을 분석해 후보를 만든 쓰나미탐지 계산시각은 실제 해수면 사건 뒤다.",
+      "concepts": [
+        "쓰나미탐지 계산시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08094",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탐지결과를 육상에 보낸 쓰나미후보 송신시각은 관측과 경보 판단 사이의 전달 사건이다.",
+      "concepts": [
+        "쓰나미후보 송신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08095",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경보기관이 후보자료를 받은 경보센터 수신시각은 부표 현장의 파 도달보다 늦다.",
+      "concepts": [
+        "경보센터 수신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08096",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 관측과 모델을 종합해 발표한 쓰나미경보 발령시각은 자연현상 발생시각이 아니다.",
+      "concepts": [
+        "쓰나미경보 발령시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08097",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "규모나 도달예측을 고친 쓰나미경보 수정시각은 새로운 파가 발생한 것으로 해석하지 않는다.",
+      "concepts": [
+        "쓰나미경보 수정시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08098",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위험 감소를 판단해 공표한 쓰나미경보 해제시각은 해상 진동이 완전히 끝난 순간과 다를 수 있다.",
+      "concepts": [
+        "쓰나미경보 해제시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08099",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "쓰나미 사건시간사슬은 파 도달·센서표본·탐지·송신·수신·경보를 명시적으로 나눈다.",
+      "concepts": [
+        "쓰나미 사건시간사슬"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08100",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표본주기가 긴 부표에서는 쓰나미도달 불확실범위로 실제 도착의 이른 경계와 늦은 경계를 보고한다.",
+      "concepts": [
+        "쓰나미도달 불확실범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    }
+  ]
+}

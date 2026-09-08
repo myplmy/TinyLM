@@ -1,0 +1,150 @@
+{"primary":"환기팬 압력형성 지연","text":"팬을 켠 뒤 축사 내부 압력과 공기흐름이 안정될 때까지가 환기팬 압력형성 지연이다. 모터 전류가 오른 시각과 먼 우리 풍속이 안정된 시각을 비교해 기동 대기와 공기 전달을 나눈다.","relations":["process","state","boundary"]}
+{"primary":"환기명령 실행대기","text":"제어명령이 큐에 들어간 뒤 인버터 차례가 올 때까지를 환기명령 실행대기로 기록한다. 인버터가 유휴 상태가 된 시각과 실제 출력 시작을 비교해 제어 큐의 길이를 정확히 잰다.","relations":["process","attribute","comparison"]}
+{"primary":"압력형성 실행대기 구별","text":"압력형성 실행대기 구별은 공기역학적 반응시간과 제어기 대기시간을 분리한다. 제어 명령이 이미 실행된 뒤에도 압력이 천천히 변하면 그 구간은 큐가 아니라 축사 체적의 반응이다.","relations":["classification","process","role"]}
+{"primary":"덕트공기 도달지연","text":"팬 기동 뒤 먼 구역에 새 공기가 도달하는 물리 시간이 덕트공기 도달지연이다. 추적가스가 근단과 말단 센서에 나타난 시차를 쓰면 팬 성능과 덕트 전달을 구분할 수 있다.","relations":["part_of","process","state"]}
+{"primary":"환기설정 승인대기","text":"환기량 변경안을 만든 뒤 관리자가 허용할 때까지가 환기설정 승인대기다. 센서 위험값이 유지돼도 승인 계정의 결정이 없던 시간은 설비 성능 지연과 별도로 기록한다.","relations":["boundary","function","process"]}
+{"primary":"팬기동 공기교환선행","text":"팬이 먼저 돌고 오염공기가 뒤에 희석되는 팬기동 공기교환선행을 시간축에 남긴다. 회전수 상승만 보고 환기가 끝났다고 하지 않고 이산화탄소가 실제 낮아지는 후속 상태를 확인한다.","relations":["classification","comparison","state"]}
+{"primary":"필터압력 회복지연","text":"필터세척 뒤 차압이 정상범위로 돌아올 때까지가 필터압력 회복지연이다. 세척 종료 뒤 남은 수분과 공기저항이 감소하는 곡선을 따라 실제 회복 완료를 판정한다.","relations":["attribute","contrast","process"]}
+{"primary":"예비팬 배정대기","text":"주팬 고장 뒤 사용할 예비팬의 운전권이 배정될 때까지가 예비팬 배정대기다. 운전권 승인 전에 팬이 정지해 있던 시간은 기계 고장이 아니라 공유 자원의 의사결정 지연이다.","relations":["process","role","state"]}
+{"primary":"축사환기 지연사슬","text":"축사환기 지연사슬은 명령대기·팬기동·압력형성·공기도달·승인을 순서대로 잇는다. 명령 생성, 제어기 실행, 팬 회전, 압력 전달, 동물 구역 도달에 서로 다른 시각을 붙인다.","relations":["boundary","part_of","process"]}
+{"primary":"환기로그 순서복원","text":"명령과 센서시각이 충돌하면 환기로그 순서복원으로 실제 기동과 후속 반응을 재배열한다. 장치 원시시각을 표준시에 맞추고 서버 수신 지연을 제거해 원인과 반응의 방향을 보존한다.","relations":["attribute","comparison","process"]}
+{"primary":"냉각패드 습윤지연","text":"급수가 시작된 뒤 냉각패드 전체가 젖을 때까지의 물리 시간이 냉각패드 습윤지연이다. 상단 밸브 개방과 하단 배수의 첫 연속 흐름 사이를 재면 패드 내부 확산시간을 알 수 있다.","relations":["process","state","boundary"]}
+{"primary":"냉각구역 사용순번대기","text":"여러 축사동 중 해당 구역의 냉각설비 차례를 기다린 구간이 냉각구역 사용순번대기다. 공동펌프의 이전 회차 종료와 해당 밸브 개방 사이만 계산해 습윤시간과 섞지 않는다.","relations":["process","attribute","comparison"]}
+{"primary":"패드습윤 순번대기 구별","text":"패드습윤 순번대기 구별은 물이 퍼지는 시간과 설비사용 대기를 같은 원인으로 보지 않는다. 급수 밸브가 닫힌 채 기다린 구간은 자원 큐이고 개방 뒤 젖어 가는 구간만 물리 반응이다.","relations":["classification","process","role"]}
+{"primary":"체온하강 생리반응지연","text":"냉각이 시작된 뒤 가축 체온이 낮아질 때까지의 생리 시간이 체온하강 생리반응지연이다. 개체별 기준 체온과 환경온도를 함께 보아 측정 지연을 실제 생리 반응으로 오인하지 않는다.","relations":["part_of","process","state"]}
+{"primary":"냉각연장 승인대기","text":"고온이 지속돼 운전시간 연장을 검토하는 구간이 냉각연장 승인대기다. 체감온도와 가축 호흡수가 위험해도 책임자의 운전 연장 결정 전 시간은 행정 의존으로 남긴다.","relations":["boundary","function","process"]}
+{"primary":"급수개시 패드냉각선행","text":"급수가 먼저 시작되고 패드 냉각효과가 뒤따르는 급수개시 패드냉각선행을 기록한다. 물 공급 접점, 패드 표면온도, 축사 흡입공기 온도를 차례로 이어 효과 발생을 확인한다.","relations":["classification","comparison","state"]}
+{"primary":"패드세척 처리지연","text":"막힌 섬유를 씻어 물분포를 회복하는 실제 시간이 패드세척 처리지연이다. 노즐 분리, 섬유 세척, 재조립, 유량 확인에 실제 손이 투입된 시간만 처리 구간에 센다.","relations":["attribute","contrast","process"]}
+{"primary":"냉각펌프 사용대기","text":"공동펌프가 다른 동을 지원하는 동안 기다린 구간이 냉각펌프 사용대기다. 다른 동의 운전 종료 뒤에도 안전 전환시간이 필요하면 큐와 보호 절차를 나눠 적는다.","relations":["process","role","state"]}
+{"primary":"축사냉각 지연분해","text":"축사냉각 지연분해는 급수·습윤·생리반응·설비대기·승인시간을 따로 계산한다. 물 공급과 증발, 체온 반응, 설비 배정, 승인 흐름을 분리해 긴 지연의 원인을 찾는다.","relations":["boundary","part_of","process"]}
+{"primary":"냉각기록 순서교정","text":"센서 업로드가 늦으면 냉각기록 순서교정으로 급수와 체온반응의 실제 차례를 복원한다. 원시 센서 표본과 업로드 배치를 분리해 늦게 도착한 과거 값이 현재 반응 뒤에 놓이지 않게 한다.","relations":["attribute","comparison","process"]}
+{"primary":"급수배관 압력도달지연","text":"펌프기동 뒤 먼 급수기까지 압력이 전해지는 물리 시간이 급수배관 압력도달지연이다. 근단과 말단 압력계의 상승 시차를 써야 펌프 대기와 배관을 통한 수압 전달이 구별된다.","relations":["process","state","boundary"]}
+{"primary":"급수밸브 실행대기","text":"급수요청 뒤 제어기의 밸브명령 차례를 기다린 구간이 급수밸브 실행대기다.","relations":["process","attribute","comparison"]}
+{"primary":"압력도달 밸브대기 구별","text":"압력도달 밸브대기 구별은 물의 전파시간과 명령 큐 대기를 나눈다. 밸브가 열리기 전 정지구간은 제어 순번이고 개방 후 압력파 이동은 유체 과정이다.","relations":["classification","process","role"]}
+{"primary":"급수조 수위회복지연","text":"보충수가 들어온 뒤 운영수위가 회복될 때까지가 급수조 수위회복지연이다.","relations":["part_of","process","state"]}
+{"primary":"수질검사 판정대기","text":"채수 뒤 검사결과를 검토할 차례를 기다린 구간이 수질검사 판정대기다. 분석은 끝났지만 검토자가 배정되지 않은 시간은 수질 반응이나 장비 처리시간에 넣지 않는다.","relations":["boundary","function","process"]}
+{"primary":"펌프기동 급수도달선행","text":"펌프가 먼저 켜지고 급수기 유량이 뒤에 생기는 펌프기동 급수도달선행을 남긴다.","relations":["classification","comparison","state"]}
+{"primary":"급수기 세척처리시간","text":"오염된 급수기를 비우고 씻는 실제 작업시간이 급수기 세척처리시간이다. 배수, 세제 접촉, 헹굼, 재급수의 각 실제 작업을 합쳐 단순 작업자 대기와 분리한다.","relations":["attribute","contrast","process"]}
+{"primary":"예비급수차 배차대기","text":"주배관 고장 뒤 급수차가 배정될 때까지가 예비급수차 배차대기다.","relations":["process","role","state"]}
+{"primary":"축사급수 지연사슬","text":"축사급수 지연사슬은 명령·펌프·압력·수위·검사·배차대기를 순서대로 잇는다. 센서 요구부터 말단 수위 회복까지 명령·기동·전달·검사 단계를 공통 시간축에 배열한다.","relations":["boundary","part_of","process"]}
+{"primary":"급수연표 순서복원","text":"밸브와 유량로그가 엇갈리면 급수연표 순서복원으로 실제 물 공급 차례를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"사료이송 도달지연","text":"스크루가 돈 뒤 먼 급이기에 사료가 도착할 때까지가 사료이송 도달지연이다. 스크루 회전 뒤 관로 끝의 중량센서가 반응할 때까지를 재어 물질 이동시간으로 잡는다.","relations":["process","state","boundary"]}
+{"primary":"급이회차 순번대기","text":"급이회차 순번대기는 여러 축사동에 차례로 사료를 공급할 때 해당 동의 직전 회차가 끝나기를 기다린 구간이다.","relations":["process","attribute","comparison"]}
+{"primary":"사료도달 급이대기 구별","text":"사료도달 급이대기 구별은 이송에 걸린 시간과 회차 전 대기를 분리한다. 회차가 시작되기 전에 빈 설비를 기다린 시간은 사료가 관로를 이동한 시간과 원인이 다르다.","relations":["classification","process","role"]}
+{"primary":"사료혼합 균질화지연","text":"여러 원료가 균일하게 섞일 때까지의 물리 시간이 사료혼합 균질화지연이다.","relations":["part_of","process","state"]}
+{"primary":"배합승인 검토대기","text":"배합 결과가 나온 뒤 영양담당의 승인을 기다린 구간이 배합승인 검토대기다. 성분표가 완성된 뒤 담당자가 알레르기·영양 기준을 확인하지 못한 구간을 별도 큐로 둔다.","relations":["boundary","function","process"]}
+{"primary":"혼합완료 급이선행","text":"사료배합이 끝난 다음 급이기를 운전하는 혼합완료 급이선행을 지킨다.","relations":["classification","comparison","state"]}
+{"primary":"급이기 막힘해소 지연","text":"막힌 배관을 열어 유량을 회복하는 실제 시간이 급이기 막힘해소 지연이다. 역회전, 덮개 개방, 이물 제거, 시험운전의 소요를 합쳐 수리 작업의 실제 길이를 계산한다.","relations":["attribute","contrast","process"]}
+{"primary":"사료차량 하역대기","text":"원료가 도착해도 저장빈의 차례를 기다린 구간이 사료차량 하역대기다.","relations":["process","role","state"]}
+{"primary":"축사급이 지연분해","text":"축사급이 지연분해는 혼합·승인·회차대기·이송·막힘·하역대기를 나눈다. 배합 처리, 품질 승인, 설비 회차, 사료 이송, 막힘 복구를 각각 다른 원인 코드로 연결한다.","relations":["boundary","part_of","process"]}
+{"primary":"급이기록 순서교정","text":"계량기와 작업표 시각이 다르면 급이기록 순서교정으로 배합부터 섭취까지를 복원한다.","relations":["attribute","comparison","process"]}
+{"primary":"가축이동 적응지연","text":"새 우리로 옮긴 뒤 동물이 먹이와 물을 정상적으로 이용할 때까지가 가축이동 적응지연이다. 이동 완료 뒤 섭취량과 음수, 휴식 행동이 기준으로 돌아올 때까지를 생물 반응으로 본다.","relations":["process","state","boundary"]}
+{"primary":"이동통로 사용대기","text":"다른 군이 통로를 비울 때까지 해당 군이 기다린 구간이 이동통로 사용대기다.","relations":["process","attribute","comparison"]}
+{"primary":"적응지연 통로대기 구별","text":"적응지연 통로대기 구별은 생리·행동 반응과 시설 순번을 따로 본다. 통로가 비기를 기다린 정지시간은 이동 전 자원 제약이고 새 우리 반응은 이동 후에 시작된다.","relations":["classification","process","role"]}
+{"primary":"군집분리 이동시간","text":"개체를 골라 별도 우리로 이동시키는 실제 작업시간이 군집분리 이동시간이다.","relations":["part_of","process","state"]}
+{"primary":"수의검사 확인대기","text":"이동 전 건강상태를 확인할 담당자를 기다린 구간이 수의검사 확인대기다. 검사 요청은 접수됐지만 수의사가 도착하지 않은 구간을 개체 상태 변화와 섞지 않는다.","relations":["boundary","function","process"]}
+{"primary":"검사완료 개체이동선행","text":"수의검사가 끝난 다음 개체를 옮기는 검사완료 개체이동선행을 유지한다.","relations":["classification","comparison","state"]}
+{"primary":"미끄럼구간 우회지연","text":"젖은 통로를 피해 돌아가며 늘어난 물리 시간이 미끄럼구간 우회지연이다. 우회 경로의 실제 거리와 보행 속도로 늘어난 시간을 계산해 단순 출발 대기에서 제외한다.","relations":["attribute","contrast","process"]}
+{"primary":"가축운송칸 준비대기","text":"이동계획이 확정된 뒤 세척된 가축운송칸을 배정받을 때까지가 가축운송칸 준비대기다.","relations":["process","role","state"]}
+{"primary":"가축이동 지연사슬","text":"가축이동 지연사슬은 검사·통로대기·분리·이동·적응·확인을 순서대로 잇는다. 건강확인, 통로 확보, 무리 분리, 이동, 새 환경 적응을 사건 전후 상태와 함께 잇는다.","relations":["boundary","part_of","process"]}
+{"primary":"개체이동 순서복원","text":"RFID와 수기표가 충돌하면 개체이동 순서복원으로 실제 우리 이동 차례를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"축사센서 응답지연","text":"온도나 가스가 변한 뒤 탐침값이 안정될 때까지의 물리 시간이 축사센서 응답지연이다. 기준가스를 주입한 때부터 출력이 허용 오차 안에 머무를 때까지를 탐침의 물리 응답으로 측정한다.","relations":["process","state","boundary"]}
+{"primary":"센서자료 전송대기","text":"표본이 장치에 저장된 뒤 무선슬롯을 기다린 구간이 센서자료 전송대기다.","relations":["process","attribute","comparison"]}
+{"primary":"응답지연 전송대기 구별","text":"응답지연 전송대기 구별은 계측기 반응과 통신 큐를 같은 지연으로 보지 않는다. 센서 값이 이미 안정됐는데 서버 도착만 늦으면 원인은 무선 슬롯이나 재전송 큐에 있다.","relations":["classification","process","role"]}
+{"primary":"센서필터 처리시간","text":"원시잡음을 줄여 제어값을 만드는 실제 계산시간이 센서필터 처리시간이다.","relations":["part_of","process","state"]}
+{"primary":"대시보드 갱신대기","text":"서버에 값이 들어왔어도 화면 새로고침 차례를 기다린 구간이 대시보드 갱신대기다. 저장소에는 최신 값이 있지만 화면 캐시가 이전 표본을 보인 구간을 표시 지연으로 분류한다.","relations":["boundary","function","process"]}
+{"primary":"물리변화 센서표본선행","text":"축사환경이 먼저 바뀌고 센서표본이 뒤따르는 물리변화 센서표본선행을 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"게이트웨이 재시도지연","text":"무선충돌 뒤 패킷을 다시 보내며 늘어난 시간이 게이트웨이 재시도지연이다. 패킷 충돌 횟수와 백오프 간격을 합쳐 통신 경로가 추가한 시간을 센서 반응과 나눈다.","relations":["attribute","contrast","process"]}
+{"primary":"품질검사 처리대기","text":"자료수신 뒤 이상값 검사를 거칠 차례를 기다린 구간이 품질검사 처리대기다.","relations":["process","role","state"]}
+{"primary":"축사계측 지연사슬","text":"축사계측 지연사슬은 환경변화·센서응답·필터·전송·화면갱신을 순서대로 잇는다. 환경 변화, 탐침 안정, 필터 계산, 무선 전송, 저장, 화면 갱신의 시간표를 개별로 보존한다.","relations":["boundary","part_of","process"]}
+{"primary":"센서기록 순서복원","text":"버퍼시각과 측정시각이 뒤섞이면 센서기록 순서복원으로 실제 관측 차례를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"감염잠복 생물지연","text":"감염잠복 생물지연은 병원체 노출과 첫 임상 증상 사이에 증식과 면역 반응이 진행되는 시간이다. 관찰 여부와 무관하게 흐르며 보고 지연과 구별한다.","relations":["process","state","boundary"]}
+{"primary":"임상관찰 순번대기","text":"이상징후가 있어도 해당 동의 관찰 차례를 기다린 구간이 임상관찰 순번대기다.","relations":["process","attribute","comparison"]}
+{"primary":"잠복지연 관찰대기 구별","text":"잠복지연 관찰대기 구별은 질병진행과 사람이 보지 못한 시간을 분리한다. 증상이 이미 나타났지만 순찰 전이라 발견되지 않은 시간은 잠복기가 아니라 감시 공백이다.","relations":["classification","process","role"]}
+{"primary":"항체형성 반응지연","text":"감염 뒤 검출 가능한 항체가 생길 때까지가 항체형성 반응지연이다.","relations":["part_of","process","state"]}
+{"primary":"수의사 판정대기","text":"증상기록이 모인 뒤 수의사가 검토할 차례를 기다린 구간이 수의사 판정대기다. 자료가 준비된 뒤 다른 진료 때문에 검토가 시작되지 못한 시간을 질병 진행과 따로 집계한다.","relations":["boundary","function","process"]}
+{"primary":"노출발생 증상발현선행","text":"병원체 노출이 먼저이고 증상발현이 뒤인 노출발생 증상발현선행을 지킨다.","relations":["classification","comparison","state"]}
+{"primary":"체온상승 생리시간","text":"감염반응으로 체온이 임계값에 도달하는 실제 시간이 체온상승 생리시간이다. 동일 개체의 연속 체온곡선에서 기준선 이탈부터 지속 임계 도달까지를 생리 반응으로 잰다.","relations":["attribute","contrast","process"]}
+{"primary":"재관찰 일정대기","text":"초기소견이 불명확해 다음 관찰시점까지 기다린 구간이 재관찰 일정대기다.","relations":["process","role","state"]}
+{"primary":"질병발현 지연분해","text":"질병발현 지연분해는 잠복·항체·체온·관찰·판정대기를 각각 표시한다. 노출·증식·면역반응·증상발현·사람 관찰·의학 판정을 연속하되 원인별 구간을 분리한다.","relations":["boundary","part_of","process"]}
+{"primary":"질병연표 순서교정","text":"증상기록이 후입력되면 질병연표 순서교정으로 노출과 발현 차례를 복원한다.","relations":["attribute","comparison","process"]}
+{"primary":"분변시료 냉각지연","text":"채취한 시료가 지정 보관온도에 도달할 때까지가 분변시료 냉각지연이다. 채취온도에서 운송 허용온도로 내려간 첫 시각을 기록해 냉장고 앞 대기와 열전달을 구별한다.","relations":["process","state","boundary"]}
+{"primary":"분변검사 접수대기","text":"분변검사 접수대기는 시료가 검사실에 도착한 후 바코드 등록 순번이 올 때까지 머문 구간이다. 운송 지연이나 실제 분석 시간과 구분한다.","relations":["process","attribute","comparison"]}
+{"primary":"시료냉각 접수대기 구별","text":"시료냉각 접수대기 구별은 온도 안정시간과 행정 큐를 나눈다. 온도는 이미 안정됐지만 바코드 접수가 늦은 구간은 물류·행정 큐이며 냉각시간이 아니다.","relations":["classification","process","role"]}
+{"primary":"병원체배양 반응시간","text":"시료에서 병원체가 검출수준까지 증식하는 실제 시간이 병원체배양 반응시간이다.","relations":["part_of","process","state"]}
+{"primary":"분석장비 회차대기","text":"전처리가 끝난 뒤 검사장비의 빈 회차를 기다린 구간이 분석장비 회차대기다. 전처리 완료표본이 장비 투입구 앞에서 기다린 시간을 증폭·판독의 고정 처리시간과 나눈다.","relations":["boundary","function","process"]}
+{"primary":"채취완료 운송선행","text":"표본 채취와 봉인이 끝난 다음 검사실 운송이 시작되는 채취완료 운송선행을 유지한다.","relations":["classification","comparison","state"]}
+{"primary":"유전자검사 처리지연","text":"추출·증폭·판독에 실제로 걸린 시간이 유전자검사 처리지연이다. 추출 시작부터 대조군이 유효한 판독 완료까지의 장비·반응 시간을 실제 검사 과정으로 센다.","relations":["attribute","contrast","process"]}
+{"primary":"축산검사결과 승인대기","text":"장비출력이 나온 뒤 책임자가 결과를 승인할 때까지가 축산검사결과 승인대기다.","relations":["process","role","state"]}
+{"primary":"축산검사 지연사슬","text":"축산검사 지연사슬은 채취·냉각·운송·접수·반응·분석·승인을 잇는다. 채취 현장, 냉장 운송, 접수 큐, 반응 장치, 판독 검토의 시계를 하나의 표본 ID로 연결한다.","relations":["boundary","part_of","process"]}
+{"primary":"검사기록 순서복원","text":"접수와 결과게시 시각이 충돌하면 검사기록 순서복원으로 실제 처리 차례를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"임상소견 검토시간","text":"체온·호흡·섭취·활동 기록을 실제로 판단하는 시간이 임상소견 검토시간이다. 수의사가 기록을 열고 감별 기준을 적용한 실제 작업 구간만 세며 배정 전 대기는 제외한다.","relations":["process","state","boundary"]}
+{"primary":"수의진료 배정대기","text":"이상개체가 등록된 뒤 담당 수의사를 기다린 구간이 수의진료 배정대기다.","relations":["process","attribute","comparison"]}
+{"primary":"검토시간 배정대기 구별","text":"검토시간 배정대기 구별은 의학적 판단과 인력 큐를 분리한다. 담당자가 지정되기 전 정지시간과 지정 후 판단시간을 업무 로그의 상태 전환으로 갈라 기록한다.","relations":["classification","process","role"]}
+{"primary":"감별진단 처리시간","text":"여러 질환 가능성을 비교하고 추가검사를 정하는 실제 시간이 감별진단 처리시간이다.","relations":["part_of","process","state"]}
+{"primary":"전문의 자문대기","text":"현장수의사가 자료를 보낸 뒤 전문기관 회신을 기다린 구간이 전문의 자문대기다. 질문과 자료가 완전하게 접수된 뒤 회신이 올 때까지를 재며 불완전 자료 보완은 별도 과정으로 둔다.","relations":["boundary","function","process"]}
+{"primary":"검사결과 임상판정선행","text":"검사결과를 확인한 다음 임상판정을 확정하는 검사결과 임상판정선행을 지킨다.","relations":["classification","comparison","state"]}
+{"primary":"치료계획 작성지연","text":"체중과 상태에 맞춰 처방을 만드는 실제 시간이 치료계획 작성지연이다. 체중별 용량 계산, 금기 확인, 투약 경로 선택에 실제 사용된 시간을 승인 대기와 나눈다.","relations":["attribute","contrast","process"]}
+{"primary":"처방승인 순번대기","text":"치료안이 완성된 뒤 책임자의 승인 차례를 기다린 구간이 처방승인 순번대기다.","relations":["process","role","state"]}
+{"primary":"수의판정 지연분해","text":"수의판정 지연분해는 배정·검토·감별·자문·계획·승인시간을 나눈다. 초기 배정부터 감별·자문·처방·책임 승인까지 각 상태가 열린 시각과 닫힌 시각을 남긴다.","relations":["boundary","part_of","process"]}
+{"primary":"진료연표 순서교정","text":"검사·자문·처방 시각이 엇갈리면 진료연표 순서교정으로 효력 차례를 복원한다.","relations":["attribute","comparison","process"]}
+{"primary":"격리우리 환경안정지연","text":"환기와 온도를 바꾼 뒤 격리우리가 안정될 때까지가 격리우리 환경안정지연이다. 빈 우리에 설정을 적용한 뒤 온도·습도·환기량이 모두 허용 범위에 머문 때를 완료로 잡는다.","relations":["process","state","boundary"]}
+{"primary":"격리우리 배정대기","text":"의심개체가 확인된 뒤 빈 격리공간을 기다린 구간이 격리우리 배정대기다.","relations":["process","attribute","comparison"]}
+{"primary":"환경안정 배정대기 구별","text":"환경안정 배정대기 구별은 물리조건 회복과 시설 큐를 따로 본다. 우리가 비지 않아 기다린 시간은 시설 큐이고 청소 뒤 미기후가 안정되는 시간은 물리 과정이다.","relations":["classification","process","role"]}
+{"primary":"개체격리 이동시간","text":"의심개체를 분리해 격리우리로 옮기는 실제 시간이 개체격리 이동시간이다.","relations":["part_of","process","state"]}
+{"primary":"격리승인 검토대기","text":"격리근거가 모인 뒤 책임자가 조치를 승인할 때까지가 격리승인 검토대기다. 감염 가능성 근거는 충분하지만 책임자가 결정을 내리지 않은 구간을 생물학적 지연과 분리한다.","relations":["boundary","function","process"]}
+{"primary":"수의판정 격리이동선행","text":"수의판정 뒤 개체를 이동하는 수의판정 격리이동선행을 유지한다.","relations":["classification","comparison","state"]}
+{"primary":"격리구역 소독지연","text":"이전 개체 퇴실 뒤 우리를 세척·소독하는 실제 시간이 격리구역 소독지연이다. 오염 제거, 약제 도포, 접촉, 헹굼, 건조의 실제 소요를 재어 배정 대기에서 떼어 낸다.","relations":["attribute","contrast","process"]}
+{"primary":"보호구 지급대기","text":"격리담당자가 전용 보호구를 인수할 때까지 기다린 구간이 보호구 지급대기다.","relations":["process","role","state"]}
+{"primary":"가축격리 지연사슬","text":"가축격리 지연사슬은 승인·우리배정·소독·이동·환경안정·보호구대기를 잇는다. 판정 승인, 빈 우리 확보, 소독, 개체 이동, 환경 안정, 보호구 준비를 의존 순서로 묶는다.","relations":["boundary","part_of","process"]}
+{"primary":"격리기록 순서복원","text":"RFID와 승인기록이 다르면 격리기록 순서복원으로 실제 분리 차례를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"약물흡수 생리반응지연","text":"투약 뒤 유효성분이 흡수되어 작용하기까지의 시간이 약물흡수 생리반응지연이다. 투여시각부터 혈중 유효농도와 임상지표 변화가 나타나는 때까지를 체내 작용 구간으로 본다.","relations":["process","state","boundary"]}
+{"primary":"투약회차 순번대기","text":"여러 개체군 중 해당 우리의 투약 차례를 기다린 구간이 투약회차 순번대기다.","relations":["process","attribute","comparison"]}
+{"primary":"약물반응 투약대기 구별","text":"약물반응 투약대기 구별은 체내 작용시간과 작업 순번을 같은 원인으로 보지 않는다. 약이 아직 투여되지 않은 작업 큐와 투여 후 흡수·대사 시간은 시작 사건부터 서로 다르다.","relations":["classification","process","role"]}
+{"primary":"주사준비 처리시간","text":"용량을 계산하고 주사기를 준비하는 실제 시간이 주사준비 처리시간이다.","relations":["part_of","process","state"]}
+{"primary":"처방확인 승인대기","text":"처방이 작성된 뒤 담당자가 용량을 확인할 때까지가 처방확인 승인대기다. 용량 계산은 끝났지만 이중 확인 서명이 없는 시간을 약물 준비나 생리 반응에 포함하지 않는다.","relations":["boundary","function","process"]}
+{"primary":"처방승인 실제투약선행","text":"승인된 처방을 확인한 다음 약물을 투여하는 처방승인 실제투약선행을 지킨다.","relations":["classification","comparison","state"]}
+{"primary":"투약기 세척지연","text":"군 사이에 자동투약기를 비우고 씻는 실제 시간이 투약기 세척지연이다. 잔류 약물 배출, 세척수 순환, 농도 확인, 재충전의 실제 설비 작업시간을 합산한다.","relations":["attribute","contrast","process"]}
+{"primary":"약품출고 물류대기","text":"처방 뒤 약품창고에서 해당 물량을 받을 때까지가 약품출고 물류대기다.","relations":["process","role","state"]}
+{"primary":"가축투약 지연사슬","text":"가축투약 지연사슬은 처방·확인·출고·준비·투여·흡수반응을 순서대로 잇는다. 처방 작성, 용량 확인, 약품 출고, 장비 준비, 투여, 흡수 반응을 개체별 기록으로 이어 붙인다.","relations":["boundary","part_of","process"]}
+{"primary":"투약기록 순서복원","text":"스캔과 수기시각이 다르면 투약기록 순서복원으로 처방부터 반응까지를 재배열한다.","relations":["attribute","comparison","process"]}
+{"primary":"소독약 접촉시간","text":"축사표면에 약제가 지정시간 머물러 작용하는 실제 구간이 소독약 접촉시간이다. 표면이 충분히 젖은 시점부터 허용 최소시간이 지난 때까지를 화학 작용에 필요한 구간으로 센다.","relations":["process","state","boundary"]}
+{"primary":"축사동 청소순번대기","text":"여러 동 중 해당 구역의 세척 차례를 기다린 시간이 축사동 청소순번대기다.","relations":["process","attribute","comparison"]}
+{"primary":"접촉시간 청소대기 구별","text":"접촉시간 청소대기 구별은 소독작용에 필요한 시간과 작업 큐를 분리한다. 약제가 도포되기 전 작업팀을 기다린 시간은 큐이고 도포 후 유지시간만 소독 반응이다.","relations":["classification","process","role"]}
+{"primary":"바닥건조 자연지연","text":"세척 뒤 바닥과 깔짚이 안전수준까지 마르는 시간이 바닥건조 자연지연이다.","relations":["part_of","process","state"]}
+{"primary":"소독검수 승인대기","text":"청소가 끝난 뒤 담당자가 잔류오염을 확인할 때까지가 소독검수 승인대기다. 건조는 끝났으나 ATP 검사와 담당 확인이 시작되지 않은 구간을 청소 처리시간과 나눈다.","relations":["boundary","function","process"]}
+{"primary":"분뇨제거 세척선행","text":"분뇨를 제거한 다음 물세척과 소독을 하는 분뇨제거 세척선행을 유지한다.","relations":["classification","comparison","state"]}
+{"primary":"고압세척 처리지연","text":"벽과 기구의 오염을 실제로 씻어 내는 시간이 고압세척 처리지연이다. 세척기가 실제 작동하며 벽·바닥·기구를 순회한 시간만 포함하고 급수 확보 대기는 제외한다.","relations":["attribute","contrast","process"]}
+{"primary":"세척장비 사용대기","text":"공동 고압세척기가 다른 동에서 돌아오길 기다린 구간이 세척장비 사용대기다.","relations":["process","role","state"]}
+{"primary":"축사청소 지연분해","text":"축사청소 지연분해는 장비대기·세척·접촉·건조·검수시간을 각각 표시한다. 장비 확보, 오염 제거, 약제 접촉, 건조, 잔류검사, 승인 단계를 각각 독립 시간으로 기록한다.","relations":["boundary","part_of","process"]}
+{"primary":"청소일지 순서교정","text":"일괄입력된 일지는 청소일지 순서교정으로 분뇨제거부터 재입실까지를 복원한다.","relations":["attribute","comparison","process"]}
+{"primary":"분뇨발효 생물지연","text":"저장조에서 미생물이 유기물을 분해하는 데 걸리는 시간이 분뇨발효 생물지연이다. 온도와 교반 조건이 유지된 뒤 유기물 지표가 목표에 이르는 기간은 차량이 없어도 진행된다.","relations":["process","state","boundary"]}
+{"primary":"분뇨수거 차량대기","text":"저장조가 차도 수거차의 배차를 기다린 구간이 분뇨수거 차량대기다.","relations":["process","attribute","comparison"]}
+{"primary":"발효지연 차량대기 구별","text":"발효지연 차량대기 구별은 생물처리시간과 물류대기를 같은 것으로 보지 않는다. 처리가 완료된 뒤 반출차가 오지 않은 구간을 미생물 분해시간에 더하면 공정 성능이 왜곡된다.","relations":["classification","process","role"]}
+{"primary":"저장조 교반처리시간","text":"침전을 풀고 균질화하도록 교반한 실제 시간이 저장조 교반처리시간이다.","relations":["part_of","process","state"]}
+{"primary":"반출검사 판정대기","text":"시료가 준비된 뒤 반출허용 결과를 기다린 구간이 반출검사 판정대기다. 분석결과는 나왔지만 환경기준 검토가 끝나지 않은 시간을 발효나 운송 지연과 별도로 둔다.","relations":["boundary","function","process"]}
+{"primary":"수위상승 교반선행","text":"저장조 수위가 기준에 든 뒤 교반을 시작하는 수위상승 교반선행을 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"악취저감 반응지연","text":"처리제를 넣은 뒤 악취농도가 낮아질 때까지가 악취저감 반응지연이다. 처리제 투입 뒤 가스센서 농도가 지속 기준 아래로 내려갈 때까지를 화학·생물 반응으로 잰다.","relations":["attribute","contrast","process"]}
+{"primary":"처리시설 투입대기","text":"수거차가 도착해도 처리라인의 차례를 기다린 구간이 처리시설 투입대기다.","relations":["process","role","state"]}
+{"primary":"분뇨관리 지연사슬","text":"분뇨관리 지연사슬은 저장·교반·발효·검사·배차·처리시설 대기를 잇는다. 저장조 유입, 교반, 발효, 품질검사, 차량 배정, 외부시설 접수의 시간을 배치번호로 묶는다.","relations":["boundary","part_of","process"]}
+{"primary":"분뇨운영 순서복원","text":"계량과 반출시각이 엇갈리면 분뇨운영 순서복원으로 실제 이동 차례를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"정전후 전압형성지연","text":"발전기를 켠 뒤 축사설비에 안정전압이 생길 때까지가 정전후 전압형성지연이다. 발전기 회전이 오른 뒤 전압과 주파수가 모두 허용대에 안정될 때까지를 전기적 회복으로 본다.","relations":["process","state","boundary"]}
+{"primary":"예비발전기 기동대기","text":"정전 뒤 자동기동 명령이 제어기 큐에서 기다린 구간이 예비발전기 기동대기다.","relations":["process","attribute","comparison"]}
+{"primary":"전압형성 기동대기 구별","text":"전압형성 기동대기 구별은 발전기의 물리 반응과 명령대기를 나눈다. 시동 명령 전의 안전 확인 큐와 시동 후 회전·자속 형성은 서로 다른 원인의 지연이다.","relations":["classification","process","role"]}
+{"primary":"환기팬 재가속지연","text":"전원복귀 뒤 팬이 목표속도에 도달할 때까지의 시간이 환기팬 재가속지연이다.","relations":["part_of","process","state"]}
+{"primary":"부하복구 순번대기","text":"급수·환기·냉각 설비가 정한 순서로 투입되며 기다린 구간이 부하복구 순번대기다. 필수 설비가 앞선 부하의 안정화를 기다린 시간은 각 장치 자체 기동성능에 포함하지 않는다.","relations":["boundary","function","process"]}
+{"primary":"발전전압 부하투입선행","text":"발전전압을 확인한 다음 필수부하를 넣는 발전전압 부하투입선행을 지킨다.","relations":["classification","comparison","state"]}
+{"primary":"센서재부팅 처리지연","text":"전원복귀 뒤 센서가 자가진단을 마치는 실제 시간이 센서재부팅 처리지연이다. 전원 인가부터 펌웨어 검사, 기준점 설정, 첫 유효 표본까지를 장치 내부 처리구간으로 잰다.","relations":["attribute","contrast","process"]}
+{"primary":"원격제어 승인대기","text":"필수부하가 안정된 뒤 일반설비 복구승인을 기다린 구간이 원격제어 승인대기다.","relations":["process","role","state"]}
+{"primary":"축사전력 복구사슬","text":"축사전력 복구사슬은 정전·기동대기·전압형성·부하투입·설비반응을 잇는다. 정전 감지, 발전 승인, 전압 안정, 우선부하 투입, 환기·급수 반응을 단계별로 연결한다.","relations":["boundary","part_of","process"]}
+{"primary":"전력로그 순서복원","text":"발전기와 BMS 시각이 다르면 전력로그 순서복원으로 실제 복구 차례를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"질병회복 생리지연","text":"치료 뒤 체온·섭취·활동이 정상으로 돌아오는 데 걸리는 시간이 질병회복 생리지연이다. 투약이 끝난 뒤 체온·섭취·활동 지표가 여러 관찰주기 동안 정상화되는 시간을 회복으로 본다.","relations":["process","state","boundary"]}
+{"primary":"회복평가 방문대기","text":"평가예정이 되어도 수의팀의 방문 차례를 기다린 구간이 회복평가 방문대기다.","relations":["process","attribute","comparison"]}
+{"primary":"회복지연 평가대기 구별","text":"회복지연 평가대기 구별은 개체의 실제 회복과 관찰 공백을 분리한다. 개체는 이미 정상범위인데 재검 일정이 늦은 구간은 생리 회복이 아니라 평가 큐다.","relations":["classification","process","role"]}
+{"primary":"항원감소 반응시간","text":"치료 뒤 검사표지자가 기준 아래로 낮아지는 생물학적 시간이 항원감소 반응시간이다.","relations":["part_of","process","state"]}
+{"primary":"격리해제 검토대기","text":"회복자료가 모인 뒤 해제 결정을 기다린 구간이 격리해제 검토대기다. 마지막 음성검사와 행동기록이 준비된 뒤 책임자가 해제 여부를 판단하지 않은 시간을 따로 센다.","relations":["boundary","function","process"]}
+{"primary":"증상회복 재검사선행","text":"임상증상이 회복된 다음 확인검사를 하는 증상회복 재검사선행을 유지한다.","relations":["classification","comparison","state"]}
+{"primary":"활동량 정상화지연","text":"행동센서 지표가 평상범위로 안정되는 시간이 활동량 정상화지연이다. 행동센서의 일중 주기를 고려해 단발 증가가 아니라 평상 패턴이 재형성된 때를 완료로 잡는다.","relations":["attribute","contrast","process"]}
+{"primary":"해제승인 순번대기","text":"수의판정 뒤 책임자의 격리해제 승인 차례를 기다린 구간이 해제승인 순번대기다.","relations":["process","role","state"]}
+{"primary":"가축회복 지연사슬","text":"가축회복 지연사슬은 치료·생리반응·재검사·평가·검토·해제승인을 연결한다. 치료, 약효, 증상완화, 재검사, 관찰평가, 승인, 격리해제를 개체 상태 전이와 함께 배열한다.","relations":["boundary","part_of","process"]}
+{"primary":"회복기록 순서교정","text":"검사게시와 관찰시각이 엇갈리면 회복기록 순서교정으로 실제 호전 차례를 복원한다.","relations":["attribute","comparison","process"]}

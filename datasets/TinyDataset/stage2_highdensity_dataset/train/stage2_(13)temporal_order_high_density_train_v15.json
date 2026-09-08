@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v15",
+  "version": "15",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-02101 ~ S2-TOH-02250",
+  "concept_family": "S2-A03-T015: 철도 운행 간격·환승 조정 — 원인 지연과 관측 지연의 분리",
+  "design_note": "철도 운행 간격·환승 조정 영역의 원인 지연과 관측 지연의 분리 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-02101",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시간표승인 대기 지연은 충돌검사가 끝난 뒤 운영 책임자의 확정을 기다린 시간이다. 열차 운행 자체의 소요와 분리한다. 운행안은 완성됐지만 안전·용량 검토자의 서명을 기다린 구간으로 계산 처리시간과 구별한다.",
+      "concepts": [
+        "시간표승인 대기 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02102",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시각표게시 관측 지연은 확정본이 생성된 뒤 앱·역 화면에 새 값이 보이기까지의 간격이다. 계획 적용이 늦어진 것은 아니다.",
+      "concepts": [
+        "시각표게시 관측 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02103",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선로용량 원인 지연은 원하는 슬롯 사이에 안전간격이 없어 추가 열차 배치가 늦어진 시간이다. 계산화면 갱신 지연과 다르다. 앞 열차가 점유구간을 비울 때까지 출발할 수 없어 인프라 자원 제약이 직접 원인이다.",
+      "concepts": [
+        "선로용량 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02104",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량순환 반영 지연은 운행시각 변경 뒤 연결된 회송·입고·다음 출고를 재계산하는 데 걸린 시간이다. 게시 전송을 포함하지 않는다.",
+      "concepts": [
+        "차량순환 반영 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02105",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계획변경 알림 지연은 수정 승인 뒤 역·승무·승객 채널에 통지가 도착하기까지의 간격이다. 변경 원인은 이미 발생했다. 배차는 이미 바뀌었지만 승객 앱과 현장표시가 전송주기 뒤 갱신된 관측 지연이다.",
+      "concepts": [
+        "계획변경 알림 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02106",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "다중노선 시각전파 지연은 한 노선 조정 뒤 연결 노선 환승표에 수정이 반영되기까지의 시간이다. 화면 표시와 구별한다.",
+      "concepts": [
+        "다중노선 시각전파 지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02107",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충돌검사 처리 지연은 후보 열차가 많아 선로·승강장 중첩을 확인하는 데 오래 걸린 시간이다. 승인 대기와 나눠 본다. 여러 열차의 경로·시간창을 비교해 모순을 찾는 연산시간으로 승인 대기와 다르다.",
+      "concepts": [
+        "충돌검사 처리 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02108",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "임시열차 등록 지연은 증편 결정 뒤 열차번호·차량·승무를 시스템에 연결하는 처리 시간이다. 실제 출고 소요와 다르다.",
+      "concepts": [
+        "임시열차 등록 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02109",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운행계획 인계 지연은 확정표 뒤 교대 관제사가 변경 사유와 예외를 확인할 때까지의 간격이다. 적용 시작과 구분한다. 새 계획 확정 뒤 관제조와 역무조에 전달·확인될 때까지의 통신·절차 지연이다.",
+      "concepts": [
+        "운행계획 인계 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02110",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계획실적 확정 지연은 운행일 종료 뒤 누락·취소·대체 열차를 대조해 보고를 잠그는 시간이다. 실제 영업기간에 포함하지 않는다.",
+      "concepts": [
+        "계획실적 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02111",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첨두차량 출고 지연은 증편 결정 뒤 검사·세척·진로 확보 때문에 차량 투입이 늦어진 시간이다. 위치보고 지연과 분리한다. 차량 준비 뒤 검사선과 진출선의 차례를 기다리며 영업선에 늦게 들어간 자원 대기다.",
+      "concepts": [
+        "첨두차량 출고 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02112",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증편상태 표시 지연은 추가 열차가 본선에 들어온 뒤 관제·승객 화면에 운행중으로 보이기까지의 간격이다. 실제 투입은 먼저다.",
+      "concepts": [
+        "증편상태 표시 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02113",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무부족 원인 지연은 가용 자격자가 없어 첨두 증편 출발이 미뤄진 시간이다. 근무표 갱신 지연과 다르다. 필수 인원이 배정되지 않아 열차가 준비 상태에서도 출발하지 못한 운영 원인이다.",
+      "concepts": [
+        "승무부족 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02114",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단축간격 안정화 지연은 추가 열차 투입 뒤 여러 역 정차와 합류가 맞아 실제 간격이 목표에 이르는 시간이다. 집계를 포함하지 않는다.",
+      "concepts": [
+        "단축간격 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02115",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "혼잡경보 전달 지연은 밀도 기준 충족 뒤 관제와 역 책임자에게 알림이 도착하는 간격이다. 승객 증가는 더 앞선다. 승강장 혼잡이 판정된 뒤 알림망을 거쳐 관제에 도착한 차이를 실제 혼잡발생과 나눈다.",
+      "concepts": [
+        "혼잡경보 전달 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02116",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수요자료 집계 지연은 개찰·차량·영상 표본 뒤 역별 승차량이 시간대 통계로 확정되기까지의 시간이다. 실제 혼잡과 구별한다.",
+      "concepts": [
+        "수요자료 집계 지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02117",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "편성간격 반응 지연은 출발시각을 바꾼 뒤 노선 여러 지점에서 새 배차가 체감될 때까지의 시간이다. 앱 예측 갱신과 나눠 본다. 앞 열차가 늦어진 뒤 신호간격과 정차조정이 후속 편성에 퍼질 때까지 시차가 생긴다.",
+      "concepts": [
+        "편성간격 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02118",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첨두종료 복귀 지연은 수요 감소 뒤 차량 회차와 입고를 정리해 평시 간격에 이르는 시간이다. 종료 공지와 다르다.",
+      "concepts": [
+        "첨두종료 복귀 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02119",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추가운행 승인 지연은 수요 확인 뒤 차량·승무·전력 책임자의 허가를 기다린 간격이다. 출고 작업시간에 섞지 않는다. 차량과 승무원이 준비돼도 관제 책임자의 허가를 기다린 시간은 행정 대기다.",
+      "concepts": [
+        "추가운행 승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02120",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첨두효과 보고 지연은 증편 종료 뒤 대기시간·혼잡·비용을 대조해 평가를 확정하는 시간이다. 첨두운영 종료시각과 구분한다.",
+      "concepts": [
+        "첨두효과 보고 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02121",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승하차 원인 정차지연은 승객 이동이 계획보다 오래 이어져 출발이 늦어진 시간이다. 폐문상태 보고 지연과 분리한다. 승객 흐름이 끝나야 문을 닫을 수 있어 혼잡한 승하차 시간이 정차연장의 물리 원인이 된다.",
+      "concepts": [
+        "승하차 원인 정차지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02122",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정차완료 표시 지연은 열차가 이미 출발한 뒤 역 실적화면에 출발 상태가 반영되기까지의 간격이다. 실제 정차가 늘어난 것은 아니다.",
+      "concepts": [
+        "정차완료 표시 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02123",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "문끼임 원인 지연은 장애물 제거와 재개폐 때문에 승강장 머묾이 늘어난 시간이다. 관제 알림 지연과 다르다. 문 감지 후 재개방·안전확인·재폐쇄가 이어져 출발이 늦어지는 사건 연쇄다.",
+      "concepts": [
+        "문끼임 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02124",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "폐문확인 반응 지연은 문이 닫힌 뒤 모든 잠금 신호가 안정되어 출발조건이 만들어지는 시간이다. 화면표시는 별도다.",
+      "concepts": [
+        "폐문확인 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02125",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승강장확인 전달 지연은 안전 확인 뒤 역무원 신호가 운전실·관제에 도착하기까지의 간격이다. 승객처리는 이미 끝났다. 현장 안전확인은 끝났지만 무전 또는 신호가 운전실에 늦게 도착한 통신 지연이다.",
+      "concepts": [
+        "승강장확인 전달 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02126",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "혼잡흐름 도달 지연은 개찰구 유입 증가 뒤 승객이 플랫폼 문 구역까지 이동하는 시간이다. 카메라 집계 지연과 구별한다.",
+      "concepts": [
+        "혼잡흐름 도달 지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02127",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승객 이동 지연은 연결편 하차 뒤 통로 혼잡 때문에 다음 플랫폼 도착이 늦어진 시간이다. 안내화면 갱신과 나눠 본다. 연결 열차에서 내린 승객이 통로와 계단을 지나 승강장에 도달하는 실제 이동시간이다.",
+      "concepts": [
+        "환승객 이동 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02128",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정차연장 해제 지연은 승객 흐름이 끝난 뒤 문·신호·간격 조건을 다시 확인해 출발하기까지의 간격이다. 방송 종료와 다르다.",
+      "concepts": [
+        "정차연장 해제 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02129",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출발승인 대기 지연은 차량 준비 뒤 앞 열차 안전간격이나 진로 허가를 기다린 시간이다. 승하차 지연으로 섞지 않는다. 문과 신호는 준비됐지만 관제 허가가 나올 때까지 멈춘 구간으로 차량 반응시간과 다르다.",
+      "concepts": [
+        "출발승인 대기 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02130",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정차실적 확정 지연은 출발 뒤 문·승객·신호 기록을 맞춰 원인별 시간을 잠그는 처리 시간이다. 실제 정차기간과 구분한다.",
+      "concepts": [
+        "정차실적 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02131",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류진로 설정 지연은 열차 접근 뒤 상충 진로가 풀리기를 기다려 본선 진입이 늦어진 시간이다. 진로표시 수신 지연과 분리한다. 분기기 전환과 쇄정 확인을 차례로 수행해 진로가 유효해질 때까지 설비 처리시간이 든다.",
+      "concepts": [
+        "합류진로 설정 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02132",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접속부상태 관측 지연은 열차가 충돌구간을 비운 뒤 관제화면에 비점유가 보이기까지의 간격이다. 실제 해제는 먼저일 수 있다.",
+      "concepts": [
+        "접속부상태 관측 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02133",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선행열차 원인 지연은 앞 열차가 접속부에 오래 머물러 지선 출발이 미뤄진 시간이다. 지선 경보 전송 지연과 다르다. 앞 열차가 폐색을 점유해 후속 열차가 신호 앞에서 기다린 직접 의존 지연이다.",
+      "concepts": [
+        "선행열차 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02134",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "순서교환 반영 지연은 우선권 변경 뒤 신호·승강장·승객 안내가 새 배열에 맞춰지는 시간이다. 문서 갱신은 별도다.",
+      "concepts": [
+        "순서교환 반영 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02135",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진로충돌 알림 지연은 상충 요청 뒤 연동 판정과 관제 통지를 거치는 간격이다. 요청 발생은 더 앞선다. 상충 경로가 입력된 뒤 인터록 판정과 관제표시를 거쳐 경고가 보이는 처리·전송 시간이다.",
+      "concepts": [
+        "진로충돌 알림 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02136",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "본선지연 전파 지연은 한 합류부 정체 뒤 후속 역·지선 도착시각에 영향이 나타나는 시간이다. 통계화면과 구별한다.",
+      "concepts": [
+        "본선지연 전파 지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02137",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "신호응답 반응 지연은 진로 승인 뒤 전철기·쇄정·현시가 순서대로 완료되는 시간이다. 관제 수신과 나눠 본다. 진로가 열린 뒤 신호기가 진행현시로 바뀌고 운전자가 가속하기까지의 설비·행동 반응이다.",
+      "concepts": [
+        "신호응답 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02138",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류복구 안정화 지연은 충돌 원인 해소 뒤 밀린 열차를 보내 기준 간격에 이르는 시간이다. 첫 통과와 다르다.",
+      "concepts": [
+        "합류복구 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02139",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "우선권변경 승인 지연은 지연·환승 영향 계산 뒤 관제 책임자의 결정을 기다린 간격이다. 진로 동작시간에 섞지 않는다. 운행 충돌은 분석됐지만 어느 열차를 먼저 보낼지 책임자가 정할 때까지의 의사결정 대기다.",
+      "concepts": [
+        "우선권변경 승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02140",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접속부연표 확정 지연은 혼잡 종료 뒤 요청·허가·통과 기록을 시계 보정해 잠그는 시간이다. 실제 점유기간과 구분한다.",
+      "concepts": [
+        "접속부연표 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02141",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "완행대피 진입 지연은 대피 결정 뒤 승객 처리와 진로 설정을 거쳐 완행 열차가 대피선에 완전히 들어가기까지 걸린 물리 시간이다. 위치 보고 전송 지연은 제외한다.",
+      "concepts": [
+        "완행대피 진입 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02142",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대피상태 표시 지연은 완행이 대피선에 들어간 뒤 관제화면에 정착 상태가 보이는 간격이다. 실제 위치는 먼저 바뀌었다.",
+      "concepts": [
+        "대피상태 표시 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02143",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "급행접근 원인 지연은 급행 자체가 늦어 완행의 대피·재출발 결정이 미뤄진 시간이다. 도착예측 갱신 지연과 다르다. 급행이 본선 접속부에 가까워져 완행의 복귀가 막힌 상황은 열차 간 의존 원인이다.",
+      "concepts": [
+        "급행접근 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02144",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추월진로 반응 지연은 완행 정차 뒤 본선 경로와 신호를 급행에 맞추는 데 걸린 시간이다. 안내 전송은 별도다.",
+      "concepts": [
+        "추월진로 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02145",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추월취소 알림 지연은 운행 결정 뒤 완행 승무와 승객 안내에 변경이 도착하는 간격이다. 취소 결정은 이미 끝났다. 취소결정은 끝났지만 운전실·역·승객 안내에 순차 전달되어 각 화면의 반영이 늦다.",
+      "concepts": [
+        "추월취소 알림 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02146",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "급행영향 도달 지연은 추월 순서 변경 뒤 후속 역 도착과 환승에 차이가 나타나는 시간이다. 집계 보고와 구별한다.",
+      "concepts": [
+        "급행영향 도달 지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02147",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "안전간격 반응 지연은 급행 통과 뒤 완행이 출발할 수 있는 거리·시간 조건이 생기기까지의 간격이다. 신호 화면과 나눠 본다.",
+      "concepts": [
+        "안전간격 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02148",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "완행복귀 안정화 지연은 대피선 출발 뒤 후속 열차 사이에 새 순서가 자리 잡는 시간이다. 첫 본선 진입과 다르다.",
+      "concepts": [
+        "완행복귀 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02149",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추월계획 승인 지연은 편익·승강장·진로 검토 뒤 관제 허가를 기다린 시간이다. 열차 운행 소요에 포함하지 않는다.",
+      "concepts": [
+        "추월계획 승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02150",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추월실적 보고 지연은 운행 종료 뒤 대피·통과·재출발 기록을 대조해 효과를 확정하는 시간이다. 추월 종료시각과 구분한다.",
+      "concepts": [
+        "추월실적 보고 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02151",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단선진입권 대기 지연은 열차 준비 뒤 반대 방향 점유가 끝나기를 기다린 시간이다. 허가 표시 지연과 분리한다.",
+      "concepts": [
+        "단선진입권 대기 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02152",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교행상태 관측 지연은 한 열차가 대피선에 정차한 뒤 관제화면에 조건 충족이 보이는 간격이다. 실제 정차는 먼저다.",
+      "concepts": [
+        "교행상태 관측 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02153",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상대열차 원인 지연은 반대편 열차가 예정 교행역에 늦게 도착해 대기시간이 늘어난 현상이다. 위치보고 지연과 다르다.",
+      "concepts": [
+        "상대열차 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02154",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교행역 변경 반영 지연은 새 만남 위치 확정 뒤 양쪽 신호·승무·안내가 바뀌는 시간이다. 승인 보고는 별도다.",
+      "concepts": [
+        "교행역 변경 반영 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02155",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "점유충돌 알림 지연은 양끝 요청이 겹친 뒤 연동 차단과 관제 통지를 거치는 간격이다. 요청은 더 앞서 발생한다.",
+      "concepts": [
+        "점유충돌 알림 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02156",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단선지연 후속도달은 한 교행 대기 뒤 다음 교행역과 환승열차에 영향이 나타나는 시간이다. 통계 집계와 구별한다.",
+      "concepts": [
+        "단선지연 후속도달"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02157",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "폐색해제 반응 지연은 열차 후미 진출 뒤 검지·연동이 다음 진입권을 만들기까지의 시간이다. 화면 갱신과 나눠 본다.",
+      "concepts": [
+        "폐색해제 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02158",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교행복구 안정화 지연은 변경된 만남 뒤 밀린 열차를 처리해 기준 순서에 이르는 시간이다. 첫 출발만으로 끝나지 않는다.",
+      "concepts": [
+        "교행복구 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02159",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교행변경 승인 지연은 열차 위치·대피선·후속 영향 검토 뒤 책임자 결정을 기다린 간격이다. 신호 설정시간과 다르다.",
+      "concepts": [
+        "교행변경 승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02160",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교행연표 확정 지연은 운행이 끝난 뒤 양쪽 열차 기록의 시계 차이를 교정해 대표 사건 순서를 확정할 때까지 걸린다. 단선 점유 시간에는 포함하지 않는다.",
+      "concepts": [
+        "교행연표 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02161",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승보행 원인 지연은 긴 통로·혼잡·설비 제약 때문에 연결편 도착이 늦어진 시간이다. 위치자료 수집 지연과 분리한다.",
+      "concepts": [
+        "환승보행 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02162",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승완료 관측 지연은 승객이 탑승한 뒤 개찰·영상·승무 보고로 완료가 확인되는 간격이다. 실제 승차는 먼저다.",
+      "concepts": [
+        "환승완료 관측 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02163",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접속열차 원인 지연은 첫 열차가 늦어 환승객이 연결 플랫폼에 제때 오지 못한 시간이다. 앱 예측 갱신 지연과 다르다.",
+      "concepts": [
+        "접속열차 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02164",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연결편 대기반응 지연은 대기 결정 뒤 승무·신호·문 제어가 출발 보류 상태로 맞춰지는 시간이다. 알림 전송은 별도다.",
+      "concepts": [
+        "연결편 대기반응 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02165",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승실패 알림 지연은 연결 불가 판정 뒤 승객에게 대체 경로가 표시되기까지의 간격이다. 실패 조건은 이미 성립했다.",
+      "concepts": [
+        "환승실패 알림 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02166",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승영향 전파 지연은 한 연결편 대기 뒤 후속 열차와 다른 역 혼잡에 영향이 나타나는 시간이다. 통계 보고와 구별한다.",
+      "concepts": [
+        "환승영향 전파 지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02167",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "플랫폼이동 반응 지연은 승강장 변경 안내 뒤 승객 흐름이 새 통로에 자리 잡기까지의 시간이다. 게시 갱신과 나눠 본다.",
+      "concepts": [
+        "플랫폼이동 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02168",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연결회복 안정화 지연은 지연 열차 처리 뒤 여러 회차의 환승 성공률이 기준으로 돌아오는 시간이다. 한 번의 성공과 다르다.",
+      "concepts": [
+        "연결회복 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02169",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승대기 승인 지연은 승객수·후속간격·승무한도 검토 뒤 출발 보류 결정을 기다린 간격이다. 실제 대기시간에 섞지 않는다.",
+      "concepts": [
+        "환승대기 승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02170",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승실적 확정 지연은 연결편 출발 뒤 성공·실패·대체이동 자료를 대조해 보고를 잠그는 시간이다. 환승 운영기간과 구분한다.",
+      "concepts": [
+        "환승실적 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02171",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차연결 대기지연은 연결편 준비 뒤 지연 도착열차와 승객을 기다린 시간이다. 승객수 보고 지연과 분리한다.",
+      "concepts": [
+        "막차연결 대기지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02172",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차상태 표시 지연은 출발 보류나 운행 종료 결정이 난 뒤 그 상태가 앱과 역 화면에 반영될 때까지의 간격이다. 현장 결정은 표시보다 앞선다.",
+      "concepts": [
+        "막차상태 표시 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02173",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무한도 원인 지연은 대체 승무원의 자격과 잔여 근로시간 확인 때문에 막차 대기 연장 결정이 늦어진 기간이다. 근무표 표시 갱신과는 별개다.",
+      "concepts": [
+        "승무한도 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02174",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대체버스 준비 지연은 연결 실패를 판단한 뒤 차량, 기사, 승차 위치를 마련하여 첫 버스가 출발 가능해질 때까지 걸린다. 승객 안내가 전송되는 시간은 별도로 센다.",
+      "concepts": [
+        "대체버스 준비 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02175",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차변경 알림 지연은 출발·대기 결정 뒤 승객과 역 직원에게 통지가 도착하는 간격이다. 결정 원인은 이미 발생했다.",
+      "concepts": [
+        "막차변경 알림 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02176",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차지연 영향도달은 한 노선 대기 뒤 종착 회송·승무·다른 연결편에 영향이 나타나는 시간이다. 보고 갱신과 구별한다.",
+      "concepts": [
+        "막차지연 영향도달"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02177",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연결승객 이동 지연은 하차 뒤 야간 폐쇄 통로와 혼잡 때문에 막차 승강장 도착이 늦어진 시간이다. 위치관측과 나눠 본다.",
+      "concepts": [
+        "연결승객 이동 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02178",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차처리 안정화 지연은 열차 출발 뒤 남은 승객을 대체수단에 인계해 상황을 닫는 시간이다. 출발 한 시점과 다르다.",
+      "concepts": [
+        "막차처리 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02179",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연결포기 승인 지연은 도착 예측, 대체 교통, 승무 한도를 검토한 뒤 담당자가 연결편 대기를 끝내기로 허가할 때까지의 시간이다.",
+      "concepts": [
+        "연결포기 승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02180",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차보고 확정 지연은 영업 종료 후 대기, 연결 실패, 대체 수송 자료를 대조하여 최종 기록을 승인하는 데 걸린다. 이 대기는 실제 막차 운행 구간과 분리한다.",
+      "concepts": [
+        "막차보고 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02181",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승강장변경 전파 지연은 배정 수정 뒤 신호·표지·앱·역무원에게 새 위치가 도달하기까지의 시간이다. 열차 이동과 분리한다.",
+      "concepts": [
+        "승강장변경 전파 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02182",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "플랫폼상태 관측 지연은 열차 진입·진출 뒤 점유화면에 새 값이 보이기까지의 간격이다. 실제 점유는 먼저 바뀐다.",
+      "concepts": [
+        "플랫폼상태 관측 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02183",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통로혼잡 원인 지연은 승객 밀집으로 플랫폼 변경 이동이 오래 걸린 시간이다. 카메라 집계 지연과 다르다.",
+      "concepts": [
+        "통로혼잡 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02184",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "동선분산 반응 지연은 안내인·표지 조정 뒤 승객 흐름이 여러 통로로 나뉘기까지의 시간이다. 게시 전송은 별도다.",
+      "concepts": [
+        "동선분산 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02185",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "플랫폼변경 알림 지연은 새 위치 확정 뒤 승객 단말과 방송에 통지가 도착하는 간격이다. 변경 결정은 이미 끝났다.",
+      "concepts": [
+        "플랫폼변경 알림 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02186",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "열차변경 영향도달은 승강장 조정 뒤 계단·환승통로·후속 플랫폼 혼잡에 차이가 나타나는 시간이다. 통계화면과 구별한다.",
+      "concepts": [
+        "열차변경 영향도달"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02187",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승객역류 반응 지연은 잘못된 플랫폼에서 새 위치로 방향을 바꾼 뒤 흐름이 안정되는 시간이다. 안내 갱신과 나눠 본다.",
+      "concepts": [
+        "승객역류 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02188",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승강장복귀 안정화 지연은 임시 배정 종료 뒤 열차와 승객이 기준 위치에 다시 자리 잡는 시간이다. 첫 열차 정상만으로 끝나지 않는다.",
+      "concepts": [
+        "승강장복귀 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02189",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "플랫폼변경 승인 지연은 선로·수용량·접근성 검토 뒤 운영 책임자의 결정을 기다린 간격이다. 열차 진로설정과 다르다.",
+      "concepts": [
+        "플랫폼변경 승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02190",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승강장실적 확정 지연은 피크 종료 후 점유, 밀도, 이동시간 자료를 검증해 승강장 실적표를 승인할 때까지의 후처리 기간이다. 실제 혼잡이 지속된 시간과 구분한다.",
+      "concepts": [
+        "승강장실적 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02191",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장애탐지 관측 지연은 운행 간격이 무너진 뒤 지표창과 관제 확인을 거쳐 사건으로 판정되는 시간이다. 원인 발생은 더 앞선다.",
+      "concepts": [
+        "장애탐지 관측 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02192",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지연상태 표시 지연은 관제가 변경을 적용한 뒤 승객·역 화면에 새 도착예측이 보이기까지의 간격이다. 실제 운행은 먼저 바뀐다.",
+      "concepts": [
+        "지연상태 표시 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02193",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선행열차 원인전파 지연은 한 열차 고장 뒤 안전간격과 승강장 순서를 거쳐 후속편이 늦어지는 시간이다. 보고 전송과 다르다.",
+      "concepts": [
+        "선행열차 원인전파 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02194",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "열차완화효과 도달 지연은 단축회차·순서교환 뒤 밀린 열차가 정리되어 실제 간격이 회복되기까지의 시간이다. 집계는 별도다.",
+      "concepts": [
+        "열차완화효과 도달 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02195",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복구안내 전달 지연은 서비스 정상화를 판단한 뒤 문안을 승인하고 각 채널에 배포하여 승객이 볼 수 있을 때까지의 간격이다. 서비스는 통지보다 앞서 회복될 수 있다.",
+      "concepts": [
+        "복구안내 전달 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02196",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지선영향 도달 지연은 본선 간격 붕괴 뒤 합류 대기와 환승을 거쳐 지선 출발에 차이가 나타나는 시간이다. 화면 갱신과 구별한다.",
+      "concepts": [
+        "지선영향 도달 지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02197",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시간표예측 반응 지연은 실제 위치·정차 변화 뒤 모델이 새 도착시각을 계산해 안정시키는 시간이다. 관측 수집과 나눠 본다.",
+      "concepts": [
+        "시간표예측 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02198",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복운영 안정화 지연은 원인 제거 뒤 차량·승무·승강장 배열을 맞춰 기준표로 돌아오는 시간이다. 첫 정시열차와 다르다.",
+      "concepts": [
+        "회복운영 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02199",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감편결정 승인 지연은 영향·대체수송·후속 회차 검토 뒤 책임자의 허가를 기다린 간격이다. 열차 취소 처리시간과 구분한다.",
+      "concepts": [
+        "감편결정 승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02200",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장애연표 확정 지연은 운행이 안정된 후 신호 로그와 열차·역·안내 기록의 시계를 교정하여 대표 연표를 승인할 때까지의 후처리 기간이다. 장애가 실제로 지속된 시간은 포함하지 않는다.",
+      "concepts": [
+        "장애연표 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02201",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차작업 원인 지연은 청소·점검·운전실 전환이 계획보다 오래 걸려 반대편 출발이 늦어진 시간이다. 상태표시 지연과 분리한다.",
+      "concepts": [
+        "회차작업 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02202",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차완료 관측 지연은 열차가 이미 반대 방향으로 출발한 뒤 운영화면에 완료가 보이는 간격이다. 실제 출발은 먼저다.",
+      "concepts": [
+        "회차완료 관측 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02203",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진로대기 원인 지연은 회차선에서 본선으로 나갈 경로가 비지 않아 출발이 미뤄진 시간이다. 관제 수신 지연과 다르다.",
+      "concepts": [
+        "진로대기 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02204",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운전실전환 반응 지연은 책임 인계 뒤 제어·제동·통신을 반대편에서 준비하는 데 걸린 시간이다. 보고 전송은 별도다.",
+      "concepts": [
+        "운전실전환 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02205",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차지연 알림 지연은 출발 예상 변경 뒤 승무·역·승객 채널에 통지가 도착하는 간격이다. 지연 원인은 이미 발생했다.",
+      "concepts": [
+        "회차지연 알림 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02206",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종착혼잡 영향도달은 회차선 정체가 본선 접근 열차와 승강장 밀도에 차이를 만들 때까지의 간격이다. 통계에 집계된 시각은 따로 본다.",
+      "concepts": [
+        "종착혼잡 영향도달"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02207",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차내정리 반응 지연은 마지막 하차 뒤 분실물·청결·안전 확인을 마치는 데 걸린 시간이다. 완료화면과 나눠 본다.",
+      "concepts": [
+        "차내정리 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02208",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차복구 안정화 지연은 지연 열차를 처리한 뒤 여러 편성의 출발 간격과 위치가 기준으로 돌아오는 시간이다. 한 열차 복귀와 다르다.",
+      "concepts": [
+        "회차복구 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02209",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단축회차 승인 지연은 승객처리·진로·차량순환 검토 뒤 책임자의 결정을 기다린 간격이다. 방향전환 소요와 구분한다.",
+      "concepts": [
+        "단축회차 승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02210",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차실적 확정 지연은 마지막 영업 운행 후 도착, 하차, 승무 교대, 재출발 자료의 불일치를 정리하고 실적표를 닫을 때까지 걸린다. 차량이 회차한 실제 소요 시간과 구분한다.",
+      "concepts": [
+        "회차실적 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02211",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예비차 출고 지연은 투입 결정 후 검사, 승무 편성, 기지 진로 확보가 늦어 본선 합류가 예정에서 밀린 시간이다. 차량 위치 보고가 늦게 들어온 현상과 구별한다.",
+      "concepts": [
+        "예비차 출고 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02212",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량투입 관측 지연은 예비편성이 첫 영업운행을 시작한 뒤 차량관리 화면에 반영되는 간격이다. 실제 투입은 먼저다.",
+      "concepts": [
+        "차량투입 관측 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02213",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비결함 원인 지연은 출고검사에서 문제를 발견해 대체편성 준비가 미뤄진 시간이다. 검사결과 전송 지연과 다르다.",
+      "concepts": [
+        "정비결함 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02214",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량교체 반영 지연은 편성 변경 뒤 열차번호·승무·좌석·안내 체계가 새 차량에 맞춰지는 시간이다. 게시 보고는 별도다.",
+      "concepts": [
+        "차량교체 반영 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02215",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량고장 알림 지연은 결함을 판정한 뒤 관제와 정비 부서의 내용이 승객 안내 채널에 도달할 때까지의 간격이다. 고장 발생 자체는 더 앞선다.",
+      "concepts": [
+        "차량고장 알림 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02216",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "편성순환 영향도달은 차량 한 편성이 이탈한 뒤 그 여파가 후속 회차와 기지 입고 배열에 실제로 나타날 때까지의 시간이다. 통계 화면 갱신과 구별한다.",
+      "concepts": [
+        "편성순환 영향도달"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02217",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기지회송 반응 지연은 회송 결정 뒤 본선 간격과 진로를 확보해 실제 이동하기까지의 시간이다. 명령 수신과 나눠 본다.",
+      "concepts": [
+        "기지회송 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02218",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량운용 안정화 지연은 대체편성 투입 뒤 여러 회차의 위치와 간격이 기준으로 돌아오는 시간이다. 첫 정상 출발과 다르다.",
+      "concepts": [
+        "차량운용 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02219",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량교체 승인 지연은 결함 상태, 예비차, 승무 인력, 기지 용량 검토가 끝난 뒤 담당 허가가 남을 때까지의 대기다. 차량 출고 시간은 별도로 센다.",
+      "concepts": [
+        "차량교체 승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02220",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량이력 확정 지연은 운행일이 끝난 뒤 영업, 회송, 고장, 정비 기록을 대조하여 차량 이력을 닫기까지 걸린다. 실제 운용 기간에는 포함하지 않는다.",
+      "concepts": [
+        "차량이력 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02221",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대체승무 도착 지연은 결원 확인 뒤 다른 역·기지에서 교대지점까지 이동한 시간이다. 위치보고 지연과 분리한다.",
+      "concepts": [
+        "대체승무 도착 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02222",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교대완료 관측 지연은 책임 전환 뒤 근무관리 화면에 새 승무가 보이기까지의 간격이다. 실제 인수는 먼저다.",
+      "concepts": [
+        "교대완료 관측 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02223",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "휴식부족 원인 지연은 법정·운영 휴식이 끝나지 않아 후속 열차 배정이 미뤄진 시간이다. 근무표 갱신과 다르다.",
+      "concepts": [
+        "휴식부족 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02224",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "인계확인 반응 지연은 새 승무 도착 뒤 제한·차량·시간표를 함께 검토해 출발 준비를 마치는 시간이다. 보고 전송은 별도다.",
+      "concepts": [
+        "인계확인 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02225",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무변경 알림 지연은 대체 배정 뒤 관제·역·차량 담당에게 통지가 도착하는 간격이다. 배정 결정은 이미 끝났다.",
+      "concepts": [
+        "승무변경 알림 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02226",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교대지연 영향도달은 한 열차의 늦은 출발이 후속 회차나 환승 계획에 영향을 주기까지 걸린 시간이다. 통계 화면에서 그 차이를 집계해 보여 준 시각과 같지 않다.",
+      "concepts": [
+        "교대지연 영향도달"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02227",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "근무표 재계산 지연은 결원이나 열차 지연이 생긴 뒤 자격과 휴식 규정을 만족하는 새 승무 순환을 찾는 데 든 시간이다. 관리자 승인 대기는 별도다.",
+      "concepts": [
+        "근무표 재계산 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02228",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무운용 안정화 지연은 대체교대 뒤 여러 회차의 인력 위치와 열차 배정이 기준으로 돌아오는 시간이다. 첫 출발과 다르다.",
+      "concepts": [
+        "승무운용 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02229",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴급대체 승인 지연은 후보자의 자격, 근로 한도, 이동 가능성을 확인한 뒤 대체 승인이 날 때까지 기다린 시간이다. 현장 이동 소요에는 넣지 않는다.",
+      "concepts": [
+        "긴급대체 승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02230",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무실적 확정 지연은 근무 종료 후 운전, 대기, 회송, 교대 자료를 검증해 실적 장부를 닫기까지 걸린다. 승무원이 실제 근무한 기간과 다르다.",
+      "concepts": [
+        "승무실적 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02231",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보수작업 원인 지연은 결함 확대나 자재 부족으로 선로 인계가 예정시각을 넘긴 시간이다. 완료보고 지연과 분리한다.",
+      "concepts": [
+        "보수작업 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02232",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운행인계 관측 지연은 폐쇄 해제 뒤 관제·역 화면에 정상 사용 상태가 보이기까지의 간격이다. 실제 인계는 먼저다.",
+      "concepts": [
+        "운행인계 관측 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02233",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시험실패 원인 지연은 수리 뒤 기능검사에서 이상이 남아 첫차 준비가 미뤄진 시간이다. 시험결과 전송 지연과 다르다.",
+      "concepts": [
+        "시험실패 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02234",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업연장 반영 지연은 보수 종료 예상이 바뀐 뒤 첫차, 차량, 승무, 승객 계획을 새 시각에 맞추는 데 걸린다. 안내 전달 시간은 별도로 센다.",
+      "concepts": [
+        "작업연장 반영 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02235",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫차변경 알림 지연은 첫차 시각 조정이 확정된 뒤 역 게시판과 앱, 문자 안내에 새 정보가 도착할 때까지의 간격이다. 운행 변경 원인은 그보다 앞서 발생한다.",
+      "concepts": [
+        "첫차변경 알림 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02236",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보수영향 도달 지연은 작업 연장이 후속 차량 순환과 환승 계획에 영향을 드러낼 때까지 걸린 시간이다. 그 결과가 통계 화면에 집계된 시각은 별도로 센다.",
+      "concepts": [
+        "보수영향 도달 지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02237",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "속도제한 반응 지연은 운행 인계 뒤 열차가 임시 제한 구간에 도달하여 실제 소요가 늘어날 때까지의 차이다. 게시물 갱신 시간과 구분한다.",
+      "concepts": [
+        "속도제한 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02238",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보수후 안정화 지연은 첫차 통과 뒤 여러 열차에서 신호, 선로, 배차 간격이 정상인지 확인할 때까지의 기간이다. 한 차례 성공만으로 안정화를 선언하지 않는다.",
+      "concepts": [
+        "보수후 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02239",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업연장 승인 지연은 미완료 위험·승객 영향·대체운행을 검토해 책임자 결정을 기다린 간격이다. 실제 보수시간과 구분한다.",
+      "concepts": [
+        "작업연장 승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02240",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보수실적 확정 지연은 운행을 재개한 뒤 작업 내역, 기능시험, 첫차 통과, 인계 기록을 검증해 보수 보고서를 승인할 때까지의 행정 소요다. 선로를 닫아 둔 기간에는 넣지 않는다.",
+      "concepts": [
+        "보수실적 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02241",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복표 계산 지연은 장애·열차위치·차량순환을 입력한 뒤 실행 가능한 새 순서를 찾는 시간이다. 관제화면 갱신과 분리한다.",
+      "concepts": [
+        "회복표 계산 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02242",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복상태 관측 지연은 실제 간격이 좋아진 뒤 승객·운영 지표에 정상화가 보이기까지의 간격이다. 회복 자체는 먼저일 수 있다.",
+      "concepts": [
+        "회복상태 관측 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02243",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "밀린열차 원인 지연은 원인 제거 뒤에도 앞선 열차 대기열 때문에 기준 간격 복귀가 늦어진 시간이다. 집계 지연과 다르다.",
+      "concepts": [
+        "밀린열차 원인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02244",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단계증편 반응 지연은 추가 열차를 투입한 뒤 노선 전체의 승객 대기시간이 줄어들기까지 걸린다. 증편 안내가 전달되는 시간은 포함하지 않는다.",
+      "concepts": [
+        "단계증편 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02245",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정상복귀 알림 지연은 기준 운행표로 돌아간 뒤 안내 문안을 승인하고 각 승객 채널에 전송하기까지의 간격이다. 실제 운행은 알림보다 먼저 정상화될 수 있다.",
+      "concepts": [
+        "정상복귀 알림 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02246",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승회복 도달 지연은 본선 배차가 개선된 뒤 연결편 성공률과 플랫폼 혼잡이 회복될 때까지의 간격이다. 보고서에 반영된 시각과 나눈다.",
+      "concepts": [
+        "환승회복 도달 지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02247",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "도착예측 반응 지연은 열차 순서 변경 뒤 모델이 새 위치·정차를 받아 안정된 예측을 내는 시간이다. 수집 전송과 나눠 본다.",
+      "concepts": [
+        "도착예측 반응 지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02248",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기준표복귀 안정화 지연은 기준표로 돌아온 뒤 차량·승무·환승이 여러 회차 정상으로 맞는 시간이다. 첫 정시열차와 다르다.",
+      "concepts": [
+        "기준표복귀 안정화 지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02249",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정상표 전환승인 지연은 실측 열차 간격, 수송 용량, 남은 지연을 검토한 뒤 기준 시간표 복귀를 결재할 때까지의 대기다. 열차가 실제로 운행한 시간은 아니다.",
+      "concepts": [
+        "정상표 전환승인 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02250",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복보고 확정 지연은 특별 운영 종료 이후 조정 조치와 효과, 승객 영향을 검토해 회복 보고서를 확정하기까지의 후처리 시간이다. 서비스가 회복되는 과정 자체와 구별한다.",
+      "concepts": [
+        "회복보고 확정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    }
+  ]
+}

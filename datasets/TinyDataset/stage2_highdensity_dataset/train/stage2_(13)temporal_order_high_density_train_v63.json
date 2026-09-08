@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v63",
+  "version": "63",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-09301 ~ S2-TOH-09450",
+  "concept_family": "S2-A03-T063: 공항 활주로 제설·운항 회복 — 충돌하는 타임스탬프의 신뢰순위 판정",
+  "design_note": "공항 활주로 제설·운항 회복 영역의 충돌하는 타임스탬프의 신뢰순위 판정 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-09301",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예보서와 센서기록이 다르면 교정된 관측장의 공항기상 원시관측 우선으로 강설 시작을 정한다. 활주로별 센서 시계가 관제 표준시와 맞는지 확인한 뒤 첫 연속 강설 표본을 사건 경계로 채택한다.",
+      "concepts": [
+        "공항기상 원시관측 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09302",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수기보고보다 임계적설을 직접 남긴 적설계 접점시각 신뢰를 높게 둔다. 센서 임계값 변경 이력을 확인해 설정 조정이 강설 시작으로 기록되지 않게 한다.",
+      "concepts": [
+        "적설계 접점시각 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09303",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관측 뒤 작성된 기상전문 발행시각 후순위는 눈이 시작된 시각이 아니다. 전문의 작성 지연을 역산해도 원관측보다 앞선 자연현상을 새로 입증할 수 없으므로 행정 기록으로만 남긴다.",
+      "concepts": [
+        "기상전문 발행시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09304",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관측장 결측 때 레이더 강설대 증거로 활주로 도달의 범위를 보완한다. 빔 고도와 이동 속도를 고려하면 지상 도달은 하나의 시점이 아니라 제한된 구간이 된다.",
+      "concepts": [
+        "레이더 강설대 증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09305",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "국지 강설은 조종사 기상보고 보조로 확인하되 발화 수신시각과 나눈다. 보고 항공기의 위치와 고도를 대조하면 강설대가 관측장을 통과한 구간을 좁힐 수 있다.",
+      "concepts": [
+        "조종사 기상보고 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09306",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "눈이 내린 때와 경보가 확정된 강설발생 경보시각 구별로 사건을 분리한다. 발령 지연은 별도 처리시간으로 남겨 자연현상의 지속시간을 늘리지 않는다.",
+      "concepts": [
+        "강설발생 경보시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09307",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분 단위 후입력인 수기기상 기록한계 때문에 원시센서와 동등하게 쓰지 않는다. 교대자가 기억으로 채운 분 단위 값은 연속 표본 사이의 정확한 시작점을 결정하지 못한다.",
+      "concepts": [
+        "수기기상 기록한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09308",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "적설계와 풍속계가 다르면 기상장비 시각편차 보정 뒤 현상 순서를 맞춘다. 정기 동기화 로그 사이의 오차는 선형 보간해 초 단위 역전을 바로잡는다.",
+      "concepts": [
+        "기상장비 시각편차 보정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09309",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공항기상 증거우선순위는 원시센서·레이더·조종사보고·전문·수기기록 순으로 둔다. 각 자료의 시계 동기화와 생성 경로를 함께 적어 동일 시각처럼 보이는 후속 기록을 분리한다.",
+      "concepts": [
+        "공항기상 증거우선순위"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09310",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강설기록 충돌연표는 현상·측정·전문·경보·수신시각을 공통축에 놓는다. 자료마다 원시 생성과 서버 수신 열을 나눠 전송 순서가 사건 순서를 덮지 않게 한다.",
+      "concepts": [
+        "강설기록 충돌연표"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09311",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마찰값이 출처마다 다르면 검증된 측정차량의 활주로마찰 장치시각 우선으로 상태를 정한다. 측정차의 바퀴 회전과 제동력 원자료가 함께 변한 순간을 해당 주행의 직접 관측으로 본다.",
+      "concepts": [
+        "활주로마찰 장치시각 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09312",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영메모보다 포장에 설치된 노면온도 센서원본 신뢰를 높게 둔다. 센서 교정이 유효한 구간만 선택해야 결측 보간값을 직접 관측으로 오인하지 않는다.",
+      "concepts": [
+        "노면온도 센서원본 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09313",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "측정 뒤 제출한 활주로상태 보고시각 후순위는 표면이 변한 때가 아니다. 보고 승인까지 걸린 시간을 실제 결빙 지속시간에 더하지 않고 별도의 처리 지연으로 계산한다.",
+      "concepts": [
+        "활주로상태 보고시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09314",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서가 결측이면 원본 촬영시각의 CCTV 적설영상 증거로 상태를 보완한다.",
+      "concepts": [
+        "CCTV 적설영상 증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09315",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공기 제동보고 착륙시각 보조는 해당 활주로 상태의 관측 근거로만 쓴다. 착륙 활주 구간과 마찰측정 지점을 맞춰야 서로 다른 노면 상태를 한 사건으로 합치지 않는다.",
+      "concepts": [
+        "제동보고 착륙시각 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09316",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표면이 악화된 때와 운영자가 확정한 노면변화 판정시각 구별로 사건을 나눈다.",
+      "concepts": [
+        "노면변화 판정시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09317",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교대 뒤 적은 순찰일지 시간한계 때문에 자동센서보다 낮은 신뢰도를 준다. 순찰 경로의 영상이나 차량 위치가 없으면 기록된 시각은 넓은 확인 구간만 제공한다.",
+      "concepts": [
+        "순찰일지 시간한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09318",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마찰계·온도계·CCTV가 다르면 노면계측 공통시각 보정 뒤 순서를 정한다.",
+      "concepts": [
+        "노면계측 공통시각 보정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09319",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활주로상태 증거순위표는 마찰·온도·영상·제동보고·판정·일지의 신뢰도를 정리한다. 값마다 관측 지점과 장비 교정 이력을 붙여 표면 변화의 선후를 재구성할 수 있게 한다.",
+      "concepts": [
+        "활주로상태 증거순위표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09320",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활주로노면 충돌해결은 측정·착륙·순찰·보고시각을 보존해 상태연표를 복원한다.",
+      "concepts": [
+        "활주로노면 충돌해결"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09321",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제설 시작기록이 다르면 차량이 활주로에 진입한 제설차 GPS시각 우선으로 정한다. 게이트 통과 뒤 실제 작업구간에 들어온 좌표를 써서 대기 이동과 제설 시작을 구분한다.",
+      "concepts": [
+        "제설차 GPS시각 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09322",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업표보다 브러시 모터가 돈 브러시 구동접점 신뢰를 높게 둔다.",
+      "concepts": [
+        "브러시 구동접점 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09323",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사전에 만든 제설계획 생성시각 후순위는 실제 작업개시 증거가 아니다. 계획된 출발은 장비 고장이나 관제 대기로 미뤄질 수 있어 작업 사건의 상한도 되지 못한다.",
+      "concepts": [
+        "제설계획 생성시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09324",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "구동로그가 결측이면 제설제 감소량의 살포량 계량증거로 작업을 보완한다.",
+      "concepts": [
+        "살포량 계량증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09325",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량로그가 없을 때 활주로 CCTV시각 보조로 진입과 이탈의 경계를 둔다. 카메라 프레임의 서버 지연을 보정하고 제설날이 노면에 닿은 장면을 실제 작업의 보조 경계로 삼는다.",
+      "concepts": [
+        "활주로 CCTV시각 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09326",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제승인과 차량의 실제 진입을 제설승인 작업시각 구별로 나눈다.",
+      "concepts": [
+        "제설승인 작업시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09327",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차 뒤 작성한 운전자 작업일지 제한 때문에 GPS·접점보다 낮게 평가한다. 운전자가 한꺼번에 적은 회차는 개별 구간의 진입과 이탈 순서를 뒤바꿀 수 있다.",
+      "concepts": [
+        "운전자 작업일지 제한"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09328",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량단말과 관제서버가 다르면 제설차량 시계보정 뒤 작업순서를 맞춘다.",
+      "concepts": [
+        "제설차량 시계보정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09329",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제설작업 증거우선순위는 GPS·구동접점·계량·CCTV·승인·일지 순으로 둔다. 서로 다른 장비 시계를 관제 표준시에 정렬한 다음 위치와 구동 상태가 동시에 성립한 구간을 확정한다.",
+      "concepts": [
+        "제설작업 증거우선순위"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09330",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제설회차 충돌연표는 승인·진입·브러시·살포·이탈·검사의 시각을 연결한다.",
+      "concepts": [
+        "제설회차 충돌연표"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09331",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제빙액 준비시각이 다르면 탱크중량 변화의 제빙액 탱크계량 우선으로 실제 출고를 정한다. 밸브 개방과 중량 감소가 연속해서 나타난 시점을 출고 사건으로 잡고 단순 재고 보정은 제외한다.",
+      "concepts": [
+        "제빙액 탱크계량 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09332",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업표보다 펌프가 돈 제빙펌프 구동신호 신뢰를 높게 둔다.",
+      "concepts": [
+        "제빙펌프 구동신호 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09333",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사전에 입력한 제빙요청 작성시각 후순위는 액체가 사용된 때가 아니다. 요청서가 미리 저장되었더라도 차량 배정과 펌프 작동이 뒤따르지 않으면 사용 사건은 발생하지 않은 것이다.",
+      "concepts": [
+        "제빙요청 작성시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09334",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "펌프로그가 빠졌을 때 유량계 살포증거로 제빙 시작과 종료를 보완한다.",
+      "concepts": [
+        "유량계 살포증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09335",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "직접유량이 없으면 제빙차 위치시각 보조로 작업구간을 제한한다. 차량이 지정 구역에 머문 시간과 항공기 회차를 연결해 다른 편의 제빙 작업과 섞이지 않게 한다.",
+      "concepts": [
+        "제빙차 위치시각 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09336",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제허가와 실제 노즐분사를 제빙승인 살포시각 구별로 각각 기록한다.",
+      "concepts": [
+        "제빙승인 살포시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09337",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업 뒤 작성한 제빙대장 후입력한계 때문에 장치원본보다 낮게 평가한다. 사용량 합계가 맞더라도 입력 시각은 담당자가 사무실로 돌아온 때일 수 있으므로 현장 경계로 쓰지 않는다.",
+      "concepts": [
+        "제빙대장 후입력한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09338",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탱크계와 차량단말이 다르면 제빙설비 시각오프셋 보정 뒤 순서를 맞춘다.",
+      "concepts": [
+        "제빙설비 시각오프셋 보정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09339",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제빙작업 증거순위표는 계량·펌프·유량·위치·승인·대장의 신뢰도를 정리한다. 액체 이동을 직접 포착한 계량과 펌프 신호를 중심에 두고 승인 문서는 행정 단계로 따로 배열한다.",
+      "concepts": [
+        "제빙작업 증거순위표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09340",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제빙운영 충돌해결은 요청·출고·살포·복귀·정산시각을 공통축에 둔다.",
+      "concepts": [
+        "제빙운영 충돌해결"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09341",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발행시각이 충돌하면 권한서버가 받은 NOTAM 서버접수 우선으로 효력순서를 정한다. 전자서명 검증이 끝난 수신 원본을 기준으로 해야 초안 저장과 실제 효력 발생을 혼동하지 않는다.",
+      "concepts": [
+        "NOTAM 서버접수 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09342",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전화메모보다 권한자가 남긴 관제승인 전자서명 신뢰를 높게 둔다.",
+      "concepts": [
+        "관제승인 전자서명 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09343",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "편집 중인 NOTAM 초안작성시각 후순위는 공지 효력이 생긴 때가 아니다. 초안은 여러 번 수정될 수 있어 최종 식별자와 서명이 연결되지 않으면 시간 순서의 근거가 되지 않는다.",
+      "concepts": [
+        "NOTAM 초안작성시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09344",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "내부로그가 결측이면 항공정보망 배포증거로 외부 이용 가능시각을 보완한다.",
+      "concepts": [
+        "항공정보망 배포증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09345",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공사 수신확인 보조는 공지가 실제 도착한 늦은 경계로 사용한다. 배포 서버와 항공사 단말 사이 전송 지연을 계산하면 공지 효력과 운영자 인지의 간격을 구할 수 있다.",
+      "concepts": [
+        "항공사 수신확인 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09346",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "문서생성과 운항규칙이 바뀐 NOTAM발행 효력시각 구별로 사건을 나눈다.",
+      "concepts": [
+        "NOTAM발행 효력시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09347",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분 단위 전화통보 기록한계 때문에 서버원본과 같은 신뢰도를 주지 않는다. 통화가 끝난 뒤 적힌 메모는 발신과 수신의 어느 순간인지 특정하지 못해 보조 범위만 제공한다.",
+      "concepts": [
+        "전화통보 기록한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09348",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발행기관과 공항서버가 다르면 항공정보 시각정합 뒤 공지 차례를 정한다.",
+      "concepts": [
+        "항공정보 시각정합"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09349",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "NOTAM증거 우선순위표는 서버접수·전자서명·배포·수신확인·전화기록 순으로 둔다. 효력 발생, 네트워크 배포, 현장 인지를 서로 다른 열로 두어 한 타임스탬프가 세 사건을 대신하지 않게 한다.",
+      "concepts": [
+        "NOTAM증거 우선순위표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09350",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "NOTAM기록 충돌연표는 초안·승인·효력·배포·수신시각을 연결한다.",
+      "concepts": [
+        "NOTAM기록 충돌연표"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09351",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "폐쇄시각이 다르면 권한관제석의 활주로폐쇄 관제로그 우선으로 운항금지 시작을 정한다. 관제 권한이 실제 상태를 폐쇄로 바꾼 트랜잭션과 활주로 점유 자료를 맞춰 금지 효력의 시작을 확정한다.",
+      "concepts": [
+        "활주로폐쇄 관제로그 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09352",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교신메모보다 차량·항공기 점유를 직접 읽은 활주로 점유센서 신뢰를 높게 둔다.",
+      "concepts": [
+        "활주로 점유센서 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09353",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사전문구의 관제지시 작성시각 후순위는 조종사에게 전달된 시각이 아니다. 미리 준비한 문구는 송신되지 않을 수도 있으므로 녹취의 호출부호와 결합될 때만 전달 과정에 포함한다.",
+      "concepts": [
+        "관제지시 작성시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09354",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전자로그가 결측이면 공항관제녹취 발화증거로 폐쇄지시의 경계를 보완한다.",
+      "concepts": [
+        "공항관제녹취 발화증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09355",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조종사 복창시각 보조는 지시가 수신된 늦은 경계로만 사용한다. 복창 내용이 원지시와 일치하는지 확인해야 단순 교신 시각을 폐쇄 인지 사건으로 잘못 채택하지 않는다.",
+      "concepts": [
+        "조종사 복창시각 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09356",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지시발화와 활주로가 닫힌 폐쇄지시 효력시각 구별로 통신과 상태를 나눈다.",
+      "concepts": [
+        "폐쇄지시 효력시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09357",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "나중에 적은 관제메모 시간한계 때문에 녹취·점유센서보다 낮게 평가한다. 메모의 분 단위 표시는 초 단위 녹취보다 거칠어 동시에 일어난 두 지시의 선후를 판정하기 어렵다.",
+      "concepts": [
+        "관제메모 시간한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09358",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주·보조 관제석이 다르면 관제석 시각오프셋 보정 뒤 지시순서를 맞춘다.",
+      "concepts": [
+        "관제석 시각오프셋 보정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09359",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제기록 증거우선순위는 권한로그·점유센서·녹취·복창·메모 순으로 둔다. 권한 변경과 실제 점유를 먼저 놓고 음성 전달과 사후 메모를 뒤에 배치해 효력·행동·기록을 분리한다.",
+      "concepts": [
+        "관제기록 증거우선순위"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09360",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활주로폐쇄 충돌연표는 지시·복창·점유해제·효력·공지시각을 연결한다.",
+      "concepts": [
+        "활주로폐쇄 충돌연표"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09361",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검사시각이 다르면 점검차 위치의 활주로검사 GPS시각 우선으로 현장진입을 정한다. 차량이 검사 구역의 지오펜스를 처음 통과한 표본을 써서 대기장에서의 엔진 시동과 현장 진입을 나눈다.",
+      "concepts": [
+        "활주로검사 GPS시각 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09362",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수기표보다 마찰·온도 장치의 노면검사 장치시각 신뢰를 높게 둔다.",
+      "concepts": [
+        "노면검사 장치시각 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09363",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사전에 만든 검사계획 생성시각 후순위는 현장점검이 시작된 때가 아니다. 예정 시각은 제설 종료나 관제 허가에 따라 바뀌므로 실제 검사 구간을 직접 제한하지 못한다.",
+      "concepts": [
+        "검사계획 생성시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09364",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "GPS 결측 때 원본 메타데이터의 검사사진 촬영증거로 위치점검을 보완한다.",
+      "concepts": [
+        "검사사진 촬영증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09365",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량이 진입·이탈한 활주로출입 접점보조로 검사구간의 경계를 둔다. 차단기 개폐 로그를 차량 좌표와 대조하면 GPS 공백에서도 진입과 이탈의 넓은 한계를 보존할 수 있다.",
+      "concepts": [
+        "활주로출입 접점보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09366",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장점검 종료와 감독자가 확정한 검사완료 승인시각 구별로 사건을 나눈다.",
+      "concepts": [
+        "검사완료 승인시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09367",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "순찰 뒤 작성한 점검표 후입력한계 때문에 장치·사진보다 낮게 평가한다. 여러 구간을 한 번에 입력한 표에서는 항목 순서가 관측 순서와 같다고 가정하지 않는다.",
+      "concepts": [
+        "점검표 후입력한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09368",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량GPS와 관제서버가 다르면 검사차량 시계보정 뒤 작업순서를 정한다.",
+      "concepts": [
+        "검사차량 시계보정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09369",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활주로검사 증거순위표는 GPS·장치·사진·출입접점·승인·점검표 순으로 둔다. 현장 위치, 측정 장치, 촬영 원본을 서로 교차 확인하고 승인·점검표는 후속 판단 단계로 표시한다.",
+      "concepts": [
+        "활주로검사 증거순위표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09370",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활주로검사 충돌해결은 진입·측정·촬영·이탈·승인시각을 공통축에 놓는다.",
+      "concepts": [
+        "활주로검사 충돌해결"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09371",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제동상태가 다르면 검증된 마찰차의 제동측정 장치시각 우선으로 결과를 정한다. 속도와 감속력 신호가 유효 범위에 든 주행만 골라 정지 중 영점 보정이 결과 시각으로 오인되지 않게 한다.",
+      "concepts": [
+        "제동측정 장치시각 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09372",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장메모보다 착륙자료의 항공기 감속자료 신뢰를 보조증거로 높게 둔다.",
+      "concepts": [
+        "항공기 감속자료 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09373",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "측정 뒤 만든 제동보고 작성시각 후순위는 노면을 관측한 때가 아니다. 보고서 생성은 측정 자료 전송과 검토 뒤에 일어나므로 노면 상태 변화의 직접 시점이 아니다.",
+      "concepts": [
+        "제동보고 작성시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09374",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "직접 측정이 없으면 원본 촬영시각의 타이어자국 영상증거로 상태를 보완한다.",
+      "concepts": [
+        "타이어자국 영상증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09375",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조종사 제동보고 보조는 착륙시각과 발화시각을 분리해 사용한다. 접지부터 감속 종료까지의 비행자료를 맞추면 발화가 늦어도 체감 제동의 관측 구간을 좁힐 수 있다.",
+      "concepts": [
+        "조종사 제동보고 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09376",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원시측정과 등급을 확정한 제동등급 판정시각 구별로 관측과 판단을 나눈다.",
+      "concepts": [
+        "제동등급 판정시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09377",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "반올림된 수기마찰 기록한계 때문에 장치원본과 동등하게 쓰지 않는다. 소수점 반올림과 일괄 전사 때문에 가까운 두 측정의 크기와 순서가 뒤바뀔 가능성을 따로 표시한다.",
+      "concepts": [
+        "수기마찰 기록한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09378",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마찰차와 항공기 기록이 다르면 제동자료 시각정합 뒤 선후를 정한다.",
+      "concepts": [
+        "제동자료 시각정합"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09379",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제동상태 증거우선순위는 마찰차·감속자료·영상·조종사보고·판정·수기값 순으로 둔다. 장비 교정 여부와 공간 구간을 함께 비교해 서로 다른 활주로 지점의 값을 시간 충돌로 잘못 보지 않는다.",
+      "concepts": [
+        "제동상태 증거우선순위"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09380",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제동기록 충돌연표는 측정·착륙·보고·등급·공지시각을 연결한다.",
+      "concepts": [
+        "제동기록 충돌연표"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09381",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조명상태가 다르면 전원접촉기의 활주로등 접점시각 우선으로 실제 점등을 정한다. 접촉기 상태와 회로 전류가 동시에 바뀐 순간을 선택해 명령 수신과 실제 발광 사이의 지연을 분리한다.",
+      "concepts": [
+        "활주로등 접점시각 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09382",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영화면보다 밝기를 직접 읽은 광센서 관측기록 신뢰를 높게 둔다.",
+      "concepts": [
+        "광센서 관측기록 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09383",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사전 설정의 점등계획 등록시각 후순위는 조명이 켜진 때가 아니다. 자동 점등 예약은 기상 조건이나 운영 모드로 취소될 수 있어 실행 기록이 없으면 사건으로 세지 않는다.",
+      "concepts": [
+        "점등계획 등록시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09384",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접점로그가 없을 때 전력계 부하증거로 등화 기동을 보완한다.",
+      "concepts": [
+        "전력계 부하증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09385",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전력자료가 결측이면 CCTV 점등시각 보조로 밝기변화의 경계를 둔다. 카메라 노출 변화와 주변 차량 불빛을 구별한 프레임만 써서 등화의 실제 전환 구간을 추정한다.",
+      "concepts": [
+        "CCTV 점등시각 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09386",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제명령과 램프가 켜진 때를 점등명령 실제점등 구별로 나눈다.",
+      "concepts": [
+        "점등명령 실제점등 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09387",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업 뒤 적은 등화점검표 시간한계 때문에 접점·광센서보다 낮게 평가한다. 순회가 끝난 뒤 작성된 체크 표시는 어느 등화가 먼저 복구되었는지 보여 주지 못한다.",
+      "concepts": [
+        "등화점검표 시간한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09388",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조명PLC와 관제서버가 다르면 등화제어 시계보정 뒤 변화순서를 맞춘다.",
+      "concepts": [
+        "등화제어 시계보정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09389",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활주로등 증거순위표는 접점·광센서·전력·영상·명령·점검표 순으로 둔다. 전기 접점과 광센서를 직접 증거로 두고 영상·명령·점검표의 관측 지연을 각각 별도 항목으로 기록한다.",
+      "concepts": [
+        "활주로등 증거순위표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09390",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "등화기록 충돌해결은 명령·접점·밝기·확인·보고시각을 공통축에 둔다.",
+      "concepts": [
+        "등화기록 충돌해결"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09391",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가용시각이 다르면 장비 자체점검의 항행시설 원시상태 우선으로 실제 서비스 변화를 정한다. 장비 내부의 신호 품질과 자체진단 전환이 일치하는 순간을 서비스 가용성 변화의 기준으로 삼는다.",
+      "concepts": [
+        "항행시설 원시상태 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09392",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영메모보다 송신출력을 직접 읽은 로컬라이저 신호센서 신뢰를 높게 둔다.",
+      "concepts": [
+        "로컬라이저 신호센서 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09393",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장애 뒤 작성된 항행공지 작성시각 후순위는 신호가 사라진 때가 아니다. 공지 문안은 장애 확인과 영향 평가 뒤 작성되므로 신호 단절보다 늦은 운영 판단을 나타낸다.",
+      "concepts": [
+        "항행공지 작성시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09394",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지상자료가 불명확하면 항공기 비행검사 측정증거로 시설상태를 보완한다.",
+      "concepts": [
+        "비행검사 측정증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09395",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "직접신호가 결측이면 원격감시 경보시각 보조로 장애의 늦은 경계를 둔다. 통신 주기만큼 늦게 도착할 수 있는 경보라서 마지막 정상 표본과 첫 경보 사이를 장애 범위로 둔다.",
+      "concepts": [
+        "원격감시 경보시각 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09396",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출력저하와 담당자가 확정한 신호장애 판정시각 구별로 사건을 나눈다.",
+      "concepts": [
+        "신호장애 판정시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09397",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교대 뒤 적은 시설일지 시간한계 때문에 장치원본보다 낮게 평가한다. 교대 인계 과정의 요약은 짧은 복구와 재장애를 생략할 수 있어 연속 상태 자료를 대신하지 못한다.",
+      "concepts": [
+        "시설일지 시간한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09398",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "송신기와 감시서버가 다르면 항행장비 시각보정 뒤 장애순서를 맞춘다.",
+      "concepts": [
+        "항행장비 시각보정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09399",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항행시설 증거우선순위는 자체점검·신호센서·비행검사·원격경보·판정·일지 순으로 둔다. 자체 신호, 외부 센서, 비행 확인을 독립 증거로 보존하고 원격 경보와 일지는 지연 경로를 명시한다.",
+      "concepts": [
+        "항행시설 증거우선순위"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09400",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항행시설 충돌연표는 신호변화·경보·판정·공지·복구의 타임스탬프를 연결한다.",
+      "concepts": [
+        "항행시설 충돌연표"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09401",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "견인기록이 다르면 차량이 움직인 게이트견인 GPS시각 우선으로 실제 출발을 정한다. 견인차가 항공기와 결합된 뒤 좌표가 연속 이동한 첫 표본을 골라 빈 차량 이동을 출발로 세지 않는다.",
+      "concepts": [
+        "게이트견인 GPS시각 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09402",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업표보다 전원케이블 접점의 지상전원 접점기록 신뢰를 높게 둔다.",
+      "concepts": [
+        "지상전원 접점기록 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09403",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사전에 만든 조업계획 생성시각 후순위는 작업이 시작된 때가 아니다. 배정표에 적힌 시작은 탑승 지연이나 장비 대기로 달라지므로 실제 지상조업의 경계를 보장하지 않는다.",
+      "concepts": [
+        "조업계획 생성시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09404",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "스캔로그가 결측이면 수하물계수 변화증거로 적재진행을 보완한다.",
+      "concepts": [
+        "수하물계수 변화증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09405",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량GPS가 없을 때 램프CCTV 촬영시각 보조로 작업구간을 제한한다. 항공기 등록과 작업 차량을 프레임에서 함께 확인해 인접 게이트의 동시 작업이 섞이는 것을 막는다.",
+      "concepts": [
+        "램프CCTV 촬영시각 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09406",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감독자 승인과 견인·적재의 실제 시작을 조업승인 실행시각 구별로 나눈다.",
+      "concepts": [
+        "조업승인 실행시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09407",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "램프작업표 시간한계는 회차가 끝난 뒤 일괄 입력한 작업표가 세부 장치 원본보다 낮은 시간 증거력을 갖는다는 제약이다. 완료 사실은 보조하지만 작업 사이의 정확한 순서를 확정하지 못한다.",
+      "concepts": [
+        "램프작업표 시간한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09408",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "견인기·스캐너·게이트서버가 다르면 지상조업 시계보정 뒤 순서를 정한다.",
+      "concepts": [
+        "지상조업 시계보정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09409",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지상조업 증거우선순위는 GPS·접점·계수·영상·승인·작업표 순으로 둔다. 차량 위치와 장비 접점, 수하물 계수를 먼저 연결하고 승인·작업표는 운영 기록층으로 분리한다.",
+      "concepts": [
+        "지상조업 증거우선순위"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09410",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트작업 충돌연표는 준비·적재·견인·푸시백·승인시각을 공통축에 놓는다.",
+      "concepts": [
+        "게이트작업 충돌연표"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09411",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출발결정이 다르면 권한 운항서버의 항공사운항 서버기록 우선으로 효력시각을 정한다. 권한 계정의 상태 변경과 배포 로그가 이어진 시점을 사용해 개인 메모의 결정보다 효력 발생을 우선한다.",
+      "concepts": [
+        "항공사운항 서버기록 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09412",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전화메모보다 기장의 기장수신 확인기록 신뢰를 높게 둔다.",
+      "concepts": [
+        "기장수신 확인기록 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09413",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "편집 중인 운항안 초안시각 후순위는 실제 배포나 승인이 아니다. 저장된 초안이 폐기되었는지 승인본으로 이어졌는지 확인하지 않으면 운항 결정의 순서를 만들 수 없다.",
+      "concepts": [
+        "운항안 초안시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09414",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "내부로그가 없으면 표준 운항메시지 전송증거로 이용 가능시각을 보완한다.",
+      "concepts": [
+        "운항메시지 전송증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09415",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무원 브리핑시각 보조는 계획이 현장에 전달된 늦은 경계로 쓴다. 참석 확인과 자료 버전을 맞추면 결정이 승무원에게 실제 전달된 가장 늦은 경계를 찾을 수 있다.",
+      "concepts": [
+        "승무원 브리핑시각 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09416",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운항승인과 항공기가 움직인 때를 운항승인 출발시각 구별로 각각 기록한다.",
+      "concepts": [
+        "운항승인 출발시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09417",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "나중에 적은 배차메모 시간한계 때문에 서버·전송로그보다 낮게 평가한다. 전화 협의 뒤 남긴 메모는 발신·합의·입력 시점을 구분하지 않아 권한 기록보다 넓은 오차를 가진다.",
+      "concepts": [
+        "배차메모 시간한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09418",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공사와 공항서버가 다르면 항공사 공항시각 정합 뒤 결정순서를 맞춘다.",
+      "concepts": [
+        "항공사 공항시각 정합"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09419",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운항결정 증거우선순위는 권한서버·수신확인·전송·브리핑·메모 순으로 둔다. 상태 변경, 메시지 배포, 수신 확인, 현장 브리핑을 연쇄로 놓고 각 구간의 전송 지연을 따로 계산한다.",
+      "concepts": [
+        "운항결정 증거우선순위"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09420",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공사운항 충돌해결은 계획·승인·전달·탑승·출발시각을 연결한다.",
+      "concepts": [
+        "항공사운항 충돌해결"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09421",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수용가능시각이 다르면 대체공항 운영서버의 대체공항 가용로그 우선으로 판단한다. 수용 슬롯이 서버에서 활성화되고 권한자가 확정한 트랜잭션을 기준으로 실제 가용 시작을 판정한다.",
+      "concepts": [
+        "대체공항 가용로그 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09422",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전화협의보다 권한자의 슬롯승인 전자서명 신뢰를 높게 둔다.",
+      "concepts": [
+        "슬롯승인 전자서명 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09423",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "미리 만든 대체계획 작성시각 후순위는 공항이 실제 수용한 시각이 아니다. 후보 공항을 적어 둔 계획은 슬롯과 기상 조건이 충족되지 않아도 존재하므로 수용 사건이 아니다.",
+      "concepts": [
+        "대체계획 작성시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09424",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가용로그가 없으면 항공정보망 수신증거로 승인전달을 보완한다.",
+      "concepts": [
+        "항공정보망 수신증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09425",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조종사 교신시각 보조는 대체결정이 현장에 알려진 늦은 경계로 쓴다. 호출부호와 대체공항명이 일치하는 녹취를 확인해 결정 전달의 늦은 한계로만 사용한다.",
+      "concepts": [
+        "조종사 교신시각 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09426",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대체공항 승인과 실제 착륙을 대체승인 착륙시각 구별로 나눈다.",
+      "concepts": [
+        "대체승인 착륙시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09427",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사후 작성한 협의메모 시간한계 때문에 서버·전자서명보다 낮게 평가한다. 여러 기관의 통화를 나중에 요약하면 합의 전후가 뒤섞일 수 있어 전자서명 순서를 대체하지 못한다.",
+      "concepts": [
+        "협의메모 시간한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09428",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출발지와 대체공항이 다르면 공항간 시각오프셋 보정 뒤 선후를 정한다.",
+      "concepts": [
+        "공항간 시각오프셋 보정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09429",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대체공항 증거우선순위는 가용로그·전자서명·정보망·교신·메모 순으로 둔다. 슬롯 활성화와 서명 승인을 핵심으로 두고 정보망 배포와 교신은 인지 경로로 분리해 배열한다.",
+      "concepts": [
+        "대체공항 증거우선순위"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09430",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대체운항 충돌연표는 협의·승인·전달·회항·착륙의 시간을 공통축에 둔다.",
+      "concepts": [
+        "대체운항 충돌연표"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09431",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출동기록이 다르면 차량이 움직인 비상차량 GPS시각 우선으로 대응개시를 정한다. 차고 이탈 좌표와 경광등 작동을 함께 확인해 시동 점검을 실제 출동 시작으로 잘못 세지 않는다.",
+      "concepts": [
+        "비상차량 GPS시각 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09432",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업보고보다 제설·구조장비의 구조장비 작동접점 신뢰를 높게 둔다.",
+      "concepts": [
+        "구조장비 작동접점 신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09433",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "문서발령의 비상계획 발령시각 후순위는 현장위험이 시작된 시각이 아니다. 문서 발령은 위험 감지보다 늦거나 사전 예방으로 빠를 수 있어 현장 사건의 직접 경계가 아니다.",
+      "concepts": [
+        "비상계획 발령시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09434",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자동접점이 없으면 원본 현장영상 촬영증거로 대응구간을 보완한다.",
+      "concepts": [
+        "현장영상 촬영증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09435",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기관무전 수신시각 보조는 지시가 전달된 늦은 경계로만 쓴다. 수신 확인 발화가 포함된 채널만 골라 전파 도달과 대응 행동 사이의 간격을 구분한다.",
+      "concepts": [
+        "기관무전 수신시각 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09436",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활주로 위험과 차량출동을 위험발생 대응시각 구별로 각각 기록한다.",
+      "concepts": [
+        "위험발생 대응시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09437",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상일지 시간한계는 상황 종료 뒤 정리한 일지가 GPS와 장치 접점만큼 정밀한 시간 근거가 되지 못한다는 제약이다. 여러 기관의 병행 행동을 작성 순서로 오인하지 않는다.",
+      "concepts": [
+        "비상일지 시간한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09438",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공항·소방·경찰 기록이 다르면 비상기관 시각정합 뒤 사건순서를 맞춘다.",
+      "concepts": [
+        "비상기관 시각정합"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09439",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공항비상 증거우선순위는 GPS·장비접점·영상·무전·일지 순으로 둔다. 차량 이동과 장비 접점, 현장 영상을 먼저 맞춘 뒤 무전·일지의 전달 및 정리 시각을 덧붙인다.",
+      "concepts": [
+        "공항비상 증거우선순위"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09440",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공항비상 충돌연표는 위험·출동·도착·조치·해제시각을 공통축에 놓는다.",
+      "concepts": [
+        "공항비상 충돌연표"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09441",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복시각이 다르면 관제·게이트 원시자료의 운항회복 원시통계 우선으로 정한다. 첫 정상 이착륙과 게이트 처리량이 지속적으로 회복된 구간을 찾아 일시적 한 편의 운항과 구별한다.",
+      "concepts": [
+        "운항회복 원시통계 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09442",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보고서보다 실제 이동과 이륙의 첫 정상운항 접점신뢰를 높게 둔다.",
+      "concepts": [
+        "첫 정상운항 접점신뢰"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09443",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사후 만든 회복보고 작성시각 후순위는 서비스가 돌아온 때가 아니다. 보고서가 승인된 때는 이미 누적 통계가 모인 뒤이므로 정상 서비스의 시작보다 늦은 행정 사건이다.",
+      "concepts": [
+        "회복보고 작성시각 후순위"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09444",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "개별로그가 일부 없으면 지연곡선 계산증거로 회복추세를 보완한다.",
+      "concepts": [
+        "지연곡선 계산증거"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09445",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공사 확인시각 보조는 정상운항이 외부에 인지된 늦은 경계로 쓴다. 여러 항공사의 수신 시각을 비교하면 회복 정보가 외부 운영망에 퍼진 범위를 추정할 수 있다.",
+      "concepts": [
+        "항공사 확인시각 보조"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09446",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 정상운항과 기관이 확정한 회복발생 확정시각 구별로 사건을 나눈다.",
+      "concepts": [
+        "회복발생 확정시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09447",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "나중에 집계한 수기회복표 시간한계 때문에 원시운항로그보다 낮게 평가한다. 반올림한 시간대별 집계는 짧은 재폐쇄를 감출 수 있어 원시 운항 상태의 연속성을 증명하지 못한다.",
+      "concepts": [
+        "수기회복표 시간한계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09448",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제·게이트·항공사 서버는 회복시스템 공통시각보정 뒤 순서를 맞춘다.",
+      "concepts": [
+        "회복시스템 공통시각보정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09449",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운항회복 증거우선순위는 원시운항·접점·지연곡선·항공사확인·보고 순으로 둔다. 관제 상태와 실제 운항, 게이트 처리, 지연곡선을 연결해 기술적 복구와 이용자 체감 회복을 나눠 판정한다.",
+      "concepts": [
+        "운항회복 증거우선순위"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09450",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공항회복 충돌해결은 폐쇄·제설·검사·승인·첫 운항·보고시각을 연결한다.",
+      "concepts": [
+        "공항회복 충돌해결"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    }
+  ]
+}

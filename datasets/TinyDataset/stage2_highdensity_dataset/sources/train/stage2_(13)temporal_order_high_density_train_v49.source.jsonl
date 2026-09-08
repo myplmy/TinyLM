@@ -1,0 +1,150 @@
+{"primary":"축사온도 실제상승시점","text":"축사공기가 실제로 더워지기 시작한 축사온도 실제상승시점은 센서가 다음 표본을 만든 때보다 이를 수 있다. 열수지와 직전 정상표본을 함께 사용해 탐침 응답 전 과열의 가능한 시작범위를 제한한다.","relations":["process","state","boundary"]}
+{"primary":"온도센서 표본시각","text":"감지소자가 값을 확정한 온도센서 표본시각은 연속적인 온도변화의 시작과 구별한다. 직전·다음 표본의 간격과 탐침 응답을 함께 적어 연속 변화가 한 점으로 축소되지 않게 한다.","relations":["process","attribute","comparison"]}
+{"primary":"온도경보 생성시각","text":"지속성 검사를 통과해 경보가 뜬 온도경보 생성시각은 물리적 과열과 센서측정 이후다. 평균창과 지속조건이 끝난 뒤 만들어진 판단 사건이므로 공기 온도 변화와 합치지 않는다.","relations":["process","role","classification"]}
+{"primary":"환기화면 표시시각","text":"표본이 게이트웨이와 서버를 거쳐 보인 환기화면 표시시각은 현장상태보다 통신만큼 늦다. 장치 송신·게이트웨이 수신·서버 저장·화면 갱신을 분리해 현장과 표시 사이 지연을 측정한다.","relations":["process","part_of","state"]}
+{"primary":"온도기록 백필시각","text":"온도기록 백필시각은 통신 복구 뒤 과거 표본을 서버에 적재한 때이며 과열 발생 시각이 아니다. 장치 원시 시각과 표본 번호로 재정렬해 두 사건을 분리한다.","relations":["process","function","boundary"]}
+{"primary":"야간냉각 발생구간","text":"외기유입으로 온도가 서서히 낮아진 야간냉각 발생구간은 한 표본시각으로 줄이지 않는다. 외기댐퍼 개방 뒤 축사 여러 위치가 순차 냉각되는 시작·종료 범위를 유지한다.","relations":["state","comparison","classification"]}
+{"primary":"온도회복 관측시각","text":"센서가 정상범위를 다시 읽은 온도회복 관측시각은 실제 회복 뒤의 확인사건이다. 센서의 첫 정상표본과 요구 유지시간을 구별해 물리 회복의 늦은 확인 경계로만 사용한다.","relations":["process","contrast","attribute"]}
+{"primary":"센서교정 수정시각","text":"편향을 바로잡은 센서교정 수정시각은 축사온도가 그때 변한 사건이 아니다. 원값과 보정값·적용범위·수정시각을 모두 남겨 사후 편집을 새 환경 변화와 구별한다.","relations":["process","role","state"]}
+{"primary":"열화상 촬영시각","text":"카메라가 가축과 바닥열을 본 열화상 촬영시각은 분석결과가 저장된 때와 다르다. 원본 프레임 시각과 분석 파일 생성·보고시각을 나눠 현장 관측의 선후를 보존한다.","relations":["process","part_of","boundary"]}
+{"primary":"축사열이상 판독시각","text":"영상에서 고온구역을 확정한 축사열이상 판독시각은 촬영과 실제 발열 뒤의 처리시점이다. 촬영 프레임과 분석 완료를 나눠 가축 발열·영상 관측·사람 판정의 시간층을 보존한다.","relations":["process","comparison","classification"]}
+{"primary":"축사습도 발생시점","text":"호흡·세척·외기로 습도가 실제 오르기 시작한 축사습도 발생시점은 경보시각과 다르다. 세척·호흡·외기유입 자료와 탐침곡선을 맞춰 센서 첫 상승 전의 변화구간을 추정한다.","relations":["process","state","boundary"]}
+{"primary":"습도표본 취득시각","text":"센서가 상대습도를 읽은 습도표본 취득시각은 수증기 증가의 정확한 시작을 뜻하지 않는다. 표본주기와 센서 안정시간을 고려해 물리 수증기 증가의 늦은 경계로만 사용한다.","relations":["process","attribute","comparison"]}
+{"primary":"결로형성 실제시점","text":"결로형성 실제시점은 벽이나 천장의 표면 온도가 이슬점 아래로 내려가 물방울이 생기기 시작한 때다. 순찰 발견은 늦을 수 있으므로 온도 기록으로 발생 구간을 좁힌다.","relations":["process","role","classification"]}
+{"primary":"결로발견 순찰시각","text":"작업자가 결로를 본 결로발견 순찰시각은 발생 이후의 관측 상한이다. 이전 무결로 확인과 발견 사이를 발생 가능구간으로 두고 발견 한 점을 정확한 시작이라 하지 않는다.","relations":["process","part_of","state"]}
+{"primary":"습도경보 표시시각","text":"평균창과 임계를 거쳐 화면에 뜬 습도경보 표시시각은 실제 습기와 측정 뒤에 놓인다. 센서 측정, 평균 계산, 임계 판정, 화면 갱신의 각 지연을 환경 변화와 분리한다.","relations":["process","function","boundary"]}
+{"primary":"깔짚수분 측정시각","text":"표본을 채취해 수분을 잰 깔짚수분 측정시각은 깔짚이 젖은 사건시각과 구별한다.","relations":["state","comparison","classification"]}
+{"primary":"건조회복 발생구간","text":"환기로 깔짚과 공기가 마른 건조회복 발생구간은 여러 시간에 걸친 상태변화다. 환기 시작 뒤 깔짚 수분과 공기습도가 함께 안정되는 구간을 점진적 회복으로 기록한다.","relations":["process","contrast","attribute"]}
+{"primary":"습도자료 수신시각","text":"원격표본이 중앙에 도착한 습도자료 수신시각에는 센서취득 뒤 전송시간이 포함된다.","relations":["process","role","state"]}
+{"primary":"습도기록 정정시각","text":"결측보완이나 교정으로 값을 고친 습도기록 정정시각은 새 환경사건이 아니다. 원값·원시각과 수정 사유를 남겨 사후 교정이 새 습도 변화로 학습되지 않게 한다.","relations":["process","part_of","boundary"]}
+{"primary":"결로사진 업로드시각","text":"현장사진이 서버에 들어온 결로사진 업로드시각은 촬영·발견보다 늦은 자료처리다.","relations":["process","comparison","classification"]}
+{"primary":"암모니아 실제상승시점","text":"분뇨분해로 농도가 오르기 시작한 암모니아 실제상승시점은 센서검출보다 이를 수 있다. 분뇨량·환기 상태와 가스센서 반응을 연결해 임계 경보 전 노출 시작범위를 좁힌다.","relations":["process","state","boundary"]}
+{"primary":"암모니아 감지시각","text":"가스센서가 상승을 잡은 암모니아 감지시각은 물질생성 뒤의 측정사건이다.","relations":["process","attribute","comparison"]}
+{"primary":"가스경보 판정시각","text":"교차센서와 지속시간을 확인한 가스경보 판정시각은 감지 이후의 판단이다. 복수 탐침과 지속조건을 검토한 뒤의 판단으로, 첫 분자 노출 또는 첫 표본과는 별도다.","relations":["process","role","classification"]}
+{"primary":"가스시료 채취시각","text":"검증용 공기를 용기에 담은 가스시료 채취시각은 실험실 접수와 분리한다.","relations":["process","part_of","state"]}
+{"primary":"가스분석 완료시각","text":"분석기가 농도를 산출한 가스분석 완료시각은 축사노출이 발생한 시각이 아니다. 시료 채취·운송·분석 뒤 결과가 생성된 때이므로 과거 축사 상태의 직접 시점이 아니다.","relations":["process","function","boundary"]}
+{"primary":"환기효과 실제구간","text":"팬증대로 농도가 서서히 낮아진 환기효과 실제구간은 한 경보해제 시각보다 넓다.","relations":["state","comparison","classification"]}
+{"primary":"가스회복 확인시각","text":"연속 정상표본을 확보한 가스회복 확인시각은 물리적 회복 뒤의 판정이다. 연속 정상표본이 요구 관찰창을 채운 뒤 내려진 판정을 물리 환기 회복과 나눠 둔다.","relations":["process","contrast","attribute"]}
+{"primary":"가스센서 세척시각","text":"감지부를 청소한 가스센서 세척시각은 농도가 실제 낮아진 사건과 같지 않다.","relations":["process","role","state"]}
+{"primary":"가스자료 백필시각","text":"오프라인 표본이 뒤늦게 적재된 가스자료 백필시각은 노출연표에서 제외해 원시시각을 쓴다. 늦게 적재된 표본은 원 측정시각과 순번을 보존해 노출 연표의 인과 방향을 유지한다.","relations":["process","part_of","boundary"]}
+{"primary":"가스기록 수정시각","text":"단위·교정계수를 고친 가스기록 수정시각은 축사에서 새 가스사건이 일어난 때가 아니다.","relations":["process","comparison","classification"]}
+{"primary":"환기팬 실제기동시각","text":"모터가 돌아 공기흐름을 만든 환기팬 실제기동시각은 제어명령이 생성된 때와 다르다. 모터 전류와 회전수, 말단 풍속이 순서대로 나타난 때를 써서 명령과 물리 작동을 가른다.","relations":["process","state","boundary"]}
+{"primary":"팬기동 명령시각","text":"제어기가 출력을 켠 팬기동 명령시각은 접촉기·회전·유량 발생보다 앞선다.","relations":["process","attribute","comparison"]}
+{"primary":"팬회전 감지시각","text":"회전센서가 속도를 확인한 팬회전 감지시각은 물리기동 직후의 관측이다. 센서 표본주기만큼 늦을 수 있으므로 기동의 직접 사건이 아니라 관측 상한으로 사용한다.","relations":["process","role","classification"]}
+{"primary":"환기량 표시시각","text":"여러 센서값을 합쳐 화면에 풍량이 뜬 환기량 표시시각은 실제 공기이동보다 늦다.","relations":["process","part_of","state"]}
+{"primary":"팬정지 실제시각","text":"회전체가 완전히 멈춘 팬정지 실제시각은 정지명령이나 접촉기 해제와 구별한다. 전류 차단 뒤 관성 회전이 사라진 때를 따로 기록해 제어 접점과 공기흐름 종료를 나눈다.","relations":["process","function","boundary"]}
+{"primary":"팬트립 발생시각","text":"보호장치가 모터를 차단한 팬트립 발생시각은 운영자가 경보를 확인한 때보다 앞선다.","relations":["state","comparison","classification"]}
+{"primary":"팬고장 접수시각","text":"정비시스템에 신고가 등록된 팬고장 접수시각은 기계고장 뒤의 행정기록이다. 고장이 발생·탐지된 뒤 정비 티켓이 서버에 등록된 행정 사건으로 별도 지연을 가진다.","relations":["process","contrast","attribute"]}
+{"primary":"팬수리 완료사건","text":"모터·벨트 수리와 시험이 끝난 팬수리 완료사건은 작업표 승인시각과 다르다.","relations":["process","role","state"]}
+{"primary":"팬복귀 승인시각","text":"감독자가 시험결과를 검수한 팬복귀 승인시각은 기능회복 뒤의 판정이다. 기능시험 합격과 감독 서명 사이를 구별해 물리 회복 이후의 권한 판정으로 둔다.","relations":["process","part_of","boundary"]}
+{"primary":"팬로그 적재시각","text":"장치이력이 중앙DB에 들어온 팬로그 적재시각은 각 명령·회전사건과 구별한다.","relations":["process","comparison","classification"]}
+{"primary":"흡기댐퍼 개방사건","text":"날개가 실제 열려 외기가 들어온 흡기댐퍼 개방사건은 제어출력 시각과 다르다. 개도 피드백과 외기 유량이 함께 변한 순간을 사용해 제어출력만 있는 상태를 제외한다.","relations":["process","state","boundary"]}
+{"primary":"댐퍼개방 명령시각","text":"제어기가 목표개도를 보낸 댐퍼개방 명령시각은 구동기 움직임보다 앞선다.","relations":["process","attribute","comparison"]}
+{"primary":"끝위치 확인시각","text":"접점이 개방완료를 알린 끝위치 확인시각은 날개이동 뒤의 관측사건이다. 날개가 움직이기 시작한 때보다 늦은 완료 관측이며 접점 바운스는 지속조건으로 제거한다.","relations":["process","role","classification"]}
+{"primary":"댐퍼고착 발생시점","text":"기구부가 실제 움직이지 못한 댐퍼고착 발생시점은 불일치경보가 뜬 때보다 이를 수 있다.","relations":["process","part_of","state"]}
+{"primary":"댐퍼고장 판정시각","text":"재시도와 현장확인 뒤 고착을 확정한 댐퍼고장 판정시각은 기계사건 이후다. 재시도·전류·현장점검을 모아 결론낸 시각은 고착이 처음 생긴 때와 같지 않다.","relations":["process","function","boundary"]}
+{"primary":"댐퍼수동조작 시각","text":"작업자가 손으로 위치를 바꾼 댐퍼수동조작 시각은 단말입력과 별개다.","relations":["state","comparison","classification"]}
+{"primary":"댐퍼상태 수신시각","text":"현장피드백이 관제서버에 도착한 댐퍼상태 수신시각에는 통신지연이 포함된다. 현장 원시각과 서버 도착의 차이를 통신지연으로 계산해 개도 변화와 혼합하지 않는다.","relations":["process","contrast","attribute"]}
+{"primary":"댐퍼복귀 실제시각","text":"시험개폐가 정상으로 돌아온 댐퍼복귀 실제시각은 운전허가와 구별한다.","relations":["process","role","state"]}
+{"primary":"댐퍼복귀 승인시각","text":"시험기록을 검수해 자동모드를 허가한 댐퍼복귀 승인시각은 물리복구 뒤다. 위치·유량 시험이 끝난 뒤 자동모드 전환을 허용한 사람의 결정 사건으로 둔다.","relations":["process","part_of","boundary"]}
+{"primary":"댐퍼기록 백필시각","text":"통신회복 때 몰려 저장된 댐퍼기록 백필시각은 실제 개폐연표가 아니다.","relations":["process","comparison","classification"]}
+{"primary":"급이개시 실제시각","text":"사료가 호퍼에서 급이선으로 움직이기 시작한 급이개시 실제시각은 예약명령과 다르다. 스크루 전류와 호퍼 중량 감소가 함께 시작된 때를 물질 이동의 직접 근거로 사용한다.","relations":["process","state","boundary"]}
+{"primary":"급이예약 발령시각","text":"제어기가 급이회차를 생성한 급이예약 발령시각은 모터기동 전에 놓인다.","relations":["process","attribute","comparison"]}
+{"primary":"사료도달 관측시각","text":"말단센서가 사료를 확인한 사료도달 관측시각은 이송개시 뒤의 결과시점이다. 말단센서 반응은 이송 시작보다 늦으므로 관로 전달시간의 종료경계로만 쓴다.","relations":["process","role","classification"]}
+{"primary":"급이중단 발생시각","text":"막힘이나 모터정지로 흐름이 실제 끊긴 급이중단 발생시각은 경보시각보다 이를 수 있다.","relations":["process","part_of","state"]}
+{"primary":"급이막힘 경보시각","text":"전류·회전·중량 이상이 판정된 급이막힘 경보시각은 중단 뒤의 관측이다. 전류 이상과 중량 정체를 일정 시간 확인한 뒤 발생해 실제 막힘보다 뒤일 수 있다.","relations":["process","function","boundary"]}
+{"primary":"섭취시작 행동시각","text":"가축이 먹기 시작한 섭취시작 행동시각은 사료배출 완료와 구별한다.","relations":["state","comparison","classification"]}
+{"primary":"섭취영상 분석시각","text":"카메라 자료로 섭취행동을 분류한 섭취영상 분석시각은 실제 행동 뒤의 계산이다. 행동 프레임 촬영과 분류 계산·저장의 시각을 나눠 가축 섭취의 원사건을 보존한다.","relations":["process","contrast","attribute"]}
+{"primary":"급이량 집계시각","text":"회차별 중량을 묶어 확정한 급이량 집계시각은 물질공급 이후다.","relations":["process","role","state"]}
+{"primary":"사료재고 반영시각","text":"사용량이 장부에서 차감된 사료재고 반영시각은 급이사건 자체가 아니다. 장부 갱신은 급이량 집계 뒤의 회계 사건이며 사료가 실제 이동한 때가 아니다.","relations":["process","part_of","boundary"]}
+{"primary":"급이기록 정정시각","text":"동물군이나 양을 고친 급이기록 정정시각은 사료가 다시 공급된 때가 아니다.","relations":["process","comparison","classification"]}
+{"primary":"급수시작 유량시각","text":"배관에 실제 유량이 생긴 급수시작 유량시각은 밸브명령과 다르다. 밸브 접점 뒤 말단 유량이 지속된 첫 표본을 써서 명령과 실제 급수를 구별한다.","relations":["process","state","boundary"]}
+{"primary":"급수밸브 명령시각","text":"제어기가 밸브를 열도록 보낸 급수밸브 명령시각은 물도달 전에 놓인다.","relations":["process","attribute","comparison"]}
+{"primary":"음수행동 실제시각","text":"가축이 니플을 눌러 마신 음수행동 실제시각은 일일섭취량 계산시각과 구별한다. 니플 접점과 영상 원본을 맞춰 일일 집계가 생성되기 전 개체 행동을 배열한다.","relations":["process","role","classification"]}
+{"primary":"음수량 집계시각","text":"센서펄스를 모아 개체·군별 값을 만든 음수량 집계시각은 실제 음수 뒤다.","relations":["process","part_of","state"]}
+{"primary":"급수중단 발생시점","text":"동결·누설·압력저하로 물이 끊긴 급수중단 발생시점은 신고보다 이를 수 있다. 압력·유량의 마지막 정상과 첫 무유량 사이를 불확실 구간으로 두어 신고시각과 나눈다.","relations":["process","function","boundary"]}
+{"primary":"급수경보 표시시각","text":"지속성 판정 뒤 화면에 뜬 급수경보 표시시각은 물리중단 이후다.","relations":["state","comparison","classification"]}
+{"primary":"수질시료 채취시각","text":"현장에서 물을 병에 담은 수질시료 채취시각은 검사실 접수와 분리한다. 용기 바코드와 현장 위치를 확인해 검사실 접수·분석보다 앞선 대표 상태를 고정한다.","relations":["process","contrast","attribute"]}
+{"primary":"수질결과 승인시각","text":"분석값을 검토해 합격·부적합을 확정한 수질결과 승인시각은 채취 뒤의 판정이다.","relations":["process","role","state"]}
+{"primary":"급수복구 실제시각","text":"수리 뒤 말단에 물이 다시 나온 급수복구 실제시각은 작업표 마감과 다르다. 밸브 개방뿐 아니라 먼 급수기에서 유량이 안정된 때를 물리 서비스 회복으로 본다.","relations":["process","part_of","boundary"]}
+{"primary":"급수자료 백필시각","text":"회선복구 뒤 적재된 급수자료 백필시각은 실제 유량사건의 시각이 아니다.","relations":["process","comparison","classification"]}
+{"primary":"기침발생 실제시점","text":"가축이 실제 기침한 기침발생 실제시점은 마이크가 소리를 분류한 시각과 다를 수 있다. 원음 프레임과 분류 결과를 분리해 알고리즘 처리시각이 행동 시각을 덮지 않게 한다.","relations":["process","state","boundary"]}
+{"primary":"기침감지 판정시각","text":"음향모델이 기침으로 확정한 기침감지 판정시각은 행동 뒤의 계산사건이다.","relations":["process","attribute","comparison"]}
+{"primary":"발열발생 시작구간","text":"체온이 여러 시간에 걸쳐 오르기 시작한 발열발생 시작구간은 측정 한 점과 구별한다. 직전 정상 체온과 첫 지속 상승 사이를 범위로 두고 단일 측정점을 정확한 시작이라 하지 않는다.","relations":["process","role","classification"]}
+{"primary":"발열측정 시각","text":"열화상이나 체온계가 고값을 얻은 발열측정 시각은 병리적 시작 이후다.","relations":["process","part_of","state"]}
+{"primary":"활동저하 실제구간","text":"가축움직임이 서서히 줄어든 활동저하 실제구간은 일일지표 생성시각이 아니다. 개체의 일중 패턴을 기준으로 여러 표본에 걸친 감소를 기록해 일일 지표 생성과 나눈다.","relations":["process","function","boundary"]}
+{"primary":"활동지표 산출시각","text":"태그자료를 묶어 활동감소를 계산한 활동지표 산출시각은 행동발생 뒤다.","relations":["state","comparison","classification"]}
+{"primary":"질병의심 경보시각","text":"기침·체온·활동을 결합해 의심을 띄운 질병의심 경보시각은 증상사건보다 늦다. 기침·체온·활동의 마지막 입력 뒤 규칙이 실행된 판단 시각이며 증상 시작보다 늦다.","relations":["process","contrast","attribute"]}
+{"primary":"수의사 진찰시각","text":"수의사가 개체를 직접 검사한 수의사 진찰시각은 증상시작과 분리한다.","relations":["process","role","state"]}
+{"primary":"질병확진 승인시각","text":"검사결과와 임상을 검토해 병명을 확정한 질병확진 승인시각은 감염시각이 아니다. 실험실 결과와 임상 검토를 닫은 행정·의학 판정으로 감염·증상 사건과 구별한다.","relations":["process","part_of","boundary"]}
+{"primary":"질병기록 수정시각","text":"진단명이나 개체ID를 고친 질병기록 수정시각은 새 발병사건으로 세지 않는다.","relations":["process","comparison","classification"]}
+{"primary":"병원체감염 추정구간","text":"개체가 실제 감염된 때를 노출·잠복자료로 제한한 병원체감염 추정구간은 검사일과 다르다. 노출의 마지막 가능시각과 잠복기의 범위를 결합해 단일 검사일로 감염점을 고정하지 않는다.","relations":["process","state","boundary"]}
+{"primary":"비강시료 채취시각","text":"검체를 실제 얻은 비강시료 채취시각은 검사실 수령보다 앞선다.","relations":["process","attribute","comparison"]}
+{"primary":"가축검사실 접수시각","text":"바코드가 검사실에서 찍힌 가축검사실 접수시각은 감염이나 채취사건과 구별한다. 현장 채취 뒤 운송·바코드 큐를 거친 행정 경계로 시료 상태의 원시각과 분리한다.","relations":["process","role","classification"]}
+{"primary":"PCR 증폭검출 시각","text":"분석기가 신호를 임계로 잡은 PCR 증폭검출 시각은 병원체 침입시각이 아니다.","relations":["process","part_of","state"]}
+{"primary":"진단결과 보고시각","text":"확정결과가 축사운영자에게 전달된 진단결과 보고시각은 분석 뒤의 통보다. 분석·승인 후 운영자에게 통보된 때이므로 병원체 존재나 검사 완료와 같은 사건이 아니다.","relations":["process","function","boundary"]}
+{"primary":"항체형성 발생구간","text":"면역반응으로 항체가 증가한 항체형성 발생구간은 혈액채취 시각 한 점이 아니다.","relations":["state","comparison","classification"]}
+{"primary":"혈청검사 측정시각","text":"장비가 항체값을 낸 혈청검사 측정시각은 면역형성 이후의 관측이다. 항체 형성 이후 장비가 관측한 표본이며 감염 시작과 면역반응 경계를 직접 주지 않는다.","relations":["process","contrast","attribute"]}
+{"primary":"병원체배양 완료시각","text":"배지에서 균이 자라 동정된 병원체배양 완료시각은 현장감염 뒤의 실험사건이다.","relations":["process","role","state"]}
+{"primary":"축산검사결과 정정시각","text":"오염·교차반응을 확인해 결과를 고친 축산검사결과 정정시각은 새 질병사건이 아니다. 원결과와 수정 근거·시각을 모두 남겨 재판정이 새 감염 사건처럼 보이지 않게 한다.","relations":["process","part_of","boundary"]}
+{"primary":"질병자료 적재시각","text":"LIMS 자료가 농장시스템에 들어온 질병자료 적재시각은 채취·분석 원시시각과 구별한다.","relations":["process","comparison","classification"]}
+{"primary":"격리이동 실제시각","text":"의심개체가 격리칸으로 실제 이동한 격리이동 실제시각은 이동명령과 다르다. 개체 태그가 격리구역 진입접점을 통과한 때를 사용해 명령·배정과 행동을 나눈다.","relations":["process","state","boundary"]}
+{"primary":"격리명령 발령시각","text":"수의사나 관리자가 격리를 지시한 격리명령 발령시각은 현장실행보다 앞선다.","relations":["process","attribute","comparison"]}
+{"primary":"격리문 폐쇄시각","text":"문접점이 분리상태를 확인한 격리문 폐쇄시각은 개체이동 종료 뒤일 수 있다. 개체 이동 뒤 물리 분리가 완성된 후속 경계이며 이동 종료와 동일하다고 가정하지 않는다.","relations":["process","role","classification"]}
+{"primary":"격리표지 설치시각","text":"작업자가 통제표지를 붙인 격리표지 설치시각은 행정명령과 구별한다.","relations":["process","part_of","state"]}
+{"primary":"접촉개체 추적시각","text":"태그·동선자료로 노출군을 계산한 접촉개체 추적시각은 실제 접촉 뒤의 분석이다. 과거 태그·위치 자료를 계산한 분석 시각과 실제 접촉 구간을 별도 필드로 둔다.","relations":["process","function","boundary"]}
+{"primary":"노출통보 수신시각","text":"담당자가 경보를 받은 노출통보 수신시각은 접촉사건 자체가 아니다.","relations":["state","comparison","classification"]}
+{"primary":"격리해제 승인시각","text":"검사·관찰을 검토해 제한을 푼 격리해제 승인시각은 건강회복과 분리한다. 생리 회복·음성검사 뒤 책임자가 제한을 푼 판정이며 건강 회복점과는 다르다.","relations":["process","contrast","attribute"]}
+{"primary":"격리해제 실행시각","text":"문통제와 군배치가 실제 정상으로 돌아간 격리해제 실행시각은 승인 뒤다.","relations":["process","role","state"]}
+{"primary":"격리기록 백필시각","text":"오프라인 이동기록이 나중에 적재된 격리기록 백필시각은 실제 실행시각이 아니다. 원시 이동시각을 보존해 네트워크 복구 때 개체가 격리된 것처럼 보이는 오류를 막는다.","relations":["process","part_of","boundary"]}
+{"primary":"격리정보 수정시각","text":"개체번호나 사유를 고친 격리정보 수정시각은 다시 격리된 사건으로 보지 않는다.","relations":["process","comparison","classification"]}
+{"primary":"출입자 축사진입 시각","text":"배지와 문접점이 실제 통과를 기록한 출입자 축사진입 시각은 방문예약과 다르다. 배지 승인과 문 개방이 함께 성립한 접점을 방문예약·사전신청보다 우선한다.","relations":["process","state","boundary"]}
+{"primary":"방문예약 입력시각","text":"관리자가 일정을 등록한 방문예약 입력시각은 현장출입의 증거가 아니다.","relations":["process","attribute","comparison"]}
+{"primary":"소독통과 센서시각","text":"차량이나 사람이 소독구역을 지난 소독통과 센서시각은 체크표 서명과 구별한다. 차량이나 사람의 통과 관측이며 체크표 작성과 소독액 작용 완료는 별도 사건으로 둔다.","relations":["process","role","classification"]}
+{"primary":"소독체크 서명시각","text":"작업자가 확인표를 마친 소독체크 서명시각은 실제 분사·접촉 뒤일 수 있다.","relations":["process","part_of","state"]}
+{"primary":"차량진입 번호판시각","text":"입구카메라가 차량을 본 차량진입 번호판시각은 출입대장 입력보다 현장사건에 가깝다. 카메라 원본 프레임과 게이트 접점을 맞춰 대장 후입력보다 현장 통과를 정확히 배열한다.","relations":["process","function","boundary"]}
+{"primary":"차량출입 등록시각","text":"사무실에서 기록을 저장한 차량출입 등록시각은 물리적 경계통과와 다르다.","relations":["state","comparison","classification"]}
+{"primary":"보호구 착용 관측시각","text":"영상이나 감독자가 보호구를 확인한 보호구 착용 관측시각은 착용시작과 구별한다. 관측 시점은 이미 착용된 상태의 늦은 경계일 뿐 실제 착용 시작을 직접 알려주지 않는다.","relations":["process","contrast","attribute"]}
+{"primary":"출입위반 경보시각","text":"권한·동선 조건을 계산해 위반을 띄운 출입위반 경보시각은 통과사건 이후다.","relations":["process","role","state"]}
+{"primary":"출입자료 백필시각","text":"단말연결 뒤 과거기록이 들어온 출입자료 백필시각은 방문시각이 아니다. 오프라인 배지로그의 원접점과 순번을 유지해 서버 적재를 방문 사건으로 오인하지 않는다.","relations":["process","part_of","boundary"]}
+{"primary":"출입대장 수정시각","text":"방문자명과 목적을 고친 출입대장 수정시각은 새 출입사건으로 세지 않는다.","relations":["process","comparison","classification"]}
+{"primary":"분뇨발생 누적구간","text":"배설물이 축적된 분뇨발생 누적구간은 스크레이퍼 운전시각 한 점과 다르다. 배설과 축적은 연속 상태변화이므로 스크레이퍼 기동·장부 갱신의 한 점과 분리한다.","relations":["process","state","boundary"]}
+{"primary":"스크레이퍼 실제기동","text":"체인이 움직여 분뇨를 밀기 시작한 스크레이퍼 실제기동은 제어명령과 구별한다.","relations":["process","attribute","comparison"]}
+{"primary":"스크레이퍼 명령시각","text":"제어기가 운전을 지시한 스크레이퍼 명령시각은 모터회전 전에 놓인다. 모터 전류와 이동센서가 뒤따르지 않으면 제어 요청일 뿐 실제 분뇨 이송은 아니다.","relations":["process","role","classification"]}
+{"primary":"분뇨이송 도달시각","text":"배설물이 저장조에 도착한 분뇨이송 도달시각은 기동이나 작업완료 입력과 다르다.","relations":["process","part_of","state"]}
+{"primary":"저장조 수위상승시점","text":"분뇨유입으로 수위가 오른 저장조 수위상승시점은 센서표시 뒤에 확인될 수 있다. 유입 시작과 센서 반응 사이를 고려해 첫 높은 표본을 정확한 물질 도달점이라 하지 않는다.","relations":["process","function","boundary"]}
+{"primary":"수위경보 생성시각","text":"표본·지속성을 거쳐 경보가 뜬 수위경보 생성시각은 실제 상승 뒤다.","relations":["state","comparison","classification"]}
+{"primary":"분뇨반출 실제시각","text":"차량이 저장조 물질을 싣고 떠난 분뇨반출 실제시각은 장부차감과 다르다. 차량 계근과 출차 접점으로 물질 이동을 확정하고 재고 장부의 사후 차감과 구별한다.","relations":["process","contrast","attribute"]}
+{"primary":"분뇨장부 반영시각","text":"수량이 시스템에서 줄어든 분뇨장부 반영시각은 물질이동 뒤의 기록이다.","relations":["process","role","state"]}
+{"primary":"악취저감 발생구간","text":"처리와 환기로 냄새가 서서히 낮아진 악취저감 발생구간은 조사시각 한 점이 아니다. 환기·처리제 이후 가스농도가 여러 표본에 걸쳐 낮아지는 상태 변화를 범위로 기록한다.","relations":["process","part_of","boundary"]}
+{"primary":"분뇨기록 정정시각","text":"수위·반출량을 고친 분뇨기록 정정시각은 현장처리가 다시 일어난 때가 아니다.","relations":["process","comparison","classification"]}
+{"primary":"정전실제 발생시각","text":"축사전압이 실제 사라진 정전실제 발생시각은 관제경보 표시시각보다 앞선다. 계전기 전압 원시파형의 첫 지속 상실을 써서 관제 표시·사람 인지보다 물리 사건을 우선한다.","relations":["process","state","boundary"]}
+{"primary":"정전경보 수신시각","text":"운영자 단말에 알림이 도착한 정전경보 수신시각은 물리적 전원상실 이후다.","relations":["process","attribute","comparison"]}
+{"primary":"발전기 실제기동","text":"엔진이 돌고 전압이 생긴 발전기 실제기동은 원격기동 명령과 다르다. 스타터 전류, 축 회전, 유효 전압의 순서를 보존해 원격 명령만으로 기동이라 하지 않는다.","relations":["process","role","classification"]}
+{"primary":"발전기 명령시각","text":"ATS가 기동신호를 낸 발전기 명령시각은 유효전력 공급보다 앞선다.","relations":["process","part_of","state"]}
+{"primary":"필수부하 재투입시각","text":"환기·급수·관제가 실제 전력을 다시 받은 필수부하 재투입시각은 복전선언과 구별한다. 모선 전압뿐 아니라 환기·급수·관제 단자의 실제 소비전력이 돌아온 때를 사용한다.","relations":["process","function","boundary"]}
+{"primary":"상용복전 발생시각","text":"계통전압이 돌아온 상용복전 발생시각은 전력사의 통보나 차고기록과 다를 수 있다.","relations":["state","comparison","classification"]}
+{"primary":"복전확인 판정시각","text":"전압·주파수 안정성을 검토한 복전확인 판정시각은 물리복전 뒤다. 전압·주파수 관찰창과 책임 검토가 끝난 후의 판단으로 물리 복전보다 늦게 둔다.","relations":["process","contrast","attribute"]}
+{"primary":"발전기 정지시각","text":"비상발전이 실제 멈춘 발전기 정지시각은 상용전환 완료와 별도 사건이다.","relations":["process","role","state"]}
+{"primary":"정전자료 백필시각","text":"오프라인 제어로그가 뒤늦게 적재된 정전자료 백필시각은 사건연표가 아니다. 버퍼 행을 원 장치시각으로 재정렬해 통신 회복이 복수 전기사건의 발생점이 되지 않게 한다.","relations":["process","part_of","boundary"]}
+{"primary":"전력기록 수정시각","text":"정산값이나 원인을 고친 전력기록 수정시각은 새 정전·복전사건이 아니다.","relations":["process","comparison","classification"]}
+{"primary":"치료투약 실제시각","text":"약물이 가축에게 주입·급여된 치료투약 실제시각은 처방이나 기록입력과 다르다. 개체 태그와 주입·급여 접점을 결합해 처방 작성 및 장부 기록과 투여 행동을 나눈다.","relations":["process","state","boundary"]}
+{"primary":"처방발행 시각","text":"수의사가 약과 용량을 승인한 처방발행 시각은 실제 투여 전에 놓인다.","relations":["process","attribute","comparison"]}
+{"primary":"약품바코드 스캔시각","text":"개체·약품을 현장에서 읽은 약품바코드 스캔시각은 장부차감과 구별한다. 약품·개체 확인의 현장 사건이지만 실제 투여는 후속 주입·섭취 접점으로 별도 확인한다.","relations":["process","role","classification"]}
+{"primary":"가축약효발현 추정시점","text":"체온·활동 회복으로 약효가 시작된 때를 제한한 가축약효발현 추정시점은 관찰시각과 다르다.","relations":["process","part_of","state"]}
+{"primary":"치료반응 관측시각","text":"수의사나 센서가 상태호전을 확인한 치료반응 관측시각은 약효발생 이후다. 약효가 이미 시작된 뒤 센서나 수의사가 확인한 늦은 경계로만 사용한다.","relations":["process","function","boundary"]}
+{"primary":"휴약기간 시작시각","text":"마지막 실제투여를 기준으로 계산한 휴약기간 시작시각은 처방종료일과 구별한다.","relations":["state","comparison","classification"]}
+{"primary":"치료완료 승인시각","text":"검사·증상을 검토해 치료를 닫은 치료완료 승인시각은 생물학적 회복 뒤일 수 있다. 생물학적 회복 자료를 검토해 치료 상태를 닫은 권한 사건이며 회복 자체와 합치지 않는다.","relations":["process","contrast","attribute"]}
+{"primary":"약품재고 반영시각","text":"사용량이 창고시스템에 차감된 약품재고 반영시각은 투약사건 자체가 아니다.","relations":["process","role","state"]}
+{"primary":"투약기록 백필시각","text":"오프라인 자료가 적재된 투약기록 백필시각은 실제 투여시각으로 쓰지 않는다. 원 투여시각과 개체 ID를 보존해 늦은 업로드가 새로운 약물 사건으로 보이지 않게 한다.","relations":["process","part_of","boundary"]}
+{"primary":"치료기록 정정시각","text":"개체·용량을 바로잡은 치료기록 정정시각은 약물이 다시 투여된 사건이 아니다.","relations":["process","comparison","classification"]}
+{"primary":"질병회복 실제구간","text":"체온·섭취·활동이 여러 날에 걸쳐 정상화된 질병회복 실제구간은 해제승인 한 점과 다르다. 체온·섭취·활동이 여러 관찰주기 정상화되는 과정을 승인 한 점과 분리해 표현한다.","relations":["process","state","boundary"]}
+{"primary":"회복판정 관측시각","text":"수의사가 검사와 행동을 확인한 회복판정 관측시각은 실제 호전 뒤의 판단이다.","relations":["process","attribute","comparison"]}
+{"primary":"무증상 시작추정 시점","text":"마지막 증상과 다음 관찰 사이에서 무증상이 시작된 때를 제한한 무증상 시작추정 시점은 기록시각과 다르다. 마지막 증상과 첫 무증상 관찰 사이의 범위만 주며 기록시각을 정확한 회복점으로 쓰지 않는다.","relations":["process","role","classification"]}
+{"primary":"질병회복 격리해제 승인시각","text":"연속검사와 관찰을 검토해 격리를 푼 질병회복 격리해제 승인시각은 건강회복 자체가 아니다.","relations":["process","part_of","state"]}
+{"primary":"군복귀 실제시각","text":"개체가 원래 축군으로 이동한 군복귀 실제시각은 해제명령과 구별한다. 개체 태그가 원 축군 구역을 통과한 때를 사용해 해제 승인과 물리 이동을 구별한다.","relations":["process","function","boundary"]}
+{"primary":"환기정상화 실행시각","text":"질병대응 고환기에서 일반설정으로 실제 바뀐 환기정상화 실행시각은 계획승인 뒤다.","relations":["state","comparison","classification"]}
+{"primary":"재발발생 추정구간","text":"증상이 다시 시작된 때를 두 관찰 사이로 제한한 재발발생 추정구간은 발견일 한 점이 아니다. 마지막 정상과 첫 재증상 관찰 사이를 범위로 두어 발견 시각을 실제 재발점이라 하지 않는다.","relations":["process","contrast","attribute"]}
+{"primary":"재발관측 확인시각","text":"센서·수의사가 재발을 확정한 재발관측 확인시각은 생물학적 변화 뒤다.","relations":["process","role","state"]}
+{"primary":"사후감시 종료시각","text":"무재발 기간을 채워 집중감시를 닫은 사후감시 종료시각은 마지막 병원체 소멸시각이 아니다. 요구 무재발 기간과 마지막 검사 검토가 끝난 운영 판정이며 병원체 소멸의 직접 증거는 아니다.","relations":["process","part_of","boundary"]}
+{"primary":"질병회차 종결시각","text":"발병·진단·격리·치료·회복을 검수해 원장을 잠근 질병회차 종결시각은 현장사건 뒤의 행정시점이다.","relations":["process","comparison","classification"]}

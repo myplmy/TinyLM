@@ -1,0 +1,150 @@
+{"primary":"열원기동 접점기록 우선","text":"열생산 서버와 운전일지의 기동시각이 다르면 버너 접점이 실제로 닫힌 열원기동 접점기록 우선을 적용해 선후를 정한다. 연료밸브 접점과 화염검출 신호가 이어진 시점을 사용해 명령만 발행된 상태를 기동에서 제외한다.","relations":["process","state","boundary"]}
+{"primary":"보일러화염 감지시각 우선","text":"제어명령보다 화염검출기 원시 로그가 늦게 남았다면 실제 연소 시작은 보일러화염 감지시각 우선으로 판정한다. 연료밸브 개방과 화염의 지속 확인을 함께 봐 점화 실패의 짧은 신호를 제외한다.","relations":["process","attribute","comparison"]}
+{"primary":"열원출력 계량시각 보조","text":"접점 로그가 빠진 구간에서는 열량계 상승이 포착된 열원출력 계량시각 보조를 쓰되 센서 응답지연을 함께 기록한다. 열량 상승은 연소 뒤 늦게 나타나므로 기동의 상한으로 쓰되 센서 위치에 따른 지연을 명시한다.","relations":["classification","process","role"]}
+{"primary":"열생산 일지 후입력 경계","text":"교대자가 나중에 적은 열생산 일지 후입력 경계는 자동 접점과 같은 수준의 사건 증거로 취급하지 않는다.","relations":["part_of","process","state"]}
+{"primary":"다중보일러 기동순번 복원","text":"보일러 두 대의 화면시각이 같아도 개별 연료밸브 로그를 비교하는 다중보일러 기동순번 복원으로 실제 차례를 가린다. 각 설비의 밸브·화염·출력 표본을 표준시에 맞춰 화면의 동일시각을 실제 순서로 다시 배열한다.","relations":["boundary","function","process"]}
+{"primary":"열원정지 명령시각 구별","text":"정지 버튼을 누른 때와 화염이 사라진 때가 충돌하면 열원정지 명령시각 구별을 통해 명령과 물리종료를 나눈다.","relations":["classification","comparison","state"]}
+{"primary":"열원운전 서버시각 보정","text":"열원운전 서버시각 보정은 기준시계와의 편차를 적용한 뒤에만 다른 설비 기록과 비교하도록 요구한다. 동기화 전후의 오프셋을 구간별로 적용해 시계 조정 자체가 가짜 기동 역전을 만들지 않게 한다.","relations":["attribute","contrast","process"]}
+{"primary":"예비열원 자동전환 증거","text":"주열원 고장 뒤 예비기가 켜진 순서는 운영자 메모보다 전환릴레이의 예비열원 자동전환 증거로 확정한다.","relations":["process","role","state"]}
+{"primary":"열원재기동 승인시각 후순위","text":"승인 문서의 열원재기동 승인시각 후순위는 실제 기동 접점보다 늦게 등록될 수 있어 사건 발생시각으로 대체하지 않는다. 승인은 운전 권한의 사건이며 버너가 실제 점화된 순간은 현장 접점으로 따로 보존한다.","relations":["boundary","part_of","process"]}
+{"primary":"열원계통 시간축 기준선","text":"각 보일러 시계가 어긋난 날에는 중앙 동기서버의 열원계통 시간축 기준선을 먼저 복원하고 모든 로그를 그 축에 맞춘다.","relations":["attribute","comparison","process"]}
+{"primary":"순환펌프 전류상승 시각우선","text":"기동명령과 설비일지가 다를 때 모터 전류가 오른 순환펌프 전류상승 시각우선으로 실제 회전 시작을 판정한다. 기동전류 뒤 회전수와 유량이 지속된 구간을 확인해 시험 펄스를 실제 순환으로 세지 않는다.","relations":["process","state","boundary"]}
+{"primary":"펌프토출 압력응답 보조증거","text":"전류 기록이 결측이면 토출압이 지속적으로 오른 펌프토출 압력응답 보조증거를 사용하되 배관 전파시간을 뺀다.","relations":["process","attribute","comparison"]}
+{"primary":"펌프정지 관성구간 분리","text":"정지접점 뒤에도 유량이 남은 경우 펌프정지 관성구간 분리로 구동 종료와 수리학적 흐름 종료를 따로 기록한다. 모터 전원 종료부터 유량이 기준 아래로 내려갈 때까지를 후속 관성 상태로 따로 계산한다.","relations":["classification","process","role"]}
+{"primary":"병렬펌프 기동순서 판별","text":"동일 분에 켜진 두 장비는 차단기 접점의 밀리초 기록을 대조하는 병렬펌프 기동순서 판별로 차례를 정한다.","relations":["part_of","process","state"]}
+{"primary":"펌프현장 스위치기록 우위","text":"원격 화면과 현장제어반이 충돌하면 물리 접점에 가까운 펌프현장 스위치기록 우위를 적용한다. 현장 접점의 교정된 원시각을 우선하되 원격 명령과의 차이는 통신·제어 지연으로 남긴다.","relations":["boundary","function","process"]}
+{"primary":"펌프점검표 작성시각 후순위","text":"작업자가 교대 말에 입력한 펌프점검표 작성시각 후순위는 점검 행위가 일어난 시각과 같다고 보지 않는다.","relations":["classification","comparison","state"]}
+{"primary":"순환계통 유량계 시계보정","text":"순환계통 유량계 시계보정은 계측기의 누적 편차를 기준시각에 맞춘 뒤 기동 로그와 비교하는 절차다. 기준 펄스 사이의 누적 오차를 보간해 가까운 펌프 기동과 유량 반응의 선후를 보존한다.","relations":["attribute","contrast","process"]}
+{"primary":"펌프고장 알람도착 지연","text":"고장 접점보다 관제화면이 늦게 울린 차이는 펌프고장 알람도착 지연이며 고장 발생을 알람 수신 때로 미루지 않는다.","relations":["process","role","state"]}
+{"primary":"예비펌프 투입사건 확정","text":"자동절체 기록과 운전일지가 다르면 차단기 닫힘과 전류상승을 묶은 예비펌프 투입사건 확정으로 판단한다. 차단기 접점, 전류, 토출압이 연속으로 성립한 때를 사용해 자동절체 요청과 완료를 나눈다.","relations":["boundary","part_of","process"]}
+{"primary":"펌프복귀 확인시각 구분","text":"정비 완료 입력 뒤 정상압력이 회복됐다면 펌프복귀 확인시각 구분으로 행정 완료와 기능 회복을 나눈다.","relations":["attribute","comparison","process"]}
+{"primary":"공급밸브 개도피드백 우선","text":"개방명령과 수기기록이 어긋날 때 실제 축이 움직인 공급밸브 개도피드백 우선으로 유로 형성 순서를 판정한다. 위치센서가 실제 이동을 보인 첫 표본으로 개방을 잡고 명령 큐 대기는 별도 기록한다.","relations":["process","state","boundary"]}
+{"primary":"밸브명령 큐시각 후순위","text":"제어기에 대기열로 남은 밸브명령 큐시각 후순위는 실행 접점보다 앞서도 물리 개방 증거가 아니다.","relations":["process","attribute","comparison"]}
+{"primary":"밸브완전개방 도달시각","text":"부분 개도와 완전 개방 기록이 섞이면 최종 위치신호가 안정된 밸브완전개방 도달시각을 별도 사건으로 둔다. 최종 개도가 허용오차 안에 일정 시간 머문 때를 써서 순간 접촉을 완료로 오인하지 않는다.","relations":["classification","process","role"]}
+{"primary":"구역차단 현장봉인 증거","text":"원격 상태가 갱신되지 않은 구간은 작업자가 봉인을 확인한 구역차단 현장봉인 증거로 폐쇄 여부를 보완한다.","relations":["part_of","process","state"]}
+{"primary":"우회밸브 전환순서 복원","text":"주밸브 폐쇄와 우회밸브 개방 로그가 충돌하면 접점 변화와 압력방향을 합친 우회밸브 전환순서 복원으로 정한다. 주유로 압력 하강과 우회유량 상승을 함께 맞춰 두 밸브의 물리 전환 순서를 확정한다.","relations":["boundary","function","process"]}
+{"primary":"밸브위치 캐시시각 배제","text":"화면에 오래 남은 밸브위치 캐시시각 배제는 새 사건처럼 보이는 과거 상태값을 연표에서 제외하는 원칙이다.","relations":["classification","comparison","state"]}
+{"primary":"원격밸브 통신복구 후입력","text":"통신 회복 때 여러 상태가 한꺼번에 찍힌 원격밸브 통신복구 후입력은 실제 동작시각으로 그대로 쓰지 않는다. 장치 순번과 원접점 시각으로 재정렬해 복구 순간 여러 밸브가 동시에 움직인 듯 보이지 않게 한다.","relations":["attribute","contrast","process"]}
+{"primary":"감압밸브 설정변경 증거순위","text":"감압밸브 설정변경 증거순위는 제어기 원본, 승인된 작업기록, 관제 메모의 차례로 신뢰도를 둔다.","relations":["process","role","state"]}
+{"primary":"밸브고착 해제시각 판정","text":"명령 반복 중 실제 유량이 처음 변한 때를 밸브고착 해제시각 판정으로 삼아 마지막 명령시각과 구별한다. 유량 변화와 축 위치가 함께 나타난 때를 실제 해제로 두고 반복 명령은 시도 이력으로만 남긴다.","relations":["boundary","part_of","process"]}
+{"primary":"밸브정비 종료서명 경계","text":"밸브정비 종료서명 경계는 서류가 닫힌 때일 뿐 위치시험이 성공한 사건을 대신하지 못한다.","relations":["attribute","comparison","process"]}
+{"primary":"공급온도 센서원본 우선","text":"대시보드와 데이터베이스 값의 시각이 다르면 장치 버퍼에서 추출한 공급온도 센서원본 우선으로 관측 차례를 세운다. 보간되지 않은 교정 표본을 사용해 대시보드 갱신이나 DB 적재순서가 관측을 바꾸지 않게 한다.","relations":["process","state","boundary"]}
+{"primary":"환수온도 표본도착 지연","text":"현장에서 측정된 뒤 서버에 늦게 들어온 간격은 환수온도 표본도착 지연이며 열상태 발생시각과 분리한다.","relations":["process","attribute","comparison"]}
+{"primary":"온도계 시각점프 보정","text":"재부팅 뒤 시계가 앞으로 뛴 구간은 온도계 시각점프 보정을 거쳐 단조로운 표본 순서를 회복한다. 재부팅 직전·직후의 기준서버 오프셋을 적용해 같은 표본의 중복과 시간 역전을 제거한다.","relations":["classification","process","role"]}
+{"primary":"이중온도계 다수결 제한","text":"센서 둘과 수기계가 충돌할 때 이중온도계 다수결 제한은 단순 개수보다 교정상태와 설치위치를 먼저 본다.","relations":["part_of","process","state"]}
+{"primary":"열교환기 출구관측 신뢰도","text":"열교환기 출구관측 신뢰도는 교정된 직접센서, 계산 추정값, 운영자 추측의 순서로 평가한다. 직접 탐침의 교정·응답 지연을 확인한 뒤 계산값과 사람 추정은 불확실 보조증거로 둔다.","relations":["boundary","function","process"]}
+{"primary":"온도데이터 백필시각 구별","text":"통신복구 뒤 저장된 온도데이터 백필시각 구별로 실제 측정 때와 중앙 저장 때를 각각 남긴다.","relations":["classification","comparison","state"]}
+{"primary":"센서교체 전후 시간연결","text":"새 센서의 첫 표본과 기존 센서의 마지막 표본은 센서교체 전후 시간연결을 통해 중복 구간과 공백을 표시한다. 두 센서의 병행 측정창을 비교해 오프셋을 구하고 공백 구간은 직접 관측으로 채우지 않는다.","relations":["attribute","contrast","process"]}
+{"primary":"온도이상 판정시각 후행","text":"원시온도가 먼저 한계를 넘고 분석기가 뒤에 확정했다면 온도이상 판정시각 후행을 사건 발생과 혼동하지 않는다.","relations":["process","role","state"]}
+{"primary":"표본수집 게이트웨이 우선순위","text":"장치시계가 불안정하면 수신순서를 보존한 표본수집 게이트웨이 우선순위로 상대 선후를 보완한다. 패킷 순번은 상대 선후를 주지만 절대시각은 보장하지 않으므로 기준시계와 함께 사용한다.","relations":["boundary","part_of","process"]}
+{"primary":"열상태 재구성 신뢰표지","text":"여러 출처를 합친 열상태 재구성 신뢰표지는 확정·추정·불명으로 나눠 연표의 증거 강도를 드러낸다.","relations":["attribute","comparison","process"]}
+{"primary":"압력센서 원시시각 우선","text":"압력급등 기록이 충돌하면 보정 이력이 있는 장치의 압력센서 원시시각 우선을 적용해 최초 변화를 정한다. 교정 이력과 표본번호가 유효한 압력계의 첫 지속 급등으로 배관 사건의 늦은 경계를 잡는다.","relations":["process","state","boundary"]}
+{"primary":"압력파 도달시각 보조","text":"밸브 접점이 없을 때 인접 지점의 압력파 도달시각 보조로 동작 순서를 추정하되 거리 지연을 명시한다.","relations":["process","attribute","comparison"]}
+{"primary":"압력알람 서버수신 경계","text":"압력알람 서버수신 경계는 중앙 시스템이 알게 된 시각이며 배관에서 이상이 시작된 시각은 아니다. 장치 경보 생성과 중앙 수신의 차이를 제어망 지연으로 두고 배관 변화와 합치지 않는다.","relations":["classification","process","role"]}
+{"primary":"차압계 시계편차 교정","text":"두 구역의 차압계 시계편차 교정을 마친 뒤에만 압력 역전의 앞뒤를 비교할 수 있다.","relations":["part_of","process","state"]}
+{"primary":"압력수기값 반올림 제한","text":"분 단위로 적힌 압력수기값 반올림 제한 때문에 초 단위 사건의 선후를 확정 근거로 쓰지 않는다. 기록 오차범위를 명시해 초 단위 자동표본 사이에서만 보조하며 단독으로 선후를 뒤집지 않는다.","relations":["boundary","function","process"]}
+{"primary":"압력강하 최초표본 판정","text":"연속 결측 뒤 낮은 값이 나타난 경우 압력강하 최초표본 판정은 시작의 상한만 제공하고 정확한 순간은 열어 둔다.","relations":["classification","comparison","state"]}
+{"primary":"압력복구 안정시각 구별","text":"한 표본의 정상화와 일정 시간 유지된 압력복구 안정시각 구별로 순간 반등을 회복 완료로 오인하지 않는다. 정상범위 진입 뒤 요구된 유지시간이 끝난 때를 완료로 잡아 짧은 반등을 회복에서 제외한다.","relations":["attribute","contrast","process"]}
+{"primary":"다중압력계 출처우선순위","text":"다중압력계 출처우선순위는 설치구간의 직접성, 교정 유효성, 표본누락 여부를 함께 따져 정한다.","relations":["process","role","state"]}
+{"primary":"압력기록 수정이력 보존","text":"운영자가 오기값을 고쳐도 압력기록 수정이력 보존을 통해 원본시각과 정정시각을 모두 남긴다. 원본 값·측정시각·정정값·수정시각을 함께 두어 사후 편집이 사건 연표를 덮지 않게 한다.","relations":["boundary","part_of","process"]}
+{"primary":"압력사건 근거연결표","text":"압력사건 근거연결표는 원시 표본, 알람, 현장확인, 보고서가 가리키는 서로 다른 시각을 연결한다.","relations":["attribute","comparison","process"]}
+{"primary":"SCADA 기준시계 우선","text":"설비별 시각이 엇갈리면 동기상태가 확인된 SCADA 기준시계 우선을 적용하되 원본 오프셋도 보존한다. 동기 성공 구간에서만 절대시각 기준으로 쓰고 비동기 장치는 오프셋과 불확실성을 별도 표시한다.","relations":["process","state","boundary"]}
+{"primary":"PLC 재부팅 시각불연속","text":"전원 복귀 뒤 과거시각으로 돌아간 PLC 재부팅 시각불연속 구간은 로그 순번과 스캔주기로 재배열한다.","relations":["process","attribute","comparison"]}
+{"primary":"NTP 동기성공 증거","text":"서버가 기준시각을 다시 받은 NTP 동기성공 증거는 그 이후 로그의 절대시각 신뢰도를 높인다. 동기 이전 로그는 자동으로 신뢰하지 않고 마지막 정상 기준과의 편차 범위로 재검토한다.","relations":["classification","process","role"]}
+{"primary":"제어서버 로그순번 보조","text":"시계가 흔들려도 증가하는 제어서버 로그순번 보조를 사용하면 동일 장치 안의 상대 순서를 복원할 수 있다.","relations":["part_of","process","state"]}
+{"primary":"이벤트버퍼 배출시각 배제","text":"통신회복 때 몰려 기록된 이벤트버퍼 배출시각 배제는 수신순간을 발생순간으로 오인하지 않게 한다. 버퍼 도착순서 대신 장치 원시각과 순번으로 사건을 배치해 통신 회복을 발생시각과 나눈다.","relations":["boundary","function","process"]}
+{"primary":"이중서버 시간충돌 판정","text":"주·대기 서버 기록이 다르면 활성 역할과 동기상태를 확인하는 이중서버 시간충돌 판정으로 출처를 고른다.","relations":["classification","comparison","state"]}
+{"primary":"로그파일 생성시각 후순위","text":"파일이 회전하며 새로 생긴 로그파일 생성시각 후순위는 내부 사건의 시간보다 증거력이 낮다. 파일 회전은 저장 관리 사건일 뿐 내부 설비 변화의 시각을 대표하지 않으므로 메타데이터로만 둔다.","relations":["attribute","contrast","process"]}
+{"primary":"제어망 시계오프셋 적용","text":"제어망 시계오프셋 적용은 각 장치의 빠름·느림을 보정해 공통 시간축으로 변환하는 절차다.","relations":["process","role","state"]}
+{"primary":"서버복제 도착시각 구별","text":"원본 노드와 분석 노드 사이의 서버복제 도착시각 구별로 사건 기록과 복사 완료를 나눈다. 원본 커밋과 분석노드 복제를 나란히 기록해 복사 지연을 열공급 상태 변화로 해석하지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"시간원 품질등급 표시","text":"시간원 품질등급 표시는 동기·추정·불명 상태를 기록해 같은 형식의 타임스탬프라도 신뢰도가 다름을 드러낸다.","relations":["attribute","comparison","process"]}
+{"primary":"열공급 경보접점 우선","text":"화면 팝업과 문자 통보가 어긋나면 제어기의 열공급 경보접점 우선으로 최초 이상 인지를 판정한다. 직접 센서 조건이 처음 충족된 접점을 사용하고 화면·문자 통보는 후속 관측 경계로 둔다.","relations":["process","state","boundary"]}
+{"primary":"경보집계 지연시각 분리","text":"여러 알람을 묶어 늦게 만든 경보집계 지연시각 분리로 개별 이상 발생과 종합 경보 생성을 나눈다.","relations":["process","attribute","comparison"]}
+{"primary":"경보해제 자동기록 신뢰","text":"정상조건 충족 뒤 제어기가 남긴 경보해제 자동기록 신뢰는 수기 종료 메모보다 높은 증거로 쓴다. 정상조건이 유지된 뒤 생성된 해제로그를 쓰되 실제 압력·온도 회복 표본도 함께 검증한다.","relations":["classification","process","role"]}
+{"primary":"경보확인 클릭시각 후행","text":"운영자의 경보확인 클릭시각 후행은 사람이 확인한 때이며 설비 이상이 시작된 때가 아니다.","relations":["part_of","process","state"]}
+{"primary":"중복경보 최초사건 선택","text":"같은 원인으로 여러 화면이 울리면 중복경보 최초사건 선택으로 가장 직접적인 센서 접점을 기준에 둔다. 같은 원인 ID를 공유하는 파생 경보를 묶고 가장 가까운 장치 접점 하나를 최초 사건으로 고른다.","relations":["boundary","function","process"]}
+{"primary":"경보억제 설정시각 경계","text":"정비 중 적용한 경보억제 설정시각 경계는 이상 부재의 증거가 아니라 알림 경로가 닫힌 시각이다.","relations":["classification","comparison","state"]}
+{"primary":"경보복구 메시지순번","text":"시간표시가 같은 메시지는 경보복구 메시지순번을 이용해 발생·확인·해제 차례를 보존한다. 동일 표시시각 안에서도 시퀀스 번호와 상태 전이를 이용해 발생·확인·해제의 방향을 유지한다.","relations":["attribute","contrast","process"]}
+{"primary":"외부문자 발송시각 보조","text":"관제 로그가 일부 손상됐을 때 외부문자 발송시각 보조는 이상 인지의 늦은 상한으로만 사용한다.","relations":["process","role","state"]}
+{"primary":"경보규칙 변경이력 우선","text":"판정기준이 달라진 날은 경보규칙 변경이력 우선을 적용해 어떤 임계값이 당시 유효했는지 먼저 확인한다. 사건 당시 활성 버전의 임계와 지속조건을 적용해 나중 규칙으로 과거 경보를 재판정하지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"경보연표 출처등급","text":"경보연표 출처등급은 장치접점·서버수신·운영자확인·외부통보를 구분해 시간 증거의 계층을 만든다.","relations":["attribute","comparison","process"]}
+{"primary":"열수송 현장점검 시각우선","text":"누수 흔적의 발견시각이 엇갈리면 사진 메타데이터와 위치기록을 묶은 열수송 현장점검 시각우선을 쓴다. 사진 원본과 위치가 해당 설비에서 일치한 때를 관측으로 두고 보고서 작성은 뒤의 기록 사건이다.","relations":["process","state","boundary"]}
+{"primary":"작업일지 일괄입력 경계","text":"교대 말에 여러 항목을 적은 작업일지 일괄입력 경계는 각 점검이 그때 수행됐다는 뜻이 아니다.","relations":["process","attribute","comparison"]}
+{"primary":"열화상 촬영원본 신뢰","text":"열화상 촬영원본 신뢰는 보고서 삽입 시각보다 장치가 남긴 원본 촬영 시각에 높은 증거 순위를 부여한다. 교정 이력과 파일 해시를 대조하여 복사나 첨부 때문에 사건 배열이 뒤바뀌는 일을 막는다.","relations":["classification","process","role"]}
+{"primary":"현장무전 수신시각 보조","text":"자동 로그가 없을 때 관제 녹취의 현장무전 수신시각 보조로 발견 사건의 늦은 상한을 세운다.","relations":["part_of","process","state"]}
+{"primary":"점검경로 위치시각 대조","text":"점검경로 위치시각 대조는 작업자가 해당 설비에 실제 도착했는지 확인해 후입력 기록을 걸러낸다. GPS 체류구간과 설비 ID를 연결해 이동 중 입력한 메모를 현장 관측으로 오인하지 않는다.","relations":["boundary","function","process"]}
+{"primary":"현장사진 편집시각 배제","text":"파일을 자르거나 전송하며 바뀐 현장사진 편집시각 배제는 촬영사건의 증거를 원본 메타데이터로 되돌린다.","relations":["classification","comparison","state"]}
+{"primary":"점검완료 서명시각 후행","text":"모든 구간을 돌아본 뒤 등록한 점검완료 서명시각 후행은 개별 관측시각을 대표하지 않는다. 서명은 순찰 전체의 행정 완료이며 각 설비 사진·측정의 개별 시각을 그대로 보존한다.","relations":["attribute","contrast","process"]}
+{"primary":"수기계기 판독시각 추정","text":"분 단위 일지뿐인 수기계기 판독시각 추정은 이동경로와 앞뒤 자동표본으로 가능한 범위를 표시한다.","relations":["process","role","state"]}
+{"primary":"현장교대 인계시각 구별","text":"현장교대 인계시각 구별로 설비 상태가 바뀐 때와 책임이 다음 작업자에게 넘어간 때를 나눈다. 설비 상태 변화, 인계 대화, 전자서명을 분리해 책임 전환과 물리 사건을 같은 시각으로 만들지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"점검증거 묶음신뢰도","text":"점검증거 묶음신뢰도는 원본사진·위치·무전·수기일지가 서로 맞는 정도에 따라 확정 수준을 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"수요계량기 장치시각 우선","text":"고객계량 서버와 장치기록이 다르면 동기상태가 확인된 수요계량기 장치시각 우선으로 사용량 변화를 놓는다. 동기된 원시 누적값의 변화로 실제 수요를 배열하고 서버 수신은 통신 지연 측정에 사용한다.","relations":["process","state","boundary"]}
+{"primary":"계량자료 수집시각 분리","text":"검침값이 중앙에 들어온 계량자료 수집시각 분리로 실제 소비구간과 전송 완료를 구별한다.","relations":["process","attribute","comparison"]}
+{"primary":"원격검침 재전송 중복제거","text":"같은 표본이 다른 시각에 도착하면 원격검침 재전송 중복제거로 최초 측정값 하나만 사건축에 남긴다. 장치 ID·표본번호·측정값이 같은 행을 하나로 묶되 첫 전송 실패 이력은 별도 보존한다.","relations":["classification","process","role"]}
+{"primary":"시간대별 사용량 경계보정","text":"계량기 시계가 느린 구간은 시간대별 사용량 경계보정을 적용해 요금창과 실제 수요창을 다시 맞춘다.","relations":["part_of","process","state"]}
+{"primary":"건물제어 수요시각 보조","text":"계량 표본이 끊긴 때는 건물제어 수요시각 보조를 쓰되 내부 제어기와 열공급망의 시계차를 표시한다. 내부 밸브·설정 변경은 계량 반응의 선행 근거지만 열공급망 수요의 직접 표본은 아니다.","relations":["boundary","function","process"]}
+{"primary":"검침수정 등록시각 후행","text":"오류값을 고친 검침수정 등록시각 후행은 소비가 새로 일어난 때가 아니라 데이터가 정정된 때다.","relations":["classification","comparison","state"]}
+{"primary":"수요급증 최초표본 상한","text":"표본주기 사이에 부하가 올랐다면 수요급증 최초표본 상한은 발생시각의 늦은 경계만 제공한다. 직전 정상표본과 첫 급증표본 사이를 불확실 구간으로 두어 표본 시각을 정확한 발생점이라 하지 않는다.","relations":["attribute","contrast","process"]}
+{"primary":"계량기 교체구간 시간연결","text":"계량기 교체구간 시간연결은 구형 마지막 표본과 신형 첫 표본의 공백·중첩을 따로 기록한다.","relations":["process","role","state"]}
+{"primary":"수요반응 명령대비 계량","text":"수요반응 명령대비 계량은 지시시각과 실제 부하감소 표본을 대조해 효과가 시작된 순서를 판정한다. 명령 수신부터 계량 부하가 지속 감소한 때까지를 계산해 행정 지시와 물리 효과를 분리한다.","relations":["boundary","part_of","process"]}
+{"primary":"고객계량 시간증거 등급","text":"고객계량 시간증거 등급은 장치원본·수집서버·정정자료·청구집계를 신뢰순으로 구별한다.","relations":["attribute","comparison","process"]}
+{"primary":"정비작업 접수시각 후순위","text":"고장 발생보다 늦게 티켓이 만들어진 정비작업 접수시각 후순위는 설비사건의 시작을 대신하지 않는다.","relations":["process","state","boundary"]}
+{"primary":"작업허가 전자서명 신뢰","text":"종이 메모와 시스템이 다르면 권한자가 남긴 작업허가 전자서명 신뢰를 적용해 허가 효력시각을 정한다.","relations":["process","attribute","comparison"]}
+{"primary":"정비현장 착수증거 우선","text":"작업자의 위치와 장비 잠금기록을 합친 정비현장 착수증거 우선은 계획표보다 실제 시작에 가깝다.","relations":["classification","process","role"]}
+{"primary":"부품교체 스캔시각 보조","text":"분해 로그가 없으면 새 부품 바코드의 부품교체 스캔시각 보조로 교체 완료의 이른 경계를 세운다.","relations":["part_of","process","state"]}
+{"primary":"정비티켓 일괄종료 경계","text":"교대 말에 여러 건을 닫은 정비티켓 일괄종료 경계는 각 기능시험이 같은 때 끝났음을 뜻하지 않는다.","relations":["boundary","function","process"]}
+{"primary":"잠금해제 접점시각 우선","text":"현장 정비 종료와 운전 복귀 사이에서는 안전장치의 잠금해제 접점시각 우선을 물리 증거로 쓴다.","relations":["classification","comparison","state"]}
+{"primary":"기능시험 원시로그 신뢰","text":"보고서 작성시각보다 시험장치가 남긴 기능시험 원시로그 신뢰를 높게 두어 복귀 순서를 확정한다.","relations":["attribute","contrast","process"]}
+{"primary":"정비계획 변경시각 구별","text":"일정표를 고친 정비계획 변경시각 구별로 예정 사건과 실제 수행 사건을 섞지 않는다.","relations":["process","role","state"]}
+{"primary":"정비완료 승인시각 후행","text":"감독자가 검토한 정비완료 승인시각 후행은 시험 성공 뒤에 놓이는 행정 사건으로 기록한다.","relations":["boundary","part_of","process"]}
+{"primary":"정비연표 증거사슬","text":"정비연표 증거사슬은 고장접점·허가·잠금·교체·시험·승인을 출처별 시각과 함께 연결한다.","relations":["attribute","comparison","process"]}
+{"primary":"관제전화 녹취시각 우선","text":"전화 메모와 시스템 입력이 어긋나면 원본 음성의 관제전화 녹취시각 우선으로 지시 전달 순서를 정한다.","relations":["process","state","boundary"]}
+{"primary":"운영지시 발신시각 구별","text":"문서를 작성한 때와 실제 전송한 때를 운영지시 발신시각 구별로 나눠 수신 전후를 판정한다.","relations":["process","attribute","comparison"]}
+{"primary":"메신저 서버수신 증거","text":"개인단말 시계가 틀렸다면 중앙 기록의 메신저 서버수신 증거로 대화 안의 상대 순서를 복원한다.","relations":["classification","process","role"]}
+{"primary":"무전중계 지연시각 분리","text":"현장 발화와 관제 녹음 사이의 무전중계 지연시각 분리로 지시가 늦게 내려진 것처럼 보이는 오류를 막는다.","relations":["part_of","process","state"]}
+{"primary":"교대브리핑 기록후입력","text":"브리핑 뒤 작성된 교대브리핑 기록후입력은 회의가 열린 시각과 문서가 저장된 시각을 따로 남긴다.","relations":["boundary","function","process"]}
+{"primary":"지시수신 확인시각 후행","text":"작업자가 눌러 남긴 지시수신 확인시각 후행은 메시지가 실제 도착한 때보다 늦을 수 있다.","relations":["classification","comparison","state"]}
+{"primary":"다중통신 채널우선순위","text":"다중통신 채널우선순위는 서버원본·녹취·자동수신증·수기메모의 순으로 시간 신뢰도를 둔다.","relations":["attribute","contrast","process"]}
+{"primary":"긴급지시 재전송 중복","text":"같은 명령이 여러 채널에 찍힌 긴급지시 재전송 중복은 하나의 지시사건과 여러 전달사건으로 분리한다.","relations":["process","role","state"]}
+{"primary":"관제메모 정정이력 보존","text":"잘못 적은 시각을 고쳐도 관제메모 정정이력 보존으로 최초 입력과 수정 완료를 모두 추적한다.","relations":["boundary","part_of","process"]}
+{"primary":"운영대화 시간축 통합","text":"운영대화 시간축 통합은 전화·무전·메신저·지시서를 기준서버 시각에 맞춰 하나의 순서로 배열한다.","relations":["attribute","comparison","process"]}
+{"primary":"기상관측 장치시각 우선","text":"외기온 변화가 출처마다 다르면 교정된 관측소의 기상관측 장치시각 우선으로 실제 관측 순서를 잡는다.","relations":["process","state","boundary"]}
+{"primary":"예보발행 시각후행 구별","text":"한파가 시작된 때와 예보가 나온 때를 예보발행 시각후행 구별로 나눠 원인과 정보생성을 혼동하지 않는다.","relations":["process","attribute","comparison"]}
+{"primary":"외기온 표본도착 지연","text":"관측소에서 측정된 뒤 관제로 늦게 온 구간은 외기온 표본도착 지연이며 현상시각을 바꾸지 않는다.","relations":["classification","process","role"]}
+{"primary":"일사량 센서시계 보정","text":"열수요 분석 전에 일사량 센서시계 보정을 적용해 다른 기상·부하 자료와 같은 시간축에 둔다.","relations":["part_of","process","state"]}
+{"primary":"기상전문 수정시각 경계","text":"오류를 고친 기상전문 수정시각 경계는 새로운 날씨 사건이 아니라 정보가 갱신된 사건이다.","relations":["boundary","function","process"]}
+{"primary":"한파경보 효력시각 우선","text":"발표문 작성시각보다 공식 효력이 시작된 한파경보 효력시각 우선으로 운영규칙 적용 구간을 정한다.","relations":["classification","comparison","state"]}
+{"primary":"미세기상 현장관측 보조","text":"중앙 관측소와 배관 현장이 다르면 작업자 계측의 미세기상 현장관측 보조로 국지 조건을 보완한다.","relations":["attribute","contrast","process"]}
+{"primary":"기상자료 백필시각 배제","text":"통신회복 때 몰린 기상자료 백필시각 배제는 수집시각을 측정시각으로 잘못 배열하지 않게 한다.","relations":["process","role","state"]}
+{"primary":"예보모델 실행시각 구분","text":"입력자료 기준시각과 계산을 돌린 예보모델 실행시각 구분으로 예측이 이용 가능해진 때를 판정한다.","relations":["boundary","part_of","process"]}
+{"primary":"열수요 기상근거 연결","text":"열수요 기상근거 연결은 관측·예보·경보의 서로 다른 시각을 수요조정 결정과 함께 표시한다.","relations":["attribute","comparison","process"]}
+{"primary":"정전접점 원시기록 우선","text":"전력감시 화면과 운전일지가 다르면 차단기에서 나온 정전접점 원시기록 우선으로 공급상실을 판정한다.","relations":["process","state","boundary"]}
+{"primary":"예비전원 기동시각 구별","text":"기동명령과 전압형성 사이를 예비전원 기동시각 구별로 나눠 실제 사용 가능 시점을 정한다.","relations":["process","attribute","comparison"]}
+{"primary":"전력품질계 시계보정","text":"순간전압강하의 선후를 비교하기 전에 전력품질계 시계보정을 적용해 제어망 시각과 맞춘다.","relations":["classification","process","role"]}
+{"primary":"UPS 이벤트 수신지연","text":"장치에는 먼저 남고 서버에 늦게 온 차이는 UPS 이벤트 수신지연이며 전원사건을 뒤로 옮기지 않는다.","relations":["part_of","process","state"]}
+{"primary":"계통복전 전압증거 우선","text":"복전 승인문보다 모선 전압이 안정된 계통복전 전압증거 우선으로 실제 공급 회복을 확정한다.","relations":["boundary","function","process"]}
+{"primary":"차단기 조작기록 신뢰순위","text":"차단기 조작기록 신뢰순위는 보조회로 접점·보호계전기·원격화면·수기일지 순으로 둔다.","relations":["classification","comparison","state"]}
+{"primary":"전력알람 일괄등록 경계","text":"게이트웨이 복구 뒤 찍힌 전력알람 일괄등록 경계는 여러 사건이 동시에 발생했다는 증거가 아니다.","relations":["attribute","contrast","process"]}
+{"primary":"부하차단 실행시각 판정","text":"명령 뒤 계측전력이 실제 줄어든 부하차단 실행시각 판정으로 요청과 효과를 구별한다.","relations":["process","role","state"]}
+{"primary":"전력운영 메모후입력","text":"교대자가 나중에 적은 전력운영 메모후입력은 원시 접점의 절대시각을 덮어쓰지 못한다.","relations":["boundary","part_of","process"]}
+{"primary":"열공급 전력연표 통합","text":"열공급 전력연표 통합은 정전·예비전원·펌프정지·복전 사건을 공통 기준시계에 맞춰 연결한다.","relations":["attribute","comparison","process"]}
+{"primary":"누수센서 최초접점 우선","text":"신고시각과 경보가 다르면 배관에서 젖음이 감지된 누수센서 최초접점 우선으로 사건 시작을 잡는다.","relations":["process","state","boundary"]}
+{"primary":"누수신고 접수시각 후행","text":"주민이나 작업자의 누수신고 접수시각 후행은 사람이 인지한 때이며 파손 발생과 같지 않다.","relations":["process","attribute","comparison"]}
+{"primary":"압력급락 원시표본 보조","text":"누수센서가 없으면 여러 지점의 압력급락 원시표본 보조로 파손시각의 범위를 좁힌다.","relations":["classification","process","role"]}
+{"primary":"긴급차단 명령실행 구별","text":"밸브를 닫으라는 지시와 위치접점을 긴급차단 명령실행 구별로 나눠 대응 순서를 기록한다.","relations":["part_of","process","state"]}
+{"primary":"현장도착 위치기록 우선","text":"전화 보고보다 차량 위치의 현장도착 위치기록 우선으로 점검 개시의 증거를 정한다.","relations":["boundary","function","process"]}
+{"primary":"파손확인 사진원본 신뢰","text":"전송된 파일시각보다 촬영장치의 파손확인 사진원본 신뢰를 높게 두어 발견 순서를 복원한다.","relations":["classification","comparison","state"]}
+{"primary":"비상복구 일지후입력 경계","text":"작업 종료 뒤 작성한 비상복구 일지후입력 경계는 각 차단·배수·용접 시각을 대신하지 않는다.","relations":["attribute","contrast","process"]}
+{"primary":"공급재개 유량증거 우선","text":"행정 승인보다 실제 흐름이 돌아온 공급재개 유량증거 우선으로 서비스 회복을 판정한다.","relations":["process","role","state"]}
+{"primary":"누수사건 출처충돌 표지","text":"누수사건 출처충돌 표지는 센서·신고·사진·작업기록의 시각이 맞지 않음을 연표에 명시한다.","relations":["boundary","part_of","process"]}
+{"primary":"비상대응 시간근거 사슬","text":"비상대응 시간근거 사슬은 최초 이상부터 차단·도착·복구·공급재개까지 증거 출처를 단계별로 잇는다.","relations":["attribute","comparison","process"]}
+{"primary":"축열조 수위장치시각 우선","text":"운전 화면과 현장계가 다르면 교정된 수위계의 축열조 수위장치시각 우선으로 충방열 변화를 놓는다.","relations":["process","state","boundary"]}
+{"primary":"축열펌프 기동접점 증거","text":"충전명령보다 모터 접점의 축열펌프 기동접점 증거를 실제 순환 시작으로 채택한다.","relations":["process","attribute","comparison"]}
+{"primary":"축열온도층 관측지연 분리","text":"상하부 센서의 응답차는 축열온도층 관측지연 분리로 처리해 층상화 순서를 뒤집지 않는다.","relations":["classification","process","role"]}
+{"primary":"축열전환 밸브피드백 우선","text":"계획표와 다른 시각에 유로가 바뀌면 축열전환 밸브피드백 우선으로 충전·방전 전환을 판정한다.","relations":["part_of","process","state"]}
+{"primary":"축열조 계측백필 경계","text":"통신복구 뒤 같은 분에 모인 축열조 계측백필 경계는 실제 변화가 동시에 일어난 것으로 보지 않는다.","relations":["boundary","function","process"]}
+{"primary":"축열가용량 계산시각 후행","text":"원시 온도·유량 뒤에 산출된 축열가용량 계산시각 후행은 계산 완료이지 물리 상태 발생이 아니다.","relations":["classification","comparison","state"]}
+{"primary":"축열운전 승인시각 구별","text":"운영자가 승인한 때와 자동제어가 실행한 때를 축열운전 승인시각 구별로 각각 남긴다.","relations":["attribute","contrast","process"]}
+{"primary":"축열회복 안정판정 시각","text":"한 표본 회복이 아니라 지정기간 정상범위를 지킨 축열회복 안정판정 시각을 완료 근거로 쓴다.","relations":["process","role","state"]}
+{"primary":"축열조 정비기록 신뢰순위","text":"축열조 정비기록 신뢰순위는 잠금접점·시험로그·전자서명·수기메모 순으로 시간 증거를 평가한다.","relations":["boundary","part_of","process"]}
+{"primary":"축열계통 공통시간축","text":"축열계통 공통시간축은 수위·온도·펌프·밸브·계산 로그의 오프셋을 보정해 사건 차례를 통합한다.","relations":["attribute","comparison","process"]}

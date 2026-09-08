@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v46",
+  "version": "46",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-06751 ~ S2-TOH-06900",
+  "concept_family": "S2-A03-T046: 식품 발효공정 온도·품질 제어 — 지연 원인과 처리 대기시간의 순서 복원",
+  "design_note": "식품 발효공정 온도·품질 제어 영역의 지연 원인과 처리 대기시간의 순서 복원 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-06751",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉동원료를 꺼낸 뒤 중심온도가 투입기준에 오르는 열전달 시간이 원료해동 물리지연이다. 표면이 아닌 중심 탐침이 투입범위에 지속 진입한 때를 사용해 단순 실온 노출과 구별한다.",
+      "concepts": [
+        "원료해동 물리지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06752",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도는 맞았지만 품질담당의 상태확인을 기다리는 구간이 원료해동 승인대기다. 중심온도 자료가 준비된 뒤 담당자가 검토하지 않은 시간은 열전달이 아니라 권한 의존이다.",
+      "concepts": [
+        "원료해동 승인대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06753",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배합표에 따라 여러 원료를 재고확인·계량하는 작업시간이 원료계량 처리지연이다. 로트 확인·영점설정·개별 계량·합계검증에 실제 투입된 시간만 작업구간으로 센다.",
+      "concepts": [
+        "원료계량 처리지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06754",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공용저울을 먼저 쓰는 배치가 끝날 때까지 멈춘 구간이 원료계량 순번대기다. 앞 배치의 저울 해제부터 해당 로트가 영점설정을 시작할 때까지를 자원 큐로 센다.",
+      "concepts": [
+        "원료계량 순번대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06755",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분말이 액상에 풀려 균일농도가 되기까지의 물리시간이 원료용해 반응지연이다. 교반 시작 뒤 여러 위치의 농도가 허용 편차 안에 든 때까지를 물질 확산으로 본다.",
+      "concepts": [
+        "원료용해 반응지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06756",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시료측정은 끝났지만 기준검토와 전자서명을 기다리는 시간이 원료검사 결과대기다. 분석 완료와 기준 판정·전자서명 사이를 나눠 실험 처리시간을 과장하지 않는다.",
+      "concepts": [
+        "원료검사 결과대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06757",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "펌프기동 뒤 원료가 긴 배관을 지나 발효조에 도달하는 시간이 원료이송 배관지연이다. 펌프 접점과 수신탱크 유량의 시차를 재어 명령 대기와 관내 이동을 분리한다.",
+      "concepts": [
+        "원료이송 배관지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06758",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탱크세정·밸브상태 확인이 끝날 때까지 투입을 보류하는 구간이 원료투입 허가대기다. 탱크 청정·밸브 경로·로트 승인 중 마지막 확인 전 정지는 배관 이동과 분리한다.",
+      "concepts": [
+        "원료투입 허가대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06759",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "혼합 뒤 차가운 원료와 배지의 온도가 같아질 때까지의 시간이 원료온도 평형지연이다. 혼합 직후의 공간 온도차가 기준 아래에 지속 머문 시점까지를 열적 평형과정으로 둔다.",
+      "concepts": [
+        "원료온도 평형지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06760",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출고·해동·검사·승인·이송·투입을 배열해 대기와 물리반응을 나누는 규칙이 원료연표 복원순서다. 각 단계의 시작·완료와 대기 원인을 배치번호로 연결해 물리 반응과 행정 큐를 구별한다.",
+      "concepts": [
+        "원료연표 복원순서"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06761",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉장종균을 배지에 넣은 뒤 대사가 정상속도에 이르는 시간이 종균활성 회복지연이다. 접종 뒤 산소 소비와 대사 지표가 기준속도에 이르는 구간은 설비 대기와 다른 생물 반응이다.",
+      "concepts": [
+        "종균활성 회복지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06762",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배양은 끝났지만 순도·활성 결과 승인을 기다리는 구간이 종균출고 검토대기다.",
+      "concepts": [
+        "종균출고 검토대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06763",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접종 뒤 목표세포수까지 늘어나는 생물학적 시간이 종균증식 생물지연이다. 초기 세포수와 연속 계수로 목표농도 도달을 확인해 배양기 회차대기와 나눈다.",
+      "concepts": [
+        "종균증식 생물지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06764",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공용배양기의 앞 회차가 끝날 때까지 시작하지 못한 시간이 종균배양기 순번대기다.",
+      "concepts": [
+        "종균배양기 순번대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06765",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증식종료 뒤 보관온도로 내려가는 열적 시간이 종균냉각 후행지연이다. 증식 종료 뒤 용기 중심온도가 보관범위에 안정될 때까지를 열전달 후행부로 기록한다.",
+      "concepts": [
+        "종균냉각 후행지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06766",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "동정시험 결과와 기준주를 비교할 때까지 투입을 막는 구간이 종균정체성 확인대기다.",
+      "concepts": [
+        "종균정체성 확인대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06767",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "밸브개방 뒤 종균이 이송관을 지나 본조에 들어오는 시간이 접종배관 도달지연이다. 밸브 개방과 본조 질량·추적농도 변화의 시차로 종균의 관내 이동시간을 계산한다.",
+      "concepts": [
+        "접종배관 도달지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06768",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배지온도와 위생상태를 검토해 작업허가를 내릴 때까지의 시간이 접종승인 처리대기다.",
+      "concepts": [
+        "접종승인 처리대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06769",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주입된 종균이 교반으로 조 전체에 퍼질 때까지의 시간이 종균혼합 분산지연이다. 주입점과 먼 위치의 농도 편차가 기준 아래에 든 때까지를 교반 확산으로 본다.",
+      "concepts": [
+        "종균혼합 분산지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06770",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증식·검사·승인·접종·분산의 시각을 맞춰 원인지연을 찾는 작업이 종균사건 순서복원이다.",
+      "concepts": [
+        "종균사건 순서복원"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06771",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충전명령 뒤 배관저항을 거쳐 목표액위까지 채우는 물리시간이 발효조 충전유량 지연이다. 펌프 기동부터 목표 액위·중량에 도달할 때까지를 물리 충전으로 두고 배정대기는 제외한다.",
+      "concepts": [
+        "발효조 충전유량 지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06772",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조가 비어 있어도 생산계획과 세정상태 승인을 기다리는 구간이 발효조 배정대기다.",
+      "concepts": [
+        "발효조 배정대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06773",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증기가 들어온 뒤 전체배지가 살균온도에 이르는 시간이 배지멸균 가열지연이다. 가장 차가운 지점이 살균온도에 이르고 유지구간이 시작될 때까지를 열전달로 잰다.",
+      "concepts": [
+        "배지멸균 가열지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06774",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도기록은 충족됐지만 편차검토가 끝날 때까지 접종을 늦추는 시간이 멸균주기 승인대기다.",
+      "concepts": [
+        "멸균주기 승인대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06775",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "멸균 뒤 접종온도까지 열을 빼는 물리시간이 발효조 냉각지연이다. 멸균 종료부터 조 중심과 벽면이 접종범위에 들어오는 때까지의 열 제거를 계산한다.",
+      "concepts": [
+        "발효조 냉각지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06776",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "동시 공정이 많아 냉각수 우선순위를 기다리는 구간이 냉각수 배정대기다.",
+      "concepts": [
+        "냉각수 배정대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06777",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가압·배기 뒤 헤드스페이스가 설정압에 안정되는 시간이 탱크압력 평형지연이다. 밸브 조작 뒤 압력 변동폭이 허용대 안에 지속 머문 때를 안정 완료로 삼는다.",
+      "concepts": [
+        "탱크압력 평형지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06778",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "액위·질량·밸브폐쇄를 대조할 때까지 완료를 확정하지 않는 시간이 조충전 완료판정 대기다.",
+      "concepts": [
+        "조충전 완료판정 대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06779",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충전 뒤 교반으로 농도와 온도가 고르게 되는 시간이 배지균질화 지연이다. 충전 완료 후 온도·농도·고형분의 공간 편차가 기준 아래가 될 때까지를 분리한다.",
+      "concepts": [
+        "배지균질화 지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06780",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조배정·충전·가열·승인·냉각·접종을 배열하는 절차가 충전연표 재구성이다.",
+      "concepts": [
+        "충전연표 재구성"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06781",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증기밸브가 열린 뒤 코일과 배지가 데워지는 물리시간이 가열코일 응답지연이다. 증기 접점과 배지 온도 상승의 시차를 써서 제어 대기와 코일 열전달을 구별한다.",
+      "concepts": [
+        "가열코일 응답지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06782",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "새 온도설정은 배치책임자의 변경승인 전까지 적용되지 않으며 그 구간이 가열목표 변경대기다.",
+      "concepts": [
+        "가열목표 변경대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06783",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉수투입 뒤 조 내부온도가 낮아지는 열전달 시간이 냉각자켓 전달지연이다. 냉수 유량 형성부터 발효액 온도 기울기가 바뀔 때까지를 열전달 반응으로 둔다.",
+      "concepts": [
+        "냉각자켓 전달지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06784",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 조가 냉각을 요청해 공용설비 순번을 기다리는 시간이 냉각용량 배분대기다.",
+      "concepts": [
+        "냉각용량 배분대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06785",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도센서 물리응답은 배지 온도가 바뀐 뒤 열이 보호관을 통과해 탐침 출력이 새 값에 안정될 때까지의 시간이다. 허용 오차 안에서 계속 머문 첫 시점을 종료 경계로 삼는다.",
+      "concepts": [
+        "온도센서 물리응답"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06786",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표본은 왔지만 교정편차와 급변을 검사할 때까지 제어반영을 늦추는 구간이 온도자료 검수대기다.",
+      "concepts": [
+        "온도자료 검수대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06787",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이상원인을 제거한 뒤 발효액이 목표범위에 돌아오는 시간이 온도복귀 반응지연이다. 냉각·가열 원인을 제거한 뒤 여러 표본이 목표범위에 머무를 때까지를 실제 회복으로 본다.",
+      "concepts": [
+        "온도복귀 반응지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06788",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정상표본이 여러 번 이어지고 품질영향을 검토할 때까지 이탈을 닫지 않는 시간이 온도이탈 해제대기다.",
+      "concepts": [
+        "온도이탈 해제대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06789",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "밸브를 닫은 뒤에도 잔열로 온도가 계속 변하는 시간이 열관성 효과지연이다. 밸브 폐쇄 이후 온도 극값과 새 평형 사이를 후행 열반응으로 따로 기록한다.",
+      "concepts": [
+        "열관성 효과지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06790",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "명령·밸브·열전달·센서·판정의 순서를 맞추는 방법이 온도사건 선후복원이다.",
+      "concepts": [
+        "온도사건 선후복원"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06791",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "미생물 대사로 산이 축적되어 pH가 떨어지는 시간이 산생성 생물지연이다. 접종 후 유기산 농도와 pH가 지속 변하기 시작한 때까지를 미생물 대사과정으로 센다.",
+      "concepts": [
+        "산생성 생물지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06792",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이탈은 확인됐지만 첨가량과 제품규격을 검토하는 구간이 pH보정 승인대기다.",
+      "concepts": [
+        "pH보정 승인대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06793",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중화제를 넣은 뒤 조 전체 pH가 균일해지는 시간이 중화제 혼합지연이다. 주입 완료 뒤 탱크 여러 위치의 pH 편차가 허용범위에 들 때까지를 확산시간으로 둔다.",
+      "concepts": [
+        "중화제 혼합지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06794",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공용투입라인 세척과 앞 배치종료를 기다리는 시간이 중화제 투입순번대기다.",
+      "concepts": [
+        "중화제 투입순번대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06795",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "세척이나 교정 뒤 전극값이 안정되는 시간이 pH센서 안정지연이다. 세척·교정 후 기준액과 공정액에서 출력 드리프트가 멈출 때까지를 계측 반응으로 본다.",
+      "concepts": [
+        "pH센서 안정지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06796",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장값과 실험실값을 대조할 때까지 상태판정을 보류하는 구간이 pH결과 품질대기다.",
+      "concepts": [
+        "pH결과 품질대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06797",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첨가 뒤 완충계가 새 평형에 이르며 pH가 천천히 변하는 시간이 완충작용 후행지연이다. 첨가가 끝난 뒤 화학 평형으로 pH가 계속 이동한 구간을 펌프 운전과 분리한다.",
+      "concepts": [
+        "완충작용 후행지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06798",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대사·센서·첨가오류 중 원인을 분석할 때까지 추가조치를 미루는 시간이 pH이탈 원인대기다.",
+      "concepts": [
+        "pH이탈 원인대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06799",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보정 뒤 여러 표본이 범위에 머무는지 보는 시간이 산도회복 관찰지연이다. 정상값 첫 진입 뒤 요구된 연속 표본이 채워질 때까지를 판정 관찰창으로 둔다.",
+      "concepts": [
+        "산도회복 관찰지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06800",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대사변화·센서표본·판정·승인·첨가·회복을 배열하는 규칙이 pH연표 복원규칙이다.",
+      "concepts": [
+        "pH연표 복원규칙"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06801",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회전수명령 뒤 임펠러와 액체가 목표유동에 이르는 시간이 교반기 가속지연이다. 모터 전류가 오른 뒤 회전수와 액체 유동이 목표에 안정될 때까지를 기계 반응으로 센다.",
+      "concepts": [
+        "교반기 가속지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06802",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "액위·축봉·전력상태 검토가 끝날 때까지 기동을 늦추는 구간이 교반기 기동허가 대기다.",
+      "concepts": [
+        "교반기 기동허가 대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06803",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회전이 시작된 뒤 농도와 온도가 균일해지는 물리시간이 혼합균질화 지연이다. 임펠러가 정상속도에 든 뒤 농도·온도의 공간 편차가 사라질 때까지를 별도 과정으로 둔다.",
+      "concepts": [
+        "혼합균질화 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06804",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "혼합완료 판정대기는 여러 위치의 표본을 모두 받은 뒤 농도 편차를 계산하여 완료 여부를 결정할 때까지의 대기다.",
+      "concepts": [
+        "혼합완료 판정대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06805",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정지명령 뒤 액체회전이 가라앉는 시간이 교반감속 관성지연이다. 전원 차단 뒤 회전수와 액체 와류가 기준 아래로 내려갈 때까지를 후행 운동으로 본다.",
+      "concepts": [
+        "교반감속 관성지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06806",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "거품·산소전달 영향을 검토할 때까지 정지를 보류하는 구간이 교반정지 승인대기다.",
+      "concepts": [
+        "교반정지 승인대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06807",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "베어링이상 뒤 진동이 구조물과 센서에 나타나는 시간이 축진동 전파지연이다. 베어링 이상 발생과 원격 센서의 지속 진동 검출 사이를 구조 전달·계측 지연으로 나눈다.",
+      "concepts": [
+        "축진동 전파지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06808",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "한 번의 고값을 교차측정으로 확인할 때까지 감발을 늦추는 시간이 진동경보 확인대기다.",
+      "concepts": [
+        "진동경보 확인대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06809",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수리 뒤 시험회전이 온도·진동 허용치에 머무는 시간이 교반복귀 안정지연이다. 수리 후 부하시험에서 온도·진동·토크가 여러 표본 정상인 때까지를 복귀 과정으로 둔다.",
+      "concepts": [
+        "교반복귀 안정지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06810",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "허가·기동·가속·혼합·판정의 시각을 배열한 것이 교반사건 순서복원이다.",
+      "concepts": [
+        "교반사건 순서복원"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06811",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접종 뒤 대사가 활발해져 이산화탄소가 검출될 때까지의 생물시간이 발효가스 생성지연이다. 접종부터 배출 유량이 대조값 위에 지속 나타날 때까지를 대사 활성의 생물시간으로 본다.",
+      "concepts": [
+        "발효가스 생성지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06812",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가스생성은 확인됐지만 향·수율 영향을 검토하는 구간이 배기설정 승인대기다.",
+      "concepts": [
+        "배기설정 승인대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06813",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배기밸브가 열린 뒤 조압력이 낮아지는 물리시간이 헤드압 배출지연이다. 배기밸브 개방부터 조압력이 설정범위에 안정될 때까지를 유체 방출과정으로 잰다.",
+      "concepts": [
+        "헤드압 배출지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06814",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공용세정탑의 용량을 기다리느라 배기량을 제한하는 시간이 배기가스 처리순번 대기다.",
+      "concepts": [
+        "배기가스 처리순번 대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06815",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공기를 넣은 뒤 산소가 액상에 녹아 센서에 보이는 시간이 산소용해 전달지연이다. 기체 유량 형성 뒤 용존산소 탐침이 새 평형에 도달할 때까지를 물질전달로 둔다.",
+      "concepts": [
+        "산소용해 전달지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06816",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대사·거품·제품영향을 확인할 때까지 새 통기량을 보류하는 구간이 통기량 변경검토 대기다.",
+      "concepts": [
+        "통기량 변경검토 대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06817",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가스발생 뒤 거품층이 센서높이까지 자라는 시간이 거품상승 물리지연이다. 가스발생 시작과 거품센서 접촉의 시차를 재어 거품층 성장 구간을 계산한다.",
+      "concepts": [
+        "거품상승 물리지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06818",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "거품은 높아도 제품규격과 투입상한을 확인하는 시간이 소포제 투입승인 대기다.",
+      "concepts": [
+        "소포제 투입승인 대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06819",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공정변경 뒤 배기가스 조성이 새 상태에 이르는 시간이 배기농도 회복지연이다. 공정 설정 변경 뒤 배기가스 조성이 여러 표본 새 상태에 머물 때까지를 반응으로 본다.",
+      "concepts": [
+        "배기농도 회복지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06820",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대사·가스생성·센서·판정·배기조치를 배열하는 작업이 가스사건 연표재구성이다.",
+      "concepts": [
+        "가스사건 연표재구성"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06821",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "뜨거운 시료가 분석온도까지 내려가는 물리시간이 발효시료 냉각지연이다. 채취온도에서 분석 허용온도까지 시료 중심이 내려갈 때를 써서 검사실 대기와 분리한다.",
+      "concepts": [
+        "발효시료 냉각지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06822",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "실험실의 앞 배치분석이 끝날 때까지 기다리는 구간이 시료검사 순번대기다.",
+      "concepts": [
+        "시료검사 순번대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06823",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오염미생물이 검출가능 수준까지 자라는 생물학적 시간이 배양검사 생장지연이다. 접종 뒤 대조군이 유효하고 오염 신호가 검출 임계에 이를 때까지를 생물 성장으로 센다.",
+      "concepts": [
+        "배양검사 생장지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06824",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기기결과는 나왔지만 대조군과 기준검토를 기다리는 시간이 검사결과 승인대기다.",
+      "concepts": [
+        "검사결과 승인대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06825",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시료전처리와 기기측정으로 당도를 산출하는 시간이 당도분석 처리지연이다. 여과·희석·기기 영점·측정·결과산출에 실제 사용된 시간을 장비 회차대기에서 나눈다.",
+      "concepts": [
+        "당도분석 처리지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06826",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분석값을 LIMS에서 배치제어로 승인전송할 때까지의 구간이 당도결과 전송대기다.",
+      "concepts": [
+        "당도결과 전송대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06827",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "크로마토그래피에서 성분이 컬럼을 지나 분리되는 시간이 향성분 분리 지연이다. 주입부터 각 성분 피크가 컬럼을 통과하고 적분이 끝날 때까지를 분석과정으로 둔다.",
+      "concepts": [
+        "향성분 분리 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06828",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기기값과 관능결과를 함께 검토할 전문가를 기다리는 시간이 향판정 전문가대기다.",
+      "concepts": [
+        "향판정 전문가대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06829",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "다른 지점의 반복표본이 일치하는지 확인하는 시간이 시료대표성 확인지연이다. 서로 다른 채취점의 반복결과를 비교해 허용 편차를 확인한 실제 검토시간을 센다.",
+      "concepts": [
+        "시료대표성 확인지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06830",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "채취·운송·전처리·분석·승인·전송을 나누는 기준이 검사연표 복원기준이다.",
+      "concepts": [
+        "검사연표 복원기준"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06831",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "펌프기동 뒤 세정액이 배관말단과 탱크벽에 도달하는 시간이 CIP 세정액 도달지연이다. 펌프 기동과 말단 유량·전도도 변화의 시차로 배관 내 세정액 전달을 측정한다.",
+      "concepts": [
+        "CIP 세정액 도달지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06832",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "생산종료·제품회수·밸브격리를 확인할 때까지 세정을 늦추는 구간이 CIP 착수허가 대기다.",
+      "concepts": [
+        "CIP 착수허가 대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06833",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "세정액이 목표온도에 오르는 열전달 시간이 세정가열 물리지연이다. 히터 투입부터 가장 차가운 회수점이 목표온도에 이르는 때까지를 열전달로 본다.",
+      "concepts": [
+        "세정가열 물리지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06834",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "말단센서가 충분히 안정될 때까지 접촉시간 계수를 미루는 구간이 세정온도 판정대기다.",
+      "concepts": [
+        "세정온도 판정대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06835",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "새 물을 흘린 뒤 잔류세제가 기준 아래로 내려가는 시간이 헹굼농도 회복지연이다. 새 물 공급 뒤 회수 전도도가 잔류 기준 아래에 지속 든 때까지를 세제 제거로 센다.",
+      "concepts": [
+        "헹굼농도 회복지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06836",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전도도·온도·시간 기록을 검수할 때까지 생산허가를 막는 시간이 CIP 완료승인 대기다.",
+      "concepts": [
+        "CIP 완료승인 대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06837",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증기가 배관 고점과 사각부에 도달하는 시간이 살균증기 전달지연이다. 증기밸브 개방부터 고점·사각부 온도가 살균범위에 드는 때까지를 관로 전달로 둔다.",
+      "concepts": [
+        "살균증기 전달지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06838",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "한 지점 온도미달의 원인을 판단할 때까지 주기를 닫지 않는 구간이 살균편차 조사대기다.",
+      "concepts": [
+        "살균편차 조사대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06839",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고온설비가 접종가능 온도로 내려가는 시간이 세정후 냉각지연이다. 증기 종료 뒤 설비 표면과 배관 말단이 접종 허용온도에 이르는 구간을 계산한다.",
+      "concepts": [
+        "세정후 냉각지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06840",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "격리·세정·헹굼·살균·검수·냉각을 배열하는 절차가 CIP사건 순서복원이다.",
+      "concepts": [
+        "CIP사건 순서복원"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06841",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오염증식 잠복지연은 미량 오염원이 들어온 뒤 개체 수가 늘어 센서나 배양 검사에서 처음 검출될 때까지 걸린다. 오염 유입과 경보 표시는 서로 다른 사건이다.",
+      "concepts": [
+        "오염증식 잠복지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06842",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단일 이상을 재검사와 환경시료로 확인하는 구간이 오염경보 확인대기다.",
+      "concepts": [
+        "오염경보 확인대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06843",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차단명령 뒤 밸브가 닫혀 흐름이 멈추는 시간이 격리밸브 구동지연이다. 차단 명령과 최종 위치·무유량 확인 사이를 재어 제어 큐와 기계 이동을 구별한다.",
+      "concepts": [
+        "격리밸브 구동지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06844",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배치·배관·인접조 영향을 분석할 때까지 경계를 확정하지 못하는 시간이 격리범위 결정대기다.",
+      "concepts": [
+        "격리범위 결정대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06845",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "소독제가 미생물을 사멸시켜 오염도가 낮아지는 반응시간이 소독효과 발현지연이다. 약제 접촉 시작부터 생존 미생물 지표가 목표 아래에 이르는 때까지를 반응시간으로 둔다.",
+      "concepts": [
+        "소독효과 발현지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06846",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검사결과 뒤 품질·생산·규정 담당의 판단을 기다리는 구간이 폐기결정 승인대기다.",
+      "concepts": [
+        "폐기결정 승인대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06847",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "한 지점 오염이 공기·작업자를 따라 다른 구역에 도달하는 시간이 환경오염 확산지연이다. 원지점 검출과 다른 구역의 첫 일치 신호 사이를 공기·작업자 이동 경로와 함께 계산한다.",
+      "concepts": [
+        "환경오염 확산지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06848",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출입·세정·원료 기록이 모일 때까지 원인확정을 미루는 시간이 추적조사 자료대기다.",
+      "concepts": [
+        "추적조사 자료대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06849",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "소독 뒤 연속 음성표본을 확보하는 시간이 청정회복 관찰지연이다. 소독 후 여러 위치의 연속 음성표본이 요구기간을 채울 때까지를 확인구간으로 본다.",
+      "concepts": [
+        "청정회복 관찰지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06850",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유입·증식·검출·확인·격리·소독·회복을 배열하는 작업이 오염사건 연표재구성이다.",
+      "concepts": [
+        "오염사건 연표재구성"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06851",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접종 뒤 세포가 새 배지에 적응해 성장하기까지의 시간이 유도기 생물지연이다. 접종 뒤 세포의 대사·산소소비가 성장상태로 전환될 때까지를 배지 적응과정으로 둔다.",
+      "concepts": [
+        "유도기 생물지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06852",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증식률과 대사표지를 검토할 때까지 성장단계 전환을 확정하지 않는 시간이 유도기 종료판정 대기다.",
+      "concepts": [
+        "유도기 종료판정 대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06853",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "세포수가 목표농도까지 지수적으로 늘어나는 시간이 대수증식 시간지연이다. 연속 세포농도 곡선이 목표값에 도달할 때까지를 실제 증식으로 보고 분석대기는 제외한다.",
+      "concepts": [
+        "대수증식 시간지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06854",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "농도는 충족됐지만 온도·향·산도 결과를 기다리는 구간이 단계전환 승인대기다.",
+      "concepts": [
+        "단계전환 승인대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06855",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주발효 뒤 향과 조직이 목표상태에 이르는 화학·생물시간이 숙성반응 진행지연이다. 주발효 종료 뒤 향·산도·조직 지표가 목표범위에 이르는 화학·생물 반응을 센다.",
+      "concepts": [
+        "숙성반응 진행지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06856",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시간은 지났지만 관능·성분평가를 기다리는 구간이 숙성종료 품질대기다.",
+      "concepts": [
+        "숙성종료 품질대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06857",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영양고갈 뒤 세포분해가 제품에 영향을 줄 만큼 진행되는 시간이 자가분해 발생지연이다. 영양 고갈부터 분해 지표와 품질 영향이 나타날 때까지를 후속 생물과정으로 기록한다.",
+      "concepts": [
+        "자가분해 발생지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06858",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수율·품질·설비여유를 함께 판단할 때까지 수확을 미루는 시간이 수확결정 검토대기다.",
+      "concepts": [
+        "수확결정 검토대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06859",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발효정지 후행지연은 냉각이나 pH 조정을 시작한 뒤 가스와 열 생성이 지속적으로 하한 아래에 머물 때까지 걸린다. 조작 명령 시각과 미생물 대사 정지는 다르다.",
+      "concepts": [
+        "발효정지 후행지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06860",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접종·적응·증식·숙성·정지·수확을 자료시각에 맞춰 배열한 것이 발효단계 순서복원이다.",
+      "concepts": [
+        "발효단계 순서복원"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06861",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배출밸브 개방 뒤 발효액이 수신탱크에 도달하는 물리시간이 제품이송 배관지연이다. 밸브 개방과 수신탱크 질량 증가 사이를 재어 관내 이동과 시작 명령을 분리한다.",
+      "concepts": [
+        "제품이송 배관지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06862",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "품질해제와 수신탱크 청정확인을 기다리는 구간이 제품이송 승인대기다.",
+      "concepts": [
+        "제품이송 승인대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06863",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정지 뒤 입자가 가라앉아 분리층이 생기는 시간이 고형물 침강지연이다. 교반 정지 뒤 탁도 경계와 분리층 높이가 안정될 때까지를 중력 침강으로 센다.",
+      "concepts": [
+        "고형물 침강지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06864",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원심분리기 앞 배치가 끝날 때까지 멈춘 시간이 분리공정 순번대기다.",
+      "concepts": [
+        "분리공정 순번대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06865",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "압력인가 뒤 제품이 막을 지나 여과측에 모이는 시간이 여과막 투과지연이다. 압력 인가부터 여과측 유량이 안정되고 목표량이 모일 때까지를 막 전달과정으로 둔다.",
+      "concepts": [
+        "여과막 투과지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06866",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탁도·차압 결과가 승인될 때까지 다음 이송을 보류하는 시간이 여과완료 판정대기다.",
+      "concepts": [
+        "여과완료 판정대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06867",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제품유입 뒤 거품과 액위가 안정되는 시간이 탱크충전 평형지연이다. 유입 종료 뒤 거품과 액위 진동이 허용폭에 머무를 때까지를 후행 안정화로 본다.",
+      "concepts": [
+        "탱크충전 평형지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06868",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "다음 수신탱크의 세정·배관상태를 확인하는 구간이 탱크전환 허가대기다.",
+      "concepts": [
+        "탱크전환 허가대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06869",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주이송 뒤 배관잔량을 회수하는 시간이 이송후 잔류배출 지연이다. 주유량 종료부터 배관 드레인과 회수탱크 유입이 끝날 때까지를 잔류 회수로 센다.",
+      "concepts": [
+        "이송후 잔류배출 지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06870",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해제·승인·밸브개방·도달·분리·완료를 배열하는 절차가 제품이송 연표복원이다.",
+      "concepts": [
+        "제품이송 연표복원"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06871",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충전 전 제품이 포장온도까지 내려가는 물리시간이 포장제품 냉각지연이다. 공정탱크에서 포장 허용온도로 제품 중심이 내려갈 때까지를 열전달 구간으로 둔다.",
+      "concepts": [
+        "포장제품 냉각지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06872",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "미생물·성분·라벨판 검토를 기다리는 구간이 포장개시 승인대기다.",
+      "concepts": [
+        "포장개시 승인대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06873",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "속도명령 뒤 기계가 새 처리량에 안정되는 시간이 충전기 속도응답 지연이다. 처리량 명령 뒤 모터속도와 충전량 편차가 새 설정에 안정될 때까지를 기계 반응으로 본다.",
+      "concepts": [
+        "충전기 속도응답 지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06874",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "다른 제품의 세척·교체가 끝날 때까지 기다리는 시간이 포장라인 순번대기다.",
+      "concepts": [
+        "포장라인 순번대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06875",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가열봉합 뒤 접착층이 식어 강도를 얻는 시간이 밀봉접착 형성지연이다. 가열봉합 종료 뒤 접착층 온도와 강도가 취급 기준에 이를 때까지를 경화과정으로 센다.",
+      "concepts": [
+        "밀봉접착 형성지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06876",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누설시험 뒤 표본판정과 승인에 걸리는 시간이 밀봉검사 결과대기다.",
+      "concepts": [
+        "밀봉검사 결과대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06877",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "새 배치정보가 프린터와 검사기에 적용되는 시간이 라벨판 전환지연이다. 새 배치판 승인부터 프린터·검사기의 버전과 첫 정상품이 일치할 때까지를 처리시간으로 둔다.",
+      "concepts": [
+        "라벨판 전환지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06878",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "규격·유통기한·알레르기 문구를 확인하는 구간이 라벨변경 검토대기다.",
+      "concepts": [
+        "라벨변경 검토대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06879",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "포장 뒤 제품과 창고공기가 같은 온도에 이르는 시간이 상자온도 평형지연이다. 포장 종료 뒤 상자 중심과 창고공기 온도차가 허용범위에 드는 때까지를 열평형으로 본다.",
+      "concepts": [
+        "상자온도 평형지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06880",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "품질해제·승인·충전·밀봉·검사·입고를 배열한 것이 포장사건 순서복원이다.",
+      "concepts": [
+        "포장사건 순서복원"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06881",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계획시각 뒤 원료·종균·조가 준비되어 실제 투입할 때까지의 시간이 발효배치 착수지연이다. 계획 효력부터 원료·종균·설비가 준비되고 첫 실제 충전이 시작될 때까지를 나눠 기록한다.",
+      "concepts": [
+        "발효배치 착수지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06882",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수요·재고·검사능력을 검토해 배치표를 승인하는 구간이 생산계획 확정대기다.",
+      "concepts": [
+        "생산계획 확정대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06883",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장상태와 편차를 대조하고 서명해 다음 조에 넘기는 시간이 교대인계 처리지연이다. 앞뒤 조가 설비·배치·편차를 대조하고 전자서명을 끝낸 실제 업무구간만 센다.",
+      "concepts": [
+        "교대인계 처리지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06884",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자격인력과 교대여유가 생길 때까지 작업이 멈추는 시간이 작업자 배정대기다.",
+      "concepts": [
+        "작업자 배정대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06885",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "변경판이 현장단말·제어기·검사실에 적용되는 시간이 공정변경 전파지연이다. 승인판 생성부터 현장단말·제어기·검사실의 버전 회신이 모두 맞을 때까지를 계산한다.",
+      "concepts": [
+        "공정변경 전파지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06886",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "새 공정조건의 품질·안전 영향을 검토하는 구간이 변경판 승인대기다.",
+      "concepts": [
+        "변경판 승인대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06887",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발효속도가 낮아 목표성분에 늦게 도달하는 시간이 배치연장 생물지연이다. 예상보다 느린 대사로 목표 성분이 늦게 형성된 구간을 승인·설비 대기와 분리한다.",
+      "concepts": [
+        "배치연장 생물지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06888",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추가운전과 폐기 중 선택을 위한 자료검토 시간이 배치연장 결정대기다.",
+      "concepts": [
+        "배치연장 결정대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06889",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이전배치 배출과 세정 뒤 설비를 새 제품조건으로 맞추는 시간이 다음배치 전환지연이다. 이전 제품 배출, CIP, 조건 설정, 원료 준비, 첫 충전의 선행 의존을 단계별로 둔다.",
+      "concepts": [
+        "다음배치 전환지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06890",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계획·승인·자원준비·착수·연장·종료를 배열하는 작업이 생산일정 연표복원이다.",
+      "concepts": [
+        "생산일정 연표복원"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06891",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉각이나 교반고장 뒤 품질지표가 실제 악화되기까지의 시간이 발효고장 영향지연이다. 냉각·교반 이상 발생부터 온도·산소·품질 지표가 실제 이탈할 때까지를 후속 영향으로 본다.",
+      "concepts": [
+        "발효고장 영향지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06892",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "설비·제품·위생 영향을 모아 대응단계를 정하는 구간이 발효설비 장애등급 결정대기다.",
+      "concepts": [
+        "발효설비 장애등급 결정대기"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06893",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주설비 차단 뒤 예비펌프·냉각기가 유효출력에 이르는 시간이 예비설비 전환지연이다. 주설비 차단 뒤 예비 장치 기동과 유효 출력 형성 사이를 물리 전환시간으로 센다.",
+      "concepts": [
+        "예비설비 전환지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06894",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "임시조건의 안전·품질한계를 검토하는 시간이 발효공정 비상운전 승인대기다.",
+      "concepts": [
+        "발효공정 비상운전 승인대기"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06895",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고장원인을 없앤 뒤 온도·pH·산소가 범위로 돌아오는 시간이 공정조건 회복지연이다. 원인 제거 후 온도·pH·산소가 모두 허용범위에 지속 진입한 때를 상태 회복으로 둔다.",
+      "concepts": [
+        "공정조건 회복지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06896",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "노출시간과 검사결과를 검토해 재처리·사용·폐기를 정하는 구간이 제품처분 결정대기다.",
+      "concepts": [
+        "제품처분 결정대기"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06897",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "설비가 정상이어도 미생물활동이 새 평형에 이르는 시간이 복구후 대사안정 지연이다. 설비값 정상화 뒤 가스·열·성분 생성률이 새 평형에 이를 때까지를 생물 후행부로 본다.",
+      "concepts": [
+        "복구후 대사안정 지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06898",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연속표본과 시험결과가 합격할 때까지 비상상태를 유지하는 시간이 정상운전 해제대기다.",
+      "concepts": [
+        "정상운전 해제대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06899",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복구 뒤 다음 배치에서 같은 이상이 없는지 확인하는 시간이 후속배치 검증지연이다. 복구 다음 배치의 공정·품질 지표가 전 회차 정상범위를 재현할 때까지를 검증구간으로 센다.",
+      "concepts": [
+        "후속배치 검증지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06900",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고장·영향·판정·우회·회복·품질결정을 순서대로 맞추는 작업이 발효장애 연표재구성이다.",
+      "concepts": [
+        "발효장애 연표재구성"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    }
+  ]
+}

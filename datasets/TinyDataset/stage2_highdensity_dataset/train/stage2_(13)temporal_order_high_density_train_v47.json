@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v47",
+  "version": "47",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-06901 ~ S2-TOH-07050",
+  "concept_family": "S2-A03-T047: 데이터센터 냉각·전력 절체 — 마감 창 내부·외부 사건의 시간 경계",
+  "design_note": "데이터센터 냉각·전력 절체 영역의 마감 창 내부·외부 사건의 시간 경계 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-06901",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수전전압이 돌아온 뒤 주파수·고조파·상순서가 허용범위에 머무는지 보는 시간이 상용전원 품질확인창이다. 전압 복귀 한 점이 아니라 주파수·고조파·상순서가 요구시간 동안 함께 안정되는지 본다.",
+      "concepts": [
+        "상용전원 품질확인창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06902",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전압상실부터 비상절체 신호가 확정되어야 하는 최장시간이 계통정전 검출마감이다. 원시 전압 상실부터 보호계전 지속조건과 비상 신호 생성 중 마지막 사건까지를 직접 잰다.",
+      "concepts": [
+        "계통정전 검출마감"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06903",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상용전원이 안정된 뒤 발전기 병렬을 해제하기 전에 동기를 맞춰야 하는 경계가 수전복귀 동기기한이다. 상용과 발전 전원의 위상·주파수 조건을 맞추고 병렬 해제 접점이 경계 안에 있어야 한다.",
+      "concepts": [
+        "수전복귀 동기기한"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06904",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예정정전 공지가 운전계획에 반영될 수 있는 제출시한 전 구간이 전력사 통보유효창이다. 기관 수신과 운영계획 버전 반영이 제출시한 전에 끝나야 단순 발송을 유효 통보로 보지 않는다.",
+      "concepts": [
+        "전력사 통보유효창"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06905",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고장해제 뒤 보호대기와 계통허가가 모두 유효한 시간대만 재폐로할 수 있으며 이를 수전차단기 재폐로창이라 한다. 보호계전 리셋·계통 허가·현장 안전확인의 교집합에서만 닫힘 명령을 허용한다.",
+      "concepts": [
+        "수전차단기 재폐로창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06906",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "품질확인 구간이 끝나기 전에 또는 승인기한 뒤 수행한 절체를 상용복귀 창외절체로 분류한다. 조기·지연 절체를 각각 구분해 품질 미확인과 승인 만료라는 다른 위반 원인을 남긴다.",
+      "concepts": [
+        "상용복귀 창외절체"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06907",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하루 경계시각의 전력량을 검수해 정산자료로 잠그는 시각이 수전계량 확정마감이다. 원계량 수집과 결측 검토·책임 서명·정산원장 잠금 중 마지막 사건을 완료로 삼는다.",
+      "concepts": [
+        "수전계량 확정마감"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06908",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전압·주파수 경보가 뜬 뒤 운전자가 원인과 대응을 확인해야 하는 최종시각이 계통경보 응답기한이다. 화면 확인뿐 아니라 원인 등급과 즉시 조치가 권한 계정에 기록된 때까지를 응답으로 본다.",
+      "concepts": [
+        "계통경보 응답기한"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06909",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "절체 전후 지정기간의 고속파형만 사건분석 표본으로 묶는 범위가 전력품질 표본창이다. 사건 전후 고속파형의 시작·종료를 고정해 늦게 수집된 평상표본이 분석에 섞이지 않게 한다.",
+      "concepts": [
+        "전력품질 표본창"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06910",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정전·절체·복귀의 원시로그와 영향을 정한 시간 안에 제출하는 기준이 수전사건 보고마감이다. 원시로그 해시·영향 범위·책임 승인과 기관 접수가 모두 기준시간 안에 있어야 한다.",
+      "concepts": [
+        "수전사건 보고마감"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06911",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상용전원 상실과 UPS 인버터 공급 사이에 부하가 견딜 수 있는 최대공백이 UPS 무순단 전환한계다. 상용 전압 상실과 중요부하 단자의 인버터 전압 형성 사이 공백을 직접 측정한다.",
+      "concepts": [
+        "UPS 무순단 전환한계"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06912",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잔량과 필수부하로 계산한 지속가능 시작·종료 사이가 UPS 배터리 지원창이다.",
+      "concepts": [
+        "UPS 배터리 지원창"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06913",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배터리가 경계 아래로 내려간 뒤 비필수부하를 내려야 하는 최종시각이 저잔량 부하차단마감이다. 배터리 임계 도달 뒤 차단 명령이 아니라 비필수 부하 전류가 사라진 때까지를 판정한다.",
+      "concepts": [
+        "저잔량 부하차단마감"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06914",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입력전원이 돌아온 뒤 안정성을 확인하고 바이패스에서 정상으로 옮기는 구간이 UPS 복전관찰창이다.",
+      "concepts": [
+        "UPS 복전관찰창"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06915",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복구 뒤 다음 비상대기 전에 예비용량을 채워야 하는 시간경계가 UPS 충전완료 기한이다. 잔량 표시뿐 아니라 다음 비상에 필요한 용량시험이 대기상태 복귀 전에 끝나야 한다.",
+      "concepts": [
+        "UPS 충전완료 기한"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06916",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이중화 여유와 낮은 부하가 확보된 지정시간에만 방전시험을 하는 구간이 배터리 시험허용창이다.",
+      "concepts": [
+        "배터리 시험허용창"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06917",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비허가가 끝나기 전에 절연·시험·정상경로 복귀를 모두 마쳐야 하는 시각이 UPS 바이패스 작업마감이다. 절연·부품작업·기능시험·정상경로 전환 중 가장 늦은 완료가 허가 만료 전이어야 한다.",
+      "concepts": [
+        "UPS 바이패스 작업마감"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06918",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단일모듈 고장 뒤 이중화 상실 여부를 판정해야 하는 최장시간이 UPS 경보확인 기한이다.",
+      "concepts": [
+        "UPS 경보확인 기한"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06919",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정전 전후 지정분의 파형·상태·명령을 덮어쓰지 않고 묶는 범위가 UPS 로그보존창이다. 파형·상태·명령의 장치 원시각과 해시를 함께 고정해 순환버퍼 덮어쓰기를 막는다.",
+      "concepts": [
+        "UPS 로그보존창"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06920",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배터리소모·모듈상태·절체결과를 검수해 사건을 닫는 시각이 UPS 복구보고 마감이다.",
+      "concepts": [
+        "UPS 복구보고 마감"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06921",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정전확정 뒤 비상발전기가 정 목표전압과 주파수에 도달해야 하는 최장시각이 발전기 기동완료마감이다. 시동 명령 이후 회전수·전압·주파수가 모두 허용대에 지속 든 때를 완료로 본다.",
+      "concepts": [
+        "발전기 기동완료마감"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06922",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉간기동 뒤 부하를 받기 전 윤활·냉각이 안정되어야 하는 구간이 발전기 예열운전창이다.",
+      "concepts": [
+        "발전기 예열운전창"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06923",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발전전압 안정 뒤 냉각·네트워크·안전 부하를 정해진 순서로 넣어야 하는 경계가 필수부하 투입기한이다. 냉각·네트워크·안전 부하의 실제 전류가 지정 순서로 형성된 가장 늦은 시각을 사용한다.",
+      "concepts": [
+        "필수부하 투입기한"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06924",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "낮은 부하와 환기·방재 인력이 확보된 시간대만 연료를 보충하는 구간이 연료보충 안전창이다.",
+      "concepts": [
+        "연료보충 안전창"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06925",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비나 냉각 점검 없이 비상발전을 유지할 수 있는 최대기간이 발전기 연속운전한계다. 누적 운전시간과 냉각·윤활 상태를 함께 추적해 정지 없이 유지할 수 있는 경계를 넘지 않는다.",
+      "concepts": [
+        "발전기 연속운전한계"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06926",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 부하시험일부터 허용주기가 지나기 전에 다음 시험을 끝내야 하는 기준이 발전시험 수행기한이다.",
+      "concepts": [
+        "발전시험 수행기한"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06927",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부하를 상용으로 넘긴 뒤 무부하냉각을 유지해야 하는 시간이 발전기 정지냉각창이다. 부하 해제 뒤 무부하 회전과 온도 안정이 요구시간을 채운 다음에야 엔진을 정지한다.",
+      "concepts": [
+        "발전기 정지냉각창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06928",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트립 뒤 원인확인과 윤활압 회복 전에는 재기동하지 않는 최소대기시간이 발전기 재기동 유예다.",
+      "concepts": [
+        "발전기 재기동 유예"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06929",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기동·부하투입·정지 파형을 원인분석이 끝날 때까지 보존하는 기간이 발전파형 보존기한이다. 기동·부하투입·정지 각 구간의 원시파일이 원인분석 종료 전까지 해시 검증 가능해야 한다.",
+      "concepts": [
+        "발전파형 보존기한"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06930",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연료·기동·부하·경보·정지 기록을 정한 시각까지 확정하는 기준이 발전사건 문서마감이다.",
+      "concepts": [
+        "발전사건 문서마감"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06931",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전원상실 판정부터 대체전원 접점이 닫힐 때까지 허용되는 최대시간이 ATS 절체동작 한계다. 전원상실 확정부터 대체접점 닫힘과 부하전압 회복 중 요구된 마지막 사건까지를 잰다.",
+      "concepts": [
+        "ATS 절체동작 한계"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06932",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상용전원 복귀 뒤 흔들림 없이 유지되는지 확인하는 최소시간이 ATS 재절체 안정창이다.",
+      "concepts": [
+        "ATS 재절체 안정창"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06933",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "폐쇄전환 설비에서 동기조건이 맞는 짧은 시간에만 양 전원을 겹치는 범위가 두전원 병렬허용창이다. 위상·주파수·전압 조건의 교집합이 유효한 짧은 구간만 병렬로 두고 즉시 한 경로를 연다.",
+      "concepts": [
+        "두전원 병렬허용창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06934",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비창 종료 전 모의정전·절체·복귀를 모두 검증해야 하는 경계가 ATS 시험완료마감이다.",
+      "concepts": [
+        "ATS 시험완료마감"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06935",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "명령과 접점이 맞지 않은 뒤 수동경로를 확보해야 하는 최장시간이 절체실패 응답기한이다. 접점 불일치 탐지 뒤 수동 우회와 중요부하 전압 확보가 제한시간 안에 성립해야 한다.",
+      "concepts": [
+        "절체실패 응답기한"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06936",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고장원인이 제거되고 승인토큰이 살아 있는 동안만 원격잠금을 푸는 구간이 ATS 잠금해제 유효창이다.",
+      "concepts": [
+        "ATS 잠금해제 유효창"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06937",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사건 뒤 각 접점과 보호계전의 원시기록을 덮어쓰기 전에 회수해야 하는 시각이 절체로그 수집마감이다. 보호계전·보조접점·전압파형을 장치 순번과 함께 회수해 순환버퍼 이전에 원본을 잠근다.",
+      "concepts": [
+        "절체로그 수집마감"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06938",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정기점검 전 장치시계를 기준서버 허용오차 안으로 맞춰야 하는 기준이 ATS 시계동기 기한이다.",
+      "concepts": [
+        "ATS 시계동기 기한"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06939",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경로전환 뒤 전압·전류·온도가 안정되는지 보는 구간이 절체후 부하관찰창이다. 전압·전류·단자온도가 여러 표본 안정되는 기간을 지나야 단순 접점 전환을 복귀로 보지 않는다.",
+      "concepts": [
+        "절체후 부하관찰창"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06940",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원인·수동개입·복귀상태를 검수해 작업표를 닫는 시각이 ATS 사건종료마감이다.",
+      "concepts": [
+        "ATS 사건종료마감"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06941",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상위차단기 투입 뒤 분기들을 돌입전류 한계 안에서 시간차로 켜는 구간이 PDU 순차가압창이다. 분기별 돌입전류가 안정된 뒤 다음 차단기를 넣는 간격을 지켜 상위 용량을 넘지 않는다.",
+      "concepts": [
+        "PDU 순차가압창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06942",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분기전류가 지속상한을 넘은 뒤 부하를 옮기거나 내려야 하는 최종시각이 분기과부하 감발마감이다.",
+      "concepts": [
+        "분기과부하 감발마감"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06943",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이중전원과 랙우회가 확인된 지정기간에만 분전반을 격리하는 시간이 PDU 정비허가창이다. 랙 우회와 이중전원, 잠금표찰, 작업자 승인 조건이 동시에 열린 기간에만 격리한다.",
+      "concepts": [
+        "PDU 정비허가창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06944",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고장구간을 분리하고 절연 결과가 유효한 동안 재투입해야 하는 경계가 차단기 재투입기한이다.",
+      "concepts": [
+        "차단기 재투입기한"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06945",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부하가 대표수준인 시간대에만 단자온도를 비교하는 구간이 PDU 열화상 점검창이다. 대표 부하가 유지되고 단자 접근이 안전한 교집합에서 촬영해야 비교값이 유효하다.",
+      "concepts": [
+        "PDU 열화상 점검창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06946",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비 시작 전 대상랙 전력을 다른 분기로 옮겨야 하는 시각이 부하이동 완료마감이다.",
+      "concepts": [
+        "부하이동 완료마감"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06947",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누설·온도·전류 경보 뒤 현장검증을 끝내야 하는 최장시간이 PDU 경보확인 기한이다. 경보 뒤 현장 온도·전류·누설을 검증하고 조치 등급을 확정한 때까지를 제한시간과 비교한다.",
+      "concepts": [
+        "PDU 경보확인 기한"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06948",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정산경계 전후 원시누적값을 검수해 일일사용량을 잠그는 구간이 분기계량 확정창이다.",
+      "concepts": [
+        "분기계량 확정창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06949",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재가압 뒤 접점·전류·온도 이상이 없는지 확인하는 최소시간이 PDU 복귀관찰 시간이다. 재가압 후 접점·전류·온도의 연속 정상표본이 최소기간을 채워야 운영 복귀를 승인한다.",
+      "concepts": [
+        "PDU 복귀관찰 시간"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06950",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차단·우회·수리·재투입 내역을 정한 기간 안에 제출하는 기준이 분전사건 보고마감이다.",
+      "concepts": [
+        "분전사건 보고마감"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06951",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "A경로에서 B경로로 옮길 때 서버가 허용하는 짧은 병렬공급 구간이 랙 이중전원 겹침창이다. 두 PDU 전압이 함께 공급되는 교집합을 서버 허용시간 안으로 제한해 역급전 위험을 피한다.",
+      "concepts": [
+        "랙 이중전원 겹침창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06952",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전력예산 초과 뒤 비필수 작업을 중지해야 하는 최종시각이 랙부하 감축기한이다.",
+      "concepts": [
+        "랙부하 감축기한"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06953",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전원복구 뒤 부하급증을 피하려고 순차부팅 간격을 유지하는 구간이 서버재기동 유지창이다. 앞 묶음의 전력과 서비스가 안정된 뒤 다음 묶음을 켜도록 부팅 간격을 유지한다.",
+      "concepts": [
+        "서버재기동 유지창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06954",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "PDU 정비 전 이중코드 서버의 활성경로를 모두 바꿔야 하는 경계가 랙전력 이동마감이다.",
+      "concepts": [
+        "랙전력 이동마감"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06955",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "한 경로가 고장난 순간부터 이중화가 회복될 때까지의 취약기간이 단일전원 위험창이다. 한 경로 상실부터 대체경로 검증 완료까지를 취약 상태로 두고 단순 전압 복귀로 닫지 않는다.",
+      "concepts": [
+        "단일전원 위험창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06956",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "흡입온도가 임계를 넘은 뒤 작업이동·감발·냉각증대를 실행해야 하는 최장시간이 랙온도 대응기한이다.",
+      "concepts": [
+        "랙온도 대응기한"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06957",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "피크예고 시작부터 해제까지 서버전력 상한을 유지하는 범위가 전력캡 적용유효창이다. 피크 예고 효력부터 해제까지 실제 서버 소비전력이 상한 안에 머무는지 계량으로 확인한다.",
+      "concepts": [
+        "전력캡 적용유효창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06958",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서비스 중복성과 냉각여유가 확보된 기간에만 전원·팬을 점검하는 시간이 랙점검 작업창이다.",
+      "concepts": [
+        "랙점검 작업창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06959",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감발해제 뒤 오류율·전력·온도가 안정되는지 확인해야 하는 시간이 부하복귀 관찰기한이다. 감발 해제 뒤 오류율·전력·온도가 모두 정상범위에 지속 든 때까지를 관찰한다.",
+      "concepts": [
+        "부하복귀 관찰기한"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06960",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경로변경과 영향서비스를 사건종료 후 정한 시각까지 확정하는 기준이 랙전원 기록마감이다.",
+      "concepts": [
+        "랙전원 기록마감"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06961",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예상부하 상승 전 냉수온도를 확보하기 위해 기동할 수 있는 계획구간이 냉동기 선행기동창이다. 예상 열부하 전에 냉동기를 켜되 최소운전·전력피크 제약이 함께 유효한 시간에 한정한다.",
+      "concepts": [
+        "냉동기 선행기동창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06962",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기동명령 뒤 오일압·유량·냉수온도가 운전기준에 들어와야 하는 최장시각이 냉동기 기동완료마감이다.",
+      "concepts": [
+        "냉동기 기동완료마감"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06963",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부하가 낮아져도 잦은 재기동을 막으려고 운전을 유지하는 최소시간이 저부하 정지유예창이다. 부하 감소 한 점이 아니라 최소 운전시간이 끝날 때까지 정지를 늦춰 빈번한 재기동을 막는다.",
+      "concepts": [
+        "저부하 정지유예창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06964",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운전시간 편차가 기준을 넘기기 전에 주·예비 역할을 바꿔야 하는 경계가 냉동기 순환교대기한이다.",
+      "concepts": [
+        "냉동기 순환교대기한"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06965",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "설정변경 뒤 공급온도가 안정적으로 범위에 머무는지 보는 구간이 냉수온 복귀관찰창이다. 설정 변경 뒤 공급·환수 온도와 유량이 여러 표본 안정되는지를 함께 본다.",
+      "concepts": [
+        "냉수온 복귀관찰창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06966",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "축열·예비용량이 충분한 저부하 시간대만 기계를 멈추는 구간이 냉동기 정비허용창이다.",
+      "concepts": [
+        "냉동기 정비허용창"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06967",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누설경보 뒤 환기·격리·점검을 끝내야 하는 최장시간이 냉매경보 조치기한이다. 누설 감지부터 환기·구역격리·현장검증 중 가장 늦은 완료를 경보 마감과 비교한다.",
+      "concepts": [
+        "냉매경보 조치기한"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06968",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수리·진공·충전·시험 결과가 유효한 작업창 안에서 복귀해야 하는 기준이 냉동기 재가동기한이다.",
+      "concepts": [
+        "냉동기 재가동기한"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06969",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하루 온도·유량·전력 자료를 다음 효율계산 전까지 잠그는 시각이 냉수자료 검수마감이다. 온도·유량·전력의 결측·교정과 책임 서명이 효율계산 전에 원장에 잠겨야 한다.",
+      "concepts": [
+        "냉수자료 검수마감"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06970",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트립·우회·복구의 원인과 영향을 정한 일수 안에 제출하는 기준이 냉동기 사건보고 기한이다.",
+      "concepts": [
+        "냉동기 사건보고 기한"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06971",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "랙열경보 뒤 해당 공조기가 풍량을 높여야 하는 최장시간이 CRAC 증풍 응답기한이다. 랙 경보 뒤 팬 명령이 아니라 실제 풍량과 바닥압력이 목표에 든 때를 응답으로 본다.",
+      "concepts": [
+        "CRAC 증풍 응답기한"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06972",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "인접장비가 부하를 받을 수 있는 기간에만 한 대를 정지하는 구간이 CRAC 순환정비창이다.",
+      "concepts": [
+        "CRAC 순환정비창"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06973",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "팬조정 뒤 이중바닥 압력이 허용폭에 머무는지 확인하는 시간이 바닥압력 안정창이다. 팬 조정 뒤 여러 센서의 압력이 허용폭 안에 최소시간 머물러야 완료한다.",
+      "concepts": [
+        "바닥압력 안정창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06974",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "습도·부하 조건 변화 뒤 자유냉각과 기계냉각 사이를 바꿔야 하는 경계가 냉각모드 전환마감이다.",
+      "concepts": [
+        "냉각모드 전환마감"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06975",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수위경보가 발생한 뒤 배수와 누수확인을 끝내야 하는 최장시간이 응축수 배수점검기한이다. 수위경보 이후 배수 유량·트랩·누수 위치를 확인해 재상승 위험까지 제한시간 안 평가한다.",
+      "concepts": [
+        "응축수 배수점검기한"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06976",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입자·차압과 이중화가 안전한 저부하 시간에만 필터를 바꾸는 구간이 필터교체 작업허용창이다.",
+      "concepts": [
+        "필터교체 작업허용창"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06977",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트립 뒤 압축기 압력평형을 위해 재기동을 금지하는 최소기간이 공조재기동 지연창이다. 트립 뒤 압축기 양측 압력이 평형에 이르고 최소 정지시간이 지난 뒤에만 기동한다.",
+      "concepts": [
+        "공조재기동 지연창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06978",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수리 뒤 온도·풍량·누수경보가 안정되는지 확인해야 하는 시간이 CRAC 복귀관찰기한이다.",
+      "concepts": [
+        "CRAC 복귀관찰기한"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06979",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승인된 새 설정판을 다음 부하주기 전에 모든 장비에 배포해야 하는 시각이 공조설정 적용마감이다. 승인 버전이 모든 장비에 배포되고 회신 해시가 일치한 때를 적용 완료로 삼는다.",
+      "concepts": [
+        "공조설정 적용마감"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06980",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경보·수동개입·수리·시험을 작업종료 뒤 잠그는 시각이 CRAC 사건문서 마감이다.",
+      "concepts": [
+        "CRAC 사건문서 마감"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06981",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "외기온도가 낮은 시간대에 유량과 히터를 유지해 결빙을 막는 운전범위가 냉각탑 동파방지창이다. 외기 저온 동안 순환유량·히터·팬 설정의 교집합을 유지해 배관 결빙을 방지한다.",
+      "concepts": [
+        "냉각탑 동파방지창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06982",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "응축수온 상승 뒤 추가팬을 투입해야 하는 최장시간이 냉각탑 팬증대기한이다.",
+      "concepts": [
+        "냉각탑 팬증대기한"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06983",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "순환수 유량과 접촉시간이 확보된 지정구간만 약품을 넣는 시간이 수질약품 투입창이다. 순환 유량과 탱크 혼합, 안전인력 조건이 모두 유효한 기간에만 주입한다.",
+      "concepts": [
+        "수질약품 투입창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06984",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수질상한 도달 뒤 농축수를 빼 기준으로 돌려야 하는 시각이 블로다운 완료마감이다.",
+      "concepts": [
+        "블로다운 완료마감"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06985",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예비셀과 외기여유가 확보된 기간에만 한 셀을 격리하는 구간이 냉각탑 정비허용창이다. 예비 셀 용량과 외기 여유·부하 한계가 동시에 충족된 구간에서 한 셀을 격리한다.",
+      "concepts": [
+        "냉각탑 정비허용창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06986",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 채취·소독일부터 정한 주기 안에 다음 검사를 끝내야 하는 경계가 레지오넬라 검사기한이다.",
+      "concepts": [
+        "레지오넬라 검사기한"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06987",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상정지 뒤 회전체와 전동기가 멈출 때까지 기다리는 최소시간이 탑팬 재기동유예다. 회전체 속도와 모터온도가 안전 범위에 든 뒤 최소 정지시간까지 채워야 한다.",
+      "concepts": [
+        "탑팬 재기동유예"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06988",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재투입 뒤 진동·수온·수위가 안정되는지 보는 구간이 냉각탑 복귀관찰창이다.",
+      "concepts": [
+        "냉각탑 복귀관찰창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06989",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "한파예보 전에 밸브·팬·히터 설정을 바꿔야 하는 최종시각이 겨울운전 설정마감이다. 한파 효력 전 밸브·팬·히터 설정의 배포와 장비 회신을 모두 끝내야 한다.",
+      "concepts": [
+        "겨울운전 설정마감"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06990",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수질·약품·정비·경보를 월보고 전까지 검수하는 기준이 냉각탑 기록확정기한이다.",
+      "concepts": [
+        "냉각탑 기록확정기한"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06991",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서취득 뒤 허용지연 안에 중앙에 도착한 값만 실시간제어에 쓰는 구간이 온도표본 실시간창이다. 장치 측정과 중앙 수신 차이가 허용지연 안인 값만 현재 제어상태를 대표하게 한다.",
+      "concepts": [
+        "온도표본 실시간창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06992",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주센서 표본이 끊긴 뒤 대체값으로 바꿔야 하는 최장시간이 결측센서 전환기한이다.",
+      "concepts": [
+        "결측센서 전환기한"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06993",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "순간초과를 제외하고 경보를 확정하기 위해 값이 이어져야 하는 시간이 온도경보 지속창이다. 임계 초과가 요구된 연속시간을 채울 때만 경보를 열어 순간 잡음을 배제한다.",
+      "concepts": [
+        "온도경보 지속창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06994",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 합격일부터 허용주기를 넘기기 전에 교정을 마쳐야 하는 경계가 센서교정 수행기한이다.",
+      "concepts": [
+        "센서교정 수행기한"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06995",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서와 서버의 편차가 허용범위에 머물러야 하는 연속구간이 시계동기 유지창이다. 센서·게이트웨이·서버 오프셋이 허용범위 안인 연속기간만 절대 선후 판정에 사용한다.",
+      "concepts": [
+        "시계동기 유지창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06996",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신복구 뒤 누락표본을 다음 일일집계 전까지 올려야 하는 시각이 환경자료 백필마감이다.",
+      "concepts": [
+        "환경자료 백필마감"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06997",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중복측정과 낮은 부하가 확보된 기간에만 감지부를 청소하는 구간이 센서세척 작업창이다. 중복 센서가 유효하고 부하가 낮은 교집합에서 감지부 분리·세척·교정을 완료한다.",
+      "concepts": [
+        "센서세척 작업창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06998",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 정상복귀 뒤 재상승이 없는지 확인해야 하는 최소시간이 경보해제 관찰기한이다.",
+      "concepts": [
+        "경보해제 관찰기한"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06999",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교정·결측·정비정보를 반영해 일일자료를 잠그는 시각이 환경자료 확정마감이다. 교정·결측·정비영향을 반영한 뒤 책임 서명과 일일 원장 잠금이 끝나야 한다.",
+      "concepts": [
+        "환경자료 확정마감"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07000",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오류발견 뒤 영향구간과 대체값을 기록해야 하는 최종시각이 센서이상 보고기한이다.",
+      "concepts": [
+        "센서이상 보고기한"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07001",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이중화·부하이동·현장안전이 모두 유효한 기간에만 전력설비를 격리하는 구간이 전력정비 승인창이다. 이중화·부하이동·잠금표찰·현장안전 조건이 동시에 유지되는 동안만 설비를 연다.",
+      "concepts": [
+        "전력정비 승인창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07002",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예약창 시작 뒤 부하상승 전에 대상설비를 격리해야 하는 경계가 냉각정비 착수마감이다.",
+      "concepts": [
+        "냉각정비 착수마감"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07003",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전자허가가 만료되기 전에 잠금·표찰·작업착수를 마쳐야 하는 기준이 작업허가 유효기한이다. 허가 만료 전 잠금·표찰과 첫 실제 작업이 시작돼야 하며 사전 서명만으로는 부족하다.",
+      "concepts": [
+        "작업허가 유효기한"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07004",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예상피크나 악천후 전 공구·인원·임시배관을 회수해야 하는 시각이 정비철수 안전마감이다.",
+      "concepts": [
+        "정비철수 안전마감"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07005",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비종료와 정상부하 복귀 사이 지정기간에만 시험하는 시간이 기능시험 수행창이다. 정비 종료 뒤 시험 부하 인가와 결과 합격이 정상 서비스 복귀 전에 완료되어야 한다.",
+      "concepts": [
+        "기능시험 수행창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07006",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예약종료가 임박하기 전에 서비스·안전 담당의 연장결정을 받아야 하는 기준이 정비연장 승인기한이다.",
+      "concepts": [
+        "정비연장 승인기한"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07007",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교체 뒤 한 부하주기 동안 온도·전류·진동을 보는 구간이 부품교체 관찰창이다. 교체품의 온도·전류·진동이 한 대표 부하주기 정상인 것을 확인한 뒤 창을 닫는다.",
+      "concepts": [
+        "부품교체 관찰창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07008",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재가동 전 모든 작업자 잠금과 표찰을 검수·해제해야 하는 시각이 잠금해제 완료마감이다.",
+      "concepts": [
+        "잠금해제 완료마감"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07009",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "측정·부품·시험결과를 작업종료 후 정한 시간 안에 올리는 기준이 정비자료 제출기한이다. 측정·부품·시험 원본과 전자서명이 작업종료 뒤 기준시간 안 원장에 접수되어야 한다.",
+      "concepts": [
+        "정비자료 제출기한"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07010",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운전인계와 문서검수까지 완료해야 작업창 안으로 인정되는 마지막 시각이 정비회차 종료경계다.",
+      "concepts": [
+        "정비회차 종료경계"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07011",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 감지 뒤 교차센서·영상·흡기상태를 확인하는 제한시간이 연기확인 판단창이다.",
+      "concepts": [
+        "연기확인 판단창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07012",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "화재확정 뒤 작업자가 방화구획 밖으로 나가야 하는 최장시간이 전산실 대피기한이다.",
+      "concepts": [
+        "전산실 대피기한"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07013",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대피경고 시작부터 방출 전까지 인원확인을 위해 둔 최소시간이 가스소화 방출지연창이다.",
+      "concepts": [
+        "가스소화 방출지연창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07014",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "소화·구조계획에 따라 위험분기 전원을 내려야 하는 시각이 비상전력 차단마감이다.",
+      "concepts": [
+        "비상전력 차단마감"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07015",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "화재모드 확정 뒤 일반공조를 막고 배연경로를 만들어야 하는 최장시간이 방화댐퍼 전환기한이다.",
+      "concepts": [
+        "방화댐퍼 전환기한"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07016",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장지휘와 설비수동권한을 소방대에 넘기는 제한구간이 소방인계 유효창이다.",
+      "concepts": [
+        "소방인계 유효창"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07017",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진압 뒤 가스·연기·구조안전 판정 전까지 출입을 막는 시간이 재입실 금지기간이다.",
+      "concepts": [
+        "재입실 금지기간"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07018",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환기재개 뒤 입자·가스·온도가 안정되는지 보는 구간이 화재후 환경관찰창이다.",
+      "concepts": [
+        "화재후 환경관찰창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07019",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감지 전후 전력·공조·출입·영상을 조사종료까지 유지하는 기간이 화재로그 보존기한이다.",
+      "concepts": [
+        "화재로그 보존기한"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07020",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "화재사건 보고마감은 진압 결과, 영향 범위, 복구 조치, 재발 방지안을 사고 뒤 정해진 일수 안에 확정하도록 둔 기한이다.",
+      "concepts": [
+        "화재사건 보고마감"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07021",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중앙제어가 보낸 냉각·전력 명령이 현장장치에 도착해야 하는 최장시간이 BMS 명령수신기한이다.",
+      "concepts": [
+        "BMS 명령수신기한"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07022",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "패킷손실이 일시현상인지 고장인지 확인하는 지속구간이 제어망 장애판정창이다.",
+      "concepts": [
+        "제어망 장애판정창"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07023",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중앙연결 상실 뒤 장치가 안전한 로컬설정으로 바뀌어야 하는 시각이 로컬제어 전환마감이다.",
+      "concepts": [
+        "로컬제어 전환마감"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07024",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이중화 서버와 현장제어기에 같은 판을 적용하는 승인시간대가 제어설정 배포창이다.",
+      "concepts": [
+        "제어설정 배포창"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07025",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신복구 뒤 누락로그를 일일감사 전에 모두 올려야 하는 경계가 자료재전송 완료기한이다.",
+      "concepts": [
+        "자료재전송 완료기한"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07026",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주·예비 시간원 절체 뒤 장치편차가 수렴해야 하는 구간이 시간서버 동기창이다.",
+      "concepts": [
+        "시간서버 동기창"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07027",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비자 세션이 자동으로 끊겨야 하는 승인종료 시각이 원격접속 허가만료다.",
+      "concepts": [
+        "원격접속 허가만료"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07028",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비정상명령이나 로그인 뒤 계정을 격리·확인해야 하는 최장시간이 보안경보 응답기한이다.",
+      "concepts": [
+        "보안경보 응답기한"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07029",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "로컬에서 중앙자동으로 돌아간 뒤 명령·상태 일치를 확인하는 시간이 중앙복귀 관찰창이다.",
+      "concepts": [
+        "중앙복귀 관찰창"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07030",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신·수동운전·복귀 자료를 정한 기간 안에 검수하는 기준이 제어장애 기록마감이다.",
+      "concepts": [
+        "제어장애 기록마감"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07031",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉각·전력 여유가 줄기 시작한 뒤 위험 전에 작업부하를 낮출 수 있는 구간이 서비스 감발결정창이다.",
+      "concepts": [
+        "서비스 감발결정창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07032",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "용량경보 확정 뒤 배치·분석 작업을 멈춰야 하는 최종시각이 비필수작업 중지마감이다.",
+      "concepts": [
+        "비필수작업 중지마감"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07033",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "네트워크·저장소·목적지 여유가 확보된 기간에만 워크로드를 옮기는 구간이 가상머신 이동창이다.",
+      "concepts": [
+        "가상머신 이동창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07034",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "설비정비나 열위험 시작 전에 대상서비스 이전을 끝내야 하는 경계가 부하이동 완료기한이다.",
+      "concepts": [
+        "부하이동 완료기한"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07035",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "피크나 냉각장애 동안 전력상한을 적용하는 시작·종료 범위가 서버전력캡 유지창이다.",
+      "concepts": [
+        "서버전력캡 유지창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07036",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "성능저하 예상 뒤 고객에게 영향과 기간을 알려야 하는 최장시간이 사용자통보 제출기한이다.",
+      "concepts": [
+        "사용자통보 제출기한"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07037",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "용량회복 뒤 소수작업·부분트래픽·정상부하로 올리는 관찰구간이 서비스복귀 단계창이다.",
+      "concepts": [
+        "서비스복귀 단계창"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07038",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오류율이 경계를 넘은 뒤 이전 배치로 돌아가야 하는 최장시간이 복귀실패 롤백기한이다.",
+      "concepts": [
+        "복귀실패 롤백기한"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07039",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전부하 복귀 뒤 지연·오류·온도를 집중확인하는 최소시간이 성능감시 유지기한이다.",
+      "concepts": [
+        "성능감시 유지기한"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07040",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "결정·이동·고객영향·복귀를 사건종료 뒤 확정하는 시각이 감발사건 문서마감이다.",
+      "concepts": [
+        "감발사건 문서마감"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07041",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "건전전력·냉각구역부터 서비스까지 순차로 되돌리는 전체기간이 전산실 단계복구창이다.",
+      "concepts": [
+        "전산실 단계복구창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07042",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전원복구 뒤 서버부하 투입 전에 최소냉각을 만들어야 하는 시각이 필수냉각 확보마감이다.",
+      "concepts": [
+        "필수냉각 확보마감"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07043",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환경·전력·네트워크 조건이 함께 유효한 기간만 랙전원을 넣는 구간이 랙재가압 허용창이다.",
+      "concepts": [
+        "랙재가압 허용창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07044",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시험결과가 나온 뒤 운영책임자가 재개여부를 결정해야 하는 최장시간이 서비스재개 승인기한이다.",
+      "concepts": [
+        "서비스재개 승인기한"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07045",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "각 단계 뒤 온도·전류·오류율이 안정되는지 보는 시간이 복구중 경보관찰창이다.",
+      "concepts": [
+        "복구중 경보관찰창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07046",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복구계획이 정한 종료시각 전까지 목표서비스와 부하를 회복해야 하는 경계가 정상부하 도달마감이다.",
+      "concepts": [
+        "정상부하 도달마감"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07047",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정상화 뒤 같은 전력·냉각 이상이 없는지 집중확인하는 구간이 재발감시 유지기간이다.",
+      "concepts": [
+        "재발감시 유지기간"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07048",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영구수리 뒤 임시케이블·밸브·설정을 원복해야 하는 최종시각이 임시우회 해제기한이다.",
+      "concepts": [
+        "임시우회 해제기한"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07049",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원시로그·수동조치·손실·복귀단계를 감사판으로 잠그는 시각이 복구자료 확정마감이다.",
+      "concepts": [
+        "복구자료 확정마감"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07050",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "근본원인·후속조치·책임자를 승인해 사건을 닫아야 하는 기준이 장애회차 종결기한이다.",
+      "concepts": [
+        "장애회차 종결기한"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    }
+  ]
+}

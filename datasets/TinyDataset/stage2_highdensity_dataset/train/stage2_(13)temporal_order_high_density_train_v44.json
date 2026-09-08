@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v44",
+  "version": "44",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-06451 ~ S2-TOH-06600",
+  "concept_family": "S2-A03-T044: 산림 병해충 예찰·방제 — 사건 시각과 관측 기록 시각의 분리",
+  "design_note": "산림 병해충 예찰·방제 영역의 사건 시각과 관측 기록 시각의 분리 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-06451",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "곤충이 유인트랩에 들어간 때를 뜻하는 해충포획 실제시각은 조사원이 트랩을 회수한 시각보다 앞선 구간에 있다. 트랩 접점과 내부 사진을 이용해 이전 점검 이후의 포획 가능구간을 제한하고 회수와 나눈다.",
+      "concepts": [
+        "해충포획 실제시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06452",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조사원이 포획물을 꺼내 수량을 확인한 트랩회수 관측시각은 각 개체의 포획순간과 구별한다. 마지막 회수 이후부터 이번 개봉 전까지를 포획 가능구간으로 두고 개체별 정확한 시점을 꾸미지 않는다.",
+      "concepts": [
+        "트랩회수 관측시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06453",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "설치를 앱에 입력한 트랩설치 등록시각은 장치가 현장에 놓인 물리적 시각과 다를 수 있다. GPS 설치와 장치 활성화를 확인해 앱 입력·수정시각이 물리 배치를 대체하지 않게 한다.",
+      "concepts": [
+        "트랩설치 등록시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06454",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자가 실제 유인제를 바꾼 유인제 교체실행 시각은 자재장부 차감시각과 분리한다. 유인제 용기 태그와 트랩 GPS가 일치한 작업 접점을 장부 입력보다 앞세운다.",
+      "concepts": [
+        "유인제 교체실행 시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06455",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장에서 센 수량이 서버에 저장된 포획수 입력시각은 관측행위 뒤 통신시간을 포함한다. 현장 계수와 서버 저장 사이를 통신·업무 지연으로 두고 개체 포획 순서에 포함하지 않는다.",
+      "concepts": [
+        "포획수 입력시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06456",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "카메라나 광센서가 곤충통과를 잡은 자동트랩 감지시각은 분석모델이 종을 확정한 때와 다르다. 센서 원시프레임은 포획의 늦은 경계이며 종분류 계산·사람 검수는 후속 사건으로 둔다.",
+      "concepts": [
+        "자동트랩 감지시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06457",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이미지 처리 뒤 해충종이 결정된 자동분류 판정시각은 포획사건 이후의 계산시점이다. 포획 이미지 촬영 뒤 모델 계산과 검수까지의 처리 사건으로 생물 행동보다 늦게 둔다.",
+      "concepts": [
+        "자동분류 판정시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06458",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조사자가 포획판을 촬영한 트랩사진 촬영시각은 사진이 서버에 업로드된 때보다 사건에 가깝다. 카메라 시계와 파일 해시를 확인해 업로드·보고서 삽입이 관측 순서를 바꾸지 않게 한다.",
+      "concepts": [
+        "트랩사진 촬영시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06459",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신복구 후 과거 관측이 저장된 트랩자료 백필시각을 포획시각으로 쓰면 발생추세가 왜곡된다. 장치 원시각·순번을 보존해 통신 복구 때 과거 포획이 몰려 발생한 듯 보이지 않게 한다.",
+      "concepts": [
+        "트랩자료 백필시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06460",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "동정오류를 바로잡은 트랩조사 수정시각은 해충이 새로 나타난 사건이 아니라 기록갱신이다. 원동정·원시각과 수정값·사유를 함께 보존해 발생 추세를 사후 편집으로 바꾸지 않는다.",
+      "concepts": [
+        "트랩조사 수정시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06461",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수목의 잎색이 실제로 변하기 시작한 잎변색 발생시점은 사람이 처음 발견한 시각보다 이를 수 있다. 직전 정상 사진과 첫 변색 사진 사이를 범위로 두어 순찰 발견 한 점으로 시작을 고정하지 않는다.",
+      "concepts": [
+        "잎변색 발생시점"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06462",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "순찰자가 변색을 확인한 잎변색 발견시각은 증상의 시작이 아니라 관측가능한 상한이다. 직전 정상 관찰과 발견 사이를 증상 시작의 범위로 두어 순찰 지연을 생리 변화와 구별한다.",
+      "concepts": [
+        "잎변색 발견시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06463",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해충이 나무껍질을 뚫은 수간천공 발생시점은 수피를 벗겨 흔적을 본 시각과 구별한다. 수피 흔적의 발달도와 해충 생활사를 사용해 해체 점검 전의 가능구간을 추정한다.",
+      "concepts": [
+        "수간천공 발생시점"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06464",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장표에 천공흔을 입력한 천공흔 기록시각은 피해행위 뒤의 조사·기록 사건이다. 사진 촬영·현장 관찰과 표 작성·서버 입력을 분리해 피해행위의 직접 시각으로 쓰지 않는다.",
+      "concepts": [
+        "천공흔 기록시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06465",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수지유출 실제시점은 나무에서 수지가 처음 흐르기 시작한 때로, 발견 사진보다 앞설 수 있다. 건조 정도와 연속 촬영 자료를 이용해 발생 가능 구간을 좁힌다.",
+      "concepts": [
+        "수지유출 실제시점"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06466",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "드론이나 조사원이 수관쇠퇴를 확인한 수관쇠퇴 관측시각은 생리적 저하의 발생시각과 같지 않다. 연속 영상과 생리 지표로 저하 구간을 제한하고 한 번의 드론 통과는 관측 상한으로만 둔다.",
+      "concepts": [
+        "수관쇠퇴 관측시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06467",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "형성층과 수분상태로 나무가 생존을 잃은 때를 추정한 고사발생 추정시점은 현장고사 판정일과 구별한다. 형성층 손상·수분지표·잎 상태를 결합해 판정일과 생존 상실의 시간층을 분리한다.",
+      "concepts": [
+        "고사발생 추정시점"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06468",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수목대장에 고사로 바뀐 고사목 등록시각은 실제 고사 뒤의 행정시점이다.",
+      "concepts": [
+        "고사목 등록시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06469",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "카메라 원본에 붙은 증상사진 메타시각은 파일복사·보고서 삽입시각보다 현장관측에 가깝다. 카메라 시계 교정과 원파일 해시를 확인해 복사·편집·보고서 생성보다 현장 관측을 우선한다.",
+      "concepts": [
+        "증상사진 메타시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06470",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수종이나 증상등급을 고친 증상기록 정정시각은 수목상태가 변한 사건으로 세지 않는다.",
+      "concepts": [
+        "증상기록 정정시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06471",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "카메라가 산림영상을 얻은 드론촬영 원시시각은 비행 뒤 파일을 업로드한 때와 분리한다. 프레임별 GPS·카메라 시각을 사용해 이륙·착륙 또는 업로드를 피해 관측시각으로 두지 않는다.",
+      "concepts": [
+        "드론촬영 원시시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06472",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "무선망이나 저장매체를 거쳐 서버에 들어온 드론영상 수신시각은 현장장면보다 늦다.",
+      "concepts": [
+        "드론영상 수신시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06473",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 사진을 위치보정해 지도로 만든 정사영상 생성시각은 각 나무가 촬영된 시각이 아니다. 개별 촬영 후 위치보정·모자이크가 끝난 계산 사건이어서 산림 상태의 직접 시각이 아니다.",
+      "concepts": [
+        "정사영상 생성시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06474",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분석모델이 영상에서 이상수관을 표시한 피해반점 검출시각은 피해발생이나 촬영 뒤의 계산사건이다.",
+      "concepts": [
+        "피해반점 검출시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06475",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공기가 특정 임반 위를 지나며 센서를 작동한 항공촬영 통과시각은 전체비행 종료시각과 나누어 본다. 비행 전체가 아니라 대상 임반의 센서 노출구간을 골라 실제 관측 범위를 고정한다.",
+      "concepts": [
+        "항공촬영 통과시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06476",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전문가가 자동검출을 검토해 피해지도를 확정한 영상분석 승인시각은 관측원시시각보다 뒤에 놓인다.",
+      "concepts": [
+        "영상분석 승인시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06477",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "임무표에 예정된 드론비행 계획시각은 실제 이륙·촬영시각의 증거가 아니다. 기상·배터리·허가로 취소될 수 있어 원시 프레임이 없으면 현장 관측 증거가 아니다.",
+      "concepts": [
+        "드론비행 계획시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06478",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기체가 지면을 떠난 드론이륙 실제시각은 조종앱에서 임무를 시작한 시각과 다를 수 있다.",
+      "concepts": [
+        "드론이륙 실제시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06479",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오프라인 분석결과가 뒤늦게 적재된 영상자료 백필시각은 피해관측의 시계열 위치가 아니다. 원촬영·계산시각과 분석 버전을 유지해 늦은 적재가 새 피해 사건으로 보이지 않게 한다.",
+      "concepts": [
+        "영상자료 백필시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06480",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경계나 등급을 사람이 고친 산림영상 수정시각은 숲에서 새 사건이 일어난 때를 뜻하지 않는다.",
+      "concepts": [
+        "산림영상 수정시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06481",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조직·토양·곤충 시료를 실제 용기에 담은 시료채취 현장시각은 검사실 접수시각보다 앞선다. 용기 봉인·GPS·바코드가 일치한 때를 사용해 운송·접수·분석보다 대표 상태를 앞에 둔다.",
+      "concepts": [
+        "시료채취 현장시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06482",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "라벨을 미리 만들 수 있으므로 시료바코드 발행시각은 채취행위의 직접 증거가 아니다.",
+      "concepts": [
+        "시료바코드 발행시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06483",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운송된 시료가 검사실에 인계된 산림병해 검사실 접수시각은 병원체가 나무에 감염된 시각과 구별한다. 시료가 도착한 행정 경계이며 현장 감염과 채취 이후의 운송지연을 포함한다.",
+      "concepts": [
+        "산림병해 검사실 접수시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06484",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시료가 배지에 들어가 배양기가 시작된 배양개시 기기시각은 접수나 결과판정과 별도다.",
+      "concepts": [
+        "배양개시 기기시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06485",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "PCR 장비가 신호를 임계로 판정한 병원체 증폭검출 시각은 현장감염이 발생한 때가 아니다. 추출·증폭 뒤 신호가 임계에 이른 분석 사건으로 감염 시작과 동일시하지 않는다.",
+      "concepts": [
+        "병원체 증폭검출 시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06486",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전문가가 대조군과 곡선을 검토해 확정한 진단결과 승인시각은 기기검출 뒤의 판정사건이다.",
+      "concepts": [
+        "진단결과 승인시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06487",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "확정결과가 방제기관에 전달된 진단보고 배포시각은 시료채취·분석시각보다 늦다. 판독·책임 승인 후 기관에 전달된 통보이며 원시료와 검사 완료보다 늦다.",
+      "concepts": [
+        "진단보고 배포시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06488",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운송앱에 이동이 저장된 시료운송 기록시각은 시료가 각 위치를 실제 통과한 때와 다를 수 있다.",
+      "concepts": [
+        "시료운송 기록시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06489",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오염이나 동정오류로 결과를 고친 산림병원체 검사결과 정정시각은 새 감염사건으로 해석하지 않는다. 원결과·오염근거·수정값을 함께 남겨 사후 교정이 새 병원체 사건이 되지 않게 한다.",
+      "concepts": [
+        "산림병원체 검사결과 정정시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06490",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "LIMS에 자료가 들어간 진단자료 적재시각은 장비가 측정한 원시시각에 처리지연이 더해진 값이다.",
+      "concepts": [
+        "진단자료 적재시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06491",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "숲에 비가 내리기 시작한 강우실제 시작시각은 기상대 보고서 발행시각과 구별한다. 현장 우량계와 레이더의 첫 연속 강우를 맞춰 보고서 발행 이전의 자연현상을 고정한다.",
+      "concepts": [
+        "강우실제 시작시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06492",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "우량계가 누적량을 읽은 강우센서 표본시각은 표본 사이 강우개시의 정확한 순간은 아니다.",
+      "concepts": [
+        "강우센서 표본시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06493",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장기온이 병원체 발달 기준을 지난 기온임계 통과시점은 일평균이 계산된 때보다 앞선다. 원시 온도곡선이 기준을 지난 때를 사용해 일평균 계산·게시시각과 구별한다.",
+      "concepts": [
+        "기온임계 통과시점"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06494",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하루 표본을 묶어 평균을 낸 일평균 기온산출 시각은 각 온도사건 뒤의 처리시점이다.",
+      "concepts": [
+        "일평균 기온산출 시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06495",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잎표면이 실제 젖기 시작한 습윤발생 실제시점은 습윤센서가 임계를 확인한 때와 다르다. 잎수분과 강우·이슬점 자료를 결합해 센서 임계 전 젖음의 가능범위를 제한한다.",
+      "concepts": [
+        "습윤발생 실제시점"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06496",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지속시간 조건을 통과해 경보가 만들어진 습윤경보 생성시각은 물리적 젖음 뒤에 놓인다.",
+      "concepts": [
+        "습윤경보 생성시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06497",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가지가 부러지거나 포자가 이동한 바람피해 발생시각은 순찰보고 시각보다 이를 수 있다. 돌풍 표본과 가지 파손 사진 사이를 사건구간으로 두어 순찰보고를 직접 발생점이라 하지 않는다.",
+      "concepts": [
+        "바람피해 발생시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06498",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관측을 검수해 전문이 배포된 산림기상전문 발행시각은 그 자료가 설명하는 현상시각과 나눈다.",
+      "concepts": [
+        "산림기상전문 발행시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06499",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원격관측이 서버에 도착한 현장기상 수신시각에는 측정 뒤 통신지연이 포함된다. 장치 측정·송신과 서버 도착의 차이를 산림 통신지연으로 기록한다.",
+      "concepts": [
+        "현장기상 수신시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06500",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서오류를 보정한 기상자료 정정시각은 숲의 환경이 다시 변한 시점이 아니다.",
+      "concepts": [
+        "기상자료 정정시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06501",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "번데기에서 성충이 실제 나온 성충우화 발생시점은 트랩에서 성충을 잡은 시각보다 앞설 수 있다. 발육도와 첫 성충 포획 사이를 범위로 두어 트랩 점검일을 우화의 정확한 시각으로 쓰지 않는다.",
+      "concepts": [
+        "성충우화 발생시점"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06502",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트랩회수 때 성충을 확인한 성충포획 관측시각은 우화사건의 직접 시각이 아니다.",
+      "concepts": [
+        "성충포획 관측시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06503",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "암컷이 나무에 알을 낳은 산란실제 시점은 조사자가 난괴를 발견한 때와 구별한다. 난괴 발달단계와 기온 누적을 이용해 발견 전 산란의 가능한 구간을 추정한다.",
+      "concepts": [
+        "산란실제 시점"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06504",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장조사에서 난괴를 본 난괴발견 조사시각은 산란 이후의 관측시점이다.",
+      "concepts": [
+        "난괴발견 조사시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06505",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유충발달과 기온으로 부화가 시작된 때를 계산한 부화발생 추정시점은 모델산출 시각과 다르다. 모델이 대표하는 생물 시각과 계산을 수행한 시스템 시각을 서로 다른 필드로 둔다.",
+      "concepts": [
+        "부화발생 추정시점"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06506",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누적온도를 갱신해 부화를 예측한 부화모델 계산시각은 생물학적 사건 뒤 또는 앞의 처리시점이다.",
+      "concepts": [
+        "부화모델 계산시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06507",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유충이 형성층이나 잎을 먹기 시작한 유충가해 시작시점은 피해흔 발견보다 이를 수 있다. 첫 섭식흔의 크기와 생활사를 통해 피해 발견보다 앞선 시작범위를 제한한다.",
+      "concepts": [
+        "유충가해 시작시점"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06508",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조사표에 피해를 입력한 유충피해 기록시각은 실제 섭식행위와 분리한다.",
+      "concepts": [
+        "유충피해 기록시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06509",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기온과 포획감소로 휴면진입을 추정한 월동진입 추정시각은 보고서 작성시각이 아니다. 포획감소·기온·발육상태가 가리키는 생물 전환을 보고서 작성과 분리한다.",
+      "concepts": [
+        "월동진입 추정시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06510",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추가표본으로 단계판정을 고친 생활사 판정수정 시각은 개체가 그때 변태했다는 뜻이 아니다.",
+      "concepts": [
+        "생활사 판정수정 시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06511",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "병원체가 숙주조직에 들어간 물리적 때가 정확히 보이지 않아 제한구간으로 두는 값이 감염실제 시작구간이다. 마지막 음성 표본과 첫 증상·양성 사이를 노출·잠복 정보로 좁혀 범위로 유지한다.",
+      "concepts": [
+        "감염실제 시작구간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06512",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "순찰자가 최초 증상을 본 첫증상 발견시각은 감염시각보다 늦은 관측사건이다.",
+      "concepts": [
+        "첫증상 발견시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06513",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "포자가 공기 중으로 방출된 포자비산 실제시점은 포집기가 이를 모은 시간과 분리한다. 포집기의 채취창과 기상자료를 사용해 분석 시각이 아닌 공중 방출 구간을 추정한다.",
+      "concepts": [
+        "포자비산 실제시점"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06514",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "포집지를 회수해 농도를 센 포자포집 회수시각은 비산구간 종료 뒤일 수 있다.",
+      "concepts": [
+        "포자포집 회수시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06515",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유전형과 증상발달로 전염을 추정한 인접목 전염추정 시점은 분석이 수행된 때와 다르다. 유전형·공간거리·증상발달을 결합한 과거 사건 추정이며 계산 완료와는 별도다.",
+      "concepts": [
+        "인접목 전염추정 시점"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06516",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "반복촬영에서 병반이 커진 것을 확인한 병반확대 관측시각은 확대가 진행된 전체기간을 대표한다.",
+      "concepts": [
+        "병반확대 관측시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06517",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 나무가 서로 다른 때 죽어 형성된 집단고사 발생구간은 보고서 등록일 한 점으로 줄이지 않는다. 개체별 고사 추정구간의 합집합을 유지해 여러 사건을 보고일 한 점으로 축소하지 않는다.",
+      "concepts": [
+        "집단고사 발생구간"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06518",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장팀이 감염범위를 그린 피해경계 조사시각은 병원체가 그 경계까지 퍼진 순간과 다르다.",
+      "concepts": [
+        "피해경계 조사시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06519",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 조사를 합쳐 지도가 만들어진 확산지도 생성시각은 현장 전염사건 뒤의 계산시점이다. 자료 정제·모형 실행·렌더링 뒤의 계산 사건이므로 현장 전염 시계열을 대신하지 않는다.",
+      "concepts": [
+        "확산지도 생성시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06520",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오분류를 바로잡은 확산판정 정정시각은 감염범위가 새로 변한 때로 해석하지 않는다.",
+      "concepts": [
+        "확산판정 정정시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06521",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염목이나 목재가 실제 구역경계를 지난 검역이동 발생시각은 운송허가 입력시각과 구별한다. 차량 GPS·검문소 태그·화물 식별이 일치한 경계 통과를 허가서 입력보다 앞세운다.",
+      "concepts": [
+        "검역이동 발생시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06522",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기관이 반출을 승인한 이동허가 발급시각은 차량이 실제 출발한 때보다 앞선다.",
+      "concepts": [
+        "이동허가 발급시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06523",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운송차가 집하장을 떠난 차량출발 GPS시각은 출고서 마감시각보다 물리사건에 가깝다. 적재 완료 뒤 위치·속도가 연속 변한 첫 표본으로 출고문서 작성과 실제 이동을 나눈다.",
+      "concepts": [
+        "차량출발 GPS시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06524",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재고시스템에 반출로 처리된 목재출고 등록시각은 현장적재·출발과 다를 수 있다.",
+      "concepts": [
+        "목재출고 등록시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06525",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량태그가 검문소에서 읽힌 검문소 통과시각은 운전자의 사후진술보다 이동연표에 가깝다. 차량 태그와 차단기·영상이 같은 대상을 가리킨 때를 사후 진술보다 높은 근거로 둔다.",
+      "concepts": [
+        "검문소 통과시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06526",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검사결과를 단말에 저장한 검역검사 기록시각은 실제 표본확인 뒤일 수 있다.",
+      "concepts": [
+        "검역검사 기록시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06527",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기관이 금지명령에 서명한 이동금지 발령시각은 현장차단이 적용된 때와 별개다. 법적 효력과 현장 차단 적용은 다른 사건이므로 그 사이의 시행 지연을 보존한다.",
+      "concepts": [
+        "이동금지 발령시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06528",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트가 닫히고 차량통제가 시작된 이동차단 실행시각은 명령발령 뒤의 물리사건이다.",
+      "concepts": [
+        "이동차단 실행시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06529",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오프라인 운송기록이 나중에 적재된 반출자료 백필시각은 실제 이동시각을 대신하지 않는다. 오프라인 GPS·태그의 원시각으로 재정렬해 업로드 시점의 가짜 이동을 막는다.",
+      "concepts": [
+        "반출자료 백필시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06530",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량번호·수량을 바로잡은 검역기록 수정시각은 목재가 다시 이동한 사건이 아니다.",
+      "concepts": [
+        "검역기록 수정시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06531",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "노즐에서 방제약이 처음 나온 약제살포 실제개시는 작업지시나 펌프기동 입력시각과 다르다. 펌프전류와 노즐유량이 함께 지속된 첫 시각으로 지시·설정 입력과 물리 분사를 가른다.",
+      "concepts": [
+        "약제살포 실제개시"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06532",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관리자가 구역·약량을 승인한 살포지시 발령시각은 현장분사 전에 놓인다.",
+      "concepts": [
+        "살포지시 발령시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06533",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업기가 대상임반에 실제 들어간 살포구역 진입시각은 출동등록보다 현장사건에 가깝다. 작업기 GPS가 대상 임반 경계를 통과한 때를 출동등록·도로 이동보다 현장 사건으로 둔다.",
+      "concepts": [
+        "살포구역 진입시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06534",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "GPS 경로가 중앙서버에 도착한 살포경로 수신시각은 기체나 차량의 측위시각보다 늦다.",
+      "concepts": [
+        "살포경로 수신시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06535",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "약액이 잎이나 수간에 닿은 약제접촉 발생시점은 살포량 장부가 갱신된 때와 분리한다. 노즐 분사 뒤 잎 표면 젖음센서와 유량을 맞춰 장부 갱신보다 실제 접촉을 앞세운다.",
+      "concepts": [
+        "약제접촉 발생시점"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06536",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유량표본을 묶어 사용량을 확정한 살포량 집계시각은 개별분사 뒤의 처리사건이다.",
+      "concepts": [
+        "살포량 집계시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06537",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "살포종료 실제시각은 마지막 노즐 유량이 0이 되고 작업기가 살포 경계를 벗어난 때다. 감독자가 작업표를 닫은 시각은 그보다 늦을 수 있으므로 따로 기록한다.",
+      "concepts": [
+        "살포종료 실제시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06538",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경로·약량을 검수해 완료로 올린 살포완료 보고시각은 물리작업 뒤의 행정기록이다.",
+      "concepts": [
+        "살포완료 보고시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06539",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해충행동과 잎피해 감소로 약효가 시작된 때를 잡은 방제약효발현 추정시점은 조사일 자체와 다르다. 살포 뒤 행동·피해 지표의 지속 변화로 반응 구간을 잡고 조사일은 관측시각으로만 둔다.",
+      "concepts": [
+        "방제약효발현 추정시점"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06540",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표본목에서 생존수와 피해를 센 약효조사 관측시각은 약효발현 이후의 확인시점이다.",
+      "concepts": [
+        "약효조사 관측시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06541",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "포식성 곤충이나 기생봉을 현장에 풀어준 천적방사 실제시각은 자재출고·작업입력과 구별한다. 용기 개방·현장 GPS·수량 확인이 일치한 때를 자재출고나 앱 입력보다 우선한다.",
+      "concepts": [
+        "천적방사 실제시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06542",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사육시설 재고에서 차감된 천적출고 장부시각은 산림방사 사건과 같은 시각이 아니다.",
+      "concepts": [
+        "천적출고 장부시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06543",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "후속세대나 기생률로 천적정착이 시작된 때를 추정한 정착발생 추정시점은 조사수행 시각과 다르다. 후속세대와 기생률이 나타난 시점에서 생활사를 역산한 범위로 조사 수행시각과 나눈다.",
+      "concepts": [
+        "정착발생 추정시점"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06544",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장표본에서 천적활동을 확인한 천적정착 관측시각은 실제 정착 뒤의 기록이다.",
+      "concepts": [
+        "천적정착 관측시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06545",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "미생물 방제액이 대상에 닿기 시작한 미생물제 살포개시는 배양배치 출고시각과 분리한다. 노즐 유량과 대상 표면 접촉이 시작된 때를 배양배치 출고·운송과 분리한다.",
+      "concepts": [
+        "미생물제 살포개시"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06546",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검사에서 생물활성이 확인된 미생물제 활성판정 시각은 현장감염 억제시점이 아니다.",
+      "concepts": [
+        "미생물제 활성판정 시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06547",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기생이 여러 날에 걸쳐 일어난 기생률 발생구간은 한 번의 표본채취 시각으로 줄일 수 없다. 개체별 기생이 일어난 여러 날의 범위를 보존해 표본채취 한 점으로 축소하지 않는다.",
+      "concepts": [
+        "기생률 발생구간"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06548",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유충을 채집해 기생여부를 본 기생률 조사시각은 생물학적 기생 뒤의 관측이다.",
+      "concepts": [
+        "기생률 조사시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06549",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종동정이나 수량을 고친 생물방제 기록수정은 천적이 새로 방사된 사건이 아니다. 원방사·관측 기록과 정정 이유를 함께 남겨 종동정 변경이 새 방사로 해석되지 않게 한다.",
+      "concepts": [
+        "생물방제 기록수정"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06550",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 조사결과를 묶어 효과를 승인한 방제효과 보고시각은 실제 개체군감소 뒤의 판단시점이다.",
+      "concepts": [
+        "방제효과 보고시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06551",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "톱이 대상목에 처음 작동한 감염목 벌채개시 시각은 작업허가나 현장도착 시각과 구별한다. 톱 전류와 대상목 태그가 일치한 첫 절단을 허가·현장도착과 별도 사건으로 둔다.",
+      "concepts": [
+        "감염목 벌채개시 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06552",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "책임자가 제거를 승인한 벌채허가 발령시각은 물리적 벌채보다 먼저다.",
+      "concepts": [
+        "벌채허가 발령시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06553",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "나무가 실제 지면에 쓰러진 감염목 도복시각은 작업자가 완료를 입력한 때와 다르다. 진동·영상에서 수간이 지면에 닿은 때를 작업 완료버튼보다 물리 사건에 가깝게 본다.",
+      "concepts": [
+        "감염목 도복시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06554",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수목대장에서 제거로 바뀐 벌채완료 등록시각은 도복·절단 뒤의 행정기록이다.",
+      "concepts": [
+        "벌채완료 등록시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06555",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "목재가 파쇄기에서 실제 분쇄된 파쇄실행 시각은 처리량 집계시각과 분리한다. 목재 태그와 파쇄기 전류·중량 감소가 함께 나타난 구간을 처리량 집계보다 우선한다.",
+      "concepts": [
+        "파쇄실행 시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06556",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계근과 작업표로 수량을 확정한 파쇄량 집계시각은 물질처리 이후다.",
+      "concepts": [
+        "파쇄량 집계시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06557",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "챔버농도가 올라 훈증이 실제 시작된 훈증시작 기기시각은 약제투입 명령시각과 다르다. 약제투입 명령이 아니라 챔버 농도가 유효범위에 지속 진입한 때를 실제 시작으로 본다.",
+      "concepts": [
+        "훈증시작 기기시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06558",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "농도·접촉시간을 검토해 합격한 훈증완료 판정시각은 물리처리 종료 뒤의 판단이다.",
+      "concepts": [
+        "훈증완료 판정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06559",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "처리잔재 차량이 경계를 지난 잔재반출 GPS시각은 운송서류 마감과 구별한다. 화물 식별과 차량 경계 통과가 맞는 표본으로 운송서류 생성·장부 차감과 구별한다.",
+      "concepts": [
+        "잔재반출 GPS시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06560",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대상수량이나 좌표를 고친 위생벌채 기록정정은 나무가 다시 제거된 사건이 아니다.",
+      "concepts": [
+        "위생벌채 기록정정"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06561",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위성이 대상산림을 통과하며 영상을 얻은 위성영상 촬영시각은 자료가 지상국에 내려온 때와 다르다. 센서 노출과 궤도 위치가 대상 임반에 해당한 때를 지상국 수신·처리보다 앞에 둔다.",
+      "concepts": [
+        "위성영상 촬영시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06562",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지상국이 파일을 받은 위성자료 수신시각은 산림표면의 관측원시시각보다 늦다.",
+      "concepts": [
+        "위성자료 수신시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06563",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대기보정 뒤 지수가 생성된 식생지수 계산시각은 잎상태가 변한 실제시각이 아니다. 대기보정·지수 산출이 끝난 시스템 사건으로 원프레임의 산림 상태시각을 대체하지 않는다.",
+      "concepts": [
+        "식생지수 계산시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06564",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 위성촬영 사이에 수관상태가 악화된 피해변화 실제구간은 한 영상날짜로 확정할 수 없다.",
+      "concepts": [
+        "피해변화 실제구간"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06565",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공열센서가 고온수관을 본 열이상 촬영시각은 분석자가 이상을 표시한 때와 분리한다. 항공센서 원시프레임과 위치를 사용해 분석 표시·보고시각보다 현장 관측을 우선한다.",
+      "concepts": [
+        "열이상 촬영시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06566",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상검토로 고온반점을 확정한 산림열이상 판독시각은 현장발열 뒤의 처리사건이다.",
+      "concepts": [
+        "산림열이상 판독시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06567",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "레이저가 수관구조를 측정한 라이다 관측시각은 점군파일 생성시각과 구별한다. 레이저 펄스가 수관을 지난 시간창과 점군 생성·분류 시각을 서로 나눠 보존한다.",
+      "concepts": [
+        "라이다 관측시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06568",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항법·레이저 자료를 결합해 점군을 만든 점군자료 생성시각은 숲의 관측시각이 아니다.",
+      "concepts": [
+        "점군자료 생성시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06569",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분류경계를 고친 원격탐사 지도수정은 산림피해가 그때 변한 사건으로 보지 않는다. 원영상·이전 분류·수정 이유를 남겨 경계 편집이 새 피해 발생처럼 보이지 않게 한다.",
+      "concepts": [
+        "원격탐사 지도수정"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06570",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검수된 피해판이 현장팀에 전달된 영상판 배포시각은 촬영·분석 뒤의 통신시점이다.",
+      "concepts": [
+        "영상판 배포시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06571",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조사원이 표본점에 실제 도착한 조사원 현장도착 시각은 출장앱 출발입력과 다르다.",
+      "concepts": [
+        "조사원 현장도착 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06572",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫 표본의 위치가 단말에 찍힌 조사착수 GPS시각은 계획된 조사개시보다 실제행위에 가깝다.",
+      "concepts": [
+        "조사착수 GPS시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06573",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "개별 나무를 관찰·측정한 표본목 검사시각은 하루 조사종료시각과 구별한다.",
+      "concepts": [
+        "표본목 검사시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06574",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조사원이 단말에 결과를 적은 현장표 작성시각은 증상발생이나 표본관측 뒤일 수 있다.",
+      "concepts": [
+        "현장표 작성시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06575",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 조사조가 현장에서 시료·구역·위험을 대조한 교대인계 실제시각은 전자서명과 분리한다.",
+      "concepts": [
+        "교대인계 실제시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06576",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "책임자가 앱에서 인계를 확정한 방제교대서명 등록시각은 대화와 물품전달 뒤에 놓일 수 있다.",
+      "concepts": [
+        "방제교대서명 등록시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06577",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "카메라가 표본목을 찍은 현장사진 촬영시각은 보고서에 삽입된 때보다 관측에 가깝다.",
+      "concepts": [
+        "현장사진 촬영시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06578",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신지역에 돌아와 파일을 올린 현장자료 업로드시각은 각 산림조사 시각이 아니다.",
+      "concepts": [
+        "현장자료 업로드시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06579",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수종·좌표·등급을 고친 조사일지 수정시각은 현장에서 재관측한 때로 자동 해석하지 않는다.",
+      "concepts": [
+        "조사일지 수정시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06580",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감독자가 하루 표본수와 결측을 검수한 현장조사 마감시각은 개별 관측 뒤의 행정시점이다.",
+      "concepts": [
+        "현장조사 마감시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06581",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "포획임계와 확산조건을 계산해 경보가 만들어진 해충경보 생성시각은 해충이 처음 나타난 때와 다르다.",
+      "concepts": [
+        "해충경보 생성시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06582",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전문가가 오탐을 검토해 발령을 확정한 경보승인 서명시각은 자동생성 이후다.",
+      "concepts": [
+        "경보승인 서명시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06583",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기관이 구역과 방법을 승인한 방제명령 발령시각은 현장작업 착수와 구별한다.",
+      "concepts": [
+        "방제명령 발령시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06584",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장팀 단말에 지시가 도착한 방제명령 수신시각은 중앙발령에 통신지연이 더해진 값이다.",
+      "concepts": [
+        "방제명령 수신시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06585",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조사자료를 묶어 보고서를 만든 피해보고 작성시각은 각 피해발생·관측시각이 아니다.",
+      "concepts": [
+        "피해보고 작성시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06586",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검수판이 외부에 게시된 피해보고 공개시각은 작성·승인 뒤의 배포사건이다.",
+      "concepts": [
+        "피해보고 공개시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06587",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오프라인 기록이 나중에 적재된 방제자료 백필시각은 작업연표의 실제 위치가 아니다.",
+      "concepts": [
+        "방제자료 백필시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06588",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종오인이나 범위를 고친 경보정정 게시시각은 새 해충사건이 발생한 때가 아니다.",
+      "concepts": [
+        "경보정정 게시시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06589",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 표본을 분석해 감소를 승인한 방제효과 확정시각은 실제 개체군 변화 뒤의 판단이다.",
+      "concepts": [
+        "방제효과 확정시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06590",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발생·관측·진단·방제·효과의 시각을 검수해 더는 바꾸지 않는 사건원장 잠금시각은 현장사건이 아니다.",
+      "concepts": [
+        "사건원장 잠금시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06591",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표본목과 해충을 다시 조사한 방제후 생존확인 시각은 약효가 처음 나타난 시각과 구별한다.",
+      "concepts": [
+        "방제후 생존확인 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06592",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "남은 개체가 다시 늘기 시작한 재발실제 시작구간은 다음 트랩회수 전후로만 제한할 수 있다.",
+      "concepts": [
+        "재발실제 시작구간"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-06593",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트랩에서 증가를 확인한 재발포획 관측시각은 개체군 재증가 뒤의 관측사건이다.",
+      "concepts": [
+        "재발포획 관측시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06594",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "새눈과 잎면적이 여러 날에 걸쳐 좋아진 수관회복 발생구간은 한 조사일로 줄이지 않는다.",
+      "concepts": [
+        "수관회복 발생구간"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06595",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전문가가 반복영상으로 회복을 확정한 수관회복 판정시각은 생리적 회복 뒤의 판단이다.",
+      "concepts": [
+        "수관회복 판정시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06596",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자료검토 뒤 기관이 이동제한을 푼 검역해제 승인시각은 해충소멸 시각과 같지 않다.",
+      "concepts": [
+        "검역해제 승인시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-06597",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트와 표지가 실제 정상으로 돌아간 현장차단 해제시각은 승인문서 뒤의 실행사건이다.",
+      "concepts": [
+        "현장차단 해제시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-06598",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연속된 무검출기간을 채워 집중조사를 끝낸 장기감시 종료시각은 마지막 해충사망 순간이 아니다.",
+      "concepts": [
+        "장기감시 종료시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-06599",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제 전후 자료를 검수해 공개한 복원자료 공개시각은 회복현상이 발생한 때와 분리한다.",
+      "concepts": [
+        "복원자료 공개시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-06600",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원인·작업·효과·잔여위험을 검수해 사건을 닫은 방제회차 종결시각은 자연사건 뒤의 행정시점이다.",
+      "concepts": [
+        "방제회차 종결시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    }
+  ]
+}

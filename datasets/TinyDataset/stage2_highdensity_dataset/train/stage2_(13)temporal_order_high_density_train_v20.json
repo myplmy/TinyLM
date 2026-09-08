@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v20",
+  "version": "20",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-02851 ~ S2-TOH-03000",
+  "concept_family": "S2-A03-T020: 하천 저수지 수위·방류 관리 — 시간 정보 충돌과 순서 복원",
+  "design_note": "하천 저수지 수위·방류 관리 영역의 시간 정보 충돌과 순서 복원 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-02851",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강우계 시각 역전은 하류 표본이 상류 표본보다 먼저 찍힌 기록 충돌이다. 각 장비의 시계 보정 이력과 원시 수신 순번을 맞춰 실제 강우 이동 순서를 복원한다.",
+      "concepts": [
+        "강우계 시각 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02852",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "레이더강우 시차 충돌은 영상 생성시각과 관제 수신시각을 같은 사건시각으로 읽을 때 생긴다. 관측 주기와 전송 지연을 분리해 어느 강우대가 먼저 형성됐는지 판정한다.",
+      "concepts": [
+        "레이더강우 시차 충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02853",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상류강우 종료순서 복원은 마지막 유효 강우와 결측 시작점을 대조해 늦게 도착한 자료를 늦게 내린 비로 오인하지 않는다.",
+      "concepts": [
+        "상류강우 종료순서 복원"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02854",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유출상승 선후 복원은 강우계와 유량계의 시계차로 원인과 반응이 뒤집힌 기록을 공통시각과 홍수파 이동한계로 바로잡는다.",
+      "concepts": [
+        "유출상승 선후 복원"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02855",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시간대변환 강우오류는 현지시각과 협정세계시 자료의 시간대·일광절약 적용을 통일해 관측이 다른 날짜로 밀리는 일을 막는다.",
+      "concepts": [
+        "시간대변환 강우오류"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02856",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누적강우 재전송순서는 통신 복구 뒤 오래된 표본 묶음이 최신 표본 다음에 도착할 때 생성시각과 누적계수로 다시 배열한다. 도착순서를 강우 발생순서로 쓰면 안 된다.",
+      "concepts": [
+        "누적강우 재전송순서"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02857",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지류도달시각 모순은 센서표류·다른 지류 강우·보정시각을 비교해 합류점 상승이 상류 강우보다 앞선 기록을 해소한다.",
+      "concepts": [
+        "지류도달시각 모순"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02858",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "우량계 재부팅시각은 장비가 초기시각으로 돌아가 재가동 뒤 표본이 과거 기록 사이에 끼는 기준점이다. 부팅 로그와 증가하는 패킷 번호로 재부팅 전후 순서를 잇는다.",
+      "concepts": [
+        "우량계 재부팅시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02859",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예보발표와 강우관측 순서는 발표시각, 자료마감시각, 실제 관측시각을 구별해야 복원된다. 발표 뒤 도착한 지연 관측이 예보에 이미 반영됐다고 간주하지 않는다.",
+      "concepts": [
+        "예보발표와 강우관측 순서"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02860",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강우사건 경계복원은 자정 집계와 통신공백으로 갈라진 호우를 무강우 간격과 유출반응으로 다시 잇고 실제 양 경계를 정한다.",
+      "concepts": [
+        "강우사건 경계복원"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02861",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수위표본 생성수신 충돌은 일련번호와 게이트웨이 기록으로 현장 생성과 중앙 수신을 구별해 전송 중 뒤섞인 순서를 복원한다.",
+      "concepts": [
+        "수위표본 생성수신 충돌"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02862",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기준점교정 전후순서는 교정 시행시각과 새 표고가 적용된 첫 표본을 찾아 같은 수위에 섞인 기준을 분리한다.",
+      "concepts": [
+        "기준점교정 전후순서"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02863",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상하류 수위상승 역전은 지류유입과 배수위 영향을 먼저 배제한 뒤 장비시계를 보정해 물리 전파에 맞는 순서를 정한다.",
+      "concepts": [
+        "상하류 수위상승 역전"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02864",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수위센서 시계표류는 점검 때 측정한 기준시계 차이를 구간별로 보간해 장기간 누적된 표본시각 오차를 바로잡는다.",
+      "concepts": [
+        "수위센서 시계표류"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02865",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "동일시각 중복수위표본은 자동값과 재전송값을 원본채널·품질표지·패킷번호로 분리해 생성과 보정 순서를 정한다.",
+      "concepts": [
+        "동일시각 중복수위표본"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02866",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "결측보간 시각오인은 나중에 계산한 보간값의 저장시각을 실제 수위가 발생한 시각으로 읽는 오류다. 대상 표본시각과 보간 실행시각을 별도로 두어 사건 연표에 배치한다.",
+      "concepts": [
+        "결측보간 시각오인"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02867",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이동평균 갱신순서는 계산창의 입력마감과 화면 캐시를 대조해 평활지표가 원시표본보다 먼저 보인 기록을 바로잡는다.",
+      "concepts": [
+        "이동평균 갱신순서"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02868",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수동검측 기록충돌은 현장 수첩, 사진, 전산 입력에 서로 다른 시각이 적힌 경우다. 촬영 메타데이터와 이동 경로, 서명 순서를 묶어 측정시각과 입력시각을 나눈다.",
+      "concepts": [
+        "수동검측 기록충돌"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02869",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수위경보 선행모순은 경보 발령시각이 기준초과 표본보다 앞서 보이는 상황이다. 예측경보인지 관측경보인지 분류하고 판정창에 사용된 원시 표본을 찾아 순서를 설명한다.",
+      "concepts": [
+        "수위경보 선행모순"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02870",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수흔적 사후시각은 물이 빠진 뒤 측량한 흔적의 조사시각을 첨두수위 발생시각으로 오인하지 않도록 하는 구분이다. 인접 계측소 연표로 실제 첨두 구간을 역산한다.",
+      "concepts": [
+        "홍수흔적 사후시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02871",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저수량 계산시각 충돌은 수위 관측시각과 저수용량 환산 실행시각이 다른데 한 시각으로 기록된 경우다. 적용 곡선의 버전과 입력 표본을 찾아 계산의 선후를 복원한다.",
+      "concepts": [
+        "저수량 계산시각 충돌"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02872",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유입방류 적산순서는 경계시각이 다른 적산계 자료를 합치면서 유입보다 방류가 먼저 반영된 것처럼 보일 때 재구성한다. 각 계기의 적산 마감과 초기화 시각을 맞춘다.",
+      "concepts": [
+        "유입방류 적산순서"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02873",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저수위곡선 버전시차는 새 용량곡선의 등록시각과 과거 자료 재산정시각이 뒤섞인 충돌이다. 효력 발생일과 재처리 실행일을 나눠 어느 결과가 먼저 유효했는지 밝힌다.",
+      "concepts": [
+        "저수위곡선 버전시차"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02874",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증발량 일경계충돌은 기상일과 운영일의 자정 기준이 달라 하루 증발량이 앞뒤 날짜에 중복되는 문제다. 관측 구간을 실제 시작·종료시각으로 풀어 수지 순서를 다시 계산한다.",
+      "concepts": [
+        "증발량 일경계충돌"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02875",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저수용량 갱신역전은 최신 수위로 계산한 용량이 오래된 결과보다 먼저 저장되었다가 지연 자료에 덮인 상황이다. 입력시각과 산출물 버전을 비교해 유효 갱신 순서를 정한다.",
+      "concepts": [
+        "저수용량 갱신역전"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02876",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "취수량 사후보정순서는 검침 뒤 보정된 취수량이 원자료보다 이른 시각을 갖는 경우다. 실제 취수구간, 검침시각, 승인시각을 분리해 저수수지에 적용한다.",
+      "concepts": [
+        "취수량 사후보정순서"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02877",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저수수지 마감시각복원은 유입·방류·취수·증발 자료의 마감이 제각각일 때 동일 구간만 골라 닫는 절차다. 늦게 확정된 항목이 물리적으로 늦게 발생했다고 보지 않는다.",
+      "concepts": [
+        "저수수지 마감시각복원"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02878",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "댐간 연계저수 충돌은 상류댐 방류와 하류댐 유입의 기준시각이 달라 이동 전부터 유입된 것처럼 보이는 기록이다. 방류 발생, 도달, 계측 시각을 차례로 정렬한다.",
+      "concepts": [
+        "댐간 연계저수 충돌"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02879",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예비홍수용량 확보순서는 목표용량 공표, 예비방류 승인, 실제 수위하강의 기록 순서가 엇갈릴 때 복원한다. 문서 등록시각보다 명령 효력과 수문 동작증거를 우선한다.",
+      "concepts": [
+        "예비홍수용량 확보순서"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02880",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사수위 도달시각모순은 취수구 표고·센서보정·계산구간을 확인해 저수량 계산과 현장관측 사이의 가능한 경계를 좁힌다.",
+      "concepts": [
+        "사수위 도달시각모순"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02881",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수문명령 동작시각충돌은 제어명령 기록과 개도계 변화가 역순으로 남은 상황이다. 명령 생성·전송·수신과 모터 동작을 별도 사건으로 나눠 실제 실행 순서를 복원한다.",
+      "concepts": [
+        "수문명령 동작시각충돌"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02882",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "개도계 제어로그역전은 개도센서 표본이 제어실 명령보다 먼저 찍혔을 때 현장 자동제어 여부와 시계 차이를 확인하는 판정이다. 반드시 원격명령의 선행을 가정하지 않는다.",
+      "concepts": [
+        "개도계 제어로그역전"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02883",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방류량 계측순서복원은 수문 개도, 상류수위, 환산 방류량의 갱신시각이 어긋날 때 입력 표본과 계산 주기를 따라 배열한다. 산출물 게시시각은 방류 시작시각이 아니다.",
+      "concepts": [
+        "방류량 계측순서복원"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02884",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사후승인 방류순서는 실제 수문 동작 뒤 승인기록이 남았을 때 무단 동작과 비상 사후승인을 구분하는 절차다. 현장권한, 비상조건, 통화기록을 연결해 명령 계보를 세운다.",
+      "concepts": [
+        "사후승인 방류순서"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02885",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "다중수문 동작순서는 같은 분으로 묶인 기록을 전류파형과 개도변화의 세부 시각으로 나눠 실제 순번을 복원한다.",
+      "concepts": [
+        "다중수문 동작순서"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02886",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수문폐쇄 완료충돌은 제어 화면의 완료표지와 현장 한계스위치 시각이 다른 경우다. 기계 정지와 수밀 확인을 구별해 어느 사건을 폐쇄 완료로 쓸지 정한다.",
+      "concepts": [
+        "수문폐쇄 완료충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02887",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원격명령 재전송순서는 통신장애 때 쌓인 같은 명령을 번호와 승인토큰으로 정렬해 마지막 수신을 마지막 의도와 구별한다.",
+      "concepts": [
+        "원격명령 재전송순서"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02888",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상방류 개시근거는 경보, 운영자 통화, 현장 수동조작의 시각이 충돌할 때 최초 실제 유량변화와 권한 전환 기록으로 찾는다. 보고서 작성시각은 보조증거다.",
+      "concepts": [
+        "비상방류 개시근거"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02889",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방류예고 실방류역전은 주민 예고 수신시각보다 방류 계측시각이 앞선 상황이다. 발송시각·수신시각·수문동작시각을 나눠 예고 준수 여부와 실제 순서를 각각 판정한다.",
+      "concepts": [
+        "방류예고 실방류역전"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02890",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하류유량 반응순서는 관측소 거리·유속·지류유입으로 상승 선후를 복원하며 빠른 화면 갱신을 물리 반응으로 보지 않는다.",
+      "concepts": [
+        "하류유량 반응순서"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02891",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발전기기동 방류순서는 밸브 개방·회전·병입·방류 기록을 인터록과 계측값으로 배열하며 상태표시 하나에 의존하지 않는다.",
+      "concepts": [
+        "발전기기동 방류순서"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02892",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "터빈유량 기록시차는 현장 유량계와 발전제어시스템의 집계주기가 달라 같은 방류가 다른 시각에 보이는 현상이다. 원시 표본과 평균창을 맞춰 순서를 비교한다.",
+      "concepts": [
+        "터빈유량 기록시차"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02893",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계통병입 시각충돌은 차단기 접점, 전력거래 계량, 운전일지에 서로 다른 병입시각이 남은 경우다. 전기적 동기와 상업계량 개시를 별도 사건으로 복원한다.",
+      "concepts": [
+        "계통병입 시각충돌"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02894",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출력저하 원인순서는 낙차 감소, 유입제한, 진동경보가 비슷한 시각에 나타날 때 고해상도 계측과 물리 의존관계로 앞선 변화를 찾는다. 경보 도착순서만 따르지 않는다.",
+      "concepts": [
+        "출력저하 원인순서"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02895",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발전정지 수문전환은 터빈 차단과 여수로 방류 확대의 시각이 엇갈릴 때 총방류 연속성과 각 밸브 위치로 전환 순서를 복원한다. 보고된 정지시각은 검증 대상이다.",
+      "concepts": [
+        "발전정지 수문전환"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02896",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전력계량 일경계는 거래일과 발전운영일의 마감이 달라 자정 전후 발전량이 뒤바뀌는 문제다. 실제 계량구간을 풀어 기동·정지 사건과 다시 정렬한다.",
+      "concepts": [
+        "전력계량 일경계"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02897",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "양수발전 모드전환은 펌프정지·유로전환·수차기동을 인터록과 회전방향 계측으로 배열해 출력부호 하나에 의존하지 않는다.",
+      "concepts": [
+        "양수발전 모드전환"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02898",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조속기로그 시각표류는 조속기 내부시계가 관제시계보다 앞서 제어반응이 지시보다 먼저 보이는 문제다. 동기화 사건 전후의 오프셋을 구간별로 적용한다.",
+      "concepts": [
+        "조속기로그 시각표류"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02899",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발전계획 수정순서는 최초안·재지시·현장수용·실제출력을 효력번호와 확인응답으로 배열해 늦은 저장이 최신안을 덮지 않게 한다.",
+      "concepts": [
+        "발전계획 수정순서"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02900",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발전비상정지 복원은 보호계전·차단기·터빈밸브·방류변화를 공통 트리거와 장비별 시계차로 정렬한다.",
+      "concepts": [
+        "발전비상정지 복원"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02901",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "생태유량 약속방류 순서는 협의문서의 효력, 운영명령, 하류 도달을 구별해 늦은 등록이 약속 시작을 바꾸지 않게 한다.",
+      "concepts": [
+        "생태유량 약속방류 순서"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02902",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "어도유량 관측시차는 본류 방류와 어도 입구 계측의 시간 기준이 달라 공급이 관측보다 뒤로 보이는 경우다. 이동시간과 로거 오프셋을 함께 보정한다.",
+      "concepts": [
+        "어도유량 관측시차"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02903",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산란기 보호창경계는 생태 보호기간의 날짜 경계와 교대 운영일 경계가 달라 방류가 창 안팎으로 다르게 분류되는 문제다. 지역시각 기준 효력 구간으로 다시 판정한다.",
+      "concepts": [
+        "산란기 보호창경계"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02904",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저서생물 조사시각충돌은 현장 채집시각과 표본 등록시각이 바뀌어 방류 전 조사처럼 보이는 상황이다. 표본 봉인번호와 이동일지로 채집 뒤 분석 순서를 복원한다.",
+      "concepts": [
+        "저서생물 조사시각충돌"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02905",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수온완화 방류순서는 저층취수 전환과 하류 수온하강의 기록이 역전될 때 수온센서 시차와 물의 도달시간을 적용해 판정한다. 화면 표시가 먼저 바뀐 것은 물리효과가 아니다.",
+      "concepts": [
+        "수온완화 방류순서"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02906",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하천건조 경보역전은 구간 단절 관측보다 부족유량 경보가 먼저 발령된 경우다. 예측경보와 현장확인 경보를 분류해 모순인지 정상적인 선제조치인지 가린다.",
+      "concepts": [
+        "하천건조 경보역전"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02907",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "생태유량 부족구간 복원은 결측 뒤 보충된 유량자료의 저장순서가 실제 저유량 구간을 흐릴 때 원시시각과 상하류 균형으로 시작·종료를 다시 정한다.",
+      "concepts": [
+        "생태유량 부족구간 복원"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02908",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하류습지 도달순서는 댐 방류·중간 취수·습지 수위상승을 경로별 이동시간으로 배열하고 센서 수신속도와 나눈다.",
+      "concepts": [
+        "하류습지 도달순서"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02909",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "최소유량 보정기록은 계측오차 수정 뒤 과거 부족판정이 사라지거나 새로 생긴 경우다. 원판정시각과 보정 승인시각을 함께 남겨 당시 의사결정 순서를 보존한다.",
+      "concepts": [
+        "최소유량 보정기록"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02910",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "생태방류 종료근거는 보호기간·현장확인·감량명령과 실제 수문변화를 연결해 사후보고를 종료시각으로 쓰지 않는다.",
+      "concepts": [
+        "생태방류 종료근거"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02911",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수주의보 발령순서는 예측초과·관측초과·승인·공표를 경보 종류와 효력번호로 배열해 예측경보의 선행 가능성을 보존한다.",
+      "concepts": [
+        "홍수주의보 발령순서"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02912",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대응단계 상향충돌은 회의록과 상황판에 다른 상향시각이 적힌 경우다. 책임자 승인, 호출 전파, 실제 비상조 배치의 사건을 분리해 어느 시각이 단계 효력인지 정한다.",
+      "concepts": [
+        "대응단계 상향충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02913",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예비방류 대피준비순서는 예고발송·현장준비·수문개방을 따로 배열해 준비완료가 방류보다 앞서는 보호조건을 검증한다.",
+      "concepts": [
+        "예비방류 대피준비순서"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02914",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수대책회의 기록시차는 회의 시작·결정·회의록 등록이 한 시각으로 섞인 문제다. 통화접속과 명령번호를 이용해 논의 뒤 결정, 결정 뒤 기록이라는 순서를 복원한다.",
+      "concepts": [
+        "홍수대책회의 기록시차"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02915",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "둑월류 관측순서는 주민신고·영상·수위계 중 촬영 원본과 상승률을 우선해 최초 월류의 시간범위를 좁힌다.",
+      "concepts": [
+        "둑월류 관측순서"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02916",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수문개방 침수발생순서는 신고가 앞설 때 지류홍수·시계오차·사전누출을 검토해 방류를 성급히 최초 원인으로 정하지 않는다.",
+      "concepts": [
+        "수문개방 침수발생순서"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02917",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대응단계 하향근거는 수위하락, 기상해제, 하류확인, 승인 기록의 선후가 충돌할 때 필수조건 충족시각 중 가장 늦은 것을 찾아 효력 시작을 정한다.",
+      "concepts": [
+        "대응단계 하향근거"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02918",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수조절 종료복원은 마지막 방류감량과 저수지 정상운영 복귀가 서로 다른 일지에 달리 적힌 사건이다. 목표수위와 수문상태를 대조해 조절 종료와 사후감시를 구별한다.",
+      "concepts": [
+        "홍수조절 종료복원"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02919",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유역경보 합성순서는 여러 지자체와 기관 경보가 중앙 상황판에 비순차로 도착했을 때 원발행시각과 개정번호로 정렬한다. 중앙 수신순서는 지역 위험의 발생순서가 아니다.",
+      "concepts": [
+        "유역경보 합성순서"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02920",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수사후연표 해소는 자동로그·회의록·보도시각의 신뢰도와 해상도를 비교해 사건 순서를 정하고 모호한 간격은 범위로 남긴다.",
+      "concepts": [
+        "홍수사후연표 해소"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02921",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가뭄단계 진입충돌은 지표가 기준을 넘은 날과 행정 단계가 효력을 얻은 날이 다르게 기록된 상황이다. 산출·검토·승인·공표를 분리해 단계 전환 순서를 복원한다.",
+      "concepts": [
+        "가뭄단계 진입충돌"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02922",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제한급수 공고순서는 내부 결정문, 주민 공고, 밸브 조작의 시각이 엇갈릴 때 효력 조항과 현장실행을 따로 배열한다. 게시물 수정시각을 최초 공고로 쓰지 않는다.",
+      "concepts": [
+        "제한급수 공고순서"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02923",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "용수배분 승인역전은 하류 공급기록이 배분 승인보다 먼저 보이는 경우다. 기존 정기배분인지 긴급 선집행인지 구분하고 명령 계보로 정당한 순서를 판정한다.",
+      "concepts": [
+        "용수배분 승인역전"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02924",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저수지 연계운영순서는 상류 방류와 하류 취수 전환이 서로 다른 시간대에 기록될 때 이동시간과 효력시각을 맞춰 복원한다. 두 시설의 저장시각을 직접 비교하지 않는다.",
+      "concepts": [
+        "저수지 연계운영순서"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02925",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "농업생활용수 전환은 감축결정·분수문조정·정수장증산을 대상별 효력과 실제 유량변화로 연결해 전체 순서를 정한다.",
+      "concepts": [
+        "농업생활용수 전환"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02926",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "취수감축 실적시차는 유량계 집계가 하루 늦게 확정되어 감축명령보다 먼저 또는 뒤로 잘못 놓이는 문제다. 실제 측정구간을 명령 효력구간과 겹쳐 판정한다.",
+      "concepts": [
+        "취수감축 실적시차"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02927",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가뭄해제 기준복원은 저수율 회복, 유입전망 개선, 승인 시각이 서로 다를 때 모든 필수조건이 충족된 뒤 해제가 효력을 얻었는지 검증하는 절차다.",
+      "concepts": [
+        "가뭄해제 기준복원"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02928",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대체수원 투입순서는 관정가동·관로충수·배수지유입·공급완화를 물의 경로와 계측지연에 따라 배열한다.",
+      "concepts": [
+        "대체수원 투입순서"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02929",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "월간배분 장부경계는 말일 야간 공급이 다음 달 실적으로 넘어가 승인 전 공급처럼 보이는 문제다. 유량계 경계와 행정월 경계를 분리해 사건 순서를 유지한다.",
+      "concepts": [
+        "월간배분 장부경계"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02930",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "갈수예보 갱신충돌은 새 관측을 쓴 모형결과가 오래된 승인본보다 먼저 배포된 경우다. 자료기준시각, 계산버전, 승인상태를 함께 정렬해 당시 유효 예보를 식별한다.",
+      "concepts": [
+        "갈수예보 갱신충돌"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02931",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탁도급등 방류변경순서는 상류 표본, 선택취수 전환, 방류조정을 측정시각과 명령효력으로 구별한다.",
+      "concepts": [
+        "탁도급등 방류변경순서"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02932",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "취수중단 기록역전은 펌프 정지 로그가 탁도경보보다 앞서 보일 때 예방 정지인지 시계오차인지 가리는 문제다. 전류곡선과 운영자 호출기록을 함께 본다.",
+      "concepts": [
+        "취수중단 기록역전"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02933",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선택취수 수심전환은 게이트 위치와 취수수온·탁도 변화의 시각이 충돌할 때 기계동작과 수괴 도달을 나눠 배열한다. 수질효과는 전환 뒤 지연될 수 있다.",
+      "concepts": [
+        "선택취수 수심전환"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02934",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "밀도류 도달순서는 여러 수심 센서가 탁도전선을 서로 다른 순서로 기록할 때 센서 깊이, 저수지 지형, 시계오차로 가능한 이동을 복원한다.",
+      "concepts": [
+        "밀도류 도달순서"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02935",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "퇴사측량 기준일충돌은 현장 측량일, 자료처리일, 성과 승인일이 한 기준일로 섞인 경우다. 실제 지형 상태는 현장 취득 구간에 귀속하고 후처리 순서는 따로 남긴다.",
+      "concepts": [
+        "퇴사측량 기준일충돌"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02936",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배사수문 동작복원은 명령로그가 사라지고 탁도·유량 변화만 남았을 때 현장 접점과 하류 반응으로 개방·유지·폐쇄 순서를 추정한다. 불확실한 시각은 범위로 표시한다.",
+      "concepts": [
+        "배사수문 동작복원"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02937",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "침전지 유입시각은 저수지 방류표본과 하류 침전지 탁도 상승이 동일시각으로 기록된 충돌을 이동시간으로 교정한다. 수신시각이 같아도 물리 사건은 순차적이다.",
+      "concepts": [
+        "침전지 유입시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02938",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탁도센서 세척시차는 세척 뒤 낮아진 값이 세척기록보다 먼저 찍혔을 때 장비시계와 작업자 일지를 맞춰 품질표지 적용 구간을 복원한다.",
+      "concepts": [
+        "탁도센서 세척시차"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02939",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부유물경보 순서는 영상탐지, 취수구 막힘, 운영자 경보가 서로 다르게 배열될 때 원본 프레임시각과 압력변화로 최초 징후를 찾는다. 접수시각은 후속 사건이다.",
+      "concepts": [
+        "부유물경보 순서"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02940",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수질정상 선언근거는 탁도 회복 표본, 연속 유지창, 책임자 승인, 취수재개의 기록이 충돌할 때 필수조건의 마지막 충족 뒤 선언이 있었는지 판정한다.",
+      "concepts": [
+        "수질정상 선언근거"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02941",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누수계측 시각충돌은 배수량 증가와 누수경보의 장비시각이 맞지 않는 상황이다. 원시 펄스와 수집주기, 시계동기 이력을 사용해 변화 뒤 경보라는 순서를 복원한다.",
+      "concepts": [
+        "누수계측 시각충돌"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02942",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "변위경보 현장점검순서는 자동경보와 점검사진의 시각이 뒤집혀 보일 때 사진 원본과 출입기록을 대조한다. 사전 정기점검인지 경보 후 확인인지 구별한다.",
+      "concepts": [
+        "변위경보 현장점검순서"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02943",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지진계 기동시각은 촉발기록, 외부 지진관측, 댐 계측의 시계가 달라 진동 전후가 모호할 때 공통 파형 특징으로 맞추는 기준점이다.",
+      "concepts": [
+        "지진계 기동시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02944",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "양압상승 순서복원은 여러 간극수압계의 상승이 물리 경로와 반대로 기록될 때 센서 응답·배선 지연·배수공 상태를 비교해 실제 전파 순서를 정한다.",
+      "concepts": [
+        "양압상승 순서복원"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02945",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "균열측정 버전충돌은 현장값, 보정값, 승인값의 파일시각이 뒤섞여 균열이 먼저 줄었다가 늘어난 것처럼 보이는 문제다. 측정시각과 보정 계보로 변화 순서를 복원한다.",
+      "concepts": [
+        "균열측정 버전충돌"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02946",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "안전등급 변경순서는 자동지표, 전문가 판정, 운영제한의 발효가 서로 다른 시각을 가질 때 단계별 사건으로 배열한다. 문서 업로드가 늦어도 제한 효력은 앞설 수 있다.",
+      "concepts": [
+        "안전등급 변경순서"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02947",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사면변위 관측역전은 하부 표점 이동이 상부 강우침투보다 먼저 기록된 경우다. 외부 충격 가능성과 시계오차를 검토한 뒤 인과적으로 가능한 순서를 좁힌다.",
+      "concepts": [
+        "사면변위 관측역전"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02948",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계측기교체 전후순서는 구 장비 마지막 표본과 신 장비 첫 표본을 자산번호와 작업단계로 구별해 겹침을 분리한다.",
+      "concepts": [
+        "계측기교체 전후순서"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02949",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정밀안전진단 연표는 이상탐지, 긴급점검, 계측확대, 해석, 등급판정의 보고시각이 충돌할 때 원시증거와 승인 계보로 복원한다. 최종보고 날짜는 조사 시작이 아니다.",
+      "concepts": [
+        "정밀안전진단 연표"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02950",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "구조보강 완료근거는 시공종료·품질시험·감리승인·제한해제를 나눠 작업 종료만으로 안전완료를 앞당기지 않는다.",
+      "concepts": [
+        "구조보강 완료근거"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02951",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방류예고 발송충돌은 문자시스템, 지자체 공문, 방송기록에 서로 다른 발송시각이 남은 경우다. 메시지 식별자와 재전송 이력을 맞춰 최초 발송과 갱신 순서를 복원한다.",
+      "concepts": [
+        "방류예고 발송충돌"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02952",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주민문자 사이렌순서는 현장제어 접점과 통신응답으로 같은 시각대의 발령 순서를 정하며 빠른 수신만 우선하지 않는다.",
+      "concepts": [
+        "주민문자 사이렌순서"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02953",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대피명령 승인수신순서는 승인문, 기관수신, 주민도달의 시각이 뒤섞인 상황을 효력번호와 전달경로로 배열한다. 수신 지연을 명령 지연과 분리한다.",
+      "concepts": [
+        "대피명령 승인수신순서"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02954",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마을별 경보도달순서는 서로 다른 통신망을 쓴 지역의 확인시각을 단순 비교하지 않고 발송큐, 중계, 단말수신으로 나눠 복원한다. 실제 위험도달 순서도 별도로 계산한다.",
+      "concepts": [
+        "마을별 경보도달순서"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02955",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하류교량 통제시각은 차단기 설치, 경찰 승인, 내비게이션 표시가 서로 다른 때 기록된 사건이다. 물리 통제와 정보 통제를 구분해 연표에 놓는다.",
+      "concepts": [
+        "하류교량 통제시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02956",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경보철회 위험해소순서는 수위하락과 철회방송이 역전되어 보일 때 원시수위의 발생시각과 판정창을 적용한다. 화면상 정상표지 하나만으로 위험해소를 앞당기지 않는다.",
+      "concepts": [
+        "경보철회 위험해소순서"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02957",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "야간경보 확인시차는 발송 뒤 주민 확인이 다음 날 집계되어 경보보다 하루 늦은 사건처럼 보이는 문제다. 개별 단말 응답시각과 집계 생성시각을 구별한다.",
+      "concepts": [
+        "야간경보 확인시차"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02958",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신망 재전송순서는 실패한 경보가 복구 뒤 여러 경로에서 중복 도착할 때 원메시지 번호와 발송시각으로 배열한다. 마지막 도착본을 새 경보로 세지 않는다.",
+      "concepts": [
+        "통신망 재전송순서"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02959",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대피소 개방연표는 관리자 출입, 전력 투입, 수용 가능 선언, 첫 주민 입소의 기록이 충돌할 때 시설 사용 가능 조건을 기준으로 복원한다.",
+      "concepts": [
+        "대피소 개방연표"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02960",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주민복귀 승인근거는 방류감소, 도로점검, 지자체 승인, 안내 수신의 시각이 다를 때 모든 보호조건이 갖춰진 뒤 복귀가 시작됐는지 판정한다.",
+      "concepts": [
+        "주민복귀 승인근거"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02961",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "본류지류 첨두순서는 관측소 시계가 달라 어느 홍수파가 합류점에 먼저 왔는지 모호한 경우다. 원시 파형과 이동거리, 공통 강우 기준으로 정렬한다.",
+      "concepts": [
+        "본류지류 첨두순서"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02962",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류점 수위상승역전은 합류점 상승이 두 상류 관측보다 먼저 기록될 때 미계측 국지유입과 장비오차를 함께 검토한다. 물리적으로 가능한 선후만 남긴다.",
+      "concepts": [
+        "합류점 수위상승역전"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02963",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "역류개시 시각복원은 지류 유속반전, 본류 수위, 배수문 상태의 시각이 충돌할 때 방향계 원시값과 수면경사로 최초 역류 구간을 좁히는 절차다.",
+      "concepts": [
+        "역류개시 시각복원"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02964",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상류댐 방류도달충돌은 하류 합류점 반응이 방류명령보다 먼저 보이는 경우다. 실제 수문동작, 다른 지류 홍수파, 시계오프셋을 비교해 원인을 가린다.",
+      "concepts": [
+        "상류댐 방류도달충돌"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02965",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지류펌프 가동순서는 집수위 상승, 펌프기동, 합류점 유량변화의 로그가 뒤섞일 때 제어조건과 전류기록으로 복원한다. 화면명령만을 기동증거로 쓰지 않는다.",
+      "concepts": [
+        "지류펌프 가동순서"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02966",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류홍수경보 연표는 본류경보와 지류경보의 개정번호가 중앙에서 역순 수신될 때 원발행시각으로 재배열한다. 종합경보가 어떤 선행 자료를 사용했는지도 확인한다.",
+      "concepts": [
+        "합류홍수경보 연표"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02967",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수문곡선 시각정렬은 관측소별 표본 간격과 시작초가 달라 첨두가 동시에 보이지 않는 문제다. 공통 시간격자로 맞추되 보간값과 실제 표본을 구분한다.",
+      "concepts": [
+        "수문곡선 시각정렬"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02968",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부정류 전파순서는 방류변화가 하류 여러 지점에 비단조롭게 기록될 때 지류유입과 배수위, 센서지연을 포함한 물리모형으로 가능한 순서를 검증한다.",
+      "concepts": [
+        "부정류 전파순서"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02969",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류점 표본중복은 통신 복구 뒤 동일 측정이 다른 수신시각으로 두 번 저장된 상황이다. 장비번호와 원시 일련번호로 하나의 사건을 식별해 연표 중복을 제거한다.",
+      "concepts": [
+        "합류점 표본중복"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02970",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수파 분리근거는 본류·지류 첨두가 겹칠 때 상류 파형과 도달범위로 기여 선후를 추정하고 불분명한 구간은 동시 범위로 둔다.",
+      "concepts": [
+        "홍수파 분리근거"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02971",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관개공급 개시순서는 저수지 방류, 간선수로 유입, 지선 분배의 기록시각이 다를 때 물의 이동과 수문 동작을 따라 복원한다. 명령시각을 농가 도달시각으로 쓰지 않는다.",
+      "concepts": [
+        "관개공급 개시순서"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02972",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수로도달 시각충돌은 하류 수로의 수위상승이 상류 방류보다 먼저 찍힌 경우다. 수로 내 잔류수와 국지취수, 센서시계 오차를 점검해 순서를 판정한다.",
+      "concepts": [
+        "수로도달 시각충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02973",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분수문 배분연표는 여러 지선 수문의 개방기록이 같은 분으로 묶였을 때 현장 접점과 유량반응으로 실제 차례를 복원한다. 계획표 순서를 실행순서로 간주하지 않는다.",
+      "concepts": [
+        "분수문 배분연표"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02974",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "농가신청 공급역전은 공급 계량이 신청 승인보다 먼저 보일 때 정기배분 잔량인지 긴급 선공급인지 구분한다. 신청 입력시각과 효력시각도 나눠 본다.",
+      "concepts": [
+        "농가신청 공급역전"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02975",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "윤번관개 차례복원은 교대일지와 유량계가 다른 농가 순서를 보일 때 수문 위치와 도달지연을 반영해 실제 급수 차례를 정한다. 중첩 급수는 겹침 구간으로 표시한다.",
+      "concepts": [
+        "윤번관개 차례복원"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02976",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관개종료 기록충돌은 수문폐쇄, 수로유량 소멸, 농가확인의 시각이 다를 때 기계 종료와 물리 공급 종료를 구별해 복원한다.",
+      "concepts": [
+        "관개종료 기록충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02977",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수로파손 공급중단순서는 압력저하, 주민신고, 상류차단의 기록이 역전될 때 원시계측과 현장사진으로 파손 뒤 차단이라는 사건연쇄를 검증한다.",
+      "concepts": [
+        "수로파손 공급중단순서"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02978",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "용수계량 일경계는 야간 관개량이 운영일과 달력일에 다르게 귀속되어 공급순서가 뒤바뀌는 문제다. 실제 계량구간을 윤번표 효력과 맞춰 다시 배치한다.",
+      "concepts": [
+        "용수계량 일경계"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02979",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴급관개 승인순서는 작물피해 신고, 현장확인, 예외승인, 수문개방 기록이 충돌할 때 권한 계보와 실제 유량변화로 복원한다. 사후 입력을 사후 승인과 혼동하지 않는다.",
+      "concepts": [
+        "긴급관개 승인순서"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02980",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "농업용수 복귀근거는 가뭄제한 해제, 수로점검, 정상배분 재개가 다른 시각에 남을 때 필수조건의 마지막 충족과 첫 정상 유량을 구분해 기록한다.",
+      "concepts": [
+        "농업용수 복귀근거"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02981",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수문정비 허가격리순서는 작업허가, 전원차단, 수문고정, 작업착수의 기록이 충돌할 때 잠금표지와 전류로그로 보호단계가 먼저였는지 검증한다.",
+      "concepts": [
+        "수문정비 허가격리순서"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02982",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계측기교정 연표는 기준기 측정, 보정계수 계산, 장비 적용, 과거자료 재처리의 파일시각이 뒤섞일 때 각 효력구간을 분리해 복원한다.",
+      "concepts": [
+        "계측기교정 연표"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02983",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "취수탑 점검시간충돌은 출입기록, 잠수일지, 영상시각이 다를 때 작업자의 이동과 통신보고를 대조해 실제 점검 구간을 정한다. 보고 완료를 입수시각으로 쓰지 않는다.",
+      "concepts": [
+        "취수탑 점검시간충돌"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02984",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발전기정비 수위운영순서는 발전정지, 저수위 조정, 정비허가가 역전되어 보일 때 설비격리와 운영명령의 의존관계로 복원한다.",
+      "concepts": [
+        "발전기정비 수위운영순서"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02985",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상전원 시험순서는 상용전원 모의차단, 발전기기동, 부하절체, 복귀기록이 서로 다른 시계를 쓸 때 전압파형과 접점순번으로 맞춘다.",
+      "concepts": [
+        "비상전원 시험순서"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02986",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신장비 교체시각은 구 단말 마지막 전송과 신 단말 첫 전송이 겹칠 때 자산번호와 네트워크 등록기록으로 전후를 구분한다. 중복 수신을 동시 장비로 오인하지 않는다.",
+      "concepts": [
+        "통신장비 교체시각"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02987",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "준설작업 방류조정순서는 작업선 진입, 방류감량, 탁도감시, 준설착수의 기록이 충돌할 때 보호조건과 실제 유량으로 안전한 선후를 검증한다.",
+      "concepts": [
+        "준설작업 방류조정순서"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02988",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잠수점검 입수회수순서는 교대일지와 수면감시 영상이 다른 시각을 보일 때 원본 영상과 호흡가스 기록으로 작업구간을 복원한다. 통신보고 지연은 별도로 둔다.",
+      "concepts": [
+        "잠수점검 입수회수순서"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02989",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비종료 검증순서는 공구회수, 보호장치 복구, 무부하 시험, 운전승인의 시각이 엇갈릴 때 체크리스트 서명과 설비상태로 실제 복귀 순서를 정한다.",
+      "concepts": [
+        "정비종료 검증순서"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-02990",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업허가 로그충돌은 종이허가와 전산승인의 시각이 달라 작업이 먼저 시작된 것처럼 보이는 경우다. 원본 서명, 권한자 통화, 현장출입으로 효력시각을 판정한다.",
+      "concepts": [
+        "작업허가 로그충돌"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02991",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "댐비상단계 발령순서는 자동경보, 책임자 승인, 기관통보, 주민경보의 시각이 충돌할 때 단계 효력과 전달 사건을 분리해 복원한다.",
+      "concepts": [
+        "댐비상단계 발령순서"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02992",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전원상실 연표복원은 수전 차단, UPS 전환, 발전기 기동, 설비 정지 로그의 시계가 서로 어긋날 때 전압 파형과 공통 장애 표지를 이용해 사건 순서를 재구성한다.",
+      "concepts": [
+        "전원상실 연표복원"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02993",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어실대피 원격전환순서는 현장 퇴실과 원격관제 인수 기록이 겹칠 때 출입통제와 제어세션 소유권을 대조해 공백 없는 전환이었는지 판정한다.",
+      "concepts": [
+        "제어실대피 원격전환순서"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02994",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수문고착 사건순서는 개방명령, 모터과전류, 개도불변, 현장확인의 기록이 역전될 때 전기적 증거로 최초 실패와 후속 탐지를 배열한다.",
+      "concepts": [
+        "수문고착 사건순서"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02995",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신두절 보고시차는 연결 상실, 자동 재시도, 운영자 인지, 외부보고의 시각이 섞인 상황이다. 실제 장애 시작과 보고 지연을 분리해 연표를 복원한다.",
+      "concepts": [
+        "통신두절 보고시차"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-02996",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상방류 승인충돌은 구두승인, 전산기록, 현장조작의 시각이 맞지 않을 때 권한 위임과 통화 원본, 수문변화로 유효 명령 순서를 정한다.",
+      "concepts": [
+        "비상방류 승인충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02997",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주민대피 도로통제순서는 대피개시와 교량차단이 역순 기록될 때 현장영상과 차량흐름을 이용해 실제 겹침과 선후를 복원한다. 계획상 순서를 사실로 대체하지 않는다.",
+      "concepts": [
+        "주민대피 도로통제순서"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02998",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "응급복구 자원도착순서는 요청, 배차, 현장도착, 작업투입의 시스템 시각이 충돌할 때 차량위치와 출입기록으로 재구성한다. 접수 완료를 자원도착으로 세지 않는다.",
+      "concepts": [
+        "응급복구 자원도착순서"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02999",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상종료 선언근거는 구조 안정, 수문 복구, 하류 확인, 기관 승인 가운데 가장 늦게 충족된 필수조건 뒤에 종료 선언이 있었는지 검증하는 기준이다.",
+      "concepts": [
+        "비상종료 선언근거"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-03000",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "최종사건연표 확정은 자동로그·통화·영상·보고서를 출처 신뢰도와 시각해상도로 정렬하고 남는 모호함은 범위로 남긴다.",
+      "concepts": [
+        "최종사건연표 확정"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "comparison"
+      ]
+    }
+  ]
+}

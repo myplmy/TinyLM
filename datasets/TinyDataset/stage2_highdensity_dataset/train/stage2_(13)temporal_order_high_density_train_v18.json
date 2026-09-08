@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v18",
+  "version": "18",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-02551 ~ S2-TOH-02700",
+  "concept_family": "S2-A03-T018: 하천 저수지 수위·방류 관리 — 시점과 기간·마감 창의 구분",
+  "design_note": "하천 저수지 수위·방류 관리 영역의 시점과 기간·마감 창의 구분 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-02551",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유역강우 시작시점은 대표 관측망에서 강수가 처음 연속 조건을 충족한 순간이다. 비가 이어진 전체 기간과 구분한다. 유효 강우가 유역에서 처음 관측된 단일 경계이며 호우가 이어진 전체 지속기간과는 다르다.",
+      "concepts": [
+        "유역강우 시작시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02552",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유역강우 지속기간은 첫 유효 강수부터 마지막 강수 뒤 종료 조건까지의 구간이다. 우량계 한 표본시점만 뜻하지 않는다.",
+      "concepts": [
+        "유역강우 지속기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02553",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강우예보 갱신창은 홍수파가 도달하기 전에 새 레이더 관측과 수치예보를 운영 계획에 반영할 수 있는 구간이다. 게시 시각은 이 범위 안의 한 사건이다.",
+      "concepts": [
+        "강우예보 갱신창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02554",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유입예측 확정 마감시각은 수문 조정을 결정하기 전에 강우·토양·지류 정보를 잠글 마지막 순간이다. 계산기간과 구분한다.",
+      "concepts": [
+        "유입예측 확정 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02555",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선제방류 판단창은 큰 유입이 오기 전 하류 수용 여력과 빈 저장공간을 비교해 미리 물을 뺄지 결정하는 구간이다. 승인과 수문 개방은 각각 이 구간 안의 사건이다.",
+      "concepts": [
+        "선제방류 판단창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02556",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수파 유역출구 도달시점은 증가한 유량의 선두가 기준 관측소에 실제 나타난 순간이다. 강우 시작과 나눠 본다.",
+      "concepts": [
+        "홍수파 유역출구 도달시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02557",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강우후 유출지속기간은 비가 그친 뒤 지표·토양·지류 물이 본류로 계속 나오는 구간이다. 종료표본 하나와 같지 않다. 비가 그친 뒤에도 하천유량이 기저수준으로 돌아올 때까지 이어진 길이를 뜻한다.",
+      "concepts": [
+        "강우후 유출지속기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02558",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추가강우 대응창은 첫 홍수파가 지난 뒤 다음 비가 오기 전 저장량과 방류 계획을 다시 조정할 수 있는 기간이다. 한 번의 명령이 아니라 재검토 가능한 전체 시간대를 뜻한다.",
+      "concepts": [
+        "추가강우 대응창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02559",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강우사건 종료시점은 강수와 후속 유출이 정한 기준 아래로 내려가 하나의 회차를 닫는 순간이다. 비가 멎은 시점과 구분한다. 정해진 무강우 간격이 시작된 단일 경계이고 앞선 강우 전체 기간은 포함하지 않는다.",
+      "concepts": [
+        "강우사건 종료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02560",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강우후 수문감시기간은 사건 종료 뒤 토양포화·지류잔류·저수지 유입을 집중 확인하는 구간이다. 첫 낮은 유량에서 끝내지 않는다.",
+      "concepts": [
+        "강우후 수문감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02561",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수위표본 생성시점은 센서가 물높이를 하나의 값으로 기록한 순간이다. 전송·저장·표시가 이어지는 기간과 구분한다. 센서가 원시 수위값을 취득한 한 순간이며 중앙 전송과 저장에 걸린 시간은 뒤에 온다.",
+      "concepts": [
+        "수위표본 생성시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02562",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수위관측 회차기간은 정해 둔 개시부터 종료까지 동일한 설정으로 수위 표본을 모은 구간이다. 개별 측정 시각은 회차 안의 한 사건이다.",
+      "concepts": [
+        "수위관측 회차기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02563",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수동검측 허용창은 자동 센서와 같은 수리 상태를 대표하도록 현장 표척을 읽을 수 있는 구간이다. 작업자 도착과 실제 검측을 서로 다른 시점으로 둔다.",
+      "concepts": [
+        "수동검측 허용창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02564",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서교정 완료 마감시각은 홍수기 집중감시 전에 기준점과 편차 보정을 끝내야 하는 마지막 순간이다. 교정기간과 구분한다.",
+      "concepts": [
+        "센서교정 완료 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02565",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "결측보완 창은 관측 자료를 확정하기 전에 현장값, 인접 관측소, 장치 저장분으로 공백을 메우는 기간이다. 보완을 위한 재측정이나 추정은 그 안의 개별 사건이다.",
+      "concepts": [
+        "결측보완 창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02566",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기준수위 통과시점은 연속 시계열이 주의·경계선을 처음 넘은 순간이다. 높은 수위가 유지된 기간과 나눠 본다.",
+      "concepts": [
+        "기준수위 통과시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02567",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고수위 유지기간은 기준 초과부터 안정적 하강으로 해제될 때까지의 구간이다. 최고수위 시점 하나와 같지 않다. 수위가 관리상한 이상에 머문 시작부터 하락할 때까지의 길이이며 첨두시점 하나와 다르다.",
+      "concepts": [
+        "고수위 유지기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02568",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저수지자료 재수집 허용창은 통신이 복구된 뒤 관측 회차를 확정하기 전까지 빠진 표본을 다시 요청할 수 있는 구간이다. 각 수신 시각은 이 구간에 포함되는 개별 사건이다.",
+      "concepts": [
+        "저수지자료 재수집 허용창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02569",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관측회차 확정시점은 보정·결측·출처 검토를 마쳐 시계열을 더 바꾸지 않는 순간이다. 마지막 표본 생성과 구분한다. 해당 회차의 자동·수동 자료가 봉인된 단일 경계이고 관측 수행기간 전체는 아니다.",
+      "concepts": [
+        "관측회차 확정시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02570",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교정후 품질감시기간은 센서 조정 뒤 인접 관측과 편차가 안정적인지 확인하는 구간이다. 첫 일치값에서 끝내지 않는다.",
+      "concepts": [
+        "교정후 품질감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02571",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저수위 판정시점은 댐 수위가 운영 기준선을 처음 연속해서 통과한 순간이다. 부족 상태가 지속된 기간과 구분한다. 보정된 수위가 하한조건을 처음 충족해 운영상태가 바뀐 한 순간이다.",
+      "concepts": [
+        "저수위 판정시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02572",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저수량 변화기간은 시작·종료 수위 사이에서 유입과 방류 차가 누적된 구간이다. 한 수위표본만 뜻하지 않는다.",
+      "concepts": [
+        "저수량 변화기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02573",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "목표수위 조정창은 계절, 유입 예측, 용수 수요를 반영해 운영 목표값을 재설정하는 시간대다. 결정 접점은 이 범위 내부에 기록한다.",
+      "concepts": [
+        "목표수위 조정창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02574",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수여유 확보 마감시각은 예상 큰 유입이 도착하기 전에 필요한 빈 저장공간을 만들어야 하는 마지막 순간이다. 방류기간과 구분한다.",
+      "concepts": [
+        "홍수여유 확보 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02575",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저수곡선 선택창은 계절이 바뀔 때 홍수 조절, 용수 공급, 생태 목표를 비교해 운영 곡선을 고르는 기간이다. 곡선이 승인된 순간만 가리키지 않는다.",
+      "concepts": [
+        "저수곡선 선택창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02576",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "최고수위 도달시점은 상승에서 하강으로 바뀌는 국소 최대 순간이다. 고수위가 이어진 전체 기간과 나눠 본다.",
+      "concepts": [
+        "최고수위 도달시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02577",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수기 운영기간은 정한 계절 경계 사이에 낮은 목표수위와 강화 규칙을 쓰는 구간이다. 시작 공지시점 하나와 같지 않다.",
+      "concepts": [
+        "홍수기 운영기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02578",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저수량 회복창은 가뭄 뒤 유입을 저장하면서 필수 방류를 지킬 수 있는 시간 범위다. 수문조정 한 건과 다르다.",
+      "concepts": [
+        "저수량 회복창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02579",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영수위 복귀시점은 임시 홍수·가뭄 목표에서 정상곡선 범위로 다시 들어온 순간이다. 복귀과정 전체와 구분한다.",
+      "concepts": [
+        "운영수위 복귀시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02580",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복귀후 물수지감시기간은 목표수위 회복 뒤 유입·방류·증발 추정이 맞는지 집중 확인하는 구간이다. 첫 균형표본에서 끝내지 않는다.",
+      "concepts": [
+        "복귀후 물수지감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02581",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수문개방 시작시점은 구동기가 닫힘 위치를 벗어나 실제로 움직인 순간이다. 방류명령 입력이나 개방기간과 구분한다.",
+      "concepts": [
+        "수문개방 시작시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02582",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수문개방 유지기간은 목표 개도 도달 뒤 폐쇄 시작 전까지 물길을 유지한 구간이다. 한 위치표본만 뜻하지 않는다.",
+      "concepts": [
+        "수문개방 유지기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02583",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단계개도 조정창은 하류 수위와 구조물 반응을 관찰하며 다음 수문 개도 단계를 선택할 수 있는 구간이다. 명령 한 건과 전체 시간 범위를 구별한다.",
+      "concepts": [
+        "단계개도 조정창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02584",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하류경고 완료 마감시각은 방류파가 위험구간에 닿기 전에 대상자 통지를 끝내야 하는 마지막 순간이다. 경고기간과 구분한다.",
+      "concepts": [
+        "하류경고 완료 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02585",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상개방 결정창은 현재 수위와 예상 유입, 댐 안전을 검토해 여수로를 추가로 쓸지 정할 수 있는 시간대다. 실제 개방 명령은 판단이 끝난 뒤 별도로 남는다.",
+      "concepts": [
+        "비상개방 결정창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02586",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "목표개도 도달시점은 문 위치가 지시값에 들어와 안정된 순간이다. 움직인 전체 기간과 나눠 본다.",
+      "concepts": [
+        "목표개도 도달시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02587",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고방류 유지기간은 큰 유량을 시작한 뒤 감축 조건을 충족할 때까지의 구간이다. 최대유량 시점 하나와 같지 않다.",
+      "concepts": [
+        "고방류 유지기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02588",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방류감축 허용창은 하류 첨두와 저수지 안전을 해치지 않으면서 수문 개도를 줄일 수 있는 구간이다. 실제 감축 명령은 내부 사건이다.",
+      "concepts": [
+        "방류감축 허용창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02589",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수문폐쇄 완료시점은 문이 닫힘 한계에 도달하고 누수·위치 확인을 마친 순간이다. 방류영향 종료와 구분한다.",
+      "concepts": [
+        "수문폐쇄 완료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02590",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "폐쇄후 하류감시기간은 수문을 닫은 뒤 잔류 홍수파와 하상·제방 영향을 집중 확인하는 구간이다. 첫 수위하락에서 끝내지 않는다.",
+      "concepts": [
+        "폐쇄후 하류감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02591",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발전기 기동시점은 수차 회전과 계통연결이 확인되어 출력이 처음 생긴 순간이다. 준비기간과 구분한다.",
+      "concepts": [
+        "발전기 기동시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02592",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수력발전 운전기간은 계통연결부터 출력 0과 해제까지 물을 사용해 전기를 만든 구간이다. 한 출력표본만 뜻하지 않는다.",
+      "concepts": [
+        "수력발전 운전기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02593",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출력증가 허용창은 수위·방류·전력수요를 만족하며 다음 부하단계로 올릴 수 있는 시간 범위다. 조작시점과 창 전체는 다르다.",
+      "concepts": [
+        "출력증가 허용창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02594",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "피크전력 공급 마감시각은 수요 최고구간이 지나기 전에 약정 출력을 계통에 제공해야 하는 마지막 순간이다. 발전기간과 구분한다.",
+      "concepts": [
+        "피크전력 공급 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02595",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예비기동 결정창은 예상 전력 수요, 주기기 고장 위험, 물 사용량을 함께 보고 추가 발전기를 투입할 수 있는 기간이다. 실제 기동 명령은 그 안에서 일어난다.",
+      "concepts": [
+        "예비기동 결정창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02596",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "최대출력 도달시점은 부하상승 뒤 허용 출력의 최고값에 안정된 순간이다. 고출력 유지기간과 나눠 본다.",
+      "concepts": [
+        "최대출력 도달시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02597",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계통병렬 유지기간은 동기화 뒤 차단기 해제 전까지 전력망과 연결된 구간이다. 동기화 시점 하나와 같지 않다.",
+      "concepts": [
+        "계통병렬 유지기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02598",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출력감축 허용창은 계통 수요와 하류 유량을 해치지 않으면서 발전량을 낮출 수 있는 기간이다. 감축 명령과 목표 출력 도달은 서로 다른 시점이다.",
+      "concepts": [
+        "출력감축 허용창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02599",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발전정지 완료시점은 출력·회전·수류가 안전조건에 들어와 계통에서 분리된 순간이다. 명령시점과 구분한다.",
+      "concepts": [
+        "발전정지 완료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02600",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정지후 설비감시기간은 수차 정지 뒤 온도·진동·누수와 수압 변화를 집중 확인하는 구간이다. 첫 정상값에서 끝내지 않는다.",
+      "concepts": [
+        "정지후 설비감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02601",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "생태방류 개시시점은 수문·발전 유량 가운데 하류 최소흐름으로 인정되는 물이 실제 나가기 시작한 순간이다. 승인기간과 구분한다.",
+      "concepts": [
+        "생태방류 개시시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02602",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "생태유량 적용기간은 계절·산란·수온 조건에 맞춘 최소 방류를 유지하는 구간이다. 한 유량표본만 뜻하지 않는다.",
+      "concepts": [
+        "생태유량 적용기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02603",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "어류보호 조정창은 급격한 수위 변화가 생기기 전에 방류 증감 속도를 완화할 수 있는 구간이다. 조작 시각과 허용 범위의 양 경계를 따로 기록한다.",
+      "concepts": [
+        "어류보호 조정창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02604",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산란기 유량확보 마감시각은 대상 어종 이동과 산란이 시작되기 전에 필요한 하천흐름을 만들어야 하는 마지막 순간이다. 적용기간과 구분한다.",
+      "concepts": [
+        "산란기 유량확보 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02605",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉수방류 결정창은 하류 수온과 저층 산소, 남은 저수량을 검토하여 선택 취수층을 바꿀지 판단하는 기간이다. 결정서가 승인된 시각만을 뜻하지 않는다.",
+      "concepts": [
+        "냉수방류 결정창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02606",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "생태펄스 도달시점은 증가한 방류 선두가 기준 서식구간에 실제 나타난 순간이다. 수문개방과 나눠 본다.",
+      "concepts": [
+        "생태펄스 도달시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02607",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서식지지원 유지기간은 목표 수온·수심·유속을 위해 임시 유량을 계속하는 구간이다. 첨두시점 하나와 같지 않다.",
+      "concepts": [
+        "서식지지원 유지기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02608",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "평상유량 복귀창은 생물 영향이 급변하지 않도록 임시 방류량을 단계적으로 낮출 수 있는 구간이다. 감축 명령의 발행과 평상유량 복귀는 서로 다른 시점이다.",
+      "concepts": [
+        "평상유량 복귀창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02609",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "생태운영 종료시점은 계절 목표와 영향확인을 마쳐 특별 유량규칙을 닫은 순간이다. 마지막 관측시점과 구분한다.",
+      "concepts": [
+        "생태운영 종료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02610",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "생태운영후 감시기간은 평상방류 복귀 뒤 어류·수온·하상반응을 집중 확인하는 구간이다. 첫 정상표본에서 끝내지 않는다.",
+      "concepts": [
+        "생태운영후 감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02611",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수대응 개시시점은 유입·수위 전망이 단계 기준을 충족해 특별 운영을 시작한 순간이다. 강우기간 전체와 구분한다.",
+      "concepts": [
+        "홍수대응 개시시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02612",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수운영 기간은 대응개시부터 수위·유입·하류영향이 안정되어 종료할 때까지의 구간이다. 최고수위 한 시점만 뜻하지 않는다.",
+      "concepts": [
+        "홍수운영 기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02613",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예비방류 실행창은 홍수파 도달 전에 하류여유를 활용해 저장공간을 만들 수 있는 시간 범위다. 수문명령과 창 전체는 다르다.",
+      "concepts": [
+        "예비방류 실행창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02614",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수공간 확보 마감시각은 예상 첨두 유입이 오기 전에 목표 빈 체적을 만들어 두어야 하는 최종 경계다. 이를 확보하기 위해 방류한 전체 기간과 다르다.",
+      "concepts": [
+        "홍수공간 확보 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02615",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상여수로 결정창은 계획홍수위 접근과 구조 안전을 근거로 추가 물길을 열지 정하는 구간이다. 여수로 개방 명령은 이 판단 기간 안의 한 사건이다.",
+      "concepts": [
+        "비상여수로 결정창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02616",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유입첨두 도달시점은 저수지로 들어오는 유량이 사건 중 최대가 된 순간이다. 고유입 유지기간과 나눠 본다.",
+      "concepts": [
+        "유입첨두 도달시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02617",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고방류 대응기간은 하류 경고와 구조감시 아래 큰 유량을 유지한 구간이다. 최대개도 시점 하나와 같지 않다.",
+      "concepts": [
+        "고방류 대응기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02618",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단계감축 허용창은 추가 강우와 저장 여유를 확인하면서 방류량을 순차적으로 낮출 수 있는 구간이다. 개별 감축은 전체 계획의 일부다.",
+      "concepts": [
+        "단계감축 허용창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02619",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "홍수운영 종료시점은 임시 수문규칙과 비상지휘를 닫고 평상 기준으로 돌아온 순간이다. 비가 그친 때와 구분한다.",
+      "concepts": [
+        "홍수운영 종료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02620",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종료후 홍수감시기간은 정상운영 복귀 뒤 잔류유입·하류침수·구조반응을 확인하는 구간이다. 첫 낮은 수위에서 끝내지 않는다.",
+      "concepts": [
+        "종료후 홍수감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02621",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가뭄대응 개시시점은 저수율·유입·전망이 단계 기준을 충족해 공급제한을 시작한 순간이다. 건조기간 전체와 구분한다.",
+      "concepts": [
+        "가뭄대응 개시시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02622",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가뭄운영 기간은 제한개시부터 저장·유입이 회복되어 정상배분으로 돌아갈 때까지의 구간이다. 최저수위 한 시점만 뜻하지 않는다.",
+      "concepts": [
+        "가뭄운영 기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02623",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "용도별 감축창은 필수 수요를 지키며 생활, 농업, 산업 배분량을 단계적으로 줄일 수 있는 구간이다. 각 밸브 조정은 내부 사건이다.",
+      "concepts": [
+        "용도별 감축창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02624",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상수원 확보 마감시각은 저수량이 임계치에 닿기 전에 연계관·지하수·운반수를 준비할 마지막 순간이다. 준비기간과 구분한다.",
+      "concepts": [
+        "비상수원 확보 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02625",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가뭄단계 상향창은 유입전망과 수요감축 효과를 검토해 더 엄격한 제한을 정할 수 있는 구간이다. 결정시점만 뜻하지 않는다.",
+      "concepts": [
+        "가뭄단계 상향창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02626",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "최저수위 도달시점은 하강세가 멈추고 상승 또는 안정으로 바뀐 사건 최저 순간이다. 저수위 유지기간과 나눠 본다.",
+      "concepts": [
+        "최저수위 도달시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02627",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공급제한 유지기간은 단계별 감축규칙을 실제 사용자·수로에 적용한 구간이다. 최초 통지시점 하나와 같지 않다.",
+      "concepts": [
+        "공급제한 유지기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02628",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제한해제 허용창은 유입 회복과 다음 건기 위험을 확인하며 용수 공급을 단계적으로 늘릴 수 있는 구간이다. 밸브 하나를 여는 순간과 같지 않다.",
+      "concepts": [
+        "제한해제 허용창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02629",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가뭄운영 종료시점은 용도별 제한과 비상지휘를 닫아 정상배분이 적용된 순간이다. 첫 강우시점과 구분한다.",
+      "concepts": [
+        "가뭄운영 종료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02630",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종료후 저장감시기간은 제한해제 뒤 저수량·수요·유입이 안정적인지 확인하는 구간이다. 첫 상승표본에서 끝내지 않는다.",
+      "concepts": [
+        "종료후 저장감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02631",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고탁도 도달시점은 증가한 부유물 농도가 저수지 기준 지점에서 경계값을 처음 넘은 순간이다. 탁수가 이어진 기간과 구분한다.",
+      "concepts": [
+        "고탁도 도달시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02632",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탁수영향 기간은 첫 기준초과부터 여러 표본이 회복조건을 채울 때까지의 구간이다. 최고농도 시점 하나만 뜻하지 않는다.",
+      "concepts": [
+        "탁수영향 기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02633",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선택취수 전환창은 탁수층이 취수구에 오기 전에 더 맑은 수심의 취수구로 바꿀 수 있는 구간이다. 밸브 명령과 실제 유로 전환을 구분한다.",
+      "concepts": [
+        "선택취수 전환창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02634",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하류탁도 경고 마감시각은 퇴사·배사 물이 취수·어업구간에 닿기 전에 통지를 끝낼 마지막 순간이다. 경고기간과 구분한다.",
+      "concepts": [
+        "하류탁도 경고 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02635",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "퇴사방류 결정창은 퇴적량, 하류 수질, 다음 유입을 함께 살펴 배사수문을 사용할지 정할 수 있는 기간이다. 결재 시점과 방류 시작은 서로 다른 내부 사건이다.",
+      "concepts": [
+        "퇴사방류 결정창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02636",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탁도첨두 도달시점은 사건 중 부유물 농도가 가장 높게 측정된 순간이다. 탁수 지속기간과 나눠 본다.",
+      "concepts": [
+        "탁도첨두 도달시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02637",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선택취수 유지기간은 특정 깊이의 수질이 유리해 그 취수구를 계속 쓰는 구간이다. 전환시점 하나와 같지 않다.",
+      "concepts": [
+        "선택취수 유지기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02638",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정상취수 복귀창은 여러 수심과 하류 수질을 확인한 뒤 평상 취수구로 돌아갈 수 있는 구간이다. 단일 전환 명령만으로 전체 허용 시간을 대신하지 않는다.",
+      "concepts": [
+        "정상취수 복귀창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02639",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탁수운영 종료시점은 선택취수·퇴사·강화감시를 닫고 평상 규칙을 적용한 순간이다. 탁도 한 표본 하락과 구분한다.",
+      "concepts": [
+        "탁수운영 종료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02640",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종료후 퇴적감시기간은 수질회복 뒤 하상·취수구·저수지 퇴적변화를 확인하는 구간이다. 첫 맑은 표본에서 끝내지 않는다.",
+      "concepts": [
+        "종료후 퇴적감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02641",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "구조이상 감지시점은 변위·누수·압력 중 하나가 지속 기준을 처음 충족한 순간이다. 이상상태 전체 기간과 구분한다.",
+      "concepts": [
+        "구조이상 감지시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02642",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "댐안전 대응기간은 이상확인부터 원인격리·검증·정상운영 승인까지의 구간이다. 최고 변위시점 하나만 뜻하지 않는다.",
+      "concepts": [
+        "댐안전 대응기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02643",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정밀점검 착수창은 위험이 더 커지기 전에 전문가와 계측 장비를 배치해 원인을 조사할 수 있는 구간이다. 현장 도착은 조사 개시와 다를 수 있다.",
+      "concepts": [
+        "정밀점검 착수창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02644",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상수위 저감 마감시각은 구조 하중이 위험 수준에 오래 머물기 전에 목표 수위까지 낮춰야 하는 최종 시점이다. 이를 위한 방류의 전체 기간은 별도다.",
+      "concepts": [
+        "비상수위 저감 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02645",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주민대피 판단창은 구조추세·파괴경로·도달시간을 검토해 대상구역 조치를 정하는 제한 구간이다. 결정시점만 뜻하지 않는다.",
+      "concepts": [
+        "주민대피 판단창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02646",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "최대변위 도달시점은 사건 중 댐체 이동량이 가장 크게 기록된 순간이다. 고변위 유지기간과 나눠 본다.",
+      "concepts": [
+        "최대변위 도달시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02647",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강화계측 유지기간은 짧은 표본 간격과 추가 센서를 적용해 댐 구조를 집중 감시한 구간이다. 센서 설치 시각 하나가 전체 기간을 뜻하지 않는다.",
+      "concepts": [
+        "강화계측 유지기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02648",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영복귀 허용창은 전문가 검토와 반복 시험을 바탕으로 수위 및 방류 제한을 단계적으로 완화할 수 있는 구간이다. 승인과 실제 복귀를 분리한다.",
+      "concepts": [
+        "운영복귀 허용창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02649",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "댐안전 대응종료시점은 구조상태와 운영설비가 기준을 충족해 비상절차를 닫은 순간이다. 첫 안정표본과 구분한다.",
+      "concepts": [
+        "댐안전 대응종료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02650",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종료후 구조감시기간은 정상운영 복귀 뒤 변위·누수·압력 재발을 집중 확인하는 구간이다. 첫 정상일에서 끝내지 않는다.",
+      "concepts": [
+        "종료후 구조감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02651",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방류경고 발령시점은 예정 유량과 도달구간을 확정해 하류 대상자에게 공식 통지를 시작한 순간이다. 경고기간과 구분한다.",
+      "concepts": [
+        "방류경고 발령시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02652",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하류통제 기간은 경고 뒤 위험구역 접근을 막은 때부터 수위·현장 안전 확인 후 해제까지의 구간이다. 사이렌 시점 하나만 뜻하지 않는다.",
+      "concepts": [
+        "하류통제 기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02653",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주민대피 실행창은 방류파가 저지대에 도달하기 전에 주민을 안전 구역으로 옮겨야 하는 구간이다. 각 차량의 출발은 이 시간대의 내부 사건이다.",
+      "concepts": [
+        "주민대피 실행창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02654",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하상철수 완료 마감시각은 수문개방 전에 작업자·차량·장비를 위험구역 밖으로 빼야 하는 마지막 순간이다. 철수기간과 구분한다.",
+      "concepts": [
+        "하상철수 완료 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02655",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추가도로 통제창은 실제 수위가 예상보다 빠르게 오를 때 더 넓은 구간을 막을 수 있는 제한 범위다. 결정시점만 뜻하지 않는다.",
+      "concepts": [
+        "추가도로 통제창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02656",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방류파 도달시점은 수문을 연 뒤 증가한 유량의 선두가 하류 기준 지점에서 처음 관측된 때다. 수문 개방 시각이나 첨두 유량 도착과는 구별한다.",
+      "concepts": [
+        "방류파 도달시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02657",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경고유지 기간은 최초 통지부터 잔류위험 해소와 종료 안내까지 경계 상태를 유지한 구간이다. 한 문자발송 시점과 같지 않다.",
+      "concepts": [
+        "경고유지 기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02658",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통제해제 허용창은 수위, 유속, 사면, 잔류 침수를 확인하며 안전한 구간부터 접근 제한을 풀 수 있는 기간이다. 차단기 하나를 해제한 순간과 구별한다.",
+      "concepts": [
+        "통제해제 허용창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02659",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하류통제 종료시점은 모든 대상구역의 안전과 인계가 확인되어 특별 접근제한을 닫은 순간이다. 첨두통과와 구분한다.",
+      "concepts": [
+        "하류통제 종료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02660",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종료후 주민지원기간은 통제해제 뒤 침수·이동·생계 피해와 잘못된 경고를 처리하는 구간이다. 첫 복귀시점에서 끝내지 않는다.",
+      "concepts": [
+        "종료후 주민지원기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02661",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지류파 합류시점은 지류의 증가유량 선두가 본류 기준단면에 실제 들어온 순간이다. 지류 강우기간과 구분한다.",
+      "concepts": [
+        "지류파 합류시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02662",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류홍수 영향기간은 지류·본류 흐름이 함께 하류수위를 높인 첫 순간부터 안정화까지의 구간이다. 첨두 한 시점만 뜻하지 않는다.",
+      "concepts": [
+        "합류홍수 영향기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02663",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "댐방류 감축창은 지류 홍수파가 합류하기 전에 수문 개도를 낮춰 하류 첨두를 완화하는 시간 범위다. 감축 지시와 수문 반응을 따로 기록한다.",
+      "concepts": [
+        "댐방류 감축창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02664",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류첨두 회피 마감시각은 두 흐름이 겹치기 전에 댐 방류 조정을 완료해야 하는 마지막 순간이다. 조정기간과 구분한다.",
+      "concepts": [
+        "합류첨두 회피 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02665",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방류재개 판단창은 지류 수위가 낮아지고 추가 강우 가능성과 저수 안전을 확인한 뒤 감축 운전을 끝낼지 검토하는 시간대다. 재개 명령이 발행된 순간은 창 안의 선택이다.",
+      "concepts": [
+        "방류재개 판단창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02666",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류첨두 도달시점은 지류와 본류를 합친 유량 또는 수위가 사건 최대가 된 순간이다. 높은 흐름 기간과 나눠 본다.",
+      "concepts": [
+        "합류첨두 도달시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02667",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "댐감축 유지기간은 지류 영향이 큰 동안 평상보다 낮은 방류량을 적용한 구간이다. 첫 감축시점 하나와 같지 않다.",
+      "concepts": [
+        "댐감축 유지기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02668",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "평상방류 복귀창은 합류부의 수용 여력과 저수량을 보며 감축한 유량을 정상 수준으로 올릴 수 있는 기간이다. 한 단계의 수문 개도 변경은 창 안의 일부 사건이다.",
+      "concepts": [
+        "평상방류 복귀창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02669",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류대응 종료시점은 지류파 진출과 하류 안정 뒤 특별 수문조정을 닫은 순간이다. 최고수위 통과와 구분한다.",
+      "concepts": [
+        "합류대응 종료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02670",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종료후 하류감시기간은 방류복귀 뒤 잔류수위·제방·지류 역류를 확인하는 구간이다. 첫 하강표본에서 끝내지 않는다.",
+      "concepts": [
+        "종료후 하류감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02671",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관개공급 개시시점은 배분 승인 뒤 수로 기준점에서 실제 유량이 시작된 순간이다. 펌프명령이나 공급기간과 구분한다.",
+      "concepts": [
+        "관개공급 개시시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02672",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관개공급 기간은 수로 유량 시작부터 밸브·펌프 종료와 잔류수 배출까지의 구간이다. 한 계량표본만 뜻하지 않는다.",
+      "concepts": [
+        "관개공급 기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02673",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "구역별 배분창은 작물 수요, 수로 용량, 저수량을 고려해 각 지역에 물을 보낼 수 있는 구간이다. 분기별 밸브 조작은 서로 다른 내부 시각을 갖는다.",
+      "concepts": [
+        "구역별 배분창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02674",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "농업용수 도달 마감시각은 작물 피해가 생기기 전에 말단 구역에 필요한 양이 도착해야 하는 마지막 순간이다. 이동기간과 구분한다.",
+      "concepts": [
+        "농업용수 도달 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02675",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예비펌프 투입창은 주 펌프가 고장 난 뒤 관로 압력이 무너지기 전에 대체 펌프를 기동해야 하는 시간대다. 투입 승인과 실제 회전 시작은 창 안의 별도 사건이다.",
+      "concepts": [
+        "예비펌프 투입창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02676",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "말단유량 도달시점은 취수 증가분이 수로 끝 기준점에 실제 나타난 순간이다. 펌프기동과 나눠 본다.",
+      "concepts": [
+        "말단유량 도달시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02677",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "양수운전 유지기간은 펌프 기동부터 정지와 압력해제까지 물을 올린 구간이다. 최고출력 시점 하나와 같지 않다.",
+      "concepts": [
+        "양수운전 유지기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02678",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공급감축 허용창은 구역별 목표량을 채운 뒤 수로 안전과 잔류 이동을 고려하여 유량을 낮출 수 있는 구간이다. 종료 경계 전에 단계별 감축을 마친다.",
+      "concepts": [
+        "공급감축 허용창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02679",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관개회차 종료시점은 취수·양수·분배를 닫고 말단 도달량을 확정한 순간이다. 펌프정지시점과 구분한다.",
+      "concepts": [
+        "관개회차 종료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02680",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차후 수로감시기간은 공급종료 뒤 누수·침수·잔류수와 다음 수요를 확인하는 구간이다. 첫 유량 0 표본에서 끝내지 않는다.",
+      "concepts": [
+        "회차후 수로감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02681",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수문정비 개시시점은 운영제외·에너지격리·대체방류를 확인하고 실제 분해를 시작한 순간이다. 준비기간과 구분한다.",
+      "concepts": [
+        "수문정비 개시시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02682",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수문정비 기간은 설비 인계부터 수리·시험·관제 복귀까지의 구간이다. 부품교체 한 시점만 뜻하지 않는다.",
+      "concepts": [
+        "수문정비 기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02683",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자 진입창은 수압·전원·문체를 안전하게 고정한 동안 내부 접근이 허용되는 시간 범위다. 출입시점과 창 전체는 다르다.",
+      "concepts": [
+        "작업자 진입창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02684",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저수지수문 기능시험 완료 마감시각은 다음 홍수·운영 회차 전에 모든 개도·수밀 검사를 끝내야 하는 마지막 순간이다. 시험기간과 구분한다.",
+      "concepts": [
+        "저수지수문 기능시험 완료 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02685",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비연장 결정창은 남은 결함과 대체 방류 능력을 비교하여 수문 작업을 더 이어 갈지 판단하는 구간이다. 결재 시점 하나보다 앞선 검토 과정까지 포함한다.",
+      "concepts": [
+        "정비연장 결정창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02686",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제복귀 시점은 반복시험과 안전인계를 마쳐 원격 운영권이 다시 활성화된 순간이다. 정비기간 전체와 나눠 본다.",
+      "concepts": [
+        "관제복귀 시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02687",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시험운전 유지기간은 제한 개도에서 위치·하중·진동을 관찰하는 구간이다. 첫 움직임 시점 하나와 같지 않다.",
+      "concepts": [
+        "시험운전 유지기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02688",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영투입 허용창은 시험 결과와 하류 조건을 확인한 뒤 정비한 수문을 실제 방류에 사용할 수 있는 기간이다. 투입 명령 한 건이 창 전체를 대표하지 않는다.",
+      "concepts": [
+        "운영투입 허용창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02689",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비회차 종료시점은 운영인계·기록·작업구역 철수를 모두 마쳐 작업을 닫은 순간이다. 수리완료와 구분한다.",
+      "concepts": [
+        "정비회차 종료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02690",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비후 설비감시기간은 관제복귀 뒤 위치·누수·진동·응답시간을 집중 확인하는 구간이다. 첫 정상동작에서 끝내지 않는다.",
+      "concepts": [
+        "정비후 설비감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02691",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상대응 개시시점은 이상수위·구조·수문상태가 기준을 충족해 지휘체계를 공식 연 순간이다. 이상발견기간과 구분한다.",
+      "concepts": [
+        "비상대응 개시시점"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02692",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "댐비상운영 기간은 대응개시부터 원인격리·복구·정상승인까지 특별 절차를 유지한 구간이다. 최고위험 한 시점만 뜻하지 않는다.",
+      "concepts": [
+        "댐비상운영 기간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02693",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "초동완화 실행창은 영향확대 전에 수문·취수·경고 조치를 선택하고 실행할 수 있는 시간 범위다. 명령과 창 전체는 다르다.",
+      "concepts": [
+        "초동완화 실행창"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02694",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하류대피 완료 마감시각은 위험 방류나 파괴파가 도달하기 전에 대상자를 안전구역으로 옮길 마지막 순간이다. 대피기간과 구분한다.",
+      "concepts": [
+        "하류대피 완료 마감시각"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02695",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상수위 저감창은 구조 안전과 하류 통수 능력을 지키면서 저장 하중을 낮출 수 있는 구간이다. 수위 저감 결재 한 번이 아니라 허용된 시작과 종료 경계를 포함한다.",
+      "concepts": [
+        "비상수위 저감창"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02696",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원인격리 시점은 고장수문·센서·전원에서 추가 영향이 퍼지지 않도록 분리한 순간이다. 완전복구와 나눠 본다.",
+      "concepts": [
+        "원인격리 시점"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02697",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제한운영 유지기간은 임시설비와 낮은 수위·방류 한도를 적용하는 구간이다. 원인격리 한 시점과 같지 않다.",
+      "concepts": [
+        "제한운영 유지기간"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02698",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정상복귀 판단창은 구조·수문·수위·하류 관측을 모아 특별 규칙 해제를 정할 수 있는 시간 범위다. 결정 한 건과 다르다.",
+      "concepts": [
+        "정상복귀 판단창"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02699",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상운영 종료시점은 정상설비와 운영기준을 되찾아 지휘체계를 닫은 순간이다. 첫 정상수위와 구분한다.",
+      "concepts": [
+        "비상운영 종료시점"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02700",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상종료후 저수지 집중감시기간은 비상종료 뒤 재발·잔류수위·구조반응과 주민영향을 확인하는 구간이다. 첫 안정일에서 끝내지 않는다.",
+      "concepts": [
+        "비상종료후 저수지 집중감시기간"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "state"
+      ]
+    }
+  ]
+}

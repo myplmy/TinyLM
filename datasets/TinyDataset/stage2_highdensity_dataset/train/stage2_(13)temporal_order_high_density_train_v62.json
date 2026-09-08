@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v62",
+  "version": "62",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-09151 ~ S2-TOH-09300",
+  "concept_family": "S2-A03-T062: 도로 터널 배수·교통 통제 — 마감 창 내부·외부 사건의 시간 경계",
+  "design_note": "도로 터널 배수·교통 통제 영역의 마감 창 내부·외부 사건의 시간 경계 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-09151",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "터널운영실이 예보를 기준시각 전 받으면 집중호우 예보창 내부수신으로 기록한다. 발행시각이 아니라 운영실 수신로그를 기준으로 해야 실제 준비에 쓸 수 있었던 시간을 과장하지 않는다.",
+      "concepts": [
+        "집중호우 예보창 내부수신"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09152",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예보발행은 빨라도 운영서버 도착이 마감 뒤면 집중호우 예보창 외부수신이다. 전송망 지연을 따로 산정해도 준비 가능 시각은 소급하지 않으며 늦은 도착은 마감 위반으로 남긴다.",
+      "concepts": [
+        "집중호우 예보창 외부수신"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09153",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예보가 창 끝과 같은 시각에 도착한 예보창 끝점수신은 경계 포함 규칙을 확인한다. 규정이 끝점을 포함하면 적시로, 포함하지 않으면 지연으로 판정하고 같은 자료에 두 기준을 섞지 않는다.",
+      "concepts": [
+        "예보창 끝점수신"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09154",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배수펌프·차로통제 계획은 강우대응 계획마감 전에 승인돼야 한다.",
+      "concepts": [
+        "강우대응 계획마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09155",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "새 강우량을 운영계획에 반영할 수 있는 기간이 예보갱신 반영허용창이다. 갱신본의 강우대 이동과 터널 위치가 연결된 경우에만 배수·차단 계획을 다시 계산한다.",
+      "concepts": [
+        "예보갱신 반영허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09156",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자료는 도착했어도 검토완료가 늦으면 강우자료 검토기한 초과로 분류한다.",
+      "concepts": [
+        "강우자료 검토기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09157",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예보오류 정정신청창은 잘못 전달된 강우 지역을 공식적으로 고쳐 달라고 요청할 수 있는 기간이다. 기한 안에 접수번호가 발급된 건만 신청으로 세고 작성 중 초안은 제외한다.",
+      "concepts": [
+        "예보오류 정정신청창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09158",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "인력·펌프·차단장비 준비가 모두 끝난 호우대응 준비완료경계로 사전대응을 판정한다.",
+      "concepts": [
+        "호우대응 준비완료경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09159",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "호우예보 창연결표는 발행·수신·검토·계획·준비 시각을 각 마감과 잇는다. 예보가 준비 행동으로 이어진 지연을 단계마다 분리하면 어느 마감이 실제로 초과됐는지 드러난다.",
+      "concepts": [
+        "호우예보 창연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09160",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기상기관과 터널서버가 다르면 기상서버 터널시각 정합 뒤 내부·외부를 정한다.",
+      "concepts": [
+        "기상서버 터널시각 정합"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09161",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수위센서가 대응창 안에 임계값을 넘으면 집수정 고수위창 내부탐지다. 센서의 첫 초과 표본과 지속 조건을 함께 확인해 순간 잡음을 대응 사건으로 오인하지 않는다.",
+      "concepts": [
+        "집수정 고수위창 내부탐지"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09162",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "실제 상승은 빨라도 센서탐지가 창 뒤면 집수정 고수위창 외부탐지로 남긴다.",
+      "concepts": [
+        "집수정 고수위창 외부탐지"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09163",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수위표본이 경계와 같은 시각에 임계를 넘은 수위창 끝점초과는 포함 규칙을 따른다. 표본주기 때문에 경계 직후 값만 남았다면 직전 정상값과 함께 불확실 구간으로 표시한다.",
+      "concepts": [
+        "수위창 끝점초과"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09164",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영자는 고수위 경보확인마감 전에 센서와 CCTV를 대조해야 한다.",
+      "concepts": [
+        "고수위 경보확인마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09165",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단일 이상표본을 다른 계기로 확인할 수 있는 기간이 수위센서 재검허용창이다. 독립 계기의 측정이 기한 안 끝나야 최초 경보를 유지하거나 취소할 근거가 생긴다.",
+      "concepts": [
+        "수위센서 재검허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09166",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경보는 제때 울렸어도 현장점검이 늦으면 집수정 점검기한 초과다.",
+      "concepts": [
+        "집수정 점검기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09167",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서오류가 의심될 때 오탐검토를 요청할 수 있는 기간이 고수위 오탐신고창이다. 현장점검 요청이 접수된 때와 오탐 판정이 끝난 때를 나눠 대응 지연을 숨기지 않는다.",
+      "concepts": [
+        "고수위 오탐신고창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09168",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연속수위와 유입량이 기준을 충족한 집수정 위험판정경계로 대응단계를 정한다.",
+      "concepts": [
+        "집수정 위험판정경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09169",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "집수정 경보창 대조표는 수위상승·탐지·확인·점검·판정시각을 연결한다. 수위의 물리 변화와 시스템 경보, 사람 확인을 별도 열로 두어 동일 사건처럼 합치지 않는다.",
+      "concepts": [
+        "집수정 경보창 대조표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09170",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수위계와 관제서버가 다르면 수위계 시각오프셋 보정 뒤 마감 준수를 판정한다.",
+      "concepts": [
+        "수위계 시각오프셋 보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09171",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고수위 판정 뒤 허용시간 안에 펌프전류가 오르면 배수펌프 기동창 내부다. 명령시각이 아니라 회전수와 토출압이 유효하게 오른 첫 구간을 실제 기동으로 판정한다.",
+      "concepts": [
+        "배수펌프 기동창 내부"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09172",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기동명령은 빨라도 실제 회전이 창 뒤면 배수펌프 기동창 외부다.",
+      "concepts": [
+        "배수펌프 기동창 외부"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09173",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "모터접점이 마감과 같은 펌프기동 끝점접점은 경계 포함 여부를 확인한다. 접점만 닫히고 전류나 토출이 없으면 경계 내 명령은 성립해도 펌프 작동은 실패한 것이다.",
+      "concepts": [
+        "펌프기동 끝점접점"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09174",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주펌프 실패 뒤 예비펌프는 예비펌프 투입마감 전에 운전돼야 한다.",
+      "concepts": [
+        "예비펌프 투입마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09175",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기동실패 뒤 안전하게 재시도할 수 있는 기간이 펌프재시도 허용창이다. 재시도 사이 냉각·절연 확인 시간을 확보해 빠른 반복 명령이 안전 절차를 건너뛰지 않게 한다.",
+      "concepts": [
+        "펌프재시도 허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09176",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "모터는 돌았어도 토출유량 확인이 늦으면 토출확인 완료기한 초과다.",
+      "concepts": [
+        "토출확인 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09177",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예비설비도 실패할 때 외부지원을 요청할 수 있는 기간이 펌프고장 예외신고창이다. 예비펌프 상태와 침수 예측치를 함께 보내야 외부지원의 우선순위를 기한 안 결정할 수 있다.",
+      "concepts": [
+        "펌프고장 예외신고창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09178",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전류·압력·유량이 연속 정상인 배수기능 회복경계로 기동완료를 판정한다.",
+      "concepts": [
+        "배수기능 회복경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09179",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "펌프기동 창판정표는 명령·접점·전류·토출·예비투입·회복을 경계별로 잇는다. 명령 접수부터 실제 배수까지 각 접점의 통과 여부를 적어 부분 성공과 완전 성공을 구별한다.",
+      "concepts": [
+        "펌프기동 창판정표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09180",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "PLC와 BMS가 다르면 펌프제어 로그시각 교정 뒤 내부·외부를 확정한다.",
+      "concepts": [
+        "펌프제어 로그시각 교정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09181",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "펌프기동 뒤 차수문과 밸브가 허용창 안에 열리면 배수유로 개방창 내부다. 밸브 위치뿐 아니라 유량 방향을 확인해야 닫힌 우회관의 잘못된 개방신호를 배제할 수 있다.",
+      "concepts": [
+        "배수유로 개방창 내부"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09182",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "개방명령은 제때였어도 위치피드백이 늦으면 배수유로 개방창 외부다.",
+      "concepts": [
+        "배수유로 개방창 외부"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09183",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "완전개방 접점이 마감과 같은 유로개방 끝점도달은 경계 포함 규칙을 따른다. 완전개방 접점이 경계에 있어도 압력이 안정된 시각은 뒤일 수 있으므로 판정 대상을 명시한다.",
+      "concepts": [
+        "유로개방 끝점도달"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09184",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차로 수위는 침수구간 배수마감 전에 통행기준 아래로 내려가야 한다.",
+      "concepts": [
+        "침수구간 배수마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09185",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주배관 막힘 때 우회유로로 바꿀 수 있는 기간이 우회배수 전환허용창이다. 주유로 폐색이 확인된 뒤 우회밸브와 역류방지 장치가 순서대로 열리는지 살핀다.",
+      "concepts": [
+        "우회배수 전환허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09186",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배수량은 충분해도 잔류수위 확인이 늦으면 잔류수위 확인기한 초과다.",
+      "concepts": [
+        "잔류수위 확인기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09187",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배수연장 승인신청창은 유입이 계속되어 통제 종료를 미뤄야 할 때 연장 사유와 예상 종료를 제출하도록 열린 접수 기간이다. 마감 뒤의 승인은 원래 통제 경계를 소급해 바꾸지 않는다.",
+      "concepts": [
+        "배수연장 승인신청창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09188",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연속 표본과 현장점검이 건조를 확인한 차로건조 완료경계로 배수완료를 정한다.",
+      "concepts": [
+        "차로건조 완료경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09189",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배수운영 창연결표는 밸브·펌프·수위·건조·연장승인의 시각을 각 경계와 잇는다. 수위 하강과 노면 건조는 밸브 조작보다 늦게 나타나므로 물리 결과의 별도 완료창을 둔다.",
+      "concepts": [
+        "배수운영 창연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09190",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유량·수위·밸브 기록은 배수센서 공통시각 보정 뒤 창 안팎을 판정한다.",
+      "concepts": [
+        "배수센서 공통시각 보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09191",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "침수위험 판정 뒤 정한 시간 안에 입구차단기가 닫히면 터널입구 차단창 내부다. 차단 명령이 아니라 차단봉 접점과 진입 차량 부재를 함께 확인해 실효적 폐쇄를 판정한다.",
+      "concepts": [
+        "터널입구 차단창 내부"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09192",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통제지시는 빨라도 마지막 차량 진입이 창 뒤면 터널입구 차단창 외부다.",
+      "concepts": [
+        "터널입구 차단창 외부"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09193",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차단봉이 마감과 같은 시각에 닫힌 입구차단 끝점폐쇄는 경계 포함 조건을 확인한다. 끝점 포함 규정은 차단기 접점에만 적용하고 마지막 차량의 통과시각과 혼동하지 않는다.",
+      "concepts": [
+        "입구차단 끝점폐쇄"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09194",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전광표지의 진입금지 메시지는 진입금지 표출마감 전에 활성화돼야 한다.",
+      "concepts": [
+        "진입금지 표출마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09195",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강우와 수위가 악화될 때 전면차단으로 바꿀 수 있는 기간이 통제단계 상향허용창이다. 수위 상승률이 기준을 넘은 뒤의 결정 구간을 측정해 선제 상향과 늦은 상향을 구분한다.",
+      "concepts": [
+        "통제단계 상향허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09196",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차단기는 닫혔어도 CCTV 확인이 늦으면 차단확인 완료기한 초과다.",
+      "concepts": [
+        "차단확인 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09197",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차단봉 이상 때 경찰지원을 요청할 수 있는 기간이 차단장비 고장신고창이다. 고장코드와 현장 사진을 기한 안 묶어 보내야 경찰이 대체 차단 위치를 즉시 정할 수 있다.",
+      "concepts": [
+        "차단장비 고장신고창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09198",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차단봉·표지·신호·현장요원이 모두 작동한 진입통제 완료경계로 폐쇄를 판정한다.",
+      "concepts": [
+        "진입통제 완료경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09199",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "터널차단 창판정표는 위험판정·지시·표출·차단·확인 시각을 경계별로 연결한다. 위험 인지, 권한 지시, 표출, 물리 차단, 무진입 확인을 순서대로 놓아 행정 완료를 안전 완료로 보지 않는다.",
+      "concepts": [
+        "터널차단 창판정표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09200",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차단기와 교통관제 서버가 다르면 교통설비 시각정합 뒤 내부·외부를 정한다.",
+      "concepts": [
+        "교통설비 시각정합"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09201",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위험구간 진입 전에 차로신호가 통제창 안에 적색으로 바뀌면 차로통제 창내차단이다. 신호등의 적색 표시와 차단물 배치가 모두 끝난 구간만 통제된 차로로 계산한다.",
+      "concepts": [
+        "차로통제 창내차단"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09202",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지시는 빨라도 라바콘 배치가 마감 뒤면 차로통제 창외차단이다.",
+      "concepts": [
+        "차로통제 창외차단"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09203",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 차단물이 경계와 같은 시각에 놓인 차로폐쇄 끝점완료는 포함 규칙을 적용한다. 마지막 차단물의 설치시각이 경계와 같을 때 작업자 철수까지 요구하는지 규정에서 따로 확인한다.",
+      "concepts": [
+        "차로폐쇄 끝점완료"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09204",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운전자가 충분히 우회하도록 차로전환 안내마감 전에 메시지를 표출해야 한다.",
+      "concepts": [
+        "차로전환 안내마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09205",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "침수범위가 늘 때 추가차로를 닫을 수 있는 기간이 통제구간 확대허용창이다. 침수 예측이 변한 시점부터 추가 차로 신호가 전환될 때까지를 조정 소요시간으로 잰다.",
+      "concepts": [
+        "통제구간 확대허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09206",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "신호는 바뀌어도 현장요원 배치가 늦으면 현장배치 완료기한 초과다.",
+      "concepts": [
+        "현장배치 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09207",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "긴급차량 통과가 필요할 때 예외를 승인받을 수 있는 기간이 차로통제 예외신고창이다. 긴급차량의 식별과 통과 경로가 승인창 안 확정되어야 일반 차량 통제와 충돌하지 않는다.",
+      "concepts": [
+        "차로통제 예외신고창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09208",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "신호·차단물·CCTV·요원이 모두 확인된 차로폐쇄 기능경계로 통제를 판정한다.",
+      "concepts": [
+        "차로폐쇄 기능경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09209",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차로통제 창연결표는 지시·신호·차단물·요원·확인시각을 각 경계와 잇는다. 각 차로의 신호와 차단물 시간을 따로 기록해 일부 차로 지연이 전체 완료시각에 가려지지 않게 한다.",
+      "concepts": [
+        "차로통제 창연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09210",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "신호기와 관제서버가 다르면 차로설비 기록시간 보정 뒤 마감 준수를 정한다.",
+      "concepts": [
+        "차로설비 기록시간 보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09211",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전면차단 전에 전광표지가 우회경로를 창 안에 보이면 우회안내 창내표출이다. 전광판에서 실제 문구가 보인 프레임을 기준으로 서버 전송만 끝난 상태와 구별한다.",
+      "concepts": [
+        "우회안내 창내표출"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09212",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "메시지는 작성됐어도 도로변 표출이 마감 뒤면 우회안내 창외표출이다.",
+      "concepts": [
+        "우회안내 창외표출"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09213",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "새 문구가 경계와 같은 시각에 표시된 전광표지 끝점갱신은 포함 조건을 확인한다. 경계 순간의 새 문구가 한 표시주기 이상 유지됐는지 확인해 전환 중 화면을 완료로 세지 않는다.",
+      "concepts": [
+        "전광표지 끝점갱신"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09214",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교통량과 도로상태를 반영한 경로는 우회경로 확정마감 전에 승인돼야 한다.",
+      "concepts": [
+        "우회경로 확정마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09215",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오류나 혼잡변화에 따라 안내문을 고칠 수 있는 기간이 표지문구 수정허용창이다. 새 우회경로가 교통통제와 일치하는지 검토한 뒤 기한 내 배포본의 버전을 고정한다.",
+      "concepts": [
+        "표지문구 수정허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09216",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "도로표지는 제때 바뀌어도 내비게이션 배포가 늦으면 내비게이션 배포기한 초과다.",
+      "concepts": [
+        "내비게이션 배포기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09217",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표지기 고장 때 방송·경찰 대체지원을 요청할 수 있는 기간이 우회안내 장애신고창이다. 표지기 결함을 발견한 때와 대체 방송이 시작된 때를 나눠 정보 공백의 길이를 산정한다.",
+      "concepts": [
+        "우회안내 장애신고창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09218",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전광판·방송·앱·경찰안내가 같은 경로를 가리킨 우회정보 일치경계로 안내완료를 정한다.",
+      "concepts": [
+        "우회정보 일치경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09219",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "우회안내 창판정표는 경로확정·문구·표출·배포·일치확인을 경계별로 연결한다. 경로 결정·문안 승인·장치 표출·외부 배포를 분리하면 어느 단계가 마감을 넘겼는지 알 수 있다.",
+      "concepts": [
+        "우회안내 창판정표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09220",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전광판과 앱서버 기록은 안내매체 공통시각교정 뒤 내부·외부를 판정한다.",
+      "concepts": [
+        "안내매체 공통시각교정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09221",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "침수위험 뒤 대피방송이 허용창 안에 시작되면 대피개시 창내발령이다. 방송 송출 접점과 스피커 회로 상태를 확인해 운영실의 버튼 입력만으로 발령 완료라 하지 않는다.",
+      "concepts": [
+        "대피개시 창내발령"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09222",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방송준비는 빨라도 실제 음성이 마감 뒤면 대피개시 창외발령이다.",
+      "concepts": [
+        "대피개시 창외발령"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09223",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 이용자가 대피통로에 경계와 같은 시각에 들어간 대피창 끝점진입은 포함 규칙을 따른다. 끝점에 통로로 들어온 이용자가 안전구역 도착까지 별도 제한을 받는지 평가 항목을 나눈다.",
+      "concepts": [
+        "대피창 끝점진입"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09224",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "모든 비상구는 비상구 개방마감 전에 잠금해제와 조명이 확인돼야 한다.",
+      "concepts": [
+        "비상구 개방마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09225",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연기나 침수로 통로가 막힐 때 경로를 바꿀 수 있는 기간이 대피경로 변경허용창이다. 연기 방향과 침수 깊이가 바뀐 시점부터 새 유도등이 켜질 때까지를 전환 지연으로 계산한다.",
+      "concepts": [
+        "대피경로 변경허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09226",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이용자는 나갔어도 인원확인이 늦으면 인원확인 완료기한 초과다.",
+      "concepts": [
+        "인원확인 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09227",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "거동불편 이용자가 있을 때 구조지원을 요청할 수 있는 기간이 대피지원 요청창이다. 거동지원 대상의 위치와 필요한 장비가 기한 안 전달되어야 단순 신고를 실행 가능한 요청으로 본다.",
+      "concepts": [
+        "대피지원 요청창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09228",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출구통과와 인원대조가 모두 끝난 터널대피 완료경계로 대피완료를 판정한다.",
+      "concepts": [
+        "터널대피 완료경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09229",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대피운영 창연결표는 발령·비상구·이동·출구·인원확인시각을 각 경계와 잇는다. 발령, 이동 개시, 비상구 통과, 집결 확인을 독립 경계로 두어 마지막 사람의 상태를 추적한다.",
+      "concepts": [
+        "대피운영 창연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09230",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방송·출입·CCTV 시각이 다르면 대피설비 시각정합 뒤 마감 준수를 정한다.",
+      "concepts": [
+        "대피설비 시각정합"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09231",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "화재나 연기판정 뒤 배연팬이 허용창 안에 목표속도에 들면 배연팬 기동창 내부다. 모터 회전뿐 아니라 목표 방향의 풍속이 안정된 시각을 사용해 역회전이나 무부하 기동을 제외한다.",
+      "concepts": [
+        "배연팬 기동창 내부"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09232",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기동명령은 빨라도 풍량형성이 마감 뒤면 배연팬 기동창 외부다.",
+      "concepts": [
+        "배연팬 기동창 외부"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09233",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "목표풍량 도달이 경계와 같은 배연창 끝점풍량은 포함 규칙을 확인한다. 경계 시점의 순간값이 아니라 정해진 유지시간 동안 목표풍량이 지속되는지 규정에 맞춰 판정한다.",
+      "concepts": [
+        "배연창 끝점풍량"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09234",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연기흐름을 제어하도록 제트팬은 제트팬 방향전환마감 전에 새 방향으로 안정돼야 한다.",
+      "concepts": [
+        "제트팬 방향전환마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09235",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대피경로 변화에 따라 팬조합을 바꿀 수 있는 기간이 배연모드 변경허용창이다. 대피 방향이 바뀐 뒤 팬 정지·댐퍼 전환·재기동의 안전 순서를 창 안에서 지킨다.",
+      "concepts": [
+        "배연모드 변경허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09236",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "팬은 돌았어도 CCTV와 센서 확인이 늦으면 연기층 확인기한 초과다.",
+      "concepts": [
+        "연기층 확인기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09237",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "팬고장 때 소방대와 이동식장비를 요청할 수 있는 기간이 배연장애 지원요청창이다. 고장 팬과 남은 풍량을 함께 알려 소방대가 이동식 송풍기의 배치시간을 판단하게 한다.",
+      "concepts": [
+        "배연장애 지원요청창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09238",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "풍량·압력·연기방향이 연속 정상인 배연기능 안정경계로 기동완료를 정한다.",
+      "concepts": [
+        "배연기능 안정경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09239",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배연운영 창판정표는 판정·명령·기동·풍량·확인·지원요청을 경계별로 잇는다. 명령과 회전수, 댐퍼 위치, 측정 풍량을 연결해 제어 성공과 실제 연기 흐름을 구별한다.",
+      "concepts": [
+        "배연운영 창판정표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09240",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "팬PLC와 소방수신기가 다르면 환기제어 시각오프셋 보정 뒤 창을 판정한다.",
+      "concepts": [
+        "환기제어 시각오프셋 보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09241",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계통정전 뒤 비상전원이 허용창 안에 조명·펌프에 공급되면 비상전원 창내전환이다. 발전기 전압만이 아니라 필수 부하 단자의 전원을 확인해 공급 경로 전체의 회복을 판정한다.",
+      "concepts": [
+        "비상전원 창내전환"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09242",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발전기는 켜졌어도 필수부하 공급이 마감 뒤면 비상전원 창외전환이다.",
+      "concepts": [
+        "비상전원 창외전환"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09243",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "모선전압이 경계와 같은 시각에 형성된 전원전환 끝점공급은 포함 조건을 확인한다. 모선 전압이 경계에 형성돼도 펌프 재기동이 늦으면 전원 완료와 기능 회복을 별도로 기록한다.",
+      "concepts": [
+        "전원전환 끝점공급"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09244",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제·소방·현장 무전은 비상통신 복구마감 전에 연결돼야 한다.",
+      "concepts": [
+        "비상통신 복구마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09245",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주회선 장애 때 예비회선으로 바꿀 수 있는 기간이 통신우회 전환허용창이다. 예비회선 접속 뒤 시험 메시지의 왕복 확인까지 기한 내 끝나야 실사용 가능한 전환이다.",
+      "concepts": [
+        "통신우회 전환허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09246",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전압은 돌아와도 조명확인이 늦으면 필수조명 확인기한 초과다.",
+      "concepts": [
+        "필수조명 확인기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09247",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장기정전 예상 때 연료보급을 요청할 수 있는 기간이 발전연료 지원요청창이다. 잔여 운전시간 예측과 접근 가능한 보급로를 함께 제출해 긴급도를 마감 전에 확정한다.",
+      "concepts": [
+        "발전연료 지원요청창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09248",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전원·통신·조명·펌프가 모두 확인된 비상설비 회복경계로 복구를 판정한다.",
+      "concepts": [
+        "비상설비 회복경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09249",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상전원통신 창표는 정전·발전·부하·회선·확인시각을 각 마감과 연결한다. 정전, 발전기 기동, 부하 투입, 회선 복구를 각기 다른 창으로 놓아 연쇄 지연을 추적한다.",
+      "concepts": [
+        "비상전원통신 창표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09250",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상설비 공통시각보정은 발전기, UPS, 통신 장비의 서로 다른 기록 시계를 표준 기준에 맞추는 절차다. 보정된 사건 시각을 사용해 비상 구간의 포함 여부와 선후를 다시 판정한다.",
+      "concepts": [
+        "비상설비 공통시각보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09251",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "신고 뒤 첫 소방차가 대응창 안에 터널입구에 도착하면 소방대 도착창 내부다. 차량 GPS가 지정된 터널 진입 지오펜스를 통과한 때를 써서 출동 접수와 현장 도착을 나눈다.",
+      "concepts": [
+        "소방대 도착창 내부"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09252",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출동명령은 빨라도 현장도착이 마감 뒤면 소방대 도착창 외부다.",
+      "concepts": [
+        "소방대 도착창 외부"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09253",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "소방차 위치접점이 경계와 같은 도착창 끝점통과는 포함 규칙을 적용한다. 경계에 접점을 지난 차량이 실제 장비 전개까지 별도 마감을 갖는지 후속 단계에서 확인한다.",
+      "concepts": [
+        "도착창 끝점통과"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09254",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경찰·소방·도로기관에 대한 상황전파는 외부기관 상황전파마감 전에 끝나야 한다.",
+      "concepts": [
+        "외부기관 상황전파마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09255",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "소방대 도착 뒤 지휘권을 넘길 수 있는 기간이 현장지휘 전환허용창이다. 상황도와 위험구역 정보가 인계된 뒤 수신자가 지휘권을 확인한 시점을 완료로 삼는다.",
+      "concepts": [
+        "현장지휘 전환허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09256",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량은 도착했어도 구조대 배치가 늦으면 구조대 배치기한 초과다.",
+      "concepts": [
+        "구조대 배치기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09257",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "침수나 화재가 확대될 때 펌프·구급차를 요청할 수 있는 기간이 추가장비 요청창이다. 필요 수량과 투입 위치가 빠진 연락은 기한 내 접수돼도 실행 가능한 지원 요청이 아니다.",
+      "concepts": [
+        "추가장비 요청창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09258",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기관연락·임무분담·통신채널이 모두 확인된 합동지휘 가동경계로 협업개시를 정한다.",
+      "concepts": [
+        "합동지휘 가동경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09259",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "외부대응 창연결표는 신고·출동·도착·배치·지휘전환·추가지원을 경계별로 잇는다. 신고 접수부터 출동·도착·장비 전개·지휘 인수까지의 주체와 시계를 공통축에 맞춘다.",
+      "concepts": [
+        "외부대응 창연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09260",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량GPS와 관제서버가 다르면 기관위치 관제시각 정합 뒤 도착기한을 판정한다.",
+      "concepts": [
+        "기관위치 관제시각 정합"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09261",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상분석이 대응창 안에 차로침수를 확정하면 CCTV침수 탐지창 내부다. 물보라나 그림자를 제외한 연속 프레임과 수위센서가 일치할 때 탐지 완료로 인정한다.",
+      "concepts": [
+        "CCTV침수 탐지창 내부"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09262",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상은 일찍 찍혀도 판정결과가 마감 뒤면 CCTV침수 탐지창 외부다.",
+      "concepts": [
+        "CCTV침수 탐지창 외부"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09263",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분석완료가 경계와 같은 탐지창 끝점판정은 창의 포함 여부를 확인한다. 분석이 경계에 끝나도 사람 확인이 필수라면 자동판정과 운영판정의 마감은 따로 계산한다.",
+      "concepts": [
+        "탐지창 끝점판정"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09264",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자동탐지 뒤 운영자 영상확인은 영상확인 완료마감 전에 이뤄져야 한다.",
+      "concepts": [
+        "영상확인 완료마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09265",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주카메라가 가려질 때 다른 화각으로 바꿀 수 있는 기간이 카메라전환 허용창이다. 대체 화각이 침수 기준점을 실제로 포함하는지 확인해야 단순 채널 변경을 감시 회복으로 보지 않는다.",
+      "concepts": [
+        "카메라전환 허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09266",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "CCTV는 감지했어도 수위센서 대조가 늦으면 센서융합 확인기한 초과다.",
+      "concepts": [
+        "센서융합 확인기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09267",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상결측 때 현장순찰을 요청할 수 있는 기간이 카메라고장 신고창이다. 결측 시작시각과 순찰 요청 접수시각을 함께 남겨 영상 공백과 대응 지연을 구별한다.",
+      "concepts": [
+        "카메라고장 신고창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09268",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원본영상·수위·위치정보가 일치한 침수영상 확정경계로 탐지완료를 정한다.",
+      "concepts": [
+        "침수영상 확정경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09269",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상감시 창판정표는 촬영·자동탐지·사람확인·센서대조·현장요청을 경계별로 잇는다. 촬영 원본, 자동 경보, 운영자 확인, 현장 검증을 단계별로 배열해 탐지시각의 의미를 고정한다.",
+      "concepts": [
+        "영상감시 창판정표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09270",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "카메라와 분석서버가 다르면 CCTV분석 서버시각 보정 뒤 내부·외부를 판정한다.",
+      "concepts": [
+        "CCTV분석 서버시각 보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09271",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "침수나 충돌 뒤 허용창 안에 균열·박락 점검을 시작하면 구조점검 창내착수다. 기술자가 위험구역에 진입하고 첫 측정을 시작한 때를 써서 단순 배정이나 이동을 착수로 세지 않는다.",
+      "concepts": [
+        "구조점검 창내착수"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09272",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "점검은 빨리 시작했어도 안전판정이 마감 뒤면 구조점검 창외완료다.",
+      "concepts": [
+        "구조점검 창외완료"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09273",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기술자 서명이 경계와 같은 점검창 끝점서명은 포함 규칙을 따른다. 서명이 경계에 있어도 필수 측정이 그 전에 끝났는지 검토해 문서 완료만으로 적시성을 인정하지 않는다.",
+      "concepts": [
+        "점검창 끝점서명"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09274",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통행재개 전에 위험 낙하물은 낙하물 제거마감까지 치워야 한다.",
+      "concepts": [
+        "낙하물 제거마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09275",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "육안점검에서 이상이 나오면 정밀진단으로 바꿀 수 있는 기간이 정밀진단 전환허용창이다. 이상 기준을 넘은 측정부터 정밀장비가 배치될 때까지를 별도 전환시간으로 기록한다.",
+      "concepts": [
+        "정밀진단 전환허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09276",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장측정은 끝나도 검토승인이 늦으면 구조안전 검토기한 초과다.",
+      "concepts": [
+        "구조안전 검토기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09277",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "심각한 손상이 의심될 때 전문가 지원을 요청할 수 있는 기간이 외부전문가 요청창이다. 손상 위치와 계측값을 기한 안 제공해야 전문가가 원격 판단 또는 현장 출동을 선택할 수 있다.",
+      "concepts": [
+        "외부전문가 요청창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09278",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "균열·변위·누수·낙하물이 기준 안인 터널구조 안전경계로 통행 가능성을 판정한다.",
+      "concepts": [
+        "터널구조 안전경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09279",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "구조점검 창연결표는 착수·측정·제거·검토·승인시각을 각 경계와 잇는다. 착수·측정·위험물 제거·검토·승인의 마감을 분리해 안전 판정의 병목을 드러낸다.",
+      "concepts": [
+        "구조점검 창연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09280",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계측기와 점검단말이 다르면 점검장비 기록시각 교정 뒤 기한 준수를 정한다.",
+      "concepts": [
+        "점검장비 기록시각 교정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09281",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배수·환기·구조·교통점검이 끝나 재개창 안에 입구가 열리면 터널재개 창내개방이다. 모든 선행 안전조건의 완료시각 중 가장 늦은 값과 차단기 개방을 비교해 조기 재개를 막는다.",
+      "concepts": [
+        "터널재개 창내개방"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09282",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "안전승인은 제때였어도 실제 차단기 개방이 마감 뒤면 터널재개 창외개방이다.",
+      "concepts": [
+        "터널재개 창외개방"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09283",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입구차단기 개방접점이 경계와 같은 재개창 끝점개방은 포함 규칙을 확인한다. 끝점 접점이 허용되더라도 안내 시스템 갱신이 늦으면 실제 통행 가능 시각은 뒤로 잡는다.",
+      "concepts": [
+        "재개창 끝점개방"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09284",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제·경찰·시설 책임자의 결정은 재개결정 승인마감 전에 완료돼야 한다.",
+      "concepts": [
+        "재개결정 승인마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09285",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "일부 차로부터 열도록 계획을 조정할 수 있는 기간이 단계재개 조정허용창이다. 차로별 안전상태에 따라 개방 순서를 바꾸되 승인된 전환안이 조정창 안 확정되어야 한다.",
+      "concepts": [
+        "단계재개 조정허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09286",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "터널은 열렸어도 앱과 표지 갱신이 늦으면 교통정보 갱신기한 초과다.",
+      "concepts": [
+        "교통정보 갱신기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09287",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "안전조건이 부족할 때 개방연기를 알릴 수 있는 기간이 재개연기 공지창이다. 예정 개방 전에 연기 사유와 새 예상시각이 배포되어야 이용자가 막힌 진입로로 몰리지 않는다.",
+      "concepts": [
+        "재개연기 공지창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09288",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차로개방·조명·환기·정보가 모두 정상인 터널서비스 회복경계로 재개완료를 정한다.",
+      "concepts": [
+        "터널서비스 회복경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09289",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통행재개 창판정표는 안전판정·승인·개방·정보갱신·서비스회복시각을 각 경계와 잇는다. 안전 승인, 물리 개방, 안내 갱신, 첫 정상 통과를 연결해 명목 재개와 서비스 회복을 구분한다.",
+      "concepts": [
+        "통행재개 창판정표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09290",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재개설비 공통시각보정은 차단기, 신호기, 관제 서버의 로그를 하나의 기준시로 환산하는 절차다. 교정 후 경계 접점으로 운행 재개 전후의 사건 위치를 확정한다.",
+      "concepts": [
+        "재개설비 공통시각보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09291",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사고연표와 피해자료가 제출창 안에 기관서버로 들어가면 터널사고 보고창 내부접수다. 전송 버튼 시각이 아니라 기관 서버의 수신확인과 문서 무결성 검증이 창 안 끝났는지 본다.",
+      "concepts": [
+        "터널사고 보고창 내부접수"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09292",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "문서는 일찍 작성해도 서버접수가 마감 뒤면 터널사고 보고창 외부접수다.",
+      "concepts": [
+        "터널사고 보고창 외부접수"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09293",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사고보고 끝점접수는 기관의 수신 시각이 제출 기한과 정확히 같은 보고를 포함 여부 규칙에 따라 처리하는 경우다. 끝점 허용 규정과 다음 영업일 연장 규정을 섞지 않는다.",
+      "concepts": [
+        "사고보고 끝점접수"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09294",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서·영상·작업기록을 종합한 분석은 터널원인분석 제출마감 전에 승인돼야 한다.",
+      "concepts": [
+        "터널원인분석 제출마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09295",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누락이나 시각오류를 바로잡을 수 있는 기간이 사고자료 수정허용창이다. 원본 이력은 보존하고 정정 사유와 영향 항목을 기한 안 제출해 사후 연표 변경을 추적 가능하게 한다.",
+      "concepts": [
+        "사고자료 수정허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09296",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보고서는 제출해도 원시로그 보존이 늦으면 증거보존 완료기한 초과다.",
+      "concepts": [
+        "증거보존 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09297",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보고기한 연장요청창은 대규모 장애로 자료 복구가 늦을 때 마감 전에 기간 연장을 신청할 수 있는 구간이다. 장애 증거와 예상 복구시간이 접수되기 전에는 연장이 자동 적용되지 않는다.",
+      "concepts": [
+        "보고기한 연장요청창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09298",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원인·조치·근거·서명이 모두 잠긴 사고보고 확정경계로 최종상태를 판정한다.",
+      "concepts": [
+        "사고보고 확정경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09299",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "터널보고 창연결표는 사건 발생부터 자료 추출, 분석, 승인, 전송, 기관 접수까지의 시각을 해당 마감과 연결한 표다. 보고 지연 때문에 사고 발생시각이 바뀌지 않도록 단계별 경계를 분리한다.",
+      "concepts": [
+        "터널보고 창연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09300",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "터널운영실과 기관서버의 시간대가 다르면 기관서버 시간대보정 뒤 기한 준수를 정한다.",
+      "concepts": [
+        "기관서버 시간대보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    }
+  ]
+}

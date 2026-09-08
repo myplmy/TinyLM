@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v27",
+  "version": "27",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-03901 ~ S2-TOH-04050",
+  "concept_family": "S2-A03-T027: 온라인 학습 진도·피드백 운영 — 원인 지연과 관측 지연의 분리",
+  "design_note": "온라인 학습 진도·피드백 운영 영역의 원인 지연과 관측 지연의 분리 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-03901",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "등록승인 처리지연은 신청 뒤 자격·결제·정원 검토를 기다려 수강권이 늦게 생긴 시간이다. 권한표시 갱신지연과 분리한다. 신청서 수신 뒤 규칙검사와 계정생성을 거쳐 승인 플래그가 생기는 내부 처리시간으로 측정한다.",
+      "concepts": [
+        "등록승인 처리지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03902",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수강권 표시지연은 역할이 이미 부여된 뒤 캐시·동기화를 거쳐 강좌목록에 보이는 간격이다. 실제 승인 지연이 아니다.",
+      "concepts": [
+        "수강권 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-03903",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진단경로 계산지연은 답안 확정 뒤 수준과 추천순서를 산출하는 처리 시간이다. 결과알림 전달지연과 다르다. 응답 수집이 끝난 뒤 능력추정과 선수구조 탐색을 거쳐 경로가 확정되는 연산 지연이다.",
+      "concepts": [
+        "진단경로 계산지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03904",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진단결과 알림지연은 학습경로가 정해진 뒤 앱·메일을 통해 학습자에게 도착하는 간격이다. 판정 자체는 먼저 끝났다.",
+      "concepts": [
+        "진단결과 알림지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03905",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기기호환 해결지연은 오류 발견 뒤 브라우저·보조기술 설정을 바꿔 실제 접근을 회복하는 시간이다. 지원티켓 표시지연과 분리한다. 오류 발생에서 브라우저 진단과 설정변경을 거쳐 정상접속까지 걸린 문제해결 시간을 구분한다.",
+      "concepts": [
+        "기기호환 해결지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-03906",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지원티켓 인지지연은 학습자가 문제를 등록한 뒤 담당자가 대기열에서 확인하기까지의 간격이다. 기술문제 발생시간과 다르다.",
+      "concepts": [
+        "지원티켓 인지지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03907",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "학습계약 검토대기는 예외조항 문의 뒤 담당자의 해석·승인을 기다린 시간이다. 동의버튼 반영지연과 구분한다. 초안은 준비됐지만 학습자와 교사가 조건에 합의할 때까지 확정하지 않은 의사결정 대기다.",
+      "concepts": [
+        "학습계약 검토대기"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03908",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온보딩진도 집계지연은 필수활동이 끝난 뒤 완료상태가 과정원장에 계산되어 나타나기까지의 처리 시간이다.",
+      "concepts": [
+        "온보딩진도 집계지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-03909",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접근권 전파지연은 중앙에서 역할을 승인한 뒤 영상·토론·과제 서비스에 권한이 퍼지는 간격이다. 승인결정은 이미 발생했다. 권한은 서버에서 바뀌었으나 캐시와 서비스 복제본에 퍼지기까지 화면 접근이 늦는 전송 지연이다.",
+      "concepts": [
+        "접근권 전파지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03910",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온보딩보고 확정지연은 초기활동 종료 뒤 결측·중복·지원사건을 대조해 기록을 잠그는 시간이다. 학습자 온보딩기간과 별도다.",
+      "concepts": [
+        "온보딩보고 확정지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-03911",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단원공개 승인대기는 편집완료 뒤 정확성·저작권·접근성 검토로 효력이 늦어진 시간이다. 공개표시 지연과 다르다. 콘텐츠 검수는 끝났지만 담당교사의 최종 서명을 기다린 구간으로 시스템 실행시간과 다르다.",
+      "concepts": [
+        "단원공개 승인대기"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03912",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단원목록 표시지연은 콘텐츠가 이미 공개됐지만 색인·캐시 때문에 학습자 화면에 늦게 나타나는 간격이다.",
+      "concepts": [
+        "단원목록 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-03913",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선수완료 판정지연은 마지막 활동 뒤 조건집계와 예외규칙을 평가해 완료상태가 생기는 시간이다. 후속잠금 해제전파와 구분한다. 활동 로그를 모아 기준을 계산한 뒤 완료상태를 갱신하므로 마지막 활동보다 결과가 늦게 나타난다.",
+      "concepts": [
+        "선수완료 판정지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03914",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "후속단원 해제지연은 선수판정이 끝난 뒤 권한서비스가 갱신되어 다음 자료가 열리기까지의 간격이다. 학습원인 지연이 아니다.",
+      "concepts": [
+        "후속단원 해제지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03915",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자료개정 검토지연은 오류수정 뒤 새 버전의 근거·영향을 확인하느라 공개가 늦어진 시간이다. 파일동기화 지연과 다르다. 수정안 제출 뒤 정확성·접근성·저작권 검토를 거쳐 유효본이 정해지는 처리시간이다.",
+      "concepts": [
+        "자료개정 검토지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-03916",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "개정본 동기화지연은 승인된 파일이 지역저장소와 학습자 단말에 퍼지는 간격이다. 내용검토는 이미 끝났다.",
+      "concepts": [
+        "개정본 동기화지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03917",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예약공개 실행지연은 예정시각 뒤 작업대기열이나 장애로 공개효력이 늦게 적용된 시간이다. 학습자 새로고침 지연과 구분한다. 예약시각 도달 뒤 작업큐와 캐시무효화를 거쳐 학습자 화면에 보일 때까지 시스템 지연이 생긴다.",
+      "concepts": [
+        "예약공개 실행지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03918",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공개알림 전달지연은 단원이 열린 뒤 메시지 대기열을 거쳐 통지가 도착하는 간격이다. 콘텐츠 접근은 먼저 가능할 수 있다.",
+      "concepts": [
+        "공개알림 전달지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-03919",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단원잠금 판정지연은 마감이나 미숙달 조건 발생 뒤 시스템이 차단상태를 계산하는 시간이다. 화면잠금 표시지연과 다르다. 마감 또는 선수조건 변화 뒤 접근규칙을 재계산해 잠금이 적용되는 판정시간을 별도로 잰다.",
+      "concepts": [
+        "단원잠금 판정지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03920",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "콘텐츠상태 보고지연은 공개·수정·잠금이 끝난 뒤 운영대시보드에 집계되어 보이는 간격이다. 실제 효력시각을 바꾸지 않는다.",
+      "concepts": [
+        "콘텐츠상태 보고지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-03921",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상재생 시작지연은 재생요청 뒤 네트워크·복호화·버퍼채움 때문에 첫 프레임이 늦게 나온 시간이다. 재생상태 표시지연과 다르다. 재생 요청 뒤 매니페스트와 첫 조각을 받아 디코딩할 때까지의 네트워크·처리 지연이다.",
+      "concepts": [
+        "영상재생 시작지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03922",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상상태 표시지연은 재생이 이미 시작된 뒤 단말 이벤트가 서버와 화면에 반영되는 간격이다. 학습내용 전달은 먼저다.",
+      "concepts": [
+        "영상상태 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-03923",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상버퍼링 원인지연은 대역폭 부족이나 서버응답으로 다음 구간 공급이 늦어진 시간이다. 버퍼링 보고전송 지연과 구분한다. 대역폭 저하 뒤 저장된 버퍼가 소진된 다음 재생이 멈춰 원인과 관측결과 사이에 시차가 생긴다.",
+      "concepts": [
+        "영상버퍼링 원인지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03924",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "버퍼링 보고지연은 단말에서 멈춤이 발생한 뒤 원격분석에 사건이 도착하는 간격이다. 실제 중단시간은 원로그를 따른다.",
+      "concepts": [
+        "버퍼링 보고지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03925",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자막생성 처리지연은 음성자료 뒤 전사·정렬·검수를 마쳐 자막이 준비되는 시간이다. 자막표시 렌더링지연과 다르다. 음성 업로드 뒤 인식·구두점·시간정렬을 거쳐 자막본이 완성되는 계산 과정의 길이다.",
+      "concepts": [
+        "자막생성 처리지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-03926",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자막표시 렌더링지연은 확정된 자막구간이 재생화면에 나타날 때까지의 단말 처리 간격이다. 전사작업시간이 아니다.",
+      "concepts": [
+        "자막표시 렌더링지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03927",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시청완료 판정지연은 요구구간을 본 뒤 탐색·배속·결측 이벤트를 검증해 완료로 바꾸는 시간이다. 완료알림 지연과 분리한다. 마지막 재생이벤트 뒤 서버 집계와 기준검사가 끝나야 완료로 바뀌므로 활동 자체보다 늦다.",
+      "concepts": [
+        "시청완료 판정지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03928",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시청진도 동기화지연은 오프라인이나 불안정 연결의 재생기록이 서버 원장에 늦게 도착하는 간격이다. 학습발생은 더 앞섰다.",
+      "concepts": [
+        "시청진도 동기화지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-03929",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상질문 답변대기는 질문등록 뒤 교사나 동료가 내용을 확인해 응답할 때까지의 시간이다. 질문알림 전달지연과 다르다. 질문은 접수됐지만 교사 또는 동료의 응답을 기다린 구간으로 플랫폼 연산지연이 아니다.",
+      "concepts": [
+        "영상질문 답변대기"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03930",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상분석 보고지연은 시청기간 종료 뒤 표본·중단·완료자료를 모아 통계를 확정하는 시간이다. 실제 시청시간에 포함하지 않는다.",
+      "concepts": [
+        "영상분석 보고지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-03931",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "읽기자료 변환지연은 원문 뒤 음성·확대·재배치 형식을 만드는 처리 시간이다. 변환본 목록표시 지연과 다르다. 원본 업로드 뒤 형식변환과 접근성 검사가 완료되어 열람본이 생길 때까지 처리시간이 흐른다.",
+      "concepts": [
+        "읽기자료 변환지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03932",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "읽기자료 표시지연은 준비된 문서가 캐시·렌더링을 거쳐 학습자 화면에 나타나는 간격이다. 콘텐츠 생성시간이 아니다.",
+      "concepts": [
+        "읽기자료 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-03933",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오프라인 주석동기 지연은 기기에서 만든 메모가 연결복구 뒤 서버에 도착하는 간격이다. 주석작성 자체는 과거에 발생했다. 기기에서 작성된 주석이 재접속 뒤 서버로 전송될 때까지 관측이 늦어 실제 작성시각과 갈린다.",
+      "concepts": [
+        "오프라인 주석동기 지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03934",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "읽기완료 판정지연은 요구페이지·체류·응답조건을 검토해 완료상태를 만들기까지의 시간이다. 본문열람시간과 구분한다.",
+      "concepts": [
+        "읽기완료 판정지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03935",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "인용검사 처리지연은 응답제출 뒤 출처와 문장대응을 분석해 문제를 찾는 시간이다. 결과알림 전달지연과 다르다. 제출문에서 출처를 추출하고 원문과 대조해 결과를 만드는 연산시간을 승인 대기와 분리한다.",
+      "concepts": [
+        "인용검사 처리지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-03936",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "인용경고 전달지연은 검사결과가 나온 뒤 학습자 단말에 수정요청이 보이기까지의 간격이다. 검사 자체는 끝났다.",
+      "concepts": [
+        "인용경고 전달지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03937",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "개정자료 승인대기는 정정본 작성 뒤 학술·저작권 검토를 기다린 시간이다. 파일배포 지연과 분리한다. 검토가 완료된 개정본이 책임자 승인 전 배포되지 않은 기간은 행정적 대기다.",
+      "concepts": [
+        "개정자료 승인대기"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03938",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "개정자료 배포지연은 승인본이 지역 캐시와 오프라인 묶음에 퍼지는 시간이다. 내용수정은 이미 완료됐다.",
+      "concepts": [
+        "개정자료 배포지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-03939",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "읽기활동 수집지연은 페이지·주석 이벤트가 서버에 늦게 모이는 간격이다. 실제 읽기순서는 장치 생성시각으로 본다. 열람 이벤트가 단말 큐에 쌓였다가 묶음 전송되어 대시보드 반영이 실제 읽기보다 늦는다.",
+      "concepts": [
+        "읽기활동 수집지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03940",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "읽기보고 확정지연은 활동창 종료 뒤 오프라인자료와 이의를 대조해 진도를 잠그는 시간이다. 학습기간과 별도다.",
+      "concepts": [
+        "읽기보고 확정지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-03941",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "퀴즈문항 배정지연은 응시요청 뒤 규칙·난이도·중복제외를 계산해 세트를 만드는 시간이다. 단말표시 지연과 다르다. 응시 요청 뒤 난이도·노출제약을 계산해 문항세트를 고르는 동안 시작화면이 기다린다.",
+      "concepts": [
+        "퀴즈문항 배정지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03942",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "퀴즈화면 표시지연은 문항세트가 확정된 뒤 네트워크와 렌더링을 거쳐 첫 문항이 보이는 간격이다.",
+      "concepts": [
+        "퀴즈화면 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-03943",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "답안저장 전송지연은 선택이나 입력 뒤 서버 확인응답이 돌아오기까지의 시간이다. 학습자가 답을 만든 시간과 구분한다. 로컬 저장과 서버 수신 사이의 네트워크 차이를 답안 작성시간이나 채점시간과 섞지 않는다.",
+      "concepts": [
+        "답안저장 전송지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03944",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자동채점 처리지연은 제출답안 뒤 규칙실행과 부분점수 계산을 끝내는 시간이다. 점수공개 전달지연과 다르다.",
+      "concepts": [
+        "자동채점 처리지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03945",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수동채점 대기지연은 서술형 제출 뒤 담당자 배정·검토 차례를 기다린 시간이다. 실제 채점작업시간과 분리한다. 답안은 준비됐지만 채점자 배정과 검토 차례를 기다린 기간이어서 알고리즘 처리와 다르다.",
+      "concepts": [
+        "수동채점 대기지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-03946",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "채점결과 표시지연은 점수가 확정된 뒤 공개규칙과 캐시를 거쳐 학습자에게 보이는 간격이다.",
+      "concepts": [
+        "채점결과 표시지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03947",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강제제출 처리지연은 제한시간 종료 뒤 마지막 저장을 모아 시도본을 잠그는 시간이다. 응시종료 자체는 먼저다. 제한시간 종료 뒤 마지막 답안을 봉인하고 세션을 닫아 접수상태를 확정하는 시스템 소요시간이다.",
+      "concepts": [
+        "강제제출 처리지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03948",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재응시 해제지연은 자격조건 충족 뒤 권한상태가 갱신되어 새 시도버튼이 열리기까지의 간격이다.",
+      "concepts": [
+        "재응시 해제지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-03949",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "점수재계산 처리지연은 무효문항이나 이의판정 뒤 전체 응시결과를 다시 산출하는 시간이다. 판정결정과 구분한다. 문항 무효화 뒤 가중치와 총점을 다시 산출해 성적부에 반영하는 연산 지연이다.",
+      "concepts": [
+        "점수재계산 처리지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03950",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "퀴즈통계 보고지연은 평가창 종료 뒤 문항·시도·점수자료를 검증해 분석을 배포하기까지의 간격이다.",
+      "concepts": [
+        "퀴즈통계 보고지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-03951",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "과제파일 업로드지연은 전송시작 뒤 네트워크와 서버수신 때문에 제출물이 늦게 도착한 시간이다. 학습자의 작성시간과 다르다. 전송 시작부터 마지막 바이트 검증까지의 시간으로 작성 지연이나 교사 접수대기와 구별한다.",
+      "concepts": [
+        "과제파일 업로드지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03952",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "업로드상태 표시지연은 파일이 이미 저장된 뒤 무결성검사와 화면갱신을 거쳐 완료로 보이는 간격이다.",
+      "concepts": [
+        "업로드상태 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-03953",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표절분석 처리지연은 제출본 뒤 색인검색·문장비교·보고생성을 마치는 시간이다. 결과통지 지연과 분리한다.",
+      "concepts": [
+        "표절분석 처리지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03954",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표절결과 알림지연은 분석이 끝난 뒤 교사나 학습자에게 보류정보가 도착하는 간격이다. 유사도 계산은 먼저 완료됐다.",
+      "concepts": [
+        "표절결과 알림지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03955",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "과제채점 배정대기는 제출 뒤 담당자와 순서를 정해 실제 검토가 시작되기까지의 시간이다. 채점소요시간과 구분한다.",
+      "concepts": [
+        "과제채점 배정대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-03956",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "과제회수 승인대기는 학습자의 수정요청 뒤 마감·채점상태를 확인해 되돌리기까지의 시간이다. 파일다운로드 지연과 다르다.",
+      "concepts": [
+        "과제회수 승인대기"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03957",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "최종제출 잠금지연은 학습자가 확정한 뒤 서버가 버전과 무결성을 검사해 수정차단을 적용하는 간격이다.",
+      "concepts": [
+        "최종제출 잠금지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03958",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제출접수 메일지연은 유효 시도본이 저장된 뒤 메시지 대기열을 거쳐 확인메일이 도착하는 시간이다. 제출시각은 서버접수를 따른다.",
+      "concepts": [
+        "제출접수 메일지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-03959",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "과제이의 처리지연은 근거제출 뒤 기준·버전·채점을 재검토해 결론을 내기까지의 시간이다. 이의접수 통지지연과 별도다.",
+      "concepts": [
+        "과제이의 처리지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03960",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "과제기록 봉인지연은 모든 절차가 끝난 뒤 제출본·채점·정정 계보를 확인해 잠그는 시간이다. 실제 과제기간이 아니다.",
+      "concepts": [
+        "과제기록 봉인지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-03961",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "토론글 게시지연은 작성자가 전송한 뒤 필터·저장·색인을 거쳐 다른 학습자에게 보이는 시간이다. 글작성 지연과 다르다.",
+      "concepts": [
+        "토론글 게시지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03962",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게시알림 전달지연은 글이 이미 공개된 뒤 구독자 단말에 통지가 도착하는 간격이다.",
+      "concepts": [
+        "게시알림 전달지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-03963",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "답글검토 처리지연은 신고나 자동표지 뒤 맥락·규칙을 확인해 유지·숨김을 정하는 시간이다. 임시숨김 표시지연과 구분한다.",
+      "concepts": [
+        "답글검토 처리지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03964",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "신고상태 표시지연은 사건이 접수된 뒤 작성자나 신고자 화면에 처리상태가 늦게 보이는 간격이다.",
+      "concepts": [
+        "신고상태 표시지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03965",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교사중재 응답대기는 갈등이나 오개념 질문 뒤 담당자가 맥락을 읽고 개입할 때까지의 시간이다. 메시지전송 지연과 다르다.",
+      "concepts": [
+        "교사중재 응답대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-03966",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "토론수정 전파지연은 글을 고친 뒤 캐시와 알림인용에 최신본문이 반영되는 시간이다. 수정결정은 이미 발생했다.",
+      "concepts": [
+        "토론수정 전파지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03967",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "참여집계 처리지연은 토론종료 뒤 유효 글·답글·읽기조건을 계산하는 시간이다. 학습자의 실제 참여가 늦어진 것은 아니다.",
+      "concepts": [
+        "참여집계 처리지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03968",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "토론진도 표시지연은 참여판정이 끝난 뒤 과정대시보드에 완료로 나타나는 간격이다.",
+      "concepts": [
+        "토론진도 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-03969",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "익명처리 승인대기는 민감글의 공개범위를 바꾸기 전 정책·영향 검토를 기다린 시간이다. 기술적 가림 처리와 구분한다.",
+      "concepts": [
+        "익명처리 승인대기"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03970",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "토론기록 확정지연은 마감 뒤 신고·수정·이의 계보를 대조해 활동원장을 잠그는 간격이다.",
+      "concepts": [
+        "토론기록 확정지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-03971",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "실시간입장 연결지연은 입장요청 뒤 인증·미디어협상으로 강의가 늦게 보인 시간이다. 출석표시 지연과 다르다.",
+      "concepts": [
+        "실시간입장 연결지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03972",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출석상태 표시지연은 학습자가 이미 접속했지만 체류조건과 서버집계 때문에 명단에 늦게 나타나는 간격이다.",
+      "concepts": [
+        "출석상태 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-03973",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "음성전달 네트워크지연은 교사가 말한 뒤 압축·전송·재생을 거쳐 학습자가 듣는 시간이다. 교사의 발화준비 지연과 구분한다.",
+      "concepts": [
+        "음성전달 네트워크지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03974",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "채팅메시지 전송지연은 입력확정 뒤 서버중계와 렌더링을 거쳐 다른 참가자에게 보이는 간격이다.",
+      "concepts": [
+        "채팅메시지 전송지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03975",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "소그룹배정 처리지연은 출석확인 뒤 인원·역할을 계산해 방을 만드는 시간이다. 참가자 이동지연과 별도다.",
+      "concepts": [
+        "소그룹배정 처리지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-03976",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "소그룹입장 지연은 방이 열린 뒤 단말전환과 사용자의 확인 때문에 실제 참여가 늦어진 시간이다.",
+      "concepts": [
+        "소그룹입장 지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03977",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "녹화변환 처리지연은 수업종료 뒤 영상·음성을 합치고 인덱싱하는 시간이다. 다시보기 알림지연과 다르다.",
+      "concepts": [
+        "녹화변환 처리지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03978",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "녹화공개 전파지연은 검수된 영상이 저장소와 과정페이지에 반영되는 간격이다. 변환작업은 이미 끝났다.",
+      "concepts": [
+        "녹화공개 전파지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-03979",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출석정정 검토지연은 장애증거 제출 뒤 접속로그와 참여를 대조해 판정을 바꾸는 시간이다. 신청접수 지연과 분리한다.",
+      "concepts": [
+        "출석정정 검토지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03980",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "실시간보고 확정지연은 세션 뒤 출석·채팅·녹화·장애자료를 모아 기록을 잠그는 간격이다. 수업기간과 다르다.",
+      "concepts": [
+        "실시간보고 확정지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-03981",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "프로젝트 자료수집지연은 접근허가·응답대기·현장조건 때문에 필요한 근거가 늦게 모인 시간이다. 저장소 표시지연과 구분한다.",
+      "concepts": [
+        "프로젝트 자료수집지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03982",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "프로젝트 저장소 동기지연은 구성원이 올린 변경이 다른 팀원의 화면에 반영되는 간격이다. 실제 작업발생은 앞섰다.",
+      "concepts": [
+        "프로젝트 저장소 동기지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-03983",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "팀역할 합의지연은 범위확정 뒤 책임·작업량을 조정하느라 개별착수가 늦어진 시간이다. 역할표 게시지연과 다르다.",
+      "concepts": [
+        "팀역할 합의지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03984",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "팀역할 표시지연은 합의된 배정이 프로젝트도구와 알림에 퍼지는 간격이다. 책임효력은 회의결정에서 시작할 수 있다.",
+      "concepts": [
+        "팀역할 표시지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03985",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "구현원인 통합지연은 한 구성요소의 미완료나 인터페이스 불일치 때문에 전체 통합이 늦어진 시간이다. 빌드상태 수집지연과 구분한다.",
+      "concepts": [
+        "구현원인 통합지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-03986",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "빌드상태 보고지연은 시험이 끝난 뒤 결과가 대시보드와 팀채널에 나타나기까지의 간격이다. 구현완료시각은 바꾸지 않는다.",
+      "concepts": [
+        "빌드상태 보고지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03987",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중간피드백 대기지연은 점검본 제출 뒤 교사 검토차례와 분석을 기다린 시간이다. 수정작업시간과 별도다.",
+      "concepts": [
+        "중간피드백 대기지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03988",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "프로젝트진도 집계지연은 개별과업 상태가 중앙보드에 늦게 합산되는 시간이다. 실제 팀작업 순서는 원로그를 따른다.",
+      "concepts": [
+        "프로젝트진도 집계지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-03989",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "최종제출 업로드지연은 산출물 확정 뒤 큰 파일과 의존물을 서버가 받는 데 걸린 시간이다. 팀완료 지연과 다르다.",
+      "concepts": [
+        "최종제출 업로드지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03990",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "프로젝트기여 확정지연은 종료 뒤 활동·동료확인·이의를 대조해 개인기여를 잠그는 시간이다. 수행기간에 포함하지 않는다.",
+      "concepts": [
+        "프로젝트기여 확정지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-03991",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "동료평가 배정지연은 제출마감 뒤 익명화·충돌회피·부하균형을 계산해 평가자를 정하는 시간이다. 배정알림 지연과 구분한다.",
+      "concepts": [
+        "동료평가 배정지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03992",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "평가배정 알림지연은 제출본이 이미 할당된 뒤 평가자 단말에 통지가 도착하는 간격이다.",
+      "concepts": [
+        "평가배정 알림지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-03993",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "동료평가 작성지연은 평가자가 답안과 기준을 읽고 근거를 구성하는 데 걸린 시간이다. 저장확인 지연과 다르다.",
+      "concepts": [
+        "동료평가 작성지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03994",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "평가초안 저장지연은 입력 뒤 자동저장 확인이 돌아오기까지의 간격이다. 판단 자체는 더 일찍 형성됐다.",
+      "concepts": [
+        "평가초안 저장지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03995",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복수평가 수집지연은 일부 평가자가 늦거나 재배정되어 요구 개수를 채우는 시간이 늘어난 경우다. 점수집계 처리지연과 분리한다.",
+      "concepts": [
+        "복수평가 수집지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-03996",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종합점수 계산지연은 유효 평가가 모인 뒤 편향보정과 규칙적용을 끝내는 시간이다. 평가작성 지연이 아니다.",
+      "concepts": [
+        "종합점수 계산지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-03997",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "평가편차 검토대기는 큰 차이 발견 뒤 교사가 근거를 비교할 차례를 기다린 시간이다. 실제 조정판정시간과 구분한다.",
+      "concepts": [
+        "평가편차 검토대기"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-03998",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "동료피드백 표시지연은 공개승인 뒤 작성자 화면에 의견이 렌더링되는 간격이다. 평가완료는 먼저다.",
+      "concepts": [
+        "동료피드백 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-03999",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "평가이의 처리지연은 신고 뒤 익명근거·기준·위해성을 검토해 결론을 내는 시간이다. 이의전달 지연과 별도다.",
+      "concepts": [
+        "평가이의 처리지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04000",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "동료평가 보고지연은 평가창 종료 뒤 누락·무효·신뢰도를 대조해 통계를 확정하는 간격이다.",
+      "concepts": [
+        "동료평가 보고지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-04001",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자동채점 계산지연은 답안제출 뒤 규칙검색·코드실행·부분점수 산출에 걸린 처리 시간이다. 결과표시 지연과 다르다.",
+      "concepts": [
+        "자동채점 계산지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04002",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자동점수 표시지연은 계산이 끝난 뒤 공개정책과 화면갱신을 거쳐 학습자에게 보이는 간격이다.",
+      "concepts": [
+        "자동점수 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-04003",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오류유형 분석지연은 정오판정 뒤 풀이흔적을 비교해 개념오류를 찾는 시간이다. 맞춤힌트 전달지연과 구분한다.",
+      "concepts": [
+        "오류유형 분석지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04004",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "맞춤힌트 전달지연은 설명이 선택된 뒤 단말에 렌더링되어 보이기까지의 간격이다. 힌트생성은 이미 끝났다.",
+      "concepts": [
+        "맞춤힌트 전달지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04005",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저신뢰 검토대기는 자동판정 뒤 사람확인이 필요한 사례가 담당자 차례를 기다린 시간이다. 검토작업시간과 다르다.",
+      "concepts": [
+        "저신뢰 검토대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-04006",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "피드백수정 처리지연은 오류신고 뒤 규칙과 설명을 고쳐 검수하기까지의 시간이다. 수정본 전파지연과 분리한다.",
+      "concepts": [
+        "피드백수정 처리지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04007",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "피드백수정 전파지연은 승인된 설명이 캐시·재추천에 반영되는 간격이다. 내용교정은 먼저 끝났다.",
+      "concepts": [
+        "피드백수정 전파지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04008",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "숙달추천 계산지연은 새 응답 뒤 개념상태와 다음활동 순서를 다시 산출하는 시간이다. 추천표시 지연과 다르다.",
+      "concepts": [
+        "숙달추천 계산지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-04009",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추천화면 갱신지연은 새 경로가 확정된 뒤 학습자 화면에 나타나는 간격이다. 숙달판정시각은 바꾸지 않는다.",
+      "concepts": [
+        "추천화면 갱신지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04010",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자동피드백 기록봉인지연은 시도종료 뒤 사용규칙·수정·이의 계보를 검증해 잠그는 시간이다.",
+      "concepts": [
+        "자동피드백 기록봉인지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-04011",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교사채점 배정대기는 제출이 끝난 뒤 담당 교사와 채점 순번이 정해져 실제 검토를 시작할 때까지 걸린다. 채점 자체의 소요와 구별한다.",
+      "concepts": [
+        "교사채점 배정대기"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04012",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "채점상태 표시지연은 교사가 검토를 시작했지만 학습자 화면에 상태가 늦게 갱신되는 간격이다.",
+      "concepts": [
+        "채점상태 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-04013",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서술형 판정지연은 답안근거와 기준경계를 검토해 점수를 정하는 데 걸린 시간이다. 점수공개 지연과 구분한다.",
+      "concepts": [
+        "서술형 판정지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04014",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "점수공개 전파지연은 최종점수가 승인된 뒤 과정페이지와 알림에 나타나는 간격이다. 채점은 이미 끝났다.",
+      "concepts": [
+        "점수공개 전파지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04015",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복수채점 조정대기는 편차발견 뒤 조정회의나 책임자 검토를 기다린 시간이다. 실제 재채점시간과 다르다.",
+      "concepts": [
+        "복수채점 조정대기"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-04016",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "개별상담 예약지연은 피드백공개 뒤 교사·학습자의 공통시간을 찾느라 대화가 늦어진 시간이다. 상담내용 처리와 별도다.",
+      "concepts": [
+        "개별상담 예약지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04017",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "채점이의 검토지연은 근거접수 뒤 원답안·기준·피드백을 대조해 결론을 내는 시간이다. 접수알림 지연과 구분한다.",
+      "concepts": [
+        "채점이의 검토지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04018",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "점수정정 반영지연은 변경이 승인된 뒤 성적부·진도·수료판정에 새 값이 퍼지는 간격이다. 판정 자체는 먼저다.",
+      "concepts": [
+        "점수정정 반영지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-04019",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교사피드백 알림지연은 의견이 공개된 뒤 메시지서비스를 거쳐 학습자에게 도착하는 시간이다. 피드백작성시간이 아니다.",
+      "concepts": [
+        "교사피드백 알림지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04020",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교사평가 기록확정지연은 채점·이의·정정 종료 뒤 근거와 버전을 대조해 원장을 잠그는 간격이다.",
+      "concepts": [
+        "교사평가 기록확정지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-04021",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "숙달상태 계산지연은 새 평가 뒤 가중치·선수관계·신뢰도를 적용해 수준을 갱신하는 시간이다. 화면표시 지연과 다르다.",
+      "concepts": [
+        "숙달상태 계산지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04022",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "숙달상태 표시지연은 판정이 이미 끝난 뒤 진도화면과 추천서비스에 상태가 퍼지는 간격이다.",
+      "concepts": [
+        "숙달상태 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-04023",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보충배정 판단지연은 취약신호 뒤 오류유형과 선수개념을 분석해 자료를 고르는 시간이다. 자료개방 지연과 구분한다.",
+      "concepts": [
+        "보충배정 판단지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04024",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보충자료 개방지연은 추천이 확정된 뒤 권한·캐시가 갱신되어 학습자가 열 수 있을 때까지의 간격이다.",
+      "concepts": [
+        "보충자료 개방지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04025",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재진단 준비지연은 보충완료 뒤 새 문항을 구성하고 중복·난이도를 검증하는 시간이다. 응시버튼 표시지연과 다르다.",
+      "concepts": [
+        "재진단 준비지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-04026",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재진단 결과대기는 제출 뒤 수동문항이나 신뢰도 검토 때문에 숙달갱신이 늦어진 시간이다. 실제 학습시간과 분리한다.",
+      "concepts": [
+        "재진단 결과대기"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04027",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "숙달하락 탐지지연은 지식이 약해진 뒤 후속문항이나 활동에서 증거가 생길 때까지 알아차리지 못한 시간이다. 학습망각기간과 구분한다.",
+      "concepts": [
+        "숙달하락 탐지지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04028",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복습권고 전달지연은 취약판정 뒤 알림과 추천화면에 자료가 나타나는 간격이다. 판정원인은 먼저 발생했다.",
+      "concepts": [
+        "복습권고 전달지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-04029",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "면제심사 대기지연은 외부성취 증거제출 뒤 진위·동등성 검토를 기다린 시간이다. 결과표시 지연과 다르다.",
+      "concepts": [
+        "면제심사 대기지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04030",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "숙달원장 확정지연은 학기종료 뒤 보충·이의·면제자료를 대조해 최종상태를 잠그는 시간이다.",
+      "concepts": [
+        "숙달원장 확정지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-04031",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진도이벤트 수집지연은 학습행위 뒤 단말·서버 전송 때문에 원장에 늦게 도착한 시간이다. 실제 학습발생은 장치시각 기준이다.",
+      "concepts": [
+        "진도이벤트 수집지연"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04032",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진도율 계산지연은 새 학습 이벤트가 들어온 뒤 유효성, 가중치, 선수 조건을 적용해 비율을 다시 산출하는 데 든 시간이다. 화면 표출 지연과 다르다.",
+      "concepts": [
+        "진도율 계산지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-04033",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "학습진도 대시보드 갱신지연은 계산된 진도와 위험상태가 캐시·렌더링을 거쳐 보이는 간격이다. 원인학습은 더 앞섰다.",
+      "concepts": [
+        "학습진도 대시보드 갱신지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04034",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위험탐지 관찰지연은 미접속이나 실패가 시작된 뒤 분석창에 충분한 증거가 쌓일 때까지의 시간이다. 지원연결 지연과 구분한다.",
+      "concepts": [
+        "위험탐지 관찰지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04035",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지원배정 처리지연은 위험판정 뒤 담당교사·상담·보충경로를 정하는 시간이다. 학습자 알림지연과 다르다.",
+      "concepts": [
+        "지원배정 처리지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-04036",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지원알림 전달지연은 개입계획이 확정된 뒤 메시지가 학습자에게 도착하는 간격이다. 지원결정은 이미 발생했다.",
+      "concepts": [
+        "지원알림 전달지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04037",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진도정정 검토지연은 누락신고 뒤 원시로그·오프라인증거를 대조해 상태를 바꾸는 시간이다. 정정반영 지연과 분리한다.",
+      "concepts": [
+        "진도정정 검토지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04038",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진도정정 반영지연은 승인된 변경이 대시보드·추천·수료조건에 퍼지는 간격이다. 검토결론은 먼저다.",
+      "concepts": [
+        "진도정정 반영지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-04039",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "월간성과 집계지연은 분석월 뒤 결측·중복·이의자료를 정리해 보고서를 확정하는 시간이다. 학습활동기간과 별도다.",
+      "concepts": [
+        "월간성과 집계지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04040",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진도원장 봉인지연은 과정종료 뒤 모든 보정과 이력을 검증해 변경을 막기까지의 간격이다.",
+      "concepts": [
+        "진도원장 봉인지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-04041",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마감변경 승인대기는 일정문제 발견 뒤 영향·공정성·공지범위를 검토해 새 기한을 정하는 시간이다. 화면반영 지연과 다르다.",
+      "concepts": [
+        "마감변경 승인대기"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04042",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "새마감 표시지연은 변경이 승인된 뒤 달력·과제·알림화면에 새 값이 퍼지는 간격이다. 효력은 승인조건을 따른다.",
+      "concepts": [
+        "새마감 표시지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-04043",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유예신청 처리지연은 사유와 증거를 받은 뒤 자격·범위를 검토해 결론을 내는 시간이다. 신청접수 알림지연과 구분한다.",
+      "concepts": [
+        "유예신청 처리지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04044",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "개인유예 반영지연은 승인 뒤 해당 학습자의 제출권한과 달력에 새 기한이 나타나는 간격이다.",
+      "concepts": [
+        "개인유예 반영지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04045",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "성적마감 검토지연은 마지막 채점 뒤 누락·계산·정정을 확인해 성적을 잠그는 시간이다. 게시전파 지연과 다르다.",
+      "concepts": [
+        "성적마감 검토지연"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-04046",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "성적게시 전달지연은 공식점수가 확정된 뒤 학습자 포털과 알림에 나타나는 간격이다.",
+      "concepts": [
+        "성적게시 전달지연"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04047",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수료판정 계산지연은 최종점수 뒤 숙달·참여·필수활동을 함께 확인해 결과를 만드는 시간이다. 증명서생성 지연과 구분한다.",
+      "concepts": [
+        "수료판정 계산지연"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-04048",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수료증 생성지연은 합격 판정 뒤 문서 서식, 식별번호, 전자 서명을 결합해 파일을 준비할 때까지 걸린다. 수료 자격의 효력은 더 일찍 시작될 수 있다.",
+      "concepts": [
+        "수료증 생성지연"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-04049",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수료증 배포지연은 생성된 문서가 포털·메일·검증서비스에 도착하는 간격이다. 판정이나 생성시간과 다르다.",
+      "concepts": [
+        "수료증 배포지연"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-04050",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "과정종료 보고지연은 모든 절차 뒤 등록·활동·평가·수료자료를 대조해 종합보고를 잠그는 시간이다.",
+      "concepts": [
+        "과정종료 보고지연"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    }
+  ]
+}

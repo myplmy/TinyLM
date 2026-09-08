@@ -1,0 +1,150 @@
+{"primary":"부표파랑 발생시각","text":"부표파랑 발생시각은 먼바다 파군이 관측 지점에 실제 닿기 시작한 때다. 위성 수신시각이 아니라 계류점 수압의 첫 변화와 인접 관측소의 파군 도달을 함께 맞춰 정한다.","relations":["process","state","boundary"]}
+{"primary":"파압센서 응답지연","text":"파압센서 응답지연은 수압 변화 뒤 감지소자가 안정값을 내기까지 걸린 시간이다. 센서 재료와 필터 설정이 만드는 지연이므로 통신 큐에서 기다린 시간과 원인이 다르다.","relations":["process","attribute","comparison"]}
+{"primary":"파랑표본 슬롯대기","text":"파랑표본 슬롯대기는 센서가 다음 정시 표본 차례를 기다린 시간일 뿐이다. 파군은 이미 도착했지만 정시 채집 규칙 때문에 기록이 늦어진 운용 대기다.","relations":["classification","process","role"]}
+{"primary":"파고연산 처리대기","text":"파고연산 처리대기는 수집된 파형이 앞선 계산 작업 뒤에 놓인 큐 시간이다. 앞선 스펙트럼 계산량이 많을수록 늘어나며 해양 현상의 전파속도와는 관련이 없다.","relations":["part_of","process","state"]}
+{"primary":"파고통보 전송지연","text":"파고통보 전송지연은 계산값이 무선망을 지나 육상 서버에 도착하는 데 생긴다. 재전송 횟수와 위성 링크 상태를 확인하면 관측 지연과 송달 지연을 분리할 수 있다.","relations":["boundary","function","process"]}
+{"primary":"파랑관측 지연사슬","text":"파랑관측 지연사슬은 파군 도달·센서응답·표본대기·연산·전송을 차례로 잇는다. 각 단계의 시작·끝을 따로 빼야 늦게 도착한 경보에서 실제 파랑의 선후를 복원할 수 있다.","relations":["classification","comparison","state"]}
+{"primary":"파랑물리지연 경계","text":"파랑물리지연 경계는 파압센서 반응시간과 단순 연산 순번대기를 구별한다.","relations":["attribute","contrast","process"]}
+{"primary":"파고순서 역산","text":"파고순서 역산은 수신시각에서 전송·처리·응답 지연을 빼 실제 파군 도달을 찾는다.","relations":["process","role","state"]}
+{"primary":"파랑동시수신 오해","text":"서로 다른 파군 자료가 함께 수신돼도 파랑동시수신 오해 때문에 발생시각을 같게 두지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"파랑연표 복원기준","text":"파랑연표 복원기준은 각 단계의 인과 지연과 대기시간을 별도 칸에 기록하는 것이다.","relations":["attribute","comparison","process"]}
+{"primary":"부표돌풍 도달시각","text":"부표돌풍 도달시각은 강한 바람대가 풍향풍속계 위치를 통과하기 시작한 때다. 풍속계가 도는 때보다 앞설 수 있어 인접 기압과 기체 자세 변화도 보조 증거로 사용한다.","relations":["process","state","boundary"]}
+{"primary":"풍속계 회전자지연","text":"풍속계 회전자지연은 돌풍 뒤 회전자가 새 속도에 따라붙는 물리 반응시간이다. 베어링 마찰과 회전자 관성에 따른 물리 반응이며 평균창 종료 대기와 구별해야 한다.","relations":["process","attribute","comparison"]}
+{"primary":"풍속평균 창대기","text":"풍속평균 창대기는 정해진 평균 구간이 닫힐 때까지 값을 확정하지 못한 시간이다. 규정된 표본 수를 모으는 동안 생기는 계산 전 대기라서 돌풍 지속시간으로 더하지 않는다.","relations":["classification","process","role"]}
+{"primary":"기상패킷 큐대기","text":"기상패킷 큐대기는 파랑 자료가 먼저 송신되는 동안 풍속 자료가 기다린 순번이다. 송신 우선순위와 저장량에 따라 변하므로 바람의 물리적 도달시간으로 해석할 수 없다.","relations":["part_of","process","state"]}
+{"primary":"돌풍경보 링크지연","text":"돌풍경보 링크지연은 부표 송신 뒤 위성 중계를 거쳐 관제에 닿기까지의 시간이다. 위성 홉과 육상망 전달시간을 패킷별로 추적해 실제 기상변화 뒤에 놓는다.","relations":["boundary","function","process"]}
+{"primary":"돌풍관측 시간사슬","text":"돌풍관측 시간사슬은 도달·회전자반응·평균창·패킷큐·링크전송을 연결한다. 회전자 반응과 평균 산출, 통신 대기를 순서대로 배치하면 수신 역전을 바로잡을 수 있다.","relations":["classification","comparison","state"]}
+{"primary":"풍속반응 대기구별","text":"풍속반응 대기구별은 회전자 관성과 송신 큐 정체를 서로 다른 원인으로 남긴다.","relations":["attribute","contrast","process"]}
+{"primary":"돌풍발생 순서복구","text":"돌풍발생 순서복구는 경보 수신순서보다 보정된 도달시각을 기준으로 삼는다.","relations":["process","role","state"]}
+{"primary":"기상경보 동착분리","text":"두 돌풍경보가 같이 도착해도 기상경보 동착분리는 평균창과 큐 시간을 따로 본다.","relations":["boundary","part_of","process"]}
+{"primary":"돌풍연표 판정표","text":"돌풍연표 판정표는 각 지연의 길이를 기록해 관측 전후를 뒤집지 않게 한다.","relations":["attribute","comparison","process"]}
+{"primary":"부표수온 변화시각","text":"부표수온 변화시각은 다른 수괴가 온도센서 주변에 실제 들어온 순간이다. 센서 주변 물이 바뀐 때를 찾으려면 깊이별 흐름 자료와 열응답곡선을 함께 본다.","relations":["process","state","boundary"]}
+{"primary":"수온소자 열응답지연","text":"수온소자 열응답지연은 센서가 물과 열평형에 가까워질 때까지 필요한 시간이다. 소자 열용량 때문에 생기는 자연스러운 반응시간이며 다음 채널 차례를 기다린 것과 다르다.","relations":["process","attribute","comparison"]}
+{"primary":"수온채널 순회대기","text":"수온채널 순회대기는 다중 센서 스캐너가 해당 깊이 채널로 돌아올 때까지다. 측정기는 준비됐지만 다중화 장치가 다른 깊이를 읽는 동안 보류된 시간이다.","relations":["classification","process","role"]}
+{"primary":"수온품질검사 대기","text":"수온품질검사 대기는 수집값이 자동 이상치 검사 순번을 기다린 시간이다. 값 자체는 이미 존재하므로 자동 검사 큐가 길어져도 수괴 유입시각은 늦춰지지 않는다.","relations":["part_of","process","state"]}
+{"primary":"수온자료 송신지연","text":"수온자료 송신지연은 검사된 값이 저대역폭 통신을 지나 육상에 도달하는 시간이다. 전송 묶음 주기와 링크 재시도가 만든 시간을 원시 표본의 발생순서에서 제거한다.","relations":["boundary","function","process"]}
+{"primary":"수온관측 지연경로","text":"수온관측 지연경로는 수괴유입·열응답·채널순회·검사·송신을 시간순으로 묶는다. 열평형·스캔·검사·송신의 서로 다른 원인을 표시해 한 덩어리 지연으로 취급하지 않는다.","relations":["classification","comparison","state"]}
+{"primary":"열응답 큐대기경계","text":"열응답 큐대기경계는 물리적 열평형 지연을 검사 작업의 대기와 혼동하지 않는다.","relations":["attribute","contrast","process"]}
+{"primary":"수괴유입 시각추정","text":"수괴유입 시각추정은 표본시각보다 센서 응답곡선을 거슬러 실제 변화를 찾는다.","relations":["process","role","state"]}
+{"primary":"수온수신 순서착시","text":"뒤늦게 송신된 값이 먼저 도착해도 수온수신 순서착시는 사건 순서를 바꾸지 못한다.","relations":["boundary","part_of","process"]}
+{"primary":"수온연표 복원규칙","text":"수온연표 복원규칙은 채널대기와 열반응시간을 각각 보정해 변화시각을 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"부표염분 변화시각","text":"부표염분 변화시각은 담수 유입으로 센서 주변 전도도가 실제 달라진 때다. 담수 전선의 실제 통과는 전도도 원시곡선과 수온 보정을 함께 살펴 추정한다.","relations":["process","state","boundary"]}
+{"primary":"전도도셀 세척지연","text":"전도도셀 세척지연은 오염막 제거 뒤 측정면이 새 물에 노출되기까지의 시간이다. 와이퍼 작동 뒤 오래된 물이 빠지고 새 표본이 채워지는 물리 교체시간을 포함한다.","relations":["process","attribute","comparison"]}
+{"primary":"염분표본 예약대기","text":"염분표본 예약대기는 전력 절약 일정상 다음 측정 슬롯을 기다린 시간이다. 배터리 절약 정책이 정한 측정 간격이므로 해수 혼합의 진행시간으로 해석하면 안 된다.","relations":["classification","process","role"]}
+{"primary":"염분보정 연산대기","text":"염분보정 연산대기는 온도 보정 작업이 처리기에 올라갈 차례를 기다린다. 온도·압력 자료가 준비된 뒤 처리기 순번을 기다리는 소프트웨어 지연이다.","relations":["part_of","process","state"]}
+{"primary":"염분보고 통신지연","text":"염분보고 통신지연은 보정값을 묶어 송신한 뒤 관제 서버가 받을 때까지다. 패킷 생성부터 육상 확인까지의 경로를 재구성해 실제 담수 유입과 분리한다.","relations":["boundary","function","process"]}
+{"primary":"염분관측 순서고리","text":"염분관측 순서고리는 담수유입·세척·표본예약·보정연산·통신을 잇는다. 세척·표본·보정·송신의 완료점을 연결하면 늦게 보고된 오래된 변화를 찾아낼 수 있다.","relations":["classification","comparison","state"]}
+{"primary":"세척지연 대기분리","text":"세척지연 대기분리는 유체 교체시간과 예약 슬롯의 단순 대기를 따로 분류한다.","relations":["attribute","contrast","process"]}
+{"primary":"담수유입 선후복원","text":"담수유입 선후복원은 염분보고 도착순이 아니라 보정된 변화시각으로 판단한다.","relations":["process","role","state"]}
+{"primary":"염분자료 동시도착","text":"염분자료 동시도착은 묶음 전송 결과일 수 있어 변화의 완전 동시성을 뜻하지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"염분연표 보정표","text":"염분연표 보정표는 물리지연·예약대기·계산대기·전송시간을 분리해 적는다.","relations":["attribute","comparison","process"]}
+{"primary":"부표해류 전환시각","text":"부표해류 전환시각은 관측층의 흐름 방향이 실제로 바뀌기 시작한 때다. 유향이 기준각을 지속적으로 넘은 첫 구간을 사용해 순간 난류를 방향 전환으로 오인하지 않는다.","relations":["process","state","boundary"]}
+{"primary":"유속계 음향지연","text":"유속계 음향지연은 음파 송수신과 산란 신호 왕복에 필요한 물리 시간이다. 음파 왕복과 신호처리에 필요한 고정 반응시간이며 관측 주기 대기와 다른 종류다.","relations":["process","attribute","comparison"]}
+{"primary":"해류핑 주기대기","text":"해류핑 주기대기는 계측기가 다음 음향 발사 주기를 기다리는 간격이다. 직전 발신 뒤 안전 간격을 채우는 운용 규칙 때문에 다음 측정이 보류된 시간이다.","relations":["classification","process","role"]}
+{"primary":"유속벡터 계산대기","text":"유속벡터 계산대기는 여러 빔 자료가 계산 큐에서 처리 차례를 기다린 시간이다. 여러 빔 자료가 모두 모인 뒤 처리 큐에서 차례를 기다린 시간이어서 해류 변화 뒤에 놓인다.","relations":["part_of","process","state"]}
+{"primary":"해류자료 업링크지연","text":"해류자료 업링크지연은 계산 결과가 위성 통신창을 거쳐 전달되는 데 생긴다. 중계 부이와 위성망의 송수신 로그를 이용해 실제 측정 이후의 전달시간만 계산한다.","relations":["boundary","function","process"]}
+{"primary":"해류관측 인과사슬","text":"해류관측 인과사슬은 흐름전환·음향왕복·핑주기·벡터계산·업링크를 잇는다. 방향변화·음향측정·주기대기·벡터계산·통신의 선후를 고정해 사건 연표를 복구한다.","relations":["classification","comparison","state"]}
+{"primary":"음향지연 주기경계","text":"음향지연 주기경계는 신호 왕복시간과 다음 핑을 기다린 시간을 구별한다.","relations":["attribute","contrast","process"]}
+{"primary":"해류전환 시점복구","text":"해류전환 시점복구는 계산 완료시각에서 주기와 처리 지연을 되짚어 구한다.","relations":["process","role","state"]}
+{"primary":"유속패킷 순서역전","text":"유속패킷 순서역전이 생겨도 원시 핑 번호로 해류 사건의 선후를 회복한다.","relations":["boundary","part_of","process"]}
+{"primary":"해류연표 복원표","text":"해류연표 복원표는 실제 흐름변화와 장치·처리·통신 시간을 단계별로 둔다.","relations":["attribute","comparison","process"]}
+{"primary":"부표조위 변곡시각","text":"부표조위 변곡시각은 해수면 상승이 하강으로 실제 바뀐 순간이다. 상승률의 부호가 지속해서 바뀐 지점을 찾아 파랑 잡음 속 순간 변화를 제외한다.","relations":["process","state","boundary"]}
+{"primary":"조위정수관 유동지연","text":"조위정수관 유동지연은 외해 수위가 관 안 측정면에 전달되는 물리 시간이다. 관 입구와 측정면의 수위차가 해소되는 시간이며 표본 시계의 대기와는 원인이 다르다.","relations":["process","attribute","comparison"]}
+{"primary":"조위표본 간격대기","text":"조위표본 간격대기는 장치가 다음 분 단위 측정시각을 기다린 간격이다. 변곡은 이미 생겼지만 다음 정시 측정까지 기록이 없는 관측 일정의 공백이다.","relations":["classification","process","role"]}
+{"primary":"조석필터 처리대기","text":"조석필터 처리대기는 원자료가 노이즈 제거 계산 순번을 기다린 시간이다. 원자료가 확보된 뒤 저주파 성분을 분리할 계산 차례를 기다리는 시간이다.","relations":["part_of","process","state"]}
+{"primary":"조위통계 전송지연","text":"조위통계 전송지연은 필터 결과를 묶어 육상 저장소로 보내는 데 걸린다. 필터 결과의 생성시각과 육상 수신시각을 빼 링크 전달만 별도로 산출한다.","relations":["boundary","function","process"]}
+{"primary":"조위관측 지연연쇄","text":"조위관측 지연연쇄는 해수면변곡·관유동·표본간격·필터·전송을 연결한다. 관 유동·표본·필터·전송 지연을 각각 보정해야 실제 조석 변곡 순서가 유지된다.","relations":["classification","comparison","state"]}
+{"primary":"관유동 표본대기경계","text":"관유동 표본대기경계는 물이 전달되는 시간과 시계 슬롯 대기를 분리한다.","relations":["attribute","contrast","process"]}
+{"primary":"조위변곡 순서추정","text":"조위변곡 순서추정은 보고시각이 아니라 관 유동과 필터 지연을 보정해 정한다.","relations":["process","role","state"]}
+{"primary":"조위자료 동착착시","text":"서로 다른 표본이 묶여 도착해도 조위자료 동착착시는 변곡을 동시에 만들지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"조위연표 복구원칙","text":"조위연표 복구원칙은 원시 수위시계와 각 후속 대기의 길이를 함께 쓰는 것이다.","relations":["attribute","comparison","process"]}
+{"primary":"부표기압 급락시각","text":"부표기압 급락시각은 폭풍 중심 접근으로 현장 압력이 빠르게 낮아지기 시작한 때다. 원시 압력곡선의 기울기가 기준을 넘은 첫 점을 인접 부표 자료와 함께 확인한다.","relations":["process","state","boundary"]}
+{"primary":"기압센서 압력평형지연","text":"기압센서 압력평형지연은 통기구 안팎 압력이 같아질 때까지 필요한 물리 시간이다. 통기구와 센서실의 압력이 따라붙는 물리시간이며 채널 순번 때문에 기다린 것과 다르다.","relations":["process","attribute","comparison"]}
+{"primary":"기압채널 읽기대기","text":"기압채널 읽기대기는 다중 기상센서 순회 중 해당 채널 차례를 기다린 시간이다. 기상 스캐너가 다른 센서를 순회하는 동안 해당 값이 아직 읽히지 않은 운용 지연이다.","relations":["classification","process","role"]}
+{"primary":"폭풍판정 큐대기","text":"폭풍판정 큐대기는 급락 자료가 앞선 경보 규칙 뒤에서 처리되기를 기다린다. 자료는 수집됐지만 앞선 경보 규칙이 실행 중이라 판단이 미뤄진 처리 대기다.","relations":["part_of","process","state"]}
+{"primary":"기압경보 송달지연","text":"기압경보 송달지연은 판정 메시지가 위성망과 관제망을 통과하는 시간이다. 판정시각과 기관 수신시각 사이의 위성·육상망 로그를 따라 전달시간을 계산한다.","relations":["boundary","function","process"]}
+{"primary":"기압급락 시간사슬","text":"기압급락 시간사슬은 현장변화·압력평형·채널읽기·판정큐·송달을 잇는다. 현장 변화부터 사람에게 보이는 경보까지 각 단계의 원인을 보존해 선후를 되짚는다.","relations":["classification","comparison","state"]}
+{"primary":"평형지연 큐대기구별","text":"평형지연 큐대기구별은 센서 통기 반응과 소프트웨어 순번 대기를 가른다.","relations":["attribute","contrast","process"]}
+{"primary":"폭풍접근 선후복원","text":"폭풍접근 선후복원은 경보 도착순보다 보정된 기압 급락시각을 우선한다.","relations":["process","role","state"]}
+{"primary":"기압경보 동시표시","text":"기압경보 동시표시는 화면 갱신 묶음일 수 있어 폭풍 변화의 동시성을 보장하지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"폭풍기압 연표표준","text":"폭풍기압 연표표준은 물리반응과 처리대기를 별도 항으로 빼 실제 순서를 남긴다.","relations":["attribute","comparison","process"]}
+{"primary":"부표용존산소 감소시각","text":"부표용존산소 감소시각은 저산소 수괴가 센서 깊이에 들어온 실제 때다. 저산소 수괴의 진입은 막센서 반응을 역보정하고 해류 방향과 대조해 추정한다.","relations":["process","state","boundary"]}
+{"primary":"산소막 확산지연","text":"산소막 확산지연은 용존산소가 센서막을 지나 전극에 도달하는 물리 시간이다. 분자가 막을 통과해 전극 신호를 만드는 재료 반응시간이라 절전 모드 대기와 구별된다.","relations":["process","attribute","comparison"]}
+{"primary":"산소측정 전력대기","text":"산소측정 전력대기는 배터리 절약 모드가 끝나 센서가 깨어날 때까지다. 센서가 꺼져 있어 생긴 관측 공백이며 실제 산소 감소가 멈춘 시간을 뜻하지 않는다.","relations":["classification","process","role"]}
+{"primary":"산소보정 처리대기","text":"산소보정 처리대기는 염분·온도 보정값이 계산 차례를 기다린 시간이다. 온도와 염분 자료가 모두 준비된 뒤 계산 순번을 기다리는 소프트웨어 단계다.","relations":["part_of","process","state"]}
+{"primary":"저산소경보 전송지연","text":"저산소경보 전송지연은 판정 뒤 경보가 육상 운영자에게 도달하기까지다. 판정 패킷의 재시도와 위성 홉을 확인해 수괴 변화 뒤의 송달시간만 더한다.","relations":["boundary","function","process"]}
+{"primary":"산소관측 지연사슬","text":"산소관측 지연사슬은 수괴유입·막확산·전력대기·보정·경보전송을 묶는다. 확산·절전·보정·전송을 한 줄에 배열하면 늦은 경보가 사건 순서를 바꾸지 못한다.","relations":["classification","comparison","state"]}
+{"primary":"막확산 전력대기경계","text":"막확산 전력대기경계는 센서 재료 반응과 운용 일정의 대기를 혼동하지 않는다.","relations":["attribute","contrast","process"]}
+{"primary":"저산소발생 시각복원","text":"저산소발생 시각복원은 경보시각에서 확산·처리 시간을 되돌려 추정한다.","relations":["process","role","state"]}
+{"primary":"산소경보 수신역전","text":"늦게 발생한 경보가 먼저 와도 산소경보 수신역전은 원표본 순서로 바로잡는다.","relations":["boundary","part_of","process"]}
+{"primary":"저산소연표 복구표","text":"저산소연표 복구표는 자연 변화와 센서·전력·계산·통신 지연을 나눠 기록한다.","relations":["attribute","comparison","process"]}
+{"primary":"부표기름막 접촉시각","text":"부표기름막 접촉시각은 표류 오염막이 형광센서 주변에 처음 닿은 순간이다. 형광 원시값의 첫 지속 상승과 해수면 카메라 영상을 함께 써 실제 접촉을 좁힌다.","relations":["process","state","boundary"]}
+{"primary":"형광센서 반응지연","text":"형광센서 반응지연은 오염물질 여기 뒤 검출 신호가 안정될 때까지의 시간이다. 여기광과 검출회로가 안정되는 물리 반응시간이며 표본 슬롯 대기와는 다르다.","relations":["process","attribute","comparison"]}
+{"primary":"오염채널 표본대기","text":"오염채널 표본대기는 정해진 환경측정 순서에서 형광 채널 차례를 기다린다. 다른 환경센서를 읽는 동안 형광 채널 차례가 오지 않아 기록이 보류된 시간이다.","relations":["classification","process","role"]}
+{"primary":"오염판정 검토대기","text":"오염판정 검토대기는 자동 후보가 사람 확인 목록에서 순번을 기다린 시간이다. 자동 후보는 이미 생겼지만 전문가가 앞선 경보를 처리하는 동안 승인만 늦어진다.","relations":["part_of","process","state"]}
+{"primary":"기름유출 경보지연","text":"기름유출 경보지연은 승인된 경보가 통신망을 거쳐 대응기관에 닿기까지다. 부표 판정에서 해양기관 수신까지의 통신 경로를 따로 계산해 접촉시각과 분리한다.","relations":["boundary","function","process"]}
+{"primary":"기름막관측 지연고리","text":"기름막관측 지연고리는 접촉·센서반응·표본대기·검토·경보전달을 잇는다. 센서반응·표본대기·사람검토·통신의 순서를 남겨 수신순서 착시를 교정한다.","relations":["classification","comparison","state"]}
+{"primary":"센서반응 검토대기경계","text":"센서반응 검토대기경계는 광학 반응시간과 담당자 순번 대기를 분리한다.","relations":["attribute","contrast","process"]}
+{"primary":"오염접촉 순서복원","text":"오염접촉 순서복원은 승인 순서가 아니라 보정된 최초 센서 접촉을 기준으로 한다.","relations":["process","role","state"]}
+{"primary":"오염경보 동착오인","text":"여러 경보가 한 번에 전송돼도 오염경보 동착오인은 기름막 접촉을 같게 만들지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"기름유출 연표원칙","text":"기름유출 연표원칙은 원시 광학신호와 검토·전송 대기를 각각 보존하는 것이다.","relations":["attribute","comparison","process"]}
+{"primary":"부표계류장력 증가시각","text":"부표계류장력 증가시각은 파랑과 조류로 계류줄 하중이 실제 커지기 시작한 때다. 파랑 충격과 지속 장력 변화를 나누고 기준을 연속 초과한 첫 시점을 사건으로 쓴다.","relations":["process","state","boundary"]}
+{"primary":"장력계 탄성응답지연","text":"장력계 탄성응답지연은 변형이 감지소자에 전달되어 안정되는 물리 시간이다. 변형률 소자와 신호 필터가 새 하중에 안정될 때까지의 물리 반응시간이다.","relations":["process","attribute","comparison"]}
+{"primary":"장력표본 주기대기","text":"장력표본 주기대기는 고속 측정창이 다시 열릴 때까지 기다린 간격이다. 장력 변화 뒤 다음 계측주기가 올 때까지 기록이 없는 운용 대기다.","relations":["classification","process","role"]}
+{"primary":"계류위험 계산대기","text":"계류위험 계산대기는 장력 자료가 위험도 산출 큐에서 앞 작업을 기다린다. 여러 계류선 값을 결합하는 분석 작업이 처리 순번을 기다린 시간이다.","relations":["part_of","process","state"]}
+{"primary":"계류경보 통신지연","text":"계류경보 통신지연은 위험 판정 뒤 정비센터에 메시지가 도달하는 시간이다. 위험 판정 패킷이 위성과 육상망을 지나 유지보수팀에 닿기까지 걸린다.","relations":["boundary","function","process"]}
+{"primary":"계류관측 인과연쇄","text":"계류관측 인과연쇄는 하중증가·탄성응답·표본주기·위험계산·통신을 잇는다. 하중변화·센서응답·표본주기·계산·전송을 분리해 파손 전후를 복원한다.","relations":["classification","comparison","state"]}
+{"primary":"탄성지연 주기대기경계","text":"탄성지연 주기대기경계는 재료 변형시간과 측정 일정의 공백을 구분한다.","relations":["attribute","contrast","process"]}
+{"primary":"계류과부하 순서복구","text":"계류과부하 순서복구는 경보 수신시각보다 보정된 장력 증가시각을 비교한다.","relations":["process","role","state"]}
+{"primary":"계류경보 묶음수신","text":"계류경보 묶음수신은 전송 재개 결과일 수 있어 하중 사건의 동시성을 뜻하지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"계류연표 복원규칙","text":"계류연표 복원규칙은 물리응답·표본대기·처리대기·전송지연을 따로 계산한다.","relations":["attribute","comparison","process"]}
+{"primary":"부표배터리 전압강하시각","text":"부표배터리 전압강하시각은 저장전압이 절전 기준 아래로 실제 내려간 때다. 부하 변화와 일사 감소를 함께 확인해 전압이 기준을 처음 지속해서 밑돈 때를 찾는다.","relations":["process","state","boundary"]}
+{"primary":"태양충전 회복지연","text":"태양충전 회복지연은 일사 회복 뒤 배터리 전압이 안정되기까지의 물리 시간이다. 빛이 돌아온 뒤 전기화학적 충전으로 단자전압이 안정되기까지의 물리 반응시간이다.","relations":["process","attribute","comparison"]}
+{"primary":"절전모드 해제대기","text":"절전모드 해제대기는 제어기가 다음 기상 확인 슬롯까지 잠든 시간이다. 전압이 회복돼도 다음 제어 확인주기까지 장치가 깨어나지 않은 운용 공백이다.","relations":["classification","process","role"]}
+{"primary":"전력상태 판정대기","text":"전력상태 판정대기는 전압 자료가 상태 분류 큐에서 처리 차례를 기다린다. 원시 전압은 존재하지만 상태기계가 앞선 작업 뒤에서 차례를 기다린 처리 지연이다.","relations":["part_of","process","state"]}
+{"primary":"전력경보 송신지연","text":"전력경보 송신지연은 저전압 판정이 육상 유지보수팀에 전달되기까지다. 절전 중 묶인 패킷이 링크 재개 뒤 전달되는 시간을 저전압 발생과 분리한다.","relations":["boundary","function","process"]}
+{"primary":"부표전력 지연사슬","text":"부표전력 지연사슬은 전압강하·충전반응·절전대기·판정·송신을 연결한다. 배터리 반응·제어주기·상태판정·통신을 나누면 일괄 경보의 실제 선후를 복원할 수 있다.","relations":["classification","comparison","state"]}
+{"primary":"충전회복 절전대기경계","text":"충전회복 절전대기경계는 전기화학 반응과 제어 일정 대기를 구별한다.","relations":["attribute","contrast","process"]}
+{"primary":"저전압발생 순서복구","text":"저전압발생 순서복구는 경보 도착보다 원시 전압강하 시각을 먼저 비교한다.","relations":["process","role","state"]}
+{"primary":"전력경보 일괄도착","text":"여러 전력경보 일괄도착은 통신 재개 결과여서 고장 동시성을 뜻하지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"부표전력 연표기준","text":"부표전력 연표기준은 배터리 반응과 절전·처리·송신 대기를 별도로 남긴다.","relations":["attribute","comparison","process"]}
+{"primary":"위성가시창 개방시각","text":"위성가시창 개방시각은 통신 위성이 부표 안테나의 유효 범위에 들어온 때다. 예측 궤도만 쓰지 않고 실제 신호 세기 상승과 안테나 고도를 함께 대조해 정한다.","relations":["process","state","boundary"]}
+{"primary":"안테나 추적정렬지연","text":"안테나 추적정렬지연은 가시창 개방 뒤 링크 방향을 맞추는 물리 제어시간이다. 구동기가 방위와 고도를 맞추는 물리 제어시간이므로 패킷 큐 대기와 구별된다.","relations":["process","attribute","comparison"]}
+{"primary":"관측패킷 송신순번대기","text":"관측패킷 송신순번대기는 저장된 자료가 우선순위 큐에서 앞 패킷을 기다린다. 자료 우선순위와 크기에 따라 달라지며 관측 사건의 자연 발생시간에는 포함되지 않는다.","relations":["classification","process","role"]}
+{"primary":"위성재전송 대기시간","text":"위성재전송 대기시간은 응답 누락 뒤 다음 허용 슬롯까지 보류된 시간이다. 응답 실패 뒤 다음 허용 슬롯까지 보류된 시간이어서 원본 생성시각을 바꾸지 않는다.","relations":["part_of","process","state"]}
+{"primary":"육상수신 처리지연","text":"육상수신 처리지연은 신호 도착 뒤 해독과 무결성 검사를 마칠 때까지다. 신호가 도착한 뒤 복호화와 무결성 검사를 마칠 때까지 이용 가능성이 늦어진 단계다.","relations":["boundary","function","process"]}
+{"primary":"위성통신 지연연쇄","text":"위성통신 지연연쇄는 가시창·안테나정렬·송신큐·재시도·해독을 차례로 잇는다. 가시창·정렬·송신순번·재시도·복호화를 순서대로 빼면 원시 관측순서가 되살아난다.","relations":["classification","comparison","state"]}
+{"primary":"정렬지연 큐대기경계","text":"정렬지연 큐대기경계는 안테나 운동시간과 패킷 순번 대기를 구분한다.","relations":["attribute","contrast","process"]}
+{"primary":"부표자료 생성순서복원","text":"부표자료 생성순서복원은 위성 수신순서 대신 각 패킷의 원시 표본시각을 쓴다.","relations":["process","role","state"]}
+{"primary":"재전송 선착착시","text":"늦게 재전송된 오래된 자료가 먼저 보이면 재전송 선착착시를 원시시각으로 교정한다.","relations":["boundary","part_of","process"]}
+{"primary":"위성자료 연표규칙","text":"위성자료 연표규칙은 링크 단계별 대기를 빼고 관측 사건의 선후를 재구성한다.","relations":["attribute","comparison","process"]}
+{"primary":"부표선박 충돌시각","text":"부표선박 충돌시각은 선체가 부표 구조물에 실제 접촉한 순간이다. 신고보다 앞선 물리 접촉은 구조물 가속도와 선박 위치궤적의 첫 교차로 확인한다.","relations":["process","state","boundary"]}
+{"primary":"가속도계 진동전달지연","text":"가속도계 진동전달지연은 충격파가 구조물을 지나 센서에 닿는 물리 시간이다. 충격파가 부표 골격을 지나 센서에 닿는 시간이며 저장 버퍼의 순번 대기와 다르다.","relations":["process","attribute","comparison"]}
+{"primary":"충격표본 버퍼대기","text":"충격표본 버퍼대기는 고속 파형이 저장 장치에 기록될 차례를 기다린 시간이다. 파형은 이미 검출됐지만 고속 자료가 메모리에 쓰일 차례를 기다린 운용 지연이다.","relations":["classification","process","role"]}
+{"primary":"충돌판정 분석대기","text":"충돌판정 분석대기는 파형이 풍랑 잡음 분석 뒤 처리되기를 기다린다. 저장된 파형이 풍랑 잡음 분류 뒤에서 처리되기를 기다린 소프트웨어 시간이다.","relations":["part_of","process","state"]}
+{"primary":"충돌신고 전송지연","text":"충돌신고 전송지연은 자동 판정 뒤 해경과 운영자에게 통보되기까지다. 판정 메시지의 생성과 해경 접수 사이 통신경로를 추적해 실제 접촉 뒤에 배치한다.","relations":["boundary","function","process"]}
+{"primary":"부표충돌 지연사슬","text":"부표충돌 지연사슬은 접촉·진동전달·버퍼·분석·신고전송을 잇는다. 접촉·진동전파·버퍼기록·분석·신고를 분리하면 늦은 통보에서 선후를 복원할 수 있다.","relations":["classification","comparison","state"]}
+{"primary":"진동전달 버퍼대기경계","text":"진동전달 버퍼대기경계는 구조물 전파시간과 저장 순번 대기를 분리한다.","relations":["attribute","contrast","process"]}
+{"primary":"선박접촉 순서복원","text":"선박접촉 순서복원은 신고 접수순보다 충격센서 보정시각을 우선한다.","relations":["process","role","state"]}
+{"primary":"충돌경보 동시도착","text":"여러 부표의 충돌경보 동시도착은 망 복구 묶음일 수 있어 접촉 동시성이 아니다.","relations":["boundary","part_of","process"]}
+{"primary":"충돌연표 복구기준","text":"충돌연표 복구기준은 파형 첫 도달과 후속 처리·통신 시간을 따로 기록한다.","relations":["attribute","comparison","process"]}
+{"primary":"부표생물막 세척시각","text":"부표생물막 세척시각은 와이퍼가 센서 표면의 부착물을 실제 제거한 때다. 와이퍼 명령이 아니라 센서 표면의 부착물이 실제 벗겨진 영상과 모터 부하로 정한다.","relations":["process","state","boundary"]}
+{"primary":"센서표면 안정화지연","text":"센서표면 안정화지연은 세척 뒤 주변 물 흐름과 측정값이 다시 안정될 때까지다. 세척 뒤 난류와 잔류물이 사라져 측정값이 평형에 드는 물리 회복시간이다.","relations":["process","attribute","comparison"]}
+{"primary":"세척후 표본대기","text":"세척후 표본대기는 품질 규칙이 다음 유효 측정 슬롯까지 값을 보류한 시간이다. 표면은 안정됐지만 품질 규칙이 다음 측정 슬롯까지 값을 보류한 운용 대기다.","relations":["classification","process","role"]}
+{"primary":"생물막보정 검토대기","text":"생물막보정 검토대기는 교정 후보가 전문가 확인 순번을 기다린다. 자동 보정안은 존재하지만 전문가가 앞선 자료를 확인하는 동안 승인되지 않은 시간이다.","relations":["part_of","process","state"]}
+{"primary":"정정자료 배포지연","text":"정정자료 배포지연은 승인된 보정값이 이용기관에 전달되는 데 걸린다. 검토가 끝난 값이 저장소와 이용기관으로 전달되는 후속 지연이라 오염 발생과 구별된다.","relations":["boundary","function","process"]}
+{"primary":"생물막관리 지연고리","text":"생물막관리 지연고리는 세척·표면안정·표본대기·검토·배포를 연결한다. 세척·안정화·새 표본·전문검토·배포를 잇고 각 단계의 대기 원인을 따로 남긴다.","relations":["classification","comparison","state"]}
+{"primary":"표면안정 검토대기경계","text":"표면안정 검토대기경계는 유체 안정화와 사람 검토의 순번 대기를 구별한다.","relations":["attribute","contrast","process"]}
+{"primary":"오염영향 시각복원","text":"오염영향 시각복원은 정정 배포일이 아니라 원시 신호 변화와 세척시각을 쓴다.","relations":["process","role","state"]}
+{"primary":"정정자료 수신역전","text":"정정자료 수신역전이 생겨도 원표본의 측정순서는 바뀌지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"생물막연표 복원표","text":"생물막연표 복원표는 물리 회복과 표본·검토·배포 대기를 각기 표시한다.","relations":["attribute","comparison","process"]}
+{"primary":"부표쓰나미 파두도달","text":"부표쓰나미 파두도달은 장주기 수위변화의 첫 파두가 관측점에 닿은 순간이다. 장주기 수압의 첫 지속 변화와 인접 심해 부표의 전파 방향을 결합해 실제 도달을 정한다.","relations":["process","state","boundary"]}
+{"primary":"해저압력 전달지연","text":"해저압력 전달지연은 수위 변화가 계류계통을 거쳐 압력센서에 반영되는 시간이다. 수위 변화가 센서 계통에 반영되는 물리 반응시간이며 표본 누적 대기와 구별된다.","relations":["process","attribute","comparison"]}
+{"primary":"쓰나미후보 누적대기","text":"쓰나미후보 누적대기는 판정에 필요한 연속 표본이 채워질 때까지의 대기다. 판정에 필요한 연속 표본 수가 채워질 때까지 기다리지만 파두는 이미 관측점을 지났다.","relations":["classification","process","role"]}
+{"primary":"재난경보 승인대기","text":"재난경보 승인대기는 자동 후보가 당직자의 확인 차례를 기다린 시간이다. 자동 후보가 만들어진 뒤 당직 검토와 기관 승인 순번 때문에 통보가 보류된 시간이다.","relations":["part_of","process","state"]}
+{"primary":"쓰나미통보 망지연","text":"쓰나미통보 망지연은 승인 메시지가 재난기관과 해안지역에 도달하기까지다. 승인 메시지가 재난망과 지역 경보망을 통과한 시간을 자연 전파시간과 분리한다.","relations":["boundary","function","process"]}
+{"primary":"쓰나미관측 지연사슬","text":"쓰나미관측 지연사슬은 파두도달·압력전달·표본누적·승인·통보를 잇는다. 파두·압력반응·표본누적·승인·통보를 배열하면 발표순서와 실제 도달순서를 나눌 수 있다.","relations":["classification","comparison","state"]}
+{"primary":"압력전달 승인대기경계","text":"압력전달 승인대기경계는 해양 물리 반응과 행정 처리 대기를 분리한다.","relations":["attribute","contrast","process"]}
+{"primary":"파두도달 순서복원","text":"파두도달 순서복원은 경보 발표순이 아니라 센서별 보정 도달시각을 비교한다.","relations":["process","role","state"]}
+{"primary":"쓰나미경보 동시발표","text":"여러 해역의 쓰나미경보 동시발표는 승인 묶음일 수 있어 파두 동시도달이 아니다.","relations":["boundary","part_of","process"]}
+{"primary":"쓰나미연표 복구원칙","text":"쓰나미연표 복구원칙은 자연전파·센서반응·판정대기·통보지연을 따로 계산한다.","relations":["attribute","comparison","process"]}

@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v68",
+  "version": "68",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-10051 ~ S2-TOH-10200",
+  "concept_family": "S2-A03-T068: 산림 병해충 예찰·방제 — 충돌하는 타임스탬프의 신뢰순위 판정",
+  "design_note": "산림 병해충 예찰·방제 영역의 충돌하는 타임스탬프의 신뢰순위 판정 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-10051",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유인트랩 포획접촉시각은 해충이 끈끈이판에 실제 붙은 순간을 뜻한다. 센서가 늦게 깨어난 경우를 대비해 끈끈이판 영상과 이전·이후 점검 사이의 증거 구간도 함께 남긴다.",
+      "concepts": [
+        "유인트랩 포획접촉시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10052",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트랩센서 원시시각은 접촉 신호를 처음 검출한 장치 내부 시각이다. 장치 시계가 표준시와 어긋날 수 있으므로 마지막 동기화와 드리프트를 적용한 값만 비교한다.",
+      "concepts": [
+        "트랩센서 원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10053",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트랩게이트웨이 수신시각은 현장 패킷이 중계기에 도착한 때여서 포획보다 늦다. 무선 재시도와 저장 후 전달 때문에 생긴 시차는 해충이 붙은 물리 사건과 분리한다.",
+      "concepts": [
+        "트랩게이트웨이 수신시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10054",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트랩점검 수기시각은 작업자가 포획 흔적을 보고 기록한 후입력 시각이다. 작업자가 나중에 적은 시간은 관찰 시각조차 근사값일 수 있어 직접 접촉 증거보다 낮게 둔다.",
+      "concepts": [
+        "트랩점검 수기시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10055",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서와 수기 기록이 다르면 트랩시각 충돌사례로 묶어 근거를 비교한다. 서로 다른 값 중 하나를 임의 채택하지 않고 각 시계 상태와 사건 직접성을 함께 평가한다.",
+      "concepts": [
+        "트랩시각 충돌사례"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10056",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트랩시각 신뢰순위는 보정된 접촉센서·게이트웨이·수기점검 순으로 둔다. 센서가 고장 났다면 사진과 점검 기록의 순위가 달라질 수 있어 근거별 유효성도 표시한다.",
+      "concepts": [
+        "트랩시각 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10057",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트랩시계 보정기준은 마지막 동기화 오차를 원시시각에 적용하는 절차다. 두 동기화점 사이 오차가 선형인지 확인하고 불확실하면 가능한 포획 구간으로 넓혀 표현한다.",
+      "concepts": [
+        "트랩시계 보정기준"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10058",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "포획시각 증거결합은 센서 파형과 사진 속 개체 위치를 함께 대조한다.",
+      "concepts": [
+        "포획시각 증거결합"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10059",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트랩후입력 경계는 점검자가 쓴 시각을 실제 포획시각으로 오인하지 않게 한다.",
+      "concepts": [
+        "트랩후입력 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10060",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트랩포획 연표감사는 원시값·보정값·수신·점검의 변경 이력을 모두 남긴다.",
+      "concepts": [
+        "트랩포획 연표감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10061",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "드론촬영 노출시각은 산림 영상 센서가 병반 구역의 빛을 실제 받아들인 때다. 셔터가 열린 순간은 파일 저장과 다르므로 카메라 이벤트 번호와 비행 위치로그를 결합한다.",
+      "concepts": [
+        "드론촬영 노출시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10062",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "드론카메라 원시시각은 셔터 이벤트와 함께 저장된 기체 장치시각이다. 기체 재부팅이나 시간대 설정 변경이 있었는지 확인한 뒤 같은 임무의 시계축에 맞춘다.",
+      "concepts": [
+        "드론카메라 원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10063",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "드론지상국 수신시각은 영상 파일이 무선 링크로 내려온 시각이다. 영상 압축과 무선 대기로 늦어진 값이어서 병반이 촬영된 선후를 직접 나타내지 않는다.",
+      "concepts": [
+        "드론지상국 수신시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10064",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "드론영상 등록시각은 분석자가 임무 자료를 시스템에 올린 후속 시각이다. 분석 저장소에 올린 때는 촬영 뒤 처리 사건이며 원본 노출시각을 덮어쓰지 않는다.",
+      "concepts": [
+        "드론영상 등록시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10065",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "카메라·비행로그·지상국 시간이 어긋나면 드론시각 충돌묶음으로 관리한다. 카메라와 기체 로그의 프레임 번호가 이어지는지 살펴 어느 시계가 튄 것인지 찾는다.",
+      "concepts": [
+        "드론시각 충돌묶음"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10066",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "드론촬영 신뢰순위는 동기화된 셔터로그를 비행요약과 등록시각보다 앞세운다. 동기화된 셔터원본이 없으면 비행경로와 지상국 수신을 조합해 신뢰 구간으로 낮춰 쓴다.",
+      "concepts": [
+        "드론촬영 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10067",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "드론시계 편차보정은 이륙 전 기준시계와 비교한 오차를 촬영 로그에 반영한다. 이륙 전과 착륙 후 기준값을 비교하면 임무 도중 누적된 드리프트도 추정할 수 있다.",
+      "concepts": [
+        "드론시계 편차보정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10068",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "드론노출 시각추정은 셔터번호와 기체 위치 연속성을 이용해 충돌값을 좁힌다.",
+      "concepts": [
+        "드론노출 시각추정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10069",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "드론수신시각 경계는 파일 도착이 촬영 사건보다 뒤라는 점을 보존한다.",
+      "concepts": [
+        "드론수신시각 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10070",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "드론영상 시간감사는 원본 메타데이터와 모든 보정 근거를 함께 기록한다.",
+      "concepts": [
+        "드론영상 시간감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10071",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림시료 채취시각은 조사자가 감염 의심 조직을 나무에서 분리한 순간이다. 조직을 자른 때와 봉투를 봉인한 때를 나누어 실제 생물 표본 분리 사건을 먼저 기록한다.",
+      "concepts": [
+        "산림시료 채취시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10072",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "채취기기 버튼시각은 봉투 식별기를 누를 때 장치가 저장한 현장 시각이다. 버튼을 늦게 누른 가능성을 확인하려면 현장 사진과 작업자의 이동 정지시간을 대조한다.",
+      "concepts": [
+        "채취기기 버튼시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10073",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시료바코드 스캔시각은 봉인 뒤 바코드를 읽은 때로 실제 분리보다 늦을 수 있다. 스캔은 식별 연결 사건이므로 채취보다 뒤에 오며 통신 재전송이 있으면 더 늦어질 수 있다.",
+      "concepts": [
+        "시료바코드 스캔시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10074",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시료대장 입력시각은 현장 복귀 뒤 표본 정보를 전산에 옮긴 후입력 시각이다. 사무실에서 옮겨 적은 값은 회고 기록이어서 현장 사건의 직접 시계로 사용하지 않는다.",
+      "concepts": [
+        "시료대장 입력시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10075",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "버튼·스캔·대장 시간이 맞지 않으면 시료시각 충돌기록으로 보존한다. 봉투번호와 사진 순서가 맞지 않으면 시각뿐 아니라 시료 대응 자체도 함께 재검증한다.",
+      "concepts": [
+        "시료시각 충돌기록"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10076",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림채취 신뢰순위는 현장 사진과 버튼로그를 스캔·대장 입력보다 우선한다. 현장 증거가 누락된 표본은 단정값 대신 마지막 미채취와 첫 봉인 사이 구간으로 둔다.",
+      "concepts": [
+        "산림채취 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10077",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "채취장치 시계교정은 기준 GPS 시각과의 편차를 해당 조사일 로그에 적용한다. GPS 기준과 장치 표시의 차이를 조사 시작·종료 때 모두 확인해 중간 편차를 보정한다.",
+      "concepts": [
+        "채취장치 시계교정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10078",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시료채취 증거대조는 사진 순서·봉투번호·이동경로로 실제 선후를 확인한다.",
+      "concepts": [
+        "시료채취 증거대조"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10079",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시료입력시각 경계는 대장 작성이 채취 사건 자체가 아님을 명시한다.",
+      "concepts": [
+        "시료입력시각 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10080",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림시료 연표감사는 원본 시각을 지우지 않고 채택값과 이유를 덧붙인다.",
+      "concepts": [
+        "산림시료 연표감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10081",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "병해충검사 증폭시각은 PCR 장비가 양성 임계값을 실제 넘어선 순간이다. 양성 결과 승인보다 앞선 분자 반응 사건이며 증폭곡선이 기준선을 지속해서 넘은 첫 주기를 쓴다.",
+      "concepts": [
+        "병해충검사 증폭시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10082",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "PCR장비 원시시각은 증폭곡선과 함께 저장된 장비 제어기의 시각이다. 장비 내부 시계의 재부팅과 시간 수정 이력을 확인해 각 주기 번호와 표준시를 연결한다.",
+      "concepts": [
+        "PCR장비 원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10083",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검사서버 수신시각은 분석 결과 파일이 실험실 서버에 올라온 때다. 파일 전송과 저장 대기로 늦어진 후속 시각이어서 병원체 검출의 발생순서를 바꾸지 않는다.",
+      "concepts": [
+        "검사서버 수신시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10084",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검사자 승인시각은 담당자가 결과를 검토해 양성으로 확정한 후속 시각이다. 사람 검토가 끝난 때는 결과 사용 가능 시각이며 실제 증폭 시작과 별도 사건이다.",
+      "concepts": [
+        "검사자 승인시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10085",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장비와 서버·승인 시간이 역전되면 검사시각 충돌표에 원본을 나란히 둔다. 주기번호는 연속인데 시각만 뒤집혔다면 장비 시계 점프를 우선 의심해 원본을 보존한다.",
+      "concepts": [
+        "검사시각 충돌표"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10086",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "PCR시각 신뢰순위는 장비 원곡선·권한서버·사람 승인 순으로 근거를 둔다. 장비 상태가 정상일 때만 원시 로그를 최상위에 두고 결함이 있으면 시약 단계 증거를 보강한다.",
+      "concepts": [
+        "PCR시각 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10087",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "PCR시계 동기교정은 장비 감사로그의 표준시 편차를 계산해 원시시각에 붙인다. 검사 전후 서버 기준과의 차이를 적용하되 이미 저장된 원시값은 삭제하지 않고 병기한다.",
+      "concepts": [
+        "PCR시계 동기교정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10088",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증폭발생 시각복원은 주기번호와 런 시작시각을 이용해 임계 통과를 재계산한다.",
+      "concepts": [
+        "증폭발생 시각복원"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10089",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검사승인시각 경계는 양성 발생과 행정 확정이 서로 다른 사건임을 드러낸다.",
+      "concepts": [
+        "검사승인시각 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10090",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "PCR결과 시간감사는 원곡선·보정·수신·승인의 순서를 변경 이력과 보존한다.",
+      "concepts": [
+        "PCR결과 시간감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10091",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제풍속 돌풍시각은 살포지점 바람이 허용 상한을 실제 넘은 순간이다. 원시 풍속이 기준을 지속 초과한 시작점을 찾고 순간 돌풍과 긴 강풍 구간을 구분한다.",
+      "concepts": [
+        "방제풍속 돌풍시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10092",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림풍속계 원시시각은 돌풍 표본을 저장한 현장 센서의 내부 시각이다. 기상탑 시계의 동기 상태와 센서 표본주기를 확인해야 다른 기록과 정확히 대조할 수 있다.",
+      "concepts": [
+        "산림풍속계 원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10093",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기상중계 수신시각은 풍속 패킷이 산림 관제망에 들어온 때다. 현장망 버퍼와 재전송이 만든 지연이므로 바람이 분 시각보다 늦게 놓는 것이 원칙이다.",
+      "concepts": [
+        "기상중계 수신시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10094",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "살포팀 풍속보고시각은 작업자가 현장 상태를 무전으로 알린 시각이다. 무전 시각은 사람이 위험을 인지한 때이며 실제 돌풍과 자동 검출 뒤에 올 수 있다.",
+      "concepts": [
+        "살포팀 풍속보고시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10095",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서 상한초과와 무전 보고가 어긋나면 풍속시각 충돌사례로 비교한다. 영상 속 수목 흔들림과 살포기 자세센서를 보조로 써 어느 타임스탬프가 더 타당한지 검토한다.",
+      "concepts": [
+        "풍속시각 충돌사례"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10096",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제풍속 신뢰순위는 교정된 원시센서와 현장 계측을 무전 요약보다 앞세운다. 원시 센서가 결빙됐다면 무조건 우선하지 않고 결빙 진단과 인접 관측을 포함해 순위를 조정한다.",
+      "concepts": [
+        "방제풍속 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10097",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "풍속센서 편차보정은 정기 검교정 결과와 기준시계 오차를 함께 적용한다. 기준시계 오차와 계측 지연을 따로 적용해 시간 보정과 풍속값 보정을 섞지 않는다.",
+      "concepts": [
+        "풍속센서 편차보정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10098",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "돌풍시각 보조추정은 인근 관측소와 드론 흔들림 로그로 센서 공백을 좁힌다.",
+      "concepts": [
+        "돌풍시각 보조추정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10099",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "풍속보고시각 경계는 무전 송신을 돌풍 발생과 같은 때로 취급하지 않는다.",
+      "concepts": [
+        "풍속보고시각 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10100",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제기상 시간감사는 살포중지 판단에 쓴 시각과 배제한 시각의 이유를 남긴다.",
+      "concepts": [
+        "방제기상 시간감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10101",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림약제 살포개시는 노즐에서 약액이 실제 분무되기 시작한 순간이다. 노즐 밸브 명령보다 압력과 유량이 함께 상승한 순간을 실제 약액 방출의 시작으로 정한다.",
+      "concepts": [
+        "산림약제 살포개시"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10102",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "살포기 제어원시시각은 밸브 열림 신호와 함께 장비가 저장한 때다. 장비 시계가 차량 기준과 동기화됐는지 확인하고 명령 이벤트와 실제 출력의 차이를 남긴다.",
+      "concepts": [
+        "살포기 제어원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10103",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "살포관제 수신시각은 작업 패킷이 중앙 운영화면에 도착한 시각이다. 무선망에서 늦게 도착한 패킷은 관제 인지시각일 뿐 현장 분무 시작을 대신하지 않는다.",
+      "concepts": [
+        "살포관제 수신시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10104",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "살포작업 일지시각은 작업자가 종료 뒤 개시 내역을 적은 후입력 시각이다. 종료 뒤 적은 일지는 작업 범위와 사유를 보완하지만 정밀한 개시 타임스탬프는 아니다.",
+      "concepts": [
+        "살포작업 일지시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10105",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유량 상승과 제어로그·일지가 다르면 살포개시 시각충돌로 묶는다. 유량계와 제어로그가 다르면 노즐 막힘이나 센서 지연을 확인해 사건 정의에 맞는 값을 고른다.",
+      "concepts": [
+        "살포개시 시각충돌"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10106",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림살포 신뢰순위는 유량계 접점·제어원본·관제수신·일지 순이다. 약액 접촉을 가장 직접 보여주는 유량과 압력 증거를 정상 제어로그보다 먼저 평가한다.",
+      "concepts": [
+        "산림살포 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10107",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "살포장비 시계보정은 임무 전 동기화 기록으로 제어시각 편차를 교정한다. 임무 전후 동기화값으로 드리프트를 계산하고 통신 수신시각은 보정 기준에서 제외한다.",
+      "concepts": [
+        "살포장비 시계보정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10108",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "살포개시 교차확인은 노즐 압력과 탱크 유량 변화를 함께 대조한다.",
+      "concepts": [
+        "살포개시 교차확인"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10109",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "살포일지 경계는 회고 입력시각을 약액 분무의 실제 시작으로 쓰지 않게 한다.",
+      "concepts": [
+        "살포일지 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10110",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림살포 연표감사는 채택한 개시시각과 원본별 배제 근거를 보존한다.",
+      "concepts": [
+        "산림살포 연표감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10111",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제탱크 유량변화시각은 약제 배출률이 설정값에서 실제 달라진 때다. 펄스 간격이 새 수준으로 지속된 첫 구간을 찾아 순간 진동이나 기포 영향을 제외한다.",
+      "concepts": [
+        "방제탱크 유량변화시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10112",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탱크유량계 원시시각은 펄스 변화와 함께 계측기가 남긴 내부 시각이다. 계측기 재설정과 누적값 초기화가 있었는지 확인한 뒤 차량 시계에 맞춰 비교한다.",
+      "concepts": [
+        "탱크유량계 원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10113",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량게이트웨이 수신시각은 유량 메시지가 차량 제어망에 도착한 때다. 차내 버스 부하와 메시지 재시도 때문에 생긴 시차는 약제 흐름 변화 뒤에 배치한다.",
+      "concepts": [
+        "차량게이트웨이 수신시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10114",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "약제사용량 입력시각은 작업 종료 뒤 총량을 전산에 등록한 시각이다. 작업자가 총량을 정리한 때는 사후 행정 사건이며 순간 유량 변화를 직접 보여주지 않는다.",
+      "concepts": [
+        "약제사용량 입력시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10115",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원시펄스와 차량로그·사용량 입력이 어긋나면 탱크시각 충돌표본이 된다. 압력곡선과 잔량센서 변화도 함께 대조하면 결함 있는 펄스 로그를 식별할 수 있다.",
+      "concepts": [
+        "탱크시각 충돌표본"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10116",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제유량 신뢰순위는 검교정된 펄스원본을 계산총량과 수기입력보다 우선한다. 검교정 상태가 유효한 계량 원본을 우선하되 막힘 진단이 있으면 압력 증거를 함께 쓴다.",
+      "concepts": [
+        "방제유량 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10117",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유량계 시계편차교정은 차량 기준시계와의 차이를 각 펄스에 반영한다. 차량 시계와의 오차를 각 펄스에 적용하고 보정 전 원본 해시도 감사 이력에 남긴다.",
+      "concepts": [
+        "유량계 시계편차교정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10118",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유량변화 시각추적은 압력곡선과 펄스 간격을 결합해 실제 변화를 찾는다.",
+      "concepts": [
+        "유량변화 시각추적"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10119",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사용량입력 경계는 총량 등록이 유량 변화 사건보다 뒤라는 점을 명시한다.",
+      "concepts": [
+        "사용량입력 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10120",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제탱크 시간감사는 원시펄스·보정값·총량계산·입력 이력을 함께 남긴다.",
+      "concepts": [
+        "방제탱크 시간감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10121",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제구역 작업자진입은 작업자가 통제 경계를 실제 넘어간 순간이다. 통제선의 실제 통과를 태그 검출과 영상 프레임으로 확인해 무전 보고와 구별한다.",
+      "concepts": [
+        "방제구역 작업자진입"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10122",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자태그 원시시각은 출입 비콘이 태그 신호를 처음 읽은 때다. 비콘 시계의 표준시 편차와 신호 중복 제거 규칙을 확인한 뒤 첫 유효 검출을 고른다.",
+      "concepts": [
+        "작업자태그 원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10123",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "안전관제 수신시각은 태그 이벤트가 현장 안전서버에 도착한 시각이다. 현장 게이트웨이에서 중앙까지의 통신 지연이 포함되므로 실제 진입보다 늦을 수 있다.",
+      "concepts": [
+        "안전관제 수신시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10124",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감독자 진입보고시각은 무전이나 일지로 사람의 진입을 확인한 시각이다. 감독자의 인지와 보고가 뒤따른 시각이며 경계 통과의 물리 증거보다 순위가 낮다.",
+      "concepts": [
+        "감독자 진입보고시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10125",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "태그와 영상·무전 시간이 다르면 진입시각 충돌사례로 원본을 보존한다. 태그가 누락되면 영상과 보호구 대여기록을 결합해 진입 가능한 구간을 좁힌다.",
+      "concepts": [
+        "진입시각 충돌사례"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10126",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자진입 신뢰순위는 경계 비콘·영상·관제수신·수기보고 순으로 둔다. 센서 고장 여부와 경계 직접성을 평가해 태그·영상·관제·수기 기록의 순위를 정한다.",
+      "concepts": [
+        "작업자진입 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10127",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출입태그 시계보정은 비콘의 표준시 동기 상태와 드리프트를 적용한다. 비콘 동기화 이력으로 오차를 수정하되 신호 수신 지연과 시계 편차를 따로 계산한다.",
+      "concepts": [
+        "출입태그 시계보정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10128",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진입시각 영상대조는 경계 카메라 프레임과 태그 검출의 연속성을 확인한다.",
+      "concepts": [
+        "진입시각 영상대조"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10129",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감독보고시각 경계는 사람의 보고가 실제 경계 통과와 다른 사건임을 밝힌다.",
+      "concepts": [
+        "감독보고시각 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10130",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제구역 출입감사는 원시 태그와 채택 진입시각, 수정 이유를 추적한다.",
+      "concepts": [
+        "방제구역 출입감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10131",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림병반 최초관찰은 조사자가 나무의 변색이나 괴사를 실제 확인한 순간이다. 변색을 실제 본 순간과 사진·대장에 남긴 순간을 나눠 병해 진행 연표의 시작을 보존한다.",
+      "concepts": [
+        "산림병반 최초관찰"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10132",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림병반 사진원시시각은 병반이 담긴 원본 이미지의 카메라 장치시각이다. 카메라 시계의 시간대와 수동 변경 이력을 확인해 같은 조사일 기준으로 보정한다.",
+      "concepts": [
+        "산림병반 사진원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10133",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위치앱 등록시각은 관찰 지점과 증상을 현장 앱에 저장한 때다. 사진 촬영 뒤 통신 가능 지점에서 저장될 수 있어 현장 관찰의 직접 시각으로 쓰지 않는다.",
+      "concepts": [
+        "위치앱 등록시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10134",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "병반보고 제출시각은 조사표를 검토해 중앙 시스템으로 보낸 후속 시각이다. 검토와 문서 작성이 끝난 후속 사건이므로 최초 발견보다 늦은 것이 정상이다.",
+      "concepts": [
+        "병반보고 제출시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10135",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사진·앱·보고서의 시간이 어긋나면 병반시각 충돌묶음으로 비교한다. 사진 순번·이동궤적·메모 생성시간을 함께 보면 잘못 설정된 시계를 가려낼 수 있다.",
+      "concepts": [
+        "병반시각 충돌묶음"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10136",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "병반관찰 신뢰순위는 원본사진과 위치궤적을 앱 등록·보고 제출보다 앞세운다. 검증된 원본 사진과 현장 위치를 사후 대장과 보고 제출시각보다 우선한다.",
+      "concepts": [
+        "병반관찰 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10137",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장카메라 시계교정은 당일 기준시계 촬영본과의 편차로 사진시각을 보정한다. 조사 전 기준시계 사진과 조사 후 편차를 이용해 촬영시각의 오차 범위를 계산한다.",
+      "concepts": [
+        "현장카메라 시계교정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10138",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "최초관찰 시각추정은 사진 순번과 조사 이동경로를 함께 사용한다.",
+      "concepts": [
+        "최초관찰 시각추정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10139",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "병반제출시각 경계는 보고서 제출을 현장 발견과 동일시하지 않는다.",
+      "concepts": [
+        "병반제출시각 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10140",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림병반 시간감사는 원본사진·앱·보고서와 최종 채택 근거를 남긴다.",
+      "concepts": [
+        "산림병반 시간감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10141",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림위성 촬영노출은 궤도 센서가 피해 산림의 복사신호를 실제 받은 순간이다. 영상 파일 생성보다 앞선 광학 사건이며 궤도 위치와 센서 주사번호로 실제 노출을 찾는다.",
+      "concepts": [
+        "산림위성 촬영노출"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10142",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위성탑재체 원시시각은 영상 줄마다 기록된 탑재 컴퓨터 기준시각이다. 표준시 동기 상태와 윤초 처리 여부를 확인해 다른 지상 기록과 같은 축에 놓는다.",
+      "concepts": [
+        "위성탑재체 원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10143",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지상국 영상수신시각은 촬영 자료가 하향 링크로 완전히 도착한 때다. 궤도 통과 뒤 내려온 파일의 도착시각이어서 산림 상태가 포착된 때보다 늦다.",
+      "concepts": [
+        "지상국 영상수신시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10144",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림영상 게시시각은 보정 산출물이 분석 포털에 공개된 후속 시각이다. 방사보정과 모자이크가 끝난 이용 가능 시각이며 원시 촬영순서를 대체하지 않는다.",
+      "concepts": [
+        "산림영상 게시시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10145",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "궤도로그와 파일 메타정보가 다르면 위성시각 충돌사례로 대조한다. 주사선 번호와 궤도 예측이 이어지는데 메타시각만 다르면 기록 변환 오류를 먼저 점검한다.",
+      "concepts": [
+        "위성시각 충돌사례"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10146",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위성촬영 신뢰순위는 궤도 동기화된 탑재체 원본을 수신·게시보다 우선한다. 검증된 탑재체 이벤트를 지상 수신과 제품 게시보다 높게 두되 원본 결함 여부도 확인한다.",
+      "concepts": [
+        "위성촬영 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10147",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "궤도시각 보정근거는 위성 시계 오차와 영상 줄 번호의 대응 관계다. 기준국 동기로그와 프레임 위치를 사용해 노출시각의 오차 범위를 정량화한다.",
+      "concepts": [
+        "궤도시각 보정근거"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10148",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위성노출 시각복원은 궤도 위치와 스캔 진행률로 각 산림 구역을 계산한다.",
+      "concepts": [
+        "위성노출 시각복원"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10149",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위성게시시각 경계는 분석 가능 시각이 실제 지표 촬영보다 늦음을 보존한다.",
+      "concepts": [
+        "위성게시시각 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10150",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산림위성 시간감사는 원시노출·지상수신·보정·게시의 모든 시간을 남긴다.",
+      "concepts": [
+        "산림위성 시간감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10151",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염목 표식부착시각은 조사자가 대상 줄기에 통제 표지를 실제 고정한 때다. 태그 활성화와 줄기 사진을 함께 확인해 단순 대장 등록보다 실제 현장 부착을 우선한다.",
+      "concepts": [
+        "감염목 표식부착시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10152",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표식태그 원시시각은 전자태그가 활성화되며 자체 기록한 장치시각이다. 휴대단말과의 동기 편차 및 절전 복귀를 점검한 뒤 태그가 켜진 시각을 보정한다.",
+      "concepts": [
+        "표식태그 원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10153",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표식지도 동기시각은 태그 위치가 산림 관리서버에 반영된 때다. 통신 복구 뒤 늦게 반영될 수 있어 부착 사건보다 뒤따르는 정보 갱신으로 분류한다.",
+      "concepts": [
+        "표식지도 동기시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10154",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염목 대장입력시각은 작업자가 표식 정보를 사무실에서 등록한 후속 시각이다. 사무실에서 옮겨 적은 시각은 관리 책임의 등록이며 현장 작업 선후를 직접 증명하지 않는다.",
+      "concepts": [
+        "감염목 대장입력시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10155",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "태그·사진·지도·대장 시간이 다르면 표식시각 충돌기록으로 보존한다. 태그번호가 사진과 일치하는지 먼저 확인해 서로 다른 나무의 기록을 잘못 합치지 않는다.",
+      "concepts": [
+        "표식시각 충돌기록"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10156",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염목표식 신뢰순위는 현장사진·태그원본·지도동기·대장입력 순이다. 현장 사진과 태그 원시기록을 지도 동기와 후입력 대장보다 우선해 판정한다.",
+      "concepts": [
+        "감염목표식 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10157",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표식태그 시계교정은 활성화 전 휴대단말과 비교한 편차를 적용한다. 현장 출발 전 단말 기준과 작업 후 편차를 적용하고 원본 활성화시각도 함께 보존한다.",
+      "concepts": [
+        "표식태그 시계교정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10158",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표식부착 증거대조는 사진 속 태그번호와 조사 이동궤적을 함께 확인한다.",
+      "concepts": [
+        "표식부착 증거대조"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10159",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대장입력시각 경계는 행정 등록이 현장 표식 사건을 대신하지 않게 한다.",
+      "concepts": [
+        "대장입력시각 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10160",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염목표식 시간감사는 원시시각과 보정·동기·입력의 변화를 추적한다.",
+      "concepts": [
+        "감염목표식 시간감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10161",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염목 벌채개시시각은 절단 장비가 대상 줄기에 처음 닿은 순간이다. 작업 일지보다 톱날 접촉과 장비 부하의 첫 상승을 실제 벌채 시작의 직접 증거로 쓴다.",
+      "concepts": [
+        "감염목 벌채개시시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10162",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "벌채장비 접촉로그는 톱 부하 상승과 함께 기록된 장치 원시시각이다. 장비 시계의 재시동과 교대별 동기화를 확인해 부하 파형을 표준 시간축에 맞춘다.",
+      "concepts": [
+        "벌채장비 접촉로그"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10163",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "벌채차량 수신시각은 접촉 이벤트가 차량 제어기에 도착한 때다. 차내 통신 지연이 포함된 후속 시각이므로 줄기 접촉보다 앞선 사건으로 둘 수 없다.",
+      "concepts": [
+        "벌채차량 수신시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10164",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "벌채작업 보고시각은 팀장이 작업 일지에 개시를 적은 후속 시각이다. 팀장이 나중에 정리한 값은 행정 기록이며 장비가 나무에 닿은 순간과 분리한다.",
+      "concepts": [
+        "벌채작업 보고시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10165",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장비 부하·영상·차량·일지 시각이 다르면 벌채시각 충돌사례로 묶는다. 영상 프레임과 부하곡선의 공통 변화를 찾아 어느 장치 로그가 어긋났는지 판별한다.",
+      "concepts": [
+        "벌채시각 충돌사례"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10166",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염목벌채 신뢰순위는 부하원본·현장영상·차량수신·일지 순으로 둔다. 장비 원본이 정상일 때 접촉로그를 우선하고 고장 징후가 있으면 영상 증거를 보강한다.",
+      "concepts": [
+        "감염목벌채 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10167",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "벌채장비 시계보정은 교대 시작 때 차량 기준시계와 맞춘 오차를 적용한다. 차량 기준시계와의 시작·종료 편차를 적용하되 보정 전 로그도 감사 가능하게 남긴다.",
+      "concepts": [
+        "벌채장비 시계보정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10168",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "벌채개시 시각복원은 부하곡선 첫 상승과 영상 프레임을 결합해 정한다.",
+      "concepts": [
+        "벌채개시 시각복원"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10169",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "벌채보고시각 경계는 작업 종료 뒤 쓴 일지를 실제 접촉시각과 분리한다.",
+      "concepts": [
+        "벌채보고시각 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10170",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염목벌채 연표감사는 모든 원본과 최종 개시시각 선택 근거를 보존한다.",
+      "concepts": [
+        "감염목벌채 연표감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10171",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "페로몬 교체완료시각은 새 유인제가 트랩에 고정되어 노출되기 시작한 때다. 유인제 포장이 열린 때보다 트랩에 고정되어 공기에 노출된 순간을 실제 완료로 삼는다.",
+      "concepts": [
+        "페로몬 교체완료시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10172",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교체단말 원시시각은 작업자가 완료 버튼을 누를 때 저장된 현장 시각이다. 휴대단말의 시간대와 동기화 상태를 확인한 뒤 완료 버튼 기록을 다른 증거와 비교한다.",
+      "concepts": [
+        "교체단말 원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10173",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "트랩서버 반영시각은 교체 이벤트가 통신망을 지나 중앙에 도착한 때다. 통신 음영에서 저장됐다가 늦게 올라올 수 있어 현장 교체보다 뒤의 갱신 사건으로 본다.",
+      "concepts": [
+        "트랩서버 반영시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10174",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교체일지 확인시각은 감독자가 사진과 작업내역을 나중에 승인한 시각이다. 감독 승인은 사진과 위치를 검토한 때이며 유인제가 작동하기 시작한 시각을 바꾸지 않는다.",
+      "concepts": [
+        "교체일지 확인시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10175",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단말·사진·서버·승인 시간이 다르면 페로몬시각 충돌표로 관리한다. 포장 사진·태그 스캔·위치 체류가 같은 작업을 가리키는지 확인한 뒤 값을 대조한다.",
+      "concepts": [
+        "페로몬시각 충돌표"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10176",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "페로몬교체 신뢰순위는 사진·단말원본·서버수신·감독승인 순으로 둔다. 검증된 사진과 단말 원본을 서버 수신 및 감독 승인보다 앞세워 실제 선후를 정한다.",
+      "concepts": [
+        "페로몬교체 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10177",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교체단말 시계교정은 현장 출발 전 서버와 동기화한 편차를 반영한다. 출발 전 서버 비교값과 복귀 후 편차를 이용해 현장 기록의 오차 범위를 계산한다.",
+      "concepts": [
+        "교체단말 시계교정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10178",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교체완료 시각대조는 포장 개봉사진과 트랩 위치 체류시간을 활용한다.",
+      "concepts": [
+        "교체완료 시각대조"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10179",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감독승인시각 경계는 행정 확인이 유인제 노출 시작보다 늦음을 밝힌다.",
+      "concepts": [
+        "감독승인시각 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10180",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "페로몬교체 시간감사는 원본·보정·수신·승인 순서를 변경 없이 남긴다.",
+      "concepts": [
+        "페로몬교체 시간감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10181",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주민해충 목격시각은 신고자가 산림 인접지에서 해충을 실제 본 때다. 회고 진술만으로 한 점을 만들지 말고 사진·통화·이동기록 사이 가능한 관찰 구간도 보존한다.",
+      "concepts": [
+        "주민해충 목격시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10182",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주민사진 원시시각은 목격 장면을 담은 원본 파일의 촬영시각이다. 휴대전화 시계가 자동 동기화됐는지 확인하고 편집본 대신 원본 메타데이터를 사용한다.",
+      "concepts": [
+        "주민사진 원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10183",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "신고센터 접수시각은 전화나 앱 신고가 기관 시스템에 들어온 때다. 기관이 정보를 받은 때는 실제 목격보다 뒤이므로 해충 활동의 발생순서를 대신하지 않는다.",
+      "concepts": [
+        "신고센터 접수시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10184",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장확인 방문시각은 조사팀이 신고 위치에 도착해 증거를 확인한 때다. 조사팀 도착은 후속 검증 사건이며 주민이 본 개체가 이미 이동했을 가능성을 함께 기록한다.",
+      "concepts": [
+        "현장확인 방문시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10185",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "진술·사진·접수·방문 시간이 다르면 주민신고 시각충돌로 표시한다. 사진과 진술이 다르면 주변 연속 사진과 통신기록을 이용해 어느 값이 더 일관적인지 본다.",
+      "concepts": [
+        "주민신고 시각충돌"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10186",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해충목격 신뢰순위는 검증된 원본사진을 회고 진술과 접수시각보다 우선한다. 원본 사진의 진위와 시계 상태를 먼저 검증한 뒤 진술·접수·방문 기록과 순위를 비교한다.",
+      "concepts": [
+        "해충목격 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10187",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주민기기 시계검증은 통신기록과 인접 사진의 메타정보로 편차를 확인한다. 같은 날 서버에 전송된 다른 사진과 통화 시작시각을 대조해 휴대기기 편차를 추정한다.",
+      "concepts": [
+        "주민기기 시계검증"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10188",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "목격시각 범위추정은 사진이 없으면 통화 전후 행동 증거로 구간을 좁힌다.",
+      "concepts": [
+        "목격시각 범위추정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10189",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "신고접수시각 경계는 기관이 안 시각을 실제 목격시각과 같게 두지 않는다.",
+      "concepts": [
+        "신고접수시각 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10190",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주민신고 시간감사는 진술의 불확실성과 각 객관 증거의 근거를 함께 남긴다.",
+      "concepts": [
+        "주민신고 시간감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10191",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제후 재관찰시각은 조사자가 처리 구역의 해충 활동을 다시 확인한 순간이다. 처리 효과 승인보다 앞선 현장 사건이며 조사자가 해당 구역을 실제 확인한 순간을 쓴다.",
+      "concepts": [
+        "방제후 재관찰시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10192",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재관찰카메라 원시시각은 현장 사진과 함께 저장된 장치시각이다. 기기 동기화와 파일 편집 여부를 확인해 보정한 원본 촬영값만 순서 비교에 사용한다.",
+      "concepts": [
+        "재관찰카메라 원시시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10193",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재조사앱 저장시각은 관찰 결과가 휴대단말 기록에 반영된 때다. 통신 지연이나 오프라인 저장 때문에 늦을 수 있어 현장 관찰과 별도 갱신 사건으로 둔다.",
+      "concepts": [
+        "재조사앱 저장시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10194",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제효과 승인시각은 전문가가 재관찰 자료를 검토해 방제 결과를 사용할 수 있다고 확정한 때다. 해충 상태를 현장에서 관찰한 시각과는 다르다.",
+      "concepts": [
+        "방제효과 승인시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10195",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사진·앱·승인 시간이 어긋나면 재관찰시각 충돌묶음으로 원본을 비교한다. 사진 순번·구역 이동·앱 로그가 같은 조사 회차인지 확인한 뒤 상충값을 평가한다.",
+      "concepts": [
+        "재관찰시각 충돌묶음"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10196",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제후관찰 신뢰순위는 보정 사진과 위치궤적을 앱·승인시각보다 앞세운다. 검증된 사진과 위치궤적을 앱 저장 및 사람 승인보다 우선해 실제 관찰순서를 정한다.",
+      "concepts": [
+        "방제후관찰 신뢰순위"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10197",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재관찰기기 시계교정은 조사 시작 전 기준시계와의 차이를 적용한다. 조사 전후 기준시계 차이를 반영하고 보정값의 불확실 범위도 함께 기록한다.",
+      "concepts": [
+        "재관찰기기 시계교정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10198",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재관찰 시각복원은 사진 순번과 구역 이동기록을 연결해 실제 선후를 정한다.",
+      "concepts": [
+        "재관찰 시각복원"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10199",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "효과승인시각 경계는 검토 완료가 현장 재관찰보다 뒤임을 분명히 한다.",
+      "concepts": [
+        "효과승인시각 경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10200",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제효과 시간감사는 원시 관찰과 보정·저장·승인의 이력을 모두 보존한다.",
+      "concepts": [
+        "방제효과 시간감사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    }
+  ]
+}

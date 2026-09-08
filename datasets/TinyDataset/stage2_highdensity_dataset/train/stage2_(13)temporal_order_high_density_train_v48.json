@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v48",
+  "version": "48",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-07051 ~ S2-TOH-07200",
+  "concept_family": "S2-A03-T048: 항만 컨테이너 하역·혼잡 관리 — 충돌하는 타임스탬프의 신뢰순위 판정",
+  "design_note": "항만 컨테이너 하역·혼잡 관리 영역의 충돌하는 타임스탬프의 신뢰순위 판정 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-07051",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "도착예정표와 다르면 항만경계 통과를 기록한 AIS 원시시각을 우선하는 기준이 선박도착 AIS원본 우선이다. 선박 식별과 항만 지오펜스 진입이 연속 표본에서 확인된 때를 예정·신고보다 앞세운다.",
+      "concepts": [
+        "선박도착 AIS원본 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07052",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대리점이 사후 등록한 시각은 물리적 입항보다 낮게 두는 원칙이 도착신고 입력시각 하위다. 원 AIS·레이더 접점을 보존한 채 입력과 수정 이력을 메타데이터로만 사용한다.",
+      "concepts": [
+        "도착신고 입력시각 하위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07053",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정박보고와 충돌하면 속도·위치가 함께 안정된 로그를 높은 근거로 보는 규칙이 정박발생 위치로그 순위다. 속도 감소와 위치 안정이 함께 지속된 구간을 써서 순간 저속 통과를 정박으로 세지 않는다.",
+      "concepts": [
+        "정박발생 위치로그 순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07054",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "AIS 누락 때 레이더항적과 관제녹취가 일치한 시각을 앞세우는 기준이 항계통과 레이더증거 우선이다. 선박 식별과 경계 좌표가 일치하는 연속 항적을 확인해 다른 목표의 반사를 배제한다.",
+      "concepts": [
+        "항계통과 레이더증거 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07055",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제허가와 선박의 실제 이동을 별도 사건으로 두는 원칙이 입항허가 발령시각 구분이다. 허가 효력은 운영 결정이고 실제 경계 통과는 선박 행동이므로 두 사건의 간격을 보존한다.",
+      "concepts": [
+        "입항허가 발령시각 구분"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07056",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선박기록계 시각을 항만기준 교신과 맞춰 편차를 고치는 절차가 선박시계 교정기준이다. 교정 전후 오프셋을 구간별로 남겨 시계 조정이 도착·정박 순서를 역전시키지 않게 한다.",
+      "concepts": [
+        "선박시계 교정기준"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07057",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "ETA 갱신시각 비우선은 예상 도착값을 바꾼 시각을 실제 입항 증거보다 낮게 평가하는 기준이다. AIS 경계 통과가 없으면 반복된 예측 수정만으로 도착 순서를 정하지 않는다.",
+      "concepts": [
+        "ETA 갱신시각 비우선"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07058",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예정표보다 승선사다리 센서와 도선사 태그가 맞는 때를 우선하는 기준이 도선승선 실증시각이다. 사다리 접점과 태그가 같은 도선사를 가리킬 때 물리 승선으로 확정하고 일정표를 후순위로 둔다.",
+      "concepts": [
+        "도선승선 실증시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07059",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "레이더·AIS 뒤에 VHF 녹취를 보조증거로 두는 원칙이 입항녹취 보조순위다. 호출부호·위치가 일치하는 발화만 사용하고 음성 수신 지연을 장치 위치자료와 함께 고려한다.",
+      "concepts": [
+        "입항녹취 보조순위"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07060",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "동기된 위치원본·레이더·물리접점·교신·후입력 순으로 정한 것이 선박도착 증거계층이다. 각 자료의 교정상태·후수정 가능성·사건과의 거리를 기록해 충돌 판정 근거를 명시한다.",
+      "concepts": [
+        "선박도착 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07061",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "초안과 현장표가 다르면 권한서명이 남은 배정판을 우선하는 기준이 선석배정 승인로그 우선이다. 권한 서명과 버전이 고정된 판을 기준으로 초안 저장이나 화면 복사본을 후순위로 둔다.",
+      "concepts": [
+        "선석배정 승인로그 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07062",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접안보고와 다르면 방충재 센서와 계류줄 장력이 맞는 때를 우선하는 기준이 안벽접촉 센서시각 우선이다. 방충재 하중과 선체 속도 감소, 계류 장력이 이어진 때를 접안 물리경계로 사용한다.",
+      "concepts": [
+        "안벽접촉 센서시각 우선"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07063",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수기기록보다 마지막 계류점 작업스캔을 높은 근거로 보는 규칙이 계류완료 작업스캔 순위다. 모든 계류점의 마지막 유효 스캔과 장력 안정이 이어진 때를 완료 근거로 사용한다.",
+      "concepts": [
+        "계류완료 작업스캔 순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07064",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종이배치표가 출력된 때는 효력이나 접안시각이 아니므로 낮게 두는 원칙이 선석표 인쇄시각 하위다. 권한서명·배정 효력과 연결되지 않은 출력물은 예정 정보를 보여 줄 뿐 사건 시각은 아니다.",
+      "concepts": [
+        "선석표 인쇄시각 하위"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07065",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "물리적 정지·계류완료·관제선언을 다른 사건으로 두는 원칙이 접안완료 선언시각 구분이다. 선체 정지, 계류 고정, 관제 선언은 서로 다른 상태 전이이므로 하나의 시각으로 합치지 않는다.",
+      "concepts": [
+        "접안완료 선언시각 구분"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07066",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중앙수정과 현장계획이 다르면 터미널이 수신확인한 유효판을 우선하는 기준이 선석변경 수신판 우선이다.",
+      "concepts": [
+        "선석변경 수신판 우선"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07067",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업개시 범위를 확인할 때 배지기록을 센서 다음의 근거로 쓰는 기준이 계류팀 출입로그 보조다. 배지 진입은 작업 가능범위를 줄이지만 계류줄을 실제 취급한 접점보다 직접성은 낮다.",
+      "concepts": [
+        "계류팀 출입로그 보조"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07068",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "파일복사 시각보다 원본영상 프레임 시각을 앞세우는 규칙이 접안영상 메타시각 순위다.",
+      "concepts": [
+        "접안영상 메타시각 순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07069",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제·TOS·센서의 공통 계류사건으로 편차를 맞추는 절차가 선석서버 시계보정이다. 동일 계류점 사건의 원시각 차이를 이용해 시스템별 오프셋을 구하고 원본도 함께 남긴다.",
+      "concepts": [
+        "선석서버 시계보정"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07070",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "안벽센서·계류스캔·승인판·관제녹취·사후표 순으로 정한 것이 선석사용 증거계층이다.",
+      "concepts": [
+        "선석사용 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07071",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "도선일지와 다르면 VHF 원본녹취를 실제 지시시각으로 보는 기준이 도선지시 녹취원본 우선이다. 권한 관제사의 호출부호와 지시 내용이 명확한 원음 프레임을 수기 일지보다 우선한다.",
+      "concepts": [
+        "도선지시 녹취원본 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07072",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업보고보다 줄장력 발생과 예선위치가 일치한 때를 높은 근거로 보는 규칙이 예선연결 장력센서 순위다.",
+      "concepts": [
+        "예선연결 장력센서 순위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07073",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배차표 등록은 실제 출동이나 연결보다 낮게 두는 원칙이 예선배차 입력시각 하위다. 배차는 취소되거나 늦게 실행될 수 있어 GPS 출발·예선줄 장력 없이는 행동 증거가 아니다.",
+      "concepts": [
+        "예선배차 입력시각 하위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07074",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승선보고와 다르면 통제문·승선점 태그가 맞는 시각을 우선하는 기준이 도선사 태그통과 우선이다.",
+      "concepts": [
+        "도선사 태그통과 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07075",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조종일지보다 엔진출력 원시로그를 실제 견인시각의 높은 증거로 보는 규칙이 예선출력 장치로그 순위다. 엔진 회전과 추진력·장력이 함께 오른 구간을 실제 지원으로 두고 단순 시동을 제외한다.",
+      "concepts": [
+        "예선출력 장치로그 순위"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07076",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선박정지와 도선사의 완료통보를 별도 사건으로 두는 원칙이 도선완료 선언시각 구분이다.",
+      "concepts": [
+        "도선완료 선언시각 구분"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07077",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예선단말 시각을 항만 AIS 공통위치로 맞추는 절차가 예선GPS 시계교정이다. AIS와 같은 항만 지점을 통과한 공통 사건으로 위치단말의 누적 시계오차를 보정한다.",
+      "concepts": [
+        "예선GPS 시계교정"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07078",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전자항적이 없는 구간에서만 수기일지를 보조로 두는 기준이 도선수기일지 보조순위다.",
+      "concepts": [
+        "도선수기일지 보조순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07079",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사후에 배차사유를 고친 때를 실제 출동시각으로 쓰지 않는 원칙이 예선요청 수정시각 비우선이다. 요청 사유의 사후 편집은 원출동·연결 시각을 바꾸지 않고 수정 이력으로만 보존한다.",
+      "concepts": [
+        "예선요청 수정시각 비우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07080",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위치·장력·출력원본·녹취·수기 순으로 정한 것이 도선예선 증거계층이다.",
+      "concepts": [
+        "도선예선 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07081",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업표와 다르면 PLC가 주접촉기와 구동을 기록한 시각을 우선하는 기준이 안벽크레인 기동원본 우선이다. 주접촉기·모터전류·구동 위치가 연속으로 나타난 때를 작업표의 예정시각보다 앞세운다.",
+      "concepts": [
+        "안벽크레인 기동원본 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07082",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 계획이 충돌하면 현장제어에 실제 배포된 서명판을 높은 근거로 보는 규칙이 크레인배정 승인판 순위다.",
+      "concepts": [
+        "크레인배정 승인판 순위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07083",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기사기록보다 네 코너 잠금센서가 일치한 때를 우선하는 기준이 스프레더 잠금센서 우선이다. 네 코너 접점과 중량 증가가 일치해야 잠금 완료로 보고 기사 입력은 보조로 둔다.",
+      "concepts": [
+        "스프레더 잠금센서 우선"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07084",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "크레인작업 입력시각 하위는 TOS의 작업 완료 입력을 실제 인양 센서보다 낮은 순위로 두는 원칙이다. 운영자 입력은 현장 동작보다 늦을 수 있다.",
+      "concepts": [
+        "크레인작업 입력시각 하위"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07085",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상과 보고가 다르면 호이스트 전류가 상승한 원시시각을 앞세우는 규칙이 인양개시 모터로그 순위다. 호이스트 전류와 높이 변화가 함께 시작된 표본으로 영상·보고의 처리 지연을 보완한다.",
+      "concepts": [
+        "인양개시 모터로그 순위"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07086",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "구동정지·안전잠금·관제종료를 각각 나누는 원칙이 크레인정지 선언시각 구분이다.",
+      "concepts": [
+        "크레인정지 선언시각 구분"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07087",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "PLC와 TOS를 동일 컨테이너 스캔으로 맞추는 절차가 크레인PLC 시계보정이다. 컨테이너 식별 스캔과 잠금 접점을 TOS 기록에 맞춰 장치 오프셋을 구간별로 적용한다.",
+      "concepts": [
+        "크레인PLC 시계보정"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07088",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서와 영상 뒤에 작업자 무전을 보조근거로 두는 기준이 기사무전 보조순위다.",
+      "concepts": [
+        "기사무전 보조순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07089",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신복구 때 적재된 시각을 실제 인양으로 쓰지 않는 원칙이 크레인로그 백필시각 비우선이다. 늦게 적재된 행은 PLC 원시각과 순번으로 다시 배열해 복구 순간 인양으로 오인하지 않는다.",
+      "concepts": [
+        "크레인로그 백필시각 비우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07090",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잠금·모터·위치원본·영상·TOS입력 순으로 정한 것이 안벽하역 증거계층이다.",
+      "concepts": [
+        "안벽하역 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07091",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "하역목록과 다르면 스프레더 잠금·중량센서가 맞은 때를 우선하는 기준이 컨테이너 인양센서 우선이다. 잠금·중량·높이의 세 원시신호가 이어진 때를 물리 이동의 근거로 사용한다.",
+      "concepts": [
+        "컨테이너 인양센서 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07092",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "적하해제와 이동이 확인된 위치로그를 높은 근거로 보는 규칙이 선박이탈 위치로그 순위다.",
+      "concepts": [
+        "선박이탈 위치로그 순위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07093",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자가 묶음으로 완료처리한 시각은 실제 이동보다 낮게 두는 원칙이 컨테이너 완료입력 하위다. 묶음 완료는 여러 상자를 한 시각에 만들 수 있어 개별 센서 순서를 대체하지 않는다.",
+      "concepts": [
+        "컨테이너 완료입력 하위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07094",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상과 기록이 다르면 샤시 하중센서의 안정시각을 우선하는 기준이 샤시안착 압력증거 우선이다.",
+      "concepts": [
+        "샤시안착 압력증거 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07095",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잠금해제와 컨테이너 이탈을 별도 사건으로 두는 원칙이 트위스트록 해제시각 구분이다. 잠금 해제 접점과 상자 이탈은 연속하지만 별개인 사건이므로 안전 대기구간을 유지한다.",
+      "concepts": [
+        "트위스트록 해제시각 구분"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07096",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수기번호보다 시간동기된 OCR과 RFID가 일치한 자료를 앞세우는 규칙이 컨테이너ID OCR순위다.",
+      "concepts": [
+        "컨테이너ID OCR순위"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07097",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "파일저장보다 카메라 프레임 메타시각을 사용하는 기준이 하역영상 원본시각 우선이다. 카메라 시계 교정과 파일 해시를 확인해 내보내기·저장시각보다 원프레임을 우선한다.",
+      "concepts": [
+        "하역영상 원본시각 우선"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07098",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "스프레더 중량계와 크레인 PLC의 공통리프트로 편차를 고치는 절차가 중량계 시계교정이다.",
+      "concepts": [
+        "중량계 시계교정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07099",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자동식별이 충돌할 때 사진과 함께 남은 즉시수기를 보조로 쓰는 기준이 검수원 수기보조다. 즉시 작성·사진 연결·상자 식별이 모두 확인될 때만 자동식별 충돌의 보조증거로 쓴다.",
+      "concepts": [
+        "검수원 수기보조"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07100",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잠금·하중·위치·영상식별·완료입력 순으로 정한 것이 컨테이너이동 증거계층이다.",
+      "concepts": [
+        "컨테이너이동 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07101",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "야드트랙터 GPS우선은 배차표와 현장이 다를 때 위치와 속도의 원시 시각을 실제 이동 근거로 삼는 기준이다. 컨테이너 결합 뒤 연속 움직임이 시작된 표본을 출발 경계로 정한다.",
+      "concepts": [
+        "야드트랙터 GPS우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07102",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "무선보고보다 블록게이트 태그를 높은 증거로 보는 규칙이 야드블록 진입게이트 순위다.",
+      "concepts": [
+        "야드블록 진입게이트 순위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07103",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장치기사가 나중에 누른 완료시각은 실제 적치보다 낮게 두는 원칙이 장치완료 TOS입력 하위다. 기사의 버튼 입력은 적치 후 행정 사건일 수 있어 스프레더·위치센서보다 후순위다.",
+      "concepts": [
+        "장치완료 TOS입력 하위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07104",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "적치보고가 다르면 호이스트 하중이 해제된 때를 우선하는 기준이 RTG 하중센서 우선이다.",
+      "concepts": [
+        "RTG 하중센서 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07105",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수기베이보다 카메라와 위치센서가 일치한 값을 높은 근거로 보는 규칙이 적치위치 OCR증거 순위다. 상자번호·베이 표지·위치센서가 같은 프레임에서 맞는 경우를 수기 베이보다 높게 둔다.",
+      "concepts": [
+        "적치위치 OCR증거 순위"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07106",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장비정지·적치완료·TOS확정을 다른 사건으로 두는 원칙이 야드이동 완료선언 구분이다.",
+      "concepts": [
+        "야드이동 완료선언 구분"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07107",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "GPS 공통통과로 RTG·트랙터·TOS 시각을 맞추는 절차가 야드장비 시계보정이다. 공통 GPS 통과점을 이용해 장비별 오프셋을 계산하고 보정 전 원시각을 함께 저장한다.",
+      "concepts": [
+        "야드장비 시계보정"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07108",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자동배차 로그가 없을 때 녹취를 보조근거로 쓰는 기준이 무전배차 보조순위다.",
+      "concepts": [
+        "무전배차 보조순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07109",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오프라인 단말 업로드시각을 실제 이동으로 쓰지 않는 원칙이 야드자료 백필비우선이다. 오프라인 기록의 장치시각과 순번을 유지해 업로드가 새 이동 사건으로 보이지 않게 한다.",
+      "concepts": [
+        "야드자료 백필비우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07110",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "GPS·게이트·하중·OCR·TOS입력 순으로 정한 것이 야드이동 증거계층이다.",
+      "concepts": [
+        "야드이동 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07111",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예약표와 다르면 입구 카메라의 번호판 프레임 시각을 우선하는 기준이 게이트도착 번호판원본 우선이다. 번호판 프레임과 루프센서가 같은 차량을 확인한 때를 예약표의 예상보다 우선한다.",
+      "concepts": [
+        "게이트도착 번호판원본 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07112",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예약생성이나 수정은 실제 차량도착보다 낮게 두는 원칙이 트럭예약 입력시각 하위다.",
+      "concepts": [
+        "트럭예약 입력시각 하위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07113",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트통과 차단기센서 순위는 운전자 진술보다 OCR, 루프 센서, 차단기 접점이 연속해 일치한 시각을 우선하는 규칙이다. 진술은 세 장치 근거를 보완할 때만 쓴다.",
+      "concepts": [
+        "게이트통과 차단기센서 순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07114",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서류시각과 다르면 차량·상자·운전자 ID가 묶인 스캔을 우선하는 기준이 컨테이너 인수스캔 우선이다.",
+      "concepts": [
+        "컨테이너 인수스캔 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07115",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트검사 종료시각 구분은 검사 합격과 차량의 차단기 통과를 서로 다른 사건으로 기록하는 원칙이다. 두 시각 사이의 대기나 설비 지연을 지우지 않는다.",
+      "concepts": [
+        "게이트검사 종료시각 구분"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07116",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "ERP입력보다 계근장치가 안정중량을 잡은 때를 앞세우는 규칙이 계근대 원시시각 순위다.",
+      "concepts": [
+        "계근대 원시시각 순위"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07117",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "OCR·계근·TOS의 동일차량 사건으로 편차를 고치는 절차가 게이트서버 시계교정이다. 동일 차량의 OCR·계근·차단기 사건을 맞춰 시스템별 시계오차와 전송지연을 분리한다.",
+      "concepts": [
+        "게이트서버 시계교정"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07118",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자동장애 때 서명된 출입증을 보조근거로 쓰는 기준이 수기출입증 보조순위다.",
+      "concepts": [
+        "수기출입증 보조순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07119",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "번호나 목적을 고친 때를 새 통과시각으로 보지 않는 원칙이 게이트기록 수정시각 비우선이다. 번호·목적 정정은 원프레임과 통과 접점을 보존한 채 메타데이터 수정으로만 남긴다.",
+      "concepts": [
+        "게이트기록 수정시각 비우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07120",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영상루프·계근·인수스캔·전자서류·후입력 순으로 정한 것이 트럭게이트 증거계층이다.",
+      "concepts": [
+        "트럭게이트 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07121",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "열차표와 다르면 궤도회로 점유시각을 실제 도착근거로 보는 기준이 항만철도 도착궤도회로 우선이다. 열차 식별과 첫 궤도 점유가 일치한 접점을 예정표나 전화보고보다 앞세운다.",
+      "concepts": [
+        "항만철도 도착궤도회로 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07122",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계획된 도착·출발은 물리운행보다 낮게 두는 원칙이 철도운행표 예정시각 하위다.",
+      "concepts": [
+        "철도운행표 예정시각 하위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07123",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "화차정차 RFID순위는 수기 검수표보다 화차 태그와 위치 센서가 같은 정차를 가리키는 시각을 우선하는 증거 규칙이다. 태그 식별만 맞고 센서가 흔들리면 확정 근거로 쓰지 않는다.",
+      "concepts": [
+        "화차정차 RFID순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07124",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "적재완료 입력과 다르면 크레인 하중해제 시각을 우선하는 기준이 컨테이너 적재하중 우선이다.",
+      "concepts": [
+        "컨테이너 적재하중 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07125",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출발허가와 실제 궤도이탈을 별도 사건으로 두는 원칙이 열차출발 신호시각 구분이다. 운행 허가와 마지막 화차의 궤도 이탈 사이를 나눠 권한 사건과 이동 사건을 보존한다.",
+      "concepts": [
+        "열차출발 신호시각 구분"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07126",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서장애 구간에서만 관제녹취를 보조로 쓰는 기준이 기관사 무전기록 보조다.",
+      "concepts": [
+        "기관사 무전기록 보조"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07127",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "궤도회로와 항만게이트 공통통과로 서버편차를 맞추는 절차가 철도시스템 시계보정이다. 공통 궤도·게이트 통과로 서버 오프셋을 구해 분 단위 작업표의 선후를 바로잡는다.",
+      "concepts": [
+        "철도시스템 시계보정"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07128",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "편성목록을 고친 시각은 실제 연결·분리보다 낮게 보는 원칙이 화차목록 수정시각 비우선이다.",
+      "concepts": [
+        "화차목록 수정시각 비우선"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07129",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 체크표 중 권한자가 인증한 합격시각을 우선하는 기준이 출발검사 전자서명 우선이다. 검사항목·권한자·버전이 고정된 서명을 우선하고 임시 체크표는 후수정 가능성 때문에 낮춘다.",
+      "concepts": [
+        "출발검사 전자서명 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07130",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "궤도·RFID·하중·권한서명·예정표 순으로 정한 것이 항만철도 증거계층이다.",
+      "concepts": [
+        "항만철도 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07131",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업일지와 다르면 저속위치와 안벽센서가 맞는 시각을 우선하는 기준이 바지선 접안 AIS우선이다. 저속 위치와 안벽 접점·계류장력이 이어진 때를 작업일지의 사후 기록보다 앞세운다.",
+      "concepts": [
+        "바지선 접안 AIS우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07132",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배정표 생성은 실제 접안보다 낮게 두는 원칙이 바지선배정 입력시각 하위다.",
+      "concepts": [
+        "바지선배정 입력시각 하위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07133",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접안완료 보고보다 장력센서 안정시각을 높은 근거로 보는 규칙이 계류줄 장력증거 순위다. 여러 줄의 장력이 허용대에 안정된 마지막 시각으로 단순 접촉과 접안 완료를 가른다.",
+      "concepts": [
+        "계류줄 장력증거 순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07134",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "화물기록과 다르면 크레인 잠금·하중 원본을 우선하는 기준이 바지선 하역센서 우선이다.",
+      "concepts": [
+        "바지선 하역센서 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07135",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "바지선 출항허가 구분은 관제 허가, 계류 해제, 선체 이동 시작을 각각 독립 사건으로 기록하는 원칙이다. 세 시각을 합치지 않아 준비 지연을 측정할 수 있다.",
+      "concepts": [
+        "바지선 출항허가 구분"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07136",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위치자료가 끊긴 경우 VHF 녹취를 보조로 쓰는 기준이 수로교신 녹취보조다.",
+      "concepts": [
+        "수로교신 녹취보조"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07137",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "AIS와 크레인 공통인양으로 시각편차를 맞추는 절차가 바지선단말 시계교정이다. AIS 위치와 크레인 상자 인양의 공통 사건을 사용해 단말·TOS 사이 오프셋을 보정한다.",
+      "concepts": [
+        "바지선단말 시계교정"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07138",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "명세를 정정한 때를 실제 적양하 시각으로 쓰지 않는 원칙이 화물명세 수정시각 비우선이다.",
+      "concepts": [
+        "화물명세 수정시각 비우선"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07139",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출항신고와 다르면 레이더·AIS가 함께 움직인 때를 앞세우는 규칙이 출항실증 레이더순위다. 레이더와 AIS의 위치·속도가 함께 변한 때를 신고보다 우선하되 센서 품질도 검토한다.",
+      "concepts": [
+        "출항실증 레이더순위"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07140",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위치·장력·하중·교신·사후서류 순으로 정한 것이 바지선운영 증거계층이다.",
+      "concepts": [
+        "바지선운영 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07141",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업표와 다르면 플러그 전압·접촉기 원시시각을 우선하는 기준이 냉동컨테이너 연결센서 우선이다. 플러그 접점과 전압·전류가 연속 성립한 때를 연결 완료로 두고 작업표를 후순위로 둔다.",
+      "concepts": [
+        "냉동컨테이너 연결센서 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07142",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "TOS 완료버튼은 실제 통전보다 낮게 두는 원칙이 리퍼작업 입력시각 하위다.",
+      "concepts": [
+        "리퍼작업 입력시각 하위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07143",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "리퍼온도 기록계 순위는 중앙 화면과 값이 다를 때 컨테이너 내부의 교정된 원시 기록을 우선하는 규칙이다. 중앙 표시는 통신 지연 가능성을 반영해 보조 근거로 둔다.",
+      "concepts": [
+        "리퍼온도 기록계 순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07144",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운전자 신고보다 분기차단기와 전압로그를 우선하는 기준이 전원상실 PDU로그 우선이다.",
+      "concepts": [
+        "전원상실 PDU로그 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07145",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도상승 표본과 경보표시를 다른 사건으로 두는 원칙이 냉동경보 생성시각 구분이다. 온도 임계 초과, 지속조건 판정, 경보 표시를 나눠 물리 변화와 시스템 판단을 구별한다.",
+      "concepts": [
+        "냉동경보 생성시각 구분"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07146",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수기보고보다 케이블ID와 전압이 묶인 스캔을 앞세우는 규칙이 비상발전 연결스캔 순위다.",
+      "concepts": [
+        "비상발전 연결스캔 순위"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07147",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "컨테이너 기록계와 PDU 공통정전으로 편차를 고치는 절차가 리퍼시계 보정기준이다. 공통 정전 접점으로 기록계·PDU 오프셋을 구하고 구간별 시계 변화까지 반영한다.",
+      "concepts": [
+        "리퍼시계 보정기준"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07148",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기기장애 때 교정온도계와 사진이 있는 수기를 보조로 쓰는 기준이 현장온도 수기보조다.",
+      "concepts": [
+        "현장온도 수기보조"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07149",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신복구 시 적재된 때를 실제 온도변화로 쓰지 않는 원칙이 리퍼자료 백필비우선이다. 늦은 적재는 원표본 시각과 순번으로 복원해 통신 회복이 온도 변화로 보이지 않게 한다.",
+      "concepts": [
+        "리퍼자료 백필비우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07150",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "내부기록계·PDU원본·연결스캔·현장측정·후입력 순으로 정한 것이 냉동화물 증거계층이다.",
+      "concepts": [
+        "냉동화물 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07151",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "신고서와 다르면 차량·컨테이너가 통제문을 지난 시각을 우선하는 기준이 위험물 반입게이트 우선이다.",
+      "concepts": [
+        "위험물 반입게이트 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07152",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서류생성은 실제 반입·적치보다 낮게 두는 원칙이 위험물신고 작성시각 하위다.",
+      "concepts": [
+        "위험물신고 작성시각 하위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07153",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위험물 적치RFID 순위는 수기 위치보다 상자 태그와 블록 게이트가 함께 일치한 시각에 더 큰 증거 가중치를 주는 규칙이다.",
+      "concepts": [
+        "위험물 적치RFID 순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07154",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "신고시각과 다르면 교정된 가스센서 원시표본을 우선하는 기준이 가스경보 센서원본 우선이다.",
+      "concepts": [
+        "가스경보 센서원본 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07155",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "물질누출과 감지·경보생성을 다른 사건으로 두는 원칙이 누출발생 경보시각 구분이다.",
+      "concepts": [
+        "누출발생 경보시각 구분"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07156",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전화전달보다 책임자 서명명령을 앞세우는 규칙이 격리명령 권한로그 순위다.",
+      "concepts": [
+        "격리명령 권한로그 순위"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07157",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "명령 뒤 차단기·펜스·출입센서가 실제 바뀐 때를 우선하는 기준이 격리실행 물리증거 우선이다.",
+      "concepts": [
+        "격리실행 물리증거 우선"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07158",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서·게이트·TOS 공통스캔으로 편차를 맞추는 절차가 위험물서버 시계보정이다.",
+      "concepts": [
+        "위험물서버 시계보정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07159",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자동감시가 없는 구간에서만 사진수기를 보조로 두는 기준이 수기순찰 보조순위다.",
+      "concepts": [
+        "수기순찰 보조순위"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07160",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서·물리통제·게이트태그·권한서명·서류 순으로 정한 것이 위험물사건 증거계층이다.",
+      "concepts": [
+        "위험물사건 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07161",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예약표와 다르면 검사구역에서 컨테이너가 찍힌 시각을 우선하는 기준이 세관검사 개시스캔 우선이다.",
+      "concepts": [
+        "세관검사 개시스캔 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07162",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예약입력은 실제 개봉·검색보다 낮게 두는 원칙이 검사예약 생성시각 하위다.",
+      "concepts": [
+        "검사예약 생성시각 하위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07163",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "봉인해제 센서순위는 수기 장부보다 전자 봉인의 해제 신호와 영상이 맞는 시각을 우선 근거로 삼는 규칙이다.",
+      "concepts": [
+        "봉인해제 센서순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07164",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보고서와 다르면 현장에서 시료가 발행·스캔된 때를 우선하는 기준이 검역시료 바코드 우선이다.",
+      "concepts": [
+        "검역시료 바코드 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07165",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장검색 종료와 세관승인을 별도 사건으로 두는 원칙이 검사완료 승인시각 구분이다.",
+      "concepts": [
+        "검사완료 승인시각 구분"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07166",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운전자 신고보다 포털센서와 차량OCR가 일치한 시각을 앞세우는 규칙이 방사선포털 원본순위다.",
+      "concepts": [
+        "방사선포털 원본순위"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07167",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트 공통통과로 세관·검역 단말편차를 고치는 절차가 검사단말 시계교정이다.",
+      "concepts": [
+        "검사단말 시계교정"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07168",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전자장애 때 서명·사진이 있는 수기를 보조로 두는 기준이 검사수기표 보조순위다.",
+      "concepts": [
+        "검사수기표 보조순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07169",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "품목·수량을 고친 때를 실제 검사시각으로 쓰지 않는 원칙이 통관정정 시각비우선이다.",
+      "concepts": [
+        "통관정정 시각비우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07170",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장스캔·봉인센서·기기원본·승인서명·후입력 순으로 정한 것이 통관검역 증거계층이다.",
+      "concepts": [
+        "통관검역 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07171",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "초안과 작업지시가 다르면 권한서명과 장비수신이 남은 명령을 우선하는 기준이 TOS 명령서명 우선이다.",
+      "concepts": [
+        "TOS 명령서명 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07172",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "데이터베이스 저장은 현장작업 뒤일 수 있어 장치원본보다 낮게 두는 원칙이 TOS 저장시각 비우선이다.",
+      "concepts": [
+        "TOS 저장시각 비우선"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07173",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지시발령과 실제 적용을 가를 때 장비 ACK를 높은 근거로 보는 규칙이 장비수신확인 로그순위다.",
+      "concepts": [
+        "장비수신확인 로그순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07174",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "백필된 서버시각보다 장치가 붙인 작업원본 시각을 우선하는 기준이 TOS 이벤트 원본시각 우선이다.",
+      "concepts": [
+        "TOS 이벤트 원본시각 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07175",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "물리적 완료·기사입력·중앙확정을 별도 사건으로 두는 원칙이 작업완료와 확정시각 구분이다.",
+      "concepts": [
+        "작업완료와 확정시각 구분"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07176",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 배차판 중 현장수신과 승인범위가 일치한 판을 앞세우는 규칙이 TOS 판본효력 순위다.",
+      "concepts": [
+        "TOS 판본효력 순위"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07177",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "GPS·게이트 공통이벤트로 클러스터 시각을 맞추는 절차가 TOS 서버시계 보정이다.",
+      "concepts": [
+        "TOS 서버시계 보정"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07178",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기계원본이 없는 경우에만 즉시메모를 보조로 쓰는 기준이 운영자 메모 보조순위다.",
+      "concepts": [
+        "운영자 메모 보조순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07179",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누가 언제 원본을 바꿨는지는 변경불가 감사로그를 우선하는 기준이 TOS 수정감사 우선이다.",
+      "concepts": [
+        "TOS 수정감사 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07180",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장치원본·수신확인·서명판·감사로그·후입력 순으로 정한 것이 TOS시각 증거계층이다.",
+      "concepts": [
+        "TOS시각 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07181",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기사신고와 다르면 보호계전·PLC 고장비트를 우선하는 기준이 하역장비 고장센서 우선이다.",
+      "concepts": [
+        "하역장비 고장센서 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07182",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업지시 생성은 기계고장보다 낮게 두는 원칙이 정비접수 입력시각 하위다.",
+      "concepts": [
+        "정비접수 입력시각 하위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07183",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수기잠금표보다 전원차단·키스위치 원본을 높은 근거로 보는 규칙이 장비격리 차단기순위다.",
+      "concepts": [
+        "장비격리 차단기순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07184",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재고차감과 다르면 현장에서 일련번호가 스캔된 때를 우선하는 기준이 부품교체 바코드 우선이다.",
+      "concepts": [
+        "부품교체 바코드 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07185",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조립완료·기능시험·운전승인을 별도 사건으로 두는 원칙이 수리완료와 시험시각 구분이다.",
+      "concepts": [
+        "수리완료와 시험시각 구분"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07186",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비사 기록보다 모터·제동·하중 원본을 앞세우는 규칙이 시험운전 장치로그 순위다.",
+      "concepts": [
+        "시험운전 장치로그 순위"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07187",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장비시험 공통동작으로 CMMS와 PLC 편차를 고치는 절차가 정비단말 시계교정이다.",
+      "concepts": [
+        "정비단말 시계교정"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07188",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전자로그가 끊긴 구간에서 서명인계서를 보조로 쓰는 기준이 교대정비 수기보조다.",
+      "concepts": [
+        "교대정비 수기보조"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07189",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고친 시각을 실제 수리행위로 쓰지 않는 원칙이 정비기록 수정시각 비우선이다.",
+      "concepts": [
+        "정비기록 수정시각 비우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07190",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보호원본·격리접점·부품스캔·기능시험·CMMS입력 순으로 정한 것이 장비정비 증거계층이다.",
+      "concepts": [
+        "장비정비 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07191",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 신고가 다르면 충돌·기울기·가스 등 물리센서의 최초 원본을 우선하는 기준이 항만사고 최초센서 우선이다.",
+      "concepts": [
+        "항만사고 최초센서 우선"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07192",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제시스템에 입력한 때는 실제 사고보다 낮게 두는 원칙이 사고접수 등록시각 하위다.",
+      "concepts": [
+        "사고접수 등록시각 하위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-07193",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상정지 장치로그 순위는 무전 보고보다 크레인과 차량의 원시 비상정지 로그에 더 높은 증거 가중치를 주는 규칙이다.",
+      "concepts": [
+        "비상정지 장치로그 순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07194",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대피명령과 다르면 출입게이트 통과와 집결스캔을 우선하는 기준이 대피실행 게이트증거 우선이다.",
+      "concepts": [
+        "대피실행 게이트증거 우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07195",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위험제거·인원구조·지휘종료를 다른 사건으로 두는 원칙이 구조완료 선언시각 구분이다.",
+      "concepts": [
+        "구조완료 선언시각 구분"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07196",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전화메모보다 교환기 원본녹취를 앞세우는 규칙이 기관통보 녹취원본 순위다.",
+      "concepts": [
+        "기관통보 녹취원본 순위"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-07197",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서·영상·교신의 공통사건으로 편차를 맞추는 절차가 사고시스템 시계보정이다.",
+      "concepts": [
+        "사고시스템 시계보정"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-07198",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "객관기록 뒤에 독립진술을 보조근거로 두는 기준이 목격자진술 보조순위다.",
+      "concepts": [
+        "목격자진술 보조순위"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-07199",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사후정정 때를 사고나 복구발생 시각으로 쓰지 않는 원칙이 사고보고 수정시각 비우선이다.",
+      "concepts": [
+        "사고보고 수정시각 비우선"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-07200",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "물리센서·영상·장치제어·녹취·진술·후입력 순으로 정한 것이 항만사고 증거계층이다.",
+      "concepts": [
+        "항만사고 증거계층"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    }
+  ]
+}

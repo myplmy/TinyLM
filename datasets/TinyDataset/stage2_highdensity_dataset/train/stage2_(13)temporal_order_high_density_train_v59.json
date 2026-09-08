@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v59",
+  "version": "59",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-08701 ~ S2-TOH-08850",
+  "concept_family": "S2-A03-T059: 데이터센터 냉각·전력 절체 — 사건 시각과 관측 기록 시각의 분리",
+  "design_note": "데이터센터 냉각·전력 절체 영역의 사건 시각과 관측 기록 시각의 분리 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-08701",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "외부계통 전압이 실제로 사라진 계통정전 실제시각은 관제화면이 경보를 띄운 시각보다 앞설 수 있다. 계전기 원시파형의 전압 붕괴점을 기준으로 삼고 화면 수신 지연은 별도 구간으로 남긴다.",
+      "concepts": [
+        "계통정전 실제시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08702",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보호계전기가 전압상실을 기록한 정전계전기 접점시각은 물리사건에 가까운 장치 관측이다.",
+      "concepts": [
+        "정전계전기 접점시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08703",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "BMS가 메시지를 받은 정전경보 서버수신시각은 통신과 처리 지연을 포함한다. 장치 송신시각과 비교하면 제어망 전달 및 서버 큐가 경보 연표에 더한 시간을 계산할 수 있다.",
+      "concepts": [
+        "정전경보 서버수신시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08704",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영자에게 알림을 보낸 정전문자 발송시각은 정전 발생과 별도의 통보사건이다.",
+      "concepts": [
+        "정전문자 발송시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08705",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "당직자가 화면을 확인한 정전상황 인지시각은 장치접점 뒤에 놓이는 사람의 관측이다. 화면 열람과 확인 버튼을 구별해 자동 알림 이후 사람 판단까지의 대응 공백을 측정한다.",
+      "concepts": [
+        "정전상황 인지시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08706",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정전사건 기록시각 구별은 전압상실·접점·서버수신·통보·인지의 다섯 시간을 분리한다.",
+      "concepts": [
+        "정전사건 기록시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08707",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신복구 뒤 저장된 전력로그 백필시각은 정전이 실제 일어난 시각을 바꾸지 않는다. 각 표본의 장치 타임스탬프를 보존해야 늦은 일괄 저장이 정전 순서를 뒤집지 않는다.",
+      "concepts": [
+        "전력로그 백필시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08708",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잘못 적은 시작시각을 고친 정전보고 정정시각은 새로운 전력사건이 아니다.",
+      "concepts": [
+        "정전보고 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08709",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정전관측 시간사슬은 계통·계전기·BMS·문자·운영자의 기록을 공통축에 연결한다. 원인 사건, 장치 감지, 전송, 서버 표시, 운영자 확인을 출처별 시계오차와 함께 배열한다.",
+      "concepts": [
+        "정전관측 시간사슬"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08710",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계전기 원본이 없으면 마지막 정상표본과 첫 경보 사이를 정전발생 불확실창으로 둔다.",
+      "concepts": [
+        "정전발생 불확실창"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08711",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계통정전 뒤 UPS가 배터리에 부하를 넘긴 UPS방전 실제개시는 인버터 전류로 판정한다. 배터리 전류 방향이 연속해서 바뀐 첫 표본을 써서 시험 방전이나 순간 잡음을 제외한다.",
+      "concepts": [
+        "UPS방전 실제개시"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08712",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전력계가 방전전류를 읽은 UPS전류 표본시각은 전환의 최초 순간보다 늦을 수 있다.",
+      "concepts": [
+        "UPS전류 표본시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08713",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잔여시간을 산출한 UPS상태 계산시각은 원시 전압·전류 관측 뒤의 처리 사건이다. 계산 결과의 시점은 사용한 마지막 원시 표본 뒤이며 배터리 전환 자체를 나타내지 않는다.",
+      "concepts": [
+        "UPS상태 계산시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08714",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어기가 방전상태를 확정한 UPS경보 생성시각은 실제 부하전환 뒤에 온다.",
+      "concepts": [
+        "UPS경보 생성시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08715",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중앙서버에 행이 생긴 UPS경보 서버등록시각은 통신 지연까지 포함한다. 메시지 헤더의 장치시각과 DB 삽입시각을 함께 저장하면 네트워크와 기록 대기를 분리할 수 있다.",
+      "concepts": [
+        "UPS경보 서버등록시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08716",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "당직자가 알람을 눌러 확인한 UPS운영자 확인시각은 장치사건과 구별한다.",
+      "concepts": [
+        "UPS운영자 확인시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08717",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "네트워크 회복 후 보낸 UPS기록 재전송시각은 각 표본의 원 측정시각을 유지한다. 버퍼 순번이 유지되는지 확인해 재전송 도착순서를 전환 사건의 선후로 오해하지 않는다.",
+      "concepts": [
+        "UPS기록 재전송시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08718",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보정계수를 적용한 UPS자료 재계산시각은 과거 방전이 다시 일어난 때가 아니다.",
+      "concepts": [
+        "UPS자료 재계산시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08719",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "UPS사건 다중시각표는 전환·표본·계산·경보·등록·확인의 시각을 함께 둔다. 물리 전환과 상태 추정, 경보 생성, 저장, 사람 확인을 독립 열로 두어 의미를 고정한다.",
+      "concepts": [
+        "UPS사건 다중시각표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08720",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고속접점이 없으면 정전접점과 첫 방전표본 사이를 UPS전환 추정범위로 표시한다.",
+      "concepts": [
+        "UPS전환 추정범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08721",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "엔진축이 돌기 시작한 발전기 실제기동시각은 원격 기동명령 및 경보시각과 다르다. 스타터 전류와 축 회전수가 함께 나타난 시점을 사용해 원격 명령만 들어간 상태와 구별한다.",
+      "concepts": [
+        "발전기 실제기동시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08722",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "속도센서가 첫 회전수를 남긴 발전기 회전수 관측시각은 기계기동의 장치 관측이다.",
+      "concepts": [
+        "발전기 회전수 관측시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08723",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발전전압 형성시각은 엔진 기동과 구별되는 물리 사건으로, 전압과 주파수가 정격 허용대에 들어와 유지되기 시작한 때다. 짧은 스파이크는 준비 완료로 인정하지 않는다.",
+      "concepts": [
+        "발전전압 형성시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08724",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어기가 전압·주파수 안정성을 확인한 발전기 준비판정시각은 계측 뒤에 온다.",
+      "concepts": [
+        "발전기 준비판정시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08725",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "BMS가 발전기 상태를 받은 발전경보 서버수신시각에는 제어망 지연이 포함된다. 장치 패킷번호와 서버 도착을 맞추면 제어망이 만든 지연을 엔진 기동시간과 분리할 수 있다.",
+      "concepts": [
+        "발전경보 서버수신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08726",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영자가 소리나 화면으로 알아낸 발전기 인지시각 구별로 장치기동과 사람 관측을 나눈다.",
+      "concepts": [
+        "발전기 인지시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08727",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신복구 때 몰린 발전로그 버퍼배출시각은 여러 기동사건이 동시에 생겼다는 뜻이 아니다. 한꺼번에 도착한 기록은 원시 장치시각으로 다시 정렬해 복수 상태가 동시에 변한 것처럼 보이지 않게 한다.",
+      "concepts": [
+        "발전로그 버퍼배출시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08728",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시험모드 표기를 고친 발전시험 기록정정시각은 실제 엔진상태 변화와 별개다.",
+      "concepts": [
+        "발전시험 기록정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08729",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "발전기 사건시간사슬은 명령·회전·전압·준비판정·수신·인지의 선후를 연결한다. 시동 명령, 축 회전, 전압 안정, 부하 준비, 원격 수신, 운영 확인을 서로 다른 사건으로 연결한다.",
+      "concepts": [
+        "발전기 사건시간사슬"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08730",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회전센서가 결측이면 명령과 전압형성 사이를 발전기동 불확실구간으로 남긴다.",
+      "concepts": [
+        "발전기동 불확실구간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08731",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접촉기가 실제로 절체된 ATS물리전환 시각은 제어명령이 발행된 때와 같지 않다. 주·예비 접촉기의 보조접점이 실제 위치를 바꾼 순간을 기준으로 제어기 출력과 나눠 기록한다.",
+      "concepts": [
+        "ATS물리전환 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08732",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "절체위치를 읽은 ATS보조접점 관측시각은 물리 전환에 가장 가까운 기록이다.",
+      "concepts": [
+        "ATS보조접점 관측시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08733",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영화면이 새 위치를 보인 ATS상태 화면갱신시각은 장치 관측 뒤에 올 수 있다. 브라우저 갱신 주기와 캐시가 더한 지연을 제거해 현장 절체와 화면 표시를 혼합하지 않는다.",
+      "concepts": [
+        "ATS상태 화면갱신시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08734",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비정상 절체를 판단한 ATS경보 생성시각은 접점 변화와 논리검사 뒤의 사건이다.",
+      "concepts": [
+        "ATS경보 생성시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08735",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중앙 BMS가 메시지를 받은 ATS경보 수신시각은 네트워크 지연을 포함한다. 송신 헤더와 중앙 수신로그의 차이는 장치 동작이 아니라 통신 경로의 관측 지연이다.",
+      "concepts": [
+        "ATS경보 수신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08736",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "당직자가 현장이나 화면으로 확인한 ATS운영자 확인시각은 절체 발생과 구별한다.",
+      "concepts": [
+        "ATS운영자 확인시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08737",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어망 회복 후 올라온 ATS로그 백필시각은 원본 접점시각을 대체하지 않는다. 복구 후 적재된 행도 원본 접점시각과 순번을 유지해야 절체 왕복을 올바르게 재구성할 수 있다.",
+      "concepts": [
+        "ATS로그 백필시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08738",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잘못 분류한 전원방향을 고친 ATS기록 정정시각은 새 절체사건이 아니다.",
+      "concepts": [
+        "ATS기록 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08739",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "ATS절체 시간연결표는 명령·물리접점·화면·경보·수신·확인의 시각을 나란히 둔다. 명령·접점·전압·전송·화면·확인의 각 시간 출처와 오프셋을 한 연표에서 대조한다.",
+      "concepts": [
+        "ATS절체 시간연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08740",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접점원본이 손상되면 전압상실과 새 모선전압 사이를 ATS전환 추정시간창으로 둔다.",
+      "concepts": [
+        "ATS전환 추정시간창"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08741",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전원절체 중 압축기가 멈춘 냉동기 실제정지시각은 정지명령이나 경보시각과 다르다. 압축기 전류와 회전 신호가 사라진 첫 지속구간을 사용해 정지 지시보다 물리 상태를 우선한다.",
+      "concepts": [
+        "냉동기 실제정지시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08742",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "모터전류가 0으로 떨어진 냉동기 전류표본시각은 기계정지의 장치 관측이다.",
+      "concepts": [
+        "냉동기 전류표본시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08743",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉동기 정지 뒤 냉수온도가 오르기 시작한 냉수온도 반응시각은 후속 열현상이다. 배관 체적과 센서 위치 때문에 늦게 나타나는 열 반응을 장비 정지의 원인시각과 분리한다.",
+      "concepts": [
+        "냉수온도 반응시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08744",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어기가 유량·온도 조건으로 이상을 확정한 냉각상실 판정시각은 물리정지 뒤에 온다.",
+      "concepts": [
+        "냉각상실 판정시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08745",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "BMS가 경보를 저장한 냉동기경보 서버수신시각은 제어망 처리시간을 포함한다. 제어기 경보 생성과 BMS 저장 사이 차이를 네트워크 및 처리시간으로 따로 계산한다.",
+      "concepts": [
+        "냉동기경보 서버수신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08746",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영자가 화면으로 이상을 확인한 냉각상태 인지시각은 센서 관측과 분리한다.",
+      "concepts": [
+        "냉각상태 인지시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08747",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연결 회복 뒤 올라온 냉동기로그 재전송시각은 각 상태의 원 발생시각이 아니다. 버퍼 배출 순서가 원사건 순서와 일치하는지 표본번호로 검증해 도착시각 기준 정렬을 피한다.",
+      "concepts": [
+        "냉동기로그 재전송시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08748",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서오류를 확인해 사건을 고친 냉각기록 재분류시각은 새로운 냉각상실이 아니다.",
+      "concepts": [
+        "냉각기록 재분류시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08749",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉동기 사건시간사슬은 정지·전류·온도반응·판정·수신·인지의 순서를 연결한다. 명령, 압축기 상태, 냉수 반응, 경보 판정, 서버 수신, 운영 인지를 인과 순서로 잇는다.",
+      "concepts": [
+        "냉동기 사건시간사슬"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08750",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "직접접점이 없으면 마지막 운전전류와 첫 온도상승 사이를 냉동기정지 추정범위로 표시한다.",
+      "concepts": [
+        "냉동기정지 추정범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08751",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배관에서 냉각수가 새기 시작한 냉각수누설 실제시각은 누수센서가 젖은 시각보다 앞설 수 있다. 압력 하강과 유량 불일치의 시작점을 이용해 감지선이 젖기 전의 가능 구간을 제한한다.",
+      "concepts": [
+        "냉각수누설 실제시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08752",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감지케이블이 접촉을 기록한 누수센서 감지시각은 물리 누설의 첫 장치 관측이다.",
+      "concepts": [
+        "누수센서 감지시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08753",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "다중센서 조건으로 경보를 만든 누수경보 계산시각은 감지 뒤의 처리 사건이다. 조건식이 마지막 센서값을 받은 뒤 실행되므로 이 시간은 물리 누설보다 늦은 분석 사건이다.",
+      "concepts": [
+        "누수경보 계산시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08754",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중앙 시스템이 메시지를 받은 누수경보 BMS수신시각에는 통신지연이 포함된다.",
+      "concepts": [
+        "누수경보 BMS수신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08755",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자가 액체와 위치를 확인한 누수현장 확인시각은 센서관측보다 늦다. 출입기록과 사진 원본을 결합해 작업자가 실제 위치를 확인한 때와 신고 입력을 구별한다.",
+      "concepts": [
+        "누수현장 확인시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08756",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누수사건 관측시각 구별은 발생·센서·계산·수신·현장확인을 별도 시간으로 둔다.",
+      "concepts": [
+        "누수사건 관측시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08757",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트웨이 복구 뒤 올라온 누수로그 백필시각은 배관사건의 원시각이 아니다. 장치 순번과 원 측정시각을 유지하면 망복구 순간에 누설이 시작된 것처럼 보이는 오류를 막는다.",
+      "concepts": [
+        "누수로그 백필시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08758",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "결로를 누설로 잘못 분류한 기록을 고친 누수오탐 정정시각은 새 사건이 아니다.",
+      "concepts": [
+        "누수오탐 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08759",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉각수누설 시간사슬은 배관상태부터 경보와 확인까지의 관측 단계를 연결한다. 배관 변화, 센서 접촉, 규칙 판정, 경보 전송, 사람 확인을 각기 다른 관측층으로 둔다.",
+      "concepts": [
+        "냉각수누설 시간사슬"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08760",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감지 전 표본공백이 있으면 마지막 정상점검과 첫 젖음 사이를 누설시작 불확실범위로 둔다.",
+      "concepts": [
+        "누설시작 불확실범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08761",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서버열이 늘어 랙온도가 실제로 오르기 시작한 랙온도 상승실제시각은 센서응답보다 빠를 수 있다. 전력 사용량과 열모형을 센서곡선에 맞춰 탐침 반응 전의 상승 시작 범위를 추정한다.",
+      "concepts": [
+        "랙온도 상승실제시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08762",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탐침이 값을 남긴 랙온도 표본시각은 물리 변화의 관측 근사값이다.",
+      "concepts": [
+        "랙온도 표본시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08763",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 랙 표본으로 분포를 만든 열지도 계산시각은 측정 뒤의 분석 사건이다. 여러 표본 중 가장 늦게 도착한 값 뒤에 산출되므로 랙의 물리 온도변화와 동일하지 않다.",
+      "concepts": [
+        "열지도 계산시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08764",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지속조건을 충족해 발령한 고온경보 생성시각은 첫 임계표본보다 늦게 온다.",
+      "concepts": [
+        "고온경보 생성시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08765",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "모니터링DB에 저장된 고온경보 서버등록시각은 경보 생성과도 다를 수 있다. 분석기 생성시각과 DB 커밋시각을 비교해 저장 큐가 더한 지연을 별도 기록한다.",
+      "concepts": [
+        "고온경보 서버등록시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08766",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영자가 대시보드를 본 랙고온 인지시각은 장치관측 및 경보 뒤의 사람 사건이다.",
+      "concepts": [
+        "랙고온 인지시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08767",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신회복 후 저장된 온도자료 백필시각은 각 표본의 측정시각을 유지한다. 과거 표본의 원시각을 덮어쓰지 않아야 냉각 장애와 온도 상승의 선후가 보존된다.",
+      "concepts": [
+        "온도자료 백필시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08768",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교정불량을 확인해 값을 고친 랙센서 오류정정시각은 과거 온도가 새로 변한 때가 아니다.",
+      "concepts": [
+        "랙센서 오류정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08769",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "랙열사건 다중시각표는 열발생·표본·계산·경보·등록·인지의 시각을 함께 둔다. 열 발생 추정, 탐침 측정, 지도 계산, 경보 생성, 저장, 사람 인지를 공통 표준시에 맞춘다.",
+      "concepts": [
+        "랙열사건 다중시각표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08770",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표본주기 사이에 한계를 넘었다면 랙고온 발생추정창으로 가능한 시간을 제한한다.",
+      "concepts": [
+        "랙고온 발생추정창"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08771",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "외기유입으로 실내습도가 실제로 오른 습도상승 실제시각은 센서의 첫 변화보다 앞설 수 있다. 외기댐퍼 접점과 수증기 수지로 첫 상승 범위를 잡아 느린 탐침 반응과 분리한다.",
+      "concepts": [
+        "습도상승 실제시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08772",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탐침이 상대습도를 기록한 습도센서 측정시각은 자연상태를 관측한 기준이다.",
+      "concepts": [
+        "습도센서 측정시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08773",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도와 습도로 값을 산출한 이슬점 계산시각은 원시 표본 뒤의 처리사건이다. 산출값은 사용한 온습도 표본에 의존하므로 원자료보다 앞선 환경 사건으로 해석하지 않는다.",
+      "concepts": [
+        "이슬점 계산시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08774",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분석기가 표면온도와 비교해 확정한 결로위험 판정시각은 습도변화 뒤에 온다.",
+      "concepts": [
+        "결로위험 판정시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08775",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "BMS가 경보를 받은 습도경보 수신시각은 센서·분석보다 늦을 수 있다. 장치 전송과 BMS 큐를 거친 시간임을 표시해 실내 상태가 그 순간 바뀌었다고 보지 않는다.",
+      "concepts": [
+        "습도경보 수신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08776",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자가 물방울을 본 결로현장 확인시각은 실제 응축 시작시각과 같지 않다.",
+      "concepts": [
+        "결로현장 확인시각"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08777",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "버퍼에서 늦게 올라온 습도기록 재전송시각은 원 측정시각을 대체하지 않는다. 버퍼에서 늦게 온 표본은 측정시각으로 재배치해 결로 위험의 진행 방향을 유지한다.",
+      "concepts": [
+        "습도기록 재전송시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08778",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도센서 보정을 반영한 이슬점자료 정정시각은 새 결로사건이 아니다.",
+      "concepts": [
+        "이슬점자료 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08779",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "습도결로 시간연결표는 상태변화·표본·계산·경보·현장확인을 순서대로 잇는다. 외기 유입, 습도 표본, 이슬점 계산, 경보, 현장 결로 확인을 단계별로 잇는다.",
+      "concepts": [
+        "습도결로 시간연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08780",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장확인 전 표본이 끊겼다면 정상표본과 첫 흔적 사이를 결로시작 불확실구간으로 둔다.",
+      "concepts": [
+        "결로시작 불확실구간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08781",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배관이나 장비에서 물이 바닥으로 나온 바닥누수 실제발생시각은 감지선 반응보다 앞선다. 밸브·압력 자료와 첫 물 흔적 사이를 불확실 구간으로 두어 감지선 접촉만 원인시각으로 삼지 않는다.",
+      "concepts": [
+        "바닥누수 실제발생시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08782",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "액체가 감지선에 닿은 바닥감지선 접점시각은 누수의 직접 관측이다.",
+      "concepts": [
+        "바닥감지선 접점시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08783",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 감지주소로 위치를 추정한 누수구역 계산시각은 접점 뒤의 처리사건이다. 복수 감지주소가 모인 뒤 위치 추정이 끝난 때라서 각 센서의 젖은 시각과 구분된다.",
+      "concepts": [
+        "누수구역 계산시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08784",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제시스템이 메시지를 보낸 누수알림 발신시각은 발생과 관측 뒤에 온다.",
+      "concepts": [
+        "누수알림 발신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08785",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장신고가 접수된 누수신고 접수시각은 사람이 인지한 때로 분리한다. 관찰자가 물을 본 때와 신고 시스템이 접수한 때를 따로 남겨 사람·행정 지연을 계산한다.",
+      "concepts": [
+        "누수신고 접수시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08786",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누수발생 관측분리는 물리발생·감지·위치계산·알림·신고의 시간을 구분한다.",
+      "concepts": [
+        "누수발생 관측분리"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08787",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신복구 때 찍힌 감지기록 버퍼배출시각은 누수 발생시각으로 쓰지 않는다. 복구 후 일괄 도착한 행은 원표본 번호로 배열해 누수 진행이 역순으로 보이지 않게 한다.",
+      "concepts": [
+        "감지기록 버퍼배출시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08788",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잘못 추정한 구역을 고친 누수위치 정정시각은 새로운 누설이 아니다.",
+      "concepts": [
+        "누수위치 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08789",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "바닥누수 증거연표는 감지선·계산·알림·사진·신고의 타임스탬프를 공통축에 둔다. 압력·감지선·위치 계산·사진·신고의 생성 및 수신시각을 분리해 증거의 층위를 보존한다.",
+      "concepts": [
+        "바닥누수 증거연표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08790",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접점이 결측이면 마지막 건조점검과 첫 사진 사이를 바닥누수 발생시간창으로 둔다.",
+      "concepts": [
+        "바닥누수 발생시간창"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08791",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "설비나 케이블에서 연기가 생긴 연기발생 실제시각은 감지기 경보보다 앞설 수 있다. 전류 이상과 영상의 첫 연기 흔적을 대조해 감지기 임계 도달 전의 발생 범위를 좁힌다.",
+      "concepts": [
+        "연기발생 실제시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08792",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "광학센서가 농도변화를 기록한 연기감지기 관측시각은 화재현상의 첫 장치 관측이다.",
+      "concepts": [
+        "연기감지기 관측시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08793",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복수 조건으로 화재를 확정한 화재판정 계산시각은 센서관측 뒤에 온다. 연기와 온도 조건이 모두 들어온 뒤 규칙이 실행된 시점이므로 발화 자체의 직접 표본은 아니다.",
+      "concepts": [
+        "화재판정 계산시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08794",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중앙수신기가 경보를 받은 소방신호 수신시각에는 회선 지연이 포함된다.",
+      "concepts": [
+        "소방신호 수신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08795",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "당직자가 화면과 CCTV를 확인한 화재운영자 인지시각은 자동경보와 분리한다. 경보 표시, CCTV 열람, 확인 클릭을 구분해 사람이 위험을 이해한 순간을 별도 상태로 둔다.",
+      "concepts": [
+        "화재운영자 인지시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08796",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "화재사건 다중시각구별은 발열·연기·감지·판정·수신·인지의 시간을 각각 남긴다.",
+      "concepts": [
+        "화재사건 다중시각구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08797",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "망복구 뒤 저장된 소방로그 백필시각은 실제 화재가 일어난 시각이 아니다. 망이 복구된 때가 아니라 각 감지·판정의 장치 원시각으로 연표를 복원한다.",
+      "concepts": [
+        "소방로그 백필시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08798",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "분진을 연기로 잘못 분류한 기록을 고친 화재오탐 정정시각은 새 경보사건이 아니다.",
+      "concepts": [
+        "화재오탐 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08799",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "데이터센터 화재시간사슬은 물리현상·센서·판정·통보·현장확인을 연결한다. 발화 추정, 감지, 자동판정, 통보, 운영 확인, 현장 확인의 각 지연을 독립적으로 계산한다.",
+      "concepts": [
+        "데이터센터 화재시간사슬"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08800",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "직접영상이 없으면 마지막 정상관찰과 첫 감지 사이를 발화추정 불확실창으로 표시한다.",
+      "concepts": [
+        "발화추정 불확실창"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08801",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "스위치나 링크가 실제로 끊긴 네트워크장애 실제시각은 모니터링 경보보다 앞설 수 있다. 포트 반송파와 인접 장비 로그의 첫 단절을 사용해 감시주기 뒤 경보와 물리 장애를 나눈다.",
+      "concepts": [
+        "네트워크장애 실제시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08802",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감시기가 연결상태를 조회한 링크상태 폴링시각은 장애발생의 표본 관측이다.",
+      "concepts": [
+        "링크상태 폴링시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08803",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연속 실패로 이상을 확정한 장애탐지 계산시각은 첫 실패표본 뒤에 온다. 여러 번의 실패 조건을 충족한 뒤 확정되므로 첫 패킷 손실보다 의도적으로 늦을 수 있다.",
+      "concepts": [
+        "장애탐지 계산시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08804",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영플랫폼이 메시지를 받은 네트워크경보 수신시각은 감시망 지연을 포함한다.",
+      "concepts": [
+        "네트워크경보 수신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08805",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "담당자가 알림을 확인한 네트워크장애 인지시각은 장치 및 탐지시각과 분리한다. 알림 수신과 담당자의 조사 시작을 분리해 자동 탐지 이후의 사람 대응시간을 측정한다.",
+      "concepts": [
+        "네트워크장애 인지시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08806",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "네트워크사건 관측시각 구별은 단절·폴링·탐지·수신·사람확인의 시간을 나눈다.",
+      "concepts": [
+        "네트워크사건 관측시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08807",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연결복구 뒤 적재된 모니터링자료 백필시각은 각 장애의 원 발생시각이 아니다. 복구 직후 몰린 표본도 원 측정시각과 장비 순번으로 재정렬해야 장애 지속시간이 보존된다.",
+      "concepts": [
+        "모니터링자료 백필시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08808",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유지보수 트래픽을 장애로 본 기록을 고친 네트워크경보 정정시각은 새 사건이 아니다.",
+      "concepts": [
+        "네트워크경보 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08809",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "네트워크장애 시간사슬은 포트·감시기·분석기·운영플랫폼·담당자 기록을 연결한다. 링크 단절, 감시 표본, 탐지 규칙, 플랫폼 등록, 담당 인지를 각각 다른 시계에서 표준화한다.",
+      "concepts": [
+        "네트워크장애 시간사슬"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08810",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고속접점이 없으면 마지막 성공과 첫 실패 사이를 링크단절 추정시간창으로 둔다.",
+      "concepts": [
+        "링크단절 추정시간창"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08811",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장 장치가 상태값을 읽은 BMS센서 측정시각은 중앙 데이터베이스 저장시각과 구별한다. 게이트웨이 수신·DB 저장과 나란히 두어 현장 표본이 이동한 시간을 상태 변화로 오해하지 않는다.",
+      "concepts": [
+        "BMS센서 측정시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08812",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트웨이가 표본을 받은 BMS게이트웨이 수신시각은 장치측정 뒤의 전달사건이다.",
+      "concepts": [
+        "BMS게이트웨이 수신시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08813",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수신값에 제어규칙을 적용한 BMS규칙 실행시각은 측정 및 전송 뒤에 온다. 사용한 표본 버전과 실행 큐를 기록하면 계산 지연과 센서 응답 지연을 따로 구할 수 있다.",
+      "concepts": [
+        "BMS규칙 실행시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08814",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영화면이 새 상태를 보인 BMS화면 갱신시각은 규칙 실행보다 늦을 수 있다.",
+      "concepts": [
+        "BMS화면 갱신시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08815",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "당직자가 화면을 눌러 확인한 BMS운영자 확인시각은 물리상태 변화와 같지 않다. 확인 버튼은 경보 처리의 사람 사건이며 설비가 정상화됐다는 물리 증거로 사용하지 않는다.",
+      "concepts": [
+        "BMS운영자 확인시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08816",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "BMS기록 단계구별은 측정·수신·규칙·화면·확인의 다섯 시간을 각각 보존한다.",
+      "concepts": [
+        "BMS기록 단계구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08817",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신회복 뒤 몰려 저장된 BMS버퍼 배출시각은 상태가 동시에 바뀐 증거가 아니다. 같은 저장시각을 가진 여러 행도 장치 원시각이 다르면 순차 사건으로 복원한다.",
+      "concepts": [
+        "BMS버퍼 배출시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08818",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서보정을 반영해 값을 고친 BMS자료 정정시각은 새 설비사건이 아니다.",
+      "concepts": [
+        "BMS자료 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08819",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "BMS다중시계 연결표는 장치·게이트웨이·서버·화면의 오프셋과 사건순서를 잇는다. 장치 오프셋, 게이트웨이 지연, 서버 처리, 화면 갱신을 보정해 선후 역전을 탐지한다.",
+      "concepts": [
+        "BMS다중시계 연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08820",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표본사이에서 상태가 달라졌다면 BMS상태변화 추정창으로 가능한 발생범위를 둔다.",
+      "concepts": [
+        "BMS상태변화 추정창"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08821",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출입리더와 위치기록으로 확인한 운영순찰 실제도착시각은 순찰표 입력시각보다 앞설 수 있다. 출입 접점과 휴대단말 위치가 함께 성립한 때를 써서 예정표의 도착과 구별한다.",
+      "concepts": [
+        "운영순찰 실제도착시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08822",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자가 계기를 읽은 현장온도 판독시각은 서버에 값을 적은 시각과 분리한다.",
+      "concepts": [
+        "현장온도 판독시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08823",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장치원본에 남은 순찰사진 촬영시각은 파일을 전송하거나 편집한 시각과 다르다. EXIF 원본과 단말 보안시계를 검증해 업로드·편집 시간이 현장 관찰을 대체하지 않게 한다.",
+      "concepts": [
+        "순찰사진 촬영시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08824",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단말에 기록을 올린 순찰메모 저장시각은 현장에서 관찰한 때보다 늦을 수 있다.",
+      "concepts": [
+        "순찰메모 저장시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08825",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제에 이상을 전달한 순찰이상 보고시각은 관찰 및 메모 뒤의 통보사건이다. 사진 촬영이나 계기 확인보다 뒤의 통보 사건이므로 최초 발견시각을 소급해 바꾸지 않는다.",
+      "concepts": [
+        "순찰이상 보고시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08826",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영순찰 시각구별은 도착·판독·촬영·저장·보고를 별도 사건으로 남긴다.",
+      "concepts": [
+        "운영순찰 시각구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08827",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오프라인 단말이 나중에 올린 순찰자료 동기화시각은 원 관측시각을 대체하지 않는다. 오프라인 기록의 원 생성시각과 수정 이력을 유지해 접속 회복을 현장 방문으로 잘못 세지 않는다.",
+      "concepts": [
+        "순찰자료 동기화시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08828",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잘못 고른 설비번호를 고친 순찰기록 정정시각은 새로운 현장관찰이 아니다.",
+      "concepts": [
+        "순찰기록 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08829",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영순찰 시간사슬은 위치·계기·사진·메모·보고의 타임스탬프를 연결한다. 실제 도착, 계기 관찰, 사진 촬영, 메모 작성, 관제 보고의 순서를 방문 ID로 묶는다.",
+      "concepts": [
+        "운영순찰 시간사슬"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08830",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "이전 정상점검과 첫 이상관찰 사이를 순찰이상 발생범위로 두어 시작시각을 제한한다.",
+      "concepts": [
+        "순찰이상 발생범위"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08831",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부품이 실제로 기능을 잃은 정비고장 실제발생시각은 티켓 생성보다 앞설 수 있다. 진동·전류 변화와 기능 상실의 첫 표본을 통해 티켓 이전의 고장 범위를 제한한다.",
+      "concepts": [
+        "정비고장 실제발생시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08832",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어기가 고장상태를 남긴 설비고장 접점시각은 물리사건의 직접 관측이다.",
+      "concepts": [
+        "설비고장 접점시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08833",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영자가 요청을 등록한 정비티켓 생성시각은 고장발생 및 경보 뒤에 온다. 사용자가 요청을 등록한 행정 사건이며 장비가 고장난 정확한 순간을 직접 증명하지 않는다.",
+      "concepts": [
+        "정비티켓 생성시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08834",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자가 잠금을 시작한 정비작업 착수시각은 티켓배정과 별도 현장사건이다.",
+      "concepts": [
+        "정비작업 착수시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08835",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수리 뒤 시험이 성공한 기능복구 시험시각은 부품교체 완료와 다를 수 있다. 부품 교체 뒤 부하 시험이 기준을 통과한 때를 사용해 단순 조립 완료와 실제 복구를 나눈다.",
+      "concepts": [
+        "기능복구 시험시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08836",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "설비기능이 돌아온 때와 감독자가 닫은 정비완료 승인시각 구별로 사건을 나눈다.",
+      "concepts": [
+        "정비완료 승인시각 구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08837",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장단말이 나중에 올린 정비자료 동기화시각은 작업시각을 덮어쓰지 않는다. 현장 작업의 원시각을 보존해야 늦은 업로드가 착수·수리·시험 순서를 바꾸지 않는다.",
+      "concepts": [
+        "정비자료 동기화시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08838",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잘못 입력한 고장분류를 고친 정비티켓 정정시각은 새 고장이 아니다.",
+      "concepts": [
+        "정비티켓 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08839",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비사건 시간계보는 고장·접점·티켓·착수·시험·승인의 시각을 출처별로 잇는다. 고장 추정, 장치경보, 티켓, 작업 착수, 교체, 시험, 승인 기록의 출처를 연결한다.",
+      "concepts": [
+        "정비사건 시간계보"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08840",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "직접접점이 없으면 마지막 정상운전과 첫 경보 사이를 설비고장 추정구간으로 둔다.",
+      "concepts": [
+        "설비고장 추정구간"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08841",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서비스와 설비 영향이 처음 생긴 장애사건 실제개시시각은 상황보고 작성보다 앞선다. 서비스 지표와 설비 접점 중 먼저 영향을 보인 범위를 정하고 보고서 작성은 후속 사건으로 둔다.",
+      "concepts": [
+        "장애사건 실제개시시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08842",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감시도구가 처음 이상을 포착한 장애탐지 최초시각은 실제 개시의 늦은 경계다.",
+      "concepts": [
+        "장애탐지 최초시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08843",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대응인력이 모인 상황실 소집시각은 탐지와 보고 뒤의 조직 사건이다. 탐지 뒤 조직 대응이 시작된 시각이므로 장애 원인이나 최초 영향시각과 합치지 않는다.",
+      "concepts": [
+        "상황실 소집시각"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08844",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "상황을 정리해 문서를 만든 장애보고 초안시각은 원인사건의 시각이 아니다.",
+      "concepts": [
+        "장애보고 초안시각"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08845",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고객이나 기관에 알림을 보낸 외부통지 발신시각은 실제 장애와 구별한다. 메시지 큐 등록과 실제 발송을 구별해 고객 인지의 가장 이른 가능시각을 계산한다.",
+      "concepts": [
+        "외부통지 발신시각"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08846",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장애연표 시각구별은 개시·탐지·소집·초안·통지의 시간을 따로 기록한다.",
+      "concepts": [
+        "장애연표 시각구별"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08847",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회의 뒤 일괄 입력한 상황기록 후입력시각은 각 조치가 그때 일어난 뜻이 아니다. 회의 후 입력된 항목은 원 조치시각과 작성시각을 모두 보존해 감사 연표의 선후를 유지한다.",
+      "concepts": [
+        "상황기록 후입력시각"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08848",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "영향범위를 재평가해 등급을 고친 장애등급 정정시각은 새 장애발생이 아니다.",
+      "concepts": [
+        "장애등급 정정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08849",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "데이터센터 장애시간사슬은 물리·서비스·탐지·대응·통지·정정의 시각을 연결한다. 물리 고장, 서비스 영향, 자동 탐지, 조직 대응, 외부 통지, 사후 정정을 계층별로 연결한다.",
+      "concepts": [
+        "데이터센터 장애시간사슬"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08850",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "직접 로그가 없으면 마지막 정상지표와 첫 이상지표 사이를 장애개시 불확실시간창으로 둔다.",
+      "concepts": [
+        "장애개시 불확실시간창"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    }
+  ]
+}

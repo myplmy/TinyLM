@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v67",
+  "version": "67",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-09901 ~ S2-TOH-10050",
+  "concept_family": "S2-A03-T067: 병원 수술실 배정·감염 통제 — 마감 창 내부·외부 사건의 시간 경계",
+  "design_note": "병원 수술실 배정·감염 통제 영역의 마감 창 내부·외부 사건의 시간 경계 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-09901",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술실 종말청소 허용창은 이전 환자 퇴실 뒤 다음 준비 점검 전까지 열린다. 이 범위는 단순 예약 시간이 아니라 오염 제거를 끝내야 다음 환자를 안전하게 받을 수 있는 실제 운영 경계다.",
+      "concepts": [
+        "수술실 종말청소 허용창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09902",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종말청소 실제완료시각은 마지막 고접촉면 소독과 폐기물 반출이 끝난 때다. 청소 카트가 나간 때보다 소독 접촉이 끝난 때가 늦으면 후자를 선택한다.",
+      "concepts": [
+        "종말청소 실제완료시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09903",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "실제완료가 허용창 시작 뒤이며 종료 전이면 청소창 내부완료로 판정한다. 판정에는 소독제 접촉시간과 표면 건조가 모두 끝난 시각을 사용하며 점검표 제출만으로 완료를 앞당기지 않는다.",
+      "concepts": [
+        "청소창 내부완료"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09904",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "창이 열리기 전에 기록된 완료는 청소창 시작전완료로 따로 분류한다. 이 기록은 이전 수술 청소일 수 있어 작업 회차와 담당자 정보를 다시 맞춰야 한다.",
+      "concepts": [
+        "청소창 시작전완료"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09905",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "준비 점검 마감 뒤 소독이 끝났다면 청소창 종료후완료에 해당한다. 이 경우 다음 수술 준비와 소독이 겹쳤는지 별도 위험 사건으로 연결해 일정 지연과 감염 노출을 함께 검토한다.",
+      "concepts": [
+        "청소창 종료후완료"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09906",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "청소창 경계포함규칙은 시작점과 종료점을 포함할지 운영 규정에 명시한다.",
+      "concepts": [
+        "청소창 경계포함규칙"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09907",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "소독 완료가 창 시작과 정확히 같으면 청소창 시작점완료로 표시한다. 경계 포함 정책이 닫힌 구간이면 적합하지만 시작점을 제외하도록 정한 기관에서는 창 밖 사건으로 남는다.",
+      "concepts": [
+        "청소창 시작점완료"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09908",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "소독 완료가 마감과 같은 순간이면 청소창 종료점완료로 남겨 경계판정을 보존한다.",
+      "concepts": [
+        "청소창 종료점완료"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09909",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "청소기록 지연경계는 입력시각이 늦어도 실제 소독 완료가 창 안이면 이를 구별한다. 문손잡이 센서와 청소 카트 이탈 기록이 있으면 입력이 늦어도 그 물리 증거로 완료 위치를 복원할 수 있다.",
+      "concepts": [
+        "청소기록 지연경계"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09910",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종말청소 창판정표는 창 양 끝과 실제완료·입력시각을 별도 열에 둔다.",
+      "concepts": [
+        "종말청소 창판정표"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09911",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예방항생제 투여창은 절개 전 효과 농도를 확보하도록 정한 임상 시간 범위다. 약제별 주입시간과 절개 예정시각을 함께 계산해야 하므로 처방 발행부터의 단순 경과시간과는 구별된다.",
+      "concepts": [
+        "예방항생제 투여창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09912",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항생제 실제주입시각은 약물이 정맥관으로 들어가기 시작한 때를 가리킨다. 펌프 준비나 약품 스캔은 주입 전 사건이므로 혈관 유입 시작과 구분한다.",
+      "concepts": [
+        "항생제 실제주입시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09913",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "실제주입이 투여창의 두 경계 사이면 항생제창 안쪽투여로 판단한다. 주입 시작만 창 안에 있고 완료가 절개 뒤라면 약제 지침에 따라 별도 준수 판정이 필요하다.",
+      "concepts": [
+        "항생제창 안쪽투여"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09914",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "허용 시작보다 이른 주입은 항생제창 이전투여로 분리해 평가한다. 약효 유지 범위를 벗어났다면 재투여 여부와 실제 절개 지연을 함께 확인한다.",
+      "concepts": [
+        "항생제창 이전투여"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09915",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "허용 종료를 지난 주입은 항생제창 이후투여이며 처방시각으로 덮지 않는다. 늦은 투여는 무투여와 같지 않으므로 실제 시작점과 지연 사유를 보존해 감염위험 해석에 사용한다.",
+      "concepts": [
+        "항생제창 이후투여"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09916",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항생제 경계판정규칙은 시작점·종료점 투여의 포함 여부를 수술 정책으로 정한다.",
+      "concepts": [
+        "항생제 경계판정규칙"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09917",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주입 개시가 허용창 시작과 같으면 항생제 시작경계투여로 기록한다. 정책이 시작점을 포함하면 허용되지만 시계 정밀도가 분 단위뿐이면 경계 불확실성도 함께 표시한다.",
+      "concepts": [
+        "항생제 시작경계투여"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09918",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주입 개시가 허용창 끝과 일치하면 항생제 종료경계투여로 별도 표지한다.",
+      "concepts": [
+        "항생제 종료경계투여"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09919",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항생제 입력지연 분리는 간호기록 입력과 실제 주입 사이의 차이를 보존한다. 주입펌프 원시로그와 약품 바코드 스캔을 대조하면 회고 입력 때문에 생긴 가짜 지연을 제거할 수 있다.",
+      "concepts": [
+        "항생제 입력지연 분리"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09920",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예방투여 시간검사는 절개시각·창 경계·실제주입을 비교해 준수 여부를 정한다.",
+      "concepts": [
+        "예방투여 시간검사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09921",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "멸균기구 반입창은 수술실 청정 준비 완료 뒤 환자 입실 전까지다. 너무 이른 반입은 노출 시간을 늘리고 너무 늦은 반입은 수술 지연을 만들므로 양쪽 경계를 모두 평가한다.",
+      "concepts": [
+        "멸균기구 반입창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09922",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "멸균세트 실제도착은 봉인된 기구가 수술실 인계 지점에 놓인 순간이다. 운반함이 복도에 머문 때와 담당자가 인계받은 때를 하나로 합치지 않는다.",
+      "concepts": [
+        "멸균세트 실제도착"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09923",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "실제도착이 반입창 안쪽이면 기구반입 창내도착으로 판정한다. 봉인 손상이나 멸균 유효기간 문제는 시간 적합성과 다른 축이어서 창 안 도착만으로 사용 가능하다고 결론내리지 않는다.",
+      "concepts": [
+        "기구반입 창내도착"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09924",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "청정 준비 전에 기구가 도착하면 기구반입 조기도착으로 구별한다. 청정구역 밖 보관시간과 포장 손상 여부를 확인해 노출 위험을 따로 판정한다.",
+      "concepts": [
+        "기구반입 조기도착"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09925",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환자 입실 마감 뒤 도착한 세트는 기구반입 지연도착에 해당한다. 대체 세트를 먼저 사용했다면 늦은 세트의 도착은 수술 개시 원인이 아니므로 인계 관계도 분리한다.",
+      "concepts": [
+        "기구반입 지연도착"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09926",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기구반입 경계정의는 청정 완료와 환자 입실을 각각 창의 양 끝으로 삼는다.",
+      "concepts": [
+        "기구반입 경계정의"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09927",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "청정 준비 완료와 같은 순간의 도착은 기구반입 시작점도착이다. 청정 확인 장치의 시계와 운반 스캐너가 다르면 두 시계를 보정한 뒤 시작점 일치를 확정한다.",
+      "concepts": [
+        "기구반입 시작점도착"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09928",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환자 입실과 정확히 같은 시각의 도착은 기구반입 종료점도착으로 남긴다.",
+      "concepts": [
+        "기구반입 종료점도착"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09929",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기구스캔 기록지연은 바코드 등록보다 실제 인계가 먼저 일어난 상태다. 수술실 문 통과 영상과 인계 서명의 시각을 이용해 반입 구간을 좁히고 늦은 스캔과 구분한다.",
+      "concepts": [
+        "기구스캔 기록지연"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09930",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "멸균반입 시간대조는 봉인상태 확인시각과 반입창 경계를 함께 검토한다.",
+      "concepts": [
+        "멸균반입 시간대조"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09931",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술환자 이송창은 병동 출발 허용시각부터 마취 준비 마감까지다. 병동 출발이 창 안이어도 수술실 도착이 마감을 넘을 수 있으므로 판단 사건은 입구 통과로 고정한다.",
+      "concepts": [
+        "수술환자 이송창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09932",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환자 수술실도착시각은 침상이 지정 수술실 입구를 통과한 실제 순간이다. 대기구역 진입과 지정 수술실 입구 통과가 다르면 후자를 배정 이송 사건으로 쓴다.",
+      "concepts": [
+        "환자 수술실도착시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09933",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "도착이 허용 시작 뒤 마취 준비 마감 전이면 환자이송 창내도착이다. 환자 확인과 동의서 점검은 도착 뒤 과정이어서 이송 시간 판정과 준비 완료 판정을 따로 유지한다.",
+      "concepts": [
+        "환자이송 창내도착"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09934",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "허용 시작 전에 수술실에 온 경우를 환자이송 이른도착으로 표시한다. 조기 도착이 대기구역 혼잡이나 개인정보 노출을 만들었는지도 별도 평가한다.",
+      "concepts": [
+        "환자이송 이른도착"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09935",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마취 준비 마감 뒤 입구를 통과했다면 환자이송 늦은도착이다. 응급 우선순위 변경으로 마감이 연장됐다면 원래 창과 승인된 새 창을 버전별로 남겨야 한다.",
+      "concepts": [
+        "환자이송 늦은도착"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09936",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환자이송 창경계규칙은 양 끝점 도착의 수용 여부를 배정 기준에 적는다.",
+      "concepts": [
+        "환자이송 창경계규칙"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09937",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "허용 시작과 동일한 도착은 환자이송 시작점도착으로 판정한다. 센서 분해능보다 작은 차이는 임의로 안쪽 처리하지 말고 경계 사건이라는 상태를 보존한다.",
+      "concepts": [
+        "환자이송 시작점도착"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09938",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마취 준비 마감과 같은 순간이면 환자이송 마감점도착으로 따로 남긴다.",
+      "concepts": [
+        "환자이송 마감점도착"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09939",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환자도착 입력시차는 전산 등록이 늦더라도 출입센서 시각을 실제도착으로 보존한다. 침상 위치 태그와 출입문 기록이 일치하면 전산 입력 시각보다 그 교차 증거의 신뢰도가 높다.",
+      "concepts": [
+        "환자도착 입력시차"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09940",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술이송 창검증은 병동 호출·입구 통과·마취 마감의 순서를 대조한다.",
+      "concepts": [
+        "수술이송 창검증"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09941",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술실 공조안정창은 문 폐쇄 뒤 목표 환기상태를 확인해야 하는 준비 시간이다. 압력차 한 번의 통과가 아니라 규정된 연속 유지기간을 채운 뒤에야 안정 사건이 성립한다.",
+      "concepts": [
+        "수술실 공조안정창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09942",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공조 실제안정시각은 압력차와 입자수가 연속 기준을 처음 만족한 때다. 짧은 순간의 기준 통과가 아니라 요구 지속시간을 채운 첫 끝점을 사용한다.",
+      "concepts": [
+        "공조 실제안정시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09943",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "안정시각이 준비창 안에 들면 공조창 안쪽안정으로 분류한다. 입자수와 압력차 가운데 하나만 만족한 시점은 부분 상태이므로 최종 안정시각으로 선택하지 않는다.",
+      "concepts": [
+        "공조창 안쪽안정"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09944",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "문 폐쇄 전 안정 표시는 공조창 이전안정이며 새 준비주기의 증거가 아니다. 이전 운전주기의 값이 남았는지 확인하지 않으면 새 수술 준비를 잘못 판정할 수 있다.",
+      "concepts": [
+        "공조창 이전안정"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09945",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공조창 이후안정은 환자 입실 마감이 지난 뒤에야 양압과 청정도 기준이 충족된 상태다. 시간 초과와 실패 노출 길이를 함께 계산해 감염 통제 기록에 남긴다.",
+      "concepts": [
+        "공조창 이후안정"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09946",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공조안정 경계규칙은 문 폐쇄와 입실 마감을 창의 시작·끝으로 고정한다.",
+      "concepts": [
+        "공조안정 경계규칙"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09947",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "문 폐쇄와 동시에 기준을 만족하면 공조창 시작점안정으로 남긴다. 이전 수술의 안정값이 그대로 남았는지 확인하려면 문 폐쇄 뒤 새 연속 측정 구간이 시작됐는지 살핀다.",
+      "concepts": [
+        "공조창 시작점안정"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09948",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입실 마감과 같은 순간의 안정은 공조창 종료점안정으로 경계 처리한다.",
+      "concepts": [
+        "공조창 종료점안정"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09949",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공조대시보드 갱신지연은 실제 센서 안정과 화면 표시를 분리한다. 원시 센서가 먼저 안정된 경우 화면 지연은 시설 상태가 아니라 관측 전달 과정의 문제로 분류한다.",
+      "concepts": [
+        "공조대시보드 갱신지연"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09950",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술공조 창판독은 압력·입자 원시시각을 이용해 안정 사건의 위치를 정한다.",
+      "concepts": [
+        "수술공조 창판독"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09951",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술팀 손위생창은 오염 가능 활동 종료 뒤 멸균 가운 착용 전까지다. 세정 완료 뒤 멸균영역 밖 물체를 만지면 새 오염 사건이 생겨 기존 창 판정을 다시 시작해야 한다.",
+      "concepts": [
+        "수술팀 손위생창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09952",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "손위생 실제완료시각은 마지막 세정과 건조 절차가 끝난 순간이다. 물기 제거가 끝나기 전 장갑을 착용했다면 세정 종료와 준비 완료는 일치하지 않는다.",
+      "concepts": [
+        "손위생 실제완료시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09953",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "완료시각이 손위생창 양 끝 사이면 손위생 창내완료로 본다. 세정 시간과 건조 완료가 모두 기준을 충족해야 하며 디스펜서 작동 한 번만으로 완료를 추정하지 않는다.",
+      "concepts": [
+        "손위생 창내완료"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09954",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "창 시작보다 이른 세정은 이후 오염 가능성 때문에 손위생 창전완료로 구별한다. 그 뒤 비멸균 물체 접촉이 있었는지 확인해야 이전 세정의 효력을 판단할 수 있다.",
+      "concepts": [
+        "손위생 창전완료"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09955",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가운 착용 마감 뒤 세정이 끝나면 손위생 창후완료에 해당한다. 가운을 이미 입은 뒤 세정했다면 순서 위반이므로 단순 지각과 다른 감염 통제 오류로 분류한다.",
+      "concepts": [
+        "손위생 창후완료"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09956",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "손위생 경계포함정책은 시작·마감과 같은 완료를 인정할지 정한다.",
+      "concepts": [
+        "손위생 경계포함정책"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09957",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오염 활동 종료와 동시에 세정이 끝나면 손위생 시작경계완료다. 경계 직전 오염 활동의 종료가 확실하지 않으면 세정 완료만 정확해도 적합성을 확정할 수 없다.",
+      "concepts": [
+        "손위생 시작경계완료"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09958",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가운 착용 마감과 같은 순간의 완료는 손위생 마감경계완료로 기록한다.",
+      "concepts": [
+        "손위생 마감경계완료"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09959",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "손위생 서명지연은 확인 서명이 늦어도 실제 세정 완료와 나누어 저장한다. 세정대 센서와 출입 영상이 있으면 서명보다 앞선 실제 수행 구간을 근거 있게 복원할 수 있다.",
+      "concepts": [
+        "손위생 서명지연"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09960",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "손위생 시간준수표는 오염종료·세정완료·가운착용의 세 시각을 대조한다.",
+      "concepts": [
+        "손위생 시간준수표"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09961",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술임플란트 개봉창은 제품 확인 완료 뒤 실제 사용 직전까지다. 선택이 바뀔 가능성이 사라진 뒤에 열어야 멸균 노출과 불필요한 폐기를 동시에 줄일 수 있다.",
+      "concepts": [
+        "수술임플란트 개봉창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09962",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "임플란트 실제개봉시각은 멸균 포장의 봉인이 처음 끊어진 때다. 겉상자 개봉이 아니라 환자에게 쓰일 멸균 장벽이 깨진 순간을 기준으로 한다.",
+      "concepts": [
+        "임플란트 실제개봉시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09963",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "봉인 해제가 개봉창 안에 있으면 임플란트 창내개봉으로 판정한다. 제품번호 확인과 환자 적합성 승인도 선행돼야 하므로 시간 창 충족만으로 전체 절차가 끝나지 않는다.",
+      "concepts": [
+        "임플란트 창내개봉"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09964",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제품 확인 전에 봉인을 열었다면 임플란트 조기개봉으로 분류한다. 사용하지 않은 채 창을 넘겼다면 폐기나 재처리 여부를 추적해야 한다.",
+      "concepts": [
+        "임플란트 조기개봉"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09965",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사용 준비 마감 뒤 개봉한 경우는 임플란트 지연개봉이다. 사용자가 기다리는 동안 수술 흐름이 멈췄는지 확인해 개봉 지연과 실제 수술 지연의 인과를 구분한다.",
+      "concepts": [
+        "임플란트 지연개봉"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09966",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "임플란트 개봉경계는 확인 완료와 사용 직전을 각각 시작점과 종료점으로 둔다.",
+      "concepts": [
+        "임플란트 개봉경계"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09967",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제품 확인 완료와 동시에 연 포장은 임플란트 시작점개봉이다. 확인 완료와 봉인 파손의 순서를 같은 초로만 기록했다면 세부 로그 없이는 동시성으로 단정하지 않는다.",
+      "concepts": [
+        "임플란트 시작점개봉"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09968",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사용 시작과 같은 순간에 연 경우는 임플란트 종료점개봉으로 표시한다.",
+      "concepts": [
+        "임플란트 종료점개봉"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09969",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "임플란트 스캔지연은 포장 개봉과 전산 추적 등록의 시각차를 보존한다. 포장 사진과 수술대 영상이 개봉을 먼저 보여주면 뒤늦은 바코드 등록을 추적 정보 갱신으로만 해석한다.",
+      "concepts": [
+        "임플란트 스캔지연"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09970",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "임플란트 창검사표는 확인·개봉·사용·등록시각을 분리해 검사한다.",
+      "concepts": [
+        "임플란트 창검사표"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09971",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술혈액 반입창은 수혈 필요 확정 뒤 보관 허용시간이 끝나기 전까지다. 제제 출고 뒤 온도 관리 가능시간도 창을 제한하므로 단순 수술 예정시각만으로 양 끝을 정하지 않는다.",
+      "concepts": [
+        "수술혈액 반입창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09972",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "혈액제제 실제인계는 혈액은행 운반자가 수술실 담당자에게 넘긴 순간이다. 운반함 도착과 담당자 확인이 다르면 책임 이전이 완료된 시점을 명시한다.",
+      "concepts": [
+        "혈액제제 실제인계"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09973",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "인계가 반입창 내부에서 일어나면 혈액반입 창내인계로 판정한다. 환자 식별 대조가 끝나지 않았다면 물리적 도착과 임상 사용 가능 상태는 서로 다른 사건이다.",
+      "concepts": [
+        "혈액반입 창내인계"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09974",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "필요 확정 전에 도착한 혈액은 혈액반입 선행인계로 따로 관리한다. 냉장 보관과 환자 식별이 유지됐는지 확인해 조기 도착의 안전성을 평가한다.",
+      "concepts": [
+        "혈액반입 선행인계"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09975",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보관 허용 마감 뒤 인계되면 혈액반입 마감후인계에 해당한다. 늦은 인계가 실제 수혈 지연을 만들었는지 보려면 대체 제제와 수술 단계의 시간을 함께 비교한다.",
+      "concepts": [
+        "혈액반입 마감후인계"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09976",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "혈액반입 경계규약은 필요 확정과 허용 마감을 창의 두 끝으로 정의한다.",
+      "concepts": [
+        "혈액반입 경계규약"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09977",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "필요 확정과 같은 시각의 전달은 혈액반입 시작점인계다. 필요 확정과 인계가 같은 시각이어도 출고가 그보다 앞섰다면 선행 보관 근거를 별도로 확인한다.",
+      "concepts": [
+        "혈액반입 시작점인계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09978",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보관 허용 마감과 동시에 전달되면 혈액반입 종료점인계로 표시한다.",
+      "concepts": [
+        "혈액반입 종료점인계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09979",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "혈액인계 서명지연은 전자서명 시각과 실제 손인계를 분리해 보존한다. 냉장함 개폐로그와 운반 위치기록을 결합하면 서명 없이도 실제 전달 범위를 좁힐 수 있다.",
+      "concepts": [
+        "혈액인계 서명지연"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09980",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술혈액 창검증은 요청·출고·실제인계·보관마감의 순서를 확인한다.",
+      "concepts": [
+        "수술혈액 창검증"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09981",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술검체 운송창은 채취 완료 뒤 보존 허용시간이 만료되기 전까지다. 검체 종류마다 허용 온도와 최대 지연이 달라서 동일한 마감값을 모든 표본에 적용하면 안 된다.",
+      "concepts": [
+        "수술검체 운송창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09982",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검체 실제출발시각은 밀봉 용기가 수술실에서 검사실로 이동하기 시작한 때다. 운반 호출이나 라벨 출력은 이동 전 준비이므로 용기 움직임과 구분한다.",
+      "concepts": [
+        "검체 실제출발시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09983",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출발이 운송창의 양 경계 사이면 검체운송 창내출발이다. 출발이 적합해도 운송 중 정체로 도착 마감을 넘을 수 있으므로 이동 전후 창을 분리해 평가한다.",
+      "concepts": [
+        "검체운송 창내출발"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09984",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "채취 전 출발로 표시된 기록은 검체운송 조기표시이며 사건 오류를 뜻한다. 채취 전 출발 표시는 시계 오류나 다른 검체 사건일 가능성을 먼저 조사한다.",
+      "concepts": [
+        "검체운송 조기표시"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09985",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보존 마감 뒤 이동을 시작했다면 검체운송 지연출발로 판정한다. 보존액 투입으로 새 허용창이 열렸다면 그 조치 시각과 근거를 원래 창 옆에 명시한다.",
+      "concepts": [
+        "검체운송 지연출발"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09986",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검체운송 경계정책은 채취 완료와 보존 만료를 포함할지 명시한다.",
+      "concepts": [
+        "검체운송 경계정책"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09987",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "채취 완료와 동시에 이동하면 검체운송 시작경계로 기록한다. 채취 완료의 정의가 용기 봉인인지 조직 분리인지에 따라 시작점이 달라지므로 규정을 먼저 확인한다.",
+      "concepts": [
+        "검체운송 시작경계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09988",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보존 만료와 같은 순간의 출발은 검체운송 종료경계로 따로 둔다.",
+      "concepts": [
+        "검체운송 종료경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09989",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검체접수 기록지연은 검사실 입력시각이 실제 출발이나 도착을 대신하지 못하게 한다. 운반함 태그와 검사실 문 통과 시각은 접수 입력보다 실제 이동을 더 직접적으로 보여준다.",
+      "concepts": [
+        "검체접수 기록지연"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09990",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검체시간 경계검사는 채취·출발·도착·접수의 시각을 분리해 준수를 평가한다.",
+      "concepts": [
+        "검체시간 경계검사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09991",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "격리수술실 설정창은 감염위험 통보 뒤 환자 입실 허용 전까지다. 환자 감염경로에 따라 필요한 압력·보호구·동선 조건이 달라지므로 위험 통보 내용과 창을 함께 묶는다.",
+      "concepts": [
+        "격리수술실 설정창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-09992",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "격리설정 실제완료는 표지·보호구·동선·폐기물 용기가 모두 배치된 때다. 필수 보호구와 폐기 동선 가운데 가장 늦게 준비된 요소가 전체 완료를 정한다.",
+      "concepts": [
+        "격리설정 실제완료"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-09993",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "설정 완료가 준비창 안에 놓이면 격리설정 창내완료로 분류한다. 구성 요소 하나라도 빠지면 부분 완료이며 마지막 필수 요소가 배치된 순간을 전체 완료로 삼는다.",
+      "concepts": [
+        "격리설정 창내완료"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-09994",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염 통보 전의 배치는 격리설정 통보전완료이며 새 사례 준비와 구분한다. 기존 격리 상태가 우연히 남은 경우와 해당 환자를 위한 준비를 구별해야 한다.",
+      "concepts": [
+        "격리설정 통보전완료"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09995",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환자 입실 뒤 설정이 끝났다면 격리설정 입실후완료에 해당한다. 노출이 이미 시작된 경우 뒤늦은 완성은 개선 조치이지 입실 전 준수 사건으로 소급되지 않는다.",
+      "concepts": [
+        "격리설정 입실후완료"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09996",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "격리설정 경계기준은 위험 통보와 입실 허용을 창의 시작·마감으로 삼는다.",
+      "concepts": [
+        "격리설정 경계기준"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09997",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위험 통보와 같은 순간에 준비가 끝나면 격리설정 시작점완료다. 통보와 완료가 같은 시각이면 사전 준비인지 즉시 대응인지 원시 작업기록으로 구별해야 한다.",
+      "concepts": [
+        "격리설정 시작점완료"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-09998",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입실 허용과 동시에 준비가 끝난 경우는 격리설정 종료점완료다.",
+      "concepts": [
+        "격리설정 종료점완료"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-09999",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "격리체크 입력지연은 점검표 제출이 늦어도 실제 배치 완료를 따로 남긴다. 보호구함 센서와 출입통제 설정 로그가 일치하면 점검표의 늦은 제출을 행정 지연으로 판정한다.",
+      "concepts": [
+        "격리체크 입력지연"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10000",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "격리수술 준비판정은 통보·설정완료·입실의 상대 위치를 기준으로 한다.",
+      "concepts": [
+        "격리수술 준비판정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10001",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술기구 계수창은 체강 봉합 준비 뒤 최종 봉합 시작 전까지다. 첫 계수와 추가 사용품 반영을 구별하고 마지막 사용 뒤 확정한 최종 대조만 마감 판정에 사용한다.",
+      "concepts": [
+        "수술기구 계수창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10002",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기구계수 실제완료는 사용한 기구와 거즈의 수량 대조가 끝난 순간이다. 두 확인자가 수량 일치를 선언한 때를 스캐너 종료나 화면 저장보다 우선한다.",
+      "concepts": [
+        "기구계수 실제완료"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10003",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계수가 지정 범위 안에서 끝나면 기구계수 창내완료로 판정한다. 수량 불일치가 남아 있으면 읽기가 끝났어도 완료가 아니며 원인 확인 뒤 확정된 시각을 선택한다.",
+      "concepts": [
+        "기구계수 창내완료"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10004",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "봉합 준비 전 계수는 기구계수 조기완료이며 최종 확인과 같지 않다. 이후 추가 기구가 투입됐다면 조기 계수는 최종 안전 확인으로 사용할 수 없다.",
+      "concepts": [
+        "기구계수 조기완료"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10005",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "최종 봉합 시작 뒤 끝난 계수는 기구계수 지연완료에 해당한다. 봉합을 중단하고 재계수했다면 지연 시간과 환자 안전을 위한 회복 절차를 연결해 기록한다.",
+      "concepts": [
+        "기구계수 지연완료"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10006",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기구계수 경계규칙은 봉합 준비와 봉합 시작을 창의 두 경계로 고정한다.",
+      "concepts": [
+        "기구계수 경계규칙"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10007",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "봉합 준비와 동시에 계수가 끝나면 기구계수 시작점완료다. 준비 시작과 같은 초의 완료는 이전 예비 계수일 수 있으므로 해당 수술의 품목 목록을 대조한다.",
+      "concepts": [
+        "기구계수 시작점완료"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10008",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "최종 봉합 시작과 같은 순간의 완료는 기구계수 마감점완료로 남긴다.",
+      "concepts": [
+        "기구계수 마감점완료"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10009",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기구계수 입력시차는 전산 확인이 늦어도 실제 구두 대조시각을 보존한다. 두 명의 구두 확인 녹음과 스캐너 로그가 맞으면 전산 저장이 늦어도 실제 계수 시점을 복원한다.",
+      "concepts": [
+        "기구계수 입력시차"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10010",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기구계수 시간검증은 준비·완료·봉합의 순서를 원시기록으로 대조한다.",
+      "concepts": [
+        "기구계수 시간검증"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10011",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "응급수술 삽입결정창은 중증도 확정 뒤 기존 수술 변경 마감 전까지다. 환자 악화로 우선순위가 바뀌면 새 중증도 확정이 창을 다시 열었는지 버전 이력에서 확인한다.",
+      "concepts": [
+        "응급수술 삽입결정창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10012",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "응급수술 실제배정은 수술실과 팀이 응급환자에게 확정된 순간이다. 수술실·마취팀·집도의가 모두 확정된 마지막 시각을 실제 배정으로 본다.",
+      "concepts": [
+        "응급수술 실제배정"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10013",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "실제배정이 결정창 내부면 응급배정 창내결정으로 분류한다. 수술실만 정하고 마취팀이 확보되지 않았다면 부분 배정이므로 전체 확정과 구별한다.",
+      "concepts": [
+        "응급배정 창내결정"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10014",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중증도 확정 전 배정은 응급배정 확정전표시로 따로 검토한다. 임시 후보 상태를 확정 배정으로 읽지 않도록 배차 버전과 승인자를 확인한다.",
+      "concepts": [
+        "응급배정 확정전표시"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10015",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "변경 마감 뒤 배정이 확정되면 응급배정 마감후결정이다. 마감 뒤 기존 수술을 취소했다면 승인 권한과 통보 지연을 함께 조사해 늦은 변경의 근거를 평가한다.",
+      "concepts": [
+        "응급배정 마감후결정"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10016",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "응급배정 경계정의는 중증도 확정과 일정 변경 마감을 양 끝으로 둔다.",
+      "concepts": [
+        "응급배정 경계정의"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10017",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "중증도 확정과 동시에 배정되면 응급배정 시작경계로 표시한다. 자동분류와 전문의 확정이 같은 시각이 아닐 수 있으므로 어떤 사건이 창을 여는지 명확히 정한다.",
+      "concepts": [
+        "응급배정 시작경계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10018",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "일정 변경 마감과 같은 순간의 배정은 응급배정 종료경계다.",
+      "concepts": [
+        "응급배정 종료경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10019",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "응급배정 통보지연은 팀이 늦게 알았어도 실제 배정 확정시각과 구별한다. 배정 버전은 먼저 발효되고 팀 통보가 뒤따를 수 있어 수신 지연을 결정 지연으로 합치지 않는다.",
+      "concepts": [
+        "응급배정 통보지연"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10020",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "응급삽입 창판정은 중증도·배정·통보·변경마감의 시각을 나란히 본다.",
+      "concepts": [
+        "응급삽입 창판정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10021",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복실 이송창은 마취 종료 뒤 지정 회복침상 인계 마감 전까지다. 환자 상태가 불안정해 수술실 관찰이 연장되면 승인된 의료적 연장과 단순 침상 대기를 구분한다.",
+      "concepts": [
+        "회복실 이송창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10022",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복실 실제도착은 환자 침상이 회복실 감시구역에 들어온 순간이다. 복도 대기와 감시구역 진입을 구분해 환자 모니터링 공백을 정확히 계산한다.",
+      "concepts": [
+        "회복실 실제도착"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10023",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "도착이 이송창 안쪽이면 회복이송 창내도착으로 판정한다. 회복실 진입 뒤 모니터 연결이 늦으면 도착 적합성과 감시 개시 적합성을 각각 판정한다.",
+      "concepts": [
+        "회복이송 창내도착"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10024",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마취 종료 전 도착 표시는 회복이송 조기도착으로 분리해 검토한다. 마취 종료 기록의 지연인지 실제 순서 오류인지 원시 모니터 로그로 구별한다.",
+      "concepts": [
+        "회복이송 조기도착"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10025",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "인계 마감 뒤 회복실에 들어오면 회복이송 늦은도착이다. 침상 부족이 원인이면 배정 로그를 통해 임상 지연과 자원 대기시간을 나누어 기록한다.",
+      "concepts": [
+        "회복이송 늦은도착"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10026",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복이송 경계정책은 마취 종료와 인계 마감을 포함하는지 정한다.",
+      "concepts": [
+        "회복이송 경계정책"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10027",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마취 종료와 같은 시각의 도착은 회복이송 시작점도착이다. 마취 종료가 추정값이면 경계 일치도 확정값이 아니므로 가능한 시간구간으로 표시한다.",
+      "concepts": [
+        "회복이송 시작점도착"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10028",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "인계 마감과 동시에 들어오면 회복이송 마감점도착으로 기록한다.",
+      "concepts": [
+        "회복이송 마감점도착"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10029",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복도착 등록지연은 간호기록 입력이 실제 감시구역 진입보다 늦은 경우다. 위치 태그가 감시구역 진입을 보여주면 간호기록 시차를 도착 사건의 오류로 간주하지 않는다.",
+      "concepts": [
+        "회복도착 등록지연"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10030",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복이송 시간대조는 마취종료·출발·도착·인계마감을 분리한다.",
+      "concepts": [
+        "회복이송 시간대조"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10031",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공기매개수술 소독창은 환자 퇴실 뒤 필요한 공기교환 종료 전까지다. 필요 환기횟수는 공조 성능에 따라 실제 소요시간이 달라지므로 고정 분량 대신 측정값으로 마감을 정한다.",
+      "concepts": [
+        "공기매개수술 소독창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10032",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공기소독 실제완료는 표면 소독과 요구 환기횟수가 모두 충족된 때다. 표면 작업과 공조 요구량 중 마지막으로 충족된 조건이 완료 사건을 만든다.",
+      "concepts": [
+        "공기소독 실제완료"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10033",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "완료가 소독창의 시작과 종료 사이면 공기소독 창내완료다. 표면 소독과 공기교환 중 늦게 끝난 요소가 전체 완료시각을 결정한다.",
+      "concepts": [
+        "공기소독 창내완료"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10034",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환자 퇴실 전 완료 표시는 공기소독 퇴실전표시로 오류 경계를 둔다. 이전 소독 회차나 잘못된 사용자 입력인지 작업 식별자로 확인한다.",
+      "concepts": [
+        "공기소독 퇴실전표시"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10035",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공기교환 마감 뒤 소독이 끝나면 공기소독 마감후완료로 본다. 다음 환자 입실이 먼저였다면 두 구간의 겹침을 산출해 잠재 노출시간을 별도로 보고한다.",
+      "concepts": [
+        "공기소독 마감후완료"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10036",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공기소독 경계규약은 퇴실과 요구 환기 종료를 창의 양 끝으로 정의한다.",
+      "concepts": [
+        "공기소독 경계규약"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10037",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환자 퇴실과 동시에 완료된 표시는 공기소독 시작경계다. 퇴실 감지와 문 폐쇄가 다르면 환기 계산의 시작 사건을 시설 규정에 맞춰 선택한다.",
+      "concepts": [
+        "공기소독 시작경계"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10038",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "요구 환기 종료와 같은 순간의 완료는 공기소독 종료경계로 기록한다.",
+      "concepts": [
+        "공기소독 종료경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10039",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공기소독 보고지연은 점검표 제출시각을 실제 소독 완료와 분리한다. 입자 센서와 청소장비 로그가 완료를 뒷받침하면 늦은 보고는 행정 흐름의 문제로 남긴다.",
+      "concepts": [
+        "공기소독 보고지연"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10040",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공기매개 소독판정은 퇴실·환기·표면소독·보고의 시각을 각각 확인한다.",
+      "concepts": [
+        "공기매개 소독판정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10041",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술후 감염검체창은 의심징후 확인 뒤 항균제 변경 전까지 열린다. 항균제 변경이 배양 결과에 영향을 주므로 처방시각보다 실제 첫 투여시각을 종료 경계로 삼는다.",
+      "concepts": [
+        "수술후 감염검체창"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-10042",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염검체 실제채취는 배양 용기에 조직이나 체액이 담긴 순간이다. 용기 라벨 출력보다 조직이나 체액이 분리되어 담긴 물리 순간을 우선한다.",
+      "concepts": [
+        "감염검체 실제채취"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-10043",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "채취가 지정 창 안에서 이뤄지면 감염검체 창내채취로 판정한다. 적절한 부위와 무균 절차를 충족했는지는 시간 준수와 별도로 확인해야 한다.",
+      "concepts": [
+        "감염검체 창내채취"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-10044",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "의심징후 확인 전 채취는 감염검체 의심전채취로 따로 분류한다. 선별검사 목적의 표본인지 새 감염 의심에 대한 표본인지 임상 맥락을 나눈다.",
+      "concepts": [
+        "감염검체 의심전채취"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10045",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항균제 변경 뒤 채취하면 감염검체 변경후채취에 해당한다. 변경 약제가 들어간 뒤라면 음성 결과의 해석 한계와 지연 사유를 함께 표시한다.",
+      "concepts": [
+        "감염검체 변경후채취"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10046",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염검체 경계기준은 의심 확인과 항균제 변경을 시작·종료점으로 삼는다.",
+      "concepts": [
+        "감염검체 경계기준"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10047",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "의심징후 확인과 동시에 채취되면 감염검체 시작점채취다. 의심 확인이 회고 입력이면 경계 일치를 주장하지 말고 증상 관찰 로그로 실제 범위를 좁힌다.",
+      "concepts": [
+        "감염검체 시작점채취"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10048",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항균제 변경과 같은 순간의 채취는 감염검체 종료점채취로 남긴다.",
+      "concepts": [
+        "감염검체 종료점채취"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-10049",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염검체 등록지연은 검사실 접수가 늦어도 실제 채취시각을 바꾸지 않는다. 용기 라벨 시각과 운반함 기록이 있으면 검사실 접수보다 앞선 채취 사건을 추적할 수 있다.",
+      "concepts": [
+        "감염검체 등록지연"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-10050",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수술감염 창검사는 징후·채취·약제변경·접수의 시간 경계를 대조한다.",
+      "concepts": [
+        "수술감염 창검사"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{"primary":"커밋시각과 빌드시각 역전","text":"커밋시각과 빌드시각 역전은 빌드 시작이 기준 커밋 생성보다 먼저 표시된 모순이다. 저장소와 실행기 시계를 맞춰 실제 선후를 복원한다. 빌드가 참조한 커밋 해시와 서버 수신시각을 대조해 개발자 PC 시계 때문에 생긴 겉보기 역전을 바로잡는다.","relations":["process","boundary","classification"]}
+{"primary":"빌드작업 번호중복","text":"빌드작업 번호중복은 재시도로 서로 다른 실행이 같은 회차번호를 받은 상황이다. 실행 식별자와 산출물 해시로 시간열을 분리한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"시험완료 미래시각","text":"시험완료 미래시각은 실행기 시계가 앞서 결과가 현재보다 뒤의 시각으로 기록된 오류다. 시험 간격을 보존한 채 기준시계로 이동한다. 시험 로그가 현재보다 뒤라면 실행노드 시계오차와 시간대 변환을 확인해 실제 완료경계를 다시 정한다.","relations":["process","state","comparison"]}
+{"primary":"아티팩트와 커밋 불일치","text":"아티팩트와 커밋 불일치는 메타데이터가 가리키는 소스보다 다른 해시로 빌드된 경우다. 빌드 입력목록과 서명 증거로 대응 관계를 고친다.","relations":["process","role","boundary"]}
+{"primary":"서명완료와 업로드 역전","text":"서명완료와 업로드 역전은 저장소 업로드가 서명보다 먼저인데 문서에는 반대로 남은 상황이다. 객체 생성·서명 원시로그로 순서를 정한다. 아티팩트 해시와 저장소 이벤트를 연결해 업로드 뒤 서명처럼 보이는 비동기 기록순서를 복원한다.","relations":["attribute","function","classification"]}
+{"primary":"병렬시험 결과 역정렬","text":"병렬시험 결과 역정렬은 늦게 끝난 시험이 앞선 순번으로 게시된 경우다. 실행 시작·종료시각을 기준으로 결과 목록을 재배열한다.","relations":["part_of","process","boundary"]}
+{"primary":"빌드취소 이벤트누락","text":"빌드취소 이벤트누락은 실행 중 상태에서 재시도 상태로 바로 넘어간 상황이다. 실행기 종료코드와 예약 이력으로 빠진 취소를 복원한다. 작업이 중단됐지만 취소 로그가 없으면 큐 상태와 후속 재시도를 대조해 누락된 전이를 찾는다.","relations":["process","contrast","state"]}
+{"primary":"캐시적중 기록충돌","text":"캐시적중 기록충돌은 같은 단계가 캐시 사용과 새 실행으로 동시에 표시된 경우다. 산출물 생성시각과 캐시키를 대조해 실제 경로를 판정한다.","relations":["attribute","comparison","function"]}
+{"primary":"릴리스태그 날짜경계 혼선","text":"릴리스태그 날짜경계 혼선은 자정 부근 태그가 빌드일과 다른 회차에 들어간 상황이다. 저장소 사건시각으로 소속 회차를 바로잡는다. 자정 무렵 태그를 공통 표준시로 환산해 저장소와 배포시스템의 서로 다른 날짜표시를 일치시킨다.","relations":["process","classification","state"]}
+{"primary":"빌드연표 출처충돌","text":"빌드연표 출처충돌은 저장소·실행기·아티팩트 시스템이 서로 다른 순서를 주장하는 경우다. 원시 실행번호와 해시 연결을 우선해 대표 연표를 만든다.","relations":["process","comparison","boundary"]}
+{"primary":"설정게시와 승인 역전","text":"설정게시와 승인 역전은 운영 버전 생성이 승인 전자서명보다 먼저 표시된 모순이다. 임시 게시와 실제 활성화 사건을 분리한다. 승인 전에 게시된 것처럼 보이면 초안 노출·예약실행·로그시계의 계보를 검토해 유효 순서를 정한다.","relations":["process","boundary","classification"]}
+{"primary":"설정버전 번호중복","text":"설정버전 번호중복은 두 변경이 같은 버전표식을 받은 상황이다. 내용 해시와 작성자 이력을 사용해 독립 시간열로 나눈다.","relations":["attribute","comparison","contrast"]}
+{"primary":"플래그활성 미래시각","text":"플래그활성 미래시각은 관리단말 시계 오류로 활성 기록이 아직 오지 않은 시각을 가진 경우다. 사용자 노출 로그에 맞춰 보정한다. 활성 기록이 미래라면 예약 효력시각인지 노드 시계오차인지 구별해 실제 트래픽 노출과 연결한다.","relations":["process","state","comparison"]}
+{"primary":"비밀값과 참조버전 불일치","text":"비밀값과 참조버전 불일치는 애플리케이션 기록이 실제 저장된 키 세대와 다른 경우다. 접근 감사와 키 식별자로 연결을 복원한다.","relations":["process","role","boundary"]}
+{"primary":"롤백완료와 오류감소 역전","text":"롤백완료와 오류감소 역전은 오류 회복이 원복보다 먼저 보이는 상황이다. 이전 자연 회복과 집계 지연을 검토해 원인을 구분한다. 오류율 집계창이 늦게 닫힐 수 있으므로 원시 요청과 롤백 효력시각으로 회복 선후를 판정한다.","relations":["attribute","function","classification"]}
+{"primary":"다중리전 적용 역정렬","text":"다중리전 적용 역정렬은 수신 순서 때문에 후속 리전 적용이 먼저 표시된 경우다. 각 노드 발생시각을 공통 기준으로 변환한다.","relations":["part_of","process","boundary"]}
+{"primary":"설정비활성 이벤트누락","text":"설정비활성 이벤트누락은 활성 버전이 새 버전으로 바로 바뀌어 이전 해제시점이 없는 상황이다. 참조 전환 로그로 경계를 복원한다. 활성값이 사라졌지만 해제 이벤트가 없을 때 버전 전환과 캐시 갱신을 따라 누락구간을 복원한다.","relations":["process","contrast","state"]}
+{"primary":"적용상태 표시충돌","text":"적용상태 표시충돌은 같은 노드가 새 버전과 옛 버전을 동시에 보고한 경우다. 프로세스 세대와 보고 생성시각으로 실제 상태를 판정한다.","relations":["attribute","comparison","function"]}
+{"primary":"설정회차 자정중복","text":"설정회차 자정중복은 밤중의 한 변경이 양쪽 운영일 일지에 각각 새 사건으로 적힌 경우다. 실행 ID와 절대 시각을 확인해 같은 배포 기록을 한 회차로 결속한다.","relations":["process","classification","state"]}
+{"primary":"설정감사 출처충돌","text":"설정감사 출처충돌은 저장소·배포기·노드 로그가 적용 순서를 다르게 가리키는 경우다. 실제 읽힌 버전 증거를 우선해 연표를 정한다.","relations":["process","comparison","boundary"]}
+{"primary":"잠금획득과 변경시작 역전","text":"잠금획득과 변경시작 역전은 스키마 작업이 독점 잠금보다 먼저 기록된 모순이다. 데이터베이스 원시 트랜잭션 순번으로 선후를 복원한다.","relations":["process","boundary","classification"]}
+{"primary":"마이그레이션 회차중복","text":"마이그레이션 회차중복은 재실행이 같은 작업번호로 남은 상황이다. 트랜잭션 식별자와 적용된 구조 해시로 두 실행을 나눈다.","relations":["attribute","comparison","contrast"]}
+{"primary":"복제적용 미래시각","text":"복제적용 미래시각은 대기 노드 시계가 앞서 아직 생성되지 않은 로그를 적용한 것처럼 보이는 오류다. 로그순번에 맞춰 보정한다.","relations":["process","state","comparison"]}
+{"primary":"백필대상과 결과 불일치","text":"백필대상과 결과 불일치는 작업표의 샤드와 실제 갱신 행의 샤드가 다른 경우다. 쿼리 범위와 변경로그로 대응을 바로잡는다.","relations":["process","role","boundary"]}
+{"primary":"검증완료와 제약오류 역전","text":"검증완료와 제약오류 역전은 완료 선언 뒤 같은 회차의 오류가 먼저 발생한 것처럼 들어온 상황이다. 검사 생성시각과 수신 지연을 분리한다.","relations":["attribute","function","classification"]}
+{"primary":"샤드이동 로그역정렬","text":"샤드이동 로그역정렬은 복구된 통신이 완료·복사·시작 사건을 뒤섞어 보낸 경우다. 이동 세대와 로그순번으로 재배열한다.","relations":["part_of","process","boundary"]}
+{"primary":"스키마원복 이벤트누락","text":"스키마원복 이벤트누락은 실패 상태에서 이전 구조 정상 상태로 바로 넘어간 상황이다. DDL 이력과 메타데이터 버전으로 빠진 원복을 넣는다.","relations":["process","contrast","state"]}
+{"primary":"행수검증 결과충돌","text":"행수검증 결과충돌은 같은 스냅샷에 서로 다른 행수가 보고된 경우다. 읽기시점과 격리수준을 맞춰 어느 비교가 유효한지 판정한다.","relations":["attribute","comparison","function"]}
+{"primary":"변경창 회차경계 혼선","text":"변경창 회차경계 혼선은 자정 넘긴 작업이 두 승인 회차에 중복 귀속된 상황이다. 잠금 획득과 해제 구간으로 하나의 작업열을 만든다.","relations":["process","classification","state"]}
+{"primary":"데이터연표 출처충돌","text":"데이터연표 출처충돌은 배포기·데이터베이스·모니터링 기록이 다른 선후를 주장하는 경우다. 트랜잭션 로그순번을 최우선 근거로 삼는다.","relations":["process","comparison","boundary"]}
+{"primary":"대상등록과 헬스역전","text":"대상등록과 헬스역전은 헬스 성공이 대상 등록보다 먼저 표시된 모순이다. 검사 대상 식별자와 분배기 시계를 보정한다.","relations":["process","boundary","classification"]}
+{"primary":"드레이닝 이벤트중복","text":"드레이닝 이벤트중복은 같은 대상 제거가 두 제어노드에서 별도 사건으로 남은 상황이다. 대상 세대와 명령번호로 병합한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"요청배정 미래시각","text":"요청배정 미래시각은 프록시 시계 오류로 아직 오지 않은 시각의 요청이 기록된 경우다. 분산추적 순서에 맞춰 이동한다.","relations":["process","state","comparison"]}
+{"primary":"대상주소와 인스턴스 불일치","text":"대상주소와 인스턴스 불일치는 헬스로그의 주소가 실제 등록 인스턴스와 다른 경우다. 등록 세대와 네트워크 흐름으로 연결을 고친다.","relations":["process","role","boundary"]}
+{"primary":"격리완료와 실패역전","text":"격리완료와 실패역전은 대상 제외가 원인 실패보다 먼저 보이는 상황이다. 이전 예방 격리인지 시계충돌인지 근거로 나눠 본다.","relations":["attribute","function","classification"]}
+{"primary":"가중치변경 로그역정렬","text":"가중치변경 로그역정렬은 여러 분배노드의 수신시각 때문에 단계 비율이 뒤섞인 경우다. 정책 버전과 생성시각으로 재배열한다.","relations":["part_of","process","boundary"]}
+{"primary":"서비스복귀 이벤트누락","text":"서비스복귀 이벤트누락은 격리 상태에서 정상 요청처리로 바로 넘어간 상황이다. 헬스 성공과 첫 배정 사이에 복귀 사건을 복원한다.","relations":["process","contrast","state"]}
+{"primary":"대상상태 동시충돌","text":"대상상태 동시충돌은 같은 대상이 정상과 비정상으로 동시에 표시된 경우다. 검사창과 상태 세대를 맞춰 대표 상태를 정한다.","relations":["attribute","comparison","function"]}
+{"primary":"로드밸런서 회차중복","text":"로드밸런서 회차중복은 야간 전환이 두 운영일지에 각각 완전한 사건으로 기록된 상황이다. 명령 식별자로 하나로 묶는다.","relations":["process","classification","state"]}
+{"primary":"분배연표 출처충돌","text":"분배연표 출처충돌은 제어면, 프록시, 접근 로그가 요청 분산 순서를 서로 다르게 나타내는 상태다. 시계 교정과 실제 처리 근거를 이용해 대표 연표를 정한다.","relations":["process","comparison","boundary"]}
+{"primary":"확장판정과 기동역전","text":"확장판정과 기동역전은 인스턴스 시작이 확장 결정보다 먼저 표시된 모순이다. 예약 확장 여부와 각 시스템 시계를 확인한다.","relations":["process","boundary","classification"]}
+{"primary":"확장요청 식별자중복","text":"확장요청 식별자중복은 재시도된 할당이 같은 번호로 여러 자원을 만든 상황이다. 공급자 자원ID로 실행을 분리한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"준비완료 미래시각","text":"준비완료 미래시각은 호스트 시계가 앞서 헬스 성공이 현재보다 뒤에 기록된 오류다. 첫 실제 요청시각에 맞춰 보정한다.","relations":["process","state","comparison"]}
+{"primary":"인스턴스와 확장그룹 불일치","text":"인스턴스와 확장그룹 불일치는 새 자원의 태그가 실제 요청 그룹과 다른 경우다. 할당 이력과 정책버전으로 소속을 고친다.","relations":["process","role","boundary"]}
+{"primary":"축소완료와 부하상승 역전","text":"축소완료와 부하상승 역전은 자원 제거가 부하 증가보다 앞선 것처럼 보이는 상황이다. 집계창과 계획 축소를 검토한다.","relations":["attribute","function","classification"]}
+{"primary":"확장단계 로그역정렬","text":"확장단계 로그역정렬은 여러 호스트의 수신순서 때문에 요청·할당·기동·준비가 뒤섞인 경우다. 공급자 사건순번으로 재배열한다.","relations":["part_of","process","boundary"]}
+{"primary":"드레이닝 이벤트누락","text":"드레이닝 이벤트누락은 서비스 중 대상이 곧바로 종료 상태로 넘어간 상황이다. 연결 감소와 종료로그로 빠진 단계를 넣는다.","relations":["process","contrast","state"]}
+{"primary":"가용용량 지표충돌","text":"가용용량 지표충돌은 같은 시각 서로 다른 정상 인스턴스 수가 보고된 경우다. 집계 대상과 표본 생성시각을 맞춰 판정한다.","relations":["attribute","comparison","function"]}
+{"primary":"확장회차 자정혼선","text":"확장회차 자정혼선은 피크 대응이 두 날짜 비용·운영 회차에 중복된 상황이다. 실제 자원 생존구간으로 나눠 귀속한다.","relations":["process","classification","state"]}
+{"primary":"용량연표 출처충돌","text":"용량연표 출처충돌은 정책기·공급자·헬스시스템이 다른 선후를 주장하는 경우다. 자원ID별 생성·종료 원시사건을 기준으로 정한다.","relations":["process","comparison","boundary"]}
+{"primary":"표본생성과 수집역전","text":"표본생성과 수집역전은 저장소 수신이 관측기 측정보다 먼저 표시된 모순이다. 시간대와 장치시계 차를 보정한다.","relations":["process","boundary","classification"]}
+{"primary":"경보사건 번호중복","text":"경보사건 번호중복은 독립 이상이 같은 사건번호를 받은 상황이다. 규칙ID·대상·시작구간으로 시간열을 분리한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"로그표본 미래시각","text":"로그표본 미래시각은 애플리케이션 시계가 앞서 아직 오지 않은 시각의 로그가 나타난 오류다. 추적순서와 기준시계로 이동한다.","relations":["process","state","comparison"]}
+{"primary":"지표대상 라벨불일치","text":"지표대상 라벨불일치는 표본 라벨이 실제 발생 인스턴스와 다른 경우다. 호스트ID와 수집경로로 대응을 바로잡는다.","relations":["process","role","boundary"]}
+{"primary":"경보종료와 정상화역전","text":"경보종료와 정상화역전은 종료 사건 뒤에 정상 조건이 먼저 충족된 것처럼 순서가 뒤집힌 상황이다. 평가창과 수집 지연을 재계산한다.","relations":["attribute","function","classification"]}
+{"primary":"로그배치 역정렬","text":"로그배치 역정렬은 통신 복구 때 최신 배치가 과거 배치보다 먼저 색인된 경우다. 원본 생성시각과 순번으로 재배열한다.","relations":["part_of","process","boundary"]}
+{"primary":"경보확인 이벤트누락","text":"경보 활성과 완화 사이에서 담당자 확인이 사라진 상황이다. 경보확인 이벤트누락은 사용자 감사로그로 빠진 응답을 복원한다.","relations":["process","contrast","state"]}
+{"primary":"대시보드 상태충돌","text":"대시보드 상태충돌은 같은 규칙이 활성과 정상으로 동시에 보인 경우다. 조회창과 평가 세대를 일치시켜 대표 상태를 정한다.","relations":["attribute","comparison","function"]}
+{"primary":"관측회차 날짜중복","text":"관측회차 날짜중복은 자정 부근 표본이 두 일일 집계에 모두 포함된 상황이다. 표본 생성시각으로 한 회차에 귀속한다.","relations":["process","classification","state"]}
+{"primary":"관측연표 출처충돌","text":"관측연표 출처충돌은 원시 표본, 색인 저장소, 대시보드가 사건의 선후를 다르게 제시하는 상태다. 원본 생성 순번과 수집 로그를 우선해 시간열을 복원한다.","relations":["process","comparison","boundary"]}
+{"primary":"첫오류와 사건선언 역전","text":"첫오류와 사건선언 역전은 공식 선언이 최초 사용자 실패보다 먼저 표시된 모순이다. 예방 선언인지 시계차인지 기록으로 판정한다.","relations":["process","boundary","classification"]}
+{"primary":"사건번호 중복배정","text":"사건번호 중복배정은 별개 장애가 같은 대응번호를 받은 상황이다. 영향대상·채널·선언자를 이용해 연표를 분리한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"완화완료 미래시각","text":"완화완료 미래시각은 작업단말 시계 오류로 완료가 현재보다 뒤에 기록된 경우다. 서비스 지표 회복과 맞춰 보정한다.","relations":["process","state","comparison"]}
+{"primary":"영향지역과 지표불일치","text":"영향지역과 지표불일치는 공지가 가리킨 리전이 실제 실패 로그와 다른 경우다. 요청 추적과 라우팅 상태로 대상을 고친다.","relations":["process","role","boundary"]}
+{"primary":"정상선언과 복구역전","text":"정상선언과 복구역전은 종료 공지가 실제 사용자 회복보다 먼저인 상황이다. 내부 정상화와 외부 체감 복구를 따로 둔다.","relations":["attribute","function","classification"]}
+{"primary":"대응대화 역정렬","text":"대응대화 역정렬은 내보내기 과정에서 수정 메시지와 원문 순서가 뒤섞인 경우다. 메시지ID와 서버 생성시각으로 재배열한다.","relations":["part_of","process","boundary"]}
+{"primary":"지휘인계 이벤트누락","text":"지휘인계 이벤트누락은 첫 책임자와 새 책임자의 지시 사이에 인계 기록이 없는 상황이다. 채널 권한과 확인 메시지로 경계를 복원한다.","relations":["process","contrast","state"]}
+{"primary":"사건상태 동시충돌","text":"사건상태 동시충돌은 같은 사건이 조사중과 해결됨으로 동시에 표시된 경우다. 상태버전과 승인시각을 맞춰 대표 상태를 정한다.","relations":["attribute","comparison","function"]}
+{"primary":"야간사건 회차중복","text":"야간사건 회차중복은 자정 넘긴 장애가 이틀 통계에 각각 하나의 사건으로 잡힌 상황이다. 동일 사건번호로 한 연표를 유지한다.","relations":["process","classification","state"]}
+{"primary":"장애연표 출처충돌","text":"장애연표 출처충돌은 지표·배포·대화·공지 기록이 다른 순서를 주장하는 경우다. 자동 원시사건과 사용자 영향 증거의 신뢰순위를 적용한다.","relations":["process","comparison","boundary"]}
+{"primary":"게시와 소비역전","text":"게시와 소비역전은 소비자가 처리에 들어간 시각이 메시지의 영구 저장보다 이르게 나타난 기록 불일치다. 생산자와 큐 브로커의 시계를 공통 기준으로 바꿔 선후를 되찾는다.","relations":["process","boundary","classification"]}
+{"primary":"메시지 식별자중복","text":"메시지 식별자중복은 서로 다른 본문이 같은 ID를 받은 상황이다. 내용 해시·파티션·오프셋으로 시간열을 분리한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"처리완료 미래시각","text":"처리완료 미래시각은 소비자 시계가 앞서 완료가 현재보다 뒤에 기록된 오류다. 브로커 커밋순번에 맞춰 이동한다.","relations":["process","state","comparison"]}
+{"primary":"파티션과 순서키 불일치","text":"파티션과 순서키 불일치는 관련 메시지가 약속된 파티션과 다른 곳에 들어간 경우다. 생산로그와 해시규칙으로 매핑을 고친다.","relations":["process","role","boundary"]}
+{"primary":"재노출과 실패역전","text":"재노출과 실패역전은 항목이 다시 보인 시각보다 처리 실패가 뒤에 기록된 상황이다. 임대만료와 소비자 로그 지연을 나눠 본다.","relations":["attribute","function","classification"]}
+{"primary":"재전송 배치역정렬","text":"재전송 배치역정렬은 통신 복구 때 높은 오프셋이 낮은 오프셋보다 먼저 수신된 경우다. 브로커 오프셋으로 재배열한다.","relations":["part_of","process","boundary"]}
+{"primary":"처리확인 이벤트누락","text":"처리확인 이벤트누락은 실행 성공 뒤 항목이 사라졌지만 커밋 기록이 없는 상황이다. 업무결과와 소비자 상태로 빠진 확인을 복원한다.","relations":["process","contrast","state"]}
+{"primary":"메시지상태 동시충돌","text":"메시지상태 동시충돌은 같은 항목이 처리중과 죽은편지로 동시에 표시된 경우다. 임대세대와 이동사건을 맞춰 대표 상태를 정한다.","relations":["attribute","comparison","function"]}
+{"primary":"큐회차 날짜중복","text":"큐회차 날짜중복은 자정 부근 처리량이 두 일일 집계에 모두 들어간 상황이다. 커밋시각 기준으로 한 회차에 귀속한다.","relations":["process","classification","state"]}
+{"primary":"메시지연표 출처충돌","text":"메시지연표 출처충돌은 생산자, 브로커, 소비자, 업무 저장소가 한 메시지의 선후를 다르게 보여 주는 상태다. 파티션 오프셋과 커밋 증거를 우선해 대표 순서를 정한다.","relations":["process","comparison","boundary"]}
+{"primary":"업로드와 객체완료 역전","text":"업로드와 객체완료 역전은 완성 객체 시각이 마지막 조각 전송보다 먼저 표시된 모순이다. 조각목록과 저장소 시계를 보정한다.","relations":["process","boundary","classification"]}
+{"primary":"객체버전 식별자중복","text":"객체버전 식별자중복은 서로 다른 내용이 같은 버전ID를 받은 상황이다. 체크섬과 생성 리전을 이용해 기록을 분리한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"복제완료 미래시각","text":"복제완료 미래시각은 대상 리전의 장치 시계가 앞서 있어 완료 기록이 현재보다 뒤의 시각으로 저장된 오류다. 작업 순번과 기준시를 사용해 제자리로 옮긴다.","relations":["process","state","comparison"]}
+{"primary":"객체키와 내용불일치","text":"객체키와 내용불일치는 메타데이터가 가리키는 키에 다른 본문이 저장된 경우다. 체크섬·업로드ID·감사로그로 대응을 고친다.","relations":["process","role","boundary"]}
+{"primary":"삭제와 복제역전","text":"삭제와 복제역전은 원본 삭제 뒤 시작된 복제가 먼저 끝난 것처럼 표시된 상황이다. 보존 복제본과 지연 이벤트를 구분한다.","relations":["attribute","function","classification"]}
+{"primary":"저장목록 역정렬","text":"저장목록 역정렬은 색인 갱신순서 때문에 최신 버전 아래에 과거 버전이 새 항목처럼 나타난 경우다. 실제 생성시각으로 재배열한다.","relations":["part_of","process","boundary"]}
+{"primary":"보존잠금 이벤트누락","text":"보존잠금 이벤트누락은 일반 버전이 곧바로 삭제불가 상태가 됐지만 설정 기록이 없는 상황이다. 정책 감사로그로 빠진 사건을 넣는다.","relations":["process","contrast","state"]}
+{"primary":"복제상태 동시충돌","text":"복제상태 동시충돌은 같은 버전이 완료와 실패로 동시에 표시된 경우다. 작업세대와 대상 체크섬을 맞춰 대표 상태를 정한다.","relations":["attribute","comparison","function"]}
+{"primary":"수명주기 회차중복","text":"수명주기 회차중복은 같은 계층 이동이 두 작업일에 각각 신규 사건으로 잡힌 상황이다. 객체 버전과 작업ID로 병합한다.","relations":["process","classification","state"]}
+{"primary":"저장연표 출처충돌","text":"저장연표 출처충돌은 원본·복제·색인·수명주기 로그가 다른 순서를 주장하는 경우다. 객체 체크섬과 작업순번을 우선해 정한다.","relations":["process","comparison","boundary"]}
+{"primary":"DNS게시와 조회역전","text":"DNS게시와 조회역전은 새 주소 조회가 권한 서버 게시보다 먼저 표시된 모순이다. 해석기 캐시와 양쪽 시계를 함께 검토한다.","relations":["process","boundary","classification"]}
+{"primary":"경로변경 식별자중복","text":"경로변경 식별자중복은 서로 다른 회선 조정이 같은 변경번호를 받은 상황이다. 장비ID와 정책해시로 시간열을 분리한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"패킷도착 미래시각","text":"패킷도착 미래시각은 네트워크 장비 시계가 앞서 수신이 현재보다 뒤에 기록된 오류다. 흐름순번과 왕복시간으로 보정한다.","relations":["process","state","comparison"]}
+{"primary":"방화벽규칙과 장비불일치","text":"방화벽규칙과 장비불일치는 중앙 정책 버전이 실제 집행 규칙과 다른 경우다. 장비 설정해시와 감사로그로 연결을 고친다.","relations":["process","role","boundary"]}
+{"primary":"우회해제와 경로복구역전","text":"우회해제와 경로복구역전은 임시 경로 종료가 주 회선 정상화보다 먼저 보이는 상황이다. 검사 생성시각과 보고 지연을 구분한다.","relations":["attribute","function","classification"]}
+{"primary":"라우팅사건 역정렬","text":"라우팅사건 역정렬은 여러 라우터의 수신시각 때문에 철회·선택·광고가 뒤섞인 경우다. 프로토콜 순번과 장비시계를 보정한다.","relations":["part_of","process","boundary"]}
+{"primary":"연결종료 이벤트누락","text":"연결종료 이벤트누락은 활성 세션이 곧바로 새 경로 세션으로 바뀐 상황이다. 흐름 튜플과 재연결 로그로 빠진 종료를 복원한다.","relations":["process","contrast","state"]}
+{"primary":"경로상태 동시충돌","text":"경로상태 동시충돌은 같은 목적지가 도달가능과 불가능으로 동시에 보인 경우다. 관측지점과 경로세대를 맞춰 각각의 범위를 정한다.","relations":["attribute","comparison","function"]}
+{"primary":"네트워크회차 날짜중복","text":"네트워크회차 날짜중복은 자정 넘긴 전환이 두 일일 보고에 완전한 사건으로 들어간 상황이다. 변경ID로 하나의 연표를 유지한다.","relations":["process","classification","state"]}
+{"primary":"네트워크연표 출처충돌","text":"네트워크연표 출처충돌은 제어면·장비·흐름·탐사가 다른 순서를 주장하는 경우다. 데이터면 원시 패킷과 정책버전을 함께 우선한다.","relations":["process","comparison","boundary"]}
+{"primary":"키발급과 첫사용 역전","text":"키발급과 첫사용 역전은 인증 성공이 자격증명 생성보다 먼저 표시된 모순이다. 키ID와 인증서버 시계를 보정한다.","relations":["process","boundary","classification"]}
+{"primary":"세션 식별자중복","text":"세션 식별자중복은 서로 다른 사용자의 연결이 같은 세션ID를 받은 상황이다. 주체·토큰해시·발급자를 이용해 분리한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"권한회수 미래시각","text":"권한회수 미래시각은 관리단말 시계 오류로 폐기가 현재보다 뒤에 기록된 경우다. 실제 거절로그에 맞춰 이동한다.","relations":["process","state","comparison"]}
+{"primary":"계정과 감사주체 불일치","text":"계정과 감사주체 불일치는 접근로그의 사용자 라벨이 실제 토큰 주체와 다른 경우다. 발급 주장과 서명키로 대응을 고친다.","relations":["process","role","boundary"]}
+{"primary":"세션종료와 위험행위 역전","text":"세션종료와 위험행위 역전은 차단 뒤 발생한 행위가 먼저 기록된 것처럼 보이는 상황이다. 지연 로그와 별도 세션 가능성을 검토한다.","relations":["attribute","function","classification"]}
+{"primary":"인증로그 역정렬","text":"인증로그 역정렬은 여러 서버의 수신순서 때문에 도전·승인·토큰발급이 뒤섞인 경우다. 상관ID와 각 서버 시계를 맞춘다.","relations":["part_of","process","boundary"]}
+{"primary":"권한승격 이벤트누락","text":"권한승격 이벤트누락은 일반 역할에서 관리자 행위로 바로 넘어간 상황이다. 정책 변경과 임시권한 감사로 빠진 사건을 복원한다.","relations":["process","contrast","state"]}
+{"primary":"계정상태 동시충돌","text":"계정상태 동시충돌은 같은 계정이 활성과 잠금으로 동시에 표시된 경우다. 상태버전과 집행지점을 맞춰 적용 범위를 정한다.","relations":["attribute","comparison","function"]}
+{"primary":"접근회차 날짜중복","text":"접근회차 날짜중복은 자정 부근 세션이 두 날짜 통계에 각각 신규 접근으로 잡힌 상황이다. 발급·종료 구간으로 배분한다.","relations":["process","classification","state"]}
+{"primary":"접근연표 출처충돌","text":"접근연표 출처충돌은 발급자·정책기·서비스·감사저장이 다른 순서를 주장하는 경우다. 서명된 토큰시각과 원시 상관ID를 우선한다.","relations":["process","comparison","boundary"]}
+{"primary":"백업시작과 기준시각 역전","text":"백업시작과 기준시각 역전은 데이터 읽기가 스냅샷 경계보다 먼저인데 반대로 기록된 모순이다. 저장 엔진 순번으로 선후를 복원한다.","relations":["process","boundary","classification"]}
+{"primary":"백업세대 식별자중복","text":"백업세대 식별자중복은 서로 다른 회차가 같은 세대번호를 받은 상황이다. 저장위치·체크섬·기준시각으로 분리한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"복원완료 미래시각","text":"복원완료 미래시각은 복구 환경의 빠른 시계 때문에 복원 종료가 아직 오지 않은 때로 저장된 이상값이다. 검증 로그를 기준 시계에 환산해 사건 위치를 바로잡는다.","relations":["process","state","comparison"]}
+{"primary":"백업목록과 객체불일치","text":"백업목록과 객체불일치는 명세의 파일이 실제 저장 객체와 다른 경우다. 객체해시와 작업ID로 대응 관계를 고친다.","relations":["process","role","boundary"]}
+{"primary":"검증완료와 읽기오류 역전","text":"검증완료와 읽기오류 역전은 성공 검증을 승인한 뒤 같은 회차의 읽기 오류가 앞선 사건처럼 도착한 경우다. 생성 시각과 검사 순번을 이용해 두 로그의 순서를 복원한다.","relations":["attribute","function","classification"]}
+{"primary":"복원로그 역정렬","text":"복원로그 역정렬은 병렬 샤드의 수신시각 때문에 생성·주입·검증 순서가 뒤섞인 경우다. 샤드별 순번을 먼저 복원한다.","relations":["part_of","process","boundary"]}
+{"primary":"스냅샷종료 이벤트누락","text":"스냅샷종료 이벤트누락은 생성중 상태에서 곧바로 보존 상태로 넘어간 상황이다. 객체완료와 메타데이터 잠금으로 빠진 종료를 넣는다.","relations":["process","contrast","state"]}
+{"primary":"복구본상태 동시충돌","text":"복구본상태 동시충돌은 같은 세대가 정상과 손상으로 동시에 표시된 경우다. 검사세대와 체크섬을 맞춰 대표 판정을 정한다.","relations":["attribute","comparison","function"]}
+{"primary":"백업회차 날짜중복","text":"백업회차 날짜중복은 자정 넘긴 전체백업이 이틀 보고에 각각 한 건으로 잡힌 상황이다. 하나의 작업ID로 연속 구간을 유지한다.","relations":["process","classification","state"]}
+{"primary":"복구연표 출처충돌","text":"복구연표 출처충돌은 데이터베이스·객체저장·복구도구·검증기가 다른 순서를 주장하는 경우다. 저장 엔진 순번과 체크섬을 우선한다.","relations":["process","comparison","boundary"]}
+{"primary":"장애감지와 전환역전","text":"장애감지와 전환역전은 대체 리전 활성화가 장애 판정보다 먼저 표시된 모순이다. 예방 훈련인지 시계차인지 기록으로 구분한다.","relations":["process","boundary","classification"]}
+{"primary":"전환회차 식별자중복","text":"전환회차 식별자중복은 서로 다른 장애가 같은 재해번호를 받은 상황이다. 원인·리전·선언채널로 연표를 분리한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"대체승격 미래시각","text":"대체승격 미래시각은 대기 리전의 시계 오차로 승격 완료가 현재 이후에 찍힌 기록이다. 첫 쓰기 로그와 공통 시각을 대조해 완료 사건을 재배치한다.","relations":["process","state","comparison"]}
+{"primary":"복제대상과 주리전 불일치","text":"복제대상과 주리전 불일치는 전환 기록이 가리킨 데이터 원본이 실제 주 역할과 다른 경우다. 로그세대와 쓰기 증거로 연결을 고친다.","relations":["process","role","boundary"]}
+{"primary":"원복완료와 동기화역전","text":"원복완료와 동기화역전은 주 리전 복귀가 데이터 따라잡기보다 먼저 보이는 상황이다. 읽기 복귀와 쓰기 복귀를 나눠 해석한다.","relations":["attribute","function","classification"]}
+{"primary":"전환사건 역정렬","text":"전환사건 역정렬은 DNS·로드밸런서·데이터베이스 로그가 수신순서로 뒤섞인 경우다. 서비스 의존성과 원시 생성시각으로 재배열한다.","relations":["part_of","process","boundary"]}
+{"primary":"대체운영 이벤트누락","text":"대체운영 이벤트누락은 전환중 상태에서 곧바로 원복 상태로 넘어간 상황이다. 요청·쓰기 로그로 실제 운영 구간을 복원한다.","relations":["process","contrast","state"]}
+{"primary":"리전상태 동시충돌","text":"리전상태 동시충돌은 같은 리전이 주와 대기로 동시에 표시된 경우다. 역할세대와 데이터 계층별 범위를 맞춰 판정한다.","relations":["attribute","comparison","function"]}
+{"primary":"재해회차 날짜중복","text":"재해회차 날짜중복은 자정을 넘긴 하나의 장애가 전날과 다음 날 통계에 두 건의 완전한 사건으로 집계된 오류다. 재해 식별자와 절대 시각으로 연표를 하나로 합친다.","relations":["process","classification","state"]}
+{"primary":"전환연표 출처충돌","text":"전환연표 출처충돌은 DNS·프록시·저장소·상태공지가 다른 순서를 주장하는 경우다. 사용자 요청과 쓰기확정 증거를 우선한다.","relations":["process","comparison","boundary"]}
+{"primary":"배포승인과 노출역전","text":"배포승인과 노출역전은 사용자 요청이 승인보다 먼저 새 버전에 간 것으로 표시된 모순이다. 시험 트래픽인지 시계차인지 구분한다.","relations":["process","boundary","classification"]}
+{"primary":"릴리스번호 중복사용","text":"릴리스번호 중복사용은 서로 다른 코드해시가 같은 버전표시를 가진 상황이다. 아티팩트 서명과 커밋으로 시간열을 분리한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"카나리완료 미래시각","text":"카나리완료 미래시각은 배포기 시간이 앞서 카나리 종료가 미래로 기록된 경우다. 요청 추적의 실제 도착 순서에 맞춰 완료 시각을 교정한다.","relations":["process","state","comparison"]}
+{"primary":"대상버전과 이미지불일치","text":"대상버전과 이미지불일치는 배포상태 라벨이 실행 중인 이미지 해시와 다른 경우다. 프로세스 메타데이터로 대응을 고친다.","relations":["process","role","boundary"]}
+{"primary":"롤백완료와 오류회복역전","text":"롤백완료와 오류회복역전은 회복 지표가 원복보다 먼저 보이는 상황이다. 집계창과 다른 완화조치를 함께 검토한다.","relations":["attribute","function","classification"]}
+{"primary":"리전배포 로그역정렬","text":"리전배포 로그역정렬은 여러 제어기의 수신시각 때문에 카나리·확대·완료가 뒤섞인 경우다. 배포세대와 생성시각으로 재배열한다.","relations":["part_of","process","boundary"]}
+{"primary":"배포중지 이벤트누락","text":"배포중지 이벤트누락은 확대중 상태에서 곧바로 롤백 상태로 넘어간 상황이다. 정책판정과 명령이력으로 빠진 중지를 복원한다.","relations":["process","contrast","state"]}
+{"primary":"릴리스상태 동시충돌","text":"릴리스상태 동시충돌은 같은 버전이 진행중과 완료로 동시에 표시된 경우다. 대상집합과 상태버전을 맞춰 대표 판정을 정한다.","relations":["attribute","comparison","function"]}
+{"primary":"배포회차 날짜중복","text":"배포회차 날짜중복은 자정 넘긴 릴리스가 이틀 변경일지에 각각 한 건으로 기록된 상황이다. 릴리스ID로 하나의 연표를 유지한다.","relations":["process","classification","state"]}
+{"primary":"배포연표 출처충돌","text":"배포연표 출처충돌은 저장소·배포기·인스턴스·사용자지표가 다른 순서를 주장하는 경우다. 실행 이미지해시와 실제 요청을 우선한다.","relations":["process","comparison","boundary"]}
+{"primary":"사건종료와 회고착수 역전","text":"사건종료와 회고착수 역전은 공식 종료보다 회고 시작이 먼저 표시된 모순이다. 대응 중 메모와 정식 분석 작업을 구분한다.","relations":["process","boundary","classification"]}
+{"primary":"회고문서 식별자중복","text":"회고문서 식별자중복은 서로 다른 사건 분석이 같은 문서번호를 받은 상황이다. 사건ID·작성자·증거목록으로 분리한다.","relations":["attribute","comparison","contrast"]}
+{"primary":"개선완료 미래시각","text":"개선완료 미래시각은 추적 도구의 시계 오차 때문에 개선 종료가 현재 이후에 찍힌 기록이다. 코드와 설정이 실제 배포된 시각에 맞춰 완료 사건을 옮긴다.","relations":["process","state","comparison"]}
+{"primary":"연표와 증거시각 불일치","text":"연표와 증거시각 불일치는 문서 순서가 원시 로그의 선후와 다른 경우다. 출처 시계 보정과 수정이력으로 문장을 고친다.","relations":["process","role","boundary"]}
+{"primary":"조치승인과 원인확정역전","text":"조치승인과 원인확정역전은 해결책이 원인 검증보다 먼저 승인된 상황이다. 임시 완화와 영구 개선을 나눠 평가한다.","relations":["attribute","function","classification"]}
+{"primary":"검토댓글 역정렬","text":"검토댓글 역정렬은 내보내기 과정에서 답글이 원문보다 앞에 놓인 경우다. 메시지ID와 부모관계로 토론 순서를 복원한다.","relations":["part_of","process","boundary"]}
+{"primary":"검증시험 이벤트누락","text":"검증시험 이벤트누락은 구현 완료에서 조치 종료로 바로 넘어간 상황이다. 실행기 결과와 승인 기록으로 빠진 시험을 넣는다.","relations":["process","contrast","state"]}
+{"primary":"조치상태 동시충돌","text":"조치상태 동시충돌은 하나의 조치가 진행 중과 완료 상태로 함께 표시된 모순이다. 상태 버전과 담당 승인 로그를 대조해 대표값을 고른다.","relations":["attribute","comparison","function"]}
+{"primary":"회고회차 날짜중복","text":"회고회차 날짜중복은 장기 분석이 두 월간 보고에 각각 신규 회고로 잡힌 상황이다. 문서ID로 하나의 진행열을 유지한다.","relations":["process","classification","state"]}
+{"primary":"회고연표 출처충돌","text":"회고연표 출처충돌은 원시 로그, 대화, 공지, 사후 문서가 사건 순서를 서로 다르게 적은 상태다. 자동 증거의 신뢰 순위를 적용한 뒤 하나의 연표를 만든다.","relations":["process","comparison","boundary"]}

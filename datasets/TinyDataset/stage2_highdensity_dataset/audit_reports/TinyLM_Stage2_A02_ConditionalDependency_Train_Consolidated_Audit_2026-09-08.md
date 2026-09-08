@@ -1,6 +1,7 @@
 # TinyLM Stage2 A02 조건·의존 구조 train 통합 감사 보고서
 
-- 감사일: 2026-09-08 KST
+- 최초 감사일: 2026-09-08 KST
+- 정본 감사기 재감사일: 2026-09-09 KST
 - 대상: `stage2_(12)conditional_dependency_high_density_train_v01.json`~`v86.json`
 - 판정: **PASS**
 - 이 문서는 Stage2 A02 train 교육영역의 누적 정본 감사다. 작성 중 작업원장에 남긴 파일별 진행 기록보다 이 문서와 기계 부속의 최종 수치를 우선한다.
@@ -25,6 +26,14 @@
 - 동일 4어절 도입부 1쌍은 v81 한 문장의 실제 주어를 구체화해 0으로 만들었다.
 - 위 교정에서 ID와 relations는 변경하지 않았다.
 
+### 2.1 2026-09-09 감사기 변경·재감사와 수정 필요성 판정
+
+- A01에서 확정한 정본 변경을 동일하게 적용했다. 문자 3~5-gram TF-IDF의 IDF는 문서별 고유 feature의 document frequency로 계산하고 sparse vocabulary를 연속 index로 구성했으며, CSR 형식 검증·float64 cosine·벡터화 pair 순회를 사용한다. 표준출력은 Windows에서도 결과가 손실되지 않도록 UTF-8로 고정했다.
+- 정본 batch digest는 정렬된 파일별 SHA-256 문자열을 구분자 없이 이어 붙인 뒤 다시 SHA-256 하는 산식으로 통일했다. 기존 A02 보고서의 set digest는 이 산식과 일치하지 않아 정정하지만, 파일별 source SHA 86/86과 corpus SHA 86/86은 종전 기계 부속과 모두 일치한다. 따라서 데이터 drift는 없다.
+- corrected internal 최고값 `0.426295796`은 독립 scikit-learn 전수값 `0.42629579574110477`과 같은 pair `S2-A02-T-047:115`↔`S2-A02-T-052:90`에서 일치했다. 종전 `0.425291196`은 감사 계산값 차이로 폐기한다.
+- 반복 4어절 도입부, 5어절, exact/normalized, 문자·어절 유사도 threshold, 조사·문법, 비정상 문자, 문장 내부 반복, relations, 예약 unseen relation-set, source↔corpus projection을 모두 재검사했다. 위반이 0이므로 **A02 record·source·corpus는 한 건도 수정하지 않았다.**
+- A03 포장 전 정본 문법 gate에서 `이다`·`이며` 같은 서술격 조사·연결형을 주격조사 `이/가` 후보에서 제외하도록 판별기를 보완했다. 8건 fixture와 A02 전체 재실행 결과 기존 후보 221건·확정 오류 0 및 품질 수치가 그대로 유지되어 A02 데이터 수정은 여전히 0건이다.
+
 ## 3. 최종 품질 gate
 
 | 검사 | 결과 |
@@ -36,7 +45,7 @@
 | 반복 5어절 | 0 / 214,911 assignments |
 | 반복 4어절 도입부 | 0 |
 | 문자 3~5-gram TF-IDF cosine ≥0.72 | 0쌍 |
-| 문자 유사도 최고 | 0.425291196 |
+| 문자 유사도 최고 | 0.426295796 |
 | word-set Jaccard ≥0.60 | 0쌍 |
 | word-set Jaccard 최고 | 0.379310345 |
 | hard 조사·문법 오류 | 0 |
@@ -86,10 +95,10 @@
 
 | 비교 대상 | 대상 records | char cosine ≥0.72 / 최고 | Jaccard ≥0.60 / 최고 |
 |---|---:|---:|---:|
-| A02 내부 | 12,900 | 0 / 0.425291196 | 0 / 0.379310345 |
-| Stage2 A01 train | 13,050 | 0 / 0.289286366 | 0 / 0.250000000 |
+| A02 내부 | 12,900 | 0 / 0.426295796 | 0 / 0.379310345 |
+| Stage2 A01 train | 13,050 | 0 / 0.300021987 | 0 / 0.250000000 |
 | Stage1 high-density | 34,000 | 0 / 0.298366652 | 0 / 0.266666667 |
-| 그 밖의 Stage2 high-density pilot | 300 | 0 / 0.165279821 | 0 / 0.150000000 |
+| 그 밖의 Stage2 high-density pilot | 300 | 0 / 0.183182794 | 0 / 0.150000000 |
 
 저밀도와 held-out/evaluation은 정본 참고 및 교차 유사도 범위에서 제외했다. 일반 lexical-shape fingerprint는 반복 987종, 최대 점유율 1.914729%였으나 이는 어휘를 `<lex>`로 치환한 진단값이다. provenance fingerprint 0, 실제 반복 5어절 0, 고유사 threshold 초과 0이므로 의미 보일러플레이트 gate는 PASS다.
 
@@ -184,24 +193,25 @@
 | v85 | `S2-CDH-12601 ~ S2-CDH-12750` | S2-A02-T085: 도로 터널 배수·교통 통제 — 필요조건 충족과 결과 발생의 비대칭 판정 | 45.166667 | `876364da581f…` | `b7762a6d4886…` |
 | v86 | `S2-CDH-12751 ~ S2-CDH-12900` | S2-A02-T086: 공항 활주로 제설·운항 회복 — 선행 자원 의존과 독립 우회경로 구분 | 45.233333 | `47c5bd81ef59…` | `2350f0c4fe42…` |
 
-- v01~v86 source-set SHA-256: `8d593b6833459659a2bc24b2d3d86bfa4317c644044b22332617c094fef25d24`
-- v01~v86 corpus-set SHA-256: `5a161aec3d55bd53dafd3937b8cd329177091207db644478dc241d19eea8a40f`
+- v01~v86 source-set SHA-256: `54d6e0e6f4ffc45b1a3a6a1e536d60f723f75a639eeed5d02f443a8a6c074b27`
+- v01~v86 corpus-set SHA-256: `e879848b045d92b59ab0a50e126bff716753f6e9ce2a51e661cb1ddc14f82a6e`
 - 각 파일의 전체 SHA-256은 기계 부속 JSON에 보존했다.
+- set digest 변경은 산식 통일에 따른 감사 보고값 정정이며, 위 표의 86개 파일별 SHA는 변경되지 않았다.
 
 ## 9. 중앙 원장·manifest·checkpoint 정합성
 
 - 중앙 family 원장 SHA-256: `21804692434294b0c80774464c87d9e3d90f58ce93748c32671cf535244e5aa7`
-- checkpoint SHA-256: `5c174886af8b83b6f4ce8d05d4373f3d70c46c2cb38b303ee8a8deedef716b65`
+- checkpoint SHA-256: `b2e0ccf3411e5b8d4f2a05b3a62641fefe96c480c4e0897b8d787b6a205eb1f0`
 - Stage2 preparation manifest SHA-256: `1802fd79354a9ff3cd36872a7f2c32a89ae1803e94aae9ce40edea7cbe4b0c0e`
 - checkpoint A02 train entries: 86, source/corpus SHA 불일치 0
-- checkpoint 전체는 A01 train 87 + A02 train 86 = 173 entries다.
+- checkpoint 전체는 A01 train 87 + A02 train 86 + A03 train 69 = 242 entries다. A03 포장으로 전역 checkpoint SHA만 갱신됐고 A02 entry 86개는 모두 그대로 일치한다.
 - checkpoint와 Stage2 manifest가 참조한 중앙 family 원장 SHA는 현재 원장과 모두 일치한다.
 - `PREPARATION_MANIFEST.json`은 예약 승인 snapshot으로 유지하며 생성 완료 상태는 checkpoint·작업원장·본 감사가 소유한다.
 
 ## 10. 다음 재개점
 
-- Stage2 train 우선 순서에 따라 다음 직접 작성 대상은 기존 A03 v01 pilot을 보존한 `S2-A03-T-002`다.
-- A03 source v02~v69 68개를 완성한 뒤에만 같은 영역 단위 token·중복·5어절·fuzzy·조사 감사를 수행하고 PASS일 때 corpus를 포장한다.
+- A03 train v01~v69는 2026-09-09 정본 포장·최종 재감사 PASS 상태로 동결했다.
+- Stage2 train 우선순서의 다음 영역은 A04 `state_transition`, 예약 `S2-A04-T-001~069`이다.
 - Stage1/identity, 저밀도, held-out/evaluation, legacy `stage2_(2)attribute_high_density_*`는 수정하지 않는다.
 
 ## 11. 기계 부속

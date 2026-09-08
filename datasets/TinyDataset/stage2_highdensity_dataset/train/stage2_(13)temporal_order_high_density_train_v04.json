@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v04",
+  "version": "4",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-00451 ~ S2-TOH-00600",
+  "concept_family": "S2-A03-T004: 스마트 온실 관수·환경제어 — 시간 정보 충돌과 순서 복원",
+  "design_note": "스마트 온실 관수·환경제어 영역의 시간 정보 충돌과 순서 복원 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-00451",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관수 로그 시계 충돌은 제어기에는 밸브 개방이 먼저지만 서버에는 유량 상승이 먼저 찍힌 경우다. 장치별 시계 오프셋을 보정한 뒤 물리적으로 가능한 순서를 복원한다.",
+      "concepts": [
+        "관수 로그 시계 충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00452",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "밸브 순번과 시각 불일치는 증가한 시퀀스 번호가 이전 타임스탬프와 함께 저장된 상태다. 재부팅 전후의 시계 이동을 확인해 순번 증거를 우선한다.",
+      "concepts": [
+        "밸브 순번과 시각 불일치"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00453",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "펌프 전류와 압력 역전은 화면상 압력 상승이 모터 전류보다 앞서 보이는 모순이다. 배관 잔압 여부와 원시 표본시각을 함께 봐 실제 선후를 정한다.",
+      "concepts": [
+        "펌프 전류와 압력 역전"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00454",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "급수 명령 중복시각은 재전송된 두 명령이 같은 벽시계 값을 가진 경우다. 메시지 식별자와 수신 순서를 이용해 최초 요청과 재시도를 나눈다.",
+      "concepts": [
+        "급수 명령 중복시각"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00455",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배액 도달 기록 역순은 회수조 유입이 관수 시작보다 앞서 저장된 자료다. 이전 회차 잔류 배액인지 시계 오류인지 유량 연속성으로 판별한다.",
+      "concepts": [
+        "배액 도달 기록 역순"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00456",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관수 종료 시각 공백은 폐쇄 명령은 있으나 영점 유량 표본이 누락된 상황이다. 다음 회차 시작과 압력 하강 범위로 종료 구간만 복원하고 한 점을 꾸며내지 않는다.",
+      "concepts": [
+        "관수 종료 시각 공백"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00457",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "구역 전환 표식 충돌은 앞 구역 닫힘과 다음 구역 열림이 서로 다른 로그에서 반대 순서로 보이는 경우다. 공통 매니폴드 압력의 변화가 가능한 배열을 고른다.",
+      "concepts": [
+        "구역 전환 표식 충돌"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00458",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예약표와 실행 이력 차이는 계획된 시작시간과 실제 밸브 작동시간이 일치하지 않는 상태다. 사건 순서는 예약표가 아니라 현장 실행 증거로 복구한다.",
+      "concepts": [
+        "예약표와 실행 이력 차이"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00459",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관수 확인 응답 역전은 완료 응답이 요청보다 이른 시각으로 표시된 모순이다. 왕복 메시지 번호와 서버 수신순서를 사용해 시계 오차를 분리한다.",
+      "concepts": [
+        "관수 확인 응답 역전"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00460",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유량계 재부팅 경계는 장치 시간이 초기값으로 돌아가 이후 표본이 과거에 끼어든 상태다. 누적량 증가와 부팅 식별자를 기준으로 두 시간축을 이어 붙인다.",
+      "concepts": [
+        "유량계 재부팅 경계"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00461",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "양액 주입 기록 충돌은 펌프 로그와 탱크 중량 로그가 서로 다른 투입 순서를 가리키는 경우다. 계량 변화와 체크밸브 상태를 대조해 실제 주입을 판정한다.",
+      "concepts": [
+        "양액 주입 기록 충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00462",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교반 종료 시계 오차는 인버터 정지와 회전수 영점의 타임스탬프가 장치마다 어긋난 상태다. 동기 표식과 감속에 필요한 최소시간으로 순서를 맞춘다.",
+      "concepts": [
+        "교반 종료 시계 오차"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00463",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "농도 안정 선행 모순은 기록상 전도도 안정이 원액 투입보다 먼저 나타난 경우다. 이전 배치 표본 혼입과 분석기 지연을 확인한 뒤 배치 경계를 복원한다.",
+      "concepts": [
+        "농도 안정 선행 모순"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00464",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "산도 보정 중복이력은 한 번의 주입이 제어기와 게이트웨이에 두 사건처럼 저장된 상태다. 동일 명령번호와 투입량을 근거로 복제 행을 합친다.",
+      "concepts": [
+        "산도 보정 중복이력"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00465",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시료 채취 시각 불일치는 라벨 인쇄시각과 실제 채취 확인시각이 다른 경우다. 작업자 서명과 용기 스캔 순서를 통해 관측 사건을 배치한다.",
+      "concepts": [
+        "시료 채취 시각 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00466",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배합 승인 역전기록은 승인 문서가 시험 완료보다 앞서 보이는 모순이다. 문서 수정이력과 분석기 원시 종료시각으로 실제 의사결정 순서를 정한다.",
+      "concepts": [
+        "배합 승인 역전기록"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00467",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탱크 수위 이력 단절은 통신 공백 때문에 보충 시작과 종료 사이 표본이 없는 상태다. 누적 유량과 다음 수위로 가능한 구간을 추정하되 정확한 순간은 유보한다.",
+      "concepts": [
+        "탱크 수위 이력 단절"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00468",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원액 배치표 혼선은 두 탱크의 기록이 같은 배치번호로 합쳐져 투입 순서가 섞인 경우다. 밸브 경로와 질량수지를 이용해 각 사건을 분리한다.",
+      "concepts": [
+        "원액 배치표 혼선"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00469",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "세척과 배합 겹침 충돌은 한 화면에서 두 작업이 동시에 보이지만 공통 배관상 함께 수행할 수 없는 상태다. 밸브 위치의 원시 변화로 실제 배열을 고른다.",
+      "concepts": [
+        "세척과 배합 겹침 충돌"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00470",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전도도 표본 순서 뒤섞임은 네트워크 재전송으로 도착순서와 측정순서가 달라진 자료다. 장치 표본번호를 기준으로 시간열을 다시 정렬한다.",
+      "concepts": [
+        "전도도 표본 순서 뒤섞임"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00471",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "천창 명령 시각 충돌은 중앙 제어와 현장 드라이브가 서로 다른 개방 시작을 기록한 경우다. 전류 상승과 엔코더 이동을 묶어 실제 구동점을 정한다.",
+      "concepts": [
+        "천창 명령 시각 충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00472",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "개도율 표본 역배열은 늦게 도착한 패킷이 앞선 위치값 뒤에 삽입된 상태다. 표본번호와 이동방향 제약으로 엔코더 열을 재정렬한다.",
+      "concepts": [
+        "개도율 표본 역배열"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00473",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "팬 기동과 풍속 모순은 풍속 상승이 전류 투입보다 앞서 보이는 기록이다. 자연풍 기여와 센서시계 오차를 검토해 가능한 순서를 복원한다.",
+      "concepts": [
+        "팬 기동과 풍속 모순"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00474",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환기 요구 이력 중복은 같은 판단이 재계산 때마다 새 사건처럼 남은 경우다. 원인 표본창과 요구 식별자를 대조해 하나의 지속 상태로 묶는다.",
+      "concepts": [
+        "환기 요구 이력 중복"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00475",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "댐퍼 끝단신호 역전은 닫힘 접점과 열림 접점이 겹쳐 순서가 모호한 상태다. 모터 방향과 접점 해제시각으로 전환 경계를 정한다.",
+      "concepts": [
+        "댐퍼 끝단신호 역전"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00476",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "풍압 잠금 시각 불일치는 풍속계와 제어기가 잠금 시작을 다르게 기록한 경우다. 평균창 종료와 출력 차단 이력을 비교해 판정 기준시각을 선택한다.",
+      "concepts": [
+        "풍압 잠금 시각 불일치"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00477",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환기 종료 표본 결측은 팬 정지 뒤 풍속이 영점이 되는 과정이 빠진 상황이다. 다음 기동 전 최종 정상값으로 종료 범위를 제한하고 한 시점을 단정하지 않는다.",
+      "concepts": [
+        "환기 종료 표본 결측"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00478",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "천창 위치 캐시 역순은 화면 캐시가 과거 개도율을 새 값 뒤에 보여 준 경우다. 현장 엔코더 원본과 캐시 생성시각을 분리해 읽는다.",
+      "concepts": [
+        "천창 위치 캐시 역순"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00479",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상환기 기록 합류는 자동 환기와 연기 배출 이력이 하나의 운전구간으로 합쳐진 상태다. 경보 식별자와 모드 전환을 따라 두 사건의 경계를 복원한다.",
+      "concepts": [
+        "비상환기 기록 합류"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00480",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "측창 수동조작 누락은 위치 변화는 있으나 자동 명령이 없는 경우다. 현장 키 스위치와 출입기록을 사용해 누락된 조작 구간을 표시한다.",
+      "concepts": [
+        "측창 수동조작 누락"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00481",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "점화 요청과 화염 역전은 화염센서 시각이 제어 요청보다 먼저 찍힌 모순이다. 잔류 화염 여부와 두 장치의 동기 오차를 확인해 실제 선후를 정한다.",
+      "concepts": [
+        "점화 요청과 화염 역전"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00482",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보일러 재부팅 시간점프는 부팅 뒤 내부시계가 과거로 돌아가 운전행이 섞인 상태다. 누적 운전시간과 부팅번호로 기록을 두 구간으로 나눈다.",
+      "concepts": [
+        "보일러 재부팅 시간점프"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00483",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온수 도달 순서 충돌은 말단 센서가 중간 센서보다 먼저 상승한 것으로 보이는 자료다. 센서 위치와 표본주기를 반영해 전송 지연을 교정한다.",
+      "concepts": [
+        "온수 도달 순서 충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00484",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "난방 요구 중복사건은 같은 저온 조건이 여러 제어주기에서 반복 기록된 경우다. 시작과 해제 표식을 찾아 하나의 요구기간으로 합친다.",
+      "concepts": [
+        "난방 요구 중복사건"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00485",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "버너 정지 시각 공백은 연료밸브 폐쇄와 불꽃 소멸 사이 로그가 누락된 상황이다. 안전연동 순서로 종료 범위를 정하되 임의의 초를 넣지 않는다.",
+      "concepts": [
+        "버너 정지 시각 공백"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00486",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "축열 방출 이력 혼선은 충전과 방출 표본이 같은 태그에 섞여 방향이 모호한 상태다. 유량 방향과 온도차 부호로 각 구간을 분리한다.",
+      "concepts": [
+        "축열 방출 이력 혼선"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00487",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환수 온도표 역정렬은 서버 도착 순서대로 저장해 과거 표본이 뒤늦게 끼어든 자료다. 장치 측정번호를 따라 실제 시간열을 복원한다.",
+      "concepts": [
+        "환수 온도표 역정렬"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00488",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저온 경보와 난방 시작이 같은 시각으로 반올림되어 선후가 사라진 상태를 저온 경보와 난방 충돌이라 한다. 고해상도 원시 로그로 경계를 재검토한다.",
+      "concepts": [
+        "저온 경보와 난방 충돌"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00489",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배관 순환 모드 누락은 펌프 전류는 이어지지만 보온 모드 전환행이 없는 상황이다. 밸브 조합과 설정값 변화로 누락 구간을 표시한다.",
+      "concepts": [
+        "배관 순환 모드 누락"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00490",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도 회복 기준 불일치는 제어기와 운영자가 서로 다른 안정폭을 사용해 종료시각이 달라진 경우다. 두 기준을 병기하고 동일 사건처럼 합치지 않는다.",
+      "concepts": [
+        "온도 회복 기준 불일치"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00491",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차광 명령 기록 역전은 회수 명령이 전개 명령보다 앞선 시각으로 저장된 모순이다. 엔코더 방향과 명령번호를 이용해 실제 순서를 바로잡는다.",
+      "concepts": [
+        "차광 명령 기록 역전"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00492",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막 위치 표본 중복은 재전송 패킷이 새로운 이동처럼 이력에 들어간 상태다. 동일 표본번호와 좌표를 확인해 복제 기록을 제거한다.",
+      "concepts": [
+        "막 위치 표본 중복"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00493",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보광 점등 시각 충돌은 조명제어기와 전력계가 서로 다른 시작점을 가리키는 경우다. 전력 상승과 광센서 반응의 물리 순서를 기준으로 정렬한다.",
+      "concepts": [
+        "보광 점등 시각 충돌"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00494",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "일사 변화와 차광 모순은 화면상 차광 전개가 일사 초과보다 먼저 보이는 자료다. 예측제어 여부와 원시 광량 시계를 함께 확인한다.",
+      "concepts": [
+        "일사 변화와 차광 모순"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00495",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "램프 소등 행 누락은 점등과 다음 점등 사이 종료 사건이 없는 상황이다. 전력 영점 구간으로 소등 범위를 복원하되 정확한 순간은 미확정으로 둔다.",
+      "concepts": [
+        "램프 소등 행 누락"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00496",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "광량 적산 경계 충돌은 자정과 재배일 전환이 달라 표본이 두 기간에 중복된 경우다. 승인된 운영일 기준으로 경계를 다시 배정한다.",
+      "concepts": [
+        "광량 적산 경계 충돌"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00497",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차광 안전잠금 이력 혼선은 강풍 잠금과 정비 잠금이 같은 상태코드로 저장된 경우다. 원인 경보와 해제 권한을 따라 두 기간을 구분한다.",
+      "concepts": [
+        "차광 안전잠금 이력 혼선"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00498",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "광센서 시계 표류는 오후 표본일수록 기준시각과 차이가 커져 사건순서가 바뀌어 보이는 상태다. 동기 표식 사이 오차를 보간해 보정한다.",
+      "concepts": [
+        "광센서 시계 표류"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00499",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보광 예약과 실행 차이는 계획표의 점등시각과 실제 전력 투입시각이 다른 경우다. 학습용 사건 순서는 실행 이력을 사용한다.",
+      "concepts": [
+        "보광 예약과 실행 차이"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00500",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차광 회수 동시표시는 두 막이 같은 초로 반올림돼 완전 동시처럼 보이는 상태다. 엔코더 세부시각으로 시작순서를 유보하거나 복원한다.",
+      "concepts": [
+        "차광 회수 동시표시"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00501",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가스 공급과 환기 역전은 기록상 천창 개방 뒤에도 주입이 먼저 시작된 것처럼 보이는 모순이다. 밸브 전류와 개도율 원본으로 실제 배열을 정한다.",
+      "concepts": [
+        "가스 공급과 환기 역전"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00502",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "농도 표본 역수신은 통신 재시도로 오래된 측정값이 최신 값 뒤에 도착한 상태다. 측정번호와 장치시각을 기준으로 다시 정렬한다.",
+      "concepts": [
+        "농도 표본 역수신"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00503",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누출 경보 중복행은 같은 상한 초과가 제어기와 방재반에서 두 사건처럼 저장된 경우다. 공통 감지기 식별자로 하나의 원인을 연결한다.",
+      "concepts": [
+        "누출 경보 중복행"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00504",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "가스 밸브 상태 충돌은 개방 접점과 유량 영점이 동시에 기록된 상황이다. 배관 압력과 접점 유지시간을 통해 고장 또는 시계오차를 판정한다.",
+      "concepts": [
+        "가스 밸브 상태 충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00505",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자 입실시각 불일치는 출입카드와 현장 확인표가 다른 순간을 가리키는 경우다. 문 개방 원시기록을 기준점으로 삼아 노출 순서를 복원한다.",
+      "concepts": [
+        "작업자 입실시각 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00506",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환기 해제 기록 공백은 농도 정상화 뒤 공급잠금이 풀린 사건이 남지 않은 상황이다. 다음 주입 전 권한변화를 찾아 해제 범위만 표시한다.",
+      "concepts": [
+        "환기 해제 기록 공백"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00507",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "실린더 교체 이력 혼합은 철거와 새 용기 연결이 같은 작업코드로 합쳐진 상태다. 중량 변화와 밸브 격리 순서를 따라 두 사건을 분리한다.",
+      "concepts": [
+        "실린더 교체 이력 혼합"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00508",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탄소 사용량 기간 충돌은 자정 경계의 유량이 두 일자 집계에 함께 들어간 경우다. 원시 적산계 차분으로 각 기간을 재계산한다.",
+      "concepts": [
+        "탄소 사용량 기간 충돌"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00509",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공급 승인 시각 역전은 운영자 승인이 안전검사보다 먼저 찍힌 모순이다. 전자서명 수정이력과 검사 완료 원본으로 실제 순서를 정한다.",
+      "concepts": [
+        "공급 승인 시각 역전"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00510",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "농도 회복 판정 불일치는 센서마다 안정 시작시각이 달라 해제점이 하나로 정해지지 않는 경우다. 공간별 결과를 병기해 거짓 단일시각을 피한다.",
+      "concepts": [
+        "농도 회복 판정 불일치"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00511",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서 표본번호 충돌은 서로 다른 측정값이 같은 번호를 가진 상태다. 장치 재부팅 식별자와 원시 바이트 순서를 이용해 두 구간을 분리한다.",
+      "concepts": [
+        "센서 표본번호 충돌"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00512",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트웨이 시각 역전은 수신시각이 장치 측정시각보다 앞서 기록된 모순이다. 시간대 설정과 동기 오프셋을 검토해 공통 기준으로 환산한다.",
+      "concepts": [
+        "게이트웨이 시각 역전"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00513",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서버 저장순서 혼선은 병렬 작업자가 행을 써서 파일 순서와 사건 순서가 달라진 경우다. 측정시각과 시퀀스 번호를 함께 사용한다.",
+      "concepts": [
+        "서버 저장순서 혼선"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00514",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "캐시 갱신 시각 중복은 여러 화면 값이 같은 초로 묶여 순서가 사라진 상태다. 원천 로그의 밀리초와 버전 번호로 필요한 경계만 복원한다.",
+      "concepts": [
+        "캐시 갱신 시각 중복"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00515",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수동 기록 날짜 오류는 자정 뒤 작업을 전날 일지에 적어 자동자료와 충돌한 경우다. 교대시간과 출입기록을 근거로 운영일을 재배정한다.",
+      "concepts": [
+        "수동 기록 날짜 오류"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00516",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시간대 설정 불일치는 한 장치는 현지시각, 다른 장치는 협정시를 사용해 사건이 몇 시간 어긋난 상태다. 시간대 표식을 적용한 뒤 비교한다.",
+      "concepts": [
+        "시간대 설정 불일치"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00517",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "일광절약 오적용은 적용하지 않는 지역 장치가 한 시간을 임의 보정한 오류다. 설정 변경 이력으로 왜곡 구간을 찾아 원시시각을 환산한다.",
+      "concepts": [
+        "일광절약 오적용"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00518",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "동기 서버 전환 경계는 기준시계가 바뀌며 타임스탬프가 순간 이동한 지점이다. 전환 전후 오프셋을 각각 구해 시간열을 연결한다.",
+      "concepts": [
+        "동기 서버 전환 경계"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00519",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표본 결측 구간 복원은 앞뒤 값과 제어사건으로 가능한 순서 범위를 정하는 작업이다. 관측되지 않은 개별 시각을 사실처럼 채우지 않는다.",
+      "concepts": [
+        "표본 결측 구간 복원"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00520",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감사 추적 시각 우선순위는 측정·수신·저장·표시 시각이 충돌할 때 목적에 맞는 기준을 고르는 규칙이다. 물리 사건에는 측정시각을 우선한다.",
+      "concepts": [
+        "감사 추적 시각 우선순위"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00521",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정식 기록 날짜 충돌은 작업표와 출입 이력이 서로 다른 운영일을 가리키는 경우다. 베드 태그 스캔과 교대 경계로 실제 정식순서를 복원한다.",
+      "concepts": [
+        "정식 기록 날짜 충돌"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00522",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활착 사진 순서 뒤섞임은 업로드 순서가 촬영 순서와 달라진 상태다. 이미지 메타시각과 식물 표지판을 함께 확인한다.",
+      "concepts": [
+        "활착 사진 순서 뒤섞임"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00523",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "개화 조사 중복시각은 두 조사자가 같은 구역 결과를 같은 시각으로 등록한 경우다. 표본목록과 작업자 동선을 이용해 중복인지 병행인지 판정한다.",
+      "concepts": [
+        "개화 조사 중복시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00524",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수확 시작 기록 역전은 포장 입고가 채취보다 앞서 보이는 모순이다. 용기 바코드와 저울 시각을 기준으로 물류 순서를 다시 세운다.",
+      "concepts": [
+        "수확 시작 기록 역전"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00525",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "병징 발견 날짜 불일치는 사진 촬영일과 보고서 승인일을 같은 발견시각으로 사용한 경우다. 최초 증거와 행정 확정을 분리한다.",
+      "concepts": [
+        "병징 발견 날짜 불일치"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00526",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "격리 시작 행 누락은 이동 금지 상태는 남아 있으나 적용 사건이 없는 상황이다. 출입 차단과 표지 설치 기록으로 시작 범위를 제한한다.",
+      "concepts": [
+        "격리 시작 행 누락"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00527",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "생육측정 표본 혼합은 다른 개체의 길이값이 한 시간열에 합쳐져 성장순서가 역전된 경우다. 개체 태그를 기준으로 자료를 분할한다.",
+      "concepts": [
+        "생육측정 표본 혼합"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00528",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수분활동 시각 충돌은 벌통 계수기와 영상 분석이 다른 출입순서를 보이는 상태다. 장치별 지연과 동일 개체 중복을 보정한다.",
+      "concepts": [
+        "수분활동 시각 충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00529",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "적엽 작업 종료 불일치는 작업자 서명과 잔재 반출시각이 다른 경우다. 교육 목적에 따라 절단 완료와 정리 완료를 별도 사건으로 둔다.",
+      "concepts": [
+        "적엽 작업 종료 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00530",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수확 배치 경계 혼선은 자정 전후 열매가 두 배치에 중복 배정된 상태다. 첫 채취와 예냉 입고 표식을 따라 운영 배치를 다시 나눈다.",
+      "concepts": [
+        "수확 배치 경계 혼선"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00531",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "필터 교체 순서 충돌은 탈거보다 새 부품 검사가 먼저 기록된 모순이다. 부품 바코드와 압력격리 이력을 이용해 실제 작업순서를 복원한다.",
+      "concepts": [
+        "필터 교체 순서 충돌"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00532",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "펌프 점검 시각 중복은 여러 점검항목이 같은 분으로 반올림돼 동시처럼 보이는 상태다. 계측구와 측정기 로그로 필요한 선후만 확인한다.",
+      "concepts": [
+        "펌프 점검 시각 중복"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00533",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업허가와 격리 역전은 허가서 시각이 전원 차단보다 뒤인데 작업 시작은 앞선 것으로 보이는 모순이다. 출입과 잠금 표식을 대조한다.",
+      "concepts": [
+        "작업허가와 격리 역전"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00534",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시험운전 종료 공백은 기동과 정상복귀 사이 완료행이 누락된 상황이다. 마지막 시험표본과 자동모드 진입으로 종료 범위를 정한다.",
+      "concepts": [
+        "시험운전 종료 공백"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00535",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예비품 입고일 충돌은 창고 스캔과 구매시스템이 다른 날짜를 기록한 경우다. 실제 사용 가능성에는 검수 완료시각을 우선한다.",
+      "concepts": [
+        "예비품 입고일 충돌"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00536",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "윤활 작업 이력 중복은 한 주입이 모바일 일지와 설비 로그에 각각 등록된 상태다. 주입량과 작업자 식별자를 맞춰 하나의 사건으로 묶는다.",
+      "concepts": [
+        "윤활 작업 이력 중복"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00537",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "누설시험 압력 역전은 감압 표본이 가압 표본보다 먼저 정렬된 자료다. 측정번호와 밸브 조작을 기준으로 시간열을 바로잡는다.",
+      "concepts": [
+        "누설시험 압력 역전"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00538",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비 복귀 승인 충돌은 현장 책임자와 중앙 운영자가 다른 복귀시각을 제시한 경우다. 장치 제어권이 실제 넘어간 사건을 기준점으로 삼는다.",
+      "concepts": [
+        "정비 복귀 승인 충돌"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00539",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공구 반출 시각 누락은 작업 종료 뒤 이물 확인의 선후를 증명할 기록이 없는 상태다. 완료시각을 단정하지 않고 미확정 경계로 남긴다.",
+      "concepts": [
+        "공구 반출 시각 누락"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00540",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비일 운영일 혼선은 야간 작업이 달력상 이틀에 걸쳐 한 회차가 둘로 나뉜 경우다. 작업허가 번호로 연속 구간을 재결합한다.",
+      "concepts": [
+        "정비일 운영일 혼선"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00541",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고온 경보 순서 충돌은 센서 상한 초과와 경보 확정이 로그마다 반대로 보이는 상태다. 유지창과 장치시계 오프셋을 적용해 실제 선후를 복원한다.",
+      "concepts": [
+        "고온 경보 순서 충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00542",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상정지 중복기록은 버튼·제어기·접촉기 로그가 한 정지를 세 사건처럼 보이게 한 경우다. 공통 사건번호와 물리 단계로 연결한다.",
+      "concepts": [
+        "비상정지 중복기록"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00543",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대피 시작 시각 불일치는 방송 송출과 출입문 개방 중 어느 것을 시작으로 삼는지 달라진 경우다. 두 기준을 분리해 결과에 명시한다.",
+      "concepts": [
+        "대피 시작 시각 불일치"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00544",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "화재 감지 시계 오차는 감지기와 방재반의 기준시각이 달라 신고순서가 뒤집힌 상태다. 동기시험 결과로 오프셋을 보정한다.",
+      "concepts": [
+        "화재 감지 시계 오차"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00545",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "안전잠금 해제 역전은 재입실 승인보다 출력 복귀가 먼저 기록된 모순이다. 제어권 이력과 승인 수정기록으로 실제 경계를 확인한다.",
+      "concepts": [
+        "안전잠금 해제 역전"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00546",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상발전 절체 공백은 정전과 예비전원 안정 사이 연결행이 없는 상황이다. 전압 연속자료로 가능한 절체구간만 복원한다.",
+      "concepts": [
+        "비상발전 절체 공백"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00547",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "구조 신고 중복시각은 자동신고와 음성신고가 같은 초에 기록된 경우다. 메시지 식별자와 통화 연결을 통해 병행 사건으로 남긴다.",
+      "concepts": [
+        "구조 신고 중복시각"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00548",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사고 종료 기준 충돌은 위험 제거와 운영 재개 중 어느 시점을 종료로 보는지 달라진 경우다. 두 사건을 각각 기록해 거짓 단일 종료를 피한다.",
+      "concepts": [
+        "사고 종료 기준 충돌"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00549",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경보 서버 재부팅 경계는 부팅 뒤 시간이 되돌아가 알림과 확인 순서가 섞인 상태다. 외부 메시지 수신시각으로 구간을 다시 잇는다.",
+      "concepts": [
+        "경보 서버 재부팅 경계"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00550",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상훈련과 실제경보 혼선은 같은 코드가 사용돼 두 이력이 합쳐진 경우다. 훈련표식과 현장 출력 여부로 사건군을 분리한다.",
+      "concepts": [
+        "비상훈련과 실제경보 혼선"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00551",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강우 센서 시각 충돌은 우량계와 기상서버가 서로 다른 시작시각을 제시한 경우다. 첫 버킷 전도와 원격 수신시각을 분리해 기록한다.",
+      "concepts": [
+        "강우 센서 시각 충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00552",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "돌풍 기록 역배열은 재전송된 고주파 표본이 평균값 뒤에 도착해 순서가 뒤섞인 상태다. 원시 표본번호로 시간열을 복원한다.",
+      "concepts": [
+        "돌풍 기록 역배열"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00553",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서리 사진 날짜 오류는 카메라 날짜가 하루 앞서 병해 기록과 충돌한 경우다. 배경 조명 주기와 파일 생성이력을 이용해 촬영일을 정한다.",
+      "concepts": [
+        "서리 사진 날짜 오류"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00554",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "외기 온도표 중복구간은 로거 재시작 때 같은 표본묶음이 다시 저장된 상태다. 체크섬과 누적번호로 복제 범위를 제거한다.",
+      "concepts": [
+        "외기 온도표 중복구간"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00555",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "일사 급증 순서 모순은 차광 전개가 구름 해제보다 먼저 보이는 자료다. 예측제어 명령이 있었는지 확인한 뒤 물리 사건을 배열한다.",
+      "concepts": [
+        "일사 급증 순서 모순"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00556",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "폭우 예보와 실황 혼선은 예측 유효시각을 실제 강우시각처럼 저장한 경우다. 자료 종류를 분리해 예보 발행·대상·관측 시각을 각각 둔다.",
+      "concepts": [
+        "폭우 예보와 실황 혼선"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00557",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "한파 종료 기준 불일치는 외기 상승과 배관 해빙 중 어느 사건을 종료로 쓰는지 다른 경우다. 목적별 경계를 병기한다.",
+      "concepts": [
+        "한파 종료 기준 불일치"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00558",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기상대 시계 표류는 동기 실패 뒤 표본이 점차 늦어져 온실 사건과 순서가 바뀐 상태다. 기준표식 사이 오차를 보간한다.",
+      "concepts": [
+        "기상대 시계 표류"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00559",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "해빙 점검 행 누락은 기온 회복과 운전 재개 사이 검사 기록이 없는 상황이다. 재개조건 충족을 추정하지 않고 증거 공백으로 남긴다.",
+      "concepts": [
+        "해빙 점검 행 누락"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00560",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "태풍 대비 작업 중복은 같은 폐쇄가 작업일지와 자동로그에 따로 등록된 경우다. 구역·작업자·장치 상태를 맞춰 단일 사건으로 연결한다.",
+      "concepts": [
+        "태풍 대비 작업 중복"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00561",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배액 유입 시각 충돌은 유량계와 회수조 수위계가 서로 다른 시작순서를 보이는 경우다. 배관 체류와 센서 지연을 반영해 가능한 배열을 정한다.",
+      "concepts": [
+        "배액 유입 시각 충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00562",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "역세 시작 기록 역전은 차압 해제보다 흐름 전환이 늦게 찍혀 물리 순서가 모순된 상태다. 밸브 전류와 원시 압력값으로 복원한다.",
+      "concepts": [
+        "역세 시작 기록 역전"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00563",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "살균 처리 이력 중복은 한 회차가 제어기와 수질시스템에 두 배치처럼 남은 경우다. 처리수량과 회차번호로 같은 사건을 결합한다.",
+      "concepts": [
+        "살균 처리 이력 중복"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00564",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회수수 검사시각 불일치는 채취·접수·분석 시작을 모두 검사시각으로 부른 경우다. 세 사건을 분리해 승인 순서를 정한다.",
+      "concepts": [
+        "회수수 검사시각 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00565",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "저장조 유입 행 누락은 수위 상승은 있으나 유입밸브 기록이 없는 상황이다. 질량수지로 유입 구간을 제한하되 정확한 시작은 유보한다.",
+      "concepts": [
+        "저장조 유입 행 누락"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00566",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탁도 표본 역정렬은 통신 복구 뒤 과거 값이 몰려 들어온 상태다. 장치 측정번호에 따라 실제 수질 시간열을 재구성한다.",
+      "concepts": [
+        "탁도 표본 역정렬"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00567",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재순환 승인 역전은 운영 승인시각이 시험결과보다 먼저 표시된 모순이다. 전자서명 수정이력과 분석 완료 원본을 비교한다.",
+      "concepts": [
+        "재순환 승인 역전"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00568",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배액 폐기 경계 충돌은 운반 시작과 저장조 비움 중 어느 시점을 완료로 쓰는지 달라진 경우다. 두 사건을 따로 남겨 목적에 맞게 선택한다.",
+      "concepts": [
+        "배액 폐기 경계 충돌"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00569",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회수조 시계 재설정은 정비 뒤 장치시각이 초기화돼 표본이 과거 구간에 섞인 상태다. 정비번호와 누적 유량으로 경계를 잇는다.",
+      "concepts": [
+        "회수조 시계 재설정"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00570",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수질 보고 기간 혼선은 채취일과 보고서 승인일이 같은 날짜 필드에 섞인 경우다. 표본 대상기간과 행정 확정시각을 분리한다.",
+      "concepts": [
+        "수질 보고 기간 혼선"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00571",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "병징 사진 순서 충돌은 업로드 순서가 촬영 순서와 달라 증상 진행이 거꾸로 보이는 상태다. 원본 메타시각과 개체표지를 이용한다.",
+      "concepts": [
+        "병징 사진 순서 충돌"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00572",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "격리 명령 시각 불일치는 구두 지시와 시스템 등록이 다른 순간을 가리키는 경우다. 실제 이동 차단이 시작된 증거를 별도 사건으로 둔다.",
+      "concepts": [
+        "격리 명령 시각 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00573",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "포자검사 배치 혼선은 두 날짜의 포집판이 같은 번호로 등록돼 결과 순서가 섞인 상태다. 용기 바코드와 노출구간으로 분리한다.",
+      "concepts": [
+        "포자검사 배치 혼선"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00574",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "방제 시작 기록 역전은 약제 사용량이 작업허가보다 먼저 나타난 모순이다. 탱크 중량과 허가 수정이력으로 실제 배열을 확인한다.",
+      "concepts": [
+        "방제 시작 기록 역전"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00575",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재입실 승인 중복행은 안전과 생산 담당자의 서명이 두 허가처럼 저장된 경우다. 동일 격리회차와 적용범위를 확인해 공동결정으로 묶는다.",
+      "concepts": [
+        "재입실 승인 중복행"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00576",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감염 확정 기준 충돌은 영상 판독과 시험실 결과가 다른 시점을 확정으로 제시한 경우다. 의심·잠정·확정 사건을 단계별로 병기한다.",
+      "concepts": [
+        "감염 확정 기준 충돌"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00577",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검역 종료 행 누락은 대상이 생산구역으로 이동했지만 해제기록이 없는 상황이다. 이동 승인과 검사결과로 종료 범위를 정하되 빈 시각을 만들지 않는다.",
+      "concepts": [
+        "검역 종료 행 누락"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00578",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "약제 접촉시간 역산 오류는 재입실시각에서 고정값을 빼 살포종료를 추정해 원기록과 충돌한 경우다. 실제 밸브 폐쇄시각을 우선한다.",
+      "concepts": [
+        "약제 접촉시간 역산 오류"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00579",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "위생 전환 기록 혼선은 청정복 교체와 손 소독이 같은 코드로 합쳐져 순서를 알 수 없는 상태다. 출입 단계와 스캔기록을 나눠 복원한다.",
+      "concepts": [
+        "위생 전환 기록 혼선"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00580",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "질병 보고 운영일 오류는 야간 판정이 전날 보고서에 들어가 후속 격리보다 늦게 보이는 경우다. 교대경계로 날짜를 재배정한다.",
+      "concepts": [
+        "질병 보고 운영일 오류"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00581",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전력계 시각 충돌은 설비계량기와 수전계량기가 서로 다른 부하변화 시점을 기록한 경우다. 측정구간과 평균창을 맞춰 비교한다.",
+      "concepts": [
+        "전력계 시각 충돌"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00582",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부하차단 순서 역전은 하위 설비 정지가 상위 차단기 개방보다 먼저 보이는 모순이다. 로컬 보호동작 가능성과 장치시계 오차를 확인한다.",
+      "concepts": [
+        "부하차단 순서 역전"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-00583",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "축전지 충전 이력 중복은 같은 회차가 PCS와 관리서버에 따로 저장된 상태다. 에너지량과 세션번호를 맞춰 하나의 사건으로 연결한다.",
+      "concepts": [
+        "축전지 충전 이력 중복"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00584",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상발전 시계 재설정은 장기 정지 뒤 내부시각이 초기화돼 기동행이 과거에 끼어든 경우다. 외부 절체반 기록으로 기준을 복원한다.",
+      "concepts": [
+        "비상발전 시계 재설정"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00585",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수요반응 시작 불일치는 시장 통보와 현장 감축이 서로 다른 시각을 가리키는 경우다. 요청 사건과 실제 부하변화를 분리한다.",
+      "concepts": [
+        "수요반응 시작 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00586",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "태양광 출력표 역정렬은 통신이 회복된 뒤 과거 인버터 표본이 늦게 유입되어 최신 값 앞에 잘못 배치된 상태다. 측정 순번과 장치 시각으로 실제 발전 순서를 재구성한다.",
+      "concepts": [
+        "태양광 출력표 역정렬"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00587",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "요금 집계 경계 충돌은 시간대 전환 표본이 두 구간에 중복 배정된 경우다. 정산 규칙의 포함 경계를 적용해 다시 합산한다.",
+      "concepts": [
+        "요금 집계 경계 충돌"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00588",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "절감 승인 기록 역전은 성과보고 승인이 검증표 작성보다 앞서 찍힌 모순이다. 문서 버전과 전자서명 이력으로 실제 순서를 찾는다.",
+      "concepts": [
+        "절감 승인 기록 역전"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00589",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전력 복구 행 누락은 정전과 정상운전 사이 수전 재개 사건이 없는 상황이다. 전압 연속자료로 복구범위를 정하되 단일시각은 유보한다.",
+      "concepts": [
+        "전력 복구 행 누락"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00590",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "에너지 보고 날짜 혼선은 측정기간 종료일과 문서 발행일을 같은 날짜로 쓴 경우다. 실적 대상구간과 행정 확정시각을 분리한다.",
+      "concepts": [
+        "에너지 보고 날짜 혼선"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00591",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어명령 시계 충돌은 중앙 서버와 현장 제어기가 같은 출력을 서로 다른 시작시각으로 기록한 경우다. 메시지 번호와 수신 확인을 따라 실제 전달 순서를 복원한다.",
+      "concepts": [
+        "제어명령 시계 충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00592",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어주기 순번 역전은 증가한 계산회차가 더 이른 벽시계 값과 함께 저장된 상태다. 시계 보정보다 단조 증가하는 회차번호를 우선해 배열한다.",
+      "concepts": [
+        "제어주기 순번 역전"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00593",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트웨이 재전송 혼선은 통신 복구 뒤 과거 명령과 응답이 최신 사건 사이에 끼어든 경우다. 원본 생성시각과 재전송 표식을 나눠 읽는다.",
+      "concepts": [
+        "게이트웨이 재전송 혼선"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00594",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "원격 승인 기록 불일치는 운영자 서명시각과 제어권 부여시각이 다른 상황이다. 결정 사건과 장치 적용 사건을 별도 단계로 유지한다.",
+      "concepts": [
+        "원격 승인 기록 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00595",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "백업제어기 시간점프는 인수 직후 로컬시계가 주 제어기보다 뒤로 이동한 상태다. 공통 센서 표본을 기준점으로 두 시간축을 이어 붙인다.",
+      "concepts": [
+        "백업제어기 시간점프"
+      ],
+      "relations": [
+        "attribute",
+        "classification",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-00596",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "알림 확인 순서 충돌은 단말 확인이 메시지 발송보다 앞서 표시된 모순이다. 중계서버 수신번호와 단말 캐시시각을 대조해 복원한다.",
+      "concepts": [
+        "알림 확인 순서 충돌"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00597",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "명령취소 행 누락은 실행되지 않은 출력이 대기열에서 사라졌지만 취소시각이 없는 상황이다. 전후 큐 상태로 범위만 정하고 가상의 순간은 만들지 않는다.",
+      "concepts": [
+        "명령취소 행 누락"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00598",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수동자동 전환 중복은 같은 모드 변경이 현장 스위치와 중앙 이력에 두 사건처럼 남은 경우다. 제어권 식별자와 상태 지속구간으로 하나의 전환을 연결한다.",
+      "concepts": [
+        "수동자동 전환 중복"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-00599",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어설정 버전 혼선은 새 기준값이 적용된 시각과 문서 승인시각이 같은 필드에 섞인 상태다. 버전 배포·활성화·승인을 각각 분리한다.",
+      "concepts": [
+        "제어설정 버전 혼선"
+      ],
+      "relations": [
+        "state",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-00600",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신복구 기준시각 불일치는 첫 패킷 수신과 연속 정상 확인이 서로 다른 종료점을 제시한 경우다. 두 기준을 병기하고 목적에 맞는 사건을 선택한다.",
+      "concepts": [
+        "통신복구 기준시각 불일치"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "boundary"
+      ]
+    }
+  ]
+}

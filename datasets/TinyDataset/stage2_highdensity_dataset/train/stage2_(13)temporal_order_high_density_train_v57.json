@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v57",
+  "version": "57",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-08401 ~ S2-TOH-08550",
+  "concept_family": "S2-A03-T057: 전기버스 충전차고 전력·배차 — 마감 창 내부·외부 사건의 시간 경계",
+  "design_note": "전기버스 충전차고 전력·배차 영역의 마감 창 내부·외부 사건의 시간 경계 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-08401",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증설신청이 마감시각보다 먼저 시스템에 접수되면 수전증설 신청창 내부접수로 인정한다. 제출 버튼이 아니라 전력사 서버의 접수번호 발급시각을 써서 전송 중 문서를 적시 신청으로 보지 않는다.",
+      "concepts": [
+        "수전증설 신청창 내부접수"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08402",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마감 뒤 도착한 신청은 작성일이 빨라도 수전증설 신청창 외부접수로 분류한다. 전송 지연 사유는 별도 기록하되 기관 수신이 늦었다는 판정 자체를 작성시각으로 소급하지 않는다.",
+      "concepts": [
+        "수전증설 신청창 외부접수"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08403",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "신청 접수시각이 마감과 정확히 같을 때 수전계약 끝점접수의 포함 여부는 사전 규칙으로 정한다. 끝점을 닫힌 경계로 규정한 경우에만 적시이며 서버 시계오차가 있으면 허용 오차를 명시한다.",
+      "concepts": [
+        "수전계약 끝점접수"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08404",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전력사가 지정기한 안에 용량검토를 끝냈는지 판단하는 구간이 계통용량 검토완료창이다. 검토 보고서가 권한 계정으로 확정되고 차고에 전달된 시점 중 요구된 완료조건을 명확히 선택한다.",
+      "concepts": [
+        "계통용량 검토완료창"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08405",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예상 피크값은 피크전력 통보마감 전송완료시각을 기준으로 창 안팎을 가른다. 계량 집계 완료와 기관 수신을 구별해 내부 계산이 빨라도 전송이 늦은 경우를 외부로 판정한다.",
+      "concepts": [
+        "피크전력 통보마감"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08406",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "성능시험이 허용창 뒤에 끝나면 수전설비 시험기한 초과이며 시험 시작이 빨랐다는 이유로 내부가 되지 않는다. 시험 착수와 결과 승인에 서로 다른 마감이 있으면 어느 단계가 초과했는지 각각 표시한다.",
+      "concepts": [
+        "수전설비 시험기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08407",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마감 전 반려된 요청을 다시 제출할 수 있는 기간이 계통요청 수정허용창이다. 반려 사유가 수신된 뒤 수정본 접수까지가 창 안에 있어야 원신청의 결함을 기한 내 보완한 것이다.",
+      "concepts": [
+        "계통요청 수정허용창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08408",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승인서 작성시각이 아니라 차고가 실제 받은 전력승인 수신경계로 후속 준비 가능 여부를 판정한다. 승인 효력과 현장 인지는 다를 수 있으므로 전력사 서명·차고 수신·운영 확인을 나란히 둔다.",
+      "concepts": [
+        "전력승인 수신경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08409",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수전업무 창경계표는 접수·반려·수정·승인·시험의 각 마감과 실제 사건시각을 나란히 둔다. 각 행정 사건에 생성·전송·기관접수 시각을 나눠 마감 충족의 근거가 어느 시스템인지 드러낸다.",
+      "concepts": [
+        "수전업무 창경계표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08410",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전력사와 차고의 시간대가 다르면 수전마감 시간대보정 뒤 내부·외부를 판단한다. 서머타임과 서버 오프셋까지 UTC로 환산해 같은 표시시각이 다른 실제 순간을 뜻하지 않게 한다.",
+      "concepts": [
+        "수전마감 시간대보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08411",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "버스의 충전슬롯이 예약창 종료 전에 확정되면 충전예약 내부확정이다. 신청만 저장된 상태가 아니라 차량·충전기·전력 슬롯이 모두 잠긴 시점을 확정으로 본다.",
+      "concepts": [
+        "충전예약 내부확정"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08412",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예약창이 닫힌 뒤 충전기 번호를 바꾼 사건은 충전예약 외부변경으로 기록한다. 변경이 늦어도 긴급 예외 승인이 있으면 일반 위반과 분리하되 원래 마감은 그대로 보존한다.",
+      "concepts": [
+        "충전예약 외부변경"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08413",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "확정시각이 창 끝과 같은 충전슬롯 경계확정은 경계 포함 규칙에 따라 판정한다. 경계와 같은 초의 트랜잭션은 예약 정책의 포함 여부와 서버 표준시를 함께 확인한다.",
+      "concepts": [
+        "충전슬롯 경계확정"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08414",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배차 전 급속충전을 시작할 수 있도록 정한 기간이 급속충전 시작허용창이다. 커넥터 결합이 아니라 유효 전력이 흐른 첫 표본을 시작으로 삼아 준비 행동과 충전을 나눈다.",
+      "concepts": [
+        "급속충전 시작허용창"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08415",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "완속충전은 완속충전 종료마감 전에 목표 잔량에 도달해야 내부 완료다. 충전기 종료 명령이 아니라 배터리 잔량이 목표에 도달한 마지막 유효 표본을 완료로 사용한다.",
+      "concepts": [
+        "완속충전 종료마감"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08416",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충전시간 연장 승인이 마감 뒤에 나면 충전연장 승인기한 초과로 분류한다.",
+      "concepts": [
+        "충전연장 승인기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08417",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배차와 전력계획을 바꾸지 않고 취소할 수 있는 기간이 충전예약 취소허용창이다. 취소가 배차와 수전 계획에 반영되기 전이면 접수만으로 자원이 풀렸다고 보지 않는다.",
+      "concepts": [
+        "충전예약 취소허용창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08418",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "케이블 분리와 점유상태 해제가 끝난 충전기점유 해제경계로 다음 예약의 내부 진입을 판단한다.",
+      "concepts": [
+        "충전기점유 해제경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08419",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충전예약 창판정표는 신청·확정·변경·취소·시작·종료시각과 각 경계를 연결한다. 요청·확정·변경·취소와 실제 접속·종료를 분리해 행정 슬롯과 물리 충전을 혼합하지 않는다.",
+      "concepts": [
+        "충전예약 창판정표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08420",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단말과 예약서버가 어긋나면 충전예약 서버시각 보정 후 마감 준수 여부를 확정한다.",
+      "concepts": [
+        "충전예약 서버시각 보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08421",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차고 게이트 통과가 입고창 마감 전이면 버스입고 내부도착으로 판정한다. 차고 외부 대기열 진입이 아니라 차량 식별 게이트의 통과 접점을 입고 사건으로 고정한다.",
+      "concepts": [
+        "버스입고 내부도착"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08422",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운행 종료가 빨라도 게이트 통과가 늦으면 버스입고 외부도착이다.",
+      "concepts": [
+        "버스입고 외부도착"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08423",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트 접점이 마감과 같은 입고창 끝점통과는 창의 닫힌 경계 여부를 확인한다. 끝점 포함 규칙을 차량 앞축 또는 전체 차량 통과 중 어느 접점에 적용하는지 먼저 정한다.",
+      "concepts": [
+        "입고창 끝점통과"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08424",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "야간 세차 배정을 받으려면 세차전 입고마감 안에 차량이 도착해야 한다.",
+      "concepts": [
+        "세차전 입고마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08425",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고장차가 정비접수를 시작할 수 있는 입고기간이 정비접수 입고허용창이다. 게이트 도착 뒤 고장코드와 차량키가 정비시스템에 인계된 때까지를 허용구간으로 잰다.",
+      "concepts": [
+        "정비접수 입고허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08426",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트는 제때 지났어도 검사완료가 늦으면 입고검사 완료기한 초과다.",
+      "concepts": [
+        "입고검사 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08427",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "노선 사고로 늦는 차량이 사전에 예외를 신고할 수 있는 기간이 지연운행 예외신고창이다. 노선 사고 증거와 예상 도착이 마감 전에 접수되어야 사후 늦은 입고를 자동 면제하지 않는다.",
+      "concepts": [
+        "지연운행 예외신고창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08428",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운전자가 키와 운행기록을 넘긴 버스키 반납경계로 입고 절차 완료를 판정한다.",
+      "concepts": [
+        "버스키 반납경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08429",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입고사건 창대조표는 노선종료·게이트·검사·키반납을 서로 다른 마감에 맞춰 본다. 노선 종료, 게이트 통과, 검사 시작, 키 반납을 각각 다른 완료조건과 비교한다.",
+      "concepts": [
+        "입고사건 창대조표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08430",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량단말과 게이트시각이 다르면 입고기록 시계교정 뒤 창 안팎을 정한다.",
+      "concepts": [
+        "입고기록 시계교정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08431",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입고 뒤 온도가 허용창 안에 충전 가능범위로 내려가면 배터리냉각 내부진입이다. 팩 평균뿐 아니라 최고 셀온도가 충전 허용범위에 지속 들어온 시점을 사용한다.",
+      "concepts": [
+        "배터리냉각 내부진입"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08432",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "냉각이 충전시작 마감 뒤 끝나면 배터리냉각 외부완료로 분류한다.",
+      "concepts": [
+        "배터리냉각 외부완료"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08433",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도 안정시각이 창 끝과 같은 냉각창 끝점도달은 포함 규칙에 따라 내부 여부가 달라진다. 경계 순간의 단일 표본이 아니라 정해진 유지시간을 충족하는지에 따라 내부 완료를 판정한다.",
+      "concepts": [
+        "냉각창 끝점도달"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08434",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "열화상과 온도편차 기록은 열점검 제출마감 전에 저장돼야 다음 충전이 허용된다.",
+      "concepts": [
+        "열점검 제출마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08435",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "겨울 운행 전 셀온도를 올릴 수 있는 기간이 배터리예열 허용창이다. 셀온도 상승이 출고 마감 전에 끝나도록 히터 기동과 안정화의 서로 다른 경계를 둔다.",
+      "concepts": [
+        "배터리예열 허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08436",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "경보해제가 운행결정 뒤에 이뤄지면 열경보 해제기한 초과이며 차량은 제때 준비되지 않았다.",
+      "concepts": [
+        "열경보 해제기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08437",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고온 지속 시 추가 냉각시간을 요청할 수 있는 기간이 냉각연장 요청창이다. 현재 온도와 예상 하강률을 포함한 요청이 기한 안 접수돼야 연장 승인 판단이 가능하다.",
+      "concepts": [
+        "냉각연장 요청창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08438",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연속 표본이 기준 안에 든 배터리 안정판정경계로 냉각 완료를 판정한다.",
+      "concepts": [
+        "배터리 안정판정경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08439",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "열관리 창연결표는 입고온도·냉각·예열·점검·경보해제시각을 각 운행마감과 연결한다. 입고 고온, 냉각 시작, 허용온도 진입, 충전, 예열, 경보 해제를 시간 의존으로 연결한다.",
+      "concepts": [
+        "열관리 창연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08440",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서 버퍼가 늦게 올라오면 열관리 기록시간 보정으로 측정시각을 복원해 창을 판정한다.",
+      "concepts": [
+        "열관리 기록시간 보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08441",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "안전점검과 충전이 첫차마감 전에 끝나면 첫차출고 내부완료로 인정한다. 충전·안전점검뿐 아니라 운전자 인계와 게이트 통과까지 마감 전 끝난 경우만 실제 출고다.",
+      "concepts": [
+        "첫차출고 내부완료"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08442",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "모든 점검이 끝났어도 게이트 출발이 마감 뒤면 첫차출고 외부완료다.",
+      "concepts": [
+        "첫차출고 외부완료"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08443",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "버스가 마감과 같은 시각에 출고센서를 지나면 출고창 끝점통과 규칙을 적용한다. 경계에 센서를 지난 차량이 노선으로 완전히 진입했는지 후속 위치표본과 함께 확인한다.",
+      "concepts": [
+        "출고창 끝점통과"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08444",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량·기사·노선을 묶은 계획은 배차확정 제출마감 전에 운영서버에 등록해야 한다.",
+      "concepts": [
+        "배차확정 제출마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08445",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고장차를 대신할 예비차를 지정할 수 있는 기간이 예비차 투입허용창이다. 고장 확정 뒤 대체 차량의 충전상태와 운전자 배정이 창 안에 함께 잠겨야 한다.",
+      "concepts": [
+        "예비차 투입허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08446",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량은 준비됐지만 운전자인계가 늦으면 기사인계 완료기한 초과로 본다.",
+      "concepts": [
+        "기사인계 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08447",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기상이나 도로사고로 출발을 늦출 때 승인을 받을 수 있는 기간이 출고연기 승인창이다. 연기 사유와 새 출발시각이 마감 전에 권한 계정으로 승인돼야 사후 변경이 아니다.",
+      "concepts": [
+        "출고연기 승인창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08448",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충전·점검·청소·기사인계가 모두 끝난 출고준비 완료경계로 마감 충족을 판정한다.",
+      "concepts": [
+        "출고준비 완료경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08449",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배차마감 사건표는 차량준비·계획확정·예비차·인계·게이트출발을 각 경계와 대조한다. 차량 준비, 운행계획 고정, 예비차 결정, 운전자 인계, 물리 출발을 단계별 경계에 맞춘다.",
+      "concepts": [
+        "배차마감 사건표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08450",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배차서버와 게이트 로그는 출고로그 기준시각 통합 뒤 내부·외부를 결정한다.",
+      "concepts": [
+        "출고로그 기준시각 통합"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08451",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자가 정비창 시작 뒤 종료 전 장비를 잠그면 충전기정비 내부착수다. 잠금표지만 붙인 상태가 아니라 전원 격리와 작업자 확인이 모두 창 안에 성립해야 한다.",
+      "concepts": [
+        "충전기정비 내부착수"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08452",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비가 허용창 뒤까지 이어지면 충전기정비 외부종료로 기록한다.",
+      "concepts": [
+        "충전기정비 외부종료"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08453",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기능시험 완료가 정비창 끝과 같은 정비창 끝점복귀는 경계 포함 규칙을 확인한다. 기능시험 결과가 경계에 나왔더라도 잠금 해제와 운영 인계가 별도 마감인지 확인한다.",
+      "concepts": [
+        "정비창 끝점복귀"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08454",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "다음 점검회차에 쓸 부품은 정비부품 주문마감 전에 발주가 접수돼야 한다.",
+      "concepts": [
+        "정비부품 주문마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08455",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운행에 지장을 주지 않고 펌웨어를 바꿀 수 있는 기간이 충전기 펌웨어 작업창이다. 설치·재부팅·통신시험을 모두 완료할 수 있는 구간으로 잡아 운행 슬롯과 겹치지 않게 한다.",
+      "concepts": [
+        "충전기 펌웨어 작업창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08456",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장비는 복귀했어도 보고서가 늦으면 정비보고 제출기한 초과로 분류한다.",
+      "concepts": [
+        "정비보고 제출기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08457",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "숨은 고장이 발견됐을 때 작업창 연장을 요청할 수 있는 경계가 정비창 연장요청기한이다. 추가 결함의 증거와 예상 복구시간이 원래 종료 전에 접수되어야 작업창이 합법적으로 늘어난다.",
+      "concepts": [
+        "정비창 연장요청기한"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08458",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시험충전이 연속 성공한 정비복귀 기능경계로 운전 가능상태를 판정한다.",
+      "concepts": [
+        "정비복귀 기능경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08459",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충전기정비 창대조표는 잠금·분해·교체·시험·복귀·보고 시각을 각 마감과 잇는다. 격리, 분해, 교체, 시험, 복귀, 보고를 나눠 기계 완료와 운영 가능 상태를 구별한다.",
+      "concepts": [
+        "충전기정비 창대조표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08460",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장단말과 정비서버가 다르면 정비시스템 시간대교정 뒤 기한 준수 여부를 정한다.",
+      "concepts": [
+        "정비시스템 시간대교정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08461",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전력사 요청창 안에 충전부하가 실제로 줄면 수요감축 내부응답이다. 제어 명령 전송이 아니라 계량점의 실측 수요가 목표 아래로 내려간 시각을 응답으로 본다.",
+      "concepts": [
+        "수요감축 내부응답"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08462",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감축명령을 제때 받아도 부하저감이 창 뒤에 시작되면 수요감축 외부응답이다.",
+      "concepts": [
+        "수요감축 외부응답"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08463",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "실측전력이 경계와 같은 시각에 목표에 든 감축창 끝점도달은 포함 조건을 확인한다. 경계의 순간 하강이 아니라 요구된 유지시간 동안 감축량이 지속되는지 함께 판정한다.",
+      "concepts": [
+        "감축창 끝점도달"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08464",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차고는 가능한 감축량을 감축참여 회신마감 전에 전력사로 보내야 한다.",
+      "concepts": [
+        "감축참여 회신마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08465",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계통요청 종료 뒤 단계적으로 충전을 되돌릴 수 있는 기간이 충전재개 허용창이다. 계통 요청 종료 뒤 우선순위 차량부터 부하를 올려 수전한도를 넘지 않는 순차 복귀를 확인한다.",
+      "concepts": [
+        "충전재개 허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08466",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "부하는 줄였어도 계량자료를 늦게 내면 감축실적 제출기한 초과다.",
+      "concepts": [
+        "감축실적 제출기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08467",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감축예외 신고창은 응급 운행 때문에 충전 부하를 유지해야 할 때 차량 식별과 필요 전력량을 제출하도록 열린 시간대다. 마감 전 접수된 경우에만 승인 예외로 심사한다.",
+      "concepts": [
+        "감축예외 신고창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08468",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "명령시각이 아니라 계량값이 목표 아래로 유지된 실부하 감축완료경계로 대응을 판정한다.",
+      "concepts": [
+        "실부하 감축완료경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08469",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수요반응 창연결표는 요청·회신·부하감축·재개·실적제출을 서로 다른 경계에 맞춘다. 전력사 요청, 운영 회신, 실제 부하하강, 단계 복귀, 실적 접수에 각기 다른 마감을 둔다.",
+      "concepts": [
+        "수요반응 창연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08470",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 운영자의 서버가 어긋나면 전력사 차고시각 정합 뒤 창 안팎을 확정한다.",
+      "concepts": [
+        "전력사 차고시각 정합"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08471",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "낮은 요금 구간 안에 충전을 시작하고 끝내면 경부하 충전창 내부로 기록한다. 접속만이 아니라 유효 전력이 흐른 시작과 종료가 모두 저요금 경계 안에 있어야 한다.",
+      "concepts": [
+        "경부하 충전창 내부"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08472",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충전이 피크요금 경계를 넘어 끝나면 피크요금창 외부종료에 해당한다.",
+      "concepts": [
+        "피크요금창 외부종료"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08473",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충전 종료가 요금창 끝과 정확히 같은 요금창 끝점충전은 정산 경계 규칙을 따른다. 종료 표본이 경계와 같을 때 계량 간격의 귀속 규칙을 적용해 두 요금대에 중복 계산하지 않는다.",
+      "concepts": [
+        "요금창 끝점충전"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08474",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "다음 날 충전계획은 시간대요금 계획마감 전에 확정돼야 한다.",
+      "concepts": [
+        "시간대요금 계획마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08475",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수요예측이 바뀌었을 때 예약을 조정할 수 있는 기간이 피크회피 변경허용창이다. 예측 갱신부터 수정 예약 확정까지를 재어 이미 시작된 충전을 소급 변경하지 않는다.",
+      "concepts": [
+        "피크회피 변경허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08476",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "요금은 낮아도 계획확정이 늦으면 충전계획 확정기한 초과로 분류한다.",
+      "concepts": [
+        "충전계획 확정기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08477",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잘못된 시간대 분류를 정정해 달라고 요청할 수 있는 기간이 요금자료 정정신청창이다. 원계량 해시와 오류 구간을 포함한 신청이 기한 안 접수돼야 정산 결과를 다시 계산한다.",
+      "concepts": [
+        "요금자료 정정신청창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08478",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "실제 전력표본이 정산구간을 벗어나는 계량구간 종료경계로 요금 적용을 가른다.",
+      "concepts": [
+        "계량구간 종료경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08479",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "피크요금 창판정표는 예약·충전·계량·정산·정정의 시각을 요금경계와 연결한다. 예약 시각, 실제 전력 흐름, 계량 구간, 청구 생성, 정정 승인을 서로 다른 층으로 연결한다.",
+      "concepts": [
+        "피크요금 창판정표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08480",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계량기와 요금서버가 다르면 계량기 시각오프셋 보정 뒤 내부 사용량을 다시 계산한다.",
+      "concepts": [
+        "계량기 시각오프셋 보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08481",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충전기 작업 전에 차단·검전·접지가 허용창 안에 끝나면 고전압격리 내부완료다. 차단기 개방, 무전압 확인, 접지, 잠금이 모두 끝난 가장 늦은 시각을 격리 완료로 삼는다.",
+      "concepts": [
+        "고전압격리 내부완료"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08482",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업이 끝났어도 격리해제가 마감 뒤면 고전압격리 외부해제로 기록한다.",
+      "concepts": [
+        "고전압격리 외부해제"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08483",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잠금접점이 창 끝과 같은 격리창 끝점잠금은 경계 포함 규칙을 적용한다. 잠금 접점만 경계에 있고 검전이 늦으면 안전격리 전체는 창 밖이라는 점을 구별한다.",
+      "concepts": [
+        "격리창 끝점잠금"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08484",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고전압 작업허가는 안전허가 발급마감 전에 권한자가 서명해야 효력이 있다.",
+      "concepts": [
+        "안전허가 발급마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08485",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업중단 뒤 검전을 다시 수행할 수 있는 기간이 검전재확인 허용창이다. 작업 재개 전 무전압 상태가 다시 확인된 때가 허용구간 안인지 장치·작업자 기록으로 검증한다.",
+      "concepts": [
+        "검전재확인 허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08486",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업은 끝나도 안전점검이 늦으면 안전점검 완료기한 초과다.",
+      "concepts": [
+        "안전점검 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08487",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업 지연으로 잠금을 유지할 때 운영자에게 알릴 수 있는 기간이 격리연장 신고창이다. 작업 종료 예상과 잠금 책임자가 기한 내 전달되어야 다음 교대가 전원을 임의 복귀하지 않는다.",
+      "concepts": [
+        "격리연장 신고창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08488",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "잠금해제와 전압복귀를 모두 확인한 안전복귀 승인경계로 설비 사용을 허용한다.",
+      "concepts": [
+        "안전복귀 승인경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08489",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고전압작업 창연결표는 허가·차단·검전·접지·작업·해제·복귀를 각 경계와 잇는다. 허가, 차단, 검전, 접지, 작업, 해제, 복귀의 선행조건과 각 마감을 한 연표에 둔다.",
+      "concepts": [
+        "고전압작업 창연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08490",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보호계전기와 작업단말 시각이 다르면 안전로그 기준시각교정 뒤 창을 판정한다.",
+      "concepts": [
+        "안전로그 기준시각교정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08491",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "열폭주 경보 뒤 지정시간 안에 구역차단이 시작되면 배터리화재 초기대응창 내부다. 경보 생성이 아니라 방화구역 차단 접점과 대피방송 시작이 제한시간 안에 있는지 본다.",
+      "concepts": [
+        "배터리화재 초기대응창 내부"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08492",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "소화설비가 기한 뒤 작동하면 배터리화재 대응창 외부로 판정한다.",
+      "concepts": [
+        "배터리화재 대응창 외부"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08493",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 인원이 대피경계를 정확히 통과한 대피창 끝점통과는 포함 규칙으로 처리한다. 마지막 사람의 출입태그가 경계와 같다면 끝점 포함 규칙과 안전구역 도착 조건을 함께 확인한다.",
+      "concepts": [
+        "대피창 끝점통과"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08494",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자동통보가 실패하면 수동신고를 소방신고 접수마감 전에 완료해야 한다.",
+      "concepts": [
+        "소방신고 접수마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08495",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "열화상 감시가 끝날 때까지 사람의 출입을 막는 기간이 재진입 금지창이다. 셀온도와 가스 농도가 감시 기준을 충족할 때까지 출입 접점을 차단해 명목 해제와 구별한다.",
+      "concepts": [
+        "재진입 금지창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08496",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장은 안정돼도 기관보고가 늦으면 사고보고 완료기한 초과다.",
+      "concepts": [
+        "사고보고 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08497",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재발열로 통제를 이어갈 때 연장을 승인받을 수 있는 기간이 비상대응 연장승인창이다. 재발열 자료와 새 통제 종료를 원래 창 안 승인받아야 사후 연장이 안전 위반을 덮지 않는다.",
+      "concepts": [
+        "비상대응 연장승인창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08498",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도와 가스가 기준 안에서 유지된 화재안정 판정경계로 비상상태 종료를 정한다.",
+      "concepts": [
+        "화재안정 판정경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08499",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "배터리화재 창판정표는 경보·차단·대피·신고·소화·감시·보고의 마감을 함께 보여 준다. 열 경보, 구역 차단, 대피, 신고, 소화, 재발 감시, 보고의 독립 마감을 연결한다.",
+      "concepts": [
+        "배터리화재 창판정표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08500",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "BMS·소방설비·출입통제 기록은 화재로그 공통시각보정 뒤 내부·외부를 확정한다.",
+      "concepts": [
+        "화재로그 공통시각보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08501",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어기 설치와 재부팅이 정비창 안에 끝나면 충전제어 업데이트창 내부다. 설치 완료뿐 아니라 재부팅 뒤 실제 충전 세션 검증까지 정비창 안 끝나야 한다.",
+      "concepts": [
+        "충전제어 업데이트창 내부"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08502",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "설치는 제때 시작해도 검증이 창 뒤에 끝나면 충전제어 업데이트창 외부다.",
+      "concepts": [
+        "충전제어 업데이트창 외부"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08503",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어기 재기동이 창 끝과 같은 업데이트창 끝점재기동은 경계 포함 규칙을 확인한다. 경계에 켜졌더라도 통신·안전 설정 검증이 뒤라면 운영 복귀는 아직 외부다.",
+      "concepts": [
+        "업데이트창 끝점재기동"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08504",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "서명된 소프트웨어 묶음은 배포패키지 승인마감 전에 운영계로 넘어가야 한다.",
+      "concepts": [
+        "배포패키지 승인마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08505",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "업데이트 오류가 나면 이전 설정으로 되돌릴 수 있는 기간이 설정롤백 허용창이다. 오류 탐지부터 이전 버전 활성화와 시험 완료까지를 허용구간에 포함해 단순 명령과 나눈다.",
+      "concepts": [
+        "설정롤백 허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08506",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "코드는 설치됐어도 충전기 통신검증이 늦으면 통신검증 완료기한 초과다.",
+      "concepts": [
+        "통신검증 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08507",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "일부 충전기 검증이 끝나지 않을 때 창 연장을 요청할 수 있는 기간이 배포연장 요청창이다. 미검증 충전기 목록과 위험을 기한 안 제출해야 부분 배포의 연장을 승인할 수 있다.",
+      "concepts": [
+        "배포연장 요청창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08508",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예약·인증·전력제어가 연속 성공한 제어서비스 정상경계로 업데이트 완료를 판정한다.",
+      "concepts": [
+        "제어서비스 정상경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08509",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "소프트웨어 작업창 표는 승인·설치·재기동·검증·롤백·정상화시각을 각 경계와 잇는다. 승인·설치·재부팅·검증·롤백·정상화를 분리해 코드 배포와 서비스 회복의 차이를 보인다.",
+      "concepts": [
+        "소프트웨어 작업창 표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08510",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제어서버와 충전기 시각이 어긋나면 제어서버 장비시각 정합 뒤 마감 준수를 정한다.",
+      "concepts": [
+        "제어서버 장비시각 정합"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08511",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "외부세척과 실내청소가 출고준비창 안에 끝나면 버스세차 내부완료다. 세척 종료가 아니라 실내 소독·건조·최종검수 중 가장 늦은 완료가 출고창 안에 있어야 한다.",
+      "concepts": [
+        "버스세차 내부완료"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08512",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "세차를 일찍 시작해도 건조가 출고창 뒤면 버스세차 외부완료로 분류한다.",
+      "concepts": [
+        "버스세차 외부완료"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08513",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "건조완료가 세차창 끝과 같은 세차창 끝점건조는 경계 포함 여부를 확인한다. 표면 수분이 경계에 기준 아래로 내려도 검수가 필수라면 전체 세차 완료는 뒤에 놓인다.",
+      "concepts": [
+        "세차창 끝점건조"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08514",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "특수세척이 필요한 차량은 오염차량 접수마감 전에 상태를 등록해야 한다.",
+      "concepts": [
+        "오염차량 접수마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08515",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "입고순서가 달라졌을 때 세차슬롯을 바꿀 수 있는 기간이 세차예약 변경허용창이다. 새 슬롯이 확정되고 급수·작업조 배정에 반영된 때까지를 조정 완료로 본다.",
+      "concepts": [
+        "세차예약 변경허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08516",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "외부는 깨끗해도 실내소독이 늦으면 실내소독 완료기한 초과다.",
+      "concepts": [
+        "실내소독 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08517",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "세차지연 예외신고창은 급수 중단으로 출고 세차가 늦어질 때 원인 증거와 예상 복구 시각을 배차실에 제출하도록 둔 접수 구간이다. 창이 닫힌 뒤의 통보는 사후 보고로 분류한다.",
+      "concepts": [
+        "세차지연 예외신고창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08518",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검수자가 내외부 기준 충족을 확인한 차량청결 승인경계로 세차완료를 정한다.",
+      "concepts": [
+        "차량청결 승인경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08519",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량세차 창판정표는 예약·입고·세척·건조·소독·검수시각을 출고마감과 연결한다. 예약·입고·외부세척·실내소독·건조·검수의 경계를 출고 준비와 단계별로 대조한다.",
+      "concepts": [
+        "차량세차 창판정표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08520",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "세차기와 운영서버의 시계차는 세차설비 기록시각 보정 뒤 내부·외부 판정에 반영한다.",
+      "concepts": [
+        "세차설비 기록시각 보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08521",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량키와 운행정보가 교대창 안에 넘어가면 운전자 교대창 내부인계다. 키 전달뿐 아니라 차량 결함과 노선 변경을 인수자가 확인한 시점이 창 안에 있어야 한다.",
+      "concepts": [
+        "운전자 교대창 내부인계"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08522",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "다음 기사가 도착했어도 인계서명이 늦으면 운전자 교대창 외부인계다.",
+      "concepts": [
+        "운전자 교대창 외부인계"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08523",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "인계서명이 마감과 같은 교대창 끝점서명은 경계 포함 규칙에 따라 처리한다. 전자서명이 경계와 같을 때 끝점 포함 여부와 실제 키 수령이 일치하는지 확인한다.",
+      "concepts": [
+        "교대창 끝점서명"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08524",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "결원에 따른 운전자 교체는 근무표 변경마감 전에 확정돼야 한다.",
+      "concepts": [
+        "근무표 변경마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08525",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "결근을 확인한 뒤 대체기사를 부를 수 있는 기간이 대체기사 호출허용창이다. 결근 확정 뒤 자격·휴식시간을 충족한 기사가 수락할 때까지를 호출 결과로 본다.",
+      "concepts": [
+        "대체기사 호출허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08526",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기사는 준비됐어도 법정휴식 확인이 늦으면 휴식확인 완료기한 초과다.",
+      "concepts": [
+        "휴식확인 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08527",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운행복귀가 늦을 때 배차실에 교대지연을 보고할 수 있는 기간이 교대지연 보고창이다. 복귀 예상과 대체 필요 여부가 기한 안 접수돼야 배차가 다음 차량을 조정할 수 있다.",
+      "concepts": [
+        "교대지연 보고창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08528",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "키·단말·노선정보·차량상태를 모두 넘긴 운전인계 완료경계로 교대완료를 정한다.",
+      "concepts": [
+        "운전인계 완료경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08529",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운전자교대 창연결표는 도착·휴식확인·인계·서명·출발을 각 마감과 잇는다. 도착, 의무휴식 확인, 차량정보 인계, 전자서명, 게이트 출발의 마감을 따로 둔다.",
+      "concepts": [
+        "운전자교대 창연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08530",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기사단말과 배차서버가 다르면 교대단말 서버시각 교정 뒤 마감 준수를 판단한다.",
+      "concepts": [
+        "교대단말 서버시각 교정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08531",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고장복구 뒤 버스가 재개창 안에 출발하면 노선복귀 내부출발이다. 수리 완료나 배차 승인만으로는 부족하고 차량이 게이트를 나간 때가 재개창 안에 있어야 한다.",
+      "concepts": [
+        "노선복귀 내부출발"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08532",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량수리는 끝났어도 운행재개가 창 뒤면 노선복귀 외부출발이다.",
+      "concepts": [
+        "노선복귀 외부출발"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08533",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "게이트 출발이 재개창 끝과 같은 복귀창 끝점출발은 경계 규칙을 확인한다. 경계 접점이 허용돼도 첫 정류장 도착에 별도 서비스 마감이 있는지 구분한다.",
+      "concepts": [
+        "복귀창 끝점출발"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08534",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고장노선의 대체차와 우회경로는 대체운행 결정마감 전에 확정돼야 한다.",
+      "concepts": [
+        "대체운행 결정마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08535",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지연차량을 다시 시간표에 넣을 수 있는 기간이 배차복원 조정허용창이다. 지연 차량의 위치와 충전량을 반영한 시간표가 창 안 확정돼야 운행에 재편입된다.",
+      "concepts": [
+        "배차복원 조정허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08536",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운행은 재개됐어도 승객안내가 늦으면 승객안내 완료기한 초과다.",
+      "concepts": [
+        "승객안내 완료기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08537",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "도로통제가 이어질 때 재개를 늦추도록 승인받는 기간이 복귀연기 승인창이다. 도로통제 증거와 새 시작시각이 원래 재개 전에 승인되어야 사후 기록이 아니다.",
+      "concepts": [
+        "복귀연기 승인창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08538",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량출발과 정류장 운행이 모두 확인된 노선서비스 회복경계로 복구완료를 정한다.",
+      "concepts": [
+        "노선서비스 회복경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08539",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "노선복구 창판정표는 고장·대체결정·수리·출발·안내·서비스회복을 경계별로 연결한다. 고장, 대체결정, 수리, 출발, 승객안내, 첫 정상 운행을 서로 다른 복구 경계로 잇는다.",
+      "concepts": [
+        "노선복구 창판정표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08540",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량단말과 관제서버의 기록은 차량관제 시각정합 뒤 내부·외부로 분류한다.",
+      "concepts": [
+        "차량관제 시각정합"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08541",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "충전량과 요금자료가 보고창 안에 접수되면 충전실적 내부제출이다. 파일 생성이 아니라 기관 서버의 수신확인과 무결성 검사가 보고창 안 완료됐는지 본다.",
+      "concepts": [
+        "충전실적 내부제출"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-08542",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자료 생성은 빨라도 기관수신이 마감 뒤면 충전실적 외부제출로 본다.",
+      "concepts": [
+        "충전실적 외부제출"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-08543",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기관 서버 접수가 마감과 같은 보고창 끝점접수는 경계 포함 조건에 따른다. 끝점 수신을 허용하는 규정과 시스템 시계오차 범위를 적용해 전송시각과 혼합하지 않는다.",
+      "concepts": [
+        "보고창 끝점접수"
+      ],
+      "relations": [
+        "classification",
+        "process",
+        "role"
+      ]
+    },
+    {
+      "id": "S2-TOH-08544",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운행거리와 지연정보는 배차실적 확정마감 전에 검수돼야 한다.",
+      "concepts": [
+        "배차실적 확정마감"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08545",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오류 계량이나 누락 운행을 고칠 수 있는 기간이 보고자료 수정허용창이다. 원본 계량을 보존하고 정정 사유·영향 구간이 기한 내 접수된 경우에만 새 버전을 인정한다.",
+      "concepts": [
+        "보고자료 수정허용창"
+      ],
+      "relations": [
+        "boundary",
+        "function",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08546",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사고자료가 정확해도 제출이 늦으면 안전통계 제출기한 초과다.",
+      "concepts": [
+        "안전통계 제출기한 초과"
+      ],
+      "relations": [
+        "classification",
+        "comparison",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08547",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시스템 장애 때 제출기한 연장을 신청할 수 있는 기간이 보고기한 연장신청창이다. 장애 로그와 복구 예상이 원마감 전에 제출되어야 승인 전 자동으로 기한이 늘어나지 않는다.",
+      "concepts": [
+        "보고기한 연장신청창"
+      ],
+      "relations": [
+        "attribute",
+        "contrast",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08548",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수치·근거·서명이 모두 잠긴 운영보고 확정경계로 최종 제출상태를 판정한다.",
+      "concepts": [
+        "운영보고 확정경계"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-08549",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차고보고 창연결표는 자료생성·검수·수정·승인·전송·접수시각을 각 마감과 잇는다. 자료 생성, 검수, 오류 수정, 책임 승인, 전송, 기관 접수를 각 마감과 한 줄씩 대응시킨다.",
+      "concepts": [
+        "차고보고 창연결표"
+      ],
+      "relations": [
+        "boundary",
+        "part_of",
+        "process"
+      ]
+    },
+    {
+      "id": "S2-TOH-08550",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차고와 기관서버의 시간대가 다르면 보고서버 시간대보정 뒤 기한 준수를 확정한다.",
+      "concepts": [
+        "보고서버 시간대보정"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "process"
+      ]
+    }
+  ]
+}

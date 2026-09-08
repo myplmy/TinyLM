@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v39",
+  "version": "39",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-05701 ~ S2-TOH-05850",
+  "concept_family": "S2-A03-T039: 공항 활주로 제설·운항 회복 — 사건 시각과 관측 기록 시각의 분리",
+  "design_note": "공항 활주로 제설·운항 회복 영역의 사건 시각과 관측 기록 시각의 분리 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-05701",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "눈이 활주로 표면에 처음 닿은 때를 가리키는 강설실제 시작시각은 기상관측원이 보고서를 입력한 시각과 구별해야 한다. 첫 눈결정이 활주로 표면에 닿은 물리 사건을 기준으로 하며, 관측자가 일지에 입력한 늦은 시각과 분리한다.",
+      "concepts": [
+        "강설실제 시작시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05702",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관측원이 강설을 확인해 시스템에 올린 순간인 강설관측 등록시각은 자연현상이 시작된 때보다 늦을 수 있다.",
+      "concepts": [
+        "강설관측 등록시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05703",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "기상레이더가 강수에코를 처음 포착한 레이더강설 탐지시각은 공항 지면에 눈이 도달한 사건시각과 같은 값이 아니다. 레이더 반사도가 임계치를 넘은 표본 시각일 뿐 지상 강설의 최초 접촉을 그대로 뜻하지는 않는다.",
+      "concepts": [
+        "레이더강설 탐지시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05704",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "우량계가 강수를 누적해 표본을 만든 우량계 표본시각은 개별 눈송이가 내리기 시작한 순간을 직접 뜻하지 않는다.",
+      "concepts": [
+        "우량계 표본시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05705",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장 강설은 이미 시작됐지만 교대업무 뒤 일지에 적힌 차이를 관측일지 작성지연이라 하며 사건 자체의 지연으로 해석하지 않는다. 순찰 뒤 작성된 문서의 저장 시각보다 현장 메모의 관측 시각을 앞선 사건 증거로 채택해야 한다.",
+      "concepts": [
+        "관측일지 작성지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05706",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 관측을 검토해 공항기상 전문이 확정된 기상전문 발행시각은 그 전문이 설명하는 강설구간보다 뒤에 놓인다.",
+      "concepts": [
+        "기상전문 발행시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05707",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 강설이 지면에 닿은 강설종료 실제시점은 관측자가 종료를 확신해 보고한 시각보다 앞설 수 있다. 마지막 강설 입자가 관측된 뒤 무강수 확인창이 이어진 경계를 종료로 삼고 보고 완료 시각은 배제한다.",
+      "concepts": [
+        "강설종료 실제시점"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05708",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "일정 관찰창 동안 새 강설이 없음을 확인한 강설종료 확인시각은 물리적 강설종료와 확인절차를 분리한 값이다.",
+      "concepts": [
+        "강설종료 확인시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05709",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "센서표본이 중앙서버에 도착한 자동기상 수집시각은 장치가 현장에서 측정한 원시시각에 통신지연이 더해진 결과다. 센서가 표본을 취한 순간과 서버가 묶음을 수신한 순간 사이의 통신 지연을 시간축에서 따로 둔다.",
+      "concepts": [
+        "자동기상 수집시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05710",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "통신복구 뒤 과거 표본이 저장된 기상자료 백필시각을 실제 강설시각으로 쓰면 제설 대응이 거꾸로 보일 수 있다.",
+      "concepts": [
+        "기상자료 백필시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05711",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활주로 수막이 실제로 얼기 시작한 노면결빙 발생시각은 검사차가 결빙을 발견한 시각보다 먼저일 가능성이 크다. 수막이 실제로 얼기 시작한 물리 경계가 경보등 점등보다 앞설 수 있어 두 기록을 같은 사건으로 합치지 않는다.",
+      "concepts": [
+        "노면결빙 발생시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05712",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "순찰차가 특정 지점의 얼음을 처음 확인한 결빙발견 순찰시각은 결빙의 생성 순간이 아니라 관측 가능한 하한이다.",
+      "concepts": [
+        "결빙발견 순찰시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05713",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "매립센서가 온도를 읽은 노면온도 측정시각은 표본주기 사이에 일어난 급락의 정확한 사건시각을 보장하지 않는다. 센서의 원시 표본 태그를 우선하고 보정 계산이 완료된 시각은 후속 처리 단계로 배치한다.",
+      "concepts": [
+        "노면온도 측정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05714",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "점검자가 마찰·오염 결과를 단말에 기록한 노면상태 입력시각은 검사행위와 시스템 등록이 분리되어 있음을 나타낸다.",
+      "concepts": [
+        "노면상태 입력시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05715",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "융설수가 먼저 고였지만 다음 순찰에서 보고된 시간차를 수막형성 관측지연이라 하며 배수사건의 시각과 나누어 본다. 영상에서 수막을 사후 판독한 시각이 아니라 해당 프레임의 촬영 시각을 형성 사건의 상한으로 사용한다.",
+      "concepts": [
+        "수막형성 관측지연"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05716",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "온도·수분 자료를 묶어 재결빙으로 판정한 재결빙 판정시각은 실제 얼음핵이 생긴 순간보다 뒤따르는 분석결과다.",
+      "concepts": [
+        "재결빙 판정시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05717",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "측정자가 눈 깊이를 잰 오염깊이 표본시각은 측정구간 전체의 상태를 대표할 뿐 모든 지점의 발생시각은 아니다. 측정자가 값을 입력한 때보다 자를 노면에 댄 채취 순간이 실제 오염 상태에 가까운 기준점이다.",
+      "concepts": [
+        "오염깊이 표본시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05718",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활주로 센서값이 관제망에 들어온 노면센서 전송시각에는 측정 뒤 게이트웨이 처리시간이 포함된다.",
+      "concepts": [
+        "노면센서 전송시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05719",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "임계판정 뒤 화면에 알림이 뜬 결빙경보 표시시각은 표면결빙과 센서감지 이후의 별도 사건이다. 표시장치가 경보를 띄운 순간은 판정 연산과 전송을 거친 결과이므로 결빙 자체의 시작보다 늦다.",
+      "concepts": [
+        "결빙경보 표시시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05720",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오입력을 바로잡은 노면기록 수정시각은 상태가 바뀐 때가 아니라 기록의 신뢰도가 갱신된 시점이다.",
+      "concepts": [
+        "노면기록 수정시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05721",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "눈이 표면을 덮고 있던 물리적 기간인 활주로 오염실제 구간은 순찰기록의 시작·종료 입력시각으로 그대로 치환할 수 없다. 첫 오염 접촉부터 최종 제거 확인까지를 물리 구간으로 묶고 보고서 작성 구간은 별도 기록 과정으로 둔다.",
+      "concepts": [
+        "활주로 오염실제 구간"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05722",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "점검결과가 운영시스템에 게시된 오염구간 보고시각은 현장측정 종료와 검토시간 뒤에 발생한다.",
+      "concepts": [
+        "오염구간 보고시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05723",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제동성능이 실제로 떨어진 마찰저하 발생시점은 측정차가 낮은 값을 낸 때보다 앞선 구간에 있을 수 있다. 측정차가 임계값을 검출한 표본은 저하가 이미 진행된 뒤일 수 있어 바로 앞 정상 표본과 함께 경계를 좁힌다.",
+      "concepts": [
+        "마찰저하 발생시점"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05724",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "측정차가 임계미만 값을 얻은 마찰저하 검출시각은 저하 발생의 정확한 순간이 아니라 최초 확인자료다.",
+      "concepts": [
+        "마찰저하 검출시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05725",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "고무퇴적이 젖은 노면과 결합해 마찰을 낮춘 고무퇴적 영향시각은 정비보고서 작성일과 분리해 추정한다. 착륙 반복으로 마찰값이 변한 실제 시점은 정비팀이 퇴적을 확인한 시각보다 앞선 가능성을 보존한다.",
+      "concepts": [
+        "고무퇴적 영향시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05726",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량측정 뒤 품질검사를 통과해 상태코드가 확정될 때까지의 차이를 표면상태 판독지연이라 한다.",
+      "concepts": [
+        "표면상태 판독지연"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05727",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "여러 지점 측정을 합쳐 지도가 출력된 오염지도 생성시각은 각 측정이 수행된 원시시각보다 늦다. 여러 표본을 결합해 지도가 완성된 때는 분석 산출물의 시각이며 각 구역 오염 발생시각을 대신하지 않는다.",
+      "concepts": [
+        "오염지도 생성시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05728",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활주로 상태코드가 항공사에 전달된 활주로코드 공표시각은 오염상태가 처음 형성된 때를 뜻하지 않는다.",
+      "concepts": [
+        "활주로코드 공표시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05729",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제설로 마찰이 기준을 되찾은 표면회복 실제시점은 후속 측정이 회복을 인증한 때와 구별한다. 제설날 통과 뒤 마찰이 기준을 회복한 최초 측정 경계를 쓰고 관제 승인 시각은 후속 운영 결정으로 분리한다.",
+      "concepts": [
+        "표면회복 실제시점"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05730",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검사결과를 승인해 운항가능으로 확정한 표면회복 인증시각은 물리적 회복 뒤의 행정 사건이다.",
+      "concepts": [
+        "표면회복 인증시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05731",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "순찰차가 활주로에 진입해 검사를 시작한 순찰차 검사개시 시각은 작업계획에 예정된 시각과 다를 수 있다. 차량이 지정 검사구간에 진입한 GPS 사건을 개시로 보고 무전 보고가 시작된 때와 혼동하지 않는다.",
+      "concepts": [
+        "순찰차 검사개시 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05732",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제가 노면확인을 지시한 검사요청 발령시각은 검사차가 실제 이동을 시작한 때보다 앞선다.",
+      "concepts": [
+        "검사요청 발령시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05733",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마찰계·깊이자로 값을 얻은 검사결과 채취시각은 사무실에서 결과를 승인한 시각과 분리된다. 마찰·오염 표본이 취득된 순간을 결과 근거로 삼으며 데이터 업로드 완료는 전달 단계의 표식이다.",
+      "concepts": [
+        "검사결과 채취시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05734",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장결과가 전자서명되어 올라간 검사보고 제출시각에는 이동과 자료정리 시간이 포함된다.",
+      "concepts": [
+        "검사보고 제출시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05735",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "특정 활주로 지점을 차량이 지나며 본 순찰구간 통과시각은 전체 검사종료시각보다 상태사건에 가깝다. GPS 궤적이 구간 경계를 넘은 시각이 실제 통과이고 관제 화면 갱신은 지연된 관측 기록이다.",
+      "concepts": [
+        "순찰구간 통과시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05736",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "카메라가 노면을 촬영한 검사영상 촬영시각은 영상파일이 서버에 업로드된 시각과 같지 않다.",
+      "concepts": [
+        "검사영상 촬영시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05737",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대용량 자료가 중앙저장소에 다 들어온 영상업로드 완료시각은 현장관측의 발생시각으로 사용하지 않는다. 파일 전송이 끝난 때는 촬영 사건보다 뒤이므로 영상 메타데이터의 프레임 시각을 원사건에 연결한다.",
+      "concepts": [
+        "영상업로드 완료시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05738",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감독자가 이상값을 대조한 검사기록 검토시각은 검사가 이뤄진 순간이 아니라 품질확정 사건이다.",
+      "concepts": [
+        "검사기록 검토시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05739",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "의심구간으로 차량이 다시 들어간 재검사 실제개시는 재검사 명령이 등록된 시각과 분리해서 기록한다. 측정차가 재검사 선을 넘은 물리 접점을 기준으로 하고 작업지시 승인과 결과 등록 사이에 배치한다.",
+      "concepts": [
+        "재검사 실제개시"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05740",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오프라인 단말이 연결된 뒤 자료를 올린 순찰기록 백필시각은 각 현장검사의 원시시각보다 뒤에 몰려 나타난다.",
+      "concepts": [
+        "순찰기록 백필시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05741",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차고에서 차량이 실제 움직인 제설차 출발실제 시각은 배차시스템의 출발처리 버튼을 누른 때와 다를 수 있다. 차량 바퀴가 대기선을 벗어난 GPS·차륜 기록을 출발로 잡아 운전자 출발보고보다 우선한다.",
+      "concepts": [
+        "제설차 출발실제 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05742",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영자가 차량 출동을 시스템에 확정한 제설출동 등록시각은 물리적 출발의 기록이지 출발 그 자체는 아니다.",
+      "concepts": [
+        "제설출동 등록시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05743",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제설차가 정지선을 넘어 활주로에 들어간 활주로 진입사건 시각은 관제허가 발령시각 이후에 놓인다. 정지선을 통과한 위치 표본이 실제 진입을 증명하며 관제 허가 발화는 선행 조건이지 진입 자체가 아니다.",
+      "concepts": [
+        "활주로 진입사건 시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05744",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제가 진입을 승인한 활주로 진입허가 시각은 차량이 실제 경계를 통과한 때를 대신하지 않는다.",
+      "concepts": [
+        "활주로 진입허가 시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05745",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제설날이 눈을 밀기 시작한 제설날 접촉시점은 차량 GPS 보고주기 사이에서 발생할 수 있다. 날 압력센서가 노면 하중을 처음 검출한 순간을 접촉으로 두고 작업모드 선택 시각과 구별한다.",
+      "concepts": [
+        "제설날 접촉시점"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05746",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "GPS 점들이 서버에 묶여 경로로 저장된 제설경로 기록시각은 개별 청소행위보다 나중이다.",
+      "concepts": [
+        "제설경로 기록시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05747",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량이 지정구간의 마지막 눈을 밀어낸 제설구간 완료사건은 작업자가 완료를 입력한 시각과 구별한다. 제설차 후미가 구간 끝을 벗어난 위치 기록을 완료로 삼으며 품질확인 보고는 그 뒤의 검증 절차다.",
+      "concepts": [
+        "제설구간 완료사건"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05748",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "팀장이 구간결과를 확인해 관제에 알린 제설완료 보고시각은 표면작업 종료 뒤에 발생한다.",
+      "concepts": [
+        "제설완료 보고시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05749",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "구동계가 실제 기능을 잃은 제설차 고장발생시각은 운전자가 경고를 인지해 무전한 시각보다 앞설 수 있다. 진단코드 최초 발생과 차량 정지 시각을 비교해 고장 사건을 정하고 정비접수 시간은 후속 행정으로 둔다.",
+      "concepts": [
+        "제설차 고장발생시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05750",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정비센터가 장애신고를 등록한 제설고장 접수시각은 기계고장 사건과 통보과정을 나눈 값이다.",
+      "concepts": [
+        "제설고장 접수시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05751",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "노즐에서 제빙액이 처음 분사된 제빙액 살포개시 사건은 펌프기동 로그나 작업승인 시각과 동일하지 않다. 노즐 유량이 0에서 양수로 바뀐 원시 표본이 개시이며 펌프 기동 명령만으로 실제 살포를 앞당기지 않는다.",
+      "concepts": [
+        "제빙액 살포개시 사건"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05752",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제가 제빙액 투입을 지시한 살포명령 발령시각은 차량이 실제 분사를 시작하기 전에 발생한다.",
+      "concepts": [
+        "살포명령 발령시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05753",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유량계가 일정 구간의 사용량을 확정한 살포량 계측시각은 액체가 노면에 닿은 순간보다 뒤따른다. 누적유량 값에 붙은 장치 표본시각을 사용하고 서버 집계가 끝난 때는 계산 결과의 생성시각으로 남긴다.",
+      "concepts": [
+        "살포량 계측시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05754",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "약제가 얼음을 녹여 마찰을 회복시킨 제빙효과 발생시점은 후속검사가 효과를 확인한 시각과 다르다.",
+      "concepts": [
+        "제빙효과 발생시점"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05755",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검사차가 기준충족을 측정한 제빙효과 확인시각은 융해가 실제 완료된 때의 상한으로 해석한다. 노면 마찰이 회복 기준을 넘은 검사 시각이 확인 경계이며 약제 살포 종료와 자동으로 같다고 보지 않는다.",
+      "concepts": [
+        "제빙효과 확인시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05756",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "탱크에 약제가 실제 유입된 약제탱크 보충사건은 재고시스템 입고처리 시각과 분리된다.",
+      "concepts": [
+        "약제탱크 보충사건"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05757",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사용량과 보충량이 장부에 갱신된 약제재고 반영시각은 현장 물질이동 뒤의 기록사건이다. 창고 시스템 갱신은 실제 탱크 인출 뒤에 일어나므로 계량기 변화와 출고 인계 기록을 먼저 배열한다.",
+      "concepts": [
+        "약제재고 반영시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05758",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량위치가 중앙에 도착한 살포차 GPS 수신시각은 위성이 위치를 산출한 장치시각에 통신지연이 더해진다.",
+      "concepts": [
+        "살포차 GPS 수신시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05759",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 노즐이 닫히고 차량이 구간을 벗어난 제빙작업 종료사건은 전자작업표 종료와 구별한다. 마지막 노즐의 유량이 0으로 내려간 물리 사건을 종료로 두며 작업자가 단말에서 닫은 시각은 후행한다.",
+      "concepts": [
+        "제빙작업 종료사건"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05760",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감독자가 사용량·경로·결과를 검수해 작업표를 닫은 제빙작업 마감시각은 물리작업 종료 뒤에 놓인다.",
+      "concepts": [
+        "제빙작업 마감시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05761",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "측정차 타이어가 특정 지점을 지나 값을 얻은 마찰측정 실제시각은 결과파일 생성시각과 분리해 보존한다. 측정바퀴가 해당 위치를 지난 센서 시각이 원사건이고 보고서 생성 시각은 여러 표본을 묶은 후속 단계다.",
+      "concepts": [
+        "마찰측정 실제시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05762",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "한 회차 표본을 묶어 파일로 만든 마찰파일 생성시각은 각 활주로 위치의 관측시각보다 늦다.",
+      "concepts": [
+        "마찰파일 생성시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05763",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조종사가 착륙 중 제동상태를 경험한 제동보고 체감시각은 무선으로 보고한 시각과 다를 수 있다. 조종사가 제동 변화를 느낀 착륙 활주 구간을 음성 녹취 시각과 대조해 발화 이전의 체감 사건을 복원한다.",
+      "concepts": [
+        "제동보고 체감시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05764",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제가 조종사 보고를 접수한 제동보고 수신시각은 항공기가 실제 제동한 순간 이후다.",
+      "concepts": [
+        "제동보고 수신시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05765",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표면마찰이 실제 기준 아래로 내려간 마찰임계 통과시점은 이산 측정만으로 한 점에 확정하기 어렵다. 연속 표본 중 최초 기준 미달 값과 직전 정상 값을 사용해 실제 통과 경계를 두 시각 사이로 제한한다.",
+      "concepts": [
+        "마찰임계 통과시점"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05766",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "측정값을 검증해 시스템이 경보를 만든 마찰경보 생성시각은 임계통과 뒤의 계산사건이다.",
+      "concepts": [
+        "마찰경보 생성시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05767",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "규정속도로 안정되어 유효표본을 얻은 측정차 속도구간 시각은 차량 출발시각과 구별한다. 유효 속도범위에 머문 GPS 구간만 마찰표본의 시간창으로 인정하고 가감속 구간은 판정에서 제외한다.",
+      "concepts": [
+        "측정차 속도구간 시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05768",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "품질담당이 이상치를 배제하고 결과를 확정한 마찰자료 승인시각은 현장표본보다 뒤에 놓인다.",
+      "concepts": [
+        "마찰자료 승인시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05769",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제설 뒤 실제 제동성이 좋아진 제동성회복 사건시점은 시험차가 이를 인증한 시각에 앞설 수 있다. 기준 이상 측정이 연속 확인된 첫 경계를 회복으로 삼고 재개방 승인은 뒤따르는 운영 판단으로 둔다.",
+      "concepts": [
+        "제동성회복 사건시점"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05770",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영자가 상태코드를 갱신한 제동성회복 보고시각은 물리적 회복이 공표된 행정시점이다.",
+      "concepts": [
+        "제동성회복 보고시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05771",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "등화와 진입표지가 실제 폐쇄상태로 바뀐 활주로 폐쇄실행 시각은 폐쇄결정이나 공지발행 시각과 다르다. 폐쇄등과 표지가 실제 활성화된 접점을 실행으로 기록하며 폐쇄 결정이나 통보 발송은 선행 사건이다.",
+      "concepts": [
+        "활주로 폐쇄실행 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05772",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영책임자가 폐쇄를 승인한 활주로 폐쇄결정 시각은 현장조치가 모두 적용되기 전에 놓인다.",
+      "concepts": [
+        "활주로 폐쇄결정 시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05773",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자가 폐쇄표지를 실제 배치한 폐쇄표지 설치시각은 작업완료 입력보다 현장사건에 가깝다. 마지막 필수 표지가 지정 위치에 고정된 현장 확인을 사용하고 작업지시 발행 시각은 설치 완료가 아니다.",
+      "concepts": [
+        "폐쇄표지 설치시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05774",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영시스템에 활주로가 닫힌 것으로 표시된 폐쇄상태 전산반영은 물리적 차단 뒤 통신지연을 포함할 수 있다.",
+      "concepts": [
+        "폐쇄상태 전산반영"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05775",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표지제거와 등화복원이 끝나 항공기 진입이 가능해진 재개방 실제시각은 승인문서 시각과 별개다. 폐쇄 표시가 해제되고 관제가 사용 가능 상태를 적용한 경계가 재개방이며 첫 항공기 이용은 그 뒤의 증거다.",
+      "concepts": [
+        "재개방 실제시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05776",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "검사결과를 근거로 책임자가 운항재개를 허가한 재개방 승인시각은 현장준비 완료와 순서가 다를 수 있다.",
+      "concepts": [
+        "재개방 승인시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05777",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활주로 길이 일부만 사용할 수 있게 표지·거리정보가 바뀐 부분개방 적용시각은 공지작성 시각과 구별한다. 활주로 일부 구간의 상태코드가 실제 변경된 운영 시각을 쓰고 계획안 승인만으로 적용을 앞당기지 않는다.",
+      "concepts": [
+        "부분개방 적용시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05778",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제설지연으로 종료예정이 수정된 폐쇄연장 입력시각은 활주로 상태가 새로 악화된 사건을 뜻하지 않는다.",
+      "concepts": [
+        "폐쇄연장 입력시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05779",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장 폐쇄조치가 완료된 뒤 여러 화면에 같은 상태가 퍼지는 차이를 운영상태 표시지연이라 한다. 현장 상태가 바뀐 뒤 화면이 갱신된 전송차를 계산해 표시시각을 원사건과 별도의 관측 단계로 둔다.",
+      "concepts": [
+        "운영상태 표시지연"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05780",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재개방 뒤 첫 항공기가 실제 이착륙한 개방후 첫사용 시각은 행정적 개방의 효과가 나타난 시점이다.",
+      "concepts": [
+        "개방후 첫사용 시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05781",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "활주로 폐쇄·오염 정보를 검토해 공지가 발행된 노탐발행 시각은 현장상태 발생시각보다 뒤에 놓인다. 공식 문서가 식별번호와 함께 생성된 순간은 공표 절차의 기준이며 실제 폐쇄 실행보다 앞뒤일 수 있다.",
+      "concepts": [
+        "노탐발행 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05782",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공지문이 지정한 노탐효력 시작시각은 문서를 작성하거나 배포한 시각과 다를 수 있다.",
+      "concepts": [
+        "노탐효력 시작시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05783",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공사 시스템이 공지를 받은 노탐배포 수신시각은 발행기관의 시각에 전송지연이 더해진 값이다. 각 수신기관이 전문을 받은 때는 네트워크 경로마다 달라 발행시각이나 현장 상태변경과 동일하지 않다.",
+      "concepts": [
+        "노탐배포 수신시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05784",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제사가 항공기에 활주로 폐쇄를 알린 관제폐쇄 통보시각은 현장차단이 실행된 시각을 대신하지 않는다.",
+      "concepts": [
+        "관제폐쇄 통보시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05785",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공항 운영DB가 제설상태를 새 판으로 바꾼 운항정보 갱신시각은 자료가 측정된 때와 구별한다. 항공사 시스템 반영은 노탐 수신 뒤 처리된 결과이므로 활주로 사건의 원시 시각 대신 사용할 수 없다.",
+      "concepts": [
+        "운항정보 갱신시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05786",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오염깊이나 종료시각을 바로잡은 노탐정정 발행시각은 현장사건이 다시 발생했다는 뜻이 아니다.",
+      "concepts": [
+        "노탐정정 발행시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05787",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운항제한 종료를 외부에 알린 노탐해제 공표시각은 실제 장애물이 제거된 뒤에 올 수 있다. 해제 전문이 공식 배포된 순간을 공표로 기록하되 노면 회복과 재개방 실행은 별도 선행 근거로 유지한다.",
+      "concepts": [
+        "노탐해제 공표시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05788",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교신내용을 일지에 입력한 관제일지 기록시각은 무선통보가 이뤄진 원시시각과 나누어 본다.",
+      "concepts": [
+        "관제일지 기록시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05789",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제사와 조종사가 실제 송수신한 음성교신 발생시각은 녹취파일 저장시각과 동일하지 않다. 무전 신호의 녹취 서버 타임스탬프를 송신 지연과 보정해 발화 사건을 추정하고 문서 전사 시각은 제외한다.",
+      "concepts": [
+        "음성교신 발생시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05790",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "음성자료가 검색목록에 등록된 녹취파일 인덱싱시각은 교신사건 뒤의 자료처리 시점이다.",
+      "concepts": [
+        "녹취파일 인덱싱시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05791",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "주바퀴가 활주로에 닿은 항공기 착륙접지 시각은 조종사 보고나 운항DB 도착시각과 구별한다. 주륜 하중센서와 활주로 레이더가 함께 가리킨 접점을 사용하며 관제 착륙보고는 뒤따르는 확인이다.",
+      "concepts": [
+        "항공기 착륙접지 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05792",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운항시스템에 도착으로 처리된 착륙보고 등록시각은 실제 접지와 활주로 이탈 뒤에 기록될 수 있다.",
+      "concepts": [
+        "착륙보고 등록시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05793",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공기가 추력을 올려 활주를 시작한 이륙활주 시작시각은 관제허가 발령시각보다 늦다. 정지 상태에서 가속이 시작된 항공기 위치·속도 표본을 기준으로 하고 이륙허가 발화와 구별한다.",
+      "concepts": [
+        "이륙활주 시작시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05794",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제가 이륙을 승인한 이륙허가 발령시각은 항공기가 실제로 움직인 시각과 같은 사건이 아니다.",
+      "concepts": [
+        "이륙허가 발령시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05795",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공기가 유도로 경계를 통과한 활주로 이탈사건 시각은 조종사의 이탈보고 수신시각과 분리된다. 항공기 기준점이 활주로 경계를 완전히 벗어난 감시자료 시각을 사용해 조종사 이탈보고보다 앞세운다.",
+      "concepts": [
+        "활주로 이탈사건 시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05796",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제가 활주로 비움을 확인한 이탈보고 수신시각은 기체가 실제 경계를 벗어난 뒤에 놓일 수 있다.",
+      "concepts": [
+        "이탈보고 수신시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05797",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무원이 노면상태 때문에 회항을 결정한 회항결정 발생시각은 운항계획 변경등록보다 앞선다. 운항승무원이 회항을 확정한 교신·조작 증거를 배열하고 항공사 시스템 등록은 후속 기록으로 둔다.",
+      "concepts": [
+        "회항결정 발생시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05798",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공사와 공항DB에 회항이 표시된 회항정보 시스템반영은 조종실 의사결정 뒤의 기록사건이다.",
+      "concepts": [
+        "회항정보 시스템반영"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05799",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공기가 주기장이나 공중에서 제설완료를 기다리기 시작한 제설대기 시작시각은 지연코드 입력시각과 다르다. 제설차가 지정 대기점에 정차한 위치 사건을 시작으로 삼으며 출동 명령 수신만으로 대기를 소급하지 않는다.",
+      "concepts": [
+        "제설대기 시작시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05800",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "담당자가 원인을 분류해 넣은 운항지연 코드입력은 실제 대기기간이 시작된 뒤에 수행될 수 있다.",
+      "concepts": [
+        "운항지연 코드입력"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05801",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "유도로 표면에 실제 얼음이 형성된 유도로 결빙발생 시각은 순찰차가 이를 발견한 때와 구별한다.",
+      "concepts": [
+        "유도로 결빙발생 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05802",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장점검 결과가 관제에 접수된 유도로 결빙보고 시각은 결빙사건보다 늦은 관측기록이다.",
+      "concepts": [
+        "유도로 결빙보고 시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05803",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제설날이 유도로 눈을 밀기 시작한 유도로 제설개시 사건은 작업지시가 발령된 시각과 다르다.",
+      "concepts": [
+        "유도로 제설개시 사건"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05804",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량에 제설구간이 배정된 유도로 작업지시 시각은 실제 현장착수 전에 발생한다.",
+      "concepts": [
+        "유도로 작업지시 시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05805",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "점검자가 주기장 상태를 측정한 주기장 오염관측 시각은 결과가 항공사에 전달된 시각과 분리한다.",
+      "concepts": [
+        "주기장 오염관측 시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05806",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지상조업사에 상태정보가 전송된 주기장 상태배포 시각은 표면상태가 생긴 순간을 뜻하지 않는다.",
+      "concepts": [
+        "주기장 상태배포 시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05807",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "적설로 유도등이 실제 가려진 유도등 매몰발생 시점은 조도센서 경보보다 앞설 수 있다.",
+      "concepts": [
+        "유도등 매몰발생 시점"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05808",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조도저하가 임계판정을 통과한 유도등 매몰경보 시각은 매몰상태를 뒤늦게 확인한 기록이다.",
+      "concepts": [
+        "유도등 매몰경보 시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05809",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "눈 제거와 안전검사가 끝나 견인차가 통과할 수 있게 된 견인경로 개방시각은 공지등록과 구별한다.",
+      "concepts": [
+        "견인경로 개방시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05810",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "조업사에 사용가능 정보가 전달된 견인경로 공지시각은 현장개방 뒤의 통신사건이다.",
+      "concepts": [
+        "견인경로 공지시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05811",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "등화회로에 전압이 인가되어 실제 빛이 나온 활주로등 점등사건 시각은 관제명령 입력시각과 다르다.",
+      "concepts": [
+        "활주로등 점등사건 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05812",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제사가 밝기단계를 선택한 등화명령 입력시각은 현장등기구의 광출력 발생보다 앞선다.",
+      "concepts": [
+        "등화명령 입력시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05813",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회로가 실제 기능을 잃은 등화고장 발생시각은 감시기가 불일치를 검출한 시각보다 이를 수 있다.",
+      "concepts": [
+        "등화고장 발생시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05814",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "전류감시와 순찰이 이상을 확인한 등화고장 검출시각은 최초 고장의 관측가능 하한이다.",
+      "concepts": [
+        "등화고장 검출시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05815",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "표지신호가 실제 끊긴 항행시설 신호중단 시각은 원격경보가 중앙에 표시된 때와 분리한다.",
+      "concepts": [
+        "항행시설 신호중단 시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05816",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "설비이상이 관제화면에 뜬 항행경보 표시시각에는 센서판정과 통신시간이 포함된다.",
+      "concepts": [
+        "항행경보 표시시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05817",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "매몰된 등기구가 눈 제거로 다시 보이게 된 제설후 등화노출 시점은 조도시험 완료시각보다 앞선다.",
+      "concepts": [
+        "제설후 등화노출 시점"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05818",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자가 밝기와 회로를 검사한 등화기능 시험시각은 복구가 실제 이루어진 때를 인증하는 관측이다.",
+      "concepts": [
+        "등화기능 시험시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05819",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시험결과를 검토해 정상운전으로 확정한 등화복구 승인시각은 물리적 수리완료 뒤의 행정사건이다.",
+      "concepts": [
+        "등화복구 승인시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05820",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "오프라인 순찰기록을 교대 후 올린 등화일지 백필시각은 실제 점검·고장·복구 시각을 대신하지 않는다.",
+      "concepts": [
+        "등화일지 백필시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05821",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업자가 지정위치에 실제 도착한 제설인력 현장도착 시각은 호출메시지를 받은 때와 다르다.",
+      "concepts": [
+        "제설인력 현장도착 시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05822",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "비상근무 지시가 발송된 제설인력 호출시각은 이동과 준비 전의 통보사건이다.",
+      "concepts": [
+        "제설인력 호출시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05823",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연료가 차량탱크에 실제 들어간 제설차 연료보급 사건은 재고장부 반영시각과 분리한다.",
+      "concepts": [
+        "제설차 연료보급 사건"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05824",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보급량이 자산시스템에 등록된 연료재고 갱신시각은 현장물질 이동 뒤의 기록이다.",
+      "concepts": [
+        "연료재고 갱신시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05825",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운송차가 공항 저장소에 도착한 제빙액 배송도착 시각은 구매시스템 입고승인과 다를 수 있다.",
+      "concepts": [
+        "제빙액 배송도착 시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05826",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수량·품질검사를 마치고 재고로 인정한 제빙액 입고승인 시각은 물리적 배송 뒤에 놓인다.",
+      "concepts": [
+        "제빙액 입고승인 시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05827",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "두 작업조가 현장에서 설비·구간상태를 실제 대조한 교대인수인계 발생시각은 전자서명시각과 구별한다.",
+      "concepts": [
+        "교대인수인계 발생시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05828",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "책임자가 인수인계를 시스템에 확정한 교대서명 등록시각은 대화와 현장확인 이후일 수 있다.",
+      "concepts": [
+        "교대서명 등록시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05829",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "제설장비가 수리·시험을 끝내 출동가능해진 장비정비 완료사건은 정비표 마감시각과 다르다.",
+      "concepts": [
+        "장비정비 완료사건"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05830",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감독자가 부품과 시험결과를 검수한 장비정비표 마감시각은 기계기능 회복 뒤의 기록사건이다.",
+      "concepts": [
+        "장비정비표 마감시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05831",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "카메라가 노면영상을 만든 활주로 카메라 촬영시각은 파일이 관제서버에 저장된 시각과 구별한다.",
+      "concepts": [
+        "활주로 카메라 촬영시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05832",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "네트워크를 지나 영상이 중앙에 도착한 활주로 영상수신 시각은 현장장면보다 통신지연만큼 늦다.",
+      "concepts": [
+        "활주로 영상수신 시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05833",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량단말이 위치를 계산한 제설차 GPS 측위시각은 관제지도에 점이 그려진 때와 다르다.",
+      "concepts": [
+        "제설차 GPS 측위시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05834",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "수집·보정 뒤 차량위치가 화면에 나타난 GPS 지도표시 시각은 실제 이동사건을 뒤따른다.",
+      "concepts": [
+        "GPS 지도표시 시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05835",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장치가 표본에 붙인 운영센서 원시시각은 서버수신시각보다 사건 가까운 기준으로 우선 검토한다.",
+      "concepts": [
+        "운영센서 원시시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05836",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "자료가 데이터베이스에 저장된 운영자료 적재시각은 측정과 전송이 끝난 뒤의 처리시점이다.",
+      "concepts": [
+        "운영자료 적재시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05837",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "관제교신이 실제 발생한 음성녹취 기록시각은 녹취파일의 복사·보관시각과 나누어 본다.",
+      "concepts": [
+        "음성녹취 기록시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05838",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사후검토로 도착·출발 값을 고친 운항DB 수정시각은 항공기 사건이 다시 발생한 것이 아니다.",
+      "concepts": [
+        "운항DB 수정시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05839",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시간동기 오류를 바로잡은 서버시계 교정시각은 교정 전 기록의 실제 순서를 재계산하는 기준이다.",
+      "concepts": [
+        "서버시계 교정시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05840",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "사용자 변경행위를 별도 시스템이 적은 감사로그 생성시각은 원본 업무기록 저장과 약간 다를 수 있다.",
+      "concepts": [
+        "감사로그 생성시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05841",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "마지막 작업차가 활주로를 벗어나 표면작업이 끝난 제설종료 실제사건은 운영자가 완료를 선언한 때와 다르다.",
+      "concepts": [
+        "제설종료 실제사건"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05842",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "현장팀 보고를 받아 관제가 제설완료를 선언한 제설종료 선언시각은 물리적 작업종료 뒤에 놓인다.",
+      "concepts": [
+        "제설종료 선언시각"
+      ],
+      "relations": [
+        "process",
+        "attribute",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-05843",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "폐쇄가 풀린 뒤 첫 항공기가 실제 닿은 운항재개 첫접지 시각은 재개승인 효과를 확인하는 사건이다.",
+      "concepts": [
+        "운항재개 첫접지 시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05844",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "공항시스템 상태가 정상운영으로 바뀐 운항재개 전산시각은 첫 이착륙이나 표면회복과 별개다.",
+      "concepts": [
+        "운항재개 전산시각"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05845",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "바람에 날린 눈이 다시 활주로를 덮기 시작한 잔설재발 발생시각은 순찰에서 발견한 때보다 앞설 수 있다.",
+      "concepts": [
+        "잔설재발 발생시각"
+      ],
+      "relations": [
+        "process",
+        "function",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05846",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "재오염을 확인해 관제에 올린 잔설재발 보고시각은 현상발생 뒤의 관측·통보 시점이다.",
+      "concepts": [
+        "잔설재발 보고시각"
+      ],
+      "relations": [
+        "state",
+        "comparison",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-05847",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "감축운항에서 정상편성으로 실제 전환한 회복계획 적용시각은 계획판이 승인된 시각과 구별한다.",
+      "concepts": [
+        "회복계획 적용시각"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "attribute"
+      ]
+    },
+    {
+      "id": "S2-TOH-05848",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "항공사·관제·공항이 운영판을 확정한 회복계획 승인시각은 현장 실행보다 먼저 또는 뒤에 기록될 수 있다.",
+      "concepts": [
+        "회복계획 승인시각"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-05849",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "지연편과 대기열이 기준 아래로 내려간 정상운영 달성시점은 사후보고서가 이를 확정한 시각보다 앞선다.",
+      "concepts": [
+        "정상운영 달성시점"
+      ],
+      "relations": [
+        "process",
+        "part_of",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-05850",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "강설·제설·폐쇄·재개 연표를 검수해 문서를 잠근 사후보고 확정시각은 사건들의 발생시각이 아니다.",
+      "concepts": [
+        "사후보고 확정시각"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "classification"
+      ]
+    }
+  ]
+}

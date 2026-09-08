@@ -1,0 +1,150 @@
+{"primary":"계통지령 전달지연","text":"계통지령 전달지연은 운영기관이 명령을 발행한 뒤 통신망과 관제를 거쳐 현장제어기에 도착하는 간격이다. 출력응답 지연과 다르다. 급전소 발행 태그와 현장 수신 태그의 차이는 통신 경로에서 생긴 관측 지연이며 배터리의 출력 반응시간과 다르다.","relations":["process","state","boundary"]}
+{"primary":"배터리 출력응답 지연","text":"배터리 출력응답 지연은 유효 지령수신 뒤 램프·접촉기·변환기를 거쳐 실제 전력이 바뀌는 시간이다. 통신지연과 분리한다.","relations":["process","attribute","comparison"]}
+{"primary":"주파수변화 관측지연","text":"주파수변화 관측지연은 계통상태가 바뀐 뒤 측정창·필터 때문에 제어값에 나타나는 간격이다. 변화발생 자체가 늦은 것은 아니다. 계통에서 주파수가 변한 물리 시점 뒤 계측창과 필터 계산이 끝나 표시되므로 센서 처리구간을 따로 센다.","relations":["process","classification","boundary"]}
+{"primary":"지령수락 처리지연","text":"지령수락 처리지연은 명령수신 뒤 가용용량·온도·보호상태를 검토해 응답하기까지의 시간이다. 설비출력 변화와 구분한다.","relations":["process","function","state"]}
+{"primary":"출력계량 수집지연","text":"출력계량 수집지연은 실제 전력이 흐른 뒤 계량기·수집망을 거쳐 정산자료에 도착하는 간격이다. 전력계 원시 표본에서 게이트웨이 집계와 중앙 저장까지 이어진 시간을 실제 출력변화의 원인으로 오인하지 않는다.","relations":["process","role","contrast"]}
+{"primary":"출력제한 발현지연","text":"출력제한 발현지연은 온도·전압 제약 확인 뒤 목표감축이 실제 변환기 출력에 적용될 때까지의 시간이다.","relations":["part_of","process","state"]}
+{"primary":"관제화면 갱신지연","text":"관제화면 갱신지연은 현장상태가 서버에 저장된 뒤 집계·렌더링되어 보이는 간격이다. 지령이나 출력 발생시각과 다르다. BMS 상태가 먼저 바뀐 뒤 화면 주기와 네트워크 큐를 거쳐 늦게 보이는 현상은 장치 동작지연이 아니다.","relations":["process","comparison","boundary"]}
+{"primary":"시장실적 확정지연","text":"시장실적 확정지연은 운전종료 뒤 계량·기준·예외를 검토해 정산값을 잠그는 시간이다. 실제 지령기간과 별도다.","relations":["process","attribute","function"]}
+{"primary":"보호사건 통보지연","text":"보호사건 통보지연은 장치가 출력을 차단한 뒤 운영자·계통기관에 알림이 도착하는 간격이다. 보호계전기가 차단한 순간과 운영자에게 알림이 도착한 순간을 나누어 안전동작이 통보 뒤에 일어난 것처럼 뒤집지 않는다.","relations":["process","classification","state"]}
+{"primary":"지령회차 보고지연","text":"지령회차 보고지연은 회차 뒤 명령·응답·제약자료를 대조해 운영보고를 확정하는 시간이다.","relations":["process","contrast","attribute"]}
+{"primary":"충전전류 상승지연","text":"충전전류 상승지연은 충전허가 뒤 접촉기와 변환기 제어를 거쳐 목표전류에 이르는 시간이다. 상태표시 지연과 다르다. 접촉기 투입 뒤 직류링크와 제어루프가 안정되며 전류가 목표값에 도달하는 구간은 전기적 응답시간이다.","relations":["process","state","boundary"]}
+{"primary":"충전상태 표시지연","text":"충전상태 표시지연은 전류가 이미 흐른 뒤 서버·화면에 충전중 상태가 나타나는 간격이다.","relations":["process","attribute","comparison"]}
+{"primary":"셀전압 반응지연","text":"셀전압 반응지연은 충전전류 변화 뒤 전기화학 분극으로 측정전압이 새 수준에 이르는 시간이다. 센서수집 지연과 구분한다. 전류가 바뀐 뒤 내부저항과 분극 효과를 거쳐 단자전압이 이동하므로 두 센서 표본의 선후를 물리 과정으로 설명한다.","relations":["process","classification","boundary"]}
+{"primary":"셀전압 수집지연","text":"셀전압 수집지연은 측정 뒤 모듈통신과 BMS주기를 거쳐 팩제어에 값이 도착하는 간격이다.","relations":["process","function","state"]}
+{"primary":"정전압 전환처리지연","text":"정전압 전환처리지연은 전압경계 도달 뒤 제어기가 전류감축 모드로 바꾸는 시간이다. 셀반응 지연과 다르다. 상한전압 검출, 지속조건 확인, 전류제어 모드 변경이 순차로 진행되어 단순 데이터 전송 지연과 구별된다.","relations":["process","role","contrast"]}
+{"primary":"완충판정 지연","text":"완충판정 지연은 목표전압·전류 뒤 유지조건과 편차를 검토해 완료로 확정하는 시간이다. 실제 에너지유입과 분리한다.","relations":["part_of","process","state"]}
+{"primary":"냉각효과 도달지연","text":"냉각출력 증가 뒤 차가운 유체와 열전달이 셀온도를 낮출 때까지의 시간이 냉각효과 도달지연이다. 밸브 개방 뒤 차가운 유체가 모듈에 도착하고 셀 온도가 내려가기까지의 열전달 시간을 실제 원인 지연으로 본다.","relations":["process","comparison","boundary"]}
+{"primary":"충전완료 알림지연","text":"충전완료 알림지연은 완료판정 뒤 관제·시장·사용자 화면에 통지가 도착하는 간격이다.","relations":["process","attribute","function"]}
+{"primary":"충전중단 승인대기","text":"충전중단 승인대기는 비긴급 제약 뒤 계통·운영 우선순위를 검토해 정지결정을 기다린 시간이다. 중단 요청은 즉시 도착했지만 계통운영자의 허가를 기다린 구간이어서 설비가 느리게 반응한 사례로 세지 않는다.","relations":["process","classification","state"]}
+{"primary":"충전회차 확정지연","text":"충전회차 확정지연은 전류종료 뒤 에너지·셀편차·온도자료를 대조해 기록을 잠그는 시간이다.","relations":["process","contrast","attribute"]}
+{"primary":"방전출력 상승지연","text":"방전출력 상승지연은 지령 뒤 접촉기·인버터 램프를 거쳐 목표전력에 도달하는 시간이다. 지령전송 지연과 다르다. 출력지령 뒤 인버터 전류루프와 램프 제한을 거쳐 목표 방전에 이르는 시간은 제어계 응답으로 측정한다.","relations":["process","state","boundary"]}
+{"primary":"방전상태 표시지연","text":"방전상태 표시지연은 실제 출력 뒤 계량수집과 화면갱신으로 방전중이 보이는 간격이다.","relations":["process","attribute","comparison"]}
+{"primary":"부하변화 관측지연","text":"부하변화 관측지연은 시설수요가 바뀐 뒤 계량창·필터를 거쳐 제어입력에 나타나는 시간이다. 부하가 먼저 바뀌고 전력계 평균창이 닫힌 뒤 수치가 갱신되므로 표시 변화는 원사건의 후행 관측이다.","relations":["process","classification","boundary"]}
+{"primary":"피크저감 계산지연","text":"피크저감 계산지연은 부하표본 뒤 기준선·예측·한계를 적용해 배터리 목표를 산출하는 시간이다. 실제 부하변화와 분리한다.","relations":["process","function","state"]}
+{"primary":"저전압 반응지연","text":"방전전류 증가 뒤 셀 내부저항과 분극으로 전압이 내려가는 시간이 저전압 반응지연이다. 센서전송 지연과 다르다. 셀전압 저하가 감지된 뒤 필터와 지속판정을 거쳐 감축명령이 나가므로 전기화학 반응과 보호처리를 분리한다.","relations":["process","role","contrast"]}
+{"primary":"저전압 경보지연","text":"저전압 경보지연은 최초 경계통과 뒤 지속조건과 통신을 거쳐 알림이 생기는 간격이다.","relations":["part_of","process","state"]}
+{"primary":"방전감축 처리지연","text":"제약판정 뒤 변환기 목표가 낮아져 실제 출력이 줄기까지의 시간이 방전감축 처리지연이다. 감축 기준 초과부터 새 제한값 계산과 인버터 적용까지의 연산 구간을 통신 대기나 승인 대기와 섞지 않는다.","relations":["process","comparison","boundary"]}
+{"primary":"잔량재평가 지연","text":"방전종료 뒤 안정전압과 계량을 모아 남은 에너지를 확정할 때까지의 시간이 잔량재평가 지연이다.","relations":["process","attribute","function"]}
+{"primary":"비상부하 전환대기","text":"정전판정 뒤 차단기·부하우선순위를 확인해 저장전력이 필수회로를 맡기까지의 시간이 비상부하 전환대기다. 필수 부하 목록과 현장 준비 확인이 끝날 때까지 접속을 미룬 시간은 자원 선택에 따른 운영 대기다.","relations":["process","classification","state"]}
+{"primary":"방전회차 보고지연","text":"방전회차 보고지연은 출력종료 뒤 에너지·잔량·제약을 검수해 회차기록을 확정하는 시간이다.","relations":["process","contrast","attribute"]}
+{"primary":"전류적산 오차누적지연","text":"작은 전류오프셋이 여러 시간 누적되어 상태추정에 눈에 띄는 차이를 만들 때까지의 시간이 전류적산 오차누적지연이다. 작은 센서 편향이 여러 표본에 걸쳐 누적되어 잔량 추정에 드러나므로 원인과 결과 사이에 긴 축적 구간이 있다.","relations":["process","state","boundary"]}
+{"primary":"충전상태 계산지연","text":"충전상태 계산지연은 새 센서표본 뒤 적산·온도·모형을 적용해 잔량값을 갱신하는 시간이다.","relations":["process","attribute","comparison"]}
+{"primary":"개방전압 안정지연","text":"전류정지 뒤 분극이 가라앉아 개방전압 보정에 쓸 수 있을 때까지의 시간이 개방전압 안정지연이다. 전류를 끊은 뒤 분극이 풀려 전압이 평형에 가까워질 때까지 기다리는 시간은 측정 필수조건이다.","relations":["process","classification","boundary"]}
+{"primary":"상태값 화면반영지연","text":"상태값 화면반영지연은 추정이 끝난 뒤 관제·계획서비스에 새 잔량이 퍼지는 간격이다.","relations":["process","function","state"]}
+{"primary":"열화효과 발현지연","text":"반복 회차와 고온 뒤 실제 가용용량·저항 변화가 나타날 때까지의 시간이 열화효과 발현지연이다. 반복된 고율운전의 손상이 곧바로 보이지 않고 이후 용량시험에서 나타나므로 장기 물리 지연으로 분류한다.","relations":["process","role","contrast"]}
+{"primary":"건강상태 검출지연","text":"건강상태 검출지연은 열화가 진행된 뒤 충분한 회차자료가 쌓여 판정할 때까지의 간격이다.","relations":["part_of","process","state"]}
+{"primary":"용량재식별 처리지연","text":"완전회차 뒤 계량·오차·온도를 검토해 새 용량기준을 확정하는 시간이 용량재식별 처리지연이다. 완전 회차 자료를 수집한 뒤 모형 적합과 검증을 거쳐 새 용량값이 확정되는 계산 단계의 소요시간이다.","relations":["process","comparison","boundary"]}
+{"primary":"센서교정 반영지연","text":"센서오프셋을 승인한 뒤 상태추정·원장·계획에 새 보정이 적용될 때까지의 간격이 센서교정 반영지연이다.","relations":["process","attribute","function"]}
+{"primary":"추정이의 검토대기","text":"비정상값 신고 뒤 원시자료·모형버전·센서를 검토해 결론을 내기까지의 시간이 추정이의 검토대기다. 자동 추정은 완료됐지만 담당자의 반례 확인과 승인을 기다렸으므로 알고리즘 실행시간과 구분한다.","relations":["process","classification","state"]}
+{"primary":"상태원장 확정지연","text":"평가회차 뒤 보정·용량·불확실성 계보를 검수해 잠그는 시간이 상태원장 확정지연이다.","relations":["process","contrast","attribute"]}
+{"primary":"셀균형 효과지연","text":"균형전류를 적용한 뒤 셀에너지와 안정전압 편차가 실제 줄어들 때까지의 시간이 셀균형 효과지연이다. 균형저항을 켠 뒤 높은 셀의 전하가 서서히 빠져 전압편차가 줄어드는 전기적 반응창을 관찰한다.","relations":["process","state","boundary"]}
+{"primary":"균형상태 표시지연","text":"균형이 이미 시작된 뒤 모듈통신과 화면갱신으로 상태가 나타나는 간격이 균형상태 표시지연이다.","relations":["process","attribute","comparison"]}
+{"primary":"셀전압 안정지연","text":"균형전류를 멈춘 뒤 표면전하가 가라앉아 실제 편차를 볼 수 있을 때까지의 시간이 셀전압 안정지연이다. 균형 동작을 멈춘 직후 반동전압이 가라앉을 때까지의 완화시간을 두어 조기 재측정 오판을 막는다.","relations":["process","classification","boundary"]}
+{"primary":"균형대상 계산지연","text":"셀자료 뒤 온도·충전상태·편차를 검토해 대상목록을 만드는 시간이 균형대상 계산지연이다.","relations":["process","function","state"]}
+{"primary":"균형저항 발열지연","text":"우회전류 뒤 저항과 보드온도가 센서에 나타날 때까지의 시간이 균형저항 발열지연이다. 저항에 전류가 흐른 뒤 열용량 때문에 표면온도가 늦게 올라가므로 가동 태그와 열센서 상승 태그가 다르다.","relations":["process","role","contrast"]}
+{"primary":"과열경보 관측지연","text":"실제 온도상승 뒤 센서주기·필터로 과열조건이 확인될 때까지의 간격이 과열경보 관측지연이다.","relations":["part_of","process","state"]}
+{"primary":"균형차단 반응지연","text":"과열·운전변경 판정 뒤 조정전류가 실제 멈출 때까지의 시간이 균형차단 반응지연이다. 과온 판정 뒤 스위치 개방과 전류 소멸까지 걸린 짧은 전기 응답을 경보 전달시간에서 떼어 측정한다.","relations":["process","comparison","boundary"]}
+{"primary":"편차재평가 처리지연","text":"안정측정 뒤 유효셀·오차를 검토해 잔여편차를 확정하는 시간이 편차재평가 처리지연이다.","relations":["process","attribute","function"]}
+{"primary":"재균형 승인대기","text":"추가조정 필요 뒤 열·운전일정을 검토해 회차를 허용하기까지의 시간이 재균형 승인대기다. 전압 재측정이 끝난 뒤 다음 균형 회차를 운영자가 허가할 때까지 멈춘 구간은 의사결정 대기다.","relations":["process","classification","state"]}
+{"primary":"균형회차 보고지연","text":"조정종료 뒤 전류·열·편차를 대조해 기록을 잠그는 시간이 균형회차 보고지연이다.","relations":["process","contrast","attribute"]}
+{"primary":"셀열전도 지연","text":"셀 내부발열 뒤 표면과 모듈센서까지 열이 이동하는 물리 시간이 셀열전도 지연이다. 센서수집 지연과 다르다. 한 셀에서 난 열이 인접 셀 센서에 도달하기까지 재료와 접촉면을 통과하는 물리 전달시간이 존재한다.","relations":["process","state","boundary"]}
+{"primary":"온도표본 수집지연","text":"온도측정 뒤 모듈통신과 BMS주기를 거쳐 제어기에 도착하는 간격이 온도표본 수집지연이다.","relations":["process","attribute","comparison"]}
+{"primary":"냉각유체 도달지연","text":"밸브·펌프 제어 뒤 차가운 유체가 먼 모듈에 도달할 때까지의 시간이 냉각유체 도달지연이다. 펌프 기동 후 유량 전면이 먼 랙에 닿을 때까지의 배관 이동시간을 제어신호 전송차와 별도로 계산한다.","relations":["process","classification","boundary"]}
+{"primary":"냉각효과 검출지연","text":"셀온도가 내려간 뒤 필터·표본주기로 개선이 판정될 때까지의 간격이 냉각효과 검출지연이다.","relations":["process","function","state"]}
+{"primary":"열폭주 발현지연","text":"내부결함이나 과열 뒤 자체발열이 급격히 가속할 때까지의 물리·화학 시간이 열폭주 발현지연이다. 내부 단락 뒤 발열이 축적되어 온도상승과 가스방출로 드러나기까지 잠복구간이 있어 최초 원인을 앞에 둔다.","relations":["process","role","contrast"]}
+{"primary":"열이상 인지지연","text":"온도·가스 이상 뒤 경보·운영검토로 위험을 알아차릴 때까지의 시간이 열이상 인지지연이다.","relations":["part_of","process","state"]}
+{"primary":"사전냉각 처리지연","text":"고율지령 예정 뒤 냉각장치를 올려 목표온도에 도달하기까지의 시간이 사전냉각 처리지연이다. 고율운전 예고 뒤 목표유량 계산과 밸브명령 생성에 든 시간은 열이 이동하는 냉각효과 지연과 다르다.","relations":["process","comparison","boundary"]}
+{"primary":"출력감축 열회복지연","text":"출력을 낮춘 뒤 발열이 줄고 셀온도가 안전범위로 돌아오기까지의 시간이 출력감축 열회복지연이다.","relations":["process","attribute","function"]}
+{"primary":"열보호 해제대기","text":"온도회복 뒤 원인·센서·유지조건을 검토해 보호잠금을 풀기까지의 시간이 열보호 해제대기다. 온도가 기준 아래로 내려가도 안정 유지창과 안전승인을 채울 때까지 보호상태를 남기는 정책 대기다.","relations":["process","classification","state"]}
+{"primary":"열회차 확정지연","text":"운전종료 뒤 위치별 온도·냉각·보호자료를 검수해 잠그는 시간이 열회차 확정지연이다.","relations":["process","contrast","attribute"]}
+{"primary":"냉각수 유량형성지연","text":"펌프기동 뒤 배관압력과 분기유량이 안정될 때까지의 물리 시간이 냉각수 유량형성지연이다. 펌프 회전이 오른 뒤 배관 압력과 순환유량이 목표에 도달하는 유체 응답시간을 기동명령과 나눠 본다.","relations":["process","state","boundary"]}
+{"primary":"유량센서 표시지연","text":"실제 흐름 뒤 센서·제어망·화면에 유량이 나타나는 간격이 유량센서 표시지연이다.","relations":["process","attribute","comparison"]}
+{"primary":"냉동기 냉각발현지연","text":"압축기기동 뒤 냉매순환과 열교환으로 공급수온이 낮아질 때까지의 시간이 냉동기 냉각발현지연이다. 압축기 기동 뒤 냉매순환과 열교환이 형성되어 공급수 온도가 내려갈 때까지 열역학적 지연이 이어진다.","relations":["process","classification","boundary"]}
+{"primary":"공급수온 수집지연","text":"수온측정 뒤 제어기 집계로 운영화면에 나타나는 간격이 공급수온 수집지연이다.","relations":["process","function","state"]}
+{"primary":"필터막힘 진행지연","text":"입자축적 뒤 차압이 관리기준까지 증가하는 물리 시간이 필터막힘 진행지연이다. 입자가 누적된 뒤 차압이 임계치에 이를 때까지 서서히 진행되므로 단일 시점 고장으로 축약하지 않는다.","relations":["process","role","contrast"]}
+{"primary":"차압경보 판정지연","text":"차압초과 뒤 지속조건·통신을 거쳐 경보가 생기는 간격이 차압경보 판정지연이다.","relations":["part_of","process","state"]}
+{"primary":"누설압력저하 지연","text":"냉각수 누출 뒤 회로압력·수위에 측정가능한 변화가 나타날 때까지의 시간이 누설압력저하 지연이다. 작은 누설이 시작된 뒤 계통 용적 때문에 압력이 서서히 떨어져 센서 임계값을 늦게 통과한다.","relations":["process","comparison","boundary"]}
+{"primary":"누설위치 확인지연","text":"이상감지 뒤 구간차단·현장점검으로 실제 누설점을 찾기까지의 시간이 누설위치 확인지연이다.","relations":["process","attribute","function"]}
+{"primary":"수리후 유량복구지연","text":"배관·밸브 수리 뒤 충수·탈기·펌프운전으로 정상유량이 돌아오기까지의 시간이 수리후 유량복구지연이다. 밸브 수리를 마쳐도 공기 제거와 배관 충수가 끝나야 정상유량이 생기므로 완료보고 즉시 회복으로 보지 않는다.","relations":["process","classification","state"]}
+{"primary":"냉각계통 보고지연","text":"운전·정비 뒤 유량·수온·누설자료를 대조해 회차를 확정하는 시간이 냉각계통 보고지연이다.","relations":["process","contrast","attribute"]}
+{"primary":"인버터 출력응답지연","text":"새 전력목표 뒤 제어·스위칭·필터를 거쳐 교류출력이 바뀌는 시간이 인버터 출력응답지연이다. 전력지령 수신에서 PWM 변경과 계통전류 정착까지 이어지는 제어 응답을 중앙 계량 갱신과 구별한다.","relations":["process","state","boundary"]}
+{"primary":"교류계량 수집지연","text":"실제 출력 뒤 계량주기·통신을 거쳐 관제값이 갱신되는 간격이 교류계량 수집지연이다.","relations":["process","attribute","comparison"]}
+{"primary":"계통동기 처리지연","text":"연결요청 뒤 전압·주파수·위상을 맞추고 유지조건을 확인하는 시간이 계통동기 처리지연이다. 전압·주파수·위상 표본을 모아 안정조건을 확인한 뒤 접속허가를 내리는 계산시간이 포함된다.","relations":["process","classification","boundary"]}
+{"primary":"차단기상태 표시지연","text":"접점동작 뒤 원격입력과 화면에 투입·개방이 나타나는 간격이 차단기상태 표시지연이다.","relations":["process","function","state"]}
+{"primary":"반도체 발열지연","text":"스위칭손실 증가 뒤 소자접합부와 방열판 온도가 오르는 물리 시간이 반도체 발열지연이다. 스위칭 손실이 생긴 뒤 소자 접합부와 케이스 센서 사이 열저항 때문에 측정온도가 뒤늦게 오른다.","relations":["process","role","contrast"]}
+{"primary":"과전류보호 반응지연","text":"전류경계 초과 뒤 검출·판정·게이트차단까지의 짧은 시간이 과전류보호 반응지연이다.","relations":["part_of","process","state"]}
+{"primary":"직류링크 방전지연","text":"스위칭정지 뒤 축적전하가 저항·부하를 통해 안전전압으로 내려가는 시간이 직류링크 방전지연이다. 접촉기를 열어도 커패시터 전하가 방전저항을 통해 감소하므로 무전압 확인까지 물리적 시간이 필요하다.","relations":["process","comparison","boundary"]}
+{"primary":"재접속 승인대기","text":"고장해제 뒤 계통조건·냉각·보호기록을 검토해 차단기투입을 허용하기까지의 시간이 재접속 승인대기다.","relations":["process","attribute","function"]}
+{"primary":"효율계산 처리지연","text":"직류·교류 계량 뒤 경계와 보조전력을 맞춰 효율을 확정하는 시간이 효율계산 처리지연이다. 입출력 표본을 같은 창으로 정렬하고 결측을 보정한 뒤 효율값을 산출해 실제 운전보다 결과가 늦다.","relations":["process","classification","state"]}
+{"primary":"변환회차 보고지연","text":"출력종료 뒤 지령·계량·보호·열자료를 검수해 기록을 잠그는 시간이 변환회차 보고지연이다.","relations":["process","contrast","attribute"]}
+{"primary":"BMS 부팅지연","text":"전원인가 뒤 메모리·통신·센서 자가진단을 마쳐 상태감시를 시작하기까지의 시간이 BMS 부팅지연이다. 전원 인가 뒤 메모리 검사와 센서 초기화가 차례로 끝나야 상태판정을 시작하므로 단순 통신 지연이 아니다.","relations":["process","state","boundary"]}
+{"primary":"센서자료 수집지연","text":"셀측정 뒤 모듈버스와 상위제어 주기를 거쳐 BMS에 도착하는 간격이 센서자료 수집지연이다.","relations":["process","attribute","comparison"]}
+{"primary":"자가진단 처리지연","text":"입력확보 뒤 모순·범위·통신·접촉기를 검사해 운전허가를 내기까지의 시간이 자가진단 처리지연이다. 각 회로 시험과 결과 취합에 걸린 시간을 외부 승인 대기와 나누어 장치 내부 처리량으로 평가한다.","relations":["process","classification","boundary"]}
+{"primary":"운전허가 전파지연","text":"허가판정 뒤 변환기·관제·지령서비스에 상태가 퍼지는 간격이 운전허가 전파지연이다.","relations":["process","function","state"]}
+{"primary":"보호경보 판정지연","text":"최초 이상 뒤 지속·조합조건을 평가해 보호등급을 정하는 시간이 보호경보 판정지연이다. 순간 이상 표본 뒤 필터와 지속시간 조건을 통과해야 경보가 확정되어 최초 이상과 표시 사이가 벌어진다.","relations":["process","role","contrast"]}
+{"primary":"보호상태 표시지연","text":"보호가 이미 동작한 뒤 화면·통보에 차단상태가 나타나는 간격이 보호상태 표시지연이다.","relations":["part_of","process","state"]}
+{"primary":"이벤트버퍼 고정지연","text":"경보 뒤 전후 원시자료를 순환메모리에서 영구영역으로 복사하는 시간이 이벤트버퍼 고정지연이다. 사건 발생 뒤 앞뒤 표본창이 완성되어야 로그 묶음을 봉인하므로 저장 완료는 원사건보다 늦다.","relations":["process","comparison","boundary"]}
+{"primary":"설정변경 반영지연","text":"새 한계·보정이 승인된 뒤 모든 모듈과 백업제어기에 적용되는 간격이 설정변경 반영지연이다.","relations":["process","attribute","function"]}
+{"primary":"보호해제 승인대기","text":"정상값 복귀 뒤 원인·시험·권한을 검토해 잠금을 풀기까지의 시간이 보호해제 승인대기다. 원인 제거와 시험 결과가 준비됐어도 안전담당자의 확인 전에는 해제하지 않는 관리적 대기다.","relations":["process","classification","state"]}
+{"primary":"BMS사건 확정지연","text":"사건종료 뒤 입력·판정·명령·통신 계보를 대조해 원장을 잠그는 시간이 BMS사건 확정지연이다.","relations":["process","contrast","attribute"]}
+{"primary":"접촉기 개방지연","text":"정지명령 뒤 코일·기계동작·아크소멸을 거쳐 전류경로가 끊길 때까지의 시간이 접촉기 개방지연이다. 차단명령 뒤 코일 자속이 사라지고 접점이 물리적으로 벌어질 때까지의 기계 응답을 측정한다.","relations":["process","state","boundary"]}
+{"primary":"격리상태 표시지연","text":"회로가 이미 분리된 뒤 보조접점·통신·화면에 상태가 나타나는 간격이 격리상태 표시지연이다.","relations":["process","attribute","comparison"]}
+{"primary":"잔류전압 감소지연","text":"회로차단 뒤 커패시터와 배선전하가 안전수준으로 내려갈 때까지의 물리 시간이 잔류전압 감소지연이다. 전원 분리 후 커패시터가 방전되며 전압이 작업허용 기준 아래로 내려갈 때까지 자연 감소가 이어진다.","relations":["process","classification","boundary"]}
+{"primary":"무전압 확인대기","text":"차단 뒤 규정방전시간과 측정준비를 기다려 작업허가를 내기까지의 시간이 무전압 확인대기다.","relations":["process","function","state"]}
+{"primary":"절연회복 반응지연","text":"수분·오염 제거 뒤 절연저항이 안정된 값으로 돌아오기까지의 물리 시간이 절연회복 반응지연이다. 습기 제거와 온도 안정 뒤 절연저항이 서서히 회복되어 건조 시작과 정상 판정 사이에 물성 지연이 생긴다.","relations":["process","role","contrast"]}
+{"primary":"절연검사 결과지연","text":"현장측정 뒤 온도보정·기록검토로 합격을 확정하는 시간이 절연검사 결과지연이다.","relations":["part_of","process","state"]}
+{"primary":"제한재가동 출력지연","text":"재가동명령 뒤 접촉기·인버터를 거쳐 낮은 시험출력에 도달하는 시간이 제한재가동 출력지연이다. 재가동 허가 뒤 낮은 한도에서 램프를 따라 출력을 올려 목표값 도달이 의도적으로 늦어진다.","relations":["process","comparison","boundary"]}
+{"primary":"재발경보 관측지연","text":"위험이 다시 생긴 뒤 센서주기·판정창으로 알림이 나타나는 간격이 재발경보 관측지연이다.","relations":["process","attribute","function"]}
+{"primary":"정상복귀 승인대기","text":"제한관찰 뒤 성능·안전·계통조건을 검토해 일반운전을 허가하기까지의 시간이 정상복귀 승인대기다. 시험운전은 통과했지만 관제와 안전 담당자의 공동승인을 기다린 구간이라 물리 복구시간과 다르다.","relations":["process","classification","state"]}
+{"primary":"격리회차 확정지연","text":"차단·시험·재가동 뒤 기록을 대조해 안전사건을 잠그는 시간이 격리회차 확정지연이다.","relations":["process","contrast","attribute"]}
+{"primary":"연기센서 반응지연","text":"연기·입자가 센서에 도달한 뒤 광학·이온화 신호가 경계에 이르기까지의 시간이 연기센서 반응지연이다. 연기가 발생 지점에서 센서까지 이동하고 검출실 농도가 임계치에 이를 때까지 전파·축적 시간이 필요하다.","relations":["process","state","boundary"]}
+{"primary":"화재경보 전달지연","text":"경보생성 뒤 관제·소방·현장장치에 통지가 도착하는 간격이 화재경보 전달지연이다.","relations":["process","attribute","comparison"]}
+{"primary":"열폭주 전파지연","text":"한 셀의 급격한 발열 뒤 인접셀·모듈로 열과 반응이 퍼지는 물리·화학 시간이 열폭주 전파지연이다. 한 모듈의 열과 가스가 인접 랙으로 전달되어 다음 셀이 임계온도에 오르기까지 물리적 간격이 존재한다.","relations":["process","classification","boundary"]}
+{"primary":"인접랙 온도관측지연","text":"열이 도달한 뒤 센서응답·수집주기로 상승이 확인될 때까지의 간격이 인접랙 온도관측지연이다.","relations":["process","function","state"]}
+{"primary":"소방대 도착지연","text":"통보 뒤 이동·출입·위험정보 확인으로 대응대가 현장에 도착하는 데 걸린 시간이 소방대 도착지연이다.","relations":["process","role","contrast"]}
+{"primary":"냉각살수 효과지연","text":"살수개시 뒤 셀·랙 온도상승률이 실제 낮아질 때까지의 시간이 냉각살수 효과지연이다.","relations":["part_of","process","state"]}
+{"primary":"겉불진압 확인지연","text":"불꽃이 사라진 뒤 열영상·가스·재점화 가능성을 검토해 진압상태를 확인하는 시간이 겉불진압 확인지연이다.","relations":["process","comparison","boundary"]}
+{"primary":"재발인지 관측지연","text":"열이나 가스가 다시 오르기 시작한 뒤 경보·순찰로 발견할 때까지의 시간이 재발인지 관측지연이다.","relations":["process","attribute","function"]}
+{"primary":"현장인계 승인대기","text":"현장인계 승인대기는 장기 감시 후 소방, 운영, 조사팀이 남은 위험과 책임 범위를 확인해 인계에 합의할 때까지 걸린다. 실제 복구 작업 시간은 제외한다.","relations":["process","classification","state"]}
+{"primary":"화재보고 확정지연","text":"사건종료 뒤 로그·영상·부품·조치자료를 대조해 기록을 잠그는 시간이 화재보고 확정지연이다.","relations":["process","contrast","attribute"]}
+{"primary":"정비착수 승인대기","text":"작업요청 뒤 범위·계통영향·안전을 검토해 허가하기까지의 시간이 정비착수 승인대기다.","relations":["process","state","boundary"]}
+{"primary":"전원격리 동작지연","text":"허가 뒤 차단기·접촉기·유체밸브가 실제 안전상태에 이르는 시간이 전원격리 동작지연이다.","relations":["process","attribute","comparison"]}
+{"primary":"부품조달 지연","text":"고장규격 확정 뒤 재고·운송·검사 때문에 교체품이 현장에 늦게 오는 시간이 부품조달 지연이다.","relations":["process","classification","boundary"]}
+{"primary":"정비상태 입력지연","text":"현장작업 뒤 단계·측정·교체내용이 자산시스템에 반영되는 간격이 정비상태 입력지연이다.","relations":["process","function","state"]}
+{"primary":"시험출력 반응지연","text":"시험명령 뒤 설비와 냉각이 안정된 측정상태에 이르기까지의 시간이 시험출력 반응지연이다.","relations":["process","role","contrast"]}
+{"primary":"열화상 판독지연","text":"시험촬영 뒤 온도보정·위치대조로 국부발열 판정을 확정하는 시간이 열화상 판독지연이다.","relations":["part_of","process","state"]}
+{"primary":"보호복구 처리지연","text":"기능시험 뒤 임시우회·잠금·설정값을 정상구성으로 되돌리는 시간이 보호복구 처리지연이다.","relations":["process","comparison","boundary"]}
+{"primary":"운전승인 전파지연","text":"정비합격 뒤 계획·관제·지령서비스에 사용가능 상태가 퍼지는 간격이 운전승인 전파지연이다.","relations":["process","attribute","function"]}
+{"primary":"재투입 안정지연","text":"정상투입 뒤 전압·온도·통신이 안정되어 완전가용으로 판정될 때까지의 시간이 재투입 안정지연이다.","relations":["process","classification","state"]}
+{"primary":"정비회차 보고지연","text":"정비회차 보고지연은 작업이 끝난 뒤 허가서, 격리 기록, 교체 부품, 기능시험, 승인을 대조하여 정비 이력을 확정하기까지 걸린 시간이다.","relations":["process","contrast","attribute"]}
+{"primary":"태양광예측 갱신지연","text":"새 기상자료 뒤 발전예측을 다시 계산해 운전계획에 반영하기까지의 시간이 태양광예측 갱신지연이다.","relations":["process","state","boundary"]}
+{"primary":"재생출력 계량지연","text":"실제 발전변화 뒤 계량·통신으로 관제에 값이 나타나는 간격이 재생출력 계량지연이다.","relations":["process","attribute","comparison"]}
+{"primary":"잉여전력 충전응답지연","text":"잉여판정 뒤 배터리전류가 흡수방향 목표에 도달하기까지의 시간이 잉여전력 충전응답지연이다.","relations":["process","classification","boundary"]}
+{"primary":"구름영향 도달지연","text":"구름이 이동한 뒤 발전소 구역별 일사와 출력이 차례로 감소하는 물리 시간이 구름영향 도달지연이다.","relations":["process","function","state"]}
+{"primary":"램프완화 계산지연","text":"급변표본 뒤 허용변화율과 잔량을 적용해 배터리목표를 산출하는 시간이 램프완화 계산지연이다.","relations":["process","role","contrast"]}
+{"primary":"풍력보상 출력지연","text":"풍력급변 뒤 저장장치가 반대방향 전력을 실제 내기까지의 시간이 풍력보상 출력지연이다.","relations":["part_of","process","state"]}
+{"primary":"일몰감소 관측지연","text":"일사감소 뒤 집계창·통신으로 발전하락이 관제에 보이는 간격이 일몰감소 관측지연이다.","relations":["process","comparison","boundary"]}
+{"primary":"예측오차 인지지연","text":"실발전과 예측이 벌어진 뒤 분석창에서 유의한 오차로 판정할 때까지의 시간이 예측오차 인지지연이다.","relations":["process","attribute","function"]}
+{"primary":"계획수정 승인대기","text":"예측오차 뒤 잔량·시장·계통영향을 검토해 새 충방전계획을 허가하기까지의 시간이 계획수정 승인대기다.","relations":["process","classification","state"]}
+{"primary":"재생연계 보고지연","text":"운전종료 뒤 발전·저장·제한량을 대조해 기여를 확정하는 시간이 재생연계 보고지연이다.","relations":["process","contrast","attribute"]}
+{"primary":"피크발생 관측지연","text":"실제 부하가 오른 뒤 계량창·통신으로 관리시스템에 나타나는 간격이 피크발생 관측지연이다.","relations":["process","state","boundary"]}
+{"primary":"피크방전 응답지연","text":"피크판정 뒤 배터리가 목표출력에 도달하기까지의 시간이 피크방전 응답지연이다.","relations":["process","attribute","comparison"]}
+{"primary":"정전감지 판정지연","text":"외부전압 상실 뒤 지속·위상·재폐로 조건을 확인해 정전으로 확정하는 시간이 정전감지 판정지연이다.","relations":["process","classification","boundary"]}
+{"primary":"비상전환 동작지연","text":"정전판정 뒤 차단기·인버터·부하분배를 거쳐 저장장치가 필수부하를 맡기까지의 시간이 비상전환 동작지연이다.","relations":["process","function","state"]}
+{"primary":"잔량감소 영향지연","text":"비상공급 뒤 가용운전시간과 부하차단 필요가 임계수준에 이르기까지의 시간이 잔량감소 영향지연이다.","relations":["process","role","contrast"]}
+{"primary":"부하차단 승인대기","text":"잔량위험 뒤 필수성·복구전망을 검토해 일반부하를 끊기까지의 시간이 부하차단 승인대기다.","relations":["part_of","process","state"]}
+{"primary":"계통복귀 관측지연","text":"외부전원이 돌아온 뒤 안정창을 채워 재접속 가능으로 판정할 때까지의 시간이 계통복귀 관측지연이다.","relations":["process","comparison","boundary"]}
+{"primary":"부하이관 반응지연","text":"재동기 뒤 계통이 부하를 받으며 배터리출력이 영으로 줄 때까지의 시간이 부하이관 반응지연이다.","relations":["process","attribute","function"]}
+{"primary":"절감효과 계산지연","text":"피크회차 뒤 기준선·실인입·손실을 대조해 절감량을 확정하는 시간이 절감효과 계산지연이다.","relations":["process","classification","state"]}
+{"primary":"비상회차 보고지연","text":"복구 뒤 정전·공급·부하·잔량자료를 검수해 사건을 잠그는 시간이 비상회차 보고지연이다.","relations":["process","contrast","attribute"]}
+{"primary":"배터리고장 발현지연","text":"내부결함·열화·외부충격 뒤 측정가능한 전압·온도·절연 이상이 나타날 때까지의 시간이 배터리고장 발현지연이다.","relations":["process","state","boundary"]}
+{"primary":"고장탐지 관측지연","text":"이상이 생긴 뒤 센서주기·판정·운영검토로 사건을 인지할 때까지의 시간이 고장탐지 관측지연이다.","relations":["process","attribute","comparison"]}
+{"primary":"안전정지 동작지연","text":"고장판정 뒤 출력감축·접촉기개방으로 위험에너지가 차단될 때까지의 시간이 안전정지 동작지연이다.","relations":["process","classification","boundary"]}
+{"primary":"고장통보 전달지연","text":"보호동작 뒤 관제·계통·정비팀에 사건이 도착하는 간격이 고장통보 전달지연이다.","relations":["process","function","state"]}
+{"primary":"원인분석 처리지연","text":"로그·부품·환경자료 뒤 고장모드와 기여조건을 확정하기까지의 시간이 원인분석 처리지연이다.","relations":["process","role","contrast"]}
+{"primary":"부품교체 조달대기","text":"원인확정 뒤 적합부품·인력·작업창을 기다리는 시간이 부품교체 조달대기다.","relations":["part_of","process","state"]}
+{"primary":"복구출력 반응지연","text":"제한재가동 명령 뒤 정상랙·변환기가 시험출력에 도달하기까지의 시간이 복구출력 반응지연이다.","relations":["process","comparison","boundary"]}
+{"primary":"재발인지 지연","text":"시험중 같은 이상이 다시 생긴 뒤 경보·검토로 확인할 때까지의 시간이 재발인지 지연이다.","relations":["process","attribute","function"]}
+{"primary":"고장복구 정상승인대기","text":"고장복구 정상승인대기는 복구 후 관찰을 마친 뒤 안전성, 성능, 계통 조건을 확인하고 일반 운전을 승인할 때까지의 대기다.","relations":["process","classification","state"]}
+{"primary":"고장사건 확정지연","text":"대응종료 뒤 원인·조치·시험·개선책을 검수해 원장을 잠그는 시간이 고장사건 확정지연이다.","relations":["process","contrast","attribute"]}

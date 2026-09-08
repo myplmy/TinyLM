@@ -1,7 +1,8 @@
 {
-  "schema_version": "1.0",
-  "audit": "Stage2 A02 conditional_dependency train consolidated audit",
-  "date_kst": "2026-09-08",
+  "schema_version": "1.1",
+  "audit": "Stage2 A02 conditional_dependency train consolidated audit (revised canonical re-audit)",
+  "initial_audit_date_kst": "2026-09-08",
+  "date_kst": "2026-09-09",
   "verdict": "PASS",
   "scope": {
     "versions": "v01~v86",
@@ -15,7 +16,7 @@
   },
   "canonical_alignment": {
     "reservation_ledger_sha256": "21804692434294b0c80774464c87d9e3d90f58ce93748c32671cf535244e5aa7",
-    "checkpoint_sha256": "5c174886af8b83b6f4ce8d05d4373f3d70c46c2cb38b303ee8a8deedef716b65",
+    "checkpoint_sha256": "b2e0ccf3411e5b8d4f2a05b3a62641fefe96c480c4e0897b8d787b6a205eb1f0",
     "preparation_manifest_sha256": "1802fd79354a9ff3cd36872a7f2c32a89ae1803e94aae9ce40edea7cbe4b0c0e",
     "ledger_checkpoint_sha_match": true,
     "ledger_manifest_sha_match": true,
@@ -37,6 +38,55 @@
     "rows_directly_rewritten_for_opening_repetition": 1,
     "ids_or_relations_changed_by_token_and_repetition_corrections": 0
   },
+  "audit_revision_2026_09_09": {
+    "auditor_changes": [
+      "Use per-document unique character features for document frequency in NFKC/casefold character 3-5 gram TF-IDF.",
+      "Compact sparse vocabulary indices, validate CSR structure, and calculate cosine similarity in float64.",
+      "Vectorize sparse pair iteration while retaining exhaustive comparison coverage.",
+      "Emit Windows console output as UTF-8 so concept-family text cannot abort report serialization.",
+      "Use the canonical set-digest formula: concatenate sorted per-file SHA-256 hexadecimal strings without filenames or separators, then hash.",
+      "Gate actual validation collisions rather than counting validation records as failures.",
+      "Exclude Korean copular endings such as 이다 and 이며 from the 이/가 mismatch detector."
+    ],
+    "data_drift_check": {
+      "source_file_sha_matches_prior_report": "86/86",
+      "corpus_file_sha_matches_prior_report": "86/86",
+      "source_or_corpus_records_modified": 0,
+      "record_rewrites": [],
+      "conclusion": "No A02 data repair was required; only audit calculations and report values were revised."
+    },
+    "internal_similarity_crosscheck": {
+      "superseded_char_3_5_tfidf_max": 0.425291196,
+      "corrected_char_3_5_tfidf_max": 0.426295796,
+      "independent_sklearn_char_3_5_tfidf_max": 0.42629579574110477,
+      "max_pair": ["S2-A02-T-047:115", "S2-A02-T-052:90"],
+      "pairs_ge_0_72": 0,
+      "word_set_jaccard_max": 0.379310345,
+      "word_set_jaccard_pairs_ge_0_60": 0
+    },
+    "cross_corpus_similarity_revisions": {
+      "stage2_a01_train_char_max_before": 0.289286366,
+      "stage2_a01_train_char_max_after": 0.300021987,
+      "stage1_highdensity_char_max_unchanged": 0.298366652,
+      "other_stage2_highdensity_pilots_char_max_before": 0.165279821,
+      "other_stage2_highdensity_pilots_char_max_after": 0.183182794,
+      "all_threshold_pairs_ge_0_72": 0
+    },
+    "set_digest_revision": {
+      "source_before": "8d593b6833459659a2bc24b2d3d86bfa4317c644044b22332617c094fef25d24",
+      "source_after": "54d6e0e6f4ffc45b1a3a6a1e536d60f723f75a639eeed5d02f443a8a6c074b27",
+      "corpus_before": "5a161aec3d55bd53dafd3937b8cd329177091207db644478dc241d19eea8a40f",
+      "corpus_after": "e879848b045d92b59ab0a50e126bff716753f6e9ce2a51e661cb1ddc14f82a6e",
+      "reason": "Digest formula normalization; every individual file SHA remained unchanged."
+    },
+    "copula_detector_postcheck": {
+      "fixture_cases": 8,
+      "full_a02_reaudit": "PASS",
+      "particle_warning_candidates_unchanged": 221,
+      "confirmed_errors": 0
+    },
+    "post_reaudit_verdict": "PASS"
+  },
   "gates": {
     "artifact_errors": 0,
     "exact_primary_duplicates": 0,
@@ -51,12 +101,18 @@
     "five_word_assignments": 214911,
     "repeated_four_word_openings": 0,
     "char_3_5_tfidf_pairs_ge_0_72": 0,
-    "char_3_5_tfidf_max": 0.425291196,
+    "char_3_5_tfidf_max": 0.426295796,
+    "char_3_5_tfidf_max_pair": {
+      "query_owner": "S2-A02-T-047:115",
+      "reference_owner": "S2-A02-T-052:90"
+    },
     "word_set_jaccard_pairs_ge_0_60": 0,
     "word_set_jaccard_max": 0.379310345,
     "hard_grammar_findings": 0,
     "particle_warning_candidates": 221,
     "particle_warning_confirmed_errors": 0,
+    "unicode_or_control_findings": 0,
+    "repeated_sentences_within_record": 0,
     "controlled_relation_violations": 0,
     "relation_cardinality_violations": 0,
     "duplicate_relations_within_record": 0,
@@ -181,7 +237,7 @@
     "stage2_a01_train": {
       "comparison_records": 13050,
       "char_3_5_tfidf_pairs_ge_0_72": 0,
-      "char_3_5_tfidf_max": 0.289286366,
+      "char_3_5_tfidf_max": 0.300021987,
       "word_set_jaccard_pairs_ge_0_60": 0,
       "word_set_jaccard_max": 0.25
     },
@@ -195,7 +251,7 @@
     "other_stage2_highdensity_pilots": {
       "comparison_records": 300,
       "char_3_5_tfidf_pairs_ge_0_72": 0,
-      "char_3_5_tfidf_max": 0.165279821,
+      "char_3_5_tfidf_max": 0.183182794,
       "word_set_jaccard_pairs_ge_0_60": 0,
       "word_set_jaccard_max": 0.15
     },
@@ -213,13 +269,14 @@
     "interpretation": "generic lexical-shape fingerprint is diagnostic only; exact five-word repetition and fuzzy thresholds are the semantic boilerplate gates"
   },
   "digests": {
-    "source_set_sha256": "8d593b6833459659a2bc24b2d3d86bfa4317c644044b22332617c094fef25d24",
-    "corpus_set_sha256": "5a161aec3d55bd53dafd3937b8cd329177091207db644478dc241d19eea8a40f"
+    "source_set_sha256": "54d6e0e6f4ffc45b1a3a6a1e536d60f723f75a639eeed5d02f443a8a6c074b27",
+    "corpus_set_sha256": "e879848b045d92b59ab0a50e126bff716753f6e9ce2a51e661cb1ddc14f82a6e"
   },
   "checkpoint": {
-    "completed_total": 173,
+    "completed_total": 242,
     "completed_a01_train": 87,
     "completed_a02_train": 86,
+    "completed_a03_train": 69,
     "ledger_sha256": "21804692434294b0c80774464c87d9e3d90f58ce93748c32671cf535244e5aa7",
     "a02_hash_mismatches": []
   },

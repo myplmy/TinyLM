@@ -1,0 +1,150 @@
+{"primary":"원료입고 계근시각 우선","text":"납품서와 창고기록이 다르면 인증된 저울의 원료입고 계근시각 우선으로 실제 도착 순서를 정한다. 차량 식별과 중량 안정 신호가 함께 남은 표본을 골라 빈 저울의 영점조정을 입고로 세지 않는다.","relations":["process","state","boundary"]}
+{"primary":"원료게이트 접점기록","text":"차량단말보다 출입센서의 원료게이트 접점기록이 물리적 공장 진입시각에 가깝다.","relations":["process","attribute","comparison"]}
+{"primary":"납품서 작성시각 후순위","text":"운송 중 미리 적을 수 있는 납품서 작성시각 후순위는 실제 원료인수 증거로 단독 사용하지 않는다. 문서가 운송 전에 생성돼도 게이트 통과와 계근 접점이 없으면 물리 도착 순서를 증명하지 못한다.","relations":["classification","process","role"]}
+{"primary":"원료온도 원시표본 신뢰","text":"입고온도가 출처마다 다르면 교정된 탐침의 원료온도 원시표본 신뢰를 적용한다.","relations":["part_of","process","state"]}
+{"primary":"원료바코드 스캔시각 보조","text":"계근 로그가 결측일 때 원료바코드 스캔시각 보조로 입고의 늦은 경계를 세운다. 스캔 위치와 로트번호를 확인하면 계근 이후 창고 인수의 가장 늦은 가능시각을 제한할 수 있다.","relations":["boundary","function","process"]}
+{"primary":"입고검수 승인시각 구별","text":"원료가 도착한 때와 담당자가 품질을 승인한 입고검수 승인시각 구별로 사건을 나눈다.","relations":["classification","comparison","state"]}
+{"primary":"원료인수 수기기록 제한","text":"분 단위로 후입력된 원료인수 수기기록 제한 때문에 자동접점과 같은 신뢰도를 주지 않는다. 교대자가 묶어 적은 분 단위 값은 가까운 두 납품의 선후를 뒤바꿀 수 있어 보조로만 둔다.","relations":["attribute","contrast","process"]}
+{"primary":"원료입고 이중시계보정","text":"창고와 계근대 시각이 어긋나면 원료입고 이중시계보정 뒤 선후를 판정한다.","relations":["process","role","state"]}
+{"primary":"원료인수 증거순위표","text":"원료인수 증거순위표는 계근·게이트·온도·스캔·납품서·승인의 시간 신뢰도를 정리한다. 각 기록의 생성 주체와 후수정 가능성을 함께 표시해 자동 측정과 행정 승인을 구별한다.","relations":["boundary","part_of","process"]}
+{"primary":"원료입고 충돌연표","text":"원료입고 충돌연표는 서로 다른 기록의 원본시각과 정정시각을 모두 보존해 차례를 복원한다.","relations":["attribute","comparison","process"]}
+{"primary":"종균해동 온도접점 우선","text":"작업일지와 냉동고가 다르면 목표온도에 도달한 종균해동 온도접점 우선으로 해동완료를 정한다. 용기 중심온도가 허용 범위에 지속 진입한 때를 사용해 냉동고 문 개방과 해동 완료를 나눈다.","relations":["process","state","boundary"]}
+{"primary":"종균출고 스캔기록","text":"냉동고에서 용기가 나온 종균출고 스캔기록은 배양실 수기시각보다 직접적인 이동 증거다.","relations":["process","attribute","comparison"]}
+{"primary":"종균준비표 작성시각 후행","text":"준비 뒤 작성한 종균준비표 작성시각 후행은 실제 해동이나 혼합시각과 같지 않다. 준비표의 저장은 작업 종료 뒤일 수 있으므로 온도곡선과 혼합 장치가 실제 순서를 결정한다.","relations":["classification","process","role"]}
+{"primary":"종균활성 측정원본 신뢰","text":"활성값이 충돌하면 교정된 분석기의 종균활성 측정원본 신뢰를 우선한다.","relations":["part_of","process","state"]}
+{"primary":"접종용기 봉인시각 보조","text":"혼합 로그가 없을 때 접종용기 봉인시각 보조로 준비완료의 늦은 경계를 둔다. 봉인 스캔은 혼합이 끝난 뒤의 사건이어서 준비 완료의 상한만 제공하고 시작은 알려주지 않는다.","relations":["boundary","function","process"]}
+{"primary":"종균승인 접종시각 구별","text":"품질승인이 난 때와 탱크에 실제 넣은 때를 종균승인 접종시각 구별로 분리한다.","relations":["classification","comparison","state"]}
+{"primary":"배양자 메모시각 제한","text":"교대 말에 적은 배양자 메모시각 제한은 장치 접점보다 낮은 증거로 평가한다. 기억에 의존한 기록은 초 단위 접점과 충돌할 때 원사건을 바꾸지 않고 설명 자료로 남긴다.","relations":["attribute","contrast","process"]}
+{"primary":"종균실 시각오프셋 보정","text":"냉동고와 배양기 시계가 다르면 종균실 시각오프셋 보정 뒤 준비순서를 세운다.","relations":["process","role","state"]}
+{"primary":"종균처리 증거우선순위","text":"종균처리 증거우선순위는 온도·스캔·활성측정·봉인·승인·메모의 차례로 둔다. 해동·혼합·활성검사·봉인의 물리 접점을 앞에 두고 사람 승인과 메모를 뒤에 배열한다.","relations":["boundary","part_of","process"]}
+{"primary":"종균준비 충돌기록표","text":"종균준비 충돌기록표는 해동·혼합·승인·접종의 서로 다른 타임스탬프를 연결한다.","relations":["attribute","comparison","process"]}
+{"primary":"발효조 충전유량 우선","text":"배치시작 기록이 다르면 유량이 처음 지속된 발효조 충전유량 우선으로 물리적 투입을 판정한다. 밸브 개방 뒤 유량이 최소 지속시간을 넘긴 첫 표본을 써서 배관 세척수를 원료 투입과 구별한다.","relations":["process","state","boundary"]}
+{"primary":"발효조 밸브접점 신뢰","text":"개방명령보다 실제 위치가 바뀐 발효조 밸브접점 신뢰를 높게 두어 충전 시작을 정한다.","relations":["process","attribute","comparison"]}
+{"primary":"배치번호 생성시각 후순위","text":"미리 만들 수 있는 배치번호 생성시각 후순위는 원료가 탱크에 들어간 때를 대신하지 않는다. 번호는 예약만으로도 발급될 수 있어 탱크 중량이나 레벨 변화가 없으면 충전 사건이 아니다.","relations":["classification","process","role"]}
+{"primary":"발효조 중량변화 증거","text":"유량계가 불안정하면 탱크저울의 발효조 중량변화 증거로 충전 선후를 보완한다.","relations":["part_of","process","state"]}
+{"primary":"충전완료 레벨시각 보조","text":"밸브로그가 빠졌을 때 목표수위의 충전완료 레벨시각 보조로 완료경계를 세운다. 레벨센서의 교정과 거품 영향을 확인한 뒤 목표수위 진입을 완료의 늦은 근거로 사용한다.","relations":["boundary","function","process"]}
+{"primary":"배치개시 승인시각 구별","text":"관리자 승인과 실제 교반 시작을 배치개시 승인시각 구별로 각각 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"발효일지 후입력 제한","text":"교대 뒤 저장된 발효일지 후입력 제한은 원시 설비로그보다 신뢰도가 낮다. 나중에 저장된 일지는 원시 밸브·유량 시각을 보존할 때만 배치 설명에 활용한다.","relations":["attribute","contrast","process"]}
+{"primary":"발효조 제어시계 보정","text":"PLC와 제조실행시스템이 다르면 발효조 제어시계 보정 뒤 배치연표를 맞춘다.","relations":["process","role","state"]}
+{"primary":"발효조 기동증거 순위","text":"발효조 기동증거 순위는 밸브·유량·중량·레벨·승인·일지의 직접성으로 정한다. 물질 이동을 직접 본 유량·중량을 중심에 두고 번호 생성과 승인은 운영 기록층으로 분리한다.","relations":["boundary","part_of","process"]}
+{"primary":"배치충전 충돌연표","text":"배치충전 충돌연표는 명령·물리접점·계측·승인시각을 분리해 실제 차례를 복원한다.","relations":["attribute","comparison","process"]}
+{"primary":"발효온도 센서원본 우선","text":"대시보드와 기록지가 다르면 교정된 탐침의 발효온도 센서원본 우선으로 상태 변화를 판단한다. 탐침 교정이 유효하고 결측 보간이 아닌 표본만 골라 실제 온도 전환점을 확정한다.","relations":["process","state","boundary"]}
+{"primary":"가열밸브 위치접점 신뢰","text":"온도상승 원인은 명령보다 실제 열매체가 흐른 가열밸브 위치접점 신뢰로 확인한다.","relations":["process","attribute","comparison"]}
+{"primary":"온도차트 인쇄시각 후행","text":"나중에 출력한 온도차트 인쇄시각 후행은 해당 온도가 관측된 때가 아니다. 출력 작업은 과거 데이터를 재현한 행정 사건이므로 종이 생성시각으로 발효 상태를 배열하지 않는다.","relations":["classification","process","role"]}
+{"primary":"이중온도계 교정상태 우선","text":"두 센서가 충돌하면 최근 교정이 유효한 이중온도계 교정상태 우선으로 출처를 고른다.","relations":["part_of","process","state"]}
+{"primary":"냉각수 유량시각 보조","text":"온도센서 결측 때 냉각수 유량시각 보조로 냉각 개시의 범위를 추정한다. 냉각 밸브와 유량 증가는 온도 하강의 선행 원인이지만 탱크 내부 온도 자체의 직접 표본은 아니다.","relations":["boundary","function","process"]}
+{"primary":"온도이상 판정시각 구별","text":"임계 초과가 일어난 때와 품질팀이 확정한 온도이상 판정시각 구별로 사건을 나눈다.","relations":["classification","comparison","state"]}
+{"primary":"수기온도 판독시각 제한","text":"정확한 초를 모르는 수기온도 판독시각 제한 때문에 자동표본과 동등하게 쓰지 않는다. 작업자의 반올림과 시계 오차 범위를 적어 연속 센서 사이에서만 보조적으로 위치시킨다.","relations":["attribute","contrast","process"]}
+{"primary":"온도계 시각편차 보정","text":"탐침별 시계가 다르면 온도계 시각편차 보정 후 상승·하강 순서를 비교한다.","relations":["process","role","state"]}
+{"primary":"발효온도 증거순위표","text":"발효온도 증거순위표는 원시탐침·밸브·유량·수기값·판정기록의 신뢰도를 정리한다. 원시 탐침, 냉각 접점, 유량, 사람 판독, 판정 기록의 관측 거리를 비교한다.","relations":["boundary","part_of","process"]}
+{"primary":"온도기록 충돌해결","text":"온도기록 충돌해결은 원본값과 보정·승인 이력을 남긴 채 실제 변화 연표를 확정한다.","relations":["attribute","comparison","process"]}
+{"primary":"pH전극 원시시각 우선","text":"서버값과 작업일지가 다르면 교정된 전극의 pH전극 원시시각 우선으로 산도변화를 정한다. 세척·교정 구간을 제외하고 전극값이 안정된 첫 표본으로 산도 변화의 경계를 정한다.","relations":["process","state","boundary"]}
+{"primary":"산주입 펌프접점 신뢰","text":"주입명령보다 모터가 돈 산주입 펌프접점 신뢰를 높게 두어 조정 시작을 판정한다.","relations":["process","attribute","comparison"]}
+{"primary":"pH보고서 생성시각 후순위","text":"분석 뒤 만든 pH보고서 생성시각 후순위는 전극 측정시각을 대신하지 않는다. 보고서는 채취와 분석이 끝난 뒤 만들어지므로 원전극의 측정 순서를 소급해 바꾸지 않는다.","relations":["classification","process","role"]}
+{"primary":"이중pH전극 품질우선","text":"전극 둘이 다르면 세척·교정 상태가 좋은 이중pH전극 품질우선으로 출처를 선택한다.","relations":["part_of","process","state"]}
+{"primary":"적정검사 채취시각 보조","text":"온라인전극이 결측이면 실험실 적정검사 채취시각 보조로 상태의 늦은 경계를 둔다. 시료가 탱크 상태를 대표한 채취 구간을 표시해 실험실 판독시각과 발효 상태를 분리한다.","relations":["boundary","function","process"]}
+{"primary":"pH이탈 승인시각 구별","text":"기준이탈 발생과 편차를 승인한 pH이탈 승인시각 구별로 물리상태와 행정을 나눈다.","relations":["classification","comparison","state"]}
+{"primary":"수기pH 기록한계","text":"반올림과 후입력이 있는 수기pH 기록한계 때문에 전극 원본보다 낮게 평가한다. 소수점 반올림과 일괄 입력은 작은 변화의 선후를 숨길 수 있어 전극과 충돌하면 후순위다.","relations":["attribute","contrast","process"]}
+{"primary":"pH계 시계오프셋 보정","text":"분석기와 PLC가 어긋나면 pH계 시계오프셋 보정 뒤 투입·반응 순서를 맞춘다.","relations":["process","role","state"]}
+{"primary":"pH조정 증거우선순위","text":"pH조정 증거우선순위는 전극·펌프접점·채취·검사·승인·수기기록 순으로 둔다. 전극 변화와 주입펌프 접점을 먼저 맞추고 실험실 검사·승인·수기는 보조 단계로 둔다.","relations":["boundary","part_of","process"]}
+{"primary":"pH기록 충돌연표","text":"pH기록 충돌연표는 측정·주입·검사·판정의 시간을 공통축에 놓아 실제 차례를 복원한다.","relations":["attribute","comparison","process"]}
+{"primary":"교반기 전류상승 우선","text":"기동명령과 일지가 다르면 모터전류가 오른 교반기 전류상승 우선으로 실제 회전을 판정한다. 기동전류 뒤 회전수와 토크가 유지된 구간을 확인해 순간 접점이나 시험 펄스를 제외한다.","relations":["process","state","boundary"]}
+{"primary":"교반축 회전센서 신뢰","text":"제어화면보다 축의 움직임을 직접 읽은 교반축 회전센서 신뢰를 높게 둔다.","relations":["process","attribute","comparison"]}
+{"primary":"교반계획 등록시각 후순위","text":"사전에 정한 교반계획 등록시각 후순위는 실제 기동사건의 증거가 아니다. 예약은 설비 점유나 안전조건 때문에 실행되지 않을 수 있어 실제 회전의 증거가 아니다.","relations":["classification","process","role"]}
+{"primary":"교반토크 변화증거","text":"전류기록이 빠졌을 때 점도에 따른 교반토크 변화증거로 회전 개시를 보완한다.","relations":["part_of","process","state"]}
+{"primary":"교반정지 진동시각 보조","text":"정지접점이 없으면 진동이 사라진 교반정지 진동시각 보조로 물리종료를 추정한다. 잔류 회전이 사라진 진동 구간은 전원 차단보다 늦은 물리 종료의 상한을 제공한다.","relations":["boundary","function","process"]}
+{"primary":"교반승인 기동시각 구별","text":"운영자가 허가한 때와 모터가 실제 돈 때를 교반승인 기동시각 구별로 나눈다.","relations":["classification","comparison","state"]}
+{"primary":"교반일지 후작성 제한","text":"교대 말에 적은 교반일지 후작성 제한은 장치원본과 같은 시간 신뢰도를 갖지 않는다. 교대 뒤 묶어 입력한 내용은 장치 원시각과 작업자 확인시각을 구별해 보존해야 한다.","relations":["attribute","contrast","process"]}
+{"primary":"교반제어 시각보정","text":"인버터와 PLC 기록이 다르면 교반제어 시각보정 뒤 속도변화의 선후를 정한다.","relations":["process","role","state"]}
+{"primary":"교반사건 증거순위","text":"교반사건 증거순위는 전류·회전·토크·진동·승인·일지의 직접성으로 정한다. 전류·회전·토크·진동의 연속 자료를 먼저 보고 명령·승인·일지는 뒤의 운영 기록으로 둔다.","relations":["boundary","part_of","process"]}
+{"primary":"교반연표 충돌해결","text":"교반연표 충돌해결은 명령·기동·속도변화·정지의 원본시각을 공통축에 놓는다.","relations":["attribute","comparison","process"]}
+{"primary":"발효가스 유량원본 우선","text":"가스생성 기록이 다르면 교정된 유량계의 발효가스 유량원본 우선으로 변화를 판정한다. 유량계 영점과 밸브상태를 검증한 뒤 지속 변화가 시작된 표본을 가스 생성의 직접 근거로 쓴다.","relations":["process","state","boundary"]}
+{"primary":"배기밸브 접점기록 신뢰","text":"배기명령보다 밸브가 실제 열린 배기밸브 접점기록 신뢰를 높게 둔다.","relations":["process","attribute","comparison"]}
+{"primary":"가스보고 입력시각 후순위","text":"작업자가 나중에 적은 가스보고 입력시각 후순위는 발생시각으로 사용하지 않는다. 작업자가 값을 옮긴 때는 측정·발생보다 늦으므로 입력 순서로 공정 반응을 재구성하지 않는다.","relations":["classification","process","role"]}
+{"primary":"탱크압력 상승증거","text":"유량계가 결측이면 탱크압력 상승증거로 가스축적의 선후를 보완한다.","relations":["part_of","process","state"]}
+{"primary":"포집백 중량시각 보조","text":"온라인계기가 없을 때 포집백 중량시각 보조로 배출량 변화의 늦은 경계를 잡는다. 백 교체와 저울 안정 여부를 확인하면 누적 가스량이 증가한 늦은 경계를 제한할 수 있다.","relations":["boundary","function","process"]}
+{"primary":"압력경보 확인시각 구별","text":"압력이 오른 때와 운영자가 알람을 본 압력경보 확인시각 구별로 사건을 분리한다.","relations":["classification","comparison","state"]}
+{"primary":"수기압력 기록한계","text":"간헐 판독인 수기압력 기록한계 때문에 연속센서와 동등하게 선후를 확정하지 않는다. 간헐 표본 사이의 변화를 알 수 없어 경보와 충돌하면 연속 압력센서의 추세를 우선한다.","relations":["attribute","contrast","process"]}
+{"primary":"가스계측 시각오프셋 보정","text":"유량계와 압력계가 다르면 가스계측 시각오프셋 보정 뒤 상관관계를 본다.","relations":["process","role","state"]}
+{"primary":"가스압력 증거순위표","text":"가스압력 증거순위표는 유량·밸브·압력·중량·알람·수기기록의 신뢰도를 정리한다. 유량·밸브·압력의 직접 측정을 앞에 두고 중량·알람·수기는 관측 지연에 따라 배치한다.","relations":["boundary","part_of","process"]}
+{"primary":"가스발생 충돌연표","text":"가스발생 충돌연표는 생성·축적·배기·경보시각을 분리해 실제 차례를 복원한다.","relations":["attribute","comparison","process"]}
+{"primary":"공정시료 채취접점 우선","text":"채취일지와 바코드가 다르면 자동밸브가 열린 공정시료 채취접점 우선으로 시각을 정한다. 자동밸브 개방과 용기 중량 변화가 함께 나타난 때를 써서 예정 또는 라벨 출력과 구별한다.","relations":["process","state","boundary"]}
+{"primary":"시료용기 스캔기록 신뢰","text":"용기가 라인에서 등록된 시료용기 스캔기록 신뢰는 후입력된 표보다 높다.","relations":["process","attribute","comparison"]}
+{"primary":"채취계획 생성시각 후순위","text":"예정만 나타내는 채취계획 생성시각 후순위는 실제 표본 확보의 증거가 아니다. 계획은 작업이 취소돼도 남을 수 있으므로 바코드와 시료량이 없으면 표본 사건으로 세지 않는다.","relations":["classification","process","role"]}
+{"primary":"시료중량 변화증거","text":"접점이 결측이면 용기저울의 시료중량 변화증거로 채취 완료를 보완한다.","relations":["part_of","process","state"]}
+{"primary":"시료냉장 입고시각 보조","text":"채취기록이 불명확할 때 시료냉장 입고시각 보조로 늦은 경계를 둔다. 냉장고 스캔은 채취 뒤의 상한이며 운송 시간을 고려해 원상태의 정확한 시점과 합치지 않는다.","relations":["boundary","function","process"]}
+{"primary":"채취승인 실채취 구별","text":"작업허가와 밸브 개방을 채취승인 실채취 구별로 각각 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"시료대장 후입력 제한","text":"교대 뒤 작성한 시료대장 후입력 제한 때문에 장치·스캔 시각보다 낮게 평가한다. 대장 순번이 실제 채취 순서와 다를 수 있어 밸브 접점과 스캔 로그로 다시 정렬한다.","relations":["attribute","contrast","process"]}
+{"primary":"채취설비 시계보정","text":"채취기와 실험실 서버가 다르면 채취설비 시계보정 뒤 운송 순서를 맞춘다.","relations":["process","role","state"]}
+{"primary":"공정시료 증거우선순위","text":"공정시료 증거우선순위는 밸브접점·스캔·중량·냉장입고·승인·대장 순으로 둔다. 물리 채취, 용기 식별, 중량, 냉장 인수, 사람 승인을 서로 다른 증거층으로 보존한다.","relations":["boundary","part_of","process"]}
+{"primary":"시료채취 충돌연표","text":"시료채취 충돌연표는 허가·실채취·포장·입고의 시각을 출처별로 연결한다.","relations":["attribute","comparison","process"]}
+{"primary":"품질분석 장치시각 우선","text":"검사결과의 시각이 다르면 검증된 분석기의 품질분석 장치시각 우선으로 완료를 정한다. 대조군 통과와 결과 파일 닫힘이 함께 확인된 시점을 사용해 단순 장비 시작과 완료를 나눈다.","relations":["process","state","boundary"]}
+{"primary":"검체접수 바코드신뢰","text":"수기 접수표보다 서버 원본의 검체접수 바코드신뢰를 높게 둔다.","relations":["process","attribute","comparison"]}
+{"primary":"품질보고 작성시각 후순위","text":"결과 뒤에 생긴 품질보고 작성시각 후순위는 분석 완료시각이 아니다. 보고서 승인까지의 검토시간은 분석 장치가 결과를 만든 시각에 더하지 않는다.","relations":["classification","process","role"]}
+{"primary":"표준물질 측정증거","text":"장비시각이 의심되면 같은 회차의 표준물질 측정증거로 검사순서를 보완한다.","relations":["part_of","process","state"]}
+{"primary":"원자료 파일시각 보조","text":"DB 기록이 결측이면 변경되지 않은 원자료 파일시각 보조로 늦은 경계를 세운다. 파일시스템 이동·복사 이력을 확인해 변경시각이 아니라 내부 측정 메타데이터를 사용한다.","relations":["boundary","function","process"]}
+{"primary":"분석완료 승인시각 구별","text":"장비가 끝난 때와 검토자가 확정한 분석완료 승인시각 구별로 처리단계를 나눈다.","relations":["classification","comparison","state"]}
+{"primary":"수기결과 전사한계","text":"복사오류와 후입력이 가능한 수기결과 전사한계 때문에 원파일보다 낮게 평가한다. 자리 바꿈과 단위 오류가 가능한 전사본은 원자료 해시와 불일치하면 시간·값 모두 후순위로 둔다.","relations":["attribute","contrast","process"]}
+{"primary":"품질서버 시간대보정","text":"분석기와 품질서버가 다르면 품질서버 시간대보정 뒤 시료별 차례를 정한다.","relations":["process","role","state"]}
+{"primary":"품질판정 증거순위표","text":"품질판정 증거순위표는 장치원본·바코드·표준물질·원파일·승인·수기결과 순으로 둔다. 장치 결과와 표준물질을 핵심으로 두고 파일 보존, 책임 승인, 수기 전사를 차례로 비교한다.","relations":["boundary","part_of","process"]}
+{"primary":"품질기록 충돌해결","text":"품질기록 충돌해결은 분석·검토·승인·보고의 원본 타임스탬프를 보존한다.","relations":["attribute","comparison","process"]}
+{"primary":"CIP유량 접점기록 우선","text":"세척시작 기록이 다르면 세정액 유량이 생긴 CIP유량 접점기록 우선으로 물리 개시를 정한다. 세정액 유량과 밸브 위치가 함께 유효해진 때를 써서 예비 물채움이나 명령만 있는 상태를 제외한다.","relations":["process","state","boundary"]}
+{"primary":"CIP밸브 위치신호 신뢰","text":"운전명령보다 세척유로가 열린 CIP밸브 위치신호 신뢰를 높게 둔다.","relations":["process","attribute","comparison"]}
+{"primary":"CIP계획 등록시각 후순위","text":"미리 잡은 CIP계획 등록시각 후순위는 실제 세척이 시작됐다는 증거가 아니다. 예약은 생산 종료 지연으로 바뀔 수 있어 설비 접점 없이 실제 세척 개시를 증명하지 못한다.","relations":["classification","process","role"]}
+{"primary":"세정액 전도도증거","text":"유량로그가 빠졌을 때 세정액 전도도증거로 배관 도달순서를 보완한다.","relations":["part_of","process","state"]}
+{"primary":"CIP온도 도달시각 보조","text":"접점이 불명확하면 목표온도의 CIP온도 도달시각 보조로 유효세척 시작을 추정한다. 목표 온도와 전도도가 함께 유지된 구간을 보면 단순 예열과 유효 세척을 구분할 수 있다.","relations":["boundary","function","process"]}
+{"primary":"CIP승인 실행시각 구별","text":"작업허가와 펌프기동을 CIP승인 실행시각 구별로 나눠 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"세척일지 후작성 제한","text":"교대 후 입력한 세척일지 후작성 제한은 설비 접점보다 시간 신뢰도가 낮다. 운영자가 나중에 입력한 완료는 원시 유량·온도 곡선을 바꾸지 않고 설명용으로만 사용한다.","relations":["attribute","contrast","process"]}
+{"primary":"CIP설비 시계교정","text":"세척PLC와 제조서버가 다르면 CIP설비 시계교정 뒤 헹굼·배수 순서를 맞춘다.","relations":["process","role","state"]}
+{"primary":"CIP증거 우선순위","text":"CIP증거 우선순위는 유량·밸브·전도도·온도·승인·일지의 직접성으로 정한다. 세정액의 이동과 농도를 직접 본 유량·전도도를 우선하고 승인·일지는 뒤에 둔다.","relations":["boundary","part_of","process"]}
+{"primary":"CIP충돌 시간표","text":"CIP충돌 시간표는 예비헹굼·세정·후헹굼·배수·승인 시각을 공통축에 놓는다.","relations":["attribute","comparison","process"]}
+{"primary":"오염경보 센서원본 우선","text":"오염시각이 출처마다 다르면 입자계나 생물센서의 오염경보 센서원본 우선으로 최초 징후를 정한다. 센서 교정과 위치를 확인한 연속 이상표본으로 최초 징후를 잡고 사람 보고 지연을 분리한다.","relations":["process","state","boundary"]}
+{"primary":"무균구역 출입접점 신뢰","text":"작업일지보다 출입통제의 무균구역 출입접점 신뢰를 높게 두어 사람 이동 순서를 판단한다.","relations":["process","attribute","comparison"]}
+{"primary":"오염보고 작성시각 후순위","text":"사건 뒤에 만든 오염보고 작성시각 후순위는 오염이 시작된 때가 아니다. 조사 뒤 작성된 문서는 원인 구간을 설명하지만 오염 물질이 처음 나타난 시각은 아니다.","relations":["classification","process","role"]}
+{"primary":"배양오염 양성증거","text":"온라인센서가 불명확하면 시료의 배양오염 양성증거로 발생의 늦은 경계를 보완한다.","relations":["part_of","process","state"]}
+{"primary":"환경검체 채취시각 보조","text":"원인구간을 좁힐 때 환경검체 채취시각 보조를 쓰되 오염 시작과 동일시하지 않는다. 검체 결과는 채취 당시 상태만 반영하므로 배양 완료시각으로 오염 시작을 늦추지 않는다.","relations":["boundary","function","process"]}
+{"primary":"오염발생 확정시각 구별","text":"첫 징후와 품질팀의 오염발생 확정시각 구별로 물리사건과 판정을 나눈다.","relations":["classification","comparison","state"]}
+{"primary":"현장메모 시간한계","text":"나중에 정리한 현장메모 시간한계 때문에 센서·출입기록보다 낮은 증거로 둔다. 메모의 관찰시각과 작성시각이 분리되지 않으면 출입·센서 자료 사이의 넓은 구간만 제공한다.","relations":["attribute","contrast","process"]}
+{"primary":"오염감시 시계오프셋 보정","text":"입자계와 출입서버가 다르면 오염감시 시계오프셋 보정 뒤 원인후보의 선후를 정한다.","relations":["process","role","state"]}
+{"primary":"오염사건 증거우선순위","text":"오염사건 증거우선순위는 센서·출입·배양·환경검체·확정·메모의 차례로 둔다. 직접 센서와 출입 접점을 앞세우고 배양·검체·확정판정·메모의 후속 시간을 구별한다.","relations":["boundary","part_of","process"]}
+{"primary":"오염연표 충돌해결","text":"오염연표 충돌해결은 징후·채취·양성판정·보고시각을 따로 유지해 사건을 복원한다.","relations":["attribute","comparison","process"]}
+{"primary":"숙성온도 원시기록 우선","text":"숙성상태 기록이 다르면 교정된 온도계의 숙성온도 원시기록 우선으로 조건 변화를 정한다. 탱크별 탐침 식별과 교정상태를 확인해 대시보드 복제값보다 원표본의 순서를 사용한다.","relations":["process","state","boundary"]}
+{"primary":"숙성탱크 밸브접점 신뢰","text":"이송일지보다 실제 유로가 닫힌 숙성탱크 밸브접점 신뢰로 숙성개시를 판정한다.","relations":["process","attribute","comparison"]}
+{"primary":"숙성계획 생성시각 후순위","text":"예정표의 숙성계획 생성시각 후순위는 미생물 숙성이 시작된 증거가 아니다. 예정표는 충전 지연이나 품질 보류를 반영하지 못하므로 실제 숙성 개시 근거가 아니다.","relations":["classification","process","role"]}
+{"primary":"숙성압력 변화증거","text":"밸브로그가 없을 때 탱크압력의 숙성압력 변화증거로 밀폐 시점을 보완한다.","relations":["part_of","process","state"]}
+{"primary":"향미검사 채취시각 보조","text":"센서만으로 부족하면 향미검사 채취시각 보조로 상태확인의 늦은 경계를 둔다. 시료 채취는 감각 상태가 확인 가능한 늦은 경계이며 발효 반응의 시작과 동일하지 않다.","relations":["boundary","function","process"]}
+{"primary":"숙성완료 승인시각 구별","text":"생물학적 숙성조건 충족과 품질팀의 숙성완료 승인시각 구별로 사건을 나눈다.","relations":["classification","comparison","state"]}
+{"primary":"숙성일지 후입력 제한","text":"나중에 적은 숙성일지 후입력 제한 때문에 원시 온도·압력보다 낮게 평가한다. 일괄 기록은 짧은 온도 이탈을 생략할 수 있어 원시 압력·온도 로그보다 낮게 평가한다.","relations":["attribute","contrast","process"]}
+{"primary":"숙성설비 시각보정","text":"탱크PLC와 품질서버가 다르면 숙성설비 시각보정 뒤 상태변화 순서를 맞춘다.","relations":["process","role","state"]}
+{"primary":"숙성판정 증거순위표","text":"숙성판정 증거순위표는 온도·밸브·압력·채취검사·승인·일지의 신뢰도를 정리한다. 탱크 조건과 밸브·압력의 물리 자료를 우선하고 채취검사와 승인은 판정 단계로 둔다.","relations":["boundary","part_of","process"]}
+{"primary":"숙성기록 충돌연표","text":"숙성기록 충돌연표는 개시·상태변화·검사·승인·이송의 타임스탬프를 연결한다.","relations":["attribute","comparison","process"]}
+{"primary":"제품이송 유량접점 우선","text":"이송기록이 충돌하면 배관 유량이 시작된 제품이송 유량접점 우선으로 물리 개시를 정한다. 배관 방향과 유량 지속을 함께 확인해 세척수 흐름이나 펌프 시험을 제품 이동에서 제외한다.","relations":["process","state","boundary"]}
+{"primary":"이송밸브 위치신호 신뢰","text":"명령보다 실제 위치가 바뀐 이송밸브 위치신호 신뢰를 높게 둔다.","relations":["process","attribute","comparison"]}
+{"primary":"이송지시 작성시각 후순위","text":"사전에 만든 이송지시 작성시각 후순위는 제품이 움직인 때가 아니다. 지시는 승인 전 취소될 수 있으므로 밸브와 중량 변화 없이 물리 개시로 인정하지 않는다.","relations":["classification","process","role"]}
+{"primary":"수신탱크 중량증거","text":"유량계가 결측이면 수신탱크의 수신탱크 중량증거로 도달순서를 보완한다.","relations":["part_of","process","state"]}
+{"primary":"배관온도 변화시각 보조","text":"직접 접점이 없을 때 배관온도 변화시각 보조로 제품 통과의 경계를 추정한다. 제품 온도 특성이 나타난 구간은 밸브 개방 뒤 실제 통과의 늦은 증거로 사용할 수 있다.","relations":["boundary","function","process"]}
+{"primary":"이송승인 실행시각 구별","text":"관리자 승인과 펌프기동을 이송승인 실행시각 구별로 각각 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"이송일지 후작성 제한","text":"교대 뒤 입력된 이송일지 후작성 제한은 장치 원본보다 증거력이 낮다. 교대자가 묶어 적은 완료시각은 장치 접점과 충돌하면 보조 설명으로만 남긴다.","relations":["attribute","contrast","process"]}
+{"primary":"이송계통 시계교정","text":"송신탱크와 수신탱크 PLC가 다르면 이송계통 시계교정 뒤 순서를 맞춘다.","relations":["process","role","state"]}
+{"primary":"제품이송 증거우선순위","text":"제품이송 증거우선순위는 실제 물질 이동을 직접 나타내는 유량, 밸브, 중량 자료를 온도, 승인, 일지보다 앞세운다. 서로 다른 시계는 보정한 후 배열한다.","relations":["boundary","part_of","process"]}
+{"primary":"제품이송 충돌연표","text":"제품이송 충돌연표는 지시·밸브개방·펌프·도달·종료 시각을 공통축에 둔다.","relations":["attribute","comparison","process"]}
+{"primary":"포장기 구동접점 우선","text":"포장개시 기록이 다르면 모터가 돈 포장기 구동접점 우선으로 실제 생산 시작을 정한다. 모터 전류와 첫 용기 감지가 이어진 때를 사용해 공회전 점검을 생산 시작과 나눈다.","relations":["process","state","boundary"]}
+{"primary":"충전노즐 센서신뢰","text":"계획표보다 용기가 감지된 충전노즐 센서신뢰를 높게 두어 첫 포장품 시각을 판정한다.","relations":["process","attribute","comparison"]}
+{"primary":"포장지시 생성시각 후순위","text":"미리 발행한 포장지시 생성시각 후순위는 라인이 움직인 사건이 아니다. 작업지시는 원료 보류나 장비 이상으로 실행되지 않을 수 있어 사건시각을 직접 주지 않는다.","relations":["classification","process","role"]}
+{"primary":"제품계수기 변화증거","text":"구동로그가 빠졌을 때 제품계수기 변화증거로 포장 진행을 보완한다.","relations":["part_of","process","state"]}
+{"primary":"검사카메라 촬영시각 보조","text":"첫 정상품을 찾을 때 검사카메라 촬영시각 보조로 품질확인의 경계를 둔다. 첫 정상품의 프레임 번호를 계수기와 맞추면 품질 확인이 생산 뒤 얼마나 늦었는지 알 수 있다.","relations":["boundary","function","process"]}
+{"primary":"포장승인 생산시각 구별","text":"품질승인과 실제 라인기동을 포장승인 생산시각 구별로 나눠 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"포장대장 후입력 제한","text":"회차 뒤 작성한 포장대장 후입력 제한 때문에 자동계수보다 낮게 평가한다. 회차 합계를 나중에 적은 대장은 개별 용기의 순서를 제공하지 않아 자동계수보다 후순위다.","relations":["attribute","contrast","process"]}
+{"primary":"포장설비 시각오프셋 보정","text":"포장기와 제조서버가 다르면 포장설비 시각오프셋 보정 뒤 생산순서를 정한다.","relations":["process","role","state"]}
+{"primary":"포장사건 증거순위","text":"포장사건 증거순위는 구동접점·노즐센서·계수기·카메라·승인·대장 순으로 둔다. 구동·노즐·계수·영상의 장치 자료를 우선하고 승인과 대장은 운영 확인으로 분리한다.","relations":["boundary","part_of","process"]}
+{"primary":"포장기록 충돌해결","text":"포장기록 충돌해결은 지시·기동·첫제품·검사·종료·승인의 시각을 분리한다.","relations":["attribute","comparison","process"]}
+{"primary":"교대로그 전자서명 우선","text":"두 인계기록이 다르면 권한자가 남긴 교대로그 전자서명 우선으로 책임이 넘어간 때를 정한다. 권한 계정의 서명과 인수 확인이 모두 남은 시점을 책임 전환으로 삼아 초안 메모를 배제한다.","relations":["process","state","boundary"]}
+{"primary":"현장단말 입력순번 신뢰","text":"동일 시각의 여러 항목은 증가하는 현장단말 입력순번 신뢰로 상대 차례를 보완한다.","relations":["process","attribute","comparison"]}
+{"primary":"교대메모 작성시각 후순위","text":"근무 뒤 정리한 교대메모 작성시각 후순위는 설비사건과 같은 시각이 아니다. 근무 종료 후 정리한 메모는 과거 사건을 서술할 뿐 장치 변화나 인계 효력의 시각이 아니다.","relations":["classification","process","role"]}
+{"primary":"관제녹취 발화증거","text":"인계시각이 모호하면 저장된 관제녹취 발화증거로 대화의 선후를 확인한다.","relations":["part_of","process","state"]}
+{"primary":"작업자 위치기록 보조","text":"현장메모와 충돌할 때 작업자 위치기록 보조로 설비 접근의 가능한 시각을 좁힌다. 출입 접점과 위치 표본을 결합하면 작업자가 설비에 접근한 가능 구간을 좁힐 수 있다.","relations":["boundary","function","process"]}
+{"primary":"설비사건 인지시각 구별","text":"설비가 변한 때와 사람이 알게 된 설비사건 인지시각 구별로 사건을 분리한다.","relations":["classification","comparison","state"]}
+{"primary":"수기인계 시간한계","text":"분 단위로 옮겨 적은 수기인계 시간한계 때문에 자동로그보다 낮은 신뢰도를 준다. 분 단위 반올림은 맞닿은 두 책임 구간을 겹친 것처럼 만들 수 있어 전자서명을 우선한다.","relations":["attribute","contrast","process"]}
+{"primary":"교대단말 시각보정","text":"작업자 단말과 중앙서버가 다르면 교대단말 시각보정 뒤 기록차례를 복원한다.","relations":["process","role","state"]}
+{"primary":"운영기록 증거우선순위","text":"운영기록 증거우선순위는 장치원본·전자서명·입력순번·녹취·위치·수기메모 순으로 둔다. 장치원본과 권한서명을 핵심으로 두고 입력순번·녹취·위치·수기메모의 지연을 명시한다.","relations":["boundary","part_of","process"]}
+{"primary":"운영연표 충돌해결","text":"운영연표 충돌해결은 물리사건·인지·입력·인계·승인시각을 따로 보존한다.","relations":["attribute","comparison","process"]}

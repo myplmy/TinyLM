@@ -1,0 +1,150 @@
+{"primary":"수술실 개방점검 부분겹침","text":"전기·가스 점검의 후반과 기구배치의 초반만 함께 진행되면 수술실 개방점검 부분겹침이며 완전 동시 수행은 아니다. 전기·가스 점검의 종료와 기구배치 시작 네 접점을 비교해 실제 양수인 교집합만 병렬 작업으로 센다.","relations":["process","state","boundary"]}
+{"primary":"수술실 개방점검 완전동시","text":"두 점검이 같은 시각에 시작해 같은 시각에 끝났을 때만 수술실 개방점검 완전동시로 분류한다.","relations":["process","attribute","comparison"]}
+{"primary":"환경점검 준비구간포함","text":"더 긴 개방 준비시간 안에 온도·압력 환경점검이 모두 들어가면 환경점검 준비구간포함이다. 환경 측정의 시작과 종료가 모두 개방 준비 경계 안에 있어야 완전 포함이라고 판정한다.","relations":["classification","process","role"]}
+{"primary":"수술대 시험 무겹침","text":"수술대 구동시험이 가스점검 종료 뒤 시작해 공통 시간이 없으면 수술대 시험 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"장비반입 끝점접촉","text":"점검 종료시각과 장비반입 시작시각이 같기만 하면 장비반입 끝점접촉이며 겹침시간은 0이다. 맞닿은 한 순간은 지속시간이 없어 준비와 반입이 순차 전환되었다는 경계만 나타낸다.","relations":["boundary","function","process"]}
+{"primary":"개방회의 시작선행겹침","text":"개방회의가 먼저 시작되고 점검 후반까지 이어지면 개방회의 시작선행겹침으로 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"기구배치 종료후행겹침","text":"환경점검 중 기구배치가 시작되어 더 늦게 끝나면 기구배치 종료후행겹침이다. 공통으로 진행된 앞부분과 환경점검 뒤 남은 배치시간을 분리해 업무량을 계산한다.","relations":["attribute","contrast","process"]}
+{"primary":"두 수술실 준비 동시성구별","text":"인접 수술실 준비가 같은 분에 기록돼도 실제 구간이 다르면 두 수술실 준비 동시성구별을 적용한다.","relations":["process","role","state"]}
+{"primary":"개방준비 중첩구간 계산","text":"전기점검과 기구배치의 교집합만 따로 잰 값이 개방준비 중첩구간 계산이며 전체 소요시간과 다르다. 가장 늦은 시작과 가장 이른 종료의 차가 양수일 때만 중첩량을 더한다.","relations":["boundary","part_of","process"]}
+{"primary":"준비구간 관계증거","text":"시작·종료 접점 네 개를 모두 확인하는 준비구간 관계증거가 있어야 부분겹침과 완전동시를 가를 수 있다.","relations":["attribute","comparison","process"]}
+{"primary":"종말청소 소독교차","text":"바닥청소 후반과 표면소독 초반이 함께 진행된 구간은 종말청소 소독교차로 표시한다. 바닥의 물리 오염 제거와 표면 약제 도포가 허용된 구역에서만 동시에 이뤄진 시간을 구한다.","relations":["process","state","boundary"]}
+{"primary":"바닥청소 소독완전동시","text":"바닥청소와 표면소독이 같은 시작·종료를 공유한 경우만 바닥청소 소독완전동시다.","relations":["process","attribute","comparison"]}
+{"primary":"종말청소 환기포함","text":"긴 종말청소 시간 안에 지정 환기운전이 처음부터 끝까지 들어가면 종말청소 환기포함이다. 환기팬 기동과 정지가 청소의 양 경계 사이에 모두 놓이는지 장치로그로 확인한다.","relations":["classification","process","role"]}
+{"primary":"청소후 환경검사 무겹침","text":"청소가 끝난 뒤 대기시간까지 지나 환경검사를 시작했다면 청소후 환경검사 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"소독종료 검체채취 접점","text":"표면소독 종료와 환경검체 채취 시작이 같은 순간인 소독종료 검체채취 접점은 동시 수행이 아니다. 검체 채취가 소독 종료와 같아도 두 절차가 함께 지속된 구간은 없다고 기록한다.","relations":["boundary","function","process"]}
+{"primary":"청소작업 선행부분겹침","text":"청소가 먼저 시작하고 환기운전 중간에 끝나면 청소작업 선행부분겹침으로 분류한다.","relations":["classification","comparison","state"]}
+{"primary":"소독작업 후행부분겹침","text":"환기가 진행 중일 때 소독을 시작해 환기 뒤까지 이어지면 소독작업 후행부분겹침이다. 환기와 겹친 소독 구간, 환기 종료 뒤 단독 소독 구간을 따로 계산해 노출시간을 보존한다.","relations":["attribute","contrast","process"]}
+{"primary":"청소팀 교대겹침 판정","text":"두 청소팀의 근무기록이 맞닿거나 일부 포개지는지를 청소팀 교대겹침 판정으로 구별한다.","relations":["process","role","state"]}
+{"primary":"감염청소 공통시간량","text":"격리수술 뒤 두 소독 절차가 함께 수행된 시간만 계산한 값이 감염청소 공통시간량이다. 둘 이상의 절차가 실제 활성인 교집합만 사용하고 준비·건조의 동시 대기는 제외한다.","relations":["boundary","part_of","process"]}
+{"primary":"청소구간 네접점검증","text":"청소구간 네접점검증은 각 작업의 시작과 종료를 확인해 같은 분 기록의 거짓 동시성을 막는다.","relations":["attribute","comparison","process"]}
+{"primary":"병동이송 승강기대기 교차","text":"환자 이송 후반과 전용승강기 대기 초반이 겹치면 병동이송 승강기대기 교차다. 환자 이동이 끝나기 전 승강기 호출대기가 시작된 부분과 정차 후 대기를 구별한다.","relations":["process","state","boundary"]}
+{"primary":"두 환자 이송완전동시 금지","text":"동일 동선에서 두 환자의 이송이 같은 시작·종료를 갖지 않도록 두 환자 이송완전동시 금지를 점검한다.","relations":["process","attribute","comparison"]}
+{"primary":"이송전체 구간내 인계","text":"병동 출발부터 수술실 도착까지의 긴 구간에 환자 인계가 모두 들어가면 이송전체 구간내 인계다. 인계 대화와 확인의 시작·종료가 병동 출발 및 수술실 도착 사이에 모두 들어와야 한다.","relations":["classification","process","role"]}
+{"primary":"격리환자 일반이송 무겹침","text":"공용 복도 소독 뒤 격리환자가 이동해 일반환자 구간과 겹치지 않으면 격리환자 일반이송 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"병동출발 운송인수 접점","text":"병동 이송 종료와 수술실 운송 인수 시작이 같은 병동출발 운송인수 접점은 공통 지속시간이 없다. 두 팀의 책임 전환은 끊김 없이 이어지지만 양수 길이의 공동 이송시간은 생기지 않는다.","relations":["boundary","function","process"]}
+{"primary":"휠체어이송 선행겹침","text":"휠체어 이동이 먼저 시작하고 침상 준비 중 끝나면 휠체어이송 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"수술실입실 후행겹침","text":"운송팀 업무 중 환자가 수술실에 들어가고 업무가 더 이어지면 수술실입실 후행겹침이다. 환자 입실 뒤에도 운송팀의 장비 정리나 서명이 남은 시간을 후행 업무로 따로 둔다.","relations":["attribute","contrast","process"]}
+{"primary":"환자이송 구간동시성","text":"기록시각이 같더라도 실제 경로 구간을 비교하는 환자이송 구간동시성으로 완전동시 여부를 판정한다.","relations":["process","role","state"]}
+{"primary":"이송동선 공통점유시간","text":"두 이송이 같은 복도를 동시에 차지한 교집합을 이송동선 공통점유시간으로 따로 계산한다. 위치센서의 복도 진입·이탈을 교차해 두 환자가 실제로 같은 공간에 있던 시간만 센다.","relations":["boundary","part_of","process"]}
+{"primary":"환자이송 접점근거표","text":"출발·승강기·도착·인계 기록을 묶은 환자이송 접점근거표로 부분겹침과 단순 접촉을 가른다.","relations":["attribute","comparison","process"]}
+{"primary":"마취유도 모니터부착 교차","text":"모니터 부착이 끝나기 전에 마취유도가 시작되면 마취유도 모니터부착 교차 구간이 생긴다. 필수 모니터 신호가 확보되기 전 유도된 구간과 부착 완료 뒤 정상 유도를 분리한다.","relations":["process","state","boundary"]}
+{"primary":"마취유도 두기록 완전동시","text":"마취기 로그와 마취기록지가 같은 시작·종료를 가리킬 때 마취유도 두기록 완전동시로 본다.","relations":["process","attribute","comparison"]}
+{"primary":"전신마취내 기도삽관","text":"전신마취 유지구간 안에 기도삽관 절차가 모두 들어가면 전신마취내 기도삽관 관계다. 삽관 준비부터 확인까지가 마취 유지의 시작·종료 경계 밖으로 나가지 않는지 확인한다.","relations":["classification","process","role"]}
+{"primary":"마취회복후 병실이송 무겹침","text":"마취회복 평가가 끝나고 환자이송이 시작됐다면 마취회복후 병실이송 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"유도종료 절개시작 접점","text":"마취유도 종료와 피부절개 시작이 같은 유도종료 절개시작 접점은 절차가 겹쳤다는 뜻이 아니다. 유도 완료와 절개가 맞닿더라도 중첩은 없으며 선행 안전조건 충족만 나타낸다.","relations":["boundary","function","process"]}
+{"primary":"마취평가 선행부분겹침","text":"마취평가가 먼저 시작해 유도 초기까지 이어지면 마취평가 선행부분겹침으로 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"마취기록 후행부분겹침","text":"유도가 진행 중 기록작성을 시작해 유도 뒤 끝냈다면 마취기록 후행부분겹침이다. 마취 중 입력과 유도 뒤 정리 입력을 나눠 환자 처치와 문서 업무의 병렬 정도를 계산한다.","relations":["attribute","contrast","process"]}
+{"primary":"마취팀 교대시간 구별","text":"두 마취팀의 담당구간이 일부 겹친 것과 정확히 같은 것을 마취팀 교대시간 구별로 판정한다.","relations":["process","role","state"]}
+{"primary":"마취절차 중첩분량","text":"마취절차 중첩분량은 유도, 기도 확보, 모니터 조정이 동시에 수행된 시간의 길이다. 세 작업 중 가장 늦게 열린 경계부터 가장 먼저 닫힌 경계까지만 계산한다.","relations":["boundary","part_of","process"]}
+{"primary":"마취사건 네시각대조","text":"각 절차의 시작과 끝을 비교하는 마취사건 네시각대조가 없으면 완전동시를 확정하지 않는다.","relations":["attribute","comparison","process"]}
+{"primary":"절개 지혈작업 부분교차","text":"절개 후반에 지혈이 시작되어 일부만 함께 진행되면 절개 지혈작업 부분교차다. 지혈이 절개 종료 전 시작하고 뒤까지 이어질 때 공통부와 독립 지혈부를 구별한다.","relations":["process","state","boundary"]}
+{"primary":"양측수술 절개완전동시","text":"양측 절개가 같은 시각에 시작하고 끝난 경우에만 양측수술 절개완전동시로 기록한다.","relations":["process","attribute","comparison"]}
+{"primary":"수술전체 구간내 봉합","text":"피부절개부터 최종드레싱까지의 구간에 봉합이 모두 포함되면 수술전체 구간내 봉합이다. 봉합의 첫 바늘과 마지막 매듭이 전체 수술 경계 안에 있는지 사건로그로 검증한다.","relations":["classification","process","role"]}
+{"primary":"절제후 검체포장 무겹침","text":"절제 작업이 끝난 뒤 검체포장을 시작해 공통 시간이 없으면 절제후 검체포장 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"봉합종료 드레싱시작 접점","text":"봉합 종료와 드레싱 시작이 같은 봉합종료 드레싱시작 접점은 부분겹침으로 세지 않는다. 동일 시각의 연속 전환은 절차 간 공백이 없다는 뜻이지 동시 수행을 뜻하지 않는다.","relations":["boundary","function","process"]}
+{"primary":"절제작업 선행겹침","text":"절제가 먼저 시작하고 영상확인 도중 끝나면 절제작업 선행겹침으로 분류한다.","relations":["classification","comparison","state"]}
+{"primary":"영상확인 후행겹침","text":"절제 중 영상확인이 시작되어 절제 뒤까지 이어지면 영상확인 후행겹침이다. 절제와 함께 본 영상 구간, 절제 종료 뒤 판독만 계속된 구간을 별도로 표시한다.","relations":["attribute","contrast","process"]}
+{"primary":"수술단계 동시성판정","text":"같은 분에 기록된 두 수술단계의 실제 시작·종료를 보는 수술단계 동시성판정이 필요하다.","relations":["process","role","state"]}
+{"primary":"수술단계 공통진행시간","text":"두 단계가 함께 수행된 교집합만 합한 수술단계 공통진행시간은 각 단계 길이와 다르다. 두 단계의 전체 길이를 더하지 않고 실제 교집합만 사용해 병렬 수행량을 과장하지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"수술단계 접점추적","text":"장비로그·기록지·영상의 시작과 종료를 묶은 수술단계 접점추적으로 시간관계를 검증한다.","relations":["attribute","comparison","process"]}
+{"primary":"이동영상 준비부분겹침","text":"이동형 영상장비 준비 후반과 환자 위치조정 초반이 함께 진행되면 이동영상 준비부분겹침이다. 장비 케이블 연결 후반과 환자 위치조정 초반이 함께였던 범위를 접점 기록으로 제한한다.","relations":["process","state","boundary"]}
+{"primary":"영상촬영 양장비 완전동시","text":"두 영상장비의 노출구간이 같은 시각에 시작하고 끝날 때만 영상촬영 양장비 완전동시로 본다.","relations":["process","attribute","comparison"]}
+{"primary":"수술중 영상검사 포함","text":"수술중 영상검사 포함은 촬영 준비부터 판독 종료까지의 전 과정이 수술 시작과 종료 사이에 놓인 관계다. 검사 경계 하나라도 수술 밖이면 부분 포함으로 구분한다.","relations":["classification","process","role"]}
+{"primary":"조영검사후 절개 무겹침","text":"조영검사가 끝나고 안전대기 뒤 절개가 시작됐다면 조영검사후 절개 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"영상종료 수술재개 접점","text":"영상촬영 종료와 수술재개가 같은 영상종료 수술재개 접점은 두 절차의 동시 수행이 아니다. 촬영 종료와 조작 재개가 같으면 순차 사건이며 방사선 노출과 수술 조작의 공통시간은 영이다.","relations":["boundary","function","process"]}
+{"primary":"환자고정 선행겹침","text":"환자고정이 먼저 시작해 영상촬영 초반까지 이어지면 환자고정 선행겹침으로 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"영상판독 후행겹침","text":"촬영 중 판독이 시작되어 촬영 종료 뒤까지 지속되면 영상판독 후행겹침이다. 촬영 중 실시간 판독과 촬영 뒤 최종 판독을 나눠 장비 점유와 의사 업무를 따로 센다.","relations":["attribute","contrast","process"]}
+{"primary":"영상절차 동시성구별","text":"같은 분에 찍힌 준비·촬영 로그의 실제 구간을 비교하는 영상절차 동시성구별이 필요하다.","relations":["process","role","state"]}
+{"primary":"영상수술 공통구간량","text":"영상 획득과 수술 조작이 함께 진행된 교집합만 잰 값이 영상수술 공통구간량이다. 실제 영상 획득과 수술 조작이 동시에 활성인 시간만 교차해 대기화면은 제외한다.","relations":["boundary","part_of","process"]}
+{"primary":"영상장비 네접점대조","text":"장비 준비와 노출의 시작·종료를 확인하는 영상장비 네접점대조로 부분겹침을 검증한다.","relations":["attribute","comparison","process"]}
+{"primary":"외과팀 마취팀 교대교차","text":"외과팀 인계 후반과 마취팀 인계 초반이 겹치면 외과팀 마취팀 교대교차다. 각 팀의 인계 시작·종료를 비교해 둘이 함께 책임을 확인한 교집합을 계산한다.","relations":["process","state","boundary"]}
+{"primary":"두 교대회의 완전동시","text":"두 직군의 교대회의가 같은 시작과 종료를 가질 때만 두 교대회의 완전동시로 분류한다.","relations":["process","attribute","comparison"]}
+{"primary":"수술근무내 휴게대체 포함","text":"긴 수술근무 구간 안에 대체인력의 휴게지원이 모두 들어가면 수술근무내 휴게대체 포함이다. 대체인력 투입과 해제가 수술근무의 양 경계 안에 있어야 지원 전체가 포함된다.","relations":["classification","process","role"]}
+{"primary":"감염팀 외과팀 근무무겹침","text":"감염관리팀이 퇴실한 뒤 외과팀이 입실하면 감염팀 외과팀 근무무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"당직종료 인계시작 접점","text":"당직 종료와 다음 조 인계 시작이 같은 당직종료 인계시작 접점은 겹친 근무시간이 아니다. 경계가 같아 책임은 연속되지만 두 조가 함께 근무한 양의 지속시간은 없다.","relations":["boundary","function","process"]}
+{"primary":"주간조 선행부분겹침","text":"주간조가 먼저 시작해 야간조 인계 중 끝나면 주간조 선행부분겹침으로 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"야간조 후행부분겹침","text":"주간조 근무 중 야간조가 들어와 더 늦게 끝나면 야간조 후행부분겹침이다. 주간조와 겹친 인계시간, 주간조 퇴실 뒤 야간조 단독 근무를 구분해 기록한다.","relations":["attribute","contrast","process"]}
+{"primary":"의료진 근무동시성 판정","text":"출퇴근 기록의 분 단위가 같아도 실제 책임구간을 보는 의료진 근무동시성 판정이 필요하다.","relations":["process","role","state"]}
+{"primary":"교대인력 공통책임시간","text":"두 팀이 환자를 함께 책임진 교집합만 계산한 값이 교대인력 공통책임시간이다. 두 팀의 책임 상태가 모두 활성인 교집합만 사용하고 출입기록의 단순 동시는 제외한다.","relations":["boundary","part_of","process"]}
+{"primary":"교대구간 네시각검증","text":"각 조의 근무 시작과 종료를 대조하는 교대구간 네시각검증으로 부분겹침과 접점을 가른다.","relations":["attribute","comparison","process"]}
+{"primary":"멸균세척 건조부분겹침","text":"기구세척 후반과 건조 초반이 일부 함께 진행되면 멸균세척 건조부분겹침이며 완전 동시는 아니다. 세척 종료 전 건조 준비가 시작된 범위와 실제 고온 건조의 선후를 분리한다.","relations":["process","state","boundary"]}
+{"primary":"두 멸균기 운전완전동시","text":"두 멸균기 운전완전동시는 두 장비의 사이클 개시점과 종료점이 각각 일치하는 관계다. 어느 한 경계라도 다르면 단순 중첩으로 판정한다.","relations":["process","attribute","comparison"]}
+{"primary":"멸균사이클내 노출단계 포함","text":"긴 멸균사이클 안에 고온 노출단계가 전부 들어가면 멸균사이클내 노출단계 포함이다. 고온 노출의 상승·유지·종료가 전체 사이클 경계 안에 들어오는지 장치 원시로그로 본다.","relations":["classification","process","role"]}
+{"primary":"멸균종료후 포장검사 무겹침","text":"냉각까지 끝난 뒤 포장검사를 시작했다면 멸균종료후 포장검사 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"냉각종료 반출시작 접점","text":"냉각 종료와 반출 시작이 같은 냉각종료 반출시작 접점은 두 작업의 시간 중첩이 아니다. 냉각 완료와 반출 접점이 같아도 멸균기 내부와 운반 작업의 동시 지속은 없다.","relations":["boundary","function","process"]}
+{"primary":"세척작업 선행겹침","text":"세척이 먼저 시작해 건조 운전 중에 끝나면 세척작업 선행겹침으로 기록한다.","relations":["classification","comparison","state"]}
+{"primary":"포장검사 후행겹침","text":"냉각 중 포장검사가 시작되어 냉각 뒤까지 이어지면 포장검사 후행겹침이다. 냉각 중 시작된 검사의 공통부와 기구가 식은 뒤 이어진 판정 구간을 나눠 센다.","relations":["attribute","contrast","process"]}
+{"primary":"멸균회차 동시성구별","text":"멸균회차 동시성구별은 분 단위 표시에 의존하지 않고 두 회차의 원시 개시·종료 접점을 비교하여 완전 동시와 부분 겹침을 가르는 절차다.","relations":["process","role","state"]}
+{"primary":"멸균공정 공통운전시간","text":"세척·건조·멸균이 함께 진행된 교집합만 잰 멸균공정 공통운전시간은 전체 회차시간과 다르다. 세척·건조·멸균 세 장치 상태가 모두 활성인 교집합만 계산해 회차 전체와 혼동하지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"멸균기록 네접점대조","text":"각 회차의 시작과 종료를 장비로그로 확인하는 멸균기록 네접점대조로 시간관계를 검증한다.","relations":["attribute","comparison","process"]}
+{"primary":"격리준비 청소부분겹침","text":"격리표지 설치 후반과 전용청소 초반이 함께 진행되면 격리준비 청소부분겹침이다. 표지 설치의 후반과 전용청소의 초반이 병렬인 구역만 겹침으로 인정한다.","relations":["process","state","boundary"]}
+{"primary":"두 격리수술 완전동시 배제","text":"같은 수술실에서 두 격리수술의 구간이 같지 않음을 두 격리수술 완전동시 배제로 확인한다.","relations":["process","attribute","comparison"]}
+{"primary":"격리수술내 음압운전 포함","text":"더 긴 격리수술 구간에 음압운전이 전부 들어가면 격리수술내 음압운전 포함이다. 음압 안정부터 해제까지가 환자 입실·퇴실 사이를 완전히 덮는지 압력로그로 검증한다.","relations":["classification","process","role"]}
+{"primary":"일반수술 감염청소 무겹침","text":"감염청소와 환기대기가 끝난 뒤 일반수술을 시작하면 일반수술 감염청소 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"격리해제 일반입실 접점","text":"격리해제 종료와 일반환자 입실 시작이 같은 격리해제 일반입실 접점은 중첩이 아니다. 해제와 다음 입실이 맞닿으면 공백 없는 전환이지만 두 감염 상태의 교집합은 없다.","relations":["boundary","function","process"]}
+{"primary":"감염검체 채취선행겹침","text":"감염검체 채취가 먼저 시작해 소독 초반까지 이어지면 감염검체 채취선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"접촉자조사 후행겹침","text":"격리수술 중 접촉자조사가 시작되어 퇴실 뒤까지 이어지면 접촉자조사 후행겹침이다. 격리 중 시작한 조사의 앞부분과 환자 퇴실 뒤 계속된 추적 구간을 따로 기록한다.","relations":["attribute","contrast","process"]}
+{"primary":"감염통제 구간동시성","text":"표지·음압·보호구·청소의 실제 구간을 비교하는 감염통제 구간동시성으로 완전동시 여부를 정한다.","relations":["process","role","state"]}
+{"primary":"격리조치 공통유효시간","text":"여러 감염통제 조치가 동시에 유효한 교집합을 격리조치 공통유효시간으로 계산한다. 음압·보호구·출입제한 등 모든 조치가 동시에 유효한 시간만 최고 통제구간으로 센다.","relations":["boundary","part_of","process"]}
+{"primary":"감염통제 네경계검증","text":"각 조치의 발효와 해제 시각을 대조하는 감염통제 네경계검증으로 부분겹침과 접점을 구별한다.","relations":["attribute","comparison","process"]}
+{"primary":"응급수술 준비부분겹침","text":"정규수술 정리 후반과 응급수술 준비 초반이 겹치면 응급수술 준비부분겹침이다. 정규수술 정리와 응급 장비 반입이 안전하게 병행된 범위를 공간별 접점으로 제한한다.","relations":["process","state","boundary"]}
+{"primary":"두 응급대응 완전동시","text":"마취·외과 응급대응이 같은 시각에 시작하고 끝난 경우만 두 응급대응 완전동시로 본다.","relations":["process","attribute","comparison"]}
+{"primary":"응급수술내 대량수혈 포함","text":"긴 응급수술 구간 안에 대량수혈 절차가 전부 들어가면 응급수술내 대량수혈 포함이다. 첫 혈액 투입부터 마지막 확인까지가 응급수술 경계 안에 모두 들어오는지 환자 ID로 맞춘다.","relations":["classification","process","role"]}
+{"primary":"응급청소후 정규수술 무겹침","text":"응급수술 뒤 청소와 환기가 끝난 후 정규수술을 시작하면 응급청소후 정규수술 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"응급퇴실 청소착수 접점","text":"응급환자 퇴실과 오염청소 시작이 같은 응급퇴실 청소착수 접점은 함께 진행된 시간이 없다. 퇴실과 청소 시작이 같아도 환자 처치와 환경 작업이 함께 지속된 시간은 없다.","relations":["boundary","function","process"]}
+{"primary":"응급호출 선행겹침","text":"응급호출이 먼저 시작해 수술실 준비 중까지 이어지면 응급호출 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"혈액지원 후행겹침","text":"응급수술 중 혈액지원이 시작되어 수술 뒤까지 계속되면 혈액지원 후행겹침이다. 수술과 함께 진행된 공급 구간, 수술 뒤 반납·정산이 이어진 후행부를 분리한다.","relations":["attribute","contrast","process"]}
+{"primary":"응급자원 동시성판정","text":"같은 분에 투입된 인력·장비의 실제 이용구간을 보는 응급자원 동시성판정이 필요하다.","relations":["process","role","state"]}
+{"primary":"응급대응 공통가동시간","text":"응급대응 공통가동시간은 외과, 마취, 혈액팀 세 조직이 실제로 동시에 대응한 길이다. 각 업무 구간의 교집합만 더하고 대기 상태는 제외한다.","relations":["boundary","part_of","process"]}
+{"primary":"응급수술 네접점증거","text":"정규수술과 응급수술의 시작·종료를 확인하는 응급수술 네접점증거로 충돌구간을 검증한다.","relations":["attribute","comparison","process"]}
+{"primary":"회복실 입실 인계부분겹침","text":"환자 입실 후반과 마취 인계 초반이 함께 진행되면 회복실 입실 인계부분겹침이다. 침상 이동 후반과 마취 인계 초반이 동시에 진행된 범위를 환자 위치와 서명으로 확인한다.","relations":["process","state","boundary"]}
+{"primary":"두 회복평가 완전동시","text":"두 회복평가 완전동시는 호흡 평가와 의식 평가의 개시점과 종료점이 모두 일치하는 경우다. 시작만 같거나 일부 시간만 겹치면 완전동시로 분류하지 않는다.","relations":["process","attribute","comparison"]}
+{"primary":"회복관찰내 통증조절 포함","text":"회복관찰내 통증조절 포함은 투약 시작부터 효과 평가 종료까지가 전체 회복 관찰 기간 내부에 놓인 관계다. 절차의 한쪽 끝이 관찰 밖이면 부분 포함이다.","relations":["classification","process","role"]}
+{"primary":"회복퇴실후 병동이송 무겹침","text":"회복실 퇴실승인이 끝난 뒤 병동이송을 시작하면 회복퇴실후 병동이송 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"회복인계 종료이송 접점","text":"회복실 인계 종료와 병동이송 시작이 같은 회복인계 종료이송 접점은 구간 중첩이 아니다. 인계 서명과 병동 이동 시작이 같으면 순차 전환이며 공통 간호 지속시간은 없다.","relations":["boundary","function","process"]}
+{"primary":"호흡관찰 선행겹침","text":"호흡관찰이 먼저 시작해 통증평가 초반까지 이어지면 호흡관찰 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"퇴실교육 후행겹침","text":"회복관찰 중 퇴실교육이 시작되어 관찰 뒤까지 이어지면 퇴실교육 후행겹침이다. 관찰 중 시작한 교육과 관찰 종료 뒤 남은 설명을 나눠 환자 상태와 교육 업무를 분리한다.","relations":["attribute","contrast","process"]}
+{"primary":"회복절차 동시성구별","text":"같은 분 기록이라도 각 평가의 시작·종료를 보는 회복절차 동시성구별이 필요하다.","relations":["process","role","state"]}
+{"primary":"회복간호 공통수행시간","text":"두 간호절차가 함께 수행된 교집합만 계산한 값이 회복간호 공통수행시간이다. 두 간호행위의 최대 시작과 최소 종료 차가 양수일 때만 병렬 수행시간으로 센다.","relations":["boundary","part_of","process"]}
+{"primary":"회복실 네시각검증","text":"입실·평가·승인·퇴실의 경계를 대조하는 회복실 네시각검증으로 부분겹침을 확인한다.","relations":["attribute","comparison","process"]}
+{"primary":"검체채취 포장부분겹침","text":"검체채취 후반과 용기포장 초반이 함께 진행되면 검체채취 포장부분겹침이다. 채취 종료 전 용기 라벨·포장이 시작된 구간과 채취 뒤 독립 포장을 구분한다.","relations":["process","state","boundary"]}
+{"primary":"두 검체처리 완전동시","text":"두 검체처리 완전동시는 두 검체의 처리 개시와 종료 접점이 각각 일치하는 경우다. 한 검체가 조금이라도 먼저 열리거나 닫히면 성립하지 않는다.","relations":["process","attribute","comparison"]}
+{"primary":"검사운영내 냉장보관 포함","text":"긴 검사실 운영구간 안에 검체 냉장보관이 전부 들어가면 검사운영내 냉장보관 포함이다. 냉장 입고와 반출이 모두 검사실 운영의 양 경계 사이에 있어야 전체 포함이다.","relations":["classification","process","role"]}
+{"primary":"검체채취후 분석 무겹침","text":"채취와 운송이 끝난 뒤 분석을 시작해 공통 시간이 없으면 검체채취후 분석 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"인계종료 접수시작 접점","text":"운송 인계 종료와 검사실 접수 시작이 같은 인계종료 접수시작 접점은 중첩이 아니다. 운송팀 인계와 검사실 접수가 같은 순간이어도 두 업무가 함께 지속된 시간은 영이다.","relations":["boundary","function","process"]}
+{"primary":"병리채취 선행겹침","text":"병리채취가 먼저 시작해 수술 마무리 초반까지 이어지면 병리채취 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"동결판독 후행겹침","text":"수술 중 동결판독이 시작되어 조작 종료 뒤까지 이어지면 동결판독 후행겹침이다. 수술 조작과 겹친 실시간 판독, 조작 종료 뒤 이어진 최종 확인을 따로 기록한다.","relations":["attribute","contrast","process"]}
+{"primary":"검체절차 동시성판정","text":"같은 분에 적힌 채취·포장·접수의 실제 구간을 보는 검체절차 동시성판정이 필요하다.","relations":["process","role","state"]}
+{"primary":"검체처리 공통시간량","text":"채취팀과 검사실이 함께 검체를 처리한 교집합이 검체처리 공통시간량이다. 채취팀과 검사실이 동일 검체를 실제 처리한 교집합만 계산하고 운송 대기는 제외한다.","relations":["boundary","part_of","process"]}
+{"primary":"검체연표 네접점대조","text":"채취와 분석의 시작·종료를 대조하는 검체연표 네접점대조로 시간관계를 검증한다.","relations":["attribute","comparison","process"]}
+{"primary":"양압운전 문개방부분겹침","text":"수술실 양압운전 중 문이 잠시 열린 구간이 있으면 양압운전 문개방부분겹침으로 기록한다. 문이 열린 구간을 양압 전체와 교차해 압력 보호가 약화된 정확한 노출시간을 구한다.","relations":["process","state","boundary"]}
+{"primary":"두 공조기 운전완전동시","text":"두 공조기 운전완전동시는 주 공조기와 예비 공조기가 같은 순간에 켜지고 같은 순간에 꺼진 상태다. 운전 구간의 일부만 겹친 경우와 구별한다.","relations":["process","attribute","comparison"]}
+{"primary":"수술구간내 양압유지 포함","text":"수술 전체 구간에 양압유지가 처음부터 끝까지 들어가면 수술구간내 양압유지 포함이다. 양압 안정 시각이 절개 전이고 해제가 드레싱 뒤여야 수술 전체를 포함한다고 본다.","relations":["classification","process","role"]}
+{"primary":"오염수술후 환기대기 무겹침","text":"오염수술 종료 뒤 별도 환기대기를 운영하면 오염수술후 환기대기 무겹침으로 구분한다.","relations":["part_of","process","state"]}
+{"primary":"환기종료 입실시작 접점","text":"환기대기 종료와 다음 환자 입실이 같은 환기종료 입실시작 접점은 겹친 시간이 없다. 환기 대기와 환자 입실이 맞닿더라도 두 상태가 동시에 지속된 구간은 없다.","relations":["boundary","function","process"]}
+{"primary":"공조점검 선행겹침","text":"공조점검이 먼저 시작해 수술실 준비 초반까지 이어지면 공조점검 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"필터교체 후행겹침","text":"정비창 중 필터교체가 시작되어 창 종료 뒤까지 이어지면 필터교체 후행겹침이다. 정비창과 겹친 교체 앞부분, 정비창 종료 뒤 남은 시험·복구를 별도로 센다.","relations":["attribute","contrast","process"]}
+{"primary":"공조운전 동시성구별","text":"같은 분 상태값 대신 실제 기동·정지 접점을 보는 공조운전 동시성구별이 필요하다.","relations":["process","role","state"]}
+{"primary":"환기절차 공통가동시간","text":"양압·배기·정화가 함께 가동된 교집합만 잰 값이 환기절차 공통가동시간이다. 양압·배기·정화가 실제 가동상태인 세 구간의 교집합만 사용해 명령시간을 제외한다.","relations":["boundary","part_of","process"]}
+{"primary":"공조구간 네접점증거","text":"두 공조 절차의 시작과 종료를 확인하는 공조구간 네접점증거로 부분겹침을 검증한다.","relations":["attribute","comparison","process"]}
+{"primary":"항생제주입 절개부분겹침","text":"예방항생제 주입 후반과 피부절개 초반이 겹치면 항생제주입 절개부분겹침으로 기록한다. 주입 후반과 절개 초반의 교집합을 계산하되 예방효력은 약동학적 별도 구간으로 둔다.","relations":["process","state","boundary"]}
+{"primary":"두 항생제 주입완전동시","text":"두 항생제 주입완전동시는 두 약제의 주입 개시점과 종료점이 모두 일치하는 관계다. 한쪽 펌프가 먼저 멈추면 완전 동시가 아닌 부분 중첩이다.","relations":["process","attribute","comparison"]}
+{"primary":"수술구간내 항생제효력 포함","text":"긴 수술구간 안에 항생제 효력창이 모두 들어가면 수술구간내 항생제효력 포함이다. 예상 유효농도 창의 시작·종료가 수술의 양 경계를 완전히 덮는지 확인한다.","relations":["classification","process","role"]}
+{"primary":"항생제종료후 배양채취 무겹침","text":"항생제 투여가 끝난 뒤 배양검체를 채취하면 항생제종료후 배양채취 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"주입종료 절개시작 접점","text":"항생제 주입 종료와 절개 시작이 같은 주입종료 절개시작 접점은 동시 지속구간이 아니다. 약제 주입과 절개가 맞닿아도 동시 지속은 없으며 예방 간격은 경계값으로 기록한다.","relations":["boundary","function","process"]}
+{"primary":"투여준비 선행겹침","text":"항생제 준비가 먼저 시작해 마취유도 초반까지 이어지면 투여준비 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"추가투여 후행겹침","text":"수술 중 추가투여가 시작되어 봉합 뒤까지 이어지면 추가투여 후행겹침이다. 봉합 전 시작해 뒤까지 이어진 투여의 공통부와 회복단계 후행부를 나눈다.","relations":["attribute","contrast","process"]}
+{"primary":"약제투여 동시성판정","text":"처방과 펌프로그의 실제 시작·종료를 비교하는 약제투여 동시성판정이 필요하다.","relations":["process","role","state"]}
+{"primary":"항생제효력 공통구간","text":"두 약제의 예상 효력창이 함께 유지된 교집합이 항생제효력 공통구간이다. 두 약제 유효창의 최대 시작과 최소 종료를 이용해 실제 공동 효력시간만 계산한다.","relations":["boundary","part_of","process"]}
+{"primary":"투여절개 네경계검증","text":"주입과 절개의 시작·종료를 대조하는 투여절개 네경계검증으로 시간관계를 확인한다.","relations":["attribute","comparison","process"]}
+{"primary":"노출사고 처치부분겹침","text":"주사침 노출 보고 후반과 응급처치 초반이 함께 진행되면 노출사고 처치부분겹침이다. 사고 보고가 끝나기 전 세척·응급처치가 시작된 구간과 후속 처치를 분리한다.","relations":["process","state","boundary"]}
+{"primary":"두 비상조치 완전동시","text":"두 비상조치 완전동시는 전원 차단과 환자 대피가 함께 시작되어 함께 끝난 관계다. 어느 한 조치의 경계가 어긋나면 완전 동시로 보지 않는다.","relations":["process","attribute","comparison"]}
+{"primary":"사고대응내 구역통제 포함","text":"사고대응내 구역통제 포함은 출입 제한이 사고 대응 시작 이후 발령되고 대응 종료 이전에 해제된 관계다. 통제의 양 끝이 모두 대응 기간 내부인지 확인한다.","relations":["classification","process","role"]}
+{"primary":"오염제거후 조사착수 무겹침","text":"오염제거가 끝난 뒤 원인조사를 시작하면 오염제거후 조사착수 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"대피종료 재입실접점","text":"환자대피 종료와 안전확인 후 재입실 시작이 같은 대피종료 재입실접점은 중첩이 아니다. 대피 완료와 재입실이 맞닿으면 안전 상태 전환이며 양쪽 활동의 공통 지속시간은 없다.","relations":["boundary","function","process"]}
+{"primary":"사고경보 선행겹침","text":"사고경보가 먼저 시작해 현장통제 초반까지 이어지면 사고경보 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"원인조사 후행겹침","text":"비상조치 중 원인조사가 시작되어 조치 종료 뒤까지 이어지면 원인조사 후행겹침이다. 비상조치와 겹친 초기 조사, 조치 종료 뒤 계속된 분석을 나눠 목적과 책임을 구별한다.","relations":["attribute","contrast","process"]}
+{"primary":"사고조치 동시성구별","text":"같은 분에 입력된 대피·차단·보고의 실제 구간을 보는 사고조치 동시성구별이 필요하다.","relations":["process","role","state"]}
+{"primary":"비상대응 공통수행시간","text":"의료·시설·감염팀이 함께 대응한 교집합만 계산한 값이 비상대응 공통수행시간이다. 의료·시설·감염팀의 실제 대응구간 세 개가 동시에 열린 시간만 공통 수행으로 센다.","relations":["boundary","part_of","process"]}
+{"primary":"사고연표 네접점대조","text":"사고와 대응조치의 시작·종료를 확인하는 사고연표 네접점대조로 부분겹침을 검증한다.","relations":["attribute","comparison","process"]}

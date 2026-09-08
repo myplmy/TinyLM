@@ -1,0 +1,150 @@
+{"primary":"강설예보 수신지연","text":"기상기관이 예보를 발행한 뒤 공항운영 서버에 도착하는 통신시간이 강설예보 수신지연이다. 기관 발행과 공항 서버 접수의 차이를 재어 예보 생산시간과 네트워크 전달을 분리한다.","relations":["process","state","boundary"]}
+{"primary":"강설예보 검토대기","text":"예보는 도착했지만 강도·확률·대체자료를 사람이 확인하는 구간이 강설예보 검토대기다. 완전한 자료가 도착한 뒤 담당자가 판단을 시작하지 못한 구간을 통신이나 모형 계산과 분리한다.","relations":["process","attribute","comparison"]}
+{"primary":"제설수요 계산지연","text":"예상 적설과 활주로 우선순위를 풀어 장비·약제 필요량을 산출하는 시간이 제설수요 계산지연이다. 입력 자료가 고정된 뒤 최적화가 실제 실행된 구간만 세며 작업 큐 대기는 따로 둔다.","relations":["process","role","classification"]}
+{"primary":"제설계획 승인대기","text":"계산은 끝났지만 운항·관제·현장책임자의 합의를 기다리는 시간이 제설계획 승인대기다. 운항·관제·현장 세 권한의 마지막 동의까지를 행정 의존으로 두고 계산시간에 넣지 않는다.","relations":["process","part_of","state"]}
+{"primary":"예보갱신 반영지연","text":"새 기상판이 제설배차와 폐쇄계획에 적용되는 처리시간이 예보갱신 반영지연이다. 새 판 수신부터 배차·폐쇄계획 버전이 운영화면에 확정될 때까지를 처리구간으로 본다.","relations":["process","function","boundary"]}
+{"primary":"계획판 배포대기","text":"승인된 계획을 모든 차량·조업사 단말이 수신할 때까지 머무는 구간이 계획판 배포대기다. 승인본 버전과 단말 수신확인을 연결해 오래된 계획을 받은 차량이 없는지 검증한다.","relations":["state","comparison","classification"]}
+{"primary":"강설발달 물리지연","text":"구름에서 생긴 눈이 공항지면에 도달해 쌓이기까지의 자연시간이 강설발달 물리지연이다. 레이더 강설대가 접근한 뒤 지상 적설계가 지속 반응할 때까지를 자연 낙하·축적 과정으로 잰다.","relations":["process","contrast","attribute"]}
+{"primary":"강설경보 확인대기","text":"첫 표본 뒤 지속성·레이더·현장관측을 대조하는 시간이 강설경보 확인대기다. 지속 표본과 레이더·순찰 증거가 갖춰질 때까지를 오탐 방지 관찰창으로 기록한다.","relations":["process","role","state"]}
+{"primary":"예보오차 정정지연","text":"관측편차를 모델에 반영해 새 강설량을 내는 계산시간이 예보오차 정정지연이다. 관측 동화, 모형 재실행, 결과 검수에 실제 사용된 시간을 단순 승인 대기와 나눈다.","relations":["process","part_of","boundary"]}
+{"primary":"기상계획 연표복원","text":"발행·수신·검토·승인·배포·현상도달을 배열하는 절차가 기상계획 연표복원이다. 각 시스템의 원시각과 수신각을 나눠 늦게 도착한 예보가 현상 뒤에 잘못 배치되지 않게 한다.","relations":["process","comparison","classification"]}
+{"primary":"노면센서 응답지연","text":"노면센서 응답지연은 노면 온도가 변한 뒤 매립 탐침의 출력이 새 값에 안정될 때까지 걸리는 시간이다. 필터 처리와 통신 수신에 든 시간은 따로 떼어 센서 자체 반응만 계산한다.","relations":["process","state","boundary"]}
+{"primary":"노면자료 품질대기","text":"표본은 왔지만 결측·영점·이웃센서를 검토할 때까지 쓰지 않는 구간이 노면자료 품질대기다. 센서값 생성 뒤 품질 플래그가 확정될 때까지를 자료 검수 큐로 두고 물리 결빙과 나눈다.","relations":["process","attribute","comparison"]}
+{"primary":"결빙형성 물리지연","text":"수막이 냉각되어 실제 얼음막으로 바뀌는 자연시간이 결빙형성 물리지연이다. 수막 온도와 염도 조건이 바뀐 뒤 마찰계가 얼음막을 확인할 때까지를 상변화 구간으로 둔다.","relations":["process","role","classification"]}
+{"primary":"결빙판정 확인대기","text":"한 센서초과 뒤 순찰·마찰자료를 기다리는 시간이 결빙판정 확인대기다. 추가 증거가 준비됐지만 운영자가 결론을 내리지 않은 시간은 자연 결빙속도가 아니다.","relations":["process","part_of","state"]}
+{"primary":"순찰차 이동지연","text":"검사요청 뒤 차량이 활주로 지점에 도착하는 시간이 순찰차 이동지연이다. 차고 출발부터 지정 측정점 도착까지 GPS 경로를 써서 배차 승인대기와 분리한다.","relations":["process","function","boundary"]}
+{"primary":"순찰진입 허가대기","text":"검사차는 준비됐지만 관제의 활주로 진입틈을 기다리는 구간이 순찰진입 허가대기다. 차량이 대기점에 선 뒤 관제가 진입을 승인할 때까지를 이동시간에서 제외한다.","relations":["state","comparison","classification"]}
+{"primary":"마찰측정 처리지연","text":"규정속도 주행과 표본계산으로 결과를 만드는 시간이 마찰측정 처리지연이다. 규정속도 도달, 제동 주행, 신호 필터, 계수 산출의 실제 수행시간을 단계별로 합산한다.","relations":["process","contrast","attribute"]}
+{"primary":"마찰결과 승인대기","text":"측정 뒤 이상치와 오염조건을 검토하는 시간이 마찰결과 승인대기다. 계수 산출 완료와 책임 승인 사이를 재어 장치 처리와 사람 검토의 병목을 구별한다.","relations":["process","role","state"]}
+{"primary":"노면회복 관측지연","text":"제설 뒤 다음 검사에서 개선을 확인할 때까지의 시간이 노면회복 관측지연이다. 물리 상태가 나아진 뒤 다음 순찰 표본까지의 공백을 회복 과정 자체와 구별한다.","relations":["process","part_of","boundary"]}
+{"primary":"노면사건 순서복원","text":"결빙·센서·경보·순찰·측정·승인을 시간순으로 맞추는 작업이 노면사건 순서복원이다. 결빙 추정부터 센서·경보·순찰·측정·승인을 공통시계에 맞춰 인과 방향을 유지한다.","relations":["process","comparison","classification"]}
+{"primary":"제빙액 해동지연","text":"저온저장 약제가 살포가능 온도에 오르는 물리시간이 제빙액 해동지연이다. 저장온도에서 점도·온도가 살포기준에 지속 진입할 때까지를 열전달 과정으로 본다.","relations":["process","state","boundary"]}
+{"primary":"제빙액 출고대기","text":"재고는 있으나 품질판과 사용승인을 기다리는 구간이 제빙액 출고대기다. 품질판과 로트 승인이 모두 유효해진 뒤에만 탱크 인계를 시작하도록 자원 큐를 표시한다.","relations":["process","attribute","comparison"]}
+{"primary":"약제배송 이동지연","text":"저장소에서 활주로 차량기지까지 운반하는 시간이 약제배송 이동지연이다. 저장소 출발과 차량기지 인수 사이 GPS 구간만 세고 배차 전 정지는 물류 큐로 둔다.","relations":["process","role","classification"]}
+{"primary":"약제배차 순번대기","text":"동시에 여러 구역이 요청해 급수·보급차 순서를 기다리는 시간이 약제배차 순번대기다. 앞 구역의 보급 완료부터 해당 차량이 배정될 때까지를 배송 이동과 분리해 센다.","relations":["process","part_of","state"]}
+{"primary":"살포액 혼합지연","text":"살포액 혼합지연은 물과 농축액을 섞기 시작한 뒤 탱크 여러 위치의 농도가 허용 오차 안으로 모일 때까지 걸린 처리시간이다. 한 지점의 측정값만으로 혼합 완료를 정하지 않는다.","relations":["process","function","boundary"]}
+{"primary":"혼합비 검수대기","text":"측정값이 나와도 규격확인을 받을 때까지 살포를 늦추는 구간이 혼합비 검수대기다. 농도 측정은 끝났지만 규격 서명이 없는 구간을 화학 혼합이나 살포 반응에 더하지 않는다.","relations":["state","comparison","classification"]}
+{"primary":"약효발현 반응지연","text":"약제가 얼음과 반응해 결합을 약하게 만드는 시간이 약효발현 반응지연이다. 살포 완료 뒤 결빙점과 마찰값이 개선되는 데 걸린 화학·열역학 구간을 별도로 잰다.","relations":["process","contrast","attribute"]}
+{"primary":"약효확인 검사대기","text":"후속마찰 측정이 가능할 때까지 기다리는 시간이 약효확인 검사대기다. 노면은 이미 변했어도 측정차가 도착하지 않은 시간은 약제 반응이 아니라 관측 공백이다.","relations":["process","role","state"]}
+{"primary":"재보급 충전지연","text":"살포차 탱크를 채우고 호스를 분리하는 물리시간이 재보급 충전지연이다. 호스 결합부터 목표량 도달·누설 확인·분리까지의 실제 작업만 포함한다.","relations":["process","part_of","boundary"]}
+{"primary":"약제운영 연표복원","text":"해동·승인·배송·혼합·살포·효과확인을 배열하는 절차가 약제운영 연표복원이다. 로트 해동, 승인, 차량 배정, 배송, 혼합, 살포, 효과확인의 상태 전이를 연결한다.","relations":["process","comparison","classification"]}
+{"primary":"제설차 시동지연","text":"저온에서 엔진·유압·공압이 작업상태에 이르는 시간이 제설차 시동지연이다. 시동 명령 뒤 엔진 회전, 유압, 공압이 모두 작업범위에 안정된 때를 준비 완료로 본다.","relations":["process","state","boundary"]}
+{"primary":"제설차 배정대기","text":"가용차량과 운전자를 비교해 구역을 확정할 때까지의 시간이 제설차 배정대기다. 가용 장비와 자격 운전자의 교집합이 확정될 때까지를 시동·이동 전 자원 의존으로 둔다.","relations":["process","attribute","comparison"]}
+{"primary":"차고출발 이동지연","text":"배정 뒤 차량이 활주로 대기점까지 이동하는 시간이 차고출발 이동지연이다. 배정 확정과 실제 출발을 구별하고 GPS가 대기점을 처음 통과한 때까지를 이동으로 계산한다.","relations":["process","role","classification"]}
+{"primary":"활주로 진입대기","text":"차량은 도착했지만 이착륙 틈과 관제허가를 기다리는 구간이 활주로 진입대기다.","relations":["process","part_of","state"]}
+{"primary":"제설날 전개지연","text":"진입 뒤 날·브러시·송풍기를 작업위치로 만드는 시간이 제설날 전개지연이다. 차량 진입 뒤 날·브러시·송풍기의 위치접점이 작업 상태에 들어올 때까지를 기계 준비로 둔다.","relations":["process","function","boundary"]}
+{"primary":"작업열 형성대기","text":"여러 차량이 안전간격의 대형을 맞출 때까지 시작을 늦추는 시간이 작업열 형성대기다.","relations":["state","comparison","classification"]}
+{"primary":"제설차 고장진단 지연","text":"트립 뒤 유압·구동·제어 원인을 찾는 시간이 제설차 고장진단 지연이다. 트립 자료 수집부터 원인 격리와 수리 항목 확정까지의 실제 기술 판단시간을 센다.","relations":["process","contrast","attribute"]}
+{"primary":"예비차 투입대기","text":"예비차 점검과 운전자 인계를 기다리는 구간이 예비차 투입대기다.","relations":["process","role","state"]}
+{"primary":"장비복귀 냉각지연","text":"작업 뒤 엔진·브러시를 정비온도로 낮추는 시간이 장비복귀 냉각지연이다. 마지막 작업 뒤 엔진·유압유·브러시 온도가 정비 범위에 지속 진입할 때까지를 물리 회복으로 본다.","relations":["process","part_of","boundary"]}
+{"primary":"제설차 사건순서복원","text":"배정·시동·이동·허가·전개·작업을 배열한 것이 제설차 사건순서복원이다.","relations":["process","comparison","classification"]}
+{"primary":"활주로 폐쇄실행 지연","text":"폐쇄결정 뒤 등화·표지·차단이 실제 적용될 때까지의 시간이 활주로 폐쇄실행 지연이다. 결정 시각부터 등화·표지·차단 접점과 무진입 확인이 모두 성립한 때까지를 잰다.","relations":["process","state","boundary"]}
+{"primary":"활주로 폐쇄승인 대기","text":"오염은 확인됐지만 운항·관제 책임자의 결정을 기다리는 구간이 활주로 폐쇄승인 대기다.","relations":["process","attribute","comparison"]}
+{"primary":"폐쇄정보 전파지연","text":"승인된 상태가 관제·항공사·조업사 시스템에 퍼지는 시간이 폐쇄정보 전파지연이다. 권한 상태변경과 각 기관 수신확인 사이를 비교해 물리 폐쇄와 정보 전달을 분리한다.","relations":["process","role","classification"]}
+{"primary":"폐쇄공지 발행대기","text":"노탐 문구와 종료예정을 검토하는 동안 공표가 늦는 시간이 폐쇄공지 발행대기다.","relations":["process","part_of","state"]}
+{"primary":"재개방 현장준비 지연","text":"표지제거·등화복원·차량철수에 걸리는 시간이 재개방 현장준비 지연이다. 차량 철수, 표지 제거, 등화 복원, 최종 무장애 확인에 실제 걸린 시간을 합산한다.","relations":["process","function","boundary"]}
+{"primary":"재개방 검사대기","text":"작업은 끝났지만 마찰·오염 검사차례를 기다리는 구간이 재개방 검사대기다.","relations":["state","comparison","classification"]}
+{"primary":"개방승인 처리지연","text":"검사합격 뒤 책임자가 운항상태를 바꾸는 시간이 개방승인 처리지연이다. 검사 합격자료가 완성된 뒤 책임자의 권한 변경이 끝날 때까지를 행정 의존으로 둔다.","relations":["process","contrast","attribute"]}
+{"primary":"항공사 수신대기","text":"공항이 열렸지만 운항사가 새 상태를 확인할 때까지의 시간이 항공사 수신대기다.","relations":["process","role","state"]}
+{"primary":"첫사용 이동지연","text":"개방 뒤 대기항공기가 활주로에 들어와 이착륙하기까지의 시간이 첫사용 이동지연이다. 개방 효력 뒤 첫 항공기가 활주로 진입접점을 통과할 때까지를 수요·관제 반응시간으로 본다.","relations":["process","part_of","boundary"]}
+{"primary":"폐쇄회차 연표복원","text":"결정·실행·공지·작업·검사·승인·첫사용을 배열하는 절차가 폐쇄회차 연표복원이다.","relations":["process","comparison","classification"]}
+{"primary":"제설차 주행지연","text":"차량이 지정경로를 실제 청소하는 물리시간이 제설차 주행지연이다. 작업구간 진입부터 이탈까지 GPS와 구동접점으로 실제 청소한 시간을 측정한다.","relations":["process","state","boundary"]}
+{"primary":"제설경로 승인대기","text":"강설·바람·운항을 비교해 경로판을 확정하는 시간이 제설경로 승인대기다.","relations":["process","attribute","comparison"]}
+{"primary":"적설밀기 반응지연","text":"날이 지나간 뒤 잔설과 눈보라가 가라앉는 시간이 적설밀기 반응지연이다. 날 통과 뒤 부유눈과 잔설 깊이가 안정될 때까지를 차량 주행과 다른 후속 물리과정으로 둔다.","relations":["process","role","classification"]}
+{"primary":"후속브러시 순번대기","text":"선행차량이 구간을 비울 때까지 브러시차가 기다리는 시간이 후속브러시 순번대기다.","relations":["process","part_of","state"]}
+{"primary":"송풍효과 후행지연","text":"송풍 뒤 미세눈이 경계 밖으로 이동하는 시간이 송풍효과 후행지연이다. 송풍기 정지 뒤 미세눈이 활주로 경계 밖으로 이동한 때까지를 후행 효과로 계산한다.","relations":["process","function","boundary"]}
+{"primary":"작업완료 확인대기","text":"마지막 차량이 나가도 영상·순찰 결과를 기다리는 구간이 작업완료 확인대기다.","relations":["state","comparison","classification"]}
+{"primary":"측풍재퇴적 지연","text":"청소 뒤 바람이 눈을 다시 옮겨 수막을 만드는 시간이 측풍재퇴적 지연이다. 청소 완료부터 풍향에 따라 눈이 다시 임계 깊이에 이른 때까지를 자연 재발 과정으로 본다.","relations":["process","contrast","attribute"]}
+{"primary":"재작업 결정대기","text":"재퇴적량과 운항여유를 검토하는 시간이 재작업 결정대기다.","relations":["process","role","state"]}
+{"primary":"차량대형 재구성지연","text":"고장차를 빼고 안전간격을 다시 맞추는 시간이 차량대형 재구성지연이다. 고장차 이탈 뒤 새 선두·간격·통신채널이 확정될 때까지의 현장 조정시간을 센다.","relations":["process","part_of","boundary"]}
+{"primary":"제설작업 연표재구성","text":"경로승인·주행·후속작업·검사·재작업을 배열하는 일이 제설작업 연표재구성이다.","relations":["process","comparison","classification"]}
+{"primary":"제빙액 분사응답 지연","text":"펌프기동 뒤 노즐압력과 균일분사가 형성되는 시간이 제빙액 분사응답 지연이다. 펌프 전류가 오른 뒤 모든 노즐 압력과 유량이 허용 편차에 든 때까지를 기계 반응으로 잰다.","relations":["process","state","boundary"]}
+{"primary":"제빙살포 허가대기","text":"풍향·환경·활주로 점유를 확인하는 구간이 제빙살포 허가대기다.","relations":["process","attribute","comparison"]}
+{"primary":"약제확산 반응지연","text":"살포액이 노면막에 퍼져 결빙점을 낮추는 시간이 약제확산 반응지연이다. 노면에 닿은 약액이 수막과 섞여 농도가 균일해질 때까지를 화학·확산 구간으로 둔다.","relations":["process","role","classification"]}
+{"primary":"살포차 진입대기","text":"약제차가 관제의 작업틈을 기다리는 시간이 살포차 진입대기다.","relations":["process","part_of","state"]}
+{"primary":"살포량 계산지연","text":"속도·폭·농도를 반영해 구역별 양을 산출하는 시간이 살포량 계산지연이다. 속도·폭·온도·예상강설 입력이 고정된 뒤 구역 처방량이 산출될 때까지를 계산시간으로 본다.","relations":["process","function","boundary"]}
+{"primary":"추가살포 승인대기","text":"첫 회차 효과와 환경상한을 검토하는 시간이 추가살포 승인대기다.","relations":["state","comparison","classification"]}
+{"primary":"약제잔류 소멸지연","text":"강수와 차량통행으로 유효농도가 낮아지는 물리시간이 약제잔류 소멸지연이다. 살포 뒤 강수와 통행으로 유효농도가 기준 아래에 지속 내려갈 때까지를 물리 소멸로 센다.","relations":["process","contrast","attribute"]}
+{"primary":"잔류농도 결과대기","text":"노면시료 분석이 끝날 때까지 다음 살포를 미루는 시간이 잔류농도 결과대기다.","relations":["process","role","state"]}
+{"primary":"살포장비 세척지연","text":"작업 뒤 탱크·노즐을 세척해 부식위험을 없애는 시간이 살포장비 세척지연이다. 탱크 배출, 세척수 순환, 노즐 확인, 폐수 인계에 실제 투입된 시간만 포함한다.","relations":["process","part_of","boundary"]}
+{"primary":"제빙연표 복원규칙","text":"허가·진입·분사·반응·검사·재살포를 배열하는 규칙이 제빙연표 복원규칙이다.","relations":["process","comparison","classification"]}
+{"primary":"마찰차 가속지연","text":"검사차가 규정측정 속도에 이르는 시간이 마찰차 가속지연이다. 측정구간 진입 뒤 규정속도와 안정된 제동 조건에 도달할 때까지를 주행 준비로 분리한다.","relations":["process","state","boundary"]}
+{"primary":"마찰검사 진입대기","text":"활주로가 비고 관제허가가 날 때까지 기다리는 구간이 마찰검사 진입대기다.","relations":["process","attribute","comparison"]}
+{"primary":"마찰센서 처리지연","text":"바퀴힘과 속도를 계산해 계수를 만드는 시간이 마찰센서 처리지연이다. 힘·속도 원시표본 수집이 끝난 뒤 필터와 계수 계산이 완료되는 구간을 처리시간으로 둔다.","relations":["process","role","classification"]}
+{"primary":"마찰자료 검수대기","text":"이상치·속도편차·구간조건을 확인하는 시간이 마찰자료 검수대기다.","relations":["process","part_of","state"]}
+{"primary":"노면회복 물리지연","text":"제설·약제 뒤 얼음막이 사라져 제동성이 좋아지는 시간이 노면회복 물리지연이다. 제설·약제 이후 얼음 두께와 마찰이 기준에 지속 진입할 때까지를 실제 상태변화로 본다.","relations":["process","function","boundary"]}
+{"primary":"회복판정 승인대기","text":"값은 충족됐지만 운영책임자가 코드변경을 검토하는 구간이 회복판정 승인대기다.","relations":["state","comparison","classification"]}
+{"primary":"재측정 이동지연","text":"의심구간으로 돌아가 새 표본을 얻는 시간이 재측정 이동지연이다. 재검 지시 뒤 검사차가 의심 좌표에 돌아와 첫 유효 주행을 시작할 때까지를 측정한다.","relations":["process","contrast","attribute"]}
+{"primary":"재검사 순번대기","text":"다른 활주로 우선검사가 끝날 때까지 기다리는 시간이 재검사 순번대기다.","relations":["process","role","state"]}
+{"primary":"제동보고 관측지연","text":"항공기가 실제 제동한 뒤 조종사가 보고할 때까지의 시간이 제동보고 관측지연이다. 항공기 접지와 조종사 발화 사이를 재어 실제 체감 관측과 통신 보고를 구별한다.","relations":["process","part_of","boundary"]}
+{"primary":"마찰사건 순서복원","text":"표면변화·측정·처리·검수·승인을 배열하는 절차가 마찰사건 순서복원이다.","relations":["process","comparison","classification"]}
+{"primary":"순찰구간 이동지연","text":"검사차가 활주로 각 지점에 도달하는 물리시간이 순찰구간 이동지연이다. 각 측정점의 이탈·도착 접점으로 구간별 이동을 계산해 검사 작업시간과 섞지 않는다.","relations":["process","state","boundary"]}
+{"primary":"순찰배정 순번대기","text":"여러 검사요청의 우선순위를 정할 때까지의 시간이 순찰배정 순번대기다.","relations":["process","attribute","comparison"]}
+{"primary":"오염깊이 측정지연","text":"여러 지점에서 눈·슬러시 깊이를 재는 시간이 오염깊이 측정지연이다. 탐침 배치부터 여러 지점 표본과 대표값 확정까지의 실제 현장 측정만 센다.","relations":["process","role","classification"]}
+{"primary":"검사표 입력대기","text":"현장관측 뒤 안전구역에 돌아와 단말을 쓸 때까지의 시간이 검사표 입력대기다.","relations":["process","part_of","state"]}
+{"primary":"영상업로드 전송지연","text":"촬영자료가 서버에 도착하는 통신시간이 영상업로드 전송지연이다. 촬영 원본시각과 서버 수신·해시검증의 차이를 통신·적재 지연으로 기록한다.","relations":["process","function","boundary"]}
+{"primary":"검사결과 검토대기","text":"사진·마찰·깊이를 함께 판단하는 구간이 검사결과 검토대기다.","relations":["state","comparison","classification"]}
+{"primary":"재순찰 발생지연","text":"바람이나 강설로 상태가 다시 나빠져 검사가 필요해지는 시간이 재순찰 발생지연이다. 첫 합격 뒤 강설·바람으로 노면이 다시 임계에 이를 때까지를 자연 상태 재발로 본다.","relations":["process","contrast","attribute"]}
+{"primary":"재순찰 승인대기","text":"운항간격과 위험도를 검토해 재진입을 정하는 시간이 재순찰 승인대기다.","relations":["process","role","state"]}
+{"primary":"검사차량 철수지연","text":"마지막 지점 뒤 활주로 경계를 완전히 벗어나는 시간이 검사차량 철수지연이다. 마지막 표본 뒤 차량이 활주로 지오펜스를 벗어나고 관제 확인이 끝날 때까지를 센다.","relations":["process","part_of","boundary"]}
+{"primary":"활주로검사 연표복원","text":"배정·진입·측정·철수·입력·승인을 배열한 것이 활주로검사 연표복원이다.","relations":["process","comparison","classification"]}
+{"primary":"관제지령 전달지연","text":"활주로 상태결정이 관제석과 항공기에 전달되는 시간이 관제지령 전달지연이다. 상태 결정의 권한로그부터 조종사 복창까지를 전파·수신·인지 단계로 나눈다.","relations":["process","state","boundary"]}
+{"primary":"관제조정 협의대기","text":"출발·도착·제설 우선순위를 합의하는 구간이 관제조정 협의대기다.","relations":["process","attribute","comparison"]}
+{"primary":"착륙간격 회복지연","text":"제한운항 뒤 항공기 간격이 정상흐름에 맞춰지는 시간이 착륙간격 회복지연이다. 제한 해제 뒤 연속 항공기의 실제 간격이 운영 기준에 안정될 때까지를 흐름 회복으로 본다.","relations":["process","role","classification"]}
+{"primary":"슬롯재배정 처리대기","text":"지연편을 새 순서에 넣는 계산·승인시간이 슬롯재배정 처리대기다.","relations":["process","part_of","state"]}
+{"primary":"교신응답 전파지연","text":"관제호출 뒤 조종사의 수신·응답이 돌아오는 시간이 교신응답 전파지연이다. 관제 호출 발신과 조종사 수신·복창 사이를 나눠 전파와 사람 응답이 더한 시간을 계산한다.","relations":["process","function","boundary"]}
+{"primary":"무응답 확인대기","text":"다른 주파수와 데이터링크를 시험하는 구간이 무응답 확인대기다.","relations":["state","comparison","classification"]}
+{"primary":"활주로변경 적용지연","text":"변경지시 뒤 항공기 항로·지상동선이 실제 바뀌는 시간이 활주로변경 적용지연이다. 지시 이후 비행경로와 지상유도가 새 활주로 구성으로 실제 전환될 때까지를 잰다.","relations":["process","contrast","attribute"]}
+{"primary":"활주로변경 승인대기","text":"바람·제설·계기절차를 검토하는 시간이 활주로변경 승인대기다.","relations":["process","role","state"]}
+{"primary":"관제회복 관측지연","text":"제한해제 뒤 흐름이 안정됐음을 확인하는 시간이 관제회복 관측지연이다. 운항 흐름이 이미 좋아진 뒤 운영자가 안정 판정을 내릴 때까지의 관찰창을 별도로 둔다.","relations":["process","part_of","boundary"]}
+{"primary":"관제사건 순서재구성","text":"상태결정·협의·지령·응답·운항효과를 배열하는 절차가 관제사건 순서재구성이다.","relations":["process","comparison","classification"]}
+{"primary":"항공기 제빙처리 지연","text":"약제를 분사해 날개오염을 제거·보호하는 물리시간이 항공기 제빙처리 지연이다. 차량 접촉부터 오염 제거·보호액 도포·최종 확인까지의 물리 작업시간을 센다.","relations":["process","state","boundary"]}
+{"primary":"제빙대기열 순번대기","text":"앞 항공기의 작업이 끝날 때까지 기다리는 시간이 제빙대기열 순번대기다.","relations":["process","attribute","comparison"]}
+{"primary":"푸시백 이동지연","text":"승인 뒤 항공기가 주기장에서 유도로로 이동하는 시간이 푸시백 이동지연이다. 승인과 견인차 출발을 구별하고 주기장 블록아웃부터 유도로 인계까지를 이동으로 본다.","relations":["process","role","classification"]}
+{"primary":"푸시백 승인대기","text":"유도로·제설차·견인차 상태를 조정하는 구간이 푸시백 승인대기다.","relations":["process","part_of","state"]}
+{"primary":"이륙대기 연료지연","text":"장시간 대기 중 연료·제빙보호시간이 줄어 재처리가 필요한 상태가 되는 시간이 이륙대기 연료지연이다. 대기 시작부터 연료·보호시간이 재처리 임계에 이르는 자연 소모를 관제 큐와 분리한다.","relations":["process","function","boundary"]}
+{"primary":"출발순서 결정대기","text":"슬롯·기체상태·승객연결을 검토하는 시간이 출발순서 결정대기다.","relations":["state","comparison","classification"]}
+{"primary":"회항 비행지연","text":"회항결정 뒤 대체공항에 도착하는 물리시간이 회항 비행지연이다. 결정 효력 뒤 항로 변경부터 대체공항 착륙까지의 실제 비행구간을 처리 지연과 나눈다.","relations":["process","contrast","attribute"]}
+{"primary":"회항수용 승인대기","text":"대체공항 슬롯과 지상조업 확인을 기다리는 구간이 회항수용 승인대기다.","relations":["process","role","state"]}
+{"primary":"도착편 지상대기 지연","text":"착륙 뒤 주기장이나 유도로가 열릴 때까지의 시간이 도착편 지상대기 지연이다. 착륙 뒤 주기장 배정과 실제 도킹 사이를 재어 활주로 사용시간과 구별한다.","relations":["process","part_of","boundary"]}
+{"primary":"항공기운영 연표복원","text":"제빙·승인·푸시백·대기·이륙·회항을 배열하는 작업이 항공기운영 연표복원이다.","relations":["process","comparison","classification"]}
+{"primary":"유도로 제설이동 지연","text":"제설차가 활주로에서 유도로 작업점으로 옮겨가는 시간이 유도로 제설이동 지연이다. 활주로 작업 종료지점부터 유도로 진입까지 GPS로 재어 장비 설정 전환과 따로 기록한다.","relations":["process","state","boundary"]}
+{"primary":"유도로 폐쇄승인 대기","text":"항공기 우회와 견인계획을 확인하는 구간이 유도로 폐쇄승인 대기다.","relations":["process","attribute","comparison"]}
+{"primary":"주기장 제설처리 지연","text":"주기항공기와 장비 사이 눈을 제거하는 시간이 주기장 제설처리 지연이다. 항공기·장비 안전구역 설정부터 눈 반출과 표면 확인까지의 실제 작업을 포함한다.","relations":["process","role","classification"]}
+{"primary":"주기장 작업순번대기","text":"항공기 이동과 지상조업 종료를 기다리는 시간이 주기장 작업순번대기다.","relations":["process","part_of","state"]}
+{"primary":"유도등 노출지연","text":"적설제거 뒤 등화가 충분히 보일 때까지 잔설을 치우는 시간이 유도등 노출지연이다. 제설날 통과 뒤 잔설 제거와 광도 회복이 완료될 때까지를 시각적 기능 회복으로 둔다.","relations":["process","function","boundary"]}
+{"primary":"등화시험 결과대기","text":"조도·회로검사 승인을 기다리는 구간이 등화시험 결과대기다.","relations":["state","comparison","classification"]}
+{"primary":"유도로 마찰회복 지연","text":"제설·약제 뒤 노면제동이 정상으로 돌아오는 시간이 유도로 마찰회복 지연이다. 약제 살포 뒤 측정 마찰이 기준에 지속 도달한 때까지를 노면 상태변화로 센다.","relations":["process","contrast","attribute"]}
+{"primary":"유도로 개방검토 대기","text":"검사결과와 교통흐름을 검토하는 시간이 유도로 개방검토 대기다.","relations":["process","role","state"]}
+{"primary":"견인경로 이동지연","text":"정리된 경로로 항공기를 안전지점까지 끄는 시간이 견인경로 이동지연이다. 견인 결합 후 출발부터 안전지점 정차·분리까지의 물리 이동시간을 GPS로 계산한다.","relations":["process","part_of","boundary"]}
+{"primary":"지상구역 연표복원","text":"폐쇄·작업·시험·승인·개방을 배열한 것이 지상구역 연표복원이다.","relations":["process","comparison","classification"]}
+{"primary":"제설인력 출근이동 지연","text":"비상호출 뒤 작업자가 공항에 도착하는 시간이 제설인력 출근이동 지연이다. 비상호출 수신부터 공항 출입게이트 도착까지를 사람 이동으로 두고 소집 대기와 구별한다.","relations":["process","state","boundary"]}
+{"primary":"제설인력 배치대기","text":"자격·교대·구역위험을 검토하는 구간이 제설인력 배치대기다.","relations":["process","attribute","comparison"]}
+{"primary":"공항제설 교대인계 처리지연","text":"장비·노면·약제상태를 대조하고 서명하는 시간이 공항제설 교대인계 처리지연이다. 앞뒤 조가 장비 상태·노면·약제량을 실제 대조하고 서명한 구간만 처리시간으로 센다.","relations":["process","role","classification"]}
+{"primary":"교대조 투입대기","text":"앞 조가 차량을 반납하고 위험을 설명할 때까지의 시간이 교대조 투입대기다.","relations":["process","part_of","state"]}
+{"primary":"장비수리 작업지연","text":"고장부품을 교체·조정·시험하는 물리시간이 장비수리 작업지연이다. 원인 확정 뒤 부품 분해·교체·조정·부하시험에 실제 투입된 시간을 자재 대기에서 나눈다.","relations":["process","function","boundary"]}
+{"primary":"부품조달 승인대기","text":"규격품·비용·긴급구매 결정을 기다리는 시간이 부품조달 승인대기다.","relations":["state","comparison","classification"]}
+{"primary":"연료보급 처리지연","text":"제설차 탱크를 채우고 누설을 확인하는 시간이 연료보급 처리지연이다. 호스 연결부터 목표량·누설 확인·분리까지를 작업으로 두고 급유차 순번은 별도 큐다.","relations":["process","contrast","attribute"]}
+{"primary":"보급설비 순번대기","text":"여러 차량이 공용주유소 차례를 기다리는 시간이 보급설비 순번대기다.","relations":["process","role","state"]}
+{"primary":"운전자 휴식회복 지연","text":"장시간 작업 뒤 안전한 집중력이 돌아오는 시간이 운전자 휴식회복 지연이다. 작업 종료 뒤 규정 휴식과 주의력 확인이 모두 끝날 때까지를 생리·안전 회복으로 본다.","relations":["process","part_of","boundary"]}
+{"primary":"인력장비 연표복원","text":"호출·도착·배치·인계·정비·투입을 배열하는 절차가 인력장비 연표복원이다.","relations":["process","comparison","classification"]}
+{"primary":"노탐전문 전송지연","text":"발행된 공지가 항공사·관제 데이터망에 도착하는 시간이 노탐전문 전송지연이다. 권한서버 발행과 각 항공망 수신확인 사이를 재어 문안 작성시간과 통신을 구별한다.","relations":["process","state","boundary"]}
+{"primary":"노탐문구 검토대기","text":"활주로·종료예정·거리정보를 승인하는 구간이 노탐문구 검토대기다.","relations":["process","attribute","comparison"]}
+{"primary":"상태코드 반영지연","text":"검사승인 뒤 운영DB와 외보드가 새 코드를 표시하는 시간이 상태코드 반영지연이다. 검사 승인 뒤 운영DB 커밋과 외부 보드 갱신이 끝날 때까지를 시스템 처리로 둔다.","relations":["process","role","classification"]}
+{"primary":"상태코드 승인대기","text":"측정값과 보고문구를 책임자가 확인하는 시간이 상태코드 승인대기다.","relations":["process","part_of","state"]}
+{"primary":"조업사 통보지연","text":"공항상태가 지상조업사 각 단말에 전달되는 시간이 조업사 통보지연이다. 공항상태 배포부터 각 조업사 단말의 수신확인까지를 기관별로 계산한다.","relations":["process","function","boundary"]}
+{"primary":"항공사 확인응답 대기","text":"공지수신 확인이 돌아올 때까지의 시간이 항공사 확인응답 대기다.","relations":["state","comparison","classification"]}
+{"primary":"정정노탐 처리지연","text":"오류를 고쳐 새 판을 발행·대체하는 시간이 정정노탐 처리지연이다. 오류 접수, 문안 수정, 책임 승인, 새 판 발행·대체에 실제 걸린 시간을 센다.","relations":["process","contrast","attribute"]}
+{"primary":"정정근거 검수대기","text":"현장자료와 이전판 영향을 확인하는 구간이 정정근거 검수대기다.","relations":["process","role","state"]}
+{"primary":"해제정보 전파지연","text":"운항제한 해제가 외부시스템에 퍼지는 시간이 해제정보 전파지연이다. 제한 해제 효력과 외부 시스템 갱신을 나눠 늦은 표시를 운항 제한 지속으로 오인하지 않는다.","relations":["process","part_of","boundary"]}
+{"primary":"운항정보 연표복원","text":"현장판정·승인·발행·수신·정정을 배열한 것이 운항정보 연표복원이다.","relations":["process","comparison","classification"]}
+{"primary":"제설후 노면건조 지연","text":"눈·약제가 제거된 뒤 수막이 마르는 물리시간이 제설후 노면건조 지연이다. 마지막 약제·눈 제거 뒤 수막 센서가 건조 기준에 지속 진입할 때까지를 물리 과정으로 본다.","relations":["process","state","boundary"]}
+{"primary":"운항재개 승인대기","text":"표면·등화·차량철수 자료를 검토하는 구간이 운항재개 승인대기다.","relations":["process","attribute","comparison"]}
+{"primary":"지연편 순환회복 지연","text":"밀린 항공기와 승무·기재가 정상순환으로 돌아오는 시간이 지연편 순환회복 지연이다. 항공기·승무·슬롯의 누적 불일치가 해소되고 정상 회차가 연속 유지될 때까지를 센다.","relations":["process","role","classification"]}
+{"primary":"회복편성 결정대기","text":"취소·증편·교체안을 합의하는 시간이 회복편성 결정대기다.","relations":["process","part_of","state"]}
+{"primary":"승객재배치 처리지연","text":"좌석·수하물·연결편을 다시 배정하는 시간이 승객재배치 처리지연이다. 영향 승객 확정부터 좌석·수하물·연결편 배정과 통지 완료까지의 업무시간을 계산한다.","relations":["process","function","boundary"]}
+{"primary":"재배치 안내승인 대기","text":"보상·출발정보 문구를 검토하는 구간이 재배치 안내승인 대기다.","relations":["state","comparison","classification"]}
+{"primary":"장비상태 회복지연","text":"제설 뒤 차량·등화·센서가 정상대기 상태로 돌아오는 시간이 장비상태 회복지연이다. 제설 종료 뒤 차량 정비·등화 복원·센서 확인이 모두 정상대기 상태에 든 때까지를 둔다.","relations":["process","contrast","attribute"]}
+{"primary":"사후검사 순번대기","text":"여러 설비의 정기점검 차례를 기다리는 시간이 사후검사 순번대기다.","relations":["process","role","state"]}
+{"primary":"정상운항 관측지연","text":"제한해제 뒤 지연률과 처리량이 기준으로 내려오는 시간이 정상운항 관측지연이다. 실제 처리량과 지연률이 기준에 든 뒤 충분한 관찰창을 거쳐 운영자가 회복을 확정한다.","relations":["process","part_of","boundary"]}
+{"primary":"공항회복 연표재구성","text":"제설완료·검사·승인·첫운항·편성회복을 배열하는 작업이 공항회복 연표재구성이다.","relations":["process","comparison","classification"]}

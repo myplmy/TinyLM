@@ -1,0 +1,150 @@
+{"primary":"선박접안 예선작업 부분겹침","text":"예선지원 후반과 안벽 접안 초반이 함께 진행되면 선박접안 예선작업 부분겹침이다. 예선줄이 유지된 구간과 첫 계류줄 작업을 교차시켜 겹친 시작·종료점을 각각 보존한다.","relations":["process","state","boundary"]}
+{"primary":"두 예선지원 완전동시","text":"두 예선지원 완전동시는 두 예선이 추진 지원을 제공하기 시작한 때와 철수한 때가 모두 일치한 상태다. 준비나 대기만 겹친 시간은 비교에서 뺀다.","relations":["process","attribute","comparison"]}
+{"primary":"접안구간내 계류작업 포함","text":"긴 접안작업 안에 계류줄 고정이 전부 들어가면 접안구간내 계류작업 포함이다. 계류의 시작과 끝이 모두 접안 경계 안에 있는지 확인하며 끝점만 닿는 경우는 포함에서 제외한다.","relations":["classification","process","role"]}
+{"primary":"이전선박 이안후 접안무겹침","text":"이전 선박이 안벽을 떠난 뒤 새 선박이 들어오면 이전선박 이안후 접안무겹침이다. 안벽 점유 센서에서 두 구간 사이 빈 시간이 양수인지 확인해 분 단위 반올림의 접촉을 바로잡는다.","relations":["part_of","process","state"]}
+{"primary":"이안종료 접안시작 접점","text":"이전 이안 종료와 새 접안 시작이 같은 이안종료 접안시작 접점은 공통시간이 없다. 두 구간의 종료와 시작이 같아도 양의 길이를 가진 교집합이 없으므로 동시 작업량은 영이다.","relations":["boundary","function","process"]}
+{"primary":"도선작업 선행겹침","text":"도선작업이 먼저 시작해 예선지원 초반까지 이어지면 도선작업 선행겹침이다. 도선 승선부터 예선줄 장력 발생까지의 교차구간과 도선만 진행된 앞부분을 따로 보존한다.","relations":["classification","comparison","state"]}
+{"primary":"계류작업 후행겹침","text":"접안 중 계류가 시작되어 선체정지 뒤까지 이어지면 계류작업 후행겹침이다. 계류 시작은 접안 끝보다 앞서고 계류 종료는 뒤라는 두 부등식을 함께 만족해야 한다.","relations":["attribute","contrast","process"]}
+{"primary":"선석작업 동시성구별","text":"같은 분 기록 대신 각 선박의 실제 접안구간을 보는 선석작업 동시성구별이 필요하다. AIS 위치와 계류 접점을 초 단위로 맞춰 같은 분에 기록된 순차 작업을 동시로 세지 않는다.","relations":["process","role","state"]}
+{"primary":"접안지원 공통작업시간","text":"접안지원 공통작업시간은 도선, 예선, 계류 작업이 실제로 동시에 수행된 부분의 길이다. 세 구간의 교집합이 없으면 값은 0이며 준비 대기는 제외한다.","relations":["boundary","part_of","process"]}
+{"primary":"접안구간 네접점검증","text":"두 선박 작업의 시작·종료를 확인하는 접안구간 네접점검증으로 부분겹침을 가른다. 가장 늦은 시작이 가장 이른 종료보다 앞서는지 계산한 뒤에만 양의 겹침을 인정한다.","relations":["attribute","comparison","process"]}
+{"primary":"안벽크레인 준비교차","text":"크레인 안전점검 후반과 붐 위치조정 초반이 겹치면 안벽크레인 준비교차다. 안전점검이 끝나기 전 허용된 위치조정만 겹침으로 두고 실제 인양은 점검 완료 뒤로 제한한다.","relations":["process","state","boundary"]}
+{"primary":"두 크레인 하역완전동시","text":"두 크레인 하역완전동시는 두 안벽 크레인의 첫 유효 인양과 마지막 적치 시각이 각각 일치하는 상태다. 공회전 시간만 함께한 경우는 세지 않는다.","relations":["process","attribute","comparison"]}
+{"primary":"선박작업내 크레인가동 포함","text":"긴 선박작업 구간 안에 한 크레인의 가동이 모두 들어가면 선박작업내 크레인가동 포함이다. 크레인 전원 투입부터 정지까지가 선박 작업창을 벗어나지 않는지 장치로그로 검증한다.","relations":["classification","process","role"]}
+{"primary":"크레인정비후 하역무겹침","text":"정비와 기능시험이 끝난 뒤 하역을 시작하면 크레인정비후 하역무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"준비종료 첫인양 접점","text":"크레인 준비 종료와 첫 컨테이너 인양이 같은 준비종료 첫인양 접점은 겹침이 아니다. 경계 시각을 공유하지만 준비와 인양이 이어질 뿐 병렬 실행된 순간은 없다고 판정한다.","relations":["boundary","function","process"]}
+{"primary":"붐전개 선행겹침","text":"붐전개가 먼저 시작해 해치개방 초반까지 이어지면 붐전개 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"트위스트록 해제후행겹침","text":"하역 중 트위스트록 해제가 시작되어 인양 뒤까지 이어지면 트위스트록 해제후행겹침이다. 해제조가 인양 시작 뒤에도 남아 있었다면 안전구역 이탈까지를 후행 부분으로 포함한다.","relations":["attribute","contrast","process"]}
+{"primary":"크레인가동 동시성판정","text":"크레인가동 동시성판정은 분 단위 상태표가 아니라 각 크레인의 모터 접점으로 만든 운전 구간을 대조해 완전 동시와 부분 중첩을 구분한다.","relations":["process","role","state"]}
+{"primary":"크레인협업 공통가동시간","text":"인접 크레인이 함께 가동된 교집합을 크레인협업 공통가동시간으로 계산한다. 각 크레인의 실제 부하 인양구간을 교차해 단순 공회전이 겹친 시간은 협업량에서 뺀다.","relations":["boundary","part_of","process"]}
+{"primary":"크레인작업 네경계대조","text":"각 크레인의 시작과 종료를 확인하는 크레인작업 네경계대조로 시간관계를 검증한다.","relations":["attribute","comparison","process"]}
+{"primary":"해치개방 안전점검교차","text":"해치개방 후반과 화물창 안전점검 초반이 겹치면 해치개방 안전점검교차다. 개방이 완전히 끝나기 전에 가능한 외곽 점검과 완료 후 내부 진입을 서로 다른 구간으로 둔다.","relations":["process","state","boundary"]}
+{"primary":"양현해치 개방완전동시","text":"양현해치 개방완전동시는 좌현과 우현 해치의 개방 개시점 및 폐쇄 완료점이 각각 같은 관계다. 한쪽 해치의 경계가 다르면 부분 겹침이다.","relations":["process","attribute","comparison"]}
+{"primary":"화물창작업내 환기포함","text":"화물창작업내 환기포함은 환기팬의 기동부터 정지까지가 화물창 준비 시작 이후와 종료 이전에 모두 놓인 관계다. 팬 경계가 준비창 밖이면 완전 포함이 아니다.","relations":["classification","process","role"]}
+{"primary":"해치폐쇄후 출항준비 무겹침","text":"해치가 닫힌 뒤 출항준비를 시작하면 해치폐쇄후 출항준비 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"해치개방 종료검사 접점","text":"개방 종료와 내부검사 시작이 같은 해치개방 종료검사 접점은 중첩이 아니다. 검사자가 진입한 첫 시각이 개방 완료와 같아도 두 활동의 지속구간은 포개지지 않는다.","relations":["boundary","function","process"]}
+{"primary":"환기운전 선행겹침","text":"환기가 먼저 시작해 해치작업 초반까지 이어지면 환기운전 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"해치검사 후행겹침","text":"개방 중 검사가 시작되어 개방 종료 뒤까지 이어지면 해치검사 후행겹침이다. 검사 착수는 개방 중이고 검사 완료는 개방 뒤이므로 교집합과 단독 후행부를 나눠 기록한다.","relations":["attribute","contrast","process"]}
+{"primary":"화물창 절차동시성","text":"같은 분 기록이라도 실제 구간을 비교하는 화물창 절차동시성으로 완전동시 여부를 정한다.","relations":["process","role","state"]}
+{"primary":"해치준비 공통수행시간","text":"개방·환기·검사가 함께 진행된 교집합이 해치준비 공통수행시간이다. 개방·환기·검사가 모두 활성인 구간만 골라 두 작업만 겹친 시간과 혼합하지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"해치작업 네접점증거","text":"해치작업 네접점증거는 두 작업의 개시·완료 시각 네 값을 나란히 놓고 한 구간의 끝이 다른 구간의 시작보다 늦은지 판정한다. 어느 한쪽이 전부 포함되지 않는다면 부분겹침으로 확정한다.","relations":["attribute","comparison","process"]}
+{"primary":"컨테이너 인양교차","text":"첫 상자 인양 후반과 다음 상자 고정해제 초반이 겹치면 컨테이너 인양교차다. 앞 상자의 인양 후반과 다음 상자의 잠금 해제가 안전상 허용된 범위에서만 병렬로 진행된다.","relations":["process","state","boundary"]}
+{"primary":"두 베이 하역완전동시","text":"두 베이 하역완전동시는 두 선창에서 실제 하역을 연 때와 닫은 때가 모두 같은 관계다. 작업 구간의 일부만 겹치면 완전동시가 아니다.","relations":["process","attribute","comparison"]}
+{"primary":"선박하역내 냉동화물 포함","text":"긴 선박하역 구간에 냉동컨테이너 처리가 모두 들어가면 선박하역내 냉동화물 포함이다. 냉동상자 확인 작업의 양 끝이 전체 하역창 안에 들어오는지 상자 식별자로 추적한다.","relations":["classification","process","role"]}
+{"primary":"수입하역후 수출적재 무겹침","text":"수입상자 하역이 끝난 뒤 수출적재를 시작하면 수입하역후 수출적재 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"하역종료 적재시작 접점","text":"마지막 하역 종료와 첫 적재 시작이 같은 하역종료 적재시작 접점은 중첩이 아니다. 마지막 상자가 안벽에 놓인 순간과 첫 적재 인양이 같아도 지속시간을 공유하지 않는다.","relations":["boundary","function","process"]}
+{"primary":"고정해제 선행겹침","text":"고정해제가 먼저 시작해 인양 초반까지 이어지면 고정해제 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"검수작업 후행겹침","text":"인양 중 검수가 시작되어 안벽인계 뒤까지 이어지면 검수작업 후행겹침이다. 검수는 인양 후반에 시작해 인계가 끝난 뒤 서류 확인까지 이어지므로 뒷부분을 별도 표시한다.","relations":["attribute","contrast","process"]}
+{"primary":"하역회차 동시성구별","text":"같은 분에 처리된 상자의 실제 인양구간을 보는 하역회차 동시성구별이 필요하다.","relations":["process","role","state"]}
+{"primary":"선박하역 공통작업량","text":"두 작업조가 함께 하역한 교집합만 잰 시간이 선박하역 공통작업량이다. 두 조의 작업자 로그인만 아니라 실제 인양 접점이 동시에 열린 시간을 사용해 협업량을 계산한다.","relations":["boundary","part_of","process"]}
+{"primary":"컨테이너하역 네경계대조","text":"두 하역구간의 시작과 종료를 확인하는 컨테이너하역 네경계대조로 관계를 판정한다.","relations":["attribute","comparison","process"]}
+{"primary":"야드트랙터 인수교차","text":"안벽 인수 후반과 야드트랙터 출발 초반이 겹치면 야드트랙터 인수교차다. 상자 잠금 확인이 끝나기 전 출발 준비가 시작된 구간과 실제 이동 구간을 구별한다.","relations":["process","state","boundary"]}
+{"primary":"두 트랙터 운행완전동시","text":"두 트랙터 운행완전동시는 두 야드 트랙터가 운송을 개시하고 종료한 경계가 함께 일치한 경우다. 잠깐 나란히 움직인 것만으로는 부족하다.","relations":["process","attribute","comparison"]}
+{"primary":"터미널이송내 대기포함","text":"긴 안벽-야드 이송구간 안에 교차로 대기가 모두 들어가면 터미널이송내 대기포함이다. 교차로 정지의 시작과 해제가 전체 이동 시작·종료 사이에 모두 놓이는지 확인한다.","relations":["classification","process","role"]}
+{"primary":"이전이송후 다음출발 무겹침","text":"이전 상자 인계가 끝난 뒤 다음 운행을 시작하면 이전이송후 다음출발 무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"야드도착 인계시작 접점","text":"트랙터 도착과 야드크레인 인수 시작이 같은 야드도착 인계시작 접점은 중첩이 아니다. 도착 센서와 크레인 인수 접점이 같으면 연속 전환이며 공통 점유시간은 생성되지 않는다.","relations":["boundary","function","process"]}
+{"primary":"안벽대기 선행겹침","text":"안벽 대기가 먼저 시작해 적재 초반까지 이어지면 안벽대기 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"야드인계 후행겹침","text":"트랙터 운행 중 야드인계가 시작되어 정차 뒤까지 이어지면 야드인계 후행겹침이다. 인계 확인이 운행 종료 뒤에도 계속되면 이동과 겹친 앞부분, 정차 뒤의 뒷부분을 나눈다.","relations":["attribute","contrast","process"]}
+{"primary":"트랙터운행 동시성판정","text":"GPS 분 기록이 같아도 실제 이동구간을 보는 트랙터운행 동시성판정이 필요하다.","relations":["process","role","state"]}
+{"primary":"야드이송 공통점유시간","text":"두 트랙터가 같은 교차로를 함께 점유한 교집합이 야드이송 공통점유시간이다. 교차로별 진입·이탈 로그를 교차해 두 차량이 실제로 함께 있었던 구간만 위험 노출로 센다.","relations":["boundary","part_of","process"]}
+{"primary":"트랙터이송 네접점검증","text":"출발·도착 구간 두 쌍을 대조하는 트랙터이송 네접점검증으로 부분겹침을 가른다.","relations":["attribute","comparison","process"]}
+{"primary":"야드크레인 적치교차","text":"상자 인수 후반과 적치 인양 초반이 겹치면 야드크레인 적치교차다. 상자 인수의 마지막 고정 확인과 적치 인양 준비가 병렬인 부분을 장비 접점으로 제한한다.","relations":["process","state","boundary"]}
+{"primary":"두 야드크레인 완전동시","text":"두 야드크레인 완전동시는 두 장비가 첫 컨테이너를 들어 올린 시각과 마지막 적치를 마친 시각이 각각 같은 상태다. 대기 구간의 일치는 계산하지 않는다.","relations":["process","attribute","comparison"]}
+{"primary":"야드작업내 재배치포함","text":"긴 야드작업 구간 안에 특정 블록 재배치가 모두 들어가면 야드작업내 재배치포함이다. 특정 블록 재배치의 첫 인양과 마지막 적치가 전체 야드 근무창을 벗어나지 않아야 한다.","relations":["classification","process","role"]}
+{"primary":"정비종료후 적치무겹침","text":"야드크레인 정비가 끝난 뒤 적치를 시작하면 정비종료후 적치무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"적치종료 다음인양접점","text":"한 상자 적치 종료와 다음 인양 시작이 같은 적치종료 다음인양접점은 중첩이 아니다. 스프레더 해제와 다음 상자 결합이 같은 시각이어도 별도 대상 작업 사이에 교집합은 없다.","relations":["boundary","function","process"]}
+{"primary":"스프레더 이동선행겹침","text":"스프레더 이동이 먼저 시작해 트랙터 정차 초반까지 이어지면 스프레더 이동선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"위치확인 후행겹침","text":"적치 중 위치확인이 시작되어 스프레더 해제 뒤까지 이어지면 위치확인 후행겹침이다. 적치 종료 뒤에도 좌표 검증이 계속된 구간은 크레인 동작이 아닌 품질 확인의 후행부다.","relations":["attribute","contrast","process"]}
+{"primary":"야드장비 동시성구별","text":"같은 분 상태 대신 모터가동 구간을 비교하는 야드장비 동시성구별이 필요하다.","relations":["process","role","state"]}
+{"primary":"야드크레인 공통가동시간","text":"야드크레인 공통가동시간은 인접 장비들이 실제 이동 또는 인양을 동시에 수행한 길이다. 단순 전원 켜짐은 제외하고 동작 구간의 교차분만 산출한다.","relations":["boundary","part_of","process"]}
+{"primary":"적치작업 네경계대조","text":"두 적치작업의 시작과 종료를 확인하는 적치작업 네경계대조로 관계를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"냉동상자 플러그교차","text":"야드도착 후반과 전원플러그 연결 초반이 겹치면 냉동상자 플러그교차다. 트랙터 정차가 끝나기 전에 케이블 준비가 시작된 시간만 도착과 연결의 부분겹침으로 둔다.","relations":["process","state","boundary"]}
+{"primary":"두 냉동상자 연결완전동시","text":"두 냉동상자 연결완전동시는 두 냉동 컨테이너의 전원 연결 시작과 해제 시각이 모두 맞는 관계다. 한쪽이 더 오래 연결되면 부분 중첩이다.","relations":["process","attribute","comparison"]}
+{"primary":"냉동보관내 온도점검포함","text":"긴 냉동보관 구간 안에 정기 온도점검이 모두 들어가면 냉동보관내 온도점검포함이다. 점검 센서의 첫 표본과 판정 완료가 모두 냉동 보관창 안에 있는지 확인한다.","relations":["classification","process","role"]}
+{"primary":"분리후 반출무겹침","text":"플러그 분리가 끝난 뒤 게이트로 반출하면 분리후 반출무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"전원분리 운송시작접점","text":"전원분리 종료와 트랙터 출발이 같은 전원분리 운송시작접점은 중첩이 아니다. 플러그 접점 해제와 바퀴 이동이 같은 경계에 있으면 연속 사건이지 동시 지속 활동은 아니다.","relations":["boundary","function","process"]}
+{"primary":"케이블준비 선행겹침","text":"케이블 준비가 먼저 시작해 상자도착 초반까지 이어지면 케이블준비 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"온도확인 후행겹침","text":"플러그 연결 중 온도확인이 시작되어 연결 뒤까지 이어지면 온도확인 후행겹침이다. 연결 시험이 끝난 뒤 온도 안정 판정이 이어진 시간을 분리해 실제 냉각 반응을 보존한다.","relations":["attribute","contrast","process"]}
+{"primary":"냉동화물 동시성판정","text":"같은 분 로그가 아니라 각 연결구간을 보는 냉동화물 동시성판정이 필요하다.","relations":["process","role","state"]}
+{"primary":"냉동작업 공통처리시간","text":"전원연결과 온도확인이 함께 진행된 교집합이 냉동작업 공통처리시간이다. 전기 연결과 온도 판정이 모두 진행 중인 교집합만 계산하고 안정화 대기 전체를 포함하지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"냉동상자 네접점검증","text":"연결·분리 두 구간의 시작과 종료를 확인하는 냉동상자 네접점검증으로 겹침을 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"세관검사 개봉교차","text":"컨테이너 개봉 후반과 세관검사 초반이 겹치면 세관검사 개봉교차다. 봉인 해제의 후반과 서류·외관 검사의 초반만 겹치며 내부 검사는 완전 개방 뒤 시작한다.","relations":["process","state","boundary"]}
+{"primary":"세관검역 완전동시","text":"세관검역 완전동시는 세관 검사와 검역 검사의 개시·종료 접점이 각각 일치하는 관계다. 한 검사라도 먼저 끝나면 부분 중첩으로 분류한다.","relations":["process","attribute","comparison"]}
+{"primary":"반출절차내 세관검사포함","text":"긴 반출절차 안에 세관검사가 모두 들어가면 반출절차내 세관검사포함이다. 세관검사의 시작·종료가 반출 신청과 최종 승인 사이에 모두 들어오는지 사건번호로 맞춘다.","relations":["classification","process","role"]}
+{"primary":"검사종료후 봉인무겹침","text":"검사가 끝난 뒤 새 봉인을 설치하면 검사종료후 봉인무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"검사종료 반출승인접점","text":"세관검사 종료와 반출승인이 같은 검사종료 반출승인접점은 시간 중첩이 아니다. 승인 트랜잭션이 검사 완료와 같은 시각이어도 두 절차가 공유한 양의 시간은 없다.","relations":["boundary","function","process"]}
+{"primary":"서류검토 선행겹침","text":"서류검토가 먼저 시작해 현물검사 초반까지 이어지면 서류검토 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"검역채취 후행겹침","text":"세관검사 중 검역채취가 시작되어 검사 뒤까지 이어지면 검역채취 후행겹침이다. 검역 시료 채취가 세관검사 중 시작해 뒤에 끝나면 공통부와 독립 검역부를 따로 센다.","relations":["attribute","contrast","process"]}
+{"primary":"세관검역 동시성구별","text":"같은 분 승인 대신 실제 검사구간을 보는 세관검역 동시성구별이 필요하다.","relations":["process","role","state"]}
+{"primary":"검사기관 공통점검시간","text":"세관과 검역이 함께 상자를 점검한 교집합이 검사기관 공통점검시간이다. 세관과 검역 담당자가 동시에 상자를 개방해 본 구간만 협업으로 두고 서류 대기는 제외한다.","relations":["boundary","part_of","process"]}
+{"primary":"검사구간 네경계대조","text":"세관과 검역의 시작·종료를 확인하는 검사구간 네경계대조로 관계를 판정한다.","relations":["attribute","comparison","process"]}
+{"primary":"위험물 격리작업교차","text":"위험물 하역 후반과 격리구역 이송 초반이 겹치면 위험물 격리작업교차다. 하역이 끝나기 전 격리 운반 준비가 시작된 부분과 실제 이동의 선후를 분리한다.","relations":["process","state","boundary"]}
+{"primary":"두 위험물 점검완전동시","text":"두 위험물 점검완전동시는 두 위험물 단위의 검사 착수와 승인 종료 시각이 각각 일치한 상태다. 공통 대기시간만으로 판정하지 않는다.","relations":["process","attribute","comparison"]}
+{"primary":"위험물보관내 순찰포함","text":"위험물보관내 순찰포함은 안전 순찰의 출발과 복귀가 위험물 격리 보관 구간 안에 모두 놓인 관계다. 순찰이 보관 시작 전이나 종료 후까지 이어지면 완전 포함으로 보지 않는다.","relations":["classification","process","role"]}
+{"primary":"오염제거후 일반작업무겹침","text":"누출 오염제거가 끝난 뒤 일반화물을 처리하면 오염제거후 일반작업무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"격리종료 반출시작접점","text":"격리해제 종료와 반출 시작이 같은 격리종료 반출시작접점은 중첩이 아니다. 해제 승인과 반출 차량 출발이 맞닿아도 보관과 운송이 동시에 지속된 구간은 없다.","relations":["boundary","function","process"]}
+{"primary":"가스측정 선행겹침","text":"가스측정이 먼저 시작해 용기점검 초반까지 이어지면 가스측정 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"안전감시 후행겹침","text":"하역 중 안전감시가 시작되어 작업종료 뒤까지 이어지면 안전감시 후행겹침이다. 하역 종료 뒤 잔류가스 확인까지 감시가 이어진 부분은 작업 후 안전 상태로 별도 기록한다.","relations":["attribute","contrast","process"]}
+{"primary":"위험물작업 동시성판정","text":"위험물작업 동시성판정은 분 단위 기록 대신 실제 격리와 점검의 개시·종료 접점을 대조하여 두 작업의 동시 범위를 정한다.","relations":["process","role","state"]}
+{"primary":"위험물 대응공통시간","text":"하역·감시·격리가 함께 유지된 교집합이 위험물 대응공통시간이다. 하역·감시·격리 세 상태의 교집합을 구해 둘만 활성인 준비 또는 정리시간을 제외한다.","relations":["boundary","part_of","process"]}
+{"primary":"위험물구간 네접점검증","text":"두 위험물 절차의 시작과 종료를 확인하는 위험물구간 네접점검증으로 겹침을 가른다.","relations":["attribute","comparison","process"]}
+{"primary":"게이트차량 예약교차","text":"트럭 도착 후반과 게이트 예약검증 초반이 겹치면 게이트차량 예약교차다. 트럭이 정차를 마치기 전 예약번호 판독이 시작된 구간만 도착과 검증의 부분겹침이다.","relations":["process","state","boundary"]}
+{"primary":"두 트럭 처리완전동시","text":"두 트럭 처리완전동시는 두 트럭의 게이트 접수 시작과 반출 완료 시각이 모두 일치한 경우다. 처리 과정 일부만 겹치면 제외한다.","relations":["process","attribute","comparison"]}
+{"primary":"터미널방문내 게이트검사포함","text":"긴 터미널 방문구간 안에 게이트검사가 모두 들어가면 터미널방문내 게이트검사포함이다. 입차 접점 이후 시작하고 출차 접점 이전 끝난 검사만 방문구간에 완전히 포함된다.","relations":["classification","process","role"]}
+{"primary":"이전차량 출차후 입차무겹침","text":"이전 차량이 차로를 벗어난 뒤 다음 트럭이 들어오면 이전차량 출차후 입차무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"출차종료 입차시작접점","text":"한 트럭 출차 종료와 다음 입차가 같은 출차종료 입차시작접점은 중첩이 아니다. 차로 센서의 이전 차량 이탈과 다음 차량 진입이 같아도 공동 점유 구간은 영이다.","relations":["boundary","function","process"]}
+{"primary":"서류확인 선행겹침","text":"서류확인이 먼저 시작해 차량검사 초반까지 이어지면 서류확인 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"컨테이너검수 후행겹침","text":"게이트 처리 중 상자검수가 시작되어 출차 뒤까지 이어지면 컨테이너검수 후행겹침이다. 차량 처리는 끝났지만 봉인 확인이 뒤에 남으면 겹친 검수와 사후 검수를 갈라 센다.","relations":["attribute","contrast","process"]}
+{"primary":"게이트처리 동시성구별","text":"같은 분 접수 대신 차로점유 구간을 보는 게이트처리 동시성구별이 필요하다.","relations":["process","role","state"]}
+{"primary":"게이트차로 공통점유시간","text":"두 트럭이 한 차로 전환구간을 함께 점유한 교집합이 게이트차로 공통점유시간이다. 진입·이탈 접점의 최대 시작과 최소 종료를 비교해 실제 양수인 구간만 혼잡 시간으로 잡는다.","relations":["boundary","part_of","process"]}
+{"primary":"게이트방문 네경계대조","text":"두 방문의 입차와 출차를 확인하는 게이트방문 네경계대조로 부분겹침을 판정한다.","relations":["attribute","comparison","process"]}
+{"primary":"항만철도 적재교차","text":"화차 위치조정 후반과 컨테이너 적재 초반이 겹치면 항만철도 적재교차다. 화차 제동과 위치 확인 후반에 첫 인양 준비가 병렬로 이루어진 범위를 안전규정 안에서 계산한다.","relations":["process","state","boundary"]}
+{"primary":"두 화차 적재완전동시","text":"두 화차 적재완전동시는 두 화차의 첫 적재와 마지막 적재 시각이 모두 일치한 경우다. 중간 작업만 겹친 상태는 제외한다.","relations":["process","attribute","comparison"]}
+{"primary":"열차조성내 봉인검사포함","text":"긴 열차조성 구간 안에 봉인검사가 모두 들어가면 열차조성내 봉인검사포함이다. 봉인검사 전 과정이 첫 화차 배치 뒤이면서 조성 완료 전인지 열차 편성번호로 검증한다.","relations":["classification","process","role"]}
+{"primary":"이전화차 이동후 적재무겹침","text":"이전 화차가 이동한 뒤 다음 적재를 시작하면 이전화차 이동후 적재무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"적재종료 견인시작접점","text":"마지막 적재 종료와 기관차 견인 시작이 같은 적재종료 견인시작접점은 중첩이 아니다. 마지막 스프레더 해제와 기관차 견인력이 생긴 시각이 같으면 선후 경계만 공유한다.","relations":["boundary","function","process"]}
+{"primary":"화차점검 선행겹침","text":"화차점검 선행겹침은 점검이 적재보다 먼저 시작했으나 적재 초반에도 계속되어 두 구간이 일부 교차한 관계다.","relations":["classification","comparison","state"]}
+{"primary":"열차서류 후행겹침","text":"적재 중 열차서류 작성이 시작되어 작업 뒤까지 이어지면 열차서류 후행겹침이다. 적재 중 시작한 서류 작성이 편성 완료 뒤에도 남아 있으면 후행 행정시간을 따로 둔다.","relations":["attribute","contrast","process"]}
+{"primary":"항만철도 동시성판정","text":"항만철도 동시성판정은 화차별 원시 작업 접점을 사용해 여러 작업의 완전 동시, 부분 중첩, 무겹침을 구분한다. 같은 분 표시는 보조 정보다.","relations":["process","role","state"]}
+{"primary":"열차적재 공통작업시간","text":"두 적재조가 함께 작업한 교집합이 열차적재 공통작업시간이다. 두 조가 실제 화차에 적재한 시간구간을 교차해 교대 준비나 휴식의 중첩은 빼고 계산한다.","relations":["boundary","part_of","process"]}
+{"primary":"철도작업 네경계검증","text":"두 화차 작업의 시작과 종료를 확인하는 철도작업 네경계검증으로 겹침을 가른다.","relations":["attribute","comparison","process"]}
+{"primary":"바지선 접안하역교차","text":"바지선 접안 후반과 하역준비 초반이 겹치면 바지선 접안하역교차다. 마지막 계류 작업과 하역 장비 준비가 겹친 부분만 병렬이며 화물 이동은 접안 완료 뒤로 둔다.","relations":["process","state","boundary"]}
+{"primary":"두 바지선 작업완전동시","text":"두 바지선 작업완전동시는 두 바지선의 안벽 작업이 동일한 개시점과 종결점을 가진 관계다. 작업 일부만 함께한 경우는 부분 중첩이다.","relations":["process","attribute","comparison"]}
+{"primary":"바지선방문내 하역포함","text":"긴 바지선 방문구간 안에 화물하역이 모두 들어가면 바지선방문내 하역포함이다. 첫 화물 인양과 마지막 인계가 바지선 도착·이안 사이에 모두 들어와야 전체 포함이다.","relations":["classification","process","role"]}
+{"primary":"이전바지선 이안후 접안무겹침","text":"이전바지선 이안후 접안무겹침은 기존 바지선이 접안 구역을 완전히 벗어난 다음 새 선박이 진입한 순차 관계다.","relations":["part_of","process","state"]}
+{"primary":"이안종료 계류시작접점","text":"이전 이안 종료와 다음 계류 시작이 같은 이안종료 계류시작접점은 중첩이 아니다. 앞 바지선의 이안 종료와 다음 계류 시작이 같아도 안벽 공동 점유 지속시간은 생기지 않는다.","relations":["boundary","function","process"]}
+{"primary":"도선지원 선행겹침","text":"도선지원이 먼저 시작해 계류 초반까지 이어지면 도선지원 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"화물검수 후행겹침","text":"하역 중 검수가 시작되어 마지막 인계 뒤까지 이어지면 화물검수 후행겹침이다. 하역 중 시작한 수량 검증이 마지막 인계 뒤 이어진 시간을 사후 확인부로 구분한다.","relations":["attribute","contrast","process"]}
+{"primary":"바지선작업 동시성구별","text":"같은 분 입출항 대신 실제 안벽점유 구간을 보는 바지선작업 동시성구별이 필요하다.","relations":["process","role","state"]}
+{"primary":"바지선 공통점유시간","text":"두 지원작업이 안벽에서 함께 진행된 교집합이 바지선 공통점유시간이다. 지원선과 작업선의 실제 접안 구간을 교차해 예약창이 겹친 것만으로 점유를 늘리지 않는다.","relations":["boundary","part_of","process"]}
+{"primary":"바지선방문 네접점대조","text":"접안·이안 두 구간의 시작과 종료를 보는 바지선방문 네접점대조로 관계를 정한다.","relations":["attribute","comparison","process"]}
+{"primary":"항만교대 인계부분겹침","text":"주간조 업무 후반과 야간조 인계 초반이 겹치면 항만교대 인계부분겹침이다. 주간조가 작업을 계속하는 동안 야간조가 현장 설명을 받은 구간만 공동 책임으로 본다.","relations":["process","state","boundary"]}
+{"primary":"두 작업조 근무완전동시","text":"두 작업조 근무완전동시는 두 조가 같은 때 업무를 시작하고 같은 때 책임을 끝낸 경우다. 교대 인계만 겹치면 부분 중첩이다.","relations":["process","attribute","comparison"]}
+{"primary":"선박작업내 감독근무포함","text":"선박작업내 감독근무포함은 감독자의 로그인부터 로그아웃까지가 해당 선박 작업의 개시와 종료 안에 전부 놓인 관계다. 감독 근무가 한쪽 경계를 넘으면 완전 포함이 아니다.","relations":["classification","process","role"]}
+{"primary":"주간조 종료후 야간조무겹침","text":"주간조가 완전히 끝난 뒤 야간조가 시작하면 주간조 종료후 야간조무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"근무종료 인계시작접점","text":"한 조의 근무 종료와 인계 시작이 같은 근무종료 인계시작접점은 공통근무가 아니다. 근무 종료와 인계 시작이 맞닿으면 책임은 끊김 없이 전환되지만 공동 근무시간은 영이다.","relations":["boundary","function","process"]}
+{"primary":"안벽조 선행겹침","text":"안벽조가 먼저 시작해 야드조 교대 초반까지 이어지면 안벽조 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"검수조 후행겹침","text":"하역근무 중 검수조가 들어와 하역 뒤까지 이어지면 검수조 후행겹침이다. 검수조의 투입이 하역 중이고 철수가 하역 뒤라면 교집합과 독립 검수구간을 별도 계산한다.","relations":["attribute","contrast","process"]}
+{"primary":"작업조 근무동시성","text":"출퇴근 분 기록이 같아도 책임구간을 보는 작업조 근무동시성으로 완전동시를 판정한다.","relations":["process","role","state"]}
+{"primary":"교대조 공통책임시간","text":"두 조가 같은 작업을 함께 책임진 교집합이 교대조 공통책임시간이다. 두 조가 모두 현장 책임 상태인 시간만 구해 단순 출퇴근 기록의 동시성을 제외한다.","relations":["boundary","part_of","process"]}
+{"primary":"근무구간 네접점검증","text":"각 조의 시작과 종료를 대조하는 근무구간 네접점검증으로 부분겹침을 가른다.","relations":["attribute","comparison","process"]}
+{"primary":"크레인정비 작업교차","text":"장비점검 후반과 부품교체 초반이 겹치면 크레인정비 작업교차다. 점검이 끝나기 전 확인된 부품부터 교체한 구간과 점검 완료 뒤 본작업을 나눠 기록한다.","relations":["process","state","boundary"]}
+{"primary":"두 장비정비 완전동시","text":"두 장비정비 완전동시는 두 장비의 정비 착수와 복귀 시각이 각각 같은 상태다. 어느 한 장비가 더 일찍 투입되거나 늦게 끝나면 제외한다.","relations":["process","attribute","comparison"]}
+{"primary":"정비창내 기능시험포함","text":"긴 정비창 안에 기능시험이 모두 들어가면 정비창내 기능시험포함이다. 기능시험의 전원 투입과 종료 판정이 모두 승인된 정비창 안에 들어오는지 확인한다.","relations":["classification","process","role"]}
+{"primary":"정비완료후 운영재개무겹침","text":"정비와 시험이 끝난 뒤 운영을 재개하면 정비완료후 운영재개무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"시험종료 운영인계접점","text":"기능시험 종료와 운영인계 시작이 같은 시험종료 운영인계접점은 중첩이 아니다. 시험 완료와 운영 인수가 같은 경계라면 순차 전환이며 두 상태의 교집합은 없다.","relations":["boundary","function","process"]}
+{"primary":"잠금작업 선행겹침","text":"안전잠금이 먼저 시작해 분해 초반까지 이어지면 잠금작업 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"정비검수 후행겹침","text":"부품교체 중 검수가 시작되어 조립 뒤까지 이어지면 정비검수 후행겹침이다. 부품 교체 중 시작된 검수가 조립 완료 뒤까지 이어지면 겹침과 후속 판정을 가른다.","relations":["attribute","contrast","process"]}
+{"primary":"항만장비 정비동시성","text":"같은 분 티켓 대신 실제 잠금·작업구간을 보는 항만장비 정비동시성이 필요하다.","relations":["process","role","state"]}
+{"primary":"장비정비 공통수행시간","text":"기계팀과 전기팀이 함께 작업한 교집합이 장비정비 공통수행시간이다. 기계팀과 전기팀의 실제 작업 접점을 교차해 단순 대기 또는 회의가 겹친 구간은 제외한다.","relations":["boundary","part_of","process"]}
+{"primary":"정비작업 네경계대조","text":"두 정비절차의 시작과 종료를 확인하는 정비작업 네경계대조로 관계를 검증한다.","relations":["attribute","comparison","process"]}
+{"primary":"강풍대피 작업교차","text":"크레인 정지 후반과 붐 고정 초반이 겹치면 강풍대피 작업교차다. 크레인 감속 후반과 붐 고정 준비가 함께 진행된 부분만 겹침으로 두고 회전 정지는 선행조건으로 남긴다.","relations":["process","state","boundary"]}
+{"primary":"항만비상 두조치 완전동시","text":"항만비상 두조치 완전동시는 차량 통제와 장비 고정의 발령 및 해제 경계가 각각 같은 경우다. 접점 하나라도 다르면 두 조치의 부분 중첩으로 분류한다.","relations":["process","attribute","comparison"]}
+{"primary":"강풍대응내 선석통제포함","text":"긴 강풍대응 구간 안에 선석통제가 모두 들어가면 강풍대응내 선석통제포함이다. 선석통제의 발령과 해제가 강풍 대응의 시작·종료 안에 모두 들어오는지 권한로그로 검증한다.","relations":["classification","process","role"]}
+{"primary":"경보해제후 하역재개무겹침","text":"강풍경보가 해제되고 점검까지 끝난 뒤 하역하면 경보해제후 하역재개무겹침이다.","relations":["part_of","process","state"]}
+{"primary":"통제종료 운영재개접점","text":"선석통제 종료와 하역재개가 같은 통제종료 운영재개접점은 중첩이 아니다. 통제 해제와 첫 하역 명령이 같은 시각이어도 안전 통제와 운영이 동시에 지속된 것은 아니다.","relations":["boundary","function","process"]}
+{"primary":"장비고정 선행겹침","text":"장비고정이 먼저 시작해 작업자대피 초반까지 이어지면 장비고정 선행겹침이다.","relations":["classification","comparison","state"]}
+{"primary":"피해점검 후행겹침","text":"강풍 중 피해점검이 시작되어 경보해제 뒤까지 이어지면 피해점검 후행겹침이다. 강풍 중 시작된 점검이 경보 해제 뒤까지 이어진 구간을 사후 안전확인으로 따로 표시한다.","relations":["attribute","contrast","process"]}
+{"primary":"비상작업 동시성판정","text":"같은 분 로그 대신 실제 통제·대피구간을 보는 비상작업 동시성판정이 필요하다.","relations":["process","role","state"]}
+{"primary":"강풍대응 공통가동시간","text":"통제·고정·대피가 함께 유지된 교집합이 강풍대응 공통가동시간이다. 통제·장비고정·인원대피의 세 구간이 모두 겹친 시간만 최고 대응상태의 지속으로 계산한다.","relations":["boundary","part_of","process"]}
+{"primary":"항만비상 네접점검증","text":"강풍사건과 대응작업의 시작·종료를 확인하는 항만비상 네접점검증으로 겹침을 가른다.","relations":["attribute","comparison","process"]}

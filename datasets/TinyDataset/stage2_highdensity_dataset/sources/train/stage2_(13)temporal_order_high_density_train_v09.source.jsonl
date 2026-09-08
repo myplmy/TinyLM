@@ -1,0 +1,150 @@
+{"primary":"커밋 병합 뒤 빌드 시작","text":"커밋 병합 뒤 빌드 시작은 기준 브랜치에 변경이 들어간 다음 빌드 작업이 생성된 순서다. 개인 브랜치 시험을 배포용 빌드의 선행 사건으로 세지 않는다. 대상 브랜치에 코드가 확정된 다음 빌드해야 산출물이 승인된 커밋 계보를 정확히 가리킨다.","relations":["process","state","boundary"]}
+{"primary":"소스 검사와 컴파일 겹침","text":"소스 검사와 컴파일 겹침은 독립 모듈의 정적 검사가 진행되는 동안 다른 모듈 컴파일이 시작된 부분 중첩이다. 전체 단계가 동시에 끝난 것은 아니다.","relations":["process","comparison","attribute"]}
+{"primary":"의존성 고정 전 패키징","text":"의존성 고정 전 패키징은 잠금 파일 확정 전에 산출물을 묶어 재현성이 깨진 절차다. 임시 캐시 생성과 정식 패키징을 구분한다. 버전과 해시가 잠기기 전에 포장하면 재현성이 깨지므로 잠금파일 확정이 선행되어야 한다.","relations":["process","classification","boundary"]}
+{"primary":"컴파일 완료 후 단위시험","text":"컴파일 완료 후 단위시험은 실행 파일이 만들어진 다음 시험 묶음이 열린 정상 선후다. 시험 예약시각만으로 시작을 판단하지 않는다.","relations":["process","function","state"]}
+{"primary":"병렬 시험 동시개시","text":"병렬 시험 동시개시는 여러 실행기가 허용 오차 안에서 첫 시험을 시작한 사건이다. 같은 분에 종료됐다는 사실과 다른 판정이다. 서로 독립된 시험군이 같은 기준시각에 시작해 어느 한 시험의 완료를 기다리는 관계가 아니다.","relations":["process","role","contrast"]}
+{"primary":"시험 실패와 배포차단","text":"시험 실패와 배포차단은 실패 확정 뒤 승격 권한이 잠긴 연쇄다. 차단 정책이 존재했다는 것만으로 실패보다 앞선 실행 사건이라 하지 않는다.","relations":["part_of","process","state"]}
+{"primary":"아티팩트 서명 전 업로드","text":"아티팩트 서명 전 업로드는 무결성 서명보다 저장소 전송이 먼저 일어난 잘못된 순서다. 임시 보관함과 배포 저장소를 나눠 해석한다. 서명되지 않은 파일을 배포 저장소에 올리지 않도록 무결성 검증과 서명을 먼저 끝낸다.","relations":["process","comparison","boundary"]}
+{"primary":"빌드 재시도와 이전 작업 겹침","text":"빌드 재시도와 이전 작업 겹침은 취소 요청 뒤에도 남은 실행과 새 실행이 잠시 함께 돈 상태다. 두 결과를 한 회차로 합치지 않는다.","relations":["process","attribute","function"]}
+{"primary":"릴리스 태그 뒤 이미지 생성","text":"릴리스 태그 뒤 이미지 생성은 승인된 태그를 기준으로 컨테이너 이미지를 만든 순서다. 로컬 이미지 작성은 공식 릴리스 사건이 아니다. 유효 태그가 가리키는 커밋을 먼저 고정한 뒤 이미지를 만들어 버전과 내용의 계보를 결속한다.","relations":["process","classification","state"]}
+{"primary":"빌드 종료 후 결과게시","text":"빌드 종료 후 결과게시는 모든 작업 상태가 닫힌 다음 요약이 배포된 절차다. 일부 로그가 먼저 보였다고 완료 게시로 보지 않는다.","relations":["process","contrast","attribute"]}
+{"primary":"설정 검토 뒤 적용 승인","text":"설정 검토 뒤 적용 승인은 변경 차이를 확인한 다음 운영 반영 권한을 내린 순서다. 초안 저장을 승인으로 오인하지 않는다. 범위·비밀·상호제약 검사를 통과한 다음 운영 적용을 허가해 잘못된 초안이 먼저 퍼지지 않게 한다.","relations":["process","state","boundary"]}
+{"primary":"기능 플래그 배포와 비활성 유지","text":"기능 플래그 배포와 비활성 유지는 코드가 먼저 배포되고 사용자 노출은 꺼 둔 겹친 상태다. 기능 제공이 이미 시작됐다는 뜻은 아니다.","relations":["process","comparison","attribute"]}
+{"primary":"비밀값 교체 전 참조갱신","text":"비밀값 교체 전 참조갱신은 애플리케이션이 새 키를 읽도록 준비한 뒤 실제 키를 바꾸는 안전 절차다. 반대 순서는 인증 실패를 만든다. 새 비밀을 쓰기 전에 소비 서비스가 두 값을 읽도록 준비해 교체 순간의 인증 실패를 막는다.","relations":["process","classification","boundary"]}
+{"primary":"환경변수 변경 후 프로세스 재시작","text":"환경변수 변경 후 프로세스 재시작은 저장된 설정을 바꾼 다음 프로세스가 새 값을 읽게 한 사건열이다. 파일 수정만으로 적용 완료라 하지 않는다.","relations":["process","function","state"]}
+{"primary":"두 리전 설정 동시배포","text":"두 리전 설정 동시배포는 양쪽 적용 작업이 같은 조정 창에서 시작된 경우다. 완료시각 차이는 별도 비교한다. 동일 효력창에서 두 지역에 함께 적용해 한쪽 선행을 가정하지 않되 실제 수신차는 기록한다.","relations":["process","role","contrast"]}
+{"primary":"잘못된 설정 뒤 오류증가","text":"잘못된 설정 뒤 오류증가는 운영 반영 다음 요청 실패율이 오른 관측 순서다. 이전부터 있던 오류를 변경 결과로 자동 귀속하지 않는다.","relations":["part_of","process","state"]}
+{"primary":"설정 롤백과 캐시갱신 겹침","text":"설정 롤백과 캐시갱신 겹침은 원복 값 전파 중 일부 노드가 옛 캐시를 비우는 부분 중첩이다. 전 노드가 같은 상태였다고 보지 않는다. 원본을 되돌리는 동안 노드 캐시도 순차 갱신되어 두 활동의 일부 기간이 병행된다.","relations":["process","comparison","boundary"]}
+{"primary":"스키마 검증 전 설정저장","text":"스키마 검증 전 설정저장은 형식 확인보다 저장이 앞선 위험한 순서다. 임시 편집본 저장과 운영 게시를 구별한다.","relations":["process","attribute","function"]}
+{"primary":"플래그 활성 뒤 트래픽 노출","text":"플래그 활성 뒤 트래픽 노출은 기능을 켠 다음 대상 사용자 요청이 새 경로로 간 순서다. 관리화면 클릭을 실제 노출시점으로 대신하지 않는다. 기능상태가 먼저 켜지고 대상 규칙이 확인된 뒤 사용자 요청을 보내야 미활성 코드 노출을 피한다.","relations":["process","classification","state"]}
+{"primary":"설정 폐기 후 감사기록 보존","text":"설정 폐기 후 감사기록 보존은 사용을 끝낸 뒤 변경 이력만 장기 저장한 절차다. 설정값과 감사 증거의 수명은 다르다.","relations":["process","contrast","attribute"]}
+{"primary":"마이그레이션 잠금 뒤 스키마변경","text":"마이그레이션 잠금 뒤 스키마변경은 동시 쓰기를 제한한 다음 테이블 구조를 바꾼 순서다. 잠금 요청과 획득을 같은 사건으로 보지 않는다. 쓰기 경쟁을 막는 잠금을 먼저 얻은 다음 구조를 바꿔 부분 적용과 동시 수정 위험을 줄인다.","relations":["process","state","boundary"]}
+{"primary":"백필과 온라인 쓰기 겹침","text":"백필과 온라인 쓰기 겹침은 과거 행을 채우는 동안 새 요청도 데이터를 기록한 부분 중첩이다. 충돌 방지 규칙이 필요하다.","relations":["process","comparison","attribute"]}
+{"primary":"새 열 배포 전 코드참조","text":"새 열 배포 전 코드참조는 데이터베이스 구조가 준비되기 전에 코드가 열을 읽은 잘못된 선후다. 선택적 경로가 비활성이었는지도 따로 본다. 열이 존재하기 전에 새 코드를 활성화하면 조회가 실패하므로 호환 스키마 배포가 선행되어야 한다.","relations":["process","classification","boundary"]}
+{"primary":"복제지연 해소 후 승격","text":"복제지연 해소 후 승격은 대기 노드가 원본을 따라잡은 다음 주 역할을 넘긴 절차다. 상태 보고만 정상이라고 해서 선행 조건이 충족된 것은 아니다.","relations":["process","function","state"]}
+{"primary":"인덱스 생성과 읽기서비스 지속","text":"인덱스 생성과 읽기서비스 지속은 온라인 작업 동안 조회가 계속된 겹침이다. 쓰기 지연이 없었다는 결론과는 별개다.","relations":["process","role","contrast"]}
+{"primary":"트랜잭션 종료 뒤 잠금해제","text":"트랜잭션 종료 뒤 잠금해제는 변경을 확정하거나 취소한 다음 다른 작업이 접근하게 한 순서다. 잠금 만료를 정상 종료로 보지 않는다.","relations":["part_of","process","state"]}
+{"primary":"백업 생성 전 파괴적 변경","text":"백업 생성 전 파괴적 변경은 복구 지점을 만들기 전에 열을 삭제한 위험 순서다. 오래된 백업 존재만으로 이번 변경을 보호하지 못한다.","relations":["process","comparison","boundary"]}
+{"primary":"마이그레이션 실패와 자동복구","text":"마이그레이션 실패와 자동복구는 오류 판정 뒤 이전 스키마로 되돌리는 작업이 시작된 연쇄다. 경고 발생과 실패 확정을 구분한다.","relations":["process","attribute","function"]}
+{"primary":"샤드 재배치 동시진행","text":"샤드 재배치 동시진행은 서로 다른 샤드 이동이 같은 기간에 수행된 상태다. 같은 대상 노드에 동시에 쓰였다는 뜻은 아니다.","relations":["process","classification","state"]}
+{"primary":"검증 쿼리 후 변경완료","text":"검증 쿼리 후 변경완료는 새 구조와 데이터 수를 확인한 뒤 마이그레이션을 닫은 절차다. 실행 도구 종료만으로 완료라 하지 않는다.","relations":["process","contrast","attribute"]}
+{"primary":"대상등록 뒤 헬스확인","text":"대상등록 뒤 헬스확인은 새 인스턴스를 풀에 넣은 다음 정상 응답을 시험한 순서다. 등록 직후 곧바로 트래픽을 준 사건과 다르다.","relations":["process","state","boundary"]}
+{"primary":"헬스검사와 기존트래픽 겹침","text":"헬스검사와 기존트래픽 겹침은 신규 대상 확인 중 기존 대상들이 요청을 계속 처리한 부분 중첩이다. 신규 대상이 이미 서비스했다는 뜻은 아니다.","relations":["process","comparison","attribute"]}
+{"primary":"드레이닝 전 인스턴스종료","text":"드레이닝 전 인스턴스종료는 연결을 빼기 전에 프로세스를 끈 잘못된 순서다. 짧은 요청 성공만으로 안전했다고 판단하지 않는다.","relations":["process","classification","boundary"]}
+{"primary":"가중치 변경 후 요청이동","text":"가중치 변경 후 요청이동은 분배 비율을 바꾼 다음 새 대상의 요청 수가 늘어난 사건열이다. 대시보드 갱신순서는 근거가 아니다.","relations":["process","function","state"]}
+{"primary":"두 가용영역 동시드레이닝","text":"두 가용영역 동시드레이닝은 서로 다른 영역의 연결 제거가 같은 시간에 진행된 상태다. 용량 위험을 별도로 평가한다.","relations":["process","role","contrast"]}
+{"primary":"헬스실패 뒤 대상격리","text":"헬스실패 뒤 대상격리는 연속 실패가 확정된 다음 분배 목록에서 제외된 순서다. 한 번의 느린 응답과 격리를 직접 연결하지 않는다.","relations":["part_of","process","state"]}
+{"primary":"인증서 교체와 연결유지 겹침","text":"인증서 교체와 연결유지 겹침은 새 연결은 새 인증서를 쓰고 기존 연결은 잠시 이전 세션을 유지한 겹침이다. 전환을 한 점으로 축약하지 않는다.","relations":["process","comparison","boundary"]}
+{"primary":"라우팅규칙 검증 전 게시","text":"라우팅규칙 검증 전 게시는 경로 시험보다 운영 반영이 먼저인 절차다. 편집화면 미리보기와 실제 검증을 구별한다.","relations":["process","attribute","function"]}
+{"primary":"대상복귀 후 가중치상승","text":"대상복귀 후 가중치상승은 정상 검사를 통과한 인스턴스에 단계적으로 요청 비율을 높인 순서다. 등록시점과 완전복귀를 나눈다.","relations":["process","classification","state"]}
+{"primary":"마지막연결 종료 뒤 제거","text":"마지막연결 종료 뒤 제거는 드레이닝된 대상의 활성 세션이 0이 된 다음 풀에서 삭제한 절차다. 삭제 요청시각은 더 이를 수 있다.","relations":["process","contrast","attribute"]}
+{"primary":"부하상승 뒤 확장판정","text":"부하상승 뒤 확장판정은 지표가 지속 조건을 채운 다음 인스턴스 추가가 결정된 순서다. 순간 최고값만으로 판정하지 않는다.","relations":["process","state","boundary"]}
+{"primary":"새 인스턴스 기동과 기존처리 겹침","text":"새 인스턴스 기동과 기존처리 겹침은 확장 자원이 준비되는 동안 기존 노드가 요청을 처리한 부분 중첩이다. 준비 중 자원을 가용 용량에 넣지 않는다.","relations":["process","comparison","attribute"]}
+{"primary":"준비완료 전 트래픽할당","text":"준비완료 전 트래픽할당은 애플리케이션 초기화보다 요청 분배가 먼저인 잘못된 선후다. 포트 개방과 서비스 준비를 구분한다.","relations":["process","classification","boundary"]}
+{"primary":"부하감소 후 축소대기","text":"부하감소 후 축소대기는 지표가 내려간 다음 안정 시간을 거쳐 제거 여부를 판단한 순서다. 즉시 축소와 다른 정책이다.","relations":["process","function","state"]}
+{"primary":"두 확장그룹 동시확장","text":"두 확장그룹 동시확장은 웹과 작업자 풀이 같은 사건에 반응해 함께 늘어난 경우다. 양쪽 원인이 동일하다는 결론은 별도 검토한다.","relations":["process","role","contrast"]}
+{"primary":"용량부족 뒤 요청거절","text":"용량부족 뒤 요청거절은 사용 가능한 실행 슬롯이 소진된 다음 새 요청이 제한된 사건열이다. 거절로그 수신시각을 원인보다 앞세우지 않는다.","relations":["part_of","process","state"]}
+{"primary":"축소드레이닝과 대체기동 겹침","text":"축소드레이닝과 대체기동 겹침은 오래된 노드 연결을 빼면서 새 이미지 노드를 준비한 겹침이다. 전체 용량 변화는 시간대별로 본다.","relations":["process","comparison","boundary"]}
+{"primary":"예측확장 전 일정등록","text":"예측확장 전 일정등록은 예상 피크 정보를 정책에 넣은 다음 미리 자원을 늘린 순서다. 사람이 일정을 논의한 때는 실행 사건이 아니다.","relations":["process","attribute","function"]}
+{"primary":"확장실패와 재시도","text":"확장실패와 재시도는 할당 오류가 확정된 뒤 다른 영역에서 자원 요청을 다시 낸 연쇄다. 첫 요청이 아직 진행 중인지 확인한다.","relations":["process","classification","state"]}
+{"primary":"축소완료 후 비용집계","text":"축소완료 후 비용집계는 제거된 자원의 사용시간을 닫은 다음 절감량을 계산한 절차다. 예상 비용과 실제 청구를 구분한다.","relations":["process","contrast","attribute"]}
+{"primary":"표본적재 뒤 임계판정","text":"표본적재 뒤 임계판정은 최신 지표가 시계열 저장소에 기록된 다음 평가 규칙이 임계조건을 계산한 순서다. 대시보드가 값을 그린 시각을 판정 시작으로 혼동하지 않는다.","relations":["process","state","boundary"]}
+{"primary":"로그수집과 서비스처리 겹침","text":"로그수집과 서비스처리 겹침은 요청을 처리하는 동안 로그가 비동기로 전송된 겹침이다. 로그 도착이 처리 완료를 뜻하지 않는다.","relations":["process","comparison","attribute"]}
+{"primary":"경보확정 전 알림발송","text":"경보확정 전 알림발송은 지속 조건을 채우기 전에 통지가 나간 잘못된 순서다. 시험 알림인지 실제 경보인지 구분한다.","relations":["process","classification","boundary"]}
+{"primary":"추적샘플 저장 후 분석","text":"추적샘플 저장 후 분석은 분산 추적 조각을 모은 다음 병목 경로를 계산한 절차다. 일부 조각만으로 완전한 호출열을 만들지 않는다.","relations":["process","function","state"]}
+{"primary":"두 관측창 동시평가","text":"두 관측창 동시평가는 짧은 창과 긴 창 규칙이 같은 표본을 병렬로 검사한 경우다. 두 경보가 같은 심각도를 뜻하지 않는다.","relations":["process","role","contrast"]}
+{"primary":"수집중단 뒤 결측표시","text":"수집중단 뒤 결측표시는 예정 표본이 연속으로 사라진 다음 자료 공백 상태가 열린 순서다. 0값과 결측을 구별한다.","relations":["part_of","process","state"]}
+{"primary":"대시보드 갱신과 원시저장 겹침","text":"대시보드 갱신과 원시저장 겹침은 최신 표본을 그리는 동안 다른 표본이 저장소에 들어오는 부분 중첩이다. 화면 행순서로 사건 선후를 판단하지 않는다.","relations":["process","comparison","boundary"]}
+{"primary":"경보억제 전 정비시작","text":"경보억제 전 정비시작은 계획 작업을 먼저 시작해 불필요한 알림이 발생한 순서다. 억제 승인은 정비 선행 조건인지 정책으로 확인한다.","relations":["process","attribute","function"]}
+{"primary":"경보해제 후 사후검사","text":"경보해제 후 사후검사는 정상 유지 조건을 채운 다음 원인 재발 여부를 점검한 절차다. 해제가 원인 규명을 완료했다는 뜻은 아니다.","relations":["process","classification","state"]}
+{"primary":"보존기간 종료 뒤 로그삭제","text":"보존기간 종료 뒤 로그삭제는 정책상 유지 구간이 끝난 다음 원시 자료를 제거한 순서다. 색인 삭제와 실제 객체 삭제를 나눠 본다.","relations":["process","contrast","attribute"]}
+{"primary":"첫 오류 뒤 사건개설","text":"첫 오류 뒤 사건개설은 이상 신호를 확인한 다음 대응 채널과 사건번호를 만든 순서다. 자동 경보 생성과 사람의 사건 선언을 구분한다.","relations":["process","state","boundary"]}
+{"primary":"진단과 완화조치 겹침","text":"진단과 완화조치 겹침은 원인을 찾는 동안 안전한 트래픽 감축을 함께 수행한 부분 중첩이다. 원인 확정 뒤에만 완화가 가능하다고 보지 않는다.","relations":["process","comparison","attribute"]}
+{"primary":"영향확인 전 정상선언","text":"영향확인 전 정상선언은 사용자 지표 검증보다 종료 공지가 먼저인 잘못된 절차다. 내부 오류 감소만으로 복구를 확정하지 않는다.","relations":["process","classification","boundary"]}
+{"primary":"심각도 상향 후 인력호출","text":"심각도 상향 후 인력호출은 영향 범위가 커졌다고 판정한 다음 추가 담당자를 부른 순서다. 호출 응답시각은 별도 사건이다.","relations":["process","function","state"]}
+{"primary":"두 대응팀 동시조사","text":"두 대응팀 동시조사는 애플리케이션과 네트워크 팀이 같은 기간 서로 다른 가설을 검토한 상태다. 조사 결과가 동일하다는 뜻은 아니다.","relations":["process","role","contrast"]}
+{"primary":"완화실패 뒤 대체조치","text":"완화실패 뒤 대체조치는 첫 조치로 지표가 회복되지 않은 것을 확인한 다음 다른 경로를 선택한 연쇄다. 실행 명령만으로 실패를 판단하지 않는다.","relations":["part_of","process","state"]}
+{"primary":"상태공지와 복구작업 겹침","text":"상태공지와 복구작업 겹침은 사용자 안내를 갱신하는 동안 운영자가 조치를 계속한 부분 중첩이다. 공지 완료가 복구 완료는 아니다.","relations":["process","comparison","boundary"]}
+{"primary":"사건지휘 지정 전 변경승인","text":"사건지휘 지정 전 변경승인은 책임 경계가 서기 전에 고위험 조치를 허용한 순서다. 자동 안전조치와 수동 변경을 구별한다.","relations":["process","attribute","function"]}
+{"primary":"정상화 뒤 관찰유지","text":"정상화 뒤 관찰유지는 지표가 범위로 돌아온 다음 일정 시간 집중 감시를 이어간 절차다. 최초 정상 표본에서 사건을 닫지 않는다.","relations":["process","classification","state"]}
+{"primary":"사건종료 후 회고예약","text":"사건종료 후 회고예약은 대응 채널을 닫은 다음 참여자와 증거를 모을 일정을 잡은 순서다. 회고 일정이 사건의 일부 기간은 아니다.","relations":["process","contrast","attribute"]}
+{"primary":"메시지 게시 뒤 소비","text":"메시지 게시 뒤 소비는 생산자가 큐에 항목을 넣은 다음 소비자가 가져간 정상 선후다. 수신 확인이 처리 완료를 뜻하지 않는다.","relations":["process","state","boundary"]}
+{"primary":"두 소비자 병렬처리","text":"두 소비자 병렬처리는 서로 다른 파티션의 항목을 같은 시간에 처리한 경우다. 한 항목을 중복 처리했다는 뜻은 아니다.","relations":["process","comparison","attribute"]}
+{"primary":"커밋 전 결과발행","text":"커밋 전 결과발행은 입력 처리 확정보다 후속 메시지 발행이 먼저인 위험 순서다. 멱등성 보장이 있는지 별도로 확인한다.","relations":["process","classification","boundary"]}
+{"primary":"재시도 뒤 성공확정","text":"재시도 뒤 성공확정은 첫 처리 실패 다음 다시 실행해 커밋까지 마친 사건열이다. 재전송만으로 성공이라 하지 않는다.","relations":["process","function","state"]}
+{"primary":"백로그증가와 확장 겹침","text":"백로그증가와 확장 겹침은 대기열이 계속 늘어나는 동안 소비자 수를 늘린 부분 중첩이다. 확장 직후 감소가 보장되지는 않는다.","relations":["process","role","contrast"]}
+{"primary":"가시성시간 만료 후 재노출","text":"가시성시간 만료 후 재노출은 처리 확인이 오지 않아 항목이 다시 소비 가능해진 순서다. 새 메시지 생성과 구분한다.","relations":["part_of","process","state"]}
+{"primary":"순서키 누락과 처리역전","text":"순서키 누락과 처리역전은 관련 항목이 다른 파티션으로 나뉘어 후속 작업이 먼저 끝난 사건이다. 게시시각만으로 업무 순서를 복원하지 않는다.","relations":["process","comparison","boundary"]}
+{"primary":"죽은편지 이동 전 재시도","text":"죽은편지 이동 전 재시도는 허용 횟수만큼 처리를 반복한 다음 격리 큐로 보낸 절차다. 첫 실패에서 즉시 격리한 경우와 다르다.","relations":["process","attribute","function"]}
+{"primary":"큐정지와 진행중처리 겹침","text":"큐정지와 진행중처리 겹침은 신규 전달을 막았지만 이미 받은 작업은 끝까지 실행된 상태다. 정지시점을 전체 처리 종료로 보지 않는다.","relations":["process","classification","state"]}
+{"primary":"재처리 완료 후 격리해제","text":"재처리 완료 후 격리해제는 원인을 고친 항목의 성공을 확인한 다음 같은 유형 격리를 풀어 준 순서다. 한 건 성공만으로 전체를 해제하지 않는다.","relations":["process","contrast","attribute"]}
+{"primary":"객체업로드 뒤 색인등록","text":"객체업로드 뒤 색인등록은 본문 저장을 확정한 다음 검색용 메타데이터를 만든 순서다. 임시 멀티파트 조각을 완성 객체로 보지 않는다.","relations":["process","state","boundary"]}
+{"primary":"복제와 사용자읽기 겹침","text":"복제와 사용자읽기 겹침은 주 저장소에서 제공하는 동안 다른 리전으로 객체가 복사된 부분 중첩이다. 복제본이 이미 최신이라는 뜻은 아니다.","relations":["process","comparison","attribute"]}
+{"primary":"무결성검사 전 원본삭제","text":"무결성검사 전 원본삭제는 복사본 검증보다 원본 제거가 먼저인 잘못된 순서다. 전송 완료 신호만으로 복구 가능성을 확정하지 않는다.","relations":["process","classification","boundary"]}
+{"primary":"수명주기 전환 후 저온보관","text":"수명주기 조건을 만족한 뒤 저온 계층으로 옮기는 사건이다. 수명주기 전환 후 저온보관은 색인 변경과 실제 데이터 이동을 함께 추적해야 한다.","relations":["process","function","state"]}
+{"primary":"여러 조각 동시전송","text":"여러 조각 동시전송은 한 큰 객체의 조각들이 같은 기간 병렬로 올라간 상태다. 조각 번호 순서와 전송 완료 순서는 다를 수 있다.","relations":["process","role","contrast"]}
+{"primary":"쓰기확정 뒤 캐시무효화","text":"쓰기확정 뒤 캐시무효화는 새 객체 버전을 저장한 다음 이전 응답을 캐시에서 제거한 순서다. 무효화 요청만으로 모든 엣지가 갱신되지는 않는다.","relations":["part_of","process","state"]}
+{"primary":"복구요청과 자료해동 겹침","text":"복구요청과 자료해동 겹침은 여러 보관 객체의 해동이 병렬로 진행된 상태다. 요청 접수시각을 읽기 가능시각으로 보지 않는다.","relations":["process","comparison","boundary"]}
+{"primary":"버전잠금 전 덮어쓰기","text":"버전잠금 전 덮어쓰기는 보호 설정이 적용되기 전에 새 내용이 이전 내용을 대체한 위험 선후다. 휴지통 보존 여부를 따로 확인한다.","relations":["process","attribute","function"]}
+{"primary":"복제실패 뒤 재전송","text":"복제실패 뒤 재전송은 대상 저장 오류가 확정된 다음 같은 버전을 다시 보낸 연쇄다. 중복 객체가 생성됐는지 식별자로 판단한다.","relations":["process","classification","state"]}
+{"primary":"보존만료 후 영구삭제","text":"보존만료 후 영구삭제는 법정·운영 유지기간이 끝난 다음 모든 버전을 제거한 절차다. 사용자 숨김과 실제 삭제는 다른 사건이다.","relations":["process","contrast","attribute"]}
+{"primary":"주소변경 뒤 DNS게시","text":"주소변경 뒤 DNS게시는 새 서비스 주소가 준비된 다음 이름 해석 값을 바꾼 순서다. 계획 문서의 주소를 준비 완료로 보지 않는다.","relations":["process","state","boundary"]}
+{"primary":"기존연결과 새해석 겹침","text":"기존연결과 새해석 겹침은 오래된 연결이 유지되는 동안 새 요청은 변경된 주소를 받은 상태다. 전환을 단일 순간으로 축약하지 않는다.","relations":["process","comparison","attribute"]}
+{"primary":"방화벽허용 전 트래픽전환","text":"방화벽허용 전 트래픽전환은 새 경로 접근을 열기 전에 요청을 보낸 잘못된 선후다. 제어면 규칙 저장과 데이터면 적용을 구분한다.","relations":["process","classification","boundary"]}
+{"primary":"경로광고 후 도달성확인","text":"경로광고 후 도달성확인은 새 네트워크 경로를 전파한 다음 실제 통신 시험을 수행한 순서다. 광고 수신만으로 서비스 가능이라 하지 않는다.","relations":["process","function","state"]}
+{"primary":"두 회선 동시전환","text":"두 회선 동시전환은 주·보조 경로 조정이 같은 시간에 진행된 상태다. 중간에 완전 단절이 없었는지는 별도 확인한다.","relations":["process","role","contrast"]}
+{"primary":"패킷손실 뒤 경로우회","text":"패킷손실 뒤 경로우회는 지속 손실이 확정된 다음 대체 회선으로 트래픽을 옮긴 사건열이다. 단일 표본 손실과 우회를 연결하지 않는다.","relations":["part_of","process","state"]}
+{"primary":"DNS전파와 캐시유지 겹침","text":"DNS전파와 캐시유지 겹침은 새 레코드가 퍼지는 동안 일부 해석기가 옛 값을 보유한 상태다. 모두가 동시에 바뀌었다고 보지 않는다.","relations":["process","comparison","boundary"]}
+{"primary":"인증서배포 전 포트개방","text":"인증서배포 전 포트개방은 안전한 종단 구성이 끝나기 전에 외부 접속을 연 위험한 순서다. 내부 시험 포트와 공개 포트를 구별한다.","relations":["process","attribute","function"]}
+{"primary":"경로복구 뒤 우회해제","text":"경로복구 뒤 우회해제는 주 회선의 안정성을 확인한 다음 임시 경로를 닫은 절차다. 첫 성공 패킷에서 즉시 복귀하지 않는다.","relations":["process","classification","state"]}
+{"primary":"네트워크변경 후 흐름감사","text":"네트워크변경 후 흐름감사는 전환을 마친 다음 예상하지 않은 출발지·목적지 통신을 확인한 순서다. 감사 시작을 변경 완료로 대신하지 않는다.","relations":["process","contrast","attribute"]}
+{"primary":"키발급 뒤 권한부여","text":"키발급 뒤 권한부여는 새 자격증명을 만든 다음 필요한 역할만 연결한 순서다. 빈 키 생성과 서비스 사용 가능을 같은 사건으로 보지 않는다.","relations":["process","state","boundary"]}
+{"primary":"옛키와 새키 병행기간","text":"옛키와 새키 병행기간은 교체 중 두 자격증명이 잠시 모두 유효한 겹침이다. 같은 요청이 두 번 인증됐다는 뜻은 아니다.","relations":["process","comparison","attribute"]}
+{"primary":"권한검토 전 관리자승격","text":"권한검토 전 관리자승격은 필요성 확인보다 높은 권한 부여가 먼저인 잘못된 절차다. 긴급계정 예외인지 기록으로 구분한다.","relations":["process","classification","boundary"]}
+{"primary":"토큰발급 후 세션시작","text":"토큰발급 후 세션시작은 인증을 통과한 다음 보호 자원 접근이 시작된 사건열이다. 로그인 화면 진입은 세션 시작이 아니다.","relations":["process","function","state"]}
+{"primary":"두 인증수단 동시검증","text":"두 인증수단 동시검증은 비밀번호와 보안키 검사가 같은 인증 흐름에서 병렬로 진행된 경우다. 어느 하나만으로 완료됐다는 뜻은 아니다.","relations":["process","role","contrast"]}
+{"primary":"계정잠금 뒤 요청거절","text":"계정잠금 뒤 요청거절은 위험 판정으로 계정 상태를 막은 다음 새 접근이 차단된 순서다. 이전에 열린 세션의 종료는 별도 사건이다.","relations":["part_of","process","state"]}
+{"primary":"권한회수와 세션만료 겹침","text":"권한회수와 세션만료 겹침은 새 요청 권한을 없애는 동안 기존 토큰이 만료를 기다린 상태다. 즉시 무효화 여부를 따로 본다.","relations":["process","comparison","boundary"]}
+{"primary":"감사로그 활성 전 정책변경","text":"감사로그 활성 전 정책변경은 추적 수단을 켜기 전에 중요한 권한 규칙을 바꾼 위험 선후다. 정책 초안 수정과 운영 변경을 나눈다.","relations":["process","attribute","function"]}
+{"primary":"침해확인 후 키폐기","text":"침해확인 후 키폐기는 유출 근거를 검증한 다음 자격증명을 무효화한 절차다. 의심만으로 폐기했는지는 대응 정책에 따라 구분한다.","relations":["process","classification","state"]}
+{"primary":"접근종료 뒤 증거보존","text":"접근종료 뒤 증거보존은 의심 세션을 끊은 다음 관련 인증·행위 로그를 고정한 순서다. 계정 삭제와 증거 삭제를 연결하지 않는다.","relations":["process","contrast","attribute"]}
+{"primary":"스냅샷 시작 뒤 증분기록","text":"스냅샷 시작 뒤 증분기록은 기준 복사를 만드는 동안 이후 변경을 별도 로그에 담은 겹친 절차다. 두 자료의 경계시각을 보존한다.","relations":["process","state","boundary"]}
+{"primary":"백업완료 후 무결성검사","text":"백업완료 후 무결성검사는 객체 생성이 끝난 다음 읽기와 체크섬을 시험한 순서다. 전송 종료만으로 복구 가능이라 하지 않는다.","relations":["process","comparison","attribute"]}
+{"primary":"검증 전 원본정리","text":"검증 전 원본정리는 백업을 실제로 읽어 보기 전에 운영 데이터를 제거한 위험한 선후다. 복제 성공표시와 복구 검증은 다르다.","relations":["process","classification","boundary"]}
+{"primary":"복원환경 준비 후 자료주입","text":"복원환경 준비 후 자료주입은 격리된 대상 자원을 만든 다음 백업 내용을 넣은 절차다. 빈 인스턴스 생성만으로 복원이 시작된 것은 아니다.","relations":["process","function","state"]}
+{"primary":"여러 샤드 동시복원","text":"여러 샤드 동시복원은 독립 데이터 조각을 같은 기간 병렬로 되살린 상태다. 상호 참조 검증은 모두 끝난 뒤 수행한다.","relations":["process","role","contrast"]}
+{"primary":"시점복구 뒤 로그재생","text":"시점복구 뒤 로그재생은 기준 스냅샷을 올린 다음 목표 시각까지 변경 기록을 적용한 순서다. 로그 파일명 순서보다 트랜잭션 순서를 따른다.","relations":["part_of","process","state"]}
+{"primary":"복원시험과 운영백업 겹침","text":"복원시험과 운영백업 겹침은 격리 환경에서 시험하는 동안 정기 백업도 계속된 상태다. 시험이 운영 저장물을 바꾸지 않게 분리한다.","relations":["process","comparison","boundary"]}
+{"primary":"보존잠금 전 백업삭제","text":"보존잠금 전 백업삭제는 변경불가 설정을 적용하기 전에 복구본을 지운 위험한 절차다. 사용자 목록에서 숨긴 사건과 구별한다.","relations":["process","attribute","function"]}
+{"primary":"복원실패 뒤 다른세대 선택","text":"복원실패 뒤 다른세대 선택은 한 복구본의 오류를 확인한 다음 이전 정상 세대로 바꾼 연쇄다. 첫 복원을 계속 재시도 중인지 살핀다.","relations":["process","classification","state"]}
+{"primary":"복구검증 후 임시환경폐기","text":"복구검증 후 임시환경폐기는 데이터·서비스 검사를 마친 다음 시험 자원을 없앤 순서다. 증거 로그는 별도 보존한다.","relations":["process","contrast","attribute"]}
+{"primary":"대기리전 동기화 후 전환","text":"대기리전 동기화 후 전환은 핵심 데이터가 목표점까지 따라온 다음 트래픽을 넘긴 순서다. 상태 표시 하나만으로 동기화를 확정하지 않는다.","relations":["process","state","boundary"]}
+{"primary":"주리전 축소와 대기확장 겹침","text":"주리전 축소와 대기확장 겹침은 기존 요청을 빼는 동안 대체 리전 용량을 늘린 부분 중첩이다. 총 가용량을 구간별로 확인한다.","relations":["process","comparison","attribute"]}
+{"primary":"이름해석 변경 전 서비스준비","text":"이름해석 변경 전 서비스준비는 대체 리전의 검사와 용량 확보를 마친 뒤 주소를 바꾸는 정상 선후다. 반대면 초기 실패가 생긴다.","relations":["process","classification","boundary"]}
+{"primary":"전환명령 후 신규요청이동","text":"전환명령 후 신규요청이동은 라우팅 변경 다음 새 연결이 대기리전으로 향한 사건열이다. 기존 연결의 잔류를 별도로 본다.","relations":["process","function","state"]}
+{"primary":"두 데이터계층 동시승격","text":"두 데이터계층 동시승격은 독립 저장소의 주 역할 변경이 같은 복구 창에서 진행된 상태다. 의존 순서가 없는지 설계로 확인한다.","relations":["process","role","contrast"]}
+{"primary":"주리전장애 뒤 자동전환","text":"주리전장애 뒤 자동전환은 헬스 조건이 충족된 다음 대체 리전이 활성화된 연쇄다. 경보 수신이 실제 전환보다 늦을 수 있다.","relations":["part_of","process","state"]}
+{"primary":"데이터재동기화와 사용자복귀 겹침","text":"데이터재동기화와 사용자복귀 겹침은 일부 읽기 제공 중 뒤처진 데이터를 맞추는 상태다. 쓰기 허용 범위를 명시해야 한다.","relations":["process","comparison","boundary"]}
+{"primary":"안정확인 전 원리전복귀","text":"안정확인 전 원리전복귀는 재발 여부를 관찰하기 전에 트래픽을 되돌린 위험한 순서다. 첫 정상 표본과 안정 판정을 구분한다.","relations":["process","attribute","function"]}
+{"primary":"복귀완료 뒤 임시자원축소","text":"복귀완료 뒤 임시자원축소는 주 리전 서비스가 안정된 다음 대체 용량을 줄인 절차다. 전환 종료와 비용 정리를 나눈다.","relations":["process","classification","state"]}
+{"primary":"재해모드 종료 후 기록봉인","text":"재해모드 종료 후 기록봉인은 정상 운영으로 돌아온 다음 전환·조치 로그를 변경불가 상태로 보존한 순서다. 회고 작성은 그 뒤 가능하다.","relations":["process","contrast","attribute"]}
+{"primary":"배포승인 뒤 카나리시작","text":"배포승인 뒤 카나리시작은 변경 위험을 검토한 다음 일부 인스턴스에 새 버전을 올린 순서다. 이미지 업로드를 카나리 노출로 보지 않는다.","relations":["process","state","boundary"]}
+{"primary":"카나리관찰과 기존서비스 겹침","text":"카나리관찰과 기존서비스 겹침은 소수 새 버전을 지켜보는 동안 다수 이전 버전이 요청을 처리한 상태다. 전체 배포 완료가 아니다.","relations":["process","comparison","attribute"]}
+{"primary":"오류판정 전 전면확대","text":"오류판정 전 전면확대는 충분한 관찰이 끝나기 전에 새 버전 비율을 높인 잘못된 절차다. 초기 무오류와 안정성을 구분한다.","relations":["process","classification","boundary"]}
+{"primary":"배포중지 후 롤백","text":"배포중지 후 롤백은 이상 기준 충족으로 확대를 멈춘 다음 이전 버전 복원을 시작한 순서다. 중지와 복원 완료는 다른 사건이다.","relations":["process","function","state"]}
+{"primary":"여러 리전 순차확대","text":"여러 리전 순차확대는 첫 리전 검증 뒤 다음 리전에 변경을 적용한 사건열이다. 일부 준비 작업의 병행과 배포 순서를 나눠 본다.","relations":["process","role","contrast"]}
+{"primary":"롤백완료 뒤 오류감소","text":"롤백완료 뒤 오류감소는 이전 버전이 다시 요청을 맡은 다음 실패율이 내려간 관측 순서다. 자연 회복 가능성도 별도로 검토한다.","relations":["part_of","process","state"]}
+{"primary":"캐시정리와 버전복원 겹침","text":"캐시정리와 버전복원 겹침은 이전 코드로 되돌리는 동안 새 형식 캐시를 제거한 부분 중첩이다. 순서 의존 항목은 따로 직렬화한다.","relations":["process","comparison","boundary"]}
+{"primary":"데이터호환 확인 전 롤백","text":"데이터호환 확인 전 롤백은 새 버전이 쓴 데이터를 옛 코드가 읽을 수 있는지 검사하기 전에 복원한 위험 순서다. 코드와 스키마 복귀를 구별한다.","relations":["process","attribute","function"]}
+{"primary":"정상확인 후 배포재개","text":"정상확인 후 배포재개는 원인을 고치고 카나리 지표를 다시 검증한 다음 확대를 이어간 절차다. 단순 시간 경과만으로 재개하지 않는다.","relations":["process","classification","state"]}
+{"primary":"전면완료 뒤 변경창종료","text":"전면완료 뒤 변경창종료는 모든 대상이 목표 버전으로 안정된 다음 운영 창을 닫은 순서다. 배포 명령 종료와 안정화 완료를 나눠 기록한다.","relations":["process","contrast","attribute"]}
+{"primary":"사건종료 뒤 증거수집","text":"사건종료 뒤 증거수집은 서비스 안정화 다음 로그·메트릭·대화 기록을 고정한 순서다. 자동 보존은 대응 중에도 병행될 수 있다.","relations":["process","state","boundary"]}
+{"primary":"연표작성과 원인분석 겹침","text":"연표작성과 원인분석 겹침은 사건 순서를 맞추는 동안 여러 원인 가설을 검토한 부분 중첩이다. 가설을 확정 사실로 연표에 쓰지 않는다.","relations":["process","comparison","attribute"]}
+{"primary":"원인확정 전 책임배정","text":"원인확정 전 책임배정은 증거 검토보다 개인 책임 판단이 먼저인 잘못된 절차다. 시스템 소유자 지정과 과실 판정을 구분한다.","relations":["process","classification","boundary"]}
+{"primary":"기여요인 정리 후 개선안","text":"기여요인 정리 후 개선안은 기술·절차 조건을 식별한 다음 재발 방지 조치를 설계한 순서다. 떠오른 아이디어를 확정 조치로 보지 않는다.","relations":["process","function","state"]}
+{"primary":"여러 팀 동시검토","text":"여러 팀 동시검토는 코드·인프라·운영 관점의 분석이 같은 기간 병렬로 진행된 상태다. 결과를 합칠 검증 단계가 필요하다.","relations":["process","role","contrast"]}
+{"primary":"개선안 승인 뒤 작업등록","text":"개선안 승인 뒤 작업등록은 우선순위와 책임을 정한 다음 추적 가능한 항목을 만든 순서다. 회의 메모만으로 실행 약속이 되지 않는다.","relations":["part_of","process","state"]}
+{"primary":"문서작성과 자료검증 겹침","text":"문서작성과 자료검증 겹침은 초안을 쓰는 동안 수치와 시각을 계속 대조한 상태다. 검증 전 수치를 최종 결론으로 인용하지 않는다.","relations":["process","comparison","boundary"]}
+{"primary":"후속시험 전 조치종료","text":"후속시험 전 조치종료는 개선 효과를 확인하기 전에 작업을 닫은 잘못된 절차다. 구현 완료와 위험 해소를 구분한다.","relations":["process","attribute","function"]}
+{"primary":"재현시험 성공 후 검증완료","text":"재현시험 성공 후 검증완료는 동일 조건에서 문제가 돌아오지 않음을 확인한 다음 조치를 닫은 순서다. 한 번의 성공에 필요한 반복 수를 정책으로 정한다.","relations":["process","classification","state"]}
+{"primary":"회고공개 뒤 학습반영","text":"회고공개 뒤 학습반영은 검토된 내용을 공유한 다음 운영절차·교육·자동화에 반영한 사건열이다. 문서 게시만으로 변화가 완료된 것은 아니다.","relations":["process","contrast","attribute"]}

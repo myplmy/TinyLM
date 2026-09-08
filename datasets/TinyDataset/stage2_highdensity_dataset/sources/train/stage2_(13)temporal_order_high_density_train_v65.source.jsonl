@@ -1,0 +1,150 @@
+{"primary":"열원기동 상승구간","text":"열원기동 상승구간은 버너 점화 뒤 목표 출수온도에 이를 때까지의 운전 범위다. 연료 투입 명령이 아니라 실제 화염 형성과 출수온도 곡선으로 이 구간의 양 끝을 정한다.","relations":["process","state","boundary"]}
+{"primary":"주순환펌프 가속구간","text":"주순환펌프 가속구간은 회전 명령부터 배관 유량이 안정될 때까지 이어진다. 회전수만 오른 뒤 유량이 늦게 따라오면 유압 안정이 끝난 시각을 종료점으로 선택한다.","relations":["process","attribute","comparison"]}
+{"primary":"열원펌프 부분겹침","text":"열원기동 상승구간 도중 주순환펌프 가속구간이 시작되면 열원펌프 부분겹침이 성립한다. 공유된 시간의 길이가 양쪽 구간보다 짧은지 확인해야 단순 접촉과 구별할 수 있다.","relations":["classification","process","role"]}
+{"primary":"열원선행 겹침형","text":"열원선행 겹침형은 열원 구간이 먼저 열리고 펌프 구간과 함께 진행되다 먼저 닫히는 배열이다. 네 경계의 순서는 열원 시작·펌프 시작·열원 종료·펌프 종료로 배열된다.","relations":["part_of","process","state"]}
+{"primary":"펌프후행 겹침형","text":"펌프후행 겹침형에서는 펌프 가속이 열원 상승 중 시작되어 열원 안정 뒤에도 남는다. 공동 운전이 끝난 뒤 남은 펌프 시간은 잔열 운반 구간으로 따로 계산한다.","relations":["boundary","function","process"]}
+{"primary":"열원펌프 완전동시","text":"두 구간의 시작과 끝이 모두 같을 때만 열원펌프 완전동시라고 판정한다. 한쪽 장치의 로그 해상도가 거칠면 같은 분 표기만으로 완전 일치를 확정하지 않는다.","relations":["classification","comparison","state"]}
+{"primary":"열원구간 내 펌프포함","text":"펌프의 가속 시작과 종료가 열원 상승 범위 안에 있으면 열원구간 내 펌프포함이다.","relations":["attribute","contrast","process"]}
+{"primary":"열원펌프 끝점접촉","text":"열원 상승이 끝난 바로 그 시각에 펌프 가속이 시작되면 열원펌프 끝점접촉이다.","relations":["process","role","state"]}
+{"primary":"열원펌프 무겹침","text":"한 구간이 닫힌 뒤 시간 간격을 두고 다른 구간이 열리면 열원펌프 무겹침이다.","relations":["boundary","part_of","process"]}
+{"primary":"열원펌프 구간판정표","text":"열원펌프 구간판정표는 두 시작점과 두 종료점을 나란히 놓아 겹침 종류를 가른다. 장치 명령과 실제 열·유량 반응을 다른 행에 두어 시간 오차를 드러낸다.","relations":["attribute","comparison","process"]}
+{"primary":"일차펌프 운전구간","text":"일차펌프 운전구간은 열원측 순환이 실제 유지된 시작점과 정지점 사이를 뜻한다. 접촉기 투입보다 실제 회전과 유량이 확인된 때를 시작 경계로 삼는다.","relations":["process","state","boundary"]}
+{"primary":"이차펌프 운전구간","text":"이차펌프 운전구간은 수용가측 압력 확보를 위해 회전한 시간 범위다. 수용가 차압이 유지되지 않은 시험 회전은 정상 운전구간에서 제외해 기록한다.","relations":["process","attribute","comparison"]}
+{"primary":"일이차펌프 교차겹침","text":"일차펌프가 아직 도는 동안 이차펌프가 기동하면 일이차펌프 교차겹침이 생긴다. 두 유량곡선이 동시에 양수인 시간을 직접 구해야 명령 중첩과 실제 운전을 나눌 수 있다.","relations":["classification","process","role"]}
+{"primary":"일차선행 펌프겹침","text":"일차선행 펌프겹침은 일차 순환이 먼저 시작되고 공동 운전 뒤 먼저 끝나는 관계다. 이 관계에서는 양쪽이 함께 도는 공유구간 뒤에 이차펌프 단독운전이 남는다.","relations":["part_of","process","state"]}
+{"primary":"이차선행 펌프겹침","text":"이차선행 펌프겹침에서는 이차 순환이 먼저 열리고 일차 정지 뒤까지 지속된다. 순서가 반대면 일차 투입 전 이차 단독운전과 두 펌프의 공동시간이 차례로 나타난다.","relations":["boundary","function","process"]}
+{"primary":"일이차펌프 동시운전","text":"일이차펌프 동시운전은 양쪽 운전구간의 양 끝점이 모두 일치할 때 성립한다. 시작만 같거나 종료만 같은 경우는 완전동시가 아니라 한쪽 경계만 일치한 관계다.","relations":["classification","comparison","state"]}
+{"primary":"일차운전 속 이차운전","text":"이차펌프의 전체 운전이 일차펌프 범위 안에 놓이면 일차운전 속 이차운전이다.","relations":["attribute","contrast","process"]}
+{"primary":"펌프교대 끝점접속","text":"일차펌프 정지와 이차펌프 기동이 같은 순간이면 펌프교대 끝점접속으로 기록한다.","relations":["process","role","state"]}
+{"primary":"일이차펌프 분리운전","text":"두 펌프 운전 사이에 정지 공백이 있으면 일이차펌프 분리운전으로 구분한다.","relations":["boundary","part_of","process"]}
+{"primary":"펌프운전 겹침도","text":"펌프운전 겹침도는 각 펌프의 실제 회전 시작과 끝을 기준으로 관계를 표시한다. 교대 운전과 병행 운전을 색으로 나누면 끝점 접촉도 별도로 읽을 수 있다.","relations":["attribute","comparison","process"]}
+{"primary":"공급밸브 개방구간","text":"공급밸브 개방구간은 개방 동작이 시작되어 목표 개도에 멈출 때까지다. 명령 수신과 밸브축 이동 사이의 지연을 빼고 실제 개도 변화가 있는 범위만 사용한다.","relations":["process","state","boundary"]}
+{"primary":"환수밸브 폐쇄구간","text":"환수밸브 폐쇄구간은 닫힘 명령 뒤 차단 위치에 도달할 때까지 이어진다. 차단 위치 신호가 흔들리면 연속으로 닫힘이 유지된 첫 시각을 종료 경계로 정한다.","relations":["process","attribute","comparison"]}
+{"primary":"공급환수밸브 부분중첩","text":"두 밸브가 서로 다른 시각에 움직이면서 일부 시간만 공유하면 공급환수밸브 부분중첩이다. 두 위치곡선이 함께 변하는 양의 길이 구간이 있어야 부분 중첩으로 인정한다.","relations":["classification","process","role"]}
+{"primary":"공급밸브 선행중첩","text":"공급밸브 선행중첩은 공급측 동작이 먼저 시작되고 환수측보다 먼저 끝나는 순서다. 공급측이 단독으로 움직인 구간 뒤 공동 동작이 오고 환수측 단독구간은 남지 않는다.","relations":["part_of","process","state"]}
+{"primary":"환수밸브 후행중첩","text":"환수밸브 후행중첩에서는 환수측 동작이 공급측 진행 중 열려 그 뒤까지 남는다. 공급 개방이 끝난 뒤에도 환수 폐쇄가 이어지는 후행 부분을 별도 운전시간으로 센다.","relations":["boundary","function","process"]}
+{"primary":"공급환수밸브 완전일치","text":"개방과 폐쇄의 시작·종료가 각각 같을 때 공급환수밸브 완전일치로 본다. 양쪽 시계의 편차를 보정한 뒤 네 경계가 모두 같을 때만 이 강한 관계를 부여한다.","relations":["classification","comparison","state"]}
+{"primary":"공급동작 내 환수동작","text":"환수 폐쇄 전 과정이 공급 개방 시간 안에 들어가면 공급동작 내 환수동작이다.","relations":["attribute","contrast","process"]}
+{"primary":"밸브전환 끝점맞닿음","text":"공급 개방 완료와 환수 폐쇄 시작이 동일 시각이면 밸브전환 끝점맞닿음이다.","relations":["process","role","state"]}
+{"primary":"공급환수밸브 비중첩","text":"공급측 동작이 끝난 뒤 환수측이 움직여 공유 시간이 없으면 공급환수밸브 비중첩이다.","relations":["boundary","part_of","process"]}
+{"primary":"밸브동작 구간대조","text":"밸브동작 구간대조는 명령 시각이 아니라 실제 위치 변화의 양 끝을 비교한다. 개도 변화가 멈춘 순간을 기준으로 삼아 통신 지연이 경계를 옮기지 않게 한다.","relations":["attribute","comparison","process"]}
+{"primary":"출수온도 상승구간","text":"출수온도 상승구간은 센서값이 오르기 시작한 때부터 설정범위에 머문 때까지다. 센서 한 표본의 상승이 아니라 연속 추세 시작과 설정대역 유지 조건으로 범위를 확정한다.","relations":["process","state","boundary"]}
+{"primary":"환수온도 회복구간","text":"환수온도 회복구간은 낮아진 환수값이 정상 대역으로 돌아오는 시간 범위다. 부하 변화로 생긴 일시 반등은 제외하고 정상대역 안에서 유지된 때를 종료로 본다.","relations":["process","attribute","comparison"]}
+{"primary":"출환수온도 부분겹침","text":"출수 상승과 환수 회복이 일부 시간에만 함께 진행되면 출환수온도 부분겹침이다. 각 변화구간의 교집합이 비어 있지 않으면서 어느 한쪽 전체와 같지 않아야 한다.","relations":["classification","process","role"]}
+{"primary":"출수선행 온도겹침","text":"출수선행 온도겹침은 출수 상승이 먼저 열리고 공동 변화 뒤 먼저 안정되는 배열이다. 출수 변화가 먼저 열리고 환수 회복과 공유된 뒤 출수부터 안정되는 순서가 핵심이다.","relations":["part_of","process","state"]}
+{"primary":"환수후행 온도겹침","text":"환수후행 온도겹침에서는 환수 회복이 출수 상승 중 시작되어 이후에도 계속된다. 환수측 열관성 때문에 출수 안정 뒤에도 회복이 계속되는지를 원시곡선에서 확인한다.","relations":["boundary","function","process"]}
+{"primary":"출환수온도 완전동시","text":"두 온도 변화의 시작과 안정 시각이 모두 같아야 출환수온도 완전동시다. 표본 간격이 다르면 공통 시간눈금으로 보간하되 추정 오차보다 작은 차이는 불확실로 남긴다.","relations":["classification","comparison","state"]}
+{"primary":"출수상승 속 환수회복","text":"환수 회복 전부가 출수 상승 범위에 포함되면 출수상승 속 환수회복이다.","relations":["attribute","contrast","process"]}
+{"primary":"온도변화 끝점접촉","text":"출수 상승 종료와 환수 회복 시작이 같은 때면 온도변화 끝점접촉으로 분류한다.","relations":["process","role","state"]}
+{"primary":"출환수온도 무공유","text":"두 변화구간 사이에 안정 공백이 있으면 출환수온도 무공유로 판정한다.","relations":["boundary","part_of","process"]}
+{"primary":"온도구간 겹침판독","text":"온도구간 겹침판독은 표본시각보다 변화 시작·안정 경계를 먼저 확정한다. 센서별 표본간격을 표시하면 관측되지 않은 짧은 겹침을 과장하지 않는다.","relations":["attribute","comparison","process"]}
+{"primary":"압력상승 제어구간","text":"압력상승 제어구간은 펌프 지령 뒤 말단 압력이 목표 대역에 들 때까지다. 제어명령보다 말단 압력의 실제 상승과 안정 조건을 사용해 운전 범위를 측정한다.","relations":["process","state","boundary"]}
+{"primary":"차압완화 제어구간","text":"차압완화 제어구간은 과도한 차압을 낮추기 시작해 허용범위에 안착할 때까지다. 밸브 조정 뒤 차압이 허용대역에 머무른 첫 시각까지를 물리적 완화 과정으로 본다.","relations":["process","attribute","comparison"]}
+{"primary":"압력차압 부분교차","text":"상승 제어와 완화 제어가 일부 구간에서 함께 작동하면 압력차압 부분교차다. 두 제어가 동시에 유효했던 교집합과 각자만 작동한 구간이 모두 존재해야 한다.","relations":["classification","process","role"]}
+{"primary":"압력상승 선행교차","text":"압력상승 선행교차는 상승 제어가 먼저 시작되고 공동 운전 중 먼저 끝나는 형식이다. 상승제어 단독·공동제어·완화제어 단독의 세 부분이 어떤 순서인지 확인한다.","relations":["part_of","process","state"]}
+{"primary":"차압완화 후행교차","text":"차압완화 후행교차에서는 완화 동작이 상승 제어 중 열려 그 종료 뒤까지 이어진다. 완화가 늦게 끝난 이유가 수용가 밸브 반응인지 제어 해제 지연인지 구분해 기록한다.","relations":["boundary","function","process"]}
+{"primary":"압력제어 완전동시","text":"양쪽 제어의 개시와 해제가 모두 일치해야 압력제어 완전동시로 인정한다. 양 제어기의 개시와 해제 로그가 같은 서버시계에 맞춰진 뒤 일치 여부를 판정한다.","relations":["classification","comparison","state"]}
+{"primary":"상승제어 내 완화제어","text":"완화 제어의 전체 구간이 상승 제어 안에 놓이면 상승제어 내 완화제어다.","relations":["attribute","contrast","process"]}
+{"primary":"압력제어 끝점교대","text":"상승 제어 해제와 완화 제어 개시가 한 시각이면 압력제어 끝점교대다.","relations":["process","role","state"]}
+{"primary":"압력제어 시간분리","text":"한 제어가 끝난 뒤 다른 제어가 시작되어 간격이 남으면 압력제어 시간분리다.","relations":["boundary","part_of","process"]}
+{"primary":"압력제어 구간행렬","text":"압력제어 구간행렬은 두 제어의 네 경계를 대조해 중첩 상태를 정한다. 행렬의 각 칸에는 선행·포함·동시·분리 여부와 근거 시각을 함께 적는다.","relations":["attribute","comparison","process"]}
+{"primary":"열수요 급증구간","text":"열수요 급증구간은 여러 수용가의 합산 부하가 기준선을 넘어선 시간 범위다. 기준 초과 표본 하나가 아니라 여러 계량구간에서 부하가 지속된 범위로 피크를 정의한다.","relations":["process","state","boundary"]}
+{"primary":"축열조 방열구간","text":"축열조 방열구간은 저장열 공급이 시작되어 방열 지령이 해제될 때까지다. 밸브 개방보다 저장조 출구 열량이 양수가 된 때를 실제 방열 시작으로 삼는다.","relations":["process","attribute","comparison"]}
+{"primary":"수요축열 부분겹침","text":"수요 급증 중 일부 시간에만 축열조가 방열하면 수요축열 부분겹침이다. 부하 초과창과 방열창의 교집합을 구해 요청과 실제 지원이 공유한 시간을 측정한다.","relations":["classification","process","role"]}
+{"primary":"수요선행 방열겹침","text":"수요선행 방열겹침은 부하 급증이 먼저 시작되고 방열과 겹친 뒤 먼저 끝난다. 지원 전에 남은 수요 단독구간과 방열 종료 뒤의 상태를 구분해 대응 지연을 평가한다.","relations":["part_of","process","state"]}
+{"primary":"방열후행 수요겹침","text":"방열후행 수요겹침에서는 축열 공급이 급증 중 시작되어 부하 정상화 뒤에도 남는다. 피크가 끝난 뒤 남은 방열은 배관 열관성인지 늦은 제어 해제인지 따로 확인한다.","relations":["boundary","function","process"]}
+{"primary":"수요축열 완전동시","text":"급증 시작·종료와 방열 개시·해제가 모두 같을 때 수요축열 완전동시다. 계량창과 제어창의 해상도가 다르면 동일한 분 표기만으로 두 구간을 같다고 하지 않는다.","relations":["classification","comparison","state"]}
+{"primary":"급증구간 내 축열방열","text":"축열조 방열 전부가 부하 급증 시간에 들어가면 급증구간 내 축열방열이다.","relations":["attribute","contrast","process"]}
+{"primary":"수요방열 끝점접촉","text":"수요 급증 종료와 축열 방열 개시가 같은 순간이면 수요방열 끝점접촉이다.","relations":["process","role","state"]}
+{"primary":"수요축열 비중첩","text":"방열이 급증 전 끝나거나 급증 뒤 시작해 시간이 겹치지 않으면 수요축열 비중첩이다.","relations":["boundary","part_of","process"]}
+{"primary":"수요축열 시간대조","text":"수요축열 시간대조는 부하 초과와 실제 방열의 양 끝점을 한 축에 놓는다. 계량 지연을 보정한 뒤에야 피크 대응의 시작과 종료를 공정하게 평가할 수 있다.","relations":["attribute","comparison","process"]}
+{"primary":"주열교환기 운전구간","text":"주열교환기 운전구간은 유체가 주교환기를 통과하며 열을 전달한 실제 시간이다. 밸브 열림 신호 외에 양측 온도차와 유량이 함께 나타난 시간을 유효 운전으로 쓴다.","relations":["process","state","boundary"]}
+{"primary":"예비열교환기 운전구간","text":"예비열교환기 운전구간은 전환 뒤 예비기가 열부하를 받은 시작점과 끝점 사이다. 시험 순환은 실제 부하 인계가 아니므로 열량 전달이 확인된 범위만 포함한다.","relations":["process","attribute","comparison"]}
+{"primary":"열교환기 부분병행","text":"주기와 예비기가 인계 중 일부 시간만 함께 부하를 받으면 열교환기 부분병행이다. 두 교환기의 유효 열량이 함께 양수인 시간과 각 단독운전 시간이 모두 있어야 한다.","relations":["classification","process","role"]}
+{"primary":"주교환기 선행병행","text":"주교환기 선행병행은 주기가 먼저 운전되고 병행 인계 뒤 먼저 정지하는 관계다. 주기 단독운전 뒤 병행 인계가 이어지고 예비기 단독운전으로 넘어가는 배열이다.","relations":["part_of","process","state"]}
+{"primary":"예비교환기 후행병행","text":"예비교환기 후행병행에서는 예비기가 주기 운전 중 투입되어 그 뒤까지 가동된다. 예비기가 늦게 투입된 시점부터 주기 해제까지의 공유시간을 인계 중첩으로 센다.","relations":["boundary","function","process"]}
+{"primary":"열교환기 완전병행","text":"두 교환기의 투입과 해제가 모두 같을 때만 열교환기 완전병행이라고 한다. 한쪽이 대기모드인 동안은 물리적으로 켜져 있어도 동일 부하 병행으로 인정하지 않는다.","relations":["classification","comparison","state"]}
+{"primary":"주교환운전 내 예비시험","text":"예비기 시험 전체가 주기 운전 시간 안에 들면 주교환운전 내 예비시험이다.","relations":["attribute","contrast","process"]}
+{"primary":"열교환기 끝점인계","text":"주기 해제와 예비기 투입이 같은 시각이면 열교환기 끝점인계로 기록한다.","relations":["process","role","state"]}
+{"primary":"열교환기 순차운전","text":"주기 정지 뒤 공백을 두고 예비기가 투입되면 열교환기 순차운전이다.","relations":["boundary","part_of","process"]}
+{"primary":"열교환기 병행판정","text":"열교환기 병행판정은 밸브 명령보다 양쪽 실제 열전달 구간을 비교한다. 유효 열량이 없는 예열과 대기 회전은 병행시간에서 빼야 한다.","relations":["attribute","comparison","process"]}
+{"primary":"북부지관 압력안정구간","text":"북부지관 압력안정구간은 압력 흔들림이 줄어 목표 대역에 유지될 때까지다. 말단 센서가 목표대역을 연속 유지한 첫 구간을 택해 순간 통과를 안정으로 오인하지 않는다.","relations":["process","state","boundary"]}
+{"primary":"남부지관 압력안정구간","text":"남부지관 압력안정구간은 남부 말단의 압력이 허용범위에 정착하는 시간이다. 남부 수요 변동이 큰 경우 허용 지속시간을 채운 마지막 경계까지 관찰한다.","relations":["process","attribute","comparison"]}
+{"primary":"남북지관 안정부분겹침","text":"두 지관의 안정화가 일부 시간만 동시에 진행되면 남북지관 안정부분겹침이다. 두 안정화 과정의 공통시간과 각각의 단독시간을 모두 확인해 관계를 가른다.","relations":["classification","process","role"]}
+{"primary":"북부선행 안정겹침","text":"북부선행 안정겹침은 북부 안정화가 먼저 시작되고 남부보다 먼저 완료된다. 북부 변화 시작이 먼저이고 두 지관이 함께 안정화되다가 북부부터 끝나는 순서다.","relations":["part_of","process","state"]}
+{"primary":"남부후행 안정겹침","text":"남부후행 안정겹침에서는 남부 안정화가 북부 진행 중 열려 이후까지 이어진다. 남부 말단의 긴 배관 지연이 후행 종료를 만들었는지 유량 전파시간과 대조한다.","relations":["boundary","function","process"]}
+{"primary":"남북지관 완전동시안정","text":"양쪽 안정화 시작과 완료가 같을 때 남북지관 완전동시안정으로 판정한다. 센서 시계오차보다 경계차가 작을 때는 완전동시 대신 판정 유보 범위를 함께 남긴다.","relations":["classification","comparison","state"]}
+{"primary":"북부안정 속 남부안정","text":"남부 안정화의 전 과정이 북부 범위에 포함되면 북부안정 속 남부안정이다.","relations":["attribute","contrast","process"]}
+{"primary":"지관안정 끝점접속","text":"북부 안정화 완료와 남부 시작이 같은 순간이면 지관안정 끝점접속이다.","relations":["process","role","state"]}
+{"primary":"남북지관 안정분리","text":"한쪽 안정화가 끝난 뒤 다른 쪽이 시작되면 남북지관 안정분리다.","relations":["boundary","part_of","process"]}
+{"primary":"지관압력 겹침지도","text":"지관압력 겹침지도는 두 말단 압력의 변화 경계를 동일한 시간축에 표시한다. 북부와 남부의 서로 다른 전파지연을 지도에 함께 표시해 원인 순서를 보존한다.","relations":["attribute","comparison","process"]}
+{"primary":"누수구간 차단작업","text":"누수구간 차단작업은 차단밸브 조작 시작부터 누수 지관이 격리될 때까지다. 첫 밸브 조작부터 격리 압력 확인까지를 포함하고 현장 도착시간은 작업 전 단계로 둔다.","relations":["process","state","boundary"]}
+{"primary":"우회배관 개통작업","text":"우회배관 개통작업은 우회밸브 조작부터 대체 유량이 확보될 때까지다. 우회밸브가 열렸어도 대체 유량이 수용가에 도달하기 전이면 개통 완료로 보지 않는다.","relations":["process","attribute","comparison"]}
+{"primary":"차단우회 부분겹침","text":"누수 차단과 우회 개통이 일부 시간에 함께 진행되면 차단우회 부분겹침이다. 격리 작업과 대체 공급 준비가 실제로 동시에 진행된 구간을 장비로그에서 찾아야 한다.","relations":["classification","process","role"]}
+{"primary":"차단선행 우회겹침","text":"차단선행 우회겹침은 누수 차단이 먼저 시작되고 우회 개통 전 먼저 완료된다. 차단 작업이 먼저 시작된 뒤 두 작업이 공유되고 우회 개통이 나중에 끝나는 관계다.","relations":["part_of","process","state"]}
+{"primary":"우회후행 차단겹침","text":"우회후행 차단겹침에서는 우회 개통이 차단 중 시작되어 격리 뒤에도 계속된다. 격리 완료 뒤 남은 우회 조정시간은 복구 지연을 설명하는 별도 후행구간이다.","relations":["boundary","function","process"]}
+{"primary":"차단우회 완전동시","text":"두 작업의 시작과 완료가 모두 같을 때 차단우회 완전동시라고 판정한다. 시작과 완료 중 하나만 같으면 끝점 공유 또는 포함 관계이지 완전동시는 아니다.","relations":["classification","comparison","state"]}
+{"primary":"차단작업 내 우회개통","text":"우회 개통 전체가 누수 차단 시간 안에 들면 차단작업 내 우회개통이다.","relations":["attribute","contrast","process"]}
+{"primary":"차단우회 끝점전환","text":"차단 완료와 우회 개통 시작이 같은 시각이면 차단우회 끝점전환이다.","relations":["process","role","state"]}
+{"primary":"차단우회 시간비공유","text":"차단과 우회 사이에 작업 공백이 있으면 차단우회 시간비공유다.","relations":["boundary","part_of","process"]}
+{"primary":"누수대응 겹침판","text":"누수대응 겹침판은 격리와 대체 공급의 네 경계를 비교해 연속성을 확인한다. 무공급 공백이 남는지 확인하면 차단과 우회의 시간 연속성을 바로 판단할 수 있다.","relations":["attribute","comparison","process"]}
+{"primary":"첨두보일러 가동구간","text":"첨두보일러 가동구간은 점화 뒤 추가 열량을 내기 시작해 소화할 때까지다. 점화 명령이 아니라 안정 화염과 유효 열량이 나타난 시작점부터 실제 소화까지 센다.","relations":["process","state","boundary"]}
+{"primary":"축열조 충열구간","text":"축열조 충열구간은 잉여열 유입이 시작되어 목표 저장량에 도달할 때까지다. 펌프 운전 중에도 저장조 순열량이 음수면 충전이 아니므로 열량 방향을 함께 본다.","relations":["process","attribute","comparison"]}
+{"primary":"첨두충열 부분겹침","text":"첨두보일러 가동과 축열 충전이 일부 시간만 겹치면 첨두충열 부분겹침이다. 추가 생산이 저장으로 들어간 공통시간과 수용가로만 간 단독시간을 구분한다.","relations":["classification","process","role"]}
+{"primary":"첨두선행 충열겹침","text":"첨두선행 충열겹침은 보일러가 먼저 켜지고 공동 운전 뒤 먼저 꺼지는 관계다. 보일러가 먼저 열량을 내고 충전이 뒤따른 뒤 보일러부터 꺼지는 네 경계 배열이다.","relations":["part_of","process","state"]}
+{"primary":"충열후행 첨두겹침","text":"충열후행 첨두겹침에서는 축열 유입이 보일러 운전 중 시작되어 그 뒤까지 간다. 보일러 소화 뒤 배관 잔열로 충전이 계속됐는지 후행 열량곡선을 점검한다.","relations":["boundary","function","process"]}
+{"primary":"첨두충열 완전동시","text":"보일러 운전과 충열의 시작·종료가 모두 같아야 첨두충열 완전동시다. 열생산과 저장 유입의 시작·종료를 같은 계량주기로 환산한 뒤 일치 여부를 정한다.","relations":["classification","comparison","state"]}
+{"primary":"첨두운전 내 축열충전","text":"축열 충전 전부가 첨두보일러 가동 중 이뤄지면 첨두운전 내 축열충전이다.","relations":["attribute","contrast","process"]}
+{"primary":"첨두충열 끝점접촉","text":"첨두보일러 소화와 축열 충전 시작이 한 시각이면 첨두충열 끝점접촉이다.","relations":["process","role","state"]}
+{"primary":"첨두충열 무겹침","text":"보일러 운전과 축열 충전 사이에 간격이 있으면 첨두충열 무겹침으로 본다.","relations":["boundary","part_of","process"]}
+{"primary":"첨두축열 구간비교","text":"첨두축열 구간비교는 추가 생산과 저장의 실제 유효시간을 나란히 대조한다. 생산된 열이 수용가와 저장조 중 어디로 갔는지도 중첩 해석에 포함한다.","relations":["attribute","comparison","process"]}
+{"primary":"수용가 계량수집구간","text":"수용가 계량수집구간은 각 열량계 값을 차례로 읽어 관제에 모으는 시간이다. 첫 계량기 조회부터 마지막 유효 응답까지이며 재시도 대기는 별도 통신 상태로 기록한다.","relations":["process","state","boundary"]}
+{"primary":"부하피크 관측구간","text":"부하피크 관측구간은 합산 사용량이 상한을 넘은 시작점과 복귀점 사이다. 합산값이 상한을 넘은 첫 표본과 정상 복귀를 확인한 후속 표본 사이로 범위를 잡는다.","relations":["process","attribute","comparison"]}
+{"primary":"계량피크 부분겹침","text":"계량 수집과 부하피크 관측이 일부 시간만 함께하면 계량피크 부분겹침이다. 수집창 일부에서만 피크가 관측됐다면 미수집 시간의 부하를 임의로 같은 상태라 하지 않는다.","relations":["classification","process","role"]}
+{"primary":"계량선행 피크겹침","text":"계량선행 피크겹침은 수집이 먼저 시작되고 피크가 끝나기 전에 완료되는 배열이다. 수집 시작 뒤 피크가 열리고 수집 완료 전에 끝나는지 네 시각을 비교한다.","relations":["part_of","process","state"]}
+{"primary":"피크후행 계량겹침","text":"피크후행 계량겹침에서는 피크가 수집 도중 시작되어 수집 종료 뒤까지 계속된다. 수집이 닫힌 뒤에도 부하 초과가 남아 후속 계량창까지 이어지는지 확인한다.","relations":["boundary","function","process"]}
+{"primary":"계량피크 완전동시","text":"계량피크 완전동시는 수집 구간과 피크 판정 구간의 두 시작점과 두 종료점이 각각 일치한 관계다. 주기가 다르면 공통 시간축으로 환산하고 경계 오차를 비교한다.","relations":["classification","comparison","state"]}
+{"primary":"계량수집 내 피크구간","text":"부하피크 전부가 계량 수집 시간 안에 들면 계량수집 내 피크구간이다.","relations":["attribute","contrast","process"]}
+{"primary":"계량피크 끝점일치","text":"계량 수집 종료와 피크 시작이 한 시각이면 계량피크 끝점일치다.","relations":["process","role","state"]}
+{"primary":"계량피크 시간분리","text":"수집이 끝난 뒤 피크가 시작되거나 그 반대면 계량피크 시간분리다.","relations":["boundary","part_of","process"]}
+{"primary":"계량피크 중첩표","text":"계량피크 중첩표는 수집창과 부하초과창의 네 끝점을 기준으로 작성한다. 미응답 계량기가 있으면 공통구간의 신뢰범위를 낮춰 표시한다.","relations":["attribute","comparison","process"]}
+{"primary":"한파예보 유효구간","text":"한파예보 유효구간은 예보가 적용되는 시작시각부터 종료시각까지다. 발표시각과 적용 시작이 다를 수 있으므로 예보문에 명시된 효력 구간을 그대로 사용한다.","relations":["process","state","boundary"]}
+{"primary":"열망예열 운전구간","text":"열망예열 운전구간은 공급온도를 미리 올리기 시작해 준비운전을 끝낼 때까지다. 열원 출력 증가와 말단 온도 도달 사이를 구분해 실제 준비운전의 종료를 정한다.","relations":["process","attribute","comparison"]}
+{"primary":"예보예열 부분겹침","text":"한파예보 유효시간과 열망예열이 일부만 겹치면 예보예열 부분겹침이다. 예보가 유효한 동안 실제 예열이 작동한 공통시간을 구해 대응 범위를 평가한다.","relations":["classification","process","role"]}
+{"primary":"예보선행 예열겹침","text":"예보선행 예열겹침은 예보창이 먼저 열리고 예열이 진행되는 동안 먼저 닫힌다. 예열이 늦게 시작된 앞쪽 공백과 예보 종료 뒤 남은 운전을 별도 구간으로 남긴다.","relations":["part_of","process","state"]}
+{"primary":"예열후행 예보겹침","text":"예열후행 예보겹침에서는 예열이 예보창 안에서 시작해 예보 종료 뒤까지 이어진다. 예보창이 닫힌 뒤 지속된 예열이 관성 운전인지 갱신 누락인지 확인한다.","relations":["boundary","function","process"]}
+{"primary":"예보예열 완전동시","text":"예보 유효창과 예열 운전의 양 끝이 같을 때 예보예열 완전동시다. 예보 효력과 설비 운전의 시작·끝이 모두 일치해야 계획과 실행이 같은 구간이다.","relations":["classification","comparison","state"]}
+{"primary":"예보창 내 열망예열","text":"예열의 전체 과정이 한파예보 유효시간에 들어가면 예보창 내 열망예열이다.","relations":["attribute","contrast","process"]}
+{"primary":"예보예열 끝점접촉","text":"예보 종료와 예열 시작이 같은 순간이면 예보예열 끝점접촉으로 구분한다.","relations":["process","role","state"]}
+{"primary":"예보예열 비중첩","text":"예보 유효시간과 예열 운전 사이에 공백이 있으면 예보예열 비중첩이다.","relations":["boundary","part_of","process"]}
+{"primary":"한파대응 구간판독","text":"한파대응 구간판독은 예보 발표시각이 아니라 유효창과 실제 예열시간을 비교한다. 갱신된 예보가 효력창을 바꿨다면 이전 버전과 새 버전을 동시에 보존한다.","relations":["attribute","comparison","process"]}
+{"primary":"수요감축 요청구간","text":"수요감축 요청구간은 관제가 절감을 요구한 발효시각부터 해제시각까지다. 메시지 발송이 아니라 감축 의무가 실제 효력을 갖는 시각부터 해제까지를 뜻한다.","relations":["process","state","boundary"]}
+{"primary":"수용가 감축실행구간","text":"수용가 감축실행구간은 실제 열사용량이 기준보다 낮아진 시간 범위다. 기준선 오차를 보정한 계량값이 목표 아래로 내려간 첫 시점부터 센다.","relations":["process","attribute","comparison"]}
+{"primary":"요청실행 부분겹침","text":"감축 요청과 실제 실행이 일부 시간만 공유하면 요청실행 부분겹침이다. 요청창과 감축 실적창의 공통부분을 계산해 준수시간과 미준수시간을 나눈다.","relations":["classification","process","role"]}
+{"primary":"요청선행 실행겹침","text":"요청선행 실행겹침은 요청이 먼저 발효되고 실행과 겹친 뒤 먼저 끝나는 관계다. 요청 발효 뒤 실제 감축 전까지의 앞쪽 간격은 반응 지연으로 따로 기록한다.","relations":["part_of","process","state"]}
+{"primary":"실행후행 요청겹침","text":"실행후행 요청겹침에서는 감축이 요청 중 시작되어 해제 뒤에도 유지된다. 해제 뒤 남은 절감은 공정 복귀 지연일 수 있으므로 자발적 감축과 구별한다.","relations":["boundary","function","process"]}
+{"primary":"요청실행 완전동시","text":"요청 발효·해제와 감축 시작·종료가 모두 같아야 요청실행 완전동시다. 계량 분해능 때문에 양 끝이 범위로만 알려지면 완전 일치를 확정하지 않는다.","relations":["classification","comparison","state"]}
+{"primary":"요청창 내 감축실행","text":"감축 실행 전부가 요청 발효창에 들어가면 요청창 내 감축실행이다.","relations":["attribute","contrast","process"]}
+{"primary":"요청실행 끝점반응","text":"요청 해제와 감축 시작이 같은 때면 요청실행 끝점반응으로 기록한다.","relations":["process","role","state"]}
+{"primary":"요청실행 무중첩","text":"요청창 밖에서만 감축이 나타나 공유 시간이 없으면 요청실행 무중첩이다.","relations":["boundary","part_of","process"]}
+{"primary":"수요반응 겹침검사","text":"수요반응 겹침검사는 명령 전달이 아니라 요청 유효창과 계량 실행창을 대조한다. 요청 전달시각이 아니라 효력과 실제 절감의 공통시간을 성과로 계산한다.","relations":["attribute","comparison","process"]}
+{"primary":"주배관 보수구간","text":"주배관 보수구간은 작업구역 격리부터 압력시험을 마치고 복구할 때까지다. 현장 도착이 아니라 관로 격리 시작부터 압력시험 승인과 재개통 직전까지다.","relations":["process","state","boundary"]}
+{"primary":"임시열공급 운전구간","text":"임시열공급 운전구간은 이동식 열원이 대체 열량을 보내는 실제 시간이다. 이동식 장비가 켜진 때보다 수용가 계량점에 대체 열량이 도달한 때를 시작으로 본다.","relations":["process","attribute","comparison"]}
+{"primary":"보수공급 부분겹침","text":"배관 보수와 임시열공급이 일부 시간만 함께 진행되면 보수공급 부분겹침이다. 작업과 공급의 공통시간을 구하면 무공급 보수시간과 복구 뒤 잔여운전을 분리할 수 있다.","relations":["classification","process","role"]}
+{"primary":"보수선행 공급겹침","text":"보수선행 공급겹침은 보수가 먼저 시작되고 임시공급 종료 전 완료되는 배열이다. 보수가 먼저 열리고 임시공급이 중간에 투입돼 보수보다 늦게 끝나는 배열이다.","relations":["part_of","process","state"]}
+{"primary":"공급후행 보수겹침","text":"공급후행 보수겹침에서는 임시공급이 보수 중 시작되어 복구 뒤까지 이어진다. 본관 복구 뒤에도 대체 공급이 남은 구간은 전환 안정화 시간으로 따로 잰다.","relations":["boundary","function","process"]}
+{"primary":"보수공급 완전동시","text":"보수공급 완전동시는 보수 격리 구간과 임시 공급 구간이 같은 때 시작해 같은 때 끝난 상태다. 네 경계 접점이 모두 맞아야 완전한 일치로 인정한다.","relations":["classification","comparison","state"]}
+{"primary":"보수구간 내 임시공급","text":"임시공급 전체가 보수 시간 안에 놓이면 보수구간 내 임시공급이다.","relations":["attribute","contrast","process"]}
+{"primary":"보수공급 끝점인계","text":"보수 완료와 임시공급 개시가 같은 순간이면 보수공급 끝점인계다.","relations":["process","role","state"]}
+{"primary":"보수공급 비공유","text":"임시공급이 보수 전 끝나거나 복구 뒤 시작하면 보수공급 비공유다.","relations":["boundary","part_of","process"]}
+{"primary":"보수대체공급 구간표","text":"보수대체공급 구간표는 작업격리와 실제 열전달의 시작·끝을 함께 표시한다. 복구 승인과 본관 재개통이 다르면 작업 종료와 공급 전환을 따로 닫는다.","relations":["attribute","comparison","process"]}
+{"primary":"열원비상정지 구간","text":"열원비상정지 구간은 보호장치 작동부터 연소와 주열공급이 멈출 때까지다. 보호신호 발생부터 연료 차단과 주열량 소멸이 끝날 때까지 단계별 경계를 포함한다.","relations":["process","state","boundary"]}
+{"primary":"잔열순환 유지구간","text":"잔열순환 유지구간은 정지 뒤 펌프가 잔열을 빼내기 위해 도는 시간이다. 정지 명령 뒤 펌프가 실제 유량을 유지한 시작점과 안전온도 도달점을 사용한다.","relations":["process","attribute","comparison"]}
+{"primary":"비상정지 잔열겹침","text":"정지 절차와 잔열순환이 일부 시간에 함께하면 비상정지 잔열겹침이다. 정지 절차 안에서 잔열순환이 함께 수행된 공통시간을 구해 보호 동작을 확인한다.","relations":["classification","process","role"]}
+{"primary":"정지선행 잔열겹침","text":"정지선행 잔열겹침은 비상정지가 먼저 시작되고 잔열순환보다 먼저 끝난다. 보호 절차가 먼저 시작되고 펌프 순환이 뒤따라 정지 완료 뒤까지 남는 배열이다.","relations":["part_of","process","state"]}
+{"primary":"잔열후행 정지겹침","text":"잔열후행 정지겹침에서는 잔열순환이 정지 도중 열려 정지 완료 뒤까지 남는다. 후행 순환 종료가 센서 냉각기준에 따른 것인지 운영자 수동해제인지 분리한다.","relations":["boundary","function","process"]}
+{"primary":"정지잔열 완전동시","text":"비상정지와 잔열순환의 양 끝점이 모두 같을 때 정지잔열 완전동시다. 두 구간이 같은 경계로 기록돼도 센서와 제어기 시계를 교정한 뒤 동시성을 인정한다.","relations":["classification","comparison","state"]}
+{"primary":"정지구간 내 잔열순환","text":"잔열순환 전체가 비상정지 범위에 포함되면 정지구간 내 잔열순환이다.","relations":["attribute","contrast","process"]}
+{"primary":"정지잔열 끝점접속","text":"비상정지 완료와 잔열순환 시작이 같은 시각이면 정지잔열 끝점접속이다.","relations":["process","role","state"]}
+{"primary":"정지잔열 시간분리","text":"정지와 잔열순환 사이에 공백이 있으면 정지잔열 시간분리로 판정한다.","relations":["boundary","part_of","process"]}
+{"primary":"비상운전 겹침판정","text":"비상운전 겹침판정은 보호신호가 아니라 실제 열원정지와 펌프회전 구간을 쓴다. 정지 보호와 냉각 순환의 겹침이 없으면 잔열 위험 구간을 추가 확인한다.","relations":["attribute","comparison","process"]}

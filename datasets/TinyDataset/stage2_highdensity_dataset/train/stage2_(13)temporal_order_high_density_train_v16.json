@@ -1,0 +1,2112 @@
+{
+  "dataset_name": "Korean AI Curriculum — Stage 2 시간 순서·간격 High-Density Train 150 v16",
+  "version": "16",
+  "purpose": "사건의 선후·동시성·기간·지연·관측 창을 구별한다.",
+  "split": "train",
+  "record_count": 150,
+  "range": "S2-TOH-02251 ~ S2-TOH-02400",
+  "concept_family": "S2-A03-T016: 철도 운행 간격·환승 조정 — 시간 정보 충돌과 순서 복원",
+  "design_note": "철도 운행 간격·환승 조정 영역의 시간 정보 충돌과 순서 복원 의미축을 다룬다. primary concept·text·relations를 record별로 직접 작성한 canonical source를 포장했다.",
+  "records": [
+    {
+      "id": "S2-TOH-02251",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계획출발과 실제출발 역전은 실적시각이 기준표 생성 전으로 표시된 모순이다. 시간표 버전과 역 시계를 맞춰 올바른 회차를 복원한다. 운영계획의 예정값과 GPS 출발사건을 구별해 실제가 계획보다 앞서 보이면 시간대·버전 오류를 점검한다.",
+      "concepts": [
+        "계획출발과 실제출발 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02252",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "열차슬롯 번호중복은 서로 다른 편성이 같은 운행 슬롯을 가진 상황이다. 열차번호·차량ID·출발역으로 시간열을 분리한다.",
+      "concepts": [
+        "열차슬롯 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02253",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시각표게시 미래시각은 문서 서버 시계가 앞서 게시가 현재보다 뒤에 기록된 오류다. 버전 생성과 배포 로그에 맞춰 보정한다. 게시 로그가 현재보다 뒤라면 예약발행 태그인지 장치시계 오류인지 확인해 효력시각을 따로 정한다.",
+      "concepts": [
+        "시각표게시 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02254",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운행계획과 차량배정 불일치는 시간표에 적힌 편성과 실제 운행한 차량이 다른 경우다. 출고·열차번호·차상로그로 대응을 바로잡는다.",
+      "concepts": [
+        "운행계획과 차량배정 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02255",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계획확정과 검증완료 역전은 승인 뒤에 선로 충돌검사가 끝난 것처럼 남은 상황이다. 임시 승인과 최종 잠금을 구분한다. 검증이 끝나기 전에 확정된 것처럼 보이면 초안승인·사후검사·로그시계의 계보를 추적한다.",
+      "concepts": [
+        "계획확정과 검증완료 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02256",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "시간표버전 역정렬은 수정본 수신이 늦어 이전 표가 최신 뒤에 배치된 경우다. 버전번호와 생성시각으로 재배열한다.",
+      "concepts": [
+        "시간표버전 역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02257",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계획취소 이벤트누락은 운행예정 상태에서 다른 열차로 대체됐지만 취소 기록이 없는 상황이다. 차량·승무 연결 해제로 빠진 사건을 복원한다. 새 계획이 사라졌지만 취소기록이 없을 때 상태전이와 후속 배차를 대조해 누락된 사건범위를 찾는다.",
+      "concepts": [
+        "계획취소 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02258",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운행상태 동시충돌은 같은 열차가 계획과 취소로 동시에 표시된 경우다. 시간표 세대와 적용 회차를 맞춰 대표 상태를 정한다.",
+      "concepts": [
+        "운행상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02259",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운영일 경계중복은 자정 넘긴 열차가 이틀 시간표에 각각 신규 운행으로 들어간 상황이다. 동일 열차ID와 연속 이동으로 하나에 귀속한다. 자정 전후 같은 운행이 두 날짜에 잡히면 서비스일 기준과 절대시각으로 중복 레코드를 합친다.",
+      "concepts": [
+        "운영일 경계중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02260",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "계획연표 출처충돌은 시간표·관제·역·차상 기록이 서로 다른 출발 순서를 주장하는 경우다. 실제 역 출발과 선로점유 증거를 우선한다.",
+      "concepts": [
+        "계획연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02261",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첨두전환과 증편역전은 추가열차 투입이 첨두운영 개시보다 먼저 표시된 모순이다. 사전 회송과 영업 투입을 구분해 순서를 복원한다. 증편 투입이 전환결정보다 앞서 보일 때 사전대기·예약명령·시계차를 검토해 실제 순서를 복원한다.",
+      "concepts": [
+        "첨두전환과 증편역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02262",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증편열차 증편열차 번호중복은 별개 편성이 동일한 임시 열차번호를 받은 상황이다. 차량ID와 출발역·회차로 시간열을 분리한다.",
+      "concepts": [
+        "증편열차 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02263",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "혼잡측정 미래시각은 영상 장치의 빠른 시계 때문에 아직 오지 않은 때의 밀도가 저장된 이상 기록이다. 개찰 집계와 기준 시계의 차이를 계산해 관측 시점을 고친다.",
+      "concepts": [
+        "혼잡측정 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02264",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "증편계획과 실제노선 불일치는 배정 노선과 차상 이동경로가 다른 경우다. 진로·역정차·열차번호로 소속을 고친다.",
+      "concepts": [
+        "증편계획과 실제노선 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02265",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "평시복귀와 첨두종료 역전은 간격 확대가 종료 승인보다 먼저 보이는 상황이다. 계획 전환과 실제 열차 배열을 나눠 본다.",
+      "concepts": [
+        "평시복귀와 첨두종료 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02266",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첨두운행 로그역정렬은 여러 역의 수신시각 때문에 증편 출발과 도착이 뒤섞인 경우다. 열차별 차상시각과 역 순서로 재배열한다.",
+      "concepts": [
+        "첨두운행 로그역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02267",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추가편성 회송누락은 기지 대기에서 곧바로 영업운행으로 나타나 본선 이동 사건이 없는 상황이다. 선로점유로 빠진 회송을 복원한다.",
+      "concepts": [
+        "추가편성 회송누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02268",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첨두상태 동시충돌은 같은 구간이 평시와 첨두 간격으로 동시에 표시된 경우다. 적용 열차번호와 시작 경계를 맞춰 범위를 정한다.",
+      "concepts": [
+        "첨두상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02269",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첨두회차 날짜중복은 심야 증편이 두 운영일 통계에 각각 하나의 열차로 잡힌 상황이다. 실제 출발·도착 구간으로 귀속한다.",
+      "concepts": [
+        "첨두회차 날짜중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02270",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첨두연표 출처충돌은 수요·차량·관제·승객안내가 다른 전환 순서를 가리키는 경우다. 실제 출발차와 승차량 증거를 우선한다.",
+      "concepts": [
+        "첨두연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02271",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정차개시와 문열림 역전은 출입문 개방이 속도 0 확인보다 먼저 표시된 모순이다. 차량 제어순번과 역 시계를 맞춰 복원한다.",
+      "concepts": [
+        "정차개시와 문열림 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02272",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정차회차 번호중복은 같은 열차의 서로 다른 역 정차가 한 회차번호를 가진 상황이다. 역코드와 차상 위치로 기록을 분리한다.",
+      "concepts": [
+        "정차회차 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02273",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "폐문완료 미래시각은 차량 장치의 빠른 시계가 문 닫힘 완료를 현재 뒤로 밀어 기록한 오류다. 출발 승인과 선로 점유의 실제 선후를 이용해 시점을 보정한다.",
+      "concepts": [
+        "폐문완료 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02274",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정차역과 플랫폼 불일치는 문로그의 위치가 실제 승강장 배정과 다른 경우다. 열차 위치·문쪽·역 기록으로 대응을 고친다.",
+      "concepts": [
+        "정차역과 플랫폼 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02275",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출발승인과 폐문역전은 이동 허가가 모든 문 잠금보다 먼저 보이는 상황이다. 예고신호와 실제 견인허가를 구분한다.",
+      "concepts": [
+        "출발승인과 폐문역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02276",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승하차사건 역정렬은 센서 업로드 순서 때문에 하차·승차·폐문이 뒤섞인 경우다. 차량 이벤트순번과 영상으로 재배열한다.",
+      "concepts": [
+        "승하차사건 역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02277",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정차연장 이벤트누락은 예정 출발에서 실제 출발로 바로 이어져 추가 머묾의 원인이 없는 상황이다. 혼잡·문·신호 기록으로 누락을 복원한다.",
+      "concepts": [
+        "정차연장 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02278",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출입문상태 동시충돌은 같은 문이 열림과 잠금으로 동시에 표시된 경우다. 문 제어세대와 센서 생성시각을 맞춰 판정한다.",
+      "concepts": [
+        "출입문상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02279",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "역정차 날짜경계혼선은 자정 전 진입과 자정 후 출발이 두 독립 정차로 기록된 상황이다. 동일 열차와 플랫폼 점유로 하나로 묶는다.",
+      "concepts": [
+        "역정차 날짜경계혼선"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02280",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정차연표 출처충돌은 차상·역·관제·영상 기록이 서로 다른 문과 출발 순서를 주장하는 경우다. 차량 원시 제어순번을 우선한다.",
+      "concepts": [
+        "정차연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02281",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류예약과 진입역전은 열차가 접속부에 들어온 기록이 진로 순번 부여보다 먼저인 모순이다. 신호 요청과 실제 점유를 구분한다.",
+      "concepts": [
+        "합류예약과 진입역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02282",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접속진로 번호중복은 서로 다른 열차가 같은 진로 사용ID를 가진 상황이다. 열차번호·방향·점유구간으로 시간열을 분리한다.",
+      "concepts": [
+        "접속진로 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02283",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접속부해제 미래시각은 연동장치 시계가 앞서 해제가 현재보다 뒤에 기록된 오류다. 후속 진로 설정에 맞춰 보정한다.",
+      "concepts": [
+        "접속부해제 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02284",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "열차와 진로매핑 불일치는 관제기록의 경로가 실제 선로점유와 다른 경우다. 궤도구간·신호·열차ID로 연결을 고친다.",
+      "concepts": [
+        "열차와 진로매핑 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02285",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "후속진입과 선행진출 역전은 다음 열차 점유가 앞 열차 해제보다 먼저 보이는 상황이다. 경계센서 시계차와 열차길이를 검토한다.",
+      "concepts": [
+        "후속진입과 선행진출 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02286",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류요청 로그역정렬은 본선·지선 장치의 수신순서 때문에 요청·허가·진입이 뒤섞인 경우다. 각 발생시각과 진로세대로 재배열한다.",
+      "concepts": [
+        "합류요청 로그역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02287",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "순서교환 이벤트누락은 본선 우선에서 지선 선행으로 바뀌었지만 관제 결정이 없는 상황이다. 신호현시와 열차통과로 빠진 변경을 복원한다.",
+      "concepts": [
+        "순서교환 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02288",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "접속부상태 동시충돌은 같은 진로가 쇄정과 해제로 동시에 표시된 경우다. 연동세대와 열차점유 범위를 맞춰 대표 상태를 정한다.",
+      "concepts": [
+        "접속부상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02289",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류회차 날짜중복은 자정 넘긴 점유가 두 운영일에 각각 완전한 통과로 잡힌 상황이다. 진입·진출 구간으로 하나를 유지한다.",
+      "concepts": [
+        "합류회차 날짜중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02290",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "합류연표 출처충돌은 관제·신호·궤도·차상 기록이 다른 통과 순서를 주장하는 경우다. 실제 점유순번과 열차 위치를 우선한다.",
+      "concepts": [
+        "합류연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02291",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대피진입과 급행통과 역전은 급행이 완행 정차 확인보다 먼저 대피역을 지난 것으로 표시된 모순이다. 두 열차 시계를 맞춰 복원한다.",
+      "concepts": [
+        "대피진입과 급행통과 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02292",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추월회차 번호중복은 서로 다른 열차쌍이 같은 추월ID를 받은 상황이다. 완행·급행 번호와 대피역으로 시간열을 분리한다.",
+      "concepts": [
+        "추월회차 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02293",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "완행복귀 미래시각은 역 장치 시계가 앞서 본선 재진입이 현재보다 뒤에 기록된 오류다. 신호와 차상 이동에 맞춰 보정한다.",
+      "concepts": [
+        "완행복귀 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02294",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대피선과 열차매핑 불일치는 계획표의 완행이 실제 대기한 편성과 다른 경우다. 차량ID·문열림·진로 기록으로 대응을 고친다.",
+      "concepts": [
+        "대피선과 열차매핑 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02295",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추월취소와 급행지연 역전은 취소가 판단 근거인 지연보다 먼저 보이는 상황이다. 예측 갱신과 실제 도착을 구분한다.",
+      "concepts": [
+        "추월취소와 급행지연 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02296",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추월사건 로그역정렬은 관제·역·열차 로그 수신차로 대피·통과·복귀가 뒤섞인 경우다. 선로점유와 차량시각으로 재배열한다.",
+      "concepts": [
+        "추월사건 로그역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02297",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "완행대피 이벤트누락은 본선 주행에서 장시간 정차 뒤 순서가 바뀌었지만 대피 기록이 없는 상황이다. 진로와 플랫폼점유로 복원한다.",
+      "concepts": [
+        "완행대피 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02298",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추월상태 동시충돌은 같은 완행이 본선주행과 대피중으로 동시에 표시된 경우다. 상태세대와 위치구간을 맞춰 범위를 정한다.",
+      "concepts": [
+        "추월상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02299",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추월운행 날짜중복은 자정 넘긴 대피가 이틀 실적에 각각 별도 추월로 들어간 상황이다. 동일 열차쌍과 대피역으로 병합한다.",
+      "concepts": [
+        "추월운행 날짜중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02300",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "추월연표 출처충돌은 운행표, 진로, 차상, 역 로그가 급행과 완행의 순서를 서로 어긋나게 제시하는 상태다. 실제 선로 점유와 위치 자료를 우선한다.",
+      "concepts": [
+        "추월연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02301",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단선진입과 점유권 역전은 열차가 폐색에 들어온 기록이 방향 권한 부여보다 먼저인 모순이다. 연동순번과 차상시계를 맞춘다.",
+      "concepts": [
+        "단선진입과 점유권 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02302",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교행계획 번호중복은 별개의 열차 쌍에 동일한 교행 ID가 부여된 오류다. 운행 방향, 열차 번호, 만남 역으로 두 기록을 분리한다.",
+      "concepts": [
+        "교행계획 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02303",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "반대편출발 미래시각은 역 시계가 앞서 출발이 현재보다 뒤에 기록된 오류다. 단선점유와 다음 역 도착에 맞춰 보정한다.",
+      "concepts": [
+        "반대편출발 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02304",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교행역과 열차매핑 불일치는 계획상 대피 열차와 실제 정차 편성이 다른 경우다. 플랫폼·진로·차량ID로 대응을 고친다.",
+      "concepts": [
+        "교행역과 열차매핑 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02305",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "반대진입과 점유열차 진출 역전은 반대 열차 진입이 점유 열차 퇴거보다 먼저 보이는 상황이다. 경계센서 시계차를 검토한다.",
+      "concepts": [
+        "반대진입과 점유열차 진출 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02306",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교행로그 역정렬은 양끝 역과 관제의 수신순서 때문에 허가·진입·정차·통과가 뒤섞인 경우다. 폐색순번으로 재배열한다.",
+      "concepts": [
+        "교행로그 역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02307",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교행역변경 이벤트누락은 예정 만남역과 실제 교행역이 다른데 변경 결정이 없는 상황이다. 열차위치와 진로로 복원한다.",
+      "concepts": [
+        "교행역변경 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02308",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단선상태 동시충돌은 같은 폐색이 양 방향 점유권을 동시에 가진 것으로 표시된 경우다. 권한세대와 실제 점유를 맞춰 판정한다.",
+      "concepts": [
+        "단선상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02309",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교행운행 날짜중복은 자정 넘긴 단선통과가 두 운영일에 각각 독립 사건으로 잡힌 상황이다. 동일 점유권과 열차쌍으로 병합한다.",
+      "concepts": [
+        "교행운행 날짜중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02310",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교행연표 출처충돌은 관제·역·연동·차상 기록이 다른 만남 순서를 주장하는 경우다. 단선 점유순번과 열차 위치를 우선한다.",
+      "concepts": [
+        "교행연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02311",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승도착과 연결출발 역전은 연결편이 먼저 떠났는데 환승 성공으로 기록된 모순이다. 문열림·폐문과 승객 이동시각을 맞춰 복원한다.",
+      "concepts": [
+        "환승도착과 연결출발 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02312",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승회차 번호중복은 서로 다른 열차 연결이 같은 환승ID를 가진 상황이다. 노선·역·열차번호로 기록을 분리한다.",
+      "concepts": [
+        "환승회차 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02313",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승완료 미래시각은 집계 장치의 시계가 빨라 환승 종료가 미래 사건으로 저장된 사례다. 연결편 폐문과 개찰 통과 흐름을 기준으로 올바른 위치를 되찾는다.",
+      "concepts": [
+        "환승완료 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02314",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승객과 연결편 불일치는 분석표가 실제 승차한 열차가 아닌 다른 회차를 가리키는 경우다. 이동경로·문시각·열차번호로 매핑을 고친다.",
+      "concepts": [
+        "환승객과 연결편 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02315",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대기결정과 도착예측 역전은 연결편 보류가 근거 예측보다 먼저 보이는 상황이다. 이전 예측과 최종 판단을 구분한다.",
+      "concepts": [
+        "대기결정과 도착예측 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02316",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승이벤트 역정렬은 앱·역·차량 자료 수신차로 하차·이동·승차·출발이 뒤섞인 경우다. 실제 문과 개찰 사건으로 재배열한다.",
+      "concepts": [
+        "환승이벤트 역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02317",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연결편대기 이벤트누락은 예정시각보다 늦게 출발했지만 환승 보류 기록이 없는 상황이다. 관제명령과 문열림으로 복원한다.",
+      "concepts": [
+        "연결편대기 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02318",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승상태 동시충돌은 같은 연결이 성공과 실패로 동시에 표시된 경우다. 대상승객·연결편·판정시각을 맞춰 범위를 정한다.",
+      "concepts": [
+        "환승상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02319",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승회차 날짜경계혼선은 심야 연결이 이틀 통계에 각각 신규 환승으로 잡힌 상황이다. 동일 승객흐름과 열차쌍으로 병합한다.",
+      "concepts": [
+        "환승회차 날짜경계혼선"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02320",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "환승연표 출처충돌은 시간표·개찰·영상·차량 기록이 다른 이동 순서를 주장하는 경우다. 문 사건과 실제 승객 위치를 우선한다.",
+      "concepts": [
+        "환승연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02321",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차도착과 연결편출발 역전은 연결편 출발 뒤 도착한 승객이 성공 환승으로 표시된 모순이다. 두 열차 문시각으로 복원한다.",
+      "concepts": [
+        "막차도착과 연결편출발 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02322",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차대응 번호중복은 서로 다른 야간 연결이 같은 사건ID를 가진 상황이다. 노선·역·운영일로 시간열을 분리한다.",
+      "concepts": [
+        "막차대응 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02323",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대체버스도착 미래시각은 차량단말 시계가 앞서 도착이 현재보다 뒤에 기록된 오류다. 배차·위치·승객인계로 보정한다.",
+      "concepts": [
+        "대체버스도착 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02324",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차와 연결노선 불일치는 안내표의 연결편이 실제 대기한 열차와 다른 경우다. 플랫폼·열차번호·출발시각으로 매핑을 고친다.",
+      "concepts": [
+        "막차와 연결노선 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02325",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "연결포기와 지연확대 역전은 포기 결정이 허용 대기 초과보다 먼저 보이는 상황이다. 예측 변경과 실제 도착을 구분한다.",
+      "concepts": [
+        "연결포기와 지연확대 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02326",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차사건 역정렬은 역·관제·버스 자료 수신차로 대기·출발·대체수송이 뒤섞인 경우다. 실제 차량 이동으로 재배열한다.",
+      "concepts": [
+        "막차사건 역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02327",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차대기 이벤트누락은 예정시각보다 늦은 출발과 환승 성공이 있지만 보류 기록이 없는 상황이다. 관제·문로그로 복원한다.",
+      "concepts": [
+        "막차대기 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02328",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차상태 동시충돌은 같은 열차가 대기중과 출발완료로 동시에 표시된 경우다. 상태세대와 실제 위치를 맞춰 판정한다.",
+      "concepts": [
+        "막차상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02329",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차운영 날짜중복은 자정 넘긴 열차가 이틀 영업일에 각각 마지막편으로 잡힌 상황이다. 노선 운영일 규칙으로 하나를 정한다.",
+      "concepts": [
+        "막차운영 날짜중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02330",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "막차연표 출처충돌은 시간표·관제·역·대체교통 기록이 다른 처리 순서를 주장하는 경우다. 실제 문닫힘과 차량위치를 우선한다.",
+      "concepts": [
+        "막차연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02331",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "플랫폼배정과 열차진입 역전은 열차가 승강장에 들어온 뒤 배정이 확정된 것으로 표시된 모순이다. 임시 유도와 정식 배정을 구분한다.",
+      "concepts": [
+        "플랫폼배정과 열차진입 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02332",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승강장사용 번호중복은 서로 다른 열차 점유에 같은 사용 ID가 붙은 상황이다. 플랫폼, 열차 번호, 진입 시각을 함께 사용해 각 사건을 나눈다.",
+      "concepts": [
+        "승강장사용 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02333",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "플랫폼해제 미래시각은 역사 장치의 시계가 빨라 승강장 해제 사건이 현재 이후로 저장된 오류다. 다음 열차의 진입 로그를 기준으로 해제 시점을 앞당겨 교정한다.",
+      "concepts": [
+        "플랫폼해제 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02334",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "열차와 승강장 불일치는 안내시스템의 위치가 실제 선로점유와 다른 경우다. 진로·차상위치·문쪽으로 매핑을 고친다.",
+      "concepts": [
+        "열차와 승강장 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02335",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "동선안내와 배정변경 역전은 새 플랫폼 공지가 운영 결정보다 먼저 보이는 상황이다. 사전 후보 안내와 확정 게시를 구분한다.",
+      "concepts": [
+        "동선안내와 배정변경 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02336",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승강장사건 역정렬은 신호·역·앱 수신차로 배정·진입·정차·진출이 뒤섞인 경우다. 실제 선로점유로 재배열한다.",
+      "concepts": [
+        "승강장사건 역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02337",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "임시통로 이벤트누락은 승객 흐름이 바뀌었지만 안내인·통제선 배치 기록이 없는 상황이다. 영상과 출입센서로 복원한다.",
+      "concepts": [
+        "임시통로 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02338",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "플랫폼상태 동시충돌은 같은 승강장이 점유와 비점유로 동시에 표시된 경우다. 관측지점과 열차 후미 경계를 맞춰 판정한다.",
+      "concepts": [
+        "플랫폼상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02339",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승강장회차 날짜중복은 자정을 사이에 둔 한 점유가 전날과 다음 날 보고서에 각각 완전한 회차로 잡힌 오류다. 실제 진입부터 진출까지를 하나의 연속 구간으로 합친다.",
+      "concepts": [
+        "승강장회차 날짜중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02340",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "플랫폼연표 출처충돌은 관제·신호·영상·안내가 다른 열차 순서를 주장하는 경우다. 실제 진로와 차상 위치를 우선한다.",
+      "concepts": [
+        "플랫폼연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02341",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장애발생과 탐지역전은 공식 원인시각이 최초 간격 이탈보다 뒤인데 앞선 것으로 표시된 모순이다. 증거와 추정값을 분리한다.",
+      "concepts": [
+        "장애발생과 탐지역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02342",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운행장애 번호중복은 서로 다른 지연 원인이 같은 사건ID를 가진 상황이다. 구간·열차·원인으로 시간열을 분리한다.",
+      "concepts": [
+        "운행장애 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02343",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정상복귀 미래시각은 관제단말 시계가 앞서 복귀가 현재보다 뒤에 기록된 오류다. 실제 간격과 열차위치로 보정한다.",
+      "concepts": [
+        "정상복귀 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02344",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장애구간과 영향열차 불일치는 보고서의 대상이 실제 지연편과 다른 경우다. 선로점유·열차경로·도착차로 매핑을 고친다.",
+      "concepts": [
+        "장애구간과 영향열차 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02345",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "복구선언과 간격회복 역전은 정상 공지가 실측 안정보다 먼저 보이는 상황이다. 내부 원인제거와 서비스 회복을 구분한다.",
+      "concepts": [
+        "복구선언과 간격회복 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02346",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장애이벤트 역정렬은 신호·차상·역·공지의 수신차로 발생·완화·회복이 뒤섞인 경우다. 원시 생성시각으로 재배열한다.",
+      "concepts": [
+        "장애이벤트 역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02347",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "임시시간표 이벤트누락은 기준표에서 다른 열차 순서로 바뀌었지만 적용 기록이 없는 상황이다. 실제 출발차와 관제명령으로 복원한다.",
+      "concepts": [
+        "임시시간표 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02348",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장애상태 동시충돌은 한 사건이 진행 중이면서 동시에 해결됨으로 표시된 모순이다. 상태 버전과 적용 노선 로그를 맞춰 단일 대표 상태를 정한다.",
+      "concepts": [
+        "장애상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02349",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "장애회차 날짜중복은 자정을 넘긴 하나의 지연이 이틀 통계에 각각 독립 장애로 잡힌 오류다. 동일 사건 ID와 연속된 영향을 근거로 합친다.",
+      "concepts": [
+        "장애회차 날짜중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02350",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "철도장애연표 출처충돌은 관제·신호·열차·승객기록이 다른 선후를 주장하는 경우다. 자동 원시로그와 실제 열차 이동을 우선한다.",
+      "concepts": [
+        "철도장애연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02351",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차도착과 방향전환 역전은 반대편 운전실 활성화가 종착 정차보다 먼저 표시된 모순이다. 차량 제어순번으로 복원한다.",
+      "concepts": [
+        "회차도착과 방향전환 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02352",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차작업 회차작업 번호중복은 별개 편성이 동일한 종착 작업ID를 가진 상황이다. 차량번호·플랫폼·도착시각으로 분리한다.",
+      "concepts": [
+        "회차작업 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02353",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차출발 미래시각은 차량 시계가 빨라 회차 출발 기록이 아직 오지 않은 시점에 놓인 오류다. 본선 점유와 다음 역 도착 로그를 기준으로 사건을 앞쪽으로 이동한다.",
+      "concepts": [
+        "회차출발 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02354",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차열차와 운전실 불일치는 인계기록의 편성이 실제 방향전환 차량과 다른 경우다. 차량ID·운전실·진로로 매핑을 고친다.",
+      "concepts": [
+        "회차열차와 운전실 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02355",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "출발승인과 회차완료 역전은 운행허가가 청소·문·운전실 확인보다 먼저 보이는 상황이다. 예고와 실제 승인을 구분한다.",
+      "concepts": [
+        "출발승인과 회차완료 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02356",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차사건 역정렬은 차량·역·관제 수신차로 도착·하차·전환·출발이 뒤섞인 경우다. 차량 원시순번으로 재배열한다.",
+      "concepts": [
+        "회차사건 역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02357",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운전실교대 이벤트누락은 한 방향 운행에서 반대 방향 출발로 바로 넘어간 상황이다. 승무로그와 제어활성으로 복원한다.",
+      "concepts": [
+        "운전실교대 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02358",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차상태 동시충돌은 같은 차량이 정리중과 출발준비완료로 동시에 표시된 경우다. 작업세대와 검사범위를 맞춰 판정한다.",
+      "concepts": [
+        "회차상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02359",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "종착회차 날짜중복은 자정 넘긴 방향전환이 이틀 실적에 각각 독립 회차로 잡힌 상황이다. 동일 차량·도착·출발로 병합한다.",
+      "concepts": [
+        "종착회차 날짜중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02360",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회차연표 출처충돌은 차상·승무·역·관제 기록이 다른 작업 순서를 주장하는 경우다. 차량 제어사건과 실제 이동을 우선한다.",
+      "concepts": [
+        "회차연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02361",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량출고와 영업투입 역전은 첫 승객운행이 기지 진출보다 먼저 표시된 모순이다. 회송과 영업 열차번호를 구분해 복원한다.",
+      "concepts": [
+        "차량출고와 영업투입 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02362",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "편성운용 번호중복은 서로 다른 차량조합이 같은 편성ID를 가진 상황이다. 개별 차량번호와 결합시각으로 시간열을 분리한다.",
+      "concepts": [
+        "편성운용 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02363",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량입고 미래시각은 기지단말 시계가 앞서 입고가 현재보다 뒤에 기록된 오류다. 마지막 운행과 기지점유로 보정한다.",
+      "concepts": [
+        "차량입고 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02364",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "열차번호와 편성 불일치는 배정표의 차량이 실제 차상로그와 다른 경우다. 출고·역통과·차량ID로 매핑을 고친다.",
+      "concepts": [
+        "열차번호와 편성 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02365",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교체완료와 고장판정 역전은 대체편성 투입이 원차량 결함 확정보다 먼저 보이는 상황이다. 예방교체와 장애교체를 구분한다.",
+      "concepts": [
+        "교체완료와 고장판정 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02366",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량운용 로그역정렬은 기지·관제·차상 수신차로 출고·회송·영업·입고가 뒤섞인 경우다. 차량별 원시시각으로 재배열한다.",
+      "concepts": [
+        "차량운용 로그역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02367",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "예비차투입 이벤트누락은 고장편 이탈 뒤 다른 차량이 운행했지만 교체 기록이 없는 상황이다. 차량ID 변화로 복원한다.",
+      "concepts": [
+        "예비차투입 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02368",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "편성상태 동시충돌은 같은 차량이 영업중과 기지대기로 동시에 표시된 경우다. 위치·운용세대·열차번호를 맞춰 판정한다.",
+      "concepts": [
+        "편성상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02369",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량운용 날짜중복은 자정 넘긴 편성이 이틀 실적에 각각 신규 출고로 잡힌 상황이다. 연속 운행과 실제 입고로 하나를 정한다.",
+      "concepts": [
+        "차량운용 날짜중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02370",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "차량연표 출처충돌은 기지, 관제, 차상, 정비 시스템이 한 차량 사건의 순서를 다르게 제시하는 상태다. 차량 ID별 실제 위치와 제어 로그를 우선해 배열한다.",
+      "concepts": [
+        "차량연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02371",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무인수와 운전개시 역전은 열차 이동이 책임 인계보다 먼저 표시된 모순이다. 운전실 로그인과 차상제어 순번으로 복원한다.",
+      "concepts": [
+        "승무인수와 운전개시 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02372",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무근무 번호중복은 서로 다른 사람이 같은 근무회차ID를 가진 상황이다. 직원ID·열차·인계역으로 시간열을 분리한다.",
+      "concepts": [
+        "승무근무 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02373",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "교대완료 미래시각은 근무단말 시계가 앞서 인계가 현재보다 뒤에 기록된 오류다. 열차 출발과 로그인에 맞춰 보정한다.",
+      "concepts": [
+        "교대완료 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02374",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무원과 열차배정 불일치는 근무표의 담당과 실제 운전실 사용자가 다른 경우다. 인증·차상·인계서로 매핑을 고친다.",
+      "concepts": [
+        "승무원과 열차배정 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02375",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "대체배정과 결원확인 역전은 예비 승무 호출이 결원 판정보다 먼저 보이는 상황이다. 사전 대기와 실제 대체를 구분한다.",
+      "concepts": [
+        "대체배정과 결원확인 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02376",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무사건 역정렬은 근무·관제·차상 로그 수신차로 출근·인수·운전·인계가 뒤섞인 경우다. 인증과 열차 이동으로 재배열한다.",
+      "concepts": [
+        "승무사건 역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02377",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "휴식시작 이벤트누락은 마지막 운전에서 다음 근무로 이어지지만 휴식 구간이 없는 상황이다. 인계·기지 출입기록으로 복원한다.",
+      "concepts": [
+        "휴식시작 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02378",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무상태 동시충돌은 같은 사람이 운전중과 휴식중으로 동시에 표시된 경우다. 근무세대와 실제 열차 책임을 맞춰 판정한다.",
+      "concepts": [
+        "승무상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02379",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무회차 날짜중복은 자정 넘긴 근무가 이틀 보고에 각각 신규 출근으로 잡힌 상황이다. 인수·인계 구간으로 하나를 유지한다.",
+      "concepts": [
+        "승무회차 날짜중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02380",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "승무연표 출처충돌은 근무표·인증·차상·관제 기록이 다른 책임 순서를 주장하는 경우다. 실제 운전실 인증과 제어사용을 우선한다.",
+      "concepts": [
+        "승무연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02381",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선로폐쇄와 작업진입 역전은 장비·인력이 작업구간에 들어온 기록이 운행차단보다 먼저인 모순이다. 인접선 준비와 실제 진입을 구분한다.",
+      "concepts": [
+        "선로폐쇄와 작업진입 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02382",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보수작업 번호중복은 서로 다른 구간 정비가 같은 작업ID를 가진 상황이다. 선로·장비·폐쇄구간으로 시간열을 분리한다.",
+      "concepts": [
+        "보수작업 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02383",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "운행인계 미래시각은 작업 단말의 빠른 시계로 선로 반환 사건이 현재 뒤에 기록된 오류다. 첫 열차의 실제 통과 로그에 맞춰 시점을 교정한다.",
+      "concepts": [
+        "운행인계 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02384",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업구간과 열차제한 불일치는 보수기록 위치와 실제 속도제한 구간이 다른 경우다. 폐쇄·신호·열차로그로 매핑을 고친다.",
+      "concepts": [
+        "작업구간과 열차제한 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02385",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "첫차진입과 시험완료 역전은 영업열차 통과가 기능검증보다 먼저 보이는 상황이다. 시험열차와 영업열차를 구분한다.",
+      "concepts": [
+        "첫차진입과 시험완료 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02386",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보수사건 역정렬은 작업·관제·신호 수신차로 폐쇄·정비·시험·해제가 뒤섞인 경우다. 작업허가와 실제 선로점유로 재배열한다.",
+      "concepts": [
+        "보수사건 역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02387",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "작업연장 이벤트누락은 예정 종료 뒤에도 폐쇄가 지속됐지만 승인 기록이 없는 상황이다. 작업로그와 첫차 조정으로 복원한다.",
+      "concepts": [
+        "작업연장 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02388",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "선로상태 동시충돌은 같은 구간이 작업중과 운행가능으로 동시에 표시된 경우다. 폐쇄세대와 인계시각을 맞춰 판정한다.",
+      "concepts": [
+        "선로상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02389",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보수회차 날짜중복은 자정 넘긴 작업이 이틀 정비보고에 각각 완전한 작업으로 잡힌 상황이다. 동일 작업ID와 폐쇄구간으로 병합한다.",
+      "concepts": [
+        "보수회차 날짜중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02390",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "보수연표 출처충돌은 작업자 기록, 관제 로그, 신호 이력, 첫차 통과 자료가 보수 사건의 순서를 서로 다르게 제시하는 상태다. 폐쇄 승인과 실제 선로 점유처럼 직접 근거가 강한 시각을 우선한다.",
+      "concepts": [
+        "보수연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02391",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복표적용과 열차출발 역전은 새 순서의 운행이 임시표 승인보다 먼저 표시된 모순이다. 사전 보류와 실제 적용을 구분한다.",
+      "concepts": [
+        "회복표적용과 열차출발 역전"
+      ],
+      "relations": [
+        "process",
+        "boundary",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02392",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복계획 번호중복은 서로 다른 장애 조정안이 같은 버전ID를 가진 상황이다. 사건·열차목록·생성시각으로 분리한다.",
+      "concepts": [
+        "회복계획 번호중복"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "contrast"
+      ]
+    },
+    {
+      "id": "S2-TOH-02393",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정상표복귀 미래시각은 관제 시계가 앞서 기준 시간표 전환이 미래 사건으로 남은 기록이다. 실제 출발 열차와 승객 안내 로그를 이용해 앞쪽으로 옮긴다.",
+      "concepts": [
+        "정상표복귀 미래시각"
+      ],
+      "relations": [
+        "process",
+        "state",
+        "comparison"
+      ]
+    },
+    {
+      "id": "S2-TOH-02394",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복표와 실제순서 불일치는 계획한 우선열차와 실제 통과 편성이 다른 경우다. 신호·점유·차상로그로 매핑을 고친다.",
+      "concepts": [
+        "회복표와 실제순서 불일치"
+      ],
+      "relations": [
+        "process",
+        "role",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02395",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "정상선언과 안정확인 역전은 기준표 복귀 공지가 여러 회차 검증보다 먼저 보이는 상황이다. 내부 전환과 안정 승인으로 나눈다.",
+      "concepts": [
+        "정상선언과 안정확인 역전"
+      ],
+      "relations": [
+        "attribute",
+        "function",
+        "classification"
+      ]
+    },
+    {
+      "id": "S2-TOH-02396",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복사건 역정렬은 시간표·관제·역·앱 수신차로 조정·확대·복귀가 뒤섞인 경우다. 계획버전과 실제 열차 이동으로 재배열한다.",
+      "concepts": [
+        "회복사건 역정렬"
+      ],
+      "relations": [
+        "part_of",
+        "process",
+        "boundary"
+      ]
+    },
+    {
+      "id": "S2-TOH-02397",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "단계증편 이벤트누락은 감편 운행에서 정상 열차수로 바로 바뀌었지만 확대 기록이 없는 상황이다. 출발회차로 복원한다.",
+      "concepts": [
+        "단계증편 이벤트누락"
+      ],
+      "relations": [
+        "process",
+        "contrast",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02398",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복상태 동시충돌은 같은 노선이 임시표와 기준표 적용으로 동시에 표시된 경우다. 열차번호 범위와 전환 경계를 맞춰 판정한다.",
+      "concepts": [
+        "회복상태 동시충돌"
+      ],
+      "relations": [
+        "attribute",
+        "comparison",
+        "function"
+      ]
+    },
+    {
+      "id": "S2-TOH-02399",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복회차 날짜중복은 자정 넘긴 장애 대응이 이틀 보고에 각각 완전한 회복으로 잡힌 상황이다. 사건ID와 연속 운행으로 병합한다.",
+      "concepts": [
+        "회복회차 날짜중복"
+      ],
+      "relations": [
+        "process",
+        "classification",
+        "state"
+      ]
+    },
+    {
+      "id": "S2-TOH-02400",
+      "type": "temporal_order_packet",
+      "split": "train",
+      "text": "회복연표 출처충돌은 시간표·열차·환승·공지 기록이 다른 복귀 순서를 주장하는 경우다. 실제 출발차와 간격 측정을 우선한다.",
+      "concepts": [
+        "회복연표 출처충돌"
+      ],
+      "relations": [
+        "process",
+        "comparison",
+        "boundary"
+      ]
+    }
+  ]
+}
