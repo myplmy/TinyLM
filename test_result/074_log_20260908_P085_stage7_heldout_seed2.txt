@@ -1,0 +1,483 @@
+[1/2] Korean held-out v2.7 on the seed-2 checkpoints of the same three depths
+
+==============================================================================
+[runlog] 2026-09-08 09:17:16  name=P085_stage7_heldout_seed2
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task stage1_heldout --n 400 --preset m100s12 --models d12_cla2_norecur_s2 d14_cla2_norecur_s2 d16_cla2_norecur_s2 --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=400  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [stage1_heldout] ★한국어 4지선다 관계추론(자체)   kind=mc   공식 metric=(우리 것)
+================================================================================================
+  전체 300행 중 300문항 (seed=99)  id 앞 10개: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s8_ko-en_300M_d12_cla2_norecur_s2.pt
+
+  d12_cla2_norecur_s2 우도acc **31.0%** [95%CI 26.0%~36.4%]  길이정규acc 30.0%  정답CE 4.4394  ★정답마진 +0.0414  N=300 제외=0
+     ★마진 = 오답 평균점수 − 정답점수(argmax 와 **같은 score**). **정오의 연속판**이라 같은 문항 수로 더 잘 가른다. 🚫*'정확도가 유의하다'* 로 옮겨 적지 않는다 — 다른 양이다
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s10_ko-en_300M_d14_cla2_norecur_s2.pt
+
+  d14_cla2_norecur_s2 우도acc **32.0%** [95%CI 27.0%~37.5%]  길이정규acc 24.3%  정답CE 4.4444  ★정답마진 +0.0407  N=300 제외=0
+     ★마진 = 오답 평균점수 − 정답점수(argmax 와 **같은 score**). **정오의 연속판**이라 같은 문항 수로 더 잘 가른다. 🚫*'정확도가 유의하다'* 로 옮겨 적지 않는다 — 다른 양이다
+
+  d16_cla2_norecur_s2 우도acc **27.7%** [95%CI 22.9%~33.0%]  길이정규acc 30.3%  정답CE 4.4406  ★정답마진 +0.0295  N=300 제외=0
+     ★마진 = 오답 평균점수 − 정답점수(argmax 와 **같은 score**). **정오의 연속판**이라 같은 문항 수로 더 잘 가른다. 🚫*'정확도가 유의하다'* 로 옮겨 적지 않는다 — 다른 양이다
+
+  ── paired 정답CE 비교 (공통 300문항) ──
+    d12_cla2_norecur_s2 - d14_cla2_norecur_s2: Δ -0.0050 ± 0.0206  SD 0.1821 SE 0.0105 t -0.48  승률 50.0%  필요N(SE0.002) **8,287**
+      ⚠️★**300 문항으로는 부족하다**(필요 8,287) **그리고** t -0.48 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+    d12_cla2_norecur_s2 - d16_cla2_norecur_s2: Δ -0.0012 ± 0.0192  SD 0.1697 SE 0.0098 t -0.12  승률 50.0%  필요N(SE0.002) **7,204**
+      ⚠️★**300 문항으로는 부족하다**(필요 7,204) **그리고** t -0.12 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+    d14_cla2_norecur_s2 - d16_cla2_norecur_s2: Δ +0.0038 ± 0.0183  SD 0.1614 SE 0.0093 t +0.41  승률 51.7%  필요N(SE0.002) **6,513**
+      ⚠️★**300 문항으로는 부족하다**(필요 6,513) **그리고** t +0.41 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+
+  ── paired 정확도 비교 · McNemar (공통 300문항) ──
+     ★비대응 CI 가 겹쳐도 대응 검정은 가를 수 있다. 🚫반대도 있다.
+    d12_cla2_norecur_s2 - d14_cla2_norecur_s2: Δacc -1.00pp  불일치 39/42  z -0.33  🚫**못 가른다**  필요n(z=2) **10,800** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 36.0배 늘려야 한다
+    d12_cla2_norecur_s2 - d16_cla2_norecur_s2: Δacc +3.33pp  불일치 45/35  z +1.12  🚫**못 가른다**  필요n(z=2) **960** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 3.2배 늘려야 한다
+    d14_cla2_norecur_s2 - d16_cla2_norecur_s2: Δacc +4.33pp  불일치 46/33  z +1.46  🚫**못 가른다**  필요n(z=2) **561** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 1.9배 늘려야 한다
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  stage1_heldout  d12_cla2_norecur_s2     31.0%  정답CE 4.4394 / ★마진 +0.0414
+  stage1_heldout  d14_cla2_norecur_s2     32.0%  정답CE 4.4444 / ★마진 +0.0407
+  stage1_heldout  d16_cla2_norecur_s2     27.7%  정답CE 4.4406 / ★마진 +0.0295
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run m100s8_ko-en_300M_d12_cla2_norecur_s2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260908_091914-m100s8_ko-en_300M_d12_cla2_norecur_s2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s8_ko-en_300M_d12_cla2_norecur_s2
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s8_ko-en_300M_d12_cla2_norecur_s2
+wandb: updating run metadata; uploading artifact run-m100s8_ko-en_300M_d12_cla2_norecur_s2-benchtable_wide-sunHiA
+wandb: uploading artifact run-m100s8_ko-en_300M_d12_cla2_norecur_s2-benchtable_wide-sunHiA
+wandb: uploading artifact run-m100s8_ko-en_300M_d12_cla2_norecur_s2-benchtable_wide-sunHiA; uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2290_d3821f9bc8bfa4bae377.table.json; uploading wandb-summary.json (+ 1 more)
+wandb: uploading artifact run-m100s8_ko-en_300M_d12_cla2_norecur_s2-benchtable_wide-sunHiA; uploading requirements.txt; uploading media\table\bench\table_wide_2290_d3821f9bc8bfa4bae377.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading artifact run-m100s8_ko-en_300M_d12_cla2_norecur_s2-benchtable_wide-sunHiA
+wandb: 
+wandb: Run summary:
+wandb:         bench/stage1_heldout/acc 0.31
+wandb:    bench/stage1_heldout/acc_norm 0.3
+wandb:     bench/stage1_heldout/gold_ce 4.43935
+wandb: bench/stage1_heldout/gold_margin 0.04138
+wandb:           bench/stage1_heldout/n 400
+wandb:     bench/stage1_heldout/n_asked 300
+wandb:         bench/stage1_heldout/pmi True
+wandb:        bench/stage1_heldout/seed 99
+wandb:     bench/stage1_heldout/skipped 0
+wandb:         bench/stage1_heldout/tag d12_cla2_norecur_s2
+wandb:                              +43 ...
+wandb: 
+wandb:  View run m100s8_ko-en_300M_d12_cla2_norecur_s2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s8_ko-en_300M_d12_cla2_norecur_s2
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260908_091914-m100s8_ko-en_300M_d12_cla2_norecur_s2\logs
+  ✅ m100s8_ko-en_300M_d12_cla2_norecur_s2  (1과제 · summary 키 10개 · 표 1행 [정본 갱신 0 삽입 3])
+wandb: setting up run m100s10_ko-en_300M_d14_cla2_norecur_s2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260908_091923-m100s10_ko-en_300M_d14_cla2_norecur_s2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en_300M_d14_cla2_norecur_s2
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_d14_cla2_norecur_s2
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en_300M_d14_cla2_norecur_s2-benchtable_wide-G2URFA
+wandb: uploading artifact run-m100s10_ko-en_300M_d14_cla2_norecur_s2-benchtable_wide-G2URFA
+wandb: uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2290_66f701461f4c010ba49f.table.json
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2290_66f701461f4c010ba49f.table.json
+wandb: 
+wandb: Run summary:
+wandb:         bench/stage1_heldout/acc 0.32
+wandb:    bench/stage1_heldout/acc_norm 0.24333
+wandb:     bench/stage1_heldout/gold_ce 4.44436
+wandb: bench/stage1_heldout/gold_margin 0.04075
+wandb:           bench/stage1_heldout/n 400
+wandb:     bench/stage1_heldout/n_asked 300
+wandb:         bench/stage1_heldout/pmi True
+wandb:        bench/stage1_heldout/seed 99
+wandb:     bench/stage1_heldout/skipped 0
+wandb:         bench/stage1_heldout/tag d14_cla2_norecur_s2
+wandb:                              +43 ...
+wandb: 
+wandb:  View run m100s10_ko-en_300M_d14_cla2_norecur_s2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_d14_cla2_norecur_s2
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260908_091923-m100s10_ko-en_300M_d14_cla2_norecur_s2\logs
+  ✅ m100s10_ko-en_300M_d14_cla2_norecur_s2  (1과제 · summary 키 10개 · 표 1행 [정본 갱신 0 삽입 3])
+wandb: setting up run m100s12_ko-en_300M_d16_cla2_norecur_s2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260908_091929-m100s12_ko-en_300M_d16_cla2_norecur_s2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s12_ko-en_300M_d16_cla2_norecur_s2
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur_s2
+wandb: updating run metadata; uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur_s2-benchtable_wide-l6DrHw
+wandb: uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur_s2-benchtable_wide-l6DrHw
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2290_79d0ee0c0562f647c5b7.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 23-23, summary
+wandb: 
+wandb: Run summary:
+wandb:         bench/stage1_heldout/acc 0.27667
+wandb:    bench/stage1_heldout/acc_norm 0.30333
+wandb:     bench/stage1_heldout/gold_ce 4.44056
+wandb: bench/stage1_heldout/gold_margin 0.02953
+wandb:           bench/stage1_heldout/n 400
+wandb:     bench/stage1_heldout/n_asked 300
+wandb:         bench/stage1_heldout/pmi True
+wandb:        bench/stage1_heldout/seed 99
+wandb:     bench/stage1_heldout/skipped 0
+wandb:         bench/stage1_heldout/tag d16_cla2_norecur_s2
+wandb:                              +43 ...
+wandb: 
+wandb:  View run m100s12_ko-en_300M_d16_cla2_norecur_s2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur_s2
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260908_091929-m100s12_ko-en_300M_d16_cla2_norecur_s2\logs
+  ✅ m100s12_ko-en_300M_d16_cla2_norecur_s2  (1과제 · summary 키 10개 · 표 1행 [정본 갱신 0 삽입 3])
+
+  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고
+     프로젝트도 같은 `tinylm` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.
+     키는 `bench/<과제>/<지표>` 다. 올림 3개 · 건너뜀 0개.
+  ★표 키는 `bench/table_wide`(wide) 이고 정본은 `test_result\bench_results.tsv` 다 — 표는 매번 **전량 재구성**한다.
+     Vega y축은 `${field:y_metric}` 하나로 acc/acc_norm/gold_ce 를 바꾼다(제안서 §4.2.3).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 2.3분  (2026-09-08 09:19:36)
+==============================================================================
+[2/2] all six together - seed and depth in one McNemar table
+
+==============================================================================
+[runlog] 2026-09-08 09:19:36  name=P085_stage7_heldout_seed2
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task stage1_heldout --n 400 --preset m100s12 --models d12_cla2_norecur d12_cla2_norecur_s2 d14_cla2_norecur d14_cla2_norecur_s2 d16_cla2_norecur d16_cla2_norecur_s2 --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=400  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [stage1_heldout] ★한국어 4지선다 관계추론(자체)   kind=mc   공식 metric=(우리 것)
+================================================================================================
+  전체 300행 중 300문항 (seed=99)  id 앞 10개: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s8_ko-en_300M_d12_cla2_norecur.pt
+
+  d12_cla2_norecur   우도acc **37.7%** [95%CI 32.4%~43.3%]  길이정규acc 33.0%  정답CE 4.4988  ★정답마진 +0.0647  N=300 제외=0
+     ★마진 = 오답 평균점수 − 정답점수(argmax 와 **같은 score**). **정오의 연속판**이라 같은 문항 수로 더 잘 가른다. 🚫*'정확도가 유의하다'* 로 옮겨 적지 않는다 — 다른 양이다
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s8_ko-en_300M_d12_cla2_norecur_s2.pt
+
+  d12_cla2_norecur_s2 우도acc **31.0%** [95%CI 26.0%~36.4%]  길이정규acc 30.0%  정답CE 4.4394  ★정답마진 +0.0414  N=300 제외=0
+     ★마진 = 오답 평균점수 − 정답점수(argmax 와 **같은 score**). **정오의 연속판**이라 같은 문항 수로 더 잘 가른다. 🚫*'정확도가 유의하다'* 로 옮겨 적지 않는다 — 다른 양이다
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s10_ko-en_300M_d14_cla2_norecur.pt
+
+  d14_cla2_norecur   우도acc **34.3%** [95%CI 29.2%~39.9%]  길이정규acc 27.3%  정답CE 4.4083  ★정답마진 +0.0617  N=300 제외=0
+     ★마진 = 오답 평균점수 − 정답점수(argmax 와 **같은 score**). **정오의 연속판**이라 같은 문항 수로 더 잘 가른다. 🚫*'정확도가 유의하다'* 로 옮겨 적지 않는다 — 다른 양이다
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s10_ko-en_300M_d14_cla2_norecur_s2.pt
+
+  d14_cla2_norecur_s2 우도acc **32.0%** [95%CI 27.0%~37.5%]  길이정규acc 24.3%  정답CE 4.4444  ★정답마진 +0.0407  N=300 제외=0
+     ★마진 = 오답 평균점수 − 정답점수(argmax 와 **같은 score**). **정오의 연속판**이라 같은 문항 수로 더 잘 가른다. 🚫*'정확도가 유의하다'* 로 옮겨 적지 않는다 — 다른 양이다
+
+  d16_cla2_norecur   우도acc **27.0%** [95%CI 22.3%~32.3%]  길이정규acc 26.0%  정답CE 4.4272  ★정답마진 +0.0203  N=300 제외=0
+     ★마진 = 오답 평균점수 − 정답점수(argmax 와 **같은 score**). **정오의 연속판**이라 같은 문항 수로 더 잘 가른다. 🚫*'정확도가 유의하다'* 로 옮겨 적지 않는다 — 다른 양이다
+
+  d16_cla2_norecur_s2 우도acc **27.7%** [95%CI 22.9%~33.0%]  길이정규acc 30.3%  정답CE 4.4406  ★정답마진 +0.0295  N=300 제외=0
+     ★마진 = 오답 평균점수 − 정답점수(argmax 와 **같은 score**). **정오의 연속판**이라 같은 문항 수로 더 잘 가른다. 🚫*'정확도가 유의하다'* 로 옮겨 적지 않는다 — 다른 양이다
+
+  ── paired 정답CE 비교 (공통 300문항) ──
+    d12_cla2_norecur - d12_cla2_norecur_s2: Δ +0.0594 ± 0.0192  SD 0.1696 SE 0.0098 t +6.07  승률 63.3%  필요N(SE0.002) **7,189**
+      ★**부호는 확정이다**(t +6.07). 🚫단 정밀도 목표 SE 0.002 에는 300 이 부족하다(필요 7,189) — **크기를 인용할 때 ± 를 함께 적는다**
+    d12_cla2_norecur - d14_cla2_norecur: Δ +0.0904 ± 0.0190  SD 0.1682 SE 0.0097 t +9.31  승률 67.7%  필요N(SE0.002) **7,075**
+      ★**부호는 확정이다**(t +9.31). 🚫단 정밀도 목표 SE 0.002 에는 300 이 부족하다(필요 7,075) — **크기를 인용할 때 ± 를 함께 적는다**
+    d12_cla2_norecur - d14_cla2_norecur_s2: Δ +0.0544 ± 0.0207  SD 0.1832 SE 0.0106 t +5.14  승률 60.3%  필요N(SE0.002) **8,390**
+      ★**부호는 확정이다**(t +5.14). 🚫단 정밀도 목표 SE 0.002 에는 300 이 부족하다(필요 8,390) — **크기를 인용할 때 ± 를 함께 적는다**
+    d12_cla2_norecur - d16_cla2_norecur: Δ +0.0716 ± 0.0196  SD 0.1733 SE 0.0100 t +7.16  승률 66.7%  필요N(SE0.002) **7,507**
+      ★**부호는 확정이다**(t +7.16). 🚫단 정밀도 목표 SE 0.002 에는 300 이 부족하다(필요 7,507) — **크기를 인용할 때 ± 를 함께 적는다**
+    d12_cla2_norecur - d16_cla2_norecur_s2: Δ +0.0582 ± 0.0207  SD 0.1831 SE 0.0106 t +5.51  승률 63.7%  필요N(SE0.002) **8,386**
+      ★**부호는 확정이다**(t +5.51). 🚫단 정밀도 목표 SE 0.002 에는 300 이 부족하다(필요 8,386) — **크기를 인용할 때 ± 를 함께 적는다**
+    d12_cla2_norecur_s2 - d14_cla2_norecur: Δ +0.0310 ± 0.0231  SD 0.2044 SE 0.0118 t +2.63  승률 57.3%  필요N(SE0.002) **10,447**
+      ★**부호는 확정이다**(t +2.63). 🚫단 정밀도 목표 SE 0.002 에는 300 이 부족하다(필요 10,447) — **크기를 인용할 때 ± 를 함께 적는다**
+    d12_cla2_norecur_s2 - d14_cla2_norecur_s2: Δ -0.0050 ± 0.0206  SD 0.1821 SE 0.0105 t -0.48  승률 50.0%  필요N(SE0.002) **8,287**
+      ⚠️★**300 문항으로는 부족하다**(필요 8,287) **그리고** t -0.48 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+    d12_cla2_norecur_s2 - d16_cla2_norecur: Δ +0.0122 ± 0.0209  SD 0.1848 SE 0.0107 t +1.14  승률 49.0%  필요N(SE0.002) **8,538**
+      ⚠️★**300 문항으로는 부족하다**(필요 8,538) **그리고** t +1.14 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+    d12_cla2_norecur_s2 - d16_cla2_norecur_s2: Δ -0.0012 ± 0.0192  SD 0.1697 SE 0.0098 t -0.12  승률 50.0%  필요N(SE0.002) **7,204**
+      ⚠️★**300 문항으로는 부족하다**(필요 7,204) **그리고** t -0.12 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+    d14_cla2_norecur - d14_cla2_norecur_s2: Δ -0.0360 ± 0.0228  SD 0.2015 SE 0.0116 t -3.10  승률 43.0%  필요N(SE0.002) **10,151**
+      ★**부호는 확정이다**(t -3.10). 🚫단 정밀도 목표 SE 0.002 에는 300 이 부족하다(필요 10,151) — **크기를 인용할 때 ± 를 함께 적는다**
+    d14_cla2_norecur - d16_cla2_norecur: Δ -0.0188 ± 0.0200  SD 0.1771 SE 0.0102 t -1.84  승률 45.0%  필요N(SE0.002) **7,842**
+      ⚠️★**300 문항으로는 부족하다**(필요 7,842) **그리고** t -1.84 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+    d14_cla2_norecur - d16_cla2_norecur_s2: Δ -0.0322 ± 0.0244  SD 0.2156 SE 0.0124 t -2.59  승률 46.3%  필요N(SE0.002) **11,620**
+      ★**부호는 확정이다**(t -2.59). 🚫단 정밀도 목표 SE 0.002 에는 300 이 부족하다(필요 11,620) — **크기를 인용할 때 ± 를 함께 적는다**
+    d14_cla2_norecur_s2 - d16_cla2_norecur: Δ +0.0172 ± 0.0196  SD 0.1736 SE 0.0100 t +1.72  승률 53.7%  필요N(SE0.002) **7,536**
+      ⚠️★**300 문항으로는 부족하다**(필요 7,536) **그리고** t +1.72 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+    d14_cla2_norecur_s2 - d16_cla2_norecur_s2: Δ +0.0038 ± 0.0183  SD 0.1614 SE 0.0093 t +0.41  승률 51.7%  필요N(SE0.002) **6,513**
+      ⚠️★**300 문항으로는 부족하다**(필요 6,513) **그리고** t +0.41 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+    d16_cla2_norecur - d16_cla2_norecur_s2: Δ -0.0134 ± 0.0183  SD 0.1619 SE 0.0093 t -1.43  승률 44.0%  필요N(SE0.002) **6,552**
+      ⚠️★**300 문항으로는 부족하다**(필요 6,552) **그리고** t -1.43 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+
+  ── paired 정확도 비교 · McNemar (공통 300문항) ──
+     ★비대응 CI 가 겹쳐도 대응 검정은 가를 수 있다. 🚫반대도 있다.
+    d12_cla2_norecur - d12_cla2_norecur_s2: Δacc +6.67pp  불일치 51/31  z +2.21  ★**유의**  필요n(z=2) **246** / 보유 300
+    d12_cla2_norecur - d14_cla2_norecur: Δacc +3.33pp  불일치 54/44  z +1.01  🚫**못 가른다**  필요n(z=2) **1,176** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 3.9배 늘려야 한다
+    d12_cla2_norecur - d14_cla2_norecur_s2: Δacc +5.67pp  불일치 60/43  z +1.68  🚫**못 가른다**  필요n(z=2) **428** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 1.4배 늘려야 한다
+    d12_cla2_norecur - d16_cla2_norecur: Δacc +10.67pp  불일치 57/25  z +3.53  ★**유의**  필요n(z=2) **97** / 보유 300
+    d12_cla2_norecur - d16_cla2_norecur_s2: Δacc +10.00pp  불일치 58/28  z +3.23  ★**유의**  필요n(z=2) **115** / 보유 300
+    d12_cla2_norecur_s2 - d14_cla2_norecur: Δacc -3.33pp  불일치 32/42  z -1.16  🚫**못 가른다**  필요n(z=2) **888** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 3.0배 늘려야 한다
+    d12_cla2_norecur_s2 - d14_cla2_norecur_s2: Δacc -1.00pp  불일치 39/42  z -0.33  🚫**못 가른다**  필요n(z=2) **10,800** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 36.0배 늘려야 한다
+    d12_cla2_norecur_s2 - d16_cla2_norecur: Δacc +4.00pp  불일치 42/30  z +1.41  🚫**못 가른다**  필요n(z=2) **600** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 2.0배 늘려야 한다
+    d12_cla2_norecur_s2 - d16_cla2_norecur_s2: Δacc +3.33pp  불일치 45/35  z +1.12  🚫**못 가른다**  필요n(z=2) **960** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 3.2배 늘려야 한다
+    d14_cla2_norecur - d14_cla2_norecur_s2: Δacc +2.33pp  불일치 41/34  z +0.81  🚫**못 가른다**  필요n(z=2) **1,837** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 6.1배 늘려야 한다
+    d14_cla2_norecur - d16_cla2_norecur: Δacc +7.33pp  불일치 49/27  z +2.52  ★**유의**  필요n(z=2) **189** / 보유 300
+    d14_cla2_norecur - d16_cla2_norecur_s2: Δacc +6.67pp  불일치 48/28  z +2.29  ★**유의**  필요n(z=2) **229** / 보유 300
+    d14_cla2_norecur_s2 - d16_cla2_norecur: Δacc +5.00pp  불일치 44/29  z +1.76  🚫**못 가른다**  필요n(z=2) **390** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 1.3배 늘려야 한다
+    d14_cla2_norecur_s2 - d16_cla2_norecur_s2: Δacc +4.33pp  불일치 46/33  z +1.46  🚫**못 가른다**  필요n(z=2) **561** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 1.9배 늘려야 한다
+    d16_cla2_norecur - d16_cla2_norecur_s2: Δacc -0.67pp  불일치 29/31  z -0.26  🚫**못 가른다**  필요n(z=2) **18,001** / 보유 300
+      ⚠️★**이 과제로는 못 가른다.** 문항을 60.0배 늘려야 한다
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  stage1_heldout  d12_cla2_norecur        37.7%  정답CE 4.4988 / ★마진 +0.0647
+  stage1_heldout  d12_cla2_norecur_s2     31.0%  정답CE 4.4394 / ★마진 +0.0414
+  stage1_heldout  d14_cla2_norecur        34.3%  정답CE 4.4083 / ★마진 +0.0617
+  stage1_heldout  d14_cla2_norecur_s2     32.0%  정답CE 4.4444 / ★마진 +0.0407
+  stage1_heldout  d16_cla2_norecur        27.0%  정답CE 4.4272 / ★마진 +0.0203
+  stage1_heldout  d16_cla2_norecur_s2     27.7%  정답CE 4.4406 / ★마진 +0.0295
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run m100s8_ko-en_300M_d12_cla2_norecur
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260908_092314-m100s8_ko-en_300M_d12_cla2_norecur
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s8_ko-en_300M_d12_cla2_norecur
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s8_ko-en_300M_d12_cla2_norecur
+wandb: WARNING Artifact "run-m100s8_ko-en_300M_d12_cla2_norecur-benchtable_wide-lORtRw" already exists with the same content. No new version will be created.
+wandb: updating run metadata
+wandb: uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2293_ff52f94a81b6163fd501.table.json (+ 1 more)
+wandb: uploading history steps 26-26, summary, console lines 0-0
+wandb: 
+wandb: Run summary:
+wandb:      bench/arc_easy/acc 0.34554
+wandb: bench/arc_easy/acc_norm 0.33418
+wandb:  bench/arc_easy/gold_ce 6.67743
+wandb:        bench/arc_easy/n 5000
+wandb:  bench/arc_easy/n_asked 2376
+wandb:      bench/arc_easy/pmi True
+wandb:     bench/arc_easy/seed 99
+wandb:  bench/arc_easy/skipped 0
+wandb:      bench/arc_easy/tag d12_cla2_norecur
+wandb:     bench/hellaswag/acc 0.2896
+wandb:                     +61 ...
+wandb: 
+wandb:  View run m100s8_ko-en_300M_d12_cla2_norecur at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s8_ko-en_300M_d12_cla2_norecur
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 5 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260908_092314-m100s8_ko-en_300M_d12_cla2_norecur\logs
+  ✅ m100s8_ko-en_300M_d12_cla2_norecur  (1과제 · summary 키 10개 · 표 3행 [정본 갱신 3 삽입 0])
+wandb: setting up run m100s8_ko-en_300M_d12_cla2_norecur_s2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260908_092320-m100s8_ko-en_300M_d12_cla2_norecur_s2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s8_ko-en_300M_d12_cla2_norecur_s2
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s8_ko-en_300M_d12_cla2_norecur_s2
+wandb: updating run metadata; uploading artifact run-m100s8_ko-en_300M_d12_cla2_norecur_s2-benchtable_wide-sunHiA
+wandb: WARNING Artifact "run-m100s8_ko-en_300M_d12_cla2_norecur_s2-benchtable_wide-sunHiA" already exists with the same content. No new version will be created.
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2291_d3821f9bc8bfa4bae377.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: 
+wandb: Run summary:
+wandb:         bench/stage1_heldout/acc 0.31
+wandb:    bench/stage1_heldout/acc_norm 0.3
+wandb:     bench/stage1_heldout/gold_ce 4.43935
+wandb: bench/stage1_heldout/gold_margin 0.04138
+wandb:           bench/stage1_heldout/n 400
+wandb:     bench/stage1_heldout/n_asked 300
+wandb:         bench/stage1_heldout/pmi True
+wandb:        bench/stage1_heldout/seed 99
+wandb:     bench/stage1_heldout/skipped 0
+wandb:         bench/stage1_heldout/tag d12_cla2_norecur_s2
+wandb:                              +43 ...
+wandb: 
+wandb:  View run m100s8_ko-en_300M_d12_cla2_norecur_s2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s8_ko-en_300M_d12_cla2_norecur_s2
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260908_092320-m100s8_ko-en_300M_d12_cla2_norecur_s2\logs
+  ✅ m100s8_ko-en_300M_d12_cla2_norecur_s2  (1과제 · summary 키 10개 · 표 1행 [정본 갱신 3 삽입 0])
+wandb: setting up run m100s10_ko-en_300M_d14_cla2_norecur
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260908_092324-m100s10_ko-en_300M_d14_cla2_norecur
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en_300M_d14_cla2_norecur
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_d14_cla2_norecur
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en_300M_d14_cla2_norecur-benchtable_wide-c-cRsg
+wandb: WARNING Artifact "run-m100s10_ko-en_300M_d14_cla2_norecur-benchtable_wide-c-cRsg" already exists with the same content. No new version will be created.
+wandb: uploading wandb-summary.json
+wandb: 
+wandb: Run summary:
+wandb:      bench/arc_easy/acc 0.35269
+wandb: bench/arc_easy/acc_norm 0.32239
+wandb:  bench/arc_easy/gold_ce 6.84882
+wandb:        bench/arc_easy/n 5000
+wandb:  bench/arc_easy/n_asked 2376
+wandb:      bench/arc_easy/pmi True
+wandb:     bench/arc_easy/seed 99
+wandb:  bench/arc_easy/skipped 0
+wandb:      bench/arc_easy/tag d14_cla2_norecur
+wandb:     bench/hellaswag/acc 0.2822
+wandb:                     +61 ...
+wandb: 
+wandb:  View run m100s10_ko-en_300M_d14_cla2_norecur at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_d14_cla2_norecur
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260908_092324-m100s10_ko-en_300M_d14_cla2_norecur\logs
+  ✅ m100s10_ko-en_300M_d14_cla2_norecur  (1과제 · summary 키 10개 · 표 3행 [정본 갱신 3 삽입 0])
+wandb: setting up run m100s10_ko-en_300M_d14_cla2_norecur_s2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260908_092328-m100s10_ko-en_300M_d14_cla2_norecur_s2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en_300M_d14_cla2_norecur_s2
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_d14_cla2_norecur_s2
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en_300M_d14_cla2_norecur_s2-benchtable_wide-G2URFA
+wandb: WARNING Artifact "run-m100s10_ko-en_300M_d14_cla2_norecur_s2-benchtable_wide-G2URFA" already exists with the same content. No new version will be created.
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2291_66f701461f4c010ba49f.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 24-24, summary
+wandb: 
+wandb: Run summary:
+wandb:         bench/stage1_heldout/acc 0.32
+wandb:    bench/stage1_heldout/acc_norm 0.24333
+wandb:     bench/stage1_heldout/gold_ce 4.44436
+wandb: bench/stage1_heldout/gold_margin 0.04075
+wandb:           bench/stage1_heldout/n 400
+wandb:     bench/stage1_heldout/n_asked 300
+wandb:         bench/stage1_heldout/pmi True
+wandb:        bench/stage1_heldout/seed 99
+wandb:     bench/stage1_heldout/skipped 0
+wandb:         bench/stage1_heldout/tag d14_cla2_norecur_s2
+wandb:                              +43 ...
+wandb: 
+wandb:  View run m100s10_ko-en_300M_d14_cla2_norecur_s2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_d14_cla2_norecur_s2
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260908_092328-m100s10_ko-en_300M_d14_cla2_norecur_s2\logs
+  ✅ m100s10_ko-en_300M_d14_cla2_norecur_s2  (1과제 · summary 키 10개 · 표 1행 [정본 갱신 3 삽입 0])
+wandb: setting up run m100s12_ko-en_300M_d16_cla2_norecur
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260908_092332-m100s12_ko-en_300M_d16_cla2_norecur
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s12_ko-en_300M_d16_cla2_norecur
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur
+wandb: updating run metadata; uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur-benchtable_wide-kbv3Ng
+wandb: WARNING Artifact "run-m100s12_ko-en_300M_d16_cla2_norecur-benchtable_wide-kbv3Ng" already exists with the same content. No new version will be created.
+wandb: uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt
+wandb: uploading history steps 26-26, summary
+wandb: 
+wandb: Run summary:
+wandb:      bench/arc_easy/acc 0.35017
+wandb: bench/arc_easy/acc_norm 0.33544
+wandb:  bench/arc_easy/gold_ce 6.5625
+wandb:        bench/arc_easy/n 5000
+wandb:  bench/arc_easy/n_asked 2376
+wandb:      bench/arc_easy/pmi True
+wandb:     bench/arc_easy/seed 99
+wandb:  bench/arc_easy/skipped 0
+wandb:      bench/arc_easy/tag d16_cla2_norecur
+wandb:     bench/hellaswag/acc 0.2848
+wandb:                     +61 ...
+wandb: 
+wandb:  View run m100s12_ko-en_300M_d16_cla2_norecur at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260908_092332-m100s12_ko-en_300M_d16_cla2_norecur\logs
+  ✅ m100s12_ko-en_300M_d16_cla2_norecur  (1과제 · summary 키 10개 · 표 3행 [정본 갱신 3 삽입 0])
+wandb: setting up run m100s12_ko-en_300M_d16_cla2_norecur_s2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260908_092336-m100s12_ko-en_300M_d16_cla2_norecur_s2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s12_ko-en_300M_d16_cla2_norecur_s2
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur_s2
+wandb: updating run metadata; uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur_s2-benchtable_wide-l6DrHw
+wandb: WARNING Artifact "run-m100s12_ko-en_300M_d16_cla2_norecur_s2-benchtable_wide-l6DrHw" already exists with the same content. No new version will be created.
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2291_79d0ee0c0562f647c5b7.table.json; uploading wandb-summary.json
+wandb: uploading requirements.txt
+wandb: 
+wandb: Run summary:
+wandb:         bench/stage1_heldout/acc 0.27667
+wandb:    bench/stage1_heldout/acc_norm 0.30333
+wandb:     bench/stage1_heldout/gold_ce 4.44056
+wandb: bench/stage1_heldout/gold_margin 0.02953
+wandb:           bench/stage1_heldout/n 400
+wandb:     bench/stage1_heldout/n_asked 300
+wandb:         bench/stage1_heldout/pmi True
+wandb:        bench/stage1_heldout/seed 99
+wandb:     bench/stage1_heldout/skipped 0
+wandb:         bench/stage1_heldout/tag d16_cla2_norecur_s2
+wandb:                              +43 ...
+wandb: 
+wandb:  View run m100s12_ko-en_300M_d16_cla2_norecur_s2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur_s2
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260908_092336-m100s12_ko-en_300M_d16_cla2_norecur_s2\logs
+  ✅ m100s12_ko-en_300M_d16_cla2_norecur_s2  (1과제 · summary 키 10개 · 표 1행 [정본 갱신 3 삽입 0])
+
+  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고
+     프로젝트도 같은 `tinylm` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.
+     키는 `bench/<과제>/<지표>` 다. 올림 6개 · 건너뜀 0개.
+  ★표 키는 `bench/table_wide`(wide) 이고 정본은 `test_result\bench_results.tsv` 다 — 표는 매번 **전량 재구성**한다.
+     Vega y축은 `${field:y_metric}` 하나로 acc/acc_norm/gold_ce 를 바꾼다(제안서 §4.2.3).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 4.1분  (2026-09-08 09:23:41)
+==============================================================================
+DONE. If the sign does not reproduce the depth reversal was a seed effect and Stage6 s wording is retracted.

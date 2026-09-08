@@ -1,0 +1,289 @@
+[1/4] dim 512 depth 28 - 250 step probe, read report() and VRAM only
+
+==============================================================================
+[runlog] 2026-09-08 09:23:56  name=P089_stage0a_width_probe
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100w512s24 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --cla-group 2 --steps 250 --tokens 300M --pool-tokens 600M --exact-cache --tag w512_d28_probe
+==============================================================================
+[cmd] python run100m.py train --preset m100w512s24 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --cla-group 2 --steps 250 --tokens 300M --pool-tokens 600M --exact-cache --tag w512_d28_probe
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 28 -> 14 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=512 ffn=1408 layers=2+24+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       77.1M      15.7 MiB
+  임베딩(factorized)               8.5M       1.7 MiB
+  기타(norm/gate/router)          0.1M       0.1 MiB
+  ----------------------------------------------------
+  합계                           85.6M      17.6 MiB
+
+
+  저장(packed, 안 B)                         17.6 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        20.4 MiB
+  ★상주(runtime, 현 구현)                     620.7 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 17.6MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 0.4 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.158 GFLOP
+  ★KV 캐시(fp32)        : 14.0 KB/token  (엔트리 14개 / 방문 28회)
+                          1024 ctx 14.0 MiB → ★상주+KV = 634.7 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[w512_d28_probe] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+W0908 09:24:35.748000 13120 site-packages\torch\_inductor\utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+  step     0/250  ce 10.4061  |g| 2.99  anneal 0.00  lr 4.00e-05  107262 ms/step
+  step    10/250  ce 9.6522  |g| 1.31  anneal 0.00  lr 4.40e-04  11773 ms/step
+  step    20/250  ce 7.9603  |g| 2.33  anneal 0.00  lr 8.40e-04  7223 ms/step
+  step    30/250  ce 8.8383  |g| 12.59  anneal 0.00  lr 1.00e-03  5607 ms/step
+  step    40/250  ce 7.8170  |g| 1.36  anneal 0.02  lr 1.00e-03  4802 ms/step
+  step    50/250  ce 7.5083  |g| 0.72  anneal 0.08  lr 1.00e-03  4296 ms/step
+  step    60/250  ce 7.5336  |g| 1.64  anneal 0.14  lr 1.00e-03  3958 ms/step
+  step    70/250  ce 7.3589  |g| 0.52  anneal 0.20  lr 1.00e-03  3714 ms/step
+  step    80/250  ce 7.2835  |g| 0.68  anneal 0.26  lr 1.00e-03  3531 ms/step
+  step    90/250  ce 7.1459  |g| 0.57  anneal 0.32  lr 1.00e-03  3387 ms/step
+    >> val_loss 6.9419  ppl 1034.71  (train_ce 7.045, val-CE -0.103)  bpb 2.289
+       best 갱신 6.9419 -> m100w512s24_ko-en_300M_w512_d28_probe_best.pt
+  step   100/250  ce 7.0219  |g| 0.39  anneal 0.38  lr 1.00e-03  3551 ms/step
+  step   110/250  ce 6.8719  |g| 0.44  anneal 0.45  lr 1.00e-03  3432 ms/step
+  step   120/250  ce 6.8392  |g| 0.45  anneal 0.51  lr 1.00e-03  3331 ms/step
+  step   130/250  ce 6.7585  |g| 0.47  anneal 0.57  lr 1.00e-03  3247 ms/step
+  step   140/250  ce 6.6858  |g| 0.66  anneal 0.63  lr 1.00e-03  3174 ms/step
+  step   150/250  ce 6.5517  |g| 0.46  anneal 0.69  lr 1.00e-03  3111 ms/step
+  step   160/250  ce 6.5080  |g| 0.38  anneal 0.75  lr 1.00e-03  3055 ms/step
+  step   170/250  ce 6.3708  |g| 0.65  anneal 0.82  lr 1.00e-03  3006 ms/step
+  step   180/250  ce 6.3893  |g| 0.57  anneal 0.88  lr 1.00e-03  2963 ms/step
+  step   190/250  ce 6.3358  |g| 0.41  anneal 0.94  lr 1.00e-03  2924 ms/step
+    >> val_loss 6.1925  ppl 489.07  (train_ce 6.282, val-CE -0.090)  bpb 2.042
+       best 갱신 6.1925 -> m100w512s24_ko-en_300M_w512_d28_probe_best.pt
+  step   200/250  ce 6.2542  |g| 0.47  anneal 1.00  lr 1.00e-03  2908 ms/step
+  step   210/250  ce 6.1872  |g| 0.51  anneal 1.00  lr 9.73e-04  2875 ms/step
+  step   220/250  ce 6.1624  |g| 0.40  anneal 1.00  lr 7.75e-04  2849 ms/step
+  step   230/250  ce 6.0465  |g| 0.30  anneal 1.00  lr 4.72e-04  2822 ms/step
+  step   240/250  ce 6.0948  |g| 0.26  anneal 1.00  lr 2.05e-04  2797 ms/step
+  step   249/250  ce 6.0639  |g| 0.24  anneal 1.00  lr 1.01e-04  2776 ms/step
+    >> val_loss 5.9456  ppl 382.08  (train_ce 6.064, val-CE -0.118)  bpb 1.961
+       best 갱신 5.9456 -> m100w512s24_ko-en_300M_w512_d28_probe_best.pt
+
+[w512_d28_probe] 최종 val_loss 5.9806  ppl 395.69  best 5.9456@250  (85.6M, 11.7분, skip 0, VRAM 9.81GB(reserved)/8.56GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 9.81GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 11.8분  (2026-09-08 09:35:45)
+==============================================================================
+[2/4] dim 384 depth 28 - the narrower point
+
+==============================================================================
+[runlog] 2026-09-08 09:36:06  name=P089_stage0a_width_probe
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100w384s24 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --cla-group 2 --steps 250 --tokens 300M --pool-tokens 600M --exact-cache --tag w384_d28_probe
+==============================================================================
+[cmd] python run100m.py train --preset m100w384s24 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --cla-group 2 --steps 250 --tokens 300M --pool-tokens 600M --exact-cache --tag w384_d28_probe
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 28 -> 14 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=384 ffn=1024 layers=2+24+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       42.7M       8.7 MiB
+  임베딩(factorized)               8.5M       1.7 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           51.2M      10.5 MiB
+
+
+  저장(packed, 안 B)                         10.5 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        12.2 MiB
+  ★상주(runtime, 현 구현)                     358.0 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 10.5MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 0.2 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.088 GFLOP
+  ★KV 캐시(fp32)        : 14.0 KB/token  (엔트리 14개 / 방문 28회)
+                          1024 ctx 14.0 MiB → ★상주+KV = 372.0 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[w384_d28_probe] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[sched] shape=linear  anneal_start=0.15(step~37)  anneal_end=0.80(step~200)  완전삼진=0.80(step~200)  decay_frac=0.20  LR감쇠시작=0.80(step~200)  정렬됨
+W0908 09:36:47.364000 45628 site-packages\torch\_inductor\utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+  step     0/250  ce 10.4051  |g| 2.16  anneal 0.00  lr 4.00e-05  104634 ms/step
+  step    10/250  ce 9.8550  |g| 1.04  anneal 0.00  lr 4.40e-04  11059 ms/step
+  step    20/250  ce 8.0547  |g| 1.85  anneal 0.00  lr 8.40e-04  6603 ms/step
+  step    30/250  ce 8.7535  |g| 6.23  anneal 0.00  lr 1.00e-03  5021 ms/step
+  step    40/250  ce 8.0021  |g| 7.62  anneal 0.02  lr 1.00e-03  4212 ms/step
+  step    50/250  ce 7.6940  |g| 0.75  anneal 0.08  lr 1.00e-03  3721 ms/step
+  step    60/250  ce 7.6536  |g| 0.69  anneal 0.14  lr 1.00e-03  3390 ms/step
+  step    70/250  ce 7.5239  |g| 0.40  anneal 0.20  lr 1.00e-03  3153 ms/step
+  step    80/250  ce 7.4583  |g| 0.75  anneal 0.26  lr 1.00e-03  2974 ms/step
+  step    90/250  ce 7.3538  |g| 0.72  anneal 0.32  lr 1.00e-03  2844 ms/step
+    >> val_loss 7.1756  ppl 1307.18  (train_ce 7.271, val-CE -0.096)  bpb 2.366
+       best 갱신 7.1756 -> m100w384s24_ko-en_300M_w384_d28_probe_best.pt
+  step   100/250  ce 7.2357  |g| 0.66  anneal 0.38  lr 1.00e-03  2971 ms/step
+  step   110/250  ce 7.0894  |g| 0.58  anneal 0.45  lr 1.00e-03  2857 ms/step
+  step   120/250  ce 7.0456  |g| 0.67  anneal 0.51  lr 1.00e-03  2775 ms/step
+  step   130/250  ce 6.9823  |g| 1.32  anneal 0.57  lr 1.00e-03  2693 ms/step
+  step   140/250  ce 6.8702  |g| 0.50  anneal 0.63  lr 1.00e-03  2623 ms/step
+  step   150/250  ce 6.7193  |g| 0.46  anneal 0.69  lr 1.00e-03  2562 ms/step
+  step   160/250  ce 6.6841  |g| 0.60  anneal 0.75  lr 1.00e-03  2509 ms/step
+  step   170/250  ce 6.5413  |g| 0.52  anneal 0.82  lr 1.00e-03  2462 ms/step
+  step   180/250  ce 6.5383  |g| 0.49  anneal 0.88  lr 1.00e-03  2420 ms/step
+  step   190/250  ce 6.5171  |g| 0.65  anneal 0.94  lr 1.00e-03  2382 ms/step
+    >> val_loss 6.3644  ppl 580.78  (train_ce 6.449, val-CE -0.084)  bpb 2.099
+       best 갱신 6.3644 -> m100w384s24_ko-en_300M_w384_d28_probe_best.pt
+  step   200/250  ce 6.4233  |g| 0.58  anneal 1.00  lr 1.00e-03  2361 ms/step
+  step   210/250  ce 6.3551  |g| 0.42  anneal 1.00  lr 9.73e-04  2330 ms/step
+  step   220/250  ce 6.3332  |g| 0.46  anneal 1.00  lr 7.75e-04  2305 ms/step
+  step   230/250  ce 6.2258  |g| 0.31  anneal 1.00  lr 4.72e-04  2279 ms/step
+  step   240/250  ce 6.2753  |g| 0.28  anneal 1.00  lr 2.05e-04  2256 ms/step
+  step   249/250  ce 6.2409  |g| 0.23  anneal 1.00  lr 1.01e-04  2237 ms/step
+    >> val_loss 6.1288  ppl 458.86  (train_ce 6.241, val-CE -0.112)  bpb 2.021
+       best 갱신 6.1288 -> m100w384s24_ko-en_300M_w384_d28_probe_best.pt
+
+[w384_d28_probe] 최종 val_loss 6.1641  ppl 475.36  best 6.1288@250  (51.2M, 9.4분, skip 0, VRAM 7.82GB(reserved)/6.70GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 7.82GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 9.5분  (2026-09-08 09:45:38)
+==============================================================================
+[3/4] deployment residency of both narrow shapes - the canonical command
+
+==============================================================================
+[runlog] 2026-09-08 09:45:43  name=P089_stage0a_width_probe
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\mem_runtime.py --preset m100w512s24 --data ko-en --tokens 300M --models w512_d28_probe --device cpu --drop-latent --lut --emb-quant int8 --kv-seq 1024 --kv-dtype bf16
+==============================================================================
+================================================================================================
+  P034 단계1 — 실행시 메모리 실측 (저장 MiB 는 이론·패킹 가정, 상주 MiB 는 실측)  ★단위는 전부 **MiB**(1024^2)
+  device=cpu  max_new=32
+  ★RSS 는 할당자 때문에 과대, 텐서합산은 임시버퍼를 빼서 과소. 둘을 함께 읽는다.
+================================================================================================
+[lut] ★삼진 168개 층 -> LUT 코드. 상주 15.25 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+
+  ── w512_d28_probe (tied) ────────────────────────────────────────────────────────────
+     저장(이론·패킹)       15.8 MiB    삼진 파라미터  77.07M @ 1.7099625007211563bpw
+     텐서합산 상주        596.8 MiB = latent 294.0 + dequant사본 294.0 + 기타 8.8
+     RSS 로드전/로드후/생성후     388.8 /   2297.6 /   2307.0 MiB (증가 +1918.2)
+     ★저장 대비 상주        37.7 배
+     ★KV 캐시               7.0 MiB @ seq 1024 (7.00 KB/token · 엔트리 14개 / 방문 28회 · 2B) ★**저장 dtype bf16**(구현된 축)
+                        ⚠️**seq 에 선형**이다 — 한 수가 아니라 기울기로 읽는다. cla_group↓·재귀↑ 가 엔트리를 늘린다
+     ── P034 ★P014 단계1 (latent 해제 + **LUT 1.600bpw**) ──────────────────────────────
+     로짓 차이         max|dlogit| = 4.787e-01   동작확인(품질 기준 아님)
+     ⚠️★**0 이 아닌 것이 정상**이다 — LUT 는 per-row alpha 로 재추정한다(768 에 5의 배수 약수가 없다).
+     🚫★**이 숫자로 품질을 판정하지 않는다**(함정 34) — 결과 028 이 잰 것은 **bpb**(+0.0038~0.0068)이고 로짓 절대차와 단위가 다르다.
+     ★품질은 `paired_eval` 또는 `common_bpb` 로 따로 잰다.
+     ★LUT 상주(코드+alpha)    15.25 MiB  = 삼진 77.07M x 1.600 bpw
+     텐서합산 상주         24.1 MiB = latent 0.0 + 삼진사본 15.2 + 기타 8.8
+     RSS 해제후           703.3 MiB
+     ★상주 감축           24.77 배   (저장 15.8 → 15.8 MiB — 저장은 변하지 않는 것이 정상)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-08 09:45:48)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-08 09:45:49  name=P089_stage0a_width_probe
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\mem_runtime.py --preset m100w384s24 --data ko-en --tokens 300M --models w384_d28_probe --device cpu --drop-latent --lut --emb-quant int8 --kv-seq 1024 --kv-dtype bf16
+==============================================================================
+================================================================================================
+  P034 단계1 — 실행시 메모리 실측 (저장 MiB 는 이론·패킹 가정, 상주 MiB 는 실측)  ★단위는 전부 **MiB**(1024^2)
+  device=cpu  max_new=32
+  ★RSS 는 할당자 때문에 과대, 텐서합산은 임시버퍼를 빼서 과소. 둘을 함께 읽는다.
+================================================================================================
+[lut] ★삼진 168개 층 -> LUT 코드. 상주 8.51 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+
+  ── w384_d28_probe (tied) ────────────────────────────────────────────────────────────
+     저장(이론·패킹)        8.8 MiB    삼진 파라미터  42.66M @ 1.7099625007211563bpw
+     텐서합산 상주        334.2 MiB = latent 162.8 + dequant사본 162.8 + 기타 8.7
+     RSS 로드전/로드후/생성후     387.9 /   1541.7 /   1542.5 MiB (증가 +1154.6)
+     ★저장 대비 상주        38.0 배
+     ★KV 캐시               7.0 MiB @ seq 1024 (7.00 KB/token · 엔트리 14개 / 방문 28회 · 2B) ★**저장 dtype bf16**(구현된 축)
+                        ⚠️**seq 에 선형**이다 — 한 수가 아니라 기울기로 읽는다. cla_group↓·재귀↑ 가 엔트리를 늘린다
+     ── P034 ★P014 단계1 (latent 해제 + **LUT 1.600bpw**) ──────────────────────────────
+     로짓 차이         max|dlogit| = 2.275e-01   동작확인(품질 기준 아님)
+     ⚠️★**0 이 아닌 것이 정상**이다 — LUT 는 per-row alpha 로 재추정한다(768 에 5의 배수 약수가 없다).
+     🚫★**이 숫자로 품질을 판정하지 않는다**(함정 34) — 결과 028 이 잰 것은 **bpb**(+0.0038~0.0068)이고 로짓 절대차와 단위가 다르다.
+     ★품질은 `paired_eval` 또는 `common_bpb` 로 따로 잰다.
+     ★LUT 상주(코드+alpha)     8.51 MiB  = 삼진 42.66M x 1.600 bpw
+     텐서합산 상주         17.2 MiB = latent 0.0 + 삼진사본 8.5 + 기타 8.7
+     RSS 해제후           645.0 MiB
+     ★상주 감축           19.45 배   (저장 8.8 → 8.8 MiB — 저장은 변하지 않는 것이 정상)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-08 09:45:53)
+==============================================================================
+[4/4] single thread tok/s - is time linear in dim
+
+==============================================================================
+[runlog] 2026-09-08 09:45:53  name=P089_stage0a_width_probe
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\bench_infer.py --models w512_d28_probe --preset m100w512s24 --data ko-en --tokens 300M --device cpu --threads 1 4 --max-new 128 --reps 3 --drop-latent --int8-store --unpack-cache
+==============================================================================
+============================================================================================
+  P030 추론 속도 벤치 (단계1: KV 캐시 + eos + 삼진 1회계산 반영)
+  max_new=128  reps=3(중위값)  프롬프트='대한민국의 수도 서울은'
+  캐시 모드=['on']   (off = 결과 014 조건)
+============================================================================================
+  ★MB 는 하드코딩이 아니라 로드한 모델에서 계산한다(회계 = 안 B, 2026-07-31 통일).
+    저장 = packed_mb(아직 없는 패킹 포맷의 이론값) / 상주 = runtime_mb(결과 016 실측식).
+============================================================================================
+
+  device  threads            model    저장MB     상주MB    캐시     tok/s   TTFT ms
+--------------------------------------------------------------------------------------------
+     cpu        1   w512_d28_probe    17.6    108.5    on     15.55      72.1
+     cpu        4   w512_d28_probe    17.6    108.5    on     22.99      45.2
+--------------------------------------------------------------------------------------------
+
+★핵심 질문: 메모리를 줄이면 CPU 추론이 빨라지는가?
+  ★결과 016 의 예측: 속도가 메모리를 따라간다면 **저장이 아니라 상주**를 따라간다.
+    저장 순위(mA<mC<p6d)와 상주 순위(mC<mA<p6d)가 역전돼 있으므로 둘을 갈라 읽는다.
+
+  읽는 법: 속도비가 1.0 근처면 **전이 없음** — 가중치가 GEMM 직전에 fp32 로
+           dequant 되기 때문이다. 그것이 P034 단계2~4 가 존재하는 이유이고,
+           음성 결과이지 실패가 아니다.
+
+★한계: 삼진은 dequant 후 GEMM(저장≠실행 크기 — 상주는 같은 표의 상주MB 열) /
+        Windows CPU 측정은 노이즈 큼(중위값 사용, 1~2% 차이는 읽지 않는다) /
+        batch 1 단일요청. 서버 처리량은 다른 주제다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.0분  (2026-09-08 09:46:54)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-08 09:46:54  name=P089_stage0a_width_probe
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\bench_infer.py --models w384_d28_probe --preset m100w384s24 --data ko-en --tokens 300M --device cpu --threads 1 4 --max-new 128 --reps 3 --drop-latent --int8-store --unpack-cache
+==============================================================================
+============================================================================================
+  P030 추론 속도 벤치 (단계1: KV 캐시 + eos + 삼진 1회계산 반영)
+  max_new=128  reps=3(중위값)  프롬프트='대한민국의 수도 서울은'
+  캐시 모드=['on']   (off = 결과 014 조건)
+============================================================================================
+  ★MB 는 하드코딩이 아니라 로드한 모델에서 계산한다(회계 = 안 B, 2026-07-31 통일).
+    저장 = packed_mb(아직 없는 패킹 포맷의 이론값) / 상주 = runtime_mb(결과 016 실측식).
+============================================================================================
+
+  device  threads            model    저장MB     상주MB    캐시     tok/s   TTFT ms
+--------------------------------------------------------------------------------------------
+     cpu        1   w384_d28_probe    10.5     74.5    on     23.49      49.7
+     cpu        4   w384_d28_probe    10.5     74.5    on     35.37      26.9
+--------------------------------------------------------------------------------------------
+
+★핵심 질문: 메모리를 줄이면 CPU 추론이 빨라지는가?
+  ★결과 016 의 예측: 속도가 메모리를 따라간다면 **저장이 아니라 상주**를 따라간다.
+    저장 순위(mA<mC<p6d)와 상주 순위(mC<mA<p6d)가 역전돼 있으므로 둘을 갈라 읽는다.
+
+  읽는 법: 속도비가 1.0 근처면 **전이 없음** — 가중치가 GEMM 직전에 fp32 로
+           dequant 되기 때문이다. 그것이 P034 단계2~4 가 존재하는 이유이고,
+           음성 결과이지 실패가 아니다.
+
+★한계: 삼진은 dequant 후 GEMM(저장≠실행 크기 — 상주는 같은 표의 상주MB 열) /
+        Windows CPU 측정은 노이즈 큼(중위값 사용, 1~2% 차이는 읽지 않는다) /
+        batch 1 단일요청. 서버 처리량은 다른 주제다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.7분  (2026-09-08 09:47:35)
+==============================================================================
+DONE. Three checks must all pass before Stage1. Do not read val from 250 steps.
