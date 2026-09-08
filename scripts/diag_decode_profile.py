@@ -124,11 +124,11 @@ def main() -> int:
     import torch                                          # noqa: F401
     import tinylm                                         # noqa: F401
     from tinylm import paths
-    from tinylm.data import tokenizer_path
+    from tinylm.data import load_tokenizer
     from tinylm.infer.generate import load_model
     from tokenizers import Tokenizer
 
-    tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
+    tok = load_tokenizer(a.data)
     base = f"{a.preset}_{a.data}_{a.tokens}"
     print("=" * 96)
     print("  P014D 선결 — 디코드 시간 분해 (torch.profiler, CPU, 학습 0)")

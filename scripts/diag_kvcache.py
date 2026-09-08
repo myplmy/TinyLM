@@ -175,10 +175,10 @@ def main():
     from tinylm import paths
     from tinylm.infer.generate import load_model
     from tokenizers import Tokenizer
-    from tinylm.data import tokenizer_path
+    from tinylm.data import load_tokenizer
 
     models = [(t, _arch_of(t)) for t in a.models] if a.models else DEFAULT_MODELS
-    tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
+    tok = load_tokenizer(a.data)
     base = f"{a.preset}_{a.data}_{a.tokens}"
     use_ac = (a.device == "cuda")
 

@@ -123,14 +123,14 @@ def main():
     import torch
     import torch.nn.functional as F
     from tinylm import paths
-    from tinylm.data import prepare, tokenizer_path
+    from tinylm.data import prepare, load_tokenizer
     from tinylm.infer.generate import load_model
     from tokenizers import Tokenizer
 
     n_tok = int(float(a.tokens.rstrip("MmBb")) * (1e9 if a.tokens[-1] in "Bb" else 1e6))
     meta = prepare(a.data, n_tok, doc_filter=a.doc_filter)
     val = np.memmap(Path(meta["dir"]) / "val.bin", dtype=np.uint16, mode="r")
-    tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
+    tok = load_tokenizer(a.data)
     eos = tok.token_to_id("<eos>")
     if eos is None:
         eos = 2

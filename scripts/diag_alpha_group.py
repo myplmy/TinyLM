@@ -111,7 +111,7 @@ def main():
     import torch.nn.functional as F
     from tinylm import paths
     from tinylm.infer.generate import load_model
-    from tinylm.data import tokenizer_path
+    from tinylm.data import load_tokenizer
     from tinylm.model.ternary import TLinear
     from tokenizers import Tokenizer
 
@@ -140,7 +140,7 @@ def main():
         if not ck.exists():
             print(f"  [건너뜀] 체크포인트 없음: {ck.name}")
             continue
-        tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
+        tok = load_tokenizer(a.data)
         ids = np.array(tok.encode(text).ids, dtype=np.int64)
         bpt = n_bytes / max(len(ids), 1)
 

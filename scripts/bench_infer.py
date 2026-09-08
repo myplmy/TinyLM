@@ -258,12 +258,12 @@ def main():
     import torch
     from tinylm import paths
     from tinylm.infer.generate import load_model
-    from tinylm.data import tokenizer_path
+    from tinylm.data import load_tokenizer
     from tokenizers import Tokenizer
 
     models = ([(t, "dense" if t.startswith(("p6d", "dense", "p12d")) else "tied")
                for t in a.models] if a.models else DEFAULT_MODELS)
-    tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
+    tok = load_tokenizer(a.data)
     base = f"{a.preset}_{a.data}_{a.tokens}"
 
     modes = [True, False] if a.both_cache else [not a.no_cache]

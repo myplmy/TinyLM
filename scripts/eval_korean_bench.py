@@ -179,7 +179,7 @@ def main():
     import torch.nn.functional as F
     from tokenizers import Tokenizer
     from tinylm import paths
-    from tinylm.data import tokenizer_path
+    from tinylm.data import load_tokenizer
     from tinylm.infer.generate import load_model
 
     dev = a.device or ("cuda" if torch.cuda.is_available() else "cpu")
@@ -207,7 +207,7 @@ def main():
     items = load_items(a.task, a.n, a.seed)
     print(f"  문항 {len(items)}개 로드. guid 예시: {items[0][3]} … {items[-1][3]}")
 
-    tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
+    tok = load_tokenizer(a.data)
 
     per_item, acc, skipped = {}, {}, {}
     no_ctx, ans_len = {}, {}

@@ -810,7 +810,11 @@ class TiedMLPTransformer(nn.Module):
             # ★★P086 — 승수는 **약한 WD** 를 받는다. 0 이면 대칭성 표류로 노름이
             #   무한히 자란다(논문 §4.1·그림 4) — bf16·삼진에서 양자화 오차가 커진다.
             #   🚫`nodecay`(wd=0) 에 넣으면 안 된다. 그래서 **먼저** 가른다.
-            if n.endswith(".lrm"):
+            # ★★P086 단계3 — 벡터 모드는 이름이 `lrm_gate`·`lrm_up`·`lrm_down` 이다.
+            #   🚫`endswith(".lrm")` 만 보면 벡터 승수가 아래 `nodecay`(dim<2)로 새어
+            #   **wd 가 조용히 0 이 된다** = 팔 B 와 B' 를 못 가른다.
+            #   ✅스칼라 모드의 `.lrm` 도 이 규칙에 그대로 걸리므로 **비트 동일**이다.
+            if n.rsplit(".", 1)[-1].startswith("lrm"):
                 lrm.append(p)
             elif p.dim() < 2 or any(k in n for k in ("scale", "shift", "gates", "gain", "bias")):
                 nodecay.append(p)
@@ -822,7 +826,9 @@ class TiedMLPTransformer(nn.Module):
         return [{"params": gt, "lr": lr / math.sqrt(g), "weight_decay": weight_decay},
                 {"params": dense, "lr": lr, "weight_decay": weight_decay},
                 {"params": nodecay, "lr": lr, "weight_decay": 0.0},
-                {"params": lrm, "lr": lr, "weight_decay": 0.01}]   # ★약한 WD(P086)
+                # ★P086 단계3 — 종전 하드코딩 0.01 을 `cfg` 로 뺐다(기본 0.01 = 비트 동일).
+                {"params": lrm, "lr": lr,
+                 "weight_decay": float(getattr(self.cfg, "mlp_lrm_wd", 0.01))}]
 
     # ---------- accounting ----------
     # ★bpw 회계 규약 (2026-07-31 통일 — 결과 016 §7.4·§8.4, P034 §5)

@@ -167,7 +167,11 @@ def main() -> int:
     print(f"  ★성공 기준: **WD 보정 후** max |s/s_wd - 1| >= {PASS_MIN:g} 이면 통과 · "
           f"< {WEAK_MIN:g} 이면 **실패**(승수가 학습되지 않았다)")
 
-    rows = [(k, v) for k, v in sd.items() if k.endswith(".lrm")]
+    # P086 stage3 (2026-09-08(3rd)) - vector mode names are .lrm_gate/.lrm_up/.lrm_down.
+    #   endswith(".lrm") alone prints "no multipliers" and exits 1 on a vector run.
+    rows = [(k, v) for k, v in sd.items()
+            if k.rsplit(".", 1)[-1].startswith("lrm")]
+    is_vec = any(not k.endswith(".lrm") for k, _ in rows)
     if not rows:
         # ★R19 — 잰 것이 0 이면 조용히 0 을 통과시키지 않는다
         print("  🚫★**승수가 하나도 없다.** 이 체크포인트는 `--mlp-lrm` 으로 학습되지 않았다.",
@@ -175,6 +179,39 @@ def main() -> int:
         return 1
 
     worst_raw, worst = 0.0, 0.0
+    if is_vec:
+        # ★벡터 모드 — 원소가 층당 수천 개라 값을 다 못 찍는다. **요약 통계**로 본다.
+        print()
+        print(f"  ★**벡터 승수 모드**(P086 단계3) — 파라미터 {len(rows)}개")
+        print()
+        print("  {:<34} {:>7} {:>9} {:>10} | {:>9} {:>10}".format(
+              "파라미터", "개수", "평균", "max|s-1|", "평균/wd", "max|r-1|"))
+        print("  " + "-" * 96)
+        for k, v in rows:
+            f = v.reshape(-1).float()
+            mean = float(f.mean())
+            raw = float((f - 1.0).abs().max())
+            corr = float((f / s_wd - 1.0).abs().max())
+            worst_raw = max(worst_raw, raw)
+            worst = max(worst, corr)
+            print(f"  {k[:34]:<34} {f.numel():>7} {mean:>9.5f} {raw:>10.6f} | "
+                  f"{mean / s_wd:>9.5f} {corr:>10.6f}")
+        n_el = sum(v.reshape(-1).numel() for _, v in rows)
+        print("  " + "-" * 96)
+        print(f"  파라미터 {len(rows)}개 · 원소 {n_el}개 · raw max |s-1| = {worst_raw:.6f} · "
+              f"★**WD 보정 max |r-1| = {worst:.6f}**")
+        if have_floor:
+            print(f"  ★기울기 몫 / WD 몫 = **{worst / max(1 - s_wd, 1e-12):.1f}배**"
+                  "  — 1.0 근처면 관측된 움직임이 전부 WD 다")
+        print()
+        if worst >= PASS_MIN:
+            print(f"  ✅**통과** — WD 를 걷어내고도 승수가 {worst:.4f} 만큼 움직였다.")
+            return 0
+        if worst >= WEAK_MIN:
+            print(f"  ⚠️★**약하다** — WD 보정 후 최대 변화가 {worst:.6f} 로 1% 미만이다.")
+            return 0
+        print(f"  🚫★★**실패** — WD 보정 후 최대 변화가 {worst:.2e} 다.", file=sys.stderr)
+        return 1
     print(f"\n  {'층':<26} {'gate':>9} {'up':>9} {'down':>9} | "
           f"{'gate/wd':>9} {'up/wd':>9} {'down/wd':>9}   max|r-1|")
     print("  " + "-" * 104)

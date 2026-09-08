@@ -200,7 +200,18 @@ class Layer(nn.Module):
         # ★★P086 — 층별 스칼라 승수. **타잉된 중간층에만** 붙인다(공유가 문제의 원인이라서).
         #   1.0 으로 시작하므로 켠 직후의 첫 forward 는 **끈 것과 같다.**
         self.has_lrm = mlp_lrm and getattr(cfg, "mlp_lrm", False)
-        if self.has_lrm:
+        # ★★P086 단계3(2026-09-08(3차)) — **벡터 승수**. 논문 식 (3) `r_i·W_ij·c_j` 의 행 승수다.
+        #   🚫"scalar" 는 종전과 **비트 동일**(같은 `torch.ones(3)`, 같은 이름 `.lrm`).
+        #   ★"vector" 는 세 파라미터로 **모양이 달라** 한 텐서에 못 담는다 —
+        #     이름을 전부 `lrm` 으로 시작시켜 `param_groups` 의 한 규칙이 둘 다 잡게 한다.
+        #   ✅`MLP.forward` 는 **안 고친다** — `lrm[0]·lrm[1]·lrm[2]` 인덱싱이 튜플에도 그대로 먹고
+        #     브로드캐스트가 `[..., ffn]×[ffn]` · `[..., dim]×[dim]` 을 알아서 한다.
+        self.lrm_mode = str(getattr(cfg, "mlp_lrm_mode", "scalar")) if self.has_lrm else "scalar"
+        if self.has_lrm and self.lrm_mode == "vector":
+            self.lrm_gate = nn.Parameter(torch.ones(cfg.ffn_dim))
+            self.lrm_up = nn.Parameter(torch.ones(cfg.ffn_dim))
+            self.lrm_down = nn.Parameter(torch.ones(cfg.dim))
+        elif self.has_lrm:
             self.lrm = nn.Parameter(torch.ones(3))   # gate · up · down
         self.has_film = mlp_film and getattr(cfg, "mlp_film", False)
         if self.has_film:                      # 층별 FiLM 파라미터(스케일/시프트, ffn_dim)
@@ -250,6 +261,9 @@ class Layer(nn.Module):
         x = x + self.gates[0] * attn_out
         lora = (self.lora_gate, self.lora_up, self.lora_down) if self.has_lora else None
         film = (self.film_scale, self.film_shift) if self.has_film else None
-        lrm = self.lrm if self.has_lrm else None
+        lrm = None
+        if self.has_lrm:
+            lrm = ((self.lrm_gate, self.lrm_up, self.lrm_down)
+                   if self.lrm_mode == "vector" else self.lrm)
         x = x + self.gates[1] * self.mlp[0](self.ln2(x) * m + self.m_shift, mode_p, lora, film, lrm)
         return (x, attn_out) if want_attn else x

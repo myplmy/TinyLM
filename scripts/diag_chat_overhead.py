@@ -77,8 +77,8 @@ def main() -> int:
         name = Path(a.hf).name
     else:
         import tinylm                                     # noqa: F401  (HF 캐시 리다이렉트)
-        from tinylm.data import tokenizer_path
-        tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
+        from tinylm.data import load_tokenizer
+        tok = load_tokenizer(a.data)
         name = f"TinyLM {a.data}"
 
     print("=" * 92)

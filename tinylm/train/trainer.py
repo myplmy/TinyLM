@@ -179,7 +179,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
           attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
           reuse_attn_on_dup=False, ce_chunk=0, cla_group=None, cla_edges=True,
-          mlp_lrm=False,
+          mlp_lrm=False, mlp_lrm_mode="scalar", mlp_lrm_wd=0.01,
           tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
           save_every=0):
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -259,6 +259,19 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             print("[P086] ⚠️dense 몸통이므로 **층마다 이미 자기 W** 가 있다 — "
                   "이 팔이 재는 것은 *'WD 가 노름을 묶는가'* 이지 *'공유가 문제인가'* 가 아니다")
         cfg.mlp_lrm = True
+        # ★★P086 단계3 — 벡터 승수. 모양이 달라 파라미터가 셋으로 갈린다.
+        cfg.mlp_lrm_mode = str(mlp_lrm_mode)
+        if cfg.mlp_lrm_mode == "vector":
+            _n = cfg.n_middle * (2 * cfg.ffn_dim + cfg.dim)
+            print(f"[P086] ★★mlp_lrm_mode=vector — 논문(arXiv:2601.04890) 식 (3) 의 **행 승수**. "
+                  f"층당 2x{cfg.ffn_dim}+{cfg.dim} = {2 * cfg.ffn_dim + cfg.dim}개 x {cfg.n_middle}층 = {_n}개")
+            print("[P086] 🚫**열 승수는 안 붙인다** — `m_scale`(dim 벡터)이 이미 그 자리다"
+                  "(논문 'Model placement' 의 중복 경고). ⚠️층당 잔존 파라미터가 두 배가 된다")
+    if mlp_lrm and float(mlp_lrm_wd) != 0.01:
+        print(f"[P086] ★승수 weight decay {mlp_lrm_wd} (기본 0.01 = 대칭성 표류 완화, 논문 §4.1). "
+              f"0 은 논문 §1 의 조건이다 — ⚠️`max|s|` 노름을 함께 본다")
+    if mlp_lrm:
+        cfg.mlp_lrm_wd = float(mlp_lrm_wd)
     if mlp_group and arch == "tied":            # g 스윕용 오버라이드(P003)
         assert cfg.n_middle % mlp_group == 0, f"n_middle {cfg.n_middle} % g {mlp_group} != 0"
         cfg.mlp_group = mlp_group
@@ -609,6 +622,14 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             _swap_out(backup)
             m["val_ema"] = me["val_loss"]; line += f"  [ema {me['val_loss']:.4f}]"
         if "bpb" in m: line += f"  bpb {m['bpb']:.3f}"
+        # ★★P086 단계3 — 승수 노름 감시. 논문 §4.1 이 경고한 **대칭성 표류**가
+        #   진짜인지 이 수가 답한다(wd 0 팔에서 자라면 진짜다). 🚫lrm 이 없으면 인쇄 0.
+        if getattr(cfg, "mlp_lrm", False):
+            _sv = [float(q.detach().abs().max()) for n_, q in model.named_parameters()
+                   if n_.rsplit(".", 1)[-1].startswith("lrm")]
+            if _sv:
+                m["lrm_absmax"] = max(_sv)
+                line += f"  max|s| {max(_sv):.4f}"
         m.update(step=step, train_loss=train_loss, train_ce=ce, kd_step=bool(kd_this),
                  gap=m["val_loss"] - ce)   # gap 은 CE 기준(혼합손실과 섞지 않는다)
         # ★A3: 순간값이 아니라 **여기까지의 누적 평균**을 함께 남긴다(격자 어긋남 우회)
@@ -864,6 +885,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            #   기본값이라 코드가 안 돈 것을 못 알아챈다(결과 044).
            "cla_edges": bool(getattr(cfg, "cla_edges", True)),     # ★P084
            "mlp_lrm": bool(getattr(cfg, "mlp_lrm", False)),        # ★P086
+           "mlp_lrm_mode": str(getattr(cfg, "mlp_lrm_mode", "scalar")),   # ★P086 단계3
+           "mlp_lrm_wd": float(getattr(cfg, "mlp_lrm_wd", 0.01)),         # ★P086 단계3
            # ★★P005(2026-09-05) — 플래그를 만들면 **그것을 읽는 json 필드**를
            #   같은 커밋에 넣는다. 종전에는 `optimizer` 가 json 에 **없어서**
            #   Muon 런과 AdamW 런을 사후에 구별할 수 없었다.

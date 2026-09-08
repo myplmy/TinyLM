@@ -172,3 +172,23 @@ stories live in the Korean ledgers (01–08) and `CLAUDE.md`; this file only say
 - ★**R44** `[human]` **A benchmark that is not yet validated is quoted with that caveat.**
   Our held-out is the only high-sensitivity instrument we have and we do not yet know why
   depth reverses on it. Never pick a deployment model on it alone.
+- ★★**R45** `[human]` **Never judge an architecture from a single seed's McNemar z.**
+  The instrument's own seed noise crosses the significance threshold: two checkpoints of
+  the SAME architecture differed by +6.67pp, z +2.21. Say how many seeds a held-out
+  number rests on, every time.
+- ★★**R46** `[human]` **Never mix training-log val and deterministic full-val in one table.**
+  The same checkpoint reads 3.5139 and 3.5389 — a bias of +0.025, which is 10.4x the
+  norecur ruler. If both must appear, put the scale in the column name.
+- ★**R47** `[human]` **Rank with `gold_margin`, gate with `gold_ce`.** Measured over six
+  checkpoints: Spearman rho against accuracy is **+0.943** for the margin and **−0.371**
+  for gold CE — the accuracy leader had the worst CE.
+- ★**R48** `[human]` **Say whether a residency number is a formula or a measurement.**
+  Only the six shapes in baselines B.26.1 are measured; everything else is still the formula.
+- ★★**R49** `[human]` **A quality gate must not delete a Pareto candidate.** The objective
+  is (residency, intelligence, speed). Label each tier pass/fail and let Pareto decide.
+  Only two things stay mandatory — contamination and degeneracy — because they make the
+  measurement invalid, not merely worse.
+- ★★**R50** `[human]` **Write down which sections of a paper you read before claiming you
+  implemented it.** mlp-lrm measured the scalar triple of equation 2 while the paper's
+  contribution is the vector multiplier of equation 3, and two of our three duplicated
+  existing parameters. Log every paper-referenced implementation in `ai_dev_tool/09`.

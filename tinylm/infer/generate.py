@@ -16,7 +16,7 @@ import torch.nn.functional as F
 from .. import paths
 from ..config import TMTConfig
 from ..model import TiedMLPTransformer
-from ..data import tokenizer_path
+from ..data import load_tokenizer
 
 CKPT = paths.RUNS / "ckpt"
 
@@ -128,7 +128,7 @@ def generate(prompt, arch="tied", data="ko-en", max_new=100, temperature=0.8,
              top_k=40, ckpt_path=None, device=None, use_cache=True, stop_at_eos=True):
     from tokenizers import Tokenizer
     model, cfg, device = load_model(arch, ckpt_path, device)
-    tok = Tokenizer.from_file(str(tokenizer_path(data)))
+    tok = load_tokenizer(data)
     text = sample(model, cfg, tok, prompt, max_new=max_new, temperature=temperature,
                   top_k=top_k, device=device, use_cache=use_cache, stop_at_eos=stop_at_eos)
     print(text)

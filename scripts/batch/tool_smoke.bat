@@ -329,6 +329,19 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch t
 if errorlevel 1 echo [WARN] sm_tiedlrm failed - continuing
 
 echo.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[19a2] VECTOR multipliers  (P086 Stage3 - the shape the paper actually proposes)"
+REM  Stage1/2 measured SCALAR triples, and two of the three duplicated m_scale
+REM  and gates[1], so the effective new freedom was 1 not 3. Stage3 puts a row
+REM  vector on gate/up (ffn_dim) and down (dim). New parameter names are
+REM  lrm_gate / lrm_up / lrm_down, so param_groups must catch them by prefix -
+REM  if it does not they fall into nodecay and the wd arm becomes untestable.
+REM  wd 0 here is the paper's own condition (section 1); the default 0.01 stays
+REM  bit identical for every other run.
+timeout /t 15 /nobreak
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --mlp-lrm --mlp-lrm-mode vector --mlp-lrm-wd 0 --tag sm_vlrm
+if errorlevel 1 echo [WARN] sm_vlrm failed - continuing
+
+echo.
 python scripts\runlog.py --name !TL_LOGNAME! --note "[19b] Muon optimiser  (P005 - matrices go to Muon, the rest to AdamW)"
 REM  ------------------------------------------------------------------------
 REM  Muon has been in the parser since 2026-09-03 and had never run once.

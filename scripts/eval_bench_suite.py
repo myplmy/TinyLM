@@ -455,11 +455,11 @@ def main():
     import torch.nn.functional as F
     from tokenizers import Tokenizer
     from tinylm import paths
-    from tinylm.data import tokenizer_path
+    from tinylm.data import load_tokenizer
     from tinylm.infer.generate import load_model
 
     dev = a.device or ("cuda" if torch.cuda.is_available() else "cpu")
-    tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
+    tok = load_tokenizer(a.data)
 
     banner("★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)", "#")
     print(f"  device={dev}  n={a.n}  seq_max={a.seq_max}  seed={a.seed}  "

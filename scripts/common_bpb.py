@@ -122,7 +122,7 @@ def main():
     import torch.nn.functional as F
     from tokenizers import Tokenizer
     from tinylm import paths
-    from tinylm.data import tokenizer_path
+    from tinylm.data import load_tokenizer
     from tinylm.infer.generate import load_model
 
     if not SQUAD.exists():
@@ -169,7 +169,7 @@ def main():
             tok, _td = load_hf_tokenizer(_hf)
             print(f"  [P067] {tag}: 외부 토크나이저 {_td}")
         else:
-            tok = Tokenizer.from_file(str(tokenizer_path(data)))
+            tok = load_tokenizer(data)
         ids = tok.encode(text).ids
         n_tok = len(ids)
         bpt = n_bytes / max(n_tok, 1)            # ★이 모델 토크나이저의 bytes/token

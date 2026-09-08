@@ -92,13 +92,15 @@ def main() -> int:
         print("🚫 `tokenizers` 가 없다. 학습 환경에서 돌린다.")
         return 2
 
+    # ★★2026-09-08(3차) B1 전면이관 — `--data synthetic` 은 토크나이저 파일이 **설계상 없다**.
+    #   🚫`Tokenizer.from_file(tokenizer_path(...))` 를 무조건 부르면 `os error 2` 로 죽는다(함정 45).
+    #   ✅`--tok` 로 명시한 경로는 그대로 두고, 없을 때만 `load_tokenizer` 가 판단한다.
     if a.tok:
-        tp = a.tok
+        tok = Tokenizer.from_file(a.tok)
     else:
         import tinylm                                    # noqa: F401  (HF 캐시 리다이렉트)
-        from tinylm.data import tokenizer_path
-        tp = str(tokenizer_path(a.data))
-    tok = Tokenizer.from_file(tp)
+        from tinylm.data import load_tokenizer
+        tok = load_tokenizer(a.data)
 
     tr = load(a.train)
     va = load(a.val)

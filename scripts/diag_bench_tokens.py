@@ -68,10 +68,10 @@ def main() -> int:
 
     import numpy as np
     import tinylm                                    # noqa: F401
-    from tinylm.data import prepare, tokenizer_path
+    from tinylm.data import prepare, load_tokenizer
     from tokenizers import Tokenizer
 
-    tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
+    tok = load_tokenizer(a.data)
     d = json.loads(Path(a.bench).read_text(encoding="utf-8"))
     recs = d["records"] if isinstance(d, dict) else d
 

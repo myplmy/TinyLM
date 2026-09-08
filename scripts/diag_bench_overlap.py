@@ -91,7 +91,7 @@ def main() -> int:
 
     import numpy as np
     from tokenizers import Tokenizer
-    from tinylm.data.prepare import tokenizer_path
+    from tinylm.data.prepare import load_tokenizer
 
     p = BENCH / f"{a.task}.jsonl"
     if not p.exists():
@@ -105,7 +105,7 @@ def main() -> int:
         return 2
 
     rows = [json.loads(l) for l in p.open(encoding="utf-8") if l.strip()]
-    tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
+    tok = load_tokenizer(a.data)
     stream = np.memmap(tb, dtype=np.uint16, mode="r")
 
     print("=" * 96)

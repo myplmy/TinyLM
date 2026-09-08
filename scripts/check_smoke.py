@@ -222,6 +222,14 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     # ★★2026-09-07 (P086 단계1) — `mlp_lrm` 은 여태 **dense 에서만** 돌았는데
     #   dense 에는 공유 MLP 가 없어 **고치려는 대상이 없다.** 타잉 몸통이 그 축의 진짜 자리다.
     "sm_tiedlrm": {"arch": "tied", "mlp_lrm": True, "mlp_group": 2, "init_from": True},
+    # P086 stage3 (2026-09-08(3rd)) - the VECTOR multiplier the paper proposes.
+    #   Field-level, not flag-level: mlp_lrm_mode must actually be "vector" in the json,
+    #   and mlp_lrm_wd must be 0.0 - if param_groups misses the lrm_* names the arm
+    #   silently trains with wd 0 for a different reason and the B/B' split is untestable.
+    #   arch=dense because P086 stage3 runs on a dense recursive body - the smoke arm
+    #   must exercise the same path the real batch takes (gate 23 checks per-arch coverage).
+    "sm_vlrm": {"arch": "dense", "mlp_lrm": True, "mlp_lrm_mode": "vector",
+                "mlp_lrm_wd": 0.0},
 }
 
 

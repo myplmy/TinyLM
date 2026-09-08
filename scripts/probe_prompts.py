@@ -97,9 +97,9 @@ def main():
     from tinylm import paths
     from tinylm.infer.generate import load_model, sample
     from tokenizers import Tokenizer
-    from tinylm.data import tokenizer_path
+    from tinylm.data import load_tokenizer
 
-    tok = Tokenizer.from_file(str(tokenizer_path(a.data)))
+    tok = load_tokenizer(a.data)
     base = f"{a.preset}_{a.data}_{a.tokens}"
 
     if a.check_cache:

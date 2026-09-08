@@ -1,0 +1,35 @@
+# 형식: 종류<TAB>패턴<TAB>사유   (주석은 #, 빈 줄 허용)
+# ★백슬래시 훅 화이트리스트 (2026-09-08(3차), 사용자 지시 2E)
+#   "승인하되, 백슬래시 훅이 정당한 명령을 막지 않도록 정당한 명령에 대한 화이트리스트 작성할 것."
+#
+# 종류
+#   readonly  이 형태로 시작하면 **쓰기가 아니다** → 백슬래시가 있어도 통과
+#   path      이 경로로 쓰는 것은 저장소 밖이다 → 통과
+#   tool      우리 도구 실행(경로에 역슬래시가 정상) → 통과
+#   escape    명시적 예외 토큰
+#
+# ⚠️★규칙: **범위를 넓히면 면제를 함께 넣는다.** 그러나 면제를 넓히면 미탐이 된다 —
+#   면제를 추가할 때는 **실제로 막힌 정당한 명령**을 사유 칸에 적는다(추측 금지).
+readonly	grep 	읽기 전용. 정규식 리터럴 \d \s \b 가 정상이다
+readonly	rg 	같음
+readonly	egrep 	같음
+readonly	sed -n	-n 은 인쇄 전용(-i 가 아니다)
+readonly	cat 	리다이렉트가 없으면 인쇄뿐 — 쓰기 판정이 따로 본다
+readonly	head 	읽기 전용
+readonly	tail 	읽기 전용
+readonly	ls 	읽기 전용
+readonly	dir 	읽기 전용
+readonly	find 	읽기 전용
+readonly	wc 	읽기 전용
+readonly	diff 	읽기 전용
+readonly	git 	git 은 자기 인덱스만 만진다. diff·log 경로에 역슬래시가 정상이다
+readonly	echo 	리다이렉트가 없으면 인쇄뿐
+readonly	awk 	읽기 전용(리다이렉트는 쓰기 판정이 본다)
+readonly	python -c	한 줄 -c 는 파일을 쓰기 어렵다 — 쓰기 판정이 따로 본다
+tool	python scripts	우리 도구 실행. `python scripts\x.py` 의 역슬래시는 정상이다
+tool	python run100m.py	같음
+tool	python -m 	같음
+tool	call scripts	배치가 도구를 부른다
+path	AppData\Local\Temp\claude	★스크래치패드 — 저장소가 아니다(자백 A17 이 여기로 쓰라고 정했다)
+path	/tmp/	같음
+escape	ALLOW_BACKSLASH_WRITE	★명시적 예외. 훅이 **크게 인쇄**하고 통과시킨다. 습관으로 못 치도록 길게 만들었다
