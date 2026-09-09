@@ -1,0 +1,922 @@
+"""학습 루프: 삼진 어닐 + LR 스케줄(cosine/wsd) + NaN 가드 + EMA + 베스트 체크포인트
++ train-val 모니터 + (선택) 조기 종료 / 부모초기화 / KD.
+
+v6 효율/실험: WSD, EMA, best.pt, 조기종료, dense 부모초기화, dense 교사 KD, 층별 LoRA.
+"""
+from __future__ import annotations
+
+import json
+import math
+import time
+
+import torch
+import torch.nn.functional as F
+
+from .. import paths
+from ..config import build_config
+from ..model import TiedMLPTransformer
+from ..data import prepare, Loader
+from ..eval import evaluate
+from .init_utils import init_from_dense, load_dense
+
+CKPT = paths.RUNS / "ckpt"
+LOGS = paths.RUNS / "logs"
+
+
+def _kd_kl(slog, tlog, T, chunk=0, fp32=False):
+    """★T-2 / P053 (2026-08-14) — **KD KL 을 행 청크로 나눠 계산한다.** 기본 `chunk=0` = off.
+
+    ## 왜
+    결과 038·`docs/methods/09_training_memory.md`: 학습 VRAM 의 최대 항목은 모델이 아니라
+    **어휘 전체 위의 KD 손실 계산**이다(+5.48 GiB alloc). 정확히는 `8192 x 32768 x 4B =
+    1024 MiB` 짜리 fp32 텐서가 **동시에 여러 벌** 산다:
+
+        logits/T  ·  log_softmax(...)  ·  tlog/T  ·  softmax(tlog/T)
+
+    ## 무엇이 실제로 줄어드나 — **정직하게**
+    청킹은 **backward 를 위해 저장돼야 하는 것**(학생 `log_softmax` 출력)은 **못 줄인다.**
+    줄어드는 것은 **동시에 살아 있는 임시 텐서**다:
+      - `tlog/T` 와 `softmax(tlog/T)` 는 **grad 가 필요 없다** → 청크마다 즉시 해제된다
+      - `logits/T` 도 청크 단위로만 산다
+    → **기대 절감은 전체 4벌 중 2~3벌**, 대략 **−2~3 GiB**. **"KD 메모리가 사라진다" 가 아니다.**
+
+    ## 비트 동일성
+    `chunk <= 0` 이면 **종전 식 그대로** 부른다 → 비트 동일. 켜면 합산 순서가 달라져
+    **비트 동일이 아니다**(부동소수 결합법칙). 그래서 기본 off 이고 게이트가 필요하다.
+    `batchmean` = (전체 합) / N 이므로 청크 `sum` 을 모아 N 으로 나누면 **수학적으로 동일**하다.
+    """
+    if chunk is None or chunk <= 0 or chunk >= slog.shape[0]:
+        _s = slog.float() if fp32 else slog
+        _t = tlog.float() if fp32 else tlog
+        return F.kl_div(F.log_softmax(_s / T, -1), F.softmax(_t / T, -1),
+                        reduction="batchmean") * (T * T)
+    N = slog.shape[0]
+    acc = None
+    for i in range(0, N, chunk):
+        # ★★2026-08-22 2차 정정(사용자 지적) — **`fp32` 는 opt-in 이다.**
+        #
+        #   🚫**1차 수정에서 나는 여기에 무조건 `.float()` 를 넣었다.** 그런데 종전 경로는
+        #   autocast 아래라 **학생·교사 로짓이 둘 다 bf16** 이었고, 무조건 승격은
+        #   **`--kd-chunk` 를 쓴 기존 런(P053 계열)의 수치를 바꾼다.**
+        #   ★결과 042 가 **실효 α = 0.288** 을 그 정밀도에서 쟀다 — 그것을 흔들면 안 된다.
+        #
+        #   ✅**지금은 `fp32=False` 가 기본 = 종전과 비트 동일.**
+        #   **외부 HF 교사 경로만 `fp32=True`** 로 부른다 — 그 경로에서는 교사가 bf16 을
+        #   돌려주므로(결과 054 의 2.32 GiB 단일 할당 회피) **여기서 올려 줘야** 하고,
+        #   그 경로는 **아직 발표된 결과가 없다**(바꿔도 과거를 깨지 않는다).
+        s = slog[i:i + chunk]
+        t = tlog[i:i + chunk]
+        if fp32:
+            s, t = s.float(), t.float()
+        part = F.kl_div(F.log_softmax(s / T, -1), F.softmax(t / T, -1), reduction="sum")
+        acc = part if acc is None else acc + part
+    return acc / N * (T * T)
+
+
+def _ce_chunked(logits2d, y1d, chunk=0):
+    """★★2026-08-22(결과 054) — **평균 CE 를 행 청크로 계산한다.** 기본 `chunk=0` = off = 비트 동일.
+
+    ## 왜 — OOM 이 여기서 났다
+
+    `run_P065_stage2` 두 팔이 **모두** 이 줄에서 죽었다:
+
+        ce = F.cross_entropy(logits.reshape(-1, vocab), y.reshape(-1))
+        torch.OutOfMemoryError: Tried to allocate 512.00 MiB ... 0 bytes is free
+
+    512 MiB = `8192 x 32768 x 2B`(bf16 로짓의 reshape·contiguous). `--kd-chunk` 는
+    **KD 손실만** 나눴고 **평범한 CE 는 한 번도 나눈 적이 없었다.** 무KD 런에서는
+    KD 청킹이 아무 일도 하지 않으므로 **무KD + `--no-ckpt` 조합에서 이 항이 노출**됐다.
+
+    ## 무엇이 줄고 무엇이 안 주나 — 정직하게
+
+    ★**backward 를 위해 저장돼야 하는 것**(각 청크의 `log_softmax` 출력)은 **안 준다.**
+    줄어드는 것은 **동시에 살아 있는 임시 텐서**다 — 우리를 죽인 것이 정확히 그 512 MiB 였다.
+    ⚠️**"CE 메모리가 사라진다" 가 아니다.** 기대 절감은 **peak 의 수백 MiB 대**다.
+
+    ## 비트 동일성
+
+    `chunk <= 0` 이면 종전 호출 그대로 → **비트 동일**. 켜면 합산 순서가 달라져
+    비트 동일이 아니다(부동소수 결합법칙). 수학적으로는 동일하다
+    (`mean = sum/N`, 청크 `sum` 을 모아 N 으로 나눈다).
+    """
+    if chunk is None or chunk <= 0 or chunk >= logits2d.shape[0]:
+        return F.cross_entropy(logits2d, y1d)
+    # ★★사용자 지적(2026-08-22) — **`mean` 의 분모는 N 이 아니라 "무시되지 않은 타깃 수"** 다.
+    #   `ignore_index`(기본 −100)가 하나라도 있으면 `sum/N != mean` 이 되고,
+    #   그 차이는 **손실이 조금 작아지는 형태로 조용히** 나타난다.
+    #   우리 로더는 패딩을 쓰지 않으므로 지금은 전부 유효하지만, **가정을 단언으로 박는다** —
+    #   나중에 패딩이 들어오면 여기서 죽는 것이 조용히 틀리는 것보다 낫다.
+    assert bool((y1d >= 0).all()), (
+        "★`--ce-chunk` 는 **ignore_index 가 없는 타깃**을 전제한다. 음수 라벨이 있다 — "
+        "패딩이 들어왔다면 청킹 분모를 '유효 타깃 수' 로 고쳐야 한다")
+    N = logits2d.shape[0]
+    acc = None
+    for i in range(0, N, chunk):
+        part = F.cross_entropy(logits2d[i:i + chunk], y1d[i:i + chunk], reduction="sum")
+        acc = part if acc is None else acc + part
+    return acc / N
+
+
+def _step_stats(step_ms, warm=100):
+    """★T-1 — 순수 스텝 시간의 중앙값과 p90/p10 변동폭. `check_spill.py` 와 같은 지표.
+
+    ⚠️ **인쇄되는 `ms/step` 과 다른 양이다.** 인쇄값은 t0 기준 누적 평균이라 eval·베스트
+    체크포인트 저장·EMA 가 섞인다. 여기 값은 **스텝 본체만**이다.
+    ★그래서 **두 값을 비교하지 않는다** — 과거 로그와 비교할 때는 여전히 인쇄값 규약
+    `(누적평균×N − step0)/(N−1)` 을 쓴다.
+
+    warmup 을 버리는 이유: `--compile` 의 첫 스텝이 수십 초라 중앙값은 몰라도
+    p90/p10 을 통째로 망친다.
+    """
+    v = sorted(step_ms[warm:]) if len(step_ms) > warm + 8 else sorted(step_ms[1:])
+    if len(v) < 4:
+        return {"ms_step_median": None, "ms_step_spread": None, "ms_step_n": len(v)}
+
+    def pct(q):
+        i = (len(v) - 1) * q
+        lo = int(i); hi = min(lo + 1, len(v) - 1)
+        return v[lo] + (v[hi] - v[lo]) * (i - lo)
+
+    return {"ms_step_median": pct(0.5),
+            "ms_step_spread": pct(0.9) / max(pct(0.1), 1e-9) - 1.0,
+            "ms_step_n": len(v)}
+
+
+def _lr_factor(s, warm, steps, sched, decay_frac=0.2):
+    # (P026) decay_frac 은 이제 호출자(train)가 --decay-frac 으로 넘긴다. cooldown-QAT 정렬 실험용.
+    """cosine / wsd(긴 plateau+감쇠) / stable(warmup+평탄, plateau 생성용) /
+    decay(워밍업 없이 peak→0.1 cooldown, plateau에서 분기)."""
+    if sched == "decay":                          # cooldown-only (decay-branch)
+        return 0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * s / max(steps, 1)))
+    if s < warm:
+        return (s + 1) / warm
+    p = (s - warm) / max(steps - warm, 1)
+    if sched == "stable":                         # plateau: 감쇠 없이 평탄
+        return 1.0
+    if sched == "wsd":
+        if p < 1.0 - decay_frac:
+            return 1.0
+        q = (p - (1.0 - decay_frac)) / decay_frac
+        return 0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * q))
+    return 0.1 + 0.45 * (1 + math.cos(math.pi * p))
+
+
+def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_every,
+          resume=False, ckpt=True, compile_=False, *,
+          sched="cosine", ema=0.0, early_stop=0, init_from=None,
+          kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
+          tag=None, tokstr=None, compile_mode="default", mlp_group=None, micro_group=None,
+          mlp_split=None,
+          opt_dtype="fp32", ema_start=0.0, wq_dtype=None, emb_chunk=None,
+          optimizer="adamw", muon_lr_mult=1.0,
+          center_weights=False, decay_from=None, snapshots=None,
+          use_ternary_kernel=False, ternary_kernel_triton=False,
+          kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
+          pool_tokens=None, exact_cache=False, anneal_end=0.60, decay_frac=0.2, seed=1337,
+          anneal_shape="linear", anneal_start=None,
+          arenas=False, arena_lambda=0.1, arena_end=0.9,
+          doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None,
+          kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
+          attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
+          reuse_attn_on_dup=False, ce_chunk=0, cla_group=None, cla_edges=True,
+          mlp_lrm=False, mlp_lrm_mode="scalar", mlp_lrm_wd=0.01,
+          tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
+          save_every=0):
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
+    #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
+    torch.manual_seed(seed)
+    if device == "cuda":                        # 저비용 성능 스위치
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
+        torch.backends.cudnn.benchmark = True   # 고정 shape → cuDNN 오토튜너
+        try:
+            torch.set_float32_matmul_precision("high")   # fp32 matmul을 TF32로
+        except Exception:
+            pass
+    CKPT.mkdir(parents=True, exist_ok=True); LOGS.mkdir(parents=True, exist_ok=True)
+
+    # 데이터 풀(캐시)은 pool_tokens 로 학습길이·이름과 분리 가능. 미지정이면 기존처럼 n_tokens.
+    #   토큰스윕(P007 클린): 모든 예산을 동일 600M 풀에서 샘플 → pool_tokens=600M, exact_cache=True.
+    # ★2026-08-06 — `doc_filter` 를 학습 경로에도 전달한다. 종전에는 `prepare` 서브커맨드만
+    #   이 인자를 받아, **필터 캐시를 만들 수는 있는데 그것으로 학습할 방법이 없었다**
+    #   (결과 023 §2 의 "분리해서 쓰는 것과 분리한 것을 읽는 것은 별개 작업" 과 같은 계열).
+    meta = prepare(data, int(pool_tokens) if pool_tokens else n_tokens, exact=exact_cache,
+                   doc_filter=doc_filter, doc_min_chars=doc_min_chars, hf_tok=tokenizer_hf)
+    cfg = build_config(preset, arch, seq, ckpt)
+    # ★★P067(2026-08-22) — **외부 토크나이저면 어휘가 바뀐다.**
+    #   ⚠️여기서 `cfg.vocab_size` 를 안 고치면 임베딩이 32,768 인 채로 id 151,935 가 들어와
+    #   **IndexError 또는 (더 나쁘게) 조용한 오참조**가 난다.
+    #   ★교사 config 의 `vocab_size` 를 **최우선 정본**으로 쓴다 — KD 의 KL 이 그 축 위에서
+    #   계산되므로 토크나이저 어휘가 아니라 **교사 임베딩 폭**과 맞아야 한다.
+    if tokenizer_hf or kd_teacher_hf:
+        from ..hf_spec import teacher_spec
+        _src = kd_teacher_hf or tokenizer_hf
+        _sp = teacher_spec(_src)
+        _v = int(_sp["vocab_size"])
+        print(f"[P067] ★어휘를 {cfg.vocab_size:,} -> **{_v:,}** 로 바꾼다 (출처 {_sp['arch']})")
+        print(f"[P067]   임베딩 파라미터 {cfg.vocab_size * cfg.dim / 1e6:.1f}M -> "
+              f"**{_v * cfg.dim / 1e6:.1f}M** (사용자 지시: 모델 크기 증가는 감수)")
+        print(f"[P067] ⚠️★이 런은 **기존 런과 CE 를 직접 비교할 수 없다** — val 토큰 경계가 "
+              f"다르다(함정 2). 교차비교는 `scripts/common_bpb.py` 만 유효하다.")
+        if _sp["text_only"] is False:
+            print(f"[P067] ⚠️★이 교사는 **멀티모달**이다({_sp['model_type']}). "
+                  f"`AutoModelForCausalLM` 이 텍스트 경로만 실을 수 있는지 확인할 것.")
+        cfg.vocab_size = _v
+    # ★★P073 — `cla_group` 오버라이드. 미지정이면 프리셋 그대로 = 비트 동일.
+    #   ⚠️**모델 생성 전에** 바꿔야 한다(층이 owner 를 그때 정한다).
+    if cla_group is not None:
+        assert cla_group >= 1, "cla_group 은 1 이상"
+        assert cfg.n_layers % cla_group == 0, \
+            f"n_layers {cfg.n_layers} % cla_group {cla_group} != 0"
+        if cla_group != cfg.cla_group:
+            print(f"[P073] ★cla_group {cfg.cla_group} -> {cla_group} — "
+                  f"KV 소유 층이 {cfg.n_layers // cfg.cla_group} -> {cfg.n_layers // cla_group} 개")
+            print(f"[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다")
+        cfg.cla_group = cla_group
+
+    # ★★P084 — prelude·coda 에 CLA 를 적용하지 않는다. 🚫기본 True = 비트 동일.
+    #   ⚠️**모델 생성 전에** 바꿔야 한다(층이 owner 를 그때 정한다 — cla_group 과 같은 이유).
+    if not cla_edges:
+        _p, _m, _c, _g = cfg.n_prelude, cfg.n_middle, cfg.n_coda, cfg.cla_group
+        assert _m % _g == 0, \
+            f"n_middle {_m} % cla_group {_g} != 0 — middle 안에서 묶으므로 middle 이 나눠떨어져야 한다"
+        _before, _after = cfg.n_layers // _g, _p + _c + _m // _g
+        print(f"[P084] ★cla_edges=False — 머리 {_p} + 꼬리 {_c} 는 **자기 K/V** 를 갖는다")
+        print(f"[P084] ⚠️**KV 소유 층 {_before} -> {_after} 개**(+{_after - _before}). "
+              f"상주가 커진다 — 예산을 먼저 본다")
+        cfg.cla_edges = False
+
+    # ★★P086 — 층별 스칼라 승수. 모델 생성 전에 심는다(Layer 가 그때 파라미터를 만든다).
+    if mlp_lrm:
+        # ★★2026-09-04 정정 — **타잉을 요구하지 않는다.** 우리 32 MiB 승자는 `--arch dense`
+        #   (tie_mlp=False)이고, 타잉을 조건으로 걸면 **플래그가 조용히 아무 일도 안 한다.**
+        #   논문(arXiv:2601.04890)도 대상은 **모든 행렬층**이지 공유층이 아니다.
+        _kind = "타잉" if cfg.tie_mlp else "dense"
+        print(f"[P086] ★mlp_lrm=True — {_kind} 중간층 {cfg.n_middle}개에 "
+              f"gate·up·down 스칼라({cfg.n_middle * 3}개). 추론 상주 증가 0")
+        if not cfg.tie_mlp:
+            print("[P086] ⚠️dense 몸통이므로 **층마다 이미 자기 W** 가 있다 — "
+                  "이 팔이 재는 것은 *'WD 가 노름을 묶는가'* 이지 *'공유가 문제인가'* 가 아니다")
+        cfg.mlp_lrm = True
+        # ★★P086 단계3 — 벡터 승수. 모양이 달라 파라미터가 셋으로 갈린다.
+        cfg.mlp_lrm_mode = str(mlp_lrm_mode)
+        if cfg.mlp_lrm_mode == "vector":
+            _n = cfg.n_middle * (2 * cfg.ffn_dim + cfg.dim)
+            print(f"[P086] ★★mlp_lrm_mode=vector — 논문(arXiv:2601.04890) 식 (3) 의 **행 승수**. "
+                  f"층당 2x{cfg.ffn_dim}+{cfg.dim} = {2 * cfg.ffn_dim + cfg.dim}개 x {cfg.n_middle}층 = {_n}개")
+            print("[P086] 🚫**열 승수는 안 붙인다** — `m_scale`(dim 벡터)이 이미 그 자리다"
+                  "(논문 'Model placement' 의 중복 경고). ⚠️층당 잔존 파라미터가 두 배가 된다")
+    if mlp_lrm and float(mlp_lrm_wd) != 0.01:
+        print(f"[P086] ★승수 weight decay {mlp_lrm_wd} (기본 0.01 = 대칭성 표류 완화, 논문 §4.1). "
+              f"0 은 논문 §1 의 조건이다 — ⚠️`max|s|` 노름을 함께 본다")
+    if mlp_lrm:
+        cfg.mlp_lrm_wd = float(mlp_lrm_wd)
+    if mlp_group and arch == "tied":            # g 스윕용 오버라이드(P003)
+        assert cfg.n_middle % mlp_group == 0, f"n_middle {cfg.n_middle} % g {mlp_group} != 0"
+        cfg.mlp_group = mlp_group
+    # ★P061(2026-08-13) — **불균등 타잉.** 경계 목록. 미지정이면 위 균등 그대로 = 비트 동일.
+    if mlp_split and arch == "tied":
+        sp = tuple(sorted(int(x) for x in mlp_split))
+        assert all(0 < x < cfg.n_middle for x in sp), \
+            f"mlp_split {sp} 은 1..{cfg.n_middle-1} 범위여야 한다"
+        assert len(set(sp)) == len(sp), f"mlp_split {sp} 에 중복이 있다"
+        cfg.mlp_split = sp
+        sizes = [len([j for j in range(cfg.n_middle)
+                      if (__import__("bisect").bisect_right(sp, j)) == gi])
+                 for gi in range(len(sp) + 1)]
+        print(f"[P061] ★불균등 타잉 mlp_split={sp} -^> 그룹 크기 {sizes}, "
+              f"유니크 MLP {len(sizes)}개")
+        print(f"[P061] ⚠️유니크 개수가 기준선과 같아야 **메모리가 동일**하다 — "
+              f"g{cfg.mlp_group} 균등은 {cfg.n_middle // cfg.mlp_group}개")
+    if wq_dtype:                                # ★P068 A1 — `_wq` 저장 dtype
+        cfg.wq_dtype = wq_dtype
+        if wq_dtype != "fp32":
+            print(f"[P068] ★`_wq` 저장 dtype = {wq_dtype} (계산은 fp32). "
+                  f"⚠️**비트 동일이 아니다** — F.linear 진입 캐스팅이 사라진다(결과 035 §13)")
+    if emb_chunk is not None:                   # ★P034 단계5 — 헤드 청크(배포 전용)
+        cfg.emb_chunk = int(emb_chunk)
+        print(f"[P034-5] 헤드 청크 = {cfg.emb_chunk} "
+              f"(0=끄기. 양자화 임베딩에서만 의미가 있다)")
+    if micro_group is not None:                 # (P051) 삼진 alpha 그룹 크기 오버라이드
+        # ★`__post_init__` 은 프리셋 값으로 이미 돌았으므로 **여기서 같은 불변식을 다시 검사**한다.
+        #   빠뜨리면 TLinear 생성 시점의 assert 로 죽는데, 그때는 어느 층인지가 안 보인다.
+        # ★micro_group == 0 은 **per-row 센티널**(그룹 = 층마다의 in_f). P014C 단계2/3.
+        assert micro_group >= 0, "--micro-group 은 0(per-row) 또는 양의 약수"
+        if micro_group:
+            assert cfg.dim % micro_group == 0, \
+                f"dim {cfg.dim} % micro_group {micro_group} != 0"
+            assert cfg.ffn_dim % micro_group == 0, \
+                f"ffn_dim {cfg.ffn_dim} % micro_group {micro_group} != 0"
+        if getattr(cfg, "sparse34", False):
+            assert micro_group and micro_group % 4 == 0, \
+                "sparse34 는 micro_group 이 4의 배수여야 함(3:4 블록). per-row(0)와 병용 불가"
+        old_g = cfg.micro_group
+        cfg.micro_group = micro_group
+        # 저장 bpw 의 scale 항 = SCALE_BITS(16) / g. 코드 항(log2 3 또는 1.25)은 안 바뀐다.
+        if micro_group == 0:
+            print(f"[micro_group] ★per-row 센티널(0) — 그룹이 층마다의 in_f(768/2048)다. "
+                  f"scale 항 {16/old_g:.4f} -> 0.0208/0.0078 bpw. "
+                  f"★품질 대가는 결과 028 이 +0.0050~0.0063 bpb 로 이미 쟀다(분해능 0.008 미만).")
+        else:
+            print(f"[micro_group] alpha 그룹 {old_g} -> {micro_group} — "
+                  f"scale 항 {16/old_g:.4f} -> {16/micro_group:.4f} bpw "
+                  f"(코드 항은 불변). ★KD 교사는 자기 cfg 로 로드되므로 g{old_g} 그대로다")
+    if emb_rank is not None:                    # (P046) 임베딩 병목 E 오버라이드
+        assert emb_rank > 0, "--emb-rank 는 양수여야 한다(0=비활성은 지원하지 않는다)"
+        # ★로짓 랭크가 E 로 제한된다. 임베딩·lm_head 가 선형으로 줄고 품질 영향은 미지다.
+        cfg.emb_rank = emb_rank
+        print(f"[emb] emb_rank 오버라이드 {emb_rank} (프리셋 기본 256) — "
+              f"임베딩 파라미터 {(32768*emb_rank + emb_rank*cfg.dim)/1e6:.2f}M")
+    cfg.mlp_lora_rank, cfg.mlp_lora_bits = lora_rank, lora_bits
+    cfg.mlp_film = mlp_film
+    if attn_group is not None and arch == "tied":     # (P057) 어텐션 타잉
+        assert attn_group >= 1 and cfg.n_middle % attn_group == 0, \
+            f"n_middle {cfg.n_middle} % attn_group {attn_group} != 0"
+        cfg.attn_group = attn_group
+        if attn_group > 1:
+            print(f"[attn] ★어텐션 타잉 g={attn_group} — 중간 {cfg.n_middle}층이 "
+                  f"어텐션 {cfg.n_middle // attn_group}개를 공유한다. "
+                  f"⚠️cla_group={cfg.cla_group} 과 겹치므로 대가 귀속에 cla1 대조가 필요하다(P057)")
+    # ★★P049 §17.3 — 학습에서도 켠다. **추론과 짝을 맞추지 않으면 함정 39**다.
+    cfg.reuse_attn_on_dup = bool(reuse_attn_on_dup)
+    if cfg.reuse_attn_on_dup:
+        print("[reuse-attn] ★재귀 두 번째 이후 통과의 어텐션 출력을 **재사용**한다"
+              "(041 §17 cos 0.9882). ⚠️평가도 --reuse-attn-on-dup 을 줘야 같은 함수다")
+    if train_repeat is not None:                       # (P049B) 학습 시 재귀
+        cfg.train_repeat = float(train_repeat)
+        cfg.repeat_mode, cfg.repeat_block = repeat_mode, int(repeat_block)
+        if cfg.train_repeat != 1.0:
+            print(f"[repeat] ★학습 시 재귀 R={cfg.train_repeat} mode={repeat_mode}"
+                  f"{f' block={repeat_block}' if repeat_mode == 'block' else ''} — "
+                  f"★상주 파라미터는 불변, 계산 깊이만 늘어난다. "
+                  f"⚠️활성 메모리와 벽시계는 반복 배수만큼 는다")
+    cfg.center_weights = center_weights
+    # ★F-1(2026-08-14) — 기본 False = 종전 `repeat_interleave` 경로 = 비트 동일.
+    cfg.sdpa_gqa = bool(sdpa_gqa)
+    if sdpa_gqa:
+        print(f"[sdpa] ★enable_gqa=True — K/V 를 물리 복제(x{cfg.n_q_heads // cfg.n_kv_heads})하지 "
+              f"않고 커널에 맡긴다. ⚠️커널 경로가 바뀌므로 **로짓 비트 동일을 가정하지 않는다** "
+              f"(게이트: scripts/diag_gqa_equiv.py)")
+    cfg.use_ternary_kernel = use_ternary_kernel
+    cfg.ternary_kernel_triton = ternary_kernel_triton
+    # ★프리셋이 sparse34=True 로 정의될 수 있다(m100R1a). `--sparse34` 는 **켤 수만** 있게 한다 —
+    #   그냥 대입하면 프리셋 값을 조용히 덮어써서 3:4 없이 학습된다(감지 어려운 사고).
+    cfg.sparse34 = bool(sparse34) or bool(getattr(cfg, "sparse34", False))
+    if sparse34:
+        assert cfg.micro_group % 4 == 0, "sparse34 는 micro_group 이 4의 배수여야 함"
+        if use_ternary_kernel:
+            raise SystemExit("[sparse34] 커스텀 삼진 커널 경로는 3:4 미구현 — "
+                             "--sparse34 는 표준(F.linear) 경로에서만 사용하세요(커널 병용 금지).")
+        print("[sparse34] 3:4 희소 삼진(1.25bpw) 활성 — 각 4-블록 |w|최소 1개 0강제")
+    model = TiedMLPTransformer(cfg).to(device)
+
+    if init_from:
+        init_from_dense(model, init_from, device, depth_init=depth_init)
+
+    teacher = None
+    # ★★P067 — 외부 HF 교사가 우선한다. 우리 dense 교사와 **동시에 쓰지 않는다.**
+    if kd_teacher_hf:
+        from .hf_teacher import HFTeacher
+        assert kd, "--kd-teacher-hf 는 --kd 와 함께 준다"
+        teacher = HFTeacher(kd_teacher_hf, cfg.vocab_size, device, dtype=teacher_dtype)
+        print(f"[kd] ★외부 교사 사용 (alpha={kd_alpha}, T={kd_temp}) — "
+              f"🚫우리 dense 교사는 로드하지 않는다")
+        print(f"[kd] ★★이 실험이 묻는 것: 결과 038 의 'KD 무익' 이 **KD 탓인가 교사 탓인가**")
+    elif kd and not kd_cache:
+        teacher, _ = load_dense(kd if isinstance(kd, str) else CKPT / "dense.pt", device)
+        teacher.eval(); teacher.set_anneal(1.0)
+        for p in teacher.parameters():
+            p.requires_grad_(False)
+        # ★★P042(2026-08-07) — **교사는 학습하지 않는데 학습하는 것처럼 돌고 있었다.**
+        #   `forward()` 는 매 호출 `refresh_quant()` 로 삼진 가중치를 다시 만든다. 학생은
+        #   latent 가 스텝마다 바뀌므로 **반드시 그래야 하지만**, 교사는 가중치가 고정이다.
+        #   추론용으로 이미 구현이 끝난 두 함수를 붙인다:
+        #     `freeze_quant()`  — 삼진 가중치를 **한 번만** 계산하고 재사용
+        #     `drop_latent()`   — fp32 latent 해제(상주 2벌 → 1벌). dense 교사 기준 약 472.5MB
+        #   ⚠️ **기본 on 이 아니다.** `--kd-teacher-infer` 로 켠다 — 기본 off = 비트 동일.
+        #     결과가 달라지면 그건 구현 버그이고, P042 단계0 이 그것만 검사한다.
+        if kd_teacher_infer:
+            teacher.freeze_quant()
+            teacher.drop_latent()
+            print(f"[kd] ★교사 추론 모드(P042): freeze_quant + drop_latent 적용 — "
+                  f"매 스텝 refresh_quant 를 건너뛰고 latent 를 해제한다")
+            print(f"[kd] ⚠️ 로짓은 **비트 동일해야 한다**. 다르면 구현 버그다(게이트 G0)")
+        if compile_:
+            teacher = torch.compile(teacher)   # KD 가속: 교사 forward도 컴파일(eager→컴파일)
+        print(f"[kd] 교사 로드 완료 (alpha={kd_alpha}, T={kd_temp})")
+
+    if decay_from:                              # WSD decay-branch: plateau에서 분기
+        from .init_utils import _strip
+        st = torch.load(decay_from, map_location=device)
+        model.load_state_dict(_strip(st["model"]))
+        print(f"[decay] plateau 로드 -> cooldown {steps}스텝  <- {decay_from}")
+
+    if compile_ and (use_ternary_kernel or ternary_kernel_triton):
+        # 커널 경로는 torch.compile 과 근본적으로 상성이 나쁘다:
+        #   - Triton 커스텀 커널은 dynamo 의 identify_mutated_tensors 가 커널 IR 을 파싱하다
+        #     CompilationError(IndexError: Function argument index out of range) 로 크래시.
+        #   - anneal>=1.0 데이터 의존 분기 → 그래프 브레이크 + quant_anneal 값 가드 재컴파일 폭주.
+        # 따라서 두 옵션 동시 사용은 조용히 느려지거나 크래시하므로 **여기서 학습을 중단**한다.
+        raise SystemExit(
+            "[중단] --ternary-kernel[-triton] 은 --compile 과 함께 쓸 수 없습니다.\n"
+            "  이유: dynamo 가 커스텀 Triton 커널 IR 파싱 중 크래시(IndexError)하거나, anneal 데이터의존\n"
+            "        분기로 재컴파일 폭주가 발생합니다(커널은 별도 최적화 경로라 compile 대상이 아님).\n"
+            "  조치: 커널 벤치는 --compile 을 빼고 실행하세요. 예)\n"
+            "        python run100m.py train ... --ternary-kernel --ternary-kernel-triton   (--compile 제거)")
+    if compile_:
+        if compile_mode == "reduce-overhead":
+            print("[compile] 주의: reduce-overhead(CUDA그래프)는 임베딩 타잉과 충돌해 "
+                  "backward에서 크래시할 수 있습니다. 크래시 시 --compile-mode default 로 재실행하세요.")
+        print(f'[compile] mode={compile_mode} — 첫 스텝은 수 분 걸릴 수 있습니다')
+        model = torch.compile(model, mode=compile_mode)
+    tokstr = tokstr or (f"{int(n_tokens)//1_000_000}M" if n_tokens >= 10**6 else str(int(n_tokens)))
+    _base = f"{preset}_{data}_{tokstr}"
+    name = f"{_base}_{tag}" if tag else f"{_base}_{arch}"   # 스케일별 이름(클로버·오염 방지)
+    label = tag or arch                                    # 로그 표시용(예: t_kd_g8 / tied)
+    print(model.report())
+    # 배포 메모리 정확값을 결과 json 에 기록 → compare 가 "전체×단일bpw" 근사를 쓰지 않게 한다.
+    #   (sparse34 는 삼진분에만 1.25bpw 라서 근사가 과소·비율 과대였다. 결과 008 §2-(6))
+    _mem = model.mem_breakdown()
+    _memall = model.mem_report_all()   # (2026-07-31) packed(B)/packed_container(C)/runtime 병기
+    eff = micro_bs * accum * seq
+    print(f"[{label}] device={device}  {steps}step x {eff/1e3:.0f}K tok = "
+          f"{steps*eff/1e6:.0f}M 토큰  (sched={sched} ema={ema} lora_r={lora_rank}"
+          f"{f' seed={seed}' if seed != 1337 else ''})\n")
+
+    # ★★P022B 단계2(2026-08-07) — 옵티마이저 상태 정밀도.
+    #   DeepSeek-V3 §3.3.3 은 AdamW 1·2차 모멘트를 **BF16** 으로 들고 master weight·gradient 는
+    #   FP32 로 유지해 *"관측 가능한 성능 저하 없음"* 을 1T 토큰 규모로 보고했다.
+    #   우리 학습 파라미터 약 63.5M × 2벌 × 4B = **약 508MB** → bf16 이면 **약 254MB 회수**.
+    #   ⚠️ **기본 `fp32` = 종전 `torch.optim.AdamW(fused=True)` = 비트 동일.**
+    #     `fp32c` 는 **같은 수식의 우리 구현**(자기검증용) — 구현 위험과 dtype 위험을 분리한다.
+    # ★★P005(2026-09-03) — **Muon 라우팅.** 행렬은 Muon, 그 외(임베딩·norm·bias)는 AdamW.
+    #   🚫`adamw`(기본) = 종전과 **비트 동일**. `muon` 일 때만 두 옵티마이저가 선다.
+    #   ⚠️**이점은 대배치에 집중**된다(arXiv:2505.02222) — 우리 유효배치 131K 는 작다.
+    #   ⚠️★**삼진 STE 와의 상호작용은 미검증**이다(P005 선결) — fp16 팔과 함께 돌린다.
+    _mats = []
+    if optimizer == "muon":
+        from .muon import Muon, split_params
+        _mats, _others = split_params(model)
+        # ★★2026-09-05 수정 — 종전에는 AdamW 에 params 하나만 넘겨
+        #   **weight decay 규약이 통째로 사라졌다**: 정상 경로는 `param_groups()` 가
+        #   dense 0.1 · norm/bias 0 · lrm 0.01 을 준다.
+        #   ★**집합을 두 곳에서 정의하지 않는다**(R14) — `param_groups()` 에서
+        #   Muon 이 가져간 것만 빼고 나머지 그룹을 **그대로** 쓴다.
+        _mat_ids = {id(p) for p in _mats}
+        _groups = []
+        for _g in model.param_groups(lr):
+            _ps = [p for p in _g["params"] if id(p) not in _mat_ids]
+            if _ps:
+                _groups.append(dict(_g, params=_ps))
+        opt = torch.optim.AdamW(_groups, betas=(0.9, 0.95), eps=1e-8)
+        # ★muon_lr_mult — Muon 의 관용 lr 은 AdamW 보다 한 자릿수 크다(원 구현 2e-2).
+        #   🚫기본 1.0 = 종전 동작 그대로. **바꾸려면 명시해야 한다.**
+        opt_muon = Muon(_mats, lr=lr * muon_lr_mult)
+        _nps = sum(p.numel() for p in _mats)
+        print(f"[opt] ★Muon(P005) — 행렬 {len(_mats)}개({_nps/1e6:.1f}M)는 Muon, "
+              f"그 외 {len(_others)}개는 AdamW. 🚫muP 는 미구현(P005 A축)")
+        print(f"[opt] ★muon_lr={lr * muon_lr_mult:.2e} (= lr {lr:.2e} x {muon_lr_mult:g}) · "
+              f"AdamW 그룹 {len(_groups)}개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지")
+    elif opt_dtype == "fp32":
+        opt_muon = None
+        opt = torch.optim.AdamW(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8,
+                                fused=(device == "cuda"))   # ①: optimizer update 단일 커널
+    else:
+        opt_muon = None
+        from .adamw_bf16 import AdamWLowPrec
+        _sd = torch.bfloat16 if opt_dtype == "bf16" else torch.float32
+        opt = AdamWLowPrec(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8, state_dtype=_sd)
+        _n = sum(p.numel() for g in opt.param_groups for p in g["params"])
+        print(f"[opt] ★AdamWLowPrec state_dtype={opt_dtype} (P022B 단계2) — 학습 파라미터 "
+              f"{_n/1e6:.2f}M, 상태 2벌 예상 {_n*2*_sd.itemsize/1e6:.1f}MB "
+              f"(fp32 대비 {-_n*2*(4-_sd.itemsize)/1e6:+.1f}MB)")   # ★절감이므로 음수
+        if opt_dtype == "bf16":
+            print(f"[opt] ⚠️ master weight·gradient 는 fp32 유지, **산술도 fp32**. "
+                  f"상태만 bf16 으로 저장한다(결정론적 반올림, stochastic 아님)")
+        else:
+            print(f"[opt] ⚠️ fp32c 는 **자기검증 모드**다 — 융합 커널이 아니라 파이썬 루프이고, "
+                  f"`fp32` 와 인쇄 4자리가 맞아야 bf16 결과를 dtype 탓으로 귀속할 수 있다")
+        if resume:
+            print(f"[opt] ⚠️ --resume 은 권장하지 않는다 — load_state_dict 가 상태를 파라미터 "
+                  f"dtype 으로 캐스팅한다(오버라이드로 되돌리지만 조건이 흐려진다)")
+    base_lrs = [g["lr"] for g in opt.param_groups]
+    # ★★2026-09-05 — 종전에는 이 줄이 `opt` 만 봤다. `opt_muon` 의 lr 은
+    #   **warmup 도 wsd 감쇠도 못 받고 상수로 남았다** — AdamW 팔과 Muon 팔이
+    #   **다른 스케줄을 도는 무효 비교**가 된다. 두 옥티마이저에 같은 계수를 건다.
+    base_lrs_muon = [g["lr"] for g in opt_muon.param_groups] if opt_muon is not None else []
+    warm = 0 if sched == "decay" else max(5, min(steps // 10, 100))
+    # (P026) cooldown-QAT 스케줄 정렬 표시. anneal_end=완전삼진 도달, decay_start=LR 감쇠 시작.
+    assert 0.0 < anneal_end <= 1.0, f"--anneal-end 는 (0,1] 이어야 함: {anneal_end}"
+    # (P035) 어닐 시작점. 미지정이면 종전 하드코딩식 그대로 → 기본 동작 무변.
+    a0 = (warm / steps + 0.05) if anneal_start is None else float(anneal_start)
+    assert anneal_shape in ("linear", "step"), f"--anneal-shape: {anneal_shape}"
+    assert 0.0 <= a0 < 1.0, f"--anneal-start 는 [0,1) 이어야 함: {a0}"
+    if anneal_shape == "linear":
+        assert a0 < anneal_end, (f"linear 어닐은 anneal_start({a0:.3f}) < anneal_end({anneal_end}) "
+                                 f"여야 램프가 성립한다")
+    if anneal_end != 0.60 or decay_frac != 0.2 or anneal_shape != "linear" or anneal_start is not None:
+        _dstart = (1.0 - decay_frac) if sched == "wsd" else (0.0 if sched != "stable" else 1.0)
+        # step 어닐의 '완전삼진 도달'은 anneal_end 가 아니라 전이점(a0)이다 — 정렬 판정도 그쪽이다.
+        _full = a0 if anneal_shape == "step" else anneal_end
+        print(f"[sched] shape={anneal_shape}  anneal_start={a0:.2f}(step~{int(a0*steps)})  "
+              f"anneal_end={anneal_end:.2f}(step~{int(anneal_end*steps)})  "
+              f"완전삼진={_full:.2f}(step~{int(_full*steps)})  "
+              f"decay_frac={decay_frac:.2f}  LR감쇠시작={_dstart:.2f}(step~{int(_dstart*steps)})"
+              f"  {'정렬됨' if sched == 'wsd' and abs(_full - _dstart) < 1e-6 else '미정렬'}")
+    # 토큰 마크별 명명 스냅샷: {마크토큰: 라벨}. decay-branch 소스로 재사용.
+    snap_steps = {}
+    for tok in (snapshots or []):
+        stp = max(1, round(int(tok) / eff))
+        lbl = f"{int(tok)//1_000_000}M" if int(tok) >= 10**6 else str(int(tok))
+        snap_steps[stp] = lbl
+
+    start = 0
+    ck = CKPT / f"{name}.pt"
+    ck_best = CKPT / f"{name}_best.pt"
+    if resume and ck.exists():
+        st = torch.load(ck, map_location=device)
+        model.load_state_dict(st["model"]); opt.load_state_dict(st["opt"]); start = st["step"]
+        print(f"[{arch}] step {start}에서 재개")
+
+    kd_reader = None
+    if kd_cache:
+        from .kd_cache import KdCacheReader
+        kd_reader = KdCacheReader(_base, kd_topk, micro_bs, seq)
+        kd_reader.seek_step(start, accum)
+        print(f"[kd-cache] 오프라인 KD 캐시 사용 (top{kd_topk}, 교사 forward 없음)")
+
+    params = [p for p in model.parameters() if p.requires_grad]
+    shadow = None                               # P1: 후반부(ema_start 이후)에만 지연 생성·누적
+    ema_start_step = int(ema_start * steps)
+
+    def _swap_in_ema():
+        backup = [p.detach().clone() for p in params]
+        for p, sh in zip(params, shadow):
+            p.data.copy_(sh)
+        return backup
+
+    def _swap_out(backup):
+        for p, b in zip(params, backup):
+            p.data.copy_(b)
+
+    # reduce-overhead(CUDA그래프)는 micro-step마다 그래프 출력 버퍼를 재사용하므로,
+    # grad accum에서 각 forward 전에 step 경계를 표시해 backward가 덮인 버퍼를 참조하지 않게 한다.
+    _cudagraph_step = (getattr(torch.compiler, "cudagraph_mark_step_begin", None)
+                       if (compile_ and compile_mode == "reduce-overhead") else None)
+
+    bpt = meta.get("bytes_per_token")           # bits-per-byte용(토크나이저 무관 지표)
+    # Loader 는 torch RNG 와 **별도** np rng 를 쓴다 → --seed 가 데이터 순서에도 반영되도록 파생시킨다.
+    #   train: 시드에 따라 크롭 순서가 바뀐다(σ 측정에서 원하는 변동).
+    #   val  : **항상 99 고정.** 여기를 흔들면 서로 다른 크롭에서 val loss 를 재게 되어 런 비교가 깨진다.
+    #   (mod 2^31 = np.random.default_rng 이 음수 시드를 거부하므로. seed=1337 이면 정확히 1234)
+    tr = Loader("train", micro_bs, seq, device, meta["dir"],
+                seed=(1234 + (seed - 1337)) % (2 ** 31))
+    va = Loader("val", micro_bs, seq, device, meta["dir"], seed=99)
+    hist, t0, gmax, gpeak, n_skip = [], time.time(), 0.0, 0.0, 0
+    # ★T-1(2026-08-13) — **순수 스텝 시간**을 따로 잰다. 기존 `ms/step` 인쇄는 건드리지 않는다.
+    #   인쇄값은 `time.time()-t0` 를 스텝 수로 나눈 **누적 평균**이라 eval·베스트 저장·EMA 가
+    #   전부 섞인다. 그 자체는 규약(`(누적평균×N − step0)/(N−1)`)으로 다뤄 왔지만,
+    #   ★결과 037 §11.4 가 **세션 간 드리프트 7.5%** 를 밝힌 뒤로 계측을 더 정직하게 만들
+    #   값어치가 올라갔다. 그리고 `check_spill.py` 가 로그에서 하던 복원을 **런타임이 직접**
+    #   하면 스필 판정이 자동이 된다(결과 037 §4.1).
+    #   ⚠️ **인쇄를 바꾸지 않는 이유**: 과거 로그와의 비교 가능성을 깨지 않기 위해서다.
+    step_ms = []                      # 스텝 순수 소요(ms). eval·ckpt 저장 **제외**
+    # ★VRAM 자동 계측(P021B 교훈): 사람이 nvidia-smi 를 눈으로 보게 하면 반드시 빠뜨린다.
+    #   여기서 피크를 리셋하고 종료 시 json 에 기록한다. compile/모델 로드 뒤라 학습 피크만 잡힌다.
+    #   주의: nvidia-smi 표시값 ≈ reserved + CUDA 컨텍스트(~0.4~0.8GB) 이므로 reserved 가 하한이다.
+    if device == "cuda":
+        torch.cuda.reset_peak_memory_stats()
+    best_val, best_step, since_improve = float("inf"), 0, 0
+    n_kd_fwd = 0                                 # 실제 교사 forward를 수행한 스텝 수(가속 측정용)
+
+    # ★★A3 (P055, 2026-08-13) — **KD 스텝과 비KD 스텝의 손실 스케일을 따로 누적한다.**
+    #
+    #   왜 필요한가: `history` 는 **eval 시점의 순간값**만 남긴다. 그런데
+    #   **eval 격자와 KD 격자가 구조적으로 어긋나 있다** — eval 은 `s ≡ 99 (mod 100)`,
+    #   KD 는 `s ≡ 0 (mod kd_every)` 이고 `100 ≡ 0 (mod 4)` 이므로 **99 mod 4 = 3** 이
+    #   항상 나온다. 즉 **주기 eval 은 전부 비KD 스텝**이고 **마지막 eval 하나만 KD 스텝**이다.
+    #   → 감사 A3 가 `history` 에서 표본을 못 모아 **3회 연속 "미측정"** 이었다.
+    #     원인은 *"로깅이 없다"* 가 아니라 *"두 격자가 만나지 않는다"* 였다.
+    #
+    #   ⚠️**계산에는 아무 영향이 없다**(합계만 센다) — 비트 동일이다.
+    _acc = {"kd_l": 0.0, "kd_ce": 0.0, "kd_n": 0,
+            "no_l": 0.0, "no_ce": 0.0, "no_n": 0}
+
+    def _do_eval(step, train_loss, train_ce=None, kd_this=False):
+        """★`train_loss` 는 KD 스텝에서 **혼합손실**(α·CE+(1-α)·KL·T²)이라 val 과 단위가 다르다.
+        그래서 `train_ce`(항상 순수 CE)를 따로 받아 **val-CE 로 비교**한다.
+        이 구분이 없던 시절 REVIEW1 로그에서 마지막 eval 만 `val-train +1.69` 로 튀어
+        과적합처럼 보였다 — 실제로는 그 스텝이 KD 스텝이라 train 이 혼합손실이었을 뿐이다.
+        (주기 eval 은 s≡3 mod 4 = 비KD 스텝, 최종 eval 은 s=2288≡0 = KD 스텝에 걸린다.)
+        """
+        nonlocal best_val, best_step, since_improve
+        m = evaluate(model, va, 50, device, bytes_per_token=bpt); m["ema"] = False   # 주 지표 = raw
+        ce = train_ce if train_ce is not None else train_loss
+        line = (f"    >> val_loss {m['val_loss']:.4f}  ppl {m['ppl']:.2f}  "
+                f"(train_ce {ce:.3f}, val-CE {m['val_loss']-ce:+.3f}"
+                + (f", 혼합손실 {train_loss:.3f}[KD스텝]" if kd_this else "") + ")")
+        if shadow is not None:                                  # EMA는 부가 표시
+            backup = _swap_in_ema()
+            me = evaluate(model, va, 50, device)
+            _swap_out(backup)
+            m["val_ema"] = me["val_loss"]; line += f"  [ema {me['val_loss']:.4f}]"
+        if "bpb" in m: line += f"  bpb {m['bpb']:.3f}"
+        # ★★P086 단계3 — 승수 노름 감시. 논문 §4.1 이 경고한 **대칭성 표류**가
+        #   진짜인지 이 수가 답한다(wd 0 팔에서 자라면 진짜다). 🚫lrm 이 없으면 인쇄 0.
+        if getattr(cfg, "mlp_lrm", False):
+            _sv = [float(q.detach().abs().max()) for n_, q in model.named_parameters()
+                   if n_.rsplit(".", 1)[-1].startswith("lrm")]
+            if _sv:
+                m["lrm_absmax"] = max(_sv)
+                line += f"  max|s| {max(_sv):.4f}"
+        m.update(step=step, train_loss=train_loss, train_ce=ce, kd_step=bool(kd_this),
+                 gap=m["val_loss"] - ce)   # gap 은 CE 기준(혼합손실과 섞지 않는다)
+        # ★A3: 순간값이 아니라 **여기까지의 누적 평균**을 함께 남긴다(격자 어긋남 우회)
+        if _acc["kd_n"]:
+            m["kd_loss_mean"] = _acc["kd_l"] / _acc["kd_n"]
+            m["kd_ce_mean"] = _acc["kd_ce"] / _acc["kd_n"]
+        if _acc["no_n"]:
+            m["nokd_loss_mean"] = _acc["no_l"] / _acc["no_n"]
+            m["nokd_ce_mean"] = _acc["no_ce"] / _acc["no_n"]
+        m["kd_n"], m["nokd_n"] = _acc["kd_n"], _acc["no_n"]
+        hist.append(m); print(line)
+        # ★P058(2026-08-13) — **eval 과 체크포인트 저장을 분리한다.**
+        #   종전에는 eval 마다 model+optimizer 를 통째로 직렬화했다. `eval_every 100` 이면
+        #   2289스텝 런에서 **23회**다. AdamW 상태까지 포함하므로 학생 모델보다 크다.
+        #   `--save-every N` 이면 N 스텝 경계에서만 저장한다(0 = 종전 = 매 eval).
+        #   ⚠️ **best 와 마지막 스텝은 항상 저장한다** — 안 그러면 판정에 쓸 체크포인트가 없다.
+        is_best = m["val_loss"] < best_val - 1e-4                # best 판정 = raw
+        due = (save_every <= 0) or (step % save_every == 0) or (step >= steps)
+        if due or is_best:
+            blob = {"model": model.state_dict(), "opt": opt.state_dict(),
+                    "step": step, "cfg": cfg.__dict__}
+            if shadow is not None:
+                blob["ema"] = [sh.detach().cpu() for sh in shadow]
+            if due:
+                torch.save(blob, ck)
+            if is_best:
+                best_val, best_step, since_improve = m["val_loss"], step, 0
+                torch.save(blob, ck_best)
+                print(f"       best 갱신 {best_val:.4f} -> {ck_best.name}")
+        elif is_best:                                            # 도달 불가(위에서 처리) — 방어
+            best_val, best_step, since_improve = m["val_loss"], step, 0
+        else:
+            since_improve += 1
+        return m
+
+    for s in range(start, steps):
+        if sched == "decay":                    # 이미 학습된 plateau라 완전 삼진 유지
+            anneal = 1.0
+        elif anneal_shape == "step":
+            # (P035) 계단 어닐: a0 까지 full-precision(anneal 0), 그 지점에서 1.0 으로 급전이.
+            #   논문(arXiv:2509.22935)이 상정한 "FP 학습 → 별도 QAT" 를 **인위적으로 재현**한다.
+            #   P026(결과 015)은 끝점만 옮겨 정렬 효과를 못 봤는데, 우리 선형 램프에는
+            #   제거할 중복이 애초에 없었을 수 있다. 그 가설을 검정하려면 중복을 만들어야 한다.
+            anneal = 1.0 if (s / steps) >= a0 else 0.0
+        else:
+            # (P026) anneal_end = 완전삼진 도달 지점(진행률). 기본 0.60 = 종전 하드코딩값.
+            #   cooldown-QAT 가설: 이 지점을 LR 감쇠 시작(wsd면 1-decay_frac)과 정렬하면
+            #   "FP 학습 후 별도 QAT" 의 중복 업데이트가 사라져 같은 val 을 더 적은 steps 에 도달.
+            #   a0 는 위(스케줄 진단 블록)에서 한 번만 계산한다 — --anneal-start 미지정이면 종전값.
+            anneal = min(1.0, max(0.0, (s / steps - a0) / max(anneal_end - a0, 1e-6)))
+        model.set_anneal(anneal)
+        if arenas:
+            # ★P036 Arenas — λ_t 를 λ_0 에서 0 으로 선형 감쇠시키고 arena_end 이후 0 으로 고정한다.
+            #   논문의 "annealing" 이 가리키는 것이 이 λ 스케줄이다(우리 quant_anneal 과 별개).
+            #   끝에서 정확히 0 이 되어야 **배포 시 순수 삼진**이 되고 추론 오버헤드가 0 이다.
+            model.set_arena(arena_lambda * max(0.0, 1.0 - (s / steps) / max(arena_end, 1e-6)))
+        if lora_decay and lora_rank > 0:
+            # ★P008 점진적 타잉 — LoRA 출력 스케일 s(t) 를 1 → 0 으로 선형 감쇠시키고
+            #   진행률 `lora_decay` 지점 이후 **정확히 0** 으로 고정한다.
+            #   s=0 이 되어야 배포 시 LoRA 가 사라지고 **메모리 대가가 0** 이 된다.
+            #   (고정 LoRA 는 추론에 남아 감축비를 1.82× → 1.71× 로 깎는다)
+            model.set_lora_scale(max(0.0, 1.0 - (s / steps) / max(lora_decay, 1e-6)))
+        f = _lr_factor(s, warm, steps, sched, decay_frac)
+        for g, b in zip(opt.param_groups, base_lrs):
+            g["lr"] = b * f
+        if opt_muon is not None:                      # ★P005 — 같은 계수를 Muon 에도
+            for g, b in zip(opt_muon.param_groups, base_lrs_muon):
+                g["lr"] = b * f
+
+        # Skip-Forward / Dynamic KD: 이 스텝에서 교사 forward를 수행할지 결정(P017).
+        #   kd_every=1 → 매 스텝(기존). kd_every=K → K스텝마다 1회(교사 연산 1/K).
+        #   kd_dynamic → 간격을 1→K 로 선형 증가(초반 촘촘한 KD, 후반 성김).
+        kd_this = teacher is not None
+        if teacher is not None and kd_every > 1:
+            cur_every = (max(1, round(1 + (kd_every - 1) * s / steps))
+                         if kd_dynamic else kd_every)
+            kd_this = (s % cur_every == 0)
+        if kd_this and teacher is not None:
+            n_kd_fwd += 1
+
+        model.train()
+        _t_step = time.time()         # ★T-1: 순수 스텝 시작(eval·저장은 이 뒤에 온다)
+        tot, tot_ce = 0.0, 0.0        # tot=실제 최적화 손실(KD면 혼합), tot_ce=항상 순수 CE
+        for _ in range(accum):
+            x, y = tr()
+            if _cudagraph_step is not None:
+                _cudagraph_step()
+            with torch.autocast(device, dtype=torch.bfloat16, enabled=(device == "cuda")):
+                logits = model(x)
+                ce = _ce_chunked(logits.reshape(-1, cfg.vocab_size), y.reshape(-1), ce_chunk)
+                if kd_reader is not None:               # 오프라인 KD(캐시 top-k)
+                    from .kd_cache import kd_cache_loss
+                    tv, ti = kd_reader.next(device)
+                    kl = kd_cache_loss(logits, tv, ti, cfg.vocab_size, kd_temp)
+                    loss = ((1 - kd_alpha) * ce + kd_alpha * kl) / accum
+                elif teacher is not None and kd_this:   # 온라인 KD(교사 forward, skip-forward 반영)
+                    with torch.no_grad():
+                        tlog = teacher(x)
+                    # ★외부 HF 교사면 fp32 승격을 켠다(§_kd_kl 주석). 내부 dense 교사는 종전대로.
+                    kl = _kd_kl(logits.reshape(-1, cfg.vocab_size),
+                                tlog.reshape(-1, cfg.vocab_size), kd_temp, kd_chunk,
+                                fp32=bool(kd_teacher_hf))
+                    loss = ((1 - kd_alpha) * ce + kd_alpha * kl) / accum
+                else:
+                    loss = ce / accum
+            loss.backward()
+            tot += loss.item()
+            tot_ce += ce.item() / accum      # KD 여부와 무관하게 순수 CE 를 따로 누적
+        gn = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+
+        if not torch.isfinite(gn):
+            opt.zero_grad(set_to_none=True)
+            if opt_muon is not None:
+                opt_muon.zero_grad(set_to_none=True)
+            model.clear_quant()
+            n_skip += 1
+            print(f"  [skip] step {s}: non-finite grad ({n_skip}회째)  "
+                  f"anneal {model.cfg.quant_anneal:.2f}  lr {opt.param_groups[1]['lr']:.2e}")
+            if n_skip > 20:
+                print("  !! non-finite 20회 초과. LR을 낮추고 재시작하세요."); break
+            continue
+
+        gpeak = max(gpeak, float(gn))
+        if s >= warm:
+            gmax = max(gmax, float(gn))
+        # ★P005 — Muon 은 **행렬만** 맡는다. 두 옵티마이저가 같은 스텝에서 함께 간다.
+        opt.step()
+        if opt_muon is not None:
+            opt_muon.step()
+            opt_muon.zero_grad(set_to_none=True)
+        opt.zero_grad(set_to_none=True)
+        if ema > 0 and s >= ema_start_step:     # P1: 감쇠 구간의 좋은 가중치만 평균
+            with torch.no_grad():
+                if shadow is None:
+                    shadow = [p.detach().clone() for p in params]
+                else:
+                    for sh, p in zip(shadow, params):
+                        sh.mul_(ema).add_(p.detach(), alpha=1 - ema)
+        model.clear_quant()
+        step_ms.append((time.time() - _t_step) * 1000.0)   # ★T-1: eval·ckpt 저장 전에 찍는다
+
+        # ★A3 누적 — 이 스텝이 KD 스텝인지에 따라 갈라 담는다(계산 불변)
+        if kd_this and teacher is not None:
+            _acc["kd_l"] += float(tot); _acc["kd_ce"] += float(tot_ce); _acc["kd_n"] += 1
+        else:
+            _acc["no_l"] += float(tot); _acc["no_ce"] += float(tot_ce); _acc["no_n"] += 1
+
+        if s % 10 == 0 or s == steps - 1:
+            el = time.time() - t0
+            # ★비KD 스텝에서는 loss 와 ce 가 **구조적으로 같은 값**이다(loss = ce/accum 을 합산).
+            #   그래서 두 열을 항상 찍으면 정보가 0 인 열이 하나 생기고, KD k4 런에서는 loss 열이
+            #   4스텝마다 혼합손실 ↔ CE 로 진동해 과적합처럼 보였다(결과 012 §4 의 'loss 2↔4 진동').
+            #   → **런 간 비교 가능한 ce 를 항상 앞에** 두고, 최적화 손실은 **다를 때만** 표기한다.
+            _mix = (f"  loss {tot:.4f}[KD혼합]"
+                    if (kd_this and teacher is not None) or kd_reader is not None else "")
+            print(f"  step {s:>5}/{steps}  ce {tot_ce:.4f}{_mix}  |g| {gn:.2f}  "
+                  f"anneal {model.cfg.quant_anneal:.2f}  lr {opt.param_groups[1]['lr']:.2e}  "
+                  f"{el/(s-start+1)*1000:.0f} ms/step")
+        if (s + 1) % eval_every == 0 or s == steps - 1:
+            _do_eval(s + 1, tot, train_ce=tot_ce, kd_this=kd_this)
+            if early_stop and since_improve >= early_stop:
+                print(f"  [early-stop] {early_stop}회 연속 개선 없음 (best {best_val:.4f} @ {best_step}). 종료.")
+                break
+        if (s + 1) in snap_steps:               # 토큰 마크 스냅샷(plateau 분기 소스)
+            snap = CKPT / f"{name}_snap{snap_steps[s + 1]}.pt"
+            torch.save({"model": model.state_dict(), "cfg": cfg.__dict__, "step": s + 1}, snap)
+            print(f"       [snapshot] {snap_steps[s + 1]} 토큰 지점 저장 -> {snap.name}")
+
+    final = evaluate(model, va, 100, device, bytes_per_token=bpt); final["ema"] = False
+    if shadow is not None:
+        backup = _swap_in_ema(); fe = evaluate(model, va, 100, device); _swap_out(backup)
+        final["val_ema"], final["ppl_ema"] = fe["val_loss"], fe["ppl"]
+    n_par = sum(p.numel() for p in model.parameters())
+    import os as _os
+    res = {"arch": arch, "preset": preset, "data": data, "params": n_par, "steps": steps,
+           "lr": lr, "seq": seq,
+           # ★런 재구성용 조건(이게 없으면 로그만 보고 실험을 재현·중복판정할 수 없다).
+           #   docs/EXPERIMENT_BASELINES.md 레지스트리와 exp-preflight 스킬이 이 필드를 읽는다.
+           "seed": seed, "micro_bs": micro_bs, "accum": accum, "eff_batch": eff,
+           "pool_tokens": int(pool_tokens) if pool_tokens else None,
+           "exact_cache": bool(exact_cache),
+           "doc_filter": bool(doc_filter),
+           # ★L1/L4 (결과 023 §9) — 이 런이 실제로 본 소스별 토큰 비율. "한국어 50%" 를
+           #   추정으로 쓰지 않기 위해 런 로그에 박아 둔다. 구 캐시에는 없어 None 이 된다.
+           "mix_token_frac": meta.get("mix_token_frac"),
+           "mix_exhausted": meta.get("mix_exhausted"),
+           "bytes_per_token": meta.get("bytes_per_token"),
+           "bytes_per_token_val": meta.get("bytes_per_token_val"),
+           "mlp_group": (cfg.mlp_group if getattr(cfg, "tie_mlp", False) else 1),
+           "mlp_split": list(getattr(cfg, "mlp_split", ()) or ()),      # ★P061
+           # ★★2026-08-30 (P044B, 스모크 팔 sm_film 이 잡았다) — `mlp_film` 이 **한 번도
+           #   기록되지 않았다.** `--mlp-film` 은 2026-07 부터 있었고 실런도 둘 있는데
+           #   (`mC_film`·`t_film`) **json 으로는 FiLM 런과 아닌 런이 구분되지 않았다.**
+           #   `kd_alpha`(2026-08-20)·`emb_init`(자백 A13)과 같은 계열이다 —
+           #   **인쇄로만 남고 기계가 읽는 곳에는 없던 축.**
+           #   ⚠️`cfg.mlp_film` 이 정본이다. 실제 발현은 `Layer.has_film` 이고
+           #   그것은 **중간 타잉 층에서만** 켜진다(`transformer.py:78`) — dense 는 항상 False.
+           "mlp_film": bool(getattr(cfg, "mlp_film", False)),           # ★P044B
+           "micro_group": int(cfg.micro_group),                    # (P051) 삼진 alpha 그룹 크기
+           # ★T-1 — 순수 스텝 시간 통계. **인쇄 ms/step 과 다른 양이다**(eval·저장 제외).
+           #   `ms_step_median` 은 정상상태 대용, `ms_step_spread` 는 p90/p10−1 로
+           #   `check_spill.py` 와 **같은 지표**다(정상 6.5~15.4% vs 스필 48.5%).
+           #   warmup 100스텝을 버린다 — compile 첫 스텝이 여기 섞이면 안 된다.
+           **_step_stats(step_ms),
+           "wq_dtype": str(getattr(cfg, "wq_dtype", "fp32")),   # ★P068 A1
+           "emb_chunk": int(getattr(cfg, "emb_chunk", 0)),      # ★P034 단계5
+           "opt_dtype": str(opt_dtype),                            # (P022B 단계2) 옵티마이저 상태 정밀도
+           "opt_state_mb": (opt.state_bytes() / 1e6                # ★계산값이 아니라 실측(결과 026 교훈)
+                            if hasattr(opt, "state_bytes") else None),
+           "grad_ckpt": bool(ckpt),
+           "kd_teacher": (_os.path.basename(str(kd)) if kd else None),
+           "init_from_src": (_os.path.basename(str(init_from)) if init_from else None),
+           "tokens": steps * eff, "final": final, "best_val": best_val, "best_step": best_step,
+           "history": hist, "grad_max": gmax, "grad_peak_warmup": gpeak, "n_skip": n_skip,
+           "sched": sched, "ema": ema, "kd": bool(kd), "init_from": bool(init_from),
+           "kd_every": kd_every, "kd_dynamic": bool(kd_dynamic), "kd_fwd_steps": n_kd_fwd,
+           # ★A3(P055) — KD/비KD 스텝의 손실 스케일. **감사가 읽는 정본**이다.
+           #   `history` 의 순간값은 격자가 어긋나 표본이 안 모인다(위 _acc 주석 참조).
+           "kd_step_loss_mean": (_acc["kd_l"] / _acc["kd_n"]) if _acc["kd_n"] else None,
+           "kd_step_ce_mean": (_acc["kd_ce"] / _acc["kd_n"]) if _acc["kd_n"] else None,
+           "nokd_step_loss_mean": (_acc["no_l"] / _acc["no_n"]) if _acc["no_n"] else None,
+           "nokd_step_ce_mean": (_acc["no_ce"] / _acc["no_n"]) if _acc["no_n"] else None,
+           "kd_step_n": _acc["kd_n"], "nokd_step_n": _acc["no_n"],
+           "lora_rank": lora_rank, "wall_sec": time.time() - t0,
+           "sparse34": bool(sparse34), "bpw": 1.25 if sparse34 else 1.95,
+           "anneal_end": anneal_end, "decay_frac": decay_frac,    # (P026) 스케줄 정렬 기록
+           "anneal_shape": anneal_shape, "anneal_start": a0,      # (P035) 어닐 형태·시작점
+           "lora_decay": float(lora_decay),                       # (P008) LoRA 스케일 어닐
+           "emb_rank": int(cfg.emb_rank),                          # (P046) 임베딩 병목 E
+           "kd_teacher_infer": bool(kd_teacher_infer),            # (P042) 교사 추론 모드
+           "sdpa_gqa": bool(cfg.sdpa_gqa),                        # (F-1) enable_gqa 경로
+           "kd_chunk": int(kd_chunk or 0),                        # (T-2/P053) KD 손실 청크 행수
+           "depth_init": str(depth_init),                         # (P049) 깊이 확장 이식 방식
+           # ★★2026-08-27 (자백 A13) — 임베딩 초기화 갈래. `copy`/`svd`/`random`/`none`.
+           #   `mC_e128`(난수)과 `mC_e128svd`(SVD)가 **json 으로 구분되지 않던** 것을 닫는다.
+           "emb_init": str(getattr(model, "_emb_init", "none")),
+           # ★2026-08-20 — `kd_alpha`·`kd_temp` 가 **한 번도 기록되지 않았다**(P055 단계1 에서 발각).
+           #   배치 꼬리말이 *"json kd_alpha 가 0.3/0.1/0.7 인지 확인하라"* 고 적었는데
+           #   **필드 자체가 없었다.** 인쇄(`[kd] 교사 로드 완료 (alpha=...)`)로만 남아 있었고,
+           #   인쇄는 결과문서로 옮겨 적어야 하지만 json 은 기계가 읽는다(함정 4·37 계열).
+           "kd_alpha": (float(kd_alpha) if kd else None),
+           "kd_temp": (float(kd_temp) if kd else None),
+           "attn_group": int(getattr(cfg, "attn_group", 1)),       # (P057) 어텐션 타잉 g
+           "train_repeat": float(getattr(cfg, "train_repeat", 1.0)),   # (P049B) 학습 시 재귀 배수
+           "repeat_mode": str(getattr(cfg, "repeat_mode", "uniform")),
+           "reuse_attn_on_dup": bool(getattr(cfg, "reuse_attn_on_dup", False)),
+           "tokenizer_hf": (str(tokenizer_hf) if tokenizer_hf else None),   # ★P067
+           "kd_teacher_hf": (str(kd_teacher_hf) if kd_teacher_hf else None),
+           "teacher_dtype": str(teacher_dtype),
+           "ce_chunk": int(ce_chunk),   # ★결과 054
+           "cla_group": int(cfg.cla_group),   # ★P073
+           # ★★2026-09-04 — 새 축은 **json 에 값으로** 남긴다. 이름만 있으면
+           #   기본값이라 코드가 안 돈 것을 못 알아챈다(결과 044).
+           "cla_edges": bool(getattr(cfg, "cla_edges", True)),     # ★P084
+           "mlp_lrm": bool(getattr(cfg, "mlp_lrm", False)),        # ★P086
+           "mlp_lrm_mode": str(getattr(cfg, "mlp_lrm_mode", "scalar")),   # ★P086 단계3
+           "mlp_lrm_wd": float(getattr(cfg, "mlp_lrm_wd", 0.01)),         # ★P086 단계3
+           # ★★P005(2026-09-05) — 플래그를 만들면 **그것을 읽는 json 필드**를
+           #   같은 커밋에 넣는다. 종전에는 `optimizer` 가 json 에 **없어서**
+           #   Muon 런과 AdamW 런을 사후에 구별할 수 없었다.
+           "optimizer": optimizer,
+           "muon_lr_mult": (float(muon_lr_mult) if optimizer == "muon" else None),
+           "muon_matrices": (len(_mats) if optimizer == "muon" else None),
+           "vocab_size": int(cfg.vocab_size),
+           "save_every": int(save_every or 0),                     # (P058)
+           "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용
+           "arenas": bool(arenas), "arena_lambda": arena_lambda,  # (P036) Arenas residual
+           "arena_end": arena_end,
+           # ★저장 메모리 회계 통일(2026-07-31, P034 §5): 정본=B(코드+스케일), 병기=C(+컨테이너).
+           #   `deploy_mb` 는 **구 로그 호환 별칭**이며 값은 packed_mb(B) 와 같다.
+           #   ⚠️ 2026-07-31 이전 로그의 `deploy_mb` 는 **구 규약(1.95/1.25)** 이라 직접 비교 금지.
+           "deploy_mb": _memall["packed_mb"], **_memall,
+           # ★학습 VRAM 피크(GB). nvidia-smi ≈ reserved + CUDA 컨텍스트(0.4~0.8GB).
+           "vram_alloc_gb": (torch.cuda.max_memory_allocated() / 1024 ** 3) if device == "cuda" else None,
+           "vram_reserved_gb": (torch.cuda.max_memory_reserved() / 1024 ** 3) if device == "cuda" else None,
+           "tokens_per_microbatch": micro_bs * seq}               # ★M — 속도·VRAM 의 지배 변수
+    res["tag"] = name
+    (LOGS / f"{name}.json").write_text(json.dumps(res, indent=2))
+    kd_note = ""
+    if teacher is not None and kd_every > 1:
+        kd_note = f", KD forward {n_kd_fwd}/{steps}스텝(≈{n_kd_fwd/max(steps,1)*100:.0f}%)"
+    _vram = (f", VRAM {res['vram_reserved_gb']:.2f}GB(reserved)/{res['vram_alloc_gb']:.2f}GB(alloc)"
+             if res.get("vram_reserved_gb") else "")
+    print(f"\n[{label}] 최종 val_loss {final['val_loss']:.4f}  ppl {final['ppl']:.2f}  "
+          f"best {best_val:.4f}@{best_step}  ({n_par/1e6:.1f}M, {(time.time()-t0)/60:.1f}분, "
+          f"skip {n_skip}{kd_note}{_vram})")
+    if res.get("vram_reserved_gb"):
+        print(f"[vram] M(=micro_bs×seq)={micro_bs*seq:,}  peak reserved {res['vram_reserved_gb']:.2f}GB"
+              f"  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)")
+    return res

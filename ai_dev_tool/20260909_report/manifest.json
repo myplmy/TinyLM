@@ -1,0 +1,1137 @@
+{
+  "schema": "tinylm.report-action-bundle.v1",
+  "created_date": "2026-09-09",
+  "project_root_at_authoring": "Z:/TinyLM",
+  "report_directory": "ai_dev_tool/20260909_report",
+  "implementation_status": "AUTHORED_NOT_EXECUTED",
+  "verification_scope": "source text review; file inventory and SHA-256 only; no Python/import/compile/test/training/evaluation",
+  "application": "Merge contents of selected Axx/replacement or ALL/replacement into project root. original is comparison only. Never delete whole tinylm directory.",
+  "actions": {
+    "A01": {
+      "title": "held-out 버전 고정과 v2.8 schema 연결",
+      "priority": "P0",
+      "kind": "code_and_plan",
+      "payload_files": [
+        "scripts/eval_bench_suite.py",
+        "scripts/fetch_bench_data.py",
+        "tests/report_20260909/support_report.py",
+        "tests/report_20260909/test_a01_heldout.py",
+        "tinylm/audit_io.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/heldout.py",
+        "tinylm/eval/model_adapter.py",
+        "tinylm/eval/paired_records.py"
+      ],
+      "original_files": [
+        "scripts/eval_bench_suite.py",
+        "scripts/fetch_bench_data.py"
+      ]
+    },
+    "A02": {
+      "title": "실제 오염 제외와 문서별 정확한 bpb",
+      "priority": "P0",
+      "kind": "code_and_plan",
+      "payload_files": [
+        "scripts/analyze_paired_records.py",
+        "scripts/build_bpb_exclusion.py",
+        "scripts/common_bpb.py",
+        "scripts/merge_bpb_exclusions.py",
+        "tests/report_20260909/support_report.py",
+        "tests/report_20260909/test_a02_bpb.py",
+        "tinylm/audit_io.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/bpb_corpus.py",
+        "tinylm/eval/model_adapter.py",
+        "tinylm/eval/paired_records.py"
+      ],
+      "original_files": [
+        "scripts/common_bpb.py"
+      ]
+    },
+    "A03": {
+      "title": "문항 ID, 점수 이름, decision margin과 HF 평가",
+      "priority": "P0",
+      "kind": "code_and_plan",
+      "payload_files": [
+        "scripts/analyze_paired_records.py",
+        "scripts/eval_bench_suite.py",
+        "scripts/fetch_bench_data.py",
+        "tests/report_20260909/support_report.py",
+        "tests/report_20260909/test_a03_a04_paired.py",
+        "tinylm/audit_io.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/heldout.py",
+        "tinylm/eval/model_adapter.py",
+        "tinylm/eval/paired_records.py"
+      ],
+      "original_files": [
+        "scripts/eval_bench_suite.py",
+        "scripts/fetch_bench_data.py"
+      ]
+    },
+    "A04": {
+      "title": "paired 통계와 family 단위 불확실성",
+      "priority": "P0",
+      "kind": "code_and_plan",
+      "payload_files": [
+        "scripts/analyze_paired_records.py",
+        "tests/report_20260909/support_report.py",
+        "tests/report_20260909/test_a03_a04_paired.py",
+        "tinylm/audit_io.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/paired_records.py"
+      ],
+      "original_files": []
+    },
+    "A05": {
+      "title": "Fresh SFT의 계측·mask·학습·생성 평가",
+      "priority": "P0",
+      "kind": "code_and_plan",
+      "payload_files": [
+        "scripts/analyze_paired_records.py",
+        "scripts/diag_dataset_tokens.py",
+        "scripts/eval_sft.py",
+        "scripts/train_sft.py",
+        "tests/report_20260909/support_report.py",
+        "tests/report_20260909/test_a05_supervision.py",
+        "tinylm/audit_io.py",
+        "tinylm/chat/serialize.py",
+        "tinylm/chat/supervision.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/model_adapter.py",
+        "tinylm/eval/paired_records.py",
+        "tinylm/eval/sft_grading.py",
+        "tinylm/model/checkpoint_io.py",
+        "tinylm/train/sft.py"
+      ],
+      "original_files": [
+        "scripts/diag_dataset_tokens.py",
+        "tinylm/chat/serialize.py"
+      ]
+    },
+    "A06": {
+      "title": "동일 배포 모델의 품질·실제 KV·메모리·속도",
+      "priority": "P0",
+      "kind": "code_and_plan",
+      "payload_files": [
+        "scripts/analyze_paired_records.py",
+        "scripts/common_bpb.py",
+        "scripts/eval_deployment_artifact.py",
+        "scripts/fetch_bench_data.py",
+        "tests/report_20260909/support_report.py",
+        "tests/report_20260909/test_a06_runtime.py",
+        "tinylm/audit_io.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/bpb_corpus.py",
+        "tinylm/eval/heldout.py",
+        "tinylm/eval/model_adapter.py",
+        "tinylm/eval/paired_records.py",
+        "tinylm/eval/runtime_audit.py",
+        "tinylm/infer/generate.py",
+        "tinylm/model/transformer.py"
+      ],
+      "original_files": [
+        "scripts/common_bpb.py",
+        "scripts/fetch_bench_data.py",
+        "tinylm/infer/generate.py",
+        "tinylm/model/transformer.py"
+      ]
+    },
+    "A07": {
+      "title": "고유 데이터·노출·언어 비율을 분리하는 재분석",
+      "priority": "P1",
+      "kind": "plan_only",
+      "payload_files": [],
+      "original_files": []
+    },
+    "A08": {
+      "title": "Muon 레시피의 matrix WD와 실제 update 계측",
+      "priority": "P1",
+      "kind": "code_and_plan",
+      "payload_files": [
+        "tests/report_20260909/support_report.py",
+        "tests/report_20260909/test_a08_optimizer.py",
+        "tinylm/audit_io.py",
+        "tinylm/cli.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/train/optimizer_audit.py",
+        "tinylm/train/trainer.py"
+      ],
+      "original_files": [
+        "tinylm/cli.py",
+        "tinylm/train/trainer.py"
+      ]
+    },
+    "A09": {
+      "title": "LRM의 실제 WD와 checkpoint 시점 진단",
+      "priority": "P1",
+      "kind": "code_and_plan",
+      "payload_files": [
+        "scripts/check_lr_factor_sync.py",
+        "scripts/diag_lrm_values.py",
+        "tests/report_20260909/support_report.py",
+        "tests/report_20260909/test_a09_lrm.py",
+        "tinylm/audit_io.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/lrm_diagnostics.py",
+        "tinylm/model/checkpoint_io.py"
+      ],
+      "original_files": [
+        "scripts/check_lr_factor_sync.py",
+        "scripts/diag_lrm_values.py"
+      ]
+    },
+    "A10": {
+      "title": "attention sink의 causal null과 방문별 계측",
+      "priority": "P1",
+      "kind": "code_and_plan",
+      "payload_files": [
+        "scripts/diag_attention_sink.py",
+        "tests/report_20260909/support_report.py",
+        "tests/report_20260909/test_a10_attention.py",
+        "tinylm/audit_io.py",
+        "tinylm/eval/attention_stats.py",
+        "tinylm/eval/audit_io.py"
+      ],
+      "original_files": [
+        "scripts/diag_attention_sink.py"
+      ]
+    },
+    "A11": {
+      "title": "실제 dense MLP와 정본 그룹으로 집약 진단",
+      "priority": "P1",
+      "kind": "code_and_plan",
+      "payload_files": [
+        "scripts/diag_group_agg.py",
+        "tests/report_20260909/support_report.py",
+        "tests/report_20260909/test_a11_group.py",
+        "tinylm/audit_io.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/model/checkpoint_io.py"
+      ],
+      "original_files": [
+        "scripts/diag_group_agg.py"
+      ]
+    },
+    "A12": {
+      "title": "residual 차단과 실제 KV 공급자 삭제의 분리",
+      "priority": "조건부",
+      "kind": "plan_only",
+      "payload_files": [],
+      "original_files": []
+    },
+    "A13": {
+      "title": "P082의 N_REF 보존과 검증된 text KD",
+      "priority": "P1",
+      "kind": "code_and_plan",
+      "payload_files": [
+        "scripts/analyze_paired_records.py",
+        "scripts/build_kd_text_pairs.py",
+        "scripts/diag_dataset_tokens.py",
+        "scripts/eval_sft.py",
+        "scripts/generate_teacher_responses.py",
+        "scripts/train_sft.py",
+        "tests/report_20260909/support_report.py",
+        "tests/report_20260909/test_a05_supervision.py",
+        "tests/report_20260909/test_a13_teacher.py",
+        "tinylm/audit_io.py",
+        "tinylm/chat/serialize.py",
+        "tinylm/chat/supervision.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/model_adapter.py",
+        "tinylm/eval/paired_records.py",
+        "tinylm/eval/sft_grading.py",
+        "tinylm/model/checkpoint_io.py",
+        "tinylm/train/sft.py"
+      ],
+      "original_files": [
+        "scripts/diag_dataset_tokens.py",
+        "tinylm/chat/serialize.py"
+      ]
+    },
+    "A14": {
+      "title": "기존 폭·깊이·재귀 결과의 비교 완성",
+      "priority": "조건부",
+      "kind": "plan_only",
+      "payload_files": [],
+      "original_files": []
+    },
+    "A15": {
+      "title": "반올림 일치와 연산·gradient·update 등가성 분리",
+      "priority": "조건부",
+      "kind": "code_and_plan",
+      "payload_files": [
+        "scripts/check_training_equivalence.py",
+        "tests/report_20260909/support_report.py",
+        "tests/report_20260909/test_a15_equivalence.py",
+        "tinylm/audit_io.py",
+        "tinylm/chat/serialize.py",
+        "tinylm/chat/supervision.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/model/checkpoint_io.py"
+      ],
+      "original_files": [
+        "tinylm/chat/serialize.py"
+      ]
+    }
+  },
+  "files": [
+    {
+      "path": "scripts/analyze_paired_records.py",
+      "replacement_sha256": "36d67f4cdffc01b6a59a6a5f81d37b9ce41751151bcff66c4efd63e126791dd5",
+      "replacement_bytes": 2539,
+      "original_exists": false,
+      "actions": [
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A13"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/paired_records.py"
+      ]
+    },
+    {
+      "path": "scripts/build_bpb_exclusion.py",
+      "replacement_sha256": "d44bcf631fa7a01a69348ce993604d5dd41d49a8c82d08e3de4054d287f32873",
+      "replacement_bytes": 5439,
+      "original_exists": false,
+      "actions": [
+        "A02"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/bpb_corpus.py"
+      ]
+    },
+    {
+      "path": "scripts/build_kd_text_pairs.py",
+      "replacement_sha256": "961a8ef9ef3c6a45f0941277a642c8e05776e3b00560992be7339557a24749bb",
+      "replacement_bytes": 7747,
+      "original_exists": false,
+      "actions": [
+        "A13"
+      ],
+      "bundle_dependencies": [
+        "tinylm/chat/supervision.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/sft_grading.py"
+      ]
+    },
+    {
+      "path": "scripts/check_lr_factor_sync.py",
+      "replacement_sha256": "257044e8ef2bc8ee00ecb002d6ce5edd7cb66a84147e6e07fbabb2b6ad599a5c",
+      "replacement_bytes": 1553,
+      "original_exists": true,
+      "original_sha256": "5d49650114e788ee0a11e47b28c3c296d6d7b60f1dcaee65d81a7488c19dbcff",
+      "original_bytes": 4263,
+      "actions": [
+        "A09"
+      ],
+      "bundle_dependencies": [
+        "scripts/diag_lrm_values.py",
+        "tinylm/eval/lrm_diagnostics.py"
+      ]
+    },
+    {
+      "path": "scripts/check_training_equivalence.py",
+      "replacement_sha256": "47f9b2281a628ba2f6c981727b39e125f9cc8ab89bbf2d3fa401cce2755c75a9",
+      "replacement_bytes": 7976,
+      "original_exists": false,
+      "actions": [
+        "A15"
+      ],
+      "bundle_dependencies": [
+        "tinylm/chat/supervision.py",
+        "tinylm/model/checkpoint_io.py",
+        "tinylm/eval/audit_io.py"
+      ]
+    },
+    {
+      "path": "scripts/common_bpb.py",
+      "replacement_sha256": "5e7867529a9fd428c6b959619852d2251fe808092a1e07cd974d17b419d7f42b",
+      "replacement_bytes": 9400,
+      "original_exists": true,
+      "original_sha256": "630e2e8af2e3754d7c61677cab430ab5159722d76b92a22c17d5b153fa0c7675",
+      "original_bytes": 18086,
+      "actions": [
+        "A02",
+        "A06"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/bpb_corpus.py",
+        "tinylm/eval/model_adapter.py"
+      ]
+    },
+    {
+      "path": "scripts/diag_attention_sink.py",
+      "replacement_sha256": "ffdcabe8d18e8b0adc43a9a5db7aec8ce0ccb0bdca08f0c94030e8112302d154",
+      "replacement_bytes": 4679,
+      "original_exists": true,
+      "original_sha256": "9a4ec119afbd050a68970eac5fb1271aca0502e17d894832322f0c3f6920728c",
+      "original_bytes": 9496,
+      "actions": [
+        "A10"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/attention_stats.py"
+      ]
+    },
+    {
+      "path": "scripts/diag_dataset_tokens.py",
+      "replacement_sha256": "08c617387dcbf63069299007edc7b6efb702e343d477126d02bf20f817690680",
+      "replacement_bytes": 8315,
+      "original_exists": true,
+      "original_sha256": "50db9befecb6c6c6207e9f884f0aaa7f67bc0ef7e444c8effea757861600df87",
+      "original_bytes": 7566,
+      "actions": [
+        "A05",
+        "A13"
+      ],
+      "bundle_dependencies": [
+        "tinylm/chat/supervision.py",
+        "tinylm/audit_io.py"
+      ]
+    },
+    {
+      "path": "scripts/diag_group_agg.py",
+      "replacement_sha256": "fb876cf05ec30ebdfbed879b2ce54d7a71b48ec682be5aa91a810785e9816f51",
+      "replacement_bytes": 5296,
+      "original_exists": true,
+      "original_sha256": "3a2fec5935465dd66553be5e13932ff10215139f551a4948ea7923796a1aff6d",
+      "original_bytes": 11885,
+      "actions": [
+        "A11"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py",
+        "tinylm/model/checkpoint_io.py"
+      ]
+    },
+    {
+      "path": "scripts/diag_lrm_values.py",
+      "replacement_sha256": "a9542e9839ac20ec02d82c5860779cf63b63033410f39bd406392698b2872f1c",
+      "replacement_bytes": 4251,
+      "original_exists": true,
+      "original_sha256": "eb0dddc915b8698a4578327428e9b5d0899ccc3aac3ab2710a7b6df9541ccf43",
+      "original_bytes": 11983,
+      "actions": [
+        "A09"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py",
+        "tinylm/model/checkpoint_io.py",
+        "tinylm/eval/lrm_diagnostics.py"
+      ]
+    },
+    {
+      "path": "scripts/eval_bench_suite.py",
+      "replacement_sha256": "d67c9998784bb4746d6ee81b0d8ba84d0d2f527496785b880388caa37d6473e2",
+      "replacement_bytes": 29958,
+      "original_exists": true,
+      "original_sha256": "e612d6ca995a5b3c456cf92d697f1455f6bc91dff4925db3dad5505e35761f8f",
+      "original_bytes": 46197,
+      "actions": [
+        "A01",
+        "A03"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/heldout.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/paired_records.py",
+        "tinylm/eval/model_adapter.py"
+      ]
+    },
+    {
+      "path": "scripts/eval_deployment_artifact.py",
+      "replacement_sha256": "3c6e7168acf0efadbc932293a4158c6ac30d75729d3c87f1e4e90cb149e08de0",
+      "replacement_bytes": 16115,
+      "original_exists": false,
+      "actions": [
+        "A06"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/heldout.py",
+        "tinylm/eval/model_adapter.py",
+        "tinylm/eval/paired_records.py",
+        "tinylm/eval/runtime_audit.py",
+        "tinylm/eval/bpb_corpus.py",
+        "scripts/common_bpb.py",
+        "tinylm/model/transformer.py",
+        "tinylm/infer/generate.py"
+      ]
+    },
+    {
+      "path": "scripts/eval_sft.py",
+      "replacement_sha256": "dfd2c69162402c671ec22f036a30cdf2fb3818c256b0fe51f4ceb5c9b8f742bd",
+      "replacement_bytes": 6494,
+      "original_exists": false,
+      "actions": [
+        "A05",
+        "A13"
+      ],
+      "bundle_dependencies": [
+        "tinylm/chat/serialize.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/model_adapter.py",
+        "tinylm/eval/sft_grading.py"
+      ]
+    },
+    {
+      "path": "scripts/fetch_bench_data.py",
+      "replacement_sha256": "92c0ee5fbd8e1184525f38ffbd96da23ab7bd66906fce3363cc42f7e95f7de9d",
+      "replacement_bytes": 15297,
+      "original_exists": true,
+      "original_sha256": "079829b8a8a259dd44f50cf71b44bfb3f0b4c53f140a8f7b7cdb995cfa51545b",
+      "original_bytes": 14797,
+      "actions": [
+        "A01",
+        "A03",
+        "A06"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/heldout.py"
+      ]
+    },
+    {
+      "path": "scripts/generate_teacher_responses.py",
+      "replacement_sha256": "339ae3a4c573df4f64c2365e893595e3221011cd2b50d3ceab605f0711bc47dc",
+      "replacement_bytes": 6313,
+      "original_exists": false,
+      "actions": [
+        "A13"
+      ],
+      "bundle_dependencies": [
+        "tinylm/audit_io.py"
+      ]
+    },
+    {
+      "path": "scripts/merge_bpb_exclusions.py",
+      "replacement_sha256": "f4da61eb13eed06e80e513a715d8e45df017d47ddbe72fa97ec07515395eb92f",
+      "replacement_bytes": 1591,
+      "original_exists": false,
+      "actions": [
+        "A02"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/bpb_corpus.py"
+      ]
+    },
+    {
+      "path": "scripts/train_sft.py",
+      "replacement_sha256": "8ff75abc947dec20d41fd6fa74be6dbecaf7dd1652045d85f46543a6ade31cf3",
+      "replacement_bytes": 289,
+      "original_exists": false,
+      "actions": [
+        "A05",
+        "A13"
+      ],
+      "bundle_dependencies": [
+        "tinylm/train/sft.py"
+      ]
+    },
+    {
+      "path": "tests/report_20260909/support_report.py",
+      "replacement_sha256": "7189b2d60096bc211303c584b20979dd67dff2d7865d933d48a2dcf294916cf2",
+      "replacement_bytes": 857,
+      "original_exists": false,
+      "actions": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A08",
+        "A09",
+        "A10",
+        "A11",
+        "A13",
+        "A15"
+      ],
+      "bundle_dependencies": []
+    },
+    {
+      "path": "tests/report_20260909/test_a01_heldout.py",
+      "replacement_sha256": "ff042020cefbaf77d213da241ecdb9f512be24514dfc6a62ac0567c25dda2a4f",
+      "replacement_bytes": 2162,
+      "original_exists": false,
+      "actions": [
+        "A01"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/heldout.py"
+      ]
+    },
+    {
+      "path": "tests/report_20260909/test_a02_bpb.py",
+      "replacement_sha256": "0d829b8c380d448422332ddade5d4eb690f2ef7b983a23dccf0b8da7605fc78b",
+      "replacement_bytes": 3504,
+      "original_exists": false,
+      "actions": [
+        "A02"
+      ],
+      "bundle_dependencies": [
+        "scripts/common_bpb.py",
+        "scripts/build_bpb_exclusion.py",
+        "tinylm/eval/paired_records.py",
+        "tests/report_20260909/support_report.py"
+      ]
+    },
+    {
+      "path": "tests/report_20260909/test_a03_a04_paired.py",
+      "replacement_sha256": "37c7889fdfee71069290e943e5589b0f2b31c786d1b4d5dbdf932d0924efaa1d",
+      "replacement_bytes": 2231,
+      "original_exists": false,
+      "actions": [
+        "A03",
+        "A04"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/paired_records.py",
+        "tests/report_20260909/support_report.py"
+      ]
+    },
+    {
+      "path": "tests/report_20260909/test_a05_supervision.py",
+      "replacement_sha256": "e8af6d274c69e6ad0e085954c1f4e7290ca5076e5b19c744d1920a083291a6c6",
+      "replacement_bytes": 5354,
+      "original_exists": false,
+      "actions": [
+        "A05",
+        "A13"
+      ],
+      "bundle_dependencies": [
+        "tinylm/chat/supervision.py",
+        "tinylm/eval/sft_grading.py",
+        "tests/report_20260909/support_report.py"
+      ]
+    },
+    {
+      "path": "tests/report_20260909/test_a06_runtime.py",
+      "replacement_sha256": "25a292d9db4a6af16f4d4a77390c931ddbf981a21db660e81f5cf48cf19f415b",
+      "replacement_bytes": 2456,
+      "original_exists": false,
+      "actions": [
+        "A06"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/runtime_audit.py",
+        "tinylm/model/transformer.py",
+        "tests/report_20260909/support_report.py"
+      ]
+    },
+    {
+      "path": "tests/report_20260909/test_a08_optimizer.py",
+      "replacement_sha256": "9f9a40383b384c66c2169e6d51087830a6dbd4f2dc4ca508d51ff78fcf5e1f16",
+      "replacement_bytes": 1401,
+      "original_exists": false,
+      "actions": [
+        "A08"
+      ],
+      "bundle_dependencies": [
+        "tinylm/train/optimizer_audit.py"
+      ]
+    },
+    {
+      "path": "tests/report_20260909/test_a09_lrm.py",
+      "replacement_sha256": "03d5b96920f683d2caf4b1df23e43fa7817ffb9ba5a7d0ecff3902f9c27ce743",
+      "replacement_bytes": 1015,
+      "original_exists": false,
+      "actions": [
+        "A09"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/lrm_diagnostics.py"
+      ]
+    },
+    {
+      "path": "tests/report_20260909/test_a10_attention.py",
+      "replacement_sha256": "bf7890e32e7ebd179a7c83acaf7d46a76a9dc6e6352daf4f061faa207a401657",
+      "replacement_bytes": 905,
+      "original_exists": false,
+      "actions": [
+        "A10"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/attention_stats.py"
+      ]
+    },
+    {
+      "path": "tests/report_20260909/test_a11_group.py",
+      "replacement_sha256": "6378ef5c1ac9589bf8bfe7678f6bc81ce4ee6b57b89d35ff7ed8800f0c3eae68",
+      "replacement_bytes": 1157,
+      "original_exists": false,
+      "actions": [
+        "A11"
+      ],
+      "bundle_dependencies": [
+        "scripts/diag_group_agg.py"
+      ]
+    },
+    {
+      "path": "tests/report_20260909/test_a13_teacher.py",
+      "replacement_sha256": "470ba0e7977bf9073371afc1e9fcec4f352ba77325a9f963b9a876d6f6432e78",
+      "replacement_bytes": 671,
+      "original_exists": false,
+      "actions": [
+        "A13"
+      ],
+      "bundle_dependencies": [
+        "scripts/generate_teacher_responses.py"
+      ]
+    },
+    {
+      "path": "tests/report_20260909/test_a15_equivalence.py",
+      "replacement_sha256": "b47d7209cee59d4c363a4f2379fe8cd0755e78732ce778e3ae0bf4632886def0",
+      "replacement_bytes": 995,
+      "original_exists": false,
+      "actions": [
+        "A15"
+      ],
+      "bundle_dependencies": [
+        "scripts/check_training_equivalence.py"
+      ]
+    },
+    {
+      "path": "tinylm/audit_io.py",
+      "replacement_sha256": "70a12646b10e83e6ff29f7547cc7b8e4b2074f469e42da4535b993bf2446d415",
+      "replacement_bytes": 3362,
+      "original_exists": false,
+      "actions": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A08",
+        "A09",
+        "A10",
+        "A11",
+        "A13",
+        "A15"
+      ],
+      "bundle_dependencies": []
+    },
+    {
+      "path": "tinylm/chat/serialize.py",
+      "replacement_sha256": "7104f7782f536489ea97000d158b8b165fd610842e2d9ad9931e1b27bc83fc79",
+      "replacement_bytes": 6970,
+      "original_exists": true,
+      "original_sha256": "f67f8db7760be9c1bae9102692c819e2444c8780a2906179c4c468451926d4c8",
+      "original_bytes": 7418,
+      "actions": [
+        "A05",
+        "A13",
+        "A15"
+      ],
+      "bundle_dependencies": []
+    },
+    {
+      "path": "tinylm/chat/supervision.py",
+      "replacement_sha256": "80afd7de0cc5820f6a823b91417297fd13ddec21d6dd97143ff0fcff69a57dde",
+      "replacement_bytes": 6424,
+      "original_exists": false,
+      "actions": [
+        "A05",
+        "A13",
+        "A15"
+      ],
+      "bundle_dependencies": [
+        "tinylm/chat/serialize.py"
+      ]
+    },
+    {
+      "path": "tinylm/cli.py",
+      "replacement_sha256": "c11260734bae41dbd0d4adf15856adfc80a1d1c911944890db12b0f1dd3bf86a",
+      "replacement_bytes": 35255,
+      "original_exists": true,
+      "original_sha256": "dcb09241cbcbff0cf99535ce39a1265b623ac909a84ae71a6cca42160a8d63e3",
+      "original_bytes": 34679,
+      "actions": [
+        "A08"
+      ],
+      "bundle_dependencies": [
+        "tinylm/train/trainer.py"
+      ]
+    },
+    {
+      "path": "tinylm/eval/attention_stats.py",
+      "replacement_sha256": "d64a18a7404a92679dda24f95c1c737dbaf23271e60bfde9a6c5d9956c78b050",
+      "replacement_bytes": 2100,
+      "original_exists": false,
+      "actions": [
+        "A10"
+      ],
+      "bundle_dependencies": []
+    },
+    {
+      "path": "tinylm/eval/audit_io.py",
+      "replacement_sha256": "bc0ef9a9ff9caaaf2a3b6d7c9238ef4a8b89ec266b0b5ebbe32fca198b6162c8",
+      "replacement_bytes": 266,
+      "original_exists": false,
+      "actions": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A08",
+        "A09",
+        "A10",
+        "A11",
+        "A13",
+        "A15"
+      ],
+      "bundle_dependencies": [
+        "tinylm/audit_io.py"
+      ]
+    },
+    {
+      "path": "tinylm/eval/bpb_corpus.py",
+      "replacement_sha256": "5e6547dad710dd026626165ba204efa1f83596a7e529dcc1601e47dfe5bcab2c",
+      "replacement_bytes": 3459,
+      "original_exists": false,
+      "actions": [
+        "A02",
+        "A06"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py"
+      ]
+    },
+    {
+      "path": "tinylm/eval/heldout.py",
+      "replacement_sha256": "efdb4ac8c0dbbd2f8a026b7f0ee16a84be1ef12e69d3d445e6b0a41c57095df9",
+      "replacement_bytes": 5850,
+      "original_exists": false,
+      "actions": [
+        "A01",
+        "A03",
+        "A06"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py"
+      ]
+    },
+    {
+      "path": "tinylm/eval/lrm_diagnostics.py",
+      "replacement_sha256": "01e5c094f4671be5b835e18191a67d5eda697104948160c42deaa5f7e527f3ba",
+      "replacement_bytes": 1927,
+      "original_exists": false,
+      "actions": [
+        "A09"
+      ],
+      "bundle_dependencies": []
+    },
+    {
+      "path": "tinylm/eval/model_adapter.py",
+      "replacement_sha256": "492a26ca12472d1e49629510bffe652f9ea5a36e14275e95a0086c27858e144e",
+      "replacement_bytes": 8733,
+      "original_exists": false,
+      "actions": [
+        "A01",
+        "A02",
+        "A03",
+        "A05",
+        "A06",
+        "A13"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py"
+      ]
+    },
+    {
+      "path": "tinylm/eval/paired_records.py",
+      "replacement_sha256": "66fe4fa4d77798b2d639515ba285e581e5eab22af3096dc1aff1036cc2373031",
+      "replacement_bytes": 7173,
+      "original_exists": false,
+      "actions": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A13"
+      ],
+      "bundle_dependencies": []
+    },
+    {
+      "path": "tinylm/eval/runtime_audit.py",
+      "replacement_sha256": "19a4c78ddbf8bdd74ab4ac89481917060ba1a626f8faffc6e1f5c982f41f0105",
+      "replacement_bytes": 6943,
+      "original_exists": false,
+      "actions": [
+        "A06"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py",
+        "tinylm/eval/model_adapter.py"
+      ]
+    },
+    {
+      "path": "tinylm/eval/sft_grading.py",
+      "replacement_sha256": "98c4db1153afcee47ab53f2252c07177814a67b2e2884fc5864ae6c3e462b8ac",
+      "replacement_bytes": 3584,
+      "original_exists": false,
+      "actions": [
+        "A05",
+        "A13"
+      ],
+      "bundle_dependencies": []
+    },
+    {
+      "path": "tinylm/infer/generate.py",
+      "replacement_sha256": "93c14c30d7633afcb61412141ebfa39b88d5ee4e060c68dcf88fe46d7d20587d",
+      "replacement_bytes": 7865,
+      "original_exists": true,
+      "original_sha256": "5f6e2e2be41ab2d28526f868734a54ec3ed9d97b144a4bf8bef9f3f78bc2bde1",
+      "original_bytes": 7735,
+      "actions": [
+        "A06"
+      ],
+      "bundle_dependencies": [
+        "tinylm/model/transformer.py"
+      ]
+    },
+    {
+      "path": "tinylm/model/checkpoint_io.py",
+      "replacement_sha256": "70bb5dd5e4a5deacf3858ad5e9c4cf27b96c39edb7a6b6569a1b341375a06640",
+      "replacement_bytes": 1403,
+      "original_exists": false,
+      "actions": [
+        "A05",
+        "A09",
+        "A11",
+        "A13",
+        "A15"
+      ],
+      "bundle_dependencies": []
+    },
+    {
+      "path": "tinylm/model/transformer.py",
+      "replacement_sha256": "bf8763c0bc64684e76c62c35ff76dd6aa79f4ad29875225eb4d078dc863f95fe",
+      "replacement_bytes": 65350,
+      "original_exists": true,
+      "original_sha256": "9c3c1d62c17870c7fb5b7b38834f39c1681b168bafaee14fa1826650afa77d0f",
+      "original_bytes": 65012,
+      "actions": [
+        "A06"
+      ],
+      "bundle_dependencies": []
+    },
+    {
+      "path": "tinylm/train/optimizer_audit.py",
+      "replacement_sha256": "c860780db0693d962d0366709f69103a2f378df8b796f0ece288cd38cc80cc62",
+      "replacement_bytes": 5226,
+      "original_exists": false,
+      "actions": [
+        "A08"
+      ],
+      "bundle_dependencies": [
+        "tinylm/eval/audit_io.py"
+      ]
+    },
+    {
+      "path": "tinylm/train/sft.py",
+      "replacement_sha256": "0003c600db3fea0a235374c72b637ff2656cba3cca4e6e8b738c6ff6bf35cf6b",
+      "replacement_bytes": 9386,
+      "original_exists": false,
+      "actions": [
+        "A05",
+        "A13"
+      ],
+      "bundle_dependencies": [
+        "tinylm/chat/supervision.py",
+        "tinylm/eval/audit_io.py",
+        "tinylm/model/checkpoint_io.py"
+      ]
+    },
+    {
+      "path": "tinylm/train/trainer.py",
+      "replacement_sha256": "f8ca9a5234b30a4c1f16365881b26767a22a9a09dea08b3fc21ec89a6714bed9",
+      "replacement_bytes": 65772,
+      "original_exists": true,
+      "original_sha256": "2f40c4ee6f21221ce3b505fce3341fd1ef37e6b09416f869e7531a192689cf35",
+      "original_bytes": 63155,
+      "actions": [
+        "A08"
+      ],
+      "bundle_dependencies": [
+        "tinylm/train/optimizer_audit.py"
+      ]
+    }
+  ],
+  "baseline_dependencies": [
+    {
+      "path": "tinylm/__init__.py",
+      "sha256": "3cbc5092e4ed4f903b6a88ac39d1a1edaa32ab4d20fd2db061add441a917dc62",
+      "bytes": 397
+    },
+    {
+      "path": "tinylm/__main__.py",
+      "sha256": "3129adff95e0f38b87ab34cddfc27082c7892bcaec267ff5d40f160fdf55b44a",
+      "bytes": 61
+    },
+    {
+      "path": "tinylm/config.py",
+      "sha256": "a59319b4d21427b2fdbbe2394624273512be0585da7fea795becd1a24df56556",
+      "bytes": 29674
+    },
+    {
+      "path": "tinylm/hf_spec.py",
+      "sha256": "c83721bc915d9d73cb85d9296eecd09eed51ca6a16c9733ccb36f1e332fb7e57",
+      "bytes": 2908
+    },
+    {
+      "path": "tinylm/paths.py",
+      "sha256": "fbc4fd995acfeed9258945990c5fc67a19947bceed80189df3b7c95b2015d3c4",
+      "bytes": 4473
+    },
+    {
+      "path": "tinylm/chat/__init__.py",
+      "sha256": "e9e2e7c6696292565cd0760f0c967c36fa2a9f2269a234da46863ccbefeadf30",
+      "bytes": 1816
+    },
+    {
+      "path": "tinylm/chat/canonical.py",
+      "sha256": "8a514b69cc6c12519166defc059c74bf685defc85f20461a0e7cb52d092156bc",
+      "bytes": 7628
+    },
+    {
+      "path": "tinylm/chat/tokens.py",
+      "sha256": "72b31121f83a9febbcc263c1e969a6d8003e9080b00f8b6cd9eb881a5a4d8c35",
+      "bytes": 4046
+    },
+    {
+      "path": "tinylm/data/__init__.py",
+      "sha256": "bdc1fb147d4de4ea535f5216db9a4944c0bbf7cec1e47fa3154ead3b27caa57f",
+      "bytes": 292
+    },
+    {
+      "path": "tinylm/data/loader.py",
+      "sha256": "bd81d82eae43fd0338dce0772005712bf161ea75526aa2c6300380c51fda95ed",
+      "bytes": 1471
+    },
+    {
+      "path": "tinylm/data/prepare.py",
+      "sha256": "2ac2d46c910a71bdf5075c672a12a947035318c9cc6f3ef7807e9913a4efe216",
+      "bytes": 23010
+    },
+    {
+      "path": "tinylm/eval/__init__.py",
+      "sha256": "6d0d32a8c518b9d8335b02abd83382bbc05459e690c1d5f0e5f5828ec196bd2b",
+      "bytes": 95
+    },
+    {
+      "path": "tinylm/eval/compare.py",
+      "sha256": "6f62628734033f4ea4f866c13b10a8109e937f25ac3bb91cbb958b4a46a641a5",
+      "bytes": 5502
+    },
+    {
+      "path": "tinylm/eval/evaluate.py",
+      "sha256": "47d2870dd79085bd311a49e649ff0aa1df3e09c3edd454de53556e3febc02ace",
+      "bytes": 1274
+    },
+    {
+      "path": "tinylm/infer/__init__.py",
+      "sha256": "958c2ab839e447eab460b60b8ceb14c69fc2f8d069a49cd8364bdbd65970cf96",
+      "bytes": 151
+    },
+    {
+      "path": "tinylm/model/__init__.py",
+      "sha256": "6ecf25214e7cd9ae187b711487c74e92fcda9c6e2cc2a2785732cf8a22faa84c",
+      "bytes": 156
+    },
+    {
+      "path": "tinylm/model/lut.py",
+      "sha256": "09114e2c03bb6155e974ff1f88ff805f878d8af6f4bc72038b53d43dfbb119ac",
+      "bytes": 20613
+    },
+    {
+      "path": "tinylm/model/modules.py",
+      "sha256": "419b84ac4409896c196b876a4c280c2c68ebe1c29baa66b7d7bc98f6f544743b",
+      "bytes": 15566
+    },
+    {
+      "path": "tinylm/model/ternary_kernel.py",
+      "sha256": "bd0bba32e1e803cd5d793d6819b6c29733200ecc97b267b09fd004ae745b7bbf",
+      "bytes": 8787
+    },
+    {
+      "path": "tinylm/model/ternary.py",
+      "sha256": "019acf31d466cddce3d075a3743ba148fa624347ad68c3c52c46482510a52f1c",
+      "bytes": 22714
+    },
+    {
+      "path": "tinylm/train/__init__.py",
+      "sha256": "7cd107bdc6d3edf9914b348d81963a735ef0cc69e3b0930edc7c8d306a7284ae",
+      "bytes": 142
+    },
+    {
+      "path": "tinylm/train/adamw_bf16.py",
+      "sha256": "447cec8c426d0443fbbf7e5bc2ad4a0b626ce21c682b96fe0e5e151e3661fa67",
+      "bytes": 7751
+    },
+    {
+      "path": "tinylm/train/hf_teacher.py",
+      "sha256": "6ab5952cd27b4d92f0b1c892a2be68bad915d705b421d8e2200bf1f4337658e8",
+      "bytes": 6354
+    },
+    {
+      "path": "tinylm/train/init_utils.py",
+      "sha256": "b2f86a2097cb51a913d90a0aceb8139035ef5e307827403fb27d6add24df72c2",
+      "bytes": 23263
+    },
+    {
+      "path": "tinylm/train/kd_cache.py",
+      "sha256": "9c80e164ea5e59ea6d166723ff557741de4890c257a42db0a5986884fdb39ec4",
+      "bytes": 4712
+    },
+    {
+      "path": "tinylm/train/lr_finder.py",
+      "sha256": "5e9f9e22aa98e2b5caab52fd573d3d46795279b6215d81669204398278bc5fd6",
+      "bytes": 7434
+    },
+    {
+      "path": "tinylm/train/muon.py",
+      "sha256": "f0a3e8ab393a6a1ba3903b5be1361ad44fc28907805fedfefaa9876bd0e4aa55",
+      "bytes": 5010
+    },
+    {
+      "path": "scripts/check_heldout_defects.py",
+      "sha256": "e5159e6ea6b209f2ca0ee32d4642d8037bb5b3b68d47af24ccdec841deb30cd0",
+      "bytes": 16450
+    }
+  ],
+  "protected_reports": [
+    {
+      "path": "20260909_TinyLM_40MiB_연구타당성_및_실행조치_보고서_v2.md",
+      "sha256": "c942b073b27700b0c46400a2c3f06a18b3fff1bde97876c1fcd030f397b46242",
+      "bytes": 104907
+    },
+    {
+      "path": "20260909_TinyLM_40MiB_연구타당성_비판평가_및_개선전략_보고서.md",
+      "sha256": "920ed2a16a6d59d6667f2129e78b48edb93fd558e44da940f94f7cbf0df992a3",
+      "bytes": 123394
+    }
+  ],
+  "counts": {
+    "unique_python_files": 48,
+    "replacement_of_existing": 13,
+    "new_files": 35,
+    "regression_test_modules": 11,
+    "regression_test_methods_authored": 44,
+    "baseline_dependency_files": 28
+  }
+}
