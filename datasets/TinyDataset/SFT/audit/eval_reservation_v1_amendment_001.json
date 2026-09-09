@@ -1,0 +1,35 @@
+{
+  "amendment_id": "SFT-FRESH-V1-EVAL-AMEND-001",
+  "dataset_name": "SFT용 Fresh 코퍼스 v1",
+  "dataset_version": "v1",
+  "date": "2026-09-09",
+  "reason": "초기 동결 평가 원고에서 held-out v2.7 unseen_concept 독립 어휘 충돌 6건을 발견함",
+  "superseded_reservation": {
+    "status": "FROZEN_BEFORE_TRAIN_AUTHORING",
+    "source_file_sha256": "38775AB6778305473AA2282C78CB2B20B7A716D9BD4E97FA8000D8B2654E7478",
+    "source_file_size_bytes": 173503
+  },
+  "corrected_reservation": {
+    "status": "REFROZEN_AFTER_EXCLUSION_CORRECTION_BEFORE_FINAL_PACKAGING",
+    "revision": 2,
+    "source_file_sha256": "3A785B9E2274456533AFD521EC264A05A2D64C4D5190F6FD346556DFDDA8FE2D",
+    "source_file_size_bytes": 173482
+  },
+  "changed_eval_ids": [
+    "SFTF-V1-EVAL-000042",
+    "SFTF-V1-EVAL-000171",
+    "SFTF-V1-EVAL-000172",
+    "SFTF-V1-EVAL-000226",
+    "SFTF-V1-EVAL-000278",
+    "SFTF-V1-EVAL-000295"
+  ],
+  "collision_terms_removed": ["붓", "주머니", "차례"],
+  "change_scope": "금지된 명칭 또는 표현만 Fresh 대체어로 교정했으며 semantic task, response type, 정답 관계, 채점 방식과 분포는 바꾸지 않음",
+  "chronology_note": "초기 평가 원고는 train 작성 전에 동결됐으나 exclusion 오류 교정은 train 초안 뒤 수행됨. 교정본은 최종 패키징과 train-eval 오염 감사 전에 재동결함",
+  "post_refreeze_action": "구조적 직접 작성 train 733건을 revision 2 재동결 뒤 다시 작성했고, 개별 직접 작성 train 267건도 교정본 기준으로 재검증한 후 전체 1000건을 최종 패키징함",
+  "required_follow_up": [
+    "교정본 SHA-256 reservation 검증",
+    "held-out unseen_concept 재검사",
+    "train-eval 8-token 및 source-family 교집합 재검사"
+  ]
+}
