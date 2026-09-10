@@ -148,6 +148,10 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     #   dense 였고 `check_smoke_coverage` 가 그 빈 조합을 잡았다(P074 가 죽은 형태).
     #   ★타잉된 행렬은 **g 개 층 grad 의 합**을 받는다 — `split_params` 가 처음 보는 모양이다.
     "sm_tiedmuon": {"optimizer": "muon", "muon_lr_mult": 5.0, "arch": "tied", "mlp_group": 2},
+    # ★★2026-09-10 — P005b b-1. **업데이트 스케일 규약**이 둘이고 우리는 하나만 써 왔다.
+    #   🚫`--muon-lr-mult` 는 **균일 배수**라 다른 규약을 흉내낼 수 없다(형상 간 비가 1.63배 어긋난다).
+    #   ★`muon_scale` 필드가 json 에 없으면 나중에 두 규약의 런을 구별할 수 없다(2026-09-05 교훈).
+    "sm_muonrms": {"optimizer": "muon", "muon_scale": "rms", "arch": "dense"},
     "sm_s34":    {"sparse34": True, "bpw": 1.25},
     # ★2026-09-05 — P016 Stage3 이 **dense 몸통에서** 3:4 를 돌린다. 종전 `sm_s34` 는
     #   tied 였고 `check_smoke_coverage` 가 그 빈 조합을 잡았다(P074 가 죽은 형태).

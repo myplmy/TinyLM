@@ -15,6 +15,16 @@ REM     3. The predicted 15.6 tok/s for depth 18 is a MODEL - this batch measure
 REM     4. If depth 18 comes in under 15 tok/s it is not a deployment candidate.
 REM     5. Deployment residency comes from mem_runtime --lut only, not bench_infer's column.
 REM
+REM   CHANGED UNDER YOUR FEET - 2026-09-10
+REM     stage1_heldout no longer means v2.7 with 300 items. held-out v2.8 arrived with
+REM     4500 items and the fetcher takes the newest folder, so this run scores v2.8.
+REM     The cache now carries a version stamp and refetches itself when the folder changes.
+REM     Numbers from this batch are NOT comparable with any earlier held-out number.
+REM     Write v2.8 next to every one of them.
+REM     Also note d18 lives in preset m100s14 while arms 1-3 pass m100s12. That works -
+REM     resolve_ckpt falls back to a global search and prints the line, and load_model
+REM     builds the config from the checkpoint, not from the preset. Read that printed line.
+REM
 REM   PREREQUISITE
 REM     P062 Stage12 and Stage14 make the tags this batch scores.
 REM

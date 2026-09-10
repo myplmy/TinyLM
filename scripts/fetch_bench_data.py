@@ -64,7 +64,9 @@ SPECS = [
     ("kobest_hellaswag", "skt/kobest_v1",             "hellaswag",     "test",         500, "★한국어 4지선다 문장완성"),
     # ★★2026-09-06 — 우리 Stage1 held-out. 🚫**HF 가 아니라 로컬 파일**이다(SPECIAL 로 간다).
     #   v2.7 에서 D6(정답이 둘)이 0 이 되어 처음 채점에 쓸 수 있게 됐다.
-    ("stage1_heldout", "(local)",                     None,            "(local)",      300, "★한국어 4지선다 관계추론(자체)"),
+    # ★2026-09-10 — 공식 개수를 None 으로. v2.7 300 -> v2.8 4,500 이라 **고정 수가 아니다**
+    #   (300 을 박아 두면 판이 바뀔 때마다 ⚠️가 뜨는데 그것은 결함이 아니다).
+    ("stage1_heldout", "(local)",                     None,            "(local)",     None, "★한국어 4지선다 관계추론(자체·판마다 개수가 다르다)"),
     ("boolq",         "google/boolq",                 None,            "validation",  3270, "예/아니오. ⚠️라벨 불균형"),
     ("lambada",       "EleutherAI/lambada_openai",    "en",            "test",        5153, "★마지막 단어 예측"),
     ("mmlu",          "cais/mmlu",                    "all",           "test",       14042, "4지선다 57과목"),
@@ -203,6 +205,38 @@ SPECIAL.update(piqa=_fetch_piqa, mmlu_redux=_fetch_mmlu_redux, bfcl_v3=_fetch_bf
                stage1_heldout=_fetch_stage1_heldout)
 
 
+def heldout_stamp_path():
+    return OUT / "stage1_heldout.version"
+
+
+def heldout_latest_name():
+    """가장 최신 held-out 폴더 이름. `_fetch_stage1_heldout` 이 고르는 것과 **같은 규칙**이어야 한다."""
+    import sys as _sys
+    _sys.path.insert(0, str(ROOT / "scripts"))
+    from check_heldout_defects import BASE                       # noqa: PLC0415
+    cands = sorted(p for p in BASE.glob("held-out_v2.*") if p.is_dir())
+    return cands[-1].name if cands else None
+
+
+def heldout_cache_is_stale():
+    """★★2026-09-10 신설 — **캐시가 어느 판에서 나왔는지**를 기록하고 대조한다.
+
+    🚫사고: v2.8(4,500문항)이 도착했는데 `datasets/bench/stage1_heldout.jsonl` 은
+    **v2.7 300문항인 채로 남아 있었고**, `fetch` 는 *"이미 있다"* 로 건너뛰었다.
+    → **채점은 계속 v2.7 로 돌면서 아무도 그것을 몰랐다.** 게다가 *"★정본 판 = …"* 인쇄는
+    `_fetch_stage1_heldout` 안에 있어서 **건너뛰면 안 나온다**(함정 43 — 사본과 정본이 갈라졌다).
+    """
+    p = OUT / "stage1_heldout.jsonl"
+    if not p.exists():
+        return True, "캐시 없음"
+    stamp = heldout_stamp_path()
+    have = stamp.read_text(encoding="utf-8").strip() if stamp.exists() else "(스탬프 없음)"
+    want = heldout_latest_name()
+    if have != want:
+        return True, f"캐시는 `{have}` 인데 디스크 최신은 `{want}`"
+    return False, have
+
+
 def fetch(name, hid, cfg, split):
     OUT.mkdir(parents=True, exist_ok=True)
     p = OUT / f"{name}.jsonl"
@@ -214,6 +248,10 @@ def fetch(name, hid, cfg, split):
     with p.open("w", encoding="utf-8") as f:
         for row in ds:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    if name == "stage1_heldout":
+        nm = heldout_latest_name() or "(unknown)"
+        heldout_stamp_path().write_bytes(nm.encode("utf-8"))
+        print(f"  ★스탬프 기록: {heldout_stamp_path().name} = {nm}")
     return p, len(ds)
 
 
@@ -223,6 +261,8 @@ def main():
     ap.add_argument("--only", nargs="*", default=None)
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--verify", action="store_true")
+    ap.add_argument("--force", action="store_true",
+                    help="캐시가 있어도 다시 만든다 (★2026-09-10 신설 — 종전엔 방법이 없었다)")
     a = ap.parse_args()
 
     if a.list:
@@ -249,10 +289,14 @@ def main():
     print()
     good, bad = [], []
     for n, hid, cfg, sp, sz, _note in want:
-        if (OUT / f"{n}.jsonl").exists():
-            print(f"  [건너뜀] {n} — 이미 있다")
+        stale, why = (heldout_cache_is_stale() if n == "stage1_heldout" else (False, ""))
+        if (OUT / f"{n}.jsonl").exists() and not a.force and not stale:
+            print(f"  [건너뜀] {n} — 이미 있다"
+                  + (f"  (판 `{why}`)" if n == "stage1_heldout" else ""))
             good.append((n, "이미 있음"))
             continue
+        if stale and (OUT / f"{n}.jsonl").exists():
+            print(f"  ★{n} 캐시가 낡았다 — {why} → **다시 만든다**")
         try:
             p, cnt = fetch(n, hid, cfg, sp)
             flag = "✅" if (sz is None or cnt == sz) else "⚠️"

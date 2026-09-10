@@ -72,15 +72,43 @@ def content_words(s: str):
     return {w for w in re.findall(r"[가-힣]{2,}", s or "") if w not in drop}
 
 
+def _to_internal(r):
+    """★v2.8 스키마(`ctx`/`choices`/`gold`)를 내부 표현으로 옮긴다.
+
+    🚫**2026-09-10 사고** — v2.8 이 스키마를 바꿨는데 `load()` 는 파일명에 `300` 이 든 것만
+    찾았다. 그래서 **최신 판을 못 읽고 `(None, None)` 을 돌려줬고**, 그것을 그대로 쓰는
+    `fetch_bench_data._fetch_stage1_heldout` 이 `TypeError` 로 죽었다.
+    ★**더 나쁜 것**: 이 도구 자신은 *"못 찾았다"* 를 **인쇄만 하고 exit 0** 이었다(함정 38).
+    """
+    if "candidates" in r or "correct_index" in r:
+        return r
+    if "choices" in r and "gold" in r:
+        out = dict(r)
+        out["candidates"] = list(r["choices"])
+        out["correct_index"] = int(r["gold"])
+        out["prompt"] = r.get("ctx", "")
+        # ★v2.8 에는 `answer`·`required/forbidden_relations_canonical` 이 없다.
+        #   D1b·D6 은 그 필드를 보므로 **적용 대상이 없다** — 없는 것을 0건으로 적지 않는다.
+        return out
+    return r
+
+
 def load(folder: Path):
     # 🚫★`*metadata*` 를 먼저 집으면 **엉뚱한 파일을 채점**한다 —
     #   v2.3 이 0건으로 나오던 원인이 이것이었다(2026-09-03).
-    for f in sorted(p for p in folder.glob("*benchmark*300.json")
-                    if "metadata" not in p.name):
+    # ★2026-09-10 — 파일명에서 `300` 을 뺐다. v2.8 은 4,500문항이라 그 글롭에 안 걸렸다.
+    cands = sorted(p for p in folder.glob("*benchmark*.json")
+                   if "metadata" not in p.name)
+    for f in cands:
         d = json.load(io.open(f, encoding="utf-8"))
         recs = d.get("records") if isinstance(d, dict) else d
         if recs:
-            return f, recs
+            return f, [_to_internal(r) for r in recs]
+    for f in sorted(folder.glob("*benchmark*.jsonl")):
+        recs = [json.loads(x) for x in
+                io.open(f, encoding="utf-8").read().splitlines() if x.strip()]
+        if recs:
+            return f, [_to_internal(r) for r in recs]
     return None, None
 
 
@@ -264,7 +292,17 @@ def main() -> int:
     latest = dirs[-1].name if dirs else None
     total_d1 = 0
     total_d6 = 0
+    unreadable = 0
     recs_count = {}
+    # ★★2026-09-10 신설 — **최신 판을 못 읽으면 그 자체가 실패다**(함정 38).
+    #   🚫종전은 `scan` 이 *"benchmark json 을 못 찾았다"* 를 **인쇄만** 하고 `continue` 했고
+    #   `main` 은 `total_d1 == 0` 이라 **exit 0** 을 냈다. v2.8 이 도착한 순간
+    #   이 게이트는 초록인데 채점 경로는 `TypeError` 로 죽는 상태였다.
+    if latest and load(dirs[-1])[1] is None:
+        unreadable = 1
+        print(f"{chr(10)}  🚫★**정본 판 `{latest}` 을 읽지 못했다** — "
+              "파일명·스키마가 이 도구의 가정과 다르다. "
+              "**이 상태에서 채점하면 안 된다**(`fetch_bench_data` 가 죽거나 옛 판을 쓴다).")
     for folder in dirs:
         _judge = (folder.name == latest)
         d1, d2, d3 = scan(folder)
@@ -323,6 +361,10 @@ def main() -> int:
     print("  🚫★**D6 은 정확한 검사다 — 0건이어야 한다.** 정답이 둘이면 그 문항은 채점할 수 없다.")
     print(f"  ★★**종료코드는 최신본 `{latest}` 만 본다** — 옛 판은 고치지 않는 기록이라"
           " 합산하면 게이트가 **영구히 빨갛다**(2026-09-06 개정).")
+    if unreadable:
+        print("  🚫★**정본 판을 못 읽었다 — exit 2.** *'못 찾았다' 를 인쇄만 하고 0 을 내던 것을"
+              " 2026-09-10 에 고쳤다(함정 38).")
+        return 2
     return 1 if (total_d1 or total_d6) else 0
 
 

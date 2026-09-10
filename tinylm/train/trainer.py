@@ -168,7 +168,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, micro_group=None,
           mlp_split=None,
           opt_dtype="fp32", ema_start=0.0, wq_dtype=None, emb_chunk=None,
-          optimizer="adamw", muon_lr_mult=1.0,
+          optimizer="adamw", muon_lr_mult=1.0, muon_scale="jordan",
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
@@ -472,12 +472,25 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         opt = torch.optim.AdamW(_groups, betas=(0.9, 0.95), eps=1e-8)
         # ★muon_lr_mult — Muon 의 관용 lr 은 AdamW 보다 한 자릿수 크다(원 구현 2e-2).
         #   🚫기본 1.0 = 종전 동작 그대로. **바꾸려면 명시해야 한다.**
-        opt_muon = Muon(_mats, lr=lr * muon_lr_mult)
+        opt_muon = Muon(_mats, lr=lr * muon_lr_mult, scale_mode=muon_scale)
         _nps = sum(p.numel() for p in _mats)
         print(f"[opt] ★Muon(P005) — 행렬 {len(_mats)}개({_nps/1e6:.1f}M)는 Muon, "
               f"그 외 {len(_others)}개는 AdamW. 🚫muP 는 미구현(P005 A축)")
         print(f"[opt] ★muon_lr={lr * muon_lr_mult:.2e} (= lr {lr:.2e} x {muon_lr_mult:g}) · "
               f"AdamW 그룹 {len(_groups)}개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지")
+        # ★★P005b b-1(2026-09-10) — **두 스케일 규약을 돌리기 전에 함께 인쇄한다.**
+        #   🚫한 규약만 인쇄하면 `--muon-lr-mult 15` 가 무엇을 메우려 했는지 알 수 없다.
+        #   ★비(rms/jordan)가 형상마다 다르면 **균일 배수로는 못 메운다** — 그것이 b-2 의 가설이다.
+        print(f"[opt] ★★muon_scale={muon_scale}  — 형상별 업데이트 스케일 (V1 검증, ai_dev_tool/09)")
+        print(f"[opt]    {'형상':>16} {'개수':>5} {'jordan':>9} {'rms':>9} {'rms/jordan':>11}")
+        _ratios = []
+        for _shape, _cnt, _j, _r, _ratio in opt_muon.scale_table():
+            _ratios.append(_ratio)
+            print(f"[opt]    {str(_shape):>16} {_cnt:>5} {_j:>9.4f} {_r:>9.4f} {_ratio:>11.2f}")
+        if _ratios:
+            _spread = max(_ratios) / min(_ratios)
+            print(f"[opt]    ★비의 형상 간 퍼짐 = **{_spread:.2f}배** — "
+                  f"1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다")
     elif opt_dtype == "fp32":
         opt_muon = None
         opt = torch.optim.AdamW(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8,
@@ -893,6 +906,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "optimizer": optimizer,
            "muon_lr_mult": (float(muon_lr_mult) if optimizer == "muon" else None),
            "muon_matrices": (len(_mats) if optimizer == "muon" else None),
+           # ★P005b b-1 — 규약을 만들면 **그것을 읽는 json 필드**를 같은 커밋에 넣는다.
+           "muon_scale": (str(muon_scale) if optimizer == "muon" else None),
            "vocab_size": int(cfg.vocab_size),
            "save_every": int(save_every or 0),                     # (P058)
            "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용

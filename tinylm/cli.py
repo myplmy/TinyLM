@@ -163,6 +163,14 @@ def main():
                    help="★(P005, 2026-09-05) Muon 그룹의 lr 배수. Muon 의 관용 lr 은 "
                         "AdamW 보다 한 자릿수 크다(원 구현 2e-2 vs 우리 1e-3). "
                         "🚫기본 1.0 = 종전 동작 그대로. `--optimizer muon` 일 때만 쓴다")
+    # ★★P005b b-1(2026-09-10, 사용자 지시 2E 허가) — **업데이트 스케일 규약.**
+    #   `ai_dev_tool/09` V1 검증이 참조 구현 둘을 확인했다. 🚫기본 `jordan` = **비트 동일**.
+    p.add_argument("--muon-scale", choices=["jordan", "rms"], default="jordan",
+                   help="★(P005b b-1) Muon 업데이트 스케일 규약. "
+                        "`jordan` = max(1, out/in)**0.5 (원 구현, **기본·비트 동일**) · "
+                        "`rms` = 0.2*sqrt(max(out,in)) (AdamW 업데이트 RMS 에 맞춘다 — "
+                        "arXiv:2505.02222 각주 2 · Kimi K2 Algorithm 1). "
+                        "★두 규약의 비는 형상마다 다르므로 `--muon-lr-mult` 로는 못 바꾼다")
     # ★★P086(2026-09-04) — 층별 스칼라 승수(Learnable Multipliers). 🚫기본 off = 비트 동일.
     p.add_argument("--mlp-lrm", action="store_true",
                    help="★(P086) 타잉된 중간층마다 **gate·up·down 스칼라 승수**를 준다. "
@@ -346,6 +354,7 @@ def main():
               mlp_split=a.mlp_split,
               micro_group=a.micro_group, opt_dtype=a.opt_dtype,
               optimizer=a.optimizer, muon_lr_mult=a.muon_lr_mult,
+              muon_scale=a.muon_scale,
               wq_dtype=a.wq_dtype, emb_chunk=a.emb_chunk,
               ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from,
               snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None),

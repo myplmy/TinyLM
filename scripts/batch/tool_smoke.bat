@@ -370,6 +370,26 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch t
 if errorlevel 1 echo [WARN] sm_tiedmuon failed - continuing
 
 echo.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[19c] Muon RMS-match scale  (P005b b-1 - the other reference convention)"
+REM  ------------------------------------------------------------------------
+REM  ***2026-09-10. V1 verification found TWO reference conventions for the
+REM    update scale that Newton-Schulz destroys. We have always used Jordan's
+REM    max(1, out/in)**0.5. The other is 0.2*sqrt(max(out,in)), which the Kimi
+REM    K2 paper states as matching the AdamW update RMS.
+REM    The ratio between them is NOT constant across shapes - 5.54 for gate/up
+REM    and attention, 9.05 for down at dim 768. So --muon-lr-mult, a UNIFORM
+REM    multiplier, cannot express the other convention. That is why this needs
+REM    its own flag and its own arm.
+REM  This arm proves three things:
+REM    1. --muon-scale rms reaches the optimiser (json muon_scale says rms).
+REM    2. the scale table prints before step 0 with both conventions side by side.
+REM    3. Newton-Schulz plus a scale about 9 does not blow up on our shapes.
+REM  Default stays jordan, so every existing run is bit identical.
+timeout /t 15 /nobreak
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --optimizer muon --muon-scale rms --tag sm_muonrms
+if errorlevel 1 echo [WARN] sm_muonrms failed - continuing
+
+echo.
 python scripts\runlog.py --name !TL_LOGNAME! --note "[20] return_probs diagnostic path  (P081 - SDPA does not hand back probs)"
 REM  ------------------------------------------------------------------------
 REM  This axis CANNOT be a training arm - return_probs is blocked in train()

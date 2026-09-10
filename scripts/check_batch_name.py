@@ -44,7 +44,11 @@ ROOT = Path(__file__).resolve().parent.parent
 # 실험이 아닌 것 — 도구·스케줄러
 EXEMPT = {"run_queue.bat", "run_smoke_check.bat", "run_cleanup_checkpoints.bat"}
 
-RE_NAME = re.compile(r"^run_(P\d{3,})_([A-Za-z0-9]+)_([A-Za-z0-9_]+?)(-done)?\.bat$")
+# ★2026-09-10 — 계획번호에 **글자 꼬리**를 허용한다(`P045B` · `P005b` · `P014D` · `P034C`).
+#   🚫종전 `P\d{3,}` 는 숫자만 받았는데, 이 저장소는 **파생 계획을 글자로 가른다**
+#   (`P045` 는 큰 g 격자, `P045B` 는 작은 g 격자 — 서로 다른 계획서다).
+#   그래서 승인된 P045B 배치를 만들자마자 게이트가 막았다. **규약이 아니라 게이트가 낡았다**(함정 34).
+RE_NAME = re.compile(r"^run_(P\d{3,}[A-Za-z]?)_([A-Za-z0-9]+)_([A-Za-z0-9_]+?)(-done)?\.bat$")
 
 
 def plan_doc(pnum: str):
