@@ -38,6 +38,7 @@ flag	grade	evidence	checked	declared_in
 --close	ok		2026-09-04	scripts/wip.py
 --compile	ok		2026-09-04	tinylm/cli.py
 --compile-mode	ok		2026-09-04	tinylm/cli.py
+--corpus	ok	P090 선결(2026-09-10(2차)) - diag_sft_mask 가 검사할 canonical jsonl. 미지정이면 내장 합성 대화 4종을 쓴다(파일 없이 스모크에서 돌아야 하므로)	2026-09-10	scripts/diag_sft_mask.py
 --corr	ok		2026-09-04	scripts/paired_join.py
 --cpu-baseline	ok		2026-09-04	scripts/bench_infer.py
 --cpu-ext-limit	ok		2026-09-04	scripts/bench_infer.py
@@ -91,6 +92,7 @@ flag	grade	evidence	checked	declared_in
 --group	ok		2026-09-04	scripts/diag_group_agg.py
 --head-dim	ok		2026-09-04	scripts/diag_sdpa_backends.py
 --heldout	ok	2026-09-10 신설 - SFT 코퍼스와 held-out 의 오염 대조용 경로	2026-09-10	scripts/audit_sft_corpus.py
+--heldout-version	ok	A01(2026-09-10) - stage1_heldout 의 판을 명시한다(2.7/2.8/latest). 판마다 캐시가 따로 생겨 v2.7 과 v2.8 을 함께 누적할 수 있고, 어느 판으로 쟀는지가 요약·W&B·결과 json 에 남는다. 종전엔 문자열 정렬로 최신 폴더를 조용히 골랐다	2026-09-10	scripts/eval_bench_suite.py,scripts/fetch_bench_data.py
 --hf	ok		2026-09-04	scripts/diag_chat_overhead.py
 --ids	ok		2026-09-04	scripts/queue_menu.py
 --infer-repeat	ok		2026-09-04	scripts/bench_infer.py,scripts/diag_layer_map.py,scripts/paired_eval.py,tinylm/cli.py
@@ -116,6 +118,7 @@ flag	grade	evidence	checked	declared_in
 --kd-teacher-tag	ok		2026-09-04	tinylm/cli.py
 --kd-temp	ok		2026-09-04	tinylm/cli.py
 --kd-topk	ok		2026-09-04	tinylm/cli.py
+--kind	ok	P090 선결 - 채팅 직렬화 규약(chatml/gemma/minimal). 정본은 tinylm/chat/serialize.py 의 SPECS. TinyLM v1 은 chatml	2026-09-10	scripts/diag_sft_mask.py
 --klue-mrc	ok		2026-09-04	scripts/diag_common_text.py
 --korquad	ok		2026-09-04	scripts/diag_common_text.py
 --kv-bytes	ok		2026-09-04	scripts/mem_runtime.py
@@ -130,6 +133,7 @@ flag	grade	evidence	checked	declared_in
 --list	ok		2026-09-04	scripts/fetch_bench_data.py,scripts/probe_prompts.py,scripts/queue_menu.py,scripts/wip.py
 --live-only	ok		2026-09-04	scripts/dryrun_batch.py
 --log	ok		2026-09-04	scripts/check_smoke_diag.py,scripts/registry.py,scripts/summarize_smoke.py
+--logits-last-only	ok	A06(외부 조치 패키지, 2026-09-10) - prefill 에서 마지막 위치의 로짓만 만든다. 전 위치 로짓(vocab 32,768 x T 1,024 x 4B = 128.0 MiB)은 생성에 안 쓰이는데 우리 배포 예산이 32~40 MiB 다. 기본 off. 주의: 비트 동일이 아니다 - CPU 실측 40/40 에서 argmax 동일, 상대차 최대 5.3e-07(head GEMM 이 T=1 과 T>1 에서 다른 커널). 학습에서 켜면 ValueError	2026-09-10	scripts/bench_infer.py
 --lora-bits	ok		2026-09-04	tinylm/cli.py
 --lora-decay	ok		2026-09-04	tinylm/cli.py
 --lora-rank	ok		2026-09-04	tinylm/cli.py
@@ -141,6 +145,7 @@ flag	grade	evidence	checked	declared_in
 --lut	ok		2026-09-04	scripts/mem_runtime.py
 --lut-out-chunk	ok		2026-09-04	scripts/mem_runtime.py
 --match-train-repeat	ok		2026-09-04	scripts/paired_eval.py
+--matrix-weight-decay	ok	A08(외부 조치 패키지, 2026-09-10) - 두 옵티마이저의 **행렬 WD 만** 덮어쓴다. 미지정 = 종전(AdamW 행렬 0.1 · Muon 행렬 0) = 비트 동일. 임베딩·norm·LRM WD 는 불변. 우리 Muon 이득이 wd 축과 교락돼 있던 것을 푼다(기준표 B.23.6 · P005b b-3). 스모크 팔 [19d]	2026-09-10	tinylm/cli.py
 --max-bytes	ok		2026-09-04	scripts/diag_spam_rate.py
 --max-docs	ok		2026-09-04	scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_common_text.py,scripts/diag_fp8_precision.py,scripts/diag_spam_rate.py,scripts/diag_val_docs.py
 --max-new	ok		2026-09-04	scripts/bench_fused_int8.py,scripts/bench_infer.py,scripts/diag_decode_profile.py,scripts/diag_kvcache.py,scripts/eval_bench_suite.py,scripts/mem_runtime.py,tinylm/cli.py
@@ -179,11 +184,14 @@ flag	grade	evidence	checked	declared_in
 --only	ok		2026-09-04	scripts/fetch_bench_data.py
 --opt-dtype	exp	P022B 단계2 - 기본 fp32 = 비트 동일	2026-09-04	tinylm/cli.py
 --optimizer	ok	P005 Stage1 - 2026-09-05 에 LR 스케줄 미적용·wd 규약 소실·json 필드 없음을 고치고 스모크 팔 [19b] 신설. 배치 run_P005_Stage1_muon_lrscan.bat	2026-09-04	tinylm/cli.py
+--optimizer-audit	ok	A08 - 새 JSONL 에 매 update 의 실제 LR/WD 와 선택 행렬 8개의 gradient·update·weight RMS. CPU 복사 시간이 ms/step 에 섞이므로 속도 판정 팔과 같이 켜지 않는다. --resume 과 배타	2026-09-10	tinylm/cli.py
+--optimizer-audit-every	ok	A08 - 위 계측의 간격(스텝). 기본 100. --optimizer-audit 없이는 무의미	2026-09-10	tinylm/cli.py
 --out	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/diag_lut_kernel.py
 --out-jsonl	ok		2026-09-04	scripts/eval_bench_suite.py
 --outdir	ok		2026-09-04	scripts/runlog.py
 --pairs	ok		2026-09-04	scripts/paired_join.py
 --paths	ok		2026-09-04	scripts/diag_decode_profile.py
+--per-item-jsonl	ok	A03(2026-09-10) - 문항별 원장. id/gold/규약별 예측/후보별 합·평균NLL/토큰·문자 길이/평균마진·결정마진/skip 사유. 판정을 사후에 복원할 수 있게 한다	2026-09-10	scripts/eval_bench_suite.py
 --plan	ok		2026-09-04	scripts/check_run_registry.py
 --plan-stage	ok		2026-09-04	scripts/registry.py
 --pool-tokens	ok		2026-09-04	tinylm/cli.py

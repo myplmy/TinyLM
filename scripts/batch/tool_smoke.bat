@@ -390,6 +390,25 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch d
 if errorlevel 1 echo [WARN] sm_muonrms failed - continuing
 
 echo.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[19d] matrix weight decay on both optimisers  (A08 - the confound we never split)"
+REM  ------------------------------------------------------------------------
+REM  ***2026-09-10, external action package A08. Our Muon arm gives the matrices
+REM    weight decay 0 while the AdamW arm gives them 0.1. Ternary weights are
+REM    72.5M of 81.2M, so 89 percent of the model sits on that difference.
+REM    Every number we have written as a Muon gain is really a Muon-plus-wd-0 gain.
+REM  This arm proves four things:
+REM    1. --matrix-weight-decay reaches BOTH optimisers (json matrix_weight_decay
+REM       and muon_weight_decay both say 0.05).
+REM    2. splitting the groups does not duplicate or drop a parameter
+REM       (json optimizer_groups_final sums to the same parameter count).
+REM    3. embedding and LRM weight decay are NOT changed by the flag.
+REM    4. the Muon optimiser state is written into the checkpoint (A08 fix).
+REM  Default is None, so every existing run stays bit identical.
+timeout /t 15 /nobreak
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --optimizer muon --muon-lr-mult 5 --matrix-weight-decay 0.05 --tag sm_muonwd
+if errorlevel 1 echo [WARN] sm_muonwd failed - continuing
+
+echo.
 python scripts\runlog.py --name !TL_LOGNAME! --note "[20] return_probs diagnostic path  (P081 - SDPA does not hand back probs)"
 REM  ------------------------------------------------------------------------
 REM  This axis CANNOT be a training arm - return_probs is blocked in train()
@@ -429,6 +448,27 @@ REM    Read: "LUT residency (codes + alpha)" must be present, and max abs
 REM    dlogit must be NON-zero (per-row alpha is re-estimated - that is normal
 REM    and is NOT a quality number, result 028).
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\mem_runtime.py --preset tiny --data synthetic --tokens 2M --models sm_base --device cpu --max-new 4 --drop-latent --lut --emb-quant int8 --kv-seq 128 --kv-dtype bf16
+
+echo.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[21d] SFT assistant-only loss mask  (P090 prerequisite - the mask decides what is learned)"
+REM  ------------------------------------------------------------------------
+REM  ***2026-09-10, user instruction 3. tinylm/data/sft.py turns a canonical
+REM    conversation into (ids, labels) where labels keep ONLY the tokens the
+REM    assistant wrote. Without that mask 70 percent of the loss teaches the
+REM    model to write the QUESTION - our corpus is 29.9 percent supervised.
+REM  A mask that exists is not a mask that covers the right place (trap 37).
+REM  This arm measures four failure modes by name:
+REM    M1 the mask is empty        - supervised tokens must be over zero
+REM    M2 the mask is fully on     - ratio must stay under 0.90
+REM    M3 the boundary slipped     - the covered text must contain the
+REM       assistant body, checked through OFFSETS, not through decode
+REM    M4 the end marker is gone   - generation would never stop (014 10.6)
+REM    M5 input leaked in          - user or system text inside the span
+REM  It runs on the SYNTHETIC tokenizer and four built-in conversations, so it
+REM    needs no dataset file. That is deliberate - arm 21c died in 2026-09-08
+REM    because it demanded a file that by design never exists.
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_sft_mask.py --data synthetic
+if errorlevel 1 echo [WARN] SFT mask check FAILED - read which of M1 to M5
 if errorlevel 1 echo [WARN] LUT residency arm FAILED - the deployment number cannot be quoted
 
 echo.

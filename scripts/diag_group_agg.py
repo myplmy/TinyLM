@@ -68,6 +68,22 @@ def main() -> int:
         return 1
     sd = torch.load(ck, map_location="cpu", weights_only=False)
     sd = sd.get("model", sd)
+    # ★★★A11(2026-09-10) — **`_orig_mod.` 접두를 벗긴다.**
+    #
+    #   🚫**이것이 결과 064·065 의 "MLP 0종" 의 진짜 원인**이었다. 실측(2026-09-10):
+    #   `m100_ko-en_300M_dense.pt` 의 **키 243개가 전부 `_orig_mod.` 로 시작**한다
+    #   (`--compile` 로 학습했으니 당연하다). 그런데 아래 수집기는 `mid_mlps.` 로
+    #   **시작하는지**를 보므로 **0개**가 나온다.
+    #   ★두 세션이 이 도구를 각각 한 번씩 돌렸고 둘 다 MLP 를 0종 쟀다 —
+    #   2026-08-31 에는 *"판정문까지 찍고"*, 2026-09-02 에는 *"exit 1 로 정직하게 실패"* 했다.
+    #   ✅**정직한 실패는 수리였지만 측정이 생긴 것은 아니었다**(A11 의 지적 그대로).
+    #
+    #   ★규약은 이미 저장소에 있었다 — `tinylm/infer/generate._strip` 과
+    #   `tinylm/train/init_utils` 가 같은 한 줄을 쓴다. **진단 도구만 빠져 있었다**(R14).
+    _n_pref = sum(1 for k in sd if k.startswith("_orig_mod."))
+    if _n_pref:
+        sd = {k.replace("_orig_mod.", ""): v for k, v in sd.items()}
+        print(f"  ★`_orig_mod.` 접두를 벗겼다 — {_n_pref}개 (torch.compile 로 저장된 체크포인트)")
 
     cfg = build_config(a.preset, "tied", a.seq, True)
     g = a.group or int(getattr(cfg, "mlp_group", 8))

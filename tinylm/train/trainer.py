@@ -169,6 +169,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           mlp_split=None,
           opt_dtype="fp32", ema_start=0.0, wq_dtype=None, emb_chunk=None,
           optimizer="adamw", muon_lr_mult=1.0, muon_scale="jordan",
+          # ★A08(2026-09-10 도입) — 행렬 weight decay · opt-in 업데이트 계측.
+          #   🚫셋 다 기본값이면 **비트 동일**이다(`matrix_decay_groups` 가 원본 그룹을 그대로 돌려준다).
+          matrix_weight_decay=None, optimizer_audit=None, optimizer_audit_every=100,
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
@@ -182,6 +185,15 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           mlp_lrm=False, mlp_lrm_mode="scalar", mlp_lrm_wd=0.01,
           tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
           save_every=0):
+    # ★A08 — 명시한 신규 실험 옵션만 작동한다. **옛 Muon 상태의 조용한 재초기화를 거절한다.**
+    if matrix_weight_decay is not None and (
+            not math.isfinite(matrix_weight_decay) or matrix_weight_decay < 0):
+        raise ValueError("--matrix-weight-decay 는 유한한 비음수여야 한다")
+    if optimizer_audit and resume:
+        raise ValueError("★계측은 step=0 부터의 연속 history 를 요구한다 — "
+                         "audited resume 는 별도 실행으로 분리한다")
+    if optimizer_audit and optimizer_audit_every < 1:
+        raise ValueError("--optimizer-audit-every 는 양수여야 한다")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
     #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
@@ -454,6 +466,13 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     #   🚫`adamw`(기본) = 종전과 **비트 동일**. `muon` 일 때만 두 옵티마이저가 선다.
     #   ⚠️**이점은 대배치에 집중**된다(arXiv:2505.02222) — 우리 유효배치 131K 는 작다.
     #   ⚠️★**삼진 STE 와의 상호작용은 미검증**이다(P005 선결) — fp16 팔과 함께 돌린다.
+    # ★★A08(2026-09-10) — **행렬 weight decay 라우팅.**
+    #   🚫우리 Muon 팔의 행렬 wd 는 0 이고 AdamW 팔은 0.1 이었다 — **삼진 72.5M(89%)이 그 차이를 받는다.**
+    #   그래서 *"Muon 이득"* 이라고 적어 온 수는 실은 *"Muon + 행렬 wd 0 의 이득"* 이고
+    #   **두 축이 교락**돼 있다(기준표 B.23.6 · P005b b-3). 이 플래그가 그 교락을 푼다.
+    #   ✅**`matrix_weight_decay is None` 이면 `model.param_groups(lr)` 그 자체를 돌려준다** = 비트 동일.
+    from .optimizer_audit import matrix_decay_groups
+    _base_groups, _all_matrices = matrix_decay_groups(model, lr, matrix_weight_decay)
     _mats = []
     if optimizer == "muon":
         from .muon import Muon, split_params
@@ -465,14 +484,17 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         #   Muon 이 가져간 것만 빼고 나머지 그룹을 **그대로** 쓴다.
         _mat_ids = {id(p) for p in _mats}
         _groups = []
-        for _g in model.param_groups(lr):
+        for _g in _base_groups:
             _ps = [p for p in _g["params"] if id(p) not in _mat_ids]
             if _ps:
                 _groups.append(dict(_g, params=_ps))
         opt = torch.optim.AdamW(_groups, betas=(0.9, 0.95), eps=1e-8)
         # ★muon_lr_mult — Muon 의 관용 lr 은 AdamW 보다 한 자릿수 크다(원 구현 2e-2).
         #   🚫기본 1.0 = 종전 동작 그대로. **바꾸려면 명시해야 한다.**
-        opt_muon = Muon(_mats, lr=lr * muon_lr_mult, scale_mode=muon_scale)
+        # ★A08 — `matrix_weight_decay` 를 안 주면 **0.0** 이라 종전과 같다.
+        opt_muon = Muon(_mats, lr=lr * muon_lr_mult, scale_mode=muon_scale,
+                        weight_decay=(0.0 if matrix_weight_decay is None
+                                      else float(matrix_weight_decay)))
         _nps = sum(p.numel() for p in _mats)
         print(f"[opt] ★Muon(P005) — 행렬 {len(_mats)}개({_nps/1e6:.1f}M)는 Muon, "
               f"그 외 {len(_others)}개는 AdamW. 🚫muP 는 미구현(P005 A축)")
@@ -491,15 +513,22 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             _spread = max(_ratios) / min(_ratios)
             print(f"[opt]    ★비의 형상 간 퍼짐 = **{_spread:.2f}배** — "
                   f"1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다")
+        # ★★A08 — **`opt_muon` 상태를 체크포인트에 저장한다**(종전에는 안 했다 = 실물 결함).
+        #   ⚠️대가는 디스크다 — 모멘텀 버퍼가 행렬 파라미터와 같은 크기다.
+        print(f"[opt] ★A08 — `opt_muon` 상태를 체크포인트에 저장한다(종전 미저장 = resume 시 "
+              f"모멘텀이 조용히 0). 체크포인트가 ⚙+{_nps * 4 / 1e6:.0f} MB 커진다")
+        print(f"[opt] ★A08 — 행렬 weight decay = "
+              f"{'0.0 (종전 그대로)' if matrix_weight_decay is None else f'{float(matrix_weight_decay):g} (명시)'}"
+              f" · AdamW 팔의 dense 그룹은 0.1 이다(교락 축)")
     elif opt_dtype == "fp32":
         opt_muon = None
-        opt = torch.optim.AdamW(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8,
+        opt = torch.optim.AdamW(_base_groups, betas=(0.9, 0.95), eps=1e-8,
                                 fused=(device == "cuda"))   # ①: optimizer update 단일 커널
     else:
         opt_muon = None
         from .adamw_bf16 import AdamWLowPrec
         _sd = torch.bfloat16 if opt_dtype == "bf16" else torch.float32
-        opt = AdamWLowPrec(model.param_groups(lr), betas=(0.9, 0.95), eps=1e-8, state_dtype=_sd)
+        opt = AdamWLowPrec(_base_groups, betas=(0.9, 0.95), eps=1e-8, state_dtype=_sd)
         _n = sum(p.numel() for g in opt.param_groups for p in g["params"])
         print(f"[opt] ★AdamWLowPrec state_dtype={opt_dtype} (P022B 단계2) — 학습 파라미터 "
               f"{_n/1e6:.2f}M, 상태 2벌 예상 {_n*2*_sd.itemsize/1e6:.1f}MB "
@@ -550,7 +579,32 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     if resume and ck.exists():
         st = torch.load(ck, map_location=device)
         model.load_state_dict(st["model"]); opt.load_state_dict(st["opt"]); start = st["step"]
+        # ★★A08 — 🚫**옛 체크포인트에는 `opt_muon` 이 없다.** 그대로 재개하면 모멘텀이
+        #   **조용히 0 으로 초기화**돼 재개 이후가 다른 학습이 된다 → **거절한다**(R19: 조용한 실패 금지).
+        if opt_muon is not None:
+            if "opt_muon" not in st:
+                raise ValueError(
+                    f"★{ck.name} 에 `opt_muon` 상태가 없다(2026-09-10 이전 체크포인트). "
+                    f"그대로 재개하면 Muon 모멘텀이 조용히 0 이 된다 — "
+                    f"🚫정확한 resume 불가. 처음부터 돌리거나 `--optimizer adamw` 로 재개한다")
+            opt_muon.load_state_dict(st["opt_muon"])
+            print(f"[opt] ★A08 — `opt_muon` 모멘텀도 복원했다")
         print(f"[{arch}] step {start}에서 재개")
+
+    # ★A08 — opt-in 업데이트 계측. 🚫플래그가 없으면 **인스턴스를 안 만들고 import 도 안 한다.**
+    _recipe_audit = None
+    if optimizer_audit:
+        from .optimizer_audit import OptimizerAudit
+        _audit_opts = [("adamw", opt)] + ([("muon", opt_muon)] if opt_muon is not None else [])
+        _recipe_audit = OptimizerAudit(
+            optimizer_audit, model, _audit_opts, every=optimizer_audit_every,
+            contract={"seed": seed, "cfg": cfg.__dict__, "optimizer": optimizer,
+                      "matrix_weight_decay": matrix_weight_decay, "lr": lr,
+                      "muon_lr_mult": muon_lr_mult, "sched": sched, "steps": steps,
+                      "init_from": str(init_from) if init_from else None})
+        print(f"[opt] ★A08 계측 — {optimizer_audit} (매 {optimizer_audit_every}스텝, "
+              f"선택 행렬 {len(_recipe_audit.selected)}개). "
+              f"⚠️CPU 복사 시간이 ms/step 에 섞인다 — 🚫속도 판정 팔과 같이 켜지 않는다")
 
     kd_reader = None
     if kd_cache:
@@ -664,6 +718,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         if due or is_best:
             blob = {"model": model.state_dict(), "opt": opt.state_dict(),
                     "step": step, "cfg": cfg.__dict__}
+            # ★★A08 — 종전에는 **Muon 상태를 저장하지 않았다.** 기존 `opt` 와 같은 규약으로 넣는다.
+            if opt_muon is not None:
+                blob["opt_muon"] = opt_muon.state_dict()
             if shadow is not None:
                 blob["ema"] = [sh.detach().cpu() for sh in shadow]
             if due:
@@ -759,6 +816,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                 opt_muon.zero_grad(set_to_none=True)
             model.clear_quant()
             n_skip += 1
+            if _recipe_audit is not None:               # ★A08 — 건너뛴 스텝도 기록한다
+                _recipe_audit.after(s, applied=False)
             print(f"  [skip] step {s}: non-finite grad ({n_skip}회째)  "
                   f"anneal {model.cfg.quant_anneal:.2f}  lr {opt.param_groups[1]['lr']:.2e}")
             if n_skip > 20:
@@ -769,10 +828,14 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         if s >= warm:
             gmax = max(gmax, float(gn))
         # ★P005 — Muon 은 **행렬만** 맡는다. 두 옵티마이저가 같은 스텝에서 함께 간다.
+        if _recipe_audit is not None:                   # ★A08 — update 전 스냅샷
+            _recipe_audit.before(s)
         opt.step()
         if opt_muon is not None:
             opt_muon.step()
             opt_muon.zero_grad(set_to_none=True)
+        if _recipe_audit is not None:                   # ★A08 — update 후 RMS
+            _recipe_audit.after(s, applied=True)
         opt.zero_grad(set_to_none=True)
         if ema > 0 and s >= ema_start_step:     # P1: 감쇠 구간의 좋은 가중치만 평균
             with torch.no_grad():
@@ -908,6 +971,18 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "muon_matrices": (len(_mats) if optimizer == "muon" else None),
            # ★P005b b-1 — 규약을 만들면 **그것을 읽는 json 필드**를 같은 커밋에 넣는다.
            "muon_scale": (str(muon_scale) if optimizer == "muon" else None),
+           # ★★A08(2026-09-10) — 행렬 wd 는 **런 사후에 구별할 수 있어야 한다.**
+           #   🚫종전에 `optimizer` 필드가 없어서 Muon 런과 AdamW 런을 사후에 못 갈랐던 것과 같은 이유다.
+           "matrix_weight_decay": (float(matrix_weight_decay)
+                                   if matrix_weight_decay is not None else None),
+           "optimizer_audit": (str(optimizer_audit) if optimizer_audit else None),
+           # ★실제로 옵티마이저가 들고 있는 그룹 — *"규약대로 갔는가"* 를 사후에 본다.
+           "optimizer_groups_final": [{"lr": g["lr"],
+                                       "weight_decay": g.get("weight_decay", 0.0),
+                                       "parameters": sum(p.numel() for p in g["params"])}
+                                      for g in opt.param_groups],
+           "muon_weight_decay": (float(opt_muon.param_groups[0]["weight_decay"])
+                                 if opt_muon is not None else None),
            "vocab_size": int(cfg.vocab_size),
            "save_every": int(save_every or 0),                     # (P058)
            "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용

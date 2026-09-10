@@ -618,7 +618,7 @@ class TiedMLPTransformer(nn.Module):
 
     # ---------- forward ----------
     def forward(self, tokens, mode_override=None, return_aux=False,
-                past_kv=None, use_cache=False):
+                past_kv=None, use_cache=False, logits_last_only=False):
         """`past_kv` 는 **owner 층 인덱스 → (k, v)** 딕셔너리다.
 
         ★CLA 주의: KV 를 공유하는 층들은 **캐시도 공유**한다. 그래서 캐시 키는 층 인덱스가
@@ -762,6 +762,26 @@ class TiedMLPTransformer(nn.Module):
                 if _nxt is None or self.layers[_nxt].mlp[0] is not layer.mlp[0]:
                     self._clear_mlp_unpack(layer.mlp[0])
 
+        # ★★A06(2026-09-10 도입) — **생성은 마지막 위치의 로짓만 쓴다.**
+        #
+        #   🚫prefill 은 `T` 개 위치 **전부**의 로짓을 만든다: `T × vocab × 4B`.
+        #   `vocab 32,768 · T 1,024 · fp32` 면 ★**134,217,728 B = 128.0 MiB** 다.
+        #   ⚠️**우리 배포 예산이 32~40 MiB** 인데 그 순간 버퍼 하나가 **예산의 3.2~4.0배**다.
+        #   ★마지막 한 위치만 만들면 **0.125 MiB** = **1,024배** 작다.
+        #
+        #   ★`norm_f` 는 위치별 연산이라 **자르고 정규화해도 값이 같다**(순서 무관).
+        #   🚫**기본 False = 종전 경로와 비트 동일.** 학습에서는 라벨 모양이 깨지므로 거절한다.
+        #
+        #   ⚠️★★**켜면 비트 동일이 아니다**(2026-09-10 CPU 실측 40회, T 4~99):
+        #     - **비트 동일 시행 0/40** · 최대 절대차 **1.19e-07** · 상대차 **5.31e-07**(fp32 eps 의 4.5배)
+        #     - ★**argmax 불일치 0/40** — 그리디 생성 결과가 같다
+        #   원인은 head 의 GEMM 이 `T=1` 과 `T>1` 에서 **다른 커널**을 타는 것이다(수학은 같다).
+        #   → 🚫**"비트 동일" 이라고 적지 않는다.** ★적을 수 있는 것은 *"argmax 동일 · fp32 반올림 수준"* 이다.
+        if logits_last_only:
+            if self.training:
+                raise ValueError("★logits_last_only 는 추론 전용이다 — 학습에서 켜면 "
+                                 "라벨 모양이 안 맞는다(자르는 것은 로짓이지 라벨이 아니다)")
+            x = x[:, -1:, :]
         x = self.norm_f(x) * self.norm_f_scale
         logits = self._head_logits(x)          # ★P034 단계5(청크 복원 포함)
 

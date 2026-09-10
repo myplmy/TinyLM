@@ -39,12 +39,20 @@ def tokenizer_path(name, vocab_size=VOCAB):
 
 
 class _SyntheticEncoding:
-    """`tokenizers.Encoding` 중 우리가 쓰는 것만 흉내낸다 — `.ids` 하나."""
+    """`tokenizers.Encoding` 중 우리가 쓰는 것만 흉내낸다 — `.ids` 와 ★`.offsets`.
 
-    __slots__ = ("ids",)
+    ★★2026-09-10(2차) — **`offsets` 를 더했다**(SFT 마스크 선결).
+    `tinylm/data/sft.py` 가 **문자 구간 → 토큰 구간** 매핑에 `offsets` 를 쓴다.
+    🚫스텁에 그것이 없으면 **합성 모드로 마스크 경로를 못 돌린다** =
+    스모크가 그 축을 못 만진다(함정 37: 팔을 넣었다 ≠ 그 팔이 돌 수 있다).
+    ⚠️`tokenizers.Encoding.offsets` 와 같이 **원문 문자열의 문자 인덱스** 반열림 구간이다.
+    """
 
-    def __init__(self, ids):
+    __slots__ = ("ids", "offsets")
+
+    def __init__(self, ids, offsets=None):
         self.ids = list(ids)
+        self.offsets = list(offsets) if offsets is not None else [(0, 0)] * len(self.ids)
 
 
 class SyntheticTokenizer:
@@ -76,13 +84,20 @@ class SyntheticTokenizer:
         self.span = min(int(span), int(vocab_size))
 
     def encode(self, text):
-        b = str(text).encode("utf-8")
+        s = str(text)
         # ★결정적 해시. hash() 는 프로세스마다 달라지므로 쓰지 않는다.
-        ids, h = [], 0
-        for byte in b:
-            h = (h * 1315423911 + byte) & 0xFFFFFFFF
-            ids.append(h % self.span)
-        return _SyntheticEncoding(ids or [0])
+        # ★★2026-09-10(2차) — 문자마다 그 문자의 UTF-8 바이트 수만큼 id 를 내고
+        #   **그 id 들의 offsets 를 [i, i+1) 로** 준다(id 는 바이트 단위, 구간은 문자 단위).
+        #   🚫id 열은 **바이트 하나 하나가 그대로** 나오던 종전과 **완전히 같다** — 순서가 같다.
+        ids, offs, h = [], [], 0
+        for i, ch in enumerate(s):
+            for byte in ch.encode("utf-8"):
+                h = (h * 1315423911 + byte) & 0xFFFFFFFF
+                ids.append(h % self.span)
+                offs.append((i, i + 1))
+        if not ids:
+            return _SyntheticEncoding([0], [(0, 0)])
+        return _SyntheticEncoding(ids, offs)
 
     def decode(self, ids):
         return "<synthetic:" + " ".join(str(int(i)) for i in ids) + ">"

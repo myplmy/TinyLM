@@ -65,7 +65,23 @@ def main():
     ap.add_argument("--data", nargs="+", default=None,
                     help="모델별 데이터셋(토크나이저 선택용). 미지정이면 --data-default 를 전부 적용")
     ap.add_argument("--data-default", default="ko-en")
-    ap.add_argument("--tokens", default="300M")
+    # ★★2026-09-10(2차) — **`--tokens` 를 모델별로 받는다**(`--data` 와 같은 규약).
+    #
+    #   🚫**왜 필요한가**: 이 플래그는 **체크포인트 파일명의 칸**일 뿐이다(코퍼스는 SQuAD 고정).
+    #   그런데 우리 런이 두 가족으로 갈렸다 — 300M 토큰(풀 600M)과 **600M 토큰(풀 1200M)** —
+    #   이고 파일명이 `..._ko-en_300M_...` / `..._ko-en_600M_...` 로 다르다.
+    #   `resolve_ckpt` 의 전역 검색은 **프리셋만** 넘고 **토큰 칸은 안 넘는다**.
+    #   → 스칼라 하나로는 **한 호출에 두 가족을 못 넣고**, `common_bpb` 는
+    #   **한 호출에 모델이 둘 이상일 때만** 비교표를 만든다. 즉 ★**두 가족을 잇는 유일한 경로가
+    #   구조적으로 막혀 있었다**(열린 질문 Q2).
+    #
+    #   ★**함정 28 의 같은 수리를 세 번째로 한다** — `paired_eval --ckpt-tokens`(2026-09-06) ·
+    #   `train --ckpt-tokens`(2026-09-07) 에 이어서다. R16 이 요구하는 전수 수리다.
+    #   ✅**하나만 주면 종전과 완전히 같다**(`--tokens 300M`).
+    ap.add_argument("--tokens", nargs="+", default=["300M"], metavar="토큰",
+                    help="체크포인트 파일명의 토큰 칸. **모델별로 줄 수 있다**(--data 와 같은 규약). "
+                         "하나만 주면 전부에 적용 = 종전과 동일. "
+                         "예: `--models A B --tokens 300M 600M` (300M 가족과 600M 가족을 한 표에)")
     ap.add_argument("--preset", default="m100")
     ap.add_argument("--arch", nargs="+", default=None, help="모델별 dense/tied. 미지정이면 태그로 추정")
     ap.add_argument("--max-docs", type=int, default=4000,
@@ -150,12 +166,24 @@ def main():
     if len(datas) == 1 and len(a.models) > 1:
         datas = datas * len(a.models)
     assert len(datas) == len(a.models), "--data 개수가 --models 와 다르다"
+    # ★★2026-09-10(2차) — `--tokens` 도 모델별. 하나면 전부에 적용(= 종전과 동일).
+    toks = list(a.tokens)
+    if len(toks) == 1 and len(a.models) > 1:
+        toks = toks * len(a.models)
+    assert len(toks) == len(a.models), (
+        f"--tokens 개수({len(toks)})가 --models({len(a.models)}) 와 다르다. "
+        f"하나만 주면 전부에 적용된다")
+    if len(set(toks)) > 1:
+        print("  ★★**토큰 가족이 섞여 있다** — " + " · ".join(
+            f"{t}={k}" for t, k in zip(a.models, toks)))
+        print("     ✅**이 도구에서는 유효하다** — 공통 원문(SQuAD)에 같은 바이트를 통과시키므로")
+        print("     학습 풀이 달라도 비교가 성립한다. 🚫**학습로그 val 로는 절대 못 잇는다**(함정 2)")
     archs = a.arch if a.arch else [
         "dense" if t.startswith(("p6d", "dense", "p12d")) else "tied" for t in a.models]
 
     rows = []
-    for tag, data, arch in zip(a.models, datas, archs):
-        ck = paths.resolve_ckpt(a.preset, data, a.tokens, tag)
+    for tag, data, arch, tk in zip(a.models, datas, archs, toks):
+        ck = paths.resolve_ckpt(a.preset, data, tk, tag)
         if not ck.exists():
             print(f"\n  [건너뜀] 체크포인트 없음: {ck.name}")
             continue

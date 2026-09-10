@@ -171,6 +171,19 @@ def main():
                         "`rms` = 0.2*sqrt(max(out,in)) (AdamW 업데이트 RMS 에 맞춘다 — "
                         "arXiv:2505.02222 각주 2 · Kimi K2 Algorithm 1). "
                         "★두 규약의 비는 형상마다 다르므로 `--muon-lr-mult` 로는 못 바꾼다")
+    # ★★A08(2026-09-10, 외부 조치 패키지 도입) — **행렬 weight decay 와 업데이트 계측.**
+    #   🚫우리 Muon 팔의 행렬 wd 가 0 이고 AdamW 팔은 0.1 이라 *"Muon 이득"* 이
+    #   **옵티마이저 이득 + wd 이득**으로 교락돼 있다(기준표 B.23.6). 셋 다 기본값 = 비트 동일.
+    p.add_argument("--matrix-weight-decay", type=float, default=None,
+                   help="★(A08) **두 옵티마이저의 행렬 WD 만** 덮어쓴다. 미지정 = 종전 "
+                        "(AdamW 행렬 0.1 · Muon 행렬 0) = **비트 동일**. "
+                        "🚫임베딩·norm·LRM 의 WD 는 건드리지 않는다")
+    p.add_argument("--optimizer-audit", default=None,
+                   help="★(A08) 새 JSONL 에 매 update 의 실제 LR/WD 와 선택 행렬 8개의 "
+                        "gradient·update·weight RMS 를 남긴다. ⚠️CPU 복사 시간이 ms/step 에 "
+                        "섞이므로 🚫**속도 판정 팔과 같이 켜지 않는다**. 🚫`--resume` 과 함께 못 쓴다")
+    p.add_argument("--optimizer-audit-every", type=int, default=100,
+                   help="★(A08) 계측 간격(스텝). `--optimizer-audit` 없이는 무의미하다")
     # ★★P086(2026-09-04) — 층별 스칼라 승수(Learnable Multipliers). 🚫기본 off = 비트 동일.
     p.add_argument("--mlp-lrm", action="store_true",
                    help="★(P086) 타잉된 중간층마다 **gate·up·down 스칼라 승수**를 준다. "
@@ -355,6 +368,9 @@ def main():
               micro_group=a.micro_group, opt_dtype=a.opt_dtype,
               optimizer=a.optimizer, muon_lr_mult=a.muon_lr_mult,
               muon_scale=a.muon_scale,
+              matrix_weight_decay=a.matrix_weight_decay,
+              optimizer_audit=a.optimizer_audit,
+              optimizer_audit_every=a.optimizer_audit_every,
               wq_dtype=a.wq_dtype, emb_chunk=a.emb_chunk,
               ema_start=a.ema_start, center_weights=a.center_weights, decay_from=a.decay_from,
               snapshots=([_tok(x) for x in a.snapshot_at.split(',')] if a.snapshot_at else None),

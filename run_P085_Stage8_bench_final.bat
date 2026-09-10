@@ -15,6 +15,12 @@ REM     3. The predicted 15.6 tok/s for depth 18 is a MODEL - this batch measure
 REM     4. If depth 18 comes in under 15 tok/s it is not a deployment candidate.
 REM     5. Deployment residency comes from mem_runtime --lut only, not bench_infer's column.
 REM
+REM   FIXED 2026-09-10 - VERSION IS NOW EXPLICIT
+REM     Arm 1 pins --heldout-version 2.8 and arm 1b scores the same models on
+REM     v2.7, so the instrument change becomes a measured number instead of a
+REM     silent one. Every run records which version it used in the summary,
+REM     in the W and B fields, and in the per-item ledger.
+
 REM   CHANGED UNDER YOUR FEET - 2026-09-10
 REM     stage1_heldout no longer means v2.7 with 300 items. held-out v2.8 arrived with
 REM     4500 items and the fetcher takes the newest folder, so this run scores v2.8.
@@ -35,27 +41,42 @@ if not exist run100m.py goto BADROOT
 
 set PYTHONIOENCODING=utf-8
 
-python scripts\runlog.py --name P085_stage8_bench_final --note "[1/5] korean held-out on the new no-recursion candidates"
+python scripts\runlog.py --name P085_stage8_bench_final --note "[1/6] korean held-out on the new no-recursion candidates"
 timeout /t 15 /nobreak
-python scripts\runlog.py --name P085_stage8_bench_final -- python scripts\eval_bench_suite.py --task stage1_heldout --n 400 --preset m100s12 --models d16_cla2_norecur d16_cla2_norecur_muon15 d18_cla2_norecur_muon15 --wandb
+python scripts\runlog.py --name P085_stage8_bench_final -- python scripts\eval_bench_suite.py --task stage1_heldout --n 400 --preset m100s12 --heldout-version 2.8 --per-item-jsonl runs/bench/P085_stage8_heldout_v28_items.jsonl --models d16_cla2_norecur d16_cla2_norecur_muon15 d18_cla2_norecur_muon15 --wandb
 if errorlevel 1 echo [WARN] arm 1 failed - continuing
 
-python scripts\runlog.py --name P085_stage8_bench_final --note "[2/5] arc easy on the same three"
+echo.
+python scripts\runlog.py --name P085_stage8_bench_final --note "[1b/6] the SAME models on held-out v2.7 - the two rulers side by side"
+REM  ------------------------------------------------------------------------
+REM  ***2026-09-10, action A01. stage1_heldout used to mean whatever folder sorted
+REM    last. v2.8 arrived and the scoring silently changed instrument.
+REM    Caches are now per version, so both can be kept and accumulated.
+REM  This arm exists so the switch has a NUMBER, not an assumption:
+REM    same checkpoints, same n, same seed, only the item set differs.
+REM  Read the two accuracies together. If they disagree a lot, the earlier v2.7
+REM    numbers in results 074 and baselines B.26.7 need that caveat written next
+REM    to them - they are not wrong, they are a different instrument.
+timeout /t 15 /nobreak
+python scripts\runlog.py --name P085_stage8_bench_final -- python scripts\eval_bench_suite.py --task stage1_heldout --n 300 --preset m100s12 --heldout-version 2.7 --models d16_cla2_norecur d16_cla2_norecur_muon15 d18_cla2_norecur_muon15
+if errorlevel 1 echo [WARN] arm 1b failed - continuing
+
+python scripts\runlog.py --name P085_stage8_bench_final --note "[3/6] arc easy on the same three"
 timeout /t 15 /nobreak
 python scripts\runlog.py --name P085_stage8_bench_final -- python scripts\eval_bench_suite.py --task arc_easy --n 400 --preset m100s12 --models d16_cla2_norecur d16_cla2_norecur_muon15 d18_cla2_norecur_muon15 --wandb
 if errorlevel 1 echo [WARN] arm 2 failed - continuing
 
-python scripts\runlog.py --name P085_stage8_bench_final --note "[3/5] kobest hellaswag on the same three"
+python scripts\runlog.py --name P085_stage8_bench_final --note "[4/6] kobest hellaswag on the same three"
 timeout /t 15 /nobreak
 python scripts\runlog.py --name P085_stage8_bench_final -- python scripts\eval_bench_suite.py --task kobest_hellaswag --n 400 --preset m100s12 --models d16_cla2_norecur d16_cla2_norecur_muon15 d18_cla2_norecur_muon15 --wandb
 if errorlevel 1 echo [WARN] arm 3 failed - continuing
 
-python scripts\runlog.py --name P085_stage8_bench_final --note "[4/5] single thread tok/s for depth 18 - does the 15.6 prediction hold"
+python scripts\runlog.py --name P085_stage8_bench_final --note "[5/6] single thread tok/s for depth 18 - does the 15.6 prediction hold"
 timeout /t 15 /nobreak
 python scripts\runlog.py --name P085_stage8_bench_final -- python scripts\bench_infer.py --models d18_cla2_norecur --preset m100s14 --data ko-en --tokens 300M --device cpu --threads 1 4 --max-new 128 --reps 3 --drop-latent --int8-store --unpack-cache
 if errorlevel 1 echo [WARN] arm 4 failed - continuing
 
-python scripts\runlog.py --name P085_stage8_bench_final --note "[5/5] deployment residency for depth 18 - the canonical tool"
+python scripts\runlog.py --name P085_stage8_bench_final --note "[6/6] deployment residency for depth 18 - the canonical tool"
 timeout /t 15 /nobreak
 python scripts\runlog.py --name P085_stage8_bench_final -- python scripts\mem_runtime.py --preset m100s14 --data ko-en --tokens 300M --models d18_cla2_norecur --drop-latent --lut --emb-quant int8 --kv-seq 1024 --kv-dtype bf16
 if errorlevel 1 echo [WARN] arm 5 failed - continuing

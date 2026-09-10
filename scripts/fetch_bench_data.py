@@ -67,6 +67,8 @@ SPECS = [
     # ★2026-09-10 — 공식 개수를 None 으로. v2.7 300 -> v2.8 4,500 이라 **고정 수가 아니다**
     #   (300 을 박아 두면 판이 바뀔 때마다 ⚠️가 뜨는데 그것은 결함이 아니다).
     ("stage1_heldout", "(local)",                     None,            "(local)",     None, "★한국어 4지선다 관계추론(자체·판마다 개수가 다르다)"),
+    # ★★2026-09-10(2차) 신설 — SFT 응답 채점셋(사용자 지시 3). 🚫HF 가 아니라 로컬 canonical.
+    ("sft_fresh_eval", "(local)",                     None,            "(local)",      300, "★SFT 응답 규칙채점(자체 canonical)"),
     ("boolq",         "google/boolq",                 None,            "validation",  3270, "예/아니오. ⚠️라벨 불균형"),
     ("lambada",       "EleutherAI/lambada_openai",    "en",            "test",        5153, "★마지막 단어 예측"),
     ("mmlu",          "cais/mmlu",                    "all",           "test",       14042, "4지선다 57과목"),
@@ -171,8 +173,65 @@ def _fetch_bfcl(split):
     return rows
 
 
+# ★★A01(2026-09-10) — **held-out 판을 명시해서 고른다.**
+#   🚫종전에는 `held-out_v2.*` 를 문자열 정렬해 **마지막 폴더**를 잡았다. 문제 셋:
+#     ① v2.8 이 도착한 순간 채점이 **조용히** 바뀌었다(캐시가 있으면 그것조차 안 바뀌었다).
+#     ② 문자열 정렬은 **v2.10 에서 v2.9 뒤가 아니라 v2.1 뒤로 간다.**
+#     ③ 어느 판으로 쟀는지가 **결과 어디에도 안 남았다.**
+#   ★지금은 판마다 캐시가 따로 있고(`stage1_heldout.v2.7.jsonl`) 원본 해시가 meta 에 남는다.
+_HELDOUT_VERSION = "latest"          # main() 이 `--heldout-version` 으로 덮어쓴다
+
+
+def heldout_dirs():
+    """디스크의 held-out 폴더를 **판 번호로** 정렬해 돌려준다(문자열 정렬이 아니다)."""
+    import sys as _sys
+    _sys.path.insert(0, str(ROOT / "scripts"))
+    from check_heldout_defects import BASE                       # noqa: PLC0415
+    out = {}
+    for d in BASE.glob("held-out_v2.*"):
+        if d.is_dir():
+            out[d.name.split("held-out_v", 1)[1]] = d
+    return dict(sorted(out.items(), key=lambda kv: [int(x) for x in kv[0].split(".")]))
+
+
+def resolve_heldout_version(version):
+    """`latest` 를 **실제 판 번호**로 바꾼다. 🚫모르는 판이면 거절한다(추측하지 않는다)."""
+    dirs = heldout_dirs()
+    if not dirs:
+        raise RuntimeError("held-out_v2.* 폴더가 하나도 없다")
+    v = str(version).lstrip("v")
+    if v == "latest":
+        return list(dirs)[-1], dirs[list(dirs)[-1]]
+    if v not in dirs:
+        raise RuntimeError(f"모르는 held-out 판 `{v}` — 디스크에 있는 것: {', '.join(dirs)}")
+    return v, dirs[v]
+
+
+def heldout_cache_path(version):
+    return OUT / f"stage1_heldout.v{version}.jsonl"
+
+
+def _sha256(path):
+    import hashlib
+    h = hashlib.sha256()
+    with Path(path).open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def heldout_source_file(folder):
+    """그 폴더의 **본문 파일** 하나. 🚫둘 이상이면 고르지 않고 거절한다."""
+    cands = [q for q in sorted(folder.glob("*benchmark*.json"))
+             if "metadata" not in q.name]
+    if len(cands) != 1:
+        raise RuntimeError(f"{folder.name}: 본문 파일을 하나로 특정할 수 없다 "
+                           f"({[q.name for q in cands]})")
+    return cands[0]
+
+
 def _fetch_stage1_heldout(split):
-    """★로컬 held-out 을 **가장 최신 판에서** 읽어 온다. HF 를 안 탄다.
+    """★로컬 held-out 을 **지정한 판에서** 읽어 온다. HF 를 안 탄다.
 
     🚫★**결함이 있는 판은 내보내지 않는다.** `check_heldout_defects` 의 **D1**(오답이 정답과
     같아짐)과 **D6**(정답이 둘)은 **정확한 검사**이고 둘 중 하나라도 0 이 아니면
@@ -183,16 +242,14 @@ def _fetch_stage1_heldout(split):
     """
     import sys as _sys
     _sys.path.insert(0, str(ROOT / "scripts"))
-    from check_heldout_defects import BASE, load, scan, d6_two_answers   # noqa: PLC0415
+    from check_heldout_defects import load, scan, d6_two_answers   # noqa: PLC0415
 
-    cands = sorted(p for p in BASE.glob("held-out_v2.*") if p.is_dir())
-    if not cands:
-        raise RuntimeError(f"{BASE} 아래에 held-out_v2.* 폴더가 없다")
-    folder = cands[-1]
+    ver, folder = resolve_heldout_version(_HELDOUT_VERSION)
     _, recs = load(folder)
     d1 = scan(folder)[0] or []
     d6 = d6_two_answers(recs)
-    print(f"  ★정본 판 = {folder.name}  ·  문항 {len(recs)}개  ·  D1 {len(d1)}건 · D6 {len(d6)}건")
+    print(f"  ★정본 판 = {folder.name}  ·  문항 {len(recs)}개  ·  D1 {len(d1)}건 · D6 {len(d6)}건"
+          f"  (요청 `{_HELDOUT_VERSION}` -^> v{ver})")
     if d1 or d6:
         raise RuntimeError(
             f"🚫{folder.name} 은 D1 {len(d1)}건 · D6 {len(d6)}건이다 — "
@@ -201,45 +258,82 @@ def _fetch_stage1_heldout(split):
     return recs
 
 
+SFT_EVAL = (ROOT / "datasets" / "TinyDataset" / "SFT" / "eval"
+            / "sft_fresh_v1_eval_300.canonical.jsonl")
+
+
+def _fetch_sft_fresh_eval(split):
+    """★SFT 채점셋을 로컬 canonical 에서 읽는다(2026-09-10(2차), 사용자 지시 3).
+
+    🚫**HF 를 안 탄다.** 우리가 요청해서 받은 자료다.
+    ★**규약을 들고 오는 필드가 없으면 거절한다** — `meta.grading` 이 채점기의 입력이다
+    (없으면 채점기가 **전부 미채점**으로 끝나고 그것은 *"측정 0인데 exit 0"*(R19)이다).
+    """
+    if not SFT_EVAL.exists():
+        raise RuntimeError(f"{SFT_EVAL} 가 없다 — SFT 코퍼스가 도착하지 않았다")
+    rows = [json.loads(x) for x in
+            SFT_EVAL.read_text(encoding="utf-8").splitlines() if x.strip()]
+    if not rows:
+        raise RuntimeError(f"{SFT_EVAL.name}: 레코드 0개")
+    bad = [i for i, r in enumerate(rows)
+           if not ((r.get("meta") or {}).get("grading") or {}).get("scoring_mode")]
+    if bad:
+        raise RuntimeError(
+            f"🚫{SFT_EVAL.name}: `meta.grading.scoring_mode` 가 없는 레코드 {len(bad)}개"
+            f"(첫 index {bad[0]}) — 규칙 채점의 입력이 없으면 전부 미채점이 된다")
+    import collections
+    _c = collections.Counter(r["meta"]["grading"]["scoring_mode"] for r in rows)
+    print(f"  ★SFT 채점셋 = {SFT_EVAL.name}  ·  {len(rows)}행  ·  "
+          + " · ".join(f"{k} {v}" for k, v in sorted(_c.items())))
+    return rows
+
+
 SPECIAL.update(piqa=_fetch_piqa, mmlu_redux=_fetch_mmlu_redux, bfcl_v3=_fetch_bfcl,
+               sft_fresh_eval=_fetch_sft_fresh_eval,
                stage1_heldout=_fetch_stage1_heldout)
 
 
 def heldout_stamp_path():
+    """⚠️**레거시** — 2026-09-10 이전의 판 스탬프. 새 경로는 `.meta.json` 을 쓴다.
+    옛 캐시(`stage1_heldout.jsonl`)가 남아 있을 때만 읽는다."""
     return OUT / "stage1_heldout.version"
 
 
-def heldout_latest_name():
-    """가장 최신 held-out 폴더 이름. `_fetch_stage1_heldout` 이 고르는 것과 **같은 규칙**이어야 한다."""
-    import sys as _sys
-    _sys.path.insert(0, str(ROOT / "scripts"))
-    from check_heldout_defects import BASE                       # noqa: PLC0415
-    cands = sorted(p for p in BASE.glob("held-out_v2.*") if p.is_dir())
-    return cands[-1].name if cands else None
+def heldout_cache_state(version):
+    """★판별 캐시가 **최신 원본에서 나왔는가**. 반환 `(stale, 사유)`.
 
-
-def heldout_cache_is_stale():
-    """★★2026-09-10 신설 — **캐시가 어느 판에서 나왔는지**를 기록하고 대조한다.
-
-    🚫사고: v2.8(4,500문항)이 도착했는데 `datasets/bench/stage1_heldout.jsonl` 은
-    **v2.7 300문항인 채로 남아 있었고**, `fetch` 는 *"이미 있다"* 로 건너뛰었다.
-    → **채점은 계속 v2.7 로 돌면서 아무도 그것을 몰랐다.** 게다가 *"★정본 판 = …"* 인쇄는
-    `_fetch_stage1_heldout` 안에 있어서 **건너뛰면 안 나온다**(함정 43 — 사본과 정본이 갈라졌다).
+    🚫종전 사고: v2.8(4,500문항)이 도착했는데 `stage1_heldout.jsonl` 은 v2.7 300문항인 채로
+    남아 있었고 `fetch` 는 *"이미 있다"* 로 건너뛰었다. → **채점이 계속 v2.7 로 돌았다.**
+    ★지금은 캐시가 판마다 따로 있으므로 *"덮어써서 사라지는"* 일 자체가 없고,
+    남은 위험은 **같은 판 폴더의 내용이 바뀌는 것**뿐이라 원본 sha256 을 댄다.
     """
-    p = OUT / "stage1_heldout.jsonl"
-    if not p.exists():
-        return True, "캐시 없음"
-    stamp = heldout_stamp_path()
-    have = stamp.read_text(encoding="utf-8").strip() if stamp.exists() else "(스탬프 없음)"
-    want = heldout_latest_name()
-    if have != want:
-        return True, f"캐시는 `{have}` 인데 디스크 최신은 `{want}`"
-    return False, have
+    try:
+        ver, folder = resolve_heldout_version(version)
+    except RuntimeError as e:
+        return True, str(e)
+    cache = heldout_cache_path(ver)
+    meta = cache.with_suffix(".meta.json")
+    if not cache.exists() or not meta.exists():
+        return True, f"v{ver} 캐시 없음"
+    try:
+        m = json.loads(meta.read_text(encoding="utf-8"))
+    except Exception:                                    # noqa: BLE001
+        return True, f"v{ver} meta 를 못 읽었다"
+    src = heldout_source_file(folder)
+    if m.get("source_sha256") != _sha256(src):
+        return True, f"v{ver} 원본이 캐시 생성 이후 바뀌었다"
+    return False, f"v{ver} ({m.get('count')}문항)"
 
 
 def fetch(name, hid, cfg, split):
     OUT.mkdir(parents=True, exist_ok=True)
-    p = OUT / f"{name}.jsonl"
+    # ★★A01 — held-out 은 **판마다 다른 파일**에 쓴다. 그래야 v2.7 과 v2.8 이 공존하고
+    #   점진 누적이 된다(사용자 지시 2026-09-10). 🚫한 파일을 덮어쓰면 옛 판이 사라진다.
+    if name == "stage1_heldout":
+        ver, folder = resolve_heldout_version(_HELDOUT_VERSION)
+        p = heldout_cache_path(ver)
+    else:
+        p = OUT / f"{name}.jsonl"
     if name in SPECIAL:
         ds = SPECIAL[name](split)
     else:
@@ -249,9 +343,15 @@ def fetch(name, hid, cfg, split):
         for row in ds:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
     if name == "stage1_heldout":
-        nm = heldout_latest_name() or "(unknown)"
-        heldout_stamp_path().write_bytes(nm.encode("utf-8"))
-        print(f"  ★스탬프 기록: {heldout_stamp_path().name} = {nm}")
+        src = heldout_source_file(folder)
+        meta = {"schema": "tinylm.heldout-cache.v2", "version": ver,
+                "source": str(src.relative_to(ROOT)).replace(chr(92), "/"),
+                "source_sha256": _sha256(src), "cache_sha256": _sha256(p),
+                "count": len(ds), "written": "fetch_bench_data.py"}
+        p.with_suffix(".meta.json").write_bytes(
+            json.dumps(meta, ensure_ascii=False, indent=2).encode("utf-8"))
+        print(f"  ★판 기록: {p.name}  ·  meta {p.with_suffix('.meta.json').name}  "
+              f"·  원본 sha {meta['source_sha256'][:12]}…")
     return p, len(ds)
 
 
@@ -263,7 +363,12 @@ def main():
     ap.add_argument("--verify", action="store_true")
     ap.add_argument("--force", action="store_true",
                     help="캐시가 있어도 다시 만든다 (★2026-09-10 신설 — 종전엔 방법이 없었다)")
+    ap.add_argument("--heldout-version", default="latest",
+                    help="★(A01) `stage1_heldout` 의 판. `2.7`·`2.8`·`latest`(기본). "
+                         "판마다 캐시가 따로 생기므로 **둘을 함께 누적**할 수 있다")
     a = ap.parse_args()
+    global _HELDOUT_VERSION
+    _HELDOUT_VERSION = a.heldout_version
 
     if a.list:
         do_list()
@@ -289,13 +394,21 @@ def main():
     print()
     good, bad = [], []
     for n, hid, cfg, sp, sz, _note in want:
-        stale, why = (heldout_cache_is_stale() if n == "stage1_heldout" else (False, ""))
-        if (OUT / f"{n}.jsonl").exists() and not a.force and not stale:
+        if n == "stage1_heldout":
+            stale, why = heldout_cache_state(a.heldout_version)
+            try:
+                _ver, _ = resolve_heldout_version(a.heldout_version)
+                have = heldout_cache_path(_ver).exists()
+            except RuntimeError:
+                have = False
+        else:
+            stale, why, have = False, "", (OUT / f"{n}.jsonl").exists()
+        if have and not a.force and not stale:
             print(f"  [건너뜀] {n} — 이미 있다"
                   + (f"  (판 `{why}`)" if n == "stage1_heldout" else ""))
             good.append((n, "이미 있음"))
             continue
-        if stale and (OUT / f"{n}.jsonl").exists():
+        if stale and have:
             print(f"  ★{n} 캐시가 낡았다 — {why} → **다시 만든다**")
         try:
             p, cnt = fetch(n, hid, cfg, sp)

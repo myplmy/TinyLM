@@ -152,6 +152,12 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     #   🚫`--muon-lr-mult` 는 **균일 배수**라 다른 규약을 흉내낼 수 없다(형상 간 비가 1.63배 어긋난다).
     #   ★`muon_scale` 필드가 json 에 없으면 나중에 두 규약의 런을 구별할 수 없다(2026-09-05 교훈).
     "sm_muonrms": {"optimizer": "muon", "muon_scale": "rms", "arch": "dense"},
+    # ★★2026-09-10 A08 — 행렬 weight decay. 🚫우리 Muon 팔은 0, AdamW 팔은 0.1 이라
+    #   *"Muon 이득"* 이 **옵티마이저 이득 + wd 이득**으로 교락돼 있었다(기준표 B.23.6).
+    #   ★두 필드를 함께 요구한다 — `matrix_weight_decay`(플래그가 도달했나)와
+    #   `muon_weight_decay`(**Muon 옵티마이저가 실제로 들고 있나**). 함정 37: 기록 ≠ 실행.
+    "sm_muonwd": {"optimizer": "muon", "matrix_weight_decay": 0.05,
+                  "muon_weight_decay": 0.05, "arch": "dense"},
     "sm_s34":    {"sparse34": True, "bpw": 1.25},
     # ★2026-09-05 — P016 Stage3 이 **dense 몸통에서** 3:4 를 돌린다. 종전 `sm_s34` 는
     #   tied 였고 `check_smoke_coverage` 가 그 빈 조합을 잡았다(P074 가 죽은 형태).

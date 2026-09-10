@@ -56,10 +56,11 @@ import argparse
 import ast as _ast
 import json
 import math
+import random
 import re
 import statistics
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -96,6 +97,11 @@ TASKS = {
     "humaneval":      ("gen_save", 0.00,  "pass@1",           "코드 생성 🚫실행 안 함"),
     "humaneval_plus": ("gen_save", 0.00,  "pass@1",           "HE+ 🚫실행 안 함"),
     "bfcl_v3":        ("gen_save", 0.00,  "AST acc",          "함수 호출 🚫실행 안 함"),
+    # ★★2026-09-10(2차) 신설 — **SFT 응답 채점**(사용자 지시 3). 🚫외부 벤치가 아니다.
+    #   생성 + **규칙 기반 자동채점**(`meta.grading` 이 규약을 들고 온다).
+    #   ⚠️**우연 수준이 없다** — 4지선다가 아니라 자유 생성이다. 🚫**0 을 기대값으로 쓰지 않는다**:
+    #   base LM(SFT 없음)이 0 을 받는 것이 정상이고, **그것을 확인하는 것이 첫 런의 목적**이다.
+    "sft_fresh_eval": ("sft",      None,  "(우리 것)",          "★SFT 응답 — 규칙 기반 자동채점"),
 }
 
 
@@ -109,12 +115,49 @@ def _arch_of(tag):
     return "dense" if tag.startswith("dense") else "tied"
 
 
-def load_rows(task):
+def load_rows(task, heldout_version="latest"):
+    """★2026-09-10(A01) — `stage1_heldout` 은 **판별 캐시**를 읽는다.
+
+    | `--heldout-version` | 읽는 파일 |
+    |---|---|
+    | `2.7` | `datasets/bench/stage1_heldout.v2.7.jsonl` |
+    | `2.8` | `datasets/bench/stage1_heldout.v2.8.jsonl` |
+    | `latest`(기본) | 위 중 **가장 큰 판**. 없으면 판 없는 옛 캐시 `stage1_heldout.jsonl` |
+
+    🚫**`latest` 도 "조용히" 는 아니다** — 무엇을 골랐는지 호출자가 인쇄한다.
+    """
+    if task == "stage1_heldout":
+        p, ver = heldout_cache_for(heldout_version)
+        if p is None:
+            raise FileNotFoundError(
+                f"held-out 판 `{heldout_version}` 캐시가 없다. 먼저 "
+                f"`python scripts/fetch_bench_data.py --only stage1_heldout "
+                f"--heldout-version {heldout_version}` 를 돌리세요.")
+        return [json.loads(l) for l in p.open(encoding="utf-8") if l.strip()], ver
     p = BENCH / f"{task}.jsonl"
     if not p.exists():
         raise FileNotFoundError(
             f"{p} 가 없다. 먼저 `python scripts/fetch_bench_data.py --only {task}` 를 돌리세요.")
-    return [json.loads(l) for l in p.open(encoding="utf-8") if l.strip()]
+    return [json.loads(l) for l in p.open(encoding="utf-8") if l.strip()], None
+
+
+def heldout_cache_for(version):
+    """★판별 캐시 파일을 고른다. 반환 `(경로|None, 판 이름|None)`."""
+    avail = {}
+    for q in sorted(BENCH.glob("stage1_heldout.v*.jsonl")):
+        avail[q.name.split(".v", 1)[1].rsplit(".jsonl", 1)[0]] = q
+    v = str(version).lstrip("v")
+    if v == "latest":
+        if avail:
+            key = max(avail, key=lambda s: [int(x) for x in s.split(".")])
+            return avail[key], key
+        legacy = BENCH / "stage1_heldout.jsonl"
+        stamp = BENCH / "stage1_heldout.version"
+        if legacy.exists():
+            nm = stamp.read_text(encoding="utf-8").strip() if stamp.exists() else "unknown"
+            return legacy, f"legacy({nm})"
+        return None, None
+    return (avail.get(v), v if v in avail else None)
 
 
 # ─────────────────────────────────────────────────────────────── 어댑터
@@ -168,9 +211,40 @@ def _ad_mmlu(r):
 
 
 def _ad_mmlu_redux(r):
+    """★★2026-09-10(2차) — **MMLU-Redux 의 정정 정답을 실제로 쓴다**(외부 조치 A16 지적).
+
+    🚫**종전**: `gold = r.get("answer", r.get("correct_answer"))`.
+    `answer` 는 **언제나 있으므로** `correct_answer` 가 **한 번도 안 읽혔다**.
+    ★그러면 MMLU-Redux 를 받아 놓고 **그냥 MMLU 를 채점**한 것이다 — 이 데이터셋의 존재 이유가
+    *"MMLU 의 정답이 틀린 곳을 고친 판"* 이기 때문이다.
+
+    ★**실측(로컬 캐시 5,700행, 2026-09-10)**:
+
+    | 분기 | 행 |
+    |---|---:|
+    | 🚫**제외** `no_correct_answer` | **36** |
+    | 🚫**제외** `multiple_correct_answers` | **39** |
+    | ★정정을 쓴다(숫자 인덱스) | **48** |
+    | ★정정을 쓴다(문자 A~D) | **56** |
+    | 정정이 원본과 같다 | 298 |
+    | 정정이 없다 → 원본 유지 | 5,223 |
+
+    → ★**104행(1.8%)의 정답이 바뀌고 75행(1.3%)이 채점에서 빠진다.**
+    🚫**그러므로 이 뒤의 `mmlu_redux` 점수는 이전 수치와 비교 불가**다.
+    ⚠️`correct_answer` 는 자유서술인 경우가 있다(`no_correct_answer` 행) — **그 행은 어차피 제외**다.
+    """
     ch = r["choices"] if isinstance(r.get("choices"), list) else \
         [r[k] for k in ("A", "B", "C", "D") if k in r]
-    gold = r.get("answer", r.get("correct_answer"))
+    et = str(r.get("error_type") or "")
+    if et in ("no_correct_answer", "multiple_correct_answers"):
+        # ★`gold < 0` 이면 `run_mc` 가 **건너뛰고 사유를 남긴다**(A03 조치 1).
+        return {"ctx": "", "choices": [f" {k}" for k in "ABCD"[:len(ch)]], "gold": -1}
+    gold = r.get("answer")
+    _fix = str(r.get("correct_answer") or "").strip()
+    if _fix.isdigit() and 0 <= int(_fix) < len(ch):
+        gold = int(_fix)
+    elif len(_fix) == 1 and _fix.upper() in "ABCD"[:len(ch)]:
+        gold = _fix.upper()
     gold = int(gold) if str(gold).isdigit() else "ABCD".index(str(gold).strip()[:1])
     q = f"{r['question']}\n" + "".join(f"{k}. {c}\n" for k, c in zip("ABCD", ch))
     return {"ctx": q + "Answer:", "choices": [f" {k}" for k in "ABCD"[:len(ch)]], "gold": gold}
@@ -240,16 +314,57 @@ def _ad_kobest_hellaswag(r):
 
 
 def _ad_stage1_heldout(r):
-    """★우리 Stage1 held-out — `prompt` + `candidates` 4 + `correct_index`(0-기반).
+    """★우리 Stage1 held-out — **판 둘의 스키마를 여기서 명시적으로 받는다**(A01 조치 2).
+
+    | 판 | 필드 |
+    |---|---|
+    | v2.7 이하 | `prompt` · `candidates`(4) · `correct_index`(0-기반) |
+    | ★**v2.8** | `ctx` · `choices`(4) · `gold`(0-기반) |
+
+    🚫★**종전에는 v2.7 필드만 읽었다.** v2.8 이 그대로 들어오면 `KeyError: 'prompt'` 로
+    과제 전체가 `adapter_error` 가 된다. 지금 안 죽는 이유는 `fetch` 가 경유하는
+    `check_heldout_defects._to_internal` 이 **미리 바꿔 주기 때문**인데,
+    ⚠️**그건 린트 도구다** — 채점기가 린트 도구의 부작용에 기대면 안 된다(함정 37 계열).
+    ★그래서 **여기서도 받는다**(둘 다 있으면 결과가 같다 = 비트 동일).
 
     🚫**외부 벤치가 아니다.** 우리가 만든 문항이라 결함이 우리 책임이고, 그래서
     `check_heldout_defects` 가 **D1·D6 0건** 인 판만 `fetch_bench_data` 가 내보낸다.
     ⚠️**후보가 전부 *"…판단이다"* 꼴로 끝난다** — 길이·문형이 균질해서
     길이정규 acc 와 우도 acc 가 거의 같게 나올 것이다. 그 자체가 설계 의도다(v2.3 이 길이 편향을 없앴다).
     """
-    return {"ctx": r["prompt"],
-            "choices": [" " + c for c in r["candidates"]],
-            "gold": int(r["correct_index"])}
+    if "candidates" in r and "correct_index" in r:
+        ctx, choices, gold = r.get("prompt", r.get("ctx")), r["candidates"], r["correct_index"]
+    elif "choices" in r and "gold" in r:
+        ctx, choices, gold = r.get("ctx", r.get("prompt")), r["choices"], r["gold"]
+    else:
+        raise KeyError("held-out 스키마: prompt/candidates/correct_index 또는 ctx/choices/gold")
+    # ★A01 의 검증을 그대로 받는다 — **조용히 넘기지 않는다**(함정 31).
+    if not isinstance(ctx, str) or not ctx.strip():
+        raise ValueError("held-out: 빈/비문자열 문맥")
+    if not isinstance(choices, list) or len(choices) != 4:
+        raise ValueError(f"held-out: 선택지 4개가 필요한데 {len(choices) if isinstance(choices, list) else '?'}")
+    if any(not isinstance(c, str) or not c.strip() for c in choices):
+        raise ValueError("held-out: 빈/비문자열 선택지")
+    if isinstance(gold, bool) or not isinstance(gold, int) or not 0 <= gold < 4:
+        raise ValueError(f"held-out: gold 는 0..3 의 정수여야 한다 (받은 것 {gold!r})")
+    return {"ctx": ctx, "choices": [" " + c for c in choices], "gold": int(gold)}
+
+
+def _ad_sft_fresh_eval(r):
+    """★SFT canonical 대화 → `{ctx(생성 프롬프트), gold, grading}`(2026-09-10(2차)).
+
+    ★**프롬프트는 `serialize(..., add_generation_prompt=True)`** 로 만든다 —
+    🚫직접 문자열을 조립하면 학습 때 쓴 규약과 **갈라진다**(함정 18).
+    ★**채점 규약은 데이터가 들고 온다**(`meta.grading`) — 도구가 추측하지 않는다.
+    """
+    from tinylm.chat.serialize import serialize
+    msgs = r["messages"]
+    if not msgs or msgs[-1].get("role") != "assistant":
+        raise ValueError("SFT 레코드의 마지막 메시지가 assistant 가 아니다")
+    gold = "".join(b.get("text", "") for b in msgs[-1]["content"]
+                   if b.get("type") == "text")
+    ctx = serialize({"messages": msgs[:-1]}, "chatml", add_generation_prompt=True)
+    return {"ctx": ctx, "gold": gold, "grading": (r.get("meta") or {}).get("grading") or {}}
 
 
 ADAPTERS = {
@@ -260,6 +375,7 @@ ADAPTERS = {
     "mmlu": _ad_mmlu, "mmlu_redux": _ad_mmlu_redux, "musr": _ad_musr,
     "lambada": _ad_lambada, "gsm8k": _ad_gsm8k, "ifeval": _ad_ifeval,
     "humaneval": _ad_humaneval, "humaneval_plus": _ad_humaneval, "bfcl_v3": _ad_bfcl,
+    "sft_fresh_eval": _ad_sft_fresh_eval,
 }
 
 
@@ -313,6 +429,48 @@ def wilson(k, n):
     c = (p + z * z / (2 * n)) / d
     h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
     return p, max(0.0, c - h), min(1.0, c + h)
+
+
+def mcnemar_exact_p(b10, b01):
+    """★★A04(2026-09-10) — McNemar 의 **정확 이항 p**.
+
+    🚫우리는 `z = (b−c)/√(b+c)` 라는 **정규근사**만 썼다. 불일치 수가 작으면
+    (b+c ≲ 25) 그 근사가 무너진다 — `wilson()` 을 만든 것과 **같은 이유**다.
+    ★정확 검정은 `n = b+c` 회의 공정한 동전에서 `k = min(b,c)` 이하가 나올 양측 확률이다.
+
+    ⚠️**둘을 나란히 인쇄한다.** 근사를 지우지 않는 이유는 **과거 판정이 그 수로 적혀 있어서**다
+    (결과 074 의 z +3.30 등). 두 수가 갈라지면 그것이 정보다.
+    """
+    n = int(b10) + int(b01)
+    if n == 0:
+        return 1.0
+    k = min(int(b10), int(b01))
+    tail = sum(math.exp(math.lgamma(n + 1) - math.lgamma(j + 1)
+                        - math.lgamma(n - j + 1) - n * math.log(2))
+               for j in range(k + 1))
+    return min(1.0, 2.0 * tail)
+
+
+def cluster_bootstrap_ci(diffs_by_family, draws=2000, seed=99):
+    """★★A04 — **문항 가족을 재표집**한 95% CI. 반환 `(lo, hi, 가족수)`.
+
+    🚫**A04 의 핵심 지적**: 같은 held-out 문항을 여러 모델·시드에서 얻은 값을 **독립 표본처럼**
+    합산하면 유의성이 부풀려진다. ★문항은 **가족**(관계 유형·생성 템플릿) 안에서 상관돼 있다.
+    → 문항이 아니라 **가족을 재표집**하면 그 상관이 CI 에 들어온다.
+
+    ⚠️**이것은 문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 안 담는다**(규칙 45).
+    """
+    keys = sorted(k for k, v in diffs_by_family.items() if v)
+    if len(keys) < 2:
+        return None, None, len(keys)
+    rng, samples = random.Random(seed), []
+    for _ in range(draws):
+        picked = [diffs_by_family[rng.choice(keys)] for _ in keys]
+        tot = sum(sum(g) for g in picked)
+        cnt = sum(len(g) for g in picked)
+        samples.append(tot / cnt if cnt else 0.0)
+    samples.sort()
+    return samples[int(0.025 * (draws - 1))], samples[int(0.975 * (draws - 1))], len(keys)
 
 
 def paired_stats(a, b):
@@ -382,16 +540,25 @@ def run_mc(task, items, model, tok, dev, seq_max, torch, F, no_pmi):
       🚫단 *"정확도가 유의해졌다"* 로 옮겨 적지 않는다 — **다른 양**이다.
     """
     picks, ok, ok_norm, skipped, per_item = Counter(), [], [], 0, []
-    per_margin = []
+    per_margin, per_dmargin, ids, rows = [], [], [], []
+    h_ok, h_ok_norm, skip_rows = [], [], []
     for it in items:
         if it.get("pairs"):                        # winogrande — 문맥이 후보마다 다르다
             rs = [seq_ce(model, tok, dev, p, c, seq_max, torch, F) for p, c in it["pairs"]]
+            conts = [c for _p, c in it["pairs"]]
         else:
             rs = [seq_ce(model, tok, dev, it["ctx"], c, seq_max, torch, F) for c in it["choices"]]
+            conts = list(it["choices"])
         if any(r is None for r in rs) or it["gold"] < 0:
             skipped += 1
+            # ★A03 조치 1 — **왜 건너뛰었는지**를 남긴다. 종전에는 개수만 세고 사유가 사라졌다.
+            skip_rows.append({"id": it.get("_iid"),
+                              "reason": ("gold_missing" if it["gold"] < 0 else "seq_max_exceeded")})
             continue
         mean = [r[0] for r in rs]
+        ssum = [r[1] for r in rs]
+        ntok = [r[2] for r in rs]
+        nchar = [max(1, len(c)) for c in conts]
         if no_pmi or it.get("pairs"):
             score = mean
         else:                                      # ★PMI: 문맥 없는 우도를 뺀다
@@ -399,17 +566,127 @@ def run_mc(task, items, model, tok, dev, seq_max, torch, F, no_pmi):
             score = [m - (b[0] if b else 0.0) for m, b in zip(mean, base)]
         p = min(range(len(score)), key=lambda i: score[i])
         pn = min(range(len(rs)), key=lambda i: rs[i][1] / max(rs[i][2], 1))
+        # ★★A03 조치 4(2026-09-10) — **공식 하네스 규약을 같은 순전파로 함께 낸다.**
+        #   lm-evaluation-harness 의 multiple_choice 는
+        #     acc      = argmax(sum logL)            = argmin(합CE)   · PMI **없음**
+        #     acc_norm = argmax(sum logL / 문자길이) = argmin(합CE/문자길이)
+        #   🚫우리 `acc` 는 **평균CE + PMI**, 우리 `acc_norm` 은 **토큰길이** 정규화다.
+        #   ★비용 0 — 합CE·토큰수는 이미 있고 문자길이는 문자열에서 센다.
+        hp = min(range(len(ssum)), key=lambda i: ssum[i])
+        hpn = min(range(len(ssum)), key=lambda i: ssum[i] / nchar[i])
         picks[p] += 1
+        ids.append(it.get("_iid"))
         ok.append(1 if p == it["gold"] else 0)
         ok_norm.append(1 if pn == it["gold"] else 0)
+        h_ok.append(1 if hp == it["gold"] else 0)
+        h_ok_norm.append(1 if hpn == it["gold"] else 0)
         per_item.append(rs[it["gold"]][0])         # ★정답 후보의 평균CE = paired 용 연속값
         _wrong = [s for i, s in enumerate(score) if i != it["gold"]]
+        # ★평균마진 — 오답 **평균** 과의 차. 🚫**결정 경계가 아니다**(A03 지적).
         per_margin.append((statistics.fmean(_wrong) - score[it["gold"]]) if _wrong else 0.0)
-    return picks, ok, ok_norm, skipped, per_item, per_margin
+        # ★★결정마진 — 오답 **최강** 과의 차. 이것이 argmax 의 부호와 정확히 같다.
+        per_dmargin.append((min(_wrong) - score[it["gold"]]) if _wrong else 0.0)
+        rows.append({"id": it.get("_iid"), "gold": it["gold"],
+                     "pred_internal": p, "pred_internal_norm": pn,
+                     "pred_harness": hp, "pred_harness_norm": hpn,
+                     "sum_nll": ssum, "mean_nll": mean, "score": score,
+                     "n_tokens": ntok, "n_chars": nchar,
+                     "margin_mean": per_margin[-1], "margin_decision": per_dmargin[-1]})
+    return {"picks": picks, "ids": ids, "ok": ok, "ok_norm": ok_norm, "skipped": skipped,
+            "gold_ce": per_item, "margin": per_margin, "dmargin": per_dmargin,
+            "h_ok": h_ok, "h_ok_norm": h_ok_norm, "rows": rows, "skip_rows": skip_rows}
+
+
+def _nfkc(s):
+    """★`normalization_rule` 정본 — *"유니코드 NFKC, 양끝 공백 제거, 연속 공백 하나로 축약"*."""
+    import unicodedata
+    return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", str(s))).strip()
+
+
+def grade_sft(gen, g):
+    """★★SFT 응답 **규칙 기반 자동채점**(2026-09-10(2차), 사용자 지시 3).
+
+    반환 `(정오|None, 사유)`. `None` 은 ★**채점하지 않는다**(순위에 안 쓴다)는 뜻이다.
+
+    ★**규약은 데이터가 들고 온다** — `meta.grading` 의 `scoring_mode` 가 정본이고
+    도구가 모드를 **추측하지 않는다**. 모르는 모드는 **`None`(미채점)** 이지 **실패가 아니다**
+    (함정 31: 미평가와 실패를 섞으면 점수가 모델 탓처럼 보인다).
+
+    | `scoring_mode` | 통과 조건 |
+    |---|---|
+    | `normalized_exact` | 정규화한 생성이 `accepted_answers` 중 하나를 **포함**하고 금지어가 없다 |
+    | `required_elements` | `required_elements` 전부 포함 · `forbidden_elements` 하나도 없음 |
+    | `choice_and_required_elements` | 위 + **선택지 중 정답 하나만** 나온다 |
+    | `required_elements_and_format` | 위 + `format_constraints`(문장 수) 만족 |
+    | ★`diagnostic_required_elements` | ★**`ranking_eligible: false`** → **`None`**(진단만) |
+
+    🚫★**`normalized_exact` 를 문자열 완전일치로 재지 않는다** — 우리 gold 가
+    *"미리내통이다."* 처럼 조사·마침표를 달고 있어서 완전일치는 **정답을 오답으로** 만든다.
+    ★그래서 *"정답 문자열을 포함하고 금지어가 없다"* 로 잰다. ⚠️**그 사실을 결과에 적는다.**
+    """
+    mode = str(g.get("scoring_mode") or "")
+    if not g.get("ranking_eligible", True) or mode == "diagnostic_required_elements":
+        return None, "ranking_eligible=false (진단 전용)"
+    got = _nfkc(gen)
+    req = [_nfkc(x) for x in (g.get("required_elements") or g.get("accepted_answers") or [])]
+    bad = [_nfkc(x) for x in (g.get("forbidden_elements") or [])]
+    if not req:
+        return None, "required_elements 도 accepted_answers 도 없다"
+    hit_bad = [x for x in bad if x and x in got]
+    if hit_bad:
+        return 0, f"금지어 {hit_bad[0]!r}"
+    miss = [x for x in req if x and x not in got]
+    if miss:
+        return 0, f"필수 {miss[0]!r} 없음"
+    if mode == "choice_and_required_elements":
+        # ★선택형 — **정답만** 나와야 한다. 다 나열하면 맞힌 것이 아니다.
+        others = [_nfkc(x) for x in (g.get("choices") or []) if _nfkc(x) not in req]
+        extra = [x for x in others if x and x in got]
+        if extra:
+            return 0, f"다른 선택지 {extra[0]!r} 도 함께 나왔다"
+    if mode == "required_elements_and_format":
+        fc = g.get("format_constraints") or {}
+        want_n = fc.get("sentence_count")
+        if want_n:
+            n = len([x for x in re.split(r"[.!?。]\s*|\n+", got) if x.strip()])
+            if n != int(want_n):
+                return 0, f"문장 수 {n} != {want_n}"
+    if mode not in ("normalized_exact", "required_elements",
+                    "choice_and_required_elements", "required_elements_and_format"):
+        return None, f"모르는 scoring_mode {mode!r} — 미채점(실패로 세지 않는다)"
+    return 1, "통과"
+
+
+def run_sft(items, model, tok, dev, seq_max, max_new, torch, F):
+    """★SFT 응답 채점 — **생성 + 규칙 채점 + 정답CE**.
+
+    🚫정답CE 는 순위 지표가 아니라 **연속값 보조**다(규칙 43·47).
+    """
+    ok, ids_ok, ces, ce_ids, skipped, ungraded, rows = [], [], [], [], 0, 0, []
+    for it in items:
+        gen = greedy(model, tok, dev, it["ctx"], max_new, seq_max, torch,
+                     stop=["<|im_end|>", "<|im_start|>", "\n\n\n"])
+        v, why = grade_sft(gen, it.get("grading") or {})
+        r = seq_ce(model, tok, dev, it["ctx"], it["gold"], seq_max, torch, F)
+        if r:
+            ces.append(r[0])
+            ce_ids.append(it.get("_iid"))
+        else:
+            skipped += 1
+        if v is None:
+            ungraded += 1
+        else:
+            ok.append(v)
+            ids_ok.append(it.get("_iid"))
+        rows.append({"id": it.get("_iid"), "mode": (it.get("grading") or {}).get("scoring_mode"),
+                     "graded": v, "why": why, "gen": gen[:400], "gold": it["gold"][:200]})
+    return {"ok": ok, "ids": ids_ok, "gold_ce": ces, "ce_ids": ce_ids,
+            "skipped": skipped, "ungraded": ungraded, "rows": rows}
 
 
 def run_cloze(items, model, tok, dev, seq_max, torch, F):
-    ok, ces, skipped = [], [], 0
+    """★2026-09-10 — `ids` 를 함께 돌려준다(A03 조치 2: paired 는 **ID 교집합**으로 잇는다)."""
+    ok, ces, skipped, ids = [], [], 0, []
     for it in items:
         r = seq_ce(model, tok, dev, it["ctx"], it["gold"], seq_max, torch, F)
         if r is None:
@@ -418,7 +695,8 @@ def run_cloze(items, model, tok, dev, seq_max, torch, F):
         gen = greedy(model, tok, dev, it["ctx"], 6, seq_max, torch)
         ok.append(1 if gen.strip().split()[:1] == it["gold"].strip().split()[:1] else 0)
         ces.append(r[1])                           # ★합CE = 그 단어의 -logP -^> PPL 로 간다
-    return ok, ces, skipped
+        ids.append(it.get("_iid"))
+    return ok, ces, skipped, ids
 
 
 def main():
@@ -435,6 +713,16 @@ def main():
     ap.add_argument("--max-new", type=int, default=96, help="생성 과제의 최대 새 토큰")
     ap.add_argument("--no-pmi", action="store_true", help="PMI 보정 끄기(대조용)")
     ap.add_argument("--out-jsonl", default=None, help="gen_save 과제의 생성물 저장 경로")
+    # ★★A01(2026-09-10) — **held-out 판을 명시해서 고른다.**
+    #   🚫종전에는 `fetch` 가 *"가장 최신 폴더"* 를 골랐고 v2.8 이 도착한 순간 채점이
+    #   조용히 바뀌었다. 판이 바뀌면 점수가 바뀌는데 **태그에도 결과에도 안 남았다.**
+    ap.add_argument("--heldout-version", default="latest",
+                    help="★(A01) `stage1_heldout` 의 판. `2.7`·`2.8`·`latest`(기본). "
+                         "★어느 판으로 쟀는지가 요약·W&B·결과 json 에 **반드시 남는다**. "
+                         "🚫판이 다른 수치는 비교 불가다")
+    ap.add_argument("--per-item-jsonl", default=None,
+                    help="★(A03) 문항별 원장 — id·gold·규약별 예측·후보별 합/평균NLL·"
+                         "토큰/문자 길이·두 마진·skip 사유. 판정을 사후에 복원할 수 있게 한다")
     ap.add_argument("--wandb", action="store_true",
                     help="★결과를 W&B 온라인으로 보낸다(사용자 지시 2026-08-22)")
     # ★2026-09-03 사용자 지시 4 — 기본을 **학습 런과 같은 프로젝트**로 바꿨다.
@@ -473,12 +761,17 @@ def main():
         kind, chance, official, desc = TASKS[task]
         banner(f"[{task}] {desc}   kind={kind}   공식 metric={official}")
         try:
-            rows = load_rows(task)
+            rows, used_ver = load_rows(task, a.heldout_version)
         except FileNotFoundError as e:
             print(f"  🚫 {e}")
             print("  ★**데이터 없음은 '구현 안 함' 이 아니다.** 결과문서에 그대로 적는다.")
             all_summary[task] = {"status": "no_data"}
             continue
+        if task == "stage1_heldout":
+            # ★★A01 — **어느 판으로 쟀는지를 결과보다 먼저 인쇄한다.**
+            print(f"  ★★held-out 판 = **v{used_ver}**  (요청 `{a.heldout_version}`)  "
+                  f"· 문항 {len(rows):,}개")
+            print("     🚫**판이 다른 수치와 비교하지 않는다** — v2.7(300)과 v2.8(4,500)은 다른 계기다")
 
         rnd = random.Random(a.seed)
         idx = list(range(len(rows)))
@@ -492,6 +785,23 @@ def main():
 
         try:
             items = [ADAPTERS[task](rows[i]) for i in idx]
+            # ★★A03 조치 2(2026-09-10) — **문항 ID 를 붙인다.**
+            #   🚫종전 paired 는 `min(len)` 으로 잘라 **위치**로 짝지었다. 모델마다 다른 문항을
+            #   건너뛰면 **서로 다른 문제의 정오를 한 쌍으로** 비교한다.
+            #   ★ID 는 원본 행의 `id`(있으면) + 전체 행 인덱스다 — 자료가 바뀌면 같은 ID 가 안 나온다.
+            for _k, _i in zip(items, idx):
+                _rid = rows[_i].get("id", rows[_i].get("task_id")) if isinstance(rows[_i], dict) else None
+                _k["_iid"] = f"{task}:{_rid}" if _rid is not None else f"{task}#{_i}"
+                # ★★A04 — **문항 가족**. 같은 관계·같은 템플릿에서 나온 문항은 서로 상관돼 있다.
+                #   가족이 없으면 문항 하나가 곧 가족이고 그때 bootstrap 은 문항 재표집이 된다.
+                _r = rows[_i] if isinstance(rows[_i], dict) else {}
+                _k["_family"] = str(_r.get("relation") or _r.get("task")
+                                    or _r.get("subject") or _r.get("split") or "")
+            if len({k["_iid"] for k in items}) != len(items):
+                print(f"  🚫★**문항 ID 가 중복이다** — paired 를 ID 로 이을 수 없다. "
+                      f"고유 {len({k['_iid'] for k in items})} / 전체 {len(items)}")
+                all_summary[task] = {"status": "duplicate_item_id"}
+                continue
         except (KeyError, ValueError, IndexError) as e:
             print(f"  🚫 어댑터 실패: {type(e).__name__}: {e}")
             print("  ★필드 이름이 데이터카드와 다르다 — **조용히 넘기지 않는다**(함정 31). "
@@ -500,6 +810,7 @@ def main():
             continue
 
         per_model = {}
+        fam_of = {k["_iid"]: k.get("_family", "") for k in items}   # ★A04 — ID -> 가족
         # ★★2026-09-04(결과 074 §6.2) — **문항별 정오를 버리지 않는다.**
         #   세 모델이 **같은 문항**을 풀었는데 정확도 비교만 비대응이었다.
         #   대응(McNemar)은 같은 자료에서 필요 n 을 크게 줄인다.
@@ -512,43 +823,96 @@ def main():
             model, cfg, _ = load_model(arch=_arch_of(tag), ckpt_path=str(ck), device=dev)
             model.eval()
             rec = {"tag": tag, "n_asked": len(items)}
+            if task == "stage1_heldout":
+                rec["heldout_version"] = used_ver   # ★A01 — 결과 한 행에서 판을 복원할 수 있다
 
             if kind == "mc":
-                picks, ok, okn, sk, ce, mg = run_mc(task, items, model, tok, dev, a.seq_max,
-                                                    torch, F, a.no_pmi)
+                res = run_mc(task, items, model, tok, dev, a.seq_max, torch, F, a.no_pmi)
+                picks, ok, okn, sk = res["picks"], res["ok"], res["ok_norm"], res["skipped"]
+                ce, mg, dmg = res["gold_ce"], res["margin"], res["dmargin"]
                 p, lo, hi = wilson(sum(ok), len(ok))
                 pn, _l2, _h2 = wilson(sum(okn), len(okn))
+                hp, _hl, _hh = wilson(sum(res["h_ok"]), len(res["h_ok"]))
+                hpn, _n1, _n2 = wilson(sum(res["h_ok_norm"]), len(res["h_ok_norm"]))
                 rec.update(acc=p, acc_ci=[lo, hi], acc_norm=pn, n=len(ok), skipped=sk,
                            gold_ce=statistics.fmean(ce) if ce else None,
-                           gold_margin=statistics.fmean(mg) if mg else None)
+                           gold_margin=statistics.fmean(mg) if mg else None,
+                           # ★★A03(2026-09-10) — 결정마진 + 공식 하네스 규약 두 열
+                           gold_margin_decision=statistics.fmean(dmg) if dmg else None,
+                           harness_acc=hp, harness_acc_norm=hpn,
+                           score_convention="internal(mean CE"
+                                            + (", no PMI" if a.no_pmi else ", PMI") + ")")
                 _mg = "n/a" if rec["gold_margin"] is None else f"{rec['gold_margin']:+.4f}"
+                _dg = "n/a" if rec["gold_margin_decision"] is None \
+                    else f"{rec['gold_margin_decision']:+.4f}"
                 print(f"\n  {tag:<18} 우도acc **{p:.1%}** [95%CI {lo:.1%}~{hi:.1%}]  "
                       f"길이정규acc {pn:.1%}  정답CE {rec['gold_ce']:.4f}  "
-                      f"★정답마진 {_mg}  N={len(ok)} 제외={sk}")
-                print("     ★마진 = 오답 평균점수 − 정답점수(argmax 와 **같은 score**). "
-                      "**정오의 연속판**이라 같은 문항 수로 더 잘 가른다. "
-                      "🚫*'정확도가 유의하다'* 로 옮겨 적지 않는다 — 다른 양이다")
+                      f"★평균마진 {_mg}  ★결정마진 {_dg}  N={len(ok)} 제외={sk}")
+                print("     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. "
+                      "🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 "
+                      "+1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다")
+                # ★★A03 조치 4 — **우리 규약과 공식 하네스 규약을 같은 줄에 나란히 인쇄한다.**
+                print(f"     ★★규약 대조 — 우리(평균CE{'·PMI 없음' if a.no_pmi else '·PMI'}) "
+                      f"**{p:.1%}** / 공식 하네스(합logL) **{hp:.1%}** "
+                      f"(차 {(p - hp) * 100:+.2f}pp)  ·  "
+                      f"우리 길이정규(토큰) {pn:.1%} / 공식 acc_norm(문자) {hpn:.1%} "
+                      f"(차 {(pn - hpn) * 100:+.2f}pp)")
+                print("     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 "
+                      "하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. "
+                      "🚫**리더보드 점수와 직접 비교하지 않는다**")
+                if res["rows"] and a.per_item_jsonl:
+                    _dump_items(a.per_item_jsonl, task, tag, res)
                 tot = sum(picks.values())
                 frac = max(picks.values()) / tot if tot else 0
                 if frac >= 0.90:
                     print(f"  🚫★**퇴화** — 한 선택지를 {frac:.1%} 로 찍는다. "
                           f"이 숫자는 능력이 아니라 **편향**이다(규약 7)")
-                per_model[tag] = ce
-                per_ok[tag] = list(ok)
+                # ★A03 조치 2 — **ID 로 keying** 한다. 🚫위치 zip 을 쓰지 않는다.
+                per_model[tag] = dict(zip(res["ids"], ce))
+                per_ok[tag] = dict(zip(res["ids"], ok))
+
+            elif kind == "sft":
+                # ★★2026-09-10(2차) 신설 — SFT 응답 채점(사용자 지시 3)
+                sres = run_sft(items, model, tok, dev, a.seq_max, a.max_new, torch, F)
+                nn = len(sres["ok"])
+                p, lo, hi = wilson(sum(sres["ok"]), nn) if nn else (0.0, 0.0, 0.0)
+                rec.update(acc=p, acc_ci=[lo, hi], n=nn, skipped=sres["skipped"],
+                           ungraded=sres["ungraded"],
+                           gold_ce=statistics.fmean(sres["gold_ce"]) if sres["gold_ce"] else None)
+                _g = "n/a" if rec["gold_ce"] is None else f"{rec['gold_ce']:.4f}"
+                print(f"\n  {tag:<18} 규칙채점 **{p:.1%}** [95%CI {lo:.1%}~{hi:.1%}]  "
+                      f"정답CE {_g}  채점 {nn} / 미채점 {sres['ungraded']} / CE제외 {sres['skipped']}")
+                print("     ★**미채점은 실패가 아니다**(`ranking_eligible: false` = 진단 전용). "
+                      "🚫분모에 넣지 않는다 — 넣으면 점수가 모델 탓처럼 보인다(함정 31)")
+                print("     ⚠️★**base LM(SFT 없음)은 0 이 정상**이다 — 그것을 확인하는 것이 첫 런의 목적이다. "
+                      "★정답CE 는 0 이어도 **연속값이라 서열을 만든다**")
+                # 모드별 내역 — 어떤 규약에서 죽는지 보인다
+                _by = defaultdict(lambda: [0, 0])
+                for x in sres["rows"]:
+                    if x["graded"] is None:
+                        continue
+                    _by[x["mode"]][0] += x["graded"]
+                    _by[x["mode"]][1] += 1
+                for _m, (_k, _n) in sorted(_by.items()):
+                    print(f"       {_m:<32} {_k}/{_n}  ({(_k / _n if _n else 0):.1%})")
+                if a.per_item_jsonl:
+                    _dump_sft(a.per_item_jsonl, task, tag, sres)
+                per_model[tag] = dict(zip(sres["ce_ids"], sres["gold_ce"]))
+                per_ok[tag] = dict(zip(sres["ids"], sres["ok"]))
 
             elif kind == "cloze":
-                ok, ces, sk = run_cloze(items, model, tok, dev, a.seq_max, torch, F)
+                ok, ces, sk, cids = run_cloze(items, model, tok, dev, a.seq_max, torch, F)
                 p, lo, hi = wilson(sum(ok), len(ok))
                 ppl = math.exp(statistics.fmean(ces)) if ces else float("nan")
                 rec.update(acc=p, acc_ci=[lo, hi], ppl=ppl, n=len(ok), skipped=sk,
                            gold_ce=statistics.fmean(ces) if ces else None)
                 print(f"\n  {tag:<18} 마지막단어acc **{p:.1%}** [95%CI {lo:.1%}~{hi:.1%}]  "
                       f"PPL {ppl:,.1f}  N={len(ok)} 제외={sk}")
-                per_model[tag] = ces
+                per_model[tag] = dict(zip(cids, ces))
 
             elif kind == "gen":
                 hits, ces, inst_ok, inst_tot, inst_skip = [], [], 0, 0, 0
-                gens = []
+                gens, ce_ids = [], []
                 for it in items:
                     g = greedy(model, tok, dev, it["ctx"], a.max_new, a.seq_max, torch,
                                stop=["\nQuestion:", "\n\n\n"])
@@ -559,6 +923,7 @@ def main():
                         r = seq_ce(model, tok, dev, it["ctx"], it["gold_full"], a.seq_max, torch, F)
                         if r:
                             ces.append(r[0])
+                            ce_ids.append(it.get("_iid"))
                     else:                                   # ifeval
                         for iid, kw in zip(it["meta"]["ids"], (it["meta"]["kw"] or [{}])
                                            * len(it["meta"]["ids"])):
@@ -575,7 +940,7 @@ def main():
                     print(f"\n  {tag:<18} EM **{p:.1%}** [95%CI {lo:.1%}~{hi:.1%}]  "
                           f"★정답CE {rec['gold_ce']:.4f}  N={len(hits)}")
                     print("  ★EM 이 0 이어도 **정답CE 는 연속값**이라 서열을 만든다(결과 050 의 수법)")
-                    per_model[tag] = ces
+                    per_model[tag] = dict(zip(ce_ids, ces))
                 else:
                     ev = inst_tot - inst_skip
                     p, lo, hi = wilson(inst_ok, ev)
@@ -588,7 +953,7 @@ def main():
                     _dump(a.out_jsonl, task, tag, items, gens)
 
             else:                                            # gen_save
-                gens, syn_ok, ces = [], 0, []
+                gens, syn_ok, ces, ce_ids = [], 0, [], []
                 for it in items:
                     g = greedy(model, tok, dev, it["ctx"], a.max_new, a.seq_max, torch,
                                stop=["\ndef ", "\nclass ", "\n#", "\n\n\n"])
@@ -609,6 +974,7 @@ def main():
                         r = seq_ce(model, tok, dev, it["ctx"], it["gold"], a.seq_max, torch, F)
                         if r:
                             ces.append(r[0])
+                            ce_ids.append(it.get("_iid"))
                 p, lo, hi = wilson(syn_ok, len(items))
                 rec.update(parse_ok=p, parse_ci=[lo, hi],
                            gold_ce=statistics.fmean(ces) if ces else None, n=len(items))
@@ -620,7 +986,7 @@ def main():
                 print(f"  ★`--out-jsonl` 로 저장한 뒤 공식 하네스(evalplus / BFCL)로 채점하세요.")
                 if a.out_jsonl:
                     _dump(a.out_jsonl, task, tag, items, gens)
-                per_model[tag] = ces
+                per_model[tag] = dict(zip(ce_ids, ces))
 
             all_summary.setdefault(task, {})[tag] = rec
             del model
@@ -628,14 +994,28 @@ def main():
                 torch.cuda.empty_cache()
 
         # ★paired — 연속값(정답CE)이 있을 때만. 규약 4: 공통 문항만.
+        # ★★A03 조치 2(2026-09-10) — **ID 교집합으로 잇는다.**
+        #   🚫종전: `n = min(len(...))` 뒤 `[:n]` = **위치 짝짓기**. 모델마다 다른 문항을
+        #   건너뛰면 **다른 문제의 값을 한 쌍**으로 비교한다. `skipped` 가 0 이면 결과가 같지만
+        #   0 이 아닌 순간 조용히 틀린다(함정 38: 미탐).
         keys = [k for k in per_model if per_model[k]]
         if len(keys) >= 2:
-            n = min(len(per_model[k]) for k in keys)
-            print(f"\n  ── paired 정답CE 비교 (공통 {n}문항) ──")
-            for i in range(len(keys) - 1):
+            common = set.intersection(*[set(per_model[k]) for k in keys])
+            n = len(common)
+            _cov = {k: len(per_model[k]) for k in keys}
+            print(f"\n  ── paired 정답CE 비교 (★**ID 교집합** {n}문항) ──")
+            print(f"     모델별 보유: " + " · ".join(f"{k} {v}" for k, v in _cov.items()))
+            if any(v != n for v in _cov.values()):
+                print(f"     ⚠️★**보유가 다르다** — 교집합 {n} 만 쓴다. "
+                      f"차이는 `skipped`(seq_max 초과 또는 gold 없음)에서 온다")
+            _order = sorted(common)
+            if n == 0:
+                print("     🚫★공통 문항이 0 이다 — **이 비교는 성립하지 않는다**")
+            for i in range(len(keys) - 1 if n else 0):
                 for j in range(i + 1, len(keys)):
-                    m, sd, se, t, ci, win, need = paired_stats(per_model[keys[i]][:n],
-                                                               per_model[keys[j]][:n])
+                    m, sd, se, t, ci, win, need = paired_stats(
+                        [per_model[keys[i]][x] for x in _order],
+                        [per_model[keys[j]][x] for x in _order])
                     print(f"    {keys[i]} - {keys[j]}: Δ {m:+.4f} ± {ci:.4f}  "
                           f"SD {sd:.4f} SE {se:.4f} t {t:+.2f}  승률 {win:.1f}%  "
                           f"필요N(SE0.002) **{need:,}**")
@@ -648,16 +1028,37 @@ def main():
                     elif need > n:
                         print(f"      ★**부호는 확정이다**(t {t:+.2f}). 🚫단 정밀도 목표 SE 0.002 에는 "
                               f"{n} 이 부족하다(필요 {need:,}) — **크기를 인용할 때 ± 를 함께 적는다**")
+                    # ★★A04 — **가족 재표집 CI**. 문항 상관을 CI 에 넣는다.
+                    _fb = defaultdict(list)
+                    for _x in _order:
+                        _fb[fam_of.get(_x) or _x].append(
+                            per_model[keys[i]][_x] - per_model[keys[j]][_x])
+                    _lo, _hi, _nf = cluster_bootstrap_ci(_fb)
+                    if _lo is not None:
+                        _wide = (_hi - _lo) / max(2 * ci, 1e-12)
+                        print(f"      ★★가족 재표집 95%CI [{_lo:+.4f}, {_hi:+.4f}] "
+                              f"(가족 {_nf}개 · 문항 CI 의 **{_wide:.2f}배**)"
+                              + ("  🚫★**0 을 포함한다** — 문항을 독립으로 보면 유의했다"
+                                 if _lo <= 0 <= _hi else "  ✅0 을 안 포함한다"))
+                    else:
+                        print(f"      ⚠️가족이 {_nf}개뿐이라 재표집 CI 를 못 만든다")
 
         # ★★대응 정확도 비교(McNemar) — 결과 074 §4. 같은 문항을 푼 모델끼리만.
         okeys = [k for k in per_ok if per_ok[k]]
         if len(okeys) >= 2:
-            n = min(len(per_ok[k]) for k in okeys)
-            print(f"\n  ── paired 정확도 비교 · McNemar (공통 {n}문항) ──")
+            ocommon = set.intersection(*[set(per_ok[k]) for k in okeys])
+            n = len(ocommon)
+            oorder = sorted(ocommon)
+            print(f"\n  ── paired 정확도 비교 · McNemar (★**ID 교집합** {n}문항) ──")
             print("     ★비대응 CI 가 겹쳐도 대응 검정은 가를 수 있다. 🚫반대도 있다.")
-            for i in range(len(okeys) - 1):
+            if any(len(per_ok[k]) != n for k in okeys):
+                print("     ⚠️★모델별 보유: "
+                      + " · ".join(f"{k} {len(per_ok[k])}" for k in okeys)
+                      + f" → 교집합 {n} 만 쓴다")
+            for i in range(len(okeys) - 1 if n else 0):
                 for j in range(i + 1, len(okeys)):
-                    A, B = per_ok[okeys[i]][:n], per_ok[okeys[j]][:n]
+                    A = [per_ok[okeys[i]][x] for x in oorder]
+                    B = [per_ok[okeys[j]][x] for x in oorder]
                     b = sum(1 for x, y in zip(A, B) if x and not y)
                     c = sum(1 for x, y in zip(A, B) if y and not x)
                     dacc = (b - c) / n * 100.0
@@ -667,9 +1068,27 @@ def main():
                     z = (b - c) / math.sqrt(b + c)
                     nn = int(math.ceil(n * 4.0 / (z * z))) if z else 0
                     verdict = ("★**유의**" if abs(z) >= 2 else "🚫**못 가른다**")
+                    # ★★A04 — 정규근사 옆에 **정확 이항 p** 를 함께 찍는다.
+                    pex = mcnemar_exact_p(b, c)
                     print(f"    {okeys[i]} - {okeys[j]}: Δacc {dacc:+.2f}pp  "
-                          f"불일치 {b}/{c}  z {z:+.2f}  {verdict}  "
+                          f"불일치 {b}/{c}  z {z:+.2f}  ★정확p **{pex:.4g}**  {verdict}  "
                           f"필요n(z=2) **{nn:,}** / 보유 {n:,}")
+                    if (abs(z) >= 2) != (pex < 0.05):
+                        print(f"      🚫★★**근사와 정확 검정이 갈라진다** — z {z:+.2f}"
+                              f"({'유의' if abs(z) >= 2 else '비유의'}) vs 정확p {pex:.4g}"
+                              f"({'유의' if pex < 0.05 else '비유의'}). "
+                              f"불일치가 {b + c}개뿐이라 정규근사가 무너진다 → **정확p 를 쓴다**")
+                    # ★★A04 — 가족 재표집. 정오차(−1/0/+1)를 가족 단위로 다시 뽑는다.
+                    _fo = defaultdict(list)
+                    for _x in oorder:
+                        _fo[fam_of.get(_x) or _x].append(
+                            per_ok[okeys[i]][_x] - per_ok[okeys[j]][_x])
+                    _lo, _hi, _nf = cluster_bootstrap_ci(_fo)
+                    if _lo is not None:
+                        print(f"      ★★가족 재표집 Δacc 95%CI "
+                              f"[{_lo * 100:+.2f}pp, {_hi * 100:+.2f}pp] (가족 {_nf}개)"
+                              + ("  🚫★**0 을 포함한다**" if _lo <= 0 <= _hi else "  ✅0 을 안 포함한다"))
+                        print("        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)")
                     if abs(z) < 2 and nn > n:
                         print(f"      ⚠️★**이 과제로는 못 가른다.** 문항을 {nn / n:.1f}배 늘려야 한다")
 
@@ -677,6 +1096,37 @@ def main():
     if a.wandb:
         _push_wandb(all_summary, a)
     return 0
+
+
+def _dump_sft(path, task, tag, res):
+    """★SFT 문항별 원장 — **생성물과 채점 사유를 함께** 남긴다.
+
+    🚫점수만 남기면 *"왜 틀렸는지"* 를 사후에 못 본다. 규칙 채점은 사유가 있어야 고칠 수 있다.
+    """
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    with p.open("a", encoding="utf-8") as f:
+        for r in res["rows"]:
+            f.write(json.dumps(dict(r, task=task, model=tag), ensure_ascii=False) + "\n")
+    print(f"  ✅ SFT 문항별 원장 {len(res['rows'])}행 -^> {p}")
+
+
+def _dump_items(path, task, tag, res):
+    """★A03 조치 1 — **문항별 원장.** 판정을 사후에 복원할 수 있어야 한다.
+
+    한 줄 = 한 문항이고 `id`·`gold`·규약별 예측·후보별 합/평균 NLL·토큰/문자 길이·
+    두 마진이 들어간다. 건너뛴 문항은 **사유와 함께** 따로 적는다 —
+    🚫종전에는 `skipped` 개수만 남고 **어느 문항인지도 왜인지도 사라졌다.**
+    """
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    with p.open("a", encoding="utf-8") as f:
+        for r in res["rows"]:
+            f.write(json.dumps(dict(r, task=task, model=tag), ensure_ascii=False) + "\n")
+        for r in res["skip_rows"]:
+            f.write(json.dumps(dict(r, task=task, model=tag, skipped=True),
+                               ensure_ascii=False) + "\n")
+    print(f"  ✅ 문항별 원장 {len(res['rows'])}행(+건너뜀 {len(res['skip_rows'])}행) -^> {p}")
 
 
 def _dump(path, task, tag, items, gens):
@@ -704,10 +1154,17 @@ def _final(s):
                 print(f"  {task:<16}{tag:<20}{'n/a':>10}  주지표 없음")
                 continue
             extra = []
+            if r.get("heldout_version"):
+                extra.append(f"★판 v{r['heldout_version']}")   # ★A01 — 판이 요약에도 남는다
             if r.get("gold_ce") is not None:
                 extra.append(f"정답CE {r['gold_ce']:.4f}")
             if r.get("gold_margin") is not None:
-                extra.append(f"★마진 {r['gold_margin']:+.4f}")
+                extra.append(f"평균마진 {r['gold_margin']:+.4f}")
+            if r.get("gold_margin_decision") is not None:
+                extra.append(f"★결정마진 {r['gold_margin_decision']:+.4f}")
+            if r.get("harness_acc") is not None:
+                extra.append(f"공식규약 {r['harness_acc']:.1%}"
+                             f"({(main_v - r['harness_acc']) * 100:+.1f}pp)")
             if r.get("ppl"):
                 extra.append(f"PPL {r['ppl']:,.0f}")
             if r.get("skipped"):

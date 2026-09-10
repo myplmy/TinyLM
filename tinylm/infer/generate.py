@@ -77,7 +77,7 @@ def _pick(logits, temperature, top_k):
 
 @torch.no_grad()
 def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, device=None,
-           use_cache=True, stop_at_eos=True, eos_id=None):
+           use_cache=True, stop_at_eos=True, eos_id=None, logits_last_only=False):
     """★샘플링 루프의 **단일 소스**. 이미 로드된 모델을 받아 텍스트를 이어쓴다.
 
     `generate()`(체크포인트 경로로 매번 로드)와 여러 프롬프트를 한 모델로 돌리는 도구
@@ -102,6 +102,10 @@ def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, devi
     dev_type = device if isinstance(device, str) else device.type
     ac = dict(dtype=torch.bfloat16, enabled=(dev_type == "cuda"))
 
+    # ★★A06(2026-09-10) — prefill 이 만드는 **전 위치 로짓**은 생성에 안 쓰인다.
+    #   `vocab 32,768 · T 1,024 · fp32` = **128.0 MiB**(우리 배포 예산의 3.2~4.0배).
+    #   🚫**기본 off = 비트 동일.** 켜면 마지막 한 위치만 만든다(0.125 MiB).
+    head_options = {"logits_last_only": True} if logits_last_only else {}
     past = None
     for _ in range(max_new):
         if use_cache:
@@ -112,11 +116,11 @@ def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, devi
                 # 컨텍스트 초과 → 캐시를 버리고 뒤쪽 창으로 재구축(절대위치 RoPE 라 슬라이스 불가)
                 past, xin = None, x[:, -(cfg.max_seq_len - 1):]
             with torch.autocast(dev_type, **ac):
-                logits, past = model(xin, past_kv=past, use_cache=True)
+                logits, past = model(xin, past_kv=past, use_cache=True, **head_options)
             logits = logits[:, -1, :].float()
         else:
             with torch.autocast(dev_type, **ac):
-                logits = model(x[:, -cfg.max_seq_len:])[:, -1, :].float()
+                logits = model(x[:, -cfg.max_seq_len:], **head_options)[:, -1, :].float()
         nxt = _pick(logits, temperature, top_k)
         x = torch.cat([x, nxt], dim=1)
         if stop_at_eos and int(nxt.item()) == eos_id:

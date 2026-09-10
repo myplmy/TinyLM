@@ -501,11 +501,23 @@ def show_judge(name, rest, strict_hits):
             if t.startswith('-'):
                 break
             tags.append(t.split('#', 1)[0].split('=', 1)[-1])
-    extra = (f' ckpt-tokens={ctok}' if ctok != tok else '')
-    print(f'    {name}   preset={preset} data={data} tokens={tok}{extra}   모델 {len(tags)}개')
+    # ★★2026-09-10(2차) — **`common_bpb --tokens` 는 모델별로 여러 값**을 받는다.
+    #   🚫`_judge_val` 은 **첫 값 하나만** 읽으므로 두 가족을 섞은 호출에서
+    #   뒤쪽 모델을 전부 *"아직 없다"* 로 오판한다(함정 34 — 게이트가 낡은 쪽).
+    #   ★모델 수와 토큰 값 수가 같으면 **짝을 지어** 해석한다.
+    _tk_all = re.search(r'--tokens\s+((?:[0-9]+[MB]\s*)+)', body)
+    per_tok = _tk_all.group(1).split() if _tk_all else []
+    if len(per_tok) == len(tags) and len(set(per_tok)) > 1:
+        ctoks = per_tok
+        print(f'    {name}   preset={preset} data={data} '
+              f'tokens=★모델별({" ".join(per_tok)})   모델 {len(tags)}개')
+    else:
+        ctoks = [ctok] * len(tags)
+        extra = (f' ckpt-tokens={ctok}' if ctok != tok else '')
+        print(f'    {name}   preset={preset} data={data} tokens={tok}{extra}   모델 {len(tags)}개')
     bad = []
-    for t in tags:
-        hit, tried = _resolve_ckpt_names(preset, data, ctok, t)
+    for t, _ct in zip(tags, ctoks):
+        hit, tried = _resolve_ckpt_names(preset, data, _ct, t)
         if hit is None:
             bad.append((t, tried))
     if not tags:

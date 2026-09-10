@@ -102,20 +102,47 @@ def _lr_factor(s, warm, steps, sched, decay_frac):
     return 0.1 + 0.45 * (1 + math.cos(math.pi * p))
 
 
-def wd_floor(meta):
-    """기울기가 0 일 때 승수가 도달하는 값 `s_wd`. meta 가 없으면 None."""
+def run_wd(meta):
+    """★★2026-09-10(A09) — **그 런이 실제로 쓴 승수 weight decay** 를 돌려준다.
+
+    반환 `(wd, 출처)`.
+
+    🚫★**이 도구는 `LRM_WD = 0.01` 을 박아 두고 언제나 그것으로 역보정했다.**
+    그런데 2026-09-08 에 `--mlp-lrm-wd` 가 생겼고, ★**P086 단계3 의 벡터 런은
+    `--mlp-lrm-wd 0` 으로 돌았다**(`run_P086_Stage3_vector_lrm` 팔 2 · json `mlp_lrm_wd: 0.0`).
+    그 런에 0.01 을 대고 나눈 것이 결과 072 §13 의 *"WD 보정 max|r−1| 0.2645"* 와
+    *"기울기 몫/WD 몫 13.1배"* 다 — **분모가 0 이어야 하는데 0.0202 를 썼다.**
+
+    ★**함정 18 의 또 한 얼굴**: 같은 상수가 `transformer.py`(정본)·`cli.py`(기본값)·
+    이 파일(사본) 셋에 있었고 **런이 그것을 덮어쓸 수 있게 된 뒤에도 사본이 안 따라왔다.**
+    → **정본은 런의 json 이다.** 없으면 옛 런이므로 0.01 로 두되 **반드시 경고한다.**
+    """
+    if meta and meta.get("mlp_lrm_wd") is not None:
+        return float(meta["mlp_lrm_wd"]), "json"
+    return LRM_WD, "기본값(옛 런 — json 에 `mlp_lrm_wd` 가 없다)"
+
+
+def wd_floor(meta, wd=None):
+    """기울기가 0 일 때 승수가 도달하는 값 `s_wd`. meta 가 없으면 None.
+
+    ★`wd` 를 주면 그 값을 쓴다(정본 = 런의 json). 안 주면 `run_wd` 가 고른다.
+    """
     if not meta:
         return None
     steps = meta.get("steps")
     lr = meta.get("lr")
     if not steps or not lr:
         return None
+    if wd is None:
+        wd = run_wd(meta)[0]
+    if wd == 0.0:
+        return 1.0                     # ★wd 0 이면 바닥이 없다 — 보정도 없다
     sched = meta.get("sched", "wsd")
     decay_frac = meta.get("decay_frac", 0.2)
     warm = 0 if sched == "decay" else max(5, min(int(steps) // 10, 100))
     s = 1.0
     for t in range(int(steps)):
-        s *= (1.0 - float(lr) * _lr_factor(t, warm, int(steps), sched, decay_frac) * LRM_WD)
+        s *= (1.0 - float(lr) * _lr_factor(t, warm, int(steps), sched, decay_frac) * float(wd))
     return s
 
 
@@ -148,7 +175,8 @@ def main() -> int:
     sd = st.get("model", st)
 
     meta = load_meta(path)
-    s_wd = wd_floor(meta)
+    wd_used, wd_src = run_wd(meta)
+    s_wd = wd_floor(meta, wd_used)
 
     print("=" * 96)
     print(f"  P086 승수 진단 — {path.name}")
@@ -158,12 +186,20 @@ def main() -> int:
         print("     이때의 통과는 *'WD 를 포함해 움직였다'* 까지만 말한다.")
         s_wd = 1.0
         have_floor = False
+    elif wd_used == 0.0:
+        # ★★A09 — **이 런은 wd 가 0 이다.** 보정할 바닥이 없다.
+        have_floor = False
+        print(f"  ★★**이 런의 승수 weight decay = 0** ({wd_src}) → **보정하지 않는다**(s_wd = 1.0).")
+        print("     🚫종전에는 이런 런에도 0.01 을 대고 나눴다 — **없는 바닥을 빼고 있었다.**")
     else:
         have_floor = True
         print(f"  ★순수 WD 바닥 s_wd = **{s_wd:.6f}**  (|s-1| = {1 - s_wd:.6f})"
               f"  [steps={meta.get('steps')} lr={meta.get('lr')} "
-              f"sched={meta.get('sched', 'wsd')} wd={LRM_WD}]")
+              f"sched={meta.get('sched', 'wsd')} ★wd={wd_used:g} ({wd_src})]")
         print("     ★이만큼은 **기울기가 하나도 안 와도** 내려간다. 이 아래는 학습이 아니다.")
+        if wd_src != "json":
+            print("  ⚠️★**json 에 `mlp_lrm_wd` 가 없어 기본값 0.01 을 썼다.** 2026-09-08 이전 런이면 "
+                  "맞지만, 그 뒤 런인데 없으면 **역보정이 틀린 값으로 간다**")
     print(f"  ★성공 기준: **WD 보정 후** max |s/s_wd - 1| >= {PASS_MIN:g} 이면 통과 · "
           f"< {WEAK_MIN:g} 이면 **실패**(승수가 학습되지 않았다)")
 
@@ -203,6 +239,9 @@ def main() -> int:
         if have_floor:
             print(f"  ★기울기 몫 / WD 몫 = **{worst / max(1 - s_wd, 1e-12):.1f}배**"
                   "  — 1.0 근처면 관측된 움직임이 전부 WD 다")
+        elif wd_used == 0.0:
+            print("  ★★**WD 몫이 0 이라 비를 만들지 않는다**(A09) — 이 런은 승수가 "
+                  "자유롭게 움직였고 관측된 것이 **전부 기울기 몫**이다")
         print()
         if worst >= PASS_MIN:
             print(f"  ✅**통과** — WD 를 걷어내고도 승수가 {worst:.4f} 만큼 움직였다.")
@@ -231,6 +270,9 @@ def main() -> int:
     if have_floor:
         print(f"  ★기울기 몫 / WD 몫 = **{worst / max(1 - s_wd, 1e-12):.1f}배**"
               "  — 1.0 근처면 관측된 움직임이 전부 WD 다")
+    elif wd_used == 0.0:
+        print("  ★★**WD 몫이 0 이라 비를 만들지 않는다**(A09) — 이 런은 승수가 "
+              "자유롭게 움직였고 관측된 것이 **전부 기울기 몫**이다")
     print()
     if worst >= PASS_MIN:
         print(f"  ✅**통과** — WD 를 걷어내고도 승수가 {worst:.4f} 만큼 움직였다. "

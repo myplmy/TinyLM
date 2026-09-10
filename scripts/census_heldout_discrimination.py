@@ -30,10 +30,14 @@
 
 체크포인트를 **읽기만** 한다. 그래도 **GPU/모델 로드**가 필요하므로 ★**AI 가 아니라 사용자가 돌린다.**
 
-    python scripts/census_heldout_discrimination.py ^
-        --models d12_cla2_r20_muon15=m100s8 d14_cla2_norecur_muon15=m100s10 ^
-                 d16_cla2_norecur_muon15=m100s12 d18_cla2_norecur_muon15=m100s14 ^
+    python scripts/census_heldout_discrimination.py --heldout-version 2.8 ^
+        --models d12_cla2_norecur_muon15=m100s8 d12_cla2_r20_muon15=m100s8 ^
+                 d14_cla2_norecur_muon15=m100s10 d16_cla2_norecur_muon15=m100s12 ^
+                 d16_cla2_r20_muon15=m100s12 d18_cla2_norecur_muon15=m100s14 ^
         --n 4500
+
+★★**체크포인트는 6개**다 — D9 문턱(60%)이 6개를 전제로 한다(증보 요청서 §5).
+4개로 돌리면 대역에 드는 격자 칸이 2/4 하나뿐이라 도구가 **판정을 보류**한다(결과 074 §24.3).
 
 ★**`태그=프리셋` 형태를 받는다** — 🚫`eval_bench_suite` 는 `--preset` 이 **하나뿐**이라
 깊이가 다른 모델을 한 호출에 섞으면 **체크포인트를 못 찾는다**(2026-09-10 발견).
@@ -55,6 +59,48 @@ sys.path.insert(0, str(ROOT / "scripts"))
 OUT = ROOT / "runs" / "census"
 BAND = (0.30, 0.70)
 D9_MIN = 0.60
+# ★★2026-09-10(2차) — **문턱 60% 는 체크포인트 6개를 전제로 한 수다**(증보 요청서 §5 D9 행:
+#   *"우리 6 체크포인트 정답률이 0.3~0.7 인 문항 비율"*). 체크포인트가 n 개면 문항 정답률이
+#   k/n 격자에만 놓여서 **대역에 드는 칸이 n 에 따라 다르다** — n=4 는 {2/4} 한 칸뿐이고
+#   모델이 교환 가능할 때의 상한이 **37.5%** 라 60% 는 도달 불가능한 문턱이 된다(n=6 은 78.1%).
+#   첫 census(2026-09-10)가 체크포인트 4개로 돌아 **"🚫미달" 을 찍었다** — 격자 인공물이었다(결과 074 §24.3).
+#   → n 이 전제와 다르면 **판정을 보류**한다(규칙 57 — 문턱에는 계기의 조건을 붙인다).
+D9_NCKPT = 6
+
+
+def band_cells(n):
+    """대역(BAND)에 드는 격자 칸 k — 문항 정답률 k/n 이 대역 안인 k 들."""
+    return [k for k in range(n + 1) if BAND[0] <= k / float(n) <= BAND[1]]
+
+
+def band_ceiling(n, grid=1000):
+    """모델 n 개가 **교환 가능**(문항마다 같은 p 로 독립 정답)할 때 대역 비율의 최댓값.
+
+    p 를 격자로 훑어 이항 확률 합의 최대를 찾는다. 대역이 대칭이면 p=0.5 에서 최대다
+    (n=4 → 0.375 · n=6 → 0.78125 · n=8 → 0.7109). ⚠️상한이지 기대값이 아니다 — 모델 능력이
+    다르면(교환 불가) 특정 문항 분포에서 이보다 높을 수도 있다.
+    """
+    cells = band_cells(n)
+    best = 0.0
+    for i in range(1, grid):
+        p = i / float(grid)
+        s = sum(math.comb(n, k) * p ** k * (1.0 - p) ** (n - k) for k in cells)
+        best = max(best, s)
+    return best
+
+
+def pair_family_ci(ok_a, ok_b, rels, seed=99, draws=4000):
+    """★규칙 56 — 모델 쌍의 정답률 차를 **관계 가족 재표집**으로 잰 95% CI. 반환 `(lo, hi, 가족수)`.
+
+    문항 독립 McNemar 는 문항이 관계 틀을 공유한다는 것을 모른다 — v2.8 에서 문항 z 6/6 유의가
+    가족 재표집으로 3/6 이었다(결과 074 §24.4). 가족이 둘 미만이면 `(None, None, 가족수)`.
+    ★재표집 본체는 `eval_bench_suite.cluster_bootstrap_ci` 하나다(함정 18 — 두 곳에 안 둔다).
+    """
+    from eval_bench_suite import cluster_bootstrap_ci
+    fam = defaultdict(list)
+    for x, y, r in zip(ok_a, ok_b, rels):
+        fam[r if r is not None else "(없음)"].append(int(x) - int(y))
+    return cluster_bootstrap_ci(fam, draws=draws, seed=seed)
 
 
 def banner(s, ch="="):
@@ -84,7 +130,12 @@ def main():
     ap.add_argument("--seed", type=int, default=99)
     ap.add_argument("--device", default=None)
     ap.add_argument("--no-pmi", action="store_true")
-    ap.add_argument("--out", default=None, help="결과 json 경로(기본 runs/census/<task>.json)")
+    # ★A01(2026-09-10(2차)) — census 도 **어느 판을 쟀는지** 남겨야 한다.
+    ap.add_argument("--heldout-version", default="latest",
+                    help="★(A01) `stage1_heldout` 의 판. `2.7`·`2.8`·`latest`(기본). "
+                         "★결과 json 과 인쇄에 남는다 — 🚫판이 다른 census 는 비교 불가")
+    ap.add_argument("--out", default=None,
+                    help="결과 json 경로(기본 runs/census/<task>.v<판>_census.json — 판이 없는 과제는 <task>_census.json)")
     a = ap.parse_args()
 
     import torch
@@ -103,7 +154,13 @@ def main():
           % (dev, a.task, a.n, "off" if a.no_pmi else "on"))
     print("  🚫이 도구는 **학습하지 않는다.** 체크포인트를 읽기만 한다.")
 
-    rows = load_rows(a.task)
+    # ★★2026-09-10(2차) — `load_rows` 가 `(rows, 판)` 을 돌려준다(A01: held-out 판 명시).
+    #   ⚠️**이 줄이 안 고쳐졌으면 census 가 조용히 깨졌다** — 우리가 외부 패키지를 기각한
+    #   바로 그 사유(*"호출부가 깨진다"*)를 우리 손으로 낼 뻔했다. **diff 의 삭제 쪽을 읽어서** 잡았다.
+    rows, _hv = load_rows(a.task, a.heldout_version)
+    if _hv:
+        print("  ★★held-out 판 = **v%s**  (요청 `%s`) — 🚫판이 다른 수치와 비교 금지"
+              % (_hv, a.heldout_version))
     rnd = random.Random(a.seed)
     idx = list(range(len(rows)))
     rnd.shuffle(idx)
@@ -116,7 +173,7 @@ def main():
                "difficulty": rows[i].get("difficulty_target") or rows[i].get("difficulty"),
                "relation": rows[i].get("relation")} for i in idx]
 
-    per_ok = {}
+    per_ok, per_pick = {}, {}
     for spec in a.models:
         tag, _, pre = spec.partition("=")
         pre = pre or a.preset
@@ -126,12 +183,16 @@ def main():
             continue
         model, cfg, _ = load_model(arch=_arch_of(tag), ckpt_path=str(ck), device=dev)
         model.eval()
-        _picks, ok, _okn, sk, _ce, _mg = run_mc(a.task, items, model, tok, dev,
-                                                a.seq_max, torch, F, a.no_pmi)
+        # ★★2026-09-10(2차) — `run_mc` 가 6-튜플에서 **dict** 로 바뀌었다(A03: 규약 두 열·마진 둘·ID).
+        _res = run_mc(a.task, items, model, tok, dev, a.seq_max, torch, F, a.no_pmi)
+        ok, sk = _res["ok"], _res["skipped"]
         if sk:
             print("  ⚠️%s — 건너뛴 문항 %d개. **문항 정렬이 어긋나므로 census 를 신뢰하지 않는다**"
                   % (tag, sk))
         per_ok[tag] = ok
+        # ★2026-09-10(2차) — **모델이 고른 후보 인덱스**도 남긴다(`run_mc` 의 `rows` 가 이미 들고 있다 · 비용 0).
+        #   결과 074 §24.6: 조건·시간순서에서 네 모델이 모두 우연 아래인데 **어느 오답이 끄는지** 몰랐다(Q14).
+        per_pick[tag] = [r.get("pred_internal") for r in _res.get("rows", [])]
         print("  %-34s (%s)  정답률 %.1f%%  N=%d"
               % (tag, pre, 100.0 * sum(ok) / max(1, len(ok)), len(ok)))
         del model
@@ -156,10 +217,19 @@ def main():
     print("  B2 전부 틀림(바닥)      %5d  (%.1f%%)" % (b2, 100.0 * b2 / n))
     print("  ★일한 문항(B1·B2 밖)   %5d  (%.1f%%)" % (work, 100.0 * work / n))
     d9 = b3 / float(n)
+    cells = band_cells(len(tags))
+    ceil_ = band_ceiling(len(tags))
+    if len(tags) == D9_NCKPT:
+        verdict = "✅통과" if d9 >= D9_MIN else "🚫**미달**"
+    else:
+        # ★규칙 57 — 문턱의 전제(체크포인트 6개)와 다르면 **판정하지 않는다**(결과 074 §24.3)
+        verdict = ("⚠️**판정 보류** — 문턱은 체크포인트 %d개 전제인데 지금 %d개"
+                   % (D9_NCKPT, len(tags)))
     print()
     print("  ★★D9 변별 대역(정답률 %.1f~%.1f)  %5d  (**%.1f%%**)   문턱 >=%.0f%%  -> %s"
-          % (BAND[0], BAND[1], b3, 100.0 * d9, 100.0 * D9_MIN,
-             "✅통과" if d9 >= D9_MIN else "🚫**미달**"))
+          % (BAND[0], BAND[1], b3, 100.0 * d9, 100.0 * D9_MIN, verdict))
+    print("  ★대역에 드는 격자 칸 = %s  ·  교환가능 모델의 대역 상한 **%.1f%%**"
+          % (", ".join("%d/%d" % (k, len(tags)) for k in cells) or "(없음)", 100.0 * ceil_))
     print("  ⚠️★체크포인트가 %d개뿐이라 문항별 정답률의 격자가 성기다"
           " — 대역 판정은 **개수를 늘릴수록** 정확해진다." % len(tags))
 
@@ -210,10 +280,20 @@ def main():
 
     # ------------------------------------------------------------ 저장
     OUT.mkdir(parents=True, exist_ok=True)
-    p = Path(a.out) if a.out else OUT / ("%s_census.json" % a.task)
+    # ★★2026-09-10(2차) — 기본 파일명에 **판을 넣는다.** 종전 이름에는 판이 없어서
+    #   v2.9 census(17:58)가 v2.8 census(14:33)를 **같은 경로에 덮어썼다**(사용자가 v2.8 을
+    #   데이터 폴더에 복사해 둬서 잃지 않았다). 판마다 캐시를 따로 두는 A01 규약을 출력에도 적용한다.
+    _stem = ("%s.v%s" % (a.task, _hv)) if _hv else a.task
+    p = Path(a.out) if a.out else OUT / ("%s_census.json" % _stem)
     p.write_bytes(json.dumps({
         "task": a.task, "n": n, "models": tags,
+        "heldout_version": _hv,          # ★A01 — 어느 판으로 쟀는가
+        "heldout_version_requested": a.heldout_version,
         "b1_saturated": b1, "b2_floor": b2, "b3_band": b3, "d9": d9,
+        # ★규칙 57 — 판정의 전제를 함께 남긴다(체크포인트 수 · 대역 격자 칸 · 교환가능 상한 · 판정)
+        "n_ckpt": len(tags), "d9_cells": cells, "d9_ceiling_exchangeable": ceil_,
+        "d9_verdict": (("pass" if d9 >= D9_MIN else "fail")
+                       if len(tags) == D9_NCKPT else "withheld"),
         "bits_total": tot, "zero_info": z,
         "per_item_rate": rates,
         "ids": [labels[k]["id"] for k in range(n)],
