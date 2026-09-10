@@ -38,7 +38,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PLAN = ROOT / "test_plan"
 INDEX = PLAN / "실험계획목록.md"
-SKIP_DIRS = {".git", "HF", "runs", "data_cache", "__pycache__", "article", "datasets"}
+SKIP_DIRS = {
+    ".git", ".agents", ".codex", "HF", "runs", "data_cache",
+    "__pycache__", "article", "datasets",
+}
 # ★이 도구 자신과 스킬 예시는 스캔하지 않는다 — docstring 이 사고 사례를 인용하므로
 #   자기 자신을 "미작성 참조" 로 신고한다.
 SKIP_FILES = {"scripts/check_plan_numbers.py"}

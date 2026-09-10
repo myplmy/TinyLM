@@ -6,6 +6,7 @@
 - [Stage1 (2) 속성·정도·변이](Stage1_(2)_Attribute_Consolidated_Audit.md)
 - [Stage1 (3) 기능·용도·목적](Stage1_(3)_Function_Consolidated_Audit.md)
 - [Stage1 (4) 개념 경계·반례](Stage1_(4)_Boundary_Consolidated_Audit.md)
+- [Stage1 전체 retrospective naturalness 추가 감사 (2026-09-11)](Stage1_HighDensity_Retrospective_Naturalness_Audit_2026-09-11.md)
 - [교차영역 통합 감사](Stage1_(5-10)_CrossArea_Consolidated_Audit.md)
 - [Stage1 (5) 부분–전체](Stage1_(5)_PartWhole_Consolidated_Audit.md)
 - [Stage1 (6) 상태·상태 변화](Stage1_(6)_StateChange_Consolidated_Audit.md)

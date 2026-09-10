@@ -475,6 +475,29 @@ def _judge_val(rest, flag, default=None):
     return m.group(1) if m else default
 
 
+def _judge_model_spec(raw, default_preset):
+    """판정 도구의 모델 표기 하나를 ``(태그, 프리셋)`` 으로 푼다.
+
+    보통 ``--models`` 는 태그만 받지만 census 는 깊이가 다른 모델을 한
+    호출에 섞기 위해 ``태그=프리셋`` 을 받는다. 종전 코드는 등호의
+    오른쪽을 무조건 태그로 읽어 여섯 체크포인트를 전부 미해석했다.
+    알려진 프리셋 집합을 기준으로 방향을 판별하고, 어느 쪽도 프리셋이
+    아니면 종전 규약(오른쪽이 태그)으로 되돌아간다.
+    """
+    left, sep, right = raw.partition("=")
+    if not sep:
+        return left.split("#", 1)[0], default_preset
+    mod = presets()
+    known = set(getattr(mod, "PRESETS", {}) or {}) if mod else set()
+    if right in known and left not in known:       # census: tag=preset
+        tag, preset = left, right
+    elif left in known and right not in known:     # 허용: preset=tag
+        tag, preset = right, left
+    else:                                           # 종전 동작 보존
+        tag, preset = right, default_preset
+    return tag.split("#", 1)[0], preset
+
+
 def judge_calls(text):
     # `--models` 를 받는 비학습 호출. 🚫도구 이름 목록을 손으로 적지 않는다.
     out = []
@@ -495,12 +518,17 @@ def show_judge(name, rest, strict_hits):
     tok = _judge_val(body, '--tokens', '300M')
     ctok = _judge_val(body, '--ckpt-tokens') or tok
     mm = re.search(r'--models\s+(.*)$', body)
-    tags = []
+    specs = []
     if mm:
         for t in mm.group(1).split():
             if t.startswith('-'):
                 break
-            tags.append(t.split('#', 1)[0].split('=', 1)[-1])
+            specs.append(_judge_model_spec(t, preset))
+    tags = [tag for tag, _pre in specs]
+    spec_presets = [pre for _tag, pre in specs]
+    shown_preset = (spec_presets[0] if spec_presets and len(set(spec_presets)) == 1
+                    else "★모델별(" + " ".join(spec_presets) + ")"
+                    if spec_presets else preset)
     # ★★2026-09-10(2차) — **`common_bpb --tokens` 는 모델별로 여러 값**을 받는다.
     #   🚫`_judge_val` 은 **첫 값 하나만** 읽으므로 두 가족을 섞은 호출에서
     #   뒤쪽 모델을 전부 *"아직 없다"* 로 오판한다(함정 34 — 게이트가 낡은 쪽).
@@ -509,17 +537,17 @@ def show_judge(name, rest, strict_hits):
     per_tok = _tk_all.group(1).split() if _tk_all else []
     if len(per_tok) == len(tags) and len(set(per_tok)) > 1:
         ctoks = per_tok
-        print(f'    {name}   preset={preset} data={data} '
+        print(f'    {name}   preset={shown_preset} data={data} '
               f'tokens=★모델별({" ".join(per_tok)})   모델 {len(tags)}개')
     else:
         ctoks = [ctok] * len(tags)
         extra = (f' ckpt-tokens={ctok}' if ctok != tok else '')
-        print(f'    {name}   preset={preset} data={data} tokens={tok}{extra}   모델 {len(tags)}개')
+        print(f'    {name}   preset={shown_preset} data={data} tokens={tok}{extra}   모델 {len(tags)}개')
     bad = []
-    for t, _ct in zip(tags, ctoks):
-        hit, tried = _resolve_ckpt_names(preset, data, _ct, t)
+    for (t, tpre), _ct in zip(specs, ctoks):
+        hit, tried = _resolve_ckpt_names(tpre, data, _ct, t)
         if hit is None:
-            bad.append((t, tried))
+            bad.append((t, tpre, _ct, tried))
     if not tags:
         print('      ⚠️`--models` 뒤에서 태그를 못 읽었다 — 사람이 본다')
         return
@@ -527,14 +555,15 @@ def show_judge(name, rest, strict_hits):
         print('      ✅전부 해석된다')
         return
     made = trained_tags()
-    hard = [(t, tr) for t, tr in bad if t not in made]
-    soon = [(t, tr) for t, tr in bad if t in made]
-    for t, _tr in soon:
+    hard = [(t, pre, ct, tr) for t, pre, ct, tr in bad if t not in made]
+    soon = [(t, pre, ct, tr) for t, pre, ct, tr in bad if t in made]
+    for t, _pre, _ct, _tr in soon:
         print(f'      ⏳{t} — 아직 없다. **{made[t]} 가 만든다**(선결). 큐 순서로 보장한다')
-    for t, tried in hard:
-        print(f'      🚫**{t}** — 해석 실패. 시도: ' + (', '.join(tried) or '(없음)'))
-        strict_hits.append(f'{name}: 체크포인트 미해석 {t} (tokens={ctok})')
-    for t, _tr in hard:
+    for t, tpre, _ct, tried in hard:
+        print(f'      🚫**{t}** — 해석 실패(preset={tpre}). 시도: '
+              + (', '.join(tried) or '(없음)'))
+        strict_hits.append(f'{name}: 체크포인트 미해석 {t} (preset={tpre}, tokens={_ct})')
+    for t, _pre, _ct, _tr in hard:
         alt = sorted(p.name for p in (ROOT / 'runs' / 'ckpt').glob(f'*_{data}_*_{t}.pt'))
         if alt:
             print(f'      ★같은 태그가 **다른 토큰 칸**에 있다: ' + ', '.join(alt[:3]))
