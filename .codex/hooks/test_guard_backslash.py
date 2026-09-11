@@ -5,12 +5,15 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 import unittest
 from pathlib import Path
 
 GUARD_PATH = Path(__file__).resolve().with_name("guard_backslash.py")
+WINDOWS_WRAPPER_PATH = GUARD_PATH.with_name("guard_backslash_windows.ps1")
+HOOKS_PATH = GUARD_PATH.parents[1] / "hooks.json"
 SPEC = importlib.util.spec_from_file_location("codex_guard_backslash", GUARD_PATH)
 if SPEC is None or SPEC.loader is None:
     raise RuntimeError(f"cannot load {GUARD_PATH}")
@@ -40,6 +43,11 @@ def decision(response: dict[str, object] | None) -> str | None:
         return None
     value = specific.get("permissionDecision")
     return value if isinstance(value, str) else None
+
+
+def windows_handler() -> str:
+    hooks = json.loads(HOOKS_PATH.read_text(encoding="utf-8"))
+    return hooks["hooks"]["PreToolUse"][0]["hooks"][0]["commandWindows"]
 
 
 class GuardEvaluationTests(unittest.TestCase):
@@ -142,6 +150,38 @@ class GuardProcessTests(unittest.TestCase):
         specific = payload["hookSpecificOutput"]
         self.assertEqual(specific["hookEventName"], "PreToolUse")
         self.assertEqual(specific["permissionDecision"], "deny")
+
+    def test_windows_handler_uses_quote_free_git_root_wrapper(self) -> None:
+        handler = windows_handler()
+        self.assertNotIn('"', handler)
+        self.assertTrue(handler.startswith("cmd.exe /d /q /c powershell.exe "))
+        self.assertIn(
+            "-Command . (Join-Path (git rev-parse --show-toplevel) ",
+            handler,
+        )
+        self.assertTrue(
+            handler.endswith("'.codex/hooks/guard_backslash_windows.ps1')")
+        )
+        self.assertTrue(WINDOWS_WRAPPER_PATH.is_file())
+
+    @unittest.skipUnless(sys.platform == "win32", "Windows hook launcher contract")
+    def test_windows_handler_survives_codex_outer_quotes(self) -> None:
+        comspec = os.environ.get("COMSPEC", "cmd.exe")
+        command_line = f'{comspec} /d /s /c "{windows_handler()}"'
+        for cwd in (GUARD_PATH.parents[2], GUARD_PATH.parents[2] / "scripts"):
+            with self.subTest(cwd=cwd):
+                completed = subprocess.run(
+                    command_line,
+                    cwd=cwd,
+                    input=json.dumps(event(r"Write-Output '한글 a\nb' > probe.txt")),
+                    text=True,
+                    encoding="utf-8",
+                    capture_output=True,
+                    check=False,
+                )
+                self.assertEqual(completed.returncode, 0, completed.stderr)
+                payload = json.loads(completed.stdout)
+                self.assertEqual(decision(payload), "deny")
 
 
 if __name__ == "__main__":

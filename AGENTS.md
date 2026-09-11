@@ -111,7 +111,7 @@ Codex는 `.claude/**`, `CLAUDE.md`, 루트 `ai_dev_tool/00~08`을 지침·스킬
 | `DESIGNED` | 문서 계약만 있음 | 구현·동작 완료 |
 | `MIGRATED_UNVERIFIED` | 독립 파일로 이식됨 | 구문·로딩·실제 작동 |
 | `STATIC_ONLY` | 허용된 정적 검사 통과 | 모델 품질·동적 안전·사용자 E2E |
-| `E2E_NOT_RUN` | 새 세션 실제 검증 전 | 활성 환경 완료 |
+| `E2E_NOT_RUN` | 성공한 새 세션 종합검증 증거 없음 | 활성 환경 완료 |
 | `ACTIVE_VERIFIED` | 신뢰된 새 세션에서 실제 관찰 | 검증 범위 밖 기능 |
 | `NOT_RUN` | 해당 실행을 하지 않음 | 통과·실패 어느 쪽도 아님 |
 

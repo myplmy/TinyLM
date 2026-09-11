@@ -3,8 +3,9 @@
 **Read this one every session.** It is the short list. Rationale, evidence and war
 stories live in the Codex-owned ledgers (01–08) and shared project evidence; this file only says
 *what to do*. Korean mirror for user review: [`00_작업규약_한글판.md`](00_작업규약_한글판.md)
-— same IDs. P2 compared both ID sets read-only. Wiring `scripts/check_rules_sync.py`
-to the Codex paths and running the aggregate check belong to P7 and remain `NOT_RUN`.
+— same IDs. P2 compared both ID sets read-only. The Codex-only P7 environment aggregate
+later passed 20/20; the shared project-wide `scripts/check_static_all.py` remained outside
+that environment-only run because it includes protected-data checks.
 
 > **Environment boundary:** [`README.md`](README.md). Codex does not use `.claude/**`,
 > `CLAUDE.md`, or root `ai_dev_tool/00–08` as runtime instructions. Root 09 is referenced,

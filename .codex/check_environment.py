@@ -660,12 +660,42 @@ def main() -> int:
         command_hook = commands[0]
         if command_hook.get("type") != "command":
             return False, "hook type is not command"
-        for key in ("command", "commandWindows"):
-            value = command_hook.get(key)
-            if not isinstance(value, str) or "guard_backslash.py" not in value:
-                return False, f"{key} does not resolve the independent guard"
-            if re.search(r"(?i)\b[A-Z]:[\\/]", value):
-                return False, f"{key} contains an absolute drive path"
+        command = command_hook.get("command")
+        if not isinstance(command, str) or "guard_backslash.py" not in command:
+            return False, "command does not resolve the independent guard"
+        if re.search(r"(?i)\b[A-Z]:[\\/]", command):
+            return False, "command contains an absolute drive path"
+
+        windows_command = command_hook.get("commandWindows")
+        if not isinstance(windows_command, str):
+            return False, "commandWindows is missing"
+        if re.search(r"(?i)\b[A-Z]:[\\/]", windows_command):
+            return False, "commandWindows contains an absolute drive path"
+        if '"' in windows_command:
+            return False, "commandWindows can be broken by Codex cmd /C outer quoting"
+        if not windows_command.startswith("cmd.exe /d /q /c powershell.exe "):
+            return False, "commandWindows lacks the quote-free nested cmd entrypoint"
+        root_expression = (
+            "-Command . (Join-Path (git rev-parse --show-toplevel) "
+            "'.codex/hooks/guard_backslash_windows.ps1')"
+        )
+        if not windows_command.endswith(root_expression):
+            return False, "commandWindows does not resolve the wrapper from the Git root"
+
+        wrapper_text = read_utf8(
+            CODEX_ROOT / "hooks" / "guard_backslash_windows.ps1"
+        )
+        wrapper_required = (
+            "guard_backslash.py",
+            "$PSScriptRoot",
+            "[Console]::In.ReadToEnd()",
+            "systemMessage",
+        )
+        wrapper_missing = [
+            item for item in wrapper_required if item not in wrapper_text
+        ]
+        if wrapper_missing:
+            return False, f"Windows wrapper missing contract keys {wrapper_missing}"
         guard_text = read_utf8(CODEX_ROOT / "hooks" / "guard_backslash.py")
         required = (
             "hookSpecificOutput",
@@ -677,7 +707,10 @@ def main() -> int:
         missing = [item for item in required if item not in guard_text]
         if missing:
             return False, f"guard missing output/input keys {missing}"
-        return True, "single hooks.json source, canonical matcher, portable commands and structured deny"
+        return True, (
+            "single hooks.json source, canonical matcher, quote-free Windows wrapper, "
+            "portable commands and structured deny"
+        )
 
     ledger.guarded("Codex hook contract", check_hook_contract)
 
@@ -696,7 +729,7 @@ def main() -> int:
         check=False,
     )
     hook_test_detail = (
-        "14 mock tests passed"
+        "16 hook tests passed"
         if completed.returncode == 0
         else (completed.stderr or completed.stdout).strip()
     )
