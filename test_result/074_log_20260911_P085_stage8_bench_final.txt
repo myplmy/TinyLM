@@ -1,0 +1,672 @@
+[1/6] korean held-out on the new no-recursion candidates
+
+==============================================================================
+[runlog] 2026-09-11 03:50:39  name=P085_stage8_bench_final
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task stage1_heldout --n 400 --preset m100s12 --heldout-version 2.8 --per-item-jsonl runs/bench/P085_stage8_heldout_v28_items.jsonl --models d16_cla2_norecur d16_cla2_norecur_muon15 d18_cla2_norecur_muon15 --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=400  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [stage1_heldout] ★한국어 4지선다 관계추론(자체)   kind=mc   공식 metric=(우리 것)
+================================================================================================
+  ★★held-out 판 = **v2.8**  (요청 `2.8`)  · 문항 4,500개
+     🚫**판이 다른 수치와 비교하지 않는다** — v2.7(300)과 v2.8(4,500)은 다른 계기다
+  전체 4,500행 중 400문항 (seed=99)  id 앞 10개: [2, 31, 33, 39, 44, 53, 55, 66, 74, 97]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  d16_cla2_norecur   우도acc **47.8%** [95%CI 42.9%~52.6%]  길이정규acc 46.2%  정답CE 3.9045  ★평균마진 +0.0834  ★결정마진 -0.0377  N=400 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **47.8%** / 공식 하네스(합logL) **46.2%** (차 +1.50pp)  ·  우리 길이정규(토큰) 46.2% / 공식 acc_norm(문자) 46.2% (차 +0.00pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 400행(+건너뜀 0행) -^> runs\bench\P085_stage8_heldout_v28_items.jsonl
+
+  d16_cla2_norecur_muon15 우도acc **33.8%** [95%CI 29.3%~38.5%]  길이정규acc 46.5%  정답CE 3.9742  ★평균마진 +0.0650  ★결정마진 -0.0587  N=400 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **33.8%** / 공식 하네스(합logL) **46.8%** (차 -13.00pp)  ·  우리 길이정규(토큰) 46.5% / 공식 acc_norm(문자) 46.8% (차 -0.25pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 400행(+건너뜀 0행) -^> runs\bench\P085_stage8_heldout_v28_items.jsonl
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s14_ko-en_300M_d18_cla2_norecur_muon15.pt
+
+  d18_cla2_norecur_muon15 우도acc **45.5%** [95%CI 40.7%~50.4%]  길이정규acc 46.0%  정답CE 3.9025  ★평균마진 +0.0786  ★결정마진 -0.0351  N=400 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **45.5%** / 공식 하네스(합logL) **46.0%** (차 -0.50pp)  ·  우리 길이정규(토큰) 46.0% / 공식 acc_norm(문자) 46.0% (차 +0.00pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 400행(+건너뜀 0행) -^> runs\bench\P085_stage8_heldout_v28_items.jsonl
+
+  ── paired 정답CE 비교 (★**ID 교집합** 400문항) ──
+     모델별 보유: d16_cla2_norecur 400 · d16_cla2_norecur_muon15 400 · d18_cla2_norecur_muon15 400
+    d16_cla2_norecur - d16_cla2_norecur_muon15: Δ -0.0697 ± 0.0093  SD 0.0944 SE 0.0047 t -14.75  승률 20.5%  필요N(SE0.002) **2,230**
+      ★**부호는 확정이다**(t -14.75). 🚫단 정밀도 목표 SE 0.002 에는 400 이 부족하다(필요 2,230) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.0952, -0.0458] (가족 8개 · 문항 CI 의 **2.67배**)  ✅0 을 안 포함한다
+    d16_cla2_norecur - d18_cla2_norecur_muon15: Δ +0.0021 ± 0.0101  SD 0.1030 SE 0.0051 t +0.40  승률 45.8%  필요N(SE0.002) **2,651**
+      ⚠️★**400 문항으로는 부족하다**(필요 2,651) **그리고** t +0.40 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+      ★★가족 재표집 95%CI [-0.0247, +0.0329] (가족 8개 · 문항 CI 의 **2.85배**)  🚫★**0 을 포함한다** — 문항을 독립으로 보면 유의했다
+    d16_cla2_norecur_muon15 - d18_cla2_norecur_muon15: Δ +0.0717 ± 0.0092  SD 0.0938 SE 0.0047 t +15.29  승률 78.2%  필요N(SE0.002) **2,201**
+      ★**부호는 확정이다**(t +15.29). 🚫단 정밀도 목표 SE 0.002 에는 400 이 부족하다(필요 2,201) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.0387, +0.1066] (가족 8개 · 문항 CI 의 **3.69배**)  ✅0 을 안 포함한다
+
+  ── paired 정확도 비교 · McNemar (★**ID 교집합** 400문항) ──
+     ★비대응 CI 가 겹쳐도 대응 검정은 가를 수 있다. 🚫반대도 있다.
+    d16_cla2_norecur - d16_cla2_norecur_muon15: Δacc +14.00pp  불일치 89/33  z +5.07  ★정확p **4.04e-07**  ★**유의**  필요n(z=2) **63** / 보유 400
+      ★★가족 재표집 Δacc 95%CI [+1.04pp, +28.09pp] (가족 8개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    d16_cla2_norecur - d18_cla2_norecur_muon15: Δacc +2.25pp  불일치 50/41  z +0.94  ★정확p **0.4018**  🚫**못 가른다**  필요n(z=2) **1,798** / 보유 400
+      ★★가족 재표집 Δacc 95%CI [-6.02pp, +9.71pp] (가족 8개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 4.5배 늘려야 한다
+    d16_cla2_norecur_muon15 - d18_cla2_norecur_muon15: Δacc -11.75pp  불일치 39/86  z -4.20  ★정확p **3.178e-05**  ★**유의**  필요n(z=2) **91** / 보유 400
+      ★★가족 재표집 Δacc 95%CI [-26.68pp, +1.46pp] (가족 8개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  stage1_heldout  d16_cla2_norecur        47.8%  ★판 v2.8 / 정답CE 3.9045 / 평균마진 +0.0834 / ★결정마진 -0.0377 / 공식규약 46.2%(+1.5pp)
+  stage1_heldout  d16_cla2_norecur_muon15    33.8%  ★판 v2.8 / 정답CE 3.9742 / 평균마진 +0.0650 / ★결정마진 -0.0587 / 공식규약 46.8%(-13.0pp)
+  stage1_heldout  d18_cla2_norecur_muon15    45.5%  ★판 v2.8 / 정답CE 3.9025 / 평균마진 +0.0786 / ★결정마진 -0.0351 / 공식규약 46.0%(-0.5pp)
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run m100s12_ko-en_300M_d16_cla2_norecur
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260911_035317-m100s12_ko-en_300M_d16_cla2_norecur
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s12_ko-en_300M_d16_cla2_norecur
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur
+wandb: updating run metadata; uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur-benchtable_wide-kbv3Ng
+wandb: uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur-benchtable_wide-kbv3Ng
+wandb: uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur-benchtable_wide-kbv3Ng; uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2294_f699f59a381f37c2c489.table.json; uploading wandb-summary.json (+ 1 more)
+wandb: uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur-benchtable_wide-kbv3Ng
+wandb: uploading history steps 27-27, summary
+wandb: 
+wandb: Run summary:
+wandb:      bench/arc_easy/acc 0.35017
+wandb: bench/arc_easy/acc_norm 0.33544
+wandb:  bench/arc_easy/gold_ce 6.5625
+wandb:        bench/arc_easy/n 5000
+wandb:  bench/arc_easy/n_asked 2376
+wandb:      bench/arc_easy/pmi True
+wandb:     bench/arc_easy/seed 99
+wandb:  bench/arc_easy/skipped 0
+wandb:      bench/arc_easy/tag d16_cla2_norecur
+wandb:     bench/hellaswag/acc 0.2848
+wandb:                     +66 ...
+wandb: 
+wandb:  View run m100s12_ko-en_300M_d16_cla2_norecur at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260911_035317-m100s12_ko-en_300M_d16_cla2_norecur\logs
+  ✅ m100s12_ko-en_300M_d16_cla2_norecur  (1과제 · summary 키 15개 · 표 3행 [정본 갱신 3 삽입 0])
+wandb: setting up run m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260911_035327-m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur_muon15
+Traceback (most recent call last):
+  File "z:\TinyLM\scripts\eval_bench_suite.py", line 1313, in <module>
+    sys.exit(main())
+  File "z:\TinyLM\scripts\eval_bench_suite.py", line 1097, in main
+    _push_wandb(all_summary, a)
+  File "z:\TinyLM\scripts\eval_bench_suite.py", line 1291, in _push_wandb
+    upd, ins = bench_tsv.upsert(long_rows)
+  File "Z:\TinyLM\scripts\bench_tsv.py", line 126, in upsert
+    save(cur)
+  File "Z:\TinyLM\scripts\bench_tsv.py", line 109, in save
+    tmp.replace(TSV)
+  File "W:\miniforge3\envs\collatz_torch\lib\pathlib.py", line 1247, in replace
+    self._accessor.replace(self, target)
+PermissionError: [WinError 5] 액세스가 거부되었습니다: 'Z:\\TinyLM\\test_result\\bench_results.tsv.tmp' -> 'Z:\\TinyLM\\test_result\\bench_results.tsv'
+Traceback (most recent call last):
+  File "z:\TinyLM\scripts\eval_bench_suite.py", line 1313, in <module>
+    sys.exit(main())
+  File "z:\TinyLM\scripts\eval_bench_suite.py", line 1097, in main
+    _push_wandb(all_summary, a)
+  File "z:\TinyLM\scripts\eval_bench_suite.py", line 1291, in _push_wandb
+    upd, ins = bench_tsv.upsert(long_rows)
+  File "Z:\TinyLM\scripts\bench_tsv.py", line 126, in upsert
+    save(cur)
+  File "Z:\TinyLM\scripts\bench_tsv.py", line 109, in save
+    tmp.replace(TSV)
+  File "W:\miniforge3\envs\collatz_torch\lib\pathlib.py", line 1247, in replace
+    self._accessor.replace(self, target)
+PermissionError: [WinError 5] 액세스가 거부되었습니다: 'Z:\\TinyLM\\test_result\\bench_results.tsv.tmp' -> 'Z:\\TinyLM\\test_result\\bench_results.tsv'
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mm100s12_ko-en_300M_d16_cla2_norecur_muon15[0m at: [34mhttps://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur_muon15[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb\run-20260911_035327-m100s12_ko-en_300M_d16_cla2_norecur_muon15\logs[0m
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 2.9분  (2026-09-11 03:53:33)
+==============================================================================
+[1b/6] the SAME models on held-out v2.7 - the two rulers side by side
+
+==============================================================================
+[runlog] 2026-09-11 03:53:48  name=P085_stage8_bench_final
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task stage1_heldout --n 300 --preset m100s12 --heldout-version 2.7 --models d16_cla2_norecur d16_cla2_norecur_muon15 d18_cla2_norecur_muon15
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=300  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [stage1_heldout] ★한국어 4지선다 관계추론(자체)   kind=mc   공식 metric=(우리 것)
+================================================================================================
+  ★★held-out 판 = **v2.7**  (요청 `2.7`)  · 문항 300개
+     🚫**판이 다른 수치와 비교하지 않는다** — v2.7(300)과 v2.8(4,500)은 다른 계기다
+  전체 300행 중 300문항 (seed=99)  id 앞 10개: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  d16_cla2_norecur   우도acc **27.0%** [95%CI 22.3%~32.3%]  길이정규acc 26.0%  정답CE 4.4272  ★평균마진 +0.0203  ★결정마진 -0.0804  N=300 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **27.0%** / 공식 하네스(합logL) **29.3%** (차 -2.33pp)  ·  우리 길이정규(토큰) 26.0% / 공식 acc_norm(문자) 34.7% (차 -8.67pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+
+  d16_cla2_norecur_muon15 우도acc **28.7%** [95%CI 23.8%~34.0%]  길이정규acc 23.0%  정답CE 4.5348  ★평균마진 +0.0287  ★결정마진 -0.0609  N=300 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **28.7%** / 공식 하네스(합logL) **25.7%** (차 +3.00pp)  ·  우리 길이정규(토큰) 23.0% / 공식 acc_norm(문자) 30.7% (차 -7.67pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s14_ko-en_300M_d18_cla2_norecur_muon15.pt
+
+  d18_cla2_norecur_muon15 우도acc **35.0%** [95%CI 29.8%~40.6%]  길이정규acc 29.0%  정답CE 4.4481  ★평균마진 +0.0388  ★결정마진 -0.0487  N=300 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **35.0%** / 공식 하네스(합logL) **32.7%** (차 +2.33pp)  ·  우리 길이정규(토큰) 29.0% / 공식 acc_norm(문자) 35.0% (차 -6.00pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+
+  ── paired 정답CE 비교 (★**ID 교집합** 300문항) ──
+     모델별 보유: d16_cla2_norecur 300 · d16_cla2_norecur_muon15 300 · d18_cla2_norecur_muon15 300
+    d16_cla2_norecur - d16_cla2_norecur_muon15: Δ -0.1077 ± 0.0209  SD 0.1851 SE 0.0107 t -10.08  승률 27.7%  필요N(SE0.002) **8,562**
+      ★**부호는 확정이다**(t -10.08). 🚫단 정밀도 목표 SE 0.002 에는 300 이 부족하다(필요 8,562) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.1263, -0.0465] (가족 3개 · 문항 CI 의 **1.91배**)  ✅0 을 안 포함한다
+    d16_cla2_norecur - d18_cla2_norecur_muon15: Δ -0.0210 ± 0.0189  SD 0.1673 SE 0.0097 t -2.17  승률 43.7%  필요N(SE0.002) **6,995**
+      ★**부호는 확정이다**(t -2.17). 🚫단 정밀도 목표 SE 0.002 에는 300 이 부족하다(필요 6,995) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.0380, +0.0278] (가족 3개 · 문항 CI 의 **1.74배**)  🚫★**0 을 포함한다** — 문항을 독립으로 보면 유의했다
+    d16_cla2_norecur_muon15 - d18_cla2_norecur_muon15: Δ +0.0867 ± 0.0194  SD 0.1714 SE 0.0099 t +8.76  승률 75.3%  필요N(SE0.002) **7,343**
+      ★**부호는 확정이다**(t +8.76). 🚫단 정밀도 목표 SE 0.002 에는 300 이 부족하다(필요 7,343) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.0743, +0.0924] (가족 3개 · 문항 CI 의 **0.47배**)  ✅0 을 안 포함한다
+
+  ── paired 정확도 비교 · McNemar (★**ID 교집합** 300문항) ──
+     ★비대응 CI 가 겹쳐도 대응 검정은 가를 수 있다. 🚫반대도 있다.
+    d16_cla2_norecur - d16_cla2_norecur_muon15: Δacc -1.67pp  불일치 30/35  z -0.62  ★정확p **0.6201**  🚫**못 가른다**  필요n(z=2) **3,120** / 보유 300
+      ★★가족 재표집 Δacc 95%CI [-6.67pp, +10.00pp] (가족 3개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 10.4배 늘려야 한다
+    d16_cla2_norecur - d18_cla2_norecur_muon15: Δacc -8.00pp  불일치 22/46  z -2.91  ★정확p **0.004903**  ★**유의**  필요n(z=2) **142** / 보유 300
+      ★★가족 재표집 Δacc 95%CI [-20.00pp, -1.67pp] (가족 3개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    d16_cla2_norecur_muon15 - d18_cla2_norecur_muon15: Δacc -6.33pp  불일치 30/49  z -2.14  ★정확p **0.04217**  ★**유의**  필요n(z=2) **263** / 보유 300
+      ★★가족 재표집 Δacc 95%CI [-18.89pp, +3.33pp] (가족 3개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  stage1_heldout  d16_cla2_norecur        27.0%  ★판 v2.7 / 정답CE 4.4272 / 평균마진 +0.0203 / ★결정마진 -0.0804 / 공식규약 29.3%(-2.3pp)
+  stage1_heldout  d16_cla2_norecur_muon15    28.7%  ★판 v2.7 / 정답CE 4.5348 / 평균마진 +0.0287 / ★결정마진 -0.0609 / 공식규약 25.7%(+3.0pp)
+  stage1_heldout  d18_cla2_norecur_muon15    35.0%  ★판 v2.7 / 정답CE 4.4481 / 평균마진 +0.0388 / ★결정마진 -0.0487 / 공식규약 32.7%(+2.3pp)
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.8분  (2026-09-11 03:55:38)
+==============================================================================
+[3/6] arc easy on the same three
+
+==============================================================================
+[runlog] 2026-09-11 03:55:54  name=P085_stage8_bench_final
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task arc_easy --n 400 --preset m100s12 --models d16_cla2_norecur d16_cla2_norecur_muon15 d18_cla2_norecur_muon15 --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=400  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [arc_easy] 4지선다 과학   kind=mc   공식 metric=acc / acc_norm
+================================================================================================
+  전체 2,376행 중 400문항 (seed=99)  id 앞 10개: [4, 15, 19, 22, 43, 50, 56, 80, 81, 90]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  d16_cla2_norecur   우도acc **35.8%** [95%CI 31.2%~40.6%]  길이정규acc 29.5%  정답CE 6.6854  ★평균마진 +0.2555  ★결정마진 -0.3302  N=400 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **35.8%** / 공식 하네스(합logL) **31.2%** (차 +4.50pp)  ·  우리 길이정규(토큰) 29.5% / 공식 acc_norm(문자) 36.2% (차 -6.75pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+
+  d16_cla2_norecur_muon15 우도acc **38.8%** [95%CI 34.1%~43.6%]  길이정규acc 31.0%  정답CE 6.6382  ★평균마진 +0.3364  ★결정마진 -0.2147  N=400 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **38.8%** / 공식 하네스(합logL) **36.0%** (차 +2.75pp)  ·  우리 길이정규(토큰) 31.0% / 공식 acc_norm(문자) 36.8% (차 -5.75pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s14_ko-en_300M_d18_cla2_norecur_muon15.pt
+
+  d18_cla2_norecur_muon15 우도acc **38.8%** [95%CI 34.1%~43.6%]  길이정규acc 32.2%  정답CE 6.6436  ★평균마진 +0.3252  ★결정마진 -0.2413  N=400 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **38.8%** / 공식 하네스(합logL) **36.2%** (차 +2.50pp)  ·  우리 길이정규(토큰) 32.2% / 공식 acc_norm(문자) 36.5% (차 -4.25pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+
+  ── paired 정답CE 비교 (★**ID 교집합** 400문항) ──
+     모델별 보유: d16_cla2_norecur 400 · d16_cla2_norecur_muon15 400 · d18_cla2_norecur_muon15 400
+    d16_cla2_norecur - d16_cla2_norecur_muon15: Δ +0.0472 ± 0.0624  SD 0.6363 SE 0.0318 t +1.48  승률 54.5%  필요N(SE0.002) **101,211**
+      ⚠️★**400 문항으로는 부족하다**(필요 101,211) **그리고** t +1.48 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+      ★★가족 재표집 95%CI [-0.0164, +0.1075] (가족 400개 · 문항 CI 의 **0.99배**)  🚫★**0 을 포함한다** — 문항을 독립으로 보면 유의했다
+    d16_cla2_norecur - d18_cla2_norecur_muon15: Δ +0.0418 ± 0.0626  SD 0.6391 SE 0.0320 t +1.31  승률 56.5%  필요N(SE0.002) **102,101**
+      ⚠️★**400 문항으로는 부족하다**(필요 102,101) **그리고** t +1.31 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+      ★★가족 재표집 95%CI [-0.0199, +0.1059] (가족 400개 · 문항 CI 의 **1.00배**)  🚫★**0 을 포함한다** — 문항을 독립으로 보면 유의했다
+    d16_cla2_norecur_muon15 - d18_cla2_norecur_muon15: Δ -0.0054 ± 0.0566  SD 0.5772 SE 0.0289 t -0.19  승률 48.5%  필요N(SE0.002) **83,303**
+      ⚠️★**400 문항으로는 부족하다**(필요 83,303) **그리고** t -0.19 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+      ★★가족 재표집 95%CI [-0.0605, +0.0527] (가족 400개 · 문항 CI 의 **1.00배**)  🚫★**0 을 포함한다** — 문항을 독립으로 보면 유의했다
+
+  ── paired 정확도 비교 · McNemar (★**ID 교집합** 400문항) ──
+     ★비대응 CI 가 겹쳐도 대응 검정은 가를 수 있다. 🚫반대도 있다.
+    d16_cla2_norecur - d16_cla2_norecur_muon15: Δacc -3.00pp  불일치 42/54  z -1.22  ★정확p **0.2615**  🚫**못 가른다**  필요n(z=2) **1,067** / 보유 400
+      ★★가족 재표집 Δacc 95%CI [-8.00pp, +1.50pp] (가족 400개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 2.7배 늘려야 한다
+    d16_cla2_norecur - d18_cla2_norecur_muon15: Δacc -3.00pp  불일치 45/57  z -1.19  ★정확p **0.276**  🚫**못 가른다**  필요n(z=2) **1,134** / 보유 400
+      ★★가족 재표집 Δacc 95%CI [-8.25pp, +2.00pp] (가족 400개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 2.8배 늘려야 한다
+    d16_cla2_norecur_muon15 - d18_cla2_norecur_muon15: Δacc +0.00pp  불일치 52/52  z +0.00  ★정확p **1**  🚫**못 가른다**  필요n(z=2) **0** / 보유 400
+      ★★가족 재표집 Δacc 95%CI [-5.00pp, +5.25pp] (가족 400개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  arc_easy        d16_cla2_norecur        35.8%  정답CE 6.6854 / 평균마진 +0.2555 / ★결정마진 -0.3302 / 공식규약 31.2%(+4.5pp)
+  arc_easy        d16_cla2_norecur_muon15    38.8%  정답CE 6.6382 / 평균마진 +0.3364 / ★결정마진 -0.2147 / 공식규약 36.0%(+2.8pp)
+  arc_easy        d18_cla2_norecur_muon15    38.8%  정답CE 6.6436 / 평균마진 +0.3252 / ★결정마진 -0.2413 / 공식규약 36.2%(+2.5pp)
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run m100s12_ko-en_300M_d16_cla2_norecur
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260911_035826-m100s12_ko-en_300M_d16_cla2_norecur
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s12_ko-en_300M_d16_cla2_norecur
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur
+wandb: updating run metadata; uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur-benchtable_wide-kbv3Ng
+wandb: uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur-benchtable_wide-kbv3Ng
+wandb: uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2295_4248fb691b292fe8d26d.table.json; uploading wandb-summary.json
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy/acc 0.3575
+wandb:             bench/arc_easy/acc_norm 0.295
+wandb:              bench/arc_easy/gold_ce 6.68539
+wandb:          bench/arc_easy/gold_margin 0.25549
+wandb: bench/arc_easy/gold_margin_decision -0.3302
+wandb:          bench/arc_easy/harness_acc 0.3125
+wandb:     bench/arc_easy/harness_acc_norm 0.3625
+wandb:                    bench/arc_easy/n 400
+wandb:              bench/arc_easy/n_asked 400
+wandb:                  bench/arc_easy/pmi True
+wandb:                                 +71 ...
+wandb: 
+wandb:  View run m100s12_ko-en_300M_d16_cla2_norecur at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260911_035826-m100s12_ko-en_300M_d16_cla2_norecur\logs
+  ✅ m100s12_ko-en_300M_d16_cla2_norecur  (1과제 · summary 키 14개 · 표 3행 [정본 갱신 3 삽입 0])
+wandb: setting up run m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260911_035834-m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb: updating run metadata; uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur_muon15-benchtable_wide-w0xnqA
+wandb: uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur_muon15-benchtable_wide-w0xnqA
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2290_46aab0a4dcab614713a7.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 23-23, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy/acc 0.3875
+wandb:             bench/arc_easy/acc_norm 0.31
+wandb:              bench/arc_easy/gold_ce 6.63823
+wandb:          bench/arc_easy/gold_margin 0.33635
+wandb: bench/arc_easy/gold_margin_decision -0.21475
+wandb:          bench/arc_easy/harness_acc 0.36
+wandb:     bench/arc_easy/harness_acc_norm 0.3675
+wandb:                    bench/arc_easy/n 400
+wandb:              bench/arc_easy/n_asked 400
+wandb:                  bench/arc_easy/pmi True
+wandb:                                 +62 ...
+wandb: 
+wandb:  View run m100s12_ko-en_300M_d16_cla2_norecur_muon15 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260911_035834-m100s12_ko-en_300M_d16_cla2_norecur_muon15\logs
+  ✅ m100s12_ko-en_300M_d16_cla2_norecur_muon15  (1과제 · summary 키 14개 · 표 1행 [정본 갱신 0 삽입 3])
+wandb: setting up run m100s14_ko-en_300M_d18_cla2_norecur_muon15
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260911_035840-m100s14_ko-en_300M_d18_cla2_norecur_muon15
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s14_ko-en_300M_d18_cla2_norecur_muon15
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s14_ko-en_300M_d18_cla2_norecur_muon15
+wandb: updating run metadata; uploading artifact run-m100s14_ko-en_300M_d18_cla2_norecur_muon15-benchtable_wide-Ml86Nw
+wandb: uploading artifact run-m100s14_ko-en_300M_d18_cla2_norecur_muon15-benchtable_wide-Ml86Nw
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2290_9dcfd07e1852d00a8243.table.json; uploading wandb-summary.json
+wandb: uploading history steps 23-23, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy/acc 0.3875
+wandb:             bench/arc_easy/acc_norm 0.3225
+wandb:              bench/arc_easy/gold_ce 6.64358
+wandb:          bench/arc_easy/gold_margin 0.32519
+wandb: bench/arc_easy/gold_margin_decision -0.2413
+wandb:          bench/arc_easy/harness_acc 0.3625
+wandb:     bench/arc_easy/harness_acc_norm 0.365
+wandb:                    bench/arc_easy/n 400
+wandb:              bench/arc_easy/n_asked 400
+wandb:                  bench/arc_easy/pmi True
+wandb:                                 +47 ...
+wandb: 
+wandb:  View run m100s14_ko-en_300M_d18_cla2_norecur_muon15 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s14_ko-en_300M_d18_cla2_norecur_muon15
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260911_035840-m100s14_ko-en_300M_d18_cla2_norecur_muon15\logs
+  ✅ m100s14_ko-en_300M_d18_cla2_norecur_muon15  (1과제 · summary 키 14개 · 표 1행 [정본 갱신 0 삽입 3])
+
+  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고
+     프로젝트도 같은 `tinylm` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.
+     키는 `bench/<과제>/<지표>` 다. 올림 3개 · 건너뜀 0개.
+  ★표 키는 `bench/table_wide`(wide) 이고 정본은 `test_result\bench_results.tsv` 다 — 표는 매번 **전량 재구성**한다.
+     Vega y축은 `${field:y_metric}` 하나로 acc/acc_norm/gold_ce 를 바꾼다(제안서 §4.2.3).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 2.9분  (2026-09-11 03:58:48)
+==============================================================================
+[4/6] kobest hellaswag on the same three
+
+==============================================================================
+[runlog] 2026-09-11 03:59:03  name=P085_stage8_bench_final
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\eval_bench_suite.py --task kobest_hellaswag --n 400 --preset m100s12 --models d16_cla2_norecur d16_cla2_norecur_muon15 d18_cla2_norecur_muon15 --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=400  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [kobest_hellaswag] ★한국어 4지선다 문장완성   kind=mc   공식 metric=F1(공식)
+================================================================================================
+  전체 500행 중 400문항 (seed=99)  id 앞 10개: [0, 1, 4, 5, 6, 7, 8, 9, 10, 12]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  d16_cla2_norecur   우도acc **42.0%** [95%CI 37.3%~46.9%]  길이정규acc 39.2%  정답CE 4.0812  ★평균마진 +0.2740  ★결정마진 -0.1436  N=400 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **42.0%** / 공식 하네스(합logL) **29.0%** (차 +13.00pp)  ·  우리 길이정규(토큰) 39.2% / 공식 acc_norm(문자) 39.0% (차 +0.25pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+
+  d16_cla2_norecur_muon15 우도acc **43.0%** [95%CI 38.2%~47.9%]  길이정규acc 42.5%  정답CE 4.0413  ★평균마진 +0.2820  ★결정마진 -0.1114  N=400 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **43.0%** / 공식 하네스(합logL) **30.2%** (차 +12.75pp)  ·  우리 길이정규(토큰) 42.5% / 공식 acc_norm(문자) 37.8% (차 +4.75pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s14_ko-en_300M_d18_cla2_norecur_muon15.pt
+
+  d18_cla2_norecur_muon15 우도acc **44.2%** [95%CI 39.5%~49.1%]  길이정규acc 41.2%  정답CE 4.0047  ★평균마진 +0.2903  ★결정마진 -0.1234  N=400 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **44.2%** / 공식 하네스(합logL) **29.0%** (차 +15.25pp)  ·  우리 길이정규(토큰) 41.2% / 공식 acc_norm(문자) 41.8% (차 -0.50pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+
+  ── paired 정답CE 비교 (★**ID 교집합** 400문항) ──
+     모델별 보유: d16_cla2_norecur 400 · d16_cla2_norecur_muon15 400 · d18_cla2_norecur_muon15 400
+    d16_cla2_norecur - d16_cla2_norecur_muon15: Δ +0.0399 ± 0.0230  SD 0.2343 SE 0.0117 t +3.41  승률 61.3%  필요N(SE0.002) **13,729**
+      ★**부호는 확정이다**(t +3.41). 🚫단 정밀도 목표 SE 0.002 에는 400 이 부족하다(필요 13,729) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.0166, +0.0626] (가족 400개 · 문항 CI 의 **1.00배**)  ✅0 을 안 포함한다
+    d16_cla2_norecur - d18_cla2_norecur_muon15: Δ +0.0766 ± 0.0226  SD 0.2305 SE 0.0115 t +6.64  승률 62.0%  필요N(SE0.002) **13,288**
+      ★**부호는 확정이다**(t +6.64). 🚫단 정밀도 목표 SE 0.002 에는 400 이 부족하다(필요 13,288) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.0547, +0.0989] (가족 400개 · 문항 CI 의 **0.98배**)  ✅0 을 안 포함한다
+    d16_cla2_norecur_muon15 - d18_cla2_norecur_muon15: Δ +0.0366 ± 0.0222  SD 0.2261 SE 0.0113 t +3.24  승률 58.0%  필요N(SE0.002) **12,781**
+      ★**부호는 확정이다**(t +3.24). 🚫단 정밀도 목표 SE 0.002 에는 400 이 부족하다(필요 12,781) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.0147, +0.0580] (가족 400개 · 문항 CI 의 **0.98배**)  ✅0 을 안 포함한다
+
+  ── paired 정확도 비교 · McNemar (★**ID 교집합** 400문항) ──
+     ★비대응 CI 가 겹쳐도 대응 검정은 가를 수 있다. 🚫반대도 있다.
+    d16_cla2_norecur - d16_cla2_norecur_muon15: Δacc -1.00pp  불일치 23/27  z -0.57  ★정확p **0.6718**  🚫**못 가른다**  필요n(z=2) **5,000** / 보유 400
+      ★★가족 재표집 Δacc 95%CI [-4.25pp, +2.50pp] (가족 400개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 12.5배 늘려야 한다
+    d16_cla2_norecur - d18_cla2_norecur_muon15: Δacc -2.25pp  불일치 27/36  z -1.13  ★정확p **0.3135**  🚫**못 가른다**  필요n(z=2) **1,245** / 보유 400
+      ★★가족 재표집 Δacc 95%CI [-6.00pp, +1.50pp] (가족 400개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 3.1배 늘려야 한다
+    d16_cla2_norecur_muon15 - d18_cla2_norecur_muon15: Δacc -1.25pp  불일치 25/30  z -0.67  ★정확p **0.5901**  🚫**못 가른다**  필요n(z=2) **3,521** / 보유 400
+      ★★가족 재표집 Δacc 95%CI [-5.00pp, +2.25pp] (가족 400개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 8.8배 늘려야 한다
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  kobest_hellaswagd16_cla2_norecur        42.0%  정답CE 4.0812 / 평균마진 +0.2740 / ★결정마진 -0.1436 / 공식규약 29.0%(+13.0pp)
+  kobest_hellaswagd16_cla2_norecur_muon15    43.0%  정답CE 4.0413 / 평균마진 +0.2820 / ★결정마진 -0.1114 / 공식규약 30.2%(+12.8pp)
+  kobest_hellaswagd18_cla2_norecur_muon15    44.2%  정답CE 4.0047 / 평균마진 +0.2903 / ★결정마진 -0.1234 / 공식규약 29.0%(+15.3pp)
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: C:\Users\Uranus\_netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: WARNING Using a boolean value for 'reinit' is deprecated. Use 'return_previous' or 'finish_previous' instead.
+wandb: setting up run m100s12_ko-en_300M_d16_cla2_norecur
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260911_040142-m100s12_ko-en_300M_d16_cla2_norecur
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s12_ko-en_300M_d16_cla2_norecur
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur
+wandb: updating run metadata; uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur-benchtable_wide-kbv3Ng
+wandb: uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur-benchtable_wide-kbv3Ng
+wandb: uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json
+wandb: uploading history steps 29-29, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy/acc 0.3575
+wandb:             bench/arc_easy/acc_norm 0.295
+wandb:              bench/arc_easy/gold_ce 6.68539
+wandb:          bench/arc_easy/gold_margin 0.25549
+wandb: bench/arc_easy/gold_margin_decision -0.3302
+wandb:          bench/arc_easy/harness_acc 0.3125
+wandb:     bench/arc_easy/harness_acc_norm 0.3625
+wandb:                    bench/arc_easy/n 400
+wandb:              bench/arc_easy/n_asked 400
+wandb:                  bench/arc_easy/pmi True
+wandb:                                 +85 ...
+wandb: 
+wandb:  View run m100s12_ko-en_300M_d16_cla2_norecur at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260911_040142-m100s12_ko-en_300M_d16_cla2_norecur\logs
+  ✅ m100s12_ko-en_300M_d16_cla2_norecur  (1과제 · summary 키 14개 · 표 4행 [정본 갱신 0 삽입 3])
+wandb: setting up run m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260911_040150-m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb: updating run metadata; uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur_muon15-benchtable_wide-w0xnqA
+wandb: uploading artifact run-m100s12_ko-en_300M_d16_cla2_norecur_muon15-benchtable_wide-w0xnqA
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2291_80a56f26a370b91de0da.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 24-24, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy/acc 0.3875
+wandb:             bench/arc_easy/acc_norm 0.31
+wandb:              bench/arc_easy/gold_ce 6.63823
+wandb:          bench/arc_easy/gold_margin 0.33635
+wandb: bench/arc_easy/gold_margin_decision -0.21475
+wandb:          bench/arc_easy/harness_acc 0.36
+wandb:     bench/arc_easy/harness_acc_norm 0.3675
+wandb:                    bench/arc_easy/n 400
+wandb:              bench/arc_easy/n_asked 400
+wandb:                  bench/arc_easy/pmi True
+wandb:                                 +76 ...
+wandb: 
+wandb:  View run m100s12_ko-en_300M_d16_cla2_norecur_muon15 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_300M_d16_cla2_norecur_muon15
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260911_040150-m100s12_ko-en_300M_d16_cla2_norecur_muon15\logs
+  ✅ m100s12_ko-en_300M_d16_cla2_norecur_muon15  (1과제 · summary 키 14개 · 표 2행 [정본 갱신 0 삽입 3])
+wandb: setting up run m100s14_ko-en_300M_d18_cla2_norecur_muon15
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in z:\TinyLM\wandb\run-20260911_040159-m100s14_ko-en_300M_d18_cla2_norecur_muon15
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s14_ko-en_300M_d18_cla2_norecur_muon15
+wandb:  View project at https://wandb.ai/myplmy-ir/tinylm
+wandb:  View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s14_ko-en_300M_d18_cla2_norecur_muon15
+wandb: updating run metadata; uploading artifact run-m100s14_ko-en_300M_d18_cla2_norecur_muon15-benchtable_wide-Ml86Nw
+wandb: uploading artifact run-m100s14_ko-en_300M_d18_cla2_norecur_muon15-benchtable_wide-Ml86Nw
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media\table\bench\table_wide_2291_6204b4120777b342d135.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy/acc 0.3875
+wandb:             bench/arc_easy/acc_norm 0.3225
+wandb:              bench/arc_easy/gold_ce 6.64358
+wandb:          bench/arc_easy/gold_margin 0.32519
+wandb: bench/arc_easy/gold_margin_decision -0.2413
+wandb:          bench/arc_easy/harness_acc 0.3625
+wandb:     bench/arc_easy/harness_acc_norm 0.365
+wandb:                    bench/arc_easy/n 400
+wandb:              bench/arc_easy/n_asked 400
+wandb:                  bench/arc_easy/pmi True
+wandb:                                 +61 ...
+wandb: 
+wandb:  View run m100s14_ko-en_300M_d18_cla2_norecur_muon15 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s14_ko-en_300M_d18_cla2_norecur_muon15
+wandb:  View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: .\wandb\run-20260911_040159-m100s14_ko-en_300M_d18_cla2_norecur_muon15\logs
+  ✅ m100s14_ko-en_300M_d18_cla2_norecur_muon15  (1과제 · summary 키 14개 · 표 2행 [정본 갱신 0 삽입 3])
+
+  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고
+     프로젝트도 같은 `tinylm` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.
+     키는 `bench/<과제>/<지표>` 다. 올림 3개 · 건너뜀 0개.
+  ★표 키는 `bench/table_wide`(wide) 이고 정본은 `test_result\bench_results.tsv` 다 — 표는 매번 **전량 재구성**한다.
+     Vega y축은 `${field:y_metric}` 하나로 acc/acc_norm/gold_ce 를 바꾼다(제안서 §4.2.3).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 3.1분  (2026-09-11 04:02:07)
+==============================================================================
+[5/6] single thread tok/s for depth 18 - does the 15.6 prediction hold
+
+==============================================================================
+[runlog] 2026-09-11 04:02:22  name=P085_stage8_bench_final
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\bench_infer.py --models d18_cla2_norecur --preset m100s14 --data ko-en --tokens 300M --device cpu --threads 1 4 --max-new 128 --reps 3 --drop-latent --int8-store --unpack-cache
+==============================================================================
+============================================================================================
+  P030 추론 속도 벤치 (단계1: KV 캐시 + eos + 삼진 1회계산 반영)
+  max_new=128  reps=3(중위값)  프롬프트='대한민국의 수도 서울은'
+  캐시 모드=['on']   (off = 결과 014 조건)
+============================================================================================
+  ★MB 는 하드코딩이 아니라 로드한 모델에서 계산한다(회계 = 안 B, 2026-07-31 통일).
+    저장 = packed_mb(아직 없는 패킹 포맷의 이론값) / 상주 = runtime_mb(결과 016 실측식).
+============================================================================================
+
+  device  threads            model    저장MB     상주MB    캐시     tok/s   TTFT ms
+--------------------------------------------------------------------------------------------
+     cpu        1 d18_cla2_norecur    24.0    140.0    on     15.84      69.3
+     cpu        4 d18_cla2_norecur    24.0    140.0    on     26.21      41.5
+--------------------------------------------------------------------------------------------
+
+★핵심 질문: 메모리를 줄이면 CPU 추론이 빨라지는가?
+  ★결과 016 의 예측: 속도가 메모리를 따라간다면 **저장이 아니라 상주**를 따라간다.
+    저장 순위(mA<mC<p6d)와 상주 순위(mC<mA<p6d)가 역전돼 있으므로 둘을 갈라 읽는다.
+
+  읽는 법: 속도비가 1.0 근처면 **전이 없음** — 가중치가 GEMM 직전에 fp32 로
+           dequant 되기 때문이다. 그것이 P034 단계2~4 가 존재하는 이유이고,
+           음성 결과이지 실패가 아니다.
+
+★한계: 삼진은 dequant 후 GEMM(저장≠실행 크기 — 상주는 같은 표의 상주MB 열) /
+        Windows CPU 측정은 노이즈 큼(중위값 사용, 1~2% 차이는 읽지 않는다) /
+        batch 1 단일요청. 서버 처리량은 다른 주제다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.0분  (2026-09-11 04:03:20)
+==============================================================================
+[6/6] deployment residency for depth 18 - the canonical tool
+
+==============================================================================
+[runlog] 2026-09-11 04:03:36  name=P085_stage8_bench_final
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\mem_runtime.py --preset m100s14 --data ko-en --tokens 300M --models d18_cla2_norecur --drop-latent --lut --emb-quant int8 --kv-seq 1024 --kv-dtype bf16
+==============================================================================
+================================================================================================
+  P034 단계1 — 실행시 메모리 실측 (저장 MiB 는 이론·패킹 가정, 상주 MiB 는 실측)  ★단위는 전부 **MiB**(1024^2)
+  device=cpu  max_new=32
+  ★RSS 는 할당자 때문에 과대, 텐서합산은 임시버퍼를 빼서 과소. 둘을 함께 읽는다.
+================================================================================================
+[lut] ★삼진 108개 층 -> LUT 코드. 상주 21.25 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+
+  ── d18_cla2_norecur (tied) ────────────────────────────────────────────────────────────
+     저장(이론·패킹)       22.3 MiB    삼진 파라미터 108.82M @ 1.7099625007211563bpw
+     텐서합산 상주        839.3 MiB = latent 415.1 + dequant사본 415.1 + 기타 9.1
+     RSS 로드전/로드후/생성후     388.8 /   3121.2 /   3135.2 MiB (증가 +2746.4)
+     ★저장 대비 상주        37.6 배
+     ★KV 캐시               6.8 MiB @ seq 1024 (6.75 KB/token · 엔트리 9개 / 방문 18회 · 2B) ★**저장 dtype bf16**(구현된 축)
+                        ⚠️**seq 에 선형**이다 — 한 수가 아니라 기울기로 읽는다. cla_group↓·재귀↑ 가 엔트리를 늘린다
+     ── P034 ★P014 단계1 (latent 해제 + **LUT 1.600bpw**) ──────────────────────────────
+     로짓 차이         max|dlogit| = 1.687e+00   동작확인(품질 기준 아님)
+     ⚠️★**0 이 아닌 것이 정상**이다 — LUT 는 per-row alpha 로 재추정한다(768 에 5의 배수 약수가 없다).
+     🚫★**이 숫자로 품질을 판정하지 않는다**(함정 34) — 결과 028 이 잰 것은 **bpb**(+0.0038~0.0068)이고 로짓 절대차와 단위가 다르다.
+     ★품질은 `paired_eval` 또는 `common_bpb` 로 따로 잰다.
+     ★LUT 상주(코드+alpha)    21.25 MiB  = 삼진 108.82M x 1.600 bpw
+     텐서합산 상주         30.3 MiB = latent 0.0 + 삼진사본 21.3 + 기타 9.1
+     RSS 해제후           841.9 MiB
+     ★상주 감축           27.66 배   (저장 22.3 → 22.3 MiB — 저장은 변하지 않는 것이 정상)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-11 04:03:41)
+==============================================================================
+DONE. Deployment residency comes from mem_runtime --lut only, not bench_infer's column.

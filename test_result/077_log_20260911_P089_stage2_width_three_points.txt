@@ -1,0 +1,97 @@
+[1/3] arm A - dim 512 at depth 14. The pure cost of narrowing. NOT a candidate.
+
+==============================================================================
+[runlog] 2026-09-11 09:13:04  name=P089_stage2_width_three_points
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100w512s10 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from-tag w512_d20_parent --depth-init role --cla-group 2 --optimizer muon --muon-lr-mult 15 --steps 2289 --tokens 300M --pool-tokens 600M --exact-cache --tag w512_d14_muon15
+==============================================================================
+[cmd] python run100m.py train --preset m100w512s10 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from-tag w512_d20_parent --depth-init role --cla-group 2 --optimizer muon --muon-lr-mult 15 --steps 2289 --tokens 300M --pool-tokens 600M --exact-cache --tag w512_d14_muon15
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100_ko-en_300M_dense.pt
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100w512s16_ko-en_300M_w512_d20_parent.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 14 -> 7 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[init] ★★경고: 구조 불일치 — 학생 층 14(prelude 2/mid 10/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+[init] ★**역할 구간별 비례 대응**으로 이식한다(P049 선결, 2026-08-14) — prelude↔prelude, middle↔middle, coda↔coda. 종전의 인덱스 zip 이 아니다.
+[init] ★대응표 student->teacher: [0, 1, 2, 3, 5, 6, 8, 10, 11, 13, 14, 16, 18, 19]
+[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+Traceback (most recent call last):
+  File "z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "z:\TinyLM\tinylm\cli.py", line 359, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "z:\TinyLM\tinylm\train\trainer.py", line 387, in train
+    init_from_dense(model, init_from, device, depth_init=depth_init)
+  File "z:\TinyLM\tinylm\train\init_utils.py", line 267, in init_from_dense
+    ls.attn_mod.k_proj.weight.data.copy_(lt.attn_mod.k_proj.weight.data)
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\nn\modules\module.py", line 1965, in __getattr__
+    raise AttributeError(
+AttributeError: 'Attention' object has no attribute 'k_proj'. Did you mean: 'o_proj'?
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-09-11 09:13:07)
+==============================================================================
+[2/3] arm B - dim 512 at depth 28. Same 32 MiB budget as the baseline, twice the layers.
+
+==============================================================================
+[runlog] 2026-09-11 09:13:26  name=P089_stage2_width_three_points
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python run100m.py train --preset m100w512s24 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from-tag w512_d20_parent --depth-init role --cla-group 2 --optimizer muon --muon-lr-mult 15 --steps 2289 --tokens 300M --pool-tokens 600M --exact-cache --tag w512_d28_muon15
+==============================================================================
+[cmd] python run100m.py train --preset m100w512s24 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 100 --compile --no-ckpt --ce-chunk 2048 --init-from-tag w512_d20_parent --depth-init role --cla-group 2 --optimizer muon --muon-lr-mult 15 --steps 2289 --tokens 300M --pool-tokens 600M --exact-cache --tag w512_d28_muon15
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100_ko-en_300M_dense.pt
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100w512s16_ko-en_300M_w512_d20_parent.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 28 -> 14 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[init] ★★경고: 구조 불일치 — 학생 층 28(prelude 2/mid 24/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+[init] ★**역할 구간별 비례 대응**으로 이식한다(P049 선결, 2026-08-14) — prelude↔prelude, middle↔middle, coda↔coda. 종전의 인덱스 zip 이 아니다.
+[init] ★대응표 student->teacher: [0, 1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 8, 8, 9, 10, 10, 11, 12, 12, 13, 14, 14, 15, 16, 16, 17, 18, 19]
+[init] ★★학생이 교사보다 깊다(28 ^> 20). 교사 층이 최대 **2회 복제**된다.
+[init] ⚠️ **잔차 기여가 그만큼 중복된다.** depth_init='role' — 'prop'=gate 그대로 / 'gate_scale'=gate 를 복제횟수로 나눈다. 어느 쪽이 맞는지는 추측하지 않는다. **단계0 게이트가 잰다.**
+[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+Traceback (most recent call last):
+  File "z:\TinyLM\run100m.py", line 10, in <module>
+    main()
+  File "z:\TinyLM\tinylm\cli.py", line 359, in main
+    train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
+  File "z:\TinyLM\tinylm\train\trainer.py", line 387, in train
+    init_from_dense(model, init_from, device, depth_init=depth_init)
+  File "z:\TinyLM\tinylm\train\init_utils.py", line 267, in init_from_dense
+    ls.attn_mod.k_proj.weight.data.copy_(lt.attn_mod.k_proj.weight.data)
+  File "W:\miniforge3\envs\collatz_torch\lib\site-packages\torch\nn\modules\module.py", line 1965, in __getattr__
+    raise AttributeError(
+AttributeError: 'Attention' object has no attribute 'k_proj'. Did you mean: 'o_proj'?
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-09-11 09:13:29)
+==============================================================================
+[3/3] paired_eval - the verdict is paired, not the training log (rule R10)
+
+==============================================================================
+[runlog] 2026-09-11 09:13:49  name=P089_stage2_width_three_points
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\paired_eval.py --preset m100w512s24 --data ko-en --tokens 600M --ckpt-tokens 300M --models w512_d14_muon15 w512_d28_muon15 d14_cla2_norecur_muon15
+==============================================================================
+  ★체크포인트 이름의 토큰 칸 = 300M (val 캐시는 600M) — held-out 규약과 파일명 규약을 갈라 쓴다
+
+############################################################################################
+  P032 — 결정적 full-val + paired per-crop 비교 (학습 없음)
+############################################################################################
+  device=cuda  seq=1024  micro_bs=8  data=ko-en 600M
+  ★val 을 겹치지 않게 전부 순회한다 → eval 샘플링 노이즈 성분 = 0.
+  ★크롭별 손실을 저장해 두 모델을 **같은 크롭 위에서** 뺀다.
+  ⚠️ 이것은 **체크포인트 간** 비교다. 아키텍처 우열은 여기서 나오지 않는다.
+[data] 캐시 재사용: 600.0M 토큰 (ko-en) -> Z:\TinyLM\data_cache\ko-en_600000000
+
+  [건너뜀] 체크포인트 없음: m100w512s24_ko-en_300M_w512_d14_muon15.pt
+
+  [건너뜀] 체크포인트 없음: m100w512s24_ko-en_300M_w512_d28_muon15.pt
+[ckpt] 프리셋이 달라 전역 검색으로 찾았다 -> m100s10_ko-en_300M_d14_cla2_norecur_muon15.pt
+
+  d14_cla2_norecur_muon15 full-val 3.5608   크롭 2929개 / 2,999,296 토큰
+
+  비교할 모델이 2개 미만이고 **덤프 요청도 없었다.**
+     크롭 덤프만 원하면 `--dump-crops OUT.json` 을 준다 - 그러면 모델 1개도 정상 종료다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 2  소요 0.4분  (2026-09-11 09:14:10)
+==============================================================================
+DONE. Read three numbers: width cost, depth recovery, net gain. Ruler 0.0024.
