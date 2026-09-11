@@ -1,11 +1,12 @@
 # 06. Codex용 프로젝트 지침과 메모리
 
 > 제정: 2026-09-11, 승인된 완전분리 제안 P2  
-> 상태: **Codex 독립 이식본 / P7 통과 / P8 1차 `FAIL/PARTIAL`·교정 후 재검증 대기(`STATIC_ONLY / E2E_NOT_RUN`)**
+> 상태: **Codex 독립 이식본 / P0~P8 완료 / P8 `PASS` / Code Mode `PreToolUse` 위험 쓰기 차단 범위 `ACTIVE_VERIFIED`**
 > 환경 경계: [`README.md`](README.md)  
 > 작업규약: [`00_WORKING_RULES.md`](00_WORKING_RULES.md) · [한글 대조본](00_작업규약_한글판.md)
 > 환경 검증: [`P7_정적종합검증_보고.md`](P7_정적종합검증_보고.md)
 > P8 교정: [`P8_새세션_E2E_1차실패_원인분석_및_교정.md`](P8_새세션_E2E_1차실패_원인분석_및_교정.md)
+> P8 최종 E2E: [`README.md` §1.1](README.md#11-p8-최종-e2e-관찰-기록--2026-09-12)
 
 이 문서는 TinyLM에서 일하는 Codex가 필요한 **프로젝트 맥락과 현재 상태의 색인**이다. 실험 수치의 정본을 복제하지 않으며, 최신 핸드오프·COMPASS·기준표·결과 문서를 어디서 읽을지 알려준다.
 
@@ -18,8 +19,9 @@
 3. 이 문서 — 프로젝트 목적, 보호선, 현재 상태.
 4. [`handoff/COMPASS.md`](../../handoff/COMPASS.md) — 연구축별 현재 위치와 다음 증거.
 5. `handoff/`의 최신 유효 `*_HANDOFF.md` — 직전 작업의 실제 완료·미실행·사용자 요청.
-6. 작업 유형에 맞는 Codex 01~08과 `.agents/skills/**` — P7 정적 계약과 P8 1차의
-   `AGENTS.md`·17개 스킬 발견은 확인됐다. 교정된 훅의 실제 호출은 P8 재검증 전까지 가정하지 않는다.
+6. 작업 유형에 맞는 Codex 01~08과 `.agents/skills/**` — P7 정적 계약에 더해 P8 최종 E2E에서
+   `AGENTS.md`·17개 스킬 발견과 교정된 훅의 루트·`scripts/` 위험 쓰기 차단 2/2를 확인했다.
+   `ACTIVE_VERIFIED`는 이 Code Mode `PreToolUse` 관찰 범위에 한정한다.
 
 최신 공유 핸드오프는 파일명·`이전` 체인·존재 증거를 동적으로 대조해 고르며, 이 문서에 특정 파일명을 최신값으로 고정하지 않는다.
 
@@ -61,6 +63,7 @@ TinyLM은 저사양 CPU·엣지·모바일 배포를 위한 초경량 LLM 아키
 
 - Codex는 학습·GPU 코드·모델 로딩 진단·실험 배치·`run_smoke_check.bat`을 직접 실행하지 않는다. 배치와 절차를 준비하고 사용자가 실행한다.
 - 파일을 삭제하지 않고 삭제 권한도 요청하지 않는다. 삭제 후보는 핸드오프의 사용자 요청 표에 적는다.
+- `run_cleanup_checkpoints.bat`는 사용자 실행 전용이다. Codex는 검사·TSV 갱신과 후보 보고까지만 하고 이 배치 자체를 실행하지 않는다.
 - commit·push·PR·광범위 staging은 사용자의 명시 지시 없이는 하지 않는다. `git add .`와 `git add -A`는 사용하지 않는다.
 - `datasets/TinyDataset/**`는 2026-09-11 현재 데이터셋 팀이 생성 작업 중이다. P0~P7과
   현재 P8 교정 작업에서 열람·열거·해시·검색·검사·수정·staging을 모두 하지 않는다.
@@ -102,7 +105,7 @@ TinyLM은 저사양 CPU·엣지·모바일 배포를 위한 초경량 LLM 아키
 | 동적 스모크 | `NOT_RUN` | 최신 핸드오프 §1.3·§5 |
 | GPU/학습/census/모델 로딩 | 이번 Codex P0~P8 교정 작업에서 0회 | 현재 WIP |
 | 데이터셋 | 데이터셋 팀 작업 중, 본 작업 접근 0건 | 사용자 현재 지시, 현재 WIP |
-| Codex 환경 | P0~P7 완료. P8 1차는 지침·스킬 PASS, 훅 차단 0/2로 `FAIL/PARTIAL`; Windows handler 교정 후 재검증 대기 | [`README.md`](README.md), [`P8 교정 보고`](P8_새세션_E2E_1차실패_원인분석_및_교정.md), 현재 WIP |
+| Codex 환경 | P0~P8 완료. P8 최종 E2E는 지침·17개 스킬 발견, 정상 probe와 위험 쓰기 차단 2/2로 `PASS`; Code Mode `PreToolUse` 검증 범위 `ACTIVE_VERIFIED` | [`README.md` §1.1](README.md#11-p8-최종-e2e-관찰-기록--2026-09-12), [`P8 1차 교정 보고`](P8_새세션_E2E_1차실패_원인분석_및_교정.md), 최신 WIP·핸드오프 |
 
 공유 핸드오프의 35/35와 이번 환경 P7의 20/20은 검사 대상이 다르다. P7 PASS를 제품·모델·
 보호 데이터 또는 프로젝트 종합 게이트 통과로 승격하지 않는다.
@@ -181,8 +184,9 @@ TinyLM은 저사양 CPU·엣지·모바일 배포를 위한 초경량 LLM 아키
 
 `.agents/skills/**`는 P4에서 Codex 독립 이식본으로 전환되고 P7 정적 종합검증을 통과했다.
 내용이 이 문서와 충돌하면 스킬을 억지로 따르지 말고 사용자 지시와 Codex 00을 우선한다.
-P8 1차에서 `session-handoff`, `wip-ledger`를 포함한 저장소 스킬 17개와 프로젝트
-메타데이터의 새 세션 발견은 확인됐다. 교정된 프로젝트 훅의 실제 호출만 P8 재검증 대기다.
+P8 최종 E2E에서 `session-handoff`, `wip-ledger`를 포함한 저장소 스킬 17개와 프로젝트
+메타데이터의 새 세션 발견, 교정된 프로젝트 훅의 루트·`scripts/` 차단 2/2를 확인했다.
+`/hooks` enabled·trusted와 변경 hash 신뢰는 사용자 확인 전제이며 UI 독립 관찰로 바꾸어 쓰지 않는다.
 
 ## 6. 폴더 지도
 
@@ -199,7 +203,7 @@ P8 1차에서 `session-handoff`, `wip-ledger`를 포함한 저장소 스킬 17�
 | `review_request/` | 사용자/외부 검수 요청 |
 | `ai_dev_tool/Codex/` | Codex 전용 장기기억 |
 | `.agents/skills/` | Codex 저장소 스킬(P4 이식·P7 정적검증 완료) |
-| `.codex/` | Codex 네이티브 설정(P3)·독립 훅(P5)·환경 검사기(P7). P8 1차에서 훅 차단 실패 후 Windows handler 교정, 재검증 대기 |
+| `.codex/` | Codex 네이티브 설정(P3)·독립 훅(P5)·환경 검사기(P7). P8 1차 실패 뒤 Windows handler를 교정했고 최종 E2E에서 위험 쓰기 차단 2/2 확인 |
 | `ai_dev_tool/09_구현검증_필요목록.md` | 공유 구현검증 작업원장, 현 위치 유지 |
 
 폴더 지도는 전체 파일 인벤토리가 아니다. 실제 존재 여부와 현재 이름은 디스크가 정본이며, 목록을 AGENTS에 복제하지 않는다.
@@ -225,8 +229,8 @@ P8 1차에서 `session-handoff`, `wip-ledger`를 포함한 저장소 스킬 17�
 
 ## 8. 현재 Codex 환경 구축 상태
 
-2026-09-12 현재 승인·이행 범위는 P0~P7이며, P8 1차 E2E 실패에 대한 저장소측
-Windows handler 교정과 로컬 회귀검증까지 수행했다.
+2026-09-12 현재 P0~P8을 이행했다. P8 1차 E2E 실패에 대한 저장소측 Windows handler
+교정과 로컬 회귀검증 뒤, 사용자가 제공한 새 Code Mode 세션 최종 관찰로 실제 차단까지 확인했다.
 
 - P0: 대상 문서 해시·동시 작업 보호선 기록 완료.
 - P1: [`README.md`](README.md) 분리 계약 제정 완료.
@@ -237,9 +241,13 @@ Windows handler 교정과 로컬 회귀검증까지 수행했다.
   교정했다. guard 14개와 Windows handler 2개를 합친 16개 훅 테스트를 통과했다.
 - P6: `AGENTS.md`를 219행·14,057바이트의 Codex 진입 규범으로 축약·전환 완료.
 - P7: 환경 전용 정적 종합검증 20/20 PASS. 루트 09 기준선 해시 일치.
-- P8: 1차 새 세션에서 `AGENTS.md`와 저장소 스킬 17개는 확인됐으나 차단 probe는 0/2로
-  `FAIL/PARTIAL`이었다. 교정된 handler의 변경 hash 재신뢰와 새 세션 재검증이 남았다.
+- P8: 1차 새 세션은 `AGENTS.md`와 스킬 발견만 PASS, 차단 probe 0/2로 `FAIL/PARTIAL`이었다.
+  교정 뒤 최종 E2E에서는 `AGENTS.md` 자동 적용, 스킬 17개 발견, 정상 probe exit 0,
+  루트·`scripts/` 위험 쓰기 probe 2/2의 셸 실행 전 deny, fail-open 경고 0건과 잔존 probe 파일
+  0개를 확인해 `PASS / ACTIVE_VERIFIED`로 판정했다.
 
-따라서 현재 상태는 `STATIC_ONLY / E2E_NOT_RUN`이다. 1차 실패와 교정 근거는
-[`P8 교정 보고`](P8_새세션_E2E_1차실패_원인분석_및_교정.md)가 소유한다. 교정된 훅의
-deny를 신뢰된 깨끗한 새 Codex 작업에서 관찰하기 전에는 `ACTIVE_VERIFIED`나 완전 구축으로 쓰지 않는다.
+따라서 현재 최고 상태는 **Code Mode `PreToolUse` 위험 쓰기 차단 범위의
+`ACTIVE_VERIFIED`**다. 상세 관찰표와 범위는 [`README.md` §1.1](README.md#11-p8-최종-e2e-관찰-기록--2026-09-12),
+1차 실패와 교정 근거는 [`P8 교정 보고`](P8_새세션_E2E_1차실패_원인분석_및_교정.md)가 소유한다.
+프로젝트·모델 스모크는 `NOT_RUN`이고 Desktop 버전은 미확인이다. 최종 E2E에서 직접 실행하지 않은
+guard·wrapper·단위 테스트·환경 검사기를 같은 동적 증거로 확대하지 않는다.

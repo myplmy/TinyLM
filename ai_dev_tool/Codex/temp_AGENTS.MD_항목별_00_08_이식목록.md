@@ -1,11 +1,12 @@
 # 임시 설계 — `AGENTS.md` 항목별 Codex 00~08 이식 목록
 
 > 작성일: 2026-09-11  
-> 상태: **P2~P7 적용·정적검증 완료 / P8 1차 `FAIL/PARTIAL`·교정 후 재검증 대기**
+> 상태: **P2~P7 적용·정적검증 완료 / P8 1차 `FAIL/PARTIAL` 역사 보존 / 후속 최종 E2E `PASS`**
 > 대상 기준: 이식 전 `AGENTS.md` 890행·100,960바이트 → 현재 219행·14,057바이트  
 > 목적: `AGENTS.md`를 얇게 만들기 위한 문단별 목적지·삭제·폐기·공유정본 판단  
 > 이행 경계: 승인된 P2~P7을 적용했다. P8 1차에서 `AGENTS.md`·17개 스킬은 확인됐으나
-> 훅 차단 0/2로 실패했고, Windows handler 교정 뒤 새 세션 재검증이 남았다.
+> 훅 차단 0/2로 실패했다. Windows handler 교정 뒤 최종 E2E 결과는
+> [`README.md` §1.1](README.md#11-p8-최종-e2e-관찰-기록--2026-09-12)이 소유한다.
 
 ## 0. 최우선 예외 — 09는 이식 대상이 아니다
 
@@ -277,10 +278,12 @@ Codex의 활성 파일은 `AGENTS.md`, `.agents/**`, `.codex/**`, `ai_dev_tool/C
 - Codex 설정 작성(P3): **완료 — 파일 단위 JSON/TOML 구문·선언 경로 확인 통과**
 - Codex 훅 이식·검증(P5): **독립 구현·Windows handler 교정·16개 훅 테스트 완료**
 - 정적 종합검증(P7): **20/20 PASS**
-- 새 세션 E2E(P8): **1차 `FAIL/PARTIAL` — 지침·스킬 PASS, 훅 차단 0/2; 교정본 재검증 대기**
+- 새 세션 E2E(P8): **1차 `FAIL/PARTIAL` — 지침·스킬 PASS, 훅 차단 0/2**. 교정 뒤 최종 E2E는
+  정상 probe PASS, 루트·`scripts/` 차단 2/2로 **`PASS / ACTIVE_VERIFIED`**(해당 `PreToolUse` 범위)
 - 루트 09 수정·복사·이관: **0건**
 - GPU·학습·모델 로딩·스모크·실험/제품 스크립트 실행: **0건**. 핸드오프 생성기·정적 검사·시각 감사만 실행
 - 삭제·commit·push·PR: **0건**
 
-현재 최고 증거 수준은 `STATIC_ONLY / E2E_NOT_RUN`이다. 교정된 훅의 실제 새 세션
-deny 증거 없이는 `ACTIVE_VERIFIED` 또는 완전 구축으로 바꾸지 않는다.
+현재 최고 증거 수준은 **Code Mode `PreToolUse` 위험 쓰기 차단 범위의
+`ACTIVE_VERIFIED`**다. 프로젝트·모델 스모크는 계속 `NOT_RUN`이며, 범위·전제·미확인은
+[`README.md` §1.1](README.md#11-p8-최종-e2e-관찰-기록--2026-09-12)을 따른다.
