@@ -1,0 +1,109 @@
+{
+  "audit": "A04 synthetic numbered-primary semantic repair",
+  "date": "2026-09-10",
+  "scope": "stage2_(14)state_transition_high_density_train_v49-v69.source.jsonl",
+  "reason": "A trailing decimal suffix matched the one-based source line and was a generation discriminator, not part of the concept. Training it would teach forms such as 자동차11 instead of 자동차.",
+  "repair": {
+    "source_files": 69,
+    "source_records": 10350,
+    "numbered_rows_removed": 3146,
+    "base_primary_rows_kept_without_qualifier": 1821,
+    "semantic_qualifier_rows": 1325,
+    "changed_files": 21,
+    "post_qualifier_editorial_rows": 3,
+    "source_schema_changed": false,
+    "relations_changed": false,
+    "builder_ids_changed": false,
+    "identity_or_low_density_touched": false
+  },
+  "current_source": {
+    "source_set_sha256": "cd580a44f4648fa14af2365754a9a839a11e95bad9ad10c0d827c86d50046ba1",
+    "non_text_projection_sha256": "60a4f5ead036871bbd111b04622054df023b4adf845f25a69d961d3b768e84bb",
+    "numbered_primary_rows": 0,
+    "within_file_primary_duplicates": 0,
+    "source_records": 10350,
+    "files": 69
+  },
+  "independent_structure": {
+    "verdict": "PASS",
+    "json_parse_errors": 0,
+    "primary_literal_errors": 0,
+    "controlled_relation_errors": 0,
+    "relation_cardinality_errors": 0,
+    "exact_or_normalized_duplicates": 0,
+    "adjacent_duplicate_word_candidates": 0
+  },
+  "independent_similarity": {
+    "char_3_5_tfidf_threshold": 0.72,
+    "char_3_5_tfidf_pairs_at_or_above_threshold": 0,
+    "char_3_5_tfidf_max": 0.665704324,
+    "word_jaccard_threshold": 0.6,
+    "word_jaccard_pairs_at_or_above_threshold": 1,
+    "word_jaccard_max": 0.619047619,
+    "numbered_primary_rows": 0,
+    "primary_particle_candidates": 0,
+    "particle_histogram": {
+      "는": 3665,
+      "은": 3056,
+      "에서": 679,
+      "을": 566,
+      "으로": 551,
+      "로": 396,
+      "이": 213,
+      "의": 168,
+      "를": 118,
+      "에": 112,
+      "가": 80
+    }
+  },
+  "token_audit": {
+    "tokenizer": "tok-ko-en-32768.json",
+    "tokens_plus_eos": 456099,
+    "mean_plus_eos": 44.067536231884056,
+    "record_min": 17,
+    "record_max": 72,
+    "file_mean_min": 38.96,
+    "file_mean_max": 49.833333333333336,
+    "files_in_previous_target_range": 63,
+    "files_above_previous_target_range": ["v58", "v62", "v65", "v66", "v67", "v69"],
+    "repeat5_types": 25,
+    "repeat5_assignments": 51
+  },
+  "examples_after_repair": [
+    {
+      "location": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:11",
+      "primary": "공항 제설차 대기",
+      "text_prefix": "공항 제설차 대기는 제설차가 출동승인을 기다리며"
+    },
+    {
+      "location": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:31",
+      "primary": "공항 항공기 대기",
+      "text_prefix": "공항 항공기 대기는 항공기가 활주로 제설완료 통보를 기다리는"
+    },
+    {
+      "location": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:61",
+      "primary": "공항 전원대기 — 제설설비 대기",
+      "text_prefix": "공항 전원대기 — 제설설비 대기는 활주로조명과 제설설비가"
+    },
+    {
+      "location": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:62",
+      "primary": "공항 전원절체 — 비상공급 분담",
+      "text_prefix": "공항 전원절체 — 비상공급 분담은 정전으로 비상공급이"
+    }
+  ],
+  "verdict": {
+    "semantic_numbered_primary_repair": "PASS",
+    "structural_and_particle_reaudit": "PASS",
+    "similarity_reaudit": "FOLLOW_UP_ONE_WORD_JACCARD_PAIR",
+    "previous_file_mean_gate": "FOLLOW_UP_SIX_FILES",
+    "corpus_packaging": "NOT_RUN"
+  },
+  "tools": [
+    "stage2_highdensity_dataset/tools/repair_a04_numbered_primaries.js",
+    "stage2_highdensity_dataset/tools/repair_a04_post_qualifier_editorial.js",
+    "stage2_highdensity_dataset/tools/audit_a04_structure_independent.js",
+    "stage2_highdensity_dataset/tools/audit_a04_similarity_independent.js",
+    "stage2_highdensity_dataset/tools/audit_stage2_a04_source.js"
+  ],
+  "note": "Historical audit snapshots and repair-script fixtures may still display the old numbered examples; they are not training data and remain unchanged as evidence."
+}

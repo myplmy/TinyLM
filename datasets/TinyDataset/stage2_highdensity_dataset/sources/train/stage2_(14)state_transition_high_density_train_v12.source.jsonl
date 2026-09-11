@@ -1,0 +1,150 @@
+{"primary":"요청급증 감지중간상태","text":"요청률이 기준을 넘었지만 지속시간과 출발지 검증이 끝나지 않은 구간을 요청급증 감지중간상태로 둔다. 이 단계에서는 자동확장을 확정하지 않고 수요 급증과 공격 트래픽을 구분한다.","relations":["state","process","classification","boundary"]}
+{"primary":"자동확장 준비중간상태","text":"확장 조건은 충족했지만 할당량·이미지·네트워크 검사가 진행 중이면 자동확장 준비중간상태다. 모든 자원 검사가 통과해야 인스턴스 생성으로 이동하며 실패하면 기존 용량 유지 경로로 돌아간다.","relations":["state","process","part_of","function"]}
+{"primary":"인스턴스기동 대기상태","text":"생성 요청을 수락했으나 운영체제와 에이전트가 아직 준비되지 않은 때를 인스턴스기동 대기상태라고 한다. 제한시간 안에 건강 신호가 없으면 해당 노드를 폐기하고 대체 생성 경로를 선택한다.","relations":["state","process","classification","boundary"]}
+{"primary":"건강검증 통과대기상태","text":"프로세스는 실행됐지만 연속 건강 검사 횟수가 부족한 구간이 건강검증 통과대기상태다. 이 중간 단계의 노드는 사용자 트래픽을 받지 않으며 검사 실패 시 격리 상태로 이동한다.","relations":["state","process","role","boundary"]}
+{"primary":"트래픽점진이행 중간상태","text":"새 인스턴스에 일부 요청만 보내며 오류와 지연을 비교하는 단계를 트래픽점진이행 중간상태로 정의한다. 지표가 안정되면 비중을 늘리고 악화되면 즉시 이전 대상군으로 복귀한다.","relations":["state","process","comparison","function"]}
+{"primary":"용량안정 확인상태","text":"필요 수량은 확보됐지만 대기열과 응답시간이 아직 관찰창을 채우지 못한 구간은 용량안정 확인상태다. 이 상태가 지나기 전에는 추가 확장 종료나 축소를 결정하지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"확장완료 안정상태","text":"새 용량이 전체 트래픽을 처리하고 지표가 목표 범위에 머물면 확장완료 안정상태에 도달한다. 이후에는 같은 확장 명령이 상태를 더 바꾸지 않으며 새로운 수요 변화가 있어야 다음 전이가 시작된다.","relations":["state","process","classification","function"]}
+{"primary":"확장실패 고착상태","text":"할당량 부족과 반복 생성 실패로 더는 자동 경로가 진행되지 않으면 확장실패 고착상태다. 동일 입력을 재적용해도 벗어나지 못하므로 할당량 조정이나 수동 용량 확보가 필요하다.","relations":["state","process","boundary","role"]}
+{"primary":"확장취소 복구경로","text":"확장취소 복구경로는 새 노드가 건강성 검증에 실패했을 때 등록을 풀고 부분 생성 자원을 정리하는 절차다. 기존 대상군의 연결과 제공 용량이 유지되는지 확인해야 안전한 취소로 인정한다.","relations":["state","process","function","part_of"]}
+{"primary":"확장재시도 복구경로","text":"일시적 이미지 전송 오류가 해소되고 실패 노드가 격리되면 확장재시도 복구경로를 따른다. 새 생성 식별자를 사용해 중복 등록을 막고 건강 검사 단계부터 다시 진행한다.","relations":["state","process","function","boundary"]}
+{"primary":"배포승인 대기중간상태","text":"빌드가 준비됐지만 변경 책임자의 승인이 남아 있는 구간은 배포승인 대기중간상태다. 승인 전에는 운영 자원을 바꾸지 않으며 거절되면 패키지 보관 후 계획 수정 단계로 돌아간다.","relations":["state","process","role","boundary"]}
+{"primary":"배포패키지 검증상태","text":"서명·의존성·설정 호환성을 검사하는 동안 배포패키지 검증상태에 머문다. 모든 검사가 통과해야 카나리 단계로 이동하고 하나라도 실패하면 배포 불가 상태로 분류한다.","relations":["state","process","classification","part_of"]}
+{"primary":"카나리노출 중간상태","text":"새 버전이 제한된 사용자 요청만 처리하는 때를 카나리노출 중간상태라고 한다. 기존 버전과 결과를 비교해 승격하거나 트래픽을 회수하는 두 경로 중 하나를 선택한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"카나리판정 보류상태","text":"오류율은 정상이나 표본량이 부족해 결론을 내릴 수 없으면 카나리판정 보류상태다. 관찰창이 찰 때까지 비중을 고정하고 새로운 이상이 생기면 롤백 준비로 이동한다.","relations":["state","process","attribute","function"]}
+{"primary":"순차배포 진행상태","text":"일부 대상은 새 버전이고 나머지는 이전 버전인 구간이 순차배포 진행상태다. 각 묶음의 건강 검사를 통과해야 다음 묶음으로 넘어가며 실패 시 확산을 멈춘다.","relations":["state","process","part_of","boundary"]}
+{"primary":"배포일시정지 상태","text":"새 오류의 원인이 불명확해 추가 확산만 멈춘 구간을 배포일시정지 상태로 둔다. 이미 바뀐 대상은 관찰을 계속하고 원인이 해소되면 재개, 악화되면 롤백 경로를 따른다.","relations":["state","process","classification","function"]}
+{"primary":"배포성공 흡수상태","text":"모든 대상이 새 버전으로 전환되고 안정 관찰도 끝나면 배포성공 흡수상태에 도달한다. 같은 배포 명령을 반복해도 상태가 더 변하지 않으며 다음 버전이 새 전이를 시작한다.","relations":["state","process","function","boundary"]}
+{"primary":"배포실패 흡수상태","text":"복구 불가능한 호환 오류로 새 버전 확산이 완전히 차단되면 배포실패 흡수상태다. 동일 패키지의 재시도만으로는 벗어나지 못하고 수정 빌드나 데이터 복구가 필요하다.","relations":["state","process","classification","boundary"]}
+{"primary":"배포롤백 복구경로","text":"새 버전이 지표를 악화시키고 이전 버전이 데이터를 읽을 수 있으면 배포롤백 복구경로로 트래픽과 실행 이미지를 되돌린다. 롤백 뒤에도 새 형식 데이터 검증을 마쳐야 복구가 완료된다.","relations":["state","process","function","attribute"]}
+{"primary":"배포재개 복구경로","text":"일시정지의 원인이 외부 장애로 확인되고 카나리 상태가 정상이라면 배포재개 복구경로를 선택한다. 중단 지점과 완료 대상을 확인해 이미 배포된 묶음을 중복 처리하지 않는다.","relations":["state","process","part_of","role"]}
+{"primary":"스키마변경 준비상태","text":"새 열 정의와 호환 계획은 승인됐지만 백업과 잠금 검사가 남아 있으면 스키마변경 준비상태다. 필요한 보호 수단이 갖춰져야 적용 단계로 이동하며 실패하면 기존 스키마를 유지한다.","relations":["state","process","classification","boundary"]}
+{"primary":"스키마확장 적용중간상태","text":"일부 노드에 새 스키마가 보이고 나머지는 이전 정의를 쓰는 구간을 스키마확장 적용중간상태라고 한다. 양쪽 코드가 모두 읽을 수 있는 동안에만 단계적 확산을 허용한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"이중쓰기 전환상태","text":"구형 열과 신형 열에 같은 의미의 값을 함께 기록하는 기간이 이중쓰기 전환상태다. 두 값의 일치율을 확인한 뒤 새 열 단독 쓰기로 가며 불일치가 나면 변환 규칙을 고친다.","relations":["state","process","comparison","function"]}
+{"primary":"백필진행 중간상태","text":"과거 행의 새 열을 묶음별로 채우는 동안 백필진행 중간상태에 머문다. 완료 표식과 실패 목록을 분리해 재시작 때 이미 처리한 행을 덮어쓰지 않는다.","relations":["state","process","part_of","attribute"]}
+{"primary":"백필검증 보류상태","text":"전체 행은 채웠지만 표본 검증과 합계 비교가 끝나지 않았으면 백필검증 보류상태다. 검증 통과 전에는 구형 열을 제거하지 않으며 차이가 있으면 해당 묶음만 다시 처리한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"읽기경로 전환상태","text":"일부 요청은 신형 열을 읽고 대조 요청은 구형 열을 읽는 구간이 읽기경로 전환상태다. 결과가 같으면 신형 경로를 확대하고 의미 차이가 나면 즉시 구형 경로로 복귀한다.","relations":["state","process","contrast","function"]}
+{"primary":"구형열 보존상태","text":"신형 읽기가 안정됐지만 롤백 기간이 끝나지 않아 이전 열을 남긴 상태를 구형열 보존상태라고 한다. 쓰기는 중단하되 검증 가능한 형태로 유지하고 만료 뒤에만 제거한다.","relations":["state","process","role","boundary"]}
+{"primary":"마이그레이션 완료흡수상태","text":"새 스키마의 읽기·쓰기와 백필 검증이 끝나고 구형 경로가 안전하게 폐기되면 마이그레이션 완료흡수상태다. 같은 이전 명령을 반복해도 더 바뀔 대상이 없다.","relations":["state","process","function","classification"]}
+{"primary":"마이그레이션 실패흡수상태","text":"원본 값이 손실되어 자동 역변환도 재백필도 불가능하면 마이그레이션 실패흡수상태에 들어간다. 동일 절차의 반복으로는 벗어나지 못하며 독립 백업 복원이나 수동 교정이 필요하다.","relations":["state","process","boundary","attribute"]}
+{"primary":"스키마복원 복구경로","text":"원본 열과 변경 로그가 온전하면 스키마복원 복구경로로 읽기 경로를 되돌리고 신형 쓰기를 역반영한다. 외부 소비자의 새 계약을 확인한 뒤 구형 상태를 다시 정본으로 승격한다.","relations":["state","process","function","role"]}
+{"primary":"주데이터베이스 의심상태","text":"주 데이터베이스의 응답이 끊겼지만 관측망 장애를 배제하지 못한 구간은 주데이터베이스 의심상태다. 이때 즉시 다른 주체를 만들지 않고 독립 경로로 연결과 저장 상태를 확인한다.","relations":["state","process","classification","boundary"]}
+{"primary":"장애확정 중간상태","text":"여러 관측에서 쓰기 실패가 확인됐지만 마지막 정상 로그 위치를 계산 중이면 장애확정 중간상태다. 영향 범위를 고정한 뒤 쓰기 차단 또는 승격 경로를 선택한다.","relations":["state","process","attribute","role"]}
+{"primary":"쓰기차단 보호상태","text":"두 주체의 동시 쓰기를 막기 위해 모든 갱신을 거부하는 기간을 쓰기차단 보호상태라고 한다. 읽기는 허용할 수 있지만 단일 소유권이 확인되기 전에는 쓰기를 재개하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"복제본추격 대기상태","text":"복제본은 살아 있지만 마지막 로그를 적용하는 중이면 복제본추격 대기상태다. 허용 손실량 안으로 지연이 줄어야 승격으로 이동하고 로그 공백이 발견되면 복원 경로로 전환한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"복제본승격 진행상태","text":"소유권 잠금을 얻고 쓰기 종단점을 바꾸는 동안 복제본승격 진행상태에 머문다. 라우팅과 복제 방향이 모두 확정될 때까지 새 주체의 일반 쓰기를 제한한다.","relations":["state","process","role","part_of"]}
+{"primary":"새주체 검증상태","text":"승격된 데이터베이스가 시험 쓰기를 받았지만 일관성 비교가 남아 있으면 새주체 검증상태다. 키 수·합계·복제 연결이 통과해야 운영 주체로 확정한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"장애복제본 격리흡수상태","text":"손상된 로그와 복제 식별자가 폐기되어 자동 재가입할 수 없으면 장애복제본 격리흡수상태다. 동일 복제 재개 명령으로는 벗어나지 못하고 새 기반 사본을 만들어야 한다.","relations":["state","process","boundary","classification"]}
+{"primary":"서비스읽기전용 안정상태","text":"쓰기 주체가 없지만 검증된 사본에서 조회를 계속 제공하는 상태가 서비스읽기전용 안정상태다. 새 쓰기 경로가 준비되기 전까지 이 상태를 유지해 추가 데이터 분기를 막는다.","relations":["state","process","function","role"]}
+{"primary":"쓰기재개 복구경로","text":"단일 주체와 최신 로그가 확정되면 쓰기재개 복구경로를 따라 제한된 요청부터 허용한다. 중복 방지 키와 복제 상태를 감시하며 단계적으로 정상 처리량으로 올린다.","relations":["state","process","function","attribute"]}
+{"primary":"원주체복귀 복구경로","text":"원래 데이터베이스가 수리되고 역복제가 완료되면 원주체복귀 복구경로로 역할을 단계적으로 돌린다. 마지막 쓰기 위치와 라우팅 전환을 맞춰 두 주체가 동시에 활성화되지 않게 한다.","relations":["state","process","role","boundary"]}
+{"primary":"캐시지연 관찰중간상태","text":"캐시 지연이 높지만 단일 노드 문제인지 전체 군집 문제인지 조사 중인 구간은 캐시지연 관찰중간상태다. 표본을 모을 때까지 전면 우회를 확정하지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"캐시우회 준비상태","text":"우회 조건은 충족했지만 원본 저장소의 수용량을 확인하는 동안 캐시우회 준비상태에 머문다. 원본이 포화이면 요청 제한 경로를 선택하고 여유가 있으면 단계적 우회로 이동한다.","relations":["state","process","comparison","function"]}
+{"primary":"캐시우회 진행상태","text":"일부 키만 원본에서 읽으며 부하와 오류를 비교하는 단계가 캐시우회 진행상태다. 원본 지표가 안정되면 범위를 늘리고 악화되면 캐시 사용과 제한을 병행한다.","relations":["state","process","comparison","part_of"]}
+{"primary":"원본부하 검증상태","text":"우회 뒤 원본의 처리량은 늘었지만 지연 추세가 아직 안정되지 않았으면 원본부하 검증상태다. 충분한 관찰창을 채워야 우회를 정상 경로로 확정한다.","relations":["state","process","attribute","boundary"]}
+{"primary":"캐시재적재 중간상태","text":"정상 원본에서 키를 묶음별로 다시 채우는 동안 캐시재적재 중간상태에 있다. 버전과 만료 시각을 검사해 오염된 값이 재유입되지 않도록 한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"캐시적중 안정상태","text":"적중률과 원본 부하가 목표 범위에서 유지되면 캐시적중 안정상태로 분류한다. 이 상태에서는 우회 비중을 줄이되 재발 감시를 계속한다.","relations":["state","process","classification","comparison"]}
+{"primary":"캐시오염 격리흡수상태","text":"정상 원본도 사라지고 오염된 값만 남아 자동 재구축이 불가능하면 캐시오염 격리흡수상태다. 일반 무효화 명령을 반복하지 않고 독립 백업이나 수동 재생성을 요구한다.","relations":["state","process","boundary","function"]}
+{"primary":"대기열적체 관찰상태","text":"메시지 수는 늘었지만 유입 증가와 소비 저하 중 원인이 확정되지 않은 때를 대기열적체 관찰상태라고 한다. 생산자와 소비자의 속도를 따로 측정한 뒤 복구 방향을 정한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"소비자증설 진행상태","text":"새 소비자가 파티션을 인계받고 초기 오프셋을 맞추는 동안 소비자증설 진행상태에 머문다. 소유권 중복이 없어야 정상 소비자로 승격한다.","relations":["state","process","role","part_of"]}
+{"primary":"대기열정상화 복구경로","text":"적체가 줄고 처리 지연이 목표 안으로 들어오면 대기열정상화 복구경로로 임시 소비자와 제한 정책을 단계적으로 해제한다. 남은 실패 메시지는 별도 격리 큐에서 처리한다.","relations":["state","process","function","classification"]}
+{"primary":"배달실패 판정중간상태","text":"한 메시지가 반복 실패했지만 원인이 본문인지 하류 장애인지 조사 중이면 배달실패 판정중간상태다. 재시도 횟수와 오류 유형을 확인한 뒤 격리 또는 지연 재시도 경로를 고른다.","relations":["state","process","classification","boundary"]}
+{"primary":"격리큐 이동상태","text":"처리 불가능한 메시지를 정상 흐름에서 분리해 전용 큐로 옮기는 동안 격리큐 이동상태에 있다. 원문·오프셋·실패 이유가 함께 기록되어야 복구 가능성을 유지한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"격리원인 분석상태","text":"격리된 표본을 형식 오류·참조 누락·하류 거부로 나누는 단계가 격리원인 분석상태다. 원인마다 다른 복구 절차를 배정하고 근거 없는 일괄 재생을 막는다.","relations":["state","process","classification","function"]}
+{"primary":"수정검증 대기상태","text":"처리기 수정은 끝났지만 격리 표본의 모의 재생이 남아 있으면 수정검증 대기상태다. 부수 효과와 중복 처리 여부가 통과해야 실제 메시지 재생으로 이동한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"메시지재생 준비상태","text":"재생 범위와 순서, 속도 제한은 정했지만 소비자 잠금이 남아 있는 구간을 메시지재생 준비상태라고 한다. 정상 유입과 분리된 채 준비가 끝나야 재생을 시작한다.","relations":["state","process","role","boundary"]}
+{"primary":"메시지재생 진행상태","text":"격리 메시지를 작은 묶음으로 다시 처리하며 결과를 비교하는 동안 메시지재생 진행상태에 머문다. 오류가 늘면 즉시 중단하고 마지막 성공 오프셋으로 복귀한다.","relations":["state","process","comparison","part_of"]}
+{"primary":"재생결과 검증상태","text":"모든 메시지는 소비됐지만 외부 결과의 중복·누락 검사가 남아 있으면 재생결과 검증상태다. 검증이 끝날 때까지 격리 큐를 삭제하지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"재생완료 안정상태","text":"재생 결과와 정상 소비 지표가 관찰기간 동안 일치하면 재생완료 안정상태로 분류한다. 임시 속도 제한을 해제하되 원문 보존 기간은 감사 기준에 맞춰 유지한다.","relations":["state","process","classification","comparison"]}
+{"primary":"원문소실 실패흡수상태","text":"격리 메타데이터만 남고 메시지 원문과 복제본이 모두 사라졌다면 원문소실 실패흡수상태다. 재시도 명령으로는 벗어날 수 없고 외부 원천에서 자료를 다시 받아야 한다.","relations":["state","process","boundary","function"]}
+{"primary":"격리복귀 복구경로","text":"원인 수정과 표본 검증이 끝나면 격리복귀 복구경로를 따라 원문을 새 식별자로 정상 큐에 넣는다. 이전 실패 기록을 연결해 중복 발행과 원인 추적 단절을 막는다.","relations":["state","process","function","role"]}
+{"primary":"업로드접수 중간상태","text":"객체 키와 크기는 확인했지만 저장 위치와 권한 검사가 남아 있으면 업로드접수 중간상태다. 검사가 통과해야 전송 세션을 열고 실패하면 요청을 변경 없이 종료한다.","relations":["state","process","classification","boundary"]}
+{"primary":"분할조각 수집상태","text":"여러 전송 조각이 도착하는 동안 분할조각 수집상태에 머문다. 조각 번호와 체크섬을 기록해 재전송과 중복 도착을 구분한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"조각검증 대기상태","text":"예정된 조각 수는 채웠지만 전체 순서와 해시 검사가 끝나지 않았으면 조각검증 대기상태다. 누락이나 중복이 없다는 확인 전에는 객체 결합을 허용하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"객체결합 진행상태","text":"검증된 조각을 하나의 객체로 묶고 메타데이터를 쓰는 단계가 객체결합 진행상태다. 결합 실패 시 완성 표식을 남기지 않고 원래 조각 목록으로 복귀한다.","relations":["state","process","part_of","function"]}
+{"primary":"객체게시 보류상태","text":"결합은 끝났지만 악성 파일 검사와 접근 정책 승인이 남아 있으면 객체게시 보류상태다. 이 중간 상태의 주소는 내부 검증자에게만 보인다.","relations":["state","process","role","boundary"]}
+{"primary":"객체가용 안정상태","text":"복제본과 메타데이터가 일치하고 읽기 시험이 통과하면 객체가용 안정상태로 분류한다. 이후 일반 요청을 받되 복제 지연 경보를 계속 감시한다.","relations":["state","process","classification","attribute"]}
+{"primary":"업로드취소 흡수상태","text":"사용자가 세션을 취소하고 모든 임시 조각이 만료되면 업로드취소 흡수상태다. 같은 세션의 완료 명령을 반복해도 객체가 생성되지 않으며 새 요청이 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"조각소실 실패흡수상태","text":"원 클라이언트와 임시 저장소 모두에서 필수 조각이 사라지면 조각소실 실패흡수상태다. 나머지 조각만으로는 완전한 객체를 만들 수 없어 전체 재전송이 필요하다.","relations":["state","process","boundary","part_of"]}
+{"primary":"업로드재개 복구경로","text":"미완료 세션과 검증된 조각 목록이 남아 있으면 업로드재개 복구경로로 누락 부분만 다시 받는다. 완료된 조각은 재사용하고 마지막에 전체 해시를 다시 계산한다.","relations":["state","process","function","attribute"]}
+{"primary":"객체재구성 복구경로","text":"한 저장 노드의 조각이 손상됐지만 충분한 중복 조각이 있으면 객체재구성 복구경로를 따른다. 새 사본을 만든 뒤 원본 해시와 비교하고 손상 노드를 격리한다.","relations":["state","process","function","comparison"]}
+{"primary":"볼륨확장 준비상태","text":"추가 용량은 승인됐지만 스냅숏과 장치 호환 검사가 남아 있으면 볼륨확장 준비상태다. 두 검사가 끝나야 실제 블록 범위를 늘린다.","relations":["state","process","attribute","boundary"]}
+{"primary":"볼륨확장 진행상태","text":"저장 장치가 새 블록 범위를 할당하는 동안 볼륨확장 진행상태에 머문다. 중복 확장 요청을 막고 완료 식별자가 도착할 때까지 파일시스템 변경을 기다린다.","relations":["state","process","part_of","role"]}
+{"primary":"파일시스템 성장대기","text":"장치 용량은 늘었지만 운영체제가 새 범위를 아직 반영하지 않았으면 파일시스템 성장대기 상태다. 마운트와 오류 검사를 통과한 뒤 논리 공간을 확장한다.","relations":["state","process","classification","boundary"]}
+{"primary":"볼륨성장 검증상태","text":"파일시스템 크기는 바뀌었지만 읽기·쓰기와 여유 공간 검사가 남아 있으면 볼륨성장 검증상태다. 결과가 안정돼야 애플리케이션 용량 경보를 해제한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"볼륨확장 완료흡수상태","text":"장치와 파일시스템이 새 크기에 맞고 검증을 통과하면 볼륨확장 완료흡수상태다. 같은 확장 작업을 반복해도 이미 할당된 범위에는 추가 변화가 없다.","relations":["state","process","classification","function"]}
+{"primary":"볼륨확장 실패흡수상태","text":"메타데이터가 손상되어 기존 크기도 새 크기도 안전하게 열 수 없으면 볼륨확장 실패흡수상태다. 일반 재시도 대신 스냅숏 복원이나 새 볼륨 재구성이 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"스토리지저하 관찰상태","text":"입출력 지연과 오류가 간헐적으로 높지만 장치 고장을 확정하지 못한 구간은 스토리지저하 관찰상태다. 경로별 지표를 모아 부하 문제와 매체 문제를 나눈다.","relations":["state","process","attribute","boundary"]}
+{"primary":"대체경로 전환상태","text":"일부 입출력을 보조 장치로 옮기며 일관성과 지연을 비교하는 동안 대체경로 전환상태에 있다. 두 경로의 쓰기 순서를 맞춰야 전환 범위를 늘릴 수 있다.","relations":["state","process","comparison","part_of"]}
+{"primary":"손상볼륨 격리상태","text":"읽기 결과가 원본 체크섬과 반복해서 어긋나면 손상볼륨 격리상태로 분류한다. 이 상태의 장치는 자동 복귀하지 않으며 복제와 포렌식 경로에만 연결한다.","relations":["state","process","classification","boundary"]}
+{"primary":"볼륨복제 복구경로","text":"정상 스냅숏과 연속 변경 로그가 있으면 볼륨복제 복구경로로 새 장치를 만든다. 마지막 쓰기 위치를 검증한 뒤 서비스 연결을 새 볼륨으로 옮긴다.","relations":["state","process","function","attribute"]}
+{"primary":"네트워크지연 의심상태","text":"종단 간 지연은 늘었지만 서버 처리와 전송 구간을 분리하지 못한 때를 네트워크지연 의심상태라고 한다. 홉별 측정이 끝나기 전에는 경로 장애로 확정하지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"경로분리 진단상태","text":"같은 요청을 주 경로와 시험 경로로 보내 차이를 재는 단계가 경로분리 진단상태다. 응답 내용과 시간을 함께 비교해 서버 부하를 네트워크 문제로 오인하지 않는다.","relations":["state","process","comparison","contrast"]}
+{"primary":"라우팅우회 준비상태","text":"대체 회선은 건강하지만 용량과 보안 규칙을 확인하는 동안 라우팅우회 준비상태에 머문다. 두 조건이 통과해야 사용자 트래픽을 옮긴다.","relations":["state","process","function","boundary"]}
+{"primary":"라우팅우회 진행상태","text":"일부 주소 범위만 대체 회선으로 이동한 구간은 라우팅우회 진행상태다. 패킷 손실과 세션 유지율을 보며 비중을 늘리거나 원래 경로로 되돌린다.","relations":["state","process","part_of","attribute"]}
+{"primary":"DNS전파 중간상태","text":"권한 서버의 값은 바뀌었지만 지역별 재귀 캐시에 이전 응답이 섞여 있으면 DNS전파 중간상태다. TTL 경과와 질의 분포를 확인할 때까지 단일 주소만 유효하다고 가정하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"연결배출 대기상태","text":"새 연결은 막았지만 장기 세션과 전송이 남아 있는 기간을 연결배출 대기상태라고 한다. 종료 기준을 넘긴 연결만 명시적으로 끊고 나머지는 자연 종료를 기다린다.","relations":["state","process","role","boundary"]}
+{"primary":"네트워크복구 검증상태","text":"주 회선이 다시 응답하지만 손실률과 순서 뒤바뀜 검사가 남아 있으면 네트워크복구 검증상태다. 충분한 시험 트래픽이 통과해야 기본 경로로 승격한다.","relations":["state","process","attribute","classification"]}
+{"primary":"분할망 고착흡수상태","text":"양쪽 구역이 독립 소유권을 확정해 충돌 로그를 만들었다면 분할망 고착흡수상태로 본다. 단순 연결 재개만으로는 벗어날 수 없고 합의와 데이터 병합 절차가 필요하다.","relations":["state","process","boundary","role"]}
+{"primary":"경로복귀 복구경로","text":"주 회선의 안정성과 세션 배출이 확인되면 경로복귀 복구경로로 트래픽을 작은 비율부터 되돌린다. 우회 경로는 재발 관찰창이 끝날 때까지 대기 상태로 유지한다.","relations":["state","process","function","comparison"]}
+{"primary":"DNS정상화 복구경로","text":"모든 지역에서 새 응답이 관찰되고 실패 캐시가 만료되면 DNS정상화 복구경로를 따라 임시 가중치를 제거한다. 최종 레코드와 전파 증거를 함께 보존한다.","relations":["state","process","function","attribute"]}
+{"primary":"인증서만료 경고상태","text":"인증서의 남은 수명이 교체 기준 아래지만 새 자격이 준비되지 않았으면 인증서만료 경고상태다. 만료 전까지 발급·검증·배포 단계를 추적한다.","relations":["state","process","attribute","classification"]}
+{"primary":"새인증서 배포중간상태","text":"일부 종단점만 새 인증서를 제공하는 구간을 새인증서 배포중간상태라고 한다. 구형·신형 클라이언트의 체인 검증을 함께 확인하며 범위를 늘린다.","relations":["state","process","part_of","comparison"]}
+{"primary":"이중인증서 수용상태","text":"전환 기간에 이전 자격과 새 자격을 모두 신뢰하는 상태가 이중인증서 수용상태다. 호환 기간을 제한하고 어느 인증서를 사용했는지 기록한다.","relations":["state","process","classification","role"]}
+{"primary":"신뢰전환 검증상태","text":"새 체인의 연결은 성공했지만 모든 지역과 클라이언트 유형을 확인하지 못했으면 신뢰전환 검증상태다. 실패 집단이 없다는 근거가 모여야 이전 신뢰를 제거한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"이전인증서 폐기대기","text":"새 인증서 사용은 안정됐지만 캐시와 오프라인 장치의 갱신 기간이 남아 있으면 이전인증서 폐기대기 상태다. 만료 조건이 충족되기 전에는 개인키 폐기를 실행하지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"인증서교체 완료흡수상태","text":"모든 종단점이 새 인증서를 제공하고 이전 자격이 안전하게 폐기되면 인증서교체 완료흡수상태다. 같은 배포 명령을 반복해도 신뢰 상태는 더 변하지 않는다.","relations":["state","process","classification","function"]}
+{"primary":"개인키소실 실패흡수상태","text":"복구 사본 없이 유일한 개인키가 사라져 기존 암호 자료를 열 수 없으면 개인키소실 실패흡수상태다. 서비스 재시작으로는 벗어나지 못하고 새 자격 발급과 데이터 복구가 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"방화벽규칙 시험상태","text":"새 차단 규칙을 일부 트래픽에만 적용해 오탐과 공격 차단률을 보는 단계가 방화벽규칙 시험상태다. 정상 요청 영향이 크면 즉시 이전 정책으로 돌아간다.","relations":["state","process","comparison","boundary"]}
+{"primary":"차단정책 안정상태","text":"공격 요청은 감소하고 정상 오류는 기준 안에서 유지되면 차단정책 안정상태로 분류한다. 규칙을 전체 범위에 적용하되 예외 목록을 계속 감사한다.","relations":["state","process","classification","attribute"]}
+{"primary":"보안정책 복구경로","text":"새 정책의 오탐이 확인되면 보안정책 복구경로로 이전 규칙을 복원하고 잘못 차단된 주체를 재검토한다. 공격 서명은 별도 좁은 규칙으로 남겨 보호 공백을 막는다.","relations":["state","process","function","boundary"]}
+{"primary":"경보후보 관찰상태","text":"지표가 임계치를 한 번 넘었지만 지속 조건을 채우지 못한 구간은 경보후보 관찰상태다. 다음 표본을 모아 일시적 흔들림과 실제 이상을 구분한다.","relations":["state","process","classification","boundary"]}
+{"primary":"경보활성 중간상태","text":"경보 조건은 충족했지만 중복 사건과 정비 예외를 확인하는 동안 경보활성 중간상태에 머문다. 억제 근거가 없을 때만 담당자 호출로 이동한다.","relations":["state","process","role","boundary"]}
+{"primary":"담당자확인 대기상태","text":"호출은 전송됐지만 책임자가 사건을 인수하지 않았으면 담당자확인 대기상태다. 확인 제한시간을 넘으면 다음 순번으로 확장하고 첫 인수자가 지휘 역할을 맡는다.","relations":["state","process","role","part_of"]}
+{"primary":"사고선언 준비상태","text":"사용자 영향은 확인됐지만 등급과 대응 범위를 정하는 중이면 사고선언 준비상태다. 영향 지역과 기능을 고정한 뒤 공식 사고 상태로 전환한다.","relations":["state","process","classification","attribute"]}
+{"primary":"사고대응 진행상태","text":"지휘자와 작업 흐름이 정해지고 완화책을 시험하는 기간이 사고대응 진행상태다. 각 조치의 전후 지표를 기록해 효과 없는 변경을 되돌린다.","relations":["state","process","role","comparison"]}
+{"primary":"완화검증 중간상태","text":"사용자 오류는 줄었지만 모든 지역과 경로에서 효과를 확인하지 못했으면 완화검증 중간상태다. 독립 지표가 회복될 때까지 해결 선언을 보류한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"안정관찰 상태","text":"완화 뒤 핵심 지표가 정상 범위에 들어왔지만 재발 관찰시간이 남아 있는 구간은 안정관찰 상태다. 새 변경을 제한하고 같은 장애 지표가 다시 오르는지 확인한다.","relations":["state","process","attribute","boundary"]}
+{"primary":"사고해결 흡수상태","text":"사용자 영향이 사라지고 후속 작업의 소유권이 확정되면 사고해결 흡수상태다. 동일한 완화 명령을 반복해도 대응 단계는 더 진행되지 않으며 새 증거가 있을 때만 사건을 다시 연다.","relations":["state","process","role","classification"]}
+{"primary":"원인불명 고착상태","text":"관측 자료가 소실되어 남은 가설을 구분할 수 없으면 원인불명 고착상태에 들어간다. 같은 로그 조회를 반복하지 않고 계측 보강과 재발 시 증거 수집 계획으로 전환한다.","relations":["state","process","boundary","function"]}
+{"primary":"사고재개 복구경로","text":"해결 뒤 같은 증상이 재발하고 이전 사건과의 연결 근거가 있으면 사고재개 복구경로를 따른다. 기존 시간선과 담당자를 복원하되 새 영향 범위와 증거는 별도로 갱신한다.","relations":["state","process","role","attribute"]}
+{"primary":"리전장애 의심상태","text":"한 지역에서 여러 서비스가 실패했지만 공통 관측망의 오류를 배제하지 못한 때를 리전장애 의심상태라고 한다. 다른 지역과 외부 경로에서 독립 검사를 수행한다.","relations":["state","process","classification","boundary"]}
+{"primary":"리전장애 확정상태","text":"전원·네트워크·핵심 저장소의 실패가 독립적으로 확인되면 리전장애 확정상태로 전환한다. 영향 가용영역과 마지막 정상 시각을 고정해 복구 범위를 정한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"보조리전 준비상태","text":"대체 지역의 자원은 기동했지만 암호키와 외부 연계 검증이 남아 있으면 보조리전 준비상태다. 필수 계층이 모두 통과해야 승격을 시작한다.","relations":["state","process","role","boundary"]}
+{"primary":"데이터추격 대기상태","text":"보조 지역이 마지막 정상 로그를 적용하는 동안 데이터추격 대기상태에 머문다. 복제 지연이 허용 손실량 안으로 줄어야 쓰기 주체 후보가 된다.","relations":["state","process","comparison","attribute"]}
+{"primary":"보조리전 승격진행","text":"쓰기 소유권과 외부 종단점을 보조 지역으로 옮기는 구간이 보조리전 승격진행 상태다. 기존 지역의 쓰기를 차단한 뒤 단일 주체임을 검증한다.","relations":["state","process","role","function"]}
+{"primary":"트래픽전환 중간상태","text":"일부 사용자만 보조 지역으로 보내며 기능과 지연을 비교하는 기간을 트래픽전환 중간상태라고 한다. 오류가 늘면 가중치를 낮추고 안정되면 전체 전환으로 이동한다.","relations":["state","process","comparison","part_of"]}
+{"primary":"보조리전 안정상태","text":"보조 지역의 서비스와 데이터가 관찰기간 동안 정상 범위이면 보조리전 안정상태다. 임시 승격 표시를 운영 정본으로 바꾸고 재해복구 감시를 계속한다.","relations":["state","process","classification","attribute"]}
+{"primary":"주리전 소실흡수상태","text":"주 지역의 유일한 로컬 상태가 파괴되어 자동 재가입이 불가능하면 주리전 소실흡수상태다. 기존 자원을 재기동하는 대신 새 기반 이미지와 보조 지역 사본으로 재구축한다.","relations":["state","process","boundary","function"]}
+{"primary":"역복제 진행상태","text":"복구된 원래 지역으로 보조 지역의 새 쓰기를 전송하는 동안 역복제 진행상태에 머문다. 충돌 목록과 마지막 위치를 확인해 방향 전환 중 데이터 분기를 막는다.","relations":["state","process","part_of","attribute"]}
+{"primary":"원리전 복귀경로","text":"역복제가 완료되고 원래 지역의 건강 검사가 통과되면 원리전 복귀경로로 트래픽과 쓰기 역할을 단계적으로 되돌린다. 보조 지역은 마지막 동기화 뒤 대기 상태로 낮춘다.","relations":["state","process","function","role"]}
+{"primary":"인증장애 의심상태","text":"로그인 실패가 늘었지만 사용자 입력 오류와 인증 서비스 장애를 구분하지 못한 때를 인증장애 의심상태라고 한다. 오류 코드와 지역 분포를 확인해 영향 경로를 좁힌다.","relations":["state","process","classification","boundary"]}
+{"primary":"토큰발급 제한상태","text":"키 검증이 불안정해 새 토큰만 제한하고 기존 유효 토큰은 받는 상태가 토큰발급 제한상태다. 완전 차단보다 영향을 줄이면서 인증 기반이 회복될 시간을 확보한다.","relations":["state","process","function","boundary"]}
+{"primary":"키회전 준비상태","text":"새 키는 생성됐지만 사용처 목록과 복구 사본 검사가 남아 있으면 키회전 준비상태다. 모든 의존 서비스가 새 키를 읽을 수 있어야 배포로 이동한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"이중키 수용중간상태","text":"새 키로 쓰고 이전 키로도 읽을 수 있는 기간이 이중키 수용중간상태다. 객체별 키 버전을 기록해 전환 중 복호화 공백을 막는다.","relations":["state","process","classification","attribute"]}
+{"primary":"재암호화 진행상태","text":"기존 객체를 묶음별로 새 키로 바꾸는 동안 재암호화 진행상태에 머문다. 완료 목록과 실패 목록을 분리해 중단 뒤에도 정확한 위치에서 재개한다.","relations":["state","process","part_of","function"]}
+{"primary":"구키폐기 대기상태","text":"모든 쓰기는 새 키를 쓰지만 장기 보관 객체의 검증이 남아 있으면 구키폐기 대기상태다. 이전 키로만 읽히는 자료가 0건인지 확인한 뒤 폐기한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"키회전 완료흡수상태","text":"새 키 사용과 재암호화가 끝나고 이전 키가 안전하게 폐기되면 키회전 완료흡수상태다. 같은 회전 작업을 반복하지 않고 다음 예정 주기까지 새 키를 정본으로 유지한다.","relations":["state","process","classification","role"]}
+{"primary":"키소실 실패흡수상태","text":"유일한 복호화 키와 복구 사본이 모두 사라지면 키소실 실패흡수상태다. 일반 재인증이나 키 재발급으로는 기존 암호문을 읽을 수 없다.","relations":["state","process","boundary","function"]}
+{"primary":"세션재인증 복구경로","text":"인증 기반이 회복되면 세션재인증 복구경로를 따라 기존 세션의 주체를 다시 확인하고 새 토큰을 발급한다. 검증하지 못한 세션은 종료해 탈취 상태를 이어받지 않는다.","relations":["state","process","function","role"]}
+{"primary":"권한복원 복구경로","text":"잘못 회수된 역할의 승인 이력과 만료 조건이 남아 있으면 권한복원 복구경로로 필요한 범위만 다시 부여한다. 회수 기간의 감사 기록은 보존한다.","relations":["state","process","role","attribute"]}
+{"primary":"비용급증 의심상태","text":"시간당 지출이 늘었지만 정상 수요와 자원 누수를 구분하지 못한 구간은 비용급증 의심상태다. 서비스·지역·자원 유형별 변화를 나눠 원인을 찾는다.","relations":["state","process","classification","comparison"]}
+{"primary":"비용원인 분리상태","text":"같은 기간의 요청량과 단가, 유휴 자원을 각각 대조하는 단계가 비용원인 분리상태다. 한 요인의 변화만 확인한 뒤 제한 또는 최적화 경로를 선택한다.","relations":["state","process","contrast","attribute"]}
+{"primary":"비필수기능 제한상태","text":"핵심 기능을 유지하기 위해 고비용 부가 작업의 새 진입을 막는 상태가 비필수기능 제한상태다. 진행 중 작업은 안전 지점까지 마치고 정상 요청의 용량을 확보한다.","relations":["state","process","function","role"]}
+{"primary":"기능저하 안정상태","text":"필수 요청은 목표 지연 안에서 처리되고 제한한 기능의 영향도 관리되면 기능저하 안정상태다. 비용과 오류가 회복될 때까지 이 축소 구성을 유지한다.","relations":["state","process","classification","comparison"]}
+{"primary":"비용정상화 검증상태","text":"지출률은 낮아졌지만 청구 지연과 다음 피크를 확인하지 못했으면 비용정상화 검증상태다. 관찰창이 끝나기 전에는 모든 제한을 한꺼번에 해제하지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"예산소진 흡수상태","text":"승인된 예산이 모두 소진되어 추가 자원을 구매할 수 없으면 예산소진 흡수상태다. 같은 확장 요청을 반복해도 벗어나지 못하며 새 승인이나 자원 해제가 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"할당량고착 흡수상태","text":"상위 한도 증액이 거절되고 기존 자원도 이동할 수 없으면 할당량고착 흡수상태다. 자동 재시도 대신 축소 운영이나 다른 지역으로의 재설계를 요구한다.","relations":["state","process","boundary","classification"]}
+{"primary":"용량복원 복구경로","text":"유휴 자원을 정리하고 할당량을 확보하면 용량복원 복구경로로 필수 인스턴스부터 다시 늘린다. 건강 검사를 거쳐 정상 트래픽 비중을 단계적으로 회복한다.","relations":["state","process","function","comparison"]}
+{"primary":"기능복귀 복구경로","text":"비용과 용량 지표가 안정되면 기능복귀 복구경로를 따라 제한한 부가 기능을 우선순위 순으로 연다. 각 단계에서 지출과 오류가 다시 오르지 않는지 확인한다.","relations":["state","process","function","role"]}
+{"primary":"비용정책 복구경로","text":"잘못된 단가나 태그가 원인이면 비용정책 복구경로로 배분 규칙을 바로잡고 누락된 소유자를 연결한다. 실제 자원 사용량과 대조해 수정 결과를 검증한다.","relations":["state","process","classification","comparison"]}
+{"primary":"정비진입 준비상태","text":"정비 승인은 끝났지만 백업과 연결 배출이 남아 있으면 정비진입 준비상태다. 보호 절차가 완료되기 전에는 일반 요청을 차단하지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"정비연결배출 중간상태","text":"새 요청은 막았지만 장기 연결과 실행 작업이 남아 있는 기간을 정비연결배출 중간상태라고 한다. 안전한 종료와 체크포인트를 확인한 뒤 정비 모드로 이동한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"정비패치 적용상태","text":"승인된 패치와 설정을 순서대로 적용하는 기간이 정비패치 적용상태다. 단계별 완료 표식과 롤백 지점을 기록해 실패 범위를 제한한다.","relations":["state","process","part_of","function"]}
+{"primary":"패치검증 보류상태","text":"적용은 끝났지만 기능·성능·복제 검사가 남아 있으면 패치검증 보류상태다. 모든 검사가 통과할 때 일반 서비스로 복귀하며 하나라도 실패하면 롤백 경로를 연다.","relations":["state","process","comparison","boundary"]}
+{"primary":"서비스복귀 중간상태","text":"시험 트래픽은 성공했지만 일반 연결을 단계적으로 여는 구간이 서비스복귀 중간상태다. 오류와 대기열을 확인하며 허용 비중을 늘린다.","relations":["state","process","comparison","function"]}
+{"primary":"정비완료 안정상태","text":"일반 요청과 감시가 정상이고 임시 권한이 모두 회수되면 정비완료 안정상태다. 다음 변경이 시작되기 전까지 같은 정비 명령은 추가 전이를 만들지 않는다.","relations":["state","process","classification","role"]}
+{"primary":"패치실패 고착상태","text":"새 패치와 이전 패치가 모두 부팅되지 않고 복구 이미지도 없으면 패치실패 고착상태다. 같은 재시작을 반복하지 않고 외부 복구 매체나 장치 교체를 요구한다.","relations":["state","process","boundary","function"]}
+{"primary":"긴급롤백 복구경로","text":"패치 뒤 즉시 장애가 발생하고 이전 이미지가 유효하면 긴급롤백 복구경로로 실행 버전과 설정을 되돌린다. 데이터 호환성을 확인한 뒤 제한된 요청부터 다시 연다.","relations":["state","process","function","attribute"]}
+{"primary":"정비재개 복구경로","text":"외부 전원 문제로 중단된 정비는 장치 상태와 마지막 완료 단계를 확인한 뒤 정비재개 복구경로를 따른다. 이미 적용된 단계는 건너뛰고 미완료 작업만 순서대로 실행한다.","relations":["state","process","part_of","role"]}
+{"primary":"운영정상화 흡수상태","text":"트래픽·데이터·관측·보안 경로가 모두 기준 상태로 돌아오고 임시 조치의 인계가 끝나면 운영정상화 흡수상태다. 새로운 장애나 변경이 생기기 전에는 추가 복구 전이가 필요하지 않다.","relations":["state","process","classification","function"]}

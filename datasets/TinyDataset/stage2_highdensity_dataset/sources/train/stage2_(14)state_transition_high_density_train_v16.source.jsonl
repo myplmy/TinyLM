@@ -1,0 +1,150 @@
+{"primary":"철도시간표 변경승인대기","text":"새 운행 시각의 충돌 검사는 끝났지만 책임자 승인이 남아 있는 철도시간표 변경승인대기는 적용 전 중간 상태다. 승인되면 배포로 진행하고 반려되면 이전 시간표로 복구한다.","relations":["state","process","classification","role"]}
+{"primary":"철도시간표 배포진행상태","text":"관제에는 새 버전이 적용됐지만 역과 승무 시스템의 수신이 끝나지 않은 철도시간표 배포진행상태는 부분 완료 상태다. 모든 수신처가 확인해야 활성 상태로 넘어가며 실패한 채널은 재전송 경로로 돌린다.","relations":["state","process","part_of","function"]}
+{"primary":"열차슬롯 재조정중간상태","text":"지연 열차의 새 슬롯을 계산했으나 후속 진로가 아직 확정되지 않은 열차슬롯 재조정중간상태에서는 출발을 허가하지 않는다. 진로 검사가 통과되면 확정하고 충돌하면 원래 순서부터 다시 계산한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"배차간격 수렴중간상태","text":"앞뒤 열차의 간격이 목표값으로 가까워지지만 아직 허용 범위 밖인 배차간격 수렴중간상태에서는 추가 정차와 속도 조정을 계속한다. 연속 관측이 범위 안이면 안정 상태로 전환한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"증편편성 출고대기상태","text":"증편 계획과 승무 배정은 끝났지만 차량 검사가 남은 증편편성 출고대기상태는 영업 투입 전 중간 단계다. 검사 통과 뒤 출고하며 결함이 나오면 다른 예비편성을 찾는 복구 경로로 간다.","relations":["state","process","role","boundary"]}
+{"primary":"감편취소 확정대기상태","text":"낮은 수요로 감편 후보가 정해졌어도 환승 영향 확인이 끝나지 않은 감편취소 확정대기상태에서는 운행 슬롯을 제거하지 않는다. 영향이 작으면 취소를 확정하고 크면 기본 배차로 복귀한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"회복시간표 적용중간상태","text":"일부 열차만 새 순서로 움직이고 나머지는 기존 계획을 따르는 회복시간표 적용중간상태는 두 시간표가 공존하는 단계다. 열차별 적용 표지를 확인해 중복 진로를 막고 순차적으로 새 버전에 합류시킨다.","relations":["state","process","contrast","part_of"]}
+{"primary":"기본시간표 단계복귀경로","text":"임시 운행표를 한 번에 해제하지 않고 종점 회차와 주요 환승을 차례로 맞추는 기본시간표 단계복귀경로를 사용한다. 각 구간의 간격이 안정된 뒤 다음 구간을 원복한다.","relations":["state","process","function","part_of"]}
+{"primary":"시간표충돌 고정상태","text":"같은 선로와 시각에 둘 이상의 열차가 배정된 채 자동 해법이 없으면 시간표충돌 고정상태가 된다. 일반 재계산만 반복하지 말고 우선순위나 운행 취소를 외부에서 선택해야 빠져나온다.","relations":["state","process","boundary","role"]}
+{"primary":"운행일정 폐기흡수상태","text":"열차 운행이 공식 취소되고 슬롯이 다른 편성에 넘어가면 운행일정 폐기흡수상태로 본다. 원래 일정은 통상 상태 전이로 되살리지 않고 새 운행번호와 승인 절차로 다시 생성해야 한다.","relations":["state","process","classification","boundary"]}
+{"primary":"출발허가 확인중간상태","text":"진행 신호는 켜졌지만 출입문과 승강장 확인이 남은 출발허가 확인중간상태에서는 열차가 정차한다. 모든 확인이 끝나면 출발하고 하나라도 실패하면 허가를 정지로 되돌린다.","relations":["state","process","function","part_of"]}
+{"primary":"출입문 재확인대기상태","text":"닫힘 명령 뒤 한 문이 불명확해진 출입문 재확인대기상태에서는 기관사가 출발 동작을 보류한다. 문을 다시 열어 장애물을 제거한 뒤 전체 닫힘 검사를 반복하는 것이 복구 경로다.","relations":["state","process","part_of","function"]}
+{"primary":"진로설정 진행중간상태","text":"분기기 일부는 전환됐지만 모든 잠금 검지가 끝나지 않은 진로설정 진행중간상태는 통행 허용 상태가 아니다. 미완료 분기기를 원위치로 복귀시키거나 현장 확인 뒤 설정을 다시 시작한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"출발보류 지속흡수상태","text":"진로를 확인할 수 없고 대체 경로도 없는 출발보류 지속흡수상태에서는 시간 경과만으로 허가가 생기지 않는다. 신호 설비 복구나 수동 통행 절차가 외부에서 주어져야 상태가 바뀐다.","relations":["state","process","boundary","function"]}
+{"primary":"정차시간 연장중간상태","text":"승객 흐름 때문에 문 열림을 늘렸지만 최종 출발 한계 전인 정차시간 연장중간상태에서는 남은 승하차와 뒤 열차 간격을 함께 감시한다. 흐름이 끝나면 닫힘 절차로, 한계를 넘으면 통제 하차 경로로 간다.","relations":["state","process","comparison","attribute"]}
+{"primary":"열차간격 회복진행상태","text":"앞 열차의 추가 정차와 뒤 열차의 감속으로 간격을 조절하는 열차간격 회복진행상태에서는 두 조치의 효과가 아직 확정되지 않았다. 다음 주요역 측정이 목표 안이면 회복 완료로 전환한다.","relations":["state","process","comparison","part_of"]}
+{"primary":"추월준비 대피중간상태","text":"완행이 대피선에 들어왔지만 급행이 통과하지 않은 추월준비 대피중간상태에서는 완행의 출발을 잠근다. 급행 통과 뒤 진로를 원복하고, 급행이 취소되면 기본 순서로 복구한다.","relations":["state","process","contrast","boundary"]}
+{"primary":"추월실패 순서교착상태","text":"두 열차가 서로의 진로를 기다리고 우선순위도 확정되지 않은 추월실패 순서교착상태는 자동 시간 경과로 풀리지 않는다. 관제가 한 진로를 취소하고 명시적 순서를 부여해야 한다.","relations":["state","process","boundary","role"]}
+{"primary":"단선통행권 발행대기","text":"반대 방향 열차의 위치는 확인됐지만 기존 통행표지 회수가 남은 단선통행권 발행대기는 새 권한을 주기 전의 중간 상태다. 표지가 회수되면 발행하고 불일치하면 구간 수색 경로로 간다.","relations":["state","process","role","boundary"]}
+{"primary":"단선구간 점유흡수상태","text":"열차 위치가 불명확한 채 단선구간 점유흡수상태가 되면 단순 출발 명령으로 다른 열차를 들일 수 없다. 현장 확인이나 열차 통신 복구로 점유 경계를 확정해야 빠져나온다.","relations":["state","process","boundary","attribute"]}
+{"primary":"교행순서 재설정경로","text":"예정 교행이 실패했을 때 두 열차를 가장 가까운 역에 정차시키고 통행권을 회수한 뒤 순서를 다시 정하는 교행순서 재설정경로를 따른다. 위치 확인 없이 우선순위만 바꾸지 않는다.","relations":["state","process","role","function"]}
+{"primary":"회차선 진입대기상태","text":"종착 처리는 끝났지만 앞 편성이 회차선을 비우지 않은 회차선 진입대기상태에서는 승강장 또는 접근선에 머문다. 점유 해제 뒤 진입하고 장기 지연이면 대체 건넘선 경로를 선택한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"회차방향 전환진행상태","text":"반대 운전실의 장치는 켜졌지만 제동과 통신 시험이 남은 회차방향 전환진행상태는 비영업 중간 단계다. 시험 통과 뒤 운행번호를 인계하고 실패하면 원래 운전실로 복구한다.","relations":["state","process","role","attribute"]}
+{"primary":"회차불능 종착흡수상태","text":"회차 설비와 대체 건넘선을 모두 사용할 수 없는 회차불능 종착흡수상태에서는 해당 편성이 스스로 다음 운행으로 넘어갈 수 없다. 구조 견인이나 다른 편성 투입이 외부 복구 경로다.","relations":["state","process","boundary","function"]}
+{"primary":"단축회차 원복경로","text":"중간역에서 방향을 바꾼 편성을 정상 종점 운행으로 되돌리려면 단축회차 원복경로에 따라 승객 안내, 운행번호, 진로를 순서대로 재설정한다. 물리 위치에 맞지 않는 원래 시간표만 복원하지 않는다.","relations":["state","process","function","classification"]}
+{"primary":"환승대기 판단중간상태","text":"접속 열차의 도착 예측은 한계 안이지만 실제 승객 수가 확인되지 않은 환승대기 판단중간상태에서는 출발과 대기를 잠시 보류한다. 현장 확인 뒤 대기 여부를 확정한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"환승승객 이동중간상태","text":"승객이 도착 승강장에서 연결편으로 이동하고 있는 환승승객 이동중간상태에서는 통로 위치와 남은 시간을 계속 갱신한다. 전원이 탑승하면 완료되고 동선이 막히면 대체 경로로 전환한다.","relations":["state","process","part_of","function"]}
+{"primary":"환승보장 만료흡수상태","text":"마지막 연결편이 출발해 더 기다릴 열차가 없는 환승보장 만료흡수상태에서는 기존 대기 명령으로 접속을 되살릴 수 없다. 새 임시편이나 대체 수송을 별도로 만들어야 한다.","relations":["state","process","boundary","role"]}
+{"primary":"환승연계 재구성경로","text":"원래 연결이 끊기면 남은 열차와 버스의 수용량을 확인하고 승차권 효력을 옮겨 안내하는 환승연계 재구성경로를 따른다. 단순히 이전 출발 시각을 표시하지 않는다.","relations":["state","process","function","role"]}
+{"primary":"막차접속 재구성경로","text":"막차를 놓친 승객에게는 역내 대기, 임시 차량, 숙박 지원을 순서대로 검토하는 막차접속 재구성경로를 적용한다. 원래 연계가 종료된 상태와 새 서비스 제공을 구분한다.","relations":["state","process","classification","role"]}
+{"primary":"예비편성 준비중간상태","text":"예비 차량의 전원과 제동은 확인됐지만 청소·승무 배정이 남은 예비편성 준비중간상태는 출고 전 단계다. 남은 항목을 마치면 투입하고 결함이 나오면 다른 편성으로 전환한다.","relations":["state","process","part_of","role"]}
+{"primary":"고장편성 격리흡수상태","text":"주행 안전 기능을 잃어 본선 이동이 금지된 고장편성 격리흡수상태에서는 일반 운전 명령으로 영업 상태에 돌아갈 수 없다. 수리나 구조 견인과 재검사가 필요하다.","relations":["state","process","boundary","classification"]}
+{"primary":"편성교체 인계중간상태","text":"대체 차량은 도착했지만 운행번호와 승객 안내가 모두 넘어가지 않은 편성교체 인계중간상태에서는 두 편성을 동시에 활성화하지 않는다. 식별 대응표가 일치한 뒤 교체를 확정한다.","relations":["state","process","role","boundary"]}
+{"primary":"차량식별 불일치교착","text":"관제 번호와 물리 차량번호가 서로 다른 채 어느 매핑도 확정할 수 없는 차량식별 불일치교착은 자동 배차를 막는 흡수 상태다. 현장 차호 확인과 원본 기록 대조로만 해소한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"편성교체 단계복구경로","text":"교체가 중단되면 승객을 안전 구역으로 옮기고 두 편성의 번호를 분리한 뒤 원래 차량 또는 새 대체편을 선택하는 편성교체 단계복구경로를 따른다. 번호만 먼저 되돌리지 않는다.","relations":["state","process","role","function"]}
+{"primary":"병결접근 중간상태","text":"두 편성이 저속으로 연결 위치에 가까워지는 병결접근 중간상태에서는 거리와 제동을 연속 확인한다. 정렬되면 연결기 잠금으로 진행하고 오차가 커지면 정지·후퇴 경로로 간다.","relations":["state","process","comparison","attribute"]}
+{"primary":"병결잠금 확인대기","text":"연결기는 맞물렸지만 기계·전기 잠금 신호가 모두 들어오지 않은 병결잠금 확인대기에서는 운행 단위로 확정하지 않는다. 재체결이나 현장 점검으로 확인을 회복한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"병결실패 고착상태","text":"연결기가 손상되어 결합도 안전 분리도 할 수 없는 병결실패 고착상태는 통상 병결 명령으로 빠져나오지 못한다. 설비 수리나 구조 차량의 물리적 개입이 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"병결취소 후퇴경로","text":"병결 접근을 취소할 때 제동을 확인하고 뒤쪽 진로를 설정한 뒤 편성 간 거리를 확보하는 병결취소 후퇴경로를 따른다. 연결기 앞에서 즉시 정상 운행으로 전환하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"분리작업 진행중간상태","text":"제동은 체결됐고 연결기 해제가 진행 중인 분리작업 진행중간상태에서는 두 편성 모두 출발할 수 없다. 해제와 독립 시험이 끝나야 별도 운행 상태로 이동한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"분리후 제동확인대기","text":"연결은 끊겼지만 각 편성의 독립 제동 결과가 나오지 않은 분리후 제동확인대기는 운행 전 중간 상태다. 양쪽 시험이 통과하면 출발하고 한쪽이 실패하면 재병결을 검토한다.","relations":["state","process","contrast","function"]}
+{"primary":"분리불능 결합흡수상태","text":"연결기를 해제할 수 없고 이동도 금지된 분리불능 결합흡수상태에서는 시간표상 분리 명령을 반복해도 상태가 바뀌지 않는다. 정비 인력의 수리나 결합 운행 재계획이 필요하다.","relations":["state","process","boundary","role"]}
+{"primary":"분리복구 재병결경로","text":"분리 뒤 한 편성이 독립 운전을 못 하면 제동을 고정하고 위치를 다시 맞춘 뒤 연결기를 잠그는 분리복구 재병결경로를 사용한다. 독립 시험 실패 기록을 지우지 않는다.","relations":["state","process","function","part_of"]}
+{"primary":"증결편성 검사중간상태","text":"추가 객차의 연결은 끝났지만 전체 제동과 출입문 시험이 남은 증결편성 검사중간상태에서는 승객 탑승을 시작하지 않는다. 시험 통과 뒤 수용량을 갱신한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"감결객차 이동대기상태","text":"분리한 객차가 본선 편성에서 떨어졌지만 유치선 진로가 열리지 않은 감결객차 이동대기상태에서는 보호 선로에 정차한다. 진로가 확보되면 기지로 이동하고 실패하면 작업 구역을 연장한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"출고검사 실패흡수상태","text":"핵심 제동이나 신호 시험이 실패한 출고검사 실패흡수상태에서는 같은 편성을 일반 명령으로 출고시킬 수 없다. 결함 수리와 전 항목 재검사가 외부 해제 조건이다.","relations":["state","process","boundary","classification"]}
+{"primary":"출고검사 재수행경로","text":"검사 실패 뒤 결함을 격리하고 수리 이력을 확인한 다음 처음부터 안전 항목을 반복하는 출고검사 재수행경로를 따른다. 실패 항목만 임의로 통과 처리하지 않는다.","relations":["state","process","function","attribute"]}
+{"primary":"회송영업 전환중간상태","text":"회송 편성에 승무와 정차 계획은 붙었지만 승객 안내가 끝나지 않은 회송영업 전환중간상태에서는 문을 열지 않는다. 모든 채널이 새 종별을 확인한 뒤 영업 상태가 된다.","relations":["state","process","classification","part_of"]}
+{"primary":"편성번호 인계대기상태","text":"물리 차량 교체는 끝났지만 시스템마다 운행번호가 다른 편성번호 인계대기상태에서는 출발을 막는다. 대응표를 재배포하고 모든 수신 확인이 끝나야 해제한다.","relations":["state","process","attribute","boundary"]}
+{"primary":"차량교체 정상화경로","text":"대체편 투입 뒤 승객과 승무를 인계하고 간격을 다시 맞춘 다음 고장 편성을 기지로 보내는 차량교체 정상화경로를 따른다. 각 단계가 끝나기 전 전체 정상 상태로 표시하지 않는다.","relations":["state","process","role","function"]}
+{"primary":"신호진행 준비중간상태","text":"진로는 잠겼지만 앞 구간 점유 해제 확인이 남은 신호진행 준비중간상태에서는 정지 현시를 유지한다. 점유가 해제되면 진행으로, 재점유가 나타나면 진로 취소로 간다.","relations":["state","process","part_of","boundary"]}
+{"primary":"신호검지 불일치흡수상태","text":"현장 신호와 관제 화면이 서로 다른 신호검지 불일치흡수상태에서는 자동 현시 명령으로 정상화할 수 없다. 현장 확인과 회로 시험으로 기준 상태를 확정해야 한다.","relations":["state","process","contrast","boundary"]}
+{"primary":"신호상태 단계복구경로","text":"검지 불일치가 해소되면 정지 현시 확인, 제한 속도 시험, 정상 진로 허용 순서의 신호상태 단계복구경로를 따른다. 곧바로 진행 신호로 건너뛰지 않는다.","relations":["state","process","function","classification"]}
+{"primary":"분기기 전환중간상태","text":"분기기가 움직이기 시작했지만 끝 위치 잠금이 확인되지 않은 분기기 전환중간상태에서는 어느 방향의 진로도 허용하지 않는다. 완료 검지나 원위치 복귀 뒤 상태를 확정한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"분기기 무검지흡수상태","text":"양쪽 끝 위치가 모두 검지되지 않는 분기기 무검지흡수상태에서는 원격 전환 명령을 반복해도 열차 진입을 허용할 수 없다. 현장 고정과 수동 확인이 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"분기기 수동복구경로","text":"무검지 분기기에 접근 통제를 설정하고 현장 담당자가 방향을 확인한 뒤 쇄정하는 분기기 수동복구경로를 적용한다. 열차 통과 뒤 자동 검지 시험으로 원격 상태를 회복한다.","relations":["state","process","role","function"]}
+{"primary":"폐색권한 인계중간상태","text":"앞 관제자는 통행권을 해제했지만 다음 관제자의 수락이 남은 폐색권한 인계중간상태에서는 새 열차를 들이지 않는다. 양쪽 기록이 일치하면 권한 이전을 완료한다.","relations":["state","process","role","boundary"]}
+{"primary":"폐색점유 미상흡수상태","text":"열차가 있을 가능성은 남지만 위치를 확인할 수 없는 폐색점유 미상흡수상태에서는 시간 초과만으로 빈 구간으로 바뀌지 않는다. 수색이나 신뢰 가능한 통신이 외부 해제 조건이다.","relations":["state","process","boundary","attribute"]}
+{"primary":"폐색상태 현장확인경로","text":"점유가 불명확하면 양 끝 신호를 정지시키고 열차 연락과 선로 순회를 차례로 수행하는 폐색상태 현장확인경로를 따른다. 확인 전 자동 해제값을 쓰지 않는다.","relations":["state","process","function","role"]}
+{"primary":"임시서행 해제대기상태","text":"수리는 끝났지만 시험 열차의 측정이 남은 임시서행 해제대기상태에서는 제한 속도를 유지한다. 시험이 통과하면 단계 해제하고 이상이 재발하면 작업 상태로 돌아간다.","relations":["state","process","comparison","boundary"]}
+{"primary":"제한속도 단계복구경로","text":"서행 원인이 사라진 뒤 낮은 시험 속도부터 한 단계씩 높이며 진동과 신호를 확인하는 제한속도 단계복구경로를 사용한다. 한 번의 정상값으로 최고 속도에 바로 복귀하지 않는다.","relations":["state","process","comparison","function"]}
+{"primary":"자동운전 전환중간상태","text":"제어권 요청은 수락됐지만 위치와 정차 자료 동기화가 남은 자동운전 전환중간상태에서는 기관사가 감시 제어를 유지한다. 동기화 완료 뒤 장치에 권한을 넘긴다.","relations":["state","process","role","part_of"]}
+{"primary":"자동운전 오류흡수상태","text":"위치 기준과 제동 모델을 모두 잃은 자동운전 오류흡수상태에서는 재시작 명령만으로 자동 제어에 복귀하지 않는다. 열차 정지와 수동 보정, 기능 시험이 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"수동운전 안전복구경로","text":"자동 제어 장애 때 열차를 안전 위치에 세우고 기관사가 제한 속도로 운전한 뒤 장치를 재시험하는 수동운전 안전복구경로를 따른다. 제어권 주체를 매 단계 기록한다.","relations":["state","process","role","function"]}
+{"primary":"비상제동 정지중간상태","text":"비상제동이 작동해 속도는 줄지만 완전히 멈추지 않은 비상제동 정지중간상태에서는 제동 거리를 계속 갱신한다. 정지 뒤 승객과 차량 상태를 확인해야 다음 전이로 간다.","relations":["state","process","comparison","attribute"]}
+{"primary":"제동불능 흡수상태","text":"주·보조 제동 모두 목표 감속을 만들지 못하는 제동불능 흡수상태에서는 일반 운전 명령으로 정상 주행에 돌아갈 수 없다. 비상 저항과 선로 보호, 구조 견인이 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"구간봉쇄 설정중간상태","text":"한쪽 경계는 정지됐지만 반대쪽 진로 취소가 남은 구간봉쇄 설정중간상태에서는 현장 인력 진입을 허용하지 않는다. 양 끝 보호가 확인돼야 봉쇄 완료가 된다.","relations":["state","process","part_of","boundary"]}
+{"primary":"사고현장 보호흡수상태","text":"구조 인력과 증거 보존 구역이 선로를 점유한 사고현장 보호흡수상태에서는 운행 재개 명령만으로 봉쇄가 풀리지 않는다. 현장 지휘자의 반환 승인이 필요하다.","relations":["state","process","role","boundary"]}
+{"primary":"봉쇄해제 검증경로","text":"인력 철수, 공구 계수, 전원·신호 시험, 빈 열차 통과를 차례로 확인하는 봉쇄해제 검증경로를 거친다. 한 항목이라도 실패하면 이전 안전 단계로 되돌린다.","relations":["state","process","function","part_of"]}
+{"primary":"구조인력 철수대기상태","text":"구조 작업은 끝났지만 전원이 집결지에 도착하지 않은 구조인력 철수대기상태에서는 전원 가압과 열차 진입을 막는다. 인원 계수가 일치한 뒤 현장을 반환한다.","relations":["state","process","role","attribute"]}
+{"primary":"사고등급 재판정중간상태","text":"피해 범위는 줄었지만 설비 안정성이 아직 확인되지 않은 사고등급 재판정중간상태에서는 대응 인력을 유지한다. 새 증거에 따라 하향하거나 다시 상향한다.","relations":["state","process","comparison","classification"]}
+{"primary":"원인미상 대응흡수상태","text":"장애가 반복되지만 촉발 원인을 특정하지 못한 원인미상 대응흡수상태에서는 단순 재가동을 정상 상태로 인정하지 않는다. 계측 확대와 격리 시험이 필요하다.","relations":["state","process","boundary","attribute"]}
+{"primary":"장애원인 단계추적경로","text":"전원·통신·신호·차량을 차례로 분리해 재현 여부를 확인하는 장애원인 단계추적경로를 따른다. 한꺼번에 모든 설정을 바꿔 원인 정보를 잃지 않는다.","relations":["state","process","classification","function"]}
+{"primary":"시험운행 진행중간상태","text":"빈 열차가 복구 구간에 들어갔지만 전체 측정 지점을 지나지 않은 시험운행 진행중간상태에서는 영업 재개를 보류한다. 통과 완료 뒤 결과를 종합한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"시험실패 재봉쇄경로","text":"시험 중 신호나 진동 이상이 나오면 열차를 안전 지점에 정차시키고 구간을 다시 잠근 뒤 원인을 조사하는 시험실패 재봉쇄경로를 적용한다. 일부 정상값으로 실패를 덮지 않는다.","relations":["state","process","boundary","function"]}
+{"primary":"폭우감속 진행중간상태","text":"일부 열차는 제한 속도를 적용했지만 뒤 열차의 명령 수신이 남은 폭우감속 진행중간상태에서는 구간별 적용 여부를 추적한다. 전 열차 확인 뒤 제한 상태를 확정한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"침수수위 미상흡수상태","text":"수위 센서와 현장 보고가 모두 끊긴 침수수위 미상흡수상태에서는 시간이 흘러도 운행 가능으로 바뀌지 않는다. 대체 측정이나 현장 접근이 필요하다.","relations":["state","process","boundary","attribute"]}
+{"primary":"침수구간 배수복구경로","text":"급전을 차단하고 물을 뺀 뒤 궤도·절연·신호를 순서대로 검사하는 침수구간 배수복구경로를 따른다. 수위가 낮아졌다는 이유만으로 열차를 바로 투입하지 않는다.","relations":["state","process","function","part_of"]}
+{"primary":"강풍대기 관측중간상태","text":"열차는 정차했고 풍속이 낮아지는지 확인 중인 강풍대기 관측중간상태에서는 해제 기준의 연속 시간을 채운다. 다시 상승하면 제한 상태를 유지한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"강풍센서 상충흡수상태","text":"교량 양쪽 센서가 서로 반대 수준을 보고하고 기준 어느 값도 신뢰할 수 없는 강풍센서 상충흡수상태에서는 자동 해제를 금지한다. 휴대 계측이나 현장 점검이 필요하다.","relations":["state","process","contrast","boundary"]}
+{"primary":"풍속판정 교차검증경로","text":"상충한 풍속을 인접 관측소·휴대 센서·열차 보고와 차례로 비교하는 풍속판정 교차검증경로를 사용한다. 가장 낮은 값만 골라 제한을 해제하지 않는다.","relations":["state","process","comparison","function"]}
+{"primary":"제설작업 진행중간상태","text":"선로의 눈은 치웠지만 분기기와 승강장 제설이 남은 제설작업 진행중간상태에서는 전면 운행을 재개하지 않는다. 완료 구역만 시험 상태로 전환한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"분기기 결빙흡수상태","text":"전환부가 얼어 어느 방향에서도 잠기지 않는 분기기 결빙흡수상태에서는 원격 명령을 반복해 진로를 만들 수 없다. 해빙과 기계 점검이 외부 복구 조건이다.","relations":["state","process","boundary","function"]}
+{"primary":"결빙분기기 해빙복구경로","text":"전원을 차단하고 얼음을 제거한 뒤 양방향 전환과 잠금 검지를 시험하는 결빙분기기 해빙복구경로를 따른다. 한 방향 성공만으로 정상 상태를 선언하지 않는다.","relations":["state","process","contrast","function"]}
+{"primary":"폭염레일 감시중간상태","text":"레일 온도는 내려가지만 변형 측정이 끝나지 않은 폭염레일 감시중간상태에서는 서행을 유지한다. 연속 측정이 안정되면 제한을 단계적으로 해제한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"영구변형 폐쇄흡수상태","text":"레일이 허용 형상을 벗어나 영구변형 폐쇄흡수상태가 되면 기온 하강만으로 운행 상태에 돌아가지 않는다. 절단·교체와 정렬 시험이 필요하다.","relations":["state","process","boundary","classification"]}
+{"primary":"레일교체 단계복구경로","text":"손상부 절단, 새 레일 체결, 치수 측정, 저속 시험 순서의 레일교체 단계복구경로를 적용한다. 물리 교체와 운행 승인 사이의 중간 상태를 구분한다.","relations":["state","process","part_of","function"]}
+{"primary":"야간작업 준비중간상태","text":"작업 승인은 났지만 마지막 열차 통과와 장비 반입이 남은 야간작업 준비중간상태에서는 선로 점유권을 넘기지 않는다. 운행 종료 뒤 보호를 설정한다.","relations":["state","process","role","boundary"]}
+{"primary":"작업구간 분해흡수상태","text":"핵심 선로 부품을 분해해 열차 통과가 물리적으로 불가능한 작업구간 분해흡수상태에서는 시간표 명령으로 운행을 재개할 수 없다. 재조립과 검사가 필요하다.","relations":["state","process","boundary","part_of"]}
+{"primary":"작업중단 안전복구경로","text":"정비를 중단해야 하면 열린 부품을 임시 고정하고 공구를 회수한 뒤 통과 가능 여부를 검사하는 작업중단 안전복구경로를 따른다. 미완료 작업을 단순 종료로 표시하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"전원차단 확인중간상태","text":"급전 명령은 실행됐지만 잔류 전압과 접지를 확인 중인 전원차단 확인중간상태에서는 작업자 진입을 막는다. 무전압 확인 뒤 작업 상태로 전환한다.","relations":["state","process","attribute","boundary"]}
+{"primary":"접지미확인 흡수상태","text":"접지 위치를 찾을 수 없고 잔류 전압 가능성이 남은 접지미확인 흡수상태에서는 원격 표시만으로 안전 상태에 도달하지 않는다. 현장 계측과 접지 재설치가 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"가압전 검증복구경로","text":"인원 계수, 접지 제거, 절연 시험, 단계 가압을 순서대로 수행하는 가압전 검증복구경로를 따른다. 어느 단계에서 이상이 나오면 다시 무전압 상태로 돌아간다.","relations":["state","process","function","part_of"]}
+{"primary":"선로검사 판정대기상태","text":"측정은 끝났지만 허용치 비교와 책임자 서명이 남은 선로검사 판정대기상태에서는 반환을 보류한다. 승인되면 시험 운행으로, 반려되면 보수 작업으로 간다.","relations":["state","process","classification","role"]}
+{"primary":"결함등급 미결중간상태","text":"결함은 확인됐지만 즉시 폐쇄와 감속 운행 사이의 등급이 정해지지 않은 결함등급 미결중간상태에서는 보수적 제한을 유지한다. 추가 측정으로 경계를 확정한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"부품수급 대기흡수상태","text":"필수 부품이 없어 분해 설비를 복구할 수 없는 부품수급 대기흡수상태에서는 내부 작업만 반복해도 운행 상태로 바뀌지 않는다. 외부 부품 도착이 해제 조건이다.","relations":["state","process","boundary","part_of"]}
+{"primary":"임시보강 단계복구경로","text":"정식 부품 전까지 구조 계산, 임시 보강, 저속 시험, 연속 감시를 거치는 임시보강 단계복구경로를 사용한다. 임시 상태를 완전 수리와 구분한다.","relations":["state","process","classification","function"]}
+{"primary":"작업열차 철수중간상태","text":"정비는 끝났지만 작업 열차가 봉쇄 구간을 빠져나오는 작업열차 철수중간상태에서는 일반 진로를 잠근다. 차량이 경계를 벗어나야 선로 반환으로 진행한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"선로반환 승인대기상태","text":"설비 시험은 통과했지만 현장 책임자의 반환 서명이 남은 선로반환 승인대기상태에서는 관제가 점유권을 인수하지 않는다. 서명과 미완료 목록을 함께 확인한다.","relations":["state","process","role","attribute"]}
+{"primary":"첫차전 시운전복구경로","text":"야간 작업 뒤 빈 점검 차량으로 신호·궤도·전원을 확인하고 결과를 관제에 인계하는 첫차전 시운전복구경로를 따른다. 영업 첫차를 시험 수단으로 쓰지 않는다.","relations":["state","process","function","role"]}
+{"primary":"급전복구 진행중간상태","text":"변전소는 가압됐지만 모든 급전 구간의 전압이 안정되지 않은 급전복구 진행중간상태에서는 열차 부하를 제한한다. 구간별 확인 뒤 정상 전력 상태로 확장한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"변전소 보호잠금흡수상태","text":"반복 과전류로 보호 장치가 잠긴 변전소 보호잠금흡수상태에서는 원격 투입 명령만으로 급전이 복귀하지 않는다. 고장 제거와 현장 재설정이 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"급전우회 단계복구경로","text":"고장 변전소를 분리하고 인접 구간의 부하를 낮춘 뒤 우회 급전을 단계적으로 연결하는 급전우회 단계복구경로를 따른다. 전압과 용량 한계를 매 단계 확인한다.","relations":["state","process","comparison","function"]}
+{"primary":"회생전력 수용중간상태","text":"제동 열차의 전력이 발생했지만 수용 열차나 저장장치 연결이 확정되지 않은 회생전력 수용중간상태에서는 전압 상승을 감시한다. 수용처가 없으면 저항 제동으로 전환한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"통신대체 전환중간상태","text":"주 통신은 끊겼고 일부 열차만 예비 채널을 확인한 통신대체 전환중간상태에서는 모든 명령을 반복 송신한다. 전 열차가 복창해야 대체망 단일 상태로 넘어간다.","relations":["state","process","part_of","role"]}
+{"primary":"주예비통신 동시불능흡수","text":"주망과 예비망 모두 수신 확인을 만들지 못하는 주예비통신 동시불능흡수에서는 일반 관제 명령으로 열차를 움직이지 않는다. 현장 표지나 유선 연락 같은 외부 수단이 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"무선통신 단계복구경로","text":"열차를 안전 위치에 세우고 단일 호출, 위치 복창, 시험 명령, 정상 교신 순으로 확인하는 무선통신 단계복구경로를 적용한다. 음성 연결만으로 즉시 정상 운행하지 않는다.","relations":["state","process","role","function"]}
+{"primary":"위치정보 동기화중간상태","text":"차상 위치는 갱신됐지만 관제와 신호 설비의 좌표 반영이 남은 위치정보 동기화중간상태에서는 자동 진로를 보류한다. 세 시스템 값이 일치하면 동기화를 완료한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"위치불명 추적흡수상태","text":"열차번호와 점유 구간을 모두 확정할 수 없는 위치불명 추적흡수상태에서는 예측 시간만으로 위치를 생성하지 않는다. 기관사 연락이나 현장 검지가 필요하다.","relations":["state","process","boundary","attribute"]}
+{"primary":"위치추적 현장복구경로","text":"양 끝 신호를 정지시키고 마지막 검지와 기관사 보고, 현장 순회를 순서대로 대조하는 위치추적 현장복구경로를 따른다. 확인한 실제 위치에서 새 추적을 시작한다.","relations":["state","process","role","function"]}
+{"primary":"안내정보 배포중간상태","text":"전광판은 바뀌었지만 방송과 모바일 채널 갱신이 남은 안내정보 배포중간상태에서는 채널별 버전을 표시한다. 모두 같은 내용이 되면 배포 완료로 전환한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"안내채널 불일치교착","text":"승강장과 모바일 안내가 서로 다른 열차를 가리키고 어느 원본도 확정되지 않은 안내채널 불일치교착은 자동 반복 배포로 풀리지 않는다. 관제 원본 승인이 필요하다.","relations":["state","process","contrast","boundary"]}
+{"primary":"안내정정 단계복구경로","text":"오류 안내를 중지하고 영향을 받은 열차와 승객을 확인한 뒤 모든 채널에 정정과 적용 시각을 보내는 안내정정 단계복구경로를 따른다. 틀린 표시만 조용히 덮어쓰지 않는다.","relations":["state","process","role","function"]}
+{"primary":"혼잡경보 관찰중간상태","text":"승강장 밀도는 낮아지지만 대기열 유입이 계속되는 혼잡경보 관찰중간상태에서는 입장 제한을 유지하며 추세를 확인한다. 연속 기준을 만족해야 경보를 해제한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"승강장 과밀흡수상태","text":"승객이 안전 이동조차 할 수 없을 만큼 밀집한 승강장 과밀흡수상태에서는 안내 방송만으로 정상 흐름에 돌아가지 않는다. 유입 차단과 열차 추가, 현장 유도가 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"유입제한 단계복구경로","text":"혼잡이 줄면 비상 통로를 유지한 채 개찰구를 일부 열고 승강장 밀도를 확인하며 개방을 늘리는 유입제한 단계복구경로를 따른다. 모든 문을 한꺼번에 열지 않는다.","relations":["state","process","comparison","function"]}
+{"primary":"승객대피 이동중간상태","text":"일부 승객은 안전 구역에 도착했지만 후미 인원이 통로에 남은 승객대피 이동중간상태에서는 열차와 설비를 재가동하지 않는다. 전원 계수 뒤 대피 완료로 전환한다.","relations":["state","process","part_of","role"]}
+{"primary":"대피경로 차단흡수상태","text":"연기나 침수로 예정 통로가 막히고 대체 출구도 확인되지 않은 대피경로 차단흡수상태에서는 같은 방향 안내를 반복하지 않는다. 현장 탐색으로 새 경로를 만들어야 한다.","relations":["state","process","boundary","function"]}
+{"primary":"대피동선 재구성경로","text":"위험 구역을 경계로 표시하고 사용 가능한 출구와 이동 약자를 확인한 뒤 인원을 나누는 대피동선 재구성경로를 적용한다. 새 통로의 수용량을 먼저 검증한다.","relations":["state","process","role","function"]}
+{"primary":"승하차 지연중간상태","text":"문은 열려 있고 승객 흐름이 계속되는 승하차 지연중간상태에서는 최종 출발 한계와 밀도를 함께 감시한다. 흐름 종료 뒤 닫고 위험이 커지면 입장을 차단한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"출입문 고장흡수상태","text":"문이 열린 채 잠금도 격리도 되지 않는 출입문 고장흡수상태에서는 반복 닫힘 명령으로 운행 상태에 돌아갈 수 없다. 현장 잠금이나 승객 하차가 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"출입문 수동복구경로","text":"승객을 문 주변에서 물리고 전원을 격리한 뒤 수동 잠금과 닫힘 검지를 확인하는 출입문 수동복구경로를 따른다. 잠금 실패 시 차량 교체로 전환한다.","relations":["state","process","role","function"]}
+{"primary":"개찰구 모드전환중간상태","text":"일부 게이트만 출구로 바뀌고 나머지 설정이 남은 개찰구 모드전환중간상태에서는 승객 흐름을 분리해 안내한다. 모든 방향 검지가 끝나야 전환을 완료한다.","relations":["state","process","part_of","contrast"]}
+{"primary":"개찰기록 불일치흡수상태","text":"입장·퇴장 건수와 장치 원본이 맞지 않아 정산할 수 없는 개찰기록 불일치흡수상태에서는 자동 마감을 진행하지 않는다. 원시 로그와 현장 계수를 대조해야 한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"출입기록 조정복구경로","text":"중복 거래를 격리하고 누락 시각을 원본 로그에서 찾은 뒤 승객별 상태를 재계산하는 출입기록 조정복구경로를 따른다. 총합만 맞추려고 개별 기록을 임의 변경하지 않는다.","relations":["state","process","classification","function"]}
+{"primary":"승무교대 진행중간상태","text":"후임은 열차에 탔지만 운전 주의사항 복창과 제어권 인계가 남은 승무교대 진행중간상태에서는 전임이 책임을 유지한다. 확인 완료 뒤 역할을 전환한다.","relations":["state","process","role","part_of"]}
+{"primary":"후임부재 근무교착흡수","text":"전임의 근무 한계는 끝났고 자격 있는 후임도 없는 후임부재 근무교착흡수에서는 일반 근무연장 명령으로 출발할 수 없다. 예비 인력이나 운행 취소 결정이 필요하다.","relations":["state","process","boundary","role"]}
+{"primary":"승무재배치 단계복구경로","text":"인접 열차의 예비 인력과 휴식 시간을 확인하고 교대 지점까지 이동시킨 뒤 업무를 인계하는 승무재배치 단계복구경로를 따른다. 자격 확인 전 열차만 먼저 보내지 않는다.","relations":["state","process","role","function"]}
+{"primary":"관제인계 확인중간상태","text":"전임이 구간 정보를 보냈지만 후임의 위치·진로 복창이 남은 관제인계 확인중간상태에서는 공동 책임 표시를 유지한다. 복창이 일치하면 단일 책임으로 전환한다.","relations":["state","process","role","attribute"]}
+{"primary":"책임주체 불명흡수상태","text":"두 관제 구간 모두 열차 제어 책임을 수락하지 않는 책임주체 불명흡수상태에서는 자동 진로 설정을 중지한다. 상위 지휘자가 임시 책임자를 지정해야 빠져나온다.","relations":["state","process","boundary","role"]}
+{"primary":"관제책임 재확립경로","text":"열차를 정지시키고 마지막 명령과 구간 경계를 대조한 뒤 한 담당자에게 권한을 명시하는 관제책임 재확립경로를 적용한다. 중복 명령은 모두 취소한다.","relations":["state","process","role","function"]}
+{"primary":"지연회복 진행중간상태","text":"일부 열차는 목표 간격에 들어왔지만 종점과 환승 구간의 지연이 남은 지연회복 진행중간상태에서는 조정 명령을 구역별로 유지한다. 전 구역 안정 뒤 종료한다.","relations":["state","process","part_of","comparison"]}
+{"primary":"운행순서 교착흡수상태","text":"두 열차가 서로의 진로 해제를 기다리고 기본 규칙으로 우선권을 정할 수 없는 운행순서 교착흡수상태는 시간만 지나도 풀리지 않는다. 관제의 명시적 선택이 필요하다.","relations":["state","process","boundary","role"]}
+{"primary":"간격정상화 단계복구경로","text":"회차 여유가 큰 열차부터 정차 시간을 조정하고 주요역 간격을 확인하며 다음 구간으로 넓히는 간격정상화 단계복구경로를 따른다. 평균값 하나로 전체 완료를 선언하지 않는다.","relations":["state","process","comparison","function"]}
+{"primary":"임시셔틀 종료중간상태","text":"직통 진로는 열렸지만 마지막 셔틀의 승객 하차와 차량 회수가 남은 임시셔틀 종료중간상태에서는 두 운행 체계를 구분한다. 회수 완료 뒤 직통 체계만 남긴다.","relations":["state","process","contrast","role"]}
+{"primary":"직통운행 복원대기상태","text":"본선 설비는 정상이나 새 시간표와 승무 안내가 남은 직통운행 복원대기상태에서는 시험 열차만 허용한다. 모든 운영 조건이 준비되면 영업 직통으로 전환한다.","relations":["state","process","classification","boundary"]}
+{"primary":"본선복구 실패흡수상태","text":"반복 시험에서도 본선 신호나 궤도가 기준을 충족하지 못하는 본선복구 실패흡수상태에서는 재개 명령을 반복하지 않는다. 설비 교체나 장기 우회 계획이 필요하다.","relations":["state","process","boundary","function"]}
+{"primary":"단축운행 연장복구경로","text":"폐쇄 경계를 한 역씩 넘겨 시험하고 승강장·안내·회차를 확인하는 단축운행 연장복구경로를 따른다. 준비되지 않은 다음 구간까지 한꺼번에 정상화하지 않는다.","relations":["state","process","part_of","function"]}
+{"primary":"막차대기 마감중간상태","text":"최종 대기 시각은 지났지만 접속 승객의 승강장 이동을 확인 중인 막차대기 마감중간상태에서는 짧은 안전 확인만 남긴다. 확인 결과에 따라 출발하거나 비상 연계를 선택한다.","relations":["state","process","comparison","role"]}
+{"primary":"막차연계 종료흡수상태","text":"모든 마지막 열차가 출발해 기존 운행표 안의 연결이 사라진 막차연계 종료흡수상태에서는 대기 명령으로 환승을 복구할 수 없다. 별도 교통편을 새로 마련해야 한다.","relations":["state","process","boundary","role"]}
+{"primary":"대체귀가 단계복구경로","text":"막차를 놓친 승객 수와 목적지를 확인하고 임시 차량·택시·숙박을 순서대로 배정하는 대체귀가 단계복구경로를 적용한다. 원래 환승 완료와 새 지원 상태를 구분한다.","relations":["state","process","classification","role"]}
+{"primary":"역사폐쇄 진행중간상태","text":"일부 출입문은 닫혔지만 잔류 승객과 야간 작업자 확인이 남은 역사폐쇄 진행중간상태에서는 비상 통로를 유지한다. 전원 확인 뒤 일반 출입을 종료한다.","relations":["state","process","part_of","role"]}
+{"primary":"잔류승객 미상흡수상태","text":"역사 일부 구역을 확인할 수 없어 승객 잔류 여부가 불명확한 잔류승객 미상흡수상태에서는 문을 완전히 잠그지 않는다. 현장 수색이나 영상 복구가 필요하다.","relations":["state","process","boundary","attribute"]}
+{"primary":"역사안전 확인복구경로","text":"출입문을 구역별로 열고 수색 인원을 배치한 뒤 영상·방송·현장 응답을 대조하는 역사안전 확인복구경로를 따른다. 모든 구역 확인 뒤 폐쇄 또는 재개를 선택한다.","relations":["state","process","role","function"]}
+{"primary":"차량입고 진행중간상태","text":"열차가 기지 인입선에는 들어왔지만 지정 유치선과 전원 차단이 남은 차량입고 진행중간상태에서는 운행 종료를 확정하지 않는다. 정위치 확인 뒤 정비 상태로 넘긴다.","relations":["state","process","part_of","attribute"]}
+{"primary":"정비기록 미완흡수상태","text":"실제 작업은 끝났지만 교체 부품과 검사 결과의 근거가 없어 승인할 수 없는 정비기록 미완흡수상태에서는 출고를 허용하지 않는다. 원본 자료 복구나 재검사가 필요하다.","relations":["state","process","boundary","attribute"]}
+{"primary":"운행기록 마감복구경로","text":"누락 열차와 사건을 원시 로그에서 찾아 시간순으로 보충하고 승인자를 확인하는 운행기록 마감복구경로를 따른다. 총 건수만 맞춰 마감하지 않는다.","relations":["state","process","classification","function"]}
+{"primary":"일일배차 종료대기상태","text":"모든 영업 열차는 도착했지만 회송 편성과 승무 정산이 남은 일일배차 종료대기상태에서는 당일 배차를 열린 상태로 둔다. 잔여 임무가 닫히면 종료한다.","relations":["state","process","role","part_of"]}
+{"primary":"다음운행일 인계중간상태","text":"첫차 계획은 작성됐지만 차량 위치와 정비 제한의 수신 확인이 남은 다음운행일 인계중간상태에서는 새 담당자가 실행 승인을 내리지 않는다. 자료 일치 뒤 인계를 완료한다.","relations":["state","process","role","attribute"]}
+{"primary":"평시운행 안정흡수상태","text":"시간표·열차 간격·설비·승객 흐름이 모두 정상 범위에 머무는 평시운행 안정흡수상태에서는 내부 조정이 있어도 평시 분류를 유지한다. 새 장애나 수요 급증 같은 외부 사건이 들어와야 다른 대응 상태로 전환한다.","relations":["state","process","classification","boundary"]}

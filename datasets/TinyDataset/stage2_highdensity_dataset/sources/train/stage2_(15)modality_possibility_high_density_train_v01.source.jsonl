@@ -23,10 +23,10 @@
 {"primary":"습도회복 예상","text":"환기량을 늘리면 상대습도가 목표대로 내려갈 것이라는 습도회복 예상이 생긴다. 센서가 안정값을 읽기 전에는 예상 상태를 유지한다.","relations":["state","comparison","process"]}
 {"primary":"외기유입 위험","text":"외부 미세먼지와 풍속이 동시에 높으면 외기유입 위험이 커진다. 실제 창이 열린 상태와 열었을 때의 잠재 위험을 구별한다.","relations":["state","boundary","attribute"]}
 {"primary":"공조장애 추정","text":"팬 명령은 정상인데 풍량이 줄면 공조장애 추정을 남긴다. 벨트 파손이 확인되기 전에는 추정과 확정 고장을 분리한다.","relations":["state","comparison","attribute"]}
-{"primary":"차광연계 예정","text":"정오의 일사 예보에 맞춰 차광연계 예정이 등록되어 있다. 차광막이 실제로 내려간 시각은 예정 표와 다른 process 기록으로 남긴다.","relations":["state","process","function"]}
+{"primary":"차광연계 예정","text":"정오의 일사 예보에 맞춰 차광연계 예정이 등록되어 있다. 차광막이 실제로 내려간 시각은 예정표와 구분해 실제 하강 과정의 기록으로 남긴다.","relations":["state","process","function"]}
 {"primary":"병원균유입 가능성","text":"출입문 개방과 외기 습도 상승이 겹치면 병원균유입 가능성을 경고한다. 병원균 검출 전에는 경고를 확정 감염 상태로 부르지 않는다.","relations":["state","boundary","attribute"]}
 {"primary":"열부하 증가 전망","text":"폭염 예보와 작물 증산량을 합치면 열부하 증가 전망을 계산할 수 있다. 전망 수치와 현재 온도 초과를 각각 비교해 표시한다.","relations":["state","comparison","attribute"]}
-{"primary":"비상개방 준비","text":"정전 가능성이 보고되면 비상개방 준비 상태를 만든다. 전원이 끊겨 창이 실제로 열린 경우는 준비와 다른 process 단계다.","relations":["state","process","function"]}
+{"primary":"비상개방 준비","text":"정전 가능성이 보고되면 비상개방 준비 상태를 만든다. 전원이 끊겨 창이 실제로 열린 경우는 준비와 구분되는 실제 개방 단계다.","relations":["state","process","function"]}
 {"primary":"순환팬 과열위험","text":"모터 전류와 베어링 온도가 함께 오르면 순환팬 과열위험이 커진다. 열 보호기가 차단한 뒤의 고장과 사전 위험을 대비한다.","relations":["state","boundary","attribute"]}
 {"primary":"보일러점화 예측","text":"외기 온도와 축열조 잔량으로 보일러점화 예측 시각을 산출한다. 점화 명령 전에는 예측이고 화염 검출 뒤에 실제 점화로 바뀐다.","relations":["state","process","comparison"]}
 {"primary":"열수요 가능성","text":"일몰 뒤 내부 열손실이 커질 것으로 보이면 열수요 가능성을 올려 잡는다. 난방 밸브가 열린 사실과 수요가 예상된 사실은 다른 상태다.","relations":["state","comparison","attribute"]}
@@ -58,7 +58,7 @@
 {"primary":"개화시기 예측","text":"적산온도와 일장 자료를 합쳐 개화시기 예측을 만든다. 꽃이 실제로 열린 관측일과 예측 날짜가 다를 수 있음을 표시한다.","relations":["state","comparison","attribute"]}
 {"primary":"생장지연 가능성","text":"야간 온도와 광량이 함께 부족하면 생장지연 가능성이 높아진다. 측정된 생장률 하락과 앞으로의 가능성을 별도 값으로 둔다.","relations":["state","comparison","attribute"]}
 {"primary":"착과실패 추정","text":"개화기 고온과 수정벌 활동 감소가 겹치면 착과실패 추정을 기록한다. 열매 수가 실제로 줄었는지 확인하기 전에는 추정으로 남긴다.","relations":["state","boundary","attribute"]}
-{"primary":"적심작업 예정","text":"생장점 길이가 기준에 가까워지면 적심작업 예정이 만들어진다. 작업자가 줄기를 자른 순간을 예정과 다른 process 사건으로 기록한다.","relations":["state","process","role"]}
+{"primary":"적심작업 예정","text":"생장점 길이가 기준에 가까워지면 적심작업 예정이 만들어진다. 작업자가 줄기를 자른 순간을 예정과 구분되는 실제 작업 사건으로 기록한다.","relations":["state","process","role"]}
 {"primary":"과실비대 전망","text":"현재 착과 수와 양액 공급량으로 과실비대 전망을 계산한다. 전망은 장래 크기이고 오늘 측정한 실제 크기를 뜻하지 않는다.","relations":["state","comparison","attribute"]}
 {"primary":"엽면적감소 위험","text":"염류 집적과 뿌리 산소 부족이 겹치면 엽면적감소 위험이 커진다. 잎이 이미 떨어진 결과와 위험 조건을 대비해 기록한다.","relations":["state","boundary","attribute"]}
 {"primary":"수확량 예측","text":"개체별 착과 자료와 과거 수확률을 이용해 수확량 예측을 낸다. 예측량은 아직 수확하지 않은 미래 값이며 실측 중량과 다르다.","relations":["state","comparison","process"]}
@@ -72,7 +72,7 @@
 {"primary":"점검완료 예상","text":"점검 항목 수와 남은 시간을 보면 점검완료 예상 시각을 계산할 수 있다. 완료 서명이 입력되기 전에는 예상이 완료 사실이 아니다.","relations":["state","comparison","process"]}
 {"primary":"소독순서 실행예정","text":"출입량이 많아지면 소독순서 실행예정을 앞당길 수 있다. 실제 소독액 분사와 표면 확인을 마친 뒤에만 실행으로 기록한다.","relations":["state","process","function"]}
 {"primary":"보호구부족 가능성","text":"교대 인원과 남은 보호구 수량을 비교하면 보호구부족 가능성이 보인다. 창고가 실제로 비었는지와 계산상 부족을 구분한다.","relations":["state","comparison","attribute"]}
-{"primary":"긴급출입 발생전망","text":"고장 알람이 지속되면 야간 긴급출입 발생전망을 높인다. 출입문 기록이 실제로 생성된 사건은 전망과 다른 process다.","relations":["state","process","role"]}
+{"primary":"긴급출입 발생전망","text":"고장 알람이 지속되면 야간 긴급출입 발생전망을 높인다. 출입문 기록에 실제 긴급 출입이 남은 시점은 전망과 구분되는 실제 발생 과정이다.","relations":["state","process","role"]}
 {"primary":"기록지 누락의심","text":"센서 값은 있는데 작업 기록지만 비어 있으면 기록지 누락의심을 표시한다. 원본이 다른 저장소에 있을 가능성과 실제 누락을 경계한다.","relations":["state","boundary","attribute"]}
 {"primary":"수위하락 예측","text":"출하량과 보충 계획을 바탕으로 저장조 수위하락 예측을 만든다. 수위가 이미 하한을 넘은 현재 상태와 예상 하락을 섞지 않는다.","relations":["state","comparison","attribute"]}
 {"primary":"급수중단 가능성","text":"취수 압력이 낮고 예비 수원이 비어 있으면 급수중단 가능성이 커진다. 급수가 실제로 멈춘 시각과 위험 평가를 따로 기록한다.","relations":["state","boundary","process"]}
@@ -89,7 +89,7 @@
 {"primary":"폭염지속 전망","text":"고기압 예보가 이어지고 밤 기온도 높으면 폭염지속 전망을 연장한다. 오늘 이미 폭염이었는지와 내일 지속될 전망을 나누어 기록한다.","relations":["state","comparison","attribute"]}
 {"primary":"일사급락 관측예정","text":"두꺼운 구름대가 접근하면 일사급락 관측예정을 세운다. 광센서가 급락값을 읽기 전에는 예정된 관측이고 실제 급락이 아니다.","relations":["state","process","attribute"]}
 {"primary":"침수유입 위험","text":"집중호우 예보와 배수로 막힘이 동시에 있으면 침수유입 위험이 상승한다. 물이 재배동에 들어온 결과와 위험 예보를 대비한다.","relations":["state","boundary","attribute"]}
-{"primary":"한파복귀 예상","text":"찬 공기 유입 모델과 북풍이 맞으면 한파복귀 예상이 생긴다. 외기 온도가 실제로 내려간 시간은 예상 시간과 별도 process다.","relations":["state","comparison","process"]}
+{"primary":"한파복귀 예상","text":"찬 공기 유입 모델과 북풍이 맞으면 한파복귀 예상이 생긴다. 외기 온도가 실제로 내려간 시간은 예상 시각과 구분되는 실제 기온 변화 과정이다.","relations":["state","comparison","process"]}
 {"primary":"기상창 확보계획","text":"방제 작업에 필요한 무풍 시간이 예보되면 기상창 확보계획을 작성한다. 작업을 실제로 시작한 시각이 기록되어야 계획이 실행으로 바뀐다.","relations":["state","process","role"]}
 {"primary":"낙뢰접근 가능성","text":"뇌우 세포와 전기장 변화가 가까워지면 낙뢰접근 가능성을 높게 본다. 낙뢰가 실제로 발생한 위치와 예보 반경은 구분한다.","relations":["state","boundary","attribute"]}
 {"primary":"전력피크 예측","text":"보광과 난방 일정이 겹치면 전력피크 예측이 상향된다. 계량기가 실제 피크를 기록한 뒤의 상태와 예측량을 따로 관리한다.","relations":["state","comparison","attribute"]}
@@ -97,7 +97,7 @@
 {"primary":"배터리충전 예정","text":"야간 단가가 낮아지면 배터리충전 예정이 계획표에 표시된다. 충전 전류가 흐르기 전에는 예정 상태를 유지한다.","relations":["state","process","function"]}
 {"primary":"태양광출력 전망","text":"구름 이동과 패널 각도를 반영해 태양광출력 전망을 계산한다. 인버터가 실제로 낸 출력은 전망치와 비교할 측정값이다.","relations":["state","comparison","attribute"]}
 {"primary":"역률저하 위험","text":"유도성 부하가 몰리는 시간에는 역률저하 위험이 올라간다. 계전기가 실제 저하를 검출하기 전의 위험과 결과를 경계한다.","relations":["state","boundary","attribute"]}
-{"primary":"발전기기동 예고","text":"정전 확률이 기준을 넘으면 발전기기동 예고를 발행한다. 엔진 회전이 확인된 뒤에야 기동 process가 시작된 것으로 적는다.","relations":["state","process","function"]}
+{"primary":"발전기기동 예고","text":"정전 확률이 기준을 넘으면 발전기기동 예고를 발행한다. 엔진 회전이 확인된 뒤에야 기동 과정이 시작된 것으로 적는다.","relations":["state","process","function"]}
 {"primary":"부하분산 가능성","text":"펌프와 보광의 시작 시각을 나누면 부하분산 가능성이 생긴다. 제어기가 실제 순서를 바꾼 결과와 사전 가능성을 구분한다.","relations":["state","comparison","process"]}
 {"primary":"전력품질 이상추정","text":"전압 변동과 인버터 경보가 겹치면 전력품질 이상추정을 남긴다. 파형 분석이 끝나기 전에는 이상 확정으로 표기하지 않는다.","relations":["state","boundary","attribute"]}
 {"primary":"온도값 신뢰예측","text":"교정 이력과 주변 센서 일치도가 좋으면 온도값 신뢰예측을 높인다. 실제 센서가 고장 난 경우의 판정은 신뢰 예측과 별개다.","relations":["state","comparison","attribute"]}
@@ -105,17 +105,17 @@
 {"primary":"토양수분 갱신예정","text":"다음 순회 시각이 다가오면 토양수분 갱신예정이 열린다. 프로브가 새 값을 전송하기 전에는 갱신이 일어난 것으로 보지 않는다.","relations":["state","process","function"]}
 {"primary":"광량값 편향추정","text":"센서 표면 먼지와 기준 센서 차이가 커지면 광량값 편향추정을 저장한다. 세척 후 교정값이 확인되기 전에는 편향을 확정하지 않는다.","relations":["state","comparison","attribute"]}
 {"primary":"가스농도 초과위험","text":"환기 정지와 가스 주입 계획이 겹치면 가스농도 초과위험이 높다. 검지기가 실제 초과를 울린 사건과 위험 조건을 대비한다.","relations":["state","boundary","attribute"]}
-{"primary":"방문예정","text":"검교정 주기가 끝나면 외부 기술자 방문예정이 생성된다. 기술자가 표준기를 연결한 뒤에야 검교정 process가 시작된다.","relations":["state","process","role"]}
+{"primary":"방문예정","text":"검교정 주기가 끝나면 외부 기술자 방문예정이 생성된다. 기술자가 표준기를 연결한 뒤에야 검교정 과정이 시작된다.","relations":["state","process","role"]}
 {"primary":"데이터 지연 전망","text":"게이트웨이 큐가 길어지면 데이터 지연 전망이 커진다. 서버가 실제로 늦게 받은 표본의 시각과 전망값을 따로 비교한다.","relations":["state","comparison","process"]}
 {"primary":"결측복원 가능성","text":"앞뒤 표본이 안정적이면 결측복원 가능성을 제한적으로 인정한다. 복원된 값은 실제 측정값이 아니라 추정값이라는 경계를 남긴다.","relations":["state","boundary","attribute"]}
 {"primary":"알람묶음 발생예측","text":"같은 장치에서 짧은 간격으로 경보가 이어지면 알람묶음 발생예측을 만든다. 경보가 실제로 울린 기록과 향후 묶음 예측은 다르다.","relations":["state","comparison","process"]}
 {"primary":"배터리교체 계획","text":"센서 배터리 잔량이 교체선에 가까워지면 배터리교체 계획을 세운다. 교체 완료 확인 전에는 새 배터리 상태로 갱신하지 않는다.","relations":["state","process","function"]}
 {"primary":"관수명령 성공확률","text":"통신 품질과 밸브 응답 이력을 사용해 관수명령 성공확률을 계산한다. 명령이 실제로 적용된 결과와 계산 전 확률을 분리한다.","relations":["state","comparison","function"]}
-{"primary":"환기전환 조건예상","text":"온도와 미세먼지 예보가 동시에 변하면 환기전환 조건예상을 갱신한다. 제어기가 모드를 바꾼 시점은 예상 조건과 다른 process다.","relations":["state","process","attribute"]}
+{"primary":"환기전환 조건예상","text":"온도와 미세먼지 예보가 동시에 변하면 환기전환 조건예상을 갱신한다. 제어기가 모드를 바꾼 시점은 예상 조건과 구분되는 실제 전환 과정이다.","relations":["state","process","attribute"]}
 {"primary":"목표습도 도달가능성","text":"현재 습도와 팬 여유를 비교하면 목표습도 도달가능성을 평가할 수 있다. 목표값을 실제로 읽기 전에는 도달 완료라고 하지 않는다.","relations":["state","comparison","attribute"]}
 {"primary":"안전모드 진입위험","text":"센서 두 개가 동시에 끊기면 안전모드 진입위험을 높인다. 제어기가 실제 안전모드로 바뀐 사건은 위험 평가와 경계된다.","relations":["state","boundary","process"]}
 {"primary":"피드백지연 추정","text":"명령 시각과 응답 시각의 차가 커지면 피드백지연 추정을 남긴다. 네트워크 지연이 원인으로 확인되기 전에는 추정 상태를 유지한다.","relations":["state","comparison","attribute"]}
-{"primary":"수동전환 예정","text":"자동 제어가 불안정하면 수동전환 예정이 책임자 승인 목록에 오른다. 손으로 밸브를 조작한 시각이 실제 전환 process의 시작이다.","relations":["state","process","role"]}
+{"primary":"수동전환 예정","text":"자동 제어가 불안정하면 수동전환 예정이 책임자 승인 목록에 오른다. 손으로 밸브를 조작한 시각이 실제 전환 과정의 시작이다.","relations":["state","process","role"]}
 {"primary":"명령충돌 가능성","text":"예약 명령과 긴급 명령의 시간이 겹치면 명령충돌 가능성이 생긴다. 두 명령이 실제로 경쟁했는지와 사전 충돌 가능성을 구분한다.","relations":["state","boundary","comparison"]}
 {"primary":"복구시간 전망","text":"예비 장치 수와 최근 장애 시간을 이용해 복구시간 전망을 계산한다. 장애가 실제로 복구된 시각은 전망의 검증 결과로 따로 남긴다.","relations":["state","comparison","process"]}
 {"primary":"이력보존 확률","text":"로그 저장 공간과 전송 성공률이 충분하면 이력보존 확률을 높게 본다. 실제 로그가 남았는지 확인하기 전에는 확률을 사실로 바꾸지 않는다.","relations":["state","comparison","attribute"]}
@@ -123,7 +123,7 @@
 {"primary":"주문량 증가 전망","text":"거래처 주문 추세와 행사 일정을 보면 주문량 증가 전망이 나타난다. 실제 주문서가 접수된 사건은 전망보다 확정된 상태다.","relations":["state","process","attribute"]}
 {"primary":"냉장차량 부족가능성","text":"출하 예정량이 확보된 냉장차량 수를 넘으면 냉장차량 부족가능성이 커진다. 차량이 실제로 배정되지 않은 사실과 앞으로의 부족을 대비한다.","relations":["state","comparison","role"]}
 {"primary":"품질등급 하락추정","text":"저온 이탈과 압상 기록이 겹치면 품질등급 하락추정을 남긴다. 검수자가 실제 등급을 판정하기 전에는 추정과 확정을 구별한다.","relations":["state","boundary","attribute"]}
-{"primary":"포장라인 가동예정","text":"주문 마감이 다가오면 포장라인 가동예정이 열린다. 설비가 실제로 제품을 포장하기 시작한 시각은 예정과 다른 process다.","relations":["state","process","function"]}
+{"primary":"포장라인 가동예정","text":"주문 마감이 다가오면 포장라인 가동예정이 열린다. 설비가 실제로 제품을 포장하기 시작한 시각은 예정과 구분되는 실제 가동 과정의 시작이다.","relations":["state","process","function"]}
 {"primary":"선별오류 발생위험","text":"컨베이어 속도가 빨라지고 조명이 약하면 선별오류 발생위험이 올라간다. 잘못 분류된 상자가 실제로 발견된 결과와 위험을 대비한다.","relations":["state","boundary","attribute"]}
 {"primary":"반품률 상승전망","text":"운송 지연과 포장 손상이 누적되면 반품률 상승전망을 계산한다. 반품 접수가 실제로 늘어난 시점은 전망을 확인하는 별도 사건이다.","relations":["state","comparison","process"]}
 {"primary":"추적라벨 발행예정","text":"로트 검수가 끝나면 추적라벨 발행예정이 생성된다. 라벨 프린터가 실제로 번호를 출력하기 전에는 발행 완료가 아니다.","relations":["state","process","function"]}
@@ -131,10 +131,10 @@
 {"primary":"작업자미끄럼 위험","text":"바닥 물기와 장화 오염이 동시에 있으면 작업자미끄럼 위험이 높아진다. 실제 넘어짐이 발생한 사건과 위험한 조건은 다른 상태다.","relations":["state","comparison","attribute"]}
 {"primary":"고소작업 승인예정","text":"난방관 점검 일정이 잡히면 고소작업 승인예정이 결재 대기에 놓인다. 관리자가 승인하기 전에는 작업 허가가 성립하지 않는다.","relations":["state","process","role"]}
 {"primary":"가스누출 가능성","text":"가스 냄새 신고와 압력 저하가 겹치면 가스누출 가능성을 경고한다. 검지기가 실제 누출을 확인한 뒤의 상태와 신고 기반 가능성을 구분한다.","relations":["state","boundary","attribute"]}
-{"primary":"비상대피 실행전망","text":"화재 감지기 두 대가 경보를 내면 비상대피 실행전망을 높인다. 사람이 실제로 대피한 기록은 전망과 다른 process 결과다.","relations":["state","comparison","process"]}
+{"primary":"비상대피 실행전망","text":"화재 감지기 두 대가 경보를 내면 비상대피 실행전망을 높인다. 사람이 실제로 대피한 기록은 전망과 구분되는 실제 대피 결과다.","relations":["state","comparison","process"]}
 {"primary":"출입권한 만료예측","text":"계약 종료일이 다가오면 출입권한 만료예측을 생성한다. 권한 서버가 실제로 접근을 거부한 시점은 예측일과 다를 수 있다.","relations":["state","comparison","attribute"]}
 {"primary":"소독제 접촉시간 부족위험","text":"분무량이 적고 작업 속도가 빠르면 소독제 접촉시간 부족위험이 높아진다. 미생물 감소 실패가 실제로 확인된 결과와 위험 조건을 나눈다.","relations":["state","boundary","attribute"]}
-{"primary":"보호구착용 점검예정","text":"외부 작업자가 들어오기 전 보호구착용 점검예정을 배치한다. 점검자가 착용 상태를 확인한 뒤에야 점검 process가 완료된다.","relations":["state","process","role"]}
+{"primary":"보호구착용 점검예정","text":"외부 작업자가 들어오기 전 보호구착용 점검예정을 배치한다. 점검자가 착용 상태를 확인한 뒤에야 점검 과정이 완료된다.","relations":["state","process","role"]}
 {"primary":"화재확산 경로전망","text":"가연성 자재 배치와 환기 흐름을 결합하면 화재확산 경로전망을 산출할 수 있다. 실제 화염이 이동한 경로와 전망선을 구별한다.","relations":["state","comparison","attribute"]}
 {"primary":"대피로 확보가능성","text":"통로 적치물이 치워질 예정이면 대피로 확보가능성을 높게 본다. 실제 통로 폭을 확인하기 전에는 확보 완료로 표기하지 않는다.","relations":["state","comparison","process"]}
 {"primary":"사고보고 지연위험","text":"교대 인계가 늦고 통신이 불안정하면 사고보고 지연위험이 커진다. 보고서가 실제로 늦게 접수된 사건과 사전 위험을 대비한다.","relations":["state","boundary","role"]}

@@ -1,0 +1,2975 @@
+{
+  "audit": "A04 primary dash naturalness review",
+  "mode": "READ_ONLY_ADVISORY",
+  "warning_rules": {
+    "path": "stage2_highdensity_dataset/tools/primary_naturalness_warning_rules_v1.json",
+    "sha256": "517d452cd174581f812d3b0d73a7bf48d72615e2a4259d59bf8ad38d14b7c741",
+    "schema_version": 1
+  },
+  "source_files": 21,
+  "dash_primary_records": 1234,
+  "preliminary_classification": [
+    {
+      "value": "DASH_DELIMITER_REVIEW",
+      "records": 1233,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:75",
+          "primary": "데이터센터 변압기탭 — 조정기 대기",
+          "text": "데이터센터 변압기탭 — 조정기 대기는 탭 조정기가 명령을 기다리는 중간 상태이며, 현재 탭과 입력 전압을 보존하고 조정 지연과 출력 전압 목표를 바꾼다."
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:76",
+          "primary": "데이터센터 변압기탭 — 오차 감소",
+          "text": "데이터센터 변압기탭 — 오차 감소는 출력 전압 오차가 줄어 탭 위치가 한 단계 이동하는 과정이고, 이전 탭과 이동 시각을 남기며 조정 속도와 허용 편차를 변경한다."
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:77",
+          "primary": "데이터센터 변압기탭 — 탭 안정",
+          "text": "데이터센터 변압기탭 — 탭 안정은 탭이 목표 전압 범위에 머문 안정 상태로, 목표값과 측정 시각은 유지하고 조정 주기와 냉각 팬 단계를 조정한다."
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:91",
+          "primary": "데이터센터 제어루프 — 냉각 계산",
+          "text": "데이터센터 제어루프 — 냉각 계산은 냉각 오차를 계산해 다음 출력으로 넘기는 상태이며, 오차값과 계산 시각을 보존하고 적분 제한과 출력 변화율을 조정한다."
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:92",
+          "primary": "데이터센터 제어루프 — 오차 감소",
+          "text": "데이터센터 제어루프 — 오차 감소는 온도 오차가 줄어 안정 조절 단계로 이동하는 전이이고, 이전 오차와 구역은 유지하며 밸브 명령과 팬 속도를 변경한다."
+        }
+      ]
+    },
+    {
+      "value": "SEMANTIC_TEXT_REVIEW",
+      "records": 1,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:101",
+          "primary": "터널 배수기록 — 수위·펌프·신호 조정",
+          "text": "터널 배수기록 — 수위·펌프·신호 조정은 수위·펌프·신호 상태를 단계별로 기록하는 과정이고, 기록자와 시각은 보존하며 터널 배수기록 — 수위·펌프·신호 조정의 변경순서를 정한다."
+        }
+      ]
+    }
+  ],
+  "qualifier_shape": [
+    {
+      "value": "two_tokens",
+      "records": 943,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:75",
+          "primary": "데이터센터 변압기탭 — 조정기 대기"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:76",
+          "primary": "데이터센터 변압기탭 — 오차 감소"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:77",
+          "primary": "데이터센터 변압기탭 — 탭 안정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:91",
+          "primary": "데이터센터 제어루프 — 냉각 계산"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:92",
+          "primary": "데이터센터 제어루프 — 오차 감소"
+        }
+      ]
+    },
+    {
+      "value": "three_or_more_tokens",
+      "records": 291,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:129",
+          "primary": "데이터센터 잔류열 — 열 부분 제한"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v51.source.jsonl:75",
+          "primary": "스마트축사 동별인계 — 환기·질병 인계"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:8",
+          "primary": "터널 배수펌프 — 상승 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:10",
+          "primary": "터널 배수펌프 — 증가 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:12",
+          "primary": "터널 집수정 — 유입 촉발·억제"
+        }
+      ]
+    }
+  ],
+  "qualifier_first_token_top": [
+    {
+      "value": "안정",
+      "records": 22,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:66",
+          "primary": "산림 복구판정 — 안정 촉발·억제",
+          "qualifier": "안정 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:108",
+          "primary": "산림 회복기록 — 안정 촉발·억제",
+          "qualifier": "안정 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v61.source.jsonl:9",
+          "primary": "센터 발전기복귀 — 안정 촉발·억제",
+          "qualifier": "안정 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v61.source.jsonl:55",
+          "primary": "센터 전력품질 — 안정 촉발·억제",
+          "qualifier": "안정 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v61.source.jsonl:88",
+          "primary": "센터 전원동기화 — 안정 촉발·억제",
+          "qualifier": "안정 촉발·억제"
+        }
+      ]
+    },
+    {
+      "value": "농도",
+      "records": 21,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:35",
+          "primary": "터널 환기복귀 — 농도 복귀",
+          "qualifier": "농도 복귀"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:130",
+          "primary": "산림 회복기록 — 농도 감소",
+          "qualifier": "농도 감소"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:79",
+          "primary": "항만 위험물복귀 — 농도 이동",
+          "qualifier": "농도 이동"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:128",
+          "primary": "항만 위험물누출 — 농도 안정",
+          "qualifier": "농도 안정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v63.source.jsonl:118",
+          "primary": "축사 소독농도 — 농도 재처리",
+          "qualifier": "농도 재처리"
+        }
+      ]
+    },
+    {
+      "value": "온도",
+      "records": 21,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:128",
+          "primary": "데이터센터 잔류열 — 온도 잔류",
+          "qualifier": "온도 잔류"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:42",
+          "primary": "터널 전원절체 — 온도 촉발·억제",
+          "qualifier": "온도 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:84",
+          "primary": "터널 배수전원 — 온도 촉발·억제",
+          "qualifier": "온도 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:22",
+          "primary": "열공급 열교환기 — 온도 상승",
+          "qualifier": "온도 상승"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:30",
+          "primary": "열공급 축열조 — 온도 조정",
+          "qualifier": "온도 조정"
+        }
+      ]
+    },
+    {
+      "value": "회복",
+      "records": 19,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:40",
+          "primary": "산림 예찰징후 — 회복 촉발·억제",
+          "qualifier": "회복 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:54",
+          "primary": "산림 복구판정 — 회복 촉발·억제",
+          "qualifier": "회복 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:106",
+          "primary": "산림 회복기록 — 회복 촉발·억제",
+          "qualifier": "회복 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v60.source.jsonl:108",
+          "primary": "발효 냉각복귀 — 회복 촉발·억제",
+          "qualifier": "회복 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:32",
+          "primary": "항만 냉동컨테이너 — 회복 촉발·억제",
+          "qualifier": "회복 촉발·억제"
+        }
+      ]
+    },
+    {
+      "value": "경보",
+      "records": 16,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:12",
+          "primary": "열공급 순환펌프 — 경보 촉발·억제",
+          "qualifier": "경보 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:96",
+          "primary": "항만 일일재개 — 경보 상태",
+          "qualifier": "경보 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:133",
+          "primary": "항만 경보전파 — 경보 상태",
+          "qualifier": "경보 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v63.source.jsonl:100",
+          "primary": "축사 최종승인 — 경보 이동",
+          "qualifier": "경보 이동"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v63.source.jsonl:128",
+          "primary": "축사 운영복귀 — 경보 복귀",
+          "qualifier": "경보 복귀"
+        }
+      ]
+    },
+    {
+      "value": "확인",
+      "records": 16,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:118",
+          "primary": "공항 기록누락 — 확인 조정",
+          "qualifier": "확인 조정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:9",
+          "primary": "산림 예찰징후 — 확인 촉발·억제",
+          "qualifier": "확인 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:92",
+          "primary": "산림 복구판정 — 확인 촉발·억제",
+          "qualifier": "확인 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:117",
+          "primary": "산림 회복기록 — 확인 촉발·억제",
+          "qualifier": "확인 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:115",
+          "primary": "항만 게이트서류 — 확인 촉발·억제",
+          "qualifier": "확인 촉발·억제"
+        }
+      ]
+    },
+    {
+      "value": "지표",
+      "records": 15,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:135",
+          "primary": "터널 재난복귀 — 지표 복귀",
+          "qualifier": "지표 복귀"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:71",
+          "primary": "공항 복구판정 — 지표 판정",
+          "qualifier": "지표 판정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:50",
+          "primary": "해양 부표 수질복귀 — 지표 복귀",
+          "qualifier": "지표 복귀"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:50",
+          "primary": "산림 예찰징후 — 지표 촉발·억제",
+          "qualifier": "지표 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:137",
+          "primary": "항만 운영안정 — 지표 안정",
+          "qualifier": "지표 안정"
+        }
+      ]
+    },
+    {
+      "value": "합격",
+      "records": 15,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:79",
+          "primary": "산림 복구판정 — 합격 촉발·억제",
+          "qualifier": "합격 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:150",
+          "primary": "산림 회복기록 — 합격 촉발·억제",
+          "qualifier": "합격 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v60.source.jsonl:53",
+          "primary": "발효 출하복귀 — 합격 촉발·억제",
+          "qualifier": "합격 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:35",
+          "primary": "항만 위험물복귀 — 합격 촉발·억제",
+          "qualifier": "합격 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:92",
+          "primary": "항만 정비복귀 — 합격 촉발·억제",
+          "qualifier": "합격 촉발·억제"
+        }
+      ]
+    },
+    {
+      "value": "신호",
+      "records": 14,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:21",
+          "primary": "터널 차로대기 — 신호 대기",
+          "qualifier": "신호 대기"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:83",
+          "primary": "열공급 중간보류 — 신호 조정",
+          "qualifier": "신호 조정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:84",
+          "primary": "열공급 중간해소 — 신호 안정",
+          "qualifier": "신호 안정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:113",
+          "primary": "열공급 중간보류 — 신호 상태",
+          "qualifier": "신호 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:114",
+          "primary": "열공급 중간해소 — 신호 상태",
+          "qualifier": "신호 상태"
+        }
+      ]
+    },
+    {
+      "value": "수위",
+      "records": 13,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:11",
+          "primary": "터널 집수정 — 수위 조정",
+          "qualifier": "수위 조정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:15",
+          "primary": "터널 집수정 — 수위 복귀",
+          "qualifier": "수위 복귀"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:28",
+          "primary": "터널 교통신호 — 수위 조정",
+          "qualifier": "수위 조정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:123",
+          "primary": "터널 잔류수 — 수위 감소",
+          "qualifier": "수위 감소"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:126",
+          "primary": "터널 잔류수 — 수위 잔류",
+          "qualifier": "수위 잔류"
+        }
+      ]
+    },
+    {
+      "value": "압력",
+      "records": 13,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:16",
+          "primary": "열공급 배관압력 — 압력 안정",
+          "qualifier": "압력 안정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:71",
+          "primary": "열공급 제어루프 — 압력 계산",
+          "qualifier": "압력 계산"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:88",
+          "primary": "열공급 비상안정 — 압력 안정",
+          "qualifier": "압력 안정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:117",
+          "primary": "열공급 비상기동 — 압력 상태",
+          "qualifier": "압력 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:53",
+          "primary": "반도체 공정챔버압력 — 압력 재처리",
+          "qualifier": "압력 재처리"
+        }
+      ]
+    },
+    {
+      "value": "유량",
+      "records": 13,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:23",
+          "primary": "열공급 열교환기 — 유량 계산",
+          "qualifier": "유량 계산"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:98",
+          "primary": "열공급 열교환기 — 유량 상태",
+          "qualifier": "유량 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:140",
+          "primary": "산림 회복기록 — 유량 안정",
+          "qualifier": "유량 안정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v60.source.jsonl:19",
+          "primary": "발효 냉각복귀 — 유량 복귀",
+          "qualifier": "유량 복귀"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:75",
+          "primary": "공항 활주로배수 — 유량 상태",
+          "qualifier": "유량 상태"
+        }
+      ]
+    },
+    {
+      "value": "상승",
+      "records": 11,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:8",
+          "primary": "터널 배수펌프 — 상승 촉발·억제",
+          "qualifier": "상승 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:82",
+          "primary": "터널 배수전원 — 상승 촉발·억제",
+          "qualifier": "상승 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:97",
+          "primary": "열공급 열교환기 — 상승 수준 변화",
+          "qualifier": "상승 수준 변화"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:11",
+          "primary": "산림 예찰징후 — 상승 촉발·억제",
+          "qualifier": "상승 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:64",
+          "primary": "산림 복구판정 — 상승 촉발·억제",
+          "qualifier": "상승 촉발·억제"
+        }
+      ]
+    },
+    {
+      "value": "증가",
+      "records": 11,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:10",
+          "primary": "터널 배수펌프 — 증가 촉발·억제",
+          "qualifier": "증가 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:27",
+          "primary": "터널 교통신호 — 증가 촉발·억제",
+          "qualifier": "증가 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:47",
+          "primary": "공항 기상악화 — 증가 촉발·억제",
+          "qualifier": "증가 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:14",
+          "primary": "열공급 순환펌프 — 증가 촉발·억제",
+          "qualifier": "증가 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:49",
+          "primary": "해양 부표 수질오염 — 증가 촉발·억제",
+          "qualifier": "증가 촉발·억제"
+        }
+      ]
+    },
+    {
+      "value": "지연",
+      "records": 11,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:29",
+          "primary": "터널 교통신호 — 지연 촉발·억제",
+          "qualifier": "지연 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:25",
+          "primary": "산림 예찰징후 — 지연 촉발·억제",
+          "qualifier": "지연 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v59.source.jsonl:90",
+          "primary": "전기버스 충전품질 — 지연 촉발·억제",
+          "qualifier": "지연 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v64.source.jsonl:63",
+          "primary": "터널 신호이탈 — 지연 촉발·억제",
+          "qualifier": "지연 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:58",
+          "primary": "공항 제설차연료 — 지연 촉발·억제",
+          "qualifier": "지연 촉발·억제"
+        }
+      ]
+    },
+    {
+      "value": "표본",
+      "records": 11,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:37",
+          "primary": "산림 예찰징후 — 표본 촉발·억제",
+          "qualifier": "표본 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:31",
+          "primary": "반도체 금속배선 — 표본 판정",
+          "qualifier": "표본 판정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:116",
+          "primary": "반도체 수율계산 — 표본 판정",
+          "qualifier": "표본 판정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:16",
+          "primary": "도시열공급 열교환기 — 표본 상태",
+          "qualifier": "표본 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:66",
+          "primary": "도시열공급 압력조정 — 표본 조정",
+          "qualifier": "표본 조정"
+        }
+      ]
+    },
+    {
+      "value": "이력",
+      "records": 10,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:103",
+          "primary": "산림 회복기록 — 이력 촉발·억제",
+          "qualifier": "이력 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:39",
+          "primary": "공항 제설기록 — 이력 상태",
+          "qualifier": "이력 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:76",
+          "primary": "반도체 웨이퍼이송 — 이력 판정",
+          "qualifier": "이력 판정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:131",
+          "primary": "반도체 장비예방정비 — 이력 재처리",
+          "qualifier": "이력 재처리"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:41",
+          "primary": "도시열공급 상가열사용 — 이력 판정",
+          "qualifier": "이력 판정"
+        }
+      ]
+    },
+    {
+      "value": "차압",
+      "records": 10,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:13",
+          "primary": "열공급 순환펌프 — 차압 상태",
+          "qualifier": "차압 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:100",
+          "primary": "열공급 열교환기 — 차압 상태",
+          "qualifier": "차압 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v57.source.jsonl:25",
+          "primary": "수술실 공조복귀 — 차압 복귀",
+          "qualifier": "차압 복귀"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:59",
+          "primary": "반도체 클린룸차압 — 차압 감소",
+          "qualifier": "차압 감소"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:60",
+          "primary": "반도체 클린룸차압 — 차압 재처리",
+          "qualifier": "차압 재처리"
+        }
+      ]
+    },
+    {
+      "value": "편차",
+      "records": 10,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v50.source.jsonl:15",
+          "primary": "항만 크레인복귀 — 편차 감소",
+          "qualifier": "편차 감소"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:53",
+          "primary": "해양 부표 계류안정 — 편차 안정",
+          "qualifier": "편차 안정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:98",
+          "primary": "해양 부표 계류안정 — 편차 기록",
+          "qualifier": "편차 기록"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:78",
+          "primary": "공항 제빙노즐 — 편차 안정",
+          "qualifier": "편차 안정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:94",
+          "primary": "반도체 노광초점 — 편차 복귀",
+          "qualifier": "편차 복귀"
+        }
+      ]
+    },
+    {
+      "value": "잔량",
+      "records": 9,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:143",
+          "primary": "산림 회복기록 — 잔량 배정",
+          "qualifier": "잔량 배정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:23",
+          "primary": "도시열공급 축열조 — 잔량 통과",
+          "qualifier": "잔량 통과"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:25",
+          "primary": "도시열공급 축열조 — 잔량 상태",
+          "qualifier": "잔량 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:83",
+          "primary": "도시열공급 연료저장 — 잔량 판정",
+          "qualifier": "잔량 판정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:84",
+          "primary": "도시열공급 연료저장 — 잔량 안정",
+          "qualifier": "잔량 안정"
+        }
+      ]
+    },
+    {
+      "value": "항목",
+      "records": 9,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:20",
+          "primary": "반도체 식각가스공급 — 항목 복귀",
+          "qualifier": "항목 복귀"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:40",
+          "primary": "반도체 이온주입 — 항목 조정",
+          "qualifier": "항목 조정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:46",
+          "primary": "반도체 세정수순환 — 항목 포화",
+          "qualifier": "항목 포화"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:57",
+          "primary": "반도체 클린룸차압 — 항목 상태",
+          "qualifier": "항목 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:24",
+          "primary": "도시열공급 축열조 — 항목 상태",
+          "qualifier": "항목 상태"
+        }
+      ]
+    },
+    {
+      "value": "감소",
+      "records": 8,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:15",
+          "primary": "산림 예찰징후 — 감소 촉발·억제",
+          "qualifier": "감소 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:67",
+          "primary": "산림 복구판정 — 감소 촉발·억제",
+          "qualifier": "감소 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:114",
+          "primary": "산림 회복기록 — 감소 촉발·억제",
+          "qualifier": "감소 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v59.source.jsonl:89",
+          "primary": "전기버스 충전품질 — 감소 촉발·억제",
+          "qualifier": "감소 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v61.source.jsonl:53",
+          "primary": "센터 부하복귀 — 감소 촉발·억제",
+          "qualifier": "감소 촉발·억제"
+        }
+      ]
+    },
+    {
+      "value": "마찰",
+      "records": 8,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:72",
+          "primary": "공항 복구실패 — 마찰 감소",
+          "qualifier": "마찰 감소"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:84",
+          "primary": "공항 활주로순찰 — 마찰 이동",
+          "qualifier": "마찰 이동"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:122",
+          "primary": "공항 복구실패 — 마찰 배정",
+          "qualifier": "마찰 배정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:67",
+          "primary": "공항 항공기보류 — 마찰 재처리",
+          "qualifier": "마찰 재처리"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:68",
+          "primary": "공항 항공기복귀 — 마찰 재처리",
+          "qualifier": "마찰 재처리"
+        }
+      ]
+    },
+    {
+      "value": "보완",
+      "records": 8,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v60.source.jsonl:137",
+          "primary": "발효 출하복귀 — 보완 촉발·억제",
+          "qualifier": "보완 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:136",
+          "primary": "항만 운영기록 — 보완 촉발·억제",
+          "qualifier": "보완 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v63.source.jsonl:140",
+          "primary": "축사 최종승인 — 보완 이동",
+          "qualifier": "보완 이동"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:80",
+          "primary": "반도체 웨이퍼이송 — 보완 대기",
+          "qualifier": "보완 대기"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:145",
+          "primary": "반도체 화학물질재고 — 보완 상태",
+          "qualifier": "보완 상태"
+        }
+      ]
+    },
+    {
+      "value": "보정",
+      "records": 8,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:130",
+          "primary": "반도체 공정레시피 — 보정 상태",
+          "qualifier": "보정 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:10",
+          "primary": "도시열공급 순환펌프 — 보정 상태",
+          "qualifier": "보정 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:90",
+          "primary": "도시열공급 배출가스 — 보정 후 재검토",
+          "qualifier": "보정 후 재검토"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:55",
+          "primary": "해양부표 클로로필 — 보정 후 재검토",
+          "qualifier": "보정 후 재검토"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:60",
+          "primary": "해양부표 탁도관측 — 보정 상태",
+          "qualifier": "보정 상태"
+        }
+      ]
+    },
+    {
+      "value": "부족",
+      "records": 8,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:27",
+          "primary": "항만 야드트랙터 — 부족 촉발·억제",
+          "qualifier": "부족 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:60",
+          "primary": "항만 야드배치 — 부족 촉발·억제",
+          "qualifier": "부족 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v63.source.jsonl:61",
+          "primary": "축사 계사공간 — 부족 촉발·억제",
+          "qualifier": "부족 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v64.source.jsonl:50",
+          "primary": "터널 최종이탈 — 부족 잔류",
+          "qualifier": "부족 잔류"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v64.source.jsonl:105",
+          "primary": "터널 배수용량 — 부족 촉발·억제",
+          "qualifier": "부족 촉발·억제"
+        }
+      ]
+    },
+    {
+      "value": "점수",
+      "records": 8,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:121",
+          "primary": "해양부표 경보판정 — 점수 판정",
+          "qualifier": "점수 판정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:122",
+          "primary": "해양부표 경보판정 — 점수 완료",
+          "qualifier": "점수 완료"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:124",
+          "primary": "해양부표 경보판정 — 점수 복귀",
+          "qualifier": "점수 복귀"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v69.source.jsonl:118",
+          "primary": "수술실감염통제 마취회복 — 점수 판정",
+          "qualifier": "점수 판정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v69.source.jsonl:119",
+          "primary": "수술실감염통제 마취회복 — 점수 감소",
+          "qualifier": "점수 감소"
+        }
+      ]
+    },
+    {
+      "value": "기록",
+      "records": 7,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:50",
+          "primary": "항만 일일종료 — 기록 인계",
+          "qualifier": "기록 인계"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v64.source.jsonl:76",
+          "primary": "터널 배수기록 — 기록 촉발·억제",
+          "qualifier": "기록 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:146",
+          "primary": "도시열공급 운영회의 — 기록 상태",
+          "qualifier": "기록 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:26",
+          "primary": "해양부표 기압측정 — 기록 판정",
+          "qualifier": "기록 판정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:111",
+          "primary": "해양부표 통신링크 — 기록 상태",
+          "qualifier": "기록 상태"
+        }
+      ]
+    },
+    {
+      "value": "실제",
+      "records": 7,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:78",
+          "primary": "반도체 웨이퍼이송 — 실제 상태",
+          "qualifier": "실제 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:33",
+          "primary": "도시열공급 밸브실 — 실제 판정",
+          "qualifier": "실제 판정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:118",
+          "primary": "도시열공급 공급제한 — 실제 안정",
+          "qualifier": "실제 안정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:138",
+          "primary": "도시열공급 운영센터 — 실제 판정",
+          "qualifier": "실제 판정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:83",
+          "primary": "해양부표 AIS수신 — 실제 상태",
+          "qualifier": "실제 상태"
+        }
+      ]
+    },
+    {
+      "value": "좌표",
+      "records": 7,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:102",
+          "primary": "산림 회복기록 — 좌표 촉발·억제",
+          "qualifier": "좌표 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:89",
+          "primary": "해양부표 위치추적 — 좌표 이동",
+          "qualifier": "좌표 이동"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:90",
+          "primary": "해양부표 위치추적 — 좌표 조정",
+          "qualifier": "좌표 조정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:143",
+          "primary": "해양부표 부표회수 — 좌표 상태",
+          "qualifier": "좌표 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:147",
+          "primary": "해양부표 부표재배치 — 좌표 판정",
+          "qualifier": "좌표 판정"
+        }
+      ]
+    },
+    {
+      "value": "출력",
+      "records": 7,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:93",
+          "primary": "데이터센터 제어루프 — 출력 포화",
+          "qualifier": "출력 포화"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:95",
+          "primary": "데이터센터 제어루프 — 출력 분담",
+          "qualifier": "출력 분담"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v51.source.jsonl:85",
+          "primary": "스마트축사 환기루프 — 출력 분담",
+          "qualifier": "출력 분담"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v61.source.jsonl:64",
+          "primary": "센터 발전기복귀 — 출력 복귀",
+          "qualifier": "출력 복귀"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:25",
+          "primary": "반도체 플라즈마세정 — 출력 잔류",
+          "qualifier": "출력 잔류"
+        }
+      ]
+    },
+    {
+      "value": "고장",
+      "records": 6,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:14",
+          "primary": "터널 집수정 — 고장 촉발·억제",
+          "qualifier": "고장 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:89",
+          "primary": "열공급 비상고장 — 고장 촉발·억제",
+          "qualifier": "고장 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:31",
+          "primary": "항만 냉동컨테이너 — 고장 촉발·억제",
+          "qualifier": "고장 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:40",
+          "primary": "항만 철도복귀 — 고장 촉발·억제",
+          "qualifier": "고장 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:61",
+          "primary": "공항 제설차속도이탈 — 고장 촉발·억제",
+          "qualifier": "고장 촉발·억제"
+        }
+      ]
+    },
+    {
+      "value": "예측",
+      "records": 6,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v59.source.jsonl:138",
+          "primary": "전기버스 충전계획 — 예측 촉발·억제",
+          "qualifier": "예측 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:51",
+          "primary": "항만 작업계획 — 예측 촉발·억제",
+          "qualifier": "예측 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v63.source.jsonl:101",
+          "primary": "축사 환기계획 — 예측 촉발·억제",
+          "qualifier": "예측 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:72",
+          "primary": "공항 기상예측 — 예측 촉발·억제",
+          "qualifier": "예측 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:58",
+          "primary": "도시열공급 수요예측 — 예측 판정",
+          "qualifier": "예측 판정"
+        }
+      ]
+    },
+    {
+      "value": "측정",
+      "records": 6,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:85",
+          "primary": "공항 활주로순찰 — 측정 배정",
+          "qualifier": "측정 배정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:17",
+          "primary": "공항 마찰측정 — 측정 촉발·억제",
+          "qualifier": "측정 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:33",
+          "primary": "반도체 금속배선 — 측정 판정",
+          "qualifier": "측정 판정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:143",
+          "primary": "도시열공급 열손실분석 — 측정 상태",
+          "qualifier": "측정 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v68.source.jsonl:68",
+          "primary": "해양부표 수심측량 — 측정 상태",
+          "qualifier": "측정 상태"
+        }
+      ]
+    },
+    {
+      "value": "대조",
+      "records": 5,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v62.source.jsonl:83",
+          "primary": "항만 하역기록 — 대조 촉발·억제",
+          "qualifier": "대조 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:81",
+          "primary": "공항 기록복귀 — 대조 복귀",
+          "qualifier": "대조 복귀"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:16",
+          "primary": "반도체 식각가스공급 — 대조 상태",
+          "qualifier": "대조 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v69.source.jsonl:78",
+          "primary": "수술실감염통제 절개부위표시 — 대조 상태",
+          "qualifier": "대조 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v69.source.jsonl:138",
+          "primary": "수술실감염통제 감염보고 — 대조 상태",
+          "qualifier": "대조 상태"
+        }
+      ]
+    },
+    {
+      "value": "복구",
+      "records": 5,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:49",
+          "primary": "산림 예찰징후 — 복구 촉발·억제",
+          "qualifier": "복구 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:111",
+          "primary": "산림 회복기록 — 복구 촉발·억제",
+          "qualifier": "복구 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:101",
+          "primary": "도시열공급 긴급복구 — 복구 상태",
+          "qualifier": "복구 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:102",
+          "primary": "도시열공급 긴급복구 — 복구 재처리",
+          "qualifier": "복구 재처리"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:105",
+          "primary": "도시열공급 긴급복구 — 복구 판정",
+          "qualifier": "복구 판정"
+        }
+      ]
+    },
+    {
+      "value": "수분",
+      "records": 5,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v60.source.jsonl:72",
+          "primary": "발효 원료수분 — 수분 안정",
+          "qualifier": "수분 안정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:51",
+          "primary": "공항 활주로수분 — 수분 조정",
+          "qualifier": "수분 조정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:53",
+          "primary": "공항 활주로수분복귀 — 수분 감소",
+          "qualifier": "수분 감소"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:101",
+          "primary": "공항 활주로수분 — 수분 상태",
+          "qualifier": "수분 상태"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:103",
+          "primary": "공항 활주로수분복귀 — 수분 복귀",
+          "qualifier": "수분 복귀"
+        }
+      ]
+    },
+    {
+      "value": "열",
+      "records": 5,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:126",
+          "primary": "데이터센터 잔류열 — 열 잔류",
+          "qualifier": "열 잔류"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:127",
+          "primary": "데이터센터 잔류열 — 열 감소",
+          "qualifier": "열 감소"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:129",
+          "primary": "데이터센터 잔류열 — 열 부분 제한",
+          "qualifier": "열 부분 제한"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:130",
+          "primary": "데이터센터 잔류열 — 열 방출",
+          "qualifier": "열 방출"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:122",
+          "primary": "열공급 잔류감소 — 열 감소",
+          "qualifier": "열 감소"
+        }
+      ]
+    },
+    {
+      "value": "오차",
+      "records": 5,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:76",
+          "primary": "데이터센터 변압기탭 — 오차 감소",
+          "qualifier": "오차 감소"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:92",
+          "primary": "데이터센터 제어루프 — 오차 감소",
+          "qualifier": "오차 감소"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:89",
+          "primary": "반도체 포토마스크 — 오차 감소",
+          "qualifier": "오차 감소"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:98",
+          "primary": "반도체 정렬오차 — 오차 판정",
+          "qualifier": "오차 판정"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:99",
+          "primary": "반도체 정렬오차 — 오차 감소",
+          "qualifier": "오차 감소"
+        }
+      ]
+    },
+    {
+      "value": "유입",
+      "records": 5,
+      "examples": [
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:12",
+          "primary": "터널 집수정 — 유입 촉발·억제",
+          "qualifier": "유입 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:17",
+          "primary": "터널 배수로 — 유입 촉발·억제",
+          "qualifier": "유입 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:59",
+          "primary": "터널 교통량복귀 — 유입 복귀",
+          "qualifier": "유입 복귀"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:12",
+          "primary": "산림 예찰징후 — 유입 촉발·억제",
+          "qualifier": "유입 촉발·억제"
+        },
+        {
+          "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:68",
+          "primary": "산림 복구판정 — 유입 촉발·억제",
+          "qualifier": "유입 촉발·억제"
+        }
+      ]
+    }
+  ],
+  "dash_style_review": {
+    "core_reuse_min_records": 2,
+    "copied_subject_particles": [
+      "은",
+      "는",
+      "이",
+      "가",
+      "에서",
+      "으로"
+    ],
+    "text_begins_exact_dash_primary_plus_particle_records": 1117,
+    "text_begins_exact_dash_primary_plus_particle_ratio": 0.9051863857374393,
+    "total_core_groups": 350,
+    "repeated_core_groups": 341,
+    "records_in_repeated_core_groups": 1225,
+    "unique_core_records": 9,
+    "interpretation": "A dash label copied into a sentence and a highly reused core can indicate a generated title pattern. These are review signals, not structural errors or automatic rewrite instructions."
+  },
+  "repeated_core_groups": {
+    "group_count": 341,
+    "records": 1225,
+    "top_groups": [
+      {
+        "core": "산림 복구판정",
+        "records": 50,
+        "distinct_qualifiers": 50,
+        "qualifiers": [
+          "감소 촉발·억제",
+          "건조 촉발·억제",
+          "계곡 촉발·억제",
+          "관수량 촉발·억제",
+          "균열 촉발·억제",
+          "낙석 촉발·억제",
+          "먹이식물 촉발·억제",
+          "발생 촉발·억제",
+          "방제 촉발·억제",
+          "병반 촉발·억제",
+          "복구용 촉발·억제",
+          "복구지 촉발·억제"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:51",
+            "primary": "산림 복구판정 — 충족 촉발·억제",
+            "text": "산림 복구판정 — 충족 촉발·억제는 회복 지표 충족이 복구 승인을 촉발하고 재발 흔적이 승인을 억제하는 전이이며, 지표값과 판정 시각을 보존하고 승인 범위와 후속 점검을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:52",
+            "primary": "산림 복구판정 — 신호 촉발·억제",
+            "text": "산림 복구판정 — 신호 촉발·억제는 생존 신호가 회복 판정을 열고 뿌리 괴사가 있으면 손실 판정을 늦춘다. 생존율·괴사 등급을 보관한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:53",
+            "primary": "산림 복구판정 — 발생 촉발·억제",
+            "text": "산림 복구판정 — 발생 촉발·억제는 새순 발생으로 생장 회복을 검토하되 줄기 변색이면 완전 회복을 보류한다. 새순 수·변색 면적을 기록한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:54",
+            "primary": "산림 복구판정 — 회복 촉발·억제",
+            "text": "산림 복구판정 — 회복 촉발·억제는 토양 수분 회복으로 식재를 다시 열고 침수 잔류면 재개를 미룬다. 수분값·침수 깊이를 남긴다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:55",
+            "primary": "산림 복구판정 — 재유입 촉발·억제",
+            "text": "산림 복구판정 — 재유입 촉발·억제는 배수로 통수가 복구 작업을 촉발하고 토사 재유입이 작업을 억제하는 상태 변화이며, 통수량과 유입량을 보존하고 준설 순서와 작업 반경을 조정한다."
+          }
+        ]
+      },
+      {
+        "core": "산림 예찰징후",
+        "records": 50,
+        "distinct_qualifiers": 50,
+        "qualifiers": [
+          "가뭄 촉발·억제",
+          "감소 촉발·억제",
+          "건조 촉발·억제",
+          "경사면 촉발·억제",
+          "계곡 촉발·억제",
+          "계류 촉발·억제",
+          "고사 촉발·억제",
+          "군집 촉발·억제",
+          "균열 촉발·억제",
+          "낙엽 촉발·억제",
+          "면적 촉발·억제",
+          "발생 촉발·억제"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:1",
+            "primary": "산림 예찰징후 — 변색 촉발·억제",
+            "text": "산림 예찰징후 — 변색 촉발·억제는 잎 변색이 초기 피해 관찰을 촉발하고 정상 생장이 추가 조사를 억제하는 전이이며, 수종과 관찰 시각은 보존하고 조사 구역과 표본 순서를 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:2",
+            "primary": "산림 예찰징후 — 흔적 촉발·억제",
+            "text": "산림 예찰징후 — 흔적 촉발·억제는 줄기 천공 흔적이 병해충 의심을 촉발하고 단순 기계 손상이 오판을 억제한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:3",
+            "primary": "산림 예찰징후 — 낙엽 촉발·억제",
+            "text": "산림 예찰징후 — 낙엽 촉발·억제는 수관 밀도 저하가 정밀 예찰을 촉발하고 계절 낙엽이 오인 판정을 억제한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:4",
+            "primary": "산림 예찰징후 — 가뭄 촉발·억제",
+            "text": "산림 예찰징후 — 가뭄 촉발·억제에서는 수액 감소가 피해 단계를 올리고 일시 가뭄이 병해충 판정을 미룬다. 수액값·토양 수분을 기록한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:5",
+            "primary": "산림 예찰징후 — 배설물 촉발·억제",
+            "text": "산림 예찰징후 — 배설물 촉발·억제는 곤충 흔적으로 포획 조사를 열고 동물 배설물은 오인 채집을 막는다. 흔적 형태·위치를 남긴다."
+          }
+        ]
+      },
+      {
+        "core": "산림 회복기록",
+        "records": 50,
+        "distinct_qualifiers": 50,
+        "qualifiers": [
+          "가능성 감소",
+          "가장자리 조정",
+          "감소 촉발·억제",
+          "건조풍 상태",
+          "검증 촉발·억제",
+          "공백 촉발·억제",
+          "관측 상태",
+          "낙석 감소",
+          "낙석 촉발·억제",
+          "낙엽층 복귀",
+          "농도 감소",
+          "면적 촉발·억제"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:101",
+            "primary": "산림 회복기록 — 공백 촉발·억제",
+            "text": "산림 회복기록 — 공백 촉발·억제는 복구 전후 기록 대조가 상태 확정을 촉발하고 기록 공백이 확정을 억제하는 전이이며, 원자료와 대조 시각을 보존하고 보완 순서와 확인 역할을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:102",
+            "primary": "산림 회복기록 — 좌표 촉발·억제",
+            "text": "산림 회복기록 — 좌표 촉발·억제는 생존목 좌표가 갱신되어 회복 지도 전환을 촉발하고 좌표 불일치가 갱신을 억제하는 과정이고, 좌표와 측량 시각을 유지하며 지도 구역과 검증 순서를 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:103",
+            "primary": "산림 회복기록 — 이력 촉발·억제",
+            "text": "산림 회복기록 — 이력 촉발·억제는 방제 약제 이력이 확인되어 잔류 평가를 촉발하고 누락 이력이 평가를 억제한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:104",
+            "primary": "산림 회복기록 — 하락 촉발·억제",
+            "text": "산림 회복기록 — 하락 촉발·억제는 토양 잔류값 하락이 이용 제한 완화를 촉발하고 기준 초과가 완화를 억제하는 전이로, 잔류값과 분석 시각을 유지하며 이용 구역과 표지 기간을 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v58.source.jsonl:105",
+            "primary": "산림 회복기록 — 재검출 촉발·억제",
+            "text": "산림 회복기록 — 재검출 촉발·억제는 수질 시험이 정상화되면 하류 감시를 완화하되 독성이 다시 나오면 유지한다. 시험값과 채취 위치를 기록한다."
+          }
+        ]
+      },
+      {
+        "core": "열공급 열교환기",
+        "records": 9,
+        "distinct_qualifiers": 9,
+        "qualifiers": [
+          "교환기 촉발·억제",
+          "상승 수준 변화",
+          "온도 상승",
+          "온도 조정",
+          "유량 계산",
+          "유량 상태",
+          "장치 대기",
+          "차압 상태",
+          "효율 복귀"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:21",
+            "primary": "열공급 열교환기 — 장치 대기",
+            "text": "열공급 열교환기 — 장치 대기는 장치가 수용가의 열수요 신호를 기다리고 있는 단계다. 설비 번호와 대기 시작을 추적하고 목표 유량 및 다른 열원과의 기동 순서를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:22",
+            "primary": "열공급 열교환기 — 온도 상승",
+            "text": "열공급 열교환기 — 온도 상승은 회수수 온도가 올라 전열량을 늘릴 수 있지만 오염 경보 때문에 출력을 제한하는 전이다. 우회 운전 전에 차압과 전열 성능을 비교해 세척 필요성을 판단한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:23",
+            "primary": "열공급 열교환기 — 유량 계산",
+            "text": "열공급 열교환기 — 유량 계산은 입출구 온도차와 유량이 설계한 열전달 범위에 들어온 운전 상태다. 유량만 정상인 막힘 상태와 구분하려고 열량 계산을 함께 확인한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:24",
+            "primary": "열공급 열교환기 — 교환기 촉발·억제",
+            "text": "열공급 열교환기 — 교환기 촉발·억제는 전열 저하가 우회 경로를 촉발하고 예비 교환기가 공급 손실을 억제하는 전이이며, 전열값과 장비 식별을 유지하고 우회 밸브와 부하 순서를 바꾼다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v55.source.jsonl:25",
+            "primary": "열공급 열교환기 — 효율 복귀",
+            "text": "열공급 열교환기 — 효율 복귀는 세척 후 전열 효율이 정상으로 돌아오는 과정이고, 세척자와 완료 시각을 보존하며 유량 목표와 운전 분담을 조정한다."
+          }
+        ]
+      },
+      {
+        "core": "터널 배수기록",
+        "records": 6,
+        "distinct_qualifiers": 6,
+        "qualifiers": [
+          "기록 촉발·억제",
+          "백업 조정",
+          "복원단계 판정",
+          "수위 판정",
+          "수위·펌프·신호 조정",
+          "하강 감소"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:101",
+            "primary": "터널 배수기록 — 수위·펌프·신호 조정",
+            "text": "터널 배수기록 — 수위·펌프·신호 조정은 수위·펌프·신호 상태를 단계별로 기록하는 과정이고, 기록자와 시각은 보존하며 터널 배수기록 — 수위·펌프·신호 조정의 변경순서를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:103",
+            "primary": "터널 배수기록 — 백업 조정",
+            "text": "터널 배수기록 — 백업 조정은 백업 로그와 현장 계전기 자료로 누락 구간을 복원하는 전이이고, 복원 근거와 시각은 보존하며 후보 순서와 확인 담당을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:104",
+            "primary": "터널 배수기록 — 복원단계 판정",
+            "text": "터널 배수기록 — 복원단계 판정은 복원단계가 센서와 신호로그에 모두 맞아 공식 경로로 확정된 상태다. 일치근거와 검사시각을 남기고 후속명령 및 경보수준을 지정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v64.source.jsonl:41",
+            "primary": "터널 배수기록 — 하강 감소",
+            "text": "터널 배수기록 — 하강 감소는 펌프 가동량과 실제 수위 하강이 같은 배수 사건을 나타내는지 대조하는 과정이다. 누락 구간이 있으면 운영 확정을 미루고 현장 계량을 찾는다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v64.source.jsonl:42",
+            "primary": "터널 배수기록 — 수위 판정",
+            "text": "터널 배수기록 — 수위 판정은 수위 센서값을 되찾아 정상 이력을 복원하려 했으나 원자료 소실 시 확정하지 못하는 전이다. 복원 시점과 수위값을 남기고 검증 차례와 대체 근거를 정한다."
+          }
+        ]
+      },
+      {
+        "core": "터널 잔류수",
+        "records": 6,
+        "distinct_qualifiers": 6,
+        "qualifiers": [
+          "깊이 잔류",
+          "물 부분 제한",
+          "물 잔류",
+          "수위 감소",
+          "수위 잔류",
+          "차수턱 촉발·억제"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:121",
+            "primary": "터널 잔류수 — 물 잔류",
+            "text": "터널 잔류수 — 물 잔류는 주배수 뒤에도 바닥 저지대에 물이 고여 있는 중간 상태다. 잔류수위와 위치를 남기고 보조펌프 운전시간과 차량속도 제한을 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:122",
+            "primary": "터널 잔류수 — 차수턱 촉발·억제",
+            "text": "터널 잔류수 — 차수턱 촉발·억제는 잔류 수위가 배수 한계를 넘어 재펌핑을 촉발하고 차수턱이 확산을 억제하는 전이이며, 수위와 탐지 시각을 유지하며 펌프 순서와 차로 통제를 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:123",
+            "primary": "터널 잔류수 — 수위 감소",
+            "text": "터널 잔류수 — 수위 감소는 추가펌핑으로 저지대 수위가 계속 낮아지는 과정이다. 시간별 감소량과 관측시각을 보존하고 펌프출력 및 순찰간격을 변화에 맞춘다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:124",
+            "primary": "터널 잔류수 — 깊이 잔류",
+            "text": "터널 잔류수 — 깊이 잔류는 바닥의 물 깊이가 차량 허용선 아래에서 계속 유지된 상태다. 적용 기준과 확인점을 남기며 신호 주기와 차량 속도 제한을 단계적으로 푼다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:125",
+            "primary": "터널 잔류수 — 물 부분 제한",
+            "text": "터널 잔류수 — 물 부분 제한은 일부 저지대에 물이 남아 전체 통행이 제한된 상태이며, 구간별 수위와 제한 사유를 보존하고 부분 개방과 예비 펌프를 조정한다."
+          }
+        ]
+      },
+      {
+        "core": "공항 활주로검사",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "재시험 촉발·억제",
+          "적설 잔류",
+          "지속 촉발·억제",
+          "표면 판정",
+          "합격 촉발·억제"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:69",
+            "primary": "공항 활주로검사 — 지속 촉발·억제",
+            "text": "공항 활주로검사 — 지속 촉발·억제는 시작 신호로 점검을 열고 적설이 이어지면 보류한다. 신호 시각·적설량을 남긴다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:70",
+            "primary": "공항 활주로검사 — 합격 촉발·억제",
+            "text": "공항 활주로검사 — 합격 촉발·억제는 표면 시험 합격이 개방 검토를 촉발하고 마찰 미달이 검토를 억제하는 전이로, 시험값과 판정 시각을 유지하며 개방 순서와 관제 역할을 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:71",
+            "primary": "공항 활주로검사 — 재시험 촉발·억제",
+            "text": "공항 활주로검사 — 재시험 촉발·억제는 재시험 합격 때 운항을 승인하고 재결빙이면 승인을 보류하는 전이다. 합격값·재결빙 시각으로 감시 순서를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:119",
+            "primary": "공항 활주로검사 — 적설 잔류",
+            "text": "공항 활주로검사 — 적설 잔류는 적설이 남아 있을 때 표면 점검을 시작하는 전이다. 신호가 들어온 시각과 적설 분포를 보고 검사 경로와 작업 구역을 배정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v65.source.jsonl:120",
+            "primary": "공항 활주로검사 — 표면 판정",
+            "text": "공항 활주로검사 — 표면 판정은 표면 시험 합격 뒤 개방을 검토하는 상태다. 판정 시각과 마찰값으로 관제 협의 순서와 차로 개방을 조절한다."
+          }
+        ]
+      },
+      {
+        "core": "공항 활주로순찰",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "감지 촉발·억제",
+          "마찰 이동",
+          "순찰 안정",
+          "차량 조정",
+          "측정 배정"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:81",
+            "primary": "공항 활주로순찰 — 차량 조정",
+            "text": "공항 활주로순찰 — 차량 조정은 순찰 차량이 표면 상태를 확인하는 중간 상태로, 차량 번호와 순찰 시각은 보존하고 순찰 속도와 재측정 간격을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:82",
+            "primary": "공항 활주로순찰 — 감지 촉발·억제",
+            "text": "공항 활주로순찰 — 감지 촉발·억제는 결빙 감지가 제빙차 출동을 촉발하지만 운항 중인 항공기가 작업 진입을 억제하는 전이이며, 감지 위치와 편명은 유지하고 출동 순서와 대기 구간을 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:83",
+            "primary": "공항 활주로순찰 — 순찰 안정",
+            "text": "공항 활주로순찰 — 순찰 안정은 순찰 결과가 이전 측정과 비슷한 안정 상태로, 비교값과 관측 시각을 남기고 순찰 주기와 운항 간격을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:84",
+            "primary": "공항 활주로순찰 — 마찰 이동",
+            "text": "공항 활주로순찰 — 마찰 이동은 마찰 저하가 다시 확인되어 폐쇄로 이동한 전이이고, 저하값과 확인자를 보존하며 제설 강도와 대체 활주로를 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v53.source.jsonl:85",
+            "primary": "공항 활주로순찰 — 측정 배정",
+            "text": "공항 활주로순찰 — 측정 배정은 반복 측정이 기준을 만족해 운항 등급을 갱신하는 과정이며, 측정 횟수와 갱신 시각을 유지하고 항공기 배정과 재보고 간격을 조정한다."
+          }
+        ]
+      },
+      {
+        "core": "데이터센터 잔류열",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "열 감소",
+          "열 방출",
+          "열 부분 제한",
+          "열 잔류",
+          "온도 잔류"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:126",
+            "primary": "데이터센터 잔류열 — 열 잔류",
+            "text": "데이터센터 잔류열 — 열 잔류는 전원 차단 뒤 랙과 냉각수에 열이 남아 있는 중간 상태이며, 잔류 온도와 구역은 보존하고 팬 운전과 냉각 유량을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:127",
+            "primary": "데이터센터 잔류열 — 열 감소",
+            "text": "데이터센터 잔류열 — 열 감소는 잔류 열이 자연 방출과 강제 송풍으로 감소하는 과정이고, 감소 곡선과 관측 시각을 유지하며 송풍 단계와 재접속 지연을 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:128",
+            "primary": "데이터센터 잔류열 — 온도 잔류",
+            "text": "데이터센터 잔류열 — 온도 잔류는 표면 온도가 재접속 기준 아래로 내려간 상태로, 기준값과 확인 시각은 남기고 서버 기동 순서와 냉각 분담을 조절한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:129",
+            "primary": "데이터센터 잔류열 — 열 부분 제한",
+            "text": "데이터센터 잔류열 — 열 부분 제한은 일부 랙에 열이 남아 전체 복귀가 제한된 상태이며, 랙별 온도와 제한 사유를 보존하고 부분 기동과 예비 냉각을 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:130",
+            "primary": "데이터센터 잔류열 — 열 방출",
+            "text": "데이터센터 잔류열 — 열 방출은 전원을 낮춘 뒤에도 랙과 배전실에 남은 열이 방출되는 상태를 가리킨다. 가장 늦게 식는 구역이 기준 아래에 도달해야 정상 냉각 경로를 다시 연다."
+          }
+        ]
+      },
+      {
+        "core": "데이터센터 제어루프",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "냉각 계산",
+          "오차 감소",
+          "출력 분담",
+          "출력 포화",
+          "포화 상승"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:91",
+            "primary": "데이터센터 제어루프 — 냉각 계산",
+            "text": "데이터센터 제어루프 — 냉각 계산은 냉각 오차를 계산해 다음 출력으로 넘기는 상태이며, 오차값과 계산 시각을 보존하고 적분 제한과 출력 변화율을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:92",
+            "primary": "데이터센터 제어루프 — 오차 감소",
+            "text": "데이터센터 제어루프 — 오차 감소는 온도 오차가 줄어 안정 조절 단계로 이동하는 전이이고, 이전 오차와 구역은 유지하며 밸브 명령과 팬 속도를 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:93",
+            "primary": "데이터센터 제어루프 — 출력 포화",
+            "text": "데이터센터 제어루프 — 출력 포화는 제어 출력이 상한에 고정된 포화 상태로, 포화 시각과 부하 값은 남기고 적분 해제와 부하 감축 순서를 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:94",
+            "primary": "데이터센터 제어루프 — 포화 상승",
+            "text": "데이터센터 제어루프 — 포화 상승은 포화가 풀려 정상 조절 범위로 복귀하는 과정이며, 포화 원인과 복귀 시각을 보존하고 출력 상승률과 밸브 목표를 바꾼다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v49.source.jsonl:95",
+            "primary": "데이터센터 제어루프 — 출력 분담",
+            "text": "데이터센터 제어루프 — 출력 분담은 냉각기와 팬 출력이 맞물려 조정되는 상태이고, 장치 명령 이력과 구역은 유지하며 조정 주기와 분담 비율을 변경한다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 공급제한",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "실제 안정",
+          "제한량 상태",
+          "제한량 안정",
+          "제한량 판정",
+          "확인 계산"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:116",
+            "primary": "도시열공급 공급제한 — 확인 계산",
+            "text": "도시열공급 공급제한 — 확인 계산은 수요 조정량의 추가 확인이 필요해 제한 폭을 임시로 유지하는 상태다. 병원·주거·상가 부하를 구분한 새 자료가 들어오면 배분을 다시 계산한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:117",
+            "primary": "도시열공급 공급제한 — 제한량 판정",
+            "text": "도시열공급 공급제한 — 제한량 판정은 제한량 변동에 따라 통제방식을 바꿀지 검토하는 상태다. 축열조와 우회배관의 준비를 점검해 변경 폭과 적용점을 확정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:118",
+            "primary": "도시열공급 공급제한 — 실제 안정",
+            "text": "도시열공급 공급제한 — 실제 안정은 실제 제한량을 공급계획의 허용범위와 대조하는 단계다. 벗어난 값은 수용가별 재측정 목록으로 보내 원인을 구분한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:119",
+            "primary": "도시열공급 공급제한 — 제한량 안정",
+            "text": "도시열공급 공급제한 — 제한량 안정은 제한량이 안정되어 일반공급 재개를 심사하는 상태다. 보정 전후 수요를 맞춰 수용가별 해제 차례와 열원 출력을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:120",
+            "primary": "도시열공급 공급제한 — 제한량 상태",
+            "text": "도시열공급 공급제한 — 제한량 상태는 제한량 보정 뒤 통제 검사를 재개한 단계다. 새 불일치가 발견되면 다음 수용가로의 공급 확대를 잠시 막는다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 기상연동",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "온도 상태",
+          "온도 판정",
+          "외기 조정",
+          "외기 판정",
+          "원본 상태"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:61",
+            "primary": "도시열공급 기상연동 — 원본 상태",
+            "text": "도시열공급 기상연동 — 원본 상태는 외기온도 원본이 오지 않아 출력 판단을 유보한 상태다. 마지막 확인점과 기상계 응답을 남기고 대신 사용할 관측소를 지정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:62",
+            "primary": "도시열공급 기상연동 — 외기 판정",
+            "text": "도시열공급 기상연동 — 외기 판정은 외기 신호 변화에 맞춰 열원 출력 방향을 재평가하는 단계다. 예비 공급로와 현재 용량을 비교해 증감 또는 대기를 고른다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:63",
+            "primary": "도시열공급 기상연동 — 온도 판정",
+            "text": "도시열공급 기상연동 — 온도 판정은 실제 외기 온도가 제어 허용구간에 들어오는지 판정하는 상태다. 맞지 않는 표본은 관측소별 재수집 대상으로 넘긴다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:64",
+            "primary": "도시열공급 기상연동 — 온도 상태",
+            "text": "도시열공급 기상연동 — 온도 상태는 외기 온도가 내려가 제어 운전 복원을 논의하는 단계다. 변화 이력과 수요 반응을 다시 읽고 남은 수정 항목과 열원 순서를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:65",
+            "primary": "도시열공급 기상연동 — 외기 조정",
+            "text": "도시열공급 기상연동 — 외기 조정은 외기 자료 보정 뒤 자동제어를 시험하는 단계다. 자료가 맞지 않으면 출력 변경을 미루고 다른 관측소의 표본을 늘린다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 긴급복구",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "복구 상태",
+          "복구 재처리",
+          "복구 판정",
+          "압력 통과",
+          "진행도 판정"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:101",
+            "primary": "도시열공급 긴급복구 — 복구 상태",
+            "text": "도시열공급 긴급복구 — 복구 상태의 복구 진행도 자료는 도시열공급 긴급복구의 보조 관측과 함께 살핀다. 아직 맞지 않는 항목은 확인 목록에 유지한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:102",
+            "primary": "도시열공급 긴급복구 — 복구 재처리",
+            "text": "도시열공급 긴급복구 — 복구 재처리는 복구 진행도 이상으로 인력과 자원 운용 선택지를 다시 검토하는 상태다. 자재 잔량과 경보 시점을 근거로 우선 조치와 구역을 고른다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:103",
+            "primary": "도시열공급 긴급복구 — 진행도 판정",
+            "text": "도시열공급 긴급복구 — 진행도 판정의 복구 진행도는 도시열공급 긴급복구 운전 기준과 대조해 분류한다. 경계 밖 자료는 추가 표본을 받아 판정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:104",
+            "primary": "도시열공급 긴급복구 — 압력 통과",
+            "text": "도시열공급 긴급복구 — 압력 통과는 파손 구간의 보수율과 시험 압력이 목표를 충족해 복구 후보가 된 상태다. 수용가 공급을 재개하기 전 용접부 누설 검사를 별도로 통과해야 한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:105",
+            "primary": "도시열공급 긴급복구 — 복구 판정",
+            "text": "도시열공급 긴급복구 — 복구 판정은 진행도 자료를 조정한 뒤 복구 상태를 재평가하는 단계다. 작업 이력의 불일치가 남으면 공급 전환을 허용하지 않고 확인을 계속한다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 밸브실",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "개도 조정",
+          "개도 판정",
+          "개도 포화",
+          "눈금 판정",
+          "실제 판정"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:31",
+            "primary": "도시열공급 밸브실 — 눈금 판정",
+            "text": "도시열공급 밸브실 — 눈금 판정은 원격 개도 신호와 현장 눈금이 맞을 때까지 잠정값을 둔다. 불일치면 점검 순서를 바꾼다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:32",
+            "primary": "도시열공급 밸브실 — 개도 판정",
+            "text": "도시열공급 밸브실 — 개도 판정은 개도 이상 때 수동조작과 우회공급을 비교한다. 인력·예비밸브로 작업 시작점과 영향 구역을 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:33",
+            "primary": "도시열공급 밸브실 — 실제 판정",
+            "text": "도시열공급 밸브실 — 실제 판정은 실제 밸브 개도를 구간별 기준값과 비교해 상태를 판정한다. 불일치 자료는 위치 신호와 현장 눈금을 독립적으로 확인한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:34",
+            "primary": "도시열공급 밸브실 — 개도 조정",
+            "text": "도시열공급 밸브실 — 개도 조정은 개도가 회복되어 밸브실 정상화를 검토하는 단계다. 시간 순서가 맞는 기록만 사용해 변경 우선순위와 공급 구역을 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:35",
+            "primary": "도시열공급 밸브실 — 개도 포화",
+            "text": "도시열공급 밸브실 — 개도 포화는 개도 보정 결과를 바탕으로 작동 점검을 재개한 상태다. 이력 불일치가 남으면 현재 밸브 위치를 고정하고 추가 확인을 요청한다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 수요예측",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "예측 상태",
+          "예측 판정",
+          "예측값 복귀",
+          "예측값 조정",
+          "출처 판정"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:56",
+            "primary": "도시열공급 수요예측 — 출처 판정",
+            "text": "도시열공급 수요예측 — 출처 판정은 예측값의 표본 출처가 충분하지 않아 결과 판정을 보류한 상태다. 시간대와 수용가 유형별 자료를 분류하고 추가 입력 순번을 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:57",
+            "primary": "도시열공급 수요예측 — 예측값 조정",
+            "text": "도시열공급 수요예측 — 예측값 조정은 예측값 추세를 근거로 열원 운전 전환을 검토하는 단계다. 보조 모형과 축열 여유를 확인해 출력 변경 시점을 고른다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:58",
+            "primary": "도시열공급 수요예측 — 예측 판정",
+            "text": "도시열공급 수요예측 — 예측 판정은 예측 부하를 모형의 설정 한계와 대조하는 판정 상태다. 차이가 큰 기록은 후속 운영 판단에서 잠시 제외하고 입력값을 검증한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:59",
+            "primary": "도시열공급 수요예측 — 예측값 복귀",
+            "text": "도시열공급 수요예측 — 예측값 복귀의 수요 예측값이 기준 안으로 돌아오면 도시열공급 수요예측 재개 여부를 판단한다. 앞선 편차와 확인값을 대조해 범위를 고친다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:60",
+            "primary": "도시열공급 수요예측 — 예측 상태",
+            "text": "도시열공급 수요예측 — 예측 상태는 예측 입력 수정을 끝내고 모형 검증을 다시 시행하는 단계다. 경보나 큰 잔차가 남으면 현재 열원 계획을 유지한다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 순환펌프",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "급변 상태",
+          "보정 상태",
+          "회전수 상태",
+          "회전수 재처리",
+          "회전수 판정"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:6",
+            "primary": "도시열공급 순환펌프 — 회전수 판정",
+            "text": "도시열공급 순환펌프 — 회전수 판정의 펌프 회전수는 점검 시작 전의 임시 값이다. 도시열공급 순환펌프 이력의 빈칸을 확인하고 남은 항목을 채운 뒤 판정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:7",
+            "primary": "도시열공급 순환펌프 — 급변 상태",
+            "text": "도시열공급 순환펌프 — 급변 상태는 회전수 급변에 따른 운전 전환을 판단한다. 배관 압력·예비 펌프 준비도로 교대 시점을 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:8",
+            "primary": "도시열공급 순환펌프 — 회전수 재처리",
+            "text": "도시열공급 순환펌프 — 회전수 재처리는 회전수가 장비 한계 안에서 유량을 내는지 검사하는 상태다. 기준을 벗어나면 확정하지 않고 모터 전류와 진동을 함께 다시 잰다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:9",
+            "primary": "도시열공급 순환펌프 — 회전수 상태",
+            "text": "도시열공급 순환펌프 — 회전수 상태는 회전수 회복 뒤 정상운전을 승인할지 심사하는 단계다. 수정 전후의 유량과 전력을 비교해 펌프별 기동 차례를 새로 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:10",
+            "primary": "도시열공급 순환펌프 — 보정 상태",
+            "text": "도시열공급 순환펌프 — 보정 상태는 회전수 보정 후 성능시험을 시작한 상태다. 오차가 계속되면 출력 제한을 풀지 않고 베어링 진동과 전류 검사를 추가한다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 안전밸브",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "설비 판정",
+          "해제압력 감소",
+          "해제압력 상태",
+          "해제압력 재처리",
+          "해제압력 판정"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:126",
+            "primary": "도시열공급 안전밸브 — 해제압력 판정",
+            "text": "도시열공급 안전밸브 — 해제압력 판정은 해제압력의 초기 표본만 있어 작동 판정을 미룬 상태다. 시험 이력을 따로 검토하고 빠진 압력 자료가 들어오기를 기다린다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:127",
+            "primary": "도시열공급 안전밸브 — 해제압력 상태",
+            "text": "도시열공급 안전밸브 — 해제압력 상태는 해제압력 변화로 밸브 운전 방식을 다시 선택하는 단계다. 가용 예비밸브와 경보 시점을 확인해 전환 승인 또는 보류를 결정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:128",
+            "primary": "도시열공급 안전밸브 — 설비 판정",
+            "text": "도시열공급 안전밸브 — 설비 판정은 현재 해제압력을 설비 기준표와 비교해 판정하는 과정이다. 불일치 표본은 시험대와 현장 계측을 나눠 별도 점검으로 보낸다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:129",
+            "primary": "도시열공급 안전밸브 — 해제압력 감소",
+            "text": "도시열공급 안전밸브 — 해제압력 감소는 해제압력이 낮아져 장치를 다시 가동할지 논의하는 단계다. 이전과 현재 값을 대조해 밸브 시험 및 공급 처리 순서를 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:130",
+            "primary": "도시열공급 안전밸브 — 해제압력 재처리",
+            "text": "도시열공급 안전밸브 — 해제압력 재처리는 해제압력 교정 후 실제 작동을 재검사하는 단계다. 기록과 밸브 움직임이 다르면 공급 확대를 중지하고 시험을 반복한다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 압력조정",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "변동 조정",
+          "압력 조정",
+          "조정압력 조정",
+          "표본 조정",
+          "후보 안정"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:66",
+            "primary": "도시열공급 압력조정 — 표본 조정",
+            "text": "도시열공급 압력조정 — 표본 조정은 조정압력 표본이 부족해 밸브 판단을 유보한 상태다. 추가 관찰이 끝나면 배관별 기준과 실제 개도를 함께 적용한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:67",
+            "primary": "도시열공급 압력조정 — 변동 조정",
+            "text": "도시열공급 압력조정 — 변동 조정의 조정 압력 변동은 도시열공급 압력조정 대응책을 선택하기 전의 상태다. 장비 여력과 통보 순서를 확인해 결정을 남긴다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:68",
+            "primary": "도시열공급 압력조정 — 조정압력 조정",
+            "text": "도시열공급 압력조정 — 조정압력 조정은 조정압력과 목표값을 직접 비교하는 검사 단계다. 불일치 구간은 밸브와 압력계를 갈라 검증 목록에 올린다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:69",
+            "primary": "도시열공급 압력조정 — 후보 안정",
+            "text": "도시열공급 압력조정 — 후보 안정의 조정 압력 안정 신호는 도시열공급 압력조정 제한을 풀 후보가 된다. 보정 전후의 이력을 맞춰 실행 차례를 잡는다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:70",
+            "primary": "도시열공급 압력조정 — 압력 조정",
+            "text": "도시열공급 압력조정 — 압력 조정은 압력 자료를 정리한 뒤 밸브 조정 상태를 재확인하는 단계다. 새로운 오차가 나오면 다음 공급 단계의 시작을 막고 원인을 조사한다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 열수요조정",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "계획 감소",
+          "절감 감소",
+          "조정폭 복귀",
+          "조정폭 상태",
+          "조정폭 조정"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:131",
+            "primary": "도시열공급 열수요조정 — 절감 감소",
+            "text": "도시열공급 열수요조정 — 절감 감소는 절감 요청 뒤 실제 수요 변화가 집계될 때까지 다음 조정을 멈춘 단계다. 수용가별 응답을 확인해 과도하게 줄어든 구역부터 공급을 보완한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:132",
+            "primary": "도시열공급 열수요조정 — 조정폭 조정",
+            "text": "도시열공급 열수요조정 — 조정폭 조정은 수요 조정폭이 기준을 이탈해 열원배치를 바꾸는 변화다. 예비장치의 가동 가능성을 살펴 조정 방향과 대상 구역을 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:133",
+            "primary": "도시열공급 열수요조정 — 계획 감소",
+            "text": "도시열공급 열수요조정 — 계획 감소는 계획 조정폭과 실제 감소량의 적합성을 심사하는 상태다. 한계를 넘긴 수용가는 원격계량을 재확인하고 별도 통제 대상으로 표시한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:134",
+            "primary": "도시열공급 열수요조정 — 조정폭 복귀",
+            "text": "도시열공급 열수요조정 — 조정폭 복귀는 조정폭이 안정 구간으로 돌아와 평상 제어로 복귀할 수 있는 상태다. 운영 기록을 다시 읽고 남은 보정 작업과 열원 순서를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:135",
+            "primary": "도시열공급 열수요조정 — 조정폭 상태",
+            "text": "도시열공급 열수요조정 — 조정폭 상태는 조정폭 보완을 마치고 제어 점검으로 되돌아간 단계다. 남은 편차가 있으면 공급 확대 순서를 미루고 추가 수요 자료를 받는다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 열원전환",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "유량 복귀",
+          "유량 재처리",
+          "전환 재처리",
+          "전환 조정",
+          "확인 상태"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:76",
+            "primary": "도시열공급 열원전환 — 확인 상태",
+            "text": "도시열공급 열원전환 — 확인 상태의 전환 유량 확인은 도시열공급 열원전환의 재측정 요청으로 이어진다. 앞선 기록을 보존해 변화 경로를 추적한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:77",
+            "primary": "도시열공급 열원전환 — 전환 조정",
+            "text": "도시열공급 열원전환 — 전환 조정은 전환 유량 이상 때문에 열원 운전 변경을 검토하는 단계다. 대체 배관의 응답시간과 공급 부담을 살펴 우회 범위와 실시 순서를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:78",
+            "primary": "도시열공급 열원전환 — 전환 재처리",
+            "text": "도시열공급 열원전환 — 전환 재처리는 전환 유량에 장비별 상하한을 적용해 판정하는 상태다. 허용선을 넘은 값에는 재검 표시를 붙이고 밸브 위치와 계측기를 확인한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:79",
+            "primary": "도시열공급 열원전환 — 유량 복귀",
+            "text": "도시열공급 열원전환 — 유량 복귀는 유량이 정상 폭에 들어와 열원 복귀를 준비하는 단계다. 과거 이탈값과 새 측정을 비교해 밸브 개방과 펌프 기동 순서를 바꾼다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:80",
+            "primary": "도시열공급 열원전환 — 유량 재처리",
+            "text": "도시열공급 열원전환 — 유량 재처리는 유량 자료를 보완하고 전환 검사를 다시 연 상태다. 이력이 어긋나면 열원 복귀를 미루고 추가 계측을 요청한다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 열원정비",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "경보 상태",
+          "정비 상태",
+          "정비 판정",
+          "정비간격 상태",
+          "주기 상태"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:91",
+            "primary": "도시열공급 열원정비 — 정비 상태",
+            "text": "도시열공급 열원정비 — 정비 상태는 정비 주기 기록의 출처와 승인 이력을 먼저 검증하는 상태다. 수집 조건과 확인자를 남겨 신뢰할 판본을 다음 검토 차례로 넘긴다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:92",
+            "primary": "도시열공급 열원정비 — 경보 상태",
+            "text": "도시열공급 열원정비 — 경보 상태의 정비 주기 경보는 도시열공급 열원정비 작업을 제한하거나 옮길 근거다. 사용 가능한 지원책을 검토한 뒤 범위를 결정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:93",
+            "primary": "도시열공급 열원정비 — 정비 판정",
+            "text": "도시열공급 열원정비 — 정비 판정은 현재 정비 주기를 설비 관리 기준에 따라 검증하는 단계다. 맞지 않는 수치는 확정하기 전에 운전시간과 고장 이력을 다시 확인한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:94",
+            "primary": "도시열공급 열원정비 — 정비간격 상태",
+            "text": "도시열공급 열원정비 — 정비간격 상태는 정비간격이 정상화되어 다음 운전을 준비할 수 있는 상태다. 교정 성과와 검사점을 비교해 설비별 일정과 담당조를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:95",
+            "primary": "도시열공급 열원정비 — 주기 상태",
+            "text": "도시열공급 열원정비 — 주기 상태는 정비 주기 보정을 끝내고 확인 절차를 새로 시작한 단계다. 이상이 지속되면 관찰 기간을 연장하고 예방정비 시점을 앞당긴다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 운영센터",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "순서 상태",
+          "실제 판정",
+          "응답시간 복귀",
+          "응답시간 상태",
+          "응답지연 이동"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:136",
+            "primary": "도시열공급 운영센터 — 순서 상태",
+            "text": "도시열공급 운영센터 — 순서 상태는 센터 응답시간 자료의 순서가 맞지 않아 판단을 보류한 상태다. 시간대를 바로잡은 뒤 검증 담당자가 자동제어 전환 여부를 선택한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:137",
+            "primary": "도시열공급 운영센터 — 응답지연 이동",
+            "text": "도시열공급 운영센터 — 응답지연 이동은 응답지연 경보로 관제 처리순서를 다시 검토하는 단계다. 백업센터의 용량과 전환 부담을 비교해 제어권 이동 여부를 결정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:138",
+            "primary": "도시열공급 운영센터 — 실제 판정",
+            "text": "도시열공급 운영센터 — 실제 판정은 실제 응답시간을 관제 기준선과 대조해 판정하는 상태다. 어긋난 자료는 네트워크 원인을 확인할 때까지 후속 제어 판단에서 제외한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:139",
+            "primary": "도시열공급 운영센터 — 응답시간 복귀",
+            "text": "도시열공급 운영센터 — 응답시간 복귀는 응답시간 회복 뒤 자동제어 제한을 풀지 심사하는 단계다. 통신 교정 이력과 새 지연값으로 복귀 범위와 후속 감시를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:140",
+            "primary": "도시열공급 운영센터 — 응답시간 상태",
+            "text": "도시열공급 운영센터 — 응답시간 상태는 응답시간 수정을 끝내고 센터 검증을 재개한 단계다. 새 경보가 확인되면 제어권 전환을 허용하지 않고 수동 감시를 유지한다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 운영회의",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "결정시각 상태",
+          "결정시각 조정",
+          "결정시간 복귀",
+          "기록 상태",
+          "정리 잔류"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:146",
+            "primary": "도시열공급 운영회의 — 기록 상태",
+            "text": "도시열공급 운영회의 — 기록 상태는 회의 결정시각 기록이 불충분해 아직 최종 결론에 쓰지 않는 상태다. 최근 의사록과 승인 표본을 모은 뒤 재확인 여부를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:147",
+            "primary": "도시열공급 운영회의 — 결정시각 조정",
+            "text": "도시열공급 운영회의 — 결정시각 조정은 결정시각 이탈로 운영 계획과 통보 절차를 조정하는 단계다. 인력 여력과 통보 시점을 근거로 대응 범위 및 재회의 시간을 고른다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:148",
+            "primary": "도시열공급 운영회의 — 결정시각 상태",
+            "text": "도시열공급 운영회의 — 결정시각 상태는 회의 결정시각이 운영규정을 만족하는지 심사하는 상태다. 편차가 큰 의사록은 참석자와 승인단계별 확인 대기열로 보낸다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:149",
+            "primary": "도시열공급 운영회의 — 결정시간 복귀",
+            "text": "도시열공급 운영회의 — 결정시간 복귀는 결정시간이 안정되어 평상 의사결정으로 복귀할 수 있는 상태다. 보정한 회의록으로 적용 범위와 후속 실행의 우선순위를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:150",
+            "primary": "도시열공급 운영회의 — 정리 잔류",
+            "text": "도시열공급 운영회의 — 정리 잔류의 회의 결정시각 정리가 끝나면 도시열공급 운영회의 점검 결과를 다시 받는다. 이상 신호가 남아 있으면 다음 단계를 늦춘다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 원격검침",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "검침 배정",
+          "검침 상태",
+          "결손 판정",
+          "수신시각 판정",
+          "지연 감소"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:51",
+            "primary": "도시열공급 원격검침 — 결손 판정",
+            "text": "도시열공급 원격검침 — 결손 판정은 검침 시각 자료에 결손이 있어 임시 판정으로 둔 상태다. 빠진 위치와 계량기를 표시해 다음 통신 주기에서 보완한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:52",
+            "primary": "도시열공급 원격검침 — 검침 상태",
+            "text": "도시열공급 원격검침 — 검침 상태는 검침 시간 이탈 때문에 수동확인 대상을 다시 정하는 단계다. 현장 방문과 재전송의 소요시간을 비교해 계량기 처리 순위를 고른다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:53",
+            "primary": "도시열공급 원격검침 — 수신시각 판정",
+            "text": "도시열공급 원격검침 — 수신시각 판정은 수신시각이 정상 검침창에 드는지 판정한다. 이탈 자료는 독립 검침으로 구분한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:54",
+            "primary": "도시열공급 원격검침 — 지연 감소",
+            "text": "도시열공급 원격검침 — 지연 감소는 지연이 줄어 자동수집으로 복원할지 검토하는 단계다. 교정 근거와 재수신 결과로 복귀할 계량기 우선순위를 조절한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:55",
+            "primary": "도시열공급 원격검침 — 검침 배정",
+            "text": "도시열공급 원격검침 — 검침 배정은 검침 시각을 교정하고 통신 상태를 한 번 더 점검하는 단계다. 편차가 이어지면 자동 수집을 멈추고 수동 검침을 배정한다."
+          }
+        ]
+      },
+      {
+        "core": "도시열공급 축열조",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "기준시각 판정",
+          "잔량 상태",
+          "잔량 통과",
+          "저장 상태",
+          "항목 상태"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:21",
+            "primary": "도시열공급 축열조 — 기준시각 판정",
+            "text": "도시열공급 축열조 — 기준시각 판정은 잔량 계측의 기준시각이 서로 달라 충·방전 상태를 확정하지 않은 단계다. 유량 적산과 조 내부 온도층을 같은 시각으로 맞춰 다시 계산한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:22",
+            "primary": "도시열공급 축열조 — 저장 상태",
+            "text": "도시열공급 축열조 — 저장 상태는 저장 열량의 흔들림 때문에 충전과 방전 전환을 검토하는 상태다. 대체 열원이 준비되지 않았으면 판단을 보류하고 수위를 계속 관찰한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:23",
+            "primary": "도시열공급 축열조 — 잔량 통과",
+            "text": "도시열공급 축열조 — 잔량 통과는 현재 잔량이 축열조 운용 기준을 통과하는지 점검하는 단계다. 비교에서 벗어난 값은 탱크별 격리 목록에 남겨 재계측한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:24",
+            "primary": "도시열공급 축열조 — 항목 상태",
+            "text": "도시열공급 축열조 — 항목 상태 항목은 축열조 잔량 하락 이후 도시열공급 축열조의 제한을 완화하는 상태다. 확인값을 대조해 보정 순서와 담당을 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v67.source.jsonl:25",
+            "primary": "도시열공급 축열조 — 잔량 상태",
+            "text": "도시열공급 축열조 — 잔량 상태는 잔량 자료 보완 뒤 충전과 방전 가능량을 다시 심사하는 단계다. 신호가 흔들리면 열원 교대를 멈추고 높이별 수온을 더 관찰한다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 가스누설감지",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "농도 차단",
+          "누설 배정",
+          "누설 판정",
+          "실측 판정",
+          "안정 상태"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:136",
+            "primary": "반도체 가스누설감지 — 누설 배정",
+            "text": "반도체 가스누설감지 — 누설 배정은 누설 농도 자료를 보조 센서 관측과 함께 검토하는 상태다. 두 계측이 아직 맞지 않는 구역은 확인 목록에 남기고 현장 검사를 배정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:137",
+            "primary": "반도체 가스누설감지 — 농도 차단",
+            "text": "반도체 가스누설감지 — 농도 차단은 농도 이상 때문에 공급 차단과 대피 여부를 다시 판단하는 단계다. 흡착설비 잔량과 경보 시점을 근거로 조치 범위와 순서를 고른다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:138",
+            "primary": "반도체 가스누설감지 — 실측 판정",
+            "text": "반도체 가스누설감지 — 실측 판정은 실측 누설 농도를 가스별 운전 기준과 대조해 상태를 분류하는 단계다. 경계 밖 자료는 추가 센서 표본과 현장 검지 결과를 받아 판정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:139",
+            "primary": "반도체 가스누설감지 — 안정 상태",
+            "text": "반도체 가스누설감지 — 안정 상태의 누설 농도 안정은 반도체 가스누설감지 복구 후보를 만든다. 변화 원인과 확인값을 같이 보아 적용 순서를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:140",
+            "primary": "반도체 가스누설감지 — 누설 판정",
+            "text": "반도체 가스누설감지 — 누설 판정의 누설 농도 조정 뒤 반도체 가스누설감지 상태를 다시 평가한다. 불일치가 남으면 전환을 허용하지 않는다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 결함분류",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "검출 재처리",
+          "결함 복귀",
+          "결함 상태",
+          "결함 조정",
+          "누락 판정"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:111",
+            "primary": "반도체 결함분류 — 결함 상태",
+            "text": "반도체 결함분류 — 결함 상태는 결함 수 확인 결과가 불충분해 재측정을 요청한 상태다. 앞선 검사 기록과 좌표를 보존하면서 변화 경로와 추가 촬영 위치를 추적한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:112",
+            "primary": "반도체 결함분류 — 결함 조정",
+            "text": "반도체 결함분류 — 결함 조정은 결함 수 이상을 근거로 검사 운전 변경을 고려하는 단계다. 대체 촬영 경로의 응답시간과 처리 부담을 살펴 장비 및 로트 순서를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:113",
+            "primary": "반도체 결함분류 — 검출 재처리",
+            "text": "반도체 결함분류 — 검출 재처리는 검출된 결함 수에 제품별 상하한을 적용하는 판정 상태다. 허용선을 넘은 웨이퍼에는 재검 표시를 붙이고 결함 종류를 다시 분류한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:114",
+            "primary": "반도체 결함분류 — 결함 복귀",
+            "text": "반도체 결함분류 — 결함 복귀의 결함 수가 정상 폭에 들어오면 반도체 결함분류 복귀를 준비한다. 과거 이탈값과 새 읽기를 비교해 순서를 바꾼다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:115",
+            "primary": "반도체 결함분류 — 누락 판정",
+            "text": "반도체 결함분류 — 누락 판정은 누락된 결함 정보를 보완한 뒤 검사를 다시 연 상태다. 이전 이력과 새 분류가 어긋나면 추가 영상을 받아 최종 판정을 늦춘다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 공정레시피",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "검증 판정",
+          "레시피 상태",
+          "버전 상태",
+          "버전 재처리",
+          "보정 상태"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:126",
+            "primary": "반도체 공정레시피 — 레시피 상태",
+            "text": "반도체 공정레시피 — 레시피 상태는 레시피 버전의 출처와 승인 이력을 먼저 검증해야 하는 상태다. 수집 조건과 확인자를 기록해 사용 가능한 판본과 다음 검토 차례를 구분한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:127",
+            "primary": "반도체 공정레시피 — 버전 상태",
+            "text": "반도체 공정레시피 — 버전 상태는 버전 경보 때문에 작업을 제한하거나 다른 레시피로 옮길지 판단하는 단계다. 가용 지원책과 호환 장비를 검토한 뒤 영향 범위를 결정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:128",
+            "primary": "반도체 공정레시피 — 검증 판정",
+            "text": "반도체 공정레시피 — 검증 판정의 레시피 버전 검증은 반도체 공정레시피 관리 기준에 따라 이뤄진다. 맞지 않는 수치는 확정 전에 다시 확인한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:129",
+            "primary": "반도체 공정레시피 — 버전 재처리",
+            "text": "반도체 공정레시피 — 버전 재처리의 레시피 버전이 회복되면 반도체 공정레시피의 다음 단계가 다시 열린다. 교정 결과와 확인 시각을 대조해 계획을 다듬는다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:130",
+            "primary": "반도체 공정레시피 — 보정 상태",
+            "text": "반도체 공정레시피 — 보정 상태의 레시피 버전 보정은 반도체 공정레시피 확인 과정을 새로 시작한다. 이상이 지속되면 관찰을 연장한다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 공정챔버압력",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "검토 판정",
+          "교정 상태",
+          "압력 재처리",
+          "압력 판정",
+          "챔버 상태"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:51",
+            "primary": "반도체 공정챔버압력 — 검토 판정",
+            "text": "반도체 공정챔버압력 — 검토 판정은 챔버 압력 표본 검토가 끝나지 않아 운전 판정을 열어 둔 상태다. 진공계별 수집 경로를 점검하고 추가 측정 위치와 순서를 지정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:52",
+            "primary": "반도체 공정챔버압력 — 챔버 상태",
+            "text": "반도체 공정챔버압력 — 챔버 상태의 챔버 압력 변화는 반도체 공정챔버압력 운영 선택지를 좁힌다. 경보 발생 시각과 자원 잔량으로 적절한 대응을 택한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:53",
+            "primary": "반도체 공정챔버압력 — 압력 재처리",
+            "text": "반도체 공정챔버압력 — 압력 재처리는 실제 챔버 압력이 레시피 허용 편차를 충족하는지 확인하는 단계다. 범위를 벗어난 자료에는 재검 표시를 붙여 진공계와 밸브 상태를 추적한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:54",
+            "primary": "반도체 공정챔버압력 — 압력 판정",
+            "text": "반도체 공정챔버압력 — 압력 판정은 압력이 회복되어 공정을 다시 열 수 있는지 평가하는 상태다. 최근 압력 곡선과 교정 내역을 함께 검토해 조정 항목과 재가동 순서를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:55",
+            "primary": "반도체 공정챔버압력 — 교정 상태",
+            "text": "반도체 공정챔버압력 — 교정 상태의 챔버 압력 교정은 반도체 공정챔버압력 재점검으로 이어진다. 자료가 일치하지 않으면 처리 순서를 나중으로 미룬다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 공조필터",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "차압 복귀",
+          "차압 조정",
+          "차압 판정",
+          "필터 상태",
+          "필터 재처리"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:61",
+            "primary": "반도체 공조필터 — 필터 재처리",
+            "text": "반도체 공조필터 — 필터 재처리는 필터 차압의 확인 자료가 충분히 모이지 않아 임시 판정을 유지하는 단계다. 센서별 기록 출처와 교체 이력을 표시해 재검토 범위를 좁힌다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:62",
+            "primary": "반도체 공조필터 — 필터 상태",
+            "text": "반도체 공조필터 — 필터 상태는 차압 초과로 교체 순서와 공조기 운전을 바꾸는 상태다. 예비 필터·우회 공조 여력을 확인한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:63",
+            "primary": "반도체 공조필터 — 차압 판정",
+            "text": "반도체 공조필터 — 차압 판정은 차압 측정치를 필터별 설정 구간과 대조하는 판정 단계다. 허용선을 넘은 필터는 재측정하고 막힘 정도와 팬 출력을 함께 확인한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:64",
+            "primary": "반도체 공조필터 — 차압 복귀",
+            "text": "반도체 공조필터 — 차압 복귀는 차압이 안정된 뒤 해당 공조기를 정상 운전으로 돌릴 준비 상태다. 앞선 편차와 교체 결과를 검토해 복귀 대상과 적용 순서를 다듬는다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:65",
+            "primary": "반도체 공조필터 — 차압 조정",
+            "text": "반도체 공조필터 — 차압 조정은 차압 조정을 마친 뒤 필터 성능 검증을 다시 시작한 단계다. 새 편차가 발견되면 정상 전환을 대기시키고 공기 누설 여부를 점검한다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 노광초점",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "초점 상태",
+          "초점 재처리",
+          "초점 판정",
+          "출처 판정",
+          "편차 복귀"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:91",
+            "primary": "반도체 노광초점 — 출처 판정",
+            "text": "반도체 노광초점 — 출처 판정은 초점 판정에 필요한 표본 출처가 부족해 결론을 유보한 상태다. 시간대와 웨이퍼 위치별 자료를 분류하고 추가 측정 순번을 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:92",
+            "primary": "반도체 노광초점 — 초점 상태",
+            "text": "반도체 노광초점 — 초점 상태는 초점 변화 추세를 근거로 노광 운전의 전환을 검토하는 단계다. 보조 측정기와 대체 장비의 가용범위를 확인해 조치 시작점을 고른다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:93",
+            "primary": "반도체 노광초점 — 초점 판정",
+            "text": "반도체 노광초점 — 초점 판정은 현재 초점과 장비 설정한계의 차이를 판정하는 상태다. 편차가 큰 기록은 생산 판단에서 제외하고 렌즈 위치와 웨이퍼 평탄도를 재측정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:94",
+            "primary": "반도체 노광초점 — 편차 복귀",
+            "text": "반도체 노광초점 — 편차 복귀는 교정 웨이퍼의 초점 편차가 기준 안으로 돌아왔는지를 심사한다. 장비별 검사 결과를 비교하여 노광을 재개할 로트와 추가 확인할 초점 위치를 지정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:95",
+            "primary": "반도체 노광초점 — 초점 재처리",
+            "text": "반도체 노광초점 — 초점 재처리는 초점 수정을 마친 뒤 검증 노광을 다시 시행하는 상태다. 경보나 선폭 편차가 남으면 현재 절차를 유지하고 생산 전환을 보류한다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 로트추적",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "로트 포화",
+          "여러 판정",
+          "이탈 상태",
+          "판정 복귀",
+          "편차 감소"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:121",
+            "primary": "반도체 로트추적 — 여러 판정",
+            "text": "반도체 로트추적 — 여러 판정은 여러 관측을 묶어 로트 위치를 판정하기 전의 상태다. 서로 다른 시간의 값과 이송 장비 로그를 별도로 표시해 실제 경로를 재구성한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:122",
+            "primary": "반도체 로트추적 — 이탈 상태",
+            "text": "반도체 로트추적 — 이탈 상태의 로트 위치 이탈은 반도체 로트추적 절차에 경고를 붙인다. 준비된 장비와 필요한 시간을 비교해 대응 순서를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:123",
+            "primary": "반도체 로트추적 — 판정 복귀",
+            "text": "반도체 로트추적 — 판정 복귀의 로트 위치 판정은 반도체 로트추적 참조값의 범위를 사용한다. 범위 밖 관측치는 재측정 순서로 되돌린다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:124",
+            "primary": "반도체 로트추적 — 편차 감소",
+            "text": "반도체 로트추적 — 편차 감소는 위치 편차가 낮아져 자동 추적 운전을 재개할지 살피는 단계다. 보정 기록과 최근 위치를 정리하고 남은 경로 제약과 확인 순서를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:125",
+            "primary": "반도체 로트추적 — 로트 포화",
+            "text": "반도체 로트추적 — 로트 포화의 로트 위치 수정 뒤 반도체 로트추적 검증 결과를 다시 살핀다. 새 편차가 보이면 상태를 고정한다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 막두께측정",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "두께 상태",
+          "두께 조정",
+          "두께 판정",
+          "두께계 안정",
+          "분포 복귀"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:106",
+            "primary": "반도체 막두께측정 — 두께 판정",
+            "text": "반도체 막두께측정 — 두께 판정은 막 두께 자료의 누락 여부를 확인하느라 최종 판정을 열어 둔 상태다. 측정값과 수집 시각을 위치별로 연결해 빠진 웨이퍼를 찾는다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:107",
+            "primary": "반도체 막두께측정 — 두께 조정",
+            "text": "반도체 막두께측정 — 두께 조정은 두께 초과를 근거로 검사와 증착 장비의 역할 배치를 조정하는 단계다. 지원 장비의 준비 여부를 확인해 공정 전환을 열거나 해당 로트를 보류한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:108",
+            "primary": "반도체 막두께측정 — 두께 상태",
+            "text": "반도체 막두께측정 — 두께 상태는 실제 막 두께가 정상 폭을 벗어나는지 확인하는 상태다. 이탈 자료는 측정기 교정과 함께 다시 읽고 웨이퍼 위치별 편차를 비교한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:109",
+            "primary": "반도체 막두께측정 — 분포 복귀",
+            "text": "반도체 막두께측정 — 분포 복귀에서는 교정 후 얻은 두께 분포가 공정 허용폭에 복귀했는지를 판별한다. 로트별 편차와 장비 이력을 근거로 증착 재개 대상과 확인 순서를 결정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:110",
+            "primary": "반도체 막두께측정 — 두께계 안정",
+            "text": "반도체 막두께측정 — 두께계 안정은 두께계 교정 뒤 관찰을 재개한 단계다. 읽기가 다시 불안정하면 해당 웨이퍼를 대기시키고 다른 위치와 장비에서 표본을 얻는다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 선폭측정",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "분포 복귀",
+          "선폭 상태",
+          "선폭 판정",
+          "재조정 조정",
+          "정리 상태"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:101",
+            "primary": "반도체 선폭측정 — 선폭 상태",
+            "text": "반도체 선폭측정 — 선폭 상태의 선폭은 반도체 선폭측정 점검 전에 보류 목록에 넣는다. 추가 관찰이 끝나면 비교 기준을 적용한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:102",
+            "primary": "반도체 선폭측정 — 재조정 조정",
+            "text": "반도체 선폭측정 — 재조정 조정은 선폭 변화가 노광 보정으로 해결될지 식각 재조정이 필요한지 선택하기 전인 상태다. 초점 오차와 식각률을 나눠 보아 원인 공정을 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:103",
+            "primary": "반도체 선폭측정 — 선폭 판정",
+            "text": "반도체 선폭측정 — 선폭 판정은 현재 선폭 읽기를 제품 기준값과 나란히 비교하는 판정 단계다. 불일치 항목은 위치와 장비를 표시해 검증 대기열로 보내 원인을 구분한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:104",
+            "primary": "반도체 선폭측정 — 분포 복귀",
+            "text": "반도체 선폭측정 — 분포 복귀는 보정 뒤 선폭 분포가 공정창으로 돌아와 제한 해제를 검토하는 과정이다. 웨이퍼 중앙과 가장자리 모두 합격해야 다음 로트에 설정을 적용한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:105",
+            "primary": "반도체 선폭측정 — 정리 상태",
+            "text": "반도체 선폭측정 — 정리 상태의 선폭을 정리한 뒤 반도체 선폭측정 상태를 재확인한다. 새로운 오차는 다음 단계의 시작을 막는다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 식각가스공급",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "대조 상태",
+          "유량 상태",
+          "유량 안정",
+          "유량 판정",
+          "항목 복귀"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:16",
+            "primary": "반도체 식각가스공급 — 대조 상태",
+            "text": "반도체 식각가스공급 — 대조 상태는 유량계와 챔버 유입량이 맞을 때까지 설정을 유지한다. 밸브 누설·계측기 영점을 먼저 확인한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:17",
+            "primary": "반도체 식각가스공급 — 유량 상태",
+            "text": "반도체 식각가스공급 — 유량 상태 항목은 식각가스 유량이 기준에서 벗어나며 시작되는 상태 변화다. 반도체 식각가스공급 예비 장치의 가용성을 살핀 뒤 작업 방향을 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:18",
+            "primary": "반도체 식각가스공급 — 유량 판정",
+            "text": "반도체 식각가스공급 — 유량 판정은 식각가스 유량이 레시피 허용편차 안인지 판정한다. 초과 관측은 유량계와 밸브별로 재확인한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:19",
+            "primary": "반도체 식각가스공급 — 유량 안정",
+            "text": "반도체 식각가스공급 — 유량 안정은 가스 유량이 안정 구간으로 회복되어 정상 공급을 재개할 수 있는 단계다. 공급 이력과 남은 경보를 대조해 밸브 보정 순서와 적용 챔버를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:20",
+            "primary": "반도체 식각가스공급 — 항목 복귀",
+            "text": "반도체 식각가스공급 — 항목 복귀 항목은 식각가스 유량 보완을 마치고 반도체 식각가스공급 점검으로 되돌아간 상태다. 남은 편차가 있으면 처리 순서를 미룬다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 열처리",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "내부 판정",
+          "신호 상태",
+          "온도 보정 상태",
+          "온도 복귀",
+          "온도 상태"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:41",
+            "primary": "반도체 열처리 — 내부 판정",
+            "text": "반도체 열처리 — 내부 판정은 노 내부 열전대의 일부 자료가 비어 온도 균일도를 확정할 수 없는 상태다. 빠진 구역을 재측정한 뒤 웨이퍼 위치별 편차를 판정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:42",
+            "primary": "반도체 열처리 — 신호 상태",
+            "text": "반도체 열처리 — 신호 상태의 열처리 온도 신호는 반도체 열처리 절차를 바꿀지 판단하는 출발점이다. 예비 자원과 현장 상황을 대조해 결정을 남긴다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:43",
+            "primary": "반도체 열처리 — 온도 상태",
+            "text": "반도체 열처리 — 온도 상태는 열처리 온도가 공정 관리 한계 안에 있는지를 검사하는 상태다. 기준 밖 수치는 즉시 합격으로 쓰지 않고 독립 온도계와 노내 위치별로 확인한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:44",
+            "primary": "반도체 열처리 — 온도 복귀",
+            "text": "반도체 열처리 — 온도 복귀는 열처리 온도가 허용선 안으로 회복되어 로 재가동을 심사하는 단계다. 수정 전 이력과 후속 측정을 비교해 웨이퍼 투입 차례와 승온 속도를 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:45",
+            "primary": "반도체 열처리 — 온도 보정 상태",
+            "text": "반도체 열처리 — 온도 보정 상태의 열처리 온도 보정 뒤 반도체 열처리 점검을 새로 시작한다. 오차가 계속되면 현 상태를 유지하고 추가 확인을 받는다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 웨이퍼이송",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "보완 대기",
+          "실제 상태",
+          "이력 판정",
+          "이송 복귀",
+          "이송 상태"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:76",
+            "primary": "반도체 웨이퍼이송 — 이력 판정",
+            "text": "반도체 웨이퍼이송 — 이력 판정은 이송 시각 자료와 장비 이력이 맞지 않아 위치 판정을 보류한 상태다. 자료 수집 경로와 타임스탬프를 표시해 재확인 담당자에게 넘긴다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:77",
+            "primary": "반도체 웨이퍼이송 — 이송 상태",
+            "text": "반도체 웨이퍼이송 — 이송 상태는 이송 지연 변화에 따라 장비 운전을 제한할지 검토하는 단계다. 대체 로봇과 버퍼의 준비도를 확인하고 영향받는 로트와 대응 폭을 결정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:78",
+            "primary": "반도체 웨이퍼이송 — 실제 상태",
+            "text": "반도체 웨이퍼이송 — 실제 상태는 실제 이송 시간을 공정 기준표의 해당 구간과 대조하는 상태다. 편차가 큰 표본은 로봇별 재확인 경로로 분리해 위치 로그를 다시 읽는다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:79",
+            "primary": "반도체 웨이퍼이송 — 이송 복귀",
+            "text": "반도체 웨이퍼이송 — 이송 복귀는 이송 시간이 회복되어 운전 제한을 완화할지 판단하는 단계다. 이전 이상과 새 측정을 맞춰 로트별 적용 순서와 버퍼 사용량을 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:80",
+            "primary": "반도체 웨이퍼이송 — 보완 대기",
+            "text": "반도체 웨이퍼이송 — 보완 대기는 시간 보완 뒤 이송 로그의 재검 결과를 기다리는 상태다. 새 이상이나 위치 불일치가 있으면 자동 운전 전환을 늦추고 수동 확인을 이어 간다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 장비예방정비",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "간격 조정",
+          "이력 재처리",
+          "정비 상태",
+          "주기 상태",
+          "주기 통과"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:131",
+            "primary": "반도체 장비예방정비 — 이력 재처리",
+            "text": "반도체 장비예방정비 — 이력 재처리는 마지막 정비 이력이 정리되지 않아 다음 주기를 확정하지 않은 상태다. 보류 이유와 재검토 범위를 표시하고 누락된 작업 기록을 요청한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:132",
+            "primary": "반도체 장비예방정비 — 주기 상태",
+            "text": "반도체 장비예방정비 — 주기 상태는 정비 주기가 흔들려 일정 또는 장비 전환을 검토하는 단계다. 현장 인력과 예비 장비의 준비도를 확인해 실시 시점과 범위를 판단한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:133",
+            "primary": "반도체 장비예방정비 — 주기 통과",
+            "text": "반도체 장비예방정비 — 주기 통과는 현재 정비 주기가 설비별 제한값을 통과하는지 점검하는 상태다. 기준에서 벗어난 항목은 장비와 원인별 목록으로 옮겨 별도 심사한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:134",
+            "primary": "반도체 장비예방정비 — 간격 조정",
+            "text": "반도체 장비예방정비 — 간격 조정은 정비 간격이 짧아진 뒤 운전 제한을 조정할 수 있는 회복 단계다. 이전 이력과 현재 측정을 연결해 정비 대상과 일정 보정 목록을 갱신한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:135",
+            "primary": "반도체 장비예방정비 — 정비 상태",
+            "text": "반도체 장비예방정비 — 정비 상태의 정비 주기 교정 후 반도체 장비예방정비 점검 항목을 재배치한다. 맞지 않는 자료는 다음 처리에서 뺀다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 정렬오차",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "로그 판정",
+          "오차 감소",
+          "오차 판정",
+          "이상 이동",
+          "정렬 대기"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:96",
+            "primary": "반도체 정렬오차 — 로그 판정",
+            "text": "반도체 정렬오차 — 로그 판정은 원본 정렬 로그가 오지 않아 판정을 유보한 상태다. 마지막 확인점과 장비 응답을 보존하고 수동 측정할 좌표와 담당자를 지정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:97",
+            "primary": "반도체 정렬오차 — 이상 이동",
+            "text": "반도체 정렬오차 — 이상 이동은 이상 신호에 따라 재정렬과 로트 이동 중 하나를 선택하는 단계다. 예비 경로와 장비 용량을 따져 영향 범위 및 조치 시점을 정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:98",
+            "primary": "반도체 정렬오차 — 오차 판정",
+            "text": "반도체 정렬오차 — 오차 판정은 측정 오차가 허용폭 안에 드는지 판정하는 상태다. 이탈 표본은 웨이퍼 좌표별로 재수집해 기준 마크 손상과 장비 편차를 가른다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:99",
+            "primary": "반도체 정렬오차 — 오차 감소",
+            "text": "반도체 정렬오차 — 오차 감소는 오차가 감소해 장비 운전 복원을 검토하는 단계다. 변화 이력과 보정 결과를 다시 읽고 남은 수정 항목 및 적용 로트를 고른다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:100",
+            "primary": "반도체 정렬오차 — 정렬 대기",
+            "text": "반도체 정렬오차 — 정렬 대기는 정렬 보정 뒤 점검 결과를 기다리는 상태다. 값이 서로 맞지 않으면 공정 투입을 미루고 기준좌표를 별도 장비로 다시 잰다."
+          }
+        ]
+      },
+      {
+        "core": "반도체 포드보관",
+        "records": 5,
+        "distinct_qualifiers": 5,
+        "qualifiers": [
+          "온도 계산",
+          "온도 이동",
+          "이상 이동",
+          "조정 재처리",
+          "포드 대기"
+        ],
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:81",
+            "primary": "반도체 포드보관 — 포드 대기",
+            "text": "반도체 포드보관 — 포드 대기는 포드 내부 온도의 두 번째 관측을 기다리며 보관 상태를 보류한 단계다. 첫 값의 시각과 도어 개방 이력을 연결해 일시 상승인지 지속 이상인지 구분한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:82",
+            "primary": "반도체 포드보관 — 이상 이동",
+            "text": "반도체 포드보관 — 이상 이동은 보관온도 이상이 감지되어 이동·냉각·격리 중 어떤 조치를 택할지 판단하는 갈림길이다. 로트 민감도와 예비 보관함의 준비도를 함께 비교한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:83",
+            "primary": "반도체 포드보관 — 온도 계산",
+            "text": "반도체 포드보관 — 온도 계산은 현재 온도가 포드 등급별 허용 구간에서 얼마나 벗어났는지 계산하는 상태다. 센서 편향이 의심되면 독립 온도계로 같은 위치를 다시 잰다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:84",
+            "primary": "반도체 포드보관 — 온도 이동",
+            "text": "반도체 포드보관 — 온도 이동은 냉각 뒤 내부 온도가 안정되어 격리한 로트를 다시 이동시킬지 검토하는 과정이다. 결로 위험이 사라졌는지 습도 이력까지 확인한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v66.source.jsonl:85",
+            "primary": "반도체 포드보관 — 조정 재처리",
+            "text": "반도체 포드보관 — 조정 재처리의 포드 보관온도 조정은 반도체 포드보관 재검사의 시작점이다. 남은 불일치는 관찰 목록에 두고 처리하지 않는다."
+          }
+        ]
+      }
+    ]
+  },
+  "direct_rewrite_candidates": [],
+  "semantic_text_review_candidates": [
+    {
+      "locator": "stage2_(14)state_transition_high_density_train_v52.source.jsonl:101",
+      "primary": "터널 배수기록 — 수위·펌프·신호 조정",
+      "qualifier": "수위·펌프·신호 조정",
+      "opaque_text_warnings": [
+        "변경순서를 정한다"
+      ],
+      "text": "터널 배수기록 — 수위·펌프·신호 조정은 수위·펌프·신호 상태를 단계별로 기록하는 과정이고, 기록자와 시각은 보존하며 터널 배수기록 — 수위·펌프·신호 조정의 변경순서를 정한다."
+    }
+  ],
+  "interpretation": "DASH_DELIMITER_REVIEW means that a human-readable separator remains in a primary that is copied into text. It is a naturalness review target, not proof that the underlying concept is invalid. No source mutation is performed by this tool."
+}

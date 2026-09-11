@@ -129,4 +129,81 @@ A05 train source v01~v69는 구조·통제 relations·primary literal·중복·r
 
 - `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Full_Audit_Final_2026-09-11.json`
 - `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Independent_Audit_PostRewrite_2026-09-11.json`
+- `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Reaudit_Final_2026-09-11.json`
+- `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_UserReview_2026-09-11.json`
 - `a05_local_work_ledger_2026-09-11.md`
+
+## 10. 2026-09-11 재감사·재수정 결과 (사용자 재지침 이행)
+
+> 이 절의 재감사 판정이 이전 §7의 source-only PASS 표기를 대체한다. 이전 수치는 변경 전 snapshot으로 보존하고, 아래 수치를 현재 source 상태의 정본으로 사용한다.
+
+### 10.1 범위·보호 경계·SHA-256
+
+- 대상은 `stage2_(15)modality_possibility_high_density_train_v01.source.jsonl`~`v69.source.jsonl`뿐이다. **69 files / 10,350 records**(파일당 150 records)는 전후 동일하다.
+- 수정 전 source-set SHA-256: 독립 방식 `13ed6bf9cce2929c4a6460c3b5796b150843dcb5a01217b3f8615910c54763f1`; reviewer-assist 방식 `c33b5f265f6be8cee626853fdfed26518655c1a1bf5b16e79f5be1b6f00a82e1`.
+- 수정 후 source-set SHA-256: 독립 방식 `392a816ecfb76502a6ca3984e789a4e6a3a1d01545df5789537089890afef1`; reviewer-assist 방식 `564538fe0c1a91e9444bf7b88a5a3c59597defab3fd0836a1c3088f4856d49e4`.
+- 독립 digest는 정렬한 `filename|file_sha256\\n`의 SHA-256이고, reviewer digest는 reviewer-assist가 정의한 source-set digest다. 서로 다른 계산법이므로 값 자체를 상호 대체하지 않고 전후 비교에 각각 사용했다. 파일별 해시는 `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Independent_Reaudit_2026-09-11.json`에 보존했다.
+- 직접 text 재서술은 **87 records**(v01 12, v02 35, v04 15, v06 25)이며, `other`가 있는 **3,333 records**에 누락된 `other_type`만 schema 보완했다. `primary`, `relations`, 행 순서, registry locator는 변경하지 않았다. 다른 영역 source, `train/`, `val/`, manifest, checkpoint, 중앙 원장, 공용 감사기는 수정하지 않았다.
+
+### 10.2 hard structure gate
+
+| 검사 | 결과 |
+|---|---:|
+| 파일/파일당 records | 69 files / 각 150 |
+| UTF-8 BOM·공백행·제어문자·JSONL parse | 0 / 0 / 0 / 0 |
+| primary/text 비어 있음 | 0 / 0 |
+| primary literal 누락 | 0 |
+| 통제어휘 밖 relations | 0 |
+| relations 개수(2~5) 오류·내부 중복 | 0 / 0 |
+| `other_type` 누락·불필요 추가 | 0 / 0 |
+| train `unseen_relation` | 0 |
+| 허용 key 위반 | 0 |
+
+**구조 gate: PASS (error 0).** `relations`는 13개 통제어휘만 사용했고 모든 행의 relation 수는 3개이다.
+
+### 10.3 relations·other·길이·중복
+
+총 relation occurrence는 **31,050회**다.
+
+| relation | 횟수 |
+|---|---:|
+| `is_a` | 0 |
+| `subclass_of` | 0 |
+| `part_of` | 38 |
+| `classification` | 924 |
+| `boundary` | 4,231 |
+| `contrast` | 1,590 |
+| `comparison` | 2,924 |
+| `function` | 745 |
+| `role` | 1,710 |
+| `process` | 4,698 |
+| `state` | 7,380 |
+| `attribute` | 3,477 |
+| `other` | 3,333 |
+
+`other_type` 상위 5개(3,333행)는 `확률·확신` 1,033, `가정·반사실·조건부 결과` 635, `계획·예정·예측` 606, `정보 부족·불완전 관측` 534, `가능성·실제 발생·미발생` 525이다.
+
+- 독립 source token regex `[A-Za-z0-9가-힣]+`: **206,566 tokens**, 평균 **19.958067633 tokens/record**.
+- primary/text exact 및 NFKC 정규화 중복: **0 / 0 / 0 / 0**.
+- `primary+은/는` 시작: **1,717/10,350 = 16.5894%**. 전체 30% review, 45% HOLD 임계보다 낮다. 다만 v05의 50/150(33.3333%)은 파일 단위 다양성 review 신호다.
+- primary core: 1-token 1행, 2-token 143행, 3-token 이상 10,206행. (2-token 이상에서 공백 없는 primary 0행.) 동일 X1·상이 X2는 1 group/2행(`탱크세척`), 동일 X2·상이 X1은 12 groups/85행이다.
+
+### 10.4 반복·유사도 교차 감사
+
+- 반복 5어절을 **2회 이상**으로 세면 10,889종 / 119,924 assignments가 반복된다. 기존 보고서와 같은 고빈도(건수 **≥150**) 관점에서는 **30종 / 5,850 assignments**이며 상위 count는 195다. 두 수치는 임계가 달라 함께 기록한다.
+- reviewer-assist의 동일 relation-set masked similarity는 **44 groups**, 후보 pair 818,692개, oversized bucket 119개다. reviewer 후보 검색 기준은 raw word-Jaccard **166,087쌍**(최고 .954545455), primary-masked word-Jaccard **522,111쌍**(최고 1.0), raw char 3~5-gram TF-IDF **18,541쌍**(최고 .973745678), primary-masked char 3~5-gram TF-IDF **34,146쌍**(최고 1.0)이다.
+- 별도 scikit-learn 독립 char 3~5-gram TF-IDF 전수 대조는 **22,043쌍**, 최고 **.968091583**이다. 검색 범위·후보 생성이 다른 두 감사기를 같은 수치로 합산하지 않는다.
+- 높은 유사도와 195회 문구 반복은 modality 판정에서 공유하는 관측·예측·실제 분리 문형과 도메인 어휘가 만드는 **검토 신호**다. 유사도만으로 삭제·자동 재작성하지 않았다.
+
+### 10.5 자연성 advisory와 의미 보류
+
+- 정본 reviewer-assist post report는 hard 0, direct target 0, ChatGPT review queue **45 groups**, user queue 0을 반환했다. 현재 경고 규칙 파일이 A05의 의미 패턴을 충분히 표현하지 않아 rule-warning은 0이지만, 이는 자연성 PASS를 뜻하지 않는다.
+- 독립 의미 advisory는 다음 **489 unique rows**를 사용자 검토표로 보류했다: `counterfactual_marker` 195, `generic_condition_model` 195, `scope_undefined` 50, `motion_explanation` 49. 이들은 조건·행위·범위·설명 대상이 원문에서 정해지지 않아 임의의 구체 조건을 발명하면 안 되는 군이다.
+- 대표적인 `대안 경로를 비교하는 표지다`, `그 경로를 따랐는지`, `움직임을 설명한다`, `범위를 어디까지 예상할지`, `조건을 달리한 모형이` 표현은 표면 조사만 고쳐서는 의미가 생기지 않는다. `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_UserReview_2026-09-11.json`에 locator·primary·text·flag를 남겼다.
+- 사용자가 지적한 `열차 출입문 조건부 결과` 행(v16:4)은 **수정하지 않고 보류**했다. 현재 text에는 어떤 출입문 조건인지, 무엇이 대안인지, 어떤 운용 경로·행위자가 비교되는지 명시되어 있지 않다. 따라서 이를 열차 문이 조건부로 열리고 닫히는다는 뜻이나 항공기 출입문 대안으로 추정해 고치는 것은 근거 없는 의미 발명이다. 도메인 의미가 승인되면 그 locator만 새 조건·관측 기준·실제 사건 판정으로 직접 재서술한다.
+
+### 10.6 최종 판정
+
+- **구조: PASS.** JSONL, 150행, 필수 필드, primary literal, 13개 relations, `other_type`, 중복, registry coverage의 재감사 결과는 모두 통과했다.
+- **자연성: HOLD.** 489행의 의미 미정/부자연 문구와 높은 문형 재사용은 사용자 의미 검토가 끝나지 않았다. reviewer-assist의 구조 PASS를 자연스러운 한국어 PASS로 승격하지 않는다.
+- **전체 source-only 상태: `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`.** 사용자 검토표의 의미 승인이 있기 전에는 package train/val 승격이나 학습용 확정으로 보지 않는다.

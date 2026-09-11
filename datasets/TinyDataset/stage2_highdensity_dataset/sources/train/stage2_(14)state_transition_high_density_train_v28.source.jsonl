@@ -1,0 +1,150 @@
+{"primary":"학습초대 검증대기 중간상태","text":"초대 링크는 열렸지만 토큰 서명과 대상 계정 대조가 끝나지 않은 학습초대 검증대기 중간상태에서는 활성화를 확정하지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습초대 만료흡수 상태","text":"허용시간을 넘겨 토큰이 폐기된 학습초대 만료흡수 상태는 같은 링크를 다시 눌러 벗어날 수 없다. 관리자가 새 초대를 발급하고 대상을 재확인해야 별도 활성화 경로가 열린다.","relations":["state","process","boundary","function"]}
+{"primary":"학습계정 생성미완료 중간상태","text":"사용자 식별자는 예약됐지만 프로필 저장이 끝나지 않은 학습계정 생성미완료 중간상태에서는 로그인 권한을 주지 않는다.","relations":["state","process","part_of","attribute"]}
+{"primary":"학습계정 충돌격리 상태","text":"같은 기관 식별자가 두 계정에 연결된 학습계정 충돌격리 상태에서는 일반 병합이나 로그인을 막는다.","relations":["state","process","boundary","classification"]}
+{"primary":"학습신원 수동검토 대기상태","text":"자동 확인이 결론을 내리지 못해 증빙이 담당자 대기열에 들어간 학습신원 수동검토 대기상태는 승인도 거부도 아니다. 검토 결과에 따라 계정 활성 또는 추가 자료 요청으로 전이한다.","relations":["state","process","role","boundary"]}
+{"primary":"학습신원 불일치흡수 상태","text":"서로 양립할 수 없는 신원 증거가 확정된 학습신원 불일치흡수 상태에서는 동일 자료 재제출로 계정을 열 수 없다. 독립 확인과 정정된 원증빙이 있어야 새 검토 경로를 시작한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습암호 재설정대기 중간상태","text":"재설정 요청은 승인됐지만 새 암호가 아직 저장되지 않은 학습암호 재설정대기 중간상태에서는 기존 세션을 제한한다. 유효 토큰 제출은 암호 교체로, 만료는 요청 종료로 이어진다.","relations":["state","process","function","attribute"]}
+{"primary":"암호재설정 토큰만료 상태","text":"재설정 창이 닫힌 암호재설정 토큰만료 상태는 만료 토큰을 다시 입력해도 복구되지 않는 흡수 상태다. 본인 확인부터 새 요청을 만들어야 새로운 재설정 흐름에 들어간다.","relations":["state","process","boundary","classification"]}
+{"primary":"다중인증 등록미완료 상태","text":"인증 장치는 연결됐지만 복구코드 확인이 남은 다중인증 등록미완료 상태에서는 보호 설정을 완료로 보지 않는다. 확인 성공은 활성화로, 장치 취소는 등록 전 상태로 돌아간다.","relations":["state","process","part_of","attribute"]}
+{"primary":"학습인증 잠금흡수 상태","text":"반복 공격 신호로 인증 수단이 모두 잠긴 학습인증 잠금흡수 상태에서는 올바른 비밀번호만으로 세션을 열 수 없다. 별도 신원 재검증과 관리자 해제가 복구 경로의 필수 단계다.","relations":["state","process","boundary","role"]}
+{"primary":"학습접근 복구검증 상태","text":"잠긴 계정의 소유권과 위험 해소를 확인하는 학습접근 복구검증 상태에서는 임시 토큰만 제한적으로 허용한다. 증거가 충족되면 접근 복구로, 불충분하면 격리 유지로 전이한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인등록 결제대기 상태","text":"좌석은 임시 확보됐지만 결제 응답이 오지 않은 온라인등록 결제대기 상태는 등록 전과 확정 사이의 중간 상태다. 승인 응답은 등록 확정으로, 기한 초과는 좌석 반환으로 이어진다.","relations":["state","process","classification","attribute"]}
+{"primary":"온라인등록 승인검토 상태","text":"신청 조건은 충족됐지만 담당자 결재가 남은 온라인등록 승인검토 상태에서는 학습활동을 시작하지 않는다. 승인·거부·보완 요청 가운데 하나가 확정돼야 다음 상태로 이동한다.","relations":["state","process","role","boundary"]}
+{"primary":"온라인등록 정원보류 상태","text":"정원이 찼지만 취소 가능 좌석을 기다리는 온라인등록 정원보류 상태는 등록 실패와 구별되는 중간 상태다. 좌석 발생은 승인 검토로, 대기기한 만료는 신청 종료로 이어진다.","relations":["state","process","boundary","comparison"]}
+{"primary":"온라인등록 취소잠금 상태","text":"환불·성적·접근 회수가 서로 맞지 않아 취소 처리가 멈춘 온라인등록 취소잠금 상태에서는 일반 재등록으로 빠져나올 수 없다. 세 시스템을 정합화하고 담당자가 해제해야 복구된다.","relations":["state","process","boundary","part_of"]}
+{"primary":"선수이력 증빙대기 상태","text":"선수과목 이수 주장은 접수됐지만 원기관 확인이 남은 선수이력 증빙대기 상태에서는 후속 모듈을 잠근다. 증빙 수신은 판정으로, 회신 실패는 대체평가 안내로 이어진다.","relations":["state","process","boundary","attribute"]}
+{"primary":"선수조건 예외검토 상태","text":"일반 선수조건은 부족하지만 대체 경험이 제출된 선수조건 예외검토 상태는 충족과 미충족 사이의 중간 판정이다. 담당 승인 또는 대체진단 결과가 있어야 잠금 상태가 바뀐다.","relations":["state","process","role","classification"]}
+{"primary":"온라인분반 이관매핑 상태","text":"원분반 진도와 새분반 활동을 대응시키는 온라인분반 이관매핑 상태에서는 어느 쪽 등록도 최종 종료하지 않는다. 대응표 검증 뒤 호환 진도는 승계하고 나머지는 재배정한다.","relations":["state","process","part_of","comparison"]}
+{"primary":"온라인분반 이관충돌 상태","text":"한 활동에서 서로 다른 점수나 판본이 발견된 온라인분반 이관충돌 상태에서는 자동 이동을 중지한다. 원기록 대조와 담당자 채택 결정이 끝나야 새분반 활성 상태로 복구된다.","relations":["state","process","boundary","role"]}
+{"primary":"학습편의 승인검토 상태","text":"시간연장이나 보조기능 요청이 증빙과 함께 대기 중인 학습편의 승인검토 상태에서는 표준 조건도 승인 조건도 확정하지 않는다. 검토 결과가 적용·보완·거부 경로를 결정한다.","relations":["state","process","role","attribute"]}
+{"primary":"학습편의 충돌격리 상태","text":"두 편의 설정이 같은 평가 규칙과 양립하지 않는 학습편의 충돌격리 상태에서는 어느 한쪽을 임의 적용하지 않는다. 접근성 담당자와 평가 담당자가 우선순위를 합의해야 해제된다.","relations":["state","process","boundary","role"]}
+{"primary":"오리엔테이션 부분완료 상태","text":"필수 안내 일부만 확인한 오리엔테이션 부분완료 상태는 미시작과 이수 사이의 중간 상태다. 남은 항목을 마치면 본 학습이 열리고, 동의 거부 항목이 생기면 별도 검토로 이동한다.","relations":["state","process","part_of","classification"]}
+{"primary":"오리엔테이션 동의거부 상태","text":"필수 운영조건에 명시적으로 동의하지 않은 오리엔테이션 동의거부 상태에서는 일반 안내 재생만으로 과정 접근이 복구되지 않는다.","relations":["state","process","boundary","role"]}
+{"primary":"주간학습 계획초안 상태","text":"요일과 목표시간을 입력했지만 저장하지 않은 주간학습 계획초안 상태는 알림 활성 전의 중간 상태다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습일정 충돌복구 상태","text":"시험·과제·휴학 일정이 겹쳐 자동 배치가 멈춘 학습일정 충돌복구 상태에서는 임의로 마감을 옮기지 않는다.","relations":["state","process","boundary","comparison"]}
+{"primary":"학습모듈 사전적재 상태","text":"모듈 파일은 내려받았지만 접근권한 검사가 남은 학습모듈 사전적재 상태에서는 학습 시작을 기록하지 않는다. 권한 확인은 개방으로, 판본 불일치는 새 파일 요청으로 이어진다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습모듈 접근대기열 상태","text":"동시접속 한도 때문에 입장이 순번에 묶인 학습모듈 접근대기열 상태는 차단과 개방 사이의 중간 상태다. 자원이 생기면 입장 토큰을 받고, 대기기한이 지나면 요청이 종료된다.","relations":["state","process","comparison","function"]}
+{"primary":"학습모듈 완료검증 상태","text":"활동은 모두 끝났지만 로그와 평가를 대조하는 학습모듈 완료검증 상태에서는 완료율을 잠정값으로 둔다. 증거가 맞으면 이수로, 누락이 있으면 복구 활동 배정으로 이동한다.","relations":["state","process","boundary","classification"]}
+{"primary":"학습완료 증거소실 상태","text":"학습완료 증거소실 상태는 필수 활동의 원로그와 복구 사본이 모두 없어 단순 재집계로 완료 여부를 판정할 수 없는 흡수 상태다. 감독 대체평가나 담당자 예외승인이 별도 탈출 경로가 된다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습콘텐츠 부분적재 상태","text":"본문은 열렸지만 그림·자막·실습파일 일부가 남은 학습콘텐츠 부분적재 상태에서는 완전 열람으로 집계하지 않는다.","relations":["state","process","part_of","function"]}
+{"primary":"학습콘텐츠 판본불일치 상태","text":"화면 본문과 평가가 서로 다른 판본을 가리키는 학습콘텐츠 판본불일치 상태에서는 진도 확정을 중지한다. 캐시를 격리하고 동일 판본 묶음을 다시 배포해야 정상 흐름으로 복구된다.","relations":["state","process","boundary","comparison"]}
+{"primary":"읽기위치 동기화대기 상태","text":"기기에서 저장한 책갈피가 서버에 도착하지 않은 읽기위치 동기화대기 상태에서는 두 위치를 모두 후보로 보존한다. 시간순 검증 뒤 최신 위치를 채택하거나 충돌 검토로 이동한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"읽기완료 재검증 상태","text":"완료표시는 있으나 체류 로그가 늦게 도착한 읽기완료 재검증 상태에서는 이수도 취소도 확정하지 않는다. 원로그가 일치하면 완료를 유지하고, 불일치면 보충 열람을 요청한다.","relations":["state","process","boundary","classification"]}
+{"primary":"학습영상 변환대기 상태","text":"원영상은 등록됐지만 여러 해상도와 자막 결합이 남은 학습영상 변환대기 상태에서는 재생 링크를 공개하지 않는다. 검수 통과는 개방으로, 변환 실패는 원본 점검으로 이어진다.","relations":["state","process","part_of","function"]}
+{"primary":"학습영상 재생복구 상태","text":"재생 오류 뒤 마지막 정상 구간과 대체 전송망을 확인하는 학습영상 재생복구 상태에서는 시청시간을 중복 적립하지 않는다. 위치와 로그를 맞춘 뒤 재생 중 상태로 돌아간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습영상 로그공백 격리상태","text":"완료 구간 사이의 원재생 로그가 사라진 학습영상 로그공백 격리상태에서는 시청 완료를 자동 승인하지 않는다. 장치 사본 복구나 확인문항 대체증거가 있어야 재판정이 가능하다.","relations":["state","process","boundary","attribute"]}
+{"primary":"실시간수업 연결협상 상태","text":"입장 토큰은 유효하지만 음성·영상 경로를 고르는 실시간수업 연결협상 상태는 대기실과 참여 중 사이의 중간 상태다. 경로 확정은 입장으로, 전부 실패하면 전화 대체안내로 이동한다.","relations":["state","process","function","classification"]}
+{"primary":"실시간수업 재접속복구 상태","text":"연결이 끊긴 뒤 동일 참여자를 검증하는 실시간수업 재접속복구 상태에서는 새 출석 세션으로 중복 계산하지 않는다. 이전 세션과 시간 간격을 연결한 뒤 참여 상태로 복귀한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"실시간출석 판정보류 상태","text":"접속시간은 충분하지만 신원확인이나 참여응답이 불완전한 실시간출석 판정보류 상태에서는 출석과 결석을 모두 확정하지 않는다. 추가 로그나 담당자 검토가 최종 분류를 정한다.","relations":["state","process","role","classification"]}
+{"primary":"온라인실습 자원할당 상태","text":"실습 요청은 승인됐지만 계산·저장 자원을 묶는 온라인실습 자원할당 상태에서는 환경 접속을 열지 않는다. 할당 완료는 활성화로, 용량 부족은 대기열이나 대체환경으로 이어진다.","relations":["state","process","part_of","function"]}
+{"primary":"온라인실습 안전정지 상태","text":"위험 명령이나 환경 이상으로 실행을 멈춘 온라인실습 안전정지 상태에서는 파일과 로그를 보존한 채 입력을 막는다. 위험 해소와 스냅숏 검증 뒤에만 실행 상태로 복귀한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인실습 저장고갈 흡수상태","text":"저장공간 고갈로 결과와 스냅숏을 더 만들 수 없는 온라인실습 저장고갈 흡수상태에서는 재실행만으로 회복되지 않는다. 공간 확보와 무결성 검사 후 새 작업공간을 연결해야 한다.","relations":["state","process","boundary","function"]}
+{"primary":"온라인실습 스냅숏복구 상태","text":"중단 전 파일과 실행환경을 검증된 스냅숏에서 되살리는 온라인실습 스냅숏복구 상태에서는 아직 학습 재개를 허용하지 않는다. 복원 시험이 통과해야 활성 세션으로 이동한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"오프라인자료 내려받기대기 상태","text":"자료 요청은 승인됐지만 암호화와 전송이 남은 오프라인자료 내려받기대기 상태에서는 기기 사본을 이용 가능으로 표시하지 않는다. 무결성 확인 뒤 오프라인 접근이 열린다.","relations":["state","process","function","attribute"]}
+{"primary":"오프라인자료 사용권만료 상태","text":"오프라인자료 사용권만료 상태는 기기의 이용권과 복호화 키가 끝나 앱 재시작이나 시각 변경으로는 자료를 열 수 없는 흡수 상태다. 온라인 재인증을 거쳐 새 권한을 발급받아야 벗어난다.","relations":["state","process","boundary","classification"]}
+{"primary":"오프라인활동 업로드대기 상태","text":"로컬 학습기록이 전송 순번을 기다리는 오프라인활동 업로드대기 상태에서는 중앙 진도를 완료값으로 보지 않는다. 연결 확보는 전송으로, 인증 만료는 복구 검증으로 이어진다.","relations":["state","process","boundary","attribute"]}
+{"primary":"오프라인동기화 부분확인 상태","text":"활동 묶음 일부만 서버 확인을 받은 오프라인동기화 부분확인 상태에서는 확인된 항목과 남은 항목을 나눠 보존한다. 전부 수신되면 완료되고 불일치 항목은 충돌 검토로 간다.","relations":["state","process","part_of","classification"]}
+{"primary":"학습동기화 값충돌 상태","text":"같은 활동의 로컬값과 서버값이 양립하지 않는 학습동기화 값충돌 상태에서는 어느 쪽도 자동 폐기하지 않는다. 시간·서명·판본을 비교해 채택값을 정해야 정상 진도로 복구된다.","relations":["state","process","boundary","comparison"]}
+{"primary":"학습동기화 확인대기 상태","text":"병합값은 정해졌지만 기기와 서버의 최종 확인이 남은 학습동기화 확인대기 상태에서는 새 추천 계산을 미룬다. 양쪽 확인은 완료로, 응답 단절은 재전송 상태로 이어진다.","relations":["state","process","function","attribute"]}
+{"primary":"학습동기화 고아활동 상태","text":"소유 계정이나 과정 판본을 찾을 수 없는 학습동기화 고아활동 상태는 일반 병합 규칙으로 빠져나올 수 없는 흡수 상태다. 계보를 재연결하거나 승인된 별도 기록으로 이관해야 한다.","relations":["state","process","boundary","classification"]}
+{"primary":"모듈퀴즈 답안초안 상태","text":"일부 답안이 저장됐지만 최종 확인 전인 모듈퀴즈 답안초안 상태에서는 점수 산출을 시작하지 않는다. 계속 편집하면 진행 상태를 유지하고 제출 확인은 잠금 단계로 이동시킨다.","relations":["state","process","boundary","attribute"]}
+{"primary":"모듈퀴즈 제출협상 상태","text":"학습자는 제출을 확인했지만 서버가 답안 묶음과 시각을 고정하는 모듈퀴즈 제출협상 상태에서는 편집도 접수도 완결되지 않았다. 수신 확인은 접수로, 실패는 복구 대기로 이어진다.","relations":["state","process","function","attribute"]}
+{"primary":"모듈퀴즈 접수확인 대기상태","text":"답안은 서버에 도착했지만 고유 접수번호가 아직 없는 모듈퀴즈 접수확인 대기상태에서는 재제출을 즉시 권하지 않는다. 상태 조회 뒤 번호를 받거나 중복 방지 복구로 이동한다.","relations":["state","process","boundary","classification"]}
+{"primary":"모듈퀴즈 답안소실 흡수상태","text":"기기와 서버 양쪽에서 제출 전 답안 판본을 찾지 못한 모듈퀴즈 답안소실 흡수상태는 새로고침만으로 회복되지 않는다. 담당 승인으로 시도를 복원하거나 새 응시 기회를 열어야 한다.","relations":["state","process","boundary","role"]}
+{"primary":"모듈퀴즈 채점대기열 상태","text":"유효 접수는 끝났지만 채점 자원 순번을 기다리는 모듈퀴즈 채점대기열 상태는 제출과 결과 사이의 중간 상태다. 채점키 준비는 실행으로, 예외 표시는 수동 검토로 이어진다.","relations":["state","process","classification","function"]}
+{"primary":"모듈퀴즈 채점키충돌 상태","text":"같은 문항 판본에 둘 이상의 정답키가 연결된 모듈퀴즈 채점키충돌 상태에서는 자동 점수를 확정하지 않는다.","relations":["state","process","boundary","comparison"]}
+{"primary":"온라인평가 타이머정지 상태","text":"승인된 장애로 남은 시간이 고정된 온라인평가 타이머정지 상태에서는 답안 편집과 시간 감소를 함께 멈춘다. 장애 해소·신원 재확인·재개시각 기록을 거쳐 응시 상태로 돌아간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인평가 시간원본충돌 상태","text":"기기 타이머와 서버 타이머가 서로 다른 만료시각을 가리키는 온라인평가 시간원본충돌 상태에서는 자동 제출을 보류한다. 권위 시계와 중단 기록을 대조해 남은 시간을 복구한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"온라인시험 입실검토 상태","text":"응시 자격은 있으나 장치·신원·동의 검사가 남은 온라인시험 입실검토 상태에서는 문항을 공개하지 않는다. 세 검사가 모두 통과하면 대기실로, 하나가 실패하면 보완 경로로 이동한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"온라인시험 시험실준비 상태","text":"입실은 승인됐지만 문항·타이머·감독 연결을 맞추는 온라인시험 시험실준비 상태에서는 응시시간을 시작하지 않는다. 구성 검증 뒤에만 공식 시험 상태로 전이한다.","relations":["state","process","function","attribute"]}
+{"primary":"온라인시험 신원보류 상태","text":"신원 정보 일부는 맞지만 영상이나 문서 확인이 불충분한 온라인시험 신원보류 상태에서는 합격도 부정도 확정하지 않는다. 추가 확인은 입실로, 불일치 확정은 격리로 이어진다.","relations":["state","process","boundary","role"]}
+{"primary":"온라인시험 연결중단 상태","text":"시험 중 네트워크가 끊겼으나 서버 답안과 남은 시간이 보존된 온라인시험 연결중단 상태는 복구 가능한 중간 상태다. 재인증과 시간 보정 뒤 동일 세션으로 복귀한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인시험 답안복원 상태","text":"중단 전 자동저장본을 서버 접수본과 맞추는 온라인시험 답안복원 상태에서는 학습자에게 편집을 열지 않는다. 판본 선택과 무결성 확인 뒤 응시 재개 또는 수동 판정으로 이동한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"온라인시험 답안복구불가 상태","text":"온라인시험 답안복구불가 상태는 서명 답안과 백업이 함께 손상되어 일반 재접속으로 평가 자료를 되찾을 수 없는 흡수 상태다. 사고 승인 뒤 시행하는 재시험이 새로운 평가 경로를 제공한다.","relations":["state","process","boundary","classification"]}
+{"primary":"온라인시험 최종접수검증 상태","text":"최종 제출 신호 뒤 답안 수·해시·시각을 검사하는 온라인시험 최종접수검증 상태에서는 결과 생성을 보류한다. 검증 통과는 채점으로, 불일치는 접수 복구로 이어진다.","relations":["state","process","part_of","attribute"]}
+{"primary":"온라인시험 중복접수 격리상태","text":"같은 시도에 서로 다른 최종 답안 두 개가 접수된 온라인시험 중복접수 격리상태에서는 최신 시각만으로 하나를 버리지 않는다. 제출 경로와 서명을 조사해 권위 판본을 확정해야 한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"온라인과제 업로드처리 상태","text":"파일 전송은 끝났지만 형식·해시·악성코드를 검사하는 온라인과제 업로드처리 상태에서는 제출 완료표시를 만들지 않는다. 검증 성공은 접수로, 실패는 교체 요청으로 이동한다.","relations":["state","process","part_of","function"]}
+{"primary":"온라인과제 악성파일격리 상태","text":"위험 코드가 의심되어 첨부를 분리한 온라인과제 악성파일격리 상태에서는 일반 다운로드나 채점을 막는다. 안전 판정과 깨끗한 대체파일 제출이 있어야 접수 흐름으로 복귀한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인과제 지각판정대기 상태","text":"마감 후 도착했지만 연장·장애 기록을 확인하는 온라인과제 지각판정대기 상태에서는 감점도 면제도 확정하지 않는다. 증거 검토가 정상·지각·예외 접수 가운데 하나를 정한다.","relations":["state","process","role","classification"]}
+{"primary":"온라인과제 연장증빙보류 상태","text":"연장 요청은 접수됐지만 근거 문서의 유효성이 불분명한 온라인과제 연장증빙보류 상태에서는 마감 타이머를 잠정 유지한다. 보완 증빙 또는 담당 결정이 있어야 적용 상태가 바뀐다.","relations":["state","process","boundary","attribute"]}
+{"primary":"동료평가 대상배정대기 상태","text":"제출물은 모였지만 익명화와 이해충돌 검사가 남은 동료평가 대상배정대기 상태에서는 평가자에게 원문을 노출하지 않는다. 검사 뒤 안전한 조합만 배정한다.","relations":["state","process","role","boundary"]}
+{"primary":"동료평가 부분작성 상태","text":"기준표 일부만 채워진 동료평가 부분작성 상태는 미시작과 최종 제출 사이의 중간 상태다. 남은 설명을 보충하면 제출로, 배정 취소가 확인되면 초안을 보관하고 종료한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"동료평가 고아제출 상태","text":"평가 대상 제출물이 철회돼 연결을 잃은 동료평가 고아제출 상태는 일반 완료 집계로 빠져나올 수 없다. 새 대상에 재매핑하거나 활동 면제를 승인해야 복구된다.","relations":["state","process","boundary","classification"]}
+{"primary":"평가기준 합계검증 상태","text":"항목별 점수는 입력됐지만 총점과 필수 기준을 대조하는 평가기준 합계검증 상태에서는 성적을 확정하지 않는다. 일치하면 승인 대기로, 오류면 채점자 수정으로 돌아간다.","relations":["state","process","part_of","comparison"]}
+{"primary":"온라인평가 결과공개보류 상태","text":"점수는 확정됐지만 지정 공개시각이나 이의 검토를 기다리는 온라인평가 결과공개보류 상태에서는 학습자 화면을 잠근다. 보류 사유가 해소되면 같은 판본을 공개한다.","relations":["state","process","boundary","function"]}
+{"primary":"온라인자동채점 처리상태","text":"답안과 정답키는 준비됐지만 규칙을 순차 실행하는 온라인자동채점 처리상태에서는 부분 점수를 최종값으로 노출하지 않는다. 전 항목 계산과 합계 검증 뒤 확정 대기로 이동한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"서술답안 수동검토대기 상태","text":"자동 규칙이 다루지 못한 답안이 담당자 순번을 기다리는 서술답안 수동검토대기 상태는 미채점과 확정 사이의 중간 상태다. 검토자 수락 뒤 기준별 채점이 시작된다.","relations":["state","process","role","classification"]}
+{"primary":"온라인채점자 배정대기 상태","text":"제출물은 준비됐지만 자격·부하·이해충돌을 검사하는 온라인채점자 배정대기 상태에서는 임의 담당자를 정하지 않는다. 조건을 통과한 역할자에게만 작업을 넘긴다.","relations":["state","process","role","boundary"]}
+{"primary":"온라인복수채점 불일치 상태","text":"두 채점자가 허용범위를 넘는 서로 다른 점수를 낸 온라인복수채점 불일치 상태에서는 평균만으로 확정하지 않는다. 기준 대조와 제삼 검토를 거쳐 합의 점수로 복구한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"온라인점수 승인대기 상태","text":"채점은 끝났지만 권한자의 전자승인이 남은 온라인점수 승인대기 상태에서는 성적표와 공개값으로 쓰지 않는다. 승인 또는 반려가 확정돼야 공개 준비나 재채점으로 이동한다.","relations":["state","process","role","function"]}
+{"primary":"온라인성적 공개준비 상태","text":"승인 점수와 피드백을 학습자별 화면에 배치하는 온라인성적 공개준비 상태에서는 아직 알림을 보내지 않는다. 대상·판본·시각 검사가 끝나면 일괄 공개로 전이한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"온라인피드백 생성처리 상태","text":"오답 유형과 기준별 의견을 조합하는 온라인피드백 생성처리 상태에서는 생성 중 문안을 확정본으로 취급하지 않는다. 규칙 실행 뒤 담당 검토 또는 공개 준비로 이동한다.","relations":["state","process","function","classification"]}
+{"primary":"온라인피드백 품질보류 상태","text":"설명은 생성됐지만 근거 누락이나 부적절 표현이 발견된 온라인피드백 품질보류 상태에서는 공개를 막는다. 문안을 수정하고 독립 검수를 통과해야 공개 경로로 복귀한다.","relations":["state","process","boundary","role"]}
+{"primary":"온라인피드백 번역대기 상태","text":"원문은 승인됐지만 학습자 언어 번역이 남은 온라인피드백 번역대기 상태에서는 미검수 번역을 노출하지 않는다. 번역·용어·수치 대조가 끝나야 다국어 공개로 전이한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"학습피드백 확인대기 상태","text":"피드백은 공개됐지만 학습자의 필수 확인 응답이 없는 학습피드백 확인대기 상태는 공개와 반영 사이의 중간 상태다. 확인은 후속 활동 개방으로, 기한 초과는 알림 상향으로 이어진다.","relations":["state","process","function","attribute"]}
+{"primary":"점수정정 요청분류 상태","text":"정정 요청의 대상·기한·근거를 나누는 점수정정 요청분류 상태에서는 접수와 기각을 미리 확정하지 않는다. 자격 검사가 끝난 뒤 재검토·보완·종료 경로 가운데 하나로 보낸다.","relations":["state","process","classification","boundary"]}
+{"primary":"점수정정 원증거소실 상태","text":"원답안과 채점 판본이 모두 없는 점수정정 원증거소실 상태는 일반 재채점으로 해결할 수 없는 흡수 상태다. 대체 증빙 심사나 합의된 재평가가 새 판정 경로를 연다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인재채점 계산상태","text":"원점수와 수정 규칙을 함께 적용하는 온라인재채점 계산상태에서는 후보 점수를 공식값으로 쓰지 않는다. 항목별 차이와 총점을 검증한 뒤 승인 대기로 이동한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"온라인재채점 승인보류 상태","text":"새 점수는 산출됐지만 변경 사유와 권한 검사가 남은 온라인재채점 승인보류 상태에서는 성적표 반영을 막는다. 승인자는 근거를 확정하거나 계산 단계로 돌려보낸다.","relations":["state","process","role","boundary"]}
+{"primary":"온라인진도 재집계상태","text":"정정된 점수·면제·완료 이력을 다시 합치는 온라인진도 재집계상태에서는 이전 완료율을 잠정 유지한다. 모든 입력 판본을 확인한 뒤 새 진도 또는 충돌 검토로 이동한다.","relations":["state","process","part_of","comparison"]}
+{"primary":"온라인숙련도 갱신대기 상태","text":"새 학습 증거는 모였지만 계산 주기와 규칙 판본을 기다리는 온라인숙련도 갱신대기 상태에서는 이전 값을 최신으로 가장하지 않는다. 입력 잠금 뒤 계산 단계가 시작된다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인숙련도 이상격리 상태","text":"한 번의 결과가 기존 추세와 크게 충돌한 온라인숙련도 이상격리 상태에서는 수준을 자동 변경하지 않는다. 원데이터·장애·부정 신호를 검토해 포함 또는 제외를 확정해야 한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"개인추천 계산처리 상태","text":"목표·숙련도·가용시간으로 후보를 평가하는 개인추천 계산처리 상태에서는 중간 순위를 학습자에게 보이지 않는다. 필터와 중복 검사가 끝나면 추천 확정으로 전이한다.","relations":["state","process","function","attribute"]}
+{"primary":"개인추천 규칙충돌 상태","text":"필수 교육 추천과 학습자 제외 선호가 같은 자료에 걸린 개인추천 규칙충돌 상태에서는 임의로 노출 여부를 정하지 않는다. 우선순위 규칙과 담당 예외승인으로 해소한다.","relations":["state","process","boundary","role"]}
+{"primary":"보충학습 배정준비 상태","text":"취약 영역은 확정됐지만 적합 자료와 마감을 고르는 보충학습 배정준비 상태에서는 학습자 진도에 항목을 넣지 않는다. 자료 검증 뒤 배정 또는 대체지원으로 이동한다.","relations":["state","process","classification","function"]}
+{"primary":"보충학습 완료검증 상태","text":"배정 활동은 끝났지만 확인평가와 로그를 대조하는 보충학습 완료검증 상태에서는 숙련도 갱신을 보류한다. 증거 통과는 이수로, 누락은 추가 활동으로 이어진다.","relations":["state","process","boundary","attribute"]}
+{"primary":"개인학습 경로재배치 상태","text":"목표와 수준 변화로 남은 활동을 새 순서에 매핑하는 개인학습 경로재배치 상태에서는 기존 경로도 새 경로도 확정하지 않는다. 의존성 검증 뒤 안전한 경로를 활성화한다.","relations":["state","process","part_of","comparison"]}
+{"primary":"개인학습 경로막힘 흡수상태","text":"필수 선수활동이 폐기됐고 대체 자료도 없는 개인학습 경로막힘 흡수상태는 추천 재계산만으로 벗어날 수 없다. 교과 담당자가 대체 성취 기준이나 예외 경로를 승인해야 한다.","relations":["state","process","boundary","role"]}
+{"primary":"학습멘토 배정대기열 상태","text":"지원 필요는 확정됐지만 적합 멘토의 순번을 기다리는 학습멘토 배정대기열 상태에서는 상담 완료로 표시하지 않는다. 가용 멘토 수락은 배정으로, 긴급도 상승은 우선경로로 이동한다.","relations":["state","process","role","comparison"]}
+{"primary":"학습지원 종료검증 상태","text":"합의한 개입은 수행됐지만 효과와 후속 위험을 확인하는 학습지원 종료검증 상태에서는 사건을 닫지 않는다. 안정 확인은 종결로, 잔여 문제가 있으면 새 조치 단계로 돌아간다.","relations":["state","process","boundary","function"]}
+{"primary":"온라인과정 완료검토 상태","text":"필수 활동은 끝났지만 성적·출석·면제를 함께 확인하는 온라인과정 완료검토 상태에서는 이수증을 발급하지 않는다. 전 항목 통과는 이수 확정으로, 누락은 보완 경로로 이동한다.","relations":["state","process","part_of","classification"]}
+{"primary":"온라인이수 증거정렬 상태","text":"서로 다른 시스템의 완료시각과 판본을 맞추는 온라인이수 증거정렬 상태에서는 가장 최신 값만으로 판정하지 않는다. 계보가 연결되면 검토로, 충돌이 남으면 격리로 전이한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"온라인과정 이수보류 상태","text":"완료 후보에 미해결 성적이나 무효 활동이 포함된 온라인과정 이수보류 상태에서는 공식 자격 생성을 막는다. 정정·재평가·예외승인 가운데 필요한 복구 단계를 마쳐야 해제된다.","relations":["state","process","boundary","role"]}
+{"primary":"온라인이수증 발급대기열 상태","text":"이수는 확정됐지만 문서번호와 서명 자원의 순번을 기다리는 온라인이수증 발급대기열 상태는 판정과 발급 사이의 중간 상태다. 자원 확보 뒤 서명 단계로 이동한다.","relations":["state","process","function","classification"]}
+{"primary":"온라인이수증 서명처리 상태","text":"문서 내용과 고유번호에 전자서명을 결합하는 온라인이수증 서명처리 상태에서는 미완성 파일을 제공하지 않는다. 검증 성공은 발급 완료로, 서명 실패는 재처리 대기로 이어진다.","relations":["state","process","part_of","attribute"]}
+{"primary":"온라인이수증 전달대기 상태","text":"서명 문서는 완성됐지만 학습자 채널의 수신 확인이 없는 온라인이수증 전달대기 상태에서는 전달 완료로 집계하지 않는다. 재전송이나 대체채널 확인 뒤 상태를 닫는다.","relations":["state","process","function","attribute"]}
+{"primary":"온라인자격 효력검토 상태","text":"취소 사유 신고가 들어왔지만 증거가 확정되지 않은 온라인자격 효력검토 상태에서는 현재 효력을 잠정 유지하거나 제한한다. 독립 판정이 유지·정지·취소 경로를 정한다.","relations":["state","process","boundary","role"]}
+{"primary":"온라인자격 판본충돌 상태","text":"같은 자격번호에 유효와 취소 판본이 동시에 활성화된 온라인자격 판본충돌 상태에서는 외부 검증 응답을 보류한다. 승인 계보를 복원하고 권위 판본을 지정해야 정상 조회로 돌아간다.","relations":["state","process","boundary","comparison"]}
+{"primary":"온라인자격 갱신검토 상태","text":"자격이 갱신 창에 들어왔지만 보수교육·수수료·신원 조건을 확인하는 온라인자격 갱신검토 상태에서는 새 유효기간을 확정하지 않는다. 조건별 결과가 다음 경로를 결정한다.","relations":["state","process","part_of","classification"]}
+{"primary":"온라인갱신 원증거소실 상태","text":"온라인갱신 원증거소실 상태는 교육 이력과 대체 증빙이 모두 없어 통상 갱신식을 적용할 수 없는 흡수 상태다. 감독기관 재평가처럼 새로운 근거가 생겨야 빠져나온다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인성적표 조립상태","text":"과목별 확정점수와 학점을 한 문서로 합치는 온라인성적표 조립상태에서는 부분 합계를 공식 성적으로 내보내지 않는다. 항목 수와 판본을 검증한 뒤 최종 검수로 이동한다.","relations":["state","process","part_of","function"]}
+{"primary":"온라인성적표 합계불일치 상태","text":"과목 합과 총학점이 맞지 않는 온라인성적표 합계불일치 상태에서는 문서 발행을 중지한다. 누락 과목·중복 반영·반올림 규칙을 대조해 새 합계를 확정해야 복구된다.","relations":["state","process","boundary","comparison"]}
+{"primary":"온라인과정 판본이관 상태","text":"기존 진도를 새 콘텐츠 활동에 대응시키는 온라인과정 판본이관 상태에서는 두 판본의 미완료 항목을 모두 잠정 보존한다. 매핑 검증 뒤 새 판본 활성 또는 되돌림으로 이동한다.","relations":["state","process","part_of","comparison"]}
+{"primary":"온라인과정 이관고아 상태","text":"새 판본에 대응 항목이 없는 필수 완료가 발견된 온라인과정 이관고아 상태에서는 진도를 자동 폐기하지 않는다. 대체 항목 지정이나 인정 예외승인이 있어야 이관을 마칠 수 있다.","relations":["state","process","boundary","role"]}
+{"primary":"온라인분반 종료준비 상태","text":"온라인분반 종료준비 상태는 수업은 끝났지만 채점·이의처리·증명 발급이 남아 기록을 읽기 전용으로 둔 중간 단계다. 잔여 업무를 모두 닫은 뒤에만 장기 보관 상태로 넘긴다.","relations":["state","process","part_of","attribute"]}
+{"primary":"온라인분반 미결항목흡수 상태","text":"담당자와 원증거가 모두 사라진 미해결 성적이 남은 온라인분반 미결항목흡수 상태에서는 일반 종료 절차가 진행되지 않는다.","relations":["state","process","boundary","role"]}
+{"primary":"온라인학습 기록이관 상태","text":"운영 저장소의 활동·점수·동의를 장기보관 묶음으로 옮기는 온라인학습 기록이관 상태에서는 원본 삭제를 시작하지 않는다. 수량과 해시 확인 뒤 보관 확정으로 전이한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"온라인보관 해시보류 상태","text":"장기보관 묶음의 일부 해시가 원본과 다른 온라인보관 해시보류 상태에서는 운영 원본을 유지하고 봉인을 막는다. 손상 항목을 재추출하거나 권위 판본을 복구해야 한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"학습계정 비활성대기 상태","text":"비활성 요청은 승인됐지만 진행 중 평가와 제출을 안전하게 닫는 학습계정 비활성대기 상태에서는 접근을 단계적으로 제한한다. 세션 종료 뒤 비활성 확정으로 이동한다.","relations":["state","process","boundary","function"]}
+{"primary":"학습계정 복구매핑 상태","text":"비활성 계정의 권한·진도·분반을 현재 정책에 맞추는 학습계정 복구매핑 상태에서는 즉시 로그인을 허용하지 않는다. 매핑 검증 뒤 활성화 또는 추가 심사로 전이한다.","relations":["state","process","part_of","classification"]}
+{"primary":"온라인수강 철회정산 상태","text":"철회 승인 뒤 이용기간·환불·진도 보존을 계산하는 온라인수강 철회정산 상태에서는 등록을 완전히 닫지 않는다. 세 결과가 일치하면 종료로, 충돌하면 담당 검토로 이동한다.","relations":["state","process","part_of","comparison"]}
+{"primary":"온라인철회 결제미결 상태","text":"수강은 중단됐지만 결제 취소와 환불 결과가 맞지 않는 온라인철회 결제미결 상태에서는 같은 주문의 재등록을 막는다. 결제기관 확인과 원거래 복구가 있어야 해제된다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습알림 전달대기열 상태","text":"알림 내용은 확정됐지만 채널 순번이나 방해금지 해제를 기다리는 학습알림 전달대기열 상태에서는 실패로 확정하지 않는다. 허용시각 도달 뒤 발송 또는 만료로 이동한다.","relations":["state","process","function","attribute"]}
+{"primary":"학습알림 반복반송 상태","text":"학습알림 반복반송 상태는 모든 승인 채널에서 주소 오류가 되풀이되어 같은 연락처로는 전달할 수 없는 흡수 상태다. 수신처를 재검증하거나 담당자의 대체 연락망을 확보해야 복구된다.","relations":["state","process","boundary","role"]}
+{"primary":"학습지원 인계진행 상태","text":"담당자가 바뀌어 목표·상담·미결조치를 넘기는 학습지원 인계진행 상태에서는 이전 지원을 종료하지 않는다. 수신 담당자의 확인과 누락 검사가 끝나야 새 담당 상태가 활성화된다.","relations":["state","process","role","part_of"]}
+{"primary":"학습플랫폼 배포대기 상태","text":"새 코드와 설정은 준비됐지만 승인된 배포 창을 기다리는 학습플랫폼 배포대기 상태에서는 운영 트래픽을 바꾸지 않는다. 개시 승인은 전환으로, 취소는 기존 판본 유지로 이어진다.","relations":["state","process","role","attribute"]}
+{"primary":"학습플랫폼 부분배포 상태","text":"일부 서버만 새 판본을 실행하는 학습플랫폼 부분배포 상태에서는 전체 성공이나 실패를 확정하지 않는다. 지표가 안정되면 확대하고, 이상이 나면 이전 판본으로 되돌린다.","relations":["state","process","part_of","comparison"]}
+{"primary":"학습서비스 성능저하 상태","text":"요청은 처리되지만 지연과 실패율이 허용선을 넘은 학습서비스 성능저하 상태는 정상과 중단 사이의 중간 상태다. 부하 완화 뒤 관찰을 통과하면 정상으로, 악화되면 장애로 이동한다.","relations":["state","process","comparison","classification"]}
+{"primary":"학습서비스 장애우회 상태","text":"주 경로가 멈춰 보조 시스템으로 트래픽을 옮기는 학습서비스 장애우회 상태에서는 기능 범위를 제한하고 데이터 계보를 보존한다. 주 경로 검증 뒤 단계적으로 복귀한다.","relations":["state","process","function","boundary"]}
+{"primary":"학습서비스 이중권위 상태","text":"주·보조 시스템이 서로 자신을 최신 원본으로 주장하는 학습서비스 이중권위 상태에서는 쓰기 작업을 중지한다. 사건 순서와 승계 토큰을 대조해 권위 하나를 정해야 복구된다.","relations":["state","process","boundary","comparison"]}
+{"primary":"학습서비스 복구검증 상태","text":"기능은 돌아왔지만 데이터 정합성과 재발 여부를 확인하는 학습서비스 복구검증 상태에서는 정상 종료를 선언하지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습처리 대기열적체 상태","text":"활동 사건이 처리 용량보다 빠르게 쌓인 학습처리 대기열적체 상태에서는 최신 진도 표시가 지연될 수 있다. 처리량 확대와 순서 보존 뒤 적체가 해소되면 정상 집계로 복귀한다.","relations":["state","process","comparison","function"]}
+{"primary":"학습처리 독성항목흡수 상태","text":"같은 잘못된 사건이 반복 실패하며 대기열을 막는 학습처리 독성항목흡수 상태에서는 일반 재시도로 벗어날 수 없다. 항목을 격리하고 형식을 교정한 새 사건을 넣어야 흐름이 회복된다.","relations":["state","process","boundary","classification"]}
+{"primary":"학습데이터 복제지연 상태","text":"주 저장소의 최신 활동이 보조 저장소에 아직 도착하지 않은 학습데이터 복제지연 상태에서는 보조값을 권위 원본으로 승격하지 않는다.","relations":["state","process","comparison","attribute"]}
+{"primary":"학습데이터 정합성격리 상태","text":"활동·점수·진도 사이에 설명되지 않는 충돌이 발견된 학습데이터 정합성격리 상태에서는 자동 추천과 발급을 막는다. 원사건 계보를 복원하고 재집계해야 서비스 흐름으로 복귀한다.","relations":["state","process","boundary","part_of"]}
+{"primary":"학습데이터 정정대기 상태","text":"오류 신고와 증빙은 접수됐지만 영향 범위를 찾는 학습데이터 정정대기 상태에서는 현재값을 바로 덮어쓰지 않는다. 대상 판본과 연계 계산을 확정한 뒤 정정 또는 기각으로 이동한다.","relations":["state","process","role","attribute"]}
+{"primary":"학습동의 상태조정 중간상태","text":"여러 채널의 동의·철회 시각을 맞추는 학습동의 상태조정 중간상태에서는 불확실한 선택형 처리를 보류한다. 권위 의사표시를 정하면 활성 또는 철회 상태로 전이한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"학습기록 삭제대기 상태","text":"보존기간은 끝났지만 법적 보류와 백업 범위를 확인하는 학습기록 삭제대기 상태에서는 원본을 잠근 채 유지한다. 모든 예외가 해소되고 승인이 나야 처분 단계로 이동한다.","relations":["state","process","boundary","classification"]}
+{"primary":"학습기록 삭제차단 흡수상태","text":"종료시점을 알 수 없는 법적 보존명령이 활성화된 학습기록 삭제차단 흡수상태에서는 일반 만료 일정으로 벗어날 수 없다. 권한기관의 해제 통지가 새 처분 경로를 여는 유일한 근거다.","relations":["state","process","boundary","role"]}
+{"primary":"학습계정 비식별처리 상태","text":"직접 식별자와 학습 이력을 분리하는 학습계정 비식별처리 상태에서는 통계 이용도 개인 접근도 확정하지 않는다. 연결키 처리와 재식별 위험 검증 뒤 비식별 완료로 전이한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"학습가명키 권위충돌 상태","text":"서로 다른 가명키가 같은 학습자를 가리키는 학습가명키 권위충돌 상태에서는 두 이력을 자동 병합하지 않는다. 키 발급 계보와 원기관 확인을 거쳐 하나를 채택하거나 분리한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"학습정보 내보내기준비 상태","text":"승인된 범위의 기록을 모으고 민감 항목을 가리는 학습정보 내보내기준비 상태에서는 다운로드 링크를 만들지 않는다. 수량·범위·비식별 검수 뒤 파일 생성으로 이동한다.","relations":["state","process","part_of","classification"]}
+{"primary":"학습정보 추출실패 상태","text":"파일 생성 중 일부 판본을 읽지 못한 학습정보 추출실패 상태에서는 불완전 결과를 제공하지 않는다. 누락 원본을 복구하고 같은 기준시각으로 다시 추출해야 전달 대기로 돌아간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습백업 복원준비 상태","text":"복구시점과 대상 저장소를 정하고 격리 환경에 백업을 푸는 학습백업 복원준비 상태에서는 운영 데이터를 바꾸지 않는다. 시험과 차이 검토가 끝나야 실제 복원으로 전이한다.","relations":["state","process","part_of","comparison"]}
+{"primary":"학습백업 원본소실 흡수상태","text":"운영 원본과 검증 백업을 모두 읽을 수 없는 학습백업 원본소실 흡수상태는 일반 복원 절차로 벗어날 수 없다. 외부 사본 확보나 감독된 대체 재구성이 새 복구 경로를 만든다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습보안 사고격리 상태","text":"침해 범위가 불명확해 계정·파일·토큰을 분리한 학습보안 사고격리 상태에서는 정상 접근을 허용하지 않는다. 범위 확정과 자격 재발급, 무결성 검증을 거쳐 단계적으로 복구한다.","relations":["state","process","boundary","function"]}
+{"primary":"학습보안 회복관찰 상태","text":"차단과 복구는 끝났지만 재발 신호를 확인하는 학습보안 회복관찰 상태에서는 사고를 종결하지 않는다. 관찰기간 무사 통과는 종료로, 새 경고는 격리로 되돌린다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습감사로그 봉인대기 상태","text":"기간의 사건은 모였지만 해시 사슬과 책임자 서명이 남은 학습감사로그 봉인대기 상태에서는 장기보관 완료로 보지 않는다. 검증 통과 뒤 변경 불가 봉인으로 이동한다.","relations":["state","process","role","attribute"]}
+{"primary":"학습감사 계보단절 흡수상태","text":"원사건과 백업 모두에서 해시 연결 구간이 사라진 학습감사 계보단절 흡수상태는 재계산만으로 신뢰를 회복할 수 없다. 외부 증거와 독립 판정으로 새 기준점을 세워야 한다.","relations":["state","process","boundary","part_of"]}
+{"primary":"온라인학습 사고종료검증 상태","text":"복구 조치는 끝났지만 원인·영향·재발방지 증거를 대조하는 온라인학습 사고종료검증 상태에서는 사건을 닫지 않는다.","relations":["state","process","role","function"]}

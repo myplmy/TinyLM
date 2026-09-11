@@ -1,0 +1,96 @@
+{
+  "audit": "A04 independent similarity and particle review",
+  "source_files": 69,
+  "source_records": 10350,
+  "similarity": {
+    "char_3_5_tfidf": {
+      "method": "character 3-5-gram TF-IDF cosine; NFKC/lowercase; raw term counts; smooth IDF; L2 normalization; sparse pair accumulation",
+      "threshold": 0.72,
+      "records": 10350,
+      "pairs_with_shared_feature": 46755228,
+      "pairs_ge_threshold": 0,
+      "max": 0.665704324,
+      "max_pair": {
+        "score": 0.665704324,
+        "left": {
+          "file": "stage2_(14)state_transition_high_density_train_v60.source.jsonl",
+          "line": 81,
+          "primary": "발효 냉각수대기",
+          "text": "발효 냉각수대기는 냉각수 공급 확인을 기다리는 상태이며, 공급 시각과 유량값을 보존하고 밸브 순서와 대기 시간을 조정한다."
+        },
+        "right": {
+          "file": "stage2_(14)state_transition_high_density_train_v61.source.jsonl",
+          "line": 18,
+          "primary": "센터 냉각수대기",
+          "text": "센터 냉각수대기는 냉각수 공급을 기다리는 상태로, 공급 시각과 유량값을 유지하며 펌프 순서와 대기 시간을 조정한다."
+        }
+      },
+      "top_threshold_pairs": []
+    },
+    "word_set_jaccard": {
+      "method": "word-set Jaccard; NFKC/lowercase; Korean/ASCII/number lexical tokens; sparse inverted-index pair accumulation",
+      "threshold": 0.6,
+      "records": 10350,
+      "pairs_with_shared_word": 12133474,
+      "pairs_ge_threshold": 1,
+      "max": 0.619047619,
+      "max_pair": {
+        "score": 0.619047619,
+        "left": {
+          "file": "stage2_(14)state_transition_high_density_train_v49.source.jsonl",
+          "line": 145,
+          "primary": "데이터센터 중간확정",
+          "text": "데이터센터 중간확정은 전이 사이의 센서·명령 상태가 별도 기록으로 확정된 과정이며, 기록자와 시각을 남기고 데이터센터 중간확정의 변경순서를 정한다."
+        },
+        "right": {
+          "file": "stage2_(14)state_transition_high_density_train_v50.source.jsonl",
+          "line": 135,
+          "primary": "항만 중간확정",
+          "text": "항만 중간확정은 전이 사이의 장비·화물 상태가 별도 기록으로 확정되는 과정이며, 기록자와 시각을 남기고 항만 중간확정의 변경순서를 정한다."
+        }
+      },
+      "top_threshold_pairs": [
+        {
+          "score": 0.619047619,
+          "left": {
+            "file": "stage2_(14)state_transition_high_density_train_v49.source.jsonl",
+            "line": 145,
+            "primary": "데이터센터 중간확정",
+            "text": "데이터센터 중간확정은 전이 사이의 센서·명령 상태가 별도 기록으로 확정된 과정이며, 기록자와 시각을 남기고 데이터센터 중간확정의 변경순서를 정한다."
+          },
+          "right": {
+            "file": "stage2_(14)state_transition_high_density_train_v50.source.jsonl",
+            "line": 135,
+            "primary": "항만 중간확정",
+            "text": "항만 중간확정은 전이 사이의 장비·화물 상태가 별도 기록으로 확정되는 과정이며, 기록자와 시각을 남기고 항만 중간확정의 변경순서를 정한다."
+          }
+        }
+      ]
+    }
+  },
+  "particle_review": {
+    "hard_pattern_candidates": 0,
+    "hard_pattern_examples": [],
+    "adjacent_duplicate_word_candidates": 0,
+    "adjacent_duplicate_examples": [],
+    "primary_hangul_rows": 10350,
+    "numbered_primary_rows": 0,
+    "primary_attached_occurrences": 9604,
+    "particle_histogram": {
+      "는": 3665,
+      "은": 3056,
+      "에서": 679,
+      "을": 566,
+      "으로": 551,
+      "로": 396,
+      "이": 213,
+      "의": 168,
+      "를": 118,
+      "에": 112,
+      "가": 80
+    },
+    "primary_particle_candidates": 0,
+    "primary_particle_examples": [],
+    "review_note": "후보는 독립 휴리스틱의 검출값이며, 실제 오류 여부는 사람이 예문을 확인해야 한다. A04의 primary 끝 숫자는 레코드 구분자로 보고 앞선 한글 개념명의 받침을 판정했다."
+  }
+}

@@ -1,0 +1,150 @@
+{"primary":"트래픽증설 허용판정","text":"요청률과 지연시간이 확장 기준을 함께 넘으면 트래픽증설 허용판정을 내려 복제본을 늘린다. 계정 쿼터가 부족하거나 새 인스턴스 이미지 검증이 끝나지 않았으면 증설 전이를 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"트래픽축소 허용판정","text":"낮은 부하가 축소 관찰시간 동안 지속되면 트래픽축소 허용판정을 검토한다. 진행 중 요청이 남았거나 최소 복제본 수를 깨뜨리면 인스턴스를 제거하지 않는다.","relations":["state","process","comparison","function"]}
+{"primary":"요청제한 개시판정","text":"처리 지연과 오류율이 보호 기준을 넘으면 요청제한 개시판정을 내린다. 장애 대신 측정 수집기 오류가 확인되거나 긴급 요청 예외가 적용되면 일반 제한 전이를 억제한다.","relations":["state","process","boundary","classification"]}
+{"primary":"요청제한 해제판정","text":"용량과 오류율이 연속 관찰창에서 정상으로 돌아오면 요청제한 해제판정을 검토한다. 대기열이 아직 상한이거나 하류 서비스가 저하 상태이면 전면 해제를 보류한다.","relations":["state","process","attribute","boundary"]}
+{"primary":"백엔드풀 추가판정","text":"새 백엔드가 상태검사와 설정 검증을 통과하면 백엔드풀 추가판정을 내려 요청 대상으로 넣는다. 배포 버전이 승인 목록과 다르거나 예열이 끝나지 않았으면 추가하지 않는다.","relations":["state","process","classification","function"]}
+{"primary":"백엔드풀 제거판정","text":"한 백엔드의 연속 상태검사가 실패하면 백엔드풀 제거판정을 검토한다. 검사기 자체 장애가 확인되거나 진행 중 연결 배출이 끝나지 않았으면 즉시 제거하지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"상태실패 격리판정","text":"응답 오류와 자원 이상이 같은 인스턴스에서 반복되면 상태실패 격리판정을 내린다. 단일 일시 오류이고 독립 검사들이 정상이라면 서비스 풀 격리를 억제한다.","relations":["state","process","classification","boundary"]}
+{"primary":"예비풀 전환판정","text":"주 풀의 가용 용량이 수요 아래이고 예비 풀 검사가 통과되면 예비풀 전환판정을 내린다. 예비 풀의 데이터 접근이나 보안 정책이 미검증이면 트래픽을 넘기지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"세션재배치 허용판정","text":"기존 세션 대상이 배출 상태이고 공유 세션 저장소가 최신이면 세션재배치 허용판정을 검토한다. 쓰기 동기화가 지연되거나 멱등 키가 없으면 강제 재매핑을 억제한다.","relations":["state","process","attribute","role"]}
+{"primary":"카나리증량 승인판정","text":"새 버전의 오류율과 지연이 대조군보다 나쁘지 않으면 카나리증량 승인판정을 내린다. 표본 수가 부족하거나 핵심 기능 검사가 미완료이면 유량 비율을 높이지 않는다.","relations":["state","process","comparison","role"]}
+{"primary":"자동확장 실행판정","text":"부하 지표가 확장 기준을 충족하고 배치 가능한 노드가 있으면 자동확장 실행판정을 내린다. 최근 확장 뒤 냉각시간이 남았거나 지표가 결측이면 추가 복제본 생성을 억제한다.","relations":["state","process","function","boundary"]}
+{"primary":"확장냉각 유지판정","text":"복제본 추가 직후 부하가 아직 높아도 확장냉각 유지판정으로 관찰 상태를 유지한다. 새 복제본이 준비에 실패하거나 오류율이 급증하면 냉각 대기 대신 실패 대응으로 전환한다.","relations":["state","process","attribute","boundary"]}
+{"primary":"예약용량 사용판정","text":"일반 풀이 포화되고 예약 인스턴스가 준비되면 예약용량 사용판정을 내려 새 작업을 배치한다. 예약 용량의 이미지나 네트워크 검증이 끝나지 않았으면 투입을 억제한다.","relations":["state","process","classification","function"]}
+{"primary":"버스트쿼터 허용판정","text":"단기 부하가 기본 한도를 넘고 버스트 잔량이 충분하면 버스트쿼터 허용판정을 내린다. 비용 상한을 초과하거나 핵심 계정의 보장량을 침해하면 추가 사용을 막는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"파드스케줄 승인판정","text":"파드 자원 요청과 노드 여유가 일치하면 파드스케줄 승인판정을 내려 노드에 배치한다. 격리 규칙이나 지역 제약을 위반하면 용량이 있어도 스케줄하지 않는다.","relations":["state","process","part_of","classification"]}
+{"primary":"이미지기동 허용판정","text":"컨테이너 이미지 서명과 설정 체크섬이 승인값과 일치하면 이미지기동 허용판정을 내린다. 취약점 차단 등급이거나 필수 비밀정보가 없으면 프로세스를 시작하지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"반복충돌 격리판정","text":"같은 컨테이너가 재시작 한도 안에서 연속 실패하면 반복충돌 격리판정을 내려 요청 풀에서 뺀다. 일시 종료이고 다음 상태검사가 정상이라면 격리를 억제한다.","relations":["state","process","classification","boundary"]}
+{"primary":"컨테이너 재기동판정","text":"종료 원인이 해소되고 이미지와 설정 검증이 통과되면 컨테이너 재기동판정을 검토한다. 데이터 마이그레이션이 진행 중이거나 동일 원인이 남아 있으면 재기동하지 않는다.","relations":["state","process","function","attribute"]}
+{"primary":"노드스케줄 차단판정","text":"노드의 하드웨어 경보나 계획 정비가 확인되면 노드스케줄 차단판정을 내린다. 경보가 시험 신호이고 독립 상태가 정상이라면 새 배치 차단을 억제한다.","relations":["state","process","boundary","classification"]}
+{"primary":"노드배출 실행판정","text":"스케줄 차단 뒤 대체 노드 용량과 종료 유예가 확보되면 노드배출 실행판정을 내린다. 지역 중복성이 부족하거나 중단 불가 작업이 남았으면 배출을 보류한다.","relations":["state","process","function","role"]}
+{"primary":"장애노드 교체판정","text":"노드 장애가 재부팅으로 복구되지 않고 워크로드 배출이 끝나면 장애노드 교체판정을 내린다. 연결 볼륨 분리나 로그 수집이 미완료이면 노드를 폐기하지 않는다.","relations":["state","process","part_of","boundary"]}
+{"primary":"가상머신 기동판정","text":"용량 수요가 있고 승인 이미지와 네트워크가 준비되면 가상머신 기동판정을 내린다. 계정 쿼터 부족이나 디스크 암호키 오류가 있으면 전원 전이를 억제한다.","relations":["state","process","function","attribute"]}
+{"primary":"가상머신 종료판정","text":"유휴 시간이 기준을 넘고 연결 배출이 완료되면 가상머신 종료판정을 검토한다. 미반영 쓰기나 종료 금지 작업이 남아 있으면 전원을 끄지 않는다.","relations":["state","process","boundary","function"]}
+{"primary":"CPU등급 상향판정","text":"CPU 포화와 실행 대기가 함께 지속되면 CPU등급 상향판정을 내릴 수 있다. 소프트웨어 교착이 원인이거나 상위 등급의 호스트 여유가 없으면 크기 변경을 억제한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"메모리등급 상향판정","text":"메모리 압박과 회수 지연이 같은 인스턴스에서 반복되면 메모리등급 상향판정을 검토한다. 누수 원인 분석이 없거나 새 등급의 비용 상한을 넘으면 즉시 전환하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"메모리초과 대응판정","text":"컨테이너가 메모리 한도로 종료되고 원인 지표가 일치하면 메모리초과 대응판정을 내린다. 단순 운영자 종료나 노드 재부팅 사건이면 메모리 증설 상태로 잘못 분류하지 않는다.","relations":["state","process","classification","attribute"]}
+{"primary":"회수통지 대피판정","text":"회수형 인스턴스의 종료 통지가 도착하면 회수통지 대피판정으로 체크포인트와 작업 이동을 시작한다. 대체 용량이 없거나 체크포인트가 손상됐으면 즉시 원 인스턴스를 종료하지 않는다.","relations":["state","process","boundary","function"]}
+{"primary":"일반용량 대체판정","text":"회수형 자원 종료와 일반 인스턴스 준비가 함께 확인되면 일반용량 대체판정을 내린다. 작업 상태가 체크포인트와 맞지 않거나 네트워크 정책이 다르면 역할을 넘기지 않는다.","relations":["state","process","role","attribute"]}
+{"primary":"가용영역 우회판정","text":"한 가용영역의 용량 부족과 다른 영역의 여유가 확인되면 가용영역 우회판정을 내린다. 데이터 지역성이나 지연 상한을 위반하면 원격 영역 배치를 억제한다.","relations":["state","process","classification","boundary"]}
+{"primary":"컴퓨트정상화 판정","text":"부하와 오류율이 관찰시간 동안 안정되면 컴퓨트정상화 판정을 검토해 임시 용량을 줄인다. 대기열이나 복제 지연이 남아 있으면 기준 배치로 복귀하지 않는다.","relations":["state","process","comparison","role"]}
+{"primary":"신규배포 개시판정","text":"릴리스 이미지와 변경 승인이 모두 유효하면 신규배포 개시판정을 내려 첫 복제본을 교체한다. 오류 예산이 소진됐거나 백업 지점이 없으면 배포 전이를 억제한다.","relations":["state","process","role","boundary"]}
+{"primary":"순차배포 계속판정","text":"교체된 복제본의 상태검사와 핵심 지표가 정상이고 오류 예산이 남아 있으면 순차배포 계속판정을 내린다. 표본이 부족하거나 구버전과의 데이터 호환이 깨지면 다음 교체를 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"카나리승격 최종판정","text":"카나리 버전이 충분한 요청에서 기능·지연·오류 기준을 모두 통과하면 카나리승격 최종판정을 내린다. 미검증 사용자군이 남았거나 데이터 쓰기 호환이 불명확하면 주 버전 전환을 억제한다.","relations":["state","process","role","attribute"]}
+{"primary":"배포롤백 실행판정","text":"새 버전의 오류율이 중단 기준을 넘고 직전 버전이 정상 대기 중이면 배포롤백 실행판정을 내린다. 스키마가 이미 비호환 상태이거나 이전 이미지 검증이 끝나지 않았으면 자동 롤백을 억제한다.","relations":["state","process","boundary","function"]}
+{"primary":"설정적용 허용판정","text":"새 설정의 구문과 체크섬이 승인값과 일치하면 설정적용 허용판정을 내려 프로세스에 재적재한다. 필수 키가 빠졌거나 비밀값 권한이 없으면 적용 전이를 억제한다.","relations":["state","process","attribute","boundary"]}
+{"primary":"기능플래그 활성판정","text":"대상 사용자군과 기능 시험이 모두 준비되면 기능플래그 활성판정을 내린다. 실험 대조군이 정의되지 않았거나 롤백 경로가 없으면 기능 노출을 시작하지 않는다.","relations":["state","process","classification","function"]}
+{"primary":"스키마변경 준비판정","text":"호환성 검사와 복구 가능한 백업 지점이 모두 확보되면 스키마변경 준비판정을 내린다. 장기 트랜잭션이 남았거나 구버전 애플리케이션이 새 구조를 읽지 못하면 변경을 억제한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"스키마변경 실행판정","text":"변경 준비와 쓰기 배출이 완료되면 스키마변경 실행판정을 내려 승인된 구조를 적용한다. 복제 지연이 상한을 넘거나 잠금 예상시간이 정비 창보다 길면 실행하지 않는다.","relations":["state","process","function","comparison"]}
+{"primary":"스키마호환 복구판정","text":"새 구조에서 오류가 반복되고 역변환 검사가 통과되면 스키마호환 복구판정을 검토한다. 변경 뒤 생성된 데이터를 잃을 가능성이 있거나 백업이 불완전하면 역마이그레이션을 억제한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"릴리스동결 진입판정","text":"오류 예산 소진이나 중대 장애가 확인되면 릴리스동결 진입판정을 내려 신규 변경을 막는다. 승인된 보안 긴급수정이거나 동결 신호가 오탐으로 확인되면 일반 차단을 예외 처리한다.","relations":["state","process","boundary","role"]}
+{"primary":"주데이터베이스 장애판정","text":"상태검사 실패와 쓰기 응답 중단이 함께 지속되면 주데이터베이스 장애판정을 내린다. 네트워크 검사기만 고장이고 로컬 트랜잭션이 정상이라면 주 역할 상실로 전환하지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"복제본 승격허용판정","text":"주 데이터베이스 장애와 복제본 로그 동기화가 확인되면 복제본 승격허용판정을 내린다. 복제 지연이 허용 손실 범위를 넘거나 다른 주 노드가 살아 있으면 승격을 억제한다.","relations":["state","process","role","boundary"]}
+{"primary":"복제로그 추격판정","text":"복제본이 뒤처지고 주 로그가 보존돼 있으면 복제로그 추격판정을 내려 누락 구간을 적용한다. 체크섬 불일치나 로그 단절이 있으면 계속 재생하지 않고 새 기준 복사를 요구한다.","relations":["state","process","attribute","boundary"]}
+{"primary":"읽기전용 진입판정","text":"데이터 일관성 위험이나 저장공간 고갈이 확인되면 읽기전용 진입판정을 내려 새 쓰기를 막는다. 단일 경보가 오탐이고 독립 용량 지표가 정상이면 쓰기 차단을 억제한다.","relations":["state","process","boundary","function"]}
+{"primary":"쓰기복구 허용판정","text":"일관성 검사와 저장 여유가 회복되면 쓰기복구 허용판정을 검토한다. 복제본 동기화가 끝나지 않았거나 이전 주 노드가 분리되지 않았으면 쓰기를 열지 않는다.","relations":["state","process","function","attribute"]}
+{"primary":"연결풀 증설판정","text":"연결 대기와 데이터베이스 여유가 함께 확인되면 연결풀 증설판정을 내릴 수 있다. 데이터베이스 최대 연결에 가깝거나 쿼리 지연 원인이 잠금이면 풀 상향을 억제한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"교착작업 중단판정","text":"잠금 그래프가 순환하고 진행 가능 작업이 없으면 교착작업 중단판정으로 한 트랜잭션을 선택한다. 중단 대상이 보상 불가 작업이거나 우선순위 정책이 없으면 자동 희생을 억제한다.","relations":["state","process","classification","boundary"]}
+{"primary":"스냅숏 시작판정","text":"복구 지점 요구와 저장 여유가 확인되면 스냅숏 시작판정을 내려 일관된 블록 복사를 시작한다. 장기 쓰기 정지가 예상되거나 암호키 접근이 실패하면 실행을 보류한다.","relations":["state","process","function","attribute"]}
+{"primary":"스냅숏 완료판정","text":"모든 블록 전송과 목록 체크섬이 일치하면 스냅숏 완료판정을 내린다. 누락 블록이나 키 검증 실패가 하나라도 있으면 완료 상태로 승격하지 않는다.","relations":["state","process","part_of","boundary"]}
+{"primary":"복구지점 선택판정","text":"손상 시각과 업무 손실 허용량이 확인되면 복구지점 선택판정으로 사용할 백업과 로그 범위를 정한다. 원인 시각이 불명확하거나 백업 무결성이 미검증이면 복원을 시작하지 않는다.","relations":["state","process","classification","role"]}
+{"primary":"데이터복원 개시판정","text":"선택한 백업과 빈 복구 환경이 준비되면 데이터복원 개시판정을 내려 스냅숏과 로그를 적용한다. 대상 환경의 암호키나 저장 용량이 부족하면 복원 전이를 억제한다.","relations":["state","process","function","boundary"]}
+{"primary":"시점복구 완료판정","text":"지정 시점까지 로그가 순서대로 적용되고 마지막 위치가 일치하면 시점복구 완료판정을 내린다. 로그 공백이나 재생 오류가 남으면 데이터베이스를 열지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"복구일관성 승인판정","text":"키 수와 합계, 참조 검사가 원본 기준과 일치하면 복구일관성 승인판정을 내린다. 비교 기준이 오래됐거나 중요 테이블 검사가 누락되면 서비스 연결을 억제한다.","relations":["state","process","role","attribute"]}
+{"primary":"샤드분할 실행판정","text":"한 샤드의 용량과 지연이 분할 기준을 넘고 새 노드가 준비되면 샤드분할 실행판정을 내린다. 안정된 키 경계가 없거나 양쪽 쓰기를 동기화할 수 없으면 분할하지 않는다.","relations":["state","process","part_of","boundary"]}
+{"primary":"샤드이동 완료판정","text":"키 범위 복사와 체크섬, 라우팅 전환이 모두 끝나면 샤드이동 완료판정을 내린다. 원 노드에 미반영 쓰기가 남았거나 새 소유자가 읽기 실패하면 완료로 보지 않는다.","relations":["state","process","role","attribute"]}
+{"primary":"데이터베이스 상향판정","text":"CPU·메모리 포화와 쿼리 대기가 함께 지속되면 데이터베이스 상향판정을 검토한다. 잠금 경합이 원인이거나 새 등급의 저장 호환성이 미검증이면 크기를 바꾸지 않는다.","relations":["state","process","comparison","attribute"]}
+{"primary":"데이터베이스 하향판정","text":"낮은 사용률이 관찰기간 동안 유지되고 여유 용량이 충분하면 데이터베이스 하향판정을 내릴 수 있다. 피크 수요 예측이 상위 등급을 요구하거나 복구 시간 목표를 깨뜨리면 축소를 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"정비모드 진입판정","text":"승인된 정비 창과 연결 배출이 모두 확인되면 정비모드 진입판정을 내려 일반 요청을 막는다. 장기 트랜잭션이 남았거나 대체 데이터베이스가 준비되지 않았으면 진입하지 않는다.","relations":["state","process","boundary","role"]}
+{"primary":"엔진패치 적용판정","text":"정비모드와 복구 지점이 준비되고 패치 검증이 통과되면 엔진패치 적용판정을 내린다. 버전 호환 검사나 롤백 패키지가 없으면 적용을 억제한다.","relations":["state","process","classification","function"]}
+{"primary":"데이터베이스 복귀판정","text":"패치 뒤 기능·성능·복제 검사가 모두 통과하면 데이터베이스 복귀판정으로 일반 연결을 연다. 관찰시간이 부족하거나 오류 지표가 남으면 정비 상태를 유지한다.","relations":["state","process","role","boundary"]}
+{"primary":"캐시예열 개시판정","text":"새 캐시 군집이 비어 있고 기준 데이터의 읽기 부하가 허용 범위이면 캐시예열 개시판정을 내려 자주 쓰는 항목부터 적재한다.","relations":["state","process","function","attribute"]}
+{"primary":"캐시예열 종료판정","text":"목표 키의 적재율과 적중률이 기준을 넘으면 캐시예열 종료판정으로 일반 트래픽을 받는다. 표본 요청이 적거나 만료 설정이 잘못됐으면 종료 상태로 바꾸지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"캐시우회 활성판정","text":"캐시 응답 오류와 지연이 함께 치솟고 원본 저장소에 여유가 있으면 캐시우회 활성판정을 내린다. 원본도 포화 상태이거나 데이터베이스 보호 한도가 낮으면 우회를 억제한다.","relations":["state","process","function","comparison"]}
+{"primary":"캐시페일오버 전환판정","text":"주 캐시 노드의 장애가 확인되고 대기 군집의 복제 시점이 충분히 최신이면 캐시페일오버 전환판정을 내린다. 키 공간 불일치나 네트워크 분할이 남으면 대기 군집을 승격하지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"캐시무효화 실행판정","text":"원본 값이 변경되고 영향을 받는 키 범위가 확정되면 캐시무효화 실행판정을 내려 낡은 항목을 제거한다. 범위가 과도하게 넓거나 새 값 반영이 끝나지 않았으면 전체 무효화를 보류한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"캐시재구축 완료판정","text":"무효화 뒤 새 값이 채워지고 표본 키의 버전이 원본과 일치하면 캐시재구축 완료판정을 내린다. 이전 세대 키가 남았거나 적중률이 안정되지 않으면 완료로 보지 않는다.","relations":["state","process","attribute","classification"]}
+{"primary":"대기열 소비자 증설판정","text":"메시지 적체량과 대기 시간이 함께 증가하고 처리 노드 용량이 남아 있으면 대기열 소비자 증설판정을 내린다. 하류 서비스가 제한 중이거나 순서 보장 폭을 넘으면 증설을 억제한다.","relations":["state","process","comparison","function"]}
+{"primary":"대기열 소비자 축소판정","text":"적체가 해소되고 소비자 유휴율이 관찰 구간 내내 높으면 대기열 소비자 축소판정을 내릴 수 있다. 예약 작업이 곧 시작되거나 최소 병렬도가 필요한 파티션이 있으면 축소하지 않는다.","relations":["state","process","comparison","part_of"]}
+{"primary":"배달실패 격리판정","text":"같은 메시지가 재시도 한도를 넘고 변환 오류가 반복되면 배달실패 격리판정으로 별도 대기열에 옮긴다. 일시적인 하류 지연이 원인이거나 재시도 횟수가 잘못 집계됐으면 격리하지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"메시지재생 시작판정","text":"격리 원인이 수정되고 처리기의 멱등성이 검증되면 메시지재생 시작판정을 내려 원래 순서에 맞춰 다시 전달한다. 중복 방지 키가 없거나 하류 용량이 부족하면 재생 전이를 막는다.","relations":["state","process","function","boundary"]}
+{"primary":"메시지재생 종료판정","text":"격리된 메시지가 모두 처리되고 중복·누락 검사가 통과되면 메시지재생 종료판정을 내린다. 미확인 실패 항목이나 순서 위반이 남으면 정상 소비 상태로 돌아가지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"파티션재배치 개시판정","text":"대기열 파티션 간 적체 편차가 커지고 새 소비자 소유권이 준비되면 파티션재배치 개시판정을 내린다. 처리 중인 오프셋을 확정할 수 없거나 균형 조정이 이미 진행 중이면 개시를 억제한다.","relations":["state","process","comparison","role"]}
+{"primary":"파티션재배치 완료판정","text":"파티션재배치 완료판정은 각 파티션의 새 소유 노드와 시작 오프셋이 모두 대응될 때만 내린다. 둘 이상의 소유자나 배정되지 않은 구간이 하나라도 남으면 재배치를 완료로 승격하지 않는다.","relations":["state","process","part_of","boundary"]}
+{"primary":"객체업로드 허용판정","text":"저장 공간과 쓰기 권한, 객체 키가 모두 유효하면 객체업로드 허용판정으로 전송을 시작한다. 동일 키에 잠긴 쓰기가 있거나 악성 파일 검사가 대기 중이면 업로드를 막는다.","relations":["state","process","function","classification"]}
+{"primary":"분할업로드 완료판정","text":"모든 조각의 번호와 체크섬이 목록과 일치하면 분할업로드 완료판정을 내려 하나의 객체로 결합한다. 빠진 조각이나 중복 번호가 있으면 완료 요청을 거부한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"객체버전 교체판정","text":"새 객체의 무결성과 메타데이터가 검증되고 교체 승인이 있으면 객체버전 교체판정을 내린다. 읽기 호환성이 깨지거나 이전 버전 보존 정책이 충족되지 않으면 현재 버전을 유지한다.","relations":["state","process","classification","boundary"]}
+{"primary":"보관계층 이동판정","text":"접근 빈도가 기준 아래로 내려가고 보존 기간이 남아 있으면 보관계층 이동판정으로 객체를 저비용 계층에 옮긴다. 법적 보류가 걸렸거나 가까운 시일의 복원 요청이 예정되면 이동하지 않는다.","relations":["state","process","comparison","role"]}
+{"primary":"보관객체 복원판정","text":"복원 요청의 우선순위와 보관 매체 상태가 확인되면 보관객체 복원판정을 내려 온라인 사본을 만든다. 암호키를 사용할 수 없거나 복원 비용 한도가 승인되지 않으면 전이를 억제한다.","relations":["state","process","function","attribute"]}
+{"primary":"블록볼륨 연결판정","text":"대상 인스턴스와 볼륨의 영역이 같고 장치 슬롯이 비어 있으면 블록볼륨 연결판정을 내린다. 볼륨이 다른 노드에 단독 연결돼 있거나 파일시스템 검사가 끝나지 않았으면 연결하지 않는다.","relations":["state","process","part_of","boundary"]}
+{"primary":"블록볼륨 분리판정","text":"쓰기 입출력이 멈추고 파일시스템이 안전하게 해제되면 블록볼륨 분리판정으로 인스턴스와의 연결을 끊는다. 열린 쓰기 핸들이나 미반영 캐시가 남으면 분리를 억제한다.","relations":["state","process","function","boundary"]}
+{"primary":"블록볼륨 확장판정","text":"남은 공간이 임계치 아래이고 상위 용량의 할당 한도가 확보되면 블록볼륨 확장판정을 내린다. 스냅숏이 실패했거나 파일시스템이 새 크기를 지원하지 않으면 확장을 시작하지 않는다.","relations":["state","process","comparison","attribute"]}
+{"primary":"저장경로 저하판정","text":"입출력 지연과 오류율이 동시에 상승하면 저장경로 저하판정으로 비필수 쓰기를 줄인다. 단일 측정기의 오차이거나 대체 경로도 더 느리면 자동 전환을 억제한다.","relations":["state","process","attribute","boundary"]}
+{"primary":"스토리지 대체판정","text":"저하된 저장경로의 장애가 지속되고 복제 사본이 최신이면 스토리지 대체판정을 내려 대기 장치로 읽기·쓰기를 옮긴다. 복제 지연이 허용 손실량을 넘거나 키가 불일치하면 대체하지 않는다.","relations":["state","process","role","comparison"]}
+{"primary":"DNS 가중치 전환판정","text":"새 엔드포인트의 건강 검사와 응답 품질이 통과되면 DNS 가중치 전환판정으로 질의 비중을 늘린다. 전파 지연이 측정되지 않았거나 기존 경로의 세션 보존이 필요하면 급격한 전환을 막는다.","relations":["state","process","comparison","function"]}
+{"primary":"DNS 복구판정","text":"원래 엔드포인트가 관찰기간 동안 정상이고 캐시된 실패 응답이 사라지면 DNS 복구판정으로 기본 가중치를 되돌린다. 일부 지역에서 오류가 남거나 TTL 경과가 확인되지 않으면 복귀하지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"인증서 교체판정","text":"새 인증서의 체인·호스트명·유효기간이 검증되고 모든 종단점에 배포되면 인증서 교체판정을 내린다. 개인키 접근 권한이 과도하거나 구형 클라이언트 호환 검사가 실패하면 활성화하지 않는다.","relations":["state","process","classification","attribute"]}
+{"primary":"인증서 폐기판정","text":"대체 인증서 사용이 확인되고 이전 키의 노출 위험이 확정되면 인증서 폐기판정으로 신뢰 목록에서 제거한다.","relations":["state","process","boundary","part_of"]}
+{"primary":"방화벽규칙 적용판정","text":"요청된 통신 경로와 최소 포트 범위가 승인되면 방화벽규칙 적용판정을 내려 정책을 배포한다. 출발지 범위가 불명확하거나 기존 차단 규칙과 충돌하면 적용을 억제한다.","relations":["state","process","classification","boundary"]}
+{"primary":"회로차단기 개방판정","text":"하류 호출의 연속 실패와 지연 초과가 설정값을 넘으면 회로차단기 개방판정으로 새 호출을 즉시 차단한다. 표본 수가 부족하거나 실패가 호출자 오류로 판명되면 회로를 열지 않는다.","relations":["state","process","function","comparison"]}
+{"primary":"회로차단기 복귀판정","text":"시험 호출이 연속 성공하고 하류 지연이 안정 범위로 돌아오면 회로차단기 복귀판정으로 정상 호출을 재개한다. 반개방 단계의 표본이 부족하거나 오류율이 다시 오르면 닫힘 상태로 전환하지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"경보활성 전환판정","text":"지표가 지속시간과 심각도 기준을 모두 넘으면 경보활성 전환판정으로 담당자 호출을 시작한다. 일시적 결측 보간이나 예정된 시험 신호이면 활성 상태로 바꾸지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"경보해제 전환판정","text":"원인 지표가 정상 범위에서 안정되고 미처리 사건이 없으면 경보해제 전환판정을 내린다. 단순 수집 중단으로 값이 사라졌거나 재발 관찰시간이 지나지 않았으면 해제하지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"관측샘플링 상향판정","text":"간헐 오류의 원인을 구분할 정보가 부족하고 수집 비용 여유가 있으면 관측샘플링 상향판정으로 표본 비율을 높인다. 민감정보 마스킹이 불완전하거나 저장 한도를 넘으면 상향을 억제한다.","relations":["state","process","comparison","function"]}
+{"primary":"관측샘플링 복원판정","text":"원인 분석에 필요한 표본이 확보되고 장애 지표가 안정되면 관측샘플링 복원판정으로 평상시 비율을 되돌린다. 후속 검증이 진행 중이거나 희귀 오류가 계속되면 높은 비율을 유지한다.","relations":["state","process","attribute","role"]}
+{"primary":"로그보존 연장판정","text":"보안 사건이나 장애 분석의 증거 범위가 확정되면 로그보존 연장판정으로 해당 기간의 만료를 막는다. 개인정보 보유 근거가 없거나 암호화 저장 공간이 부족하면 무기한 연장을 허용하지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"추적수집 활성판정","text":"서비스 간 호출 경로가 불명확하고 추적 식별자 전파가 검증되면 추적수집 활성판정으로 상세 구간을 기록한다. 인증정보가 노출되거나 처리 지연 한도를 넘으면 전면 수집을 시작하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"추적수집 축소판정","text":"병목 구간이 확인되고 기본 지표만으로 재발을 감시할 수 있으면 추적수집 축소판정으로 상세 표본을 줄인다. 원인 후보가 둘 이상 남았거나 상관관계 검증이 끝나지 않았으면 축소하지 않는다.","relations":["state","process","comparison","classification"]}
+{"primary":"서비스수준 소진판정","text":"오류 예산 소비율이 여러 관찰창에서 동시에 한도를 넘으면 서비스수준 소진판정으로 비필수 변경을 중단한다. 계산 창이 불완전하거나 제외하기로 한 시험 트래픽이면 소진 상태를 선언하지 않는다.","relations":["state","process","attribute","comparison"]}
+{"primary":"변경동결 발동판정","text":"서비스수준 소진이나 광범위 장애가 확인되면 변경동결 발동판정으로 긴급 복구 외의 배포를 막는다. 사건 영향이 국소적이고 변경이 직접 완화책으로 승인됐으면 그 작업까지 일괄 차단하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"변경동결 해제판정","text":"핵심 지표가 회복되고 미해결 고위험 변경이 없으면 변경동결 해제판정으로 일반 배포를 다시 허용한다. 오류 예산 회복 근거가 부족하거나 사고 후속 조치가 미완료이면 동결을 유지한다.","relations":["state","process","role","attribute"]}
+{"primary":"접근토큰 발급판정","text":"사용자 인증과 요청 권한 범위가 확인되면 접근토큰 발급판정으로 제한된 수명의 자격을 만든다. 기기 신뢰 검사가 실패하거나 요구 권한이 역할 범위를 넘으면 발급하지 않는다.","relations":["state","process","role","classification"]}
+{"primary":"접근토큰 폐기판정","text":"계정 탈취 징후나 명시적 로그아웃이 확인되면 접근토큰 폐기판정으로 남은 유효기간과 관계없이 사용을 막는다.","relations":["state","process","boundary","part_of"]}
+{"primary":"세션강제종료 판정","text":"정책 위반 세션과 연결 주체가 확정되면 세션강제종료 판정을 내려 서버 측 상태와 갱신 자격을 제거한다.","relations":["state","process","classification","boundary"]}
+{"primary":"암호키 회전판정","text":"키의 예정 수명이 끝나거나 노출 가능성이 커지고 새 키 배포가 준비되면 암호키 회전판정을 내린다.","relations":["state","process","attribute","function"]}
+{"primary":"비밀정보 교체판정","text":"자격정보 노출이 확인되고 새 비밀값을 안전하게 전달할 경로가 있으면 비밀정보 교체판정으로 기존 값을 무효화한다. 사용처 목록이 불완전하거나 교체 뒤 검증 절차가 없으면 먼저 의존성을 확인한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"권한상향 승인판정","text":"업무 목적과 만료 시각, 승인자가 모두 확인되면 권한상향 승인판정으로 필요한 범위만 임시 부여한다. 상시 권한으로 대체되거나 직무 분리 원칙을 깨뜨리면 승격을 허용하지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"권한회수 실행판정","text":"업무 종료나 계정 상태 변경이 확인되면 권한회수 실행판정으로 역할 연결과 활성 자격을 제거한다. 소유권 이전이 끝나지 않았거나 긴급 대응 책임이 남아 있으면 대체 담당자를 먼저 지정한다.","relations":["state","process","role","part_of"]}
+{"primary":"웹방화벽 차단판정","text":"요청 특징이 검증된 공격 서명과 일치하고 정상 트래픽 영향이 제한적이면 웹방화벽 차단판정으로 규칙을 활성화한다. 오탐 표본이 많거나 우회 경로가 더 큰 위험을 만들면 전면 차단을 억제한다.","relations":["state","process","classification","comparison"]}
+{"primary":"디도스완화 활성판정","text":"분산 출발지의 비정상 요청량이 용량 한도를 위협하면 디도스완화 활성판정으로 흡수망과 속도 제한을 켠다. 합법적인 대형 행사가 원인이거나 출발지 판별 신뢰도가 낮으면 무차별 폐기를 피한다.","relations":["state","process","function","boundary"]}
+{"primary":"구성편차 복원판정","text":"실행 환경의 설정이 승인된 기준과 다르고 변경 기록이 없으면 구성편차 복원판정으로 기준값을 다시 적용한다. 긴급 변경 승인이 유효하거나 현재 값이 장애 완화에 필요하면 자동 복원을 보류한다.","relations":["state","process","comparison","classification"]}
+{"primary":"지역장애 선언판정","text":"한 지역의 전원·네트워크·핵심 서비스 실패가 독립 관측에서 함께 확인되면 지역장애 선언판정을 내린다. 단일 가용영역 문제이거나 관측망 자체의 결함이면 지역 전체 장애로 확대하지 않는다.","relations":["state","process","part_of","boundary"]}
+{"primary":"보조리전 승격판정","text":"주 지역 장애가 선언되고 보조 지역의 데이터 지연과 용량이 허용 범위이면 보조리전 승격판정을 내린다. 복제 손실이 목표치를 넘거나 쓰기 충돌 해결자가 준비되지 않았으면 승격을 억제한다.","relations":["state","process","role","comparison"]}
+{"primary":"지역트래픽 전환판정","text":"보조 지역의 건강 검사와 주요 거래 시험이 통과되면 지역트래픽 전환판정으로 진입 요청을 옮긴다. DNS 전파 상태가 불명확하거나 기존 세션을 안전하게 종료할 수 없으면 전면 전환하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"교차리전 복제중단판정","text":"손상 데이터가 원격 사본으로 퍼질 가능성이 확인되면 교차리전 복제중단판정으로 전송 채널을 멈춘다. 단순 지연만 관측됐거나 어느 사본이 정상인지 구분되지 않으면 성급히 연결을 끊지 않는다.","relations":["state","process","boundary","classification"]}
+{"primary":"교차리전 복제재개판정","text":"정상 기준점과 전송 방향이 확정되고 누락 로그를 검증했으면 교차리전 복제재개판정으로 동기화를 다시 시작한다. 충돌 기록이 남았거나 대상 저장소의 쓰기 차단이 풀리지 않았으면 재개하지 않는다.","relations":["state","process","attribute","role"]}
+{"primary":"재해복구 절차개시판정","text":"서비스 중단 예상시간이 복구 목표를 넘고 일반 복구 경로가 실패하면 재해복구 절차개시판정을 내린다.","relations":["state","process","comparison","role"]}
+{"primary":"복구환경 기동판정","text":"복구 위치의 네트워크·암호키·기본 이미지가 준비되면 복구환경 기동판정으로 필수 계층부터 실행한다. 구성 기준이 오래됐거나 격리 경계가 검증되지 않았으면 업무 서비스를 올리지 않는다.","relations":["state","process","part_of","classification"]}
+{"primary":"복구환경 검증판정","text":"복구 환경에서 인증·읽기·쓰기·외부 연계 시험이 모두 성공하면 복구환경 검증판정을 내린다. 시험 데이터가 실제 경로를 지나지 않았거나 감사 로그가 빠졌으면 사용자 트래픽을 허용하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"원리전 복귀판정","text":"원래 지역이 충분한 관찰기간 동안 안정되고 역복제 차이가 해소되면 원리전 복귀판정으로 트래픽을 단계적으로 돌린다.","relations":["state","process","comparison","attribute"]}
+{"primary":"재해복구 종료판정","text":"주요 서비스와 데이터 일관성, 운영 책임 이관이 모두 확인되면 재해복구 종료판정을 내린다. 임시 우회가 남았거나 복구 증거가 보존되지 않았으면 사건을 정상 운영으로 닫지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"사고초기선언판정","text":"사용자 영향과 핵심 지표 이상이 서로 맞물리면 사고초기선언판정으로 공동 대응 채널을 연다. 영향 증거가 없고 단일 시험 요청만 실패했으면 운영 사고로 선언하지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"사고등급 상향판정","text":"영향 사용자·지역·기능 범위가 기존 등급의 기준을 넘으면 사고등급 상향판정으로 더 넓은 대응 체계를 호출한다. 중복 신고가 규모를 부풀렸거나 완화 뒤 수치가 빠르게 회복되면 상향을 보류한다.","relations":["state","process","comparison","classification"]}
+{"primary":"사고지휘자 지정판정","text":"복수 팀의 조율이 필요하고 대응 권한을 가진 담당자가 참여하면 사고지휘자 지정판정으로 한 사람에게 의사결정 창구를 모은다.","relations":["state","process","role","boundary"]}
+{"primary":"완화책 실행판정","text":"원인 후보와 무관하게 사용자 피해를 줄이는 조치가 검증되면 완화책 실행판정으로 제한된 범위에서 적용한다. 되돌리기 어렵거나 더 큰 데이터 손실을 만들 수 있으면 실행을 억제한다.","relations":["state","process","function","comparison"]}
+{"primary":"임시우회 승인판정","text":"정상 경로의 복구가 늦고 우회 경로가 필수 기능을 안전하게 제공하면 임시우회 승인판정으로 트래픽 일부를 옮긴다. 보안 통제가 빠지거나 데이터 의미가 달라지면 편의만으로 승인하지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"원인후보 축소판정","text":"시간선과 실험 결과가 일부 가설을 반복해서 배제하면 원인후보 축소판정으로 조사 대상을 줄인다. 관측 공백이 크거나 같은 증거가 여러 가설을 설명하면 성급히 하나만 남기지 않는다.","relations":["state","process","classification","comparison"]}
+{"primary":"근본원인 확정판정","text":"재현 실험과 로그가 동일한 고장 경로를 가리키고 반증 시험도 통과하면 근본원인 확정판정을 내린다. 단순한 시간적 동시성이나 완화 성공만으로는 원인 상태를 확정하지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"영구수정 배포판정","text":"근본원인을 제거하는 변경이 격리 환경에서 검증되고 롤백 경로가 준비되면 영구수정 배포판정을 내린다. 임시 완화와 충돌하거나 데이터 이전이 미완료이면 운영 반영을 늦춘다.","relations":["state","process","function","part_of"]}
+{"primary":"안정관찰 진입판정","text":"영구수정 뒤 핵심 지표가 회복되고 신규 오류가 없으면 안정관찰 진입판정으로 변경 없이 추세를 지켜본다. 표본량이 부족하거나 트래픽이 평소보다 낮으면 해결 선언으로 바로 넘어가지 않는다.","relations":["state","process","attribute","comparison"]}
+{"primary":"사고해결 선언판정","text":"사용자 영향이 사라지고 임시 조치의 소유자와 후속 계획이 확정되면 사고해결 선언판정으로 긴급 대응을 종료한다. 미확인 데이터 손실이나 재발 경보가 남으면 해결 상태로 닫지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"서비스할당량 증액판정","text":"현재 사용량이 할당량에 근접하고 실제 수요 증가가 확인되면 서비스할당량 증액판정으로 상한을 높인다. 비정상 재시도가 사용량을 부풀렸거나 비용 승인이 없으면 증액을 억제한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"서비스할당량 축소판정","text":"장기간의 낮은 사용량과 충분한 여유가 확인되면 서비스할당량 축소판정으로 불필요한 상한을 낮춘다. 재해복구 용량이나 예정된 행사가 기존 한도를 요구하면 축소하지 않는다.","relations":["state","process","comparison","function"]}
+{"primary":"비용경보 전환판정","text":"실시간 지출과 예측 지출이 예산 기준을 함께 넘으면 비용경보 전환판정으로 소유 팀에 조치를 요구한다. 청구 지연에 따른 일시적 중복이나 승인된 일회성 비용이면 자동 차단으로 이어가지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"스폿인스턴스 대피판정","text":"회수 예고가 도착하고 대체 노드에 수용 공간이 있으면 스폿인스턴스 대피판정으로 작업과 연결을 이동한다. 상태 저장 작업의 체크포인트가 없거나 대체 용량이 포화이면 무리한 즉시 종료를 막는다.","relations":["state","process","role","part_of"]}
+{"primary":"외부의존성 격리판정","text":"외부 서비스의 실패가 내부 대기열과 스레드를 고갈시키면 외부의존성 격리판정으로 호출 풀과 재시도를 제한한다.","relations":["state","process","boundary","function"]}
+{"primary":"대체의존성 전환판정","text":"주 공급자의 장애가 지속되고 대체 공급자의 데이터·응답 계약이 검증되면 대체의존성 전환판정으로 호출 대상을 바꾼다.","relations":["state","process","comparison","classification"]}
+{"primary":"기능저하 모드진입판정","text":"자원이 부족해 핵심 요청까지 위험해지고 축소된 기능 경로가 준비되면 기능저하 모드진입판정으로 부가 처리를 생략한다. 생략 항목이 거래 정확성에 필수이거나 사용자 고지가 없으면 진입하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"기능저하 모드해제판정","text":"자원 여유와 의존 서비스 건강이 안정되고 누적 작업 처리 계획이 있으면 기능저하 모드해제판정으로 전체 기능을 복구한다.","relations":["state","process","attribute","part_of"]}
+{"primary":"비필수기능 중단판정","text":"핵심 경로의 지연이 한도를 넘고 부가 기능이 같은 자원을 경쟁하면 비필수기능 중단판정으로 해당 호출을 멈춘다. 부가 기능 중단이 법적 기록이나 안전 검사를 누락시키면 비필수로 분류하지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"비필수기능 복구판정","text":"핵심 경로가 정상화되고 부가 기능의 대기 작업을 감당할 여유가 있으면 비필수기능 복구판정으로 순차 재개한다. 오래된 작업을 먼저 폐기하지 않았거나 재개율 제한이 없으면 한꺼번에 열지 않는다.","relations":["state","process","function","comparison"]}
+{"primary":"정기정비 개시판정","text":"승인된 정비 시간이 도래하고 사용자 연결과 실행 작업이 안전하게 배출되면 정기정비 개시판정을 내린다. 비상 업무가 계속되거나 최신 백업을 확인하지 못했으면 예정 시각만으로 시작하지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"정기정비 연장판정","text":"필수 검증이 끝나지 않았고 중간 상태에서 복귀하는 위험이 더 크면 정기정비 연장판정으로 작업 시간을 늘린다. 추가 작업이 단순 편의이거나 사용자 고지 한도를 넘으면 무기한 연장하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"정기정비 종료판정","text":"변경 적용과 기능 시험, 감시 복구가 모두 끝나면 정기정비 종료판정으로 일반 요청을 다시 받는다. 임시 권한이나 우회 설정이 남았으면 정상 운영 상태로 전환하지 않는다.","relations":["state","process","part_of","attribute"]}
+{"primary":"긴급변경 승인판정","text":"진행 중인 장애를 줄일 변경이고 위험·복구 절차가 검토되면 긴급변경 승인판정으로 정규 대기 절차를 단축한다. 장애와 관련이 없거나 검증 책임자가 없으면 긴급하다는 주장만으로 승인하지 않는다.","relations":["state","process","role","classification"]}
+{"primary":"긴급변경 중단판정","text":"적용 중 오류가 예상 범위를 벗어나거나 사용자 영향이 더 커지면 긴급변경 중단판정으로 남은 단계를 멈춘다.","relations":["state","process","boundary","attribute"]}
+{"primary":"긴급변경 롤백판정","text":"변경 뒤 핵심 지표가 악화되고 이전 버전으로 되돌릴 경로가 검증되면 긴급변경 롤백판정을 내린다. 롤백이 새 데이터 형식을 손상시키거나 이미 비가역 이전이 끝났으면 대체 복구책을 선택한다.","relations":["state","process","function","boundary"]}
+{"primary":"이벤트재처리 개시판정","text":"처리기 결함이 수정되고 원본 이벤트와 시작 위치가 보존돼 있으면 이벤트재처리 개시판정으로 결과를 다시 계산한다.","relations":["state","process","part_of","function"]}
+{"primary":"누적작업 배출판정","text":"장애 중 쌓인 작업의 우선순위가 정해지고 하류 여유가 확보되면 누적작업 배출판정으로 제한된 속도로 처리를 늘린다.","relations":["state","process","comparison","classification"]}
+{"primary":"고객영향 공지판정","text":"영향 범위와 임시 대응, 다음 갱신 시각을 확인할 수 있으면 고객영향 공지판정으로 검증된 사실을 알린다.","relations":["state","process","role","boundary"]}
+{"primary":"운영상태 정상화판정","text":"사용자 기능과 내부 지표가 기준 범위로 돌아오고 임시 통제가 모두 인계되면 운영상태 정상화판정을 내린다.","relations":["state","process","attribute","boundary"]}

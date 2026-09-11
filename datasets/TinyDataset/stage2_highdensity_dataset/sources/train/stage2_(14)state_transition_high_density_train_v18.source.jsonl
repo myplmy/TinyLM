@@ -1,0 +1,150 @@
+{"primary":"저수지 수위자료 채택판정","text":"저수지 수위자료 채택판정은 주 계기와 보조 표척이 동일 기준에서 허용 오차 안에 맞을 때 수위를 갱신한다. 기준면이나 시각이 다르면 채택하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 수위자료 보류판정","text":"새 수위값이 들어와도 급변 검사와 인접 센서 대조를 통과하지 못하면 저수지 수위자료 보류판정으로 이전 검증값을 유지한다. 현장 확인 뒤에만 상태를 바꾼다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저수지 유입자료 갱신판정","text":"상류 유량계의 표본이 최신 시각이고 품질 표지가 유효하면 저수지 유입자료 갱신판정으로 계산 입력을 교체한다. 결측 보간과 실제 관측을 구분하지 못하면 갱신하지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"유역강우 결측억제판정","text":"일부 관측소에 큰 강우가 보여도 핵심 유역의 자료가 비어 있으면 유역강우 결측억제판정으로 총강우 확정을 막는다. 대체 레이더와 지상값이 함께 확인될 때 예측을 갱신한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"수위계 보정적용판정","text":"현장 기준표와 센서 편차가 반복 측정에서 일정하면 수위계 보정적용판정으로 새 계수를 사용한다. 기준표 자체가 흔들리거나 편차 방향이 바뀌면 보정을 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"대체수위 사용판정","text":"주 센서가 결측이고 보조 관측의 시간·기준면·정확도가 확인되면 대체수위 사용판정으로 추정 상태를 활성화한다. 불확실성이 운영 한계보다 크면 대체값을 쓰지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"저수지 유입예측 실행판정","text":"검증된 강우·유량과 최신 모형 상태가 준비되면 저수지 유입예측 실행판정으로 새 전망을 계산한다. 입력 시각이 섞이거나 모형 보정이 만료됐으면 실행을 보류한다.","relations":["state","process","function","boundary"]}
+{"primary":"유입예측 갱신억제판정","text":"새 강우 정보가 있어도 자료 범위가 이전 예측보다 좁고 신뢰도가 낮으면 유입예측 갱신억제판정으로 현 전망을 유지한다. 추가 관측이 확보된 뒤 재계산한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 상태판 갱신판정","text":"수위·유입·방류·수질의 검증 시각이 같은 운영 구간에 속하면 저수지 상태판 갱신판정으로 화면을 바꾼다. 한 항목이라도 오래되었으면 전체 최신 상태로 표시하지 않는다.","relations":["state","process","part_of","boundary"]}
+{"primary":"저수지 상태판 게시보류","text":"계산은 끝났어도 승인자 확인이나 자료 출처가 남아 있으면 저수지 상태판 게시보류로 외부 공개를 막는다. 긴급 경보는 별도 검증 경로가 있을 때만 먼저 보낸다.","relations":["state","process","role","boundary"]}
+{"primary":"관심수위 격상판정","text":"수위가 관심선을 넘고 상승 추세가 최소 지속시간을 채우면 관심수위 격상판정으로 감시 단계를 높인다. 단일 잡음 표본이거나 수문 조작 직후의 순간값이면 격상하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"주의수위 격상판정","text":"관심 상태에서 수위와 유입 전망이 모두 주의 기준을 충족하면 주의수위 격상판정으로 예비 방류 검토를 시작한다. 하류 측정이 불명확하면 방류 실행까지 전환하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"경계수위 격상판정","text":"주의선 위에서 가용 저장량이 줄고 예측 최고 수위가 경계선을 넘으면 경계수위 격상판정이 성립한다. 예측 입력이 결측이거나 실제 수위가 하강 중이면 자동 격상을 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"위험수위 비상판정","text":"실제 수위가 위험선을 넘고 정규 방류로 상승을 막을 수 없으면 위험수위 비상판정으로 통합 대응을 가동한다.","relations":["state","process","boundary","role"]}
+{"primary":"수위경보 하향판정","text":"수위와 상승률이 해제 기준 아래로 연속 유지되면 수위경보 하향판정으로 단계를 낮춘다. 상류 홍수파가 아직 도착하지 않았거나 시설 이상이 남으면 하향을 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"홍수기 제한수위 적용판정","text":"법정 기간이 시작되고 유입 위험 전망이 확인되면 홍수기 제한수위 적용판정으로 목표 상한을 낮춘다. 용수 공급 하한을 침해하거나 승인 계획이 없으면 즉시 적용하지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"비홍수기 목표수위 적용판정","text":"홍수 위험이 끝나고 장기 공급 전망이 안정되면 비홍수기 목표수위 적용판정으로 저장 목표를 높인다. 하류 생태유량이나 댐 안전 여유를 해치면 상향을 억제한다.","relations":["state","process","role","boundary"]}
+{"primary":"저수지 목표수위 상향판정","text":"예상 유입과 공급 수요가 충분하고 홍수 여유가 유지되면 저수지 목표수위 상향판정으로 저장 목표를 높인다. 집중호우 전망이나 사면 안정 경보가 있으면 상향하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 목표수위 하향판정","text":"홍수 예측이나 시설 안전 요구가 현재 저장 목표보다 낮은 수위를 요구하면 저수지 목표수위 하향판정이 성립한다. 하류 방류 수용력이 부족하면 하향 속도를 제한한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수위 공급제한판정","text":"가용 저수량과 예상 유입이 필수 공급 전망보다 작으면 저수위 공급제한판정으로 비필수 배분을 줄인다. 대체 수원이 확정되거나 실제 수요가 낮으면 제한 폭을 다시 계산한다.","relations":["state","process","comparison","role"]}
+{"primary":"홍수조절용량 확보판정","text":"예측 유입이 커지고 하류가 방류를 수용할 수 있으면 홍수조절용량 확보판정으로 선행 방류를 시작한다. 하류 수위가 경계 상태이거나 예측 신뢰도가 낮으면 방류를 억제한다.","relations":["state","process","function","boundary"]}
+{"primary":"용수보존량 설정판정","text":"가뭄 전망과 필수 수요가 확인되면 용수보존량 설정판정으로 일정 저수량을 다른 목적에 쓰지 못하게 잠근다. 홍수 안전 상한을 넘기게 되면 같은 보존량을 유지하지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"가용저수량 확정판정","text":"현재 저수량에서 사수량·보존량·시설 제약분을 뺀 값이 검증되면 가용저수량 확정판정으로 공급 계산에 사용한다. 항목 하나라도 최신이 아니면 확정을 보류한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"저수량 회복판정","text":"저수율이 단계 해제선 위로 오르고 장기 유입 전망도 유지되면 저수량 회복판정으로 가뭄 대응을 완화한다. 일시적 호우 한 번이나 수질 악화가 있으면 전면 회복으로 보지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"비상취수 개시판정","text":"기존 취수구가 수면 위로 드러나고 비상 펌프·관로·수질 검사가 모두 준비되면 비상취수 개시판정으로 대체 공급을 시작한다. 어느 조건이라도 미확인이면 개시를 막는다.","relations":["state","process","function","boundary"]}
+{"primary":"저수지 취수문 개방판정","text":"공급 요청이 승인되고 수위·수질·관로 여유가 모두 확보되면 저수지 취수문 개방판정으로 취수를 시작한다. 하류 관로가 차 있거나 오염 경보가 있으면 개방을 억제한다.","relations":["state","process","function","boundary"]}
+{"primary":"저수지 취수문 폐쇄판정","text":"요청량이 충족되거나 수질이 중단 기준을 넘으면 저수지 취수문 폐쇄판정으로 유입을 막는다. 급폐쇄가 관로 충격을 만들면 단계 폐쇄를 선택한다.","relations":["state","process","boundary","function"]}
+{"primary":"저수지 수문개방 촉발판정","text":"수위 상승과 예측 유입이 개방 기준을 충족하고 하류 통보가 끝나면 저수지 수문개방 촉발판정이 성립한다. 하류 수위나 설비 상태가 불확실하면 개방하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 수문개방 억제판정","text":"저장 여유가 줄어도 하류 제방 여유가 부족하거나 게이트 검지가 불완전하면 저수지 수문개방 억제판정이 우선한다. 안전 조건이 회복된 뒤 목표 개도를 다시 계산한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저수지 수문추가개방판정","text":"현재 방류 뒤에도 수위가 오르고 하류가 추가 유량을 수용하면 저수지 수문추가개방판정으로 개도를 높인다. 진동이나 공동 현상이 감지되면 증대를 중단한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"수문개도 증대억제판정","text":"유입 증가가 확인되어도 게이트 진동과 하류 급상승 가운데 하나가 한계를 넘으면 수문개도 증대억제판정으로 현재 개도를 유지한다. 원인 해소 뒤 단계 조정을 재개한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저수지 수문단계폐쇄판정","text":"유입이 감소하고 하류 수위가 안정되면 저수지 수문단계폐쇄판정으로 개도를 순차적으로 낮춘다. 상류 재상승 전망이나 수문 걸림이 있으면 폐쇄를 보류한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"수문급폐쇄 억제판정","text":"방류를 줄여야 해도 급격한 유량 저하가 하류 생태와 게이트 충격을 키우면 수문급폐쇄 억제판정으로 폐쇄 속도를 제한한다. 비상 구조 위험 때만 별도 절차를 적용한다.","relations":["state","process","boundary","role"]}
+{"primary":"저수지 방류량 증대판정","text":"예측 최고 수위가 목표를 넘고 하류 여유가 확인되면 저수지 방류량 증대판정으로 목표 유량을 높인다. 수질 사고나 대피 미완료가 있으면 증대를 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 방류량 감축판정","text":"유입과 수위가 감소하고 하류 위험이 남으면 저수지 방류량 감축판정으로 목표 유량을 낮춘다. 저수지 안전 하한이나 필수 배사 요구가 있으면 감축 폭을 제한한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 기준방류 유지판정","text":"수위·유입·하류 조건이 모두 목표 범위 안이면 저수지 기준방류 유지판정으로 현재 유량을 보존한다. 예측 급변이나 설비 이상이 나타나면 유지 상태를 재평가한다.","relations":["state","process","classification","boundary"]}
+{"primary":"저수지 비상방류 개시판정","text":"댐 안전 여유가 임계 아래이고 정규 수문만으로 수위를 제어할 수 없으면 저수지 비상방류 개시판정으로 추가 설비를 연다.","relations":["state","process","boundary","role"]}
+{"primary":"저수지 비상방류 억제판정","text":"높은 수위가 관측돼도 계측 신뢰도가 없고 하류에 즉시 인명 위험이 있으면 저수지 비상방류 억제판정으로 현 상태를 유지하며 확인한다. 대체 계측과 대피 완료 뒤 판단한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"여수로 게이트개방판정","text":"수위가 여수로 개방선에 도달하고 하류 경보가 확인되면 여수로 게이트개방판정으로 보조 방류를 시작한다. 게이트 잠금이나 하류 대피 미완료가 있으면 개방하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"여수로 게이트폐쇄판정","text":"여수로 게이트폐쇄판정은 저수지 수위가 폐쇄선 밑으로 내려가고 추가 유입 전망도 안정될 때 개도를 줄이는 결정이다. 상류 강우 재발이나 문짝 비대칭이 보이면 닫힘을 보류한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"수문분담 조정판정","text":"게이트별 진동·개도·가용량이 달라지면 수문분담 조정판정으로 총 방류를 다른 설비에 재배분한다. 어느 수문도 안전 범위를 만족하지 못하면 분담 변경을 억제한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"저층방류 선택판정","text":"저층 탁도와 산소가 허용되고 하류 냉수 공급이 필요하면 저층방류 선택판정으로 낮은 취수구를 쓴다. 무산소수나 퇴적물 교란 위험이 크면 선택하지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"표층방류 선택판정","text":"표층 수질이 양호하고 하류 수온 충격을 줄일 수 있으면 표층방류 선택판정으로 상부 취수구를 사용한다. 조류 밀도가 높거나 취수구가 막히면 억제한다.","relations":["state","process","classification","boundary"]}
+{"primary":"발전방류 선택판정","text":"유효 낙차와 계통 수요가 있고 목표 방류량이 터빈 범위에 들면 발전방류 선택판정으로 발전 경로를 쓴다. 터빈 진동이나 생태유량 제약이 있으면 우회한다.","relations":["state","process","function","boundary"]}
+{"primary":"발전방류 억제판정","text":"전력 수요가 높아도 수위가 터빈 하한 아래이거나 설비 시험이 미완료이면 발전방류 억제판정으로 발전기를 활성화하지 않는다. 대체 수문으로 필수 방류를 유지한다.","relations":["state","process","boundary","function"]}
+{"primary":"생태방류 보존판정","text":"용수와 발전 수요가 커도 하류 서식처 유량이 하한에 접근하면 생태방류 보존판정으로 최소량을 잠근다. 긴급 댐 안전 조치가 필요하면 별도 우선순위를 적용한다.","relations":["state","process","role","boundary"]}
+{"primary":"용수방류 우선판정","text":"가뭄 단계와 필수 생활 수요가 기준을 넘고 대체 수원이 없으면 용수방류 우선판정으로 다른 목적보다 공급을 앞세운다. 홍수 안전이나 수질 위험이 있으면 우선 적용을 억제한다.","relations":["state","process","role","boundary"]}
+{"primary":"하류제약 방류억제판정","text":"저수지 수위를 낮춰야 해도 하류 관측소가 경계 상태이면 하류제약 방류억제판정으로 추가 개방을 막는다. 상류 안전과 하류 위험을 함께 비교해 대체 조치를 선택한다.","relations":["state","process","contrast","boundary"]}
+{"primary":"저수지 방류명령 발효판정","text":"개도·시각·대상 수문이 명확하고 승인자와 현장 담당자가 모두 확인하면 저수지 방류명령 발효판정으로 지시를 활성화한다. 이전 명령과 충돌하면 발효를 억제한다.","relations":["state","process","role","boundary"]}
+{"primary":"저수지 방류계획 종료판정","text":"목표 수위를 맞추고 하류가 안정되며 누적 방류량이 종료 기준을 모두 충족하면 저수지 방류계획 종료판정으로 특별 조정을 닫는다. 미해결 수문 이상이나 재상승 전망이 있으면 종료하지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"유입예측 상향판정","text":"새 강우와 상류 유량이 기존 전망보다 크고 자료 신뢰도가 확보되면 유입예측 상향판정으로 예상 첨두를 높인다. 관측 시각이 맞지 않거나 단일 이상값이면 상향을 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"유입예측 하향판정","text":"강우대가 약해지고 상류 유량이 연속 감소하면 유입예측 하향판정으로 전망을 낮춘다. 아직 도달하지 않은 지류 홍수파가 있으면 전체 유입을 성급히 줄이지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"홍수파 도달판정","text":"상류 첨두의 이동시간과 저수지 유입 급증이 일치하면 홍수파 도달판정으로 예측 상태를 실제 대응 상태로 바꾼다. 다른 지류나 수문 조작이 원인일 가능성이 크면 확정을 보류한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"첨두유입 통과판정","text":"유입량이 최고값 뒤 여러 표본에서 감소하고 상류도 하강 중이면 첨두유입 통과판정으로 하강기 상태가 된다. 결측이나 후속 강우가 있으면 통과 확정을 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 선행방류 개시판정","text":"예측 홍수량이 저장 여유를 넘고 하류가 사전 방류를 수용하면 저수지 선행방류 개시판정으로 수위를 미리 낮춘다. 예측 신뢰도가 낮거나 하류가 경계 상태이면 개시하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"저수지 선행방류 억제판정","text":"큰비 전망이 있어도 용수 하한을 침범하고 하류 수위가 높은 경우에는 저수지 선행방류 억제판정으로 현 저수량을 유지한다. 전망과 하류 여유가 바뀌면 다시 평가한다.","relations":["state","process","contrast","boundary"]}
+{"primary":"홍수조절 강화판정","text":"실제 유입이 예측을 웃돌고 위험수위까지 남은 시간이 줄면 홍수조절 강화판정으로 방류·감시·통보 단계를 높인다. 하류 대피가 미완료이면 개방 속도를 제한한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"홍수조절 완화판정","text":"첨두가 지나고 수위 상승률이 완화 기준 아래로 내려가면 홍수조절 완화판정으로 추가 개방을 멈춘다. 상류 재상승 신호나 게이트 고장이 있으면 완화를 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"홍수조절 종료판정","text":"수위·유입 전망·하류 상태가 모두 종료 기준을 충족하면 홍수조절 종료판정으로 평시 전환을 시작한다. 후속 호우나 시설 점검이 남으면 종료를 보류한다.","relations":["state","process","classification","boundary"]}
+{"primary":"저수지 재상승 경계판정","text":"하강하던 수위가 다시 오르고 상류 유입도 증가하면 저수지 재상승 경계판정으로 완화 조치를 중단한다. 센서 보정이나 바람에 따른 순간 변동이면 격상하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"하류주의 발령판정","text":"방류 뒤 하류 수위가 주의선에 도달하고 상승 추세가 확인되면 하류주의 발령판정으로 순찰과 통보를 시작한다. 단일 관측소 오류이면 발령 범위를 확정하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"하류경계 발령판정","text":"여러 관측소가 경계 기준을 넘고 제방 여유가 줄면 하류경계 발령판정으로 접근 제한을 강화한다. 수위가 이미 하강하고 현장 확인이 정상이라면 자동 격상을 억제한다.","relations":["state","process","boundary","part_of"]}
+{"primary":"하류대피 준비판정","text":"예측 도달 수위가 대피 준비선에 닿고 방류 증대가 예정되면 하류대피 준비판정으로 이동 수단과 안내를 대기시킨다. 경보 대상과 도달 시각이 불명확하면 실행 단계로 넘기지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"하류대피 실행판정","text":"실제 수위나 신뢰 가능한 예측이 대피선을 넘고 경로가 확보되면 하류대피 실행판정으로 주민 이동을 시작한다. 대피로가 침수되었거나 수용지가 준비되지 않으면 대체 경로부터 정한다.","relations":["state","process","role","boundary"]}
+{"primary":"하류대피 해제판정","text":"수위가 해제선 아래로 유지되고 제방·도로 점검이 끝나면 하류대피 해제판정으로 복귀를 허용한다. 잔류 오염이나 세굴 위험이 있으면 해당 구역 해제를 억제한다.","relations":["state","process","boundary","role"]}
+{"primary":"방류예고 발송판정","text":"방류 시각·유량·영향 구역이 승인되고 수신망이 준비되면 방류예고 발송판정으로 안내를 내보낸다. 계획이 변동 중이거나 핵심 수신처가 누락되면 발송을 보류한다.","relations":["state","process","role","boundary"]}
+{"primary":"경보사이렌 작동판정","text":"방류파 도달 전 현장 경고가 필요하고 사이렌 시험이 정상이라면 경보사이렌 작동판정으로 경보를 울린다. 장치 고장이나 대체 안내 미확보 시에는 현장 인력을 먼저 배치한다.","relations":["state","process","function","boundary"]}
+{"primary":"하류경보 확대판정","text":"예측 범람 영역이 기존 경보선 밖으로 넓어지면 하류경보 확대판정으로 추가 지역을 포함한다. 고도 자료나 수위 예측이 불확실하면 최외곽 경계를 확정하지 않는다.","relations":["state","process","part_of","boundary"]}
+{"primary":"하류경보 축소판정","text":"외곽 지역의 수위와 접근 안전이 해제 기준을 충족하면 하류경보 축소판정으로 대상 범위를 줄인다. 상류 방류가 다시 늘어날 예정이면 축소를 억제한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"하류취수장 중단판정","text":"고탁도나 오염 방류가 취수구에 도달할 것으로 확인되면 하류취수장 중단판정으로 원수 유입을 막는다. 대체 수질 증거가 충분하고 오염파가 우회하면 중단 범위를 조정한다.","relations":["state","process","boundary","function"]}
+{"primary":"하류취수장 재개판정","text":"연속 시료가 기준을 충족하고 관로 세척과 정수장 준비가 끝나면 하류취수장 재개판정으로 취수를 시작한다. 오염원이 남거나 시료 대표성이 부족하면 재개하지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"하류교량 제한판정","text":"예측 수위와 유속이 교량 통행 기준을 넘으면 하류교량 제한판정으로 차량과 보행자의 접근을 막는다. 해당 교량의 실제 여유가 충분하면 다른 교량까지 일괄 제한하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"하천작업 철수판정","text":"방류파 도달 시간이 작업자 철수 시간보다 짧아지면 하천작업 철수판정으로 작업을 중단하고 인원을 이동시킨다. 안전 지대와 인원 계수가 확인되지 않으면 방류 개시를 억제한다.","relations":["state","process","role","boundary"]}
+{"primary":"주민복귀 허용판정","text":"대피 지역의 수위·도로·전기 안전이 모두 회복되면 주민복귀 허용판정으로 단계 복귀를 시작한다. 침수 주택이나 오염 구역이 남으면 해당 구역은 제외한다.","relations":["state","process","role","boundary"]}
+{"primary":"하류안전 확인판정","text":"순찰에서 제방·교량·취수구 이상이 없고 수위가 안정되면 하류안전 확인판정으로 특별 경계를 종료한다. 확인되지 않은 구간이 있으면 전체 안전으로 표시하지 않는다.","relations":["state","process","part_of","boundary"]}
+{"primary":"저수지 가뭄관심판정","text":"저수지 가뭄관심판정은 현재 저수율과 장기 유입 예상이 관심 기준보다 낮을 때 감시 등급을 올리는 결정이다. 계절성 일시 하락이고 공급 여유가 충분하면 단계 상향을 미룬다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 가뭄주의판정","text":"관심 상태에서 공급 가능 일수가 주의선보다 짧아지면 저수지 가뭄주의판정으로 수요 절감을 요청한다. 대체 수원이 즉시 확보되면 제한 수준을 낮춘다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 가뭄경계판정","text":"유입 부족과 수요 초과가 함께 지속되어 경계 기준을 넘으면 저수지 가뭄경계판정으로 용도별 배분을 조정한다. 실제 수요 자료가 결측이면 감축량 확정을 보류한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저수지 가뭄심각판정","text":"사수위 접근과 필수 공급 부족 전망이 동시에 나타나면 저수지 가뭄심각판정으로 비상 공급 체계를 가동한다. 비상 수원이나 최근 큰 유입이 확인되면 단계를 재평가한다.","relations":["state","process","boundary","role"]}
+{"primary":"저수지 공급제한 개시판정","text":"가용량이 필수 수요와 예비 기간을 충족하지 못하면 저수지 공급제한 개시판정으로 비필수 공급을 줄인다. 수요 자료가 오래됐거나 대체 공급이 미반영이면 즉시 개시하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 공급제한 완화판정","text":"저수량과 유입 전망이 해제선 위로 유지되면 저수지 공급제한 완화판정으로 배분을 단계적으로 복원한다. 한 번의 강우나 수질 이상이 있으면 전면 해제를 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"농업용수 감축판정","text":"관개 수요가 높고 생활·생태용수 보존 뒤 가용량이 부족하면 농업용수 감축판정으로 배정량을 낮춘다.","relations":["state","process","role","boundary"]}
+{"primary":"생활용수 보존판정","text":"가뭄에도 최소 생활 공급이 필요하고 다른 수요를 조정할 수 있으면 생활용수 보존판정으로 필수량을 잠근다. 원수 수질이 안전하지 않으면 양만으로 보존 상태를 확정하지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"산업용수 조정판정","text":"사업장 감축 합의와 대체 공정 계획이 확인되면 산업용수 조정판정으로 공급량을 낮춘다. 안전 필수 공정이나 계약상 예외가 미검토이면 조정을 억제한다.","relations":["state","process","classification","boundary"]}
+{"primary":"비상수원 전환판정","text":"저수지 정상 취수가 부족하고 대체 지하수·연계관로의 수질과 용량이 확보되면 비상수원 전환판정으로 공급 경로를 바꾼다. 소독이나 관망 연결이 미완료이면 전환하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"저수지 탁도경보 격상판정","text":"유입 탁도와 취수구 탁도가 모두 상위 기준을 넘으면 저수지 탁도경보 격상판정으로 취수 관리를 강화한다. 한 센서의 오염이나 채수 오류이면 격상을 보류한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 탁도경보 해제판정","text":"연속 시료와 센서값이 해제 기준 아래로 내려가면 저수지 탁도경보 해제판정으로 평시 감시를 회복한다. 상류 고탁도 유입이 아직 이동 중이면 해제하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 조류경보 발령판정","text":"세포수와 독소 지표가 기준을 충족하고 시료 대표성이 확인되면 저수지 조류경보 발령판정으로 취수 대응을 시작한다. 단일 국소 시료이면 전 수역 발령을 억제한다.","relations":["state","process","classification","boundary"]}
+{"primary":"저수지 조류경보 해제판정","text":"여러 지점의 연속 시료가 해제 기준을 충족하면 저수지 조류경보 해제판정으로 대응 단계를 낮춘다. 수온과 영양염이 재증식 조건이면 전면 해제를 보류한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저층방류 억제판정","text":"저층수 방류 수요가 있어도 용존산소가 하한 아래이거나 퇴적물 교란 위험이 크면 저층방류 억제판정으로 해당 수문을 쓰지 않는다. 혼합이나 다른 수심을 선택한다.","relations":["state","process","boundary","function"]}
+{"primary":"선택취수 변경판정","text":"현재 수심의 탁도·수온·산소가 다른 층보다 나쁘고 대체 수문이 가용하면 선택취수 변경판정으로 취수 위치를 바꾼다. 층별 값이 불확실하면 변경을 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"오염유입 차단판정","text":"상류 사고 물질의 도달이 확인되고 격리 가능한 경로가 있으면 오염유입 차단판정으로 취수와 유입 연결을 막는다.","relations":["state","process","boundary","part_of"]}
+{"primary":"저수지 오염경보 확정판정","text":"현장 센서와 실험실 시료가 같은 오염을 지시하면 저수지 오염경보 확정판정으로 의심 상태를 공식 대응 상태로 바꾼다. 채취 오류나 상충 결과가 있으면 확정을 보류한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 오염경보 해제판정","text":"오염원이 제거되고 연속 시료가 안전 기준을 충족하면 저수지 오염경보 해제판정으로 격리를 단계적으로 푼다. 퇴적물 잔류나 하류 검출이 있으면 해제를 억제한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"정수처리 통보판정","text":"원수 변화가 약품이나 여과 조정 기준을 넘고 자료 신뢰도가 확보되면 정수처리 통보판정으로 정수장에 운전 변경을 요청한다. 단기 잡음이면 불필요한 공정 전환을 막는다.","relations":["state","process","function","boundary"]}
+{"primary":"저수지 부유물 차단판정","text":"유목과 쓰레기가 취수구 접근선에 들어오고 차단망이 가용하면 저수지 부유물 차단판정으로 보호 설비를 활성화한다. 망이 손상됐거나 유량 한계를 넘으면 다른 제거 경로를 쓴다.","relations":["state","process","function","boundary"]}
+{"primary":"저수지 취수구 막힘판정","text":"취수량 저하와 차압 상승이 함께 나타나면 저수지 취수구 막힘판정으로 해당 취수구를 점검 상태로 바꾼다. 펌프 고장이나 수위 저하가 원인이면 막힘으로 확정하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 배사운전 개시판정","text":"퇴적량이 기준을 넘고 하류 탁도 수용 여유와 수문 기능이 확보되면 저수지 배사운전 개시판정으로 토사 방류를 시작한다. 산란기나 취수장 영향이 크면 개시를 억제한다.","relations":["state","process","function","boundary"]}
+{"primary":"저수지 배사운전 억제판정","text":"퇴적 제거가 필요해도 하류 탁도와 생태 조건이 한계를 넘으면 저수지 배사운전 억제판정으로 현재 상태를 유지한다. 우회 준설이나 시기 변경을 검토한다.","relations":["state","process","boundary","role"]}
+{"primary":"저수지 수질감시 강화판정","text":"탁도·조류·산소·수온 가운데 둘 이상이 주의 범위에 들면 저수지 수질감시 강화판정으로 시료 빈도를 높인다. 센서 점검 중 발생한 인공 변동이면 강화 범위를 제한한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"댐누수 경보판정","text":"배수공 유량 증가와 탁도 변화가 함께 기준을 넘으면 댐누수 경보판정으로 시설 대응을 강화한다. 강우 유입이나 계측 보정이 원인이면 구조 누수로 확정하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"댐기초 양압대응판정","text":"양압이 관리선을 넘고 저수위 변화만으로 설명되지 않으면 댐기초 양압대응판정으로 배수와 안정 검토를 시작한다. 계측공 막힘이나 센서 오류이면 수위 조정을 억제한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"댐변위 주의판정","text":"변위가 계절·온도 보정 범위를 벗어나고 연속 측정에서도 유지되면 댐변위 주의판정으로 계측 빈도를 높인다. 기준점 자체가 이동했으면 주의 상태를 확정하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"댐변위 비상판정","text":"변위량과 증가율이 비상 기준을 넘고 여러 기준점이 같은 방향을 보이면 댐변위 비상판정으로 수위 저하와 접근 통제를 시작한다. 단일 센서 이상이면 즉시 격상하지 않는다.","relations":["state","process","boundary","part_of"]}
+{"primary":"댐지진후 비상판정","text":"지진 진도와 댐 계측 변화가 비상 기준을 충족하면 댐지진후 비상판정으로 방류·접근·점검 체계를 바꾼다. 진동계 오작동이 확인되면 시설 폐쇄 범위를 제한한다.","relations":["state","process","classification","boundary"]}
+{"primary":"지진후 운전재개판정","text":"댐체·수문·전원·통신 점검이 모두 통과하면 지진후 운전재개판정으로 제한 운전을 시작한다. 미점검 구역이나 잔류 여진 위험이 있으면 정상 운전을 억제한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"저수지 사면통제판정","text":"사면 균열과 이동량이 안전 기준을 넘으면 저수지 사면통제판정으로 인근 접근과 급격한 수위 변화를 제한한다. 표면 건조 균열로 확인되면 통제 범위를 줄인다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저수지 수문진동 정지판정","text":"게이트 진동과 구동 전류가 허용치를 넘으면 저수지 수문진동 정지판정으로 이동을 멈춘다. 일시적 센서 잡음이면 보조 계측 확인 전 전체 방류를 중단하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 수문시험 재개판정","text":"수리와 무부하 구동이 통과하고 하류 시험 유량 여유가 있으면 저수지 수문시험 재개판정으로 제한 개방을 시작한다. 잠금 검지나 비상정지가 불완전하면 재개하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"저수지 전원상실 수동판정","text":"원격 전원과 예비 전원이 모두 끊기고 현장 조작 인력이 도착하면 저수지 전원상실 수동판정으로 수동 운전 상태에 들어간다. 게이트 위치를 확인하지 못하면 조작을 억제한다.","relations":["state","process","role","boundary"]}
+{"primary":"저수지 발전개시 판정","text":"유효 낙차·방류 요구·계통 수요가 모두 발전 범위에 들면 저수지 발전개시 판정으로 터빈을 가동한다. 진동 경보나 생태 방류 부족이 있으면 개시하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"저수지 발전증대 판정","text":"전력 수요와 방류 여유가 늘고 터빈 상태가 정상이라면 저수지 발전증대 판정으로 출력을 높인다. 수위 하한이나 계통 제한에 접근하면 증대를 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 발전감축 판정","text":"수위 저하·계통 제약·설비 온도 가운데 하나가 감축선을 넘으면 저수지 발전감축 판정으로 출력을 낮춘다. 비상 전력 공급 의무가 있으면 감축 폭을 조정한다.","relations":["state","process","comparison","role"]}
+{"primary":"저수지 터빈정지 판정","text":"터빈 진동이나 윤활 압력이 정지 기준을 넘고 보조 확인도 일치하면 저수지 터빈정지 판정으로 발전을 멈춘다. 단일 센서 오류이면 보호 시험 뒤 결정한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저수지 발전복구 판정","text":"정비·회전 시험·계통 동기화가 모두 끝나면 저수지 발전복구 판정으로 제한 출력을 재개한다. 방류 요구가 없거나 수위가 하한이면 발전 상태로 복귀하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"어도유량 보존판정","text":"전체 방류가 줄어도 어도 수심이 하한에 접근하면 어도유량 보존판정으로 최소 유량을 유지한다. 댐 비상안전과 충돌하면 임시 생물 구조 조치를 함께 검토한다.","relations":["state","process","role","boundary"]}
+{"primary":"어류산란기 방류판정","text":"산란기·수온·서식처 수심이 목표 범위에 들면 어류산란기 방류판정으로 완만한 생태 유량을 적용한다. 홍수 위험이나 탁도 한계가 있으면 시작을 억제한다.","relations":["state","process","classification","boundary"]}
+{"primary":"하류생태 유량증대판정","text":"서식처 노출과 수질 악화가 확인되고 저장 여유가 있으면 하류생태 유량증대판정으로 방류를 높인다. 제방 위험이나 오염수 유입이 있으면 증대를 막는다.","relations":["state","process","role","boundary"]}
+{"primary":"하류수온 완화조정판정","text":"방류수·하천수 온도 차가 생물 한계를 넘고 선택 취수가 가능하면 하류수온 완화조정판정으로 수심과 혼합 비율을 바꾼다. 수질이 나빠지면 조정을 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 생태감시 강화판정","text":"수질·유량·생물 지표 가운데 둘 이상이 경계에 접근하면 저수지 생태감시 강화판정으로 현장 조사 빈도를 높인다. 계절 자연 변동으로 확인되면 대상 범위를 줄인다.","relations":["state","process","part_of","boundary"]}
+{"primary":"수자원기관 협의개시판정","text":"상·하류 저수지와 여러 수요처의 조정이 필요한 경우 자료와 책임자가 준비되면 수자원기관 협의개시판정으로 공동 운영을 시작한다. 핵심 기관이 빠지면 확정 협의로 넘기지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"공동방류 합의판정","text":"참여 기관이 목표 수위·방류량·적용 시각에 같은 값을 승인하면 공동방류 합의판정으로 계획을 확정한다. 한 기관의 안전 제약이 미해결이면 실행을 억제한다.","relations":["state","process","role","boundary"]}
+{"primary":"하류지자체 통보판정","text":"방류나 경보 변경이 주민 대응 기준을 넘고 메시지가 승인되면 하류지자체 통보판정으로 정보를 전달한다. 대상 지역이나 시각이 불확실하면 확정 통보를 보류한다.","relations":["state","process","role","boundary"]}
+{"primary":"발전사 운전인계판정","text":"방류 계획이 발전 출력에 영향을 주고 설비 담당자가 수신을 확인하면 발전사 운전인계판정으로 제약 정보를 넘긴다. 목표 유량과 적용 시각이 불일치하면 인계를 완료하지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"농업수요 조정판정","text":"저수량이 경계 아래이고 관개 대안과 작물 영향이 검토되면 농업수요 조정판정으로 배정량을 바꾼다. 생육 임계기나 계약 예외가 미반영이면 확정을 억제한다.","relations":["state","process","role","boundary"]}
+{"primary":"저수지 태풍대응 격상판정","text":"태풍 경로가 유역을 통과하고 예측 강우가 저수지 여유를 넘으면 저수지 태풍대응 격상판정으로 사전 방류와 비상근무를 시작한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 집중호우 비상판정","text":"단시간 강우와 유입 상승이 비상 기준을 동시에 넘으면 저수지 집중호우 비상판정으로 홍수 대응을 가동한다. 레이더 오탐이나 관측 결측이면 대피 범위 확정을 보류한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저수지 가뭄해제 판정","text":"저수율·장기 유입·대체 수원 상태가 모두 해제 기준을 충족하면 저수지 가뭄해제 판정으로 제한을 단계적으로 푼다. 수질 경보나 계절 건조 전망이 남으면 전면 해제를 억제한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"수문고장 우회판정","text":"주수문이 목표 개도를 만들지 못하고 보조 수문의 용량과 안전이 확보되면 수문고장 우회판정으로 방류를 재배분한다. 어느 대체 설비도 하류 제한을 만족하지 못하면 우회하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"통신상실 현장운영판정","text":"중앙 통신이 끊기고 현장 인력과 독립 계측이 준비되면 통신상실 현장운영판정으로 수동 보고 체계에 들어간다. 마지막 명령이나 게이트 위치가 불명확하면 조작을 억제한다.","relations":["state","process","role","boundary"]}
+{"primary":"전원복구 원격운전판정","text":"주·예비 전원과 통신, 게이트 위치 검지가 모두 정상화되면 전원복구 원격운전판정으로 현장 수동에서 중앙 제어로 돌아간다. 시험 명령이 실패하면 전환하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"저수지 비상대책 가동판정","text":"시설 위험·위험수위·하류 대피 가운데 하나가 최고 대응 기준을 넘고 지휘 체계가 준비되면 저수지 비상대책 가동판정으로 통합 본부를 연다.","relations":["state","process","classification","boundary"]}
+{"primary":"저수지 비상대책 완화판정","text":"저수지 비상대책 완화판정은 수위·시설 지표가 안정되고 하류 위험도 줄었을 때 대응 인력을 순차적으로 축소하는 결정이다. 재상승 전망이나 확인하지 못한 손상이 남으면 현 단계를 유지한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 정상운영 복귀판정","text":"저수지 정상운영 복귀판정은 임시 방류와 경보, 출입 제한이 해제되고 설비 점검까지 끝난 뒤 평시 체계로 돌아가는 결정이다. 후속 감시 항목이 등록되지 않았다면 복귀를 확정하지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"저수지 사고종료 판정","text":"원인이 제거되고 피해 범위와 후속 조치가 확정되면 저수지 사고종료 판정으로 사건 상태를 닫는다. 임시 복구만 됐거나 재발 감시가 시작되지 않았으면 종료를 보류한다.","relations":["state","process","boundary","classification"]}
+{"primary":"저수지 운영교대 인계판정","text":"저수지 운영교대 인계판정은 후임자가 수위, 수문 상태, 경보와 미결 작업을 모두 확인해 되풀이했을 때 책임을 넘기는 결정이다. 핵심 명령이나 연락 체계가 빠지면 인계를 계속 보류한다.","relations":["state","process","role","boundary"]}
+{"primary":"일일수문자료 마감판정","text":"당일 자료의 결측·중복·시간 순서 검사가 모두 통과되면 일일수문자료 마감판정으로 편집을 잠근다. 미확정 대체값이나 시간대 오류가 있으면 마감을 억제한다.","relations":["state","process","classification","boundary"]}
+{"primary":"저수지 물수지 확정판정","text":"유입·방류·증발·저수량 변화의 잔차가 허용 범위이고 각 자료가 검증되면 저수지 물수지 확정판정으로 일일 수지를 승인한다. 큰 잔차가 남으면 확정하지 않는다.","relations":["state","process","part_of","boundary"]}
+{"primary":"저수지 방류실적 확정판정","text":"계량값과 수문 개도 기록이 일치하고 용도별 분류가 끝나면 저수지 방류실적 확정판정으로 계획량을 실적으로 바꾼다. 누락 계량이나 중복 기간이 있으면 보류한다.","relations":["state","process","classification","boundary"]}
+{"primary":"저수지 계획편차 판정","text":"실제 수위·방류·공급이 계획 범위를 벗어나고 원인 자료가 확보되면 저수지 계획편차 판정으로 후속 조정 대상을 지정한다. 작은 계측 오차이면 운영 실패로 확정하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"저수지 야간감시 전환판정","text":"주간 근무가 끝난 뒤 야간 인력·경보 한계·연락망이 준비되면 저수지 야간감시 전환판정으로 근무 체계를 바꾼다. 미해결 고위험 작업이 있으면 주간 지휘를 유지한다.","relations":["state","process","role","boundary"]}
+{"primary":"저수지 다음날계획 승인판정","text":"유입 전망·용수 요구·정비 제약·하류 조건이 모두 반영되면 저수지 다음날계획 승인판정으로 초안을 확정한다. 입력 버전이 다르거나 책임자 검토가 없으면 승인하지 않는다.","relations":["state","process","role","boundary"]}
+{"primary":"저수지 계절운영 종료판정","text":"계절 기준일과 수위·기상 조건이 종료 기준을 충족하면 저수지 계절운영 종료판정으로 특별 규칙을 닫는다. 예외 홍수나 가뭄 대응이 남으면 종료를 억제한다.","relations":["state","process","classification","boundary"]}
+{"primary":"저수지 홍수기 전환판정","text":"홍수기 시작일과 강우 전망이 충족되고 운영계획이 승인되면 저수지 홍수기 전환판정으로 제한수위를 적용한다. 저수위 공급 위기가 있으면 전환 방식을 별도 승인한다.","relations":["state","process","classification","boundary"]}
+{"primary":"저수지 가뭄기 전환판정","text":"건조기 기준일과 유입 부족 전망이 함께 나타나면 저수지 가뭄기 전환판정으로 보존·배분 규칙을 적용한다. 홍수 위험이 여전히 크면 단순 계절 전환을 억제한다.","relations":["state","process","classification","boundary"]}
+{"primary":"저수지 정비인계 판정","text":"설비 이상 위치·증상·운전 제한·우선순위가 정비팀에 전달되고 수신 확인이 끝나면 저수지 정비인계 판정으로 작업 대기 상태가 된다. 핵심 정보가 빠지면 인계를 보류한다.","relations":["state","process","role","boundary"]}
+{"primary":"저수지 수문자료 정정판정","text":"원본 증거로 입력 오류가 확인되고 영향 계산이 끝나면 저수지 수문자료 정정판정으로 값을 수정한다. 근거가 없거나 승인된 기록을 덮어쓰게 되면 정정을 억제한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저수지 기록잠금 판정","text":"모든 정정과 승인이 끝나고 원본 해시가 저장되면 저수지 기록잠금 판정으로 일일 기록을 변경 불가 상태로 바꾼다. 미결 사건이나 결측이 있으면 잠그지 않는다.","relations":["state","process","boundary","classification"]}
+{"primary":"저수지 운영일자 전환판정","text":"일일 자료를 마감하고 교대 인계를 끝내면 저수지 운영일자 전환판정으로 새 기준일을 연다. 자정을 넘긴 비상 사건의 연결 식별자가 없으면 전환을 보류한다.","relations":["state","process","classification","boundary"]}
+{"primary":"저수지 상태종합 확정판정","text":"수위·유입·방류·수질·시설·하류 상태가 같은 시점 기준으로 검증되면 저수지 상태종합 확정판정으로 운영 스냅샷을 승인한다. 오래된 항목이나 상충값이 있으면 확정하지 않는다.","relations":["state","process","part_of","boundary"]}

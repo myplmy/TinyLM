@@ -1,0 +1,150 @@
+{"primary":"수위자료 수신대기 상태","text":"원격 관측소가 값을 보냈지만 중앙 서버에 아직 도착하지 않은 수위자료 수신대기 상태는 완료도 결측 확정도 아닌 중간 상태다.","relations":["state","process","boundary","classification"]}
+{"primary":"수위자료 검증진행 상태","text":"범위·시각·변화율 검사가 일부만 끝난 수위자료 검증진행 상태에서는 값을 공식 판단에 쓰지 않는다. 모든 검사가 통과하면 승인 대기로, 모순이 확인되면 격리 상태로 이동한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"수위계 교대준비 상태","text":"주 계기의 품질이 낮아 예비 계기를 준비했으나 읽기 채널은 아직 바뀌지 않은 수위계 교대준비 상태는 전환 전 중간 단계다.","relations":["state","process","boundary","function"]}
+{"primary":"결측자료 보완대기 상태","text":"현장 기록이나 인접 관측으로 빈 값을 채울 가능성이 남은 결측자료 보완대기 상태는 영구 결측과 다르다.","relations":["state","process","boundary","attribute"]}
+{"primary":"중복관측 격리상태","text":"같은 시각에 서로 다른 값이 들어온 중복관측 격리상태에서는 어느 값도 정본으로 승격하지 않는다.","relations":["state","process","boundary","classification"]}
+{"primary":"관측원본 훼손 흡수상태","text":"백업 없이 원본 바이트가 변형되어 진위를 판단할 근거가 사라진 관측원본 훼손 흡수상태는 일반 재검증으로 벗어날 수 없다.","relations":["state","process","boundary","attribute"]}
+{"primary":"통신재시도 진행상태","text":"관측 패킷의 응답을 기다리며 정해진 횟수만큼 다시 보내는 통신재시도 진행상태는 성공과 장애 확정 사이에 놓인다.","relations":["state","process","boundary","function"]}
+{"primary":"위성회선 전환대기 상태","text":"지상 회선이 끊겨 위성 단말 인증을 기다리는 위성회선 전환대기 상태에서는 아직 관측 복구가 완료되지 않았다. 인증과 시험 패킷이 통과해야 대체 통신 활성 상태로 이동한다.","relations":["state","process","boundary","function"]}
+{"primary":"수동관측 입력보류 상태","text":"현장 직원이 값을 읽었지만 이중 확인 서명이 없는 수동관측 입력보류 상태는 정본 입력 전 단계다. 다른 직원의 확인과 시각 대조가 끝나면 승인하고 불일치하면 다시 측정한다.","relations":["state","process","boundary","role"]}
+{"primary":"관측값 확정대기 상태","text":"자동 검사에는 통과했으나 운영자의 최종 승인이 남은 관측값 확정대기 상태는 잠정 자료로만 취급한다. 승인되면 공식 수위 이력에 들어가고 반려되면 원인 분석 단계로 돌아간다.","relations":["state","process","boundary","role"]}
+{"primary":"경계수위 접근상태","text":"수위가 기준에 가까워지고 있으나 아직 넘지 않은 경계수위 접근상태는 경보 발령 상태와 구별된다. 상승 추세가 이어져 기준을 넘으면 경보 판정으로 가고 반전되면 평시 감시로 복귀한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"경계수위 초과확인 상태","text":"서로 독립된 두 관측이 문턱 초과를 확인한 경계수위 초과확인 상태에서는 단순 접근이 아니라 대응 전이를 준비한다. 지속시간 조건까지 충족하면 경보를 발령하고 일시 잡음이면 재검증한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"수위하강 확인대기 상태","text":"수위가 한 번 기준 아래로 내려갔지만 유지시간이 지나지 않은 수위하강 확인대기 상태는 경보 해제와 동일하지 않다. 연속 관측이 안정되면 해제로, 재상승하면 기존 경보 유지로 이동한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"유입예측 계산진행 상태","text":"강우·토양·상류 유량 입력을 모아 모형이 아직 계산 중인 유입예측 계산진행 상태에서는 결과를 확정값으로 배포하지 않는다. 계산이 끝나 품질 검사를 통과해야 검토 대기로 전환한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"예측수렴 확인상태","text":"반복 계산의 변화가 허용 범위 안으로 줄어든 예측수렴 확인상태는 결과 채택 직전 단계다. 입력 완전성과 물리 한계를 함께 통과하면 승인하고 어느 하나가 실패하면 다시 계산한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"예측불일치 격리상태","text":"두 모형의 첨두 시각과 크기가 허용차보다 다른 예측불일치 격리상태에서는 하나를 임의 선택하지 않는다. 입력 오류를 고치거나 앙상블 판단을 받아야 운영 예측으로 복귀한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"예측작업 실패흡수 상태","text":"모형 실행 파일과 복구본이 모두 손상되어 계산을 재개할 수 없는 예측작업 실패흡수 상태는 같은 작업 안에서 종료 상태다.","relations":["state","process","boundary","function"]}
+{"primary":"예측입력 복구진행 상태","text":"누락 강우와 상류 유량을 외부 저장소에서 다시 모으는 예측입력 복구진행 상태는 실패 확정 전에 거치는 중간 단계다.","relations":["state","process","boundary","attribute"]}
+{"primary":"수위경보 생성대기 상태","text":"발령 조건은 충족했지만 메시지 문안과 대상 목록이 아직 만들어지는 수위경보 생성대기 상태는 외부 발령 전 상태다.","relations":["state","process","boundary","function"]}
+{"primary":"수위경보 승인대기 상태","text":"경보 문안과 근거는 준비됐지만 책임자의 결재가 남은 수위경보 승인대기 상태에서는 공식 효력이 생기지 않는다. 승인되면 전파 대기로, 반려되면 근거 보완으로 이동한다.","relations":["state","process","boundary","role"]}
+{"primary":"수위경보 전파진행 상태","text":"일부 채널에는 전달됐고 나머지 채널은 송신 중인 수위경보 전파진행 상태는 발령 완료와 다르다. 필수 채널의 수신 확인이 모이면 완료되고 실패 채널은 대체 전파 경로로 보낸다.","relations":["state","process","boundary","role"]}
+{"primary":"수위경보 수신확인대기 상태","text":"메시지는 전송됐지만 하류 기관의 확인 응답이 없는 수위경보 수신확인대기 상태에서는 전달 완료로 기록하지 않는다. 응답이 오면 완료하고 제한 시간이 지나면 전화·무선 호출로 전환한다.","relations":["state","process","boundary","role"]}
+{"primary":"경보수신 불능흡수 상태","text":"모든 통신 경로와 현장 연락 수단이 끊겨 대상에게 도달할 방법이 없는 경보수신 불능흡수 상태는 현재 전파 작업의 종결 실패다.","relations":["state","process","boundary","function"]}
+{"primary":"오경보 정정진행 상태","text":"잘못 발송한 내용을 식별하고 정정문과 수신자 목록을 대조하는 오경보 정정진행 상태는 철회 완료 전 단계다. 모든 수신자가 새 내용을 확인해야 정보 상태를 정정 완료로 바꾼다.","relations":["state","process","boundary","role"]}
+{"primary":"수문명령 대기열상태","text":"승인된 개방 명령이 제어기에 들어갔지만 앞선 동작이 끝나지 않은 수문명령 대기열상태는 실행 전 중간 상태다. 순서와 유효시간을 통과하면 인터록 검사로 가고 기한이 지나면 취소된다.","relations":["state","process","boundary","function"]}
+{"primary":"수문인터록 검사상태","text":"전원·상하류 수위·정비 잠금·인명 안전 조건을 확인 중인 수문인터록 검사상태에서는 구동 신호를 내보내지 않는다. 모두 안전하면 작동으로, 하나라도 실패하면 억제 상태로 이동한다.","relations":["state","process","boundary","function"]}
+{"primary":"수문개방 이동상태","text":"문짝이 닫힘 위치를 떠났지만 목표 개도에 도달하지 않은 수문개방 이동상태는 개방 완료가 아니다. 위치 변화가 정상이라면 계속 이동하고 정지하면 걸림 진단으로 분기한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"수문이동 일시정지 상태","text":"하류 안전 확인을 위해 구동을 잠시 멈춘 수문이동 일시정지 상태는 명령 취소나 고장 흡수 상태와 다르다. 허가가 오면 남은 이동을 재개하고 위험이 커지면 안전 위치로 복귀한다.","relations":["state","process","boundary","classification"]}
+{"primary":"수문한계접점 확인대기 상태","text":"제어기 위치값은 목표를 가리키지만 기계식 접점 확인이 남은 수문한계접점 확인대기 상태에서는 완료 신호를 확정하지 않는다. 접점이 맞으면 완료하고 불일치하면 위치 센서 진단으로 간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"수문개방 완료상태","text":"목표 개도와 한계접점, 하류 유량이 모두 일치한 수문개방 완료상태는 이동 과정의 정상 종점이다.","relations":["state","process","boundary","function"]}
+{"primary":"수문걸림 고정상태","text":"기계 장애로 문짝이 중간 위치에 멈추고 제어 명령만으로 움직이지 않는 수문걸림 고정상태는 외부 정비 없이는 벗어날 수 없는 흡수 상태다.","relations":["state","process","boundary","part_of"]}
+{"primary":"수문모터 냉각대기 상태","text":"과열 보호가 동작해 모터 온도가 내려가기를 기다리는 수문모터 냉각대기 상태는 영구 고장과 구별된다. 온도와 절연값이 회복되면 저속 시험으로, 다시 상승하면 정비 격리로 이동한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"수문정전 안전유지 상태","text":"주 전원을 잃은 뒤 브레이크가 문짝 위치를 고정하고 있는 수문정전 안전유지 상태는 복구 전 중간 상태다.","relations":["state","process","boundary","function"]}
+{"primary":"수문수동 인계진행 상태","text":"원격 제어 권한을 현장 조작자에게 넘기며 명령 큐와 위치를 대조하는 수문수동 인계진행 상태에서는 어느 쪽도 새 명령을 독점 실행하지 않는다. 복창이 끝나야 수동 운전 상태로 전환한다.","relations":["state","process","boundary","role"]}
+{"primary":"비상정지 래치흡수 상태","text":"위험 신호로 비상정지 래치가 걸린 비상정지 래치흡수 상태에서는 일반 개폐 명령이 모두 무시된다.","relations":["state","process","boundary","function"]}
+{"primary":"비상래치 해제진행 상태","text":"사고 원인을 제거한 뒤 현장과 관제의 확인을 모으는 비상래치 해제진행 상태는 아직 운전 가능 상태가 아니다. 모든 확인과 무부하 시험이 통과해야 대기 상태로 복귀한다.","relations":["state","process","boundary","role"]}
+{"primary":"수문위치 불일치진단 상태","text":"제어값·엔코더·기계 눈금이 서로 다른 수문위치 불일치진단 상태에서는 문을 추가로 움직이지 않는다. 독립 측정으로 실제 위치를 정한 뒤 결함 채널을 격리하고 보정 경로로 간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"엔코더 채널격리 상태","text":"오류가 확인된 위치 센서를 제어 입력에서 뺀 엔코더 채널격리 상태는 고장 확산을 막는 중간 복구 단계다.","relations":["state","process","boundary","function"]}
+{"primary":"수문보정 검증대기 상태","text":"위치 계수를 다시 맞췄지만 전 구간 왕복 시험이 남은 수문보정 검증대기 상태에서는 정상 복귀를 선언하지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"방류계획 초안상태","text":"목표 수위와 하류 제한을 반영했지만 검토되지 않은 방류계획 초안상태는 실행 가능한 명령이 아니다. 수문 용량과 예측을 대조한 뒤 검토 대기로 넘기거나 계산 단계로 돌려보낸다.","relations":["state","process","boundary","classification"]}
+{"primary":"방류계획 검토진행 상태","text":"수문·수질·발전·하류 안전 담당자가 각 제약을 확인하는 방류계획 검토진행 상태에서는 계획을 잠그지 않는다. 모든 의견이 해소되면 승인 대기로, 충돌이 남으면 조정 단계로 이동한다.","relations":["state","process","boundary","role"]}
+{"primary":"방류계획 승인대기 상태","text":"기술 검토는 끝났으나 법적 권한자의 서명이 없는 방류계획 승인대기 상태는 실행 전 중간 상태다. 승인되면 예약 상태가 되고 반려되면 초안 수정으로 되돌아간다.","relations":["state","process","boundary","role"]}
+{"primary":"방류예약 계수상태","text":"승인된 계획의 시작 시각까지 남은 시간을 세는 방류예약 계수상태는 수문 작동 전 단계다. 취소 조건이 없고 시각이 되면 인터록 검사로, 새 위험이 생기면 계획 재검토로 간다.","relations":["state","process","boundary","classification"]}
+{"primary":"방류개시 진행상태","text":"수문이 움직이기 시작했지만 하류 유량 변화가 아직 확인되지 않은 방류개시 진행상태는 실행 완료가 아니다. 개도와 유량이 함께 증가하면 안정화로, 반응이 없으면 설비 진단으로 분기한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"방류유량 안정화상태","text":"유량이 목표 근처에서 흔들리며 제어기가 미세 조정 중인 방류유량 안정화상태는 목표 유지 전의 중간 단계다.","relations":["state","process","boundary","comparison"]}
+{"primary":"하류영향 확인대기 상태","text":"목표 방류에는 도달했지만 하류 관측소의 수위와 통행 안전 응답이 남은 하류영향 확인대기 상태에서는 운전을 최종 확정하지 않는다. 안전하면 유지하고 위험 신호가 오면 즉시 감량한다.","relations":["state","process","boundary","role"]}
+{"primary":"방류목표 유지상태","text":"개도·유량·하류 수위가 허용 범위에서 지속되는 방류목표 유지상태는 현재 계획의 안정 종점이다. 다음 계획이나 종료 조건이 들어오기 전까지 상태를 보존하면서 감시만 계속한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"방류중단 복구진행 상태","text":"하류 위험으로 중단한 뒤 안전 개도까지 닫고 원인을 조사하는 방류중단 복구진행 상태는 종료와 재개 사이에 놓인다. 위험이 해소되면 새 승인을 받아 재개하고 아니면 종료 상태로 간다.","relations":["state","process","boundary","function"]}
+{"primary":"방류실패 종료흡수 상태","text":"수문과 대체 방류구가 모두 사용할 수 없어 승인된 수량을 낼 방법이 없는 방류실패 종료흡수 상태는 해당 실행 작업의 흡수 상태다.","relations":["state","process","boundary","function"]}
+{"primary":"방류실적 확정상태","text":"유량 적산·개도 이력·하류 확인을 모두 잠근 방류실적 확정상태는 그 실행 기록의 정상 종점이다.","relations":["state","process","boundary","attribute"]}
+{"primary":"홍수조절공간 충전진행 상태","text":"유입수가 조절용 빈 공간을 채우고 있으나 제한수위에는 이르지 않은 홍수조절공간 충전진행 상태는 평시 저장과 비상 월류 사이의 중간 단계다.","relations":["state","process","boundary","attribute"]}
+{"primary":"여수로 접근경계 상태","text":"수면이 여수로 마루에 가까워졌지만 아직 넘지 않은 여수로 접근경계 상태에서는 월류 완료로 판단하지 않는다.","relations":["state","process","boundary","comparison"]}
+{"primary":"월류발생 고정상태","text":"물이 여수로를 실제로 넘기 시작한 월류발생 고정상태에서는 단순 수문 명령으로 발생 사실을 취소할 수 없다. 추가 유입을 줄이고 하류를 보호하는 복구 경로만 선택할 수 있다.","relations":["state","process","boundary","part_of"]}
+{"primary":"사전방류 실행진행 상태","text":"예측 홍수 전에 수문을 열어 저장 공간을 만들고 있는 사전방류 실행진행 상태는 계획 승인과 공간 확보 완료 사이에 있다. 목표 여유량에 도달하면 종료하고 하류 제한이 커지면 감량한다.","relations":["state","process","boundary","function"]}
+{"primary":"유역예측 갱신대기 상태","text":"새 강우 관측은 들어왔지만 유입 모형 재계산이 끝나지 않은 유역예측 갱신대기 상태에서는 옛 예측을 잠정값으로 표시한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"하류경보 문안검토 상태","text":"예상 도달 시각과 위험 구간을 경보 문안에 반영했는지 확인하는 하류경보 문안검토 상태는 발송 전 단계다. 수치와 대상이 맞으면 승인으로, 누락이 있으면 작성 단계로 돌아간다.","relations":["state","process","boundary","role"]}
+{"primary":"대피체계 가동진행 상태","text":"일부 마을은 대피를 시작했고 교통·수용 시설은 아직 준비 중인 대피체계 가동진행 상태는 발령과 완료 사이에 놓인다. 취약 인구 확인과 이동 완료가 모여야 보호 상태로 전환한다.","relations":["state","process","boundary","role"]}
+{"primary":"하천도로 폐쇄진행 상태","text":"진입 차단 시설은 설치됐지만 모든 접근로 통제가 확인되지 않은 하천도로 폐쇄진행 상태에서는 폐쇄 완료로 기록하지 않는다.","relations":["state","process","boundary","role"]}
+{"primary":"비상협의 소집대기 상태","text":"관계 기관에 호출은 보냈지만 의사결정 권한자가 모두 연결되지 않은 비상협의 소집대기 상태에서는 공동 명령을 확정하지 않는다.","relations":["state","process","boundary","role"]}
+{"primary":"홍수첨두 추적상태","text":"관측 최고값이 계속 갱신되어 첨두 통과 여부가 정해지지 않은 홍수첨두 추적상태는 상승과 하강 사이의 중간 판정이다. 연속 하강과 상류 감소가 확인돼야 첨두 통과 상태로 바뀐다.","relations":["state","process","boundary","comparison"]}
+{"primary":"첨두통과 회복진행 상태","text":"최고수위는 지났지만 저수지와 하류 수위가 아직 안전 범위로 내려오는 첨두통과 회복진행 상태에서는 경보를 즉시 끝내지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"수문순차개방 진행상태","text":"여러 수문을 정해진 간격으로 하나씩 여는 수문순차개방 진행상태에서는 전체 목표 개도를 완료한 것으로 보지 않는다. 각 문 반응과 하류 수위를 확인한 뒤 다음 문으로 넘어간다.","relations":["state","process","boundary","part_of"]}
+{"primary":"권양기 과부하 냉각상태","text":"전류 한계를 넘은 권양기를 정지하고 열이 빠지기를 기다리는 권양기 과부하 냉각상태는 재가동 전 중간 상태다. 온도·절연 시험을 통과하면 저하중 운전으로, 실패하면 정비 격리로 간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"비상발전 기동진행 상태","text":"주 전원 상실 뒤 비상발전기가 회전했지만 전압과 주파수가 안정되지 않은 비상발전 기동진행 상태에서는 수문 부하를 연결하지 않는다. 안정 시험이 끝나야 비상전원 공급으로 전환한다.","relations":["state","process","boundary","function"]}
+{"primary":"비상연료 고갈흡수 상태","text":"발전기 연료가 바닥나 전력 생산을 계속할 수 없는 비상연료 고갈흡수 상태는 같은 운전 안에서 자력 복귀할 수 없다. 외부 연료 보급과 누설 점검을 거쳐 새 기동 절차를 시작해야 한다.","relations":["state","process","boundary","function"]}
+{"primary":"제방침투 집중감시 상태","text":"탁수나 압력 상승 징후가 있어 관측 주기를 줄인 제방침투 집중감시 상태는 내부 침식 확정과 다르다.","relations":["state","process","boundary","attribute"]}
+{"primary":"파이핑 진행흡수 상태","text":"침투수가 토립자를 계속 운반해 통로가 자라는 파이핑 진행흡수 상태는 감시 강화만으로 정상 상태에 돌아가지 않는다.","relations":["state","process","boundary","part_of"]}
+{"primary":"홍수부유물 제거진행 상태","text":"취수구와 수문 앞의 나무·쓰레기를 단계적으로 걷어 내는 홍수부유물 제거진행 상태는 유로 회복 전 중간 단계다. 잔류물이 기준 아래이고 장비 검사가 끝나야 정상 운전으로 복귀한다.","relations":["state","process","boundary","function"]}
+{"primary":"취수구 완전폐색 상태","text":"부유물과 퇴적물로 모든 취수 통로가 막힌 취수구 완전폐색 상태에서는 일반 펌프 명령이 효력을 내지 못한다.","relations":["state","process","boundary","part_of"]}
+{"primary":"원수우회 공급진행 상태","text":"주 취수구를 격리하고 대체 관로로 물을 보내는 원수우회 공급진행 상태는 정상 계통 복귀 전의 임시 상태다. 수질과 유량을 검증하면서 주 계통 보수가 끝날 때까지 제한 운전한다.","relations":["state","process","boundary","function"]}
+{"primary":"가뭄비축 활성화상태","text":"저수량 하락으로 평시 저장분과 별도로 비축분 사용을 시작한 가뭄비축 활성화상태에서는 승인된 필수 수요만 공급한다. 유입 전망이 회복되거나 비축 한계에 이르면 다음 배분 단계로 이동한다.","relations":["state","process","boundary","classification"]}
+{"primary":"용수제한 시행진행 상태","text":"제한 명령은 발령됐지만 모든 수요처의 밸브·계량 설정이 바뀌지 않은 용수제한 시행진행 상태는 정책과 현장 적용 사이의 중간 단계다. 적용 확인이 모여야 제한 운영 완료로 본다.","relations":["state","process","boundary","role"]}
+{"primary":"수요감축 확인대기 상태","text":"절감 요청 뒤 사용량이 줄기 시작했지만 지속 여부가 확인되지 않은 수요감축 확인대기 상태에서는 감축 성공을 확정하지 않는다. 평가 기간을 통과하면 유지하고 반등하면 추가 제한으로 간다.","relations":["state","process","boundary","comparison"]}
+{"primary":"순환급수 운영상태","text":"구역별로 공급과 중단 시간을 번갈아 적용하는 순환급수 운영상태는 전면 공급도 전면 단수도 아닌 관리 상태다. 각 구역의 최소 압력과 형평성을 확인하며 다음 순번으로 전이한다.","relations":["state","process","boundary","classification"]}
+{"primary":"공급경로 상실흡수 상태","text":"주 관로와 모든 대체 관로가 동시에 사용할 수 없는 공급경로 상실흡수 상태에서는 배분 명령만으로 급수를 재개할 수 없다. 외부 운반급수나 관로 복구가 투입돼야 새 회복 경로가 열린다.","relations":["state","process","boundary","function"]}
+{"primary":"대체취수 준비상태","text":"예비 취수구를 세척하고 수질 시료를 확인하는 대체취수 준비상태는 아직 공급 전 단계다. 수질·유량·전원 시험을 모두 통과하면 전환하고 어느 하나가 실패하면 다른 수원 탐색으로 간다.","relations":["state","process","boundary","function"]}
+{"primary":"유역연계 양수진행 상태","text":"인접 유역의 여유수를 연결 관로로 끌어오는 유역연계 양수진행 상태에서는 도착량과 원수 수질을 계속 확인한다. 목표 저장량에 이르면 감속하고 품질 한계를 넘으면 즉시 격리한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"지하수 혼합조정 상태","text":"저수지 물과 지하수의 비율을 바꾸며 염류와 경도를 맞추는 지하수 혼합조정 상태는 안정 배합 전 중간 단계다. 연속 시료가 기준을 만족해야 정상 공급으로 넘어간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저수량 회복추적 상태","text":"유입이 수요를 웃돌아 저장량이 늘지만 평시 목표에는 못 미친 저수량 회복추적 상태에서는 가뭄 종료를 선언하지 않는다. 목표 지속시간을 충족하면 해제 검토로 이동한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"가뭄종료 확인대기 상태","text":"저수량·유입·계절 전망은 좋아졌으나 공급망과 수질 점검이 남은 가뭄종료 확인대기 상태는 평시 복귀 직전 단계다. 모든 지표가 유지돼야 제한을 순서대로 해제한다.","relations":["state","process","boundary","classification"]}
+{"primary":"수질시료 운반상태","text":"채수한 병이 봉인된 채 실험실로 이동 중인 수질시료 운반상태는 채취와 분석 사이의 중간 상태다. 온도·시간·인계 기록이 지켜져야 접수되고 이탈하면 격리된다.","relations":["state","process","boundary","role"]}
+{"primary":"수질시료 격리상태","text":"봉인 손상이나 온도 이탈이 발견된 수질시료 격리상태에서는 분석 결과를 공식 판단에 쓰지 않는다. 영향 평가로 사용 가능 범위를 정하거나 재채수 경로로 전환한다.","relations":["state","process","boundary","classification"]}
+{"primary":"수질분석 반응진행 상태","text":"시약과 시료가 반응하고 측정 신호가 아직 안정되지 않은 수질분석 반응진행 상태는 결과 확정 전 단계다. 종료 조건과 품질관리 시료가 맞아야 계산으로 넘어간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"수질결과 교차검증 상태","text":"첫 분석값을 다른 방법이나 실험실 결과와 대조하는 수질결과 교차검증 상태에서는 오염 여부를 확정하지 않는다. 허용차 안이면 승인하고 다르면 원인 조사와 재분석으로 간다.","relations":["state","process","boundary","comparison"]}
+{"primary":"오염의심 감시강화 상태","text":"한 지점에서 비정상 성분이 검출됐지만 재확인이 남은 오염의심 감시강화 상태는 사고 확정과 구별된다. 추가 시료와 상류 추적이 양성이면 취수 차단으로 전환한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"오염취수구 격리상태","text":"오염 경로로 의심되는 취수구의 밸브를 닫고 계통에서 분리한 오염취수구 격리상태는 확산 방지용 중간 상태다. 세척과 연속 음성 결과가 있어야 제한적으로 복귀한다.","relations":["state","process","boundary","function"]}
+{"primary":"오염수괴 확산진행 상태","text":"추적 시료에서 오염 농도 범위가 계속 넓어지는 오염수괴 확산진행 상태는 단순 의심 단계보다 진행된 상태다. 유입 차단·회수·우회 방류를 함께 적용해 확산 정지를 확인해야 한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저수지 혼합완화 진행상태","text":"선택 취수와 폭기를 조정해 오염수괴의 이동을 늦추는 저수지 혼합완화 진행상태는 정화 완료가 아니다. 경계 농도가 줄고 안전 취수층이 확보돼야 다음 회복 단계로 간다.","relations":["state","process","boundary","function"]}
+{"primary":"활성탄 투입조정 상태","text":"맛·냄새 물질 농도에 맞춰 활성탄 주입률을 찾는 활성탄 투입조정 상태에서는 과소·과다 투입을 모두 감시한다. 연속 처리수가 기준을 만족하면 안정 운전으로 전환한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저층산소 회복진행 상태","text":"폭기 후 용존산소가 오르고 있지만 목표 지속시간에는 이르지 않은 저층산소 회복진행 상태는 무산소 해소 완료와 다르다. 여러 깊이의 값이 안정돼야 정상 감시로 복귀한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"조류처리 반응대기 상태","text":"처리제를 투입한 뒤 세포 수와 독성 변화가 나타나기를 기다리는 조류처리 반응대기 상태에서는 성공이나 실패를 성급히 판정하지 않는다. 정해진 시점의 시료로 다음 조치를 결정한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"어류폐사 확정흡수 상태","text":"현장 조사로 개체 폐사와 시점이 확정된 어류폐사 확정흡수 상태는 산소 공급만으로 생존 상태로 되돌릴 수 없다. 원인 제거·사체 수거·서식처 복원은 후속 회복 경로로 별도 관리한다.","relations":["state","process","boundary","classification"]}
+{"primary":"탁수침전 진행상태","text":"유입 탁질이 가라앉고 있으나 취수 가능 농도에는 못 미친 탁수침전 진행상태는 차단과 재개 사이에 놓인다. 깊이별 측정이 기준을 만족하면 선택 취수를 다시 연다.","relations":["state","process","boundary","attribute"]}
+{"primary":"취수계통 세척진행 상태","text":"오염 가능 관로를 배수하고 맑은 물로 씻는 취수계통 세척진행 상태에서는 세척수를 공급망에 보내지 않는다. 말단 시료가 연속 통과해야 소독 단계로 넘어간다.","relations":["state","process","boundary","function"]}
+{"primary":"오염슬러지 반출대기 상태","text":"처리 과정에서 모은 오염 슬러지가 밀봉됐지만 허가 운반을 기다리는 오염슬러지 반출대기 상태는 현장 제거 전 단계다. 인계 기록과 용기가 확인돼야 지정 시설로 이동한다.","relations":["state","process","boundary","role"]}
+{"primary":"소독접촉 유지상태","text":"세척 뒤 소독제가 필요한 시간과 농도로 관로 안에 머무는 소독접촉 유지상태에서는 공급 재개를 보류한다. 접촉 조건을 채운 뒤 배출과 잔류 검사를 수행한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"안전수질 확인대기 상태","text":"주요 항목은 기준을 통과했지만 최종 독성·미생물 결과가 남은 안전수질 확인대기 상태는 음용 허용과 동일하지 않다. 모든 필수 결과가 확인돼야 제한 해제를 검토한다.","relations":["state","process","boundary","classification"]}
+{"primary":"수질제한 단계해제 상태","text":"안전 증거에 따라 취수·접촉·음용 제한을 순서대로 푸는 수질제한 단계해제 상태는 한 번에 평시로 뛰어넘지 않는다. 각 단계의 재검사에서 이상이 없을 때 다음 제한을 해제한다.","relations":["state","process","boundary","classification"]}
+{"primary":"수질사고 종료검토 상태","text":"오염원이 차단되고 수질이 회복됐지만 후속 감시와 원인 조치가 남은 수질사고 종료검토 상태는 사건 종료 전 중간 단계다. 미결 조치가 모두 책임자에게 배정돼야 종료 승인으로 간다.","relations":["state","process","boundary","role"]}
+{"primary":"수질증거 보존완료 상태","text":"시료 인계·원시 신호·결과·결재 이력이 변경 불가 저장소에 잠긴 수질증거 보존완료 상태는 해당 증거 흐름의 흡수 상태다.","relations":["state","process","boundary","attribute"]}
+{"primary":"댐안전 점검배정 상태","text":"이상 징후별 점검자와 구역은 정했지만 현장 진입이 시작되지 않은 댐안전 점검배정 상태는 조사 전 중간 단계다. 장비·출입 허가·안전 감시가 준비돼야 현장 점검으로 넘어간다.","relations":["state","process","boundary","role"]}
+{"primary":"감사랑 진입준비 상태","text":"댐 내부 감사랑의 환기·조명·가스 측정을 확인하는 감사랑 진입준비 상태에서는 작업자가 아직 제한구역에 들어가지 않는다.","relations":["state","process","boundary","function"]}
+{"primary":"계측값 대조진행 상태","text":"변위·양압·누수량 자료의 시각과 추세를 서로 맞추는 계측값 대조진행 상태는 이상 확정 전 단계다. 독립 계기가 같은 변화를 보이면 현장 조사로, 한 계기만 다르면 센서 진단으로 간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"댐변형 경계감시 상태","text":"변위가 경보값에 가까워졌지만 오차와 온도 효과가 분리되지 않은 댐변형 경계감시 상태에서는 구조 손상을 확정하지 않는다.","relations":["state","process","boundary","comparison"]}
+{"primary":"균열현황 조사진행 상태","text":"균열 길이·폭·깊이와 누수 여부를 구간별로 기록하는 균열현황 조사진행 상태는 보수 결정 전 중간 단계다. 전체 범위와 변화 속도가 확인돼야 위험 등급을 정한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"균열진전 확정흡수 상태","text":"반복 측정에서 구조 균열이 실제로 자란 것이 확정된 균열진전 확정흡수 상태는 계측 오류 해제만으로 정상으로 돌아갈 수 없다. 하중 저감·보강·재평가를 거치는 외부 복구 경로가 필요하다.","relations":["state","process","boundary","part_of"]}
+{"primary":"누수원 추적진행 상태","text":"색소·수온·전기전도도와 유로 관측으로 누수 시작점을 좁히는 누수원 추적진행 상태에서는 보수 위치를 아직 확정하지 않는다. 증거가 일치하면 차수 설계로, 상충하면 추가 탐사로 간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"배수공 세척진행 상태","text":"막힌 배수공을 낮은 압력부터 단계적으로 씻는 배수공 세척진행 상태에서는 양압과 배출 탁도를 동시에 감시한다. 유로가 열리고 토립자 유출이 없을 때만 회복 검증으로 넘어간다.","relations":["state","process","boundary","function"]}
+{"primary":"배수기능 회복검증 상태","text":"세척 뒤 배출량은 늘었지만 장시간 안정성이 확인되지 않은 배수기능 회복검증 상태는 정상 복귀 전 단계다. 양압과 탁도가 기준 안에서 유지돼야 제한을 해제한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"내부침식 비상고정 상태","text":"토립자 유출과 공동 징후가 확인된 내부침식 비상고정 상태에서는 일반 운전 명령으로 평시 상태에 복귀하지 않는다.","relations":["state","process","boundary","part_of"]}
+{"primary":"비상수위 저하진행 상태","text":"구조 위험을 줄이기 위해 허용 변화율 안에서 저수위를 낮추는 비상수위 저하진행 상태는 목표 저수위 도달 전 중간 단계다. 댐체와 하류 반응을 확인하며 방류율을 조정한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"댐안정 계산검토 상태","text":"현재 수위·재료 강도·양압을 넣은 안정 계산을 다른 담당자가 재확인하는 댐안정 계산검토 상태에서는 운전 제한을 해제하지 않는다. 입력과 안전율이 승인돼야 다음 단계로 간다.","relations":["state","process","boundary","role"]}
+{"primary":"지진후 긴급점검 상태","text":"지진 직후 수문·댐체·사면·전원 계통을 우선순위대로 확인하는 지진후 긴급점검 상태는 정상 운전과 피해 확정 사이에 놓인다. 핵심 구역 검사가 끝날 때까지 보수적 제한을 유지한다.","relations":["state","process","boundary","part_of"]}
+{"primary":"여진감시 유지상태","text":"본진 점검 뒤 추가 진동과 변위 변화를 집중 관측하는 여진감시 유지상태에서는 한 번의 정상값만으로 종료하지 않는다. 정해진 무이상 기간과 구조 검토가 끝나야 일반 감시로 복귀한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저수지사면 이동추적 상태","text":"사면 표식과 지중 변위가 서서히 달라지는 저수지사면 이동추적 상태는 붕괴 확정 전의 경계 상태다. 속도가 커지면 출입 통제와 수위 저감으로 전환하고 안정되면 장기 감시로 간다.","relations":["state","process","boundary","comparison"]}
+{"primary":"사면붕괴 확정흡수 상태","text":"토체가 실제 붕괴해 원래 지형이 사라진 사면붕괴 확정흡수 상태는 경보 해제만으로 이전 상태가 되지 않는다. 추가 붕괴를 막고 토사를 제거·보강하는 별도 복구 사업이 필요하다.","relations":["state","process","boundary","part_of"]}
+{"primary":"긴급보수 양생대기 상태","text":"균열 주입과 표면 보강을 마친 뒤 재료 강도가 생기기를 기다리는 긴급보수 양생대기 상태에서는 설비를 즉시 정상 하중에 놓지 않는다. 시간·온도·강도 시험이 충족돼야 검증으로 간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"보수효과 검증진행 상태","text":"보수 구간에 단계적으로 하중을 주며 변위·누수·진동을 보는 보수효과 검증진행 상태는 복귀 승인 전 단계다. 모든 반응이 기준 안이면 제한 운전으로, 이상이면 재보수로 이동한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"댐제한운전 회복상태","text":"보수 뒤 낮은 수위와 방류 한계로 기능을 시험하는 댐제한운전 회복상태는 평시 운전과 정지 사이의 중간 단계다. 감시 기간을 무이상으로 지나야 정상 범위를 순차 확대한다.","relations":["state","process","boundary","classification"]}
+{"primary":"댐정상운전 복귀대기 상태","text":"구조·계측·수문 시험은 통과했지만 최종 안전위원회 승인이 남은 댐정상운전 복귀대기 상태에서는 제한을 유지한다. 승인과 후속 감시 계획이 확정돼야 평시 상태로 전환한다.","relations":["state","process","boundary","role"]}
+{"primary":"수차기동 순서진행 상태","text":"윤활·냉각·가이드베인·회전 조건을 차례로 만족시키는 수차기동 순서진행 상태는 발전 시작 전 중간 단계다. 각 단계가 확인돼야 다음 동작으로 넘어가며 실패하면 안전정지로 간다.","relations":["state","process","boundary","part_of"]}
+{"primary":"발전기 동기대기 상태","text":"회전수는 맞지만 계통의 전압·주파수·위상 일치가 남은 발전기 동기대기 상태에서는 차단기를 닫지 않는다. 허용 창 안에 들어오면 연결하고 벗어나면 속도를 다시 조정한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"발전출력 상승진행 상태","text":"계통 연결 뒤 출력을 목표까지 천천히 올리는 발전출력 상승진행 상태에서는 진동·온도·수압을 함께 감시한다. 한계 접근 시 상승을 멈추고 안정되면 목표 유지로 전환한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"공동의심 부하감축 상태","text":"진동과 소음이 공동 현상을 가리켜 출력을 낮추는 공동의심 부하감축 상태는 손상 확정 전의 보호 단계다. 점검에서 표면 이상이 없으면 복귀 시험으로, 손상이 보이면 정비 격리로 간다.","relations":["state","process","boundary","function"]}
+{"primary":"수차고장 잠금흡수 상태","text":"보호장치가 중대 결함을 확인해 재기동을 금지한 수차고장 잠금흡수 상태에서는 일반 운전 명령이 작동하지 않는다. 분해 점검과 책임자 승인 후 새 시험 절차를 거쳐야 잠금을 풀 수 있다.","relations":["state","process","boundary","function"]}
+{"primary":"수차분해 정비진행 상태","text":"수차 부품을 순서대로 분리해 마모와 균열을 조사하는 수차분해 정비진행 상태는 운전 불능이지만 영구 폐기와는 다르다. 결함 범위를 정하면 수리나 교체 경로로 이동한다.","relations":["state","process","boundary","part_of"]}
+{"primary":"수차부품 교체대기 상태","text":"불량 부품은 확인됐지만 규격품의 입고와 품질 증명이 남은 수차부품 교체대기 상태에서는 재조립을 시작하지 않는다. 적합품이 확보돼야 교체 작업으로 넘어간다.","relations":["state","process","boundary","part_of"]}
+{"primary":"수차재조립 확인상태","text":"부품을 조립한 뒤 체결력·간극·정렬 기록을 대조하는 수차재조립 확인상태는 시험 운전 전 단계다. 모든 항목이 도면과 맞아야 윤활 순환과 무부하 시험으로 간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"수차무부하 시험상태","text":"발전 부하 없이 회전시키며 진동·온도·누수를 보는 수차무부하 시험상태는 정비 완료와 계통 복귀 사이에 있다. 안정 기준을 통과해야 동기 시험을 허용한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"발전계통 재연결대기 상태","text":"설비 시험은 끝났지만 계통 운영자의 접속 승인이 남은 발전계통 재연결대기 상태에서는 전력을 보내지 않는다. 승인 시각과 계통 여유가 확인돼야 동기 절차를 시작한다.","relations":["state","process","boundary","role"]}
+{"primary":"어도점검 진행상태","text":"유속·수심·막힘·출구 연결을 구간별로 확인하는 어도점검 진행상태는 통과 기능 판정 전 중간 단계다. 모든 구간을 조사한 뒤 개방 유지나 보수 격리를 결정한다.","relations":["state","process","boundary","part_of"]}
+{"primary":"생태유량 조정진행 상태","text":"하류 수심과 수온 반응을 보며 방류량을 단계적으로 바꾸는 생태유량 조정진행 상태는 목표 서식 조건 도달 전 단계다. 생물 지표와 하류 안전이 함께 안정돼야 유지 상태로 간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"어류이동 관측대기 상태","text":"어도 개방 뒤 표지 개체의 도착과 영상 판독을 기다리는 어류이동 관측대기 상태에서는 통과 성공을 확정하지 않는다. 관측 창이 끝나면 자료 품질을 검토해 다음 방류를 정한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"서식처 건조확정 상태","text":"방류 부족으로 하상이 노출되고 생물 피해가 확인된 서식처 건조확정 상태는 단순 저유량 경보에서 벗어난 결과 상태다. 유량을 회복해도 과거 피해는 남아 복원 조치를 따로 시작해야 한다.","relations":["state","process","boundary","classification"]}
+{"primary":"고립어류 구조진행 상태","text":"웅덩이에 남은 물고기를 포획해 안전 수역으로 옮기는 고립어류 구조진행 상태는 피해 확정과 구조 완료 사이의 회복 단계다. 개체 수와 이동 후 생존을 확인해야 작업을 닫는다.","relations":["state","process","boundary","role"]}
+{"primary":"생태탁도 영향감시 상태","text":"공사나 방류 뒤 탁도가 올랐지만 생물 영향 범위가 정해지지 않은 생태탁도 영향감시 상태에서는 종료를 선언하지 않는다. 농도·지속시간·행동 변화를 함께 추적한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"산란기 보호운영 상태","text":"산란 기간에 수위 변동률과 방류 시각을 제한하는 산란기 보호운영 상태는 평시 운전과 다른 임시 관리 상태다. 산란 종료 증거와 치어 안전을 확인한 뒤 단계적으로 해제한다.","relations":["state","process","boundary","classification"]}
+{"primary":"하류서식 회복추적 상태","text":"유량 복원 뒤 수심·수온·저서생물 지표가 회복되는지 보는 하류서식 회복추적 상태는 조치 완료와 생태 회복 사이에 있다. 여러 조사 시점이 기준을 만족해야 후속 감시로 낮춘다.","relations":["state","process","boundary","attribute"]}
+{"primary":"기관상황 인계진행 상태","text":"저수지 운영 상황과 미결 조치를 다음 책임 기관에 복창시키는 기관상황 인계진행 상태에서는 권한 이전을 완료로 보지 않는다. 자료 수신과 책임 범위 확인이 끝나야 인계 상태를 닫는다.","relations":["state","process","boundary","role"]}
+{"primary":"비상명령 승인대기 상태","text":"비상명령 승인대기 상태는 현장 대응의 필요성은 확인됐으나 명령권자의 최종 허가가 남아 있는 실행 전 단계다. 즉각적인 생명 보호와 승인을 기다려야 하는 운영 조치를 나누어 처리한다.","relations":["state","process","boundary","role"]}
+{"primary":"기관판단 상충격리 상태","text":"두 기관의 방류·대피 판단이 서로 모순되는 기관판단 상충격리 상태에서는 어느 명령도 조용히 덮어쓰지 않는다. 공통 관측 시각과 우선 권한을 확인해 단일 결정으로 복구한다.","relations":["state","process","boundary","classification"]}
+{"primary":"현장조치 배정진행 상태","text":"필요 작업을 담당 팀·장비·완료 시각에 연결하는 현장조치 배정진행 상태는 명령과 실행 사이에 놓인다. 수락 응답과 자원 확인이 있어야 실행 대기로 넘어간다.","relations":["state","process","boundary","role"]}
+{"primary":"현장완료 확인대기 상태","text":"작업자는 완료를 보고했지만 사진·계측·복창 확인이 남은 현장완료 확인대기 상태에서는 조치를 닫지 않는다. 독립 확인이 통과하면 완료하고 차이가 있으면 재점검한다.","relations":["state","process","boundary","role"]}
+{"primary":"운영교대 인계진행 상태","text":"전임과 후임이 수위·수문 위치·경보·미결 작업을 항목별로 맞추는 운영교대 인계진행 상태에서는 책임이 아직 완전히 넘어가지 않는다. 양쪽 서명과 복창 뒤에만 새 근무 상태가 열린다.","relations":["state","process","boundary","role"]}
+{"primary":"일일운영 마감대기 상태","text":"필수 자료는 모였지만 정정 요청과 미해결 경보가 남은 일일운영 마감대기 상태에서는 기록을 잠그지 않는다. 모든 예외가 해소되거나 후속 담당자에게 명시적으로 이관돼야 마감한다.","relations":["state","process","boundary","classification"]}
+{"primary":"기록정정 검토진행 상태","text":"원본 증거와 수정 이유, 영향 범위를 대조하는 기록정정 검토진행 상태에서는 기존 값을 덮어쓰지 않는다. 승인되면 새 판본을 추가하고 근거가 부족하면 요청을 반려한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"운영증거 잠금완료 상태","text":"원시 관측·명령·응답·승인 이력이 변경 불가 저장소에 고정된 운영증거 잠금완료 상태는 원본 기록 흐름의 흡수 상태다. 이후 정정은 원본 보존과 새 판본 연결을 전제로 한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"운영사건 종료승인 상태","text":"원인이 통제되고 후속 조치의 책임과 기한이 배정된 운영사건 종료승인 상태는 비상 대응 흐름의 정상 종점이다. 새로운 증거가 나오면 기존 기록을 보존한 채 별도 재개 사건을 만든다.","relations":["state","process","boundary","classification"]}
+{"primary":"사후분석 진행상태","text":"사건의 관측·판단·명령·결과를 시간순으로 재구성하는 사후분석 진행상태는 운영 종료 뒤 학습 단계다. 근거가 상충하면 확정 결론을 미루고 추가 증거 수집으로 돌아간다.","relations":["state","process","boundary","attribute"]}
+{"primary":"저수지 운영스냅샷 확정상태","text":"저수지 운영스냅샷 확정상태는 동일 시각의 수위, 유입량, 방류량, 수질, 설비 정보를 검증해 묶은 기준점이다. 뒤늦은 수정값은 이 기준점을 덮어쓰지 않고 새 버전으로 이어 붙인다.","relations":["state","process","boundary","part_of"]}

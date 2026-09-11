@@ -32,7 +32,7 @@
 | A06 v01 보존·구조 검증 | ✅ 완료(legacy 경고) | 기존 v01 source/패키지 | 150건·PSV 구조 통과; 기존 `other_type` 문구 불일치 25건은 보존 규칙상 미수정 |
 | A06 v02~v52 source 생성 | ✅ 완료(source-only) | A06 source 51개, 7,650건 | 예약 family/버전 순서 보존; 자동 초안+범위 제한 교정임을 감사에 명시 |
 | A06 전용 registry 작성 | ✅ 완료 | `sources/term_registry/stage2_(16)relational_composition_train_registry_v01_v52.jsonl` | 7,800행, source line·primary 대응 0 오류 |
-| A06 일괄 감사 및 필요 수정 | ✅ 1차 완료(HOLD) | A06 machine/markdown audit | 구조 gate PASS; v01 legacy 25건, 자연성·직접작성 검토 HOLD; package 미작성 |
+| A06 일괄 감사 및 필요 수정 | ✅ 재감사·행별 수정 완료(HOLD) | A06 machine/markdown re-audit | 구조 PASS_WITH_LEGACY_WARNING; v01 legacy 25건, 잔여 템플릿 자연성 HOLD; package 미작성 |
 | 완료 보고 및 한국어 커밋메시지 제안 | ✅ 준비 | 최종 응답 | source-only/HOLD 및 후속 의미 검토 조건을 함께 보고 |
 
 ## 확보한 수치
@@ -45,7 +45,7 @@
 | 2026-09-11 | A06 validation reservation | v01~v06, 6 files × 150 | 생성 범위 밖; 이 세션에서 수정·생성 금지 |
 | 2026-09-11 | 보호 manifest SHA-256 | `1802FD79354A9FF3CD36872A7F2C32A89AE1803E94AAE9CE40EDEA7CBE4B0C0E` | `stage2_highdensity_dataset/PREPARATION_MANIFEST.json` |
 | 2026-09-11 | 보호 중앙 원장 SHA-256 | `887561FD1155F7DC9C6C087FB9D1070A9BF88E328CA8A9FE4AEBFF89C1D0AFFC` | `stage1_highdensity_dataset/TinyLM_Stage2_Stage10_Actual3M_Expansion_Work_Ledger_2026-09-02.md` |
-| 2026-09-11 | 보호 공용 감사기 SHA-256 | `6766CA8F83ABDDA90DDB0894E75B3B5CECF6EA20F5FF5585FDEB21D228F24205` | `stage2_highdensity_dataset/tools/audit_stage2_primary_reviewer_assist.js` |
+| 2026-09-11 | 보호 공용 감사기 SHA-256 (초기 기록) | `6766CA8F83ABDDA90DDB0894E75B3B5CECF6EA20F5FF5585FDEB21D228F24205` | 이전 감사 초안에 기록된 값; 동시 작업 상태와 달라 현재값은 아래에 별도 기록 |
 | 2026-09-11 | 기존 A06 v01 source SHA-256 | `9607FA0F55D2A5000676C870DCE131B22E7B8FE9ACF61D1A6500AC61B774F610` | `stage2_(16)relational_composition_high_density_train_v01.source.psv` |
 | 2026-09-11 | 기존 A06 v01 package SHA-256 | `ECEED930C1E8E6000B8A23BCCEBE5BC895B276FCAD1AE65B451D4A52E329F9FE` | `train/stage2_(16)relational_composition_high_density_train_v01.json` |
 | 2026-09-11 | A06 source-set SHA-256 | `32DDA8E2AC224CF05D9F99932D24D7A7A22FCE6755F32ED675D3717A45B7FF72` | 52개 source 파일의 `filename\tfile_sha256` 정렬 결합 해시 |
@@ -61,3 +61,15 @@
 - 2026-09-11: A06 registry 7,800행을 작성함. v01은 `legacy_source_preserved_pending_area_audit`, v02~v52는 생성 provenance와 의미 검토 대기를 표시함.
 - 2026-09-11: A06 전용 감사 실행 결과 source 52파일·7,800건, 구조/controlled relations/중복/registry 대응은 통과. relations 분포·5-gram·동일 relation-set Jaccard/TF-IDF·primary/조사·2-token core를 JSON/Markdown에 기록함. v01의 `other_type` text literal 불일치 25건은 보호 규칙으로 경고만 남김; A06 생성 text의 직접 row-by-row authorship 및 의미 자연성은 HOLD.
 - 2026-09-11: 종료 전 보호 해시 재확인 — manifest `1802FD79354A9FF3CD36872A7F2C32A89AE1803E94AAE9CE40EDEA7CBE4B0C0E`, 중앙 원장 `887561FD1155F7DC9C6C087FB9D1070A9BF88E328CA8A9FE4AEBFF89C1D0AFFC`, 공용 감사기 `6766CA8F83ABDDA90DDB0894E75B3B5CECF6EA20F5FF5585FDEB21D228F24205`, 기존 v01 source/package 해시가 착수 시점과 일치함. `git diff --check` 대상 출력도 오류 없음.
+
+## 재감사·행별 수정 기록 (2026-09-11)
+
+- 수정 전 source 스냅샷: 52개 legacy `.source.psv`, 7,800건, source-set SHA-256 `32DDA8E2AC224CF05D9F99932D24D7A7A22FCE6755F32ED675D3717A45B7FF72`. v01 SHA-256 `9607FA0F55D2A5000676C870DCE131B22E7B8FE9ACF61D1A6500AC61B774F610`은 보존.
+- 1차 행별 교정: v02~v52에서 조사·직접 인접중복 293건과 v04 1건을 `apply_patch`로 수정(총 294행). 관계·ID·행 순서는 보존.
+- 고유사도 행별 재서술: 동일 core와 `— 독립 확인` 표식만 달랐던 Jaccard ≥0.95 28쌍의 후행 행 28건을 의미별로 직접 재작성. primary 변경에 맞춰 A06 전용 registry의 locator 324건을 기계적으로 동기화(원 registry SHA `3D9CAEC68B9CE92D4C2E6EDF20DEDD1A311FE2F1304E1C9DD80A998404EC936F` → `15A9429AB0F5A6C383E487A443705F834EC68C1C384C8834B31556D55ED98C29`).
+- 추가 조사 교정: v43의 `배관로` 2건을 문맥상 `배관으로`로 수정하고 registry를 재동기화. source 변경 행은 모두 324건이며 source-set 최종 SHA-256 `87BEB2DBE900E522212E713D0798C0E12E28FC3135618D9B2F9E16A4FD150663`.
+- 최종 정본: `audit_reports/machine/a06/TinyLM_Stage2_A06_RelationalComposition_Reaudit_PostRepairFinal_2026-09-11.json`; 사람용 보고서 작성 대상은 `audit_reports/a06/TinyLM_Stage2_A06_RelationalComposition_Reaudit_2026-09-11.md`.
+- 최종 수치: 구조 hard error 0, v01 legacy `other_type_text_mismatch` 25건, registry mismatch 0, files/records 52/7,800. raw 인접 중복 0, `(으)로` 후보 0, primary+은/는 27건(0.346%), word Jaccard ≥0.95 0건(최대 0.942857), char 3~5 TF-IDF ≥0.95 232건(최대 0.973682), 반복 5-gram 29,572 groups/162,821 occurrences, boilerplate skeleton 591종(반복 272종·7,481행), core 반복 2,659종·6,441행.
+- 최종 관계 분포: `is_a` 0, `subclass_of` 0, `part_of` 1,540, `classification` 1,153, `boundary` 3,059, `contrast` 850, `comparison` 1,730, `function` 930, `role` 2,522, `process` 4,185, `state` 4,335, `attribute` 1,711, `other` 1,799. `other` 상위 5종은 후속 검증 누락 213, 다음 단계 입력 결측 212, 식별 기록 상충 212, 출처 연결 불명 212, 센서 채널 불일치 211.
+- 보호 범위 최종 확인: manifest `1802FD79354A9FF3CD36872A7F2C32A89AE1803E94AAE9CE40EDEA7CBE4B0C0E`, 중앙 원장 `887561FD1155F7DC9C6C087FB9D1070A9BF88E328CA8A9FE4AEBFF89C1D0AFFC`, 공용 감사기 현재 SHA `F2B8160883897B97E77E8225C26EAD5CDEC05A7DEAE24E1E8AD191E167C2E7B0`; 모두 감사 중 수정하지 않음.
+- 판정: 구조는 `PASS_WITH_LEGACY_WARNING`, 자연성은 `HOLD`. 잔여 TF-IDF 고유사 232건, dash primary 7,622건, 반복 skeleton/core 및 relation-cue 후보는 자동 일괄수정하지 않고 사용자 검토 대기. A06 source-only라 validation leakage와 package projection은 `NOT_RUN_SOURCE_ONLY`.

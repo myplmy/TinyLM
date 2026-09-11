@@ -136,3 +136,25 @@
 | A05 최종 primary+은/는 | 1,702/10,350 = 16.4444%; 파일별 최대 v05 33.3333% | gate 통과; v05 diversity review 신호 |
 | A05 최종 중복·조사 | exact/normalized duplicate 0; 결정적 조사 suspect 0 | 완료 |
 | A05 최종 reviewer queue | hard 0 / direct 0 / ChatGPT 46 / user 0 | 의미 검토 신호만 잔존 |
+
+## 2026-09-11 재감사·재수정 세션 (사용자 재지침)
+
+- 사용자 지침: A05 source v01~v69만 대상으로 구조·자연성 advisory를 재감사하고, 명확한 의미 오류만 locator별 직접 재서술한 뒤 전수 재감사한다. 다른 영역 source, package train/val, manifest, checkpoint, 중앙 원장, 공용 감사기는 수정하지 않는다.
+- 수정 전 snapshot: 69 files / 10,350 rows / 모든 파일 150행. source set SHA-256 `13ed6bf9cce2929c4a6460c3b5796b150843dcb5a01217b3f8615910c54763f1` (파일별 SHA는 재감사 JSON에 보관). 기존 정본 source-set SHA 표기 `c33b5f265f6be8cee626853fdfed26518655c1a1bf5b16e79f5be1b6f00a82e1`과 계산 방식 차이는 병기하고, 재감사 실행값을 기준으로 전후 비교한다.
+- reviewer-assist 재감사 실행: `audit_stage2_primary_reviewer_assist.js --area A05`로 대상 selector를 고정했다. 결과는 `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Reaudit_PreRewrite_2026-09-11.json`에 보존한다.
+- 현재 재감사 상태: source 수정 전. hard 0, primary+은/는 1,702/10,350 (16.4444%), ChatGPT review queue 45, user queue 0. 동일 relation-set·masked similarity와 반복 5어절은 의미 검토 신호로 분리한다.
+- 이어받을 지점: warning/group별로 실제 의미가 성립하는지 판정하고, 명확한 의미 결손·부자연 문구만 해당 locator를 직접 재서술한 뒤 source set SHA와 전체 gate를 다시 계산한다.
+
+## 2026-09-11 재감사·재수정 완료 (사용자 재개)
+
+- 대상 범위는 A05 `stage2_(15)modality_possibility` train source v01~v69로 고정했다. 69 files / 10,350 records / 파일당 150행을 전후 동일하게 확인했다. 다른 영역 source, package `train/`·`val/`, manifest, checkpoint, 중앙 작업원장, 공용 감사기는 수정하지 않았다.
+- 수정 전 source-set digest: 독립 `13ed6bf9cce2929c4a6460c3b5796b150843dcb5a01217b3f8615910c54763f1`, reviewer `c33b5f265f6be8cee626853fdfed26518655c1a1bf5b16e79f5be1b6f00a82e1`. 수정 후: 독립 `392a816ecfb76502a6ca3984e789a4e6a3a1d01545df5789537089890afef1`, reviewer `564538fe0c1a91e9444bf7b88a5a3c59597defab3fd0836a1c3088f4856d49e4`. 독립 digest는 정렬 `filename|file_sha256\\n` 방식이며 reviewer digest와 계산법이 다르다. 파일별 SHA는 독립 재감사 JSON에 보존했다.
+- 명백한 표면·문법 오류는 locator별로 직접 재서술한 **87행**(v01 12, v02 35, v04 15, v06 25)이다. `other`가 포함된 3,333행에는 누락된 `other_type`만 추가했다. primary·relations·행 순서·registry locator는 보존했다.
+- hard gate는 error 0으로 PASS: BOM·공백행·제어문자·JSON parse, 빈 primary/text, primary literal 누락, 통제어휘 위반, relation cardinality/내부 중복, `other_type` 누락·불필요 추가, train unseen_relation, 허용 key 위반이 모두 0이다.
+- 후속 수치: relation occurrence 31,050회; `is_a 0`, `subclass_of 0`, `part_of 38`, `classification 924`, `boundary 4,231`, `contrast 1,590`, `comparison 2,924`, `function 745`, `role 1,710`, `process 4,698`, `state 7,380`, `attribute 3,477`, `other 3,333`. `other_type` 상위 5개는 확률·확신 1,033, 가정·반사실·조건부 결과 635, 계획·예정·예측 606, 정보 부족·불완전 관측 534, 가능성·실제 발생·미발생 525이다.
+- 독립 token 총량/평균은 206,566 / 19.958067633 tokens/record이다. primary/text exact·정규화 중복은 0이다. primary+은/는 시작은 1,717/10,350=16.5894%이며 전체 임계 미만, v05만 33.3333% 파일 review 신호다. 동일 X1·상이 X2는 1 group/2행, 동일 X2·상이 X1은 12 groups/85행이다.
+- 반복 5어절은 2회 이상 기준 10,889종/119,924 assignments, 기존 고빈도(≥150) 비교 기준 30종/5,850 assignments이다. reviewer similarity는 44 relation-set groups·818,692 후보·119 oversized bucket, raw/masked word-Jaccard 166,087/522,111쌍, raw/masked char TF-IDF 18,541/34,146쌍이다. 독립 scikit-learn char TF-IDF 전수 대조는 22,043쌍, 최고 .968091583이다. 방법이 다른 수치를 합산하지 않는다.
+- 자연성 advisory 최종 상태는 HOLD다. 독립 의미 패턴에서 counterfactual_marker 195, generic_condition_model 195, scope_undefined 50, motion_explanation 49, 총 489행을 사용자 검토표에 남겼다. reviewer rule-warning 0은 규칙 범위 한계이며 자연성 PASS가 아니다. 사용자가 지적한 v16:4 `열차 출입문 조건부 결과`도 조건·대안·경로·행위자가 정의되지 않아 임의 의미를 발명하지 않고 보류했다.
+- 산출물: `audit_reports/TinyLM_Stage2_A05_ModalityPossibility_Train_Consolidated_Audit_2026-09-11.md`, `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Independent_Reaudit_2026-09-11.json`, `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_UserReview_2026-09-11.json`, `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Reaudit_PostOtherType_2026-09-11.json`.
+- 문서 반영 후 동일 selector로 reviewer-assist를 재실행해 `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Reaudit_Final_2026-09-11.json`을 추가 확인했다. reviewer SHA `564538fe...`·69 files·10,350 rows·hard 0·ChatGPT queue 45·registry coverage 100%으로 문서 수치와 일치한다. 독립 scikit-learn TF-IDF도 10,350 records·22,043쌍·최고 .968091583을 재확인했다.
+- 최종 상태: **구조 PASS / 자연성 HOLD / `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`**. 다음 재개 지점은 사용자 검토표의 의미 승인 후 해당 locator만 직접 재서술하고 같은 전수 감사를 재실행하는 것이다. package·checkpoint 생성/수정은 이 작업 범위에 없다.

@@ -1,0 +1,150 @@
+{"primary":"학습계정 초대대기 상태","text":"관리자가 초대장을 만들었지만 학습자가 링크를 열지 않은 학습계정 초대대기 상태에서는 수강 이력이 아직 시작되지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습계정 활성화완료 상태","text":"본인 확인과 약관 동의가 끝난 학습계정 활성화완료 상태는 초대 대상에서 실제 학습자로 바뀐 결과다. 사용자 식별자와 최초 배정 정보는 바꾸지 않고 접근 권한만 새 상태로 갱신한다.","relations":["state","process","classification","attribute"]}
+{"primary":"과정등록 승인대기 상태","text":"수강 신청은 접수됐으나 담당자 승인이 남은 과정등록 승인대기 상태에서는 콘텐츠 진입을 허용하지 않는다. 신청시각과 대상 과정, 승인 근거를 다음 상태로 함께 넘긴다.","relations":["state","process","boundary","role"]}
+{"primary":"과정등록 확정상태","text":"승인된 신청을 실제 수강 목록에 반영한 과정등록 확정상태에서는 학습 일정과 진도판이 열린다. 등록번호와 과정 판본, 승인자는 이후 취소나 이수 판정에도 동일하게 이어진다.","relations":["state","process","function","attribute"]}
+{"primary":"선수과목 확인중 상태","text":"새 과정을 열기 전에 기존 이수증과 면제 기록을 대조하는 선수과목 확인중 상태에서는 등록을 확정하지 않는다. 확인에 사용한 증빙과 판정 규칙의 판본을 승인 결과와 함께 남긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"선수과목 충족전이 상태","text":"필수 이력의 유효성이 확인된 선수과목 충족전이 상태는 접근 차단에서 과정 진입 허용으로 넘어가는 경계다. 원래 이수일과 증빙 출처는 새 권한 상태에서도 보존한다.","relations":["state","process","boundary","classification"]}
+{"primary":"학습성향 진단전 상태","text":"진단 문항을 아직 풀지 않은 학습성향 진단전 상태에서는 추천 난이도를 확정하지 않는다. 계정 언어와 접근성 설정, 배정 과정은 진단 후 추천 상태에도 그대로 전달된다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습성향 진단완료 상태","text":"응답 제출과 채점이 끝난 학습성향 진단완료 상태에서는 초기 학습 경로를 계산할 수 있다. 원응답과 진단 판본, 완료시각은 추천 경로가 바뀌어도 추적 가능하게 유지한다.","relations":["state","process","function","attribute"]}
+{"primary":"접근성 설정검토 상태","text":"자막·화면낭독·시간연장 요청을 확인하는 접근성 설정검토 상태에서는 표준 환경을 강제로 적용하지 않는다. 요청자와 근거, 적용 범위는 승인 뒤의 학습 세션에도 보존된다.","relations":["state","process","role","attribute"]}
+{"primary":"접근성 설정적용 상태","text":"승인된 보조 기능을 과정 화면과 평가에 반영한 접근성 설정적용 상태는 검토 결과가 실행 환경으로 넘어간 상태다. 승인 범위와 만료일, 예외 문항은 후속 진도 기록과 분리하지 않는다.","relations":["state","process","part_of","attribute"]}
+{"primary":"학습자 프로필 동기화중 상태","text":"기관 명부와 학습 플랫폼의 이름·소속·권한을 맞추는 학습자 프로필 동기화중 상태에서는 새 정보가 아직 전역 확정값이 아니다.","relations":["state","process","contrast","attribute"]}
+{"primary":"학습자 프로필 동기화완료 상태","text":"충돌을 해소하고 최신 명부를 반영한 학습자 프로필 동기화완료 상태에서는 새 소속과 역할이 접근 판단에 쓰인다. 이전 프로필과 변경 사유는 감사 이력으로 남아 되돌림 기준을 제공한다.","relations":["state","process","role","attribute"]}
+{"primary":"과정오리엔테이션 시작전 상태","text":"필수 안내 화면을 열기 전인 과정오리엔테이션 시작전 상태에서는 본 학습 진도를 적립하지 않는다. 등록번호와 과정 판본, 접근성 설정은 안내 시작 뒤에도 같은 학습자 문맥으로 이어진다.","relations":["state","process","boundary","part_of"]}
+{"primary":"과정오리엔테이션 진행상태","text":"안내 단계를 순서대로 확인하는 과정오리엔테이션 진행상태에서는 완료한 항목과 남은 항목을 구분한다. 각 확인시각과 동의 응답은 중단 후 재개 상태에도 보존된다.","relations":["state","process","comparison","attribute"]}
+{"primary":"과정오리엔테이션 이수상태","text":"필수 안내와 확인문항을 모두 마친 과정오리엔테이션 이수상태는 본 학습 잠금이 해제된 결과다. 안내 판본과 응답, 완료시각은 첫 학습활동 이후에도 근거로 유지한다.","relations":["state","process","function","attribute"]}
+{"primary":"학습계획 미설정 상태","text":"주간 목표와 학습 가능 시간을 입력하지 않은 학습계획 미설정 상태에서는 일정 알림을 개인화하지 않는다. 등록 과정과 마감일 정보는 계획 생성 상태로 그대로 넘긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습계획 작성중 상태","text":"목표 시간과 요일, 휴식일을 조정하는 학습계획 작성중 상태에서는 임시 선택과 확정 계획을 구별한다. 직전 저장본과 수정시각은 확정 뒤에도 변경 이력으로 보존된다.","relations":["state","process","contrast","attribute"]}
+{"primary":"학습계획 확정상태","text":"학습자가 주간 일정을 저장한 학습계획 확정상태에서는 알림과 권장 진도가 해당 계획을 따른다. 목표값과 적용 시작일, 기준 시간대는 재계획 전까지 보존한다.","relations":["state","process","function","attribute"]}
+{"primary":"첫모듈 개방대기 상태","text":"등록은 끝났지만 개강시각이 오지 않은 첫모듈 개방대기 상태에서는 자료 링크를 노출하지 않는다. 과정 판본과 학습자 등록일, 개방 예정시각은 실제 개방 상태에 전달된다.","relations":["state","process","boundary","attribute"]}
+{"primary":"첫모듈 개방상태","text":"개강 조건이 충족되어 콘텐츠 접근이 열린 첫모듈 개방상태는 대기에서 학습 가능으로 전이한 결과다. 등록 식별자와 모듈 판본, 선수과목 판정은 접근 로그와 함께 유지한다.","relations":["state","process","classification","attribute"]}
+{"primary":"수강권한 일시보류 상태","text":"결제 확인이나 기관 자격 갱신이 남은 수강권한 일시보류 상태에서는 진도 기록을 지우지 않고 새 활동만 막는다. 기존 완료율과 제출물, 마지막 접근시각은 권한 복구 뒤에도 보존된다.","relations":["state","process","boundary","attribute"]}
+{"primary":"수강권한 복구상태","text":"보류 원인이 해소되어 학습 접근을 다시 연 수강권한 복구상태에서는 중단 전 위치에서 이어갈 수 있다. 보류 기간과 기존 진도, 미처리 마감은 복구 시점에 그대로 인계된다.","relations":["state","process","function","attribute"]}
+{"primary":"과정전환 요청상태","text":"학습자가 같은 교과의 다른 분반으로 이동을 신청한 과정전환 요청상태에서는 원 과정 등록을 즉시 폐기하지 않는다. 완료 활동과 성적, 요청 사유는 승인 판단을 위해 보존된다.","relations":["state","process","boundary","role"]}
+{"primary":"과정전환 완료상태","text":"호환 항목을 새 분반에 이관한 과정전환 완료상태에서는 인정된 진도와 다시 해야 할 활동이 분리된다. 원 과정의 제출 식별자와 인정 근거는 새 성적표에서도 추적 가능하다.","relations":["state","process","part_of","attribute"]}
+{"primary":"학습자 휴학전환 상태","text":"장기 중단 승인이 반영된 학습자 휴학전환 상태에서는 마감 계산을 멈추되 계정을 탈퇴로 처리하지 않는다. 누적 진도와 승인 기간, 복귀 조건은 재개 상태까지 보존한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"휴학복귀 승인대기 상태","text":"학습자가 복귀 의사를 제출했지만 담당자 확인이 남은 휴학복귀 승인대기 상태에서는 마감과 접근 권한을 아직 재가동하지 않는다.","relations":["state","process","boundary","role"]}
+{"primary":"학습자 복귀완료 상태","text":"복귀 승인이 적용된 학습자 복귀완료 상태에서는 정지했던 일정과 콘텐츠 접근이 다시 시작된다. 휴학 전 완료 항목과 남은 과제, 조정된 마감일은 새 학습 흐름에 그대로 이어진다.","relations":["state","process","function","attribute"]}
+{"primary":"진도대시보드 초기집계 상태","text":"여러 활동 로그를 처음 모으는 진도대시보드 초기집계 상태에서는 일부 완료값이 아직 화면에 없을 수 있다. 원본 활동 식별자와 발생시각을 보존해 집계 완료 뒤 수치를 대조한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"진도대시보드 갱신완료 상태","text":"새 활동이 모두 반영된 진도대시보드 갱신완료 상태에서는 최신 완료율과 남은 항목을 표시한다. 각 수치가 참조한 로그 범위와 집계시각은 다음 갱신 전까지 유지한다.","relations":["state","process","function","attribute"]}
+{"primary":"학습모듈 진입준비 상태","text":"학습자가 모듈을 선택했지만 필수 자료가 아직 로드되지 않은 학습모듈 진입준비 상태에서는 시작시각을 기록하지 않는다. 모듈 판본과 선택 경로, 접근성 설정을 실제 진입 상태로 넘긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습모듈 진행상태","text":"첫 활동이 시작된 학습모듈 진행상태에서는 완료한 단위와 남은 단위를 분리해 추적한다. 시작시각과 판본, 마지막 학습 위치는 세션을 닫았다가 열어도 보존된다.","relations":["state","process","part_of","attribute"]}
+{"primary":"학습모듈 완료판정 대기상태","text":"마지막 활동은 끝났지만 필수 조건 검사가 남은 학습모듈 완료판정 대기상태에서는 다음 모듈을 즉시 열지 않는다. 활동별 완료 증거와 평가 결과를 확정 판정까지 유지한다.","relations":["state","process","boundary","classification"]}
+{"primary":"학습모듈 완료확정 상태","text":"필수 활동과 평가 기준을 모두 통과한 학습모듈 완료확정 상태는 진행 중에서 이수됨으로 바뀐 결과다. 완료시각과 모듈 판본, 인정된 활동 목록은 과정 종료까지 보존된다.","relations":["state","process","classification","attribute"]}
+{"primary":"읽기자료 미열람 상태","text":"배정된 문서를 아직 열지 않은 읽기자료 미열람 상태에서는 열람 진도를 0으로 둔다. 자료 판본과 배정시각은 첫 열람 상태에서도 동일한 기준으로 이어진다.","relations":["state","process","boundary","attribute"]}
+{"primary":"읽기자료 부분열람 상태","text":"문서 일부를 읽고 위치를 저장한 읽기자료 부분열람 상태에서는 완료와 단순 개방을 구분한다. 마지막 쪽과 체류시간, 자료 판본을 다음 세션에 보존해 이어 읽기를 지원한다.","relations":["state","process","contrast","attribute"]}
+{"primary":"읽기자료 열람완료 상태","text":"필수 구간을 확인하고 종료 조건을 충족한 읽기자료 열람완료 상태에서는 해당 활동을 완료로 집계한다. 최초 개방시각과 마지막 위치, 사용한 판본은 완료 뒤에도 변경 이력으로 남긴다.","relations":["state","process","function","attribute"]}
+{"primary":"학습동영상 재생전 상태","text":"동영상이 배정됐지만 재생이 시작되지 않은 학습동영상 재생전 상태에서는 시청시간을 적립하지 않는다. 영상 판본과 자막 언어, 시작 위치 기본값을 재생 상태로 전달한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습동영상 시청중 상태","text":"재생 구간이 계속 기록되는 학습동영상 시청중 상태에서는 현재 위치와 누적 유효시간이 함께 변한다. 영상 판본과 재생속도, 자막 설정은 일시정지 뒤에도 보존된다.","relations":["state","process","part_of","attribute"]}
+{"primary":"학습동영상 시청완료 상태","text":"필수 재생 비율과 확인문항을 충족한 학습동영상 시청완료 상태에서는 활동 완료 표시가 생성된다. 건너뛴 구간과 총 유효시간, 영상 판본은 완료 판정의 근거로 남는다.","relations":["state","process","classification","attribute"]}
+{"primary":"학습동영상 재시청전환 상태","text":"완료된 영상을 다시 연 학습동영상 재시청전환 상태에서는 기존 완료표시를 취소하지 않고 새 세션을 추가한다. 최초 완료시각과 새 재생 위치를 별도 값으로 보존한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인실습 환경준비중 상태","text":"실습용 자원과 계정을 할당하는 온라인실습 환경준비중 상태에서는 실행 성공을 아직 기록하지 않는다. 학습자 식별자와 실습 판본, 요청 자원량을 활성 상태로 넘긴다.","relations":["state","process","function","attribute"]}
+{"primary":"온라인실습 환경활성 상태","text":"필요한 자원이 배치되어 접속이 열린 온라인실습 환경활성 상태에서는 실제 명령과 결과를 기록할 수 있다. 환경 판본과 할당 자원, 활성화 시각은 세션 종료까지 유지한다.","relations":["state","process","classification","attribute"]}
+{"primary":"온라인실습 중단보존 상태","text":"네트워크나 시간 제한으로 실행이 멈춘 온라인실습 중단보존 상태에서는 작업 공간을 실패로 폐기하지 않는다. 마지막 명령과 파일 스냅숏, 중단 원인을 재개 상태에 전달한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인실습 재개상태","text":"보존된 작업 공간을 다시 연결한 온라인실습 재개상태에서는 중단 직전 결과부터 실습을 이어간다. 스냅숏 식별자와 이전 실행 로그, 남은 사용시간은 새 세션에 결합된다.","relations":["state","process","part_of","attribute"]}
+{"primary":"모듈퀴즈 응시전 상태","text":"퀴즈가 열렸지만 첫 문항을 시작하지 않은 모듈퀴즈 응시전 상태에서는 시도 횟수를 소비하지 않는다. 문항 묶음 판본과 허용시간, 접근성 조건을 실제 응시 상태로 넘긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"모듈퀴즈 답안임시저장 상태","text":"일부 문항에 응답했지만 제출하지 않은 모듈퀴즈 답안임시저장 상태에서는 점수를 확정하지 않는다. 문항별 선택과 저장시각, 남은 시간을 재접속 뒤에도 보존한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"모듈퀴즈 제출확정 상태","text":"학습자가 최종 제출을 승인한 모듈퀴즈 제출확정 상태에서는 답안 편집을 닫고 채점 흐름을 시작한다. 제출 답안과 문항 판본, 제출시각은 채점 결과에 연결해 보존한다.","relations":["state","process","function","attribute"]}
+{"primary":"모듈퀴즈 채점진행 상태","text":"자동 규칙과 수동 검토가 답안을 평가하는 모듈퀴즈 채점진행 상태에서는 임시 점수를 최종 성적으로 노출하지 않는다. 원답안과 채점 규칙 판본, 검토자를 결과 상태까지 유지한다.","relations":["state","process","role","attribute"]}
+{"primary":"모듈퀴즈 결과공개 상태","text":"채점과 검수가 끝나 학습자에게 점수를 보이는 모듈퀴즈 결과공개 상태는 제출 흐름의 공개 종점이다. 원답안과 점수 구성, 공개시각은 재채점이 생겨도 이전 판본으로 보존한다.","relations":["state","process","classification","attribute"]}
+{"primary":"후속모듈 잠금해제 상태","text":"선행 모듈의 완료가 확정된 후속모듈 잠금해제 상태에서는 다음 콘텐츠에 접근할 수 있다. 선행 완료시각과 적용 규칙, 해제된 모듈 판본은 접근 로그에 함께 남는다.","relations":["state","process","function","attribute"]}
+{"primary":"학습과제 배정전 상태","text":"과제 공개시각이 오기 전인 학습과제 배정전 상태에서는 학습자 제출함을 만들지 않는다. 대상 분반과 과제 판본, 공개 예정시각은 실제 배정 상태로 전달된다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습과제 작성진행 상태","text":"학습자가 배정된 과제를 편집하는 학습과제 작성진행 상태에서는 초안과 최종 제출물을 구분한다. 편집자 식별자와 과제 판본, 최근 저장시각은 세션이 바뀌어도 보존된다.","relations":["state","process","contrast","attribute"]}
+{"primary":"학습과제 초안저장 상태","text":"아직 제출하지 않은 작업을 서버에 보관한 학습과제 초안저장 상태에서는 채점 흐름을 시작하지 않는다. 첨부파일 해시와 본문 판본, 저장시각을 다음 편집 또는 제출 상태에 넘긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습과제 제출잠금 상태","text":"학습자가 최종 제출을 확인한 학습과제 제출잠금 상태에서는 동일 판본의 일반 편집을 막는다. 제출 본문과 첨부파일, 확인시각은 접수 처리 중에도 변경 없이 보존된다.","relations":["state","process","function","attribute"]}
+{"primary":"학습과제 접수완료 상태","text":"서버가 제출물과 시각을 확정한 학습과제 접수완료 상태에서는 채점 대기열에 작업을 넣는다. 제출 식별자와 원본 해시, 적용 마감시각은 평가 결과까지 이어진다.","relations":["state","process","classification","attribute"]}
+{"primary":"지각제출 분류대기 상태","text":"마감 뒤 도착했지만 연장 승인 여부가 확인되지 않은 지각제출 분류대기 상태에서는 감점을 확정하지 않는다. 실제 제출시각과 연장 요청, 과제 판본을 판정 상태에 보존한다.","relations":["state","process","boundary","role"]}
+{"primary":"동료평가 배정완료 상태","text":"익명 규칙에 따라 검토 대상이 연결된 동료평가 배정완료 상태에서는 평가자가 지정된 제출물만 볼 수 있다. 배정 알고리즘 판본과 익명 식별자, 배정시각은 검토 완료 뒤에도 남긴다.","relations":["state","process","role","attribute"]}
+{"primary":"동료평가 작성진행 상태","text":"평가자가 기준표에 의견을 입력하는 동료평가 작성진행 상태에서는 저장된 초안과 제출 의견을 분리한다. 기준표 판본과 항목별 점수, 최근 저장시각을 재접속 상태에 보존한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"동료평가 제출완료 상태","text":"필수 기준과 설명이 모두 제출된 동료평가 제출완료 상태에서는 해당 검토를 완료로 집계한다. 평가자 익명키와 기준표 판본, 원의견은 공개 범위가 바뀌어도 보존된다.","relations":["state","process","classification","attribute"]}
+{"primary":"교사채점 대기상태","text":"제출물은 접수됐지만 담당 교사가 열지 않은 교사채점 대기상태에서는 임시 점수를 만들지 않는다. 제출 원본과 배정 채점자, 적용 기준표를 채점 시작 상태로 넘긴다.","relations":["state","process","boundary","role"]}
+{"primary":"교사채점 진행상태","text":"담당자가 기준별 점수와 의견을 기록하는 교사채점 진행상태에서는 저장본을 최종 성적으로 표시하지 않는다. 제출 원본과 기준표 판본, 수정 이력을 확정 상태까지 유지한다.","relations":["state","process","role","attribute"]}
+{"primary":"학습성적 검수보류 상태","text":"채점은 끝났지만 점수 합계나 기준 적용에 이상이 발견된 학습성적 검수보류 상태에서는 공개를 막는다. 원점수와 검수 사유, 채점 판본은 수정 전후 비교를 위해 보존된다.","relations":["state","process","boundary","comparison"]}
+{"primary":"학습성적 최종확정 상태","text":"검수와 승인이 끝난 학습성적 최종확정 상태에서는 공식 성적표와 진도 판정에 점수를 반영한다. 원제출물과 항목별 점수, 승인자는 이후 정정이 생겨도 기존 판본으로 남는다.","relations":["state","process","classification","attribute"]}
+{"primary":"평가결시 처리대기 상태","text":"응시 기록이 없지만 면제나 장애 사유가 확인되지 않은 평가결시 처리대기 상태에서는 0점을 즉시 확정하지 않는다. 배정 기록과 접속 로그, 증빙 요청시각을 판정에 보존한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"대체평가 승인상태","text":"정당한 결시 사유가 인정된 대체평가 승인상태에서는 원 평가를 미응시로 보존하고 새 응시 기회를 연다. 승인 근거와 원 마감, 대체 문항 판본은 결과 연결에 유지된다.","relations":["state","process","function","attribute"]}
+{"primary":"온라인시험 본인확인대기 상태","text":"시험 입실 요청은 왔지만 신원 검증이 끝나지 않은 온라인시험 본인확인대기 상태에서는 문항을 공개하지 않는다. 수험 식별자와 시험 판본, 요청시각을 검증 결과로 넘긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인시험 본인확인완료 상태","text":"허용된 신원 절차를 통과한 온라인시험 본인확인완료 상태에서는 입실 토큰을 발급한다. 검증 방식과 완료시각, 수험 식별자는 응시 로그에 계속 보존된다.","relations":["state","process","function","attribute"]}
+{"primary":"온라인시험 입실완료 상태","text":"시험 환경 검사와 규정 동의가 끝난 온라인시험 입실완료 상태에서는 제한된 문항 세션이 열린다. 장치 검사 결과와 시험 판본, 허용시간은 응시 종료까지 유지한다.","relations":["state","process","classification","attribute"]}
+{"primary":"온라인시험 응시진행 상태","text":"문항 답안과 잔여시간이 계속 갱신되는 온라인시험 응시진행 상태에서는 임시 저장과 최종 제출을 구분한다. 문항 순서와 답안 판본, 시간 보정 이력은 다음 상태로 이어진다.","relations":["state","process","contrast","attribute"]}
+{"primary":"온라인시험 연결중단 보존상태","text":"네트워크가 끊겨 응답 전송이 멈춘 온라인시험 연결중단 보존상태에서는 마지막 수신 답안을 폐기하지 않는다. 서버시각과 답안 판본, 남은 시간을 재개 판정에 보존한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인시험 응시재개 상태","text":"연결중단 기록을 검증한 뒤 세션을 다시 연 온라인시험 응시재개 상태에서는 보정된 잔여시간으로 계속 푼다. 중단 전 답안과 장애 구간, 재개 승인자는 최종 결과에 연결된다.","relations":["state","process","role","attribute"]}
+{"primary":"온라인시험 제출완료 상태","text":"답안 잠금과 수신 확인이 끝난 온라인시험 제출완료 상태에서는 일반 수정이 불가능하고 채점이 시작된다. 최종 답안과 제출시각, 문항 판본은 채점·이의 절차까지 보존된다.","relations":["state","process","function","attribute"]}
+{"primary":"서술형 답안검토 대기상태","text":"자동 채점이 적용되지 않는 답안이 배정된 서술형 답안검토 대기상태에서는 결과를 미완료로 둔다. 원답안과 평가 기준, 검토자 배정은 수동 판정 상태에 그대로 전달된다.","relations":["state","process","boundary","role"]}
+{"primary":"평가무효 검토상태","text":"규정 위반 신호가 발견됐지만 사실관계가 확정되지 않은 평가무효 검토상태에서는 성적을 삭제하지 않고 보류한다. 원답안과 감독 로그, 소명 자료를 최종 판정에 보존한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"평가무효 확정상태","text":"독립 검토에서 무효 근거가 확정된 평가무효 확정상태에서는 해당 점수를 이수 계산에서 제외한다. 원응시 기록과 판정 근거, 승인자는 재심이 가능하도록 그대로 남긴다.","relations":["state","process","classification","attribute"]}
+{"primary":"자동피드백 생성대기 상태","text":"채점 결과는 나왔지만 설명 문안이 아직 만들어지지 않은 자동피드백 생성대기 상태에서는 빈 피드백을 완료로 표시하지 않는다. 원답안과 오답 유형, 채점 규칙 판본을 생성 단계에 넘긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"자동피드백 생성완료 상태","text":"오답 근거와 다음 학습 안내가 구성된 자동피드백 생성완료 상태에서는 검토 또는 공개 단계로 이동할 수 있다. 참조한 답안과 규칙 판본, 생성시각은 문안과 함께 보존된다.","relations":["state","process","function","attribute"]}
+{"primary":"교사피드백 작성중 상태","text":"교사가 제출물에 설명과 예시를 덧붙이는 교사피드백 작성중 상태에서는 저장본과 공개본을 구분한다. 원제출물과 기준표 판본, 편집 이력은 공개 승인까지 유지한다.","relations":["state","process","contrast","attribute"]}
+{"primary":"학습피드백 공개대기 상태","text":"피드백 작성은 끝났지만 성적 공개시각이 오지 않은 학습피드백 공개대기 상태에서는 학습자 화면을 잠근다. 확정 문안과 대상 제출물, 예정시각을 공개 상태로 전달한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습피드백 공개완료 상태","text":"승인된 문안이 학습자에게 노출된 학습피드백 공개완료 상태에서는 열람 여부와 후속 행동을 추적한다. 공개한 판본과 시각, 연결된 점수는 이후 정정에도 원기록으로 보존된다.","relations":["state","process","function","attribute"]}
+{"primary":"학습피드백 미열람 상태","text":"피드백은 공개됐지만 학습자가 아직 열지 않은 학습피드백 미열람 상태에서는 확인 완료로 집계하지 않는다. 공개 판본과 알림 발송 이력은 첫 열람 상태에 그대로 이어진다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습피드백 열람완료 상태","text":"학습자가 피드백 화면을 확인한 학습피드백 열람완료 상태에서는 열람시각과 확인 구간이 기록된다. 공개된 문안 판본과 관련 제출물은 후속 수정 활동에도 연결해 보존한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"피드백 반영계획 작성상태","text":"학습자가 지적사항별 수정 방법을 정리하는 피드백 반영계획 작성상태에서는 계획과 실제 수정 결과를 동일시하지 않는다. 참조한 피드백 판본과 선택한 조치, 작성시각을 수정제출로 넘긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"과제수정 제출진행 상태","text":"공개된 피드백에 따라 새 판본을 편집하는 과제수정 제출진행 상태에서는 원제출물을 덮어쓰지 않는다. 이전 판본과 변경 구간, 참조 피드백을 새 제출과 함께 보존한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"과제수정 제출완료 상태","text":"수정본의 잠금과 접수가 끝난 과제수정 제출완료 상태에서는 재검토 대기열이 열린다. 원본·수정본 식별자와 변경 설명, 제출시각은 재채점 결과까지 유지한다.","relations":["state","process","function","attribute"]}
+{"primary":"학습성적 재채점요청 접수상태","text":"학습자가 근거와 함께 이의를 제출한 학습성적 재채점요청 접수상태에서는 기존 점수를 삭제하지 않고 잠정 유지한다. 요청 문안과 대상 점수 판본, 접수시각을 검토 단계에 넘긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습성적 재채점검토 상태","text":"독립 검토자가 답안과 기준 적용을 다시 확인하는 학습성적 재채점검토 상태에서는 원판정과 후보판정을 구분한다. 기존 점수와 검토 근거, 채점 규칙 판본을 최종 결정까지 보존한다.","relations":["state","process","role","comparison"]}
+{"primary":"학습성적 재채점확정 상태","text":"재검토 승인이 끝난 학습성적 재채점확정 상태에서는 유지 또는 변경된 점수를 새 판본으로 공표한다. 이전 점수와 변경 사유, 승인자는 감사 이력에 그대로 남는다.","relations":["state","process","classification","attribute"]}
+{"primary":"점수정정 통지완료 상태","text":"수정된 점수와 사유가 학습자에게 전달된 점수정정 통지완료 상태에서는 성적표·진도·자격 판정을 같은 판본으로 맞춘다. 통지 내용과 수신시각, 이전 점수는 추적을 위해 보존된다.","relations":["state","process","function","attribute"]}
+{"primary":"오답복습 활동배정 상태","text":"오답 유형에 맞는 설명과 연습문제가 연결된 오답복습 활동배정 상태에서는 원평가 결과를 완료 기록으로 유지한다. 오답 식별자와 추천 규칙, 배정 자료 판본을 복습 흐름에 넘긴다.","relations":["state","process","part_of","attribute"]}
+{"primary":"오답복습 활동진행 상태","text":"학습자가 설명을 읽고 재연습하는 오답복습 활동진행 상태에서는 원오답과 새 응답을 분리해 기록한다. 배정 근거와 시도별 답안, 마지막 위치는 중단 뒤에도 보존된다.","relations":["state","process","contrast","attribute"]}
+{"primary":"오답복습 활동완료 상태","text":"필수 설명과 확인문항을 마친 오답복습 활동완료 상태에서는 복습 이력을 진도에 추가한다. 원오답과 확인 결과, 완료시각은 이후 숙련도 갱신의 근거로 유지된다.","relations":["state","process","function","attribute"]}
+{"primary":"보충학습 추천대기 상태","text":"취약 영역은 감지됐지만 추천 자료의 적합성 검사가 남은 보충학습 추천대기 상태에서는 경로를 확정하지 않는다. 진단 근거와 후보 자료, 추천 규칙 판본을 승인 상태에 보존한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"보충학습 경로개방 상태","text":"검토된 자료 묶음이 학습자에게 열린 보충학습 경로개방 상태에서는 원과정 진도와 보충 진도를 따로 추적한다. 추천 근거와 자료 판본, 개방시각은 완료 판정까지 이어진다.","relations":["state","process","part_of","attribute"]}
+{"primary":"보충학습 이수확정 상태","text":"배정된 보충 자료와 확인평가를 끝낸 보충학습 이수확정 상태에서는 취약 영역 재평가를 시작할 수 있다. 최초 진단값과 보충 활동, 완료 결과는 전후 비교를 위해 보존된다.","relations":["state","process","comparison","attribute"]}
+{"primary":"학습토론 글초안 상태","text":"학습자가 토론문을 저장했지만 게시하지 않은 학습토론 글초안 상태에서는 다른 참여자에게 내용을 보이지 않는다. 초안 판본과 참조 자료, 저장시각은 게시 전환 때 유지된다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습토론 글게시 상태","text":"학습자가 공개를 확인한 학습토론 글게시 상태에서는 분반 토론 흐름에 글이 나타난다. 게시 판본과 작성자 식별자, 게시시각은 수정본이 생겨도 원기록으로 보존된다.","relations":["state","process","role","attribute"]}
+{"primary":"학습토론 답글검토 대기상태","text":"자동 규칙이 위험 표현을 감지한 학습토론 답글검토 대기상태에서는 글을 삭제하지 않고 공개만 보류한다. 원문과 감지 근거, 작성시각을 검토 결과에 그대로 넘긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습토론 참여인정 상태","text":"필수 글과 답글, 질적 기준을 충족한 학습토론 참여인정 상태에서는 해당 활동을 진도에 반영한다. 인정에 사용한 게시물 식별자와 기준 판본, 판정시각을 보존한다.","relations":["state","process","classification","attribute"]}
+{"primary":"학습질문 해결확정 상태","text":"질문자가 답변을 수용하거나 담당자가 해결을 승인한 학습질문 해결확정 상태에서는 미해결 대기열에서 항목을 닫는다. 질문 원문과 채택 답변, 해결시각은 이후 검색과 재개를 위해 남긴다.","relations":["state","process","function","attribute"]}
+{"primary":"온라인학습 숙련도산출 대기상태","text":"새 평가와 활동은 모였지만 계산 주기가 오지 않은 온라인학습 숙련도산출 대기상태에서는 이전 숙련도를 최신값으로 가장하지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인학습 숙련도갱신 완료상태","text":"최신 증거를 반영해 영역별 값을 확정한 온라인학습 숙련도갱신 완료상태에서는 새 추천과 진도 판단이 가능하다. 이전 숙련도와 입력 활동, 계산 판본은 전후 비교를 위해 유지한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"온라인학습 숙련도하락 검토상태","text":"최근 결과가 크게 낮아졌지만 데이터 이상 여부가 남은 온라인학습 숙련도하락 검토상태에서는 수준을 즉시 낮추지 않는다. 원점수와 장치·세션 정보, 이전 숙련도를 판정에 넘긴다.","relations":["state","process","boundary","comparison"]}
+{"primary":"온라인학습 숙련도보정 확정상태","text":"이상값과 정상 변화를 분리한 온라인학습 숙련도보정 확정상태에서는 승인된 값으로 추천 기준을 갱신한다. 보정 전 값과 제외 근거, 승인자를 감사 이력에 보존한다.","relations":["state","process","role","attribute"]}
+{"primary":"개인학습 경로재계산 대기상태","text":"숙련도나 목표가 바뀌었지만 새 순서가 아직 산출되지 않은 개인학습 경로재계산 대기상태에서는 현재 경로를 임시 유지한다. 기존 경로와 변경 입력, 계산 요청시각을 다음 상태로 전달한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"개인학습 경로재계산 완료상태","text":"새 우선순위와 선수조건을 반영한 개인학습 경로재계산 완료상태에서는 남은 활동 순서가 교체된다. 완료된 활동과 이전 경로 판본, 변경 사유는 새 경로에서도 보존한다.","relations":["state","process","function","attribute"]}
+{"primary":"온라인추천 콘텐츠후보 상태","text":"여러 자료가 목표와 숙련도에 맞춰 선별된 온라인추천 콘텐츠후보 상태에서는 아직 학습자 경로에 강제 배정하지 않는다. 후보별 근거와 자료 판본, 필터 조건을 확정 단계에 넘긴다.","relations":["state","process","boundary","classification"]}
+{"primary":"온라인추천 콘텐츠확정 상태","text":"중복과 부적합 자료를 제외한 온라인추천 콘텐츠확정 상태에서는 승인된 항목만 추천 목록에 노출한다. 후보 점수와 제외 사유, 추천 규칙 판본은 후속 평가를 위해 보존된다.","relations":["state","process","classification","attribute"]}
+{"primary":"온라인추천 거부반영 상태","text":"학습자가 특정 추천을 숨긴 온라인추천 거부반영 상태에서는 해당 활동을 미완료 필수과제로 바꾸지 않는다. 거부 대상과 사유 선택, 당시 추천 근거를 다음 추천 계산에 보존한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인학습 난이도상향 대기상태","text":"높은 숙련도 신호는 모였지만 연속 기준 검사가 남은 온라인학습 난이도상향 대기상태에서는 어려운 문항을 즉시 배정하지 않는다. 근거 평가와 현재 수준, 적용 규칙을 승인 상태에 넘긴다.","relations":["state","process","boundary","comparison"]}
+{"primary":"온라인학습 난이도상향 적용상태","text":"상향 조건이 충족되어 다음 활동 수준을 높인 온라인학습 난이도상향 적용상태에서는 이미 완료한 쉬운 활동을 취소하지 않는다. 이전 수준과 전환 근거, 적용 시작 활동을 보존한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"온라인학습 난이도하향 보호상태","text":"일시적 저성과만 감지된 온라인학습 난이도하향 보호상태에서는 단일 결과로 수준을 낮추지 않는다. 최근 평가 묶음과 보호 기간, 현재 경로를 추가 관찰 상태에 유지한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"반복학습 면제검토 상태","text":"이미 숙달한 내용이라는 증거가 제출된 반복학습 면제검토 상태에서는 활동을 완료나 미완료로 미리 바꾸지 않는다. 진단 결과와 기존 이력, 면제 규칙 판본을 판정까지 보존한다.","relations":["state","process","boundary","classification"]}
+{"primary":"반복학습 면제확정 상태","text":"동등한 숙련 증거가 승인된 반복학습 면제확정 상태에서는 대상 활동을 면제로 분류하고 다음 필수 항목을 연다. 승인 근거와 면제 범위, 원 활동 판본을 이수 기록에 남긴다.","relations":["state","process","classification","attribute"]}
+{"primary":"개인학습 목표달성 임박상태","text":"목표값에 가까워졌지만 필수 확인활동이 남은 개인학습 목표달성 임박상태에서는 달성을 확정하지 않는다. 현재 지표와 남은 기준, 목표 판본을 최종 판정에 넘긴다.","relations":["state","process","boundary","comparison"]}
+{"primary":"개인학습 목표달성 확정상태","text":"필수 증거와 목표 임계값을 모두 충족한 개인학습 목표달성 확정상태에서는 해당 목표를 완료로 닫는다. 최초 목표값과 달성 증거, 확정시각은 다음 목표를 세워도 보존된다.","relations":["state","process","classification","attribute"]}
+{"primary":"온라인과정 진도지연 경고상태","text":"계획 대비 완료율이 허용 범위보다 낮아진 온라인과정 진도지연 경고상태에서는 과정 실패를 확정하지 않고 대응을 요청한다. 계획 판본과 실제 활동, 경고시각을 회복 추적에 보존한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"온라인과정 진도회복 관찰상태","text":"보충 일정 뒤 완료율이 오르기 시작한 온라인과정 진도회복 관찰상태에서는 한 번의 활동만으로 정상 복귀를 선언하지 않는다. 경고 기준과 회복 활동, 관찰 기간을 다음 판정에 유지한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인과정 진도정상 복귀상태","text":"계획 범위 안의 완료율이 연속으로 확인된 온라인과정 진도정상 복귀상태에서는 경고를 닫고 일반 알림으로 돌아간다. 지연 구간과 회복 근거, 복귀시각은 분석 이력에 보존한다.","relations":["state","process","function","attribute"]}
+{"primary":"학습지원 개입배정 상태","text":"진도·성취·접속 신호를 검토해 담당 지원자가 연결된 학습지원 개입배정 상태에서는 아직 상담 완료로 처리하지 않는다. 배정 근거와 담당 역할, 연락 기한을 진행 상태로 넘긴다.","relations":["state","process","role","attribute"]}
+{"primary":"학습지원 개입진행 상태","text":"담당자가 상담과 자원 안내를 수행하는 학습지원 개입진행 상태에서는 계획한 조치와 실제 이행을 구분한다. 연락 기록과 합의 조치, 학습자 응답을 종료 판정까지 보존한다.","relations":["state","process","contrast","role"]}
+{"primary":"학습지원 개입종료 상태","text":"합의한 조치가 완료되고 후속 확인이 끝난 학습지원 개입종료 상태에서는 활성 지원 대기열에서 건을 닫는다. 개입 전 지표와 수행 기록, 종료 사유는 효과 평가를 위해 유지한다.","relations":["state","process","function","attribute"]}
+{"primary":"온라인과정 완료후보 상태","text":"필수 활동은 모두 끝났지만 성적·출석·면제 검수가 남은 온라인과정 완료후보 상태에서는 이수증을 발급하지 않는다. 활동별 증거와 과정 판본, 후보 생성시각을 검수에 넘긴다.","relations":["state","process","boundary","classification"]}
+{"primary":"온라인과정 완료보류 상태","text":"누락 증거 또는 미해결 성적이 발견된 온라인과정 완료보류 상태에서는 완료후보 기록을 지우지 않고 발급만 막는다. 보류 사유와 관련 활동, 재검수 조건을 다음 판정에 보존한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인과정 이수확정 상태","text":"모든 완료 조건과 검수가 통과된 온라인과정 이수확정 상태에서는 공식 이수 이력과 자격 정보를 생성한다. 과정 판본과 활동 증거, 확정자는 정정이 생겨도 원판본으로 남는다.","relations":["state","process","role","attribute"]}
+{"primary":"온라인이수증 발급대기 상태","text":"과정 이수는 확정됐지만 서명과 번호 생성이 남은 온라인이수증 발급대기 상태에서는 미완성 문서를 공식 증명으로 내보내지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인이수증 발급완료 상태","text":"고유번호와 전자서명이 부여된 온라인이수증 발급완료 상태에서는 검증 가능한 증명서를 제공한다. 이수 근거와 문서 판본, 발급시각은 재발급 뒤에도 원기록으로 유지한다.","relations":["state","process","function","attribute"]}
+{"primary":"온라인이수증 정정검토 상태","text":"이름이나 과정 표기에 오류 신고가 들어온 온라인이수증 정정검토 상태에서는 기존 증명서를 즉시 삭제하지 않는다. 발급 원본과 정정 요청, 증빙 자료를 승인 판정에 넘긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인이수증 재발급완료 상태","text":"승인된 정정을 반영해 새 판본을 만든 온라인이수증 재발급완료 상태에서는 이전 문서의 유효 상태를 명시한다. 구번호와 신번호, 정정 사유는 검증 이력에 함께 보존된다.","relations":["state","process","comparison","attribute"]}
+{"primary":"온라인자격 갱신대상 전환상태","text":"자격 유효기간이 갱신 창에 들어온 온라인자격 갱신대상 전환상태에서는 기존 이수를 만료로 단정하지 않고 보수교육을 연다. 원발급일과 유효기한, 적용 규칙 판본을 갱신 흐름에 유지한다.","relations":["state","process","boundary","classification"]}
+{"primary":"학습기록 내보내기 대기상태","text":"학습자가 기록 사본을 요청했지만 범위 검사가 남은 학습기록 내보내기 대기상태에서는 불완전 파일을 제공하지 않는다. 요청 범위와 신원 확인, 기준시각을 추출 단계에 보존한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습기록 내보내기 완료상태","text":"승인 범위의 활동과 성적이 파일로 고정된 학습기록 내보내기 완료상태에서는 다운로드 무결성을 확인할 수 있다. 추출 기준시각과 포함 항목, 파일 해시는 사후 검증을 위해 유지한다.","relations":["state","process","function","attribute"]}
+{"primary":"외부학습기록 전송대기 상태","text":"표준 학습활동 문장은 만들어졌지만 외부 저장소가 확인하지 않은 외부학습기록 전송대기 상태에서는 전송 성공으로 집계하지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"외부학습기록 전송확인 상태","text":"수신 저장소가 고유 식별자로 응답한 외부학습기록 전송확인 상태에서는 해당 활동을 전달 완료로 표시한다. 원문장과 수신 응답, 확인시각은 중복 전송 판정에 보존된다.","relations":["state","process","function","attribute"]}
+{"primary":"오프라인학습 동기화대기 상태","text":"기기에 활동은 저장됐지만 서버에 도착하지 않은 오프라인학습 동기화대기 상태에서는 중앙 진도를 최신이라고 보지 않는다. 기기 식별자와 로컬 시각, 활동 판본을 업로드 단계로 넘긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"오프라인학습 동기화진행 상태","text":"로컬 활동과 서버 이력을 순서대로 대조하는 오프라인학습 동기화진행 상태에서는 부분 반영과 전체 완료를 구분한다. 전송 묶음과 확인된 항목, 남은 항목을 완료 판정까지 보존한다.","relations":["state","process","contrast","part_of"]}
+{"primary":"오프라인학습 동기화완료 상태","text":"모든 로컬 활동이 수신·검증된 오프라인학습 동기화완료 상태에서는 중앙 진도와 추천을 다시 계산한다. 원기기 시각과 서버 수신시각, 활동 식별자는 시간차가 있어도 함께 유지한다.","relations":["state","process","function","attribute"]}
+{"primary":"학습기록 동기화충돌 검토상태","text":"같은 활동에 서로 다른 완료값이 발견된 학습기록 동기화충돌 검토상태에서는 한쪽을 자동 삭제하지 않는다. 로컬·서버 판본과 발생시각, 충돌 규칙을 해소 판정에 보존한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"학습기록 동기화충돌 해소상태","text":"출처와 시간순서를 검증해 유효 판본을 정한 학습기록 동기화충돌 해소상태에서는 중앙 진도를 다시 일치시킨다. 채택값과 제외값, 해소 근거는 감사 이력에 모두 남긴다.","relations":["state","process","comparison","attribute"]}
+{"primary":"온라인과정 판본전환 대기상태","text":"새 과정 판본은 배포됐지만 진행 중 학습자의 이관 검사가 남은 온라인과정 판본전환 대기상태에서는 콘텐츠를 즉시 교체하지 않는다. 기존 진도와 양 판본의 대응표, 전환 기준을 유지한다.","relations":["state","process","boundary","comparison"]}
+{"primary":"온라인과정 판본전환 완료상태","text":"호환 활동과 재수강 항목을 확정한 온라인과정 판본전환 완료상태에서는 새 판본으로 학습을 이어간다. 이전 완료 기록과 매핑 근거, 전환시각은 새 진도표에 연결해 보존한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"폐기콘텐츠 기록보존 상태","text":"학습 화면에서 내려간 자료의 폐기콘텐츠 기록보존 상태에서는 신규 접근을 막되 과거 이력의 참조 대상을 지우지 않는다. 콘텐츠 해시와 사용 기간, 대체 자료 연결을 장기 기록에 남긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인분반 종료대기 상태","text":"수업 기간은 끝났지만 미처리 채점과 이의가 남은 온라인분반 종료대기 상태에서는 기록을 읽기 전용으로 두고 폐쇄를 미룬다. 남은 작업과 담당자, 기준시각을 종료 판정에 보존한다.","relations":["state","process","boundary","role"]}
+{"primary":"온라인분반 종료확정 상태","text":"채점·이의·이수 판정이 모두 닫힌 온라인분반 종료확정 상태에서는 일반 학습활동 추가를 막고 기록을 보관 모드로 옮긴다. 최종 성적과 참여 이력, 종료 승인자는 그대로 유지한다.","relations":["state","process","classification","attribute"]}
+{"primary":"학습계정 탈퇴유예 상태","text":"탈퇴 요청은 확인됐지만 철회 기간이 남은 학습계정 탈퇴유예 상태에서는 접근을 제한하되 기록을 즉시 삭제하지 않는다. 요청시각과 보존 의무, 철회 기한을 최종 처리에 넘긴다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습계정 비식별화완료 상태","text":"탈퇴 확정 뒤 직접 식별자를 분리한 학습계정 비식별화완료 상태에서는 개인 접근을 복구할 수 없지만 통계용 학습 이력은 정책 범위에서 남는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"학습데이터 보존만료 대기상태","text":"법정 보존기간은 끝났지만 처분 승인이 남은 학습데이터 보존만료 대기상태에서는 새 이용을 막고 원본을 잠근다. 대상 범위와 만료 근거, 보류 사유를 최종 처분 판정에 유지한다.","relations":["state","process","boundary","classification"]}
+{"primary":"학습데이터 처분확정 상태","text":"보존 예외가 없음을 검증한 학습데이터 처분확정 상태에서는 승인 범위의 원본을 정해진 방식으로 제거한다. 대상 목록과 승인자, 처분 증명은 원데이터와 분리해 보존한다.","relations":["state","process","role","attribute"]}
+{"primary":"온라인학습 감사로그 봉인상태","text":"기간 내 학습·채점·정정 사건의 해시가 확정된 온라인학습 감사로그 봉인상태에서는 기존 항목을 덮어쓰지 않고 후속 정정만 덧붙인다. 봉인 범위와 해시, 책임자를 보존한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"온라인학습 기록장기보관 상태","text":"운영 시스템에서 분리된 온라인학습 기록장기보관 상태에서는 일상 편집을 허용하지 않고 승인된 조회만 제공한다.","relations":["state","process","function","attribute"]}

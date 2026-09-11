@@ -1,0 +1,80 @@
+{
+  "audit": "A04 independent similarity and particle review",
+  "source_files": 69,
+  "source_records": 10350,
+  "similarity": {
+    "char_3_5_tfidf": {
+      "method": "character 3-5-gram TF-IDF cosine; NFKC/lowercase; raw term counts; smooth IDF; L2 normalization; sparse pair accumulation",
+      "threshold": 0.72,
+      "records": 10350,
+      "pairs_with_shared_feature": 46751202,
+      "pairs_ge_threshold": 0,
+      "max": 0.666119893,
+      "max_pair": {
+        "score": 0.666119893,
+        "left": {
+          "file": "stage2_(14)state_transition_high_density_train_v60.source.jsonl",
+          "line": 81,
+          "primary": "발효 냉각수대기",
+          "text": "발효 냉각수대기는 냉각수 공급 확인을 기다리는 상태이며, 공급 시각과 유량값을 보존하고 밸브 순서와 대기 시간을 조정한다."
+        },
+        "right": {
+          "file": "stage2_(14)state_transition_high_density_train_v61.source.jsonl",
+          "line": 18,
+          "primary": "센터 냉각수대기",
+          "text": "센터 냉각수대기는 냉각수 공급을 기다리는 상태로, 공급 시각과 유량값을 유지하며 펌프 순서와 대기 시간을 조정한다."
+        }
+      },
+      "top_threshold_pairs": []
+    },
+    "word_set_jaccard": {
+      "method": "word-set Jaccard; NFKC/lowercase; Korean/ASCII/number lexical tokens; sparse inverted-index pair accumulation",
+      "threshold": 0.6,
+      "records": 10350,
+      "pairs_with_shared_word": 12039875,
+      "pairs_ge_threshold": 0,
+      "max": 0.590909091,
+      "max_pair": {
+        "score": 0.590909091,
+        "left": {
+          "file": "stage2_(14)state_transition_high_density_train_v34.source.jsonl",
+          "line": 28,
+          "primary": "저장장치 충전출력상향 조건판정",
+          "text": "저장장치 충전출력상향 조건판정은 계통의 추가 흡수 요청과 배터리 여유가 함께 있으면 지령을 높인다. 요청량·상승률·열여유를 본다."
+        },
+        "right": {
+          "file": "stage2_(14)state_transition_high_density_train_v34.source.jsonl",
+          "line": 53,
+          "primary": "저장장치 방전출력상향 조건판정",
+          "text": "저장장치 방전출력상향 조건판정은 계통의 추가 공급 요청과 배터리 에너지 여유가 함께 있으면 출력을 높인다. 요청량·강하율·열여유를 본다."
+        }
+      },
+      "top_threshold_pairs": []
+    }
+  },
+  "particle_review": {
+    "hard_pattern_candidates": 0,
+    "hard_pattern_examples": [],
+    "adjacent_duplicate_word_candidates": 0,
+    "adjacent_duplicate_examples": [],
+    "primary_hangul_rows": 10350,
+    "numbered_primary_rows": 0,
+    "primary_attached_occurrences": 9597,
+    "particle_histogram": {
+      "는": 3646,
+      "은": 3051,
+      "에서": 714,
+      "을": 569,
+      "으로": 553,
+      "로": 399,
+      "이": 213,
+      "의": 136,
+      "를": 123,
+      "에": 112,
+      "가": 81
+    },
+    "primary_particle_candidates": 0,
+    "primary_particle_examples": [],
+    "review_note": "후보는 독립 휴리스틱의 검출값이며, 실제 오류 여부는 사람이 예문을 확인해야 한다. A04의 primary 끝 숫자는 레코드 구분자로 보고 앞선 한글 개념명의 받침을 판정했다."
+  }
+}

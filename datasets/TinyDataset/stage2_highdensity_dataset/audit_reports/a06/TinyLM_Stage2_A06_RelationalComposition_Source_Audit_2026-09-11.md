@@ -1,5 +1,7 @@
 # Stage2 A06 relational_composition source 감사 보고서 (2026-09-11)
 
+> **역사적 기준선 문서:** 이 문서는 행별 수정 전의 초도 감사 결과를 보존한다. 최종 수정·재감사 판정은 [`TinyLM_Stage2_A06_RelationalComposition_Reaudit_2026-09-11.md`](TinyLM_Stage2_A06_RelationalComposition_Reaudit_2026-09-11.md)와 해당 machine JSON을 따른다.
+
 ## 결론
 
 - 범위: train source v01~v52, 7,800건 / 52파일

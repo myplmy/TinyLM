@@ -1,0 +1,150 @@
+{"primary":"취수기동 준비상태","text":"전원과 밸브 조건은 확인했지만 펌프를 아직 돌리지 않은 단계가 취수기동 준비상태다. 이 중간 상태에서는 원수 수위와 토출 경로가 모두 유효해야 다음 기동 단계로 간다.","relations":["state","process","function","attribute"]}
+{"primary":"취수펌프 가속중간상태","text":"정지 회전수에서 목표 회전수로 서서히 올라가는 구간이 취수펌프 가속중간상태다. 목표 유량에 도달하기 전에는 안정 운전 완료로 기록하지 않는다.","relations":["state","process","comparison","boundary"]}
+{"primary":"취수안정 확인상태","text":"목표 유량에 도달한 뒤 압력과 진동을 여러 주기 확인하는 단계가 취수안정 확인상태다. 검증이 끝나야 기동 절차를 닫고 정상 취수로 분류한다.","relations":["state","process","attribute","classification"]}
+{"primary":"저수위 기동잠금상태","text":"취수원 수위가 펌프 보호 하한 아래이면 저수위 기동잠금상태가 된다. 일반 수요 명령으로는 벗어날 수 없고 수위 회복과 흡입 조건 재검증이 필요하다.","relations":["state","boundary","function","attribute"]}
+{"primary":"취수펌프 트립고정상태","text":"과전류나 진동 보호가 동작한 펌프는 취수펌프 트립고정상태에 머문다. 단순 재기동 명령을 차단하고 원인 확인과 수동 복귀 승인을 요구한다.","relations":["state","boundary","process","role"]}
+{"primary":"취수펌프 재기동경로","text":"트립 원인을 제거하고 절연·회전 시험을 통과한 뒤 저속 시험에서 정상 운전으로 가는 절차가 취수펌프 재기동경로다. 각 단계의 증거가 없으면 다음 상태로 넘기지 않는다.","relations":["state","process","function","role"]}
+{"primary":"취수원 전환중간상태","text":"주 취수원 유입을 줄이면서 대체 취수원 유입을 늘리는 겹침 구간이 취수원 전환중간상태다. 두 수원의 유량과 수질을 따로 기록해 전환 완료 여부를 판단한다.","relations":["state","process","classification","attribute"]}
+{"primary":"오염취수원 격리고정상태","text":"위해물질이 확인된 취수원은 오염취수원 격리고정상태로 전환된다. 시간 경과만으로 해제하지 않고 반복 음성 검사와 권한자 승인이 있어야 한다.","relations":["state","boundary","classification","role"]}
+{"primary":"대체취수 안정화경로","text":"대체 취수원 연결 뒤 낮은 유량 시험, 수질 확인, 계획 유량 증량을 차례로 거치는 절차가 대체취수 안정화경로다. 곧바로 최대 취수 상태로 건너뛰지 않는다.","relations":["state","process","comparison","function"]}
+{"primary":"취수정지 확인상태","text":"펌프가 멈췄지만 잔류 유량과 밸브 밀폐를 확인하는 구간이 취수정지 확인상태다. 무유량과 역류 없음이 입증되어야 정지 완료 상태가 된다.","relations":["state","process","attribute","boundary"]}
+{"primary":"스크린세척 준비상태","text":"주 스크린을 예비 수로로 우회하고 구동부 전원을 격리한 단계가 스크린세척 준비상태다. 협잡물 제거기를 켜기 전에 작업 구역의 인원 확인을 마쳐야 한다.","relations":["state","process","function","role"]}
+{"primary":"스크린세척 진행상태","text":"스크린 표면에서 협잡물을 긁어 반출기로 보내는 동안은 스크린세척 진행상태다. 수위차가 낮아져도 정해진 왕복 동작이 끝나기 전에는 완료로 보지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"스크린고착 잠금상태","text":"구동 토크가 상한을 넘고 스크린이 움직이지 않으면 스크린고착 잠금상태가 된다. 반복 기동을 막고 물리적 장애 제거와 구동부 점검을 요구한다.","relations":["state","boundary","attribute","function"]}
+{"primary":"스크린복구 시험경로","text":"고착 원인을 제거한 뒤 무부하 회전, 저부하 세척, 수위차 확인을 거치는 절차가 스크린복구 시험경로다. 세 단계가 모두 통과되어야 자동 운전에 복귀한다.","relations":["state","process","function","comparison"]}
+{"primary":"침사인발 중간상태","text":"침사 밸브를 열어 퇴적 모래가 수거조로 이동하는 구간이 침사인발 중간상태다. 배출 농도와 수거조 수위를 보면서 종료 시점을 판단한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"고탁도 취수감량상태","text":"홍수 탁도에 대응해 취수량을 낮췄지만 완전히 중단하지 않은 단계가 고탁도 취수감량상태다. 원수 부하와 필수 공급량 사이의 제한 운전으로 관리한다.","relations":["state","comparison","attribute","function"]}
+{"primary":"원수검체 격리대기상태","text":"오염 의심 원수와 검체를 분리했지만 분석 결과가 나오지 않은 단계가 원수검체 격리대기상태다. 이 상태에서는 정상 처리와 오염 확정을 모두 보류한다.","relations":["state","process","classification","boundary"]}
+{"primary":"원수격리 해제경로","text":"대조 시료와 반복 분석이 음성이고 취수원 현장 점검이 끝난 뒤 격리를 푸는 절차가 원수격리 해제경로다. 단일 정상값만으로 즉시 일반 유입 상태로 옮기지 않는다.","relations":["state","process","role","attribute"]}
+{"primary":"분말탄 슬러리준비상태","text":"분말활성탄을 물과 섞었지만 농도 균질화를 확인하기 전 단계가 분말탄 슬러리준비상태다. 교반과 농도 검증을 통과해야 주입 가능 상태가 된다.","relations":["state","process","attribute","function"]}
+{"primary":"분말탄 주입안정상태","text":"계량 펌프 기동 뒤 실제 주입률이 목표 범위에 머무는지 확인하는 단계가 분말탄 주입안정상태다. 안정 증거가 생길 때까지 투입 개시와 정상 운전을 구분한다.","relations":["state","process","attribute","comparison"]}
+{"primary":"분말공급 막힘잠금상태","text":"호퍼 중량은 줄지 않는데 공급기 토크가 상승하면 분말공급 막힘잠금상태가 된다. 자동 재시도를 제한하고 분진 안전 절차 아래 막힘을 제거해야 한다.","relations":["state","boundary","attribute","function"]}
+{"primary":"분말공급 복구경로","text":"막힘 제거, 공회전 시험, 저율 투입 확인을 거쳐 목표 주입으로 돌아가는 절차가 분말공급 복구경로다. 분진 누출이나 토크 이상이 다시 나타나면 이전 잠금 상태로 복귀한다.","relations":["state","process","function","boundary"]}
+{"primary":"응집제 탱크전환상태","text":"운전 탱크의 흡입을 줄이면서 예비 탱크 배관의 공기를 빼는 구간이 응집제 탱크전환상태다. 새 로트 농도와 유량이 확인되어야 전환 완료로 기록한다.","relations":["state","process","classification","attribute"]}
+{"primary":"응집제 농도확인상태","text":"새 약품 로트가 연결되었지만 실측 유효농도가 확정되지 않은 단계가 응집제 농도확인상태다. 성적서 값만으로 정상 주입 설정을 적용하지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"응집펌프 오류고정상태","text":"계량 펌프 명령과 실제 토출이 반복 불일치하면 응집펌프 오류고정상태가 된다. 원수 유입과 연동해 주입을 차단하고 정비 확인 전 자동 복귀를 막는다.","relations":["state","boundary","function","attribute"]}
+{"primary":"응집주입 재개경로","text":"계량 펌프 수리 뒤 물 시험, 약품 저율 시험, 원수 유량 연동을 차례로 확인하는 절차가 응집주입 재개경로다. 각 단계에서 누설이나 편차가 발견되면 재개를 중단한다.","relations":["state","process","function","comparison"]}
+{"primary":"산도보정 수렴상태","text":"산이나 알칼리 주입 뒤 pH가 목표에 접근하지만 아직 안정시간을 채우지 않은 구간이 산도보정 수렴상태다. 순간 측정값 하나만으로 보정 완료를 선언하지 않는다.","relations":["state","process","attribute","comparison"]}
+{"primary":"산도과보정 보류상태","text":"pH가 목표를 지나 반대편 경계에 가까워지면 산도과보정 보류상태로 전환해 추가 주입을 멈춘다. 혼화와 재측정이 끝날 때까지 반대 약품을 즉시 넣지 않는다.","relations":["state","process","boundary","attribute"]}
+{"primary":"약품누출 봉쇄상태","text":"약품이 방유턱 안에 유출되고 공급원이 차단되면 약품누출 봉쇄상태가 된다. 일반 운전 명령으로 해제하지 않으며 회수·중화와 표면 검사가 끝나야 한다.","relations":["state","boundary","function","classification"]}
+{"primary":"약품실 정상화경로","text":"유출 약품 회수, 표면 중화, 환기, 공기 측정을 순서대로 통과해 약품실을 다시 여는 절차가 약품실 정상화경로다. 냄새 감소만으로 출입 제한을 풀지 않는다.","relations":["state","process","role","attribute"]}
+{"primary":"급속혼화 기동중간상태","text":"교반기가 정지에서 목표 회전수로 올라가며 응집제를 분산시키는 구간이 급속혼화 기동중간상태다. 전류와 진동이 안정되기 전에는 정상 혼화로 분류하지 않는다.","relations":["state","process","attribute","comparison"]}
+{"primary":"급속혼화 안정확인상태","text":"목표 회전수에 도달한 뒤 혼화 강도와 약품 분산을 확인하는 단계가 급속혼화 안정확인상태다. 설정 도달과 공정 안정 완료를 구분해 기록한다.","relations":["state","process","function","boundary"]}
+{"primary":"혼화기 고장잠금상태","text":"과전류나 축 진동이 보호 기준을 넘으면 혼화기 고장잠금상태가 된다. 원수 유입을 다른 계열로 돌리고 수동 점검 전에는 반복 기동을 허용하지 않는다.","relations":["state","boundary","attribute","function"]}
+{"primary":"혼화기 복구시험경로","text":"혼화기 수리 뒤 무부하 회전, 물 부하 시험, 약품 연동을 순서대로 확인하는 절차가 혼화기 복구시험경로다. 어느 단계든 이상이 재발하면 고장잠금으로 돌아간다.","relations":["state","process","function","boundary"]}
+{"primary":"플록형성 진행상태","text":"미세 입자가 충돌해 크기가 증가하지만 침강 가능 크기에 아직 못 미친 구간이 플록형성 진행상태다. 교반 강도와 체류시간을 유지하며 다음 관찰을 기다린다.","relations":["state","process","attribute","comparison"]}
+{"primary":"플록품질 저하보류상태","text":"플록 크기 감소와 파손 조각 증가가 나타나면 플록품질 저하보류상태로 전환한다. 약품을 즉시 증량하지 않고 pH와 교반 조건을 함께 재평가한다.","relations":["state","process","boundary","attribute"]}
+{"primary":"완속교반 계열전환상태","text":"주 계열 유량을 낮추면서 예비 계열 회전과 수위를 맞추는 겹침 구간이 완속교반 계열전환상태다. 두 계열의 플록 품질이 이어져야 전환 완료로 본다.","relations":["state","process","classification","comparison"]}
+{"primary":"완속교반기 트립고정상태","text":"구동 토크나 진동 보호가 동작한 장치는 완속교반기 트립고정상태에 머문다. 자동 재시도를 막고 다른 계열의 부하를 조정한 뒤 정비한다.","relations":["state","boundary","function","attribute"]}
+{"primary":"침전분배 균형중간상태","text":"침전지별 유입 편차를 줄이려고 위어와 밸브를 조정하는 동안은 침전분배 균형중간상태다. 총 유량은 유지하되 각 조의 수위가 안정될 때까지 완료로 처리하지 않는다.","relations":["state","process","comparison","attribute"]}
+{"primary":"침강안정 검증상태","text":"플록이 가라앉기 시작했지만 유출 탁도의 지속성을 확인하는 단계가 침강안정 검증상태다. 여러 체류 주기에서 기준을 만족해야 정상 침전으로 이동한다.","relations":["state","process","attribute","comparison"]}
+{"primary":"슬러지계면 경계상태","text":"슬러지계면이 경고 높이에 도달했지만 위어 유출은 발생하지 않은 단계가 슬러지계면 경계상태다. 즉시 인발을 준비하면서 월류 상태와 구분한다.","relations":["state","attribute","comparison","boundary"]}
+{"primary":"슬러지월류 격리고정상태","text":"슬러지가 위어를 넘어 후속 수로로 유출되면 해당 물은 슬러지월류 격리고정상태로 분류한다. 계면을 낮춘 뒤에도 자동 해제하지 않고 별도 수질 검사와 회수 처리가 필요하다.","relations":["state","boundary","classification","process"]}
+{"primary":"슬러지인발 진행상태","text":"인발 밸브가 열려 슬러지가 농축조로 이동하는 동안은 슬러지인발 진행상태다. 계면 높이와 배출 농도를 함께 보며 종료 조건을 판단한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"슬러지인발 종료확인상태","text":"밸브를 닫은 뒤 잔류 흐름과 계면 반등을 확인하는 단계가 슬러지인발 종료확인상태다. 유량이 0이고 계면이 안정되어야 완료로 기록한다.","relations":["state","process","attribute","boundary"]}
+{"primary":"침전지 격리잠금상태","text":"구조 누수나 반복 고탁도로 유입·유출을 차단한 침전지는 침전지 격리잠금상태가 된다. 일반 분배 명령으로 연결하지 못하게 하고 점검 승인까지 잠금을 유지한다.","relations":["state","boundary","function","role"]}
+{"primary":"침전지 배수진행상태","text":"격리 침전지 수위를 작업 기준까지 낮추는 동안은 침전지 배수진행상태다. 배수조 여유와 잔류 슬러지를 확인하며 속도를 조절한다.","relations":["state","process","function","attribute"]}
+{"primary":"침전지 세척확인상태","text":"표면 세척은 끝났지만 잔류물과 구조 손상을 검사하는 단계가 침전지 세척확인상태다. 육안 확인과 시료 검사가 모두 끝나야 충수로 이동한다.","relations":["state","process","part_of","boundary"]}
+{"primary":"침전지 충수중간상태","text":"침전지 충수중간상태는 비어 있던 조에 처리수를 서서히 넣어 운전 수위로 올리는 진행 구간이다. 누설 여부와 위어 수평을 단계마다 확인하고 목표 높이에 닿기 전에는 완료로 보지 않는다.","relations":["state","process","attribute","comparison"]}
+{"primary":"침전지 재투입경로","text":"충수, 저율 유입, 유출 탁도 검증을 차례로 거쳐 정상 부하를 맡기는 절차가 침전지 재투입경로다. 수질 증거 없이 분배 밸브를 완전히 열지 않는다.","relations":["state","process","function","role"]}
+{"primary":"고탁도수 회수대기상태","text":"기준을 넘은 침전수를 정상 여과에서 분리했지만 회수조 이송 전인 단계가 고탁도수 회수대기상태다. 재검과 저장 용량을 확인해 처리 경로를 정한다.","relations":["state","process","classification","boundary"]}
+{"primary":"여과기동 숙성상태","text":"역세 후 낮은 유량으로 여과하면서 여재층을 안정시키는 구간이 여과기동 숙성상태다. 초기 탁도와 입자계수가 기준에 들기 전에는 정수 계통에 연결하지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"여과숙성 완료확인상태","text":"초기 여과수 값이 정상으로 내려왔지만 지속 시간을 확인하는 단계가 여과숙성 완료확인상태다. 연속 표본이 통과해야 정상 여과로 분류한다.","relations":["state","process","attribute","comparison"]}
+{"primary":"여과수두 경고상태","text":"수두손실이 역세 기준에 접근했지만 유출 수질은 유지되는 단계가 여과수두 경고상태다. 즉시 정지하지 않고 예비 여과지와 역세수를 준비한다.","relations":["state","attribute","comparison","boundary"]}
+{"primary":"여과수질 차단고정상태","text":"탁도와 입자계수가 차단 기준을 넘으면 여과지는 여과수질 차단고정상태로 이동한다. 정상값 한 번으로 풀지 않고 원인 점검과 숙성 재검증을 요구한다.","relations":["state","boundary","classification","function"]}
+{"primary":"역세척 준비상태","text":"여과 유입을 차단하고 수위를 세척 기준으로 낮추는 단계가 역세척 준비상태다. 잔류 유출과 작업자 출입을 확인한 뒤 공기세척으로 넘어간다.","relations":["state","process","function","role"]}
+{"primary":"공기세척 진행상태","text":"송풍 공기가 여재층을 풀어 오염물을 분리하는 동안은 공기세척 진행상태다. 공기량과 여재 노출 여부를 감시해 다음 세척 단계를 결정한다.","relations":["state","process","function","attribute"]}
+{"primary":"고율역세 진행상태","text":"세척수를 높은 유량으로 흘려 여재를 팽창시키는 구간이 고율역세 진행상태다. 팽창률과 배출 탁도가 범위를 벗어나면 즉시 유량을 낮춘다.","relations":["state","process","comparison","attribute"]}
+{"primary":"여재침강 안정상태","text":"역세수를 끈 뒤 팽창한 여재가 내려앉지만 층 높이를 확인하는 단계가 여재침강 안정상태다. 편층이나 유실이 없을 때만 초기 여과로 이동한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"초기여과 배출상태","text":"역세 후 여과수를 회수 수로로 보내며 수질을 확인하는 단계가 초기여과 배출상태다. 정상 정수와 섞지 않고 완료 기준을 충족할 때까지 유지한다.","relations":["state","process","classification","boundary"]}
+{"primary":"여과지 정상복귀경로","text":"초기여과 배출, 연속 수질 확인, 유출밸브 전환을 거쳐 정상 계통으로 돌아가는 절차가 여과지 정상복귀경로다. 한 단계라도 실패하면 배출 상태를 유지한다.","relations":["state","process","function","boundary"]}
+{"primary":"활성탄지 기동숙성상태","text":"활성탄지에 처리수를 낮은 유량으로 흘려 미분과 초기 유출을 제거하는 단계가 활성탄지 기동숙성상태다. 냄새 물질과 탁도 검증이 끝나기 전에는 정상 계통에 연결하지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"활성탄 파과경계상태","text":"유출 농도가 경고선에 닿았지만 교체 기준은 아직 넘지 않은 단계가 활성탄 파과경계상태다. 유입 농도와 누적 통수량을 함께 확인해 일시 부하와 실제 파과를 구분한다.","relations":["state","attribute","comparison","boundary"]}
+{"primary":"활성탄지 격리고정상태","text":"반복 파과나 구조 이상이 확인된 활성탄지는 활성탄지 격리고정상태가 된다. 일반 유로 명령으로 풀지 않고 탄 교체나 수리와 수질 시험을 요구한다.","relations":["state","boundary","classification","function"]}
+{"primary":"활성탄 역세진행상태","text":"탄층을 팽창시켜 미분과 부착물을 배출하는 동안은 활성탄 역세진행상태다. 팽창률과 탄 유실을 감시하며 세척 종료를 판단한다.","relations":["state","process","function","attribute"]}
+{"primary":"활성탄지 복귀경로","text":"역세 후 침강, 초기 배출, 흡착 성능 확인을 거쳐 처리 계통에 다시 연결하는 절차가 활성탄지 복귀경로다. 파과 지표가 남으면 격리를 유지한다.","relations":["state","process","function","comparison"]}
+{"primary":"오존설비 기동준비상태","text":"냉각수와 산소 공급, 배오존 파괴기는 준비됐지만 발생기를 아직 켜지 않은 단계가 오존설비 기동준비상태다. 모든 연동 신호가 유효해야 출력 상승으로 간다.","relations":["state","process","function","attribute"]}
+{"primary":"오존출력 상승중간상태","text":"오존 발생기 출력을 0에서 목표 농도로 단계적으로 높이는 구간이 오존출력 상승중간상태다. 접촉조 잔류와 배출가스를 확인해 증량 속도를 조절한다.","relations":["state","process","comparison","attribute"]}
+{"primary":"배오존 과다잠금상태","text":"배출가스 농도가 안전 상한을 넘으면 오존 주입은 배오존 과다잠금상태로 들어간다. 파괴기 성능과 배기 경로가 검증되기 전에는 자동 재기동하지 않는다.","relations":["state","boundary","attribute","function"]}
+{"primary":"오존누출 구역고정상태","text":"실내 오존 누출이 독립 측정으로 확인되면 해당 공간은 오존누출 구역고정상태가 된다. 출입을 차단하고 농도 정상과 누출원 수리를 모두 확인해야 해제한다.","relations":["state","boundary","role","attribute"]}
+{"primary":"오존설비 정상화경로","text":"누출원 차단, 강제 환기, 반복 공기 측정, 저출력 시험을 거쳐 운전에 복귀하는 절차가 오존설비 정상화경로다. 경보 소거만으로 출력 상태를 회복하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"자외선램프 예열상태","text":"자외선 램프를 켠 뒤 광출력이 안정 수준에 오르기를 기다리는 단계가 자외선램프 예열상태다. 예열 중 처리수는 검증되지 않은 경로로 분리한다.","relations":["state","process","attribute","classification"]}
+{"primary":"자외선량 검증상태","text":"램프 출력은 안정됐지만 실제 유량에서 조사량을 계산하고 센서와 대조하는 단계가 자외선량 검증상태다. 목표 조사량이 확인되어야 정상 소독으로 이동한다.","relations":["state","process","attribute","comparison"]}
+{"primary":"저자외선량 분리상태","text":"계산 조사량이 기준 아래이면 해당 처리수는 저자외선량 분리상태로 전환된다. 정상수와 혼합하지 않고 재처리 또는 폐기 경로를 결정한다.","relations":["state","boundary","classification","function"]}
+{"primary":"자외선램프 고장잠금상태","text":"램프 소등이나 모듈 누전이 확인되면 반응기는 자외선램프 고장잠금상태에 머문다. 보호 회로 시험과 모듈 교체 전에는 유로 연결을 막는다.","relations":["state","boundary","part_of","function"]}
+{"primary":"자외선계열 복구경로","text":"램프 교체 뒤 절연 시험, 예열, 조사량 검증을 거쳐 처리 계통으로 돌아가는 절차가 자외선계열 복구경로다. 초기 물은 검증 완료 전까지 별도로 배출한다.","relations":["state","process","function","attribute"]}
+{"primary":"염소주입 기동중간상태","text":"계량 펌프를 켠 뒤 실제 약품 흐름이 주입점에 도달하기까지의 구간이 염소주입 기동중간상태다. 배관 지연을 고려해 즉시 정상 주입으로 표시하지 않는다.","relations":["state","process","function","attribute"]}
+{"primary":"염소주입 안정확인상태","text":"목표 주입률에 도달했지만 접촉조 잔류염소가 안정되는지 확인하는 단계가 염소주입 안정확인상태다. 여러 시료가 범위에 들어야 정상 상태로 전환한다.","relations":["state","process","attribute","comparison"]}
+{"primary":"저잔류염소 경계상태","text":"잔류염소가 목표 하한에 닿았지만 소독 실패 기준은 넘지 않은 단계가 저잔류염소 경계상태다. 접촉시간과 센서 교정을 확인하며 추가 주입 여부를 결정한다.","relations":["state","attribute","comparison","boundary"]}
+{"primary":"고잔류염소 보류상태","text":"잔류염소가 상한을 넘으면 정수지 이송을 멈추고 고잔류염소 보류상태로 둔다. 재측정과 주입 원인 확인 전에는 정상수와 섞지 않는다.","relations":["state","process","boundary","classification"]}
+{"primary":"소독접촉 진행상태","text":"소독제가 처리수와 반응하지만 요구 접촉시간을 아직 채우지 않은 구간이 소독접촉 진행상태다. 유입 시각과 최저 잔류값을 유지해 완료 시점을 계산한다.","relations":["state","process","attribute","function"]}
+{"primary":"접촉미달 격리고정상태","text":"필요 접촉시간을 채우지 못한 채 출구에 도달한 물은 접촉미달 격리고정상태로 분류한다. 정상 유로로 자동 복귀시키지 않고 재저류나 재소독을 거친다.","relations":["state","boundary","classification","process"]}
+{"primary":"소독약품 탱크전환상태","text":"운전 탱크 흡입을 줄이고 예비 탱크 배관의 공기를 제거하는 구간이 소독약품 탱크전환상태다. 새 로트 농도와 토출 연속성이 확인되어야 완료된다.","relations":["state","process","classification","attribute"]}
+{"primary":"염소펌프 오류고정상태","text":"명령 주입률과 실제 토출이 반복 불일치하면 염소펌프 오류고정상태가 된다. 처리수 흐름과 연동해 주입을 차단하고 자동 재시도를 막는다.","relations":["state","boundary","function","attribute"]}
+{"primary":"염소주입 복구경로","text":"염소주입 복구경로는 수리한 펌프를 물로 먼저 시험하고 저농도 약품 운전과 잔류염소 검증을 차례로 거치는 절차다. 누설 또는 과주입이 발견되면 운전을 멈추고 고장 상태로 되돌린다.","relations":["state","process","function","boundary"]}
+{"primary":"정수지 유입준비상태","text":"최종 수질은 통과했지만 정수지 밸브와 내부 수위를 확인하는 단계가 정수지 유입준비상태다. 저장조가 수용 가능한 상태여야 유입을 시작한다.","relations":["state","process","function","attribute"]}
+{"primary":"정수지 충수중간상태","text":"빈 정수지에 처리수를 천천히 채워 운전 수위로 올리는 구간이 정수지 충수중간상태다. 누설과 잔류염소를 확인하며 유입량을 단계적으로 높인다.","relations":["state","process","comparison","attribute"]}
+{"primary":"정수지 수질보류상태","text":"정수지 시료 한 항목이 경계값을 보여 재검을 기다리는 단계가 정수지 수질보류상태다. 정상 송수를 시작하지 않고 독립 분석 결과를 기다린다.","relations":["state","process","boundary","attribute"]}
+{"primary":"정수지 오염격리고정상태","text":"반복 시료에서 위해 항목이 확인된 저장조는 정수지 오염격리고정상태로 전환된다. 단순 희석으로 해제하지 않고 배수·세척·음성 검증을 요구한다.","relations":["state","boundary","classification","function"]}
+{"primary":"정수지 재개방경로","text":"오염수 배출, 내부 세척, 소독, 충수, 반복 검사를 거쳐 정수지를 다시 여는 절차가 정수지 재개방경로다. 각 검증 결과를 승인 기록과 연결한다.","relations":["state","process","role","function"]}
+{"primary":"정수지 송수인계상태","text":"정수지 수질은 승인됐지만 송수 펌프가 아직 부하를 넘겨받지 않은 단계가 정수지 송수인계상태다. 흡입 수위와 토출 경로를 확인한 뒤 공급 상태로 이동한다.","relations":["state","process","role","attribute"]}
+{"primary":"송수펌프 기동준비상태","text":"흡입 수위와 전원은 확인됐지만 토출 밸브 연동을 점검하는 단계가 송수펌프 기동준비상태다. 모든 보호 신호가 정상이어야 회전을 시작한다.","relations":["state","process","function","attribute"]}
+{"primary":"송수펌프 가속중간상태","text":"송수펌프가 정지에서 목표 회전수로 올라가는 구간이 송수펌프 가속중간상태다. 토출 압력과 모터 전류가 안정되기 전에는 정상 운전으로 분류하지 않는다.","relations":["state","process","comparison","attribute"]}
+{"primary":"송수압 안정확인상태","text":"유량 목표를 충족한 뒤 관로 압력과 변동폭을 확인하는 단계가 송수압 안정확인상태다. 여러 측정 주기가 범위에 들어야 기동 절차를 닫는다.","relations":["state","process","attribute","comparison"]}
+{"primary":"송수펌프 보호고정상태","text":"과전류나 베어링 온도 보호가 동작한 펌프는 송수펌프 보호고정상태에 머문다. 수요 명령보다 설비 보호를 우선하며 수동 원인 해제 전 재기동을 막는다.","relations":["state","boundary","function","role"]}
+{"primary":"송수펌프 복구경로","text":"보호 원인을 수리한 뒤 무부하 회전, 저속 송수, 압력 검증을 거치는 절차가 송수펌프 복구경로다. 이상이 재발하면 이전 고정 상태로 돌아간다.","relations":["state","process","function","boundary"]}
+{"primary":"송수펌프 교대중간상태","text":"예비 펌프 출력을 높이면서 주 펌프 출력을 낮추는 겹침 구간이 송수펌프 교대중간상태다. 총 유량과 압력을 유지한 뒤 역할 전환을 완료한다.","relations":["state","process","role","comparison"]}
+{"primary":"배수지 유입진행상태","text":"송수관에서 배수지로 물이 들어오지만 목표 저장 수위에 아직 못 미친 단계가 배수지 유입진행상태다. 유입수 수질과 유출 수요를 함께 감시한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"배수지 고수위경계상태","text":"배수지 수위가 상한 경보에 닿았지만 월류는 발생하지 않은 단계가 배수지 고수위경계상태다. 송수 감량과 유출 조정을 준비해 월류 상태로 넘어가지 않게 한다.","relations":["state","attribute","comparison","boundary"]}
+{"primary":"배수지 저수위 제한상태","text":"저장 수위가 필수 공급선에 가까워져 비필수 수요를 제한하는 단계가 배수지 저수위 제한상태다. 상류 송수가 회복될 때까지 압력과 배분을 낮춰 유지한다.","relations":["state","comparison","function","attribute"]}
+{"primary":"배수지 오염격리고정상태","text":"저장수 위해 항목이 반복 검출되면 해당 배수지는 배수지 오염격리고정상태가 된다. 희석이나 시간 경과로 풀지 않고 세척과 반복 검사 뒤 승인받아야 한다.","relations":["state","boundary","classification","role"]}
+{"primary":"배수지 공급복구경로","text":"오염 격리 뒤 대체 공급 확보, 저장조 세척, 충수 검사, 저율 공급을 거치는 절차가 배수지 공급복구경로다. 수질과 압력이 함께 안정되어야 정상 배분으로 돌아간다.","relations":["state","process","function","attribute"]}
+{"primary":"급수구역 전환중간상태","text":"한 압력 계통의 경계 밸브를 닫으면서 대체 계통 밸브를 여는 구간이 급수구역 전환중간상태다. 역류와 압력 공백을 피하도록 두 유로를 순서대로 조정한다.","relations":["state","process","classification","boundary"]}
+{"primary":"감압밸브 자동진입상태","text":"수동 개도에서 하류 압력 피드백 제어로 넘어가며 출력 제한을 확인하는 단계가 감압밸브 자동진입상태다. 센서와 구동 응답이 일치해야 자동 운전을 확정한다.","relations":["state","process","function","attribute"]}
+{"primary":"관망고압 차단상태","text":"복수 압력계가 파열 위험 상한을 넘으면 펌프 증속과 밸브 개방 명령을 막는 관망고압 차단상태가 된다. 압력이 안정되고 원인이 확인될 때까지 잠금을 유지한다.","relations":["state","boundary","attribute","function"]}
+{"primary":"관망저압 제한공급상태","text":"필수 수압은 남았지만 정상 수요를 모두 충족하지 못하는 단계가 관망저압 제한공급상태다. 고지대와 취약시설을 우선하며 누수 원인을 조사한다.","relations":["state","comparison","role","function"]}
+{"primary":"수리관로 충수중간상태","text":"비어 있는 수리 구간에 낮은 유량으로 물을 채우는 과정이 수리관로 충수중간상태다. 배기와 누설을 확인하며 압력을 단계적으로 높인다.","relations":["state","process","function","attribute"]}
+{"primary":"관내공기 배출상태","text":"충수 중 고점 공기밸브로 기체가 빠지고 물로 치환되는 단계가 관내공기 배출상태다. 물이 연속 배출되고 압력이 안정되어야 밸브를 닫는다.","relations":["state","process","part_of","attribute"]}
+{"primary":"배수관 세척진행상태","text":"말단 배출을 열어 침전물과 소독수를 제거하는 동안은 배수관 세척진행상태다. 탁도와 잔류염소, 누적 배출량을 함께 추적한다.","relations":["state","process","function","attribute"]}
+{"primary":"급수복귀 확인상태","text":"세척 기준은 통과했지만 수용가 쪽 압력과 수질을 확인하는 단계가 급수복귀 확인상태다. 말단 표본이 안정되어야 사고 구간을 정상 공급으로 닫는다.","relations":["state","process","role","boundary"]}
+{"primary":"관망누수 의심상태","text":"야간 유량과 압력 저하가 누수를 가리키지만 위치가 확정되지 않은 단계가 관망누수 의심상태다. 이 상태에서는 탐사 구역을 좁히되 성급히 단수하지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"누수구간 격리고정상태","text":"파손 위치가 확인되고 양끝 밸브가 닫히면 누수구간 격리고정상태가 된다. 일반 급수 명령으로 재개방하지 않고 수리·시험·수질 검증을 요구한다.","relations":["state","boundary","function","role"]}
+{"primary":"누수수리 준비상태","text":"격리 구간의 감압과 배수는 끝났지만 작업 허가와 굴착 안전을 확인하는 단계가 누수수리 준비상태다. 잔류 압력이 0이고 지장물이 표시되어야 작업을 시작한다.","relations":["state","process","role","attribute"]}
+{"primary":"관로부품 교체진행상태","text":"파손 부품을 제거하고 새 관이나 이음부를 설치하는 동안은 관로부품 교체진행상태다. 체결과 용접 검사가 끝나기 전에는 구조 복구 완료로 보지 않는다.","relations":["state","process","part_of","boundary"]}
+{"primary":"관로압력 시험상태","text":"수리를 마친 구간에 시험압을 걸어 누설과 변형을 관찰하는 단계가 관로압력 시험상태다. 정해진 유지시간을 통과해야 충수와 세척으로 이동한다.","relations":["state","process","attribute","comparison"]}
+{"primary":"수리구간 재개방경로","text":"압력 시험, 충수, 배기, 세척, 수질 검사를 순서대로 거쳐 밸브를 여는 절차가 수리구간 재개방경로다. 어느 단계든 실패하면 격리 상태를 유지한다.","relations":["state","process","function","boundary"]}
+{"primary":"역류의심 보류상태","text":"역방향 유량 신호는 있지만 계량기 방향과 압력 기록을 대조하는 단계가 역류의심 보류상태다. 확인 전까지 연결점을 제한하되 광역 오염 확정은 보류한다.","relations":["state","process","classification","boundary"]}
+{"primary":"교차연결 차단고정상태","text":"비음용 배관과 실제 연결이 확인되면 해당 지점은 교차연결 차단고정상태가 된다. 단순 밸브 복귀로 풀지 않고 물리 분리와 관망 세척을 요구한다.","relations":["state","boundary","part_of","function"]}
+{"primary":"역류오염 복구경로","text":"연결점 제거, 영향 구간 격리, 고유량 세척, 반복 음성 검사를 거치는 절차가 역류오염 복구경로다. 영향 경계가 확인될 때까지 정상 공급 범위를 넓히지 않는다.","relations":["state","process","classification","boundary"]}
+{"primary":"소화전 고유량전환상태","text":"평상 배수에서 화재 대응 고유량으로 펌프와 밸브를 조정하는 구간이 소화전 고유량전환상태다. 인근 필수 구역 압력이 유지되는지 확인하며 출력을 높인다.","relations":["state","process","role","comparison"]}
+{"primary":"화재급수 종료복귀경로","text":"소방 종료 확인 뒤 유량 감량, 관망압 안정, 수질 점검을 거쳐 평상 배수로 돌아가는 절차가 화재급수 종료복귀경로다. 급격한 밸브 폐쇄로 수격을 만들지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"정수장 정전감지상태","text":"계통 전압이 사라졌지만 비상전원 전환 결과를 아직 확인하지 못한 단계가 정수장 정전감지상태다. 핵심 밸브를 안전 위치에 두고 전원 상태를 대조한다.","relations":["state","process","attribute","boundary"]}
+{"primary":"비상전원 전환중간상태","text":"상용 부하를 끊고 발전기 전압을 맞춰 필수 설비를 차례로 연결하는 구간이 비상전원 전환중간상태다. 주파수와 부하를 확인하며 한꺼번에 연결하지 않는다.","relations":["state","process","comparison","function"]}
+{"primary":"발전기 제한운전상태","text":"비상발전 용량 안에서 취수·소독·최소 송수만 유지하는 단계가 발전기 제한운전상태다. 조명과 비필수 세척보다 수질 안전 기능을 우선한다.","relations":["state","comparison","function","role"]}
+{"primary":"완전정전 안전고정상태","text":"비상전원까지 상실하면 설비는 무전력 안전 위치의 완전정전 안전고정상태로 들어간다. 전력이 돌아와도 현장 밸브와 공정 수질을 확인하기 전에는 자동 기동하지 않는다.","relations":["state","boundary","function","process"]}
+{"primary":"계통전원 동기화상태","text":"상용전원이 돌아온 뒤 전압과 주파수, 위상을 발전기와 맞추는 단계가 계통전원 동기화상태다. 동기 검증 전에는 부하를 상용 계통으로 넘기지 않는다.","relations":["state","process","attribute","comparison"]}
+{"primary":"전원정상 복귀경로","text":"계통 동기화, 필수 부하 이전, 비필수 설비 순차 기동, 발전기 냉각을 거치는 절차가 전원정상 복귀경로다. 공정 상태를 확인하며 이전 중단 지점에서 무조건 재시작하지 않는다.","relations":["state","process","function","boundary"]}
+{"primary":"원격감시 저하상태","text":"일부 현장 값은 도착하지만 갱신 지연과 결측이 늘어난 단계가 원격감시 저하상태다. 완전 통신상실과 구분하고 신뢰 가능한 신호만 제어에 사용한다.","relations":["state","process","attribute","comparison"]}
+{"primary":"통신상실 현장대체상태","text":"중앙 연결이 완전히 끊겨 현장 제어기가 마지막 승인 설정을 유지하는 단계가 통신상실 현장대체상태다. 원격 변경을 차단하고 안전 한계 안의 제한 운전만 허용한다.","relations":["state","boundary","function","role"]}
+{"primary":"제어망 재동기화상태","text":"통신이 복구된 뒤 중앙 명령과 현장 설정, 시계를 대조하는 단계가 제어망 재동기화상태다. 불일치가 해소되기 전에는 제어권을 중앙으로 넘기지 않는다.","relations":["state","process","attribute","boundary"]}
+{"primary":"수동제어 인계상태","text":"현장 담당자가 설비별 상태를 확인하며 자동 제어에서 수동 책임으로 넘겨받는 단계가 수동제어 인계상태다. 인계 목록과 권한 확인이 끝나야 명령을 실행한다.","relations":["state","process","role","function"]}
+{"primary":"비정상명령 차단고정상태","text":"권한 없는 명령이나 안전 한계 위반이 검출되면 제어기는 비정상명령 차단고정상태가 된다. 발신원 확인과 보안 검토 전에는 같은 경로의 명령을 재허용하지 않는다.","relations":["state","boundary","classification","function"]}
+{"primary":"제어사건 조사개방상태","text":"비정상명령을 막았지만 발신원과 영향 범위가 확정되지 않은 단계가 제어사건 조사개방상태다. 시간 경과로 자동 종결하지 않고 증거 보존과 원인 분석을 이어 간다.","relations":["state","process","role","boundary"]}
+{"primary":"설비격리 준비상태","text":"정비 대상은 정했지만 전원·압력·약품 유로를 모두 차단하기 전 단계가 설비격리 준비상태다. 잔류 에너지 확인 전에는 작업 허가를 열지 않는다.","relations":["state","process","function","role"]}
+{"primary":"정비잠금 고정상태","text":"모든 에너지원에 잠금표가 부착되면 설비는 정비잠금 고정상태에 들어간다. 일반 운전 명령으로 벗어날 수 없고 작업자별 해제 확인이 필요하다.","relations":["state","boundary","role","function"]}
+{"primary":"정비작업 진행상태","text":"부품 분해와 교체가 시작됐지만 조립·검사가 끝나지 않은 구간이 정비작업 진행상태다. 작업 전 설정과 제거 부품 이력을 계속 보존한다.","relations":["state","process","part_of","role"]}
+{"primary":"정비후 시험운전상태","text":"정비후 시험운전상태는 수리 설비에 제한 부하를 걸어 누설과 제어 응답을 확인하는 검증 단계다. 한 차례 정상 신호만으로 끝내지 않고 정해진 지속시간을 충족해야 정규 운전으로 복귀한다.","relations":["state","process","comparison","boundary"]}
+{"primary":"정비설비 복귀경로","text":"시험운전, 보호장치 확인, 작업자 퇴실, 책임자 승인을 거쳐 자동 계통에 연결하는 절차가 정비설비 복귀경로다. 잠금 해제와 운전 재개를 별도 단계로 기록한다.","relations":["state","process","role","function"]}
+{"primary":"슬러지농축 유입상태","text":"침전슬러지가 농축조로 들어오지만 목표 고형물 농도에 아직 못 미친 단계가 슬러지농축 유입상태다. 유입량과 상등수 탁도를 보며 농축 시간을 조정한다.","relations":["state","process","part_of","attribute"]}
+{"primary":"농축조 고수위보류상태","text":"농축조 수위가 상한에 가까워 추가 슬러지 인발을 멈춘 단계가 농축조 고수위보류상태다. 탈수 이송이나 예비 저장이 확보될 때까지 유입을 제한한다.","relations":["state","comparison","function","boundary"]}
+{"primary":"슬러지탈수 진행상태","text":"농축 슬러지가 탈수기를 지나 물과 케이크로 분리되는 동안은 슬러지탈수 진행상태다. 공급량과 케이크 함수율을 함께 추적한다.","relations":["state","process","function","attribute"]}
+{"primary":"탈수기 고장잠금상태","text":"과토크나 여과포 이탈이 확인되면 탈수기는 탈수기 고장잠금상태에 머문다. 슬러지 공급을 차단하고 정비 검사 전 반복 기동을 막는다.","relations":["state","boundary","part_of","function"]}
+{"primary":"탈수설비 복구경로","text":"막힘 제거와 여과포 교체 뒤 공회전, 물 시험, 슬러지 저율 시험을 거치는 절차가 탈수설비 복구경로다. 토크와 누설이 안정되어야 정상 부하로 이동한다.","relations":["state","process","function","comparison"]}
+{"primary":"역세회수수 보류상태","text":"역세척수는 회수조에 모였지만 탁도와 미생물 검사가 끝나지 않은 단계가 역세회수수 보류상태다. 원수와 섞지 않고 처리 경로 결정을 기다린다.","relations":["state","process","classification","boundary"]}
+{"primary":"회수수 반송재개경로","text":"균등화, 수질 확인, 저율 반송, 원수 부하 검증을 거쳐 회수수를 공정 앞단에 넣는 절차가 회수수 반송재개경로다. 반송 비율을 단계적으로 높인다.","relations":["state","process","function","comparison"]}
+{"primary":"폐수방류 승인대기상태","text":"처리 폐수의 현장 값은 정상이나 최종 분석과 승인 서명을 기다리는 단계가 폐수방류 승인대기상태다. 승인 전에는 외부 수계로 밸브를 열지 않는다.","relations":["state","process","role","classification"]}
+{"primary":"폭우유입 비상상태","text":"폭우로 배수와 회수조 유입이 설계 여유를 넘으면 폭우유입 비상상태가 된다. 비필수 세척을 중단하고 임시 저장과 안전 배수를 우선한다.","relations":["state","process","comparison","function"]}
+{"primary":"제한급수 전환상태","text":"저장량 부족으로 정상 공급에서 시간대별 배분으로 바꾸는 구간이 제한급수 전환상태다. 취약시설 우선순위와 구역 압력을 확인하며 밸브를 단계적으로 조정한다.","relations":["state","process","role","comparison"]}
+{"primary":"비상급수차 운영상태","text":"관망 공급이 끊긴 구역에 검수된 급수차가 정해진 장소와 시간에 물을 배부하는 단계가 비상급수차 운영상태다. 수질 로트와 배부량, 대상 구역을 연결해 기록한다.","relations":["state","process","role","classification"]}
+{"primary":"공급정상화 검증상태","text":"관망 압력과 수질은 회복됐지만 여러 말단에서 지속성을 확인하는 단계가 공급정상화 검증상태다. 모든 제한 구역의 증거가 모일 때까지 전체 정상 선언을 보류한다.","relations":["state","process","attribute","boundary"]}
+{"primary":"정상운영 종결경로","text":"잔여 경보 검토, 제한 해제, 외부 지원 종료, 책임자 승인을 거쳐 사고 대응을 닫는 절차가 정상운영 종결경로다. 미해결 원인이 남으면 종결 대신 조사개방 상태를 유지한다.","relations":["state","process","role","boundary"]}
