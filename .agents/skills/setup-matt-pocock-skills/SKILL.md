@@ -1,10 +1,13 @@
 ---
 name: setup-matt-pocock-skills
-description: Sets up an `## Agent skills` block in AGENTS.md/AGENTS.md and `docs/agents/` so the engineering skills know this repo's issue tracker (GitHub or local markdown), triage label vocabulary, and domain doc layout. Run before first use of `to-issues`, `to-prd`, `triage`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, triage labels, or domain docs.
+description: 사용자가 명시적으로 요청할 때 AGENTS.md의 최소 Agent skills 라우팅과 `docs/agents/`의 issue tracker·triage label·domain 문서 설정을 준비한다. 쓰기 전 초안을 제시하고 승인을 받는다.
 disable-model-invocation: true
 ---
 
 # Setup Matt Pocock's Skills
+
+> **TinyLM Codex 이식본.** 이 스킬은 명시 호출 전용이며, 쓰기 전 사용자에게 초안을
+> 보여주고 승인받는다. 현재 사용자 범위와 [AGENTS.md](../../../AGENTS.md)가 우선한다.
 
 Scaffold the per-repo configuration that the engineering skills assume:
 
@@ -21,7 +24,7 @@ This is a prompt-driven skill, not a deterministic script. Explore, present what
 Look at the current repo to understand its starting state. Read whatever exists; don't assume:
 
 - `git remote -v` and `.git/config` — is this a GitHub repo? Which one?
-- `AGENTS.md` and `AGENTS.md` at the repo root — does either exist? Is there already an `## Agent skills` section in either?
+- root `AGENTS.md` — is there already an `## Agent skills` section?
 - `CONTEXT.md` and `CONTEXT-MAP.md` at the repo root
 - `docs/adr/` and any `src/*/docs/adr/` directories
 - `docs/agents/` — does this skill's prior output already exist?
@@ -78,13 +81,9 @@ Let them edit before writing.
 
 ### 4. Write
 
-**Pick the file to edit:**
-
-- If `AGENTS.md` exists, edit it.
-- Else if `AGENTS.md` exists, edit it.
-- If neither exists, ask the user which one to create — don't pick for them.
-
-Never create `AGENTS.md` when `AGENTS.md` already exists (or vice versa) — always edit the one that's already there.
+**Pick the file to edit:** TinyLM uses root `AGENTS.md`. If it is absent, stop and ask rather than
+creating an alternative instruction filename. Keep the added block as a thin routing pointer; detailed
+tracker configuration belongs in `docs/agents/`.
 
 If an `## Agent skills` block already exists in the chosen file, update its contents in-place rather than appending a duplicate. Don't overwrite user edits to the surrounding sections.
 

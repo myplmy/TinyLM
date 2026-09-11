@@ -1,90 +1,57 @@
-# Base Branch 결정 — `detect_base.sh` 사용 가이드
+# PR base branch 결정
 
-## 정책
+PR base는 현재 작업이 실제로 분기한 대상이어야 한다. `main`, `master`, `develop` 중
+하나를 관행으로 추측하지 않는다. Head는 현재 branch이며 base와 다른 개념이다.
 
-PR base는 **현 worktree/branch가 분기한 대상 branch**다. 항상 `main`이라고 가정하지 않는다:
-- 사용자가 default working branch에서 worktree를 분기해 작업하는 경우, PR/머지 목적지는 그 분기 base다.
-- `main`으로의 직접 머지는 별도 절차 (사용자 직접 또는 명시 요청 시 `--base main` override).
+## Windows 기본 도구
 
-이 결정을 자동화하기 위해 `scripts/detect_base.sh`를 사용한다.
-
-## 우선순위 + 신뢰도
-
-| 순위 | 출처 | confidence | 출력 |
-|---|---|---|---|
-| 1 | `--base <branch>` 명시 인자 | HIGH | branch 그대로 |
-| 2 | 메타 파일 `$GIT_DIR/pr-base` 첫 줄 | HIGH | branch 그대로 |
-| 3 | 환경변수 `PR_BASE_BRANCH` (caller가 `project.json`의 `baseBranch`를 주입) | HIGH | branch 그대로 |
-| 4 | 휴리스틱 — 첫 commit을 포함하는 local branch (단일 후보 또는 우선순위 1개 매치) | MEDIUM | branch |
-| 5 | 휴리스틱 다중 매치 (복수 우선순위 또는 비매치) | LOW | `AMBIGUOUS` + stderr 후보 |
-| 6 | 감지 실패 (reflog 정보 없음 등) | NONE | `AMBIGUOUS` |
-
-휴리스틱의 우선순위 후보 기본값은 `main master develop`이며, env `PR_BASE_PRIORITY`(공백 구분)로 override 가능.
-
-종료 코드: `0` = HIGH/MEDIUM (사용 가능), `2` = LOW/NONE (사용자 확인 필요), `1` = 오류.
-
-## 사용 패턴
-
-### Pattern A — 신규 worktree 진입 직후 (메타 1회 기록)
-
-```bash
-RAW=$(bash .claude/skills/pr-workflow/scripts/detect_base.sh --candidates 2>/tmp/db.err)
-EC=$?
-CONF=$(grep -oE 'confidence=[A-Z]+' /tmp/db.err | head -1 | cut -d= -f2)
-
-if [ $EC -eq 0 ]; then
-    BASE="$RAW"                       # HIGH/MEDIUM — 그대로 사용
-fi
-if [ $EC -eq 2 ]; then
-    # claude: AskUserQuestion 으로 후보 제시 → 사용자 선택 = $CHOSEN
-    bash .claude/skills/pr-workflow/scripts/detect_base.sh --write "$CHOSEN"
-fi
+```powershell
+$Base = & .agents/skills/pr-workflow/scripts/detect_base.ps1 -ShowCandidates
+if ($LASTEXITCODE -eq 2 -or -not $Base) {
+    # 외부 변경 없이 멈추고 후보·최근 commit을 사용자에게 보여준다.
+    return
+}
+$Head = git branch --show-current
 ```
 
-### Pattern B — 이후 호출 (메타 파일 자동 사용)
+명시 base가 이미 승인됐다면:
 
-```bash
-BASE=$(bash .claude/skills/pr-workflow/scripts/detect_base.sh)
-# 메타 파일 있으면 즉시 반환 (HIGH)
+```powershell
+$Base = & .agents/skills/pr-workflow/scripts/detect_base.ps1 -Base '<branch>'
 ```
 
-### Pattern C — 명시 override (예: main 으로 직접 머지)
+## 결정 우선순위
 
-```bash
-BASE=$(bash .claude/skills/pr-workflow/scripts/detect_base.sh --base main)
-```
+1. 사용자가 현재 작업에 명시한 base
+2. `.agents/project.json`의 비어 있지 않은 `baseBranch`
+3. `origin/HEAD`와 실제 local 기본 후보의 일치
+4. 그 밖의 분기·merge-base 증거
 
-## 휴리스틱 알고리즘 (요약)
+설정값이 `null`이거나 원격 default와 local 후보가 다르면 모호한 상태다. 감지 도구는
+후보를 stderr에 출력하고 exit 2로 끝내며 PR을 만들거나 설정을 쓰지 않는다.
 
-```
-1. $GIT_DIR/logs/HEAD 첫 줄에서 첫 commit hash 추출 (worktree 신설 시점 HEAD)
-2. git branch --contains <hash> 로 그 commit 을 포함하는 local branch 수집 (현재 branch 제외)
-3. 후보 수:
-   - 0개 → NONE
-   - 1개 → MEDIUM
-   - 2개 이상 → 우선순위(PR_BASE_PRIORITY, 기본 main/master/develop) 매치 시도
-     - 매치 1개 → MEDIUM
-     - 매치 0개 또는 2개 이상 → LOW (사용자 문의)
-```
+## 사용자 확인
 
-## 한계 (정직하게)
+모호할 때 다음을 함께 보여주고 base 하나를 직접 선택해 달라고 묻는다.
 
-- **시간 경과로 후보 증가**: worktree가 오래되어 다른 branch들이 같은 ancestor commit을 포함하면 후보가 늘어난다.
-- **메타 파일 권장**: 1회 사용자 확인 후 `--write`로 영구 기록하면 이후 자동.
-- **커밋 이력이 없는 신규 리포**: 휴리스틱이 NONE을 반환한다. 첫 PR 전 `project.json`의 `baseBranch` 또는 `--write`로 base를 지정하는 것이 확실하다.
+- 후보 branch 이름
+- `git log -1 --oneline <branch>`
+- 현재 head
+- 가능하면 merge-base 또는 worktree 생성 근거
 
-## 사용자 문의 절차 (claude 책임)
+선택값은 현재 `create_pr.ps1 -Base <chosen>` 호출에만 사용한다. `.git` 메타데이터나
+프로젝트 설정에 영구 기록하는 일은 별도 사용자 요청 없이는 하지 않는다.
 
-`detect_base.sh`가 LOW/NONE 반환 시:
-1. `AskUserQuestion`으로 후보 목록 제시
-2. 옵션 라벨: 후보 branch 이름 그대로
-3. 옵션 description: 각 branch의 최근 commit 1줄 (`git log -1 --oneline <branch>`)
-4. 사용자 선택 후 `bash detect_base.sh --write <chosen>`으로 메타 파일 기록
-5. 이후 PR 생성·머지에 그 base 사용
+## 한계
 
-## 관련 파일
+- 오래된 worktree에서는 같은 조상 commit을 포함하는 후보가 늘 수 있다.
+- `origin/HEAD` 자체가 낡거나 잘못 설정될 수 있다.
+- commit 이력이 없는 저장소는 자동 판정할 근거가 없다.
+- 이름이 익숙하다는 것은 분기 증거가 아니다.
 
-- `scripts/detect_base.sh` — 검출 헬퍼
-- `scripts/create_pr.sh` — `--base` 미지정 시 detect_base 호출
-- `scripts/merge_and_sync.sh` — 머지 후 sync 대상도 PR의 baseRefName 기준
-- `SKILL.md` §"Base 결정" 섹션
+이 경우 자동 fallback 대신 사용자 확인이 안전한 정상 종료다.
+
+## 보조 POSIX 구현
+
+`scripts/detect_base.sh`는 사용자가 Git Bash를 명시한 경우에만 쓸 수 있는 보조 구현이다.
+Windows 기본 계약과 완료 증거는 `detect_base.ps1`을 기준으로 한다.

@@ -78,7 +78,7 @@ During triage (Step 1: Gather context), read all files in `.out-of-scope/`. When
 The maintainer may:
 
 - **Confirm** — the new issue gets added to the existing file's "Prior requests" list, then closed
-- **Reconsider** — the out-of-scope file gets deleted or updated, and the issue proceeds through normal triage
+- **Reconsider** — preserve the historical record by default, mark it superseded or update it, and let the issue proceed through normal triage. Delete an exact file only when the user explicitly requests that deletion.
 - **Disagree** — the issues are related but distinct, proceed with normal triage
 
 ## When to write to `.out-of-scope/`
@@ -96,6 +96,7 @@ Only when an **enhancement** (not a bug) is rejected as `wontfix`. The flow:
 
 If the maintainer changes their mind about a previously rejected concept:
 
-- Delete the `.out-of-scope/` file
-- The skill does not need to reopen old issues — they're historical records
-- The new issue that triggered the reconsideration proceeds through normal triage
+- Preserve the existing record by default and add the new decision or a superseded marker.
+- Delete an exact `.out-of-scope/` file only when the user explicitly requests that deletion.
+- Do not reopen historical issues unless the user explicitly asks.
+- Let the new issue that triggered the reconsideration proceed through normal triage.

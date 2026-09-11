@@ -67,7 +67,7 @@
 <!--
 작성 가이드:
 1. 선행 플랜·CPR 링크·기준 코드 경로는 §0 Context 또는 상단 헤더에 명기
-2. 단일 소스는 `.claude/project.json` 의 singleSource 확인하고 재정의 금지
+2. 단일 소스는 `.agents/project.json` 의 singleSource 확인하고 재정의 금지
 3. 리스크는 "리스크 | 영향 | 완화" 표 형식 고정
 4. 미결 항목은 TBD 금지. (a) 현재 (b) 옵션 (c) 권장 동반
 5. 추측성 세부 규칙 금지. 사용자 요청·CPR 결정에 근거한 것만 기재

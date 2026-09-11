@@ -5,7 +5,7 @@
 # `git rev-parse --show-toplevel` 은 현재 체크아웃된 working tree 루트를 반환하므로
 # worktree 에서 실행하면 worktree 경로, 메인 레포에서 실행하면 메인 레포 경로를 반환.
 #
-# Output (stdout):  절대경로 (예: /z/myrepo/.claude/worktrees/sleepy-cannon-a73572)
+# Output (stdout): 절대경로 (예: /z/myrepo/worktrees/topic-branch)
 # Exit code: 0=성공, 1=git 레포 아님
 
 TOPLEVEL=$(git rev-parse --show-toplevel 2>/dev/null) || {

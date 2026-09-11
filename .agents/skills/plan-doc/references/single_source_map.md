@@ -2,12 +2,12 @@
 
 하위 플랜에서 **literal로 재정의 금지**인 수치·enum·수식의 목록. 발견 시 "<문서> §<위치> 참조" 형태로 치환한다.
 
-## 단일 소스: `.claude/project.json` 의 `singleSource`
+## 단일 소스: `.agents/project.json` 의 `singleSource`
 
-단일 소스 맵은 **`.claude/project.json`의 `singleSource` 배열**에 프로젝트별로 정의한다. 이 파일에는 하드코딩하지 않는다.
+단일 소스 맵은 **`.agents/project.json`의 `singleSource` 배열**에 프로젝트별로 정의한다. 이 파일에는 하드코딩하지 않는다.
 
 ```jsonc
-// .claude/project.json
+// .agents/project.json
 "singleSource": [
   {
     "item": "<식별자·수식·enum 이름>",

@@ -5,6 +5,9 @@ description: 학습 로그(train-logs.txt)와 `runs/logs/*.json` 을 읽어 `tes
 
 # log-to-result
 
+> **TinyLM Codex 이식본.** 현재 사용자 범위와 [AGENTS.md](../../../AGENTS.md)가 우선한다.
+> 로그 판독·결과 반영은 학습 또는 모델 실행 권한을 뜻하지 않는다.
+
 ## 왜 이 스킬이 필요한가
 
 로그를 그대로 옮겨 적으면 **틀린 문서가 남는다.** 이 저장소에서 실제로 일어난 사례:
@@ -97,7 +100,8 @@ for p in sorted(glob.glob('runs/logs/*.json')):
 
 - [ ] 모든 수치를 json 과 대조했는가? (로그 인쇄값만 믿지 않았는가)
 - [ ] 비교하는 런들의 **풀·토크나이저·학습토큰·steps·grad-ckpt** 가 같은가? 다르면 문서에 **무효 표시**
-- [ ] **`< 0.024`(2σ) 차이를 "차이 있음"으로 단정하지 않았는가?** (σ = 0.012, 결과 012)
+- [ ] 현재 비교 계열·조건의 판정자를 `docs/EXPERIMENT_BASELINES.md`와
+      `scripts/_rulers.py`에서 확인했는가? 과거 고정 0.024를 모든 비교에 적용하지 않았는가?
 - [ ] `grad_max > 10` 인 런을 "안정"으로 적지 않았는가?
 - [ ] sparse34 메모리를 `compare` 값으로 적지 않았는가?
 - [ ] ms/step 을 정상상태로 환산했는가?
@@ -132,7 +136,8 @@ for p in sorted(glob.glob('runs/logs/*.json')):
 4. `docs/METHODS.md` — 핵심 측정치 표가 낡았으면 갱신
 5. **`docs/EXPERIMENT_BASELINES.md`** — §2 레지스트리에 런 추가, 새 사실이 규칙을 바꾸면 §3~§7 개정
 6. `docs/review/` — 누적 판정이 바뀌면 리뷰문서에 반영(개별 결과보다 상위 판단)
-7. `AGENTS.md` — 규약·함정이 새로 생겼으면 추가(간결 유지)
+7. `ai_dev_tool/Codex/00~08` — 규약·함정·현재 맥락의 소유 파일을 갱신하고,
+   `AGENTS.md`에는 매 프롬프트 필수 경계가 바뀐 경우에만 짧게 반영
 
 ### 7. 결과가 기존 결론을 뒤집을 때
 

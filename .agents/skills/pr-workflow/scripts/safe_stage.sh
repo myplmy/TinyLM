@@ -5,16 +5,16 @@
 # 제시한 뒤 명시적으로 `git add` 한다.
 #
 # 제외 경로 소스 (우선순위):
-#   1. 내장 기본값 (.claude/settings.local.json, .env)
+#   1. 내장 기본값 (.env)
 #   2. env SAFE_STAGE_EXCLUDES — 개행 구분 문자열 (기본값에 추가됨)
-#      → caller(claude)가 .claude/project.json 의 excludedPaths 를 읽어 주입한다:
-#        SAFE_STAGE_EXCLUDES=$(jq -r '.excludedPaths[]' .claude/project.json 2>/dev/null) \
+#      → 호출자가 .agents/project.json 의 excludedPaths 를 읽어 주입한다:
+#        SAFE_STAGE_EXCLUDES=$(jq -r '.excludedPaths[]' .agents/project.json 2>/dev/null) \
 #          bash safe_stage.sh --add ...
-#      (jq 미설치 시 claude 가 값을 직접 개행 구분으로 넘겨도 된다)
+#      (jq 미설치 시 호출자가 값을 직접 개행 구분으로 넘겨도 된다)
 #
 # 사용법:
 #   ./safe_stage.sh                   # 전체 변경 파일을 필터링 후 출력만 (add 안 함)
-#   ./safe_stage.sh --add             # 필터링 후 git add 실행
+#   ./safe_stage.sh --add             # 금지: 명시 경로가 없으므로 실패
 #   ./safe_stage.sh --add path1 path2 # 지정 경로만 필터 검증 후 add
 #
 # 반환: 0 = 성공, 1 = 스테이징할 파일 없음 또는 전원 제외됨, 2 = 제외 경로만 선택됨
@@ -23,7 +23,6 @@ set -euo pipefail
 
 # 영구 제외 경로 (prefix 매칭) — 내장 기본값
 EXCLUDE_PATTERNS=(
-  ".claude/settings.local.json"
   ".env"
 )
 
@@ -83,6 +82,10 @@ main() {
   if [[ ${#explicit_paths[@]} -gt 0 ]]; then
     all_paths=("${explicit_paths[@]}")
   else
+    if [[ "$mode" = "add" ]]; then
+      echo "ERROR: --add requires one or more explicit paths." >&2
+      exit 1
+    fi
     while IFS= read -r line; do
       [[ -n "$line" ]] && all_paths+=("$line")
     done < <(collect_changes)

@@ -1,11 +1,17 @@
 ---
 name: plan-doc
-description: 기획/설계 plan 문서(P##/S##/CPR)의 신설·패치·suffix 이관을 처리한다. "P## 신설", "S## 플랜 작성", "CPR 라운드 N", "_absorbed로 이관", "_superseded 처리", "문서 정합성 검증", "§4.4 미결 섹션" 같은 지시에 사용한다. 사용자가 "플랜 문서"라고 명시하지 않더라도 기획 문서·cross-plan review·접미사 전환·단일 소스 참조 같은 맥락이 감지되면 이 스킬을 호출한다. 문서 골격 템플릿, 접미사 규칙 6종을 번들로 제공한다. 하위 플랜에 수치·enum·수식이 silent 중복되는 실수를 감지·교정한다. 문서 디렉토리와 단일 소스 맵은 `.Codex/project.json`의 `planDir`·`singleSource`로 설정한다.
+description: 기획·설계 문서(P##/S##/CPR)의 신설·패치·상태 이관과 단일 소스 정합성을 다룬다. 문서 디렉터리와 정본 맵은 `.agents/project.json`에서 읽는다. TinyLM 실험계획 P0NN은 이 스킬 대신 `exp-plan`을 사용한다.
 ---
 
 # plan-doc
 
-`planDir`(기획 문서 디렉토리) 관행을 강제하며 plan 문서를 생성·패치한다. 프로젝트 중립이며, 문서 위치·단일 소스는 [`.Codex/project.json`](../../project.json)에서 읽는다 (`planDir`, `planDoneDir`, `singleSource`).
+> **TinyLM Codex 이식본.** 프로젝트 메타데이터는 [`.agents/project.json`](../../project.json),
+> 환경 경계는 [Codex 분리 계약](../../../ai_dev_tool/Codex/README.md)을 따른다.
+
+`planDir`(기획 문서 디렉터리) 관행을 강제하며 plan 문서를 생성·패치한다. 문서 위치·단일 소스는 [`.agents/project.json`](../../project.json)에서 읽는다 (`planDir`, `planDoneDir`, `singleSource`).
+
+TinyLM의 `test_plan/P0NN_*.md` 실험계획은 [`exp-plan`](../exp-plan/SKILL.md)이 전담한다.
+이 스킬의 범용 suffix 예시를 기존 TinyLM 실험계획에 기계적으로 적용하지 않는다.
 
 ## 목적
 
@@ -36,10 +42,10 @@ description: 기획/설계 plan 문서(P##/S##/CPR)의 신설·패치·suffix �
    - `P##` — 시스템/기능 플랜 (구현 지향)
    - `S##` — 제안/사이드카 (승인 시 P## 격상 가능)
    - Umbrella/총괄 — 여러 서브플랜의 상위 문서. `plan_umbrella.md` 템플릿.
-2. **번호 자동 제안**: `ls <planDir>/`로 기존 번호 스캔 → 다음 번호.
+2. **번호 자동 제안**: PowerShell `Get-ChildItem -LiteralPath <planDir>` 또는 `rg --files <planDir>`로 기존 번호를 스캔해 다음 번호를 제안한다.
 3. **템플릿 선택**: `assets/templates/plan_basic.md`(기본), `plan_umbrella.md`(총괄), CPR이면 `cpr.md`.
 4. **Context 섹션 채우기**: 관련 CPR 링크, 선행 플랜 링크, 기준 코드 경로를 **상단에 명기**.
-5. **단일 소스 검증**: `.Codex/project.json`의 `singleSource` 참조. 등재된 수치·enum·수식은 **silent 중복 금지** → "<문서> §<위치> 참조" 형태로 작성.
+5. **단일 소스 검증**: `.agents/project.json`의 `singleSource` 참조. 등재된 수치·enum·수식은 **silent 중복 금지** → "<문서> §<위치> 참조" 형태로 작성.
 6. **파일명**: `P##_Descriptive_Name_planned.md` (신설은 무조건 `_planned`).
 
 ### (2) Suffix 이관 요청
@@ -50,10 +56,12 @@ description: 기획/설계 plan 문서(P##/S##/CPR)의 신설·패치·suffix �
    - **더 큰 계획으로 교체** (방향 변경) → `_superseded.md`
    - **타 문서 부록으로 흡수** (방향 유지, 단순 이관) → `_absorbed.md`
 2. `references/suffix_rules.md`에서 각 suffix의 의미·선택 기준 확인.
-3. 파일 이동: `<planDir>/X_planned.md` → `<planDoneDir>/X_<new_suffix>.md`.
+3. 파일 이동: 대상과 역참조를 먼저 보여주고 승인된 범위에서
+   `Move-Item -LiteralPath <source> -Destination <target>`을 사용한다.
 4. **헤더 배너 추가**: "**이 문서는 YYYY-MM-DD에 ABC로 absorbed/superseded 되었습니다. 결정 근거 아카이브 목적으로 보존됩니다.**" + 대체 문서 링크.
 5. 상대 경로 조정 (하위 디렉토리로 이동 시 `./` → `../`).
-6. 다른 문서에서의 역참조 grep → 링크 업데이트 필요 여부 보고 (자동 수정 금지, 사용자 확인 후).
+6. 다른 문서의 역참조는 `rg -n --fixed-strings`로 찾고 링크 업데이트 필요 여부를 보고한다
+   (자동 수정 금지, 사용자 확인 후).
 
 ### (3) CPR 작성
 1. 파일명: `CPR_<scope>_<title>_<suffix>.md`. 예:
@@ -67,7 +75,7 @@ description: 기획/설계 plan 문서(P##/S##/CPR)의 신설·패치·suffix �
 3. 2라운드 이상이면 **단일 파일 누적 금지** — 새 라운드는 새 파일.
 
 ### (4) Silent 중복 감지
-`.Codex/project.json`의 `singleSource`에 등재된 수치·enum·수식이 하위 문서에서 **literal로 재정의**되면 경고한다. 각 항목은 `{ item, source, refForm }` 형식:
+`.agents/project.json`의 `singleSource`에 등재된 수치·enum·수식이 하위 문서에서 **literal로 재정의**되면 경고한다. 각 항목은 `{ item, source, refForm }` 형식:
 
 ```jsonc
 "singleSource": [

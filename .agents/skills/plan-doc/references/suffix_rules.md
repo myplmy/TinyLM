@@ -1,6 +1,10 @@
 # Plan 파일 Suffix 규칙
 
-`planDir` 폴더의 suffix는 **문서의 현재 상태**를 표시한다. 6종. (`planDir`·`planDoneDir` 경로는 `.claude/project.json`에서 읽는다.)
+`planDir` 폴더의 suffix는 **문서의 현재 상태**를 표시한다. 6종. (`planDir`·`planDoneDir` 경로는 `.agents/project.json`에서 읽는다.)
+
+TinyLM의 `planDir`과 `planDoneDir`은 모두 `test_plan`이며 완료 상태는 `-done.md`
+접미사가 정본이다. 아래 밑줄 suffix는 그 관행을 쓰는 다른 기획 문서에만 적용하고,
+기존 P0NN 실험계획에는 적용하지 않는다.
 
 ## 전체 목록
 
@@ -27,10 +31,11 @@
 ### `_planned` → `_done` (가장 일반)
 1. PR 머지 확인
 2. 모든 Steps 체크박스 완료 확인
-3. 파일 이동: `git mv <planDir>/X_planned.md <planDoneDir>/X_done.md`
+3. 사용자 승인 뒤 파일 이동:
+   `Move-Item -LiteralPath <source> -Destination <target>`
 4. 상대 경로 조정: `](./` → `](../`
 5. 문서 상단에 구현 완료 마커 (선택): `> **Status**: Merged in PR #NN on YYYY-MM-DD.`
-6. 다른 문서의 역참조 grep → 링크 업데이트
+6. 다른 문서의 역참조를 `rg -n --fixed-strings`로 찾아 링크 업데이트
 
 ### `_planned` → `_canceled`
 1. 철회 사유 기록 섹션 `## Cancellation notice` 상단 추가

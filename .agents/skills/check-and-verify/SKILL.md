@@ -1,9 +1,12 @@
 ---
 name: check-and-verify
-description: PR 또는 Issue의 Test plan 체크박스를 읽어 각 항목의 수행 여부를 실제로 검증하고, 통과한 항목의 체크박스를 자동 갱신하는 스킬. "PR 체크박스 검증", "체크박스 자동 체크", "test plan 검증", "PR #N 체크박스 확인하고 체크", "머지 전 체크박스 점검", "이 PR 테스트 항목 돌려봐" 같은 요청에 사용한다. 또한 사용자가 명시하지 않더라도 PR 머지 직전 Test plan 항목을 검증해야 하는 맥락이면 이 스킬을 사용한다. 체크박스를 눈으로만 보고 수동 체크하거나, 검증 없이 전부 체크하는 패턴을 차단한다.
+description: PR 또는 Issue의 Test plan 체크박스를 분류하고, 사용자 승인 아래 실제 증거를 검증한 뒤 별도 외부 쓰기 승인을 받은 PASS 항목만 갱신한다. "PR 체크박스 검증", "test plan 검증", "머지 전 체크박스 점검" 요청에 사용한다.
 ---
 
 # check-and-verify
+
+> **TinyLM Codex 이식본.** 프로젝트 메타데이터는 [`.agents/project.json`](../../project.json),
+> 환경 경계는 [Codex 분리 계약](../../../ai_dev_tool/Codex/README.md)을 따른다.
 
 PR / Issue body의 Test plan 체크박스를 **실제로 검증**하고 통과 항목만 체크한다.
 
@@ -25,35 +28,23 @@ PR 머지 전 Test plan 체크박스 검증은 수작업이면 (1) 항목을 빠
 
 이 스킬은 **두 번의 사용자 승인**을 거친다. 자동으로 명령을 돌리거나 PR body를 수정하지 않는다.
 
-1. **실행 전 항목별 승인** — 자동 분류된 항목을 `AskUserQuestion` multiSelect로 제시하고, 사용자가 실행할 항목을 고른다. 고르지 않은 항목은 실행하지 않는다.
-2. **PATCH 전 일괄 승인** — 실행 결과 보고 후, 체크박스 갱신 여부를 `AskUserQuestion`으로 1회 확인한다. 승인 시에만 `gh ... edit`으로 body를 갱신한다.
+1. **실행 전 항목별 승인** — 정확한 명령과 영향을 제시하고 사용자가 실행할 항목을 고르게 한다. 고르지 않은 항목은 실행하지 않는다.
+2. **PATCH 전 일괄 승인** — 실행 결과 보고 후 체크박스 갱신 여부를 별도로 확인한다. 승인 시에만 `gh ... edit`으로 body를 갱신한다.
 
-분기 결정은 모두 `AskUserQuestion`으로 한다. 후보가 5개 이상이면 한 차수 4개 이하로 나눈다.
+실행·외부 쓰기 권한은 짧은 일반 질문으로 직접 묻는다. 선택지가 많으면 한 차수 최대 3개로 나눈다.
 
 ## 워크플로우
 
 ### 1. 입력 식별 — PR / Issue 자동 판별
 
-번호를 받으면 PR인지 Issue인지 판별한다. PR을 먼저 시도하고 실패하면 Issue.
-
-```bash
-GH="$(command -v gh || echo '/c/Program Files/GitHub CLI/gh.exe')"
-N=<번호>
-if "$GH" pr view "$N" --json body -q .body > /tmp/cav_body.md 2>/dev/null; then
-    KIND=pr
-elif "$GH" issue view "$N" --json body -q .body > /tmp/cav_body.md 2>/dev/null; then
-    KIND=issue
-else
-    echo "FAIL: #$N 은 PR 도 Issue 도 아님"; exit 1
-fi
-```
-
-body는 `/tmp/cav_body.md`에 저장된다. 이 파일이 이후 모든 단계의 입력.
+번호를 받으면 PR인지 Issue인지 판별한다. PR을 먼저 시도하고 실패하면 Issue. PowerShell의
+`Get-Command gh`와 `[IO.Path]::GetTempPath()`를 사용하며 저장소 안에 임시 body를 만들지 않는다.
+구체 명령은 [`CODEX_WORKFLOW.md`](CODEX_WORKFLOW.md)를 따른다.
 
 ### 2. 체크박스 추출·분류
 
-```bash
-python .Codex/skills/check-and-verify/scripts/checkbox_tool.py classify /tmp/cav_body.md
+```powershell
+python .agents/skills/check-and-verify/scripts/checkbox_tool.py classify $BodyPath
 ```
 
 JSON 배열을 반환한다 — 원소마다 `index, lineno, checked, text, category, command`.
@@ -78,14 +69,16 @@ JSON 배열을 반환한다 — 원소마다 `index, lineno, checked, text, cate
 
 ### 4. 실행 항목 승인 (승인 1)
 
-미체크 + 자동 가능(`pytest`/`script`/`script+env`/`file_check`) 항목을 `AskUserQuestion` multiSelect로 제시 — 사용자가 실행할 항목을 고른다. 항목이 5개 이상이면 차수를 나눈다. 각 옵션 라벨에 index + 명령을 넣어 무엇을 돌리는지 명확히 보이게 한다.
+미체크 + 자동 가능(`pytest`/`script`/`script+env`/`file_check`) 항목의 index와
+정확한 명령을 제시하고 사용자가 실행할 항목을 고르게 한다. 항목이 많으면 차수를 나눈다.
 
 ### 5. 승인 항목 실행
 
 - **pytest / script / script+env**: 리포 루트에서 `command`를 그대로 실행. exit code 0 = PASS, 그 외 = FAIL. 출력이 길면 마지막 10~20줄만 인용.
 - **file_check**: `command`가 경로다.
-  - `/`로 끝나는 디렉토리: 비어있지 않은지 확인 — `[ -n "$(ls -A <path> 2>/dev/null)" ]`
-  - 그 외: 파일 존재 — `test -f <path>`
+  - 디렉터리: `Test-Path -LiteralPath <path> -PathType Container` 후 필요 시
+    `Get-ChildItem -LiteralPath <path>`로 비어 있지 않은지 확인
+  - 파일: `Test-Path -LiteralPath <path> -PathType Leaf`
 
 명령은 체크박스 텍스트에서 추출된 것이므로, 실행 전 사용자가 승인한 항목만 돌린다 (승인 1). 화이트리스트(pytest·프로젝트 스크립트) 밖 명령은 애초에 자동 분류되지 않으므로 임의 명령은 실행되지 않는다.
 
@@ -100,23 +93,25 @@ JSON 배열을 반환한다 — 원소마다 `index, lineno, checked, text, cate
 
 ### 7. manual 항목 처리
 
-`manual` 카테고리 + 미선택 항목을 사용자에게 보고한다. 사용자가 수동으로 확인한 항목이 있으면 `AskUserQuestion` multiSelect로 "완료된 수동 항목"을 받아 PATCH 대상에 포함한다.
+`manual` 카테고리 + 미선택 항목을 사용자에게 보고한다. 사용자가 수동으로 완료했다고
+명시한 항목만 PATCH 대상에 포함한다.
 
 ### 8. 체크박스 갱신 승인 (승인 2)
 
-PATCH 대상 = PASS 항목 + 사용자가 완료 확인한 manual 항목의 index 목록. `AskUserQuestion`으로 "이 N개 항목 체크박스를 갱신할까요?" 1회 확인.
+PATCH 대상 = PASS 항목 + 사용자가 완료 확인한 manual 항목의 index 목록. 변경될 index와
+before/after를 보여주고 원격 body 갱신을 직접 승인받는다.
 
 ### 9. body 갱신·PATCH
 
 승인 시:
 
-```bash
-python .Codex/skills/check-and-verify/scripts/checkbox_tool.py apply \
-    /tmp/cav_body.md "0,2,3" > /tmp/cav_updated.md
+```powershell
+python .agents/skills/check-and-verify/scripts/checkbox_tool.py apply `
+    $BodyPath "0,2,3" | Set-Content -LiteralPath $UpdatedPath -Encoding utf8
 
 # KIND 에 따라 분기
-"$GH" pr edit  "$N" --body-file /tmp/cav_updated.md     # KIND=pr
-"$GH" issue edit "$N" --body-file /tmp/cav_updated.md   # KIND=issue
+& $Gh pr edit  $N --body-file $UpdatedPath     # KIND=pr
+& $Gh issue edit $N --body-file $UpdatedPath   # KIND=issue
 ```
 
 `gh pr edit` / `gh issue edit`은 현재 리포 컨텍스트에서 동작하므로 owner/repo를 명시할 필요가 없다. `--body-file`은 파일을 UTF-8로 읽으므로 한글이 안전하다.
@@ -136,7 +131,9 @@ stdout은 UTF-8로 고정되어 있어 리다이렉트 출력 시 한글이 손�
 
 ## gh CLI 경로
 
-`gh`가 PATH에 없으면 경로 자동 해결: `command -v gh || echo '/c/Program Files/GitHub CLI/gh.exe'`. 상세는 `pr-workflow` 스킬의 `references/gh_cli_paths.md` 참조.
+PowerShell에서 `Get-Command gh`를 먼저 사용하고, 없으면
+`C:\Program Files\GitHub CLI\gh.exe`의 존재를 확인한다. 인증이 없으면 대화형 로그인을
+임의 실행하지 않고 사용자에게 위임한다.
 
 ## 에러 복구
 
@@ -148,8 +145,8 @@ stdout은 UTF-8로 고정되어 있어 리다이렉트 출력 시 한글이 손�
 ## 체크리스트
 
 - [ ] PR / Issue 자동 판별했는가
-- [ ] 자동 항목을 실행 전 `AskUserQuestion`으로 승인받았는가 (승인 1)
+- [ ] 자동 항목을 실행 전 정확한 명령과 함께 승인받았는가 (승인 1)
 - [ ] 이미 체크된 항목을 재실행하지 않았는가 (SKIP)
 - [ ] 결과 표(PASS/FAIL/SKIP)를 보고했는가
-- [ ] 체크박스 갱신을 `AskUserQuestion`으로 일괄 승인받았는가 (승인 2)
+- [ ] 체크박스 갱신을 별도로 일괄 승인받았는가 (승인 2)
 - [ ] PASS 항목만 `[x]`로 갱신했는가 (FAIL 항목 미체크)

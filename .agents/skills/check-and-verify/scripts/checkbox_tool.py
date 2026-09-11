@@ -27,8 +27,16 @@ import sys
 CHECKBOX_RE = re.compile(r'^(\s*[-*+] \[)([ xX])(\].*)$')
 # 인라인 코드 스팬(백틱)
 CODE_RE = re.compile(r'`([^`]+)`')
-# 명령 앞 환경변수 prefix (NAME=value ...)
+# 명령 앞 환경변수 prefix. POSIX, PowerShell, cmd 표기를 분류만 하며 실행하지 않는다.
 ENV_PREFIX_RE = re.compile(r'^([A-Za-z_][A-Za-z0-9_]*=\S+\s+)+')
+POWERSHELL_ENV_PREFIX_RE = re.compile(
+    r'^(\$env:[A-Za-z_][A-Za-z0-9_]*\s*=\s*[^;]+;\s*)+',
+    re.IGNORECASE,
+)
+CMD_ENV_PREFIX_RE = re.compile(
+    r'^(set\s+[A-Za-z_][A-Za-z0-9_]*=[^&]+&&\s*)+',
+    re.IGNORECASE,
+)
 
 
 def classify_command(span):
@@ -40,10 +48,12 @@ def classify_command(span):
     """
     c = span.strip()
     body = ENV_PREFIX_RE.sub('', c)
+    body = POWERSHELL_ENV_PREFIX_RE.sub('', body)
+    body = CMD_ENV_PREFIX_RE.sub('', body)
     has_env = body != c
-    if re.match(r'(python3?\s+-m\s+pytest|pytest)\b', body):
+    if re.match(r'((?:python3?|py(?:\s+-3)?)\s+-m\s+pytest|pytest)\b', body):
         return ('script+env' if has_env else 'pytest', c)
-    if re.match(r'python3?\s+(test|scripts)/', body):
+    if re.match(r'(?:python3?|py(?:\s+-3)?)\s+(test|scripts)[/\\]', body):
         return ('script+env' if has_env else 'script', c)
     return (None, None)
 
@@ -58,7 +68,11 @@ def classify_item(text):
     if re.search(r'(존재|생성|저장|출력|파일)', text):
         for span in CODE_RE.findall(text):
             s = span.strip()
-            if '/' in s and ' ' not in s and not s.startswith(('python', 'pytest')):
+            if (
+                ('/' in s or '\\' in s)
+                and ' ' not in s
+                and not s.startswith(('python', 'pytest', 'py '))
+            ):
                 return {'category': 'file_check', 'command': s}
     return {'category': 'manual', 'command': None}
 

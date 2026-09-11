@@ -4,7 +4,7 @@
 # Base 결정:
 #  - --base 명시 시 그대로 사용
 #  - 미지정 시 detect_base.sh 호출 (project.json → 메타 → env → 휴리스틱)
-#  - 감지 결과가 LOW/NONE 이면 caller (claude) 가 사용자에게 문의
+#  - 감지 결과가 LOW/NONE 이면 호출자가 사용자에게 문의
 #
 # 사용법:
 #   ./create_pr.sh --title "..." --body-file body.md
@@ -73,7 +73,7 @@ if [[ -z "$BASE" ]]; then
     echo "  stderr from detect_base.sh:" >&2
     cat /tmp/cp_db.err >&2
     echo "" >&2
-    echo "  → caller (claude) should ask user, then re-invoke with --base <chosen>" >&2
+    echo "  → caller should ask the user, then re-invoke with --base <chosen>" >&2
     echo "    or run: bash $SCRIPT_DIR/detect_base.sh --write <chosen>" >&2
     exit 2
   fi

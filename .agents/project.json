@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "project": "TinyLM",
+  "language": "ko-KR",
+  "skillRoot": ".agents/skills",
+  "codexLongTermMemory": "ai_dev_tool/Codex",
+  "planDir": "test_plan",
+  "planDoneDir": "test_plan",
+  "planDoneConvention": "완료 문서는 같은 디렉터리에서 -done.md 접미사를 사용한다.",
+  "handoffDir": "handoff",
+  "sharedImplementationLedger": "ai_dev_tool/09_구현검증_필요목록.md",
+  "sharedImplementationLedgerPolicy": "reference-only; do not copy, move, mirror, or create a Codex 09",
+  "baseBranch": null,
+  "baseBranchPolicy": "현재 local main과 origin HEAD master가 달라 자동 확정하지 않는다. PR 작업 때 실제 분기 근거를 확인하고 모호하면 사용자에게 묻는다.",
+  "singleSource": [
+    {
+      "item": "모델 구조와 런타임 기본값",
+      "source": "tinylm/config.py",
+      "refForm": "실제 코드 tinylm/config.py 참조"
+    },
+    {
+      "item": "표준 실험조건, 비교 유효성, 계열별 판정자",
+      "source": "docs/EXPERIMENT_BASELINES.md",
+      "refForm": "docs/EXPERIMENT_BASELINES.md의 현재 해당 절 참조"
+    },
+    {
+      "item": "연구 방향과 축 상태",
+      "source": "handoff/COMPASS.md",
+      "refForm": "handoff/COMPASS.md 참조"
+    },
+    {
+      "item": "실험 계획 목록",
+      "source": "test_plan/실험계획목록.md",
+      "refForm": "test_plan/실험계획목록.md 참조"
+    },
+    {
+      "item": "실험 결과 목록",
+      "source": "test_result/실험목록.md",
+      "refForm": "test_result/실험목록.md 참조"
+    },
+    {
+      "item": "방법론 상태",
+      "source": "docs/METHODS.md",
+      "refForm": "docs/METHODS.md와 연결된 방법론 원장 참조"
+    },
+    {
+      "item": "실행 배치 레지스트리",
+      "source": "experiments.tsv",
+      "refForm": "experiments.tsv 참조"
+    },
+    {
+      "item": "허용 플래그 계약",
+      "source": "scripts/flag_whitelist.tsv",
+      "refForm": "scripts/flag_whitelist.tsv 참조"
+    }
+  ],
+  "domainAxes": [
+    "GPU, 학습, 모델 로딩은 사용자 실행 권한과 분리되어 있는가",
+    "데이터셋, 체크포인트, 로그 및 동시 작업자의 소유권을 침범하지 않는가",
+    "학습 풀, 토크나이저, 학습 토큰, 초기화, 평가 경로가 맞아 비교가 유효한가",
+    "메모리, 속도, 품질, 정적 검사, 동적 실행의 증거 수준을 섞지 않는가",
+    "결과, 계획, 기준표, 방법론, COMPASS의 문서 연쇄가 필요한 범위에서 동기화되는가"
+  ],
+  "docImpactTargets": [
+    "docs/EXPERIMENT_BASELINES.md",
+    "docs/METHODS.md",
+    "handoff/COMPASS.md",
+    "test_plan/실험계획목록.md",
+    "test_result/실험목록.md",
+    "experiments.tsv",
+    "scripts/flag_whitelist.tsv"
+  ],
+  "excludedPaths": [
+    ".env*",
+    "datasets/TinyDataset/",
+    "HF/",
+    "data_cache/",
+    "runs/",
+    "smoketest_logs/",
+    "train-logs.txt"
+  ],
+  "evidenceStates": [
+    "DESIGNED",
+    "MIGRATED_UNVERIFIED",
+    "STATIC_ONLY",
+    "E2E_NOT_RUN",
+    "ACTIVE_VERIFIED"
+  ]
+}

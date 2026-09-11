@@ -15,7 +15,7 @@
 - [ ] E2E·통합 검증 (해당 시)
 - [ ] 수동 검증 항목 (선택)
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Generated with OpenAI Codex
 ```
 
 ## 문서 전용
@@ -32,12 +32,12 @@
 - [ ] 영구 제외 경로(excludedPaths)가 포함되지 않음
 - [ ] 내부 링크 렌더링 확인
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Generated with OpenAI Codex
 ```
 
 ## Doc Impact 섹션 (조건부)
 
-`.claude/project.json`의 `docImpactTargets`에 정본 문서가 등재된 프로젝트에서만 아래 섹션을 추가한다. **배열이 비어 있으면 이 섹션을 넣지 않는다.**
+`.agents/project.json`의 `docImpactTargets`에 정본 문서가 등재된 프로젝트에서만 아래 섹션을 추가한다. **배열이 비어 있으면 이 섹션을 넣지 않는다.**
 
 ```markdown
 ## Doc Impact
@@ -53,8 +53,8 @@
 
 - [ ] Summary는 bullet 3개 이내가 이상적
 - [ ] Test plan은 실제로 수행한 것을 `[x]`로, 예정이면 `[ ]`로
-- [ ] base 브랜치는 `detect_base.sh` 결과 사용 (하드코딩 금지)
-- [ ] "🤖 Generated with..." 라인 포함
+- [ ] base 브랜치는 `detect_base.ps1` 또는 사용자 명시값 사용 (하드코딩 금지)
+- [ ] `Generated with OpenAI Codex` 표기 포함
 
 ## 커밋 메시지와의 관계
 

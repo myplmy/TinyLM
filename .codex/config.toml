@@ -1,0 +1,16 @@
+# TinyLM repository-local Codex settings.
+# This file contains only native Codex configuration. TinyLM skill metadata is
+# kept in ../.agents/project.json, and hooks remain exclusively in hooks.json.
+# Loading this file still depends on the user/host trusting this project.
+
+# Keep enough room for the intentionally small root AGENTS.md while preventing
+# a future oversized fallback document from silently becoming the prompt entry.
+project_doc_max_bytes = 32768
+project_doc_fallback_filenames = []
+project_root_markers = [".git"]
+
+# Intentionally absent:
+# - model and reasoning defaults (user-owned)
+# - sandbox/approval relaxation (user-owned)
+# - model_instructions_file (would replace AGENTS.md semantics)
+# - inline hooks (P5 owns .codex/hooks.json and is outside this task)

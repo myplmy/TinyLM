@@ -5,6 +5,9 @@ description: Triage issues through a state machine driven by triage roles. Use w
 
 # Triage
 
+> **TinyLM Codex 이식본.** 이슈 조회·분석과 댓글·라벨·close 같은 외부 변경을 분리한다.
+> 외부 변경은 정확한 대상을 보여주고 사용자 승인 뒤에만 수행한다.
+
 Move issues on the project issue tracker through a small state machine of triage roles.
 
 Every comment or issue posted to the issue tracker during triage **must** start with this disclaimer:

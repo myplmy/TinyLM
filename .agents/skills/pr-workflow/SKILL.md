@@ -1,11 +1,24 @@
 ---
 name: pr-workflow
-description: PR을 안전하게 생성·머지한다. "PR 생성", "merge 수행", "브랜치 만들고 푸시", "pull request" 같은 지시에 반드시 사용한다. Base branch는 detect_base.sh로 자동 감지(또는 사용자 확인)하고, Head는 현재 branch(HEAD)다. `git add .` / `-A` 를 차단하여 명시 경로 staging만 허용하고, `.Codex/project.json`의 `excludedPaths`에 등재된 영구 제외 경로를 자동 필터링한다. Commit 메시지 HEREDOC + Co-Authored-By 라인, PR body "## Summary / ## Test plan" 템플릿을 표준으로 적용한다. gh CLI 경로를 OS별로 자동 해결한다. 사용자가 PR 관련 의도를 보이면(base 언급, 커밋 메시지 초안, push/merge 언급 등) 명시 지시가 없어도 이 스킬을 호출한다.
+description: 사용자가 명시적으로 요청한 branch·commit·push·PR 생성·merge를 안전하게 수행한다. base/head를 확인하고 `git add .`·`-A`를 금지하며, `.agents/project.json`의 제외 경로와 명시 파일 allowlist를 적용한다. Windows PowerShell을 기본 경로로 사용한다.
 ---
 
 # pr-workflow
 
-PR 생성·머지 표준을 강제한다. **scope 사고(`git add -A`로 제외 경로 포함)** 를 원천 차단한다. 프로젝트 중립이며, 프로젝트 고유 값(제외 경로·base 브랜치·정본 문서)은 [`.Codex/project.json`](../../project.json)에서 읽는다.
+> **TinyLM Codex 이식본.** 프로젝트 메타데이터는 [`.agents/project.json`](../../project.json),
+> 환경·권한 경계는 [Codex 분리 계약](../../../ai_dev_tool/Codex/README.md)을 따른다.
+
+PR 생성·머지 표준을 강제한다. **scope 사고(`git add -A`로 제외 경로 포함)** 를 원천 차단한다.
+프로젝트 고유 값은 [`.agents/project.json`](../../project.json)에서 읽는다.
+
+## 권한 경계
+
+- 조회(`git status`, `git diff`, `gh ... view`)는 관련 진단 범위에서 가능하다.
+- branch 생성, staging, commit, push, PR 생성·편집, merge, issue comment/close는
+  **사용자의 해당 외부 변경 요청이 있을 때만** 수행한다.
+- PR 생성 요청은 merge 승인까지 포함하지 않는다. merge는 별도 명시가 필요하다.
+- 이 스킬 자체를 읽었다는 사실은 어떤 Git·GitHub 변경 권한도 부여하지 않는다.
+- 현재 사용자 범위와 [AGENTS.md](../../../AGENTS.md)가 항상 우선한다.
 
 ## 왜 이 스킬이 필요한가
 
@@ -25,69 +38,68 @@ PR 생성·머지 표준을 강제한다. **scope 사고(`git add -A`로 제외 
 
 ## 핵심 규약 (비협상)
 
-### 1. Base = detect_base.sh 자동 감지, Head = 현재 branch
+### 1. Base는 증거로 결정, Head는 현재 branch
 
-Base 결정은 `scripts/detect_base.sh`가 자동화 (자세한 가이드: [`references/base_branch_detection.md`](references/base_branch_detection.md)):
+Windows 기본 경로는 `scripts/detect_base.ps1`이다. 자세한 계약은
+[`references/base_branch_detection.md`](references/base_branch_detection.md)을 따른다.
 
-```bash
-BASE=$(bash .Codex/skills/pr-workflow/scripts/detect_base.sh 2>/tmp/db.err)
-EC=$?
-
-if [ $EC -eq 2 ] || [ "$BASE" = "AMBIGUOUS" ]; then
-    # confidence LOW/NONE — 사용자에게 AskUserQuestion 으로 문의
-    # 후보 목록은 /tmp/db.err 의 candidates= 라인 참조
-    # 결정 후: bash detect_base.sh --write <chosen>
-    ...
-fi
-
-HEAD=$(git branch --show-current)
-gh pr create --base "$BASE" --head "$HEAD" ...
+```powershell
+$Base = & .agents/skills/pr-workflow/scripts/detect_base.ps1
+if (-not $Base) {
+    # 후보와 최근 commit을 보고한 뒤 사용자에게 직접 선택을 묻는다.
+    return
+}
+$Head = git branch --show-current
+gh pr create --base $Base --head $Head ...
 ```
 
-우선순위: `--base` 명시 인자 → `.Codex/project.json`의 `baseBranch` → 메타 파일 → env `PR_BASE_BRANCH` → 휴리스틱(첫 commit 포함 local branch). 기본 우선순위 후보는 `main master develop`.
+우선순위: 사용자 명시 `-Base` → `.agents/project.json`의 비어 있지 않은 `baseBranch`
+→ 원격 default branch와 분기 근거. 현재 설정이 `null`이거나 근거가 충돌하면 임의로
+`main` 또는 `master`를 고르지 않는다.
 
-**사용자 문의 절차** (detect_base가 LOW/NONE 반환 시 필수):
-1. `AskUserQuestion`으로 후보 목록 제시 (옵션 라벨 = branch 이름)
-2. 각 옵션 description에 `git log -1 --oneline <branch>` 결과 포함
-3. 사용자 선택 후 `bash detect_base.sh --write <chosen>`으로 메타 파일 영구 기록
-4. 이후 이 worktree의 모든 PR은 그 base 사용 (HIGH confidence)
+**사용자 문의 절차** (결과가 모호할 때 필수):
+1. 후보 branch와 각 `git log -1 --oneline <branch>` 결과를 보고한다.
+2. 사용자에게 base 하나를 직접 선택해 달라고 묻는다.
+3. 선택값은 현재 작업에 명시 인자로 사용한다. 영구 기록은 사용자가 별도로 요청한 경우에만 한다.
 
 ### 2. `git add .` / `-A` 금지
 
 스테이징은 **반드시 명시 경로**로:
 
-```bash
+```powershell
 git add path/to/file1.md path/to/file2.py
 ```
 
-이유: `.Codex/project.json`의 `excludedPaths`에 등재된 경로(개인 로컬 설정·대용량 데이터·재생성 산출물·비밀키)가 untracked로 유지되며, 전체 staging은 이들을 우발적으로 포함시킨다.
+이유: `.agents/project.json`의 `excludedPaths`에 등재된 경로를 전체 staging이
+우발적으로 포함시킬 수 있다.
 
 사용자가 "전체 추가" 요청 시 **거부하고 대안 제시**:
 1. `git status --porcelain`으로 변경 목록 확인
-2. `excludedPaths` 필터링 (`scripts/safe_stage.sh` 참조)
+2. `excludedPaths` 필터링 (`scripts/safe_stage.ps1` 참조)
 3. 필터링 후 남은 파일 목록을 사용자에게 제시 → 확인 후 `git add <paths>`
 
-**영구 제외 경로는 `.Codex/project.json`의 `excludedPaths`가 단일 소스**다. 기본값: `.Codex/settings.local.json`, `.env`. 프로젝트별 추가 경로는 그 배열에 등재한다. 상세: [`references/excluded_paths.md`](references/excluded_paths.md).
+**영구 제외 경로는 `.agents/project.json`의 `excludedPaths`가 단일 소스**다.
+상세: [`references/excluded_paths.md`](references/excluded_paths.md).
 
 ### 3. Commit 메시지 포맷
 
-- 제목: 70자 이하, 대문자 시작, 명령형
+- 제목: 저장소 관례에 맞는 한 줄. 사용자가 한국어 메시지를 요청하면 한국어로 작성
   - ✅ `Docs: generalize workflow skills + add project.json config`
   - ❌ `update some docs`
 - 본문: 1줄 공백 후 변경 요약 (bullet)
-- 마지막 줄: `Co-Authored-By: Codex <noreply@anthropic.com>` (환경에 따라 모델명 포함 가능)
-- HEREDOC 사용:
+- 공동 작성자 표기를 넣을 때는 `Co-Authored-By: OpenAI Codex <codex@openai.com>`을 사용한다.
+- PowerShell here-string 또는 임시 메시지 파일을 사용한다:
 
-```bash
-git commit -m "$(cat <<'EOF'
+```powershell
+$Message = @'
 제목 한 줄
 
 - 변경 1
 - 변경 2
 
-Co-Authored-By: Codex <noreply@anthropic.com>
-EOF
-)"
+Co-Authored-By: OpenAI Codex <codex@openai.com>
+'@
+git commit -m $Message
 ```
 
 ### 4. PR body 포맷
@@ -103,10 +115,10 @@ EOF
 - [ ] 테스트 항목 1
 - [ ] 테스트 항목 2
 
-🤖 Generated with [Codex](https://Codex.com/Codex)
+Generated with OpenAI Codex
 ```
 
-**Doc Impact (조건부 섹션)**: `.Codex/project.json`의 `docImpactTargets`에 정본 문서가 등재돼 있으면 아래 섹션을 추가하고 각 문서 영향을 평가한다. 배열이 비어 있으면 **섹션 자체를 생략**한다.
+**Doc Impact (조건부 섹션)**: `.agents/project.json`의 `docImpactTargets`에 정본 문서가 등재돼 있으면 아래 섹션을 추가하고 각 문서 영향을 평가한다. 배열이 비어 있으면 **섹션 자체를 생략**한다.
 
 ```markdown
 ## Doc Impact
@@ -121,14 +133,8 @@ EOF
 
 ### 5. gh CLI 경로
 
-`gh`가 PATH에 없을 수 있으므로 경로를 자동 해결한다:
-
-```bash
-GH="$(command -v gh || echo '/c/Program Files/GitHub CLI/gh.exe')"
-"$GH" pr create --base "$BASE" --head "$HEAD" ...
-```
-
-PowerShell 환경이면 `gh`로 단축 가능. 스크립트는 두 환경 모두 지원. 상세: [`references/gh_cli_paths.md`](references/gh_cli_paths.md).
+PowerShell에서 `Get-Command gh`를 먼저 사용하고 없으면 표준 설치 경로를 확인한다.
+상세: [`references/gh_cli_paths.md`](references/gh_cli_paths.md).
 
 ## 워크플로우 (전체 흐름)
 
@@ -136,52 +142,48 @@ PowerShell 환경이면 `gh`로 단축 가능. 스크립트는 두 환경 모두
 
 ### (1) 사전 확인
 1. 현재 브랜치 확인: `git branch --show-current` (이것이 PR head)
-2. **base 결정**: `bash scripts/detect_base.sh 2>/tmp/db.err`. exit code 2 (LOW/NONE) 시 `AskUserQuestion`으로 문의 → 결정 값 `--write`로 영구 기록.
-3. base 최신화: `git fetch -q origin "$BASE"`
+2. **base 결정**: `.agents/skills/pr-workflow/scripts/detect_base.ps1`. 빈 결과면 후보를
+   보고하고 사용자에게 직접 선택을 묻는다. 영구 기록은 별도 요청 시에만 한다.
+3. base 최신화가 필요하면 네트워크 변경 범위를 알린 뒤 `git fetch -q origin $Base`
 4. `git status --short -uno`로 변경 파악 (`-uno`는 untracked 노이즈 차단)
-5. gh auth 상태: `"$GH" auth status` (1회/세션)
+5. gh auth 상태: `& $Gh auth status` (1회/세션)
 
 ### (2) 작업 branch 준비
 현재 working branch에서 작업 중이 아니면: `git checkout -b <descriptive-branch-name>`. 이미 적절한 branch면 생략.
 
 ### (3) 안전 staging (LF/CRLF warning 억제)
-`scripts/safe_stage.sh` 실행 또는 수동:
+`scripts/safe_stage.ps1` 실행 또는 수동:
 1. `git status --porcelain` → 변경 파일 목록
 2. `excludedPaths` 필터링
 3. 사용자에게 최종 목록 보여주고 확인
-4. `git add <filtered paths> 2>/dev/null` — Windows `core.autocrlf=true`에서 파일별 LF→CRLF warning 폐기 (진짜 에러는 비-zero exit로 신호되므로 안전)
+4. 사용자가 승인한 명시 경로만 `git add -- <paths>`
 
 **주의 — 금지 패턴**: `git add .` / `git add -A` — 제외 경로가 `.gitignore` 누락 시 우발 staging. 본 스킬 핵심 룰 §2 위반.
 
 ### (4) Commit
-위 "Commit 메시지 포맷" 준수. HEREDOC 사용.
+위 "Commit 메시지 포맷" 준수. PowerShell here-string을 사용한다.
 
 ### (5) Push (출력 압축)
-```bash
+```powershell
 git push -u --quiet origin <branch-name>
 ```
 
 ### (6) PR 생성
-`scripts/create_pr.sh` (자동 base 감지) 또는 수동:
-```bash
-HEAD=$(git branch --show-current)
-BASE=$(bash .Codex/skills/pr-workflow/scripts/detect_base.sh 2>/tmp/db.err) \
-  || { echo "base detection failed — see /tmp/db.err"; exit 1; }
-
-"$GH" pr create --base "$BASE" --head "$HEAD" --title "..." --body "$(cat <<'EOF'
-## Summary
-...
-EOF
-)"
+`scripts/create_pr.ps1` 또는 명시적 수동 호출:
+```powershell
+$Head = git branch --show-current
+$Base = & .agents/skills/pr-workflow/scripts/detect_base.ps1
+if (-not $Base) { throw 'Base is ambiguous; ask the user before creating a PR.' }
+& $Gh pr create --base $Base --head $Head --title '...' --body-file $BodyPath
 ```
 
-`create_pr.sh`는 detect_base가 LOW/NONE 반환 시 exit 2 + stderr 안내. 그 경우 사용자 문의 후 `--base <chosen>` 명시하여 재호출.
+`create_pr.ps1`은 base가 모호하면 외부 변경 없이 실패한다. 사용자 선택 뒤 `-Base <chosen>`을 명시한다.
 
 ### (7) Merge (사용자 요청 시) — 헬퍼 스크립트 권장
 
-**권장 (1라인 OK 출력)**:
-```bash
-bash .Codex/skills/pr-workflow/scripts/merge_and_sync.sh <NN>
+**권장 (별도 merge 승인 뒤)**:
+```powershell
+& .agents/skills/pr-workflow/scripts/merge_and_sync.ps1 -PrNumber <NN>
 # OK pr=<NN> merged synced base=<branch>
 ```
 
@@ -198,13 +200,12 @@ PR이 GitHub 이슈를 해소하면 **머지 후** 그 이슈에 해소 코멘�
 
 **작성 방법 (비협상)**:
 - `gh issue close <N> --comment "..."`의 인라인 문자열로 **긴 코멘트를 한 줄로 밀어넣지 말 것**. GitHub 마크다운은 문단 사이 **빈 줄**이 있어야 렌더되므로, 한 줄 코멘트는 헤딩·리스트가 뭉개진다.
-- 반드시 **파일(HEREDOC)로 작성 → `--body-file`**로 전달:
-  ```bash
-  cat > "$SCRATCH/close_<N>.md" <<'EOF'
-  ...아래 구조...
-  EOF
-  gh issue close <N> --comment "$(cat "$SCRATCH/close_<N>.md")"
-  # 또는 already-closed 이면: gh issue comment <N> --body-file "$SCRATCH/close_<N>.md"
+- 반드시 **임시 파일로 작성 → `--body-file`**로 전달:
+  ```powershell
+  $CloseBody = Join-Path ([IO.Path]::GetTempPath()) 'codex-close-N.md'
+  # 승인된 본문을 $CloseBody에 UTF-8로 작성한다.
+  gh issue comment <N> --body-file $CloseBody
+  gh issue close <N>
   ```
 
 **구조 (§ 헤딩 필수)**: `## ✅ 해소` → `### 구현 PR` → `### 내역` → `### 검증` → `### 잔여/후속`. **PR 번호 링크 + 빈 줄 문단 구분은 생략 불가.**
@@ -234,14 +235,15 @@ PR이 GitHub 이슈를 해소하면 **머지 후** 그 이슈에 해소 코멘�
 **amend 금지**. 문제 수정 후 **새 커밋** 생성.
 
 ### "gh: command not found"
-→ 경로 자동 해결: `command -v gh || echo '/c/Program Files/GitHub CLI/gh.exe'`
+→ PowerShell `Get-Command gh` 확인 후 `C:\Program Files\GitHub CLI\gh.exe` 존재 확인
 
 ## 번들 리소스
 
-- `scripts/safe_stage.sh` — `excludedPaths` 필터링 staging 래퍼
-- `scripts/detect_base.sh` — base 결정 (project.json → 메타 → env → 휴리스틱, confidence 라벨)
-- `scripts/create_pr.sh` — PR 생성 헬퍼 (자동 base 감지 + gh 경로)
-- `scripts/merge_and_sync.sh` — PR 머지 + base branch 로컬 동기화 1라인 헬퍼
+- `scripts/safe_stage.ps1` — `excludedPaths` 필터링과 명시 경로 staging
+- `scripts/detect_base.ps1` — base 결정; 모호하면 빈 결과와 후보 보고
+- `scripts/create_pr.ps1` — 명시 승인 뒤 PR 생성
+- `scripts/merge_and_sync.ps1` — 별도 승인 뒤 PR 머지와 원격 base 갱신
+- `scripts/*.sh` — Git Bash 환경을 사용자가 명시한 경우의 보조 구현. Windows 호환성 증거로 삼지 않는다.
 - `references/pr_body_template.md` — PR body 표준 템플릿 모음
 - `references/gh_cli_paths.md` — OS·환경별 gh 경로 해결
 - `references/excluded_paths.md` — 제외 경로 설정 방법 + 필터링 규칙
@@ -250,12 +252,12 @@ PR이 GitHub 이슈를 해소하면 **머지 후** 그 이슈에 해소 코멘�
 ## Do / Don't 요약
 
 ### DO
-- Base: `detect_base.sh` 자동 감지. 모호하면 사용자 문의 + 메타 영구 기록.
+- Base: `detect_base.ps1`로 확인. 모호하면 사용자에게 묻고 현재 호출에 명시한다.
 - Head: 현재 branch (`git branch --show-current`)
 - Stage: 명시 경로만
-- Commit: HEREDOC + Co-Authored-By
-- gh 경로: `command -v gh` 우선, 없으면 OS별 fallback
-- 이슈 close: 코멘트를 HEREDOC 파일 → `--body-file`, `## 해소 → ### 구현 PR(#번호 링크) → ### 내역 → ### 검증 → ### 잔여` 구조
+- Commit: PowerShell here-string + 필요 시 OpenAI Codex 공동작성자
+- gh 경로: PowerShell `Get-Command gh` 우선, 없으면 검증된 표준 설치 경로
+- 이슈 close: UTF-8 임시 파일 → `--body-file`, `## 해소 → ### 구현 PR(#번호 링크) → ### 내역 → ### 검증 → ### 잔여` 구조
 
 ### DON'T
 - `git add -A` / `git add .`

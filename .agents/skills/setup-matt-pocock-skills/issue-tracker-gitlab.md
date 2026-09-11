@@ -4,7 +4,8 @@ Issues and PRDs for this repo live as GitLab issues. Use the [`glab`](https://gi
 
 ## Conventions
 
-- **Create an issue**: `glab issue create --title "..." --description "..."`. Use a heredoc for multi-line descriptions. Pass `--description -` to open an editor.
+- **Create an issue**: write the approved description to a UTF-8 temporary file and pass its
+  contents using the CLI's file/stdin option. Do not open an interactive editor from an unattended run.
 - **Read an issue**: `glab issue view <number> --comments`. Use `-F json` for machine-readable output.
 - **List issues**: `glab issue list --state opened -F json` with appropriate `--label` filters. Note that GitLab uses `opened` (not `open`) for the state value.
 - **Comment on an issue**: `glab issue note <number> --message "..."`. GitLab calls comments "notes".

@@ -5,7 +5,7 @@
 #   1. 명시 인자 (--base <branch>)            → confidence=HIGH
 #   2. 메타 파일: $GIT_DIR/pr-base             → confidence=HIGH
 #   3. 환경변수: PR_BASE_BRANCH                → confidence=HIGH
-#      (caller 가 .claude/project.json 의 baseBranch 를 이 env 로 주입)
+#      (caller 가 .agents/project.json 의 baseBranch 를 이 env 로 주입)
 #   4. 휴리스틱: 첫 commit 포함 local branch (우선순위 매치 단일 후보)
 #                                              → confidence=MEDIUM
 #   5. 휴리스틱: 여러 후보 모호 / 비매치        → confidence=LOW (출력: AMBIGUOUS)
@@ -24,7 +24,7 @@
 #   base=$(bash detect_base.sh 2>/tmp/db.err) || true
 #   conf=$(grep -oE 'confidence=[A-Z]+' /tmp/db.err | cut -d= -f2)
 #   if [ "$conf" = "LOW" ] || [ "$conf" = "NONE" ]; then
-#       # 사용자에게 AskUserQuestion 으로 문의 (후보 목록 stderr 에 있음)
+#       # 후보 목록을 보고하고 사용자에게 직접 선택을 문의
 #       # 결정 후: bash detect_base.sh --write <chosen>
 #   fi
 #

@@ -1,70 +1,43 @@
-# 영구 제외 경로 (PR scope 밖)
+# 영구 제외 경로
 
-이 경로들은 **PR에 포함되지 않는다**. staging 단계에서 필터링 필수.
+PR staging에서 제외할 프로젝트 경로의 단일 소스는 `.agents/project.json`의
+`excludedPaths` 배열이다. 스킬·스크립트·이 문서에 프로젝트 목록을 중복 정의하지 않는다.
 
-## 단일 소스: `.claude/project.json` 의 `excludedPaths`
+## 매칭
 
-제외 경로 목록은 **`.claude/project.json`의 `excludedPaths` 배열이 단일 소스**다. 스크립트·SKILL·본 문서 어디에도 하드코딩하지 않는다.
+- 저장소 상대경로를 `/`로 정규화한다.
+- 디렉터리 항목은 정확 경로와 그 하위만 제외한다.
+- `*`가 있는 항목은 wildcard로 해석한다.
+- 비밀 파일과 보호 데이터는 사용자가 일반적으로 "전체 추가"라고 말해도 제외한다.
 
-```jsonc
-// .claude/project.json
-{
-  "excludedPaths": [
-    ".claude/settings.local.json",   // 내장 기본값
-    ".env",                          // 내장 기본값
-    // ↓ 프로젝트별 추가 (예시)
-    "data/raw/",                     // 대용량 원본 데이터
-    "build/",                        // 재생성 산출물
-    "*.db"                           // 로컬 DB 바이너리 (또는 .gitignore 로)
-  ]
-}
+## Windows 기본 사용
+
+목록 검토만:
+
+```powershell
+& .agents/skills/pr-workflow/scripts/safe_stage.ps1 -Path @(
+    'path/to/file1.md',
+    'path/to/file2.py'
+)
 ```
 
-내장 기본값(`safe_stage.sh`에 하드코딩): `.claude/settings.local.json`, `.env`. 그 외 프로젝트 고유 경로는 위 배열에 추가한다.
+사용자가 위 명시 목록의 staging을 승인한 뒤에만:
 
-**전형적 제외 대상 유형** (프로젝트가 있으면 추가):
-- 개인 로컬 설정 (`.claude/settings.local.json` 등)
-- 비밀키·토큰 (`.env`) — 절대 커밋 금지
-- 대용량 원본 데이터·참고 자료
-- 세션마다 재생성되는 산출물 (리포트·로그)
-- 로컬 DB 바이너리
-
-## prefix 매칭 규칙
-
-위 경로는 **prefix 매칭**으로 필터링:
-- `.env` → 정확 경로 제외
-- `data/raw/` → `data/raw/` 하위 모두 제외
-- `data/raw_backup/` → prefix 다름, `data/raw/`로는 제외되지 않음 (별도 등재 필요)
-
-> **`.claude/skills/`는 제외 대상 아님.** 리포에 특화된 워크플로우 스킬이므로 정상 tracked. 개인 환경 설정인 `settings.local.json`만 제외.
-
-## 스크립트에 주입하는 법
-
-`safe_stage.sh`는 env `SAFE_STAGE_EXCLUDES`(개행 구분)로 프로젝트 제외 경로를 받는다:
-
-```bash
-# jq 가 있으면
-SAFE_STAGE_EXCLUDES=$(jq -r '.excludedPaths[]' .claude/project.json) \
-  bash .claude/skills/pr-workflow/scripts/safe_stage.sh --add <paths>
-
-# jq 가 없으면 claude 가 project.json 을 읽어 값을 개행 구분으로 직접 주입
+```powershell
+& .agents/skills/pr-workflow/scripts/safe_stage.ps1 -Add -Path @(
+    'path/to/file1.md',
+    'path/to/file2.py'
+)
 ```
 
-## 특수 케이스
+`-Add`에 경로를 생략하면 스크립트는 실패한다. `git add .`와 `git add -A`로
+우회하지 않는다.
 
-### 제외 경로에 의도적 추가가 필요할 때
-사용자가 명시적으로 "제외 경로 내부 X 파일 추가"를 요청하면 예외 허용 가능. 단:
-1. 추가 사유를 사용자에게 재확인
-2. `.gitignore` 수정 여부 판단 (경로가 `.gitignore`에 있으면 add 자체가 실패)
-3. PR body에 예외 사유 명기
+## 예외
 
-### 새 제외 경로 발견 시
-프로젝트에서 새 임시·개인 디렉토리가 생기면 **`.claude/project.json`의 `excludedPaths`에만** 추가하면 된다 (스크립트 수정 불필요).
+사용자가 제외 경로 내부 파일을 의도적으로 포함하라고 명시하면 즉시 강제 추가하지 않는다.
+보호 이유, 정확한 파일, 비밀·대용량 여부, `.gitignore` 상태를 보고하고 재확인한다.
+승인된 예외는 PR body에 이유를 남긴다.
 
-## 검증
-
-staging 후 확인:
-```bash
-git diff --cached --name-only
-```
-제외 경로가 포함됐으면: `git reset HEAD <path>`
+새 제외 경로가 생기면 `.agents/project.json`만 갱신한다. staging 후에는 항상
+`git diff --cached --name-only`로 실제 목록을 확인한다.

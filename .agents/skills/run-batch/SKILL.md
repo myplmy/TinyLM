@@ -5,6 +5,9 @@ description: Windows 실행 배치파일(`run100m_*.bat`, `run_*.bat`)을 작성
 
 # run-batch
 
+> **TinyLM Codex 이식본.** 상세 실행 절차는 [Codex 03](../../../ai_dev_tool/Codex/03_실험착수_절차.md),
+> 절대 권한 경계는 [AGENTS.md](../../../AGENTS.md)가 우선한다. 이 스킬은 배치를 실행하지 않는다.
+
 ## 왜 이 스킬이 필요한가
 
 `.bat` 은 이 프로젝트에서 GPU 시간을 태우는 유일한 실행 경로인데, 조용히 실패하는 방식이 많다.
@@ -161,7 +164,7 @@ run_P055_stage0b_kd_audit.bat    ← 도구를 고치고 다시 잰 것
 ```
 
 배치 파일명 · `--note` 제목 · `--name` **셋 다** 바꾼다.
-전문: `ai_dev_tool/03_실험착수_절차.md` §7.
+전문: [Codex 03](../../../ai_dev_tool/Codex/03_실험착수_절차.md) §7.
 
 ### R16. **`TL_OUTDIR` 을 깔면 비운다**
 

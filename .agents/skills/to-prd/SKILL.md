@@ -1,9 +1,12 @@
 ---
 name: to-prd
-description: Turn the current conversation context into a PRD and publish it to the project issue tracker. Use when user wants to create a PRD from the current context.
+description: Turn the current conversation context into a PRD draft and, only after a separate approval, publish it to the configured issue tracker. Use when the user wants a PRD from the current context.
 ---
 
 This skill takes the current conversation context and codebase understanding and produces a PRD. Do NOT interview the user — just synthesize what you already know.
+
+> **TinyLM Codex 이식본.** PRD 초안 작성과 이슈 트래커 게시는 별도 단계다.
+> 게시·라벨 변경은 사용자 승인 뒤에만 수행하며 [AGENTS.md](../../../AGENTS.md)를 우선한다.
 
 The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not.
 
@@ -17,7 +20,8 @@ A deep module (as opposed to a shallow module) is one which encapsulates a lot o
 
 Check with the user that these modules match their expectations. Check with the user which modules they want tests written for.
 
-3. Write the PRD using the template below, then publish it to the project issue tracker. Apply the `needs-triage` triage label so it enters the normal triage flow.
+3. Write the PRD using the template below. Show the completed draft, target tracker, title, and labels.
+   Publish it and apply `needs-triage` only after the user separately approves that external change.
 
 <prd-template>
 

@@ -5,6 +5,9 @@ description: Break a plan, spec, or PRD into independently-grabbable issues on t
 
 # To Issues
 
+> **TinyLM Codex 이식본.** 이 스킬의 초안 작성은 이슈 게시 권한을 포함하지 않는다.
+> 게시·라벨 변경은 정확한 대상을 보여주고 별도 승인을 받은 뒤에만 수행한다.
+
 Break a plan into independently-grabbable issues using vertical slices (tracer bullets).
 
 The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not.
@@ -50,6 +53,9 @@ Ask the user:
 Iterate until the user approves the breakdown.
 
 ### 5. Publish the issues to the issue tracker
+
+Publishing is an external state change. After the breakdown is approved, show the exact issue count,
+titles, target tracker, labels, and dependency order, then obtain a separate publish approval.
 
 For each approved slice, publish a new issue to the issue tracker. Use the issue body template below. Apply the `needs-triage` triage label so each issue enters the normal triage flow.
 

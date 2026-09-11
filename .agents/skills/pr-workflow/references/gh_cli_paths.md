@@ -1,50 +1,41 @@
 # gh CLI 경로 해결
 
-`gh`가 PATH에 등록돼 있지 않을 수 있다 (특히 Windows + Git Bash). 경로를 자동 해결한다.
+TinyLM Codex의 기본 셸은 Windows PowerShell이다. `gh`를 찾았다는 사실과 인증되어
+외부 변경을 수행할 권한은 서로 다르다.
 
-## 경로 탐색 순서
-
-1. `command -v gh` — PATH에 있으면 이 경로 사용
-2. `/c/Program Files/GitHub CLI/gh.exe` — Windows 기본 설치 경로 (Git Bash)
-3. `C:\Program Files\GitHub CLI\gh.exe` — CMD/PowerShell
-4. `/usr/local/bin/gh` / `/opt/homebrew/bin/gh` — macOS / Linux
-
-## 세션 내 경로 캐싱 (권장)
-
-```bash
-GH="$(command -v gh || echo '/c/Program Files/GitHub CLI/gh.exe')"
-"$GH" pr create --base "$BASE" --head "$HEAD" ...
-```
-
-스크립트(`create_pr.sh`, `merge_and_sync.sh`)는 이 로직을 내장한다.
-
-## PowerShell
+## PowerShell 탐색 순서
 
 ```powershell
-gh pr create --base $BASE ...
-# 또는 전체 경로
-& "C:\Program Files\GitHub CLI\gh.exe" pr create --base $BASE ...
+$GhCommand = Get-Command gh -ErrorAction SilentlyContinue
+$Gh = if ($GhCommand) {
+    $GhCommand.Source
+} else {
+    'C:\Program Files\GitHub CLI\gh.exe'
+}
+if (-not (Test-Path -LiteralPath $Gh -PathType Leaf) -and $Gh -ne 'gh') {
+    throw 'gh CLI not found.'
+}
 ```
 
-## 인증 확인
+Git Bash 경로는 사용자가 그 셸을 명시한 경우에만 참고한다. POSIX 스크립트의 존재는
+Windows 호환성 증거가 아니다.
 
-```bash
-"$GH" auth status
+## 인증
+
+```powershell
+& $Gh auth status
 ```
 
-결과가 `not logged into any GitHub hosts`이면 `"$GH" auth login`.
+인증이 없으면 `gh auth login`을 자동 시작하지 않는다. 대화형 로그인과 계정 선택은
+사용자에게 위임하고 완료 뒤 알려 달라고 요청한다.
 
-**주의**: `gh auth login`은 interactive prompt 발생. 세션이 non-interactive면 **사용자에게 위임**하고 "로그인 완료 후 알려달라"고 요청.
-
-## 자주 쓰는 명령
+## 자주 쓰는 읽기 명령
 
 | 작업 | 명령 |
-|-|-|
-| PR 목록 | `gh pr list --state all --limit 10` |
-| PR 상세 | `gh pr view NN --json state,mergeable,mergeStateStatus` |
-| PR 생성 | `gh pr create --base "$BASE" --title ... --body ...` |
-| PR base 수정 | `gh pr edit NN --base "$BASE"` |
-| PR 머지 | `gh pr merge NN --merge --delete-branch` |
-| 이슈 목록 | `gh issue list` |
+|---|---|
+| PR 목록 | `& $Gh pr list --state all --limit 10` |
+| PR 상세 | `& $Gh pr view <N> --json state,mergeable,mergeStateStatus` |
+| 이슈 목록 | `& $Gh issue list` |
 
-> base 브랜치는 하드코딩하지 말고 `detect_base.sh` 결과(`$BASE`)를 사용한다.
+PR 생성·편집·merge와 issue 변경은 읽기 명령과 별도 권한이다. base는
+`detect_base.ps1`의 근거 또는 사용자의 명시값을 사용하고 하드코딩하지 않는다.

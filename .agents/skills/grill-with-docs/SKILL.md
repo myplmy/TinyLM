@@ -5,6 +5,8 @@ description: Grilling session that challenges your plan against the existing dom
 
 <what-to-do>
 
+> **TinyLM Codex 이식본.** 현재 사용자 범위와 [AGENTS.md](../../../AGENTS.md)가 우선한다.
+
 Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
 
 Ask the questions one at a time, waiting for feedback on each question before continuing.
@@ -71,9 +73,15 @@ When the user states how something works, check whether the code agrees. If you 
 
 ### Update CONTEXT.md inline
 
-When a term is resolved, update `CONTEXT.md` right there. Don't batch these up — capture them as they happen. Use the format in [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md).
+When a term is resolved, show the exact proposed `CONTEXT.md` change. Apply it inline only when the
+user requested documentation updates or explicitly approves the write; otherwise keep a decision draft
+in the conversation. Don't batch approved changes up — capture them as they happen. Use the format in
+[`CONTEXT-FORMAT.md`](./CONTEXT-FORMAT.md).
 
 Don't couple `CONTEXT.md` to implementation details. Only include terms that are meaningful to domain experts.
+
+Before the first file write, confirm that the user's request includes documentation updates. If the user
+asked only for a grilling session, keep a proposed change log in the conversation and do not edit files.
 
 ### Offer ADRs sparingly
 
