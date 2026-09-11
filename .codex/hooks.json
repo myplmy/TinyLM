@@ -1,12 +1,16 @@
 {
+  "description": "TinyLM Codex 전용 PreToolUse 역슬래시 쓰기 보호 훅",
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash|PowerShell",
+        "matcher": "^Bash$",
         "hooks": [
           {
             "type": "command",
-            "command": "python 'Z:\\TinyLM\\.codex\\hooks\\guard_backslash.py'"
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/guard_backslash.py\"",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"$repoRoot = git rev-parse --show-toplevel; if ($LASTEXITCODE -ne 0) { exit 0 }; python -I -B (Join-Path $repoRoot '.codex/hooks/guard_backslash.py')\"",
+            "timeout": 5,
+            "statusMessage": "Codex 쓰기 명령의 역슬래시 안전성을 확인하는 중"
           }
         ]
       }

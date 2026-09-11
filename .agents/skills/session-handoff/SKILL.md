@@ -68,14 +68,17 @@ GPU·학습·모델 로딩·스모크·삭제·commit·push를 실제로 하지 
 
 ### 4. 한정 검증
 
-핸드오프 작성 작업 자체에서 허용된 경우에만 다음 문서 검사기를 실행한다.
+핸드오프 작성 작업 자체에서 허용된 경우에만 다음 Codex 전용 문서 검사기를 실행한다.
 
 ```powershell
 $env:PYTHONIOENCODING = 'utf-8'
-python scripts/check_handoff.py
+python -I -B .agents/skills/session-handoff/scripts/check_handoff_codex.py
 python scripts/handoff_time.py
 ```
 
+공유 `scripts/check_handoff.py`는 다른 에이전트 환경 진입 파일을 직접 읽으므로 Codex
+런타임에서 호출하지 않는다. 위 독립 검사기는 고정 구조·이전 링크·커밋 구분·`-done`
+삭제 판정·로컬 링크만 검사하고, 시각 증거는 공유 `scripts/handoff_time.py`가 별도로 본다.
 이는 핸드오프 문서 정적 검사일 뿐 프로젝트 스모크나 새 세션 E2E가 아니다. 실패하면 내용을
 고치되 과거 핸드오프를 소급 재작성하지 않는다.
 
@@ -105,3 +108,4 @@ python scripts/handoff_time.py
 - `references/what_to_include.md`: TinyLM 항목별 포함 기준
 - `references/examples.md`: Codex 02 형식의 최소 예시
 - 실제 골격 정본: 저장소 `scripts/new_handoff.py`
+- Codex 정적 검사기: `scripts/check_handoff_codex.py`
