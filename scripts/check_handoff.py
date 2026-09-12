@@ -27,6 +27,7 @@
     python scripts/check_handoff.py              # 최신 1개
     python scripts/check_handoff.py --all        # 전부
     python scripts/check_handoff.py handoff/202608132327_HANDOFF.md
+    python scripts/check_handoff.py --hours-target 72  # 이번 사용자 지시가 72h일 때만
     종료코드 = 에러 개수
 """
 from __future__ import annotations
@@ -39,6 +40,7 @@ from pathlib import Path
 NL_ = chr(10)
 ROOT = Path(__file__).resolve().parent.parent
 HANDOFF = ROOT / "handoff"
+DEFAULT_HOURS_TARGET = 48.0
 
 # (키, 정규식, 에러인가) — 규약 §3 의 고정 섹션
 REQUIRED = [
@@ -60,7 +62,7 @@ REQUIRED = [
 SPEC_SINCE = "202608060000"      # ai_dev_tool/02 제정 이후 판만 강제한다
 
 
-def lint(path: Path):
+def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
     # ★규약 제정 이전 판은 검사하지 않는다 — 지금 양식을 소급 적용하는 것은
     #   기록의 왜곡이고, 고치면 그 시점의 실제 상태를 알 수 없게 된다.
     stamp = re.match(r"(\d{12})", path.name)
@@ -300,9 +302,9 @@ def lint(path: Path):
     #   고치면 그 시점의 실제 상태를 알 수 없게 된다(§lint 머리의 legacy 규약과 같은 이유).
     _all = sorted(p.name for p in path.parent.glob('*_HANDOFF.md'))
     _newest = (path.name == _all[-1]) if _all else True
-    # ★사용자가 세션마다 할당량을 준다 — 2026-09-06 은 48h, **2026-09-07 은 72h**.
-    #   ⚠️이 값은 **바닥이 아니라 그 세션의 요청**이다. 못 채우면 사유를 적으면 통과한다.
-    HOURS_TARGET = 72.0
+    # ★2026-09-12 정정 — 기본 편성 목표는 48h다. 2026-09-07 한 세션의 명시 요청 72h를
+    #   전역 상수로 남긴 것은 세션별 값과 기본 표준을 혼동한 오류였다. 다른 목표가 명시된
+    #   세션은 `--hours-target`으로만 덮어쓴다. 못 채우면 사유를 적으면 통과한다.
     REASON_MARK = "시간 미달 사유"
     try:
         tsv = (ROOT / "experiments.tsv").read_text(encoding="utf-8").split(NL_)
@@ -332,15 +334,15 @@ def lint(path: Path):
             has_reason = REASON_MARK in seg
             if live:
                 info.append(f"§7 의 실재 배치 {len(live)}개 · 합계 ⚙{total:.1f}h"
-                            f" (요청 {HOURS_TARGET:.0f}h)")
-            if total < HOURS_TARGET and not has_reason and _newest:
+                            f" (요청 {hours_target:.0f}h)")
+            if total < hours_target and not has_reason and _newest:
                 err.append(
-                    f"★★**§7 실험 배치 합계가 ⚙{total:.1f}h 로 요청 {HOURS_TARGET:.0f}h 에 못 미친다.** "
+                    f"★★**§7 실험 배치 합계가 ⚙{total:.1f}h 로 요청 {hours_target:.0f}h 에 못 미친다.** "
                     f"🚫**침묵하지 말고 §7 맨 아래에 사유를 적는다** — "
                     f"`> ★**시간 미달 사유**: ...` 한 줄이면 통과한다. "
                     f"⚠️**불필요한 중복 실험으로 채우는 것은 금지**다(같은 파라미터의 런이 "
                     f"이미 있는지로 판단). **못 채운 이유가 정당하면 그것을 쓰는 것이 옳다**")
-            elif total < HOURS_TARGET:
+            elif total < hours_target:
                 info.append(f"⚙{total:.1f}h 로 요청에 못 미치지만 **사유가 적혀 있다** — 통과")
     except Exception as e:
         info.append(f"실험 시간 합계를 못 읽었다: {type(e).__name__}")
@@ -470,7 +472,11 @@ def main():
     ap.add_argument("files", nargs="*")
     ap.add_argument("--all", action="store_true", help="handoff/ 전부")
     ap.add_argument("--last", type=int, default=1, help="최신 N개 (기본 1)")
+    ap.add_argument("--hours-target", type=float, default=DEFAULT_HOURS_TARGET,
+                    help="§7 기본 편성 목표 시간(기본 48; 현재 사용자 명시값만 override)")
     a = ap.parse_args()
+    if a.hours_target <= 0:
+        ap.error("--hours-target는 0보다 커야 한다")
 
     if a.files:
         targets = [Path(f) for f in a.files]
@@ -484,7 +490,7 @@ def main():
     print("=" * W)
     total_e = 0
     for p in targets:
-        e, w, i = lint(p)
+        e, w, i = lint(p, hours_target=a.hours_target)
         total_e += len(e)
         mark = "[OK ]" if not e else "[FAIL]"
         print(f"\n  {mark} {p.name}   (E{len(e)} W{len(w)} I{len(i)})")

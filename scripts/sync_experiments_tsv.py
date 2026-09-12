@@ -99,13 +99,15 @@ def report_done(corpus):
     ok = []
     for p in dones:
         cmds = batch_commands(p)
-        # ★2026-08-30 — `scripts\batch\` 의 **재사용 도구 호출은 보존 대상이 아니다**.
+        # ★2026-08-30 — `scripts/batch/`의 **재사용 도구 호출은 보존 대상이 아니다**.
         #   그 도구는 영구 보존되는 파일이고(개편 규약, `scripts/batch/README.md`),
         #   인자도 환경변수라 **문자열로 결과문서에 남길 것이 없다**.
-        #   🚫종전에는 `call scripts\batch	ool_wandb_push.bat` 하나 때문에
+        #   🚫종전에는 `call scripts/batch/tool_wandb_push.bat` 하나 때문에
         #   `run_P067_stage2a_gemma_probe-done.bat` 이 영원히 [보류]였다.
+        # `norm()`이 경로 구분자를 `/`로 통일한다. 백슬래시 리터럴을 직접 쓰면
+        # `\b`가 백스페이스 이스케이프로 해석돼 재사용 도구 호출을 못 거른다.
         _keep = [c for c in cmds
-                 if not c.lower().replace("/", "\\").startswith("call scripts\batch\\")]
+                 if not norm(c).startswith("call scripts/batch/")]
         miss = [c for c in _keep if norm(c) not in corpus]
         if not cmds:
             print(f"\n  ⚠️ {p.name}\n      실행 명령을 못 찾았다 — **사람이 본다**")

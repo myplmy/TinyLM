@@ -361,9 +361,12 @@ seed 1337과 2024에서 RMS4−jordan20의 부호가 같고, 두 seed 중 하나
 
 ### 9.8 Stage12 (= b-12) — 1,200M 길이 전이 (1런, 약 5.9h)
 
-`d16_cla2_norecur_rms4_t1200` 하나를 만든다. 짝은 P088 Stage8의 AdamW와 **현재 사용자
-실행 중인 P088 Stage10 jordan15**다. Stage10이 정상 종료하고 로그 파일이 닫히기 전에는
-이 배치를 실행하지 않는다. 세 팔 모두 pool/tokens=1.0이므로 이 한계를 결과마다 붙인다.
+`d16_cla2_norecur_rms4_t1200` 하나를 만든다. 짝은 P088 Stage8의 AdamW와 **2026-09-12
+정상 종료한 P088 Stage10 jordan15**다([결과 075 §19](../test_result/075_20260905_P088-토큰은-스텝이었고-full-val-은-학습데이터였다.md#19-★★★stage10-2026-09-12--muon은-12b에서도-이겼지만-이득은-약-3분의-2로-줄었다)).
+Stage10 종료 선결은 충족됐다. 세 팔 모두 pool/tokens=1.0이므로 이 한계를 결과마다 붙인다.
+또한 세 팔은 모두 같은 `--pool-tokens 1200M`의 균등 복원추출이며, 1.2B는 풀 확대가 아니라
+약 1.0 epoch-equivalent 무작위 draw다. 이 풀의 val은 한국어 0%이므로 같은 영어 전용 val 안에서만
+RMS4·jordan15·AdamW를 비교하고 한국어 품질로 일반화하지 않는다.
 
 배치: `run_P005b_Stage12_rms_1200M_transfer.bat`.
 

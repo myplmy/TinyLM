@@ -123,6 +123,11 @@ that environment-only run because it includes protected-data checks.
 - **R26** `[gate]` New batch ⇒ **one row in `experiments.tsv`**, then `queue_menu.py --audit`.
 - **R27** `[human]` **Queue instructions go by name, never by id** (trap 36) — ids shift when
   the table gains a row. If an id is needed, let `queue_menu.py --ids <batch>` compute it.
+  Unless the current user explicitly specifies another budget, the experiment-batch planning
+  target is **48 hours**. This is a review threshold, never a quota to pad with low-value or
+  duplicate runs; record a numeric shortfall reason instead. A different explicit target is
+  passed to the shared checker with `check_handoff.py --hours-target N`, not written back as
+  a new global constant.
 - **R28** `[human]` Experiments must be independent: separate tags, separate cache dirs,
   new flags default **off and bit-identical**. Reason: one failure must not take the
   others down, and the user must be able to run the queue alone.
