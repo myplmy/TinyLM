@@ -1,5 +1,7 @@
 # 00 — CODEX WORKING RULES (operational, English)
 
+> **Last updated**: 2026-09-12 · **Rule counts**: `[gate]` 8 · `[human]` 46 · `[fact]` 3
+
 **Read this one every session.** It is the short list. Rationale, evidence and war
 stories live in the Codex-owned ledgers (01–08) and shared project evidence; this file only says
 *what to do*. Korean mirror for user review: [`00_작업규약_한글판.md`](00_작업규약_한글판.md)

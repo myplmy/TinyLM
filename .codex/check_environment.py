@@ -8,6 +8,7 @@ protected dataset tree and it does not run project, model, training, or smoke co
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import hashlib
 import json
 import os
@@ -26,6 +27,8 @@ AGENTS_ROOT = REPO_ROOT / ".agents"
 CODEX_ROOT = REPO_ROOT / ".codex"
 MEMORY_ROOT = REPO_ROOT / "ai_dev_tool" / "Codex"
 ROOT_09 = REPO_ROOT / "ai_dev_tool" / "09_구현검증_필요목록.md"
+WORKING_RULES_EN = MEMORY_ROOT / "00_WORKING_RULES.md"
+WORKING_RULES_KO = MEMORY_ROOT / "00_작업규약_한글판.md"
 PROPOSAL = (
     REPO_ROOT
     / "proposal"
@@ -83,6 +86,20 @@ SKILL_CONTRACT_PATTERNS = {
     ),
 }
 
+RULE_LINE_RE = re.compile(
+    r"(?m)^-\s+(?:★+)?\*\*R(?P<id>\d{2})\*\*\s+`\[(?P<tag>[^]]+)\]`"
+)
+RULE_METADATA = {
+    "en": {
+        "date": re.compile(r"\*\*Last updated\*\*:\s*(\d{4}-\d{2}-\d{2})"),
+        "labels": {"gate": "gate", "human": "human", "fact": "fact"},
+    },
+    "ko": {
+        "date": re.compile(r"\*\*최신 갱신일자\*\*:\s*(\d{4}-\d{2}-\d{2})"),
+        "labels": {"게이트": "gate", "사람": "human", "사실": "fact"},
+    },
+}
+
 
 @dataclass(frozen=True)
 class CheckResult:
@@ -128,6 +145,81 @@ def sha256(path: Path) -> str:
 
 def read_utf8(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def parse_working_rules(path: Path, language: str) -> tuple[str, dict[str, int], dict[int, str]]:
+    """Parse declared metadata and the first classification tag on every Rxx rule."""
+    text = read_utf8(path)
+    metadata_line = next(
+        (line for line in text.splitlines()[:12] if "Rule counts" in line or "규칙 개수" in line),
+        "",
+    )
+    config = RULE_METADATA[language]
+    date_match = config["date"].search(metadata_line)
+    if date_match is None:
+        raise ValueError("top metadata has no update date")
+
+    declared: dict[str, int] = {}
+    for source_label, canonical_label in config["labels"].items():
+        match = re.search(rf"`\[{re.escape(source_label)}\]`\s+(\d+)", metadata_line)
+        if match is None:
+            raise ValueError(f"top metadata has no [{source_label}] count")
+        declared[canonical_label] = int(match.group(1))
+
+    rules: dict[int, str] = {}
+    for match in RULE_LINE_RE.finditer(text):
+        rule_id = int(match.group("id"))
+        source_tag = match.group("tag")
+        canonical_tag = config["labels"].get(source_tag)
+        if canonical_tag is None:
+            raise ValueError(f"R{rule_id:02d} has unknown tag [{source_tag}]")
+        if rule_id in rules:
+            raise ValueError(f"duplicate rule id R{rule_id:02d}")
+        rules[rule_id] = canonical_tag
+    if not rules:
+        raise ValueError("no classified Rxx rules found")
+    return date_match.group(1), declared, rules
+
+
+def check_working_rule_parity() -> tuple[bool, str]:
+    en_date, en_declared, en_rules = parse_working_rules(WORKING_RULES_EN, "en")
+    ko_date, ko_declared, ko_rules = parse_working_rules(WORKING_RULES_KO, "ko")
+
+    problems: list[str] = []
+    if en_date != ko_date:
+        problems.append(f"document dates differ en={en_date} ko={ko_date}")
+    if en_declared != ko_declared:
+        problems.append(f"declared counts differ en={en_declared} ko={ko_declared}")
+    if en_rules != ko_rules:
+        missing_en = sorted(set(ko_rules) - set(en_rules))
+        missing_ko = sorted(set(en_rules) - set(ko_rules))
+        tag_drift = sorted(
+            rule_id for rule_id in set(en_rules) & set(ko_rules)
+            if en_rules[rule_id] != ko_rules[rule_id]
+        )
+        problems.append(
+            f"rule parity differs missing_en={missing_en} missing_ko={missing_ko} tag_drift={tag_drift}"
+        )
+
+    derived = {
+        label: sum(tag == label for tag in en_rules.values())
+        for label in ("gate", "human", "fact")
+    }
+    if en_declared != derived:
+        problems.append(f"declared counts do not match rules declared={en_declared} derived={derived}")
+
+    for path, declared_date in ((WORKING_RULES_EN, en_date), (WORKING_RULES_KO, ko_date)):
+        metadata_date = dt.datetime.fromtimestamp(path.stat().st_mtime).date().isoformat()
+        if metadata_date != declared_date:
+            problems.append(
+                f"{path.name} date differs document={declared_date} metadata={metadata_date}"
+            )
+
+    detail = (
+        f"date={en_date}; rules={len(en_rules)}; "
+        f"gate={derived['gate']} human={derived['human']} fact={derived['fact']}"
+    )
+    return not problems, detail if not problems else " | ".join(problems)
 
 
 def collect_tree(root: Path) -> tuple[list[Path], list[Path], list[Path]]:
@@ -378,6 +470,11 @@ def main() -> int:
         return True, "project.json, hooks.json and config.toml parsed"
 
     ledger.guarded("JSON and TOML syntax", check_json_toml)
+
+    ledger.guarded(
+        "working-rule date and classification parity",
+        check_working_rule_parity,
+    )
 
     errors = syntax_errors(environment_files)
     ledger.record(
