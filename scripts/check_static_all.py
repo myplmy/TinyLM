@@ -84,7 +84,9 @@ CHECKS = [
      "*'없는 배치를 있는 것처럼 적지 마라'* 라면 이것은 *'만들 수 있는 배치를 안 만들고 넘기지 마라'* 다 — "
      "**의사결정함정 D1 을 기계로.** ✅재현 검증: 2026-09-03 핸드오프에서 **제안서가 지목한 두 행** "
      "(P084 단계0 · 유니크 토큰 축)을 정확히 잡는다. ⚠️초판이 시간칸 `—` 를 0 으로 읽어 3행을 "
-     "오탐했고 고쳤다(제안서 §8 이 미리 적어 둔 위험)"),
+      "오탐했고 고쳤다(제안서 §8 이 미리 적어 둔 위험)"),
+    ("test_check_pending",  ["test_check_pending.py"],
+     "W2의 정확한 PNone+사유 결합과 W3 완료 배치명 종료형 회귀"),
     ("check_lr_factor_sync", ["check_lr_factor_sync.py"],
      "★★**`_lr_factor` 가 두 곳에 산다** — 정본은 `trainer.py`, 복제는 `diag_lrm_values.py`"
      "(torch 없이 WD 바닥을 계산해야 해서). 함정 18 을 남기는 대신 **값을 기계로 대조**한다 — "
@@ -134,8 +136,8 @@ CHECKS = [
      "★그림 도구의 수치 표 ↔ 정본(json) 대조 (자백 A7 — 사본이 정본을 이중화한다)"),
     ("check_rules_sync",    ["check_rules_sync.py"],
      "작업규약 영문 정본 ↔ 한글 대조본의 규칙 번호·강제 주체 일치"),
-    ("check_doc_metadata",  ["check_doc_metadata.py"],
-     "ai_dev_tool Markdown 전수 직접 발견 → 유형별 날짜·Git 내용일·영한 pair 정합(B2)"),
+    ("check_doc_metadata",  ["check_doc_metadata.py", "--scope", "codex"],
+     "Codex Markdown 직접 발견 → 유형별 날짜·Git 내용일·영한 pair 정합(B2)"),
     ("check_index_sync",    ["check_index_sync.py"],
      "★색인이 산출물을 다 담고 있는가 — **'연쇄 갱신 완료' 라고 적고 안 한 것**(함정 13, 2026-08-29)"),
     ("check_doc_ownership", ["check_doc_ownership.py"],

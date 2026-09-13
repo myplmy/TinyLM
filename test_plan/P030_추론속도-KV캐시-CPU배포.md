@@ -128,12 +128,17 @@
 
 | 단계 | 배치 | 비용 | 판정 |
 |---|---|---|---|
-| **1.5-A** 판별 | `run_P030_cachecheck.bat` | CPU 수 분, **GPU 불필요** | fp32(CPU, autocast off)에서 mA 가 **통과 → H1 수치정밀** / **실패 → H2 CLA 캐시 공유** |
-| **1.5-B** 게이트 재설계 | `run_P030_cachegate.bat` | 수 분 | **teacher-forced 로짓 동등성**: fp32 `max\|Δlogit\| < 1e-3` 이면 통과. bf16 그리디 불일치는 **최초 분기점 top-2 간격**과 함께 **보고만** |
+| **1.5-A** 판별 ✅ 완료 | `run_P030_cachecheck.bat` | CPU 수 분, **GPU 불필요** | fp32(CPU, autocast off)에서 mA 가 **통과 → H1 수치정밀** / **실패 → H2 CLA 캐시 공유** |
+| **1.5-B** 게이트 재설계 ✅ 완료 | `run_P030_cachegate.bat` | 수 분 | **teacher-forced 로짓 동등성**: fp32 `max\|Δlogit\| < 1e-3` 이면 통과. bf16 그리디 불일치는 **최초 분기점 top-2 간격**과 함께 **보고만** |
 
-**선결 구현**(둘 다 미구현 — 승인 필요):
-- `scripts/probe_prompts.py` 에 **`--device`**(현재 없음. `load_model(device=)` 로 전달)
-- `scripts/diag_kvcache.py` 신설 — teacher-forced 로짓 비교 + 위치별 `max|Δ|` + 분기점 top-2 간격
+**실행 전 선결 구현(둘 다 2026-07-31 완료):**
+- `scripts/probe_prompts.py`에 **`--device`**를 추가해 `load_model(device=)`로 전달 완료
+- `scripts/diag_kvcache.py` 신설 완료 — teacher-forced 로짓 비교 + 위치별 `max|Δ|` + 분기점 top-2 간격
+
+> 실행 증거: [1.5-A 로그](../test_result/014_log_20260731_P030-1point5A-cachecheck-test-logs.txt),
+> [1.5-B 로그](../test_result/014_log_20260731_P030-1point5B-cachegate-test-logs.txt),
+> [결과 014](../test_result/014_20260731003000_P030-CPU추론실측-양자화오버헤드.md) §9.
+> 위 항목을 현재의 “미구현·승인 필요”로 읽지 않는다.
 
 > **★1.5-B 가 "캐시가 옳다"를 증명하는 유일한 단계다.** 1.5-A 는 어디를 먼저 볼지 정하는
 > 분기일 뿐이며, A 를 통과해도 로짓 동등성이 확인되기 전까지 단계 2 의 속도값은 **조건부**다.
@@ -310,4 +315,3 @@ batch 1 단일요청 · ⚠️인쇄되는 상주는 **LUT 경로가 아니다**
 
 ⚠️`--kv-seq 1024` 고정. 컨텍스트가 늘면 KV 항은 **정확히 선형**이다(결과 016 §24).
 🚫**이 단계는 속도를 안 잰다** — 속도는 단계5·6 이 이미 쟀고 옵티마이저는 그것을 안 바꾼다.
-

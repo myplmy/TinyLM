@@ -7,14 +7,18 @@ temporary checkpoint; it does not train or touch repository checkpoints.
 from __future__ import annotations
 
 import dataclasses
+import sys
 import tempfile
 from pathlib import Path
 
-import torch
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
 
-from tinylm.config import build_config
-from tinylm.model import TiedMLPTransformer
-from tinylm.train.init_utils import _depth_map, init_from_dense
+import torch  # noqa: E402
+
+from tinylm.config import build_config  # noqa: E402
+from tinylm.model import TiedMLPTransformer  # noqa: E402
+from tinylm.train.init_utils import _depth_map, init_from_dense  # noqa: E402
 
 
 def main() -> int:

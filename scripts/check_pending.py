@@ -21,12 +21,12 @@
 | 검사 | 무엇 | 판정 |
 |---|---|---|
 | ★**W1** | 핸드오프 §7 의 대기표에서 **선결이 비었거나 "없음" 이거나 0h** 인데 배치 이름이 없다 | 🚫**에러** |
-| ★**W2** | `proposal/done/*-approved.md` 인데 **이어진 계획서가 없다** | 🚫**에러**(도구 제안·1일 유예는 면제) |
+| ★**W2** | `proposal/done/*-approved.md` 인데 **이어진 계획서가 없다** | 🚫**에러**(정확한 `PNone`+비대상 사유·1일 유예만 면제) |
 | **W3** | 계획서 단계표가 이름 붙인 배치가 **디스크에 없다** | ⚠️**경고**(`⏸`·`🚫` 표시면 면제) |
 
 ## ★탈출구 — 정말 못 만드는 배치도 있다
 
-CLAUDE.md: *"최상위 실험 배치는 **지금 돌아갈 때만** 만든다."*
+Codex 03: *"최상위 실험 배치는 **지금 돌아갈 때만** 만든다."*
 → **선결 칸에 이유를 적으면 통과**한다. 막는 것은 **빈칸·"없음"·0h** 뿐이다.
 
 ## 사용법
@@ -51,6 +51,11 @@ FREE = ("없음", "—", "-", "")            # ★선결 **텍스트** 칸이 �
 #    (제안서 §8 이 미리 적어 둔 위험. 초판이 실제로 3행을 오탐했다).
 ZERO = ("0", "0h", "0.0h", "0.0")
 GRACE_DAYS = 1.0                                          # W2 유예(승인 직후)
+W2_FIELD_RE = re.compile(
+    r"^\s*>?\s*(?:[-*]\s*)?(?:\*\*)?"
+    r"(실험번호|실험계획 비대상 사유)(?:\*\*)?\s*:\s*(.*?)\s*$"
+)
+EMPTY_REASON = {"", "없음", "—", "-", "미정", "tbd"}
 
 
 def cells(ln):
@@ -102,14 +107,42 @@ def w1(path):
     return out
 
 
+def _plain_field_value(raw: str) -> str:
+    """Strip the small amount of Markdown allowed around W2 metadata."""
+    return re.sub(r"[*`]", "", raw).strip()
+
+
+def has_non_experiment_contract(src: str) -> bool:
+    """Require one exact ``PNone`` field and one non-placeholder reason.
+
+    Free-form phrases such as ``도구 작업`` are deliberately insufficient:
+    they previously let an unrelated sentence disable W2 for the whole file.
+    Duplicate fields are also rejected because their precedence is ambiguous.
+    """
+    fields: dict[str, str] = {}
+    for line in src.splitlines():
+        match = W2_FIELD_RE.match(line)
+        if match is None:
+            continue
+        key, raw_value = match.groups()
+        if key in fields:
+            return False
+        fields[key] = _plain_field_value(raw_value)
+    reason = fields.get("실험계획 비대상 사유", "")
+    return (
+        fields.get("실험번호") == "PNone"
+        and reason.lower() not in EMPTY_REASON
+    )
+
+
 def w2():
-    """`-approved` 인데 이어진 계획서가 없다."""
+    """`-approved`인데 계획도, 구조화한 비실험 계약도 없는 문서."""
     out = []
     now = time.time()
     for p in sorted((ROOT / "proposal" / "done").glob("*-approved.md")):
         src = io.open(p, encoding="utf-8").read()
-        if "계획서 없이" in src or "도구 작업" in src:
-            continue                                       # ★도구 제안 — 계획서를 안 만든다
+        if has_non_experiment_contract(src):
+            continue                                       # ★구조화된 비실험 제안
         if (now - p.stat().st_mtime) < GRACE_DAYS * 86400:
             continue                                       # ★승인 직후 유예
         plans = {m for m in re.findall(r"P\d{3}", src)}
@@ -122,10 +155,10 @@ def w2():
 def _ran(bat):
     """그 단계가 **이미 돌았는가** — `test_result/` 의 로그 파일명으로 판정한다.
 
-    ★배치는 완료 후 삭제되므로(CLAUDE.md 삭제 규칙) *"디스크에 없다"* 가 곧
+    ★완료 배치는 사용자 정리로 사라질 수 있으므로 *"디스크에 없다"* 가 곧
     *"안 만들었다"* 가 아니다. 🚫이 구분을 안 하면 경고 20건이 전부 잡음이 된다.
     """
-    m = re.match(r"^run_(P\d{3,}[A-Za-z]*)_([A-Za-z0-9]+)_", bat)
+    m = re.match(r"^run_(P\d{3,}[A-Za-z]*)_([A-Za-z0-9]+)(?:_|\.bat$)", bat)
     if not m:
         return False
     plan, stage = m.group(1), m.group(2).lower()

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Validate self-declared metadata for every ``ai_dev_tool/**/*.md`` file.
+"""Validate self-declared metadata for Codex-owned ``ai_dev_tool`` Markdown.
 
-The document inventory is discovered at runtime.  The policy TSV contains only
-type rules and the small set of stable pairs; it is deliberately not a file
-manifest.  This makes a newly added Markdown file fail for missing metadata
-without requiring a second registry edit.
+The default and integrated gate discover only ``ai_dev_tool/Codex/**/*.md`` so
+the Codex environment never audits Claude-owned documents.  ``--scope all`` is
+an explicit historical-maintenance mode, not part of the Codex environment
+gate.  The policy TSV contains only type rules and the small set of stable
+pairs; it is deliberately not a file manifest.
 """
 from __future__ import annotations
 
@@ -190,7 +191,7 @@ def validate(
     root: Path,
     policy_path: Path,
     *,
-    scope: str = "all",
+    scope: str = "codex",
     today: dt.date | None = None,
     as_of: dt.date | None = None,
     mtime_mode: str = "off",
@@ -298,7 +299,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="ai_dev_tool Markdown metadata validator")
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--policy", type=Path, default=DEFAULT_POLICY)
-    parser.add_argument("--scope", choices=("all", "codex"), default="all")
+    parser.add_argument(
+        "--scope",
+        choices=("all", "codex"),
+        default="codex",
+        help="audit Codex-owned docs by default; 'all' is explicit legacy maintenance",
+    )
     parser.add_argument("--today", type=dt.date.fromisoformat)
     parser.add_argument("--as-of", type=dt.date.fromisoformat)
     mtime = parser.add_mutually_exclusive_group()

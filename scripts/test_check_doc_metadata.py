@@ -54,6 +54,7 @@ def make_repo() -> tuple[tempfile.TemporaryDirectory[str], Path, Path]:
         root / "ai_dev_tool" / "snapshot.md",
         "# Snapshot\n\n> **기준일**: 2026-09-11 · **문서 유형**: snapshot\n",
     )
+    write(root / "ai_dev_tool" / "Codex" / "README.md", "# Codex\n\n" + metadata)
     git(root, "init")
     git(root, "add", "ai_dev_tool", "docs")
     git(root, "-c", "user.name=metadata-test", "-c", "user.email=test@example.invalid", "commit", "-m", "fixture")
@@ -67,13 +68,14 @@ def run_case(name: str, action, expected_fragment: str | None = None) -> None:
         errors, warnings, findings = MODULE.validate(
             root,
             policy,
+            scope="all",
             today=dt.date(2026, 9, 13),
             as_of=dt.date(2026, 9, 13),
             mtime_mode="off",
         )
         if expected_fragment is None:
             assert not errors, errors
-            assert len(findings) == 4
+            assert len(findings) == 5
         else:
             assert any(expected_fragment in error for error in errors), (name, errors)
         print(f"[PASS] {name}")
@@ -111,17 +113,29 @@ def main() -> int:
         old = dt.datetime(2026, 9, 10, 12, 0).timestamp()
         os.utime(path, (old, old))
         errors, warnings, _ = MODULE.validate(
-            root, policy, today=dt.date(2026, 9, 13), mtime_mode="warn"
+            root, policy, scope="all", today=dt.date(2026, 9, 13), mtime_mode="warn"
         )
         assert not errors and warnings
         errors, _, _ = MODULE.validate(
-            root, policy, today=dt.date(2026, 9, 13), mtime_mode="strict"
+            root, policy, scope="all", today=dt.date(2026, 9, 13), mtime_mode="strict"
         )
         assert any("local mtime" in error for error in errors)
         print("[PASS] mtime warn and strict")
     finally:
         temporary.cleanup()
-    print("[PASS] check_doc_metadata 5/5")
+    temporary, root, policy = make_repo()
+    try:
+        write(root / "ai_dev_tool" / "legacy-broken.md", "# Missing metadata\n")
+        errors, warnings, findings = MODULE.validate(
+            root, policy, today=dt.date(2026, 9, 13), mtime_mode="off"
+        )
+        assert not errors and not warnings, errors
+        assert [finding.path for finding in findings] == ["ai_dev_tool/Codex/README.md"]
+        print("[PASS] default Codex scope excludes legacy Claude documents")
+    finally:
+        temporary.cleanup()
+
+    print("[PASS] check_doc_metadata 6/6")
     return 0
 
 

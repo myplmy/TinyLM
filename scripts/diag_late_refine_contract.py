@@ -3,6 +3,12 @@
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
 
 
 def main() -> int:
@@ -27,8 +33,8 @@ def main() -> int:
     x = torch.randn(7, 16, device=device)
     scale = 0.25
 
-    cfg = LateRefineConfig()
-    if cfg.enabled:
+    late_cfg = LateRefineConfig()
+    if late_cfg.enabled:
         raise AssertionError("P091 must be default-off")
     if expanded_latent_weight(weight) is not weight:
         raise AssertionError("default-off path did not preserve weight identity")
