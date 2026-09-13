@@ -28,9 +28,9 @@
 
 | 계획 | 분리한 품질 질문 | 현재 상태 |
 |---|---|---|
-| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | selector, local update, expansion을 한 팔에 섞지 않음 | primitive 정적 계약만; 학습·품질 `NOT_RUN` |
-| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | structural/ternary/effective sparsity와 rewiring을 분리 | 계측·mask primitive만; 품질 `NOT_RUN` |
-| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | dense-master와 sparse-master를 분리 | exact 2:4 계약만; 품질 `NOT_RUN` |
-| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | compute dtype와 shadow/write-back precision을 분리 | backend gate만; 수치 안정·품질 `NOT_RUN` |
+| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | selector, local update, expansion을 한 팔에 섞지 않음 | 독립 primitive CPU 계약 PASS([080](../../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)); 학습·품질 `NOT_RUN` |
+| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | structural/ternary/effective sparsity와 rewiring을 분리 | Stage0b import 실패로 동적 계약·품질 `NOT_RUN`([083](../../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) |
+| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | dense-master와 sparse-master를 분리 | Stage0a import 실패로 native 2:4·품질 `NOT_RUN`([082](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) |
+| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | compute dtype와 shadow/write-back precision을 분리 | backend PASS([081](../../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)); 수치 안정·품질 `NOT_RUN` |
 
 각 계획의 Stage0 PASS가 나오더라도 그것은 기능 가능성의 앞단일 뿐, 품질 채택 판정이 아니다.

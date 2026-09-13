@@ -69,12 +69,16 @@
 
 ### 2.1 승인됐지만 아직 나침반 판정을 바꾸지 않는 교차축 연구
 
-P091(후반 local/expansion), P092(자유 connectivity), P022C(FP8 compute/shadow 분리),
-P025B(2:4 sparse-master)는 2026-09-13 승인됐으나 현재는 계약 primitive와 Stage0 진단만 있다.
-네 계획의 동적 결과는 모두 `NOT_RUN`이므로 위 12개 축의 실측 상태를 성공으로 바꾸지 않는다.
+P091(후반 local/expansion)은 Stage0a CPU 계약을 통과했고(080), P022C(FP8 compute/shadow 분리)는
+Stage0a CUDA backend를 통과했다(081; 순수 GEMM 1.17~2.09×). 그러나 두 계획 모두 실제 모델 배선·
+학습·품질·end-to-end 자원 이득은 `NOT_RUN`이다. P025B(2:4 sparse-master) Stage0a와 P092(자유
+connectivity) Stage0b는 project import 실패로 과학적 게이트 전에 종료됐으며(082·083), 진입 경로
+정적 수정 뒤 각각 Stage0b·Stage0c 사용자 재실행 전까지 방법론 판정은 `NOT_RUN`이다.
+
 별도 추가 편성은 [실험계획목록 §1.1](../test_plan/실험계획목록.md)의 **72.0h 조건부 hard cap**을
-따르며, 지금 실행 가능한 합계는 Stage0 네 건 **0.4h**뿐이다. 각 gate가 실패하면 해당 분기의
-잔여 예산을 자동 소진하지 않는다.
+따른다. 게이트를 통과한 P091·P022C도 후속 구현과 사용자 스모크가 선결이며, 지금 새로 실행 가능한
+것은 P025B Stage0b·P092 Stage0c 재진단뿐이다. 각 gate가 실패하면 해당 분기의 잔여 예산을 자동
+소진하지 않는다.
 
 ---
 

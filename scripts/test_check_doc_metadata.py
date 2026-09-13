@@ -26,6 +26,8 @@ type\tsnapshot\tauthored|as_of\ttype\tnone\tignore\t\t\t\tsnapshot
 pair\tpair\t\t\t\t\tai_dev_tool/00_WORKING_RULES.md\tai_dev_tool/00_작업규약_한글판.md\tdate\tmirror
 """
 
+FIXTURE_GIT_DATE = "2026-09-13T12:00:00+0900"
+
 
 def write(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -33,7 +35,15 @@ def write(path: Path, text: str) -> None:
 
 
 def git(root: Path, *args: str) -> None:
-    result = subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, encoding="utf-8")
+    # The fixture metadata is pinned to 2026-09-13.  Without a pinned commit
+    # date, the nominally "normal" case starts failing merely because the test
+    # is run on the next day; that tests the wall clock, not stale metadata.
+    env = os.environ.copy()
+    env["GIT_AUTHOR_DATE"] = FIXTURE_GIT_DATE
+    env["GIT_COMMITTER_DATE"] = FIXTURE_GIT_DATE
+    result = subprocess.run(
+        ["git", *args], cwd=root, capture_output=True, text=True, encoding="utf-8", env=env
+    )
     if result.returncode:
         raise AssertionError(result.stderr or result.stdout)
 

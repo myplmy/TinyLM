@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import sys
 from pathlib import Path
 
 
@@ -11,6 +12,13 @@ SPEC = importlib.util.spec_from_file_location("check_handoff_under_test", MODULE
 assert SPEC and SPEC.loader
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
+
+QUEUE_MODULE_PATH = Path(__file__).resolve().with_name("handoff_queue.py")
+QUEUE_SPEC = importlib.util.spec_from_file_location("handoff_queue_under_test", QUEUE_MODULE_PATH)
+assert QUEUE_SPEC and QUEUE_SPEC.loader
+QUEUE_MODULE = importlib.util.module_from_spec(QUEUE_SPEC)
+sys.modules[QUEUE_SPEC.name] = QUEUE_MODULE
+QUEUE_SPEC.loader.exec_module(QUEUE_MODULE)
 
 
 def test_completed_transfer_is_not_live_queue() -> None:
@@ -51,11 +59,26 @@ Use `run_queue.bat` to select it.
     assert names == {"run_live.bat"}
 
 
+def test_inherited_reason_boilerplate_is_idempotent() -> None:
+    core = "RMS 상단을 닫는다"
+    once = QUEUE_MODULE.inherited_reason(core)
+    twice = QUEUE_MODULE.inherited_reason(once)
+    already_duplicated = QUEUE_MODULE.inherited_reason(
+        "직전 핸드오프 계승; 직전 핸드오프 계승; RMS 상단을 닫는다; "
+        "현재 과학적 순서 재검증 필요; 현재 과학적 순서 재검증 필요"
+    )
+    expected = "직전 핸드오프 계승; RMS 상단을 닫는다; 현재 과학적 순서 재검증 필요"
+    assert once == expected
+    assert twice == expected
+    assert already_duplicated == expected
+
+
 def main() -> int:
     tests = [
         test_completed_transfer_is_not_live_queue,
         test_section_7_without_history_is_preserved,
         test_operational_launcher_is_not_counted_as_experiment_batch,
+        test_inherited_reason_boilerplate_is_idempotent,
     ]
     for test in tests:
         test()

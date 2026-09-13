@@ -34,6 +34,8 @@ QUEUE_COLUMNS = (
 )
 INVENTORY_STATES = {"PRESENT", "DONE", "MISSING", "REPLACED"}
 EXECUTION_STATES = {"READY", "GATED", "HOLD", "DONE", "REVALIDATE"}
+INHERITED_REASON_PREFIX = "직전 핸드오프 계승"
+REVALIDATE_REASON_SUFFIX = "현재 과학적 순서 재검증 필요"
 
 
 @dataclass(frozen=True)
@@ -43,6 +45,18 @@ class QueueItem:
     precondition: str
     reason: str
     execution: str
+
+
+def inherited_reason(reason: str) -> str:
+    """Render inheritance boilerplate exactly once across repeated handoffs."""
+    normalized = re.sub(r"\s+", " ", reason).replace("|", r"\|").strip()
+    parts = [part.strip() for part in normalized.split(";") if part.strip()]
+    core = [
+        part
+        for part in parts
+        if part not in {INHERITED_REASON_PREFIX, REVALIDATE_REASON_SUFFIX}
+    ]
+    return "; ".join((INHERITED_REASON_PREFIX, *core, REVALIDATE_REASON_SUFFIX))
 
 
 def _cells(line: str) -> list[str]:
@@ -164,8 +178,7 @@ def inherited_rows(previous: Path) -> list[str]:
             queue_id = "—"
             hours = float(registry["hours_n"]) if registry is not None else 0.0
         cumulative += hours
-        reason = re.sub(r"\s+", " ", item.reason).replace("|", r"\|")
-        reason = f"직전 핸드오프 계승; {reason}; 현재 과학적 순서 재검증 필요"
+        reason = inherited_reason(item.reason)
         experiment = re.sub(r"\s+", " ", item.experiment).replace("|", r"\|")
         precondition = re.sub(r"\s+", " ", item.precondition).replace("|", r"\|")
         rendered.append(

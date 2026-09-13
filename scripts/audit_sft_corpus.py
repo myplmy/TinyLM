@@ -32,12 +32,16 @@
 
     python scripts/audit_sft_corpus.py
     python scripts/audit_sft_corpus.py --tokenizer data_cache/tok-ko-en-32768.json
+    python scripts/audit_sft_corpus.py --root datasets/TinyDataset/SFT/v2/revision1 \
+        --tokenizer data_cache/tok-ko-en-32768.json --serialized-chatml \
+        --records-informational
 """
 from __future__ import annotations
 
 import argparse
 import json
 import re
+import statistics
 import sys
 import unicodedata
 from collections import Counter
@@ -154,10 +158,39 @@ def jaccard(a, b):
     return len(a & b) / float(len(a | b))
 
 
+def message_text(rec):
+    return " ".join(texts(message) for message in rec.get("messages", []))
+
+
+def structural_text(rec, source_by_id):
+    """가공어·표면 슬롯을 가려 이름만 다른 template 복제를 드러낸다."""
+    meta = rec.get("meta") or {}
+    source = source_by_id.get(meta.get("source_id")) or {}
+    value = message_text(rec)
+    replacements = set(meta.get("concepts") or [])
+    replacements.update(
+        item for item in (source.get("surface_axes") or {}).values()
+        if isinstance(item, str)
+    )
+    replacements.update((meta.get("topic_label"), meta.get("coined_stem")))
+    for item in sorted((item for item in replacements if item), key=len, reverse=True):
+        value = value.replace(item, "<X>")
+    value = re.sub(r"\d+", "<N>", value)
+    return norm(value)
+
+
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--root", default=str(SFT),
+                    help="감사할 SFT package root. 기본값은 기존 datasets/TinyDataset/SFT")
     ap.add_argument("--tokenizer", default=None,
                     help="tokenizers json 경로. 주면 토큰을 **실측**한다")
+    ap.add_argument("--serialized-chatml", action="store_true",
+                    help="본문 합이 아니라 canonical ChatML 직렬화 총토큰과 supervised mask를 센다")
+    ap.add_argument("--records-informational", action="store_true",
+                    help="레코드 수를 실패 게이트가 아닌 정보로만 센다(v2 요청서 C.4)")
+    ap.add_argument("--structural-audit", action="store_true",
+                    help="가공어·표면 슬롯을 가린 train 내부 및 train/eval template 근접도를 전수 검사")
     ap.add_argument("--heldout", default=None,
                     help="held-out json/jsonl (F2 오염 대조)")
     ap.add_argument("--dup-sample", type=int, default=1500,
@@ -165,12 +198,15 @@ def main():
     a = ap.parse_args()
 
     head("SFT 코퍼스 감사 — 정본은 요청서 부록 B")
-    if not SFT.exists():
-        bad("%s 가 없다" % SFT)
+    sft = Path(a.root)
+    if not sft.is_absolute():
+        sft = ROOT / sft
+    if not sft.exists():
+        bad("%s 가 없다" % sft)
         return 2
 
-    train_p = sorted(SFT.glob("train/*.canonical.jsonl"))
-    eval_p = sorted(SFT.glob("eval/*.canonical.jsonl"))
+    train_p = sorted(sft.glob("train/*.canonical.jsonl"))
+    eval_p = sorted(sft.glob("eval/*.canonical.jsonl"))
     if not train_p:
         bad("train/*.canonical.jsonl 이 없다")
         return 2
@@ -182,7 +218,9 @@ def main():
     # ---------------------------------------------------------------- A1 규모
     head("A1 규모(레코드) — 요청 25,000~40,000 (B.1.3)")
     n = len(train)
-    if n < WANT_RECORDS[0]:
+    if a.records_informational:
+        info("train %d건 — v2 요청서 C.4에 따라 토큰 수가 1차 기준이고 레코드 수는 정보값" % n)
+    elif n < WANT_RECORDS[0]:
         bad("train %d건 — 요청 최소 %d건의 **%.1f%%**"
             % (n, WANT_RECORDS[0], 100.0 * n / WANT_RECORDS[0]))
     else:
@@ -209,11 +247,21 @@ def main():
             a_tok = sum(len(tk.encode(t).ids) for t in asst_txt)
         except Exception as e:                                  # noqa: BLE001
             warn("토크나이저를 못 썼다(%s) — ⚙문자 기반 추정으로 내려간다" % e)
+    if tok is not None and a.serialized_chatml:
+        try:
+            from tinylm.data.sft import mask_stats
+            stats = mask_stats(train, tk, "chatml")
+            tok = stats["tokens"]
+            a_tok = stats["supervised"]
+            mark = "실측(ChatML 직렬화·assistant-only mask)"
+        except Exception as e:                                  # noqa: BLE001
+            bad("ChatML 직렬화 토큰 계측 실패(%s)" % e)
+            tok = a_tok = None
     if tok is None:
         tok = int(chars / CHARS_PER_TOKEN)
         a_tok = int(a_chars / CHARS_PER_TOKEN)
         mark = "⚙추정(문자/%.1f)" % CHARS_PER_TOKEN
-    else:
+    elif not a.serialized_chatml:
         mark = "실측"
     info("문자 %s · 토큰 %s (%s) · assistant 토큰 %s"
          % ("{:,}".format(chars), "{:,}".format(tok), mark, "{:,}".format(a_tok)))
@@ -268,7 +316,7 @@ def main():
     if not empty and not dup:
         ok("assistant span 이 비지 않고 user 와 다르다 — 마스크 경계가 유일하다")
     info("⚠️**이 검사는 정적이다.** loader 가 정말 user 를 −100 으로 마스크하는지는 "
-         "구현 뒤 `--assistant-only` 스모크 팔이 답한다(현재 **미구현**).")
+         "별도 assistant-only 스모크가 답한다.")
 
     # ------------------------------------------------------------ A5 채점 등급
     head("A5 채점 등급 분포 — 요청 T1 50% / T2 25% / T3 15% / T4 10% (B.4.1)")
@@ -329,10 +377,23 @@ def main():
             bad("J1 채점 키가 %d/%d" % (j1, len(t4)))
         if j2 < len(t4):
             bad("J2 참조답안 2개 이상이 %d/%d" % (j2, len(t4)))
-    judge = list(SFT.glob("**/*judge*")) + list(SFT.glob("**/*human*"))
-    if not judge:
-        bad("J3 사람 표본 %d건 대조 자료가 **없다**(파일 0개) — "
-            "요청서 B.4.2 는 LLM 심판을 쓸 경우 이것을 필수로 적었다" % JUDGE_SAMPLE_MIN)
+    judge = list(sft.glob("**/*judge*"))
+    human = list(sft.glob("**/*human*"))
+    judge_used = None
+    for manifest_path in sorted(sft.glob("manifests/*manifest.json")):
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            continue
+        if "llm_judge_used" in manifest:
+            judge_used = bool(manifest["llm_judge_used"])
+            break
+    if judge_used is False and not judge:
+        info("LLM 심판 미사용 — 요청서의 조건부 J3 사람 50건 대조는 적용 대상 아님")
+    elif (judge_used is True or judge) and not human:
+        bad("LLM 심판을 썼지만 J3 사람 표본 %d건 대조 자료가 **없다**" % JUDGE_SAMPLE_MIN)
+    elif judge_used is None and not judge and not human:
+        warn("LLM 심판 사용 여부를 확인할 manifest가 없어 J3 적용 여부를 판정하지 못했다")
 
     # ---------------------------------------------------------------- A9
     head("A9 train <-> eval source-disjoint")
@@ -353,6 +414,66 @@ def main():
             ok("source_family 교집합 0건")
     else:
         warn("eval 파일이 없다")
+
+    # ----------------------------------------------- A9b structural disjoint
+    if a.structural_audit and ev:
+        head("A9b 구조 template 격리 — 이름·표면 슬롯을 가린 5-gram Jaccard")
+        train_source_p = sorted(sft.glob("sources/*source_ledger*.jsonl"))
+        eval_source_p = sorted(sft.glob("eval/*source_ledger*.jsonl"))
+        source_rows = []
+        for path in train_source_p + eval_source_p:
+            source_rows.extend(read_jsonl(path))
+        source_by_id = {
+            row.get("source_id"): row for row in source_rows
+            if isinstance(row.get("source_id"), str)
+        }
+        train_struct = [structural_text(rec, source_by_id) for rec in train]
+        eval_struct = [structural_text(rec, source_by_id) for rec in ev]
+
+        internal_groups = {}
+        for rec, value in zip(train, train_struct):
+            meta = rec.get("meta") or {}
+            key = (meta.get("semantic_task"), meta.get("logic_archetype"),
+                   meta.get("topic_label"))
+            internal_groups.setdefault(key, []).append((rec, ngrams(value, 5)))
+        internal_pairs = 0
+        internal_high = 0
+        internal_records = set()
+        internal_max = 0.0
+        for rows in internal_groups.values():
+            for i in range(len(rows)):
+                for j in range(i + 1, len(rows)):
+                    internal_pairs += 1
+                    score = jaccard(rows[i][1], rows[j][1])
+                    internal_max = max(internal_max, score)
+                    if score >= 0.80:
+                        internal_high += 1
+                        internal_records.add((rows[i][0].get("meta") or {}).get("id"))
+                        internal_records.add((rows[j][0].get("meta") or {}).get("id"))
+        info("train 동일 task·logic·topic 쌍 %d개 중 >=0.80 %d쌍 · 관련 레코드 %d/%d · max %.4f"
+             % (internal_pairs, internal_high, len(internal_records), len(train), internal_max))
+        if internal_high:
+            bad("구조 template 내부 근사중복 >=0.80 이 %d쌍" % internal_high)
+
+        cross_groups = {}
+        for rec, value in zip(train, train_struct):
+            meta = rec.get("meta") or {}
+            key = (meta.get("semantic_task"), meta.get("logic_archetype"))
+            cross_groups.setdefault(key, []).append(ngrams(value, 5))
+        nearest = []
+        for rec, value in zip(ev, eval_struct):
+            meta = rec.get("meta") or {}
+            key = (meta.get("semantic_task"), meta.get("logic_archetype"))
+            query = ngrams(value, 5)
+            nearest.append(max((jaccard(query, candidate)
+                                for candidate in cross_groups.get(key, [])), default=0.0))
+        high_08 = sum(score >= 0.80 for score in nearest)
+        high_09 = sum(score >= 0.90 for score in nearest)
+        info("eval nearest: >=0.80 %d/%d · >=0.90 %d/%d · median %.4f · min %.4f · max %.4f"
+             % (high_08, len(ev), high_09, len(ev), statistics.median(nearest),
+                min(nearest), max(nearest)))
+        if high_08:
+            bad("train/eval 구조 template 근접도 >=0.80 인 eval이 %d/%d" % (high_08, len(ev)))
 
     # ---------------------------------------------------------------- A10
     head("A10 내부 근사중복 (문자 5-gram 자카드, 표본 %d)" % a.dup_sample)

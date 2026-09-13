@@ -1,6 +1,6 @@
 # TinyLM Codex 작업환경 — 소유권·분리 계약
 
-> **최신 갱신일자**: 2026-09-13 · **문서 유형**: live
+> **최신 갱신일자**: 2026-09-14 · **문서 유형**: live
 
 > 제정: 2026-09-11, 승인된 제안서 P1  
 > 상태: **P0~P8 역사 증거 `PASS / ACTIVE_VERIFIED`; 2026-09-13 확장 훅은 `STATIC_ONLY / E2E_NOT_RUN`**
@@ -75,7 +75,7 @@ CLI 버전 조회 중 임시 경로 권한 경고 2건이 있었지만 버전 �
 |---|---|---|
 | WIP v2·감사형 override | 6열 계약·원자교체·lock·CP949 출력 회귀 fixture | `STATIC_ONLY`; 실제 다중 세션 경합 E2E는 `NOT_RUN` |
 | WIP 직접수정 보조 차단 | Bash·`apply_patch` mock deny와 정상 `wip.py` 허용 | `STATIC_ONLY`; 새 hash 신뢰·실제 deny는 `E2E_NOT_RUN` |
-| compact 상태 캡슐 | 8필드 sentinel, 수동/자동 `PreCompact`, `SessionStart(source=compact)` mock | M0~M3 `STATIC_ONLY`; M4 수동 compact·M5 auto compact E2E `NOT_RUN`; M6 전환 승인 대기 |
+| compact 상태 캡슐 | 8필드 sentinel, 수동/자동 `PreCompact`, `SessionStart(source=compact)` mock | M0~M3 `STATIC_ONLY`; M5 열린 WIP exact-match 자동 경로는 2026-09-14 실제 8/8 재주입 PASS; M4 수동·M5 나머지 경로 `NOT_RUN`; M6 전환 승인 대기 |
 | 핸드오프 계승 | 6열 지시·동기화표·10열 큐·스모크 disposition fixture | 신규 실제 핸드오프에서 최종 검증 예정 |
 | Git Bash 구문 검사 | 알려진 Windows startup 실패와 실제 `bash -n` 오류를 분리한 fixture | 현재 호스트의 POSIX 셸 구문 검사는 실행 결과에 따라 `PASS/FAIL/NOT_RUN` |
 

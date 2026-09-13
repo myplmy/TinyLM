@@ -183,22 +183,22 @@ _HELDOUT_VERSION = "latest"          # main() 이 `--heldout-version` 으로 덮
 
 
 def heldout_dirs():
-    """디스크의 held-out 폴더를 **판 번호로** 정렬해 돌려준다(문자열 정렬이 아니다)."""
+    """디스크의 모든 held-out 주·부 판을 **숫자 판 번호로** 정렬해 돌려준다."""
     import sys as _sys
     _sys.path.insert(0, str(ROOT / "scripts"))
-    from check_heldout_defects import BASE                       # noqa: PLC0415
+    from check_heldout_defects import BASE, heldout_version_key  # noqa: PLC0415
     out = {}
-    for d in BASE.glob("held-out_v2.*"):
+    for d in sorted(BASE.glob("held-out_v*"), key=heldout_version_key):
         if d.is_dir():
             out[d.name.split("held-out_v", 1)[1]] = d
-    return dict(sorted(out.items(), key=lambda kv: [int(x) for x in kv[0].split(".")]))
+    return out
 
 
 def resolve_heldout_version(version):
     """`latest` 를 **실제 판 번호**로 바꾼다. 🚫모르는 판이면 거절한다(추측하지 않는다)."""
     dirs = heldout_dirs()
     if not dirs:
-        raise RuntimeError("held-out_v2.* 폴더가 하나도 없다")
+        raise RuntimeError("held-out_v* 폴더가 하나도 없다")
     v = str(version).lstrip("v")
     if v == "latest":
         return list(dirs)[-1], dirs[list(dirs)[-1]]
@@ -364,7 +364,7 @@ def main():
     ap.add_argument("--force", action="store_true",
                     help="캐시가 있어도 다시 만든다 (★2026-09-10 신설 — 종전엔 방법이 없었다)")
     ap.add_argument("--heldout-version", default="latest",
-                    help="★(A01) `stage1_heldout` 의 판. `2.7`·`2.8`·`latest`(기본). "
+                    help="★(A01) `stage1_heldout` 의 판. `2.7`·`3.0`·`latest`(기본). "
                          "판마다 캐시가 따로 생기므로 **둘을 함께 누적**할 수 있다")
     a = ap.parse_args()
     global _HELDOUT_VERSION

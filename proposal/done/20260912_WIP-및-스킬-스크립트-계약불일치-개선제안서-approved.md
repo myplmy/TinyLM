@@ -2,7 +2,8 @@
 
 > 작성일: 2026-09-12  
 > 범위: `.agents/skills/**/SKILL.md` 17개와 그 문서가 명시적으로 호출하는 저장소·번들 스크립트  
-> 상태: **2026-09-13 사용자 C안 승인 / WIP v2 계약·회귀 `STATIC_ONLY` 구현**
+> 갱신일: 2026-09-14  
+> 상태: **사용자 C안 승인 / WIP v2 계약·회귀 구현 완료 / 실제 WIP v2 운용 확인**
 
 ## 1. 결론
 
@@ -232,3 +233,8 @@ python -X utf8 scripts/dryrun_batch.py --strict <새배치파일명>
   열린 원장에 적용한다. `<br>` 없이 단일행 표와 append-only 작업 로그를 쓴다.
 - same-directory 임시파일, 쓰기 직전 원본 비교, lock, `os.replace` 원자교체를 적용했다.
 - 스킬과 Codex 02를 같은 CLI 계약으로 갱신했으며 6개 회귀가 통과했다. 완료 원장은 소급 변환하지 않았다.
+- 2026-09-14 실제 `handoff/WIP_20260913k_작업원장.md`를 v2로 만들고 `--start`, `--done`,
+  `--resume`, compact 캡슐 갱신과 11/11 확인 뒤 `--close`를 전용 CLI로 수행해
+  `handoff/WIP_20260913k_작업원장-done.md`로 보존했다. 상태표와 append-only 로그가 함께 갱신됐고
+  CP949 출력 실패나 수동 상태 복구는 발생하지 않았다. 이는 WIP 도구의 실제 운용 증거이며,
+  훅의 직접쓰기 차단 E2E와는 별개다.

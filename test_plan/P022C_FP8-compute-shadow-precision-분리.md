@@ -2,7 +2,7 @@
 
 > **승인 2026-09-13.** 정본 제안서: [`20260913_FP8-compute-shadow-precision-format-scaling-writeback-제안서-approved.md`](../proposal/done/20260913_FP8-compute-shadow-precision-format-scaling-writeback-제안서-approved.md)  
 > P022/P022B의 FP8 GEMM·사후 수치 진단을 승계하되, **compute dtype**과 **persistent shadow/write-back precision**을 같은 팔에서 바꾸지 않는다.  
-> **현재 상태:** Stage0a(C0) 진단 배치만 작성. GPU·모델·품질은 `NOT_RUN`.
+> **현재 상태:** Stage0a(C0) CUDA backend ✅PASS([결과 081](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)). scaling·backward·whole-step·모델 품질·shadow/write-back은 `NOT_RUN`.
 
 ## 1. 왜 — 기존 FP8 결과가 답하지 못한 두 물음
 
@@ -30,7 +30,7 @@ FP8/FP16 grid에 직접 write-back해도 trajectory가 유지되는지는 미측
 
 | 계획 단계 | 제안서 단계 | 무엇 | 계속 조건 | 예상 GPU-h |
 |---|---|---|---|---:|
-| **Stage0a** | C0 | CUDA FP8 backend·TinyLM 3형상 실제 호출 | `_scaled_mm` 유한 forward 성공 | 0.1 |
+| **Stage0a ✅** | C0 | CUDA FP8 backend·TinyLM 3형상 실제 호출 | ✅ 세 형상 `_scaled_mm` 유한 forward([081](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)) | 0.1 |
 | **Stage0b** | C1 | BF16/current/delayed scaling 동일세션 속도 | ≥10%, 또는 5~10%+메모리/배치 이득 | 0.7~0.8 |
 | **Stage1a** | C2 | 100M compute format screen | 제어군 대비 paired 열화 +0.01 이내 | 1.1~1.6 |
 | **Stage1b** | C3 | 300M compute-only 확인 | 현재 ruler에서 무열화 또는 명시적 Pareto | 3.0~3.2 |
@@ -64,8 +64,8 @@ Stage0a 통과 전에 Stage0b 이후 코드·배치를 작성하지 않는다.
 
 ## 7. 실행 → `run_P022C_*.bat`
 
-- 작성: `run_P022C_Stage0a_fp8_backend.bat` — GPU 진단, 약 0.1h.
-- 미작성: Stage0b~Stage4. 직전 게이트 PASS와 사용자 로그 회수 후에만 조건·태그를 확정한다.
+- 완료: `run_P022C_Stage0a_fp8_backend-done.bat` — backend·순수 GEMM 진단 PASS([결과 081](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)).
+- 미작성: Stage0b~Stage4. 다음은 C1의 cast/scaling 포함 동일세션 비교를 구현·정적 검증한 뒤 조건·태그를 확정한다.
 
 ## 8. 한계
 
@@ -77,3 +77,4 @@ Stage0a 통과 전에 Stage0b 이후 코드·배치를 작성하지 않는다.
 ## 9. 실행 이력 / 갱신
 
 - 2026-09-13: 제안서 승인, P022C 배정. Stage0a 엄격 backend 게이트와 배치 작성. 실행은 `NOT_RUN`.
+- 2026-09-13: Stage0a(C0) PASS([결과 081](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)). TinyLM 세 형상에서 `_scaled_mm`가 실행됐고 순수 GEMM은 1.17~2.09×였다. backend 성공 예측은 맞았으나 C1의 end-to-end 10% 이득 예측은 아직 `NOT_RUN`이다.

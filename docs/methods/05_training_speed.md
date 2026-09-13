@@ -148,9 +148,9 @@ M=12,288 은 **서로 다른 두 형상(mb12×1024, mb24×512)이 똑같이 OOM*
 
 | 계획 | 현재 구현 범위 | 속도 주장 가능 범위 | 다음 gate |
 |---|---|---|---|
-| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | 실제 CUDA `_scaled_mm` 진단 배치 | 없음 — backend 호출과 순수 GEMM만 확인 예정 | TinyLM shape 지원 후 cast·amax 포함 end-to-end |
-| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | exact 2:4 + native sparse tensor 진단 | 없음 — dense mask의 이론 FLOP를 속도로 세지 않음 | 같은 세션 순수 MLP ≥1.25× 뒤 whole-step |
-| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | dense mask/gradient 계약 primitive | **가속 0으로 취급** — 현재 GEMM은 dense | topology-update 비용을 포함한 실측 전 미판정 |
-| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | 독립 fold primitive | local update 속도·VRAM 모두 미측정 | 실제 모델 연결과 사용자 스모크 뒤 측정 |
+| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | CUDA `_scaled_mm` 세 형상 PASS([081](../../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)) | 순수 GEMM **1.17~2.09×**; 학습 step은 `NOT_RUN` | cast·amax/scaling·backward 포함 Stage0b(C1) |
+| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | Stage0a는 project import 실패로 무효([082](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | native 2:4·속도 모두 `NOT_RUN` | Stage0b 재실행에서 같은 세션 순수 MLP ≥1.25× 확인 |
+| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | Stage0b는 project import 실패로 무효([083](../../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) | **가속 0으로 취급**; 계약 동적 결과도 `NOT_RUN` | Stage0c 계약 후 topology-update 비용 포함 실측 |
+| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | 독립 fold 계약 CPU PASS([080](../../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)) | local update 속도·VRAM 모두 `NOT_RUN` | 실제 모델 연결과 사용자 스모크 뒤 측정 |
 
 제안 승인과 Stage0 코드 존재는 속도 개선 증거가 아니다. 네 동적 진단과 모든 학습 결과는 `NOT_RUN`이다.

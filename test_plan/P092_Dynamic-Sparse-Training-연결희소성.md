@@ -2,7 +2,7 @@
 
 > **승인 2026-09-13.** 정본 제안서: [`20260913_Dynamic-Sparse-Training-연결희소성-학습-제안서-approved.md`](../proposal/done/20260913_Dynamic-Sparse-Training-연결희소성-학습-제안서-approved.md)  
 > P016/P025/P025B의 고정 N:M이 아니라, 자유 connectivity budget을 유지하며 prune/regrow하는 알고리즘 축이다.  
-> **현재 상태:** 공통 sparsity 계측·mask STE primitive·Stage0b 진단만 구현. trainer 통합·품질은 `NOT_RUN`.
+> **현재 상태:** 공통 sparsity 계측·mask STE primitive는 구현됐지만 Stage0b는 project import 실패로 과학적 게이트 전에 종료([결과 083](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)). 진입 경로 수정 뒤 Stage0c 재실행 전까지 trainer 통합·품질은 `NOT_RUN`.
 
 ## 1. 왜 — 삼진 0과 연결 부재를 구분해야 한다
 
@@ -33,7 +33,8 @@ TinyLM TWN은 활성 연결에서도 quantizer가 0을 만든다. 그러나 `Q(W
 | 단계 | 무엇 | 계속 조건 | 비용 |
 |---|---|---|---:|
 | **Stage0a** | `S_mask`·`Z_ternary`·`S_effective`, birth/death 계약 | dense에서 `S_mask=0`, 계약 회귀 PASS | 0.01 H300 |
-| **Stage0b** | mask/ternary forward-backward, inactive gradient proxy, active conservation | NaN 0, active-count 오차 0 | 0.04 H300 |
+| **Stage0b ⚠️ 무효** | mask/ternary forward-backward 최초 시도 | `tinylm` import 전에 종료; 과학적 결과 `NOT_RUN`([083](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) | 진입 시간만 |
+| **Stage0c ⏳ 재실행** | mask/ternary forward-backward, inactive gradient proxy, active conservation | NaN 0, active-count 오차 0 | 0.04 H300 |
 | **Stage1a** | 30M static50 vs DST50 | DST 명확 우세 또는 dense gap ≤0.05 | 0.20 H300 |
 | **Stage1b** | 30M DST75 | 50% 대비 catastrophic divergence 없음 | 0.10 H300 |
 | **Stage2a** | 100M dense/static50/DST50/DST75 | best sparse dense gap ≤0.07 | 1~2 H300 |
@@ -42,7 +43,7 @@ TinyLM TWN은 활성 연결에서도 quantizer가 0을 만든다. 그러나 `Q(W
 | **Stage3b** | runner-up/재현 seed | 효과가 seed noise보다 큼 | 2~4 H300 |
 | **Stage4** | storage/kernel 후속 판정 | 알고리즘적 생존 후만 새 제안 | GPU 0 |
 
-Stage0a/b의 공통 정본은 `tinylm/train/sparsity_contract.py`와
+Stage0a/c의 공통 정본은 `tinylm/train/sparsity_contract.py`와
 `tinylm/model/sparse_connectivity.py`다. 전자는 torch 없이 세 sparsity를 분리하고, 후자는
 mask forward와 inactive regrowth score를 위한 dense-gradient STE primitive를 제공한다. 아직 TLinear에
 연결하지 않았다.
@@ -71,17 +72,19 @@ Stage0에서 `H300`을 실측하기 전에 절대 GPU-h를 확정값으로 바�
 
 ## 7. 실행 → `run_P092_*.bat`
 
-- 작성: `run_P092_Stage0b_dynamic_sparse_contract.bat` — 작은 CUDA forward/backward 진단, 약 0.1h.
+- 무효 완료: `run_P092_Stage0b_dynamic_sparse_contract-done.bat` — import 실패로 과학적 게이트 `NOT_RUN`([결과 083](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
+- 작성: `run_P092_Stage0c_dynamic_sparse_contract.bat` — 진입 경로 수정 뒤 같은 CUDA 계약 재실행, 약 0.1h.
 - Stage0a 순수 계약 회귀는 Codex 정적 검사 5/5 PASS.
-- 미작성: Stage1a~Stage3b. Stage0b 로그를 회수해 계약을 확인한 후 TLinear·trainer 통합을 별도 구현한다.
+- 미작성: Stage1a~Stage3b. 유효한 Stage0c 로그를 회수해 계약을 확인한 후 TLinear·trainer 통합을 별도 구현한다.
 
 ## 8. 한계
 
 - 현 mask primitive은 dense tensor/GEMM이므로 FLOP·wall-clock·storage 절감을 주장하지 않는다.
-- Stage0b의 작은 행렬은 TLinear/ternary/optimizer 통합을 증명하지 않는다.
+- Stage0c의 작은 행렬은 TLinear/ternary/optimizer 통합을 증명하지 않는다.
 - P025B의 exact 2:4·native kernel·sparse-master는 이 계획에서 실험하지 않는다.
 - 알고리즘적 sparsity 성공을 하드웨어 가속 성공으로 승격하지 않는다.
 
 ## 9. 실행 이력 / 갱신
 
 - 2026-09-13: 제안서 승인, 비어 있던 다음 정수 번호 P092 배정. 공통 계측·mask primitive·Stage0b 배치 작성. 실행 `NOT_RUN`.
+- 2026-09-13: Stage0b는 `ModuleNotFoundError: tinylm`으로 첫 mask 연산 전에 종료([결과 083](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)). 저장소 루트 bootstrap을 추가했고 정적 검사만 PASS했다. 방법론 예측은 대조되지 않았으며 Stage0c 재실행이 필요하다.

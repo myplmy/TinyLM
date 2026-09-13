@@ -557,6 +557,7 @@ step0 은 **초기점**을 재고, 판정 대상은 **그 초기점에서 출발
 | 수확체감 | 100→300M -0.66, 300→600M -0.18 | 006 |
 | bf16 GEMM 실측 처리량 | 우리 형상에서 **75~83 TFLOPS**(cuBLAS, sm_89) | 010 |
 | FP8(E4M3) GEMM 실측 | **1.63~2.08×** vs bf16 (Ada 2:1 비율과 일치) | 010 |
+| ★**P022C FP8 backend 재확인** | RTX 4070 Ti SUPER(sm_89)·PyTorch 2.10.0에서 TinyLM 세 형상 `_scaled_mm` PASS, 순수 GEMM **1.17~2.09×**. 🚫cast/scaling·backward·학습 step 이득은 `NOT_RUN` | **081** |
 | **GEMM 은 스텝 시간의 약 50%** | 97.5 TFLOP/step ÷ 80 TFLOPS = 1.22s vs 실측 2.467s | 010 |
 | → GEMM 전용 최적화의 상한 | GEMM 을 2× 해도 스텝 **-23%** 가 상한 | 010 |
 

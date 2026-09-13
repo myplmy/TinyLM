@@ -2,7 +2,7 @@
 
 > **승인 2026-09-13.** 정본 제안서: [`20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md`](../proposal/done/20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md)  
 > P025의 고정 2:4 개념을 대체하지 않고, native kernel·topology·dense/sparse master를 분리하는 후속 계획이다.  
-> **현재 상태:** 공통 계측 계약과 Stage0a backend 진단만 구현. GPU·품질은 `NOT_RUN`.
+> **현재 상태:** Stage0a는 project import 실패로 과학적 게이트 전에 종료([결과 082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)). 진입 경로는 정적으로 수정했고 새 Stage0b 재실행 전까지 native 2:4·GPU·품질은 `NOT_RUN`.
 
 ## 1. 왜 — 0을 넣는 것과 실제 희소 학습은 다르다
 
@@ -29,8 +29,9 @@ native 속도, dense-master 품질, inactive state를 제거한 sparse-master, t
 
 | 단계 | 무엇 | 계속 조건 | GPU-h |
 |---|---|---|---:|
-| **Stage0a** | 실제 MLP 형상 native 2:4 forward·input-grad·A/B 속도 | sparse 호출 성공 + 두 MLP 형상 최소 1.25× | 0.1 |
-| **Stage0b** | dense vs 2:4 whole primitive forward/backward | 전체 적용 1.10× 가능성 또는 메모리 트랙 재승인 | 0.2 |
+| **Stage0a ⚠️ 무효** | 실제 MLP 형상 native 2:4 진단 최초 시도 | `tinylm` import 전에 종료; 과학적 결과 `NOT_RUN`([082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | 0.1 미만 |
+| **Stage0b ⏳ 재실행** | Stage0a와 같은 native 2:4 forward·input-grad·A/B 속도 | sparse 호출 성공 + 두 MLP 형상 최소 1.25× | 0.1 |
+| **Stage0c** | dense vs 2:4 whole primitive forward/backward | 전체 적용 1.10× 가능성 또는 메모리 트랙 재승인 | 0.2 |
 | **Stage1a** | dense-master 2:4, 250 step | NaN 0, invariant 100%, 비정상 발산 없음 | 0.25 |
 | **Stage1b** | flip/death/birth/resurrection 계측 | active count·birth/death 보존 | 0.25 |
 | **Stage1c** | sparse-master 250 step | hidden dense state 없음, invariant 100% | 0.3 |
@@ -39,9 +40,9 @@ native 속도, dense-master 품질, inactive state를 제거한 sparse-master, t
 | **Stage3b** | churn cosine/adaptive freeze | Stage3a에서 sparse-master 비탈락 | 2~4 |
 | **Stage4** | seed/재생성 | 분해능 근처일 때만 | 3~5 |
 
-Stage0a의 `scripts/diag_sparse24_backend.py`는 magnitude top-2 mask의 블록별 active count,
+Stage0b 재실행의 `scripts/diag_sparse24_backend.py`는 magnitude top-2 mask의 블록별 active count,
 `torch.sparse.to_sparse_semi_structured`, forward 일치, input-gradient 유한성, 동일 세션
-median을 검사한다. weight-gradient·whole-step은 Stage0b 이후 소유로 남긴다.
+median을 검사한다. weight-gradient·whole-step은 Stage0c 이후 소유로 남긴다.
 
 ## 5. 판정 기준
 
@@ -53,25 +54,26 @@ median을 검사한다. weight-gradient·whole-step은 Stage0b 이후 소유로 
 | topology | 모든 4-block에 정확히 2 active, dynamic update의 births=deaths |
 | 재현 | 필요 Stage4에서 seed/재생성 방향 유지 |
 
-Stage0a가 속도 게이트를 못 넘으면 학습가속 분기는 종료한다. sparse-master
+유효한 Stage0b 재실행이 속도 게이트를 못 넘으면 학습가속 분기는 종료한다. sparse-master
 메모리만 계속할지는 자동 진행하지 않고 새 판정을 받는다.
 
 ## 6. 비용
 
 | 경로 | 누적 GPU-h |
 |---|---:|
-| Stage0a에서 종료 | 0.1 |
+| 유효한 Stage0b 재실행에서 종료 | 0.1(무효 Stage0a의 진입 시간 제외) |
 | Stage2까지 | 3.6 |
 | 전 게이트 통과 최대 | **12.6~18.6** |
 
 ## 7. 실행 → `run_P025B_*.bat`
 
-- 작성: `run_P025B_Stage0a_sparse24_backend.bat` — GPU 진단, 약 0.1h.
-- 미작성: Stage0b~Stage4. 직전 게이트 로그를 결과로 회수한 후에만 연다.
+- 무효 완료: `run_P025B_Stage0a_sparse24_backend-done.bat` — import 실패로 과학적 게이트 `NOT_RUN`([결과 082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
+- 작성: `run_P025B_Stage0b_sparse24_backend.bat` — 진입 경로 수정 뒤 같은 GPU 게이트 재실행, 약 0.1h.
+- 미작성: Stage0c~Stage4. 유효한 Stage0b 로그를 결과 082에 회수한 후에만 연다.
 
 ## 8. 한계
 
-- Stage0a는 sparse weight-gradient, optimizer, TLinear/STE 통합을 증명하지 않는다.
+- Stage0b 진단은 sparse weight-gradient, optimizer, TLinear/STE 통합을 증명하지 않는다.
 - exact 2:4 mask와 `SparseSemiStructuredTensor` 타입 확인만으로 전체 학습 가속을 주장하지 않는다.
 - P092의 자유 unstructured connectivity·ERK·25/12.5% density는 이 계획에 넣지 않는다.
 - 공통 계측 계약을 공유하지만 두 계획의 판정을 합치지 않는다.
@@ -79,3 +81,4 @@ Stage0a가 속도 게이트를 못 넘으면 학습가속 분기는 종료한다
 ## 9. 실행 이력 / 갱신
 
 - 2026-09-13: 제안서 승인, P025B 배정. 공통 계측 계약·exact-N:M primitive·Stage0a backend 배치 작성. 실행 `NOT_RUN`.
+- 2026-09-13: Stage0a는 `ModuleNotFoundError: tinylm`으로 첫 희소 연산 전에 종료([결과 082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)). 저장소 루트 bootstrap을 추가했고 정적 검사만 PASS했다. 방법론 예측은 대조되지 않았으며 Stage0b 재실행이 필요하다.

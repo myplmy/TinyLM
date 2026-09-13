@@ -1,6 +1,6 @@
 # 00 — CODEX WORKING RULES (operational, English)
 
-> **Last updated**: 2026-09-13 · **Document type**: live · **Rule counts**: `[gate]` 9 · `[human]` 47 · `[fact]` 3
+> **Last updated**: 2026-09-14 · **Document type**: live · **Rule counts**: `[gate]` 9 · `[human]` 48 · `[fact]` 3
 
 **Read this one every session.** It is the short list. Rationale, evidence and war
 stories live in the Codex-owned ledgers (01–08) and shared project evidence; this file only says
@@ -44,6 +44,12 @@ that environment-only run because it includes protected-data checks.
   `bash -n` syntax error is `FAIL`; known Windows signal-pipe/Win32 error 5/`0xC0000142` startup
   failure or missing Bash is `NOT_RUN`. Only a deployment gate that requires this evidence uses
   `--require-shell-syntax` to promote `NOT_RUN` to failure.
+- **R60** `[human]` **Make every user-action request executable as written.** Do not use an
+  unagreed abbreviation such as `B2`, `W2`, or `M5` without expanding its exact document and
+  meaning on first use. For user-run verification, state the target, exact location, prerequisite,
+  each command or UI action, the expected result of each step, the stop condition, the completion
+  signal, and the AI follow-up. A section pointer or a noun phrase such as “observe the probes” is
+  not a substitute for the procedure.
 
 ## B. Comparison validity — this is where numbers go wrong
 

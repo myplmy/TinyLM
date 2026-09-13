@@ -2,7 +2,7 @@
 
 > **승인 2026-09-13.** 정본 제안서: [`20260913_Muon-후반-적응적-블록-확장-재학습-제안서-approved.md`](../proposal/done/20260913_Muon-후반-적응적-블록-확장-재학습-제안서-approved.md)  
 > 사용자의 P091 승인으로 검토 원문의 미승인 번호 선점을 정식 계획번호로 해소한다.  
-> **현재 상태:** Stage0a 독립 primitive·진단만 구현. controller·trainer 배선·GPU 실행은 `NOT_RUN`.
+> **현재 상태:** Stage0a 독립 계약 진단 ✅PASS([결과 080](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)). controller·optimizer-state 격리·실제 TLinear/trainer 배선과 GPU 실행은 `NOT_RUN`.
 
 ## 1. 왜 — 후반 계산을 모든 parameter에 균등 배분해야 하는지 미측정이다
 
@@ -30,7 +30,7 @@ low-rank latent capacity를 붙였다가 (W\leftarrow W+sBA)로 접어 배포 �
 
 | 단계 | 무엇 | 계속 조건 | GPU-h |
 |---|---|---|---:|
-| **Stage0a** | unique module identity 후보, default-off identity, `W+sBA` fold identity | 정적/CPU 진단 전부 PASS | 0 |
+| **Stage0a ✅** | unique module identity 후보, default-off identity, `W+sBA` fold identity | ✅ `unique_candidates=2`, `fold_max_abs=0`([080](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)) | 0 |
 | **Stage0b** | 실제 TLinear 연결, VRAM/timing smoke | NaN/skip 0, off 경로 동일 | 0.1 |
 | **Stage1** | p=2/4/8 probe vs 32~128-step realized gain | median Spearman ρ≥0.5, 3 window 중 2개 top-2 포함 | 0.2~0.5 |
 | **Stage2** | 100M A~E 5팔 | D>C 또는 E>D가 현 ruler 초과/명시 Pareto | 3~4 |
@@ -71,8 +71,8 @@ trainer에 아직 연결하지 않아 기존 기본 경로를 바꾸지 않는�
 
 ## 7. 실행 → `run_P091_*.bat`
 
-- 작성: `run_P091_Stage0a_late_refine_contract.bat` — CPU 계약 진단, 약 0.1h 이내.
-- 미작성: Stage0b~Stage5. Stage0a 로그 회수 후 실제 TLinear/controller 연결을 별도 패치하고, 사용자 스모크 후 Stage1만 연다.
+- 완료: `run_P091_Stage0a_late_refine_contract-done.bat` — CPU 계약 진단 PASS([결과 080](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)).
+- 미작성: Stage0b~Stage5. 다음은 실제 TLinear/controller·optimizer-state 격리를 별도 패치하고, 사용자 스모크 후 Stage1만 연다.
 
 ## 8. 한계
 
@@ -84,3 +84,4 @@ trainer에 아직 연결하지 않아 기존 기본 경로를 바꾸지 않는�
 ## 9. 실행 이력 / 갱신
 
 - 2026-09-13: P091 승인·번호 정식화. unique-candidate/default-off/fold primitive와 Stage0a 배치 작성. 동적 결과 `NOT_RUN`.
+- 2026-09-13: Stage0a CPU 계약 진단 PASS([결과 080](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)). 예측한 primitive 계약은 성립했지만 selector·VRAM·품질 예측은 아직 대조하지 못했다. Stage0b 실제 배선이 다음 게이트다.

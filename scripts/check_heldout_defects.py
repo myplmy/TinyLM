@@ -25,7 +25,7 @@
 
 사용법
     python scripts/check_heldout_defects.py --dir <held-out 폴더>
-    python scripts/check_heldout_defects.py            # v2.3 · v2.4 둘 다
+    python scripts/check_heldout_defects.py            # 모든 held-out_v* 판; 숫자상 최신판만 판정
 종료코드 0 = D1 0건 / 1 = D1 이 걸렸다  (D2 는 경고이지 실패가 아니다)
 """
 from __future__ import annotations
@@ -44,6 +44,14 @@ BASE = ROOT / "datasets" / "TinyDataset" / "stage1_dataset"
 #   🚫부분문자열 비교 금지(`식물` ⊂ `양치식물`). 뽑은 뒤 **완전 일치**로만 본다.
 RE_PRED = re.compile(r"[은는이가]\s*(.+?)(?:이다|다)[.。]?\s*$")
 RE_NEG = re.compile(r"(않는다|않다|아니다|아니라고|없다)")
+
+
+def heldout_version_key(path: Path) -> tuple[int, ...]:
+    """`held-out_v2.10`, `held-out_v3.0`을 문자열이 아니라 숫자 판으로 정렬한다."""
+    match = re.fullmatch(r"held-out_v(\d+(?:\.\d+)*)", path.name)
+    if not match:
+        raise ValueError(f"held-out 판 폴더명이 아니다: {path.name}")
+    return tuple(int(part) for part in match.group(1).split("."))
 
 
 def first_sentence(s: str) -> str:
@@ -278,7 +286,8 @@ def main() -> int:
     a = ap.parse_args()
 
     dirs = ([Path(a.dir)] if a.dir else
-            [p for p in sorted(BASE.glob("held-out_v2.*")) if p.is_dir()])
+            sorted((p for p in BASE.glob("held-out_v*") if p.is_dir()),
+                   key=heldout_version_key))
 
     print("=" * 96)
     print("  check_heldout_defects — 구조가 아니라 **뜻**을 본다 (2026-09-03 신설)")
@@ -289,6 +298,8 @@ def main() -> int:
     #   **우리가 안 고치는 기록**이라 D6 이 영원히 남고, 게이트가 **영구히 빨갛다.**
     #   ★영구히 빨간 게이트는 게이트가 아니다 — 아무도 안 본다(알람 피로).
     #   → **최신 판만 exit code 에 넣고 옛 판은 인쇄만** 한다.
+    # ★2026-09-14 — v3.0 도착 뒤에도 glob 이 `held-out_v2.*`에 고정돼 v2.9를 최신으로
+    #   오판했다. 이제 모든 `held-out_v*`를 숫자판으로 정렬한다(v2.10 문자열 정렬 사고도 방지).
     latest = dirs[-1].name if dirs else None
     total_d1 = 0
     total_d6 = 0
