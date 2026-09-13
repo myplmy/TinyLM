@@ -1,0 +1,50 @@
+{
+  "status": "SEMANTIC_SOURCE_FAMILY_AUDIT_FAIL",
+  "dataset_name": "SFT용 Fresh 코퍼스 v2",
+  "dataset_version": "v2",
+  "normalization": {
+    "rule": "각 source의 primary_concept에서 접미사 '이름'을 제거해 가공어 어간을 얻고, source_text 안의 동일 어간을 모두 '<가공어>'로 치환한다. 색·재질·위치·행동·문장 구조는 보존한다.",
+    "purpose": "source_id/source_family 라벨만 달리 붙인 개념명 슬롯 교체와 train-eval 상황 틀 재사용을 탐지한다."
+  },
+  "v2_train": {
+    "records": 22200,
+    "stem_normalized_unique_types": 5553,
+    "duplicate_type_groups": 2865,
+    "maximum_type_multiplicity": 641
+  },
+  "v2_eval": {
+    "records": 360,
+    "stem_normalized_unique_types": 273
+  },
+  "v2_train_eval": {
+    "shared_stem_normalized_types": 273,
+    "eval_records_in_shared_types": 360,
+    "eval_record_overlap_rate": 1.0
+  },
+  "v1_comparator": {
+    "train_records": 1000,
+    "train_primary_normalized_unique_types": 998,
+    "train_duplicate_type_groups": 2,
+    "train_maximum_type_multiplicity": 2,
+    "eval_records": 300,
+    "eval_primary_normalized_unique_types": 300
+  },
+  "findings": [
+    "v2 eval의 모든 레코드는 가공어 이름만 제거하면 train에 이미 존재하는 source 상황 틀과 겹친다.",
+    "현재 source_family 값은 실제 상황 계보가 아니라 레코드 묶음에 새 라벨을 부여한 값이어서 의미 수준 격리를 증명하지 못한다.",
+    "train 내부의 높은 반복도는 10M 토큰의 유효 다양성을 크게 낮추며, 개념명 슬롯 교체 금지 취지와 충돌할 위험이 있다."
+  ],
+  "decision": {
+    "accepted_for_training": false,
+    "accepted_for_evaluation": false,
+    "experiment_ready": false,
+    "required_action": "현재 draft를 보존한 채 실제 topic/situation family와 문장 구조가 다양한 새 revision을 생성하고, stem-normalized train/eval 교집합 0을 새 hard gate로 적용한다."
+  },
+  "not_run": [
+    "GPU",
+    "model_load",
+    "training",
+    "checkpoint",
+    "model_evaluation"
+  ]
+}
