@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""GPU/data-free regression tests for fetch_bench_data execution logging."""
+"""GPU/data-free regressions for fetch logging and held-out version discovery."""
 from __future__ import annotations
 
 import importlib.util
@@ -31,8 +31,26 @@ def test_utf8_log_mirrors_console_text() -> None:
         assert "[fetch_bench_data] ended=" in text
 
 
+def test_heldout_dirs_ignore_non_numeric_archive_names() -> None:
+    with tempfile.TemporaryDirectory() as temp:
+        root = Path(temp)
+        for name in ("held-out_v2.9", "held-out_v2.10", "held-out_v3.0",
+                     "held-out_v1_archive"):
+            (root / name).mkdir()
+        (root / "held-out_vnotes").write_text("history", encoding="utf-8")
+
+        found = MODULE.heldout_dirs(root)
+
+        assert list(found) == ["2.9", "2.10", "3.0"]
+        assert found["3.0"] == root / "held-out_v3.0"
+
+
 def main() -> int:
-    tests = [test_log_argument_forms, test_utf8_log_mirrors_console_text]
+    tests = [
+        test_log_argument_forms,
+        test_utf8_log_mirrors_console_text,
+        test_heldout_dirs_ignore_non_numeric_archive_names,
+    ]
     for test in tests:
         test()
         print(f"PASS {test.__name__}")

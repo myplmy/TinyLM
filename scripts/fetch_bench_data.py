@@ -247,15 +247,29 @@ def _fetch_bfcl(split):
 _HELDOUT_VERSION = "latest"          # main() 이 `--heldout-version` 으로 덮어쓴다
 
 
-def heldout_dirs():
-    """디스크의 모든 held-out 주·부 판을 **숫자 판 번호로** 정렬해 돌려준다."""
+def heldout_dirs(base=None):
+    """숫자형 held-out 판 디렉터리만 판 번호순으로 돌려준다.
+
+    ``held-out_v1_archive`` 같은 보관 파일·폴더도 glob 접두사에는 걸린다.
+    엄격한 ``heldout_version_key``를 정렬 키로 부르기 전에 디렉터리 여부와
+    숫자 판 이름을 선별해야 보관물이 정상 판 탐색을 막지 않는다.
+    """
     import sys as _sys
     _sys.path.insert(0, str(ROOT / "scripts"))
     from check_heldout_defects import BASE, heldout_version_key  # noqa: PLC0415
+    root = BASE if base is None else Path(base)
+    numbered = []
+    for candidate in root.glob("held-out_v*"):
+        if not candidate.is_dir():
+            continue
+        try:
+            heldout_version_key(candidate)
+        except ValueError:
+            continue
+        numbered.append(candidate)
     out = {}
-    for d in sorted(BASE.glob("held-out_v*"), key=heldout_version_key):
-        if d.is_dir():
-            out[d.name.split("held-out_v", 1)[1]] = d
+    for d in sorted(numbered, key=heldout_version_key):
+        out[d.name.split("held-out_v", 1)[1]] = d
     return out
 
 

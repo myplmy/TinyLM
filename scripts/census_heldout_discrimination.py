@@ -41,15 +41,22 @@
 
 ★**`태그=프리셋` 형태를 받는다** — 🚫`eval_bench_suite` 는 `--preset` 이 **하나뿐**이라
 깊이가 다른 모델을 한 호출에 섞으면 **체크포인트를 못 찾는다**(2026-09-10 발견).
+
+실행하면 `--out` JSON과 같은 폴더에
+`<YYYYMMDDhhmmss>_<JSON stem>.log`를 자동 생성한다. 콘솔 출력은 유지하며 시작시각·argv·
+traceback·exit code·종료시각을 함께 기록하고, 같은 시각의 기존 로그는 덮어쓰지 않는다.
 """
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import math
 import statistics
 import sys
+import traceback
 from collections import Counter, defaultdict
+from contextlib import contextmanager
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -66,6 +73,97 @@ D9_MIN = 0.60
 #   첫 census(2026-09-10)가 체크포인트 4개로 돌아 **"🚫미달" 을 찍었다** — 격자 인공물이었다(결과 074 §24.3).
 #   → n 이 전제와 다르면 **판정을 보류**한다(규칙 57 — 문턱에는 계기의 조건을 붙인다).
 D9_NCKPT = 6
+
+
+class _Tee:
+    """Write identical text to the live console and the persisted run log."""
+
+    def __init__(self, *streams):
+        self.streams = streams
+
+    def write(self, text):
+        for stream in self.streams:
+            stream.write(text)
+        return len(text)
+
+    def flush(self):
+        for stream in self.streams:
+            stream.flush()
+
+
+def _requested_output_path(argv):
+    """Extract ``--out`` without importing model dependencies or parsing all flags."""
+    for index, value in enumerate(argv):
+        if value == "--out" and index + 1 < len(argv):
+            return argv[index + 1]
+        if value.startswith("--out="):
+            return value.split("=", 1)[1]
+    return None
+
+
+def automatic_log_path(argv, started=None):
+    """Return a non-overwriting UTF-8 transcript path next to the result JSON.
+
+    Logging is automatic because an optional flag repeats the omission that prompted this
+    repair. A timestamp prefix keeps repeated GPU runs as separate evidence. If two runs
+    start in the same second, a numeric suffix preserves both instead of overwriting one.
+    """
+    started = started or dt.datetime.now().astimezone()
+    requested_out = _requested_output_path(argv)
+    if requested_out:
+        result_path = Path(requested_out)
+        parent, stem = result_path.parent, result_path.stem
+    else:
+        parent, stem = OUT, "census_heldout_discrimination"
+    prefix = started.strftime("%Y%m%d%H%M%S")
+    candidate = parent / f"{prefix}_{stem}.log"
+    serial = 2
+    while candidate.exists():
+        candidate = parent / f"{prefix}_{stem}_{serial}.log"
+        serial += 1
+    return candidate
+
+
+@contextmanager
+def execution_log(path, started=None):
+    """Mirror stdout/stderr to a new UTF-8 log without hiding the live console."""
+    started = started or dt.datetime.now().astimezone()
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    old_out, old_err = sys.stdout, sys.stderr
+    with target.open("x", encoding="utf-8", newline="\n") as stream:
+        sys.stdout = _Tee(old_out, stream)
+        sys.stderr = _Tee(old_err, stream)
+        try:
+            print(f"[census_heldout_discrimination] started={started.isoformat()}")
+            print("[census_heldout_discrimination] argv="
+                  + json.dumps(sys.argv, ensure_ascii=False))
+            print(f"[census_heldout_discrimination] log={target}")
+            yield
+        finally:
+            print("[census_heldout_discrimination] ended="
+                  + dt.datetime.now().astimezone().isoformat())
+            sys.stdout, sys.stderr = old_out, old_err
+
+
+def logged_main(argv, log_path=None, started=None):
+    """Run ``main`` inside the transcript boundary and preserve its process status."""
+    started = started or dt.datetime.now().astimezone()
+    target = Path(log_path) if log_path is not None else automatic_log_path(argv, started)
+    with execution_log(target, started):
+        try:
+            code = main()
+        except SystemExit as exc:
+            code = exc.code if isinstance(exc.code, int) else 1
+        except KeyboardInterrupt:
+            print("[census_heldout_discrimination] interrupted", file=sys.stderr)
+            code = 130
+        except Exception:  # noqa: BLE001 - preserving the traceback is the contract
+            traceback.print_exc()
+            code = 1
+        code = 0 if code is None else code
+        print(f"[census_heldout_discrimination] exit_code={code}")
+        return code
 
 
 def band_cells(n):
@@ -358,4 +456,7 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # Help is a read-only CLI query, not a census run, so it should not create an evidence file.
+    if any(arg in {"-h", "--help"} for arg in sys.argv[1:]):
+        sys.exit(main())
+    sys.exit(logged_main(sys.argv[1:]))

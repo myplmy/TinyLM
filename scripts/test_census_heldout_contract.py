@@ -2,7 +2,12 @@
 """GPU-free regression tests for the held-out census persistence contract."""
 from __future__ import annotations
 
+import datetime as dt
+import io
 import importlib.util
+import sys
+import tempfile
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
 
@@ -40,8 +45,75 @@ def test_family_ci_withheld_is_explicit() -> None:
     assert rows[0]["family_verdict"] == "withheld"
 
 
+def test_automatic_log_path_follows_output_and_never_overwrites() -> None:
+    started = dt.datetime(2026, 9, 14, 4, 30, 12, tzinfo=dt.timezone.utc)
+    with tempfile.TemporaryDirectory() as tmp:
+        out = Path(tmp) / "heldout.v3.0.json"
+        first = MODULE.automatic_log_path(["--out", str(out)], started)
+        assert first.parent == out.parent
+        assert first.name == "20260914043012_heldout.v3.0.log"
+        first.write_text("old evidence", encoding="utf-8")
+        second = MODULE.automatic_log_path([f"--out={out}"], started)
+        assert second.name == "20260914043012_heldout.v3.0_2.log"
+        assert first.read_text(encoding="utf-8") == "old evidence"
+
+
+def test_logged_main_mirrors_console_and_records_exit() -> None:
+    original_main = MODULE.main
+    console_out, console_err = io.StringIO(), io.StringIO()
+    with tempfile.TemporaryDirectory() as tmp:
+        log = Path(tmp) / "normal.log"
+
+        def fake_main():
+            print("normal stdout")
+            print("normal stderr", file=sys.stderr)
+            return 0
+
+        MODULE.main = fake_main
+        try:
+            with redirect_stdout(console_out), redirect_stderr(console_err):
+                code = MODULE.logged_main([], log_path=log)
+        finally:
+            MODULE.main = original_main
+        saved = log.read_text(encoding="utf-8")
+    assert code == 0
+    assert "normal stdout" in console_out.getvalue()
+    assert "normal stderr" in console_err.getvalue()
+    assert "normal stdout" in saved and "normal stderr" in saved
+    assert "[census_heldout_discrimination] exit_code=0" in saved
+    assert "[census_heldout_discrimination] ended=" in saved
+
+
+def test_logged_main_records_traceback_and_failure_exit() -> None:
+    original_main = MODULE.main
+    console_err = io.StringIO()
+    with tempfile.TemporaryDirectory() as tmp:
+        log = Path(tmp) / "failure.log"
+
+        def failing_main():
+            raise RuntimeError("census boom")
+
+        MODULE.main = failing_main
+        try:
+            with redirect_stderr(console_err):
+                code = MODULE.logged_main([], log_path=log)
+        finally:
+            MODULE.main = original_main
+        saved = log.read_text(encoding="utf-8")
+    assert code == 1
+    assert "RuntimeError: census boom" in console_err.getvalue()
+    assert "RuntimeError: census boom" in saved
+    assert "[census_heldout_discrimination] exit_code=1" in saved
+
+
 def main() -> int:
-    tests = [test_pairs_keep_discordance_and_family_ci, test_family_ci_withheld_is_explicit]
+    tests = [
+        test_pairs_keep_discordance_and_family_ci,
+        test_family_ci_withheld_is_explicit,
+        test_automatic_log_path_follows_output_and_never_overwrites,
+        test_logged_main_mirrors_console_and_records_exit,
+        test_logged_main_records_traceback_and_failure_exit,
+    ]
     for test in tests:
         test()
         print(f"PASS {test.__name__}")
