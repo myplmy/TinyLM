@@ -61,32 +61,47 @@ def _stop(reason: str) -> dict[str, Any]:
     }
 
 
-def _validated_state(
+def _routed_state(
     handoff_dir: Path,
     capsule_reader: Callable[[Path], str],
     session_id: str | None = None,
-) -> tuple[Path | None, str | None, str | None]:
+) -> tuple[Path | None, str | None, str | None, str | None]:
+    """Route compact state without ever borrowing another session's WIP.
+
+    A missing or unmatched session binding means there is no capsule to inject;
+    it is not evidence that compaction itself is unsafe.  A duplicate exact
+    binding or a stale exact-match capsule is state corruption and remains a
+    fail-closed error.
+    """
     wips = _open_wips(handoff_dir)
     if not wips:
-        return None, None, None
+        return None, None, None, None
     names = ", ".join(path.name for path in wips)
     if not session_id:
         return None, None, (
-            f"compact state gate: open WIP count is {len(wips)} and session_id is missing ({names})"
-        )
+            f"compact state routing warning: session_id is missing; skipped {len(wips)} "
+            f"open WIP(s) without selecting a foreign capsule ({names})"
+        ), None
     matches = [path for path in wips if _wip_session_id(path) == session_id]
-    if len(matches) != 1:
-        matched = ", ".join(path.name for path in matches) or "none"
+    if not matches:
         return None, None, (
+            f"compact state routing warning: session_id {session_id!r} matched 0 WIPs; "
+            f"skipped {len(wips)} open WIP(s) without selecting a foreign capsule ({names})"
+        ), None
+    if len(matches) > 1:
+        matched = ", ".join(path.name for path in matches)
+        return None, None, None, (
             f"compact state gate: session_id {session_id!r} matched {len(matches)} WIPs "
-            f"({matched}); open WIPs: {names}"
+            f"({matched}); exact ownership is ambiguous"
         )
     path = matches[0]
     try:
         capsule = capsule_reader(path)
     except Exception as exc:
-        return path, None, f"compact state gate: invalid or stale capsule ({type(exc).__name__}: {exc})"
-    return path, capsule, None
+        return path, None, None, (
+            f"compact state gate: invalid or stale capsule ({type(exc).__name__}: {exc})"
+        )
+    return path, capsule, None, None
 
 
 def evaluate_event(
@@ -103,16 +118,27 @@ def evaluate_event(
     if hook_event == PRE_COMPACT:
         if event.get("trigger") not in {"manual", "auto"}:
             return None
-        _, _, error = _validated_state(handoff_dir, capsule_reader, session_id)
-        return _stop(error) if error else {"continue": True, "suppressOutput": True}
+        _, _, warning, error = _routed_state(handoff_dir, capsule_reader, session_id)
+        if error:
+            return _stop(error)
+        if warning:
+            return {"continue": True, "systemMessage": warning}
+        return {"continue": True, "suppressOutput": True}
 
     if hook_event == SESSION_START:
         if event.get("source") != "compact":
             return None
-        path, capsule, error = _validated_state(handoff_dir, capsule_reader, session_id)
+        path, capsule, warning, error = _routed_state(handoff_dir, capsule_reader, session_id)
         if error:
             return _stop(error)
-        if path is None or capsule is None:
+        if warning:
+            context = (
+                "[TinyLM compact recovery v1]\n"
+                f"{warning}. 현재 세션 WIP로 선택·수정·종료하지 않는다. "
+                "완료·승인·NOT_RUN 상태를 추측하지 말고 현재 사용자 지시와 "
+                "최신 유효 핸드오프부터 다시 확인한다."
+            )
+        elif path is None or capsule is None:
             context = (
                 "[TinyLM compact recovery v1]\n"
                 "열린 WIP 없음. 완료·승인·NOT_RUN 상태를 추측하지 말고 현재 사용자 지시와 "

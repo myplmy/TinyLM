@@ -94,21 +94,26 @@ class CompactStateTests(unittest.TestCase):
         self.assertFalse(response["continue"])
         self.assertIn("STALE_CAPSULE", response["stopReason"])
 
-    def test_ambiguous_open_wips_stop_both_paths(self) -> None:
+    def test_unbound_open_wips_do_not_block_compaction_or_leak_capsules(self) -> None:
         self.add_wip("WIP_20990101_작업원장.md")
         self.add_wip("WIP_20990101a_작업원장.md")
-        for payload in (
+        precompact = HOOK.evaluate_event(
             event("PreCompact", trigger="manual"),
+            handoff_dir=self.handoff,
+            capsule_reader=self.reader,
+        )
+        self.assertTrue(precompact["continue"])
+        self.assertIn("session_id is missing", precompact["systemMessage"])
+
+        session_start = HOOK.evaluate_event(
             event("SessionStart", source="compact"),
-        ):
-            with self.subTest(payload=payload):
-                response = HOOK.evaluate_event(
-                    payload,
-                    handoff_dir=self.handoff,
-                    capsule_reader=self.reader,
-                )
-                self.assertFalse(response["continue"])
-                self.assertIn("count is 2", response["stopReason"])
+            handoff_dir=self.handoff,
+            capsule_reader=self.reader,
+        )
+        context = session_start["hookSpecificOutput"]["additionalContext"]
+        self.assertIn("session_id is missing", context)
+        self.assertIn("현재 세션 WIP로 선택·수정·종료하지 않는다", context)
+        self.assertNotIn(next(iter(SENTINELS.values())), context)
 
     def test_multiple_open_wips_select_exact_session_binding(self) -> None:
         self.add_wip("WIP_20990101_작업원장.md", "thread-a")
@@ -127,7 +132,7 @@ class CompactStateTests(unittest.TestCase):
         self.assertEqual(seen, [chosen])
         self.assertIn(chosen.name, response["hookSpecificOutput"]["additionalContext"])
 
-    def test_multiple_open_wips_reject_unknown_session(self) -> None:
+    def test_multiple_open_wips_skip_unknown_session_without_blocking(self) -> None:
         self.add_wip("WIP_20990101_작업원장.md", "thread-a")
         self.add_wip("WIP_20990101a_작업원장.md", "thread-b")
         response = HOOK.evaluate_event(
@@ -135,10 +140,11 @@ class CompactStateTests(unittest.TestCase):
             handoff_dir=self.handoff,
             capsule_reader=self.reader,
         )
-        self.assertFalse(response["continue"])
-        self.assertIn("matched 0 WIPs", response["stopReason"])
+        self.assertTrue(response["continue"])
+        self.assertIn("matched 0 WIPs", response["systemMessage"])
+        self.assertIn("without selecting a foreign capsule", response["systemMessage"])
 
-    def test_single_open_wip_still_requires_exact_session_binding(self) -> None:
+    def test_single_open_wip_missing_or_mismatched_binding_does_not_block(self) -> None:
         self.add_wip(session_id="thread-a")
         for payload, marker in (
             (event("PreCompact", trigger="auto"), "session_id is missing"),
@@ -153,8 +159,8 @@ class CompactStateTests(unittest.TestCase):
                     handoff_dir=self.handoff,
                     capsule_reader=self.reader,
                 )
-                self.assertFalse(response["continue"])
-                self.assertIn(marker, response["stopReason"])
+                self.assertTrue(response["continue"])
+                self.assertIn(marker, response["systemMessage"])
 
     def test_single_unbound_legacy_wip_is_not_used_as_another_session(self) -> None:
         self.add_wip()
@@ -163,8 +169,27 @@ class CompactStateTests(unittest.TestCase):
             handoff_dir=self.handoff,
             capsule_reader=self.reader,
         )
-        self.assertFalse(response["continue"])
-        self.assertIn("matched 0 WIPs", response["stopReason"])
+        context = response["hookSpecificOutput"]["additionalContext"]
+        self.assertIn("matched 0 WIPs", context)
+        self.assertIn("현재 세션 WIP로 선택·수정·종료하지 않는다", context)
+        self.assertNotIn(next(iter(SENTINELS.values())), context)
+
+    def test_duplicate_exact_session_bindings_stop_both_paths(self) -> None:
+        self.add_wip("WIP_20990101_작업원장.md", TEST_SESSION)
+        self.add_wip("WIP_20990101a_작업원장.md", TEST_SESSION)
+        for payload in (
+            event("PreCompact", trigger="manual", session_id=TEST_SESSION),
+            event("SessionStart", source="compact", session_id=TEST_SESSION),
+        ):
+            with self.subTest(payload=payload):
+                response = HOOK.evaluate_event(
+                    payload,
+                    handoff_dir=self.handoff,
+                    capsule_reader=self.reader,
+                )
+                self.assertFalse(response["continue"])
+                self.assertIn("matched 2 WIPs", response["stopReason"])
+                self.assertIn("ownership is ambiguous", response["stopReason"])
 
     def test_no_open_wip_is_explicit_after_compact(self) -> None:
         response = HOOK.evaluate_event(
@@ -225,8 +250,10 @@ class CompactStateProcessTests(unittest.TestCase):
             self.assertIn("[TinyLM compact recovery v1]", context)
             self.assertIn("열린 WIP 없음", context)
         else:
-            self.assertFalse(payload["continue"])
-            self.assertIn("matched", payload["stopReason"])
+            context = payload["hookSpecificOutput"]["additionalContext"]
+            self.assertIn("[TinyLM compact recovery v1]", context)
+            self.assertIn("matched 0 WIPs", context)
+            self.assertIn("현재 세션 WIP로 선택·수정·종료하지 않는다", context)
 
 
 if __name__ == "__main__":
