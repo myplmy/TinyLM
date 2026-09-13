@@ -8,6 +8,38 @@
   "planDoneDir": "test_plan",
   "planDoneConvention": "완료 문서는 같은 디렉터리에서 -done.md 접미사를 사용한다.",
   "handoffDir": "handoff",
+  "documentRouting": {
+    "proposal": {
+      "defaultDir": "proposal",
+      "template": "proposal/_TEMPLATE.md",
+      "filenamePattern": "YYYYMMDD_slug.md",
+      "temporaryPrefix": "temp_",
+      "temporaryRequiresExplicitPath": true
+    },
+    "experimentPlan": {
+      "defaultDir": "test_plan",
+      "filenamePattern": "P0NN_slug.md"
+    },
+    "experimentResult": {
+      "defaultDir": "test_result",
+      "filenamePattern": "NNN_YYYYMMDDHHMMSS_slug.md"
+    },
+    "handoff": {
+      "defaultDir": "handoff",
+      "filenamePattern": "YYYYMMDDHHMM_HANDOFF.md",
+      "generator": "scripts/new_handoff.py"
+    },
+    "wip": {
+      "defaultDir": "handoff",
+      "filenamePattern": "WIP_YYYYMMDD_suffix_작업원장.md",
+      "generator": "scripts/wip.py"
+    },
+    "reviewRequest": {
+      "defaultDir": "review_request",
+      "filenamePattern": "YYYYMMDD_slug.md"
+    }
+  },
+  "explicitDocumentPathPolicy": "A user-named output path applies only to that exact artifact; it does not change routing for sibling artifacts.",
   "sharedImplementationLedger": "ai_dev_tool/09_구현검증_필요목록.md",
   "sharedImplementationLedgerPolicy": "reference-only; do not copy, move, mirror, or create a Codex 09",
   "baseBranch": null,

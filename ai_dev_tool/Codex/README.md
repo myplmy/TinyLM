@@ -1,7 +1,7 @@
 # TinyLM Codex 작업환경 — 소유권·분리 계약
 
 > 제정: 2026-09-11, 승인된 제안서 P1  
-> 상태: **P0~P8 완료 / P8 `PASS` / `ACTIVE_VERIFIED` — 2026-09-12 Code Mode `PreToolUse` 위험 쓰기 차단 검증 범위**
+> 상태: **P0~P8 역사 증거 `PASS / ACTIVE_VERIFIED`; 2026-09-13 확장 훅은 `STATIC_ONLY / E2E_NOT_RUN`**
 > 제안서: `proposal/done/20260911_Codex-작업환경-완전분리-구축-approved.md`  
 > 항목별 설계표: [`temp_AGENTS.MD_항목별_00_08_이식목록.md`](temp_AGENTS.MD_항목별_00_08_이식목록.md)
 > 정적 검증 보고: [`P7_정적종합검증_보고.md`](P7_정적종합검증_보고.md)
@@ -19,7 +19,7 @@
 | P2 Codex 00~08 | **완료·P7 정적검증 통과** | 10개 초벌 사본을 의미 단위로 이식하고 상호링크·역사 표지를 종합검증 |
 | P3 설정 | **완료·P7 정적검증 통과** | `.agents/project.json`과 `.codex/config.toml`의 구문·경로·역할 분리 확인 |
 | P4 스킬 | **완료·P7 정적검증 통과** | 17개 스킬과 부속 파일의 구문·참조·정적 계약·독립성 확인 |
-| P5 훅 | **구현·교정·로컬검증·새 세션 활성 확인** | 독립 guard에 Windows outer-quote 안전 wrapper를 추가하고 로컬 훅 테스트 16개를 통과했다. P8 최종 E2E에서 루트·`scripts/` 위험 쓰기 probe가 실제 셸 실행 전에 2/2 차단됐다 |
+| P5 훅 | **기존 위험쓰기 범위 `ACTIVE_VERIFIED`; 신규 확장 `STATIC_ONLY`** | 2026-09-12 P8에서 루트·`scripts/` 위험 쓰기 probe 2/2 차단을 관찰했다. 2026-09-13 추가한 WIP 직접수정 차단과 compact 캡슐은 mock PASS이나 새 세션 E2E는 아직 `NOT_RUN` |
 | P6 `AGENTS.md` 축약·전환 | **완료** | 890행·100,960바이트에서 219행·14,057바이트로 축약하고 Codex 전용 진입 규범으로 전환 |
 | P7 정적 종합검증 | **PASS** | 환경 전용 검사 20/20 통과, 루트 09 기준선 SHA-256 일치. P7 당시 프로젝트·모델 스모크는 `NOT_RUN`; 2026-09-12 별도 사용자 실행은 §1.2 `PASS` |
 | P8 새 세션 E2E | **`PASS / ACTIVE_VERIFIED`** | 2026-09-12 새 Code Mode 세션에서 `AGENTS.md` 자동 적용, 저장소 스킬 17개 발견, 정상 probe 허용, 루트·`scripts/` 차단 probe 2/2 deny, fail-open 경고 0건과 probe 파일 0개를 실제 관찰했다. 범위는 §1.1로 한정한다 |
@@ -63,9 +63,24 @@ CLI 버전 조회 중 임시 경로 권한 경고 2건이 있었지만 버전 �
 20개(코드 1개)가 더해진 작업트리였으므로, 순수 커밋 `254f4ff`만의 재현 증거로 읽지 않는다.
 합성 30스텝 손실값은 품질 근거가 아니며 계측값의 물리적 정확성까지 증명하지 않는다.
 
-⚠️이 로그 뒤 `scripts/sync_experiments_tsv.py`를 수정했다. 따라서 §1.2는 **실행 당시 트리의 PASS 기록**이고,
+⚠️이 로그 뒤 프로젝트 코드와 Codex 훅·작업 도구를 수정했다. 따라서 §1.2는 **실행 당시 트리의 PASS 기록**이고,
 후속 수정분을 포함한 현재 트리의 프로젝트 스모크는 **E2E_NOT_RUN**이다. 장기 실험 큐 전에 사용자가
 `run_smoke_check.bat`를 다시 실행해야 한다.
+
+### 1.3 2026-09-13 승인 개선안의 단계적 도입 상태
+
+| 변경 | 정적 증거 | 현재 동적 상태 |
+|---|---|---|
+| WIP v2·감사형 override | 6열 계약·원자교체·lock·CP949 출력 회귀 fixture | `STATIC_ONLY`; 실제 다중 세션 경합 E2E는 `NOT_RUN` |
+| WIP 직접수정 보조 차단 | Bash·`apply_patch` mock deny와 정상 `wip.py` 허용 | `STATIC_ONLY`; 새 hash 신뢰·실제 deny는 `E2E_NOT_RUN` |
+| compact 상태 캡슐 | 8필드 sentinel, 수동/자동 `PreCompact`, `SessionStart(source=compact)` mock | M0~M3 `STATIC_ONLY`; M4 수동 compact·M5 auto compact E2E `NOT_RUN`; M6 전환 승인 대기 |
+| 핸드오프 계승 | 6열 지시·동기화표·10열 큐·스모크 disposition fixture | 신규 실제 핸드오프에서 최종 검증 예정 |
+| Git Bash 구문 검사 | 알려진 Windows startup 실패와 실제 `bash -n` 오류를 분리한 fixture | 현재 호스트의 POSIX 셸 구문 검사는 실행 결과에 따라 `PASS/FAIL/NOT_RUN` |
+
+환경 검사기는 이제 `PASS / FAIL / NOT_RUN`을 분리한다. 알려진 Windows signal-pipe·Win32 error 5·
+`0xC0000142` Bash 시작 실패 또는 Bash 부재는 소스 오류가 아니므로 `NOT_RUN`이다. 실제 `bash -n`
+구문 오류와 알 수 없는 startup 오류만 `FAIL`이며, 배포 게이트에서 반드시 Bash 증거가 필요하면
+`--require-shell-syntax`로 `NOT_RUN`을 실패로 승격한다. 따라서 `NOT_RUN`을 PASS로 읽어서는 안 된다.
 
 ## 2. 런타임 경계
 

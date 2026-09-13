@@ -1,16 +1,45 @@
 {
-  "description": "TinyLM Codex 전용 PreToolUse 역슬래시 쓰기 보호 훅",
+  "description": "TinyLM Codex 전용 상태캡슐·PreToolUse 역슬래시·WIP 직접수정 보호 훅",
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "^compact$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/compact_state.py\"",
+            "commandWindows": "cmd.exe /d /q /c powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command . (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/compact_state_windows.ps1')",
+            "timeout": 5,
+            "additionalContextLimit": 1200,
+            "statusMessage": "TinyLM compact 상태 캡슐을 복구하는 중"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "^(manual|auto)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/compact_state.py\"",
+            "commandWindows": "cmd.exe /d /q /c powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command . (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/compact_state_windows.ps1')",
+            "timeout": 5,
+            "statusMessage": "TinyLM compact 상태 캡슐 최신성을 확인하는 중"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
-        "matcher": "^Bash$",
+        "matcher": "^(Bash|apply_patch)$",
         "hooks": [
           {
             "type": "command",
             "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/guard_backslash.py\"",
             "commandWindows": "cmd.exe /d /q /c powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command . (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/guard_backslash_windows.ps1')",
             "timeout": 5,
-            "statusMessage": "Codex 쓰기 명령의 역슬래시 안전성을 확인하는 중"
+            "statusMessage": "Codex 쓰기 명령의 역슬래시·WIP 변경 경로를 확인하는 중"
           }
         ]
       }

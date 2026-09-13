@@ -35,6 +35,15 @@ def event(
     }
 
 
+def patch_event(patch: str, *, as_string: bool = False) -> dict[str, object]:
+    return {
+        "hook_event_name": "PreToolUse",
+        "cwd": str(GUARD_PATH.parents[2]),
+        "tool_name": "apply_patch",
+        "tool_input": patch if as_string else {"patch": patch},
+    }
+
+
 def decision(response: dict[str, object] | None) -> str | None:
     if not isinstance(response, dict):
         return None
@@ -113,6 +122,36 @@ class GuardEvaluationTests(unittest.TestCase):
         self.assertIsInstance(response, dict)
         self.assertIsNone(decision(response))
         self.assertIn("systemMessage", response)
+
+    def test_direct_shell_wip_write_is_denied(self) -> None:
+        command = (
+            "Set-Content -LiteralPath "
+            "'handoff/WIP_20260913_작업원장.md' -Value 'manual'"
+        )
+        self.assertEqual(decision(GUARD.evaluate_event(event(command))), "deny")
+
+    def test_normal_wip_api_command_is_not_denied(self) -> None:
+        command = (
+            "python -X utf8 scripts/wip.py --start 1 --file "
+            "handoff/WIP_20260913_작업원장.md --note ok --resume next"
+        )
+        self.assertIsNone(GUARD.evaluate_event(event(command)))
+
+    def test_apply_patch_targeting_wip_is_denied_for_both_input_shapes(self) -> None:
+        patch = (
+            "*** Begin Patch\n*** Update File: "
+            "handoff/WIP_20260913_작업원장.md\n@@\n-old\n+new\n*** End Patch"
+        )
+        for as_string in (False, True):
+            with self.subTest(as_string=as_string):
+                self.assertEqual(
+                    decision(GUARD.evaluate_event(patch_event(patch, as_string=as_string))),
+                    "deny",
+                )
+
+    def test_apply_patch_for_non_wip_file_continues(self) -> None:
+        patch = "*** Begin Patch\n*** Update File: docs/note.md\n*** End Patch"
+        self.assertIsNone(GUARD.evaluate_event(patch_event(patch)))
 
     def test_missing_allowlist_is_fail_open_with_warning(self) -> None:
         missing = GUARD_PATH.with_name("definitely_missing_allowlist.tsv")

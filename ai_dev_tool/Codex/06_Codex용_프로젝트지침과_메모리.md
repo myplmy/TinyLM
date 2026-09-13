@@ -1,7 +1,7 @@
 # 06. Codex용 프로젝트 지침과 메모리
 
 > 제정: 2026-09-11, 승인된 완전분리 제안 P2  
-> 상태: **Codex 독립 이식본 / P0~P8 완료 / P8 `PASS` / Code Mode `PreToolUse` 위험 쓰기 차단 범위 `ACTIVE_VERIFIED`**
+> 상태: **P0~P8 역사 증거 `PASS / ACTIVE_VERIFIED`; 2026-09-13 확장 훅·작업도구 `STATIC_ONLY / E2E_NOT_RUN`**
 > 환경 경계: [`README.md`](README.md)  
 > 작업규약: [`00_WORKING_RULES.md`](00_WORKING_RULES.md) · [한글 대조본](00_작업규약_한글판.md)
 > 환경 검증: [`P7_정적종합검증_보고.md`](P7_정적종합검증_보고.md)
@@ -21,7 +21,8 @@
 5. `handoff/`의 최신 유효 `*_HANDOFF.md` — 직전 작업의 실제 완료·미실행·사용자 요청.
 6. 작업 유형에 맞는 Codex 01~08과 `.agents/skills/**` — P7 정적 계약에 더해 P8 최종 E2E에서
    `AGENTS.md`·17개 스킬 발견과 교정된 훅의 루트·`scripts/` 위험 쓰기 차단 2/2를 확인했다.
-   `ACTIVE_VERIFIED`는 이 Code Mode `PreToolUse` 관찰 범위에 한정한다.
+   `ACTIVE_VERIFIED`는 당시 Code Mode `PreToolUse` 관찰 범위에 한정한다. 2026-09-13 추가한
+   WIP 직접수정 차단·compact 상태 캡슐은 mock 정적 증거만 있으므로 새 세션 E2E 전까지 의존하지 않는다.
 
 최신 공유 핸드오프는 파일명·`이전` 체인·존재 증거를 동적으로 대조해 고르며, 이 문서에 특정 파일명을 최신값으로 고정하지 않는다.
 
@@ -68,6 +69,11 @@ TinyLM은 저사양 CPU·엣지·모바일 배포를 위한 초경량 LLM 아키
 - `datasets/TinyDataset/**`는 2026-09-11 현재 데이터셋 팀이 생성 작업 중이다. P0~P7과
   현재 P8 교정 작업에서 열람·열거·해시·검색·검사·수정·staging을 모두 하지 않는다.
 - 사용자 또는 다른 작업자의 dirty/untracked 파일은 해당 작업자의 소유다. 변경 허용목록 밖 파일을 정리하거나 되돌리지 않는다.
+- 비자명한 변경 전에는 `파일·경로 / 예정 동작 / 권한 근거 / NOT_RUN·제외`를 행별로 고정한다.
+  검토·제안 지시는 그 문서의 읽기·쓰기 권한일 뿐 구현 승인이 아니다. `.agents/**`, `.codex/**`,
+  작업흐름 생성기·검사기는 직접 지시 또는 승인된 구현 제안이 있어야 변경한다. 같은 권한의 패치
+  묶음 뒤 `scripts/check_change_scope.py`로 실제 변경 경로를 대조하되, 보호 데이터 경로는 이
+  검사기의 allowlist에도 넣지 않는다.
 - 설치·다운로드·외부 획득, 장시간 계산, 보호 데이터 변경은 별도 승인을 받는다.
 - 현재 사용자 지시에 별도 시간이 없으면 다음 실험 배치의 편성 목표는 **48시간**이다. 이는 중복·저가치
   실험으로 채우는 최소 할당량이 아니며, 유효한 후보가 부족하면 수치와 선결을 포함한 미달 사유를 남긴다.
@@ -105,10 +111,10 @@ TinyLM은 저사양 CPU·엣지·모바일 배포를 위한 초경량 LLM 아키
 | 최근 큰 결과 | P087 1,200M 토큰 런이 과적합 신호 없이 기존 대조보다 개선 | 최신 핸드오프 §1.2, 결과 073 §10, 기준표 B.31 |
 | 프로젝트 정적 게이트 | 환경 이식 착수 전 마지막 공유 기록은 35/35 통과. 이번 환경 P7은 보호 데이터 비접근 전용 검사라 그 결과를 갱신하지 않음 | 최신 공유 핸드오프 §5; 프로젝트 게이트는 이번 작업 `NOT_RUN` |
 | Codex 환경 정적 게이트 | 20/20 PASS, 교정 뒤 훅 테스트 16/16 PASS | [`P7_정적종합검증_보고.md`](P7_정적종합검증_보고.md), [`P8 교정 보고`](P8_새세션_E2E_1차실패_원인분석_및_교정.md) |
-| 동적 스모크 | **사용자 실행 당시 PASS** — 41팔 실패 0, exit 0 오류표지 0, 계측 계약 오류 0. 이후 `sync_experiments_tsv.py` 수정분은 `E2E_NOT_RUN` | [`202609121745_smoke_254f4ff.txt`](../../smoketest_logs/202609121745_smoke_254f4ff.txt) 최종 SUMMARY, 최신 WIP·핸드오프 |
+| 동적 스모크 | **사용자 실행 당시 PASS** — 41팔 실패 0, exit 0 오류표지 0, 계측 계약 오류 0. 이후 프로젝트 코드·훅·작업도구 수정분은 `E2E_NOT_RUN` | [`202609121745_smoke_254f4ff.txt`](../../smoketest_logs/202609121745_smoke_254f4ff.txt) 최종 SUMMARY, 최신 WIP·핸드오프 |
 | GPU/학습/census/모델 로딩 | 이번 Codex P0~P8 교정 작업에서 0회 | 현재 WIP |
 | 데이터셋 | 데이터셋 팀 작업 중, 본 작업 접근 0건 | 사용자 현재 지시, 현재 WIP |
-| Codex 환경 | P0~P8 완료. P8 최종 E2E는 지침·17개 스킬 발견, 정상 probe와 위험 쓰기 차단 2/2로 `PASS`; Code Mode `PreToolUse` 검증 범위 `ACTIVE_VERIFIED` | [`README.md` §1.1](README.md#11-p8-최종-e2e-관찰-기록--2026-09-12), [`P8 1차 교정 보고`](P8_새세션_E2E_1차실패_원인분석_및_교정.md), 최신 WIP·핸드오프 |
+| Codex 환경 | P0~P8 역사 범위는 `ACTIVE_VERIFIED`. 2026-09-13 확장한 WIP·compact·handoff 계약은 `STATIC_ONLY`; 현재 새 세션 E2E `NOT_RUN` | [`README.md` §1.1·§1.3](README.md), 최신 WIP·핸드오프 |
 
 공유 핸드오프의 35/35와 이번 환경 P7의 20/20은 검사 대상이 다르다. P7 PASS를 제품·모델·
 보호 데이터 또는 프로젝트 종합 게이트 통과로 승격하지 않는다.
@@ -249,11 +255,13 @@ P8 최종 E2E에서 `session-handoff`, `wip-ledger`를 포함한 저장소 스�
   루트·`scripts/` 위험 쓰기 probe 2/2의 셸 실행 전 deny, fail-open 경고 0건과 잔존 probe 파일
   0개를 확인해 `PASS / ACTIVE_VERIFIED`로 판정했다.
 
-따라서 현재 최고 상태는 **Code Mode `PreToolUse` 위험 쓰기 차단 범위의
+따라서 역사적으로 검증된 최고 상태는 **2026-09-12 Code Mode `PreToolUse` 위험 쓰기 차단 범위의
 `ACTIVE_VERIFIED`**다. 상세 관찰표와 범위는 [`README.md` §1.1](README.md#11-p8-최종-e2e-관찰-기록--2026-09-12),
 1차 실패와 교정 근거는 [`P8 교정 보고`](P8_새세션_E2E_1차실패_원인분석_및_교정.md)가 소유한다.
 프로젝트·모델 스모크는 2026-09-12 사용자 실행 당시 트리에서 **PASS**다. 이 로그는 commit `254f4ff`와 당시
 dirty 20개(코드 1개)의 합을 검증했으며 합성 손실·물리적 계측 정확성의 품질 증거는 아니다. 이후
-`scripts/sync_experiments_tsv.py` 수정분은 로그 범위 밖이므로 현재 트리의 새 스모크는 `E2E_NOT_RUN`이다.
+프로젝트 코드와 Codex 훅·작업도구 수정분은 로그 범위 밖이므로 현재 트리의 새 스모크는 `E2E_NOT_RUN`이다.
+WIP 직접수정 차단과 manual/auto compact 캡슐은 mock만 통과했으며 새 hash 신뢰·실제 차단·상태 재주입은
+사용자 새 세션 E2E 전까지 `NOT_RUN`이다.
 Desktop 버전은 미확인이다. 최종 E2E에서 직접 실행하지 않은
 guard·wrapper·단위 테스트·환경 검사기를 같은 동적 증거로 확대하지 않는다.

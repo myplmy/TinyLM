@@ -1,6 +1,6 @@
 # 00 — CODEX WORKING RULES (operational, English)
 
-> **Last updated**: 2026-09-12 · **Rule counts**: `[gate]` 8 · `[human]` 46 · `[fact]` 3
+> **Last updated**: 2026-09-13 · **Rule counts**: `[gate]` 9 · `[human]` 47 · `[fact]` 3
 
 **Read this one every session.** It is the short list. Rationale, evidence and war
 stories live in the Codex-owned ledgers (01–08) and shared project evidence; this file only says
@@ -35,6 +35,15 @@ that environment-only run because it includes protected-data checks.
 - **R04** `[human]` **Never write "조치 완료" without a file diff.** And a diff is not
   proof either — declaring bf16 fixed twice on the strength of a diff is confession A4.
   Proof is a gate that failed before the fix and passes after.
+- **R58** `[human]` **Separate technical impact from write authority.** Before changing files,
+  record `path / intended action / exact user-authority basis / NOT_RUN or exclusion` per row.
+  Review or proposal work is not implementation approval. `.agents/**`, `.codex/**`, and workflow
+  generators or validators require a direct instruction or an approved implementation proposal.
+  After each same-authority patch group, compare the actual changed paths with that allowlist.
+- **R59** `[gate]` **Separate POSIX source failure from shell-runtime startup failure.** A real
+  `bash -n` syntax error is `FAIL`; known Windows signal-pipe/Win32 error 5/`0xC0000142` startup
+  failure or missing Bash is `NOT_RUN`. Only a deployment gate that requires this evidence uses
+  `--require-shell-syntax` to promote `NOT_RUN` to failure.
 
 ## B. Comparison validity — this is where numbers go wrong
 

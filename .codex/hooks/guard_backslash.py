@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Codex PreToolUse guard for risky backslash escapes in shell write commands.
+"""Codex PreToolUse guard for risky escapes and direct WIP mutations.
 
 This hook is deliberately narrow. It does not try to authorize commands or replace
 Codex permissions. It only blocks a known class of accidental text corruption.
@@ -17,6 +17,7 @@ from typing import Any
 
 HOOK_EVENT = "PreToolUse"
 SHELL_TOOL = "Bash"
+PATCH_TOOL = "apply_patch"
 SCRIPT_DIR = Path(__file__).resolve().parent
 ALLOWLIST_PATH = SCRIPT_DIR / "backslash_whitelist.tsv"
 
@@ -73,6 +74,18 @@ WRITE_INTENT_RES = (
     re.compile(r"(?m)^\s*<<-?\s*['\"]?[A-Za-z_][A-Za-z0-9_]*['\"]?\s*$"),
 )
 
+WIP_PATH_RE = re.compile(
+    r"(?i)(?:^|[^A-Za-z0-9_.-])handoff[/\\]"
+    r"WIP_[^\s'\"|<>/\\]+_작업원장(?:-done)?\.md"
+)
+WIP_MUTATION_RES = WRITE_INTENT_RES + (
+    re.compile(
+        r"(?i)\b(?:Set-Content|Add-Content|Clear-Content|Out-File|"
+        r"Remove-Item|Move-Item|Rename-Item|Copy-Item|New-Item)\b"
+    ),
+    re.compile(r"(?i)(?:^|[;&|]\s*|\s)(?:rm|mv|cp|touch|truncate)\s"),
+)
+
 
 def _configure_utf8_streams() -> None:
     for stream in (sys.stdin, sys.stdout, sys.stderr):
@@ -106,6 +119,16 @@ def _has_write_intent(command: str) -> bool:
     return any(pattern.search(without_null_redirects) for pattern in WRITE_INTENT_RES)
 
 
+def _targets_wip(value: str) -> bool:
+    normalized = value.replace("\\\\", "\\")
+    return WIP_PATH_RE.search(normalized) is not None
+
+
+def _has_wip_mutation_intent(command: str) -> bool:
+    without_null_redirects = NULL_REDIRECT_RE.sub(" ", command)
+    return any(pattern.search(without_null_redirects) for pattern in WIP_MUTATION_RES)
+
+
 def _risky_markers(command: str) -> list[str]:
     markers: list[str] = []
     if CONTROL_CHARACTER_RE.search(command):
@@ -123,12 +146,26 @@ def _warning(message: str) -> dict[str, str]:
     return {"systemMessage": message}
 
 
-def _deny(markers: list[str]) -> dict[str, Any]:
+def _deny_backslash(markers: list[str]) -> dict[str, Any]:
     marker_text = ", ".join(markers[:5])
     reason = (
         "Codex 전용 역슬래시 보호 훅이 쓰기 명령에서 위험한 이스케이프를 감지했습니다"
         f" ({marker_text}). here-string, apply_patch 또는 안전한 파일 API를 사용하고, "
         "의도한 리터럴이면 backslash_whitelist.tsv의 명시 토큰을 명령에 포함하십시오."
+    )
+    return {
+        "hookSpecificOutput": {
+            "hookEventName": HOOK_EVENT,
+            "permissionDecision": "deny",
+            "permissionDecisionReason": reason,
+        }
+    }
+
+
+def _deny_wip() -> dict[str, Any]:
+    reason = (
+        "WIP 작업원장의 직접 수정을 차단했습니다. scripts/wip.py의 --new, --add, "
+        "상태 전이, --override 또는 --close를 사용해야 수정 전후와 근거가 원자적으로 기록됩니다."
     )
     return {
         "hookSpecificOutput": {
@@ -148,15 +185,34 @@ def evaluate_event(
         return None
     if event.get("hook_event_name") != HOOK_EVENT:
         return None
-    if event.get("tool_name") != SHELL_TOOL:
+    tool_name = event.get("tool_name")
+    if tool_name not in (SHELL_TOOL, PATCH_TOOL):
         return None
 
     tool_input = event.get("tool_input")
+    if tool_name == PATCH_TOOL:
+        if isinstance(tool_input, str):
+            patch_text = tool_input
+        elif isinstance(tool_input, dict):
+            patch_text = next(
+                (
+                    value
+                    for key in ("patch", "input", "command")
+                    if isinstance((value := tool_input.get(key)), str)
+                ),
+                "",
+            )
+        else:
+            patch_text = ""
+        return _deny_wip() if _targets_wip(patch_text) else None
+
     if not isinstance(tool_input, dict):
         return None
     command = tool_input.get("command")
     if not isinstance(command, str) or not command.strip():
         return None
+    if _targets_wip(command) and _has_wip_mutation_intent(command):
+        return _deny_wip()
     if not _has_write_intent(command):
         return None
 
@@ -179,7 +235,7 @@ def evaluate_event(
             "실행 전 리터럴 역슬래시가 의도된 것인지 다시 확인하십시오."
         )
 
-    return _deny(markers)
+    return _deny_backslash(markers)
 
 
 def main() -> int:

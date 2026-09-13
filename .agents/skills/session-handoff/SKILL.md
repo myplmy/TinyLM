@@ -51,10 +51,15 @@ python scripts/new_handoff.py --title "<이 세션이 남긴 것 한 줄>"
 - `§0`: 사용자 지시 원문, 판단한 목적, 필요 작업, 실제 작업, 결과를 분리한 표
 - `§1`: 가장 중요한 사실 세 가지
 - `§2~K`: 지시별 상세 근거·수치·판정과 `NOT_RUN` 상태
-- `사용자에게 부탁하는 것`: 비어도 쓰고, `-done` 배치 삭제 판정을 항상 포함
-- `다음 권장 실험 순서`: `순/id/실험/배치 파일/⚙/누적/선결/근거` 열
+- `정본 동기화·미갱신 사유`: `산출물/필요 여부/실제 diff/미갱신 사유`를 모두 채움
+- `스모크·동적 검증 계승`: `REQUIRED_USER_RUN`, `NOT_REQUIRED(정확한 근거)`,
+  `NOT_RUN_PENDING` 중 하나를 기록하고 대기 상태는 사용자 부탁과 연결
+- `사용자에게 부탁하는 것`: `대상/정확한 위치/근거/사용자가 할 행동/완료 신호/AI 후속 처리`
+  여섯 요소를 한 행에 두며, 비어도 쓰고 `-done` 배치 삭제 판정을 항상 포함
+- `다음 권장 실험 순서`: `순/id/실험/배치 파일/⚙/누적/인벤토리/실행상태/선결/근거` 열과
+  `이전 큐 제외·완료 이관` 표. 상태는 인벤토리와 즉시 실행 가능성을 섞지 않음
 - `커밋 메시지`: 한국어 제목과 본문을 별도 라벨·별도 코드블록으로
-- `열린 질문`, `새 세션 시작 프롬프트`, `compact 프롬프트`, `참조 치트시트`
+- `열린 질문`, 상태 분기한 `새 세션 시작 프롬프트`, `compact 프롬프트`, `참조 치트시트`
 
 GPU·학습·모델 로딩·스모크·삭제·commit·push를 실제로 하지 않았다면 반드시 `NOT_RUN` 또는
 `0건`으로 적는다. 계획, 정적 확인, 실제 실행, 사용자 E2E를 서로 승격하지 않는다.
@@ -65,6 +70,24 @@ GPU·학습·모델 로딩·스모크·삭제·commit·push를 실제로 하지 
 - 사용자 부탁 절이 채팅 최종 보고의 부탁 목록 정본이다. 보고에서 항목을 더하거나 빼지 않는다.
 - 영구 규범을 전문 복사하지 말고 `AGENTS.md` 또는 Codex 00~08의 해당 절을 링크한다.
 - 이번 세션의 변동 사실과 재시작 지점은 구체 경로·상태·근거와 함께 적는다.
+- 결과 연쇄의 각 대상은 `필요/불필요/보류`와 실제 diff 또는 정확한 미갱신 사유를 기록한다.
+- 열린 WIP가 있으면 시작 프롬프트에 정확한 파일명과 첫 미완료 번호를 쓴다. 없으면
+  “중단 작업”을 쓰지 않고 새 요청 시작이라고 명시한다. 승인 대기 항목은 승인 전 금지를 함께 쓴다.
+
+### 3.1 직전 큐 무손실 계승 — B 다음 D
+
+`scripts/new_handoff.py`는 먼저 B 계약에 따라 직전 §7의 미완료 배치를 전수 가져오고,
+`scripts/handoff_queue.py`가 D 보조 입력으로 `queue_menu.py`의 현재 id·TSV 시간을 대조한다.
+자동 이관 행은 항상 `REVALIDATE`다. AI가 현재 로그·계획·선결을 감사해 `READY/GATED/HOLD`로
+바꾸기 전에는 실행을 권하지 않는다.
+
+- 인벤토리: `PRESENT`, `DONE`, `MISSING`, `REPLACED`
+- 실행상태: `READY`, `GATED`, `HOLD`, `DONE`, `REVALIDATE`
+- 직전 미완료 배치를 현재 §7에서 빼려면 `이전 큐 제외·완료 이관` 표에 파일명·처리·근거를 쓴다.
+- 재감사하지 않았다는 사실은 삭제 근거가 아니며 `REVALIDATE` 근거다.
+- 현재 큐의 배치 수·시간 합계는 §7 본표만 집계한다. §7.1 이하의 완료·제외 이관 이력은
+  계승 증거일 뿐 현재 큐에 다시 합산하지 않는다. `run_queue.bat` 같은 운영 실행기는
+  `experiments.tsv` 실험 배치가 아니므로 배치 수·시간에서 제외한다.
 
 ### 4. 한정 검증
 
@@ -74,11 +97,13 @@ GPU·학습·모델 로딩·스모크·삭제·commit·push를 실제로 하지 
 $env:PYTHONIOENCODING = 'utf-8'
 python -I -B .agents/skills/session-handoff/scripts/check_handoff_codex.py
 python scripts/handoff_time.py
+python -X utf8 scripts/handoff_queue.py --audit handoff/<현재> --previous handoff/<직전>
 ```
 
 공유 `scripts/check_handoff.py`는 다른 에이전트 환경 진입 파일을 직접 읽으므로 Codex
-런타임에서 호출하지 않는다. 위 독립 검사기는 고정 구조·이전 링크·커밋 구분·`-done`
-삭제 판정·로컬 링크만 검사하고, 시각 증거는 공유 `scripts/handoff_time.py`가 별도로 본다.
+런타임에서 호출하지 않는다. 위 독립 검사기는 고정 구조·정본 동기화·행동 6요소·시작 상태
+분기·스모크 disposition·직전 큐 계승·커밋 구분·`-done` 삭제 판정·로컬 링크를 검사하고,
+시각 증거는 공유 `scripts/handoff_time.py`가 별도로 본다.
 이는 핸드오프 문서 정적 검사일 뿐 프로젝트 스모크나 새 세션 E2E가 아니다. 실패하면 내용을
 고치되 과거 핸드오프를 소급 재작성하지 않는다.
 
@@ -86,9 +111,11 @@ python scripts/handoff_time.py
 
 - 생성한 절대 경로
 - 핵심 상태와 미해결
+- 미해결 검사 행은 `검사 / 정확한 대상 / 증거와 상태 / 운영 영향 / 권장 조치 / 대안 / 승인 주체`
+  7요소를 모두 적는다. 번호 전체를 면제하지 않고 원문 오류와 진단 기록을 분리한다.
 - 사용자 부탁 절의 정확한 요약
 - 커밋 메시지 제목과 본문(요청 범위에 포함된 경우)
-- compact 프롬프트(규약상 파일에 기록한 것)
+- compact 프롬프트(규약상 파일에 기록한 것). M4·M5 PASS 전에는 수동 보조라고 표시
 
 사용자가 compact를 실행할지 결정한다. 스킬은 compact나 새 세션을 임의 실행하지 않는다.
 
@@ -108,4 +135,5 @@ python scripts/handoff_time.py
 - `references/what_to_include.md`: TinyLM 항목별 포함 기준
 - `references/examples.md`: Codex 02 형식의 최소 예시
 - 실제 골격 정본: 저장소 `scripts/new_handoff.py`
-- Codex 정적 검사기: `scripts/check_handoff_codex.py`
+- Codex 정적 검사기: `.agents/skills/session-handoff/scripts/check_handoff_codex.py`
+- 큐 이관·감사 보조: 저장소 `scripts/handoff_queue.py`

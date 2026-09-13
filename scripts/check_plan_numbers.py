@@ -44,7 +44,11 @@ SKIP_DIRS = {
 }
 # ★이 도구 자신과 스킬 예시는 스캔하지 않는다 — docstring 이 사고 사례를 인용하므로
 #   자기 자신을 "미작성 참조" 로 신고한다.
-SKIP_FILES = {"scripts/check_plan_numbers.py"}
+SKIP_FILES = {
+    "scripts/check_plan_numbers.py",
+    "scripts/test_check_plan_numbers.py",
+    "scripts/plan_number_diagnostic_refs.tsv",
+}
 # ★`\b` 를 쓰면 안 된다 — `run_P064_stage0` 의 `_` 는 단어문자라 경계가 안 잡힌다.
 #   (2026-08-21: 이 도구의 첫 판이 정확히 그 이유로 계획서를 못 찾았다. 함정 4 계열)
 NUM = re.compile(r"(?<![A-Za-z0-9])P(\d{3})([A-Z]?)(?![0-9])")
@@ -57,6 +61,60 @@ EXEMPT = {
     "P069": "2026-08-21 배정 철회 — P066 §3 단계2 가 다룬다. 철회 사실 기록에서만 언급된다",
     "P071": "2026-08-21 P066 으로 개명. 동",
 }
+DIAGNOSTIC_REFS = ROOT / "scripts" / "plan_number_diagnostic_refs.tsv"
+
+
+def load_diagnostic_refs(path=DIAGNOSTIC_REFS):
+    """Exact (plan id, file) exemptions for diagnostic prose, never whole-number waivers."""
+    rows: dict[tuple[str, str], str] = {}
+    errors: list[str] = []
+    if not path.is_file():
+        return rows, [f"diagnostic reference registry missing: {path}"]
+    lines = path.read_text(encoding="utf-8").splitlines()
+    if not lines or lines[0].split("\t") != ["plan_id", "path", "reason"]:
+        return rows, ["diagnostic reference registry header must be plan_id/path/reason"]
+    for line_no, line in enumerate(lines[1:], start=2):
+        cells = line.split("\t")
+        if len(cells) != 3 or not all(cell.strip() for cell in cells):
+            errors.append(f"diagnostic registry line {line_no} needs three non-empty TSV fields")
+            continue
+        plan_id, rel, reason = (cell.strip() for cell in cells)
+        if not re.fullmatch(r"P\d{3}", plan_id):
+            errors.append(f"diagnostic registry line {line_no} has invalid plan id {plan_id!r}")
+            continue
+        rel = rel.replace("\\", "/")
+        if rel.startswith("/") or ".." in Path(rel).parts or rel.startswith("datasets/"):
+            errors.append(f"diagnostic registry line {line_no} has unsafe path {rel!r}")
+            continue
+        key = (plan_id, rel)
+        if key in rows:
+            errors.append(f"diagnostic registry line {line_no} duplicates {plan_id} {rel}")
+            continue
+        target = ROOT / rel
+        if not target.is_file():
+            errors.append(f"diagnostic registry line {line_no} target missing: {rel}")
+            continue
+        if plan_id not in target.read_text(encoding="utf-8"):
+            errors.append(f"diagnostic registry line {line_no} target does not mention {plan_id}: {rel}")
+            continue
+        rows[key] = reason
+    return rows, errors
+
+
+def unresolved_refs(refs, have, diagnostic_refs):
+    """Return missing plan refs after removing only exact diagnostic file references."""
+    missing = {}
+    diagnostic = {}
+    for number, paths in refs.items():
+        if number in have or number in EXEMPT:
+            continue
+        active = sorted(path for path in paths if (number, path) not in diagnostic_refs)
+        ignored = sorted(path for path in paths if (number, path) in diagnostic_refs)
+        if active:
+            missing[number] = active
+        if ignored:
+            diagnostic[number] = ignored
+    return missing, diagnostic
 
 
 def banner(s, ch="="):
@@ -122,12 +180,16 @@ def main():
     have = plan_files()
     refs = scan_refs()
     errs, warns = [], []
+    diagnostic_refs, diagnostic_errors = load_diagnostic_refs()
 
     banner("계획번호 무결성 검사 — 번호만 배정하고 파일을 안 만드는 사고를 막는다", "#")
     print(f"  계획서 {len(have)}개  ·  참조된 번호 {len(refs)}개")
 
     # 1. 참조 무결성
-    missing = {n: sorted(v) for n, v in refs.items() if n not in have and n not in EXEMPT}
+    missing, diagnostic = unresolved_refs(refs, have, diagnostic_refs)
+    for error in diagnostic_errors:
+        print(f"\n  🚫 진단 참조 레지스트리: {error}")
+        errs.append("DIAGNOSTIC_REGISTRY")
     if missing:
         print(f"\n  🚫 참조되는데 계획서가 없는 번호 {len(missing)}개:")
         for n, where in sorted(missing.items()):
@@ -135,6 +197,11 @@ def main():
             errs.append(n)
         print("    → **번호를 붙였으면 계획서를 만든다.** 만들 생각이 없으면 **번호를 쓰지 않는다**")
         print("      (`후보`·`아이디어` 로만 적는다). 의사결정함정 D16.")
+    if diagnostic:
+        print("\n  ℹ️ 파일·번호·사유가 고정된 진단 문맥(번호 면제 아님):")
+        for number, where in sorted(diagnostic.items()):
+            print(f"    {number}  <- {', '.join(where)}")
+        print("    → 같은 번호의 다른 파일 참조는 계속 검사하며, 원문 선점은 위 FAIL에 남는다.")
 
     # 2. 번호 연속성
     nums = sorted(int(n[1:]) for n in have)

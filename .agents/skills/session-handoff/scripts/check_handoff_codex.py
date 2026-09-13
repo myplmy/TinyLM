@@ -9,7 +9,9 @@ registries. Content truth still requires human review.
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import re
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -34,6 +36,13 @@ REQUIRED_SECTIONS = {
 
 LOCAL_LINK_RE = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 FENCE_RE = re.compile(chr(96) * 3 + r"[\s\S]*?" + chr(96) * 3)
+QUEUE_HELPER_PATH = REPO_ROOT / "scripts" / "handoff_queue.py"
+QUEUE_SPEC = importlib.util.spec_from_file_location("tinylm_handoff_queue", QUEUE_HELPER_PATH)
+if QUEUE_SPEC is None or QUEUE_SPEC.loader is None:
+    raise RuntimeError(f"cannot load {QUEUE_HELPER_PATH}")
+HANDOFF_QUEUE = importlib.util.module_from_spec(QUEUE_SPEC)
+sys.modules[QUEUE_SPEC.name] = HANDOFF_QUEUE
+QUEUE_SPEC.loader.exec_module(HANDOFF_QUEUE)
 
 
 @dataclass
@@ -61,6 +70,44 @@ def is_nonempty(body: str | None) -> bool:
         if line.strip() and line.strip() != "---"
     ]
     return bool(meaningful)
+
+
+def markdown_cells(line: str) -> list[str]:
+    raw = re.split(r"(?<!\\)\|", line.strip())
+    if raw and raw[0] == "":
+        raw = raw[1:]
+    if raw and raw[-1] == "":
+        raw = raw[:-1]
+    return [cell.strip().replace(r"\|", "|") for cell in raw]
+
+
+def markdown_tables(body: str) -> list[tuple[list[str], list[list[str]]]]:
+    lines = body.splitlines()
+    result: list[tuple[list[str], list[list[str]]]] = []
+    index = 0
+    while index + 1 < len(lines):
+        if not lines[index].lstrip().startswith("|") or not re.match(
+            r"^\s*\|(?:\s*:?-+:?\s*\|)+\s*$", lines[index + 1]
+        ):
+            index += 1
+            continue
+        header = markdown_cells(lines[index])
+        rows: list[list[str]] = []
+        index += 2
+        while index < len(lines) and lines[index].lstrip().startswith("|"):
+            cells = markdown_cells(lines[index])
+            if len(cells) == len(header):
+                rows.append(cells)
+            index += 1
+        result.append((header, rows))
+    return result
+
+
+def table_rows_with_columns(body: str, columns: tuple[str, ...]) -> list[list[str]] | None:
+    for header, rows in markdown_tables(body):
+        if all(column in header for column in columns):
+            return rows
+    return None
 
 
 def validate(path: Path) -> Validation:
@@ -108,26 +155,126 @@ def validate(path: Path) -> Validation:
             errors.append(f"required section {label} is empty")
 
     directive_body = section_body(text, REQUIRED_SECTIONS["0"]) or ""
-    for column in ("지시", "목적", "필요했던 작업", "실제로 한 것", "결과"):
-        if column not in directive_body:
-            errors.append(f"directive table missing column {column}")
+    directive_columns = ("#", "사용자가 지시한 것", "AI 가 판단한 목적", "그래서 필요했던 작업", "실제로 한 것", "결과")
+    directive_rows = table_rows_with_columns(directive_body, directive_columns)
+    if directive_rows is None:
+        errors.append(f"directive table must contain exact semantic columns {directive_columns}")
+    else:
+        count_match = re.search(r"사용자 지시\s+(\d+)건", text)
+        if count_match is not None and int(count_match.group(1)) != len(directive_rows):
+            errors.append(
+                f"directive count says {count_match.group(1)} but table has {len(directive_rows)} rows"
+            )
     if re.search(r"\bN건\b", text):
         errors.append("unresolved directive count placeholder")
 
+    change_body = section_body(text, REQUIRED_SECTIONS["3"]) or ""
+    sync_columns = ("산출물", "필요 여부", "실제 diff", "미갱신 사유")
+    if table_rows_with_columns(change_body, sync_columns) is None:
+        errors.append(f"canonical synchronization table missing columns {sync_columns}")
+
     recommendation = section_body(text, REQUIRED_SECTIONS["7"]) or ""
-    for column in ("순", "id", "실험", "배치", "⚙", "누적", "선결", "근거"):
-        if column not in recommendation:
-            errors.append(f"recommendation table missing column {column}")
+    queue_columns = ("순", "id", "실험", "배치 파일", "⚙", "누적", "인벤토리", "실행상태", "선결", "근거")
+    queue_rows = table_rows_with_columns(recommendation, queue_columns)
+    if queue_rows is None:
+        errors.append(f"recommendation table missing columns {queue_columns}")
+    else:
+        header = next(
+            header for header, rows in markdown_tables(recommendation)
+            if all(column in header for column in queue_columns)
+        )
+        inventory_index = header.index("인벤토리")
+        execution_index = header.index("실행상태")
+        for row_number, row in enumerate(queue_rows, start=1):
+            inventory = row[inventory_index].strip(" `")
+            execution = row[execution_index].strip(" `")
+            if inventory not in HANDOFF_QUEUE.INVENTORY_STATES:
+                errors.append(f"queue row {row_number} has invalid inventory state {inventory!r}")
+            if execution not in HANDOFF_QUEUE.EXECUTION_STATES:
+                errors.append(f"queue row {row_number} has invalid execution state {execution!r}")
+    if "<br>" in recommendation.lower():
+        errors.append("recommendation section must not use <br>")
+
+    if previous is not None:
+        try:
+            inheritance = HANDOFF_QUEUE.inheritance_errors(path, previous_path)
+        except Exception as exc:
+            errors.append(f"queue inheritance check failed: {type(exc).__name__}: {exc}")
+        else:
+            errors.extend(inheritance)
 
     request_body = section_body(text, REQUIRED_SECTIONS["6b"]) or ""
     if "삭제" not in request_body or "-done" not in request_body:
         errors.append("user request section lacks explicit -done deletion disposition")
+    request_columns = ("대상", "정확한 위치", "근거", "사용자가 할 행동", "완료 신호", "AI 후속 처리")
+    request_rows = table_rows_with_columns(request_body, request_columns)
+    if request_rows is None:
+        errors.append(f"user request table missing six action columns {request_columns}")
+    else:
+        for row_number, row in enumerate(request_rows, start=1):
+            if any(not cell.strip() for cell in row):
+                errors.append(f"user request row {row_number} has an empty action field")
+
+    caution_body = section_body(text, REQUIRED_SECTIONS["4"]) or ""
+    unresolved_columns = (
+        "검사", "정확한 대상", "증거와 상태", "운영 영향", "권장 조치", "대안", "승인 주체"
+    )
+    unresolved_rows = table_rows_with_columns(caution_body, unresolved_columns)
+    if unresolved_rows is None:
+        errors.append(f"unresolved-check table missing columns {unresolved_columns}")
+    else:
+        unresolved_header = next(
+            header for header, rows in markdown_tables(caution_body)
+            if all(column in header for column in unresolved_columns)
+        )
+        status_index = unresolved_header.index("증거와 상태")
+        required_indices = [unresolved_header.index(column) for column in unresolved_columns[1:]]
+        placeholders = {"", "-", "—", "TBD", "미정"}
+        for row_number, row in enumerate(unresolved_rows, start=1):
+            status = row[status_index]
+            if re.search(r"(?:\bFAIL\b|\bBLOCKED\b|미해결|NOT_RUN_PENDING)", status, re.IGNORECASE):
+                incomplete = [
+                    unresolved_header[index]
+                    for index in required_indices
+                    if row[index].strip() in placeholders
+                ]
+                if incomplete:
+                    errors.append(
+                        f"unresolved-check row {row_number} lacks decision fields: {', '.join(incomplete)}"
+                    )
+    smoke_match = re.search(
+        r"`?run_smoke_check\.bat`?\s*\|\s*`?(REQUIRED_USER_RUN|NOT_RUN_PENDING|NOT_REQUIRED\([^)]+\))`?",
+        caution_body,
+    )
+    if smoke_match is None:
+        errors.append("smoke disposition is missing or invalid")
+    elif smoke_match.group(1) in {"REQUIRED_USER_RUN", "NOT_RUN_PENDING"}:
+        if "run_smoke_check.bat" not in request_body:
+            errors.append("pending/required smoke is not mirrored in the user request table")
 
     commit_body = section_body(text, REQUIRED_SECTIONS["8"]) or ""
     if "### 제목" not in commit_body or "### 본문" not in commit_body:
         errors.append("commit section must separate title and body")
     if len(FENCE_RE.findall(commit_body)) < 2:
         errors.append("commit section needs two copyable code blocks")
+
+    start_body = section_body(text, REQUIRED_SECTIONS["10"]) or ""
+    state_match = re.search(r"열린 WIP 상태\*?\*?\s*:\s*`?(있음|없음)`?", start_body)
+    if state_match is None:
+        errors.append("session-start prompt lacks explicit open-WIP state")
+    elif state_match.group(1) == "없음":
+        if "중단 작업" in start_body:
+            errors.append("session-start prompt says '중단 작업' although open-WIP state is 없음")
+        if "새 요청" not in start_body:
+            errors.append("no-open-WIP branch must say that a new request starts")
+    else:
+        if re.search(r"WIP_\d{8}[a-z]?_작업원장\.md", start_body) is None:
+            errors.append("open-WIP branch lacks the exact WIP filename")
+        if "첫 미완료" not in start_body:
+            errors.append("open-WIP branch lacks the first incomplete item")
+    for phrase in ("첫 행동", "승인 전 금지"):
+        if phrase not in start_body:
+            errors.append(f"session-start prompt lacks {phrase}")
 
     for target in LOCAL_LINK_RE.findall(text):
         lowered = target.lower()

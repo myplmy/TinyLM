@@ -23,8 +23,9 @@
     python scripts/new_handoff.py --title "속도 바닥이 승자를 무효로 만들었다"
     python scripts/new_handoff.py --title "..." --dry-run     # 이름만 인쇄
 
-★만든 뒤 본문을 채우고 `python scripts/check_handoff.py` 를 돌린다.
-🚫**이 도구는 골격만 쓴다** — 내용은 AI 가 쓴다. 고정 8절은 `ai_dev_tool/02` §3 이 정본이다.
+★만든 뒤 본문을 채우고 Codex 전용 검사기를 돌린다.
+🚫**이 도구는 골격과 직전 미완료 큐의 REVALIDATE 이관만 쓴다** — 판단 내용은 AI 가 채운다.
+고정 구조는 `ai_dev_tool/Codex/02_핸드오프_규약.md`가 정본이다.
 """
 from __future__ import annotations
 
@@ -34,6 +35,8 @@ import io
 import os
 import sys
 from pathlib import Path
+
+from handoff_queue import inherited_rows
 
 ROOT = Path(__file__).resolve().parent.parent
 HANDOFF = ROOT / "handoff"
@@ -50,8 +53,8 @@ SKELETON = """# HANDOFF {date} {hm} — {title}
 
 ## 0. 사용자 지시 (N건) — 원문과 처리
 
-| # | 지시 | 처리 |
-|---|---|---|
+| # | 사용자가 지시한 것 | AI 가 판단한 목적 | 그래서 필요했던 작업 | 실제로 한 것 | 결과 |
+|---|---|---|---|---|---|
 
 ---
 
@@ -65,9 +68,25 @@ SKELETON = """# HANDOFF {date} {hm} — {title}
 
 ## 3. 무엇이 바뀌었나 — 코드·도구
 
+### 3.1 정본 동기화·미갱신 사유
+
+| 산출물 | 필요 여부 | 실제 diff | 미갱신 사유 |
+|---|---|---|---|
+
 ---
 
 ## 4. ⚠️조심할 것 — 다음 세션이 밟을 자리
+
+### 4.1 스모크·동적 검증 계승
+
+| 항목 | 상태 | 근거 | 사용자 요청 반영 |
+|---|---|---|---|
+| `run_smoke_check.bat` | `REQUIRED_USER_RUN` / `NOT_REQUIRED(근거)` / `NOT_RUN_PENDING` 중 하나 | — | §6b의 정확한 행 또는 `요청 없음` |
+
+### 4.2 미해결 검사·판정
+
+| 검사 | 정확한 대상 | 증거와 상태 | 운영 영향 | 권장 조치 | 대안 | 승인 주체 |
+|---|---|---|---|---|---|---|
 
 ---
 
@@ -81,12 +100,23 @@ SKELETON = """# HANDOFF {date} {hm} — {title}
 
 ## 7. ★다음 권장 실험 순서 — ⚙**{{합계}}h**
 
-| 순 | id | 실험 | 배치 파일 | ⚙ | 누적 | 선결 | 근거 |
-|---:|---:|---|---|---:|---:|---|---|
+> 직전 큐 자동 이관 원천: `{queue_source}`. 자동 행은 전부 `REVALIDATE`이며 과학적 순서·선결을 다시 판정한다.
+
+| 순 | id | 실험 | 배치 파일 | ⚙ | 누적 | 인벤토리 | 실행상태 | 선결 | 근거 |
+|---:|---:|---|---|---:|---:|---|---|---|---|
+{queue_rows}
+
+### 7.1 이전 큐 제외·완료 이관
+
+| 이전 배치 | 처리 | 근거 |
+|---|---|---|
 
 ---
 
 ## 6b. ★사용자에게 부탁하는 것
+
+| 대상 | 정확한 위치 | 근거 | 사용자가 할 행동 | 완료 신호 | AI 후속 처리 |
+|---|---|---|---|---|---|
 
 ---
 
@@ -96,9 +126,17 @@ SKELETON = """# HANDOFF {date} {hm} — {title}
 
 ## 9. ★compact 프롬프트 (이번 세션이 압축될 때 남길 것)
 
+> M4·M5 E2E PASS 전까지의 **수동 보조**다. 자동 소비 계약으로 오해하지 않는다.
+
 ---
 
 ## 10. ★세션 시작 프롬프트 (다음 세션이 붙여넣는 것)
+
+- **열린 WIP 상태**: `있음` 또는 `없음`
+- **정확한 WIP / 첫 미완료**: —
+- **첫 행동과 선결**: —
+- **승인 전 금지**: —
+- 열린 WIP가 없으면 “중단 작업” 대신 **새 요청 시작**이라고 쓴다.
 
 ---
 
@@ -135,8 +173,26 @@ def main() -> int:
         print(f"\n  🚫이미 있다: {name} — 덮어쓰지 않는다. 1분 뒤 다시 부르거나 그 파일을 이어 쓴다")
         return 2
 
-    body = SKELETON.format(date=f"{now:%Y-%m-%d}", hm=f"{now:%H:%M}",
-                           title=a.title, prev=prev)
+    if prev == "(없음)":
+        queue_rows = ""
+        queue_source = "없음"
+    else:
+        try:
+            queue_rows = "\n".join(inherited_rows(HANDOFF / prev))
+        except (OSError, UnicodeError, ValueError, RuntimeError) as exc:
+            print(f"\n  🚫직전 큐 이관 실패: {type(exc).__name__}: {exc}")
+            print("  핸드오프는 만들지 않았다. 원인을 고친 뒤 다시 실행한다.")
+            return 2
+        queue_source = prev
+
+    body = SKELETON.format(
+        date=f"{now:%Y-%m-%d}",
+        hm=f"{now:%H:%M}",
+        title=a.title,
+        prev=prev,
+        queue_source=queue_source,
+        queue_rows=queue_rows,
+    )
     data = body.encode("utf-8")
     tmp = str(path) + ".tmp"
     with io.open(tmp, "wb") as f:
@@ -145,8 +201,8 @@ def main() -> int:
     os.replace(tmp, path)
 
     print(f"\n  ✅만들었다 ({len(data):,} 바이트, 골격만)")
-    print("  ★다음: 본문을 채우고 `python scripts/check_handoff.py` 를 돌린다.")
-    print("  ⚠️고정 8절의 정본은 `ai_dev_tool/02` §3 이다 — 이 골격은 그 사본이다.")
+    print("  ★다음: 본문을 채우고 Codex 전용 handoff 검사기를 돌린다.")
+    print("  ⚠️형식 정본은 `ai_dev_tool/Codex/02_핸드오프_규약.md`다.")
     print("=" * 96)
     return 0
 

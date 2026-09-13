@@ -64,6 +64,35 @@ for p in sorted(glob.glob('runs/logs/*.json')):
 | 배포 메모리 | json `deploy_mb`, 없으면 학습 로그 상단 `report()` 블록 | `compare` 의 구 로그 근사(`~`)는 sparse34 에서 과소 |
 | 안정성 | json `grad_max`(warmup 이후) + `grad_peak_warmup` | 인쇄 `\|g\|` 는 10스텝 샘플 |
 
+### 2.1 ★수치 해석 전에 비교 조건 서명을 먼저 고정한다 (2026-09-13)
+
+결과를 비교하는 각 쌍마다 `TINYLM_CONDITION_SIGNATURE_V1` 블록을 결과문서에 둔다. 필수 필드는
+`scripts/check_result_conditions.py`가 소유하며 최소한 풀·실제 train 풀 길이·draw 산식·복원추출 여부·
+WSD의 절대 지평·학습 기대/관측 언어비·평가 언어·토크나이저·grad checkpoint·비교 태그·축 분류·
+허용 주장 등급을 포함한다.
+
+판정 어휘는 다음 네 개만 쓴다.
+
+| 값 | 허용 범위 |
+|---|---|
+| `DIRECT_PAIRED` | 인과 대조에 필요한 통제축이 모두 같고 변경축만 결론에 대응한다 |
+| `PARTIAL_CONFOUNDED` | 유효한 비교지만 두 축 이상이 함께 바뀌어 단일 원인의 크기로 분해할 수 없다 |
+| `DESCRIPTIVE_ONLY` | 서로 다른 가족의 방향·크기 관측만 보존하며 직접 인과주장을 하지 않는다 |
+| `NOT_RUN` | 해당 능력·평가를 실행하지 않아 어느 방향도 주장하지 않는다 |
+
+`UNKNOWN`·`NOT_MEASURED`를 임의로 같은 조건으로 바꾸지 않는다. 같은 seed와 설정으로 실제 샘플
+위치가 같다는 근거가 있으면 그 근거를 명시하고, 없으면 미계측 축으로 분류한다. WSD에서 steps가
+달라지면 `actual_draw_tokens`뿐 아니라 `absolute_schedule_horizon`도 변경축이다. 평가셋 한국어가
+0%이면 `not_run_claims`에 `KOREAN_QUALITY`를 반드시 남긴다.
+
+```powershell
+python -X utf8 scripts/check_result_conditions.py `
+  "test_result/NNN_YYYYMMDD_결과.md"
+```
+
+검사기는 경로를 자동 발견하지 않는다. 현재 승인 범위의 결과문서를 명시적으로 넘기며, 이 정적 PASS를
+GPU·모델 품질 검증으로 해석하지 않는다.
+
 ### 3. 문서 작성
 
 파일명 `test_result/{번호}_{YYYYMMDDHHMMSS}_{요약}.md`. 같은 실험군이면 기존 번호에 이어 쓰고,
@@ -99,6 +128,8 @@ for p in sorted(glob.glob('runs/logs/*.json')):
 ### 4. 반드시 점검할 것 (문서 확정 전)
 
 - [ ] 모든 수치를 json 과 대조했는가? (로그 인쇄값만 믿지 않았는가)
+- [ ] 비교쌍마다 조건 서명을 작성하고 `check_result_conditions.py`를 통과했는가?
+- [ ] 결과→계획→실험목록→기준표→COMPASS에 같은 주장 등급과 한계가 남았는가?
 - [ ] 비교하는 런들의 **풀·토크나이저·학습토큰·steps·grad-ckpt** 가 같은가? 다르면 문서에 **무효 표시**
 - [ ] 현재 비교 계열·조건의 판정자를 `docs/EXPERIMENT_BASELINES.md`와
       `scripts/_rulers.py`에서 확인했는가? 과거 고정 0.024를 모든 비교에 적용하지 않았는가?

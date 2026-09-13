@@ -104,7 +104,7 @@ RULE_METADATA = {
 @dataclass(frozen=True)
 class CheckResult:
     name: str
-    passed: bool
+    status: str
     detail: str
 
 
@@ -113,7 +113,12 @@ class Ledger:
         self.results: list[CheckResult] = []
 
     def record(self, name: str, passed: bool, detail: str) -> None:
-        self.results.append(CheckResult(name, passed, detail))
+        self.record_status(name, "PASS" if passed else "FAIL", detail)
+
+    def record_status(self, name: str, status: str, detail: str) -> None:
+        if status not in {"PASS", "FAIL", "NOT_RUN"}:
+            raise ValueError(f"unsupported check status: {status}")
+        self.results.append(CheckResult(name, status, detail))
 
     def guarded(self, name: str, check: Callable[[], tuple[bool, str]]) -> None:
         try:
@@ -123,16 +128,20 @@ class Ledger:
             detail = f"{type(exc).__name__}: {exc}"
         self.record(name, passed, detail)
 
-    def emit(self) -> int:
+    def emit(self, *, require_shell_syntax: bool = False) -> int:
         for item in self.results:
-            state = "PASS" if item.passed else "FAIL"
-            print(f"[{state}] {item.name}: {item.detail}")
-        failures = sum(not item.passed for item in self.results)
+            print(f"[{item.status}] {item.name}: {item.detail}")
+        counts = {
+            status: sum(item.status == status for item in self.results)
+            for status in ("PASS", "FAIL", "NOT_RUN")
+        }
         print(
-            f"SUMMARY checks={len(self.results)} "
-            f"passed={len(self.results) - failures} failed={failures}"
+            f"SUMMARY checks={len(self.results)} PASS={counts['PASS']} "
+            f"FAIL={counts['FAIL']} NOT_RUN={counts['NOT_RUN']}"
         )
-        return 0 if failures == 0 else 1
+        if counts["FAIL"] or (require_shell_syntax and counts["NOT_RUN"]):
+            return 1
+        return 2 if counts["NOT_RUN"] else 0
 
 
 def sha256(path: Path) -> str:
@@ -356,18 +365,25 @@ def to_msys_path(path: Path) -> str:
     return resolved.as_posix()
 
 
-def syntax_errors(files: Iterable[Path]) -> list[str]:
-    errors: list[str] = []
-    files = list(files)
+Runner = Callable[..., subprocess.CompletedProcess[str]]
+_AUTO_BASH = object()
 
+
+def python_syntax_errors(files: Iterable[Path]) -> list[str]:
+    errors: list[str] = []
     for path in (item for item in files if item.suffix.lower() == ".py"):
         try:
             compile(read_utf8(path), str(path), "exec")
         except SyntaxError as exc:
             errors.append(f"{path.relative_to(REPO_ROOT).as_posix()}: {exc}")
+    return errors
 
-    powershell_files = [item for item in files if item.suffix.lower() == ".ps1"]
-    for path in powershell_files:
+
+def powershell_syntax_errors(
+    files: Iterable[Path], *, runner: Runner = subprocess.run
+) -> list[str]:
+    errors: list[str] = []
+    for path in (item for item in files if item.suffix.lower() == ".ps1"):
         path_literal = str(path).replace("'", "''")
         parser_command = (
             "$tokens=$null; $errors=$null; "
@@ -375,7 +391,7 @@ def syntax_errors(files: Iterable[Path]) -> list[str]:
             f"'{path_literal}',[ref]$tokens,[ref]$errors) | Out-Null; "
             "if($errors.Count -gt 0){$errors | ForEach-Object {$_.Message}; exit 1}"
         )
-        completed = subprocess.run(
+        completed = runner(
             [
                 "powershell.exe",
                 "-NoProfile",
@@ -393,26 +409,88 @@ def syntax_errors(files: Iterable[Path]) -> list[str]:
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout).strip()
             errors.append(f"{path.relative_to(REPO_ROOT).as_posix()}: {detail}")
-
-    shell_files = [item for item in files if item.suffix.lower() == ".sh"]
-    bash = find_git_bash()
-    if shell_files and bash is None:
-        errors.append("Git Bash not found for shell syntax validation")
-    elif bash is not None:
-        for path in shell_files:
-            completed = subprocess.run(
-                [str(bash), "-n", to_msys_path(path)],
-                cwd=REPO_ROOT,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
-                capture_output=True,
-                check=False,
-            )
-            if completed.returncode != 0:
-                detail = (completed.stderr or completed.stdout).strip()
-                errors.append(f"{path.relative_to(REPO_ROOT).as_posix()}: {detail}")
     return errors
+
+
+def _unsigned_returncode(returncode: int) -> int:
+    return returncode & 0xFFFFFFFF
+
+
+def classify_bash_probe(
+    bash: Path | None, *, runner: Runner = subprocess.run
+) -> tuple[str, str]:
+    """Return READY, SANDBOX_UNAVAILABLE, MISSING or BROKEN."""
+    if bash is None:
+        return "MISSING", "Git Bash executable was not found"
+    try:
+        completed = runner(
+            [str(bash), "-c", "exit 0"],
+            cwd=REPO_ROOT,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            capture_output=True,
+            check=False,
+        )
+    except OSError as exc:
+        return "BROKEN", f"{type(exc).__name__}: {exc}"
+    if completed.returncode == 0:
+        return "READY", "Git Bash startup probe passed"
+    detail = (completed.stderr or completed.stdout).strip()
+    lowered = detail.lower()
+    known_signature = (
+        "couldn't create signal pipe" in lowered
+        and "win32 error 5" in lowered
+        and _unsigned_returncode(completed.returncode) == 0xC0000142
+    )
+    if known_signature:
+        return (
+            "SANDBOX_UNAVAILABLE",
+            "managed Windows sandbox blocked the MSYS signal pipe "
+            "(Win32 error 5, 0xC0000142)",
+        )
+    return (
+        "BROKEN",
+        f"Git Bash startup failed rc={completed.returncode}: {detail or '(no output)'}",
+    )
+
+
+def shell_syntax_result(
+    files: Iterable[Path],
+    *,
+    bash: Path | None | object = _AUTO_BASH,
+    runner: Runner = subprocess.run,
+) -> tuple[str, str]:
+    shell_files = [item for item in files if item.suffix.lower() == ".sh"]
+    if not shell_files:
+        return "PASS", "no POSIX shell sources in the environment allowlist"
+    selected_bash = find_git_bash() if bash is _AUTO_BASH else bash
+    if selected_bash is not None and not isinstance(selected_bash, Path):
+        raise TypeError("bash must be a Path, None, or the internal auto sentinel")
+    probe_state, probe_detail = classify_bash_probe(selected_bash, runner=runner)
+    if probe_state in {"MISSING", "SANDBOX_UNAVAILABLE"}:
+        return "NOT_RUN", probe_detail
+    if probe_state == "BROKEN":
+        return "FAIL", f"infrastructure failure before source parsing: {probe_detail}"
+
+    errors: list[str] = []
+    assert selected_bash is not None
+    for path in shell_files:
+        completed = runner(
+            [str(selected_bash), "-n", to_msys_path(path)],
+            cwd=REPO_ROOT,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            capture_output=True,
+            check=False,
+        )
+        if completed.returncode != 0:
+            detail = (completed.stderr or completed.stdout).strip()
+            errors.append(f"{path.relative_to(REPO_ROOT).as_posix()}: {detail}")
+    if errors:
+        return "FAIL", "source syntax errors: " + " | ".join(errors)
+    return "PASS", f"{len(shell_files)} POSIX shell sources parsed by Git Bash"
 
 
 def main() -> int:
@@ -421,6 +499,11 @@ def main() -> int:
         "--root09-sha256",
         required=True,
         help="P0 baseline SHA-256 for the shared root 09 ledger",
+    )
+    parser.add_argument(
+        "--require-shell-syntax",
+        action="store_true",
+        help="treat POSIX shell NOT_RUN as a blocking FAIL exit for CI/release use",
     )
     args = parser.parse_args()
     ledger = Ledger()
@@ -476,12 +559,20 @@ def main() -> int:
         check_working_rule_parity,
     )
 
-    errors = syntax_errors(environment_files)
+    errors = python_syntax_errors(environment_files)
     ledger.record(
-        "Python, PowerShell and shell syntax",
+        "Python syntax",
         not errors,
-        "all environment source files parsed" if not errors else " | ".join(errors),
+        "all Python environment sources parsed" if not errors else " | ".join(errors),
     )
+    errors = powershell_syntax_errors(environment_files)
+    ledger.record(
+        "PowerShell syntax",
+        not errors,
+        "all PowerShell environment sources parsed" if not errors else " | ".join(errors),
+    )
+    shell_status, shell_detail = shell_syntax_result(environment_files)
+    ledger.record_status("POSIX shell syntax", shell_status, shell_detail)
 
     def check_project_roles() -> tuple[bool, str]:
         project = json.loads(read_utf8(AGENTS_ROOT / "project.json"))
@@ -743,14 +834,43 @@ def main() -> int:
         if re.search(r"(?m)^\s*\[+hooks", config_text):
             return False, "inline hook declaration duplicates hooks.json"
         event_map = hooks.get("hooks")
-        if not isinstance(event_map, dict) or set(event_map) != {"PreToolUse"}:
-            return False, "hooks.json must have only PreToolUse"
+        expected_events = {"PreToolUse", "PreCompact", "SessionStart"}
+        if not isinstance(event_map, dict) or set(event_map) != expected_events:
+            return False, f"hooks.json events must be exactly {sorted(expected_events)}"
+
+        compact_specs = (
+            ("PreCompact", "^(manual|auto)$", None),
+            ("SessionStart", "^compact$", 1200),
+        )
+        for event_name, matcher, context_limit in compact_specs:
+            compact_groups = event_map[event_name]
+            if not isinstance(compact_groups, list) or len(compact_groups) != 1:
+                return False, f"{event_name} must have one group"
+            compact_group = compact_groups[0]
+            if compact_group.get("matcher") != matcher:
+                return False, f"{event_name} matcher is not {matcher}"
+            compact_commands = compact_group.get("hooks")
+            if not isinstance(compact_commands, list) or len(compact_commands) != 1:
+                return False, f"{event_name} must have one command hook"
+            compact_hook = compact_commands[0]
+            if compact_hook.get("type") != "command":
+                return False, f"{event_name} hook type is not command"
+            if "compact_state.py" not in str(compact_hook.get("command", "")):
+                return False, f"{event_name} does not resolve compact_state.py"
+            compact_windows = compact_hook.get("commandWindows")
+            if not isinstance(compact_windows, str) or '"' in compact_windows:
+                return False, f"{event_name} Windows command is missing or quote-unsafe"
+            if not compact_windows.endswith("'.codex/hooks/compact_state_windows.ps1')"):
+                return False, f"{event_name} Windows command does not resolve the compact wrapper"
+            if context_limit is not None and compact_hook.get("additionalContextLimit") != context_limit:
+                return False, f"{event_name} additionalContextLimit drifted"
+
         groups = event_map["PreToolUse"]
         if not isinstance(groups, list) or len(groups) != 1:
             return False, "PreToolUse must have one group"
         group = groups[0]
-        if group.get("matcher") != "^Bash$":
-            return False, "canonical shell matcher is not exact"
+        if group.get("matcher") != "^(Bash|apply_patch)$":
+            return False, "canonical Bash/apply_patch matcher is not exact"
         commands = group.get("hooks")
         if not isinstance(commands, list) or len(commands) != 1:
             return False, "PreToolUse must have one command hook"
@@ -800,37 +920,63 @@ def main() -> int:
             "permissionDecisionReason",
             "systemMessage",
             "tool_input",
+            "WIP_PATH_RE",
+            "scripts/wip.py",
         )
         missing = [item for item in required if item not in guard_text]
         if missing:
             return False, f"guard missing output/input keys {missing}"
+        compact_text = read_utf8(CODEX_ROOT / "hooks" / "compact_state.py")
+        compact_required = (
+            "PreCompact",
+            "SessionStart",
+            "additionalContext",
+            "source",
+            "compact",
+            "WIP_*_작업원장.md",
+            "capsule_text",
+        )
+        compact_missing = [item for item in compact_required if item not in compact_text]
+        if compact_missing:
+            return False, f"compact hook missing contract keys {compact_missing}"
         return True, (
-            "single hooks.json source, canonical matcher, quote-free Windows wrapper, "
-            "portable commands and structured deny"
+            "single hooks.json source; staged compact gate/injection; Bash/apply_patch matcher; "
+            "quote-free Windows wrappers; structured deny and WIP direct-write guard"
         )
 
     ledger.guarded("Codex hook contract", check_hook_contract)
 
-    completed = subprocess.run(
-        [
-            sys.executable,
-            "-I",
-            "-B",
-            str(CODEX_ROOT / "hooks" / "test_guard_backslash.py"),
-        ],
-        cwd=REPO_ROOT,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        capture_output=True,
-        check=False,
+    mock_suites = (
+        ("backslash and WIP guard mock suite", CODEX_ROOT / "hooks" / "test_guard_backslash.py"),
+        ("compact state mock suite", CODEX_ROOT / "hooks" / "test_compact_state.py"),
+        ("environment tri-state mock suite", CODEX_ROOT / "test_check_environment.py"),
+        ("WIP v2 mock suite", REPO_ROOT / "scripts" / "test_wip.py"),
+        ("change-scope mock suite", REPO_ROOT / "scripts" / "test_check_change_scope.py"),
+        ("result-condition mock suite", REPO_ROOT / "scripts" / "test_check_result_conditions.py"),
+        ("shared handoff mock suite", REPO_ROOT / "scripts" / "test_check_handoff.py"),
+        ("document-routing mock suite", REPO_ROOT / "scripts" / "test_doc_routing.py"),
+        ("plan-number diagnostic mock suite", REPO_ROOT / "scripts" / "test_check_plan_numbers.py"),
+        (
+            "Codex handoff mock suite",
+            AGENTS_ROOT / "skills" / "session-handoff" / "scripts" / "test_check_handoff_codex.py",
+        ),
     )
-    hook_test_detail = (
-        "16 hook tests passed"
-        if completed.returncode == 0
-        else (completed.stderr or completed.stdout).strip()
-    )
-    ledger.record("Codex hook mock suite", completed.returncode == 0, hook_test_detail)
+    for suite_name, suite_path in mock_suites:
+        completed = subprocess.run(
+            [sys.executable, "-I", "-B", str(suite_path)],
+            cwd=REPO_ROOT,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            capture_output=True,
+            check=False,
+        )
+        detail = (
+            "mock suite passed"
+            if completed.returncode == 0
+            else (completed.stderr or completed.stdout).strip()
+        )
+        ledger.record(suite_name, completed.returncode == 0, detail)
 
     handoff_skill = read_utf8(
         AGENTS_ROOT / "skills" / "session-handoff" / "SKILL.md"
@@ -888,7 +1034,7 @@ def main() -> int:
         ),
     )
 
-    return ledger.emit()
+    return ledger.emit(require_shell_syntax=args.require_shell_syntax)
 
 
 if __name__ == "__main__":

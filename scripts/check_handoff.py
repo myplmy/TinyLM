@@ -62,6 +62,33 @@ REQUIRED = [
 SPEC_SINCE = "202608060000"      # ai_dev_tool/02 제정 이후 판만 강제한다
 
 
+def current_queue_segment(lines: list[str]) -> str:
+    """Return the live recommendation part of section 7, excluding 7.1 history."""
+    i7 = next((k for k, line in enumerate(lines) if re.match(r"^##\s*7\.", line)), None)
+    if i7 is None:
+        return ""
+    j7 = next(
+        (k for k in range(i7 + 1, len(lines)) if re.match(r"^##\s", lines[k])),
+        len(lines),
+    )
+    live_lines = lines[i7:j7]
+    history = next(
+        (k for k, line in enumerate(live_lines) if re.match(r"^###\s*7\.1\b", line)),
+        len(live_lines),
+    )
+    return NL_.join(live_lines[:history])
+
+
+def current_queue_batch_names(segment: str, known_batches: set[str]) -> set[str]:
+    """Return only experiment batches registered in experiments.tsv.
+
+    Operational launchers such as ``run_queue.bat`` can be mentioned in §7,
+    but they are neither experiment rows nor part of the queue-hour total.
+    """
+    named = set(re.findall(r"(run_[A-Za-z0-9_]+\.bat)", segment))
+    return named & known_batches
+
+
 def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
     # ★규약 제정 이전 판은 검사하지 않는다 — 지금 양식을 소급 적용하는 것은
     #   기록의 왜곡이고, 고치면 그 시점의 실제 상태를 알 수 없게 된다.
@@ -316,13 +343,10 @@ def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
                     hours[c[2]] = float(c[4])
                 except ValueError:
                     pass
-        # §7 구간만 본다
-        i7 = next((k for k, l in enumerate(lines) if re.match(r'^##\s*7\.', l)), None)
-        if i7 is not None:
-            j7 = next((k for k in range(i7 + 1, len(lines))
-                       if re.match(r'^##\s', lines[k])), len(lines))
-            seg = NL_.join(lines[i7:j7])
-            named = set(re.findall(r'(run_[A-Za-z0-9_]+\.bat)', seg))
+        # §7의 현재 권장표만 본다. §7.1은 직전 큐의 완료·제외 이력이라 다시 합산하지 않는다.
+        seg = current_queue_segment(lines)
+        if seg:
+            named = current_queue_batch_names(seg, set(hours))
             # ★★2026-09-04 수정 — **`-done` 도 센다.**
             #   🚫종전에는 `(ROOT/n).exists()` 만 봐서, 그 배치들이 **실제로 실행되어**
             #   `-done` 이 붙는 순간 **과거 핸드오프가 소급해서 실패**했다(17.9h → 5.1h).
