@@ -1,5 +1,7 @@
 # TinyLM Codex 작업환경 — 소유권·분리 계약
 
+> **최신 갱신일자**: 2026-09-13 · **문서 유형**: live
+
 > 제정: 2026-09-11, 승인된 제안서 P1  
 > 상태: **P0~P8 역사 증거 `PASS / ACTIVE_VERIFIED`; 2026-09-13 확장 훅은 `STATIC_ONLY / E2E_NOT_RUN`**
 > 제안서: `proposal/done/20260911_Codex-작업환경-완전분리-구축-approved.md`  

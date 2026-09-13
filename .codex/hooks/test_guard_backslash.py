@@ -153,6 +153,21 @@ class GuardEvaluationTests(unittest.TestCase):
         patch = "*** Begin Patch\n*** Update File: docs/note.md\n*** End Patch"
         self.assertIsNone(GUARD.evaluate_event(patch_event(patch)))
 
+    def test_apply_patch_content_may_mention_wip_path(self) -> None:
+        patch = (
+            "*** Begin Patch\n*** Update File: handoff/20990101_HANDOFF.md\n@@\n"
+            "-old\n+closed ledger: handoff/WIP_20990101_작업원장-done.md\n"
+            "*** End Patch"
+        )
+        self.assertIsNone(GUARD.evaluate_event(patch_event(patch)))
+
+    def test_apply_patch_move_destination_wip_is_denied(self) -> None:
+        patch = (
+            "*** Begin Patch\n*** Update File: handoff/note.md\n"
+            "*** Move to: handoff/WIP_20990101_작업원장.md\n*** End Patch"
+        )
+        self.assertEqual(decision(GUARD.evaluate_event(patch_event(patch))), "deny")
+
     def test_missing_allowlist_is_fail_open_with_warning(self) -> None:
         missing = GUARD_PATH.with_name("definitely_missing_allowlist.tsv")
         response = GUARD.evaluate_event(

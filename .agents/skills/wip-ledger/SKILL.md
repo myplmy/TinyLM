@@ -40,12 +40,21 @@ description: 세션 착수 시 WIP 작업원장을 만들고 작업 중 갱신�
 항상 선택한 원장을 `--file`로 명시하고 UTF-8 모드로 실행한다.
 
 ```powershell
-# 새 원장: 열린 원장이 없을 때만
+# 새 원장: 열린 원장이 없을 때
 python -X utf8 scripts/wip.py --new `
   --previous handoff/이전_HANDOFF.md `
   --allow "허용된 파일·작업" --not-run "금지·미실행 경계" `
   --user-owned "사용자 소유 실행" --retired-claims "폐기·정정 주장" `
   --item "1=사용자 지시 원문" --item "2A=사용자 지시 원문"
+
+# 동시 작업 예외: 사용자가 별도로 승인한 경우에만
+python -X utf8 scripts/wip.py --new --allow-concurrent `
+  --concurrent-reason "사용자 승인 YYYY-MM-DD와 승인 범위" `
+  --session-id $env:CODEX_SESSION_ID `
+  --previous handoff/이전_HANDOFF.md `
+  --allow "이번 작업의 독립 허용범위" --not-run "금지·미실행 경계" `
+  --user-owned "사용자 소유 실행" --retired-claims "폐기·정정 주장" `
+  --item "1=사용자 지시 원문"
 
 # 상태 전이
 python -X utf8 scripts/wip.py --start 1 --file handoff/WIP_YYYYMMDD_작업원장.md `
@@ -66,6 +75,28 @@ python -X utf8 scripts/wip.py --close --file handoff/WIP_YYYYMMDD_작업원장.m
 
 허용 상태 전이는 `대기→진행`, `진행→완료`, `대기·진행→막힘`, `막힘→대기·진행`이다.
 완료 항목은 다시 열지 않는다. 열린 항목이 하나라도 있거나 캡슐 해시가 낡았으면 닫지 않는다.
+
+기본 계약은 열린 원장 하나다. 병렬 세션 때문에 둘째 원장이 꼭 필요할 때만 사용자의 별도 승인을
+근거로 `--allow-concurrent`와 `--concurrent-reason`을 함께 쓴다. 이때 세션 ID를 원장에 결합하고,
+모든 조회·상태 전이·닫기에 `--file`을 명시한다. 인자 없는 `--list`는 열린 원장을 모두 보여준다.
+compact 훅은 공식 hook 입력의 `session_id`와 정확히 일치하는 원장 하나만 주입하며, 일치하지
+않거나 중복되면 열린 원장이 하나뿐이어도 대체 선택하지 않고 중단한다. 기존 다른 원장은
+수정·종료하지 않는다. 새 파일명은 열린 파일과 동일 stem의 `-done` 파일을 모두 사용 중인
+슬롯으로 보아야 한다. 과거 완료 파일 때문에 닫기 대상이 충돌한 열린 원장은 직접 개명하지 않고
+`--repair-name-collision --reason ... --approval-ref ...`로 감사 이력을 남겨 다음 빈 슬롯으로 옮긴다.
+
+기능 도입 전에 만들어져 `Codex 세션 ID`가 없는 기존 원장은 자동 추정하지 않는다. 그 원장의
+소유 세션과 사용자가 확인된 경우에만 다음처럼 정확한 파일·세션·사유·승인을 함께 기록한다.
+
+```powershell
+python -X utf8 scripts/wip.py --bind-session `
+  --file handoff/WIP_YYYYMMDD_작업원장.md `
+  --session-id $env:CODEX_SESSION_ID `
+  --reason "이 원장이 현재 세션 소유임을 확인한 근거" `
+  --approval-ref "사용자 승인 YYYY-MM-DD"
+```
+
+완료 원장 재결합과 이미 결합된 원장의 다른 세션 재결합은 거부한다.
 
 ## 예외 교정
 

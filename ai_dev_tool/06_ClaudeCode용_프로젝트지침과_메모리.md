@@ -1,5 +1,7 @@
 # 06. Claude Code 용 — **프로젝트 지침·메모리 대체본**
 
+> **최신 갱신일자**: 2026-09-13 · **문서 유형**: live
+
 > **왜 이 문서가 있나** — 🚫**Claude Code 는 claude.ai/Cowork 의 "프로젝트 지침" 과
 > "프로젝트 메모리" 를 읽지 못한다.** 그것은 claude.ai 프로젝트의 기능이고,
 > Claude Code 의 기억 원천은 **CLAUDE.md 계층 · `.claude/rules/` · 자동 메모리** 셋뿐이다

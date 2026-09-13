@@ -64,6 +64,12 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_attrs.py
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_diag_data.py
 if errorlevel 1 echo [WARN] check_diag_data found problems - continuing
 
+REM P089 Stage2 regression: role mapping can land on a CLA reuse layer that has
+REM no physical K/V parameters. The diagnostic proves K/V follows teacher.owner.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[pre] P089 CLA parent-init owner mapping"
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_init_cla_owner.py
+if errorlevel 1 echo [WARN] P089 CLA parent-init owner mapping failed - continuing
+
 REM  check_handoff - the handoff format drifted (4 fixed sections missing in the
 REM  latest one, 2026-08-13). Convention lives in ai_dev_tool/02; this checks it.
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\check_handoff.py

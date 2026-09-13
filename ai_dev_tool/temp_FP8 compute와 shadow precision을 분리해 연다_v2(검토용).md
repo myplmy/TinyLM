@@ -1,5 +1,7 @@
 # 제안 — FP8 compute와 shadow precision을 분리하고 format·scaling·write-back을 단계적으로 연다
 
+> **작성일**: 2026-09-12 · **문서 유형**: draft · **상태**: 승인 정본 이관 완료·사용자 삭제 대기
+
 > **작성** 2026-09-11 · **상태** ⏳판단 대기 · **분류** 실험계획  
 > 양식: `proposal/README.md` §3. 아홉 절을 비우지 않는다.  
 > **제안 파일명** `proposal/20260911_FP8-compute와-shadow-precision을-분리해-연다.md`

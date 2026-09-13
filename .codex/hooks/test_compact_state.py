@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -29,6 +30,7 @@ SENTINELS = {
     "다음 행동·선결": "NEXT_AFTER_USER_E2E_6F44",
 }
 SENTINEL_CAPSULE = "\n".join(f"| {key} | {value} |" for key, value in SENTINELS.items())
+TEST_SESSION = "thread-current"
 
 
 def event(name: str, **fields: str) -> dict[str, str]:
@@ -43,18 +45,19 @@ class CompactStateTests(unittest.TestCase):
     def tearDown(self) -> None:
         self.temp.cleanup()
 
-    def add_wip(self, name: str = "WIP_20990101_작업원장.md") -> Path:
+    def add_wip(self, name: str = "WIP_20990101_작업원장.md", session_id: str | None = None) -> Path:
         path = self.handoff / name
-        path.write_text("fixture", encoding="utf-8")
+        header = f"- **Codex 세션 ID**: `{session_id}`\n" if session_id else ""
+        path.write_text(header + "fixture", encoding="utf-8")
         return path
 
     def reader(self, path: Path) -> str:
         return SENTINEL_CAPSULE
 
     def test_m0_all_eight_sentinels_and_retired_claim_are_preserved(self) -> None:
-        self.add_wip()
+        self.add_wip(session_id=TEST_SESSION)
         response = HOOK.evaluate_event(
-            event("SessionStart", source="compact"),
+            event("SessionStart", source="compact", session_id=TEST_SESSION),
             handoff_dir=self.handoff,
             capsule_reader=self.reader,
         )
@@ -67,24 +70,24 @@ class CompactStateTests(unittest.TestCase):
         self.assertIn("NOT_RUN→PASS", context)
 
     def test_m2_precompact_accepts_valid_manual_and_auto_capsules(self) -> None:
-        self.add_wip()
+        self.add_wip(session_id=TEST_SESSION)
         for trigger in ("manual", "auto"):
             with self.subTest(trigger=trigger):
                 response = HOOK.evaluate_event(
-                    event("PreCompact", trigger=trigger),
+                    event("PreCompact", trigger=trigger, session_id=TEST_SESSION),
                     handoff_dir=self.handoff,
                     capsule_reader=self.reader,
                 )
                 self.assertTrue(response["continue"])
 
     def test_m2_stale_capsule_stops_before_compaction(self) -> None:
-        self.add_wip()
+        self.add_wip(session_id=TEST_SESSION)
 
         def stale(path: Path) -> str:
             raise ValueError("STALE_CAPSULE")
 
         response = HOOK.evaluate_event(
-            event("PreCompact", trigger="auto"),
+            event("PreCompact", trigger="auto", session_id=TEST_SESSION),
             handoff_dir=self.handoff,
             capsule_reader=stale,
         )
@@ -106,6 +109,62 @@ class CompactStateTests(unittest.TestCase):
                 )
                 self.assertFalse(response["continue"])
                 self.assertIn("count is 2", response["stopReason"])
+
+    def test_multiple_open_wips_select_exact_session_binding(self) -> None:
+        self.add_wip("WIP_20990101_작업원장.md", "thread-a")
+        chosen = self.add_wip("WIP_20990101a_작업원장.md", "thread-b")
+        seen: list[Path] = []
+
+        def reader(path: Path) -> str:
+            seen.append(path)
+            return SENTINEL_CAPSULE
+
+        response = HOOK.evaluate_event(
+            event("SessionStart", source="compact", session_id="thread-b"),
+            handoff_dir=self.handoff,
+            capsule_reader=reader,
+        )
+        self.assertEqual(seen, [chosen])
+        self.assertIn(chosen.name, response["hookSpecificOutput"]["additionalContext"])
+
+    def test_multiple_open_wips_reject_unknown_session(self) -> None:
+        self.add_wip("WIP_20990101_작업원장.md", "thread-a")
+        self.add_wip("WIP_20990101a_작업원장.md", "thread-b")
+        response = HOOK.evaluate_event(
+            event("PreCompact", trigger="auto", session_id="thread-c"),
+            handoff_dir=self.handoff,
+            capsule_reader=self.reader,
+        )
+        self.assertFalse(response["continue"])
+        self.assertIn("matched 0 WIPs", response["stopReason"])
+
+    def test_single_open_wip_still_requires_exact_session_binding(self) -> None:
+        self.add_wip(session_id="thread-a")
+        for payload, marker in (
+            (event("PreCompact", trigger="auto"), "session_id is missing"),
+            (
+                event("PreCompact", trigger="auto", session_id="thread-b"),
+                "matched 0 WIPs",
+            ),
+        ):
+            with self.subTest(payload=payload):
+                response = HOOK.evaluate_event(
+                    payload,
+                    handoff_dir=self.handoff,
+                    capsule_reader=self.reader,
+                )
+                self.assertFalse(response["continue"])
+                self.assertIn(marker, response["stopReason"])
+
+    def test_single_unbound_legacy_wip_is_not_used_as_another_session(self) -> None:
+        self.add_wip()
+        response = HOOK.evaluate_event(
+            event("SessionStart", source="compact", session_id="thread-b"),
+            handoff_dir=self.handoff,
+            capsule_reader=self.reader,
+        )
+        self.assertFalse(response["continue"])
+        self.assertIn("matched 0 WIPs", response["stopReason"])
 
     def test_no_open_wip_is_explicit_after_compact(self) -> None:
         response = HOOK.evaluate_event(
@@ -136,9 +195,16 @@ class CompactStateProcessTests(unittest.TestCase):
         self.assertEqual(completed.stdout, "")
 
     def test_current_repository_state_is_valid_static_evidence(self) -> None:
+        session_id = os.environ.get("CODEX_SESSION_ID", "test-session")
         completed = subprocess.run(
             [sys.executable, "-I", "-B", str(HOOK_PATH)],
-            input=json.dumps(event("SessionStart", source="compact")),
+            input=json.dumps(
+                event(
+                    "SessionStart",
+                    source="compact",
+                    session_id=session_id,
+                )
+            ),
             text=True,
             encoding="utf-8",
             capture_output=True,
@@ -146,14 +212,21 @@ class CompactStateProcessTests(unittest.TestCase):
         )
         self.assertEqual(completed.returncode, 0, completed.stderr)
         payload = json.loads(completed.stdout)
-        context = payload["hookSpecificOutput"]["additionalContext"]
-        self.assertIn("[TinyLM compact recovery v1]", context)
-        if HOOK._open_wips():
+        wips = HOOK._open_wips()
+        matches = [path for path in wips if HOOK._wip_session_id(path) == session_id]
+        if len(matches) == 1:
+            context = payload["hookSpecificOutput"]["additionalContext"]
+            self.assertIn("[TinyLM compact recovery v1]", context)
             self.assertIn("Compact 상태 캡슐 (v1)", context)
             for field in SENTINELS:
                 self.assertIn(field, context)
-        else:
+        elif not wips:
+            context = payload["hookSpecificOutput"]["additionalContext"]
+            self.assertIn("[TinyLM compact recovery v1]", context)
             self.assertIn("열린 WIP 없음", context)
+        else:
+            self.assertFalse(payload["continue"])
+            self.assertIn("matched", payload["stopReason"])
 
 
 if __name__ == "__main__":

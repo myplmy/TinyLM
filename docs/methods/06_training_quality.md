@@ -23,3 +23,14 @@
 | **짧은 런의 스케줄 왜곡** | ⚠️**함정** | — | `warm = max(5, min(steps//10, 100))` → 250스텝이면 warmup 25뿐 | anneal 개시 시 LR 이 peak 근처 = 불안정 | 결과 007: 250스텝 런은 **속도 외 어떤 것도 긴 런으로 이전 불가**. 품질·안정성 판정 금지 |
 | **cooldown-QAT 스케줄 정렬** | ⏸**검출 실패**(결과 015) | v6 (`--anneal-end`) | 완전삼진 도달 지점을 LR 감쇠 시작과 정렬 | 기본값(0.60)은 종전 동작 | **정렬 고유 기여 −0.0128(1.1σ) = 구분 불가.** 이득의 실체는 wsd 자체였다. 5번 표·P026 §단계5 참조 |
 | **베스트 체크포인트로 런 비교** | 🚫**금지**(결과 015) | — | — | 주기 eval 50it vs 최종 eval 100it = **다른 추정량**, `best` 는 추첨 최소값이라 **하향 편향** | 결과 015 에서 `best` 로 읽으면 부호가 뒤집혔다. **판정은 `final` 끼리만.** `best.pt` 는 체크포인트 선택용으로만 |
+
+## 2026-09-13 승인 연구의 품질 상태
+
+| 계획 | 분리한 품질 질문 | 현재 상태 |
+|---|---|---|
+| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | selector, local update, expansion을 한 팔에 섞지 않음 | primitive 정적 계약만; 학습·품질 `NOT_RUN` |
+| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | structural/ternary/effective sparsity와 rewiring을 분리 | 계측·mask primitive만; 품질 `NOT_RUN` |
+| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | dense-master와 sparse-master를 분리 | exact 2:4 계약만; 품질 `NOT_RUN` |
+| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | compute dtype와 shadow/write-back precision을 분리 | backend gate만; 수치 안정·품질 `NOT_RUN` |
+
+각 계획의 Stage0 PASS가 나오더라도 그것은 기능 가능성의 앞단일 뿐, 품질 채택 판정이 아니다.

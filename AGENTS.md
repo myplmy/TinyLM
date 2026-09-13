@@ -40,7 +40,8 @@
 2. [Codex 환경 분리 계약](ai_dev_tool/Codex/README.md)
 3. [Codex 작업규약](ai_dev_tool/Codex/00_작업규약_한글판.md)과
    [프로젝트 지침·메모리](ai_dev_tool/Codex/06_Codex용_프로젝트지침과_메모리.md)
-4. `handoff/WIP_*.md` 중 `-done`이 아닌 열린 원장; 있으면 그것이 현재 작업
+4. `handoff/WIP_*.md` 중 `-done`이 아닌 열린 원장; 하나뿐이어도 현재 사용자 지시·소유 증거를
+   확인하며, `Codex 세션 ID`가 있으면 원장 수와 무관하게 정확히 일치하는 원장만 `--file`로 선택
 5. 특정 파일명을 하드코딩하지 않고 동적으로 고른 최신 유효 `handoff/*_HANDOFF.md`
 6. [`handoff/COMPASS.md`](handoff/COMPASS.md)와
    [`docs/EXPERIMENT_BASELINES.md`](docs/EXPERIMENT_BASELINES.md)

@@ -29,3 +29,8 @@
 | ★[`20260904_배치-파라미터-화이트리스트-approved.md`](20260904_배치-파라미터-화이트리스트-approved.md) | ✅승인 | **2026-09-04** | → `scripts/check_flag_intent.py`(게이트 27) + `docs/flag_whitelist.md` |
 | ★[`20260904_선결없는-대기항목을-막는다-approved.md`](20260904_선결없는-대기항목을-막는다-approved.md) | ✅승인 | **2026-09-04** | → `scripts/check_pending.py`(게이트 28) |
 | [`20260911_Codex-작업환경-완전분리-구축-approved.md`](20260911_Codex-작업환경-완전분리-구축-approved.md) | ✅승인 | **2026-09-11** | P0~P2 완료: 소유권 기준선·분리계약·Codex 00~08 독립 이식. P3~P8 미착수 |
+| [`20260912_ai_dev_tool-문서-갱신일자-메타데이터-검증-approved.md`](20260912_ai_dev_tool-문서-갱신일자-메타데이터-검증-approved.md) | ✅**B2 승인** | **2026-09-13** | `check_doc_metadata.py` + 유형 정책 + 55개 머리말 이행. 정적 55/55 |
+| [`20260913_FP8-compute-shadow-precision-format-scaling-writeback-제안서-approved.md`](20260913_FP8-compute-shadow-precision-format-scaling-writeback-제안서-approved.md) | ✅승인 | **2026-09-13** | → `P022C`; C0 backend gate만 작성, 후속 `NOT_RUN` |
+| [`20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md`](20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md) | ✅승인 | **2026-09-13** | → `P025B`; native 2:4 Stage0a만 작성, 후속 `NOT_RUN` |
+| [`20260913_Muon-후반-적응적-블록-확장-재학습-제안서-approved.md`](20260913_Muon-후반-적응적-블록-확장-재학습-제안서-approved.md) | ✅승인 | **2026-09-13** | → `P091`; 번호 선점 해소, 계약 Stage0a만 작성 |
+| [`20260913_Dynamic-Sparse-Training-연결희소성-학습-제안서-approved.md`](20260913_Dynamic-Sparse-Training-연결희소성-학습-제안서-approved.md) | ✅승인 | **2026-09-13** | → `P092`; 공통 계약·Stage0b만 작성, 학습 `NOT_RUN` |

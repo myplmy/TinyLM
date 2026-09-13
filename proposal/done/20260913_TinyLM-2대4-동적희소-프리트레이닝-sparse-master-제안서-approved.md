@@ -1,6 +1,6 @@
 # 제안 — 2:4 동적 희소 프리트레이닝과 sparse-master 전환
 
-> **원문 작성** 2026-09-12 · **승격** 2026-09-13 · **상태** ⚠️조건부 제안서 승격 / 구현·P025B 계획 미승인 · **분류** 실험계획  
+> **원문 작성** 2026-09-12 · **승격** 2026-09-13 · **승인** 2026-09-13 · **상태** ✅승인 / P025B 단계적 착수 · **분류** 실험계획  
 > 양식: `proposal/README.md` §3. **아홉 절을 비우지 않는다.**  
 > 원문: `ai_dev_tool/temp_TinyLM 2_4 동적 희소 프리트레이닝 및 sparse-master 실험 제안서(검토용).md`
 > · 승격 전 SHA-256 `A1DF86FEA74F8E2DFFAD24371AACC9E7F81A78C53E55DD28F565EE41F3D5D27B`
@@ -906,3 +906,12 @@ birth/death/resurrection/lifetime fixture는 공통 모듈로 한 번만 구현�
 P025B는 **정확한 2:4 invariant·dense/sparse master·native kernel**만 확장하고, 일반 DST는
 **자유 connectivity·ERK·다중 density**만 확장한다. 어느 한 제안만 승인되면 공통 모듈도 그 승인안에
 필요한 최소 필드만 구현하며 다른 제안의 축을 선제 구현하지 않는다.
+
+## 11. 승인·단계적 착수 기록 — 2026-09-13
+
+- 사용자가 이 제안을 승인했고 계획번호는 **P025B**로 확정했다. 이 절은 승인 전 상태를 보존한
+  10절까지의 역사 기록보다 우선한다.
+- 현재는 P092와 공유하는 sparsity 계약, 정확한 magnitude 2:4 mask, inactive dense-gradient
+  primitive, 그리고 native CUDA 2:4 backend를 엄격히 판정하는 Stage0a 진단까지만 작성했다.
+- sparse-master optimizer state, adaptive freeze, 실제 학습·메모리·속도 비교는 Stage0a 통과 뒤의
+  후속 gate이며 모두 `NOT_RUN`이다.

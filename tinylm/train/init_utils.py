@@ -7,6 +7,7 @@ import torch
 
 from ..config import TMTConfig
 from ..model import TiedMLPTransformer
+from .init_mapping import teacher_attention_source_index
 
 
 def _strip(sd):
@@ -16,6 +17,19 @@ def _strip(sd):
 def _cfg_of(model):
     """모델의 cfg. `load_dense` 가 돌려주는 것과 학생 둘 다 `.cfg` 를 갖는다."""
     return model.cfg
+
+
+def _teacher_attn_parameter(teacher, mapped_layer: int, parameter_name: str):
+    """Resolve layer-local Q/O versus CLA-owned K/V teacher parameters."""
+    source = teacher_attention_source_index(teacher.owner, mapped_layer, parameter_name)
+    params = dict(teacher.layers[source].attn_mod.named_parameters())
+    if parameter_name not in params:
+        raise RuntimeError(
+            f"[init] 교사 어텐션 파라미터 {parameter_name!r}가 없다: "
+            f"mapped_layer={mapped_layer}, resolved_owner={source}, "
+            f"teacher.owner={teacher.owner}"
+        )
+    return params[parameter_name]
 
 
 @torch.no_grad()
@@ -232,27 +246,27 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
         for j, at_s in enumerate(student.mid_attns):
             # 이 공유 어텐션을 쓰는 학생 **중간층** 인덱스 → 대응표 → 교사 층
             s_mids = [k for k in range(j * ag, (j + 1) * ag)]
-            t_layers = [teacher.layers[lmap[sc.n_prelude + k]] for k in s_mids]
-            members = [tl.attn_mod for tl in t_layers]
+            t_ids = [lmap[sc.n_prelude + k] for k in s_mids]
             names = ["q_proj", "o_proj"] + (["k_proj", "v_proj"] if at_s.owns_kv else [])
             for nm in names:
                 dst = getattr(at_s, nm).weight.data
-                dst.copy_(sum(getattr(mm, nm).weight.data for mm in members) / len(members))
+                dst.copy_(sum(_teacher_attn_parameter(teacher, ti, f"{nm}.weight").data
+                              for ti in t_ids) / len(t_ids))
             # ★q/k norm 등 추가 파라미터가 있으면 함께 평균한다(빠뜨리면 조용히 난수로 남는다)
             ref = dict(at_s.named_parameters())
             for nm2, ps in ref.items():
                 if any(nm2.startswith(x + ".") for x in names):
                     continue                                    # 위에서 처리했다
                 try:
-                    avg = sum(dict(mm.named_parameters())[nm2].data for mm in members)
-                except KeyError:
+                    avg = sum(_teacher_attn_parameter(teacher, ti, nm2).data for ti in t_ids)
+                except RuntimeError:
                     print(f"[init] ⚠️ 공유 어텐션 파라미터 {nm2!r} 이 교사에 없다 — "
                           f"**난수로 남는다.** 결과문서에 적을 것")
                     continue
-                ps.data.copy_(avg / len(members))
+                ps.data.copy_(avg / len(t_ids))
             shared_done.add(id(at_s))
             print(f"[init]   공유 어텐션 {j}: 교사 층 "
-                  f"{[lmap[sc.n_prelude + k] for k in s_mids]} 평균")
+                  f"{t_ids} 평균")
         print(f"[init] ⚠️★어텐션 평균은 **MLP 평균과 같은 규약**이지만 **효과는 미검증**이다. "
               f"P057 단계0 게이트가 step0 CE 로 잰다(통과 대역 5.0~9.40, 함정 34)")
 
@@ -263,9 +277,15 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
         if id(ls.attn_mod) not in shared_done:
             ls.attn_mod.q_proj.weight.data.copy_(lt.attn_mod.q_proj.weight.data)
             ls.attn_mod.o_proj.weight.data.copy_(lt.attn_mod.o_proj.weight.data)
-            if ls.attn_mod.owns_kv:                 # 교사(dense, cla1)는 모든 층이 k/v 보유
-                ls.attn_mod.k_proj.weight.data.copy_(lt.attn_mod.k_proj.weight.data)
-                ls.attn_mod.v_proj.weight.data.copy_(lt.attn_mod.v_proj.weight.data)
+            if ls.attn_mod.owns_kv:
+                # P089 Stage2 failure: a CLA=2 dense teacher owns K/V only on its
+                # owner layers. Role-proportional depth mapping can map a student
+                # owner to a teacher reuse layer, where k_proj/v_proj do not exist.
+                # Q/O stay layer-local; only K/V resolve through teacher.owner.
+                ls.attn_mod.k_proj.weight.data.copy_(
+                    _teacher_attn_parameter(teacher, ti, "k_proj.weight").data)
+                ls.attn_mod.v_proj.weight.data.copy_(
+                    _teacher_attn_parameter(teacher, ti, "v_proj.weight").data)
         for a in ("a_scale", "a_shift", "m_scale", "m_shift", "gates"):
             getattr(ls, a).data.copy_(getattr(lt, a).data)
         # ★복제된 층의 잔차 중복 보정(선택). 'prop' 이면 아무것도 안 한다 = 종전 동작.

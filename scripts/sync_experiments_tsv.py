@@ -39,6 +39,11 @@ ROOT = Path(__file__).resolve().parent.parent
 TSV = ROOT / "experiments.tsv"
 RESULT = ROOT / "test_result"
 MARK = "# ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):"
+POST_DELETE_GUIDANCE = (
+    "★삭제한 뒤에는 `python scripts/sync_experiments_tsv.py --apply` 로 표를 정리한다.",
+    "★그 다음 `python scripts/queue_menu.py --audit` 로 확인하고, 필요한 id는",
+    "  `python scripts/queue_menu.py --ids <배치명...>` 로 다시 계산한다.",
+)
 
 
 def banner(s, ch="="):
@@ -189,7 +194,8 @@ def main():
     print(f"\n{'=' * 100}")
     print(f"  삭제 가능 후보 {len(ok)}건: {' '.join(ok) if ok else '(없음)'}")
     print("  ★삭제는 **사용자가** 한다. 이 도구도, AI 도 파일을 지우지 않는다.")
-    print("  ★삭제한 뒤에는 `--apply` 로 표를 정리하고 `queue_menu.py --ids` 를 다시 돌린다.")
+    for line in POST_DELETE_GUIDANCE:
+        print(f"  {line}")
     print("=" * 100)
     return 0
 

@@ -289,3 +289,14 @@ python scripts/check_spill.py test_result/037_log_20260808_P018_compressed_teach
 
 > 메모리 최적화를 제안할 때 **세 값을 함께 적는다**: `peak reserved` · `tokens/sec` · `val`.
 > **하나만 좋아지고 다른 것이 나빠지면 "최적화" 라고 부르지 않는다.**
+
+## 2026-09-13 승인 연구의 메모리 회계 (`NOT_RUN`)
+
+| 계획 | 기대하는 메모리 축 | 현재 회계·제한 |
+|---|---|---|
+| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | inactive weight·optimizer state 제거 | 현 primitive는 dense tensor라 절감 0; sparse-master 구현 전 주장 금지 |
+| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | local optimizer state 감소, 임시 `BA` 증가 | 모델 연결 전이라 peak reserved/RSS 모두 미측정 |
+| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | shadow dtype에 따른 persistent state | FP8 compute만으로 shadow·optimizer 저장이 줄었다고 하지 않음 |
+| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | structural density와 실제 state 절감 분리 | dense mask 단계는 저장·상주 절감 0 |
+
+후속 측정은 `peak reserved`·tokens/sec·val을 함께 남기며, sparse 비율만으로 VRAM 절감을 계산하지 않는다.

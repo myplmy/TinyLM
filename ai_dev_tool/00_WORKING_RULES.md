@@ -1,5 +1,7 @@
 # 00 — WORKING RULES (operational, English)
 
+> **Last updated**: 2026-09-13 · **Document type**: live
+
 **Read this one every session.** It is the short list. Rationale, evidence and war
 stories live in the Korean ledgers (01–08) and `CLAUDE.md`; this file only says
 *what to do*. Korean mirror for user review: [`00_작업규약_한글판.md`](00_작업규약_한글판.md)

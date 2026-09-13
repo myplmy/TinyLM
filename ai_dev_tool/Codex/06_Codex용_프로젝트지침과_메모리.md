@@ -1,5 +1,7 @@
 # 06. Codex용 프로젝트 지침과 메모리
 
+> **최신 갱신일자**: 2026-09-13 · **문서 유형**: live
+
 > 제정: 2026-09-11, 승인된 완전분리 제안 P2  
 > 상태: **P0~P8 역사 증거 `PASS / ACTIVE_VERIFIED`; 2026-09-13 확장 훅·작업도구 `STATIC_ONLY / E2E_NOT_RUN`**
 > 환경 경계: [`README.md`](README.md)  

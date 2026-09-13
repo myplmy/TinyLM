@@ -486,6 +486,58 @@ def override_field(
     _mutate(path, mutate)
 
 
+def bind_session(path: Path, session_id: str, reason: str, approval_ref: str) -> None:
+    """Bind an older unbound open v2 ledger to its owning Codex session."""
+
+    if path.name.endswith("-done.md"):
+        raise ValueError("completed ledgers are immutable and cannot be session-bound")
+    if not re.fullmatch(r"[A-Za-z0-9._:-]+", session_id.strip()):
+        raise ValueError("--bind-session requires a nonempty safe --session-id")
+    if not reason.strip() or not approval_ref.strip():
+        raise ValueError("--bind-session requires --reason and --approval-ref")
+
+    def mutate(lines: list[str], text: str) -> None:
+        table = parse_table(text)
+        _require_v2(table)
+        if _metadata(text, "Codex 세션 ID", ""):
+            raise ValueError("ledger already has a Codex session ID")
+        schema_rows = [
+            index for index, line in enumerate(lines)
+            if line.startswith("- **WIP 스키마**:")
+        ]
+        if len(schema_rows) != 1:
+            raise ValueError(f"WIP schema metadata count must be 1: {len(schema_rows)}")
+        value = session_id.strip()
+        lines.insert(schema_rows[0] + 1, f"- **Codex 세션 ID**: `{value}`")
+        record = {
+            "change_id": f"WIP-{dt.datetime.now().astimezone():%Y%m%dT%H%M%S%z}-SESSION",
+            "timestamp": _now(),
+            "before": "(missing)",
+            "before_sha256": _sha_text("(missing)"),
+            "after": value,
+            "after_sha256": _sha_text(value),
+            "reason": reason.strip(),
+            "approval_ref": approval_ref.strip(),
+            "operation": "bind previously unbound open ledger to owning Codex session",
+            "cli_contract": [
+                "scripts/wip.py",
+                "--bind-session",
+                "--file",
+                "<ledger>",
+                "--session-id",
+                "<owning session id>",
+                "--reason",
+                "<redacted: retained in reason>",
+                "--approval-ref",
+                "<redacted: retained in approval_ref>",
+            ],
+        }
+        payload = json.dumps(record, ensure_ascii=False, indent=2)
+        _append_to_section(lines, AUDIT_HEADING, ["```json", *payload.splitlines(), "```"])
+
+    _mutate(path, mutate)
+
+
 def migrate_v2(path: Path, approval_ref: str, user_owned: str, retired_claims: str) -> None:
     original = path.read_bytes()
     text = original.decode("utf-8")
@@ -584,17 +636,73 @@ def close(path: Path) -> Path:
     return target
 
 
+def _closed_ledger_path(path: Path) -> Path:
+    return path.with_name(path.stem + "-done.md")
+
+
+def _ledger_slot_taken(path: Path) -> bool:
+    return path.exists() or _closed_ledger_path(path).exists()
+
+
 def _next_ledger_path() -> Path:
     day = dt.datetime.now().strftime("%Y%m%d")
     base = HANDOFF / f"WIP_{day}_작업원장.md"
-    if not base.exists():
+    if not _ledger_slot_taken(base):
         return base
     for offset in range(1, 27):
         suffix = chr(ord("a") + offset)
         candidate = HANDOFF / f"WIP_{day}{suffix}_작업원장.md"
-        if not candidate.exists():
+        if not _ledger_slot_taken(candidate):
             return candidate
     raise ValueError("same-day WIP suffix space exhausted")
+
+
+def repair_name_collision(path: Path, reason: str, approval_ref: str) -> Path:
+    """Move an open ledger whose eventual ``-done`` target already exists."""
+
+    if not reason.strip() or not approval_ref.strip():
+        raise ValueError("--repair-name-collision requires --reason and --approval-ref")
+    text = path.read_text(encoding="utf-8")
+    table = parse_table(text)
+    _require_v2(table)
+    collision = _closed_ledger_path(path)
+    if not collision.exists():
+        raise ValueError(f"no close-target collision: {collision.name}")
+    target = _next_ledger_path()
+    if _ledger_slot_taken(target):
+        raise ValueError(f"repair target already exists: {target.name}")
+
+    original = path.read_bytes()
+    lines = text.splitlines()
+    record = {
+        "change_id": f"WIP-{dt.datetime.now().astimezone():%Y%m%dT%H%M%S%z}-NAME",
+        "timestamp": _now(),
+        "before": path.name,
+        "before_sha256": _sha_text(path.name),
+        "after": target.name,
+        "after_sha256": _sha_text(target.name),
+        "reason": reason.strip(),
+        "approval_ref": approval_ref.strip(),
+        "operation": "repair open-ledger close-target name collision",
+        "cli_contract": [
+            "scripts/wip.py",
+            "--repair-name-collision",
+            "--file",
+            "<ledger>",
+            "--reason",
+            "<redacted: retained in reason>",
+            "--approval-ref",
+            "<redacted: retained in approval_ref>",
+        ],
+    }
+    payload = json.dumps(record, ensure_ascii=False, indent=2)
+    _append_to_section(lines, AUDIT_HEADING, ["```json", *payload.splitlines(), "```"])
+    refresh_capsule(target, lines)
+    _atomic_write(path, original, NL.join(lines))
+    if _ledger_slot_taken(target):
+        raise RuntimeError(f"repair target appeared during write: {target.name}")
+    path.rename(target)
+    return target
 
 
 def create_ledger(
@@ -604,9 +712,20 @@ def create_ledger(
     not_run: str,
     user_owned: str,
     retired_claims: str,
+    *,
+    allow_concurrent: bool = False,
+    concurrent_reason: str = "",
+    session_id: str = "",
 ) -> Path:
-    if find_ledgers():
+    existing = find_ledgers()
+    if existing and not allow_concurrent:
         raise ValueError("an open WIP already exists; close it before creating another")
+    if allow_concurrent and not existing:
+        raise ValueError("--allow-concurrent requires at least one existing open WIP")
+    if allow_concurrent and not concurrent_reason.strip():
+        raise ValueError("--allow-concurrent requires --concurrent-reason")
+    if allow_concurrent and not session_id.strip():
+        raise ValueError("--allow-concurrent requires --session-id or CODEX_SESSION_ID")
     parsed: list[tuple[str, str]] = []
     for raw in items:
         if "=" not in raw:
@@ -627,6 +746,16 @@ def create_ledger(
         f"- **직전 핸드오프**: `{_escape_cell(previous)}`",
         f"- **사용자 지시**: {len(parsed)}건(아래 표가 정본)",
         "- **WIP 스키마**: `v2`",
+        *([f"- **Codex 세션 ID**: `{_escape_cell(session_id)}`"] if session_id.strip() else []),
+        *(
+            [
+                "- **동시 WIP 생성 승인**: "
+                f"{_escape_cell(concurrent_reason)}; 기존 열린 원장: "
+                + ", ".join(f"`{path.name}`" for path in existing)
+            ]
+            if allow_concurrent
+            else []
+        ),
         f"- **변경 허용 범위**: {_escape_cell(allowlist)}",
         f"- **NOT_RUN 경계**: {_escape_cell(not_run)}",
         f"- **사용자 소유 실행**: {_escape_cell(user_owned)}",
@@ -689,9 +818,11 @@ def main() -> int:
     action.add_argument("--block")
     action.add_argument("--wait")
     action.add_argument("--override", action="store_true")
+    action.add_argument("--bind-session", action="store_true")
     action.add_argument("--migrate-v2", action="store_true")
     action.add_argument("--capsule-check", action="store_true")
     action.add_argument("--capsule-print", action="store_true")
+    action.add_argument("--repair-name-collision", action="store_true")
     action.add_argument("--close", action="store_true")
     parser.add_argument("--file")
     parser.add_argument("--note")
@@ -710,18 +841,41 @@ def main() -> int:
     parser.add_argument("--reason")
     parser.add_argument("--approval-ref")
     parser.add_argument("--allow-directive-correction", action="store_true")
+    parser.add_argument("--allow-concurrent", action="store_true")
+    parser.add_argument("--concurrent-reason")
+    parser.add_argument("--session-id", default=os.environ.get("CODEX_SESSION_ID", ""))
     args = parser.parse_args()
     try:
+        if (args.allow_concurrent or args.concurrent_reason) and not args.new:
+            raise ValueError("--allow-concurrent/--concurrent-reason are valid only with --new")
         if args.new:
             path = create_ledger(
-                args.item, args.previous, args.allowlist, args.not_run, args.user_owned, args.retired_claims
+                args.item,
+                args.previous,
+                args.allowlist,
+                args.not_run,
+                args.user_owned,
+                args.retired_claims,
+                allow_concurrent=args.allow_concurrent,
+                concurrent_reason=args.concurrent_reason or "",
+                session_id=args.session_id,
             )
             print(f"CREATED {path.relative_to(ROOT).as_posix()} schema=v2 items={len(args.item)}")
+            return 0
+        if args.list and not args.file:
+            ledgers = find_ledgers()
+            if not ledgers:
+                raise ValueError("열려 있는 작업원장이 없다")
+            for index, ledger in enumerate(ledgers):
+                if index:
+                    print()
+                show(ledger)
             return 0
         path = resolve_ledger(args.file, allow_multiple_for_list=args.list)
         active = (
             args.add, args.start, args.done, args.block, args.wait, args.override,
-            args.migrate_v2, args.capsule_check, args.capsule_print, args.close,
+            args.bind_session, args.migrate_v2, args.capsule_check, args.capsule_print,
+            args.repair_name_collision, args.close,
         )
         if args.list or not any(active):
             show(path)
@@ -733,6 +887,19 @@ def main() -> int:
         if args.capsule_check or args.capsule_print:
             capsule = capsule_text(path)
             print(capsule if args.capsule_print else f"CAPSULE_OK {path.name} chars={len(capsule)}")
+            return 0
+        if args.repair_name_collision:
+            target = repair_name_collision(path, args.reason or "", args.approval_ref or "")
+            print(
+                f"REKEYED {path.relative_to(ROOT).as_posix()} -> "
+                f"{target.relative_to(ROOT).as_posix()}; audit appended"
+            )
+            return 0
+        if args.bind_session:
+            if not args.file:
+                raise ValueError("--bind-session requires explicit --file")
+            bind_session(path, args.session_id, args.reason or "", args.approval_ref or "")
+            print(f"BOUND {path.relative_to(ROOT).as_posix()} session_id={args.session_id}")
             return 0
         if args.close:
             target = close(path)

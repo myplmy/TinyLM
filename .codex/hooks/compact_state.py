@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any, Callable
@@ -19,6 +20,7 @@ HANDOFF_DIR = REPO_ROOT / "handoff"
 WIP_MODULE_PATH = REPO_ROOT / "scripts" / "wip.py"
 PRE_COMPACT = "PreCompact"
 SESSION_START = "SessionStart"
+SESSION_ID_RE = re.compile(r"^- \*\*Codex 세션 ID\*\*: `([^`]+)`\s*$", re.MULTILINE)
 
 
 def _configure_utf8_streams() -> None:
@@ -46,6 +48,11 @@ def _capsule_reader(path: Path) -> str:
     return module.capsule_text(path)
 
 
+def _wip_session_id(path: Path) -> str | None:
+    match = SESSION_ID_RE.search(path.read_text(encoding="utf-8"))
+    return match.group(1).strip() if match else None
+
+
 def _stop(reason: str) -> dict[str, Any]:
     return {
         "continue": False,
@@ -57,14 +64,24 @@ def _stop(reason: str) -> dict[str, Any]:
 def _validated_state(
     handoff_dir: Path,
     capsule_reader: Callable[[Path], str],
+    session_id: str | None = None,
 ) -> tuple[Path | None, str | None, str | None]:
     wips = _open_wips(handoff_dir)
     if not wips:
         return None, None, None
-    if len(wips) != 1:
-        names = ", ".join(path.name for path in wips)
-        return None, None, f"compact state gate: open WIP count is {len(wips)} ({names})"
-    path = wips[0]
+    names = ", ".join(path.name for path in wips)
+    if not session_id:
+        return None, None, (
+            f"compact state gate: open WIP count is {len(wips)} and session_id is missing ({names})"
+        )
+    matches = [path for path in wips if _wip_session_id(path) == session_id]
+    if len(matches) != 1:
+        matched = ", ".join(path.name for path in matches) or "none"
+        return None, None, (
+            f"compact state gate: session_id {session_id!r} matched {len(matches)} WIPs "
+            f"({matched}); open WIPs: {names}"
+        )
+    path = matches[0]
     try:
         capsule = capsule_reader(path)
     except Exception as exc:
@@ -81,16 +98,18 @@ def evaluate_event(
     if not isinstance(event, dict):
         return None
     hook_event = event.get("hook_event_name")
+    raw_session_id = event.get("session_id")
+    session_id = raw_session_id.strip() if isinstance(raw_session_id, str) and raw_session_id.strip() else None
     if hook_event == PRE_COMPACT:
         if event.get("trigger") not in {"manual", "auto"}:
             return None
-        _, _, error = _validated_state(handoff_dir, capsule_reader)
+        _, _, error = _validated_state(handoff_dir, capsule_reader, session_id)
         return _stop(error) if error else {"continue": True, "suppressOutput": True}
 
     if hook_event == SESSION_START:
         if event.get("source") != "compact":
             return None
-        path, capsule, error = _validated_state(handoff_dir, capsule_reader)
+        path, capsule, error = _validated_state(handoff_dir, capsule_reader, session_id)
         if error:
             return _stop(error)
         if path is None or capsule is None:

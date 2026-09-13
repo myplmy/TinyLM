@@ -52,6 +52,84 @@ class WipV2Tests(unittest.TestCase):
         self.assertIn("| **1** | 첫 지시 | ✅**완료** | 완료 | docs/a.md | — |", text)
         self.assertIn("상황판 SHA-256", WIP.capsule_text(path))
 
+    def test_concurrent_creation_is_explicit_audited_and_unambiguous(self) -> None:
+        first = self.create()
+        with self.assertRaisesRegex(ValueError, "open WIP already exists"):
+            self.create()
+        with self.assertRaisesRegex(ValueError, "concurrent-reason"):
+            WIP.create_ledger(
+                ["3=둘째 지시"], "prev", "docs", "GPU 금지", "없음", "없음",
+                allow_concurrent=True, session_id="thread-2",
+            )
+        second = WIP.create_ledger(
+            ["3=둘째 지시"], "prev", "docs", "GPU 금지", "없음", "없음",
+            allow_concurrent=True,
+            concurrent_reason="사용자 승인 2026-09-13",
+            session_id="thread-2",
+        )
+        self.assertNotEqual(first, second)
+        text = second.read_text(encoding="utf-8")
+        self.assertIn("**Codex 세션 ID**: `thread-2`", text)
+        self.assertIn("**동시 WIP 생성 승인**: 사용자 승인 2026-09-13", text)
+        self.assertIn(first.name, text)
+        with self.assertRaisesRegex(ValueError, "--file 필수"):
+            WIP.resolve_ledger(None)
+        self.assertEqual(WIP.resolve_ledger(str(second)), second.resolve())
+
+    def test_new_ledger_skips_open_and_closed_name_slots(self) -> None:
+        self.create()
+        day = WIP.dt.datetime.now().strftime("%Y%m%d")
+        closed_b = self.handoff / f"WIP_{day}b_작업원장-done.md"
+        closed_b.write_text("historic", encoding="utf-8")
+        created = WIP.create_ledger(
+            ["3=셋째 지시"], "prev", "docs", "GPU 금지", "없음", "없음",
+            allow_concurrent=True,
+            concurrent_reason="사용자 승인",
+            session_id="thread-3",
+        )
+        self.assertEqual(created.name, f"WIP_{day}c_작업원장.md")
+        self.assertEqual(closed_b.read_text(encoding="utf-8"), "historic")
+
+    def test_repair_name_collision_is_audited_and_preserves_closed_file(self) -> None:
+        self.create()
+        second = WIP.create_ledger(
+            ["3=교정 지시"], "prev", "docs", "GPU 금지", "없음", "없음",
+            allow_concurrent=True,
+            concurrent_reason="사용자 승인",
+            session_id="thread-3",
+        )
+        closed = second.with_name(second.stem + "-done.md")
+        closed.write_text("historic", encoding="utf-8")
+        repaired = WIP.repair_name_collision(second, "이름 충돌 교정", "사용자 승인")
+        self.assertFalse(second.exists())
+        self.assertTrue(repaired.exists())
+        self.assertEqual(closed.read_text(encoding="utf-8"), "historic")
+        text = repaired.read_text(encoding="utf-8")
+        self.assertIn('"operation": "repair open-ledger close-target name collision"', text)
+        self.assertIn(repaired.name, WIP.capsule_text(repaired))
+
+    def test_bind_session_is_explicit_audited_and_one_way(self) -> None:
+        path = self.create()
+        WIP.bind_session(path, "thread-owner", "기존 원장 소유 확인", "사용자 승인")
+        text = path.read_text(encoding="utf-8")
+        self.assertEqual(text.count("**Codex 세션 ID**"), 1)
+        self.assertIn("**Codex 세션 ID**: `thread-owner`", text)
+        self.assertIn(
+            '"operation": "bind previously unbound open ledger to owning Codex session"',
+            text,
+        )
+        with self.assertRaisesRegex(ValueError, "already has"):
+            WIP.bind_session(path, "thread-other", "재결합", "사용자 승인")
+
+    def test_bind_session_rejects_completed_or_unsafe_session_id(self) -> None:
+        path = self.create()
+        with self.assertRaisesRegex(ValueError, "nonempty safe"):
+            WIP.bind_session(path, "bad id", "사유", "사용자 승인")
+        completed = path.with_name(path.stem + "-done.md")
+        path.rename(completed)
+        with self.assertRaisesRegex(ValueError, "immutable"):
+            WIP.bind_session(completed, "thread-owner", "사유", "사용자 승인")
+
     def test_done_requires_start_and_legacy_is_read_only(self) -> None:
         path = self.create()
         before = path.read_bytes()

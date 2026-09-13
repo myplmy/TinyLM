@@ -78,6 +78,9 @@ WIP_PATH_RE = re.compile(
     r"(?i)(?:^|[^A-Za-z0-9_.-])handoff[/\\]"
     r"WIP_[^\s'\"|<>/\\]+_작업원장(?:-done)?\.md"
 )
+PATCH_TARGET_RE = re.compile(
+    r"(?m)^\*\*\* (?:Add File|Update File|Delete File|Move to):[ \t]*(.+?)[ \t]*$"
+)
 WIP_MUTATION_RES = WRITE_INTENT_RES + (
     re.compile(
         r"(?i)\b(?:Set-Content|Add-Content|Clear-Content|Out-File|"
@@ -122,6 +125,12 @@ def _has_write_intent(command: str) -> bool:
 def _targets_wip(value: str) -> bool:
     normalized = value.replace("\\\\", "\\")
     return WIP_PATH_RE.search(normalized) is not None
+
+
+def _patch_targets_wip(patch_text: str) -> bool:
+    """Inspect apply_patch path headers, not arbitrary diff content."""
+
+    return any(_targets_wip(match.group(1)) for match in PATCH_TARGET_RE.finditer(patch_text))
 
 
 def _has_wip_mutation_intent(command: str) -> bool:
@@ -204,7 +213,7 @@ def evaluate_event(
             )
         else:
             patch_text = ""
-        return _deny_wip() if _targets_wip(patch_text) else None
+        return _deny_wip() if _patch_targets_wip(patch_text) else None
 
     if not isinstance(tool_input, dict):
         return None

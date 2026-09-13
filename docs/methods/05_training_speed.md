@@ -143,3 +143,14 @@ M=12,288 은 **서로 다른 두 형상(mb12×1024, mb24×512)이 똑같이 OOM*
 | **★오프라인 KD 캐시** | 🧪**구현됨·미사용** | v6 (`--kd-cache`, P015, B-3) | 교사 top-k 를 미리 캐시 → 교사 forward **0** | ⚠️top-k 16 이라 **정보 손실**, 디스크 큼 | ~학생만 돌아 **−35% 추정** |
 | **★교사 forward int8**(신규) | 💡 | — (P042 §7, B-1) | 교사도 `to_int8()`. ★결과 016 §12.3: **GPU int8 언팩은 −12~15% 뿐** | 속도 −1%(교사가 1/4 스텝) | ~VRAM **−350MB** → **`--no-ckpt`(−17.3%) 개방 확률↑**. **VRAM 을 −1% 로 사는 셈** |
 | ~~accum 조정으로 스텝 반감~~ | 🚫**이득 0 확정** | — (B-5) | — | — | 🚫★결과 007: ms/step 이 accum 에 **~선형** → **총 벽시계 이득 없다.** 다시 시도하지 않는다 |
+
+## 2026-09-13 승인 연구의 속도 게이트 (`NOT_RUN`)
+
+| 계획 | 현재 구현 범위 | 속도 주장 가능 범위 | 다음 gate |
+|---|---|---|---|
+| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | 실제 CUDA `_scaled_mm` 진단 배치 | 없음 — backend 호출과 순수 GEMM만 확인 예정 | TinyLM shape 지원 후 cast·amax 포함 end-to-end |
+| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | exact 2:4 + native sparse tensor 진단 | 없음 — dense mask의 이론 FLOP를 속도로 세지 않음 | 같은 세션 순수 MLP ≥1.25× 뒤 whole-step |
+| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | dense mask/gradient 계약 primitive | **가속 0으로 취급** — 현재 GEMM은 dense | topology-update 비용을 포함한 실측 전 미판정 |
+| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | 독립 fold primitive | local update 속도·VRAM 모두 미측정 | 실제 모델 연결과 사용자 스모크 뒤 측정 |
+
+제안 승인과 Stage0 코드 존재는 속도 개선 증거가 아니다. 네 동적 진단과 모든 학습 결과는 `NOT_RUN`이다.
