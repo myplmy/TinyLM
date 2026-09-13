@@ -59,6 +59,22 @@ Use `run_queue.bat` to select it.
     assert names == {"run_live.bat"}
 
 
+def test_completed_transfer_lines_are_historical_references() -> None:
+    lines = """## 7. next
+| batch |
+|---|
+| `run_live.bat` |
+### 7.1 이전 큐 제외·완료 이관
+| previous batch |
+|---|
+| `run_deleted_after_completion.bat` |
+## 8. commit
+""".splitlines()
+    historical = MODULE.historical_queue_line_numbers(lines)
+    assert 4 not in historical
+    assert 8 in historical
+
+
 def test_inherited_reason_boilerplate_is_idempotent() -> None:
     core = "RMS 상단을 닫는다"
     once = QUEUE_MODULE.inherited_reason(core)
@@ -78,6 +94,7 @@ def main() -> int:
         test_completed_transfer_is_not_live_queue,
         test_section_7_without_history_is_preserved,
         test_operational_launcher_is_not_counted_as_experiment_batch,
+        test_completed_transfer_lines_are_historical_references,
         test_inherited_reason_boilerplate_is_idempotent,
     ]
     for test in tests:

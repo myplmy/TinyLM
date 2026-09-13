@@ -7,6 +7,7 @@ import io
 import subprocess
 import sys
 import unittest
+from unittest import mock
 from contextlib import redirect_stdout
 from pathlib import Path
 
@@ -97,6 +98,43 @@ class ShellSyntaxTests(unittest.TestCase):
             [self.shell_file], bash=Path("bash.exe"), runner=lambda *a, **k: completed(0)
         )
         self.assertEqual(state, "PASS")
+
+
+class TomlCompatibilityTests(unittest.TestCase):
+    def test_current_config_parses_without_tomllib(self) -> None:
+        text = ENV.read_utf8(ENV.CODEX_ROOT / "config.toml")
+        parsed = ENV.parse_codex_config(text, parser=None)
+        self.assertEqual(parsed["project_doc_max_bytes"], 32768)
+        self.assertEqual(parsed["project_doc_fallback_filenames"], [])
+        self.assertEqual(parsed["project_root_markers"], [".git"])
+
+    def test_fallback_rejects_toml_tables_instead_of_misreading_them(self) -> None:
+        with self.assertRaisesRegex(ValueError, "tables require Python 3.11"):
+            ENV.parse_codex_config("[hooks]\nenabled = true\n", parser=None)
+
+    def test_module_import_survives_when_tomllib_is_unavailable(self) -> None:
+        module_name = "tinylm_codex_environment_without_tomllib"
+        spec = importlib.util.spec_from_file_location(module_name, MODULE_PATH)
+        assert spec and spec.loader
+        module = importlib.util.module_from_spec(spec)
+        real_import = __import__
+
+        def blocked_import(name, *args, **kwargs):
+            if name == "tomllib":
+                raise ModuleNotFoundError("No module named 'tomllib'", name="tomllib")
+            return real_import(name, *args, **kwargs)
+
+        sys.modules[module_name] = module
+        try:
+            with mock.patch("builtins.__import__", side_effect=blocked_import):
+                spec.loader.exec_module(module)
+            self.assertIsNone(module._tomllib)
+            parsed = module.parse_codex_config(
+                module.read_utf8(module.CODEX_ROOT / "config.toml")
+            )
+            self.assertEqual(parsed["project_root_markers"], [".git"])
+        finally:
+            sys.modules.pop(module_name, None)
 
 
 class LedgerTests(unittest.TestCase):

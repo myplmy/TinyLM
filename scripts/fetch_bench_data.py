@@ -23,8 +23,11 @@
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import sys
+import traceback
+from contextlib import contextmanager
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -41,6 +44,68 @@ sys.path.insert(0, str(ROOT))
 import tinylm  # noqa: F401,E402  ★반드시 datasets/huggingface_hub 보다 먼저
 
 OUT = ROOT / "datasets" / "bench"
+
+
+class _Tee:
+    def __init__(self, *streams):
+        self.streams = streams
+
+    def write(self, text):
+        for stream in self.streams:
+            stream.write(text)
+        return len(text)
+
+    def flush(self):
+        for stream in self.streams:
+            stream.flush()
+
+
+@contextmanager
+def execution_log(path):
+    """Mirror stdout/stderr to an explicit UTF-8 log without hiding the console."""
+    if not path:
+        yield
+        return
+    target = Path(path)
+    if not target.is_absolute():
+        target = ROOT / target
+    target.parent.mkdir(parents=True, exist_ok=True)
+    old_out, old_err = sys.stdout, sys.stderr
+    with target.open("w", encoding="utf-8", newline="\n") as stream:
+        sys.stdout = _Tee(old_out, stream)
+        sys.stderr = _Tee(old_err, stream)
+        try:
+            print(f"[fetch_bench_data] started={dt.datetime.now().astimezone().isoformat()}")
+            print("[fetch_bench_data] argv=" + json.dumps(sys.argv, ensure_ascii=False))
+            yield
+        finally:
+            print(f"[fetch_bench_data] ended={dt.datetime.now().astimezone().isoformat()}")
+            sys.stdout, sys.stderr = old_out, old_err
+
+
+def requested_log_path(argv):
+    for index, value in enumerate(argv):
+        if value == "--log" and index + 1 < len(argv):
+            return argv[index + 1]
+        if value.startswith("--log="):
+            return value.split("=", 1)[1]
+    return None
+
+
+def logged_main(log_path):
+    with execution_log(log_path):
+        try:
+            code = main()
+        except SystemExit as exc:
+            code = exc.code if isinstance(exc.code, int) else 1
+        except KeyboardInterrupt:
+            print("[fetch_bench_data] interrupted", file=sys.stderr)
+            code = 130
+        except Exception:  # noqa: BLE001 - the traceback is the purpose of the log boundary
+            traceback.print_exc()
+            code = 1
+        print(f"[fetch_bench_data] exit_code={code}")
+        return code
 
 # (이름, HF id, config, split, 공식 규모, 비고)
 # ★규모는 **각 논문/데이터카드의 통용값**이다. ⚠️조회 상태는 `docs/methods/10_benchmarks.md` §6.
@@ -366,6 +431,8 @@ def main():
     ap.add_argument("--heldout-version", default="latest",
                     help="★(A01) `stage1_heldout` 의 판. `2.7`·`3.0`·`latest`(기본). "
                          "판마다 캐시가 따로 생기므로 **둘을 함께 누적**할 수 있다")
+    ap.add_argument("--log", default=None,
+                    help="stdout/stderr를 함께 남길 UTF-8 로그 경로(콘솔 출력도 유지)")
     a = ap.parse_args()
     global _HELDOUT_VERSION
     _HELDOUT_VERSION = a.heldout_version
@@ -419,6 +486,8 @@ def main():
         except Exception as e:                                   # noqa: BLE001
             msg = str(e).splitlines()[0][:160]
             print(f"  🚫 {n:<16} 실패: {type(e).__name__}: {msg}")
+            if a.log:
+                traceback.print_exc()
             bad.append((n, f"{type(e).__name__}: {msg}"))
 
     banner("요약")
@@ -428,8 +497,8 @@ def main():
     if bad:
         print("\n  ⚠️★**실패 사유를 결과문서에 그대로 적는다.** 게이트·라이선스로 못 받은 것은 "
               "*'구현 안 함'* 이 아니라 *'접근 불가'* 다 — 둘은 다르다.")
-    return 0
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(logged_main(requested_log_path(sys.argv[1:])))

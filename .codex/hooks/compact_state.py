@@ -20,6 +20,10 @@ HANDOFF_DIR = REPO_ROOT / "handoff"
 WIP_MODULE_PATH = REPO_ROOT / "scripts" / "wip.py"
 PRE_COMPACT = "PreCompact"
 SESSION_START = "SessionStart"
+ADDITIVE_NOTICE = (
+    "이 추가 컨텍스트는 Codex의 기본 압축 요약을 대체하지 않는다. "
+    "현재 사용자 지시가 항상 우선한다."
+)
 SESSION_ID_RE = re.compile(r"^- \*\*Codex 세션 ID\*\*: `([^`]+)`\s*$", re.MULTILINE)
 
 
@@ -134,6 +138,7 @@ def evaluate_event(
         if warning:
             context = (
                 "[TinyLM compact recovery v1]\n"
+                f"{ADDITIVE_NOTICE}\n"
                 f"{warning}. 현재 세션 WIP로 선택·수정·종료하지 않는다. "
                 "완료·승인·NOT_RUN 상태를 추측하지 말고 현재 사용자 지시와 "
                 "최신 유효 핸드오프부터 다시 확인한다."
@@ -141,6 +146,7 @@ def evaluate_event(
         elif path is None or capsule is None:
             context = (
                 "[TinyLM compact recovery v1]\n"
+                f"{ADDITIVE_NOTICE}\n"
                 "열린 WIP 없음. 완료·승인·NOT_RUN 상태를 추측하지 말고 현재 사용자 지시와 "
                 "최신 유효 핸드오프부터 다시 확인한다."
             )
@@ -151,6 +157,7 @@ def evaluate_event(
                 relative = path.name
             context = (
                 "[TinyLM compact recovery v1]\n"
+                f"{ADDITIVE_NOTICE}\n"
                 f"다음은 {relative}에서 해시 검증한 현재 상태 캡슐이다. "
                 "제안→승인, NOT_RUN→PASS, 미확인→실패로 바꾸지 말고 이 상태에서 계속한다.\n\n"
                 f"{capsule}"

@@ -15,11 +15,17 @@ import os
 import re
 import subprocess
 import sys
-import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Iterable
 from urllib.parse import unquote
+
+try:  # Python 3.11+; the user's established project interpreter can be 3.10.
+    import tomllib as _tomllib
+except ModuleNotFoundError:  # pragma: no cover - exercised through the fallback unit test
+    _tomllib = None
+
+_AUTO_TOML = object()
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 AGENTS_PATH = REPO_ROOT / "AGENTS.md"
@@ -154,6 +160,45 @@ def sha256(path: Path) -> str:
 
 def read_utf8(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def parse_codex_config(text: str, parser=_AUTO_TOML) -> dict[str, object]:
+    """Parse the repository-local flat TOML config without a third-party dependency.
+
+    ``tomllib`` was added in Python 3.11, while TinyLM user commands can run under
+    Python 3.10.  When the standard parser is unavailable, accept only the tiny
+    top-level JSON-compatible subset that this file owns.  Rejecting TOML tables
+    and duplicate keys is intentional: a future expansion must either raise the
+    supported Python floor or add a real parser instead of being silently
+    misread by this compatibility path.
+    """
+    backend = _tomllib if parser is _AUTO_TOML else parser
+    if backend is not None:
+        parsed = backend.loads(text)
+        if not isinstance(parsed, dict):
+            raise ValueError("config.toml top level is not a mapping")
+        return parsed
+
+    parsed: dict[str, object] = {}
+    for line_no, raw in enumerate(text.splitlines(), 1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("["):
+            raise ValueError(f"line {line_no}: TOML tables require Python 3.11+ tomllib")
+        key, sep, value = line.partition("=")
+        key = key.strip()
+        if not sep or not re.fullmatch(r"[A-Za-z0-9_-]+", key):
+            raise ValueError(f"line {line_no}: unsupported flat TOML assignment")
+        if key in parsed:
+            raise ValueError(f"line {line_no}: duplicate key {key}")
+        try:
+            parsed[key] = json.loads(value.strip())
+        except json.JSONDecodeError as exc:
+            raise ValueError(
+                f"line {line_no}: value needs tomllib or the JSON-compatible flat subset"
+            ) from exc
+    return parsed
 
 
 def parse_working_rules(path: Path, language: str) -> tuple[str, dict[str, int], dict[int, str]]:
@@ -547,7 +592,7 @@ def main() -> int:
     def check_json_toml() -> tuple[bool, str]:
         project = json.loads(read_utf8(AGENTS_ROOT / "project.json"))
         hooks = json.loads(read_utf8(CODEX_ROOT / "hooks.json"))
-        config = tomllib.loads(read_utf8(CODEX_ROOT / "config.toml"))
+        config = parse_codex_config(read_utf8(CODEX_ROOT / "config.toml"))
         if not isinstance(project, dict) or not isinstance(hooks, dict) or not isinstance(config, dict):
             return False, "top-level object is not a mapping"
         return True, "project.json, hooks.json and config.toml parsed"
@@ -576,7 +621,7 @@ def main() -> int:
 
     def check_project_roles() -> tuple[bool, str]:
         project = json.loads(read_utf8(AGENTS_ROOT / "project.json"))
-        config = tomllib.loads(read_utf8(CODEX_ROOT / "config.toml"))
+        config = parse_codex_config(read_utf8(CODEX_ROOT / "config.toml"))
         required_project = {
             "skillRoot",
             "codexLongTermMemory",

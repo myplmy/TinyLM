@@ -1,6 +1,6 @@
 # 00 — CODEX WORKING RULES (operational, English)
 
-> **Last updated**: 2026-09-14 · **Document type**: live · **Rule counts**: `[gate]` 9 · `[human]` 48 · `[fact]` 3
+> **Last updated**: 2026-09-14 · **Document type**: live · **Rule counts**: `[gate]` 9 · `[human]` 49 · `[fact]` 3
 
 **Read this one every session.** It is the short list. Rationale, evidence and war
 stories live in the Codex-owned ledgers (01–08) and shared project evidence; this file only says
@@ -50,6 +50,12 @@ that environment-only run because it includes protected-data checks.
   each command or UI action, the expected result of each step, the stop condition, the completion
   signal, and the AI follow-up. A section pointer or a noun phrase such as “observe the probes” is
   not a substitute for the procedure.
+- **R61** `[human]` **`py_compile` is not a direct-entry or interpreter-compatibility test.** After
+  changing a Python file that the user runs directly, exercise its smallest safe entry/import path
+  with the same isolation flags and a supported user-interpreter version. A standard-library import
+  newer than the supported floor needs a tested fallback or an explicit version gate. If the actual
+  interpreter or dependency is unavailable, record `NOT_RUN`; do not turn current-interpreter syntax
+  success into runtime PASS. Also run every existing scope-specific import gate that names the file.
 
 ## B. Comparison validity — this is where numbers go wrong
 

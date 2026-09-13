@@ -89,6 +89,22 @@ def current_queue_batch_names(segment: str, known_batches: set[str]) -> set[str]
     return named & known_batches
 
 
+def historical_queue_line_numbers(lines: list[str]) -> set[int]:
+    """Return 1-based lines owned by §7.1's completed/excluded queue history."""
+    i7 = next((k for k, line in enumerate(lines) if re.match(r"^##\s*7\.", line)), None)
+    if i7 is None:
+        return set()
+    j7 = next(
+        (k for k in range(i7 + 1, len(lines)) if re.match(r"^##\s", lines[k])),
+        len(lines),
+    )
+    history = next(
+        (k for k in range(i7 + 1, j7) if re.match(r"^###\s*7\.1\b", lines[k])),
+        None,
+    )
+    return set() if history is None else set(range(history + 1, j7 + 1))
+
+
 def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
     # ★규약 제정 이전 판은 검사하지 않는다 — 지금 양식을 소급 적용하는 것은
     #   기록의 왜곡이고, 고치면 그 시점의 실제 상태를 알 수 없게 된다.
@@ -468,9 +484,13 @@ def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
     #   ★양식을 늘려 해결할 문제가 아니다 — **규약을 지켰는지 기계가 본다.**
     #   근거: 2026-09-03 핸드오프 §7 이 실험 7행을 실었는데 **배치가 있는 것은 1행뿐**이었다.
     #   🚫`-done` 도 인정한다(끝난 실험을 참조할 수 있다). ⏳미작성이라고 **명시한 줄은 봐준다**.
+    historical_queue_lines = historical_queue_line_numbers(lines)
     for i, raw in enumerate(lines, 1):
         for m in re.finditer(r'`(run_[A-Za-z0-9_]+\.bat)`', raw):
             name = m.group(1)
+            if i in historical_queue_lines:
+                info.append(f"L{i} `{name}` 은 §7.1 완료·제외 이력 — 현재 실행 가능성 검사 제외")
+                continue
             if (ROOT / name).exists():
                 continue
             stem = name[:-4]

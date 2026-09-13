@@ -62,6 +62,8 @@ class CompactStateTests(unittest.TestCase):
             capsule_reader=self.reader,
         )
         context = response["hookSpecificOutput"]["additionalContext"]
+        self.assertIn("기본 압축 요약을 대체하지 않는다", context)
+        self.assertIn("현재 사용자 지시가 항상 우선", context)
         for field, marker in SENTINELS.items():
             with self.subTest(field=field):
                 self.assertIn(field, context)
@@ -199,6 +201,20 @@ class CompactStateTests(unittest.TestCase):
         )
         context = response["hookSpecificOutput"]["additionalContext"]
         self.assertIn("열린 WIP 없음", context)
+
+    def test_handoff_compact_text_is_not_read_or_replayed(self) -> None:
+        marker = "HANDOFF_COMPACT_TEXT_MUST_NOT_BE_REPLAYED"
+        (self.handoff / "209901010101_HANDOFF.md").write_text(
+            f"## compact 프롬프트\n{marker}\n", encoding="utf-8"
+        )
+        response = HOOK.evaluate_event(
+            event("SessionStart", source="compact"),
+            handoff_dir=self.handoff,
+            capsule_reader=self.reader,
+        )
+        context = response["hookSpecificOutput"]["additionalContext"]
+        self.assertNotIn(marker, context)
+        self.assertIn("기본 압축 요약을 대체하지 않는다", context)
 
     def test_nonmatching_events_are_ignored(self) -> None:
         self.assertIsNone(HOOK.evaluate_event(event("SessionStart", source="startup")))

@@ -69,6 +69,12 @@ CLI 버전 조회 중 임시 경로 권한 경고 2건이 있었지만 버전 �
 후속 수정분을 포함한 현재 트리의 프로젝트 스모크는 **E2E_NOT_RUN**이다. 장기 실험 큐 전에 사용자가
 `run_smoke_check.bat`를 다시 실행해야 한다.
 
+2026-09-14 사용자 로그 [`202609140112_smoke_cffa297.txt`](../../smoketest_logs/202609140112_smoke_cffa297.txt)는
+42팔 중 실패 1, exit-0 오류표지 0, 계측 계약 오류 0이었다. 유일한 실패는 완료·제외 이력인 §7.1의
+삭제된 과거 배치 4개를 `check_handoff.py`가 현재 실행 큐로 오인한 정적 검사 오탐이다. 실제 Markdown
+상대링크 검사는 깨진 링크 0건이었다. 검사 범위를 현재 큐와 과거 이력으로 분리하고 회귀를 통과했지만,
+수정 뒤 사용자 스모크는 아직 `E2E_NOT_RUN`이다.
+
 ### 1.3 2026-09-13 승인 개선안의 단계적 도입 상태
 
 | 변경 | 정적 증거 | 현재 동적 상태 |
@@ -78,11 +84,18 @@ CLI 버전 조회 중 임시 경로 권한 경고 2건이 있었지만 버전 �
 | compact 상태 캡슐 | 8필드 sentinel, 수동/자동 `PreCompact`, `SessionStart(source=compact)` mock | M0~M3 `STATIC_ONLY`; M5 열린 WIP exact-match 자동 경로는 2026-09-14 실제 8/8 재주입 PASS; M4 수동·M5 나머지 경로 `NOT_RUN`; M6 전환 승인 대기 |
 | 핸드오프 계승 | 6열 지시·동기화표·10열 큐·스모크 disposition fixture | 신규 실제 핸드오프에서 최종 검증 예정 |
 | Git Bash 구문 검사 | 알려진 Windows startup 실패와 실제 `bash -n` 오류를 분리한 fixture | 현재 호스트의 POSIX 셸 구문 검사는 실행 결과에 따라 `PASS/FAIL/NOT_RUN` |
+| 환경 검사 Python 호환 | `tomllib` 없는 모듈 import·flat TOML fallback 3회귀 포함 환경 단위검사 13/13 | 사용자 기본 Python의 E2E 1단계 재실행은 `NOT_RUN` |
 
 환경 검사기는 이제 `PASS / FAIL / NOT_RUN`을 분리한다. 알려진 Windows signal-pipe·Win32 error 5·
 `0xC0000142` Bash 시작 실패 또는 Bash 부재는 소스 오류가 아니므로 `NOT_RUN`이다. 실제 `bash -n`
 구문 오류와 알 수 없는 startup 오류만 `FAIL`이며, 배포 게이트에서 반드시 Bash 증거가 필요하면
 `--require-shell-syntax`로 `NOT_RUN`을 실패로 승격한다. 따라서 `NOT_RUN`을 PASS로 읽어서는 안 된다.
+
+환경 검사기는 Python 3.11 이상의 `tomllib`를 우선 쓰되, 사용자 프로젝트 Python 3.10처럼 해당
+표준 모듈이 없으면 현재 `.codex/config.toml`이 소유하는 **평면·JSON 호환 값 subset**만 내부
+fallback으로 읽는다. 표·중복 키·확장 TOML은 구버전에서 조용히 오독하지 않고 실패한다. Codex 셸의
+Python 3.11 단위검사 통과는 사용자 Python의 실제 E2E PASS가 아니므로 사용자 재실행 전에는
+`STATIC_ONLY`다.
 
 ## 2. 런타임 경계
 

@@ -48,6 +48,7 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 SFT = ROOT / "datasets" / "TinyDataset" / "SFT"
 
 #: ★요청서 부록 B 의 수. **이 수가 정본이고 데이터가 따라온다.**
@@ -238,6 +239,7 @@ def main():
     chars = sum(len(t) for t in all_txt)
     a_chars = sum(len(t) for t in asst_txt)
     tok = a_tok = None
+    tk = None
     if a.tokenizer:
         try:
             from tokenizers import Tokenizer            # type: ignore
@@ -334,6 +336,37 @@ def main():
             ok(line)
     info("scoring_mode 분포: " + ", ".join("%s=%d" % kv for kv in modes.most_common()))
     info("eval 등급: " + ", ".join("%s=%d" % kv for kv in ge.most_common()))
+
+    # ------------------------------------------------------ A5b T1 token length
+    head("A5b T1 정답 선택지 토큰 길이 편향 (B.4.1)")
+    if tk is None:
+        info("토크나이저 실측이 없어 T1 정답의 최장·최단 여부를 건너뛴다")
+    else:
+        longest = shortest = malformed = 0
+        checked = 0
+        for rec in train:
+            if grade_of(rec) != "T1":
+                continue
+            grading = ((rec.get("meta") or {}).get("grading") or {})
+            choices = grading.get("choices")
+            gold = grading.get("gold")
+            if not isinstance(choices, list) or not isinstance(gold, int) \
+                    or not (0 <= gold < len(choices)):
+                malformed += 1
+                continue
+            lengths = [len(tk.encode(str(choice)).ids) for choice in choices]
+            checked += 1
+            longest += int(lengths[gold] == max(lengths))
+            shortest += int(lengths[gold] == min(lengths))
+        if malformed:
+            bad("T1 grading choices/gold 형식 오류 %d건" % malformed)
+        line = "T1 %d건 검사 · 정답이 토큰 최장 %d건 · 최단 %d건" % (
+            checked, longest, shortest
+        )
+        if longest or shortest:
+            bad(line + " — 요청은 각각 0건")
+        else:
+            ok(line)
 
     # ---------------------------------------------------------------- A6 F3
     head("A6 F3 주제 중복 상한 5% (B.3)")

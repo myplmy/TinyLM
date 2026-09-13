@@ -103,6 +103,40 @@ def pair_family_ci(ok_a, ok_b, rels, seed=99, draws=4000):
     return cluster_bootstrap_ci(fam, draws=draws, seed=seed)
 
 
+def pair_records(per_ok, tags, relations, n, ci_fn=pair_family_ci):
+    """Build the persisted model-pair contract from already aligned answers."""
+    records = []
+    for i in range(len(tags)):
+        for j in range(i + 1, len(tags)):
+            a_tag, b_tag = tags[i], tags[j]
+            a_only = sum(
+                1 for k in range(n) if per_ok[a_tag][k] and not per_ok[b_tag][k]
+            )
+            b_only = sum(
+                1 for k in range(n) if per_ok[b_tag][k] and not per_ok[a_tag][k]
+            )
+            lo, hi, family_count = ci_fn(
+                per_ok[a_tag][:n], per_ok[b_tag][:n], relations[:n]
+            )
+            if lo is None or hi is None:
+                family_ci95 = None
+                verdict = "withheld"
+            else:
+                family_ci95 = [lo, hi]
+                verdict = "a_better" if lo > 0 else "b_better" if hi < 0 else "overlap"
+            records.append({
+                "a": a_tag,
+                "b": b_tag,
+                "a_only": a_only,
+                "b_only": b_only,
+                "discordant": a_only + b_only,
+                "family_count": family_count,
+                "family_ci95": family_ci95,
+                "family_verdict": verdict,
+            })
+    return records
+
+
 def banner(s, ch="="):
     print()
     print(ch * 96)
@@ -174,6 +208,7 @@ def main():
                "relation": rows[i].get("relation")} for i in idx]
 
     per_ok, per_pick = {}, {}
+    skipped_by_model = {}
     for spec in a.models:
         tag, _, pre = spec.partition("=")
         pre = pre or a.preset
@@ -189,6 +224,7 @@ def main():
         if sk:
             print("  ⚠️%s — 건너뛴 문항 %d개. **문항 정렬이 어긋나므로 census 를 신뢰하지 않는다**"
                   % (tag, sk))
+            skipped_by_model[tag] = sk
         per_ok[tag] = ok
         # ★2026-09-10(2차) — **모델이 고른 후보 인덱스**도 남긴다(`run_mc` 의 `rows` 가 이미 들고 있다 · 비용 0).
         #   결과 074 §24.6: 조건·시간순서에서 네 모델이 모두 우연 아래인데 **어느 오답이 끄는지** 몰랐다(Q14).
@@ -202,8 +238,18 @@ def main():
     if len(per_ok) < 2:
         print("\n  🚫**모델이 2개 미만이다** — census 는 모델 간 차이를 세는 것이라 뜻이 없다.")
         return 2
+    if skipped_by_model:
+        print("\n  🚫**건너뛴 문항이 있어 모델별 벡터 정렬을 보장할 수 없다** — "
+              "census JSON을 쓰지 않는다: %s" % skipped_by_model)
+        return 3
     n = min(len(v) for v in per_ok.values())
     tags = list(per_ok)
+    short_picks = {tag: len(per_pick.get(tag, [])) for tag in tags
+                   if len(per_pick.get(tag, [])) < n}
+    if short_picks:
+        print("\n  🚫**선택 인덱스가 정오 벡터보다 짧다** — JSON 정렬 계약을 보존할 수 없다: %s"
+              % short_picks)
+        return 3
 
     # ------------------------------------------------------------ B1·B2·B3·D9
     banner("B1·B2·B3 — **어느 문항이 실제로 일하는가**")
@@ -245,13 +291,16 @@ def main():
 
     # ------------------------------------------------------------ McNemar
     banner("M — 모델 쌍별 McNemar 불일치 쌍 (= 그 비교에서 실제로 일한 문항)")
-    print("  %-32s %-32s %8s %8s %8s" % ("A", "B", "A만맞", "B만맞", "불일치"))
-    for i in range(len(tags)):
-        for j in range(i + 1, len(tags)):
-            A, B = tags[i], tags[j]
-            a_only = sum(1 for k in range(n) if per_ok[A][k] and not per_ok[B][k])
-            b_only = sum(1 for k in range(n) if per_ok[B][k] and not per_ok[A][k])
-            print("  %-32s %-32s %8d %8d %8d" % (A, B, a_only, b_only, a_only + b_only))
+    relations = [labels[k]["relation"] for k in range(n)]
+    pairs = pair_records(per_ok, tags, relations, n)
+    print("  %-25s %-25s %7s %7s %7s %24s %12s" %
+          ("A", "B", "A만맞", "B만맞", "불일치", "관계-family 95% CI", "판정"))
+    for pair in pairs:
+        ci = pair["family_ci95"]
+        ci_text = "보류" if ci is None else "[%+.4f, %+.4f]" % (ci[0], ci[1])
+        print("  %-25s %-25s %7d %7d %7d %24s %12s" %
+              (pair["a"], pair["b"], pair["a_only"], pair["b_only"],
+               pair["discordant"], ci_text, pair["family_verdict"]))
 
     # ------------------------------------------------------------ 라벨 검증
     banner("★라벨 검증 — 생성 측의 `difficulty_target` 이 실제 난이도와 맞는가")
@@ -298,6 +347,8 @@ def main():
         "per_item_rate": rates,
         "ids": [labels[k]["id"] for k in range(n)],
         "per_ok": {t: per_ok[t][:n] for t in tags},
+        "per_pick": {t: per_pick[t][:n] for t in tags},
+        "pairs": pairs,
     }, ensure_ascii=False, indent=1).encode("utf-8"))
     print()
     print("  ★저장: %s" % p)
