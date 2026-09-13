@@ -1,0 +1,39 @@
+[1/2] strict CUDA scaled-mm feasibility
+
+==============================================================================
+[runlog] 2026-09-13 22:36:31  name=P022C_stage0a_fp8_backend
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\diag_fp8_backend_gate.py
+==============================================================================
+GPU=NVIDIA GeForce RTX 4070 Ti SUPER sm_89 torch=2.10.0
+PASS M=8192 K=768 N=2048 out=(8192, 2048) dtype=torch.bfloat16
+PASS M=8192 K=2048 N=768 out=(8192, 768) dtype=torch.bfloat16
+PASS M=8192 K=768 N=768 out=(8192, 768) dtype=torch.bfloat16
+[GATE PASS] torch._scaled_mm executed on CUDA for 3 TinyLM shapes.
+NOTE: cast/scaling overhead, backward, whole-step speed, and quality remain NOT_RUN.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-13 22:36:33)
+==============================================================================
+[2/2] same-session pure GEMM upper bound
+
+==============================================================================
+[runlog] 2026-09-13 22:36:34  name=P022C_stage0a_fp8_backend
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\bench_fp8_gemm.py
+==============================================================================
+GPU: NVIDIA GeForce RTX 4070 Ti SUPER  sm_89  torch 2.10.0
+
+shape                      M     K     N   bf16 ms    fp8 ms  speedup  bf16 TF   fp8 TF
+-------------------------------------------------------------------------------------------
+MLP gate/up  (m100)     8192   768  2048     0.356     0.170    2.09x     72.4    151.3
+MLP down     (m100)     8192  2048   768     0.366     0.185    1.97x     70.5    139.1
+Attn q/o     (m100)     8192   768   768     0.133     0.114    1.17x     72.6     85.1
+MLP gate/up  (mb12)    12288   768  2048     0.495     0.280    1.77x     78.1    138.1
+large ref    (2048^)    8192  2048  2048     0.860     0.474    1.81x     79.9    144.9
+-------------------------------------------------------------------------------------------
+판정: 우리 형상들에서 speedup 이 대체로 >1.2~1.3x 여야 P022 진행 가치. 1.0x 근방/이하면 소형모델에선 FP8도 무의미 → 음성결과로 기록하고 종료.
+주의: 여기 speedup 은 순수 GEMM 상한. 실제 학습엔 캐스팅/스케일 오버헤드가 더해져 이득은 더 작다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-13 22:36:36)
+==============================================================================
+GATE PASS means backend feasibility only. Scaling, backward, whole-step speed, and quality remain NOT_RUN.
