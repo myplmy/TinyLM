@@ -290,6 +290,11 @@ prio	plan	batch	gpu	hours	alone	watch	note
 #   10	P005	run_P005_Stage3b_muon_upper_grid.bat	Y	2.9	N	Y	결과 076에서 jordan ×20이 측정 끝이었으므로 ×25·×30을 같은 재귀 몸통에서 재서 2289-step 최적 괄호를 닫는다. `n_skip`과 paired full-val을 함께 본다
 #   11	P005	run_P005_Stage3c_norecur_muon20.bat	Y	1.9	N	N	배포 후보인 d16 무재귀에서 jordan ×20 한 팔만 추가하고 기존 ×15와 짝지어 재귀 몸통의 배수 결론이 전이되는지 본다
 
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   6	P085	run_P085_Stage8_bench_final.bat	D	1.5	N	N	★**큐가 끝나면 배포 후보가 여섯이다** — 같은 날·같은 문항으로 몰아 채점하고 tok/s 도 같은 날 잰다(세션 드리프트 7.5%, 기준표 규칙 19). held-out **v2.8 고정**(팔 1, `--per-item-jsonl`) + v2.7(팔 1b, 구판 대조) + arc_easy + KoBEST HellaSwag + 1스레드 tok/s + `mem_runtime --lut`. ⚠️`--heldout-version latest` 는 이제 v2.9 라 판을 명시했다 · 쌍 판정은 관계 가족 재표집 CI(규칙 56). ★★**d18 의 ⚙15.81 tok/s 는 모형값이고 이 배치가 실측한다** — 15 미만이면 **18층은 배포 후보가 아니다**. 선결 P062 단계12·14. 학습 0
+#   1	P085	run_P085_Stage10_census_six_ckpt.bat	D	1.2	N	Y	★★**D9 문턱을 전제한 여섯 체크포인트로 held-out v2.8·v2.9를 다시 센다** — 첫 census의 4개 격자에서는 60%가 구조적으로 불가능했다. 서로 다른 Muon ×15 아키텍처 6개를 같은 4,500 id에 적용하고, D9·관계 가족 재표집 CI·모델별 오답 선택을 읽는다. 학습 0. 각 판은 실패해도 다음 판을 계속하므로 첫 실행은 감시한다
+
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
 #     ★P062 R 곡선 -> **작성 완료**(run_P062_stage0c_r_curve.bat). 선결이 없었다 — 의사결정함정 D15
@@ -300,8 +305,6 @@ prio	plan	batch	gpu	hours	alone	watch	note
 #     (번호 미배정) 2-tap 동적 conv -> REVIEW2 확정 후. 번호는 계획서를 쓸 때 붙인다(D16). 08_paper_review §11.3-2
 #     (번호 미배정) wandb 본격 활용 -> REVIEW2 이후. 도구 scripts/wandb_sync.py 는 작성 완료
 #     P014 안 A/B LUT 커널     -> ★L2+L3 목표의 유일한 길. 미착수 (02_memory §M.3.3)
-6	P085	run_P085_Stage8_bench_final.bat	D	1.5	N	N	★**큐가 끝나면 배포 후보가 여섯이다** — 같은 날·같은 문항으로 몰아 채점하고 tok/s 도 같은 날 잰다(세션 드리프트 7.5%, 기준표 규칙 19). held-out **v2.8 고정**(팔 1, `--per-item-jsonl`) + v2.7(팔 1b, 구판 대조) + arc_easy + KoBEST HellaSwag + 1스레드 tok/s + `mem_runtime --lut`. ⚠️`--heldout-version latest` 는 이제 v2.9 라 판을 명시했다 · 쌍 판정은 관계 가족 재표집 CI(규칙 56). ★★**d18 의 ⚙15.81 tok/s 는 모형값이고 이 배치가 실측한다** — 15 미만이면 **18층은 배포 후보가 아니다**. 선결 P062 단계12·14. 학습 0
-1	P085	run_P085_Stage10_census_six_ckpt.bat	D	1.2	N	Y	★★**D9 문턱을 전제한 여섯 체크포인트로 held-out v2.8·v2.9를 다시 센다** — 첫 census의 4개 격자에서는 60%가 구조적으로 불가능했다. 서로 다른 Muon ×15 아키텍처 6개를 같은 4,500 id에 적용하고, D9·관계 가족 재표집 CI·모델별 오답 선택을 읽는다. 학습 0. 각 판은 실패해도 다음 판을 계속하므로 첫 실행은 감시한다
 12	P005b	run_P005b_Stage2b_muon_rms_upper.bat	Y	3.3	N	Y	결과 078의 RMS4가 측정 끝이므로 RMS6·8로 오른쪽 괄호를 닫는다. 둘 다 계속 좋아지면 선형 외삽하지 않고 로그 격자를 다시 설계한다
 13	P005b	run_P005b_Stage3_muon_matrix_wd.bat	Y	3.3	N	N	jordan15와 RMS4 각각에 `--matrix-weight-decay 0.1`만 추가해 scale 효과와 행렬 WD 교락을 2×2로 분리한다
 14	P005b	run_P005b_Stage9_rms_shape_transfer.bat	Y	9.6	N	N	무재귀 d12·d14·d16·d18에서 RMS4와 jordan20을 형상 안 paired full-val로 비교한다. d16 jordan20은 P005 Stage3c가 선결이다
