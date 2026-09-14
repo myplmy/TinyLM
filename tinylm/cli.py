@@ -66,6 +66,13 @@ def main():
     p.add_argument("--anneal-start", type=float, default=None,
                    help="(P035) 어닐 시작(step 이면 전이) 지점(진행률 0~1). "
                         "미지정이면 종전대로 warm/steps+0.05 를 쓴다(무변)")
+    p.add_argument("--anneal-audit", default=None,
+                   help="승인된 anneal A2: 새 JSONL에 TLinear 표본의 quant 거리·code flip·점유·"
+                        "경계여유·grad/update RMS를 기록. --resume 및 속도 판정 팔과 함께 쓰지 않는다")
+    p.add_argument("--anneal-audit-every", type=int, default=100,
+                   help="anneal 동역학 계측 간격(스텝). 기본 100")
+    p.add_argument("--anneal-audit-max-modules", type=int, default=8,
+                   help="이름 순서에서 고르게 고를 유니크 TLinear 최대 개수. 기본 8")
     # ── P036 : Arenas(annealing residual synapse). 학습 플래그, 기본 off ──
     p.add_argument("--arenas", action="store_true",
                    help="(P036) Y=X*Ta + lambda_t*X*W. latent W 를 입력 gradient 경로에 넣는다")
@@ -380,6 +387,9 @@ def main():
               pool_tokens=pool_tok, exact_cache=a.exact_cache,
               anneal_end=a.anneal_end, decay_frac=a.decay_frac, seed=a.seed,
               anneal_shape=a.anneal_shape, anneal_start=a.anneal_start,
+              anneal_audit=a.anneal_audit,
+              anneal_audit_every=a.anneal_audit_every,
+              anneal_audit_max_modules=a.anneal_audit_max_modules,
               arenas=a.arenas, arena_lambda=a.arena_lambda, arena_end=a.arena_end,
               doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars,
               lora_decay=a.lora_decay, emb_rank=a.emb_rank,

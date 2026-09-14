@@ -39,3 +39,5 @@
 | [`20260913_Muon-후반-적응적-블록-확장-재학습-제안서-approved.md`](20260913_Muon-후반-적응적-블록-확장-재학습-제안서-approved.md) | ✅승인 | **2026-09-13** | → `P091`; 번호 선점 해소, 계약 Stage0a만 작성 |
 | [`20260913_Dynamic-Sparse-Training-연결희소성-학습-제안서-approved.md`](20260913_Dynamic-Sparse-Training-연결희소성-학습-제안서-approved.md) | ✅승인 | **2026-09-13** | → `P092`; 공통 계약·Stage0b만 작성, 학습 `NOT_RUN` |
 | [`20260914_held-out-재작성-품질저하-방지-게이트-제안서-approved.md`](20260914_held-out-재작성-품질저하-방지-게이트-제안서-approved.md) | ✅**B안 승인** | **2026-09-14** | G0/G1 조건 서명·동일패널 비교·P085 Stage10c 구현 `STATIC_ONLY`; GPU 실행과 G2 이후는 단계 대기 |
+| [`20260915_타잉-종결범위-재정의와-완화기법-조건부-재개-approved.md`](20260915_타잉-종결범위-재정의와-완화기법-조건부-재개-approved.md) | ✅**C안+직접공유 구조 확장 승인** | **2026-09-15** | → `P093`; 기존 exact g2/g4 종결 유지, 구조조건부 direct-core·완화 공유는 `DESIGNED`, 구현·GPU `NOT_RUN` |
+| [`20260915_anneal-스케줄-분해와-계측우선-개선-approved.md`](20260915_anneal-스케줄-분해와-계측우선-개선-approved.md) | ✅**C안 승인** | **2026-09-15** | A0~A2 수식 단일원천·opt-in 동역학 계측 CPU fixture 완료; A3 사용자 GPU `E2E_NOT_RUN`, A4~A5 미승인 |

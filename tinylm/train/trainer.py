@@ -18,6 +18,12 @@ from ..model import TiedMLPTransformer
 from ..data import prepare, Loader
 from ..eval import evaluate
 from .init_utils import init_from_dense, load_dense
+from .anneal_schedule import (
+    auxiliary_decay_factor,
+    lr_factor,
+    quant_anneal_factor,
+    resolve_quant_start,
+)
 
 CKPT = paths.RUNS / "ckpt"
 LOGS = paths.RUNS / "logs"
@@ -143,22 +149,8 @@ def _step_stats(step_ms, warm=100):
 
 
 def _lr_factor(s, warm, steps, sched, decay_frac=0.2):
-    # (P026) decay_frac 은 이제 호출자(train)가 --decay-frac 으로 넘긴다. cooldown-QAT 정렬 실험용.
-    """cosine / wsd(긴 plateau+감쇠) / stable(warmup+평탄, plateau 생성용) /
-    decay(워밍업 없이 peak→0.1 cooldown, plateau에서 분기)."""
-    if sched == "decay":                          # cooldown-only (decay-branch)
-        return 0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * s / max(steps, 1)))
-    if s < warm:
-        return (s + 1) / warm
-    p = (s - warm) / max(steps - warm, 1)
-    if sched == "stable":                         # plateau: 감쇠 없이 평탄
-        return 1.0
-    if sched == "wsd":
-        if p < 1.0 - decay_frac:
-            return 1.0
-        q = (p - (1.0 - decay_frac)) / decay_frac
-        return 0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * q))
-    return 0.1 + 0.45 * (1 + math.cos(math.pi * p))
+    # 하위 도구가 이 private 이름을 읽어 왔으므로 호환 wrapper는 남기고, 식은 한 곳에서 소유한다.
+    return lr_factor(s, warm, steps, sched, decay_frac)
 
 
 def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_every,
@@ -177,6 +169,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
           pool_tokens=None, exact_cache=False, anneal_end=0.60, decay_frac=0.2, seed=1337,
           anneal_shape="linear", anneal_start=None,
+          anneal_audit=None, anneal_audit_every=100, anneal_audit_max_modules=8,
           arenas=False, arena_lambda=0.1, arena_end=0.9,
           doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None,
           kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
@@ -194,6 +187,11 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                          "audited resume 는 별도 실행으로 분리한다")
     if optimizer_audit and optimizer_audit_every < 1:
         raise ValueError("--optimizer-audit-every 는 양수여야 한다")
+    if anneal_audit and resume:
+        raise ValueError("★anneal 계측은 step=0부터의 연속 코드 history를 요구한다 — "
+                         "--resume과 함께 쓸 수 없다")
+    if anneal_audit and (anneal_audit_every < 1 or anneal_audit_max_modules < 1):
+        raise ValueError("--anneal-audit-every/--anneal-audit-max-modules 는 양수여야 한다")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
     #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
@@ -551,7 +549,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     # (P026) cooldown-QAT 스케줄 정렬 표시. anneal_end=완전삼진 도달, decay_start=LR 감쇠 시작.
     assert 0.0 < anneal_end <= 1.0, f"--anneal-end 는 (0,1] 이어야 함: {anneal_end}"
     # (P035) 어닐 시작점. 미지정이면 종전 하드코딩식 그대로 → 기본 동작 무변.
-    a0 = (warm / steps + 0.05) if anneal_start is None else float(anneal_start)
+    a0 = resolve_quant_start(warm, steps, anneal_start)
     assert anneal_shape in ("linear", "step"), f"--anneal-shape: {anneal_shape}"
     assert 0.0 <= a0 < 1.0, f"--anneal-start 는 [0,1) 이어야 함: {a0}"
     if anneal_shape == "linear":
@@ -605,6 +603,28 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         print(f"[opt] ★A08 계측 — {optimizer_audit} (매 {optimizer_audit_every}스텝, "
               f"선택 행렬 {len(_recipe_audit.selected)}개). "
               f"⚠️CPU 복사 시간이 ms/step 에 섞인다 — 🚫속도 판정 팔과 같이 켜지 않는다")
+
+    # 승인된 anneal 제안 A2 — opt-in일 때만 torch 의존 계측기를 import·생성한다.
+    _anneal_audit = None
+    if anneal_audit:
+        from .anneal_audit import AnnealAudit
+        _anneal_audit = AnnealAudit(
+            anneal_audit, model, every=anneal_audit_every,
+            max_modules=anneal_audit_max_modules,
+            contract={"preset": preset, "arch": arch, "data": data,
+                      "n_tokens": n_tokens, "pool_tokens": pool_tokens,
+                      "exact_cache": exact_cache, "micro_bs": micro_bs, "accum": accum,
+                      "seq": seq, "lr": lr, "optimizer": optimizer,
+                      "muon_scale": muon_scale, "muon_lr_mult": muon_lr_mult,
+                      "matrix_weight_decay": matrix_weight_decay,
+                      "seed": seed, "cfg": cfg.__dict__, "sched": sched, "steps": steps,
+                      "decay_frac": decay_frac, "anneal_shape": anneal_shape,
+                      "anneal_start": a0, "anneal_end": anneal_end,
+                      "init_from": str(init_from) if init_from else None,
+                      "tag": tag, "tokstr": tokstr})
+        print(f"[anneal] ★동역학 계측 — {anneal_audit} (매 {anneal_audit_every}스텝, "
+              f"유니크 TLinear {len(_anneal_audit.selected)}개). "
+              f"⚠️CPU 복사·동기화가 ms/step에 섞인다 — 🚫속도 판정 팔과 같이 켜지 않는다")
 
     kd_reader = None
     if kd_cache:
@@ -736,32 +756,20 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         return m
 
     for s in range(start, steps):
-        if sched == "decay":                    # 이미 학습된 plateau라 완전 삼진 유지
-            anneal = 1.0
-        elif anneal_shape == "step":
-            # (P035) 계단 어닐: a0 까지 full-precision(anneal 0), 그 지점에서 1.0 으로 급전이.
-            #   논문(arXiv:2509.22935)이 상정한 "FP 학습 → 별도 QAT" 를 **인위적으로 재현**한다.
-            #   P026(결과 015)은 끝점만 옮겨 정렬 효과를 못 봤는데, 우리 선형 램프에는
-            #   제거할 중복이 애초에 없었을 수 있다. 그 가설을 검정하려면 중복을 만들어야 한다.
-            anneal = 1.0 if (s / steps) >= a0 else 0.0
-        else:
-            # (P026) anneal_end = 완전삼진 도달 지점(진행률). 기본 0.60 = 종전 하드코딩값.
-            #   cooldown-QAT 가설: 이 지점을 LR 감쇠 시작(wsd면 1-decay_frac)과 정렬하면
-            #   "FP 학습 후 별도 QAT" 의 중복 업데이트가 사라져 같은 val 을 더 적은 steps 에 도달.
-            #   a0 는 위(스케줄 진단 블록)에서 한 번만 계산한다 — --anneal-start 미지정이면 종전값.
-            anneal = min(1.0, max(0.0, (s / steps - a0) / max(anneal_end - a0, 1e-6)))
+        # LR cooldown·quant 전이·보조경로 제거는 anneal_schedule.py의 서로 다른 계약이다.
+        anneal = quant_anneal_factor(s, steps, sched, anneal_shape, a0, anneal_end)
         model.set_anneal(anneal)
         if arenas:
             # ★P036 Arenas — λ_t 를 λ_0 에서 0 으로 선형 감쇠시키고 arena_end 이후 0 으로 고정한다.
             #   논문의 "annealing" 이 가리키는 것이 이 λ 스케줄이다(우리 quant_anneal 과 별개).
             #   끝에서 정확히 0 이 되어야 **배포 시 순수 삼진**이 되고 추론 오버헤드가 0 이다.
-            model.set_arena(arena_lambda * max(0.0, 1.0 - (s / steps) / max(arena_end, 1e-6)))
+            model.set_arena(arena_lambda * auxiliary_decay_factor(s, steps, arena_end))
         if lora_decay and lora_rank > 0:
             # ★P008 점진적 타잉 — LoRA 출력 스케일 s(t) 를 1 → 0 으로 선형 감쇠시키고
             #   진행률 `lora_decay` 지점 이후 **정확히 0** 으로 고정한다.
             #   s=0 이 되어야 배포 시 LoRA 가 사라지고 **메모리 대가가 0** 이 된다.
             #   (고정 LoRA 는 추론에 남아 감축비를 1.82× → 1.71× 로 깎는다)
-            model.set_lora_scale(max(0.0, 1.0 - (s / steps) / max(lora_decay, 1e-6)))
+            model.set_lora_scale(auxiliary_decay_factor(s, steps, lora_decay))
         f = _lr_factor(s, warm, steps, sched, decay_frac)
         for g, b in zip(opt.param_groups, base_lrs):
             g["lr"] = b * f
@@ -809,6 +817,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             tot += loss.item()
             tot_ce += ce.item() / accum      # KD 여부와 무관하게 순수 CE 를 따로 누적
         gn = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+        if _anneal_audit is not None:
+            _anneal_audit.before(s, progress=s / steps, anneal=anneal)
 
         if not torch.isfinite(gn):
             opt.zero_grad(set_to_none=True)
@@ -818,6 +828,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             n_skip += 1
             if _recipe_audit is not None:               # ★A08 — 건너뛴 스텝도 기록한다
                 _recipe_audit.after(s, applied=False)
+            if _anneal_audit is not None:
+                _anneal_audit.after(s, applied=False)
             print(f"  [skip] step {s}: non-finite grad ({n_skip}회째)  "
                   f"anneal {model.cfg.quant_anneal:.2f}  lr {opt.param_groups[1]['lr']:.2e}")
             if n_skip > 20:
@@ -836,6 +848,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             opt_muon.zero_grad(set_to_none=True)
         if _recipe_audit is not None:                   # ★A08 — update 후 RMS
             _recipe_audit.after(s, applied=True)
+        if _anneal_audit is not None:
+            _anneal_audit.after(s, applied=True)
         opt.zero_grad(set_to_none=True)
         if ema > 0 and s >= ema_start_step:     # P1: 감쇠 구간의 좋은 가중치만 평균
             with torch.no_grad():
@@ -933,6 +947,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "sparse34": bool(sparse34), "bpw": 1.25 if sparse34 else 1.95,
            "anneal_end": anneal_end, "decay_frac": decay_frac,    # (P026) 스케줄 정렬 기록
            "anneal_shape": anneal_shape, "anneal_start": a0,      # (P035) 어닐 형태·시작점
+           "anneal_audit": (str(anneal_audit) if anneal_audit else None),
+           "anneal_audit_every": int(anneal_audit_every),
+           "anneal_audit_max_modules": int(anneal_audit_max_modules),
            "lora_decay": float(lora_decay),                       # (P008) LoRA 스케일 어닐
            "emb_rank": int(cfg.emb_rank),                          # (P046) 임베딩 병목 E
            "kd_teacher_infer": bool(kd_teacher_infer),            # (P042) 교사 추론 모드
