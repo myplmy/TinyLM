@@ -27,9 +27,7 @@
 prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 1	P085	run_P085_Stage10c_heldout_v29_seed2_control.bat	D	0.9	Y	Y	v3.0 최종 판정에 쓴 seed2 여섯 모델로 v2.9를 재서 판본과 패널 교락을 해소한다. 기존 v3.0 JSON은 레거시 메타데이터 공백을 명시한 핵심 ID-paired 비교만 수행
-1	P025B	run_P025B_Stage0b_sparse24_backend.bat	D	0.1	Y	Y	Stage0a import 진입 실패를 고친 첫 유효 native 2:4·forward/input-grad·MLP 1.25x 게이트. 실패하면 후속 가속 단계를 열지 않음
 1	P092	run_P092_Stage0c_dynamic_sparse_contract.bat	D	0.1	N	Y	Stage0b import 진입 실패를 고친 첫 유효 mask STE·inactive regrowth·birth/death 보존 CUDA 계약. dense mask를 속도 이득으로 세지 않음
-2	P089	run_P089_Stage2b_width_three_points.bat	Y	4.6	N	Y	Stage2 step0 실패를 CLA 교사 K/V owner 매핑으로 수정한 후 새 태그 두 팔로 폭 대가·깊이 회복·순이득을 처음 측정한다. 사용자 스모크의 실제 CLA 이식 회귀 PASS 선결
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수 49GB→. ★판정 정본이 checkpoints.tsv 로 바뀌었다(TSV, keep/hold/delete). 삭제 후보 13.2GB/34개. YES 를 직접 입력해야 지운다
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
@@ -299,6 +297,14 @@ prio	plan	batch	gpu	hours	alone	watch	note
 #   1	P091	run_P091_Stage0a_late_refine_contract.bat	N	0.1	N	Y	unique MLP candidate·default-off·W+sBA fold identity 계약을 재다. PASS 후에만 TLinear/controller 연결을 설계하며 Stage1은 아직 닫힘
 #   1	P022C	run_P022C_Stage0a_fp8_backend.bat	D	0.1	Y	Y	TinyLM 실제 형상의 CUDA _scaled_mm 호출을 엄격 확인하고 순수 GEMM 상한을 같은 세션에서 기록. scaling/backward/품질은 미측정
 
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P025B	run_P025B_Stage0b_sparse24_backend.bat	D	0.1	Y	Y	Stage0a import 진입 실패를 고친 첫 유효 native 2:4·forward/input-grad·MLP 1.25x 게이트. 실패하면 후속 가속 단계를 열지 않음
+#   2	P089	run_P089_Stage2b_width_three_points.bat	Y	4.6	N	Y	Stage2 step0 실패를 CLA 교사 K/V owner 매핑으로 수정한 후 새 태그 두 팔로 폭 대가·깊이 회복·순이득을 처음 측정한다. 사용자 스모크의 실제 CLA 이식 회귀 PASS 선결
+#   12	P005b	run_P005b_Stage2b_muon_rms_upper.bat	Y	3.3	N	Y	결과 078의 RMS4가 측정 끝이므로 RMS6·8로 오른쪽 괄호를 닫는다. 둘 다 계속 좋아지면 선형 외삽하지 않고 로그 격자를 다시 설계한다
+#   13	P005b	run_P005b_Stage3_muon_matrix_wd.bat	Y	3.3	N	N	jordan15와 RMS4 각각에 `--matrix-weight-decay 0.1`만 추가해 scale 효과와 행렬 WD 교락을 2×2로 분리한다
+#   14	P005b	run_P005b_Stage9_rms_shape_transfer.bat	Y	9.6	N	N	무재귀 d12·d14·d16·d18에서 RMS4와 jordan20을 형상 안 paired full-val로 비교한다. d16 jordan20은 P005 Stage3c가 선결이다
+
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
 #     ★P062 R 곡선 -> **작성 완료**(run_P062_stage0c_r_curve.bat). 선결이 없었다 — 의사결정함정 D15
@@ -309,9 +315,6 @@ prio	plan	batch	gpu	hours	alone	watch	note
 #     (번호 미배정) 2-tap 동적 conv -> REVIEW2 확정 후. 번호는 계획서를 쓸 때 붙인다(D16). 08_paper_review §11.3-2
 #     (번호 미배정) wandb 본격 활용 -> REVIEW2 이후. 도구 scripts/wandb_sync.py 는 작성 완료
 #     P014 안 A/B LUT 커널     -> ★L2+L3 목표의 유일한 길. 미착수 (02_memory §M.3.3)
-12	P005b	run_P005b_Stage2b_muon_rms_upper.bat	Y	3.3	N	Y	결과 078의 RMS4가 측정 끝이므로 RMS6·8로 오른쪽 괄호를 닫는다. 둘 다 계속 좋아지면 선형 외삽하지 않고 로그 격자를 다시 설계한다
-13	P005b	run_P005b_Stage3_muon_matrix_wd.bat	Y	3.3	N	N	jordan15와 RMS4 각각에 `--matrix-weight-decay 0.1`만 추가해 scale 효과와 행렬 WD 교락을 2×2로 분리한다
-14	P005b	run_P005b_Stage9_rms_shape_transfer.bat	Y	9.6	N	N	무재귀 d12·d14·d16·d18에서 RMS4와 jordan20을 형상 안 paired full-val로 비교한다. d16 jordan20은 P005 Stage3c가 선결이다
 15	P005b	run_P005b_Stage10_rms_seed_transfer.bat	Y	6.2	N	N	재귀 d12와 무재귀 d16의 jordan20·RMS4를 seed 2024로 복제한다. 부호가 seed 1337과 뒤집히면 평균하지 않고 세 번째 seed를 연다
 16	P005b	run_P005b_Stage11_rms_600M_transfer.bat	Y	15.3	N	Y	RMS4를 600M 토큰 네 형상으로 옮기고 재귀 d12에 jordan20 한 팔을 더해 런 길이에 따른 scale 이동을 같은 1200M 풀에서 판정한다
 17	P005b	run_P005b_Stage12_rms_1200M_transfer.bat	Y	5.9	N	Y	P088 Stage10 완전 종료 뒤 d16 RMS4 1200M 한 팔을 추가한다. AdamW·jordan15와 같은 pool/tokens=1.0 조건에서만 비교한다
