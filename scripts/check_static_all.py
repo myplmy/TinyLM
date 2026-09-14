@@ -118,6 +118,8 @@ CHECKS = [
      "★HF 캐시 리다이렉트 — `tinylm` import 없이 datasets 를 쓰면 작업폴더 밖으로 받는다"),
     ("test_census_contract", ["test_census_heldout_contract.py"],
      "★held-out census JSON이 `per_pick`과 쌍별 불일치·관계-family CI를 실제로 복원할 수 있는가"),
+    ("test_census_compare", ["test_compare_heldout_census.py"],
+     "★held-out 판본 비교가 동일 모델·ID·평가 조건을 강제하고 레거시 메타데이터 누락을 명시하는가"),
     ("test_fetch_logging", ["test_fetch_bench_logging.py"],
      "★fetch 실패의 UTF-8 원문·명령·종료시각이 콘솔과 로그에 함께 남는가"),
     ("test_handoff_entry", ["test_new_handoff_entrypoint.py"],

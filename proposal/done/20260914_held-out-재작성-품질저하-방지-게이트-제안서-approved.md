@@ -1,13 +1,13 @@
 # 제안 — held-out 재작성의 품질저하를 막는 통제군·canary·중단 게이트
 
-> **작성** 2026-09-14 · **상태** ⏳판단 대기 · **분류** 데이터셋 작업방식 / 계측
-> 양식: [`proposal/README.md`](README.md) §3. 구현·데이터 재작성·GPU 실행은 아직 승인되지 않았다.
+> **작성** 2026-09-14 · **승인** 2026-09-14 · **상태** ✅B안 승인 / G0·G1 정적 구현 · **분류** 데이터셋 작업방식 / 계측
+> 양식: [`proposal/README.md`](../README.md) §3. 데이터 재작성·GPU 실행은 사용자 소유이며 G2 이후는 G0 결과 뒤 단계적으로 연다.
 
 ---
 
 ## 1. 배경 — 왜 지금 이 제안을 하나
 
-[`review_request/20260908_held-out-v2.7-증보-요청서.md`](../review_request/20260908_held-out-v2.7-증보-요청서.md)
+[`review_request/20260908_held-out-v2.7-증보-요청서.md`](../../review_request/20260908_held-out-v2.7-증보-요청서.md)
 §8은 v2.9의 위치·문장 길이·정형구 편향을 줄이면서 D9를 높이도록 v3.0 재작성을 요청했다.
 v3.0은 구조 감사에서는 통과했지만, 사용자가 독립 seed2 체크포인트 여섯 개로 수행한 실제
 census에서 다음과 같이 합격선을 크게 밑돌았다.
@@ -134,7 +134,7 @@ baseline → 작은 canary → 한 번의 full candidate → 한 번의 봉인�
 
 | 근거 | 값 | 출처 |
 |---|---|---|
-| v2.9 Muon 패널 D9 | 30.2%, 정보 0 49.1% | [`074 Stage10 로그`](../test_result/074_log_20260911_P085_stage10_census_six_ckpt.txt) |
+| v2.9 Muon 패널 D9 | 30.2%, 정보 0 49.1% | [`074 Stage10 로그`](../../test_result/074_log_20260911_P085_stage10_census_six_ckpt.txt) |
 | v3.0 독립 seed2 D9 | 19.0%, 정보 0 65.2% | `runs/census/stage1_heldout.v3.0_independent_s2_census.json` |
 | v3.0 감사 산출물 완전성 | 6모델×4,500 `per_ok/per_pick`, 15쌍 CI 누락 0 | 같은 JSON |
 | 패널 교락 | Muon15와 seed2 tag가 다름 | 두 실행 명령과 JSON `models` |
@@ -154,7 +154,7 @@ baseline → 작은 canary → 한 번의 full candidate → 한 번의 봉인�
 새 판본을 쓰기 전에 다음을 한 행의 조건 서명으로 동결한다.
 
 ```text
-dataset_version / ids / model_tag=preset 6개 / checkpoint family / data / tokens /
+dataset_version / ids / normalized-content-sha256 / model_tag=preset 6개 / checkpoint family / data / tokens /
 seed / PMI / n / code revision / JSON path / log path
 ```
 
@@ -247,3 +247,23 @@ D9 60%는 절대 목표로 유지하되 단독 승격 기준으로 쓰지 않는
 3. G1 결과를 본 뒤 canary 도구·데이터 요청 승인
 
 제안 승인만으로 데이터셋 수정, 모델 실행, 새 판본 생성, 실험계획 작성을 시작하지 않는다.
+
+---
+
+## 10. 승인·구현 기록
+
+- 사용자는 2026-09-14에 **B안**을 승인했다.
+- G0·G1의 비보호 정적 구현으로 `scripts/census_heldout_discrimination.py`에 조건 서명·정규화
+  문항 내용 해시·문항 라벨·관계/난이도/family/subtype 집계 보존을 추가하고,
+  `family_id`가 있으면 모델쌍 CI의 재표집 단위로 사용한다. `scripts/compare_heldout_census.py`는
+  동일 모델·ID·평가 조건·평가 소스 해시를 강제하는 paired 비교와 baseline label projection을
+  제공한다. GPU 없는 회귀가 소유한다.
+- P085 Stage10b는 이미 끝난 v3.0 독립 seed2 측정으로 기록하고, Stage10c
+  `run_P085_Stage10c_heldout_v29_seed2_control.bat`이 v2.9×동일 seed2 G0 셀을 채운다.
+- 기존 v3.0 JSON은 새 조건 서명 이전 산출물이므로 명시적
+  `CORE_MATCH_LEGACY_METADATA_GAP`에서 핵심 지표만 비교하며, 로그만 얻기 위한 v3.0 재실행은
+  요구하지 않는다.
+- **증거 수준**: 코드·회귀는 `STATIC_ONLY`. Stage10c GPU/model census와 변경 후 스모크는
+  `NOT_RUN`이며 사용자 실행 전에는 결과·동적 동작을 통과로 선언하지 않는다.
+- **단계 경계**: G2 canary 생성, 데이터셋 원본 변경, G3 full candidate, G4 봉인 final은
+  Stage10c 결과 회수와 다음 단계의 명시 범위 전에는 착수하지 않는다.

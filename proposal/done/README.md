@@ -38,3 +38,4 @@
 | [`20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md`](20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md) | ✅승인 | **2026-09-13** | → `P025B`; native 2:4 Stage0a만 작성, 후속 `NOT_RUN` |
 | [`20260913_Muon-후반-적응적-블록-확장-재학습-제안서-approved.md`](20260913_Muon-후반-적응적-블록-확장-재학습-제안서-approved.md) | ✅승인 | **2026-09-13** | → `P091`; 번호 선점 해소, 계약 Stage0a만 작성 |
 | [`20260913_Dynamic-Sparse-Training-연결희소성-학습-제안서-approved.md`](20260913_Dynamic-Sparse-Training-연결희소성-학습-제안서-approved.md) | ✅승인 | **2026-09-13** | → `P092`; 공통 계약·Stage0b만 작성, 학습 `NOT_RUN` |
+| [`20260914_held-out-재작성-품질저하-방지-게이트-제안서-approved.md`](20260914_held-out-재작성-품질저하-방지-게이트-제안서-approved.md) | ✅**B안 승인** | **2026-09-14** | G0/G1 조건 서명·동일패널 비교·P085 Stage10c 구현 `STATIC_ONLY`; GPU 실행과 G2 이후는 단계 대기 |

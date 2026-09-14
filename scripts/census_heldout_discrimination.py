@@ -50,6 +50,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import math
 import statistics
@@ -73,6 +74,7 @@ D9_MIN = 0.60
 #   첫 census(2026-09-10)가 체크포인트 4개로 돌아 **"🚫미달" 을 찍었다** — 격자 인공물이었다(결과 074 §24.3).
 #   → n 이 전제와 다르면 **판정을 보류**한다(규칙 57 — 문턱에는 계기의 조건을 붙인다).
 D9_NCKPT = 6
+_ACTIVE_LOG_PATH = None
 
 
 class _Tee:
@@ -148,22 +150,28 @@ def execution_log(path, started=None):
 
 def logged_main(argv, log_path=None, started=None):
     """Run ``main`` inside the transcript boundary and preserve its process status."""
+    global _ACTIVE_LOG_PATH
     started = started or dt.datetime.now().astimezone()
     target = Path(log_path) if log_path is not None else automatic_log_path(argv, started)
-    with execution_log(target, started):
-        try:
-            code = main()
-        except SystemExit as exc:
-            code = exc.code if isinstance(exc.code, int) else 1
-        except KeyboardInterrupt:
-            print("[census_heldout_discrimination] interrupted", file=sys.stderr)
-            code = 130
-        except Exception:  # noqa: BLE001 - preserving the traceback is the contract
-            traceback.print_exc()
-            code = 1
-        code = 0 if code is None else code
-        print(f"[census_heldout_discrimination] exit_code={code}")
-        return code
+    previous_log_path = _ACTIVE_LOG_PATH
+    _ACTIVE_LOG_PATH = target
+    try:
+        with execution_log(target, started):
+            try:
+                code = main()
+            except SystemExit as exc:
+                code = exc.code if isinstance(exc.code, int) else 1
+            except KeyboardInterrupt:
+                print("[census_heldout_discrimination] interrupted", file=sys.stderr)
+                code = 130
+            except Exception:  # noqa: BLE001 - preserving the traceback is the contract
+                traceback.print_exc()
+                code = 1
+            code = 0 if code is None else code
+            print(f"[census_heldout_discrimination] exit_code={code}")
+            return code
+    finally:
+        _ACTIVE_LOG_PATH = previous_log_path
 
 
 def band_cells(n):
@@ -249,6 +257,109 @@ def h2(p):
     return -(p * math.log2(p) + (1 - p) * math.log2(1 - p))
 
 
+def _sha256_json(value):
+    raw = json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _sha256_file(path):
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _portable_path(path):
+    if path is None:
+        return None
+    path = Path(path).resolve()
+    try:
+        return path.relative_to(ROOT).as_posix()
+    except ValueError:
+        return str(path)
+
+
+def grouped_metrics(rates, labels, field):
+    """Summarize empirical accuracy, D9 and entropy for one stored label field."""
+    grouped = defaultdict(list)
+    for rate, label in zip(rates, labels):
+        grouped[label.get(field) or "(없음)"].append(rate)
+    result = {}
+    for name, values in grouped.items():
+        result[str(name)] = {
+            "n": len(values),
+            "accuracy": statistics.fmean(values),
+            "d9": sum(1 for value in values if BAND[0] <= value <= BAND[1]) / len(values),
+            "bits_mean": statistics.fmean(h2(value) for value in values),
+        }
+    return result
+
+
+def empirical_difficulty_monotonic(metrics):
+    """Return easy > mid > hard, or ``None`` when any required bin is absent."""
+    if not all(name in metrics for name in ("easy", "mid", "hard")):
+        return None
+    return (metrics["easy"]["accuracy"] > metrics["mid"]["accuracy"]
+            > metrics["hard"]["accuracy"])
+
+
+def code_revision_signature():
+    """Hash the small source files that define this evaluation path.
+
+    Checkpoints are identified separately by tag, preset, filename and size. Hashing their
+    multi-gigabyte contents would add avoidable I/O to every census run.
+    """
+    files = [
+        Path(__file__).resolve(),
+        ROOT / "scripts" / "eval_bench_suite.py",
+        ROOT / "tinylm" / "infer" / "generate.py",
+        ROOT / "tinylm" / "data.py",
+    ]
+    return {
+        _portable_path(path): _sha256_file(path)
+        for path in files
+        if path.exists()
+    }
+
+
+def build_condition_signature(args, heldout_version, ids, source_rows, actual_n,
+                              device, resolved_models, result_path,
+                              dataset_content_sha256=None):
+    """Build the persisted condition signature without loading a model."""
+    return {
+        "dataset": {
+            "task": args.task,
+            "heldout_version_requested": args.heldout_version,
+            "heldout_version_resolved": heldout_version,
+            "ids_sha256": _sha256_json(ids),
+            "content_sha256": dataset_content_sha256,
+        },
+        "sample": {
+            "requested_n": args.n,
+            "actual_n": actual_n,
+            "source_rows": source_rows,
+            "seed": args.seed,
+            "covers_all_rows": actual_n == source_rows,
+        },
+        "evaluation": {
+            "data": args.data,
+            "tokens": args.tokens,
+            "seq_max": args.seq_max,
+            "pmi": not args.no_pmi,
+            "device": device,
+        },
+        "models": resolved_models,
+        "code_revision": code_revision_signature(),
+        "artifacts": {
+            "result_json": _portable_path(result_path),
+            "transcript_log": _portable_path(_ACTIVE_LOG_PATH),
+        },
+    }
+
+
 def main():
     ap = argparse.ArgumentParser(description="무변별 문항 census (학습 0 · 모델 로드 있음)")
     ap.add_argument("--models", nargs="+", required=True,
@@ -301,12 +412,25 @@ def main():
     print("  전체 %s행 중 **%d문항** (seed=%d)" % ("{:,}".format(len(rows)), len(idx), a.seed))
 
     # ★라벨은 원본 행에서 가져온다(어댑터는 ctx/choices/gold 만 남긴다)
-    labels = [{"id": rows[i].get("id"),
-               "difficulty": rows[i].get("difficulty_target") or rows[i].get("difficulty"),
-               "relation": rows[i].get("relation")} for i in idx]
+    diagnostic_fields = (
+        "family_id", "relation_subtype", "template_id",
+        "difficulty_knobs", "distractor_error_type",
+    )
+    labels = []
+    for i in idx:
+        label = {
+            "id": rows[i].get("id"),
+            "difficulty": rows[i].get("difficulty_target") or rows[i].get("difficulty"),
+            "relation": rows[i].get("relation"),
+        }
+        for field in diagnostic_fields:
+            if rows[i].get(field) is not None:
+                label[field] = rows[i].get(field)
+        labels.append(label)
 
     per_ok, per_pick = {}, {}
     skipped_by_model = {}
+    resolved_models = []
     for spec in a.models:
         tag, _, pre = spec.partition("=")
         pre = pre or a.preset
@@ -327,6 +451,13 @@ def main():
         # ★2026-09-10(2차) — **모델이 고른 후보 인덱스**도 남긴다(`run_mc` 의 `rows` 가 이미 들고 있다 · 비용 0).
         #   결과 074 §24.6: 조건·시간순서에서 네 모델이 모두 우연 아래인데 **어느 오답이 끄는지** 몰랐다(Q14).
         per_pick[tag] = [r.get("pred_internal") for r in _res.get("rows", [])]
+        resolved_models.append({
+            "spec": spec,
+            "tag": tag,
+            "preset": pre,
+            "checkpoint": ck.name,
+            "checkpoint_size_bytes": ck.stat().st_size,
+        })
         print("  %-34s (%s)  정답률 %.1f%%  N=%d"
               % (tag, pre, 100.0 * sum(ok) / max(1, len(ok)), len(ok)))
         del model
@@ -389,8 +520,12 @@ def main():
 
     # ------------------------------------------------------------ McNemar
     banner("M — 모델 쌍별 McNemar 불일치 쌍 (= 그 비교에서 실제로 일한 문항)")
-    relations = [labels[k]["relation"] for k in range(n)]
-    pairs = pair_records(per_ok, tags, relations, n)
+    # family_id가 있으면 같은 relation 안의 독립 의미 가족을 재표집 단위로 쓴다.
+    # 구판에는 이 필드가 없으므로 relation fallback을 명시적으로 유지한다.
+    resample_families = [
+        labels[k].get("family_id") or labels[k]["relation"] for k in range(n)
+    ]
+    pairs = pair_records(per_ok, tags, resample_families, n)
     print("  %-25s %-25s %7s %7s %7s %24s %12s" %
           ("A", "B", "A만맞", "B만맞", "불일치", "관계-family 95% CI", "판정"))
     for pair in pairs:
@@ -425,6 +560,18 @@ def main():
             print("  %-12s %6d %9.1f%% %9.1f%%"
                   % (lab, len(rs), 100.0 * statistics.fmean(rs), 100.0 * band))
 
+    difficulty_metrics = grouped_metrics(rates, labels[:n], "difficulty")
+    relation_metrics = grouped_metrics(rates, labels[:n], "relation")
+    family_metrics = (
+        grouped_metrics(rates, labels[:n], "family_id")
+        if any(label.get("family_id") for label in labels[:n]) else None
+    )
+    relation_subtype_metrics = (
+        grouped_metrics(rates, labels[:n], "relation_subtype")
+        if any(label.get("relation_subtype") for label in labels[:n]) else None
+    )
+    difficulty_monotonic = empirical_difficulty_monotonic(difficulty_metrics)
+
     # ------------------------------------------------------------ 저장
     OUT.mkdir(parents=True, exist_ok=True)
     # ★★2026-09-10(2차) — 기본 파일명에 **판을 넣는다.** 종전 이름에는 판이 없어서
@@ -432,10 +579,18 @@ def main():
     #   데이터 폴더에 복사해 둬서 잃지 않았다). 판마다 캐시를 따로 두는 A01 규약을 출력에도 적용한다.
     _stem = ("%s.v%s" % (a.task, _hv)) if _hv else a.task
     p = Path(a.out) if a.out else OUT / ("%s_census.json" % _stem)
+    ids = [labels[k]["id"] for k in range(n)]
+    condition_signature = build_condition_signature(
+        a, _hv, ids, len(rows), n, dev, resolved_models, p,
+        dataset_content_sha256=_sha256_json(rows),
+    )
     p.write_bytes(json.dumps({
+        "schema_version": 2,
         "task": a.task, "n": n, "models": tags,
         "heldout_version": _hv,          # ★A01 — 어느 판으로 쟀는가
         "heldout_version_requested": a.heldout_version,
+        "data": a.data, "tokens": a.tokens, "seq_max": a.seq_max,
+        "sample_seed": a.seed, "pmi": not a.no_pmi,
         "b1_saturated": b1, "b2_floor": b2, "b3_band": b3, "d9": d9,
         # ★규칙 57 — 판정의 전제를 함께 남긴다(체크포인트 수 · 대역 격자 칸 · 교환가능 상한 · 판정)
         "n_ckpt": len(tags), "d9_cells": cells, "d9_ceiling_exchangeable": ceil_,
@@ -443,10 +598,17 @@ def main():
                        if len(tags) == D9_NCKPT else "withheld"),
         "bits_total": tot, "zero_info": z,
         "per_item_rate": rates,
-        "ids": [labels[k]["id"] for k in range(n)],
+        "ids": ids,
         "per_ok": {t: per_ok[t][:n] for t in tags},
         "per_pick": {t: per_pick[t][:n] for t in tags},
         "pairs": pairs,
+        "item_labels": labels[:n],
+        "difficulty_metrics": difficulty_metrics,
+        "relation_metrics": relation_metrics,
+        "family_metrics": family_metrics,
+        "relation_subtype_metrics": relation_subtype_metrics,
+        "difficulty_monotonic": difficulty_monotonic,
+        "condition_signature": condition_signature,
     }, ensure_ascii=False, indent=1).encode("utf-8"))
     print()
     print("  ★저장: %s" % p)

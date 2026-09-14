@@ -26,6 +26,7 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
+1	P085	run_P085_Stage10c_heldout_v29_seed2_control.bat	D	0.9	Y	Y	v3.0 최종 판정에 쓴 seed2 여섯 모델로 v2.9를 재서 판본과 패널 교락을 해소한다. 기존 v3.0 JSON은 레거시 메타데이터 공백을 명시한 핵심 ID-paired 비교만 수행
 1	P025B	run_P025B_Stage0b_sparse24_backend.bat	D	0.1	Y	Y	Stage0a import 진입 실패를 고친 첫 유효 native 2:4·forward/input-grad·MLP 1.25x 게이트. 실패하면 후속 가속 단계를 열지 않음
 1	P092	run_P092_Stage0c_dynamic_sparse_contract.bat	D	0.1	N	Y	Stage0b import 진입 실패를 고친 첫 유효 mask STE·inactive regrowth·birth/death 보존 CUDA 계약. dense mask를 속도 이득으로 세지 않음
 2	P089	run_P089_Stage2b_width_three_points.bat	Y	4.6	N	Y	Stage2 step0 실패를 CLA 교사 K/V owner 매핑으로 수정한 후 새 태그 두 팔로 폭 대가·깊이 회복·순이득을 처음 측정한다. 사용자 스모크의 실제 CLA 이식 회귀 PASS 선결

@@ -9,6 +9,7 @@ import sys
 import tempfile
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
+from types import SimpleNamespace
 
 
 MODULE_PATH = Path(__file__).resolve().with_name("census_heldout_discrimination.py")
@@ -106,6 +107,50 @@ def test_logged_main_records_traceback_and_failure_exit() -> None:
     assert "[census_heldout_discrimination] exit_code=1" in saved
 
 
+def test_grouped_metrics_and_empirical_difficulty_contract() -> None:
+    rates = [4 / 6, 3 / 6, 2 / 6]
+    labels = [
+        {"difficulty": "easy", "relation": "r1"},
+        {"difficulty": "mid", "relation": "r1"},
+        {"difficulty": "hard", "relation": "r2"},
+    ]
+    metrics = MODULE.grouped_metrics(rates, labels, "difficulty")
+    assert metrics["easy"]["accuracy"] == 4 / 6
+    assert metrics["mid"]["d9"] == 1.0
+    assert MODULE.empirical_difficulty_monotonic(metrics) is True
+    assert MODULE.empirical_difficulty_monotonic({"easy": metrics["easy"]}) is None
+
+
+def test_condition_signature_records_axes_and_artifacts() -> None:
+    args = SimpleNamespace(
+        task="stage1_heldout", heldout_version="2.9", n=4500, seed=99,
+        data="ko-en", tokens="300M", seq_max=1024, no_pmi=False,
+    )
+    previous = MODULE._ACTIVE_LOG_PATH
+    with tempfile.TemporaryDirectory() as tmp:
+        MODULE._ACTIVE_LOG_PATH = Path(tmp) / "run.log"
+        try:
+            signature = MODULE.build_condition_signature(
+                args, "2.9", ["a", "b"], 2, 2, "cuda",
+                [{"tag": "m", "preset": "p", "checkpoint": "m.pt",
+                  "checkpoint_size_bytes": 10}],
+                Path(tmp) / "result.json",
+                dataset_content_sha256="content-digest",
+            )
+        finally:
+            MODULE._ACTIVE_LOG_PATH = previous
+    assert signature["dataset"]["ids_sha256"]
+    assert signature["dataset"]["content_sha256"] == "content-digest"
+    assert signature["sample"] == {
+        "requested_n": 4500, "actual_n": 2, "source_rows": 2,
+        "seed": 99, "covers_all_rows": True,
+    }
+    assert signature["evaluation"]["pmi"] is True
+    assert signature["models"][0]["tag"] == "m"
+    assert signature["artifacts"]["transcript_log"].endswith("run.log")
+    assert "scripts/eval_bench_suite.py" in signature["code_revision"]
+
+
 def main() -> int:
     tests = [
         test_pairs_keep_discordance_and_family_ci,
@@ -113,6 +158,8 @@ def main() -> int:
         test_automatic_log_path_follows_output_and_never_overwrites,
         test_logged_main_mirrors_console_and_records_exit,
         test_logged_main_records_traceback_and_failure_exit,
+        test_grouped_metrics_and_empirical_difficulty_contract,
+        test_condition_signature_records_axes_and_artifacts,
     ]
     for test in tests:
         test()
