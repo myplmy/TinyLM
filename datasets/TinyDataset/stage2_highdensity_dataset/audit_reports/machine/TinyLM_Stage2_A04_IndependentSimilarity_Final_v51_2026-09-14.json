@@ -1,0 +1,82 @@
+{
+  "audit": "A04 independent similarity and particle review",
+  "source_files": 69,
+  "source_records": 10350,
+  "similarity": {
+    "char_3_5_tfidf": {
+      "method": "character 3-5-gram TF-IDF cosine; NFKC/lowercase; raw term counts; smooth IDF; L2 normalization; sparse pair accumulation",
+      "threshold": 0.72,
+      "records": 10350,
+      "pairs_with_shared_feature": 50823191,
+      "pairs_ge_threshold": 0,
+      "max": 0.658302223,
+      "max_pair": {
+        "score": 0.658302223,
+        "left": {
+          "file": "stage2_(14)state_transition_high_density_train_v65.source.jsonl",
+          "line": 63,
+          "primary": "공항 활주로 정보 지연 출발 보류",
+          "text": "활주로 정보가 늦게 들어오면 공항 활주로 정보 지연 출발 보류를 적용한다. 보완 정보가 도착하면 항공기와 관제사에게 알리고 출발 순서를 다시 정한다."
+        },
+        "right": {
+          "file": "stage2_(14)state_transition_high_density_train_v65.source.jsonl",
+          "line": 113,
+          "primary": "공항 활주로 정보 지연 상태",
+          "text": "활주로 정보가 늦게 들어오면 공항 활주로 정보 지연 상태로 항공기 출발을 잠시 보류한다. 보완 정보가 도착하면 관제사가 항공사에 알리고 출발 순서를 다시 정한다."
+        }
+      },
+      "top_threshold_pairs": []
+    },
+    "word_set_jaccard": {
+      "method": "word-set Jaccard; NFKC/lowercase; Korean/ASCII/number lexical tokens; sparse inverted-index pair accumulation",
+      "threshold": 0.6,
+      "records": 10350,
+      "pairs_with_shared_word": 13660989,
+      "pairs_ge_threshold": 0,
+      "max": 0.576923077,
+      "max_pair": {
+        "score": 0.576923077,
+        "left": {
+          "file": "stage2_(14)state_transition_high_density_train_v60.source.jsonl",
+          "line": 97,
+          "primary": "발효 세정복귀",
+          "text": "발효 세정복귀는 재세정 완료가 생산 재개를 촉발하고 잔류 재검출이 재개를 억제하는 전이로, 완료 시각과 재검값을 보존하며 투입 순서와 세정 단계를 변경한다."
+        },
+        "right": {
+          "file": "stage2_(14)state_transition_high_density_train_v60.source.jsonl",
+          "line": 123,
+          "primary": "발효 탱크전환",
+          "text": "발효 탱크전환은 세정 완료가 생산 탱크 전환을 촉발하고 잔류 압력이 전환을 억제하는 전이로, 완료 시각과 압력값을 보존하며 밸브 순서와 투입 단계를 변경한다."
+        }
+      },
+      "top_threshold_pairs": []
+    }
+  },
+  "particle_review": {
+    "hard_pattern_candidates": 0,
+    "hard_pattern_examples": [],
+    "adjacent_duplicate_word_candidates": 0,
+    "adjacent_duplicate_examples": [],
+    "primary_hangul_rows": 10350,
+    "numbered_primary_rows": 0,
+    "primary_attached_occurrences": 8794,
+    "particle_histogram": {
+      "는": 1857,
+      "은": 1420,
+      "에서": 1325,
+      "을": 1064,
+      "이": 873,
+      "으로": 718,
+      "로": 556,
+      "를": 422,
+      "가": 319,
+      "에": 196,
+      "의": 40,
+      "와": 3,
+      "과": 1
+    },
+    "primary_particle_candidates": 0,
+    "primary_particle_examples": [],
+    "review_note": "후보는 독립 휴리스틱의 검출값이며, 실제 오류 여부는 사람이 예문을 확인해야 한다. A04의 primary 끝 숫자는 레코드 구분자로 보고 앞선 한글 개념명의 받침을 판정했다."
+  }
+}

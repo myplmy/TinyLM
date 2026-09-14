@@ -158,3 +158,143 @@
 - 산출물: `audit_reports/TinyLM_Stage2_A05_ModalityPossibility_Train_Consolidated_Audit_2026-09-11.md`, `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Independent_Reaudit_2026-09-11.json`, `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_UserReview_2026-09-11.json`, `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Reaudit_PostOtherType_2026-09-11.json`.
 - 문서 반영 후 동일 selector로 reviewer-assist를 재실행해 `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Reaudit_Final_2026-09-11.json`을 추가 확인했다. reviewer SHA `564538fe...`·69 files·10,350 rows·hard 0·ChatGPT queue 45·registry coverage 100%으로 문서 수치와 일치한다. 독립 scikit-learn TF-IDF도 10,350 records·22,043쌍·최고 .968091583을 재확인했다.
 - 최종 상태: **구조 PASS / 자연성 HOLD / `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`**. 다음 재개 지점은 사용자 검토표의 의미 승인 후 해당 locator만 직접 재서술하고 같은 전수 감사를 재실행하는 것이다. package·checkpoint 생성/수정은 이 작업 범위에 없다.
+
+## 2026-09-14 자연성·의미 직접 재서술 재개
+
+- 대상은 계속 A05 train source v01~v69뿐이며, 다른 Stage2 source, package `train/`·`val/`, manifest, checkpoint, 중앙 원장 및 공용 감사기는 수정하지 않았다.
+- 명확한 qualifier 역할 충돌·무의미한 기록 경로 문구가 확인된 **98행**만 `apply_patch`로 직접 재서술했다. v20 반례 조건·가정 범위 24행, v12 도입부 다양성 64행, v13 발생 징후/발생 여부 2행, v21 냉동 차량 적재·상자 중심 온도 징후/발생 여부 4행, v69 가정 결과/가정 범위 4행이다. primary, relations, 행 순서와 registry locator는 이 묶음에서 보존했다.
+- v12의 `primary+은/는` 도입은 109/150(72.6667%, HARD HOLD)에서 45/150(30.0000%)로 내려갔다. 전체 A05는 1,633/10,350(15.7778%)이며 HOLD 파일은 없고 v04·v05만 파일 단위 diversity review다.
+- 최종 reviewer-assist 재감사(`...SemanticPairs_r2_2026-09-14.json`)는 69 files / 10,350 records, hard source error 0, registry coverage 100%, direct rewrite target 0, ChatGPT review 44 groups(HARD 0), warning rule assignment 0을 확인했다. reviewer source-set SHA-256은 `38a9929f5aad0189c24f8e5ec3780837b4576be19daed7c5eae6c0d91435dc0e`다.
+- 독립 char 3~5-gram TF-IDF는 19,655 pairs >= .72, 최고 .9540336945626448을 보고했다. 최고 잔여 쌍은 v59:25/145의 `운전자 교대 가정 결과`/`가정 범위`이며, 유사도 신호만으로 자동 수정하지 않고 다음 수동 의미 판정 locator로 남겼다.
+- exact/NFKC primary·text duplicate는 0이지만 primary-masked exact duplicate는 2,416 groups / 8,294 records로 남는다. 이는 아직 대량 문형 반복이 있다는 증거이므로 **구조 PASS와 별도로 자연성 HOLD를 유지**한다. package·학습용 확정은 하지 않는다.
+
+## 2026-09-14 조건·사건 의미 재서술 후속 묶음
+
+- 대상은 계속 A05 source와 A05 registry locator뿐이다. `apply_patch`로 source 행을 직접 고쳤고, primary가 바뀐 locator만 registry의 원본 바이트를 보존하는 범위 내에서 동기화했다. 다른 Stage2 source, package `train/`·`val/`, manifest, checkpoint, 중앙 원장, 공용 감사기 및 Git은 수정하지 않았다.
+- v36에서는 1~120 및 136~150의 **135행**을 재검토했다. `조건부 결과`, `가정 결과`, `반사실 경로`, `대안 결과`처럼 조건·측정변수 없이 생성된 라벨을 실제 조건과 측정값이 보이는 표현으로 바꿨다. 121~135의 구체적인 반례형 조건 문장은 유지했다.
+- v66에서는 1~60, 61~75, 91~105의 **90행**을 재검토했다. `청정도 발생`, `수율 발생`처럼 상태값을 사건처럼 만든 primary를 `입자 수 기준 초과`, `수율 저하`, `공정 압력 이상`, `공급 중단`, `통신 오류` 등 실제 사건으로 바꾸고, 징후·잠정 판정·미발생 판정·발생 여부의 근거를 서로 분리했다. v66의 76~90과 106~150은 아직 이 묶음에서 재서술하지 않았으므로 다음 수동 검토 대상으로 남긴다.
+- v16:29/89는 같은 `열차 위치 가정/가상 결과` 문형을 각각 위치 신호 30초 지연과 GPS 위치 오차 50미터 가정으로 분리했다.
+- 이 묶음의 수정 전 기준 reviewer source-set SHA-256은 `517f80424ba2bd3d02a1380b097c54d67e94867c9b4d8dfea7003242a0b65073`이고, 수정 후 reviewer source-set SHA-256은 `590987f0c9e28ff5014d3c258e6c9ca58e67f11c7f80a3521d8146a89b79f364`이다. 현재 registry SHA-256은 `8bbf9bdbe7e313af566bfbe3832ef942f1ec9fa83cf1024f0e946c8c04e18948`이다.
+- r9 reviewer-assist는 69 files / 10,350 records, hard source error 0, registry parse problem 0, coverage 100%, `primary+은/는` 1,795/10,350(17.3430%), direct target 0, ChatGPT review 45 groups(HARD 0), advisory warning record 0을 확인했다. advisory warning 0은 자연성 PASS가 아니다.
+- 독립 char 3~5-gram TF-IDF는 17,411 pairs >= .72, 최고 .9485822473331011을 보고했고, 다음 최고쌍은 v32:29/149의 `조사 표본 가정 결과`/`가정 범위`다. 따라서 현재 판정은 여전히 **구조 PASS / 자연성 HOLD / `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`**다.
+- 다음 재개 지점: v66 76~90과 106~150을 사건·미확정·확인 기준·미실행 행동으로 문맥별 재서술하고 registry locator를 동기화한 뒤, v32:29/149부터 독립 유사도 최고쌍을 계속 직접 판정한다.
+
+## 2026-09-14 조건·사건 재서술 연속 검토 (r13)
+
+- 범위는 계속 A05 train source v01~v69와 primary가 바뀐 A05 registry locator뿐이다. 다른 Stage2 source, package `train/`·`val/`, manifest, checkpoint, 중앙 원장, 공용 감사기 및 Git은 수정하지 않았다.
+- 수정 전 기준선은 reviewer r9 source-set SHA-256 `590987f0c9e28ff5014d3c258e6c9ca58e67f11c7f80a3521d8146a89b79f364`, registry SHA-256 `8bbf9bdbe7e313af566bfbe3832ef942f1ec9fa83cf1024f0e946c8c04e18948`이다. primary **103행**과 text만 고친 **5행**을 locator별 `apply_patch`로 직접 재서술했다. primary 변경은 v66 63행, v32 2행, v54 4행, v51 30행, v11 2행, v22 2행이다.
+- v66에서는 `가능 상태`·`실제 확인`·`미실행 상태`·`조건부 발생`을 실제 관측 신호, 확인 기준, 하지 않은 조치의 가정, 실제 조건문으로 바꿨다. `청정도 발생`, `수율 발생`처럼 상태값을 사건으로 만든 표현을 `입자 수 기준 초과`, `수율 저하`, `압력 이상` 등으로 바꿨고, v66의 primary+은/는 도입은 71/150(47.3333%, HARD)에서 67/150(44.6667%)로 낮췄다.
+- v51에서는 온습도 센서·암모니아·이산화탄소·환기·급이·급수·점검·출하의 `발생 징후/발생 여부` 30행을 실제 이상 신호 또는 실제 판정으로 나눴다. v54·v32·v44의 가정/가상 결과와 v11의 API 게이트웨이 일정, v22의 확률 비교 중복어도 각각 구체 조건·측정값·작업 시각으로 분리했다.
+- registry는 기존 invalid UTF-8 바이트를 재직렬화하지 않고, source_file/source_line/primary 바이트 범위만 대체했다. v44 동기화 때 메모리 매핑 잠금이 한 번 발생했으나 강제 종료·덮어쓰기를 하지 않았다. 원본과 self-created 백업 SHA가 같은지 확인한 뒤 한 번의 안전 재시도로 완료했고 임시·백업 파일은 검증 후 제거했다.
+- r13 reviewer-assist 결과는 source-set SHA-256 `8ac228275bdc4d66fb439e319ffcbc0c54e849da68323400a14f703abe7ebf67`, registry SHA-256 `6663bc493ed1ec81bf6fa5a45b9c9993a280dc6313440c7ada196b0cae33036d`, 69 files / 10,350 records / hard source error 0 / registry parse problem 0 / coverage 100%이다. 전체 primary+은/는은 1,838/10,350(17.7585%), ChatGPT review queue 46 groups(HARD 0), user queue 0, rule-warning record 0이다.
+- 독립 char 3~5-gram TF-IDF는 17,212 pairs >= .72, 최고 .9477793262865214로 r9의 17,411쌍보다 199쌍 낮아졌지만 여전히 자연성 PASS 근거가 아니다. reviewer의 same-relation-set masked group은 44개이며, raw/masked Jaccard의 최고쌍에는 v18·v22·v26·v30·v34 등의 공통 확률 문형이 남아 있다. 따라서 상태는 계속 **구조 PASS / 자연성 HOLD / `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`**다.
+- 다음 재개 지점: 독립 TF-IDF 최고쌍 v25:72/102 (`콘텐츠 추천 발생 징후/발생 여부`)을 먼저 행별 판정한다. 이어 v18·v22·v26·v30·v34의 확률·확신 문형은 의미가 같은지 아닌지 사람이 읽어 확정 오류 locator만 직접 재서술하고, primary 변경마다 registry locator를 다시 동기화한 뒤 r14 reviewer와 독립 TF-IDF를 재실행한다.
+
+## 2026-09-14 r14 후속 기준선
+
+- v25:72/102의 `콘텐츠 추천 발생 징후/발생 여부`는 추천 목록 갱신의 신호와 실제 갱신 여부로 재서술했고, primary locator 2개를 registry에 동기화했다. 이번 연속 묶음의 primary 직접 재서술 누계는 **105행**, text-only 재서술은 **5행**이다.
+- r14 reviewer-assist: source-set SHA-256 `602202544d5dc20ec6d4a42f4f8efc096b5a7555af3114cfbbe94ecab2bf0929`, registry SHA-256 `9534516038ecb49f1ddb772d6b6d8bab5156309d116a4cee13eb63722397ff4b`, 69 files / 10,350 records / hard source error 0 / registry parse problem 0 / coverage 100%이다. primary+은/는은 1,839/10,350(17.7681%), ChatGPT review 46(HARD 0), user review 0, rule-warning record 0이다.
+- r14 뒤 독립 char 3~5-gram TF-IDF는 17,205 pairs >= .72, 최고 .9478066196056428이다. source 구조는 PASS지만 대량 문형 재사용 때문에 자연성은 계속 HOLD다.
+- 다음 재개 지점: v28:27/147의 `콘텐츠 추천 가정 결과/가정 범위`를 실제 조건과 서로 다른 해석 범위로 분리한다. 그 뒤 v18·v22·v26·v30·v34의 확률·확신 high-similarity 군을 같은 locator 단위로 계속 판정한다.
+
+## 2026-09-14 r15 후속 기준선
+
+- v28:27/147은 개인화 추천의 하루 지연 가정과 추천 기준 변경 범위로 고쳤고, primary 변경 누계는 **107행**, text-only 재서술은 **5행**이 됐다.
+- r15 reviewer-assist: source-set SHA-256 `234a28b471898ceee693ac1622e1fe7e50baac9502ad557bfcd54b8263a18e46`, registry SHA-256 `d7af283670669d6b91a7ec4e6882e64ec06aa0c673b19d337ff8e37d15a0e676`, 69 files / 10,350 records / hard source error 0 / registry parse problem 0 / coverage 100%이다. primary+은/는은 1,840/10,350(17.7778%), ChatGPT review 46(HARD 0), user review 0, rule-warning record 0이다.
+- 독립 char 3~5-gram TF-IDF는 17,199 pairs >= .72, 최고 .9476049050272134이다. 구조 PASS와 자연성 HOLD를 계속 분리한다.
+- 다음 재개 지점: v54:17/137의 `웨이퍼 수율 가정 결과/가정 범위`를 각각 구체 반사실 조건과 해석 범위로 판정한다. 이후 v18·v22·v26·v30·v34의 확률·확신 high-similarity 군을 locator별로 이어서 검토한다.
+
+## 2026-09-14 r16~r24 잔여 고유사 쌍 직접 재서술
+
+- r15 기준선 뒤 primary를 직접 재서술한 누계는 **125행**, text-only 재서술은 **5행**이다. 이번 묶음에서는 v54:17/137, v25:62/92·73/103, v32:19/139, v28:20/140·29/149·17/137, v46:72/102, v16:16/136의 **18행**을 각각 다른 실제 조건·관찰 근거·판정 범위로 분리했다. 같은 primary를 다른 행에 기계적으로 치환하지 않았고, source 행 순서·relations·other_type은 보존했다.
+- 변경 예시는 `웨이퍼 수율 가정 결과/범위`를 검사 표본 절반 가정의 수율 추정과 수율 해석 조건 범위로, `퀴즈 정답률 발생 징후/여부`를 초기 표본의 변화 신호와 충분한 응답에 의한 변화 확인으로, `산림 통행 발생 징후/여부`를 통행 흔적과 통행 여부 확인으로 나눴다. 상태량·설정값을 사건처럼 부른 primary와 같은 text를 공유하던 qualifier 쌍만 확정 오류로 처리했다.
+- primary가 바뀐 A05 registry locator만 원본 바이트 범위에서 동기화했다. 매 교체는 이전 registry SHA-256을 precondition으로 확인하고 source_file/source_line/old primary가 정확히 하나인 경우에만 수행했다. 메모리 매핑 재시도는 없었고, self-created temp/backup은 성공 검증 뒤 모두 제거했다.
+- r21 reviewer 실행의 첫 호출은 registry 상대경로 오기로 source·registry·report 생성 전에 중단됐다. 올바른 A05 registry 경로로 즉시 재실행했으며, 이후 r21~r24 보고서만 감사 산출물로 남겼다.
+- r24 reviewer-assist: source-set SHA-256 `a5409d0e5bc42f46d604d7d5218c1ce8afab1a34f71ee21d0831bae37d47ae19`, registry SHA-256 `dcbed255729695b5aa9f912f093ce8cc6d36932180c7b3a3ba6464e68deb0273`, 69 files / 10,350 records, hard source error 0, registry parse problem 0, coverage 100%이다. `primary+은/는`은 1,849/10,350(17.8647%), ChatGPT review 46(HARD 0), user review 0, rule-warning record 0이다.
+- r24 뒤 독립 char 3~5-gram TF-IDF는 17,137 pairs >= .72, 최고 .9459608482172597이다. r15의 17,199쌍보다 62쌍 낮았지만 높은 유사도와 primary-masked 반복이 광범위하게 남았으므로 판정은 계속 **구조 PASS / 자연성 HOLD / `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`**다.
+- 다음 재개 지점: v44:29/149의 `부표 점검 가정 결과/가정 범위`를 실제 점검 조건의 반사실 추정과 적용 조건 범위로 분리한 뒤, 독립 TF-IDF 최고쌍을 같은 방식으로 locator별 재판정한다. package·checkpoint·manifest·중앙 원장·다른 영역 source는 계속 수정하지 않는다.
+
+## 2026-09-14 r25~r28 잔여 사건·측정값 문형 재서술
+
+- 이번 후속 묶음에서는 v44:29/149, v61:62/92·72/102, v46:62/92의 **8행**을 행별로 재검토했다. `부표 점검 가정 결과/범위`는 점검 주기 변경 아래의 센서 이상 발견 시점 추정과 점검 결과 해석 조건 범위로, `랙 열부하 발생 징후/여부`는 급증 신호와 다중 계측 확인으로, `정전 복구 발생 징후/여부`는 복구 시작 신호와 완료 확인으로, `포획 트랩 발생 징후/여부`는 유인 트랩의 곤충 포획 흔적과 포획물 확인으로 바꿨다.
+- r15 이후 primary 직접 재서술 누계는 **133행**, text-only 재서술은 **5행**이다. 이번 수정도 locator별 `apply_patch`만 사용했고, source 행 순서·relations·other_type은 보존했다. primary 변경 registry locator는 원본 바이트의 정확한 `primary` 구간만 교체했으며, 모두 SHA-256 precondition·후속 hash 대조·coverage 재감사를 통과했다. temp/backup 파일과 retry는 없었다.
+- r28 reviewer-assist: source-set SHA-256 `96c53cbe0cff13fcbf201012b4b615899d0103625642b0dbcfd2fdf94bde0bf1`, registry SHA-256 `5bbcd85e973203014d7c0b3f89dd9aa4b7820fb595d209db9d7d86014f03c8fb`, 69 files / 10,350 records, hard source error 0, registry parse problem 0, coverage 100%이다. `primary+은/는`은 1,854/10,350(17.9130%), ChatGPT review 46(HARD 0), user review 0, rule-warning record 0이다.
+- r28 뒤 독립 char 3~5-gram TF-IDF는 17,108 pairs >= .72, 최고 .9444936998400334이다. 이는 r24의 17,137쌍보다 29쌍 낮지만, 모든 고유사 pair가 오류라는 뜻은 아니며 대량 문형 반복이 남아 있다. 현재 판정은 계속 **구조 PASS / 자연성 HOLD / `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`**다.
+- 다음 재개 지점: v61:63/93의 `UPS 전환 발생 징후/발생 여부`를 UPS 전환의 초기 신호와 실제 전환 확인으로 의미 분리한다. 이후에도 독립 TF-IDF 최고쌍을 한 쌍씩 읽고, 명확한 오류 locator만 직접 재서술·registry 동기화·전수 재감사한다.
+
+## 2026-09-14 A05 전체 자연성 직접 재서술 착수
+
+- 사용자 지시: A05 전체 데이터셋의 자연성 수정 작업을 수행한다. 허용 범위는 A05 `modality_possibility` train source v01~v69, primary가 바뀐 A05 registry locator, A05 감사 산출물 및 이 A05 전용 원장으로 고정한다.
+- 시작 기준은 r28 reviewer source-set SHA-256 `96c53cbe0cff13fcbf201012b4b615899d0103625642b0dbcfd2fdf94bde0bf1`, registry SHA-256 `5bbcd85e973203014d7c0b3f89dd9aa4b7820fb595d209db9d7d86014f03c8fb`, 69 files / 10,350 records, hard source error 0, registry coverage 100%이다. 이 구조 PASS는 자연성 PASS가 아니다.
+- 전수 후보를 concept·문장 의미로 분류하고, 인공 합성어·상태를 사건으로 부르는 표현·정의 없는 조건/반사실·불투명한 기록 문구·template 반복 때문에 의미가 확정적으로 손상된 locator만 `apply_patch`로 직접 재서술한다. 전역 치환·문장 자동생성·source 전체 재직렬화는 사용하지 않는다.
+- primary가 바뀌면 해당 registry locator만 원본 바이트를 보존하여 동기화한다. source 행 순서, relations, other_type과 보호 경계는 보존한다. 매 묶음 뒤 A05 selector 구조/registry/중복/조사/유사도/자연성 감사를 재실행한다.
+
+## 2026-09-14 v61 데이터센터 냉각·전력 절체 1~90행 직접 재서술
+
+- r29 전체 후보 감사에서 primary를 가린 exact text 골격이 2,157 groups / 7,320 records였고, 독립 char 3~5-gram TF-IDF는 17,108 pairs >= 0.72 / 최고 0.9444936998400334였다. 이는 구조 오류가 아니라도 대량 template 재사용과 자연성 HOLD를 뒷받침하는 재작성 우선순위다.
+- v61의 1~90행에서 `유량 발생`, `온도 발생`, `가능 상태`, `잠정 발생`, `미발생 판정`처럼 상태·측정값을 사건으로 만든 primary와 text를 실제 이상 가능성·관측 가능성·잠정 판정·미확인·신호·위험도·필요성으로 직접 분리했다. 이 묶음은 primary 86행, text-only 3행이며, 이전 r28의 v61:62·72 재서술은 보존했다. v61:63은 `UPS 전환 준비 신호`, v61:93은 `UPS 전환 완료 확인`으로 먼저 분리했다.
+- 모든 primary 변경 locator는 registry 바이트 범위만 교체했다. 1~30행 registry 동기화의 첫 사후 검증은 변경 전 byte offset을 재사용해 중단됐지만, live registry와 self-created temp의 SHA-256 일치, self-created backup의 수정 전 SHA-256 일치, 27/27 locator 실제 값을 read-only 재검증한 뒤 temp/backup만 제거했다. registry를 되돌리거나 다른 파일을 수정하지 않았다. 이후 31~60 및 61~90 동기화는 새 live byte range로 검증해 정상 완료했다.
+- r33 reviewer-assist: source-set SHA-256 `06e613756ea2ad5c3146879fdb6762280d14e48767b63e6ba30728dfeef54fe1`, registry SHA-256 `2ecdc3cf49809810b8513a6388afe231c2bc02092067c06b2e70dd2c6f87b469`, 69 files / 10,350 records, hard source error 0, registry parse problem 0, coverage 100%, primary+은/는 1,879/10,350 (18.1545894%), ChatGPT review 47 (HARD 0), user review 0, rule warning 0이다.
+- r33 뒤 독립 char 3~5-gram TF-IDF는 16,866 pairs >= 0.72 / 최고 0.944341640274376이다. 17,108쌍보다 242쌍 줄었지만 자연성 PASS 근거는 아니며, A05 전체 상태는 계속 **구조 PASS / 자연성 HOLD / `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`**다.
+- 다음 재개 지점: v61 91~150행을 실제 판정·현장 확인·미실행 조치·조건으로 재서술하고 primary 변경 registry locator를 동기화한다. 그 뒤 r33 최고 유사도인 v69:20/140과 잔여 exact masked template 군을 version별로 직접 판정한다. package·checkpoint·manifest·중앙 원장·다른 영역 source는 계속 수정하지 않는다.
+
+## 2026-09-14 v69 병원 수술실 배정·감염관리 1~15행 직접 재서술
+
+- r35 기준선 뒤 v69 1~15행의 `조건부 결과` 합성어를 실제 의료 운영에서 이해 가능한 조건문으로 바꿨다. 예를 들어 수술실 배정 기준 변경, 격리 조치 미실시의 감염 위험, 멸균 확인 단계 추가, 병상 회전 지연, 예방 항생제 투여 지연처럼 조건·대상·예상 결과가 드러나는 primary와 text로 각각 직접 재서술했다.
+- source는 `apply_patch`로 locator 15개만 수정했으며 행 순서·relations·other_type은 보존했다. 수정 뒤 v69 파일의 150행·JSONL·primary literal·relations cardinality·13개 통제어휘·전역 primary 고유성을 검사하여 오류 0을 확인했다. source SHA-256은 `B25ECD17FB5FEC0B158D6C8BFCF9FF51101B568747345CDF01573376C6BC8CDC`이다.
+- primary가 바뀐 registry locator 15개만 원본 바이트 범위로 동기화했다. 수정 전 registry SHA-256 `647035BEF3E7CB227AB9953F4E1B8DB80D165C4A3B540DF70D007BC09F3A3477`, 수정 후 `ED59079D334563282D5B0371FC1B227E79BDDBFE531CF2A57A2C612553D6AD13`이며, v69 registry 150행 중 해당 15 locator의 source-primary 일치를 다시 확인했다. self-created temp/backup은 후속 hash 확인 뒤 제거했다.
+- 다음 재개 지점: v69 16~150행에서 `가정 결과`·`반사실 경로`·`대안 결과`·`미실행 결과`·`가상 결과`·`가정 범위`의 인공 합성어와 반복 골격을 같은 방식으로 행별 직접 재서술한다. 전체 v69 완료 뒤 A05 selector 재감사와 독립 유사도 검사를 실행한다.
+
+## 2026-09-14 v69 병원 수술실 배정·감염관리 전체 직접 재서술 및 재감사
+
+- v69의 150행을 전수로 읽었다. 121~135행은 병상·격리·수술 준비의 실제 반례를 자연어로 설명하고 있어 보존했고, 27행도 `감염관리 경보가 울렸을 때의 대응 인력 수`라는 구체 조건문이라 보존했다. 나머지 **134개 primary**와 해당 text는 `조건부 결과`, `가정 결과`, `반사실 경로`, `대안 결과`, `미실행 결과`, `가상 결과`, `조건 변경 전망`, `대체 경로 예상`, `가정 범위` 같은 불투명한 합성어 대신 실제 조치·전제·예상 시점·조건 목록으로 각각 직접 재서술했다.
+- primary가 바뀐 registry locator 134개만 source_file/source_line/old primary의 단일 일치를 먼저 확인한 뒤 원본 바이트 범위로 교체했다. 76~90행 교체는 다른 프로세스의 일시 매핑 때문에 첫 복사에서 거부됐지만 live registry가 수정 전 SHA와 같음을 확인한 뒤 한 번의 짧은 재시도로 성공했다. 136~150행 교체는 사후 hash 인자 오타 뒤 live=temp SHA와 15 locator 일치를 read-only로 확인했고, 모든 self-created temp/backup은 검증 후 제거했다. 강제 종료·전역 재직렬화·다른 파일 수정은 하지 않았다.
+- v69 source 최종 SHA-256은 `CF5C2583F31A4CDFF80D9D4129489DFB90691C83DB4AAACED95E0CA312699AE1`, A05 registry 최종 SHA-256은 `B36B4302E75E38BCBF11E212E46E88243B2C8106712107551159E87E90C1DC97`이다. v69은 150행, JSONL parse·BOM·공백행·제어문자·primary literal·relations cardinality/통제어휘·global primary duplicate·registry 150 locator 모두 오류 0이다.
+- r36에서 v69 `primary+은/는` 도입이 79/150(52.6667%)로 HARD였으므로, primary는 그대로 두고 의미가 유지되는 12 text를 조건·근거로 시작하도록 직접 재서술했다. r37에서 v69은 67/150(44.6667%, REVIEW_DIVERSITY)로 HARD 해제됐다. A05 전체 r37은 69 files / 10,350 records, hard source error 0, registry parse problem 0, coverage 100%, primary+은/는 1,907/10,350(18.4251%), ChatGPT review 48(HARD 0), user review 0, rule-warning record 0이다.
+- r37 뒤 독립 char 3~5-gram TF-IDF는 16,686 pairs >= 0.72, 최고 0.9439990149483909이며 최고쌍은 v16:21/81의 `철도 승객 안내 가정 결과/가상 결과`다. r35의 16,843쌍보다 157쌍 줄었지만, 구조 PASS·HARD 해제는 A05 전체 자연성 PASS가 아니며 상태는 계속 **구조 PASS / 자연성 HOLD / `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`**다.
+- 다음 재개 지점: 독립 최고쌍 v16:21/81부터 v16 철도 운행 간격·환승 조정 source를 전수로 읽고, 같은 기준으로 불투명한 반사실/가상 합성어와 의미상 오류만 locator별 직접 재서술한다. 전체 A05 69 version의 전수 검토와 마지막 전수 감사가 끝날 때까지 package·checkpoint·manifest·중앙 원장·다른 영역 source는 수정하지 않는다.
+
+## 2026-09-14 v16 철도 운행 간격·환승 조정 전체 직접 재서술 및 재감사
+
+- r37 독립 TF-IDF 최고쌍(v16:21/81)을 시작점으로 v16 150행을 전수로 읽었다. 121~135행은 실제 철도 운영의 반례 설명이라 보존했고, 출입문·GPS의 구체 조건문 등 이미 자연스러운 28행도 보존했다. 나머지 **122개 primary**와 해당 text는 `조건부 결과`, `가정 결과`, `반사실 경로`, `대안 결과`, `미실행 결과`, `가상 결과`, `조건 변경 전망`, `대체 경로 예상`, `가정 범위`의 템플릿형 합성어 대신 배차·승강장 통제·신호기 통신·급전 전환·역무원 배치·회차 선로·냉방의 구체 조치와 전제로 직접 재서술했다.
+- primary가 바뀐 A05 registry locator만 원본 바이트 범위에서 동기화했다. v16:91~105는 첫 복사 시 일시 매핑으로 거부됐으나 live registry가 수정 전 SHA와 같음을 확인한 뒤 한 번의 짧은 재시도로 성공했다. 모든 동기화는 source_file/source_line/old primary의 단일 일치, source-primary 대조, live=temp SHA, self-created backup의 수정 전 SHA를 확인했고 temp/backup은 검증 후 삭제했다.
+- v16의 첫 구조 검사에서 line 3 `primary literal` 누락 1건을 발견했다. registry primary는 이미 정확했으므로 source text만 직접 보완했고, 이후 r38 전체 auditor는 69 files / 10,350 records, hard source error 0, registry parse problem 0, registry coverage 100%를 확인했다. r38 source-set SHA-256은 `492458550a29b49ec9998fdd203acff659bab5af703631dd1e0cd29c9b2019c2`, registry SHA-256은 `BA797FE37B6AD72899B607D214CAFA44B07DE40887DF9319B84F32248D47C51A`이다.
+- r38의 v16 `primary+은/는`은 52/150(34.6667%, REVIEW_DIVERSITY)이고, A05 전체는 1,938/10,350(18.7246%), ChatGPT review 49(HARD 0), user review 0, rule-warning record 0이다. 독립 char 3~5-gram TF-IDF는 16,543 pairs >= 0.72, 최고 0.9435935295777752이며 최고쌍은 v56:72/102의 `해상 운항 발생 징후/발생 여부`다. 따라서 A05는 여전히 **구조 PASS / 자연성 HOLD / `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`**다.
+- 다음 재개 지점: v56 해양 부표 관측·경보 운영 source를 전수로 읽고, 최고쌍의 `발생 징후/발생 여부`를 실제 신호와 실제 확인으로 우선 분리한다. 이후 동일 기준으로 잔여 version과 최종 전수 감사를 계속한다.
+
+## 2026-09-14 v59 전기버스 충전·배차 전체 직접 재서술 및 재감사
+
+- v59의 150행을 전수로 읽었다. 121~135행의 구체적인 반례 문장은 보존하고, 나머지 **135개 primary**와 해당 text에서 `조건부 결과`, `가정 결과`, `반사실 경로`, `대안 결과`, `미실행 결과`, `가상 결과`, `조건 변경 전망`, `대체 경로 예상`, `가정 범위` 같은 내부 분류 라벨을 실제 운행 조건·예상 수량·미실행 위험·운영 계획·계산 전제로 직접 재서술했다. 행 순서·relations·other_type은 보존했다.
+- 수정 전 v59 SHA-256은 r38 source-file snapshot의 `3199c413fe535f580ce5e21f6fa166961e63a5b5e7295aebd4910406cb7b0d81`이고, 수정 후 `2c0b8a6adec28f35f78561b1cb168bcedfb0d219f8ff07bcb05a3116bb9c173b`이다. 이번 작업 시작 전 A05 sorted-name source-set digest는 `a4f5ba20da4a53ccd24361b438d13c3be6208b966ba85f2ff7fafa9ca3d86e6b`, 수정 후는 `a842aedb3416acf4c67ac8d41b679d37c510b74238017611aaa4fd217b1e6eb1`이다. 이 digest는 reviewer의 source-set digest와 계산 방식이 다르므로 서로 대체하지 않는다.
+- primary가 달라진 locator 135개만 registry 원본 바이트의 `primary` 범위를 교체했다. 시작 registry SHA-256 `ba797fe37b6ad72899b607d214cafa44b07de40887df9319b84f32248d47c51a`, 완료 후 `873cacfccaa2c7c938788094c1657e6a493e727f314e13e95b9a9850c62b9d22`이다. 각 15행 묶음은 source_file/source_line/old primary 단일 일치·live/temp SHA·self-created backup SHA를 확인했으며, v59 locator 150개가 source primary와 모두 일치하고 temp/backup 0개임을 재확인했다.
+- v59 단일 파일 감사는 150행, JSONL parse·BOM/공백행·primary literal·2~5 relations·13개 통제어휘·other_type 조건·primary/text 중복·금지 라벨 primary/text 모두 오류 0이다. `primary+은/는` 도입은 2/150이다.
+- r39 reviewer-assist는 reviewer source-set SHA-256 `67f8edffe0a8296148e18d3ba0b61bd0b9de5c468e87a2ec9753b3eb52a51a42`, 69 files / 10,350 records, hard source error 0, registry parse problem 0, coverage 100%, 전체 `primary+은/는` 1,890/10,350(18.2608696%), ChatGPT review 48(HARD 0), user review 0, naturalness rule warning 0을 기록했다. 보고서는 `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Reaudit_Naturalness_r39_v59_complete_2026-09-14.json`이다.
+- r39 뒤 독립 char 3~5-gram TF-IDF는 16,446 pairs >= .72, 최고 0.9437650010187246이며 최고쌍은 v56:72/102의 `해상 운항 발생 징후/발생 여부`다. 수가 r38의 16,543쌍보다 97쌍 줄었지만, 이 수치와 구조 PASS는 A05 전체 자연성 PASS 근거가 아니다. 상태는 계속 **구조 PASS / 자연성 HOLD / `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`**다.
+- 다음 재개 지점: v56 해양 부표 관측·경보 운영을 전수로 읽고, 최고쌍의 관측 신호와 실제 발생 확인을 우선 분리한다. 이어 잔여 version의 masked template 군을 같은 locator 단위로 판정한다. package·checkpoint·manifest·중앙 원장·다른 영역 source는 계속 수정하지 않는다.
+
+## 2026-09-14 v56 해양 부표 관측·경보 운영 전체 직접 재서술 및 r40 재감사
+
+- r39 기준 v56 source SHA-256 `7012cd200aacca7bc5bbe41a9d9c5007eb09f707970bc6f903ebf5fe143d26de`에서 시작했다. 1~60행의 실제 관측·신호·판정 문장을 보존한 뒤, 61~150행의 `발생 징후`, `가능 상태`, `발생 여부`, `실제 확인`, `미실행 상태`, `조건부 발생` 내부 라벨을 관측 신호, 실제 확인 기록, 재측정·상호 검증, 미조치의 판단 한계, 구체 조건문으로 행별 직접 재서술했다. v56의 최종 source SHA-256은 `8b2c1c2f230fa2c968552e2e1fdff731dfb89e4d4984658017356175cc25ce81`이다.
+- 단일 파일 구조 검사에서 처음 발견한 primary literal 누락 2건(130·136행)과 v56 내부 primary 중복 3건(81·82·86행)을 직접 교정했다. 최종 v56은 150행, UTF-8 BOM 없음, JSONL parse, 빈 필드, primary literal, 13개 통제 relations·2~5 cardinality·내부 중복, `other_type` 조건, train `unseen_relation`, primary/text exact duplicate, 금지 내부 라벨이 모두 오류 0이다. 자체 조사 패턴은 14/150(9.3333%)이며 reviewer-assist의 더 좁은 `primary+은/는` 계수는 12/150(8.0000%)다.
+- primary가 달라진 locator만 15행 묶음으로 A05 registry 원본 바이트 범위에서 동기화했다. r39 기준 registry SHA-256 `873cacfccaa2c7c938788094c1657e6a493e727f314e13e95b9a9850c62b9d22`에서 시작해 최종 `68421ce0c9583bca2a6301f08ab08eed5a8bca027a668c9199c9c798eb2d9f44`이며, v56 150개 locator의 source-primary 대조 오류는 0이다. self-created temp/backup은 hash·locator 확인 뒤 모두 제거했다.
+- r40 A05 selector 감사 보고서 `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Reaudit_Naturalness_r40_v56_complete_2026-09-14.json`은 69 files / 10,350 records, hard source error 0, registry parse problem 0, coverage 100%, 전체 `primary+은/는` 1,872/10,350(18.0869565%), naturalness warning 0, direct rewrite target 0, ChatGPT review pending 48(HARD 0), user review 0을 기록했다. reviewer source-set SHA-256은 `b87727e91b36e72728528d91350ea37c74b2da931fe0bb7bfb9c41c0010abda8`이다.
+- r40 뒤 독립 char 3~5-gram TF-IDF는 16,132 pairs >= .72, 최고 0.9436322309281469이며 최고쌍은 v47:58/148의 전기버스 정비 확률 비교 문장이다. r39의 16,446쌍보다 314쌍 낮았지만, 높은 유사도와 48개 ChatGPT review group이 남아 있으므로 A05 판정은 계속 **구조 PASS / 자연성 HOLD / `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`**다.
+- 다음 재개 지점: 독립 최고쌍 v47:58/148을 먼저 문맥별로 읽어 확정 오류만 직접 재서술하고, 이후 남은 masked template 군을 version별로 같은 규칙으로 검토한다. package·checkpoint·manifest·중앙 원장·다른 영역 source는 계속 수정하지 않는다.
+
+## 2026-09-14 v47 전기버스 충전차고 전력·배차 고유사 pair 직접 재서술 및 r41 재감사
+
+- 독립 최고쌍인 v47:58/148을 직접 읽었다. 기존 `전기버스 정비 확률 근거/비교`와 거의 같은 두 문장은 정비 대상·분모·비교 기준이 빠져 있고, 148행에는 `비교를 비교할 때`라는 중복도 있었다. 58행은 운행 차량 수와 고장 기록을 근거로 한 `전기버스 정비 수요의 추정 근거`로, 148행은 동일 운행 거리·점검 기준의 두 기간을 비교하는 `전기버스 정비 수요의 확률 비교`로 각각 분리했다.
+- primary가 달라진 v47:58·148 registry locator만 원본 바이트 범위에서 동기화했다. r40 registry SHA-256 `68421ce0c9583bca2a6301f08ab08eed5a8bca027a668c9199c9c798eb2d9f44`에서 r41 `a62c44907f3b8cccef413952d5a632e712cf4bda50c90c88e1f662be9441f22d`로 바뀌었고, self-created temp/backup은 검증 후 제거했다. v47 source SHA-256은 `b27b9d3d85311d18161812dc8cafea9b75fb7cc3a507ad402c13d2c644e20500`이다.
+- r41 A05 selector는 69 files / 10,350 records, hard source error 0, registry parse problem 0, coverage 100%, `primary+은/는` 1,873/10,350(18.0966184%), naturalness warning 0, direct rewrite target 0, ChatGPT review pending 48(HARD 0), user review 0을 기록했다. 독립 char 3~5-gram TF-IDF는 16,124 pairs >= .72, 최고 0.9427564265924904로 감소했으며 새 최고쌍은 v64:27/147의 `배수로 점검 가정 결과/가정 범위`다.
+- 구조 PASS는 자연성 PASS가 아니므로 상태는 계속 **구조 PASS / 자연성 HOLD / `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`**다. 다음 재개 지점: v64:27/147을 구체 조건과 해석 범위로 분리하고, 이후 독립 최고쌍과 masked template 군을 locator별로 검토한다. package·checkpoint·manifest·중앙 원장·다른 영역 source는 계속 수정하지 않는다.
+
+## 2026-09-14 v64 도로 터널 배수·교통 통제 전체 자연성 직접 재서술 — registry 잠금으로 동기화 대기
+
+- v64 150행을 행별로 읽었다. 이미 구체적인 반례인 121~135행과 실제 통제 기준을 설명하는 139행은 보존했다. 나머지는 `조건부 결과`, `가정 결과`, `반사실 경로`, `대안 결과`, `미실행 결과`, `가상 결과`, `조건 변경 전망`, `대체 경로 예상`, `가정 범위` 같은 내부 분류 라벨을 수위·펌프·차수문·차로 통제·신호·환기·조명·대피·점검의 구체 조건, 산출 대상, 실제 확인 근거로 직접 재서술했다. source 행 순서·relations·`other_type`은 보존했다.
+- v64 76~120행의 변경 primary는 source_file/source_line/old primary 단일 일치와 source-primary 대조를 확인한 뒤 registry 원본 바이트 범위만 동기화했다. 각 15행 묶음은 live SHA와 temp SHA가 같고 self-created temp/backup이 제거된 상태까지 확인했다.
+- v64 136~138·140~150행 14개 primary는 source에 직접 반영되었다. 현재 v64 source SHA-256은 `8491ED43636C8F2A0901F66FDC5B85363C76AC90FDC8D2D6F20D02A59EF9256A`이다. 이 14개 locator의 registry 동기화 직전 live registry SHA-256은 `1D4B03CEBD1515AF1CA3B127C6AA1D2790EBDC0EED94468447378591F9165D88`이며, 정확한 변경 temp SHA-256은 `D85E4967437B88C80ED0A202752D54197101CB4773DE197DCF8B0D86B623A843`이다.
+- registry 파일이 다른 작업에서 열려 있어 안전한 복사 시도와 5초 후 단 한 번의 재시도가 모두 거부됐다. 프로세스 종료·강제 해제·추가 쓰기는 하지 않았다. self-created `.a05-v64-136-150.tmp`와 `.a05-v64-136-150.bak`은 복구 전제를 보존하기 위해 남겨 두었고, backup SHA는 수정 전 live SHA와 일치한다. 이 시점에는 source v64 14 locator와 registry primary가 일시 불일치하므로 A05 전수 reviewer/구조 감사는 실행하지 않았다.
+- 다음 재개 지점: 다른 작업이 registry 잠금을 해제한 뒤, **live registry SHA가 정확히 `1D4B03CEBD1515AF1CA3B127C6AA1D2790EBDC0EED94468447378591F9165D88`인 경우에만** self-created temp를 한 번 복사하고 14 locator의 source-primary 대조·live=temp SHA를 확인한다. SHA가 다르면 temp/backup을 적용·삭제하지 말고 상태를 먼저 보고한다. 성공 검증 후에만 self-created temp/backup을 제거하고 v64 단일 파일 감사, A05 영역 reviewer, 독립 TF-IDF/Jaccard 감사를 순서대로 재개한다. 상태는 계속 **자연성 HOLD**이며 package·checkpoint·manifest·중앙 원장·다른 영역 source는 수정하지 않는다.
+
+- registry 잠금과 무관한 v64 text 자연성 재서술을 계속했다. 1~120행의 `text`는 각 행의 조건·계산 대상·실제 확인 근거를 유지하면서, `primary+은/는` 도입과 같은 문장 틀을 반복하지 않도록 행별로 직접 바꿨다. 121~135행 및 139행은 이미 구체적인 반례·운영 기준이어서 보존했고, 136~150행은 앞서 설명한 전제·안전 조건의 구체 문장으로 유지했다.
+- 현재 v64 source SHA-256은 `2EF71ED2CF0E2B930324E96C57D95994BA6F9CBCB2F2EDA51F48DE315D801D22`이다. registry를 제외한 단일 source 구조 검사는 150행, UTF-8 BOM 없음, JSONL parse·빈 field·primary literal·relations 13개/2~5개/내부 중복·`other_type` 조건·train `unseen_relation`·primary/text exact duplicate·금지 내부 라벨 모두 오류 0이다. `primary+은/는`은 120/150(80.0000%)에서 11/150(7.3333%)로 낮아졌다. 이 결과는 **단일 source 구조 PASS**일 뿐 registry 불일치가 남은 A05 영역 전체 PASS나 자연성 최종 PASS가 아니다.

@@ -1,0 +1,112 @@
+{
+  "audit_id": "A06_v02_marker_rewrite_transaction_2026-09-14",
+  "scope": {
+    "area": "A06 relational_composition",
+    "source_file": "stage2_(16)relational_composition_high_density_train_v02.source.psv",
+    "source_locator_range": "source_file + source_line 2..11",
+    "source_format": "legacy PSV concept|relations|other_type|text",
+    "registry_file": "stage2_(16)relational_composition_train_registry_v01_v52.jsonl",
+    "excluded": ["v01", "v03-v52", "other areas", "package train/val", "PREPARATION_MANIFEST.json", "central ledger", "shared auditors", "checkpoint"]
+  },
+  "pre_change": {
+    "source_v02_sha256": "7E732D7306149E0EA3E82493E15E5DA474C604F77B8C190DCBA66D4CEBBFB647",
+    "source_set_sha256_historical_report": "87BEB2DBE900E522212E713D0798C0E12E28FC3135618D9B2F9E16A4FD150663",
+    "registry_sha256": "15A9429AB0F5A6C383E487A443705F834EC68C1C384C8834B31556D55ED98C29",
+    "source_files": 52,
+    "source_records": 7800,
+    "registry_records": 7800
+  },
+  "fixture": {
+    "tool": "stage2_highdensity_dataset/tools/a06/update_a06_registry_primary.js",
+    "mode": "line_preserving_primary_token_rewrite_then_same_directory_rename",
+    "fixture_records": 12,
+    "fixture_target_locators": 10,
+    "fixture_input_sha256": "65FD8DA4CFCA36247D76B0D73BE24A989E06F788F51B2D16124EAC8634258FF4",
+    "fixture_output_sha256": "C1C82E09CF39B0EF4FBBF73218730096ED5D5BFDFFD0D58CA84886A91D9F3C63",
+    "non_target_byte_mismatches": 0,
+    "result": "PASS"
+  },
+  "registry_candidate_preflight": {
+    "records": 7800,
+    "target_locators": 10,
+    "input_sha256": "15A9429AB0F5A6C383E487A443705F834EC68C1C384C8834B31556D55ED98C29",
+    "candidate_sha256": "3AD693B599A08DC710B658F6F1A45AC044274249C60893D52FCA8B8C96EC17EE",
+    "non_target_line_byte_mismatches": 0,
+    "target_non_primary_field_changes": 0,
+    "json_parse_errors": 0,
+    "result": "PASS"
+  },
+  "applied_change": {
+    "source_fields_changed": ["concept", "text"],
+    "registry_fields_changed": ["primary"],
+    "relations_changed": false,
+    "other_type_changed": false,
+    "locator_changed": false,
+    "registry_definition_changed": false,
+    "registry_review_status_changed": false,
+    "reason_for_registry_field_preservation": "The 10 rewrites clarify wording while retaining the same reserved relation-composition meaning; definition and review status remain valid and are not promoted by this pilot."
+  },
+  "post_change": {
+    "source_v02_sha256": "FEAC96C5ABB82602865FF1D96F98AB3F2433AB628A5A08BCC1978E51827A25CA",
+    "registry_sha256": "3AD693B599A08DC710B658F6F1A45AC044274249C60893D52FCA8B8C96EC17EE",
+    "registry_recovery_snapshot": "audit_reports/machine/a06/A06_registry_pre_marker_rewrite_v02_2026-09-14.jsonl",
+    "registry_recovery_snapshot_sha256": "15A9429AB0F5A6C383E487A443705F834EC68C1C384C8834B31556D55ED98C29",
+    "historical_per_file_sha_comparison": {
+      "prior_report_files_compared": 52,
+      "unchanged_files": 51,
+      "changed_files": ["stage2_(16)relational_composition_high_density_train_v02.source.psv"],
+      "result": "PASS"
+    },
+    "documented_ordered_per_file_hash_lower_concat_sha256": "9441E1DFB1C83D087B4016386D585A6C687168E5615C73251917BB17B0AB9209",
+    "hash_method_note": "This documented aggregate is SHA-256 of the concatenated lowercase SHA-256 values for v01..v52. It is not asserted to equal the older A06 report aggregate because that historical aggregation implementation is not preserved in the current A06 source-only scope."
+  },
+  "structural_audit": {
+    "source_files": 52,
+    "source_records": 7800,
+    "registry_records": 7800,
+    "header_errors": 0,
+    "blank_rows": 0,
+    "column_errors": 0,
+    "empty_concept": 0,
+    "empty_text": 0,
+    "concept_literal_missing": 0,
+    "exact_concept_duplicate": 0,
+    "exact_text_duplicate": 0,
+    "relation_name_errors": 0,
+    "relation_cardinality_errors": 0,
+    "relation_internal_duplicate_errors": 0,
+    "registry_json_parse_errors": 0,
+    "source_only_locators": 0,
+    "registry_only_locators": 0,
+    "duplicate_registry_locators": 0,
+    "source_concept_registry_primary_mismatches": 0,
+    "target_primary_mismatches": 0
+  },
+  "relations_13_counts": {
+    "is_a": 0,
+    "subclass_of": 0,
+    "part_of": 1540,
+    "classification": 1153,
+    "boundary": 3059,
+    "contrast": 850,
+    "comparison": 1730,
+    "function": 930,
+    "role": 2522,
+    "process": 4185,
+    "state": 4335,
+    "attribute": 1711,
+    "other": 1799
+  },
+  "protected_v01": {
+    "sha256": "9607FA0F55D2A5000676C870DCE131B22E7B8FE9ACF61D1A6500AC61B774F610",
+    "expected_sha256": "9607FA0F55D2A5000676C870DCE131B22E7B8FE9ACF61D1A6500AC61B774F610",
+    "result": "PASS"
+  },
+  "verdict": {
+    "targeted_transaction": "PASS",
+    "structural": "PASS_WITH_LEGACY_WARNING",
+    "naturalness_area_wide": "NOT_RUN_PENDING_V02_V52_MARKER_REWRITE",
+    "package_checkpoint_manifest_projection": "NOT_RUN_SOURCE_ONLY",
+    "note": "The v01 legacy other_type/text warning remains outside this 10-locator pilot and is preserved."
+  }
+}

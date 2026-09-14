@@ -1,0 +1,864 @@
+{
+  "audit": "Stage2 primary naturalness reviewer-assist",
+  "audit_version": 2,
+  "execution_mode": "read_only_source_scan",
+  "source_selection": {
+    "source_dir": "Z:\\TinyLM\\datasets\\TinyDataset\\stage2_highdensity_dataset\\sources\\train",
+    "filename_match": "v47\\.source\\.jsonl$",
+    "area": {
+      "requested": "A04",
+      "code": "A04",
+      "source_area_slot": "14",
+      "slug": "state_transition",
+      "rule": "filename match AND exact Stage2 area filename prefix"
+    }
+  },
+  "source_set_sha256": "ea89c1882f13e1b085aee9ef32fefe51239765615a2be6769291b289e76f1357",
+  "source_files": 1,
+  "source_records": 150,
+  "source_file_sha256": {
+    "stage2_(14)state_transition_high_density_train_v47.source.jsonl": "8808d78b556b3d672a02d1f240381bd15e249e00a6e36cbc7cbec0cf725ed4ed"
+  },
+  "registry": {
+    "supplied": false,
+    "require_registry": false,
+    "sha256": null,
+    "parse_problems": [],
+    "records": 0,
+    "coverage": null
+  },
+  "primary_eunneun_opening": {
+    "count": 150,
+    "records": 150,
+    "rate": 1,
+    "provisional_thresholds": {
+      "review_above": 0.3,
+      "hold_above": 0.45
+    },
+    "assessment": "HOLD_REWRITE_DIVERSITY",
+    "note": "The ratio is a diversity gate, not a Korean grammar error rate. A threshold crossing requires family-level review rather than blind rewrites.",
+    "by_file": [
+      {
+        "file": "stage2_(14)state_transition_high_density_train_v47.source.jsonl",
+        "records": 150,
+        "hits": 150,
+        "rate": 1,
+        "assessment": "HOLD_REWRITE_DIVERSITY"
+      }
+    ],
+    "examples": [
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:1",
+        "primary": "전기버스 차고전력 안정",
+        "text": "전기버스 차고전력 안정은 충전기 부하와 변전 용량이 배전 기준 안에 머무는 상태이며, 차고 식별과 측정 시각은 보존하고 충전 순서와 출력 설정을 조정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:2",
+        "primary": "전기버스 차고전력 이탈",
+        "text": "전기버스 차고전력 이탈은 동시 충전과 외부 부하가 겹쳐 변전 한계를 넘는 전이이고, 전력 원자료와 차고 식별은 보존하며 충전 중지와 배차 순서를 변경한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:3",
+        "primary": "전기버스 충전기 가용 안정",
+        "text": "전기버스 충전기 가용 안정은 운행 계획에 필요한 충전기가 정상 대기 상태로 확보된 상태이며, 충전기번호와 점검 시각은 보존하고 배정 순서와 출력량을 조정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:4",
+        "primary": "전기버스 충전기 가용 이탈",
+        "text": "전기버스 충전기 가용 이탈은 고장과 동시 입차로 예비 충전기가 부족해지는 과정이고, 오류 로그와 차량 식별은 보존하며 대체기 배정과 출차 시각을 변경한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:5",
+        "primary": "전기버스 배터리잔량 안정",
+        "text": "전기버스 배터리잔량 안정은 출차 예정과 충전 잔량이 운행 거리 기준을 충족하는 상태이며, 차량번호와 측정 시각은 보존하고 충전 종료와 배차 간격을 조정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:6",
+        "primary": "전기버스 배터리잔량 이탈",
+        "text": "전기버스 배터리잔량 이탈은 급한 운행이나 충전지연으로 출차에 필요한 에너지보다 잔량이 낮아진 변화다. 차량번호와 원계측을 남기고 해당 노선배차와 충전출력을 다시 배분한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:7",
+        "primary": "전기버스 충전예약 안정",
+        "text": "전기버스 충전예약 안정은 차량·충전기·출차 시각이 한 예약번호로 연결된 상태이며, 예약번호와 생성 시각은 보존하고 순서와 충전량을 조정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:8",
+        "primary": "전기버스 충전예약 이탈",
+        "text": "전기버스 충전예약 이탈은 차량 지연과 충전기 고장이 겹쳐 예약 시간이 충돌하는 과정이고, 예약 원본과 차량 식별은 보존하며 재예약과 배차를 변경한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:9",
+        "primary": "전기버스 입차흐름 안정",
+        "text": "전기버스 입차흐름 안정은 도착 차량과 충전기 처리량이 차고 운영 범위에 있는 상태이며, 차량번호와 입차 시각은 보존하고 대기선과 배정 간격을 조정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:10",
+        "primary": "전기버스 입차흐름 이탈",
+        "text": "전기버스 입차흐름 이탈은 운행 지연이 누적되어 입차 차량이 한꺼번에 몰리는 전이이고, 입차 원자료와 차고 식별은 보존하며 유도선과 충전 순서를 변경한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:11",
+        "primary": "전기버스 충전대기 안정",
+        "text": "전기버스 충전대기 안정은 대기 차량 수와 예상 대기 시간이 목표 범위에 있는 상태이며, 대기번호와 시각은 보존하고 충전기 배정과 출차 우선순위를 조정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:12",
+        "primary": "전기버스 충전대기 이탈",
+        "text": "전기버스 충전대기 이탈은 충전기 고장과 배터리 부족 차량이 겹쳐 대기열이 경계를 넘는 과정이고, 대기 기록과 차량번호는 보존하며 긴급 충전과 배차를 변경한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:13",
+        "primary": "전기버스 충전출력 안정",
+        "text": "전기버스 충전출력 안정은 충전 전류와 전압이 차량 요구 범위에 있는 상태이며, 충전기번호와 출력 시각은 보존하고 출력 단계와 충전 종료를 조정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:14",
+        "primary": "전기버스 충전출력 이탈",
+        "text": "전기버스 충전출력 이탈은 계통 제한이나 케이블 온도 상승으로 출력이 낮아지는 전이이고, 출력 원자료와 차량번호는 보존하며 충전 속도와 출차 시각을 변경한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:15",
+        "primary": "전기버스 케이블온도 안정",
+        "text": "전기버스 케이블온도 안정은 커넥터와 케이블 온도가 안전 기준 아래에서 유지되는 상태이며, 케이블번호와 측정 시각은 보존하고 출력과 점검 주기를 조정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:16",
+        "primary": "전기버스 케이블온도 이탈",
+        "text": "전기버스 케이블온도 이탈은 고전류 충전과 접촉저항 상승이 겹쳐 온도가 경계를 넘는 과정이고, 센서 원자료와 충전기 식별은 보존하며 출력 제한과 차량 배정을 변경한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:17",
+        "primary": "전기버스 커넥터상태 안정",
+        "text": "전기버스 커넥터상태 안정은 체결 신호와 절연 점검이 충전 허가 기준에 있는 상태이며, 커넥터번호와 점검 시각은 보존하고 체결 순서와 담당자를 조정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:18",
+        "primary": "전기버스 커넥터상태 이탈",
+        "text": "전기버스 커넥터상태 이탈은 마모나 이물로 체결 신호가 끊기는 전이이고, 오류 로그와 차량번호는 보존하며 충전을 중단하고 예비 커넥터를 변경한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:19",
+        "primary": "전기버스 절연저항 안정",
+        "text": "전기버스 절연저항 안정은 버스배터리와 충전기 사이 절연값이 안전하한 위에서 유지되는 상태다. 측정번호와 시각을 보존하면서 허용 충전출력과 다음 검사주기를 정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:20",
+        "primary": "전기버스 절연저항 이탈",
+        "text": "전기버스 절연저항 이탈은 습기 유입과 케이블 손상이 겹쳐 값이 경계 아래로 내려가는 과정이고, 측정 원본과 차량번호는 보존하며 충전 차단과 정비 순서를 변경한다."
+      }
+    ]
+  },
+  "x1_x2_composite": {
+    "core_style_counts": {
+      "no_space": 0,
+      "one_token": 0,
+      "two_token_core": 0,
+      "three_or_more_token_core": 150
+    },
+    "two_word_core_records": 0,
+    "two_word_core_ratio_all_records": 0,
+    "same_x1_different_x2": {
+      "group_count": 0,
+      "records": 0,
+      "ratio_within_two_word_core": null,
+      "ratio_all_records": 0,
+      "top_groups": []
+    },
+    "same_x2_different_x1": {
+      "group_count": 0,
+      "records": 0,
+      "ratio_within_two_word_core": null,
+      "ratio_all_records": 0,
+      "top_groups": []
+    }
+  },
+  "same_relation_set_masked_similarity": [
+    {
+      "relation_set": "attribute|classification|process|state",
+      "records": 28,
+      "possible_pairs": 378,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 378,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.464285714,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:31",
+            "primary": "전기버스 배차준비 안정",
+            "text": "전기버스 배차준비 안정은 차량 잔량·승무원·노선 정보가 출차 조건을 함께 충족하는 상태이며, 배차번호와 확인 시각은 보존하고 충전 종료와 출차 순서를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:105",
+            "primary": "전기버스 배차자료 안정",
+            "text": "전기버스 배차자료 안정은 차량 잔량·노선·승무원 정보가 같은 배차번호로 연결된 상태이며, 배차번호와 갱신 시각은 보존하고 우선순위와 충전 계획을 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.273931671,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:31",
+            "primary": "전기버스 배차준비 안정",
+            "text": "전기버스 배차준비 안정은 차량 잔량·승무원·노선 정보가 출차 조건을 함께 충족하는 상태이며, 배차번호와 확인 시각은 보존하고 충전 종료와 출차 순서를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:105",
+            "primary": "전기버스 배차자료 안정",
+            "text": "전기버스 배차자료 안정은 차량 잔량·노선·승무원 정보가 같은 배차번호로 연결된 상태이며, 배차번호와 갱신 시각은 보존하고 우선순위와 충전 계획을 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.5,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:31",
+            "primary": "전기버스 배차준비 안정",
+            "text": "전기버스 배차준비 안정은 차량 잔량·승무원·노선 정보가 출차 조건을 함께 충족하는 상태이며, 배차번호와 확인 시각은 보존하고 충전 종료와 출차 순서를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:105",
+            "primary": "전기버스 배차자료 안정",
+            "text": "전기버스 배차자료 안정은 차량 잔량·노선·승무원 정보가 같은 배차번호로 연결된 상태이며, 배차번호와 갱신 시각은 보존하고 우선순위와 충전 계획을 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.275115391,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:31",
+            "primary": "전기버스 배차준비 안정",
+            "text": "전기버스 배차준비 안정은 차량 잔량·승무원·노선 정보가 출차 조건을 함께 충족하는 상태이며, 배차번호와 확인 시각은 보존하고 충전 종료와 출차 순서를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:105",
+            "primary": "전기버스 배차자료 안정",
+            "text": "전기버스 배차자료 안정은 차량 잔량·노선·승무원 정보가 같은 배차번호로 연결된 상태이며, 배차번호와 갱신 시각은 보존하고 우선순위와 충전 계획을 조정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|comparison|process|state",
+      "records": 34,
+      "possible_pairs": 561,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 561,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.392857143,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:15",
+            "primary": "전기버스 케이블온도 안정",
+            "text": "전기버스 케이블온도 안정은 커넥터와 케이블 온도가 안전 기준 아래에서 유지되는 상태이며, 케이블번호와 측정 시각은 보존하고 출력과 점검 주기를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:55",
+            "primary": "전기버스 배전반온도 안정",
+            "text": "전기버스 배전반온도 안정은 모선과 단자 온도가 점검 기준 안에서 유지되는 상태이며, 배전반번호와 측정 시각은 보존하고 부하 분배와 순찰 간격을 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.274636126,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:39",
+            "primary": "전기버스 운행부하 안정",
+            "text": "전기버스 운행부하 안정은 노선 경사·승객량·외기 온도를 반영한 소비전력이 계획 범위에 있는 상태이며, 운행번호와 측정 시각은 보존하고 충전량과 배차를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:117",
+            "primary": "전기버스 승객부하 안정",
+            "text": "전기버스 승객부하 안정은 승객 수와 노선 경사가 소비전력 계획 범위에 있는 상태이며, 집계 시각과 운행번호는 보존하고 충전량과 출차 순서를 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.423076923,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:15",
+            "primary": "전기버스 케이블온도 안정",
+            "text": "전기버스 케이블온도 안정은 커넥터와 케이블 온도가 안전 기준 아래에서 유지되는 상태이며, 케이블번호와 측정 시각은 보존하고 출력과 점검 주기를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:55",
+            "primary": "전기버스 배전반온도 안정",
+            "text": "전기버스 배전반온도 안정은 모선과 단자 온도가 점검 기준 안에서 유지되는 상태이며, 배전반번호와 측정 시각은 보존하고 부하 분배와 순찰 간격을 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.290231041,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:39",
+            "primary": "전기버스 운행부하 안정",
+            "text": "전기버스 운행부하 안정은 노선 경사·승객량·외기 온도를 반영한 소비전력이 계획 범위에 있는 상태이며, 운행번호와 측정 시각은 보존하고 충전량과 배차를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:117",
+            "primary": "전기버스 승객부하 안정",
+            "text": "전기버스 승객부하 안정은 승객 수와 노선 경사가 소비전력 계획 범위에 있는 상태이며, 집계 시각과 운행번호는 보존하고 충전량과 출차 순서를 조정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|function|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|process|role|state",
+      "records": 12,
+      "possible_pairs": 66,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 66,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.321428571,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:17",
+            "primary": "전기버스 커넥터상태 안정",
+            "text": "전기버스 커넥터상태 안정은 체결 신호와 절연 점검이 충전 허가 기준에 있는 상태이며, 커넥터번호와 점검 시각은 보존하고 체결 순서와 담당자를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:77",
+            "primary": "전기버스 화재감지 안정",
+            "text": "전기버스 화재감지 안정은 연기·열 감지기와 소화 설비가 점검 기준에 있는 상태이며, 감지기번호와 점검 시각은 보존하고 점검 주기와 확인자를 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.225416256,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:77",
+            "primary": "전기버스 화재감지 안정",
+            "text": "전기버스 화재감지 안정은 연기·열 감지기와 소화 설비가 점검 기준에 있는 상태이며, 감지기번호와 점검 시각은 보존하고 점검 주기와 확인자를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:85",
+            "primary": "전기버스 배터리누설 안정",
+            "text": "전기버스 배터리누설 안정은 냉각액과 전해액 누설 징후가 점검 기준 아래인 상태이며, 차량번호와 검사 시각은 보존하고 점검 주기와 정비 담당을 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.346153846,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:17",
+            "primary": "전기버스 커넥터상태 안정",
+            "text": "전기버스 커넥터상태 안정은 체결 신호와 절연 점검이 충전 허가 기준에 있는 상태이며, 커넥터번호와 점검 시각은 보존하고 체결 순서와 담당자를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:77",
+            "primary": "전기버스 화재감지 안정",
+            "text": "전기버스 화재감지 안정은 연기·열 감지기와 소화 설비가 점검 기준에 있는 상태이며, 감지기번호와 점검 시각은 보존하고 점검 주기와 확인자를 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.265532742,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:77",
+            "primary": "전기버스 화재감지 안정",
+            "text": "전기버스 화재감지 안정은 연기·열 감지기와 소화 설비가 점검 기준에 있는 상태이며, 감지기번호와 점검 시각은 보존하고 점검 주기와 확인자를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:85",
+            "primary": "전기버스 배터리누설 안정",
+            "text": "전기버스 배터리누설 안정은 냉각액과 전해액 누설 징후가 점검 기준 아래인 상태이며, 차량번호와 검사 시각은 보존하고 점검 주기와 정비 담당을 조정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|function|process|state",
+      "records": 72,
+      "possible_pairs": 2556,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 2556,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.419354839,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:22",
+            "primary": "전기버스 배터리온도 이탈",
+            "text": "전기버스 배터리온도 이탈은 고속 운행과 고온 외기가 겹쳐 셀 온도가 경계를 넘는 전이이고, 온도 원자료와 차량 식별은 보존하며 충전 출력과 출차를 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:146",
+            "primary": "전기버스 열관리 이탈",
+            "text": "전기버스 열관리 이탈은 냉각 저하와 외기 고온이 겹쳐 온도가 다시 경계를 넘는 전이이고, 온도 원본과 차량 식별은 보존하며 충전 중지와 정비를 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.360260575,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:8",
+            "primary": "전기버스 충전예약 이탈",
+            "text": "전기버스 충전예약 이탈은 차량 지연과 충전기 고장이 겹쳐 예약 시간이 충돌하는 과정이고, 예약 원본과 차량 식별은 보존하며 재예약과 배차를 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:122",
+            "primary": "전기버스 정비예약 이탈",
+            "text": "전기버스 정비예약 이탈은 긴급 고장과 부품 지연이 겹쳐 슬롯이 충돌하는 전이이고, 예약 원본과 차량번호는 보존하며 재예약과 대체차를 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.448275862,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:22",
+            "primary": "전기버스 배터리온도 이탈",
+            "text": "전기버스 배터리온도 이탈은 고속 운행과 고온 외기가 겹쳐 셀 온도가 경계를 넘는 전이이고, 온도 원자료와 차량 식별은 보존하며 충전 출력과 출차를 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:146",
+            "primary": "전기버스 열관리 이탈",
+            "text": "전기버스 열관리 이탈은 냉각 저하와 외기 고온이 겹쳐 온도가 다시 경계를 넘는 전이이고, 온도 원본과 차량 식별은 보존하며 충전 중지와 정비를 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.361908723,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:8",
+            "primary": "전기버스 충전예약 이탈",
+            "text": "전기버스 충전예약 이탈은 차량 지연과 충전기 고장이 겹쳐 예약 시간이 충돌하는 과정이고, 예약 원본과 차량 식별은 보존하며 재예약과 배차를 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:122",
+            "primary": "전기버스 정비예약 이탈",
+            "text": "전기버스 정비예약 이탈은 긴급 고장과 부품 지연이 겹쳐 슬롯이 충돌하는 전이이고, 예약 원본과 차량번호는 보존하며 재예약과 대체차를 변경한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|process|role|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.285714286,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:88",
+            "primary": "전기버스 정비인력 이탈",
+            "text": "전기버스 정비인력 이탈은 결원이나 동시 고장으로 작업 대기가 늘어나는 과정이고, 근무표와 차량 식별은 보존하며 긴급 순서와 대체 인력을 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:120",
+            "primary": "전기버스 운전자교대 이탈",
+            "text": "전기버스 운전자교대 이탈은 결원이나 도착 지연으로 인계가 늦어지는 과정이고, 근무표와 차량번호는 보존하며 대체 운전자와 출차 시각을 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.23379477,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:88",
+            "primary": "전기버스 정비인력 이탈",
+            "text": "전기버스 정비인력 이탈은 결원이나 동시 고장으로 작업 대기가 늘어나는 과정이고, 근무표와 차량 식별은 보존하며 긴급 순서와 대체 인력을 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:120",
+            "primary": "전기버스 운전자교대 이탈",
+            "text": "전기버스 운전자교대 이탈은 결원이나 도착 지연으로 인계가 늦어지는 과정이고, 근무표와 차량번호는 보존하며 대체 운전자와 출차 시각을 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.307692308,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:88",
+            "primary": "전기버스 정비인력 이탈",
+            "text": "전기버스 정비인력 이탈은 결원이나 동시 고장으로 작업 대기가 늘어나는 과정이고, 근무표와 차량 식별은 보존하며 긴급 순서와 대체 인력을 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:120",
+            "primary": "전기버스 운전자교대 이탈",
+            "text": "전기버스 운전자교대 이탈은 결원이나 도착 지연으로 인계가 늦어지는 과정이고, 근무표와 차량번호는 보존하며 대체 운전자와 출차 시각을 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.295936235,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:88",
+            "primary": "전기버스 정비인력 이탈",
+            "text": "전기버스 정비인력 이탈은 결원이나 동시 고장으로 작업 대기가 늘어나는 과정이고, 근무표와 차량 식별은 보존하며 긴급 순서와 대체 인력을 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:120",
+            "primary": "전기버스 운전자교대 이탈",
+            "text": "전기버스 운전자교대 이탈은 결원이나 도착 지연으로 인계가 늦어지는 과정이고, 근무표와 차량번호는 보존하며 대체 운전자와 출차 시각을 변경한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|process|role|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    }
+  ],
+  "naturalness_warnings": {
+    "mode": "ADVISORY_WARNING_ONLY",
+    "rules": {
+      "path": "stage2_highdensity_dataset/tools/primary_naturalness_warning_rules_v1.json",
+      "sha256": "517d452cd174581f812d3b0d73a7bf48d72615e2a4259d59bf8ad38d14b7c741",
+      "schema_version": 1
+    },
+    "warning_records": 0,
+    "warning_assignments": 0,
+    "primary_dash_records": 0,
+    "primary_dash_ratio": 0,
+    "dash_style_review": {
+      "core_reuse_min_records": 2,
+      "copied_subject_particles": [
+        "은",
+        "는",
+        "이",
+        "가",
+        "에서",
+        "으로"
+      ],
+      "text_begins_exact_dash_primary_plus_particle_records": 0,
+      "text_begins_exact_dash_primary_plus_particle_ratio": 0,
+      "repeated_core_groups": 0,
+      "records_in_repeated_core_groups": 0,
+      "top_repeated_core_groups": [],
+      "interpretation": "This is an advisory style signal. A dash label copied into a sentence and a highly reused core can indicate a generated title pattern, but neither value alone proves that the underlying concept is false."
+    },
+    "by_code": [],
+    "by_expression": [],
+    "examples": [],
+    "note": "Warnings are evidence and statistics only. They neither alter source nor make structural gates fail by themselves."
+  },
+  "hard_source_errors": 0,
+  "direct_rewrite_targets": [],
+  "chatgpt_review_queue": [
+    {
+      "review_key": "group:primary_topic_particle_ratio",
+      "kind": "group",
+      "severity": "HARD",
+      "code": "primary_eunneun_opening_concentration",
+      "evidence": {
+        "rate": 1,
+        "thresholds": {
+          "review_above": 0.3,
+          "hold_above": 0.45
+        },
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:1",
+            "primary": "전기버스 차고전력 안정",
+            "text": "전기버스 차고전력 안정은 충전기 부하와 변전 용량이 배전 기준 안에 머무는 상태이며, 차고 식별과 측정 시각은 보존하고 충전 순서와 출력 설정을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:2",
+            "primary": "전기버스 차고전력 이탈",
+            "text": "전기버스 차고전력 이탈은 동시 충전과 외부 부하가 겹쳐 변전 한계를 넘는 전이이고, 전력 원자료와 차고 식별은 보존하며 충전 중지와 배차 순서를 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:3",
+            "primary": "전기버스 충전기 가용 안정",
+            "text": "전기버스 충전기 가용 안정은 운행 계획에 필요한 충전기가 정상 대기 상태로 확보된 상태이며, 충전기번호와 점검 시각은 보존하고 배정 순서와 출력량을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:4",
+            "primary": "전기버스 충전기 가용 이탈",
+            "text": "전기버스 충전기 가용 이탈은 고장과 동시 입차로 예비 충전기가 부족해지는 과정이고, 오류 로그와 차량 식별은 보존하며 대체기 배정과 출차 시각을 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:5",
+            "primary": "전기버스 배터리잔량 안정",
+            "text": "전기버스 배터리잔량 안정은 출차 예정과 충전 잔량이 운행 거리 기준을 충족하는 상태이며, 차량번호와 측정 시각은 보존하고 충전 종료와 배차 간격을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:6",
+            "primary": "전기버스 배터리잔량 이탈",
+            "text": "전기버스 배터리잔량 이탈은 급한 운행이나 충전지연으로 출차에 필요한 에너지보다 잔량이 낮아진 변화다. 차량번호와 원계측을 남기고 해당 노선배차와 충전출력을 다시 배분한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:7",
+            "primary": "전기버스 충전예약 안정",
+            "text": "전기버스 충전예약 안정은 차량·충전기·출차 시각이 한 예약번호로 연결된 상태이며, 예약번호와 생성 시각은 보존하고 순서와 충전량을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:8",
+            "primary": "전기버스 충전예약 이탈",
+            "text": "전기버스 충전예약 이탈은 차량 지연과 충전기 고장이 겹쳐 예약 시간이 충돌하는 과정이고, 예약 원본과 차량 식별은 보존하며 재예약과 배차를 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:9",
+            "primary": "전기버스 입차흐름 안정",
+            "text": "전기버스 입차흐름 안정은 도착 차량과 충전기 처리량이 차고 운영 범위에 있는 상태이며, 차량번호와 입차 시각은 보존하고 대기선과 배정 간격을 조정한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v47.source.jsonl:10",
+            "primary": "전기버스 입차흐름 이탈",
+            "text": "전기버스 입차흐름 이탈은 운행 지연이 누적되어 입차 차량이 한꺼번에 몰리는 전이이고, 입차 원자료와 차고 식별은 보존하며 유도선과 충전 순서를 변경한다."
+          }
+        ]
+      }
+    },
+    {
+      "review_key": "group:primary_topic_particle_ratio:stage2_(14)state_transition_high_density_train_v47.source.jsonl",
+      "kind": "group",
+      "severity": "HARD",
+      "code": "file_primary_eunneun_opening_concentration",
+      "evidence": {
+        "file": {
+          "file": "stage2_(14)state_transition_high_density_train_v47.source.jsonl",
+          "records": 150,
+          "hits": 150,
+          "rate": 1,
+          "assessment": "HOLD_REWRITE_DIVERSITY"
+        },
+        "thresholds": {
+          "review_above": 0.3,
+          "hold_above": 0.45
+        }
+      }
+    }
+  ],
+  "user_review_queue": [],
+  "review_queue_counts": {
+    "direct_rewrite_targets": 0,
+    "chatgpt_review_pending": 2,
+    "chatgpt_review_pending_hard": 2,
+    "user_review_pending": 0
+  },
+  "stale_or_invalid_decisions": [],
+  "review_protocol": {
+    "rule": "The script supplies evidence only. ChatGPT reviews chatgpt_review_queue first and records direct_rewrite, keep, or user_review in a decision sidecar. Only user_review items are escalated to the user.",
+    "direct_rewrite": "A direct target is an editorial task, not an automatic source mutation. Apply only a record-specific human/ChatGPT-authored patch, then rerun every relevant gate.",
+    "limitations": "Lexical patterns, X1/X2 clusters, and approximate large-group similarity are review signals. They do not by themselves prove that a Korean term is unnatural."
+  }
+}

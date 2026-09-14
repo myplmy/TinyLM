@@ -1,0 +1,2152 @@
+{
+  "audit": "Stage2 primary naturalness reviewer-assist",
+  "audit_version": 2,
+  "execution_mode": "read_only_source_scan",
+  "source_selection": {
+    "source_dir": "Z:\\TinyLM\\datasets\\TinyDataset\\stage2_highdensity_dataset\\sources\\train",
+    "filename_match": "v39\\.source\\.jsonl$",
+    "area": {
+      "requested": "A04",
+      "code": "A04",
+      "source_area_slot": "14",
+      "slug": "state_transition",
+      "rule": "filename match AND exact Stage2 area filename prefix"
+    }
+  },
+  "source_set_sha256": "4da8cd0ab8841b73304538d1abf67b99d231b4053d2abd2010fd2f13c7936fb1",
+  "source_files": 1,
+  "source_records": 150,
+  "source_file_sha256": {
+    "stage2_(14)state_transition_high_density_train_v39.source.jsonl": "7bcddcb2d6f0f321bac1eec744ab9c9e4dd7c9e40705618877307f96bfcba88b"
+  },
+  "registry": {
+    "supplied": false,
+    "require_registry": false,
+    "sha256": null,
+    "parse_problems": [],
+    "records": 0,
+    "coverage": null
+  },
+  "primary_eunneun_opening": {
+    "count": 0,
+    "records": 150,
+    "rate": 0,
+    "provisional_thresholds": {
+      "review_above": 0.3,
+      "hold_above": 0.45
+    },
+    "assessment": "WITHIN_PROVISIONAL_RANGE",
+    "note": "The ratio is a diversity gate, not a Korean grammar error rate. A threshold crossing requires family-level review rather than blind rewrites.",
+    "by_file": [
+      {
+        "file": "stage2_(14)state_transition_high_density_train_v39.source.jsonl",
+        "records": 150,
+        "hits": 0,
+        "rate": 0,
+        "assessment": "WITHIN_PROVISIONAL_RANGE"
+      }
+    ],
+    "examples": []
+  },
+  "x1_x2_composite": {
+    "core_style_counts": {
+      "no_space": 0,
+      "one_token": 0,
+      "two_token_core": 3,
+      "three_or_more_token_core": 147
+    },
+    "two_word_core_records": 3,
+    "two_word_core_ratio_all_records": 0.02,
+    "same_x1_different_x2": {
+      "group_count": 0,
+      "records": 0,
+      "ratio_within_two_word_core": 0,
+      "ratio_all_records": 0,
+      "top_groups": []
+    },
+    "same_x2_different_x1": {
+      "group_count": 1,
+      "records": 2,
+      "ratio_within_two_word_core": 0.666666667,
+      "ratio_all_records": 0.013333333,
+      "top_groups": [
+        {
+          "value": "단선",
+          "records": 2,
+          "distinct_variants": 2,
+          "variants": [
+            "스트링",
+            "접지선"
+          ],
+          "examples": [
+            {
+              "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:31",
+              "primary": "스트링 단선",
+              "text": "접속부가 빠지거나 케이블이 끊기면 한 스트링의 발전이 멈춘다. 인버터 감시값으로 구분하는 상태를 스트링 단선이라고 한다."
+            },
+            {
+              "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:127",
+              "primary": "접지선 단선",
+              "text": "접지선이 끊어지면 누설 전류를 안전하게 흘려보낼 길이 사라진다. 지락 보호에 영향을 주는 고장이 접지선 단선이다."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "same_relation_set_masked_similarity": [
+    {
+      "relation_set": "attribute|boundary|process|state",
+      "records": 19,
+      "possible_pairs": 171,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 171,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.193548387,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:26",
+            "primary": "모듈 습기로 인한 절연 저하",
+            "text": "모듈 안으로 습기가 스며들면 절연 저항이 낮아질 수 있다. 전압 인가와 누설 경로를 함께 보는 상태를 모듈 습기로 인한 절연 저하라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:57",
+            "primary": "고온다습 환경의 절연 저하",
+            "text": "더위와 습기가 계속되면 모듈의 절연 경로가 약해질 수 있다. 누설 전류와 함께 살피는 상태가 고온다습 환경의 절연 저하다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.176572327,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:15",
+            "primary": "인버터 과전류 보호 작동",
+            "text": "입력 전류가 정격을 넘으면 인버터는 장비를 보호하려고 출력을 제한한다. 단락과 제어 오류를 구분해 보는 조치가 인버터 과전류 보호 작동이다. 보호가 풀린 뒤 전류를 다시 확인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:63",
+            "primary": "열점 발생 뒤 보호 작동",
+            "text": "셀 한곳이 과열되면 보호 장치가 출력을 제한할 수 있다. 음영과 전류 불균형을 구분해 보는 상태가 열점 발생 뒤 보호 작동이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.25,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:26",
+            "primary": "모듈 습기로 인한 절연 저하",
+            "text": "모듈 안으로 습기가 스며들면 절연 저항이 낮아질 수 있다. 전압 인가와 누설 경로를 함께 보는 상태를 모듈 습기로 인한 절연 저하라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:57",
+            "primary": "고온다습 환경의 절연 저하",
+            "text": "더위와 습기가 계속되면 모듈의 절연 경로가 약해질 수 있다. 누설 전류와 함께 살피는 상태가 고온다습 환경의 절연 저하다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.19146209,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:12",
+            "primary": "인버터 절연 저하에 따른 출력 차단",
+            "text": "직류 입력의 절연 저항이 낮아지면 누설 경보가 울릴 수 있다. 보호 계전기 작동 뒤 차단되는 상태를 인버터 절연 저하에 따른 출력 차단이라고 한다. 재가동 전에는 누설값을 다시 잰다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:26",
+            "primary": "모듈 습기로 인한 절연 저하",
+            "text": "모듈 안으로 습기가 스며들면 절연 저항이 낮아질 수 있다. 전압 인가와 누설 경로를 함께 보는 상태를 모듈 습기로 인한 절연 저하라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|classification|process|state",
+      "records": 12,
+      "possible_pairs": 66,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 66,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.131578947,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:58",
+            "primary": "결로 때문에 생긴 습도 경보 오판",
+            "text": "센서 주변에 이슬이 맺히면 습도가 실제보다 높게 잡힐 수 있다. 환기가 안 되는 위치에서 생기는 오판을 결로 때문에 생긴 습도 경보 오판이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:71",
+            "primary": "전류 센서 영점 오차",
+            "text": "전류 센서의 기준값이 틀어지면 실제보다 높은 값이나 낮은 값이 찍힐 수 있다. 무부하 측정과 비교하는 문제를 전류 센서 영점 오차라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.136008913,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:6",
+            "primary": "해질녘 태양광 설비의 정상 정지",
+            "text": "일사량이 운전 한계 아래로 내려가면 설비는 정상적으로 멈춘다. 명령 기록과 구분해 확인하는 상태가 해질녘 태양광 설비의 정상 정지다. 다음 날 기동을 위한 대기 상태가 된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:38",
+            "primary": "일몰 뒤 추적기 고정",
+            "text": "해가 지면 추적기는 움직임을 멈추고 다음 날을 위한 대기각에 고정된다. 새벽 기동 설정까지 확인하는 상태가 일몰 뒤 추적기 고정이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.15625,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:44",
+            "primary": "계통 주파수 이탈 보호",
+            "text": "계통 주파수가 기준을 벗어나면 보호 계전기가 태양광 설비를 끊을 수 있다. 발전량 변화와 따로 기록하는 조치를 계통 주파수 이탈 보호라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:54",
+            "primary": "낙뢰 서지에 따른 설비 차단",
+            "text": "낙뢰가 가까이 치면 유도 서지가 설비로 들어올 수 있다. 보호기 한계를 넘었을 때 차단하는 조치를 낙뢰 서지에 따른 설비 차단이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.193833184,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:6",
+            "primary": "해질녘 태양광 설비의 정상 정지",
+            "text": "일사량이 운전 한계 아래로 내려가면 설비는 정상적으로 멈춘다. 명령 기록과 구분해 확인하는 상태가 해질녘 태양광 설비의 정상 정지다. 다음 날 기동을 위한 대기 상태가 된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:38",
+            "primary": "일몰 뒤 추적기 고정",
+            "text": "해가 지면 추적기는 움직임을 멈추고 다음 날을 위한 대기각에 고정된다. 새벽 기동 설정까지 확인하는 상태가 일몰 뒤 추적기 고정이다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|comparison|process|state",
+      "records": 14,
+      "possible_pairs": 91,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 91,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.119047619,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:25",
+            "primary": "모듈 적설로 인한 발전 중단",
+            "text": "눈이 모듈을 덮으면 햇빛이 막혀 발전이 멈출 수 있다. 경사와 햇볕으로 눈이 녹는지 보는 상태가 모듈 적설로 인한 발전 중단이다. 눈이 쌓인 구역은 안전하게 점검한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:52",
+            "primary": "비 뒤에 남은 물막으로 인한 출력 감소",
+            "text": "비가 그친 뒤 물막과 오염물이 남으면 빛이 퍼져 출력이 줄 수 있다. 배수 경사와 함께 보는 현상이 비 뒤에 남은 물막으로 인한 출력 감소다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.077550437,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:94",
+            "primary": "출력 변동 완화 실패",
+            "text": "저장장치가 태양광 출력 변화를 따라가지 못하면 변동을 줄이려던 제어가 실패한다. 이 상태를 출력 변동 완화 실패라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:125",
+            "primary": "산불 연기로 인한 태양광 출력 저하",
+            "text": "산불 연기가 햇빛을 가리면 태양광 발전량이 줄어든다. 시야와 일사량을 함께 보고 보수적으로 예측하는 상태가 산불 연기로 인한 태양광 출력 저하다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.181818182,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:22",
+            "primary": "고온다습 환경에서의 모듈 열화",
+            "text": "더위와 습기가 반복되면 모듈 재료가 빨리 약해질 수 있다. 봉지재 결함까지 함께 보는 문제가 고온다습 환경에서의 모듈 열화다. 열화 추세가 계속되는지도 기록한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:52",
+            "primary": "비 뒤에 남은 물막으로 인한 출력 감소",
+            "text": "비가 그친 뒤 물막과 오염물이 남으면 빛이 퍼져 출력이 줄 수 있다. 배수 경사와 함께 보는 현상이 비 뒤에 남은 물막으로 인한 출력 감소다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.125456985,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:9",
+            "primary": "낮은 해에서 생기는 모듈 그늘",
+            "text": "해가 낮게 뜨면 주변 구조물이 모듈을 가려 발전량이 줄 수 있다. 같은 시간대 기준 출력과 비교할 현상이 낮은 해에서 생기는 모듈 그늘이다. 장애물을 치울 수 있는지도 확인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:52",
+            "primary": "비 뒤에 남은 물막으로 인한 출력 감소",
+            "text": "비가 그친 뒤 물막과 오염물이 남으면 빛이 퍼져 출력이 줄 수 있다. 배수 경사와 함께 보는 현상이 비 뒤에 남은 물막으로 인한 출력 감소다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|contrast|process|state",
+      "records": 12,
+      "possible_pairs": 66,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 66,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.181818182,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:33",
+            "primary": "강풍 때 추적기 잠금",
+            "text": "강풍이 감지되면 패널을 안전한 각도로 돌린 뒤 잠가 둔다. 고장 때문에 못 움직이는 경우와 구별하는 조치가 강풍 때 추적기 잠금이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:55",
+            "primary": "강풍 때 태양광 추적기 잠금",
+            "text": "바람이 너무 세면 추적기는 패널을 안전각으로 돌려 잠근다. 고장으로 움직이지 못하는 경우와 구분하는 상태가 강풍 때 태양광 추적기 잠금이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.26413422,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:33",
+            "primary": "강풍 때 추적기 잠금",
+            "text": "강풍이 감지되면 패널을 안전한 각도로 돌린 뒤 잠가 둔다. 고장 때문에 못 움직이는 경우와 구별하는 조치가 강풍 때 추적기 잠금이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:55",
+            "primary": "강풍 때 태양광 추적기 잠금",
+            "text": "바람이 너무 세면 추적기는 패널을 안전각으로 돌려 잠근다. 고장으로 움직이지 못하는 경우와 구분하는 상태가 강풍 때 태양광 추적기 잠금이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.21875,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:16",
+            "primary": "계통 주파수 이탈에 따른 인버터 정지",
+            "text": "계통 주파수가 허용 범위를 벗어나면 인버터는 출력을 끊을 수 있다. 내부 열화와 구분해 확인할 상태가 계통 주파수 이탈에 따른 인버터 정지다. 주파수가 돌아온 뒤에만 다시 연결한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:43",
+            "primary": "수전점 전압 이탈",
+            "text": "수전점 전압이 허용 범위를 넘으면 태양광 설비가 계통에서 분리될 수 있다. 내부 발전량 변동과 구분하는 상태가 수전점 전압 이탈이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.18775933,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:33",
+            "primary": "강풍 때 추적기 잠금",
+            "text": "강풍이 감지되면 패널을 안전한 각도로 돌린 뒤 잠가 둔다. 고장 때문에 못 움직이는 경우와 구별하는 조치가 강풍 때 추적기 잠금이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:55",
+            "primary": "강풍 때 태양광 추적기 잠금",
+            "text": "바람이 너무 세면 추적기는 패널을 안전각으로 돌려 잠근다. 고장으로 움직이지 못하는 경우와 구분하는 상태가 강풍 때 태양광 추적기 잠금이다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|function|process|state",
+      "records": 23,
+      "possible_pairs": 253,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 253,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.24137931,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:46",
+            "primary": "계통 연계 차단 뒤 재투입",
+            "text": "보호 계전기가 차단한 뒤에는 전압과 주파수가 안정된 것을 확인하고 다시 연결한다. 이 절차를 계통 연계 차단 뒤 재투입이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:82",
+            "primary": "교류 차단기 재투입",
+            "text": "보호 차단 뒤에는 고장 전류가 사라지고 계통이 안정된 것을 확인해야 한다. 다시 연결하는 절차가 교류 차단기 재투입이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.237043586,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:46",
+            "primary": "계통 연계 차단 뒤 재투입",
+            "text": "보호 계전기가 차단한 뒤에는 전압과 주파수가 안정된 것을 확인하고 다시 연결한다. 이 절차를 계통 연계 차단 뒤 재투입이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:82",
+            "primary": "교류 차단기 재투입",
+            "text": "보호 차단 뒤에는 고장 전류가 사라지고 계통이 안정된 것을 확인해야 한다. 다시 연결하는 절차가 교류 차단기 재투입이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.28,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:46",
+            "primary": "계통 연계 차단 뒤 재투입",
+            "text": "보호 계전기가 차단한 뒤에는 전압과 주파수가 안정된 것을 확인하고 다시 연결한다. 이 절차를 계통 연계 차단 뒤 재투입이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:82",
+            "primary": "교류 차단기 재투입",
+            "text": "보호 차단 뒤에는 고장 전류가 사라지고 계통이 안정된 것을 확인해야 한다. 다시 연결하는 절차가 교류 차단기 재투입이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.233463373,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:46",
+            "primary": "계통 연계 차단 뒤 재투입",
+            "text": "보호 계전기가 차단한 뒤에는 전압과 주파수가 안정된 것을 확인하고 다시 연결한다. 이 절차를 계통 연계 차단 뒤 재투입이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:82",
+            "primary": "교류 차단기 재투입",
+            "text": "보호 차단 뒤에는 고장 전류가 사라지고 계통이 안정된 것을 확인해야 한다. 다시 연결하는 절차가 교류 차단기 재투입이다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|part_of|process|state",
+      "records": 5,
+      "possible_pairs": 10,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 10,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.033333333,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:27",
+            "primary": "접속함 온도 상승",
+            "text": "접속 저항이 커지면 접속함에서 열이 난다. 통풍과 전류량을 함께 확인하는 상태가 접속함 온도 상승이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:67",
+            "primary": "모듈 뒷면 환기 부족",
+            "text": "모듈 뒤쪽 공간이 좁으면 더운 공기가 빠져나가지 못한다. 고온 운전에서 출력 제한으로 이어지는 상태가 모듈 뒷면 환기 부족이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.063558265,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:27",
+            "primary": "접속함 온도 상승",
+            "text": "접속 저항이 커지면 접속함에서 열이 난다. 통풍과 전류량을 함께 확인하는 상태가 접속함 온도 상승이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:107",
+            "primary": "접속부 체결 토크 이상",
+            "text": "접속부를 너무 느슨하거나 세게 조이면 접촉 저항과 발열이 생길 수 있다. 전류가 흐를 때 확인하는 문제가 접속부 체결 토크 이상이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.115384615,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:27",
+            "primary": "접속함 온도 상승",
+            "text": "접속 저항이 커지면 접속함에서 열이 난다. 통풍과 전류량을 함께 확인하는 상태가 접속함 온도 상승이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:67",
+            "primary": "모듈 뒷면 환기 부족",
+            "text": "모듈 뒤쪽 공간이 좁으면 더운 공기가 빠져나가지 못한다. 고온 운전에서 출력 제한으로 이어지는 상태가 모듈 뒷면 환기 부족이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.119146747,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:27",
+            "primary": "접속함 온도 상승",
+            "text": "접속 저항이 커지면 접속함에서 열이 난다. 통풍과 전류량을 함께 확인하는 상태가 접속함 온도 상승이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:67",
+            "primary": "모듈 뒷면 환기 부족",
+            "text": "모듈 뒤쪽 공간이 좁으면 더운 공기가 빠져나가지 못한다. 고온 운전에서 출력 제한으로 이어지는 상태가 모듈 뒷면 환기 부족이다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|process|role|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.023809524,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:129",
+            "primary": "화재 뒤 태양광 설비 복구",
+            "text": "불이 꺼진 뒤에도 남은 열과 재발화 가능성을 확인해야 한다. 소방 확인과 절연 시험 후 진행하는 절차가 화재 뒤 태양광 설비 복구다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:135",
+            "primary": "계통 수요 변화에 따른 출력 조정",
+            "text": "계통의 전력 수요가 바뀌면 태양광 전력을 받아들일 수 있는 양도 달라진다. 운영자 지령에 따라 조정하는 일이 계통 수요 변화에 따른 출력 조정이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.017955756,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:129",
+            "primary": "화재 뒤 태양광 설비 복구",
+            "text": "불이 꺼진 뒤에도 남은 열과 재발화 가능성을 확인해야 한다. 소방 확인과 절연 시험 후 진행하는 절차가 화재 뒤 태양광 설비 복구다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:135",
+            "primary": "계통 수요 변화에 따른 출력 조정",
+            "text": "계통의 전력 수요가 바뀌면 태양광 전력을 받아들일 수 있는 양도 달라진다. 운영자 지령에 따라 조정하는 일이 계통 수요 변화에 따른 출력 조정이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.028571429,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:129",
+            "primary": "화재 뒤 태양광 설비 복구",
+            "text": "불이 꺼진 뒤에도 남은 열과 재발화 가능성을 확인해야 한다. 소방 확인과 절연 시험 후 진행하는 절차가 화재 뒤 태양광 설비 복구다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:135",
+            "primary": "계통 수요 변화에 따른 출력 조정",
+            "text": "계통의 전력 수요가 바뀌면 태양광 전력을 받아들일 수 있는 양도 달라진다. 운영자 지령에 따라 조정하는 일이 계통 수요 변화에 따른 출력 조정이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.059848598,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:129",
+            "primary": "화재 뒤 태양광 설비 복구",
+            "text": "불이 꺼진 뒤에도 남은 열과 재발화 가능성을 확인해야 한다. 소방 확인과 절연 시험 후 진행하는 절차가 화재 뒤 태양광 설비 복구다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:135",
+            "primary": "계통 수요 변화에 따른 출력 조정",
+            "text": "계통의 전력 수요가 바뀌면 태양광 전력을 받아들일 수 있는 양도 달라진다. 운영자 지령에 따라 조정하는 일이 계통 수요 변화에 따른 출력 조정이다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|classification|process|state",
+      "records": 8,
+      "possible_pairs": 28,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 28,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.117647059,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:47",
+            "primary": "출력 제한 원인 구분",
+            "text": "출력 제한이 계통 지령 때문인지 설비 고장 때문인지 먼저 가려야 한다. 같은 시각의 자료를 맞춰 보는 일을 출력 제한 원인 구분이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:141",
+            "primary": "고장 원인 재현 시험",
+            "text": "같은 입력과 보호 설정에서 고장이 다시 나타나는지 시험하면 원인을 좁힐 수 있다. 이 과정을 고장 원인 재현 시험이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.05571549,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:47",
+            "primary": "출력 제한 원인 구분",
+            "text": "출력 제한이 계통 지령 때문인지 설비 고장 때문인지 먼저 가려야 한다. 같은 시각의 자료를 맞춰 보는 일을 출력 제한 원인 구분이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:78",
+            "primary": "동시에 울린 경보의 원인 구분",
+            "text": "같은 때 과전압과 통신 경보가 울렸다고 한 고장으로 단정할 수는 없다. 독립 측정으로 나누어 보는 일이 동시에 울린 경보의 원인 구분이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.129032258,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:47",
+            "primary": "출력 제한 원인 구분",
+            "text": "출력 제한이 계통 지령 때문인지 설비 고장 때문인지 먼저 가려야 한다. 같은 시각의 자료를 맞춰 보는 일을 출력 제한 원인 구분이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:141",
+            "primary": "고장 원인 재현 시험",
+            "text": "같은 입력과 보호 설정에서 고장이 다시 나타나는지 시험하면 원인을 좁힐 수 있다. 이 과정을 고장 원인 재현 시험이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.105652916,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:115",
+            "primary": "제어 명령과 장치 응답 불일치",
+            "text": "제어 명령을 보냈는데 장치 상태가 다르게 보이면 재확인이 필요하다. 응답 시간을 넘겼을 때 생기는 문제가 제어 명령과 장치 응답 불일치다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:123",
+            "primary": "연기 센서의 오경보",
+            "text": "외부 연무가 센서에 들어오면 불이 없는데도 연기 경보가 날 수 있다. 온도와 화염 정보를 함께 보는 문제가 연기 센서의 오경보다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|comparison|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|function|process|state",
+      "records": 5,
+      "possible_pairs": 10,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 10,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.066666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:5",
+            "primary": "새벽 태양광 설비의 기동 지연",
+            "text": "해가 뜬 뒤에도 일사량이 기준에 못 미치면 설비가 바로 켜지지 않는다. 계통 연결 허가까지 살피는 상태가 새벽 태양광 설비의 기동 지연이다. 일사량이 회복되면 기동 순서를 확인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:39",
+            "primary": "저장장치 연계에 따른 발전 제한",
+            "text": "저장장치가 더 받을 수 있는 전력이 적으면 태양광 출력도 줄여야 할 수 있다. 계통 지령과 설비 고장을 구분해 보는 상태가 저장장치 연계에 따른 발전 제한이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.054090737,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:39",
+            "primary": "저장장치 연계에 따른 발전 제한",
+            "text": "저장장치가 더 받을 수 있는 전력이 적으면 태양광 출력도 줄여야 할 수 있다. 계통 지령과 설비 고장을 구분해 보는 상태가 저장장치 연계에 따른 발전 제한이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:145",
+            "primary": "고장 재발 방지 확인",
+            "text": "고장 원인을 없애고 보호 설정을 검증한 뒤에야 같은 문제가 다시 생기지 않는지 확인할 수 있다. 이 절차가 고장 재발 방지 확인이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.125,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:39",
+            "primary": "저장장치 연계에 따른 발전 제한",
+            "text": "저장장치가 더 받을 수 있는 전력이 적으면 태양광 출력도 줄여야 할 수 있다. 계통 지령과 설비 고장을 구분해 보는 상태가 저장장치 연계에 따른 발전 제한이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:111",
+            "primary": "원격 감시 통신 단절",
+            "text": "통신 경로가 끊기면 원격 감시 화면이 멈춘다. 현장 보호가 따로 작동하는지 보는 상태가 원격 감시 통신 단절이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.110647695,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:39",
+            "primary": "저장장치 연계에 따른 발전 제한",
+            "text": "저장장치가 더 받을 수 있는 전력이 적으면 태양광 출력도 줄여야 할 수 있다. 계통 지령과 설비 고장을 구분해 보는 상태가 저장장치 연계에 따른 발전 제한이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:111",
+            "primary": "원격 감시 통신 단절",
+            "text": "통신 경로가 끊기면 원격 감시 화면이 멈춘다. 현장 보호가 따로 작동하는지 보는 상태가 원격 감시 통신 단절이다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|part_of|process|state",
+      "records": 7,
+      "possible_pairs": 21,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 21,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.147058824,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:28",
+            "primary": "케이블 손상으로 인한 지락 차단",
+            "text": "케이블 외피가 벗겨진 곳으로 빗물이 들어가면 지락이 생길 수 있다. 차단으로 이어지는 상태를 케이블 손상으로 인한 지락 차단이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:53",
+            "primary": "우박으로 인한 태양광 모듈 손상",
+            "text": "우박에 맞으면 모듈 유리와 셀이 금이 갈 수 있다. 틈으로 습기가 들어가 절연 문제로 이어지는 고장을 우박으로 인한 태양광 모듈 손상이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.131586166,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:28",
+            "primary": "케이블 손상으로 인한 지락 차단",
+            "text": "케이블 외피가 벗겨진 곳으로 빗물이 들어가면 지락이 생길 수 있다. 차단으로 이어지는 상태를 케이블 손상으로 인한 지락 차단이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:53",
+            "primary": "우박으로 인한 태양광 모듈 손상",
+            "text": "우박에 맞으면 모듈 유리와 셀이 금이 갈 수 있다. 틈으로 습기가 들어가 절연 문제로 이어지는 고장을 우박으로 인한 태양광 모듈 손상이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.206896552,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:28",
+            "primary": "케이블 손상으로 인한 지락 차단",
+            "text": "케이블 외피가 벗겨진 곳으로 빗물이 들어가면 지락이 생길 수 있다. 차단으로 이어지는 상태를 케이블 손상으로 인한 지락 차단이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:53",
+            "primary": "우박으로 인한 태양광 모듈 손상",
+            "text": "우박에 맞으면 모듈 유리와 셀이 금이 갈 수 있다. 틈으로 습기가 들어가 절연 문제로 이어지는 고장을 우박으로 인한 태양광 모듈 손상이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.177197522,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:28",
+            "primary": "케이블 손상으로 인한 지락 차단",
+            "text": "케이블 외피가 벗겨진 곳으로 빗물이 들어가면 지락이 생길 수 있다. 차단으로 이어지는 상태를 케이블 손상으로 인한 지락 차단이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:53",
+            "primary": "우박으로 인한 태양광 모듈 손상",
+            "text": "우박에 맞으면 모듈 유리와 셀이 금이 갈 수 있다. 틈으로 습기가 들어가 절연 문제로 이어지는 고장을 우박으로 인한 태양광 모듈 손상이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|process|role|state",
+      "records": 3,
+      "possible_pairs": 3,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 3,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.09375,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:89",
+            "primary": "운영자 감축 지령에 따른 출력 제한",
+            "text": "계통 운영자가 발전량을 줄이라는 지령을 내릴 때가 있다. 설비 고장과 구분해 이행하는 제한이 운영자 감축 지령에 따른 출력 제한이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:97",
+            "primary": "감축 지령 전달 지연",
+            "text": "운영자의 감축 명령이 늦게 도착하면 출력 조정도 늦어진다. 계통 불안정으로 번지는지를 보는 문제가 감축 지령 전달 지연이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.057352736,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:89",
+            "primary": "운영자 감축 지령에 따른 출력 제한",
+            "text": "계통 운영자가 발전량을 줄이라는 지령을 내릴 때가 있다. 설비 고장과 구분해 이행하는 제한이 운영자 감축 지령에 따른 출력 제한이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:97",
+            "primary": "감축 지령 전달 지연",
+            "text": "운영자의 감축 명령이 늦게 도착하면 출력 조정도 늦어진다. 계통 불안정으로 번지는지를 보는 문제가 감축 지령 전달 지연이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.111111111,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:89",
+            "primary": "운영자 감축 지령에 따른 출력 제한",
+            "text": "계통 운영자가 발전량을 줄이라는 지령을 내릴 때가 있다. 설비 고장과 구분해 이행하는 제한이 운영자 감축 지령에 따른 출력 제한이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:97",
+            "primary": "감축 지령 전달 지연",
+            "text": "운영자의 감축 명령이 늦게 도착하면 출력 조정도 늦어진다. 계통 불안정으로 번지는지를 보는 문제가 감축 지령 전달 지연이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.081606872,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:89",
+            "primary": "운영자 감축 지령에 따른 출력 제한",
+            "text": "계통 운영자가 발전량을 줄이라는 지령을 내릴 때가 있다. 설비 고장과 구분해 이행하는 제한이 운영자 감축 지령에 따른 출력 제한이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:119",
+            "primary": "원격 운전 재개 승인",
+            "text": "통신이 돌아오고 현장 안전이 확인되면 원격 운전을 다시 시작할 수 있다. 담당자 확인을 거치는 절차가 원격 운전 재개 승인이다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|comparison|process|state",
+      "records": 4,
+      "possible_pairs": 6,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 6,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.085714286,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:36",
+            "primary": "추적기 배열 각도 불일치",
+            "text": "여러 추적기의 기준각이 서로 다르면 같은 햇빛에서도 전류 차이가 난다. 반복 관측으로 확인하는 현상이 추적기 배열 각도 불일치다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:62",
+            "primary": "배열별 오염 차이로 생기는 출력 손실",
+            "text": "배열마다 쌓인 먼지 양이 다르면 전류와 발전량도 다르게 줄어든다. 같은 추적 조건에서 비교하는 현상이 배열별 오염 차이로 생기는 출력 손실이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.081091578,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:36",
+            "primary": "추적기 배열 각도 불일치",
+            "text": "여러 추적기의 기준각이 서로 다르면 같은 햇빛에서도 전류 차이가 난다. 반복 관측으로 확인하는 현상이 추적기 배열 각도 불일치다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:62",
+            "primary": "배열별 오염 차이로 생기는 출력 손실",
+            "text": "배열마다 쌓인 먼지 양이 다르면 전류와 발전량도 다르게 줄어든다. 같은 추적 조건에서 비교하는 현상이 배열별 오염 차이로 생기는 출력 손실이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.142857143,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:36",
+            "primary": "추적기 배열 각도 불일치",
+            "text": "여러 추적기의 기준각이 서로 다르면 같은 햇빛에서도 전류 차이가 난다. 반복 관측으로 확인하는 현상이 추적기 배열 각도 불일치다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:62",
+            "primary": "배열별 오염 차이로 생기는 출력 손실",
+            "text": "배열마다 쌓인 먼지 양이 다르면 전류와 발전량도 다르게 줄어든다. 같은 추적 조건에서 비교하는 현상이 배열별 오염 차이로 생기는 출력 손실이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.146890064,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:36",
+            "primary": "추적기 배열 각도 불일치",
+            "text": "여러 추적기의 기준각이 서로 다르면 같은 햇빛에서도 전류 차이가 난다. 반복 관측으로 확인하는 현상이 추적기 배열 각도 불일치다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:62",
+            "primary": "배열별 오염 차이로 생기는 출력 손실",
+            "text": "배열마다 쌓인 먼지 양이 다르면 전류와 발전량도 다르게 줄어든다. 같은 추적 조건에서 비교하는 현상이 배열별 오염 차이로 생기는 출력 손실이다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|contrast|process|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.258064516,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:50",
+            "primary": "출력 하락 원인 경합",
+            "text": "출력 하락의 원인이 그늘인지 계통 제한인지 동시에 설명될 때가 있다. 독립 계측과 발생 순서로 가리는 상태가 출력 하락 원인 경합이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:150",
+            "primary": "출력 하락 원인 구분의 경계 사례",
+            "text": "출력 하락이 그늘 때문인지 계통 감축 때문인지 애매한 경우가 있다. 독립 계측과 지령 시각으로 가리는 사례가 출력 하락 원인 구분의 경계 사례다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.245437769,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:50",
+            "primary": "출력 하락 원인 경합",
+            "text": "출력 하락의 원인이 그늘인지 계통 제한인지 동시에 설명될 때가 있다. 독립 계측과 발생 순서로 가리는 상태가 출력 하락 원인 경합이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:150",
+            "primary": "출력 하락 원인 구분의 경계 사례",
+            "text": "출력 하락이 그늘 때문인지 계통 감축 때문인지 애매한 경우가 있다. 독립 계측과 지령 시각으로 가리는 사례가 출력 하락 원인 구분의 경계 사례다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.25,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:50",
+            "primary": "출력 하락 원인 경합",
+            "text": "출력 하락의 원인이 그늘인지 계통 제한인지 동시에 설명될 때가 있다. 독립 계측과 발생 순서로 가리는 상태가 출력 하락 원인 경합이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:150",
+            "primary": "출력 하락 원인 구분의 경계 사례",
+            "text": "출력 하락이 그늘 때문인지 계통 감축 때문인지 애매한 경우가 있다. 독립 계측과 지령 시각으로 가리는 사례가 출력 하락 원인 구분의 경계 사례다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.240380231,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:50",
+            "primary": "출력 하락 원인 경합",
+            "text": "출력 하락의 원인이 그늘인지 계통 제한인지 동시에 설명될 때가 있다. 독립 계측과 발생 순서로 가리는 상태가 출력 하락 원인 경합이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:150",
+            "primary": "출력 하락 원인 구분의 경계 사례",
+            "text": "출력 하락이 그늘 때문인지 계통 감축 때문인지 애매한 경우가 있다. 독립 계측과 지령 시각으로 가리는 사례가 출력 하락 원인 구분의 경계 사례다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|function|process|state",
+      "records": 11,
+      "possible_pairs": 55,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 55,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.131578947,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:73",
+            "primary": "기상 자료 누락 뒤 제어 전환",
+            "text": "기상 자료가 들어오지 않으면 예측 제어가 필요한 정보를 잃는다. 누락이 오래갈 때 보수 모드로 바꾸는 일을 기상 자료 누락 뒤 제어 전환이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:132",
+            "primary": "새 기상 자료에 따른 출력 예측 갱신",
+            "text": "새 일사량과 구름 자료가 들어오면 발전량 예측을 다시 계산한다. 자료 품질을 확인한 뒤 쓰는 절차가 새 기상 자료에 따른 출력 예측 갱신이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.124504322,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:73",
+            "primary": "기상 자료 누락 뒤 제어 전환",
+            "text": "기상 자료가 들어오지 않으면 예측 제어가 필요한 정보를 잃는다. 누락이 오래갈 때 보수 모드로 바꾸는 일을 기상 자료 누락 뒤 제어 전환이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:132",
+            "primary": "새 기상 자료에 따른 출력 예측 갱신",
+            "text": "새 일사량과 구름 자료가 들어오면 발전량 예측을 다시 계산한다. 자료 품질을 확인한 뒤 쓰는 절차가 새 기상 자료에 따른 출력 예측 갱신이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.214285714,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:108",
+            "primary": "케이블 교체 뒤 재연결",
+            "text": "절연 시험에 실패한 케이블은 교체해야 한다. 우회 회로와 무전압 작업을 확인한 뒤 다시 잇는 절차가 케이블 교체 뒤 재연결이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:132",
+            "primary": "새 기상 자료에 따른 출력 예측 갱신",
+            "text": "새 일사량과 구름 자료가 들어오면 발전량 예측을 다시 계산한다. 자료 품질을 확인한 뒤 쓰는 절차가 새 기상 자료에 따른 출력 예측 갱신이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.162646752,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:108",
+            "primary": "케이블 교체 뒤 재연결",
+            "text": "절연 시험에 실패한 케이블은 교체해야 한다. 우회 회로와 무전압 작업을 확인한 뒤 다시 잇는 절차가 케이블 교체 뒤 재연결이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:132",
+            "primary": "새 기상 자료에 따른 출력 예측 갱신",
+            "text": "새 일사량과 구름 자료가 들어오면 발전량 예측을 다시 계산한다. 자료 품질을 확인한 뒤 쓰는 절차가 새 기상 자료에 따른 출력 예측 갱신이다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|part_of|process|state",
+      "records": 6,
+      "possible_pairs": 15,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 15,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.121212121,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:144",
+            "primary": "운전 이력 보존",
+            "text": "전환 전후의 계측값, 명령, 승인을 함께 남기면 고장과 복구를 다시 살필 수 있다. 이를 운전 이력 보존이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:148",
+            "primary": "조치 기록과 근거 연결",
+            "text": "원자료와 조치 기록을 같은 사건에 연결하면 판단과 승인 근거를 다시 확인할 수 있다. 이 작업을 조치 기록과 근거 연결이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.072245148,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:144",
+            "primary": "운전 이력 보존",
+            "text": "전환 전후의 계측값, 명령, 승인을 함께 남기면 고장과 복구를 다시 살필 수 있다. 이를 운전 이력 보존이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:148",
+            "primary": "조치 기록과 근거 연결",
+            "text": "원자료와 조치 기록을 같은 사건에 연결하면 판단과 승인 근거를 다시 확인할 수 있다. 이 작업을 조치 기록과 근거 연결이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.206896552,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:144",
+            "primary": "운전 이력 보존",
+            "text": "전환 전후의 계측값, 명령, 승인을 함께 남기면 고장과 복구를 다시 살필 수 있다. 이를 운전 이력 보존이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:148",
+            "primary": "조치 기록과 근거 연결",
+            "text": "원자료와 조치 기록을 같은 사건에 연결하면 판단과 승인 근거를 다시 확인할 수 있다. 이 작업을 조치 기록과 근거 연결이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.137618174,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:144",
+            "primary": "운전 이력 보존",
+            "text": "전환 전후의 계측값, 명령, 승인을 함께 남기면 고장과 복구를 다시 살필 수 있다. 이를 운전 이력 보존이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:148",
+            "primary": "조치 기록과 근거 연결",
+            "text": "원자료와 조치 기록을 같은 사건에 연결하면 판단과 승인 근거를 다시 확인할 수 있다. 이 작업을 조치 기록과 근거 연결이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|process|role|state",
+      "records": 3,
+      "possible_pairs": 3,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 3,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.066666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:117",
+            "primary": "현장 운전으로의 전환",
+            "text": "원격 제어가 끊기면 현장 담당자가 설비를 직접 운전해야 할 수 있다. 승인된 설정을 현장 담당자에게 넘기는 절차가 현장 운전으로의 전환이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:147",
+            "primary": "운영 인수인계",
+            "text": "복구 기록과 남은 위험을 다음 담당자에게 전달하고 인수를 확인한다. 책임이 넘어가는 절차가 운영 인수인계다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.071154089,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:117",
+            "primary": "현장 운전으로의 전환",
+            "text": "원격 제어가 끊기면 현장 담당자가 설비를 직접 운전해야 할 수 있다. 승인된 설정을 현장 담당자에게 넘기는 절차가 현장 운전으로의 전환이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:147",
+            "primary": "운영 인수인계",
+            "text": "복구 기록과 남은 위험을 다음 담당자에게 전달하고 인수를 확인한다. 책임이 넘어가는 절차가 운영 인수인계다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.117647059,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:117",
+            "primary": "현장 운전으로의 전환",
+            "text": "원격 제어가 끊기면 현장 담당자가 설비를 직접 운전해야 할 수 있다. 승인된 설정을 현장 담당자에게 넘기는 절차가 현장 운전으로의 전환이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:137",
+            "primary": "출력 감축 사전 예약",
+            "text": "계통이 전력을 덜 받을 것으로 예상되면 미리 감축 시간을 잡아 둘 수 있다. 실제 지령이 오면 실행하는 계획이 출력 감축 사전 예약이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.142083231,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:117",
+            "primary": "현장 운전으로의 전환",
+            "text": "원격 제어가 끊기면 현장 담당자가 설비를 직접 운전해야 할 수 있다. 승인된 설정을 현장 담당자에게 넘기는 절차가 현장 운전으로의 전환이다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:147",
+            "primary": "운영 인수인계",
+            "text": "복구 기록과 남은 위험을 다음 담당자에게 전달하고 인수를 확인한다. 책임이 넘어가는 절차가 운영 인수인계다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "comparison|contrast|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "comparison|function|process|state",
+      "records": 3,
+      "possible_pairs": 3,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 3,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.078947368,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:13",
+            "primary": "인버터의 반복 재기동",
+            "text": "오류가 남아 있는데 자동 재시도가 이어지면 인버터가 계속 꺼졌다 켜질 수 있다. 원인을 고치기 전 반복을 멈춰야 하는 상태가 인버터의 반복 재기동이다. 재시도 횟수도 기록으로 남긴다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:116",
+            "primary": "경보 전달 지연",
+            "text": "중계망이 붐비면 현장에 경보가 늦게 전달될 수 있다. 조치가 늦어지는지를 살피는 상태가 경보 전달 지연이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.057127431,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:13",
+            "primary": "인버터의 반복 재기동",
+            "text": "오류가 남아 있는데 자동 재시도가 이어지면 인버터가 계속 꺼졌다 켜질 수 있다. 원인을 고치기 전 반복을 멈춰야 하는 상태가 인버터의 반복 재기동이다. 재시도 횟수도 기록으로 남긴다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:116",
+            "primary": "경보 전달 지연",
+            "text": "중계망이 붐비면 현장에 경보가 늦게 전달될 수 있다. 조치가 늦어지는지를 살피는 상태가 경보 전달 지연이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.147058824,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:13",
+            "primary": "인버터의 반복 재기동",
+            "text": "오류가 남아 있는데 자동 재시도가 이어지면 인버터가 계속 꺼졌다 켜질 수 있다. 원인을 고치기 전 반복을 멈춰야 하는 상태가 인버터의 반복 재기동이다. 재시도 횟수도 기록으로 남긴다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:116",
+            "primary": "경보 전달 지연",
+            "text": "중계망이 붐비면 현장에 경보가 늦게 전달될 수 있다. 조치가 늦어지는지를 살피는 상태가 경보 전달 지연이다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.13516689,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:13",
+            "primary": "인버터의 반복 재기동",
+            "text": "오류가 남아 있는데 자동 재시도가 이어지면 인버터가 계속 꺼졌다 켜질 수 있다. 원인을 고치기 전 반복을 멈춰야 하는 상태가 인버터의 반복 재기동이다. 재시도 횟수도 기록으로 남긴다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:116",
+            "primary": "경보 전달 지연",
+            "text": "중계망이 붐비면 현장에 경보가 늦게 전달될 수 있다. 조치가 늦어지는지를 살피는 상태가 경보 전달 지연이다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "comparison|part_of|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "comparison|process|role|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "contrast|function|process|state",
+      "records": 4,
+      "possible_pairs": 6,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 6,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.0625,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:45",
+            "primary": "무효전력 제어 지령 충돌",
+            "text": "전압 제어와 역률 제어가 서로 다른 무효전력 값을 요구할 수 있다. 우선순위가 없을 때 생기는 문제를 무효전력 제어 지령 충돌이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:93",
+            "primary": "저장장치 제어 통신 연결",
+            "text": "저장장치가 충전 지령을 받으려면 제어 통신이 이어져야 한다. 이 연결 상태를 저장장치 제어 통신 연결이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.073328403,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:45",
+            "primary": "무효전력 제어 지령 충돌",
+            "text": "전압 제어와 역률 제어가 서로 다른 무효전력 값을 요구할 수 있다. 우선순위가 없을 때 생기는 문제를 무효전력 제어 지령 충돌이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:93",
+            "primary": "저장장치 제어 통신 연결",
+            "text": "저장장치가 충전 지령을 받으려면 제어 통신이 이어져야 한다. 이 연결 상태를 저장장치 제어 통신 연결이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.103448276,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:45",
+            "primary": "무효전력 제어 지령 충돌",
+            "text": "전압 제어와 역률 제어가 서로 다른 무효전력 값을 요구할 수 있다. 우선순위가 없을 때 생기는 문제를 무효전력 제어 지령 충돌이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:93",
+            "primary": "저장장치 제어 통신 연결",
+            "text": "저장장치가 충전 지령을 받으려면 제어 통신이 이어져야 한다. 이 연결 상태를 저장장치 제어 통신 연결이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.141153673,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:45",
+            "primary": "무효전력 제어 지령 충돌",
+            "text": "전압 제어와 역률 제어가 서로 다른 무효전력 값을 요구할 수 있다. 우선순위가 없을 때 생기는 문제를 무효전력 제어 지령 충돌이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:93",
+            "primary": "저장장치 제어 통신 연결",
+            "text": "저장장치가 충전 지령을 받으려면 제어 통신이 이어져야 한다. 이 연결 상태를 저장장치 제어 통신 연결이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "function|part_of|process|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.096774194,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:114",
+            "primary": "통신 경로 이중화",
+            "text": "주 통신선이 끊겨도 예비선으로 감시와 제어를 이어갈 수 있어야 한다. 이 구성을 통신 경로 이중화라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:142",
+            "primary": "태양광 설비 복구 순서",
+            "text": "태양광 설비를 다시 켤 때는 보호 해제보다 절연과 통신 확인을 먼저 한다. 이 순서를 지키는 일이 태양광 설비 복구 순서다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.051495673,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:114",
+            "primary": "통신 경로 이중화",
+            "text": "주 통신선이 끊겨도 예비선으로 감시와 제어를 이어갈 수 있어야 한다. 이 구성을 통신 경로 이중화라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:142",
+            "primary": "태양광 설비 복구 순서",
+            "text": "태양광 설비를 다시 켤 때는 보호 해제보다 절연과 통신 확인을 먼저 한다. 이 순서를 지키는 일이 태양광 설비 복구 순서다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.103448276,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:114",
+            "primary": "통신 경로 이중화",
+            "text": "주 통신선이 끊겨도 예비선으로 감시와 제어를 이어갈 수 있어야 한다. 이 구성을 통신 경로 이중화라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:142",
+            "primary": "태양광 설비 복구 순서",
+            "text": "태양광 설비를 다시 켤 때는 보호 해제보다 절연과 통신 확인을 먼저 한다. 이 순서를 지키는 일이 태양광 설비 복구 순서다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.114364097,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:114",
+            "primary": "통신 경로 이중화",
+            "text": "주 통신선이 끊겨도 예비선으로 감시와 제어를 이어갈 수 있어야 한다. 이 구성을 통신 경로 이중화라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v39.source.jsonl:142",
+            "primary": "태양광 설비 복구 순서",
+            "text": "태양광 설비를 다시 켤 때는 보호 해제보다 절연과 통신 확인을 먼저 한다. 이 순서를 지키는 일이 태양광 설비 복구 순서다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "function|process|role|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    }
+  ],
+  "naturalness_warnings": {
+    "mode": "ADVISORY_WARNING_ONLY",
+    "rules": {
+      "path": "stage2_highdensity_dataset/tools/primary_naturalness_warning_rules_v1.json",
+      "sha256": "517d452cd174581f812d3b0d73a7bf48d72615e2a4259d59bf8ad38d14b7c741",
+      "schema_version": 1
+    },
+    "warning_records": 0,
+    "warning_assignments": 0,
+    "primary_dash_records": 0,
+    "primary_dash_ratio": 0,
+    "dash_style_review": {
+      "core_reuse_min_records": 2,
+      "copied_subject_particles": [
+        "은",
+        "는",
+        "이",
+        "가",
+        "에서",
+        "으로"
+      ],
+      "text_begins_exact_dash_primary_plus_particle_records": 0,
+      "text_begins_exact_dash_primary_plus_particle_ratio": 0,
+      "repeated_core_groups": 0,
+      "records_in_repeated_core_groups": 0,
+      "top_repeated_core_groups": [],
+      "interpretation": "This is an advisory style signal. A dash label copied into a sentence and a highly reused core can indicate a generated title pattern, but neither value alone proves that the underlying concept is false."
+    },
+    "by_code": [],
+    "by_expression": [],
+    "examples": [],
+    "note": "Warnings are evidence and statistics only. They neither alter source nor make structural gates fail by themselves."
+  },
+  "hard_source_errors": 0,
+  "direct_rewrite_targets": [],
+  "chatgpt_review_queue": [],
+  "user_review_queue": [],
+  "review_queue_counts": {
+    "direct_rewrite_targets": 0,
+    "chatgpt_review_pending": 0,
+    "chatgpt_review_pending_hard": 0,
+    "user_review_pending": 0
+  },
+  "stale_or_invalid_decisions": [],
+  "review_protocol": {
+    "rule": "The script supplies evidence only. ChatGPT reviews chatgpt_review_queue first and records direct_rewrite, keep, or user_review in a decision sidecar. Only user_review items are escalated to the user.",
+    "direct_rewrite": "A direct target is an editorial task, not an automatic source mutation. Apply only a record-specific human/ChatGPT-authored patch, then rerun every relevant gate.",
+    "limitations": "Lexical patterns, X1/X2 clusters, and approximate large-group similarity are review signals. They do not by themselves prove that a Korean term is unnatural."
+  }
+}

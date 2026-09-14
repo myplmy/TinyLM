@@ -1,0 +1,2182 @@
+{
+  "audit": "Stage2 primary naturalness reviewer-assist",
+  "audit_version": 2,
+  "execution_mode": "read_only_source_scan",
+  "source_selection": {
+    "source_dir": "Z:\\TinyLM\\datasets\\TinyDataset\\stage2_highdensity_dataset\\sources\\train",
+    "filename_match": "v44\\.source\\.jsonl$",
+    "area": {
+      "requested": "A04",
+      "code": "A04",
+      "source_area_slot": "14",
+      "slug": "state_transition",
+      "rule": "filename match AND exact Stage2 area filename prefix"
+    }
+  },
+  "source_set_sha256": "85cf795046a3cd156e1df30d46685d7b6f069ea84e8addece84b732de9d3fa86",
+  "source_files": 1,
+  "source_records": 150,
+  "source_file_sha256": {
+    "stage2_(14)state_transition_high_density_train_v44.source.jsonl": "bdc89172c69c47ef4e0e69a0aec92ddba8cf966468223f3f8e0efc47ccd8e3e3"
+  },
+  "registry": {
+    "supplied": false,
+    "require_registry": false,
+    "sha256": null,
+    "parse_problems": [],
+    "records": 0,
+    "coverage": null
+  },
+  "primary_eunneun_opening": {
+    "count": 150,
+    "records": 150,
+    "rate": 1,
+    "provisional_thresholds": {
+      "review_above": 0.3,
+      "hold_above": 0.45
+    },
+    "assessment": "HOLD_REWRITE_DIVERSITY",
+    "note": "The ratio is a diversity gate, not a Korean grammar error rate. A threshold crossing requires family-level review rather than blind rewrites.",
+    "by_file": [
+      {
+        "file": "stage2_(14)state_transition_high_density_train_v44.source.jsonl",
+        "records": 150,
+        "hits": 150,
+        "rate": 1,
+        "assessment": "HOLD_REWRITE_DIVERSITY"
+      }
+    ],
+    "examples": [
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:1",
+        "primary": "해양부표 수온관측 시작",
+        "text": "해양부표 수온관측 시작은 센서가 수면 아래로 안정되고 첫 자료가 수신되는 전이이며, 부표 식별과 관측 시각은 보존하고 수온값과 센서 상태는 변경된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:2",
+        "primary": "해양부표 파고자료 지연",
+        "text": "해양부표 파고자료 지연은 센서 내부 처리와 통신전송이 모두 늦어져 관측 중간구간이 제때 도착하지 않는 과정이다. 부표번호와 원측정시각을 보존해 결측과 단순 지연을 구별한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:3",
+        "primary": "해양부표 풍속경보 전이",
+        "text": "해양부표 풍속경보 전이는 풍속이 경보 한계를 넘는 상태이고, 경보 발생 전의 상승 구간이 누락되면 정상 관측에서 비상 경보로 가는 경로를 제한해야 한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:4",
+        "primary": "해양부표 파랑상태 변화",
+        "text": "해양부표 파랑상태 변화는 파고와 주기가 함께 증가해 안정 관측에서 주의 관측으로 바뀌는 과정이며, 관측 위치와 시각은 보존하고 파고와 주기는 변경된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:5",
+        "primary": "해양부표 너울중간 상태",
+        "text": "해양부표 너울중간 상태는 파고는 높지만 경보 한계에는 이르지 않은 중간 단계이고, 이 단계 자료가 빠지면 주의 상태에서 비상 상태로 바로 전이한 것으로 오인한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:6",
+        "primary": "해양부표 조류방향 전이",
+        "text": "해양부표 조류방향 전이는 유속과 풍향이 함께 바뀔 때 표류 방향이 변하는 과정이고, 위치 기준과 관측 시각은 보존하며 방향과 유속은 변경 변수다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:7",
+        "primary": "해양부표 위치자료 단절",
+        "text": "해양부표 위치자료 단절은 위성 신호 상실이 좌표 수신을 끊는 원인이고, 마지막 정상 위치와 시각을 보존하지 않으면 표류 전이 경로를 확정할 수 없다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:8",
+        "primary": "해양부표 표류경보 조건",
+        "text": "해양부표 표류경보 조건은 위치 변화와 계류 장력 저하가 함께 확인될 때 경보로 전이하며, 위치 단절 중간 상태가 누락되면 원인과 경보를 구분하지 못한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:9",
+        "primary": "해양부표 계류장력 저하",
+        "text": "해양부표 계류장력 저하는 파랑 증가와 계류선 마모가 함께일 때 장력이 낮아지는 상태이고, 장력 측정 시각과 계류선 식별은 보존하며 장력값은 변경된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:10",
+        "primary": "해양부표 계류선 파단",
+        "text": "해양부표 계류선 파단은 반복 장력과 마모 누적이 함께일 때 계류가 끊기는 비가역 상태이며, 파단 위치와 마지막 중간 장력 자료가 전이 경로의 근거다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:11",
+        "primary": "해양부표 배터리 잔량감소",
+        "text": "해양부표 배터리 잔량감소는 통신 송신 증가와 일사 부족이 함께일 때 저장량이 낮아지는 과정이고, 배터리 식별과 관측 시각은 보존하며 잔량과 송신 주기는 변경된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:12",
+        "primary": "해양부표 배터리 저전압",
+        "text": "해양부표 배터리 저전압은 잔량과 셀 온도가 함께 하한에 닿을 때 저전력 상태로 전이하며, 저전압 전의 잔량 자료가 누락되면 방전 원인을 제한한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:13",
+        "primary": "해양부표 태양충전 회복",
+        "text": "해양부표 태양충전 회복은 일사 회복과 충전 제어 연결이 함께 있을 때 저전력 상태에서 관측 상태로 돌아가며, 배터리 식별과 충전 기준은 보존한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:14",
+        "primary": "해양부표 충전제어 단절",
+        "text": "해양부표 충전제어 단절은 충전기 고장과 배터리 과열이 함께일 때 충전이 끊기는 상태이고, 단절 직전의 충전 전류와 온도 자료를 보존해야 복구 경로를 구분한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:15",
+        "primary": "해양부표 배터리 열화",
+        "text": "해양부표 배터리 열화는 반복 저전압과 고온 체류가 함께일 때 용량이 비가역적으로 줄어드는 과정이며, 배터리 식별과 시험 기준은 보존한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:16",
+        "primary": "해양부표 전원중간 상태",
+        "text": "해양부표 전원중간 상태는 배터리 잔량은 낮지만 저전력 관측이 유지되는 단계이고, 이 단계가 누락되면 정상 관측에서 즉시 전원 차단으로 전이한 것으로 기록된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:17",
+        "primary": "해양부표 센서예열 전이",
+        "text": "해양부표 센서예열 전이는 센서 전원 인가와 기준값 안정이 함께 확인될 때 대기에서 관측으로 바뀌며, 센서 식별과 예열 기준은 보존하고 온도와 시각은 변경된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:18",
+        "primary": "해양부표 센서표류 경계",
+        "text": "해양부표 센서표류 경계는 교정값과 현장값 차이가 함께 허용 범위를 넘을 때 표류 상태로 전이하며, 교정 원본과 센서 식별은 보존한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:19",
+        "primary": "해양부표 센서교정 복구",
+        "text": "해양부표 센서교정 복구는 표준 시료와 현장 자료가 다시 일치할 때 정상 관측으로 돌아가며, 교정 기준과 관측 시각은 보존하고 보정값은 변경된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:20",
+        "primary": "해양부표 압력센서 수심",
+        "text": "해양부표 압력센서 수심은 압력값과 수온 보정이 함께 바뀔 때 수심 상태가 변하며, 센서 식별과 수심 기준은 보존하고 압력과 수심은 변경 변수다."
+      }
+    ]
+  },
+  "x1_x2_composite": {
+    "core_style_counts": {
+      "no_space": 0,
+      "one_token": 0,
+      "two_token_core": 2,
+      "three_or_more_token_core": 148
+    },
+    "two_word_core_records": 2,
+    "two_word_core_ratio_all_records": 0.013333333,
+    "same_x1_different_x2": {
+      "group_count": 1,
+      "records": 2,
+      "ratio_within_two_word_core": 1,
+      "ratio_all_records": 0.013333333,
+      "top_groups": [
+        {
+          "value": "해양부표",
+          "records": 2,
+          "distinct_variants": 2,
+          "variants": [
+            "센서교차검증",
+            "통신재연결"
+          ],
+          "examples": [
+            {
+              "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:34",
+              "primary": "해양부표 통신재연결",
+              "text": "해양부표 통신재연결은 안테나 복귀와 신호 품질 회복이 함께 확인될 때 저장 자료 전송으로 전이하며, 단절 시각과 저장량은 보존하고 전송 순서는 변경된다."
+            },
+            {
+              "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:118",
+              "primary": "해양부표 센서교차검증",
+              "text": "해양부표 센서교차검증은 인접 센서값과 독립 시료가 함께 일치할 때 정상 관측으로 전이하며, 센서 식별과 시료 원본은 보존한다."
+            }
+          ]
+        }
+      ]
+    },
+    "same_x2_different_x1": {
+      "group_count": 0,
+      "records": 0,
+      "ratio_within_two_word_core": 0,
+      "ratio_all_records": 0,
+      "top_groups": []
+    }
+  },
+  "same_relation_set_masked_similarity": [
+    {
+      "relation_set": "attribute|boundary|process|state",
+      "records": 25,
+      "possible_pairs": 300,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 300,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.256410256,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:35",
+            "primary": "해양부표 자료버퍼 포화",
+            "text": "해양부표 자료버퍼 포화는 통신 단절과 관측 주기 증가가 함께일 때 저장 공간이 차는 상태이며, 포화 전 중간 저장량과 마지막 전송 시각을 보존해야 자료 손실 경로를 제한한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:115",
+            "primary": "해양부표 전원차단 손실",
+            "text": "해양부표 전원차단 손실은 배터리 저전압과 통신 송신 지속이 함께일 때 관측이 끊기는 상태이며, 차단 전 잔량과 마지막 관측 시각은 보존해야 손실 범위를 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.171685449,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:54",
+            "primary": "해양부표 조류급변 경보",
+            "text": "해양부표 조류급변 경보는 유속과 수위 변화가 함께 기준을 넘을 때 경보로 전이하며, 유속 변화 중간값이 누락되면 표류 원인과 경보를 구분할 수 없다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:69",
+            "primary": "해양부표 적조경보 조건",
+            "text": "해양부표 적조경보 조건은 엽록소 상승과 수온 정체가 함께 있을 때 경보로 전이하며, 엽록소 중간값이 누락되면 정상 관측에서 경보로의 경로를 확정하지 않는다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.27027027,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:35",
+            "primary": "해양부표 자료버퍼 포화",
+            "text": "해양부표 자료버퍼 포화는 통신 단절과 관측 주기 증가가 함께일 때 저장 공간이 차는 상태이며, 포화 전 중간 저장량과 마지막 전송 시각을 보존해야 자료 손실 경로를 제한한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:115",
+            "primary": "해양부표 전원차단 손실",
+            "text": "해양부표 전원차단 손실은 배터리 저전압과 통신 송신 지속이 함께일 때 관측이 끊기는 상태이며, 차단 전 잔량과 마지막 관측 시각은 보존해야 손실 범위를 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.19894056,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:54",
+            "primary": "해양부표 조류급변 경보",
+            "text": "해양부표 조류급변 경보는 유속과 수위 변화가 함께 기준을 넘을 때 경보로 전이하며, 유속 변화 중간값이 누락되면 표류 원인과 경보를 구분할 수 없다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:69",
+            "primary": "해양부표 적조경보 조건",
+            "text": "해양부표 적조경보 조건은 엽록소 상승과 수온 정체가 함께 있을 때 경보로 전이하며, 엽록소 중간값이 누락되면 정상 관측에서 경보로의 경로를 확정하지 않는다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|classification|process|state",
+      "records": 14,
+      "possible_pairs": 91,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 91,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.225806452,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:48",
+            "primary": "해양부표 수질경보 보류",
+            "text": "해양부표 수질경보 보류는 염분 상승과 센서 보정 미완료가 함께 있을 때 경보 확정을 늦추며, 보정 전 원자료와 관측 시각은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:82",
+            "primary": "해양부표 수중음향 관측",
+            "text": "해양부표 수중음향 관측은 음향 센서 예열과 배경 소음 기준 확인이 함께 끝날 때 관측 상태로 전이하며, 센서 식별과 기준 시각은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.184335845,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:22",
+            "primary": "해양부표 염분경보 전이",
+            "text": "해양부표 염분경보 전이는 보정된 염분이 허용 범위를 벗어날 때 경보로 바뀌며, 보정 전 원자료와 보정 완료 시각이 전이 경로의 필수 근거다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:48",
+            "primary": "해양부표 수질경보 보류",
+            "text": "해양부표 수질경보 보류는 염분 상승과 센서 보정 미완료가 함께 있을 때 경보 확정을 늦추며, 보정 전 원자료와 관측 시각은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.242424242,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:30",
+            "primary": "해양부표 침수경보 전이",
+            "text": "해양부표 침수경보 전이는 내부 습도와 누수 감지가 함께 경보 기준을 넘을 때 발생하며, 습도 상승 중간 상태가 없으면 침수 원인과 경보를 직접 연결하지 않는다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:66",
+            "primary": "해양부표 용존산소 경보",
+            "text": "해양부표 용존산소 경보는 수온 상승과 산소값 하락이 함께 기준을 넘을 때 발생하며, 수온 보정 중간 자료가 누락되면 저산소 경로를 제한한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.219166752,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:22",
+            "primary": "해양부표 염분경보 전이",
+            "text": "해양부표 염분경보 전이는 보정된 염분이 허용 범위를 벗어날 때 경보로 바뀌며, 보정 전 원자료와 보정 완료 시각이 전이 경로의 필수 근거다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:48",
+            "primary": "해양부표 수질경보 보류",
+            "text": "해양부표 수질경보 보류는 염분 상승과 센서 보정 미완료가 함께 있을 때 경보 확정을 늦추며, 보정 전 원자료와 관측 시각은 보존한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|comparison|process|state",
+      "records": 10,
+      "possible_pairs": 45,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 45,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.357142857,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:11",
+            "primary": "해양부표 배터리 잔량감소",
+            "text": "해양부표 배터리 잔량감소는 통신 송신 증가와 일사 부족이 함께일 때 저장량이 낮아지는 과정이고, 배터리 식별과 관측 시각은 보존하며 잔량과 송신 주기는 변경된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:113",
+            "primary": "해양부표 태양전지 오염",
+            "text": "해양부표 태양전지 오염은 염분 침착과 일사 부족이 함께일 때 충전량이 줄어드는 과정이고, 패널 식별과 일사 시각은 보존하며 충전량은 변경된다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.230848888,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:20",
+            "primary": "해양부표 압력센서 수심",
+            "text": "해양부표 압력센서 수심은 압력값과 수온 보정이 함께 바뀔 때 수심 상태가 변하며, 센서 식별과 수심 기준은 보존하고 압력과 수심은 변경 변수다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:57",
+            "primary": "해양부표 수심변동 전이",
+            "text": "해양부표 수심변동 전이는 수압과 조위가 함께 바뀔 때 계산 수심이 달라지는 과정이고, 기준 수면과 관측 시각은 보존하며 압력과 수심은 변경된다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.37037037,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:11",
+            "primary": "해양부표 배터리 잔량감소",
+            "text": "해양부표 배터리 잔량감소는 통신 송신 증가와 일사 부족이 함께일 때 저장량이 낮아지는 과정이고, 배터리 식별과 관측 시각은 보존하며 잔량과 송신 주기는 변경된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:113",
+            "primary": "해양부표 태양전지 오염",
+            "text": "해양부표 태양전지 오염은 염분 침착과 일사 부족이 함께일 때 충전량이 줄어드는 과정이고, 패널 식별과 일사 시각은 보존하며 충전량은 변경된다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.255769615,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:11",
+            "primary": "해양부표 배터리 잔량감소",
+            "text": "해양부표 배터리 잔량감소는 통신 송신 증가와 일사 부족이 함께일 때 저장량이 낮아지는 과정이고, 배터리 식별과 관측 시각은 보존하며 잔량과 송신 주기는 변경된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:113",
+            "primary": "해양부표 태양전지 오염",
+            "text": "해양부표 태양전지 오염은 염분 침착과 일사 부족이 함께일 때 충전량이 줄어드는 과정이고, 패널 식별과 일사 시각은 보존하며 충전량은 변경된다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|contrast|process|state",
+      "records": 3,
+      "possible_pairs": 3,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 3,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.051282051,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:50",
+            "primary": "해양부표 운영상태 종결",
+            "text": "해양부표 운영상태 종결은 관측·전원·통신·위치 지표가 모두 정상화되어 비상운영을 끝내는 변화다. 한 항목의 단독 회복만으로 전체 사건을 종료하지 않는다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:60",
+            "primary": "해양부표 파랑주기 경계",
+            "text": "해양부표 파랑주기 경계는 파고 상승과 주기 단축이 함께 있을 때 위험 파랑 상태로 전이하며, 파고나 주기 하나만으로는 같은 경보를 확정하지 않는다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.042695932,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:50",
+            "primary": "해양부표 운영상태 종결",
+            "text": "해양부표 운영상태 종결은 관측·전원·통신·위치 지표가 모두 정상화되어 비상운영을 끝내는 변화다. 한 항목의 단독 회복만으로 전체 사건을 종료하지 않는다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:60",
+            "primary": "해양부표 파랑주기 경계",
+            "text": "해양부표 파랑주기 경계는 파고 상승과 주기 단축이 함께 있을 때 위험 파랑 상태로 전이하며, 파고나 주기 하나만으로는 같은 경보를 확정하지 않는다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.057142857,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:50",
+            "primary": "해양부표 운영상태 종결",
+            "text": "해양부표 운영상태 종결은 관측·전원·통신·위치 지표가 모두 정상화되어 비상운영을 끝내는 변화다. 한 항목의 단독 회복만으로 전체 사건을 종료하지 않는다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:129",
+            "primary": "해양부표 위치기준 보존",
+            "text": "해양부표 위치기준 보존은 이동 전후의 기준 수면과 부표 식별을 유지하는 과정이고, 새 좌표와 계류 장력은 재배치에 따라 변경된다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.066065268,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:50",
+            "primary": "해양부표 운영상태 종결",
+            "text": "해양부표 운영상태 종결은 관측·전원·통신·위치 지표가 모두 정상화되어 비상운영을 끝내는 변화다. 한 항목의 단독 회복만으로 전체 사건을 종료하지 않는다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:60",
+            "primary": "해양부표 파랑주기 경계",
+            "text": "해양부표 파랑주기 경계는 파고 상승과 주기 단축이 함께 있을 때 위험 파랑 상태로 전이하며, 파고나 주기 하나만으로는 같은 경보를 확정하지 않는다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|function|process|state",
+      "records": 19,
+      "possible_pairs": 171,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 171,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.266666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:53",
+            "primary": "해양부표 태풍후 복구",
+            "text": "해양부표 태풍후 복구는 파고 하락과 계류 장력 확인이 함께 될 때 정상 관측으로 돌아가며, 폭풍 시각과 마지막 위치 자료는 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:92",
+            "primary": "해양부표 폭풍후 전원복귀",
+            "text": "해양부표 폭풍후 전원복귀는 파고 하락과 태양충전 회복이 함께 확인될 때 저전력 상태를 해제하며, 폭풍 시각과 배터리 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.211760391,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:53",
+            "primary": "해양부표 태풍후 복구",
+            "text": "해양부표 태풍후 복구는 파고 하락과 계류 장력 확인이 함께 될 때 정상 관측으로 돌아가며, 폭풍 시각과 마지막 위치 자료는 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:92",
+            "primary": "해양부표 폭풍후 전원복귀",
+            "text": "해양부표 폭풍후 전원복귀는 파고 하락과 태양충전 회복이 함께 확인될 때 저전력 상태를 해제하며, 폭풍 시각과 배터리 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.333333333,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:53",
+            "primary": "해양부표 태풍후 복구",
+            "text": "해양부표 태풍후 복구는 파고 하락과 계류 장력 확인이 함께 될 때 정상 관측으로 돌아가며, 폭풍 시각과 마지막 위치 자료는 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:92",
+            "primary": "해양부표 폭풍후 전원복귀",
+            "text": "해양부표 폭풍후 전원복귀는 파고 하락과 태양충전 회복이 함께 확인될 때 저전력 상태를 해제하며, 폭풍 시각과 배터리 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.277594263,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:53",
+            "primary": "해양부표 태풍후 복구",
+            "text": "해양부표 태풍후 복구는 파고 하락과 계류 장력 확인이 함께 될 때 정상 관측으로 돌아가며, 폭풍 시각과 마지막 위치 자료는 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:92",
+            "primary": "해양부표 폭풍후 전원복귀",
+            "text": "해양부표 폭풍후 전원복귀는 파고 하락과 태양충전 회복이 함께 확인될 때 저전력 상태를 해제하며, 폭풍 시각과 배터리 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|part_of|process|state",
+      "records": 10,
+      "possible_pairs": 45,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 45,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.3125,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:28",
+            "primary": "해양부표 부유물 충돌",
+            "text": "해양부표 부유물 충돌은 표류물 접촉과 파랑 증가가 함께일 때 외함 손상을 촉발하며, 충돌 전 위치와 파고 자료를 보존하지 않으면 손상 경로가 제한된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:106",
+            "primary": "해양부표 해양쓰레기 접촉",
+            "text": "해양부표 해양쓰레기 접촉은 부유물과 높은 파랑이 함께일 때 외함 충격을 촉발하며, 접촉 전 위치와 파고 자료를 보존해야 손상 경로를 구분한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.286683658,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:28",
+            "primary": "해양부표 부유물 충돌",
+            "text": "해양부표 부유물 충돌은 표류물 접촉과 파랑 증가가 함께일 때 외함 손상을 촉발하며, 충돌 전 위치와 파고 자료를 보존하지 않으면 손상 경로가 제한된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:106",
+            "primary": "해양부표 해양쓰레기 접촉",
+            "text": "해양부표 해양쓰레기 접촉은 부유물과 높은 파랑이 함께일 때 외함 충격을 촉발하며, 접촉 전 위치와 파고 자료를 보존해야 손상 경로를 구분한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.379310345,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:28",
+            "primary": "해양부표 부유물 충돌",
+            "text": "해양부표 부유물 충돌은 표류물 접촉과 파랑 증가가 함께일 때 외함 손상을 촉발하며, 충돌 전 위치와 파고 자료를 보존하지 않으면 손상 경로가 제한된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:106",
+            "primary": "해양부표 해양쓰레기 접촉",
+            "text": "해양부표 해양쓰레기 접촉은 부유물과 높은 파랑이 함께일 때 외함 충격을 촉발하며, 접촉 전 위치와 파고 자료를 보존해야 손상 경로를 구분한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.332413741,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:28",
+            "primary": "해양부표 부유물 충돌",
+            "text": "해양부표 부유물 충돌은 표류물 접촉과 파랑 증가가 함께일 때 외함 손상을 촉발하며, 충돌 전 위치와 파고 자료를 보존하지 않으면 손상 경로가 제한된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:106",
+            "primary": "해양부표 해양쓰레기 접촉",
+            "text": "해양부표 해양쓰레기 접촉은 부유물과 높은 파랑이 함께일 때 외함 충격을 촉발하며, 접촉 전 위치와 파고 자료를 보존해야 손상 경로를 구분한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|process|role|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|classification|process|state",
+      "records": 11,
+      "possible_pairs": 55,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 55,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.225806452,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:58",
+            "primary": "해양부표 조위자료 누락",
+            "text": "해양부표 조위자료 누락은 조위 관측 중간값이 빠져 상승에서 하강으로의 경로가 끊기는 상태이며, 마지막 정상 조위와 시각을 보존해야 전이를 제한한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:80",
+            "primary": "해양부표 전원상태 누락",
+            "text": "해양부표 전원상태 누락은 배터리 잔량과 저전력 전환 시각이 빠져 정상 관측에서 차단으로의 중간 경로가 사라지는 상태이며, 마지막 잔량을 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.184394213,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:58",
+            "primary": "해양부표 조위자료 누락",
+            "text": "해양부표 조위자료 누락은 조위 관측 중간값이 빠져 상승에서 하강으로의 경로가 끊기는 상태이며, 마지막 정상 조위와 시각을 보존해야 전이를 제한한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:80",
+            "primary": "해양부표 전원상태 누락",
+            "text": "해양부표 전원상태 누락은 배터리 잔량과 저전력 전환 시각이 빠져 정상 관측에서 차단으로의 중간 경로가 사라지는 상태이며, 마지막 잔량을 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.24137931,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:58",
+            "primary": "해양부표 조위자료 누락",
+            "text": "해양부표 조위자료 누락은 조위 관측 중간값이 빠져 상승에서 하강으로의 경로가 끊기는 상태이며, 마지막 정상 조위와 시각을 보존해야 전이를 제한한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:80",
+            "primary": "해양부표 전원상태 누락",
+            "text": "해양부표 전원상태 누락은 배터리 잔량과 저전력 전환 시각이 빠져 정상 관측에서 차단으로의 중간 경로가 사라지는 상태이며, 마지막 잔량을 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.204206427,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:58",
+            "primary": "해양부표 조위자료 누락",
+            "text": "해양부표 조위자료 누락은 조위 관측 중간값이 빠져 상승에서 하강으로의 경로가 끊기는 상태이며, 마지막 정상 조위와 시각을 보존해야 전이를 제한한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:80",
+            "primary": "해양부표 전원상태 누락",
+            "text": "해양부표 전원상태 누락은 배터리 잔량과 저전력 전환 시각이 빠져 정상 관측에서 차단으로의 중간 경로가 사라지는 상태이며, 마지막 잔량을 보존한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|comparison|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|function|process|state",
+      "records": 7,
+      "possible_pairs": 21,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 21,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.194444444,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:7",
+            "primary": "해양부표 위치자료 단절",
+            "text": "해양부표 위치자료 단절은 위성 신호 상실이 좌표 수신을 끊는 원인이고, 마지막 정상 위치와 시각을 보존하지 않으면 표류 전이 경로를 확정할 수 없다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:104",
+            "primary": "해양부표 수질자료 단절",
+            "text": "해양부표 수질자료 단절은 센서 전원 저하와 통신 지연이 함께일 때 자료가 끊기는 상태이고, 마지막 정상 수질과 시각을 보존해야 전이 경로를 제한한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.195696296,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:7",
+            "primary": "해양부표 위치자료 단절",
+            "text": "해양부표 위치자료 단절은 위성 신호 상실이 좌표 수신을 끊는 원인이고, 마지막 정상 위치와 시각을 보존하지 않으면 표류 전이 경로를 확정할 수 없다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:104",
+            "primary": "해양부표 수질자료 단절",
+            "text": "해양부표 수질자료 단절은 센서 전원 저하와 통신 지연이 함께일 때 자료가 끊기는 상태이고, 마지막 정상 수질과 시각을 보존해야 전이 경로를 제한한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.205882353,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:7",
+            "primary": "해양부표 위치자료 단절",
+            "text": "해양부표 위치자료 단절은 위성 신호 상실이 좌표 수신을 끊는 원인이고, 마지막 정상 위치와 시각을 보존하지 않으면 표류 전이 경로를 확정할 수 없다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:104",
+            "primary": "해양부표 수질자료 단절",
+            "text": "해양부표 수질자료 단절은 센서 전원 저하와 통신 지연이 함께일 때 자료가 끊기는 상태이고, 마지막 정상 수질과 시각을 보존해야 전이 경로를 제한한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.186866334,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:7",
+            "primary": "해양부표 위치자료 단절",
+            "text": "해양부표 위치자료 단절은 위성 신호 상실이 좌표 수신을 끊는 원인이고, 마지막 정상 위치와 시각을 보존하지 않으면 표류 전이 경로를 확정할 수 없다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:104",
+            "primary": "해양부표 수질자료 단절",
+            "text": "해양부표 수질자료 단절은 센서 전원 저하와 통신 지연이 함께일 때 자료가 끊기는 상태이고, 마지막 정상 수질과 시각을 보존해야 전이 경로를 제한한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|part_of|process|state",
+      "records": 5,
+      "possible_pairs": 10,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 10,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.194444444,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:10",
+            "primary": "해양부표 계류선 파단",
+            "text": "해양부표 계류선 파단은 반복 장력과 마모 누적이 함께일 때 계류가 끊기는 비가역 상태이며, 파단 위치와 마지막 중간 장력 자료가 전이 경로의 근거다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:29",
+            "primary": "해양부표 외함균열 손실",
+            "text": "해양부표 외함균열 손실은 충돌과 장기 침수가 함께일 때 내부 장비가 비가역 손상으로 가는 상태이며, 균열 위치와 마지막 정상 전원 상태는 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.135799512,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:10",
+            "primary": "해양부표 계류선 파단",
+            "text": "해양부표 계류선 파단은 반복 장력과 마모 누적이 함께일 때 계류가 끊기는 비가역 상태이며, 파단 위치와 마지막 중간 장력 자료가 전이 경로의 근거다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:29",
+            "primary": "해양부표 외함균열 손실",
+            "text": "해양부표 외함균열 손실은 충돌과 장기 침수가 함께일 때 내부 장비가 비가역 손상으로 가는 상태이며, 균열 위치와 마지막 정상 전원 상태는 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.242424242,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:10",
+            "primary": "해양부표 계류선 파단",
+            "text": "해양부표 계류선 파단은 반복 장력과 마모 누적이 함께일 때 계류가 끊기는 비가역 상태이며, 파단 위치와 마지막 중간 장력 자료가 전이 경로의 근거다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:29",
+            "primary": "해양부표 외함균열 손실",
+            "text": "해양부표 외함균열 손실은 충돌과 장기 침수가 함께일 때 내부 장비가 비가역 손상으로 가는 상태이며, 균열 위치와 마지막 정상 전원 상태는 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.176199113,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:10",
+            "primary": "해양부표 계류선 파단",
+            "text": "해양부표 계류선 파단은 반복 장력과 마모 누적이 함께일 때 계류가 끊기는 비가역 상태이며, 파단 위치와 마지막 중간 장력 자료가 전이 경로의 근거다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:29",
+            "primary": "해양부표 외함균열 손실",
+            "text": "해양부표 외함균열 손실은 충돌과 장기 침수가 함께일 때 내부 장비가 비가역 손상으로 가는 상태이며, 균열 위치와 마지막 정상 전원 상태는 보존한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|process|role|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.375,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:38",
+            "primary": "해양부표 관제확인 중간",
+            "text": "해양부표 관제확인 중간은 경보는 생성됐지만 관제 수신 확인이 끝나지 않은 단계이고, 이 단계가 누락되면 경보 생성과 현장 조치를 직접 연결한 것으로 오인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:86",
+            "primary": "해양부표 복합경보 중간",
+            "text": "해양부표 복합경보 중간은 수질 경보는 생성됐지만 관제 확인이 끝나지 않은 단계이며, 이 중간 상태가 누락되면 경보에서 즉시 회수 지시로 전이한 것으로 오인한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.343802511,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:38",
+            "primary": "해양부표 관제확인 중간",
+            "text": "해양부표 관제확인 중간은 경보는 생성됐지만 관제 수신 확인이 끝나지 않은 단계이고, 이 단계가 누락되면 경보 생성과 현장 조치를 직접 연결한 것으로 오인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:86",
+            "primary": "해양부표 복합경보 중간",
+            "text": "해양부표 복합경보 중간은 수질 경보는 생성됐지만 관제 확인이 끝나지 않은 단계이며, 이 중간 상태가 누락되면 경보에서 즉시 회수 지시로 전이한 것으로 오인한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.4,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:38",
+            "primary": "해양부표 관제확인 중간",
+            "text": "해양부표 관제확인 중간은 경보는 생성됐지만 관제 수신 확인이 끝나지 않은 단계이고, 이 단계가 누락되면 경보 생성과 현장 조치를 직접 연결한 것으로 오인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:86",
+            "primary": "해양부표 복합경보 중간",
+            "text": "해양부표 복합경보 중간은 수질 경보는 생성됐지만 관제 확인이 끝나지 않은 단계이며, 이 중간 상태가 누락되면 경보에서 즉시 회수 지시로 전이한 것으로 오인한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.397404798,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:38",
+            "primary": "해양부표 관제확인 중간",
+            "text": "해양부표 관제확인 중간은 경보는 생성됐지만 관제 수신 확인이 끝나지 않은 단계이고, 이 단계가 누락되면 경보 생성과 현장 조치를 직접 연결한 것으로 오인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:86",
+            "primary": "해양부표 복합경보 중간",
+            "text": "해양부표 복합경보 중간은 수질 경보는 생성됐지만 관제 확인이 끝나지 않은 단계이며, 이 중간 상태가 누락되면 경보에서 즉시 회수 지시로 전이한 것으로 오인한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|comparison|process|state",
+      "records": 3,
+      "possible_pairs": 3,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 3,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.102564103,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:52",
+            "primary": "해양부표 태풍대기 상태",
+            "text": "해양부표 태풍대기 상태는 파랑 증가와 전원 절약 지령이 함께 있을 때 저주기 관측으로 바뀌는 중간 단계이며, 이 단계가 빠지면 정상에서 즉시 비상으로 오인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:120",
+            "primary": "해양부표 관측등급 변경",
+            "text": "해양부표 관측등급 변경은 자료품질과 파랑 위험이 함께 달라질 때 관측 등급을 조정하며, 등급 기준과 부표 식별은 보존하고 관측 주기와 경보는 변경된다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.041477474,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:52",
+            "primary": "해양부표 태풍대기 상태",
+            "text": "해양부표 태풍대기 상태는 파랑 증가와 전원 절약 지령이 함께 있을 때 저주기 관측으로 바뀌는 중간 단계이며, 이 단계가 빠지면 정상에서 즉시 비상으로 오인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:120",
+            "primary": "해양부표 관측등급 변경",
+            "text": "해양부표 관측등급 변경은 자료품질과 파랑 위험이 함께 달라질 때 관측 등급을 조정하며, 등급 기준과 부표 식별은 보존하고 관측 주기와 경보는 변경된다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.108108108,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:52",
+            "primary": "해양부표 태풍대기 상태",
+            "text": "해양부표 태풍대기 상태는 파랑 증가와 전원 절약 지령이 함께 있을 때 저주기 관측으로 바뀌는 중간 단계이며, 이 단계가 빠지면 정상에서 즉시 비상으로 오인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:120",
+            "primary": "해양부표 관측등급 변경",
+            "text": "해양부표 관측등급 변경은 자료품질과 파랑 위험이 함께 달라질 때 관측 등급을 조정하며, 등급 기준과 부표 식별은 보존하고 관측 주기와 경보는 변경된다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.059664981,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:52",
+            "primary": "해양부표 태풍대기 상태",
+            "text": "해양부표 태풍대기 상태는 파랑 증가와 전원 절약 지령이 함께 있을 때 저주기 관측으로 바뀌는 중간 단계이며, 이 단계가 빠지면 정상에서 즉시 비상으로 오인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:120",
+            "primary": "해양부표 관측등급 변경",
+            "text": "해양부표 관측등급 변경은 자료품질과 파랑 위험이 함께 달라질 때 관측 등급을 조정하며, 등급 기준과 부표 식별은 보존하고 관측 주기와 경보는 변경된다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|function|process|state",
+      "records": 15,
+      "possible_pairs": 105,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 105,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.357142857,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:55",
+            "primary": "해양부표 해류자료 지연",
+            "text": "해양부표 해류자료 지연은 센서 처리와 통신 대기가 함께 길어질 때 현재 유속이 늦게 보고되는 상태이고, 원자료 시각과 부표 식별은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:70",
+            "primary": "해양부표 영양염센서 지연",
+            "text": "해양부표 영양염센서 지연은 시료 채취와 분석 대기가 함께 길어질 때 경보 입력이 늦어지는 상태이고, 채취 시각과 시료 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.267544094,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:55",
+            "primary": "해양부표 해류자료 지연",
+            "text": "해양부표 해류자료 지연은 센서 처리와 통신 대기가 함께 길어질 때 현재 유속이 늦게 보고되는 상태이고, 원자료 시각과 부표 식별은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:70",
+            "primary": "해양부표 영양염센서 지연",
+            "text": "해양부표 영양염센서 지연은 시료 채취와 분석 대기가 함께 길어질 때 경보 입력이 늦어지는 상태이고, 채취 시각과 시료 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.384615385,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:55",
+            "primary": "해양부표 해류자료 지연",
+            "text": "해양부표 해류자료 지연은 센서 처리와 통신 대기가 함께 길어질 때 현재 유속이 늦게 보고되는 상태이고, 원자료 시각과 부표 식별은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:70",
+            "primary": "해양부표 영양염센서 지연",
+            "text": "해양부표 영양염센서 지연은 시료 채취와 분석 대기가 함께 길어질 때 경보 입력이 늦어지는 상태이고, 채취 시각과 시료 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.296002052,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:55",
+            "primary": "해양부표 해류자료 지연",
+            "text": "해양부표 해류자료 지연은 센서 처리와 통신 대기가 함께 길어질 때 현재 유속이 늦게 보고되는 상태이고, 원자료 시각과 부표 식별은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:70",
+            "primary": "해양부표 영양염센서 지연",
+            "text": "해양부표 영양염센서 지연은 시료 채취와 분석 대기가 함께 길어질 때 경보 입력이 늦어지는 상태이고, 채취 시각과 시료 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|part_of|process|state",
+      "records": 5,
+      "possible_pairs": 10,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 10,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.166666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:78",
+            "primary": "해양부표 표류경로 제한",
+            "text": "해양부표 표류경로 제한은 위치 단절과 계류 장력 자료 누락이 함께 있을 때 가능한 표류 경로를 좁혀 기록하며, 마지막 위치와 시각은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:128",
+            "primary": "해양부표 관측위치 변경",
+            "text": "해양부표 관측위치 변경은 해저 장애물과 계류 허가가 함께 확인될 때 새 위치로 전이하며, 기존 위치와 이동 사유는 보존하고 좌표와 시각은 변경된다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.098383081,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:78",
+            "primary": "해양부표 표류경로 제한",
+            "text": "해양부표 표류경로 제한은 위치 단절과 계류 장력 자료 누락이 함께 있을 때 가능한 표류 경로를 좁혀 기록하며, 마지막 위치와 시각은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:128",
+            "primary": "해양부표 관측위치 변경",
+            "text": "해양부표 관측위치 변경은 해저 장애물과 계류 허가가 함께 확인될 때 새 위치로 전이하며, 기존 위치와 이동 사유는 보존하고 좌표와 시각은 변경된다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.212121212,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:78",
+            "primary": "해양부표 표류경로 제한",
+            "text": "해양부표 표류경로 제한은 위치 단절과 계류 장력 자료 누락이 함께 있을 때 가능한 표류 경로를 좁혀 기록하며, 마지막 위치와 시각은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:128",
+            "primary": "해양부표 관측위치 변경",
+            "text": "해양부표 관측위치 변경은 해저 장애물과 계류 허가가 함께 확인될 때 새 위치로 전이하며, 기존 위치와 이동 사유는 보존하고 좌표와 시각은 변경된다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.128554091,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:78",
+            "primary": "해양부표 표류경로 제한",
+            "text": "해양부표 표류경로 제한은 위치 단절과 계류 장력 자료 누락이 함께 있을 때 가능한 표류 경로를 좁혀 기록하며, 마지막 위치와 시각은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:128",
+            "primary": "해양부표 관측위치 변경",
+            "text": "해양부표 관측위치 변경은 해저 장애물과 계류 허가가 함께 확인될 때 새 위치로 전이하며, 기존 위치와 이동 사유는 보존하고 좌표와 시각은 변경된다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|process|role|state",
+      "records": 4,
+      "possible_pairs": 6,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 6,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.2,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:39",
+            "primary": "해양부표 관제경보 승계",
+            "text": "해양부표 관제경보 승계는 수신 확인과 담당자 배정이 함께 완료될 때 현장 대응으로 전이하며, 경보 원본과 부표 식별은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:126",
+            "primary": "해양부표 회수완료 인계",
+            "text": "해양부표 회수완료 인계는 회수 위치와 외함 상태 확인이 함께 끝날 때 정비팀으로 책임을 넘기며, 회수 기록과 부표 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.128045152,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:39",
+            "primary": "해양부표 관제경보 승계",
+            "text": "해양부표 관제경보 승계는 수신 확인과 담당자 배정이 함께 완료될 때 현장 대응으로 전이하며, 경보 원본과 부표 식별은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:126",
+            "primary": "해양부표 회수완료 인계",
+            "text": "해양부표 회수완료 인계는 회수 위치와 외함 상태 확인이 함께 끝날 때 정비팀으로 책임을 넘기며, 회수 기록과 부표 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.259259259,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:39",
+            "primary": "해양부표 관제경보 승계",
+            "text": "해양부표 관제경보 승계는 수신 확인과 담당자 배정이 함께 완료될 때 현장 대응으로 전이하며, 경보 원본과 부표 식별은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:126",
+            "primary": "해양부표 회수완료 인계",
+            "text": "해양부표 회수완료 인계는 회수 위치와 외함 상태 확인이 함께 끝날 때 정비팀으로 책임을 넘기며, 회수 기록과 부표 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.1729539,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:39",
+            "primary": "해양부표 관제경보 승계",
+            "text": "해양부표 관제경보 승계는 수신 확인과 담당자 배정이 함께 완료될 때 현장 대응으로 전이하며, 경보 원본과 부표 식별은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:126",
+            "primary": "해양부표 회수완료 인계",
+            "text": "해양부표 회수완료 인계는 회수 위치와 외함 상태 확인이 함께 끝날 때 정비팀으로 책임을 넘기며, 회수 기록과 부표 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "comparison|function|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "comparison|part_of|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "comparison|process|role|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "contrast|part_of|process|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.075,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:36",
+            "primary": "해양부표 자료손실 비가역",
+            "text": "해양부표 자료손실 비가역은 버퍼 포화와 전원 차단이 함께일 때 미전송 관측이 사라지는 손실이고, 마지막 보존 자료와 손실 시각은 복구할 수 없는 상태의 근거다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:94",
+            "primary": "해양부표 표류원인 분리",
+            "text": "해양부표 표류원인 분리는 계류선 파단과 위치자료 단절이 함께 나타날 때 두 경로를 나누는 과정이며, 마지막 정상 위치와 장력 자료를 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.047326702,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:36",
+            "primary": "해양부표 자료손실 비가역",
+            "text": "해양부표 자료손실 비가역은 버퍼 포화와 전원 차단이 함께일 때 미전송 관측이 사라지는 손실이고, 마지막 보존 자료와 손실 시각은 복구할 수 없는 상태의 근거다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:94",
+            "primary": "해양부표 표류원인 분리",
+            "text": "해양부표 표류원인 분리는 계류선 파단과 위치자료 단절이 함께 나타날 때 두 경로를 나누는 과정이며, 마지막 정상 위치와 장력 자료를 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.078947368,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:36",
+            "primary": "해양부표 자료손실 비가역",
+            "text": "해양부표 자료손실 비가역은 버퍼 포화와 전원 차단이 함께일 때 미전송 관측이 사라지는 손실이고, 마지막 보존 자료와 손실 시각은 복구할 수 없는 상태의 근거다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:94",
+            "primary": "해양부표 표류원인 분리",
+            "text": "해양부표 표류원인 분리는 계류선 파단과 위치자료 단절이 함께 나타날 때 두 경로를 나누는 과정이며, 마지막 정상 위치와 장력 자료를 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.076707844,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:36",
+            "primary": "해양부표 자료손실 비가역",
+            "text": "해양부표 자료손실 비가역은 버퍼 포화와 전원 차단이 함께일 때 미전송 관측이 사라지는 손실이고, 마지막 보존 자료와 손실 시각은 복구할 수 없는 상태의 근거다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:94",
+            "primary": "해양부표 표류원인 분리",
+            "text": "해양부표 표류원인 분리는 계류선 파단과 위치자료 단절이 함께 나타날 때 두 경로를 나누는 과정이며, 마지막 정상 위치와 장력 자료를 보존한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "function|part_of|process|state",
+      "records": 7,
+      "possible_pairs": 21,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 21,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.2,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:67",
+            "primary": "해양부표 산소센서 교체",
+            "text": "해양부표 산소센서 교체는 교정 실패와 저산소 경보가 함께 지속될 때 교체 상태로 전이하며, 센서 식별과 마지막 정상값은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:114",
+            "primary": "해양부표 태양충전 복구",
+            "text": "해양부표 태양충전 복구는 패널 세척과 일사 회복이 함께 확인될 때 배터리 충전 상태로 전이하며, 세척 기록과 배터리 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.152235873,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:81",
+            "primary": "해양부표 예비전원 승계",
+            "text": "해양부표 예비전원 승계는 주 배터리 저전압과 예비 배터리 연결이 함께 확인될 때 전원 경로를 바꾸며, 전원 식별과 저전압 원본은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:114",
+            "primary": "해양부표 태양충전 복구",
+            "text": "해양부표 태양충전 복구는 패널 세척과 일사 회복이 함께 확인될 때 배터리 충전 상태로 전이하며, 세척 기록과 배터리 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.259259259,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:67",
+            "primary": "해양부표 산소센서 교체",
+            "text": "해양부표 산소센서 교체는 교정 실패와 저산소 경보가 함께 지속될 때 교체 상태로 전이하며, 센서 식별과 마지막 정상값은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:114",
+            "primary": "해양부표 태양충전 복구",
+            "text": "해양부표 태양충전 복구는 패널 세척과 일사 회복이 함께 확인될 때 배터리 충전 상태로 전이하며, 세척 기록과 배터리 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.201705028,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:81",
+            "primary": "해양부표 예비전원 승계",
+            "text": "해양부표 예비전원 승계는 주 배터리 저전압과 예비 배터리 연결이 함께 확인될 때 전원 경로를 바꾸며, 전원 식별과 저전압 원본은 보존한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:114",
+            "primary": "해양부표 태양충전 복구",
+            "text": "해양부표 태양충전 복구는 패널 세척과 일사 회복이 함께 확인될 때 배터리 충전 상태로 전이하며, 세척 기록과 배터리 식별은 보존한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "function|process|role|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.054054054,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:74",
+            "primary": "해양부표 수질경보 승계",
+            "text": "해양부표 수질경보 승계는 오염농도가 대응기준을 넘고 관제가 메시지 수신을 확인한 뒤 현장조치로 책임을 넘기는 변화다. 원경보와 부표번호를 보존해 인계누락을 막는다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:96",
+            "primary": "해양부표 회수승계 조건",
+            "text": "해양부표 회수승계 조건은 표류 경보와 선박 접근 허가가 함께 있을 때 회수팀으로 책임을 넘기며, 경보 원본과 위치 기준은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.060747024,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:74",
+            "primary": "해양부표 수질경보 승계",
+            "text": "해양부표 수질경보 승계는 오염농도가 대응기준을 넘고 관제가 메시지 수신을 확인한 뒤 현장조치로 책임을 넘기는 변화다. 원경보와 부표번호를 보존해 인계누락을 막는다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:96",
+            "primary": "해양부표 회수승계 조건",
+            "text": "해양부표 회수승계 조건은 표류 경보와 선박 접근 허가가 함께 있을 때 회수팀으로 책임을 넘기며, 경보 원본과 위치 기준은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.057142857,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:74",
+            "primary": "해양부표 수질경보 승계",
+            "text": "해양부표 수질경보 승계는 오염농도가 대응기준을 넘고 관제가 메시지 수신을 확인한 뒤 현장조치로 책임을 넘기는 변화다. 원경보와 부표번호를 보존해 인계누락을 막는다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:96",
+            "primary": "해양부표 회수승계 조건",
+            "text": "해양부표 회수승계 조건은 표류 경보와 선박 접근 허가가 함께 있을 때 회수팀으로 책임을 넘기며, 경보 원본과 위치 기준은 보존한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.091890507,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:74",
+            "primary": "해양부표 수질경보 승계",
+            "text": "해양부표 수질경보 승계는 오염농도가 대응기준을 넘고 관제가 메시지 수신을 확인한 뒤 현장조치로 책임을 넘기는 변화다. 원경보와 부표번호를 보존해 인계누락을 막는다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:96",
+            "primary": "해양부표 회수승계 조건",
+            "text": "해양부표 회수승계 조건은 표류 경보와 선박 접근 허가가 함께 있을 때 회수팀으로 책임을 넘기며, 경보 원본과 위치 기준은 보존한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "part_of|process|role|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    }
+  ],
+  "naturalness_warnings": {
+    "mode": "ADVISORY_WARNING_ONLY",
+    "rules": {
+      "path": "stage2_highdensity_dataset/tools/primary_naturalness_warning_rules_v1.json",
+      "sha256": "517d452cd174581f812d3b0d73a7bf48d72615e2a4259d59bf8ad38d14b7c741",
+      "schema_version": 1
+    },
+    "warning_records": 0,
+    "warning_assignments": 0,
+    "primary_dash_records": 0,
+    "primary_dash_ratio": 0,
+    "dash_style_review": {
+      "core_reuse_min_records": 2,
+      "copied_subject_particles": [
+        "은",
+        "는",
+        "이",
+        "가",
+        "에서",
+        "으로"
+      ],
+      "text_begins_exact_dash_primary_plus_particle_records": 0,
+      "text_begins_exact_dash_primary_plus_particle_ratio": 0,
+      "repeated_core_groups": 0,
+      "records_in_repeated_core_groups": 0,
+      "top_repeated_core_groups": [],
+      "interpretation": "This is an advisory style signal. A dash label copied into a sentence and a highly reused core can indicate a generated title pattern, but neither value alone proves that the underlying concept is false."
+    },
+    "by_code": [],
+    "by_expression": [],
+    "examples": [],
+    "note": "Warnings are evidence and statistics only. They neither alter source nor make structural gates fail by themselves."
+  },
+  "hard_source_errors": 0,
+  "direct_rewrite_targets": [],
+  "chatgpt_review_queue": [
+    {
+      "review_key": "group:primary_topic_particle_ratio",
+      "kind": "group",
+      "severity": "HARD",
+      "code": "primary_eunneun_opening_concentration",
+      "evidence": {
+        "rate": 1,
+        "thresholds": {
+          "review_above": 0.3,
+          "hold_above": 0.45
+        },
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:1",
+            "primary": "해양부표 수온관측 시작",
+            "text": "해양부표 수온관측 시작은 센서가 수면 아래로 안정되고 첫 자료가 수신되는 전이이며, 부표 식별과 관측 시각은 보존하고 수온값과 센서 상태는 변경된다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:2",
+            "primary": "해양부표 파고자료 지연",
+            "text": "해양부표 파고자료 지연은 센서 내부 처리와 통신전송이 모두 늦어져 관측 중간구간이 제때 도착하지 않는 과정이다. 부표번호와 원측정시각을 보존해 결측과 단순 지연을 구별한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:3",
+            "primary": "해양부표 풍속경보 전이",
+            "text": "해양부표 풍속경보 전이는 풍속이 경보 한계를 넘는 상태이고, 경보 발생 전의 상승 구간이 누락되면 정상 관측에서 비상 경보로 가는 경로를 제한해야 한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:4",
+            "primary": "해양부표 파랑상태 변화",
+            "text": "해양부표 파랑상태 변화는 파고와 주기가 함께 증가해 안정 관측에서 주의 관측으로 바뀌는 과정이며, 관측 위치와 시각은 보존하고 파고와 주기는 변경된다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:5",
+            "primary": "해양부표 너울중간 상태",
+            "text": "해양부표 너울중간 상태는 파고는 높지만 경보 한계에는 이르지 않은 중간 단계이고, 이 단계 자료가 빠지면 주의 상태에서 비상 상태로 바로 전이한 것으로 오인한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:6",
+            "primary": "해양부표 조류방향 전이",
+            "text": "해양부표 조류방향 전이는 유속과 풍향이 함께 바뀔 때 표류 방향이 변하는 과정이고, 위치 기준과 관측 시각은 보존하며 방향과 유속은 변경 변수다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:7",
+            "primary": "해양부표 위치자료 단절",
+            "text": "해양부표 위치자료 단절은 위성 신호 상실이 좌표 수신을 끊는 원인이고, 마지막 정상 위치와 시각을 보존하지 않으면 표류 전이 경로를 확정할 수 없다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:8",
+            "primary": "해양부표 표류경보 조건",
+            "text": "해양부표 표류경보 조건은 위치 변화와 계류 장력 저하가 함께 확인될 때 경보로 전이하며, 위치 단절 중간 상태가 누락되면 원인과 경보를 구분하지 못한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:9",
+            "primary": "해양부표 계류장력 저하",
+            "text": "해양부표 계류장력 저하는 파랑 증가와 계류선 마모가 함께일 때 장력이 낮아지는 상태이고, 장력 측정 시각과 계류선 식별은 보존하며 장력값은 변경된다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v44.source.jsonl:10",
+            "primary": "해양부표 계류선 파단",
+            "text": "해양부표 계류선 파단은 반복 장력과 마모 누적이 함께일 때 계류가 끊기는 비가역 상태이며, 파단 위치와 마지막 중간 장력 자료가 전이 경로의 근거다."
+          }
+        ]
+      }
+    },
+    {
+      "review_key": "group:primary_topic_particle_ratio:stage2_(14)state_transition_high_density_train_v44.source.jsonl",
+      "kind": "group",
+      "severity": "HARD",
+      "code": "file_primary_eunneun_opening_concentration",
+      "evidence": {
+        "file": {
+          "file": "stage2_(14)state_transition_high_density_train_v44.source.jsonl",
+          "records": 150,
+          "hits": 150,
+          "rate": 1,
+          "assessment": "HOLD_REWRITE_DIVERSITY"
+        },
+        "thresholds": {
+          "review_above": 0.3,
+          "hold_above": 0.45
+        }
+      }
+    }
+  ],
+  "user_review_queue": [],
+  "review_queue_counts": {
+    "direct_rewrite_targets": 0,
+    "chatgpt_review_pending": 2,
+    "chatgpt_review_pending_hard": 2,
+    "user_review_pending": 0
+  },
+  "stale_or_invalid_decisions": [],
+  "review_protocol": {
+    "rule": "The script supplies evidence only. ChatGPT reviews chatgpt_review_queue first and records direct_rewrite, keep, or user_review in a decision sidecar. Only user_review items are escalated to the user.",
+    "direct_rewrite": "A direct target is an editorial task, not an automatic source mutation. Apply only a record-specific human/ChatGPT-authored patch, then rerun every relevant gate.",
+    "limitations": "Lexical patterns, X1/X2 clusters, and approximate large-group similarity are review signals. They do not by themselves prove that a Korean term is unnatural."
+  }
+}

@@ -1,0 +1,2247 @@
+{
+  "audit": "Stage2 primary naturalness reviewer-assist",
+  "audit_version": 2,
+  "execution_mode": "read_only_source_scan",
+  "source_selection": {
+    "source_dir": "Z:\\TinyLM\\datasets\\TinyDataset\\stage2_highdensity_dataset\\sources\\train",
+    "filename_match": "v40\\.source\\.jsonl$",
+    "area": {
+      "requested": "A04",
+      "code": "A04",
+      "source_area_slot": "14",
+      "slug": "state_transition",
+      "rule": "filename match AND exact Stage2 area filename prefix"
+    }
+  },
+  "source_set_sha256": "745ccefa3696fac3119496b6b95a52d3a0204189782e0d9e4b34ad2e20b87dab",
+  "source_files": 1,
+  "source_records": 150,
+  "source_file_sha256": {
+    "stage2_(14)state_transition_high_density_train_v40.source.jsonl": "6736e9e7dee5d379b1c61d076081f911721f4044fbb8d9424cf1539607c343fc"
+  },
+  "registry": {
+    "supplied": false,
+    "require_registry": false,
+    "sha256": null,
+    "parse_problems": [],
+    "records": 0,
+    "coverage": null
+  },
+  "primary_eunneun_opening": {
+    "count": 0,
+    "records": 150,
+    "rate": 0,
+    "provisional_thresholds": {
+      "review_above": 0.3,
+      "hold_above": 0.45
+    },
+    "assessment": "WITHIN_PROVISIONAL_RANGE",
+    "note": "The ratio is a diversity gate, not a Korean grammar error rate. A threshold crossing requires family-level review rather than blind rewrites.",
+    "by_file": [
+      {
+        "file": "stage2_(14)state_transition_high_density_train_v40.source.jsonl",
+        "records": 150,
+        "hits": 0,
+        "rate": 0,
+        "assessment": "WITHIN_PROVISIONAL_RANGE"
+      }
+    ],
+    "examples": []
+  },
+  "x1_x2_composite": {
+    "core_style_counts": {
+      "no_space": 0,
+      "one_token": 0,
+      "two_token_core": 0,
+      "three_or_more_token_core": 150
+    },
+    "two_word_core_records": 0,
+    "two_word_core_ratio_all_records": 0,
+    "same_x1_different_x2": {
+      "group_count": 0,
+      "records": 0,
+      "ratio_within_two_word_core": null,
+      "ratio_all_records": 0,
+      "top_groups": []
+    },
+    "same_x2_different_x1": {
+      "group_count": 0,
+      "records": 0,
+      "ratio_within_two_word_core": null,
+      "ratio_all_records": 0,
+      "top_groups": []
+    }
+  },
+  "same_relation_set_masked_similarity": [
+    {
+      "relation_set": "attribute|boundary|process|state",
+      "records": 22,
+      "possible_pairs": 231,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 231,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.208333333,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:50",
+            "primary": "여러 지표를 함께 보는 복구 판단",
+            "text": "통신, 절연, 계통 상태가 모두 안정돼야 태양광 설비의 출력을 다시 올릴 수 있다. 운영자는 한 지표만 좋아졌다고 복구하지 않고 전체 점검 결과를 확인한다. 이 판단을 여러 지표를 함께 보는 복구 판단이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:87",
+            "primary": "계통 복구 전 저장장치 절연 확인",
+            "text": "계통 전압이 돌아와도 저장장치의 절연 상태가 확인될 때까지 출력을 다시 올릴 수 없다. 담당자는 절연 시험을 마친 뒤에만 복구를 허용한다. 이 절차를 계통 복구 전 저장장치 절연 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.168780872,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:12",
+            "primary": "약한 계곡 바람과 배터리 냉각 지연",
+            "text": "배터리 온도가 올랐는데 계곡 바람까지 약하면 열이 빠지는 속도가 늦어진다. 운영자는 냉각 상태를 확인해 충전량을 조절한다. 이 상태를 약한 계곡 바람과 배터리 냉각 지연이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:75",
+            "primary": "냉각수 부족 때 배터리 온도 회복 지연",
+            "text": "냉각수가 부족한 상태에서 배터리를 빠르게 방전하면 열이 잘 빠지지 않아 온도가 천천히 내려간다. 운영자는 방전량을 낮추고 냉각수 보충을 기다린다. 이 상태를 냉각수 부족 때 배터리 온도 회복 지연이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.268292683,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:50",
+            "primary": "여러 지표를 함께 보는 복구 판단",
+            "text": "통신, 절연, 계통 상태가 모두 안정돼야 태양광 설비의 출력을 다시 올릴 수 있다. 운영자는 한 지표만 좋아졌다고 복구하지 않고 전체 점검 결과를 확인한다. 이 판단을 여러 지표를 함께 보는 복구 판단이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:87",
+            "primary": "계통 복구 전 저장장치 절연 확인",
+            "text": "계통 전압이 돌아와도 저장장치의 절연 상태가 확인될 때까지 출력을 다시 올릴 수 없다. 담당자는 절연 시험을 마친 뒤에만 복구를 허용한다. 이 절차를 계통 복구 전 저장장치 절연 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.176201293,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:3",
+            "primary": "계곡 안개로 인한 태양광 출력 제한",
+            "text": "계곡 안개가 오래 머물고 바람까지 약하면 모듈 표면의 습기가 잘 마르지 않는다. 운영자는 안개가 걷힐 때까지 출력 제한을 유지한다. 이 상태를 계곡 안개로 인한 태양광 출력 제한이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:12",
+            "primary": "약한 계곡 바람과 배터리 냉각 지연",
+            "text": "배터리 온도가 올랐는데 계곡 바람까지 약하면 열이 빠지는 속도가 늦어진다. 운영자는 냉각 상태를 확인해 충전량을 조절한다. 이 상태를 약한 계곡 바람과 배터리 냉각 지연이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|classification|process|state",
+      "records": 11,
+      "possible_pairs": 55,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 55,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.266666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:95",
+            "primary": "산악 안개와 계통 감축 지령",
+            "text": "산악 안개로 발전량 예측이 낮은데 계통 감축 지령까지 오면 줄여야 할 출력이 더 커진다. 운영자는 안개와 감축 지령이 시작된 시각을 확인해 제한 원인을 구분한다. 이 상황을 산악 안개와 계통 감축 지령이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:119",
+            "primary": "산불 연기와 계통 감축에 따른 출력 제한",
+            "text": "산불 연기로 발전량이 줄어든 상황에서 계통 감축 지령까지 오면 출력 제한이 더 커진다. 운영자는 계측 시각을 따로 확인해 자연 감소와 지령 효과를 구분한다. 이 상태를 산불 연기와 계통 감축에 따른 출력 제한이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.304402816,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:95",
+            "primary": "산악 안개와 계통 감축 지령",
+            "text": "산악 안개로 발전량 예측이 낮은데 계통 감축 지령까지 오면 줄여야 할 출력이 더 커진다. 운영자는 안개와 감축 지령이 시작된 시각을 확인해 제한 원인을 구분한다. 이 상황을 산악 안개와 계통 감축 지령이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:119",
+            "primary": "산불 연기와 계통 감축에 따른 출력 제한",
+            "text": "산불 연기로 발전량이 줄어든 상황에서 계통 감축 지령까지 오면 출력 제한이 더 커진다. 운영자는 계측 시각을 따로 확인해 자연 감소와 지령 효과를 구분한다. 이 상태를 산불 연기와 계통 감축에 따른 출력 제한이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.333333333,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:95",
+            "primary": "산악 안개와 계통 감축 지령",
+            "text": "산악 안개로 발전량 예측이 낮은데 계통 감축 지령까지 오면 줄여야 할 출력이 더 커진다. 운영자는 안개와 감축 지령이 시작된 시각을 확인해 제한 원인을 구분한다. 이 상황을 산악 안개와 계통 감축 지령이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:119",
+            "primary": "산불 연기와 계통 감축에 따른 출력 제한",
+            "text": "산불 연기로 발전량이 줄어든 상황에서 계통 감축 지령까지 오면 출력 제한이 더 커진다. 운영자는 계측 시각을 따로 확인해 자연 감소와 지령 효과를 구분한다. 이 상태를 산불 연기와 계통 감축에 따른 출력 제한이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.333913012,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:95",
+            "primary": "산악 안개와 계통 감축 지령",
+            "text": "산악 안개로 발전량 예측이 낮은데 계통 감축 지령까지 오면 줄여야 할 출력이 더 커진다. 운영자는 안개와 감축 지령이 시작된 시각을 확인해 제한 원인을 구분한다. 이 상황을 산악 안개와 계통 감축 지령이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:119",
+            "primary": "산불 연기와 계통 감축에 따른 출력 제한",
+            "text": "산불 연기로 발전량이 줄어든 상황에서 계통 감축 지령까지 오면 출력 제한이 더 커진다. 운영자는 계측 시각을 따로 확인해 자연 감소와 지령 효과를 구분한다. 이 상태를 산불 연기와 계통 감축에 따른 출력 제한이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|comparison|process|state",
+      "records": 11,
+      "possible_pairs": 55,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 55,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.243902439,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:96",
+            "primary": "고지대에서 고속 충전이 배터리 수명에 미치는 영향",
+            "text": "고지대의 낮은 기압에서 빠른 충전을 반복하면 배터리 열화가 빨라질 수 있다. 운영자는 온도와 충전 횟수를 살펴 충전 속도를 조절한다. 이 변화를 고지대에서 고속 충전이 배터리 수명에 미치는 영향이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:122",
+            "primary": "고지대 저온에서의 배터리 충전 제한",
+            "text": "고지대의 낮은 기압과 차가운 셀 온도가 겹치면 충전 전류를 줄여야 한다. 운영자는 온도와 고도 보정값을 보고 충전 속도를 조절한다. 이 조치를 고지대 저온에서의 배터리 충전 제한이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.279340519,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:96",
+            "primary": "고지대에서 고속 충전이 배터리 수명에 미치는 영향",
+            "text": "고지대의 낮은 기압에서 빠른 충전을 반복하면 배터리 열화가 빨라질 수 있다. 운영자는 온도와 충전 횟수를 살펴 충전 속도를 조절한다. 이 변화를 고지대에서 고속 충전이 배터리 수명에 미치는 영향이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:122",
+            "primary": "고지대 저온에서의 배터리 충전 제한",
+            "text": "고지대의 낮은 기압과 차가운 셀 온도가 겹치면 충전 전류를 줄여야 한다. 운영자는 온도와 고도 보정값을 보고 충전 속도를 조절한다. 이 조치를 고지대 저온에서의 배터리 충전 제한이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.323529412,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:96",
+            "primary": "고지대에서 고속 충전이 배터리 수명에 미치는 영향",
+            "text": "고지대의 낮은 기압에서 빠른 충전을 반복하면 배터리 열화가 빨라질 수 있다. 운영자는 온도와 충전 횟수를 살펴 충전 속도를 조절한다. 이 변화를 고지대에서 고속 충전이 배터리 수명에 미치는 영향이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:122",
+            "primary": "고지대 저온에서의 배터리 충전 제한",
+            "text": "고지대의 낮은 기압과 차가운 셀 온도가 겹치면 충전 전류를 줄여야 한다. 운영자는 온도와 고도 보정값을 보고 충전 속도를 조절한다. 이 조치를 고지대 저온에서의 배터리 충전 제한이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.322668007,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:96",
+            "primary": "고지대에서 고속 충전이 배터리 수명에 미치는 영향",
+            "text": "고지대의 낮은 기압에서 빠른 충전을 반복하면 배터리 열화가 빨라질 수 있다. 운영자는 온도와 충전 횟수를 살펴 충전 속도를 조절한다. 이 변화를 고지대에서 고속 충전이 배터리 수명에 미치는 영향이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:122",
+            "primary": "고지대 저온에서의 배터리 충전 제한",
+            "text": "고지대의 낮은 기압과 차가운 셀 온도가 겹치면 충전 전류를 줄여야 한다. 운영자는 온도와 고도 보정값을 보고 충전 속도를 조절한다. 이 조치를 고지대 저온에서의 배터리 충전 제한이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|contrast|process|state",
+      "records": 11,
+      "possible_pairs": 55,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 55,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.266666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:101",
+            "primary": "일사량 감소와 충전 한계가 겹친 출력 제한",
+            "text": "햇빛이 줄어드는 동안 배터리도 더 받을 수 없으면 출력과 충전 계획을 함께 조정해야 한다. 운영자는 두 제한을 확인해 필요한 부하만 남긴다. 이 상태를 일사량 감소와 충전 한계가 겹친 출력 제한이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:147",
+            "primary": "추위와 계통 전압 상승이 겹친 보호 제한",
+            "text": "추위로 전압 여유가 좁아진 상태에서 계통 전압까지 오르면 보호 제한이 겹칠 수 있다. 운영자는 두 조건을 함께 확인해 출력 제한을 정한다. 이 상태를 추위와 계통 전압 상승이 겹친 보호 제한이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.15943747,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:101",
+            "primary": "일사량 감소와 충전 한계가 겹친 출력 제한",
+            "text": "햇빛이 줄어드는 동안 배터리도 더 받을 수 없으면 출력과 충전 계획을 함께 조정해야 한다. 운영자는 두 제한을 확인해 필요한 부하만 남긴다. 이 상태를 일사량 감소와 충전 한계가 겹친 출력 제한이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:147",
+            "primary": "추위와 계통 전압 상승이 겹친 보호 제한",
+            "text": "추위로 전압 여유가 좁아진 상태에서 계통 전압까지 오르면 보호 제한이 겹칠 수 있다. 운영자는 두 조건을 함께 확인해 출력 제한을 정한다. 이 상태를 추위와 계통 전압 상승이 겹친 보호 제한이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.275,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:101",
+            "primary": "일사량 감소와 충전 한계가 겹친 출력 제한",
+            "text": "햇빛이 줄어드는 동안 배터리도 더 받을 수 없으면 출력과 충전 계획을 함께 조정해야 한다. 운영자는 두 제한을 확인해 필요한 부하만 남긴다. 이 상태를 일사량 감소와 충전 한계가 겹친 출력 제한이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:147",
+            "primary": "추위와 계통 전압 상승이 겹친 보호 제한",
+            "text": "추위로 전압 여유가 좁아진 상태에서 계통 전압까지 오르면 보호 제한이 겹칠 수 있다. 운영자는 두 조건을 함께 확인해 출력 제한을 정한다. 이 상태를 추위와 계통 전압 상승이 겹친 보호 제한이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.189805823,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:101",
+            "primary": "일사량 감소와 충전 한계가 겹친 출력 제한",
+            "text": "햇빛이 줄어드는 동안 배터리도 더 받을 수 없으면 출력과 충전 계획을 함께 조정해야 한다. 운영자는 두 제한을 확인해 필요한 부하만 남긴다. 이 상태를 일사량 감소와 충전 한계가 겹친 출력 제한이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:147",
+            "primary": "추위와 계통 전압 상승이 겹친 보호 제한",
+            "text": "추위로 전압 여유가 좁아진 상태에서 계통 전압까지 오르면 보호 제한이 겹칠 수 있다. 운영자는 두 조건을 함께 확인해 출력 제한을 정한다. 이 상태를 추위와 계통 전압 상승이 겹친 보호 제한이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|function|process|state",
+      "records": 14,
+      "possible_pairs": 91,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 91,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.260869565,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:91",
+            "primary": "예외 상황이 끝난 뒤 보수 운전 해제",
+            "text": "나쁜 날씨와 저장장치 이상이 모두 해소되면 제한된 보수 운전을 끝낼 수 있다. 운영자는 남은 예외 조건이 없는지 확인한 뒤 정상 운전으로 돌린다. 이 절차를 예외 상황이 끝난 뒤 보수 운전 해제라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:100",
+            "primary": "정상 출력 복귀 전 계통과 저장장치 확인",
+            "text": "계통 감축 지령이 풀리고 저장장치도 안정돼야 정상 출력으로 돌아갈 수 있다. 운영자는 두 조건이 모두 회복됐는지 확인한 뒤 출력을 올린다. 이 절차를 정상 출력 복귀 전 계통과 저장장치 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.168483964,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:91",
+            "primary": "예외 상황이 끝난 뒤 보수 운전 해제",
+            "text": "나쁜 날씨와 저장장치 이상이 모두 해소되면 제한된 보수 운전을 끝낼 수 있다. 운영자는 남은 예외 조건이 없는지 확인한 뒤 정상 운전으로 돌린다. 이 절차를 예외 상황이 끝난 뒤 보수 운전 해제라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:100",
+            "primary": "정상 출력 복귀 전 계통과 저장장치 확인",
+            "text": "계통 감축 지령이 풀리고 저장장치도 안정돼야 정상 출력으로 돌아갈 수 있다. 운영자는 두 조건이 모두 회복됐는지 확인한 뒤 출력을 올린다. 이 절차를 정상 출력 복귀 전 계통과 저장장치 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.3,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:91",
+            "primary": "예외 상황이 끝난 뒤 보수 운전 해제",
+            "text": "나쁜 날씨와 저장장치 이상이 모두 해소되면 제한된 보수 운전을 끝낼 수 있다. 운영자는 남은 예외 조건이 없는지 확인한 뒤 정상 운전으로 돌린다. 이 절차를 예외 상황이 끝난 뒤 보수 운전 해제라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:100",
+            "primary": "정상 출력 복귀 전 계통과 저장장치 확인",
+            "text": "계통 감축 지령이 풀리고 저장장치도 안정돼야 정상 출력으로 돌아갈 수 있다. 운영자는 두 조건이 모두 회복됐는지 확인한 뒤 출력을 올린다. 이 절차를 정상 출력 복귀 전 계통과 저장장치 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.224953875,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:91",
+            "primary": "예외 상황이 끝난 뒤 보수 운전 해제",
+            "text": "나쁜 날씨와 저장장치 이상이 모두 해소되면 제한된 보수 운전을 끝낼 수 있다. 운영자는 남은 예외 조건이 없는지 확인한 뒤 정상 운전으로 돌린다. 이 절차를 예외 상황이 끝난 뒤 보수 운전 해제라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:100",
+            "primary": "정상 출력 복귀 전 계통과 저장장치 확인",
+            "text": "계통 감축 지령이 풀리고 저장장치도 안정돼야 정상 출력으로 돌아갈 수 있다. 운영자는 두 조건이 모두 회복됐는지 확인한 뒤 출력을 올린다. 이 절차를 정상 출력 복귀 전 계통과 저장장치 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|part_of|process|state",
+      "records": 5,
+      "possible_pairs": 10,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 10,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.358974359,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:37",
+            "primary": "산사태 뒤 배수로와 절연 점검",
+            "text": "폭우로 토사가 밀려 내려와 배수로를 막으면 케이블 주변에 물이 고일 수 있다. 담당자는 물을 빼고 절연 상태를 확인한 뒤 경보 해제 여부를 정한다. 이 과정을 산사태 뒤 배수로와 절연 점검이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:52",
+            "primary": "배수로 막힘 뒤 접속함 절연 점검",
+            "text": "집중호우 뒤 토사가 배수로를 막으면 접속함 주변에 물이 고일 수 있다. 물을 뺀 뒤 절연 저항을 측정해 지락 여부를 확인하는 절차를 배수로 막힘 뒤 접속함 절연 점검이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.277567025,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:37",
+            "primary": "산사태 뒤 배수로와 절연 점검",
+            "text": "폭우로 토사가 밀려 내려와 배수로를 막으면 케이블 주변에 물이 고일 수 있다. 담당자는 물을 빼고 절연 상태를 확인한 뒤 경보 해제 여부를 정한다. 이 과정을 산사태 뒤 배수로와 절연 점검이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:52",
+            "primary": "배수로 막힘 뒤 접속함 절연 점검",
+            "text": "집중호우 뒤 토사가 배수로를 막으면 접속함 주변에 물이 고일 수 있다. 물을 뺀 뒤 절연 저항을 측정해 지락 여부를 확인하는 절차를 배수로 막힘 뒤 접속함 절연 점검이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.416666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:37",
+            "primary": "산사태 뒤 배수로와 절연 점검",
+            "text": "폭우로 토사가 밀려 내려와 배수로를 막으면 케이블 주변에 물이 고일 수 있다. 담당자는 물을 빼고 절연 상태를 확인한 뒤 경보 해제 여부를 정한다. 이 과정을 산사태 뒤 배수로와 절연 점검이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:52",
+            "primary": "배수로 막힘 뒤 접속함 절연 점검",
+            "text": "집중호우 뒤 토사가 배수로를 막으면 접속함 주변에 물이 고일 수 있다. 물을 뺀 뒤 절연 저항을 측정해 지락 여부를 확인하는 절차를 배수로 막힘 뒤 접속함 절연 점검이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.280328558,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:37",
+            "primary": "산사태 뒤 배수로와 절연 점검",
+            "text": "폭우로 토사가 밀려 내려와 배수로를 막으면 케이블 주변에 물이 고일 수 있다. 담당자는 물을 빼고 절연 상태를 확인한 뒤 경보 해제 여부를 정한다. 이 과정을 산사태 뒤 배수로와 절연 점검이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:52",
+            "primary": "배수로 막힘 뒤 접속함 절연 점검",
+            "text": "집중호우 뒤 토사가 배수로를 막으면 접속함 주변에 물이 고일 수 있다. 물을 뺀 뒤 절연 저항을 측정해 지락 여부를 확인하는 절차를 배수로 막힘 뒤 접속함 절연 점검이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|process|role|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|classification|process|state",
+      "records": 6,
+      "possible_pairs": 15,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 15,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.183673469,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:115",
+            "primary": "기상·설비·계통 자료의 시각 맞추기",
+            "text": "날씨 자료, 설비 경보, 계통 기록의 시각이 같아야 어떤 일이 먼저 일어났는지 알 수 있다. 운영자는 기록 시간을 맞춘 뒤 원인과 조건을 나눠 본다. 이 작업을 기상·설비·계통 자료의 시각 맞추기라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:137",
+            "primary": "복구 기록의 시각 맞춤 확인",
+            "text": "제어 지령 시각과 센서 기록 시각이 맞아야 복구 과정의 순서를 알 수 있다. 시각이 어긋나면 담당자는 원인을 다시 확인하고 복구 승인을 미룬다. 이 확인을 복구 기록의 시각 맞춤 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.135789044,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:115",
+            "primary": "기상·설비·계통 자료의 시각 맞추기",
+            "text": "날씨 자료, 설비 경보, 계통 기록의 시각이 같아야 어떤 일이 먼저 일어났는지 알 수 있다. 운영자는 기록 시간을 맞춘 뒤 원인과 조건을 나눠 본다. 이 작업을 기상·설비·계통 자료의 시각 맞추기라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:137",
+            "primary": "복구 기록의 시각 맞춤 확인",
+            "text": "제어 지령 시각과 센서 기록 시각이 맞아야 복구 과정의 순서를 알 수 있다. 시각이 어긋나면 담당자는 원인을 다시 확인하고 복구 승인을 미룬다. 이 확인을 복구 기록의 시각 맞춤 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.186046512,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:10",
+            "primary": "지형 그림자와 구름에 따른 출력 저하 구분",
+            "text": "산 그림자와 구름 때문에 비슷한 시간에 출력이 낮아지면 어느 원인인지 바로 알기 어렵다. 운영자는 일사량과 구름 관측 시각을 비교해 원인을 구분한다. 이 작업을 지형 그림자와 구름에 따른 출력 저하 구분이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:90",
+            "primary": "여러 경보가 동시에 울릴 때 원인 기록",
+            "text": "출력, 저장장치, 기상 경보가 같은 시간에 울리면 한 가지 고장으로 단정하기 어렵다. 운영자는 각 경보의 시각과 조건을 따로 남겨 원인을 추적한다. 이 기록을 여러 경보가 동시에 울릴 때 원인 기록이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.137692547,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:10",
+            "primary": "지형 그림자와 구름에 따른 출력 저하 구분",
+            "text": "산 그림자와 구름 때문에 비슷한 시간에 출력이 낮아지면 어느 원인인지 바로 알기 어렵다. 운영자는 일사량과 구름 관측 시각을 비교해 원인을 구분한다. 이 작업을 지형 그림자와 구름에 따른 출력 저하 구분이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:90",
+            "primary": "여러 경보가 동시에 울릴 때 원인 기록",
+            "text": "출력, 저장장치, 기상 경보가 같은 시간에 울리면 한 가지 고장으로 단정하기 어렵다. 운영자는 각 경보의 시각과 조건을 따로 남겨 원인을 추적한다. 이 기록을 여러 경보가 동시에 울릴 때 원인 기록이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|comparison|process|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.096153846,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:48",
+            "primary": "구름 통과 때 배터리 출력 보완",
+            "text": "구름이 지나가면서 발전량이 줄어들면 배터리가 잠시 전기를 내보내 출력 변동을 줄일 수 있다. 운영자는 방전 여유를 확인한 뒤 배터리 사용량을 정한다. 이 운전을 구름 통과 때 배터리 출력 보완이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:135",
+            "primary": "여러 지표로 확인하는 고장 경로",
+            "text": "출력, 저장장치, 계통 지표가 같은 방향으로 바뀌는지 보면 고장이 어떻게 이어졌는지 추적할 수 있다. 한 지표만 변하면 복합 고장으로 단정하지 않는다. 이 확인을 여러 지표로 확인하는 고장 경로라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.047142515,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:48",
+            "primary": "구름 통과 때 배터리 출력 보완",
+            "text": "구름이 지나가면서 발전량이 줄어들면 배터리가 잠시 전기를 내보내 출력 변동을 줄일 수 있다. 운영자는 방전 여유를 확인한 뒤 배터리 사용량을 정한다. 이 운전을 구름 통과 때 배터리 출력 보완이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:135",
+            "primary": "여러 지표로 확인하는 고장 경로",
+            "text": "출력, 저장장치, 계통 지표가 같은 방향으로 바뀌는지 보면 고장이 어떻게 이어졌는지 추적할 수 있다. 한 지표만 변하면 복합 고장으로 단정하지 않는다. 이 확인을 여러 지표로 확인하는 고장 경로라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.130434783,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:48",
+            "primary": "구름 통과 때 배터리 출력 보완",
+            "text": "구름이 지나가면서 발전량이 줄어들면 배터리가 잠시 전기를 내보내 출력 변동을 줄일 수 있다. 운영자는 방전 여유를 확인한 뒤 배터리 사용량을 정한다. 이 운전을 구름 통과 때 배터리 출력 보완이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:135",
+            "primary": "여러 지표로 확인하는 고장 경로",
+            "text": "출력, 저장장치, 계통 지표가 같은 방향으로 바뀌는지 보면 고장이 어떻게 이어졌는지 추적할 수 있다. 한 지표만 변하면 복합 고장으로 단정하지 않는다. 이 확인을 여러 지표로 확인하는 고장 경로라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.095486415,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:48",
+            "primary": "구름 통과 때 배터리 출력 보완",
+            "text": "구름이 지나가면서 발전량이 줄어들면 배터리가 잠시 전기를 내보내 출력 변동을 줄일 수 있다. 운영자는 방전 여유를 확인한 뒤 배터리 사용량을 정한다. 이 운전을 구름 통과 때 배터리 출력 보완이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:135",
+            "primary": "여러 지표로 확인하는 고장 경로",
+            "text": "출력, 저장장치, 계통 지표가 같은 방향으로 바뀌는지 보면 고장이 어떻게 이어졌는지 추적할 수 있다. 한 지표만 변하면 복합 고장으로 단정하지 않는다. 이 확인을 여러 지표로 확인하는 고장 경로라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|contrast|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|function|process|state",
+      "records": 12,
+      "possible_pairs": 66,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 66,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.272727273,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:97",
+            "primary": "변전소 복구 때 저장장치 절연 확인",
+            "text": "변전소의 계통이 안정돼도 저장장치 절연을 확인하기 전에는 출력을 다시 올릴 수 없다. 담당자는 절연 시험 결과를 확인한 뒤 복구 순서를 진행한다. 이 절차를 변전소 복구 때 저장장치 절연 확인이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:120",
+            "primary": "낙뢰 뒤 저장장치 충전 재개 확인",
+            "text": "낙뢰가 지나간 뒤에는 서지 보호기가 정상이고 배터리 절연 시험도 통과해야 충전을 다시 시작할 수 있다. 담당자는 두 결과를 확인한 뒤 충전을 허용한다. 이 절차를 낙뢰 뒤 저장장치 충전 재개 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.219215811,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:97",
+            "primary": "변전소 복구 때 저장장치 절연 확인",
+            "text": "변전소의 계통이 안정돼도 저장장치 절연을 확인하기 전에는 출력을 다시 올릴 수 없다. 담당자는 절연 시험 결과를 확인한 뒤 복구 순서를 진행한다. 이 절차를 변전소 복구 때 저장장치 절연 확인이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:120",
+            "primary": "낙뢰 뒤 저장장치 충전 재개 확인",
+            "text": "낙뢰가 지나간 뒤에는 서지 보호기가 정상이고 배터리 절연 시험도 통과해야 충전을 다시 시작할 수 있다. 담당자는 두 결과를 확인한 뒤 충전을 허용한다. 이 절차를 낙뢰 뒤 저장장치 충전 재개 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.3,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:97",
+            "primary": "변전소 복구 때 저장장치 절연 확인",
+            "text": "변전소의 계통이 안정돼도 저장장치 절연을 확인하기 전에는 출력을 다시 올릴 수 없다. 담당자는 절연 시험 결과를 확인한 뒤 복구 순서를 진행한다. 이 절차를 변전소 복구 때 저장장치 절연 확인이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:120",
+            "primary": "낙뢰 뒤 저장장치 충전 재개 확인",
+            "text": "낙뢰가 지나간 뒤에는 서지 보호기가 정상이고 배터리 절연 시험도 통과해야 충전을 다시 시작할 수 있다. 담당자는 두 결과를 확인한 뒤 충전을 허용한다. 이 절차를 낙뢰 뒤 저장장치 충전 재개 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.240398842,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:97",
+            "primary": "변전소 복구 때 저장장치 절연 확인",
+            "text": "변전소의 계통이 안정돼도 저장장치 절연을 확인하기 전에는 출력을 다시 올릴 수 없다. 담당자는 절연 시험 결과를 확인한 뒤 복구 순서를 진행한다. 이 절차를 변전소 복구 때 저장장치 절연 확인이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:120",
+            "primary": "낙뢰 뒤 저장장치 충전 재개 확인",
+            "text": "낙뢰가 지나간 뒤에는 서지 보호기가 정상이고 배터리 절연 시험도 통과해야 충전을 다시 시작할 수 있다. 담당자는 두 결과를 확인한 뒤 충전을 허용한다. 이 절차를 낙뢰 뒤 저장장치 충전 재개 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|part_of|process|state",
+      "records": 6,
+      "possible_pairs": 15,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 15,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.105263158,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:7",
+            "primary": "사면 배수 불량으로 인한 접속함 습기",
+            "text": "빗물이 사면을 타고 내려오는데 배수구까지 막히면 접속함 주변 습기가 늘어난다. 이 상태를 사면 배수 불량으로 인한 접속함 습기라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:59",
+            "primary": "낙뢰 뒤 저장장치 충전 회로 차단",
+            "text": "낙뢰로 인한 서지가 들어오고 저장장치 변환기의 절연도 나빠지면 충전 회로를 끊어야 한다. 담당자는 두 상태를 확인한 뒤 설비를 분리한다. 이 조치를 낙뢰 뒤 저장장치 충전 회로 차단이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.109614696,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:54",
+            "primary": "눈 녹은 물 유입 때 케이블 절연 경보",
+            "text": "눈 녹은 물이 케이블 접속부로 들어가고 절연 저항값까지 낮아지면 충전 회로를 차단할 수 있다. 담당자는 물 유입만으로 전원을 끄지 않고 측정값을 함께 살핀다. 이 경보를 눈 녹은 물 유입 때 케이블 절연 경보라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:59",
+            "primary": "낙뢰 뒤 저장장치 충전 회로 차단",
+            "text": "낙뢰로 인한 서지가 들어오고 저장장치 변환기의 절연도 나빠지면 충전 회로를 끊어야 한다. 담당자는 두 상태를 확인한 뒤 설비를 분리한다. 이 조치를 낙뢰 뒤 저장장치 충전 회로 차단이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.166666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:22",
+            "primary": "눈사태 잔해 때문에 멈춘 모듈",
+            "text": "눈사태 잔해가 모듈 주변에 쌓이면 사람이 접근하지 못해 일부 설비가 오래 멈출 수 있다. 현장 안전을 확인한 뒤 잔해를 치우고 모듈을 점검한다. 이 상태를 눈사태 잔해 때문에 멈춘 모듈이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:25",
+            "primary": "얼어붙은 케이블의 단선 위험",
+            "text": "케이블이 얼어붙은 채 장력이 커지면 접속부가 당겨져 끊어질 수 있다. 이 위험을 얼어붙은 케이블의 단선 위험이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.138990439,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:54",
+            "primary": "눈 녹은 물 유입 때 케이블 절연 경보",
+            "text": "눈 녹은 물이 케이블 접속부로 들어가고 절연 저항값까지 낮아지면 충전 회로를 차단할 수 있다. 담당자는 물 유입만으로 전원을 끄지 않고 측정값을 함께 살핀다. 이 경보를 눈 녹은 물 유입 때 케이블 절연 경보라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:59",
+            "primary": "낙뢰 뒤 저장장치 충전 회로 차단",
+            "text": "낙뢰로 인한 서지가 들어오고 저장장치 변환기의 절연도 나빠지면 충전 회로를 끊어야 한다. 담당자는 두 상태를 확인한 뒤 설비를 분리한다. 이 조치를 낙뢰 뒤 저장장치 충전 회로 차단이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|process|role|state",
+      "records": 5,
+      "possible_pairs": 10,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 10,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.086206897,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:77",
+            "primary": "저장장치 열경보 때 소방 구역 격리",
+            "text": "배터리 열경보가 울리고 소방 구역도 격리되면 충전과 방전을 모두 멈춰야 할 수 있다. 현장 책임자는 열 상태와 격리 범위를 확인해 차단 회로를 정한다. 이 조치를 저장장치 열경보 때 소방 구역 격리라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:85",
+            "primary": "부품 부족과 도로 통제에 따른 복구 지연",
+            "text": "교체 부품이 없고 산악 도로까지 통제되면 고장 난 설비를 바로 고치기 어렵다. 현장 책임자는 부품 확보와 통행 가능 시점을 확인해 복구 일정을 다시 잡는다. 이 상태를 부품 부족과 도로 통제에 따른 복구 지연이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.0772967,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:77",
+            "primary": "저장장치 열경보 때 소방 구역 격리",
+            "text": "배터리 열경보가 울리고 소방 구역도 격리되면 충전과 방전을 모두 멈춰야 할 수 있다. 현장 책임자는 열 상태와 격리 범위를 확인해 차단 회로를 정한다. 이 조치를 저장장치 열경보 때 소방 구역 격리라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:142",
+            "primary": "화재·낙뢰·절연 경보 때 안전 정지",
+            "text": "화재, 낙뢰, 절연 경보가 함께 울리면 장비를 먼저 멈춰 사람과 설비를 보호한다. 위험이 사라졌다는 자료가 모인 뒤에만 저장장치와 출력을 다시 사용한다. 이 조치를 화재·낙뢰·절연 경보 때 안전 정지라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.117647059,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:77",
+            "primary": "저장장치 열경보 때 소방 구역 격리",
+            "text": "배터리 열경보가 울리고 소방 구역도 격리되면 충전과 방전을 모두 멈춰야 할 수 있다. 현장 책임자는 열 상태와 격리 범위를 확인해 차단 회로를 정한다. 이 조치를 저장장치 열경보 때 소방 구역 격리라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:85",
+            "primary": "부품 부족과 도로 통제에 따른 복구 지연",
+            "text": "교체 부품이 없고 산악 도로까지 통제되면 고장 난 설비를 바로 고치기 어렵다. 현장 책임자는 부품 확보와 통행 가능 시점을 확인해 복구 일정을 다시 잡는다. 이 상태를 부품 부족과 도로 통제에 따른 복구 지연이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.118801142,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:77",
+            "primary": "저장장치 열경보 때 소방 구역 격리",
+            "text": "배터리 열경보가 울리고 소방 구역도 격리되면 충전과 방전을 모두 멈춰야 할 수 있다. 현장 책임자는 열 상태와 격리 범위를 확인해 차단 회로를 정한다. 이 조치를 저장장치 열경보 때 소방 구역 격리라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:142",
+            "primary": "화재·낙뢰·절연 경보 때 안전 정지",
+            "text": "화재, 낙뢰, 절연 경보가 함께 울리면 장비를 먼저 멈춰 사람과 설비를 보호한다. 위험이 사라졌다는 자료가 모인 뒤에만 저장장치와 출력을 다시 사용한다. 이 조치를 화재·낙뢰·절연 경보 때 안전 정지라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|comparison|process|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.137254902,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:76",
+            "primary": "변전소 주변 그림자와 통신 지연",
+            "text": "변전소 주변에 그림자가 드리운 때 통신까지 늦으면 출력 지령의 시각과 계측값이 어긋날 수 있다. 운영자는 같은 시각의 기록을 맞춰 원인을 구분한다. 이 확인을 변전소 주변 그림자와 통신 지연이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:88",
+            "primary": "발전량 손실 원인 점검",
+            "text": "산악 지역의 기준 일사량과 배터리 방전량을 같이 보면 음영 때문인지 저장 제한 때문인지 가릴 수 있다. 운영자는 두 자료를 비교해 출력 손실의 원인을 판단한다. 이 점검을 발전량 손실 원인 점검이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.097616879,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:76",
+            "primary": "변전소 주변 그림자와 통신 지연",
+            "text": "변전소 주변에 그림자가 드리운 때 통신까지 늦으면 출력 지령의 시각과 계측값이 어긋날 수 있다. 운영자는 같은 시각의 기록을 맞춰 원인을 구분한다. 이 확인을 변전소 주변 그림자와 통신 지연이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:88",
+            "primary": "발전량 손실 원인 점검",
+            "text": "산악 지역의 기준 일사량과 배터리 방전량을 같이 보면 음영 때문인지 저장 제한 때문인지 가릴 수 있다. 운영자는 두 자료를 비교해 출력 손실의 원인을 판단한다. 이 점검을 발전량 손실 원인 점검이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.2,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:76",
+            "primary": "변전소 주변 그림자와 통신 지연",
+            "text": "변전소 주변에 그림자가 드리운 때 통신까지 늦으면 출력 지령의 시각과 계측값이 어긋날 수 있다. 운영자는 같은 시각의 기록을 맞춰 원인을 구분한다. 이 확인을 변전소 주변 그림자와 통신 지연이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:88",
+            "primary": "발전량 손실 원인 점검",
+            "text": "산악 지역의 기준 일사량과 배터리 방전량을 같이 보면 음영 때문인지 저장 제한 때문인지 가릴 수 있다. 운영자는 두 자료를 비교해 출력 손실의 원인을 판단한다. 이 점검을 발전량 손실 원인 점검이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.171568228,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:76",
+            "primary": "변전소 주변 그림자와 통신 지연",
+            "text": "변전소 주변에 그림자가 드리운 때 통신까지 늦으면 출력 지령의 시각과 계측값이 어긋날 수 있다. 운영자는 같은 시각의 기록을 맞춰 원인을 구분한다. 이 확인을 변전소 주변 그림자와 통신 지연이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:88",
+            "primary": "발전량 손실 원인 점검",
+            "text": "산악 지역의 기준 일사량과 배터리 방전량을 같이 보면 음영 때문인지 저장 제한 때문인지 가릴 수 있다. 운영자는 두 자료를 비교해 출력 손실의 원인을 판단한다. 이 점검을 발전량 손실 원인 점검이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|contrast|process|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.081632653,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:86",
+            "primary": "모듈 교체와 배터리 점검의 작업 순서",
+            "text": "모듈 교체와 저장장치 점검이 같은 시간에 필요하면 먼저 위험이 큰 작업을 처리해야 한다. 작업 책임자는 안전 자료와 작업 가능 시간을 보고 순서를 정한다. 이런 조정을 모듈 교체와 배터리 점검의 작업 순서라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:139",
+            "primary": "음영과 저장 제한이 겹친 사례 재분석",
+            "text": "그림자와 저장장치 제한이 같은 때 나타나면 발전량 저하의 원인을 다시 나눠 봐야 한다. 운영자는 별도 계측값을 확인한 뒤 원인을 판단한다. 이 작업을 음영과 저장 제한이 겹친 사례 재분석이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.095516974,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:86",
+            "primary": "모듈 교체와 배터리 점검의 작업 순서",
+            "text": "모듈 교체와 저장장치 점검이 같은 시간에 필요하면 먼저 위험이 큰 작업을 처리해야 한다. 작업 책임자는 안전 자료와 작업 가능 시간을 보고 순서를 정한다. 이런 조정을 모듈 교체와 배터리 점검의 작업 순서라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:139",
+            "primary": "음영과 저장 제한이 겹친 사례 재분석",
+            "text": "그림자와 저장장치 제한이 같은 때 나타나면 발전량 저하의 원인을 다시 나눠 봐야 한다. 운영자는 별도 계측값을 확인한 뒤 원인을 판단한다. 이 작업을 음영과 저장 제한이 겹친 사례 재분석이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.113636364,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:86",
+            "primary": "모듈 교체와 배터리 점검의 작업 순서",
+            "text": "모듈 교체와 저장장치 점검이 같은 시간에 필요하면 먼저 위험이 큰 작업을 처리해야 한다. 작업 책임자는 안전 자료와 작업 가능 시간을 보고 순서를 정한다. 이런 조정을 모듈 교체와 배터리 점검의 작업 순서라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:139",
+            "primary": "음영과 저장 제한이 겹친 사례 재분석",
+            "text": "그림자와 저장장치 제한이 같은 때 나타나면 발전량 저하의 원인을 다시 나눠 봐야 한다. 운영자는 별도 계측값을 확인한 뒤 원인을 판단한다. 이 작업을 음영과 저장 제한이 겹친 사례 재분석이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.157904314,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:86",
+            "primary": "모듈 교체와 배터리 점검의 작업 순서",
+            "text": "모듈 교체와 저장장치 점검이 같은 시간에 필요하면 먼저 위험이 큰 작업을 처리해야 한다. 작업 책임자는 안전 자료와 작업 가능 시간을 보고 순서를 정한다. 이런 조정을 모듈 교체와 배터리 점검의 작업 순서라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:139",
+            "primary": "음영과 저장 제한이 겹친 사례 재분석",
+            "text": "그림자와 저장장치 제한이 같은 때 나타나면 발전량 저하의 원인을 다시 나눠 봐야 한다. 운영자는 별도 계측값을 확인한 뒤 원인을 판단한다. 이 작업을 음영과 저장 제한이 겹친 사례 재분석이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|function|process|state",
+      "records": 9,
+      "possible_pairs": 36,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 36,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.2,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:19",
+            "primary": "저온 뒤 저장장치 방전 제한 해제",
+            "text": "온도가 회복됐더라도 절연 시험을 통과해야 방전 제한을 풀 수 있다. 이 절차를 저온 뒤 저장장치 방전 제한 해제라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:130",
+            "primary": "복구 전 절연 검사와 계통 시험",
+            "text": "절연 검사와 계통 모의 시험을 모두 통과해야 정상 출력으로 돌아갈 수 있다. 한 시험만 합격하면 제한된 운전을 계속한다. 이 기준을 복구 전 절연 검사와 계통 시험이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.134307614,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:104",
+            "primary": "계통 전압 상승 때 저장장치 충전 조정",
+            "text": "계통 전압이 높아지고 저장장치에 충전 여유가 있으면 인버터의 무효전력과 충전 지령을 함께 조정해야 한다. 제어기는 우선순위에 따라 설정값을 바꾼다. 이 조정을 계통 전압 상승 때 저장장치 충전 조정이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:146",
+            "primary": "구름이 걷힌 뒤 충전 지령 순서",
+            "text": "구름이 걷힐 때와 저장장치 충전 상한이 겹치면 출력 감축과 충전 명령의 순서를 다시 정해야 한다. 운영자는 일사량 회복만으로 우선순위를 정하지 않는다. 이 기준을 구름이 걷힌 뒤 충전 지령 순서라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.266666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:19",
+            "primary": "저온 뒤 저장장치 방전 제한 해제",
+            "text": "온도가 회복됐더라도 절연 시험을 통과해야 방전 제한을 풀 수 있다. 이 절차를 저온 뒤 저장장치 방전 제한 해제라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:130",
+            "primary": "복구 전 절연 검사와 계통 시험",
+            "text": "절연 검사와 계통 모의 시험을 모두 통과해야 정상 출력으로 돌아갈 수 있다. 한 시험만 합격하면 제한된 운전을 계속한다. 이 기준을 복구 전 절연 검사와 계통 시험이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.158456509,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:19",
+            "primary": "저온 뒤 저장장치 방전 제한 해제",
+            "text": "온도가 회복됐더라도 절연 시험을 통과해야 방전 제한을 풀 수 있다. 이 절차를 저온 뒤 저장장치 방전 제한 해제라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:130",
+            "primary": "복구 전 절연 검사와 계통 시험",
+            "text": "절연 검사와 계통 모의 시험을 모두 통과해야 정상 출력으로 돌아갈 수 있다. 한 시험만 합격하면 제한된 운전을 계속한다. 이 기준을 복구 전 절연 검사와 계통 시험이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|part_of|process|state",
+      "records": 8,
+      "possible_pairs": 28,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 28,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.170212766,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:20",
+            "primary": "충전율과 일사량 기록을 함께 보는 방법",
+            "text": "충전율 자료와 산악 일사량 자료를 같은 시간대에 남기면 원인을 더 정확히 가릴 수 있다. 운영자는 두 기록을 비교해 충전 지령이 적절했는지 확인한다. 이 방법을 충전율과 일사량 기록을 함께 보는 방법이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:92",
+            "primary": "음영·계통·저장 문제의 판단 근거 기록",
+            "text": "음영, 계통 이상, 저장장치 제한이 한꺼번에 나타나면 계측값과 제어 지령을 함께 남겨야 한다. 운영자는 독립 자료를 비교해 원인을 판정한다. 이 기록을 음영·계통·저장 문제의 판단 근거 기록이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.110006683,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:20",
+            "primary": "충전율과 일사량 기록을 함께 보는 방법",
+            "text": "충전율 자료와 산악 일사량 자료를 같은 시간대에 남기면 원인을 더 정확히 가릴 수 있다. 운영자는 두 기록을 비교해 충전 지령이 적절했는지 확인한다. 이 방법을 충전율과 일사량 기록을 함께 보는 방법이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:92",
+            "primary": "음영·계통·저장 문제의 판단 근거 기록",
+            "text": "음영, 계통 이상, 저장장치 제한이 한꺼번에 나타나면 계측값과 제어 지령을 함께 남겨야 한다. 운영자는 독립 자료를 비교해 원인을 판정한다. 이 기록을 음영·계통·저장 문제의 판단 근거 기록이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.238095238,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:20",
+            "primary": "충전율과 일사량 기록을 함께 보는 방법",
+            "text": "충전율 자료와 산악 일사량 자료를 같은 시간대에 남기면 원인을 더 정확히 가릴 수 있다. 운영자는 두 기록을 비교해 충전 지령이 적절했는지 확인한다. 이 방법을 충전율과 일사량 기록을 함께 보는 방법이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:98",
+            "primary": "음영 지도와 현장 자료로 하는 보정 승인",
+            "text": "음영 지도와 현장 출력 자료가 같은 배열을 가리키면 발전량 보정값을 승인할 수 있다. 운영자는 지도만 믿지 않고 현장 자료와 맞는지 확인한다. 이 절차를 음영 지도와 현장 자료로 하는 보정 승인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.161534063,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:20",
+            "primary": "충전율과 일사량 기록을 함께 보는 방법",
+            "text": "충전율 자료와 산악 일사량 자료를 같은 시간대에 남기면 원인을 더 정확히 가릴 수 있다. 운영자는 두 기록을 비교해 충전 지령이 적절했는지 확인한다. 이 방법을 충전율과 일사량 기록을 함께 보는 방법이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:98",
+            "primary": "음영 지도와 현장 자료로 하는 보정 승인",
+            "text": "음영 지도와 현장 출력 자료가 같은 배열을 가리키면 발전량 보정값을 승인할 수 있다. 운영자는 지도만 믿지 않고 현장 자료와 맞는지 확인한다. 이 절차를 음영 지도와 현장 자료로 하는 보정 승인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|process|role|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.075471698,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:49",
+            "primary": "주파수 이상 때 비필수 부하 차단",
+            "text": "계통 주파수가 흔들리고 배터리 보호 한계에 가까워지면 냉난방 같은 비필수 부하를 먼저 줄인다. 운영자는 남겨야 할 설비를 정한 뒤 차단 순서를 실행한다. 이를 주파수 이상 때 비필수 부하 차단이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:127",
+            "primary": "통신 복구 뒤 계통 재투입 승인",
+            "text": "통신이 다시 연결되고 계통 재투입 승인이 나야 원격 출력 지령을 재개할 수 있다. 담당자는 통신 연결만으로 설비를 다시 투입하지 않고 승인 상태를 확인한다. 이 절차를 통신 복구 뒤 계통 재투입 승인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.044573389,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:49",
+            "primary": "주파수 이상 때 비필수 부하 차단",
+            "text": "계통 주파수가 흔들리고 배터리 보호 한계에 가까워지면 냉난방 같은 비필수 부하를 먼저 줄인다. 운영자는 남겨야 할 설비를 정한 뒤 차단 순서를 실행한다. 이를 주파수 이상 때 비필수 부하 차단이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:127",
+            "primary": "통신 복구 뒤 계통 재투입 승인",
+            "text": "통신이 다시 연결되고 계통 재투입 승인이 나야 원격 출력 지령을 재개할 수 있다. 담당자는 통신 연결만으로 설비를 다시 투입하지 않고 승인 상태를 확인한다. 이 절차를 통신 복구 뒤 계통 재투입 승인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.104166667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:49",
+            "primary": "주파수 이상 때 비필수 부하 차단",
+            "text": "계통 주파수가 흔들리고 배터리 보호 한계에 가까워지면 냉난방 같은 비필수 부하를 먼저 줄인다. 운영자는 남겨야 할 설비를 정한 뒤 차단 순서를 실행한다. 이를 주파수 이상 때 비필수 부하 차단이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:127",
+            "primary": "통신 복구 뒤 계통 재투입 승인",
+            "text": "통신이 다시 연결되고 계통 재투입 승인이 나야 원격 출력 지령을 재개할 수 있다. 담당자는 통신 연결만으로 설비를 다시 투입하지 않고 승인 상태를 확인한다. 이 절차를 통신 복구 뒤 계통 재투입 승인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.11148027,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:49",
+            "primary": "주파수 이상 때 비필수 부하 차단",
+            "text": "계통 주파수가 흔들리고 배터리 보호 한계에 가까워지면 냉난방 같은 비필수 부하를 먼저 줄인다. 운영자는 남겨야 할 설비를 정한 뒤 차단 순서를 실행한다. 이를 주파수 이상 때 비필수 부하 차단이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:127",
+            "primary": "통신 복구 뒤 계통 재투입 승인",
+            "text": "통신이 다시 연결되고 계통 재투입 승인이 나야 원격 출력 지령을 재개할 수 있다. 담당자는 통신 연결만으로 설비를 다시 투입하지 않고 승인 상태를 확인한다. 이 절차를 통신 복구 뒤 계통 재투입 승인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "comparison|function|process|state",
+      "records": 4,
+      "possible_pairs": 6,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 6,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.115384615,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:45",
+            "primary": "통신 지연 때 저장장치 충전 지령 확인",
+            "text": "산악 지역의 통신이 늦어지는 동안 발전량이 급히 바뀌면 충전 명령이 제때 전달되지 않을 수 있다. 운영자는 지연 시간을 확인하고 저장장치 보호 상태를 점검한다. 이 작업을 통신 지연 때 저장장치 충전 지령 확인이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:62",
+            "primary": "강풍 때 배터리 방전으로 전력 보완",
+            "text": "강풍으로 태양광 출력이 줄어들면 저장장치의 여유 전력을 써서 필요한 부하를 유지할 수 있다. 운영자는 배터리 잔량이 충분한지 보고 방전을 시작한다. 이 운전을 강풍 때 배터리 방전으로 전력 보완이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.090433584,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:62",
+            "primary": "강풍 때 배터리 방전으로 전력 보완",
+            "text": "강풍으로 태양광 출력이 줄어들면 저장장치의 여유 전력을 써서 필요한 부하를 유지할 수 있다. 운영자는 배터리 잔량이 충분한지 보고 방전을 시작한다. 이 운전을 강풍 때 배터리 방전으로 전력 보완이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:81",
+            "primary": "모듈 세척과 배터리 충전의 전력 우선순위",
+            "text": "모듈 오염으로 발전량이 낮은 날에는 세척 장비에 쓸 전력과 배터리에 남길 전력을 함께 따져야 한다. 운영자는 충전 여유에 따라 세척 시간을 정한다. 이런 조정을 모듈 세척과 배터리 충전의 전력 우선순위라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.153846154,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:15",
+            "primary": "막힌 냉각기 흡입구와 배터리 과열",
+            "text": "냉각기 흡입구가 막히고 배터리 사용량이 많으면 열이 잘 빠지지 않는다. 운영자는 흡입구를 점검하고 부하를 낮춘다. 이런 문제를 막힌 냉각기 흡입구와 배터리 과열이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:62",
+            "primary": "강풍 때 배터리 방전으로 전력 보완",
+            "text": "강풍으로 태양광 출력이 줄어들면 저장장치의 여유 전력을 써서 필요한 부하를 유지할 수 있다. 운영자는 배터리 잔량이 충분한지 보고 방전을 시작한다. 이 운전을 강풍 때 배터리 방전으로 전력 보완이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.135623214,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:45",
+            "primary": "통신 지연 때 저장장치 충전 지령 확인",
+            "text": "산악 지역의 통신이 늦어지는 동안 발전량이 급히 바뀌면 충전 명령이 제때 전달되지 않을 수 있다. 운영자는 지연 시간을 확인하고 저장장치 보호 상태를 점검한다. 이 작업을 통신 지연 때 저장장치 충전 지령 확인이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:62",
+            "primary": "강풍 때 배터리 방전으로 전력 보완",
+            "text": "강풍으로 태양광 출력이 줄어들면 저장장치의 여유 전력을 써서 필요한 부하를 유지할 수 있다. 운영자는 배터리 잔량이 충분한지 보고 방전을 시작한다. 이 운전을 강풍 때 배터리 방전으로 전력 보완이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "comparison|process|role|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "contrast|function|process|state",
+      "records": 5,
+      "possible_pairs": 10,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 10,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.333333333,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:105",
+            "primary": "역률 지령과 출력 감축 지령의 우선순위",
+            "text": "역률을 바꾸라는 지령과 출력을 줄이라는 지령이 동시에 오면 인버터는 미리 정한 순서대로 대응한다. 운영자는 어느 지령이 먼저 적용됐는지 확인한다. 이 기준을 역률 지령과 출력 감축 지령의 우선순위라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:116",
+            "primary": "계통 차단과 배터리 방전 지령의 우선순위",
+            "text": "계통을 끊으라는 지령과 배터리를 방전하라는 지령이 동시에 오면 보호 지령을 먼저 적용한다. 제어기는 미리 정한 순서대로 동작한다. 이 기준을 계통 차단과 배터리 방전 지령의 우선순위라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.346446558,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:105",
+            "primary": "역률 지령과 출력 감축 지령의 우선순위",
+            "text": "역률을 바꾸라는 지령과 출력을 줄이라는 지령이 동시에 오면 인버터는 미리 정한 순서대로 대응한다. 운영자는 어느 지령이 먼저 적용됐는지 확인한다. 이 기준을 역률 지령과 출력 감축 지령의 우선순위라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:116",
+            "primary": "계통 차단과 배터리 방전 지령의 우선순위",
+            "text": "계통을 끊으라는 지령과 배터리를 방전하라는 지령이 동시에 오면 보호 지령을 먼저 적용한다. 제어기는 미리 정한 순서대로 동작한다. 이 기준을 계통 차단과 배터리 방전 지령의 우선순위라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.40625,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:105",
+            "primary": "역률 지령과 출력 감축 지령의 우선순위",
+            "text": "역률을 바꾸라는 지령과 출력을 줄이라는 지령이 동시에 오면 인버터는 미리 정한 순서대로 대응한다. 운영자는 어느 지령이 먼저 적용됐는지 확인한다. 이 기준을 역률 지령과 출력 감축 지령의 우선순위라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:116",
+            "primary": "계통 차단과 배터리 방전 지령의 우선순위",
+            "text": "계통을 끊으라는 지령과 배터리를 방전하라는 지령이 동시에 오면 보호 지령을 먼저 적용한다. 제어기는 미리 정한 순서대로 동작한다. 이 기준을 계통 차단과 배터리 방전 지령의 우선순위라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.408563263,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:105",
+            "primary": "역률 지령과 출력 감축 지령의 우선순위",
+            "text": "역률을 바꾸라는 지령과 출력을 줄이라는 지령이 동시에 오면 인버터는 미리 정한 순서대로 대응한다. 운영자는 어느 지령이 먼저 적용됐는지 확인한다. 이 기준을 역률 지령과 출력 감축 지령의 우선순위라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:116",
+            "primary": "계통 차단과 배터리 방전 지령의 우선순위",
+            "text": "계통을 끊으라는 지령과 배터리를 방전하라는 지령이 동시에 오면 보호 지령을 먼저 적용한다. 제어기는 미리 정한 순서대로 동작한다. 이 기준을 계통 차단과 배터리 방전 지령의 우선순위라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "contrast|part_of|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "function|part_of|process|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.071428571,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:71",
+            "primary": "모듈 균열 때 배터리로 출력 보완",
+            "text": "패널 균열로 발전량이 줄어도 배터리 방전 여유가 있으면 필요한 전력을 잠시 보완할 수 있다. 운영자는 고장 범위와 잔량을 보고 방전량을 조절한다. 이 운전을 모듈 균열 때 배터리로 출력 보완이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:140",
+            "primary": "복구 과정 확인을 위한 기록 대조",
+            "text": "날씨, 계측값, 제어 명령, 승인 기록을 대조하면 사고 뒤 어떤 조치가 취해졌는지 확인할 수 있다. 담당자는 기록을 시간 순서로 살펴 복구 결과를 검토한다. 이 과정을 복구 과정 확인을 위한 기록 대조라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.056014902,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:71",
+            "primary": "모듈 균열 때 배터리로 출력 보완",
+            "text": "패널 균열로 발전량이 줄어도 배터리 방전 여유가 있으면 필요한 전력을 잠시 보완할 수 있다. 운영자는 고장 범위와 잔량을 보고 방전량을 조절한다. 이 운전을 모듈 균열 때 배터리로 출력 보완이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:140",
+            "primary": "복구 과정 확인을 위한 기록 대조",
+            "text": "날씨, 계측값, 제어 명령, 승인 기록을 대조하면 사고 뒤 어떤 조치가 취해졌는지 확인할 수 있다. 담당자는 기록을 시간 순서로 살펴 복구 결과를 검토한다. 이 과정을 복구 과정 확인을 위한 기록 대조라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.104166667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:71",
+            "primary": "모듈 균열 때 배터리로 출력 보완",
+            "text": "패널 균열로 발전량이 줄어도 배터리 방전 여유가 있으면 필요한 전력을 잠시 보완할 수 있다. 운영자는 고장 범위와 잔량을 보고 방전량을 조절한다. 이 운전을 모듈 균열 때 배터리로 출력 보완이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:140",
+            "primary": "복구 과정 확인을 위한 기록 대조",
+            "text": "날씨, 계측값, 제어 명령, 승인 기록을 대조하면 사고 뒤 어떤 조치가 취해졌는지 확인할 수 있다. 담당자는 기록을 시간 순서로 살펴 복구 결과를 검토한다. 이 과정을 복구 과정 확인을 위한 기록 대조라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.107615281,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:71",
+            "primary": "모듈 균열 때 배터리로 출력 보완",
+            "text": "패널 균열로 발전량이 줄어도 배터리 방전 여유가 있으면 필요한 전력을 잠시 보완할 수 있다. 운영자는 고장 범위와 잔량을 보고 방전량을 조절한다. 이 운전을 모듈 균열 때 배터리로 출력 보완이라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:140",
+            "primary": "복구 과정 확인을 위한 기록 대조",
+            "text": "날씨, 계측값, 제어 명령, 승인 기록을 대조하면 사고 뒤 어떤 조치가 취해졌는지 확인할 수 있다. 담당자는 기록을 시간 순서로 살펴 복구 결과를 검토한다. 이 과정을 복구 과정 확인을 위한 기록 대조라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "function|process|role|state",
+      "records": 7,
+      "possible_pairs": 21,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 21,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.513513514,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:65",
+            "primary": "산사태 뒤 케이블 복구 작업 재개",
+            "text": "산사태 뒤에는 도로가 열리고 설비가 무전압 상태인지 확인돼야 케이블 복구에 들어갈 수 있다. 현장 책임자는 두 조건을 확인한 뒤 인력을 투입한다. 이 절차를 산사태 뒤 케이블 복구 작업 재개라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:148",
+            "primary": "도로 통행 허가 뒤 정비 재개 확인",
+            "text": "산악 도로가 열리고 설비가 무전압 상태인지 확인돼야 정비를 다시 시작할 수 있다. 현장 책임자는 두 조건을 확인한 뒤 인력을 투입한다. 이 절차를 도로 통행 허가 뒤 정비 재개 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.465128375,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:65",
+            "primary": "산사태 뒤 케이블 복구 작업 재개",
+            "text": "산사태 뒤에는 도로가 열리고 설비가 무전압 상태인지 확인돼야 케이블 복구에 들어갈 수 있다. 현장 책임자는 두 조건을 확인한 뒤 인력을 투입한다. 이 절차를 산사태 뒤 케이블 복구 작업 재개라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:148",
+            "primary": "도로 통행 허가 뒤 정비 재개 확인",
+            "text": "산악 도로가 열리고 설비가 무전압 상태인지 확인돼야 정비를 다시 시작할 수 있다. 현장 책임자는 두 조건을 확인한 뒤 인력을 투입한다. 이 절차를 도로 통행 허가 뒤 정비 재개 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 1,
+        "maximum": {
+          "score": 0.64516129,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:65",
+            "primary": "산사태 뒤 케이블 복구 작업 재개",
+            "text": "산사태 뒤에는 도로가 열리고 설비가 무전압 상태인지 확인돼야 케이블 복구에 들어갈 수 있다. 현장 책임자는 두 조건을 확인한 뒤 인력을 투입한다. 이 절차를 산사태 뒤 케이블 복구 작업 재개라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:148",
+            "primary": "도로 통행 허가 뒤 정비 재개 확인",
+            "text": "산악 도로가 열리고 설비가 무전압 상태인지 확인돼야 정비를 다시 시작할 수 있다. 현장 책임자는 두 조건을 확인한 뒤 인력을 투입한다. 이 절차를 도로 통행 허가 뒤 정비 재개 확인이라고 한다."
+          }
+        },
+        "top_pairs": [
+          {
+            "score": 0.64516129,
+            "methods": [
+              "exhaustive_small_group"
+            ],
+            "left": {
+              "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:65",
+              "primary": "산사태 뒤 케이블 복구 작업 재개",
+              "text": "산사태 뒤에는 도로가 열리고 설비가 무전압 상태인지 확인돼야 케이블 복구에 들어갈 수 있다. 현장 책임자는 두 조건을 확인한 뒤 인력을 투입한다. 이 절차를 산사태 뒤 케이블 복구 작업 재개라고 한다."
+            },
+            "right": {
+              "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:148",
+              "primary": "도로 통행 허가 뒤 정비 재개 확인",
+              "text": "산악 도로가 열리고 설비가 무전압 상태인지 확인돼야 정비를 다시 시작할 수 있다. 현장 책임자는 두 조건을 확인한 뒤 인력을 투입한다. 이 절차를 도로 통행 허가 뒤 정비 재개 확인이라고 한다."
+            }
+          }
+        ]
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.673479223,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:65",
+            "primary": "산사태 뒤 케이블 복구 작업 재개",
+            "text": "산사태 뒤에는 도로가 열리고 설비가 무전압 상태인지 확인돼야 케이블 복구에 들어갈 수 있다. 현장 책임자는 두 조건을 확인한 뒤 인력을 투입한다. 이 절차를 산사태 뒤 케이블 복구 작업 재개라고 한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:148",
+            "primary": "도로 통행 허가 뒤 정비 재개 확인",
+            "text": "산악 도로가 열리고 설비가 무전압 상태인지 확인돼야 정비를 다시 시작할 수 있다. 현장 책임자는 두 조건을 확인한 뒤 인력을 투입한다. 이 절차를 도로 통행 허가 뒤 정비 재개 확인이라고 한다."
+          }
+        },
+        "top_pairs": []
+      }
+    }
+  ],
+  "naturalness_warnings": {
+    "mode": "ADVISORY_WARNING_ONLY",
+    "rules": {
+      "path": "stage2_highdensity_dataset/tools/primary_naturalness_warning_rules_v1.json",
+      "sha256": "517d452cd174581f812d3b0d73a7bf48d72615e2a4259d59bf8ad38d14b7c741",
+      "schema_version": 1
+    },
+    "warning_records": 0,
+    "warning_assignments": 0,
+    "primary_dash_records": 0,
+    "primary_dash_ratio": 0,
+    "dash_style_review": {
+      "core_reuse_min_records": 2,
+      "copied_subject_particles": [
+        "은",
+        "는",
+        "이",
+        "가",
+        "에서",
+        "으로"
+      ],
+      "text_begins_exact_dash_primary_plus_particle_records": 0,
+      "text_begins_exact_dash_primary_plus_particle_ratio": 0,
+      "repeated_core_groups": 0,
+      "records_in_repeated_core_groups": 0,
+      "top_repeated_core_groups": [],
+      "interpretation": "This is an advisory style signal. A dash label copied into a sentence and a highly reused core can indicate a generated title pattern, but neither value alone proves that the underlying concept is false."
+    },
+    "by_code": [],
+    "by_expression": [],
+    "examples": [],
+    "note": "Warnings are evidence and statistics only. They neither alter source nor make structural gates fail by themselves."
+  },
+  "hard_source_errors": 0,
+  "direct_rewrite_targets": [],
+  "chatgpt_review_queue": [
+    {
+      "review_key": "group:relation_set:function|process|role|state",
+      "kind": "group",
+      "severity": "AI_REVIEW",
+      "code": "same_relation_set_similarity_review",
+      "evidence": {
+        "relation_set": "function|process|role|state",
+        "records": 7,
+        "raw_jaccard_pairs_ge_threshold": 0,
+        "raw_tfidf_pairs_ge_threshold": 0,
+        "jaccard_pairs_ge_threshold": 1,
+        "tfidf_pairs_ge_threshold": 0,
+        "candidate_search": {
+          "mode": "exhaustive_small_group",
+          "candidate_pairs_examined": 21,
+          "capped": false,
+          "oversized_buckets": [],
+          "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+        },
+        "examples": [
+          {
+            "score": 0.64516129,
+            "methods": [
+              "exhaustive_small_group"
+            ],
+            "left": {
+              "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:65",
+              "primary": "산사태 뒤 케이블 복구 작업 재개",
+              "text": "산사태 뒤에는 도로가 열리고 설비가 무전압 상태인지 확인돼야 케이블 복구에 들어갈 수 있다. 현장 책임자는 두 조건을 확인한 뒤 인력을 투입한다. 이 절차를 산사태 뒤 케이블 복구 작업 재개라고 한다."
+            },
+            "right": {
+              "locator": "stage2_(14)state_transition_high_density_train_v40.source.jsonl:148",
+              "primary": "도로 통행 허가 뒤 정비 재개 확인",
+              "text": "산악 도로가 열리고 설비가 무전압 상태인지 확인돼야 정비를 다시 시작할 수 있다. 현장 책임자는 두 조건을 확인한 뒤 인력을 투입한다. 이 절차를 도로 통행 허가 뒤 정비 재개 확인이라고 한다."
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "user_review_queue": [],
+  "review_queue_counts": {
+    "direct_rewrite_targets": 0,
+    "chatgpt_review_pending": 1,
+    "chatgpt_review_pending_hard": 0,
+    "user_review_pending": 0
+  },
+  "stale_or_invalid_decisions": [],
+  "review_protocol": {
+    "rule": "The script supplies evidence only. ChatGPT reviews chatgpt_review_queue first and records direct_rewrite, keep, or user_review in a decision sidecar. Only user_review items are escalated to the user.",
+    "direct_rewrite": "A direct target is an editorial task, not an automatic source mutation. Apply only a record-specific human/ChatGPT-authored patch, then rerun every relevant gate.",
+    "limitations": "Lexical patterns, X1/X2 clusters, and approximate large-group similarity are review signals. They do not by themselves prove that a Korean term is unnatural."
+  }
+}

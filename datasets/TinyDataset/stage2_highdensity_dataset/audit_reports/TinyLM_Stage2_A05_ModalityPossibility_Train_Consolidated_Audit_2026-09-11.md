@@ -207,3 +207,48 @@ A05 train source v01~v69는 구조·통제 relations·primary literal·중복·r
 - **구조: PASS.** JSONL, 150행, 필수 필드, primary literal, 13개 relations, `other_type`, 중복, registry coverage의 재감사 결과는 모두 통과했다.
 - **자연성: HOLD.** 489행의 의미 미정/부자연 문구와 높은 문형 재사용은 사용자 의미 검토가 끝나지 않았다. reviewer-assist의 구조 PASS를 자연스러운 한국어 PASS로 승격하지 않는다.
 - **전체 source-only 상태: `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`.** 사용자 검토표의 의미 승인이 있기 전에는 package train/val 승격이나 학습용 확정으로 보지 않는다.
+
+## 11. 2026-09-14 자연성·의미 직접 재서술 후 재감사
+
+> 이 절은 §10의 재감사 뒤에 수행한 source-only 후속 수정과 재감사 결과다. §10의 역사 수치는 보존하며, 이 절의 source-set SHA와 판정이 현재 상태다.
+
+### 11.1 직접 수정 범위
+
+- 확정된 오류 locator **98행**만 직접 재서술했다. v20의 반례 조건·가정 범위 24행, v12의 과도한 `primary+은/는` 도입 64행, v13의 발생 징후/발생 여부 2행, v21의 냉동 차량 적재·포장 상자 중심 온도 징후/발생 여부 4행, v69의 가정 결과/가정 범위 4행이다.
+- 수정은 각 행의 `text`에 한정했다. primary, relations, 행 순서, 파일 수와 registry locator는 보존했으므로 registry 갱신은 필요하지 않았다.
+- 특히 반례는 실제로 어떤 기대가 깨지는지, 가정 범위는 고정 변수와 범위 밖 변수를, 발생 징후/발생 여부는 관측 신호와 확정 판정 기준을 각각 드러내도록 분리했다. 전역 치환·suffix 부여·source 전체 재직렬화는 하지 않았다.
+- §10.5의 v16:4 `열차 출입문 조건부 결과` 보류 설명은 당시 snapshot의 역사 기록이다. 현재 v16:4는 잠금 확인 신호 지연·수동 확인 부재·실제 출발 판정 근거를 명시하므로, 더 이상 그 보류 사유에 해당하지 않는다. 이 사실은 이번 98행 묶음의 수정 공적으로 소급 계상하지 않는다.
+
+| source | 직접 수정 전 SHA-256 | 수정 후 SHA-256 |
+|---|---|---|
+| v12 | `27aeecb77913cd8a97b1916ade9f9bd94a020f33b2b2099f3c86b507f7b2157c` | `67220da15dc56308f429e6b721ca70e6ce2fc9d6bf5513fbfa500113e6c7baab` |
+| v13 | `ec0da08a2fab0ec8a6f12046b324317231d08cff5c7fefa648392ba5bb1666dc` | `440a03d090b1b43bb753c1b60747beefc9b232de662e42bf8fe8e3cad67d855b` |
+| v20 | `a7ac5cfd811dd3645dafa371d1203eee833b7e9fc10c70ea02ae562470747376` | `19e0b5e1cb33884f56744d8cd6375c5e1b16136589e8cfa135e164d38a951582` |
+| v21 | `b4017d08bc35869c51a5697dd2d2e1bd1722380e9a4d7c915a956a3f0c9f514a` | `69a5176eaa7d4f18770ab6df478a0e7a530194ffdcdda36b809f017e74b64059` |
+| v69 | `43f4a2eb3cd713b6abe1b0188a7f0ee24e2d884a1be08cd1be59097775178a79` | `00fc3f0bba1333dbbd458a8e3dc0c25a75493488f482824234b2f61713a322c2` |
+
+v20의 수정 전 해시는 직전 reviewer source-set `1db2c61abc03ac7bb98a6f0239608c4d8208789f04e7f8a815e36ecca0e9136c`, 나머지 네 파일의 수정 전 해시는 이어진 reviewer source-set `84eba10260f8127b36081d65c20c5ab7f8d8e78eb14ba487fcf5d793a243a3ff`에서 취득했다. 두 source-set은 서로 다른 재감사 시점의 digest이므로 상호 대체하지 않는다.
+
+### 11.2 구조·형식 재감사
+
+- reviewer-assist source-set SHA-256: `38a9929f5aad0189c24f8e5ec3780837b4576be19daed7c5eae6c0d91435dc0e`.
+- 69 files / 10,350 records(파일당 150), hard source error **0**, registry parse problem **0**, registry coverage **100%**, direct rewrite target **0**이다.
+- 통제 relations 분포와 `other_type` 상위 5유형은 §10.3과 동일하다. 이번 수정은 text만 바꿨으므로 relation occurrence와 `other_type` 분포에 영향을 주지 않았다.
+- 독립 whitespace token 평균은 **20.057778 tokens/record**이며 primary/text exact 및 NFKC 중복은 모두 **0**이다.
+
+### 11.3 도입부·반복·유사도
+
+- v12의 `primary+은/는` 도입은 **109/150 (72.6667%) → 45/150 (30.0000%)**가 됐다. 전체는 **1,633/10,350 = 15.7778%**이며 HOLD 파일은 없다. v04·v05만 파일 단위 diversity review로 남는다.
+- exact primary-masked text 중복은 **2,416 groups / 8,294 records**로 남는다. 이는 exact primary/text 중복과 다른 지표이며, primary만 가린 뒤 남는 공통 문형의 재사용을 뜻한다.
+- 독립 char 3~5-gram TF-IDF는 **19,655 pairs >= .72**, 최고 cosine **.9540336945626448**이다. 최고 잔여 쌍은 v59:25 `운전자 교대 가정 결과`와 v59:145 `운전자 교대 가정 범위`다. 이 쌍은 다음 행별 의미 판정 대상으로 남겼으며 자동 수정하지 않았다.
+- 반복 5어절 상위에는 195회 문구가 남아 있다. 반복 신호는 locator별로 읽어 명확한 오류일 때만 수정한다.
+
+### 11.4 판정
+
+- **구조: PASS.** JSONL, 각 150행, primary literal, 13개 relations, relation 수, `other_type`, exact/NFKC 중복, registry coverage를 통과했다.
+- **자연성: HOLD.** reviewer rule-warning 0은 의미 품질 PASS가 아니다. ChatGPT review queue 44 groups와 primary-masked exact duplicate 2,416 groups가 남아 있으며, 일상어로 해석이 불안정한 primary는 억지로 의미를 발명하지 않았다.
+- **현재 상태: `SOURCE_STRUCTURAL_PASS_NATURALNESS_HOLD_PENDING_SEMANTIC_REVIEW`.** package train/val, checkpoint, manifest, 중앙 원장, 공용 감사기 및 다른 영역 source는 수정·승격하지 않았다.
+
+### 11.5 기계 산출물
+
+- `audit_reports/machine/a05/TinyLM_Stage2_A05_ModalityPossibility_Reaudit_SemanticRepair_v12_v20_v24_v49_SemanticPairs_r2_2026-09-14.json`

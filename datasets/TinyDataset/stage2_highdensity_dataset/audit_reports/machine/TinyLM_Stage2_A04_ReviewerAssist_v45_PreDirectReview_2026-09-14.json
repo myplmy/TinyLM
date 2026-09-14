@@ -1,0 +1,1224 @@
+{
+  "audit": "Stage2 primary naturalness reviewer-assist",
+  "audit_version": 2,
+  "execution_mode": "read_only_source_scan",
+  "source_selection": {
+    "source_dir": "Z:\\TinyLM\\datasets\\TinyDataset\\stage2_highdensity_dataset\\sources\\train",
+    "filename_match": "v45\\.source\\.jsonl$",
+    "area": {
+      "requested": "A04",
+      "code": "A04",
+      "source_area_slot": "14",
+      "slug": "state_transition",
+      "rule": "filename match AND exact Stage2 area filename prefix"
+    }
+  },
+  "source_set_sha256": "6ed7649d6efbce0053d0188edcb44b493e680e877ea1385ac221a3bff4e809d8",
+  "source_files": 1,
+  "source_records": 150,
+  "source_file_sha256": {
+    "stage2_(14)state_transition_high_density_train_v45.source.jsonl": "f3e6ff038593fe27eba9f35f62907f70ff85667d7350a8adf34c69590c9522bb"
+  },
+  "registry": {
+    "supplied": false,
+    "require_registry": false,
+    "sha256": null,
+    "parse_problems": [],
+    "records": 0,
+    "coverage": null
+  },
+  "primary_eunneun_opening": {
+    "count": 150,
+    "records": 150,
+    "rate": 1,
+    "provisional_thresholds": {
+      "review_above": 0.3,
+      "hold_above": 0.45
+    },
+    "assessment": "HOLD_REWRITE_DIVERSITY",
+    "note": "The ratio is a diversity gate, not a Korean grammar error rate. A threshold crossing requires family-level review rather than blind rewrites.",
+    "by_file": [
+      {
+        "file": "stage2_(14)state_transition_high_density_train_v45.source.jsonl",
+        "records": 150,
+        "hits": 150,
+        "rate": 1,
+        "assessment": "HOLD_REWRITE_DIVERSITY"
+      }
+    ],
+    "examples": [
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:1",
+        "primary": "수술실 배정안정 피드백",
+        "text": "수술실 배정안정 피드백은 예정 수술과 빈 수술실이 맞물려 대기열이 안정되는 상태이며, 수술실 식별과 환자 사건번호는 보존하고 배정 시각과 순서는 조정된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:2",
+        "primary": "수술실 일정이탈 피드백",
+        "text": "수술실 일정이탈 피드백은 지연 수술이 다음 배정에 누적되어 안정 상태에서 이탈하는 과정이며, 환자 사건번호와 원래 우선순위는 보존하고 시작 예정은 변경된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:3",
+        "primary": "수술실 응급우선 안정",
+        "text": "수술실 응급우선 안정은 응급 환자의 우선순위가 반영되어 대기시간 변동이 줄어든 상태이고, 응급 사건번호는 보존하며 일반 수술의 시작 시각은 재배치된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:4",
+        "primary": "수술실 응급우선 이탈",
+        "text": "수술실 응급우선 이탈은 응급 호출이 겹쳐 배정 순서가 흔들리는 전이이며, 호출 기록과 환자 식별은 보존하고 우선순위와 예상 입실 시각은 바뀐다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:5",
+        "primary": "수술실 사전준비 안정",
+        "text": "수술실 사전준비 안정은 환자 확인과 기구 점검이 예정 시각 전에 완료된 상태이며, 점검표 원본과 수술 사건번호는 보존하고 준비 완료 시각만 갱신된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:6",
+        "primary": "수술실 사전준비 이탈",
+        "text": "수술실 사전준비 이탈은 동의서나 기구 확인이 늦어 준비 상태가 미완료로 되돌아가는 과정이고, 환자 식별과 누락 항목은 보존하며 배정 시작을 연기한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:7",
+        "primary": "수술실 마취인력 안정",
+        "text": "수술실 마취인력 안정은 필요한 마취 담당자가 교대 계획에 맞춰 확보된 상태이며, 담당자 자격과 환자 사건번호는 보존하고 호출 시각과 배정표는 조정된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:8",
+        "primary": "수술실 마취인력 이탈",
+        "text": "수술실 마취인력 이탈은 결원이나 교대 지연으로 준비 인력이 부족해지는 전이이며, 자격 기록과 환자 식별은 보존하고 대체 인력과 수술 순서를 변경한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:9",
+        "primary": "수술실 외과팀 안정",
+        "text": "수술실 외과팀 안정은 집도의와 보조 인력이 같은 수술계획을 확인한 상태이고, 수술계획 버전과 환자 사건번호는 보존하며 회의 시각만 갱신한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:10",
+        "primary": "수술실 외과팀 이탈",
+        "text": "수술실 외과팀 이탈은 계획 변경이 팀별로 다르게 전달되어 준비 상태가 갈라지는 과정이며, 원본 계획과 환자 식별은 보존하고 확인 절차를 다시 연다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:11",
+        "primary": "수술실 감염감시 안정",
+        "text": "수술실 감염감시 안정은 배양 결과와 표면 지표가 허용 범위 안에서 유지되는 상태이며, 표본번호와 채취 시각은 보존하고 감시 주기와 청소 시각은 조정된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:12",
+        "primary": "수술실 감염감시 이탈",
+        "text": "수술실 감염감시 이탈은 환경 표지나 배양 결과가 경계값을 넘어 격리 상태로 전환되는 과정이고, 표본번호와 원자료는 보존하며 입실 허가와 소독 순서를 바꾼다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:13",
+        "primary": "수술실 공기압 안정",
+        "text": "수술실 공기압 안정은 청정구역 압력이 기준 차이를 유지하는 상태이며, 실내 센서 식별과 측정 시각은 보존하고 압력 설정과 팬 출력은 변경된다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:14",
+        "primary": "수술실 공기압 이탈",
+        "text": "수술실 공기압 이탈은 문 개방이나 팬 이상으로 구역 간 압력 차가 줄어드는 전이이며, 센서 원자료와 수술실 식별은 보존하고 입실 상태와 환기 설정을 조정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:15",
+        "primary": "수술실 온습도 안정",
+        "text": "수술실 온습도 안정은 온도와 습도가 관리 범위에 머무는 상태이고, 센서 시각과 실내 식별은 보존하며 냉난방 출력과 점검 주기는 조정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:16",
+        "primary": "수술실 온습도 이탈",
+        "text": "수술실 온습도 이탈은 외기 변화와 장비 부하로 관리 범위를 벗어나는 과정이며, 측정 원본과 수술실 식별은 보존하고 수술 개시와 공조 출력을 변경한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:17",
+        "primary": "수술실 멸균물품 안정",
+        "text": "수술실 멸균물품 안정은 포장 봉인과 유효기간이 모두 확인된 상태이며, 물품 로트번호와 확인 기록은 보존하고 반입 시각과 사용 순서만 갱신한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:18",
+        "primary": "수술실 멸균물품 이탈",
+        "text": "수술실 멸균물품 이탈은 봉인 손상이나 유효기간 경과로 사용 가능 상태가 취소되는 전이이고, 로트번호와 사진 기록은 보존하며 대체 물품과 수술 순서를 바꾼다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:19",
+        "primary": "수술실 기구세트 안정",
+        "text": "수술실 기구세트 안정은 수술 유형에 필요한 기구가 세트별로 맞춰진 상태이며, 세트번호와 수술 사건번호는 보존하고 배치 위치와 준비 완료 시각을 조정한다."
+      },
+      {
+        "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:20",
+        "primary": "수술실 기구세트 이탈",
+        "text": "수술실 기구세트 이탈은 누락 기구가 발견되어 준비 완료 상태가 보류되는 과정이며, 세트번호와 누락 기록은 보존하고 보충 작업과 시작 시각을 변경한다."
+      }
+    ]
+  },
+  "x1_x2_composite": {
+    "core_style_counts": {
+      "no_space": 0,
+      "one_token": 0,
+      "two_token_core": 0,
+      "three_or_more_token_core": 150
+    },
+    "two_word_core_records": 0,
+    "two_word_core_ratio_all_records": 0,
+    "same_x1_different_x2": {
+      "group_count": 0,
+      "records": 0,
+      "ratio_within_two_word_core": null,
+      "ratio_all_records": 0,
+      "top_groups": []
+    },
+    "same_x2_different_x1": {
+      "group_count": 0,
+      "records": 0,
+      "ratio_within_two_word_core": null,
+      "ratio_all_records": 0,
+      "top_groups": []
+    }
+  },
+  "same_relation_set_masked_similarity": [
+    {
+      "relation_set": "attribute|boundary|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|classification|process|state",
+      "records": 15,
+      "possible_pairs": 105,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 105,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.290322581,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:59",
+            "primary": "수술실 양압문 안정",
+            "text": "수술실 양압문 안정은 문 닫힘과 인터록이 연속 확인되어 압력 차가 유지되는 상태이고, 문 식별과 경보 시각은 보존하며 점검 간격과 통행 순서를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:89",
+            "primary": "수술실 초음파프로브 안정",
+            "text": "수술실 초음파프로브 안정은 프로브 식별과 영상 품질 점검이 정상인 상태이고, 프로브번호와 점검 시각은 보존하며 젤 공급과 사용 순서를 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.150589373,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:1",
+            "primary": "수술실 배정안정 피드백",
+            "text": "수술실 배정안정 피드백은 예정 수술과 빈 수술실이 맞물려 대기열이 안정되는 상태이며, 수술실 식별과 환자 사건번호는 보존하고 배정 시각과 순서는 조정된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:51",
+            "primary": "수술실 예약취소 안정",
+            "text": "수술실 예약취소 안정은 취소 사유와 대체 수술이 기록되어 빈 시간이 예측 가능한 상태이며, 예약번호와 환자 사건번호는 보존하고 배정 시각을 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.310344828,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:59",
+            "primary": "수술실 양압문 안정",
+            "text": "수술실 양압문 안정은 문 닫힘과 인터록이 연속 확인되어 압력 차가 유지되는 상태이고, 문 식별과 경보 시각은 보존하며 점검 간격과 통행 순서를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:89",
+            "primary": "수술실 초음파프로브 안정",
+            "text": "수술실 초음파프로브 안정은 프로브 식별과 영상 품질 점검이 정상인 상태이고, 프로브번호와 점검 시각은 보존하며 젤 공급과 사용 순서를 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.186912538,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:23",
+            "primary": "수술실 장비자가검사 안정",
+            "text": "수술실 장비자가검사 안정은 모니터와 마취기의 자가검사가 연속으로 정상인 상태이며, 장비 식별과 검사 시각은 보존하고 검사 주기와 사용 순서를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:89",
+            "primary": "수술실 초음파프로브 안정",
+            "text": "수술실 초음파프로브 안정은 프로브 식별과 영상 품질 점검이 정상인 상태이고, 프로브번호와 점검 시각은 보존하며 젤 공급과 사용 순서를 조정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|comparison|process|state",
+      "records": 22,
+      "possible_pairs": 231,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 231,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.294117647,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:97",
+            "primary": "수술실 정전대응 안정",
+            "text": "수술실 정전대응 안정은 무정전 전원과 비상 조명이 목표 시간 동안 유지되는 상태이며, 전원 로그와 방 식별은 보존하고 부하 우선순위와 점검 시각을 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:145",
+            "primary": "수술실 운영지표 안정",
+            "text": "수술실 운영지표 안정은 회전시간·감염지표·대기열이 목표 범위에서 함께 유지되는 상태이며, 지표 산출 시각과 방 식별은 보존하고 배정 주기와 점검 우선순위를 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.235942178,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:83",
+            "primary": "수술실 출혈감시 안정",
+            "text": "수술실 출혈감시 안정은 측정된 출혈량과 교체량의 차이가 예상 범위에 머무는 상태이고, 측정 시각과 환자 사건번호는 보존하며 관찰 간격과 보충 계획을 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:127",
+            "primary": "수술실 회복지표 안정",
+            "text": "수술실 회복지표 안정은 통증·호흡·의식 지표가 회복 기준 안에서 추세를 보이는 상태이며, 측정 시각과 환자 사건번호는 보존하고 관찰 간격과 퇴실 기준을 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.3125,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:97",
+            "primary": "수술실 정전대응 안정",
+            "text": "수술실 정전대응 안정은 무정전 전원과 비상 조명이 목표 시간 동안 유지되는 상태이며, 전원 로그와 방 식별은 보존하고 부하 우선순위와 점검 시각을 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:145",
+            "primary": "수술실 운영지표 안정",
+            "text": "수술실 운영지표 안정은 회전시간·감염지표·대기열이 목표 범위에서 함께 유지되는 상태이며, 지표 산출 시각과 방 식별은 보존하고 배정 주기와 점검 우선순위를 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.272715271,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:83",
+            "primary": "수술실 출혈감시 안정",
+            "text": "수술실 출혈감시 안정은 측정된 출혈량과 교체량의 차이가 예상 범위에 머무는 상태이고, 측정 시각과 환자 사건번호는 보존하며 관찰 간격과 보충 계획을 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:127",
+            "primary": "수술실 회복지표 안정",
+            "text": "수술실 회복지표 안정은 통증·호흡·의식 지표가 회복 기준 안에서 추세를 보이는 상태이며, 측정 시각과 환자 사건번호는 보존하고 관찰 간격과 퇴실 기준을 조정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|part_of|process|state",
+      "records": 11,
+      "possible_pairs": 55,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 55,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.366666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:25",
+            "primary": "수술실 산소공급 안정",
+            "text": "수술실 산소공급 안정은 배관 압력과 저장량이 요구 범위에 있는 상태이며, 저장탱크 식별과 측정 시각은 보존하고 공급 밸브와 보충 시각은 조정된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:105",
+            "primary": "수술실 질소공급 안정",
+            "text": "수술실 질소공급 안정은 저장량과 배관 압력이 실험 장비 요구 범위에 머무는 상태이며, 저장용기 번호와 측정 시각은 보존하고 보충 계획과 공급 순서를 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.284231706,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:25",
+            "primary": "수술실 산소공급 안정",
+            "text": "수술실 산소공급 안정은 배관 압력과 저장량이 요구 범위에 있는 상태이며, 저장탱크 식별과 측정 시각은 보존하고 공급 밸브와 보충 시각은 조정된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:105",
+            "primary": "수술실 질소공급 안정",
+            "text": "수술실 질소공급 안정은 저장량과 배관 압력이 실험 장비 요구 범위에 머무는 상태이며, 저장용기 번호와 측정 시각은 보존하고 보충 계획과 공급 순서를 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.392857143,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:25",
+            "primary": "수술실 산소공급 안정",
+            "text": "수술실 산소공급 안정은 배관 압력과 저장량이 요구 범위에 있는 상태이며, 저장탱크 식별과 측정 시각은 보존하고 공급 밸브와 보충 시각은 조정된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:105",
+            "primary": "수술실 질소공급 안정",
+            "text": "수술실 질소공급 안정은 저장량과 배관 압력이 실험 장비 요구 범위에 머무는 상태이며, 저장용기 번호와 측정 시각은 보존하고 보충 계획과 공급 순서를 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.284806027,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:25",
+            "primary": "수술실 산소공급 안정",
+            "text": "수술실 산소공급 안정은 배관 압력과 저장량이 요구 범위에 있는 상태이며, 저장탱크 식별과 측정 시각은 보존하고 공급 밸브와 보충 시각은 조정된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:105",
+            "primary": "수술실 질소공급 안정",
+            "text": "수술실 질소공급 안정은 저장량과 배관 압력이 실험 장비 요구 범위에 머무는 상태이며, 저장용기 번호와 측정 시각은 보존하고 보충 계획과 공급 순서를 조정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|process|role|state",
+      "records": 26,
+      "possible_pairs": 325,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 325,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.275862069,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:113",
+            "primary": "수술실 체내기구 계수 안정",
+            "text": "수술실 체내기구 계수 안정은 사용 전후 기구 수가 일치하는 상태이며, 기구 세트번호와 계수 시각은 보존하고 계수자 역할과 확인 순서를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:115",
+            "primary": "수술실 거즈계수 안정",
+            "text": "수술실 거즈계수 안정은 포장 단위와 사용량 기록이 수술 사건에 맞는 상태이며, 포장번호와 계수 시각은 보존하고 계수자와 확인 간격을 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.228382781,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:113",
+            "primary": "수술실 체내기구 계수 안정",
+            "text": "수술실 체내기구 계수 안정은 사용 전후 기구 수가 일치하는 상태이며, 기구 세트번호와 계수 시각은 보존하고 계수자 역할과 확인 순서를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:115",
+            "primary": "수술실 거즈계수 안정",
+            "text": "수술실 거즈계수 안정은 포장 단위와 사용량 기록이 수술 사건에 맞는 상태이며, 포장번호와 계수 시각은 보존하고 계수자와 확인 간격을 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.296296296,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:113",
+            "primary": "수술실 체내기구 계수 안정",
+            "text": "수술실 체내기구 계수 안정은 사용 전후 기구 수가 일치하는 상태이며, 기구 세트번호와 계수 시각은 보존하고 계수자 역할과 확인 순서를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:115",
+            "primary": "수술실 거즈계수 안정",
+            "text": "수술실 거즈계수 안정은 포장 단위와 사용량 기록이 수술 사건에 맞는 상태이며, 포장번호와 계수 시각은 보존하고 계수자와 확인 간격을 조정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.222118469,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:113",
+            "primary": "수술실 체내기구 계수 안정",
+            "text": "수술실 체내기구 계수 안정은 사용 전후 기구 수가 일치하는 상태이며, 기구 세트번호와 계수 시각은 보존하고 계수자 역할과 확인 순서를 조정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:115",
+            "primary": "수술실 거즈계수 안정",
+            "text": "수술실 거즈계수 안정은 포장 단위와 사용량 기록이 수술 사건에 맞는 상태이며, 포장번호와 계수 시각은 보존하고 계수자와 확인 간격을 조정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|classification|process|state",
+      "records": 4,
+      "possible_pairs": 6,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 6,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.171428571,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:32",
+            "primary": "수술실 표면검사 이탈",
+            "text": "수술실 표면검사 이탈은 접촉면 지표가 기준을 넘어 오염 의심 상태가 되는 전이이며, 표면 위치와 표본번호는 보존하고 격리 범위와 소독 방법을 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:76",
+            "primary": "수술실 약품투여 기록 이탈",
+            "text": "수술실 약품투여 기록 이탈은 투여 기록과 처방 버전이 어긋나 검증 상태가 중단되는 전이이며, 원본 기록과 사건번호는 보존하고 재확인과 투여 승인 흐름을 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.131265043,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:32",
+            "primary": "수술실 표면검사 이탈",
+            "text": "수술실 표면검사 이탈은 접촉면 지표가 기준을 넘어 오염 의심 상태가 되는 전이이며, 표면 위치와 표본번호는 보존하고 격리 범위와 소독 방법을 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:76",
+            "primary": "수술실 약품투여 기록 이탈",
+            "text": "수술실 약품투여 기록 이탈은 투여 기록과 처방 버전이 어긋나 검증 상태가 중단되는 전이이며, 원본 기록과 사건번호는 보존하고 재확인과 투여 승인 흐름을 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.1875,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:32",
+            "primary": "수술실 표면검사 이탈",
+            "text": "수술실 표면검사 이탈은 접촉면 지표가 기준을 넘어 오염 의심 상태가 되는 전이이며, 표면 위치와 표본번호는 보존하고 격리 범위와 소독 방법을 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:76",
+            "primary": "수술실 약품투여 기록 이탈",
+            "text": "수술실 약품투여 기록 이탈은 투여 기록과 처방 버전이 어긋나 검증 상태가 중단되는 전이이며, 원본 기록과 사건번호는 보존하고 재확인과 투여 승인 흐름을 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.166983167,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:32",
+            "primary": "수술실 표면검사 이탈",
+            "text": "수술실 표면검사 이탈은 접촉면 지표가 기준을 넘어 오염 의심 상태가 되는 전이이며, 표면 위치와 표본번호는 보존하고 격리 범위와 소독 방법을 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:76",
+            "primary": "수술실 약품투여 기록 이탈",
+            "text": "수술실 약품투여 기록 이탈은 투여 기록과 처방 버전이 어긋나 검증 상태가 중단되는 전이이며, 원본 기록과 사건번호는 보존하고 재확인과 투여 승인 흐름을 변경한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|comparison|process|state",
+      "records": 7,
+      "possible_pairs": 21,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 21,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.222222222,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:42",
+            "primary": "수술실 회복실 수용 이탈",
+            "text": "수술실 회복실 수용 이탈은 퇴실 지연으로 빈 침상이 줄어 입실 대기 상태가 되는 과정이고, 환자 사건번호와 모니터 기록은 보존하며 회복실 배정과 수술 순서를 바꾼다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:78",
+            "primary": "수술실 혈액제제 운반 이탈",
+            "text": "수술실 혈액제제 운반 이탈은 온도 상승이나 인계 지연으로 사용 승인 상태가 보류되는 과정이며, 제제번호와 온도 기록은 보존하고 대체 제제와 수술 순서를 바꾼다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.179795919,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:42",
+            "primary": "수술실 회복실 수용 이탈",
+            "text": "수술실 회복실 수용 이탈은 퇴실 지연으로 빈 침상이 줄어 입실 대기 상태가 되는 과정이고, 환자 사건번호와 모니터 기록은 보존하며 회복실 배정과 수술 순서를 바꾼다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:130",
+            "primary": "수술실 통증평가 이탈",
+            "text": "수술실 통증평가 이탈은 통증 점수가 상승해 회복 상태가 지연되는 과정이고, 평가 기록과 사건번호는 보존하며 추가 처치와 회복실 배정을 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.242424242,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:42",
+            "primary": "수술실 회복실 수용 이탈",
+            "text": "수술실 회복실 수용 이탈은 퇴실 지연으로 빈 침상이 줄어 입실 대기 상태가 되는 과정이고, 환자 사건번호와 모니터 기록은 보존하며 회복실 배정과 수술 순서를 바꾼다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:78",
+            "primary": "수술실 혈액제제 운반 이탈",
+            "text": "수술실 혈액제제 운반 이탈은 온도 상승이나 인계 지연으로 사용 승인 상태가 보류되는 과정이며, 제제번호와 온도 기록은 보존하고 대체 제제와 수술 순서를 바꾼다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.212913183,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:42",
+            "primary": "수술실 회복실 수용 이탈",
+            "text": "수술실 회복실 수용 이탈은 퇴실 지연으로 빈 침상이 줄어 입실 대기 상태가 되는 과정이고, 환자 사건번호와 모니터 기록은 보존하며 회복실 배정과 수술 순서를 바꾼다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:78",
+            "primary": "수술실 혈액제제 운반 이탈",
+            "text": "수술실 혈액제제 운반 이탈은 온도 상승이나 인계 지연으로 사용 승인 상태가 보류되는 과정이며, 제제번호와 온도 기록은 보존하고 대체 제제와 수술 순서를 바꾼다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|function|process|state",
+      "records": 58,
+      "possible_pairs": 1653,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1653,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.34375,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:18",
+            "primary": "수술실 멸균물품 이탈",
+            "text": "수술실 멸균물품 이탈은 봉인 손상이나 유효기간 경과로 사용 가능 상태가 취소되는 전이이고, 로트번호와 사진 기록은 보존하며 대체 물품과 수술 순서를 바꾼다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:120",
+            "primary": "수술실 봉합재고 이탈",
+            "text": "수술실 봉합재고 이탈은 특정 규격 소진이나 유효기간 경과로 준비 상태가 보류되는 전이이고, 제품 로트와 출고 기록은 보존하며 대체 규격과 수술 순서를 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.277707492,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:26",
+            "primary": "수술실 산소공급 이탈",
+            "text": "수술실 산소공급 이탈은 압력 저하나 밸브 이상으로 공급 상태가 경보로 전환되는 과정이며, 압력 원자료와 장비 식별은 보존하고 환자 입실과 공급 경로를 바꾼다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:106",
+            "primary": "수술실 질소공급 이탈",
+            "text": "수술실 질소공급 이탈은 저장량 부족이나 밸브 이상으로 공급 경로가 예비 상태로 바뀌는 과정이고, 용기번호와 압력 원자료는 보존하며 예비 연결과 작업 순서를 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.366666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:18",
+            "primary": "수술실 멸균물품 이탈",
+            "text": "수술실 멸균물품 이탈은 봉인 손상이나 유효기간 경과로 사용 가능 상태가 취소되는 전이이고, 로트번호와 사진 기록은 보존하며 대체 물품과 수술 순서를 바꾼다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:120",
+            "primary": "수술실 봉합재고 이탈",
+            "text": "수술실 봉합재고 이탈은 특정 규격 소진이나 유효기간 경과로 준비 상태가 보류되는 전이이고, 제품 로트와 출고 기록은 보존하며 대체 규격과 수술 순서를 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.297386713,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:18",
+            "primary": "수술실 멸균물품 이탈",
+            "text": "수술실 멸균물품 이탈은 봉인 손상이나 유효기간 경과로 사용 가능 상태가 취소되는 전이이고, 로트번호와 사진 기록은 보존하며 대체 물품과 수술 순서를 바꾼다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:120",
+            "primary": "수술실 봉합재고 이탈",
+            "text": "수술실 봉합재고 이탈은 특정 규격 소진이나 유효기간 경과로 준비 상태가 보류되는 전이이고, 제품 로트와 출고 기록은 보존하며 대체 규격과 수술 순서를 변경한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|part_of|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|process|role|state",
+      "records": 3,
+      "possible_pairs": 3,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 3,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.114285714,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:8",
+            "primary": "수술실 마취인력 이탈",
+            "text": "수술실 마취인력 이탈은 결원이나 교대 지연으로 준비 인력이 부족해지는 전이이며, 자격 기록과 환자 식별은 보존하고 대체 인력과 수술 순서를 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:94",
+            "primary": "수술실 소음수준 이탈",
+            "text": "수술실 소음수준 이탈은 장비 경보가 겹쳐 의사소통 상태가 흔들리는 과정이며, 소음 측정과 사건번호는 보존하고 경보 우선순위와 담당자 호출을 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.070484083,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:94",
+            "primary": "수술실 소음수준 이탈",
+            "text": "수술실 소음수준 이탈은 장비 경보가 겹쳐 의사소통 상태가 흔들리는 과정이며, 소음 측정과 사건번호는 보존하고 경보 우선순위와 담당자 호출을 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:142",
+            "primary": "수술실 개선조치 이탈",
+            "text": "수술실 개선조치 이탈은 조치가 완료로 표시됐지만 재발 지표가 높아 관리 상태가 이탈하는 과정이고, 조치번호와 원인 기록은 보존하며 재검증과 책임자 배정을 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.121212121,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:8",
+            "primary": "수술실 마취인력 이탈",
+            "text": "수술실 마취인력 이탈은 결원이나 교대 지연으로 준비 인력이 부족해지는 전이이며, 자격 기록과 환자 식별은 보존하고 대체 인력과 수술 순서를 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:94",
+            "primary": "수술실 소음수준 이탈",
+            "text": "수술실 소음수준 이탈은 장비 경보가 겹쳐 의사소통 상태가 흔들리는 과정이며, 소음 측정과 사건번호는 보존하고 경보 우선순위와 담당자 호출을 변경한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.098716934,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:94",
+            "primary": "수술실 소음수준 이탈",
+            "text": "수술실 소음수준 이탈은 장비 경보가 겹쳐 의사소통 상태가 흔들리는 과정이며, 소음 측정과 사건번호는 보존하고 경보 우선순위와 담당자 호출을 변경한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:142",
+            "primary": "수술실 개선조치 이탈",
+            "text": "수술실 개선조치 이탈은 조치가 완료로 표시됐지만 재발 지표가 높아 관리 상태가 이탈하는 과정이고, 조치번호와 원인 기록은 보존하며 재검증과 책임자 배정을 변경한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "comparison|process|role|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "function|part_of|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    }
+  ],
+  "naturalness_warnings": {
+    "mode": "ADVISORY_WARNING_ONLY",
+    "rules": {
+      "path": "stage2_highdensity_dataset/tools/primary_naturalness_warning_rules_v1.json",
+      "sha256": "517d452cd174581f812d3b0d73a7bf48d72615e2a4259d59bf8ad38d14b7c741",
+      "schema_version": 1
+    },
+    "warning_records": 0,
+    "warning_assignments": 0,
+    "primary_dash_records": 0,
+    "primary_dash_ratio": 0,
+    "dash_style_review": {
+      "core_reuse_min_records": 2,
+      "copied_subject_particles": [
+        "은",
+        "는",
+        "이",
+        "가",
+        "에서",
+        "으로"
+      ],
+      "text_begins_exact_dash_primary_plus_particle_records": 0,
+      "text_begins_exact_dash_primary_plus_particle_ratio": 0,
+      "repeated_core_groups": 0,
+      "records_in_repeated_core_groups": 0,
+      "top_repeated_core_groups": [],
+      "interpretation": "This is an advisory style signal. A dash label copied into a sentence and a highly reused core can indicate a generated title pattern, but neither value alone proves that the underlying concept is false."
+    },
+    "by_code": [],
+    "by_expression": [],
+    "examples": [],
+    "note": "Warnings are evidence and statistics only. They neither alter source nor make structural gates fail by themselves."
+  },
+  "hard_source_errors": 0,
+  "direct_rewrite_targets": [],
+  "chatgpt_review_queue": [
+    {
+      "review_key": "group:primary_topic_particle_ratio",
+      "kind": "group",
+      "severity": "HARD",
+      "code": "primary_eunneun_opening_concentration",
+      "evidence": {
+        "rate": 1,
+        "thresholds": {
+          "review_above": 0.3,
+          "hold_above": 0.45
+        },
+        "examples": [
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:1",
+            "primary": "수술실 배정안정 피드백",
+            "text": "수술실 배정안정 피드백은 예정 수술과 빈 수술실이 맞물려 대기열이 안정되는 상태이며, 수술실 식별과 환자 사건번호는 보존하고 배정 시각과 순서는 조정된다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:2",
+            "primary": "수술실 일정이탈 피드백",
+            "text": "수술실 일정이탈 피드백은 지연 수술이 다음 배정에 누적되어 안정 상태에서 이탈하는 과정이며, 환자 사건번호와 원래 우선순위는 보존하고 시작 예정은 변경된다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:3",
+            "primary": "수술실 응급우선 안정",
+            "text": "수술실 응급우선 안정은 응급 환자의 우선순위가 반영되어 대기시간 변동이 줄어든 상태이고, 응급 사건번호는 보존하며 일반 수술의 시작 시각은 재배치된다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:4",
+            "primary": "수술실 응급우선 이탈",
+            "text": "수술실 응급우선 이탈은 응급 호출이 겹쳐 배정 순서가 흔들리는 전이이며, 호출 기록과 환자 식별은 보존하고 우선순위와 예상 입실 시각은 바뀐다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:5",
+            "primary": "수술실 사전준비 안정",
+            "text": "수술실 사전준비 안정은 환자 확인과 기구 점검이 예정 시각 전에 완료된 상태이며, 점검표 원본과 수술 사건번호는 보존하고 준비 완료 시각만 갱신된다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:6",
+            "primary": "수술실 사전준비 이탈",
+            "text": "수술실 사전준비 이탈은 동의서나 기구 확인이 늦어 준비 상태가 미완료로 되돌아가는 과정이고, 환자 식별과 누락 항목은 보존하며 배정 시작을 연기한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:7",
+            "primary": "수술실 마취인력 안정",
+            "text": "수술실 마취인력 안정은 필요한 마취 담당자가 교대 계획에 맞춰 확보된 상태이며, 담당자 자격과 환자 사건번호는 보존하고 호출 시각과 배정표는 조정된다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:8",
+            "primary": "수술실 마취인력 이탈",
+            "text": "수술실 마취인력 이탈은 결원이나 교대 지연으로 준비 인력이 부족해지는 전이이며, 자격 기록과 환자 식별은 보존하고 대체 인력과 수술 순서를 변경한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:9",
+            "primary": "수술실 외과팀 안정",
+            "text": "수술실 외과팀 안정은 집도의와 보조 인력이 같은 수술계획을 확인한 상태이고, 수술계획 버전과 환자 사건번호는 보존하며 회의 시각만 갱신한다."
+          },
+          {
+            "locator": "stage2_(14)state_transition_high_density_train_v45.source.jsonl:10",
+            "primary": "수술실 외과팀 이탈",
+            "text": "수술실 외과팀 이탈은 계획 변경이 팀별로 다르게 전달되어 준비 상태가 갈라지는 과정이며, 원본 계획과 환자 식별은 보존하고 확인 절차를 다시 연다."
+          }
+        ]
+      }
+    },
+    {
+      "review_key": "group:primary_topic_particle_ratio:stage2_(14)state_transition_high_density_train_v45.source.jsonl",
+      "kind": "group",
+      "severity": "HARD",
+      "code": "file_primary_eunneun_opening_concentration",
+      "evidence": {
+        "file": {
+          "file": "stage2_(14)state_transition_high_density_train_v45.source.jsonl",
+          "records": 150,
+          "hits": 150,
+          "rate": 1,
+          "assessment": "HOLD_REWRITE_DIVERSITY"
+        },
+        "thresholds": {
+          "review_above": 0.3,
+          "hold_above": 0.45
+        }
+      }
+    }
+  ],
+  "user_review_queue": [],
+  "review_queue_counts": {
+    "direct_rewrite_targets": 0,
+    "chatgpt_review_pending": 2,
+    "chatgpt_review_pending_hard": 2,
+    "user_review_pending": 0
+  },
+  "stale_or_invalid_decisions": [],
+  "review_protocol": {
+    "rule": "The script supplies evidence only. ChatGPT reviews chatgpt_review_queue first and records direct_rewrite, keep, or user_review in a decision sidecar. Only user_review items are escalated to the user.",
+    "direct_rewrite": "A direct target is an editorial task, not an automatic source mutation. Apply only a record-specific human/ChatGPT-authored patch, then rerun every relevant gate.",
+    "limitations": "Lexical patterns, X1/X2 clusters, and approximate large-group similarity are review signals. They do not by themselves prove that a Korean term is unnatural."
+  }
+}

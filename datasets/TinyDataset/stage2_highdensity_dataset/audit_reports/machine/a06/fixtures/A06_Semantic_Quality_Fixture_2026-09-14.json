@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "tool": "audit_a06_semantic_quality.js",
+  "area": "A06",
+  "generated_at": "2026-09-13T19:53:13.280Z",
+  "scope": {
+    "source_only": true,
+    "source_format": "fixture PSV",
+    "registry_checked": false,
+    "package_projection": "NOT_RUN; v01 has a protected package and non-pass v01 source rows are reported as PACKAGE_PROJECTION_HOLD",
+    "excluded": [
+      "other areas",
+      "package train/val",
+      "manifest",
+      "central ledger",
+      "checkpoint",
+      "shared audit tools"
+    ]
+  },
+  "evidence_limit": "The source contains constructed training scenarios, not independently verified operational records. Deterministic signals identify wording, scaffolding, and cue gaps; they do not prove factual truth or natural Korean acceptance. A human/LLM row review is still required before a semantic rewrite.",
+  "inputs": {
+    "files": [
+      {
+        "file": "a06_semantic_quality_fixture.psv",
+        "version": 0,
+        "records": 3,
+        "sha256": "3934A17C342653260901298CE146A1C34A35096FE27805C9F61527433489A258",
+        "family": "fixture"
+      }
+    ],
+    "source_set_sha256": "ED45D792FDB9917D1811E5F932472D6CFB403E9834433DF57DE946772BFBC6EB",
+    "registry_sha256": null,
+    "registry_rows": 0
+  },
+  "structural": {
+    "verdict": "FAIL",
+    "hard_error_count": 1,
+    "errors": {
+      "missing_files": [],
+      "unexpected_files": [],
+      "duplicate_source_formats": [],
+      "utf8": [],
+      "bom": [],
+      "header": [],
+      "row_count": [],
+      "blank_rows": [],
+      "columns": [],
+      "control_characters": [],
+      "empty_concept": [],
+      "empty_text": [],
+      "concept_literal_missing": [
+        {
+          "source_file": "a06_semantic_quality_fixture.psv",
+          "source_line": 3,
+          "version": 0,
+          "row": 2,
+          "id": null
+        }
+      ],
+      "concept_duplicate": [],
+      "text_duplicate": [],
+      "relation_controlled": [],
+      "relation_cardinality": [],
+      "relation_internal_duplicate": [],
+      "other_type_rule": [],
+      "registry": []
+    },
+    "controlled_relation_distribution": {
+      "is_a": 0,
+      "subclass_of": 0,
+      "part_of": 0,
+      "classification": 1,
+      "boundary": 1,
+      "contrast": 0,
+      "comparison": 0,
+      "function": 0,
+      "role": 1,
+      "process": 2,
+      "state": 1,
+      "attribute": 0,
+      "other": 0
+    },
+    "other_type_top_5": []
+  },
+  "semantic": {
+    "verdict": "HOLD_REWRITE_QUEUE_PRESENT",
+    "decision_distribution": {
+      "REWRITE_REQUIRED": 2,
+      "PASS_CANDIDATE": 1
+    },
+    "flag_distribution": {
+      "GENERIC_SCAFFOLD": 2,
+      "RELATION_CUE_GAPS": 2,
+      "ADJACENT_REPEATED_TOKEN": 1,
+      "DASH_MARKER_PRIMARY": 1,
+      "UNGROUNDED_PLACEHOLDER": 1
+    },
+    "relation_cue_gap_distribution": {
+      "boundary": 1,
+      "classification": 1,
+      "process": 1,
+      "state": 1
+    },
+    "primary_particle_start": {
+      "total": 2,
+      "starts_with_primary_particle": 2,
+      "wrong_particle": 0,
+      "rate_percent": 66.6667
+    },
+    "primary_particle_gate": "HOLD_OVER_45_PERCENT",
+    "scenario_cue_counts": {
+      "trigger_or_condition": 2,
+      "decision_or_action": 3,
+      "consequence_or_limit": 2
+    },
+    "similarity": {
+      "method": "same controlled-relation set; primary removed; Korean word-set Jaccard and unigrams TF-IDF cosine",
+      "pair_total": 0,
+      "word_jaccard_threshold": 0.75,
+      "word_jaccard_at_or_above_threshold": 0,
+      "word_jaccard_max": 0,
+      "tfidf_cosine_threshold": 0.85,
+      "tfidf_cosine_at_or_above_threshold": 0,
+      "tfidf_cosine_max": 0,
+      "top_word_jaccard_pairs": [],
+      "top_tfidf_pairs": [],
+      "repeated_primary_removed_skeletons": []
+    },
+    "rewrite_queue_count": 2,
+    "rewrite_queue": [
+      {
+        "id": null,
+        "source_file": "a06_semantic_quality_fixture.psv",
+        "source_line": 2,
+        "version": 0,
+        "family": "fixture",
+        "concept": "양액 수위 경보 — 연결 확인",
+        "relations": [
+          "process",
+          "state"
+        ],
+        "other_type": null,
+        "text": "양액 수위 경보 — 연결 확인은 예외 목록을 검토해 통상 처리와 제한 처리를 구분한다.",
+        "decision": "REWRITE_REQUIRED",
+        "flags": [
+          "DASH_MARKER_PRIMARY",
+          "GENERIC_SCAFFOLD",
+          "UNGROUNDED_PLACEHOLDER",
+          "RELATION_CUE_GAPS"
+        ],
+        "matched_scaffolds": [
+          "예외 목록을 검토",
+          "통상 처리와 제한 처리"
+        ],
+        "matched_placeholders": [
+          "예외 목록",
+          "통상 처리",
+          "제한 처리"
+        ],
+        "missing_fact_cues": [
+          "trigger_or_condition"
+        ],
+        "relation_cue_gaps": [
+          "process",
+          "state"
+        ]
+      },
+      {
+        "id": null,
+        "source_file": "a06_semantic_quality_fixture.psv",
+        "source_line": 4,
+        "version": 0,
+        "family": "fixture",
+        "concept": "환기창 기록 기록",
+        "relations": [
+          "boundary",
+          "classification"
+        ],
+        "other_type": null,
+        "text": "환기창 기록 기록은 두 담당자의 표가 다를 때 어느 표가 최신인지 확인한다.",
+        "decision": "REWRITE_REQUIRED",
+        "flags": [
+          "ADJACENT_REPEATED_TOKEN",
+          "GENERIC_SCAFFOLD",
+          "RELATION_CUE_GAPS"
+        ],
+        "matched_scaffolds": [
+          "두 담당자의 표"
+        ],
+        "matched_placeholders": [],
+        "missing_fact_cues": [
+          "consequence_or_limit"
+        ],
+        "relation_cue_gaps": [
+          "boundary",
+          "classification"
+        ]
+      }
+    ]
+  }
+}

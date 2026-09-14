@@ -1,0 +1,1734 @@
+{
+  "audit": "Stage2 primary naturalness reviewer-assist",
+  "audit_version": 2,
+  "execution_mode": "read_only_source_scan",
+  "source_selection": {
+    "source_dir": "Z:\\TinyLM\\datasets\\TinyDataset\\stage2_highdensity_dataset\\sources\\train",
+    "filename_match": "v56\\.source\\.jsonl$",
+    "area": {
+      "requested": "A04",
+      "code": "A04",
+      "source_area_slot": "14",
+      "slug": "state_transition",
+      "rule": "filename match AND exact Stage2 area filename prefix"
+    }
+  },
+  "source_set_sha256": "5c3a6ac9f94c667d7e374fab2dc9a84a277ca152d17a1386cab30fe9345061af",
+  "source_files": 1,
+  "source_records": 150,
+  "source_file_sha256": {
+    "stage2_(14)state_transition_high_density_train_v56.source.jsonl": "9aebf7749a29bd17c328908e54b9fa0b993b5a1dd8a234d22f30dd505864d8ce"
+  },
+  "registry": {
+    "supplied": false,
+    "require_registry": false,
+    "sha256": null,
+    "parse_problems": [],
+    "records": 0,
+    "coverage": null
+  },
+  "primary_eunneun_opening": {
+    "count": 0,
+    "records": 150,
+    "rate": 0,
+    "provisional_thresholds": {
+      "review_above": 0.3,
+      "hold_above": 0.45
+    },
+    "assessment": "WITHIN_PROVISIONAL_RANGE",
+    "note": "The ratio is a diversity gate, not a Korean grammar error rate. A threshold crossing requires family-level review rather than blind rewrites.",
+    "by_file": [
+      {
+        "file": "stage2_(14)state_transition_high_density_train_v56.source.jsonl",
+        "records": 150,
+        "hits": 0,
+        "rate": 0,
+        "assessment": "WITHIN_PROVISIONAL_RANGE"
+      }
+    ],
+    "examples": []
+  },
+  "x1_x2_composite": {
+    "core_style_counts": {
+      "no_space": 0,
+      "one_token": 0,
+      "two_token_core": 0,
+      "three_or_more_token_core": 150
+    },
+    "two_word_core_records": 0,
+    "two_word_core_ratio_all_records": 0,
+    "same_x1_different_x2": {
+      "group_count": 0,
+      "records": 0,
+      "ratio_within_two_word_core": null,
+      "ratio_all_records": 0,
+      "top_groups": []
+    },
+    "same_x2_different_x1": {
+      "group_count": 0,
+      "records": 0,
+      "ratio_within_two_word_core": null,
+      "ratio_all_records": 0,
+      "top_groups": []
+    }
+  },
+  "same_relation_set_masked_similarity": [
+    {
+      "relation_set": "attribute|boundary|process|state",
+      "records": 10,
+      "possible_pairs": 45,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 45,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.290322581,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:110",
+            "primary": "해양 부표 위험 수역 위치 제외",
+            "text": "안전 규칙에 따라 위험 수역의 후보 좌표는 관측 위치 목록에서 뺀다. 해양 부표 위험 수역 위치 제외에서는 대체 좌표와 송신 우선순위를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:120",
+            "primary": "해양 부표 위험 파고 추정 제외",
+            "text": "안전 규칙에 맞지 않는 파고 추정값은 관측 판단에 쓰지 않는다. 해양 부표 위험 파고 추정 제외에서는 대체 관측과 회수 조건을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.307074282,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:54",
+            "primary": "해양 부표 계류선 마모 대응",
+            "text": "계류선이 많이 닳아 끊어질 위험이 크면 부표를 회수해 사고를 막는다. 해양 부표 계류선 마모 대응에서는 선박 접근 경로와 관측 중단 시점을 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:99",
+            "primary": "해양 부표 계류선 마모 한계 확인",
+            "text": "계류선 마모가 끊어질 위험 수준을 넘는지 확인해 부표 회수가 필요한지 판단한다. 해양 부표 계류선 마모 한계 확인에서는 회수 항로와 관측 중단 시점을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.25,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:110",
+            "primary": "해양 부표 위험 수역 위치 제외",
+            "text": "안전 규칙에 따라 위험 수역의 후보 좌표는 관측 위치 목록에서 뺀다. 해양 부표 위험 수역 위치 제외에서는 대체 좌표와 송신 우선순위를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:120",
+            "primary": "해양 부표 위험 파고 추정 제외",
+            "text": "안전 규칙에 맞지 않는 파고 추정값은 관측 판단에 쓰지 않는다. 해양 부표 위험 파고 추정 제외에서는 대체 관측과 회수 조건을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.249527058,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:54",
+            "primary": "해양 부표 계류선 마모 대응",
+            "text": "계류선이 많이 닳아 끊어질 위험이 크면 부표를 회수해 사고를 막는다. 해양 부표 계류선 마모 대응에서는 선박 접근 경로와 관측 중단 시점을 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:99",
+            "primary": "해양 부표 계류선 마모 한계 확인",
+            "text": "계류선 마모가 끊어질 위험 수준을 넘는지 확인해 부표 회수가 필요한지 판단한다. 해양 부표 계류선 마모 한계 확인에서는 회수 항로와 관측 중단 시점을 정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|classification|process|state",
+      "records": 12,
+      "possible_pairs": 66,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 66,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.275862069,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:11",
+            "primary": "해양 부표 수온 측정",
+            "text": "수온 센서는 정해진 수심의 바닷물 온도를 일정한 간격으로 잰다. 해양 부표 수온 측정에서는 보정값과 다음 측정 시각을 확인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:21",
+            "primary": "해양 부표 풍속 측정",
+            "text": "풍속 센서는 바람의 세기와 방향을 일정한 간격으로 측정해 해상 상태를 알린다. 해양 부표 풍속 측정에서는 다음 측정 시간과 경보 기준을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.227763915,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:11",
+            "primary": "해양 부표 수온 측정",
+            "text": "수온 센서는 정해진 수심의 바닷물 온도를 일정한 간격으로 잰다. 해양 부표 수온 측정에서는 보정값과 다음 측정 시각을 확인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:21",
+            "primary": "해양 부표 풍속 측정",
+            "text": "풍속 센서는 바람의 세기와 방향을 일정한 간격으로 측정해 해상 상태를 알린다. 해양 부표 풍속 측정에서는 다음 측정 시간과 경보 기준을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.25,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:11",
+            "primary": "해양 부표 수온 측정",
+            "text": "수온 센서는 정해진 수심의 바닷물 온도를 일정한 간격으로 잰다. 해양 부표 수온 측정에서는 보정값과 다음 측정 시각을 확인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:21",
+            "primary": "해양 부표 풍속 측정",
+            "text": "풍속 센서는 바람의 세기와 방향을 일정한 간격으로 측정해 해상 상태를 알린다. 해양 부표 풍속 측정에서는 다음 측정 시간과 경보 기준을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.23511073,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:11",
+            "primary": "해양 부표 수온 측정",
+            "text": "수온 센서는 정해진 수심의 바닷물 온도를 일정한 간격으로 잰다. 해양 부표 수온 측정에서는 보정값과 다음 측정 시각을 확인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:21",
+            "primary": "해양 부표 풍속 측정",
+            "text": "풍속 센서는 바람의 세기와 방향을 일정한 간격으로 측정해 해상 상태를 알린다. 해양 부표 풍속 측정에서는 다음 측정 시간과 경보 기준을 정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|comparison|process|state",
+      "records": 19,
+      "possible_pairs": 171,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 171,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.466666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:18",
+            "primary": "해양 부표 파고 안정",
+            "text": "파고와 파 주기가 관리 범위 안에 머무는지 여러 번의 측정값으로 확인한다. 해양 부표 파고 안정일 때에는 측정 간격과 경보 기준을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:28",
+            "primary": "해양 부표 조류 안정",
+            "text": "유속과 흐름 방향이 관리 범위 안에 있는지 같은 수심에서 여러 번 확인한다. 해양 부표 조류 안정일 때에는 측정 간격과 항로 경보 기준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.324667074,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:18",
+            "primary": "해양 부표 파고 안정",
+            "text": "파고와 파 주기가 관리 범위 안에 머무는지 여러 번의 측정값으로 확인한다. 해양 부표 파고 안정일 때에는 측정 간격과 경보 기준을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:28",
+            "primary": "해양 부표 조류 안정",
+            "text": "유속과 흐름 방향이 관리 범위 안에 있는지 같은 수심에서 여러 번 확인한다. 해양 부표 조류 안정일 때에는 측정 간격과 항로 경보 기준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.481481481,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:18",
+            "primary": "해양 부표 파고 안정",
+            "text": "파고와 파 주기가 관리 범위 안에 머무는지 여러 번의 측정값으로 확인한다. 해양 부표 파고 안정일 때에는 측정 간격과 경보 기준을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:28",
+            "primary": "해양 부표 조류 안정",
+            "text": "유속과 흐름 방향이 관리 범위 안에 있는지 같은 수심에서 여러 번 확인한다. 해양 부표 조류 안정일 때에는 측정 간격과 항로 경보 기준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.36619635,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:18",
+            "primary": "해양 부표 파고 안정",
+            "text": "파고와 파 주기가 관리 범위 안에 머무는지 여러 번의 측정값으로 확인한다. 해양 부표 파고 안정일 때에는 측정 간격과 경보 기준을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:28",
+            "primary": "해양 부표 조류 안정",
+            "text": "유속과 흐름 방향이 관리 범위 안에 있는지 같은 수심에서 여러 번 확인한다. 해양 부표 조류 안정일 때에는 측정 간격과 항로 경보 기준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|function|process|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.083333333,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:126",
+            "primary": "해양 부표 회수 전 최종 대기",
+            "text": "관측을 끝낸 뒤에는 회수 지시가 내려올 때까지 마지막 자료와 위치 신호를 확인한다. 해양 부표 회수 전 최종 대기 중에는 회수 경로와 대기 한계를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:150",
+            "primary": "해양 부표 보고 절차 종료",
+            "text": "관측, 회수, 분석, 보고가 끝나면 다음 관측 주기를 준비한다. 해양 부표 보고 절차 종료에서는 재관측 주기와 경보 기준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.056440283,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:126",
+            "primary": "해양 부표 회수 전 최종 대기",
+            "text": "관측을 끝낸 뒤에는 회수 지시가 내려올 때까지 마지막 자료와 위치 신호를 확인한다. 해양 부표 회수 전 최종 대기 중에는 회수 경로와 대기 한계를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:150",
+            "primary": "해양 부표 보고 절차 종료",
+            "text": "관측, 회수, 분석, 보고가 끝나면 다음 관측 주기를 준비한다. 해양 부표 보고 절차 종료에서는 재관측 주기와 경보 기준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.064516129,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:126",
+            "primary": "해양 부표 회수 전 최종 대기",
+            "text": "관측을 끝낸 뒤에는 회수 지시가 내려올 때까지 마지막 자료와 위치 신호를 확인한다. 해양 부표 회수 전 최종 대기 중에는 회수 경로와 대기 한계를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:150",
+            "primary": "해양 부표 보고 절차 종료",
+            "text": "관측, 회수, 분석, 보고가 끝나면 다음 관측 주기를 준비한다. 해양 부표 보고 절차 종료에서는 재관측 주기와 경보 기준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.083668984,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:126",
+            "primary": "해양 부표 회수 전 최종 대기",
+            "text": "관측을 끝낸 뒤에는 회수 지시가 내려올 때까지 마지막 자료와 위치 신호를 확인한다. 해양 부표 회수 전 최종 대기 중에는 회수 경로와 대기 한계를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:150",
+            "primary": "해양 부표 보고 절차 종료",
+            "text": "관측, 회수, 분석, 보고가 끝나면 다음 관측 주기를 준비한다. 해양 부표 보고 절차 종료에서는 재관측 주기와 경보 기준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|part_of|process|state",
+      "records": 8,
+      "possible_pairs": 28,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 28,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.34375,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:16",
+            "primary": "해양 부표 파고 관측 대기",
+            "text": "파고 센서는 다음 관측 구간이 올 때까지 최근 파랑 자료를 정리하며 기다린다. 해양 부표 파고 관측 대기 중에는 측정 시간과 송신 주기를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:26",
+            "primary": "해양 부표 조류 관측 대기",
+            "text": "유속 센서는 다음 조류 관측 시간이 오기 전까지 설치 수심과 최근 값을 확인한다. 해양 부표 조류 관측 대기 중에는 관측 시간과 육상 전송 주기를 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.350801203,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:51",
+            "primary": "해양 부표 계류 장력 점검 대기",
+            "text": "정기 점검 시간이 오기 전에는 계류 장력과 부표 위치를 함께 살핀다. 해양 부표 계류 장력 점검 대기 중에는 장력 기준과 순찰 주기를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:96",
+            "primary": "해양 부표 계류 위치 점검 대기",
+            "text": "계류 장력과 부표 위치는 다음 점검 시간이 될 때까지 계속 관찰한다. 해양 부표 계류 위치 점검 대기 중에는 점검 주기와 송신 우선순위를 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.3,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:16",
+            "primary": "해양 부표 파고 관측 대기",
+            "text": "파고 센서는 다음 관측 구간이 올 때까지 최근 파랑 자료를 정리하며 기다린다. 해양 부표 파고 관측 대기 중에는 측정 시간과 송신 주기를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:26",
+            "primary": "해양 부표 조류 관측 대기",
+            "text": "유속 센서는 다음 조류 관측 시간이 오기 전까지 설치 수심과 최근 값을 확인한다. 해양 부표 조류 관측 대기 중에는 관측 시간과 육상 전송 주기를 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.281117173,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:51",
+            "primary": "해양 부표 계류 장력 점검 대기",
+            "text": "정기 점검 시간이 오기 전에는 계류 장력과 부표 위치를 함께 살핀다. 해양 부표 계류 장력 점검 대기 중에는 장력 기준과 순찰 주기를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:96",
+            "primary": "해양 부표 계류 위치 점검 대기",
+            "text": "계류 장력과 부표 위치는 다음 점검 시간이 될 때까지 계속 관찰한다. 해양 부표 계류 위치 점검 대기 중에는 점검 주기와 송신 우선순위를 정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "attribute|process|role|state",
+      "records": 5,
+      "possible_pairs": 10,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 10,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.2,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:56",
+            "primary": "해양 부표 경보 확인 대기",
+            "text": "파고·풍속·수질 경보가 오면 관제 담당자가 내용을 보기 전까지 알림 상태로 둔다. 해양 부표 경보 확인 대기 중에는 확인 책임자와 송신 우선순위를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:86",
+            "primary": "해양 부표 비상 관측 대기",
+            "text": "폭풍 상황에 쓸 예비 센서는 원격 기동 명령이 올 때까지 준비 상태로 둔다. 해양 부표 비상 관측 대기 중에는 작동 기준과 우선 송신 항목을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.121613783,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:56",
+            "primary": "해양 부표 경보 확인 대기",
+            "text": "파고·풍속·수질 경보가 오면 관제 담당자가 내용을 보기 전까지 알림 상태로 둔다. 해양 부표 경보 확인 대기 중에는 확인 책임자와 송신 우선순위를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:86",
+            "primary": "해양 부표 비상 관측 대기",
+            "text": "폭풍 상황에 쓸 예비 센서는 원격 기동 명령이 올 때까지 준비 상태로 둔다. 해양 부표 비상 관측 대기 중에는 작동 기준과 우선 송신 항목을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.171428571,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:56",
+            "primary": "해양 부표 경보 확인 대기",
+            "text": "파고·풍속·수질 경보가 오면 관제 담당자가 내용을 보기 전까지 알림 상태로 둔다. 해양 부표 경보 확인 대기 중에는 확인 책임자와 송신 우선순위를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:86",
+            "primary": "해양 부표 비상 관측 대기",
+            "text": "폭풍 상황에 쓸 예비 센서는 원격 기동 명령이 올 때까지 준비 상태로 둔다. 해양 부표 비상 관측 대기 중에는 작동 기준과 우선 송신 항목을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.150648092,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:56",
+            "primary": "해양 부표 경보 확인 대기",
+            "text": "파고·풍속·수질 경보가 오면 관제 담당자가 내용을 보기 전까지 알림 상태로 둔다. 해양 부표 경보 확인 대기 중에는 확인 책임자와 송신 우선순위를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:86",
+            "primary": "해양 부표 비상 관측 대기",
+            "text": "폭풍 상황에 쓸 예비 센서는 원격 기동 명령이 올 때까지 준비 상태로 둔다. 해양 부표 비상 관측 대기 중에는 작동 기준과 우선 송신 항목을 정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|comparison|process|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|function|process|state",
+      "records": 31,
+      "possible_pairs": 465,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 465,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.413793103,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:87",
+            "primary": "해양 부표 비상 관측 시작",
+            "text": "파고가 급격히 높아지면 비상 관측을 시작하되 남은 전력에 맞춰 송신량을 제한한다. 해양 부표 비상 관측 시작에서는 표본 빈도와 압축 수준을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:122",
+            "primary": "해양 부표 비상 관측 재발",
+            "text": "폭풍이 다시 강해지면 비상 관측을 켜되 배터리 잔량에 맞춰 송신 자료량을 제한한다. 해양 부표 비상 관측 재발에서는 표본 빈도와 압축 수준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.50384709,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:87",
+            "primary": "해양 부표 비상 관측 시작",
+            "text": "파고가 급격히 높아지면 비상 관측을 시작하되 남은 전력에 맞춰 송신량을 제한한다. 해양 부표 비상 관측 시작에서는 표본 빈도와 압축 수준을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:122",
+            "primary": "해양 부표 비상 관측 재발",
+            "text": "폭풍이 다시 강해지면 비상 관측을 켜되 배터리 잔량에 맞춰 송신 자료량을 제한한다. 해양 부표 비상 관측 재발에서는 표본 빈도와 압축 수준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.423076923,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:87",
+            "primary": "해양 부표 비상 관측 시작",
+            "text": "파고가 급격히 높아지면 비상 관측을 시작하되 남은 전력에 맞춰 송신량을 제한한다. 해양 부표 비상 관측 시작에서는 표본 빈도와 압축 수준을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:122",
+            "primary": "해양 부표 비상 관측 재발",
+            "text": "폭풍이 다시 강해지면 비상 관측을 켜되 배터리 잔량에 맞춰 송신 자료량을 제한한다. 해양 부표 비상 관측 재발에서는 표본 빈도와 압축 수준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.496540597,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:87",
+            "primary": "해양 부표 비상 관측 시작",
+            "text": "파고가 급격히 높아지면 비상 관측을 시작하되 남은 전력에 맞춰 송신량을 제한한다. 해양 부표 비상 관측 시작에서는 표본 빈도와 압축 수준을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:122",
+            "primary": "해양 부표 비상 관측 재발",
+            "text": "폭풍이 다시 강해지면 비상 관측을 켜되 배터리 잔량에 맞춰 송신 자료량을 제한한다. 해양 부표 비상 관측 재발에서는 표본 빈도와 압축 수준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "boundary|process|role|state",
+      "records": 4,
+      "possible_pairs": 6,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 6,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.147058824,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:14",
+            "primary": "해양 부표 수온 경보",
+            "text": "수온이 정한 범위를 벗어나면 운영자에게 경보를 보내고 센서값을 다시 확인한다. 해양 부표 수온 경보에서는 확인 담당자와 송신 빈도를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:45",
+            "primary": "해양 부표 전원 고장",
+            "text": "배터리 고장으로 관측을 계속할 수 없으면 남은 전력으로 비상 위치만 보낸다. 해양 부표 전원 고장에서는 회수 담당자와 비상 송신 방식을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.0912331,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:14",
+            "primary": "해양 부표 수온 경보",
+            "text": "수온이 정한 범위를 벗어나면 운영자에게 경보를 보내고 센서값을 다시 확인한다. 해양 부표 수온 경보에서는 확인 담당자와 송신 빈도를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:24",
+            "primary": "해양 부표 강풍 경보",
+            "text": "풍속이 운항 기준을 넘으면 부표 주변의 작업선 접근을 제한하고 회수팀에 알린다. 해양 부표 강풍 경보에서는 회수 구역과 담당자를 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.166666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:14",
+            "primary": "해양 부표 수온 경보",
+            "text": "수온이 정한 범위를 벗어나면 운영자에게 경보를 보내고 센서값을 다시 확인한다. 해양 부표 수온 경보에서는 확인 담당자와 송신 빈도를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:45",
+            "primary": "해양 부표 전원 고장",
+            "text": "배터리 고장으로 관측을 계속할 수 없으면 남은 전력으로 비상 위치만 보낸다. 해양 부표 전원 고장에서는 회수 담당자와 비상 송신 방식을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.126633583,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:14",
+            "primary": "해양 부표 수온 경보",
+            "text": "수온이 정한 범위를 벗어나면 운영자에게 경보를 보내고 센서값을 다시 확인한다. 해양 부표 수온 경보에서는 확인 담당자와 송신 빈도를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:74",
+            "primary": "해양 부표 자료 수집 누락",
+            "text": "센서가 멈춰 자료가 비면 인접 부표로 얼마나 보완할 수 있는지 확인한다. 해양 부표 자료 수집 누락에서는 대체 수집과 송신을 맡을 부표를 정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|comparison|process|state",
+      "records": 6,
+      "possible_pairs": 15,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 15,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.428571429,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:20",
+            "primary": "해양 부표 파고 정상 복귀",
+            "text": "너울이 잦아들어 파고가 평소 범위로 돌아오면 비상 송신을 끝낸다. 해양 부표 파고 정상 복귀에서는 최대 파고와 복귀 시각을 확인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:30",
+            "primary": "해양 부표 조류 정상 복귀",
+            "text": "유속이 낮아져 평소 범위로 돌아오면 비상 경보를 해제할 수 있는지 확인한다. 해양 부표 조류 정상 복귀에서는 최대 유속과 복귀 시각을 기록한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.37992442,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:53",
+            "primary": "해양 부표 계류 위치 안정",
+            "text": "계류 장력과 기준 위치의 차이가 관리 범위 안에 있는지 확인해 부표가 안정적으로 머무는지 판단한다. 해양 부표 계류 위치 안정일 때에는 점검 간격과 송신 주기를 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:98",
+            "primary": "해양 부표 계류 위치 편차 확인",
+            "text": "계류 장력과 기준 좌표의 차이가 관리선 안에 있는지 함께 확인한다. 해양 부표 계류 위치 편차 확인 뒤에는 점검 간격과 관측 빈도를 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.416666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:20",
+            "primary": "해양 부표 파고 정상 복귀",
+            "text": "너울이 잦아들어 파고가 평소 범위로 돌아오면 비상 송신을 끝낸다. 해양 부표 파고 정상 복귀에서는 최대 파고와 복귀 시각을 확인한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:30",
+            "primary": "해양 부표 조류 정상 복귀",
+            "text": "유속이 낮아져 평소 범위로 돌아오면 비상 경보를 해제할 수 있는지 확인한다. 해양 부표 조류 정상 복귀에서는 최대 유속과 복귀 시각을 기록한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.358659309,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:53",
+            "primary": "해양 부표 계류 위치 안정",
+            "text": "계류 장력과 기준 위치의 차이가 관리 범위 안에 있는지 확인해 부표가 안정적으로 머무는지 판단한다. 해양 부표 계류 위치 안정일 때에는 점검 간격과 송신 주기를 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:98",
+            "primary": "해양 부표 계류 위치 편차 확인",
+            "text": "계류 장력과 기준 좌표의 차이가 관리선 안에 있는지 함께 확인한다. 해양 부표 계류 위치 편차 확인 뒤에는 점검 간격과 관측 빈도를 조절한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|function|process|state",
+      "records": 10,
+      "possible_pairs": 45,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 45,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.461538462,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:114",
+            "primary": "해양 부표 전면 관측 복귀",
+            "text": "모든 센서가 기준값을 보내면 관측 범위를 원래대로 넓힌다. 해양 부표 전면 관측 복귀에서는 일반 주기와 경보 수준을 다시 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:124",
+            "primary": "해양 부표 전면 비상 관측 복귀",
+            "text": "모든 비상 센서가 기준을 만족하면 전면 관측으로 돌아갈 수 있는지 확인한다. 해양 부표 전면 비상 관측 복귀에서는 일반 주기와 경보 수준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.39853747,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:114",
+            "primary": "해양 부표 전면 관측 복귀",
+            "text": "모든 센서가 기준값을 보내면 관측 범위를 원래대로 넓힌다. 해양 부표 전면 관측 복귀에서는 일반 주기와 경보 수준을 다시 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:124",
+            "primary": "해양 부표 전면 비상 관측 복귀",
+            "text": "모든 비상 센서가 기준을 만족하면 전면 관측으로 돌아갈 수 있는지 확인한다. 해양 부표 전면 비상 관측 복귀에서는 일반 주기와 경보 수준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.36,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:114",
+            "primary": "해양 부표 전면 관측 복귀",
+            "text": "모든 센서가 기준값을 보내면 관측 범위를 원래대로 넓힌다. 해양 부표 전면 관측 복귀에서는 일반 주기와 경보 수준을 다시 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:124",
+            "primary": "해양 부표 전면 비상 관측 복귀",
+            "text": "모든 비상 센서가 기준을 만족하면 전면 관측으로 돌아갈 수 있는지 확인한다. 해양 부표 전면 비상 관측 복귀에서는 일반 주기와 경보 수준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.341875003,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:114",
+            "primary": "해양 부표 전면 관측 복귀",
+            "text": "모든 센서가 기준값을 보내면 관측 범위를 원래대로 넓힌다. 해양 부표 전면 관측 복귀에서는 일반 주기와 경보 수준을 다시 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:124",
+            "primary": "해양 부표 전면 비상 관측 복귀",
+            "text": "모든 비상 센서가 기준을 만족하면 전면 관측으로 돌아갈 수 있는지 확인한다. 해양 부표 전면 비상 관측 복귀에서는 일반 주기와 경보 수준을 조절한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|part_of|process|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.142857143,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:85",
+            "primary": "해양 부표 관측 상태 확인",
+            "text": "관측을 계속하기 전 센서 작동, 부표 위치, 전원 잔량이 기준에 맞는지 살핀다. 해양 부표 관측 상태 확인 결과는 다음 관측을 정상 또는 점검 필요로 나누는 기준이 된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:130",
+            "primary": "해양 부표 회수 전 최종 기록",
+            "text": "회수 직전의 센서 상태, 좌표, 전원 잔량을 마지막 운용 기록으로 남긴다. 해양 부표 회수 전 최종 기록 뒤에는 장비를 끄고 이후 변화는 정비 기록으로 분리한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.071515719,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:85",
+            "primary": "해양 부표 관측 상태 확인",
+            "text": "관측을 계속하기 전 센서 작동, 부표 위치, 전원 잔량이 기준에 맞는지 살핀다. 해양 부표 관측 상태 확인 결과는 다음 관측을 정상 또는 점검 필요로 나누는 기준이 된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:130",
+            "primary": "해양 부표 회수 전 최종 기록",
+            "text": "회수 직전의 센서 상태, 좌표, 전원 잔량을 마지막 운용 기록으로 남긴다. 해양 부표 회수 전 최종 기록 뒤에는 장비를 끄고 이후 변화는 정비 기록으로 분리한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.078947368,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:85",
+            "primary": "해양 부표 관측 상태 확인",
+            "text": "관측을 계속하기 전 센서 작동, 부표 위치, 전원 잔량이 기준에 맞는지 살핀다. 해양 부표 관측 상태 확인 결과는 다음 관측을 정상 또는 점검 필요로 나누는 기준이 된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:130",
+            "primary": "해양 부표 회수 전 최종 기록",
+            "text": "회수 직전의 센서 상태, 좌표, 전원 잔량을 마지막 운용 기록으로 남긴다. 해양 부표 회수 전 최종 기록 뒤에는 장비를 끄고 이후 변화는 정비 기록으로 분리한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.094441343,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:85",
+            "primary": "해양 부표 관측 상태 확인",
+            "text": "관측을 계속하기 전 센서 작동, 부표 위치, 전원 잔량이 기준에 맞는지 살핀다. 해양 부표 관측 상태 확인 결과는 다음 관측을 정상 또는 점검 필요로 나누는 기준이 된다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:130",
+            "primary": "해양 부표 회수 전 최종 기록",
+            "text": "회수 직전의 센서 상태, 좌표, 전원 잔량을 마지막 운용 기록으로 남긴다. 해양 부표 회수 전 최종 기록 뒤에는 장비를 끄고 이후 변화는 정비 기록으로 분리한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "classification|process|role|state",
+      "records": 19,
+      "possible_pairs": 171,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 171,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.387096774,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:50",
+            "primary": "해양 부표 수질 정상 복귀",
+            "text": "센서를 세정한 뒤 다시 채수해 수질 값이 평소 범위로 돌아왔는지 확인한다. 해양 부표 수질 정상 복귀에서는 채수 주기와 송신량을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:104",
+            "primary": "해양 부표 수질 센서 세척 후 복귀",
+            "text": "센서를 세정한 뒤 다시 채수해 염분, 탁도, 용존산소가 현장 범위로 돌아왔는지 확인한다. 해양 부표 수질 센서 세척 후 복귀에서는 표류로 인한 변화와 센서 오염을 구분한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.360840165,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:50",
+            "primary": "해양 부표 수질 정상 복귀",
+            "text": "센서를 세정한 뒤 다시 채수해 수질 값이 평소 범위로 돌아왔는지 확인한다. 해양 부표 수질 정상 복귀에서는 채수 주기와 송신량을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:104",
+            "primary": "해양 부표 수질 센서 세척 후 복귀",
+            "text": "센서를 세정한 뒤 다시 채수해 염분, 탁도, 용존산소가 현장 범위로 돌아왔는지 확인한다. 해양 부표 수질 센서 세척 후 복귀에서는 표류로 인한 변화와 센서 오염을 구분한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.37037037,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:50",
+            "primary": "해양 부표 수질 정상 복귀",
+            "text": "센서를 세정한 뒤 다시 채수해 수질 값이 평소 범위로 돌아왔는지 확인한다. 해양 부표 수질 정상 복귀에서는 채수 주기와 송신량을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:104",
+            "primary": "해양 부표 수질 센서 세척 후 복귀",
+            "text": "센서를 세정한 뒤 다시 채수해 염분, 탁도, 용존산소가 현장 범위로 돌아왔는지 확인한다. 해양 부표 수질 센서 세척 후 복귀에서는 표류로 인한 변화와 센서 오염을 구분한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.358907515,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:50",
+            "primary": "해양 부표 수질 정상 복귀",
+            "text": "센서를 세정한 뒤 다시 채수해 수질 값이 평소 범위로 돌아왔는지 확인한다. 해양 부표 수질 정상 복귀에서는 채수 주기와 송신량을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:104",
+            "primary": "해양 부표 수질 센서 세척 후 복귀",
+            "text": "센서를 세정한 뒤 다시 채수해 염분, 탁도, 용존산소가 현장 범위로 돌아왔는지 확인한다. 해양 부표 수질 센서 세척 후 복귀에서는 표류로 인한 변화와 센서 오염을 구분한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "comparison|function|process|state",
+      "records": 6,
+      "possible_pairs": 15,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 15,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.205882353,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:109",
+            "primary": "해양 부표 위치 기록 확정",
+            "text": "다시 맞춘 좌표가 계류 장치 기록과 맞으면 실제 위치 기록으로 확정한다. 해양 부표 위치 기록 확정에서는 회수 항로와 관측 빈도를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:119",
+            "primary": "해양 부표 잔류 파고 기록 일치",
+            "text": "복원한 파고가 인접 부표 기록과 맞으면 사용할 수 있는 관측값으로 확정한다. 해양 부표 잔류 파고 기록 일치에서는 회수 지시와 송신 주기를 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.188069583,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:109",
+            "primary": "해양 부표 위치 기록 확정",
+            "text": "다시 맞춘 좌표가 계류 장치 기록과 맞으면 실제 위치 기록으로 확정한다. 해양 부표 위치 기록 확정에서는 회수 항로와 관측 빈도를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:119",
+            "primary": "해양 부표 잔류 파고 기록 일치",
+            "text": "복원한 파고가 인접 부표 기록과 맞으면 사용할 수 있는 관측값으로 확정한다. 해양 부표 잔류 파고 기록 일치에서는 회수 지시와 송신 주기를 조절한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.2,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:84",
+            "primary": "해양 부표 파고 자료 확인 후 재개",
+            "text": "늦게 들어온 파고 자료의 시각이 맞으면 관측 보류를 풀고 작업을 다시 시작한다. 해양 부표 파고 자료 확인 후 재개에서는 전송 빈도를 단계적으로 되돌린다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:109",
+            "primary": "해양 부표 위치 기록 확정",
+            "text": "다시 맞춘 좌표가 계류 장치 기록과 맞으면 실제 위치 기록으로 확정한다. 해양 부표 위치 기록 확정에서는 회수 항로와 관측 빈도를 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.23077112,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:109",
+            "primary": "해양 부표 위치 기록 확정",
+            "text": "다시 맞춘 좌표가 계류 장치 기록과 맞으면 실제 위치 기록으로 확정한다. 해양 부표 위치 기록 확정에서는 회수 항로와 관측 빈도를 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:119",
+            "primary": "해양 부표 잔류 파고 기록 일치",
+            "text": "복원한 파고가 인접 부표 기록과 맞으면 사용할 수 있는 관측값으로 확정한다. 해양 부표 잔류 파고 기록 일치에서는 회수 지시와 송신 주기를 조절한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "comparison|process|role|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.114285714,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:65",
+            "primary": "해양 부표 관측 기록 확정",
+            "text": "복원한 자료가 센서 이력과 맞으면 공식 관측 기록으로 확정한다. 해양 부표 관측 기록 확정에서는 확인 담당자와 다음 경보 판단 기준을 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:127",
+            "primary": "해양 부표 회수 전 최종 확인",
+            "text": "수온, 파고, 풍속 자료가 회수 기준에 맞는지 마지막으로 검사한다. 해양 부표 회수 전 최종 확인에서는 재검 간격과 회수 승인 여부를 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.094947088,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:65",
+            "primary": "해양 부표 관측 기록 확정",
+            "text": "복원한 자료가 센서 이력과 맞으면 공식 관측 기록으로 확정한다. 해양 부표 관측 기록 확정에서는 확인 담당자와 다음 경보 판단 기준을 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:127",
+            "primary": "해양 부표 회수 전 최종 확인",
+            "text": "수온, 파고, 풍속 자료가 회수 기준에 맞는지 마지막으로 검사한다. 해양 부표 회수 전 최종 확인에서는 재검 간격과 회수 승인 여부를 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.133333333,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:65",
+            "primary": "해양 부표 관측 기록 확정",
+            "text": "복원한 자료가 센서 이력과 맞으면 공식 관측 기록으로 확정한다. 해양 부표 관측 기록 확정에서는 확인 담당자와 다음 경보 판단 기준을 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:127",
+            "primary": "해양 부표 회수 전 최종 확인",
+            "text": "수온, 파고, 풍속 자료가 회수 기준에 맞는지 마지막으로 검사한다. 해양 부표 회수 전 최종 확인에서는 재검 간격과 회수 승인 여부를 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.16253538,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:65",
+            "primary": "해양 부표 관측 기록 확정",
+            "text": "복원한 자료가 센서 이력과 맞으면 공식 관측 기록으로 확정한다. 해양 부표 관측 기록 확정에서는 확인 담당자와 다음 경보 판단 기준을 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:127",
+            "primary": "해양 부표 회수 전 최종 확인",
+            "text": "수온, 파고, 풍속 자료가 회수 기준에 맞는지 마지막으로 검사한다. 해양 부표 회수 전 최종 확인에서는 재검 간격과 회수 승인 여부를 정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "function|part_of|process|state",
+      "records": 2,
+      "possible_pairs": 1,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 1,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.076923077,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:105",
+            "primary": "해양 부표 오염 의심 센서 격리",
+            "text": "오염이 의심되는 수질 센서는 자동 자료 경로에서 빼고 예비 채널로 관측을 이어 간다. 해양 부표 오염 의심 센서 격리에서는 진단용 표시와 대체 채널을 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:136",
+            "primary": "해양 부표 회수 완료",
+            "text": "부표를 선박 위로 인양하면 회수 작업을 마치고 센서 전원을 끈다. 해양 부표 회수 완료에서는 보관 위치와 장비 상태를 정리한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.061774773,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:105",
+            "primary": "해양 부표 오염 의심 센서 격리",
+            "text": "오염이 의심되는 수질 센서는 자동 자료 경로에서 빼고 예비 채널로 관측을 이어 간다. 해양 부표 오염 의심 센서 격리에서는 진단용 표시와 대체 채널을 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:136",
+            "primary": "해양 부표 회수 완료",
+            "text": "부표를 선박 위로 인양하면 회수 작업을 마치고 센서 전원을 끈다. 해양 부표 회수 완료에서는 보관 위치와 장비 상태를 정리한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.057142857,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:105",
+            "primary": "해양 부표 오염 의심 센서 격리",
+            "text": "오염이 의심되는 수질 센서는 자동 자료 경로에서 빼고 예비 채널로 관측을 이어 간다. 해양 부표 오염 의심 센서 격리에서는 진단용 표시와 대체 채널을 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:136",
+            "primary": "해양 부표 회수 완료",
+            "text": "부표를 선박 위로 인양하면 회수 작업을 마치고 센서 전원을 끈다. 해양 부표 회수 완료에서는 보관 위치와 장비 상태를 정리한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.109201175,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:105",
+            "primary": "해양 부표 오염 의심 센서 격리",
+            "text": "오염이 의심되는 수질 센서는 자동 자료 경로에서 빼고 예비 채널로 관측을 이어 간다. 해양 부표 오염 의심 센서 격리에서는 진단용 표시와 대체 채널을 정한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:136",
+            "primary": "해양 부표 회수 완료",
+            "text": "부표를 선박 위로 인양하면 회수 작업을 마치고 센서 전원을 끈다. 해양 부표 회수 완료에서는 보관 위치와 장비 상태를 정리한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "function|process|role|state",
+      "records": 10,
+      "possible_pairs": 45,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 45,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.413793103,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:55",
+            "primary": "해양 부표 계류선 교체 후 위치 복귀",
+            "text": "새 계류선을 설치한 뒤 부표가 기준 위치 가까이 돌아왔는지 확인한다. 해양 부표 계류선 교체 후 위치 복귀에서는 장력 목표와 관측 간격을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:100",
+            "primary": "해양 부표 계류 위치 복귀",
+            "text": "새 계류선을 연결한 뒤 부표가 지정 좌표로 돌아왔는지 확인한다. 해양 부표 계류 위치 복귀에서는 작업 담당자와 다음 관측 간격을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.411589025,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:55",
+            "primary": "해양 부표 계류선 교체 후 위치 복귀",
+            "text": "새 계류선을 설치한 뒤 부표가 기준 위치 가까이 돌아왔는지 확인한다. 해양 부표 계류선 교체 후 위치 복귀에서는 장력 목표와 관측 간격을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:100",
+            "primary": "해양 부표 계류 위치 복귀",
+            "text": "새 계류선을 연결한 뒤 부표가 지정 좌표로 돌아왔는지 확인한다. 해양 부표 계류 위치 복귀에서는 작업 담당자와 다음 관측 간격을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.416666667,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:55",
+            "primary": "해양 부표 계류선 교체 후 위치 복귀",
+            "text": "새 계류선을 설치한 뒤 부표가 기준 위치 가까이 돌아왔는지 확인한다. 해양 부표 계류선 교체 후 위치 복귀에서는 장력 목표와 관측 간격을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:100",
+            "primary": "해양 부표 계류 위치 복귀",
+            "text": "새 계류선을 연결한 뒤 부표가 지정 좌표로 돌아왔는지 확인한다. 해양 부표 계류 위치 복귀에서는 작업 담당자와 다음 관측 간격을 정한다."
+          }
+        },
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": {
+          "score": 0.377174475,
+          "methods": [
+            "exhaustive_small_group"
+          ],
+          "left": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:55",
+            "primary": "해양 부표 계류선 교체 후 위치 복귀",
+            "text": "새 계류선을 설치한 뒤 부표가 기준 위치 가까이 돌아왔는지 확인한다. 해양 부표 계류선 교체 후 위치 복귀에서는 장력 목표와 관측 간격을 조절한다."
+          },
+          "right": {
+            "locator": "stage2_(14)state_transition_high_density_train_v56.source.jsonl:100",
+            "primary": "해양 부표 계류 위치 복귀",
+            "text": "새 계류선을 연결한 뒤 부표가 지정 좌표로 돌아왔는지 확인한다. 해양 부표 계류 위치 복귀에서는 작업 담당자와 다음 관측 간격을 정한다."
+          }
+        },
+        "top_pairs": []
+      }
+    },
+    {
+      "relation_set": "part_of|process|role|state",
+      "records": 1,
+      "possible_pairs": 0,
+      "candidate_search": {
+        "mode": "exhaustive_small_group",
+        "candidate_pairs_examined": 0,
+        "capped": false,
+        "oversized_buckets": [],
+        "note": "For large groups this is deterministic MinHash/5-word candidate generation followed by exact scores on candidates; it is not an exhaustive all-pairs proof."
+      },
+      "raw_text_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "raw_text_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_word_set_jaccard": {
+        "threshold": 0.6,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      },
+      "masked_primary_char_3_5_tfidf_cosine": {
+        "threshold": 0.72,
+        "pairs_ge_threshold": 0,
+        "maximum": null,
+        "top_pairs": []
+      }
+    }
+  ],
+  "naturalness_warnings": {
+    "mode": "ADVISORY_WARNING_ONLY",
+    "rules": {
+      "path": "stage2_highdensity_dataset/tools/primary_naturalness_warning_rules_v1.json",
+      "sha256": "517d452cd174581f812d3b0d73a7bf48d72615e2a4259d59bf8ad38d14b7c741",
+      "schema_version": 1
+    },
+    "warning_records": 0,
+    "warning_assignments": 0,
+    "primary_dash_records": 0,
+    "primary_dash_ratio": 0,
+    "dash_style_review": {
+      "core_reuse_min_records": 2,
+      "copied_subject_particles": [
+        "은",
+        "는",
+        "이",
+        "가",
+        "에서",
+        "으로"
+      ],
+      "text_begins_exact_dash_primary_plus_particle_records": 0,
+      "text_begins_exact_dash_primary_plus_particle_ratio": 0,
+      "repeated_core_groups": 0,
+      "records_in_repeated_core_groups": 0,
+      "top_repeated_core_groups": [],
+      "interpretation": "This is an advisory style signal. A dash label copied into a sentence and a highly reused core can indicate a generated title pattern, but neither value alone proves that the underlying concept is false."
+    },
+    "by_code": [],
+    "by_expression": [],
+    "examples": [],
+    "note": "Warnings are evidence and statistics only. They neither alter source nor make structural gates fail by themselves."
+  },
+  "hard_source_errors": 0,
+  "direct_rewrite_targets": [],
+  "chatgpt_review_queue": [],
+  "user_review_queue": [],
+  "review_queue_counts": {
+    "direct_rewrite_targets": 0,
+    "chatgpt_review_pending": 0,
+    "chatgpt_review_pending_hard": 0,
+    "user_review_pending": 0
+  },
+  "stale_or_invalid_decisions": [],
+  "review_protocol": {
+    "rule": "The script supplies evidence only. ChatGPT reviews chatgpt_review_queue first and records direct_rewrite, keep, or user_review in a decision sidecar. Only user_review items are escalated to the user.",
+    "direct_rewrite": "A direct target is an editorial task, not an automatic source mutation. Apply only a record-specific human/ChatGPT-authored patch, then rerun every relevant gate.",
+    "limitations": "Lexical patterns, X1/X2 clusters, and approximate large-group similarity are review signals. They do not by themselves prove that a Korean term is unnatural."
+  }
+}
