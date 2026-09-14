@@ -4,7 +4,7 @@
 >
 > **승인일**: 2026-09-15
 >
-> **상태**: ✅권장 C안 승인 — A0~A2 구현·CPU fixture 완료, A3 사용자 GPU 실행은 `NOT_RUN`, A4 이후 미승인
+> **상태**: ✅권장 C안 승인 — A0~A2 구현·CPU fixture 완료, A3는 P035B 계획·배치까지 `STATIC_ONLY`이고 사용자 GPU 실행은 `NOT_RUN`, A4 이후 미승인
 >
 > **분류**: 학습방법 / 양자화 / 학습률 스케줄
 
@@ -130,31 +130,30 @@ LR cooldown·quantization 전이·보조경로 제거를 독립 계약으로 계
 | A0 | ✅문서 감사 | 코드 기본 0.60, 최근 명시 0.80, WSD와 quant/aux의 소유권을 이 문서에 분리 기록 |
 | A1 | ✅`STATIC_ONLY` | `tinylm/train/anneal_schedule.py`에 LR·quant·aux 식을 분리하고 종전 LR 전 구간 정확 일치 CPU fixture 작성 |
 | A2 | ✅구현·CPU fixture(`STATIC_ONLY`) | `--anneal-audit*` opt-in JSONL/계약: 유니크 TLinear 표본의 quant 거리·code flip·점유·경계여유·grad/update RMS. off면 계측 인스턴스와 계측 모듈을 import하지 않는 것은 정적으로 확인했지만, 실제 학습의 on/off 동일성과 오버헤드는 사용자 스모크·A3 전 `NOT_RUN` |
-| A3 | `E2E_NOT_RUN` | 실제 모델·체크포인트·GPU trajectory와 계측 on/off 오염 검증은 사용자 실행 |
+| A3 | 계획·배치 `STATIC_ONLY`, 실행 `E2E_NOT_RUN` | [P035B](../../test_plan/P035B_anneal-동역학-계측과-오염대조.md)와 정본 배치 작성; 실제 모델·체크포인트·GPU trajectory와 계측 on/off 오염 검증은 사용자 실행 |
 | A4~A5 | ⏳미승인 | A3 결과가 새 후보의 필요성을 보일 때만 별도 승인 |
 
 처음 제안한 “같은 checkpoint를 재생”이라는 표현은 **동일한 후반 checkpoint에서 서로 다른
 초반 anneal 이력을 복원할 수 없으므로 부정확했다**. A3는 같은 초기 상태에서 시작하는 두 fresh
 trajectory로 정정한다. 고정 샘플 forward만으로는 optimizer update 뒤 code flip을 측정할 수 없다.
 
-### 6.4 A3 사용자 실행 절차(배치 미작성)
+### 6.4 A3 정식 계획과 사용자 실행 절차
 
 1. `Z:\TinyLM`의 `collatz_torch` 활성 터미널에서 현재 변경 뒤 `run_smoke_check.bat`를 실행해
    실패 팔 0·exit-0 오류표지 0·계측 계약 오류 0을 확인한다.
-2. 아래 첫 두 명령은 **같은 부모·seed·pool·250 steps**를 쓰고 `--anneal-end`와 출력 tag/path만
-   바꾼다. 셋째는 0.80 팔에서 audit만 끈 오염 대조다. 기존 파일이 있으면 덮어쓰지 말고 새
-   시각 경로를 쓴다.
+2. 정본은 [P035B 계획](../../test_plan/P035B_anneal-동역학-계측과-오염대조.md)과
+   [`run_P035B_Stage1_anneal_a3_trajectories.bat`](../../run_P035B_Stage1_anneal_a3_trajectories.bat)이다.
+   첫 두 팔은 **같은 부모·seed·pool·250 steps**를 쓰고 `--anneal-end`와 출력 tag/path만
+   바꾼다. 셋째는 0.80 팔에서 audit만 끈 오염 대조다. 배치는 기존 산출물을 발견하면 덮어쓰지
+   않고 중단한다.
 
 ```bat
-set PYTHONIOENCODING=utf-8
-python scripts\runlog.py --name anneal_a3_end060 -- python run100m.py train --preset m100s8 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.2 --seed 1337 --eval-every 250 --init-from --depth-init role --cla-group 2 --optimizer muon --muon-scale rms --muon-lr-mult 4 --steps 250 --tokens 300M --pool-tokens 600M --exact-cache --tag anneal_a3_end060 --anneal-audit runs\audit\anneal_a3_end060.jsonl --anneal-audit-every 10 --anneal-audit-max-modules 8
-python scripts\runlog.py --name anneal_a3_end080 -- python run100m.py train --preset m100s8 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --init-from --depth-init role --cla-group 2 --optimizer muon --muon-scale rms --muon-lr-mult 4 --steps 250 --tokens 300M --pool-tokens 600M --exact-cache --tag anneal_a3_end080 --anneal-audit runs\audit\anneal_a3_end080.jsonl --anneal-audit-every 10 --anneal-audit-max-modules 8
-python scripts\runlog.py --name anneal_a3_off080 -- python run100m.py train --preset m100s8 --arch dense --data ko-en --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --eval-every 250 --init-from --depth-init role --cla-group 2 --optimizer muon --muon-scale rms --muon-lr-mult 4 --steps 250 --tokens 300M --pool-tokens 600M --exact-cache --tag anneal_a3_off080
+run_P035B_Stage1_anneal_a3_trajectories.bat
 ```
 
 3. 세 run 모두 exit 0·NaN/skip 0이어야 한다. 첫 두 run의 JSONL·`.contract.json`과 세 run의
-   runlog를 회신한다.
-4. `anneal_a3_end080`과 `anneal_a3_off080`만 audit on/off 오염 대조로 쓴다. 계측 on의
+   JSON 로그·통합 runlog를 회신한다.
+4. `p35b_a3_e80`과 `p35b_a3_off80`만 audit on/off 오염 대조로 쓴다. 계측 on의
    `ms/step`은 방법의 속도로 인용하지 않는다.
 5. A3는 동역학 진단이지 0.60/0.80 품질 재대결이 아니다. 250-step final loss로 기본값을 바꾸지 않는다.
 6. 현 trainer는 세 run 모두 final/best 체크포인트를 저장한다. 실행 전 여유 공간 약 5.6 GiB를
@@ -209,4 +208,7 @@ python scripts\runlog.py --name anneal_a3_off080 -- python run100m.py train --pr
 
 - 2026-09-15: 사용자가 C안을 승인했다.
 - 승인 범위는 A0~A3이다. A0~A2는 구현·CPU fixture까지 `STATIC_ONLY`, A3는 사용자 실행 전
-  `E2E_NOT_RUN`이다. adaptive/freeze 후보(A4), 기본값 변경(A5), 실험 배치 작성은 승인되지 않았다.
+  `E2E_NOT_RUN`이다. adaptive/freeze 후보(A4)와 기본값 변경(A5)은 미승인이다.
+- 2026-09-15 후속 정정: A3는 실제 GPU trajectory이므로 계획·배치 없이 raw 명령만 요청한 것은
+  잘못이었다. 사용자의 직접 지시에 따라 P035B 계획·배치·태그·중단선을 작성했다. 이는 A4/A5
+  승인으로 확대되지 않는다.
