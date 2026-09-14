@@ -337,7 +337,7 @@ def _fetch_stage1_heldout(split):
     return recs
 
 
-SFT_EVAL = (ROOT / "datasets" / "TinyDataset" / "SFT" / "eval"
+SFT_EVAL = (ROOT / "datasets" / "TinyDataset" / "SFT" / "v1" / "eval"
             / "sft_fresh_v1_eval_300.canonical.jsonl")
 
 

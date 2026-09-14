@@ -23,8 +23,8 @@
 ### 수동 명령
 
 ```powershell
-python scripts/generate_teacher_responses.py --hf-model "$AuditTeacherSnapshot" --train datasets/TinyDataset/SFT/train/sft_fresh_v1_train_1000.canonical.jsonl --max-new 128 --max-input 1024 --out-jsonl runs/audit_20260909/A13_teacher_raw.jsonl
-python scripts/build_kd_text_pairs.py --reference-train datasets/TinyDataset/SFT/train/sft_fresh_v1_train_1000.canonical.jsonl --teacher-responses runs/audit_20260909/A13_teacher_raw.jsonl --verification "$AuditVerification" --tokenizer "$AuditTokenizer" --serializer chatml --seq 1024 --max-response-tokens 128 --out-dir runs/audit_20260909/A13_pairs
+python scripts/generate_teacher_responses.py --hf-model "$AuditTeacherSnapshot" --train datasets/TinyDataset/SFT/v1/train/sft_fresh_v1_train_1000.canonical.jsonl --max-new 128 --max-input 1024 --out-jsonl runs/audit_20260909/A13_teacher_raw.jsonl
+python scripts/build_kd_text_pairs.py --reference-train datasets/TinyDataset/SFT/v1/train/sft_fresh_v1_train_1000.canonical.jsonl --teacher-responses runs/audit_20260909/A13_teacher_raw.jsonl --verification "$AuditVerification" --tokenizer "$AuditTokenizer" --serializer chatml --seq 1024 --max-response-tokens 128 --out-dir runs/audit_20260909/A13_pairs
 ```
 
 두 명령 사이에 **응답의 의미 정답/짧은 이유를 검증**해야 한다. 생성기가 자기 응답을 correct=true로 인증하지 않는다. 이 단계의 산출물 예:

@@ -3,8 +3,14 @@
 > **현재 상태: `SEMANTIC_SOURCE_FAMILY_AUDIT_FAIL` — 학습·평가 사용 금지.**
 > eval 360건 전부의 가공어-정규화 source 유형이 train과 겹친다. 상세는
 > `audit/sft_fresh_v2_semantic_diversity_audit.md`를 따른다.
+>
+> **2026-09-15 저장 상태:** GitHub 대용량 제한 대응을 위해 사용자 승인 아래
+> `train/sft_fresh_v2_train.canonical.jsonl`과
+> `sources/sft_fresh_v2_train_source_ledger.jsonl`을 로컬 `main` 이력과 작업트리에서
+> 제거했다. 아래 생성 수치와 매니페스트 해시는 생성 당시 증거이며, 현재 패키지를 곧바로
+> 학습에 사용할 수 있다는 뜻이 아니다.
 
-이 디렉터리는 v1과 독립된 신규 SFT 데이터 패키지다. 기존 `SFT/`의 v1 파일은 입력이나
+이 디렉터리는 v1과 독립된 신규 SFT 데이터 패키지다. 기존 `SFT/v1/`의 파일은 입력이나
 출력으로 수정하지 않는다.
 
 고정 계약은 `prompts/sft_fresh_v2_authoring_prompt.md`에 있다. 학습 문자열은 canonical

@@ -27,7 +27,7 @@
 ## 사용법
 
     python scripts/diag_sft_mask.py                       # 합성 대화 4종(파일 불필요)
-    python scripts/diag_sft_mask.py --corpus datasets/TinyDataset/SFT/train/sft_fresh_v1_train_1000.canonical.jsonl
+    python scripts/diag_sft_mask.py --corpus datasets/TinyDataset/SFT/v1/train/sft_fresh_v1_train_1000.canonical.jsonl
     python scripts/diag_sft_mask.py --data ko-en          # 실토크나이저(기본은 합성 스텁)
 
 ★**합성 모드가 기본**이다 — 스모크에서 **파일 없이** 돌아야 한다(2026-09-08(2차) 팔 [21c] 사고).

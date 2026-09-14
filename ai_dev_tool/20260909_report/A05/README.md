@@ -35,15 +35,15 @@
 ### 수동 순서와 명령
 
 ```powershell
-python scripts/diag_dataset_tokens.py --train datasets/TinyDataset/SFT/train/sft_fresh_v1_train_1000.canonical.jsonl --val datasets/TinyDataset/SFT/eval/sft_fresh_v1_eval_300.canonical.jsonl --tok "$AuditTokenizer" --fields messages --serializer chatml --seq 1024 --out-json runs/audit_20260909/A05_tokens.json
-python scripts/eval_sft.py --eval datasets/TinyDataset/SFT/eval/sft_fresh_v1_eval_300.canonical.jsonl --reference-only --out-jsonl runs/audit_20260909/A05_reference_contract.jsonl
+python scripts/diag_dataset_tokens.py --train datasets/TinyDataset/SFT/v1/train/sft_fresh_v1_train_1000.canonical.jsonl --val datasets/TinyDataset/SFT/v1/eval/sft_fresh_v1_eval_300.canonical.jsonl --tok "$AuditTokenizer" --fields messages --serializer chatml --seq 1024 --out-json runs/audit_20260909/A05_tokens.json
+python scripts/eval_sft.py --eval datasets/TinyDataset/SFT/v1/eval/sft_fresh_v1_eval_300.canonical.jsonl --reference-only --out-jsonl runs/audit_20260909/A05_reference_contract.jsonl
 ```
 
 계측/채점 규약을 검수한 뒤 기존 B0를 동일 생성 평가로 기록한다. 다음은 **새 SFT 실행 예시**이며 이번 작업에서는 실행하지 않았다.
 
 ```powershell
-python scripts/train_sft.py --checkpoint "$AuditCheckpoint" --train datasets/TinyDataset/SFT/train/sft_fresh_v1_train_1000.canonical.jsonl --tokenizer "$AuditTokenizer" --serializer chatml --seq 1024 --epochs 1 --micro-bs 1 --accum 4 --lr 0.00002 --optimizer adamw --ce-chunk 256 --out-dir runs/audit_20260909/A05_S1_seed1337
-python scripts/eval_sft.py --eval datasets/TinyDataset/SFT/eval/sft_fresh_v1_eval_300.canonical.jsonl --checkpoint runs/audit_20260909/A05_S1_seed1337/model.pt --tokenizer "$AuditTokenizer" --serializer chatml --out-jsonl runs/audit_20260909/A05_S1_generation.jsonl
+python scripts/train_sft.py --checkpoint "$AuditCheckpoint" --train datasets/TinyDataset/SFT/v1/train/sft_fresh_v1_train_1000.canonical.jsonl --tokenizer "$AuditTokenizer" --serializer chatml --seq 1024 --epochs 1 --micro-bs 1 --accum 4 --lr 0.00002 --optimizer adamw --ce-chunk 256 --out-dir runs/audit_20260909/A05_S1_seed1337
+python scripts/eval_sft.py --eval datasets/TinyDataset/SFT/v1/eval/sft_fresh_v1_eval_300.canonical.jsonl --checkpoint runs/audit_20260909/A05_S1_seed1337/model.pt --tokenizer "$AuditTokenizer" --serializer chatml --out-jsonl runs/audit_20260909/A05_S1_generation.jsonl
 ```
 
 위 LR은 **시작용 제안값**이며 검증된 최적값이 아니다. 검수 override를 사용했다면 B0·reference·S1 모두 동일 파일과 hash를 써야 한다.

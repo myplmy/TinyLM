@@ -7,7 +7,7 @@
 >  감사를 위한 **도구가 적절히 구비되어 있는지** 확인바람."*
 
 실사 결과 **우리 `scripts/` 에 SFT 감사기가 없었다.** 데이터셋 팀이 자기 폴더에 둔
-`SFT/tools/build_phase1.py` 는 **생성기**이고, 자기 산출물을 자기가 검사한다
+`SFT/v1/tools/build_phase1.py` 는 **생성기**이고, 자기 산출물을 자기가 검사한다
 (★함정 43 — **자기 사본과 대조하는 게이트는 게이트가 아니다**). 그래서 **요청서를 정본으로
 읽는 독립 감사기**를 우리 쪽에 만든다.
 
@@ -32,7 +32,7 @@
 
     python scripts/audit_sft_corpus.py
     python scripts/audit_sft_corpus.py --tokenizer data_cache/tok-ko-en-32768.json
-    python scripts/audit_sft_corpus.py --root datasets/TinyDataset/SFT/v2/revision1 \
+    python scripts/audit_sft_corpus.py --root datasets/TinyDataset/SFT/v2_r1 \
         --tokenizer data_cache/tok-ko-en-32768.json --serialized-chatml \
         --records-informational
 """
@@ -49,7 +49,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-SFT = ROOT / "datasets" / "TinyDataset" / "SFT"
+SFT = ROOT / "datasets" / "TinyDataset" / "SFT" / "v1"
 
 #: ★요청서 부록 B 의 수. **이 수가 정본이고 데이터가 따라온다.**
 WANT_RECORDS = (25_000, 40_000)
@@ -183,7 +183,7 @@ def structural_text(rec, source_by_id):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=str(SFT),
-                    help="감사할 SFT package root. 기본값은 기존 datasets/TinyDataset/SFT")
+                    help="감사할 SFT package root. 기본값은 datasets/TinyDataset/SFT/v1")
     ap.add_argument("--tokenizer", default=None,
                     help="tokenizers json 경로. 주면 토큰을 **실측**한다")
     ap.add_argument("--serialized-chatml", action="store_true",

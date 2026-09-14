@@ -1,32 +1,28 @@
-# SFT용 Fresh 코퍼스 v1
+# TinyDataset SFT 버전 색인
 
-이 디렉터리는 기존 고밀도·저밀도·held-out 코퍼스의 문장을 재료로 삼지 않고 직접 작성한 문맥 기반 positive SFT 파일럿을 보관한다.
+- 갱신일자: 2026-09-15
 
-현재 승인 범위는 Phase 0과 Phase 1뿐이다. Phase 2 확장, rejected sidecar, 학습, 모델 로드, 체크포인트 생성 및 모델 평가는 승인되지 않았다.
+이 디렉터리는 SFT 데이터 패키지의 저장 위치를 버전별로 분리한다.
 
-Phase 1 파일럿 1,000건과 source-disjoint eval 300건은 생성 및 비토큰 정적 감사를 마쳤다. 하드 실패는 0건이며 실제 토큰 계측은 사용자 승인 전이므로 `TOKEN_CALIBRATION_PENDING`이다. 상세 결과와 평가 예약 교정 이력은 `PHASE1_PILOT_REPORT_V1.md`에 있다.
+| 디렉터리 | 의미 | 현재 저장 상태 |
+|---|---|---|
+| `v1/` | SFT용 Fresh 코퍼스 v1 파일럿 | 패키지 전체 보존 |
+| `v2/` | SFT용 Fresh 코퍼스 v2 실패 draft | 감사·평가·문서 보존, 대용량 train·source ledger 제외 |
+| `v2_r1/` | v2의 독립 revision1 | 감사·평가·문서 보존, 대용량 train·source ledger 제외 |
 
-## 디렉터리
+`v2_r1`은 저장 디렉터리명만 평탄화한 것이다. 레코드와 매니페스트의
+`dataset_version=v2`, `package_revision=revision1` 의미는 바꾸지 않는다.
 
-- `PHASE0_DESIGN_REVIEW_V1.md`: 적용 설계와 실행 경계
-- `PHASE1_PILOT_REPORT_V1.md`: 파일럿 결과, 감사 해석 및 남은 승인 게이트
-- `prompts/`: 작성에 적용한 프롬프트
-- `authoring/`: 직접 작성한 감사 가능 원고
-- `sources/`: 학습 입력에서 제외되는 source ledger
-- `train/`: canonical positive SFT JSONL
-- `eval/`: source-disjoint 자동채점 평가와 평가 source ledger
-- `manifests/`: 자산, 버전, 분포, 해시 및 상태
-- `audit/`: 정적 감사 결과와 위반·후보 목록
-- `tools/`: 이 코퍼스만을 위한 기계적 패키징·감사 도구
+## 대용량 파일 보존 경계
 
-## 고정 경계
+2026-09-15 사용자 승인에 따라 GitHub 100 MB 제한을 넘거나 대용량 경고를 일으킨 다음
+네 파일은 로컬 `main` 이력과 작업트리에서 제거했다.
 
-- 데이터셋 표시명: `SFT용 Fresh 코퍼스 v1`
-- dataset version: `v1`
-- canonical schema: `canonical_version=1`
-- serializer: TinyLM v1 `chatml`
-- 학습 직렬화 대상: `messages`만
-- 학습 손실 대상: assistant text와 승인된 assistant 종료 경계
-- 다른 모든 데이터셋: 읽기 전용 보호 대상
-- 토큰 계측: 사용자 별도 승인 전 미실행
-- 상태: Phase 1 제출 뒤 `SCALE_UP_NOT_AUTHORIZED`
+- `v2/train/sft_fresh_v2_train.canonical.jsonl`
+- `v2/sources/sft_fresh_v2_train_source_ledger.jsonl`
+- `v2_r1/train/sft_fresh_v2_r1_train.canonical.jsonl`
+- `v2_r1/sources/sft_fresh_v2_r1_train_source_ledger.jsonl`
+
+따라서 v2와 v2_r1의 기존 감사·매니페스트에 기록된 레코드 수와 해시는 생성 당시
+산출물의 증거이며, 현재 작업트리에 파일이 존재한다는 뜻이 아니다. 감사 JSON 안의 기존
+절대경로도 생성 당시 provenance로 보존하며 현재 경로 라우팅에 사용하지 않는다.

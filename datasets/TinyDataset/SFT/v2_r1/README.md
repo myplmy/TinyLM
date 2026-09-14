@@ -1,5 +1,14 @@
 # SFT용 Fresh 코퍼스 v2 revision1
 
+> **현재 저장 경로:** `datasets/TinyDataset/SFT/v2_r1/`. 디렉터리만 평탄화했으며
+> 레코드의 `dataset_version=v2`, `package_revision=revision1` 계약은 그대로다.
+>
+> **2026-09-15 저장 상태:** GitHub 대용량 제한 대응을 위해 사용자 승인 아래
+> `train/sft_fresh_v2_r1_train.canonical.jsonl`과
+> `sources/sft_fresh_v2_r1_train_source_ledger.jsonl`을 로컬 `main` 이력과 작업트리에서
+> 제거했다. 아래 생성 수치와 매니페스트 해시는 생성 당시 증거이며, 현재 패키지를 곧바로
+> 학습에 사용할 수 있다는 뜻이 아니다.
+
 이 디렉터리는 `SFT/v2` 루트의 `SEMANTIC_SOURCE_FAMILY_AUDIT_FAIL` draft를 수정하거나
 덮어쓰지 않고 새로 만드는 독립 revision이다.
 

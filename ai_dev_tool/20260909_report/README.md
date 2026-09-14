@@ -116,7 +116,7 @@ $AuditTokenizer = 'Z:\TinyLM\data_cache\tok-ko-en-32768.json'
 | AuditVerification | A13 교사 응답의 원문/응답 SHA와 검수 근거를 담은 JSONL |
 | AuditSmallTrain | A15 길이 제한 이내인 train 자료의 작은 별도 사본 |
 
-이미 존재하는 Fresh 자료는 `datasets/TinyDataset/SFT/train/sft_fresh_v1_train_1000.canonical.jsonl`과 `eval/sft_fresh_v1_eval_300.canonical.jsonl`이다. 기본 SQuAD 경로는 `datasets/squad/train-v2.0.json`이다. 데이터 cache 디렉터리는 `ko-en_600000000`처럼 정수 suffix를 사용한다. 문서의 bin 예시는 후보가 실제 사용한 stream과 dtype로 바꿔야 한다.
+이미 존재하는 Fresh 자료는 `datasets/TinyDataset/SFT/v1/train/sft_fresh_v1_train_1000.canonical.jsonl`과 `v1/eval/sft_fresh_v1_eval_300.canonical.jsonl`이다. 기본 SQuAD 경로는 `datasets/squad/train-v2.0.json`이다. 데이터 cache 디렉터리는 `ko-en_600000000`처럼 정수 suffix를 사용한다. 문서의 bin 예시는 후보가 실제 사용한 stream과 dtype로 바꿔야 한다.
 
 학습/생성 명령의 출력은 새로운 `runs/audit_20260909/...` 경로로 지정한다. 같은 출력 파일을 덮어쓰지 않는 도구는 이미 존재하면 실패한다. 중단된 산출물을 자동 삭제·복구하지 않으므로 다음 실행에는 새 출력 경로를 사용한다.
 

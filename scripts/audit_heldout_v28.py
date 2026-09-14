@@ -43,8 +43,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT = (ROOT / "datasets" / "TinyDataset" / "stage1_dataset" / "held-out_v2.8"
            / "stage1_heldout_benchmark_v2.8.jsonl")
-SFT_TRAIN = ROOT / "datasets/TinyDataset/SFT/train/sft_fresh_v1_train_1000.canonical.jsonl"
-SFT_EVAL = ROOT / "datasets/TinyDataset/SFT/eval/sft_fresh_v1_eval_300.canonical.jsonl"
+SFT_TRAIN = ROOT / "datasets/TinyDataset/SFT/v1/train/sft_fresh_v1_train_1000.canonical.jsonl"
+SFT_EVAL = ROOT / "datasets/TinyDataset/SFT/v1/eval/sft_fresh_v1_eval_300.canonical.jsonl"
 V27 = (ROOT / "datasets/TinyDataset/stage1_dataset/held-out_v2.7"
        / "stage1_heldout_benchmark_v2.7_300.json")
 
