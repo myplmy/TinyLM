@@ -76,8 +76,8 @@ delete	m100R1c_ko-en_300M_mC_r20_best.pt	726.9	best 는 하향 편향이라 판�
 delete	m100R1d_ko-en_300M_mC_d36_ag2_best.pt	754.6	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
 delete	m100R1d_ko-en_300M_mC_d36_best.pt	970.7	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
 hold	m100_ko-en_300M_denseb_best.pt	1516.8	dense_best 삭제 이후 재생성본(denseb)의 best. P054 확인바라며, 사고재발 방지할 것.
-delete	tiny_synthetic_2M_dense.pt	62.6	스모크. run_smoke_check.bat 이 매번 재생성한다
-delete	tiny_synthetic_2M_dense_best.pt	62.6	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+keep	tiny_synthetic_2M_dense.pt	62.6	cleanup G1 파생보호 대상 — tiny_synthetic_2M_kd_c0가 init_from_src로 실제 참조하므로 현 계약에서는 삭제 금지
+keep	tiny_synthetic_2M_dense_best.pt	62.6	cleanup G1이 부모의 best 형제까지 보호한다 — tiny 계보 예외 계약을 별도 승인하기 전 보존
 delete	tiny_synthetic_2M_sm_ag.pt	49.5	스모크. run_smoke_check.bat 이 매번 재생성한다
 delete	tiny_synthetic_2M_sm_ag_best.pt	49.5	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
 delete	tiny_synthetic_2M_sm_base.pt	52.5	스모크. run_smoke_check.bat 이 매번 재생성한다
@@ -345,10 +345,10 @@ hold	m100s10_ko-en_600M_d14_cla2_norecur_muon15_t600.pt	420.3	4578스텝 full-tr
 hold	m100s10_ko-en_600M_d14_cla2_norecur_muon15_t600_best.pt	420.3	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s10_ko-en_600M_d14_cla2_norecur_t600.pt	1067.6	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s10_ko-en_600M_d14_cla2_norecur_t600_best.pt	1067.6	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-keep	m100s12_ko-en_1200M_d16_cla2_norecur_muon15_t1200.pt	836.3	진행 중 P088 Stage10 본체 - 결과 문서화와 후속 공통평가 완료 전 삭제 금지
-keep	m100s12_ko-en_1200M_d16_cla2_norecur_muon15_t1200_best.pt	836.3	진행 중 P088 Stage10 best - 결과 문서화와 후속 공통평가 완료 전 삭제 금지
-hold	m100s12_ko-en_1200M_d16_cla2_norecur_t1200.pt	1206.1	9156스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s12_ko-en_1200M_d16_cla2_norecur_t1200_best.pt	1206.1	9156스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
+keep	m100s12_ko-en_1200M_d16_cla2_norecur_muon15_t1200.pt	836.3	P005b Stage12의 1.2B jordan15 비교군 — P088 Stage10 완료 뒤에도 final 필요
+delete	m100s12_ko-en_1200M_d16_cla2_norecur_muon15_t1200_best.pt	836.3	P088 Stage10 결과 075 §19와 final이 정본; P005b Stage12 paired_eval은 final만 사용하고 부모·교사 참조 없음
+keep	m100s12_ko-en_1200M_d16_cla2_norecur_t1200.pt	1206.1	P005b Stage12의 1.2B AdamW 비교군 — RMS4·jordan15와 동일 조건 비교 전 삭제 금지
+delete	m100s12_ko-en_1200M_d16_cla2_norecur_t1200_best.pt	1206.1	P088 Stage8 결과와 final이 정본; P005b Stage12 paired_eval은 final만 사용하고 부모·교사 참조 없음
 hold	m100s12_ko-en_300M_d16_cla2_blockr2.pt	1206.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s12_ko-en_300M_d16_cla2_blockr2_best.pt	1206.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s12_ko-en_300M_d16_cla2_norecur.pt	1206.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
@@ -365,8 +365,8 @@ hold	m100s12_ko-en_300M_d16_cla2_r20_p12_t300.pt	1206.1	2289스텝 full-train - 
 hold	m100s12_ko-en_300M_d16_cla2_r20_p12_t300_best.pt	1206.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s12_ko-en_300M_d16_cla2_r20_p12_t600.pt	1206.1	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s12_ko-en_300M_d16_cla2_r20_p12_t600_best.pt	1206.1	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s12_ko-en_300M_d16_g4_muon15.pt	304.5	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s12_ko-en_300M_d16_g4_muon15_best.pt	304.5	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
+keep	m100s12_ko-en_300M_d16_g4_muon15.pt	304.5	P086 Stage2의 타잉×Muon 정본이자 P093 구조조건부 직접공유의 내부 비교 근거
+delete	m100s12_ko-en_300M_d16_g4_muon15_best.pt	304.5	P086 결과 072 §12는 final paired_eval로 판정; 부모·교사 참조 없음
 hold	m100s12_ko-en_600M_d16_cla2_norecur_muon15_t600.pt	466.5	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s12_ko-en_600M_d16_cla2_norecur_muon15_t600_best.pt	466.5	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s12_ko-en_600M_d16_cla2_norecur_t600.pt	1206.1	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
@@ -379,12 +379,12 @@ hold	m100s14_ko-en_300M_d18_cla2_norecur_s2.pt	1344.5	2289스텝 full-train - �
 hold	m100s14_ko-en_300M_d18_cla2_norecur_s2_best.pt	1344.5	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s14_ko-en_600M_d18_cla2_norecur_muon15_t600.pt	512.7	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s14_ko-en_600M_d18_cla2_norecur_muon15_t600_best.pt	512.7	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_ag2_muon15.pt	615.6	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_ag2_muon15_best.pt	615.6	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
+keep	m100s8_ko-en_300M_d12_ag2_muon15.pt	615.6	P045B 직접 attention 공유 기각 정본이며 P093의 재실행 없는 직접공유 대조군
+delete	m100s8_ko-en_300M_d12_ag2_muon15_best.pt	615.6	P045B 결과 079는 final paired_eval로 판정; 부모·교사 참조 없음
 hold	m100s8_ko-en_300M_d12_cla2_norecur.pt	929.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s8_ko-en_300M_d12_cla2_norecur_best.pt	929.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_norecur_muon15.pt	374.0	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_norecur_muon15_best.pt	374.0	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
+keep	m100s8_ko-en_300M_d12_cla2_norecur_muon15.pt	374.0	P045B dense 기준 final이며 P093 직접·구조조건부 공유의 공통 대조군
+delete	m100s8_ko-en_300M_d12_cla2_norecur_muon15_best.pt	374.0	P045B 결과 079는 final paired_eval로 판정; 부모·교사 참조 없음
 hold	m100s8_ko-en_300M_d12_cla2_norecur_s2.pt	929.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s8_ko-en_300M_d12_cla2_norecur_s2_best.pt	929.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s8_ko-en_300M_d12_cla2_r20_adamw.pt	929.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
@@ -393,8 +393,8 @@ hold	m100s8_ko-en_300M_d12_cla2_r20_muon10.pt	374.0	2289스텝 full-train - 축�
 hold	m100s8_ko-en_300M_d12_cla2_r20_muon10_best.pt	374.0	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s8_ko-en_300M_d12_cla2_r20_muon15.pt	374.0	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s8_ko-en_300M_d12_cla2_r20_muon15_best.pt	374.0	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_muon20.pt	374.0	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_muon20_best.pt	374.0	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
+keep	m100s8_ko-en_300M_d12_cla2_r20_muon20.pt	374.0	P005b Stage10·11의 재귀 jordan20 비교군 — 시드·600M 전이 완료 전 final 필요
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon20_best.pt	374.0	P005/P005b 판정은 final paired_eval를 사용; 후속 Stage10·11도 final만 참조
 hold	m100s8_ko-en_300M_d12_cla2_r20_p12_t300.pt	929.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s8_ko-en_300M_d12_cla2_r20_p12_t300_best.pt	929.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s8_ko-en_300M_d12_cla2_r20_p12_t600.pt	929.1	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
@@ -403,32 +403,32 @@ hold	m100s8_ko-en_300M_d12_cla2_r20_p300_e4.pt	929.1	9156스텝 full-train - 축
 hold	m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt	929.1	9156스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s8_ko-en_300M_d12_cla2_r20_p6_t1200.pt	929.1	9156스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s8_ko-en_300M_d12_cla2_r20_p6_t1200_best.pt	929.1	9156스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_rms2.pt	651.6	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_rms2_best.pt	651.6	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_rms4.pt	651.6	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_rms4_best.pt	651.6	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms2.pt	651.6	P005b Stage2에서 RMS4에 밀린 팔; 결과 078에 final·paired 수치가 있고 후속 계획이 참조하지 않음
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms2_best.pt	651.6	RMS2 팔 자체가 종결됐고 결과 078의 판정은 final 기준; 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_cla2_r20_rms4.pt	651.6	P005b Stage10·11의 재귀 RMS4 기준 final — 시드·600M 전이 완료 전 필요
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms4_best.pt	651.6	P005b 후속 paired_eval은 final만 참조; 결과 078에 수치 보존
 hold	m100s8_ko-en_300M_d12_cla2_r20_s34.pt	929.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s8_ko-en_300M_d12_cla2_r20_s34_best.pt	929.1	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_s763_adamw.pt	929.1	763스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_s763_adamw_best.pt	929.1	763스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_s763_muon1.pt	374.0	763스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_s763_muon15.pt	374.0	763스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_s763_muon15_best.pt	374.0	763스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_s763_muon1_best.pt	374.0	763스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_s763_muon30.pt	374.0	763스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_s763_muon30_best.pt	374.0	763스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_s763_muon45.pt	374.0	763스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_s763_muon45_best.pt	374.0	763스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_s763_muon5.pt	374.0	763스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_s763_muon5_best.pt	374.0	763스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_vlrm.pt	374.5	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_vlrm_best.pt	374.5	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_vlrm_ctrl.pt	374.0	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_cla2_r20_vlrm_ctrl_best.pt	374.0	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_g2_muon15.pt	507.6	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_g2_muon15_best.pt	507.6	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_g4_muon15.pt	435.5	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
-hold	m100s8_ko-en_300M_d12_g4_muon15_best.pt	435.6	2289스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_adamw.pt	929.1	P005 Stage1 100M 대조는 300M Stage2로 대체됐고 결과 076에 보존; 활성 부모·교사·후속 비교 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_adamw_best.pt	929.1	같은 100M 격자 종결; 판정은 final·공통 bpb로 문서화됨
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon1.pt	374.0	P005 Stage1 100M 격자 열세 팔; 300M 본런으로 대체되고 결과 076에 수치 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon15.pt	374.0	P005 Stage1 100M 격자 팔; 300M 본런과 상단 격자로 대체되고 결과 076에 수치 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon15_best.pt	374.0	같은 100M 격자 종결; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon1_best.pt	374.0	같은 100M 격자 종결; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon30.pt	374.0	P005 Stage1b 100M 괄호 팔; 300M Stage3b가 상단을 다시 측정했고 결과 076에 수치 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon30_best.pt	374.0	같은 100M 격자 종결; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon45.pt	374.0	P005 Stage1b 100M 열세 팔; 결과 076에 수치 보존, 후속 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon45_best.pt	374.0	같은 100M 격자 종결; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon5.pt	374.0	P005 Stage1 100M 격자 팔; 300M 본런으로 대체되고 결과 076에 수치 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon5_best.pt	374.0	같은 100M 격자 종결; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_vlrm.pt	374.5	P086 dense-body vector LRM은 결과 072 §13에서 종결; 값·paired 판정이 문서화되고 후속 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_vlrm_best.pt	374.5	같은 종결 팔; 판정은 final 기준이며 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_vlrm_ctrl.pt	374.0	P086 vector LRM 동시 대조는 결과 072 §13에 보존; 직접공유용 대조는 별도 P045B final을 유지
+delete	m100s8_ko-en_300M_d12_cla2_r20_vlrm_ctrl_best.pt	374.0	같은 종결 대조; 판정은 final 기준이며 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_g2_muon15.pt	507.6	P045B 직접 MLP g2 기각 정본이며 P093의 재실행 없는 직접공유 대조군
+delete	m100s8_ko-en_300M_d12_g2_muon15_best.pt	507.6	P045B 결과 079는 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_g4_muon15.pt	435.5	P045B 직접 MLP g4 기각 정본이며 P093의 재실행 없는 직접공유 대조군
+delete	m100s8_ko-en_300M_d12_g4_muon15_best.pt	435.6	P045B 결과 079는 final paired_eval로 판정; 부모·교사 참조 없음
 hold	m100s8_ko-en_600M_d12_cla2_norecur_t600.pt	929.1	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s8_ko-en_600M_d12_cla2_norecur_t600_best.pt	929.1	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
 hold	m100s8_ko-en_600M_d12_cla2_r20_muon15_t600.pt	374.0	4578스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정
@@ -457,3 +457,36 @@ delete	tiny_synthetic_2M_sm_vlrm.pt	62.7	tiny 스모크 - run_smoke_check.bat �
 delete	tiny_synthetic_2M_sm_vlrm_best.pt	62.7	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
 delete	tiny_synthetic_4M_sm_ckpttok.pt	62.6	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
 delete	tiny_synthetic_4M_sm_ckpttok_best.pt	62.6	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+# ★2026-09-15 사람 재판정 32행 — 결과 076/077/078과 P005b/P089/P093 후속 참조를 대조함. `_best`는 이름이 아니라 역할로 판정
+keep	m100s10_ko-en_300M_d14_cla2_norecur_muon20.pt	743.9	P005b Stage9 형상 전이의 jordan20 final; Stage10·11 전이 해석과 형상 기준으로 보존
+delete	m100s10_ko-en_300M_d14_cla2_norecur_muon20_best.pt	743.9	P005b 결과 078은 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt	743.9	P005b Stage9 승자 final; Stage10·11 전이 전 기준으로 보존
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_best.pt	743.9	P005b 결과 078과 후속 비교는 final 기준; 부모·교사 참조 없음
+keep	m100s12_ko-en_300M_d16_cla2_norecur_muon20.pt	836.2	P005b Stage9 형상 전이의 jordan20 final; Stage10 시드 전이의 seed1337 기준
+delete	m100s12_ko-en_300M_d16_cla2_norecur_muon20_best.pt	836.3	P005b 결과 078은 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt	836.2	P005b Stage9 승자 final; Stage10 시드 전이의 seed1337 기준
+delete	m100s12_ko-en_300M_d16_cla2_norecur_rms4_best.pt	836.3	P005b 결과 078과 후속 비교는 final 기준; 부모·교사 참조 없음
+keep	m100s14_ko-en_300M_d18_cla2_norecur_muon20.pt	928.6	P005b Stage9 형상 전이의 jordan20 final; Stage11 길이 전이의 300M 기준
+delete	m100s14_ko-en_300M_d18_cla2_norecur_muon20_best.pt	928.6	P005b 결과 078은 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s14_ko-en_300M_d18_cla2_norecur_rms4.pt	928.6	P005b Stage9 승자 final; Stage11 길이 전이의 300M 기준
+delete	m100s14_ko-en_300M_d18_cla2_norecur_rms4_best.pt	928.6	P005b 결과 078과 후속 비교는 final 기준; 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_cla2_norecur_muon20.pt	651.6	P005b Stage9 형상 전이의 jordan20 final; Stage10·11의 300M 형상 기준
+delete	m100s8_ko-en_300M_d12_cla2_norecur_muon20_best.pt	651.6	P005b 결과 078은 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_cla2_norecur_rms4.pt	651.6	P005b Stage9 승자 final; Stage10·11의 300M 형상 기준
+delete	m100s8_ko-en_300M_d12_cla2_norecur_rms4_best.pt	651.6	P005b 결과 078과 후속 비교는 final 기준; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon15_mwd01.pt	651.6	P005b Stage3에서 matrix WD 0.1이 악화; 결과 078에 final·paired 수치가 있고 후속 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon15_mwd01_best.pt	651.6	같은 기각 팔; 판정은 final 기준이며 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_cla2_r20_muon25.pt	651.6	P005 Stage3b 상단 곡선의 중간점; ×25·×30 동급이고 오른쪽 경계가 열린 상태라 final 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon25_best.pt	651.6	P005 결과 076은 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_cla2_r20_muon30.pt	651.6	P005 Stage3b 현재 우측 최선점; 상단 괄호가 열려 있어 final 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon30_best.pt	651.6	P005 결과 076은 final paired_eval로 판정; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms4_mwd01.pt	651.6	P005b Stage3에서 matrix WD 0.1이 악화; 결과 078에 final·paired 수치가 있고 후속 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms4_mwd01_best.pt	651.6	같은 기각 팔; 판정은 final 기준이며 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms6.pt	651.6	P005b Stage2b에서 RMS4와 동급이고 단순한 RMS4를 유지하기로 판정; 결과 078에 수치 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms6_best.pt	651.6	같은 종결 팔; 판정은 final 기준이며 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms8.pt	651.6	P005b Stage2b에서 RMS4보다 악화되어 상단 폐쇄; 결과 078에 수치 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms8_best.pt	651.6	같은 종결 팔; 판정은 final 기준이며 부모·교사 참조 없음
+keep	m100w512s10_ko-en_300M_w512_d14_muon15_b.pt	391.5	P089 Stage2b 폭 대가 분해점; Stage3·4 재승인 판단 전 final 보존
+delete	m100w512s10_ko-en_300M_w512_d14_muon15_b_best.pt	391.5	P089 결과 077은 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100w512s24_ko-en_300M_w512_d28_muon15_b.pt	686.0	P089 Stage2b 깊이 회복점; 폭 축 보류 결론과 후속 재승인 판단의 final 정본
+delete	m100w512s24_ko-en_300M_w512_d28_muon15_b_best.pt	686.0	P089 결과 077은 final paired_eval로 판정; 부모·교사 참조 없음
