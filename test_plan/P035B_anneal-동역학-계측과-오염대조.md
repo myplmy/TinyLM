@@ -5,8 +5,9 @@
 > A3를 정식 실험으로 옮긴다. P035의 형태 비교를 반복하는 계획이 아니라, P035에서 보지 못한
 > quantization distance·code flip·grid margin과 계측 오염을 확인하는 후속 계획이다.
 >
-> **현재 상태:** 계획·배치 작성과 정적 preflight만 완료(`STATIC_ONLY`). GPU 학습·모델 로딩·
-> 스모크·A3 결과 판정은 `NOT_RUN`. A4 후보 구현과 A5 기본값 변경은 미승인이다.
+> **현재 상태(2026-09-15):** Stage1 A3 완료([결과 084](../test_result/084_20260915_P035B-감사오염은-없고-후반궤적차도-지속되지-않았다.md)).
+> G0·G1은 PASS했으나 G2의 지속 후반 궤적차는 불성립했다. A4 adaptive/freeze 후보를 열 근거가
+> 생기지 않았고 A5 기본값 변경은 미승인이다.
 
 ## 1. 왜 — raw 명령이 아니라 실험 계약이 필요하다
 
@@ -151,3 +152,8 @@ A3 로그가 회신되기 전에는 결과 문서를 만들지 않는다. 회신
 
 - 2026-09-15: 승인 제안 A3를 P035B Stage1로 정식 등록. 계획·배치·태그·중단선 작성,
   GPU 실행은 `NOT_RUN`.
+
+- 2026-09-15: Stage1 세 팔 모두 250 step·skip 0·exit 0. E80 audit-on/off는 중앙 ms/step
+  −0.045%, wall +0.75%, reserved 차 0 GiB, final val 동일로 G1 통과. E60/E80은 step 200 뒤
+  flip·qdist·margin 차의 부호가 뒤집히거나 섞여 G2 지속성 불성립. 250-step loss로 endpoint를
+  선택하지 않으며 A4를 열지 않는다([결과 084](../test_result/084_20260915_P035B-감사오염은-없고-후반궤적차도-지속되지-않았다.md)).

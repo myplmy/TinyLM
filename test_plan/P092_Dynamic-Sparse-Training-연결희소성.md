@@ -75,7 +75,7 @@ Stage0에서 `H300`을 실측하기 전에 절대 GPU-h를 확정값으로 바�
 ## 7. 실행 → `run_P092_*.bat`
 
 - 무효 완료: `run_P092_Stage0b_dynamic_sparse_contract-done.bat` — import 실패로 과학적 게이트 `NOT_RUN`([결과 083](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
-- 실행 완료: `run_P092_Stage0c_dynamic_sparse_contract.bat` — CUDA 계약 PASS. 파일은 아직 `-done` 접미사로 개명되지 않았다([결과 083 §6](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
+- 실행 완료: `run_P092_Stage0c_dynamic_sparse_contract-done.bat` — CUDA 계약 PASS가 인쇄값까지 2/2 재현됐다([결과 083 §6~§7](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
 - Stage0a 순수 계약 회귀는 Codex 정적 검사 5/5 PASS.
 - 미작성: Stage1a~Stage3b. 유효한 Stage0c 로그를 회수해 계약을 확인한 후 TLinear·trainer 통합을 별도 구현한다.
 
@@ -94,3 +94,7 @@ Stage0에서 `H300`을 실측하기 전에 절대 GPU-h를 확정값으로 바�
   mask/effective sparsity 0.5, births=deaths=16으로 계약을 통과했다. dense tensor+mask이므로
   sparse kernel·가속·메모리·품질은 주장하지 않고 TLinear·trainer 통합 게이트로 이동한다
   ([결과 083 §6](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
+
+- 2026-09-15: 같은 Stage0c 진단이 loss 6.695264, inactive gradient 12.144601,
+  births=deaths=16까지 동일하게 두 번째 PASS. 작은 합성 계약 재현일 뿐 trainer·품질 게이트를
+  추가로 연 것은 아니다([결과 083 §7](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).

@@ -848,3 +848,67 @@ Muon은 단순 SGD/Adam update가 아니라 momentum 이후 Newton–Schulz를 �
 - 기본값 변경
 
 을 하지 않는다.
+
+## 비판 검토 부록 — Muon·저정밀 문헌과 구현 계약 보완
+
+### A. 추가 선행연구
+
+원문의 ECO와 Direct Quantized Training은 full-precision master를 없애는 직접 근거로 적절하다.
+하지만 Muon 자체의 optimizer-state 저정밀화 연구가 빠져 있어 “momentum은 고정한다”는 선택을
+외부 대안과 비교하기에 부족했다. 다음 원문을 함께 본다.
+
+- ECO: https://arxiv.org/abs/2601.22101
+- Direct Quantized Training: https://proceedings.mlr.press/v304/zhao26b.html
+- MuonQ: https://arxiv.org/abs/2605.11396
+- Effective Quantization of Muon Optimizer States: https://arxiv.org/abs/2509.23106
+- Floating Point Quantization of LLM Training: https://arxiv.org/abs/2510.21314
+
+MuonQ는 Muon state의 방향 보존형 저비트 표현과 최대 7.3배 state-memory 감축을, 별도 Muon
+state 연구는 blockwise 8-bit로 최대 62% state-footprint 감축을 보고한다. 이는 본 제안의
+shadow-weight residual과 같은 방법은 아니지만, 전체 학습 메모리에서 shadow만 줄이는 안의
+기회비용을 평가하는 필수 대조다.
+
+### B. 구현 전에 닫아야 할 결함
+
+1. **숨은 master 금지**: `Q+R`의 유효 정밀도가 16~24bit라면 단순 분할 master가 될 수 있다.
+   residual entropy·dynamic range·유효 bit·zero rate를 보고하고, full-size 고정밀 persistent
+   tensor, optimizer reference, storage alias가 없음을 hard assertion으로 검사한다.
+2. **update 의미 단일화**: `W=dequant(Q)+dequant(R)`에서 post-Muon update를 적용한 뒤 Q를
+   requantize하고 그 오차를 R로 보내는 순서, Q/R scale refresh 주기, residual clipping,
+   stochastic rounding을 한 식으로 고정한다. Q와 R을 따로 update해 이중 양자화하지 않는다.
+3. **P022C 출구조건**: static L이 실제 packed/masterless 상태로 품질·메모리 문턱을 이미
+   만족하면 residual 복잡성을 열지 않는다. P022C가 fake write-back에 머물면 본안의 storage
+   단계도 열지 않는다.
+4. **정밀도 스케줄의 관측 선결**: WSD decay 경계만으로 R8→R16을 정당화할 수 없다. update/ULP,
+   residual RMS와 post-Muon update RMS의 비 `rho`, ternary disagreement가 실제로 decay에서
+   바뀌는지 observer가 먼저 보여야 한다.
+5. **최악 phase 메모리**: 후반 R16이 peak라면 앞 단계의 R8 절감으로 microbatch를 늘렸다가
+   decay에서 OOM이 날 수 있다. global batch는 최악 phase에서도 고정 가능해야 하며, phase별
+   재할당·microbatch 변경은 독립변수로 금지한다.
+6. **전체 메모리 분해**: FP32 Muon state, gradient, activation, temporary dequant가 shadow
+   절감보다 클 수 있다. Stage0은 persistent/temporary/peak를 분리하고 Muon-state quantization
+   대안과 같은 표에서 비교해야 한다.
+7. **비열등 문턱**: 원문의 `B≈A`와 `≤+0.01`은 단일 점 기준으로 너무 넓다. 현재
+   `scripts/_rulers.py`의 조건별 자와 paired CI를 사용하고 최소효과·비열등 margin을 사전등록한다.
+8. **resume 계약**: Q/R, scale, precision phase, WSD progress가 checkpoint round-trip 뒤
+   동일해야 한다. load 직후 고정밀 W를 영구 materialize하지 않는지도 검사한다.
+
+### C. 수정된 게이트
+
+| 게이트 | 필수 관측 | 중단선 |
+|---|---|---|
+| R0 P022C 선결 | 실제 packed/masterless static L과 failure signature | fake-only면 저장 실험 중단 |
+| R1 observer | update/ULP·rho·disagreement의 WSD 구간별 분포 | decay 변화가 없으면 동적 R8→R16 보류 |
+| R2 storage proof | hidden master 0, physical peak/RSS 실측 | logical byte만 줄면 중단 |
+| R3 static residual | paired 품질·skip·resume·메모리 | 현 ruler 밖 또는 peak 절감 없음이면 중단 |
+| R4 dynamic precision | 최악 phase에서도 batch 고정, R8→R16 이득 | OOM/phase batch 변경이면 무효 |
+| R5 throughput | 동일 global batch와 더 큰 physical microbatch를 분리 비교 | batch·kernel 교락 시 재설계 |
+| R6 scale/seed | 300M 뒤 최소 2 seed | 방향 미재현이면 기본값 후보 탈락 |
+
+### D. 최종 판단
+
+**조건부 승격 타당(A+)**이다. 가장 먼저 열 것은 Q/R 구현이 아니라 P022C 결과를 입력으로 한
+observer와 전체 학습 메모리 분해다. shadow residual과 Muon-state quantization을 경쟁 대안으로
+비교하고, 실제 packed/masterless 증거가 있는 경로만 다음 단계로 보낸다. 이 부록은 구현 승인이나
+P번호 선점이 아니며, 사용자 승인 전 계획서·코드·배치·기본값을 만들지 않는다.
+을 하지 않는다.
