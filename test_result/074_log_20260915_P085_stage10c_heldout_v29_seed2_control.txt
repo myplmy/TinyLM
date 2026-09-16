@@ -1,0 +1,150 @@
+PURPOSE: measure v2.9 on the exact seed2 panel already used for v3.0.
+LIMIT: the existing v3.0 JSON lacks the new full condition signature, so comparison is core-only with an explicit metadata gap.
+[1/3] activate held-out v2.9 in the benchmark cache
+
+==============================================================================
+[runlog] 2026-09-15 07:31:08  name=P085_stage10c_heldout_v29_seed2_control
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\fetch_bench_data.py --only stage1_heldout --heldout-version 2.9 --force --log runs\census\P085_stage10c_v29_fetch.log
+==============================================================================
+[fetch_bench_data] started=2026-09-15T07:31:09.163991+09:00
+[fetch_bench_data] argv=["scripts\\fetch_bench_data.py", "--only", "stage1_heldout", "--heldout-version", "2.9", "--force", "--log", "runs\\census\\P085_stage10c_v29_fetch.log"]
+
+################################################################################################
+  내려받기 1종 — ★HF 게이트로 실패하면 **그것도 결과다. 지우지 않는다**
+################################################################################################
+  HF_HOME          = Z:\TinyLM\HF
+  HF_DATASETS_CACHE= Z:\TinyLM\HF\datasets
+  최종 저장 위치     = Z:\TinyLM\datasets\bench
+
+  ★정본 판 = held-out_v2.9  ·  문항 4500개  ·  D1 0건 · D6 0건  (요청 `2.9` -^> v2.9)
+  ★판 기록: stage1_heldout.v2.9.jsonl  ·  meta stage1_heldout.v2.9.meta.json  ·  원본 sha 26f254d9dd94…
+  ✅ stage1_heldout      4500행 -> stage1_heldout.v2.9.jsonl
+
+================================================================================================
+  요약
+================================================================================================
+  성공 1 / 실패 0
+[fetch_bench_data] exit_code=0
+[fetch_bench_data] ended=2026-09-15T07:31:09.482032+09:00
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-15 07:31:09)
+==============================================================================
+[2/3] census v2.9 with the independent seed2 six-model panel
+
+==============================================================================
+[runlog] 2026-09-15 07:31:09  name=P085_stage10c_heldout_v29_seed2_control
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\census_heldout_discrimination.py --heldout-version 2.9 --models d12_cla2_norecur_s2=m100s8 d12_cla2_r20_s2=m100s8 d14_cla2_norecur_s2=m100s10 d16_cla2_norecur_s2=m100s12 d16_cla2_r20_s2=m100s12 d18_cla2_norecur_s2=m100s14 --n 4500 --out runs\census\stage1_heldout.v2.9_independent_s2_stage10c_census.json
+==============================================================================
+[census_heldout_discrimination] started=2026-09-15T07:31:10.058161+09:00
+[census_heldout_discrimination] argv=["scripts\\census_heldout_discrimination.py", "--heldout-version", "2.9", "--models", "d12_cla2_norecur_s2=m100s8", "d12_cla2_r20_s2=m100s8", "d14_cla2_norecur_s2=m100s10", "d16_cla2_norecur_s2=m100s12", "d16_cla2_r20_s2=m100s12", "d18_cla2_norecur_s2=m100s14", "--n", "4500", "--out", "runs\\census\\stage1_heldout.v2.9_independent_s2_stage10c_census.json"]
+[census_heldout_discrimination] log=runs\census\20260915073110_stage1_heldout.v2.9_independent_s2_stage10c_census.log
+
+################################################################################################
+  ★무변별 문항 census — **문항 수가 아니라 문항당 정보를 센다**
+################################################################################################
+  device=cuda  task=stage1_heldout  n=4500  PMI=on
+  🚫이 도구는 **학습하지 않는다.** 체크포인트를 읽기만 한다.
+  ★★held-out 판 = **v2.9**  (요청 `2.9`) — 🚫판이 다른 수치와 비교 금지
+  전체 4,500행 중 **4500문항** (seed=99)
+  d12_cla2_norecur_s2                (m100s8)  정답률 31.7%  N=4500
+  d12_cla2_r20_s2                    (m100s8)  정답률 39.4%  N=4500
+  d14_cla2_norecur_s2                (m100s10)  정답률 39.1%  N=4500
+  d16_cla2_norecur_s2                (m100s12)  정답률 33.3%  N=4500
+  d16_cla2_r20_s2                    (m100s12)  정답률 38.0%  N=4500
+  d18_cla2_norecur_s2                (m100s14)  정답률 38.3%  N=4500
+
+================================================================================================
+  B1·B2·B3 — **어느 문항이 실제로 일하는가**
+================================================================================================
+  전체 4500문항 · 체크포인트 6개
+  B1 전부 맞힘(포화)        755  (16.8%)
+  B2 전부 틀림(바닥)       1679  (37.3%)
+  ★일한 문항(B1·B2 밖)    2066  (45.9%)
+
+  ★★D9 변별 대역(정답률 0.3~0.7)   1029  (**22.9%**)   문턱 >=60%  -> 🚫**미달**
+  ★대역에 드는 격자 칸 = 2/6, 3/6, 4/6  ·  교환가능 모델의 대역 상한 **78.1%**
+  ⚠️★체크포인트가 6개뿐이라 문항별 정답률의 격자가 성기다 — 대역 판정은 **개수를 늘릴수록** 정확해진다.
+
+================================================================================================
+  I — 문항당 정보(bit)
+================================================================================================
+  평균 0.3657 bit/문항 · 합계 **1645.5 bit**
+  ★같은 정보를 정보 1.0 bit 짜리 문항으로만 모으면 **1646문항**이면 된다
+  🚫정보 0 인 문항 2434개 (**54.1%**) — 이 문항들은 돌리는 시간만 쓴다
+
+================================================================================================
+  M — 모델 쌍별 McNemar 불일치 쌍 (= 그 비교에서 실제로 일한 문항)
+================================================================================================
+  A                         B                             A만맞     B만맞     불일치         관계-family 95% CI           판정
+  d12_cla2_norecur_s2       d12_cla2_r20_s2               229     573     802       [-0.1617, -0.0120]     b_better
+  d12_cla2_norecur_s2       d14_cla2_norecur_s2           235     569     804       [-0.1133, -0.0311]     b_better
+  d12_cla2_norecur_s2       d16_cla2_norecur_s2           371     443     814       [-0.1096, +0.0725]      overlap
+  d12_cla2_norecur_s2       d16_cla2_r20_s2               272     557     829       [-0.1183, -0.0171]     b_better
+  d12_cla2_norecur_s2       d18_cla2_norecur_s2           288     586     874       [-0.1859, +0.0282]      overlap
+  d12_cla2_r20_s2           d14_cla2_norecur_s2           462     452     914       [-0.0728, +0.0791]      overlap
+  d12_cla2_r20_s2           d16_cla2_norecur_s2           672     400    1072       [-0.0558, +0.1807]      overlap
+  d12_cla2_r20_s2           d16_cla2_r20_s2               515     456     971       [-0.0598, +0.1151]      overlap
+  d12_cla2_r20_s2           d18_cla2_norecur_s2           561     515    1076       [-0.1422, +0.1453]      overlap
+  d14_cla2_norecur_s2       d16_cla2_norecur_s2           598     336     934       [-0.0429, +0.1550]      overlap
+  d14_cla2_norecur_s2       d16_cla2_r20_s2               483     434     917       [-0.0538, +0.0707]      overlap
+  d14_cla2_norecur_s2       d18_cla2_norecur_s2           503     467     970       [-0.1016, +0.1062]      overlap
+  d16_cla2_norecur_s2       d16_cla2_r20_s2               357     570     927       [-0.1365, +0.0260]      overlap
+  d16_cla2_norecur_s2       d18_cla2_norecur_s2           311     537     848       [-0.1275, +0.0118]      overlap
+  d16_cla2_r20_s2           d18_cla2_norecur_s2           488     501     989       [-0.1126, +0.0758]      overlap
+
+================================================================================================
+  ★라벨 검증 — 생성 측의 `difficulty_target` 이 실제 난이도와 맞는가
+================================================================================================
+  라벨             문항      평균정답률      변별대역%   정보bit/문항
+  mid          3150      28.9%      21.1%     0.3511
+  hard          900      50.5%      27.1%     0.4082
+  easy          450      63.4%      26.4%     0.3824
+  ★**단조여야 한다**(easy > mid > hard 정답률). 안 그러면 라벨이 난이도가 아니다.
+
+================================================================================================
+  ★관계 유형별 — 어느 관계가 변별을 만드나
+================================================================================================
+  relation         문항      평균정답률      변별대역%
+  대조              562      65.8%      35.4%
+  목적수단            562      29.9%      31.1%
+  인과              563      33.2%      25.9%
+  반의              563      42.3%      29.7%
+  상하위             562      71.8%      25.6%
+  부분전체            563      31.1%      18.5%
+  시간순서            563      13.5%      12.4%
+  조건              562       5.5%       4.3%
+
+  ★저장: runs\census\stage1_heldout.v2.9_independent_s2_stage10c_census.json
+  ★이 파일이 있으면 **증보 규모를 산술로 정할 수 있다** — 필요 불일치 쌍 / 현재 변별 대역 비율.
+[census_heldout_discrimination] exit_code=0
+[census_heldout_discrimination] ended=2026-09-15T08:26:41.232510+09:00
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 55.5분  (2026-09-15 08:26:41)
+==============================================================================
+[3/3] paired version comparison; legacy v3.0 metadata gap is explicit
+
+==============================================================================
+[runlog] 2026-09-15 08:26:41  name=P085_stage10c_heldout_v29_seed2_control
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python scripts\compare_heldout_census.py --baseline runs\census\stage1_heldout.v2.9_independent_s2_stage10c_census.json --candidate runs\census\stage1_heldout.v3.0_independent_s2_census.json --out runs\census\stage1_heldout.v2.9_vs_v3.0_independent_s2_stage10c_compare.json --allow-legacy-metadata-gap
+==============================================================================
+================================================================================================
+  held-out census 동일 패널 판본 비교 — GPU 0
+================================================================================================
+  상태: CORE_MATCH_LEGACY_METADATA_GAP
+  baseline v2.9 -> candidate v3.0
+  모델 6개 · 문항 4500개
+  D9: 22.87% -> 18.98% (-3.89pp)
+  정보 0: 54.09% -> 65.18% (+11.09pp)
+  정보 합: 1645.5 -> 1271.7 bit (-373.8)
+  방향 판정: CORE_REGRESSION
+  정책 승격 판정: NOT_SET — G0 원인분리 진단이며 결과를 본 뒤 임계값을 만들지 않는다
+  경고: 레거시 JSON 조건 메타데이터 공백 = candidate.condition_signature, legacy evaluation data/tokens/seq_max/pmi/device not artifact-verified, legacy sample seed/source_rows not artifact-verified, legacy model preset/checkpoint identity not artifact-verified, legacy evaluation source hashes not artifact-verified, legacy dataset content hash not artifact-verified
+  저장: runs\census\stage1_heldout.v2.9_vs_v3.0_independent_s2_stage10c_compare.json
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-15 08:26:42)
+==============================================================================
+VERDICT: CORE_REGRESSION only if v3.0 has lower D9, higher zero-info, and lower total bits on this same panel. Mixed directions are inconclusive.
+DONE. This is G0 diagnosis, not held-out promotion and not a sealed-final pass.
