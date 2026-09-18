@@ -59,6 +59,36 @@ Use `run_queue.bat` to select it.
     assert names == {"run_live.bat"}
 
 
+def test_current_queue_batch_names_recognize_native_shell_launcher() -> None:
+    segment = """## 7. next
+| batch |
+|---|
+| `run_live.sh` |
+Use `run_queue.sh` to select it.
+"""
+    names = MODULE.current_queue_batch_names(segment, {"run_live.sh"})
+    assert names == {"run_live.sh"}
+
+
+def test_registry_hours_recognize_bat_and_sh_launchers() -> None:
+    lines = [
+        "prio\tplan\tbatch\tgpu\thours",
+        "1\tP001\trun_win.bat\tN\t1.5",
+        "2\tP002\trun_wsl.sh\tN\t0.4",
+        "3\tP003\tnotes.md\tN\t9.9",
+    ]
+    assert MODULE.registry_hours(lines) == {
+        "run_win.bat": 1.5,
+        "run_win.sh": 1.5,
+        "run_wsl.sh": 0.4,
+    }
+
+
+def test_done_launcher_pattern_preserves_platform_suffix() -> None:
+    assert MODULE.done_launcher_pattern("run_win.bat") == "run_win-done*.bat"
+    assert MODULE.done_launcher_pattern("run_wsl.sh") == "run_wsl-done*.sh"
+
+
 def test_completed_transfer_lines_are_historical_references() -> None:
     lines = """## 7. next
 | batch |
@@ -131,6 +161,9 @@ def main() -> int:
         test_completed_transfer_is_not_live_queue,
         test_section_7_without_history_is_preserved,
         test_operational_launcher_is_not_counted_as_experiment_batch,
+        test_current_queue_batch_names_recognize_native_shell_launcher,
+        test_registry_hours_recognize_bat_and_sh_launchers,
+        test_done_launcher_pattern_preserves_platform_suffix,
         test_completed_transfer_lines_are_historical_references,
         test_empty_recommendation_table_is_structurally_valid,
         test_inherited_reason_boilerplate_is_idempotent,

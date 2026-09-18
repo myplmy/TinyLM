@@ -359,8 +359,12 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
   manual compact는 `NOT_RUN`이며, 2026-09-18 사용자가 수행 계획 없음·검증 제외를 결정했다.
   따라서 이 항목은 M3 사용자 승인 범위의 운영 종결을 막지 않지만, 전체 경로 증거는 `PARTIAL`이고
   manual 경로를 `ACTIVE_VERIFIED`로 부르지 않는다.
-- `run_smoke_check.sh`: 사용자 실행 최신 로그 `202609181921_smoke_d8011d0.txt`에서 42팔·실패 0·
-  exit-0 오류표지 0·계측 오류 0으로 당시 트리 PASS. 이후 코드 변경분은 새 smoke 전 `E2E_NOT_RUN`.
+- `run_smoke_check.sh`: 사용자가 `202609182225_smoke_4ff08ef.txt`를 추가 실행했다. 전체
+  42팔 중 41팔과 모든 모델·합성 팔, 계측 필드 계약은 통과했지만, `check_handoff.py`가 Linux `.sh` 4개를
+  `.bat`만 인식하는 코드로 누락해 예상시간을 `0.0h`로 오계산했고 48h 미달 사유도
+  없어 종합은 42팔 중 1개 FAIL·summarize exit 1이었다. 파서를 `.bat`/`.sh` 공통으로
+  교정하여 현재 합계는 `0.4h`로 재현되며, 신규 handoff에 정당한 미달 사유를 기록한 뒤
+  사용자 재실행이 필요하다. 교정 후 트리는 아직 `E2E_NOT_RUN`이다.
 - `run_cleanup_checkpoints.sh`: 사용자 삭제 실행 전용, `NOT_RUN`.
 - M4 backend·M5 교량: `NOT_RUN`.
 
@@ -414,7 +418,7 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
 | `apply_patch` 직접쓰기 | tool 실행 전에 deny, WIP hash 불변 | `ACTIVE_VERIFIED` |
 | auto compact | exact 열린 WIP의 8필드 hash-verified capsule 재주입 | 해당 자동 경로 PASS |
 | manual compact | Codex가 앱 lifecycle action을 직접 만들 수 없음 | `NOT_RUN`; 사용자 결정으로 검증 범위 제외·실행 불요 |
-| user smoke | `202609181921_smoke_d8011d0.txt`: 42/0/0/0, summarize exit 0 | 당시 트리 PASS; 현재 변경 뒤 재실행 필요 |
+| user smoke | `202609182225_smoke_4ff08ef.txt`: 전체 42팔 중 41 PASS·handoff 정책 1 FAIL, 모델·합성 팔과 계약 오류 0, summarize exit 1 | `.sh` 시간 오계산과 미달 사유 누락을 교정; 교정 후 사용자 재실행 필요 |
 
 직접쓰기 probe 전후 WIP SHA-256은
 `1a3f15d66cbc59a58aec9d1182c103f686137633804c98d5e5438c74057087b0`로 같았다. 이 증거는
@@ -431,19 +435,22 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
 | M3a Desktop WSL agent | `ACTIVE_VERIFIED` | 현재 project/runtime가 바뀌면 재검증 |
 | M3b PreToolUse 정상·위험쓰기·WIP guard | 관찰한 probe 범위 `ACTIVE_VERIFIED` | 다른 matcher로 일반화 금지 |
 | M3c SessionStart·PreCompact·compact | auto compact exact-WIP 재주입 PASS, manual `NOT_RUN`·사용자 제외 | 사용자 승인 범위는 예외 종결; manual 경로를 PASS로 승격 금지 |
-| M3d model smoke | `202609181921` 당시 트리 PASS 42/0/0/0 | 이후 코드 변경 때문에 현재 트리 새 smoke 필요 |
+| M3d model smoke | `202609182225` 전체 42팔 중 41 PASS·handoff 정책 1 FAIL; 모델·합성 팔과 계약 오류 0 | `.sh` 파서·미달 사유 교정 후 현재 트리 smoke 재실행 필요 |
 | M4 backend | `NOT_RUN` | CUDA/cuSPARSELt/Triton/FlashAttention 실제 호출과 수치·메모리 |
 | M5 교량 | `NOT_RUN` | 동일 checkpoint 평가와 필요시 최소 dense 대조 |
 | M6 운영 전환 | 진행 중 | M3 잔여·M4·M5 뒤 사용자 최종 승인 |
 
 이관을 한 문장으로 요약하면 **“저장소와 Codex agent는 WSL로 전환됐고 요청된 PreToolUse·
-WIP guard·auto compact 및 한 차례 모델 smoke가 범위별로 작동했으며, manual compact는 사용자
-결정으로 검증에서 제외됐고 현재 변경 뒤 새 smoke·backend·Windows↔WSL 교량은 남았다”**다.
+WIP guard·auto compact는 범위별로 작동했지만, 최신 smoke는 모델·합성 팔이 모두 통과해도
+handoff `.sh` 시간 파서·사유 게이트로 종합 FAIL이었고, 교정 후 smoke·backend·Windows↔WSL
+교량·최종 전환 승인은 남았다”**다. manual compact는 사용자 결정으로 검증 범위에서
+제외되었으며, 그 경로를 PASS로 승격하지 않는다.
 
 ### 12.4 다음 순서
 
 1. hooks.json 또는 Desktop project identity가 바뀌지 않았다면 이번 세 probe를 반복할 필요는 없다.
-2. 현재 코드 변경 뒤 사용자 소유 `./run_smoke_check.sh`를 다시 실행한다. exit 0, 실패 팔 0,
+2. `.sh` 시간 파서와 신규 handoff의 48h 미달 사유가 반영된 트리에서 사용자 소유
+   `./run_smoke_check.sh`를 다시 실행한다. exit 0, 실패 팔 0,
    exit-0 오류표지 0, 계측 계약 오류 0과 새 로그 경로를 함께 회신한다.
 3. manual compact는 사용자 결정으로 검증 범위에서 제외됐으며 재요청 전에는 실행·검증하지 않는다.
    이 예외 종결을 manual 경로 PASS나 M3 전체 `ACTIVE_VERIFIED`로 다시 쓰지 않는다.

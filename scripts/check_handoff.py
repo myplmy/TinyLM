@@ -14,7 +14,7 @@
 2. 규약이 문서에만 있고 **검사가 없었다.** 배치는 `lint_bat` 가, 진단은
    `check_diag_data` 가 보는데 **핸드오프만 아무도 안 봤다.**
 
-→ **이 도구가 그 구멍이다.** `run_smoke_check.bat` 이 매번 돌린다.
+→ **이 도구가 그 구멍이다.** `run_smoke_check.bat` / `run_smoke_check.sh`가 매번 돌린다.
 
 ## 무엇을 보는가
 
@@ -42,6 +42,7 @@ ROOT = Path(__file__).resolve().parent.parent
 HANDOFF = ROOT / "handoff"
 DEFAULT_HOURS_TARGET = 48.0
 QUEUE_REQUIRED_COLUMNS = ("순", "id", "실험", "배치", "⚙", "누적", "선결", "근거")
+LAUNCHER_RE = re.compile(r"run_[A-Za-z0-9_]+\.(?:bat|sh)", re.IGNORECASE)
 
 # (키, 정규식, 에러인가) — 규약 §3 의 고정 섹션
 REQUIRED = [
@@ -83,11 +84,40 @@ def current_queue_segment(lines: list[str]) -> str:
 def current_queue_batch_names(segment: str, known_batches: set[str]) -> set[str]:
     """Return only experiment batches registered in experiments.tsv.
 
-    Operational launchers such as ``run_queue.bat`` can be mentioned in §7,
+    Operational launchers such as ``run_queue.bat`` / ``run_queue.sh`` can be mentioned in §7,
     but they are neither experiment rows nor part of the queue-hour total.
     """
-    named = set(re.findall(r"(run_[A-Za-z0-9_]+\.bat)", segment))
+    named = set(LAUNCHER_RE.findall(segment))
     return named & known_batches
+
+
+def registry_hours(lines: list[str]) -> dict[str, float]:
+    """Read hours for native launchers and Linux companions of Windows rows."""
+    hours: dict[str, float] = {}
+    for row in lines:
+        cells = row.split(chr(9))
+        if len(cells) <= 4 or not cells[0].isdigit() or LAUNCHER_RE.fullmatch(cells[2]) is None:
+            continue
+        try:
+            value = float(cells[4])
+        except ValueError:
+            continue
+        launcher = cells[2]
+        hours[launcher] = value
+        if launcher.lower().endswith(".bat"):
+            hours.setdefault(launcher[:-4] + ".sh", value)
+    return hours
+
+
+def done_launcher_pattern(name: str) -> str:
+    """Return the repository convention for a completed launcher of either suffix."""
+    path = Path(name)
+    return f"{path.stem}-done*{path.suffix}"
+
+
+def launcher_exists(name: str) -> bool:
+    """Accept the live launcher or its timestamped/untimestamped ``-done`` form."""
+    return (ROOT / name).exists() or any(ROOT.glob(done_launcher_pattern(name)))
 
 
 def queue_table_header_index(lines: list[str]) -> int | None:
@@ -373,14 +403,7 @@ def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
     REASON_MARK = "시간 미달 사유"
     try:
         tsv = (ROOT / "experiments.tsv").read_text(encoding="utf-8").split(NL_)
-        hours = {}
-        for row in tsv:
-            c = row.split(chr(9))
-            if len(c) > 4 and c[0].isdigit() and c[2].endswith(".bat"):
-                try:
-                    hours[c[2]] = float(c[4])
-                except ValueError:
-                    pass
+        hours = registry_hours(tsv)
         # §7의 현재 권장표만 본다. §7.1은 직전 큐의 완료·제외 이력이라 다시 합산하지 않는다.
         seg = current_queue_segment(lines)
         if seg:
@@ -390,8 +413,7 @@ def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
             #   `-done` 이 붙는 순간 **과거 핸드오프가 소급해서 실패**했다(17.9h → 5.1h).
             #   핸드오프는 **그 시점의 스냅샷**이고 규칙 9 는 이미 `-done` 을 유효 참조로 본다.
             #   함정 34 여섯 번째 — **게이트가 실패를 찍으면 게이트를 먼저 의심한다.**
-            live = {n for n in named
-                    if (ROOT / n).exists() or (ROOT / n.replace(".bat", "-done.bat")).exists()}
+            live = {name for name in named if launcher_exists(name)}
             total = sum(hours.get(n, 0.0) for n in live)
             has_reason = REASON_MARK in seg
             if live:
@@ -427,8 +449,13 @@ def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
         try:
             sys.path.insert(0, str(ROOT / "scripts"))
             from queue_menu import load as _q_load, available as _q_avail
+            from queue_menu_linux import available as _ql_avail, with_shell_state as _q_shell_state
             _rows, _ = _q_load()
             _qid = {r["batch"]: i for i, r in enumerate(_q_avail(_rows))}
+            _qid.update({
+                r["shell_batch"]: i
+                for i, r in enumerate(_ql_avail(_q_shell_state(_rows, root=ROOT)))
+            })
         except Exception:                                    # noqa: BLE001
             _qid = None
         i7 = next((k for k, l in enumerate(lines) if re.match(r'^##\s*7\.', l)), None)
@@ -460,17 +487,18 @@ def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
                         c = [x.strip() for x in ln.strip().strip("|").split("|")]
                         if len(c) != len(cols):
                             continue
-                        mb = re.search(r'(run_[A-Za-z0-9_]+\.bat)', ln)
+                        mb = LAUNCHER_RE.search(ln)
                         if not mb:
                             continue
-                        want = _qid.get(mb.group(1))
+                        launcher = mb.group(0)
+                        want = _qid.get(launcher)
                         got = re.sub(r'[*`★ ]', "", c[ic])
                         if want is None:
                             if got not in ("—", "-", ""):
-                                err.append(f"★`{mb.group(1)}` 는 큐에 없는데(`-done` 이거나 "
+                                err.append(f"★`{launcher}` 는 큐에 없는데(`-done` 이거나 "
                                            f"TSV 에 없다) id 가 `{got}` 로 적혀 있다 — `—` 로")
                         elif got != str(want):
-                            err.append(f"★**id 가 틀렸다**: `{mb.group(1)}` 는 큐 id "
+                            err.append(f"★**id 가 틀렸다**: `{launcher}` 는 큐 id "
                                        f"**{want}** 인데 표에는 `{got}` 다. "
                                        f"🚫손으로 쓰지 말고 `queue_menu.py --ids` 를 쓰세요(함정 36)")
                 # ★★2026-09-05 사용자 지시 — `근거` 칸에 줄바꿈을 쓰지 않는다.
@@ -497,15 +525,14 @@ def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
     #   🚫`-done` 도 인정한다(끝난 실험을 참조할 수 있다). ⏳미작성이라고 **명시한 줄은 봐준다**.
     historical_queue_lines = historical_queue_line_numbers(lines)
     for i, raw in enumerate(lines, 1):
-        for m in re.finditer(r'`(run_[A-Za-z0-9_]+\.bat)`', raw):
+        for m in re.finditer(rf'`({LAUNCHER_RE.pattern})`', raw, re.IGNORECASE):
             name = m.group(1)
             if i in historical_queue_lines:
                 info.append(f"L{i} `{name}` 은 §7.1 완료·제외 이력 — 현재 실행 가능성 검사 제외")
                 continue
             if (ROOT / name).exists():
                 continue
-            stem = name[:-4]
-            if (ROOT / (stem + '-done.bat')).exists():
+            if any(ROOT.glob(done_launcher_pattern(name))):
                 info.append(f"L{i} `{name}` 은 이미 `-done` 이다 — 참조는 유효")
                 continue
             if any(k in raw for k in ('미작성', '작성 예정', '승인 시', '승인되면', '작성 대기')):
