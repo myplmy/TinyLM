@@ -58,11 +58,12 @@
 2. ⏸★★**폭 축은 손실을 회복했지만 채택 이득을 만들지 못했다** — Stage2b에서 폭 대가
    +0.1017과 깊이 회복 +0.1028이 거의 같아 dim512·L28은 기준보다 −0.0011 좋을 뿐 자 안이다
    (077 §12). 부모 계보 교락, held-out, 384 팔이 남아 있고 Stage3·4는 재승인 없이 열지 않는다.
-3. ⚠️★★**WSL agent·hook·smoke는 범위별로 관찰됐지만 운영 종결은 아니다** — 최신 사용자 로그
+3. ⚠️★★**WSL agent·hook·smoke는 범위별로 관찰됐지만 이관 전체 종결은 아니다** — 최신 사용자 로그
    `202609181921_smoke_d8011d0.txt`는 42팔, 실패 0, exit-0 오류표지 0, 계측 오류 0으로 당시 트리
    PASS다. 이후 optimizer/gate/inference 코드가 바뀌어 현재 트리는 새 smoke가 필요하다. Bash와
    `apply_patch`의 WIP 직접쓰기 deny 및 allowed `wip.py`, hash-verified auto compact 주입도 실제
-   관찰했다. manual compact는 앱 사용자 동작이라 `NOT_RUN`이며 M3 전체는 `PARTIAL`이다.
+   관찰했다. manual compact는 `NOT_RUN`이고 사용자가 검증 제외를 결정했다. M3 작업은 이 예외로
+   운영 종결하지만, manual 경로나 M3 전체를 `ACTIVE_VERIFIED`로 승격하지 않는다.
 
 ✅**이번에 닫힌 옛 구멍 둘**: `d18` 상주·속도는 37.1 MiB·15.84 tok/s로 실측됐고(074 §26),
 작은-g/attention **직접 공유** 공백은 P045B가 채워 세 팔 모두 dense보다 나빠 현 조건에서 닫혔다(079).

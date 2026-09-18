@@ -3,7 +3,7 @@
 > **최신 갱신일자**: 2026-09-18 · **문서 유형**: live
 
 > 제정: 2026-09-11, 승인된 완전분리 제안 P2  
-> 상태: **Windows P0~P8 역사 증거 보존; WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED`, M3 전체 `PARTIAL`, 현재 변경 뒤 smoke `E2E_NOT_RUN`**
+> 상태: **Windows P0~P8 역사 증거 보존; WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED`, M3 사용자 범위 예외 종결(manual compact `NOT_RUN`·검증 제외), 현재 변경 뒤 smoke `E2E_NOT_RUN`**
 > 환경 경계: [`README.md`](README.md)  
 > 작업규약: [`00_WORKING_RULES.md`](00_WORKING_RULES.md) · [한글 대조본](00_작업규약_한글판.md)
 > 환경 검증: [`P7_정적종합검증_보고.md`](P7_정적종합검증_보고.md)
@@ -116,7 +116,7 @@ TinyLM은 저사양 CPU·엣지·모바일 배포를 위한 초경량 LLM 아키
 | 동적 스모크 | **2026-09-18 사용자 실행 당시 PASS** — 42팔 실패 0, exit 0 오류표지 0, 계측 계약 오류 0. 이후 optimizer·gate·추론 코드 변경분은 `E2E_NOT_RUN` | [`202609181921_smoke_d8011d0.txt`](../../smoketest_logs/202609181921_smoke_d8011d0.txt) 최종 SUMMARY, 최신 WIP·핸드오프 |
 | GPU/학습/census/모델 로딩 | 이번 Codex P0~P8 교정 작업에서 0회 | 현재 WIP |
 | 데이터셋 | 데이터셋 팀 작업 중, 본 작업 접근 0건 | 사용자 현재 지시, 현재 WIP |
-| Codex 환경 | WSL agent, 일반/root/scripts PreToolUse, WIP Bash/apply_patch deny와 auto compact exact-WIP 주입은 실제 관찰 범위 `ACTIVE_VERIFIED`. manual compact가 남아 M3 전체는 `PARTIAL` | [`README.md` §1.5](README.md), 최신 WIP·핸드오프 |
+| Codex 환경 | WSL agent, 일반/root/scripts PreToolUse, WIP Bash/apply_patch deny와 auto compact exact-WIP 주입은 실제 관찰 범위 `ACTIVE_VERIFIED`. manual compact는 `NOT_RUN`·사용자 검증 제외로 M3 사용자 범위만 예외 종결 | [`README.md` §1.5](README.md), 최신 WIP·핸드오프 |
 
 공유 핸드오프의 35/35와 이번 환경 P7의 20/20은 검사 대상이 다르다. P7 PASS를 제품·모델·
 보호 데이터 또는 프로젝트 종합 게이트 통과로 승격하지 않는다.
@@ -262,7 +262,8 @@ auto compact 범위의 `ACTIVE_VERIFIED`**다. 상세 관찰표와 범위는 [`R
 소유하고, 2026-09-12 Windows P8은 역사 증거로 보존한다. 프로젝트·모델 스모크는
 `202609181921_smoke_d8011d0.txt` 실행 당시 트리에서 **PASS**지만 합성 손실·물리 계측 정확성의
 품질 증거가 아니다. 이후 optimizer·기능 gate·추론 도구 변경분은 로그 범위 밖이므로 현재 트리의
-새 스모크는 `E2E_NOT_RUN`이다. manual compact는 앱 사용자 lifecycle 동작이라 `NOT_RUN`이며,
-이 때문에 M3 전체는 `PARTIAL`이다.
+새 스모크는 `E2E_NOT_RUN`이다. manual compact는 앱 사용자 lifecycle 동작이라 `NOT_RUN`이고
+사용자가 검증 제외를 결정했다. 따라서 M3 작업은 예외 종결하되 해당 경로와 M3 전체를
+`ACTIVE_VERIFIED`로 승격하지 않는다.
 Desktop 버전은 미확인이다. 최종 E2E에서 직접 실행하지 않은
 guard·wrapper·단위 테스트·환경 검사기를 같은 동적 증거로 확대하지 않는다.

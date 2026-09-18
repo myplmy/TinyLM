@@ -1,6 +1,6 @@
 # 00 — CODEX WORKING RULES (operational, English)
 
-> **Last updated**: 2026-09-14 · **Document type**: live · **Rule counts**: `[gate]` 9 · `[human]` 49 · `[fact]` 3
+> **Last updated**: 2026-09-15 · **Document type**: live · **Rule counts**: `[gate]` 9 · `[human]` 49 · `[fact]` 3
 
 **Read this one every session.** It is the short list. Rationale, evidence and war
 stories live in the Codex-owned ledgers (01–08) and shared project evidence; this file only says

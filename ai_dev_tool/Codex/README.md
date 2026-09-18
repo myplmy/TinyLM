@@ -3,7 +3,7 @@
 > **최신 갱신일자**: 2026-09-18 · **문서 유형**: live
 
 > 제정: 2026-09-11, 승인된 제안서 P1  
-> 상태: **Windows P0~P8 역사 증거 보존; WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED`, M3 전체 `PARTIAL`, 현재 변경 뒤 smoke `E2E_NOT_RUN`**
+> 상태: **Windows P0~P8 역사 증거 보존; WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED`, M3 사용자 범위 예외 종결(manual compact `NOT_RUN`·검증 제외), 현재 변경 뒤 smoke `E2E_NOT_RUN`**
 > 제안서: `proposal/done/20260911_Codex-작업환경-완전분리-구축-approved.md`  
 > 항목별 설계표: [`temp_AGENTS.MD_항목별_00_08_이식목록.md`](temp_AGENTS.MD_항목별_00_08_이식목록.md)
 > 정적 검증 보고: [`P7_정적종합검증_보고.md`](P7_정적종합검증_보고.md)
@@ -120,12 +120,13 @@ agent·hook에는 승계하지 않는다. WSL canonical project를 다시 열고
 | WSL agent | canonical cwd·kernel·distro·Bash | `ACTIVE_VERIFIED` |
 | 일반/root/scripts PreToolUse | 정상 exit 0, 위험쓰기 두 건은 shell exit 전 deny, 부산물·fail-open 경고 0 | 관찰 범위 `ACTIVE_VERIFIED` |
 | WIP direct-write guard | Bash·`apply_patch` direct write는 tool 전 deny, 정상 `wip.py` 허용, WIP hash 불변 | 관찰 범위 `ACTIVE_VERIFIED` |
-| compact | exact 열린 WIP의 8필드 capsule이 auto compact 뒤 hash와 함께 재주입 | auto 경로 PASS; manual `NOT_RUN` |
+| compact | exact 열린 WIP의 8필드 capsule이 auto compact 뒤 hash와 함께 재주입 | auto 경로 PASS; manual `NOT_RUN`·사용자 검증 제외 |
 | model smoke | `202609181921_smoke_d8011d0.txt`, 42팔·실패 0·exit-0 오류표지 0·계측 오류 0 | 당시 트리 PASS |
 
 그 smoke 뒤 optimizer 기본값·기능 gate·추론 도구 코드가 바뀌었으므로 **현재 트리 smoke는 다시
-`E2E_NOT_RUN`**이다. manual compact도 Codex가 앱 lifecycle event를 대신 만들 수 없어 사용자
-관찰이 남았다. 따라서 WSL 이관 전체나 M3 전체를 `ACTIVE_VERIFIED`로 부르지 않는다. M4 backend와
+`E2E_NOT_RUN`**이다. manual compact는 Codex가 앱 lifecycle event를 대신 만들 수 없고 사용자가
+2026-09-18 검증 제외를 결정했다. M3 작업은 이 예외로 운영 종결하지만 manual 경로는 계속
+`NOT_RUN`이며 WSL 이관 전체나 M3 전체를 `ACTIVE_VERIFIED`로 부르지 않는다. M4 backend와
 M5 Windows↔WSL 교량은 `NOT_RUN`이다.
 
 ## 2. 런타임 경계

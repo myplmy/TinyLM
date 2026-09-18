@@ -2,7 +2,7 @@
 
 > **작성일**: 2026-09-15  
 > **최종 수정일**: 2026-09-18
-> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent와 관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 전체 `PARTIAL` / M4·M5 `NOT_RUN`
+> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent와 관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 사용자 범위 예외 종결(manual compact 검증 제외, 전체 증거 `PARTIAL`) / M4·M5 `NOT_RUN`
 > **분류**: 작업환경 / 실행기반 / 실험 재현성  
 > **실험번호**: `PNone`  
 > **실험계획 비대상 사유**: 이 문서는 환경 이관 의사결정 제안이다. 승인 뒤 필요한 교량 실험은 기존 계획의 환경 단계 또는 별도 승인된 실험계획으로 등록한다.
@@ -356,7 +356,9 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
 - M3 PreToolUse 위험쓰기 보호: 요청된 정상 1건과 루트·`scripts/` 차단 2건, Bash·`apply_patch`
   WIP 직접쓰기 deny, 정상 `wip.py` 경로 범위에서 `ACTIVE_VERIFIED`.
 - compact: exact WIP hash의 자동 compact 상태 캡슐 주입은 현재 task에서 실제 관찰했다.
-  manual compact는 앱 사용자 동작이라 `NOT_RUN`; M3 전체는 `PARTIAL`이다.
+  manual compact는 `NOT_RUN`이며, 2026-09-18 사용자가 수행 계획 없음·검증 제외를 결정했다.
+  따라서 이 항목은 M3 사용자 승인 범위의 운영 종결을 막지 않지만, 전체 경로 증거는 `PARTIAL`이고
+  manual 경로를 `ACTIVE_VERIFIED`로 부르지 않는다.
 - `run_smoke_check.sh`: 사용자 실행 최신 로그 `202609181921_smoke_d8011d0.txt`에서 42팔·실패 0·
   exit-0 오류표지 0·계측 오류 0으로 당시 트리 PASS. 이후 코드 변경분은 새 smoke 전 `E2E_NOT_RUN`.
 - `run_cleanup_checkpoints.sh`: 사용자 삭제 실행 전용, `NOT_RUN`.
@@ -411,13 +413,14 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
 | Bash 직접쓰기 | shell 실행 전에 deny, shell exit code 없음 | `ACTIVE_VERIFIED` |
 | `apply_patch` 직접쓰기 | tool 실행 전에 deny, WIP hash 불변 | `ACTIVE_VERIFIED` |
 | auto compact | exact 열린 WIP의 8필드 hash-verified capsule 재주입 | 해당 자동 경로 PASS |
-| manual compact | Codex가 앱 lifecycle action을 직접 만들 수 없음 | `NOT_RUN`, 사용자 동작 필요 |
+| manual compact | Codex가 앱 lifecycle action을 직접 만들 수 없음 | `NOT_RUN`; 사용자 결정으로 검증 범위 제외·실행 불요 |
 | user smoke | `202609181921_smoke_d8011d0.txt`: 42/0/0/0, summarize exit 0 | 당시 트리 PASS; 현재 변경 뒤 재실행 필요 |
 
 직접쓰기 probe 전후 WIP SHA-256은
 `1a3f15d66cbc59a58aec9d1182c103f686137633804c98d5e5438c74057087b0`로 같았다. 이 증거는
-해당 task·hook hash의 WIP guard와 auto compact 경로에 한정한다. manual compact가 남았으므로
-M3 전체를 `ACTIVE_VERIFIED`로 승격하지 않는다.
+해당 task·hook hash의 WIP guard와 auto compact 경로에 한정한다. manual compact는 사용자가
+검증 범위에서 제외했으므로 운영 종결의 선결은 아니지만, 미실행 경로가 있으므로 M3 전체를
+`ACTIVE_VERIFIED`로 승격하지 않는다.
 
 ### 12.3 단계별 현재 판정
 
@@ -427,22 +430,22 @@ M3 전체를 `ACTIVE_VERIFIED`로 승격하지 않는다.
 | M2R 공통 실행 기반 | `STATIC_ONLY` PASS (`31/0/1`, shell entrypoint `8`) | PowerShell source는 별도 Windows 증거 또는 선택적 `pwsh`; 전체 보호 데이터 suite는 미실행 |
 | M3a Desktop WSL agent | `ACTIVE_VERIFIED` | 현재 project/runtime가 바뀌면 재검증 |
 | M3b PreToolUse 정상·위험쓰기·WIP guard | 관찰한 probe 범위 `ACTIVE_VERIFIED` | 다른 matcher로 일반화 금지 |
-| M3c SessionStart·PreCompact·compact | auto compact exact-WIP 재주입 PASS, manual `NOT_RUN` | manual compact 사용자 관찰 뒤 범위 종결 |
+| M3c SessionStart·PreCompact·compact | auto compact exact-WIP 재주입 PASS, manual `NOT_RUN`·사용자 제외 | 사용자 승인 범위는 예외 종결; manual 경로를 PASS로 승격 금지 |
 | M3d model smoke | `202609181921` 당시 트리 PASS 42/0/0/0 | 이후 코드 변경 때문에 현재 트리 새 smoke 필요 |
 | M4 backend | `NOT_RUN` | CUDA/cuSPARSELt/Triton/FlashAttention 실제 호출과 수치·메모리 |
 | M5 교량 | `NOT_RUN` | 동일 checkpoint 평가와 필요시 최소 dense 대조 |
 | M6 운영 전환 | 진행 중 | M3 잔여·M4·M5 뒤 사용자 최종 승인 |
 
 이관을 한 문장으로 요약하면 **“저장소와 Codex agent는 WSL로 전환됐고 요청된 PreToolUse·
-WIP guard·auto compact 및 한 차례 모델 smoke가 범위별로 작동했지만, manual compact·현재 변경 뒤
-새 smoke·backend·Windows↔WSL 교량은 남았다”**다.
+WIP guard·auto compact 및 한 차례 모델 smoke가 범위별로 작동했으며, manual compact는 사용자
+결정으로 검증에서 제외됐고 현재 변경 뒤 새 smoke·backend·Windows↔WSL 교량은 남았다”**다.
 
 ### 12.4 다음 순서
 
 1. hooks.json 또는 Desktop project identity가 바뀌지 않았다면 이번 세 probe를 반복할 필요는 없다.
 2. 현재 코드 변경 뒤 사용자 소유 `./run_smoke_check.sh`를 다시 실행한다. exit 0, 실패 팔 0,
    exit-0 오류표지 0, 계측 계약 오류 0과 새 로그 경로를 함께 회신한다.
-3. WIP 직접쓰기 guard와 auto compact는 관찰 완료다. M3 전체를 닫는 남은 lifecycle 항목은
-   사용자가 앱에서 수행하는 manual compact이며, 재주입된 capsule의 WIP 경로·hash 일치를 확인한다.
+3. manual compact는 사용자 결정으로 검증 범위에서 제외됐으며 재요청 전에는 실행·검증하지 않는다.
+   이 예외 종결을 manual 경로 PASS나 M3 전체 `ACTIVE_VERIFIED`로 다시 쓰지 않는다.
 4. M4 backend와 M5 교량은 smoke PASS와 별도 실행 승인을 받은 뒤에만 연다. queue를 먼저
    권하지 않는다.

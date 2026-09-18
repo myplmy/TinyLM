@@ -5,6 +5,7 @@ flag	grade	evidence	checked	declared_in
 --all	ok		2026-09-04	scripts/check_handoff.py,scripts/diag_cache.py,scripts/fetch_bench_data.py,scripts/plot_results.py
 --all-pairs	ok		2026-09-04	scripts/paired_join.py
 --allow	ok		2026-09-04	scripts/check_change_scope.py,scripts/wip.py
+--allow-concurrent	ok	동시 WIP 생성의 명시 승인 경로; 기존 open WIP·사유·session id 필수	2026-09-18	scripts/wip.py
 --allow-directive-correction	ok		2026-09-04	scripts/wip.py
 --allow-legacy-metadata-gap	ok	P085 Stage10c one-time bridge: permits core paired comparison only when a legacy census lacks the new condition signature; output must retain CORE_MATCH_LEGACY_METADATA_GAP	2026-09-14	scripts/compare_heldout_census.py
 --allow-renumber	ok		2026-09-04	scripts/rename_result.py
@@ -22,6 +23,7 @@ flag	grade	evidence	checked	declared_in
 --arena-lambda	ok		2026-09-04	tinylm/cli.py
 --arenas	ok		2026-09-04	tinylm/cli.py
 --artifact	ok		2026-09-04	scripts/wip.py
+--as-of	ok	dirty live 문서 선언일 비교 기준일; 검사 입력만 바꾸고 파일은 수정하지 않음	2026-09-18	scripts/check_doc_metadata.py
 --attn-group	ok		2026-09-04	scripts/diag_depth_init.py,tinylm/cli.py
 --audit	ok		2026-09-04	scripts/handoff_queue.py,scripts/queue_menu.py
 --authority	ok		2026-09-04	scripts/new_proposal.py
@@ -32,6 +34,7 @@ flag	grade	evidence	checked	declared_in
 --batch	ok		2026-09-04	scripts/diag_lut_kernel.py
 --batches	ok		2026-09-04	scripts/diag_trapping.py
 --bench	ok		2026-09-04	scripts/diag_bench_tokens.py,scripts/label_heldout_controlled.py
+--bind-session	ok	구형 미결합 open WIP의 감사형 단방향 세션 결합; reason·approval-ref 필수	2026-09-18	scripts/wip.py
 --block	ok		2026-09-04	scripts/diag_train_repeat.py,scripts/wip.py
 --both-cache	ok		2026-09-04	scripts/bench_infer.py
 --bs	ok		2026-09-04	scripts/diag_depth_init.py,scripts/diag_gqa_equiv.py,scripts/diag_kd_loss.py,scripts/diag_sdpa_backends.py,scripts/diag_train_repeat.py
@@ -55,6 +58,7 @@ flag	grade	evidence	checked	declared_in
 --close	ok		2026-09-04	scripts/wip.py
 --compile	ok		2026-09-04	tinylm/cli.py
 --compile-mode	ok		2026-09-04	tinylm/cli.py
+--concurrent-reason	ok	동시 WIP 사용자 승인 사유 기록; --allow-concurrent와 함께만 유효	2026-09-18	scripts/wip.py
 --context-tokens	ok	teacher-forced 실제 텍스트 probe의 문맥 토큰 수	2026-09-18	scripts/infer_text_probe.py
 --corpus	ok	P090 선결(2026-09-10(2차)) - diag_sft_mask 가 검사할 canonical jsonl. 미지정이면 내장 합성 대화 4종을 쓴다(파일 없이 스모크에서 돌아야 하므로)	2026-09-10	scripts/diag_sft_mask.py
 --corr	ok		2026-09-04	scripts/paired_join.py
@@ -108,6 +112,7 @@ flag	grade	evidence	checked	declared_in
 --file	ok		2026-09-04	scripts/audit_heldout_v28.py,scripts/check_pending.py,scripts/wip.py
 --find	ok		2026-09-04	scripts/registry.py
 --fix	ok		2026-09-04	scripts/check_index_sync.py,scripts/check_links.py
+--fix-handoff-renames	ok	사용자 명시 승인 시 handoff의 유일 상태개명 링크 후보만 교정	2026-09-18	scripts/check_links.py
 --force	ok	2026-09-10 신설 - 벤치 캐시를 다시 만든다. held-out 판이 바뀌어도 '이미 있다' 로 건너뛰던 구멍을 막는다	2026-09-10	scripts/fetch_bench_data.py
 --force-dense	ok		2026-09-04	tinylm/cli.py
 --format	ok		2026-09-06	scripts/wandb_table_probe.py
@@ -160,6 +165,8 @@ flag	grade	evidence	checked	declared_in
 --lines	ok		2026-09-04	scripts/check_doc_ownership.py
 --list	ok		2026-09-04	scripts/fetch_bench_data.py,scripts/probe_prompts.py,scripts/queue_menu.py,scripts/wip.py
 --live-only	ok		2026-09-04	scripts/dryrun_batch.py
+--local-mtime-strict	ok	local mtime 차이를 오류로 승격하는 metadata 검사 모드	2026-09-18	scripts/check_doc_metadata.py
+--local-mtime-warn	ok	local mtime 차이를 경고로 기록하는 metadata 검사 모드	2026-09-18	scripts/check_doc_metadata.py
 --log	ok		2026-09-04	scripts/check_smoke_diag.py,scripts/registry.py,scripts/summarize_smoke.py
 --logits-last-only	ok	A06(외부 조치 패키지, 2026-09-10) - prefill 에서 마지막 위치의 로짓만 만든다. 전 위치 로짓(vocab 32,768 x T 1,024 x 4B = 128.0 MiB)은 생성에 안 쓰이는데 우리 배포 예산이 32~40 MiB 다. 기본 off. 주의: 비트 동일이 아니다 - CPU 실측 40/40 에서 argmax 동일, 상대차 최대 5.3e-07(head GEMM 이 T=1 과 T>1 에서 다른 커널). 학습에서 켜면 ValueError	2026-09-10	scripts/bench_infer.py
 --lora-bits	ok		2026-09-04	tinylm/cli.py
@@ -227,6 +234,7 @@ flag	grade	evidence	checked	declared_in
 --per-item-jsonl	ok	A03(2026-09-10) - 문항별 원장. id/gold/규약별 예측/후보별 합·평균NLL/토큰·문자 길이/평균마진·결정마진/skip 사유. 판정을 사후에 복원할 수 있게 한다	2026-09-10	scripts/eval_bench_suite.py
 --plan	ok		2026-09-04	scripts/check_run_registry.py
 --plan-stage	ok		2026-09-04	scripts/registry.py
+--policy	ok	metadata policy TSV 경로 지정	2026-09-18	scripts/check_doc_metadata.py
 --pool-tokens	ok		2026-09-04	tinylm/cli.py
 --pools	ok		2026-09-04	scripts/diag_val_lang.py
 --prefix	ok		2026-09-04	scripts/wandb_table_probe.py
@@ -243,7 +251,9 @@ flag	grade	evidence	checked	declared_in
 --real	ok		2026-09-04	scripts/diag_kd_loss.py
 --reason	ok		2026-09-04	scripts/wip.py
 --record	ok		2026-09-04	scripts/registry.py
+--records-informational	ok	SFT v2 감사에서 레코드 수를 실패 gate 아닌 정보값으로 판정	2026-09-18	scripts/audit_sft_corpus.py
 --render	ok		2026-09-04	scripts/handoff_queue.py,scripts/registry.py
+--repair-name-collision	ok	완료 이름 충돌 open WIP를 빈 슬롯으로 감사형 이동; 삭제·덮어쓰기 없음	2026-09-18	scripts/wip.py
 --repeat-block	ok		2026-09-04	tinylm/cli.py
 --repeat-kv-reuse	rejected	결과 062 - 대가 +0.0591~+0.0928 = 재귀 이득의 5.4~5.7배. 엔트리 축은 닫혔다	2026-09-04	scripts/mem_runtime.py,scripts/paired_eval.py,tinylm/cli.py
 --repeat-mode	exp	P043 - inplace 는 추론 --repeat-where even 의 학습 짝	2026-09-04	tinylm/cli.py
@@ -256,16 +266,20 @@ flag	grade	evidence	checked	declared_in
 --resume	ok		2026-09-04	scripts/wip.py,tinylm/cli.py
 --retired-claims	ok		2026-09-04	scripts/wip.py
 --reuse-attn-on-dup	rejected	결과 041 §17.4 - 재귀 이득 -0.0203 을 전부 잃고 +0.0079 더 나빴다	2026-09-04	scripts/paired_eval.py,tinylm/cli.py
+--root	ok	metadata/SFT 감사 대상 root 지정; 보호 데이터 접근 권한은 별도	2026-09-18	scripts/audit_sft_corpus.py,scripts/check_doc_metadata.py
 --rows	ok		2026-09-04	scripts/diag_kd_loss.py
 --sample	ok		2026-09-04	scripts/diag_bench_overlap.py,scripts/diag_val_lang.py
 --samples	ok	실제 validation 텍스트 probe에서 결정적으로 뽑을 span 수	2026-09-18	scripts/infer_text_probe.py
 --save-every	ok		2026-09-04	tinylm/cli.py
 --scan	ok		2026-09-04	scripts/registry.py
 --sched	ok		2026-09-04	tinylm/cli.py
+--scope	ok	metadata 감사 범위 codex/all 선택; 기본 codex	2026-09-18	scripts/check_doc_metadata.py
 --sdpa-gqa	rejected	CLAUDE.md 3.6 - VRAM +27%, 시간 +96%	2026-09-04	tinylm/cli.py
 --seed	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/diag_layer_map.py,scripts/diag_lut_kernel.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py,scripts/eval_slices.py,tinylm/cli.py
 --seq	ok		2026-09-04	scripts/check_run_registry.py,scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_attention_sink.py,scripts/diag_chat_overhead.py,scripts/diag_depth_init.py,scripts/diag_dtype_map.py,scripts/diag_fp8_precision.py,scripts/diag_gqa_equiv.py,scripts/diag_group_agg.py,scripts/diag_kd_loss.py,scripts/diag_layer_map.py,scripts/diag_p067_teacher.py,scripts/diag_repeat_attn_sim.py,scripts/diag_sdpa_backends.py,scripts/diag_train_repeat.py,scripts/diag_trapping.py,scripts/diag_val_docs.py,scripts/eval_slices.py,scripts/paired_eval.py,tinylm/cli.py
 --seq-max	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py
+--serialized-chatml	ok	SFT canonical ChatML 총토큰과 supervised mask 실측	2026-09-18	scripts/audit_sft_corpus.py
+--session-id	ok	WIP를 정확한 Codex task에 결합하는 식별자	2026-09-18	scripts/wip.py
 --set-after	ok		2026-09-04	scripts/wip.py
 --sft	ok	2026-09-10 신설 - held-out 감사에서 SFT fresh 와의 8-gram 겹침을 함께 본다(증보 요청서 4-4)	2026-09-10	scripts/audit_heldout_v28.py
 --shapes	ok		2026-09-04	scripts/diag_int8mm_paths.py
@@ -274,6 +288,7 @@ flag	grade	evidence	checked	declared_in
 --skip-ablation	ok		2026-09-04	scripts/diag_layer_map.py
 --slug	ok		2026-09-04	scripts/new_proposal.py
 --snapshot-at	ok		2026-09-04	tinylm/cli.py
+--source	ok	POSIX smoke wrapper가 파싱할 canonical BAT module 경로 선택; 실행 권한 아님	2026-09-18	scripts/smoke_module.py
 --sparse34	exp	3:4 준정형. 표준 경로 전용	2026-09-04	tinylm/cli.py
 --spec-only	ok		2026-09-04	scripts/diag_p067_teacher.py
 --sql	ok		2026-09-04	scripts/registry.py
@@ -283,6 +298,7 @@ flag	grade	evidence	checked	declared_in
 --start	ok		2026-09-04	scripts/wip.py
 --steps	ok		2026-09-04	scripts/check_run_registry.py,tinylm/cli.py
 --strict	ok		2026-09-04	scripts/dryrun_batch.py
+--structural-audit	ok	SFT 표면 슬롯을 가린 train/eval template 근접도 감사	2026-09-18	scripts/audit_sft_corpus.py
 --stub	ok		2026-09-08	scripts/compass.py
 --student	ok		2026-09-04	scripts/diag_kd_loss.py
 --suffix	ok		2026-09-04	scripts/diag_val_lang.py,scripts/diag_vocab.py
@@ -305,6 +321,7 @@ flag	grade	evidence	checked	declared_in
 --threads	ok		2026-09-04	scripts/bench_infer.py
 --tiny	ok		2026-09-04	tinylm/cli.py
 --title	ok		2026-09-07	scripts/new_handoff.py,scripts/new_proposal.py
+--today	ok	metadata 미래일 검사의 명시 기준일; 파일 수정 없음	2026-09-18	scripts/check_doc_metadata.py
 --tok	ok		2026-09-04	scripts/diag_common_text.py,scripts/diag_dataset_tokens.py
 --tokenizer	ok		2026-09-04	scripts/audit_heldout_v28.py,scripts/audit_sft_corpus.py
 --tokenizer-hf	ok		2026-09-04	scripts/common_bpb.py,tinylm/cli.py
