@@ -121,7 +121,7 @@ Transformer 배선, 모델 로딩, smoke, GPU, 학습 `.sh`, KV 축소, 기본 �
 | 유사 실험 조회 | 같은 Scout+1 MiB dual-arena causal LTM 런 없음 |
 | 중복·교락 | KV 압축·MLP tying·depth 교환은 S7 전 금지 |
 | 계산 | H300 상대비만 사용; 실제 baseline wall을 S0 뒤 기록 |
-| 태그·진입점 | 옛 S0a 사용자 queue 콘솔 PASS는 **로깅 프로그램 코드 오류**로 원본 로그 미보존. 새 `run_P095_S0aL_causal_memory_log_recovery.sh`는 다른 단계명으로 동일 계약 로그만 복구하며 사용자 실행 `NOT_RUN`; 학습 tag·본런 `.sh` 없음 |
+| 태그·진입점 | 옛 S0a 콘솔 PASS의 원본 미보존을 `run_P095_S0aL_causal_memory_log_recovery-done.sh`로 복구했다([결과 087](../test_result/087_20260919_P095-S0a-memory-primitive-계약은-통과했다.md)); 학습 tag·본런 `.sh` 없음 |
 | 보호 경계 | 데이터·모델·GPU·smoke 접근 없음 |
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
@@ -134,3 +134,6 @@ Transformer 배선, 모델 로딩, smoke, GPU, 학습 `.sh`, KV 축소, 기본 �
   새로 통과시킨 증거가 아니다.
 - 2026-09-19: 옛 `-done`을 되돌리지 않고 S0aL 로그복구 SH를 별도 작성했다. 이는 새 과학
   단계가 아니며 S0b 통합·physical accounting은 계속 `NOT_RUN`이다.
+- 2026-09-19: S0aL 보존 로그가 exit 0을 기록해 causal order·prefix invariance·
+  history dependence·논리 1 MiB·backward 계약을 PASS로 승격했다([결과 087](../test_result/087_20260919_P095-S0a-memory-primitive-계약은-통과했다.md)).
+  S0b 통합·physical accounting·latency·학습성·품질은 `NOT_RUN`이다.

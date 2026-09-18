@@ -5,10 +5,11 @@
 > **2026-09-18 흡수 승인:** 레이어 상태 기반 제안의 권장 B안을 별도 P번호 없이 이 계획에
 > 흡수했다. 정본 제안서:
 > [`20260918_레이어-상태기반-학습연산-재배분-타당성-검토-제안서-approved-on-going.md`](../proposal/20260918_레이어-상태기반-학습연산-재배분-타당성-검토-제안서-approved-on-going.md).
-> **현재 상태:** Stage0a 독립 계약 진단 ✅PASS([결과 080](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)).
-> R1의 optimizer update 분해 primitive와 AdamW/Muon CPU fixture는 `STATIC_ONLY` PASS다.
-> 논리 occurrence·CLA owner를 포함한 R0 전체 mapping, controller·optimizer-state 격리·실제
-> TLinear/trainer 배선, 모델 로딩·GPU 실행은 `NOT_RUN`.
+> **현재 상태:** Stage0a 독립 계약과 R0/R1b actual tiny-model mapping 게이트가
+> ✅PASS([결과 080 §6](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19)).
+> 논리 layer 6, unique MLP 4, attention 6, CLA KV owner 3, optimizer parameter 63이
+> 보존 로그에서 확인됐다. selector `S/U`, controller·optimizer-state 절감·실제
+> TLinear/trainer 배선, timing·GPU·학습·품질은 `NOT_RUN`.
 
 ## 1. 왜 — 후반 계산을 모든 parameter에 균등 배분해야 하는지 미측정이다
 
@@ -69,9 +70,9 @@ trainer에 아직 연결하지 않아 기존 기본 경로를 바꾸지 않는�
 
 | 흡수 단계 | 무엇 | 다음 단계 조건 | 상태·비용 |
 |---|---|---|---|
-| **R0 schema** | logical occurrence, unique MLP/attention tensor, CLA K/V owner, optimizer group을 분리하고 `S/U` 필드 고정 | helper·실제 tiny-model gate 구현/구문 PASS; 사용자 모델 실행 `NOT_RUN` | 구현됨, GPU 0 |
+| **R0 schema ✅** | logical occurrence, unique MLP/attention tensor, CLA K/V owner, optimizer group을 분리하고 `S/U` 필드 고정 | tiny-model mapping PASS: 6/4/6/3 owners([080 §6](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19)) | 완료, CPU/GPU 0 |
 | **R1a audit primitive** | 기존 `OptimizerAudit`에 total/WD/optimizer-only update와 normalized ratio를 opt-in으로 추가 | AdamW·Muon 분리, parameter 중복 차단 | 구현·CPU fixture `STATIC_ONLY` PASS |
-| **R1b integration** | 실제 TinyLM mapping·audit on/off 오염·timing을 모델 경로에서 대조 | tiny CPU model mapping·audit 생성 불변 gate 구현; 사용자 실행·timing은 `NOT_RUN` | 구문 PASS, GPU `NOT_RUN` |
+| **R1b mapping ✅ / timing ⏸** | 실제 TinyLM mapping·audit 생성 불변·timing을 모델 경로에서 대조 | mapping·optimizer 63 parameter 계약 PASS; 개별 owner 표·timing·오염 수치는 `NOT_RUN` | [080 §6](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19), GPU 0 |
 | **R2 진단** | selector 전용 패널에서 CLA-safe gate-zero `S`와 여러 window의 `U` 측정 | window·panel rank 안정, mapping 오류 0 | 모델·GPU `NOT_RUN` |
 | **R3 예측력** | 기존 Stage1의 32~128-step realized gain과 `S/U` ranking 대조 | median Spearman `rho≥0.5`, 3 window 중 2개 top-2 | 기존 Stage1에 흡수 |
 
@@ -107,9 +108,9 @@ fixed structured layer dropout(C)은 각각 별도 후속 계획·승인으로 �
 - WSL 사용자 queue 콘솔 PASS: `run_P091_R1_optimizer_audit_contract.sh` — R1a synthetic CPU
   fixture만 실행했다. 당시 launcher가 `runlog.py`를 우회해 `test_result/` 원본은 미보존이므로
   실제 모델 mapping·selector 증거로 확대하지 않는다.
-- 실행 대기: `run_P091_R0R1b_model_mapping_audit.sh` — R1a를 회귀한 뒤 실제 tiny CPU 모델의
-  logical/shared/CLA/optimizer mapping과 audit 생성 시 state 불변을 확인한다.
-- 미작성: R2~R3와 Stage0b~Stage5. 다음은 사용자 R0/R1b gate와 실제
+- 완료: `run_P091_R0R1b_model_mapping_audit-done.sh` — R1a 회귀와 실제 tiny CPU 모델의
+  logical/shared/CLA/optimizer mapping을 exit 0으로 확인했다([080 §6](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19)).
+- 미작성: R2~R3와 Stage0b~Stage5. R0/R1b gate는 완료됐으며 다음은 실제
   TLinear/controller·optimizer-state 격리 범위를 별도로 고정하고, 구현 뒤 사용자 스모크를 통과한
   경우에만 Stage1을 연다.
 
@@ -149,3 +150,6 @@ primitive에만 적용하며 모델 로딩, smoke, GPU, 장기 학습과 B/C 후
   R1b 실제 모델 audit이다.
 - 2026-09-19: R0 mapping helper와 R1b tiny CPU model gate·WSL SH를 구현하고 구문 검사를
   통과했다. Codex는 모델을 실행하지 않았으므로 mapping·audit 불변의 동적 판정은 `NOT_RUN`이다.
+- 2026-09-19: 사용자 실행 R0/R1b 보존 로그가 exit 0을 기록했다. 논리 layer 6,
+  unique MLP 4, attention 6, KV owner 3, optimizer parameter 63 mapping을 PASS로 승격했다.
+  selector·timing·GPU·학습·품질은 여전히 `NOT_RUN`이다.

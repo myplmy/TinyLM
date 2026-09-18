@@ -76,7 +76,10 @@ unset TL_NOPAUSE
 printf '\n[queue] finished\n'
 date
 printf '%s\n' 'Logs: test_result for experiments, smoketest_logs for smoke gates.'
-if [[ "$tl_rc" -ne 0 ]]; then
+if [[ "$tl_rc" -eq 8 ]]; then
+    printf '%s\n' '[queue] plan completed with one or more valid gate-negative results; this is not an execution failure.' >&2
+    printf '%s\n' '[queue] inspect the preserved experiment logs before deciding whether to continue the axis.' >&2
+elif [[ "$tl_rc" -ne 0 ]]; then
     printf '[queue] plan returned %s - inspect the logs above.\n' "$tl_rc" >&2
 fi
 exit "$tl_rc"

@@ -64,6 +64,23 @@ def load():
             warn.append(f"L{ln} 열이 {len(f)}개다(필요 {len(COLS)}). TAB 구분인지 확인: {s[:50]}")
             continue
         r = dict(zip(COLS, f[:len(COLS)]))
+        # Linux/WSL gate는 실행 장애가 아닌 유효한 음성 결과를
+        # 비영 종료코드로 남길 수 있다. 기존 8열 규약을 깨지 않도록
+        # 선택 9번째 열로만 받고, 없으면 빈 집합으로 본다.
+        raw_negative = f[len(COLS)].strip() if len(f) > len(COLS) else ""
+        negative_rcs = set()
+        if raw_negative and raw_negative != "-":
+            try:
+                negative_rcs = {int(value) for value in raw_negative.split(",")}
+            except ValueError:
+                warn.append(
+                    f"L{ln} negative_rc가 쉼표 구분 정수가 아니다: {raw_negative!r}"
+                )
+            if any(value <= 0 or value > 255 for value in negative_rcs):
+                warn.append(f"L{ln} negative_rc는 1~255 범위여야 한다: {raw_negative!r}")
+                negative_rcs = set()
+        r["negative_rc"] = raw_negative
+        r["negative_rcs"] = negative_rcs
         try:
             r["prio_n"] = int(r["prio"])
         except ValueError:

@@ -50,15 +50,22 @@ def available(rows):
 
 
 def _display_rows(rows, warn):
-    width = 106
+    live = available(rows)
+    shell_width = max(
+        44,
+        max((len(str(row["shell_batch"])) for row in live), default=0) + 2,
+    )
+    width = 62 + shell_width
     print("=" * width)
     print("  TinyLM Linux/WSL queue - metadata: experiments.tsv")
     print("=" * width)
-    live = available(rows)
     if not live:
         print("  No runnable .sh companion is present.")
     else:
-        print(f"  {'id':>3}  {'plan':<7}{'shell entry':<44}{'GPU':<7}{'hours':>7}  note")
+        print(
+            f"  {'id':>3}  {'plan':<7}{'shell entry':<{shell_width}}"
+            f"{'GPU':<7}{'hours':>7}  note"
+        )
         print("  " + "-" * (width - 4))
         for index, row in enumerate(live):
             flags = []
@@ -74,14 +81,28 @@ def _display_rows(rows, warn):
             flag_text = f"[{'/'.join(flags)}] " if flags else ""
             gpu = windows_queue.GPU_LABEL.get(row["gpu"].upper(), row["gpu"])
             print(
-                f"  {index:>3}  {row['plan']:<7}{row['shell_batch']:<44}"
+                f"  {index:>3}  {row['plan']:<7}{row['shell_batch']:<{shell_width}}"
                 f"{gpu:<7}{hours:>7}  {flag_text}{row['note']}"
             )
         total = sum(row["hours_n"] for row in live)
         print("  " + "-" * (width - 4))
         print(f"  Total if all are selected: about {total:.1f}h")
 
-    missing = [row for row in rows if not row["shell_exists"]]
+    done = [
+        row for row in rows
+        if not row["exists"] and row.get("done", False)
+    ]
+    if done:
+        print()
+        print("  Completed (-done) entries excluded from the runnable menu:")
+        for row in done:
+            print(f"    {row['batch']}")
+
+    missing = [
+        row for row in rows
+        if not row["shell_exists"]
+        and not (not row["exists"] and row.get("done", False))
+    ]
     if missing:
         print()
         print("  Unavailable Linux/WSL entries (missing native .sh or BAT companion):")
@@ -139,6 +160,8 @@ def render_plan(chosen, smoke_policy: str = "stop") -> str:
         "tl_failed_entries=()",
         "tl_warnings=0",
         "tl_warning_entries=()",
+        "tl_negatives=0",
+        "tl_negative_entries=()",
         "",
     ]
     for index, row in enumerate(chosen):
@@ -182,10 +205,36 @@ def render_plan(chosen, smoke_policy: str = "stop") -> str:
                 ]
             )
         else:
+            negative_rcs = sorted(int(value) for value in row.get("negative_rcs", set()))
+            negative_test = " || ".join(
+                f'[[ "$tl_rc" -eq {value} ]]' for value in negative_rcs
+            )
+            if negative_test:
+                lines.extend(
+                    [
+                        f"if {negative_test}; then",
+                        f"    printf '%s\\n' '[GATE NEGATIVE] {shell_batch} returned a declared scientific-negative result - not an execution failure' >&2",
+                        '    tl_negatives=$((tl_negatives + 1))',
+                        f"    tl_negative_entries+=({shlex.quote(shell_batch)})",
+                        'elif [[ "$tl_rc" -ne 0 ]]; then',
+                        f"    printf '%s\\n' '[WARN] {shell_batch} returned an execution error - continuing to collect remaining results' >&2",
+                        '    tl_failures=$((tl_failures + 1))',
+                        f"    tl_failed_entries+=({shlex.quote(shell_batch)})",
+                        "fi",
+                    ]
+                )
+                lines.extend(
+                    [
+                        f"printf '%s\\n' '[queue] {shell_batch} done'",
+                        "date",
+                        "",
+                    ]
+                )
+                continue
             lines.extend(
                 [
                     'if [[ "$tl_rc" -ne 0 ]]; then',
-                    f"    printf '%s\\n' '[WARN] {shell_batch} returned an error - continuing to collect remaining results' >&2",
+                    f"    printf '%s\\n' '[WARN] {shell_batch} returned an execution error - continuing to collect remaining results' >&2",
                     '    tl_failures=$((tl_failures + 1))',
                     f"    tl_failed_entries+=({shlex.quote(shell_batch)})",
                     "fi",
@@ -206,7 +255,17 @@ def render_plan(chosen, smoke_policy: str = "stop") -> str:
             '    if [[ "$tl_warnings" -ne 0 ]]; then',
             '        printf "[queue] user-accepted warnings: %s\\n" "${tl_warning_entries[*]}" >&2',
             "    fi",
+            '    if [[ "$tl_negatives" -ne 0 ]]; then',
+            '        printf "[queue] valid gate-negative results: %s\\n" "${tl_negative_entries[*]}" >&2',
+            "    fi",
             "    exit 4",
+            "fi",
+            'if [[ "$tl_negatives" -ne 0 ]]; then',
+            '    printf "\\n[queue] completed with %s valid gate-negative result(s): %s\\n" "$tl_negatives" "${tl_negative_entries[*]}" >&2',
+            '    if [[ "$tl_warnings" -ne 0 ]]; then',
+            '        printf "[queue] user-accepted warnings: %s\\n" "${tl_warning_entries[*]}" >&2',
+            "    fi",
+            "    exit 8",
             "fi",
             'if [[ "$tl_warnings" -ne 0 ]]; then',
             '    printf "\\n[queue] completed with %s user-accepted warning(s): %s\\n" "$tl_warnings" "${tl_warning_entries[*]}" >&2',
@@ -268,13 +327,16 @@ def cmd_build(rows, pick: str, smoke_policy: str | None) -> int:
     for index, row in enumerate(chosen, 1):
         print(f"  {index}. {row['shell_batch']} ({row['plan']}, {row['hours_n']:.1f}h)")
         print(f"     {row['note']}")
+        if row.get("negative_rcs"):
+            codes = ",".join(str(value) for value in sorted(row["negative_rcs"]))
+            print(f"     Declared scientific-negative exit code(s): {codes}")
         total += row["hours_n"]
     print(f"  Total: about {total:.1f}h")
     if contains_smoke:
         print(f"  Smoke failure policy: {effective_smoke_policy} (user selected)")
     print(
-        "  Other entry policy: run every selected entry, collect failures, "
-        "and return 4 if any fail."
+        "  Other entry policy: collect execution failures separately from declared "
+        "scientific-negative exits; return 4 for failures and 8 for negatives only."
     )
     if any(row["shell_batch"] == "run_smoke_check.sh" for row in chosen):
         if chosen[0]["shell_batch"] != "run_smoke_check.sh":
@@ -315,7 +377,10 @@ def cmd_audit(rows, warn) -> int:
             print(f"  {name}")
 
     missing_companions = sorted(
-        str(row["shell_batch"]) for row in rows if not row["shell_exists"]
+        str(row["shell_batch"])
+        for row in rows
+        if not row["shell_exists"]
+        and not (not row["exists"] and row.get("done", False))
     )
     if missing_companions:
         print(

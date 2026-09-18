@@ -137,7 +137,7 @@ flag	grade	evidence	checked	declared_in
 --inspect-chars	ok		2026-09-04	scripts/diag_val_docs.py
 --int8-store	ok		2026-09-04	scripts/bench_infer.py,scripts/mem_runtime.py
 --item	ok		2026-09-04	scripts/wip.py
---iters	ok		2026-09-04	scripts/diag_dtype_map.py,scripts/diag_int8mm_paths.py,scripts/diag_sdpa_backends.py
+--iters	ok		2026-09-19	scripts/diag_dtype_map.py,scripts/diag_int8mm_paths.py,scripts/diag_sdpa_backends.py,scripts/diag_sdpa_wsl_gqa.py,scripts/diag_sparse24_inference_attribution.py
 --jsonl	ok		2026-09-04	scripts/diag_common_text.py
 --k	ok		2026-09-04	scripts/diag_bench_overlap.py
 --kd	ok		2026-09-04	tinylm/cli.py
@@ -184,6 +184,7 @@ flag	grade	evidence	checked	declared_in
 --match-train-repeat	ok		2026-09-04	scripts/paired_eval.py
 --matrix-weight-decay	ok	A08 - 두 옵티마이저의 행렬 WD만 덮어쓴다. 미지정은 optimizer-aware 규약(AdamW 행렬 0.1, Muon 행렬 0)이며 임베딩·norm·LRM WD는 불변. 2026-09-18 Muon RMS4 기본 채용 뒤에도 None을 유지해 이 구분을 보존	2026-09-18	tinylm/cli.py
 --max-bytes	ok		2026-09-04	scripts/diag_spam_rate.py
+--max-speed-ratio	ok	P060B WSL native forced-GQA의 off-default 대비 허용 속도 대가	2026-09-19	scripts/diag_sdpa_wsl_gqa.py
 --max-docs	ok		2026-09-04	scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_common_text.py,scripts/diag_fp8_precision.py,scripts/diag_spam_rate.py,scripts/diag_val_docs.py
 --max-new	ok		2026-09-04	scripts/bench_fused_int8.py,scripts/bench_infer.py,scripts/diag_decode_profile.py,scripts/diag_kvcache.py,scripts/eval_bench_suite.py,scripts/mem_runtime.py,tinylm/cli.py
 --max-tokens	ok		2026-09-04	scripts/diag_vocab.py
@@ -193,6 +194,7 @@ flag	grade	evidence	checked	declared_in
 --micro-group	exp	P051 - packed 전용 레버. 상주식에 bpw 가 없다	2026-09-04	scripts/diag_lut_kernel.py,tinylm/cli.py
 --migrate-v2	ok		2026-09-04	scripts/wip.py
 --min-chars	ok		2026-09-04	scripts/diag_spam_rate.py
+--min-memory-reduction	ok	P060B WSL native forced-GQA working-memory 최소 절감율	2026-09-19	scripts/diag_sdpa_wsl_gqa.py
 --mlp-film	rejected	결과 063 - 무KD 에서도 +0.0003 (t 0.77). KD 조건의 값이 그대로 재현됐다	2026-09-04	tinylm/cli.py
 --mlp-group	exp	결과 067 §11.3 - 잰 전 구간에서 지배당했다(d8 +0.0637 -> d16 +0.1049). 기각이 아니라 파레토 밖	2026-09-04	tinylm/cli.py
 --mlp-lrm	exp	P086 / 결과 072 - dense 몸통에서 -0.0005 로 종결. 타잉 몸통은 미측정	2026-09-04	tinylm/cli.py
@@ -203,6 +205,7 @@ flag	grade	evidence	checked	declared_in
 --model	ok		2026-09-06	scripts/bench_tsv.py
 --model-data	ok	checkpoint가 사용한 tokenizer identity를 추측하지 않고 명시한다	2026-09-18	scripts/infer_text_probe.py
 --models	ok		2026-09-04	scripts/bench_fused_int8.py,scripts/bench_infer.py,scripts/census_heldout_discrimination.py,scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_attention_sink.py,scripts/diag_decode_profile.py,scripts/diag_fp8_precision.py,scripts/diag_kvcache.py,scripts/diag_layer_map.py,scripts/diag_sparse34.py,scripts/diag_trapping.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py,scripts/mem_runtime.py,scripts/paired_eval.py,scripts/probe_prompts.py
+--m-values	ok	P025B one-way inference/training pack을 decode·prefill·training 형상 M별로 분리	2026-09-19	scripts/diag_sparse24_inference_attribution.py
 --modes	ok		2026-09-04	scripts/diag_depth_init.py
 --muon-lr-mult	ok	P005/P005b - Muon 그룹 lr 배수. 2026-09-18 사용자 확정 기본 4.0; 명시적 실험값은 계속 기록	2026-09-18	tinylm/cli.py
 --muon-scale	ok	P005b b-1 - Muon 업데이트 스케일 규약. 2026-09-18 사용자 확정 기본 rms=0.2*sqrt(max(out,in)); jordan은 레거시 대조. 두 규약은 균일 LR 배수로 치환 불가	2026-09-18	tinylm/cli.py
@@ -245,6 +248,7 @@ flag	grade	evidence	checked	declared_in
 --project	ok		2026-09-04	scripts/wandb_sync.py,scripts/wandb_table_probe.py
 --prompt	ok		2026-09-04	tinylm/cli.py
 --prompt-file	ok	임의 생성 probe의 UTF-8 prompt 파일. 한 줄당 한 prompt	2026-09-18	scripts/infer_text_probe.py
+--prefill-speedup	ok	P025B inference-prefill micro-gate 최소 속도향상	2026-09-19	scripts/diag_sparse24_inference_attribution.py
 --push	ok		2026-09-04	scripts/wandb_sync.py
 --push-meta	ok		2026-09-04	scripts/wandb_sync.py
 --q-heads	ok		2026-09-04	scripts/diag_sdpa_backends.py
@@ -263,7 +267,7 @@ flag	grade	evidence	checked	declared_in
 --report-every	ok		2026-09-04	scripts/diag_spam_rate.py
 --report-greedy	ok		2026-09-04	scripts/diag_kvcache.py
 --reps	ok		2026-09-04	scripts/bench_infer.py
---require-wsl	ok	P025B WSL 재probe가 Windows 역사 실패와 섞이지 않도록 WSL runtime을 강제한다	2026-09-18	scripts/diag_sparse24_backend.py
+--require-wsl	ok	WSL 독립 environment stratum을 Windows 역사 결과와 분리	2026-09-19	scripts/diag_sdpa_wsl_gqa.py,scripts/diag_sparse24_backend.py,scripts/diag_sparse24_inference_attribution.py
 --resume	ok		2026-09-04	scripts/wip.py,tinylm/cli.py
 --retired-claims	ok		2026-09-04	scripts/wip.py
 --reuse-attn-on-dup	rejected	결과 041 §17.4 - 재귀 이득 -0.0203 을 전부 잃고 +0.0079 더 나빴다	2026-09-04	scripts/paired_eval.py,tinylm/cli.py
@@ -347,7 +351,7 @@ flag	grade	evidence	checked	declared_in
 --wandb-project	ok		2026-09-04	scripts/eval_bench_suite.py
 --wandb-standalone	ok		2026-09-04	scripts/eval_bench_suite.py
 --warn	ok		2026-09-04	scripts/check_spill.py
---warmup	ok	P025B backend timing 전 CUDA warmup 반복 수	2026-09-18	scripts/diag_sparse24_backend.py
+--warmup	ok	GPU backend timing 전 CUDA warmup 반복 수	2026-09-19	scripts/diag_sdpa_wsl_gqa.py,scripts/diag_sparse24_backend.py,scripts/diag_sparse24_inference_attribution.py
 --wide	ok		2026-09-06	scripts/bench_tsv.py
 --window	ok		2026-09-04	scripts/diag_attention_sink.py
 --wq-dtype	ok		2026-09-04	tinylm/cli.py

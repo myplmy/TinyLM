@@ -18,15 +18,20 @@
 # alone : Y 면 **단독 실행 필요**(속도·VRAM 측정). 다른 GPU 작업 금지
 # watch : Y 면 **사람이 앞부분을 봐야 한다**(조용히 실패할 수 있는 실험)
 # note  : 무엇에 답하는가 (한 줄)
+# negative_rc: 선택 9번째 열. 실행 장애가 아닌 사전 등록 음성 게이트 종료코드.
+#              빈칸/열 생략은 선언 없음. 해당 코드는 queue 실패 4와 분리해 최종 8로 보존한다.
 #
 # ★2026-09-13 승인 연구 추가 72.0h 조건부 hard cap(기존 P005b/P089 큐와 별도):
 #   P091 22.6h + P025B 18.6h + P022C 14.5h + P092 min(7.65 H300, 16.3h) = 72.0h.
-#   현재 TSV의 네 Stage0 진단 0.4h만 실행 가능하다. 후속 배치는 각 gate PASS 뒤에만 새 행으로 연다.
+#   완료 이관 행은 실행 불가이며, 현재 신규 runnable은 P025B Stage0bWc와 P060B Stage0aW
+#   두 GPU 진단 약 0.2h뿐이다. 후속 배치는 각 gate PASS 뒤에만 새 행으로 연다.
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
-prio	plan	batch	gpu	hours	alone	watch	note
+prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 1	P025B	run_P025B_Stage0bWb_wsl_sparse24_training_pack.sh	D	0.1	Y	Y	one-way inference pack과 bidirectional training pack을 분리해 native 2:4 forward·input-grad·속도를 재판정한다. 학습 0
+1	P025B	run_P025B_Stage0bWc_wsl_sparse24_inference_attribution.sh	D	0.1	Y	Y	Stage0bWb의 M8192 training-pack 속도와 one-way inference pack을 분리하고 M1/16/128/1024/8192의 정합·속도·peak allocation을 측정한다. 학습 0	8
+2	P060B	run_P060B_Stage0aW_wsl_sdpa_gqa_backend.sh	D	0.1	Y	Y	WSL native SDPA의 off/on default와 forced CUDNN/FLASH/EFFICIENT GQA 정합·속도·working memory를 분리한다. 학습 0	8
 2	P096	run_P096_Q1b_taxonomy_difficulty_contract.sh	N	0.1	N	N	Q1a 회귀 뒤 보호 데이터 없이 8 relation·32 subtype·난이도·family/template cap 계약을 검증한다
 3	P093	run_P093_Stage0ab_sharing_accounting.sh	N	0.1	N	N	기존 질문 중복과 D/R 후보의 unique weight·packed/resident·optimizer state·FLOPs를 GPU 없이 회계한다
 4	P091	run_P091_R0R1b_model_mapping_audit.sh	N	0.1	N	N	R1a 회귀 뒤 실제 TinyLM CPU 모델의 logical layer·shared tensor·CLA owner·optimizer group mapping과 audit-off 불변을 검증한다

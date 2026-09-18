@@ -31,7 +31,8 @@
 | **anneal 동역학 계측** | ✅**A0~A2 구현·CPU fixture**, A3 `E2E_NOT_RUN` | `anneal_schedule.py`, `--anneal-audit*` | LR/quant/aux 식을 분리하고 quant 거리·code flip·점유·경계여유·grad/update RMS를 저빈도 JSONL로 기록 | CPU 복사·동기화가 섞여 계측 on 속도는 인용 금지; 기본값·품질은 안 바뀜 | 승인된 [제안서](../../proposal/done/20260915_anneal-스케줄-분해와-계측우선-개선-approved.md). A3는 같은 초기 상태의 fresh 0.60/0.80 trajectory를 사용자가 실행한 뒤 판정 |
 | **seq-length warmup(P013)** | 💡→📌**설계조건 확보** | — (P013) | 초반 짧은 seq 로 어텐션 O(seq²) 절감 | **M 유지 필수** — seq 절반이면 mb 2배 | ★P021B: mb16×seq512(M=8192) 가 표준 mb8×seq1024(M=8192) 대비 **-5.7%**. 단 seq·mb 가 동시에 변해 기여도 분리는 안 됨. 이 값을 이득 상한으로 |
 | **데이터 풀 다양성(`--pool-tokens`)** | ✅**측정·조건부 채택** | v6 | 학습토큰은 그대로 두고 샘플 풀만 확대 → 반복 노출 감소 | 토큰화 1회 비용·디스크; pool별 언어비·val이 바뀌면 비교 교락 | 결과 006 log-val −0.12에는 시험지 변화가 섞였다. 같은 common text 방향은 양수지만 큰 pool의 영어 편향이 있다. 언어비를 보존한 exact cache에서만 “무료 품질 레버”로 사용 |
-| **2:4 준정형 희소(GPU)** | ⚠️**Windows FAIL / WSL 재게이트 대기** | — (P025B) | 희소 텐서코어로 학습 GEMM 가속 가능성을 먼저 진단 | Windows는 `cuSPARSELt not supported`. WSL 종전 오류는 one-way pack의 `packed_t=None` dgrad 진단 결함으로 판정 철회; bidirectional pack의 forward·gradient·속도는 `NOT_RUN`. WSL 원본 로그는 로깅 코드 오류로 부재 | Stage0bWb에서 pack 방향별 단계와 속도를 재판정([결과 082 §7](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) |
+| **2:4 준정형 희소(GPU)** | ⚠️**정합 PASS / training-pack 속도 음성** | — (P025B) | 희소 텐서코어로 학습·추론 GEMM 가속 가능성을 pack·M별로 분리 | WSL Stage0bWb에서 inference forward와 bidirectional training-pack forward/dgrad는 PASS. M8192 training-pack은 **0.759×/0.820×**로 느렸지만 inference decode/prefill은 미측정 | Stage0bWc가 one-way inference pack의 M1/16/128/1024/8192 속도·peak allocation을 귀속. whole-step·학습 후 실제 추론은 별도([결과 082](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) |
+| **WSL native SDPA/GQA(P060B)** | ⏳**재개·GPU NOT_RUN** | — (P060B) | Windows 기본 dispatcher 열세와 WSL forced fused backend를 독립 환경으로 분리 | native CUDNN/FLASH/EFFICIENT 가용성·정합·속도·working memory를 같은 q/k/v로 비교. 외부 flash-attn은 설치하지 않음 | Stage0aW에서 B8/T1024 주 게이트와 B1/T128 전이만 측정; 통합·backward·학습은 후속 |
 | **URL/메타데이터 prepend(데이터)** | 💡 | — (P012 추가) | 문서 앞 출처/메타 prepend로 목표loss 토큰 30~40%↓ | 한국어 셋은 URL 원본 부재 가능(score 대체) | 연산바운드에서 절대 벽시계 줄이는 데이터측 레버. arXiv:2511.21613 |
 | **SplitK 융합 dequant+GEMM(추론)** | 📄참고 | — | 스키니(M=1-16) 메모리바운드 W4A16 GEMM을 SplitK atomic으로 가속 | **추론 decode 전용**. 학습은 M=8192 대배치=연산바운드라 무관. cuBLAS 아닌 naive Triton DP 대비 수치 | 우리 학습엔 부적합. GPU decode 시 ternary_kernel 업그레이드 경로. arXiv:2402.00025 |
 
@@ -150,9 +151,11 @@ M=12,288 은 **서로 다른 두 형상(mb12×1024, mb24×512)이 똑같이 OOM*
 | 계획 | 현재 구현 범위 | 속도 주장 가능 범위 | 다음 gate |
 |---|---|---|---|
 | [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | CUDA `_scaled_mm` 세 형상 PASS([081](../../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)) | 순수 GEMM **1.17~2.09×**; 학습 step은 `NOT_RUN` | cast·amax/scaling·backward 포함 Stage0b(C1) |
-| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | Windows backend FAIL; WSL 종전 판정은 pack 방향 진단 오류로 철회([082 §6~§7](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | Stage0bWb bidirectional forward·input-grad·속도 `NOT_RUN` | 교정 SH 사용자 결과 뒤 Stage0c 개방/종료 판정 |
+| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | WSL Stage0bWb inference forward·bidirectional forward/dgrad PASS; M8192 training-pack 0.759×/0.820×([082](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | 해당 training pack·형상은 속도 음성. inference pack·decode/prefill·whole-step·학습 후 추론은 `NOT_RUN` | Stage0bWc pack/M 귀속 뒤 Stage0c·Stage2i 판단 |
 | [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | Stage0c CUDA mask/gradient/birth-death 계약 PASS([083 §6](../../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) | **가속 0으로 취급**; dense tensor+mask 계약만 통과 | TLinear·trainer 연결 뒤 topology-update 비용 포함 실측 |
-| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | 독립 fold 계약 CPU PASS([080](../../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)) | local update 속도·VRAM 모두 `NOT_RUN` | 실제 모델 연결과 사용자 스모크 뒤 측정 |
+| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | 독립 fold와 actual tiny-model owner/optimizer mapping PASS([080 §6](../../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19)) | selector·local update 속도·VRAM 모두 `NOT_RUN` | TLinear/controller 구현과 사용자 스모크 뒤 측정 |
+| [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | WSL native forced GQA 정합·속도·working-memory 진단과 SH 정적 PASS | GPU 결과 `NOT_RUN`; Windows P060 기본-dispatch 열세는 유지 | Stage0aW 결과가 통과해야만 Attention opt-in 통합 |
 
 제안 승인과 Stage0 코드 존재는 속도 개선 증거가 아니다. P092의 계약 PASS도 가속 PASS가 아니며,
-P025B의 Windows 실패는 유지되지만 WSL backend 기각은 철회했다. 네 계획의 실제 학습 속도는 모두 `NOT_RUN`이다.
+P025B의 Windows 실패는 유지되고 WSL training-pack 정합성은 통과했지만 해당 M8192 속도는 음성이다.
+P060B를 포함한 다섯 계획의 실제 학습 속도는 모두 `NOT_RUN`이다.

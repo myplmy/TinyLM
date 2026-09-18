@@ -4,6 +4,8 @@ from __future__ import annotations
 import subprocess
 import tempfile
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path, PureWindowsPath
 
 import check_shell_entrypoints as shell_check
@@ -25,6 +27,8 @@ def row(batch: str):
         "line": 1,
         "exists": True,
         "done": False,
+        "negative_rc": "",
+        "negative_rcs": set(),
     }
 
 
@@ -79,6 +83,11 @@ class LinuxQueueTests(unittest.TestCase):
             finished["done"] = True
             rows = linux_queue.with_shell_state([finished], root=root)
             self.assertEqual(linux_queue.available(rows), [])
+            output = StringIO()
+            with redirect_stdout(output):
+                linux_queue._display_rows(rows, [])
+            self.assertIn("Completed (-done)", output.getvalue())
+            self.assertNotIn("Unavailable Linux/WSL", output.getvalue())
 
     def test_native_shell_row_is_runnable_without_bat(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -195,6 +204,96 @@ class LinuxQueueTests(unittest.TestCase):
         self.assertTrue(linux_queue.selection_contains_smoke(rows, "0 1"))
         self.assertTrue(linux_queue.selection_contains_smoke(rows, "smoke_check"))
         self.assertFalse(linux_queue.selection_contains_smoke(rows, "1"))
+
+    def test_declared_negative_is_not_execution_failure(self) -> None:
+        chosen = [
+            {
+                **row("run_gate_negative.sh"),
+                "shell_batch": "run_gate_negative.sh",
+                "shell_exists": True,
+                "negative_rc": "8",
+                "negative_rcs": {8},
+            },
+            {
+                **row("run_gate_pass.sh"),
+                "shell_batch": "run_gate_pass.sh",
+                "shell_exists": True,
+            },
+        ]
+        bash = shell_check.find_bash()
+        if bash is None:
+            self.skipTest("bash is unavailable")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            runs = root / "runs"
+            runs.mkdir()
+            negative = root / "run_gate_negative.sh"
+            passed = root / "run_gate_pass.sh"
+            negative.write_text("#!/usr/bin/env bash\nexit 8\n", encoding="ascii")
+            passed.write_text(
+                "#!/usr/bin/env bash\nprintf '%s\\n' pass-ran\nexit 0\n",
+                encoding="ascii",
+            )
+            negative.chmod(0o755)
+            passed.chmod(0o755)
+            plan_path = runs / "_queue_plan.sh"
+            plan_path.write_text(
+                linux_queue.render_plan(chosen).replace("sleep 15", "sleep 0"),
+                encoding="utf-8",
+                newline="\n",
+            )
+            completed = subprocess.run(
+                [bash, str(plan_path)], cwd=root, capture_output=True,
+                text=True, check=False,
+            )
+        self.assertEqual(completed.returncode, 8, completed.stderr)
+        self.assertIn("pass-ran", completed.stdout)
+        self.assertIn("GATE NEGATIVE", completed.stderr)
+        self.assertIn("not an execution failure", completed.stderr)
+        self.assertNotIn("selected entry failures", completed.stderr)
+
+    def test_execution_failure_takes_precedence_over_declared_negative(self) -> None:
+        chosen = [
+            {
+                **row("run_gate_negative.sh"),
+                "shell_batch": "run_gate_negative.sh",
+                "shell_exists": True,
+                "negative_rc": "8",
+                "negative_rcs": {8},
+            },
+            {
+                **row("run_gate_broken.sh"),
+                "shell_batch": "run_gate_broken.sh",
+                "shell_exists": True,
+            },
+        ]
+        bash = shell_check.find_bash()
+        if bash is None:
+            self.skipTest("bash is unavailable")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            runs = root / "runs"
+            runs.mkdir()
+            negative = root / "run_gate_negative.sh"
+            broken = root / "run_gate_broken.sh"
+            negative.write_text("#!/usr/bin/env bash\nexit 8\n", encoding="ascii")
+            broken.write_text("#!/usr/bin/env bash\nexit 7\n", encoding="ascii")
+            negative.chmod(0o755)
+            broken.chmod(0o755)
+            plan_path = runs / "_queue_plan.sh"
+            plan_path.write_text(
+                linux_queue.render_plan(chosen).replace("sleep 15", "sleep 0"),
+                encoding="utf-8",
+                newline="\n",
+            )
+            completed = subprocess.run(
+                [bash, str(plan_path)], cwd=root, capture_output=True,
+                text=True, check=False,
+            )
+        self.assertEqual(completed.returncode, 4, completed.stderr)
+        self.assertIn("selected entry failures: 1", completed.stderr)
+        self.assertIn("valid gate-negative results: run_gate_negative.sh", completed.stderr)
+        self.assertIn("run_gate_broken.sh", completed.stderr)
 
     def test_smoke_collect_and_warn_policies_are_explicit(self) -> None:
         chosen = [

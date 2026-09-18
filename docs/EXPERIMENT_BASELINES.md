@@ -3280,9 +3280,11 @@ SE 0.0006, t 1.89로 무재귀 자 0.0024 안이며 체크포인트 수준에서
   `sm_89`·torch 2.10.0의 첫 native 2:4 호출이 `cuSPARSELt not supported`로 끝났다.
   WSL Stage0bW의 `operation is not supported`는 PyTorch 2.10 소스상 one-way pack의
   `packed_t=None`을 input-gradient에서 사용한 진단 구현 오류로 재분류했다([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
-  WSL backend 기각은 철회했고, bidirectional training pack의 forward·input-grad·속도는
-  Stage0bWb 사용자 실행 전까지 `NOT_RUN`이다. WSL 원본 로그는 **로깅 프로그램 코드 오류**로
-  부재한다.
+  WSL backend 기각은 철회했다. Stage0bWb 보존 로그에서 inference forward와 bidirectional
+  training-pack forward·input-gradient·tile 계약은 PASS했지만 M8192 training-pack forward는
+  dense 대비 **0.759×/0.820×**로 느렸다(exit 8 = 유효 음성, 실행 장애 아님).
+  inference exact-2:4의 decode/prefill, whole-step, sparse-master 메모리, 학습 후 실제 모델 추론은
+  `NOT_RUN`이며 Stage0bWc가 pack·M별 속도와 peak allocation을 분리한다([결과 082 현재 판정](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#현재-판정2026-09-19--stage0bwb-정합성-pass-훈련-형상-속도-음성)).
 - P092 Stage0c는 CUDA에서 finite loss, inactive gradient 합 12.144601, mask/effective
   sparsity 0.5, births=deaths=16으로 핵심 계약을 통과했다. 그러나 dense tensor+mask라
   가속·메모리·학습·품질은 모두 `NOT_RUN`이다.
@@ -3336,16 +3338,25 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
 65. ★★**진단 재현은 그 진단의 계약만 강화한다.** 같은 작은 합성값 2회 PASS를 trainer·
     속도·메모리·품질 증거로 확대하지 않는다.
 
-## B.35 ★★2026-09-19 — **다음 게이트는 구현됐지만 동적 결과와 품질은 아직 아니다**
+## B.35 ★★2026-09-19 — **다섯 보존 로그의 계약 결과와 새 WSL backend 게이트를 분리한다**
 
 - P096 Q1b는 보호 데이터 없이 8 relation·32 subtype·320 synthetic fixture로 proof path,
-  easy/mid/hard knob, family/template 5% cap을 확인했다. 이는 taxonomy 기계 계약의
-  `STATIC_ONLY` PASS이며 실제 문항 의미·변별정보·봉인 final은 `NOT_RUN`이다.
+  easy/mid/hard knob, family/template 5% cap을 사용자 보존 로그에서 exit 0으로 확인했다
+  ([결과 085](../test_result/085_20260919_P096-Q1b-taxonomy-계약은-통과했고-실문항은-남았다.md)).
+  이는 taxonomy 기계 계약 PASS이며 실제 문항 의미·변별정보·봉인 final은 `NOT_RUN`이다.
 - P093 Stage0a/b 산술 회계에서 D1-wide-core는 dense 대비 추가 linear FLOPs +62.4%라
   고계산 트랙, R1 low-rank r4/8/16은 순배포 절감 26.1~27.2%와 추가 FLOPs 0.45~1.79%의
-  기본 회계 후보다. allocator RSS·activation·latency·품질은 포함하지 않았다.
-- P091 R0/R1b actual tiny-model mapping gate는 구현·구문 PASS이나 Codex가 모델을 실행하지
-  않았으므로 사용자 queue 전에는 동적 PASS가 아니다.
+  기본 회계 후보다([결과 086](../test_result/086_20260919_P093-회계상-R1은-남고-D1은-고계산이다.md)).
+  allocator RSS·activation·latency·품질은 포함하지 않았다.
+- P091 R0/R1b actual tiny-model mapping은 logical layer 6, unique MLP 4, attention 6,
+  KV owner 3, optimizer parameter 63을 보존 로그에서 통과했다([결과 080 §6](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19)).
+  개별 owner 표·selector `S/U`·timing·학습·품질은 `NOT_RUN`이다.
+- P095 S0aL은 read-before-write·prefix invariance·history dependence·논리 1 MiB·finite
+  backward를 보존 로그에서 통과했다([결과 087](../test_result/087_20260919_P095-S0a-memory-primitive-계약은-통과했다.md)).
+  Transformer 통합·물리 RSS·latency·학습가능성은 `NOT_RUN`이다.
+- P060B Stage0aW는 종전 P060 Windows 결과를 지우지 않고 WSL native CUDNN/FLASH/EFFICIENT
+  forced-GQA를 독립 environment stratum으로 재개한다. 코드·SH는 정적 PASS지만 GPU 결과는
+  `NOT_RUN`이며 외부 `flash-attn` 설치는 범위 밖이다.
 
 66. ★★**one-way sparse pack의 forward 가능성과 training dgrad 가능성을 합치지 않는다.**
     `packed`와 `packed_t`를 각각 기록하고, dgrad 실패를 backend 설치 실패로 승격하지 않는다.
@@ -3353,3 +3364,6 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
     optimizer lower bound, FLOPs를 통과해도 RSS·latency·품질을 별도로 잰다.
 68. ★★**taxonomy coverage는 semantic validity가 아니다.** subtype 수와 quota가 맞아도 팀 의미
     검토와 실제 panel 판정 전에는 benchmark 품질 향상으로 쓰지 않는다.
+69. ★★**사전등록 음성 종료코드와 실행 장애를 분리한다.** 해당 entry의 metadata에 선언된
+    exit 8만 `GATE_NEGATIVE`로 모으고, 미선언 nonzero는 계속 queue 실패 4로 남긴다. 음성만
+    있을 때 최종 8을 보존하되 “실행 실패”라고 부르지 않는다.
