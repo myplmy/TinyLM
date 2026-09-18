@@ -97,7 +97,9 @@ class LinuxQueueTests(unittest.TestCase):
         self.assertIn("./run_smoke_check.sh", plan)
         self.assertIn("smoke check failed", plan)
         self.assertIn("./run_fixture_Stage0.sh", plan)
-        self.assertIn("returned an error - continuing", plan)
+        self.assertIn("continuing to collect remaining results", plan)
+        self.assertIn("tl_failures=$((tl_failures + 1))", plan)
+        self.assertIn("exit 4", plan)
         self.assertNotIn(".bat", plan)
         self.assertIn("printf '%s\\n' '[STOP]", plan)
         bash = shell_check.find_bash()
@@ -110,6 +112,140 @@ class LinuxQueueTests(unittest.TestCase):
                 [bash, "-n", shell_check.to_bash_path(path)], capture_output=True, text=True, check=False
             )
         self.assertEqual(completed.returncode, 0, completed.stderr)
+
+    def test_generated_plan_runs_all_gates_and_returns_aggregate_failure(self) -> None:
+        chosen = [
+            {
+                **row("run_gate_one.sh"),
+                "shell_batch": "run_gate_one.sh",
+                "shell_exists": True,
+            },
+            {
+                **row("run_gate_two.sh"),
+                "shell_batch": "run_gate_two.sh",
+                "shell_exists": True,
+            },
+        ]
+        bash = shell_check.find_bash()
+        if bash is None:
+            self.skipTest("bash is unavailable")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            runs = root / "runs"
+            runs.mkdir()
+            first = root / "run_gate_one.sh"
+            second = root / "run_gate_two.sh"
+            first.write_text(
+                "#!/usr/bin/env bash\nprintf '%s\\n' gate-one-ran\nexit 7\n",
+                encoding="ascii",
+            )
+            second.write_text(
+                "#!/usr/bin/env bash\nprintf '%s\\n' gate-two-ran\nexit 0\n",
+                encoding="ascii",
+            )
+            first.chmod(0o755)
+            second.chmod(0o755)
+            plan_path = runs / "_queue_plan.sh"
+            plan_text = linux_queue.render_plan(chosen).replace("sleep 15", "sleep 0")
+            plan_path.write_text(
+                plan_text, encoding="utf-8", newline="\n"
+            )
+            completed = subprocess.run(
+                [bash, str(plan_path)],
+                cwd=root,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+        self.assertEqual(completed.returncode, 4, completed.stderr)
+        self.assertIn("gate-one-ran", completed.stdout)
+        self.assertIn("gate-two-ran", completed.stdout)
+        self.assertIn("selected entry failures: 1", completed.stderr)
+        self.assertIn("run_gate_one.sh", completed.stderr)
+
+    def test_selection_contains_smoke_accepts_id_and_name(self) -> None:
+        rows = [
+            {
+                **row("run_smoke_check.sh"),
+                "shell_batch": "run_smoke_check.sh",
+                "shell_exists": True,
+            },
+            {
+                **row("run_gate_one.sh"),
+                "shell_batch": "run_gate_one.sh",
+                "shell_exists": True,
+            },
+        ]
+        self.assertTrue(linux_queue.selection_contains_smoke(rows, "0 1"))
+        self.assertTrue(linux_queue.selection_contains_smoke(rows, "smoke_check"))
+        self.assertFalse(linux_queue.selection_contains_smoke(rows, "1"))
+
+    def test_smoke_collect_and_warn_policies_are_explicit(self) -> None:
+        chosen = [
+            {
+                **row("run_smoke_check.sh"),
+                "shell_batch": "run_smoke_check.sh",
+                "shell_exists": True,
+            }
+        ]
+        collect = linux_queue.render_plan(chosen, smoke_policy="collect")
+        warn = linux_queue.render_plan(chosen, smoke_policy="warn")
+        self.assertNotIn("[STOP] smoke check failed", collect)
+        self.assertIn("tl_failures=$((tl_failures + 1))", collect)
+        self.assertIn("user-selected warn policy", warn)
+        self.assertIn("tl_warnings=$((tl_warnings + 1))", warn)
+        self.assertNotIn("tl_failures=$((tl_failures + 1))", warn)
+
+    def test_smoke_policy_controls_failure_and_continuation(self) -> None:
+        chosen = [
+            {
+                **row("run_smoke_check.sh"),
+                "shell_batch": "run_smoke_check.sh",
+                "shell_exists": True,
+            },
+            {
+                **row("run_gate_one.sh"),
+                "shell_batch": "run_gate_one.sh",
+                "shell_exists": True,
+            },
+        ]
+        bash = shell_check.find_bash()
+        if bash is None:
+            self.skipTest("bash is unavailable")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            runs = root / "runs"
+            runs.mkdir()
+            smoke = root / "run_smoke_check.sh"
+            gate = root / "run_gate_one.sh"
+            smoke.write_text("#!/usr/bin/env bash\nexit 9\n", encoding="ascii")
+            gate.write_text(
+                "#!/usr/bin/env bash\nprintf '%s\\n' gate-ran\nexit 0\n",
+                encoding="ascii",
+            )
+            smoke.chmod(0o755)
+            gate.chmod(0o755)
+            completed = {}
+            for policy in linux_queue.SMOKE_POLICIES:
+                plan_path = runs / f"_queue_plan_{policy}.sh"
+                plan_text = linux_queue.render_plan(
+                    chosen, smoke_policy=policy
+                ).replace("sleep 15", "sleep 0")
+                plan_path.write_text(plan_text, encoding="utf-8", newline="\n")
+                completed[policy] = subprocess.run(
+                    [bash, str(plan_path)],
+                    cwd=root,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+        self.assertEqual(completed["stop"].returncode, 3)
+        self.assertNotIn("gate-ran", completed["stop"].stdout)
+        self.assertEqual(completed["collect"].returncode, 4)
+        self.assertIn("gate-ran", completed["collect"].stdout)
+        self.assertEqual(completed["warn"].returncode, 0)
+        self.assertIn("gate-ran", completed["warn"].stdout)
+        self.assertIn("user-accepted warning", completed["warn"].stderr)
 
 
 if __name__ == "__main__":
