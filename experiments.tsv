@@ -36,9 +36,6 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 3	P093	run_P093_Stage0ab_sharing_accounting.sh	N	0.1	N	N	기존 질문 중복과 D/R 후보의 unique weight·packed/resident·optimizer state·FLOPs를 GPU 없이 회계한다
 4	P091	run_P091_R0R1b_model_mapping_audit.sh	N	0.1	N	N	R1a 회귀 뒤 실제 TinyLM CPU 모델의 logical layer·shared tensor·CLA owner·optimizer group mapping과 audit-off 불변을 검증한다
 5	P095	run_P095_S0aL_causal_memory_log_recovery.sh	N	0.1	N	N	이전 콘솔 PASS와 구분한 S0aL 단계로 causal memory CPU 계약의 원본 로그를 복구한다. 새 과학 주장은 없음
-1	P085	run_P085_Stage10c_heldout_v29_seed2_control.bat	D	0.9	Y	Y	v3.0 최종 판정에 쓴 seed2 여섯 모델로 v2.9를 재서 판본과 패널 교락을 해소한다. 기존 v3.0 JSON은 레거시 메타데이터 공백을 명시한 핵심 ID-paired 비교만 수행
-1	P092	run_P092_Stage0c_dynamic_sparse_contract.bat	D	0.1	N	Y	Stage0b import 진입 실패를 고친 첫 유효 mask STE·inactive regrowth·birth/death 보존 CUDA 계약. dense mask를 속도 이득으로 세지 않음
-1	P035B	run_P035B_Stage1_anneal_a3_trajectories.bat	Y	0.8	Y	Y	승인 제안 A3의 0.60/0.80 동역학과 0.80 audit on/off 오염을 같은 부모·seed·600M pool의 세 250-step 팔로 분리한다. 품질·기본값 판정 금지
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수 49GB→. ★판정 정본이 checkpoints.tsv 로 바뀌었다(TSV, keep/hold/delete). 삭제 후보 13.2GB/34개. YES 를 직접 입력해야 지운다
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
@@ -316,6 +313,15 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   13	P005b	run_P005b_Stage3_muon_matrix_wd.bat	Y	3.3	N	N	jordan15와 RMS4 각각에 `--matrix-weight-decay 0.1`만 추가해 scale 효과와 행렬 WD 교락을 2×2로 분리한다
 #   14	P005b	run_P005b_Stage9_rms_shape_transfer.bat	Y	9.6	N	N	무재귀 d12·d14·d16·d18에서 RMS4와 jordan20을 형상 안 paired full-val로 비교한다. d16 jordan20은 P005 Stage3c가 선결이다
 
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P085	run_P085_Stage10c_heldout_v29_seed2_control.bat	D	0.9	Y	Y	v3.0 최종 판정에 쓴 seed2 여섯 모델로 v2.9를 재서 판본과 패널 교락을 해소한다. 기존 v3.0 JSON은 레거시 메타데이터 공백을 명시한 핵심 ID-paired 비교만 수행
+#   1	P092	run_P092_Stage0c_dynamic_sparse_contract.bat	D	0.1	N	Y	Stage0b import 진입 실패를 고친 첫 유효 mask STE·inactive regrowth·birth/death 보존 CUDA 계약. dense mask를 속도 이득으로 세지 않음
+#   1	P035B	run_P035B_Stage1_anneal_a3_trajectories.bat	Y	0.8	Y	Y	승인 제안 A3의 0.60/0.80 동역학과 0.80 audit on/off 오염을 같은 부모·seed·600M pool의 세 250-step 팔로 분리한다. 품질·기본값 판정 금지
+#   15	P005b	run_P005b_Stage10_rms_seed_transfer.bat	Y	6.2	N	N	재귀 d12와 무재귀 d16의 jordan20·RMS4를 seed 2024로 복제한다. 부호가 seed 1337과 뒤집히면 평균하지 않고 세 번째 seed를 연다
+#   16	P005b	run_P005b_Stage11_rms_600M_transfer.bat	Y	15.3	N	Y	RMS4를 600M 토큰 네 형상으로 옮기고 재귀 d12에 jordan20 한 팔을 더해 런 길이에 따른 scale 이동을 같은 1200M 풀에서 판정한다
+#   17	P005b	run_P005b_Stage12_rms_1200M_transfer.bat	Y	5.9	N	Y	P088 Stage10 완전 종료 뒤 d16 RMS4 1200M 한 팔을 추가한다. AdamW·jordan15와 같은 pool/tokens=1.0 조건에서만 비교한다
+
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
 #     ★P062 R 곡선 -> **작성 완료**(run_P062_stage0c_r_curve.bat). 선결이 없었다 — 의사결정함정 D15
@@ -326,6 +332,3 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #     (번호 미배정) 2-tap 동적 conv -> REVIEW2 확정 후. 번호는 계획서를 쓸 때 붙인다(D16). 08_paper_review §11.3-2
 #     (번호 미배정) wandb 본격 활용 -> REVIEW2 이후. 도구 scripts/wandb_sync.py 는 작성 완료
 #     P014 안 A/B LUT 커널     -> ★L2+L3 목표의 유일한 길. 미착수 (02_memory §M.3.3)
-15	P005b	run_P005b_Stage10_rms_seed_transfer.bat	Y	6.2	N	N	재귀 d12와 무재귀 d16의 jordan20·RMS4를 seed 2024로 복제한다. 부호가 seed 1337과 뒤집히면 평균하지 않고 세 번째 seed를 연다
-16	P005b	run_P005b_Stage11_rms_600M_transfer.bat	Y	15.3	N	Y	RMS4를 600M 토큰 네 형상으로 옮기고 재귀 d12에 jordan20 한 팔을 더해 런 길이에 따른 scale 이동을 같은 1200M 풀에서 판정한다
-17	P005b	run_P005b_Stage12_rms_1200M_transfer.bat	Y	5.9	N	Y	P088 Stage10 완전 종료 뒤 d16 RMS4 1200M 한 팔을 추가한다. AdamW·jordan15와 같은 pool/tokens=1.0 조건에서만 비교한다

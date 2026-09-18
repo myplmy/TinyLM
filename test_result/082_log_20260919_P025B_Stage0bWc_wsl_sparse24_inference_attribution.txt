@@ -1,0 +1,36 @@
+P025B Stage0bWc: one-way inference pack versus bidirectional training pack by M; packing excluded; synthetic kernel gate, not trained-model inference
+
+==============================================================================
+[runlog] 2026-09-19 05:28:11  name=P025B_Stage0bWc_wsl_sparse24_inference_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sparse24_inference_attribution.py --require-wsl --m-values 1,16,128,1024,8192 --warmup 10 --iters 30 --prefill-speedup 1.10
+==============================================================================
+runtime_system=Linux release=6.18.33.2-microsoft-standard-WSL2 WSL_DISTRO_NAME=Ubuntu
+torch=2.10.0+cu130 cuda=13.0 cudnn=91501 cusparselt=0.8.0 compiled=True available=True backend_version=800
+gpu=NVIDIA GeForce RTX 4070 Ti SUPER sm_89 m_values=[1, 16, 128, 1024, 8192] warmup=10 iters=30
+NOTE: packing is outside timing; this is kernel attribution, not model inference.
+layout	M	K	N	dense_ms	sparse_ms	speedup	max_abs	rms	dense_peak_MiB	sparse_peak_MiB
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/sparse/semi_structured.py:568: UserWarning: The PyTorch API of SparseSemiStructuredTensor is in prototype stage and will change in the near future. Please open a Github issue for features requests and see our documentation on the torch.sparse module for further information about the project.
+  return cls(
+[pack] K=768 N=2048 inference(packed=True,packed_t=False) training(packed=True,packed_t=True)
+[mask] K=768 N=2048 inference_kept_per_row4=2 training_kept_per_4x4=7..8
+inference_exact2of4	1	768	2048	0.075518	0.292420	0.258	0.00195312	4.82537e-05	0.004	0.230
+training_bidirectional	1	768	2048	0.027700	0.300933	0.092	0.0078125	0.000248175	0.004	0.230
+inference_exact2of4	16	768	2048	0.026532	0.250313	0.106	0.03125	0.000477884	0.062	0.250
+training_bidirectional	16	768	2048	0.076735	0.250042	0.307	0.03125	0.000421759	0.062	0.250
+inference_exact2of4	128	768	2048	0.030009	0.267697	0.112	0.03125	0.000508145	0.500	0.688
+training_bidirectional	128	768	2048	0.030532	0.254614	0.120	0.03125	0.000425939	0.500	0.688
+inference_exact2of4	1024	768	2048	0.075222	0.278042	0.271	0.0625	0.000520986	4.000	4.188
+training_bidirectional	1024	768	2048	0.069365	0.260055	0.267	0.0625	0.000432785	4.000	4.188
+inference_exact2of4	8192	768	2048	0.364112	0.461052	0.790	0.0625	0.000522836	32.000	32.188
+training_bidirectional	8192	768	2048	0.364108	0.489043	0.745	0.0625	0.000431817	32.000	32.188
+[pack] K=2048 N=768 inference(packed=True,packed_t=False) training(packed=True,packed_t=True)
+[mask] K=2048 N=768 inference_kept_per_row4=2 training_kept_per_4x4=7..8
+inference_exact2of4	1	2048	768	0.028060	0.391585	0.072	0.015625	0.000694181	0.001	0.230
+training_bidirectional	1	2048	768	0.031724	0.375923	0.084	0.0625	0.00276932	0.001	0.230
+inference_exact2of4	16	2048	768	0.095025	0.315945	0.301	0.0625	0.00144852	0.023	0.211
+training_bidirectional	16	2048	768	0.048177	0.331937	0.145	0.03125	0.000571277	0.023	0.211
+[GATE FAIL correctness] layout=inference_exact2of4 M=128 K=2048 N=768: max_abs=0.125 rms=0.0114334; Tensor-likes are not close!
+------------------------------------------------------------------------------
+[runlog] 종료코드 4  소요 0.0분  (2026-09-19 05:28:13)
+==============================================================================
