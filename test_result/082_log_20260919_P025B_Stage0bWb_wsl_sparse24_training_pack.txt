@@ -1,0 +1,44 @@
+
+==============================================================================
+[runlog] 2026-09-19 03:35:54  name=P025B_Stage0bWb_wsl_sparse24_training_pack
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_sparse24_backend.py --require-wsl --m 8192 --warmup 10 --iters 30
+==============================================================================
+runtime_system=Linux release=6.18.33.2-microsoft-standard-WSL2 WSL_DISTRO_NAME=Ubuntu
+torch=2.10.0+cu130 torch_cuda=13.0 cudnn=91501 nvidia-cusparselt-cu13=0.8.0 cusparselt_compiled=True
+GPU=NVIDIA GeForce RTX 4070 Ti SUPER sm_89 torch=2.10.0+cu130
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/sparse/semi_structured.py:568: UserWarning: The PyTorch API of SparseSemiStructuredTensor is in prototype stage and will change in the near future. Please open a Github issue for features requests and see our documentation on the torch.sparse module for further information about the project.
+  return cls(
+[inference-pack] shape=(2048, 768)
+[inference-pack] packed_none=False
+[inference-pack] packed_t_none=True
+[inference-pack] t_packed_none=True
+[inference-pack] t_packed_t_none=False
+[PASS forward] M=8192 K=768 N=2048 exact row-wise 2:4
+[EXPECTED inference-pack limit] input-gradient needs packed_t: NotImplementedError: `SparseSemiStructuredTensorCUSPARSELT` matmul: operation is not supported
+[training-pack] shape=(2048, 768)
+[training-pack] packed_none=False
+[training-pack] packed_t_none=False
+[training-pack] t_packed_none=False
+[training-pack] t_packed_t_none=False
+[PASS training-mask] bidirectional <=2:4; kept_per_4x4=7..8
+M=8192 K=768 N=2048 layout=SparseSemiStructuredTensorCUSPARSELT dense=0.3624ms sparse=0.4778ms speedup=0.759x
+[inference-pack] shape=(768, 2048)
+[inference-pack] packed_none=False
+[inference-pack] packed_t_none=True
+[inference-pack] t_packed_none=True
+[inference-pack] t_packed_t_none=False
+[PASS forward] M=8192 K=2048 N=768 exact row-wise 2:4
+[EXPECTED inference-pack limit] input-gradient needs packed_t: NotImplementedError: `SparseSemiStructuredTensorCUSPARSELT` matmul: operation is not supported
+[training-pack] shape=(768, 2048)
+[training-pack] packed_none=False
+[training-pack] packed_t_none=False
+[training-pack] t_packed_none=False
+[training-pack] t_packed_t_none=False
+[PASS training-mask] bidirectional <=2:4; kept_per_4x4=7..8
+M=8192 K=2048 N=768 layout=SparseSemiStructuredTensorCUSPARSELT dense=0.3580ms sparse=0.4363ms speedup=0.820x
+[GATE NEGATIVE] minimum MLP speedup 0.759x is below 1.25x.
+Do not open acceleration stages; memory-only continuation requires a new decision.
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 0.1분  (2026-09-19 03:35:59)
+==============================================================================
