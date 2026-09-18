@@ -1,8 +1,8 @@
 # 제안 — TinyLM 학습환경을 WSL2 Linux로 단계적으로 이관한다
 
 > **작성일**: 2026-09-15  
-> **최종 수정일**: 2026-09-17
-> **상태**: ✅사용자 승인 / M2R 공통 SH·교차 플랫폼 정적 구현 완료 / M3 Desktop 훅 E2E·M4 backend·M5 교량 대조는 보류
+> **최종 수정일**: 2026-09-18
+> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent runtime과 요청된 PreToolUse probe 범위 `ACTIVE_VERIFIED` / 나머지 M3·M4·M5는 미실행
 > **분류**: 작업환경 / 실행기반 / 실험 재현성  
 > **실험번호**: `PNone`  
 > **실험계획 비대상 사유**: 이 문서는 환경 이관 의사결정 제안이다. 승인 뒤 필요한 교량 실험은 기존 계획의 환경 단계 또는 별도 승인된 실험계획으로 등록한다.
@@ -352,7 +352,77 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
 
 - M2R 공통 기반: `STATIC_ONLY`; 환경 검사 `PASS 31 / FAIL 0 / NOT_RUN 1`(WSL의 PowerShell parser 부재), 새 회귀·구문 검사 PASS.
 - 전체 `check_static_all.py`: 보호 데이터 검사를 포함하므로 이번 범위에서는 `NOT_RUN`.
-- M3 Desktop WSL agent·hook E2E: `E2E_NOT_RUN`.
+- M3 Desktop WSL agent runtime: 2026-09-18 새 task의 Linux·WSL2·Ubuntu·Bash 실제 관찰로 `ACTIVE_VERIFIED`.
+- M3 PreToolUse 위험쓰기 보호: 요청된 정상 1건과 루트·`scripts/` 차단 2건 범위에서
+  `ACTIVE_VERIFIED`; WIP 직접쓰기 guard·SessionStart·PreCompact는 `E2E_NOT_RUN`.
 - `run_smoke_check.sh`: 사용자 GPU·모델 실행 전용, `NOT_RUN`.
 - `run_cleanup_checkpoints.sh`: 사용자 삭제 실행 전용, `NOT_RUN`.
 - M4 backend·M5 교량: `NOT_RUN`.
+
+## 12. 2026-09-18 새 WSL task 실제 관찰과 현재 이관 상태
+
+### 12.1 agent runtime과 정적 선결
+
+새 ChatGPT Desktop task에서 저장소 명령이 실제 Linux 환경 안에서 실행되는 것을 확인했다.
+
+| probe | 실제 관찰 | 판정 |
+|---|---|---|
+| `pwd` | `/home/uranus/tinyLM` | canonical WSL workdir PASS |
+| `uname -a` | Linux, Microsoft WSL2 kernel | WSL2 agent runtime PASS |
+| `echo "$WSL_DISTRO_NAME"` | `Ubuntu` | 대상 배포판 PASS |
+| `command -v bash` | `/usr/bin/bash` | POSIX shell PASS |
+
+사용자는 활성화된 `tlm_torch`에서 다음 정적 선결 결과를 회신했다. 이번 문서 갱신에서는 같은
+검사를 재실행하지 않고 회신 로그를 판독했다.
+
+| 검사 | 회신 결과 | 판정 |
+|---|---|---|
+| `.codex/check_environment.py` | `checks=32 PASS=31 FAIL=0 NOT_RUN=1` | 정적 선결 PASS; `pwsh` 부재 PowerShell parser 1건은 `NOT_RUN` 유지 |
+| `scripts/check_shell_entrypoints.py` | shell entrypoints `4` PASS | Linux queue·smoke entrypoint 정적 PASS |
+
+정적 PASS는 모델·GPU·smoke의 동적 성공을 뜻하지 않는다. 또한 PowerShell source 검사를 하지
+못한 한 건을 PASS로 합산하지 않는다.
+
+### 12.2 hook probe의 실제 결과
+
+사용자는 project hook 전부를 trusted·enabled로 전환했다고 알렸다. UI 상태 자체를 이 task가
+별도로 읽은 것은 아니지만, 다음 PreToolUse 동작을 실제 tool call에서 관찰했다.
+
+| 순서 | 요청 | 실제 결과 | 판정 |
+|---:|---|---|---|
+| 1 | 파일을 만들지 않고 `printf 'a\nb\n'` | `a`, `b` 출력, exit `0` | 정상 명령 허용 PASS |
+| 2 | 루트 `.codex/hook-probe.txt` 쓰기 | shell 실행 전에 `Command blocked by PreToolUse hook`; shell exit code 없음 | 사전 deny PASS |
+| 3 | `scripts/.codex/hook-probe.txt` 쓰기 | shell 실행 전에 같은 PreToolUse deny; shell exit code 없음 | 사전 deny PASS |
+| 잔존 | 보호 경로를 prune한 `find`와 두 정확한 Git 경로 확인 | probe 파일 `0`, Git 상태 `0` | 부산물 없음 |
+| 경고 | 세 probe의 hook 출력 | fail-open·`systemMessage` 경고 `0` | fail-open 없음 |
+
+따라서 **현재 hash·현재 WSL task의 요청된 PreToolUse 정상/위험쓰기 범위만**
+`ACTIVE_VERIFIED`다. 이 결과를 SessionStart 재주입, PreCompact 중단, WIP 직접쓰기 guard,
+모든 matcher 또는 `run_smoke_check.sh` 성공으로 확대하지 않는다.
+
+### 12.3 단계별 현재 판정
+
+| 단계 | 2026-09-18 판정 | 남은 것 |
+|---|---|---|
+| M1R 물리 이관·canonical workdir | 사용자 이관 완료, 새 task workdir `ACTIVE_VERIFIED` | Windows 사본의 장기 역할은 최종 운영 승인 때 확정 |
+| M2R 공통 실행 기반 | `STATIC_ONLY` PASS (`31/0/1`, shell `4/4`) | PowerShell source는 별도 Windows 증거 또는 선택적 `pwsh`; 전체 보호 데이터 suite는 미실행 |
+| M3a Desktop WSL agent | `ACTIVE_VERIFIED` | 현재 project/runtime가 바뀌면 재검증 |
+| M3b PreToolUse 정상·두 위험쓰기 | 해당 probe 범위 `ACTIVE_VERIFIED` | WIP 직접쓰기 matcher는 별도 probe 필요 |
+| M3c SessionStart·PreCompact·compact | `E2E_NOT_RUN` | manual/auto compact와 재주입·중단 경로별 관찰 |
+| M3d model smoke | `E2E_NOT_RUN` | 사용자가 `./run_smoke_check.sh` 실행 후 새 로그 회신 |
+| M4 backend | `NOT_RUN` | CUDA/cuSPARSELt/Triton/FlashAttention 실제 호출과 수치·메모리 |
+| M5 교량 | `NOT_RUN` | 동일 checkpoint 평가와 필요시 최소 dense 대조 |
+| M6 운영 전환 | 진행 중 | M3 잔여·M4·M5 뒤 사용자 최종 승인 |
+
+이관을 한 문장으로 요약하면 **“저장소와 Codex agent는 WSL로 전환됐고 요청된 PreToolUse
+보호도 실제 작동했지만, 모델 smoke·backend·Windows↔WSL 교량은 아직 실행하지 않았다”**다.
+
+### 12.4 다음 순서
+
+1. hooks.json 또는 Desktop project identity가 바뀌지 않았다면 이번 세 probe를 반복할 필요는 없다.
+2. 다음 동적 단계는 사용자 소유 `./run_smoke_check.sh`다. exit 0, 실패 팔 0, exit-0 오류표지 0,
+   계측 계약 오류 0과 새 로그 경로를 함께 회신해야 한다.
+3. WIP 직접쓰기 guard와 manual/auto compact는 모델 smoke와 다른 M3 범위다. M3 전체를 닫으려면
+   각각 별도 probe가 필요하다.
+4. M4 backend와 M5 교량은 smoke PASS와 별도 실행 승인을 받은 뒤에만 연다. queue를 먼저
+   권하지 않는다.

@@ -1,6 +1,6 @@
 # 제안 — WIP 수동수정 차단과 감사형 오버라이드
 
-> **작성** 2026-09-12 · **갱신** 2026-09-13 · **상태** ✅C안 승인·`STATIC_ONLY` 구현 / 실제 훅 E2E `NOT_RUN` · **분류** 스킬 / 작업방식
+> **작성** 2026-09-12 · **갱신** 2026-09-18 · **상태** ✅C안 승인·진행 중 / 구현 `STATIC_ONLY`, WIP 직접쓰기 훅 E2E `NOT_RUN` · **분류** 스킬 / 작업방식
 > 양식: [`proposal/README.md`](README.md) §3. 승인 전에는 구현하지 않았고, 사용자 승인 뒤 C안 범위만 구현했다.
 
 ---
@@ -159,3 +159,7 @@ HTML 줄바꿈 태그를 만들거나 기능 부족 때문에 AI가 수동 패�
 - PreToolUse guard는 Bash와 `apply_patch`의 WIP 직접 수정을 막고 정상 `scripts/wip.py` 호출은 허용한다.
 - 원자 쓰기·기존 lock 보존 포함 WIP 6개, guard 20개 mock 회귀가 통과했다.
 - 실제 새 hash 신뢰, Bash/`apply_patch` deny, 다중 세션 경합은 사용자 새 세션 E2E 전까지 `NOT_RUN`이다.
+
+2026-09-18 새 WSL task에서 일반 위험쓰기 matcher의 정상 허용과 `.codex` 대상 두 차단은
+실제 관찰했지만, WIP 파일 직접쓰기·정상 `scripts/wip.py` 허용·다중 세션 경합은 이번 probe
+대상이 아니었다. 따라서 이 제안 고유 종료 조건은 남아 있고 `approved-on-going`으로 표시한다.

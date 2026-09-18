@@ -2,7 +2,7 @@
 
 > 작성일: 2026-09-12  
 > 대상: `.codex/check_environment.py`의 POSIX shell 문법 검사와 Windows Codex 실행 경계  
-> 상태: **2026-09-13 사용자 권장안 승인 / 검사기·회귀 `STATIC_ONLY` 구현 / 실제 Bash E2E는 `NOT_RUN`**
+> 상태: **2026-09-13 사용자 권장안 승인·진행 중 / 검사기·회귀 구현 / WSL POSIX Bash PASS, Windows 관리 샌드박스 Git Bash E2E는 `NOT_RUN`**
 
 ## 1. 결론
 
@@ -240,3 +240,8 @@ CI에서 보완한다.
 - `--require-shell-syntax`는 POSIX 구문 증거가 필수인 호출에서만 `NOT_RUN`을 실패 exit로 올린다.
 - `.codex/test_check_environment.py` 회귀는 정적 통과했다. 이 호스트의 실제 Git Bash startup과
   샌드박스 밖 보완 검사는 이 구현 뒤 아직 실행하지 않았으므로 `ACTIVE_VERIFIED`로 승격하지 않는다.
+
+2026-09-18 사용자가 회신한 WSL 환경 검사에서는 `/usr/bin/bash`가 POSIX shell source 5개를
+파싱했고 별도 shell entrypoint 검사 4개도 PASS했다. 이는 Linux 쪽 source evidence를 채우지만,
+원 제안이 분리해 둔 Windows 관리 샌드박스 안·밖 Git Bash startup E2E를 대신하지 않는다.
+Windows BAT 호환 경로가 남아 있으므로 제안서는 `approved-on-going`으로 유지한다.
