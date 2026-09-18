@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import importlib.metadata
+import os
+import platform
 import statistics
 import sys
 import time
@@ -31,11 +34,30 @@ def main() -> int:
     ap.add_argument("--m", type=int, default=8192)
     ap.add_argument("--warmup", type=int, default=10)
     ap.add_argument("--iters", type=int, default=30)
+    ap.add_argument("--require-wsl", action="store_true",
+                    help="WSL 재개 probe: Linux/WSL runtime이 아니면 CUDA 호출 전에 중단")
     args = ap.parse_args()
+
+    release = platform.uname().release
+    distro = os.environ.get("WSL_DISTRO_NAME", "")
+    is_wsl = bool(distro) or "microsoft" in release.lower()
+    print(f"runtime_system={platform.system()} release={release} WSL_DISTRO_NAME={distro or '<unset>'}")
+    if args.require_wsl and not is_wsl:
+        print("[GATE FAIL] --require-wsl was set but this process is not running inside WSL.")
+        return 2
 
     import torch
     import torch.nn.functional as F
     from tinylm.model.sparse_connectivity import exact_nm_mask
+
+    try:
+        cusparselt_pkg = importlib.metadata.version("nvidia-cusparselt-cu13")
+    except importlib.metadata.PackageNotFoundError:
+        cusparselt_pkg = "NOT_INSTALLED"
+    print(
+        f"torch={torch.__version__} torch_cuda={torch.version.cuda} "
+        f"cudnn={torch.backends.cudnn.version()} nvidia-cusparselt-cu13={cusparselt_pkg}"
+    )
 
     if not torch.cuda.is_available():
         print("[GATE FAIL] CUDA is unavailable; native 2:4 was not tested.")

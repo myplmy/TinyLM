@@ -93,6 +93,7 @@ class OptimizerAudit:
         indices = sorted({round(i * (len(candidates) - 1) / max(1, n - 1)) for i in range(n)})
         self.selected = [candidates[i] for i in indices]
         self.groups = []
+        self.param_group_by_id = {}
         self.lrm_group = None
         for opt_name, opt in optimizers:
             for i, group in enumerate(opt.param_groups):
@@ -101,12 +102,19 @@ class OptimizerAudit:
                        "weight_decay": group.get("weight_decay", 0), "names": ns,
                        "elements": sum(p.numel() for p in group["params"])}
                 self.groups.append(row)
+                for p in group["params"]:
+                    key = id(p)
+                    if key in self.param_group_by_id:
+                        prev = self.param_group_by_id[key][0]
+                        raise ValueError(
+                            f"parameter가 optimizer 둘에 중복됨: {names[key]} ({prev}, {opt_name})")
+                    self.param_group_by_id[key] = (opt_name, group)
                 if any(x.rsplit(".", 1)[-1].startswith("lrm") for x in ns):
                     if self.lrm_group is not None:
                         raise ValueError("LRM이 여러 그룹에 나뉨: LR history 규약 확장 필요")
                     self.lrm_group = group
         write_json_new(self.path.with_suffix(".contract.json"),
-                       {"schema": "tinylm.optimizer-audit.v1",
+                       {"schema": "tinylm.optimizer-audit.v2",
                         "contract": _jsonable(contract),
                         "groups": self.groups,
                         "selected_matrices": [x for x, _ in self.selected],
@@ -121,23 +129,40 @@ class OptimizerAudit:
         if step % self.every:
             return
         for name, p in self.selected:
+            if id(p) not in self.param_group_by_id:
+                raise ValueError(f"선택 행렬이 어떤 optimizer group에도 없음: {name}")
+            opt_name, group = self.param_group_by_id[id(p)]
             before = p.detach().float().cpu().clone()
             grad = p.grad
             grad_rms = None if grad is None else float(grad.detach().float().square().mean().sqrt())
-            self.before_values.append((name, p, before, grad_rms))
+            self.before_values.append((name, p, before, grad_rms, opt_name,
+                                       float(group["lr"]),
+                                       float(group.get("weight_decay", 0.0))))
 
     def after(self, step, applied):
         stats = []
         if applied:
-            for name, p, before, grad_rms in self.before_values:
+            for name, p, before, grad_rms, opt_name, lr, weight_decay in self.before_values:
                 after = p.detach().float().cpu()
-                update = after - before
-                rms = float(update.square().mean().sqrt())
+                total_update = after - before
+                wd_update = before.mul(-lr * weight_decay)
+                optimizer_update = total_update - wd_update
+                total_rms = float(total_update.square().mean().sqrt())
+                wd_rms = float(wd_update.square().mean().sqrt())
+                optimizer_rms = float(optimizer_update.square().mean().sqrt())
                 wrms = float(before.square().mean().sqrt())
                 stats.append({"name": name, "elements": p.numel(),
+                              "optimizer": opt_name, "lr": lr,
+                              "weight_decay": weight_decay,
                               "gradient_rms_after_clip": grad_rms,
-                              "update_rms_including_wd": rms, "weight_rms_before": wrms,
-                              "update_weight_ratio": rms / wrms if wrms else None})
+                              "update_rms_including_wd": total_rms,
+                              "weight_decay_update_rms": wd_rms,
+                              "optimizer_update_rms_excluding_wd": optimizer_rms,
+                              "weight_rms_before": wrms,
+                              "update_weight_ratio": total_rms / wrms if wrms else None,
+                              "wd_weight_ratio": wd_rms / wrms if wrms else None,
+                              "optimizer_update_weight_ratio": (
+                                  optimizer_rms / wrms if wrms else None)})
         self.before_values = []
         row = {"step": step, "applied": bool(applied), "matrices": stats,
                "lr_groups": [{"optimizer": n, "lr": [g["lr"] for g in o.param_groups],

@@ -33,12 +33,14 @@ RESERVED_PREFIX = {                    # 계획됐지만 아직 안 돈 접두�
     "nz_": "P021 추가검증 A 노이즈 캘리브레이션",
 }
 # 런 재구성에 필요한 필드(구 로그엔 없음 → 경고만)
-NEEDED = ["pool_tokens", "mlp_group", "micro_bs", "accum", "deploy_mb", "kd_teacher"]
+NEEDED = ["pool_tokens", "mlp_group", "micro_bs", "accum", "deploy_mb", "kd_teacher",
+          "optimizer", "matrix_weight_decay_effective"]
 
 # 조건 동일성 판정에 쓰는 축. 여기 값이 모두 같으면 "같은 실험"이다.
 IDENTITY = ["preset", "data", "arch", "mlp_group", "sparse34", "steps", "micro_bs", "accum",
             "seq", "lr", "sched", "anneal_end", "decay_frac", "pool_tokens", "kd", "kd_every",
-            "kd_dynamic", "kd_teacher", "init_from_src", "ema", "lora_rank", "grad_ckpt"]
+            "kd_dynamic", "kd_teacher", "init_from_src", "ema", "lora_rank", "grad_ckpt",
+            "optimizer", "muon_scale", "muon_lr_mult", "matrix_weight_decay_effective"]
 
 
 def load():
@@ -114,7 +116,9 @@ def cmd_audit(runs):
     dup = 0
     for r in runs:
         # 재구성 필드가 없는 구 로그는 동일성 판정 불가 → 제외
-        if any(r.get(k) is None for k in ("micro_bs", "accum", "pool_tokens")):
+        if any(r.get(k) is None for k in (
+                "micro_bs", "accum", "pool_tokens", "optimizer",
+                "matrix_weight_decay_effective")):
             continue
         seen.setdefault(_ident(r), []).append(r)
     for _, group in seen.items():

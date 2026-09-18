@@ -11,7 +11,8 @@
 종전 `run_queue.bat` 은 메뉴와 `:RESOLVE` 의 `if` 사슬에 **파일명을 박아** 두었다.
 실험이 끝나 `-done` 이 붙거나 새 배치가 생기면 **배치 파일을 고쳐야** 했다.
 
-**이제 진실의 원천은 `experiments.tsv` 하나다.**
+**이제 진실의 원천은 `experiments.tsv` 하나다.** Windows 메뉴는 그중 `.bat` 행만
+사용하고, Linux/WSL 전용 `.sh` 행은 `queue_menu_linux.py`가 사용한다.
 
 ## 왜 파이썬인가 — cmd 로는 불가능하다
 
@@ -75,17 +76,21 @@ def load():
         r["line"] = ln
         p = ROOT / r["batch"]
         r["exists"] = p.exists()
-        # `-done` 은 파일명이 바뀌므로 원본이 없을 때만 확인한다
-        stem = r["batch"][:-4] if r["batch"].endswith(".bat") else r["batch"]
-        r["done"] = any(Path(g).exists() for g in glob.glob(str(ROOT / (stem + "-done*.bat"))))
+        suffix = Path(r["batch"]).suffix.lower()
+        if suffix not in {".bat", ".sh"}:
+            warn.append(f"L{ln} batch 확장자는 .bat 또는 .sh여야 한다: {r['batch']!r}")
+        # `-done` 은 파일명이 바뀌므로 원본이 없을 때만 확인한다.
+        stem = r["batch"][:-len(suffix)] if suffix else r["batch"]
+        done_pattern = stem + "-done*" + suffix
+        r["done"] = any(Path(g).exists() for g in glob.glob(str(ROOT / done_pattern)))
         rows.append(r)
     rows.sort(key=lambda x: (x["prio_n"], x["line"]))
     return rows, warn
 
 
 def available(rows):
-    """메뉴에 올릴 것 = 디스크에 있고 `-done` 이 아닌 것."""
-    return [r for r in rows if r["exists"]]
+    """Windows 메뉴에 올릴 것 = 존재하는 `.bat` 행."""
+    return [r for r in rows if r["batch"].lower().endswith(".bat") and r["exists"]]
 
 
 def cmd_list(rows, warn):
@@ -113,7 +118,7 @@ def cmd_list(rows, warn):
         tot = sum(r["hours_n"] for r in av)
         print(f"  전부 돌리면 약 {tot:.1f}시간")
     # 표에는 있는데 디스크에 없는 것 = 완료됐거나 아직 안 만든 것
-    miss = [r for r in rows if not r["exists"]]
+    miss = [r for r in rows if r["batch"].lower().endswith(".bat") and not r["exists"]]
     if miss:
         print()
         print("  메뉴에 없는 항목(디스크에 파일이 없다):")
@@ -240,7 +245,7 @@ def cmd_audit(rows, warn):
     print("=" * W)
     print("  experiments.tsv 감사 — 표와 디스크가 일치하는가")
     print("=" * W)
-    listed = {r["batch"] for r in rows}
+    listed = {r["batch"] for r in rows if r["batch"].lower().endswith(".bat")}
     on_disk = {os.path.basename(p) for p in glob.glob(str(ROOT / "run_*.bat"))}
     # ★스케줄러 자신은 실험이 아니다 — 표에 넣으면 자기를 call 하게 된다
     SELF = {"run_queue.bat"}
@@ -253,12 +258,18 @@ def cmd_audit(rows, warn):
         print("  ★표에 없는 배치(메타데이터 누락 — Claude 가 추가해야 한다):")
         for b in only_disk:
             print(f"    {b}")
-    only_tsv = sorted(r["batch"] for r in rows if not r["exists"] and not r["done"])
+    only_tsv = sorted(
+        r["batch"] for r in rows
+        if r["batch"].lower().endswith(".bat") and not r["exists"] and not r["done"]
+    )
     if only_tsv:
         print("  표에만 있는 배치(아직 안 만들었거나 이름이 바뀌었다 — 오류는 아니다):")
         for b in only_tsv:
             print(f"    {b}")
-    done = sorted(r["batch"] for r in rows if r["done"])
+    done = sorted(
+        r["batch"] for r in rows
+        if r["batch"].lower().endswith(".bat") and r["done"]
+    )
     if done:
         print("  완료(-done)로 판정돼 메뉴에서 빠진 것:")
         for b in done:

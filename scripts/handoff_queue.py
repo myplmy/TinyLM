@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Lossless handoff queue inheritance and validation helper.
 
-It reads only the named handoff document, root ``experiments.tsv`` and root
-``run_*.bat`` inventory through ``queue_menu.py``.  It never builds or executes a
-queue.  Scientific priority and readiness remain human/agent judgments; generated
-rows therefore default to ``REVALIDATE``.
+It reads only the named handoff document, root ``experiments.tsv`` and registered
+Windows ``.bat`` / Linux ``.sh`` launchers through ``queue_menu.py``.  It never
+builds or executes a queue.  Scientific priority and readiness remain human/agent
+judgments; generated rows therefore default to ``REVALIDATE``.
 """
 from __future__ import annotations
 
@@ -36,6 +36,11 @@ INVENTORY_STATES = {"PRESENT", "DONE", "MISSING", "REPLACED"}
 EXECUTION_STATES = {"READY", "GATED", "HOLD", "DONE", "REVALIDATE"}
 INHERITED_REASON_PREFIX = "직전 핸드오프 계승"
 REVALIDATE_REASON_SUFFIX = "현재 과학적 순서 재검증 필요"
+
+
+def is_experiment_launcher(name: str) -> bool:
+    """Return whether a handoff cell names a supported experiment launcher."""
+    return name.lower().endswith((".bat", ".sh"))
 
 
 @dataclass(frozen=True)
@@ -111,7 +116,7 @@ def queue_items(text: str) -> list[QueueItem]:
         items: list[QueueItem] = []
         for row in rows:
             batch = row[batch_column].strip(" `")
-            if not batch.lower().endswith(".bat"):
+            if not is_experiment_launcher(batch):
                 continue
             execution = row[execution_column] if execution_column is not None else "REVALIDATE"
             items.append(
@@ -136,7 +141,7 @@ def transferred_batches(text: str) -> set[str]:
         return {
             row[batch_column].strip(" `")
             for row in rows
-            if row[batch_column].strip(" `").lower().endswith(".bat")
+            if is_experiment_launcher(row[batch_column].strip(" `"))
             and row[header.index("처리")].strip()
             and row[header.index("근거")].strip()
         }

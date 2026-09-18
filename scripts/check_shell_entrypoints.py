@@ -9,12 +9,18 @@ import sys
 from pathlib import Path, PureWindowsPath
 
 ROOT = Path(__file__).resolve().parent.parent
-SHELL_FILES = (
+COMMON_SHELL_FILES = (
     ROOT / "run_queue.sh",
     ROOT / "run_cleanup_checkpoints.sh",
     ROOT / "run_smoke_check.sh",
     ROOT / "scripts" / "shell" / "tinylm_env.sh",
 )
+
+
+def shell_files() -> tuple[Path, ...]:
+    """공통 진입점과 루트의 모든 실험/게이트 SH를 빠짐없이 검사한다."""
+    root_entries = tuple(sorted(ROOT.glob("run_P*.sh")))
+    return COMMON_SHELL_FILES + root_entries
 
 
 def find_bash() -> str | None:
@@ -55,7 +61,8 @@ def to_bash_path(path: Path | PureWindowsPath, *, windows: bool | None = None) -
 
 def main() -> int:
     errors: list[str] = []
-    for path in SHELL_FILES:
+    entries = shell_files()
+    for path in entries:
         if not path.is_file():
             errors.append(f"missing: {path.relative_to(ROOT).as_posix()}")
             continue
@@ -71,7 +78,7 @@ def main() -> int:
     if bash is None:
         errors.append("bash executable not found; shell syntax NOT_RUN")
     else:
-        for path in SHELL_FILES:
+        for path in entries:
             if not path.is_file():
                 continue
             completed = subprocess.run(
@@ -113,7 +120,7 @@ def main() -> int:
         print(f"[shell-entrypoints] errors={len(errors)}")
         return 1
     print(
-        f"[PASS] shell entrypoints={len(SHELL_FILES)}; "
+        f"[PASS] shell entrypoints={len(entries)}; "
         "LF/shebang/mode/bash syntax/smoke grammar/Linux queue audit"
     )
     return 0

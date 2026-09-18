@@ -99,6 +99,33 @@ def test_inherited_reason_boilerplate_is_idempotent() -> None:
     assert already_duplicated == expected
 
 
+def test_handoff_queue_recognizes_bat_and_sh_launchers() -> None:
+    text = """## 7. next
+| 순 | id | 실험 | 배치 파일 | ⚙ | 누적 | 인벤토리 | 실행상태 | 선결 | 근거 |
+|---:|---:|---|---|---:|---:|---|---|---|---|
+| 1 | 0 | Windows | `run_win.bat` | 0.1 | 0.1 | PRESENT | READY | smoke | legacy |
+| 2 | 1 | WSL | `run_wsl.sh` | 0.1 | 0.2 | PRESENT | GATED | smoke | native |
+| 3 | — | 문서 | `notes.md` | 0.0 | 0.2 | MISSING | HOLD | — | 제외 |
+## 8. commit
+"""
+    assert [item.batch for item in QUEUE_MODULE.queue_items(text)] == [
+        "run_win.bat",
+        "run_wsl.sh",
+    ]
+
+
+def test_handoff_transfer_recognizes_sh_launcher() -> None:
+    text = """## 7. next
+### 7.1 이전 큐 제외·완료 이관
+| 이전 배치 | 처리 | 근거 |
+|---|---|---|
+| `run_wsl.sh` | 제외 | 선결 미충족 |
+| `notes.md` | 보존 | 실행기 아님 |
+## 8. commit
+"""
+    assert QUEUE_MODULE.transferred_batches(text) == {"run_wsl.sh"}
+
+
 def main() -> int:
     tests = [
         test_completed_transfer_is_not_live_queue,
@@ -107,6 +134,8 @@ def main() -> int:
         test_completed_transfer_lines_are_historical_references,
         test_empty_recommendation_table_is_structurally_valid,
         test_inherited_reason_boilerplate_is_idempotent,
+        test_handoff_queue_recognizes_bat_and_sh_launchers,
+        test_handoff_transfer_recognizes_sh_launcher,
     ]
     for test in tests:
         test()

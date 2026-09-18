@@ -6,8 +6,9 @@
 > 흡수했다. 정본 제안서:
 > [`20260918_레이어-상태기반-학습연산-재배분-타당성-검토-제안서-approved-on-going.md`](../proposal/20260918_레이어-상태기반-학습연산-재배분-타당성-검토-제안서-approved-on-going.md).
 > **현재 상태:** Stage0a 독립 계약 진단 ✅PASS([결과 080](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)).
-> 흡수한 `S/U` R0 schema는 `DESIGNED`; controller·optimizer-state 격리·실제 TLinear/trainer
-> 배선, audit 구현, 모델 로딩·GPU 실행은 `NOT_RUN`.
+> R1의 optimizer update 분해 primitive와 AdamW/Muon CPU fixture는 `STATIC_ONLY` PASS다.
+> 논리 occurrence·CLA owner를 포함한 R0 전체 mapping, controller·optimizer-state 격리·실제
+> TLinear/trainer 배선, 모델 로딩·GPU 실행은 `NOT_RUN`.
 
 ## 1. 왜 — 후반 계산을 모든 parameter에 균등 배분해야 하는지 미측정이다
 
@@ -69,7 +70,8 @@ trainer에 아직 연결하지 않아 기존 기본 경로를 바꾸지 않는�
 | 흡수 단계 | 무엇 | 다음 단계 조건 | 상태·비용 |
 |---|---|---|---|
 | **R0 schema** | logical occurrence, unique MLP/attention tensor, CLA K/V owner, optimizer group을 분리하고 `S/U` 필드 고정 | shared tensor 중복 0, K/V 공급과 잔차 기여 구분 | `DESIGNED`, GPU 0 |
-| **R1 audit** | 기존 `OptimizerAudit`에 realized/WD/normalized update를 opt-in으로 추가하고 on/off 오염 fixture | 기본 off 동일, Muon post-NS delta 포착, overhead 별도 | 구현·CPU fixture `NOT_RUN` |
+| **R1a audit primitive** | 기존 `OptimizerAudit`에 total/WD/optimizer-only update와 normalized ratio를 opt-in으로 추가 | AdamW·Muon 분리, parameter 중복 차단 | 구현·CPU fixture `STATIC_ONLY` PASS |
+| **R1b integration** | 실제 TinyLM mapping·audit on/off 오염·timing을 모델 경로에서 대조 | 기본 off 동일, Muon post-NS delta 포착, overhead 별도 | 모델·GPU `NOT_RUN` |
 | **R2 진단** | selector 전용 패널에서 CLA-safe gate-zero `S`와 여러 window의 `U` 측정 | window·panel rank 안정, mapping 오류 0 | 모델·GPU `NOT_RUN` |
 | **R3 예측력** | 기존 Stage1의 32~128-step realized gain과 `S/U` ranking 대조 | median Spearman `rho≥0.5`, 3 window 중 2개 top-2 | 기존 Stage1에 흡수 |
 
@@ -99,15 +101,17 @@ fixed structured layer dropout(C)은 각각 별도 후속 계획·승인으로 �
 | Stage2까지 | 3.3~4.6 |
 | Stage5까지 최대 | **18.3~22.6** |
 
-## 7. 실행 → `run_P091_*.bat`
+## 7. 실행 진입점
 
-- 완료: `run_P091_Stage0a_late_refine_contract-done.bat` — CPU 계약 진단 PASS([결과 080](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)).
-- 미작성: R1~R3와 Stage0b~Stage5. 다음은 R0 mapping 문서 대조와 실제
+- 역사 완료(Windows): `run_P091_Stage0a_late_refine_contract-done.bat` — CPU 계약 진단 PASS([결과 080](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)).
+- WSL 준비·미실행: `run_P091_R1_optimizer_audit_contract.sh` — R1a synthetic CPU fixture만 실행한다.
+  내부 진단은 직접 실행해 PASS했지만 진입점 자체는 사용자 실행 전 `NOT_RUN`이다.
+- 미작성: R1b~R3와 Stage0b~Stage5. 다음은 R0 mapping 문서 대조와 실제
   TLinear/controller·optimizer-state 격리 범위를 별도로 고정하고, 구현 뒤 사용자 스모크를 통과한
   경우에만 Stage1을 연다.
 
-사용자의 2026-09-18 승인은 권장 B안의 **게이트 계획과 P091 흡수** 승인이다. audit·trainer 코드,
-모델 로딩, smoke, GPU, 배치와 B/C 후속 개입의 자동 승인은 아니다.
+사용자의 2026-09-18 후속 지시는 **기능 gate 구현과 WSL `.sh` 준비**까지 승인했다. 이는 R1a
+primitive에만 적용하며 모델 로딩, smoke, GPU, 장기 학습과 B/C 후속 개입의 자동 승인은 아니다.
 
 ## 8. 한계
 
@@ -124,7 +128,7 @@ fixed structured layer dropout(C)은 각각 별도 후속 계획·승인으로 �
 |---|---|
 | 유사 실험 조회 | 같은 `S/U→realized gain` 예측 실험 없음; D안은 P091과 중복이라 여기 흡수 |
 | 소유권 | P091이 selector·local refine을 소유; blockwise LR/skip은 R3 뒤 별도 계획 |
-| 태그·배치 | 신규 배정·작성 없음 |
+| 태그·진입점 | R1a CPU 계약용 `.sh`만 준비; 학습 tag·본런 `.sh` 없음 |
 | 보호 경계 | 데이터·모델·GPU·smoke 접근 없음 |
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
@@ -134,4 +138,6 @@ fixed structured layer dropout(C)은 각각 별도 후속 계획·승인으로 �
 - 2026-09-13: P091 승인·번호 정식화. unique-candidate/default-off/fold primitive와 Stage0a 배치 작성. 동적 결과 `NOT_RUN`.
 - 2026-09-13: Stage0a CPU 계약 진단 PASS([결과 080](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)). 예측한 primitive 계약은 성립했지만 selector·VRAM·품질 예측은 아직 대조하지 못했다. Stage0b 실제 배선이 다음 게이트다.
 - 2026-09-18: 레이어 상태 기반 제안 권장 B안을 별도 번호 없이 흡수했다. R0 schema와 R1~R3
-  gate를 계획에 추가했으며 구현·모델·GPU·배치는 `NOT_RUN`이다.
+  gate를 계획에 추가했다.
+- 2026-09-18: R1a optimizer audit v2와 AdamW/Muon synthetic CPU fixture PASS. 전체 모델 mapping,
+  audit off 동일성·timing, selector 예측력은 계속 `NOT_RUN`이다.

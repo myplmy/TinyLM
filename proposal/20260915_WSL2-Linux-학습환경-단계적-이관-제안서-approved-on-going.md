@@ -2,7 +2,7 @@
 
 > **작성일**: 2026-09-15  
 > **최종 수정일**: 2026-09-18
-> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent runtime과 요청된 PreToolUse probe 범위 `ACTIVE_VERIFIED` / 나머지 M3·M4·M5는 미실행
+> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent와 관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 전체 `PARTIAL` / M4·M5 `NOT_RUN`
 > **분류**: 작업환경 / 실행기반 / 실험 재현성  
 > **실험번호**: `PNone`  
 > **실험계획 비대상 사유**: 이 문서는 환경 이관 의사결정 제안이다. 승인 뒤 필요한 교량 실험은 기존 계획의 환경 단계 또는 별도 승인된 실험계획으로 등록한다.
@@ -353,9 +353,12 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
 - M2R 공통 기반: `STATIC_ONLY`; 환경 검사 `PASS 31 / FAIL 0 / NOT_RUN 1`(WSL의 PowerShell parser 부재), 새 회귀·구문 검사 PASS.
 - 전체 `check_static_all.py`: 보호 데이터 검사를 포함하므로 이번 범위에서는 `NOT_RUN`.
 - M3 Desktop WSL agent runtime: 2026-09-18 새 task의 Linux·WSL2·Ubuntu·Bash 실제 관찰로 `ACTIVE_VERIFIED`.
-- M3 PreToolUse 위험쓰기 보호: 요청된 정상 1건과 루트·`scripts/` 차단 2건 범위에서
-  `ACTIVE_VERIFIED`; WIP 직접쓰기 guard·SessionStart·PreCompact는 `E2E_NOT_RUN`.
-- `run_smoke_check.sh`: 사용자 GPU·모델 실행 전용, `NOT_RUN`.
+- M3 PreToolUse 위험쓰기 보호: 요청된 정상 1건과 루트·`scripts/` 차단 2건, Bash·`apply_patch`
+  WIP 직접쓰기 deny, 정상 `wip.py` 경로 범위에서 `ACTIVE_VERIFIED`.
+- compact: exact WIP hash의 자동 compact 상태 캡슐 주입은 현재 task에서 실제 관찰했다.
+  manual compact는 앱 사용자 동작이라 `NOT_RUN`; M3 전체는 `PARTIAL`이다.
+- `run_smoke_check.sh`: 사용자 실행 최신 로그 `202609181921_smoke_d8011d0.txt`에서 42팔·실패 0·
+  exit-0 오류표지 0·계측 오류 0으로 당시 트리 PASS. 이후 코드 변경분은 새 smoke 전 `E2E_NOT_RUN`.
 - `run_cleanup_checkpoints.sh`: 사용자 삭제 실행 전용, `NOT_RUN`.
 - M4 backend·M5 교량: `NOT_RUN`.
 
@@ -372,13 +375,13 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
 | `echo "$WSL_DISTRO_NAME"` | `Ubuntu` | 대상 배포판 PASS |
 | `command -v bash` | `/usr/bin/bash` | POSIX shell PASS |
 
-사용자는 활성화된 `tlm_torch`에서 다음 정적 선결 결과를 회신했다. 이번 문서 갱신에서는 같은
-검사를 재실행하지 않고 회신 로그를 판독했다.
+사용자는 활성화된 `tlm_torch`에서 정적 선결 결과를 회신했다. 이후 이번 변경을 반영한 상태에서도
+같은 환경 검사와 shell 진입점 검사를 다시 실행해 범위를 분리했다.
 
 | 검사 | 회신 결과 | 판정 |
 |---|---|---|
-| `.codex/check_environment.py` | `checks=32 PASS=31 FAIL=0 NOT_RUN=1` | 정적 선결 PASS; `pwsh` 부재 PowerShell parser 1건은 `NOT_RUN` 유지 |
-| `scripts/check_shell_entrypoints.py` | shell entrypoints `4` PASS | Linux queue·smoke entrypoint 정적 PASS |
+| `.codex/check_environment.py` | 초기 회신과 현재 재검사 모두 `checks=32 PASS=31 FAIL=0 NOT_RUN=1` | 정적 선결 PASS; `pwsh` 부재 PowerShell parser 1건은 `NOT_RUN` 유지 |
+| `scripts/check_shell_entrypoints.py` | 초기 `4`, 현재 신규 gate `.sh` 포함 `8` PASS | Linux queue·smoke·gate entrypoint 정적 PASS |
 
 정적 PASS는 모델·GPU·smoke의 동적 성공을 뜻하지 않는다. 또한 PowerShell source 검사를 하지
 못한 한 건을 PASS로 합산하지 않는다.
@@ -397,32 +400,49 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
 | 경고 | 세 probe의 hook 출력 | fail-open·`systemMessage` 경고 `0` | fail-open 없음 |
 
 따라서 **현재 hash·현재 WSL task의 요청된 PreToolUse 정상/위험쓰기 범위만**
-`ACTIVE_VERIFIED`다. 이 결과를 SessionStart 재주입, PreCompact 중단, WIP 직접쓰기 guard,
-모든 matcher 또는 `run_smoke_check.sh` 성공으로 확대하지 않는다.
+`ACTIVE_VERIFIED`다. 이후 같은 task에서 WIP 직접쓰기 Bash/apply_patch deny와 정상 `wip.py`
+경로도 실제 관찰했지만, 이 결과를 모든 matcher나 manual compact 성공으로 확대하지 않는다.
+
+### 12.2a WIP guard·compact와 최신 smoke 추가 관찰
+
+| 항목 | 실제 관찰 | 판정 |
+|---|---|---|
+| 허용 WIP 경로 | `scripts/wip.py`를 통한 capsule 갱신 | PASS |
+| Bash 직접쓰기 | shell 실행 전에 deny, shell exit code 없음 | `ACTIVE_VERIFIED` |
+| `apply_patch` 직접쓰기 | tool 실행 전에 deny, WIP hash 불변 | `ACTIVE_VERIFIED` |
+| auto compact | exact 열린 WIP의 8필드 hash-verified capsule 재주입 | 해당 자동 경로 PASS |
+| manual compact | Codex가 앱 lifecycle action을 직접 만들 수 없음 | `NOT_RUN`, 사용자 동작 필요 |
+| user smoke | `202609181921_smoke_d8011d0.txt`: 42/0/0/0, summarize exit 0 | 당시 트리 PASS; 현재 변경 뒤 재실행 필요 |
+
+직접쓰기 probe 전후 WIP SHA-256은
+`1a3f15d66cbc59a58aec9d1182c103f686137633804c98d5e5438c74057087b0`로 같았다. 이 증거는
+해당 task·hook hash의 WIP guard와 auto compact 경로에 한정한다. manual compact가 남았으므로
+M3 전체를 `ACTIVE_VERIFIED`로 승격하지 않는다.
 
 ### 12.3 단계별 현재 판정
 
 | 단계 | 2026-09-18 판정 | 남은 것 |
 |---|---|---|
 | M1R 물리 이관·canonical workdir | 사용자 이관 완료, 새 task workdir `ACTIVE_VERIFIED` | Windows 사본의 장기 역할은 최종 운영 승인 때 확정 |
-| M2R 공통 실행 기반 | `STATIC_ONLY` PASS (`31/0/1`, shell `4/4`) | PowerShell source는 별도 Windows 증거 또는 선택적 `pwsh`; 전체 보호 데이터 suite는 미실행 |
+| M2R 공통 실행 기반 | `STATIC_ONLY` PASS (`31/0/1`, shell entrypoint `8`) | PowerShell source는 별도 Windows 증거 또는 선택적 `pwsh`; 전체 보호 데이터 suite는 미실행 |
 | M3a Desktop WSL agent | `ACTIVE_VERIFIED` | 현재 project/runtime가 바뀌면 재검증 |
-| M3b PreToolUse 정상·두 위험쓰기 | 해당 probe 범위 `ACTIVE_VERIFIED` | WIP 직접쓰기 matcher는 별도 probe 필요 |
-| M3c SessionStart·PreCompact·compact | `E2E_NOT_RUN` | manual/auto compact와 재주입·중단 경로별 관찰 |
-| M3d model smoke | `E2E_NOT_RUN` | 사용자가 `./run_smoke_check.sh` 실행 후 새 로그 회신 |
+| M3b PreToolUse 정상·위험쓰기·WIP guard | 관찰한 probe 범위 `ACTIVE_VERIFIED` | 다른 matcher로 일반화 금지 |
+| M3c SessionStart·PreCompact·compact | auto compact exact-WIP 재주입 PASS, manual `NOT_RUN` | manual compact 사용자 관찰 뒤 범위 종결 |
+| M3d model smoke | `202609181921` 당시 트리 PASS 42/0/0/0 | 이후 코드 변경 때문에 현재 트리 새 smoke 필요 |
 | M4 backend | `NOT_RUN` | CUDA/cuSPARSELt/Triton/FlashAttention 실제 호출과 수치·메모리 |
 | M5 교량 | `NOT_RUN` | 동일 checkpoint 평가와 필요시 최소 dense 대조 |
 | M6 운영 전환 | 진행 중 | M3 잔여·M4·M5 뒤 사용자 최종 승인 |
 
-이관을 한 문장으로 요약하면 **“저장소와 Codex agent는 WSL로 전환됐고 요청된 PreToolUse
-보호도 실제 작동했지만, 모델 smoke·backend·Windows↔WSL 교량은 아직 실행하지 않았다”**다.
+이관을 한 문장으로 요약하면 **“저장소와 Codex agent는 WSL로 전환됐고 요청된 PreToolUse·
+WIP guard·auto compact 및 한 차례 모델 smoke가 범위별로 작동했지만, manual compact·현재 변경 뒤
+새 smoke·backend·Windows↔WSL 교량은 남았다”**다.
 
 ### 12.4 다음 순서
 
 1. hooks.json 또는 Desktop project identity가 바뀌지 않았다면 이번 세 probe를 반복할 필요는 없다.
-2. 다음 동적 단계는 사용자 소유 `./run_smoke_check.sh`다. exit 0, 실패 팔 0, exit-0 오류표지 0,
-   계측 계약 오류 0과 새 로그 경로를 함께 회신해야 한다.
-3. WIP 직접쓰기 guard와 manual/auto compact는 모델 smoke와 다른 M3 범위다. M3 전체를 닫으려면
-   각각 별도 probe가 필요하다.
+2. 현재 코드 변경 뒤 사용자 소유 `./run_smoke_check.sh`를 다시 실행한다. exit 0, 실패 팔 0,
+   exit-0 오류표지 0, 계측 계약 오류 0과 새 로그 경로를 함께 회신한다.
+3. WIP 직접쓰기 guard와 auto compact는 관찰 완료다. M3 전체를 닫는 남은 lifecycle 항목은
+   사용자가 앱에서 수행하는 manual compact이며, 재주입된 capsule의 WIP 경로·hash 일치를 확인한다.
 4. M4 backend와 M5 교량은 smoke PASS와 별도 실행 승인을 받은 뒤에만 연다. queue를 먼저
    권하지 않는다.

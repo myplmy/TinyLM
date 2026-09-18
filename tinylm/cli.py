@@ -15,6 +15,12 @@ from . import paths  # noqa: F401  (HF 리다이렉트 먼저)
 from .data import DATASETS
 from .config import PRESETS
 from .config import REPEAT_MODES
+from .training_defaults import (
+    DEFAULT_MATRIX_WEIGHT_DECAY,
+    DEFAULT_MUON_LR_MULT,
+    DEFAULT_MUON_SCALE,
+    DEFAULT_OPTIMIZER,
+)
 
 
 def _tok(s):
@@ -161,29 +167,28 @@ def main():
     #   예: `--mlp-split 12` -^> [0..11][12..15] / `--mlp-split 4` -^> [0..3][4..15]
     p.add_argument("--mlp-split", type=int, nargs="*", default=None,
                     help="중간 MLP 타잉 경계(불균등). 미지정이면 --mlp-group 균등")
-    # ★★P005(2026-09-03) — Muon. 🚫기본 `adamw` = 비트 동일.
-    p.add_argument("--optimizer", choices=["adamw", "muon"], default="adamw",
-                   help="★(P005) `muon` 이면 **행렬만** Muon(Newton-Schulz 5), "
-                        "임베딩·norm·bias 는 AdamW. ⚠️이점은 대배치 집중 — 우리 131K 는 작다. "
-                        "⚠️삼진 STE 상호작용 미검증")
-    p.add_argument("--muon-lr-mult", type=float, default=1.0,
-                   help="★(P005, 2026-09-05) Muon 그룹의 lr 배수. Muon 의 관용 lr 은 "
-                        "AdamW 보다 한 자릿수 크다(원 구현 2e-2 vs 우리 1e-3). "
-                        "🚫기본 1.0 = 종전 동작 그대로. `--optimizer muon` 일 때만 쓴다")
+    # ★★2026-09-18 사용자 확정 — 학습 recipe 기본은 Muon RMS4, KD는 계속 opt-in/off.
+    #   아키텍처 preset 필드가 아니므로 한 곳(training_defaults.py)에서만 소유한다.
+    p.add_argument("--optimizer", choices=["adamw", "muon"], default=DEFAULT_OPTIMIZER,
+                   help="★기본 `muon`: **행렬만** Muon(Newton-Schulz 5), "
+                        "임베딩·norm·bias 는 AdamW. `--optimizer adamw`로 명시적 대조 가능")
+    p.add_argument("--muon-lr-mult", type=float, default=DEFAULT_MUON_LR_MULT,
+                   help="★Muon 그룹 lr 배수. 기본 4.0은 RMS 스케일의 내부 전이 검증값. "
+                        "`--optimizer muon` 일 때만 쓴다")
     # ★★P005b b-1(2026-09-10, 사용자 지시 2E 허가) — **업데이트 스케일 규약.**
-    #   `ai_dev_tool/09` V1 검증이 참조 구현 둘을 확인했다. 🚫기본 `jordan` = **비트 동일**.
-    p.add_argument("--muon-scale", choices=["jordan", "rms"], default="jordan",
+    #   `ai_dev_tool/09` V1 검증이 참조 구현 둘을 확인했다. 사용자 확정 기본은 RMS.
+    p.add_argument("--muon-scale", choices=["jordan", "rms"], default=DEFAULT_MUON_SCALE,
                    help="★(P005b b-1) Muon 업데이트 스케일 규약. "
-                        "`jordan` = max(1, out/in)**0.5 (원 구현, **기본·비트 동일**) · "
-                        "`rms` = 0.2*sqrt(max(out,in)) (AdamW 업데이트 RMS 에 맞춘다 — "
+                        "`jordan` = max(1, out/in)**0.5 (구 레거시) · "
+                        "`rms` = 0.2*sqrt(max(out,in)) (**기본**, AdamW 업데이트 RMS 에 맞춤 — "
                         "arXiv:2505.02222 각주 2 · Kimi K2 Algorithm 1). "
                         "★두 규약의 비는 형상마다 다르므로 `--muon-lr-mult` 로는 못 바꾼다")
     # ★★A08(2026-09-10, 외부 조치 패키지 도입) — **행렬 weight decay 와 업데이트 계측.**
     #   🚫우리 Muon 팔의 행렬 wd 가 0 이고 AdamW 팔은 0.1 이라 *"Muon 이득"* 이
     #   **옵티마이저 이득 + wd 이득**으로 교락돼 있다(기준표 B.23.6). 셋 다 기본값 = 비트 동일.
-    p.add_argument("--matrix-weight-decay", type=float, default=None,
+    p.add_argument("--matrix-weight-decay", type=float, default=DEFAULT_MATRIX_WEIGHT_DECAY,
                    help="★(A08) **두 옵티마이저의 행렬 WD 만** 덮어쓴다. 미지정 = 종전 "
-                        "(AdamW 행렬 0.1 · Muon 행렬 0) = **비트 동일**. "
+                        "optimizer-aware 규약(AdamW 행렬 0.1 · Muon 행렬 0). "
                         "🚫임베딩·norm·LRM 의 WD 는 건드리지 않는다")
     p.add_argument("--optimizer-audit", default=None,
                    help="★(A08) 새 JSONL 에 매 update 의 실제 LR/WD 와 선택 행렬 8개의 "

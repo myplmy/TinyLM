@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Linux/WSL queue menu backed by the existing experiments.tsv contract.
 
-The TSV keeps canonical Windows .bat names.  A Linux entry becomes runnable only
-when a same-stem .sh companion exists.  Missing experiment companions are
-reported, never synthesized here; this keeps the current migration task from
-creating experiment-specific launchers.
+Windows `.bat` rows use a same-stem `.sh` companion when one exists. Linux-only
+experiments and diagnostic gates can instead be registered as native `.sh` rows.
+Missing companions are reported, never synthesized here.
 """
 from __future__ import annotations
 
@@ -25,9 +24,12 @@ REQUIRED_COMMON = {
 
 
 def shell_name(batch: str) -> str:
-    if not batch.lower().endswith(".bat"):
-        raise ValueError(f"canonical queue entry is not a .bat file: {batch}")
-    return batch[:-4] + ".sh"
+    lowered = batch.lower()
+    if lowered.endswith(".bat"):
+        return batch[:-4] + ".sh"
+    if lowered.endswith(".sh"):
+        return batch
+    raise ValueError(f"queue entry is neither .bat nor .sh: {batch}")
 
 
 def with_shell_state(rows, root: Path = ROOT):
@@ -41,7 +43,8 @@ def with_shell_state(rows, root: Path = ROOT):
 
 
 def available(rows):
-    # The canonical BAT existence/-done state remains authoritative during migration.
+    # BAT companion rows require both the canonical BAT and its SH adapter.
+    # Native SH rows point at the same file in both fields, so this also covers them.
     return [row for row in rows if row["shell_exists"] and row["exists"]]
 
 
@@ -80,7 +83,7 @@ def _display_rows(rows, warn):
     missing = [row for row in rows if not row["shell_exists"]]
     if missing:
         print()
-        print("  Windows-only entries (same-stem .sh companion is absent):")
+        print("  Unavailable Linux/WSL entries (missing native .sh or BAT companion):")
         for row in missing:
             print(f"    {row['batch']:<46} -> {row['shell_batch']}")
     for item in warn:
@@ -233,7 +236,7 @@ def cmd_audit(rows, warn) -> int:
     unexpected = sorted(live_disk - listed)
     if unexpected:
         errors += len(unexpected)
-        print("[FAIL] .sh entries without a canonical experiments.tsv .bat row:")
+        print("[FAIL] .sh entries without an experiments.tsv BAT companion or native SH row:")
         for name in unexpected:
             print(f"  {name}")
 
@@ -249,8 +252,8 @@ def cmd_audit(rows, warn) -> int:
     )
     if missing_companions:
         print(
-            f"[INFO] {len(missing_companions)} canonical rows remain Windows-only; "
-            "this migration step does not create experiment-specific launchers."
+            f"[INFO] {len(missing_companions)} rows are unavailable on Linux/WSL; "
+            "missing experiment companions are not synthesized."
         )
     for item in warn:
         errors += 1

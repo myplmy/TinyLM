@@ -1,4 +1,4 @@
-# TinyLM 실험 배치 메타데이터 (run_queue.bat 의 유일한 진실 원천)
+# TinyLM 실험 실행파일 메타데이터 (Windows BAT / Linux·WSL SH 공통 진실 원천)
 #
 # ★규약 (ai_dev_tool/03 §6.2)
 #   1. 새 실험 배치를 만들면 **여기 한 줄 추가**한다. run_queue.bat 은 고치지 않는다.
@@ -26,6 +26,10 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
+1	P096	run_P096_Q1_schema_solver_contract.sh	N	0.1	N	N	보호 데이터 없이 held-out schema·유일 proof·negative fixture 계약을 검증한다
+2	P091	run_P091_R1_optimizer_audit_contract.sh	N	0.1	N	N	CPU fixture로 AdamW·Muon realized update를 WD와 optimizer-only로 분리한다
+3	P095	run_P095_S0_causal_memory_contract.sh	N	0.1	N	N	합성 CPU fixture로 read-before-write·prefix 격리·1 MiB·backward 계약을 검증한다
+4	P025B	run_P025B_Stage0bW_wsl_sparse24_backend.sh	D	0.1	Y	Y	WSL CUDA에서 native 2:4 forward·input-grad·속도 backend를 재탐지한다. 학습 0
 1	P085	run_P085_Stage10c_heldout_v29_seed2_control.bat	D	0.9	Y	Y	v3.0 최종 판정에 쓴 seed2 여섯 모델로 v2.9를 재서 판본과 패널 교락을 해소한다. 기존 v3.0 JSON은 레거시 메타데이터 공백을 명시한 핵심 ID-paired 비교만 수행
 1	P092	run_P092_Stage0c_dynamic_sparse_contract.bat	D	0.1	N	Y	Stage0b import 진입 실패를 고친 첫 유효 mask STE·inactive regrowth·birth/death 보존 CUDA 계약. dense mask를 속도 이득으로 세지 않음
 1	P035B	run_P035B_Stage1_anneal_a3_trajectories.bat	Y	0.8	Y	Y	승인 제안 A3의 0.60/0.80 동역학과 0.80 audit on/off 오염을 같은 부모·seed·600M pool의 세 250-step 팔로 분리한다. 품질·기본값 판정 금지

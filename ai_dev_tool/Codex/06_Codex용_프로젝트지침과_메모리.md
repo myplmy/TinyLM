@@ -1,9 +1,9 @@
 # 06. Codex용 프로젝트 지침과 메모리
 
-> **최신 갱신일자**: 2026-09-17 · **문서 유형**: live
+> **최신 갱신일자**: 2026-09-18 · **문서 유형**: live
 
 > 제정: 2026-09-11, 승인된 완전분리 제안 P2  
-> 상태: **Windows P0~P8 역사 증거 `PASS / ACTIVE_VERIFIED`; WSL 공통 기반 `STATIC_ONLY`, Desktop WSL agent·hook `E2E_NOT_RUN`**
+> 상태: **Windows P0~P8 역사 증거 보존; WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED`, M3 전체 `PARTIAL`, 현재 변경 뒤 smoke `E2E_NOT_RUN`**
 > 환경 경계: [`README.md`](README.md)  
 > 작업규약: [`00_WORKING_RULES.md`](00_WORKING_RULES.md) · [한글 대조본](00_작업규약_한글판.md)
 > 환경 검증: [`P7_정적종합검증_보고.md`](P7_정적종합검증_보고.md)
@@ -113,10 +113,10 @@ TinyLM은 저사양 CPU·엣지·모바일 배포를 위한 초경량 LLM 아키
 | 최근 큰 결과 | P087 1,200M 토큰 런이 과적합 신호 없이 기존 대조보다 개선 | 최신 핸드오프 §1.2, 결과 073 §10, 기준표 B.31 |
 | 프로젝트 정적 게이트 | 환경 이식 착수 전 마지막 공유 기록은 35/35 통과. 이번 환경 P7은 보호 데이터 비접근 전용 검사라 그 결과를 갱신하지 않음 | 최신 공유 핸드오프 §5; 프로젝트 게이트는 이번 작업 `NOT_RUN` |
 | Codex 환경 정적 게이트 | 20/20 PASS, 교정 뒤 훅 테스트 16/16 PASS | [`P7_정적종합검증_보고.md`](P7_정적종합검증_보고.md), [`P8 교정 보고`](P8_새세션_E2E_1차실패_원인분석_및_교정.md) |
-| 동적 스모크 | **사용자 실행 당시 PASS** — 41팔 실패 0, exit 0 오류표지 0, 계측 계약 오류 0. 이후 프로젝트 코드·훅·작업도구 수정분은 `E2E_NOT_RUN` | [`202609121745_smoke_254f4ff.txt`](../../smoketest_logs/202609121745_smoke_254f4ff.txt) 최종 SUMMARY, 최신 WIP·핸드오프 |
+| 동적 스모크 | **2026-09-18 사용자 실행 당시 PASS** — 42팔 실패 0, exit 0 오류표지 0, 계측 계약 오류 0. 이후 optimizer·gate·추론 코드 변경분은 `E2E_NOT_RUN` | [`202609181921_smoke_d8011d0.txt`](../../smoketest_logs/202609181921_smoke_d8011d0.txt) 최종 SUMMARY, 최신 WIP·핸드오프 |
 | GPU/학습/census/모델 로딩 | 이번 Codex P0~P8 교정 작업에서 0회 | 현재 WIP |
 | 데이터셋 | 데이터셋 팀 작업 중, 본 작업 접근 0건 | 사용자 현재 지시, 현재 WIP |
-| Codex 환경 | P0~P8 역사 범위는 `ACTIVE_VERIFIED`. 2026-09-13 확장한 WIP·compact·handoff 계약은 `STATIC_ONLY`; 현재 새 세션 E2E `NOT_RUN` | [`README.md` §1.1·§1.3](README.md), 최신 WIP·핸드오프 |
+| Codex 환경 | WSL agent, 일반/root/scripts PreToolUse, WIP Bash/apply_patch deny와 auto compact exact-WIP 주입은 실제 관찰 범위 `ACTIVE_VERIFIED`. manual compact가 남아 M3 전체는 `PARTIAL` | [`README.md` §1.5](README.md), 최신 WIP·핸드오프 |
 
 공유 핸드오프의 35/35와 이번 환경 P7의 20/20은 검사 대상이 다르다. P7 PASS를 제품·모델·
 보호 데이터 또는 프로젝트 종합 게이트 통과로 승격하지 않는다.
@@ -257,13 +257,12 @@ P8 최종 E2E에서 `session-handoff`, `wip-ledger`를 포함한 저장소 스�
   루트·`scripts/` 위험 쓰기 probe 2/2의 셸 실행 전 deny, fail-open 경고 0건과 잔존 probe 파일
   0개를 확인해 `PASS / ACTIVE_VERIFIED`로 판정했다.
 
-따라서 역사적으로 검증된 최고 상태는 **2026-09-12 Code Mode `PreToolUse` 위험 쓰기 차단 범위의
-`ACTIVE_VERIFIED`**다. 상세 관찰표와 범위는 [`README.md` §1.1](README.md#11-p8-최종-e2e-관찰-기록--2026-09-12),
-1차 실패와 교정 근거는 [`P8 교정 보고`](P8_새세션_E2E_1차실패_원인분석_및_교정.md)가 소유한다.
-프로젝트·모델 스모크는 2026-09-12 사용자 실행 당시 트리에서 **PASS**다. 이 로그는 commit `254f4ff`와 당시
-dirty 20개(코드 1개)의 합을 검증했으며 합성 손실·물리적 계측 정확성의 품질 증거는 아니다. 이후
-프로젝트 코드와 Codex 훅·작업도구 수정분은 로그 범위 밖이므로 현재 트리의 새 스모크는 `E2E_NOT_RUN`이다.
-WIP 직접수정 차단과 manual/auto compact 캡슐은 mock만 통과했으며 새 hash 신뢰·실제 차단·상태 재주입은
-사용자 새 세션 E2E 전까지 `NOT_RUN`이다.
+현재 최고 상태는 **2026-09-18 WSL task에서 직접 관찰한 `PreToolUse`·WIP direct-write guard·
+auto compact 범위의 `ACTIVE_VERIFIED`**다. 상세 관찰표와 범위는 [`README.md` §1.5](README.md)가
+소유하고, 2026-09-12 Windows P8은 역사 증거로 보존한다. 프로젝트·모델 스모크는
+`202609181921_smoke_d8011d0.txt` 실행 당시 트리에서 **PASS**지만 합성 손실·물리 계측 정확성의
+품질 증거가 아니다. 이후 optimizer·기능 gate·추론 도구 변경분은 로그 범위 밖이므로 현재 트리의
+새 스모크는 `E2E_NOT_RUN`이다. manual compact는 앱 사용자 lifecycle 동작이라 `NOT_RUN`이며,
+이 때문에 M3 전체는 `PARTIAL`이다.
 Desktop 버전은 미확인이다. 최종 E2E에서 직접 실행하지 않은
 guard·wrapper·단위 테스트·환경 검사기를 같은 동적 증거로 확대하지 않는다.

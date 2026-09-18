@@ -1,9 +1,9 @@
 # TinyLM Codex 작업환경 — 소유권·분리 계약
 
-> **최신 갱신일자**: 2026-09-17 · **문서 유형**: live
+> **최신 갱신일자**: 2026-09-18 · **문서 유형**: live
 
 > 제정: 2026-09-11, 승인된 제안서 P1  
-> 상태: **Windows P0~P8 역사 증거 `PASS / ACTIVE_VERIFIED`; WSL 공통 기반 `STATIC_ONLY`, Desktop WSL agent·hook `E2E_NOT_RUN`**
+> 상태: **Windows P0~P8 역사 증거 보존; WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED`, M3 전체 `PARTIAL`, 현재 변경 뒤 smoke `E2E_NOT_RUN`**
 > 제안서: `proposal/done/20260911_Codex-작업환경-완전분리-구축-approved.md`  
 > 항목별 설계표: [`temp_AGENTS.MD_항목별_00_08_이식목록.md`](temp_AGENTS.MD_항목별_00_08_이식목록.md)
 > 정적 검증 보고: [`P7_정적종합검증_보고.md`](P7_정적종합검증_보고.md)
@@ -97,7 +97,7 @@ fallback으로 읽는다. 표·중복 키·확장 TOML은 구버전에서 조용
 Python 3.11 단위검사 통과는 사용자 Python의 실제 E2E PASS가 아니므로 사용자 재실행 전에는
 `STATIC_ONLY`다.
 
-### 1.4 WSL 정본 이관 상태 — 2026-09-17
+### 1.4 WSL 정본 이관 착수 상태 — 2026-09-17
 
 사용자가 작업트리를 `/home/uranus/tinyLM`으로 이관했으며 Windows `Z:\TinyLM`은 같은 위치를
 가리키는 편의 링크다. 공통 `run_queue.sh`, `run_smoke_check.sh`,
@@ -109,6 +109,24 @@ Python 3.11 단위검사 통과는 사용자 Python의 실제 E2E PASS가 아니
 disabled였다. 따라서 2026-09-12 Windows P8 기록은 역사적 유효 증거로 보존하되 현재 WSL
 agent·hook에는 승계하지 않는다. WSL canonical project를 다시 열고 새 작업에서 exact hash를
 검토·신뢰한 뒤 probe를 통과할 때까지 상태는 `E2E_NOT_RUN`이다.
+
+### 1.5 WSL 새 task 실제 상태 — 2026-09-18
+
+§1.4 뒤 사용자가 Desktop WSL mode로 새 task를 열었고 `/home/uranus/tinyLM`, Linux WSL2,
+`Ubuntu`, `/usr/bin/bash`를 실제 관찰했다. 현재 task에서 다음 범위가 확인됐다.
+
+| 범위 | 증거 | 판정 |
+|---|---|---|
+| WSL agent | canonical cwd·kernel·distro·Bash | `ACTIVE_VERIFIED` |
+| 일반/root/scripts PreToolUse | 정상 exit 0, 위험쓰기 두 건은 shell exit 전 deny, 부산물·fail-open 경고 0 | 관찰 범위 `ACTIVE_VERIFIED` |
+| WIP direct-write guard | Bash·`apply_patch` direct write는 tool 전 deny, 정상 `wip.py` 허용, WIP hash 불변 | 관찰 범위 `ACTIVE_VERIFIED` |
+| compact | exact 열린 WIP의 8필드 capsule이 auto compact 뒤 hash와 함께 재주입 | auto 경로 PASS; manual `NOT_RUN` |
+| model smoke | `202609181921_smoke_d8011d0.txt`, 42팔·실패 0·exit-0 오류표지 0·계측 오류 0 | 당시 트리 PASS |
+
+그 smoke 뒤 optimizer 기본값·기능 gate·추론 도구 코드가 바뀌었으므로 **현재 트리 smoke는 다시
+`E2E_NOT_RUN`**이다. manual compact도 Codex가 앱 lifecycle event를 대신 만들 수 없어 사용자
+관찰이 남았다. 따라서 WSL 이관 전체나 M3 전체를 `ACTIVE_VERIFIED`로 부르지 않는다. M4 backend와
+M5 Windows↔WSL 교량은 `NOT_RUN`이다.
 
 ## 2. 런타임 경계
 
@@ -222,11 +240,13 @@ P2·P4·P5의 승인된 이식 중에는 Claude 전용 파일을 **비교 입력
 | `E2E_NOT_RUN` | 성공한 새 Codex 세션 종합검증 증거 없음. 실패·부분 시도 뒤에도 전체 통과 전까지 유지 |
 | `ACTIVE_VERIFIED` | 신뢰된 프로젝트의 새 세션에서 발견·라우팅·훅까지 확인 |
 
-P5 구현·교정·로컬검증과 P7 정적 종합검증에 더해 §1.1의 새 세션 실제 차단을 관찰했으므로,
-현재 최고 상태는 **Code Mode `PreToolUse` 위험 쓰기 차단 범위의 `ACTIVE_VERIFIED`**다.
+P5 구현·교정·로컬검증과 P7 정적 종합검증에 더해 §1.1의 Windows 역사 증거와 §1.5의 WSL 새 task
+실제 차단을 관찰했으므로, 현재 최고 상태는 **WSL에서 직접 관찰한 `PreToolUse`·WIP guard·
+auto compact 범위의 `ACTIVE_VERIFIED`**다.
 P8 1차 실패는 교정 전 역사로
 [`P8 교정 보고`](P8_새세션_E2E_1차실패_원인분석_및_교정.md)에 보존한다.
-프로젝트·모델 스모크는 §1.2의 **사용자 실행 범위에서 PASS**이고 후속 코드 변경분은 **E2E_NOT_RUN**이다.
+프로젝트·모델 스모크는 §1.5의 2026-09-18 **사용자 실행 당시 범위에서 PASS**이고 후속 코드
+변경분은 **E2E_NOT_RUN**이다.
 Desktop 버전과 P8 최종 E2E에서 직접 실행하지 않은
 guard·wrapper·단위 테스트·환경 검사기까지 `ACTIVE_VERIFIED`로 확대 해석하지 않는다.
 

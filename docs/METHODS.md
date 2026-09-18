@@ -18,6 +18,7 @@
 | 9 | 학습 VRAM | [methods/09_training_memory.md](methods/09_training_memory.md) |
 | ★**10** | **벤치마크·평가 기법** | [methods/10_benchmarks.md](methods/10_benchmarks.md) |
 | ★**11** | **토크나이저** | [methods/11_tokenizer.md](methods/11_tokenizer.md) |
+| ★**12** | **추론 속도·실제 생성 경로** | [methods/12_inference_speed.md](methods/12_inference_speed.md) |
 
 ## 상태 범례
 
@@ -35,6 +36,11 @@
 - **v6** — `tinylm/` 패키지 모듈화 + 효율/실험 기능(EMA·WSD·베스트ckpt·조기종료·
   스케일별 체크포인트 이름·자동 LR 탐색·KD·부모초기화·ternary-LoRA·FiLM·깊은 프리셋·
   reduce-overhead·TF32·HF 리다이렉트·크기별 데이터 캐시).
+
+> **2026-09-18 현재 recipe 결정:** Muon RMS4(`×4`) + Muon 일반행렬 WD0 + KD off를
+> 사용자 기본으로 채택했다. embedding WD0.1, norm/bias/gate WD0, LRM 사용 시 WD0.01은
+> parameter-group 정책으로 분리한다. 코드 기본 변경은 새 사용자 smoke 전 `STATIC_ONLY`이며,
+> LR/WSD/accum/anneal은 CLI 기본과 연구 표준이 아직 완전히 일치하지 않는다.
 
 ## 현재까지의 핵심 측정치
 

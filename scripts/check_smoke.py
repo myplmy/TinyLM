@@ -50,6 +50,8 @@ REQUIRED = ["seed", "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cach
             "kv_entries", "kv_visits", "kv_kb_per_token", "kv_mb", "runtime_plus_kv_mb",
             "emb_init",                                # ★자백 A13(2026-08-27) — 임베딩 초기화 갈래
             "tokenizer_hf", "kd_teacher_hf", "teacher_dtype", "vocab_size",  # ★P067
+            "optimizer", "muon_lr_mult", "muon_scale", "matrix_weight_decay",
+            "matrix_weight_decay_effective", "muon_weight_decay",  # 2026-09-18 기본 recipe
                              # ★P068 A1 / P034 단계5 (2026-08-22)
             "save_every"]                              # P058
 
@@ -61,7 +63,11 @@ def check(name, d, expect=None):
     # ★2026-08-22 — `kd_alpha`·`kd_temp` 는 **무KD 런에서 정당하게 None** 이다.
     #   지난 세션에 REQUIRED 에만 넣고 nullable 에 안 넣어서 **무KD 팔 7개가 전부 에러**였다.
     #   ⚠️필드를 필수로 만들 때는 **"언제 None 이 정상인가" 를 같이 정한다**(함정 34 계열).
-    nullable = {"pool_tokens", "kd_teacher", "init_from_src", "kd_alpha", "kd_temp", "tokenizer_hf", "kd_teacher_hf"}
+    nullable = {"pool_tokens", "kd_teacher", "init_from_src", "kd_alpha", "kd_temp",
+                "tokenizer_hf", "kd_teacher_hf", "matrix_weight_decay",
+                # AdamW 명시 런에는 Muon 인스턴스가 없으므로 세 필드는 정당하게 None 이다.
+                # 키 자체는 필수로 유지해 사후에 optimizer 경로를 구분한다.
+                "muon_lr_mult", "muon_scale", "muon_weight_decay"}
     for k in REQUIRED:
         if k not in d:
             errs.append(f"필드 누락: {k}")
@@ -135,13 +141,16 @@ def check(name, d, expect=None):
 
 
 EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
-    "sm_base":   {"seed": 1337, "sparse34": False, "anneal_end": 0.60, "grad_ckpt": True},
+    "sm_base":   {"seed": 1337, "sparse34": False, "anneal_end": 0.60,
+                  "grad_ckpt": True, "optimizer": "muon", "muon_lr_mult": 4.0,
+                  "muon_scale": "rms", "matrix_weight_decay_effective": 0.0,
+                  "muon_weight_decay": 0.0},
     "sm_seed":   {"seed": 4242},
     # ★★2026-09-04 — **값**까지 적는다. 이름만 넣으면 기본값이라 코드가 안 돈다(결과 044).
     "sm_claedge": {"cla_group": 2, "cla_edges": False},
     "sm_lrm":     {"mlp_lrm": True},
     # ★★P005(2026-09-05) — Muon 은 2026-09-03 에 파서에 들어왔는데 **한 번도 안 돌았다**.
-    #   `muon_lr_mult` 를 기본(1.0)이 아닌 5 로 주는 이유는 **배수가 실제로 전달되는지**를
+    #   `muon_lr_mult` 를 기본(4.0)이 아닌 5 로 주는 이유는 **배수가 실제로 전달되는지**를
     #   같이 사기 위해서다 — 이름만 있으면 기본값이라 코드가 안 돈다(결과 044).
     "sm_muon":    {"optimizer": "muon", "muon_lr_mult": 5.0},
     # ★2026-09-08 — P086 Stage2 가 **타잉 몸통에서** Muon 을 돌린다. 종전 `sm_muon` 은
@@ -249,7 +258,7 @@ def main():
     a = ap.parse_args()
     files = sorted(LOGS.glob(f"*{a.tag}.json")) if a.tag else sorted(LOGS.glob("tiny_*sm_*.json"))
     if not files:
-        print(f"[!] 검사할 스모크 로그가 없습니다({LOGS}). 먼저 run_smoke.bat 을 돌리세요.")
+        print(f"[!] 검사할 스모크 로그가 없습니다({LOGS}). 먼저 현재 OS의 smoke wrapper를 돌리세요.")
         return 1
     total = 0
     seen_tags = set()

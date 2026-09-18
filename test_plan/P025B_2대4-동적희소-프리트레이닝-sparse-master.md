@@ -2,10 +2,12 @@
 
 > **승인 2026-09-13.** 정본 제안서: [`20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md`](../proposal/done/20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md)  
 > P025의 고정 2:4 개념을 대체하지 않고, native kernel·topology·dense/sparse master를 분리하는 후속 계획이다.  
-> **현재 상태(2026-09-14):** Stage0b는 import를 통과했지만 현재 RTX 4070 Ti SUPER
+> **현재 상태(2026-09-18):** Windows Stage0b는 import를 통과했지만 RTX 4070 Ti SUPER
 > `sm_89`·PyTorch 2.10.0 환경에서 `cuSPARSELt not supported`로 첫 native 호출이 거부됐다
 > ([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
-> 현 환경의 학습 가속 분기는 종료하며 sparse-master 메모리 분기는 별도 재승인 전 대기한다.
+> 그 **Windows runtime 층**의 학습 가속 분기는 종료했다. WSL 이관 뒤에는 OS/runtime 차이를
+> 분리한 Stage0bW 진단 `.sh`를 준비했으며 사용자 GPU 실행 전 `NOT_RUN`이다. 따라서 cuSPARSELt
+> 지원이 회복됐다고도, WSL에서도 실패했다고도 아직 말하지 않는다.
 
 ## 1. 왜 — 0을 넣는 것과 실제 희소 학습은 다르다
 
@@ -33,8 +35,9 @@ native 속도, dense-master 품질, inactive state를 제거한 sparse-master, t
 | 단계 | 무엇 | 계속 조건 | GPU-h |
 |---|---|---|---:|
 | **Stage0a ⚠️ 무효** | 실제 MLP 형상 native 2:4 진단 최초 시도 | `tinylm` import 전에 종료; 과학적 결과 `NOT_RUN`([082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | 0.1 미만 |
-| **Stage0b 🚫 환경 게이트 실패** | import는 통과. 첫 실제 MLP 형상에서 현재 환경이 cuSPARSELt를 지원하지 않아 native forward 전 종료([082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | 현 환경 가속 분기 종료 | 진입 시간만 |
-| **Stage0c ⏸** | dense vs 2:4 whole primitive forward/backward | 다른 지원 환경 증거 또는 메모리 트랙 별도 재승인 | 0.2 |
+| **Stage0b-Win 🚫** | import는 통과. 첫 실제 MLP 형상에서 Windows runtime의 cuSPARSELt가 native forward 전 거부([082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | Windows 가속 분기 종료 | 진입 시간만 |
+| **Stage0bW ⏳** | 같은 실제 형상·계측 계약을 WSL CUDA runtime에서 재probe | native type·forward·input-grad·median ≥1.25× | 사용자 실행, `NOT_RUN` |
+| **Stage0c ⏸** | dense vs 2:4 whole primitive forward/backward | Stage0bW PASS 또는 메모리 트랙 별도 재승인 | 0.2 |
 | **Stage1a ⏸** | dense-master 2:4, 250 step | sparse-master 메모리 트랙 별도 재승인 | 0.25 |
 | **Stage1b** | flip/death/birth/resurrection 계측 | active count·birth/death 보존 | 0.25 |
 | **Stage1c** | sparse-master 250 step | hidden dense state 없음, invariant 100% | 0.3 |
@@ -57,7 +60,7 @@ median을 검사한다. weight-gradient·whole-step은 Stage0c 이후 소유로 
 | topology | 모든 4-block에 정확히 2 active, dynamic update의 births=deaths |
 | 재현 | 필요 Stage4에서 seed/재생성 방향 유지 |
 
-유효한 Stage0b 재실행이 속도 게이트를 못 넘으면 학습가속 분기는 종료한다. sparse-master
+유효한 Stage0bW가 지원 또는 속도 게이트를 못 넘으면 WSL 학습가속 분기도 종료한다. sparse-master
 메모리만 계속할지는 자동 진행하지 않고 새 판정을 받는다.
 
 ## 6. 비용
@@ -68,11 +71,14 @@ median을 검사한다. weight-gradient·whole-step은 Stage0c 이후 소유로 
 | Stage2까지 | 3.6 |
 | 전 게이트 통과 최대 | **12.6~18.6** |
 
-## 7. 실행 → `run_P025B_*.bat`
+## 7. 실행 진입점
 
 - 무효 완료: `run_P025B_Stage0a_sparse24_backend-done.bat` — import 실패로 과학적 게이트 `NOT_RUN`([결과 082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
-- 완료: `run_P025B_Stage0b_sparse24_backend-done.bat` — 현재 환경의 native cuSPARSELt 지원 불가로 음성 게이트 종료([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
-- 미작성: Stage0c~Stage4. 같은 환경에서 자동 개방하지 않는다.
+- 완료(Windows 역사): `run_P025B_Stage0b_sparse24_backend-done.bat` — 해당 runtime의 native
+  cuSPARSELt 지원 불가로 음성 게이트 종료([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
+- 준비·미실행(WSL): `run_P025B_Stage0bW_wsl_sparse24_backend.sh` — `--require-wsl`을 강제하고
+  실제 CUDA/cuSPARSELt forward·input-gradient·속도를 검사한다. GPU 진단이라 사용자가 실행한다.
+- 미작성: Stage0c~Stage4. Stage0bW 결과를 회수하기 전 자동 개방하지 않는다.
 
 ## 8. 한계
 
@@ -87,4 +93,6 @@ median을 검사한다. weight-gradient·whole-step은 Stage0c 이후 소유로 
 - 2026-09-13: Stage0a는 `ModuleNotFoundError: tinylm`으로 첫 희소 연산 전에 종료([결과 082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)). 저장소 루트 bootstrap을 추가했고 정적 검사만 PASS했다. 방법론 예측은 대조되지 않았으며 Stage0b 재실행이 필요하다.
 - 2026-09-14: Stage0b는 import 후 첫 `M=8192,K=768,N=2048` native 호출에서
   `cuSPARSELt not supported on your machine`으로 종료했다. forward·input-grad·속도·품질은
-  `NOT_RUN`; 현 환경 가속 분기는 사전등록 규칙에 따라 닫았다([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
+  `NOT_RUN`; Windows runtime 가속 분기는 사전등록 규칙에 따라 닫았다([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
+- 2026-09-18: WSL 이관을 별도 environment stratum으로 사전등록하고 Stage0bW 진단 코드·`.sh`를
+  정적 검증했다. 사용자 GPU 실행과 backend 판정은 `NOT_RUN`이다.

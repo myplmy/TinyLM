@@ -10,7 +10,7 @@
 
 **갱신 규칙**: 새 런이 끝나면 §2 레지스트리에 한 줄 추가. 새 사실이 규칙을 바꾸면 §3~§7 개정 +
 개정 근거(결과 번호)를 함께 적는다. 수치 정본은 항상 `runs/logs/*.json`.
-최종 갱신 2026-07-30(결과 013 시점 · REVIEW1 완료).
+최종 정책 갱신 2026-09-18(과거 표·연혁은 원문 시점을 보존).
 
 ---
 
@@ -23,11 +23,12 @@
 | 학습 예산 | **300M 토큰** = `--steps 2289 --micro-bs 8 --accum 16 --seq 1024` | 유효배치 **131,072**. `--tokens` 는 캐시 크기일 뿐 |
 | **데이터 풀** | **≥ 2× 학습토큰** → 300M 학습이면 `--pool-tokens 600M --exact-cache` | 결과 006: 풀만 2×로 dense **-0.12** |
 | lr | **`1e-3`(재확인 완료)** | ★결과 017: dense·accum16 grid 권장이 **정확히 1.0e-3**(`\|g\|max` 5.92). **배치가 다르면 이 값이 아니다** — 유효배치 2배에 LR **1.64~1.67배**(accum 8 은 6e-4). tied 는 프로브에서 6e-4 로 나오나 **실런 3건이 1e-3 에서 안전** → 변경 안 함 |
-| 스케줄 | **`--sched wsd`**(개정 2026-07-31), 어닐 종료 **`--anneal-end 0.60` 유지** | ★결과 015: wsd 가 cosine 대비 **−0.0755(6.3σ)**, 시간 비용 0. **정렬(`anneal-end 0.80`)은 두 예산 모두에서 검출 실패**(1.07σ / 0.05σ) → **채택 안 함**. **dense 에서만 확인** — tied+KD 미검증 |
+| optimizer | **Muon RMS4** (`--optimizer muon --muon-scale rms --muon-lr-mult 4`) | 결과 078: 형상·seed2024·길이 방향 gate 통과. 일반 Muon 행렬 WD0; embedding/특수그룹은 별도 정책. 2026-09-18 사용자 채택, 새 smoke 전 구현 증거는 `STATIC_ONLY` |
+| 스케줄 | **`--sched wsd`**(개정 2026-07-31), 어닐 종료 **`--anneal-end 0.60` 유지** | ★결과 015: wsd 가 cosine 대비 **−0.0755(6.3σ)**, 시간 비용 0. **정렬(`anneal-end 0.80`)은 두 예산 모두에서 검출 실패**(1.07σ / 0.05σ) → **채택 안 함**. ⚠️결과 078의 RMS4 A~C는 0.80을 썼으므로 6차 후보 SH 전 0.60/0.80 bridge 또는 명시적 계보 선택이 필요 |
 | compile | `--compile` (mode=default) | `reduce-overhead` 는 타잉 임베딩 충돌(P027). **커널 병용 금지**(SystemExit) |
 | grad-ckpt | dense = `--no-ckpt`(13.5GB) / **tied+KD+dense교사 = ON** | 결과 007. KD+dense교사에 no-ckpt 는 OOM 위험 |
 | 타잉 | `--mlp-group 8` 권장 상한 (g4 = 보수, g16 = 최공격) | 결과 002 |
-| KD | `--kd --init-from --kd-every 4` (**정적 k4**) | 결과 005: full KD 보다 **-0.042·-15%**. ⚠️★**2026-08-08 유보**: 결과 038 이 300M 에서 **KD 의 몫을 −0.0032(사실상 0)** 로, **KD 제거를 reserved −7.41 GiB + 품질 −0.0208** 로 쟀다. 기준표 §7 의 *"KD 이득은 예산↑에서 감소"* 와 일관. **표준 조건 변경 여부는 REVIEW2 가 정한다** — 기존 레버 비교 전부가 KD 조건이므로 공용 대조군 `mC_wsd` 가 함께 움직인다 |
+| KD | **off**(필요한 연구 팔만 명시적 `--kd`) | 결과 038: 300M 두 seed에서 KD가 +0.0208/+0.0219 악화, 제거 시 reserved −7.41 GiB. 2026-09-18 사용자 확정. 100M·외부 우수 교사는 별도 실험축이며 기본 recipe를 되돌리지 않음 |
 | eval | `--eval-every 100` | 250스텝 벤치는 999 |
 | seed | **`--seed 1337`**(기본=종전 동작) | 가중치 초기화 + train 크롭 순서에 반영. **val 크롭은 항상 99 고정**(흔들면 비교 무효). σ 측정용 |
 
@@ -44,6 +45,15 @@
 
 > **함정**: `--accum` 기본값은 **8** 이다. 빠뜨리면 같은 steps 로 **절반(150M)만** 학습된다.
 > 결과 005 초판이 이 실수로 오염됐다. mb/accum 을 바꾸면 이 표를 다시 계산할 것.
+
+> **2026-09-18 실행 경계**: 신규 기준 후보는 300M을 기본으로 한다. 600M draw는 한국어
+> 학습·평가 구성 gate를 통과하기 전 `HOLD`이며, 1.2B 학습토큰 SH는 작성하지 않는다. 위 600M
+> 환산행은 역사적 계산식이지 현재 실행 권고가 아니다. 과거 1.2B-pool val의 한국어 비율은 0%다.
+
+> **CLI 정합성 경고**: 옵션 미지정 기본은 여전히 `lr=6e-4`, `sched=cosine`, `accum=8`,
+> grad checkpoint on이다. optimizer/KD만 새 정책과 일치한다. 표준 비교 명령은 LR·WSD·accum·
+> checkpoint·anneal을 모두 명시해야 하며, 이 불일치를 해결하기 전 “기본 옵션으로 표준 recipe”라고
+> 쓰지 않는다.
 
 ---
 
@@ -3266,9 +3276,11 @@ SE 0.0006, t 1.89로 무재귀 자 0.0024 안이며 체크포인트 수준에서
 
 ### B.33.3 희소 — **계약 가능성과 native 가속 가능성을 분리한다**
 
-- P025B Stage0b는 import를 통과했지만 현재 RTX 4070 Ti SUPER `sm_89`·torch 2.10.0에서
-  첫 native 2:4 호출이 `cuSPARSELt not supported`로 끝났다. forward·input-grad·속도는
-  `NOT_RUN`이며 현 환경 가속 분기는 종료한다. 로그만으로 GPU·드라이버·빌드 중 단독 원인은 못 고른다.
+- P025B Stage0b는 Windows runtime에서 import를 통과했지만 RTX 4070 Ti SUPER
+  `sm_89`·torch 2.10.0의 첫 native 2:4 호출이 `cuSPARSELt not supported`로 끝났다.
+  그 runtime의 forward·input-grad·속도는 `NOT_RUN`이며 Windows 가속 분기는 종료한다.
+  WSL 이관 뒤 같은 계약의 Stage0bW `.sh`를 준비했지만 사용자 GPU 실행 전 `NOT_RUN`이다.
+  로그만으로 GPU·드라이버·OS·빌드 중 단독 원인은 못 고른다.
 - P092 Stage0c는 CUDA에서 finite loss, inactive gradient 합 12.144601, mask/effective
   sparsity 0.5, births=deaths=16으로 핵심 계약을 통과했다. 그러나 dense tensor+mask라
   가속·메모리·학습·품질은 모두 `NOT_RUN`이다.
@@ -3277,8 +3289,11 @@ SE 0.0006, t 1.89로 무재귀 자 0.0024 안이며 체크포인트 수준에서
     세 개를 통과해도 시드·길이 전이가 남으면 전역 기본값이 아니라 조건부 후보라고 쓴다.
 62. ★★**같은 예산 후보가 기준과 자 안이면 ‘손실 회복’과 ‘채택’을 분리한다.** 분해 팔이
     폭 대가를 갚았어도 순이득 채택선을 못 넘으면 보류이며 후속 격자를 자동 개방하지 않는다.
-63. ★★**backend 지원 불가는 방법론 품질 기각이 아니다.** 현 환경 가속 분기는 닫되,
-    미실행 forward·gradient·속도와 별도 sparse-master 메모리 트랙을 실패로 승격하지 않는다.
+63. ★★**backend 지원 불가는 방법론 품질 기각이 아니다.** 실패가 관찰된 runtime 층의 가속
+    분기는 닫되, 다른 OS/runtime의 미실행 forward·gradient·속도와 별도 sparse-master 메모리
+    트랙을 실패로 승격하지 않는다.
+64. ★★**WSL 재probe는 독립 environment stratum이다.** Windows 실패를 지우지 않고
+    `--require-wsl`과 runtime metadata를 남기며, Stage0bW PASS 전 Stage0c를 열지 않는다.
 
 ## B.34 ★★★2026-09-16 — **RMS4 길이 전이·held-out 판본 회귀·anneal A3를 닫았다**
 

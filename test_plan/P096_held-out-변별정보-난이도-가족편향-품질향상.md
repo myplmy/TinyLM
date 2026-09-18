@@ -4,8 +4,9 @@
 > [`20260914_held-out-변별정보-난이도-가족편향-품질향상-제안서-approved-on-going.md`](../proposal/20260914_held-out-변별정보-난이도-가족편향-품질향상-제안서-approved-on-going.md)
 >
 > **현재 상태:** Q0 동일패널 원인분리는 기존 [결과 074 §27](../test_result/074_20260904_P085-정답CE는-9쌍-전부-맞고-정확도는-끝까지-못-가른다.md)로
-> 완료됐다. Q1 이후 schema/tool/data/GPU는 `NOT_RUN`. 이 계획 승인은 보호 데이터 접근·재작성
-> 권한을 만들지 않는다.
+> 완료됐다. Q1a의 최소 schema·transitive proof solver·negative synthetic fixture는
+> `STATIC_ONLY` PASS다. 전체 관계 taxonomy·difficulty 생성기, 실제 data/GPU는 `NOT_RUN`이며
+> 보호 데이터 접근·재작성 권한은 열리지 않았다.
 
 ## 1. 왜 — 정적 문체 proxy가 아니라 실제 변별정보를 최적화한다
 
@@ -63,7 +64,8 @@ Q1에서 다음 필드와 소유권을 먼저 고정한다.
 | 단계 | 무엇 | 다음 단계 조건 | 비용 |
 |---|---|---|---:|
 | **Q0 ✅** | P085 Stage10c로 v2.9/v3.0 같은 seed2 패널 전이 분해 | ✅ `CORE_REGRESSION`; paired JSON·skip 0 | 완료, ⚙0.9 GPU-h 역사값 |
-| **Q1** | schema·solver·family taxonomy·difficulty knob 정적 계약과 fixture | 정답 유일성·오답 거짓·필드 누락 0 | ⚙2~3 engineer-h + 팀 검토 |
+| **Q1a ✅** | 최소 schema·direct/transitive solver·negative synthetic fixture | 정답 유일성·오답 미증명·필드/ID 오류 검출 | `STATIC_ONLY`, GPU 0 |
+| **Q1b** | 전체 relation/family taxonomy·difficulty knob 생성/검증 계약 | 하위형별 proof·오답형·난이도 fixture와 팀 검토 | `NOT_RUN`, ⚙2~3 engineer-h |
 | **Q2** | 기존 유효 ID 보존, 10% canary 450자리×최대 2후보 생성 | 후보 상한·provenance·family cap 준수 | 데이터팀 1회 |
 | **Q3** | 설계 패널 응답행렬과 제약 기반 450개 선별 | 정보 0↓, bit↑, 최소 쌍 coverage↑, 관계 비퇴행 | ⚙0.3 GPU-h/회, 최대 2회 |
 | **Q4** | 사람 의미감사와 canary paired 판정 | 의미 오류 0, 사전등록 벡터 통과 | 사람 표본 1회 |
@@ -86,12 +88,12 @@ Q3가 두 번 실패하면 문구를 더 고치지 않고 가설을 닫는다. Q
 ## 7. 우선순위와 실행 경계
 
 현재 우선순위는 **A1(과학적 판정 인프라)**이다. 6차 baseline 후보와 새 architecture가 좋아도
-held-out 판본이 모델 서열을 안정적으로 가르지 못하면 “지능 향상”을 판정할 수 없다. Q1은 GPU 0이고
-가장 큰 현재 구멍을 직접 줄이므로 신규 세 계획 중 가장 앞에 둔다.
+held-out 판본이 모델 서열을 안정적으로 가르지 못하면 “지능 향상”을 판정할 수 없다. Q1a는
+GPU 0 계약으로 닫았고 Q1b가 실제 canary 전에 남은 최소 선결이다.
 
-그러나 이번 승인은 계획 작성까지다. `datasets/TinyDataset/**` 열거·읽기·수정, 후보 생성,
-schema/tool 구현, 사람 감사, GPU census와 새 판본 승격은 별도 범위·데이터팀 소유권·사용자 승인이
-필요하다. 현행 v2.9나 v3.0을 자동으로 교체하지 않는다.
+사용자는 Q1a synthetic 기능 gate 구현과 WSL 계약 진입점까지 승인했다. `datasets/TinyDataset/**`
+열거·읽기·수정, 후보 생성, Q1b 이후 도구, 사람 감사, GPU census와 새 판본 승격은 별도 범위·
+데이터팀 소유권·사용자 승인이 필요하다. 현행 v2.9나 v3.0을 자동으로 교체하지 않는다.
 
 ## 8. 한계와 위험
 
@@ -112,10 +114,12 @@ schema/tool 구현, 사람 감사, GPU census와 새 판본 승격은 별도 범
 | 유사 실험 조회 | P085 Q0 근거는 재사용; 같은 Pareto 선별 실험은 없음 |
 | 중복 | 품질저하 방지 gate는 기존 승인안, P096은 실제 품질향상 방법만 소유 |
 | 비용 | Q0 완료값과 Q1~Q6 신규 비용을 분리; 반복 상한 고정 |
-| 태그·배치 | 미배정·미작성 |
+| 태그·진입점 | `run_P096_Q1_schema_solver_contract.sh` 준비·미실행; 학습 tag·본런 `.sh` 없음 |
 | 보호 경계 | 이번 계획 작성에서 보호 데이터 접근 0 |
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 - 2026-09-18: 권장안 B 승인으로 P096을 신설했다. Q0은 기존 결과로 완료, Q1 이후는
   `NOT_RUN`이며 데이터·GPU 권한은 열지 않았다.
+- 2026-09-18: Q1a 합성 schema/solver의 정상·모호·오답·필드누락·중복 ID CPU fixture PASS.
+  전체 taxonomy와 실제 문항 품질은 `NOT_RUN`이다.

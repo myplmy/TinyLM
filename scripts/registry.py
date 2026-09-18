@@ -81,7 +81,9 @@ DEFAULTS = {
     "depth_init": "zip", "cla_group": 1, "cla_edges": True, "attn_group": 1,
     "mlp_group": 1, "train_repeat": 1.0, "repeat_mode": "uniform", "emb_init": None,
     "tokenizer_hf": None, "doc_filter": False, "micro_bs": 8, "accum": 8, "seq": 1024,
-    "lr": 1e-3, "optimizer": "adamw", "repeat_kv_reuse": False, "reuse_attn_on_dup": False,
+    "lr": 1e-3, "optimizer": "muon", "muon_lr_mult": 4.0, "muon_scale": "rms",
+    "matrix_weight_decay": None,
+    "repeat_kv_reuse": False, "reuse_attn_on_dup": False,
 }
 # 표에 넣을 값이 아닌 것(측정 결과·환경). params 열에서 뺀다.
 NOT_PARAM = {

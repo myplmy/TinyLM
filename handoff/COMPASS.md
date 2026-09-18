@@ -4,7 +4,7 @@
 > 그래서 이름에 시각이 없다(제안서 §3.6). 🚫`check_handoff` 는 `*_HANDOFF.md` 만 보므로
 > 이 파일에 고정 섹션 8개를 요구하지 않는다 — **면제 코드가 필요 없다.**
 >
-> **신설** 2026-09-08(2차) · **최신 갱신** 2026-09-16 · **근거** [제안서(승인)](../proposal/done/20260908_연구방향-길잡이-파일-approved.md)
+> **신설** 2026-09-08(2차) · **최신 갱신** 2026-09-18 · **근거** [제안서(승인)](../proposal/done/20260908_연구방향-길잡이-파일-approved.md)
 > · 사용자 지시 8(원안) → 2026-09-08(2차) 지시 2B(*"claude 개선안으로 승인"*).
 >
 > ★**읽는 순서**: `ai_dev_tool/06` → **이 파일** → 최신 핸드오프.
@@ -41,8 +41,8 @@
 | **어텐션 타잉** | 🚫**직접 공유 현 조건 기각** — `ag2`가 dense보다 +0.0073 열세(자의 3.0배). ⚠️head 정렬·저랭크 차이를 쓰는 방식은 별도 방법이며 0런 | ★**079 §3**(2026-09-11) ← 058 | [P093](../test_plan/P093_구조조건부-직접공유와-완화타잉.md)의 중복·회계에서만 보존; 직접 `ag2` 반복과 CLA 혼합은 하지 않음 | 종전 `ag2` 표본 공백과 CLA 교락은 해소됐다. 직접 공유를 되살리려면 같은 격자 반복이 아니라 대가 완화의 새 구현·순메모리 근거가 필요하다 |
 | **CLA/KV** | ✅**승격 후보 1순위** — 유일하게 깊이보다 싸다 | 결과 059 · 2026-09-08 | 5차 리뷰 승인 뒤 프리셋 · ⏸`cla2 × lr 1.5배` 1런(⚙1.7h, 배치 미작성 · 사용자 결정) | ★**값어치가 컨텍스트에 선형**이다(seq2048 이면 0.00293). **seq 를 바꾸면 순위가 바뀐다** · ⚠️★**우리 대가 +0.024 가 논문(GQA2-CLA2 +0.00516 nats)의 4.6배**이고 논문은 **CLA2 최적 LR 이 1.5배**라 실측했는데 우리는 전 팔 1e-3 이다(B.29.1) — **LR 을 맞추면 대가가 줄어 교환비가 더 좋아질 수 있다** |
 | **양자화** | ⏸**부분** — LUT 1.600 채택 · 🚫3:4 는 지배당함 · ✅**상주 실측 완료** | 075 §15 → ★**014 §18** (최신 2026-09-08) | 없음(이 축은 지금 막는 것이 없다) | ✅**식이 옳았다**(차 1.2%, 보수적). ⚠️남은 것은 **LUT 커널의 속도**(논문 표 4 = 2비트 대비 +8.8~12.2%) — 메모리 축은 닫혔고 **속도 축이 열려 있다** |
-| **토큰·코퍼스** | ★**가장 큰 실측 레버** — 1.2B에서 AdamW·jordan15·RMS4 직접 짝까지 확보했다. 600M→1.2B는 풀 확대가 아니라 같은 1.2B 풀의 복원추출 draw와 WSD 지평 증가다 | ★**078 §13** ← 076 §13 ← 075 §19(2026-09-16) | 독립 공통 원문 bpb 또는 한국어 평가가 필요할 때만 별도 승인 후 설계; 같은 길이 재실행 없음 | `pool/tokens=1.0`은 순차 1 epoch가 아니며 기대 unique 약 757M. train draw는 한/영 약 25/75, val 한국어 0%라 한국어 품질은 NOT_RUN |
-| **옵티마이저** | ★**RMS4 레시피 기본 후보 확정·연구축은 열림** — 상단·WD·형상·seed2024·600M·1.2B 전이를 모두 통과 | ★**078 §11~§15** ← 076 §13 ← 075 §19(2026-09-16) | preset 기본값 승격은 사용자 결정; 독립 질문인 QK-norm 상한·Muon 노름 진단은 P005b b-6·b-7 | 현 후보는 `rms×4, matrix WD 0`. eval 한국어 0%와 다른 풀·모델 규모에서는 보편성 미확인이고 코드 기본값은 아직 변경하지 않음 |
+| **토큰·코퍼스** | ★**가장 큰 실측 레버이나 신규 상한을 낮춤** — 역사적 1.2B에서 optimizer 직접 짝을 확보했지만 한국어 0% val이라 한국어 품질 근거가 아니다 | ★**078 §13** ← 076 §13 ← 075 §19(2026-09-16) | 신규 기준 후보는 300M. 600M은 한국어 학습·평가 gate 전 HOLD, 1.2B SH는 작성 금지. 반복 노출은 pool/draw를 분리한 1→2 eq 설계로만 검토 | `pool/tokens=1.0`은 순차 epoch가 아니며 역사적 1.2B 기대 unique 약 757M. train draw는 한/영 약 25/75, val 한국어 0%라 한국어 품질은 NOT_RUN |
+| **옵티마이저** | ★**Muon RMS4를 사용자 기본 채택·연구축은 열림** — 상단·WD·형상·seed2024·역사적 길이 전이를 통과 | ★**078 §11~§15** ← 076 §13 ← 075 §19(2026-09-16) | 현재 코드 기본은 RMS4×4·KD off·optimizer-aware WD. 새 smoke 뒤 실제 본런 검증; QK-norm·schedule-scaled WD는 별도 연구 | Muon 일반행렬 WD0, embedding AdamW WD0.1, norm/bias/gate WD0, LRM WD0.01. 기본값 구현과 CPU 계약은 `STATIC_ONLY`; 현재 변경 뒤 학습은 `NOT_RUN` |
 | **토크나이저/어휘** | ⏸**보류** — 선결은 P075 단계1(어휘 16,384) ⚙2.0h | 결과 053 · 2026-08-22 | P075 단계1(**16 MiB 예산이 열릴 때**) | 어휘를 줄이면 **M=8192 무릎이 움직인다**(무릎은 어휘 32,768 기준). 그러면 속도·VRAM 표가 전부 다시 필요하다 |
 | **속도** | ⚠️**열림 · 🚫게이트 아님** — 폭 축소와 d18 배포 속도를 실측했고 둘 다 15 tok/s 바닥을 넘음 | ★**077 §5** ← 074 §26(2026-09-11) | 기존 `inplace` 체크포인트의 **CPU 1코어 tok/s** 실측 ⚙0.2h(학습 0, 사용자 실행) | 남은 경로는 LUT 커널·`inplace`/block 재귀·멀티코어. 폭의 시간 지수 1.44~1.65이며 MobileLLM은 inplace를 SRAM 속도 때문에 채택했지만 우리는 속도로 안 쟀다 |
 | **지능/벤치** | 🚫**v3.0 동일패널 core 회귀 확정** — seed2에서 v2.9→v3.0 D9 22.9→19.0%, 정보 0 54.1→65.2%, 총 bit 1,645.5→1,271.7 | ★**074 §27** ← 074 §25(2026-09-16) | 승인된 [P096](../test_plan/P096_held-out-변별정보-난이도-가족편향-품질향상.md) **Q1 schema/solver 계약**(GPU 0)이 다음. 보호 데이터·canary·GPU는 별도 승인 | v3.0 승격 실패와 별개로 v2.9도 D9 미달·난이도 비단조. 레거시 v3.0 메타데이터 공백 때문에 허용 주장은 core 세 축뿐이며 seed2 패널은 더 이상 봉인 final이 아님 |
@@ -58,11 +58,11 @@
 2. ⏸★★**폭 축은 손실을 회복했지만 채택 이득을 만들지 못했다** — Stage2b에서 폭 대가
    +0.1017과 깊이 회복 +0.1028이 거의 같아 dim512·L28은 기준보다 −0.0011 좋을 뿐 자 안이다
    (077 §12). 부모 계보 교락, held-out, 384 팔이 남아 있고 Stage3·4는 재승인 없이 열지 않는다.
-3. ⚠️★★**WSL agent와 첫 smoke 실행은 관찰됐지만 운영 종결은 아니다** — 사용자 smoke는 모델
-   팔이 아니라 handoff/link 정적 gate 2건 때문에 FAIL했고 수정 뒤 재실행이 남았다. auto compact의
-   hash-verified 상태 캡슐 주입은 이번 task에서 관찰됐지만 manual compact와 Bash/apply_patch WIP
-   direct-write deny probe가 남아 M3는 닫히지 않았다. 재실행 전 smoke나 전체 환경을
-   `ACTIVE_VERIFIED`로 부르지 않는다.
+3. ⚠️★★**WSL agent·hook·smoke는 범위별로 관찰됐지만 운영 종결은 아니다** — 최신 사용자 로그
+   `202609181921_smoke_d8011d0.txt`는 42팔, 실패 0, exit-0 오류표지 0, 계측 오류 0으로 당시 트리
+   PASS다. 이후 optimizer/gate/inference 코드가 바뀌어 현재 트리는 새 smoke가 필요하다. Bash와
+   `apply_patch`의 WIP 직접쓰기 deny 및 allowed `wip.py`, hash-verified auto compact 주입도 실제
+   관찰했다. manual compact는 앱 사용자 동작이라 `NOT_RUN`이며 M3 전체는 `PARTIAL`이다.
 
 ✅**이번에 닫힌 옛 구멍 둘**: `d18` 상주·속도는 37.1 MiB·15.84 tok/s로 실측됐고(074 §26),
 작은-g/attention **직접 공유** 공백은 P045B가 채워 세 팔 모두 dense보다 나빠 현 조건에서 닫혔다(079).
@@ -74,23 +74,28 @@
 ### 2.1 승인됐지만 아직 나침반 판정을 바꾸지 않는 교차축 연구
 
 P091(후반 local/expansion)은 Stage0a CPU 계약을 통과했고(080), 2026-09-18 승인된 레이어 상태
-권장 B안의 `S/U` R0~R3 계약을 별도 번호 없이 흡수했다. P022C(FP8 compute/shadow 분리)는
+권장 B안의 `S/U` R0~R3 계약을 별도 번호 없이 흡수했다. R1a optimizer audit primitive도
+total/WD/optimizer-only update CPU fixture를 통과했으나 실제 모델 mapping·selector는 `NOT_RUN`이다.
+P022C(FP8 compute/shadow 분리)는
 Stage0a CUDA backend를 통과했다(081; 순수 GEMM 1.17~2.09×). 그러나 두 계획 모두 실제 모델 배선·
-학습·품질·end-to-end 자원 이득은 `NOT_RUN`이다. P025B Stage0b는 import 뒤 현 환경의
-`cuSPARSELt not supported`를 실측해 native 가속 분기를 닫았다(082 §6). P092 Stage0c는 CUDA
+학습·품질·end-to-end 자원 이득은 `NOT_RUN`이다. P025B Stage0b는 Windows runtime에서
+`cuSPARSELt not supported`를 실측해 그 분기를 닫았다(082 §6). WSL Stage0bW 진단 `.sh`는
+준비됐으나 사용자 GPU 실행 전 `NOT_RUN`이다. P092 Stage0c는 CUDA
 mask/gradient/birth-death 계약을 2회 통과했지만 dense tensor+mask라 가속·메모리·학습·품질은
 여전히 `NOT_RUN`이다(083 §6~§7). P035B A3는 audit 오염 G1은 통과했지만 지속 후반 궤적차 G2가
 성립하지 않아 adaptive/freeze A4를 열지 않는다(084).
 
 별도 추가 편성은 [실험계획목록 §1.1](../test_plan/실험계획목록.md)의 **72.0h 조건부 hard cap**을
 따른다. 게이트를 통과한 P091·P022C도 후속 구현과 사용자 스모크가 선결이며, 지금 새로 실행 가능한
-것은 없다. P025B 가속 분기는 닫혔고 P092는 TLinear·trainer 구현과 사용자 스모크가 선결이다.
+것은 P025B Stage0bW 사용자 진단뿐이며 학습 편성은 없다. P092는 TLinear·trainer 구현과 사용자
+스모크가 선결이다.
 각 gate가 실패하거나 구현이 비어 있으면 해당 분기의 잔여 예산을 자동 소진하지 않는다.
 
 신규 승인 [P094](../test_plan/P094_Muon-저정밀-shadow-Q-R-residual과-동적정밀도.md)는 P022C의
-actual packed/masterless 출구조건에 막혀 있고, [P095](../test_plan/P095_Scout-1MiB-LTM-학습가능성.md)는
-S0 causal-isolation·물리 회계부터 시작하는 새 아키텍처 축이다. P096은 Q0 기존 증거만 완료됐다.
-세 계획 모두 기존 72h hard cap에 자동 편성하지 않았고 구현·배치·새 GPU 실행은 `NOT_RUN`이다.
+actual packed/masterless 출구조건에 막혀 있다. [P095](../test_plan/P095_Scout-1MiB-LTM-학습가능성.md)는
+S0a causal primitive CPU 계약을 통과했지만 Transformer 통합·물리 RSS·학습성은 `NOT_RUN`이다.
+P096은 Q0과 Q1a 최소 schema/proof synthetic fixture만 통과했으며 전체 taxonomy·실제 문항은
+`NOT_RUN`이다. 세 계획 모두 기존 72h hard cap에 자동 편성하지 않았고 새 GPU 학습은 `NOT_RUN`이다.
 
 ---
 

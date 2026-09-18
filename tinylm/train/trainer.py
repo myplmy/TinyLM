@@ -17,6 +17,13 @@ from ..config import build_config
 from ..model import TiedMLPTransformer
 from ..data import prepare, Loader
 from ..eval import evaluate
+from ..training_defaults import (
+    DEFAULT_MATRIX_WEIGHT_DECAY,
+    DEFAULT_MUON_LR_MULT,
+    DEFAULT_MUON_SCALE,
+    DEFAULT_OPTIMIZER,
+    effective_matrix_weight_decay,
+)
 from .init_utils import init_from_dense, load_dense
 from .anneal_schedule import (
     auxiliary_decay_factor,
@@ -160,10 +167,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, micro_group=None,
           mlp_split=None,
           opt_dtype="fp32", ema_start=0.0, wq_dtype=None, emb_chunk=None,
-          optimizer="adamw", muon_lr_mult=1.0, muon_scale="jordan",
+          optimizer=DEFAULT_OPTIMIZER, muon_lr_mult=DEFAULT_MUON_LR_MULT,
+          muon_scale=DEFAULT_MUON_SCALE,
           # ★A08(2026-09-10 도입) — 행렬 weight decay · opt-in 업데이트 계측.
           #   🚫셋 다 기본값이면 **비트 동일**이다(`matrix_decay_groups` 가 원본 그룹을 그대로 돌려준다).
-          matrix_weight_decay=None, optimizer_audit=None, optimizer_audit_every=100,
+          matrix_weight_decay=DEFAULT_MATRIX_WEIGHT_DECAY,
+          optimizer_audit=None, optimizer_audit_every=100,
           center_weights=False, decay_from=None, snapshots=None,
           use_ternary_kernel=False, ternary_kernel_triton=False,
           kd_cache=False, kd_topk=16, kd_every=1, kd_dynamic=False, sparse34=False,
@@ -461,7 +470,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     #   ⚠️ **기본 `fp32` = 종전 `torch.optim.AdamW(fused=True)` = 비트 동일.**
     #     `fp32c` 는 **같은 수식의 우리 구현**(자기검증용) — 구현 위험과 dtype 위험을 분리한다.
     # ★★P005(2026-09-03) — **Muon 라우팅.** 행렬은 Muon, 그 외(임베딩·norm·bias)는 AdamW.
-    #   🚫`adamw`(기본) = 종전과 **비트 동일**. `muon` 일 때만 두 옵티마이저가 선다.
+    #   `adamw` 명시는 구 레시피의 비트 동일 경로다. 2026-09-18 사용자 승인 기본은
+    #   Muon RMS4이며, `muon`일 때만 두 옵티마이저가 선다.
     #   ⚠️**이점은 대배치에 집중**된다(arXiv:2505.02222) — 우리 유효배치 131K 는 작다.
     #   ⚠️★**삼진 STE 와의 상호작용은 미검증**이다(P005 선결) — fp16 팔과 함께 돌린다.
     # ★★A08(2026-09-10) — **행렬 weight decay 라우팅.**
@@ -488,7 +498,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                 _groups.append(dict(_g, params=_ps))
         opt = torch.optim.AdamW(_groups, betas=(0.9, 0.95), eps=1e-8)
         # ★muon_lr_mult — Muon 의 관용 lr 은 AdamW 보다 한 자릿수 크다(원 구현 2e-2).
-        #   🚫기본 1.0 = 종전 동작 그대로. **바꾸려면 명시해야 한다.**
+        #   2026-09-18 승인 recipe 의 기본은 RMS4이며, 구 비교 재현값은 명시한다.
         # ★A08 — `matrix_weight_decay` 를 안 주면 **0.0** 이라 종전과 같다.
         opt_muon = Muon(_mats, lr=lr * muon_lr_mult, scale_mode=muon_scale,
                         weight_decay=(0.0 if matrix_weight_decay is None
@@ -992,6 +1002,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            #   🚫종전에 `optimizer` 필드가 없어서 Muon 런과 AdamW 런을 사후에 못 갈랐던 것과 같은 이유다.
            "matrix_weight_decay": (float(matrix_weight_decay)
                                    if matrix_weight_decay is not None else None),
+           "matrix_weight_decay_effective": effective_matrix_weight_decay(
+               optimizer, matrix_weight_decay),
            "optimizer_audit": (str(optimizer_audit) if optimizer_audit else None),
            # ★실제로 옵티마이저가 들고 있는 그룹 — *"규약대로 갔는가"* 를 사후에 본다.
            "optimizer_groups_final": [{"lr": g["lr"],
