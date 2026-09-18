@@ -26,10 +26,11 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-1	P096	run_P096_Q1_schema_solver_contract.sh	N	0.1	N	N	보호 데이터 없이 held-out schema·유일 proof·negative fixture 계약을 검증한다
-2	P091	run_P091_R1_optimizer_audit_contract.sh	N	0.1	N	N	CPU fixture로 AdamW·Muon realized update를 WD와 optimizer-only로 분리한다
-3	P095	run_P095_S0_causal_memory_contract.sh	N	0.1	N	N	합성 CPU fixture로 read-before-write·prefix 격리·1 MiB·backward 계약을 검증한다
-4	P025B	run_P025B_Stage0bW_wsl_sparse24_backend.sh	D	0.1	Y	Y	WSL CUDA에서 native 2:4 forward·input-grad·속도 backend를 재탐지한다. 학습 0
+1	P025B	run_P025B_Stage0bWb_wsl_sparse24_training_pack.sh	D	0.1	Y	Y	one-way inference pack과 bidirectional training pack을 분리해 native 2:4 forward·input-grad·속도를 재판정한다. 학습 0
+2	P096	run_P096_Q1b_taxonomy_difficulty_contract.sh	N	0.1	N	N	Q1a 회귀 뒤 보호 데이터 없이 8 relation·32 subtype·난이도·family/template cap 계약을 검증한다
+3	P093	run_P093_Stage0ab_sharing_accounting.sh	N	0.1	N	N	기존 질문 중복과 D/R 후보의 unique weight·packed/resident·optimizer state·FLOPs를 GPU 없이 회계한다
+4	P091	run_P091_R0R1b_model_mapping_audit.sh	N	0.1	N	N	R1a 회귀 뒤 실제 TinyLM CPU 모델의 logical layer·shared tensor·CLA owner·optimizer group mapping과 audit-off 불변을 검증한다
+5	P095	run_P095_S0aL_causal_memory_log_recovery.sh	N	0.1	N	N	이전 콘솔 PASS와 구분한 S0aL 단계로 causal memory CPU 계약의 원본 로그를 복구한다. 새 과학 주장은 없음
 1	P085	run_P085_Stage10c_heldout_v29_seed2_control.bat	D	0.9	Y	Y	v3.0 최종 판정에 쓴 seed2 여섯 모델로 v2.9를 재서 판본과 패널 교락을 해소한다. 기존 v3.0 JSON은 레거시 메타데이터 공백을 명시한 핵심 ID-paired 비교만 수행
 1	P092	run_P092_Stage0c_dynamic_sparse_contract.bat	D	0.1	N	Y	Stage0b import 진입 실패를 고친 첫 유효 mask STE·inactive regrowth·birth/death 보존 CUDA 계약. dense mask를 속도 이득으로 세지 않음
 1	P035B	run_P035B_Stage1_anneal_a3_trajectories.bat	Y	0.8	Y	Y	승인 제안 A3의 0.60/0.80 동역학과 0.80 audit on/off 오염을 같은 부모·seed·600M pool의 세 250-step 팔로 분리한다. 품질·기본값 판정 금지

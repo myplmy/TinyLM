@@ -3278,11 +3278,11 @@ SE 0.0006, t 1.89로 무재귀 자 0.0024 안이며 체크포인트 수준에서
 
 - P025B Stage0b는 Windows runtime에서 import를 통과했지만 RTX 4070 Ti SUPER
   `sm_89`·torch 2.10.0의 첫 native 2:4 호출이 `cuSPARSELt not supported`로 끝났다.
-  WSL Stage0bW도 torch `2.10.0+cu130`·cuSPARSELt `0.8.0`을 로드했지만 같은 첫 형상의
-  matmul이 `operation is not supported`로 종료했다([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--패키지는-로드됐지만-첫-sparse-matmul이-지원되지-않았다)).
-  두 runtime의 forward 정합·input-grad·속도는 `NOT_RUN`이며 현재 가속 분기는 종료한다.
-  WSL 원본 로그는 launcher 결함으로 미보존이므로 사용자 queue transcript가 증거다. 이 관측만으로
-  GPU·driver·PyTorch·cuSPARSELt 중 단독 원인은 못 고른다.
+  WSL Stage0bW의 `operation is not supported`는 PyTorch 2.10 소스상 one-way pack의
+  `packed_t=None`을 input-gradient에서 사용한 진단 구현 오류로 재분류했다([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
+  WSL backend 기각은 철회했고, bidirectional training pack의 forward·input-grad·속도는
+  Stage0bWb 사용자 실행 전까지 `NOT_RUN`이다. WSL 원본 로그는 **로깅 프로그램 코드 오류**로
+  부재한다.
 - P092 Stage0c는 CUDA에서 finite loss, inactive gradient 합 12.144601, mask/effective
   sparsity 0.5, births=deaths=16으로 핵심 계약을 통과했다. 그러나 dense tensor+mask라
   가속·메모리·학습·품질은 모두 `NOT_RUN`이다.
@@ -3295,8 +3295,8 @@ SE 0.0006, t 1.89로 무재귀 자 0.0024 안이며 체크포인트 수준에서
     분기는 닫되, 다른 OS/runtime의 미실행 forward·gradient·속도와 별도 sparse-master 메모리
     트랙을 실패로 승격하지 않는다.
 64. ★★**WSL 재probe는 독립 environment stratum이다.** Windows 실패를 지우지 않고
-    `--require-wsl`과 runtime metadata를 남긴다. WSL도 첫 matmul에서 실패했으므로 현재 두
-    runtime의 가속 분기는 종료하며, 다른 지원 환경 또는 sparse-master 별도 재승인 전 Stage0c를 열지 않는다.
+    `--require-wsl`과 runtime metadata를 남긴다. 한 `try`의 generic 오류를 backend 첫 호출로
+    단정하지 않고 conversion·forward·dgrad·timing과 pack 방향을 각각 기록한다.
 
 ## B.34 ★★★2026-09-16 — **RMS4 길이 전이·held-out 판본 회귀·anneal A3를 닫았다**
 
@@ -3335,3 +3335,21 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
     unique·언어비·평가 언어를 함께 기록하고, 한국어 0% 평가로 한국어 품질을 승격하지 않는다.
 65. ★★**진단 재현은 그 진단의 계약만 강화한다.** 같은 작은 합성값 2회 PASS를 trainer·
     속도·메모리·품질 증거로 확대하지 않는다.
+
+## B.35 ★★2026-09-19 — **다음 게이트는 구현됐지만 동적 결과와 품질은 아직 아니다**
+
+- P096 Q1b는 보호 데이터 없이 8 relation·32 subtype·320 synthetic fixture로 proof path,
+  easy/mid/hard knob, family/template 5% cap을 확인했다. 이는 taxonomy 기계 계약의
+  `STATIC_ONLY` PASS이며 실제 문항 의미·변별정보·봉인 final은 `NOT_RUN`이다.
+- P093 Stage0a/b 산술 회계에서 D1-wide-core는 dense 대비 추가 linear FLOPs +62.4%라
+  고계산 트랙, R1 low-rank r4/8/16은 순배포 절감 26.1~27.2%와 추가 FLOPs 0.45~1.79%의
+  기본 회계 후보다. allocator RSS·activation·latency·품질은 포함하지 않았다.
+- P091 R0/R1b actual tiny-model mapping gate는 구현·구문 PASS이나 Codex가 모델을 실행하지
+  않았으므로 사용자 queue 전에는 동적 PASS가 아니다.
+
+66. ★★**one-way sparse pack의 forward 가능성과 training dgrad 가능성을 합치지 않는다.**
+    `packed`와 `packed_t`를 각각 기록하고, dgrad 실패를 backend 설치 실패로 승격하지 않는다.
+67. ★★**GPU 0 산술 회계는 후보를 거르는 선결이지 모델 품질 결과가 아니다.** packed 추정,
+    optimizer lower bound, FLOPs를 통과해도 RSS·latency·품질을 별도로 잰다.
+68. ★★**taxonomy coverage는 semantic validity가 아니다.** subtype 수와 quota가 맞아도 팀 의미
+    검토와 실제 panel 판정 전에는 benchmark 품질 향상으로 쓰지 않는다.

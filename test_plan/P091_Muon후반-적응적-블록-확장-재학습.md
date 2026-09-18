@@ -69,9 +69,9 @@ trainer에 아직 연결하지 않아 기존 기본 경로를 바꾸지 않는�
 
 | 흡수 단계 | 무엇 | 다음 단계 조건 | 상태·비용 |
 |---|---|---|---|
-| **R0 schema** | logical occurrence, unique MLP/attention tensor, CLA K/V owner, optimizer group을 분리하고 `S/U` 필드 고정 | shared tensor 중복 0, K/V 공급과 잔차 기여 구분 | `DESIGNED`, GPU 0 |
+| **R0 schema** | logical occurrence, unique MLP/attention tensor, CLA K/V owner, optimizer group을 분리하고 `S/U` 필드 고정 | helper·실제 tiny-model gate 구현/구문 PASS; 사용자 모델 실행 `NOT_RUN` | 구현됨, GPU 0 |
 | **R1a audit primitive** | 기존 `OptimizerAudit`에 total/WD/optimizer-only update와 normalized ratio를 opt-in으로 추가 | AdamW·Muon 분리, parameter 중복 차단 | 구현·CPU fixture `STATIC_ONLY` PASS |
-| **R1b integration** | 실제 TinyLM mapping·audit on/off 오염·timing을 모델 경로에서 대조 | 기본 off 동일, Muon post-NS delta 포착, overhead 별도 | 모델·GPU `NOT_RUN` |
+| **R1b integration** | 실제 TinyLM mapping·audit on/off 오염·timing을 모델 경로에서 대조 | tiny CPU model mapping·audit 생성 불변 gate 구현; 사용자 실행·timing은 `NOT_RUN` | 구문 PASS, GPU `NOT_RUN` |
 | **R2 진단** | selector 전용 패널에서 CLA-safe gate-zero `S`와 여러 window의 `U` 측정 | window·panel rank 안정, mapping 오류 0 | 모델·GPU `NOT_RUN` |
 | **R3 예측력** | 기존 Stage1의 32~128-step realized gain과 `S/U` ranking 대조 | median Spearman `rho≥0.5`, 3 window 중 2개 top-2 | 기존 Stage1에 흡수 |
 
@@ -107,7 +107,9 @@ fixed structured layer dropout(C)은 각각 별도 후속 계획·승인으로 �
 - WSL 사용자 queue 콘솔 PASS: `run_P091_R1_optimizer_audit_contract.sh` — R1a synthetic CPU
   fixture만 실행했다. 당시 launcher가 `runlog.py`를 우회해 `test_result/` 원본은 미보존이므로
   실제 모델 mapping·selector 증거로 확대하지 않는다.
-- 미작성: R1b~R3와 Stage0b~Stage5. 다음은 R0 mapping 문서 대조와 실제
+- 실행 대기: `run_P091_R0R1b_model_mapping_audit.sh` — R1a를 회귀한 뒤 실제 tiny CPU 모델의
+  logical/shared/CLA/optimizer mapping과 audit 생성 시 state 불변을 확인한다.
+- 미작성: R2~R3와 Stage0b~Stage5. 다음은 사용자 R0/R1b gate와 실제
   TLinear/controller·optimizer-state 격리 범위를 별도로 고정하고, 구현 뒤 사용자 스모크를 통과한
   경우에만 Stage1을 연다.
 
@@ -145,3 +147,5 @@ primitive에만 적용하며 모델 로딩, smoke, GPU, 장기 학습과 B/C 후
 - 2026-09-18: WSL queue에서도 R1a 콘솔 PASS를 관찰했다. 원본 로그 미보존 결함을 교정했지만
   교정 후 재실행 전에는 durable-log E2E를 주장하지 않는다. 다음 단계는 그대로 R0 mapping과
   R1b 실제 모델 audit이다.
+- 2026-09-19: R0 mapping helper와 R1b tiny CPU model gate·WSL SH를 구현하고 구문 검사를
+  통과했다. Codex는 모델을 실행하지 않았으므로 mapping·audit 불변의 동적 판정은 `NOT_RUN`이다.

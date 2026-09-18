@@ -21,6 +21,8 @@
 
 - **에러**: `0x00`~`0x08` · `0x0B` · `0x0C` · `0x0E`~`0x1F` 중 하나라도 있으면.
   (탭 `0x09` · LF `0x0A` · CR `0x0D` 는 정상 문자라 뺀다)
+- **허용**: 원본 콘솔 로그에 들어 있는 완결된 ANSI CSI 시퀀스. 예: 색상용
+  `ESC[1;34m`·`ESC[0m`. 고립 ESC나 불완전 시퀀스는 계속 에러다.
 - ⚠️**탭은 안 본다** — `.tsv` 의 구분자이고 `.py` 의 들여쓰기로도 합법이다.
   🚫`.bat` 의 탭은 `lint_bat` 이 이미 본다. **범위를 넓히면 면제를 함께 넣는다.**
 - `.bat` 은 건너뛴다(`lint_bat` 소관 — 한 개념을 두 곳에서 검사하지 않는다).
@@ -30,6 +32,7 @@
 """
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -42,6 +45,22 @@ SKIP_DIRS = {"__pycache__", ".git", "node_modules"}
 BAD = set(range(0x00, 0x09)) | {0x0B, 0x0C} | set(range(0x0E, 0x20))
 NAMES = {0x00: "NUL", 0x07: "BEL", 0x08: "BS(\\b)", 0x0B: "VT(\\v)",
          0x0C: "FF(\\f)", 0x1B: "ESC"}
+
+
+ANSI_CSI = re.compile(rb"\x1B\[[0-?]*[ -/]*[@-~]")
+
+
+def first_bad_control(raw: bytes) -> tuple[int, int] | None:
+    """Return the first non-ANSI forbidden control as ``(offset, byte)``."""
+    allowed_offsets = {
+        offset
+        for match in ANSI_CSI.finditer(raw)
+        for offset in range(match.start(), match.end())
+    }
+    for index, byte in enumerate(raw):
+        if byte in BAD and index not in allowed_offsets:
+            return index, byte
+    return None
 
 
 def _targets():
@@ -71,14 +90,14 @@ def main() -> int:
             raw = p.read_bytes()
         except OSError:
             continue
-        for i, b in enumerate(raw):
-            if b in BAD:
-                line = raw[:i].count(b"\n") + 1
-                nm = NAMES.get(b, f"0x{b:02X}")
-                ctx = raw[max(0, i - 24):i + 24].decode("utf-8", "replace")
-                ctx = ctx.replace(chr(10), "\\n")
-                hits.append((p, line, nm, ctx))
-                break                     # 파일당 첫 건만 — 목록이 길어지면 안 읽는다
+        bad = first_bad_control(raw)
+        if bad is not None:
+            i, b = bad
+            line = raw[:i].count(b"\n") + 1
+            nm = NAMES.get(b, f"0x{b:02X}")
+            ctx = raw[max(0, i - 24):i + 24].decode("utf-8", "replace")
+            ctx = ctx.replace(chr(10), "\\n")
+            hits.append((p, line, nm, ctx))
 
     print("=" * 92)
     print(f"  게이트 35 — 제어문자 (검사 {len(files)}파일 · `.bat` 은 lint_bat 소관)")

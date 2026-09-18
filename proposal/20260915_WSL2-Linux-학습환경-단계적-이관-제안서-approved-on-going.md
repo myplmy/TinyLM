@@ -2,7 +2,7 @@
 
 > **작성일**: 2026-09-15  
 > **최종 수정일**: 2026-09-19
-> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent와 관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 사용자 범위 예외 종결(manual compact 검증 제외, 전체 증거 `PARTIAL`) / M4 `PARTIAL`(cuSPARSELt 대상 matmul FAIL, 나머지 backend `NOT_RUN`) / M5 `NOT_RUN`
+> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent와 관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 사용자 범위 예외 종결(manual compact 검증 제외, 전체 증거 `PARTIAL`) / M4 `PARTIAL`(설치 메타데이터만 확인; P025B 종전 판정 `INVALID_DIAGNOSTIC`, 교정 gate와 나머지 backend `NOT_RUN`) / M5 `NOT_RUN`
 > **분류**: 작업환경 / 실행기반 / 실험 재현성  
 > **실험번호**: `PNone`  
 > **실험계획 비대상 사유**: 이 문서는 환경 이관 의사결정 제안이다. 승인 뒤 필요한 교량 실험은 기존 계획의 환경 단계 또는 별도 승인된 실험계획으로 등록한다.
@@ -19,7 +19,7 @@ Windows의 현재 학습환경과 WSL2의 후보 환경은 PyTorch·CUDA 주버�
 | PyTorch | `2.10.0` | `2.10.0+cu130` | 표기는 거의 같아도 wheel·확장 ABI는 별도 확인 대상 |
 | CUDA build | `13.0` | `13.0` | 큰 축은 일치 |
 | cuDNN runtime | `9.19.0` | `9.15.1` | 커널 선택·결정성·속도 조건이 달라질 수 있음 |
-| cuSPARSELt | OFF | ON | P025B native 2:4 게이트를 다시 열 수 있는 직접 차이 |
+| cuSPARSELt | OFF | package·PyTorch compile flag 확인 | P025B native 2:4 training 경로는 교정 gate 실행 전 `NOT_RUN` |
 | Triton | Windows `triton-windows 3.7.1.post27` | Linux `triton 3.6.0` | 같은 import 이름이어도 배포판·버전·생성 커널이 다름 |
 | FlashAttention | 미확인/미설치 | `tlm_torch`에서 distribution 미검출 | Linux가 설치 가능성이 높은 것이지 현재 설치·동작한 것은 아님 |
 
@@ -374,7 +374,7 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
   2026-09-18 사용자 queue에서 일반 gate 전수수집과 최종 exit 4는 관찰됐지만, 네 실험 gate의
   원본 로그가 launcher 결함으로 남지 않았다. 실행 정책은 관찰 PASS, durable-log E2E는 교정 후 `NOT_RUN`이다.
 - `run_cleanup_checkpoints.sh`: 사용자 삭제 실행 전용, `NOT_RUN`.
-- M4 backend: cuSPARSELt 대상 matmul FAIL까지 `PARTIAL`; 나머지 backend `NOT_RUN`. M5 교량: `NOT_RUN`.
+- M4 backend: 설치 메타데이터까지만 `PARTIAL`; P025B 종전 FAIL은 진단 결함으로 `INVALID_DIAGNOSTIC`, 교정 gate와 나머지 backend는 `NOT_RUN`. M5 교량: `NOT_RUN`.
 
 ## 12. 2026-09-18 새 WSL task 실제 관찰과 현재 이관 상태
 
@@ -395,7 +395,7 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
 | 검사 | 회신 결과 | 판정 |
 |---|---|---|
 | `.codex/check_environment.py` | 초기 회신과 현재 재검사 모두 `checks=32 PASS=31 FAIL=0 NOT_RUN=1` | 정적 선결 PASS; `pwsh` 부재 PowerShell parser 1건은 `NOT_RUN` 유지 |
-| `scripts/check_shell_entrypoints.py` | 초기 `4`, 현재 신규 gate `.sh` 포함 `8` PASS | Linux queue·smoke·gate entrypoint 정적 PASS |
+| `scripts/check_shell_entrypoints.py` | 초기 `4`, 현재 신규 gate `.sh` 포함 `13` PASS | Linux queue·smoke·gate entrypoint 정적 PASS |
 
 정적 PASS는 모델·GPU·smoke의 동적 성공을 뜻하지 않는다. 또한 PowerShell source 검사를 하지
 못한 한 건을 PASS로 합산하지 않는다.
@@ -439,47 +439,93 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
 ### 12.2b 전체 gate queue와 로그 보존 결함
 
 사용자는 WSL queue에서 smoke와 P096/P091/P095/P025B gate를 한 번에 실행했다. smoke의 마지막
-회차와 P096·P091·P095 콘솔 결과는 PASS였고, P025B는 torch `2.10.0+cu130`·cuSPARSELt `0.8.0`
-로드 뒤 첫 `M=8192,K=768,N=2048` sparse matmul에서 `operation is not supported`로 실패했다.
-queue는 일반 gate를 끝까지 수집한 뒤 실패 1건으로 exit `4`를 반환해 실행 정책은 의도대로였다.
+회차와 P096·P091·P095 콘솔 결과는 PASS였고, P025B 진단은 torch `2.10.0+cu130`·cuSPARSELt `0.8.0`
+로드 뒤 `M=8192,K=768,N=2048`에서 `operation is not supported`를 반환했다. 당시 한 `try`가
+forward·input-gradient·속도를 함께 감싸 정확한 실패 단계를 보존하지 않았으므로 이를 "첫 sparse
+matmul"이나 backend 미지원으로 귀속한 판정은 유효하지 않다. queue는 일반 gate를 끝까지 수집한
+뒤 실패 1건으로 exit `4`를 반환해 실행 정책 자체는 의도대로였다.
 
-다만 네 WSL gate launcher가 `scripts/runlog.py`를 거치지 않아 `test_result/` 원본 로그가 0건이었고,
+다만 네 WSL gate launcher가 `scripts/runlog.py`를 거치지 않은 **로깅 프로그램 코드 오류** 때문에
+`test_result/` 원본 로그가 0건이었고,
 스모크도 30분 재사용 창 때문에 두 실행이 한 파일에 합쳐졌다. Windows 큐가 로그를 더 잘 보존한
 이유는 큐 자체가 아니라 개별 BAT가 `runlog.py`를 소유했기 때문이다. 네 SH를 같은 계약으로
 교정하고 모든 `run_P*.sh`의 runlog 경유를 정적 검사로 강제했다. 스모크 첫 `[tool]` note는 이제
 항상 새 파일을 열며, 요약기는 역사적으로 합쳐진 파일에서도 마지막 session만 판정한다. 정적
-회귀는 queue 11/11·smoke entrypoint 4/4·shell entrypoint 8/8 PASS이나, 교정 후 사용자 동적
+회귀는 queue 11/11·smoke entrypoint 4/4·shell entrypoint 13/13 PASS이나, 교정 후 사용자 동적
 재실행은 `E2E_NOT_RUN`이다.
+
+### 12.2c P025B 원인 교정과 M4 무학습 gate 재감사
+
+설치된 PyTorch 2.10 소스에서 `SparseSemiStructuredTensorCUSPARSELT._mm()`의 해당 오류는
+희소 operand의 `packed is None`일 때 발생한다. `to_sparse_semi_structured(W[N,K])`는 원래
+방향의 `packed`만 만들고 `packed_t`는 만들지 않는다. `F.linear(X, W_sparse)`의 forward는
+내부 이중 transpose로 원래 pack을 사용할 수 있지만, input-gradient가 반대 방향 matmul을 요구하면
+`packed_t`가 없는 객체가 `_mm()`에 들어갈 수 있다. 따라서 종전 Stage0bW의 한 방향 inference
+pack으로 forward와 input-gradient를 함께 검사한 구현은 training backend 판정기가 아니었다.
+[PyTorch의 CUSPARSELT 텐서 문서](https://docs.pytorch.org/docs/main/generated/torch.sparse.semi_structured.SparseSemiStructuredTensorCUSPARSELT.html)도
+training용 양방향 pack API를 별도로 둔다.
+
+교정 Stage0bWb는 다음을 분리한다.
+
+1. 한 방향 inference pack의 `packed`·`packed_t`와 transpose 상태를 출력하고 forward를 dense와 대조한다.
+2. inference pack의 input-gradient 실패가 정확히 `packed_t` 부재인지 별도 분류한다.
+3. `prune_dense_static_sort()`로 `packed`와 `packed_t`를 모두 만든 training pack을 구성한다.
+4. 두 TinyLM MLP 방향에서 4×4 tile의 행·열 각각 ≤2/4, forward·input-gradient를 dense와
+   수치 대조하고 속도를 잰다. 양방향 greedy pruner는 일부 tile에서 7/8개만 보존할 수 있으므로
+   exact 2/4를 요구하지 않는다.
+
+코드·launcher의 정적 검증만 끝났고 사용자 GPU 실행은 아직 없으므로 Stage0bWb는
+`STATIC_ONLY`/동적 `NOT_RUN`이다. 종전 콘솔 transcript에는 단계 식별과 원본 로그가 모두 없어
+backend FAIL 증거로 재사용하지 않는다.
+
+M4의 원래 계약인 **import·지원·수치 일치·메모리 계측**을 backend별로 다시 대조하면 다음과 같다.
+
+| backend 축 | 현재 자산 | WSL M4 판정 | 누락 |
+|---|---|---|---|
+| torch/CUDA/cuDNN 환경 | 버전·CUDA 가용성은 smoke/환경 출력에 존재 | 메타데이터 `PARTIAL` | 독립 actual-call·peak-memory 표 |
+| cuSPARSELt native 2:4 | `diag_sparse24_backend.py`, `run_P025B_Stage0bWb_wsl_sparse24_training_pack.sh` | 구현 `STATIC_ONLY`, GPU `NOT_RUN` | 사용자 실행 로그·판정 |
+| FP8 scaled GEMM | `diag_fp8_backend_gate.py`와 Windows 역사 결과 존재 | WSL `NOT_RUN` | WSL-native launcher와 WSL actual-call·수치오차·메모리 gate |
+| PyTorch SDPA FLASH/MEM-EFFICIENT/CUDNN | `diag_sdpa_backends.py`는 가용성과 상대속도만 검사 | WSL M4 불충분 | WSL-native launcher, dense/math 기준 수치 일치와 peak-memory 계약 |
+| TinyLM Triton ternary kernel | `tinylm/model/ternary_kernel.py` 구현 존재 | WSL `NOT_RUN` | 전용 import→실제 kernel→reference 수치→peak-memory gate와 launcher |
+| 외부 `flash-attn` | distribution 미검출 | `NOT_RUN` | 설치 승인·호환성·실제 호출·수치·메모리; PyTorch FLASH SDPA와 별도 판정 |
+
+따라서 **작성된 M4 gate는 P025B Stage0bWb 하나뿐이고, FP8·SDPA/cuDNN·Triton·외부
+FlashAttention의 WSL-native 완결 gate는 아직 작성되지 않았다.** 미작성 항목은 실행 가능 큐로
+표시하지 않고 backlog로 유지한다. 이번 우선순위에는 즉시 실행 가능한 교정·무데이터 계약 gate만
+선정했으므로, 위 누락 gate 구현은 별도 우선순위 확정 전 자동 개방하지 않는다.
 
 ### 12.3 단계별 현재 판정
 
 | 단계 | 2026-09-19 판정 | 남은 것 |
 |---|---|---|
 | M1R 물리 이관·canonical workdir | 사용자 이관 완료, 새 task workdir `ACTIVE_VERIFIED` | Windows 사본의 장기 역할은 최종 운영 승인 때 확정 |
-| M2R 공통 실행 기반 | `STATIC_ONLY` PASS (`31/0/1`, shell entrypoint `8`) | PowerShell source는 별도 Windows 증거 또는 선택적 `pwsh`; 전체 보호 데이터 suite는 미실행 |
+| M2R 공통 실행 기반 | `STATIC_ONLY` PASS (`31/0/1`, shell entrypoint `13`) | PowerShell source는 별도 Windows 증거 또는 선택적 `pwsh`; 전체 보호 데이터 suite는 미실행 |
 | M3a Desktop WSL agent | `ACTIVE_VERIFIED` | 현재 project/runtime가 바뀌면 재검증 |
 | M3b PreToolUse 정상·위험쓰기·WIP guard | 관찰한 probe 범위 `ACTIVE_VERIFIED` | 다른 matcher로 일반화 금지 |
 | M3c SessionStart·PreCompact·compact | auto compact exact-WIP 재주입 PASS, manual `NOT_RUN`·사용자 제외 | 사용자 승인 범위는 예외 종결; manual 경로를 PASS로 승격 금지 |
 | M3d model smoke | 23:07 `82dad38` 회차 42/42 PASS. 23:33 회차도 마지막 session 기준 42/42 PASS이나 앞 파일에 합쳐져 commit header 귀속 불완전 | 새 session 분리 교정 뒤 현재 tree whole-smoke는 `E2E_NOT_RUN` |
-| M4 backend | `PARTIAL` — cuSPARSELt package는 로드됐지만 TinyLM 대상 첫 matmul FAIL([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--패키지는-로드됐지만-첫-sparse-matmul이-지원되지-않았다)) | Triton·FlashAttention 등 나머지 실제 호출·수치·메모리는 `NOT_RUN`; 2:4 가속 후속 자동 개방 금지 |
+| M4 backend | 설치 메타데이터 `PARTIAL`; 종전 P025B FAIL은 `INVALID_DIAGNOSTIC`; 교정 Stage0bWb 구현은 `STATIC_ONLY`·GPU `NOT_RUN` | FP8·SDPA/cuDNN·Triton·외부 FlashAttention의 WSL-native 완결 gate 미작성/`NOT_RUN`; 어떤 후속도 자동 개방 금지 |
 | M5 교량 | `NOT_RUN` | 동일 checkpoint 평가와 필요시 최소 dense 대조 |
 | M6 운영 전환 | 진행 중 | M4 잔여 backend·M5와 사용자 최종 승인; queue 로그 교정 E2E는 별도 확인 |
 
 이관을 한 문장으로 요약하면 **“저장소와 Codex agent는 WSL로 전환됐고 요청된 PreToolUse·
 WIP guard·auto compact는 범위별로 작동했고 smoke의 두 실제 회차도 각각 42/42 PASS지만,
-두 번째 로그는 앞 파일에 합쳐져 귀속이 불완전하며, cuSPARSELt 대상 matmul은 WSL에서도
-지원되지 않았다. 나머지 backend·Windows↔WSL 교량·최종 전환 승인은 남았다”**다. manual compact는
+두 번째 로그는 앞 파일에 합쳐져 귀속이 불완전하며, cuSPARSELt 종전 FAIL은 진단 코드 결함으로
+무효화되어 교정 gate 실행을 기다린다. 나머지 backend·Windows↔WSL 교량·최종 전환 승인은
+남았다”**다. manual compact는
 사용자 결정으로 검증 범위에서 제외되었으며, 그 경로를 PASS로 승격하지 않는다.
 
 ### 12.4 다음 순서
 
 1. hooks.json 또는 Desktop project identity가 바뀌지 않았다면 이번 세 probe를 반복할 필요는 없다.
-2. 교정된 로그 보존 E2E가 필요하면 사용자 소유 `./run_queue.sh`의 현재 메뉴에서 동일 gate 묶음을
-   다시 선택한다. cleanup은 제외한다. smoke도 포함할 경우 화면의 `stop`·`collect`·`warn` 설명을
-   보고 실패 정책을 사용자가 직접 선택하며, 새 smoke 파일과 `test_result/` 로그 생성 여부를 함께 본다.
+2. 교정된 로그 보존 E2E와 P025B 재판정은 사용자 소유 `./run_queue.sh`의 현재 메뉴에서 구현·정적
+   검증된 gate 묶음을 선택한다. cleanup은 제외한다. smoke도 포함할 경우 화면의
+   `stop`·`collect`·`warn` 설명을 보고 실패 정책을 사용자가 직접 선택하며, 새 smoke 파일과
+   `test_result/` 로그 생성 여부를 함께 본다.
 3. manual compact는 사용자 결정으로 검증 범위에서 제외됐으며 재요청 전에는 실행·검증하지 않는다.
    이 예외 종결을 manual 경로 PASS나 M3 전체 `ACTIVE_VERIFIED`로 다시 쓰지 않는다.
 4. 일반 gate는 한 queue에서 모두 결과를 수집하되 항목별로 따로 판정한다. `warn`이나 queue
-   exit 0은 smoke PASS를 뜻하지 않으며, P025B Stage0c와 M5 교량을 자동으로 열지 않는다.
+   exit 0은 smoke PASS를 뜻하지 않으며, P025B Stage0bWb PASS 전에는 Stage0c와 M5 교량을 열지 않는다.
+   미작성 M4 gate는 backlog이며 현재 실행 큐나 파일명 목록으로 제시하지 않는다.
 5. 최신 smoke PASS만으로 M4·M5·M6를 대신할 수 없으므로 파일명은 `-approved-on-going`을 유지하고
    `proposal/done/`으로 이관하지 않는다.

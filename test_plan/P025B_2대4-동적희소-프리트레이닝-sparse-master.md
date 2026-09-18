@@ -5,11 +5,12 @@
 > **현재 상태(2026-09-19):** Windows Stage0b는 import를 통과했지만 RTX 4070 Ti SUPER
 > `sm_89`·PyTorch 2.10.0 환경에서 `cuSPARSELt not supported`로 첫 native 호출이 거부됐다
 > ([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
-> WSL Stage0bW도 torch `2.10.0+cu130`·cuSPARSELt `0.8.0`을 로드한 뒤 같은 첫 형상의
-> native matmul에서 `operation is not supported`로 종료했다([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--패키지는-로드됐지만-첫-sparse-matmul이-지원되지-않았다)).
-> 따라서 현재 Windows/WSL runtime의 학습 가속 분기는 모두 종료한다. WSL 원본 로그는 당시
-> launcher 결함으로 미보존이며 사용자 queue transcript가 증거다; sparse-master 메모리 트랙은
-> 별도 재승인 없이 열지 않는다.
+> WSL Stage0bW의 `operation is not supported`는 backend 불가가 아니라, one-way
+> `to_sparse_semi_structured` 결과(`packed_t=None`)로 input-gradient를 호출한 진단 구현 결함으로
+> 재분류했다([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--판정-철회와-진단-구현-오류)).
+> `packed`/`packed_t`를 모두 만드는 학습용 경로와 단계별 출력을 추가한 Stage0bWb는
+> `STATIC_ONLY`; 사용자 GPU 재실행은 `NOT_RUN`이다. 당시 WSL 원본 로그는 **로깅 프로그램의
+> launcher 코드 오류**로 부재하며, 사용자 queue transcript만 역사 증거로 남는다.
 
 ## 1. 왜 — 0을 넣는 것과 실제 희소 학습은 다르다
 
@@ -38,8 +39,9 @@ native 속도, dense-master 품질, inactive state를 제거한 sparse-master, t
 |---|---|---|---:|
 | **Stage0a ⚠️ 무효** | 실제 MLP 형상 native 2:4 진단 최초 시도 | `tinylm` import 전에 종료; 과학적 결과 `NOT_RUN`([082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | 0.1 미만 |
 | **Stage0b-Win 🚫** | import는 통과. 첫 실제 MLP 형상에서 Windows runtime의 cuSPARSELt가 native forward 전 거부([082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | Windows 가속 분기 종료 | 진입 시간만 |
-| **Stage0bW 🚫** | 같은 실제 형상·계측 계약을 WSL CUDA runtime에서 재probe | 첫 native matmul `operation is not supported`; WSL 가속 분기 종료([082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--패키지는-로드됐지만-첫-sparse-matmul이-지원되지-않았다)) | 진입 시간만 |
-| **Stage0c ⏸** | dense vs 2:4 whole primitive forward/backward | 다른 지원 runtime 증거 또는 메모리 트랙 별도 재승인 | 0.2 |
+| **Stage0bW ⚠️ 무효** | WSL CUDA runtime 최초 재probe | one-way pack의 dgrad를 backend 첫 matmul 실패로 합친 진단 구현 오류; 원본 로그도 로깅 코드 오류로 부재([082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--판정-철회와-진단-구현-오류)) | 진입 시간만 |
+| **Stage0bWb** | inference pack과 bidirectional training pack의 상태·forward·dgrad·속도를 단계별 재probe | `packed`·`packed_t` 모두 존재, 4×4 tile의 행·열 각각 ≤2/4, 두 형상 forward/dgrad 수치 일치, 최소 1.25× | `STATIC_ONLY`; 사용자 GPU `NOT_RUN` |
+| **Stage0c ⏸** | dense vs 2:4 whole primitive forward/backward | 유효한 Stage0bWb PASS | 0.2 |
 | **Stage1a ⏸** | dense-master 2:4, 250 step | sparse-master 메모리 트랙 별도 재승인 | 0.25 |
 | **Stage1b** | flip/death/birth/resurrection 계측 | active count·birth/death 보존 | 0.25 |
 | **Stage1c** | sparse-master 250 step | hidden dense state 없음, invariant 100% | 0.3 |
@@ -48,9 +50,13 @@ native 속도, dense-master 품질, inactive state를 제거한 sparse-master, t
 | **Stage3b** | churn cosine/adaptive freeze | Stage3a에서 sparse-master 비탈락 | 2~4 |
 | **Stage4** | seed/재생성 | 분해능 근처일 때만 | 3~5 |
 
-Stage0b 재실행의 `scripts/diag_sparse24_backend.py`는 magnitude top-2 mask의 블록별 active count,
-`torch.sparse.to_sparse_semi_structured`, forward 일치, input-gradient 유한성, 동일 세션
-median을 검사한다. weight-gradient·whole-step은 Stage0c 이후 소유로 남긴다.
+Stage0bWb의 `scripts/diag_sparse24_backend.py`는 magnitude top-2 inference mask와
+`to_sparse_semi_structured`의 one-way pack 상태를 먼저 기록한다. 이어 PyTorch 2.10의
+`SparseSemiStructuredTensorCUSPARSELT.prune_dense_static_sort`로 원본·전치 `packed`를 함께
+만들어 4×4 tile의 row/column 양방향 ≤2/4, forward·input-gradient의 dense 수치 일치,
+동일 세션 median을 검사한다. training pruner는 일부 tile에서 8개가 아니라 7개만 남길 수 있으므로
+`정확히 2/4`를 강제하지 않는다.
+weight-gradient·whole-step은 Stage0c 이후 소유로 남긴다.
 
 ## 5. 판정 기준
 
@@ -62,7 +68,7 @@ median을 검사한다. weight-gradient·whole-step은 Stage0c 이후 소유로 
 | topology | 모든 4-block에 정확히 2 active, dynamic update의 births=deaths |
 | 재현 | 필요 Stage4에서 seed/재생성 방향 유지 |
 
-유효한 Stage0bW가 지원 또는 속도 게이트를 못 넘으면 WSL 학습가속 분기도 종료한다. sparse-master
+유효한 Stage0bWb가 지원 또는 속도 게이트를 못 넘으면 WSL 학습가속 분기도 종료한다. sparse-master
 메모리만 계속할지는 자동 진행하지 않고 새 판정을 받는다.
 
 ## 6. 비용
@@ -78,10 +84,11 @@ median을 검사한다. weight-gradient·whole-step은 Stage0c 이후 소유로 
 - 무효 완료: `run_P025B_Stage0a_sparse24_backend-done.bat` — import 실패로 과학적 게이트 `NOT_RUN`([결과 082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
 - 완료(Windows 역사): `run_P025B_Stage0b_sparse24_backend-done.bat` — 해당 runtime의 native
   cuSPARSELt 지원 불가로 음성 게이트 종료([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
-- 실행(WSL, 콘솔 증거): `run_P025B_Stage0bW_wsl_sparse24_backend.sh` — 첫 native matmul에서
-  지원 불가([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--패키지는-로드됐지만-첫-sparse-matmul이-지원되지-않았다)).
-  당시 `runlog.py` 우회 결함으로 원본 로그가 없으며, 교정 뒤 재실행은 로그 보존 E2E 용도다.
-- 미작성: Stage0c~Stage4. Stage0bW 결과를 회수하기 전 자동 개방하지 않는다.
+- 무효(WSL, 콘솔 증거): `run_P025B_Stage0bW_wsl_sparse24_backend-done.sh` — one-way pack의
+  dgrad 실패를 첫 backend matmul 실패로 오분류했다. **로깅 프로그램 코드 오류**로 원본 로그도 없다.
+- 실행 대기: `run_P025B_Stage0bWb_wsl_sparse24_training_pack.sh` — 두 pack 방향과 각 연산 단계를
+  분리해 기록하는 교정 재게이트. GPU 실행은 `NOT_RUN`이다.
+- 미작성: Stage0c~Stage4. Stage0bWb 결과를 회수하기 전 자동 개방하지 않는다.
 
 ## 8. 한계
 
@@ -99,8 +106,9 @@ median을 검사한다. weight-gradient·whole-step은 Stage0c 이후 소유로 
   `NOT_RUN`; Windows runtime 가속 분기는 사전등록 규칙에 따라 닫았다([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
 - 2026-09-18: WSL 이관을 별도 environment stratum으로 사전등록하고 Stage0bW 진단 코드·`.sh`를
   정적 검증했다.
-- 2026-09-18: 사용자 queue에서 WSL Stage0bW를 실행했다. 패키지 import 뒤 첫
-  `M=8192,K=768,N=2048` sparse matmul이 `NotImplementedError: operation is not supported`로
-  종료해 WSL 가속 분기도 닫았다([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--패키지는-로드됐지만-첫-sparse-matmul이-지원되지-않았다)).
-  forward 정합·input-gradient·속도·학습·품질은 `NOT_RUN`; 원본 로그 미보존 부채는 launcher
-  교정으로 재발 방지만 완료했다.
+- 2026-09-18: 사용자 queue의 Stage0bW는 `operation is not supported`로 종료했고 당시에는
+  WSL backend 불가로 오판했다. 원본 로그는 WSL launcher의 로깅 프로그램 코드 오류로 부재한다.
+- 2026-09-19: PyTorch 2.10 소스와 실행 순서를 재대조했다. 일반 변환은 `packed_t=None`이고
+  정확한 오류는 transpose된 sparse 객체의 `packed is None`일 때 발생하므로, 실패는 dgrad용
+  양방향 패킹 누락으로 재분류했다. 학습용 양방향 pack과 단계별 출력의 Stage0bWb를 구현·정적
+  검증했으며 실제 GPU 판정은 `NOT_RUN`이다.

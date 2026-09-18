@@ -20,9 +20,9 @@
 
 | 검사 | 무엇 | 판정 |
 |---|---|---|
-| ★**W1** | 핸드오프 §7 의 대기표에서 **선결이 비었거나 "없음" 이거나 0h** 인데 배치 이름이 없다 | 🚫**에러** |
+| ★**W1** | 핸드오프 §7 의 대기표에서 **선결이 비었거나 "없음" 이거나 0h** 인데 `.bat`/`.sh` 실행 진입점이 없다 | 🚫**에러** |
 | ★**W2** | `proposal/done/*-approved.md` 인데 **이어진 계획서가 없다** | 🚫**에러**(정확한 `PNone`+비대상 사유·1일 유예만 면제) |
-| **W3** | 계획서 단계표가 이름 붙인 배치가 **디스크에 없다** | ⚠️**경고**(`⏸`·`🚫` 표시면 면제) |
+| **W3** | 계획서 단계표가 이름 붙인 `.bat`/`.sh` 진입점이 **디스크에 없다** | ⚠️**경고**(`⏸`·`🚫` 표시면 면제) |
 
 ## ★탈출구 — 정말 못 만드는 배치도 있다
 
@@ -45,7 +45,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 NL = chr(10)
-BAT = re.compile(r"run_[A-Za-z0-9_]+\.bat")
+LAUNCHER = re.compile(r"run_[A-Za-z0-9_]+\.(?:bat|sh)")
 FREE = ("없음", "—", "-", "")            # ★선결 **텍스트** 칸이 비었다
 # 🚫★시간 칸의 `—` 는 *"모른다"* 이지 *"0"* 이 아니다 — 섞으면 과잉 차단이 된다
 #    (제안서 §8 이 미리 적어 둔 위험. 초판이 실제로 3행을 오탐했다).
@@ -101,7 +101,7 @@ def w1(path):
                      if "선결" in x and x != cols[idx]), None)
         hh = re.sub(r"[*`⚙]", "", c[hidx]).strip() if hidx is not None else ""
         free = (pre in FREE) or pre.startswith("없음") or (hh in ZERO)
-        if free and not BAT.search(ln):
+        if free and not LAUNCHER.search(ln):
             _nm = re.sub(r"[*`]", "", c[0]).strip()
             out.append((_nm, pre or "(빈칸)", hh))
     return out
@@ -152,13 +152,16 @@ def w2():
     return out
 
 
-def _ran(bat):
+def _ran(launcher):
     """그 단계가 **이미 돌았는가** — `test_result/` 의 로그 파일명으로 판정한다.
 
     ★완료 배치는 사용자 정리로 사라질 수 있으므로 *"디스크에 없다"* 가 곧
     *"안 만들었다"* 가 아니다. 🚫이 구분을 안 하면 경고 20건이 전부 잡음이 된다.
     """
-    m = re.match(r"^run_(P\d{3,}[A-Za-z]*)_([A-Za-z0-9]+)(?:_|\.bat$)", bat)
+    m = re.match(
+        r"^run_(P\d{3,}[A-Za-z]*)_([A-Za-z0-9]+)(?:_|\.(?:bat|sh)$)",
+        launcher,
+    )
     if not m:
         return False
     plan, stage = m.group(1), m.group(2).lower()
@@ -180,8 +183,10 @@ def w3():
                 continue
             if "⏸" in ln or "🚫" in ln or "없음" in ln:
                 continue                                   # ★미뤘다고 명시했다
-            for b in set(BAT.findall(ln)):
-                if (ROOT / b).exists() or (ROOT / b.replace(".bat", "-done.bat")).exists():
+            for b in set(LAUNCHER.findall(ln)):
+                path = ROOT / b
+                done_path = path.with_name(f"{path.stem}-done{path.suffix}")
+                if path.exists() or done_path.exists():
                     continue
                 if _ran(b):
                     continue                               # ★돌았고 배치는 지워졌다

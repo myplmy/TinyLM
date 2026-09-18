@@ -121,7 +121,7 @@ Transformer 배선, 모델 로딩, smoke, GPU, 학습 `.sh`, KV 축소, 기본 �
 | 유사 실험 조회 | 같은 Scout+1 MiB dual-arena causal LTM 런 없음 |
 | 중복·교락 | KV 압축·MLP tying·depth 교환은 S7 전 금지 |
 | 계산 | H300 상대비만 사용; 실제 baseline wall을 S0 뒤 기록 |
-| 태그·진입점 | `run_P095_S0_causal_memory_contract.sh` 사용자 queue 콘솔 PASS; 당시 `runlog.py` 우회로 원본 로그 미보존. 학습 tag·본런 `.sh` 없음 |
+| 태그·진입점 | 옛 S0a 사용자 queue 콘솔 PASS는 **로깅 프로그램 코드 오류**로 원본 로그 미보존. 새 `run_P095_S0aL_causal_memory_log_recovery.sh`는 다른 단계명으로 동일 계약 로그만 복구하며 사용자 실행 `NOT_RUN`; 학습 tag·본런 `.sh` 없음 |
 | 보호 경계 | 데이터·모델·GPU·smoke 접근 없음 |
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
@@ -132,3 +132,5 @@ Transformer 배선, 모델 로딩, smoke, GPU, 학습 `.sh`, KV 축소, 기본 �
 - 2026-09-18: WSL queue 진입점에서도 S0a 콘솔 PASS를 관찰했지만 `test_result/` 원본은 launcher
   결함으로 남지 않았다. 로그 경로는 교정했으며, 이 사실은 S0b 통합·physical RSS·학습성을
   새로 통과시킨 증거가 아니다.
+- 2026-09-19: 옛 `-done`을 되돌리지 않고 S0aL 로그복구 SH를 별도 작성했다. 이는 새 과학
+  단계가 아니며 S0b 통합·physical accounting은 계속 `NOT_RUN`이다.

@@ -30,8 +30,8 @@ def fixture():
         "distractor_error_type": {"1": "unsupported", "2": "near_miss"},
         "difficulty_target": "mid",
         "difficulty_knobs": {
-            "hops": 2, "explicitness": "implicit", "competing_clues": 1,
-            "distractor_distance": "near",
+            "hops": 2, "explicitness": "explicit", "competing_clues": 1,
+            "distractor_distance": "same_relation",
         },
     }
 

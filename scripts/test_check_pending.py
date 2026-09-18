@@ -63,6 +63,19 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory() as temporary:
         root = Path(temporary)
+        handoff = root / "handoff.md"
+        write(
+            handoff,
+            "## 7. 다음 권장 실험 순서\n\n"
+            "| 순 | 배치 파일 | 선결 |\n"
+            "|---:|---|---|\n"
+            "| 1 | `run_P096_Q1b_contract.sh` | 없음 |\n",
+        )
+        assert MODULE.w1(handoff) == []
+    print("[PASS] W1 recognizes a POSIX shell launcher")
+
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
         write(root / "test_result" / "014_log_20260731_P030-cachecheck.txt", "done\n")
         write(root / "test_result" / "014_log_20260731_P030-cachegate.txt", "done\n")
         write(root / "test_result" / "014_log_20260731_P030-stage2B.txt", "done\n")
@@ -72,11 +85,26 @@ def main() -> int:
             assert MODULE._ran("run_P030_cachecheck.bat")
             assert MODULE._ran("run_P030_cachegate.bat")
             assert MODULE._ran("run_P030_stage2B_infer.bat")
+            assert MODULE._ran("run_P030_stage2B_infer.sh")
             assert not MODULE._ran("run_P030_missing.bat")
         finally:
             MODULE.ROOT = old_root
-    print("[PASS] terminal and underscored stage names find completed logs")
-    print("[PASS] check_pending regression 4/4")
+    print("[PASS] BAT and SH terminal or underscored stage names find completed logs")
+
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        plan = root / "test_plan" / "P096_fixture.md"
+        write(plan, "| 단계 | 진입점 |\n|---|---|\n| Q1b | `run_P096_Q1b_contract.sh` |\n")
+        old_root = MODULE.ROOT
+        MODULE.ROOT = root
+        try:
+            assert MODULE.w3() == [("P096_fixture.md", "run_P096_Q1b_contract.sh")]
+            write(root / "run_P096_Q1b_contract-done.sh", "#!/usr/bin/env bash\n")
+            assert MODULE.w3() == []
+        finally:
+            MODULE.ROOT = old_root
+    print("[PASS] W3 recognizes live and -done POSIX shell launchers")
+    print("[PASS] check_pending regression 6/6")
     return 0
 
 

@@ -14,8 +14,8 @@
 | 신호 | 규칙 | 왜 이것이 신호인가 |
 |---|---|---|
 | ★**E1 로그 귀속** | 결과문서 `NNN` 이 **남의 로그(`MMM_log_`)를 자기 것보다 많이** 인용 | 결과문서 번호 = 실험군 번호이고 **로그 파일명 앞 세 자리가 그것을 말한다.** 본문이 통째로 바뀌면 인용하는 로그도 통째로 바뀐다 |
-| ★**E2 본문 중복** | 두 결과문서가 **N줄 연속으로 동일** | 덮어쓰기는 **복사**다. 원본과 사본이 남는다 |
-| ★★**E3 H1 번호** | 결과문서 `NNN` 의 첫 `# ` 줄이 **`NNN` 로 시작**하는가 | ★**가장 값싸고 가장 정확하다.** 실제 사고에서 051·053·058 의 첫 줄이 전부 `# 059 — P074 단계1:` 이었다 |
+| ★**E2 본문 중복** | 표·펜스·인용을 제외한 두 결과문서의 서술이 **N줄 연속으로 동일** | 덮어쓰기는 **복사**다. 원본과 사본이 남는다. 표준 재현조건 표는 서로 같을 수 있어 신호에서 제외한다 |
+| ★★**E3 H1 번호** | 결과문서 `NNN` 의 첫 `# ` 줄이 `NNN`, `실험 NNN`, `결과 NNN` 중 하나로 시작하는가 | ★**가장 값싸고 가장 정확하다.** 실제 사고에서 051·053·058 의 첫 줄이 전부 `# 059 — P074 단계1:` 이었다 |
 
 ## ★★오경보 실측 (2026-08-30, 결과문서 60개)
 
@@ -81,7 +81,12 @@ DEFAULT_N = 6
 
 
 def substantive(path):
-    """의미 있는 줄만 `(줄번호, 내용)` 으로. 표 구분선·코드펜스·인용은 뺀다."""
+    """서술 본문만 ``(줄번호, 내용)`` 으로 반환한다.
+
+    결과문서의 재현조건 표는 서로 같은 스키마와 값을 의도적으로 반복할 수 있다.
+    표 행을 E2에 넣으면 표준조건을 공유한 별개 실험을 본문 도용으로 오인하므로 전체
+    Markdown 표를 제외한다. 과거 파괴 커밋 ``86d24c9``의 서술 복사는 표를 빼도 검출된다.
+    """
     out = []
     try:
         fh = open(path, encoding="utf-8")
@@ -92,7 +97,7 @@ def substantive(path):
             s = ln.strip()
             if not s or len(s) < MIN_LINE:
                 continue
-            if s.startswith(("|---", "```", "---", ">")):
+            if s.startswith(("|", "```", "---", ">")):
                 continue
             out.append((i, s))
     return out
@@ -102,7 +107,7 @@ def check(n_lines=DEFAULT_N, verbose=False):
     paths = [p for p in sorted(glob.glob(str(ROOT / "test_result" / "*.md")))
              if not os.path.basename(p).startswith("실험목록")]
     docs = {os.path.basename(p): p for p in paths}
-    errs, warns = [], []
+    errs, warns, infos = [], [], []
 
     # ── E1. 로그 귀속 ────────────────────────────────────────────────────
     for name, p in docs.items():
@@ -139,8 +144,8 @@ def check(n_lines=DEFAULT_N, verbose=False):
         if not h1:
             warns.append(f"[W3] {name}: H1(`# `) 이 없다")
             continue
-        # ★초기 문서(001~005)는 `# 실험 001 —` 양식이다 — **양식 차이이지 결함이 아니다**.
-        got = re.match(r"^#\s*(?:실험\s*)?(\d{3})", h1)
+        # `# 실험 001`, `# 결과 061`, `# 084`는 모두 소유 번호를 명시한 유효 양식이다.
+        got = re.match(r"^#\s*(?:(?:실험|결과)\s*)?(\d{3})", h1)
         if not got:
             warns.append(f"[W3] {name}: H1 이 세 자리 번호로 시작하지 않는다 — {h1[:60]}")
         elif got.group(1) != num:
@@ -167,7 +172,7 @@ def check(n_lines=DEFAULT_N, verbose=False):
 
     for pair, found in sorted(pair_hits.items()):
         if pair in ALLOW:
-            warns.append(f"[W2] {pair[0][:34]} <-> {pair[1][:34]}: "
+            infos.append(f"[I2] {pair[0][:34]} <-> {pair[1][:34]}: "
                          f"{len(found)}블록 — ✅**허용됨**: {ALLOW[pair]}")
             continue
         first = found[0][0]
@@ -175,7 +180,7 @@ def check(n_lines=DEFAULT_N, verbose=False):
                     f"         {n_lines}줄 연속 동일 블록 {len(found)}종. 첫 줄: {first[:76]}\n"
                     "         ★한쪽 본문이 다른 쪽에서 복사됐을 수 있다 — "
                     "`git log -p` 로 **어느 쪽이 먼저였는지** 확인한다")
-    return errs, warns
+    return errs, warns, infos
 
 
 def main() -> int:
@@ -192,13 +197,15 @@ def main() -> int:
     print("  ★★오경보 실측(2026-08-30, 문서 60개): **E1 0건 · E2 1쌍(허용 목록에 있다)**")
     print("  🚫이 게이트는 *'내용이 옳은가'* 를 못 본다 — *'남의 것으로 보이는가'* 만 본다.")
 
-    errs, warns = check(a.lines, a.verbose)
+    errs, warns, infos = check(a.lines, a.verbose)
     print()
+    for info in infos:
+        print(f"  ℹ️ {info}")
     for w in warns:
         print(f"  ⚠️ {w}")
     for e in errs:
         print(f"  🚫 {e}")
-    print(f"\n  에러 {len(errs)}건 · 경고 {len(warns)}건")
+    print(f"\n  에러 {len(errs)}건 · 경고 {len(warns)}건 · 허용 정보 {len(infos)}건")
     if not errs:
         print("  ✅ 모든 결과문서의 본문이 자기 실험군의 것으로 보인다.")
     print("=" * 96)
