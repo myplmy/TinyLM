@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -262,17 +263,23 @@ def check_working_rule_parity() -> tuple[bool, str]:
     if en_declared != derived:
         problems.append(f"declared counts do not match rules declared={en_declared} derived={derived}")
 
+    metadata_drift: list[str] = []
     for path, declared_date in ((WORKING_RULES_EN, en_date), (WORKING_RULES_KO, ko_date)):
         metadata_date = dt.datetime.fromtimestamp(path.stat().st_mtime).date().isoformat()
         if metadata_date != declared_date:
-            problems.append(
-                f"{path.name} date differs document={declared_date} metadata={metadata_date}"
-            )
+            metadata_drift.append(f"{path.name}:{metadata_date}")
+            if os.name == "nt":
+                problems.append(
+                    f"{path.name} date differs document={declared_date} metadata={metadata_date}"
+                )
 
     detail = (
         f"date={en_date}; rules={len(en_rules)}; "
-        f"gate={derived['gate']} human={derived['human']} fact={derived['fact']}"
+        f"gate={derived['gate']} human={derived['human']} fact={derived['fact']}; "
+        f"mtime={'strict' if os.name == 'nt' else 'informational'}"
     )
+    if metadata_drift and os.name != "nt":
+        detail += f"; mtime_drift={metadata_drift}"
     return not problems, detail if not problems else " | ".join(problems)
 
 
@@ -383,6 +390,11 @@ def broken_markdown_links(paths: Iterable[Path]) -> list[str]:
 
 
 def find_git_bash() -> Path | None:
+    """Find native POSIX Bash or the Windows Git-for-Windows Bash."""
+    if os.name != "nt":
+        candidate = shutil.which("bash")
+        return Path(candidate) if candidate else None
+
     completed = subprocess.run(
         ["git", "--exec-path"],
         cwd=REPO_ROOT,
@@ -424,11 +436,32 @@ def python_syntax_errors(files: Iterable[Path]) -> list[str]:
     return errors
 
 
-def powershell_syntax_errors(
-    files: Iterable[Path], *, runner: Runner = subprocess.run
-) -> list[str]:
+_AUTO_POWERSHELL = object()
+
+
+def find_powershell() -> str | None:
+    if os.name == "nt":
+        return shutil.which("powershell.exe") or shutil.which("pwsh.exe")
+    return shutil.which("pwsh")
+
+
+def powershell_syntax_result(
+    files: Iterable[Path],
+    *,
+    executable: str | None | object = _AUTO_POWERSHELL,
+    runner: Runner = subprocess.run,
+) -> tuple[str, str]:
+    scripts = [item for item in files if item.suffix.lower() == ".ps1"]
+    if not scripts:
+        return "PASS", "no PowerShell sources in the environment allowlist"
+    selected = find_powershell() if executable is _AUTO_POWERSHELL else executable
+    if selected is not None and not isinstance(selected, str):
+        raise TypeError("PowerShell executable must be a string, None, or auto")
+    if selected is None:
+        return "NOT_RUN", "PowerShell parser is unavailable on this platform"
+
     errors: list[str] = []
-    for path in (item for item in files if item.suffix.lower() == ".ps1"):
+    for path in scripts:
         path_literal = str(path).replace("'", "''")
         parser_command = (
             "$tokens=$null; $errors=$null; "
@@ -438,7 +471,7 @@ def powershell_syntax_errors(
         )
         completed = runner(
             [
-                "powershell.exe",
+                selected,
                 "-NoProfile",
                 "-NonInteractive",
                 "-Command",
@@ -454,7 +487,9 @@ def powershell_syntax_errors(
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout).strip()
             errors.append(f"{path.relative_to(REPO_ROOT).as_posix()}: {detail}")
-    return errors
+    if errors:
+        return "FAIL", "source syntax errors: " + " | ".join(errors)
+    return "PASS", f"{len(scripts)} PowerShell sources parsed by {selected}"
 
 
 def _unsigned_returncode(returncode: int) -> int:
@@ -466,7 +501,7 @@ def classify_bash_probe(
 ) -> tuple[str, str]:
     """Return READY, SANDBOX_UNAVAILABLE, MISSING or BROKEN."""
     if bash is None:
-        return "MISSING", "Git Bash executable was not found"
+        return "MISSING", "Bash executable was not found"
     try:
         completed = runner(
             [str(bash), "-c", "exit 0"],
@@ -480,7 +515,7 @@ def classify_bash_probe(
     except OSError as exc:
         return "BROKEN", f"{type(exc).__name__}: {exc}"
     if completed.returncode == 0:
-        return "READY", "Git Bash startup probe passed"
+        return "READY", "Bash startup probe passed"
     detail = (completed.stderr or completed.stdout).strip()
     lowered = detail.lower()
     known_signature = (
@@ -535,7 +570,7 @@ def shell_syntax_result(
             errors.append(f"{path.relative_to(REPO_ROOT).as_posix()}: {detail}")
     if errors:
         return "FAIL", "source syntax errors: " + " | ".join(errors)
-    return "PASS", f"{len(shell_files)} POSIX shell sources parsed by Git Bash"
+    return "PASS", f"{len(shell_files)} POSIX shell sources parsed by {selected_bash}"
 
 
 def main() -> int:
@@ -610,12 +645,8 @@ def main() -> int:
         not errors,
         "all Python environment sources parsed" if not errors else " | ".join(errors),
     )
-    errors = powershell_syntax_errors(environment_files)
-    ledger.record(
-        "PowerShell syntax",
-        not errors,
-        "all PowerShell environment sources parsed" if not errors else " | ".join(errors),
-    )
+    powershell_status, powershell_detail = powershell_syntax_result(environment_files)
+    ledger.record_status("PowerShell syntax", powershell_status, powershell_detail)
     shell_status, shell_detail = shell_syntax_result(environment_files)
     ledger.record_status("POSIX shell syntax", shell_status, shell_detail)
 

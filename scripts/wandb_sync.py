@@ -11,7 +11,8 @@
       넣으면 **비트 동일성이 깨질 수 있고**, 네트워크 실패가 5시간짜리 런을 죽인다.
       이 도구는 **런이 끝난 뒤** json 을 읽어 올린다. 실패해도 잃는 것이 없다.
    3. ★**API 키를 코드·로그·인쇄 어디에도 남기지 않는다.** **경로만** 읽는다.
-      기본 경로 `Z:/TinyLM_private/weave_apikey_only.txt`, 환경변수 `TL_WANDB_KEY_FILE` 로 변경.
+      Windows 기본 경로는 `Z:/TinyLM_private/weave_apikey_only.txt`이고,
+      WSL/Linux는 위치를 추측하지 않고 `TL_WANDB_KEY_FILE`을 명시해야 한다.
 
 ★무엇을 올리는가
    config   arch·preset·steps·seed·mlp_group·attn_group·kd·kd_alpha·pool_tokens …
@@ -40,7 +41,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 LOGS = ROOT / "runs" / "logs"
-DEFAULT_KEY_FILE = r"Z:/TinyLM_private/weave_apikey_only.txt"
+WINDOWS_DEFAULT_KEY_FILE = Path(r"Z:/TinyLM_private/weave_apikey_only.txt")
 
 # ★config 로 올릴 필드 — "런을 재현하는 데 필요한 것" 만.
 CONFIG_KEYS = [
@@ -65,7 +66,15 @@ SUMMARY_KEYS = [
 
 
 def key_file_path():
-    return Path(os.environ.get("TL_WANDB_KEY_FILE", DEFAULT_KEY_FILE))
+    configured = os.environ.get("TL_WANDB_KEY_FILE")
+    if configured:
+        return Path(configured).expanduser()
+    if os.name == "nt":
+        return WINDOWS_DEFAULT_KEY_FILE
+    raise FileNotFoundError(
+        "WSL/Linux에서는 비밀 경로를 추측하지 않는다. "
+        "TL_WANDB_KEY_FILE을 명시할 것."
+    )
 
 
 def read_key():

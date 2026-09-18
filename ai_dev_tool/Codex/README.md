@@ -1,9 +1,9 @@
 # TinyLM Codex 작업환경 — 소유권·분리 계약
 
-> **최신 갱신일자**: 2026-09-14 · **문서 유형**: live
+> **최신 갱신일자**: 2026-09-17 · **문서 유형**: live
 
 > 제정: 2026-09-11, 승인된 제안서 P1  
-> 상태: **P0~P8 역사 증거 `PASS / ACTIVE_VERIFIED`; 2026-09-13 확장 훅은 `STATIC_ONLY / E2E_NOT_RUN`**
+> 상태: **Windows P0~P8 역사 증거 `PASS / ACTIVE_VERIFIED`; WSL 공통 기반 `STATIC_ONLY`, Desktop WSL agent·hook `E2E_NOT_RUN`**
 > 제안서: `proposal/done/20260911_Codex-작업환경-완전분리-구축-approved.md`  
 > 항목별 설계표: [`temp_AGENTS.MD_항목별_00_08_이식목록.md`](temp_AGENTS.MD_항목별_00_08_이식목록.md)
 > 정적 검증 보고: [`P7_정적종합검증_보고.md`](P7_정적종합검증_보고.md)
@@ -96,6 +96,19 @@ CLI 버전 조회 중 임시 경로 권한 경고 2건이 있었지만 버전 �
 fallback으로 읽는다. 표·중복 키·확장 TOML은 구버전에서 조용히 오독하지 않고 실패한다. Codex 셸의
 Python 3.11 단위검사 통과는 사용자 Python의 실제 E2E PASS가 아니므로 사용자 재실행 전에는
 `STATIC_ONLY`다.
+
+### 1.4 WSL 정본 이관 상태 — 2026-09-17
+
+사용자가 작업트리를 `/home/uranus/tinyLM`으로 이관했으며 Windows `Z:\TinyLM`은 같은 위치를
+가리키는 편의 링크다. 공통 `run_queue.sh`, `run_smoke_check.sh`,
+`run_cleanup_checkpoints.sh`와 교차 플랫폼 정적 검사는 구현·회귀 PASS다. 개별 실험 SH는
+작성하지 않았고 실제 큐·스모크·cleanup은 `NOT_RUN`이다.
+
+읽기 전용 Desktop 설정 실사에서는 `integratedTerminalShell = "wsl"`이지만
+`runCodexInWindowsSubsystemForLinux = false`이며 과거 `Z:` project hook 세 개도 모두
+disabled였다. 따라서 2026-09-12 Windows P8 기록은 역사적 유효 증거로 보존하되 현재 WSL
+agent·hook에는 승계하지 않는다. WSL canonical project를 다시 열고 새 작업에서 exact hash를
+검토·신뢰한 뒤 probe를 통과할 때까지 상태는 `E2E_NOT_RUN`이다.
 
 ## 2. 런타임 경계
 

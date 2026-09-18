@@ -1,9 +1,9 @@
 # 06. Codex용 프로젝트 지침과 메모리
 
-> **최신 갱신일자**: 2026-09-13 · **문서 유형**: live
+> **최신 갱신일자**: 2026-09-17 · **문서 유형**: live
 
 > 제정: 2026-09-11, 승인된 완전분리 제안 P2  
-> 상태: **P0~P8 역사 증거 `PASS / ACTIVE_VERIFIED`; 2026-09-13 확장 훅·작업도구 `STATIC_ONLY / E2E_NOT_RUN`**
+> 상태: **Windows P0~P8 역사 증거 `PASS / ACTIVE_VERIFIED`; WSL 공통 기반 `STATIC_ONLY`, Desktop WSL agent·hook `E2E_NOT_RUN`**
 > 환경 경계: [`README.md`](README.md)  
 > 작업규약: [`00_WORKING_RULES.md`](00_WORKING_RULES.md) · [한글 대조본](00_작업규약_한글판.md)
 > 환경 검증: [`P7_정적종합검증_보고.md`](P7_정적종합검증_보고.md)
@@ -51,7 +51,7 @@ TinyLM은 저사양 CPU·엣지·모바일 배포를 위한 초경량 LLM 아키
 
 | 항목 | 현재 지침 |
 |---|---|
-| 작업 루트 | `Z:\TinyLM` |
+| 작업 루트 | 정본 `/home/uranus/tinyLM`; Windows 편의 링크 `Z:\TinyLM` |
 | 사용자 하드웨어 | Windows, RTX 4070 Ti Super 16GB 단일 GPU |
 | 배포 목표 | 상주 ≤16 MiB(엔트리), 32 MiB(메인스트림), 40 MiB(데스크톱 상한). 현 연구 의사결정은 주로 32·40 MiB |
 | 속도 기준 | 단일 CPU·단일 코어 ≥15 tok/s. 속도는 현재 우선순위 ③이며 단독 종결 게이트가 아님 |
@@ -64,9 +64,9 @@ TinyLM은 저사양 CPU·엣지·모바일 배포를 위한 초경량 LLM 아키
 
 ### 2.1 절대 금지와 승인 경계
 
-- Codex는 학습·GPU 코드·모델 로딩 진단·실험 배치·`run_smoke_check.bat`을 직접 실행하지 않는다. 배치와 절차를 준비하고 사용자가 실행한다.
+- Codex는 학습·GPU 코드·모델 로딩 진단·실험 배치·`run_smoke_check.bat`·`run_smoke_check.sh`를 직접 실행하지 않는다. 실행 파일과 절차를 준비하고 사용자가 실행한다.
 - 파일을 삭제하지 않고 삭제 권한도 요청하지 않는다. 삭제 후보는 핸드오프의 사용자 요청 표에 적는다.
-- `run_cleanup_checkpoints.bat`는 사용자 실행 전용이다. Codex는 검사·TSV 갱신과 후보 보고까지만 하고 이 배치 자체를 실행하지 않는다.
+- `run_cleanup_checkpoints.bat`와 `run_cleanup_checkpoints.sh`는 사용자 실행 전용이다. Codex는 검사·TSV 갱신과 후보 보고까지만 하고 이 진입점들을 실행하지 않는다.
 - commit·push·PR·광범위 staging은 사용자의 명시 지시 없이는 하지 않는다. `git add .`와 `git add -A`는 사용하지 않는다.
 - `datasets/TinyDataset/**`는 2026-09-11 현재 데이터셋 팀이 생성 작업 중이다. P0~P7과
   현재 P8 교정 작업에서 열람·열거·해시·검색·검사·수정·staging을 모두 하지 않는다.

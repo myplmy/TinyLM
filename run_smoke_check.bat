@@ -70,7 +70,8 @@ REM   runlog invocation that carries a command without the `--` separator.
 set PYTHONIOENCODING=utf-8
 echo.
 python scripts\runlog.py --name smoke -- python scripts\summarize_smoke.py
-if errorlevel 1 echo [WARN] summarize_smoke reported a failing arm - read section A above
+set TL_SUMMARY_RC=!errorlevel!
+if not "!TL_SUMMARY_RC!"=="0" echo [WARN] summarize_smoke reported a failing arm - read section A above
 
 REM ***2026-09-06: the old trailing block restated 'Long runs are safe to start'
 REM   UNCONDITIONALLY, so it contradicted summarize_smoke on every bad run. The
@@ -79,13 +80,15 @@ REM   one line, so restating it here can only ever disagree with it. Point at it
 REM   instead of repeating it - one concept, one definition (R14).
 echo.
 python scripts\runlog.py --name smoke --note "=================================================================" "VERDICT: the single answer is the last line of the SUMMARY above," "  which joins BOTH checks - every arm's exit code AND the field" "  contract. Neither one alone is the verdict." "  Section A lists arms that exited non-zero. Section B lists arms" "  that exited 0 with an error mark in their output - read those by" "  hand, exit codes cannot see them." "  The [VERIFY] banner further up is a section title, not the answer." "=================================================================" "done."
+set TL_NOTE_RC=!errorlevel!
 REM 2026-08-13 - clear TL_OUTDIR before returning. setlocal SHOULD scope it, but a
 REM   queue run leaked it to three later batches and their experiment logs went to
 REM   smoketest_logs. The exact leak path was never pinned down, so clear it on
 REM   every exit path. runlog.py also decides by name now (3 nets).
 set TL_OUTDIR=
 if not defined TL_NOPAUSE pause
-exit /b 0
+if not "!TL_SUMMARY_RC!"=="0" exit /b !TL_SUMMARY_RC!
+exit /b !TL_NOTE_RC!
 
 :BADROOT
 echo.

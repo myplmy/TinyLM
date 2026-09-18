@@ -74,7 +74,7 @@ Codex는 `.claude/**`, `CLAUDE.md`, 루트 `ai_dev_tool/00~08`을 지침·스킬
 ### 5.1 GPU·학습·모델
 
 - Codex는 GPU 학습, 장시간 학습·평가, 모델 로딩, 체크포인트 실행,
-  `run_smoke_check.bat`을 직접 실행하지 않는다.
+  `run_smoke_check.bat`·`run_smoke_check.sh`를 직접 실행하지 않는다.
 - 계획서·배치·정적 검사와 실제 실행은 별개다. 사용자 실행 항목은 정확한 명령, 예상 시간,
   자원, 선결, 판정 기준을 제시한다.
 - 설치·다운로드·외부 데이터 취득·대규모 계산은 사용자 승인과 실행 경계를 먼저 확인한다.
@@ -129,7 +129,7 @@ Codex는 `.claude/**`, `CLAUDE.md`, 루트 `ai_dev_tool/00~08`을 지침·스킬
 
 ## 7. 파일·문서 작업 규약
 
-- 검색은 `rg`와 `rg --files`를 우선하고, Windows 기본 셸은 PowerShell로 본다.
+- 검색은 `rg`와 `rg --files`를 우선한다. Windows에서는 PowerShell, WSL/Linux에서는 Bash를 사용하며 현재 세션의 실제 런타임을 먼저 확인한다.
 - 한국어 파일은 UTF-8로 읽고 쓴다. 사용자 Windows 명령에 유니코드 출력이 있으면
   필요한 `PYTHONIOENCODING=utf-8` 설정을 함께 제시한다.
 - 실제 파일 편집은 좁은 패치로 수행하고 관련 없는 변경을 보존한다.

@@ -100,6 +100,44 @@ class ShellSyntaxTests(unittest.TestCase):
         self.assertEqual(state, "PASS")
 
 
+class PlatformDiscoveryTests(unittest.TestCase):
+    def test_posix_bash_uses_path_lookup(self) -> None:
+        with mock.patch.object(ENV.os, "name", "posix"), mock.patch.object(
+            ENV.shutil, "which", return_value="/usr/bin/bash"
+        ):
+            self.assertEqual(ENV.find_git_bash(), Path("/usr/bin/bash"))
+
+    def test_missing_powershell_is_not_run(self) -> None:
+        state, detail = ENV.powershell_syntax_result(
+            [ENV.CODEX_ROOT / "hooks" / "compact_state_windows.ps1"],
+            executable=None,
+        )
+        self.assertEqual(state, "NOT_RUN")
+        self.assertIn("unavailable", detail)
+
+    def test_available_powershell_parses_source(self) -> None:
+        calls: list[list[str]] = []
+
+        def runner(argv, **kwargs):
+            calls.append(argv)
+            return completed(0)
+
+        state, detail = ENV.powershell_syntax_result(
+            [ENV.CODEX_ROOT / "hooks" / "compact_state_windows.ps1"],
+            executable="pwsh",
+            runner=runner,
+        )
+        self.assertEqual(state, "PASS")
+        self.assertEqual(calls[0][0], "pwsh")
+        self.assertIn("parsed", detail)
+
+    def test_posix_working_rule_mtime_is_informational(self) -> None:
+        with mock.patch.object(ENV.os, "name", "posix"):
+            passed, detail = ENV.check_working_rule_parity()
+        self.assertTrue(passed, detail)
+        self.assertIn("mtime=informational", detail)
+
+
 class TomlCompatibilityTests(unittest.TestCase):
     def test_current_config_parses_without_tomllib(self) -> None:
         text = ENV.read_utf8(ENV.CODEX_ROOT / "config.toml")
