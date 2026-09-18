@@ -134,7 +134,8 @@ def generate(prompt, arch="tied", data="ko-en", max_new=100, temperature=0.8,
     model, cfg, device = load_model(arch, ckpt_path, device)
     tok = load_tokenizer(data)
     text = sample(model, cfg, tok, prompt, max_new=max_new, temperature=temperature,
-                  top_k=top_k, device=device, use_cache=use_cache, stop_at_eos=stop_at_eos)
+                  top_k=top_k, device=device, use_cache=use_cache, stop_at_eos=stop_at_eos,
+                  logits_last_only=True)
     print(text)
     return text
 
@@ -148,9 +149,9 @@ def check_cache_equivalence(model, cfg, tok, prompt, max_new=24, device=None):
       2. SDPA 마스크 — q_len < kv_len 에서 `is_causal=True` 는 **좌상단 정렬**이라 조용히 틀린다
     """
     a = sample(model, cfg, tok, prompt, max_new=max_new, temperature=0.0,
-               device=device, use_cache=True, stop_at_eos=False)
+               device=device, use_cache=True, stop_at_eos=False, logits_last_only=True)
     b = sample(model, cfg, tok, prompt, max_new=max_new, temperature=0.0,
-               device=device, use_cache=False, stop_at_eos=False)
+               device=device, use_cache=False, stop_at_eos=False, logits_last_only=True)
     ok = (a == b)
     print(f"  [캐시검증] {'일치 ✅' if ok else '불일치 ❌ — 캐시 구현이 틀렸다'}  {prompt!r}")
     if not ok:

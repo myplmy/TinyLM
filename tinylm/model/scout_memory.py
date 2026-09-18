@@ -75,3 +75,46 @@ class CausalScoutMemory(torch.nn.Module):
         read_value, weights = self.read(query, state)
         next_state = self.write(write_key, write_value, state) if enable_write else state
         return read_value, weights, next_state
+
+
+class ScoutMemoryBridge(torch.nn.Module):
+    """Default-off hidden-state bridge for the P095 S0b integration contract.
+
+    It deliberately supports one sequence at a time.  Full batched Transformer
+    wiring, retrieval supervision and learned write policy remain later gates.
+    """
+
+    def __init__(self, hidden_dim: int, memory: CausalScoutMemory):
+        super().__init__()
+        self.hidden_dim = int(hidden_dim)
+        self.memory = memory
+        self.query = torch.nn.Linear(hidden_dim, memory.key_dim, bias=False)
+        self.write_key = torch.nn.Linear(hidden_dim, memory.key_dim, bias=False)
+        self.write_value = torch.nn.Linear(hidden_dim, memory.value_dim, bias=False)
+        self.fuse = torch.nn.Linear(memory.value_dim, hidden_dim, bias=False)
+        self.gate = torch.nn.Parameter(torch.zeros(()))
+
+    @staticmethod
+    def state_bytes(state: ScoutMemoryState) -> int:
+        return sum(
+            tensor.numel() * tensor.element_size()
+            for tensor in (state.keys, state.values, state.valid, state.cursor)
+        )
+
+    def forward(self, hidden: torch.Tensor, state: ScoutMemoryState,
+                write_mask: torch.Tensor | None = None):
+        if hidden.ndim != 2 or hidden.shape[1] != self.hidden_dim:
+            raise ValueError(f"hidden must be [T,{self.hidden_dim}], got {tuple(hidden.shape)}")
+        if write_mask is None:
+            write_mask = torch.ones(hidden.shape[0], dtype=torch.bool, device=hidden.device)
+        if write_mask.shape != (hidden.shape[0],):
+            raise ValueError("write_mask must have shape [T]")
+        outputs = []
+        current = state
+        for index, vector in enumerate(hidden):
+            read, _weights, current = self.memory.step(
+                self.query(vector), self.write_key(vector), self.write_value(vector), current,
+                enable_write=bool(write_mask[index]),
+            )
+            outputs.append(vector + self.gate * self.fuse(read))
+        return torch.stack(outputs), current

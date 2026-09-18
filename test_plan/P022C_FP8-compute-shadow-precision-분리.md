@@ -31,7 +31,7 @@ FP8/FP16 grid에 직접 write-back해도 trajectory가 유지되는지는 미측
 | 계획 단계 | 제안서 단계 | 무엇 | 계속 조건 | 예상 GPU-h |
 |---|---|---|---|---:|
 | **Stage0a ✅** | C0 | CUDA FP8 backend·TinyLM 3형상 실제 호출 | ✅ 세 형상 `_scaled_mm` 유한 forward([081](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)) | 0.1 |
-| **Stage0b** | C1 | BF16/current/delayed scaling 동일세션 속도 | ≥10%, 또는 5~10%+메모리/배치 이득 | 0.7~0.8 |
+| **Stage0bW 실행 대기** | C1 | WSL BF16/current/delayed scaling 동일세션 forward 속도·정합·peak allocation | ≥10%; backward/whole-step은 다음 단계 | GPU 진단 0.1h 미만 |
 | **Stage1a** | C2 | 100M compute format screen | 제어군 대비 paired 열화 +0.01 이내 | 1.1~1.6 |
 | **Stage1b** | C3 | 300M compute-only 확인 | 현재 ruler에서 무열화 또는 명시적 Pareto | 3.0~3.2 |
 | **Stage2a** | S0 | FP32 shadow observer replay | invisible update·ULP·distortion·ternary F1 정상 저장 | 0.2 |
@@ -65,7 +65,9 @@ Stage0a 통과 전에 Stage0b 이후 코드·배치를 작성하지 않는다.
 ## 7. 실행 → `run_P022C_*.bat`
 
 - 완료: `run_P022C_Stage0a_fp8_backend-done.bat` — backend·순수 GEMM 진단 PASS([결과 081](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)).
-- 미작성: Stage0b~Stage4. 다음은 C1의 cast/scaling 포함 동일세션 비교를 구현·정적 검증한 뒤 조건·태그를 확정한다.
+- 실행 대기: `run_P022C_Stage0bW_fp8_scaling_overhead.sh` — C1의 absmax·scale·cast를
+  포함한 동일세션 forward 비교. GPU 결과는 `NOT_RUN`.
+- 미작성: Stage1a~Stage4. Stage0bW가 forward 후보를 남겨도 backward·whole-step을 자동 통과시키지 않는다.
 
 ## 8. 한계
 
@@ -78,3 +80,6 @@ Stage0a 통과 전에 Stage0b 이후 코드·배치를 작성하지 않는다.
 
 - 2026-09-13: 제안서 승인, P022C 배정. Stage0a 엄격 backend 게이트와 배치 작성. 실행은 `NOT_RUN`.
 - 2026-09-13: Stage0a(C0) PASS([결과 081](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)). TinyLM 세 형상에서 `_scaled_mm`가 실행됐고 순수 GEMM은 1.17~2.09×였다. backend 성공 예측은 맞았으나 C1의 end-to-end 10% 이득 예측은 아직 `NOT_RUN`이다.
+- 2026-09-19: WSL C1 forward attribution을 구현했다. current scaling은 매 호출 activation·weight
+  absmax와 cast를, delayed scaling은 고정 scale과 cast를 포함한다. backward·optimizer·whole-step은
+  포함하지 않으며 사용자 GPU 실행 전까지 `NOT_RUN`이다.

@@ -37,6 +37,8 @@ REQUIRED_SECTIONS = {
 LOCAL_LINK_RE = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 FENCE_RE = re.compile(chr(96) * 3 + r"[\s\S]*?" + chr(96) * 3)
 QUEUE_HELPER_PATH = REPO_ROOT / "scripts" / "handoff_queue.py"
+DEFAULT_HOURS_TARGET = 48.0
+HOURS_REASON_MARK = "시간 미달 사유"
 QUEUE_SPEC = importlib.util.spec_from_file_location("tinylm_handoff_queue", QUEUE_HELPER_PATH)
 if QUEUE_SPEC is None or QUEUE_SPEC.loader is None:
     raise RuntimeError(f"cannot load {QUEUE_HELPER_PATH}")
@@ -110,7 +112,7 @@ def table_rows_with_columns(body: str, columns: tuple[str, ...]) -> list[list[st
     return None
 
 
-def validate(path: Path) -> Validation:
+def validate(path: Path, *, hours_target: float = DEFAULT_HOURS_TARGET) -> Validation:
     errors: list[str] = []
     warnings: list[str] = []
     text = path.read_text(encoding="utf-8")
@@ -185,6 +187,8 @@ def validate(path: Path) -> Validation:
         )
         inventory_index = header.index("인벤토리")
         execution_index = header.index("실행상태")
+        hours_index = header.index("⚙")
+        current_hours = 0.0
         for row_number, row in enumerate(queue_rows, start=1):
             inventory = row[inventory_index].strip(" `")
             execution = row[execution_index].strip(" `")
@@ -192,6 +196,19 @@ def validate(path: Path) -> Validation:
                 errors.append(f"queue row {row_number} has invalid inventory state {inventory!r}")
             if execution not in HANDOFF_QUEUE.EXECUTION_STATES:
                 errors.append(f"queue row {row_number} has invalid execution state {execution!r}")
+            if inventory == "PRESENT" and execution not in {"DONE", "HOLD"}:
+                raw_hours = row[hours_index].strip(" `⚙h시간")
+                try:
+                    current_hours += float(raw_hours)
+                except ValueError:
+                    errors.append(
+                        f"queue row {row_number} has invalid hours value {row[hours_index]!r}"
+                    )
+        if current_hours < hours_target and HOURS_REASON_MARK not in recommendation:
+            errors.append(
+                f"current queue totals {current_hours:.1f}h below {hours_target:.0f}h but "
+                f"section 7 lacks '{HOURS_REASON_MARK}'"
+            )
     if "<br>" in recommendation.lower():
         errors.append("recommendation section must not use <br>")
 
@@ -313,7 +330,10 @@ def resolve_targets(arguments: list[str]) -> list[Path]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("files", nargs="*")
+    parser.add_argument("--hours-target", type=float, default=DEFAULT_HOURS_TARGET)
     args = parser.parse_args()
+    if args.hours_target <= 0:
+        parser.error("--hours-target must be positive")
 
     try:
         targets = resolve_targets(args.files)
@@ -326,7 +346,7 @@ def main() -> int:
 
     error_count = 0
     for path in targets:
-        result = validate(path)
+        result = validate(path, hours_target=args.hours_target)
         print(f"CHECK {path.relative_to(REPO_ROOT).as_posix()}")
         for error in result.errors:
             print(f"  FAIL {error}")

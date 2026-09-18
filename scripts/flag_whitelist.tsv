@@ -104,10 +104,12 @@ flag	grade	evidence	checked	declared_in
 --eval-every	ok		2026-09-04	tinylm/cli.py
 --exact-cache	ok		2026-09-04	tinylm/cli.py
 --exact-path	ok		2026-09-04	scripts/new_proposal.py
+--evidence	ok	P094 R0 machine-readable P022C dependency evidence path; absence is declared HOLD exit 8	2026-09-19	scripts/diag_p094_dependency_gate.py
 --expect-before	ok		2026-09-04	scripts/wip.py
 --explicit-path	ok		2026-09-04	scripts/check_doc_routing.py
 --field	ok		2026-09-04	scripts/wip.py
 --fields	ok		2026-09-04	scripts/diag_dataset_tokens.py
+--filter	ok	interactive checkpoint catalog substring filter; model loads only after explicit selection	2026-09-19	scripts/interactive_infer.py
 --fig	ok		2026-09-04	scripts/plot_results.py
 --file	ok		2026-09-04	scripts/audit_heldout_v28.py,scripts/check_pending.py,scripts/wip.py
 --find	ok		2026-09-04	scripts/registry.py
@@ -115,18 +117,19 @@ flag	grade	evidence	checked	declared_in
 --fix-handoff-renames	ok	사용자 명시 승인 시 handoff의 유일 상태개명 링크 후보만 교정	2026-09-18	scripts/check_links.py
 --force	ok	2026-09-10 신설 - 벤치 캐시를 다시 만든다. held-out 판이 바뀌어도 '이미 있다' 로 건너뛰던 구멍을 막는다	2026-09-10	scripts/fetch_bench_data.py
 --force-dense	ok		2026-09-04	tinylm/cli.py
+--full-logits	ok	추론 벤치 역사 재현용; 실제 생성 벤치 기본은 logits_last_only이며 학습 forward 기본은 유지	2026-09-19	scripts/bench_infer.py
 --format	ok		2026-09-06	scripts/wandb_table_probe.py
 --freq-cap	ok		2026-09-04	scripts/diag_bench_tokens.py
 --from-step	ok		2026-09-04	scripts/check_spill.py
 --fsync-sec	ok		2026-09-04	scripts/runlog.py
 --g	ok		2026-09-04	scripts/diag_lut_kernel.py
---group	ok		2026-09-04	scripts/diag_group_agg.py
+--group	ok		2026-09-19	scripts/diag_group_agg.py,scripts/diag_sharing_parent_approx.py
 --head-dim	ok		2026-09-04	scripts/diag_sdpa_backends.py
 --has-smoke	ok	WSL queue 선택에 smoke가 포함됐는지 판정하는 읽기 전용 실행기 제어값	2026-09-19	scripts/queue_menu_linux.py
 --heldout	ok	2026-09-10 신설 - SFT 코퍼스와 held-out 의 오염 대조용 경로	2026-09-10	scripts/audit_sft_corpus.py
 --heldout-version	ok	A01(2026-09-10) - stage1_heldout 의 판을 명시한다(2.7/2.8/latest). 판마다 캐시가 따로 생겨 v2.7 과 v2.8 을 함께 누적할 수 있고, 어느 판으로 쟀는지가 요약·W&B·결과 json 에 남는다. 종전엔 문자열 정렬로 최신 폴더를 조용히 골랐다	2026-09-10	scripts/census_heldout_discrimination.py,scripts/eval_bench_suite.py,scripts/fetch_bench_data.py
 --hf	ok		2026-09-04	scripts/diag_chat_overhead.py
---hours-target	ok		2026-09-04	scripts/check_handoff.py
+--hours-target	ok	핸드오프 현재 큐 편성 목표; 기본 48h, 세션별 명시값만 override	2026-09-19	.agents/skills/session-handoff/scripts/check_handoff_codex.py,scripts/check_handoff.py
 --ids	ok		2026-09-04	scripts/queue_menu.py
 --infer-repeat	ok		2026-09-04	scripts/bench_infer.py,scripts/diag_layer_map.py,scripts/paired_eval.py,tinylm/cli.py
 --infer-repeat-per-tag	ok		2026-09-04	scripts/paired_eval.py
@@ -137,7 +140,7 @@ flag	grade	evidence	checked	declared_in
 --inspect-chars	ok		2026-09-04	scripts/diag_val_docs.py
 --int8-store	ok		2026-09-04	scripts/bench_infer.py,scripts/mem_runtime.py
 --item	ok		2026-09-04	scripts/wip.py
---iters	ok		2026-09-19	scripts/diag_dtype_map.py,scripts/diag_int8mm_paths.py,scripts/diag_sdpa_backends.py,scripts/diag_sdpa_wsl_gqa.py,scripts/diag_sparse24_inference_attribution.py
+--iters	ok		2026-09-19	scripts/diag_dtype_map.py,scripts/diag_fp8_scaling_overhead.py,scripts/diag_int8mm_paths.py,scripts/diag_scout_memory_integration.py,scripts/diag_sdpa_backends.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_sdpa_wsl_gqa.py,scripts/diag_sparse24_inference_attribution.py
 --jsonl	ok		2026-09-04	scripts/diag_common_text.py
 --k	ok		2026-09-04	scripts/diag_bench_overlap.py
 --kd	ok		2026-09-04	tinylm/cli.py
@@ -169,7 +172,7 @@ flag	grade	evidence	checked	declared_in
 --local-mtime-strict	ok	local mtime 차이를 오류로 승격하는 metadata 검사 모드	2026-09-18	scripts/check_doc_metadata.py
 --local-mtime-warn	ok	local mtime 차이를 경고로 기록하는 metadata 검사 모드	2026-09-18	scripts/check_doc_metadata.py
 --log	ok		2026-09-04	scripts/check_smoke_diag.py,scripts/registry.py,scripts/summarize_smoke.py
---logits-last-only	ok	A06(외부 조치 패키지, 2026-09-10) - prefill 에서 마지막 위치의 로짓만 만든다. 전 위치 로짓(vocab 32,768 x T 1,024 x 4B = 128.0 MiB)은 생성에 안 쓰이는데 우리 배포 예산이 32~40 MiB 다. 기본 off. 주의: 비트 동일이 아니다 - CPU 실측 40/40 에서 argmax 동일, 상대차 최대 5.3e-07(head GEMM 이 T=1 과 T>1 에서 다른 커널). 학습에서 켜면 ValueError	2026-09-10	scripts/bench_infer.py
+--logits-last-only	ok	A06 - 생성·TTFT·tok/s 벤치는 기본 on; 학습·teacher-forced NLL의 Transformer forward 기본 false는 유지; CPU 40/40 argmax 동일	2026-09-19	scripts/bench_infer.py
 --lora-bits	ok		2026-09-04	tinylm/cli.py
 --lora-decay	ok		2026-09-04	tinylm/cli.py
 --lora-rank	ok		2026-09-04	tinylm/cli.py
@@ -180,10 +183,12 @@ flag	grade	evidence	checked	declared_in
 --lrs	ok		2026-09-04	tinylm/cli.py
 --lut	ok		2026-09-04	scripts/mem_runtime.py
 --lut-out-chunk	ok		2026-09-04	scripts/mem_runtime.py
---m	ok	backend primitive의 행 수. 학습 batch 의미가 아니며 shape를 로그에 남긴다	2026-09-18	scripts/diag_fp8_backend_gate.py,scripts/diag_sparse24_backend.py
+--m	ok	backend primitive의 행 수. 학습 batch 의미가 아니며 shape를 로그에 남긴다	2026-09-19	scripts/diag_fp8_backend_gate.py,scripts/diag_fp8_scaling_overhead.py,scripts/diag_sparse24_backend.py
 --match-train-repeat	ok		2026-09-04	scripts/paired_eval.py
 --matrix-weight-decay	ok	A08 - 두 옵티마이저의 행렬 WD만 덮어쓴다. 미지정은 optimizer-aware 규약(AdamW 행렬 0.1, Muon 행렬 0)이며 임베딩·norm·LRM WD는 불변. 2026-09-18 Muon RMS4 기본 채용 뒤에도 None을 유지해 이 구분을 보존	2026-09-18	tinylm/cli.py
+--max-abs-ratio	ok	P025B FP16 GEMM max absolute error를 reference RMS로 정규화한 outlier gate	2026-09-19	scripts/diag_sparse24_inference_attribution.py
 --max-bytes	ok		2026-09-04	scripts/diag_spam_rate.py
+--max-nrms	ok	FP8·2:4·GQA의 RMS(error)/RMS(reference) 정합 문턱	2026-09-19	scripts/diag_fp8_scaling_overhead.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_sparse24_inference_attribution.py
 --max-speed-ratio	ok	P060B WSL native forced-GQA의 off-default 대비 허용 속도 대가	2026-09-19	scripts/diag_sdpa_wsl_gqa.py
 --max-docs	ok		2026-09-04	scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_common_text.py,scripts/diag_fp8_precision.py,scripts/diag_spam_rate.py,scripts/diag_val_docs.py
 --max-new	ok		2026-09-04	scripts/bench_fused_int8.py,scripts/bench_infer.py,scripts/diag_decode_profile.py,scripts/diag_kvcache.py,scripts/eval_bench_suite.py,scripts/mem_runtime.py,tinylm/cli.py
@@ -193,8 +198,10 @@ flag	grade	evidence	checked	declared_in
 --micro-bs	ok		2026-09-04	scripts/check_run_registry.py,scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_dtype_map.py,scripts/diag_fp8_precision.py,scripts/diag_trapping.py,scripts/paired_eval.py,tinylm/cli.py
 --micro-group	exp	P051 - packed 전용 레버. 상주식에 bpw 가 없다	2026-09-04	scripts/diag_lut_kernel.py,tinylm/cli.py
 --migrate-v2	ok		2026-09-04	scripts/wip.py
+--min-cosine	ok	backend 비교의 flattened-output cosine 정합 문턱	2026-09-19	scripts/diag_fp8_scaling_overhead.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_sparse24_inference_attribution.py
 --min-chars	ok		2026-09-04	scripts/diag_spam_rate.py
 --min-memory-reduction	ok	P060B WSL native forced-GQA working-memory 최소 절감율	2026-09-19	scripts/diag_sdpa_wsl_gqa.py
+--min-speedup	ok	P022C cast/scaling 포함 FP8 forward 최소 속도향상	2026-09-19	scripts/diag_fp8_scaling_overhead.py
 --mlp-film	rejected	결과 063 - 무KD 에서도 +0.0003 (t 0.77). KD 조건의 값이 그대로 재현됐다	2026-09-04	tinylm/cli.py
 --mlp-group	exp	결과 067 §11.3 - 잰 전 구간에서 지배당했다(d8 +0.0637 -> d16 +0.1049). 기각이 아니라 파레토 밖	2026-09-04	tinylm/cli.py
 --mlp-lrm	exp	P086 / 결과 072 - dense 몸통에서 -0.0005 로 종결. 타잉 몸통은 미측정	2026-09-04	tinylm/cli.py
@@ -254,6 +261,7 @@ flag	grade	evidence	checked	declared_in
 --q-heads	ok		2026-09-04	scripts/diag_sdpa_backends.py
 --quiet	ok		2026-09-04	scripts/check_batch_name.py,scripts/check_index_sync.py,scripts/check_plan_numbers.py,scripts/check_static_all.py,scripts/check_tag_arch.py
 --real	ok		2026-09-04	scripts/diag_kd_loss.py
+--ranks	ok	P093 shared-base residual SVD rank 목록	2026-09-19	scripts/diag_sharing_parent_approx.py
 --reason	ok		2026-09-04	scripts/wip.py
 --record	ok		2026-09-04	scripts/registry.py
 --records-informational	ok	SFT v2 감사에서 레코드 수를 실패 gate 아닌 정보값으로 판정	2026-09-18	scripts/audit_sft_corpus.py
@@ -267,21 +275,21 @@ flag	grade	evidence	checked	declared_in
 --report-every	ok		2026-09-04	scripts/diag_spam_rate.py
 --report-greedy	ok		2026-09-04	scripts/diag_kvcache.py
 --reps	ok		2026-09-04	scripts/bench_infer.py
---require-wsl	ok	WSL 독립 environment stratum을 Windows 역사 결과와 분리	2026-09-19	scripts/diag_sdpa_wsl_gqa.py,scripts/diag_sparse24_backend.py,scripts/diag_sparse24_inference_attribution.py
+--require-wsl	ok	WSL 독립 environment stratum을 Windows 역사 결과와 분리	2026-09-19	scripts/diag_fp8_scaling_overhead.py,scripts/diag_sdpa_wsl_gqa.py,scripts/diag_sparse24_backend.py,scripts/diag_sparse24_inference_attribution.py
 --resume	ok		2026-09-04	scripts/wip.py,tinylm/cli.py
 --retired-claims	ok		2026-09-04	scripts/wip.py
 --reuse-attn-on-dup	rejected	결과 041 §17.4 - 재귀 이득 -0.0203 을 전부 잃고 +0.0079 더 나빴다	2026-09-04	scripts/paired_eval.py,tinylm/cli.py
 --root	ok	metadata/SFT 감사 대상 root 지정; 보호 데이터 접근 권한은 별도	2026-09-18	scripts/audit_sft_corpus.py,scripts/check_doc_metadata.py
 --rows	ok		2026-09-04	scripts/diag_kd_loss.py
 --sample	ok		2026-09-04	scripts/diag_bench_overlap.py,scripts/diag_val_lang.py
---samples	ok	실제 validation 텍스트 probe에서 결정적으로 뽑을 span 수	2026-09-18	scripts/infer_text_probe.py
+--samples	ok	실제 validation span 또는 P093 synthetic activation 표본 수	2026-09-19	scripts/diag_sharing_parent_approx.py,scripts/infer_text_probe.py
 --save-every	ok		2026-09-04	tinylm/cli.py
 --scan	ok		2026-09-04	scripts/registry.py
 --sched	ok		2026-09-04	tinylm/cli.py
 --scope	ok	metadata 감사 범위 codex/all 선택; 기본 codex	2026-09-18	scripts/check_doc_metadata.py
 --sdpa-gqa	rejected	CLAUDE.md 3.6 - VRAM +27%, 시간 +96%	2026-09-04	tinylm/cli.py
 --seed	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/diag_layer_map.py,scripts/diag_lut_kernel.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py,scripts/eval_slices.py,tinylm/cli.py
---seq	ok		2026-09-04	scripts/check_run_registry.py,scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_attention_sink.py,scripts/diag_chat_overhead.py,scripts/diag_depth_init.py,scripts/diag_dtype_map.py,scripts/diag_fp8_precision.py,scripts/diag_gqa_equiv.py,scripts/diag_group_agg.py,scripts/diag_kd_loss.py,scripts/diag_layer_map.py,scripts/diag_p067_teacher.py,scripts/diag_repeat_attn_sim.py,scripts/diag_sdpa_backends.py,scripts/diag_train_repeat.py,scripts/diag_trapping.py,scripts/diag_val_docs.py,scripts/eval_slices.py,scripts/paired_eval.py,tinylm/cli.py
+--seq	ok		2026-09-19	scripts/check_run_registry.py,scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_attention_sink.py,scripts/diag_chat_overhead.py,scripts/diag_depth_init.py,scripts/diag_dtype_map.py,scripts/diag_fp8_precision.py,scripts/diag_gqa_equiv.py,scripts/diag_group_agg.py,scripts/diag_kd_loss.py,scripts/diag_layer_map.py,scripts/diag_p067_teacher.py,scripts/diag_repeat_attn_sim.py,scripts/diag_sdpa_backends.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_train_repeat.py,scripts/diag_trapping.py,scripts/diag_val_docs.py,scripts/eval_slices.py,scripts/paired_eval.py,tinylm/cli.py
 --seq-max	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py
 --serialized-chatml	ok	SFT canonical ChatML 총토큰과 supervised mask 실측	2026-09-18	scripts/audit_sft_corpus.py
 --session-id	ok	WIP를 정확한 Codex task에 결합하는 식별자	2026-09-18	scripts/wip.py
@@ -302,7 +310,7 @@ flag	grade	evidence	checked	declared_in
 --stale	ok		2026-09-04	scripts/check_index_sync.py
 --stamp-reuse-min	ok		2026-09-04	scripts/runlog.py
 --start	ok		2026-09-04	scripts/wip.py
---steps	ok		2026-09-04	scripts/check_run_registry.py,tinylm/cli.py
+--steps	ok		2026-09-19	scripts/check_run_registry.py,scripts/diag_dynamic_sparse_tlinear.py,scripts/diag_scout_memory_integration.py,tinylm/cli.py
 --strict	ok		2026-09-04	scripts/dryrun_batch.py
 --structural-audit	ok	SFT 표면 슬롯을 가린 train/eval template 근접도 감사	2026-09-18	scripts/audit_sft_corpus.py
 --stub	ok		2026-09-08	scripts/compass.py
@@ -340,6 +348,7 @@ flag	grade	evidence	checked	declared_in
 --train-repeat	ok		2026-09-04	tinylm/cli.py
 --turns	ok		2026-09-04	scripts/diag_chat_overhead.py
 --unpack-cache	ok		2026-09-04	scripts/bench_infer.py,scripts/mem_runtime.py
+--update-every	ok	P092 TLinear microtrainer topology update interval	2026-09-19	scripts/diag_dynamic_sparse_tlinear.py
 --user-owned	ok		2026-09-04	scripts/wip.py
 --val	ok		2026-09-04	scripts/diag_dataset_quality.py,scripts/diag_dataset_tokens.py
 --verbose	ok		2026-09-04	scripts/check_doc_ownership.py,scripts/check_flag_used.py,scripts/check_flag_whitelist.py,scripts/check_imports.py,scripts/check_index_sync.py
@@ -351,9 +360,10 @@ flag	grade	evidence	checked	declared_in
 --wandb-project	ok		2026-09-04	scripts/eval_bench_suite.py
 --wandb-standalone	ok		2026-09-04	scripts/eval_bench_suite.py
 --warn	ok		2026-09-04	scripts/check_spill.py
---warmup	ok	GPU backend timing 전 CUDA warmup 반복 수	2026-09-19	scripts/diag_sdpa_wsl_gqa.py,scripts/diag_sparse24_backend.py,scripts/diag_sparse24_inference_attribution.py
+--warmup	ok	GPU backend timing 전 CUDA warmup 반복 수	2026-09-19	scripts/diag_fp8_scaling_overhead.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_sdpa_wsl_gqa.py,scripts/diag_sparse24_backend.py,scripts/diag_sparse24_inference_attribution.py
 --wide	ok		2026-09-06	scripts/bench_tsv.py
 --window	ok		2026-09-04	scripts/diag_attention_sink.py
+--windows	ok	P091 selector S/U stability window count	2026-09-19	scripts/diag_layer_state_selector.py
 --wq-dtype	ok		2026-09-04	tinylm/cli.py
 --write	ok		2026-09-04	scripts/label_heldout_controlled.py,scripts/stamp_index_dates.py
 --yes	ok		2026-09-04	scripts/cleanup_ckpt.py

@@ -139,7 +139,7 @@ class _CpuWatch:
 
 
 def bench_one(model, cfg, tok, prompt, max_new, device, reps, use_cache=True,
-              watch=None, ext_limit=None, max_retry=0, logits_last_only=False):
+              watch=None, ext_limit=None, max_retry=0, logits_last_only=True):
     """(tok/s, TTFT_ms, 부하정보) 를 reps 회 재서 중위값. 첫 회는 warmup 으로 버린다.
 
     `watch` 가 있으면 반복마다 외부 CPU 부하를 **시스템 전체 %(0~100)** 로 재서 기록한다.
@@ -164,7 +164,10 @@ def bench_one(model, cfg, tok, prompt, max_new, device, reps, use_cache=True,
         with torch.no_grad():
             dev_t = device if isinstance(device, str) else device.type
             with torch.autocast(dev_t, dtype=torch.bfloat16, enabled=(dev_t == "cuda")):
-                _ = model(x[:, -cfg.max_seq_len:])
+                _ = model(
+                    x[:, -cfg.max_seq_len:],
+                    **({"logits_last_only": True} if logits_last_only else {}),
+                )
         if device == "cuda":
             torch.cuda.synchronize()
         ttft = (time.perf_counter() - t0) * 1000
@@ -175,7 +178,7 @@ def bench_one(model, cfg, tok, prompt, max_new, device, reps, use_cache=True,
         _ = sample(model, cfg, tok, prompt, max_new=max_new, temperature=0.7,
                    top_k=40, device=device, use_cache=use_cache,
                    stop_at_eos=False,      # ★속도 측정은 항상 max_new 토큰을 다 생성해야 공정
-                   logits_last_only=logits_last_only)   # ★A06(기본 off = 종전 경로)
+                   logits_last_only=logits_last_only)
         if device == "cuda":
             torch.cuda.synchronize()
         el = time.perf_counter() - t0
@@ -258,11 +261,14 @@ def main():
     #   `vocab 32,768 · T 1,024 · fp32` = **128.0 MiB** 인데 우리 배포 예산은 32~40 MiB 다.
     #   ⚠️🚫**비트 동일이 아니다** — 실측 40/40 시행에서 argmax 는 같고 상대차 최대 **5.3e-07**
     #   (fp32 eps 의 4.5배). head 의 GEMM 이 `T=1` 과 `T>1` 에서 다른 커널을 탄다.
-    ap.add_argument("--logits-last-only", action="store_true",
+    ap.set_defaults(logits_last_only=True)
+    ap.add_argument("--logits-last-only", dest="logits_last_only", action="store_true",
                     help="★(A06) prefill 에서 **마지막 위치의 로짓만** 만든다. "
                          "전 위치 로짓은 생성에 안 쓰이는데 vocab×T×4B 를 먹는다"
                          "(32,768×1,024×4 = 128.0 MiB → 0.125 MiB). "
-                         "🚫**기본 off**. ⚠️비트 동일이 아니다(argmax 동일 · 상대차 ~5e-07)")
+                         "★추론 속도 벤치 기본값. ⚠️비트 동일이 아니다(argmax 동일 · 상대차 ~5e-07)")
+    ap.add_argument("--full-logits", dest="logits_last_only", action="store_false",
+                    help="역사 결과 재현용: 생성에 쓰지 않는 전 위치 logits까지 계산한다")
     a = ap.parse_args()
 
     import torch

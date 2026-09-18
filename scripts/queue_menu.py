@@ -301,6 +301,20 @@ def cmd_audit(rows, warn):
     return err
 
 
+def cmd_platform_audit(rows, warn):
+    """Audit the queue used by the current host.
+
+    On WSL/Linux, ``run_queue.sh`` consumes native SH rows and BAT companion
+    adapters, so a Windows-only audit can report green while the actual menu is
+    stale.  Keep Windows behavior unchanged and delegate POSIX to the Linux
+    adapter's existing bidirectional audit.
+    """
+    if os.name != "posix":
+        return cmd_audit(rows, warn)
+    import queue_menu_linux
+    return queue_menu_linux.cmd_audit(queue_menu_linux.with_shell_state(rows), warn)
+
+
 def cmd_ids(rows, names):
     """★배치 **파일명** 목록 -> 큐에 입력할 **id 줄**. (2026-08-14 신설)
 
@@ -367,7 +381,7 @@ def main():
     a = ap.parse_args()
     rows, warn = load()
     if a.audit:
-        return cmd_audit(rows, warn)
+        return cmd_platform_audit(rows, warn)
     if a.ids:
         return cmd_ids(rows, a.ids)
     if a.build is not None:

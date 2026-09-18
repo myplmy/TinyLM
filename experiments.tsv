@@ -23,19 +23,29 @@
 #
 # ★2026-09-13 승인 연구 추가 72.0h 조건부 hard cap(기존 P005b/P089 큐와 별도):
 #   P091 22.6h + P025B 18.6h + P022C 14.5h + P092 min(7.65 H300, 16.3h) = 72.0h.
-#   완료 이관 행은 실행 불가이며, 현재 신규 runnable은 P025B Stage0bWc와 P060B Stage0aW
-#   두 GPU 진단 약 0.2h뿐이다. 후속 배치는 각 gate PASS 뒤에만 새 행으로 연다.
+#   완료 이관 행은 실행 불가다. 2026-09-19 후속은 교정 gate와 승인된 즉시 선결,
+#   P097 300M 데이터 recipe 네 팔만 연다. 각 조건부 본런은 앞 gate PASS 뒤에만 추가한다.
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-1	P025B	run_P025B_Stage0bWb_wsl_sparse24_training_pack.sh	D	0.1	Y	Y	one-way inference pack과 bidirectional training pack을 분리해 native 2:4 forward·input-grad·속도를 재판정한다. 학습 0
 1	P025B	run_P025B_Stage0bWc_wsl_sparse24_inference_attribution.sh	D	0.1	Y	Y	Stage0bWb의 M8192 training-pack 속도와 one-way inference pack을 분리하고 M1/16/128/1024/8192의 정합·속도·peak allocation을 측정한다. 학습 0	8
 2	P060B	run_P060B_Stage0aW_wsl_sdpa_gqa_backend.sh	D	0.1	Y	Y	WSL native SDPA의 off/on default와 forced CUDNN/FLASH/EFFICIENT GQA 정합·속도·working memory를 분리한다. 학습 0	8
-2	P096	run_P096_Q1b_taxonomy_difficulty_contract.sh	N	0.1	N	N	Q1a 회귀 뒤 보호 데이터 없이 8 relation·32 subtype·난이도·family/template cap 계약을 검증한다
-3	P093	run_P093_Stage0ab_sharing_accounting.sh	N	0.1	N	N	기존 질문 중복과 D/R 후보의 unique weight·packed/resident·optimizer state·FLOPs를 GPU 없이 회계한다
-4	P091	run_P091_R0R1b_model_mapping_audit.sh	N	0.1	N	N	R1a 회귀 뒤 실제 TinyLM CPU 모델의 logical layer·shared tensor·CLA owner·optimizer group mapping과 audit-off 불변을 검증한다
-5	P095	run_P095_S0aL_causal_memory_log_recovery.sh	N	0.1	N	N	이전 콘솔 PASS와 구분한 S0aL 단계로 causal memory CPU 계약의 원본 로그를 복구한다. 새 과학 주장은 없음
+1	P096	run_P096_Q2_canary_candidate_contract.sh	N	0.1	N	N	Q1b synthetic items로 450 slot·slot당 최대 2후보·provenance·ID preservation 계약을 검증한다
+1	P095	run_P095_S0b_memory_bridge_contract.sh	N	0.1	N	N	default-off Scout bridge의 identity·causality·reset·physical bytes·latency·backward 계약을 검증한다
+1	P091	run_P091_R2_layer_state_selector.sh	N	0.1	N	N	actual tiny model에서 gate-zero S와 WD 분리 optimizer-only U를 3 window로 기록한다
+1	P092	run_P092_Stage1aT_tlinear_dst_contract.sh	N	0.1	N	N	actual TLinear static50/DST50의 inactive score·active update·birth/death·optimizer-state 계약을 검증한다
+2	P022C	run_P022C_Stage0bW_fp8_scaling_overhead.sh	D	0.1	Y	Y	BF16 대비 FP8 current/delayed scaling의 absmax·cast 포함 forward 정합·속도·peak allocation을 잰다	8
+2	P025B	run_P025B_Stage0bWd_wsl_sparse24_inference_attribution.sh	D	0.1	Y	Y	Wc의 절대오차 단독·fail-fast를 교정해 두 형상과 M1~8192를 scale-aware 정합·속도로 완주한다	8
+2	P060B	run_P060B_Stage0aWb_wsl_sdpa_gqa_backend.sh	D	0.1	Y	Y	실용 on_default와 forced backend 후보를 별도 판정해 default false-negative를 교정한다	8
+3	P060B	run_P060B_Stage0bW_model_gqa_integration.sh	D	0.2	Y	Y	actual d14 RMS4 checkpoint의 full/cache prefill/decode GQA 정합·속도·peak allocation을 잰다
+3	P093	run_P093_Stage0c_parent_approximation.sh	D	0.2	Y	Y	d16 RMS4 parent의 shared mean+rank4/8/16 residual weight/output NRMS를 잰다	8
+4	P094	run_P094_R0_p022c_dependency_gate.sh	N	0.1	N	N	P022C actual packed/masterless evidence가 없으면 fail-closed dependency HOLD(exit 8)로 남긴다	8
+5	P097	run_P097_Stage0_dataset_recipe_contract.sh	N	0.1	N	N	한영 외부 recipe exact-token quota·source-stratified val·repo-local HF cache 계약을 검증한다
+6	P097	run_P097_Stage1a_control_v2_300M.sh	Y	3.0	Y	Y	KoWiki+FineWeb-Edu exact token 50:50 새 pipeline control을 600M pool·300M draw로 학습한다
+7	P097	run_P097_Stage1b_fineweb2_300M.sh	Y	3.0	Y	Y	FineWeb2 Korean+FineWeb-Edu exact token 50:50 recipe를 600M pool·300M draw로 학습한다
+8	P097	run_P097_Stage1c_edu_v2_300M.sh	Y	3.0	Y	Y	filtered Korean Webtext Edu+FineWeb-Edu exact token 50:50 recipe를 600M pool·300M draw로 학습한다
+9	P097	run_P097_Stage1d_madlad_300M.sh	Y	3.0	Y	Y	MADLAD clean ko+en exact token 50:50 recipe를 600M pool·300M draw로 학습한다
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수 49GB→. ★판정 정본이 checkpoints.tsv 로 바뀌었다(TSV, keep/hold/delete). 삭제 후보 13.2GB/34개. YES 를 직접 입력해야 지운다
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
@@ -321,6 +331,14 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   15	P005b	run_P005b_Stage10_rms_seed_transfer.bat	Y	6.2	N	N	재귀 d12와 무재귀 d16의 jordan20·RMS4를 seed 2024로 복제한다. 부호가 seed 1337과 뒤집히면 평균하지 않고 세 번째 seed를 연다
 #   16	P005b	run_P005b_Stage11_rms_600M_transfer.bat	Y	15.3	N	Y	RMS4를 600M 토큰 네 형상으로 옮기고 재귀 d12에 jordan20 한 팔을 더해 런 길이에 따른 scale 이동을 같은 1200M 풀에서 판정한다
 #   17	P005b	run_P005b_Stage12_rms_1200M_transfer.bat	Y	5.9	N	Y	P088 Stage10 완전 종료 뒤 d16 RMS4 1200M 한 팔을 추가한다. AdamW·jordan15와 같은 pool/tokens=1.0 조건에서만 비교한다
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P025B	run_P025B_Stage0bWb_wsl_sparse24_training_pack.sh	D	0.1	Y	Y	one-way inference pack과 bidirectional training pack을 분리해 native 2:4 forward·input-grad·속도를 재판정한다. 학습 0
+#   2	P096	run_P096_Q1b_taxonomy_difficulty_contract.sh	N	0.1	N	N	Q1a 회귀 뒤 보호 데이터 없이 8 relation·32 subtype·난이도·family/template cap 계약을 검증한다
+#   3	P093	run_P093_Stage0ab_sharing_accounting.sh	N	0.1	N	N	기존 질문 중복과 D/R 후보의 unique weight·packed/resident·optimizer state·FLOPs를 GPU 없이 회계한다
+#   4	P091	run_P091_R0R1b_model_mapping_audit.sh	N	0.1	N	N	R1a 회귀 뒤 실제 TinyLM CPU 모델의 logical layer·shared tensor·CLA owner·optimizer group mapping과 audit-off 불변을 검증한다
+#   5	P095	run_P095_S0aL_causal_memory_log_recovery.sh	N	0.1	N	N	이전 콘솔 PASS와 구분한 S0aL 단계로 causal memory CPU 계약의 원본 로그를 복구한다. 새 과학 주장은 없음
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)

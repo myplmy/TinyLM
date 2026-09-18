@@ -239,6 +239,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | `qb_*` | cooldown-QAT(P026) | **사용중**(결과 015: `qb_cos`·`qb_wsd60`·`qb_wsd80`·`qb_wsd80_s85`). `qb_wsd60_s85` **예약**(단계5) |
 | `qa_*` | 어닐 형태(P035: `qa_step60`·`qa_step80`) | ⚠️**2026-08-23 정정 — 이 행이 낡았다.** P035 는 **결과 022 로 종결**(2×2 네 값이 1.07σ 안, 형태 효과의 부호가 전이점에 따라 뒤집힘 = 검출 불가). `--anneal-shape` 은 구현돼 있고 **재실행 계획 없음** |
 | `p35b_a3_*` | P035B A3 동역학(`e60`·`e80`)과 audit 오염 대조(`off80`) | **예약 2026-09-15.** 세 팔 모두 m100s8·250 step·600M exact pool·seed 1337; 🚫품질 또는 anneal 기본값 판정에 사용 금지 |
+| `p097_ctrl_v2`·`p097_fw2`·`p097_edu_v2`·`p097_madlad` | P097 300M 한영 dataset recipe 대조 | **예약 2026-09-19.** 전 팔 m100s10 dense·CLA2·Muon RMS4×4·300M draw·600M nominal pool·seed1337. tokenizer/data가 달라 자기 val_loss 교차비교 금지 |
 | `mA_*`,`mB_*`,`mC_*` | 1차 리뷰 최적안 검증(REVIEW1) | ✅ **완료**(결과 012). 승자 = `mA_g4s34_k4` |
 | `p6d_s2` | σ 측정 — p6d 를 시드만 바꿔 재현(REVIEW1 [1]) | ✅ **완료**(결과 012, σ=0.012) |
 | `p12*` | 1200M 풀 계열(P007B: `p12d`·`p12d600`·`p12tk600_k4`) | **예약**(미실행) |
@@ -3355,8 +3356,23 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
   backward를 보존 로그에서 통과했다([결과 087](../test_result/087_20260919_P095-S0a-memory-primitive-계약은-통과했다.md)).
   Transformer 통합·물리 RSS·latency·학습가능성은 `NOT_RUN`이다.
 - P060B Stage0aW는 종전 P060 Windows 결과를 지우지 않고 WSL native CUDNN/FLASH/EFFICIENT
-  forced-GQA를 독립 environment stratum으로 재개한다. 코드·SH는 정적 PASS지만 GPU 결과는
-  `NOT_RUN`이며 외부 `flash-attn` 설치는 범위 밖이다.
+  forced-GQA를 독립 environment stratum으로 재개했다([결과 088](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)).
+  B8/T1024 forced CUDNN/FLASH는 off 대비 +7.9%/+5.8%로 +5% 문턱을 못 넘었고 EFFICIENT는
+  unavailable이라 forced 가설은 음성이다. 그러나 dispatcher `on_default`는 속도 +0.3%에
+  working memory −37.2%, B1/T128은 0.0%/−37.2%로 실용 후보를 남겼다. Stage0aW가 최종
+  candidate를 forced 경로에만 한정한 것은 설계결함이므로 default/forced 분리 재게이트와 actual
+  checkpoint model-path gate를 구현했으며 사용자 GPU 결과는 `NOT_RUN`이다.
+- P025B Stage0bWc inference attribution은 `(K,N,M)=(2048,768,128)`에서 legacy elementwise
+  `rtol=atol=0.02`가 `max_abs=0.125`, RMS 0.0114로 실패해 exit 4였고 이후 형상을 생략했다
+  ([결과 082 §8](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#8-stage0bwc-wsl-inference-attribution2026-09-19--정합-문턱에서-중단-측정된-속도는-전부-음성)).
+  완료 행의 sparse speedup은 0.072~0.790×로 전부 음성이지만 전체 형상 gate는 미완결이다.
+  출력 규모에 민감한 절대오차 단독 판정과 fail-fast를 normalized RMS·max-abs/reference RMS·
+  cosine·완주형 Stage0bWd로 교정했으며 새 GPU 결과는 `NOT_RUN`이다.
+- P097은 기존 cache를 바꾸지 않고 current-source exact-token control, FineWeb2-ko,
+  filtered Korean-Webtext-Edu, MADLAD clean의 네 600M pool/300M draw recipe를 신설한다.
+  각 source token quota와 source-stratified val을 50:50으로 고정하고 HF cache를 저장소 `HF/`
+  아래로 강제한다. 실제 다운로드·학습·한영 benchmark는 `NOT_RUN`이며 서로 다른 tokenizer의
+  자기 val_loss를 직접 비교하지 않는다.
 
 66. ★★**one-way sparse pack의 forward 가능성과 training dgrad 가능성을 합치지 않는다.**
     `packed`와 `packed_t`를 각각 기록하고, dgrad 실패를 backend 설치 실패로 승격하지 않는다.
@@ -3367,3 +3383,10 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
 69. ★★**사전등록 음성 종료코드와 실행 장애를 분리한다.** 해당 entry의 metadata에 선언된
     exit 8만 `GATE_NEGATIVE`로 모으고, 미선언 nonzero는 계속 queue 실패 4로 남긴다. 음성만
     있을 때 최종 8을 보존하되 “실행 실패”라고 부르지 않는다.
+70. ★★**wide low-precision GEMM 정합을 elementwise 절대오차 하나로 판정하지 않는다.**
+    max abs를 계속 인쇄하되 reference RMS로 정규화한 RMS·outlier ratio와 cosine을 함께 쓰고,
+    한 행 실패로 나머지 형상 증거를 버리지 않는다.
+71. ★★**backend 이름보다 제품 목표를 먼저 판정한다.** forced kernel이 문턱을 못 넘어도
+    dispatcher default가 같은 memory/speed 목표를 달성하면 별도 실용 후보로 남긴다.
+72. ★★**데이터 recipe 비교는 source token quota·val source ratio를 고정한다.** 문서 수 50:50을
+    token 50:50으로 부르지 않고, tokenizer가 다르면 자기 val_loss를 팔 사이 순위로 쓰지 않는다.

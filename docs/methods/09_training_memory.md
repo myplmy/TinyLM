@@ -299,7 +299,7 @@ python scripts/check_spill.py test_result/037_log_20260808_P018_compressed_teach
 | [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | shadow dtype에 따른 persistent state | FP8 compute만으로 shadow·optimizer 저장이 줄었다고 하지 않음 |
 | [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | structural density와 실제 state 절감 분리 | dense mask 단계는 저장·상주 절감 0 |
 | [P093](../../test_plan/P093_구조조건부-직접공유와-완화타잉.md) | unique packed/resident·optimizer state 절감 | R1 순배포 절감 26.1~27.2%는 산술 회계이며 activation·allocator RSS·latency 미측정([086](../../test_result/086_20260919_P093-회계상-R1은-남고-D1은-고계산이다.md)) |
-| [P095](../../test_plan/P095_Scout-1MiB-LTM-학습가능성.md) | 논리 1 MiB와 metadata/scratch/physical RSS 분리 | 논리 payload 계약만 PASS; 실제 resident·RSS·latency `NOT_RUN`([087](../../test_result/087_20260919_P095-S0a-memory-primitive-계약은-통과했다.md)) |
-| [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | manual KV repeat 대비 native GQA working memory | Stage0aW는 input bytes+peak allocation delta 진단이며 전체 peak reserved·학습 VRAM은 `NOT_RUN` |
+| [P095](../../test_plan/P095_Scout-1MiB-LTM-학습가능성.md) | 논리 1 MiB와 metadata/scratch/physical RSS 분리 | S0bB 코드 fixture의 state tensor는 1,049,608 B = payload 1,048,576 + metadata 1,032 B; full Transformer resident·RSS·학습은 `NOT_RUN` |
+| [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | manual KV repeat 대비 default GQA working memory | [088](../../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md) isolated B8/T1024에서 48.376→30.376 MiB(−37.2%); 전체 peak reserved·학습 VRAM은 `NOT_RUN` |
 
 후속 측정은 `peak reserved`·tokens/sec·val을 함께 남기며, sparse 비율만으로 VRAM 절감을 계산하지 않는다.

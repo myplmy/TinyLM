@@ -31,7 +31,22 @@ DATASETS = {
                   ("HuggingFaceFW/fineweb-edu", "sample-10BT", "train", "text", 0.5)],
     "ko":    [("wikimedia/wikipedia", "20231101.ko", "train", "text", 1.0)],
     "en":    [("Salesforce/wikitext", "wikitext-103-raw-v1", "train", "text", 1.0)],
+    # P097: 기존 cache/tokenizer를 덮지 않는 300M 학습용 독립 recipe.
+    # 세 recipe는 문서 추첨 비율이 아니라 아래 exact-token-quota-v1 경로로
+    # 실제 token 50:50을 강제하고 source-stratified validation을 만든다.
+    "ko-en-control-v2": [("wikimedia/wikipedia", "20231101.ko", "train", "text", 0.5),
+                         ("HuggingFaceFW/fineweb-edu", "sample-10BT", "train", "text", 0.5)],
+    "ko-en-fw2": [("HuggingFaceFW/fineweb-2", "kor_Hang", "train", "text", 0.5),
+                   ("HuggingFaceFW/fineweb-edu", "sample-10BT", "train", "text", 0.5)],
+    "ko-en-edu-v2": [("eliceai/korean-webtext-edu", None, "train", "text", 0.5),
+                      ("HuggingFaceFW/fineweb-edu", "sample-10BT", "train", "text", 0.5)],
+    "ko-en-madlad": [("allenai/madlad-400", "ko", "clean", "text", 0.5),
+                      ("allenai/madlad-400", "en", "clean", "text", 0.5)],
 }
+
+TOKEN_BALANCED_DATASETS = frozenset({
+    "ko-en-control-v2", "ko-en-fw2", "ko-en-edu-v2", "ko-en-madlad",
+})
 
 
 def tokenizer_path(name, vocab_size=VOCAB):
@@ -148,6 +163,8 @@ def _stream(name, exhausted_cb=None):
     iters, ratios = [], []
     for hf_id, cfg, split, key, r in specs:
         ds = load_dataset(hf_id, cfg, split=split, streaming=True)
+        if name in TOKEN_BALANCED_DATASETS:
+            ds = ds.shuffle(seed=0, buffer_size=10_000)
         iters.append((iter(ds), key)); ratios.append(r)
     rng = np.random.default_rng(0)
     p = np.array(ratios) / sum(ratios)
@@ -171,6 +188,131 @@ def _stream(name, exhausted_cb=None):
             #   지금까지 "한국어 50%" 라고 적어 온 모든 문서가 미확인이었다
             #   (docs/methods/07_corpus_selection.md §4.3). 이제 실측해서 meta 에 남긴다.
             yield t, i
+
+
+def exact_token_quotas(total: int, ratios) -> list[int]:
+    """Allocate an exact integer token budget while preserving ratio order."""
+    total = int(total)
+    values = [float(value) for value in ratios]
+    if total < len(values) or not values or any(value <= 0 for value in values):
+        raise ValueError("token budget and all source ratios must be positive")
+    scale = sum(values)
+    quotas = [int(total * value / scale) for value in values]
+    quotas[-1] += total - sum(quotas)
+    return quotas
+
+
+def _load_stream(spec):
+    """Load one HF source lazily after ``tinylm.paths`` fixed cache paths."""
+    from datasets import load_dataset
+    hf_id, cfg, split, key, _ratio = spec
+    if cfg is None:
+        dataset = load_dataset(hf_id, split=split, streaming=True)
+    else:
+        dataset = load_dataset(hf_id, cfg, split=split, streaming=True)
+    dataset = dataset.shuffle(seed=0, buffer_size=10_000)
+    return iter(dataset), key
+
+
+def _prepare_token_balanced(name, n_tokens, val_frac, cache_dir, tok, eos, dtype,
+                            vocab_size, *, doc_filter, doc_min_chars):
+    """Build a source-stratified exact-token recipe without touching old caches."""
+    specs = DATASETS[name]
+    quotas = exact_token_quotas(n_tokens, [spec[4] for spec in specs])
+    train_parts, val_parts = [], []
+    source_tokens, source_docs, val_tokens = [], [], []
+    total_bytes = 0
+    dropped_docs = 0
+    dropped_chars = 0
+    started = time.time()
+
+    print(f"[mix] ★exact-token-quota-v1: total={n_tokens:,} "
+          f"quotas={dict(zip((spec[0] + ':' + str(spec[1]) for spec in specs), quotas))}")
+    for source_index, (spec, quota) in enumerate(zip(specs, quotas)):
+        iterator, key = _load_stream(spec)
+        chunks = []
+        count = docs = 0
+        for row in iterator:
+            if key not in row:
+                raise KeyError(f"{spec[0]} config={spec[1]} row lacks text key {key!r}")
+            text = row[key]
+            if not text or len(text) <= 64:
+                continue
+            if doc_filter and spam_signature(text, doc_min_chars):
+                dropped_docs += 1
+                dropped_chars += len(text)
+                continue
+            ids = tok.encode(text).ids
+            piece = np.asarray(ids + [eos], dtype=dtype)
+            chunks.append(piece)
+            count += len(piece)
+            docs += 1
+            total_bytes += len(text.encode("utf-8"))
+            if count >= quota:
+                break
+            if count and count % 5_000_000 < len(piece):
+                print(f"  [source {source_index + 1}/{len(specs)}] "
+                      f"{count/1e6:>6.1f}M / {quota/1e6:.1f}M")
+        if count < quota:
+            raise RuntimeError(
+                f"source exhausted before exact quota: {spec[0]}:{spec[1]} "
+                f"got={count:,} wanted={quota:,}"
+            )
+        source = np.concatenate(chunks)[:quota]
+        n_val_source = max(1, int(len(source) * val_frac))
+        if n_val_source >= len(source):
+            raise ValueError("validation fraction leaves no training tokens")
+        train_parts.append(source[:-n_val_source])
+        val_parts.append(source[-n_val_source:])
+        source_tokens.append(int(len(source)))
+        source_docs.append(int(docs))
+        val_tokens.append(int(n_val_source))
+        print(f"  [source complete] {spec[0]}:{spec[1]} tokens={len(source):,} "
+              f"docs={docs:,} val={n_val_source:,}")
+
+    train_array = np.concatenate(train_parts)
+    val_array = np.concatenate(val_parts)
+    train_array.tofile(cache_dir / "train.bin")
+    val_array.tofile(cache_dir / "val.bin")
+    meta = {
+        "data": name,
+        "tokens": int(len(train_array) + len(val_array)),
+        "requested_tokens": int(n_tokens),
+        "vocab": int(vocab_size),
+        "token_dtype": str(np.dtype(dtype).name),
+        "hf_tokenizer": None,
+        "train": int(len(train_array)),
+        "val": int(len(val_array)),
+        "dir": str(cache_dir),
+        "bytes_per_token": total_bytes / max(n_tokens, 1),
+        "doc_filter": bool(doc_filter),
+        "mix_policy": "exact-token-quota-v1",
+        "stream_shuffle_seed": 0,
+        "stream_shuffle_buffer": 10_000,
+        "mix_sources": [spec[0] for spec in specs],
+        "mix_configs": [spec[1] for spec in specs],
+        "mix_splits": [spec[2] for spec in specs],
+        "mix_ratio_cfg": [spec[4] for spec in specs],
+        "mix_tokens": source_tokens,
+        "mix_docs": source_docs,
+        "mix_token_frac": [value / n_tokens for value in source_tokens],
+        "val_mix_tokens": val_tokens,
+        "build_wall_sec": time.time() - started,
+    }
+    try:
+        meta["bytes_per_token_val"] = (
+            len(tok.decode(val_array.tolist()).encode("utf-8")) / max(len(val_array), 1)
+        )
+    except Exception as exc:  # noqa: BLE001
+        print(f"[bpb] balanced val bytes_per_token 계산 실패(무시): {exc}")
+    if doc_filter:
+        meta["doc_min_chars"] = int(doc_min_chars)
+        meta["docs_dropped"] = int(dropped_docs)
+        meta["drop_chars"] = int(dropped_chars)
+    (cache_dir / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
+    print(f"[data] ★source-stratified train {meta['train']/1e6:.1f}M / "
+          f"val {meta['val']/1e3:.0f}K 저장 -> {cache_dir}")
+    return meta
 
 
 def build_tokenizer(name, vocab_size=VOCAB):
@@ -338,6 +480,14 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
         if _dt is np.uint32:
             print(f"[tok] ★어휘 {_v:,} > 65,536 → 토큰 저장 dtype 을 **uint32** 로 올린다"
                   f"(캐시가 2배가 된다). meta.json 의 'token_dtype' 이 정본이다.")
+        if name in TOKEN_BALANCED_DATASETS:
+            if hf_tok:
+                raise ValueError("P097 exact-token recipes do not yet support --tokenizer-hf")
+            return _prepare_token_balanced(
+                name, n_tokens, val_frac, cache_dir, tok, eos, _dt, _v,
+                doc_filter=doc_filter, doc_min_chars=doc_min_chars,
+            )
+
         buf, total, total_bytes = [], 0, 0
         t0 = time.time()
         n_drop, n_drop_chars = 0, 0

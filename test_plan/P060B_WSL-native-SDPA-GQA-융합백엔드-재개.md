@@ -3,7 +3,9 @@
 > **신규 후속 계획 2026-09-19.** [P060](P060_어텐션-활성메모리-축-GQA는-그중-하나였다.md)의
 > Windows/PyTorch 결과를 지우지 않고 WSL2·torch `2.10.0+cu130`을 독립 environment
 > stratum으로 재개한다. 구 P060의 기본 dispatcher 결론은 유지하며, 새 로그
-> 전까지 WSL 결과는 `E2E_NOT_RUN`이다.
+> 전까지 WSL 결과는 `E2E_NOT_RUN`이다. Stage0aW 보존 로그에서 forced backend는 음성이었지만
+> dispatcher-selected `on_default`가 속도 +0.3%·working memory −37.2%로 실용 문턱을 통과했다
+> ([결과 088](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)).
 
 ## 1. 재개 근거와 비재개 경계
 
@@ -39,13 +41,15 @@ WSL + `sm_89`는 플랫폼 선결을 만족한다. 패키지 존재는 커널 PA
 
 | 단계 | 내용 | 계속 조건 | 비용·상태 |
 |---|---|---|---|
-| **Stage0aW** | off/on default와 on-CUDNN/FLASH/EFFICIENT의 정합성·median forward·working memory | B8/T1024에서 forced GQA 중 하나가 정합 PASS, off 대비 속도 +5% 이내, memory ≥10% 절감 | GPU 진단 수 초, 학습 0; 사용자 `NOT_RUN` |
-| **Stage0bW** | `Attention.forward` opt-in 통합, off identity, cache/non-cache 그리디 동등성 | Stage0aW PASS, 오차·fallback·save/load 계약 통과 | 구현·SH 미작성 |
+| **Stage0aW ✅ 혼합** | off/on default와 on-CUDNN/FLASH/EFFICIENT의 정합성·median forward·working memory | forced 세 경로는 문턱 미달/불가; default는 +0.3%, memory −37.2%로 실용 후보 | [088](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md) |
+| **Stage0aWb 실행 대기** | 같은 micro-gate에서 dispatcher default와 forced 후보를 별도 판정 | default 또는 forced 중 하나가 속도 +5% 이내·memory ≥10% 절감하면 exit 0 | GPU 진단 수 초, 학습 0 |
+| **Stage0bW 실행 대기** | actual d14 RMS4 checkpoint의 `Attention.forward` default `enable_gqa` opt-in, full/cache prefill/decode 정합·속도·peak allocation | NRMS≤0.001, cosine≥0.999999, 실행 예외 0 | 구현·SH 작성, 사용자 모델/GPU `NOT_RUN` |
 | **Stage1W** | 250-step off vs forced-GQA 학습 속도·peak reserved·NaN/skip | memory ≥10% 절감, ms/step 악화 ≤5% | 조건부, SH 미작성 |
 | **Stage2W** | 배포 prefill/decode·장문 생성 정합성 | cache 경로 실제 텍스트와 속도 방향 통과 | 별도 승인·모델 실행 |
 
-Stage0aW exit 8은 유효한 음성 결과이며 실행 장애로 세지 않는다. 기본 SDPA
-경로를 바꾸지 않고 Stage0bW를 자동으로 열지 않는다.
+Stage0aW exit 8은 forced-only 사전등록 질문에는 유효한 음성이지만, 실용 후보선에서
+`on_default`를 제외한 설계 때문에 전체 GQA 음성으로 읽을 수 없다. Stage0aWb는 두 후보군을
+분리하고, 그 결과 전에는 기본 SDPA 경로를 바꾸지 않는다.
 
 ## 4. preflight·실행 경계
 
@@ -73,3 +77,10 @@ Stage0aW exit 8은 유효한 음성 결과이며 실행 장애로 세지 않는�
 
 - 2026-09-19: WSL torch/Triton inventory와 P060 미완 A3를 대조해 P060B를 신설했다.
   Stage0aW 진단·SH를 구현했으며 GPU 결과는 `NOT_RUN`이다.
+- 2026-09-19: Stage0aW 보존 로그는 forced CUDNN/FLASH가 +7.9%/+5.8%로 5% 문턱을
+  못 넘겨 exit 8이었다. 그러나 `on_default`는 +0.3%와 working memory −37.2%를 동시에
+  달성했다. forced backend 이름을 실용 목표보다 앞세운 최종 candidate 선정은 설계결함이라
+  Stage0aWb에서 default/forced를 별도 보고하고 어느 한쪽이 통과하면 practical candidate로 남긴다.
+- 2026-09-19: 기존 `--sdpa-gqa` actual Attention 배선을 재사용해 d14 RMS4 checkpoint의
+  full forward·cache prefill·decode 정합, same-session 속도·peak allocation을 한 로그에 남기는
+  Stage0bW 진단·SH를 구현했다. 기본값은 off이며 사용자 실행 전 결과는 `NOT_RUN`이다.

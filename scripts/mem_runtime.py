@@ -227,7 +227,7 @@ def main():
         nt = bd["params"]["ternary"]
 
         _ = sample(model, cfg, tok, PROMPT, max_new=a.max_new, temperature=0.7,
-                   top_k=40, device=dev, stop_at_eos=False)
+                   top_k=40, device=dev, stop_at_eos=False, logits_last_only=True)
         r2 = rss_mb()                                   # (d) 생성 중/후 피크 근사
         peak_cuda = (torch.cuda.max_memory_allocated() / 1024 ** 2
                      if a.device == "cuda" else float("nan"))

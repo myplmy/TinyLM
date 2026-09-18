@@ -3,8 +3,8 @@
 > **승인 2026-09-18.** 권장안 A를 조건부 연구 경로로 승인했다. 정본 제안서:
 > [`20260916_Muon-저정밀-shadow-residual-동적정밀도와-배치환원-제안서-approved-on-going.md`](../proposal/20260916_Muon-저정밀-shadow-residual-동적정밀도와-배치환원-제안서-approved-on-going.md)
 >
-> **현재 상태:** `DESIGNED`. P022C의 실제 packed/masterless low-shadow 출구조건이
-> 충족되지 않았으므로 구현·모델 로딩·GPU·배치·품질 결과는 `NOT_RUN`이다.
+> **현재 상태:** R0 dependency gate·SH `STATIC_ONLY`. P022C의 실제 packed/masterless
+> low-shadow 출구조건이 충족되지 않았으므로 R1 residual 구현·모델 로딩·GPU·품질은 `NOT_RUN`이다.
 
 ## 1. 왜 — low shadow의 실패와 실제 메모리 절감을 분리한다
 
@@ -61,7 +61,7 @@ P022C가 확정한 `L`을 그대로 사용하고 다음 항목을 모든 핵심 
 
 | 단계 | 무엇 | 다음 단계 조건 | 비용 |
 |---|---|---|---:|
-| **R0 P022C 출구** | actual packed/masterless `L`, failure signature, hidden-master 여부 확인 | 실제 storage 증거가 있고 residual 필요 신호가 존재 | GPU 0, 기존 증거 읽기 |
+| **R0 실행 대기** | machine-readable P022C actual packed/masterless `L`, failure signature, hidden-master 여부 확인 | schema·actual_packed·hidden_fp32_master=false·residual need가 모두 존재 | GPU 0, 없으면 exit 8 HOLD |
 | **R1 observer** | 기존 FP32 궤적에서 Q/R simulation; post-Muon update RMS, ULP, `rho`, saturation, ternary disagreement를 WSD 구간별 기록 | R16이 L-only 왜곡을 줄이거나 decay 분포가 사전 문턱을 넘음 | ⚙0.05~0.10 H300 |
 | **R2 static residual** | `A-L/B-R16/C-R8` 100M screen | paired CI가 현재 ruler 안, NaN/skip 0, resume 동일 | ⚙0.67 H300 신규 팔 상한 |
 | **R3 dynamic precision** | R8 생존 시 static R8 대 decay 시작 R8→R16 | static 대비 품질 또는 최악 phase 메모리 Pareto | ⚙0.33 H300 |
@@ -92,8 +92,12 @@ P094로 옮기지 않는다.
 ## 7. 우선순위와 실행 경계
 
 현재 우선순위는 **의존성 차단(D)**이다. P022C의 C/S 단계와 actual packed/masterless 출구조건이
-선결이므로 P094용 배치·tag·CLI·storage 구현을 지금 만들지 않는다. 첫 행동은 R0 증거표이며,
+선결이므로 residual·storage 구현을 지금 만들지 않는다. 첫 행동은 R0 증거표이며,
 그 결과가 residual 필요성을 보여 준 뒤에만 R1 구현 범위를 다시 고정한다.
+
+`run_P094_R0_p022c_dependency_gate.sh`는 `runs/evidence/P022C_shadow_storage.json`의
+`p022c.shadow-storage.v1` 계약을 fail-closed로 검사한다. 현재 evidence가 없으므로 예상 결과는
+exit 8 `DEPENDENCY HOLD`이며 실행 장애가 아니다.
 
 사용자 승인은 계획과 조건부 연구 경로의 승인이다. GPU 학습, 모델 로딩, smoke, 배치 작성,
 기본 optimizer·shadow 정책 변경은 별도 실행 승인과 직전 gate 로그가 필요하다.
@@ -123,3 +127,5 @@ P094로 옮기지 않는다.
 
 - 2026-09-18: 권장안 A 승인으로 P094를 신설했다. P022C actual packed/masterless R0 이전의
   구현·배치·GPU·품질은 `NOT_RUN`이다.
+- 2026-09-19: P094 자체 residual을 선제 구현하지 않고 R0 machine-readable dependency gate와
+  SH를 작성했다. P022C evidence가 없으면 exit 8로 닫히며 R1 이후는 계속 `NOT_RUN`이다.

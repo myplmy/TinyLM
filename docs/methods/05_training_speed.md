@@ -150,11 +150,11 @@ M=12,288 은 **서로 다른 두 형상(mb12×1024, mb24×512)이 똑같이 OOM*
 
 | 계획 | 현재 구현 범위 | 속도 주장 가능 범위 | 다음 gate |
 |---|---|---|---|
-| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | CUDA `_scaled_mm` 세 형상 PASS([081](../../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)) | 순수 GEMM **1.17~2.09×**; 학습 step은 `NOT_RUN` | cast·amax/scaling·backward 포함 Stage0b(C1) |
-| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | WSL Stage0bWb inference forward·bidirectional forward/dgrad PASS; M8192 training-pack 0.759×/0.820×([082](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | 해당 training pack·형상은 속도 음성. inference pack·decode/prefill·whole-step·학습 후 추론은 `NOT_RUN` | Stage0bWc pack/M 귀속 뒤 Stage0c·Stage2i 판단 |
-| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | Stage0c CUDA mask/gradient/birth-death 계약 PASS([083 §6](../../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) | **가속 0으로 취급**; dense tensor+mask 계약만 통과 | TLinear·trainer 연결 뒤 topology-update 비용 포함 실측 |
+| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | CUDA `_scaled_mm` 순수 GEMM 1.17~2.09× PASS; WSL cast/scaling 포함 C1 SH 구현 | backward·whole-step은 `NOT_RUN` | Stage0bW current/delayed 결과 뒤 다음 gate |
+| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | Wc 측정 행 0.072~0.790×, 둘째 형상 M128 정합문턱 exit 4·이후 생략([082 §8](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#8-stage0bwc-wsl-inference-attribution2026-09-19--정합-문턱에서-중단-측정된-속도는-전부-음성)) | 완료 행은 음성이나 전체 gate 미완결 | scale-aware·완주형 Stage0bWd 사용자 실행 |
+| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | Stage0c CUDA 계약 PASS; actual TLinear Stage1aT controller 계약 구현 | **가속 0으로 취급**; full trainer 30M은 `NOT_RUN` | Stage1aT→CLI/default-off→smoke→30M |
 | [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | 독립 fold와 actual tiny-model owner/optimizer mapping PASS([080 §6](../../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19)) | selector·local update 속도·VRAM 모두 `NOT_RUN` | TLinear/controller 구현과 사용자 스모크 뒤 측정 |
-| [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | WSL native forced GQA 정합·속도·working-memory 진단과 SH 정적 PASS | GPU 결과 `NOT_RUN`; Windows P060 기본-dispatch 열세는 유지 | Stage0aW 결과가 통과해야만 Attention opt-in 통합 |
+| [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | forced CUDNN/FLASH +7.9%/+5.8%로 음성, `on_default` +0.3%·working memory −37.2%([088](../../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)) | isolated forward의 실용 후보; actual model·학습은 `NOT_RUN` | default/forced 재게이트와 d14 checkpoint 통합 SH |
 
 제안 승인과 Stage0 코드 존재는 속도 개선 증거가 아니다. P092의 계약 PASS도 가속 PASS가 아니며,
 P025B의 Windows 실패는 유지되고 WSL training-pack 정합성은 통과했지만 해당 M8192 속도는 음성이다.

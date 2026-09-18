@@ -89,6 +89,31 @@ class TLinear(nn.Module):
         self._lut_codes = None
         self._lut_alpha = None           # (O, 1) per-row fp32
         self._lut_ipad = 0
+        # P092: default-off structural connectivity.  None preserves the exact
+        # historical path.  The controller owns mask updates and gradient scores.
+        self.register_buffer("connectivity_mask", None)
+        self._connectivity_dense_grad = False
+
+    def set_connectivity(self, mask=None, *, dense_regrowth_gradient=False):
+        if mask is None:
+            self.connectivity_mask = None
+            self._connectivity_dense_grad = False
+            return
+        if mask.shape != self.weight.shape:
+            raise ValueError(
+                f"connectivity mask shape {tuple(mask.shape)} != {tuple(self.weight.shape)}"
+            )
+        self.connectivity_mask = mask.to(device=self.weight.device, dtype=torch.bool)
+        self._connectivity_dense_grad = bool(dense_regrowth_gradient)
+
+    def _connectivity_weight(self, weight):
+        if self.connectivity_mask is None:
+            return weight
+        from .sparse_connectivity import connectivity_weight
+        return connectivity_weight(
+            weight, self.connectivity_mask,
+            dense_regrowth_gradient=self._connectivity_dense_grad,
+        )
 
     # ---------- P034 단계2: 추론 시 latent 해제 ----------
     def latent_dropped(self):
@@ -306,7 +331,7 @@ class TLinear(nn.Module):
     def refresh_quant(self, anneal, arena=None):
         # torch.compile 안전: Python 분기 없이 항상 STE 항을 더한다(anneal은 스칼라 텐서).
         self._anneal_t = anneal          # 커널 경로가 float(cfg.quant_anneal) 대신 이 텐서를 쓰게 함
-        w = self._w()
+        w = self._connectivity_weight(self._w())
         wq = ternary(w, self.cfg)
         self._wq = wq + (1.0 - anneal) * (w - wq).detach()
         # ★P068 A1(2026-08-22) — `_wq` **저장** dtype 만 내린다. 계산(`ternary`)은 fp32 다.
@@ -341,6 +366,8 @@ class TLinear(nn.Module):
                 y = y + F.linear(h, self.mode_b)
             return y
         if getattr(self.cfg, "use_ternary_kernel", False):   # 분리된 커스텀 커널 경로(기본 off)
+            if self.connectivity_mask is not None:
+                raise RuntimeError("P092 connectivity mask is not implemented in ternary kernel path")
             if self._latent_shape is not None:
                 raise RuntimeError("latent 해제 상태에서는 커스텀 커널 경로를 쓸 수 없다 "
                                    "(커널이 latent weight 를 직접 읽는다).")
@@ -351,7 +378,8 @@ class TLinear(nn.Module):
             if self._i8 is not None:                 # P034 단계3: int8 저장 → 매번 되돌린다
                 wq = self._wq_from_i8()
             else:
-                wq = self._wq if self._wq is not None else ternary(self._w(), self.cfg)
+                wq = (self._wq if self._wq is not None
+                      else ternary(self._connectivity_weight(self._w()), self.cfg))
             y = F.linear(x, wq)
         if self.use_mode and mode_p is not None:
             h = F.linear(x, self.mode_a) * (mode_p @ self.mode_gain)

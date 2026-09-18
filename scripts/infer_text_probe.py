@@ -119,7 +119,7 @@ def main() -> int:
         bpb = nll * len(y) / (target_bytes * math.log(2))
         generated = sample(model, cfg, model_tok, context, max_new=args.max_new,
                            temperature=args.temperature, top_k=args.top_k,
-                           device=device, use_cache=True)
+                           device=device, use_cache=True, logits_last_only=True)
         continuation = generated[len(context):] if generated.startswith(context) else generated
         _print_block(f"MODEL continuation #{index} offset={offset}", continuation)
         print(f"[teacher-forced] target_nll={nll:.6f} ppl={math.exp(min(nll, 20)):.3f} "
@@ -129,7 +129,7 @@ def main() -> int:
     for index, prompt in enumerate(_prompts(args), 1):
         generated = sample(model, cfg, model_tok, prompt, max_new=args.max_new,
                            temperature=args.temperature, top_k=args.top_k,
-                           device=device, use_cache=True)
+                           device=device, use_cache=True, logits_last_only=True)
         _print_block(f"USER prompt #{index}", generated)
 
     print("\n[interpretation] 이 모델은 사전학습 next-token continuation 모델이다. "

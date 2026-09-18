@@ -8,7 +8,8 @@
 > **현재 상태:** Stage0a 독립 계약과 R0/R1b actual tiny-model mapping 게이트가
 > ✅PASS([결과 080 §6](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19)).
 > 논리 layer 6, unique MLP 4, attention 6, CLA KV owner 3, optimizer parameter 63이
-> 보존 로그에서 확인됐다. selector `S/U`, controller·optimizer-state 절감·실제
+> 보존 로그에서 확인됐다. `S/U` 산식·WD 분리의 R2t tiny actual-model gate와 SH는
+> `STATIC_ONLY`; 실제 checkpoint selector panel, controller·optimizer-state 절감·
 > TLinear/trainer 배선, timing·GPU·학습·품질은 `NOT_RUN`.
 
 ## 1. 왜 — 후반 계산을 모든 parameter에 균등 배분해야 하는지 미측정이다
@@ -73,7 +74,8 @@ trainer에 아직 연결하지 않아 기존 기본 경로를 바꾸지 않는�
 | **R0 schema ✅** | logical occurrence, unique MLP/attention tensor, CLA K/V owner, optimizer group을 분리하고 `S/U` 필드 고정 | tiny-model mapping PASS: 6/4/6/3 owners([080 §6](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19)) | 완료, CPU/GPU 0 |
 | **R1a audit primitive** | 기존 `OptimizerAudit`에 total/WD/optimizer-only update와 normalized ratio를 opt-in으로 추가 | AdamW·Muon 분리, parameter 중복 차단 | 구현·CPU fixture `STATIC_ONLY` PASS |
 | **R1b mapping ✅ / timing ⏸** | 실제 TinyLM mapping·audit 생성 불변·timing을 모델 경로에서 대조 | mapping·optimizer 63 parameter 계약 PASS; 개별 owner 표·timing·오염 수치는 `NOT_RUN` | [080 §6](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19), GPU 0 |
-| **R2 진단** | selector 전용 패널에서 CLA-safe gate-zero `S`와 여러 window의 `U` 측정 | window·panel rank 안정, mapping 오류 0 | 모델·GPU `NOT_RUN` |
+| **R2t 실행 대기** | actual tiny model에서 CLA-safe MLP gate-zero `S`와 WD를 분리한 optimizer-only `U`를 3 synthetic window로 계측 | finite S/U, unique mapping·중복 0; 실제 checkpoint panel은 별도 | CPU gate 구현·SH 작성 |
+| **R2 진단** | selector 전용 실제 checkpoint panel에서 여러 window의 `S/U` 측정 | window·panel rank 안정, mapping 오류 0 | 모델·GPU `NOT_RUN` |
 | **R3 예측력** | 기존 Stage1의 32~128-step realized gain과 `S/U` ranking 대조 | median Spearman `rho≥0.5`, 3 window 중 2개 top-2 | 기존 Stage1에 흡수 |
 
 `S`는 잔차 기여 ablation이며 CLA K/V 공급 중단으로 부르지 않는다. `U`는 raw gradient가 아니라
@@ -110,7 +112,9 @@ fixed structured layer dropout(C)은 각각 별도 후속 계획·승인으로 �
   실제 모델 mapping·selector 증거로 확대하지 않는다.
 - 완료: `run_P091_R0R1b_model_mapping_audit-done.sh` — R1a 회귀와 실제 tiny CPU 모델의
   logical/shared/CLA/optimizer mapping을 exit 0으로 확인했다([080 §6](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19)).
-- 미작성: R2~R3와 Stage0b~Stage5. R0/R1b gate는 완료됐으며 다음은 실제
+- 실행 대기: `run_P091_R2_layer_state_selector.sh` — tiny actual-model에서 S/U 산식·WD 분리·
+  window 기록을 검증한다. 이는 실제 checkpoint realized-gain 예측이 아니다.
+- 미작성: 실제 panel R2·R3와 Stage0b~Stage5. R0/R1b gate는 완료됐으며 다음은 실제
   TLinear/controller·optimizer-state 격리 범위를 별도로 고정하고, 구현 뒤 사용자 스모크를 통과한
   경우에만 Stage1을 연다.
 
@@ -153,3 +157,6 @@ primitive에만 적용하며 모델 로딩, smoke, GPU, 장기 학습과 B/C 후
 - 2026-09-19: 사용자 실행 R0/R1b 보존 로그가 exit 0을 기록했다. 논리 layer 6,
   unique MLP 4, attention 6, KV owner 3, optimizer parameter 63 mapping을 PASS로 승격했다.
   selector·timing·GPU·학습·품질은 여전히 `NOT_RUN`이다.
+- 2026-09-19: R2의 산식·배선 선결을 독립 `R2t` gate로 구현했다. 실제 TinyLM tiny model에서
+  MLP residual gate-zero `S`, decoupled WD를 제거한 optimizer-only update/weight `U`, 세 window
+  순위를 기록한다. 실제 checkpoint panel과 32~128-step realized gain R3는 `NOT_RUN`이다.

@@ -41,7 +41,8 @@ RESULT = ROOT / "test_result"
 MARK = "# ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):"
 POST_DELETE_GUIDANCE = (
     "★삭제한 뒤에는 `python scripts/sync_experiments_tsv.py --apply` 로 표를 정리한다.",
-    "★그 다음 `python scripts/queue_menu.py --audit` 로 확인하고, 필요한 id는",
+    "★그 다음 `python scripts/queue_menu.py --audit` 로 확인한다(WSL에서는 Linux audit로 자동 위임).",
+    "  필요한 id는",
     "  `python scripts/queue_menu.py --ids <배치명...>` 로 다시 계산한다.",
 )
 
@@ -55,7 +56,10 @@ def banner(s, ch="="):
 def norm(s):
     """캐럿 줄바꿈·연속공백·대소문자·경로 구분자를 지운 비교용 정규형."""
     s = s.replace("^\n", " ").replace("^\r\n", " ")
+    s = s.replace("\\\n", " ").replace("\\\r\n", " ")
     s = s.replace("\\", "/").replace("\r", " ")
+    s = re.sub(r'(?i)(?:"?\$python_bin"?|/home/[^\s"\']+/python|python\.exe)', "python", s)
+    s = re.sub(r"(?i)\bexec\s+python\b", "python", s)
     return re.sub(r"\s+", " ", s).strip().lower()
 
 
@@ -69,12 +73,25 @@ def batch_commands(p):
       그래서 `call` 이 결과문서에 있는지만 본다(약한 검사임을 인쇄한다).
     """
     out = []
-    for ln in p.read_text(encoding="utf-8", errors="replace").splitlines():
+    physical = p.read_text(encoding="utf-8", errors="replace").splitlines()
+    logical, current = [], ""
+    for line in physical:
+        stripped = line.rstrip()
+        continuation = stripped.endswith("\\") or stripped.endswith("^")
+        current += (stripped[:-1] if continuation else stripped) + (" " if continuation else "")
+        if not continuation:
+            logical.append(current)
+            current = ""
+    if current:
+        logical.append(current)
+    for ln in logical:
         t = ln.strip()
         if t.lower().startswith("call ") and "scripts" in t.lower():
             out.append(t)
             continue
-        if not t.lower().startswith("python "):
+        is_windows_python = t.lower().startswith("python ")
+        is_shell_runlog = "scripts/runlog.py" in norm(t)
+        if not (is_windows_python or is_shell_runlog):
             continue
         if "--note" in t and " -- " not in t:
             continue                       # 제목만 찍는 줄
@@ -94,9 +111,12 @@ def result_corpus():
     return "\n".join(buf)
 
 
-def report_done(corpus):
+def report_done(corpus, *, root=ROOT):
     """디스크의 `-done` **전수**에 대해 ①② 를 판정한다."""
-    dones = sorted(ROOT.glob("run_*-done.bat"))
+    dones = sorted(
+        path for path in root.glob("run_*-done.*")
+        if path.suffix.lower() in {".bat", ".sh"}
+    )
     banner(f"`-done` 배치 전수 판정 — 디스크에 {len(dones)}건")
     if not dones:
         print("  없다.")
@@ -133,9 +153,9 @@ def report_done(corpus):
     return ok
 
 
-def report_orphans(apply_):
+def report_orphans(apply_, *, tsv=TSV, root=ROOT):
     """TSV 에는 있는데 디스크에 없는 배치 행 → 주석 블록으로 **이동**."""
-    lines = TSV.read_text(encoding="utf-8").splitlines()
+    lines = tsv.read_text(encoding="utf-8").splitlines()
     orphans, keep = [], []
     for ln in lines:
         if not ln.strip() or ln.lstrip().startswith("#"):
@@ -146,11 +166,13 @@ def report_orphans(apply_):
             keep.append(ln)
             continue
         batch = c[2].strip()
-        if not batch.endswith(".bat"):
+        suffix = Path(batch).suffix.lower()
+        if suffix not in {".bat", ".sh"}:
             keep.append(ln)
             continue
-        stem = batch[:-4]
-        if (ROOT / batch).exists() or (ROOT / f"{stem}-done.bat").exists():
+        stem = batch[:-len(suffix)]
+        done = any(root.glob(Path(stem).name + "-done*" + suffix))
+        if (root / batch).exists() or done:
             keep.append(ln)
         else:
             orphans.append((ln, batch, c))
@@ -175,7 +197,7 @@ def report_orphans(apply_):
         out = out[:i] + note + [""] + out[i:]
     else:
         out += [""] + note
-    TSV.write_bytes(("\n".join(out) + "\n").encode("utf-8"))
+    tsv.write_bytes(("\n".join(out) + "\n").encode("utf-8"))
     print(f"\n  ✅ {len(orphans)}행을 주석으로 이동했다. **지우지 않았다** — 원문이 `#` 뒤에 남아 있다.")
     print("  ⚠️ 이동 후 `python scripts/queue_menu.py --audit` 로 확인하세요.")
     return 0

@@ -4,9 +4,9 @@
 > [`20260916_Scout-1MiB-장기기억-학습가능성-검증-제안서-approved-on-going.md`](../proposal/20260916_Scout-1MiB-장기기억-학습가능성-검증-제안서-approved-on-going.md)
 >
 > **현재 상태:** S0a의 독립 memory primitive가 read-before-write, prefix invariance,
-> history dependence, 정확한 논리 payload 1 MiB, backward CPU fixture를 통과해 `STATIC_ONLY`다.
-> Transformer 통합, context shortcut/oracle fixture, metadata·scratch·RSS·latency, 학습가능성,
-> 일반 LM 품질은 모두 `NOT_RUN`이다.
+> history dependence, 정확한 논리 payload 1 MiB, backward 보존 로그를 통과했다.
+> default-off hidden bridge의 S0bB 코드·CPU fixture는 `STATIC_ONLY`다. full Transformer 통합,
+> context shortcut/oracle fixture, RSS, 학습가능성, 일반 LM 품질은 모두 `NOT_RUN`이다.
 
 ## 1. 왜 — 기능 성립과 동예산 최적화를 섞지 않는다
 
@@ -68,7 +68,8 @@ explicit long-term memory(LTM)를 추가해, 새로운 episodic fact를 쓰고 �
 | 단계 | 무엇 | 다음 단계 조건 | 비용 |
 |---|---|---|---:|
 | **S0a primitive ✅** | read-before-write, prefix invariance, history dependence, logical 1 MiB, backward | 독립 CPU fixture 전부 통과 | `STATIC_ONLY`, GPU 0 |
-| **S0b integration** | shape·mask·reset·determinism·physical byte·latency, fact context 제거와 oracle 누출 fixture | BASE가 chance 부근, 미래/label 누출 0, fallback 동일 | `NOT_RUN`, GPU 0 |
+| **S0bB 실행 대기** | default-off hidden bridge의 shape·write mask·reset·determinism·physical byte·latency·prefix causality | gate=0 bit identity, future perturbation prefix 불변, finite backward | CPU bridge gate |
+| **S0bT ⏸** | full Transformer coda 전 wiring과 fact context 제거/oracle 누출 fixture | BASE chance 부근, 미래/label 누출 0, fallback 동일 | 모델 wiring `NOT_RUN`, GPU 0 |
 | **S1 oracle memory** | oracle WRITE에서 READ/retrieval/fusion overfit과 unseen episode | train QA≥99%, recall@4≥99%; unseen에서 M이 controls보다 CI 하한 기준 우세 | ≤0.05 H300 |
 | **S2 capacity/conflict** | 25/50/100/120% occupancy, duplicate, update, conflict, tombstone, eviction | exact duplicate<1%, capacity 증가에도 원인불명 collapse 없음 | ≤0.10 H300 |
 | **S3 learned WRITE** | explicit hint→100/50/20/0% anneal, source-disjoint eval | WRITE F1≥95%, hint 0에서 oracle 성능의 ≥80% | ≤0.08 H300 |
@@ -101,6 +102,10 @@ memory와 같으면 “memory를 사용하지 않았다”로 종료한다. S5 �
 
 사용자는 S0a 독립 primitive와 WSL 계약 진입점 구현까지 승인했다. synthetic task generator,
 Transformer 배선, 모델 로딩, smoke, GPU, 학습 `.sh`, KV 축소, 기본 프리셋 변경은 승인 범위가 아니다.
+
+2026-09-19 현재 후속 승인으로 `ScoutMemoryBridge`와
+`run_P095_S0b_memory_bridge_contract.sh`를 추가했다. 이 gate는 hidden `[T,D]` bridge까지이며
+full Transformer coda wiring은 S0bT로 명시적으로 남긴다.
 
 ## 8. 한계와 위험
 
@@ -137,3 +142,6 @@ Transformer 배선, 모델 로딩, smoke, GPU, 학습 `.sh`, KV 축소, 기본 �
 - 2026-09-19: S0aL 보존 로그가 exit 0을 기록해 causal order·prefix invariance·
   history dependence·논리 1 MiB·backward 계약을 PASS로 승격했다([결과 087](../test_result/087_20260919_P095-S0a-memory-primitive-계약은-통과했다.md)).
   S0b 통합·physical accounting·latency·학습성·품질은 `NOT_RUN`이다.
+- 2026-09-19: default-off `ScoutMemoryBridge`와 S0bB 계약 SH를 구현했다. gate=0 identity,
+  reset determinism, future perturbation prefix invariance, logical/physical byte 분리, CPU latency,
+  finite backward를 검사한다. full Transformer wiring·shortcut dataset·learned WRITE는 `NOT_RUN`이다.

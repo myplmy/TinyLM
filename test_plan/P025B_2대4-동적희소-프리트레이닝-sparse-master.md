@@ -13,7 +13,10 @@
 > 두 형상에서 dense 대비 **0.759×/0.820×**로 느려 1.25× 게이트가 음성이었다
 > ([결과 082 현재 판정](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#현재-판정2026-09-19--stage0bwb-정합성-pass-훈련-형상-속도-음성)).
 > 이 수치는 training-oriented pack·training-shaped M만 측정했으므로 inference pack,
-> decode/prefill, 학습 후 실제 모델 추론 축은 닫지 않는다.
+> decode/prefill, 학습 후 실제 모델 추론 축은 닫지 않는다. Stage0bWc는 둘째 형상
+> `M=128`에서 elementwise `rtol/atol` 문턱으로 exit 4가 나고 이후 형상을 생략했다
+> ([결과 082 §8](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#8-stage0bwc-wsl-inference-attribution2026-09-19--정합-문턱에서-중단-측정된-속도는-전부-음성)).
+> 이는 backend 결론이 아니라 **절대오차 단독 gate와 fail-fast 설계 결함**이 섞인 결과다.
 
 ## 1. 왜 — 0을 넣는 것과 실제 희소 학습은 다르다
 
@@ -44,7 +47,8 @@ native 속도, dense-master 품질, inactive state를 제거한 sparse-master, t
 | **Stage0b-Win 🚫** | import는 통과. 첫 실제 MLP 형상에서 Windows runtime의 cuSPARSELt가 native forward 전 거부([082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | Windows 가속 분기 종료 | 진입 시간만 |
 | **Stage0bW ⚠️ 무효** | WSL CUDA runtime 최초 재probe | one-way pack의 dgrad를 backend 첫 matmul 실패로 합친 진단 구현 오류; 원본 로그도 로깅 코드 오류로 부재([082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--판정-철회와-진단-구현-오류)) | 진입 시간만 |
 | **Stage0bWb ⚠️ 혼합** | inference pack forward + bidirectional training pack forward/dgrad·M8192 속도 | 정합성 PASS; training-pack 속도 0.759×/0.820×로 1.25× 미달([082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#현재-판정2026-09-19--stage0bwb-정합성-pass-훈련-형상-속도-음성)) | GPU 진단 0.1h 미만 |
-| **Stage0bWc 실행 대기** | one-way inference pack vs training pack, M=1/16/128/1024/8192 정합·속도·peak allocation; pack 시간 제외 | prefill M≤1024 중 최소 하나가 ≥1.10×; decode 지원/속도는 별도 기술 | GPU 진단 0.1h 미만, 학습 0 |
+| **Stage0bWc ⚠️ 계측 미완결** | one-way inference pack vs training pack, M=1/16/128/1024/8192 정합·속도·peak allocation | 둘째 형상 M128의 elementwise 문턱 실패로 이후 행 생략; 측정 행은 모두 ≤0.790× | [082 §8](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#8-stage0bwc-wsl-inference-attribution2026-09-19--정합-문턱에서-중단-측정된-속도는-전부-음성) |
+| **Stage0bWd 실행 대기** | 같은 질문을 normalized RMS·max-abs/reference RMS·cosine으로 판정하고 legacy elementwise 결과는 경고로 보존; 모든 행 완주 | scale-aware 정합 전 행 PASS 뒤 inference prefill 중 하나 ≥1.10×; 아니면 완결된 exit 8 음성 | GPU 진단 0.1h 미만, 학습 0 |
 | **Stage0c ⏸** | dense vs 2:4 whole primitive forward/backward | Stage0bWc로 pack 속도 귀속 후 학습가속 분기를 재판단 | 0.2 |
 | **Stage1a ⏸** | dense-master 2:4, 250 step | sparse-master 메모리 트랙 별도 재승인 | 0.25 |
 | **Stage1b** | flip/death/birth/resurrection 계측 | active count·birth/death 보존 | 0.25 |
@@ -85,15 +89,15 @@ Stage0bWb의 훈련 형상 속도 음성은 그 pack에 한정한다. Stage0bWc�
 | Stage2까지 | 3.6 |
 | 전 게이트 통과 최대 | **12.6~18.6** |
 
-### 6.1 Stage0bWc preflight
+### 6.1 Stage0bWd preflight
 
 | 점검 | 결과 |
 |---|---|
 | 독립변수 | 같은 WSL·dtype·K/N에서 sparse pack 종류와 M만 바꾸며 packing은 timing에서 제외 |
 | registry 유사 런 | `check_run_registry --plan`에서 exact-2:4 inference decode/prefill 귀속 런 없음 |
-| 태그 충돌 | `P025B_Stage0bWc_wsl_sparse24_inference_attribution` 저장 로그 없음 |
+| 태그 충돌 | Wc 로그는 보존하고 새 이름 `P025B_Stage0bWd_wsl_sparse24_inference_attribution` 사용 |
 | 데이터·토큰 | 합성 kernel 진단이라 pool/tokenizer/steps 해당 없음; 학습 0 |
-| 판정 | inference prefill M16~1024 중 하나가 ≥1.10×면 후보, 아니면 exit 8 음성; decode는 별도 기술 |
+| 판정 | normalized RMS≤0.001, max_abs/reference RMS≤0.01, cosine≥0.999999; legacy elementwise assert는 경고. 정합 후 inference prefill M16~1024 중 하나가 ≥1.10×면 후보, 아니면 exit 8 음성 |
 | 비용·자원 | 사용자 GPU 진단 약 0.1h, 단독 실행; 모델·체크포인트 없음 |
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
@@ -107,8 +111,10 @@ Stage0bWb의 훈련 형상 속도 음성은 그 pack에 한정한다. Stage0bWc�
   dgrad 실패를 첫 backend matmul 실패로 오분류했다. **로깅 프로그램 코드 오류**로 원본 로그도 없다.
 - 완료: `run_P025B_Stage0bWb_wsl_sparse24_training_pack-done.sh` — 정합성 PASS,
   M8192 training-pack 속도 음성([082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#현재-판정2026-09-19--stage0bwb-정합성-pass-훈련-형상-속도-음성)).
-- 실행 대기: `run_P025B_Stage0bWc_wsl_sparse24_inference_attribution.sh` — inference/training
-  pack과 decode/prefill/training M을 분리하는 속도 귀속 게이트. GPU 실행은 `NOT_RUN`.
+- 완료·계측 미완결: `run_P025B_Stage0bWc_wsl_sparse24_inference_attribution-done.sh` —
+  elementwise 정합 문턱에서 exit 4, 이후 행 생략([082 §8](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#8-stage0bwc-wsl-inference-attribution2026-09-19--정합-문턱에서-중단-측정된-속도는-전부-음성)).
+- 실행 대기: `run_P025B_Stage0bWd_wsl_sparse24_inference_attribution.sh` — Wc의 절대오차
+  단독·fail-fast를 교정한 완결 귀속 gate. GPU 결과는 `NOT_RUN`.
 - 미작성: Stage0c~Stage4와 Stage2i 학습 후 checkpoint end-to-end 추론. 실행 가능한
   sparse 학습 모델과 앞 게이트 없이 placeholder SH를 만들지 않는다.
 
@@ -137,3 +143,7 @@ Stage0bWb의 훈련 형상 속도 음성은 그 pack에 한정한다. Stage0bWc�
 - 2026-09-19: Stage0bWb 보존 로그를 회수했다. bidirectional pack 정합성은 PASS,
   training-shaped forward는 0.759×/0.820×로 음성이었다. 훈련 pack의 속도를 추론으로
   외삽하지 않도록 Stage0bWc 귀속 진단·SH를 구현했고 GPU 결과는 `NOT_RUN`이다.
+- 2026-09-19: Stage0bWc는 `(K,N,M)=(2048,768,128)`에서 elementwise tolerance가
+  `max_abs=0.125`, RMS 0.0114로 실패해 exit 4였고 이후 형상을 생략했다. 측정 완료 행은
+  모두 dense보다 느렸지만 전체 speed gate는 미완결이다. 절대오차를 출력 규모와 무관한
+  단독 gate로 쓴 것과 fail-fast를 설계결함으로 분류해 Stage0bWd를 신설했다.

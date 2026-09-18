@@ -162,7 +162,7 @@ def main():
                 try:
                     out = sample(model, cfg, tok, prompt, max_new=mx,
                                  temperature=T, top_k=a.top_k, device=device,
-                                 use_cache=not a.no_cache)
+                                 use_cache=not a.no_cache, logits_last_only=True)
                 except Exception as e:
                     print(f"\n      >>> temp={T}  [!] 생성 실패: {type(e).__name__}: {e}")
                     continue

@@ -79,6 +79,8 @@ fixture
 |---:|---:|---|---|---:|---:|---|---|---|---|
 {queue_row}
 
+> ★**시간 미달 사유**: fixture queue는 계약 검사 한 건뿐이며 중복 실험으로 48시간을 채우지 않는다.
+
 ### 7.1 이전 큐 제외·완료 이관
 
 | 이전 배치 | 처리 | 근거 |
@@ -148,6 +150,14 @@ class HandoffContractTests(unittest.TestCase):
     def test_valid_current_handoff_passes(self) -> None:
         errors = self.write(current_text(self.previous.name, queue_row=self.carried_row))
         self.assertEqual(errors, [])
+
+    def test_short_queue_without_reason_fails(self) -> None:
+        text = current_text(self.previous.name, queue_row=self.carried_row).replace(
+            "> ★**시간 미달 사유**: fixture queue는 계약 검사 한 건뿐이며 중복 실험으로 48시간을 채우지 않는다.\n",
+            "",
+        )
+        errors = self.write(text)
+        self.assertTrue(any("below 48h" in error and "시간 미달 사유" in error for error in errors))
 
     def test_previous_queue_omission_fails(self) -> None:
         errors = self.write(current_text(self.previous.name, queue_row=""))

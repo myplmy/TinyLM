@@ -7,7 +7,8 @@
 > 완료됐다. Q1a 최소 계약에 이어 Q1b의 8 relation·32 subtype·320 synthetic fixture,
 > difficulty-knob 정합, family/template 5% cap과 proof-path negative fixture를 사용자 보존
 > 로그에서 exit 0으로 확인했다([결과 085](../test_result/085_20260919_P096-Q1b-taxonomy-계약은-통과했고-실문항은-남았다.md)).
-> 팀 의미검토, 실제 data/GPU는 `NOT_RUN`이며 보호 데이터 접근·재작성 권한은 열리지 않았다.
+> Q2a bounded candidate/provenance contract 코드·SH는 `STATIC_ONLY`다. 팀 의미검토,
+> 실제 보호 data/GPU는 `NOT_RUN`이며 다른 세션 소유 원본을 수정하지 않는다.
 
 ## 1. 왜 — 정적 문체 proxy가 아니라 실제 변별정보를 최적화한다
 
@@ -67,7 +68,8 @@ Q1에서 다음 필드와 소유권을 먼저 고정한다.
 | **Q0 ✅** | P085 Stage10c로 v2.9/v3.0 같은 seed2 패널 전이 분해 | ✅ `CORE_REGRESSION`; paired JSON·skip 0 | 완료, ⚙0.9 GPU-h 역사값 |
 | **Q1a ✅** | 최소 schema·direct/transitive solver·negative synthetic fixture | 정답 유일성·오답 미증명·필드/ID 오류 검출 | `STATIC_ONLY`, GPU 0 |
 | **Q1b ✅ 보존 로그** | 전체 relation/family taxonomy·difficulty knob 생성/검증 계약 | 8 relation·32 subtype·320 fixture 기계검증 exit 0; 팀 의미검토는 `NOT_RUN`([085](../test_result/085_20260919_P096-Q1b-taxonomy-계약은-통과했고-실문항은-남았다.md)) | CPU/GPU 0 |
-| **Q2** | 기존 유효 ID 보존, 10% canary 450자리×최대 2후보 생성 | 후보 상한·provenance·family cap 준수 | 데이터팀 1회 |
+| **Q2a 실행 대기** | 보호 데이터 독립 synthetic fixture에서 450 slot·slot당 최대 2후보·provenance·preservation 계약 | cap·source/candidate ID·semantic solver negative fixture PASS | CPU/GPU 0 |
+| **Q2b ⏸** | 기존 유효 ID 보존, 실제 10% canary 450자리×최대 2후보 생성 | Q2a PASS 뒤 데이터팀 소유 입력·사람 의미검토 | 데이터팀 1회 |
 | **Q3** | 설계 패널 응답행렬과 제약 기반 450개 선별 | 정보 0↓, bit↑, 최소 쌍 coverage↑, 관계 비퇴행 | ⚙0.3 GPU-h/회, 최대 2회 |
 | **Q4** | 사람 의미감사와 canary paired 판정 | 의미 오류 0, 사전등록 벡터 통과 | 사람 표본 1회 |
 | **Q5** | 통과 규칙만 full에 1회 적용 | 정적·설계패널 paired 모두 통과 | 팀 1회 + ⚙1.2 GPU-h 상한 |
@@ -95,6 +97,9 @@ held-out 판본이 모델 서열을 안정적으로 가르지 못하면 “지�
 사용자는 Q1a synthetic 기능 gate 구현과 WSL 계약 진입점까지 승인했다. `datasets/TinyDataset/**`
 열거·읽기·수정, 후보 생성, Q2 이후 도구, 사람 감사, GPU census와 새 판본 승격은 별도 범위·
 데이터팀 소유권·사용자 승인이 필요하다. 현행 v2.9나 v3.0을 자동으로 교체하지 않는다.
+
+후속 승인으로 `run_P096_Q2_canary_candidate_contract.sh`를 작성했다. Q2a는 synthetic Q1b
+items로 hard cap·provenance·ID preservation·semantic solver 계약만 검증하며 실제 문항을 읽지 않는다.
 
 ## 8. 한계와 위험
 
@@ -133,3 +138,6 @@ held-out 판본이 모델 서열을 안정적으로 가르지 못하면 “지�
   사용자 실행·팀 의미검토·실제 문항은 `NOT_RUN`이다.
 - 2026-09-19: Q1b SH 보존 로그를 회수해 exit 0을 확인했다([결과 085](../test_result/085_20260919_P096-Q1b-taxonomy-계약은-통과했고-실문항은-남았다.md)).
   팀 의미검토·실문항·보호 데이터·GPU panel은 계속 `NOT_RUN`이다.
+- 2026-09-19: Q2a bounded-canary contract를 구현했다. baseline slot≤450, source slot당 후보≤2,
+  provenance/source ID/candidate ID, preserved item semantic identity와 generated item proof solver를
+  검사한다. 실제 보호 문항·텍스트 생성·팀 의미감사·panel은 `NOT_RUN`이다.

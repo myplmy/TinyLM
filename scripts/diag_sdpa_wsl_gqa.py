@@ -41,6 +41,22 @@ def _version(name: str) -> str:
         return "NOT_INSTALLED"
 
 
+def _eligible(rows, baseline: str, candidates, max_speed_ratio: float,
+              min_memory_reduction: float):
+    if baseline not in rows:
+        return []
+    base_ms, base_memory, *_ = rows[baseline]
+    selected = []
+    for name in candidates:
+        if name not in rows:
+            continue
+        speed_ratio = rows[name][0] / base_ms
+        memory_reduction = 1.0 - rows[name][1] / base_memory
+        if speed_ratio <= max_speed_ratio and memory_reduction >= min_memory_reduction:
+            selected.append((name, speed_ratio, memory_reduction))
+    return selected
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--warmup", type=int, default=5)
@@ -144,31 +160,36 @@ def main() -> int:
         if "off_default" not in rows:
             print("[GATE FAIL] off_default baseline unavailable")
             return 3
-        eligible = []
-        for name in ("on_cudnn", "on_flash", "on_efficient"):
-            if name not in rows:
-                continue
-            speed_ratio = rows[name][0] / rows["off_default"][0]
-            memory_reduction = 1.0 - rows[name][1] / rows["off_default"][1]
-            if (speed_ratio <= args.max_speed_ratio
-                    and memory_reduction >= args.min_memory_reduction):
-                eligible.append((name, speed_ratio, memory_reduction))
-        if eligible:
-            print("[SHAPE CANDIDATE] " + ", ".join(
+        default_eligible = _eligible(
+            rows, "off_default", ("on_default",),
+            args.max_speed_ratio, args.min_memory_reduction,
+        )
+        forced_eligible = _eligible(
+            rows, "off_default", ("on_cudnn", "on_flash", "on_efficient"),
+            args.max_speed_ratio, args.min_memory_reduction,
+        )
+        if default_eligible:
+            print("[DEFAULT CANDIDATE] " + ", ".join(
                 f"{name} speed={ratio:.3f}x memory={reduction:.1%}"
-                for name, ratio, reduction in eligible
+                for name, ratio, reduction in default_eligible
             ))
-            if shape_index == 0:
-                primary_candidate = True
-        else:
+        if forced_eligible:
+            print("[FORCED CANDIDATE] " + ", ".join(
+                f"{name} speed={ratio:.3f}x memory={reduction:.1%}"
+                for name, ratio, reduction in forced_eligible
+            ))
+        if not forced_eligible:
             print(f"[SHAPE NEGATIVE] no forced GQA backend met speed<=+"
                   f"{(args.max_speed_ratio - 1.0):.0%} and memory reduction>="
                   f"{args.min_memory_reduction:.0%}")
+        if shape_index == 0 and (default_eligible or forced_eligible):
+            primary_candidate = True
 
     if not primary_candidate:
-        print("[GATE NEGATIVE] standard B8/T1024 shape has no eligible fused GQA backend")
+        print("[GATE NEGATIVE] standard B8/T1024 shape has no practical default or forced GQA candidate")
         return 8
-    print("[GATE CANDIDATE] WSL fused GQA passed the micro-gate; integration remains NOT_RUN")
+    print("[GATE CANDIDATE] WSL dispatcher-selected or forced GQA passed the practical "
+          "micro-gate; backend identity and integration remain NOT_RUN")
     return 0
 
 

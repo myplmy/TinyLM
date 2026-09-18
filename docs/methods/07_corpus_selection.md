@@ -217,3 +217,25 @@ SQuAD v2 의 `context` 는 그 조건을 정확히 만족한다.
 
 결과 011 §1.3 의 "영문 8.1% 압축 열세" 는 **미스터리가 아니라 어휘 배분의 직접 결과**다.
 그리고 **미학습 토큰은 0.11~0.17% 뿐**이라 어휘가 놀고 있는 것이 아니다(결과 025).
+
+---
+
+## 7. 2026-09-19 P097 — 300M direct recipe 대조
+
+기존 `ko-en`을 소급 변경하지 않고 다음 네 이름을 추가했다.
+
+| recipe | 한국어 | 영어 | mixer/val | 실행 상태 |
+|---|---|---|---|---|
+| `ko-en-control-v2` | KoWiki | FineWeb-Edu | token 50:50, source-stratified | `NOT_RUN` |
+| `ko-en-fw2` | FineWeb2 `kor_Hang` | FineWeb-Edu | 동일 | `NOT_RUN` |
+| `ko-en-edu-v2` | Korean Webtext Edu + 기존 SEO filter | FineWeb-Edu | 동일 | `NOT_RUN` |
+| `ko-en-madlad` | MADLAD clean `ko` | MADLAD clean `en` | 동일 | `NOT_RUN` |
+
+모두 별도 tokenizer/cache namespace와 nominal pool 600M, draw 300M을 사용한다. 기존 L1의
+문서단위 ratio와 L2의 전체-stream 말미 val을 재사용하지 않는다. source별 quota를 실제 token으로
+채우고 각 source의 말미 0.5%를 따로 val로 떼어 결합한다. HF cache는
+`/home/uranus/tinyLM/HF/{hub,datasets}` 밖이면 실행 전 exit 3이다.
+
+⚠️각 recipe는 tokenizer도 다르므로 자기 `val_loss`·ppl을 팔 사이에서 직접 비교하지 않는다.
+같은 한국어/영어 문항의 accuracy·gold margin과 같은 원문의 byte-level bpb만 비교한다.
+데이터 카드는 실물 품질 PASS가 아니므로 실제 mix/drop/중복과 생성 prompt 관련성을 결과에서 다시 본다.
