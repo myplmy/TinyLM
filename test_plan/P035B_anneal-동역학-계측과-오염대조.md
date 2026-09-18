@@ -111,7 +111,9 @@ code flip, occupancy, grid margin, gradient/update RMS를 층별과 원소수 �
 
 ## 5. 실행 파일과 사용자 절차
 
-정본 배치: [`run_P035B_Stage1_anneal_a3_trajectories.bat`](../run_P035B_Stage1_anneal_a3_trajectories.bat)
+실행 당시 정본 배치: `run_P035B_Stage1_anneal_a3_trajectories.bat`.
+Stage1 완료 후 배치 파일은 정리되어 현재 저장소에는 없으며, 실행 조건과 판정은
+[결과 084](../test_result/084_20260915_P035B-감사오염은-없고-후반궤적차도-지속되지-않았다.md)가 보존한다.
 
 1. 현재 코드 변경 뒤 `run_smoke_check.bat`를 사용자가 실행해 실패 팔 0,
    exit-0 오류표지 0, 계측 계약 오류 0을 확인한다.

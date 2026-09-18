@@ -75,6 +75,16 @@ def test_completed_transfer_lines_are_historical_references() -> None:
     assert 8 in historical
 
 
+def test_empty_recommendation_table_is_structurally_valid() -> None:
+    lines = """## 7. next
+| 순 | id | 실험 | 배치 파일 | ⚙ | 누적 | 인벤토리 | 실행상태 | 선결 | 근거 |
+|---:|---:|---|---|---:|---:|---|---|---|---|
+
+현재 실행 가능한 실험은 없다.
+""".splitlines()
+    assert MODULE.queue_table_header_index(lines) == 1
+
+
 def test_inherited_reason_boilerplate_is_idempotent() -> None:
     core = "RMS 상단을 닫는다"
     once = QUEUE_MODULE.inherited_reason(core)
@@ -95,6 +105,7 @@ def main() -> int:
         test_section_7_without_history_is_preserved,
         test_operational_launcher_is_not_counted_as_experiment_batch,
         test_completed_transfer_lines_are_historical_references,
+        test_empty_recommendation_table_is_structurally_valid,
         test_inherited_reason_boilerplate_is_idempotent,
     ]
     for test in tests:

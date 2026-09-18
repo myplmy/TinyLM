@@ -1,9 +1,14 @@
 # 제안 — Muon 저정밀 shadow에 explicit residual을 붙이고 WSD 구간별 정밀도를 바꾼다
 
-> **작성** 2026-09-16 · **상태** ⏳판단 대기 · **분류** 실험계획  
-> 양식: `proposal/README.md` §3. 아홉 절을 비우지 않는다.  
-> **선결:** P022C shadow/write-back 트랙의 failure signature 또는 low-shadow 생존 조건 확인.  
+> **작성** 2026-09-16 · **상태** 🔄권장안 A 승인·선결 진행 중 · **분류** 실험계획
+> 양식: `proposal/README.md` §3. 아홉 절을 비우지 않는다.
+> **선결:** P022C shadow/write-back 트랙의 failure signature 또는 low-shadow 생존 조건 확인.
 > **범위:** Muon-owned matrix의 latent/shadow 저장 정밀도만 다룬다. Muon momentum 저정밀화, FP8 compute, global-batch 확대는 본 제안의 독립변수가 아니다.
+>
+> **승인 기록(2026-09-18):** 사용자가 권장안 A를 승인했다. 실험계획은
+> [P094](../test_plan/P094_Muon-저정밀-shadow-Q-R-residual과-동적정밀도.md)로 이관했다.
+> P022C actual packed/masterless 출구조건, 구현·smoke·GPU·배치·재현은 남아 있으므로
+> `-approved-on-going` 상태다. 계획 승인만으로 해당 실행 권한은 열리지 않는다.
 
 ---
 
@@ -19,9 +24,9 @@ TinyLM의 `TLinear.weight`는 현재 연속형 `nn.Parameter`이며, ternary for
 
 외부에서도 master weight 제거 가능성은 확인되어 있다.
 
-- Nikdan et al., **ECO: Quantized Training without Full-Precision Master Weights**, arXiv:2601.22101  
+- Nikdan et al., **ECO: Quantized Training without Full-Precision Master Weights**, arXiv:2601.22101
   https://arxiv.org/abs/2601.22101
-- Zhao et al., **Direct Quantized Training of Language Models with Stochastic Rounding**, PMLR 304  
+- Zhao et al., **Direct Quantized Training of Language Models with Stochastic Rounding**, PMLR 304
   https://proceedings.mlr.press/v304/zhao26b.html
 
 ECO는 quantized parameter에 직접 update한 뒤 quantization error를 optimizer momentum으로 되돌리는 방법을 제안하지만, Muon의 Newton–Schulz update를 대상으로 한 방법은 아니다.
@@ -822,12 +827,13 @@ Muon은 단순 SGD/Adam update가 아니라 momentum 이후 Newton–Schulz를 �
 
 ---
 
-## 승인 후에만 할 일
+## 승인 결과와 이후 별도 승인 항목
 
-본 proposal이 승인된 뒤에만 다음을 수행한다.
+2026-09-18 승인으로 아래 1~2는 완료했다. 3 이후는 P094의 직전 gate와 별도 구현·실행 승인
+뒤에만 수행한다.
 
-1. 현재 사용 가능한 실험번호 확인
-2. `test_plan/` 정식 계획서 생성
+1. ✅ 현재 사용 가능한 실험번호 확인
+2. ✅ [`P094`](../test_plan/P094_Muon-저정밀-shadow-Q-R-residual과-동적정밀도.md) 정식 계획서 생성
 3. `test_plan/README.md` 색인 추가
 4. observer 구현
 5. Q/R storage abstraction 구현
@@ -839,7 +845,7 @@ Muon은 단순 SGD/Adam update가 아니라 momentum 이후 Newton–Schulz를 �
 11. Stage0 batch 작성
 12. Stage0 통과 후에만 Stage1 batch 작성
 
-승인 전에:
+P094 R0 출구조건과 별도 승인 전에:
 
 - P번호 선점
 - 실제 training implementation
@@ -909,6 +915,6 @@ shadow-weight residual과 같은 방법은 아니지만, 전체 학습 메모리
 
 **조건부 승격 타당(A+)**이다. 가장 먼저 열 것은 Q/R 구현이 아니라 P022C 결과를 입력으로 한
 observer와 전체 학습 메모리 분해다. shadow residual과 Muon-state quantization을 경쟁 대안으로
-비교하고, 실제 packed/masterless 증거가 있는 경로만 다음 단계로 보낸다. 이 부록은 구현 승인이나
-P번호 선점이 아니며, 사용자 승인 전 계획서·코드·배치·기본값을 만들지 않는다.
-을 하지 않는다.
+비교하고, 실제 packed/masterless 증거가 있는 경로만 다음 단계로 보낸다. 이 부록 자체는 구현
+승인이 아니다. P094 계획은 사용자 승인으로 생성됐지만 코드·배치·기본값과 GPU 실행은 계속
+별도 범위다.

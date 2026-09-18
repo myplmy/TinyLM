@@ -41,6 +41,7 @@ NL_ = chr(10)
 ROOT = Path(__file__).resolve().parent.parent
 HANDOFF = ROOT / "handoff"
 DEFAULT_HOURS_TARGET = 48.0
+QUEUE_REQUIRED_COLUMNS = ("순", "id", "실험", "배치", "⚙", "누적", "선결", "근거")
 
 # (키, 정규식, 에러인가) — 규약 §3 의 고정 섹션
 REQUIRED = [
@@ -87,6 +88,27 @@ def current_queue_batch_names(segment: str, known_batches: set[str]) -> set[str]
     """
     named = set(re.findall(r"(run_[A-Za-z0-9_]+\.bat)", segment))
     return named & known_batches
+
+
+def queue_table_header_index(lines: list[str]) -> int | None:
+    """Return the header row for the recommendation table, even when it is empty.
+
+    An empty table is a valid explicit statement that no experiment is currently
+    runnable. Requiring a ``run_*.bat`` data row made that state impossible to
+    represent and produced a false smoke failure.
+    """
+    for index in range(len(lines) - 1):
+        header = lines[index].strip()
+        separator = lines[index + 1].strip()
+        if not header.startswith("|") or not separator.startswith("|"):
+            continue
+        if set(separator.replace("|", "").strip()) > set("-: "):
+            continue
+        columns = [column.strip() for column in header.strip("|").split("|")]
+        if all(any(required in column for column in columns)
+               for required in QUEUE_REQUIRED_COLUMNS):
+            return index
+    return None
 
 
 def historical_queue_line_numbers(lines: list[str]) -> set[int]:
@@ -401,7 +423,6 @@ def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
     #   🚫**`id` 를 손으로 쓰지 않는다**(함정 36 — 표에 한 줄만 늘어도 전부 밀린다).
     #   ★`queue_menu.py --ids <배치명>` 이 계산한 값을 붙인다. **이 규칙이 그 값과 대조**한다.
     #   ⚠️최신 판에만 적용한다 — 지난 핸드오프는 그때의 스냅샷이다(규칙 10 과 같은 이유).
-    REQ_COLS = ("순", "id", "실험", "배치", "⚙", "누적", "선결", "근거")
     if _newest:
         try:
             sys.path.insert(0, str(ROOT / "scripts"))
@@ -415,24 +436,14 @@ def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
             j7 = next((k for k in range(i7 + 1, len(lines))
                        if re.match(r'^##\s', lines[k])), len(lines))
             seg7 = lines[i7:j7]
-            hdr_k = None
-            for k, ln in enumerate(seg7):
-                if ln.strip().startswith("|") and re.search(r'`?run_[A-Za-z0-9_]+\.bat', ln):
-                    # 이 행이 속한 표의 헤더를 위로 거슬러 찾는다
-                    for b in range(k - 1, -1, -1):
-                        if not seg7[b].strip().startswith("|"):
-                            break
-                        if set(seg7[b].replace("|", "").strip()) <= set("-: "):
-                            hdr_k = b - 1
-                            break
-                    break
+            hdr_k = queue_table_header_index(seg7)
             if hdr_k is None or hdr_k < 0:
-                err.append("★**§7 에 권장 실험순서 표가 없다**(배치를 담은 표를 못 찾았다). "
+                err.append("★**§7 에 권장 실험순서 표가 없다**(필수 열을 갖춘 표를 못 찾았다). "
                            "열은 `순 | id | 실험 | 배치 파일 | ⚙ | 누적 | 선결 | 근거` "
                            "여덟이다(2026-09-05 사용자 승인 A2+B2)")
             else:
                 cols = [c.strip() for c in seg7[hdr_k].strip().strip("|").split("|")]
-                miss = [c for c in REQ_COLS
+                miss = [c for c in QUEUE_REQUIRED_COLUMNS
                         if not any(c in x for x in cols)]
                 if miss:
                     err.append(
