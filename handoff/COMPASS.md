@@ -4,7 +4,7 @@
 > 그래서 이름에 시각이 없다(제안서 §3.6). 🚫`check_handoff` 는 `*_HANDOFF.md` 만 보므로
 > 이 파일에 고정 섹션 8개를 요구하지 않는다 — **면제 코드가 필요 없다.**
 >
-> **신설** 2026-09-08(2차) · **최신 갱신** 2026-09-18 · **근거** [제안서(승인)](../proposal/done/20260908_연구방향-길잡이-파일-approved.md)
+> **신설** 2026-09-08(2차) · **최신 갱신** 2026-09-19 · **근거** [제안서(승인)](../proposal/done/20260908_연구방향-길잡이-파일-approved.md)
 > · 사용자 지시 8(원안) → 2026-09-08(2차) 지시 2B(*"claude 개선안으로 승인"*).
 >
 > ★**읽는 순서**: `ai_dev_tool/06` → **이 파일** → 최신 핸드오프.
@@ -45,7 +45,7 @@
 | **옵티마이저** | ★**Muon RMS4를 사용자 기본 채택·연구축은 열림** — 상단·WD·형상·seed2024·역사적 길이 전이를 통과 | ★**078 §11~§15** ← 076 §13 ← 075 §19(2026-09-16) | 현재 코드 기본은 RMS4×4·KD off·optimizer-aware WD. 새 smoke 뒤 실제 본런 검증; QK-norm·schedule-scaled WD는 별도 연구 | Muon 일반행렬 WD0, embedding AdamW WD0.1, norm/bias/gate WD0, LRM WD0.01. 기본값 구현과 CPU 계약은 `STATIC_ONLY`; 현재 변경 뒤 학습은 `NOT_RUN` |
 | **토크나이저/어휘** | ⏸**보류** — 선결은 P075 단계1(어휘 16,384) ⚙2.0h | 결과 053 · 2026-08-22 | P075 단계1(**16 MiB 예산이 열릴 때**) | 어휘를 줄이면 **M=8192 무릎이 움직인다**(무릎은 어휘 32,768 기준). 그러면 속도·VRAM 표가 전부 다시 필요하다 |
 | **속도** | ⚠️**열림 · 🚫게이트 아님** — 폭 축소와 d18 배포 속도를 실측했고 둘 다 15 tok/s 바닥을 넘음 | ★**077 §5** ← 074 §26(2026-09-11) | 기존 `inplace` 체크포인트의 **CPU 1코어 tok/s** 실측 ⚙0.2h(학습 0, 사용자 실행) | 남은 경로는 LUT 커널·`inplace`/block 재귀·멀티코어. 폭의 시간 지수 1.44~1.65이며 MobileLLM은 inplace를 SRAM 속도 때문에 채택했지만 우리는 속도로 안 쟀다 |
-| **지능/벤치** | 🚫**v3.0 동일패널 core 회귀 확정** — seed2에서 v2.9→v3.0 D9 22.9→19.0%, 정보 0 54.1→65.2%, 총 bit 1,645.5→1,271.7 | ★**074 §27** ← 074 §25(2026-09-16) | 승인된 [P096](../test_plan/P096_held-out-변별정보-난이도-가족편향-품질향상.md) **Q1 schema/solver 계약**(GPU 0)이 다음. 보호 데이터·canary·GPU는 별도 승인 | v3.0 승격 실패와 별개로 v2.9도 D9 미달·난이도 비단조. 레거시 v3.0 메타데이터 공백 때문에 허용 주장은 core 세 축뿐이며 seed2 패널은 더 이상 봉인 final이 아님 |
+| **지능/벤치** | 🚫**v3.0 동일패널 core 회귀 확정** — seed2에서 v2.9→v3.0 D9 22.9→19.0%, 정보 0 54.1→65.2%, 총 bit 1,645.5→1,271.7 | ★**074 §27** ← 074 §25(2026-09-16) | 승인된 [P096](../test_plan/P096_held-out-변별정보-난이도-가족편향-품질향상.md) **Q1b 전체 taxonomy·difficulty 계약**(GPU 0)이 다음. Q1a는 CPU와 사용자 WSL queue에서 PASS했으나 queue 원본 로그는 미보존; 보호 데이터·canary·GPU는 별도 승인 | v3.0 승격 실패와 별개로 v2.9도 D9 미달·난이도 비단조. 레거시 v3.0 메타데이터 공백 때문에 허용 주장은 core 세 축뿐이며 seed2 패널은 더 이상 봉인 final이 아님 |
 
 ---
 
@@ -58,9 +58,11 @@
 2. ⏸★★**폭 축은 손실을 회복했지만 채택 이득을 만들지 못했다** — Stage2b에서 폭 대가
    +0.1017과 깊이 회복 +0.1028이 거의 같아 dim512·L28은 기준보다 −0.0011 좋을 뿐 자 안이다
    (077 §12). 부모 계보 교락, held-out, 384 팔이 남아 있고 Stage3·4는 재승인 없이 열지 않는다.
-3. ⚠️★★**WSL agent·hook·smoke는 범위별로 관찰됐지만 이관 전체 종결은 아니다** — 최신 사용자 로그
-   `202609181921_smoke_d8011d0.txt`는 42팔, 실패 0, exit-0 오류표지 0, 계측 오류 0으로 당시 트리
-   PASS다. 이후 optimizer/gate/inference 코드가 바뀌어 현재 트리는 새 smoke가 필요하다. Bash와
+3. ⚠️★★**WSL agent·hook·smoke는 범위별로 관찰됐지만 이관 전체 종결은 아니다** — 사용자
+   `202609182307_smoke_82dad38.txt`에는 23:07과 23:33 두 회차가 잘못 이어 붙었고, 마지막 회차만
+   분리하면 42팔·실패 0·exit-0 오류표지 0·계측 오류 0이다. 다만 파일명·commit header가 첫
+   회차 것이어서 마지막 회차의 정확한 작업트리 귀속 증거로는 불완전하다. 새 smoke 첫 note가
+   항상 새 파일을 만들도록 교정했으며 현재 교정 뒤 smoke는 `E2E_NOT_RUN`이다. Bash와
    `apply_patch`의 WIP 직접쓰기 deny 및 allowed `wip.py`, hash-verified auto compact 주입도 실제
    관찰했다. manual compact는 `NOT_RUN`이고 사용자가 검증 제외를 결정했다. M3 작업은 이 예외로
    운영 종결하지만, manual 경로나 M3 전체를 `ACTIVE_VERIFIED`로 승격하지 않는다.
@@ -80,16 +82,18 @@ total/WD/optimizer-only update CPU fixture를 통과했으나 실제 모델 mapp
 P022C(FP8 compute/shadow 분리)는
 Stage0a CUDA backend를 통과했다(081; 순수 GEMM 1.17~2.09×). 그러나 두 계획 모두 실제 모델 배선·
 학습·품질·end-to-end 자원 이득은 `NOT_RUN`이다. P025B Stage0b는 Windows runtime에서
-`cuSPARSELt not supported`를 실측해 그 분기를 닫았다(082 §6). WSL Stage0bW 진단 `.sh`는
-준비됐으나 사용자 GPU 실행 전 `NOT_RUN`이다. P092 Stage0c는 CUDA
+`cuSPARSELt not supported`를 실측했고, WSL Stage0bW도 패키지 로드 뒤 첫 native matmul에서
+`operation is not supported`로 종료했다([082 §6~§7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
+따라서 현재 두 runtime의 가속 분기는 닫혔고 sparse-master 메모리는 별도 재승인 대상이다.
+WSL 원본 로그는 launcher 결함으로 미보존이며 사용자 queue transcript만 있다. P092 Stage0c는 CUDA
 mask/gradient/birth-death 계약을 2회 통과했지만 dense tensor+mask라 가속·메모리·학습·품질은
 여전히 `NOT_RUN`이다(083 §6~§7). P035B A3는 audit 오염 G1은 통과했지만 지속 후반 궤적차 G2가
 성립하지 않아 adaptive/freeze A4를 열지 않는다(084).
 
 별도 추가 편성은 [실험계획목록 §1.1](../test_plan/실험계획목록.md)의 **72.0h 조건부 hard cap**을
-따른다. 게이트를 통과한 P091·P022C도 후속 구현과 사용자 스모크가 선결이며, 지금 새로 실행 가능한
-것은 P025B Stage0bW 사용자 진단뿐이며 학습 편성은 없다. P092는 TLinear·trainer 구현과 사용자
-스모크가 선결이다.
+따른다. 게이트를 통과한 P091·P022C도 후속 구현과 사용자 스모크가 선결이며, 지금 즉시 실행할
+새 학습 SH는 없다. 우선순위는 P096 Q1b → P093 Stage0a·0b → P091 R0/R1b이며, P022C Stage0b와
+P092 trainer 연결은 각 구현 뒤 사용자 스모크가 선결이다.
 각 gate가 실패하거나 구현이 비어 있으면 해당 분기의 잔여 예산을 자동 소진하지 않는다.
 
 신규 승인 [P094](../test_plan/P094_Muon-저정밀-shadow-Q-R-residual과-동적정밀도.md)는 P022C의

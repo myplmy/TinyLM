@@ -3245,7 +3245,7 @@ Muon 순효과 **−0.0246875 nats = 무재귀 자 0.0024의 10.3배**다. 학�
 
 > 정본: [결과 078 §6~§9](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md),
 > [결과 077 §12](../test_result/077_20260908_P089-폭을-줄이면-같은-예산에-층을-두-배-쌓고-속도-바닥도-넘는다.md),
-> [결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md),
+> [결과 082 §6~§7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md),
 > [결과 083 §6](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md).
 
 ### B.33.1 ★★★RMS4 — **상단·WD·네 형상을 모두 통과했다**
@@ -3278,9 +3278,11 @@ SE 0.0006, t 1.89로 무재귀 자 0.0024 안이며 체크포인트 수준에서
 
 - P025B Stage0b는 Windows runtime에서 import를 통과했지만 RTX 4070 Ti SUPER
   `sm_89`·torch 2.10.0의 첫 native 2:4 호출이 `cuSPARSELt not supported`로 끝났다.
-  그 runtime의 forward·input-grad·속도는 `NOT_RUN`이며 Windows 가속 분기는 종료한다.
-  WSL 이관 뒤 같은 계약의 Stage0bW `.sh`를 준비했지만 사용자 GPU 실행 전 `NOT_RUN`이다.
-  로그만으로 GPU·드라이버·OS·빌드 중 단독 원인은 못 고른다.
+  WSL Stage0bW도 torch `2.10.0+cu130`·cuSPARSELt `0.8.0`을 로드했지만 같은 첫 형상의
+  matmul이 `operation is not supported`로 종료했다([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--패키지는-로드됐지만-첫-sparse-matmul이-지원되지-않았다)).
+  두 runtime의 forward 정합·input-grad·속도는 `NOT_RUN`이며 현재 가속 분기는 종료한다.
+  WSL 원본 로그는 launcher 결함으로 미보존이므로 사용자 queue transcript가 증거다. 이 관측만으로
+  GPU·driver·PyTorch·cuSPARSELt 중 단독 원인은 못 고른다.
 - P092 Stage0c는 CUDA에서 finite loss, inactive gradient 합 12.144601, mask/effective
   sparsity 0.5, births=deaths=16으로 핵심 계약을 통과했다. 그러나 dense tensor+mask라
   가속·메모리·학습·품질은 모두 `NOT_RUN`이다.
@@ -3293,7 +3295,8 @@ SE 0.0006, t 1.89로 무재귀 자 0.0024 안이며 체크포인트 수준에서
     분기는 닫되, 다른 OS/runtime의 미실행 forward·gradient·속도와 별도 sparse-master 메모리
     트랙을 실패로 승격하지 않는다.
 64. ★★**WSL 재probe는 독립 environment stratum이다.** Windows 실패를 지우지 않고
-    `--require-wsl`과 runtime metadata를 남기며, Stage0bW PASS 전 Stage0c를 열지 않는다.
+    `--require-wsl`과 runtime metadata를 남긴다. WSL도 첫 matmul에서 실패했으므로 현재 두
+    runtime의 가속 분기는 종료하며, 다른 지원 환경 또는 sparse-master 별도 재승인 전 Stage0c를 열지 않는다.
 
 ## B.34 ★★★2026-09-16 — **RMS4 길이 전이·held-out 판본 회귀·anneal A3를 닫았다**
 

@@ -121,7 +121,7 @@ Transformer 배선, 모델 로딩, smoke, GPU, 학습 `.sh`, KV 축소, 기본 �
 | 유사 실험 조회 | 같은 Scout+1 MiB dual-arena causal LTM 런 없음 |
 | 중복·교락 | KV 압축·MLP tying·depth 교환은 S7 전 금지 |
 | 계산 | H300 상대비만 사용; 실제 baseline wall을 S0 뒤 기록 |
-| 태그·진입점 | `run_P095_S0_causal_memory_contract.sh` 준비·미실행; 학습 tag·본런 `.sh` 없음 |
+| 태그·진입점 | `run_P095_S0_causal_memory_contract.sh` 사용자 queue 콘솔 PASS; 당시 `runlog.py` 우회로 원본 로그 미보존. 학습 tag·본런 `.sh` 없음 |
 | 보호 경계 | 데이터·모델·GPU·smoke 접근 없음 |
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
@@ -129,3 +129,6 @@ Transformer 배선, 모델 로딩, smoke, GPU, 학습 `.sh`, KV 축소, 기본 �
 - 2026-09-18: 권장안 A 승인으로 P095를 신설했다.
 - 2026-09-18: S0a causal memory primitive와 CPU fixture PASS. 이는 Transformer 연결이나
   write→retrieve→answer 학습성 PASS가 아니며 S0b 이후는 `NOT_RUN`이다.
+- 2026-09-18: WSL queue 진입점에서도 S0a 콘솔 PASS를 관찰했지만 `test_result/` 원본은 launcher
+  결함으로 남지 않았다. 로그 경로는 교정했으며, 이 사실은 S0b 통합·physical RSS·학습성을
+  새로 통과시킨 증거가 아니다.

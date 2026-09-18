@@ -29,6 +29,22 @@ def row(batch: str):
 
 
 class LinuxQueueTests(unittest.TestCase):
+    def test_experiment_shell_requires_runlog_contract(self) -> None:
+        path = Path("run_P099_fixture.sh")
+        missing = b"#!/usr/bin/env bash\nexec python scripts/diag_fixture.py\n"
+        self.assertIn(
+            "does not invoke scripts/runlog.py",
+            shell_check.experiment_log_contract_errors(path, missing),
+        )
+        wrapped = (
+            b"#!/usr/bin/env bash\n"
+            b"exec python scripts/runlog.py --name P099_fixture -- "
+            b"python scripts/diag_fixture.py\n"
+        )
+        self.assertEqual(
+            shell_check.experiment_log_contract_errors(path, wrapped), []
+        )
+
     def test_same_stem_mapping(self) -> None:
         self.assertEqual(
             linux_queue.shell_name("run_smoke_check.bat"),

@@ -2,12 +2,14 @@
 
 > **승인 2026-09-13.** 정본 제안서: [`20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md`](../proposal/done/20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md)  
 > P025의 고정 2:4 개념을 대체하지 않고, native kernel·topology·dense/sparse master를 분리하는 후속 계획이다.  
-> **현재 상태(2026-09-18):** Windows Stage0b는 import를 통과했지만 RTX 4070 Ti SUPER
+> **현재 상태(2026-09-19):** Windows Stage0b는 import를 통과했지만 RTX 4070 Ti SUPER
 > `sm_89`·PyTorch 2.10.0 환경에서 `cuSPARSELt not supported`로 첫 native 호출이 거부됐다
 > ([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
-> 그 **Windows runtime 층**의 학습 가속 분기는 종료했다. WSL 이관 뒤에는 OS/runtime 차이를
-> 분리한 Stage0bW 진단 `.sh`를 준비했으며 사용자 GPU 실행 전 `NOT_RUN`이다. 따라서 cuSPARSELt
-> 지원이 회복됐다고도, WSL에서도 실패했다고도 아직 말하지 않는다.
+> WSL Stage0bW도 torch `2.10.0+cu130`·cuSPARSELt `0.8.0`을 로드한 뒤 같은 첫 형상의
+> native matmul에서 `operation is not supported`로 종료했다([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--패키지는-로드됐지만-첫-sparse-matmul이-지원되지-않았다)).
+> 따라서 현재 Windows/WSL runtime의 학습 가속 분기는 모두 종료한다. WSL 원본 로그는 당시
+> launcher 결함으로 미보존이며 사용자 queue transcript가 증거다; sparse-master 메모리 트랙은
+> 별도 재승인 없이 열지 않는다.
 
 ## 1. 왜 — 0을 넣는 것과 실제 희소 학습은 다르다
 
@@ -36,8 +38,8 @@ native 속도, dense-master 품질, inactive state를 제거한 sparse-master, t
 |---|---|---|---:|
 | **Stage0a ⚠️ 무효** | 실제 MLP 형상 native 2:4 진단 최초 시도 | `tinylm` import 전에 종료; 과학적 결과 `NOT_RUN`([082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | 0.1 미만 |
 | **Stage0b-Win 🚫** | import는 통과. 첫 실제 MLP 형상에서 Windows runtime의 cuSPARSELt가 native forward 전 거부([082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | Windows 가속 분기 종료 | 진입 시간만 |
-| **Stage0bW ⏳** | 같은 실제 형상·계측 계약을 WSL CUDA runtime에서 재probe | native type·forward·input-grad·median ≥1.25× | 사용자 실행, `NOT_RUN` |
-| **Stage0c ⏸** | dense vs 2:4 whole primitive forward/backward | Stage0bW PASS 또는 메모리 트랙 별도 재승인 | 0.2 |
+| **Stage0bW 🚫** | 같은 실제 형상·계측 계약을 WSL CUDA runtime에서 재probe | 첫 native matmul `operation is not supported`; WSL 가속 분기 종료([082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--패키지는-로드됐지만-첫-sparse-matmul이-지원되지-않았다)) | 진입 시간만 |
+| **Stage0c ⏸** | dense vs 2:4 whole primitive forward/backward | 다른 지원 runtime 증거 또는 메모리 트랙 별도 재승인 | 0.2 |
 | **Stage1a ⏸** | dense-master 2:4, 250 step | sparse-master 메모리 트랙 별도 재승인 | 0.25 |
 | **Stage1b** | flip/death/birth/resurrection 계측 | active count·birth/death 보존 | 0.25 |
 | **Stage1c** | sparse-master 250 step | hidden dense state 없음, invariant 100% | 0.3 |
@@ -76,8 +78,9 @@ median을 검사한다. weight-gradient·whole-step은 Stage0c 이후 소유로 
 - 무효 완료: `run_P025B_Stage0a_sparse24_backend-done.bat` — import 실패로 과학적 게이트 `NOT_RUN`([결과 082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
 - 완료(Windows 역사): `run_P025B_Stage0b_sparse24_backend-done.bat` — 해당 runtime의 native
   cuSPARSELt 지원 불가로 음성 게이트 종료([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
-- 준비·미실행(WSL): `run_P025B_Stage0bW_wsl_sparse24_backend.sh` — `--require-wsl`을 강제하고
-  실제 CUDA/cuSPARSELt forward·input-gradient·속도를 검사한다. GPU 진단이라 사용자가 실행한다.
+- 실행(WSL, 콘솔 증거): `run_P025B_Stage0bW_wsl_sparse24_backend.sh` — 첫 native matmul에서
+  지원 불가([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--패키지는-로드됐지만-첫-sparse-matmul이-지원되지-않았다)).
+  당시 `runlog.py` 우회 결함으로 원본 로그가 없으며, 교정 뒤 재실행은 로그 보존 E2E 용도다.
 - 미작성: Stage0c~Stage4. Stage0bW 결과를 회수하기 전 자동 개방하지 않는다.
 
 ## 8. 한계
@@ -95,4 +98,9 @@ median을 검사한다. weight-gradient·whole-step은 Stage0c 이후 소유로 
   `cuSPARSELt not supported on your machine`으로 종료했다. forward·input-grad·속도·품질은
   `NOT_RUN`; Windows runtime 가속 분기는 사전등록 규칙에 따라 닫았다([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
 - 2026-09-18: WSL 이관을 별도 environment stratum으로 사전등록하고 Stage0bW 진단 코드·`.sh`를
-  정적 검증했다. 사용자 GPU 실행과 backend 판정은 `NOT_RUN`이다.
+  정적 검증했다.
+- 2026-09-18: 사용자 queue에서 WSL Stage0bW를 실행했다. 패키지 import 뒤 첫
+  `M=8192,K=768,N=2048` sparse matmul이 `NotImplementedError: operation is not supported`로
+  종료해 WSL 가속 분기도 닫았다([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--패키지는-로드됐지만-첫-sparse-matmul이-지원되지-않았다)).
+  forward 정합·input-gradient·속도·학습·품질은 `NOT_RUN`; 원본 로그 미보존 부채는 launcher
+  교정으로 재발 방지만 완료했다.

@@ -104,8 +104,9 @@ fixed structured layer dropout(C)은 각각 별도 후속 계획·승인으로 �
 ## 7. 실행 진입점
 
 - 역사 완료(Windows): `run_P091_Stage0a_late_refine_contract-done.bat` — CPU 계약 진단 PASS([결과 080](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)).
-- WSL 준비·미실행: `run_P091_R1_optimizer_audit_contract.sh` — R1a synthetic CPU fixture만 실행한다.
-  내부 진단은 직접 실행해 PASS했지만 진입점 자체는 사용자 실행 전 `NOT_RUN`이다.
+- WSL 사용자 queue 콘솔 PASS: `run_P091_R1_optimizer_audit_contract.sh` — R1a synthetic CPU
+  fixture만 실행했다. 당시 launcher가 `runlog.py`를 우회해 `test_result/` 원본은 미보존이므로
+  실제 모델 mapping·selector 증거로 확대하지 않는다.
 - 미작성: R1b~R3와 Stage0b~Stage5. 다음은 R0 mapping 문서 대조와 실제
   TLinear/controller·optimizer-state 격리 범위를 별도로 고정하고, 구현 뒤 사용자 스모크를 통과한
   경우에만 Stage1을 연다.
@@ -141,3 +142,6 @@ primitive에만 적용하며 모델 로딩, smoke, GPU, 장기 학습과 B/C 후
   gate를 계획에 추가했다.
 - 2026-09-18: R1a optimizer audit v2와 AdamW/Muon synthetic CPU fixture PASS. 전체 모델 mapping,
   audit off 동일성·timing, selector 예측력은 계속 `NOT_RUN`이다.
+- 2026-09-18: WSL queue에서도 R1a 콘솔 PASS를 관찰했다. 원본 로그 미보존 결함을 교정했지만
+  교정 후 재실행 전에는 durable-log E2E를 주장하지 않는다. 다음 단계는 그대로 R0 mapping과
+  R1b 실제 모델 audit이다.

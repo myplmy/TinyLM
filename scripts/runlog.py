@@ -180,11 +180,35 @@ def _auto_num(out, name):
     sys.exit(2)
 
 
-def _stamped_path(out, name, sha, forced_stamp, reuse_min):
+SMOKE_SESSION_START = "[tool] instrumentation contract smoke test"
+
+
+def _is_smoke_session_start(name, note):
+    """Return true only for the first runlog note of a smoke invocation."""
+    return bool(name == "smoke" and note and note[0] == SMOKE_SESSION_START)
+
+
+def _fresh_stamped_path(out, name, tag):
+    """Choose a new non-experiment path without overwriting a same-minute run."""
+    now = datetime.now()
+    path = out / f"{now:%Y%m%d%H%M}_{name}_{tag}.txt"
+    if not path.exists():
+        return path
+    path = out / f"{now:%Y%m%d%H%M%S}_{name}_{tag}.txt"
+    suffix = 2
+    while path.exists():
+        path = out / f"{now:%Y%m%d%H%M%S}-{suffix}_{name}_{tag}.txt"
+        suffix += 1
+    return path
+
+
+def _stamped_path(out, name, sha, forced_stamp, reuse_min, *, force_new=False):
     """비실험 로그 경로. `{YYYYMMDDHHMM}_{name}_{sha7}.txt`, 최근 파일이면 이어쓴다."""
     tag = sha or "nogit"
     if forced_stamp:
         return out / f"{forced_stamp}_{name}_{tag}.txt"
+    if force_new:
+        return _fresh_stamped_path(out, name, tag)
     now = time.time()
     hits = [p for p in out.glob(f"*_{name}_*.txt")
             if now - p.stat().st_mtime <= reuse_min * 60]
@@ -408,8 +432,14 @@ def main():
                     f"-> {path.name}  ({_ago:.1f}시간 전, TL_LOG_REUSE_H={_rh:g})\n")
                 sys.stdout.flush()
     else:
-        path = _stamped_path(out, a.name, sha, os.environ.get("TL_STAMP"),
-                             a.stamp_reuse_min)
+        path = _stamped_path(
+            out,
+            a.name,
+            sha,
+            os.environ.get("TL_STAMP"),
+            a.stamp_reuse_min,
+            force_new=_is_smoke_session_start(a.name, a.note),
+        )
 
     # ★커밋 배너는 **비실험 로그 전용**이다(사용자 확인 2026-08-07).
     #   실험 로그는 조건 재현에 필요한 것이 이미 `runs/logs/*.json`(정본)과 헤더에 있고,

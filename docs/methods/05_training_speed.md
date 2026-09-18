@@ -31,7 +31,7 @@
 | **anneal 동역학 계측** | ✅**A0~A2 구현·CPU fixture**, A3 `E2E_NOT_RUN` | `anneal_schedule.py`, `--anneal-audit*` | LR/quant/aux 식을 분리하고 quant 거리·code flip·점유·경계여유·grad/update RMS를 저빈도 JSONL로 기록 | CPU 복사·동기화가 섞여 계측 on 속도는 인용 금지; 기본값·품질은 안 바뀜 | 승인된 [제안서](../../proposal/done/20260915_anneal-스케줄-분해와-계측우선-개선-approved.md). A3는 같은 초기 상태의 fresh 0.60/0.80 trajectory를 사용자가 실행한 뒤 판정 |
 | **seq-length warmup(P013)** | 💡→📌**설계조건 확보** | — (P013) | 초반 짧은 seq 로 어텐션 O(seq²) 절감 | **M 유지 필수** — seq 절반이면 mb 2배 | ★P021B: mb16×seq512(M=8192) 가 표준 mb8×seq1024(M=8192) 대비 **-5.7%**. 단 seq·mb 가 동시에 변해 기여도 분리는 안 됨. 이 값을 이득 상한으로 |
 | **데이터 풀 다양성(`--pool-tokens`)** | ✅**측정·조건부 채택** | v6 | 학습토큰은 그대로 두고 샘플 풀만 확대 → 반복 노출 감소 | 토큰화 1회 비용·디스크; pool별 언어비·val이 바뀌면 비교 교락 | 결과 006 log-val −0.12에는 시험지 변화가 섞였다. 같은 common text 방향은 양수지만 큰 pool의 영어 편향이 있다. 언어비를 보존한 exact cache에서만 “무료 품질 레버”로 사용 |
-| **2:4 준정형 희소(GPU)** | 🚫**현 환경 backend 게이트 실패** | — (P025B) | 희소 텐서코어로 학습 GEMM 가속 가능성을 먼저 진단 | 현재 RTX 4070 Ti SUPER `sm_89`·torch 2.10.0에서 첫 native 호출이 `cuSPARSELt not supported`; forward·gradient·속도는 `NOT_RUN`. 환경 구성요소 단독 원인은 로그만으로 미분리 | 현 환경 가속 분기는 종료([결과 082 §6](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)). sparse-master 메모리는 별도 트랙 |
+| **2:4 준정형 희소(GPU)** | 🚫**Windows·WSL backend 게이트 실패** | — (P025B) | 희소 텐서코어로 학습 GEMM 가속 가능성을 먼저 진단 | Windows는 첫 native 호출에서 `cuSPARSELt not supported`; WSL torch 2.10.0+cu130·cuSPARSELt 0.8.0도 대상 matmul에서 `operation is not supported`. forward 정합·gradient·속도는 `NOT_RUN`; WSL 원본 로그는 launcher 결함으로 미보존 | 현재 두 runtime의 가속 분기 종료([결과 082 §6~§7](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)). sparse-master 메모리는 별도 트랙 |
 | **URL/메타데이터 prepend(데이터)** | 💡 | — (P012 추가) | 문서 앞 출처/메타 prepend로 목표loss 토큰 30~40%↓ | 한국어 셋은 URL 원본 부재 가능(score 대체) | 연산바운드에서 절대 벽시계 줄이는 데이터측 레버. arXiv:2511.21613 |
 | **SplitK 융합 dequant+GEMM(추론)** | 📄참고 | — | 스키니(M=1-16) 메모리바운드 W4A16 GEMM을 SplitK atomic으로 가속 | **추론 decode 전용**. 학습은 M=8192 대배치=연산바운드라 무관. cuBLAS 아닌 naive Triton DP 대비 수치 | 우리 학습엔 부적합. GPU decode 시 ternary_kernel 업그레이드 경로. arXiv:2402.00025 |
 
@@ -150,9 +150,9 @@ M=12,288 은 **서로 다른 두 형상(mb12×1024, mb24×512)이 똑같이 OOM*
 | 계획 | 현재 구현 범위 | 속도 주장 가능 범위 | 다음 gate |
 |---|---|---|---|
 | [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | CUDA `_scaled_mm` 세 형상 PASS([081](../../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)) | 순수 GEMM **1.17~2.09×**; 학습 step은 `NOT_RUN` | cast·amax/scaling·backward 포함 Stage0b(C1) |
-| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | Stage0b가 현재 환경의 cuSPARSELt 지원 불가를 실측([082 §6](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | native forward·input-grad·속도 `NOT_RUN`; 현 환경 가속 분기 종료 | 다른 지원 환경 증거가 생길 때만 재개 |
+| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | Windows와 WSL 모두 첫 native matmul 지원 불가([082 §6~§7](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)) | native forward 정합·input-grad·속도 `NOT_RUN`; 현재 두 runtime 가속 분기 종료 | 다른 지원 환경 증거 또는 sparse-master 별도 재승인 때만 재개 |
 | [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | Stage0c CUDA mask/gradient/birth-death 계약 PASS([083 §6](../../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) | **가속 0으로 취급**; dense tensor+mask 계약만 통과 | TLinear·trainer 연결 뒤 topology-update 비용 포함 실측 |
 | [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | 독립 fold 계약 CPU PASS([080](../../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)) | local update 속도·VRAM 모두 `NOT_RUN` | 실제 모델 연결과 사용자 스모크 뒤 측정 |
 
 제안 승인과 Stage0 코드 존재는 속도 개선 증거가 아니다. P092의 계약 PASS도 가속 PASS가 아니며,
-P025B는 현 환경에서 native 경로에 진입하지 못했다. 네 계획의 실제 학습 속도는 모두 `NOT_RUN`이다.
+P025B는 Windows와 WSL 모두 대상 native matmul을 실행하지 못했다. 네 계획의 실제 학습 속도는 모두 `NOT_RUN`이다.

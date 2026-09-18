@@ -49,6 +49,7 @@ LOGDIR = ROOT / "smoketest_logs"
 RE_CMD = re.compile(r"^\[runlog\] cmd=(.+?)\s*$")
 RE_END = re.compile(r"^\[runlog\] 종료코드 (\d+)\s")
 RE_CONTRACT = re.compile(r"총 에러 (\d+)건")
+SESSION_MARK = "[tool] instrumentation contract smoke test"
 
 # ★오류 표지 — exit 0 인 팔에서도 이것이 보이면 특이사항으로 올린다.
 #   🚫팔 제목·안내문에 섞이므로 **줄 전체가 표지로 시작하거나 예외 형태일 때만** 센다.
@@ -69,6 +70,14 @@ def short(cmd: str, n: int = 62) -> str:
     return cmd if len(cmd) <= n else cmd[: n - 1] + "…"
 
 
+def latest_session(text: str) -> tuple[str, int]:
+    """Isolate the last smoke invocation if an old run was appended by mistake."""
+    starts = [match.start() for match in re.finditer(re.escape(SESSION_MARK), text)]
+    if not starts:
+        return text, 0
+    return text[starts[-1] :], len(starts)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--log", default=None, help="스모크 로그 경로(기본: 최신)")
@@ -81,7 +90,8 @@ def main() -> int:
         print("=" * 96)
         return 2
 
-    text = io.open(path, encoding="utf-8", errors="replace").read()
+    full_text = io.open(path, encoding="utf-8", errors="replace").read()
+    text, session_count = latest_session(full_text)
     lines = text.split(chr(10))
 
     arms, cur, buf = [], None, []
@@ -99,6 +109,9 @@ def main() -> int:
         else:
             buf.append(ln)
 
+    # A completed summary call can be present when this tool is rerun manually.
+    # It reports the smoke; it is not one of the smoke arms being judged.
+    arms = [item for item in arms if "scripts/summarize_smoke.py" not in item[0]]
     failed = [(c, code, b) for c, code, b in arms if code != 0]
     odd = []
     for c, code, b in arms:
@@ -108,12 +121,17 @@ def main() -> int:
         if hits:
             odd.append((c, hits))
 
-    contract = RE_CONTRACT.search(text)
-    n_contract = int(contract.group(1)) if contract else None
+    contracts = RE_CONTRACT.findall(text)
+    n_contract = int(contracts[-1]) if contracts else None
 
     print("=" * 96)
     print("  스모크 종료코드 요약 — %s" % path.name)
     print("=" * 96)
+    if session_count > 1:
+        print(
+            "  [WARN] 한 파일에 스모크 %d회가 이어 붙었다 — 마지막 회차만 판정"
+            % session_count
+        )
     print("  팔 %d개 (runlog 경유분만)  ·  실패 %d개  ·  exit 0 인데 오류 표지 %d개"
           % (len(arms), len(failed), len(odd)))
     print("  계측 필드 계약(check_smoke): %s"

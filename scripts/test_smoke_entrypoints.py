@@ -1,13 +1,44 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import tempfile
 import unittest
 from pathlib import Path
+
+import runlog
+import summarize_smoke
 
 ROOT = Path(__file__).resolve().parent.parent
 
 
 class SmokeEntrypointExitTests(unittest.TestCase):
+    def test_smoke_start_note_forces_a_fresh_log(self) -> None:
+        self.assertTrue(
+            runlog._is_smoke_session_start(
+                "smoke", [runlog.SMOKE_SESSION_START]
+            )
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            out = Path(temporary)
+            first = runlog._stamped_path(
+                out, "smoke", "abcdef0", None, 30, force_new=True
+            )
+            first.write_text("old\n", encoding="utf-8")
+            second = runlog._stamped_path(
+                out, "smoke", "abcdef0", None, 30, force_new=True
+            )
+        self.assertNotEqual(first, second)
+
+    def test_summary_isolates_last_accidentally_appended_session(self) -> None:
+        text = (
+            f"{summarize_smoke.SESSION_MARK}\nold-arm\n"
+            f"{summarize_smoke.SESSION_MARK}\nnew-arm\n"
+        )
+        latest, count = summarize_smoke.latest_session(text)
+        self.assertEqual(count, 2)
+        self.assertNotIn("old-arm", latest)
+        self.assertIn("new-arm", latest)
+
     def test_windows_wrapper_returns_summary_failure(self) -> None:
         text = (ROOT / "run_smoke_check.bat").read_text(encoding="ascii")
         summary = (

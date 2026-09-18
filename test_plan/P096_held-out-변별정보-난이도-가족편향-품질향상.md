@@ -114,7 +114,7 @@ GPU 0 계약으로 닫았고 Q1b가 실제 canary 전에 남은 최소 선결이
 | 유사 실험 조회 | P085 Q0 근거는 재사용; 같은 Pareto 선별 실험은 없음 |
 | 중복 | 품질저하 방지 gate는 기존 승인안, P096은 실제 품질향상 방법만 소유 |
 | 비용 | Q0 완료값과 Q1~Q6 신규 비용을 분리; 반복 상한 고정 |
-| 태그·진입점 | `run_P096_Q1_schema_solver_contract.sh` 준비·미실행; 학습 tag·본런 `.sh` 없음 |
+| 태그·진입점 | `run_P096_Q1_schema_solver_contract.sh` 사용자 queue 콘솔 PASS; 당시 `runlog.py` 우회로 원본 로그 미보존. 학습 tag·본런 `.sh` 없음 |
 | 보호 경계 | 이번 계획 작성에서 보호 데이터 접근 0 |
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
@@ -123,3 +123,6 @@ GPU 0 계약으로 닫았고 Q1b가 실제 canary 전에 남은 최소 선결이
   `NOT_RUN`이며 데이터·GPU 권한은 열지 않았다.
 - 2026-09-18: Q1a 합성 schema/solver의 정상·모호·오답·필드누락·중복 ID CPU fixture PASS.
   전체 taxonomy와 실제 문항 품질은 `NOT_RUN`이다.
+- 2026-09-18: WSL queue 진입점에서도 `[PASS] P096 Q1`을 관찰했지만 launcher 로그 결함으로
+  `test_result/` 원본이 남지 않았다. underlying Q1a 판정은 변하지 않으며, 교정 후 재실행 전에는
+  “보존 로그를 갖춘 E2E”로 승격하지 않는다.

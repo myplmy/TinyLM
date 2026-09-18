@@ -23,6 +23,34 @@ def shell_files() -> tuple[Path, ...]:
     return COMMON_SHELL_FILES + root_entries
 
 
+def experiment_log_contract_errors(path: Path, data: bytes) -> list[str]:
+    """Every P-plan shell entry must preserve stdout through runlog.
+
+    The queue deliberately only invokes entrypoints.  Without this contract a
+    native WSL gate can print PASS/FAIL and return the right status while
+    silently leaving no evidence in test_result.
+    """
+    if not path.name.startswith("run_P") or not path.name.endswith(".sh"):
+        return []
+    text = data.decode("utf-8", errors="replace")
+    active = [
+        line.strip()
+        for line in text.splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    runlog_lines = [line for line in active if "scripts/runlog.py" in line]
+    errors = []
+    if not runlog_lines:
+        errors.append("does not invoke scripts/runlog.py")
+        return errors
+    joined = " ".join(active)
+    if "--name P" not in joined:
+        errors.append("runlog name does not start with a P-plan number")
+    if " -- " not in joined:
+        errors.append("runlog child delimiter `--` is missing")
+    return errors
+
+
 def find_bash() -> str | None:
     if os.name != "nt":
         return shutil.which("bash")
@@ -73,6 +101,10 @@ def main() -> int:
             errors.append(f"CR byte found: {path.relative_to(ROOT).as_posix()}")
         if os.name != "nt" and not os.access(path, os.X_OK):
             errors.append(f"not executable: {path.relative_to(ROOT).as_posix()}")
+        for detail in experiment_log_contract_errors(path, data):
+            errors.append(
+                f"experiment log contract {path.relative_to(ROOT).as_posix()}: {detail}"
+            )
 
     bash = find_bash()
     if bash is None:
@@ -121,7 +153,7 @@ def main() -> int:
         return 1
     print(
         f"[PASS] shell entrypoints={len(entries)}; "
-        "LF/shebang/mode/bash syntax/smoke grammar/Linux queue audit"
+        "LF/shebang/mode/bash syntax/runlog/smoke grammar/Linux queue audit"
     )
     return 0
 

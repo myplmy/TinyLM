@@ -1,8 +1,8 @@
 # 제안 — TinyLM 학습환경을 WSL2 Linux로 단계적으로 이관한다
 
 > **작성일**: 2026-09-15  
-> **최종 수정일**: 2026-09-18
-> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent와 관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 사용자 범위 예외 종결(manual compact 검증 제외, 전체 증거 `PARTIAL`) / M4·M5 `NOT_RUN`
+> **최종 수정일**: 2026-09-19
+> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent와 관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 사용자 범위 예외 종결(manual compact 검증 제외, 전체 증거 `PARTIAL`) / M4 `PARTIAL`(cuSPARSELt 대상 matmul FAIL, 나머지 backend `NOT_RUN`) / M5 `NOT_RUN`
 > **분류**: 작업환경 / 실행기반 / 실험 재현성  
 > **실험번호**: `PNone`  
 > **실험계획 비대상 사유**: 이 문서는 환경 이관 의사결정 제안이다. 승인 뒤 필요한 교량 실험은 기존 계획의 환경 단계 또는 별도 승인된 실험계획으로 등록한다.
@@ -371,9 +371,10 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
   최종 exit 4로 반환한다. smoke가 선택됐으면 실행 전에 사용자가 `stop`(즉시 중단·실패),
   `collect`(나머지 실행 뒤 실패), `warn`(나머지 실행·smoke만 전체 실패에서 제외) 중 하나를
   명시한다. 이 실행 정책은 실패한 smoke를 PASS로 바꾸지 않는다. 회귀 10/10은 PASS지만 실제
-  전체 gate queue는 `E2E_NOT_RUN`이다.
+  2026-09-18 사용자 queue에서 일반 gate 전수수집과 최종 exit 4는 관찰됐지만, 네 실험 gate의
+  원본 로그가 launcher 결함으로 남지 않았다. 실행 정책은 관찰 PASS, durable-log E2E는 교정 후 `NOT_RUN`이다.
 - `run_cleanup_checkpoints.sh`: 사용자 삭제 실행 전용, `NOT_RUN`.
-- M4 backend·M5 교량: `NOT_RUN`.
+- M4 backend: cuSPARSELt 대상 matmul FAIL까지 `PARTIAL`; 나머지 backend `NOT_RUN`. M5 교량: `NOT_RUN`.
 
 ## 12. 2026-09-18 새 WSL task 실제 관찰과 현재 이관 상태
 
@@ -426,7 +427,8 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
 | auto compact | exact 열린 WIP의 8필드 hash-verified capsule 재주입 | 해당 자동 경로 PASS |
 | manual compact | Codex가 앱 lifecycle action을 직접 만들 수 없음 | `NOT_RUN`; 사용자 결정으로 검증 범위 제외·실행 불요 |
 | 최초 user smoke | `202609182225_smoke_4ff08ef.txt`: 전체 42팔 중 41 PASS·handoff 정책 1 FAIL, 모델·합성 팔과 계약 오류 0, summarize exit 1 | `.sh` 시간 오계산과 미달 사유 누락을 교정한 역사 증거 |
-| 교정 후 user smoke | `202609182307_smoke_82dad38.txt`: 전체 42팔 PASS, exit-0 오류표지 0, 계약 0, summarize exit 0 | `82dad38` 범위 PASS; 이후 queue 정책 변경으로 확대 금지 |
+| 교정 후 user smoke 1회차 | `202609182307_smoke_82dad38.txt`의 23:07 회차: 전체 42팔 PASS, exit-0 오류표지 0, 계약 0, summarize exit 0 | `82dad38` 범위 PASS; 이후 변경으로 확대 금지 |
+| queue 안 user smoke 2회차 | 같은 파일에 23:33 회차가 잘못 이어 붙음. 마지막 session만 분리하면 42팔 PASS·표지 0·계약 0 | 기능 결과 PASS지만 파일명·commit header가 1회차 것이므로 정확한 작업트리 귀속은 불완전 |
 
 직접쓰기 probe 전후 WIP SHA-256은
 `1a3f15d66cbc59a58aec9d1182c103f686137633804c98d5e5438c74057087b0`로 같았다. 이 증거는
@@ -434,33 +436,50 @@ WSL canonical 또는 플랫폼 분기로 갱신한다. 일반 문서를 일괄 �
 검증 범위에서 제외했으므로 운영 종결의 선결은 아니지만, 미실행 경로가 있으므로 M3 전체를
 `ACTIVE_VERIFIED`로 승격하지 않는다.
 
+### 12.2b 전체 gate queue와 로그 보존 결함
+
+사용자는 WSL queue에서 smoke와 P096/P091/P095/P025B gate를 한 번에 실행했다. smoke의 마지막
+회차와 P096·P091·P095 콘솔 결과는 PASS였고, P025B는 torch `2.10.0+cu130`·cuSPARSELt `0.8.0`
+로드 뒤 첫 `M=8192,K=768,N=2048` sparse matmul에서 `operation is not supported`로 실패했다.
+queue는 일반 gate를 끝까지 수집한 뒤 실패 1건으로 exit `4`를 반환해 실행 정책은 의도대로였다.
+
+다만 네 WSL gate launcher가 `scripts/runlog.py`를 거치지 않아 `test_result/` 원본 로그가 0건이었고,
+스모크도 30분 재사용 창 때문에 두 실행이 한 파일에 합쳐졌다. Windows 큐가 로그를 더 잘 보존한
+이유는 큐 자체가 아니라 개별 BAT가 `runlog.py`를 소유했기 때문이다. 네 SH를 같은 계약으로
+교정하고 모든 `run_P*.sh`의 runlog 경유를 정적 검사로 강제했다. 스모크 첫 `[tool]` note는 이제
+항상 새 파일을 열며, 요약기는 역사적으로 합쳐진 파일에서도 마지막 session만 판정한다. 정적
+회귀는 queue 11/11·smoke entrypoint 4/4·shell entrypoint 8/8 PASS이나, 교정 후 사용자 동적
+재실행은 `E2E_NOT_RUN`이다.
+
 ### 12.3 단계별 현재 판정
 
-| 단계 | 2026-09-18 판정 | 남은 것 |
+| 단계 | 2026-09-19 판정 | 남은 것 |
 |---|---|---|
 | M1R 물리 이관·canonical workdir | 사용자 이관 완료, 새 task workdir `ACTIVE_VERIFIED` | Windows 사본의 장기 역할은 최종 운영 승인 때 확정 |
 | M2R 공통 실행 기반 | `STATIC_ONLY` PASS (`31/0/1`, shell entrypoint `8`) | PowerShell source는 별도 Windows 증거 또는 선택적 `pwsh`; 전체 보호 데이터 suite는 미실행 |
 | M3a Desktop WSL agent | `ACTIVE_VERIFIED` | 현재 project/runtime가 바뀌면 재검증 |
 | M3b PreToolUse 정상·위험쓰기·WIP guard | 관찰한 probe 범위 `ACTIVE_VERIFIED` | 다른 matcher로 일반화 금지 |
 | M3c SessionStart·PreCompact·compact | auto compact exact-WIP 재주입 PASS, manual `NOT_RUN`·사용자 제외 | 사용자 승인 범위는 예외 종결; manual 경로를 PASS로 승격 금지 |
-| M3d model smoke | `202609182307`의 `82dad38` 범위 42/42 PASS·오류표지 0·계약 0·summarize exit 0 | 이후 queue 정책은 회귀 10/10·shell 8/8로 별도 검증; 현재 dirty tree whole-smoke는 사용자 선택 |
-| M4 backend | `NOT_RUN` | CUDA/cuSPARSELt/Triton/FlashAttention 실제 호출과 수치·메모리 |
+| M3d model smoke | 23:07 `82dad38` 회차 42/42 PASS. 23:33 회차도 마지막 session 기준 42/42 PASS이나 앞 파일에 합쳐져 commit header 귀속 불완전 | 새 session 분리 교정 뒤 현재 tree whole-smoke는 `E2E_NOT_RUN` |
+| M4 backend | `PARTIAL` — cuSPARSELt package는 로드됐지만 TinyLM 대상 첫 matmul FAIL([결과 082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#7-stage0bw-wsl-재탐지2026-09-18--패키지는-로드됐지만-첫-sparse-matmul이-지원되지-않았다)) | Triton·FlashAttention 등 나머지 실제 호출·수치·메모리는 `NOT_RUN`; 2:4 가속 후속 자동 개방 금지 |
 | M5 교량 | `NOT_RUN` | 동일 checkpoint 평가와 필요시 최소 dense 대조 |
-| M6 운영 전환 | 진행 중 | 전체 gate queue 결과·M4·M5 뒤 사용자 최종 승인 |
+| M6 운영 전환 | 진행 중 | M4 잔여 backend·M5와 사용자 최종 승인; queue 로그 교정 E2E는 별도 확인 |
 
 이관을 한 문장으로 요약하면 **“저장소와 Codex agent는 WSL로 전환됐고 요청된 PreToolUse·
-WIP guard·auto compact는 범위별로 작동했으며, `82dad38` 교정 후 smoke도 42/42 PASS지만,
-전체 기능 gate queue·backend·Windows↔WSL 교량·최종 전환 승인은 남았다”**다. manual compact는
+WIP guard·auto compact는 범위별로 작동했고 smoke의 두 실제 회차도 각각 42/42 PASS지만,
+두 번째 로그는 앞 파일에 합쳐져 귀속이 불완전하며, cuSPARSELt 대상 matmul은 WSL에서도
+지원되지 않았다. 나머지 backend·Windows↔WSL 교량·최종 전환 승인은 남았다”**다. manual compact는
 사용자 결정으로 검증 범위에서 제외되었으며, 그 경로를 PASS로 승격하지 않는다.
 
 ### 12.4 다음 순서
 
 1. hooks.json 또는 Desktop project identity가 바뀌지 않았다면 이번 세 probe를 반복할 필요는 없다.
-2. 사용자 소유 `./run_queue.sh`를 열고 현재 gate menu id `1 2 3 5`를 함께 선택한다. id `4`
-   cleanup은 제외한다. 현재 dirty tree smoke도 다시 보려면 id `0`을 앞에 추가하며, 이 경우
-   화면의 `stop`·`collect`·`warn` 설명을 보고 실패 정책을 사용자가 직접 선택한다. 전체 출력을
-   회신하고, smoke를 포함했을 때만 새 smoke 로그도 함께 회신한다.
+2. 교정된 로그 보존 E2E가 필요하면 사용자 소유 `./run_queue.sh`의 현재 메뉴에서 동일 gate 묶음을
+   다시 선택한다. cleanup은 제외한다. smoke도 포함할 경우 화면의 `stop`·`collect`·`warn` 설명을
+   보고 실패 정책을 사용자가 직접 선택하며, 새 smoke 파일과 `test_result/` 로그 생성 여부를 함께 본다.
 3. manual compact는 사용자 결정으로 검증 범위에서 제외됐으며 재요청 전에는 실행·검증하지 않는다.
    이 예외 종결을 manual 경로 PASS나 M3 전체 `ACTIVE_VERIFIED`로 다시 쓰지 않는다.
 4. 일반 gate는 한 queue에서 모두 결과를 수집하되 항목별로 따로 판정한다. `warn`이나 queue
-   exit 0은 smoke PASS를 뜻하지 않으며, 실패한 gate의 후속 단계와 M5 교량을 자동으로 열지 않는다.
+   exit 0은 smoke PASS를 뜻하지 않으며, P025B Stage0c와 M5 교량을 자동으로 열지 않는다.
+5. 최신 smoke PASS만으로 M4·M5·M6를 대신할 수 없으므로 파일명은 `-approved-on-going`을 유지하고
+   `proposal/done/`으로 이관하지 않는다.
