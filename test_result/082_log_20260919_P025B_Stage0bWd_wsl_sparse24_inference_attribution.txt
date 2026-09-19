@@ -1,0 +1,45 @@
+P025B Stage0bWd: Stage0bWc used elementwise tolerance as the sole gate and stopped at the first failed row; this rerun uses normalized RMS plus cosine and completes every shape
+
+==============================================================================
+[runlog] 2026-09-19 07:51:25  name=P025B_Stage0bWd_wsl_sparse24_inference_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sparse24_inference_attribution.py --require-wsl --m-values 1,16,128,1024,8192 --warmup 10 --iters 30 --prefill-speedup 1.10 --max-nrms 0.001 --max-abs-ratio 0.01 --min-cosine 0.999999
+==============================================================================
+runtime_system=Linux release=6.18.33.2-microsoft-standard-WSL2 WSL_DISTRO_NAME=Ubuntu
+torch=2.10.0+cu130 cuda=13.0 cudnn=91501 cusparselt=0.8.0 compiled=True available=True backend_version=800
+gpu=NVIDIA GeForce RTX 4070 Ti SUPER sm_89 m_values=[1, 16, 128, 1024, 8192] warmup=10 iters=30
+NOTE: packing is outside timing; this is kernel attribution, not model inference.
+layout	M	K	N	dense_ms	sparse_ms	speedup	max_abs	rms	ref_rms	nrms	max_abs_ratio	cosine	legacy_close	dense_peak_MiB	sparse_peak_MiB
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/sparse/semi_structured.py:568: UserWarning: The PyTorch API of SparseSemiStructuredTensor is in prototype stage and will change in the near future. Please open a Github issue for features requests and see our documentation on the torch.sparse module for further information about the project.
+  return cls(
+[pack] K=768 N=2048 inference(packed=True,packed_t=False) training(packed=True,packed_t=True)
+[mask] K=768 N=2048 inference_kept_per_row4=2 training_kept_per_4x4=7..8
+inference_exact2of4	1	768	2048	0.033848	0.383915	0.088	0.00195312	4.82537e-05	25.4296	1.89754e-06	7.68051e-05	1.000000000	1	0.004	0.230
+training_bidirectional	1	768	2048	0.023559	0.445621	0.053	0.0078125	0.000248175	20.3677	1.21847e-05	0.000383573	1.000000119	1	0.004	0.230
+inference_exact2of4	16	768	2048	0.038560	0.280096	0.138	0.03125	0.000477884	25.6713	1.86155e-05	0.00121731	1.000000000	1	0.062	0.250
+training_bidirectional	16	768	2048	0.117061	0.278634	0.420	0.03125	0.000421759	20.0336	2.10526e-05	0.00155988	0.999999940	1	0.062	0.250
+inference_exact2of4	128	768	2048	0.035172	0.368712	0.095	0.03125	0.000508145	25.8162	1.96832e-05	0.00121048	1.000000000	1	0.500	0.688
+training_bidirectional	128	768	2048	0.039875	0.365051	0.109	0.03125	0.000425939	20.8459	2.04328e-05	0.0014991	0.999999940	1	0.500	0.688
+inference_exact2of4	1024	768	2048	0.074265	0.338993	0.219	0.0625	0.000520986	25.8046	2.01897e-05	0.00242205	1.000000000	1	4.000	4.188
+training_bidirectional	1024	768	2048	0.099544	0.273512	0.364	0.0625	0.000432785	20.7885	2.08185e-05	0.00300647	0.999999940	1	4.000	4.188
+inference_exact2of4	8192	768	2048	0.372005	0.535816	0.694	0.0625	0.000522836	25.8057	2.02605e-05	0.00242194	1.000000000	1	32.000	32.188
+training_bidirectional	8192	768	2048	0.377220	0.578499	0.652	0.0625	0.000431817	20.8464	2.07142e-05	0.00299812	1.000000000	1	32.000	32.188
+[pack] K=2048 N=768 inference(packed=True,packed_t=False) training(packed=True,packed_t=True)
+[mask] K=2048 N=768 inference_kept_per_row4=2 training_kept_per_4x4=7..8
+inference_exact2of4	1	2048	768	0.029539	0.346899	0.085	0.015625	0.000694181	40.8648	1.69872e-05	0.000382358	0.999999881	1	0.001	0.230
+training_bidirectional	1	2048	768	0.023749	0.388950	0.061	0.0625	0.00276932	31.2453	8.86316e-05	0.0020003	0.999999940	1	0.001	0.230
+inference_exact2of4	16	2048	768	0.044878	0.361148	0.124	0.0625	0.00144852	42.5592	3.40354e-05	0.00146854	1.000000119	1	0.023	0.211
+training_bidirectional	16	2048	768	0.037265	0.414890	0.090	0.03125	0.000571277	34.0615	1.67719e-05	0.000917457	1.000000119	1	0.023	0.211
+inference_exact2of4	128	2048	768	0.039715	0.360955	0.110	0.125	0.0114334	42.1336	0.000271361	0.00296675	0.999999881	0	0.188	0.375
+training_bidirectional	128	2048	768	0.061582	0.367985	0.167	0.125	0.00917743	34.2971	0.000267586	0.00364462	1.000000119	1	0.188	0.375
+inference_exact2of4	1024	2048	768	0.144103	0.395960	0.364	0.125	0.00132471	42.1848	3.14026e-05	0.00296315	0.999999881	1	1.500	1.688
+training_bidirectional	1024	2048	768	0.091966	0.396206	0.232	0.0625	0.00115312	34.0017	3.39135e-05	0.00183814	1.000000000	1	0.000	1.688
+inference_exact2of4	8192	2048	768	0.377394	0.460231	0.820	0.125	0.00137419	42.1552	3.25982e-05	0.00296523	0.999999881	1	12.000	12.188
+training_bidirectional	8192	2048	768	0.373379	0.440048	0.848	0.125	0.00110025	34.1049	3.22607e-05	0.00366517	0.999999940	1	12.000	12.188
+[LEGACY TOLERANCE WARNING] elementwise rtol/atol failed in 1 row(s), but scale-aware agreement decides the gate: [('inference_exact2of4', 128, 2048, 768)]
+[DECODE] supported_shapes=2 min_speedup=0.085x max_speedup=0.088x
+[PREFILL] supported_shapes=6 min_speedup=0.095x max_speedup=0.364x unsupported_cases=0
+[GATE NEGATIVE] no inference-prefill shape reached 1.10x; do not claim inference acceleration.
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 0.1분  (2026-09-19 07:51:28)
+==============================================================================

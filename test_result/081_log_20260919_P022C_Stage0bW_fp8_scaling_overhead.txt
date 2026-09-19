@@ -1,0 +1,24 @@
+P022C C1: same-session BF16 versus FP8 current/delayed scaling with absmax, cast, scaled_mm, correctness and peak allocation; backward/training 0
+
+==============================================================================
+[runlog] 2026-09-19 07:51:07  name=P022C_Stage0bW_fp8_scaling_overhead
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_fp8_scaling_overhead.py --require-wsl --m 8192 --warmup 10 --iters 30 --min-speedup 1.10 --max-nrms 0.03 --min-cosine 0.999
+==============================================================================
+runtime=Linux release=6.18.33.2-microsoft-standard-WSL2 WSL_DISTRO_NAME=Ubuntu
+gpu=NVIDIA GeForce RTX 4070 Ti SUPER sm=(8, 9) torch=2.10.0+cu130 warmup=10 iters=30
+NOTE: forward includes absmax/scale/cast for current scaling and cast for delayed scaling; backward and whole training step remain NOT_RUN.
+K	N	variant	ms	speedup	peak_MiB	max_abs	nrms	cosine
+768	2048	bf16	0.366553	1.000	32.000	0	0	0.999999821
+768	2048	fp8_current	0.449444	0.816	39.502	5.875	0.0377077	0.999289691
+768	2048	fp8_delayed	0.361126	1.015	39.501	5.875	0.0377077	0.999289691
+2048	768	bf16	0.362702	1.000	12.000	0	0	1.000000000
+2048	768	fp8_current	0.582764	0.622	48.001	9.5	0.0377102	0.999290049
+2048	768	fp8_delayed	0.418401	0.867	48.000	9.5	0.0377102	0.999290049
+768	768	bf16	0.178365	1.000	12.000	0	0	1.000000000
+768	768	fp8_current	0.334246	0.534	18.564	5.75	0.0376359	0.999291360
+768	768	fp8_delayed	0.237633	0.751	18.563	5.75	0.0376359	0.999291360
+[GATE FAIL] FP8 correctness failures=[(768, 2048, 'fp8_current', 0.03770773857831955, 0.9992896914482117), (768, 2048, 'fp8_delayed', 0.03770773857831955, 0.9992896914482117), (2048, 768, 'fp8_current', 0.037710171192884445, 0.9992900490760803), (2048, 768, 'fp8_delayed', 0.037710171192884445, 0.9992900490760803), (768, 768, 'fp8_current', 0.03763589635491371, 0.9992913603782654), (768, 768, 'fp8_delayed', 0.03763589635491371, 0.9992913603782654)]
+------------------------------------------------------------------------------
+[runlog] 종료코드 4  소요 0.1분  (2026-09-19 07:51:10)
+==============================================================================

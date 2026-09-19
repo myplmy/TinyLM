@@ -1,0 +1,18 @@
+P060B Stage0bW: actual d14 RMS4 checkpoint, default repeat versus dispatcher enable_gqa for full forward, cache prefill/decode, speed and peak allocation; default remains off
+
+==============================================================================
+[runlog] 2026-09-19 07:52:02  name=P060B_Stage0bW_model_gqa_integration
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sdpa_gqa_model_path.py --ckpt runs/ckpt/m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt --arch dense --seq 256 --warmup 3 --iters 10 --max-nrms 0.001 --min-cosine 0.999999
+==============================================================================
+path	max_abs	nrms	cosine
+full_forward	0	0	1.000000119
+cache_prefill	0	0	1.000000119
+cache_decode	0	0	1.000000119
+timing off_ms=11.135369 on_ms=9.897357 on_over_off=0.889x
+allocation off_peak_MiB=9.568 on_peak_MiB=9.568 reduction=0.000%
+[PASS] P060B Stage0bW: actual checkpoint full/prefill/decode agreement; timing and allocation recorded
+NOTE: default remains off; backward, training step and quality remain NOT_RUN.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-19 07:52:06)
+==============================================================================

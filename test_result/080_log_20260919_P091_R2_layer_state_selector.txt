@@ -1,0 +1,27 @@
+P091 R2: actual TinyLM tiny-model gate-zero S and weight-decay-separated optimizer update U across three deterministic windows; R3 realized-gain prediction remains separate
+
+==============================================================================
+[runlog] 2026-09-19 07:50:31  name=P091_R2_layer_state_selector
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_layer_state_selector.py --windows 3
+==============================================================================
+window	block_layers	S_gate_zero	U_optimizer_only_over_weight
+0	layers=0	0.00827121735	0.077597309
+0	layers=1,2	0.0121026039	0.0768334248
+0	layers=3,4	8.24928284e-05	0.0749265974
+0	layers=5	0.00381755829	0.0776494535
+1	layers=0	0.00317764282	0.0774353668
+1	layers=1,2	0.000477313995	0.0768430433
+1	layers=3,4	0.00531959534	0.0748587911
+1	layers=5	0.00395774841	0.0776198062
+2	layers=0	0.00515079498	0.077571285
+2	layers=1,2	0.000376701355	0.0768060226
+2	layers=3,4	-0.000298023224	0.0750344482
+2	layers=5	0.00234508514	0.077735232
+S_rank_rho_vs_window0=[-1.0, 0.4]
+U_rank_rho_vs_window0=[1.0, 1.0]
+[PASS] P091 R2 pipeline: logical_layers=6 unique_mlp=4 windows=3 finite_S_U=true weight_decay_separated=true
+NOTE: tiny synthetic windows do not establish selector-to-realized-gain prediction; R3 remains NOT_RUN.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-19 07:50:35)
+==============================================================================

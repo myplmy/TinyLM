@@ -1,0 +1,45 @@
+P097 arm C: MADLAD clean Korean plus English, exact token 50:50, source-stratified val; 300M draw from 600M pool
+
+==============================================================================
+[runlog] 2026-09-19 10:08:59  name=P097_Stage1d_madlad_300M
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/usr/bin/bash scripts/shell/run_p097_dataset_arm.sh ko-en-madlad 0
+==============================================================================
+HF_HOME=/home/uranus/tinyLM/HF
+HF_HUB_CACHE=/home/uranus/tinyLM/HF/hub
+HF_DATASETS_CACHE=/home/uranus/tinyLM/HF/datasets
+[PASS] all Hugging Face cache paths are under /home/uranus/tinyLM/HF
+[cmd] python run100m.py prepare --data ko-en-madlad --tokens 600M --pool-tokens 600M --exact-cache
+[data] 정확 캐시(ko-en-madlad_600000000) 없음 → 정확히 그 크기로 신규 생성(상위호환 무시)
+[tok] 32768 BPE 학습 중 (표본 20만 문서)...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/run100m.py", line 10, in <module>
+    main()
+  File "/home/uranus/tinyLM/tinylm/cli.py", line 330, in main
+    prepare(a.data, pool_tok if pool_tok else n_tok, exact=a.exact_cache, hf_tok=a.tokenizer_hf,
+  File "/home/uranus/tinyLM/tinylm/data/prepare.py", line 473, in prepare
+    tok = build_tokenizer(name)
+  File "/home/uranus/tinyLM/tinylm/data/prepare.py", line 334, in build_tokenizer
+    tok.train_from_iterator(sample(), vocab_size=vocab_size, min_frequency=2,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/tokenizers/implementations/byte_level_bpe.py", line 118, in train_from_iterator
+    self._tokenizer.train_from_iterator(
+  File "/home/uranus/tinyLM/tinylm/data/prepare.py", line 330, in sample
+    for i, (t, _src_i) in enumerate(src):
+  File "/home/uranus/tinyLM/tinylm/data/prepare.py", line 165, in _stream
+    ds = load_dataset(hf_id, cfg, split=split, streaming=True)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/datasets/load.py", line 1698, in load_dataset
+    builder_instance = load_dataset_builder(
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/datasets/load.py", line 1325, in load_dataset_builder
+    dataset_module = dataset_module_factory(
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/datasets/load.py", line 1217, in dataset_module_factory
+    raise e1 from None
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/datasets/load.py", line 1177, in dataset_module_factory
+    raise RuntimeError(f"Dataset scripts are no longer supported, but found {filename}")
+RuntimeError: Dataset scripts are no longer supported, but found madlad-400.py
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-09-19 10:09:03)
+==============================================================================

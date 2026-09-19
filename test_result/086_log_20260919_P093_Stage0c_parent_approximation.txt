@@ -1,0 +1,17 @@
+P093 Stage0c: actual dense parent MLP groups approximated by shared mean plus rank 4/8/16 residual; latent-weight and synthetic-activation output NRMS
+
+==============================================================================
+[runlog] 2026-09-19 07:52:22  name=P093_Stage0c_parent_approximation
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sharing_parent_approx.py --ckpt runs/ckpt/m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt --arch dense --device cuda --group 4 --ranks 4,8,16 --samples 128
+==============================================================================
+rank	weight_nrms	mlp_output_nrms
+0	0.864991528	0.981390984
+4	0.85715966	0.979116482
+8	0.850699573	0.977350937
+16	0.839555903	0.974000811
+[PASS] P093 Stage0c: groups=3 ranks=[4, 8, 16] weight/output approximation errors decrease monotonically
+NOTE: approximation is not save/load wiring, optimizer ownership, latency or quality.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-19 07:52:25)
+==============================================================================
