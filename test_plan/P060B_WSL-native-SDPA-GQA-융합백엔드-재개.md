@@ -42,8 +42,9 @@ WSL + `sm_89`는 플랫폼 선결을 만족한다. 패키지 존재는 커널 PA
 | 단계 | 내용 | 계속 조건 | 비용·상태 |
 |---|---|---|---|
 | **Stage0aW ✅ 혼합** | off/on default와 on-CUDNN/FLASH/EFFICIENT의 정합성·median forward·working memory | forced 세 경로는 문턱 미달/불가; default는 +0.3%, memory −37.2%로 실용 후보 | [088](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md) |
-| **Stage0aWb 실행 대기** | 같은 micro-gate에서 dispatcher default와 forced 후보를 별도 판정 | default 또는 forced 중 하나가 속도 +5% 이내·memory ≥10% 절감하면 exit 0 | GPU 진단 수 초, 학습 0 |
-| **Stage0bW 실행 대기** | actual d14 RMS4 checkpoint의 `Attention.forward` default `enable_gqa` opt-in, full/cache prefill/decode 정합·속도·peak allocation | NRMS≤0.001, cosine≥0.999999, 실행 예외 0 | 구현·SH 작성, 사용자 모델/GPU `NOT_RUN` |
+| **Stage0aWb ✅ 후보 재현** | dispatcher default와 forced 후보를 별도 판정 | B8/T1024 default 1.018×·FLASH 1.031×, memory 약 −37%; EFFICIENT만 unavailable | [088 §6.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#61-wb-micro-gate) |
+| **Stage0aWc 실행 대기** | warning을 variant별 포착하고 direct EFFICIENT와 grouped-broadcast EFFICIENT를 분리 | 지원 FLASH/CUDNN, direct unavailable, zero-stride broadcast 대안의 정합·속도·physical storage를 별도 출력 | GPU 진단 수 초, 학습 0 |
+| **Stage0bW ✅ actual model 후보** | d14 RMS4 checkpoint full/cache prefill/decode | bit-identical, on/off 0.889×로 11.1% 빠름; peak 감소 0% | [088 §6.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#62-actual-d14-checkpoint-model-path) |
 | **Stage1W** | 250-step off vs forced-GQA 학습 속도·peak reserved·NaN/skip | memory ≥10% 절감, ms/step 악화 ≤5% | 조건부, SH 미작성 |
 | **Stage2W** | 배포 prefill/decode·장문 생성 정합성 | cache 경로 실제 텍스트와 속도 방향 통과 | 별도 승인·모델 실행 |
 
@@ -84,3 +85,7 @@ Stage0aW exit 8은 forced-only 사전등록 질문에는 유효한 음성이지�
 - 2026-09-19: 기존 `--sdpa-gqa` actual Attention 배선을 재사용해 d14 RMS4 checkpoint의
   full forward·cache prefill·decode 정합, same-session 속도·peak allocation을 한 로그에 남기는
   Stage0bW 진단·SH를 구현했다. 기본값은 off이며 사용자 실행 전 결과는 `NOT_RUN`이다.
+- 2026-09-19: Wb는 default practical 후보와 forced FLASH 후보를 재현했고 actual d14 model은
+  정합 0 오차·11.1% 속도 이득을 보였다. 긴 warning은 EFFICIENT 강제 probe가 local runtime의
+  head-count 제약으로 실패하며 다른 비활성 backend 이유까지 열거한 출력이다. 이전 판독은 이를
+  설명·구조화하지 않았고 Wc에서 한 행 reason으로 교정한다. 기본값은 계속 off다.

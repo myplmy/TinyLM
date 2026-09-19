@@ -52,6 +52,14 @@ class WipV2Tests(unittest.TestCase):
         self.assertIn("| **1** | 첫 지시 | ✅**완료** | 완료 | docs/a.md | — |", text)
         self.assertIn("상황판 SHA-256", WIP.capsule_text(path))
 
+    def test_capsule_includes_bounded_running_progress(self) -> None:
+        path = self.create()
+        WIP.set_state(path, "1", WIP.RUN, "진행 근거 " + "가" * 400, "중간 산출물", "다음 검사")
+        capsule = WIP.capsule_text(path)
+        self.assertIn("1:진행 진행 근거", capsule)
+        self.assertIn("산출물=중간 산출물", capsule)
+        self.assertIn("…", capsule)
+
     def test_concurrent_creation_is_explicit_audited_and_unambiguous(self) -> None:
         first = self.create()
         with self.assertRaisesRegex(ValueError, "open WIP already exists"):

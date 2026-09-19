@@ -119,3 +119,15 @@ Qwen의 작은 신호만으로 표준조건을 되돌리거나 Gemma 효과를 �
 - [Approximate Likelihood Matching, NeurIPS 2025](https://papers.neurips.cc/paper_files/paper/2025/hash/720f9f5dc751eb56952ae4fee2398f73-Abstract-Conference.html) · [DOI](https://doi.org/10.52202/085713-2653)
 - [DWA-KD, Findings EACL 2026](https://aclanthology.org/2026.findings-eacl.181/) · [DOI](https://doi.org/10.18653/v1/2026.findings-eacl.181)
 - [Byte-Level Distillation, CustomNLP4U 2026](https://aclanthology.org/2026.customnlp4u-1.9/) · [DOI](https://doi.org/10.18653/v1/2026.customnlp4u-1.9)
+
+## 2026-09-19 구조·selector·held-out 계약의 품질 한계
+
+- P091 R2는 pipeline 계약을 통과했지만 selector `S`가 seed별 `rho=-1.0~0.4`라 안정적 품질
+  신호가 아니다. `U`의 `rho=1.0`도 작은 fixture의 순위 계약이며 학습 개선 증거가 아니다.
+- P093 Stage0c의 best rank16 output NRMS는 `0.974`이고 rank0 대비 개선은 약 `0.75%`뿐이다.
+  단조 감소만으로 “근사 가능”이라 하지 않고 viability floor를 통과하기 전 모델 품질 실험을 열지 않는다.
+- P095 S0b는 causal memory state의 계약과 backward만 확인했다. 기억 내용의 유용성·장기
+  retention·Transformer 품질은 `NOT_RUN`이다.
+- P096 Q2a의 320 synthetic canary는 schema/provenance/preservation 계약이다. 보호 실문항과
+  사람 의미검토가 없으므로 held-out 품질 향상으로 승격하지 않는다.
+- P097 네 데이터 recipe는 학습이 모두 0-step이므로 품질 비교표에 수치를 만들지 않는다.

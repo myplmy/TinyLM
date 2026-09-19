@@ -7,7 +7,7 @@
 > 완료됐다. Q1a 최소 계약에 이어 Q1b의 8 relation·32 subtype·320 synthetic fixture,
 > difficulty-knob 정합, family/template 5% cap과 proof-path negative fixture를 사용자 보존
 > 로그에서 exit 0으로 확인했다([결과 085](../test_result/085_20260919_P096-Q1b-taxonomy-계약은-통과했고-실문항은-남았다.md)).
-> Q2a bounded candidate/provenance contract 코드·SH는 `STATIC_ONLY`다. 팀 의미검토,
+> Q2a bounded candidate/provenance contract도 사용자 로그에서 PASS했다([085 §4](../test_result/085_20260919_P096-Q1b-taxonomy-계약은-통과했고-실문항은-남았다.md#4-q2a-bounded-canary-candidate-계약2026-09-19)). 팀 의미검토,
 > 실제 보호 data/GPU는 `NOT_RUN`이며 다른 세션 소유 원본을 수정하지 않는다.
 
 ## 1. 왜 — 정적 문체 proxy가 아니라 실제 변별정보를 최적화한다
@@ -68,7 +68,7 @@ Q1에서 다음 필드와 소유권을 먼저 고정한다.
 | **Q0 ✅** | P085 Stage10c로 v2.9/v3.0 같은 seed2 패널 전이 분해 | ✅ `CORE_REGRESSION`; paired JSON·skip 0 | 완료, ⚙0.9 GPU-h 역사값 |
 | **Q1a ✅** | 최소 schema·direct/transitive solver·negative synthetic fixture | 정답 유일성·오답 미증명·필드/ID 오류 검출 | `STATIC_ONLY`, GPU 0 |
 | **Q1b ✅ 보존 로그** | 전체 relation/family taxonomy·difficulty knob 생성/검증 계약 | 8 relation·32 subtype·320 fixture 기계검증 exit 0; 팀 의미검토는 `NOT_RUN`([085](../test_result/085_20260919_P096-Q1b-taxonomy-계약은-통과했고-실문항은-남았다.md)) | CPU/GPU 0 |
-| **Q2a 실행 대기** | 보호 데이터 독립 synthetic fixture에서 450 slot·slot당 최대 2후보·provenance·preservation 계약 | cap·source/candidate ID·semantic solver negative fixture PASS | CPU/GPU 0 |
+| **Q2a ✅ 완료** | 보호 데이터 독립 synthetic fixture에서 450 slot·slot당 최대 2후보·provenance·preservation 계약 | baseline/candidate 각 320, cap·source/candidate ID·semantic contract PASS | [085 §4](../test_result/085_20260919_P096-Q1b-taxonomy-계약은-통과했고-실문항은-남았다.md#4-q2a-bounded-canary-candidate-계약2026-09-19) |
 | **Q2b ⏸** | 기존 유효 ID 보존, 실제 10% canary 450자리×최대 2후보 생성 | Q2a PASS 뒤 데이터팀 소유 입력·사람 의미검토 | 데이터팀 1회 |
 | **Q3** | 설계 패널 응답행렬과 제약 기반 450개 선별 | 정보 0↓, bit↑, 최소 쌍 coverage↑, 관계 비퇴행 | ⚙0.3 GPU-h/회, 최대 2회 |
 | **Q4** | 사람 의미감사와 canary paired 판정 | 의미 오류 0, 사전등록 벡터 통과 | 사람 표본 1회 |
@@ -141,3 +141,5 @@ items로 hard cap·provenance·ID preservation·semantic solver 계약만 검증
 - 2026-09-19: Q2a bounded-canary contract를 구현했다. baseline slot≤450, source slot당 후보≤2,
   provenance/source ID/candidate ID, preserved item semantic identity와 generated item proof solver를
   검사한다. 실제 보호 문항·텍스트 생성·팀 의미감사·panel은 `NOT_RUN`이다.
+- 2026-09-19: 사용자 Q2a 로그가 synthetic baseline/candidate 각 320과 cap·provenance·ID
+  보존 계약을 통과했다. 실제 보호 문항과 팀 의미검토 전에는 Q2b를 열지 않는다.

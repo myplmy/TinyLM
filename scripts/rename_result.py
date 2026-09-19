@@ -9,7 +9,7 @@
       1. `test_result/NNN_....md`            파일 자체
       2. `test_result/실험목록.md`             표의 링크
       3. `test_plan/실험계획목록.md`           계획 표의 링크
-      4. 그 문서를 가리키는 **모든 문서의 상대링크**(계획서·리뷰·핸드오프·CLAUDE.md…)
+      4. 그 문서를 가리키는 **Codex 허용 문서의 상대링크**(계획서·리뷰·핸드오프 등)
 
     ⚠️★**손으로 하면 4번을 빠뜨린다.** `check_links.py` 가 나중에 잡지만 그때는
     이미 커밋된 뒤다. 이 도구는 넷을 한 번에 하고, **먼저 보여주고** 나서 적용한다.
@@ -41,8 +41,9 @@ SCAN = ("*.md", "*.bat", "*.py", "*.tsv", "*.txt")
 # ★2026-08-24 — `ROOT.rglob` 은 **거르기 전에 걷는다.** `HF/`·`data_cache/`·`runs/` 가
 #   커서 네트워크 드라이브에서 수십 초가 걸렸다(`check_plan_numbers.py` 와 같은 형태).
 #   ★참조가 있을 수 있는 곳만 본다 — 없는 곳을 걷지 않는 것이 거르는 것보다 빠르다.
-SCAN_DIRS = ("test_result", "test_plan", "docs", "handoff", "ai_dev_tool",
-             "scripts", ".claude", "util", "article")
+SCAN_DIRS = ("test_result", "test_plan", "docs", "handoff", "proposal",
+             "review_request", "ai_dev_tool/Codex", "scripts", "util", "article")
+FORBIDDEN_ROOT_FILES = {"CLAUDE.md"}
 
 
 def _norm(name: str) -> str:
@@ -50,8 +51,10 @@ def _norm(name: str) -> str:
 
 
 def _targets():
-    for pat in SCAN:                      # 최상위 파일(CLAUDE.md·experiments.tsv·run_*.bat)
-        yield from ROOT.glob(pat)
+    for pat in SCAN:
+        for path in ROOT.glob(pat):
+            if path.name not in FORBIDDEN_ROOT_FILES:
+                yield path
     for d in SCAN_DIRS:
         base = ROOT / d
         if not base.is_dir():

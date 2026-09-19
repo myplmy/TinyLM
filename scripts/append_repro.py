@@ -1,17 +1,17 @@
-"""`-done` 배치의 **재현 명령**을 대응 결과문서 부록으로 옮긴다.
+"""`-done` launcher의 **재현 명령**을 대응 결과문서 부록으로 옮긴다.
 
 ★왜 생겼나 (2026-08-28)
-    `sync_experiments_tsv.py` 는 `-done` 배치를 지워도 되는지 판정할 때
-    **"이 배치의 명령이 결과문서에 남아 있는가"** 를 본다. 남아 있지 않으면 `[보류]` 다 —
+    `sync_experiments_tsv.py` 는 `-done` launcher를 지워도 되는지 판정할 때
+    **"이 launcher의 명령이 결과문서에 남아 있는가"** 를 본다. 남아 있지 않으면 `[보류]` 다 —
     지우는 순간 **어떤 명령으로 그 수를 얻었는지가 소실**되기 때문이다.
 
     그동안 그 부록을 **손으로** 붙여 왔고(문서에 *"자동 추출"* 이라고 적혀 있으나 **도구는 없었다**),
     그래서 `-done` 9건 중 **8건이 보류**로 쌓였다. 손으로 하는 일은 밀린다. 도구로 옮긴다.
 
 무엇을 하나
-    1. `-done` 배치에서 `runlog.py ... -- python ...` 의 **실행 명령만** 뽑는다(`--note` 는 뺀다)
-    2. 배치 이름의 `P0NN_stageX` 로 `test_result/` 의 로그를 찾아 **앞 세 자리 = 결과문서 번호**를 얻는다
-    3. 그 결과문서에 **`## ★부록 — 재현 명령 정본`** 절이 없으면 붙인다(**있으면 건드리지 않는다**)
+    1. `-done` launcher에서 실제 실행 명령만 뽑는다(`--note` 는 뺀다)
+    2. launcher 이름의 `P0NN[B]_stageX` 로 `test_result/` 로그를 찾아 결과문서 번호를 얻는다
+    3. 해당 명령이 빠졌을 때만 launcher별 재현 부록을 붙인다. 같은 문서의 여러 launcher도 명령별로 판정한다
 
     python scripts/append_repro.py            # 보고만
     python scripts/append_repro.py --apply    # 실제로 붙인다
@@ -32,50 +32,39 @@ import re
 import sys
 from pathlib import Path
 
+from sync_experiments_tsv import batch_commands, norm as _norm
+
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "test_result"
 TODAY = _dt.date.today().isoformat()
 
-#: ★이 도구가 남기는 **유일한 서명**. 건너뛸지 여부는 오직 이것으로 판단한다.
-#: 🚫배치 이름이 본문 어딘가에 있다는 것은 서명이 아니다(2026-08-30 결함).
-MARKER = "## ★부록 — 재현 명령 정본"
 
-
-def _norm(t):
-    """공백을 접는다. ★`sync_experiments_tsv.norm` 과 **같은 규약**이어야 한다 —
-    두 도구가 같은 질문에 다른 답을 내면 `-done` 판정이 영원히 안 끝난다."""
-    return " ".join(str(t).split())
-CMD = re.compile(r"runlog\.py\s+--name\s+\S+\s+--\s+(python\s+.+?)\s*$")
-STAGE = re.compile(r"run_(P\d{3})_(stage[0-9A-Za-z]*)", re.I)
-
-
-def commands(bat: Path) -> list[str]:
-    out = []
-    for ln in bat.read_text(encoding="utf-8", errors="replace").splitlines():
-        if ln.lstrip().upper().startswith("REM"):
-            continue
-        m = CMD.search(ln.strip())
-        if m:
-            c = m.group(1).strip()
-            if c not in out:
-                out.append(c)
-    return out
-
-
-def result_doc_for(bat: Path) -> tuple[str | None, Path | None]:
-    m = STAGE.search(bat.name)
-    if not m:
+def result_doc_for(launcher: Path) -> tuple[str | None, Path | None]:
+    match = re.search(
+        r"run_(P\d{3}[A-Za-z]?)_(.+?)-done\.(?:bat|sh)$",
+        launcher.name,
+        re.IGNORECASE,
+    )
+    if match is None:
         return None, None
-    plan, stage = m.group(1), m.group(2)
-    cand = [p for p in RES.glob("*_log_*.txt")
-            if plan in p.name and stage.lower() in p.name.lower()]
-    if not cand:
-        cand = [p for p in RES.glob("*_log_*.txt") if plan in p.name]
-    if not cand:
+    plan, stage = match.groups()
+    logs = sorted(RES.glob("*_log_*.txt"))
+    exact = [
+        path for path in logs
+        if f"{plan}_{stage}".casefold() in path.name.casefold()
+    ]
+    candidates = exact or [
+        path for path in logs
+        if re.search(rf"(?:^|_){re.escape(plan)}(?:_|$)", path.name, re.IGNORECASE)
+    ]
+    if not candidates:
         return None, None
-    num = cand[0].name[:3]
-    docs = [p for p in RES.glob(f"{num}_*.md") if "_log_" not in p.name]
-    return num, (docs[0] if docs else None)
+    numbers = {path.name[:3] for path in candidates}
+    if len(numbers) != 1:
+        return None, None
+    number = next(iter(numbers))
+    docs = [path for path in RES.glob(f"{number}_*.md") if "_log_" not in path.name]
+    return number, (docs[0] if len(docs) == 1 else None)
 
 
 def main() -> int:
@@ -84,12 +73,15 @@ def main() -> int:
     a = ap.parse_args()
 
     print("=" * 96)
-    print("  `-done` 배치의 재현 명령 -> 결과문서 부록")
+    print("  `-done` launcher의 재현 명령 -> 결과문서 부록")
     print("=" * 96)
     todo, skip = [], []
-    for bat in sorted(ROOT.glob("run_*-done.bat")):
+    for bat in sorted(
+        path for path in ROOT.glob("run_*-done.*")
+        if path.suffix.lower() in {".bat", ".sh"}
+    ):
         num, doc = result_doc_for(bat)
-        cmds = commands(bat)
+        cmds = batch_commands(bat)
         if doc is None or not cmds:
             skip.append((bat.name, "결과문서 또는 명령을 못 찾았다"))
             continue
@@ -124,8 +116,8 @@ def main() -> int:
                 continue
             block = ["\n\n---\n",
                      f"\n## ★부록 — 재현 명령 정본 (`{bat.name}` 추출, {TODAY})\n",
-                     "\n> ★**이 절이 있어야 배치를 지울 수 있다**(`sync_experiments_tsv.py`).\n",
-                     "> 명령은 **배치에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.\n",
+                     "\n> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).\n",
+                     "> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.\n",
                      "\n```\n"] + [c + "\n" for c in cmds] + ["```\n"]
             out = (body.rstrip() + "".join(block)).encode("utf-8")
             assert len(out) > len(body), doc.name      # 함정 35 — 줄어들 수 없다

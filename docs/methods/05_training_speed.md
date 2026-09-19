@@ -146,16 +146,18 @@ M=12,288 은 **서로 다른 두 형상(mb12×1024, mb24×512)이 똑같이 OOM*
 | **★교사 forward int8**(신규) | 💡 | — (P042 §7, B-1) | 교사도 `to_int8()`. ★결과 016 §12.3: **GPU int8 언팩은 −12~15% 뿐** | 속도 −1%(교사가 1/4 스텝) | ~VRAM **−350MB** → **`--no-ckpt`(−17.3%) 개방 확률↑**. **VRAM 을 −1% 로 사는 셈** |
 | ~~accum 조정으로 스텝 반감~~ | 🚫**이득 0 확정** | — (B-5) | — | — | 🚫★결과 007: ms/step 이 accum 에 **~선형** → **총 벽시계 이득 없다.** 다시 시도하지 않는다 |
 
-## 2026-09-13 승인 연구의 속도 게이트 (`NOT_RUN`)
+## 2026-09-19 WSL 후속 게이트 판정
 
-| 계획 | 현재 구현 범위 | 속도 주장 가능 범위 | 다음 gate |
+| 계획 | 사용자 보존 결과 | 현재 판정 | 다음 |
 |---|---|---|---|
-| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | CUDA `_scaled_mm` 순수 GEMM 1.17~2.09× PASS; WSL cast/scaling 포함 C1 SH 구현 | backward·whole-step은 `NOT_RUN` | Stage0bW current/delayed 결과 뒤 다음 gate |
-| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | Wc 측정 행 0.072~0.790×, 둘째 형상 M128 정합문턱 exit 4·이후 생략([082 §8](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#8-stage0bwc-wsl-inference-attribution2026-09-19--정합-문턱에서-중단-측정된-속도는-전부-음성)) | 완료 행은 음성이나 전체 gate 미완결 | scale-aware·완주형 Stage0bWd 사용자 실행 |
-| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | Stage0c CUDA 계약 PASS; actual TLinear Stage1aT controller 계약 구현 | **가속 0으로 취급**; full trainer 30M은 `NOT_RUN` | Stage1aT→CLI/default-off→smoke→30M |
-| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | 독립 fold와 actual tiny-model owner/optimizer mapping PASS([080 §6](../../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19)) | selector·local update 속도·VRAM 모두 `NOT_RUN` | TLinear/controller 구현과 사용자 스모크 뒤 측정 |
-| [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | forced CUDNN/FLASH +7.9%/+5.8%로 음성, `on_default` +0.3%·working memory −37.2%([088](../../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)) | isolated forward의 실용 후보; actual model·학습은 `NOT_RUN` | default/forced 재게이트와 d14 checkpoint 통합 SH |
+| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | current `0.816/0.622/0.534×`, delayed `1.015/0.867/0.751×`; peak allocation 증가 | **compute 가속 과학적 음성**. exit 4는 분류 오류 | Wb로 exit 8 계약만 재확인; shadow/storage 축은 별도 |
+| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | Wd 전 형상 정합 PASS, sparse speedup `0.085~0.820×` | synthetic inference kernel 축 음성 | sparse-master·whole-step·학습 후 checkpoint 추론은 별도 계획 없이는 승격 금지 |
+| [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | isolated default `1.018×`, CUDNN `1.051×`, FLASH `1.031×`; actual model `0.889×` | actual forward 속도 후보. allocation 감소는 0 | Wc는 warning 귀속과 zero-stride grouped-broadcast EFFICIENT 대안을 분리; backward·학습·품질은 `NOT_RUN` |
+| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | R2 pipeline PASS; `S rho=-1.0~0.4`, `U rho=1.0` | selector S 불안정; 속도·품질 증거 없음 | S를 기본 selector로 승격 금지 |
+| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | Stage1aT active-count/transition/loss 계약 PASS | dense mask 계약일 뿐 가속 0으로 취급 | full trainer 30M은 `NOT_RUN` |
+| [P093](../../test_plan/P093_구조조건부-직접공유와-완화타잉.md) | rank16 output NRMS `0.974`, rank0 대비 개선 약 `0.75%` | 현재 parent approximation 과학적 음성 | 새 parameterization 없이는 모델/GPU 단계로 진행하지 않음 |
 
-제안 승인과 Stage0 코드 존재는 속도 개선 증거가 아니다. P092의 계약 PASS도 가속 PASS가 아니며,
-P025B의 Windows 실패는 유지되고 WSL training-pack 정합성은 통과했지만 해당 M8192 속도는 음성이다.
-P060B를 포함한 다섯 계획의 실제 학습 속도는 모두 `NOT_RUN`이다.
+forced SDPA의 raw warning은 모든 backend가 실패했다는 뜻이 아니었다. EFFICIENT를 강제한 팔에서
+GQA head 수가 달라 해당 kernel이 선택되지 못했고, 같은 로그의 CUDNN·FLASH·default 팔은 실제로
+실행됐다. 진단기는 이제 backend별 warning을 해당 행에 붙여 출력한다. 계약 PASS나 isolated
+forward 속도를 학습 속도·end-to-end throughput으로 확대하지 않는다.

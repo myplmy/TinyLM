@@ -179,6 +179,18 @@ class HandoffContractTests(unittest.TestCase):
         )
         self.assertTrue(any("not mirrored" in error for error in errors))
 
+    def test_wsl_smoke_entrypoint_is_accepted_and_mirrored(self) -> None:
+        text = current_text(
+            self.previous.name, queue_row=self.carried_row, smoke="REQUIRED_USER_RUN"
+        ).replace("run_smoke_check.bat", "run_smoke_check.sh")
+        text = text.replace(
+            "| `-done` 삭제 | 저장소 루트 | 삭제 후보 없음 | 삭제하지 않음 | 변경 없음 | 재감사 |",
+            "| smoke | `run_smoke_check.sh` | WSL fixture | 실행 | PASS | 판독 |\n"
+            "| `-done` 삭제 | 저장소 루트 | 삭제 후보 없음 | 삭제하지 않음 | 변경 없음 | 재감사 |",
+        )
+        errors = self.write(text)
+        self.assertFalse(any("smoke" in error for error in errors))
+
     def test_no_open_wip_cannot_claim_interrupted_work(self) -> None:
         text = current_text(self.previous.name, queue_row=self.carried_row).replace(
             "새 요청 시작", "중단 작업을 이어서 시작"

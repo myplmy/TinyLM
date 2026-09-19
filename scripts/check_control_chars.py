@@ -32,13 +32,15 @@
 """
 from __future__ import annotations
 
+import argparse
 import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DIRS = ("scripts", "tinylm", "docs", "test_plan", "test_result", "ai_dev_tool",
-        "handoff", "proposal", "review_request", ".claude")
+DIRS = ("scripts", "tinylm", "docs", "test_plan", "test_result",
+        "ai_dev_tool/Codex", "handoff", "proposal", "review_request")
+ROOT_FILES = ("AGENTS.md", "README.md", "run100m.py", "experiments.tsv")
 EXTS = (".py", ".md", ".tsv", ".json", ".txt", ".cfg", ".toml", ".yml", ".yaml")
 SKIP_DIRS = {"__pycache__", ".git", "node_modules"}
 
@@ -75,7 +77,7 @@ def _targets():
             if any(part in SKIP_DIRS for part in p.parts):
                 continue
             out.append(p)
-    for name in ("CLAUDE.md", "run100m.py", "experiments.tsv"):
+    for name in ROOT_FILES:
         p = ROOT / name
         if p.is_file():
             out.append(p)
@@ -83,6 +85,8 @@ def _targets():
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Codex 허용 텍스트의 제어문자 검사")
+    parser.parse_args()
     files = _targets()
     hits = []
     for p in files:

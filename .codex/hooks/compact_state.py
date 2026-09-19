@@ -2,9 +2,9 @@
 """PreCompact gate and compact-only SessionStart WIP capsule injector.
 
 This hook only enumerates ``handoff/WIP_*_작업원장.md`` at repository root.
-It never walks the repository or protected dataset paths.  Actual manual and
-automatic compaction behavior remains E2E_NOT_RUN until observed in a trusted
-fresh Codex session.
+It never walks the repository or protected dataset paths.  Runtime evidence is
+owned by the Codex environment ledger; this module never promotes its own
+static/mock execution into a manual or automatic compaction verdict.
 """
 from __future__ import annotations
 
@@ -127,7 +127,7 @@ def evaluate_event(
             return _stop(error)
         if warning:
             return {"continue": True, "systemMessage": warning}
-        return {"continue": True, "suppressOutput": True}
+        return {"continue": True}
 
     if hook_event == SESSION_START:
         if event.get("source") != "compact":

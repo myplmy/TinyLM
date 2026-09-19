@@ -3,8 +3,9 @@
 > **승인 2026-09-18.** 권장안 A를 조건부 연구 경로로 승인했다. 정본 제안서:
 > [`20260916_Muon-저정밀-shadow-residual-동적정밀도와-배치환원-제안서-approved-on-going.md`](../proposal/20260916_Muon-저정밀-shadow-residual-동적정밀도와-배치환원-제안서-approved-on-going.md)
 >
-> **현재 상태:** R0 dependency gate·SH `STATIC_ONLY`. P022C의 실제 packed/masterless
-> low-shadow 출구조건이 충족되지 않았으므로 R1 residual 구현·모델 로딩·GPU·품질은 `NOT_RUN`이다.
+> **현재 상태:** R0 dependency gate는 사용자 실행에서 예상한 exit8 HOLD를 반환했다
+> ([결과 089](../test_result/089_20260919_P094-P022C-shadow-evidence가-없어-residual은-HOLD다.md)). P022C의 실제 packed/masterless low-shadow 출구조건이 충족되지 않았으므로
+> R1 residual 구현·모델 로딩·GPU·품질은 `NOT_RUN`이다.
 
 ## 1. 왜 — low shadow의 실패와 실제 메모리 절감을 분리한다
 
@@ -61,7 +62,7 @@ P022C가 확정한 `L`을 그대로 사용하고 다음 항목을 모든 핵심 
 
 | 단계 | 무엇 | 다음 단계 조건 | 비용 |
 |---|---|---|---:|
-| **R0 실행 대기** | machine-readable P022C actual packed/masterless `L`, failure signature, hidden-master 여부 확인 | schema·actual_packed·hidden_fp32_master=false·residual need가 모두 존재 | GPU 0, 없으면 exit 8 HOLD |
+| **R0 ✅ dependency HOLD 확인** | machine-readable P022C actual packed/masterless `L`, failure signature, hidden-master 여부 확인 | evidence 파일 부재로 선언된 exit8; residual R1 미개방 | [089](../test_result/089_20260919_P094-P022C-shadow-evidence가-없어-residual은-HOLD다.md) |
 | **R1 observer** | 기존 FP32 궤적에서 Q/R simulation; post-Muon update RMS, ULP, `rho`, saturation, ternary disagreement를 WSD 구간별 기록 | R16이 L-only 왜곡을 줄이거나 decay 분포가 사전 문턱을 넘음 | ⚙0.05~0.10 H300 |
 | **R2 static residual** | `A-L/B-R16/C-R8` 100M screen | paired CI가 현재 ruler 안, NaN/skip 0, resume 동일 | ⚙0.67 H300 신규 팔 상한 |
 | **R3 dynamic precision** | R8 생존 시 static R8 대 decay 시작 R8→R16 | static 대비 품질 또는 최악 phase 메모리 Pareto | ⚙0.33 H300 |
@@ -129,3 +130,5 @@ exit 8 `DEPENDENCY HOLD`이며 실행 장애가 아니다.
   구현·배치·GPU·품질은 `NOT_RUN`이다.
 - 2026-09-19: P094 자체 residual을 선제 구현하지 않고 R0 machine-readable dependency gate와
   SH를 작성했다. P022C evidence가 없으면 exit 8로 닫히며 R1 이후는 계속 `NOT_RUN`이다.
+- 2026-09-19: 사용자 R0 로그가 evidence 부재를 감지해 exit8 HOLD로 끝났다. compute C1 음성을
+  shadow residual need로 대체하지 않으며 actual packed/masterless evidence 전에는 재실행하지 않는다.

@@ -80,7 +80,7 @@ class CompactStateTests(unittest.TestCase):
                     handoff_dir=self.handoff,
                     capsule_reader=self.reader,
                 )
-                self.assertTrue(response["continue"])
+                self.assertEqual(response, {"continue": True})
 
     def test_m2_stale_capsule_stops_before_compaction(self) -> None:
         self.add_wip(session_id=TEST_SESSION)

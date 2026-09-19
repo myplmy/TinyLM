@@ -34,22 +34,22 @@
 
 | 축 | 상태 | 마지막 실측 | ★다음 한 걸음 | ★★무엇이 이 판정을 뒤집나 |
 |---|---|---|---|---|
-| **깊이** | ⚠️**열림** — 18층 40 예산 후보의 배포 실측을 확보했고, RMS4/jordan20 방향은 무재귀 d12·14·16·18 모두에서 같았다 | ★**078 §8** ← 076 §13 ← 075 §17(2026-09-14) | P089 단계3(dim512 L20·28·36, ⚙4.5h)은 Stage2b 채택선 미달로 **자동 개방하지 않고 재승인 대기** | `d18`은 **37.1 MiB·15.84 tok/s 실측**으로 배포 바닥을 넘었지만 16→18 꺾임 원인은 미해결이다. 옵티마이저 방향 전이는 깊이 자체의 최적점 증거가 아니다 |
+| **깊이** | ⚠️**열림** — 18층 40 예산 후보의 배포 실측을 확보했고, RMS4/jordan20 방향은 무재귀 d12·14·16·18 모두에서 같았다 | ★**088 §6**(d14 backend 경로, 깊이 우열 아님) ← 078 §8 ← 076 §13 ← 075 §17(2026-09-19) | P089 단계3(dim512 L20·28·36, ⚙4.5h)은 Stage2b 채택선 미달로 **자동 개방하지 않고 재승인 대기** | `d18`은 **37.1 MiB·15.84 tok/s 실측**으로 배포 바닥을 넘었지만 16→18 꺾임 원인은 미해결이다. 옵티마이저 방향 전이는 깊이 자체의 최적점 증거가 아니다 |
 | **폭** | ⏸**보류** — dim512의 폭 대가 +0.1017을 L14→28 깊이 회복 +0.1028이 상쇄했지만 순이득 −0.0011은 자 안 | ★**077 §12** ← 077 §11 ← 077 §10(2026-09-14) | **없음(자동 진행 금지)** — Stage3 재승인 전 대기 | 같은 32 MiB 후보 B는 dim768 기준과 체크포인트 수준에서도 구분 불가(t=1.89)이고 채택선 −0.02 미달. 부모 계보가 다르고 held-out·384 팔은 NOT_RUN이라 이 둘이 판정을 바꿀 수 있다 |
 | **재귀** | ★**승자의 부품(상주 축 한정)** — 300M→600M 토큰 이득은 재귀·무재귀 네 형상에서 재현됐고, RMS4 우세도 재귀 d12에서 시작해 무재귀 네 형상으로 전이했다 | ★**078 §8** ← 076 §11.5 ← 075 §17(2026-09-14) | 사용자 승인 뒤 **임베딩 재주입 덧셈판** 구현 ⚙0.4h + 비교 2팔 ⚙3.7h | 078은 옵티마이저 방향의 재귀 경계 전이이지 재귀 자체의 우열 증거가 아니다. 같은 방문 수면 깊이가 이기며 우리 재귀에는 재주입·반복 수 무작위화·절단 BPTT가 없다 |
-| **MLP 타잉** | 🚫**기존 exact 직접 공유 기각**. P093 보존 회계에서 D1-wide는 +62.4% FLOPs 고계산 트랙, R1 r4/8/16은 순절감 26.1~27.2%·추가 FLOPs 0.45~1.79% 기본 회계 후보 | ★**086**(2026-09-19) ← 079 §3 | d16 RMS4 parent의 shared mean+rank4/8/16 Stage0c SH 실행·판독 ⚙0.2h. 모델/GPU `NOT_RUN` | 같은 폭 `g2/g4` 반복은 판정을 못 뒤집는다. D3-cycle은 중복 HOLD, D2는 P091 의존. 층별 matrix가 붙으면 완화 공유로 재분류한다 |
+| **MLP 타잉** | 🚫**기존 exact 직접 공유 기각·현재 R1 parent approximation도 음성** — 회계상 순절감 26%대지만 rank16 output NRMS 0.974, rank0 대비 개선 약 0.75% | ★**086 §4**(2026-09-19) ← 079 §3 | 새 factorization·학습 가능한 residual 설계를 먼저 제안; 현 Stage0c를 GPU 품질로 승격하지 않음 | 절감 산술이 아니라 output NRMS≤0.90·기준 대비 ≥10% 개선과 실제 품질이 함께 필요하다 |
 | **어텐션 타잉** | 🚫**직접 공유 현 조건 기각** — `ag2`가 dense보다 +0.0073 열세(자의 3.0배). ⚠️head 정렬·저랭크 차이를 쓰는 방식은 별도 방법이며 0런 | ★**079 §3**(2026-09-11) ← 058 | [P093](../test_plan/P093_구조조건부-직접공유와-완화타잉.md)의 중복·회계에서만 보존; 직접 `ag2` 반복과 CLA 혼합은 하지 않음 | 종전 `ag2` 표본 공백과 CLA 교락은 해소됐다. 직접 공유를 되살리려면 같은 격자 반복이 아니라 대가 완화의 새 구현·순메모리 근거가 필요하다 |
 | **CLA/KV** | ✅**승격 후보 1순위** — 유일하게 깊이보다 싸다 | 결과 059 · 2026-09-08 | 5차 리뷰 승인 뒤 프리셋 · ⏸`cla2 × lr 1.5배` 1런(⚙1.7h, 배치 미작성 · 사용자 결정) | ★**값어치가 컨텍스트에 선형**이다(seq2048 이면 0.00293). **seq 를 바꾸면 순위가 바뀐다** · ⚠️★**우리 대가 +0.024 가 논문(GQA2-CLA2 +0.00516 nats)의 4.6배**이고 논문은 **CLA2 최적 LR 이 1.5배**라 실측했는데 우리는 전 팔 1e-3 이다(B.29.1) — **LR 을 맞추면 대가가 줄어 교환비가 더 좋아질 수 있다** |
 | **양자화** | ⏸**부분** — LUT 1.600 채택 · 🚫3:4 는 지배당함 · ✅**상주 실측 완료** | 075 §15 → ★**014 §18** (최신 2026-09-08) | 없음(이 축은 지금 막는 것이 없다) | ✅**식이 옳았다**(차 1.2%, 보수적). ⚠️남은 것은 **LUT 커널의 속도**(논문 표 4 = 2비트 대비 +8.8~12.2%) — 메모리 축은 닫혔고 **속도 축이 열려 있다** |
-| **토큰·코퍼스** | ★**가장 큰 실측 레버이나 기존 pool은 언어 drift가 있다** — 역사적 1.2B val 한국어 0%; P097은 300M draw에서 source token·val을 50:50으로 고정한다 | ★**078 §13** ← 076 §13 ← 075 §19(2026-09-16) | P097 Stage0 계약 뒤 control/FineWeb2/edu-v2/MADLAD 네 600M pool·300M draw 팔. 다운로드·학습 `NOT_RUN` | tokenizer가 다른 recipe의 자기 val_loss는 직접 비교 불가. 한영 공통 과제·byte-bpb와 prompt 관련성으로 판정하며 SFT 없는 chat 한계는 별도다 |
+| **토큰·코퍼스** | ⚠️**가장 큰 실측 레버·P097 학습은 아직 0-step** — control/FineWeb2/filtered-Edu 600M cache는 검증됐고 MADLAD loader를 교정했다 | ★**090**(2026-09-19) ← 078 §13 ← 075 §19 | P097 Stage1aB→1bB→1cB→1dB; 다운로드·GPU 학습은 사용자 실행 | 네 팔 모두 300M draw지만 tokenizer가 달라 자기 val_loss 직접 순위 금지. 같은 한영 과제·byte-bpb·prompt 관련성으로 판정한다 |
 | **옵티마이저** | ★**Muon RMS4를 사용자 기본 채택·연구축은 열림** — 상단·WD·형상·seed2024·역사적 길이 전이를 통과 | ★**078 §11~§15** ← 076 §13 ← 075 §19(2026-09-16) | 현재 코드 기본은 RMS4×4·KD off·optimizer-aware WD. 새 smoke 뒤 실제 본런 검증; QK-norm·schedule-scaled WD는 별도 연구 | Muon 일반행렬 WD0, embedding AdamW WD0.1, norm/bias/gate WD0, LRM WD0.01. 기본값 구현과 CPU 계약은 `STATIC_ONLY`; 현재 변경 뒤 학습은 `NOT_RUN` |
 | **토크나이저/어휘** | ⏸**보류** — 선결은 P075 단계1(어휘 16,384) ⚙2.0h | 결과 053 · 2026-08-22 | P075 단계1(**16 MiB 예산이 열릴 때**) | 어휘를 줄이면 **M=8192 무릎이 움직인다**(무릎은 어휘 32,768 기준). 그러면 속도·VRAM 표가 전부 다시 필요하다 |
-| **속도** | ⚠️**열림 · 🚫단일 게이트 아님** — P025B Wc 측정 행은 0.072~0.790×로 음성이지만 정합 fail-fast로 미완결. P060B forced는 음성이나 WSL on_default는 +0.3%·working memory −37.2% | ★**088**(2026-09-19) ← 082 ← 077 §5 | P025B Wd 완결 귀속 → P060B Wb/default actual model gate → P022C C1 cast/scaling forward. 사용자 GPU `NOT_RUN` | micro gate를 학습·checkpoint 추론으로 승격하지 않는다. backend 이름보다 제품 speed/memory 목표를 먼저 본다 |
-| **지능/벤치** | 🚫**v3.0 동일패널 core 회귀 확정** — seed2에서 v2.9→v3.0 D9 22.9→19.0%, 정보 0 54.1→65.2%, 총 bit 1,645.5→1,271.7 | ★**085**(2026-09-19) ← 074 §27 ← 074 §25 | P096 Q2a bounded-canary synthetic contract SH → 실제 Q2b는 데이터팀·팀 의미검토 선결 | v3.0 승격 실패와 별개로 v2.9도 D9 미달·난이도 비단조. 기계 taxonomy/provenance PASS는 실제 문항 품질이나 봉인 final이 아님 |
+| **속도** | ⚠️**열림·backend별 분리** — P022C compute와 P025B synthetic 2:4 inference는 음성, P060B actual model forward는 약 11.1% 단축 후보 | ★**088 §6** ← 082 §9 ← 081 §6(2026-09-19) | P060B Wc warning 귀속·grouped-broadcast EFFICIENT 대안 → P022C Wb exit 계약 → P014D Stage0bW profile. 모두 사용자 실행 | micro/forward gate를 학습·decode·checkpoint 품질로 승격하지 않는다. P060B actual allocation 감소는 0이고 backward·학습은 NOT_RUN이다 |
+| **지능/벤치** | 🚫**v3.0 동일패널 core 회귀 확정·Q2a는 synthetic 계약만 PASS** | ★**085 §4**(2026-09-19) ← 074 §27 ← 074 §25 | 실제 Q2b는 보호 데이터·팀 의미검토 선결; 자동 편성 금지 | synthetic 320개·cap/provenance PASS는 실문항 변별정보나 봉인 final 품질이 아니다 |
 
 ---
 
-## 2. ★지금 이 저장소가 가진 가장 큰 구멍 셋 (**갱신** 2026-09-18)
+## 2. ★지금 이 저장소가 가진 가장 큰 구멍 셋 (**갱신** 2026-09-19)
 
 1. 🚫★★**v3.0은 동일 seed2 통제에서도 회귀했다** — v2.9→v3.0 D9 **−3.89pp**, 정보 0
    **+11.09pp**, 총 정보량 **−373.8 bit**다(074 §27). v2.9도 합격판이 아니므로 되돌리지 않고,
@@ -76,33 +76,34 @@
 
 ### 2.1 승인됐지만 아직 나침반 판정을 바꾸지 않는 교차축 연구
 
-P091(후반 local/expansion)은 Stage0a·R1a와 R0/R1b actual tiny-model mapping을 보존 로그에서
-통과했고(080), 레이어 상태 권장 B안의 `S/U` R0~R3를 흡수했다. selector와 실제 local update는
-`NOT_RUN`이다.
-P022C(FP8 compute/shadow 분리)는
-Stage0a CUDA backend를 통과했다(081; 순수 GEMM 1.17~2.09×). 그러나 두 계획 모두 실제 모델 배선·
-학습·품질·end-to-end 자원 이득은 `NOT_RUN`이다. P025B Windows Stage0b의
-`cuSPARSELt not supported`는 유지하지만, WSL Stage0bW의 `operation is not supported`는
-one-way pack으로 dgrad를 호출한 진단 구현 오류여서 backend 기각을 철회했다([082 §7](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
-bidirectional training pack을 쓰는 Stage0bWb는 forward/dgrad 정합을 통과했지만 M8192 속도가
-0.759×/0.820×로 음성이었다. 이는 inference pack·decode/prefill·whole-step·학습 후 추론을
-닫지 않으며 Stage0bWc가 귀속한다(082). P092 Stage0c는 CUDA
-mask/gradient/birth-death 계약을 2회 통과했지만 dense tensor+mask라 가속·메모리·학습·품질은
-여전히 `NOT_RUN`이다(083 §6~§7). P035B A3는 audit 오염 G1은 통과했지만 지속 후반 궤적차 G2가
-성립하지 않아 adaptive/freeze A4를 열지 않는다(084).
+사용자 보존 로그를 전수 연결한 현재 분류는 다음과 같다.
 
-별도 추가 편성은 [실험계획목록 §1.1](../test_plan/실험계획목록.md)의 **72.0h 조건부 hard cap**을
-따른다. 완료한 P091·P096·P093·P095 계약을 새 학습 이득으로 승격하지 않는다. 현재 실제로
-존재하는 runnable gate 순서는 P025B Stage0bWc → P060B Stage0aW이며 둘 다 학습 0이다.
-P022C Stage0b, P092 trainer 연결, P095 S0b는 각 구현 뒤 사용자 스모크가 선결이며 아직 실행
-큐에 넣지 않는다. P094 R0는 P022C actual packed/masterless 증거 전까지 의존성 HOLD다.
-각 gate가 실패하거나 구현이 비어 있으면 해당 분기의 잔여 예산을 자동 소진하지 않는다.
+- P091 R2 selector pipeline은 PASS지만 `S` 순위가 seed에 불안정하다. P092 Stage1aT는
+  controller 계약만 PASS이며 full trainer는 `NOT_RUN`이다.
+- P093 Stage0c는 단조 감소만 통과시킨 설계결함이 있었고 실제 output NRMS 0.974라 현재
+  parameterization은 음성이다. P094는 P022C shadow evidence 부재로 정상 `HOLD`다.
+- P095 S0b는 1 MiB payload와 metadata·read/write 계약만 PASS다. P096 Q2a는 synthetic
+  taxonomy/provenance 계약만 PASS다. 두 결과 모두 모델 능력으로 승격하지 않는다.
+- P022C C1과 P025B Wd의 synthetic 가속은 음성이다. P060B actual model forward만 약 11.1%
+  단축 후보를 남겼고 allocation 감소·backward·학습은 확인되지 않았다.
+- P097은 세 cache가 완성됐지만 모든 학습이 0-step이다. cache 완성과 모델 품질을 분리한다.
 
-신규 승인 [P094](../test_plan/P094_Muon-저정밀-shadow-Q-R-residual과-동적정밀도.md)는 P022C의
-actual packed/masterless 출구조건에 막혀 있다. [P095](../test_plan/P095_Scout-1MiB-LTM-학습가능성.md)는
-S0aL causal primitive 보존 로그를 통과했지만 Transformer 통합·물리 RSS·학습성은 `NOT_RUN`이다.
-P096은 Q0·Q1a와 Q1b 보존 taxonomy 로그까지 통과했으나 팀 의미검토·실제 문항은 `NOT_RUN`이다.
-세 계획 모두 기존 72h hard cap에 자동 편성하지 않았고 새 GPU 학습은 `NOT_RUN`이다.
+과거 계획 누락 2차 감사에서 P064·P071·P072·P073·P074·P079·P084·P085·P088도 결과상 완료됐는데
+낡은 상단 상태 때문에 진행 중으로 남았음을 확인해 종결·승계 근거를 계획서에 고정했다. P044B와
+P078의 기존 종결도 유지한다. 따라서 계획 인덱스는 실행 전 25·진행 47·종결 41이다.
+
+실제로 남은 오래된 runnable은 P076 Stage1W, P014D Stage0bW와 P087 Stage3bW다. P087은 학습을
+반복하지 않고 기존 checkpoint 둘의 누락된 결정적 full-val paired 평가만 회수한다. P077은
+Stage1c까지 완료됐지만 다음 품질 gate가 미설계, P005b b-6/b-7·P081·P083은 구현 선결,
+P089는 재승인 HOLD라 물리 SH 없는 항목을 실행순서에 넣지 않는다. P076·P014D·P087 사용자
+모델/GPU 실행은 모두 `NOT_RUN`이다. 이 상태는
+[실험계획목록](../test_plan/실험계획목록.md)의 세 표에 계획당 한 행으로 반영한다.
+
+물리적으로 없는 launcher를 권장 순서에 쓰지 않는다. 현재 runnable은 queue audit로 확인한 실제
+`.sh`만 대상으로 하며, 실행시간 합계를 채우기 위해 미구현 계획이나 조건부 후속을 파일명처럼
+꾸미지 않는다. 장시간 큐가 필요하면 먼저 전체 113개 계획의 frontier를 다시 감사하고, 구현·선결·
+예상시간이 확인된 항목만 추가한다. 재발방지 정본은
+[실험 프론티어 전수감사 제안서](../proposal/20260919_실험-프론티어-전수감사와-장시간-큐-근시안-재발방지-제안서.md)다.
 
 ---
 

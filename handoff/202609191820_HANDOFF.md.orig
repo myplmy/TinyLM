@@ -1,0 +1,255 @@
+# HANDOFF 2026-09-19 18:20 — 재감사 보완 완료 — 로그·SDPA·계획 프론티어·WSL preflight·compact 훅
+
+- **이전**: [`202609191642_HANDOFF.md`](202609191642_HANDOFF.md)
+- **정본 작업원장**: [`WIP_20260919f_작업원장-done.md`](WIP_20260919f_작업원장-done.md) 6/6 완료.
+- **런타임**: WSL2 Ubuntu, 저장소 `/home/uranus/tinyLM`, Python `/home/uranus/miniforge3/envs/tlm_torch/bin/python`.
+- **코드가 정본**(`tinylm/`). 문서와 어긋나면 코드가 이긴다.
+- **AI 는 학습/GPU·모델·smoke·queue를 직접 실행하지 않는다** — SH를 쓰고 사용자가 돌린다.
+- **이 문서는 요약하지 않는다** — 다음 세션이 이것만 읽고 이어갈 수 있어야 한다.
+- **증거 수준**: 사용자 보존 로그만 동적 관측이고, 이번 수정·신규 SH는 `STATIC_ONLY / E2E_NOT_RUN`이다.
+- **경계 사고 공개**: 전역 Git 조회 1회와 오래된 텍스트 도구 2개가 금지 경로를 열거·읽었다. 쓰기·삭제·staging은 0건이며 A35에 기록하고 세 도구 범위를 차단했다.
+
+---
+
+## 0. 사용자 지시 (6건) — 원문과 처리
+
+| # | 사용자가 지시한 것 | AI 가 판단한 목적 | 그래서 필요했던 작업 | 실제로 한 것 | 결과 |
+|---|---|---|---|---|---|
+| 1 | 완료 SH·지정 로그 15건의 반영, 오류 원인·수정·재실행 준비를 재검토 | 실행 장애·과학적 음성·HOLD·계약 PASS 분리 | 로그명·수치·종료코드·결과/계획 연결 전수 대조 | 15/15 exact 로그 연결, 결과 080~090의 누락·과장·순서·파일명 역사 보완 | ✅정적 완료; 재실행 `NOT_RUN` |
+| 2 | Flash/SDPA 경고를 왜 무시했는지 분석하고 해결 가능하면 수정 | direct EFFICIENT 불가와 대안 경로를 분리 | 공식 계약·warning 귀속·GQA broadcast 대안 검증 | zero-stride grouped broadcast, storage dedupe, warning 회귀와 Wc 연쇄 갱신 | ✅CPU 계약 PASS; GPU Wc `NOT_RUN` |
+| 3 | 전체 계획 목록·P076/P078/P044B/P014D·다른 진행축·COMPASS 재감사 | 최근 신규계획 편향과 false ongoing 제거 | 113계획 의미 감사·one-plan-one-state·과거 READY 회수 | false ongoing 9건 종결/승계, P077 정정, P087 Stage3bW 복구 | ✅25 계획전/47 진행/41 종결 |
+| 4 | 13.4h만 편성한 원인과 근시안 방지 제안서 재검토 | 48h 억지 채우기와 실제 누락을 모두 차단 | 중복·상태·frontier·WSL preflight 사각지대 분석 | M0/M1·수동 M2, 제안서 보완, SH preflight 0건 결함 수정 | ✅정적 보완; 자동 M2~M5 제안 상태 |
+| 5 | guard 외 hook·autocompact 효율을 감사 | hook이 낡은 handoff를 재생하거나 압축을 유발하는지 판별 | 실제 `/usr/bin/python3` 명령 20회·14회귀·공식 계약 대조 | exact WIP f, old handoff 0, warning 0, median/p95 측정 | ✅유지·개선; 현재 hash E2E `NOT_RUN` |
+| 6 | done 삭제 가능성·다음 순서·커밋안·신규 handoff | 재현성 보존과 실행 인계 | 17개 명령 보존/재실행 필요·실물 큐·검증 전수 대조 | 17개 모두 삭제 가능 판정, 10단계 13.2h 순서, 본 handoff·커밋안 작성 | ✅삭제·commit은 미수행 |
+
+---
+
+## 1. 가장 중요한 것 셋
+
+1. **직전 이행은 완전하지 않았다.** exact 로그명 6개 누락, P097 종료 원인 과장, P060B broadcast 대안 미구현, 완료 계획 9건의 false ongoing, P087 평가 누락, WSL preflight 0건 사각지대를 이번 재감사에서 교정했다.
+2. **과학적 판정은 유지된다.** P022C·P025B·P093은 유효 음성, P094는 의도된 HOLD, P060B actual forward만 0.889× 후보다. grouped broadcast와 모든 신규 gate는 GPU/모델 재실행 전 `NOT_RUN`이다.
+3. **현재 실물 큐는 12개·13.4h이고 연구 순서는 10개·13.2h다.** 부족분을 미구현 이름으로 채우지 않는다. 실제 과거 누락 P087만 복구했고, 나머지는 구현·재승인·선행결과가 필요하다.
+
+---
+
+## 2. 무엇을 했나
+
+### 2.1 지정 로그 15건 재판독
+
+| 계획 | 원본 관측 | 현재 판정·정본 |
+|---|---|---|
+| P091 R2 | selector pipeline exit0, S rho −1.0~0.4, U 1.0 | 계약 PASS·S 불안정; [결과 080](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md) |
+| P022C W | current 0.534~0.816×, delayed 0.751~1.015×, peak 증가 | 유효 과학적 음성; exit4 분류결함을 새 Wb에서 exit8 계약으로 교정 |
+| P025B Wd | 모든 synthetic 형상 0.085~0.820× | inference kernel 음성; sparse-master·학습축 전체 종결 아님 |
+| P092 Stage1aT | active 8192/16384, transition4, finite loss | controller 계약 PASS; full trainer `NOT_RUN` |
+| P096 Q2 | 320/320·cap450·max2·provenance PASS | synthetic 계약 PASS; 보호 실문항 `NOT_RUN` |
+| P093 Stage0c | rank16 output NRMS 0.974, rank0 대비 약 0.75% 개선 | monotonic-only false pass; 현 parameterization 음성, 동일 GPU 재실행 불필요 |
+| P095 S0b | payload 1,048,576B + metadata 1,032B | bridge primitive PASS; full Transformer `NOT_RUN` |
+| P060B Wb/model | direct EFFICIENT 불가; actual logits 동일, 11.1354→9.8974ms, allocation 동일 | default forward 0.889× 후보; backward·학습·allocation 이득 미확인 |
+| P094 R0 | P022C shadow evidence 없음, exit8 | 의도된 fail-closed HOLD |
+| P097 Stage0+네 팔 | 계약 exit0; 세 cache 600M 완성, 네 학습 모두 0-step | cache와 품질 분리; finalizer 단독 원인은 미확정 |
+
+### 2.2 SDPA/Flash 경고 재감사
+
+- 이전 누락은 로그 전체 미분석이 아니라 forced EFFICIENT 팔 warning의 범위 설명과 물리 broadcast 대안 구현 누락이었다.
+- PyTorch direct GQA는 Q 12 heads와 K/V 3 heads 때문에 EFFICIENT 강제 경로가 unavailable이다. 이를 성공한 FLASH/CUDNN 실패로 확대하지 않는다.
+- Q를 [B,3,4,T,D], K/V를 zero-stride singleton group으로 broadcast하는 별도 후보와 physical-storage 중복 제거를 구현했다. CPU 동등성·warning 포착은 PASS, GPU Wc는 `NOT_RUN`이다.
+
+### 2.3 계획 프론티어와 큐
+
+- 113개 물리 계획을 한 행·한 상태로 고정했다. 현재 실행 전 25·진행 47·종결 41이다.
+- P064/P071/P072/P073/P074/P079/P084/P085/P088의 낡은 진행 상태를 결과 근거로 종결·승계했고 P044B/P078 종결을 유지했다.
+- 진짜 오래된 누락은 P087 Stage3 결정적 full-val paired 평가였다. 기존 checkpoint만 쓰는 Stage3bW를 추가했다. P077은 gate 미설계, P005b/P081/P083은 구현 선결, P089는 재승인 HOLD다.
+
+### 2.4 compact·검사 도구
+
+- 실제 hook interpreter `/usr/bin/python3`로 20회 측정: median 34.18ms, p95 43.49ms, context 1,742자, exact WIP f, old handoff 0, warning 0.
+- hook은 autocompact 빈도를 결정하지 않는다. 제거해도 횟수는 줄지 않고 승인·보호경계의 exact-WIP 보강만 사라지므로 유지·개선한다.
+- `dryrun_batch`의 BAT-only 결함을 고쳐 live WSL SH에서 학습 4·판정 2건을 strict 검사했다.
+- `rename_result`, `check_control_chars`, `check_links`의 금지 환경 탐색을 제거하고 공통 범위 회귀를 추가했다. 경계 위반은 Codex 08 A35/A36에 공개했다.
+
+---
+
+## 3. 무엇이 바뀌었나 — 코드·도구
+
+| 묶음 | 핵심 파일 | 역할 |
+|---|---|---|
+| 결과 재감사 | `test_result/080~090`, `check_index_sync.py` | 15로그 exact 연결, 역사 파일명·조건 서명·과장 교정 |
+| SDPA | `diag_sdpa_wsl_gqa.py`, backend 회귀, P060B 계획/결과/방법론/기준표 | direct unavailable와 grouped-broadcast 후보 분리 |
+| 계획 상태 | 관련 계획 9건, `실험계획목록.md`, normalizer/checker | false ongoing 교정·113행 단일 상태 |
+| P087 | 계획서, `run_P087_Stage3bW_paired_fullval.sh`, `experiments.tsv` | 누락된 기존 checkpoint full-val 평가 복구 |
+| 큐 재발방지 | frontier 제안서, COMPASS | 최신 계획 편향·48h 미달 원인과 후속 M2~M5 |
+| WSL preflight | `dryrun_batch.py`, `test_dryrun_shell.py`, static 목록 | BAT뿐인 검사에 SH 학습·판정 파서 추가 |
+| compact | hook state·회귀·효율 감사보고서 | 진행 산출물 capsule·실제 interpreter 성능·증거수준 |
+| 도구 범위 | 결과 개명·링크·제어문자 검사와 범위 회귀 | 금지 환경·보호 데이터 기본 탐색 차단 |
+| 자백 | Codex 08 A35/A36 | 이번 경계 위반과 WSL 0건 false PASS를 보존 |
+
+### 3.1 정본 동기화·미갱신 사유
+
+| 산출물 | 필요 여부 | 실제 diff | 미갱신 사유 |
+|---|---|---|---|
+| 결과·계획·두 목록 | 필요 | 있음 | 지정 로그·단계 상태·P087 복구 반영 |
+| 기준표·방법론·COMPASS | 필요 | 있음 | P060B/P093/P097와 frontier 판정 동기화 |
+| `docs/METHODS.md` | 불필요 | 없음 | 동적 품질로 채택된 최상위 방법이 바뀌지 않음 |
+| 루트 09 | 금지 | 없음 | 사용자가 갱신을 지시하지 않음 |
+| 보호 데이터·checkpoint·원본 로그 | 변경 금지 | 없음 | 본문 변경 0; 단 검사도구의 금지 읽기 사고는 A35로 별도 공개 |
+| Git 외부 상태 | 금지 | 없음 | staging·commit·push·PR 0 |
+
+---
+
+## 4. ⚠️조심할 것 — 다음 세션이 밟을 자리
+
+- 결과 080~088 일부 파일명은 최초 실패 판정을 보존한다. H1·역사 배너·최신 절이 현재 결론이며 완료 WIP를 깨는 개명은 하지 않았다.
+- P097 finalizer abort의 관측과 iterator close 구현 누락은 확인했지만, 그 누락이 유일 원인이라는 동적 증거는 없다.
+- P060B direct EFFICIENT unavailable과 grouped-broadcast 후보는 다른 팔이다. CPU 계약 PASS를 GPU backend 성공으로 승격하지 않는다.
+- P093 수치는 현재 설계를 기각하기에 충분해 같은 GPU 진단 재실행을 권하지 않는다. 새 factorization은 새 단계다.
+- P087 Stage3bW는 신규 1.2B 학습이 아니라 기존 300M checkpoint 둘의 평가다.
+- `-done.sh` 17개는 삭제 가능하지만 이번 세션은 삭제하지 않았다. 승인 전 임의 정리하지 않는다.
+- 전역 상태·오래된 검사도구의 금지 읽기 사고가 있었다. 수정·삭제는 없지만 “보호 경로 접근 0건”이라고 보고하지 않는다.
+
+### 4.1 스모크·동적 검증 계승
+
+| 항목 | 상태 | 근거 | 사용자 요청 반영 |
+|---|---|---|---|
+| 현재 WSL runtime | 관찰 범위 `ACTIVE_VERIFIED` | pwd·Linux/WSL·Ubuntu·Bash와 환경검사 | 유지 |
+| guard hook | 과거 hash 관찰 범위 `ACTIVE_VERIFIED` | 이번에 guard 코드는 변경하지 않음 | 재probe 요청 없음 |
+| compact hook 현재 hash | `STATIC_ONLY / E2E_NOT_RUN` | 14/14·실제 command 20/20 process PASS | `/hooks` 재신뢰 후 다음 auto 1회 관찰 |
+| `run_smoke_check.sh` | `REQUIRED_USER_RUN` | trainer/data/backend/queue/preflight 코드 변경 | §6b에서 queue id 0으로 요청 |
+| 새 gate·평가·학습 | `NOT_RUN_PENDING` | shell31·queue audit PASS만 있음 | §7 순서로 사용자 실행 |
+| PowerShell parser | `NOT_RUN` | WSL에 parser 없음, POSIX shell은 별도 PASS | WSL SH 실패가 아님 |
+
+### 4.2 미해결 검사·판정
+
+| 검사 | 정확한 대상 | 증거와 상태 | 운영 영향 | 권장 조치 | 대안 | 승인 주체 |
+|---|---|---|---|---|---|---|
+| project smoke | 변경 코드 종합 동적 경로 | 정적 PASS, 새 smoke 없음 | 장시간 큐 선결 | queue id0 실행·로그 회신 | 실패 시 연구 큐 금지 | 사용자 실행·AI 판독 |
+| P060B Wc | direct/broadcast backend 정합·warning·속도 | CPU 회귀 PASS, GPU `NOT_RUN` | backend 후보 판정 | gate 묶음으로 실행 | 기존 Wb 판정 유지 | 사용자 |
+| P087 Stage3bW | 두 기존 checkpoint의 deterministic full-val | SH/preflight PASS, 모델 `NOT_RUN` | P087 종결 근거 | gate 묶음으로 실행 | 기존 로그 눈금만 유지 | 사용자 |
+| P076/P014D | group-init step0 / decode profile | 구현·SH static PASS | 조건부 본런 개방 | 로그 먼저 판독 | gate 음성이면 후속 미작성 | 사용자 |
+| P097 | Stage0b와 네 300M 팔 | cache는 일부 완성, 신규 SH `NOT_RUN` | 데이터 품질 비교 불가 | Stage0b 후 네 팔 | 외부 source 불가면 HOLD | 사용자 |
+| frontier M2~M5 | 전체 READY/GATED/HOLD 자동 감사 | 제안 상태 | 48h 장기 편성 근거 미완 | 별도 승인 후 구현 | 수동 전수감사 | 사용자 승인 |
+
+---
+
+## 5. ★확보한 수치
+
+| 항목 | 값 | 근거·한계 |
+|---|---:|---|
+| 지정 로그 연결 | 15/15 | exact basename가 대응 결과문서에 존재 |
+| 결과 조건서명 | 10문서/16서명 PASS | 정적 schema·조건 대조 |
+| P022C speedup | current 0.534~0.816×; delayed 0.751~1.015× | compute 음성 |
+| P025B speedup | 0.085~0.820× | synthetic inference 음성 |
+| P060B actual forward | 11.1354→9.8974ms = 0.889× | allocation 9.568/9.568MiB |
+| P093 best output NRMS | 0.97400 | rank0 대비 약 0.75% 개선 |
+| P095 physical state | 1,049,608B | payload 1,048,576 + metadata 1,032 |
+| 계획 인덱스 | 113문서=113행 | 계획전25·진행47·종결41 |
+| compact process | median34.18ms·p95 43.49ms | 20회, Desktop lifecycle E2E 아님 |
+| Linux queue | runnable12·전체13.4h | smoke·cleanup 포함; 연구10개13.2h |
+| WSL preflight | 학습4·판정2 | live SH strict PASS |
+| done launcher | 17/17 명령 보존·동일 stage 재실행 없음 | 삭제 미수행 |
+| 환경 검사 | PASS31/FAIL0/NOT_RUN1 | PowerShell parser만 NOT_RUN |
+| 핵심 정적 | backend·dataset·group-init·append·scope·WIP·compact·shell·plan·queue PASS | GPU·모델·smoke 대체 아님 |
+
+---
+
+## 6. ★열린 질문
+
+1. smoke를 gate 묶음에 넣을 때 실패 정책을 `stop`·`collect`·`warn` 중 사용자가 선택한다. 안전 기본값은 `stop`이다.
+2. 삭제 가능 판정된 done launcher 17건을 실제 삭제할지는 별도 승인 사항이다.
+3. frontier 제안서 C안의 자동 M2~M5를 구현할지는 사용자 판단이 필요하다.
+4. P076·P014D의 다음 장시간 구현은 각각 Stage1W·profile 로그를 먼저 판독한 뒤 결정한다.
+5. compact 새 hash는 `/hooks` 재신뢰와 다음 실제 auto compact 1회 관찰 전 `ACTIVE_VERIFIED`로 올리지 않는다.
+---
+
+## 7. ★다음 권장 실험 순서 — ⚙**13.2h**
+
+> 현재 `queue_menu_linux.py --list`의 실물 SH만 사용한다. smoke id0은 §6b 선결이고 cleanup id6은 연구시간에서 제외한다.
+
+| 순 | id | 실험 | 배치 파일 | ⚙ | 누적 | 인벤토리 | 실행상태 | 선결 | 근거 |
+|---:|---:|---|---|---:|---:|---|---|---|---|
+| 1 | 7 | P097 Stage0b — 환경·cache·MADLAD 계약 | `run_P097_Stage0b_dataset_recipe_contract.sh` | 0.1 | 0.1 | PRESENT | NOT_RUN/GATED | smoke PASS | 네 300M 팔 공통 오류수정을 network/GPU/model 0으로 먼저 검증 |
+| 2 | 5 | P087 Stage3bW — paired full-val | `run_P087_Stage3bW_paired_fullval.sh` | 0.3 | 0.4 | PRESENT | NOT_RUN/GATED | 기존 두 checkpoint | 이번 2차 감사에서 회수한 오래된 실제 누락; 신규 학습 0 |
+| 3 | 3 | P076 Stage1W — parent group-init | `run_P076_Stage1W_group_init_gate.sh` | 0.3 | 0.7 | PRESENT | NOT_RUN/GATED | 실제 m100 dense parent | 오래 미뤄진 진행축, Stage2 10.8h 개방 gate |
+| 4 | 4 | P014D Stage0bW — decode profile | `run_P014D_Stage0bW_decode_profile.sh` | 0.3 | 1.0 | PRESENT | NOT_RUN/GATED | CPU model profile, 단독 | kernel 약 6h 전에 유도값을 실측으로 교체 |
+| 5 | 2 | P060B Stage0aWc — direct/broadcast attribution | `run_P060B_Stage0aWc_wsl_sdpa_gqa_backend.sh` | 0.1 | 1.1 | PRESENT | NOT_RUN/GATED | WSL CUDA | direct unavailable와 grouped-broadcast 후보를 분리 |
+| 6 | 1 | P022C Stage0bWb — 음성 exit 계약 | `run_P022C_Stage0bWb_fp8_scaling_overhead.sh` | 0.1 | 1.2 | PRESENT | NOT_RUN/GATED | WSL CUDA | 유효 과학적 음성을 실행 실패로 오인하지 않게 확인 |
+| 7 | 8 | P097 Stage1aB — control-v2 300M | `run_P097_Stage1aB_control_v2_300M.sh` | 3.0 | 4.2 | PRESENT | NOT_RUN/GATED | Stage0b exit0 | 검증 cache를 쓰는 대조군 |
+| 8 | 9 | P097 Stage1bB — FineWeb2 300M | `run_P097_Stage1bB_fineweb2_300M.sh` | 3.0 | 7.2 | PRESENT | NOT_RUN/GATED | Stage0b exit0 | native PATH 교정 뒤 실제 학습 |
+| 9 | 10 | P097 Stage1cB — filtered edu 300M | `run_P097_Stage1cB_edu_v2_300M.sh` | 3.0 | 10.2 | PRESENT | NOT_RUN/GATED | Stage0b exit0 | 검증 filtered cache 재사용 |
+| 10 | 11 | P097 Stage1dB — MADLAD 300M | `run_P097_Stage1dB_madlad_300M.sh` | 3.0 | 13.2 | PRESENT | NOT_RUN/GATED | Stage0b exit0·외부 download/license | direct-shard adapter와 데이터 품질 확인 |
+
+> **48h 미달 사유**: 연구 SH 13.2h로 34.8h 부족하다. P076 Stage2와 P014D kernel은 바로 앞 gate 결과에 따라 설계가 달라지고, P077·P005b·P081·P083·P089는 각각 gate 미설계·구현 선결·재승인 HOLD다. 물리적으로 없는 SH나 저가치 반복으로 시간을 채우지 않는다.
+
+### 7.1 이전 큐 제외·완료 이관
+
+- `sync_experiments_tsv.py` 조건 ① `-done`·② 명령 보존은 17/17 통과했다. 사람 조건 ③도 동일 stage 재실행 없음으로 확인했다.
+- 삭제 가능 17건:
+  - `run_P022C_Stage0bW_fp8_scaling_overhead-done.sh`
+  - `run_P025B_Stage0bWc_wsl_sparse24_inference_attribution-done.sh`, `run_P025B_Stage0bWd_wsl_sparse24_inference_attribution-done.sh`
+  - `run_P060B_Stage0aW_wsl_sdpa_gqa_backend-done.sh`, `run_P060B_Stage0aWb_wsl_sdpa_gqa_backend-done.sh`, `run_P060B_Stage0bW_model_gqa_integration-done.sh`
+  - `run_P091_R2_layer_state_selector-done.sh`, `run_P092_Stage1aT_tlinear_dst_contract-done.sh`, `run_P093_Stage0c_parent_approximation-done.sh`, `run_P094_R0_p022c_dependency_gate-done.sh`, `run_P095_S0b_memory_bridge_contract-done.sh`, `run_P096_Q2_canary_candidate_contract-done.sh`
+  - `run_P097_Stage0_dataset_recipe_contract-done.sh`, `run_P097_Stage1a_control_v2_300M-done.sh`, `run_P097_Stage1b_fineweb2_300M-done.sh`, `run_P097_Stage1c_edu_v2_300M-done.sh`, `run_P097_Stage1d_madlad_300M-done.sh`
+- 필요한 재시도는 Wb/Wc/Stage0b/Stage1*B처럼 새 단계에 있고 P093은 보존 수치로 음성 판정이 충분하다. 나머지 후속도 같은 launcher 재사용이 아니라 새 단계 또는 선결 HOLD다.
+- 이번 세션은 삭제하지 않았다. 정확한 17건 삭제 승인을 받은 뒤 다시 존재·정본 보존을 확인해야 한다.
+
+---
+
+## 6b. ★사용자에게 부탁하는 것
+
+| 대상 | 정확한 위치 | 근거 | 사용자가 할 행동 | 완료 신호 | AI 후속 처리 |
+|---|---|---|---|---|---|
+| compact trust | Desktop `/hooks` | current hash는 process-level static만 PASS | 변경된 hook을 재검토·신뢰하고 다음 실제 auto compact 1회에서 현재 WIP/context를 관찰 | exact current context, old handoff 0, warning 0 | hash 범위 E2E 판정 |
+| smoke+gate 묶음 | 저장소 루트 `run_queue.sh` | 모든 개별 gate를 한 큐에서 회수 가능 | ids `0 7 5 3 4 2 1` 선택; smoke 실패 정책은 권장 `stop`, 장시간 수집이 필요하면 `collect` 또는 `warn`을 명시 선택 | smoke 로그 1건과 실험 로그 6건 | 결과별 PASS/음성/HOLD/실행오류 분리 |
+| 300M 데이터 팔 | 같은 queue UI | Stage0b 통과 전 네 학습을 열면 안 됨 | 앞 묶음의 id7 exit0을 AI가 판독한 뒤 ids `8 9 10 11`을 순차 선택 | 네 학습·평가 로그 | 결과090·계획·COMPASS 갱신 |
+| done 정리 | 사용자 승인 메시지 | 17건은 삭제 가능 판정이나 삭제는 파괴적 작업 | 원하면 “done launcher 17건 삭제 승인”이라고 정확히 승인 | 승인 문구 | 존재 재확인 후 그 17건만 삭제·TSV sync |
+
+---
+
+## 8. 커밋 메시지
+
+커밋은 수행하지 않았다. 제안:
+
+```text
+fix: WSL 실험 결과 연쇄와 프론티어 사전검사를 재정비
+
+- 지정 로그 15건의 결과·계획·기준표 연쇄와 과학적 음성 판정을 교정
+- SDPA grouped-broadcast 후보, P087 paired 평가, P097 재실행 경로를 정적 구현
+- 계획 113건을 단일 상태로 재분류하고 WSL SH preflight·도구 범위 회귀를 추가
+- compact 훅 효율 감사와 경계 위반 자백·신규 핸드오프를 반영
+```
+
+---
+
+## 9. ★compact 프롬프트 (이번 세션이 압축될 때 남길 것)
+
+> M4·M5 E2E PASS 전까지의 **수동 보조**다. 자동 소비 계약으로 오해하지 않는다.
+
+```markdown
+`/home/uranus/tinyLM`의 재감사 WIP f는 6/6 완료다. 지정 로그 15건은 결과 080~090에 exact 연결됐고, P022C/P025B/P093은 과학적 음성, P094는 HOLD, P060B actual forward만 0.889× 후보다. SDPA grouped-broadcast는 CPU 계약만 PASS이고 GPU Wc는 NOT_RUN이다. 계획 인덱스는 113행=25 계획전/47 진행/41 종결이며, 오래된 실제 누락 P087 Stage3bW를 복구했다. queue는 runnable12·전체13.4h, 연구 권장 10개·13.2h다. compact actual-command 20회는 exact WIP·old handoff0·warning0이나 Desktop E2E는 NOT_RUN이다. done launcher 17개는 삭제 가능하나 미삭제다. GPU·모델·smoke·queue·외부 다운로드·삭제·루트09·staging·commit·push는 수행하지 않았다. 다음은 사용자 로그가 오면 queue id 순서와 선결에 따라 판독한다.
+```
+
+---
+
+## 10. ★세션 시작 프롬프트 (다음 세션이 붙여넣는 것)
+
+- **열린 WIP 상태**: 이번 재감사 WIP는 `WIP_20260919f_작업원장-done.md` 6/6로 닫힘. 다른 세션 소유 열린 WIP 2건은 결합·수정하지 않음.
+- **정확한 WIP / 첫 미완료**: 이번 세션 미완료 없음; 새 요청 시작.
+- **첫 행동과 선결**: 사용자가 새 smoke/gate 로그를 회신하면 id0부터 판독하고 실행 장애가 있으면 장시간 팔을 권하지 않는다.
+- **증거 언어**: 사용자 로그 없는 신규 SH·hook hash는 `STATIC_ONLY / E2E_NOT_RUN`; 과학적 음성 exit8은 실행 장애와 분리.
+- **승인 전 금지**: 보호 데이터 접근, 다른 WIP 수정, GPU·모델·smoke·queue·외부 다운로드, done 삭제, 루트09, staging·commit·push·PR.
+
+---
+
+## 11. ★참조 치트시트
+
+- [정본 WIP](WIP_20260919f_작업원장-done.md)
+- [직전 핸드오프](202609191642_HANDOFF.md)
+- [COMPASS](COMPASS.md)
+- [기준표](../docs/EXPERIMENT_BASELINES.md)
+- [실험계획목록](../test_plan/실험계획목록.md)
+- [실험결과목록](../test_result/실험목록.md)
+- [P060B 계획](../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md)
+- [P087 계획](../test_plan/P087_반복노출-1-2-4epoch.md)
+- [compact 효율 감사](../docs/20260919_Codex-compact-hook-효율성-감사.md)
+- [frontier 재발방지 제안서](../proposal/20260919_실험-프론티어-전수감사와-장시간-큐-근시안-재발방지-제안서.md)
+- [Codex 자백원장 A35/A36](../ai_dev_tool/Codex/08_AI-미보고-내역-자백원장.md)

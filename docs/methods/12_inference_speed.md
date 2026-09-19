@@ -190,3 +190,14 @@
 - 🚫**GPU 추론 속도는 이 문서가 안 본다.** 배포 목표가 CPU 다.
 - ⚠️**[08 §13](08_paper_review.md) 과 내용이 일부 겹친다** — **의도한 것**이다(사용자 지시 5).
   08 은 **논문 단위 판정**, 12 는 **기법 단위 원장**이다.
+
+## 12.8 2026-09-19 WSL 재개 상태
+
+P025B의 cuSPARSELt 방향 오류는 교정됐지만 Wd synthetic inference는 모든 측정 형상에서
+`0.085~0.820×`로 dense보다 느렸다. 이는 2:4 synthetic kernel 가속 축의 음성이지 sparse-master
+학습 뒤 checkpoint 전체 추론의 직접 측정은 아니다.
+
+P060B actual model GQA 경로는 logits 동등성을 유지하며 `11.1354→9.8974 ms`(약 11.1% 단축)를
+관찰했다. 다만 단일 forward fixture이고 allocation 감소가 0이라 decode/prefill·KV cache·긴 생성
+속도로 확대하지 않는다. P014D는 과거 Stage0 프로파일 결함을 교정한 WSL Stage0b launcher가
+물리적으로 준비됐고 사용자 실행은 `NOT_RUN`이다.

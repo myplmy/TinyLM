@@ -1,11 +1,11 @@
-"""부모(dense) 체크포인트 활용 — KD 교사 로드 & 부모초기화(RRT식 average-init)."""
+"""부모(dense) 체크포인트 활용 — KD 교사 로드와 명시적 그룹 집약 초기화."""
 from __future__ import annotations
 
 from pathlib import Path
 
 import torch
 
-from ..config import TMTConfig
+from ..config import GROUP_INIT_MODES, TMTConfig
 from ..model import TiedMLPTransformer
 from .init_mapping import teacher_attention_source_index
 
@@ -17,6 +17,25 @@ def _strip(sd):
 def _cfg_of(model):
     """모델의 cfg. `load_dense` 가 돌려주는 것과 학생 둘 다 `.cfg` 를 갖는다."""
     return model.cfg
+
+
+def _aggregate_group_tensors(tensors, mode: str):
+    """Aggregate one tied group while preserving legacy mean bit-for-bit."""
+    tensors = list(tensors)
+    if not tensors:
+        raise ValueError("group aggregation requires at least one tensor")
+    if mode not in GROUP_INIT_MODES:
+        raise ValueError(f"unsupported group_init={mode!r}; choices={GROUP_INIT_MODES}")
+    if mode == "middle":
+        return tensors[len(tensors) // 2]
+    mean = sum(tensors) / len(tensors)
+    if mode == "mean":
+        return mean
+    target = sum(float(t.detach().float().norm()) for t in tensors) / len(tensors)
+    current = float(mean.detach().float().norm())
+    if target > 0.0 and current <= torch.finfo(torch.float32).eps:
+        raise RuntimeError("norm_mean cannot restore an exactly cancelled group mean")
+    return mean if target == 0.0 else mean * (target / current)
 
 
 def _teacher_attn_parameter(teacher, mapped_layer: int, parameter_name: str):
@@ -142,14 +161,17 @@ def _depth_map(sc, tc):
     return idx, rep
 
 
-def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init="prop"):
+def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init="prop", group_init="mean"):
     """dense 가중치를 tied 학생에 이식.
       - 임베딩·최종노름·어텐션(q/o, 소유층 k/v)·adaLN·gate: 인덱스 그대로 복사
       - prelude/coda MLP: 그대로 복사
-      - 중간 MLP: dense의 mlp_group개 층을 평균 내어 공유 인스턴스에 넣음(RRT average-init)
+      - 중간 MLP: dense의 mlp_group개 층을 group_init 규약으로 공유 인스턴스에 집약
     LoRA(있으면)는 U=0 초기화라 시작 시 항등 → 별도 처리 불필요."""
+    if group_init not in GROUP_INIT_MODES:
+        raise ValueError(f"unsupported group_init={group_init!r}; choices={GROUP_INIT_MODES}")
     teacher, _ = load_dense(dense_path, device)
     g = student.cfg.mlp_group
+    student._group_init = group_init
 
     # ★2026-08-07(P046) — `--emb-rank` 로 E 를 바꾸면 임베딩 shape 이 교사와 다르다.
     #   종전에는 `load_state_dict` 가 **strict 라 즉사**했다. 지금은 **건너뛰고 크게 알린다** —
@@ -241,7 +263,7 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
     if ag > 1:
         if student.mid_attns is None:
             raise RuntimeError(f"attn_group={ag} 인데 student.mid_attns 가 없다 — 모델 구성 불일치")
-        print(f"[init] ★P057 그룹평균 어텐션 이식: attn_group={ag}, "
+        print(f"[init] ★P057 그룹 어텐션 이식: attn_group={ag}, group_init={group_init}, "
               f"공유 어텐션 {len(student.mid_attns)}개")
         for j, at_s in enumerate(student.mid_attns):
             # 이 공유 어텐션을 쓰는 학생 **중간층** 인덱스 → 대응표 → 교사 층
@@ -250,24 +272,30 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
             names = ["q_proj", "o_proj"] + (["k_proj", "v_proj"] if at_s.owns_kv else [])
             for nm in names:
                 dst = getattr(at_s, nm).weight.data
-                dst.copy_(sum(_teacher_attn_parameter(teacher, ti, f"{nm}.weight").data
-                              for ti in t_ids) / len(t_ids))
+                values = [
+                    _teacher_attn_parameter(teacher, ti, f"{nm}.weight").data
+                    for ti in t_ids
+                ]
+                dst.copy_(_aggregate_group_tensors(values, group_init))
             # ★q/k norm 등 추가 파라미터가 있으면 함께 평균한다(빠뜨리면 조용히 난수로 남는다)
             ref = dict(at_s.named_parameters())
             for nm2, ps in ref.items():
                 if any(nm2.startswith(x + ".") for x in names):
                     continue                                    # 위에서 처리했다
                 try:
-                    avg = sum(_teacher_attn_parameter(teacher, ti, nm2).data for ti in t_ids)
+                    values = [
+                        _teacher_attn_parameter(teacher, ti, nm2).data
+                        for ti in t_ids
+                    ]
                 except RuntimeError:
                     print(f"[init] ⚠️ 공유 어텐션 파라미터 {nm2!r} 이 교사에 없다 — "
                           f"**난수로 남는다.** 결과문서에 적을 것")
                     continue
-                ps.data.copy_(avg / len(t_ids))
+                ps.data.copy_(_aggregate_group_tensors(values, group_init))
             shared_done.add(id(at_s))
             print(f"[init]   공유 어텐션 {j}: 교사 층 "
-                  f"{t_ids} 평균")
-        print(f"[init] ⚠️★어텐션 평균은 **MLP 평균과 같은 규약**이지만 **효과는 미검증**이다. "
+                  f"{t_ids} -> {group_init}")
+        print(f"[init] ⚠️★어텐션 집약은 **MLP와 같은 group_init 규약**이지만 **효과는 미검증**이다. "
               f"P057 단계0 게이트가 step0 CE 로 잰다(통과 대역 5.0~9.40, 함정 34)")
 
     seen = {}                    # 교사 층 ti 가 몇 번째로 쓰였나 (identity 모드용)
@@ -343,8 +371,8 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
                 f"  정적 게이트 `check_group_map.py` 가 이 불일치를 프리셋 전수로 잡는다.")
         ref = dict(mlp_s.named_parameters())
         for name, ps in ref.items():
-            avg = sum(dict(mm.named_parameters())[name].data for mm in members) / len(members)
-            ps.data.copy_(avg)
+            values = [dict(mm.named_parameters())[name].data for mm in members]
+            ps.data.copy_(_aggregate_group_tensors(values, group_init))
     del teacher
     if device == "cuda":
         torch.cuda.empty_cache()
@@ -357,10 +385,11 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
     from ..config import mlp_group_members as _mgm
     _sp = tuple(getattr(sc, "mlp_split", ()) or ())
     if not getattr(sc, "tie_mlp", True):
-        _avg = "dense — 층당 1개, 평균 없음"       # ★2026-08-27: dense 에 `g층 평균` 은 거짓말이다
+        _avg = "dense — 층당 1개, 그룹 집약 없음"
     elif _sp:
         _sizes = [len(_mgm(sc, gi)) for gi in range(sc.n_mlp_groups)]
-        _avg = f"★P061 불균등 그룹 {_sizes} 평균"
+        _avg = f"★P061 불균등 그룹 {_sizes}"
     else:
-        _avg = f"{g}층 평균"
-    print(f"[init] dense 부모초기화 완료 (중간 MLP는 {_avg}{_extra})  <- {Path(dense_path).name}")
+        _avg = f"{g}층 그룹"
+    print(f"[init] dense 부모초기화 완료 (중간 MLP는 {_avg}, "
+          f"group_init={group_init}{_extra})  <- {Path(dense_path).name}")

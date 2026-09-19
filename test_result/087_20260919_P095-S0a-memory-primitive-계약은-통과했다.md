@@ -1,4 +1,6 @@
-# 결과 087 — **P095 S0a causal memory primitive 계약은 통과했다**
+# 결과 087 — **P095 1 MiB bridge 계약은 통과했고 Transformer 통합은 남았다**
+
+- **파일명 역사 보존**: 최초 단계의 이름을 인용한 완료 WIP는 불변이므로 파일은 개명하지 않는다. 현재 판정은 H1과 최신 실행 절이 소유한다.
 
 > **계획**: [P095 — Scout + 1 MiB LTM의 기능적 학습가능성](../test_plan/P095_Scout-1MiB-LTM-학습가능성.md) **S0aL**  
 > **로그**: `test_result/087_log_20260919_P095_S0aL_causal_memory_log_recovery.txt`  
@@ -66,3 +68,26 @@
 S0b에서 Transformer 통합·reset·determinism·physical byte·latency와 context shortcut/oracle
 누출 fixture를 선행해야 한다. S0aL PASS만으로 memory 학습이나 1 MiB 배포
 비용을 통과한 것으로 주장하지 않는다.
+
+## 4. S0b hidden bridge 계약(2026-09-19)
+
+> **로그**: `087_log_20260919_P095_S0b_memory_bridge_contract.txt` · exit 0 · CPU
+
+논리 payload `1,048,576 B`, 물리 state `1,049,608 B`, metadata `1,032 B`로 논리 용량
+대비 overhead는 약 **0.098%**다. 24 step·8 write에서 median **10.9749 ms**, p95
+**12.5960 ms**를 기록했고 default-off identity, reset determinism, prefix invariance,
+physical accounting, finite backward를 통과했다.
+
+이는 독립 hidden bridge 계약이다. full Transformer coda wiring, context shortcut/oracle,
+learned WRITE, 장기 학습성과 LM 품질은 계속 `NOT_RUN`이다.
+
+---
+
+## ★부록 — 재현 명령 정본 (`run_P095_S0b_memory_bridge_contract-done.sh` 추출, 2026-09-19)
+
+> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).
+> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.
+
+```
+   "$python_bin" scripts/diag_scout_memory_integration.py --steps 24 --iters 20
+```

@@ -222,20 +222,20 @@ SQuAD v2 의 `context` 는 그 조건을 정확히 만족한다.
 
 ## 7. 2026-09-19 P097 — 300M direct recipe 대조
 
-기존 `ko-en`을 소급 변경하지 않고 다음 네 이름을 추가했다.
+기존 `ko-en`을 소급 변경하지 않고 네 독립 namespace를 사용한다.
 
-| recipe | 한국어 | 영어 | mixer/val | 실행 상태 |
-|---|---|---|---|---|
-| `ko-en-control-v2` | KoWiki | FineWeb-Edu | token 50:50, source-stratified | `NOT_RUN` |
-| `ko-en-fw2` | FineWeb2 `kor_Hang` | FineWeb-Edu | 동일 | `NOT_RUN` |
-| `ko-en-edu-v2` | Korean Webtext Edu + 기존 SEO filter | FineWeb-Edu | 동일 | `NOT_RUN` |
-| `ko-en-madlad` | MADLAD clean `ko` | MADLAD clean `en` | 동일 | `NOT_RUN` |
+| recipe | 600M cache 관찰 | 학습 관찰 | 재실행 경로 |
+|---|---|---|---|
+| `ko-en-control-v2` | train 597M + val 3M, source 300M/300M; byte/meta 재검증 PASS | cache 직후 CPython finalization abort, 학습 0-step | Stage1aB는 검증된 cache 재사용 |
+| `ko-en-fw2` | 동일 600M exact cache PASS | WSL PATH의 접근 불가 `nvcc`에서 compile 0-step | native PATH로 Stage1bB |
+| `ko-en-edu-v2` | filtered cache 600M, source 300M/300M, 487 docs drop; 재검증 PASS | cache 직후 finalization abort, 학습 0-step | Stage1cB는 검증된 cache 재사용 |
+| `ko-en-madlad` | cache 미생성 | `datasets 5.0.0`가 Hub script를 거부 | 공식 고정 revision의 clean JSONL.gz shard 직접 adapter로 Stage1dB |
 
-모두 별도 tokenizer/cache namespace와 nominal pool 600M, draw 300M을 사용한다. 기존 L1의
-문서단위 ratio와 L2의 전체-stream 말미 val을 재사용하지 않는다. source별 quota를 실제 token으로
-채우고 각 source의 말미 0.5%를 따로 val로 떼어 결합한다. HF cache는
-`/home/uranus/tinyLM/HF/{hub,datasets}` 밖이면 실행 전 exit 3이다.
+MADLAD adapter는 공식 repository의 immutable revision과 언어별 clean shard 수(ko 13, en 947)를
+고정하며 cache는 `HF/hub` 아래에 둔다. 이는 데이터 카드 품질 승인이 아니라 loader 호환 교정이다.
+토크나이저 표본 수집과 본 cache 생성이 모두 같은 direct adapter를 타며, 외부 다운로드·실물 row
+감사는 사용자 실행이다.
 
-⚠️각 recipe는 tokenizer도 다르므로 자기 `val_loss`·ppl을 팔 사이에서 직접 비교하지 않는다.
-같은 한국어/영어 문항의 accuracy·gold margin과 같은 원문의 byte-level bpb만 비교한다.
-데이터 카드는 실물 품질 PASS가 아니므로 실제 mix/drop/중복과 생성 prompt 관련성을 결과에서 다시 본다.
+모든 recipe는 source token quota와 source-stratified val을 50:50으로 고정한다. tokenizer가
+서로 다르므로 자기 `val_loss`·ppl을 팔 사이 순위로 쓰지 않고 같은 한영 문항 accuracy/gold
+margin과 동일 원문의 byte-bpb로 판정한다. 네 학습·품질은 여전히 `NOT_RUN`이다.

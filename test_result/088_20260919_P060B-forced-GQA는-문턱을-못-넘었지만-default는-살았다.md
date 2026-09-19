@@ -1,4 +1,6 @@
-# 결과 088 — P060B forced GQA는 문턱을 못 넘었지만 default는 살았다
+# 결과 088 — P060B default GQA는 실제 모델에서 11% 빨랐고 forced 지원은 backend별로 갈렸다
+
+- **파일명 역사 보존**: 최초 단계의 이름을 인용한 완료 WIP는 불변이므로 파일은 개명하지 않는다. 현재 판정은 H1과 최신 실행 절이 소유한다.
 
 - **계획**: [P060B](../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md)
 - **로그**: `088_log_20260919_P060B_Stage0aW_wsl_sdpa_gqa_backend.txt`
@@ -94,4 +96,57 @@
 
 ```bash
 /home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sdpa_wsl_gqa.py --require-wsl --warmup 5 --iters 20 --max-speed-ratio 1.05 --min-memory-reduction 0.10
+```
+
+## 6. Stage0aWb + Stage0bW 실제 후속(2026-09-19)
+
+### 6.1 Wb micro gate
+
+- **로그**: `088_log_20260919_P060B_Stage0aWb_wsl_sdpa_gqa_backend.txt`
+- **종료**: exit 0 · 실행 가능한 default practical candidate 계약 PASS
+
+| 형상 | default | forced CUDNN | forced FLASH | EFFICIENT |
+|---|---|---|---|---|
+| B8/T1024 | 1.018×, memory −37.2% | 1.051×, −38.0% | **1.031×, −37.2%** | unavailable |
+| B1/T128 | **0.879×, −37.2%** | **1.046×, −37.9%** | 1.190×, −37.2% | unavailable |
+
+exit 0으로 default practical candidate를 재현했고 주 형상에서는 FLASH도 +5% 이내 후보가 됐다.
+이는 같은 20회 측정의 session noise 때문에 Wa의 FLASH 1.058×와 문턱 양쪽에 놓인 결과이므로
+“항상 FLASH가 빠르다”가 아니라 **경계 후보**로 읽는다.
+
+로그의 긴 경고는 지원된 FLASH/CUDNN 실패가 아니다. `sdpa_kernel(EFFICIENT_ATTENTION)`가
+다른 backend를 강제로 끈 상태에서 local torch 2.10 runtime이 Q 12/KV 3 head GQA를 지원하지
+못해, 왜 FLASH·cuDNN으로 fallback할 수 없는지를 함께 열거한 뒤 `No available kernel`을 낸
+것이다. 이전 판독은 EFFICIENT unavailable을 기록했지만 raw warning의 범위와 의미를 설명·정리하지
+않은 **보고 및 진단 출력 누락**이었다. 진단기는 warning을 variant별로 포착해 한 줄의 structured
+UNAVAILABLE reason으로 남기고, timing 반복에서는 같은 warning을 억제한다. 또한 PyTorch 경고가
+제안한 singleton grouped broadcast를 `on_efficient_broadcast`로 별도 추가했다. 이는 K/V를 물리
+repeat하지 않는 zero-stride view이며 CPU math 경로에서 manual-repeat와 동등하고 physical storage가
+더 작음을 확인했다. local torch 2.10 GPU kernel의 실제 지원·속도·working memory는 Wc 전까지
+`NOT_RUN`이다. 공식 main 문서는 forced fused kernel이 불가하면 이유를 warning으로 낸다고 하며
+GQA를 실험 기능으로 설명하므로 버전별 지원을 구분한다:
+[PyTorch SDPA](https://docs.pytorch.org/docs/main/generated/torch.nn.functional.scaled_dot_product_attention.html).
+
+### 6.2 actual d14 checkpoint model path
+
+- **로그**: `088_log_20260919_P060B_Stage0bW_model_gqa_integration.txt`
+- **종료**: exit 0 · 정합 PASS; 속도 후보이며 품질·학습 PASS 아님
+
+- full forward, cache prefill, cache decode: `max_abs=0`, `NRMS=0`, cosine≈1
+- median: off **11.1354 ms**, on **9.8974 ms** = on/off **0.889×**, 약 **11.1% 빠름**
+- peak allocation: 9.568/9.568 MiB, 측정된 감소 **0%**
+
+따라서 WSL default `enable_gqa`는 actual model forward에서도 정합과 속도 후보를 통과했다.
+다만 seq256·B1 한 형상이고 peak allocation이 줄지 않았으며 backward·training step·실제 생성
+품질은 `NOT_RUN`이다. CLI 기본값은 계속 off로 보존한다.
+
+---
+
+## ★부록 — 재현 명령 정본 (`run_P060B_Stage0bW_model_gqa_integration-done.sh` 추출, 2026-09-19)
+
+> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).
+> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.
+
+```
+   "$python_bin" scripts/diag_sdpa_gqa_model_path.py --ckpt "$ckpt" --arch dense    --seq 256 --warmup 3 --iters 10 --max-nrms 0.001 --min-cosine 0.999999
 ```

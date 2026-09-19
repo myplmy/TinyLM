@@ -34,12 +34,12 @@ RESERVED_PREFIX = {                    # 계획됐지만 아직 안 돈 접두�
 }
 # 런 재구성에 필요한 필드(구 로그엔 없음 → 경고만)
 NEEDED = ["pool_tokens", "mlp_group", "micro_bs", "accum", "deploy_mb", "kd_teacher",
-          "optimizer", "matrix_weight_decay_effective"]
+          "optimizer", "matrix_weight_decay_effective", "group_init"]
 
 # 조건 동일성 판정에 쓰는 축. 여기 값이 모두 같으면 "같은 실험"이다.
 IDENTITY = ["preset", "data", "arch", "mlp_group", "sparse34", "steps", "micro_bs", "accum",
             "seq", "lr", "sched", "anneal_end", "decay_frac", "pool_tokens", "kd", "kd_every",
-            "kd_dynamic", "kd_teacher", "init_from_src", "ema", "lora_rank", "grad_ckpt",
+            "kd_dynamic", "kd_teacher", "init_from_src", "group_init", "ema", "lora_rank", "grad_ckpt",
             "optimizer", "muon_scale", "muon_lr_mult", "matrix_weight_decay_effective"]
 
 

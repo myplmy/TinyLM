@@ -239,10 +239,11 @@ def check_result_index(err: list, warn: dict, stale_days: int) -> None:
             if d is not None and d > stale_days:
                 warn["W3"].append(f"{p.name[:56]}  색인 {stamp_col[num]} vs 실제 {real} ({d}일)")
         # ★첫 줄이 아니라 **첫 H1** 을 본다 — 정정 배너가 머리에 붙은 문서가 있다(008·012).
-        head = next((ln for ln in p.read_text(encoding="utf-8").splitlines()[:14]
-                     if ln.startswith("# ")), "")
+        head_lines = p.read_text(encoding="utf-8").splitlines()[:14]
+        head = next((ln for ln in head_lines if ln.startswith("# ")), "")
+        filename_history_preserved = any("파일명 역사 보존" in ln for ln in head_lines)
         toks = {t for t in re.split(r"[-_\s]+", p.stem.split("_", 2)[-1]) if len(t) >= 2}
-        if toks and not any(t in head for t in toks):
+        if toks and not filename_history_preserved and not any(t in head for t in toks):
             warn["W4"].append(f"{p.name[:56]}  (H1 제목과 어휘가 전혀 안 겹친다: {head[:44]})")
 
 

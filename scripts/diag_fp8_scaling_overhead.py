@@ -43,6 +43,20 @@ def _metrics(torch, actual, reference):
     return float(error.abs().max()), float(nrms), float(cosine)
 
 
+def _gate_decision(rows, *, min_speedup, max_nrms, min_cosine):
+    """Return a scientific gate result, never an execution-failure code."""
+    numeric = [
+        row for row in rows
+        if row["nrms"] > max_nrms or row["cosine"] < min_cosine
+    ]
+    candidates = [row for row in rows if row["speedup"] >= min_speedup]
+    if not candidates:
+        return 8, "no speed candidate", numeric, candidates
+    if numeric:
+        return 8, "speed candidate failed numerical screen", numeric, candidates
+    return 0, "speed and numerical candidate", numeric, candidates
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--m", type=int, default=8192)
@@ -74,8 +88,7 @@ def main() -> int:
           "backward and whole training step remain NOT_RUN.")
     print("K\tN\tvariant\tms\tspeedup\tpeak_MiB\tmax_abs\tnrms\tcosine")
 
-    candidates = []
-    correctness_failures = []
+    fp8_rows = []
     for k, n in ((768, 2048), (2048, 768), (768, 768)):
         torch.manual_seed(22000 + k + n)
         x = torch.randn(args.m, k, device="cuda", dtype=torch.bfloat16)
@@ -120,20 +133,28 @@ def main() -> int:
             print(f"{k}\t{n}\t{name}\t{ms:.6f}\t{speedup:.3f}\t{peak:.3f}\t"
                   f"{max_abs:.6g}\t{nrms:.6g}\t{cosine:.9f}")
             if name != "bf16":
-                if nrms > args.max_nrms or cosine < args.min_cosine:
-                    correctness_failures.append((k, n, name, nrms, cosine))
-                elif speedup >= args.min_speedup:
-                    candidates.append((k, n, name, speedup))
+                fp8_rows.append({
+                    "k": k, "n": n, "name": name, "speedup": speedup,
+                    "nrms": nrms, "cosine": cosine, "peak_mib": peak,
+                })
 
-    if correctness_failures:
-        print(f"[GATE FAIL] FP8 correctness failures={correctness_failures}")
-        return 4
-    if not candidates:
-        print(f"[GATE NEGATIVE] no cast/scaling-inclusive FP8 path reached {args.min_speedup:.2f}x")
-        return 8
+    code, reason, numeric, candidates = _gate_decision(
+        fp8_rows, min_speedup=args.min_speedup,
+        max_nrms=args.max_nrms, min_cosine=args.min_cosine,
+    )
+    if numeric:
+        print("[NUMERIC SCREEN] " + repr([
+            (row["k"], row["n"], row["name"], row["nrms"], row["cosine"])
+            for row in numeric
+        ]))
+    if code:
+        best = max((row["speedup"] for row in fp8_rows), default=0.0)
+        print(f"[GATE NEGATIVE] {reason}; best cast/scaling-inclusive speedup={best:.3f}x, "
+              "no Stage C2 quality run is opened")
+        return code
     print(f"[GATE CANDIDATE] {len(candidates)} shape/path pairs reached "
           f"{args.min_speedup:.2f}x: {candidates}")
-    return 0
+    return code
 
 
 if __name__ == "__main__":

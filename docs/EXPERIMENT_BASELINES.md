@@ -3390,3 +3390,56 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
     dispatcher default가 같은 memory/speed 목표를 달성하면 별도 실용 후보로 남긴다.
 72. ★★**데이터 recipe 비교는 source token quota·val source ratio를 고정한다.** 문서 수 50:50을
     token 50:50으로 부르지 않고, tokenizer가 다르면 자기 val_loss를 팔 사이 순위로 쓰지 않는다.
+
+## B.36 ★★2026-09-19(2차) — **계약 PASS·과학적 음성·실행 장애를 다시 분리한다**
+
+이번 사용자 보존 로그 15건은 “실행됐다”는 공통점 외에는 같은 종류의 증거가 아니다.
+
+- **P022C C1**: current scaling은 `0.816/0.622/0.534×`, delayed scaling은
+  `1.015/0.867/0.751×`였고 peak allocation도 BF16보다 늘었다. 정합성은 좋지만 사전등록한
+  `+10%` 속도 문턱을 전혀 넘지 못했으므로 **FP8 compute 가속 축은 과학적 음성**이다.
+  기존 exit 4는 추가 NRMS screen이 음성을 실행 실패로 잘못 분류한 판정기 결함이며 exit 8로
+  교정했다. 재분류용 Wb는 수치를 뒤집기 위한 재실험이 아니다([결과 081 §6](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)).
+- **P025B Wd**: scale-aware 정합은 전 형상에서 통과했지만 inference sparse/dense speedup은
+  두 `(K,N)` 계열, `M=1~8192` 전부 `0.085~0.820×`로 느렸다. 합성 inference kernel 가속
+  가설은 음성이다. 이것만으로 sparse-master의 상태 절감·whole-step·학습 후 checkpoint
+  추론까지 닫지 않는다([결과 082 §9](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
+- **P060B Wb·모델 통합**: isolated B8/T1024에서 forced CUDNN/FLASH는 off보다 각각
+  `1.051/1.031×`, default는 `1.018×`이고 EFFICIENT는 unavailable이다. actual model 경로는
+  logits가 일치하고 `11.1354→9.8974 ms`(`0.889×`, 약 11.1% 단축)였지만 allocation은
+  둘 다 `9.568 MiB`였다. 따라서 **forward 속도 후보**이지 학습·backward·품질·전체 메모리
+  PASS가 아니다([결과 088 §6](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)).
+  local torch 2.10 direct EFFICIENT GQA는 unavailable이다. Wc는 이 실패를 보존하면서
+  zero-stride grouped broadcast 대안을 별도 variant로 측정하며 GPU 결과는 `NOT_RUN`이다.
+- **P091 R2**: selector pipeline 계약은 통과했으나 `S`의 순위상관은 seed별
+  `−1.0~0.4`로 불안정했고 `U`만 `1.0`이었다. 상태기반 재배분의 품질·속도 이득은 아직 없다
+  ([결과 080 §8](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)).
+- **P092 Stage1aT**는 active count·전이·loss 계약을 통과했지만 full trainer는 `NOT_RUN`이다
+  ([결과 083 §8](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
+- **P093 Stage0c**는 rank 증가에 따라 오차가 단조 감소했을 뿐, best rank16의 output NRMS가
+  `0.97400`이고 rank0 대비 개선도 약 `0.75%`라 근사로 쓸 수 없다. 단조성만 보던 gate에
+  `output NRMS≤0.90`과 `≥10% 개선` 문턱을 추가했으며 현재 R1 parameterization은 과학적
+  음성이다([결과 086 §4](../test_result/086_20260919_P093-회계상-R1은-남고-D1은-고계산이다.md)).
+- **P094 R0**는 P022C shadow evidence 파일이 없어 예상대로 `HOLD(exit 8)`다
+  ([결과 089](../test_result/089_20260919_P094-P022C-shadow-evidence가-없어-residual은-HOLD다.md)).
+- **P095 S0b**는 논리 payload 1,048,576 B, metadata 1,032 B, physical 1,049,608 B와
+  read/write 계약을 통과했다. full Transformer·학습은 `NOT_RUN`이다
+  ([결과 087 §4](../test_result/087_20260919_P095-S0a-memory-primitive-계약은-통과했다.md)).
+- **P096 Q2a**는 synthetic baseline/candidate 320개·cap 450·provenance/preservation 계약을
+  통과했지만 보호 실문항은 `NOT_RUN`이다([결과 085 §4](../test_result/085_20260919_P096-Q1b-taxonomy-계약은-통과했고-실문항은-남았다.md)).
+- **P097**은 control/FineWeb2/filtered-Edu 세 cache를 정확히 600M(각 source 300M,
+  val 3M)으로 완성했다. control/Edu는 stream 종료 시 CPython finalization abort,
+  FineWeb2는 WSL PATH의 접근 불가 Windows `nvcc`를 subprocess가 만나 0-step,
+  MADLAD는 `datasets 5.0.0`의 Hub script 거부로 cache도 만들지 못했다. 세 완성 cache는
+  파일 byte 수·합계를 재검증해 재사용하고, WSL launcher PATH를 native entry로 제한하며,
+  MADLAD는 공식 immutable JSONL shard를 직접 읽는다. 네 학습·품질 결과는 모두
+  `NOT_RUN`이다([결과 090](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md)).
+
+73. ★★**과학적 음성은 실행 실패가 아니다.** 수치가 유효한 채 사전등록 문턱을 못 넘으면
+    선언된 exit 8로 보존하고, 예외·누락·무수치만 실행 오류로 분류한다.
+74. ★★**단조 개선만으로 후보를 통과시키지 않는다.** 절대 viability floor와 기준 대비 최소
+    개선폭을 함께 두며, 둘 중 하나라도 없으면 “더 나쁜 것보다 낫다”만 증명한다.
+75. ★★**cache 생성과 학습 결과를 분리한다.** 종료 finalizer가 실패해도 byte 수·meta·source
+    합계를 독립 검증해 cache는 재사용할 수 있지만 학습 0-step을 품질 결과로 승격하지 않는다.
+76. ★★**WSL 실험 PATH는 Linux native executable만 사용한다.** `/mnt/<drive>` 상속 경로는
+    subprocess 탐색에서 `PermissionError`를 만들 수 있으므로 launcher 공통 환경에서 제거한다.

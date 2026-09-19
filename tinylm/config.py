@@ -19,6 +19,7 @@ VOCAB = 32768
 #   assert 가 터졌다. **2.8시간 학습이 끝난 뒤에.**
 #   → ★**목록을 한 곳에 두고 세 경로가 전부 이것을 import 한다.**
 REPEAT_MODES = ("uniform", "block", "progressive", "inplace")
+GROUP_INIT_MODES = ("mean", "middle", "norm_mean")
 
 
 @dataclass

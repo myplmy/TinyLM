@@ -260,13 +260,14 @@ def validate(path: Path, *, hours_target: float = DEFAULT_HOURS_TARGET) -> Valid
                         f"unresolved-check row {row_number} lacks decision fields: {', '.join(incomplete)}"
                     )
     smoke_match = re.search(
-        r"`?run_smoke_check\.bat`?\s*\|\s*`?(REQUIRED_USER_RUN|NOT_RUN_PENDING|NOT_REQUIRED\([^)]+\))`?",
+        r"`?(run_smoke_check\.(?:bat|sh))`?\s*\|\s*`?"
+        r"(REQUIRED_USER_RUN|NOT_RUN_PENDING|NOT_REQUIRED\([^)]+\))`?",
         caution_body,
     )
     if smoke_match is None:
         errors.append("smoke disposition is missing or invalid")
-    elif smoke_match.group(1) in {"REQUIRED_USER_RUN", "NOT_RUN_PENDING"}:
-        if "run_smoke_check.bat" not in request_body:
+    elif smoke_match.group(2) in {"REQUIRED_USER_RUN", "NOT_RUN_PENDING"}:
+        if smoke_match.group(1) not in request_body:
             errors.append("pending/required smoke is not mirrored in the user request table")
 
     commit_body = section_body(text, REQUIRED_SECTIONS["8"]) or ""

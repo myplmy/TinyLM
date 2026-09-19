@@ -1,6 +1,6 @@
 # 실험계획 P084 — **prelude·coda 에 CLA 를 적용하지 않는다**
 
-> **작성 2026-09-03**(사용자 지시). **상태: 구현 완료 · 런 0.**
+> **작성 2026-09-03**(사용자 지시). **상태: ✅조건부 종결**(2026-09-19 전수감사) — 결과 071에서 Stage1·2·4 완료. Stage3 머리/꼬리 분해는 판정을 바꾸지 않아 미편성하며 34 MiB 예산이 열릴 때만 재개.
 > 정본 기준표 = [`docs/EXPERIMENT_BASELINES.md`](../docs/EXPERIMENT_BASELINES.md) ·
 > 자 = [`scripts/_rulers.py`](../scripts/_rulers.py)
 

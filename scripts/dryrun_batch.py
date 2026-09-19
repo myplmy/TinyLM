@@ -39,8 +39,8 @@
 
 사용:
 
-    python scripts/dryrun_batch.py                       # 최상위 run_*.bat 전부
-    python scripts/dryrun_batch.py run_P079_stage3.bat   # 하나만
+    python scripts/dryrun_batch.py                       # 최상위 run_*.bat/.sh 전부
+    python scripts/dryrun_batch.py run_P097_Stage1aB_control_v2_300M.sh
     python scripts/dryrun_batch.py --strict              # 태그 불일치·예산 초과면 exit 1
 """
 from __future__ import annotations
@@ -58,6 +58,27 @@ from check_tag_arch import claims                        # noqa: E402  (함정 1
 # ★`check_batch_flags` 와 같은 호출 추출 규약. 바꿀 때는 둘을 함께 본다.
 CALL = re.compile(r"^\s*python\s+(?:scripts\\runlog\.py[^\n]*?--\s+python\s+)?"
                   r"([\w\\/.-]+\.py)\s+(.*)$", re.I | re.M)
+SHELL_PY = (r'(?:"\$(?:python_bin|TLM_PY)"|'
+            r'\$(?:python_bin|TLM_PY)|'
+            r'/[^\s"]*python(?:3(?:\.\d+)?)?)')
+SHELL_CALL = re.compile(
+    rf"^\s*(?:exec\s+)?{SHELL_PY}\s+scripts/runlog\.py\b.*?\s--\s+"
+    rf"{SHELL_PY}\s+([\w/.-]+\.py)\s+(.*)$",
+    re.I | re.M,
+)
+
+
+def launcher_calls(text: str):
+    """Yield (script, args) from Windows BAT and WSL runlog launchers."""
+    for match in CALL.finditer(text):
+        yield match.group(1), match.group(2)
+
+    # POSIX launchers use backslash-newline continuation and a resolved Python
+    # variable on both sides of runlog's separator.
+    logical = re.sub(r"\\[ \t]*\r?\n[ \t]*", " ", text)
+    for match in SHELL_CALL.finditer(logical):
+        rest = re.sub(r"\s+\|\|.*$", "", match.group(2))
+        yield match.group(1), rest
 
 # `--no-ckpt` 예산. 정본은 `lint_bat.NOCKPT_MAX_MV` 이고 여기서는 **읽기만** 한다.
 NOCKPT_MAX_MV = 294_912
@@ -71,6 +92,7 @@ _CKPT_ANY = any((ROOT / 'runs' / 'ckpt').glob('*.pt'))
 AXES: list[tuple[str, str, object]] = [
     # (cfg 필드, 명령줄 플래그, 중립값)
     ("mlp_group", "--mlp-group", 1),
+    ("group_init", "--group-init", "mean"),
     ("cla_group", "--cla-group", 1),
     ("attn_group", "--attn-group", 1),
     ("train_repeat", "--train-repeat", 1.0),
@@ -387,16 +409,18 @@ def trained_tags():
     global _TRAINED_TAGS
     if _TRAINED_TAGS is None:
         out = {}
-        pats = list(ROOT.glob('run_*.bat')) + list((ROOT / 'scripts' / 'batch').glob('*.bat'))
+        pats = (list(ROOT.glob('run_*.bat')) + list(ROOT.glob('run_*.sh'))
+                + list((ROOT / 'scripts' / 'batch').glob('*.bat'))
+                + list((ROOT / 'scripts' / 'batch').glob('*.sh')))
         for f in pats:
             try:
                 txt = f.read_text(encoding='utf-8', errors='replace')
             except OSError:
                 continue
-            for m in CALL.finditer(txt):
-                if Path(m.group(1).replace(chr(92), '/')).name != 'run100m.py':
+            for script, rest in launcher_calls(txt):
+                if Path(script.replace(chr(92), '/')).name != 'run100m.py':
                     continue
-                for t in re.findall(r'--tag\s+(\S+)', m.group(2)):
+                for t in re.findall(r'--tag\s+(\S+)', rest):
                     out.setdefault(t, f.name)
         _TRAINED_TAGS = out
     return _TRAINED_TAGS
@@ -501,8 +525,7 @@ def _judge_model_spec(raw, default_preset):
 def judge_calls(text):
     # `--models` 를 받는 비학습 호출. 🚫도구 이름 목록을 손으로 적지 않는다.
     out = []
-    for m in CALL.finditer(text):
-        script, rest = m.group(1), m.group(2)
+    for script, rest in launcher_calls(text):
         name = Path(script.replace(chr(92), "/")).name
         if name == "run100m.py" or "--models" not in rest:
             continue
@@ -573,7 +596,7 @@ def show_judge(name, rest, strict_hits):
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="배치 드라이런 — 유효 실험 조건 인쇄")
-    ap.add_argument("bats", nargs="*", help="비우면 최상위 run_*.bat 전부")
+    ap.add_argument("bats", nargs="*", help="비우면 최상위 run_*.bat/.sh 전부")
     ap.add_argument("--strict", action="store_true",
                     help="태그 불일치·예산 초과가 있으면 exit 1")
     ap.add_argument("--live-only", action="store_true",
@@ -596,7 +619,8 @@ def main() -> int:
               "(cla_group · mlp_group · attn_group · train_repeat · ckpt)")
 
     files = ([Path(b) for b in a.bats] if a.bats
-             else sorted(ROOT.glob("run_*.bat")))
+             else sorted([*ROOT.glob("run_*.bat"), *ROOT.glob("run_*.sh")],
+                         key=lambda path: path.name))
     if a.live_only:
         files = [f for f in files if "-done" not in f.name]
     takes = flag_table()
@@ -609,8 +633,7 @@ def main() -> int:
             print(f"\n  [!] 없다: {f}")
             continue
         text = p.read_text(encoding="utf-8", errors="replace")
-        runs = [(t, rest) for t, rest in
-                ((m.group(1), m.group(2)) for m in CALL.finditer(text))
+        runs = [(t, rest) for t, rest in launcher_calls(text)
                 if Path(t.replace("\\", "/")).name == "run100m.py"
                 and re.match(r"\s*train\b", rest)]
         judges = judge_calls(text)

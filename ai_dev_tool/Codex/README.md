@@ -21,7 +21,7 @@
 | P2 Codex 00~08 | **완료·P7 정적검증 통과** | 10개 초벌 사본을 의미 단위로 이식하고 상호링크·역사 표지를 종합검증 |
 | P3 설정 | **완료·P7 정적검증 통과** | `.agents/project.json`과 `.codex/config.toml`의 구문·경로·역할 분리 확인 |
 | P4 스킬 | **완료·P7 정적검증 통과** | 17개 스킬과 부속 파일의 구문·참조·정적 계약·독립성 확인 |
-| P5 훅 | **기존 위험쓰기 범위 `ACTIVE_VERIFIED`; 신규 확장 `STATIC_ONLY`** | 2026-09-12 P8에서 루트·`scripts/` 위험 쓰기 probe 2/2 차단을 관찰했다. 2026-09-13 추가한 WIP 직접수정 차단과 compact 캡슐은 mock PASS이나 새 세션 E2E는 아직 `NOT_RUN` |
+| P5 훅 | **위험쓰기·이전 auto compact 관찰 범위 `ACTIVE_VERIFIED`; 현재 compact 변경 `STATIC_ONLY`** | guard 실제 관찰은 보존한다. exact-WIP auto 주입도 과거 hash에서 관찰했지만, 2026-09-19 진행 항목 capsule·반환 계약을 바꿨으므로 새 hash 재신뢰와 auto E2E 전에는 현재 변경을 승격하지 않는다 |
 | P6 `AGENTS.md` 축약·전환 | **완료** | 890행·100,960바이트에서 219행·14,057바이트로 축약하고 Codex 전용 진입 규범으로 전환 |
 | P7 정적 종합검증 | **PASS** | 환경 전용 검사 20/20 통과, 루트 09 기준선 SHA-256 일치. P7 당시 프로젝트·모델 스모크는 `NOT_RUN`; 2026-09-12 별도 사용자 실행은 §1.2 `PASS` |
 | P8 새 세션 E2E | **`PASS / ACTIVE_VERIFIED`** | 2026-09-12 새 Code Mode 세션에서 `AGENTS.md` 자동 적용, 저장소 스킬 17개 발견, 정상 probe 허용, 루트·`scripts/` 차단 probe 2/2 deny, fail-open 경고 0건과 probe 파일 0개를 실제 관찰했다. 범위는 §1.1로 한정한다 |
@@ -81,7 +81,7 @@ CLI 버전 조회 중 임시 경로 권한 경고 2건이 있었지만 버전 �
 |---|---|---|
 | WIP v2·감사형 override | 6열 계약·원자교체·lock·CP949 출력 회귀 fixture | `STATIC_ONLY`; 실제 다중 세션 경합 E2E는 `NOT_RUN` |
 | WIP 직접수정 보조 차단 | Bash·`apply_patch` mock deny와 정상 `wip.py` 허용 | `STATIC_ONLY`; 새 hash 신뢰·실제 deny는 `E2E_NOT_RUN` |
-| compact 상태 캡슐 | 8필드 sentinel, 수동/자동 `PreCompact`, `SessionStart(source=compact)` mock | M0~M3 `STATIC_ONLY`; M5 열린 WIP exact-match 자동 경로는 2026-09-14 실제 8/8 재주입 PASS; M4 수동·M5 나머지 경로 `NOT_RUN`; M6 전환 승인 대기 |
+| compact 상태 캡슐 | 8필드 sentinel, 진행 항목·길이상한, 수동/자동 `PreCompact`, `SessionStart(source=compact)` mock | WIP 12·compact 14 tests와 현재 session direct simulation PASS. 과거 exact-match auto 경로는 실제 PASS였으나 현재 hash는 `STATIC_ONLY`; manual은 사용자 검증 제외·`NOT_RUN` |
 | 핸드오프 계승 | 6열 지시·동기화표·10열 큐·스모크 disposition fixture | 신규 실제 핸드오프에서 최종 검증 예정 |
 | Git Bash 구문 검사 | 알려진 Windows startup 실패와 실제 `bash -n` 오류를 분리한 fixture | 현재 호스트의 POSIX 셸 구문 검사는 실행 결과에 따라 `PASS/FAIL/NOT_RUN` |
 | 환경 검사 Python 호환 | `tomllib` 없는 모듈 import·flat TOML fallback 3회귀 포함 환경 단위검사 13/13 | 사용자 기본 Python의 E2E 1단계 재실행은 `NOT_RUN` |
@@ -120,7 +120,7 @@ agent·hook에는 승계하지 않는다. WSL canonical project를 다시 열고
 | WSL agent | canonical cwd·kernel·distro·Bash | `ACTIVE_VERIFIED` |
 | 일반/root/scripts PreToolUse | 정상 exit 0, 위험쓰기 두 건은 shell exit 전 deny, 부산물·fail-open 경고 0 | 관찰 범위 `ACTIVE_VERIFIED` |
 | WIP direct-write guard | Bash·`apply_patch` direct write는 tool 전 deny, 정상 `wip.py` 허용, WIP hash 불변 | 관찰 범위 `ACTIVE_VERIFIED` |
-| compact | exact 열린 WIP의 8필드 capsule이 auto compact 뒤 hash와 함께 재주입 | auto 경로 PASS; manual `NOT_RUN`·사용자 검증 제외 |
+| compact | 과거 hash에서 exact 열린 WIP의 8필드 capsule이 auto compact 뒤 재주입 | 과거 auto 경로 PASS. 2026-09-19 진행 항목 포함 개선 뒤 현재 hash는 재신뢰·새 auto 관찰 전 `STATIC_ONLY`; manual `NOT_RUN`·사용자 검증 제외 |
 | model smoke | `202609181921_smoke_d8011d0.txt`, 42팔·실패 0·exit-0 오류표지 0·계측 오류 0 | 당시 트리 PASS |
 
 그 smoke 뒤 optimizer 기본값·기능 gate·추론 도구 코드가 바뀌었으므로 **현재 트리 smoke는 다시

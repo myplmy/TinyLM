@@ -3,7 +3,7 @@
 
 ## 왜 필요한가 (2026-08-13)
 
-결과 문서는 **결론이 바뀌면 제목이 바뀐다**(`ai_dev_tool/03` §8). 개명 자체는 쉬운데
+결과 문서는 **결론이 바뀌면 제목이 바뀐다**(`ai_dev_tool/Codex/02_핸드오프_규약.md`). 개명 자체는 쉬운데
 **참조를 빠뜨리기 쉽다** — 특히 `test_result/실험목록.md` 는 **같은 번호의 행이 여럿**
 (041 / 041+ / 041++)이라 한 행만 고치고 나머지를 남기는 사고가 난다.
 
@@ -12,7 +12,7 @@
 
 ## 무엇을 보는가
 
-`docs/ test_plan/ test_result/ ai_dev_tool/ handoff/ CLAUDE.md` 안의
+`docs/ test_plan/ test_result/ ai_dev_tool/Codex/ handoff/` 안의
 **상대 마크다운 링크**가 실제 파일을 가리키는지.
 
 - ★`--fix` 를 주면 **상태 접미사 변형을 자동 해결**한다(같은 이름의 유일한 실제 파일을 찾는다)
@@ -39,7 +39,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-TARGET_DIRS = ("docs", "test_plan", "test_result", "ai_dev_tool", "handoff")
+TARGET_DIRS = ("docs", "test_plan", "test_result", "ai_dev_tool/Codex", "handoff")
 LINK = re.compile(r"\]\(([^)#][^)]*?)\)")
 SKIP = ("http://", "https://", "mailto:")
 PROTECTED_ROOT = ROOT / "datasets" / "TinyDataset"
@@ -49,13 +49,10 @@ def _targets():
     out = []
     for d in TARGET_DIRS:
         out += sorted((ROOT / d).rglob("*.md"))
-    cm = ROOT / "CLAUDE.md"
-    if cm.exists():
-        out.append(cm)
     return out
 
 
-# ★상태 접미사 정본 — `proposal/README.md` §2 와 `ai_dev_tool/03` §8 이 쓰는 것.
+# ★상태 접미사 정본 — `proposal/README.md` §2 와 Codex 02 규약이 쓰는 것.
 #   🚫목록을 두 곳에 두지 않는다(함정 18).
 STATUS_SUFFIXES = (
     "approved-on-going",
@@ -167,7 +164,7 @@ def main():
             name = Path(tgt).name
             cand = _status_candidate(idx, name)
             # ★`handoff/` 는 **그 시점의 기록**이다. 개명 뒤에도 고치지 않는다
-            #   (ai_dev_tool/03 §8.4) — 고치면 "그때 무엇을 알았나" 가 사라진다.
+            #   (Codex 02 핸드오프 규약) — 고치면 "그때 무엇을 알았나" 가 사라진다.
             # 🚫★2026-09-08(2차) — 종전에는 이 규칙이 **보고에만** 걸려 있고
             #   `--fix` 는 handoff 도 고쳤다. 색인에 `proposal/` 을 넣자마자
             #   **과거 핸드오프 9개가 한 번에 고쳐졌다**(되돌렸다).
@@ -203,7 +200,7 @@ def main():
         print("\n  ✅ 깨진 링크 0건")
     if legacy:
         print(f"\n  [I] handoff/ 의 옛 이름 참조 {len(legacy)}건 — "
-              f"**고치지 않는다**(ai_dev_tool/03 §8.4, 당시 기록)")
+              f"**고치지 않는다**(Codex 02 핸드오프 규약, 당시 기록)")
         for b in legacy:
             print(f"    {b}")
     if protected_skipped:

@@ -162,7 +162,7 @@ def _lr_factor(s, warm, steps, sched, decay_frac=0.2):
 
 def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_every,
           resume=False, ckpt=True, compile_=False, *,
-          sched="cosine", ema=0.0, early_stop=0, init_from=None,
+          sched="cosine", ema=0.0, early_stop=0, init_from=None, group_init="mean",
           kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, micro_group=None,
           mlp_split=None,
@@ -391,7 +391,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     model = TiedMLPTransformer(cfg).to(device)
 
     if init_from:
-        init_from_dense(model, init_from, device, depth_init=depth_init)
+        init_from_dense(model, init_from, device, depth_init=depth_init, group_init=group_init)
 
     teacher = None
     # ★★P067 — 외부 HF 교사가 우선한다. 우리 dense 교사와 **동시에 쓰지 않는다.**
@@ -966,6 +966,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "sdpa_gqa": bool(cfg.sdpa_gqa),                        # (F-1) enable_gqa 경로
            "kd_chunk": int(kd_chunk or 0),                        # (T-2/P053) KD 손실 청크 행수
            "depth_init": str(depth_init),                         # (P049) 깊이 확장 이식 방식
+           "group_init": str(group_init),                         # (P076) 공유 그룹 부모 집약
            # ★★2026-08-27 (자백 A13) — 임베딩 초기화 갈래. `copy`/`svd`/`random`/`none`.
            #   `mC_e128`(난수)과 `mC_e128svd`(SVD)가 **json 으로 구분되지 않던** 것을 닫는다.
            "emb_init": str(getattr(model, "_emb_init", "none")),

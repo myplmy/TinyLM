@@ -8,6 +8,7 @@ import os
 import platform
 import statistics
 import time
+import warnings
 
 
 def _median_ms(torch, fn, warmup: int, iters: int) -> float:
@@ -57,6 +58,46 @@ def _eligible(rows, baseline: str, candidates, max_speed_ratio: float,
     return selected
 
 
+def _grouped_broadcast_inputs(q, k, v):
+    """Represent GQA as an extra batch group with zero-stride K/V views."""
+    batch, q_heads, q_seq, dim = q.shape
+    kv_heads, kv_seq = k.shape[1], k.shape[2]
+    if q_heads % kv_heads:
+        raise ValueError(f"q_heads={q_heads} is not divisible by kv_heads={kv_heads}")
+    group = q_heads // kv_heads
+    q_grouped = q.reshape(batch, kv_heads, group, q_seq, dim)
+    k_grouped = k.unsqueeze(2).expand(batch, kv_heads, group, kv_seq, dim)
+    v_grouped = v.unsqueeze(2).expand(batch, kv_heads, group, kv_seq, dim)
+    return q_grouped, k_grouped, v_grouped
+
+
+def _unique_storage_mib(*tensors):
+    """Count physical tensor storages once; expanded views must not look materialized."""
+    storages = {}
+    for tensor in tensors:
+        storage = tensor.untyped_storage()
+        storages[storage.data_ptr()] = storage.nbytes()
+    return sum(storages.values()) / 2**20
+
+
+def _captured_call(fn):
+    """Capture backend-selection diagnostics without flooding the run log."""
+    caught = []
+    result = None
+    error = None
+    try:
+        with warnings.catch_warnings(record=True) as records:
+            warnings.simplefilter("always")
+            result = fn()
+        caught = [str(record.message).split("(Triggered internally", 1)[0].strip()
+                  for record in records]
+    except Exception as exc:  # backend probe must preserve the local runtime reason
+        error = exc
+        caught = [str(record.message).split("(Triggered internally", 1)[0].strip()
+                  for record in records]
+    return result, list(dict.fromkeys(caught)), error
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--warmup", type=int, default=5)
@@ -90,11 +131,15 @@ def main() -> int:
     print("NOTE: PyTorch native SDPA backends are probed; external flash-attn is not required.")
 
     variants = (
-        ("off_default", None, False),
-        ("on_default", None, True),
-        ("on_cudnn", SDPBackend.CUDNN_ATTENTION, True),
-        ("on_flash", SDPBackend.FLASH_ATTENTION, True),
-        ("on_efficient", SDPBackend.EFFICIENT_ATTENTION, True),
+        ("off_default", None, False, False),
+        ("on_default", None, True, False),
+        ("on_cudnn", SDPBackend.CUDNN_ATTENTION, True, False),
+        ("on_flash", SDPBackend.FLASH_ATTENTION, True, False),
+        ("on_efficient", SDPBackend.EFFICIENT_ATTENTION, True, False),
+        # Local torch 2.10 rejects dense Hq=12/Hkv=3 in the direct efficient path.
+        # Preserve that result, then separately test PyTorch's suggested grouped
+        # singleton broadcast without materializing K/V repeats.
+        ("on_efficient_broadcast", SDPBackend.EFFICIENT_ATTENTION, False, True),
     )
     primary_candidate = False
     for shape_index, (batch, seq) in enumerate(((8, 1024), (1, 128))):
@@ -110,25 +155,36 @@ def main() -> int:
         rows = {}
         print(f"[shape] batch={batch} seq={seq} q_heads=12 kv_heads=3 head_dim=64 bf16")
         print("variant\tstatus\tms\tvs_off\tworking_MiB\tmemory_reduction\tmax_abs\trms")
-        for name, backend, gqa in variants:
-            key, value = (k, v) if gqa else (k_rep, v_rep)
+        for name, backend, gqa, grouped_broadcast in variants:
+            if grouped_broadcast:
+                query, key, value = _grouped_broadcast_inputs(q, k, v)
+            else:
+                query = q
+                key, value = (k, v) if gqa else (k_rep, v_rep)
 
-            def call(backend=backend, gqa=gqa, key=key, value=value):
+            def call(backend=backend, gqa=gqa, query=query, key=key, value=value,
+                     grouped_broadcast=grouped_broadcast):
                 if backend is None:
-                    return F.scaled_dot_product_attention(
-                        q, key, value, is_causal=True, enable_gqa=gqa
+                    result = F.scaled_dot_product_attention(
+                        query, key, value, is_causal=True, enable_gqa=gqa
                     )
-                with sdpa_kernel(backend):
-                    return F.scaled_dot_product_attention(
-                        q, key, value, is_causal=True, enable_gqa=gqa
-                    )
+                else:
+                    with sdpa_kernel(backend):
+                        result = F.scaled_dot_product_attention(
+                            query, key, value, is_causal=True, enable_gqa=gqa
+                        )
+                return result.reshape_as(q) if grouped_broadcast else result
 
-            try:
-                output = call()
-            except (NotImplementedError, RuntimeError) as exc:
+            output, backend_warnings, backend_error = _captured_call(call)
+            if backend_error is not None:
+                diagnostic = " | ".join(backend_warnings) or "no backend diagnostic"
                 print(f"{name}\tUNAVAILABLE\t-\t-\t-\t-\t-\t-\t"
-                      f"{type(exc).__name__}: {str(exc).splitlines()[0]}")
+                      f"{type(backend_error).__name__}: {str(backend_error).splitlines()[0]}; "
+                      f"diagnostic={diagnostic}")
                 continue
+            if backend_warnings:
+                print(f"[BACKEND WARNING] variant={name} diagnostic="
+                      + " | ".join(backend_warnings))
             delta = (output.float() - reference.float()).abs()
             max_abs = float(delta.max())
             rms = float(delta.square().mean().sqrt())
@@ -140,11 +196,14 @@ def main() -> int:
                       f"{str(exc).splitlines()[0]}")
                 return 4
             try:
-                ms = _median_ms(torch, call, args.warmup, args.iters)
-                peak_delta = _peak_delta_mib(torch, call)
-                input_mib = (
-                    q.numel() + key.numel() + value.numel()
-                ) * q.element_size() / 2**20
+                def quiet_call():
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("ignore")
+                        return call()
+
+                ms = _median_ms(torch, quiet_call, args.warmup, args.iters)
+                peak_delta = _peak_delta_mib(torch, quiet_call)
+                input_mib = _unique_storage_mib(query, key, value)
                 working_mib = input_mib + peak_delta
                 rows[name] = (ms, working_mib, max_abs, rms)
             except Exception as exc:
@@ -165,7 +224,9 @@ def main() -> int:
             args.max_speed_ratio, args.min_memory_reduction,
         )
         forced_eligible = _eligible(
-            rows, "off_default", ("on_cudnn", "on_flash", "on_efficient"),
+            rows, "off_default", (
+                "on_cudnn", "on_flash", "on_efficient", "on_efficient_broadcast"
+            ),
             args.max_speed_ratio, args.min_memory_reduction,
         )
         if default_eligible:

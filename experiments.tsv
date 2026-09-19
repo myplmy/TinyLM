@@ -35,17 +35,20 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 1	P095	run_P095_S0b_memory_bridge_contract.sh	N	0.1	N	N	default-off Scout bridge의 identity·causality·reset·physical bytes·latency·backward 계약을 검증한다
 1	P091	run_P091_R2_layer_state_selector.sh	N	0.1	N	N	actual tiny model에서 gate-zero S와 WD 분리 optimizer-only U를 3 window로 기록한다
 1	P092	run_P092_Stage1aT_tlinear_dst_contract.sh	N	0.1	N	N	actual TLinear static50/DST50의 inactive score·active update·birth/death·optimizer-state 계약을 검증한다
-2	P022C	run_P022C_Stage0bW_fp8_scaling_overhead.sh	D	0.1	Y	Y	BF16 대비 FP8 current/delayed scaling의 absmax·cast 포함 forward 정합·속도·peak allocation을 잰다	8
+2	P022C	run_P022C_Stage0bWb_fp8_scaling_overhead.sh	D	0.1	Y	Y	Stage0bW의 유효 측정을 보존하고 FP8 수치·속도 음성을 실행 실패가 아닌 선언된 exit 8로 재검증한다	8
 2	P025B	run_P025B_Stage0bWd_wsl_sparse24_inference_attribution.sh	D	0.1	Y	Y	Wc의 절대오차 단독·fail-fast를 교정해 두 형상과 M1~8192를 scale-aware 정합·속도로 완주한다	8
-2	P060B	run_P060B_Stage0aWb_wsl_sdpa_gqa_backend.sh	D	0.1	Y	Y	실용 on_default와 forced backend 후보를 별도 판정해 default false-negative를 교정한다	8
+2	P060B	run_P060B_Stage0aWc_wsl_sdpa_gqa_backend.sh	D	0.1	Y	Y	FLASH·CUDNN 성공, direct EFFICIENT unavailable, zero-stride grouped-broadcast 대안의 warning·정합·속도·physical storage를 분리한다	8
+2	P076	run_P076_Stage1W_group_init_gate.sh	D	0.3	Y	Y	mean/middle/norm_mean 부모 집약을 실제 m100 dense parent와 고정 val crop의 step0 이식 대역으로 검사한다. 최종품질 서열 판정 금지	8
+2	P014D	run_P014D_Stage0bW_decode_profile.sh	N	0.3	Y	Y	측정 0건으로 끝난 Stage0의 fp32 경로 인자 결함을 교정해 fp32/int8/LUT decode self CPU time을 재측정한다
 3	P060B	run_P060B_Stage0bW_model_gqa_integration.sh	D	0.2	Y	Y	actual d14 RMS4 checkpoint의 full/cache prefill/decode GQA 정합·속도·peak allocation을 잰다
 3	P093	run_P093_Stage0c_parent_approximation.sh	D	0.2	Y	Y	d16 RMS4 parent의 shared mean+rank4/8/16 residual weight/output NRMS를 잰다	8
 4	P094	run_P094_R0_p022c_dependency_gate.sh	N	0.1	N	N	P022C actual packed/masterless evidence가 없으면 fail-closed dependency HOLD(exit 8)로 남긴다	8
-5	P097	run_P097_Stage0_dataset_recipe_contract.sh	N	0.1	N	N	한영 외부 recipe exact-token quota·source-stratified val·repo-local HF cache 계약을 검증한다
-6	P097	run_P097_Stage1a_control_v2_300M.sh	Y	3.0	Y	Y	KoWiki+FineWeb-Edu exact token 50:50 새 pipeline control을 600M pool·300M draw로 학습한다
-7	P097	run_P097_Stage1b_fineweb2_300M.sh	Y	3.0	Y	Y	FineWeb2 Korean+FineWeb-Edu exact token 50:50 recipe를 600M pool·300M draw로 학습한다
-8	P097	run_P097_Stage1c_edu_v2_300M.sh	Y	3.0	Y	Y	filtered Korean Webtext Edu+FineWeb-Edu exact token 50:50 recipe를 600M pool·300M draw로 학습한다
-9	P097	run_P097_Stage1d_madlad_300M.sh	Y	3.0	Y	Y	MADLAD clean ko+en exact token 50:50 recipe를 600M pool·300M draw로 학습한다
+3	P087	run_P087_Stage3bW_paired_fullval.sh	D	0.3	Y	Y	기존 두 체크포인트를 ko-en 600M 결정적 val에서 match-train-repeat paired 평가해 누락된 크롭별 t·승률을 회수한다. 신규 학습 0
+5	P097	run_P097_Stage0b_dataset_recipe_contract.sh	N	0.1	N	N	WSL native PATH·exact-cache byte/meta·iterator close·MADLAD direct-shard routing을 network/GPU/model 0으로 재검증한다
+6	P097	run_P097_Stage1aB_control_v2_300M.sh	Y	3.0	Y	Y	완성된 control cache를 검증·재사용하고 stream-close·native PATH 교정 뒤 300M 학습을 재개한다
+7	P097	run_P097_Stage1bB_fineweb2_300M.sh	Y	3.0	Y	Y	완성된 FineWeb2 cache를 재사용하고 torch.compile nvcc PATH 2차 오류 교정 뒤 300M 학습을 재개한다
+8	P097	run_P097_Stage1cB_edu_v2_300M.sh	Y	3.0	Y	Y	완성된 filtered edu cache를 검증·재사용하고 stream-close 교정 뒤 300M 학습을 재개한다
+9	P097	run_P097_Stage1dB_madlad_300M.sh	Y	3.0	Y	Y	datasets 5 remote-script 제거에 맞춰 공식 MADLAD JSONL shard adapter로 prepare한 뒤 300M 학습한다
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수 49GB→. ★판정 정본이 checkpoints.tsv 로 바뀌었다(TSV, keep/hold/delete). 삭제 후보 13.2GB/34개. YES 를 직접 입력해야 지운다
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다

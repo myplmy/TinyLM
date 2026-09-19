@@ -124,6 +124,8 @@ flag	grade	evidence	checked	declared_in
 --fsync-sec	ok		2026-09-04	scripts/runlog.py
 --g	ok		2026-09-04	scripts/diag_lut_kernel.py
 --group	ok		2026-09-19	scripts/diag_group_agg.py,scripts/diag_sharing_parent_approx.py
+--group-init	ok	P076 공유 MLP/어텐션 부모 집약 방식; mean 기본 비트동일, middle·norm_mean 실험	2026-09-19	tinylm/cli.py
+--group-inits	ok	P076 Stage1 step0 이식 대역에서 여러 집약 방식을 한 크롭으로 검사	2026-09-19	scripts/diag_depth_init.py
 --head-dim	ok		2026-09-04	scripts/diag_sdpa_backends.py
 --has-smoke	ok	WSL queue 선택에 smoke가 포함됐는지 판정하는 읽기 전용 실행기 제어값	2026-09-19	scripts/queue_menu_linux.py
 --heldout	ok	2026-09-10 신설 - SFT 코퍼스와 held-out 의 오염 대조용 경로	2026-09-10	scripts/audit_sft_corpus.py
@@ -189,6 +191,7 @@ flag	grade	evidence	checked	declared_in
 --max-abs-ratio	ok	P025B FP16 GEMM max absolute error를 reference RMS로 정규화한 outlier gate	2026-09-19	scripts/diag_sparse24_inference_attribution.py
 --max-bytes	ok		2026-09-04	scripts/diag_spam_rate.py
 --max-nrms	ok	FP8·2:4·GQA의 RMS(error)/RMS(reference) 정합 문턱	2026-09-19	scripts/diag_fp8_scaling_overhead.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_sparse24_inference_attribution.py
+--max-output-nrms	ok	P093 parent approximation 출력 NRMS viability 상한	2026-09-19	scripts/diag_sharing_parent_approx.py
 --max-speed-ratio	ok	P060B WSL native forced-GQA의 off-default 대비 허용 속도 대가	2026-09-19	scripts/diag_sdpa_wsl_gqa.py
 --max-docs	ok		2026-09-04	scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_common_text.py,scripts/diag_fp8_precision.py,scripts/diag_spam_rate.py,scripts/diag_val_docs.py
 --max-new	ok		2026-09-04	scripts/bench_fused_int8.py,scripts/bench_infer.py,scripts/diag_decode_profile.py,scripts/diag_kvcache.py,scripts/eval_bench_suite.py,scripts/mem_runtime.py,tinylm/cli.py
@@ -201,6 +204,7 @@ flag	grade	evidence	checked	declared_in
 --min-cosine	ok	backend 비교의 flattened-output cosine 정합 문턱	2026-09-19	scripts/diag_fp8_scaling_overhead.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_sparse24_inference_attribution.py
 --min-chars	ok		2026-09-04	scripts/diag_spam_rate.py
 --min-memory-reduction	ok	P060B WSL native forced-GQA working-memory 최소 절감율	2026-09-19	scripts/diag_sdpa_wsl_gqa.py
+--min-output-improvement	ok	P093 parent approximation rank0 대비 최소 output NRMS 개선율	2026-09-19	scripts/diag_sharing_parent_approx.py
 --min-speedup	ok	P022C cast/scaling 포함 FP8 forward 최소 속도향상	2026-09-19	scripts/diag_fp8_scaling_overhead.py
 --mlp-film	rejected	결과 063 - 무KD 에서도 +0.0003 (t 0.77). KD 조건의 값이 그대로 재현됐다	2026-09-04	tinylm/cli.py
 --mlp-group	exp	결과 067 §11.3 - 잰 전 구간에서 지배당했다(d8 +0.0637 -> d16 +0.1049). 기각이 아니라 파레토 밖	2026-09-04	tinylm/cli.py

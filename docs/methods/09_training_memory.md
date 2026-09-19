@@ -290,16 +290,17 @@ python scripts/check_spill.py test_result/037_log_20260808_P018_compressed_teach
 > 메모리 최적화를 제안할 때 **세 값을 함께 적는다**: `peak reserved` · `tokens/sec` · `val`.
 > **하나만 좋아지고 다른 것이 나빠지면 "최적화" 라고 부르지 않는다.**
 
-## 2026-09-13 승인 연구의 메모리 회계 (`NOT_RUN`)
+## 2026-09-19 승인 연구의 메모리 회계
 
-| 계획 | 기대하는 메모리 축 | 현재 회계·제한 |
+| 계획 | 관찰 | 주장 가능한 범위 |
 |---|---|---|
-| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | inactive weight·optimizer state 제거 | Stage0bWb는 pack 정합·속도만 측정. Stage0bWc peak allocation도 전체 training VRAM이 아니며 sparse-master 구현 전 state 절감 주장 금지 |
-| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | local optimizer state 감소, 임시 `BA` 증가 | owner/optimizer parameter mapping만 PASS([080 §6](../../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md#6-r0r1b-실제-tiny-model-mapping-게이트2026-09-19)); peak reserved/RSS·state 절감 미측정 |
-| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | shadow dtype에 따른 persistent state | FP8 compute만으로 shadow·optimizer 저장이 줄었다고 하지 않음 |
-| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | structural density와 실제 state 절감 분리 | dense mask 단계는 저장·상주 절감 0 |
-| [P093](../../test_plan/P093_구조조건부-직접공유와-완화타잉.md) | unique packed/resident·optimizer state 절감 | R1 순배포 절감 26.1~27.2%는 산술 회계이며 activation·allocator RSS·latency 미측정([086](../../test_result/086_20260919_P093-회계상-R1은-남고-D1은-고계산이다.md)) |
-| [P095](../../test_plan/P095_Scout-1MiB-LTM-학습가능성.md) | 논리 1 MiB와 metadata/scratch/physical RSS 분리 | S0bB 코드 fixture의 state tensor는 1,049,608 B = payload 1,048,576 + metadata 1,032 B; full Transformer resident·RSS·학습은 `NOT_RUN` |
-| [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | manual KV repeat 대비 default GQA working memory | [088](../../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md) isolated B8/T1024에서 48.376→30.376 MiB(−37.2%); 전체 peak reserved·학습 VRAM은 `NOT_RUN` |
+| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | BF16 peak `32/12/12 MiB` 대비 FP8 current `39.5/48/18.56 MiB` | compute-only 팔은 메모리도 음성. shadow·optimizer persistent state는 미측정 |
+| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | Wd synthetic inference 전 형상 느림 | sparse tensor allocation을 전체 training VRAM 절감으로 부르지 않음 |
+| [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | isolated GQA working memory는 manual repeat보다 약 37% 작음; actual model allocation은 off/on 모두 `9.568 MiB` | isolated working set 후보. 전체 peak reserved/RSS·학습 VRAM 감소는 없음 |
+| [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | owner/optimizer mapping과 selector 계약만 PASS | local optimizer state·temporary BA·peak reserved 미측정 |
+| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | dense tensor+mask controller 계약 PASS | structural active count를 저장 절감으로 환산하지 않음 |
+| [P093](../../test_plan/P093_구조조건부-직접공유와-완화타잉.md) | 회계상 절감 후보였으나 현재 parent approximation output NRMS `0.974` | 품질 viability를 못 넘은 회계 후보를 메모리 승자로 승격 금지 |
+| [P095](../../test_plan/P095_Scout-1MiB-LTM-학습가능성.md) | payload 1,048,576 B + metadata 1,032 B = physical 1,049,608 B | primitive fixture만 PASS; full Transformer resident/RSS·학습은 `NOT_RUN` |
 
-후속 측정은 `peak reserved`·tokens/sec·val을 함께 남기며, sparse 비율만으로 VRAM 절감을 계산하지 않는다.
+후속 측정은 `peak reserved`·tokens/sec·val을 함께 남긴다. 논리 payload, allocator allocation,
+process RSS와 checkpoint 저장 크기는 서로 대체하지 않는다.

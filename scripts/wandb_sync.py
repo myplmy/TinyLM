@@ -49,7 +49,7 @@ CONFIG_KEYS = [
     "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cache",
     "sched", "anneal_end", "decay_frac", "grad_ckpt", "compile",
     "mlp_group", "micro_group", "attn_group", "mlp_split", "n_layers",
-    "emb_rank", "sparse34", "bpw", "depth_init", "train_repeat", "repeat_mode",
+    "emb_rank", "sparse34", "bpw", "depth_init", "group_init", "train_repeat", "repeat_mode",
     "kd", "kd_every", "kd_alpha", "kd_temp", "kd_teacher", "kd_chunk",
     "init_from", "init_from_src", "opt_dtype", "sdpa_gqa", "params",
 ]

@@ -228,11 +228,30 @@ def _capsule_values(path: Path, text: str, table: Table) -> dict[str, str]:
         for item_id, cells in rows
         if any(mark in cells[2] for mark in OPEN_MARKS)
     ]
-    done_rows = [(item_id, cells[4]) for item_id, cells in rows if DONE in cells[2]]
+    activity_rows = [
+        (item_id, cells[2], cells[3], cells[4])
+        for item_id, cells in rows
+        if RUN in cells[2] or DONE in cells[2]
+    ]
     blocked = [(item_id, cells[3], cells[5]) for item_id, cells in rows if BLOCK in cells[2]]
     first = next((row for row in open_rows if RUN in row[1]), open_rows[0] if open_rows else None)
     open_text = ", ".join(f"{item_id}:{status}" for item_id, status, _ in open_rows) or "없음"
-    done_text = ", ".join(f"{item_id}:{artifact}" for item_id, artifact in done_rows) or "완료 항목 없음"
+    def compact(value: str, limit: int = 180) -> str:
+        value = re.sub(r"\s+", " ", value).strip()
+        return value if len(value) <= limit else value[: limit - 1].rstrip() + "…"
+
+    activity_parts: list[str] = []
+    for item_id, status, work, artifact in activity_rows:
+        if DONE in status:
+            activity_parts.append(f"{item_id}:완료 산출물={compact(artifact)}")
+        else:
+            detail = f"{item_id}:진행 {compact(work)}"
+            if artifact != "—":
+                detail += f" / 산출물={compact(artifact, 120)}"
+            activity_parts.append(detail)
+    activity_text = "; ".join(activity_parts) or "착수·완료 항목 없음"
+    if len(activity_text) > 2200:
+        activity_text = activity_text[:2199].rstrip() + "…"
     blocked_text = "; ".join(f"{item_id} {note} / {resume}" for item_id, note, resume in blocked)
     if not blocked_text:
         blocked_text = "명시적 막힘 없음; 승인·미확인은 각 행의 작업 내용·이어받을 지점이 정본"
@@ -244,7 +263,7 @@ def _capsule_values(path: Path, text: str, table: Table) -> dict[str, str]:
         ),
         "보호·NOT_RUN 경계": _metadata(text, "NOT_RUN 경계"),
         "열린 WIP·미완료 상태": f"{path.relative_to(ROOT).as_posix()}; 미완료={open_text}",
-        "수행 변경·검증": done_text,
+        "수행 변경·검증": activity_text,
         "막힘·승인·미확인": blocked_text,
         "사용자 소유 실행": _metadata(text, "사용자 소유 실행", "없음으로 기록됨"),
         "폐기·정정 주장": _metadata(text, "폐기·정정 주장", "없음으로 기록됨"),

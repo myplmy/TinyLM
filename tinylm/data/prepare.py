@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import json
+import gzip
 import time
 from pathlib import Path
 
@@ -47,6 +48,12 @@ DATASETS = {
 TOKEN_BALANCED_DATASETS = frozenset({
     "ko-en-control-v2", "ko-en-fw2", "ko-en-edu-v2", "ko-en-madlad",
 })
+
+# datasets>=4 no longer executes Hub dataset scripts.  MADLAD-400 still uses
+# one, so read its official immutable JSONL shards directly through
+# huggingface_hub.  Downloads remain under paths.HF_DIR/hub.
+MADLAD_REVISION = "ecd71297d60c1eb996cd3d7c44c60ad5b55adfc6"
+MADLAD_CLEAN_SHARDS = {"ko": 13, "en": 947}
 
 
 def tokenizer_path(name, vocab_size=VOCAB):
@@ -162,6 +169,11 @@ def _stream(name, exhausted_cb=None):
     specs = DATASETS[name]
     iters, ratios = [], []
     for hf_id, cfg, split, key, r in specs:
+        if hf_id.casefold() == "allenai/madlad-400":
+            iterator, loaded_key = _load_stream((hf_id, cfg, split, key, r))
+            iters.append((iterator, loaded_key))
+            ratios.append(r)
+            continue
         ds = load_dataset(hf_id, cfg, split=split, streaming=True)
         if name in TOKEN_BALANCED_DATASETS:
             ds = ds.shuffle(seed=0, buffer_size=10_000)
@@ -169,25 +181,31 @@ def _stream(name, exhausted_cb=None):
     rng = np.random.default_rng(0)
     p = np.array(ratios) / sum(ratios)
     dead = set()
-    while True:
-        i = rng.choice(len(iters), p=p)
-        it, key = iters[i]
-        try:
-            t = next(it)[key]
-        except StopIteration:
-            if i not in dead:
-                dead.add(i)
-                if exhausted_cb is not None:
-                    exhausted_cb(i)
-            if len(dead) == len(iters):
-                return                      # 전부 고갈 — 무한루프 대신 정상 종료
-            continue
-        if t and len(t) > 64:
-            # ★L1(2026-08-06): 소스 인덱스를 함께 낸다. `rng.choice` 는 **문서**를 고르므로
-            #   문서 길이가 소스마다 다르면 **토큰 비율은 설정한 ratio 가 아니다.**
-            #   지금까지 "한국어 50%" 라고 적어 온 모든 문서가 미확인이었다
-            #   (docs/methods/07_corpus_selection.md §4.3). 이제 실측해서 meta 에 남긴다.
-            yield t, i
+    try:
+        while True:
+            i = rng.choice(len(iters), p=p)
+            it, key = iters[i]
+            try:
+                t = next(it)[key]
+            except StopIteration:
+                if i not in dead:
+                    dead.add(i)
+                    if exhausted_cb is not None:
+                        exhausted_cb(i)
+                if len(dead) == len(iters):
+                    return                      # 전부 고갈 — 무한루프 대신 정상 종료
+                continue
+            if t and len(t) > 64:
+                # ★L1(2026-08-06): 소스 인덱스를 함께 낸다. `rng.choice` 는 **문서**를 고르므로
+                #   문서 길이가 소스마다 다르면 **토큰 비율은 설정한 ratio 가 아니다.**
+                #   지금까지 "한국어 50%" 라고 적어 온 모든 문서가 미확인이었다
+                #   (docs/methods/07_corpus_selection.md §4.3). 이제 실측해서 meta 에 남긴다.
+                yield t, i
+    finally:
+        for iterator, _key in iters:
+            close = getattr(iterator, "close", None)
+            if callable(close):
+                close()
 
 
 def exact_token_quotas(total: int, ratios) -> list[int]:
@@ -202,10 +220,61 @@ def exact_token_quotas(total: int, ratios) -> list[int]:
     return quotas
 
 
+def _buffer_shuffle(iterator, *, seed=0, buffer_size=10_000):
+    """Deterministically shuffle an iterator while propagating close()."""
+    rng = np.random.default_rng(seed)
+    buffer = []
+    try:
+        for _ in range(buffer_size):
+            buffer.append(next(iterator))
+    except StopIteration:
+        pass
+    try:
+        while buffer:
+            index = int(rng.integers(len(buffer)))
+            item = buffer[index]
+            try:
+                buffer[index] = next(iterator)
+            except StopIteration:
+                buffer[index] = buffer[-1]
+                buffer.pop()
+            yield item
+    finally:
+        close = getattr(iterator, "close", None)
+        if callable(close):
+            close()
+
+
+def _madlad_rows(language, split):
+    """Yield MADLAD rows from official immutable shards without remote code."""
+    if split != "clean" or language not in MADLAD_CLEAN_SHARDS:
+        raise ValueError(f"unsupported MADLAD direct source: language={language} split={split}")
+    from huggingface_hub import hf_hub_download
+
+    order = np.random.default_rng(0).permutation(MADLAD_CLEAN_SHARDS[language])
+    for index in order:
+        filename = f"data/{language}/{language}_{split}_{int(index):04d}.jsonl.gz"
+        local = hf_hub_download(
+            repo_id="allenai/MADLAD-400",
+            repo_type="dataset",
+            revision=MADLAD_REVISION,
+            filename=filename,
+            cache_dir=paths.HF_DIR / "hub",
+        )
+        with gzip.open(local, "rt", encoding="utf-8") as stream:
+            for line in stream:
+                if line:
+                    row = json.loads(line)
+                    if row.get("text"):
+                        yield {"text": row["text"]}
+
+
 def _load_stream(spec):
     """Load one HF source lazily after ``tinylm.paths`` fixed cache paths."""
     from datasets import load_dataset
     hf_id, cfg, split, key, _ratio = spec
+    if hf_id.casefold() == "allenai/madlad-400":
+        return iter(_buffer_shuffle(_madlad_rows(cfg, split), seed=0)), key
     if cfg is None:
         dataset = load_dataset(hf_id, split=split, streaming=True)
     else:
@@ -232,27 +301,32 @@ def _prepare_token_balanced(name, n_tokens, val_frac, cache_dir, tok, eos, dtype
         iterator, key = _load_stream(spec)
         chunks = []
         count = docs = 0
-        for row in iterator:
-            if key not in row:
-                raise KeyError(f"{spec[0]} config={spec[1]} row lacks text key {key!r}")
-            text = row[key]
-            if not text or len(text) <= 64:
-                continue
-            if doc_filter and spam_signature(text, doc_min_chars):
-                dropped_docs += 1
-                dropped_chars += len(text)
-                continue
-            ids = tok.encode(text).ids
-            piece = np.asarray(ids + [eos], dtype=dtype)
-            chunks.append(piece)
-            count += len(piece)
-            docs += 1
-            total_bytes += len(text.encode("utf-8"))
-            if count >= quota:
-                break
-            if count and count % 5_000_000 < len(piece):
-                print(f"  [source {source_index + 1}/{len(specs)}] "
-                      f"{count/1e6:>6.1f}M / {quota/1e6:.1f}M")
+        try:
+            for row in iterator:
+                if key not in row:
+                    raise KeyError(f"{spec[0]} config={spec[1]} row lacks text key {key!r}")
+                text = row[key]
+                if not text or len(text) <= 64:
+                    continue
+                if doc_filter and spam_signature(text, doc_min_chars):
+                    dropped_docs += 1
+                    dropped_chars += len(text)
+                    continue
+                ids = tok.encode(text).ids
+                piece = np.asarray(ids + [eos], dtype=dtype)
+                chunks.append(piece)
+                count += len(piece)
+                docs += 1
+                total_bytes += len(text.encode("utf-8"))
+                if count >= quota:
+                    break
+                if count and count % 5_000_000 < len(piece):
+                    print(f"  [source {source_index + 1}/{len(specs)}] "
+                          f"{count/1e6:>6.1f}M / {quota/1e6:.1f}M")
+        finally:
+            close = getattr(iterator, "close", None)
+            if callable(close):
+                close()
         if count < quota:
             raise RuntimeError(
                 f"source exhausted before exact quota: {spec[0]}:{spec[1]} "
@@ -327,10 +401,13 @@ def build_tokenizer(name, vocab_size=VOCAB):
     src = _stream(name)
     def sample():
         # ★_stream 이 (텍스트, 소스인덱스) 를 낸다(L1, 2026-08-06). 토크나이저는 텍스트만 쓴다.
-        for i, (t, _src_i) in enumerate(src):
-            if i >= 200_000:
-                break
-            yield t
+        try:
+            for i, (t, _src_i) in enumerate(src):
+                if i >= 200_000:
+                    break
+                yield t
+        finally:
+            src.close()
     tok.train_from_iterator(sample(), vocab_size=vocab_size, min_frequency=2,
                             special_tokens=["<pad>", "<bos>", "<eos>"])
     DATA_CACHE.mkdir(parents=True, exist_ok=True)
@@ -354,6 +431,38 @@ def _find_reusable(name, n_tokens):
             if best is None or m["tokens"] < best["tokens"]:
                 m["dir"] = str(d); best = m
     return best
+
+
+def _validate_token_balanced_cache(cache_dir, meta):
+    """Reject incomplete P097 caches before reuse without reading corpus rows."""
+    dtype = np.dtype(meta.get("token_dtype", "uint16"))
+    problems = []
+    train = int(meta.get("train", -1))
+    val = int(meta.get("val", -1))
+    tokens = int(meta.get("tokens", -1))
+    requested = int(meta.get("requested_tokens", tokens))
+    if min(train, val, tokens, requested) < 0 or train + val != tokens or tokens != requested:
+        problems.append(
+            f"token counts disagree: train={train} val={val} tokens={tokens} requested={requested}"
+        )
+    for filename, expected in (("train.bin", train), ("val.bin", val)):
+        path = Path(cache_dir) / filename
+        actual = path.stat().st_size if path.exists() else -1
+        wanted = expected * dtype.itemsize
+        if actual != wanted:
+            problems.append(f"{filename} bytes={actual} expected={wanted}")
+    mix_tokens = [int(value) for value in meta.get("mix_tokens", [])]
+    val_mix_tokens = [int(value) for value in meta.get("val_mix_tokens", [])]
+    source_count = len(DATASETS.get(str(meta.get("data")), ()))
+    if len(mix_tokens) != source_count or sum(mix_tokens) != tokens:
+        problems.append(f"mix_tokens={mix_tokens} source_count={source_count} total={tokens}")
+    if len(val_mix_tokens) != source_count or sum(val_mix_tokens) != val:
+        problems.append(f"val_mix_tokens={val_mix_tokens} source_count={source_count} val={val}")
+    if meta.get("mix_policy") != "exact-token-quota-v1":
+        problems.append(f"mix_policy={meta.get('mix_policy')!r}")
+    if problems:
+        raise RuntimeError("invalid exact-token cache: " + "; ".join(problems))
+    return meta
 
 
 def _ensure_bpt(meta):
@@ -428,12 +537,16 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
             d = DATA_CACHE / (f"{name}_{n_tokens}" + _sfx)
             if (d / "meta.json").exists() and (d / "train.bin").exists():
                 m = json.loads((d / "meta.json").read_text()); m["dir"] = str(d)
+                if name in TOKEN_BALANCED_DATASETS:
+                    _validate_token_balanced_cache(d, m)
                 print(f"[data] 정확 캐시 사용(exact, 상위호환 무시): {n_tokens/1e6:.1f}M ({name}) -> {d}")
                 return _ensure_bpt(m)
             print(f"[data] 정확 캐시({name}_{n_tokens}) 없음 → 정확히 그 크기로 신규 생성(상위호환 무시)")
         else:
             reuse = _find_reusable(name, n_tokens)
             if reuse:
+                if name in TOKEN_BALANCED_DATASETS:
+                    _validate_token_balanced_cache(Path(reuse["dir"]), reuse)
                 print(f"[data] 캐시 재사용: {reuse['tokens']/1e6:.1f}M 토큰 ({name}) "
                       f"-> {reuse['dir']}")
                 return _ensure_bpt(reuse)

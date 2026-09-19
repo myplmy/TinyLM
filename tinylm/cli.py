@@ -13,7 +13,7 @@ import argparse
 
 from . import paths  # noqa: F401  (HF 리다이렉트 먼저)
 from .data import DATASETS
-from .config import PRESETS
+from .config import GROUP_INIT_MODES, PRESETS
 from .config import REPEAT_MODES
 from .training_defaults import (
     DEFAULT_MATRIX_WEIGHT_DECAY,
@@ -131,6 +131,9 @@ def main():
     p.add_argument("--ema", type=float, default=0.0, help="EMA decay(0=끔, 예: 0.999)")
     p.add_argument("--early-stop", type=int, default=0, help="val 개선 없이 N회 eval시 종료(0=끔)")
     p.add_argument("--init-from", action="store_true", help="tied를 dense.pt로 부모초기화")
+    p.add_argument("--group-init", choices=list(GROUP_INIT_MODES), default="mean",
+                   help="(P076) 공유 MLP/어텐션 부모 집약. mean=종전 산술평균(기본·비트 동일), "
+                        "middle=그룹 중앙 교사층, norm_mean=평균 방향의 노름을 교사 평균으로 복원")
     p.add_argument("--ckpt-tokens", default=None, metavar="300M",
                    help="★★2026-09-07 신설(함정 28 여섯째) — **이 명령이 읽는** 체크포인트 "
                         "파일명의 토큰 칸. `--init-from` 부모 · `--init-from-tag` · KD 교사 셋에 "
@@ -371,7 +374,7 @@ def main():
         train(preset, a.arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
               a.lr, a.eval_every, a.resume, ckpt, a.compile,
               sched=a.sched, ema=a.ema, early_stop=a.early_stop,
-              init_from=init_src,
+              init_from=init_src, group_init=a.group_init,
               kd=(kd_teacher if a.kd else False),
               kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
               lora_rank=a.lora_rank, lora_bits=a.lora_bits, mlp_film=a.mlp_film,

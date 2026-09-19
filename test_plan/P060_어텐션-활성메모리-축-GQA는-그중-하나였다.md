@@ -1,5 +1,8 @@
 # P060 — **어텐션 활성 메모리 축**: `enable_gqa` 는 그중 **한 수단**이었다
 
+> **상태: 종결·WSL 후속 이관.** Windows runtime의 원 질문과 결과 046은 보존하며,
+> WSL native dispatcher·forced backend·actual model 후속은 [P060B](P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md)가 소유한다.
+
 > **사후 작성 2026-08-14** (사용자 지적). ⚠️**이 계획서는 실험이 끝난 뒤에 쓰였다.**
 > 그것 자체가 결함이고 §0 에 적는다.
 >

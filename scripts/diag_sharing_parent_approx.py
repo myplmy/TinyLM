@@ -18,6 +18,16 @@ def _parse_ranks(raw):
     return values
 
 
+def _approximation_gate(values, *, max_output_nrms, min_output_improvement):
+    monotonic_weight = all(b[1] <= a[1] + 1e-8 for a, b in zip(values, values[1:]))
+    monotonic_output = all(b[2] <= a[2] + 1e-8 for a, b in zip(values, values[1:]))
+    baseline = values[0][2]
+    best = values[-1][2]
+    improvement = 1.0 - best / max(baseline, 1e-30)
+    viable = best <= max_output_nrms and improvement >= min_output_improvement
+    return monotonic_weight, monotonic_output, improvement, viable
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ckpt", required=True)
@@ -26,6 +36,8 @@ def main() -> int:
     parser.add_argument("--group", type=int, default=4)
     parser.add_argument("--ranks", type=_parse_ranks, default=_parse_ranks("4,8,16"))
     parser.add_argument("--samples", type=int, default=128)
+    parser.add_argument("--max-output-nrms", type=float, default=0.90)
+    parser.add_argument("--min-output-improvement", type=float, default=0.10)
     args = parser.parse_args()
 
     import torch
@@ -98,13 +110,24 @@ def main() -> int:
         y = math.sqrt(output_error[rank][0] / max(output_error[rank][1], 1e-30))
         values.append((rank, w, y))
         print(f"{rank}\t{w:.9g}\t{y:.9g}")
-    monotonic_weight = all(b[1] <= a[1] + 1e-8 for a, b in zip(values, values[1:]))
-    monotonic_output = all(b[2] <= a[2] + 1e-8 for a, b in zip(values, values[1:]))
+    monotonic_weight, monotonic_output, output_improvement, viable = _approximation_gate(
+        values,
+        max_output_nrms=args.max_output_nrms,
+        min_output_improvement=args.min_output_improvement,
+    )
+    print(f"best_output_nrms={values[-1][2]:.9g} "
+          f"relative_output_error_reduction={output_improvement:.3%} "
+          f"required_output_nrms<={args.max_output_nrms:.3f} "
+          f"required_reduction>={args.min_output_improvement:.1%}")
     if not (monotonic_weight and monotonic_output):
         print(f"[GATE NEGATIVE] monotonic_weight={monotonic_weight} monotonic_output={monotonic_output}")
         return 8
+    if not viable:
+        print("[GATE NEGATIVE] rank growth is monotonic but does not recover enough parent output; "
+              "do not open save/load or training integration")
+        return 8
     print(f"[PASS] P093 Stage0c: groups={len(middle)//args.group} ranks={args.ranks} "
-          "weight/output approximation errors decrease monotonically")
+          "weight/output approximation errors decrease and pass the viability floor")
     print("NOTE: approximation is not save/load wiring, optimizer ownership, latency or quality.")
     return 0
 

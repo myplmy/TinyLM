@@ -53,13 +53,22 @@ import torch                                                    # noqa: E402
 import torch.nn.functional as F                                 # noqa: E402
 
 from tinylm import paths                                        # noqa: E402
-from tinylm.config import build_config                          # noqa: E402
+from tinylm.config import GROUP_INIT_MODES, build_config        # noqa: E402
 from tinylm.model.transformer import TiedMLPTransformer         # noqa: E402
 from tinylm.train.init_utils import init_from_dense, _depth_map  # noqa: E402
 
 
 def _hdr(s):
     print("\n" + "=" * 78 + f"\n  {s}\n" + "=" * 78)
+
+
+def _group_gate_exit(hard_failures, negative_failures):
+    """Execution/contract failures outrank valid scientific negatives."""
+    if hard_failures:
+        return 1
+    if negative_failures:
+        return 8
+    return 0
 
 
 def main():
@@ -81,8 +90,14 @@ def main():
                     help="★P061 불균등 타잉 경계. 예: --mlp-split 12")
     ap.add_argument("--modes", nargs="*", default=None,
                     help="잴 depth_init 모드. 기본 prop/gate_scale/identity")
+    ap.add_argument("--group-inits", nargs="+", choices=list(GROUP_INIT_MODES), default=None,
+                    help="P076 Stage1: depth_init=prop을 고정하고 부모 그룹 집약 방식의 step0 대역만 검사")
     a = ap.parse_args()
+    if a.group_inits and a.modes:
+        ap.error("--group-inits and --modes are mutually exclusive")
     dev, fails = a.device, []
+    negative_fails = []
+    group_gate = bool(a.group_inits)
 
     sc = build_config(a.preset, "tied", a.seq, True)
     # ★축 오버라이드 — 미지정이면 프리셋 그대로 = **비트 동일**
@@ -183,83 +198,106 @@ def main():
 
     results = {}
     # 대조군: 이식 없음(난수) — **이식이 뭘 걷어내는지 크기를 보기 위해서**
-    # ★2026-08-27 — 학생이 더 얕으면 **role 을 기본 모드에 넣는다.** 그 경우
-    #   실제 배치가 쓰는 표(role)를 게이트가 한 번도 안 재는 상태였다(로그 059).
-    _modes = tuple(a.modes) if a.modes else (
-        ("role", "prop", "gate_scale", "identity") if not _deeper
-        else ("prop", "gate_scale", "identity"))
-    for mode in ("(난수 대조군)",) + _modes:
-        _hdr(f"모드 {mode}")
+    # P076은 depth_init=prop을 고정하고 집약 방식만 바꾼다. step0은 서열이 아니라
+    # 모든 방식이 5.0~9.4 이식 대역에 들어오는지만 보는 이진 gate다.
+    if group_gate:
+        variants = [("(난수 대조군)", None, None)] + [
+            (f"group_init={name}", "prop", name) for name in a.group_inits
+        ]
+        print(f"\n  [P076] group-init step0 gate: {', '.join(a.group_inits)}")
+        print("  판정 대역 5.0~9.4; 이 수치로 방식의 학습 후 서열을 정하지 않는다")
+    else:
+        depth_modes = tuple(a.modes) if a.modes else (
+            ("role", "prop", "gate_scale", "identity") if not _deeper
+            else ("prop", "gate_scale", "identity"))
+        variants = [("(난수 대조군)", None, None)] + [
+            (mode, mode, "mean") for mode in depth_modes
+        ]
+
+    for label, depth_mode, group_init in variants:
+        _hdr(f"모드 {label}")
         torch.manual_seed(1337)
         m = TiedMLPTransformer(sc).to(dev)
-        if mode != "(난수 대조군)":
+        if depth_mode is not None:
             buf = io.StringIO()
             try:
                 with redirect_stdout(buf):
-                    init_from_dense(m, str(ck), dev, depth_init=mode)
+                    init_from_dense(
+                        m, str(ck), dev, depth_init=depth_mode, group_init=group_init
+                    )
             except Exception as e:
                 print(f"  🚫 G0-a 실패 — {type(e).__name__}: {e}")
-                fails.append(f"G0-a[{mode}]")
+                fails.append(f"G0-a[{label}]")
                 continue
             out = buf.getvalue()
             print("  " + "\n  ".join(out.strip().splitlines()))
             missing = [f"{t}({w})" for t, w in expect if t not in out]
+            if group_gate and f"group_init={group_init}" not in out:
+                missing.append(f"group_init={group_init}")
             if missing:
-                print(f"  🚫 G0-b 실패 — 구조를 바꿨는데 알림이 없다: {', '.join(missing)}")
-                fails.append(f"G0-b[{mode}]")
-            elif expect:
-                print(f"  ✅ G0-b 통과 — 요구 알림 {len(expect)}건 전부 확인")
+                print(f"  🚫 G0-b 실패 — 구조/집약을 바꿨는데 알림이 없다: {', '.join(missing)}")
+                fails.append(f"G0-b[{label}]")
+            elif expect or group_gate:
+                print("  ✅ G0-b 통과 — 요구 알림 전부 확인")
         m.eval()
         with torch.no_grad():
             with torch.autocast(dev, dtype=torch.bfloat16, enabled=(dev == "cuda")):
                 logits = m(x)
                 ce = F.cross_entropy(logits.reshape(-1, sc.vocab_size), y.reshape(-1)).item()
             act = logits.float().abs().max().item()
-        results[mode] = (ce, act)
+        results[label] = (ce, act)
         print(f"\n  step0 CE {ce:.4f}   |logit|max {act:.2f}")
         del m, logits
         if dev == "cuda":
             torch.cuda.empty_cache()
 
     _hdr("판정")
-    print(f"  {'모드':<16}{'step0 CE':>12}{'|logit|max':>13}   G0-c")
-    print("  " + "-" * 60)
+    print(f"  {'모드':<24}{'step0 CE':>12}{'|logit|max':>13}   G0-c")
+    print("  " + "-" * 68)
     best, best_ce = None, None
-    for k, (ce, act) in results.items():
-        ok = ce < thr
-        print(f"  {k:<16}{ce:>12.4f}{act:>13.2f}   {'✅' if ok else '🚫'}")
-        if k != "(난수 대조군)" and (best_ce is None or ce < best_ce):
-            best, best_ce = k, ce
+    for key, (ce, act) in results.items():
+        is_control = key == "(난수 대조군)"
+        ok = (5.0 <= ce <= 9.4) if group_gate and not is_control else ce < thr
+        print(f"  {key:<24}{ce:>12.4f}{act:>13.2f}   {'✅' if ok else '🚫'}")
+        if group_gate and not is_control and not ok:
+            negative_fails.append(f"G0-c[{key}]")
+        if not is_control and (best_ce is None or ce < best_ce):
+            best, best_ce = key, ce
     rnd = results.get("(난수 대조군)", (None,))[0]
-    if best_ce is not None and best_ce >= thr:
+    if not group_gate and best_ce is not None and best_ce >= thr:
         fails.append("G0-c")
     print()
     if rnd is not None and best_ce is not None:
-        d = rnd - best_ce
-        if d > 0:
-            print(f"  ★이식이 걷어낸 출발 핸디캡: {d:+.4f} nats "
+        delta = rnd - best_ce
+        if delta > 0:
+            print(f"  ★이식이 걷어낸 출발 핸디캡: {delta:+.4f} nats "
                   f"(난수 {rnd:.4f} -^> {best} {best_ce:.4f})")
         else:
-            # ★2026-08-13 정정: 종전에는 음수도 "걷어냈다" 로 인쇄해 **정반대로 읽혔다**.
-            print(f"  🚫★이식이 출발점을 **더 나쁘게** 만들었다: {-d:.4f} nats "
+            print(f"  🚫★이식이 출발점을 **더 나쁘게** 만들었다: {-delta:.4f} nats "
                   f"(난수 {rnd:.4f} -^> {best} {best_ce:.4f})")
-            print(f"     -^> 이건 '초기화가 안 됐다' 가 아니라 **'초기화가 해롭다'** 는 뜻이다. "
-                  f"복제된 층이 교사가 본 적 없는 입력을 받는다(합성 불일치).")
-    if best:
+    if group_gate:
+        print("  ⚠️ P076 step0은 이식 유효성만 답한다. 최저 CE를 최종 품질 승자로 고르지 않는다.")
+    elif best:
         print(f"  ★권장 depth_init = **{best}**")
         for other in ("gate_scale", "identity"):
             if other in results and "prop" in results:
-                d = results["prop"][0] - results[other][0]
-                print(f"    prop − {other} = {d:+.4f} nats "
-                      f"({other + ' 이 낫다' if d > 0 else 'prop 이 낫다'})")
-            print("    ⚠️ **이건 step0 값이다.** 학습 후에도 그 순서가 유지된다는 보장은 없다 — "
-                  "단계1 은 이 값으로 하나만 고르고, 뒤집힐 가능성을 결과문서에 적는다.")
+                delta = results["prop"][0] - results[other][0]
+                print(f"    prop − {other} = {delta:+.4f} nats "
+                      f"({other + ' 이 낫다' if delta > 0 else 'prop 이 낫다'})")
+        print("    ⚠️ **이건 step0 값이다.** 학습 후에도 그 순서가 유지된다는 보장은 없다.")
     print()
-    if fails:
-        print(f"  🚫 실패: {', '.join(fails)}  -^> **단계1(5.8h)을 돌리지 않는다**")
+    gate_exit = _group_gate_exit(fails, negative_fails if group_gate else [])
+    if gate_exit == 1:
+        print(f"  🚫 실행·계약 실패: {', '.join(fails)} — 후속 품질 팔을 열지 않는다")
+        return gate_exit
+    if gate_exit == 8:
+        print(f"  [GATE NEGATIVE] {', '.join(negative_fails)} — 유효 수치가 이식 대역을 못 넘었다")
+        return gate_exit
+    if group_gate:
+        print("  ✅ P076 Stage1 집약 방식 전부 이식 대역 PASS — Stage2 품질 팔은 별도 편성 가능")
     else:
-        print("  ✅ G0 전부 통과 — run_P049_depth_g16x2.bat 을 돌릴 수 있다")
-    return 1 if fails else 0
+        print("  ✅ G0 전부 통과 — 계획서의 다음 단계로 갈 수 있다")
+    return 0
 
 
 if __name__ == "__main__":
