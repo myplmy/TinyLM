@@ -14,6 +14,13 @@ MOD = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = MOD
 SPEC.loader.exec_module(MOD)
 
+SHELL_CHECK_MODULE = Path(__file__).resolve().with_name("check_shell_entrypoints.py")
+SHELL_CHECK_SPEC = importlib.util.spec_from_file_location("shell_entry_test", SHELL_CHECK_MODULE)
+assert SHELL_CHECK_SPEC and SHELL_CHECK_SPEC.loader
+SHELL_CHECK = importlib.util.module_from_spec(SHELL_CHECK_SPEC)
+sys.modules[SHELL_CHECK_SPEC.name] = SHELL_CHECK
+SHELL_CHECK_SPEC.loader.exec_module(SHELL_CHECK)
+
 
 def main() -> int:
     shell_train = (
@@ -49,7 +56,29 @@ def main() -> int:
     assert " ".join(judges[0][1].split()) == (
         "--preset m100s8 --models repeated unique --tokens 600M"
     )
-    print("[PASS] dryrun_batch parses BAT and WSL runlog launchers")
+    assert MOD._judge_values(
+        "--models a b --model-data data-a data-b --preset p", "--model-data"
+    ) == ["data-a", "data-b"]
+
+    full_with_push = shell_train.replace(
+        "--tag p097_ctrl_v2\n",
+        "--micro-bs 8 --accum 16 --seq 1024 --tag p097_ctrl_v2\n"
+        "/usr/bin/bash scripts/shell/tool_wandb_push.sh p097_ctrl_v2\n",
+    )
+    assert not SHELL_CHECK.training_wandb_contract_errors(
+        Path("run_P097_full.sh"), full_with_push.encode()
+    )
+    full_without_push = full_with_push.rsplit("\n", 2)[0] + "\n"
+    assert SHELL_CHECK.training_wandb_contract_errors(
+        Path("run_P097_full.sh"), full_without_push.encode()
+    )
+    short_probe = full_with_push.replace("--steps 2289", "--steps 250").replace(
+        "/usr/bin/bash scripts/shell/tool_wandb_push.sh p097_ctrl_v2\n", ""
+    )
+    assert not SHELL_CHECK.training_wandb_contract_errors(
+        Path("run_P060_probe.sh"), short_probe.encode()
+    )
+    print("[PASS] dryrun_batch parses BAT/WSL calls and enforces WSL W&B post-run scope")
     return 0
 
 

@@ -52,6 +52,13 @@ CONFIG_KEYS = [
     "emb_rank", "sparse34", "bpw", "depth_init", "group_init", "train_repeat", "repeat_mode",
     "kd", "kd_every", "kd_alpha", "kd_temp", "kd_teacher", "kd_chunk",
     "init_from", "init_from_src", "opt_dtype", "sdpa_gqa", "params",
+    # ★2026-09-20 WSL 계약 감사 — P097은 Muon RMS4·CLA2로 학습됐지만 종전 payload는
+    #   이 다섯 축을 버렸다. 업로드 성공 여부와 별개로 config가 불완전하면 같은 이름의
+    #   런을 재현할 수 없다. trainer JSON이 소유하는 값만 추가하고 파생값을 만들지 않는다.
+    "optimizer", "muon_scale", "muon_lr_mult", "muon_matrices",
+    "matrix_weight_decay", "matrix_weight_decay_effective", "muon_weight_decay",
+    "cla_group", "cla_edges", "wq_dtype", "doc_filter", "tokenizer_hf",
+    "ce_chunk", "save_every",
 ]
 # ★summary 로 올릴 필드 — "판정에 쓰는 것" 만.
 SUMMARY_KEYS = [
@@ -140,11 +147,17 @@ def _eligible(stem, d):
     return True, ""
 
 
-def collect(tag=None, verbose=False):
+def _tag_matches(stem: str, tag: str | None, *, exact: bool = False) -> bool:
+    if not tag:
+        return True
+    return (stem == tag or stem.endswith("_" + tag)) if exact else tag in stem
+
+
+def collect(tag=None, verbose=False, *, exact=False):
     """`runs/logs/*.json` 을 읽어 (이름, dict) 목록으로. **자격 없는 것은 제외**한다."""
     out, skipped = [], []
     for p in sorted(LOGS.glob("*.json")):
-        if tag and tag not in p.stem:
+        if not _tag_matches(p.stem, tag, exact=exact):
             continue
         try:
             d = json.loads(p.read_text(encoding="utf-8"))
@@ -220,6 +233,10 @@ def main():
     ap.add_argument("--project", default="tinylm")
     ap.add_argument("--entity", default=None)
     ap.add_argument("--tag", default=None, help="런 이름 부분 일치 필터")
+    ap.add_argument("--tag-exact", action="store_true",
+                    help="--tag를 raw experiment tag로 보고 파일 stem 끝에서 정확히 일치시킨다")
+    ap.add_argument("--expect-count", type=int, default=0,
+                    help="선택된 eligible run 수가 이 값과 다르면 login/push 전에 중단")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--push-meta", action="store_true",
                     help="experiments.tsv·checkpoints.tsv 를 아티팩트 런으로 올린다 "
@@ -229,9 +246,13 @@ def main():
     if a.check:
         return do_check()
 
-    runs = collect(a.tag, verbose=True)
+    runs = collect(a.tag, verbose=True, exact=a.tag_exact)
     if a.limit:
         runs = runs[:a.limit]
+    if a.expect_count and len(runs) != a.expect_count:
+        print(f"[STOP] selected eligible runs={len(runs)}, expected={a.expect_count}; "
+              "refusing ambiguous or empty wandb push")
+        return 2
     banner(f"wandb 동기화 — {'PUSH' if a.push else 'DRY-RUN(네트워크 없음)'} · {len(runs)}런", "#")
     if not a.push:
         print("  ★`--push` 가 없으므로 **아무것도 올리지 않는다.** 무엇이 올라갈지만 보여준다.")

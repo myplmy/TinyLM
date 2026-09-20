@@ -2,6 +2,7 @@ flag	grade	evidence	checked	declared_in
 --abl-crops	ok		2026-09-04	scripts/diag_layer_map.py
 --accum	ok		2026-09-04	scripts/check_run_registry.py,tinylm/cli.py
 --add	ok		2026-09-04	scripts/wip.py
+--alg-ids	ok	P025B 형상별 cuSPARSELt 알고리즘 탐색 목록; 탐색과 확인 측정을 분리한다	2026-09-20	scripts/diag_sparse24_path_attribution.py
 --all	ok		2026-09-04	scripts/check_handoff.py,scripts/diag_cache.py,scripts/fetch_bench_data.py,scripts/plot_results.py
 --all-pairs	ok		2026-09-04	scripts/paired_join.py
 --allow	ok		2026-09-04	scripts/check_change_scope.py,scripts/wip.py
@@ -67,6 +68,7 @@ flag	grade	evidence	checked	declared_in
 --cpu-ext-retry	ok		2026-09-04	scripts/bench_infer.py
 --cpu-watch	ok		2026-09-04	scripts/bench_infer.py
 --crops	ok		2026-09-04	scripts/diag_repeat_attn_sim.py,scripts/diag_visit_selectivity.py,scripts/eval_slices.py,scripts/paired_join.py
+--cuda-graph	ok	P025B 반복 sparse GEMM의 graph capture 효과를 기본 호출과 분리 측정	2026-09-20	scripts/diag_sparse24_path_attribution.py
 --data	ok		2026-09-04	scripts/bench_fused_int8.py,scripts/bench_infer.py,scripts/census_heldout_discrimination.py,scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_attention_sink.py,scripts/diag_bench_overlap.py,scripts/diag_bench_tokens.py,scripts/diag_cache.py,scripts/diag_chat_overhead.py,scripts/diag_dataset_tokens.py,scripts/diag_decode_profile.py,scripts/diag_depth_init.py,scripts/diag_dtype_map.py,scripts/diag_fp8_precision.py,scripts/diag_group_agg.py,scripts/diag_kd_loss.py,scripts/diag_kvcache.py,scripts/diag_layer_gates.py,scripts/diag_layer_map.py,scripts/diag_repeat_attn_sim.py,scripts/diag_sft_mask.py,scripts/diag_spam_rate.py,scripts/diag_sparse34.py,scripts/diag_sparse34_pack.py,scripts/diag_train_repeat.py,scripts/diag_trapping.py,scripts/diag_val_docs.py,scripts/diag_val_lang.py,scripts/diag_vocab.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py,scripts/eval_slices.py,scripts/mem_runtime.py,scripts/paired_eval.py,scripts/probe_prompts.py,tinylm/cli.py
 --data-default	ok		2026-09-04	scripts/common_bpb.py
 --date	ok		2026-09-04	scripts/new_proposal.py
@@ -105,6 +107,7 @@ flag	grade	evidence	checked	declared_in
 --exact-cache	ok		2026-09-04	tinylm/cli.py
 --exact-path	ok		2026-09-04	scripts/new_proposal.py
 --evidence	ok	P094 R0 machine-readable P022C dependency evidence path; absence is declared HOLD exit 8	2026-09-19	scripts/diag_p094_dependency_gate.py
+--expect-count	ok	W&B exact-tag post-run 전송에서 선택된 eligible JSON이 정확히 하나인지 login 전에 검증	2026-09-20	scripts/wandb_sync.py
 --expect-before	ok		2026-09-04	scripts/wip.py
 --explicit-path	ok		2026-09-04	scripts/check_doc_routing.py
 --field	ok		2026-09-04	scripts/wip.py
@@ -118,6 +121,7 @@ flag	grade	evidence	checked	declared_in
 --force	ok	2026-09-10 신설 - 벤치 캐시를 다시 만든다. held-out 판이 바뀌어도 '이미 있다' 로 건너뛰던 구멍을 막는다	2026-09-10	scripts/fetch_bench_data.py
 --force-dense	ok		2026-09-04	tinylm/cli.py
 --full-logits	ok	추론 벤치 역사 재현용; 실제 생성 벤치 기본은 logits_last_only이며 학습 forward 기본은 유지	2026-09-19	scripts/bench_infer.py
+--layouts	ok	P025B sparse operand layout 후보를 명시해 방향별 성능과 정합을 분리	2026-09-20	scripts/diag_sparse24_path_attribution.py
 --format	ok		2026-09-06	scripts/wandb_table_probe.py
 --freq-cap	ok		2026-09-04	scripts/diag_bench_tokens.py
 --from-step	ok		2026-09-04	scripts/check_spill.py
@@ -190,6 +194,7 @@ flag	grade	evidence	checked	declared_in
 --matrix-weight-decay	ok	A08 - 두 옵티마이저의 행렬 WD만 덮어쓴다. 미지정은 optimizer-aware 규약(AdamW 행렬 0.1, Muon 행렬 0)이며 임베딩·norm·LRM WD는 불변. 2026-09-18 Muon RMS4 기본 채용 뒤에도 None을 유지해 이 구분을 보존	2026-09-18	tinylm/cli.py
 --max-abs-ratio	ok	P025B FP16 GEMM max absolute error를 reference RMS로 정규화한 outlier gate	2026-09-19	scripts/diag_sparse24_inference_attribution.py
 --max-bytes	ok		2026-09-04	scripts/diag_spam_rate.py
+--max-memory-ratio	ok	P022C FP8 peak allocation의 BF16 대비 독립 문턱	2026-09-20	scripts/diag_fp8_path_attribution.py
 --max-nrms	ok	FP8·2:4·GQA의 RMS(error)/RMS(reference) 정합 문턱	2026-09-19	scripts/diag_fp8_scaling_overhead.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_sparse24_inference_attribution.py
 --max-output-nrms	ok	P093 parent approximation 출력 NRMS viability 상한	2026-09-19	scripts/diag_sharing_parent_approx.py
 --max-speed-ratio	ok	P060B WSL native forced-GQA의 off-default 대비 허용 속도 대가	2026-09-19	scripts/diag_sdpa_wsl_gqa.py
@@ -214,6 +219,7 @@ flag	grade	evidence	checked	declared_in
 --mlp-split	ok		2026-09-04	scripts/diag_depth_init.py,tinylm/cli.py
 --mode	ok		2026-09-04	scripts/diag_train_repeat.py
 --model	ok		2026-09-06	scripts/bench_tsv.py
+--model-arch	ok	P097처럼 태그 접두사로 구조를 추측할 수 없는 checkpoint의 모델별 arch를 명시	2026-09-20	scripts/eval_bench_suite.py,scripts/eval_recipe_prompt_panel.py
 --model-data	ok	checkpoint가 사용한 tokenizer identity를 추측하지 않고 명시한다	2026-09-18	scripts/infer_text_probe.py
 --models	ok		2026-09-04	scripts/bench_fused_int8.py,scripts/bench_infer.py,scripts/census_heldout_discrimination.py,scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_attention_sink.py,scripts/diag_decode_profile.py,scripts/diag_fp8_precision.py,scripts/diag_kvcache.py,scripts/diag_layer_map.py,scripts/diag_sparse34.py,scripts/diag_trapping.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py,scripts/mem_runtime.py,scripts/paired_eval.py,scripts/probe_prompts.py
 --m-values	ok	P025B one-way inference/training pack을 decode·prefill·training 형상 M별로 분리	2026-09-19	scripts/diag_sparse24_inference_attribution.py
@@ -233,6 +239,8 @@ flag	grade	evidence	checked	declared_in
 --no-pmi	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/eval_bench_suite.py
 --not-run	ok		2026-09-04	scripts/wip.py
 --note	ok		2026-09-04	scripts/registry.py,scripts/runlog.py,scripts/wip.py
+--off-tag	ok	P060B 동일조건 off JSON을 exact raw tag로 선택하는 paired gate 입력	2026-09-20	scripts/diag_sdpa_gqa_training_pair.py
+--on-tag	ok	P060B 동일조건 on JSON을 exact raw tag로 선택하는 paired gate 입력	2026-09-20	scripts/diag_sdpa_gqa_training_pair.py
 --num	ok		2026-09-04	scripts/runlog.py
 --old	ok		2026-09-04	scripts/rename_result.py
 --only	ok		2026-09-04	scripts/fetch_bench_data.py
@@ -243,6 +251,7 @@ flag	grade	evidence	checked	declared_in
 --out	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/diag_lut_kernel.py
 --out-jsonl	ok		2026-09-04	scripts/eval_bench_suite.py
 --outdir	ok		2026-09-04	scripts/runlog.py
+--outputs	ok	P097 공통평가 산출물의 기존 존재 여부를 실행 전에 fail-closed 검사	2026-09-20	scripts/check_p097_stage2_assets.py
 --override	ok		2026-09-04	scripts/wip.py
 --pairs	ok		2026-09-04	scripts/paired_join.py
 --paths	ok		2026-09-04	scripts/diag_decode_profile.py
@@ -256,6 +265,7 @@ flag	grade	evidence	checked	declared_in
 --preset	ok		2026-09-04	scripts/bench_fused_int8.py,scripts/bench_infer.py,scripts/census_heldout_discrimination.py,scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_attention_sink.py,scripts/diag_decode_profile.py,scripts/diag_depth_init.py,scripts/diag_dtype_map.py,scripts/diag_fp8_precision.py,scripts/diag_gqa_equiv.py,scripts/diag_group_agg.py,scripts/diag_kvcache.py,scripts/diag_layer_gates.py,scripts/diag_layer_map.py,scripts/diag_repeat_attn_sim.py,scripts/diag_sparse34.py,scripts/diag_sparse34_pack.py,scripts/diag_train_repeat.py,scripts/diag_trapping.py,scripts/diag_val_docs.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py,scripts/eval_slices.py,scripts/mem_runtime.py,scripts/paired_eval.py,scripts/probe_prompts.py,tinylm/cli.py
 --previous	ok		2026-09-04	scripts/handoff_queue.py,scripts/wip.py
 --probe-only	ok		2026-09-04	scripts/diag_fp8_precision.py
+--profile-iters	ok	P022C·P025B profiler 반복 수를 timing 반복과 분리	2026-09-20	scripts/diag_fp8_path_attribution.py,scripts/diag_sparse24_path_attribution.py
 --project	ok		2026-09-04	scripts/wandb_sync.py,scripts/wandb_table_probe.py
 --prompt	ok		2026-09-04	tinylm/cli.py
 --prompt-file	ok	임의 생성 probe의 UTF-8 prompt 파일. 한 줄당 한 prompt	2026-09-18	scripts/infer_text_probe.py
@@ -284,6 +294,7 @@ flag	grade	evidence	checked	declared_in
 --retired-claims	ok		2026-09-04	scripts/wip.py
 --reuse-attn-on-dup	rejected	결과 041 §17.4 - 재귀 이득 -0.0203 을 전부 잃고 +0.0079 더 나빴다	2026-09-04	scripts/paired_eval.py,tinylm/cli.py
 --root	ok	metadata/SFT 감사 대상 root 지정; 보호 데이터 접근 권한은 별도	2026-09-18	scripts/audit_sft_corpus.py,scripts/check_doc_metadata.py
+--rounds	ok	P022C·P025B 측정 순서 교차 반복 횟수	2026-09-20	scripts/diag_fp8_path_attribution.py,scripts/diag_sparse24_path_attribution.py
 --rows	ok		2026-09-04	scripts/diag_kd_loss.py
 --sample	ok		2026-09-04	scripts/diag_bench_overlap.py,scripts/diag_val_lang.py
 --samples	ok	실제 validation span 또는 P093 synthetic activation 표본 수	2026-09-19	scripts/diag_sharing_parent_approx.py,scripts/infer_text_probe.py
@@ -291,7 +302,7 @@ flag	grade	evidence	checked	declared_in
 --scan	ok		2026-09-04	scripts/registry.py
 --sched	ok		2026-09-04	tinylm/cli.py
 --scope	ok	metadata 감사 범위 codex/all 선택; 기본 codex	2026-09-18	scripts/check_doc_metadata.py
---sdpa-gqa	rejected	CLAUDE.md 3.6 - VRAM +27%, 시간 +96%	2026-09-04	tinylm/cli.py
+--sdpa-gqa	exp	결과046 Windows 구 조합은 VRAM +27%, 시간 +96%로 음성; P060B WSL torch2.10 default dispatcher·현 recipe 재검증은 사용자 승인된 독립 stratum이며 기본값 승격 아님	2026-09-20	tinylm/cli.py
 --seed	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/diag_layer_map.py,scripts/diag_lut_kernel.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py,scripts/eval_slices.py,tinylm/cli.py
 --seq	ok		2026-09-19	scripts/check_run_registry.py,scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_attention_sink.py,scripts/diag_chat_overhead.py,scripts/diag_depth_init.py,scripts/diag_dtype_map.py,scripts/diag_fp8_precision.py,scripts/diag_gqa_equiv.py,scripts/diag_group_agg.py,scripts/diag_kd_loss.py,scripts/diag_layer_map.py,scripts/diag_p067_teacher.py,scripts/diag_repeat_attn_sim.py,scripts/diag_sdpa_backends.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_train_repeat.py,scripts/diag_trapping.py,scripts/diag_val_docs.py,scripts/eval_slices.py,scripts/paired_eval.py,tinylm/cli.py
 --seq-max	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py
@@ -309,6 +320,8 @@ flag	grade	evidence	checked	declared_in
 --source	ok	POSIX smoke wrapper가 파싱할 canonical BAT module 경로 선택; 실행 권한 아님	2026-09-18	scripts/smoke_module.py
 --sparse34	exp	3:4 준정형. 표준 경로 전용	2026-09-04	tinylm/cli.py
 --spec-only	ok		2026-09-04	scripts/diag_p067_teacher.py
+--split-k-modes	ok	P025B cuSPARSELt Split-K mode 탐색 후보	2026-09-20	scripts/diag_sparse24_path_attribution.py
+--split-k-values	ok	P025B cuSPARSELt Split-K factor 탐색 후보	2026-09-20	scripts/diag_sparse24_path_attribution.py
 --sql	ok		2026-09-04	scripts/registry.py
 --squad	ok		2026-09-04	scripts/diag_common_text.py
 --stale	ok		2026-09-04	scripts/check_index_sync.py
@@ -318,6 +331,7 @@ flag	grade	evidence	checked	declared_in
 --strict	ok		2026-09-04	scripts/dryrun_batch.py
 --structural-audit	ok	SFT 표면 슬롯을 가린 train/eval template 근접도 감사	2026-09-18	scripts/audit_sft_corpus.py
 --stub	ok		2026-09-08	scripts/compass.py
+--tag-exact	ok	W&B raw experiment tag를 stem suffix exact match로 제한해 부분일치 오업로드 방지	2026-09-20	scripts/wandb_sync.py
 --student	ok		2026-09-04	scripts/diag_kd_loss.py
 --suffix	ok		2026-09-04	scripts/diag_val_lang.py,scripts/diag_vocab.py
 --sync	ok		2026-09-04	scripts/check_flag_whitelist.py
@@ -326,6 +340,7 @@ flag	grade	evidence	checked	declared_in
 --target-train	ok		2026-09-04	scripts/diag_dataset_tokens.py
 --target-val	ok		2026-09-04	scripts/diag_dataset_tokens.py
 --task	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/diag_bench_overlap.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py
+--tasks	ok	P097 asset gate가 확인할 benchmark 목록을 명시	2026-09-20	scripts/check_p097_stage2_assets.py
 --teacher	ok		2026-09-04	scripts/diag_kd_loss.py,scripts/diag_p067_teacher.py
 --teacher-dtype	ok		2026-09-04	tinylm/cli.py
 --teacher-preset	ok		2026-09-04	scripts/diag_depth_init.py,scripts/diag_layer_gates.py,scripts/diag_repeat_attn_sim.py,scripts/diag_train_repeat.py
@@ -350,12 +365,15 @@ flag	grade	evidence	checked	declared_in
 --top-unused	ok		2026-09-04	scripts/diag_vocab.py
 --train	ok		2026-09-04	scripts/diag_dataset_quality.py,scripts/diag_dataset_tokens.py
 --train-repeat	ok		2026-09-04	tinylm/cli.py
+--tune-iters	ok	P025B 알고리즘 탐색 반복 수; 최종 확인 반복과 분리	2026-09-20	scripts/diag_sparse24_path_attribution.py
+--tune-warmup	ok	P025B 알고리즘 탐색 warmup; 최종 확인 warmup과 분리	2026-09-20	scripts/diag_sparse24_path_attribution.py
 --turns	ok		2026-09-04	scripts/diag_chat_overhead.py
 --unpack-cache	ok		2026-09-04	scripts/bench_infer.py,scripts/mem_runtime.py
 --update-every	ok	P092 TLinear microtrainer topology update interval	2026-09-19	scripts/diag_dynamic_sparse_tlinear.py
 --user-owned	ok		2026-09-04	scripts/wip.py
 --val	ok		2026-09-04	scripts/diag_dataset_quality.py,scripts/diag_dataset_tokens.py
 --verbose	ok		2026-09-04	scripts/check_doc_ownership.py,scripts/check_flag_used.py,scripts/check_flag_whitelist.py,scripts/check_imports.py,scripts/check_index_sync.py
+--verbose-build	ok	P014D native extension compiler 명령·진단 출력 opt-in	2026-09-20	scripts/bench_lut_cpu_native.py,scripts/test_lut_cpu_native.py
 --verify	ok		2026-09-04	scripts/fetch_bench_data.py,scripts/plot_results.py
 --vocab	ok		2026-09-04	scripts/diag_kd_loss.py
 --vs	ok		2026-09-04	tinylm/cli.py

@@ -1,7 +1,7 @@
 # P014D — **LUT 배포 커널: 속도와 패킹**
 
-- **상태**: 🔄**진행 중·커널 구현 HOLD** — Stage0bW CPU profile은 완주했다
-  ([결과 069 §8](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#8-stage0bw-교정-재실행2026-09-20--프로파일은-완주했고-즉시-커널-착수-근거는-부족)). int8은 fp32보다 5~15% 빨랐지만 LUT reference는 +1~+23% 느렸고, LUT 언팩 대역 25.1~36.3%는 유도 40~55% 아래다. 명시 중단선 20% 미만도 아니므로 축을 닫지 않되 6h custom kernel은 열지 않는다.
+- **상태**: 🔄**진행 중·native CPU v0 구현** — Stage0bW CPU profile은 완주했고
+  ([결과 069 §8](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#8-stage0bw-교정-재실행2026-09-20--프로파일은-완주했고-즉시-커널-착수-근거는-부족)). 사용자 후속 승인으로 외부 다운로드 없는 5-trit/per-row-alpha C++ native v0와 actual-model gate를 구현했다. 작은 합성 정합·TLinear dispatch는 PASS, 실제 model decode는 `NOT_RUN`이다.
 - **상태 갱신**: 2026-09-20
 - **신설**: 2026-08-30 (사용자 지시 12 — P014 가 길어져 가독성·관리가 나빠졌다)
 - **이관 원본**: [P014](P014_커스텀삼진커널-검증.md) · [P014B](P014B_LUT커널-실사-및-속도게이트.md) · [P014C](P014C_우리구조에맞는-역양자화제거-경로.md)
@@ -147,3 +147,32 @@ LUT 이 **방문당 비용을 절반**으로 만들면 기울기 3.128 → ⚙1.
 사전등록 20% 중단선에는 들지 않아 LUT 축 자체는 열어 두지만, 40~55% 개방선에도 들지 않으므로
 직접 커널 6h는 `HOLD`다. §4.2의 I2_S per-row-alpha 호환성 정적 실사(⚙2h)를 먼저 수행하고,
 재사용 가능성이 없고 profiler상 제거 가능한 비용이 1.5× 채택선을 지지할 때만 직접 구현을 연다.
+
+## 9. 2026-09-20 custom kernel 현황 재감사와 native CPU v0
+
+재감사 결과 기존 구현은 세 층이었다.
+
+1. `lut.py`: 5트릿/byte 패킹과 PyTorch `einsum+gather` reference — 모델에 연결됐지만 native가 아님.
+2. `_weight_int8pack_mm`: per-row int8 융합 — 결과028에서 언팩 cache보다 6.5배 느리고 삼진
+   1.6bpw를 직접 읽지 않으므로 P014D 해법이 아님.
+3. `ternary_kernel.py`: GPU 학습용 Triton 실험 — CPU decode 목표와 다르며 LUT packed code를 읽지 않음.
+
+따라서 “custom LUT kernel 구현 완료” 주장은 거짓이었다. 외부
+[T-MAC](https://github.com/microsoft/T-MAC)과 [BitNet](https://github.com/microsoft/BitNet)은
+고성능 SIMD·전용 layout/build 체계를 요구하고, 현 g=5 code/per-row alpha/TLinear ABI에 바로
+연결되지 않는다. 이번 단계에서는 외부 소스를 vendoring하지 않고 다음 최소 native 기준선을 구현했다.
+
+- `tinylm/csrc/lut_cpu.cpp`: packed uint8 code를 직접 읽는 float32 CPU C++ LUT v0.
+- `tinylm/model/lut_cpu.py`: explicit `lut_backend=native_cpu`일 때만 lazy build; Ninja가 없으면
+  로컬 C++17 compiler fallback. 실패 시 reference로 조용히 fallback하지 않음.
+- `TLinear.forward`: default `reference`는 불변, native는 CPU/per-row alpha만 fail-closed.
+- 정합: 2-D·3-D·TLinear dispatch compiled PASS.
+- 합성 M=1, 1 thread 두 차례: native/reference 1.36~2.42×, native/dense
+  0.288~0.731×. 즉 Python overhead 감소 방향은 재현됐지만 짧은 microbenchmark 분산이 크고,
+  dense를 이긴 형상은 없어 SIMD 최적 kernel은 아직 아니다.
+
+`run_P014D_Stage1W_native_lut_kernel.sh`는 compile 정합→TinyLM shape→두 actual model
+decode를 같은 세션에서 실행한다. native LUT가 int8 경로보다 1.5× 빠른 모델이 하나도 없으면
+exit8 음성이다. 이는 per-row 재양자화 speed gate이며 품질 채택은 아니다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

@@ -240,6 +240,8 @@ fp32 상주와 int8 상주가 갈린다.**
 | `qa_*` | 어닐 형태(P035: `qa_step60`·`qa_step80`) | ⚠️**2026-08-23 정정 — 이 행이 낡았다.** P035 는 **결과 022 로 종결**(2×2 네 값이 1.07σ 안, 형태 효과의 부호가 전이점에 따라 뒤집힘 = 검출 불가). `--anneal-shape` 은 구현돼 있고 **재실행 계획 없음** |
 | `p35b_a3_*` | P035B A3 동역학(`e60`·`e80`)과 audit 오염 대조(`off80`) | **예약 2026-09-15.** 세 팔 모두 m100s8·250 step·600M exact pool·seed 1337; 🚫품질 또는 anneal 기본값 판정에 사용 금지 |
 | `p097_ctrl_v2`·`p097_fw2`·`p097_edu_v2`·`p097_madlad` | P097 300M 한영 dataset recipe 대조 | **사용 완료 2026-09-20.** 전 팔 m100s10 dense·CLA2·Muon RMS4×4·300.024M draw·600M nominal pool·seed1337·exit0. tokenizer/data/val이 달라 자기 val_loss 교차비교 금지([090 §5](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#5-stage0bstage1abd-실제-완료2026-09-20)) |
+| `p076_s2_mean`·`p076_s2_middle`·`p076_s2_normmean` | P076 Stage2 부모 집약 품질 3팔 | **예약 2026-09-20.** m100R1c tied·같은 dense parent·Muon RMS4×4·CLA2·300M/600M·seed1337; `group_init`만 변경 |
+| `p060b_s1w_off250`·`p060b_s1w_on250` | P060B WSL GQA 250-step 속도/VRAM gate | **예약 2026-09-20.** m100s10 dense·Muon RMS4×4·CLA2·32.768M probe; 품질/W&B 판정 금지 |
 | `mA_*`,`mB_*`,`mC_*` | 1차 리뷰 최적안 검증(REVIEW1) | ✅ **완료**(결과 012). 승자 = `mA_g4s34_k4` |
 | `p6d_s2` | σ 측정 — p6d 를 시드만 바꿔 재현(REVIEW1 [1]) | ✅ **완료**(결과 012, σ=0.012) |
 | `p12*` | 1200M 풀 계열(P007B: `p12d`·`p12d600`·`p12tk600_k4`) | **예약**(미실행) |
@@ -3452,3 +3454,7 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
     최종 확인 수치로 재사용하지 않는다.
 78. ★★**서로 다른 recipe/tokenizer/val의 자체 loss는 학습 완료 증거이지 recipe 순위가 아니다.**
     같은 문항·공통 byte 원문 평가 전에는 `DESCRIPTIVE_ONLY`로 남긴다.
+79. ★★**WSL full training은 exact-tag post-run W&B를 사용하고, 50M 미만 probe는 업로드하지
+    않는다.** remote 실패는 JSON·학습 rc를 덮지 않으며 W&B는 정본이 아니다.
+80. ★★**native extension과 빠른 kernel은 동의어가 아니다.** P014D C++ LUT v0의 compiled
+    정합은 PASS지만 합성 두 측정에서 dense 대비 0.288~0.731×다. actual model·SIMD 전에는 속도 채택 금지.

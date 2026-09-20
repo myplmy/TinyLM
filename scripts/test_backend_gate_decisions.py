@@ -22,6 +22,7 @@ from scripts.diag_sharing_parent_approx import _approximation_gate
 from scripts.diag_depth_init import _group_gate_exit
 from scripts.diag_sparse24_inference_attribution import _agreement_ok, _error_stats
 from scripts.diag_sparse24_path_attribution import _parse_layouts, _parse_signed_csv
+from scripts.diag_sdpa_gqa_training_pair import _contract_errors as _gqa_training_contract_errors
 from scripts._gpu_bench_attribution import median_mad, parse_int_csv
 
 
@@ -88,6 +89,21 @@ def main() -> int:
     }
     assert [x[0] for x in _eligible(rows, "off_default", ("on_default",), 1.05, 0.10)] == ["on_default"]
     assert not _eligible(rows, "off_default", ("on_cudnn",), 1.05, 0.10)
+
+    common = {
+        "preset": "m100s10", "arch": "dense", "data": "ko-en",
+        "tokens": 32_768_000, "pool_tokens": 600_000_000, "steps": 250,
+        "micro_bs": 8, "accum": 16, "seq": 1024, "seed": 1337,
+        "optimizer": "muon", "muon_scale": "rms", "muon_lr_mult": 4.0,
+        "matrix_weight_decay_effective": 0.0, "cla_group": 2,
+        "grad_ckpt": False,
+    }
+    assert not _gqa_training_contract_errors(
+        dict(common, sdpa_gqa=False), dict(common, sdpa_gqa=True)
+    )
+    assert _gqa_training_contract_errors(
+        dict(common, sdpa_gqa=False), dict(common, sdpa_gqa=False)
+    )
 
     fp8_rows = [
         {"speedup": value, "nrms": 0.0377, "cosine": 0.99929,

@@ -158,6 +158,8 @@ class TMTConfig:
     # ★★P014 단계1(2026-08-22) — LUT 배포 경로의 출력채널 청크.
     #   0 = 한 번에. gather 결과 `(B, J, O)` 가 크면 여기서 나눈다(수학적으로 동일).
     lut_out_chunk: int = 0
+    # P014D native CPU LUT is explicit opt-in; reference remains the stable default.
+    lut_backend: str = "reference"
 
     # ── P036 단계0 : Arenas (Annealing Residual Synapse), arXiv:2601.07892 §3.2 ──
     #   Y = X·Tα + λ_t·X·W          (논문 식 7)
@@ -189,6 +191,8 @@ class TMTConfig:
         assert self.repeat_where in ("front", "back", "even"), \
             f"repeat_where 는 front|back|even — 받은 값: {self.repeat_where}"
         assert self.infer_repeat > 0, "infer_repeat 는 양수여야 한다"
+        assert self.lut_backend in ("reference", "native_cpu"), \
+            f"lut_backend 는 reference|native_cpu — 받은 값: {self.lut_backend}"
 
     @property
     def head_dim(self): return self.dim // self.n_q_heads

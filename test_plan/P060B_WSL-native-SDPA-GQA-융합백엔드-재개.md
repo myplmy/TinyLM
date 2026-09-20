@@ -49,7 +49,7 @@ WSL + `sm_89`는 플랫폼 선결을 만족한다. 패키지 존재는 커널 PA
 | **Stage0aWc ✅ 혼합** | warning을 variant별 포착하고 direct EFFICIENT와 grouped-broadcast EFFICIENT를 분리 | default/CUDNN/FLASH 후보 재현, direct EFFICIENT unavailable; grouped 팔은 5-D 형상 결함으로 무효 | [088 §7](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#7-stage0awc-backend-귀속2026-09-20--defaultcudnnflash-후보-efficient만-불가) |
 | **Stage0aWd 실행 대기** | batch×KV-head를 접은 4-D zero-stride grouped-broadcast로 EFFICIENT 재검증 | direct 결과와 분리해 정합·속도·physical storage 출력 | GPU 진단 수 초, 학습 0 |
 | **Stage0bW ✅ actual model 후보** | d14 RMS4 checkpoint full/cache prefill/decode | bit-identical, on/off 0.889×로 11.1% 빠름; peak 감소 0% | [088 §6.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#62-actual-d14-checkpoint-model-path) |
-| **Stage1W** | 250-step off vs forced-GQA 학습 속도·peak reserved·NaN/skip | memory ≥10% 절감, ms/step 악화 ≤5% | 조건부, SH 미작성 |
+| **Stage1W 구현·실행 대기** | 현 WSL current recipe 250-step off vs default GQA 학습 속도·peak reserved·NaN/skip | memory ≥10% 절감, ms/step 악화 ≤5% | SH·JSON gate 구현, 약 0.5h |
 | **Stage2W** | 배포 prefill/decode·장문 생성 정합성 | cache 경로 실제 텍스트와 속도 방향 통과 | 별도 승인·모델 실행 |
 
 Stage0aW exit 8은 forced-only 사전등록 질문에는 유효한 음성이지만, 실용 후보선에서
@@ -97,3 +97,21 @@ Stage0aW exit 8은 forced-only 사전등록 질문에는 유효한 음성이지�
   unavailable로 분리했다. 그러나 grouped-broadcast를 5-D로 전달해 fused kernel의 4-D 계약을
   위반했다. Q를 `[B×Hkv,G,T,D]`로 접고 K/V를 같은 4-D head 축에 zero-stride expand하는 Wd를
   구현했으며 GPU 결과는 `NOT_RUN`이다. 이 교정은 default GQA 후보를 무효화하지 않는다.
+
+## 7. 2026-09-20 Stage1W 구현·preflight
+
+과거 Windows P060의 `mC_gqa_off250/on250`은 m100R1c tied·구 optimizer 계열에서 on이
+약 1.96배 느리고 reserved VRAM도 5.07→6.45GB로 악화됐다. 새 Stage1W는 이를 지우거나
+반복하는 것이 아니라 **WSL torch2.10 + m100s10 dense + 현 Muon RMS4** environment/current
+recipe stratum에서 default dispatcher 후보가 학습에도 전이하는지 재검증한다.
+
+**독립변수**: 같은 250-step 조건의 `--sdpa-gqa` off/on 하나다. tags는
+`p060b_s1w_off250/on250`이며 충돌 0, draw는 32.768M, pool은 exact 600M이다.
+
+- `diag_sdpa_gqa_training_pair.py`가 JSON의 조건 동일성, `sdpa_gqa` 실제값, skip,
+  `ms_step_median`, reserved VRAM을 fail-closed로 대조한다.
+- on/off≤1.05와 reserved-memory ≥10% 절감을 모두 만족해야 exit0 후보이며, 유효 음성은 exit8이다.
+- 50M 미만 속도 probe라 W&B 업로드를 금지한다. 품질은 `NOT_RUN`이다.
+- 실행 파일: `run_P060B_Stage1W_sdpa_gqa_training_gate.sh`.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

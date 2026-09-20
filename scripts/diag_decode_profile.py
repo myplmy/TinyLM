@@ -118,7 +118,7 @@ def main() -> int:
     ap.add_argument("--models", nargs="+", required=True)
     ap.add_argument("--max-new", type=int, default=32)
     ap.add_argument("--paths", nargs="+", default=["fp32", "int8", "lut"],
-                    choices=["fp32", "int8", "lut"])
+                    choices=["fp32", "int8", "lut", "lut_native"])
     a = ap.parse_args()
 
     import torch                                          # noqa: F401
@@ -154,9 +154,12 @@ def main() -> int:
                 emb_quant=("int8" if path != "fp32" else None))
             if path != "fp32":
                 model.drop_latent()
-                if path == "lut":
+                if path in ("lut", "lut_native"):
                     model.cfg.lut_out_chunk = 0
                     model.to_lut()
+                    model.cfg.lut_backend = (
+                        "native_cpu" if path == "lut_native" else "reference"
+                    )
                 else:
                     model.to_int8()
             model.eval()

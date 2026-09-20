@@ -37,6 +37,36 @@ class WandbKeyPathTests(unittest.TestCase):
                 wandb_sync.WINDOWS_DEFAULT_KEY_FILE,
             )
 
+    def test_exact_tag_is_suffix_not_substring(self) -> None:
+        stem = "m100s10_ko-en-control-v2_300M_p097_ctrl_v2"
+        self.assertTrue(wandb_sync._tag_matches(stem, "p097_ctrl_v2", exact=True))
+        self.assertFalse(wandb_sync._tag_matches(stem, "p097_ctrl", exact=True))
+        self.assertTrue(wandb_sync._tag_matches(stem, "p097_ctrl", exact=False))
+
+    def test_payload_preserves_optimizer_and_cla_contract(self) -> None:
+        source = {
+            "optimizer": "muon",
+            "muon_scale": "rms",
+            "muon_lr_mult": 4.0,
+            "matrix_weight_decay_effective": 0.0,
+            "cla_group": 2,
+            "final": {"val_loss": 3.5},
+            "history": [{"step": 1, "val_loss": 4.0}],
+        }
+        config, summary, history = wandb_sync.payload("fixture", source)
+        self.assertEqual(
+            {key: config[key] for key in (
+                "optimizer", "muon_scale", "muon_lr_mult",
+                "matrix_weight_decay_effective", "cla_group",
+            )},
+            {
+                "optimizer": "muon", "muon_scale": "rms", "muon_lr_mult": 4.0,
+                "matrix_weight_decay_effective": 0.0, "cla_group": 2,
+            },
+        )
+        self.assertEqual(summary["final_val_loss"], 3.5)
+        self.assertEqual(history[0]["step"], 1)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

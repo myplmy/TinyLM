@@ -3,10 +3,17 @@
 from __future__ import annotations
 
 import os
+import re
 import shutil
+import shlex
 import subprocess
 import sys
 from pathlib import Path, PureWindowsPath
+
+try:
+    from scripts.dryrun_batch import launcher_calls
+except ModuleNotFoundError:  # direct `python scripts/check_shell_entrypoints.py`
+    from dryrun_batch import launcher_calls
 
 ROOT = Path(__file__).resolve().parent.parent
 COMMON_SHELL_FILES = (
@@ -14,7 +21,9 @@ COMMON_SHELL_FILES = (
     ROOT / "run_cleanup_checkpoints.sh",
     ROOT / "run_smoke_check.sh",
     ROOT / "scripts" / "shell" / "tinylm_env.sh",
+    ROOT / "scripts" / "shell" / "tool_wandb_push.sh",
 )
+WANDB_MIN_TOKENS = 50_000_000
 
 
 def shell_files() -> tuple[Path, ...]:
@@ -48,6 +57,61 @@ def experiment_log_contract_errors(path: Path, data: bytes) -> list[str]:
         errors.append("runlog name does not start with a P-plan number")
     if " -- " not in joined:
         errors.append("runlog child delimiter `--` is missing")
+    return errors
+
+
+def training_wandb_contract_errors(path: Path, data: bytes) -> list[str]:
+    """Live full-training SH must push exactly its raw tag after training.
+
+    Short probes below 50M draw tokens are deliberately excluded from W&B so
+    they cannot look like full quality runs. Historical ``-done`` launchers are
+    immutable evidence and predate this WSL contract, so only live files are
+    enforced.
+    """
+    if path.name.endswith("-done.sh") or not path.name.startswith("run_P"):
+        return []
+    text = data.decode("utf-8", errors="replace")
+    errors: list[str] = []
+    for program, args in launcher_calls(text):
+        if program != "run100m.py":
+            continue
+        tokens = shlex.split(args, posix=True)
+        if not tokens or tokens[0] != "train":
+            continue
+
+        def value(flag: str, default: int | None = None) -> int | None:
+            try:
+                return int(tokens[tokens.index(flag) + 1])
+            except (ValueError, IndexError):
+                return default
+
+        try:
+            tag = tokens[tokens.index("--tag") + 1]
+        except (ValueError, IndexError):
+            errors.append("training call has no --tag for W&B post-run identity")
+            continue
+        steps = value("--steps")
+        micro_bs = value("--micro-bs")
+        accum = value("--accum", 8)
+        seq = value("--seq")
+        if None in (steps, micro_bs, accum, seq):
+            errors.append(f"training tag {tag} lacks explicit steps/micro-bs/accum/seq")
+            continue
+        draw_tokens = int(steps) * int(micro_bs) * int(accum) * int(seq)
+        call_re = re.compile(
+            r"scripts/shell/tool_wandb_push\.sh\s+[\"']?"
+            + re.escape(tag)
+            + r"(?:[\"']|\s|$)"
+        )
+        has_push = bool(call_re.search(text))
+        if draw_tokens >= WANDB_MIN_TOKENS and not has_push:
+            errors.append(
+                f"full training tag {tag} ({draw_tokens} tokens) lacks exact WSL W&B post-run push"
+            )
+        if draw_tokens < WANDB_MIN_TOKENS and has_push:
+            errors.append(
+                f"short probe tag {tag} ({draw_tokens} tokens) must not be pushed to W&B"
+            )
     return errors
 
 
@@ -105,6 +169,10 @@ def main() -> int:
             errors.append(
                 f"experiment log contract {path.relative_to(ROOT).as_posix()}: {detail}"
             )
+        for detail in training_wandb_contract_errors(path, data):
+            errors.append(
+                f"training W&B contract {path.relative_to(ROOT).as_posix()}: {detail}"
+            )
 
     bash = find_bash()
     if bash is None:
@@ -153,7 +221,7 @@ def main() -> int:
         return 1
     print(
         f"[PASS] shell entrypoints={len(entries)}; "
-        "LF/shebang/mode/bash syntax/runlog/smoke grammar/Linux queue audit"
+        "LF/shebang/mode/bash syntax/runlog/W&B/smoke grammar/Linux queue audit"
     )
     return 0
 

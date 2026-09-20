@@ -79,6 +79,8 @@ TASKS = {
     # ★★2026-09-05 — KoBEST. 논문 지표는 **F1** 이지만 🚫우리 지표에 그 이름을 쓰지 않는다(규약 2)
     "kobest_copa":    ("mc",       0.50,  "F1(공식)",          "★한국어 2지선다 인과"),
     "kobest_hellaswag": ("mc",     0.25,  "F1(공식)",          "★한국어 4지선다 문장완성"),
+    "klue_ynat":      ("mc",       1 / 7, "macro-F1(공식)",    "★한국어 뉴스 주제 7지선다"),
+    "klue_nli":       ("mc",       1 / 3, "accuracy(공식)",    "★한국어 NLI 3지선다"),
     # ★★2026-09-06 — 우리가 만든 한국어 held-out. v2.7 에서 D6(정답이 둘)이 0 이 되어 열렸다.
     #   ⚠️**공식 metric 이 없다** — 외부 벤치가 아니라 우리 문항이다. 우연 25.0%.
     "stage1_heldout": ("mc",          0.25,  "(우리 것)",          "★한국어 4지선다 관계추론(자체)"),
@@ -113,6 +115,28 @@ def banner(s, ch="="):
 
 def _arch_of(tag):
     return "dense" if tag.startswith("dense") else "tied"
+
+
+def _expand_per_model(values, count, label, *, fallback=None):
+    """Expand a one-value option or validate an exact model-aligned list."""
+    selected = list(values or ([] if fallback is None else [fallback]))
+    if len(selected) == 1 and count > 1:
+        selected *= count
+    if len(selected) != count:
+        raise ValueError(
+            f"{label} 개수({len(selected)})가 --models({count})와 다르다; "
+            "하나만 주면 모든 모델에 적용된다"
+        )
+    return selected
+
+
+def _model_specs(models, default_data, model_data=None, model_arch=None):
+    datas = _expand_per_model(model_data, len(models), "--model-data", fallback=default_data)
+    inferred = [_arch_of(tag) for tag in models]
+    archs = inferred if model_arch is None else _expand_per_model(
+        model_arch, len(models), "--model-arch"
+    )
+    return list(zip(models, datas, archs))
 
 
 def load_rows(task, heldout_version="latest"):
@@ -313,6 +337,25 @@ def _ad_kobest_hellaswag(r):
             "gold": int(r["label"])}
 
 
+def _ad_klue_ynat(r):
+    """KLUE YNAT — title-only topic classification as fixed label MC."""
+    labels = ["IT과학", "경제", "사회", "생활문화", "세계", "스포츠", "정치"]
+    return {
+        "ctx": f"뉴스 제목: {r['title']}\n이 뉴스의 주제는",
+        "choices": [" " + label for label in labels],
+        "gold": int(r["label"]),
+    }
+
+
+def _ad_klue_nli(r):
+    """KLUE NLI label order: entailment, neutral, contradiction."""
+    return {
+        "ctx": f"전제: {r['premise']}\n가설: {r['hypothesis']}\n두 문장의 관계는",
+        "choices": [" 함의", " 중립", " 모순"],
+        "gold": int(r["label"]),
+    }
+
+
 def _ad_stage1_heldout(r):
     """★우리 Stage1 held-out — **판 둘의 스키마를 여기서 명시적으로 받는다**(A01 조치 2).
 
@@ -371,6 +414,7 @@ ADAPTERS = {
     "hellaswag": _ad_hellaswag, "piqa": _ad_piqa, "winogrande": _ad_winogrande,
     "arc_easy": _ad_arc, "arc_easy_full": _ad_arc, "arc_challenge": _ad_arc, "boolq": _ad_boolq,
     "kobest_copa": _ad_kobest_copa, "kobest_hellaswag": _ad_kobest_hellaswag,
+    "klue_ynat": _ad_klue_ynat, "klue_nli": _ad_klue_nli,
     "stage1_heldout": _ad_stage1_heldout,
     "mmlu": _ad_mmlu, "mmlu_redux": _ad_mmlu_redux, "musr": _ad_musr,
     "lambada": _ad_lambada, "gsm8k": _ad_gsm8k, "ifeval": _ad_ifeval,
@@ -705,6 +749,11 @@ def main():
     ap.add_argument("--models", nargs="+", required=True)
     ap.add_argument("--preset", default="m100R1c")
     ap.add_argument("--data", default="ko-en")
+    ap.add_argument("--model-data", nargs="+", default=None,
+                    help="모델별 tokenizer/data identity. 하나면 전 모델 공통; P097처럼 "
+                         "recipe가 다르면 --models와 같은 개수로 지정")
+    ap.add_argument("--model-arch", nargs="+", choices=("dense", "tied"), default=None,
+                    help="모델별 arch. 미지정이면 기존 tag 접두 추정; P097 tag는 dense를 명시")
     ap.add_argument("--tokens", default="300M")
     ap.add_argument("--n", type=int, default=200)
     ap.add_argument("--seq-max", type=int, default=1024)
@@ -734,6 +783,11 @@ def main():
                          "기본은 **학습 런에 얹는다**")
     a = ap.parse_args()
 
+    try:
+        model_specs = _model_specs(a.models, a.data, a.model_data, a.model_arch)
+    except ValueError as exc:
+        ap.error(str(exc))
+
     tasks = list(TASKS) if a.task == "all" else [a.task]
     for t in tasks:
         assert t in TASKS, f"모르는 과제: {t}. 가능: {'|'.join(TASKS)}"
@@ -747,7 +801,7 @@ def main():
     from tinylm.infer.generate import load_model
 
     dev = a.device or ("cuda" if torch.cuda.is_available() else "cpu")
-    tok = load_tokenizer(a.data)
+    tokenizers = {}
 
     banner("★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)", "#")
     print(f"  device={dev}  n={a.n}  seq_max={a.seq_max}  seed={a.seed}  "
@@ -815,14 +869,18 @@ def main():
         #   세 모델이 **같은 문항**을 풀었는데 정확도 비교만 비대응이었다.
         #   대응(McNemar)은 같은 자료에서 필요 n 을 크게 줄인다.
         per_ok = {}
-        for tag in a.models:
-            ck = paths.resolve_ckpt(a.preset, a.data, a.tokens, tag)
+        for tag, model_data, model_arch in model_specs:
+            ck = paths.resolve_ckpt(a.preset, model_data, a.tokens, tag)
             if not ck.exists():
                 print(f"  [건너뜀] 체크포인트 없음: {ck.name}")
                 continue
-            model, cfg, _ = load_model(arch=_arch_of(tag), ckpt_path=str(ck), device=dev)
+            if model_data not in tokenizers:
+                tokenizers[model_data] = load_tokenizer(model_data)
+            tok = tokenizers[model_data]
+            model, cfg, _ = load_model(arch=model_arch, ckpt_path=str(ck), device=dev)
             model.eval()
-            rec = {"tag": tag, "n_asked": len(items)}
+            rec = {"tag": tag, "data": model_data, "arch": model_arch,
+                   "n_asked": len(items)}
             if task == "stage1_heldout":
                 rec["heldout_version"] = used_ver   # ★A01 — 결과 한 행에서 판을 복원할 수 있다
 
@@ -1174,7 +1232,7 @@ def _final(s):
     print("     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.")
 
 
-def _run_name(a, tag):
+def _run_name(a, tag, data=None):
     """★학습 런과 **같은 이름**. `wandb_sync` 가 `runs/logs/*.json` 의 stem 을 쓰고,
     그 stem 이 `{preset}_{data}_{tokens}_{tag}` 이므로 여기서도 그대로 만든다.
 
@@ -1189,7 +1247,8 @@ def _run_name(a, tag):
     복구되지 않은 것은 이름뿐이다. 그 파일명이 곧 `{preset}_{data}_{tokens}_{tag}.pt` 이므로
     **거기서 stem 을 떼면 이름이 언제나 맞는다.**
     """
-    hit = sorted((ROOT / "runs" / "ckpt").glob(f"*_{a.data}_{a.tokens}_{tag}.pt"))
+    data = data or a.data
+    hit = sorted((ROOT / "runs" / "ckpt").glob(f"*_{data}_{a.tokens}_{tag}.pt"))
     hit = [p for p in hit if not p.stem.endswith("_best")]
     if len(hit) == 1:
         return hit[0].stem
@@ -1197,17 +1256,17 @@ def _run_name(a, tag):
         # 🚫여러 프리셋에 같은 태그가 있으면 **추측하지 않는다** — CLI 값을 쓴다
         print(f"  ⚠️`{tag}` 가 프리셋 {len(hit)}개에 있다 — `--preset {a.preset}` 을 그대로 쓴다: "
               + ", ".join(p.stem.split("_")[0] for p in hit))
-    return f"{a.preset}_{a.data}_{a.tokens}_{tag}"
+    return f"{a.preset}_{data}_{a.tokens}_{tag}"
 
 
-def _bench_eligible(a, tag):
+def _bench_eligible(a, tag, data=None):
     """★250스텝 프로브를 W&B 에 올리지 않는다(2026-08-23 사용자 지시, 2026-09-03 재확인).
 
     사용자가 **짧은 프로브 데이터를 이미 한 번 지웠다.** 벤치 경로에도 같은 게이트를 건다.
     판정은 스텝이 아니라 **학습 토큰**이다 — `steps` 는 유효배치에 따라 뜻이 달라진다.
     """
     import json
-    p = ROOT / "runs" / "logs" / f"{_run_name(a, tag)}.json"
+    p = ROOT / "runs" / "logs" / f"{_run_name(a, tag, data)}.json"
     if not p.exists():
         return False, f"학습 json 이 없다({p.name}) - 어느 런의 벤치인지 결합할 수 없다"
     try:
@@ -1264,12 +1323,13 @@ def _push_wandb(summary, a):
 
     pushed = skipped = 0
     for tag, tasks in sorted(per_tag.items()):
-        ok, why = _bench_eligible(a, tag)
+        data = next((rec.get("data") for rec in tasks.values() if rec.get("data")), a.data)
+        ok, why = _bench_eligible(a, tag, data)
         if not ok:
             print(f"  [건너뜀] {tag}: {why}")
             skipped += 1
             continue
-        rid = _run_name(a, tag)
+        rid = _run_name(a, tag, data)
         r = wandb.init(project=a.wandb_project, id=rid, name=rid, resume="allow", reinit=True)
         flat = {}
         for task, rec in tasks.items():

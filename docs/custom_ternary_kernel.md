@@ -117,3 +117,24 @@
 
 > **최근 갱신 2026-08-14** — 본문(2026-07)의 전제 5개 중 5개가 실측으로 뒤집혔다.
 > 커널 자체 제작은 보류, 남은 것은 **있는 연산을 쓰는 것**이다.
+
+---
+
+## 6. 2026-09-20 정정 — **int8 연산은 해법이 아니었고 native LUT v0를 열었다**
+
+위 §1의 “커널을 짤 필요가 없다”는 뒤의 [결과 028 §13](../test_result/028_20260807_P014C-per-row는-공짜지만-융합커널은-6.5배-느리다.md)과
+[결과 069 §8](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#8-stage0bw-교정-재실행2026-09-20--프로파일은-완주했고-즉시-커널-착수-근거는-부족)에 의해 폐기됐다.
+`_weight_int8pack_mm`는 존재하지만 우리 CPU 조합에서 언팩 cache보다 6.5배 느렸고, 5-trit
+packed code를 직접 읽는 삼진 kernel도 아니다.
+
+현재 구현 상태:
+
+| 층 | 상태 | 의미 |
+|---|---|---|
+| Python LUT reference | 완료 | 1.6bpw 상주·정합 정본, 속도 kernel 아님 |
+| C++ native LUT v0 | 구현·합성 정합 PASS | g=5 uint8 code+per-row alpha를 직접 읽음, default off |
+| SIMD/AVX2·T-MAC/BitNet 연동 | 미구현 | native v0 두 측정이 dense 대비 0.288~0.731×라 최적 kernel 아님 |
+| actual model decode | `NOT_RUN` | 사용자 Stage1W 로그가 채택/음성을 결정 |
+
+외부 T-MAC/BitNet 코드를 복사하지 않았고, lazy extension build 실패 시 reference로 조용히
+fallback하지 않는다. 정본 계획은 [P014D §9](../test_plan/P014D_LUT-배포커널-속도와-패킹.md#9-2026-09-20-custom-kernel-현황-재감사와-native-cpu-v0)다.

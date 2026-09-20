@@ -358,9 +358,20 @@ class TLinear(nn.Module):
     def forward(self, x, mode_p=None):
         if self._lut_codes is not None:          # ★★P014 단계1: LUT 배포 경로(1.600 bpw)
             from .lut import lut_linear, TRITS_PER_BYTE
-            y = lut_linear(x, self._lut_codes, TRITS_PER_BYTE, self._lut_ipad,
-                           alpha=self._lut_alpha,
-                           out_chunk=int(getattr(self.cfg, "lut_out_chunk", 0) or 0))
+            lut_backend = str(getattr(self.cfg, "lut_backend", "reference"))
+            if lut_backend == "reference":
+                y = lut_linear(x, self._lut_codes, TRITS_PER_BYTE, self._lut_ipad,
+                               alpha=self._lut_alpha,
+                               out_chunk=int(getattr(self.cfg, "lut_out_chunk", 0) or 0))
+            elif lut_backend == "native_cpu":
+                from .lut_cpu import lut_linear_native_cpu
+                y = lut_linear_native_cpu(
+                    x, self._lut_codes, self._lut_ipad, self._lut_alpha,
+                )
+            else:
+                raise RuntimeError(
+                    f"unknown LUT backend {lut_backend!r}; expected reference or native_cpu"
+                )
             if self.use_mode and mode_p is not None:
                 h = F.linear(x, self.mode_a) * (mode_p @ self.mode_gain)
                 y = y + F.linear(h, self.mode_b)

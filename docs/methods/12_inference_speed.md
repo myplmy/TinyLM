@@ -204,4 +204,6 @@ P060B actual model GQA 경로는 logits 동등성을 유지하며 `11.1354→9.8
 현 권장이다. 단 actual allocation 감소 0, backward·학습·긴 생성은 미측정이다.
 
 P014D Stage0bW는 완주했다. int8은 fp32보다 5~15% 빨랐지만 LUT reference는 +1~+23% 느리고
-LUT 언팩 대역은 25.1~36.3%였다. 6h custom kernel은 HOLD, I2_S 정적 실사가 다음이다.
+LUT 언팩 대역은 25.1~36.3%였다. 사용자 후속 승인으로 g=5/per-row-alpha C++ native v0를
+구현했고 합성 M=1 두 측정에서 Python reference보다 1.36~2.42× 빨랐지만 dense 대비 0.288~0.731×다.
+actual model decode와 SIMD/외부 kernel 연동은 `NOT_RUN`이다.
