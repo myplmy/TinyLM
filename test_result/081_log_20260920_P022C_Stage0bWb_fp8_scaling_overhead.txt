@@ -1,0 +1,25 @@
+P022C Stage0bWb: Stage0bW measured valid rows but mislabeled the scientific numeric/speed negative as execution failure; corrected gate classification
+
+==============================================================================
+[runlog] 2026-09-20 02:13:34  name=P022C_Stage0bWb_fp8_scaling_overhead
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_fp8_scaling_overhead.py --require-wsl --m 8192 --warmup 10 --iters 30 --min-speedup 1.10 --max-nrms 0.03 --min-cosine 0.999
+==============================================================================
+runtime=Linux release=6.18.33.2-microsoft-standard-WSL2 WSL_DISTRO_NAME=Ubuntu
+gpu=NVIDIA GeForce RTX 4070 Ti SUPER sm=(8, 9) torch=2.10.0+cu130 warmup=10 iters=30
+NOTE: forward includes absmax/scale/cast for current scaling and cast for delayed scaling; backward and whole training step remain NOT_RUN.
+K	N	variant	ms	speedup	peak_MiB	max_abs	nrms	cosine
+768	2048	bf16	0.372425	1.000	32.000	0	0	0.999999821
+768	2048	fp8_current	0.715423	0.521	39.502	5.875	0.0377077	0.999289691
+768	2048	fp8_delayed	0.324443	1.148	39.501	5.875	0.0377077	0.999289691
+2048	768	bf16	0.392036	1.000	12.000	0	0	1.000000000
+2048	768	fp8_current	0.738345	0.531	48.001	9.5	0.0377102	0.999290049
+2048	768	fp8_delayed	0.437082	0.897	48.000	9.5	0.0377102	0.999290049
+768	768	bf16	0.185919	1.000	12.000	0	0	1.000000000
+768	768	fp8_current	1.157065	0.161	18.564	5.75	0.0376359	0.999291360
+768	768	fp8_delayed	0.170825	1.088	18.563	5.75	0.0376359	0.999291360
+[NUMERIC SCREEN] [(768, 2048, 'fp8_current', 0.03770773857831955, 0.9992896914482117), (768, 2048, 'fp8_delayed', 0.03770773857831955, 0.9992896914482117), (2048, 768, 'fp8_current', 0.037710171192884445, 0.9992900490760803), (2048, 768, 'fp8_delayed', 0.037710171192884445, 0.9992900490760803), (768, 768, 'fp8_current', 0.03763589635491371, 0.9992913603782654), (768, 768, 'fp8_delayed', 0.03763589635491371, 0.9992913603782654)]
+[GATE NEGATIVE] speed candidate failed numerical screen; best cast/scaling-inclusive speedup=1.148x, no Stage C2 quality run is opened
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 0.0분  (2026-09-20 02:13:36)
+==============================================================================

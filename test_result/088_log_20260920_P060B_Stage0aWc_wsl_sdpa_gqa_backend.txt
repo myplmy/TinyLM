@@ -1,0 +1,35 @@
+P060B Stage0aWc: capture forced SDPA backend warnings per variant so successful FLASH/CUDNN and unavailable EFFICIENT are not conflated
+
+==============================================================================
+[runlog] 2026-09-20 02:13:16  name=P060B_Stage0aWc_wsl_sdpa_gqa_backend
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sdpa_wsl_gqa.py --require-wsl --warmup 5 --iters 20 --max-speed-ratio 1.05 --min-memory-reduction 0.10
+==============================================================================
+runtime_system=Linux release=6.18.33.2-microsoft-standard-WSL2 WSL_DISTRO_NAME=Ubuntu
+torch=2.10.0+cu130 cuda=13.0 cudnn=91501 triton=3.6.0 flash-attn=NOT_INSTALLED
+gpu=NVIDIA GeForce RTX 4070 Ti SUPER sm_89
+NOTE: PyTorch native SDPA backends are probed; external flash-attn is not required.
+[shape] batch=8 seq=1024 q_heads=12 kv_heads=3 head_dim=64 bf16
+variant	status	ms	vs_off	working_MiB	memory_reduction	max_abs	rms
+off_default	OK	0.2880	1.000x	48.376	0.000%	0.015625	0.000254483
+on_default	OK	0.2859	0.993x	30.376	37.209%	0.015625	0.000254483
+on_cudnn	OK	0.2851	0.990x	30.001	37.984%	0.015625	0.000253071
+on_flash	OK	0.2883	1.001x	30.376	37.209%	0.015625	0.000254483
+on_efficient	UNAVAILABLE	-	-	-	-	-	-	RuntimeError: No available kernel. Aborting execution.; diagnostic=Memory efficient kernel not used because: | For dense input, both fused kernels require query, key and value to have the same num_heads. Query.sizes(): [8, 12, 1024, 64], Key sizes(): [8, 3, 1024, 64], Value sizes(): [8, 3, 1024, 64] instead. To broadcast dense inputs, try using unsqueeze and expand_to before passing them into the kernel. | Flash attention kernel not used because: | Flash attention has been runtime disabled. | cuDNN attention kernel not used because: | cuDNN attention has been runtime disabled.
+on_efficient_broadcast	UNAVAILABLE	-	-	-	-	-	-	RuntimeError: No available kernel. Aborting execution.; diagnostic=Memory efficient kernel not used because: | All fused kernels requires query, key and value to be 4 dimensional, but got Query dim: 5, Key dim: 5, Value dim: 5 instead. | Flash attention kernel not used because: | Flash attention has been runtime disabled. | cuDNN attention kernel not used because: | cuDNN attention has been runtime disabled.
+[DEFAULT CANDIDATE] on_default speed=0.993x memory=37.2%
+[FORCED CANDIDATE] on_cudnn speed=0.990x memory=38.0%, on_flash speed=1.001x memory=37.2%
+[shape] batch=1 seq=128 q_heads=12 kv_heads=3 head_dim=64 bf16
+variant	status	ms	vs_off	working_MiB	memory_reduction	max_abs	rms
+off_default	OK	0.0315	1.000x	0.562	0.000%	0.015625	0.000534651
+on_default	OK	0.0313	0.993x	0.476	15.451%	0.015625	0.000534651
+on_cudnn	OK	0.0363	1.151x	0.470	16.493%	0.015625	0.000533073
+on_flash	OK	0.0355	1.127x	0.476	15.451%	0.015625	0.000534651
+on_efficient	UNAVAILABLE	-	-	-	-	-	-	RuntimeError: No available kernel. Aborting execution.; diagnostic=Memory efficient kernel not used because: | For dense input, both fused kernels require query, key and value to have the same num_heads. Query.sizes(): [1, 12, 128, 64], Key sizes(): [1, 3, 128, 64], Value sizes(): [1, 3, 128, 64] instead. To broadcast dense inputs, try using unsqueeze and expand_to before passing them into the kernel. | Flash attention kernel not used because: | Flash attention has been runtime disabled. | cuDNN attention kernel not used because: | cuDNN attention has been runtime disabled.
+on_efficient_broadcast	UNAVAILABLE	-	-	-	-	-	-	RuntimeError: No available kernel. Aborting execution.; diagnostic=Memory efficient kernel not used because: | All fused kernels requires query, key and value to be 4 dimensional, but got Query dim: 5, Key dim: 5, Value dim: 5 instead. | Flash attention kernel not used because: | Flash attention has been runtime disabled. | cuDNN attention kernel not used because: | cuDNN attention has been runtime disabled.
+[DEFAULT CANDIDATE] on_default speed=0.993x memory=15.5%
+[SHAPE NEGATIVE] no forced GQA backend met speed<=+5% and memory reduction>=10%
+[GATE CANDIDATE] WSL dispatcher-selected or forced GQA passed the practical micro-gate; backend identity and integration remain NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-20 02:13:19)
+==============================================================================
