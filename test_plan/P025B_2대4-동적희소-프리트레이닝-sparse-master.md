@@ -17,6 +17,9 @@
 > `M=128`에서 elementwise `rtol/atol` 문턱으로 exit 4가 나고 이후 형상을 생략했다
 > ([결과 082 §8](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#8-stage0bwc-wsl-inference-attribution2026-09-19--정합-문턱에서-중단-측정된-속도는-전부-음성)).
 > 이는 backend 결론이 아니라 **절대오차 단독 gate와 fail-fast 설계 결함**이 섞인 결과다.
+> **현재 후속(2026-09-20):** Stage0bWd의 전 형상 속도 음성은 보존한다. wall-sync 한 수로
+> PyTorch 호출 준비와 GPU sparse GEMM을 합친 한계를 해소하기 위해 Stage0bWe attribution과
+> Stage0bWf alg-id/Split-K 탐색을 구현했다. GPU 결과는 `NOT_RUN`이다.
 
 ## 1. 왜 — 0을 넣는 것과 실제 희소 학습은 다르다
 
@@ -49,6 +52,8 @@ native 속도, dense-master 품질, inactive state를 제거한 sparse-master, t
 | **Stage0bWb ⚠️ 혼합** | inference pack forward + bidirectional training pack forward/dgrad·M8192 속도 | 정합성 PASS; training-pack 속도 0.759×/0.820×로 1.25× 미달([082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#현재-판정2026-09-19--stage0bwb-정합성-pass-훈련-형상-속도-음성)) | GPU 진단 0.1h 미만 |
 | **Stage0bWc ⚠️ 계측 미완결** | one-way inference pack vs training pack, M=1/16/128/1024/8192 정합·속도·peak allocation | 둘째 형상 M128의 elementwise 문턱 실패로 이후 행 생략; 측정 행은 모두 ≤0.790× | [082 §8](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#8-stage0bwc-wsl-inference-attribution2026-09-19--정합-문턱에서-중단-측정된-속도는-전부-음성) |
 | **Stage0bWd ✅ 정합 PASS·속도 음성** | normalized RMS·max-abs/reference RMS·cosine으로 모든 행 완주 | 정합 전 행 PASS; decode 0.085~0.088×·prefill 최대 0.364×·전체 최대 0.820×로 inference 가속 음성 | [082 §9](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#9-stage0bwd-scale-aware-완주2026-09-19--정합-pass속도-음성) |
+| **Stage0bWe 구현·실행 대기** | wall-sync·CUDA Event·host enqueue·M1 padding·profiler·CUDA Graph를 같은 pack에서 분리 | 측정 계약·정합 PASS 후 병목 귀속. 결과가 좋아도 TLinear 이득 주장은 금지 | GPU 진단 약 0.2h |
+| **Stage0bWf 구현·실행 대기** | 공개 `_cslt_sparse_mm`의 `alg_id`·Split-K를 탐색과 확인 측정으로 분리 | fresh confirm에서 dense 대비 ≥1.10×인 행만 후보 | GPU 진단 약 0.2h |
 | **Stage0c ⏸** | dense vs 2:4 whole primitive forward/backward | Stage0bWc로 pack 속도 귀속 후 학습가속 분기를 재판단 | 0.2 |
 | **Stage1a ⏸** | dense-master 2:4, 250 step | sparse-master 메모리 트랙 별도 재승인 | 0.25 |
 | **Stage1b** | flip/death/birth/resurrection 계측 | active count·birth/death 보존 | 0.25 |
@@ -102,6 +107,29 @@ Stage0bWb의 훈련 형상 속도 음성은 그 pack에 한정한다. Stage0bWc�
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
+### 6.2 Stage0bWe/Wf preflight와 지시서 비판적 검토
+
+| 항목 | 판정 | 근거·구현 경계 |
+|---|---|---|
+| wall-sync와 GPU 시간 분리 | 타당·구현 | 기존 두 진단은 반복마다 `perf_counter`+`cuda.synchronize`; 새 진단은 wall/event/host/profiler를 별도 열로 둔다 |
+| CUDA Event=순수 GEMM | 부정 | padding·allocation·부가 kernel이 포함될 수 있어 `event_batch_ms`로만 표기하고 profiler 행만 kernel 귀속에 쓴다 |
+| M=1→8 padding | 타당·구현 | local torch 2.10 `SparseSemiStructuredTensor._pad_dense_input()`의 FP16 dense 최소 행 8; M1 dispatch·명시 pad+slice·M8을 분리 |
+| alg-id/Split-K | 부분 타당·구현 | `_cslt_sparse_mm` schema에 `alg_id/split_k/split_k_mode`가 있다. 다만 cuSPARSELt 0.8.0은 `get_max_alg_id()`가 `None`이라 지원 집합을 자동 확정할 수 없다. Wf는 보수적 0~4를 probe하고 unsupported를 기록 |
+| 압축 재생성 | 현 공개 경로에는 불필요 | alg-id/Split-K는 기존 `packed`를 재사용한다. packing 시간은 별도 기록 |
+| CUDA Graph=plan 재사용 | 부정·분리 | Graph replay는 launch/반복 경로 후보일 뿐 descriptor/plan 객체 재사용과 동일하지 않다 |
+| 저수준 plan cache | 미구현 | NVIDIA C API에는 반복 실행 가능한 plan이 있으나 PyTorch public Python API는 plan handle을 노출하지 않는다. We에서 host/setup 병목이 확인될 때 C++ extension 별도 승인으로 연다 |
+| dense→sparse 고정 순서 | 결함·교정 | 3 round에서 짝수는 선언 순서, 홀수는 역순으로 측정하고 median+MAD를 기록 |
+
+공식 cuSPARSELt workflow는 descriptor·algorithm selection·plan·workspace 뒤 matmul을 반복하는
+구조다. 이는 “재사용할 수 있다”는 C API 사실이지 현재 PyTorch wrapper가 이미 재사용한다는
+증거가 아니다. 따라서 지시서의 “PyTorch가 매 호출 모두 구성·해제한다”는 주장은 local Python
+surface와 공식 API만으로 확정하지 않고 **검증 가설**로 낮춘다.
+
+독립변수: We는 측정 경로만, Wf는 같은 pack/input에서 alg-id/Split-K만 바꾼다. 데이터·토크나이저·
+학습토큰은 합성 진단이라 해당 없음. search 측정은 최종 판정에 재사용하지 않는다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
 ## 7. 실행 진입점
 
 - 무효 완료: `run_P025B_Stage0a_sparse24_backend-done.bat` — import 실패로 과학적 게이트 `NOT_RUN`([결과 082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
@@ -115,6 +143,10 @@ Stage0bWb의 훈련 형상 속도 음성은 그 pack에 한정한다. Stage0bWc�
   elementwise 정합 문턱에서 exit 4, 이후 행 생략([082 §8](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#8-stage0bwc-wsl-inference-attribution2026-09-19--정합-문턱에서-중단-측정된-속도는-전부-음성)).
 - 완료: `run_P025B_Stage0bWd_wsl_sparse24_inference_attribution-done.sh` — Wc false-negative를
   해소하고 전 행 정합 PASS·합성 inference 속도 음성을 확정했다.
+- 실행 대기: `run_P025B_Stage0bWe_wsl_sparse24_path_attribution.sh` — wall/event/host/padding/
+  profiler/graph 귀속. 기존 Wd 음성을 덮지 않는다.
+- 실행 대기: `run_P025B_Stage0bWf_wsl_sparse24_algorithm_sweep.sh` — explicit alg-id/Split-K
+  probe와 fresh confirmation. plan-handle 재사용 실험은 아님.
 - 미작성: Stage0c~Stage4와 Stage2i 학습 후 checkpoint end-to-end 추론. 실행 가능한
   sparse 학습 모델과 앞 게이트 없이 placeholder SH를 만들지 않는다.
 
@@ -150,3 +182,7 @@ Stage0bWb의 훈련 형상 속도 음성은 그 pack에 한정한다. Stage0bWc�
 - 2026-09-19: Stage0bWd는 Wc 실패 행을 NRMS 0.000271·cosine 0.999999881로 통과시키고
   두 형상 전 행을 완주했다. 모든 sparse 호출이 dense보다 느려 이 runtime의 synthetic
   inference 가속 분기는 음성이다. sparse-master·whole-step·실제 checkpoint는 별도다.
+- 2026-09-20: 사용자 후속 지시를 local torch 2.10 Python source와 공식 cuSPARSELt workflow에
+  대조했다. M1 padding·계측분리·alg-id/Split-K·교차순서는 타당해 We/Wf로 구현했다. CUDA
+  Graph와 plan reuse는 다른 최적화이며 public Python plan handle이 없으므로 후자는 선제 구현하지
+  않았다. 실제 GPU 병목·속도 개선은 사용자 실행 전 `NOT_RUN`이다.

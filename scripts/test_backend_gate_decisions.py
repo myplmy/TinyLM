@@ -17,9 +17,12 @@ from scripts.diag_sdpa_wsl_gqa import (
     _unique_storage_mib,
 )
 from scripts.diag_fp8_scaling_overhead import _gate_decision
+from scripts.diag_fp8_path_attribution import _fp8_tensor_ledger
 from scripts.diag_sharing_parent_approx import _approximation_gate
 from scripts.diag_depth_init import _group_gate_exit
 from scripts.diag_sparse24_inference_attribution import _agreement_ok, _error_stats
+from scripts.diag_sparse24_path_attribution import _parse_layouts, _parse_signed_csv
+from scripts._gpu_bench_attribution import median_mad, parse_int_csv
 
 
 def main() -> int:
@@ -29,6 +32,9 @@ def main() -> int:
     k = torch.randn(2, 3, 7, 8)
     v = torch.randn(2, 3, 7, 8)
     qg, kg, vg = _grouped_broadcast_inputs(q, k, v)
+    assert qg.ndim == kg.ndim == vg.ndim == 4
+    assert qg.shape == kg.shape == vg.shape == (6, 4, 7, 8)
+    assert kg.stride(1) == 0 and vg.stride(1) == 0
     grouped = torch.nn.functional.scaled_dot_product_attention(
         qg, kg, vg, is_causal=True
     ).reshape_as(q)
@@ -39,6 +45,14 @@ def main() -> int:
     assert _unique_storage_mib(qg, kg, vg) < _unique_storage_mib(
         q, k.repeat_interleave(4, 1), v.repeat_interleave(4, 1)
     )
+
+    assert parse_int_csv("1,8,8,128") == [1, 8, 128]
+    assert _parse_signed_csv("-1,0,1,-1") == [-1, 0, 1]
+    assert _parse_layouts("inference,training,inference") == ["inference", "training"]
+    assert median_mad([1.0, 2.0, 100.0]) == (2.0, 1.0)
+    ledger = _fp8_tensor_ledger(8, 4, 6)
+    assert ledger["B_prepared_fp8"]["persistent"] > ledger["C_weight_cached"]["persistent"]
+    assert ledger["C_weight_cached"]["per_call_temporaries"] < ledger["D_delayed"]["per_call_temporaries"]
 
     def warning_probe():
         warnings.warn("backend marker", UserWarning)

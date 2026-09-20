@@ -4,7 +4,7 @@
 > 그래서 이름에 시각이 없다(제안서 §3.6). 🚫`check_handoff` 는 `*_HANDOFF.md` 만 보므로
 > 이 파일에 고정 섹션 8개를 요구하지 않는다 — **면제 코드가 필요 없다.**
 >
-> **신설** 2026-09-08(2차) · **최신 갱신** 2026-09-19 · **근거** [제안서(승인)](../proposal/done/20260908_연구방향-길잡이-파일-approved.md)
+> **신설** 2026-09-08(2차) · **최신 갱신** 2026-09-20 · **근거** [제안서(승인)](../proposal/done/20260908_연구방향-길잡이-파일-approved.md)
 > · 사용자 지시 8(원안) → 2026-09-08(2차) 지시 2B(*"claude 개선안으로 승인"*).
 >
 > ★**읽는 순서**: `ai_dev_tool/06` → **이 파일** → 최신 핸드오프.
@@ -40,11 +40,11 @@
 | **MLP 타잉** | 🚫**기존 exact 직접 공유 기각·현재 R1 parent approximation도 음성** — 회계상 순절감 26%대지만 rank16 output NRMS 0.974, rank0 대비 개선 약 0.75% | ★**086 §4**(2026-09-19) ← 079 §3 | 새 factorization·학습 가능한 residual 설계를 먼저 제안; 현 Stage0c를 GPU 품질로 승격하지 않음 | 절감 산술이 아니라 output NRMS≤0.90·기준 대비 ≥10% 개선과 실제 품질이 함께 필요하다 |
 | **어텐션 타잉** | 🚫**직접 공유 현 조건 기각** — `ag2`가 dense보다 +0.0073 열세(자의 3.0배). ⚠️head 정렬·저랭크 차이를 쓰는 방식은 별도 방법이며 0런 | ★**079 §3**(2026-09-11) ← 058 | [P093](../test_plan/P093_구조조건부-직접공유와-완화타잉.md)의 중복·회계에서만 보존; 직접 `ag2` 반복과 CLA 혼합은 하지 않음 | 종전 `ag2` 표본 공백과 CLA 교락은 해소됐다. 직접 공유를 되살리려면 같은 격자 반복이 아니라 대가 완화의 새 구현·순메모리 근거가 필요하다 |
 | **CLA/KV** | ✅**승격 후보 1순위** — 유일하게 깊이보다 싸다 | 결과 059 · 2026-09-08 | 5차 리뷰 승인 뒤 프리셋 · ⏸`cla2 × lr 1.5배` 1런(⚙1.7h, 배치 미작성 · 사용자 결정) | ★**값어치가 컨텍스트에 선형**이다(seq2048 이면 0.00293). **seq 를 바꾸면 순위가 바뀐다** · ⚠️★**우리 대가 +0.024 가 논문(GQA2-CLA2 +0.00516 nats)의 4.6배**이고 논문은 **CLA2 최적 LR 이 1.5배**라 실측했는데 우리는 전 팔 1e-3 이다(B.29.1) — **LR 을 맞추면 대가가 줄어 교환비가 더 좋아질 수 있다** |
-| **양자화** | ⏸**부분** — LUT 1.600 채택 · 🚫3:4 는 지배당함 · ✅**상주 실측 완료** | 075 §15 → ★**014 §18** (최신 2026-09-08) | 없음(이 축은 지금 막는 것이 없다) | ✅**식이 옳았다**(차 1.2%, 보수적). ⚠️남은 것은 **LUT 커널의 속도**(논문 표 4 = 2비트 대비 +8.8~12.2%) — 메모리 축은 닫혔고 **속도 축이 열려 있다** |
-| **토큰·코퍼스** | ⚠️**가장 큰 실측 레버·P097 학습은 아직 0-step** — control/FineWeb2/filtered-Edu 600M cache는 검증됐고 MADLAD loader를 교정했다 | ★**090**(2026-09-19) ← 078 §13 ← 075 §19 | P097 Stage1aB→1bB→1cB→1dB; 다운로드·GPU 학습은 사용자 실행 | 네 팔 모두 300M draw지만 tokenizer가 달라 자기 val_loss 직접 순위 금지. 같은 한영 과제·byte-bpb·prompt 관련성으로 판정한다 |
+| **양자화** | ⏸**부분** — LUT 1.600 채택 · 🚫3:4는 지배당함 · 상주 실측 완료 · 속도 구현 HOLD | ★**069 §8**(2026-09-20) ← 075 §15 ← 014 §18 | I2_S가 per-row alpha·shape를 수용하는지 정적 실사(⚙2h); custom LUT 6h는 HOLD | int8은 fp32보다 5~15% 빠르지만 LUT reference는 +1~+23% 느리고 언팩 대역 25.1~36.3%다. profiler 수치는 tok/s가 아니며 축 종결도 아님 |
+| **토큰·코퍼스** | ⚠️**P097 네 학습 완료·팔 간 품질은 미판정** — 네 600M recipe에서 300M 학습 exit0·skip0 | ★**090 §5**(2026-09-20) ← 078 §13 ← 075 §19 | checkpoint별 tokenizer/data를 고르는 Stage2 evaluator 구현 후 같은 한영 과제·common byte-bpb·prompt panel | final 3.5133/3.8828/3.9858/4.0261은 서로 다른 tokenizer·val이라 순위 금지. W&B push도 미실행·payload config 불완전 |
 | **옵티마이저** | ★**Muon RMS4를 사용자 기본 채택·연구축은 열림** — 상단·WD·형상·seed2024·역사적 길이 전이를 통과 | ★**078 §11~§15** ← 076 §13 ← 075 §19(2026-09-16) | 현재 코드 기본은 RMS4×4·KD off·optimizer-aware WD. 새 smoke 뒤 실제 본런 검증; QK-norm·schedule-scaled WD는 별도 연구 | Muon 일반행렬 WD0, embedding AdamW WD0.1, norm/bias/gate WD0, LRM WD0.01. 기본값 구현과 CPU 계약은 `STATIC_ONLY`; 현재 변경 뒤 학습은 `NOT_RUN` |
 | **토크나이저/어휘** | ⏸**보류** — 선결은 P075 단계1(어휘 16,384) ⚙2.0h | 결과 053 · 2026-08-22 | P075 단계1(**16 MiB 예산이 열릴 때**) | 어휘를 줄이면 **M=8192 무릎이 움직인다**(무릎은 어휘 32,768 기준). 그러면 속도·VRAM 표가 전부 다시 필요하다 |
-| **속도** | ⚠️**열림·backend별 분리** — P022C compute와 P025B synthetic 2:4 inference는 음성, P060B actual model forward는 약 11.1% 단축 후보 | ★**088 §6** ← 082 §9 ← 081 §6(2026-09-19) | P060B Wc warning 귀속·grouped-broadcast EFFICIENT 대안 → P022C Wb exit 계약 → P014D Stage0bW profile. 모두 사용자 실행 | micro/forward gate를 학습·decode·checkpoint 품질로 승격하지 않는다. P060B actual allocation 감소는 0이고 backward·학습은 NOT_RUN이다 |
+| **속도** | ⚠️**열림·backend별 분리** — P060B default GQA는 micro와 actual model 후보, P022C/P025B는 원인귀속 후속 | ★**088 §7~§8** ← 082 §10 ← 081 §7~§8(2026-09-20) | P025B We→Wf, P022C Wc, P060B Wd 순의 합성 gate. 실제 학습/모델 통합은 각 gate 뒤 | GQA를 버릴 근거 없음. direct EFFICIENT만 불가하며 default/CUDNN/FLASH B8 후보. actual allocation 감소 0, backward·학습 `NOT_RUN` |
 | **지능/벤치** | 🚫**v3.0 동일패널 core 회귀 확정·Q2a는 synthetic 계약만 PASS** | ★**085 §4**(2026-09-19) ← 074 §27 ← 074 §25 | 실제 Q2b는 보호 데이터·팀 의미검토 선결; 자동 편성 금지 | synthetic 320개·cap/provenance PASS는 실문항 변별정보나 봉인 final 품질이 아니다 |
 
 ---
@@ -84,19 +84,21 @@
   parameterization은 음성이다. P094는 P022C shadow evidence 부재로 정상 `HOLD`다.
 - P095 S0b는 1 MiB payload와 metadata·read/write 계약만 PASS다. P096 Q2a는 synthetic
   taxonomy/provenance 계약만 PASS다. 두 결과 모두 모델 능력으로 승격하지 않는다.
-- P022C C1과 P025B Wd의 synthetic 가속은 음성이다. P060B actual model forward만 약 11.1%
-  단축 후보를 남겼고 allocation 감소·backward·학습은 확인되지 않았다.
-- P097은 세 cache가 완성됐지만 모든 학습이 0-step이다. cache 완성과 모델 품질을 분리한다.
+- P022C Wb는 한 형상 1.148×지만 수치·메모리 음성이고 weight-cache Wc는 `NOT_RUN`이다.
+  P025B Wd는 synthetic 음성이며 We/Wf가 host/GPU/algorithm 귀속을 분리한다. P060B actual model
+  forward만 약 11.1% 단축 후보를 남겼고 allocation 감소·backward·학습은 확인되지 않았다.
+- P097 네 학습은 완료됐지만 서로 다른 tokenizer·val이라 recipe 품질은 미판정이다. 공통평가와
+  W&B 원격 전송을 학습 완료와 분리한다.
 
 과거 계획 누락 2차 감사에서 P064·P071·P072·P073·P074·P079·P084·P085·P088도 결과상 완료됐는데
 낡은 상단 상태 때문에 진행 중으로 남았음을 확인해 종결·승계 근거를 계획서에 고정했다. P044B와
-P078의 기존 종결도 유지한다. 따라서 계획 인덱스는 실행 전 25·진행 47·종결 41이다.
+P078의 기존 종결도 유지한다. 2026-09-20 P087 Stage3bW 회수로 P087을 종결해 현재 계획
+인덱스는 실행 전 25·진행 46·종결 42다.
 
-실제로 남은 오래된 runnable은 P076 Stage1W, P014D Stage0bW와 P087 Stage3bW다. P087은 학습을
-반복하지 않고 기존 checkpoint 둘의 누락된 결정적 full-val paired 평가만 회수한다. P077은
-Stage1c까지 완료됐지만 다음 품질 gate가 미설계, P005b b-6/b-7·P081·P083은 구현 선결,
-P089는 재승인 HOLD라 물리 SH 없는 항목을 실행순서에 넣지 않는다. P076·P014D·P087 사용자
-모델/GPU 실행은 모두 `NOT_RUN`이다. 이 상태는
+기존 runnable P076 Stage1W·P014D Stage0bW·P087 Stage3bW는 모두 회수됐다. P076은 세 집약
+이식 gate PASS 뒤 Stage2 품질 SH 미작성, P014D는 custom kernel HOLD, P087은 paired Δ−0.2116로
+종결이다. P077은 다음 품질 gate 미설계, P005b b-6/b-7·P081·P083은 구현 선결, P089는 재승인
+HOLD라 물리 SH 없는 항목을 실행순서에 넣지 않는다. 이 상태는
 [실험계획목록](../test_plan/실험계획목록.md)의 세 표에 계획당 한 행으로 반영한다.
 
 물리적으로 없는 launcher를 권장 순서에 쓰지 않는다. 현재 runnable은 queue audit로 확인한 실제

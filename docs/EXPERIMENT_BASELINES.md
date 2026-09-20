@@ -239,7 +239,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | `qb_*` | cooldown-QAT(P026) | **사용중**(결과 015: `qb_cos`·`qb_wsd60`·`qb_wsd80`·`qb_wsd80_s85`). `qb_wsd60_s85` **예약**(단계5) |
 | `qa_*` | 어닐 형태(P035: `qa_step60`·`qa_step80`) | ⚠️**2026-08-23 정정 — 이 행이 낡았다.** P035 는 **결과 022 로 종결**(2×2 네 값이 1.07σ 안, 형태 효과의 부호가 전이점에 따라 뒤집힘 = 검출 불가). `--anneal-shape` 은 구현돼 있고 **재실행 계획 없음** |
 | `p35b_a3_*` | P035B A3 동역학(`e60`·`e80`)과 audit 오염 대조(`off80`) | **예약 2026-09-15.** 세 팔 모두 m100s8·250 step·600M exact pool·seed 1337; 🚫품질 또는 anneal 기본값 판정에 사용 금지 |
-| `p097_ctrl_v2`·`p097_fw2`·`p097_edu_v2`·`p097_madlad` | P097 300M 한영 dataset recipe 대조 | **예약 2026-09-19.** 전 팔 m100s10 dense·CLA2·Muon RMS4×4·300M draw·600M nominal pool·seed1337. tokenizer/data가 달라 자기 val_loss 교차비교 금지 |
+| `p097_ctrl_v2`·`p097_fw2`·`p097_edu_v2`·`p097_madlad` | P097 300M 한영 dataset recipe 대조 | **사용 완료 2026-09-20.** 전 팔 m100s10 dense·CLA2·Muon RMS4×4·300.024M draw·600M nominal pool·seed1337·exit0. tokenizer/data/val이 달라 자기 val_loss 교차비교 금지([090 §5](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#5-stage0bstage1abd-실제-완료2026-09-20)) |
 | `mA_*`,`mB_*`,`mC_*` | 1차 리뷰 최적안 검증(REVIEW1) | ✅ **완료**(결과 012). 승자 = `mA_g4s34_k4` |
 | `p6d_s2` | σ 측정 — p6d 를 시드만 바꿔 재현(REVIEW1 [1]) | ✅ **완료**(결과 012, σ=0.012) |
 | `p12*` | 1200M 풀 계열(P007B: `p12d`·`p12d600`·`p12tk600_k4`) | **예약**(미실행) |
@@ -2440,7 +2440,9 @@ vs 우리 **0.1** · linear · 무warmup. 결과 019 의 *"무효 +0.0005"* 는 
 −0.10671875와 −0.074375의 합 **−0.18109375**보다 ★**−0.0196875 더 좋다**(dense 자의 9.4배).
 → 🚫**이득이 겹쳐 사라진다는 가설은 기각**. 다만 구성항의 시험지가 달라 잔차를 보편 교호 상수로 쓰지 않는다.
 `val−train_ce` 꼬리 평균 **+0.02237**, 유니크 커버리지 ⚙**86.47%(518.8M)**, 상주 **30.7 MiB 불변**.
-🚫학습은 4배 스텝이고, 배치가 안내한 full-val `paired_eval` 호출은 누락돼 짝 수치는 미측정이다.
+🚫학습은 4배 스텝이다. 누락됐던 full-val `paired_eval`은 2026-09-20 회수되어
+3.3728 대 3.5844, paired Δ **−0.2116**, SE 0.0009, t −246.93, 긴 학습 checkpoint 승률
+100.0%였다([결과 073 §12](../test_result/073_20260904_P087-두-번째-epoch은-과적합-없이-0.1155를-준다.md#12-stage3bw-결정적-paired-full-val2026-09-20--누락-평가-회수방향-강화)). 단일시드 checkpoint 판정이며 아키텍처 일반 판정은 아니다.
 
 ★★**이 축의 특별한 점 둘**:
 1. ★**배포 상주를 한 바이트도 안 쓴다.** 같은 −0.0744 를 메모리로 사려면 **14.0~16.6 MiB** 가
@@ -3361,17 +3363,17 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
   unavailable이라 forced 가설은 음성이다. 그러나 dispatcher `on_default`는 속도 +0.3%에
   working memory −37.2%, B1/T128은 0.0%/−37.2%로 실용 후보를 남겼다. Stage0aW가 최종
   candidate를 forced 경로에만 한정한 것은 설계결함이므로 default/forced 분리 재게이트와 actual
-  checkpoint model-path gate를 구현했으며 사용자 GPU 결과는 `NOT_RUN`이다.
+  checkpoint model-path gate를 구현했다. 후속 Wb/Wc·actual model 결과는 B.36이 소유한다.
 - P025B Stage0bWc inference attribution은 `(K,N,M)=(2048,768,128)`에서 legacy elementwise
   `rtol=atol=0.02`가 `max_abs=0.125`, RMS 0.0114로 실패해 exit 4였고 이후 형상을 생략했다
   ([결과 082 §8](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#8-stage0bwc-wsl-inference-attribution2026-09-19--정합-문턱에서-중단-측정된-속도는-전부-음성)).
   완료 행의 sparse speedup은 0.072~0.790×로 전부 음성이지만 전체 형상 gate는 미완결이다.
   출력 규모에 민감한 절대오차 단독 판정과 fail-fast를 normalized RMS·max-abs/reference RMS·
-  cosine·완주형 Stage0bWd로 교정했으며 새 GPU 결과는 `NOT_RUN`이다.
+  cosine·완주형 Stage0bWd로 교정했고 실제 전 행 정합 PASS·속도 음성은 B.36이 소유한다.
 - P097은 기존 cache를 바꾸지 않고 current-source exact-token control, FineWeb2-ko,
   filtered Korean-Webtext-Edu, MADLAD clean의 네 600M pool/300M draw recipe를 신설한다.
   각 source token quota와 source-stratified val을 50:50으로 고정하고 HF cache를 저장소 `HF/`
-  아래로 강제한다. 실제 다운로드·학습·한영 benchmark는 `NOT_RUN`이며 서로 다른 tokenizer의
+  아래로 강제한다. 네 300M 학습 완료와 미실행 공통평가는 B.36이 소유하며, 서로 다른 tokenizer의
   자기 val_loss를 직접 비교하지 않는다.
 
 66. ★★**one-way sparse pack의 forward 가능성과 training dgrad 가능성을 합치지 않는다.**
@@ -3395,22 +3397,26 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
 
 이번 사용자 보존 로그 15건은 “실행됐다”는 공통점 외에는 같은 종류의 증거가 아니다.
 
-- **P022C C1**: current scaling은 `0.816/0.622/0.534×`, delayed scaling은
-  `1.015/0.867/0.751×`였고 peak allocation도 BF16보다 늘었다. 정합성은 좋지만 사전등록한
-  `+10%` 속도 문턱을 전혀 넘지 못했으므로 **FP8 compute 가속 축은 과학적 음성**이다.
-  기존 exit 4는 추가 NRMS screen이 음성을 실행 실패로 잘못 분류한 판정기 결함이며 exit 8로
-  교정했다. 재분류용 Wb는 수치를 뒤집기 위한 재실험이 아니다([결과 081 §6](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)).
+- **P022C C1/Wb**: 재실행에서 delayed scaling 한 형상은 **1.148×**로 +10% 속도 문턱을
+  넘었으므로 “항상 속도 미달”은 철회한다. 그러나 세 형상 모두 NRMS 3.76~3.77%로 3% 수치
+  문턱을 넘고 peak allocation도 BF16보다 늘어 전체 계약은 exit8 과학적 음성이다. 매 호출
+  FP8 weight 재변환의 기여는 미분리였으므로 A~E 동일계측·weight-cache Wc를 구현했고 GPU는
+  `NOT_RUN`이다([결과 081 §7~§8](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md#7-stage0bwb-종료코드-교정-재실행2026-09-20--속도-한-행-양성수치와-메모리-음성)).
 - **P025B Wd**: scale-aware 정합은 전 형상에서 통과했지만 inference sparse/dense speedup은
   두 `(K,N)` 계열, `M=1~8192` 전부 `0.085~0.820×`로 느렸다. 합성 inference kernel 가속
   가설은 음성이다. 이것만으로 sparse-master의 상태 절감·whole-step·학습 후 checkpoint
   추론까지 닫지 않는다([결과 082 §9](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
+- **P025B We/Wf**: Wd 음성을 유지한 채 wall-sync·CUDA Event·host enqueue·M1 padding·
+  profiler·CUDA Graph와 alg-id/Split-K 탐색/확인을 분리 구현했다. Event는 순수 GEMM으로
+  부르지 않고 plan-handle cache는 public Python API 밖이라 `NOT_RUN`이다([결과 082 §10](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#10-stage0bwewf-병목-분리-후속2026-09-20--구현-static_onlygpu-not_run)).
 - **P060B Wb·모델 통합**: isolated B8/T1024에서 forced CUDNN/FLASH는 off보다 각각
   `1.051/1.031×`, default는 `1.018×`이고 EFFICIENT는 unavailable이다. actual model 경로는
   logits가 일치하고 `11.1354→9.8974 ms`(`0.889×`, 약 11.1% 단축)였지만 allocation은
   둘 다 `9.568 MiB`였다. 따라서 **forward 속도 후보**이지 학습·backward·품질·전체 메모리
   PASS가 아니다([결과 088 §6](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)).
-  local torch 2.10 direct EFFICIENT GQA는 unavailable이다. Wc는 이 실패를 보존하면서
-  zero-stride grouped broadcast 대안을 별도 variant로 측정하며 GPU 결과는 `NOT_RUN`이다.
+  local torch 2.10 direct EFFICIENT GQA는 unavailable이다. Wc에서 default/CUDNN/FLASH는
+  0.993/0.990/1.001×와 working −37.2~38.0%를 재현했다. grouped 후보는 5-D 형상 결함으로
+  무효였고 batch×KV-head 4-D Wd로 교정했으며 GPU는 `NOT_RUN`이다([결과 088 §7~§8](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#7-stage0awc-backend-귀속2026-09-20--defaultcudnnflash-후보-efficient만-불가)).
 - **P091 R2**: selector pipeline 계약은 통과했으나 `S`의 순위상관은 seed별
   `−1.0~0.4`로 불안정했고 `U`만 `1.0`이었다. 상태기반 재배분의 품질·속도 이득은 아직 없다
   ([결과 080 §8](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)).
@@ -3427,13 +3433,11 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
   ([결과 087 §4](../test_result/087_20260919_P095-S0a-memory-primitive-계약은-통과했다.md)).
 - **P096 Q2a**는 synthetic baseline/candidate 320개·cap 450·provenance/preservation 계약을
   통과했지만 보호 실문항은 `NOT_RUN`이다([결과 085 §4](../test_result/085_20260919_P096-Q1b-taxonomy-계약은-통과했고-실문항은-남았다.md)).
-- **P097**은 control/FineWeb2/filtered-Edu 세 cache를 정확히 600M(각 source 300M,
-  val 3M)으로 완성했다. control/Edu는 stream 종료 시 CPython finalization abort,
-  FineWeb2는 WSL PATH의 접근 불가 Windows `nvcc`를 subprocess가 만나 0-step,
-  MADLAD는 `datasets 5.0.0`의 Hub script 거부로 cache도 만들지 못했다. 세 완성 cache는
-  파일 byte 수·합계를 재검증해 재사용하고, WSL launcher PATH를 native entry로 제한하며,
-  MADLAD는 공식 immutable JSONL shard를 직접 읽는다. 네 학습·품질 결과는 모두
-  `NOT_RUN`이다([결과 090](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md)).
+- **P097** Stage0b와 네 300M 학습은 모두 완료됐다. final은 control 3.51328, FineWeb2
+  3.88281, filtered-Edu 3.98578, MADLAD 4.02609이며 전 팔 exit0·skip0·`grad_max`≤1.1343다.
+  그러나 tokenizer와 자기 val이 달라 이 숫자의 팔 간 순위는 무효다. 공통 byte 원문·동일
+  한영 과제·prompt panel은 `NOT_RUN`이며 Stage2 evaluator는 checkpoint별 tokenizer/data를
+  선택하도록 보완이 필요하다([결과 090 §5](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#5-stage0bstage1abd-실제-완료2026-09-20)).
 
 73. ★★**과학적 음성은 실행 실패가 아니다.** 수치가 유효한 채 사전등록 문턱을 못 넘으면
     선언된 exit 8로 보존하고, 예외·누락·무수치만 실행 오류로 분류한다.
@@ -3443,3 +3447,8 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
     합계를 독립 검증해 cache는 재사용할 수 있지만 학습 0-step을 품질 결과로 승격하지 않는다.
 76. ★★**WSL 실험 PATH는 Linux native executable만 사용한다.** `/mnt/<drive>` 상속 경로는
     subprocess 탐색에서 `PermissionError`를 만들 수 있으므로 launcher 공통 환경에서 제거한다.
+77. ★★**wall-sync, CUDA Event, host enqueue, profiler를 같은 시간으로 부르지 않는다.** Event
+    합계에는 부가 GPU op가 섞일 수 있고, 개별 kernel 귀속은 profiler가 소유한다. 탐색 수치를
+    최종 확인 수치로 재사용하지 않는다.
+78. ★★**서로 다른 recipe/tokenizer/val의 자체 loss는 학습 완료 증거이지 recipe 순위가 아니다.**
+    같은 문항·공통 byte 원문 평가 전에는 `DESCRIPTIVE_ONLY`로 남긴다.

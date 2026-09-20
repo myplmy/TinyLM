@@ -1,6 +1,6 @@
 # TinyLM Codex 작업환경 — 소유권·분리 계약
 
-> **최신 갱신일자**: 2026-09-18 · **문서 유형**: live
+> **최신 갱신일자**: 2026-09-20 · **문서 유형**: live
 
 > 제정: 2026-09-11, 승인된 제안서 P1  
 > 상태: **Windows P0~P8 역사 증거 보존; WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED`, M3 사용자 범위 예외 종결(manual compact `NOT_RUN`·검증 제외), 현재 변경 뒤 smoke `E2E_NOT_RUN`**

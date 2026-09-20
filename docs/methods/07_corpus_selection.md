@@ -220,22 +220,24 @@ SQuAD v2 의 `context` 는 그 조건을 정확히 만족한다.
 
 ---
 
-## 7. 2026-09-19 P097 — 300M direct recipe 대조
+## 7. 2026-09-19~20 P097 — 300M direct recipe 대조
 
 기존 `ko-en`을 소급 변경하지 않고 네 독립 namespace를 사용한다.
 
-| recipe | 600M cache 관찰 | 학습 관찰 | 재실행 경로 |
+| recipe | 600M cache 관찰 | 2026-09-20 학습 관찰 | 현재 판정 |
 |---|---|---|---|
-| `ko-en-control-v2` | train 597M + val 3M, source 300M/300M; byte/meta 재검증 PASS | cache 직후 CPython finalization abort, 학습 0-step | Stage1aB는 검증된 cache 재사용 |
-| `ko-en-fw2` | 동일 600M exact cache PASS | WSL PATH의 접근 불가 `nvcc`에서 compile 0-step | native PATH로 Stage1bB |
-| `ko-en-edu-v2` | filtered cache 600M, source 300M/300M, 487 docs drop; 재검증 PASS | cache 직후 finalization abort, 학습 0-step | Stage1cB는 검증된 cache 재사용 |
-| `ko-en-madlad` | cache 미생성 | `datasets 5.0.0`가 Hub script를 거부 | 공식 고정 revision의 clean JSONL.gz shard 직접 adapter로 Stage1dB |
+| `ko-en-control-v2` | train 597M + val 3M, source 300M/300M; byte/meta PASS | final 3.51328 · bpb1.15739 · grad0.783 · skip0 | 자체 학습 PASS, 교차순위 금지 |
+| `ko-en-fw2` | 동일 600M exact cache PASS | final 3.88281 · bpb1.20943 · grad0.906 · skip0 | 자체 학습 PASS, 교차순위 금지 |
+| `ko-en-edu-v2` | filtered 600M, 487 docs drop | final 3.98578 · bpb1.19298 · grad1.109 · skip0 | 자체 학습 PASS, 교차순위 금지 |
+| `ko-en-madlad` | direct-shard로 신규 600M 완성 | final 4.02609 · bpb1.25658 · grad1.134 · skip0 | 자체 학습 PASS, 교차순위 금지 |
 
 MADLAD adapter는 공식 repository의 immutable revision과 언어별 clean shard 수(ko 13, en 947)를
 고정하며 cache는 `HF/hub` 아래에 둔다. 이는 데이터 카드 품질 승인이 아니라 loader 호환 교정이다.
-토크나이저 표본 수집과 본 cache 생성이 모두 같은 direct adapter를 타며, 외부 다운로드·실물 row
-감사는 사용자 실행이다.
+토크나이저 표본 수집과 본 cache 생성이 모두 같은 direct adapter를 탔고 사용자 실행에서
+cache·학습이 완료됐다. 데이터 카드 설명을 실물 문서 품질 감사로 승격하지 않는다.
 
 모든 recipe는 source token quota와 source-stratified val을 50:50으로 고정한다. tokenizer가
 서로 다르므로 자기 `val_loss`·ppl을 팔 사이 순위로 쓰지 않고 같은 한영 문항 accuracy/gold
-margin과 동일 원문의 byte-bpb로 판정한다. 네 학습·품질은 여전히 `NOT_RUN`이다.
+margin과 동일 원문의 byte-bpb로 판정한다. 네 학습은 완료됐지만 **팔 간 품질 비교는 여전히
+`NOT_RUN`**이다. 기존 evaluator가 단일 `--data` tokenizer를 모든 모델에 적용하므로 Stage2는
+checkpoint별 recipe/tokenizer 선택 구현 뒤에만 실행한다.

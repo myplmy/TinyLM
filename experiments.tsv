@@ -29,20 +29,14 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-1	P025B	run_P025B_Stage0bWc_wsl_sparse24_inference_attribution.sh	D	0.1	Y	Y	Stage0bWb의 M8192 training-pack 속도와 one-way inference pack을 분리하고 M1/16/128/1024/8192의 정합·속도·peak allocation을 측정한다. 학습 0	8
-2	P060B	run_P060B_Stage0aW_wsl_sdpa_gqa_backend.sh	D	0.1	Y	Y	WSL native SDPA의 off/on default와 forced CUDNN/FLASH/EFFICIENT GQA 정합·속도·working memory를 분리한다. 학습 0	8
-1	P096	run_P096_Q2_canary_candidate_contract.sh	N	0.1	N	N	Q1b synthetic items로 450 slot·slot당 최대 2후보·provenance·ID preservation 계약을 검증한다
-1	P095	run_P095_S0b_memory_bridge_contract.sh	N	0.1	N	N	default-off Scout bridge의 identity·causality·reset·physical bytes·latency·backward 계약을 검증한다
-1	P091	run_P091_R2_layer_state_selector.sh	N	0.1	N	N	actual tiny model에서 gate-zero S와 WD 분리 optimizer-only U를 3 window로 기록한다
-1	P092	run_P092_Stage1aT_tlinear_dst_contract.sh	N	0.1	N	N	actual TLinear static50/DST50의 inactive score·active update·birth/death·optimizer-state 계약을 검증한다
+1	P025B	run_P025B_Stage0bWe_wsl_sparse24_path_attribution.sh	D	0.2	Y	Y	Wd의 합성 속도 음성을 보존하고 wall-sync·CUDA event·host enqueue·M1 padding·profiler·CUDA Graph를 분리해 병목 위치를 귀속한다. 학습 0
+2	P025B	run_P025B_Stage0bWf_wsl_sparse24_algorithm_sweep.sh	D	0.2	Y	Y	공개 low-level _cslt_sparse_mm의 alg_id·Split-K를 탐색 측정과 확인 측정으로 분리하고 1.10배 후보 여부를 판정한다. 학습 0	8
+2	P022C	run_P022C_Stage0bWc_fp8_path_attribution.sh	D	0.1	Y	Y	BF16·prepared FP8·가중치 캐시·delayed·current를 같은 계측으로 비교하고 속도·메모리·수치를 독립 판정한다. 학습 0	8
+2	P060B	run_P060B_Stage0aWd_wsl_sdpa_gqa_backend.sh	D	0.1	Y	Y	Wc의 5-D grouped-broadcast 결함을 고쳐 batch×KV-head를 접은 4-D zero-stride EFFICIENT 후보를 재검증한다. 학습 0	8
 2	P022C	run_P022C_Stage0bWb_fp8_scaling_overhead.sh	D	0.1	Y	Y	Stage0bW의 유효 측정을 보존하고 FP8 수치·속도 음성을 실행 실패가 아닌 선언된 exit 8로 재검증한다	8
-2	P025B	run_P025B_Stage0bWd_wsl_sparse24_inference_attribution.sh	D	0.1	Y	Y	Wc의 절대오차 단독·fail-fast를 교정해 두 형상과 M1~8192를 scale-aware 정합·속도로 완주한다	8
 2	P060B	run_P060B_Stage0aWc_wsl_sdpa_gqa_backend.sh	D	0.1	Y	Y	FLASH·CUDNN 성공, direct EFFICIENT unavailable, zero-stride grouped-broadcast 대안의 warning·정합·속도·physical storage를 분리한다	8
 2	P076	run_P076_Stage1W_group_init_gate.sh	D	0.3	Y	Y	mean/middle/norm_mean 부모 집약을 실제 m100 dense parent와 고정 val crop의 step0 이식 대역으로 검사한다. 최종품질 서열 판정 금지	8
 2	P014D	run_P014D_Stage0bW_decode_profile.sh	N	0.3	Y	Y	측정 0건으로 끝난 Stage0의 fp32 경로 인자 결함을 교정해 fp32/int8/LUT decode self CPU time을 재측정한다
-3	P060B	run_P060B_Stage0bW_model_gqa_integration.sh	D	0.2	Y	Y	actual d14 RMS4 checkpoint의 full/cache prefill/decode GQA 정합·속도·peak allocation을 잰다
-3	P093	run_P093_Stage0c_parent_approximation.sh	D	0.2	Y	Y	d16 RMS4 parent의 shared mean+rank4/8/16 residual weight/output NRMS를 잰다	8
-4	P094	run_P094_R0_p022c_dependency_gate.sh	N	0.1	N	N	P022C actual packed/masterless evidence가 없으면 fail-closed dependency HOLD(exit 8)로 남긴다	8
 3	P087	run_P087_Stage3bW_paired_fullval.sh	D	0.3	Y	Y	기존 두 체크포인트를 ko-en 600M 결정적 val에서 match-train-repeat paired 평가해 누락된 크롭별 t·승률을 회수한다. 신규 학습 0
 5	P097	run_P097_Stage0b_dataset_recipe_contract.sh	N	0.1	N	N	WSL native PATH·exact-cache byte/meta·iterator close·MADLAD direct-shard routing을 network/GPU/model 0으로 재검증한다
 6	P097	run_P097_Stage1aB_control_v2_300M.sh	Y	3.0	Y	Y	완성된 control cache를 검증·재사용하고 stream-close·native PATH 교정 뒤 300M 학습을 재개한다
@@ -342,6 +336,19 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   3	P093	run_P093_Stage0ab_sharing_accounting.sh	N	0.1	N	N	기존 질문 중복과 D/R 후보의 unique weight·packed/resident·optimizer state·FLOPs를 GPU 없이 회계한다
 #   4	P091	run_P091_R0R1b_model_mapping_audit.sh	N	0.1	N	N	R1a 회귀 뒤 실제 TinyLM CPU 모델의 logical layer·shared tensor·CLA owner·optimizer group mapping과 audit-off 불변을 검증한다
 #   5	P095	run_P095_S0aL_causal_memory_log_recovery.sh	N	0.1	N	N	이전 콘솔 PASS와 구분한 S0aL 단계로 causal memory CPU 계약의 원본 로그를 복구한다. 새 과학 주장은 없음
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P025B	run_P025B_Stage0bWc_wsl_sparse24_inference_attribution.sh	D	0.1	Y	Y	Stage0bWb의 M8192 training-pack 속도와 one-way inference pack을 분리하고 M1/16/128/1024/8192의 정합·속도·peak allocation을 측정한다. 학습 0	8
+#   2	P060B	run_P060B_Stage0aW_wsl_sdpa_gqa_backend.sh	D	0.1	Y	Y	WSL native SDPA의 off/on default와 forced CUDNN/FLASH/EFFICIENT GQA 정합·속도·working memory를 분리한다. 학습 0	8
+#   1	P096	run_P096_Q2_canary_candidate_contract.sh	N	0.1	N	N	Q1b synthetic items로 450 slot·slot당 최대 2후보·provenance·ID preservation 계약을 검증한다
+#   1	P095	run_P095_S0b_memory_bridge_contract.sh	N	0.1	N	N	default-off Scout bridge의 identity·causality·reset·physical bytes·latency·backward 계약을 검증한다
+#   1	P091	run_P091_R2_layer_state_selector.sh	N	0.1	N	N	actual tiny model에서 gate-zero S와 WD 분리 optimizer-only U를 3 window로 기록한다
+#   1	P092	run_P092_Stage1aT_tlinear_dst_contract.sh	N	0.1	N	N	actual TLinear static50/DST50의 inactive score·active update·birth/death·optimizer-state 계약을 검증한다
+#   2	P025B	run_P025B_Stage0bWd_wsl_sparse24_inference_attribution.sh	D	0.1	Y	Y	Wc의 절대오차 단독·fail-fast를 교정해 두 형상과 M1~8192를 scale-aware 정합·속도로 완주한다	8
+#   3	P060B	run_P060B_Stage0bW_model_gqa_integration.sh	D	0.2	Y	Y	actual d14 RMS4 checkpoint의 full/cache prefill/decode GQA 정합·속도·peak allocation을 잰다
+#   3	P093	run_P093_Stage0c_parent_approximation.sh	D	0.2	Y	Y	d16 RMS4 parent의 shared mean+rank4/8/16 residual weight/output NRMS를 잰다	8
+#   4	P094	run_P094_R0_p022c_dependency_gate.sh	N	0.1	N	N	P022C actual packed/masterless evidence가 없으면 fail-closed dependency HOLD(exit 8)로 남긴다	8
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)

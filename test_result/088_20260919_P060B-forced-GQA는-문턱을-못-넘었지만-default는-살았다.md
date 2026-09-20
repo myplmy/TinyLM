@@ -150,3 +150,40 @@ GQA를 실험 기능으로 설명하므로 버전별 지원을 구분한다:
 ```
    "$python_bin" scripts/diag_sdpa_gqa_model_path.py --ckpt "$ckpt" --arch dense    --seq 256 --warmup 3 --iters 10 --max-nrms 0.001 --min-cosine 0.999999
 ```
+
+## 7. Stage0aWc backend 귀속(2026-09-20) — **default/CUDNN/FLASH 후보, EFFICIENT만 불가**
+
+> 로그: `088_log_20260920_P060B_Stage0aWc_wsl_sdpa_gqa_backend.txt` · 종료코드 0
+
+| 형상 | default GQA | forced CUDNN | forced FLASH | direct EFFICIENT | grouped EFFICIENT(Wc) |
+|---|---|---|---|---|---|
+| B8/T1024 | 0.993×, working −37.2% | 0.990×, −38.0% | 1.001×, −37.2% | unavailable | unavailable(5-D) |
+| B1/T128 | 0.993×, −15.5% | 1.151×, −16.5% | 1.127×, −15.5% | unavailable | unavailable(5-D) |
+
+B8/T1024에서는 default·CUDNN·FLASH가 모두 속도 +5% 이내와 working-memory −10% 이상을
+충족했다. 작은 B1/T128에서는 default만 문턱을 통과했다. 따라서 **GQA 때문에 SDPA를 못 쓴다**는
+결론은 틀리며, 현 runtime의 실용 경로는 dispatcher default다. forced EFFICIENT의 실패를
+FLASH/CUDNN 실패로 확대하지 않는다.
+
+Wc가 추가한 grouped-broadcast는 수학적으로는 repeat와 같지만 `[B,Hkv,G,T,D]` 5-D를 그대로
+SDPA에 전달했다. fused kernel은 4-D를 요구하므로 `All fused kernels requires ... 4
+dimensional`로 실패했다. 이는 EFFICIENT 자체의 최종 음성이 아니라 **후속 후보 구현의 형상
+결함**이다.
+
+## 8. Stage0aWd 4-D grouped-broadcast 교정 — **정적 완료·GPU NOT_RUN**
+
+`_grouped_broadcast_inputs()`는 이제 Q를 `[B×Hkv,G,T,D]`, K/V를 zero-stride
+`[B×Hkv,G,T,D]`로 만들고 결과를 원래 `[B,Hq,T,D]`로 되돌린다. CPU math 동등성,
+4-D shape, K/V group stride 0, physical storage 비중복 회귀는 통과했다.
+
+새 `run_P060B_Stage0aWd_wsl_sdpa_gqa_backend.sh`가 EFFICIENT GPU 지원·속도·메모리를
+재검증한다. 이 팔은 default GQA 채택의 선결이 아니라 backend attribution 후속이다. actual model
+forward의 11.1% 후보와 micro working-memory 절감은 유지되며 backward·학습·장문 decode 품질은
+계속 `NOT_RUN`이다.
+
+### 8.1 Stage0aWc 재현 명령 정본
+
+```bash
+"$python_bin" scripts/diag_sdpa_wsl_gqa.py --require-wsl --warmup 5 --iters 20 \
+  --max-speed-ratio 1.05 --min-memory-reduction 0.10
+```

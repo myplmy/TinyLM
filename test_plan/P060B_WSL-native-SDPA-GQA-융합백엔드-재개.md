@@ -6,6 +6,9 @@
 > 전까지 WSL 결과는 `E2E_NOT_RUN`이다. Stage0aW 보존 로그에서 forced backend는 음성이었지만
 > dispatcher-selected `on_default`가 속도 +0.3%·working memory −37.2%로 실용 문턱을 통과했다
 > ([결과 088](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)).
+> **현재 상태(2026-09-20):** Wc에서 B8/T1024 default·CUDNN·FLASH가 모두 실용 문턱을
+> 통과했고 actual model default GQA는 11.1% 빠른 후보를 유지한다. direct EFFICIENT는 불가하며,
+> Wc grouped 후보는 5-D 형상 결함이었다. 4-D로 교정한 Wd는 정적 PASS·GPU `NOT_RUN`이다.
 
 ## 1. 재개 근거와 비재개 경계
 
@@ -43,7 +46,8 @@ WSL + `sm_89`는 플랫폼 선결을 만족한다. 패키지 존재는 커널 PA
 |---|---|---|---|
 | **Stage0aW ✅ 혼합** | off/on default와 on-CUDNN/FLASH/EFFICIENT의 정합성·median forward·working memory | forced 세 경로는 문턱 미달/불가; default는 +0.3%, memory −37.2%로 실용 후보 | [088](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md) |
 | **Stage0aWb ✅ 후보 재현** | dispatcher default와 forced 후보를 별도 판정 | B8/T1024 default 1.018×·FLASH 1.031×, memory 약 −37%; EFFICIENT만 unavailable | [088 §6.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#61-wb-micro-gate) |
-| **Stage0aWc 실행 대기** | warning을 variant별 포착하고 direct EFFICIENT와 grouped-broadcast EFFICIENT를 분리 | 지원 FLASH/CUDNN, direct unavailable, zero-stride broadcast 대안의 정합·속도·physical storage를 별도 출력 | GPU 진단 수 초, 학습 0 |
+| **Stage0aWc ✅ 혼합** | warning을 variant별 포착하고 direct EFFICIENT와 grouped-broadcast EFFICIENT를 분리 | default/CUDNN/FLASH 후보 재현, direct EFFICIENT unavailable; grouped 팔은 5-D 형상 결함으로 무효 | [088 §7](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#7-stage0awc-backend-귀속2026-09-20--defaultcudnnflash-후보-efficient만-불가) |
+| **Stage0aWd 실행 대기** | batch×KV-head를 접은 4-D zero-stride grouped-broadcast로 EFFICIENT 재검증 | direct 결과와 분리해 정합·속도·physical storage 출력 | GPU 진단 수 초, 학습 0 |
 | **Stage0bW ✅ actual model 후보** | d14 RMS4 checkpoint full/cache prefill/decode | bit-identical, on/off 0.889×로 11.1% 빠름; peak 감소 0% | [088 §6.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#62-actual-d14-checkpoint-model-path) |
 | **Stage1W** | 250-step off vs forced-GQA 학습 속도·peak reserved·NaN/skip | memory ≥10% 절감, ms/step 악화 ≤5% | 조건부, SH 미작성 |
 | **Stage2W** | 배포 prefill/decode·장문 생성 정합성 | cache 경로 실제 텍스트와 속도 방향 통과 | 별도 승인·모델 실행 |
@@ -89,3 +93,7 @@ Stage0aW exit 8은 forced-only 사전등록 질문에는 유효한 음성이지�
   정합 0 오차·11.1% 속도 이득을 보였다. 긴 warning은 EFFICIENT 강제 probe가 local runtime의
   head-count 제약으로 실패하며 다른 비활성 backend 이유까지 열거한 출력이다. 이전 판독은 이를
   설명·구조화하지 않았고 Wc에서 한 행 reason으로 교정한다. 기본값은 계속 off다.
+- 2026-09-20: Wc는 B8/T1024에서 default·CUDNN·FLASH 후보를 모두 재현하고 EFFICIENT만
+  unavailable로 분리했다. 그러나 grouped-broadcast를 5-D로 전달해 fused kernel의 4-D 계약을
+  위반했다. Q를 `[B×Hkv,G,T,D]`로 접고 K/V를 같은 4-D head 축에 zero-stride expand하는 Wd를
+  구현했으며 GPU 결과는 `NOT_RUN`이다. 이 교정은 default GQA 후보를 무효화하지 않는다.

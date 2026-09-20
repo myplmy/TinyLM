@@ -59,15 +59,25 @@ def _eligible(rows, baseline: str, candidates, max_speed_ratio: float,
 
 
 def _grouped_broadcast_inputs(q, k, v):
-    """Represent GQA as an extra batch group with zero-stride K/V views."""
+    """Represent GQA as a 4-D grouped batch with zero-stride K/V views.
+
+    Fused SDPA kernels require 4-D inputs.  Keeping ``kv_heads`` as a fifth
+    dimension is mathematically valid on the math path but is rejected by the
+    fused backend selector.  Fold ``batch * kv_heads`` into the batch axis and
+    expose the query group as the common head axis instead.
+    """
     batch, q_heads, q_seq, dim = q.shape
     kv_heads, kv_seq = k.shape[1], k.shape[2]
     if q_heads % kv_heads:
         raise ValueError(f"q_heads={q_heads} is not divisible by kv_heads={kv_heads}")
     group = q_heads // kv_heads
-    q_grouped = q.reshape(batch, kv_heads, group, q_seq, dim)
-    k_grouped = k.unsqueeze(2).expand(batch, kv_heads, group, kv_seq, dim)
-    v_grouped = v.unsqueeze(2).expand(batch, kv_heads, group, kv_seq, dim)
+    q_grouped = q.reshape(batch * kv_heads, group, q_seq, dim)
+    k_grouped = k.reshape(batch * kv_heads, 1, kv_seq, dim).expand(
+        batch * kv_heads, group, kv_seq, dim
+    )
+    v_grouped = v.reshape(batch * kv_heads, 1, kv_seq, dim).expand(
+        batch * kv_heads, group, kv_seq, dim
+    )
     return q_grouped, k_grouped, v_grouped
 
 
