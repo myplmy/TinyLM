@@ -240,6 +240,11 @@ fp32 상주와 int8 상주가 갈린다.**
 | `qa_*` | 어닐 형태(P035: `qa_step60`·`qa_step80`) | ⚠️**2026-08-23 정정 — 이 행이 낡았다.** P035 는 **결과 022 로 종결**(2×2 네 값이 1.07σ 안, 형태 효과의 부호가 전이점에 따라 뒤집힘 = 검출 불가). `--anneal-shape` 은 구현돼 있고 **재실행 계획 없음** |
 | `p35b_a3_*` | P035B A3 동역학(`e60`·`e80`)과 audit 오염 대조(`off80`) | **예약 2026-09-15.** 세 팔 모두 m100s8·250 step·600M exact pool·seed 1337; 🚫품질 또는 anneal 기본값 판정에 사용 금지 |
 | `p097_ctrl_v2`·`p097_fw2`·`p097_edu_v2`·`p097_madlad` | P097 300M 한영 dataset recipe 대조 | **사용 완료 2026-09-20.** 전 팔 m100s10 dense·CLA2·Muon RMS4×4·300.024M draw·600M nominal pool·seed1337·exit0. tokenizer/data/val이 달라 자기 val_loss 교차비교 금지([090 §5](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#5-stage0bstage1abd-실제-완료2026-09-20)) |
+| `p097_{ctrl_v2,fw2}_s{2024,31415}` | P097 control/FineWeb2 교환 재현성 | **예약 2026-09-21.** 기존 seed1337에 두 seed를 더해 YNAT/ARC 강점과 common-bpb 열세의 부호만 재판단; 기본 dataset 승격 금지 |
+| `p060b_q_{off,on}_s{1337,2024,31415}` | P060B GQA 300M 품질 3-seed | **예약 2026-09-21.** seed 내 `sdpa_gqa` 하나만 변경; memory gate 음성을 품질 PASS로 승격 금지 |
+| `d14_cla2_norecur_rms4_lr{15,20}[_s2024|_s31415]`·`d14_cla2_norecur_rms4_s{2024,31415}` | P005b CLA2 LR 1.0/1.5/2.0 3-seed | **예약 2026-09-21.** 논문의 CLA별 LR 최적화를 우리 RMS4 조건에서 재판단 |
+| `p098_r2_{ctrl,reinject}_s{1337,2024,31415}` | P098 재귀 embedding 재주입 | **예약 2026-09-21.** m100s8 dense·CLA2·R2·RMS4×4 300M; cycle 덧셈 on/off만 변경 |
+| `p092_s{1,2,3}_*` | P092 full-trainer dense/static/DST panel | **예약 2026-09-21.** 30M→100M→gate→300M 3-seed; dense mask라 하드웨어 가속/저장 절감 주장 금지 |
 | `p076_s2_mean`·`p076_s2_middle`·`p076_s2_normmean` | P076 Stage2 부모 집약 품질 3팔 | **예약 2026-09-20.** m100R1c tied·같은 dense parent·Muon RMS4×4·CLA2·300M/600M·seed1337; `group_init`만 변경 |
 | `p060b_s1w_off250`·`p060b_s1w_on250` | P060B WSL GQA 250-step 속도/VRAM gate | **예약 2026-09-20.** m100s10 dense·Muon RMS4×4·CLA2·32.768M probe; 품질/W&B 판정 금지 |
 | `mA_*`,`mB_*`,`mC_*` | 1차 리뷰 최적안 검증(REVIEW1) | ✅ **완료**(결과 012). 승자 = `mA_g4s34_k4` |
@@ -3412,6 +3417,10 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
   M8192 event만 1.137~1.295×였고 wall은 전 행 0.084~0.831×로 음성이다. Wf raw low-level
   event는 M8192에서 1.244/1.390×지만 wall 0.778/0.841×이며 non-default alg tuning 이득은 없다.
   We CUDA Graph는 replay 전 output 비교 결함으로 무효라 Wg로 분리한다([결과 082 §11](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#11-stage0bwewf-실제-귀속2026-09-21--gpu-op-후보는-m8192뿐-host-wall은-전부-음성)).
+- **P025B Wg**: graph 8행을 모두 회수했다. M1 graph dense/sparse는
+  `0.079~0.369×`, M8192는 `1.400~2.342×`이지만 일반 wall은
+  `0.771~0.802×`다. captured work 후보를 whole-step으로 옮기지 않고 Stage0cW에서
+  fwd+dgrad+wgrad+pack/accum을 재다([082 §12](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#12-stage0bwg-cuda-graph-복구2026-09-21--구현-오류는-닫혔고-큰-m의-replay-후보는-성립했다)).
 - **P060B Wb·모델 통합**: isolated B8/T1024에서 forced CUDNN/FLASH는 off보다 각각
   `1.051/1.031×`, default는 `1.018×`이고 EFFICIENT는 unavailable이다. actual model 경로는
   logits가 일치하고 `11.1354→9.8974 ms`(`0.889×`, 약 11.1% 단축)였지만 allocation은
@@ -3441,11 +3450,10 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
   ([결과 087 §4](../test_result/087_20260919_P095-S0a-memory-primitive-계약은-통과했다.md)).
 - **P096 Q2a**는 synthetic baseline/candidate 320개·cap 450·provenance/preservation 계약을
   통과했지만 보호 실문항은 `NOT_RUN`이다([결과 085 §4](../test_result/085_20260919_P096-Q1b-taxonomy-계약은-통과했고-실문항은-남았다.md)).
-- **P097** Stage0b와 네 300M 학습은 모두 완료됐다. final은 control 3.51328, FineWeb2
-  3.88281, filtered-Edu 3.98578, MADLAD 4.02609이며 전 팔 exit0·skip0·`grad_max`≤1.1343다.
-  그러나 tokenizer와 자기 val이 달라 이 숫자의 팔 간 순위는 무효다. 공통 byte 원문·동일
-  한영 과제·prompt panel은 `NOT_RUN`이며 Stage2 evaluator는 checkpoint별 tokenizer/data를
-  선택하도록 보완이 필요하다([결과 090 §5](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#5-stage0bstage1abd-실제-완료2026-09-20)).
+- **P097** Stage2Wb 공통평가를 완주했다. control common-bpb **1.3355**,
+  FineWeb2 YNAT **40.9%**·ARC **36.3%**로 강점이 갈렸지만 KoBEST/NLI/HellaSwag에서
+  동시 우세하지 않아 전면 승자는 없다. 기본 dataset을 바꾸지 않고 control/FineWeb2
+  두 추가 seed로 교환 재현성만 확인한다([090 §8](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#8-stage2wb-공통평가-복구2026-09-21--네-recipe를-같은-문항에서-비교했지만-전면-승자는-없다)).
 
 73. ★★**과학적 음성은 실행 실패가 아니다.** 수치가 유효한 채 사전등록 문턱을 못 넘으면
     선언된 exit 8로 보존하고, 예외·누락·무수치만 실행 오류로 분류한다.

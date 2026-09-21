@@ -23,6 +23,7 @@ COMMON_SHELL_FILES = (
     ROOT / "scripts" / "shell" / "tinylm_env.sh",
     ROOT / "scripts" / "shell" / "tool_wandb_push.sh",
     ROOT / "scripts" / "shell" / "tool_wandb_backfill.sh",
+    ROOT / "scripts" / "shell" / "tool_wandb_bench_backfill.sh",
 )
 WANDB_MIN_TOKENS = 50_000_000
 
@@ -62,12 +63,13 @@ def experiment_log_contract_errors(path: Path, data: bytes) -> list[str]:
 
 
 def training_wandb_contract_errors(path: Path, data: bytes) -> list[str]:
-    """Live full-training SH must push exactly its raw tag after training.
+    """Live full-training SH relies on runlog's centralized WSL post-run sync.
 
     Short probes below 50M draw tokens are deliberately excluded from W&B so
-    they cannot look like full quality runs. Historical ``-done`` launchers are
-    immutable evidence and predate this WSL contract, so only live files are
-    enforced.
+    they cannot look like full quality runs.  Per-launcher push calls are now
+    rejected because they duplicate the central fail-open hook and can upload
+    the same run twice. Historical ``-done`` launchers remain evidence and are
+    excluded from this forward contract.
     """
     if path.name.endswith("-done.sh") or not path.name.startswith("run_P"):
         return []
@@ -105,14 +107,28 @@ def training_wandb_contract_errors(path: Path, data: bytes) -> list[str]:
             + r"(?:[\"']|\s|$)"
         )
         has_push = bool(call_re.search(text))
-        if draw_tokens >= WANDB_MIN_TOKENS and not has_push:
+        if draw_tokens >= WANDB_MIN_TOKENS and has_push:
             errors.append(
-                f"full training tag {tag} ({draw_tokens} tokens) lacks exact WSL W&B post-run push"
+                f"full training tag {tag} ({draw_tokens} tokens) duplicates runlog W&B auto-sync"
             )
         if draw_tokens < WANDB_MIN_TOKENS and has_push:
             errors.append(
                 f"short probe tag {tag} ({draw_tokens} tokens) must not be pushed to W&B"
             )
+    return errors
+
+
+def benchmark_wandb_contract_errors(path: Path, data: bytes) -> list[str]:
+    """Live model benchmark launchers must request the approved W&B view."""
+    if path.name.endswith("-done.sh") or not path.name.startswith("run_P"):
+        return []
+    text = data.decode("utf-8", errors="replace")
+    errors: list[str] = []
+    for program, args in launcher_calls(text):
+        if Path(program).name != "eval_bench_suite.py":
+            continue
+        if "--wandb" not in shlex.split(args, posix=True):
+            errors.append("eval_bench_suite.py call lacks --wandb benchmark upload contract")
     return errors
 
 
@@ -173,6 +189,10 @@ def main() -> int:
         for detail in training_wandb_contract_errors(path, data):
             errors.append(
                 f"training W&B contract {path.relative_to(ROOT).as_posix()}: {detail}"
+            )
+        for detail in benchmark_wandb_contract_errors(path, data):
+            errors.append(
+                f"benchmark W&B contract {path.relative_to(ROOT).as_posix()}: {detail}"
             )
 
     bash = find_bash()

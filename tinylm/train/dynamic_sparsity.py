@@ -43,13 +43,14 @@ class ConnectivityController:
                 dense_regrowth_gradient=self.dynamic,
             )
 
-    def capture_scores_and_mask_gradients(self):
+    def capture_scores_and_mask_gradients(self, *, capture_scores=True):
         """Save inactive scores, then keep optimizer updates on active slots only."""
         for module in self.modules:
             grad = module.weight.grad
             if grad is None:
                 raise RuntimeError("connectivity score requested before backward")
-            self.scores[id(module)] = grad.detach().abs().clone()
+            if self.dynamic and capture_scores:
+                self.scores[id(module)] = grad.detach().abs().clone()
             grad.mul_(module.connectivity_mask.to(grad.dtype))
 
     @staticmethod
@@ -74,23 +75,21 @@ class ConnectivityController:
             if score is None:
                 raise RuntimeError("rewire requires captured dense gradients")
             before = mask.clone()
-            for row in range(mask.shape[0]):
-                active_index = torch.where(mask[row])[0]
-                inactive_index = torch.where(~mask[row])[0]
-                swaps = min(
-                    len(active_index), len(inactive_index),
-                    max(1, math.ceil(len(active_index) * self.swap_fraction)),
-                )
-                prune = active_index[
-                    module.weight[row, active_index].abs().topk(
-                        swaps, largest=False, sorted=False
-                    ).indices
-                ]
-                grow = inactive_index[
-                    score[row, inactive_index].topk(swaps, largest=True, sorted=False).indices
-                ]
-                mask[row, prune] = False
-                mask[row, grow] = True
+            per_row = mask.sum(dim=1)
+            if not bool(torch.all(per_row == per_row[0])):
+                raise RuntimeError("P092 row-wise density conservation was violated")
+            active = int(per_row[0])
+            inactive = mask.shape[1] - active
+            swaps = min(active, inactive, max(1, math.ceil(active * self.swap_fraction)))
+            prune_score = module.weight.detach().abs().masked_fill(~mask, float("inf"))
+            grow_score = score.masked_fill(mask, float("-inf"))
+            prune = prune_score.topk(swaps, dim=1, largest=False, sorted=False).indices
+            grow = grow_score.topk(swaps, dim=1, largest=True, sorted=False).indices
+            mask.scatter_(1, prune, False)
+            mask.scatter_(1, grow, True)
+            # A newly born edge must not resurrect a stale latent value from
+            # its inactive lifetime.  Optimizer state is reset below as well.
+            module.weight.scatter_(1, grow, 0.0)
             module.set_connectivity(mask, dense_regrowth_gradient=True)
             changed = before ^ mask
             self._reset_optimizer_state(optimizers, module.weight, changed)

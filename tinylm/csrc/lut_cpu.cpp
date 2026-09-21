@@ -11,16 +11,21 @@ namespace {
 constexpr int64_t kGroup = 5;
 constexpr int64_t kPatterns = 243;
 
-const std::array<std::array<int8_t, kGroup>, kPatterns>& pattern_trits() {
-  static std::array<std::array<int8_t, kGroup>, kPatterns> values{};
+const std::array<std::uint8_t, kPatterns>& pattern_carries() {
+  // Transition (pattern-1) -> pattern in base 3.  Each trailing digit 2
+  // wraps +1 -> -1 (-2*x), then the first non-wrapped digit advances by x.
+  // This builds all 243 sums with additions instead of 243*5 multiplies.
+  static std::array<std::uint8_t, kPatterns> values{};
   static std::once_flag initialized;
   std::call_once(initialized, []() {
-    for (int64_t pattern = 0; pattern < kPatterns; ++pattern) {
-      int64_t value = pattern;
-      for (int64_t k = 0; k < kGroup; ++k) {
-        values[pattern][k] = static_cast<int8_t>(value % 3 - 1);
-        value /= 3;
+    for (int64_t pattern = 1; pattern < kPatterns; ++pattern) {
+      int64_t previous = pattern - 1;
+      std::uint8_t carries = 0;
+      while (previous % 3 == 2) {
+        ++carries;
+        previous /= 3;
       }
+      values[pattern] = carries;
     }
   });
   return values;
@@ -67,7 +72,7 @@ torch::Tensor lut_linear_cpu(
   const uint8_t* code_ptr = codes.data_ptr<uint8_t>();
   const float* alpha_ptr = alpha.data_ptr<float>();
   float* result_ptr = result.data_ptr<float>();
-  const auto& patterns = pattern_trits();
+  const auto& carries = pattern_carries();
 
   at::parallel_for(0, batch * groups, 1, [&](int64_t begin, int64_t end) {
     for (int64_t linear = begin; linear < end; ++linear) {
@@ -75,20 +80,19 @@ torch::Tensor lut_linear_cpu(
       const int64_t j = linear % groups;
       float* row = table_ptr + linear * kPatterns;
       const int64_t base = j * kGroup;
-      const float* group_ptr = x_ptr + b * input + std::min(base, input);
-      for (int64_t pattern = 0; pattern < kPatterns; ++pattern) {
-        float sum = 0.0f;
-        if (base + kGroup <= input) {
-          sum = group_ptr[0] * patterns[pattern][0]
-              + group_ptr[1] * patterns[pattern][1]
-              + group_ptr[2] * patterns[pattern][2]
-              + group_ptr[3] * patterns[pattern][3]
-              + group_ptr[4] * patterns[pattern][4];
-        } else {
-          for (int64_t k = 0; k < kGroup && base + k < input; ++k) {
-            sum += group_ptr[k] * static_cast<float>(patterns[pattern][k]);
-          }
+      float activation[kGroup] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+      for (int64_t k = 0; k < kGroup && base + k < input; ++k) {
+        activation[k] = x_ptr[b * input + base + k];
+      }
+      float sum = -(activation[0] + activation[1] + activation[2]
+                    + activation[3] + activation[4]);
+      row[0] = sum;
+      for (int64_t pattern = 1; pattern < kPatterns; ++pattern) {
+        const int64_t carry = carries[pattern];
+        for (int64_t k = 0; k < carry; ++k) {
+          sum -= 2.0f * activation[k];
         }
+        sum += activation[carry];
         row[pattern] = sum;
       }
     }
@@ -115,5 +119,6 @@ torch::Tensor lut_linear_cpu(
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, module) {
   module.def("lut_linear_cpu", &lut_linear_cpu,
-             "TinyLM native CPU LUT linear v0 (float32, per-row alpha)");
+             "TinyLM native CPU LUT linear v1 (incremental table, float32, per-row alpha)",
+             pybind11::call_guard<pybind11::gil_scoped_release>());
 }

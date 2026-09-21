@@ -65,18 +65,28 @@ def main() -> int:
         "--micro-bs 8 --accum 16 --seq 1024 --tag p097_ctrl_v2\n"
         "/usr/bin/bash scripts/shell/tool_wandb_push.sh p097_ctrl_v2\n",
     )
-    assert not SHELL_CHECK.training_wandb_contract_errors(
-        Path("run_P097_full.sh"), full_with_push.encode()
-    )
     full_without_push = full_with_push.rsplit("\n", 2)[0] + "\n"
-    assert SHELL_CHECK.training_wandb_contract_errors(
+    assert not SHELL_CHECK.training_wandb_contract_errors(
         Path("run_P097_full.sh"), full_without_push.encode()
+    )
+    assert SHELL_CHECK.training_wandb_contract_errors(
+        Path("run_P097_full.sh"), full_with_push.encode()
     )
     short_probe = full_with_push.replace("--steps 2289", "--steps 250").replace(
         "/usr/bin/bash scripts/shell/tool_wandb_push.sh p097_ctrl_v2\n", ""
     )
     assert not SHELL_CHECK.training_wandb_contract_errors(
         Path("run_P060_probe.sh"), short_probe.encode()
+    )
+    bench_without = (
+        '"$python_bin" scripts/runlog.py --name P097_eval -- '
+        '"$python_bin" scripts/eval_bench_suite.py --task hellaswag --models model\n'
+    )
+    assert SHELL_CHECK.benchmark_wandb_contract_errors(
+        Path("run_P097_eval.sh"), bench_without.encode()
+    )
+    assert not SHELL_CHECK.benchmark_wandb_contract_errors(
+        Path("run_P097_eval.sh"), bench_without.replace("\n", " --wandb\n").encode()
     )
     print("[PASS] dryrun_batch parses BAT/WSL calls and enforces WSL W&B post-run scope")
     return 0

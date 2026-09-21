@@ -183,7 +183,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None,
           kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
           attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
-          reuse_attn_on_dup=False, ce_chunk=0, cla_group=None, cla_edges=True,
+          repeat_embed_reinject=False, reuse_attn_on_dup=False,
+          connectivity_mode="none", connectivity_density=1.0,
+          connectivity_update_every=100, connectivity_swap_fraction=0.1,
+          ce_chunk=0, cla_group=None, cla_edges=True,
           mlp_lrm=False, mlp_lrm_mode="scalar", mlp_lrm_wd=0.01,
           tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
           save_every=0):
@@ -370,6 +373,14 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                   f"{f' block={repeat_block}' if repeat_mode == 'block' else ''} — "
                   f"★상주 파라미터는 불변, 계산 깊이만 늘어난다. "
                   f"⚠️활성 메모리와 벽시계는 반복 배수만큼 는다")
+    cfg.repeat_embed_reinject = bool(repeat_embed_reinject)
+    if cfg.repeat_embed_reinject:
+        if float(getattr(cfg, "train_repeat", 1.0)) <= 1.0:
+            raise ValueError("--repeat-embed-reinject는 --train-repeat > 1을 요구한다")
+        if str(getattr(cfg, "repeat_mode", "uniform")) != "uniform":
+            raise ValueError("첫 재주입 계약은 repeat-mode=uniform 전용이다")
+        print("[repeat] ★추가 uniform cycle 시작에 초기 token embedding을 덧셈한다"
+              "(P098, 기본 off)")
     cfg.center_weights = center_weights
     # ★F-1(2026-08-14) — 기본 False = 종전 `repeat_interleave` 경로 = 비트 동일.
     cfg.sdpa_gqa = bool(sdpa_gqa)
@@ -388,10 +399,39 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             raise SystemExit("[sparse34] 커스텀 삼진 커널 경로는 3:4 미구현 — "
                              "--sparse34 는 표준(F.linear) 경로에서만 사용하세요(커널 병용 금지).")
         print("[sparse34] 3:4 희소 삼진(1.25bpw) 활성 — 각 4-블록 |w|최소 1개 0강제")
+    if connectivity_mode not in ("none", "static", "dynamic"):
+        raise ValueError("--connectivity-mode must be none|static|dynamic")
+    if not 0.0 < float(connectivity_density) <= 1.0:
+        raise ValueError("--connectivity-density must be in (0,1]")
+    if int(connectivity_update_every) < 1:
+        raise ValueError("--connectivity-update-every must be positive")
+    if not 0.0 <= float(connectivity_swap_fraction) <= 1.0:
+        raise ValueError("--connectivity-swap-fraction must be in [0,1]")
+    cfg.connectivity_mode = str(connectivity_mode)
+    cfg.connectivity_density = float(connectivity_density)
+    cfg.connectivity_update_every = int(connectivity_update_every)
+    cfg.connectivity_swap_fraction = float(connectivity_swap_fraction)
     model = TiedMLPTransformer(cfg).to(device)
 
     if init_from:
         init_from_dense(model, init_from, device, depth_init=depth_init, group_init=group_init)
+
+    _connectivity = None
+    _connectivity_totals = {"births": 0, "deaths": 0, "updates": 0}
+    if cfg.connectivity_mode != "none":
+        from .dynamic_sparsity import ConnectivityController
+        _connectivity = ConnectivityController(
+            model._tlinear_cache,
+            density=cfg.connectivity_density,
+            dynamic=(cfg.connectivity_mode == "dynamic"),
+            swap_fraction=cfg.connectivity_swap_fraction,
+        )
+        active = sum(int(module.connectivity_mask.sum()) for module in _connectivity.modules)
+        total = sum(module.connectivity_mask.numel() for module in _connectivity.modules)
+        print(f"[connectivity] P092 mode={cfg.connectivity_mode} density="
+              f"{active/max(total,1):.6f} active={active}/{total} "
+              f"update_every={cfg.connectivity_update_every} "
+              f"swap_fraction={cfg.connectivity_swap_fraction}")
 
     teacher = None
     # ★★P067 — 외부 HF 교사가 우선한다. 우리 dense 교사와 **동시에 쓰지 않는다.**
@@ -826,6 +866,11 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             loss.backward()
             tot += loss.item()
             tot_ce += ce.item() / accum      # KD 여부와 무관하게 순수 CE 를 따로 누적
+        if _connectivity is not None:
+            _connectivity.capture_scores_and_mask_gradients(
+                capture_scores=(cfg.connectivity_mode == "dynamic"
+                                and (s + 1) % cfg.connectivity_update_every == 0)
+            )
         gn = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         if _anneal_audit is not None:
             _anneal_audit.before(s, progress=s / steps, anneal=anneal)
@@ -856,6 +901,19 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         if opt_muon is not None:
             opt_muon.step()
             opt_muon.zero_grad(set_to_none=True)
+        if (_connectivity is not None and cfg.connectivity_mode == "dynamic"
+                and (s + 1) % cfg.connectivity_update_every == 0):
+            _opts = [opt] + ([opt_muon] if opt_muon is not None else [])
+            _summaries = _connectivity.rewire(_opts)
+            births = sum(item.births for item in _summaries)
+            deaths = sum(item.deaths for item in _summaries)
+            if births != deaths:
+                raise RuntimeError(f"P092 active budget changed: births={births} deaths={deaths}")
+            _connectivity_totals["births"] += births
+            _connectivity_totals["deaths"] += deaths
+            _connectivity_totals["updates"] += 1
+            print(f"[connectivity] step={s + 1} births={births} deaths={deaths} "
+                  f"updates={_connectivity_totals['updates']}")
         if _recipe_audit is not None:                   # ★A08 — update 후 RMS
             _recipe_audit.after(s, applied=True)
         if _anneal_audit is not None:
@@ -955,6 +1013,13 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "kd_step_n": _acc["kd_n"], "nokd_step_n": _acc["no_n"],
            "lora_rank": lora_rank, "wall_sec": time.time() - t0,
            "sparse34": bool(sparse34), "bpw": 1.25 if sparse34 else 1.95,
+           "connectivity_mode": str(cfg.connectivity_mode),
+           "connectivity_density": float(cfg.connectivity_density),
+           "connectivity_update_every": int(cfg.connectivity_update_every),
+           "connectivity_swap_fraction": float(cfg.connectivity_swap_fraction),
+           "connectivity_births": int(_connectivity_totals["births"]),
+           "connectivity_deaths": int(_connectivity_totals["deaths"]),
+           "connectivity_updates": int(_connectivity_totals["updates"]),
            "anneal_end": anneal_end, "decay_frac": decay_frac,    # (P026) 스케줄 정렬 기록
            "anneal_shape": anneal_shape, "anneal_start": a0,      # (P035) 어닐 형태·시작점
            "anneal_audit": (str(anneal_audit) if anneal_audit else None),
@@ -979,6 +1044,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "attn_group": int(getattr(cfg, "attn_group", 1)),       # (P057) 어텐션 타잉 g
            "train_repeat": float(getattr(cfg, "train_repeat", 1.0)),   # (P049B) 학습 시 재귀 배수
            "repeat_mode": str(getattr(cfg, "repeat_mode", "uniform")),
+           "repeat_embed_reinject": bool(getattr(cfg, "repeat_embed_reinject", False)),
            "reuse_attn_on_dup": bool(getattr(cfg, "reuse_attn_on_dup", False)),
            "tokenizer_hf": (str(tokenizer_hf) if tokenizer_hf else None),   # ★P067
            "kd_teacher_hf": (str(kd_teacher_hf) if kd_teacher_hf else None),

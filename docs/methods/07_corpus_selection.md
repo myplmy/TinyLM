@@ -238,6 +238,7 @@ cache·학습이 완료됐다. 데이터 카드 설명을 실물 문서 품질 �
 
 모든 recipe는 source token quota와 source-stratified val을 50:50으로 고정한다. tokenizer가
 서로 다르므로 자기 `val_loss`·ppl을 팔 사이 순위로 쓰지 않고 같은 한영 문항 accuracy/gold
-margin과 동일 원문의 byte-bpb로 판정한다. 네 학습은 완료됐지만 **팔 간 품질 비교는 여전히
-`NOT_RUN`**이다. 기존 evaluator가 단일 `--data` tokenizer를 모든 모델에 적용하므로 Stage2는
-checkpoint별 recipe/tokenizer 선택 구현 뒤에만 실행한다.
+margin과 동일 원문의 byte-bpb로 판정했다. Stage2Wb에서 control bpb **1.3355**,
+FineWeb2 YNAT **40.9%**·ARC **36.3%**로 강점이 갈렸고 KoBEST/NLI/HellaSwag에서 한 recipe의
+전면 우세는 없었다. 따라서 기본 dataset은 유지하고 control/FineWeb2 추가 2-seed로
+교환 재현성만 확인한다([090 §8](../../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#8-stage2wb-공통평가-복구2026-09-21--네-recipe를-같은-문항에서-비교했지만-전면-승자는-없다)).

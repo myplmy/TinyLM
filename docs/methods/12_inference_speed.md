@@ -193,12 +193,15 @@ custom LUT kernel의 상한을 직접 실측한 것도 아니다.
 
 ## 12.8 2026-09-19 WSL 재개 상태
 
-P025B의 cuSPARSELt 방향 오류는 교정됐지만 Wd synthetic inference는 모든 측정 형상에서
-`0.085~0.820×`로 dense보다 느렸다. 이는 2:4 synthetic kernel 가속 축의 음성이지 sparse-master
-학습 뒤 checkpoint 전체 추론의 직접 측정은 아니다.
+P025B의 cuSPARSELt 방향 오류와 We graph 구현 결함은 Wg에서 닫혔다.
+M1 graph는 `0.079~0.369×`로 음성이지만 M8192 graph는 `1.400~2.342×`로
+빠르다. 반면 일반 PyTorch wall은 `0.771~0.802×`로 여전히 느리다. 큰 M의
+captured work 후보를 TLinear/checkpoint 추론으로 승격하지 않고 Stage0cW에서
+weight-gradient·pack/accum 상각을 포함해 재다.
 
 P060B actual model GQA 경로는 logits 동등성을 유지하며 `11.1354→9.8974 ms`(약 11.1% 단축)를
-관찰했다. Wd의 default micro는 working −37.2%와 속도 ±0.3% 후보지만 grouped EFFICIENT는
+관찰했다. 단 종전 구현은 `q_len<kv_len` cache decode에서 GQA를 끄고 K/V를
+다시 4배 복제했으므로 일반 생성 decode 이득은 0이었다. Wd의 default micro는 working −37.2%와 속도 ±0.3% 후보지만 grouped EFFICIENT는
 1.232~1.639× 느리다. Stage1W actual training은 속도 1.0025×이나 reserved 절감이 1.986%뿐이라
 10% memory gate 음성이다. 따라서 배포 forward 후보는 유지하되 학습 기본값은 off다.
 
@@ -206,4 +209,6 @@ P014D Stage0bW는 완주했다. int8은 fp32보다 5~15% 빨랐지만 LUT refere
 LUT 언팩 대역은 25.1~36.3%였다. 사용자 후속 승인으로 g=5/per-row-alpha C++ native v0를
 구현했고 합성 M=1 두 측정에서 Python reference보다 1.36~2.42× 빨랐지만 dense 대비 0.288~0.731×다.
 actual model에서 native/reference는 1.785~1.790×였지만 native/int8은 1.188~1.249×로 1.50×
-채택선 미달이고 fp32보다도 느리다. scalar v0는 속도 음성이고 SIMD/외부 kernel 연동은 미구현이다.
+채택선 미달이고 fp32보다도 느리다. moonshot의 3:4/32-state native kernel은
+현 generic g5 checkpoint에 그대로 쓸 수 없다. GIL 해제와 base-3 증분 243-state 표만
+v1에 차용했고 실제 속도는 `NOT_RUN`이다.

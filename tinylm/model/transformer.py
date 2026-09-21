@@ -639,6 +639,9 @@ class TiedMLPTransformer(nn.Module):
             x = self._emb_rows(tokens.reshape(-1)).reshape(*tokens.shape, -1)
         if self.emb_up is not None:
             x = F.linear(x, self._emb_up_w())              # ★2026-08-26 접근자 경유
+        # P098: 재귀 cycle에 다시 더할 초기 token representation. 기본
+        # off에서는 아래 분기가 완전히 죽어 종전 경로가 불변이다.
+        embed_state = x
         # ★RoPE 는 절대위치다. 캐시 사용 시 [:T] 가 아니라 [past_len : past_len+T] 를 써야 한다.
         cos, sin = self.rope_cos[past_len:past_len + T], self.rope_sin[past_len:past_len + T]
         if not self._quant_frozen:
@@ -664,6 +667,11 @@ class TiedMLPTransformer(nn.Module):
                                "(층 반복은 학습된 깊이 분포 밖이고, grad checkpoint 와도 섞인다). "
                                "학습 시 반복은 --train-repeat 로(P049B).")
         seen = {}                                       # owner -> 그 owner 를 몇 번째 통과 중인가
+        _reinject = bool(getattr(cfg, "repeat_embed_reinject", False))
+        if _reinject:
+            if not repeating or str(getattr(cfg, "repeat_mode", "uniform")) != "uniform":
+                raise RuntimeError("repeat_embed_reinject는 uniform train_repeat > 1 경로 전용이다")
+        _mid_visits = 0
 
         # ★★P049 §17.3 — `--reuse-attn-on-dup`. **재귀 통과에서만** 켜진다.
         #   결과 041 §17 이 **복제층 어텐션 출력 cos 0.9882** 를 쟀다 = 두 번째 통과가
@@ -679,6 +687,11 @@ class TiedMLPTransformer(nn.Module):
 
         kv_bank, mode_hist = {}, []
         for step_idx, i in enumerate(schedule):
+            if cfg.n_prelude <= i < cfg.n_prelude + cfg.n_middle:
+                if (_reinject and i == cfg.n_prelude and _mid_visits > 0
+                        and _mid_visits % cfg.n_middle == 0):
+                    x = x + embed_state
+                _mid_visits += 1
             layer = self.layers[i]
             mode_p = None
             if cfg.n_modes > 1:

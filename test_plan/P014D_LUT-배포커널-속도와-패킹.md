@@ -1,7 +1,7 @@
 # P014D — **LUT 배포 커널: 속도와 패킹**
 
-- **상태**: 🔄**진행 중·native CPU v0 속도 음성** — Stage0bW CPU profile은 완주했고
-  ([결과 069 §8](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#8-stage0bw-교정-재실행2026-09-20--프로파일은-완주했고-즉시-커널-착수-근거는-부족)). 5-trit/per-row-alpha C++ v0는 actual model에서 Python reference보다 1.79× 빠르지만 int8 대비 1.188~1.249×로 채택선 1.50×에 미달했다([결과 069 §9](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#9-stage1w-native-lut-actual-model-gate2026-09-20--reference는-개선-int8-문턱은-미달)). scalar v0는 음성이고 SIMD/외부 ABI는 미구현이다.
+- **상태**: 🔄**진행 중·native CPU v0 음성, v1 정적 구현** — Stage0bW CPU profile은 완주했고
+  ([결과 069 §8](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#8-stage0bw-교정-재실행2026-09-20--프로파일은-완주했고-즉시-커널-착수-근거는-부족)). 5-trit/per-row-alpha C++ v0는 actual model에서 Python reference보다 1.79× 빠르지만 int8 대비 1.188~1.249×로 채택선 1.50×에 미달했다([결과 069 §9](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#9-stage1w-native-lut-actual-model-gate2026-09-20--reference는-개선-int8-문턱은-미달)). moonshot의 3:4 전용 설계는 분리하고 generic g5에 GIL 해제·base-3 증분 표를 차용한 v1 Stage1Wb를 준비했다. 실제 속도는 `NOT_RUN`.
 - **상태 갱신**: 2026-09-21
 - **신설**: 2026-08-30 (사용자 지시 12 — P014 가 길어져 가독성·관리가 나빠졌다)
 - **이관 원본**: [P014](P014_커스텀삼진커널-검증.md) · [P014B](P014B_LUT커널-실사-및-속도게이트.md) · [P014C](P014C_우리구조에맞는-역양자화제거-경로.md)
@@ -184,3 +184,23 @@ compiled 정합·합성·두 actual checkpoint decode가 모두 실행됐다. na
 scalar C++ v0를 기본 배포 backend로 승격하지 않는다. g5 packed 상주 레버와 reference 구현은
 보존하며, 속도 후속은 SIMD/vectorized layout 또는 외부 T-MAC/BitNet ABI 적합성 실사라는 별도
 구현 질문이다. 그 구현 승인 전 새 launcher를 만들지 않는다.
+
+## 11. 2026-09-21 moonshot 비교와 Stage1Wb native v1
+
+`origin/moonshot` HEAD `86ccf6982fb5`(해당 커널 commit `3791a88`)를 checkout하지 않고
+tree/diff로 비교했다. 그 branch의 주요 native
+CPU LUT은 P014D g5/243-state의 더 나은 버전이 아니라 **3:4 전용 1.25bpw/32-state**
+PM001 커널이다. 현 P014D checkpoint는 3:4를 강제하지 않으므로 그대로 이식하면
+독립변수가 커널 구현에서 가중치 토폴로지로 바뀐다.
+
+차용 가능한 부분만 generic g5에 반영했다.
+
+- pybind 호출 중 Python GIL을 해제한다.
+- 243 패턴×5 곱셈을 매번 하지 않고 base-3 증분 전이로 LUT 표를 만든다.
+- 패킹 1.600bpw, per-row alpha, TLinear ABI, 기본 `reference`는 불변이다.
+
+`run_P014D_Stage1Wb_native_lut_incremental.sh`는 종전 Stage1W와 같은 형상·actual
+checkpoint·int8 대조·1.50× 문턱을 쓴다. 정적 source/default contract만 PASS했고 C++
+compile·CPU model·속도는 사용자 실행 전 `NOT_RUN`이다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

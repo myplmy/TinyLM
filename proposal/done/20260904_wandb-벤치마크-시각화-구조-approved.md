@@ -1,6 +1,6 @@
 # 제안 — **W&B 벤치마크 시각화 구조**
 
-> **작성** 2026-09-04 · **개정** 2026-09-05(자립본) · **상태** ⏳판단 대기 · **분류** 도구
+> **작성** 2026-09-04 · **개정** 2026-09-21 · **상태** ✅승인·구현, 실런 운영 보강 · **분류** 도구
 > 트리거: 2026-09-04 사용자 지시 11 · 2026-09-05 사용자 지시 (2)C·(5)
 > 양식: [`proposal/README.md`](README.md) §3
 >
@@ -628,3 +628,23 @@ for tag, tasks in sorted(per_tag.items()):
 | TSV upsert + 표 생성 | 0.6h | **0.5h** |
 | 증분·재실행 검증 | 0.5h | ⏸실런 대기 |
 | 사용자 화면 | 0.5h | **0.2h**(Stage0b) |
+
+## 14. 2026-09-21 WSL 실런 누락 회수과 재발 방지
+
+P097 Stage2Wb의 여섯 `eval_bench_suite.py` 호출은 `--wandb`를 빠뜨려 모델 평가는
+완주했지만 이 제안의 summary/table 함수가 0회 호출됐다. 즉 구현 미작동이 아니라
+**launcher 옵션 누락**이었다.
+
+보강은 세 계층으로 나뉨다.
+
+1. `eval_bench_suite.py`는 remote 옵션과 무관하게 eligible 결과를 먼저
+   `test_result/bench_results.tsv`에 upsert한다. W&B 오류가 로컬 정본 생성을 막지 못한다.
+2. live WSL benchmark SH의 `eval_bench_suite.py`는 `--wandb`를 포함해야 정적
+   shell contract를 통과한다.
+3. 이미 끝난 Wb는 문항별 JSONL에서 24 group×3 metric=72 long row를 복구했고,
+   `tool_wandb_bench_backfill.sh` 본래 4개 학습 run ID에만 붙이는 bounded plan 4/4를 통과했다.
+
+학습 W&B는 별개로 SH마다 adapter를 적는 방식을 폐기하고 WSL `runlog.py`가
+성공한 50M 이상 full run의 exact tag를 종료 후 fail-open 동기화한다. 네트워크
+실패는 학습 rc를 바꾸지 않고 같은 experiment log에 경고로 남는다. 이 보강의
+원격 E2E는 AI가 실행하지 않아 `NOT_RUN`이다.

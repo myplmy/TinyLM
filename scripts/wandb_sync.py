@@ -10,9 +10,10 @@
    2. ★★**학습 경로를 건드리지 않는다.** `trainer.py` 에 훅을 넣지 않았다 —
       넣으면 **비트 동일성이 깨질 수 있고**, 네트워크 실패가 5시간짜리 런을 죽인다.
       이 도구는 **런이 끝난 뒤** json 을 읽어 올린다. 실패해도 잃는 것이 없다.
-   3. ★**API 키를 코드·로그·인쇄 어디에도 남기지 않는다.** **경로만** 읽는다.
-      Windows 기본 경로는 `Z:/TinyLM_private/weave_apikey_only.txt`이고,
-      WSL/Linux는 위치를 추측하지 않고 `TL_WANDB_KEY_FILE`을 명시해야 한다.
+   3. ★**API 키를 코드·로그·인쇄 어디에도 남기지 않는다.** **경로만** 정한다.
+      Windows 기본 경로는 `Z:/TinyLM_private/weave_apikey_only.txt`, WSL 기본
+      경로는 `/mnt/z/TinyLM_private/weave_apikey_only.txt`이다. 환경변수
+      `TL_WANDB_KEY_FILE`이 있으면 두 기본값보다 우선한다.
 
 ★무엇을 올리는가
    config   arch·preset·steps·seed·mlp_group·attn_group·kd·kd_alpha·pool_tokens …
@@ -42,6 +43,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 LOGS = ROOT / "runs" / "logs"
 WINDOWS_DEFAULT_KEY_FILE = Path(r"Z:/TinyLM_private/weave_apikey_only.txt")
+WSL_DEFAULT_KEY_FILE = Path("/mnt/z/TinyLM_private/weave_apikey_only.txt")
 
 # ★config 로 올릴 필드 — "런을 재현하는 데 필요한 것" 만.
 CONFIG_KEYS = [
@@ -50,6 +52,9 @@ CONFIG_KEYS = [
     "sched", "anneal_end", "decay_frac", "grad_ckpt", "compile",
     "mlp_group", "micro_group", "attn_group", "mlp_split", "n_layers",
     "emb_rank", "sparse34", "bpw", "depth_init", "group_init", "train_repeat", "repeat_mode",
+    "repeat_embed_reinject",
+    "connectivity_mode", "connectivity_density", "connectivity_update_every",
+    "connectivity_swap_fraction",
     "kd", "kd_every", "kd_alpha", "kd_temp", "kd_teacher", "kd_chunk",
     "init_from", "init_from_src", "opt_dtype", "sdpa_gqa", "params",
     # ★2026-09-20 WSL 계약 감사 — P097은 Muon RMS4·CLA2로 학습됐지만 종전 payload는
@@ -66,6 +71,7 @@ SUMMARY_KEYS = [
     "deploy_mb", "packed_mb", "runtime_mb", "mem_params", "opt_state_mb",
     "vram_alloc_gb", "vram_reserved_gb", "ms_step_median", "ms_step_spread",
     "wall_sec", "tokens_per_microbatch", "bytes_per_token",
+    "connectivity_births", "connectivity_deaths", "connectivity_updates",
     # ★2026-08-29 — KV 캐시 상주(REVIEW3 미지 8). `runtime_mb` 는 **가중치만**이고
     #   `runtime_plus_kv_mb` 가 합계다. 둘을 함께 올려 혼동을 막는다.
     "kv_entries", "kv_visits", "kv_kb_per_token", "kv_mb", "runtime_plus_kv_mb",
@@ -78,10 +84,7 @@ def key_file_path():
         return Path(configured).expanduser()
     if os.name == "nt":
         return WINDOWS_DEFAULT_KEY_FILE
-    raise FileNotFoundError(
-        "WSL/Linux에서는 비밀 경로를 추측하지 않는다. "
-        "TL_WANDB_KEY_FILE을 명시할 것."
-    )
+    return WSL_DEFAULT_KEY_FILE
 
 
 def read_key():
@@ -95,11 +98,6 @@ def read_key():
     if not k:
         raise ValueError(f"키 파일이 비어 있다: {p}")
     return k
-
-
-def mask(k):
-    """★인쇄용. 길이와 앞뒤 2자만 — 그마저도 `--check` 에서만 쓴다."""
-    return f"<{len(k)}자, {k[:2]}…{k[-2:]}>" if len(k) > 6 else "<너무 짧다>"
 
 
 def banner(s, ch="="):
@@ -225,8 +223,8 @@ def do_check():
     print(f"  존재 여부    : {'있다' if p.exists() else '★없다'}")
     if p.exists():
         try:
-            k = read_key()
-            print(f"  키 형태      : {mask(k)}   ★값은 인쇄하지 않는다")
+            read_key()
+            print("  키 읽기      : PASS (비어 있지 않음; 값·길이·앞뒤 문자는 미출력)")
         except Exception as e:                                  # noqa: BLE001
             print(f"  ★키 읽기 실패: {type(e).__name__}")
     try:

@@ -2,8 +2,9 @@
 
 > **작성** 2026-09-19 · **보완** 2026-09-21 · **상태** 🔄승인 후 진행 중 · **분류** 작업방식
 > 양식: [`proposal/README.md`](README.md) §3. **아홉 절을 비우지 않는다** — 없으면 *"없다"* 라고 쓴다.
-> **승인**: 2026-09-21 사용자 권장 C안 승인. M2 inventory compiler·fixture 구현, M3~M5는
-> current frontier 산출·coverage와 3회 queue 운영 증거가 남아 있어 완료 이관 전이다.
+> **승인**: 2026-09-21 사용자 권장 C안 승인. M2 inventory compiler·fixture, M3 현재
+> frontier 114/114 + non-DONE disposition 72/72, M4 READY 50.8h + GATED 0.3h 편성까지
+> 정적 증거를 확보했다. M5 3회 queue 운영 증거가 남아 완료 이관 전이다.
 
 ---
 
@@ -74,8 +75,8 @@
 | M0 | 계획 색인을 물리 계획서 기준 1행·1상태로 정규화 | 완료 | 문서 수=행 수, duplicate=0 |
 | M1 | 상태 checker를 정적 종합검사에 연결 | 완료 | 강조·소절·중복·누락 0 |
 | M2 | frontier 감사기를 신설해 각 계획의 READY/GATED/HOLD·첫 선결·비용·최근 실행을 출력하고 BAT·SH preflight를 모두 요구 | **수동 기준선·WSL SH parser 완료** · 자동화 ⚙1.5h | 모든 계획이 한 이유로 분류되고 live 학습 SH 계측이 0이 아님 |
-| M3 | 큐 편성기가 최신 handoff뿐 아니라 M2 출력·COMPASS·기준표를 필수 입력으로 사용 | ⚙1h | 오래된 runnable fixture가 누락되면 실패 |
-| M4 | 48h 편성 감사: READY를 우선하고 GATED는 gate까지만, 제외 후보마다 근거 기록 | ⚙0.5h | 미달이면 남은 READY 0 또는 수치 사유 존재 |
+| M3 ✅ 정적 운영 증거 | 114/114 frontier SHA와 non-DONE 72/72 disposition을 현 큐가 소비 | 완료 | `handoff/audit/20260921b_FRONTIER.json`·`20260921b_FRONTIER.md`·`20260921b_FRONTIER_DISPOSITION.md` |
+| M4 ✅ 정적 편성 | READY 50.8h를 전부 편성하고 GATED 0.3h는 앞 gate만, 제외 65개 근거 기록 | 완료 | 최대 51.1h; gate 음성 시 후속 자동 승격 금지 |
 | M5 | 3회 큐에서 신규/기존 계획 누락률과 사후 재편성 횟수 확인 | 사용자 실행 후 | 누락 0이면 작업방식 승인 완료 |
 
 큐는 시간을 억지로 채우지 않는다. 다만 48h 미달이면 “조건부 본런이 아직 없다” 한 문장으로

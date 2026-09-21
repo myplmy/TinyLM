@@ -103,7 +103,13 @@ class TLinear(nn.Module):
             raise ValueError(
                 f"connectivity mask shape {tuple(mask.shape)} != {tuple(self.weight.shape)}"
             )
-        self.connectivity_mask = mask.to(device=self.weight.device, dtype=torch.bool)
+        converted = mask.to(device=self.weight.device, dtype=torch.bool)
+        if (self.connectivity_mask is not None
+                and self.connectivity_mask.shape == converted.shape
+                and self.connectivity_mask.device == converted.device):
+            self.connectivity_mask.copy_(converted)
+        else:
+            self.connectivity_mask = converted
         self._connectivity_dense_grad = bool(dense_regrowth_gradient)
 
     def _connectivity_weight(self, weight):

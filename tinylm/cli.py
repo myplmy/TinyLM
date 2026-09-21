@@ -241,6 +241,9 @@ def main():
     p.add_argument("--repeat-mode", choices=list(REPEAT_MODES), default="uniform",
                    help="(P049B) uniform=중간 전체 / block=--repeat-block 그룹만 / progressive=깊을수록 증가")
     p.add_argument("--repeat-block", type=int, default=0, help="(P049B) block 모드의 MLP 그룹 인덱스")
+    p.add_argument("--repeat-embed-reinject", action="store_true",
+                   help="(P098) uniform 재귀의 두 번째 이후 cycle 시작에 초기 token embedding을 덧셈. "
+                        "--train-repeat > 1과만 유효; 기본 off=비트 동일")
     p.add_argument("--save-every", type=int, default=0,
                    help="(P058) 체크포인트 저장 주기(스텝). 0=매 eval 마다(종전). "
                         "eval 은 자주 하되 저장은 드물게 하려는 것 — model+optimizer 직렬화가 비싸다")
@@ -271,6 +274,14 @@ def main():
     p.add_argument("--ternary-kernel", action="store_true", help="(실험) 커스텀 삼진 커널 경로(레퍼런스)")
     p.add_argument("--ternary-kernel-triton", action="store_true", help="커널 Triton forward(검증 후에만)")
     p.add_argument("--sparse34", action="store_true", help="(P016) 3:4 희소 삼진 1.25bpw(각 4-블록 |w|최소 1개 0강제)")
+    p.add_argument("--connectivity-mode", choices=["none", "static", "dynamic"], default="none",
+                   help="(P092) TLinear structural connectivity. none=기본 동작, static=고정 mask, dynamic=RigL-like rewire")
+    p.add_argument("--connectivity-density", type=float, default=1.0,
+                   help="(P092) 행별 active connectivity 비율")
+    p.add_argument("--connectivity-update-every", type=int, default=100,
+                   help="(P092) dynamic topology update 스텝 간격")
+    p.add_argument("--connectivity-swap-fraction", type=float, default=0.1,
+                   help="(P092) update당 active slot 교체 비율")
     p.add_argument("--pool-tokens", default=None,
                    help="데이터 풀(캐시) 크기를 학습길이·이름과 분리 지정(예: 600M). "
                         "미지정이면 --tokens 사용. 토큰스윕 클린판: 모든 예산을 같은 풀에서 샘플.")
@@ -392,6 +403,10 @@ def main():
               use_ternary_kernel=a.ternary_kernel, ternary_kernel_triton=a.ternary_kernel_triton,
               kd_cache=a.kd_cache, kd_topk=a.kd_topk,
               kd_every=a.kd_every, kd_dynamic=a.kd_dynamic, sparse34=a.sparse34,
+              connectivity_mode=a.connectivity_mode,
+              connectivity_density=a.connectivity_density,
+              connectivity_update_every=a.connectivity_update_every,
+              connectivity_swap_fraction=a.connectivity_swap_fraction,
               pool_tokens=pool_tok, exact_cache=a.exact_cache,
               anneal_end=a.anneal_end, decay_frac=a.decay_frac, seed=a.seed,
               anneal_shape=a.anneal_shape, anneal_start=a.anneal_start,
@@ -405,6 +420,7 @@ def main():
               sdpa_gqa=a.sdpa_gqa, kd_chunk=a.kd_chunk, depth_init=a.depth_init,
               attn_group=a.attn_group, train_repeat=a.train_repeat,
               repeat_mode=a.repeat_mode, repeat_block=a.repeat_block,
+              repeat_embed_reinject=a.repeat_embed_reinject,
               reuse_attn_on_dup=a.reuse_attn_on_dup,
               ce_chunk=a.ce_chunk, cla_group=a.cla_group,
               cla_edges=(not a.no_cla_edges), mlp_lrm=a.mlp_lrm,

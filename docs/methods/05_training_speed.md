@@ -151,10 +151,10 @@ M=12,288 은 **서로 다른 두 형상(mb12×1024, mb24×512)이 똑같이 OOM*
 | 계획 | 사용자 보존 결과 | 현재 판정 | 다음 |
 |---|---|---|---|
 | [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | Wc cached weight `1.368/0.968/1.188×`; NRMS 3.76~3.78%·memory 전 형상 증가 | **cache-only compute 가속 음성** | activation 변환 융합/다른 format의 새 설계 전 통합 금지; shadow는 별도 |
-| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | We M8192 event `1.137~1.295×`, wall 최대 `0.831×`; Wf raw event `1.244/1.390×` | GPU op 후보·host wall 음성, algorithm tuning 이득 없음 | graph 구현결함 Wg만 회수; whole-step/TLinear 승격 금지 |
+| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | Wg graph 8행 OK; M1 `0.079~0.369×`, M8192 `1.400~2.342×`; 일반 wall `0.771~0.802×` | 큰 M captured GPU work 후보·호출 wall 음성 | Stage0cW에서 fwd+dgrad+wgrad+패킹/accum 전체 primitive로 재판단 |
 | [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | default micro 후보, actual model `0.889×`; Stage1W speed `1.0025×`, reserved −1.986% | 배포 forward 후보지만 학습 memory gate 음성 | 기본 off 유지; full-quality 자동 개방 금지 |
 | [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | R2 pipeline PASS; `S rho=-1.0~0.4`, `U rho=1.0` | selector S 불안정; 속도·품질 증거 없음 | S를 기본 selector로 승격 금지 |
-| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | Stage1aT active-count/transition/loss 계약 PASS | dense mask 계약일 뿐 가속 0으로 취급 | full trainer 30M은 `NOT_RUN` |
+| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | full trainer opt-in과 vectorized topology update 구현 | 여전히 dense mask GEMM이므로 가속 0으로 취급 | 30M/100M/300M에서 계측 overhead를 실측 전 `NOT_RUN` |
 | [P093](../../test_plan/P093_구조조건부-직접공유와-완화타잉.md) | rank16 output NRMS `0.974`, rank0 대비 개선 약 `0.75%` | 현재 parent approximation 과학적 음성 | 새 parameterization 없이는 모델/GPU 단계로 진행하지 않음 |
 
 forced SDPA의 raw warning은 모든 backend가 실패했다는 뜻이 아니었다. EFFICIENT를 강제한 팔에서

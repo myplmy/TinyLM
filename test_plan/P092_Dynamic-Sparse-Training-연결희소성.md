@@ -6,7 +6,9 @@
 > 보존을 모두 통과했다([결과 083 §6](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
 > actual `TLinear` mask와 trainer-agnostic controller의 Stage1aT 계약도 사용자 로그에서 PASS했다
 > ([083 §8](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md#8-stage1at-actual-tlinear-microtrainer2026-09-19)).
-> full Transformer/trainer 30M과 실제 학습·속도·메모리·품질은 여전히 `NOT_RUN`이다.
+> full Transformer/trainer의 default-off CLI·mask·gradient score·optimizer-state reset·vectorized
+> rewire를 2026-09-21 구현했고 30M→100M→게이트→300M 3-seed SH를 준비했다.
+> 정적 배선만 PASS이며 GPU·compile 상호작용·속도·메모리·품질은 여전히 `NOT_RUN`이다.
 
 ## 1. 왜 — 삼진 0과 연결 부재를 구분해야 한다
 
@@ -40,8 +42,8 @@ TinyLM TWN은 활성 연결에서도 quantizer가 0을 만든다. 그러나 `Q(W
 | **Stage0b ⚠️ 무효** | mask/ternary forward-backward 최초 시도 | `tinylm` import 전에 종료; 과학적 결과 `NOT_RUN`([083](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) | 진입 시간만 |
 | **Stage0c ✅ 완료** | CUDA mask/ternary forward-backward, inactive gradient proxy, active conservation | finite·inactive grad 12.144601·births=deaths=16로 통과([083 §6](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) | 진입 시간만 |
 | **Stage1aT ✅ 완료** | actual TLinear static50/DST50 microtrainer 계약 | active 8192/16384·transition 4, mask/inactive/active-only/birth=death/state reset PASS | [083 §8](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md#8-stage1at-actual-tlinear-microtrainer2026-09-19) |
-| **Stage1a ⏸ 구현 게이트** | full Transformer/trainer 30M static50 vs DST50 | Stage1aT 로그 PASS, CLI/default-off·smoke 뒤 | 0.20 H300 |
-| **Stage1b** | 30M DST75 | 50% 대비 catastrophic divergence 없음 | 0.10 H300 |
+| **Stage1a 🔄 구현 완료·실행 대기** | full Transformer/trainer 30M dense/static50/DST50 | default-off·compile·mask/state-reset·finite 통과 | 0.20 H300 |
+| **Stage1b 🔄 실행 대기** | 30M DST75(25% density) | 50% 대비 catastrophic divergence 없음 | 0.10 H300 |
 | **Stage2a** | 100M dense/static50/DST50/DST75 | best sparse dense gap ≤0.07 | 1~2 H300 |
 | **Stage2b** | optimizer cold-start/loss spike | 반복 spike 회복·state 계약 정상 | Stage2a 포함 |
 | **Stage3a** | best density 300M, 1 seed | 현 TinyLM 채택선 안 | 1 H300 |
@@ -81,7 +83,10 @@ Stage0에서 `H300`을 실측하기 전에 절대 GPU-h를 확정값으로 바�
 - 실행 완료: `run_P092_Stage0c_dynamic_sparse_contract-done.bat` — CUDA 계약 PASS가 인쇄값까지 2/2 재현됐다([결과 083 §6~§7](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
 - Stage0a 순수 계약 회귀는 Codex 정적 검사 5/5 PASS.
 - 완료: `run_P092_Stage1aT_tlinear_dst_contract-done.sh` — actual TLinear/controller 계약 PASS.
-- 미작성: full trainer Stage1a~Stage3b. Stage1aT 뒤 CLI/default-off와 smoke를 연결한다.
+- 실행 대기: `run_P092_Stage1W_full_trainer_30M.sh` — dense/static50/DST50/DST25.
+- 실행 대기: `run_P092_Stage2W_full_trainer_100M.sh` — 같은 4팔 100M.
+- 조건부 실행: `run_P092_Stage3W_full_trainer_300M_seeds.sh` — Stage2 dynamic 팔 중
+  dense gap≤0.07·skip0 하나 이상일 때만 4팔×3seed 300M. 앞 gate 음성은 exit8이다.
 
 ## 8. 한계
 
@@ -108,3 +113,18 @@ Stage0에서 `H300`을 실측하기 전에 절대 GPU-h를 확정값으로 바�
   reset을 검사한다. full Transformer 30M·속도·메모리·품질은 `NOT_RUN`이다.
 - 2026-09-19: 사용자 Stage1aT 로그가 20 step·4 transition에서 계약을 통과했다. 작은 fixture의
   dynamic final loss가 static보다 0.012 높은 것은 품질 판정이 아니며 full trainer는 `NOT_RUN`이다.
+- 2026-09-21: full trainer opt-in을 배선했다. 기본 `none`은 mask/controller를 생성하지
+  않는다. static/dynamic은 inactive gradient를 optimizer 전에 차단하고, dynamic update는
+  행별 top-k를 vectorize해 birth를 0으로 시작하며 AdamW/Muon state를 함께 reset한다.
+  30M·100M·300M 태그 충돌은 0건이고 학습 결과는 `NOT_RUN`이다.
+
+### 9.1 full-trainer preflight
+
+**독립변수**: 같은 모델/seed/pool/tokenizer/schedule에서 connectivity mode·density만 변경.
+**계산**: 229/763/2289 step = 30.015M/100.008M/300.024M draw. nominal 600M exact cache는
+모든 팔에 공통이며 실제 train split 597M 한계를 결과에 남긴다.
+**태그**: 전 팔 충돌 0.
+**판정**: 30M은 진입, 100M은 Stage3 gate, 300M은 세 seed 품질. dense mask GEMM으로
+속도·storage 절감을 주장하지 않는다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

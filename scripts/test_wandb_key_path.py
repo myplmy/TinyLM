@@ -2,7 +2,10 @@
 from __future__ import annotations
 
 import os
+import io
+import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 from unittest import mock
 
@@ -24,12 +27,14 @@ class WandbKeyPathTests(unittest.TestCase):
                 Path("~/private/key.txt").expanduser(),
             )
 
-    def test_posix_requires_explicit_secret_path(self) -> None:
+    def test_posix_uses_approved_wsl_default(self) -> None:
         with mock.patch.dict(os.environ, {}, clear=True), mock.patch.object(
             wandb_sync.os, "name", "posix"
         ):
-            with self.assertRaisesRegex(FileNotFoundError, "TL_WANDB_KEY_FILE"):
-                wandb_sync.key_file_path()
+            self.assertEqual(
+                wandb_sync.key_file_path(),
+                Path("/mnt/z/TinyLM_private/weave_apikey_only.txt"),
+            )
 
     def test_windows_keeps_legacy_default(self) -> None:
         with mock.patch.dict(os.environ, {}, clear=True), mock.patch.object(
@@ -39,6 +44,19 @@ class WandbKeyPathTests(unittest.TestCase):
                 wandb_sync.key_file_path(),
                 wandb_sync.WINDOWS_DEFAULT_KEY_FILE,
             )
+
+    def test_read_key_emits_no_secret_or_shape_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "key.txt"
+            secret = "example-secret-value-that-must-never-be-printed"
+            path.write_text(secret + "\n", encoding="utf-8")
+            output = io.StringIO()
+            with mock.patch.dict(
+                os.environ, {"TL_WANDB_KEY_FILE": str(path)}, clear=False
+            ), redirect_stdout(output):
+                self.assertEqual(wandb_sync.read_key(), secret)
+            self.assertEqual(output.getvalue(), "")
+            self.assertFalse(hasattr(wandb_sync, "mask"))
 
     def test_exact_tag_is_suffix_not_substring(self) -> None:
         stem = "m100s10_ko-en-control-v2_300M_p097_ctrl_v2"

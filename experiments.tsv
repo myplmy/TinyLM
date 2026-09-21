@@ -29,15 +29,39 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-1	P025B	run_P025B_Stage0bWe_wsl_sparse24_path_attribution.sh	D	0.2	Y	Y	Wd의 합성 속도 음성을 보존하고 wall-sync·CUDA event·host enqueue·M1 padding·profiler·CUDA Graph를 분리해 병목 위치를 귀속한다. 학습 0
-2	P025B	run_P025B_Stage0bWf_wsl_sparse24_algorithm_sweep.sh	D	0.2	Y	Y	공개 low-level _cslt_sparse_mm의 alg_id·Split-K를 탐색 측정과 확인 측정으로 분리하고 1.10배 후보 여부를 판정한다. 학습 0	8
 1	P025B	run_P025B_Stage0bWg_wsl_sparse24_graph_recovery.sh	D	0.1	Y	Y	We의 CUDA Graph를 replay 전에 비교해 전 행 false failure가 난 결함만 M1/M8192·inference/training에서 필수 graph gate로 재검증한다. 학습 0
-2	P022C	run_P022C_Stage0bWc_fp8_path_attribution.sh	D	0.1	Y	Y	BF16·prepared FP8·가중치 캐시·delayed·current를 같은 계측으로 비교하고 속도·메모리·수치를 독립 판정한다. 학습 0	8
-2	P060B	run_P060B_Stage0aWd_wsl_sdpa_gqa_backend.sh	D	0.1	Y	Y	Wc의 5-D grouped-broadcast 결함을 고쳐 batch×KV-head를 접은 4-D zero-stride EFFICIENT 후보를 재검증한다. 학습 0	8
-3	P014D	run_P014D_Stage1W_native_lut_kernel.sh	N	0.5	Y	Y	5-trit/per-row-alpha native CPU LUT v0를 compile·정합·합성·actual-model decode로 검증하고 int8 대비 1.5배 문턱을 판정한다. 학습 0	8
-4	P060B	run_P060B_Stage1W_sdpa_gqa_training_gate.sh	Y	0.5	Y	Y	현 WSL·m100s10·Muon RMS4의 250-step off/on에서 ms-step 악화 5% 이내와 reserved VRAM 10% 절감을 검사한다. 32.8M probe라 W&B 업로드 금지	8
 2	P097	run_P097_Stage2Wb_common_recipe_evaluation.sh	D	3.0	Y	Y	잘못된 HF repo id klue를 klue/klue로 교정한 뒤 네 recipe checkpoint의 동일 패널을 재실행한다. KLUE 두 파일이 선결, 학습 0
-6	P076	run_P076_Stage2W_group_init_quality.sh	Y	8.2	Y	Y	같은 dense parent·Muon RMS4 조건에서 mean/middle/norm_mean 3팔을 학습하고 결정적 paired full-val로 최종 품질을 비교한다
+1	P014D	run_P014D_Stage1Wb_native_lut_incremental.sh	N	0.1	Y	Y	moonshot 3:4 kernel에서 차용한 GIL 해제와 base-3 증분 243-state 표로 native LUT v1의 정합·합성·실제 decode 1.50배 문턱을 재판단한다	8
+2	P025B	run_P025B_Stage0cW_sparse24_whole_primitive.sh	D	0.2	Y	Y	M8192에서 forward+dgrad+dense-wgrad와 optimizer-step 패킹/accum 상각을 합쳐 graph kernel 후보가 whole primitive 1.10배로 남는지 검사한다	8
+3	P060B	run_P060B_Stage2W_gqa_deploy_cache.sh	D	0.3	Y	Y	종전에 제외됐던 KV-cache decode에 enable_gqa를 연결하고 3길이 prefill/decode·peak·실제 텍스트 정합을 판정한다	8
+4	P005b	run_P005b_Stage13W_cla2_lr15.sh	Y	1.2	Y	Y	CLA2 RMS4 300M에서 LR 1.5배 한 점을 기존 1e-3 직접 대조와 비교한다
+5	P005b	run_P005b_Stage13W_cla2_lr20.sh	Y	1.2	Y	Y	CLA2 RMS4 300M에서 LR 2.0배를 추가해 LR 최적점을 한 점 사후해석하지 않는다
+6	P005b	run_P005b_Stage13W_cla2_lr_pair.sh	D	0.2	Y	N	seed1337의 CLA2 LR 1.0/1.5/2.0 panel을 같은 full-val에서 paired 비교한다
+7	P005b	run_P005b_Stage13W_cla2_lr_seed2024.sh	Y	3.6	Y	N	CLA2 LR 1.0/1.5/2.0 세 팔을 seed2024에서 독립 재현한다
+8	P005b	run_P005b_Stage13W_cla2_lr_seed31415.sh	Y	3.6	Y	N	CLA2 LR 1.0/1.5/2.0 세 팔을 seed31415에서 재현해 세 seed 방향을 확정한다
+9	P005b	run_P005b_Stage14W_cla2_lr_seed_panel.sh	D	0.3	Y	N	CLA2 LR 세 seed panel의 paired 부호·크기·안정성을 비교한다
+10	P060B	run_P060B_Stage3aW_gqa_quality_off_s1337.sh	Y	1.2	Y	N	GQA off 300M seed1337 direct control
+11	P060B	run_P060B_Stage3aW_gqa_quality_on_s1337.sh	Y	1.2	Y	N	GQA on 300M seed1337; off와는 sdpa_gqa 하나만 다르다
+12	P060B	run_P060B_Stage3aW_gqa_quality_off_s2024.sh	Y	1.2	Y	N	GQA off 300M seed2024 control
+13	P060B	run_P060B_Stage3aW_gqa_quality_on_s2024.sh	Y	1.2	Y	N	GQA on 300M seed2024
+14	P060B	run_P060B_Stage3aW_gqa_quality_off_s31415.sh	Y	1.2	Y	N	GQA off 300M seed31415 control
+15	P060B	run_P060B_Stage3aW_gqa_quality_on_s31415.sh	Y	1.2	Y	N	GQA on 300M seed31415
+16	P060B	run_P060B_Stage3bW_gqa_quality_pair.sh	D	0.3	Y	N	GQA on/off 세 seed를 각각 paired full-val로 평가해 속도·memory 후보의 품질 대가를 확정한다
+17	P098	run_P098_Stage1aW_r2_ctrl_s1337.sh	Y	1.8	Y	Y	R2 uniform RMS4 seed1337 재주입 off direct control
+18	P098	run_P098_Stage1bW_r2_reinject_s1337.sh	Y	1.8	Y	Y	R2 uniform RMS4 seed1337 추가 cycle token embedding 재주입
+19	P098	run_P098_Stage1cW_r2_ctrl_s2024.sh	Y	1.8	Y	N	R2 재주입 off seed2024
+20	P098	run_P098_Stage1dW_r2_reinject_s2024.sh	Y	1.8	Y	N	R2 재주입 on seed2024
+21	P098	run_P098_Stage1eW_r2_ctrl_s31415.sh	Y	1.8	Y	N	R2 재주입 off seed31415
+22	P098	run_P098_Stage1fW_r2_reinject_s31415.sh	Y	1.8	Y	N	R2 재주입 on seed31415
+23	P098	run_P098_Stage2W_r2_reinject_pair.sh	D	0.3	Y	N	R2 embedding 재주입 on/off 세 seed의 paired full-val 방향을 확정한다
+24	P092	run_P092_Stage1W_full_trainer_30M.sh	Y	0.5	Y	Y	full trainer의 dense/static50/DST50/DST25 30M 진입·compile·mask/state-reset 계약을 검사한다
+25	P092	run_P092_Stage2W_full_trainer_100M.sh	Y	1.8	Y	Y	100M dense/static50/DST50/DST25에서 재배선 품질·스파이크·오버헤드를 비교한다
+26	P092	run_P092_Stage3W_full_trainer_300M_seeds.sh	Y	13.5	Y	Y	100M gap gate 통과 후 dense/static50/DST50/DST25를 300M 세 seed로 확인한다	8
+27	P097	run_P097_Stage3aW_ctrl_v2_s2024.sh	Y	1.2	Y	N	control-v2 300M seed2024로 common-bpb 강점의 재현성을 준비한다
+28	P097	run_P097_Stage3bW_fineweb2_s2024.sh	Y	1.2	Y	N	FineWeb2 300M seed2024로 YNAT/ARC 강점의 재현성을 준비한다
+29	P097	run_P097_Stage3cW_ctrl_v2_s31415.sh	Y	1.2	Y	N	control-v2 300M seed31415 세 시드 panel
+30	P097	run_P097_Stage3dW_fineweb2_s31415.sh	Y	1.2	Y	N	FineWeb2 300M seed31415 세 시드 panel
+31	P097	run_P097_Stage4W_ctrl_fw2_seed_panel.sh	D	1.2	Y	Y	control/FineWeb2 세 seed의 YNAT/NLI/ARC/HellaSwag/common-bpb를 공통 문항에서 비교하고 W&B를 갱신한다
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수 49GB→. ★판정 정본이 checkpoints.tsv 로 바뀌었다(TSV, keep/hold/delete). 삭제 후보 13.2GB/34개. YES 를 직접 입력해야 지운다
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
@@ -361,6 +385,16 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #
 # ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
 #   5	P097	run_P097_Stage2W_common_recipe_evaluation.sh	D	3.0	Y	Y	네 300M recipe checkpoint를 모델별 tokenizer로 동일 KoBEST·KLUE·영어 문항, common-bpb, 고정 prompt에 평가한다. 학습 0
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P025B	run_P025B_Stage0bWe_wsl_sparse24_path_attribution.sh	D	0.2	Y	Y	Wd의 합성 속도 음성을 보존하고 wall-sync·CUDA event·host enqueue·M1 padding·profiler·CUDA Graph를 분리해 병목 위치를 귀속한다. 학습 0
+#   2	P025B	run_P025B_Stage0bWf_wsl_sparse24_algorithm_sweep.sh	D	0.2	Y	Y	공개 low-level _cslt_sparse_mm의 alg_id·Split-K를 탐색 측정과 확인 측정으로 분리하고 1.10배 후보 여부를 판정한다. 학습 0	8
+#   2	P022C	run_P022C_Stage0bWc_fp8_path_attribution.sh	D	0.1	Y	Y	BF16·prepared FP8·가중치 캐시·delayed·current를 같은 계측으로 비교하고 속도·메모리·수치를 독립 판정한다. 학습 0	8
+#   2	P060B	run_P060B_Stage0aWd_wsl_sdpa_gqa_backend.sh	D	0.1	Y	Y	Wc의 5-D grouped-broadcast 결함을 고쳐 batch×KV-head를 접은 4-D zero-stride EFFICIENT 후보를 재검증한다. 학습 0	8
+#   3	P014D	run_P014D_Stage1W_native_lut_kernel.sh	N	0.5	Y	Y	5-trit/per-row-alpha native CPU LUT v0를 compile·정합·합성·actual-model decode로 검증하고 int8 대비 1.5배 문턱을 판정한다. 학습 0	8
+#   4	P060B	run_P060B_Stage1W_sdpa_gqa_training_gate.sh	Y	0.5	Y	Y	현 WSL·m100s10·Muon RMS4의 250-step off/on에서 ms-step 악화 5% 이내와 reserved VRAM 10% 절감을 검사한다. 32.8M probe라 W&B 업로드 금지	8
+#   6	P076	run_P076_Stage2W_group_init_quality.sh	Y	8.2	Y	Y	같은 dense parent·Muon RMS4 조건에서 mean/middle/norm_mean 3팔을 학습하고 결정적 paired full-val로 최종 품질을 비교한다
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)

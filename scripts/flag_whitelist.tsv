@@ -59,6 +59,10 @@ flag	grade	evidence	checked	declared_in
 --close	ok		2026-09-04	scripts/wip.py
 --compile	ok		2026-09-04	tinylm/cli.py
 --compile-mode	ok		2026-09-04	tinylm/cli.py
+--connectivity-density	exp	P092 TLinear structural connectivity active ratio	2026-09-21	tinylm/cli.py
+--connectivity-mode	exp	P092 none/static/dynamic full-trainer selector	2026-09-21	tinylm/cli.py
+--connectivity-swap-fraction	exp	P092 dynamic topology update replacement fraction	2026-09-21	tinylm/cli.py
+--connectivity-update-every	exp	P092 dynamic topology update interval	2026-09-21	tinylm/cli.py
 --concurrent-reason	ok	동시 WIP 사용자 승인 사유 기록; --allow-concurrent와 함께만 유효	2026-09-18	scripts/wip.py
 --context-tokens	ok	teacher-forced 실제 텍스트 probe의 문맥 토큰 수	2026-09-18	scripts/infer_text_probe.py
 --corpus	ok	P090 선결(2026-09-10(2차)) - diag_sft_mask 가 검사할 canonical jsonl. 미지정이면 내장 합성 대화 4종을 쓴다(파일 없이 스모크에서 돌아야 하므로)	2026-09-10	scripts/diag_sft_mask.py
@@ -148,6 +152,7 @@ flag	grade	evidence	checked	declared_in
 --inspect-chars	ok		2026-09-04	scripts/diag_val_docs.py
 --int8-store	ok		2026-09-04	scripts/bench_infer.py,scripts/mem_runtime.py
 --item	ok		2026-09-04	scripts/wip.py
+--items	ok	보존된 benchmark per-item JSONL에서 local TSV만 복구	2026-09-21	scripts/recover_bench_tsv_from_items.py
 --iters	ok		2026-09-19	scripts/diag_dtype_map.py,scripts/diag_fp8_scaling_overhead.py,scripts/diag_int8mm_paths.py,scripts/diag_scout_memory_integration.py,scripts/diag_sdpa_backends.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_sdpa_wsl_gqa.py,scripts/diag_sparse24_inference_attribution.py
 --json	ok	codex-safe 정적감사의 versioned JSON evidence 경로	2026-09-21	scripts/check_static_all.py
 --json-out	ok	frontier 감사의 versioned machine-readable 산출물 경로	2026-09-21	scripts/frontier_audit.py
@@ -203,6 +208,7 @@ flag	grade	evidence	checked	declared_in
 --max-nrms	ok	FP8·2:4·GQA의 RMS(error)/RMS(reference) 정합 문턱	2026-09-19	scripts/diag_fp8_scaling_overhead.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_sparse24_inference_attribution.py
 --max-output-nrms	ok	P093 parent approximation 출력 NRMS viability 상한	2026-09-19	scripts/diag_sharing_parent_approx.py
 --max-speed-ratio	ok	P060B WSL native forced-GQA의 off-default 대비 허용 속도 대가	2026-09-19	scripts/diag_sdpa_wsl_gqa.py
+--max-slowdown	ok	P060B deploy GQA의 prefill/decode 최대 허용 느려짐	2026-09-21	scripts/diag_sdpa_gqa_deploy.py
 --max-docs	ok		2026-09-04	scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_common_text.py,scripts/diag_fp8_precision.py,scripts/diag_spam_rate.py,scripts/diag_val_docs.py
 --max-new	ok		2026-09-04	scripts/bench_fused_int8.py,scripts/bench_infer.py,scripts/diag_decode_profile.py,scripts/diag_kvcache.py,scripts/eval_bench_suite.py,scripts/mem_runtime.py,tinylm/cli.py
 --max-tokens	ok		2026-09-04	scripts/diag_vocab.py
@@ -213,6 +219,7 @@ flag	grade	evidence	checked	declared_in
 --micro-group	exp	P051 - packed 전용 레버. 상주식에 bpw 가 없다	2026-09-04	scripts/diag_lut_kernel.py,tinylm/cli.py
 --migrate-v2	ok		2026-09-04	scripts/wip.py
 --min-cosine	ok	backend 비교의 flattened-output cosine 정합 문턱	2026-09-19	scripts/diag_fp8_scaling_overhead.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_sparse24_inference_attribution.py
+--min-benefit	ok	P060B deploy GQA 최소 속도 또는 peak 이득	2026-09-21	scripts/diag_sdpa_gqa_deploy.py
 --min-chars	ok		2026-09-04	scripts/diag_spam_rate.py
 --min-memory-reduction	ok	P060B WSL native forced-GQA working-memory 최소 절감율	2026-09-19	scripts/diag_sdpa_wsl_gqa.py
 --min-output-improvement	ok	P093 parent approximation rank0 대비 최소 output NRMS 개선율	2026-09-19	scripts/diag_sharing_parent_approx.py
@@ -261,6 +268,7 @@ flag	grade	evidence	checked	declared_in
 --outputs	ok	P097 공통평가 산출물의 기존 존재 여부를 실행 전에 fail-closed 검사	2026-09-20	scripts/check_p097_stage2_assets.py
 --override	ok		2026-09-04	scripts/wip.py
 --pairs	ok		2026-09-04	scripts/paired_join.py
+--pack-repeats	ok	P025B optimizer-step 패킹 중앙값 반복수	2026-09-21	scripts/diag_sparse24_whole_primitive.py
 --paths	ok		2026-09-04	scripts/diag_decode_profile.py
 --per-item-jsonl	ok	A03(2026-09-10) - 문항별 원장. id/gold/규약별 예측/후보별 합·평균NLL/토큰·문자 길이/평균마진·결정마진/skip 사유. 판정을 사후에 복원할 수 있게 한다	2026-09-10	scripts/eval_bench_suite.py
 --plan	ok		2026-09-04	scripts/check_run_registry.py
@@ -290,6 +298,7 @@ flag	grade	evidence	checked	declared_in
 --render	ok		2026-09-04	scripts/handoff_queue.py,scripts/registry.py
 --repair-name-collision	ok	완료 이름 충돌 open WIP를 빈 슬롯으로 감사형 이동; 삭제·덮어쓰기 없음	2026-09-18	scripts/wip.py
 --repeat-block	ok		2026-09-04	tinylm/cli.py
+--repeat-embed-reinject	exp	P098 uniform 재귀 cycle token embedding 재주입; 기본 off	2026-09-21	tinylm/cli.py
 --repeat-kv-reuse	rejected	결과 062 - 대가 +0.0591~+0.0928 = 재귀 이득의 5.4~5.7배. 엔트리 축은 닫혔다	2026-09-04	scripts/mem_runtime.py,scripts/paired_eval.py,tinylm/cli.py
 --repeat-mode	exp	P043 - inplace 는 추론 --repeat-where even 의 학습 짝	2026-09-04	tinylm/cli.py
 --repeat-where	ok		2026-09-04	scripts/bench_infer.py,scripts/paired_eval.py,tinylm/cli.py
@@ -315,6 +324,7 @@ flag	grade	evidence	checked	declared_in
 --seed	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/diag_layer_map.py,scripts/diag_lut_kernel.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py,scripts/eval_slices.py,tinylm/cli.py
 --seq	ok		2026-09-19	scripts/check_run_registry.py,scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_attention_sink.py,scripts/diag_chat_overhead.py,scripts/diag_depth_init.py,scripts/diag_dtype_map.py,scripts/diag_fp8_precision.py,scripts/diag_gqa_equiv.py,scripts/diag_group_agg.py,scripts/diag_kd_loss.py,scripts/diag_layer_map.py,scripts/diag_p067_teacher.py,scripts/diag_repeat_attn_sim.py,scripts/diag_sdpa_backends.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_train_repeat.py,scripts/diag_trapping.py,scripts/diag_val_docs.py,scripts/eval_slices.py,scripts/paired_eval.py,tinylm/cli.py
 --seq-max	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py
+--seqs	ok	P060B deploy prefill/decode 길이 CSV	2026-09-21	scripts/diag_sdpa_gqa_deploy.py
 --serialized-chatml	ok	SFT canonical ChatML 총토큰과 supervised mask 실측	2026-09-18	scripts/audit_sft_corpus.py
 --session-id	ok	WIP를 정확한 Codex task에 결합하는 식별자	2026-09-18	scripts/wip.py
 --set-after	ok		2026-09-04	scripts/wip.py

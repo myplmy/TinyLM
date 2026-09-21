@@ -26,6 +26,7 @@ def main() -> int:
     source = source_path()
     text = source.read_text(encoding="utf-8")
     assert source.is_file() and "lut_linear_cpu" in text and "kPatterns = 243" in text
+    assert "pattern_carries" in text and "gil_scoped_release" in text
     assert extension_name().startswith("tinylm_lut_cpu_")
     assert TMTConfig().lut_backend == "reference"
     try:

@@ -72,6 +72,112 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "test_result"
+WANDB_MIN_TOKENS = 50_000_000
+
+
+def _value_after(argv, flag, default=None):
+    try:
+        return argv[argv.index(flag) + 1]
+    except (ValueError, IndexError):
+        return default
+
+
+def _training_wandb_spec(cmd, environ=None):
+    """Return the exact post-run W&B target for an eligible WSL full train.
+
+    The hook is deliberately outside ``trainer.py`` and runs only after a
+    successful child process.  A short diagnostic run never becomes a W&B
+    quality run, and an explicit ``TL_WANDB_AUTO=0`` remains an offline escape
+    hatch.  Missing/invalid flags are left to the launcher static contract.
+    """
+    env = os.environ if environ is None else environ
+    if not env.get("WSL_DISTRO_NAME"):
+        return None
+    if str(env.get("TL_WANDB_AUTO", "1")).strip().lower() in {
+        "0", "false", "no", "off",
+    }:
+        return None
+    try:
+        program_index = next(
+            i for i, token in enumerate(cmd) if Path(token).name == "run100m.py"
+        )
+    except StopIteration:
+        return None
+    argv = list(cmd[program_index + 1:])
+    if not argv or argv[0] != "train":
+        return None
+    tag = _value_after(argv, "--tag")
+    try:
+        steps = int(_value_after(argv, "--steps"))
+        micro_bs = int(_value_after(argv, "--micro-bs"))
+        accum = int(_value_after(argv, "--accum", "8"))
+        seq = int(_value_after(argv, "--seq"))
+    except (TypeError, ValueError):
+        return None
+    draw_tokens = steps * micro_bs * accum * seq
+    if not tag or draw_tokens < WANDB_MIN_TOKENS:
+        return None
+    return {
+        "tag": tag,
+        "draw_tokens": draw_tokens,
+        "project": env.get("TL_WB_PROJECT", "tinylm"),
+        "entity": env.get("TL_WB_ENTITY") or None,
+    }
+
+
+def _post_run_wandb(cmd, env, stream):
+    """Upload one successful full-run JSON; never change the training rc."""
+    spec = _training_wandb_spec(cmd, env)
+    if spec is None:
+        return None
+    command = [
+        sys.executable,
+        str(ROOT / "scripts" / "wandb_sync.py"),
+        "--push",
+        "--project", str(spec["project"]),
+        "--tag", str(spec["tag"]),
+        "--tag-exact",
+        "--expect-count", "1",
+    ]
+    if spec["entity"]:
+        command.extend(["--entity", str(spec["entity"])])
+    head = (
+        "\n[wandb-auto] successful WSL full training; starting fail-open post-run sync\n"
+        f"[wandb-auto] project={spec['project']} exact_tag={spec['tag']} "
+        f"draw_tokens={spec['draw_tokens']}\n"
+    )
+    stream.write(head); stream.flush()
+    sys.stdout.write(head); sys.stdout.flush()
+    try:
+        proc = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            env=env,
+            bufsize=1,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        assert proc.stdout is not None
+        for line in proc.stdout:
+            stream.write(line); stream.flush()
+            sys.stdout.write(line); sys.stdout.flush()
+        sync_rc = proc.wait()
+    except Exception as exc:  # noqa: BLE001 - auxiliary network path is fail-open
+        sync_rc = 1
+        line = f"[wandb-auto] WARN sync launcher failed: {type(exc).__name__}\n"
+        stream.write(line); stream.flush()
+        sys.stdout.write(line); sys.stdout.flush()
+    if sync_rc != 0:
+        line = (
+            f"[wandb-auto] WARN sync rc={sync_rc}; training rc remains 0 and local JSON is intact\n"
+        )
+    else:
+        line = "[wandb-auto] PASS post-run sync\n"
+    stream.write(line); stream.flush()
+    sys.stdout.write(line); sys.stdout.flush()
+    return sync_rc
 
 
 def _split_argv(argv):
@@ -504,6 +610,11 @@ def main():
                 os.fsync(f.fileno())        # ★OS 캐시까지 디스크로 — 정전·BSOD 대비
                 last_sync = now
         rc = proc.wait()
+        if rc == 0:
+            # WSL full-training upload is a post-run, fail-open side effect.
+            # Its output is kept in the same experiment log, while the child
+            # training return code remains the launcher verdict.
+            _post_run_wandb(cmd, env, f)
     except KeyboardInterrupt:
         rc = 130
         msg = "\n[runlog] ★Ctrl+C 로 중단됨 — 여기까지의 로그는 보존됩니다.\n"

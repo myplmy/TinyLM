@@ -87,12 +87,14 @@ class Attention(nn.Module):
         #   `enable_gqa=True` 는 커널이 **복제 없이** 같은 KV 헤드를 여러 Q 헤드에 태운다.
         #   ⚠️ **기본 off = 종전 경로 = 비트 동일.** 커널 경로가 바뀌므로 로짓이 완전히
         #      같다고 가정하지 않는다 — `scripts/diag_gqa_equiv.py` 가 잰다.
-        #   ⚠️ **학습 경로(q_len == kv_len)에만 적용한다.** KV 캐시 경로는 `attn_mask` 를
-        #      쓰는데 그쪽은 Flash 백엔드가 아니고, 캐시 정확성 게이트(`diag_kvcache.py`)가
-        #      이미 확정한 경로라 건드릴 이유가 없다.
+        #   2026-09-21 P060B Stage2W: opt-in GQA는 KV-cache decode에서도 같은
+        #   `enable_gqa=True` 규약을 쓴다. 종전에는 q_len < kv_len이면 K/V를
+        #   다시 4배 복제해 일반 생성 경로의 이득이 0이었다. 마스크는 기존
+        #   절대위치 causal 규약을 그대로 재사용하며 backend 미지원은 fallback
+        #   없이 즉시 드러나게 한다(기본 off는 불변).
         use_gqa = bool(getattr(c, "sdpa_gqa", False)) and n_rep > 1
         q_len, kv_len = q.shape[2], k.shape[2]
-        if not (use_gqa and q_len == kv_len):
+        if not use_gqa:
             if n_rep > 1:
                 k = k.repeat_interleave(n_rep, dim=1)
                 v = v.repeat_interleave(n_rep, dim=1)
@@ -109,7 +111,12 @@ class Attention(nn.Module):
             past_len = kv_len - q_len
             mask = torch.ones(q_len, kv_len, dtype=torch.bool,
                               device=q.device).tril(past_len)
-            o = F.scaled_dot_product_attention(q, k, v, attn_mask=mask)
+            if use_gqa:
+                o = F.scaled_dot_product_attention(
+                    q, k, v, attn_mask=mask, enable_gqa=True
+                )
+            else:
+                o = F.scaled_dot_product_attention(q, k, v, attn_mask=mask)
         # ── ★★P081 선결 (2026-08-31) — **어텐션 확률을 밖으로 내보낸다** ──────────────
         #   🚫SDPA 는 확률을 안 돌려준다. Flash 백엔드에서는 물질화조차 안 된다.
         #   그래서 어텐션 싱크(StreamingLLM)를 **한 번도 못 봤다**.

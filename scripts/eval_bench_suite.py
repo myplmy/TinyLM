@@ -1151,8 +1151,13 @@ def main():
                         print(f"      ⚠️★**이 과제로는 못 가른다.** 문항을 {nn / n:.1f}배 늘려야 한다")
 
     _final(all_summary)
+    _persist_bench(all_summary, a)
     if a.wandb:
-        _push_wandb(all_summary, a)
+        try:
+            _push_wandb(all_summary, a)
+        except Exception as exc:  # noqa: BLE001 - remote view must not erase local result
+            print(f"  [WARN] W&B benchmark upload failed: {type(exc).__name__}")
+            print("  [WARN] local per-item output and bench_results.tsv remain authoritative")
     return 0
 
 
@@ -1280,6 +1285,41 @@ def _bench_eligible(a, tag, data=None):
     return True, ""
 
 
+def _persist_bench(summary, a):
+    """Always preserve eligible benchmark rows locally before remote upload.
+
+    W&B is a derived view, so a missing key or network failure must never be
+    the reason ``bench_results.tsv`` is absent.  This also makes a later
+    bounded backfill possible without loading the model again.
+    """
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import bench_tsv
+
+    per_tag = {}
+    for task, per in summary.items():
+        if per.get("status"):
+            continue
+        for tag, rec in per.items():
+            per_tag.setdefault(tag, {})[task] = rec
+
+    updated = inserted = skipped = 0
+    for tag, tasks in sorted(per_tag.items()):
+        data = next((rec.get("data") for rec in tasks.values() if rec.get("data")), a.data)
+        ok, why = _bench_eligible(a, tag, data)
+        if not ok:
+            print(f"  [bench-tsv 건너뜀] {tag}: {why}")
+            skipped += 1
+            continue
+        rows = []
+        for task, rec in tasks.items():
+            rows += bench_tsv.rows_from_rec(tag, task, rec, a.n, a.seed, not a.no_pmi)
+        upd, ins = bench_tsv.upsert(rows)
+        updated += upd
+        inserted += ins
+    print(f"  [bench-tsv] local upsert updated={updated} inserted={inserted} "
+          f"skipped_models={skipped} -> {bench_tsv.TSV.relative_to(ROOT)}")
+
+
 def _push_wandb(summary, a):
     """★결과를 W&B 로 보낸다. **기본은 학습 런에 얹는다**(2026-09-03 사용자 지시 4).
 
@@ -1340,22 +1380,18 @@ def _push_wandb(summary, a):
             flat[f"bench/{task}/seed"] = a.seed
             flat[f"bench/{task}/pmi"] = not a.no_pmi
         r.summary.update(flat)
-        # ★★표 — 정본 TSV 에 upsert 하고 **그 모델의 누적 전량**을 wide 로 다시 그린다.
+        # ★★표 — 로컬 정본은 `_persist_bench()`가 원격 접속 전에
+        #   이미 upsert했다. 여기서는 **그 모델의 누적 전량**만 wide로 그린다.
         #   🚫스칼라(위 `flat`)는 덮어쓰고 표는 누적이다 — 갱신 규약이 다르다(제안서 §3.2).
         #   ★wide 인 이유: W&B 의 `${field:...}` 셀렉터가 **열**만 고를 수 있다.
         #     long 에서는 `params` 셀렉터가 화면에서 안 먹었다(사용자 판정 §4.2.3).
-        long_rows = []
-        for task, rec in tasks.items():
-            long_rows += bench_tsv.rows_from_rec(tag, task, rec, a.n, a.seed,
-                                                 not a.no_pmi)
-        upd, ins = bench_tsv.upsert(long_rows)
         wide = bench_tsv.rows_for(tag, wide=True)
         r.log({bench_tsv.KEY_WIDE: wandb.Table(columns=bench_tsv.COLS_WIDE,
                                                data=wide)})
         r.finish()
         pushed += 1
         print(f"  ✅ {rid}  ({len(tasks)}과제 · summary 키 {len(flat)}개 · "
-              f"표 {len(wide)}행 [정본 갱신 {upd} 삽입 {ins}])")
+              f"표 {len(wide)}행 [로컬 정본에서 전량 재구성])")
 
     print("")
     print("  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고")

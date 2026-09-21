@@ -79,6 +79,7 @@ class TMTConfig:
     train_repeat: float = 1.0
     repeat_mode: str = "uniform"      # uniform=중간 전체 / block=특정 그룹만 / progressive=깊을수록 증가
     repeat_block: int = 0             # block 모드에서 반복할 MLP 그룹 인덱스
+    repeat_embed_reinject: bool = False  # P098: 추가 uniform cycle 시작에 token embedding 덧셈
 
     # --- mode control ---
     n_modes: int = 1
@@ -98,6 +99,10 @@ class TMTConfig:
     #   기본 fp32 = 비트 동일. bf16 이면 `F.linear` 진입 캐스팅이 사라진다(결과 035 §13).
     wq_dtype: str = "fp32"
     sparse34: bool = False            # (P016) 3:4 희소 삼진(4개마다 |w|최소 1개 0강제) = 1.25bpw
+    connectivity_mode: str = "none"  # P092: none | static | dynamic(RigL-like)
+    connectivity_density: float = 1.0
+    connectivity_update_every: int = 100
+    connectivity_swap_fraction: float = 0.1
 
     # --- relaxation: RRT식 층별 LoRA (공유 MLP 위, 배포 메모리 최소) ---
     mlp_lora_rank: int = 0            # 0이면 비활성
@@ -183,6 +188,10 @@ class TMTConfig:
         assert self.attn_group >= 1 and self.n_middle % self.attn_group == 0, \
             f"n_middle {self.n_middle} % attn_group {self.attn_group} != 0"
         assert self.train_repeat > 0, "train_repeat 는 양수여야 한다"
+        assert self.connectivity_mode in ("none", "static", "dynamic")
+        assert 0.0 < self.connectivity_density <= 1.0
+        assert self.connectivity_update_every >= 1
+        assert 0.0 <= self.connectivity_swap_fraction <= 1.0
         assert self.repeat_mode in REPEAT_MODES, \
             f"repeat_mode 는 {'|'.join(REPEAT_MODES)} — 받은 값: {self.repeat_mode}"
         if self.sparse34:

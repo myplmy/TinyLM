@@ -15,7 +15,7 @@
 | **EMA / 체크포인트 병합** | 🧪 | v6 (`--ema`) | 최근 가중치 평균 → 무료 품질 향상 | decay 스케일 주의(6번) | 근거 WSM/EMA(2025) |
 | **다운스트림 평가** | ⚠️**부분 도입** | P069/P080 | val CE와 실제 능력을 분리 | 구현·평가·통계 비용 | native에서 HellaSwag·PIQA·ARC-e가 서열 후보. 외부 tokenizer 지원과 TinyDataset 모델 forced-choice는 미구현; v2.4는 파일/token gate만 있고 MANIFEST 정본은 아직 v2.3 |
 | **외부 교사 증류(Qwen/Gemma)** | ⚠️**부분 측정** | v6 (`--kd-teacher-hf`) | 더 강한 공개 교사의 token 분포를 모사 | 큰 어휘·부모초기화 상실·교사 forward·평가 배선 | **Qwen −0.0077 common-bpb = 기존 실무 규칙 0.008 바로 아래, 단일 시드. Gemma 270M은 250-step backward/VRAM probe뿐이고 `grad_max`: 무KD GT0 36.9, KD 118.8/488.8로 모두 기존 `>10` gate 실패; 원인이 KD인지 Gemma-vocab 학생 공통인지 미분리, full 품질 미실행.** §2026-09-01 |
-| **고품질/curated 데이터** | ⚠️**공통평가 전 판정 불가** | v4~·P097 | 교과서·QA·FineWeb-Edu 비율↑ → 적은 토큰으로 목표 loss | 절대품질용(타잉 격차엔 무관) | P012는 tokenizer·val 교락과 분포이동으로 무효. P097은 control/FineWeb2/filtered-Edu/MADLAD 네 300M 학습을 exit0로 완료했지만 각 tokenizer·val이 달라 final 3.5133/3.8828/3.9858/4.0261을 순위로 쓰지 않는다. 동일 한영 과제·공통 byte 원문은 `NOT_RUN`([090 §5](../../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#5-stage0bstage1abd-실제-완료2026-09-20)) |
+| **고품질/curated 데이터** | ⚠️**공통평가 완주·전면 승자 없음** | v4~·P097 | 교과서·QA·FineWeb-Edu 비율↑ → 적은 토큰으로 목표 loss | source+tokenizer bundle이 함께 바뀐다 | P097 Stage2Wb에서 control은 common-bpb **1.3355**, FineWeb2는 KLUE YNAT **40.9%**·ARC **36.3%**로 강점이 갈렸다. KoBEST/NLI/HellaSwag에서 FineWeb2 전면 우세가 재현되지 않아 기본 dataset 교체 근거는 없다([090 §8](../../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#8-stage2wb-공통평가-복구2026-09-21--네-recipe를-같은-문항에서-비교했지만-전면-승자는-없다)) |
 | **bits-per-byte 지표** | ✅**공통 원문 구현·적용범위 제한** | `scripts/common_bpb.py` | 같은 raw text의 byte당 손실로 이종 tokenizer 비교 | corpus·언어·오염에 의존 | Qwen/Gemma 교차비교의 유효 경로. 현재 정본은 영문 SQuAD train context라 한국어 지능을 못 재며, P075 dev overlap 12%와 split이 달라 train을 재감사해야 함 |
 | **★★SEO 스팸 필터로 학습** | ✅**측정** | v6 (`--doc-filter`, P028 단계3) | [결과 018](../../test_result/018_20260731190000_P037-단계1-경계는정상-원인은스팸문서.md)이 실측한 서명(대형 ∧ 줄바꿈~0% ∧ 줄 고유율 100%)으로 문서 제외 후 **그 데이터로 학습** | 학습 예산 고정 시 **유니크 텍스트 13% 감소** | ★재학습 결과 **−0.296 nats(24.7σ)** — 우리가 측정한 **가장 큰 단일 품질 개선**이고 **아키텍처가 아니라 데이터**에서 나왔다. `ko-edu-en` 열세의 **63%가 스팸**이었다([결과 011 §2](../../test_result/011_20260730135000_P028-단계0-캐시진단.md)) |
 | **`ko-en` 표준 train 스팸 감사** | ✅**측정·필터 재학습 종결** | [P047](../../test_result/031_20260807_P047-ko-en은-깨끗하다-기준선이-안전하다.md) | 같은 SEO 서명으로 표준 train 전수 검사 | 추가 필터의 기대효과가 비용보다 작음 | 366,819문서 중 6개, 문자 **0.06229%**, 예상 **−0.00098 nats**. `ko-en` 기준선은 안전하며 이 사유의 전 기준선 재학습은 하지 않음 |
@@ -130,4 +130,5 @@ Qwen의 작은 신호만으로 표준조건을 되돌리거나 Gemma 효과를 �
   retention·Transformer 품질은 `NOT_RUN`이다.
 - P096 Q2a의 320 synthetic canary는 schema/provenance/preservation 계약이다. 보호 실문항과
   사람 의미검토가 없으므로 held-out 품질 향상으로 승격하지 않는다.
-- P097 네 데이터 recipe는 학습이 모두 0-step이므로 품질 비교표에 수치를 만들지 않는다.
+- P097 네 recipe는 300M 학습·공통평가를 완주했으나 one-seed bundle 비교다.
+  control/FineWeb2 교환을 세 seed에서 재현하기 전 새 혼합 recipe를 기본으로 승격하지 않는다.

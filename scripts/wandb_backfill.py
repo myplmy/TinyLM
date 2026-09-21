@@ -108,7 +108,9 @@ def main() -> int:
         print(f"[PASS] uploaded_missing={len(missing)} skipped_existing={len(existing & set(names))}")
         return 0
     except Exception as exc:  # noqa: BLE001 - external service boundary
-        print(f"[FAIL] W&B backfill: {type(exc).__name__}: {exc}")
+        # Authentication exceptions are intentionally not echoed: an SDK must
+        # never get a chance to reflect credential material into the terminal.
+        print(f"[FAIL] W&B backfill: {type(exc).__name__} (credential value suppressed)")
         return 3
 
 

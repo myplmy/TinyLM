@@ -3,6 +3,8 @@
 The extension is compiled lazily only when ``lut_backend='native_cpu'`` is
 selected.  Reference behavior remains the default and build/runtime failures
 are fail-closed rather than silently falling back to the slow Python path.
+The v1 kernel builds the 243-state activation table through base-3 incremental
+updates and releases the Python GIL while native work is running.
 """
 from __future__ import annotations
 

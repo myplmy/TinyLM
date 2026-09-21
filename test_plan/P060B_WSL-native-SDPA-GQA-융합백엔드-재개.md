@@ -9,6 +9,9 @@
 > **현재 상태(2026-09-21):** Wd에서 default는 B8/T1024·B1/T128 모두 speed/memory micro
 > 문턱을 통과했고 grouped EFFICIENT는 실행됐지만 1.232~1.639× 느렸다. Stage1W actual training은
 > 속도 1.0025×로 중립이나 reserved 절감 1.986%로 10% 문턱에 미달해 음성이다([결과 088 §9](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#9-stage0awdstage1w-실제-결과2026-09-2021--default-micro-후보-학습-memory-gate-음성)).
+> 추가 실사에서 종전 `sdpa_gqa` 경로가 KV-cache decode(`q_len<kv_len`)에서는
+> K/V를 다시 4배 복제해 일반 생성 이득이 0임을 확인했다. 기본 off를 유지하며
+> cache mask+`enable_gqa` Stage2W와 on/off 300M 3-seed Stage3W를 준비했다.
 
 ## 1. 재개 근거와 비재개 경계
 
@@ -51,6 +54,7 @@ WSL + `sm_89`는 플랫폼 선결을 만족한다. 패키지 존재는 커널 PA
 | **Stage0bW ✅ actual model 후보** | d14 RMS4 checkpoint full/cache prefill/decode | bit-identical, on/off 0.889×로 11.1% 빠름; peak 감소 0% | [088 §6.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#62-actual-d14-checkpoint-model-path) |
 | **Stage1W 🚫 memory gate 음성** | 현 WSL current recipe 250-step off vs default GQA 학습 속도·peak reserved·NaN/skip | speed 1.0025× PASS, reserved 절감 1.986% FAIL | [088 §9.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#92-stage1w-학습-gate) |
 | **Stage2W** | 배포 prefill/decode·장문 생성 정합성 | cache 경로 실제 텍스트와 속도 방향 통과 | 별도 승인·모델 실행 |
+| **Stage3W** | 300M GQA off/on 세 seed 품질 panel | 세 seed 방향 일치, 속도/메모리 후보와 품질 비퇴행 | 학습 6팔+평가 |
 
 Stage0aW exit 8은 forced-only 사전등록 질문에는 유효한 음성이지만, 실용 후보선에서
 `on_default`를 제외한 설계 때문에 전체 GQA 음성으로 읽을 수 없다. Stage0aWb는 두 후보군을
@@ -76,6 +80,19 @@ Wd는 4-D grouped EFFICIENT의 실행 가능성을 확인했지만 default보다
 유지한다. 그러나 actual 250-step 학습에서는 reserved VRAM이 8.852→8.676GB, 1.986%만 줄어
 사전등록 10%를 못 넘었다. 따라서 `--sdpa-gqa` 기본값은 off를 유지하고 full-quality Stage2W를
 자동 개방하지 않는다. actual model forward의 11.1% 후보는 배포 속도 축에 한정해 보존한다.
+
+### 8.1 Stage2W/Stage3W 후속 구현
+
+- `Attention.forward` opt-in GQA를 cache decode에도 연결했다. 종전 mask·절대위치
+  causal 규약은 그대로 재사용하고 backend 미지원은 fallback 없이 드러난다.
+- `run_P060B_Stage2W_gqa_deploy_cache.sh`는 seq128/512/1024 prefill·decode·peak,
+  3개 한영 greedy 텍스트 동일성을 검사한다.
+- Stage3W는 시드 1337/2024/31415의 off/on 직접쌍이다. 공통 조건은
+  m100s10 dense·CLA2·Muon RMS4×4·KD off·300M draw·exact 600M pool이다.
+
+코드·SH·태그 충돌 검사만 통과했고 GPU·모델·학습·품질은 `NOT_RUN`이다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 ## 5. 한계
 
