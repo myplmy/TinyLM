@@ -2,7 +2,7 @@
 
 > **승인 2026-09-13.** 정본 제안서: [`20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md`](../proposal/done/20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md)  
 > P025의 고정 2:4 개념을 대체하지 않고, native kernel·topology·dense/sparse master를 분리하는 후속 계획이다.  
-> **현재 상태(2026-09-19):** Windows Stage0b는 import를 통과했지만 RTX 4070 Ti SUPER
+> **현재 상태(2026-09-21):** Windows Stage0b는 import를 통과했지만 RTX 4070 Ti SUPER
 > `sm_89`·PyTorch 2.10.0 환경에서 `cuSPARSELt not supported`로 첫 native 호출이 거부됐다
 > ([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
 > WSL Stage0bW의 `operation is not supported`는 backend 불가가 아니라, one-way
@@ -52,8 +52,9 @@ native 속도, dense-master 품질, inactive state를 제거한 sparse-master, t
 | **Stage0bWb ⚠️ 혼합** | inference pack forward + bidirectional training pack forward/dgrad·M8192 속도 | 정합성 PASS; training-pack 속도 0.759×/0.820×로 1.25× 미달([082](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#현재-판정2026-09-19--stage0bwb-정합성-pass-훈련-형상-속도-음성)) | GPU 진단 0.1h 미만 |
 | **Stage0bWc ⚠️ 계측 미완결** | one-way inference pack vs training pack, M=1/16/128/1024/8192 정합·속도·peak allocation | 둘째 형상 M128의 elementwise 문턱 실패로 이후 행 생략; 측정 행은 모두 ≤0.790× | [082 §8](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#8-stage0bwc-wsl-inference-attribution2026-09-19--정합-문턱에서-중단-측정된-속도는-전부-음성) |
 | **Stage0bWd ✅ 정합 PASS·속도 음성** | normalized RMS·max-abs/reference RMS·cosine으로 모든 행 완주 | 정합 전 행 PASS; decode 0.085~0.088×·prefill 최대 0.364×·전체 최대 0.820×로 inference 가속 음성 | [082 §9](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#9-stage0bwd-scale-aware-완주2026-09-19--정합-pass속도-음성) |
-| **Stage0bWe 구현·실행 대기** | wall-sync·CUDA Event·host enqueue·M1 padding·profiler·CUDA Graph를 같은 pack에서 분리 | 측정 계약·정합 PASS 후 병목 귀속. 결과가 좋아도 TLinear 이득 주장은 금지 | GPU 진단 약 0.2h |
-| **Stage0bWf 구현·실행 대기** | 공개 `_cslt_sparse_mm`의 `alg_id`·Split-K를 탐색과 확인 측정으로 분리 | fresh confirm에서 dense 대비 ≥1.10×인 행만 후보 | GPU 진단 약 0.2h |
+| **Stage0bWe ⚠️ 부분 유효** | wall-sync·CUDA Event·host enqueue·M1 padding·profiler·CUDA Graph를 같은 pack에서 분리 | 정합·wall/event/host/profiler 유효; graph는 pre-replay 비교 결함으로 전 행 무효 | [082 §11](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#11-stage0bwewf-실제-귀속2026-09-21--gpu-op-후보는-m8192뿐-host-wall은-전부-음성) |
+| **Stage0bWf ✅ 부분 후보** | 공개 `_cslt_sparse_mm`의 `alg_id`·Split-K를 탐색과 확인 측정으로 분리 | M8192 event 1.244/1.390×, wall 0.778/0.841×; 비기본 alg tuning 이득 없음 | [082 §11](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#11-stage0bwewf-실제-귀속2026-09-21--gpu-op-후보는-m8192뿐-host-wall은-전부-음성) |
+| **Stage0bWg 실행 대기** | We의 graph pre-replay 결함만 M1/M8192 inference/training에서 재검증 | dense/sparse graph 전 행 정합·실행; 하나라도 unavailable이면 exit5 | GPU 진단 약 0.1h |
 | **Stage0c ⏸** | dense vs 2:4 whole primitive forward/backward | Stage0bWc로 pack 속도 귀속 후 학습가속 분기를 재판단 | 0.2 |
 | **Stage1a ⏸** | dense-master 2:4, 250 step | sparse-master 메모리 트랙 별도 재승인 | 0.25 |
 | **Stage1b** | flip/death/birth/resurrection 계측 | active count·birth/death 보존 | 0.25 |
@@ -143,10 +144,12 @@ surface와 공식 API만으로 확정하지 않고 **검증 가설**로 낮춘�
   elementwise 정합 문턱에서 exit 4, 이후 행 생략([082 §8](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#8-stage0bwc-wsl-inference-attribution2026-09-19--정합-문턱에서-중단-측정된-속도는-전부-음성)).
 - 완료: `run_P025B_Stage0bWd_wsl_sparse24_inference_attribution-done.sh` — Wc false-negative를
   해소하고 전 행 정합 PASS·합성 inference 속도 음성을 확정했다.
-- 실행 대기: `run_P025B_Stage0bWe_wsl_sparse24_path_attribution.sh` — wall/event/host/padding/
-  profiler/graph 귀속. 기존 Wd 음성을 덮지 않는다.
-- 실행 대기: `run_P025B_Stage0bWf_wsl_sparse24_algorithm_sweep.sh` — explicit alg-id/Split-K
-  probe와 fresh confirmation. plan-handle 재사용 실험은 아님.
+- 완료·graph 부분 무효: `run_P025B_Stage0bWe_wsl_sparse24_path_attribution-done.sh` —
+  wall/event/host/padding/profiler 유효, graph는 진단 구현 결함.
+- 완료: `run_P025B_Stage0bWf_wsl_sparse24_algorithm_sweep-done.sh` — explicit alg-id/Split-K
+  probe와 fresh confirmation. low-level event만 M8192 후보, wall과 algorithm tuning은 음성.
+- 실행 대기: `run_P025B_Stage0bWg_wsl_sparse24_graph_recovery.sh` — capture 뒤 첫 replay를
+  보장하고 graph만 좁게 회수한다.
 - 미작성: Stage0c~Stage4와 Stage2i 학습 후 checkpoint end-to-end 추론. 실행 가능한
   sparse 학습 모델과 앞 게이트 없이 placeholder SH를 만들지 않는다.
 
@@ -185,4 +188,10 @@ surface와 공식 API만으로 확정하지 않고 **검증 가설**로 낮춘�
 - 2026-09-20: 사용자 후속 지시를 local torch 2.10 Python source와 공식 cuSPARSELt workflow에
   대조했다. M1 padding·계측분리·alg-id/Split-K·교차순서는 타당해 We/Wf로 구현했다. CUDA
   Graph와 plan reuse는 다른 최적화이며 public Python plan handle이 없으므로 후자는 선제 구현하지
+  않았다.
+- 2026-09-21: We 정합과 wall/event/host/profiler는 완주했다. M≤128은 sparse event가 dense의
+  0.031~0.094×, M8192만 1.137~1.295×였고 wall은 전 행 0.084~0.831×로 음성이다. graph는
+  replay 전 output 비교로 전 행 false failure라 Wg로 분리했다. Wf는 M8192 event 1.244/1.390×를
+  보였지만 wall은 0.778/0.841×이고, 비기본 algorithm이 alg0를 이긴 후보는 없다. raw GPU-op
+  후보를 TLinear/whole-step 후보로 승격하지 않는다.
   않았다. 실제 GPU 병목·속도 개선은 사용자 실행 전 `NOT_RUN`이다.

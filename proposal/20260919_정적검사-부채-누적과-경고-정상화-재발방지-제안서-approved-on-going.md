@@ -1,9 +1,11 @@
 # 제안 — 정적검사 부채를 누적시키지 않는 종료 게이트와 경고 정상화
 
-> **작성** 2026-09-19 · **보완** 2026-09-20 · **상태** ⏳판단 대기 · **분류** 작업방식 / 정적검사
+> **작성** 2026-09-19 · **보완** 2026-09-21 · **상태** 🔄승인 후 진행 중 · **분류** 작업방식 / 정적검사
 > **실험번호**: `PNone`
 > **실험계획 비대상 사유**: 문서·검사기·세션 종료 계약을 다루며 GPU 학습이나 모델 비교 실험이 아니다.
 > 양식: [`proposal/README.md`](README.md) §3.
+> **승인**: 2026-09-21 사용자 B안 승인·수정. 정적감사 전문을 handoff에 누적하지 않고
+> `handoff + WIP + handoff/audit/*_STATIC_AUDIT.json` 세 문서 역할분리로 구현한다.
 
 ---
 
@@ -43,7 +45,7 @@ Codex가 실행 가능한 정적 검사에서 발생한 실패와 조치 가능�
 | 경고 등급 계약 | `ERROR`, `ACTIONABLE_WARNING`, `ACCEPTED_INFO`, `NOT_RUN`을 종료코드·요약에서 분리 |
 | 문서 상태 전이 검사 | 완료 제안서의 P번호 또는 정확한 `PNone` 사유, live 문서 날짜를 이관 시점에 검사 |
 | 회귀 fixture | 표준표 중복은 허용하되 서술 복사·H1 소유번호 오류는 계속 잡는 독립 테스트 |
-| 핸드오프 필드 | 실행 프로필, 오류 수, 조치 가능한 경고 수, NOT_RUN 이유를 구조화해 계승 |
+| 별도 정적감사 기록 | 실행 프로필, 오류 수, 조치 가능한 경고 수, NOT_RUN 이유를 versioned JSON으로 보존하고 handoff는 경로만 링크 |
 
 정본 수치는 각 검사기의 실행 결과가 소유한다. 별도 수동 부채 목록을 만들어 숫자를 복제하지 않는다.
 
@@ -149,11 +151,12 @@ orchestrator다. 현재 검사 범위는 대략 다음 다섯 부류다.
 | M1 | 출력 심각도를 오류·조치경고·허용정보·NOT_RUN으로 표준화 | ⚙ 0.5h | 허용정보가 warning count를 올리지 않음 |
 | M2 | 제안서 상태 전이와 live 문서 수정 직후 metadata 검사를 실행하는 좁은 진입점 추가 | ⚙ 0.5~1h | P번호/PNone·날짜 결함 fixture가 실패를 재현 |
 | M3 | `wip.py --close` 앞에 현재 WIP의 안전 프로필 증거를 요구하는 독립 pre-close 검사 추가 | ⚙ 1~2h | 오류·조치경고가 있으면 close 거부, NOT_RUN은 이유와 함께 보존 |
-| M4 | `new_handoff.py`가 프로필·오류·조치경고·NOT_RUN을 구조화해 기록 | ⚙ 0.5~1h | 새 handoff 회귀와 기존 handoff read-only 호환 PASS |
+| M4 | `new_handoff.py`와 Codex checker가 같은 세션의 별도 audit JSON 링크만 요구하고 전문은 복사하지 않음 | ⚙ 0.5~1h | 새 handoff·WIP·audit 3문서 연결, 기존 handoff read-only 호환 PASS |
 
 구현 위치는 기존 `check_static_all.py`의 profile manifest와 JSON 출력, `wip.py`의 evidence
-검증 인자 두 곳으로 한정한다. `check_static_all_codex.py`, 별도 warning ledger, 또 다른 wrapper를
-추가하는 안은 중복 정본을 만들므로 권장안에서 제외한다.
+검증 인자, 기존 handoff generator/checker의 **audit 링크 계약**으로 한정한다. audit JSON은 수동
+warning ledger가 아니라 실행 산출물이며 검사 수치를 handoff 본문에 복제하지 않는다.
+`check_static_all_codex.py`나 또 다른 wrapper는 중복 정본을 만들므로 제외한다.
 
 구현 원칙은 다음과 같다.
 
@@ -193,7 +196,7 @@ orchestrator다. 현재 검사 범위는 대략 다음 다섯 부류다.
 
 ### ★권장안과 근거
 
-**B안을 권장한다.** 이번 재현은 “검사가 없어서”가 아니라 검사 결과의 심각도와 WIP 종료가 연결되지
+**B안을 승인·착수했다.** 이번 재현은 “검사가 없어서”가 아니라 검사 결과의 심각도와 WIP 종료가 연결되지
 않아서 생겼다. 안전 프로필은 보호 데이터 접근 금지와 전수검증 요구를 동시에 만족시키고,
 pre-close 증거는 보고만 하고 넘기는 경로를 직접 차단한다. 구현 후에도 이는 정적 절차
 `STATIC_ONLY`이며, GPU·모델·smoke E2E 성공을 의미하지 않는다.

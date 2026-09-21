@@ -198,12 +198,12 @@ P025B의 cuSPARSELt 방향 오류는 교정됐지만 Wd synthetic inference는 �
 학습 뒤 checkpoint 전체 추론의 직접 측정은 아니다.
 
 P060B actual model GQA 경로는 logits 동등성을 유지하며 `11.1354→9.8974 ms`(약 11.1% 단축)를
-관찰했다. Wc B8/T1024 default/CUDNN/FLASH도 0.993/0.990/1.001×와 working −37.2~38.0%로
-후보다. EFFICIENT grouped 팔의 5-D 결함은 4-D Wd로 교정했지만 GPU `NOT_RUN`이다. GQA를
-버리고 manual KV repeat/MHA로 가면 micro working memory 이득을 잃으므로 default GQA+SDPA가
-현 권장이다. 단 actual allocation 감소 0, backward·학습·긴 생성은 미측정이다.
+관찰했다. Wd의 default micro는 working −37.2%와 속도 ±0.3% 후보지만 grouped EFFICIENT는
+1.232~1.639× 느리다. Stage1W actual training은 속도 1.0025×이나 reserved 절감이 1.986%뿐이라
+10% memory gate 음성이다. 따라서 배포 forward 후보는 유지하되 학습 기본값은 off다.
 
 P014D Stage0bW는 완주했다. int8은 fp32보다 5~15% 빨랐지만 LUT reference는 +1~+23% 느리고
 LUT 언팩 대역은 25.1~36.3%였다. 사용자 후속 승인으로 g=5/per-row-alpha C++ native v0를
 구현했고 합성 M=1 두 측정에서 Python reference보다 1.36~2.42× 빨랐지만 dense 대비 0.288~0.731×다.
-actual model decode와 SIMD/외부 kernel 연동은 `NOT_RUN`이다.
+actual model에서 native/reference는 1.785~1.790×였지만 native/int8은 1.188~1.249×로 1.50×
+채택선 미달이고 fp32보다도 느리다. scalar v0는 속도 음성이고 SIMD/외부 kernel 연동은 미구현이다.

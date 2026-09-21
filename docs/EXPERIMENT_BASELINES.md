@@ -3408,9 +3408,10 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
   두 `(K,N)` 계열, `M=1~8192` 전부 `0.085~0.820×`로 느렸다. 합성 inference kernel 가속
   가설은 음성이다. 이것만으로 sparse-master의 상태 절감·whole-step·학습 후 checkpoint
   추론까지 닫지 않는다([결과 082 §9](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
-- **P025B We/Wf**: Wd 음성을 유지한 채 wall-sync·CUDA Event·host enqueue·M1 padding·
-  profiler·CUDA Graph와 alg-id/Split-K 탐색/확인을 분리 구현했다. Event는 순수 GEMM으로
-  부르지 않고 plan-handle cache는 public Python API 밖이라 `NOT_RUN`이다([결과 082 §10](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#10-stage0bwewf-병목-분리-후속2026-09-20--구현-static_onlygpu-not_run)).
+- **P025B We/Wf**: 정합과 wall/event/host/profiler는 완주했다. M≤128 event는 0.031~0.094×,
+  M8192 event만 1.137~1.295×였고 wall은 전 행 0.084~0.831×로 음성이다. Wf raw low-level
+  event는 M8192에서 1.244/1.390×지만 wall 0.778/0.841×이며 non-default alg tuning 이득은 없다.
+  We CUDA Graph는 replay 전 output 비교 결함으로 무효라 Wg로 분리한다([결과 082 §11](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#11-stage0bwewf-실제-귀속2026-09-21--gpu-op-후보는-m8192뿐-host-wall은-전부-음성)).
 - **P060B Wb·모델 통합**: isolated B8/T1024에서 forced CUDNN/FLASH는 off보다 각각
   `1.051/1.031×`, default는 `1.018×`이고 EFFICIENT는 unavailable이다. actual model 경로는
   logits가 일치하고 `11.1354→9.8974 ms`(`0.889×`, 약 11.1% 단축)였지만 allocation은
@@ -3418,7 +3419,12 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
   PASS가 아니다([결과 088 §6](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)).
   local torch 2.10 direct EFFICIENT GQA는 unavailable이다. Wc에서 default/CUDNN/FLASH는
   0.993/0.990/1.001×와 working −37.2~38.0%를 재현했다. grouped 후보는 5-D 형상 결함으로
-  무효였고 batch×KV-head 4-D Wd로 교정했으며 GPU는 `NOT_RUN`이다([결과 088 §7~§8](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#7-stage0awc-backend-귀속2026-09-20--defaultcudnnflash-후보-efficient만-불가)).
+  무효였다. 4-D Wd에서 grouped EFFICIENT는 실행됐지만 1.232~1.639× 느렸다. Stage1W actual
+  training은 속도 1.0025×, reserved 절감 1.986%라 10% memory 문턱을 못 넘었다. default micro와
+  actual forward 속도 후보는 보존하지만 학습 memory 레버는 음성이다([결과 088 §9](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#9-stage0awdstage1w-실제-결과2026-09-2021--default-micro-후보-학습-memory-gate-음성)).
+- **P022C Wc**: cached FP8 weight는 2/3 형상에서 1.10×를 넘었지만 2048→768은 0.968×이고,
+  모든 FP8 팔이 NRMS 3.76~3.78%·working-memory 증가라 세 계약 동시 PASS가 없다. cache-only
+  TLinear 통합은 열지 않는다([결과 081 §9](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md#9-stage0bwc-ae-원인-귀속2026-09-21--weight-cache만으로-세-계약을-함께-못-살린다)).
 - **P091 R2**: selector pipeline 계약은 통과했으나 `S`의 순위상관은 seed별
   `−1.0~0.4`로 불안정했고 `U`만 `1.0`이었다. 상태기반 재배분의 품질·속도 이득은 아직 없다
   ([결과 080 §8](../test_result/080_20260913_P091-Stage0a-계약은-통과했고-실제-배선은-남았다.md)).

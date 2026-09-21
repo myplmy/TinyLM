@@ -370,6 +370,14 @@ def cmd_ids(rows, names):
     return len(miss)
 
 
+def cmd_platform_ids(rows, names):
+    """Use the same live menu that the current platform actually executes."""
+    if os.name != "posix":
+        return cmd_ids(rows, names)
+    import queue_menu_linux
+    return queue_menu_linux.cmd_ids(queue_menu_linux.with_shell_state(rows), names)
+
+
 def main():
     ap = argparse.ArgumentParser(description="run_queue.bat 의 메타데이터 기반 두뇌")
     ap.add_argument("--list", action="store_true",
@@ -383,7 +391,7 @@ def main():
     if a.audit:
         return cmd_platform_audit(rows, warn)
     if a.ids:
-        return cmd_ids(rows, a.ids)
+        return cmd_platform_ids(rows, a.ids)
     if a.build is not None:
         return cmd_build(rows, a.build)
     # ★`--list` 는 아래 기본 경로와 같다 — **명시적으로 읽어** 죽은 플래그가 아님을 남긴다

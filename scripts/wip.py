@@ -594,6 +594,7 @@ def migrate_v2(path: Path, approval_ref: str, user_owned: str, retired_claims: s
         insert_at = next((i for i, line in enumerate(lines) if line.startswith("## ")), 1)
         lines[insert_at:insert_at] = [
             "- **WIP 스키마**: `v2`",
+            "- **정적 감사 계약**: `v1`",
             f"- **사용자 소유 실행**: {_escape_cell(user_owned)}",
             f"- **폐기·정정 주장**: {_escape_cell(retired_claims)}",
             "",
@@ -637,7 +638,37 @@ def show(path: Path) -> int:
     return open_count
 
 
-def close(path: Path) -> Path:
+def _validate_static_audit(path: Path, audit_path: Path) -> None:
+    if not audit_path.is_file():
+        raise ValueError(f"static audit does not exist: {audit_path}")
+    try:
+        audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ValueError(f"static audit is unreadable: {type(exc).__name__}: {exc}") from exc
+    if audit.get("schema") != "TINYLM_STATIC_AUDIT_V1":
+        raise ValueError("static audit schema is not TINYLM_STATIC_AUDIT_V1")
+    if audit.get("profile") != "codex-safe":
+        raise ValueError("static audit profile must be codex-safe")
+    wip = audit.get("wip") or {}
+    expected_path = path.relative_to(ROOT).as_posix()
+    if wip.get("path") != expected_path:
+        raise ValueError(f"static audit WIP mismatch: {wip.get('path')!r} != {expected_path!r}")
+    if wip.get("sha256") != _sha_bytes(path.read_bytes()):
+        raise ValueError("static audit WIP hash is stale")
+    current_session = _metadata(
+        path.read_text(encoding="utf-8"), "Codex 세션 ID", ""
+    ).strip("` ")
+    if (wip.get("session_id") or "") != current_session:
+        raise ValueError("static audit session id does not match WIP")
+    counts = audit.get("counts") or {}
+    if counts.get("errors") != 0 or counts.get("actionable_warnings") != 0:
+        raise ValueError(
+            "static audit is not clean: "
+            f"errors={counts.get('errors')} actionable={counts.get('actionable_warnings')}"
+        )
+
+
+def close(path: Path, static_audit: Path | None = None) -> Path:
     text = path.read_text(encoding="utf-8")
     table = parse_table(text)
     _require_v2(table)
@@ -648,6 +679,11 @@ def close(path: Path) -> Path:
     if elided:
         raise ValueError(f"지시 원문 생략 표식이 남음: {', '.join(elided)}")
     capsule_text(path)
+    contract = _metadata(text, "정적 감사 계약", "")
+    if contract and static_audit is None:
+        raise ValueError("this WIP requires --static-audit before close")
+    if static_audit is not None:
+        _validate_static_audit(path, static_audit.resolve())
     target = path.with_name(path.stem + "-done.md")
     if target.exists():
         raise ValueError(f"close target already exists: {target.name}")
@@ -765,6 +801,7 @@ def create_ledger(
         f"- **직전 핸드오프**: `{_escape_cell(previous)}`",
         f"- **사용자 지시**: {len(parsed)}건(아래 표가 정본)",
         "- **WIP 스키마**: `v2`",
+        "- **정적 감사 계약**: `v1`",
         *([f"- **Codex 세션 ID**: `{_escape_cell(session_id)}`"] if session_id.strip() else []),
         *(
             [
@@ -863,6 +900,7 @@ def main() -> int:
     parser.add_argument("--allow-concurrent", action="store_true")
     parser.add_argument("--concurrent-reason")
     parser.add_argument("--session-id", default=os.environ.get("CODEX_SESSION_ID", ""))
+    parser.add_argument("--static-audit")
     args = parser.parse_args()
     try:
         if (args.allow_concurrent or args.concurrent_reason) and not args.new:
@@ -921,7 +959,8 @@ def main() -> int:
             print(f"BOUND {path.relative_to(ROOT).as_posix()} session_id={args.session_id}")
             return 0
         if args.close:
-            target = close(path)
+            audit_path = (ROOT / args.static_audit).resolve() if args.static_audit else None
+            target = close(path, audit_path)
             print(f"CLOSED {target.relative_to(ROOT).as_posix()}; source preserved by rename")
             return 0
         if args.add:

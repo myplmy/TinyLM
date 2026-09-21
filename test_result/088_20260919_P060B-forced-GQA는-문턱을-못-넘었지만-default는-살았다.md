@@ -187,3 +187,75 @@ forward의 11.1% 후보와 micro working-memory 절감은 유지되며 backward�
 "$python_bin" scripts/diag_sdpa_wsl_gqa.py --require-wsl --warmup 5 --iters 20 \
   --max-speed-ratio 1.05 --min-memory-reduction 0.10
 ```
+
+---
+
+## ★부록 — 재현 명령 정본 (`run_P060B_Stage1W_sdpa_gqa_training_gate-done.sh` 추출, 2026-09-21)
+
+> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).
+> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.
+
+```
+   "$python_bin" run100m.py train --arch dense --preset m100s10 --data ko-en    --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8    --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20    --eval-every 250 --optimizer muon --muon-scale rms --muon-lr-mult 4    --matrix-weight-decay 0 --cla-group 2 --no-ckpt --compile --seed 1337    --tag p060b_s1w_off250
+   "$python_bin" run100m.py train --arch dense --preset m100s10 --data ko-en    --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8    --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20    --eval-every 250 --optimizer muon --muon-scale rms --muon-lr-mult 4    --matrix-weight-decay 0 --cla-group 2 --sdpa-gqa --no-ckpt --compile --seed 1337    --tag p060b_s1w_on250
+   "$python_bin" scripts/diag_sdpa_gqa_training_pair.py    --off-tag p060b_s1w_off250 --on-tag p060b_s1w_on250    --max-speed-ratio 1.05 --min-memory-reduction 0.10
+```
+
+## 9. Stage0aWd·Stage1W 실제 결과(2026-09-20~21) — **default micro 후보, 학습 memory gate 음성**
+
+### 9.1 Wd backend 귀속
+
+| 형상 | default GQA | forced FLASH | grouped EFFICIENT | 판정 |
+|---|---|---|---|---|
+| B8/T1024 | 0.995×, working −37.2% | 1.034×, −37.2% | 1.232×, −13.2% | default·FLASH 후보 |
+| B1/T128 | 1.003×, working −37.2% | 1.203×, −37.2% | 1.639×, −13.3% | default만 후보 |
+
+4-D grouped-broadcast는 실제 실행돼 Wc의 형상 결함은 해소됐지만 EFFICIENT는 두 형상 모두 느리다.
+direct EFFICIENT의 `No available kernel`은 여전히 Q-head 12/KV-head 3 native GQA 미지원이며,
+FLASH/cuDNN 실패로 확대하지 않는다. 실용 경로는 dispatcher default다.
+
+### 9.2 Stage1W 학습 gate
+
+| 팔 | median ms/step | reserved VRAM | final val | `grad_max` | skip |
+|---|---:|---:|---:|---:|---:|
+| off | 1752.714 | 8.852GB | 4.9450 | 1.0155 | 0 |
+| on | 1757.069 | 8.676GB | 4.9425 | 0.9561 | 0 |
+
+속도 on/off는 **1.0025×**로 +5% 이내지만 reserved 절감은 **1.986%**라 10% 문턱에 크게
+못 미친다. 따라서 `enable_gqa`는 isolated working-memory를 줄여도 현재 전체 training reserved
+memory의 유효 레버가 아니며 Stage1W는 exit8 과학적 음성이다. 32.768M probe의 val 차이는 품질
+판정에 쓰지 않고 W&B에도 올리지 않는다. CLI 기본값은 off를 유지한다.
+
+<!-- TINYLM_CONDITION_SIGNATURE_V1 id=P060B-stage1W-training-gqa -->
+| field | arm_a | arm_b | evidence |
+| --- | --- | --- | --- |
+| pool_id | ko-en_600000000 | ko-en_600000000 | exact cache |
+| actual_pool_tokens | 597000000 | 597000000 | cache 계약 |
+| pool_override | exact 600M | exact 600M | launcher |
+| steps | 250 | 250 | JSON |
+| micro_bs | 8 | 8 | JSON |
+| accum | 16 | 16 | JSON |
+| seq | 1024 | 1024 | JSON |
+| actual_draw_tokens | 32768000 | 32768000 | 계산·JSON |
+| sampler_with_replacement | true | true | loader 계약 |
+| expected_unique_tokens | about 31.9M | about 31.9M | 복원추출 모형 |
+| sequential_epoch_claim | false | false | epoch 주장 없음 |
+| scheduler | wsd | wsd | JSON |
+| warmup | same trainer rule | same trainer rule | 동일 코드 |
+| anneal_start | same | same | JSON |
+| decay_fraction | 0.20 | 0.20 | JSON |
+| absolute_schedule_horizon | 250 | 250 | JSON |
+| train_language_expected | ko/en 50:50 | ko/en 50:50 | cache recipe |
+| train_language_observed | same cached sample order | same cached sample order | same seed |
+| eval_dataset | same internal val | same internal val | JSON |
+| eval_language | ko/en | ko/en | same cache |
+| tokenizer | tok-ko-en-32768 | tok-ko-en-32768 | same data |
+| grad_ckpt | false | false | JSON |
+| representation | repeated K/V off | enable_gqa true | 독립변수 |
+| comparator_tag | p060b_s1w_off250 | p060b_s1w_on250 | JSON |
+| matched_axes | pool_id,actual_pool_tokens,pool_override,steps,micro_bs,accum,seq,actual_draw_tokens,sampler_with_replacement,expected_unique_tokens,sequential_epoch_claim,scheduler,warmup,anneal_start,decay_fraction,absolute_schedule_horizon,train_language_expected,train_language_observed,eval_dataset,eval_language,tokenizer,grad_ckpt | same | representation 외 고정 |
+| changed_axes | representation | representation | CLI flag |
+| unmeasured_axes | NONE | NONE | speed/memory pair complete |
+| not_run_claims | FULL_QUALITY,LONG_CONTEXT,DEPLOY_GENERATION | same | 250-step 범위 |
+| permitted_claim | DIRECT_PAIRED | DIRECT_PAIRED | 같은 학습조건 speed/reserved 비교 |
+<!-- /TINYLM_CONDITION_SIGNATURE_V1 -->

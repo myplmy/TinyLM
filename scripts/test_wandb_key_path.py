@@ -7,6 +7,9 @@ from pathlib import Path
 from unittest import mock
 
 import wandb_sync
+import wandb_backfill
+
+ROOT = Path(__file__).resolve().parent.parent
 
 
 class WandbKeyPathTests(unittest.TestCase):
@@ -66,6 +69,30 @@ class WandbKeyPathTests(unittest.TestCase):
         )
         self.assertEqual(summary["final_val_loss"], 3.5)
         self.assertEqual(history[0]["step"], 1)
+
+    def test_bounded_backfill_manifest_and_remote_ids(self) -> None:
+        rows = wandb_backfill.load_manifest(
+            ROOT / "scripts" / "wandb_backfill_tags.tsv"
+        )
+        self.assertEqual(len(rows), 7)
+        self.assertEqual(len({tag for tag, _reason in rows}), 7)
+
+        class Run:
+            def __init__(self, run_id):
+                self.id = run_id
+
+        class Api:
+            def runs(self, path, filters, per_page):
+                self.args = (path, filters, per_page)
+                return [Run("one"), Run("two")]
+
+        api = Api()
+        found = wandb_backfill.remote_ids(
+            api, entity="entity", project="tinylm",
+            names=["one", "two", "three"],
+        )
+        self.assertEqual(found, {"one", "two"})
+        self.assertEqual(api.args[0], "entity/tinylm")
 
 
 if __name__ == "__main__":

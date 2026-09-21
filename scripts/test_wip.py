@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -199,8 +200,45 @@ class WipV2Tests(unittest.TestCase):
         for item in ("1", "2A"):
             WIP.set_state(path, item, WIP.RUN, "착수", None, "완료 처리")
             WIP.set_state(path, item, WIP.DONE, "완료", "없음", None)
-        target = WIP.close(path)
+        with self.assertRaisesRegex(ValueError, "requires --static-audit"):
+            WIP.close(path)
+        audit = self.root / "audit.json"
+        audit.write_text(
+            json.dumps({
+                "schema": "TINYLM_STATIC_AUDIT_V1",
+                "profile": "codex-safe",
+                "wip": {
+                    "path": path.relative_to(self.root).as_posix(),
+                    "sha256": WIP._sha_bytes(path.read_bytes()),
+                    "session_id": None,
+                },
+                "counts": {"errors": 0, "actionable_warnings": 0},
+            }),
+            encoding="utf-8",
+        )
+        target = WIP.close(path, audit)
         self.assertFalse(path.exists())
+        self.assertTrue(target.exists())
+
+    def test_static_audit_session_id_accepts_markdown_metadata(self) -> None:
+        path = self.create()
+        WIP.bind_session(path, "thread-owner", "소유 확인", "사용자 승인")
+        for item in ("1", "2A"):
+            WIP.set_state(path, item, WIP.RUN, "착수", None, "완료 처리")
+            WIP.set_state(path, item, WIP.DONE, "완료", "없음", None)
+        audit = self.root / "audit-session.json"
+        audit.write_text(
+            json.dumps({
+                "schema": "TINYLM_STATIC_AUDIT_V1", "profile": "codex-safe",
+                "wip": {
+                    "path": path.relative_to(self.root).as_posix(),
+                    "sha256": WIP._sha_bytes(path.read_bytes()),
+                    "session_id": "thread-owner",
+                },
+                "counts": {"errors": 0, "actionable_warnings": 0},
+            }), encoding="utf-8",
+        )
+        target = WIP.close(path, audit)
         self.assertTrue(target.exists())
 
 

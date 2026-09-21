@@ -202,6 +202,22 @@ def payload(name, d):
     return cfg, summ, hist
 
 
+def upload_runs(run_ctx, runs, *, project: str, entity: str | None = None) -> None:
+    """Upload an already validated selection without changing local sources."""
+    for name, d in runs:
+        cfg, summ, hist = payload(name, d)
+        run = run_ctx.init(
+            project=project, entity=entity, id=name, name=name,
+            config=cfg, resume="allow", reinit=True,
+        )
+        for index, point in enumerate(hist):
+            if isinstance(point, dict):
+                run_ctx.log(point, step=point.get("step", index))
+        for key, value in summ.items():
+            run.summary[key] = value
+        run.finish()
+
+
 def do_check():
     banner("wandb 준비 점검 — 네트워크를 쓰지 않는다", "#")
     p = key_file_path()
@@ -274,16 +290,8 @@ def main():
         print(f"      config {len(cfg)}개 · summary {len(summ)}개 · history {len(hist)}점")
         print(f"      final={d.get('final')}  grad_max={d.get('grad_max')}  "
               f"vram={d.get('vram_reserved_gb')}  ms/step={d.get('ms_step_median')}")
-        if not a.push:
-            continue
-        r = run_ctx.init(project=a.project, entity=a.entity, id=name, name=name,
-                         config=cfg, resume="allow", reinit=True)
-        for i, h in enumerate(hist):
-            if isinstance(h, dict):
-                run_ctx.log(h, step=h.get("step", i))
-        for k, v in summ.items():
-            r.summary[k] = v
-        r.finish()
+    if a.push:
+        upload_runs(run_ctx, runs, project=a.project, entity=a.entity)
 
     # ★2026-08-22 — `meta_experiments`·`meta_checkpoints` 는 **기본 off** 다.
     #   아티팩트만 담은 **빈 런**이 wandb 목록을 어지럽힌다(사용자가 삭제했다).

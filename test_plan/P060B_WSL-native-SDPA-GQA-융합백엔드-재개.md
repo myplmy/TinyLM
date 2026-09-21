@@ -6,9 +6,9 @@
 > 전까지 WSL 결과는 `E2E_NOT_RUN`이다. Stage0aW 보존 로그에서 forced backend는 음성이었지만
 > dispatcher-selected `on_default`가 속도 +0.3%·working memory −37.2%로 실용 문턱을 통과했다
 > ([결과 088](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)).
-> **현재 상태(2026-09-20):** Wc에서 B8/T1024 default·CUDNN·FLASH가 모두 실용 문턱을
-> 통과했고 actual model default GQA는 11.1% 빠른 후보를 유지한다. direct EFFICIENT는 불가하며,
-> Wc grouped 후보는 5-D 형상 결함이었다. 4-D로 교정한 Wd는 정적 PASS·GPU `NOT_RUN`이다.
+> **현재 상태(2026-09-21):** Wd에서 default는 B8/T1024·B1/T128 모두 speed/memory micro
+> 문턱을 통과했고 grouped EFFICIENT는 실행됐지만 1.232~1.639× 느렸다. Stage1W actual training은
+> 속도 1.0025×로 중립이나 reserved 절감 1.986%로 10% 문턱에 미달해 음성이다([결과 088 §9](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#9-stage0awdstage1w-실제-결과2026-09-2021--default-micro-후보-학습-memory-gate-음성)).
 
 ## 1. 재개 근거와 비재개 경계
 
@@ -47,9 +47,9 @@ WSL + `sm_89`는 플랫폼 선결을 만족한다. 패키지 존재는 커널 PA
 | **Stage0aW ✅ 혼합** | off/on default와 on-CUDNN/FLASH/EFFICIENT의 정합성·median forward·working memory | forced 세 경로는 문턱 미달/불가; default는 +0.3%, memory −37.2%로 실용 후보 | [088](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md) |
 | **Stage0aWb ✅ 후보 재현** | dispatcher default와 forced 후보를 별도 판정 | B8/T1024 default 1.018×·FLASH 1.031×, memory 약 −37%; EFFICIENT만 unavailable | [088 §6.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#61-wb-micro-gate) |
 | **Stage0aWc ✅ 혼합** | warning을 variant별 포착하고 direct EFFICIENT와 grouped-broadcast EFFICIENT를 분리 | default/CUDNN/FLASH 후보 재현, direct EFFICIENT unavailable; grouped 팔은 5-D 형상 결함으로 무효 | [088 §7](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#7-stage0awc-backend-귀속2026-09-20--defaultcudnnflash-후보-efficient만-불가) |
-| **Stage0aWd 실행 대기** | batch×KV-head를 접은 4-D zero-stride grouped-broadcast로 EFFICIENT 재검증 | direct 결과와 분리해 정합·속도·physical storage 출력 | GPU 진단 수 초, 학습 0 |
+| **Stage0aWd ✅ 귀속 완료** | batch×KV-head를 접은 4-D zero-stride grouped-broadcast로 EFFICIENT 재검증 | grouped EFFICIENT 실행 가능하지만 속도 음성; default 실용 후보 유지 | [088 §9.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#91-wd-backend-귀속) |
 | **Stage0bW ✅ actual model 후보** | d14 RMS4 checkpoint full/cache prefill/decode | bit-identical, on/off 0.889×로 11.1% 빠름; peak 감소 0% | [088 §6.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#62-actual-d14-checkpoint-model-path) |
-| **Stage1W 구현·실행 대기** | 현 WSL current recipe 250-step off vs default GQA 학습 속도·peak reserved·NaN/skip | memory ≥10% 절감, ms/step 악화 ≤5% | SH·JSON gate 구현, 약 0.5h |
+| **Stage1W 🚫 memory gate 음성** | 현 WSL current recipe 250-step off vs default GQA 학습 속도·peak reserved·NaN/skip | speed 1.0025× PASS, reserved 절감 1.986% FAIL | [088 §9.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#92-stage1w-학습-gate) |
 | **Stage2W** | 배포 prefill/decode·장문 생성 정합성 | cache 경로 실제 텍스트와 속도 방향 통과 | 별도 승인·모델 실행 |
 
 Stage0aW exit 8은 forced-only 사전등록 질문에는 유효한 음성이지만, 실용 후보선에서
@@ -68,6 +68,14 @@ Stage0aW exit 8은 forced-only 사전등록 질문에는 유효한 음성이지�
 | 보호 경계 | 데이터·체크포인트·모델 로딩·학습 0; Codex GPU 실행 금지 |
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 8. 2026-09-21 Wd·Stage1W 결과
+
+Wd는 4-D grouped EFFICIENT의 실행 가능성을 확인했지만 default보다 23.2~63.9% 느려 backend
+후보에서 탈락했다. dispatcher default는 isolated working memory 약 37% 절감과 속도 +0.3% 이내를
+유지한다. 그러나 actual 250-step 학습에서는 reserved VRAM이 8.852→8.676GB, 1.986%만 줄어
+사전등록 10%를 못 넘었다. 따라서 `--sdpa-gqa` 기본값은 off를 유지하고 full-quality Stage2W를
+자동 개방하지 않는다. actual model forward의 11.1% 후보는 배포 속도 축에 한정해 보존한다.
 
 ## 5. 한계
 

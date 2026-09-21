@@ -22,6 +22,7 @@ COMMON_SHELL_FILES = (
     ROOT / "run_smoke_check.sh",
     ROOT / "scripts" / "shell" / "tinylm_env.sh",
     ROOT / "scripts" / "shell" / "tool_wandb_push.sh",
+    ROOT / "scripts" / "shell" / "tool_wandb_backfill.sh",
 )
 WANDB_MIN_TOKENS = 50_000_000
 

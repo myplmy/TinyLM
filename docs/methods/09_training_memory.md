@@ -294,9 +294,9 @@ python scripts/check_spill.py test_result/037_log_20260808_P018_compressed_teach
 
 | 계획 | 관찰 | 주장 가능한 범위 |
 |---|---|---|
-| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | BF16 peak `32/12/12 MiB` 대비 FP8 current `39.5/48/18.56 MiB` | compute-only 팔은 메모리도 음성. shadow·optimizer persistent state는 미측정 |
-| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | Wd synthetic inference 전 형상 느림 | sparse tensor allocation을 전체 training VRAM 절감으로 부르지 않음 |
-| [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | isolated GQA working memory는 manual repeat보다 약 37% 작음; actual model allocation은 off/on 모두 `9.568 MiB` | isolated working set 후보. 전체 peak reserved/RSS·학습 VRAM 감소는 없음 |
+| [P022C](../../test_plan/P022C_FP8-compute-shadow-precision-분리.md) | Wc에서도 BF16 working `32/12/12 MiB`보다 cached weight `39.5/49.5/18.56 MiB`로 증가 | weight cache만으로 memory 계약 음성. shadow·optimizer persistent state는 미측정 |
+| [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | We/Wf low-level sparse peak가 dense보다 소폭 크고 wall은 전 형상 느림 | sparse tensor allocation이나 GPU event 후보를 전체 training VRAM 절감으로 부르지 않음 |
+| [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | isolated working memory 약 −37%; actual model allocation 감소 0%; Stage1W reserved `8.852→8.676GB`(−1.986%) | 학습 memory 10% 문턱 음성. isolated working set과 전체 reserved를 분리 |
 | [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | owner/optimizer mapping과 selector 계약만 PASS | local optimizer state·temporary BA·peak reserved 미측정 |
 | [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | dense tensor+mask controller 계약 PASS | structural active count를 저장 절감으로 환산하지 않음 |
 | [P093](../../test_plan/P093_구조조건부-직접공유와-완화타잉.md) | 회계상 절감 후보였으나 현재 parent approximation output NRMS `0.974` | 품질 viability를 못 넘은 회계 후보를 메모리 승자로 승격 금지 |

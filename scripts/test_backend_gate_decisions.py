@@ -21,7 +21,12 @@ from scripts.diag_fp8_path_attribution import _fp8_tensor_ledger
 from scripts.diag_sharing_parent_approx import _approximation_gate
 from scripts.diag_depth_init import _group_gate_exit
 from scripts.diag_sparse24_inference_attribution import _agreement_ok, _error_stats
-from scripts.diag_sparse24_path_attribution import _parse_layouts, _parse_signed_csv
+from scripts.diag_sparse24_path_attribution import (
+    _capture_graph,
+    _parse_layouts,
+    _parse_signed_csv,
+    _tuning_metrics,
+)
 from scripts.diag_sdpa_gqa_training_pair import _contract_errors as _gqa_training_contract_errors
 from scripts._gpu_bench_attribution import median_mad, parse_int_csv
 
@@ -51,6 +56,71 @@ def main() -> int:
     assert _parse_signed_csv("-1,0,1,-1") == [-1, 0, 1]
     assert _parse_layouts("inference,training,inference") == ["inference", "training"]
     assert median_mad([1.0, 2.0, 100.0]) == (2.0, 1.0)
+
+    class _Context:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+    class _Stream:
+        def wait_stream(self, _other):
+            return None
+
+    class _Graph:
+        def __init__(self):
+            self.replays = 0
+
+        def replay(self):
+            self.replays += 1
+
+    class _Cuda:
+        def __init__(self):
+            self.graph_object = None
+            self.syncs = 0
+
+        def Stream(self):
+            return _Stream()
+
+        def current_stream(self):
+            return _Stream()
+
+        def stream(self, _stream):
+            return _Context()
+
+        def CUDAGraph(self):
+            self.graph_object = _Graph()
+            return self.graph_object
+
+        def graph(self, _graph):
+            return _Context()
+
+        def synchronize(self):
+            self.syncs += 1
+
+    class _FakeTorch:
+        def __init__(self):
+            self.cuda = _Cuda()
+
+    fake_torch = _FakeTorch()
+    _output, graph_replay = _capture_graph(fake_torch, lambda: object())
+    assert fake_torch.cuda.graph_object.replays == 1
+    graph_replay()
+    assert fake_torch.cuda.graph_object.replays == 2
+    confirmed = {
+        "dense": {"event": 1.0, "wall": 1.0},
+        "default_alg0": {"event": 0.8, "wall": 1.2},
+        "tuned": {"event": 0.7, "wall": 1.1},
+    }
+    tuned = _tuning_metrics(
+        confirmed, (3, 1, -1), min_speedup=1.10, min_tuning_gain=1.02
+    )
+    assert tuned["low_level_candidate"] and tuned["tuning_candidate"]
+    same_default = _tuning_metrics(
+        confirmed, (0, 1, -1), min_speedup=1.10, min_tuning_gain=1.02
+    )
+    assert same_default["tuning_gain"] == 1.0 and not same_default["tuning_candidate"]
     ledger = _fp8_tensor_ledger(8, 4, 6)
     assert ledger["B_prepared_fp8"]["persistent"] > ledger["C_weight_cached"]["persistent"]
     assert ledger["C_weight_cached"]["per_call_temporaries"] < ledger["D_delayed"]["per_call_temporaries"]

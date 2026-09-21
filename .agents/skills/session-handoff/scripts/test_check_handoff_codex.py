@@ -32,6 +32,7 @@ def current_text(previous: str, *, queue_row: str, smoke: str = "NOT_REQUIRED(�
     return f"""# HANDOFF 2099-01-01 00:01 — fixture
 
 - **이전**: [`{previous}`]({previous})
+- [정적 감사 기록](audit/fixture_STATIC_AUDIT.json)
 - STATIC_ONLY / E2E_NOT_RUN / NOT_RUN
 
 ## 0. 사용자 지시 1건 — 원문과 처리
@@ -46,7 +47,11 @@ fixture
 
 ## 2. 무엇을 했나
 
-fixture
+### 2.0 사용자용 판독
+
+| 관측 | 의미 | 사용자 영향 | 다음 행동 |
+|---|---|---|---|
+| fixture PASS | 구조가 맞음 | 누락 없음 | 계속 |
 
 ## 3. 무엇이 바뀌었나 — 코드·도구
 
@@ -130,6 +135,10 @@ class HandoffContractTests(unittest.TestCase):
         CHECKER.HANDOFF_ROOT = self.handoff
         self.previous = self.handoff / "209901010000_HANDOFF.md"
         self.previous.write_text(previous_text(), encoding="utf-8")
+        (self.handoff / "audit").mkdir()
+        (self.handoff / "audit" / "fixture_STATIC_AUDIT.json").write_text(
+            "{}\n", encoding="utf-8"
+        )
         self.current = self.handoff / "209901010001_HANDOFF.md"
 
     def tearDown(self) -> None:

@@ -29,8 +29,8 @@ def main() -> int:
     nli = _ad_klue_nli({"premise": "비가 온다.", "hypothesis": "날씨가 맑다.", "label": 2})
     assert nli["gold"] == 2 and nli["choices"] == [" 함의", " 중립", " 모순"]
     specs_by_name = {row[0]: row for row in SPECS}
-    assert specs_by_name["klue_ynat"][1:4] == ("klue", "ynat", "validation")
-    assert specs_by_name["klue_nli"][1:4] == ("klue", "nli", "validation")
+    assert specs_by_name["klue_ynat"][1:5] == ("klue/klue", "ynat", "validation", 9107)
+    assert specs_by_name["klue_nli"][1:5] == ("klue/klue", "nli", "validation", 3000)
     print("[PASS] P097 multi-recipe data/arch routing and KLUE adapters")
     return 0
 

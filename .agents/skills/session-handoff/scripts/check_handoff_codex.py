@@ -175,6 +175,20 @@ def validate(path: Path, *, hours_target: float = DEFAULT_HOURS_TARGET) -> Valid
     if table_rows_with_columns(change_body, sync_columns) is None:
         errors.append(f"canonical synchronization table missing columns {sync_columns}")
 
+    if path.name[:8] >= "20260921":
+        user_explanation = section_body(text, REQUIRED_SECTIONS["2"]) or ""
+        explanation_columns = ("관측", "의미", "사용자 영향", "다음 행동")
+        explanation_rows = table_rows_with_columns(user_explanation, explanation_columns)
+        if not explanation_rows:
+            errors.append(
+                f"user-facing explanation table missing or empty: {explanation_columns}"
+            )
+        audit_link = re.search(
+            r"\[정적 감사 기록\]\((audit/[^)]+_STATIC_AUDIT\.json)\)", head
+        )
+        if audit_link is None:
+            errors.append("new handoff lacks separate static-audit record link")
+
     recommendation = section_body(text, REQUIRED_SECTIONS["7"]) or ""
     queue_columns = ("순", "id", "실험", "배치 파일", "⚙", "누적", "인벤토리", "실행상태", "선결", "근거")
     queue_rows = table_rows_with_columns(recommendation, queue_columns)

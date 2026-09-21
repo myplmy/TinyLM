@@ -7,9 +7,11 @@ import unittest
 from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path, PureWindowsPath
+from unittest import mock
 
 import check_shell_entrypoints as shell_check
 import queue_menu_linux as linux_queue
+import queue_menu as shared_queue
 
 
 def row(batch: str):
@@ -33,6 +35,16 @@ def row(batch: str):
 
 
 class LinuxQueueTests(unittest.TestCase):
+    def test_shared_ids_delegate_to_linux_menu_on_posix(self) -> None:
+        rows = [row("run_fixture_Stage0.sh")]
+        with mock.patch.object(shared_queue.os, "name", "posix"), mock.patch.object(
+            linux_queue, "with_shell_state", return_value=[{"linux": True}]
+        ) as state, mock.patch.object(linux_queue, "cmd_ids", return_value=0) as ids:
+            rc = shared_queue.cmd_platform_ids(rows, ["run_fixture_Stage0.sh"])
+            self.assertEqual(rc, 0)
+            state.assert_called_once_with(rows)
+            ids.assert_called_once_with([{"linux": True}], ["run_fixture_Stage0.sh"])
+
     def test_experiment_shell_requires_runlog_contract(self) -> None:
         path = Path("run_P099_fixture.sh")
         missing = b"#!/usr/bin/env bash\nexec python scripts/diag_fixture.py\n"

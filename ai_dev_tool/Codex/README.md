@@ -1,6 +1,6 @@
 # TinyLM Codex 작업환경 — 소유권·분리 계약
 
-> **최신 갱신일자**: 2026-09-20 · **문서 유형**: live
+> **최신 갱신일자**: 2026-09-21 · **문서 유형**: live
 
 > 제정: 2026-09-11, 승인된 제안서 P1  
 > 상태: **Windows P0~P8 역사 증거 보존; WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED`, M3 사용자 범위 예외 종결(manual compact `NOT_RUN`·검증 제외), 현재 변경 뒤 smoke `E2E_NOT_RUN`**
@@ -79,7 +79,7 @@ CLI 버전 조회 중 임시 경로 권한 경고 2건이 있었지만 버전 �
 
 | 변경 | 정적 증거 | 현재 동적 상태 |
 |---|---|---|
-| WIP v2·감사형 override | 6열 계약·원자교체·lock·CP949 출력 회귀 fixture | `STATIC_ONLY`; 실제 다중 세션 경합 E2E는 `NOT_RUN` |
+| WIP v2·감사형 override·static pre-close | 6열 계약·원자교체·lock·CP949 출력과 exact WIP/session `TINYLM_STATIC_AUDIT_V1` 회귀 fixture | `STATIC_ONLY`; 실제 다중 세션 경합과 새 pre-close 운영 E2E는 `NOT_RUN` |
 | WIP 직접수정 보조 차단 | Bash·`apply_patch` mock deny와 정상 `wip.py` 허용 | `STATIC_ONLY`; 새 hash 신뢰·실제 deny는 `E2E_NOT_RUN` |
 | compact 상태 캡슐 | 8필드 sentinel, 진행 항목·길이상한, 수동/자동 `PreCompact`, `SessionStart(source=compact)` mock | WIP 12·compact 14 tests와 현재 session direct simulation PASS. 과거 exact-match auto 경로는 실제 PASS였으나 현재 hash는 `STATIC_ONLY`; manual은 사용자 검증 제외·`NOT_RUN` |
 | 핸드오프 계승 | 6열 지시·동기화표·10열 큐·스모크 disposition fixture | 신규 실제 핸드오프에서 최종 검증 예정 |

@@ -76,6 +76,14 @@ def _capture_graph(torch, fn):
     with torch.cuda.graph(graph):
         output = fn()
 
+    # CUDA stream capture records the work but the captured output is not a
+    # trustworthy comparison target until the graph has been launched once.
+    # We previously compared this pre-replay buffer with an eager result, so
+    # dense and sparse variants both reported false ``Tensor-likes are not
+    # close`` failures for every shape.
+    graph.replay()
+    torch.cuda.synchronize()
+
     def replay():
         graph.replay()
         return output
@@ -139,9 +147,31 @@ def _print_measurement(prefix: str, rows: dict[str, dict[str, float]]) -> None:
         )
 
 
+def _tuning_metrics(confirmed, selected, *, min_speedup: float,
+                    min_tuning_gain: float):
+    """Separate low-level sparse-vs-dense gain from algorithm-tuning gain."""
+    tuned_event = confirmed["tuned"]["event"]
+    dense_speedup = confirmed["dense"]["event"] / tuned_event
+    wall_speedup = confirmed["dense"]["wall"] / confirmed["tuned"]["wall"]
+    if selected == (0, 1, -1):
+        # The selected candidate is exactly the default control.  Timing the
+        # same callable under two labels can create a fake tuning gain.
+        tuning_gain = 1.0
+    else:
+        tuning_gain = confirmed["default_alg0"]["event"] / tuned_event
+    return {
+        "dense_speedup": dense_speedup,
+        "wall_speedup": wall_speedup,
+        "tuning_gain": tuning_gain,
+        "low_level_candidate": dense_speedup >= min_speedup,
+        "tuning_candidate": selected != (0, 1, -1) and tuning_gain >= min_tuning_gain,
+    }
+
+
 def _attribute(torch, F, sparse_cls, packs, *, k: int, n: int, m_values,
                layouts, args) -> int:
     failures = []
+    graph_failures = []
     for m in m_values:
         x = torch.randn(m, k, device="cuda", dtype=torch.float16)
         # The class method is the exact dispatcher helper used by PyTorch.
@@ -228,6 +258,7 @@ def _attribute(torch, F, sparse_cls, packs, *, k: int, n: int, m_values,
                             f"event_batch_ms={graph_event:.6f} status=OK"
                         )
                     except Exception as exc:
+                        graph_failures.append((layout, m, k, n, name, type(exc).__name__))
                         print(
                             f"[cuda_graph] layout={layout} M={m} variant={name} "
                             f"status=UNAVAILABLE reason={type(exc).__name__}: "
@@ -237,13 +268,16 @@ def _attribute(torch, F, sparse_cls, packs, *, k: int, n: int, m_values,
     if failures:
         print(f"[GATE FAIL correctness] rows={failures}")
         return 4
+    if args.require_cuda_graph and graph_failures:
+        print(f"[GATE FAIL cuda_graph] rows={graph_failures}")
+        return 5
     print("[ATTRIBUTION COMPLETE] wall/event/host/profiler are separate; "
           "public plan reuse remains NOT_IMPLEMENTED")
     return 0
 
 
 def _tune(torch, F, sparse_cls, packs, *, k: int, n: int, m_values,
-          layouts, args) -> tuple[bool, list[tuple]]:
+          layouts, args) -> tuple[bool, bool, list[tuple]]:
     max_alg = torch.backends.cusparselt.get_max_alg_id()
     if args.alg_ids == "auto":
         alg_ids = list(range(max_alg)) if isinstance(max_alg, int) and max_alg > 0 else [0]
@@ -261,6 +295,7 @@ def _tune(torch, F, sparse_cls, packs, *, k: int, n: int, m_values,
               "cuSPARSELt version; auto mode preserves alg0 only")
 
     any_candidate = False
+    any_tuning_candidate = False
     summaries = []
     for m in m_values:
         x = torch.randn(m, k, device="cuda", dtype=torch.float16)
@@ -343,20 +378,29 @@ def _tune(torch, F, sparse_cls, packs, *, k: int, n: int, m_values,
                 iters=args.iters,
             )
             _print_measurement(f"confirm:{layout}:M{m}:K{k}:N{n}", confirmed)
-            speedup = confirmed["dense"]["event"] / confirmed["tuned"]["event"]
+            selected = (alg_id, split_k, split_mode)
+            metrics = _tuning_metrics(
+                confirmed,
+                selected,
+                min_speedup=args.min_speedup,
+                min_tuning_gain=args.min_tuning_gain,
+            )
             print(
                 f"[tune selected] layout={layout} M={m} alg={alg_id} "
                 f"split_k={split_k} mode={split_mode} search_wall_ms={search_wall_ms:.3f} "
-                f"confirmed_event_speedup={speedup:.3f}x"
+                f"dense_event_speedup={metrics['dense_speedup']:.3f}x "
+                f"dense_wall_speedup={metrics['wall_speedup']:.3f}x "
+                f"tuning_gain_over_alg0={metrics['tuning_gain']:.3f}x"
             )
             if args.profile_iters:
                 _print_profile(
                     f"tuned:{layout}:M{m}:K{k}:N{n}",
                     profiler_rows(torch, tuned_fn, iters=args.profile_iters),
                 )
-            any_candidate |= speedup >= args.min_speedup
-            summaries.append((layout, m, (alg_id, split_k, split_mode), speedup))
-    return any_candidate, summaries
+            any_candidate |= metrics["low_level_candidate"]
+            any_tuning_candidate |= metrics["tuning_candidate"]
+            summaries.append((layout, m, selected, metrics))
+    return any_candidate, any_tuning_candidate, summaries
 
 
 def main() -> int:
@@ -369,17 +413,23 @@ def main() -> int:
     parser.add_argument("--iters", type=int, default=20)
     parser.add_argument("--profile-iters", type=int, default=3)
     parser.add_argument("--cuda-graph", action="store_true")
+    parser.add_argument("--require-cuda-graph", action="store_true",
+                        help="fail if any requested dense/sparse graph capture is unavailable")
     parser.add_argument("--alg-ids", default="auto")
     parser.add_argument("--split-k-values", default="1,2,4")
     parser.add_argument("--split-k-modes", default="0,1")
     parser.add_argument("--tune-warmup", type=int, default=3)
     parser.add_argument("--tune-iters", type=int, default=10)
     parser.add_argument("--min-speedup", type=float, default=1.10)
+    parser.add_argument("--min-tuning-gain", type=float, default=1.02)
     parser.add_argument("--max-nrms", type=float, default=1e-3)
     parser.add_argument("--max-abs-ratio", type=float, default=1e-2)
     parser.add_argument("--min-cosine", type=float, default=0.999999)
     parser.add_argument("--require-wsl", action="store_true")
     args = parser.parse_args()
+
+    if args.require_cuda_graph and not args.cuda_graph:
+        parser.error("--require-cuda-graph requires --cuda-graph")
 
     try:
         m_values = parse_int_csv(args.m_values)
@@ -420,6 +470,7 @@ def main() -> int:
     )
     all_tune_summaries = []
     tune_candidate = False
+    algorithm_candidate = False
     for k, n in ((768, 2048), (2048, 768)):
         torch.manual_seed(25000 + k + n)
         dense_weight = torch.randn(n, k, device="cuda", dtype=torch.float16)
@@ -457,7 +508,7 @@ def main() -> int:
             if code:
                 return code
         else:
-            candidate, summaries = _tune(
+            candidate, tuned_algorithm, summaries = _tune(
                 torch,
                 F,
                 SparseSemiStructuredTensorCUSPARSELT,
@@ -469,15 +520,23 @@ def main() -> int:
                 args=args,
             )
             tune_candidate |= candidate
+            algorithm_candidate |= tuned_algorithm
             all_tune_summaries.extend((k, n, *row) for row in summaries)
 
     if args.mode == "tune":
         print(f"[tune summary] {all_tune_summaries}")
         if not tune_candidate:
-            print(f"[GATE NEGATIVE] no confirmed tuned row reached {args.min_speedup:.2f}x")
+            print(f"[GATE NEGATIVE] no confirmed low-level sparse row reached "
+                  f"dense event speedup {args.min_speedup:.2f}x")
             return 8
-        print(f"[GATE CANDIDATE] at least one tuned row reached {args.min_speedup:.2f}x; "
-              "TLinear/model integration remains NOT_RUN")
+        print(f"[GATE CANDIDATE] at least one low-level sparse row reached dense event "
+              f"speedup {args.min_speedup:.2f}x; wall and model integration remain separate")
+        if algorithm_candidate:
+            print(f"[TUNING CANDIDATE] a non-default algorithm improved on alg0 by at least "
+                  f"{args.min_tuning_gain:.2f}x")
+        else:
+            print(f"[TUNING NEGATIVE] no non-default algorithm confirmed at least "
+                  f"{args.min_tuning_gain:.2f}x over alg0; Split-K was unsupported")
     return 0
 
 

@@ -134,7 +134,8 @@ packed code를 직접 읽는 삼진 kernel도 아니다.
 | Python LUT reference | 완료 | 1.6bpw 상주·정합 정본, 속도 kernel 아님 |
 | C++ native LUT v0 | 구현·합성 정합 PASS | g=5 uint8 code+per-row alpha를 직접 읽음, default off |
 | SIMD/AVX2·T-MAC/BitNet 연동 | 미구현 | native v0 두 측정이 dense 대비 0.288~0.731×라 최적 kernel 아님 |
-| actual model decode | `NOT_RUN` | 사용자 Stage1W 로그가 채택/음성을 결정 |
+| actual model decode | 완료·속도 음성 | native/reference 1.785~1.790×, native/int8 1.188~1.249×로 채택선 1.50× 미달 |
 
 외부 T-MAC/BitNet 코드를 복사하지 않았고, lazy extension build 실패 시 reference로 조용히
-fallback하지 않는다. 정본 계획은 [P014D §9](../test_plan/P014D_LUT-배포커널-속도와-패킹.md#9-2026-09-20-custom-kernel-현황-재감사와-native-cpu-v0)다.
+fallback하지 않는다. scalar v0를 기본 backend로 승격하지 않으며 SIMD/외부 ABI는 별도 승인 전
+미구현이다. 정본 계획은 [P014D §10](../test_plan/P014D_LUT-배포커널-속도와-패킹.md#10-2026-09-21-stage1w-결과와-다음-경계)다.

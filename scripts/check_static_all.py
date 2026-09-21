@@ -29,8 +29,13 @@
 from __future__ import annotations
 
 import argparse
+import datetime as dt
+import hashlib
+import json
+import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -46,6 +51,18 @@ ROOT = Path(__file__).resolve().parent.parent
 #   보고 전용 도구에는 성립하지 않는다. 그래서 목록으로 예외를 만든다.
 #   ⚠️새 보고 전용 게이트를 만들면 **여기에 이름을 넣는다.**
 ALWAYS_SHOW = {"sync_experiments_tsv"}
+
+# The full historical suite includes checks that enumerate protected datasets,
+# caches, checkpoints, or broad run logs.  Codex-safe records these as NOT_RUN
+# instead of silently skipping them or treating them as PASS.
+CODEX_SAFE_EXCLUDED = {
+    "check_heldout_defects": "protected held-out/dataset content",
+    "check_eval_pool": "data_cache and validation token content",
+    "registry --scan": "broad runs/logs inventory",
+    "plot_results --verify": "broad run JSON verification",
+    "check_tag_arch": "broad run JSON inspection",
+    "check_handoff": "Codex uses the independent session-handoff checker",
+}
 
 # (표시이름, 인자, 무엇을 막는가)  — ★목록을 두 곳에 두지 않는다. 여기가 정본이다.
 CHECKS = [
@@ -133,6 +150,10 @@ CHECKS = [
      "계획번호 ↔ 계획서 ↔ 실험계획목록 3자 정합(D16)"),
     ("check_experiment_plan_index", ["check_experiment_plan_index.py"],
      "실험계획목록은 물리 계획서마다 정확히 한 행·한 상태만 가지며 강조·소절·중복 행을 두지 않는다"),
+    ("frontier_audit", ["frontier_audit.py", "--check"],
+     "모든 물리 계획이 최신성 필터 없이 frontier 한 행으로 보존되는가"),
+    ("test_frontier_audit", ["test_frontier_audit.py"],
+     "오래된 P014와 최신 P097 fixture가 함께 frontier에 남는가"),
     ("check_run_registry",  ["check_run_registry.py"],
      "런 레지스트리·중복·태그 충돌"),
     ("check_result_numbers", ["check_result_numbers.py"],
@@ -147,6 +168,10 @@ CHECKS = [
      "★fetch 실패의 UTF-8 원문·명령·종료시각이 콘솔과 로그에 함께 남는가"),
     ("test_handoff_entry", ["test_new_handoff_entrypoint.py"],
      "★세션 종료 생성기가 Python isolated mode에서도 형제 모듈을 찾아 실제로 시작하는가"),
+    ("check_proposals", ["check_proposals.py"],
+     "제안서 루트의 아홉 절·비용·계측위험·대안·권장안·suffix/status 양식"),
+    ("test_check_proposals", ["test_check_proposals.py"],
+     "제안서 린터가 빈 절·계측위험 누락·상태접미사 drift를 실제로 거부하는가"),
     ("check_diag_data",     ["check_diag_data.py"],
      "진단 도구의 계측 건강 — 절대지표에 난수 정답을 쓰는가"),
     ("queue_menu --audit",  ["queue_menu.py", "--audit"],
@@ -215,10 +240,81 @@ CHECKS = [
 ]
 
 
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    digest.update(path.read_bytes())
+    return digest.hexdigest().upper()
+
+
+def _wip_metadata(path: Path | None):
+    if path is None:
+        return None
+    text = path.read_text(encoding="utf-8")
+    match = __import__("re").search(r"^- \*\*Codex 세션 ID\*\*: `([^`]+)`", text, __import__("re").MULTILINE)
+    return {
+        "path": path.relative_to(ROOT).as_posix(),
+        "sha256": _sha256(path),
+        "session_id": match.group(1) if match else None,
+    }
+
+
+def _worktree_manifest(*, evidence_output: Path | None = None):
+    completed = subprocess.run(
+        ["git", "-c", "core.quotepath=false", "status", "--porcelain=v1", "--untracked-files=all"],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace",
+        check=False,
+    )
+    excluded = ("datasets/TinyDataset/", "HF/", "data_cache/", "runs/", "smoketest_logs/")
+    rows = []
+    for line in completed.stdout.splitlines():
+        if len(line) < 4:
+            continue
+        status, raw = line[:2], line[3:]
+        path_text = raw.split(" -> ")[-1]
+        if path_text.startswith('"') and path_text.endswith('"'):
+            path_text = path_text[1:-1]
+        record = {"status": status, "path": path_text}
+        target = ROOT / path_text
+        if evidence_output is not None and target.resolve() == evidence_output.resolve():
+            record["sha256"] = "SELF_EVIDENCE_OUTPUT"
+        elif path_text.startswith(excluded):
+            record["sha256"] = "NOT_HASHED_PROTECTED_OR_RUNTIME"
+        else:
+            record["sha256"] = _sha256(target) if target.is_file() else "MISSING_OR_DIRECTORY"
+        rows.append(record)
+    canonical = json.dumps(rows, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return rows, hashlib.sha256(canonical.encode("utf-8")).hexdigest().upper()
+
+
+def _write_evidence(path: Path, payload) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    data = (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    with tempfile.NamedTemporaryFile(
+        mode="wb", prefix=path.name + ".", suffix=".tmp", dir=path.parent, delete=False
+    ) as stream:
+        temporary = Path(stream.name)
+        stream.write(data)
+        stream.flush()
+        os.fsync(stream.fileno())
+    try:
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def main():
     ap = argparse.ArgumentParser(description="정적 게이트 전수 (torch·GPU 0)")
     ap.add_argument("--quiet", action="store_true", help="실패한 것의 출력만 보인다")
+    ap.add_argument("--profile", choices=("all", "codex-safe"), default="all")
+    ap.add_argument("--json", dest="json_path", help="versioned static-audit evidence output")
+    ap.add_argument("--wip", help="evidence가 결합될 exact open WIP path")
     a = ap.parse_args()
+
+    wip_path = (ROOT / a.wip).resolve() if a.wip else None
+    if a.json_path and wip_path is None:
+        ap.error("--json requires --wip")
+    if wip_path is not None and (not wip_path.is_file() or ROOT not in wip_path.parents):
+        ap.error("--wip must be an existing repository file")
 
     print("#" * 100)
     print("  ★정적 게이트 전수 — torch·GPU 를 **전혀 쓰지 않는다**. AI 가 매 갱신 직후 돈다")
@@ -226,25 +322,46 @@ def main():
     print("#" * 100)
 
     rows, bad = [], 0
+    evidence_checks = []
     for name, argv, why in CHECKS:
+        if a.profile == "codex-safe" and name in CODEX_SAFE_EXCLUDED:
+            reason = CODEX_SAFE_EXCLUDED[name]
+            rows.append((name, "NOT_RUN", None, why))
+            evidence_checks.append({
+                "name": name, "status": "NOT_RUN", "returncode": None,
+                "reason": reason, "output_sha256": None,
+            })
+            if not a.quiet:
+                print(f"\n[NOT_RUN] {name}: {reason}")
+            continue
         r = subprocess.run([sys.executable, str(ROOT / "scripts" / argv[0]), *argv[1:]],
                            cwd=str(ROOT), capture_output=True, text=True,
                            encoding="utf-8", errors="replace")
         ok = r.returncode == 0
-        rows.append((name, ok, r.returncode, why))
+        rows.append((name, "PASS" if ok else "ERROR", r.returncode, why))
+        output = (r.stdout or "") + (r.stderr or "")
+        actionable = output.count("[ACTIONABLE_WARNING]")
+        evidence_checks.append({
+            "name": name,
+            "status": "PASS" if ok and not actionable else ("ACTIONABLE_WARNING" if ok else "ERROR"),
+            "returncode": r.returncode,
+            "reason": why,
+            "output_sha256": hashlib.sha256(output.encode("utf-8")).hexdigest().upper(),
+        })
         if not ok:
             bad += 1
         if (not ok) or (not a.quiet) or (name in ALWAYS_SHOW):
             print(f"\n{'=' * 100}\n  [{'OK ' if ok else 'FAIL'}] {name}   (exit {r.returncode})\n{'=' * 100}")
-            out = (r.stdout or "") + (r.stderr or "")
-            tail = out.strip().splitlines()
+            tail = output.strip().splitlines()
             print("\n".join(tail[-40:]) if len(tail) > 40 else "\n".join(tail))
 
     print("\n" + "#" * 100)
     print("  요약")
     print("#" * 100)
-    for name, ok, rc, why in rows:
-        print(f"  {'✅' if ok else '🚫'} {name:<22} exit {rc:<3}  {why}")
+    for name, status, rc, why in rows:
+        icon = {"PASS": "✅", "ERROR": "🚫", "NOT_RUN": "⏸"}[status]
+        rc_text = "NR" if rc is None else str(rc)
+        print(f"  {icon} {name:<22} exit {rc_text:<3}  {why}")
     print(f"\n  {'✅ 정적 게이트 전부 통과' if bad == 0 else f'🚫 {bad}건 실패'} "
           f"— 검사 {len(rows)}종")
     if ALWAYS_SHOW:
@@ -254,8 +371,34 @@ def main():
     #   **정적 게이트까지 사용자 몫으로 읽힐 여지**가 있었다. 실제로 나는 매 세션
     #   *"정적검사를 돌려 주세요"* 라고 보고했다. 🚫**정적은 torch·GPU 를 안 쓰므로 AI 가 직접 돈다.**
     print("  ★**이 스위트는 AI 가 직접 돌린다** — torch·GPU 를 쓰지 않으므로 위임할 이유가 없다.")
-    print("  ⚠️★**사용자에게 요청할 것은 `run_smoke_check.bat`(torch·GPU) 하나뿐**이다.")
+    print("  ⚠️★**사용자에게 요청할 동적 단계는 현재 플랫폼의 `run_smoke_check.bat/.sh`다.**")
     print("     정적은 *'이름이 있는가'*, 동적은 *'그 경로가 실제로 도는가'* 를 본다(함정 37).")
+    if a.json_path:
+        target = (ROOT / a.json_path).resolve()
+        manifest, worktree_sha = _worktree_manifest(evidence_output=target)
+        counts = {
+            "pass": sum(row["status"] == "PASS" for row in evidence_checks),
+            "errors": sum(row["status"] == "ERROR" for row in evidence_checks),
+            "actionable_warnings": sum(row["status"] == "ACTIONABLE_WARNING" for row in evidence_checks),
+            "accepted_info": 0,
+            "not_run": sum(row["status"] == "NOT_RUN" for row in evidence_checks),
+        }
+        evidence = {
+            "schema": "TINYLM_STATIC_AUDIT_V1",
+            "created_at": dt.datetime.now().astimezone().isoformat(timespec="seconds"),
+            "profile": a.profile,
+            "wip": _wip_metadata(wip_path),
+            "worktree_sha256": worktree_sha,
+            "worktree_manifest": manifest,
+            "counts": counts,
+            "checks": evidence_checks,
+        }
+        if ROOT not in target.parents:
+            ap.error("--json must stay inside the repository")
+        _write_evidence(target, evidence)
+        print(f"  STATIC_AUDIT {target.relative_to(ROOT).as_posix()} profile={a.profile} "
+              f"errors={counts['errors']} actionable={counts['actionable_warnings']} "
+              f"not_run={counts['not_run']}")
     return 1 if bad else 0
 
 

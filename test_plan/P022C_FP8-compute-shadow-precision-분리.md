@@ -2,9 +2,9 @@
 
 > **승인 2026-09-13.** 정본 제안서: [`20260913_FP8-compute-shadow-precision-format-scaling-writeback-제안서-approved.md`](../proposal/done/20260913_FP8-compute-shadow-precision-format-scaling-writeback-제안서-approved.md)  
 > P022/P022B의 FP8 GEMM·사후 수치 진단을 승계하되, **compute dtype**과 **persistent shadow/write-back precision**을 같은 팔에서 바꾸지 않는다.  
-> **현재 상태(2026-09-20):** Stage0a(C0) CUDA backend는 PASS했다. Stage0bWb에서 delayed
+> **현재 상태(2026-09-21):** Stage0a(C0) CUDA backend는 PASS했다. Stage0bWb에서 delayed
 > 한 형상은 1.148×였지만 세 형상 모두 NRMS 약 3.77%와 peak 증가로 전체 계약은 exit8
-> 음성이다([결과 081 §7](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md#7-stage0bwb-종료코드-교정-재실행2026-09-20--속도-한-행-양성수치와-메모리-음성)). 매 호출 weight 재변환의 기여를 분리하는 Stage0bWc A~E 진단과 SH를 구현했으며 GPU 결과는 `NOT_RUN`이다. shadow/write-back은 별도 `NOT_RUN`이다.
+> 음성이다([결과 081 §7](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md#7-stage0bwb-종료코드-교정-재실행2026-09-20--속도-한-행-양성수치와-메모리-음성)). Stage0bWc에서 weight cache는 두 형상 속도선을 넘었지만 모든 형상의 memory·NRMS가 음성이어서 cache-only TLinear 통합은 열지 않는다([결과 081 §9](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md#9-stage0bwc-ae-원인-귀속2026-09-21--weight-cache만으로-세-계약을-함께-못-살린다)). shadow/write-back은 별도 `NOT_RUN`이다.
 
 ## 1. 왜 — 기존 FP8 결과가 답하지 못한 두 물음
 
@@ -35,7 +35,7 @@ FP8/FP16 grid에 직접 write-back해도 trajectory가 유지되는지는 미측
 | **Stage0a ✅** | C0 | CUDA FP8 backend·TinyLM 3형상 실제 호출 | ✅ 세 형상 `_scaled_mm` 유한 forward([081](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)) | 0.1 |
 | **Stage0bW ⚠️ 측정 완료·분류 결함** | C1 | WSL BF16/current/delayed scaling 동일세션 forward 속도·정합·peak allocation | 최고 1.015×·메모리 이득 0으로 compute 음성; NRMS 선을 exit4로 반환한 것은 분류 오류 | [081 §6](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md#6-stage0bw-c1-wsl-scaling-overhead2026-09-19) |
 | **Stage0bWb ✅ 음성** | C1 종료코드 계약 | delayed 한 행 1.148×지만 수치·메모리 문턱 미달을 exit8로 분리 | 실행 장애 아님 | [081 §7](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md#7-stage0bwb-종료코드-교정-재실행2026-09-20--속도-한-행-양성수치와-메모리-음성) |
-| **Stage0bWc 구현·실행 대기** | C1 원인 귀속 | A BF16/B prepared/C weight cache/D delayed/E current를 같은 wall/event/profiler/memory 방식으로 분리 | C가 속도≥1.10×·working memory≤BF16·NRMS≤0.03·cosine≥0.999를 모두 통과할 때만 통합 검토 | GPU 진단 0.1h |
+| **Stage0bWc ✅ 원인 귀속·전체 음성** | C1 원인 귀속 | A BF16/B prepared/C weight cache/D delayed/E current를 같은 wall/event/profiler/memory 방식으로 분리 | C는 두 형상 speed PASS였으나 memory·NRMS 전 형상 FAIL; cache-only 통합 중단 | [081 §9](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md#9-stage0bwc-ae-원인-귀속2026-09-21--weight-cache만으로-세-계약을-함께-못-살린다) |
 | **Stage1a** | C2 | 100M compute format screen | 제어군 대비 paired 열화 +0.01 이내 | 1.1~1.6 |
 | **Stage1b** | C3 | 300M compute-only 확인 | 현재 ruler에서 무열화 또는 명시적 Pareto | 3.0~3.2 |
 | **Stage2a** | S0 | FP32 shadow observer replay | invisible update·ULP·distortion·ternary F1 정상 저장 | 0.2 |
@@ -73,7 +73,8 @@ Stage0a 통과 전에 Stage0b 이후 코드·배치를 작성하지 않는다.
   분류가 잘못됐다. compute track은 speed/memory gate상 음성이다.
 - 완료: `run_P022C_Stage0bWb_fp8_scaling_overhead-done.sh` — exit8 계약 확인. 한 형상 speed
   후보는 있었지만 수치·메모리 미달.
-- 실행 대기: `run_P022C_Stage0bWc_fp8_path_attribution.sh` — weight cache와 A~E 원인 귀속.
+- 완료: `run_P022C_Stage0bWc_fp8_path_attribution-done.sh` — weight cache와 A~E 원인 귀속;
+  speed 일부 양성이나 memory·numeric 전체 음성.
 - 미작성: compute Stage1a/1b. shadow Stage2 이후는 compute 음성과 별도이며 actual
   packed/masterless 설계 전에는 P094 evidence를 만들지 않는다.
 
@@ -98,3 +99,7 @@ Stage0a 통과 전에 Stage0b 이후 코드·배치를 작성하지 않는다.
   미달”을 철회했다. 다만 모든 FP8 행의 NRMS가 3%를 넘고 peak가 증가해 전체 계약은 음성이다.
   weight를 매 호출 재변환하는 D의 구조를 C와 분리하는 Wc 진단·SH를 구현했다. actual TLinear
   cache와 backward는 합성 C가 통과하기 전 구현하지 않는다.
+- 2026-09-21: Wc에서 cached weight는 768→2048 1.368×, 768→768 1.188×였지만
+  2048→768은 0.968×였다. 모든 FP8 팔의 NRMS 약 3.76~3.78%와 working-memory 증가로 세 계약을
+  함께 통과한 형상이 0개라 cache-only compute integration을 열지 않는다. compute 트랙의 다음
+  재개는 activation 변환 융합이나 다른 format/수치 문턱을 새로 설계할 때만 가능하다.

@@ -127,8 +127,10 @@ SPECS = [
     #   BoolQ 33.1 · WiC 34.7 로 **우연(50) 아래**다. 39B 가 못 하는 것을 81M 에 물리지 않는다.
     ("kobest_copa",   "skt/kobest_v1",                "copa",          "test",        1000, "★한국어 2지선다 인과"),
     ("kobest_hellaswag", "skt/kobest_v1",             "hellaswag",     "test",         500, "★한국어 4지선다 문장완성"),
-    ("klue_ynat",     "klue",                         "ynat",          "validation",  9107, "★한국어 뉴스 주제 7지선다"),
-    ("klue_nli",      "klue",                         "nli",           "validation",  3000, "★한국어 NLI 3지선다"),
+    # HF repository id는 namespace/name 전체가 필요하다. `klue`만 주면
+    # huggingface_hub가 hf://datasets/klue URI를 유효한 repo로 보지 않는다.
+    ("klue_ynat",     "klue/klue",                    "ynat",          "validation",  9107, "★한국어 뉴스 주제 7지선다"),
+    ("klue_nli",      "klue/klue",                    "nli",           "validation",  3000, "★한국어 NLI 3지선다"),
     # ★★2026-09-06 — 우리 Stage1 held-out. 🚫**HF 가 아니라 로컬 파일**이다(SPECIAL 로 간다).
     #   v2.7 에서 D6(정답이 둘)이 0 이 되어 처음 채점에 쓸 수 있게 됐다.
     # ★2026-09-10 — 공식 개수를 None 으로. v2.7 300 -> v2.8 4,500 이라 **고정 수가 아니다**

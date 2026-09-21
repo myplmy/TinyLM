@@ -1,6 +1,6 @@
 # 06. Codex용 프로젝트 지침과 메모리
 
-> **최신 갱신일자**: 2026-09-18 · **문서 유형**: live
+> **최신 갱신일자**: 2026-09-21 · **문서 유형**: live
 
 > 제정: 2026-09-11, 승인된 완전분리 제안 P2  
 > 상태: **Windows P0~P8 역사 증거 보존; WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED`, M3 사용자 범위 예외 종결(manual compact `NOT_RUN`·검증 제외), 현재 변경 뒤 smoke `E2E_NOT_RUN`**
@@ -95,6 +95,12 @@ TinyLM은 저사양 CPU·엣지·모바일 배포를 위한 초경량 LLM 아키
 | 배포 | 목표 환경에서 상주·속도·기능 확인 | 별도 배포 증거가 있어야 함 |
 
 정적 통과를 학습·품질·훅 활성화 증거로 승격하지 않는다. 실행하지 않은 항목은 `NOT_RUN`으로 남긴다.
+
+2026-09-21 이후 새 WIP의 종료 증거는 handoff 본문에 검사 출력을 누적하지 않는다.
+`check_static_all.py --profile codex-safe`가 만든 세션별 `handoff/audit/*_STATIC_AUDIT.json`이
+오류·조치경고·NOT_RUN과 exact WIP/session을 소유하고, 기록 단위는 handoff·WIP·audit 세 문서다.
+handoff §2는 사용자에게 `관측/의미/사용자 영향/다음 행동`을 설명하고, 내부 hash·검사 전문은
+audit와 상세 절에 둔다.
 
 ### 2.3 Windows와 문서 편집
 

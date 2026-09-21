@@ -31,11 +31,12 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 1	P025B	run_P025B_Stage0bWe_wsl_sparse24_path_attribution.sh	D	0.2	Y	Y	Wd의 합성 속도 음성을 보존하고 wall-sync·CUDA event·host enqueue·M1 padding·profiler·CUDA Graph를 분리해 병목 위치를 귀속한다. 학습 0
 2	P025B	run_P025B_Stage0bWf_wsl_sparse24_algorithm_sweep.sh	D	0.2	Y	Y	공개 low-level _cslt_sparse_mm의 alg_id·Split-K를 탐색 측정과 확인 측정으로 분리하고 1.10배 후보 여부를 판정한다. 학습 0	8
+1	P025B	run_P025B_Stage0bWg_wsl_sparse24_graph_recovery.sh	D	0.1	Y	Y	We의 CUDA Graph를 replay 전에 비교해 전 행 false failure가 난 결함만 M1/M8192·inference/training에서 필수 graph gate로 재검증한다. 학습 0
 2	P022C	run_P022C_Stage0bWc_fp8_path_attribution.sh	D	0.1	Y	Y	BF16·prepared FP8·가중치 캐시·delayed·current를 같은 계측으로 비교하고 속도·메모리·수치를 독립 판정한다. 학습 0	8
 2	P060B	run_P060B_Stage0aWd_wsl_sdpa_gqa_backend.sh	D	0.1	Y	Y	Wc의 5-D grouped-broadcast 결함을 고쳐 batch×KV-head를 접은 4-D zero-stride EFFICIENT 후보를 재검증한다. 학습 0	8
 3	P014D	run_P014D_Stage1W_native_lut_kernel.sh	N	0.5	Y	Y	5-trit/per-row-alpha native CPU LUT v0를 compile·정합·합성·actual-model decode로 검증하고 int8 대비 1.5배 문턱을 판정한다. 학습 0	8
 4	P060B	run_P060B_Stage1W_sdpa_gqa_training_gate.sh	Y	0.5	Y	Y	현 WSL·m100s10·Muon RMS4의 250-step off/on에서 ms-step 악화 5% 이내와 reserved VRAM 10% 절감을 검사한다. 32.8M probe라 W&B 업로드 금지	8
-5	P097	run_P097_Stage2W_common_recipe_evaluation.sh	D	3.0	Y	Y	네 300M recipe checkpoint를 모델별 tokenizer로 동일 KoBEST·KLUE·영어 문항, common-bpb, 고정 prompt에 평가한다. 학습 0
+2	P097	run_P097_Stage2Wb_common_recipe_evaluation.sh	D	3.0	Y	Y	잘못된 HF repo id klue를 klue/klue로 교정한 뒤 네 recipe checkpoint의 동일 패널을 재실행한다. KLUE 두 파일이 선결, 학습 0
 6	P076	run_P076_Stage2W_group_init_quality.sh	Y	8.2	Y	Y	같은 dense parent·Muon RMS4 조건에서 mean/middle/norm_mean 3팔을 학습하고 결정적 paired full-val로 최종 품질을 비교한다
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수 49GB→. ★판정 정본이 checkpoints.tsv 로 바뀌었다(TSV, keep/hold/delete). 삭제 후보 13.2GB/34개. YES 를 직접 입력해야 지운다
 #
@@ -356,6 +357,10 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   7	P097	run_P097_Stage1bB_fineweb2_300M.sh	Y	3.0	Y	Y	완성된 FineWeb2 cache를 재사용하고 torch.compile nvcc PATH 2차 오류 교정 뒤 300M 학습을 재개한다
 #   8	P097	run_P097_Stage1cB_edu_v2_300M.sh	Y	3.0	Y	Y	완성된 filtered edu cache를 검증·재사용하고 stream-close 교정 뒤 300M 학습을 재개한다
 #   9	P097	run_P097_Stage1dB_madlad_300M.sh	Y	3.0	Y	Y	datasets 5 remote-script 제거에 맞춰 공식 MADLAD JSONL shard adapter로 prepare한 뒤 300M 학습한다
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   5	P097	run_P097_Stage2W_common_recipe_evaluation.sh	D	3.0	Y	Y	네 300M recipe checkpoint를 모델별 tokenizer로 동일 KoBEST·KLUE·영어 문항, common-bpb, 고정 prompt에 평가한다. 학습 0
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
