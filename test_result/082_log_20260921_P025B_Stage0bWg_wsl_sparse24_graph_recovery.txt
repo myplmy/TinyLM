@@ -1,0 +1,82 @@
+
+==============================================================================
+[runlog] 2026-09-21 21:02:49  name=P025B_Stage0bWg_wsl_sparse24_graph_recovery
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sparse24_path_attribution.py --require-wsl --mode attribute --m-values 1,8192 --layouts inference,training --rounds 2 --warmup 3 --iters 10 --profile-iters 0 --cuda-graph --require-cuda-graph --max-nrms 0.001 --max-abs-ratio 0.01 --min-cosine 0.999999
+==============================================================================
+runtime_system=Linux release=6.18.33.2-microsoft-standard-WSL2 WSL_DISTRO_NAME=Ubuntu
+torch=2.10.0+cu130 cuda=13.0 cudnn=91501 cusparselt_pkg=0.8.0 backend_version=800 compiled=True available=True
+NOTE: wall_sync includes dispatch+GPU+synchronize; event_batch includes all GPU ops; host_enqueue excludes final drain; profiler rows attribute individual ops.
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/sparse/semi_structured.py:568: UserWarning: The PyTorch API of SparseSemiStructuredTensor is in prototype stage and will change in the near future. Please open a Github issue for features requests and see our documentation on the torch.sparse module for further information about the project.
+  return cls(
+[pack] K=768 N=2048 inference_wall_ms=475.327586 training_wall_ms=9.076787 inference_packed_t=False training_packed_t=True
+[padding] M=1 padded_M=8 input_MiB=0.001465 padded_MiB=0.011719 pad_event_batch_ms=0.017101; slicing is a view
+[agreement] layout=inference M=1 K=768 N=2048 ok=1 nrms=1.680994e-06 max_abs_ratio=7.3664356e-05 cosine=0.999999940 pack_wall_ms=475.327586
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+inference:M1:K768:N2048:dense	0.042661	0.012215	0.013054	0.002917	7.219	0.149	0.004	0.000
+inference:M1:K768:N2048:sparse_dispatch	0.270144	0.004300	0.245834	0.006749	238.370	10.781	0.230	0.000
+inference:M1:K768:N2048:sparse_explicit_pad	0.245899	0.002390	0.222794	0.003587	215.673	4.837	0.219	0.000
+[ratio] layout=inference M=1 event_dense_over_sparse=0.053x wall_dense_over_sparse=0.158x
+[cuda_graph] layout=inference M=1 variant=dense event_batch_ms=0.009523 status=OK
+[cuda_graph] layout=inference M=1 variant=sparse_dispatch event_batch_ms=0.025805 status=OK
+[agreement] layout=training M=1 K=768 N=2048 ok=1 nrms=3.6858572e-05 max_abs_ratio=0.0014559663 cosine=0.999999940 pack_wall_ms=9.076787
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+training:M1:K768:N2048:dense	0.029638	0.000424	0.012642	0.002949	7.013	0.125	0.004	0.000
+training:M1:K768:N2048:sparse_dispatch	0.301899	0.028423	0.280866	0.038690	296.782	30.629	0.230	0.000
+training:M1:K768:N2048:sparse_explicit_pad	0.255202	0.001467	0.224717	0.007629	230.032	15.600	0.219	0.000
+[ratio] layout=training M=1 event_dense_over_sparse=0.045x wall_dense_over_sparse=0.098x
+[cuda_graph] layout=training M=1 variant=dense event_batch_ms=0.007654 status=OK
+[cuda_graph] layout=training M=1 variant=sparse_dispatch event_batch_ms=0.025702 status=OK
+[padding] M=8192 padded_M=8192 pad_event_batch_ms=0
+[agreement] layout=inference M=8192 K=768 N=2048 ok=1 nrms=2.0286247e-05 max_abs_ratio=0.0024219179 cosine=1.000000000 pack_wall_ms=475.327586
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+inference:M8192:K768:N2048:dense	0.370190	0.003380	0.347648	0.030413	10.854	0.287	32.000	0.000
+inference:M8192:K768:N2048:sparse_dispatch	0.463519	0.003774	0.248262	0.004141	306.378	25.388	32.188	0.000
+[ratio] layout=inference M=8192 event_dense_over_sparse=1.400x wall_dense_over_sparse=0.799x
+[cuda_graph] layout=inference M=8192 variant=dense event_batch_ms=0.315389 status=OK
+[cuda_graph] layout=inference M=8192 variant=sparse_dispatch event_batch_ms=0.184544 status=OK
+[agreement] layout=training M=8192 K=768 N=2048 ok=1 nrms=2.0551452e-05 max_abs_ratio=0.0029914833 cosine=1.000000000 pack_wall_ms=9.076787
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+training:M8192:K768:N2048:dense	0.375553	0.004507	0.352077	0.033744	10.555	0.048	32.000	0.000
+training:M8192:K768:N2048:sparse_dispatch	0.476088	0.008776	0.237670	0.006963	287.093	51.738	32.188	0.000
+[ratio] layout=training M=8192 event_dense_over_sparse=1.481x wall_dense_over_sparse=0.789x
+[cuda_graph] layout=training M=8192 variant=dense event_batch_ms=0.324813 status=OK
+[cuda_graph] layout=training M=8192 variant=sparse_dispatch event_batch_ms=0.232038 status=OK
+[ATTRIBUTION COMPLETE] wall/event/host/profiler are separate; public plan reuse remains NOT_IMPLEMENTED
+[pack] K=2048 N=768 inference_wall_ms=0.269221 training_wall_ms=0.063207 inference_packed_t=False training_packed_t=True
+[padding] M=1 padded_M=8 input_MiB=0.003906 padded_MiB=0.031250 pad_event_batch_ms=0.012390; slicing is a view
+[agreement] layout=inference M=1 K=2048 N=768 ok=1 nrms=2.6526839e-05 max_abs_ratio=0.0007351095 cosine=1.000000000 pack_wall_ms=0.269221
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+inference:M1:K2048:N768:dense	0.077582	0.051556	0.012374	0.001542	7.267	0.115	0.001	0.000
+inference:M1:K2048:N768:sparse_dispatch	0.354660	0.032110	0.300952	0.061234	298.874	70.550	0.230	0.000
+inference:M1:K2048:N768:sparse_explicit_pad	0.354065	0.039751	0.272742	0.040499	230.691	9.741	0.199	0.000
+[ratio] layout=inference M=1 event_dense_over_sparse=0.041x wall_dense_over_sparse=0.219x
+[cuda_graph] layout=inference M=1 variant=dense event_batch_ms=0.006451 status=OK
+[cuda_graph] layout=inference M=1 variant=sparse_dispatch event_batch_ms=0.054272 status=OK
+[agreement] layout=training M=1 K=2048 N=768 ok=1 nrms=1.814564e-05 max_abs_ratio=0.0004105827 cosine=1.000000238 pack_wall_ms=0.063207
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+training:M1:K2048:N768:dense	0.028945	0.000155	0.007362	0.000011	6.791	0.026	0.001	0.000
+training:M1:K2048:N768:sparse_dispatch	0.400347	0.052025	0.281018	0.019386	249.623	3.268	0.230	0.000
+training:M1:K2048:N768:sparse_explicit_pad	0.281942	0.009598	0.266494	0.018382	287.049	5.570	0.199	0.000
+[ratio] layout=training M=1 event_dense_over_sparse=0.026x wall_dense_over_sparse=0.072x
+[cuda_graph] layout=training M=1 variant=dense event_batch_ms=0.004294 status=OK
+[cuda_graph] layout=training M=1 variant=sparse_dispatch event_batch_ms=0.054579 status=OK
+[padding] M=8192 padded_M=8192 pad_event_batch_ms=0
+[agreement] layout=inference M=8192 K=2048 N=768 ok=1 nrms=3.2383796e-05 max_abs_ratio=0.0029659444 cosine=0.999999881 pack_wall_ms=0.269221
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+inference:M8192:K2048:N768:dense	0.355149	0.000442	0.319728	0.021162	10.859	0.228	12.000	0.000
+inference:M8192:K2048:N768:sparse_dispatch	0.460690	0.027605	0.241398	0.001680	228.602	0.880	12.188	0.000
+[ratio] layout=inference M=8192 event_dense_over_sparse=1.324x wall_dense_over_sparse=0.771x
+[cuda_graph] layout=inference M=8192 variant=dense event_batch_ms=0.359037 status=OK
+[cuda_graph] layout=inference M=8192 variant=sparse_dispatch event_batch_ms=0.162611 status=OK
+[agreement] layout=training M=8192 K=2048 N=768 ok=1 nrms=3.1874653e-05 max_abs_ratio=0.0036630437 cosine=1.000000119 pack_wall_ms=0.063207
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+training:M8192:K2048:N768:dense	0.358077	0.002437	0.300677	0.001054	13.523	2.528	12.000	0.000
+training:M8192:K2048:N768:sparse_dispatch	0.446660	0.006121	0.240435	0.004915	233.885	24.201	12.188	0.000
+[ratio] layout=training M=8192 event_dense_over_sparse=1.251x wall_dense_over_sparse=0.802x
+[cuda_graph] layout=training M=8192 variant=dense event_batch_ms=0.372019 status=OK
+[cuda_graph] layout=training M=8192 variant=sparse_dispatch event_batch_ms=0.158813 status=OK
+[ATTRIBUTION COMPLETE] wall/event/host/profiler are separate; public plan reuse remains NOT_IMPLEMENTED
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-21 21:02:53)
+==============================================================================
