@@ -1,0 +1,177 @@
+P060B Stage1W: same 250-step Muon RMS4 recipe, only sdpa_gqa off/on; speed and reserved memory only
+
+==============================================================================
+[runlog] 2026-09-20 23:50:09  name=P060B_Stage1W_sdpa_gqa_training_gate
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --preset m100s10 --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --eval-every 250 --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --no-ckpt --compile --seed 1337 --tag p060b_s1w_off250
+==============================================================================
+[cmd] python run100m.py train --arch dense --preset m100s10 --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --eval-every 250 --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --no-ckpt --compile --seed 1337 --tag p060b_s1w_off250
+[ckpt] m100s10 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> /home/uranus/tinyLM/data_cache/ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 14 -> 7 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+10+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       84.6M      17.3 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           93.3M      19.1 MiB
+
+
+  저장(packed, 안 B)                         19.1 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.1 MiB
+  ★상주(runtime, 현 구현)                     678.7 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.1MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.173 GFLOP
+  ★KV 캐시(fp32)        : 10.5 KB/token  (엔트리 7개 / 방문 14회)
+                          1024 ctx 10.5 MiB → ★상주+KV = 689.2 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[p060b_s1w_off250] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[opt] ★Muon(P005) — 행렬 85개(84.8M)는 Muon, 그 외 72개는 AdamW. 🚫muP 는 미구현(P005 A축)
+[opt] ★muon_lr=4.00e-03 (= lr 1.00e-03 x 4) · AdamW 그룹 2개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지
+[opt] ★★muon_scale=rms  — 형상별 업데이트 스케일 (V1 검증, ai_dev_tool/09)
+[opt]                  형상    개수    jordan       rms  rms/jordan
+[opt]         (2048, 768)    28    1.6330    9.0510        5.54
+[opt]          (768, 768)    28    1.0000    5.5426        5.54
+[opt]         (768, 2048)    14    1.0000    9.0510        9.05
+[opt]          (192, 768)    14    1.0000    5.5426        5.54
+[opt]          (768, 256)     1    1.7321    5.5426        3.20
+[opt]    ★비의 형상 간 퍼짐 = **2.83배** — 1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다
+[opt] ★A08 — `opt_muon` 상태를 체크포인트에 저장한다(종전 미저장 = resume 시 모멘텀이 조용히 0). 체크포인트가 ⚙+339 MB 커진다
+[opt] ★A08 — 행렬 weight decay = 0 (명시) · AdamW 팔의 dense 그룹은 0.1 이다(교락 축)
+  step     0/250  ce 10.4153  |g| 2.28  anneal 0.00  lr 4.00e-05  15856 ms/step
+  step    10/250  ce 9.6958  |g| 1.14  anneal 0.00  lr 4.40e-04  2978 ms/step
+  step    20/250  ce 8.3206  |g| 1.86  anneal 0.00  lr 8.40e-04  2468 ms/step
+  step    30/250  ce 7.2257  |g| 0.68  anneal 0.00  lr 1.00e-03  2218 ms/step
+  step    40/250  ce 6.7725  |g| 0.37  anneal 0.02  lr 1.00e-03  2174 ms/step
+  step    50/250  ce 6.4692  |g| 0.59  anneal 0.11  lr 1.00e-03  2085 ms/step
+  step    60/250  ce 6.3292  |g| 0.53  anneal 0.20  lr 1.00e-03  2065 ms/step
+  step    70/250  ce 6.2152  |g| 0.55  anneal 0.29  lr 1.00e-03  2020 ms/step
+  step    80/250  ce 6.0542  |g| 0.58  anneal 0.38  lr 1.00e-03  2009 ms/step
+  step    90/250  ce 5.9474  |g| 0.81  anneal 0.47  lr 1.00e-03  1981 ms/step
+  step   100/250  ce 5.8439  |g| 0.62  anneal 0.56  lr 1.00e-03  1978 ms/step
+  step   110/250  ce 5.7404  |g| 0.61  anneal 0.64  lr 1.00e-03  1975 ms/step
+  step   120/250  ce 5.6735  |g| 0.69  anneal 0.73  lr 1.00e-03  1957 ms/step
+  step   130/250  ce 5.6570  |g| 0.65  anneal 0.82  lr 1.00e-03  1956 ms/step
+  step   140/250  ce 5.5547  |g| 0.53  anneal 0.91  lr 1.00e-03  1942 ms/step
+  step   150/250  ce 5.4937  |g| 0.47  anneal 1.00  lr 1.00e-03  1943 ms/step
+  step   160/250  ce 5.4561  |g| 0.44  anneal 1.00  lr 1.00e-03  1930 ms/step
+  step   170/250  ce 5.3517  |g| 0.58  anneal 1.00  lr 1.00e-03  1932 ms/step
+  step   180/250  ce 5.3419  |g| 0.44  anneal 1.00  lr 1.00e-03  1922 ms/step
+  step   190/250  ce 5.3059  |g| 0.60  anneal 1.00  lr 1.00e-03  1925 ms/step
+  step   200/250  ce 5.2391  |g| 0.38  anneal 1.00  lr 1.00e-03  1915 ms/step
+  step   210/250  ce 5.1381  |g| 0.42  anneal 1.00  lr 9.73e-04  1917 ms/step
+  step   220/250  ce 5.1424  |g| 0.43  anneal 1.00  lr 7.75e-04  1909 ms/step
+  step   230/250  ce 5.0458  |g| 0.29  anneal 1.00  lr 4.72e-04  1911 ms/step
+  step   240/250  ce 5.1072  |g| 0.27  anneal 1.00  lr 2.05e-04  1913 ms/step
+  step   249/250  ce 5.0594  |g| 0.27  anneal 1.00  lr 1.01e-04  1906 ms/step
+    >> val_loss 4.9912  ppl 147.12  (train_ce 5.059, val-CE -0.068)  bpb 1.646
+       best 갱신 4.9912 -> m100s10_ko-en_300M_p060b_s1w_off250_best.pt
+
+[p060b_s1w_off250] 최종 val_loss 4.9450  ppl 140.47  best 4.9912@250  (93.3M, 8.1분, skip 0, VRAM 8.85GB(reserved)/8.01GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 8.85GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 8.1분  (2026-09-20 23:58:18)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-20 23:58:18  name=P060B_Stage1W_sdpa_gqa_training_gate
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --preset m100s10 --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --eval-every 250 --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --sdpa-gqa --no-ckpt --compile --seed 1337 --tag p060b_s1w_on250
+==============================================================================
+[cmd] python run100m.py train --arch dense --preset m100s10 --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 250 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --eval-every 250 --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --sdpa-gqa --no-ckpt --compile --seed 1337 --tag p060b_s1w_on250
+[ckpt] m100s10 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> /home/uranus/tinyLM/data_cache/ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 14 -> 7 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[sdpa] ★enable_gqa=True — K/V 를 물리 복제(x4)하지 않고 커널에 맡긴다. ⚠️커널 경로가 바뀌므로 **로짓 비트 동일을 가정하지 않는다** (게이트: scripts/diag_gqa_equiv.py)
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+10+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       84.6M      17.3 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           93.3M      19.1 MiB
+
+
+  저장(packed, 안 B)                         19.1 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.1 MiB
+  ★상주(runtime, 현 구현)                     678.7 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.1MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.173 GFLOP
+  ★KV 캐시(fp32)        : 10.5 KB/token  (엔트리 7개 / 방문 14회)
+                          1024 ctx 10.5 MiB → ★상주+KV = 689.2 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[p060b_s1w_on250] device=cuda  250step x 131K tok = 33M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[opt] ★Muon(P005) — 행렬 85개(84.8M)는 Muon, 그 외 72개는 AdamW. 🚫muP 는 미구현(P005 A축)
+[opt] ★muon_lr=4.00e-03 (= lr 1.00e-03 x 4) · AdamW 그룹 2개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지
+[opt] ★★muon_scale=rms  — 형상별 업데이트 스케일 (V1 검증, ai_dev_tool/09)
+[opt]                  형상    개수    jordan       rms  rms/jordan
+[opt]         (2048, 768)    28    1.6330    9.0510        5.54
+[opt]          (768, 768)    28    1.0000    5.5426        5.54
+[opt]         (768, 2048)    14    1.0000    9.0510        9.05
+[opt]          (192, 768)    14    1.0000    5.5426        5.54
+[opt]          (768, 256)     1    1.7321    5.5426        3.20
+[opt]    ★비의 형상 간 퍼짐 = **2.83배** — 1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다
+[opt] ★A08 — `opt_muon` 상태를 체크포인트에 저장한다(종전 미저장 = resume 시 모멘텀이 조용히 0). 체크포인트가 ⚙+339 MB 커진다
+[opt] ★A08 — 행렬 weight decay = 0 (명시) · AdamW 팔의 dense 그룹은 0.1 이다(교락 축)
+W0920 23:58:34.110000 697481 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+  step     0/250  ce 10.4153  |g| 2.28  anneal 0.00  lr 4.00e-05  33467 ms/step
+  step    10/250  ce 9.6959  |g| 1.14  anneal 0.00  lr 4.40e-04  4830 ms/step
+  step    20/250  ce 8.3205  |g| 1.86  anneal 0.00  lr 8.40e-04  3353 ms/step
+  step    30/250  ce 7.2259  |g| 0.68  anneal 0.00  lr 1.00e-03  2898 ms/step
+  step    40/250  ce 6.7721  |g| 0.38  anneal 0.02  lr 1.00e-03  2672 ms/step
+  step    50/250  ce 6.4586  |g| 0.52  anneal 0.11  lr 1.00e-03  2492 ms/step
+  step    60/250  ce 6.3302  |g| 0.70  anneal 0.20  lr 1.00e-03  2402 ms/step
+  step    70/250  ce 6.2220  |g| 0.60  anneal 0.29  lr 1.00e-03  2311 ms/step
+  step    80/250  ce 6.0653  |g| 0.78  anneal 0.38  lr 1.00e-03  2267 ms/step
+  step    90/250  ce 5.9468  |g| 0.69  anneal 0.47  lr 1.00e-03  2210 ms/step
+  step   100/250  ce 5.8577  |g| 0.65  anneal 0.56  lr 1.00e-03  2184 ms/step
+  step   110/250  ce 5.7609  |g| 0.71  anneal 0.64  lr 1.00e-03  2146 ms/step
+  step   120/250  ce 5.6612  |g| 0.53  anneal 0.73  lr 1.00e-03  2130 ms/step
+  step   130/250  ce 5.6562  |g| 0.45  anneal 0.82  lr 1.00e-03  2101 ms/step
+  step   140/250  ce 5.5598  |g| 0.50  anneal 0.91  lr 1.00e-03  2094 ms/step
+  step   150/250  ce 5.4960  |g| 0.53  anneal 1.00  lr 1.00e-03  2071 ms/step
+  step   160/250  ce 5.4564  |g| 0.51  anneal 1.00  lr 1.00e-03  2064 ms/step
+  step   170/250  ce 5.3466  |g| 0.61  anneal 1.00  lr 1.00e-03  2058 ms/step
+  step   180/250  ce 5.3521  |g| 0.45  anneal 1.00  lr 1.00e-03  2041 ms/step
+  step   190/250  ce 5.2881  |g| 0.37  anneal 1.00  lr 1.00e-03  2037 ms/step
+  step   200/250  ce 5.2445  |g| 0.51  anneal 1.00  lr 1.00e-03  2023 ms/step
+  step   210/250  ce 5.1314  |g| 0.34  anneal 1.00  lr 9.73e-04  2020 ms/step
+  step   220/250  ce 5.1354  |g| 0.35  anneal 1.00  lr 7.75e-04  2008 ms/step
+  step   230/250  ce 5.0365  |g| 0.30  anneal 1.00  lr 4.72e-04  2006 ms/step
+  step   240/250  ce 5.1058  |g| 0.27  anneal 1.00  lr 2.05e-04  1995 ms/step
+  step   249/250  ce 5.0573  |g| 0.27  anneal 1.00  lr 1.01e-04  1995 ms/step
+    >> val_loss 4.9887  ppl 146.75  (train_ce 5.057, val-CE -0.069)  bpb 1.645
+       best 갱신 4.9887 -> m100s10_ko-en_300M_p060b_s1w_on250_best.pt
+
+[p060b_s1w_on250] 최종 val_loss 4.9425  ppl 140.12  best 4.9887@250  (93.3M, 8.5분, skip 0, VRAM 8.68GB(reserved)/7.89GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 8.68GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 8.6분  (2026-09-21 00:06:54)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-21 00:06:54  name=P060B_Stage1W_sdpa_gqa_training_gate
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sdpa_gqa_training_pair.py --off-tag p060b_s1w_off250 --on-tag p060b_s1w_on250 --max-speed-ratio 1.05 --min-memory-reduction 0.10
+==============================================================================
+off=m100s10_ko-en_300M_p060b_s1w_off250.json ms_step_median=1752.714 vram_reserved_gb=8.852
+on=m100s10_ko-en_300M_p060b_s1w_on250.json ms_step_median=1757.069 vram_reserved_gb=8.676
+on/off speed_ratio=1.0025 memory_reduction=1.986%
+[LIMIT] 250-step/32.768M probe judges speed and training memory only; quality NOT_RUN
+[GATE NEGATIVE] requires speed<=+5% and reserved-memory reduction>=10%
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 0.0분  (2026-09-21 00:06:54)
+==============================================================================

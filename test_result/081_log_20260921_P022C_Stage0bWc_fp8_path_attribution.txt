@@ -1,0 +1,203 @@
+P022C Stage0bWc: separate prepared GEMM, cached weight, delayed and current scaling with independent speed memory and numerical gates
+
+==============================================================================
+[runlog] 2026-09-21 00:07:53  name=P022C_Stage0bWc_fp8_path_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_fp8_path_attribution.py --require-wsl --m 8192 --rounds 3 --warmup 5 --iters 20 --profile-iters 3 --min-speedup 1.10 --max-memory-ratio 1.00 --max-nrms 0.03 --min-cosine 0.999
+==============================================================================
+runtime=Linux release=6.18.33.2-microsoft-standard-WSL2 WSL_DISTRO_NAME=Ubuntu
+gpu=NVIDIA GeForce RTX 4070 Ti SUPER sm=(8, 9) torch=2.10.0+cu130 rounds=3 warmup=5 iters=20
+NOTE: wall_sync includes dispatch+GPU+synchronize; event_batch includes every GPU op in the callable and is not a pure GEMM label; profiler rows attribute individual ops.
+[shape] M=8192 K=768 N=2048
+variant	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	persistent_MiB	working_MiB	wall_speedup	event_speedup	max_abs	nrms	cosine	speed_ok	memory_ok	numeric_ok
+A_bf16	0.343265	0.003560	0.328021	0.002542	8.670	0.027	32.000	0.000	32.000	1.000	1.000	0	0	0.999999940	0	1	1
+[lifetime] variant=A_bf16 persistent_extra_MiB=0.000 logical_per_call_temporaries_MiB=32.000
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/profiler/profiler.py:217: UserWarning: Warning: Profiler clears events at the end of each cycle.Only events from the current cycle will be reported.To keep events across cycles, set acc_events=True.
+  _warn_once(
+[profile] M8192:K768:N2048:A_bf16 top=8
+  kernel_op=aten::mm calls=3 device_us=829.033 cpu_us=659.684 device_memory_MiB=96.000
+  kernel_op=ampere_bf16_s1688gemm_bf16_128x128_ldg8_f2f_tn calls=3 device_us=829.033 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=277.747 cpu_us=2779.831 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=599.441 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernel calls=3 device_us=0.000 cpu_us=381.737 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=25.774 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=22.080 device_memory_MiB=0.000
+  kernel_op=aten::matmul calls=3 device_us=0.000 cpu_us=15.698 device_memory_MiB=0.000
+B_prepared_fp8	0.211103	0.000191	0.164301	0.004966	35.842	24.336	32.000	7.500	39.500	1.626	1.996	5.75	0.037635852	0.999291539	1	0	0
+[lifetime] variant=B_prepared_fp8 persistent_extra_MiB=7.500 logical_per_call_temporaries_MiB=32.000
+[profile] M8192:K768:N2048:B_prepared_fp8 top=8
+  kernel_op=aten::_scaled_mm calls=3 device_us=436.278 cpu_us=149.209 device_memory_MiB=0.000
+  kernel_op=sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize128x64x64_stage4_warpsize2x2x1_tensor16x8x32_algo2_execute_kernel__5x_cublas calls=3 device_us=436.278 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=145.307 cpu_us=2536.387 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=368.975 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=42.975 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=9.566 device_memory_MiB=0.000
+  kernel_op=aten::resize_ calls=3 device_us=0.000 cpu_us=9.212 device_memory_MiB=96.000
+  kernel_op=aten::transpose calls=6 device_us=0.000 cpu_us=7.121 device_memory_MiB=0.000
+C_weight_cached	0.250913	0.001255	0.236646	0.000718	24.003	0.417	38.000	1.500	39.500	1.368	1.386	5.75	0.037635852	0.999291539	1	0	0
+[lifetime] variant=C_weight_cached persistent_extra_MiB=1.500 logical_per_call_temporaries_MiB=50.000
+[profile] M8192:K768:N2048:C_weight_cached top=8
+  kernel_op=aten::_scaled_mm calls=3 device_us=432.946 cpu_us=141.448 device_memory_MiB=0.000
+  kernel_op=sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize128x64x64_stage4_warpsize2x2x1_tensor16x8x32_algo2_execute_kernel__5x_cublas calls=3 device_us=432.946 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::mul calls=3 device_us=139.487 cpu_us=81.854 device_memory_MiB=36.000
+  kernel_op=void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}) calls=3 device_us=139.487 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=45.393 cpu_us=3209.880 device_memory_MiB=0.000
+  kernel_op=aten::copy_ calls=3 device_us=27.153 cpu_us=25.347 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul> >(int, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul>) calls=3 device_us=27.153 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=301.214 device_memory_MiB=0.000
+D_delayed	0.307416	0.014166	0.261990	0.000365	72.183	2.320	39.501	0.000	39.501	1.117	1.252	5.75	0.037635852	0.999291539	1	0	0
+[lifetime] variant=D_delayed persistent_extra_MiB=0.000 logical_per_call_temporaries_MiB=54.500
+[profile] M8192:K768:N2048:D_delayed top=8
+  kernel_op=aten::_scaled_mm calls=3 device_us=434.256 cpu_us=156.950 device_memory_MiB=0.000
+  kernel_op=sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize128x64x64_stage4_warpsize2x2x1_tensor16x8x32_algo2_execute_kernel__5x_cublas calls=3 device_us=434.256 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::mul calls=12 device_us=165.844 cpu_us=159.946 device_memory_MiB=45.003
+  kernel_op=void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}) calls=6 device_us=160.456 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::copy_ calls=6 device_us=36.553 cpu_us=51.748 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul> >(int, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul>) calls=6 device_us=36.553 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=35.330 cpu_us=79.193 device_memory_MiB=0.000
+  kernel_op=aten::reciprocal calls=6 device_us=5.833 cpu_us=49.469 device_memory_MiB=0.003
+E_current	0.413867	0.035411	0.406067	0.014080	138.298	2.162	39.502	0.000	39.502	0.829	0.808	5.75	0.037635852	0.999291539	0	0	0
+[lifetime] variant=E_current persistent_extra_MiB=0.000 logical_per_call_temporaries_MiB=54.500
+[profile] M8192:K768:N2048:E_current top=8
+  kernel_op=aten::_scaled_mm calls=3 device_us=433.803 cpu_us=72.352 device_memory_MiB=0.000
+  kernel_op=sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize128x64x64_stage4_warpsize2x2x1_tensor16x8x32_algo2_execute_kernel__5x_cublas calls=3 device_us=433.803 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::mul calls=18 device_us=143.689 cpu_us=51.439 device_memory_MiB=45.006
+  kernel_op=void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}) calls=6 device_us=133.854 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::abs calls=12 device_us=102.924 cpu_us=67.209 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::AbsFunctor<c10::BFloat16>, std::array<char*, 2ul> >(int, at::native::AbsFunctor<c10::BFloat16>, std::array<char*, 2ul>) calls=6 device_us=102.924 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::amax calls=6 device_us=44.969 cpu_us=45.419 device_memory_MiB=0.003
+  kernel_op=void at::native::reduce_kernel<512, 1, at::native::ReduceOp<c10::BFloat16, at::native::func_wrapper_t<c10::BFloat16, at::native::MaxNanFunctor<c10::BFloat16> >, unsigned int, c10::BFloat16, 4, 4> >(at::native::ReduceOp<c10::BFloat16, at::native::func_wrapper_t<c10::BFloat16, at::native::MaxNanFunctor<c10::BFloat16> >, unsigned int, c10::BFloat16, 4, 4>) calls=6 device_us=43.418 cpu_us=0.000 device_memory_MiB=0.000
+[component] M=8192 K=768 N=2048 name=x_absmax_scale event_batch_ms=0.051555
+[component] M=8192 K=768 N=2048 name=w_absmax_scale event_batch_ms=0.066674
+[component] M=8192 K=768 N=2048 name=x_scale_cast event_batch_ms=0.049597
+[component] M=8192 K=768 N=2048 name=w_scale_cast event_batch_ms=0.017482
+[component] M=8192 K=768 N=2048 name=prepared_scaled_mm event_batch_ms=0.184392
+[shape] M=8192 K=2048 N=768
+variant	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	persistent_MiB	working_MiB	wall_speedup	event_speedup	max_abs	nrms	cosine	speed_ok	memory_ok	numeric_ok
+A_bf16	0.345510	0.004400	0.316722	0.018530	10.774	0.167	12.000	0.000	12.000	1.000	1.000	0	0	1.000000000	0	1	1
+[lifetime] variant=A_bf16 persistent_extra_MiB=0.000 logical_per_call_temporaries_MiB=12.000
+[profile] M8192:K2048:N768:A_bf16 top=8
+  kernel_op=aten::mm calls=3 device_us=1061.984 cpu_us=147.549 device_memory_MiB=36.000
+  kernel_op=void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x128_32x3_tn_align8>(cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x128_32x3_tn_align8::Params) calls=3 device_us=1061.984 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=281.426 cpu_us=132.106 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=1031.240 device_memory_MiB=0.000
+  kernel_op=cuLaunchKernel calls=3 device_us=0.000 cpu_us=246.127 device_memory_MiB=0.000
+  kernel_op=aten::matmul calls=3 device_us=0.000 cpu_us=9.445 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=9.321 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=9.174 device_memory_MiB=0.000
+B_prepared_fp8	0.211005	0.000476	0.162160	0.000843	13.052	0.305	12.000	17.500	29.500	1.637	1.953	9.5	0.037680347	0.999290287	1	0	0
+[lifetime] variant=B_prepared_fp8 persistent_extra_MiB=17.500 logical_per_call_temporaries_MiB=12.000
+[profile] M8192:K2048:N768:B_prepared_fp8 top=8
+  kernel_op=aten::_scaled_mm calls=3 device_us=444.530 cpu_us=176.484 device_memory_MiB=0.000
+  kernel_op=sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize128x128x64_stage3_warpsize4x2x1_tensor16x8x32_algo2_execute_kernel__5x_cublas calls=3 device_us=444.530 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=150.293 cpu_us=586.666 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=298.545 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=243.531 device_memory_MiB=0.000
+  kernel_op=aten::resize_ calls=3 device_us=0.000 cpu_us=10.219 device_memory_MiB=36.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=9.816 device_memory_MiB=0.000
+  kernel_op=aten::transpose calls=6 device_us=0.000 cpu_us=6.495 device_memory_MiB=0.000
+C_weight_cached	0.357099	0.002368	0.346562	0.001771	42.131	0.323	48.000	1.500	49.500	0.968	0.914	9.5	0.037680347	0.999290287	0	0	0
+[lifetime] variant=C_weight_cached persistent_extra_MiB=1.500 logical_per_call_temporaries_MiB=60.000
+[profile] M8192:K2048:N768:C_weight_cached top=8
+  kernel_op=aten::_scaled_mm calls=3 device_us=447.708 cpu_us=49.648 device_memory_MiB=0.000
+  kernel_op=sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize128x128x64_stage3_warpsize4x2x1_tensor16x8x32_algo2_execute_kernel__5x_cublas calls=3 device_us=447.708 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::mul calls=3 device_us=342.430 cpu_us=49.527 device_memory_MiB=96.000
+  kernel_op=void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}) calls=3 device_us=342.430 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::copy_ calls=3 device_us=154.091 cpu_us=10.322 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul> >(int, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul>) calls=3 device_us=154.091 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=111.264 cpu_us=75.721 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=793.523 device_memory_MiB=0.000
+D_delayed	0.384415	0.009855	0.378510	0.009851	84.626	10.836	48.000	0.000	48.000	0.899	0.837	9.5	0.037680347	0.999290287	0	0	0
+[lifetime] variant=D_delayed persistent_extra_MiB=0.000 logical_per_call_temporaries_MiB=64.500
+[profile] M8192:K2048:N768:D_delayed top=8
+  kernel_op=aten::mul calls=12 device_us=653.929 cpu_us=76.271 device_memory_MiB=105.003
+  kernel_op=void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}) calls=6 device_us=648.567 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::_scaled_mm calls=3 device_us=446.454 cpu_us=46.866 device_memory_MiB=0.000
+  kernel_op=sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize128x128x64_stage3_warpsize4x2x1_tensor16x8x32_algo2_execute_kernel__5x_cublas calls=3 device_us=446.454 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::copy_ calls=6 device_us=163.223 cpu_us=15.539 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul> >(int, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul>) calls=6 device_us=163.223 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=114.764 cpu_us=2452.239 device_memory_MiB=0.000
+  kernel_op=aten::reciprocal calls=6 device_us=6.171 cpu_us=17.052 device_memory_MiB=0.003
+E_current	0.566388	0.002725	0.627178	0.013016	205.870	12.052	48.001	0.000	48.001	0.610	0.505	9.5	0.037680347	0.999290287	0	0	0
+[lifetime] variant=E_current persistent_extra_MiB=0.000 logical_per_call_temporaries_MiB=64.500
+[profile] M8192:K2048:N768:E_current top=8
+  kernel_op=aten::abs calls=12 device_us=512.735 cpu_us=68.629 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::AbsFunctor<c10::BFloat16>, std::array<char*, 2ul> >(int, at::native::AbsFunctor<c10::BFloat16>, std::array<char*, 2ul>) calls=6 device_us=512.735 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::_scaled_mm calls=3 device_us=446.611 cpu_us=76.914 device_memory_MiB=0.000
+  kernel_op=sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize128x128x64_stage3_warpsize4x2x1_tensor16x8x32_algo2_execute_kernel__5x_cublas calls=3 device_us=446.611 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::mul calls=18 device_us=389.017 cpu_us=94.655 device_memory_MiB=105.006
+  kernel_op=void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}) calls=6 device_us=378.576 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::copy_ calls=12 device_us=170.247 cpu_us=40.922 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul> >(int, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul>) calls=6 device_us=163.566 cpu_us=0.000 device_memory_MiB=0.000
+[component] M=8192 K=2048 N=768 name=x_absmax_scale event_batch_ms=0.118974
+[component] M=8192 K=2048 N=768 name=w_absmax_scale event_batch_ms=0.048773
+[component] M=8192 K=2048 N=768 name=x_scale_cast event_batch_ms=0.202506
+[component] M=8192 K=2048 N=768 name=w_scale_cast event_batch_ms=0.017384
+[component] M=8192 K=2048 N=768 name=prepared_scaled_mm event_batch_ms=0.188152
+[shape] M=8192 K=768 N=768
+variant	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	persistent_MiB	working_MiB	wall_speedup	event_speedup	max_abs	nrms	cosine	speed_ok	memory_ok	numeric_ok
+A_bf16	0.165641	0.001463	0.132506	0.004170	10.708	0.401	12.000	0.000	12.000	1.000	1.000	0	0	1.000000000	0	1	1
+[lifetime] variant=A_bf16 persistent_extra_MiB=0.000 logical_per_call_temporaries_MiB=12.000
+[profile] M8192:K768:N768:A_bf16 top=8
+  kernel_op=aten::mm calls=3 device_us=337.101 cpu_us=104.427 device_memory_MiB=36.000
+  kernel_op=void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x128_32x3_tn_align8>(cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x128_32x3_tn_align8::Params) calls=3 device_us=337.101 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=115.914 cpu_us=100.470 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=312.748 device_memory_MiB=0.000
+  kernel_op=cuLaunchKernel calls=3 device_us=0.000 cpu_us=190.740 device_memory_MiB=0.000
+  kernel_op=aten::matmul calls=3 device_us=0.000 cpu_us=7.838 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=7.309 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=6.056 device_memory_MiB=0.000
+B_prepared_fp8	0.082212	0.003359	0.064560	0.000304	16.979	0.577	12.000	6.563	18.563	2.015	2.052	5.875	0.03782424	0.999285638	1	0	0
+[lifetime] variant=B_prepared_fp8 persistent_extra_MiB=6.563 logical_per_call_temporaries_MiB=12.000
+[profile] M8192:K768:N768:B_prepared_fp8 top=8
+  kernel_op=aten::_scaled_mm calls=3 device_us=171.439 cpu_us=94.304 device_memory_MiB=0.000
+  kernel_op=sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize64x128x64_stage4_warpsize2x2x1_tensor16x8x32_algo2_execute_kernel__5x_cublas calls=3 device_us=171.439 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=58.488 cpu_us=97.885 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=196.652 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=106.797 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=8.342 device_memory_MiB=0.000
+  kernel_op=aten::resize_ calls=3 device_us=0.000 cpu_us=7.074 device_memory_MiB=36.000
+  kernel_op=aten::transpose calls=6 device_us=0.000 cpu_us=5.012 device_memory_MiB=0.000
+C_weight_cached	0.139437	0.002874	0.111627	0.000102	38.102	7.470	18.000	0.563	18.563	1.188	1.187	5.875	0.03782424	0.999285638	1	0	0
+[lifetime] variant=C_weight_cached persistent_extra_MiB=0.563 logical_per_call_temporaries_MiB=30.000
+[profile] M8192:K768:N768:C_weight_cached top=8
+  kernel_op=aten::_scaled_mm calls=3 device_us=171.592 cpu_us=45.578 device_memory_MiB=0.000
+  kernel_op=sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize64x128x64_stage4_warpsize2x2x1_tensor16x8x32_algo2_execute_kernel__5x_cublas calls=3 device_us=171.592 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::mul calls=3 device_us=112.598 cpu_us=49.899 device_memory_MiB=36.000
+  kernel_op=void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}) calls=3 device_us=112.598 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=43.174 cpu_us=80.705 device_memory_MiB=0.000
+  kernel_op=aten::copy_ calls=3 device_us=26.815 cpu_us=9.939 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul> >(int, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul>) calls=3 device_us=26.815 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=195.573 device_memory_MiB=0.000
+D_delayed	0.178562	0.009379	0.131208	0.001416	95.152	18.440	18.563	0.000	18.563	0.928	1.010	5.875	0.03782424	0.999285638	0	0	0
+[lifetime] variant=D_delayed persistent_extra_MiB=0.000 logical_per_call_temporaries_MiB=31.688
+[profile] M8192:K768:N768:D_delayed top=8
+  kernel_op=aten::_scaled_mm calls=3 device_us=172.650 cpu_us=80.079 device_memory_MiB=0.000
+  kernel_op=sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize64x128x64_stage4_warpsize2x2x1_tensor16x8x32_algo2_execute_kernel__5x_cublas calls=3 device_us=172.650 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::mul calls=12 device_us=131.411 cpu_us=81.479 device_memory_MiB=40.128
+  kernel_op=void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}) calls=6 device_us=126.342 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=42.730 cpu_us=88.730 device_memory_MiB=0.000
+  kernel_op=aten::copy_ calls=6 device_us=32.681 cpu_us=17.557 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul> >(int, at::native::float8_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda(c10::BFloat16)#1}, std::array<char*, 2ul>) calls=6 device_us=32.681 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::reciprocal calls=6 device_us=5.757 cpu_us=19.174 device_memory_MiB=0.003
+E_current	0.283049	0.010513	0.214994	0.007970	176.688	2.822	18.564	0.000	18.564	0.585	0.616	5.875	0.03782424	0.999285638	0	0	0
+[lifetime] variant=E_current persistent_extra_MiB=0.000 logical_per_call_temporaries_MiB=31.688
+[profile] M8192:K768:N768:E_current top=8
+  kernel_op=aten::_scaled_mm calls=3 device_us=174.255 cpu_us=74.004 device_memory_MiB=0.000
+  kernel_op=sm89_xmma_gemm_e4m3bf16_e4m3f32_f32_tn_n_tilesize64x128x64_stage4_warpsize2x2x1_tensor16x8x32_algo2_execute_kernel__5x_cublas calls=3 device_us=174.255 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::mul calls=18 device_us=128.671 cpu_us=62.939 device_memory_MiB=40.131
+  kernel_op=void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl<at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<c10::BFloat16, c10::BFloat16, c10::BFloat16, at::native::binary_internal::MulFunctor<float> > const&)::{lambda(int)#1}) calls=6 device_us=118.684 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::abs calls=12 device_us=53.604 cpu_us=69.840 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::AbsFunctor<c10::BFloat16>, std::array<char*, 2ul> >(int, at::native::AbsFunctor<c10::BFloat16>, std::array<char*, 2ul>) calls=6 device_us=53.604 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::amax calls=6 device_us=40.813 cpu_us=50.749 device_memory_MiB=0.003
+  kernel_op=aten::copy_ calls=12 device_us=39.442 cpu_us=27.428 device_memory_MiB=0.000
+[component] M=8192 K=768 N=768 name=x_absmax_scale event_batch_ms=0.062203
+[component] M=8192 K=768 N=768 name=w_absmax_scale event_batch_ms=0.065138
+[component] M=8192 K=768 N=768 name=x_scale_cast event_batch_ms=0.048886
+[component] M=8192 K=768 N=768 name=w_scale_cast event_batch_ms=0.053613
+[component] M=8192 K=768 N=768 name=prepared_scaled_mm event_batch_ms=0.063061
+[independent summary] C_weight_cached rows=[(768, 2048, True, False, False, 1.3680611279801405), (2048, 768, False, False, False, 0.9675441295305687), (768, 768, True, False, False, 1.1879312511245037)]
+[GATE NEGATIVE] speed/memory/numeric gates did not all pass on any shape; FP8 numerical screen remains negative; TLinear cache integration remains NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 0.1분  (2026-09-21 00:07:56)
+==============================================================================

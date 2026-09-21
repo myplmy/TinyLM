@@ -1,0 +1,56 @@
+P014D Stage1W: opt-in native CPU 5-trit LUT v0 correctness, synthetic shape timing, and actual-model decode speed gate; training 0
+
+==============================================================================
+[runlog] 2026-09-20 23:48:35  name=P014D_Stage1W_native_lut_kernel
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/test_lut_cpu_native.py --compile
+==============================================================================
+[PASS] P014D native CPU LUT compiled correctness: 2-D/3-D and TLinear dispatch
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-09-20 23:48:52)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-20 23:48:52  name=P014D_Stage1W_native_lut_kernel
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/bench_lut_cpu_native.py --threads 1 --warmup 3 --iters 10
+==============================================================================
+torch=2.10.0+cu130 threads=1 dtype=float32
+M	K	N	dense_ms	python_lut_ms	native_lut_ms	native_vs_dense	native_vs_python
+1	768	2048	0.061924	0.322068	0.136656	0.453x	2.357x
+1	2048	768	0.067435	0.291532	0.206312	0.327x	1.413x
+1	768	768	0.024260	0.136698	0.071489	0.339x	1.912x
+[LIMIT] synthetic v0 is a correctness/native-overhead baseline, not the model tok/s gate
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-20 23:48:54)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-20 23:48:54  name=P014D_Stage1W_native_lut_kernel
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/bench_lut_cpu_model.py --preset m100R1c --data ko-en --tokens 300M --models mC_cla2_ag4 mC_cla2_ag4_r20 --max-new 32 --threads 1 --warmup 2 --iters 3 --min-speedup 1.50
+==============================================================================
+torch=2.10.0+cu130 threads=1 prompt='대한민국의 수도 서울은'
+model	path	median_ms	tok_per_s	vs_int8
+[lut] ★삼진 46개 층 -> LUT 코드. 상주 7.72 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+[lut] ★삼진 46개 층 -> LUT 코드. 상주 7.72 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+mC_cla2_ag4	fp32	691.955	46.246	1.333x
+mC_cla2_ag4	int8	922.089	34.704	1.000x
+mC_cla2_ag4	lut_reference	1318.464	24.271	0.699x
+mC_cla2_ag4	lut_native	738.491	43.332	1.249x
+[model] mC_cla2_ag4 native_vs_int8=1.249x native_vs_reference=1.785x
+[lut] ★삼진 46개 층 -> LUT 코드. 상주 7.72 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+[lut] ★삼진 46개 층 -> LUT 코드. 상주 7.72 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+mC_cla2_ag4_r20	fp32	1123.657	28.478	1.320x
+mC_cla2_ag4_r20	int8	1482.798	21.581	1.000x
+mC_cla2_ag4_r20	lut_reference	2234.663	14.320	0.664x
+mC_cla2_ag4_r20	lut_native	1248.415	25.633	1.188x
+[model] mC_cla2_ag4_r20 native_vs_int8=1.188x native_vs_reference=1.790x
+[GATE NEGATIVE] no model reached native LUT/int8 >= 1.50x
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 0.7분  (2026-09-20 23:49:35)
+==============================================================================

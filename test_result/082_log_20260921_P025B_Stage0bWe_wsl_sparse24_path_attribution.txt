@@ -1,0 +1,469 @@
+P025B Stage0bWe: preserve Wd negative and split PyTorch dispatch, padding, GPU-op and graph overhead without TLinear integration
+
+==============================================================================
+[runlog] 2026-09-21 00:07:11  name=P025B_Stage0bWe_wsl_sparse24_path_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sparse24_path_attribution.py --require-wsl --mode attribute --m-values 1,8,128,8192 --layouts inference,training --rounds 3 --warmup 5 --iters 20 --profile-iters 3 --cuda-graph --max-nrms 0.001 --max-abs-ratio 0.01 --min-cosine 0.999999
+==============================================================================
+runtime_system=Linux release=6.18.33.2-microsoft-standard-WSL2 WSL_DISTRO_NAME=Ubuntu
+torch=2.10.0+cu130 cuda=13.0 cudnn=91501 cusparselt_pkg=0.8.0 backend_version=800 compiled=True available=True
+NOTE: wall_sync includes dispatch+GPU+synchronize; event_batch includes all GPU ops; host_enqueue excludes final drain; profiler rows attribute individual ops.
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/sparse/semi_structured.py:568: UserWarning: The PyTorch API of SparseSemiStructuredTensor is in prototype stage and will change in the near future. Please open a Github issue for features requests and see our documentation on the torch.sparse module for further information about the project.
+  return cls(
+[pack] K=768 N=2048 inference_wall_ms=429.652104 training_wall_ms=8.223707 inference_packed_t=False training_packed_t=True
+[padding] M=1 padded_M=8 input_MiB=0.001465 padded_MiB=0.011719 pad_event_batch_ms=0.017357; slicing is a view
+[agreement] layout=inference M=1 K=768 N=2048 ok=1 nrms=1.680994e-06 max_abs_ratio=7.3664356e-05 cosine=0.999999940 pack_wall_ms=429.652104
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+inference:M1:K768:N2048:dense	0.030850	0.004514	0.008579	0.000234	6.917	0.402	0.004	0.000
+inference:M1:K768:N2048:sparse_dispatch	0.276850	0.002213	0.280166	0.012392	256.536	18.247	0.230	0.000
+inference:M1:K768:N2048:sparse_explicit_pad	0.245731	0.014192	0.258816	0.029902	235.609	4.788	0.219	0.000
+[ratio] layout=inference M=1 event_dense_over_sparse=0.031x wall_dense_over_sparse=0.111x
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/profiler/profiler.py:217: UserWarning: Warning: Profiler clears events at the end of each cycle.Only events from the current cycle will be reported.To keep events across cycles, set acc_events=True.
+  _warn_once(
+[profile] inference:M1:K768:N2048:dense top=8
+  kernel_op=aten::mm calls=3 device_us=19.021 cpu_us=778.505 device_memory_MiB=0.012
+  kernel_op=std::enable_if<!(false), void>::type internal::gemvx::kernel<int, int, __half, __half, __half, float, false, true, true, false, 7, false, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half>, float> >(cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half>, float>) calls=3 device_us=19.021 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=7.810 cpu_us=3159.546 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernel calls=3 device_us=0.000 cpu_us=692.854 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=75.590 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=27.141 device_memory_MiB=0.000
+  kernel_op=aten::as_strided calls=3 device_us=0.000 cpu_us=15.279 device_memory_MiB=0.000
+  kernel_op=aten::matmul calls=3 device_us=0.000 cpu_us=14.639 device_memory_MiB=0.000
+[profile] inference:M1:K768:N2048:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=64.888 cpu_us=950.382 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=64.888 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::copy_ calls=3 device_us=2.574 cpu_us=23.966 device_memory_MiB=0.000
+  kernel_op=Memcpy DtoD (Device -> Device) calls=3 device_us=2.574 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::fill_ calls=3 device_us=2.516 cpu_us=40.949 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::FillFunctor<c10::Half>, std::array<char*, 1ul> >(int, at::native::FillFunctor<c10::Half>, std::array<char*, 1ul>) calls=3 device_us=2.516 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=1.036 cpu_us=2639.781 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=203.222 device_memory_MiB=-0.035
+[profile] inference:M1:K768:N2048:sparse_explicit_pad top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=64.436 cpu_us=683.929 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=64.436 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=22.050 cpu_us=151.850 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=118.821 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=46.365 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=19.548 device_memory_MiB=0.094
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=12.565 device_memory_MiB=0.000
+  kernel_op=aten::slice calls=3 device_us=0.000 cpu_us=11.704 device_memory_MiB=0.000
+[cuda_graph] layout=inference M=1 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=inference M=1 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[agreement] layout=training M=1 K=768 N=2048 ok=1 nrms=3.6858572e-05 max_abs_ratio=0.0014559663 cosine=0.999999940 pack_wall_ms=8.223707
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+training:M1:K768:N2048:dense	0.028823	0.000565	0.013363	0.000734	8.262	0.261	0.004	0.000
+training:M1:K768:N2048:sparse_dispatch	0.300982	0.017714	0.317382	0.034451	299.854	41.891	0.230	0.000
+training:M1:K768:N2048:sparse_explicit_pad	0.266655	0.003149	0.255150	0.005413	249.772	30.495	0.219	0.000
+[ratio] layout=training M=1 event_dense_over_sparse=0.042x wall_dense_over_sparse=0.096x
+[profile] training:M1:K768:N2048:dense top=8
+  kernel_op=aten::mm calls=3 device_us=20.198 cpu_us=155.981 device_memory_MiB=0.012
+  kernel_op=std::enable_if<!(false), void>::type internal::gemvx::kernel<int, int, __half, __half, __half, float, false, true, true, false, 7, false, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half>, float> >(cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half>, float>) calls=3 device_us=20.198 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=7.837 cpu_us=79.083 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernel calls=3 device_us=0.000 cpu_us=39.384 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=25.160 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=7.195 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=6.021 device_memory_MiB=0.000
+  kernel_op=aten::transpose calls=3 device_us=0.000 cpu_us=5.380 device_memory_MiB=0.000
+[profile] training:M1:K768:N2048:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=64.203 cpu_us=688.565 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=64.203 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::copy_ calls=3 device_us=2.424 cpu_us=17.113 device_memory_MiB=0.000
+  kernel_op=Memcpy DtoD (Device -> Device) calls=3 device_us=2.424 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::fill_ calls=3 device_us=2.247 cpu_us=50.682 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::FillFunctor<c10::Half>, std::array<char*, 1ul> >(int, at::native::FillFunctor<c10::Half>, std::array<char*, 1ul>) calls=3 device_us=2.247 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=0.769 cpu_us=77.379 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=155.733 device_memory_MiB=-0.035
+[profile] training:M1:K768:N2048:sparse_explicit_pad top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=64.025 cpu_us=952.049 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=64.025 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=21.725 cpu_us=123.041 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=276.575 device_memory_MiB=0.000
+  kernel_op=aten::slice calls=3 device_us=0.000 cpu_us=73.185 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=64.332 device_memory_MiB=0.000
+  kernel_op=aten::transpose calls=12 device_us=0.000 cpu_us=28.032 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=23.150 device_memory_MiB=0.094
+[cuda_graph] layout=training M=1 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=training M=1 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[padding] M=8 padded_M=8 pad_event_batch_ms=0
+[agreement] layout=inference M=8 K=768 N=2048 ok=1 nrms=1.7512935e-05 max_abs_ratio=0.0012189888 cosine=1.000000119 pack_wall_ms=429.652104
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+inference:M8:K768:N2048:dense	0.027268	0.000112	0.013861	0.001282	8.988	0.514	0.031	0.000
+inference:M8:K768:N2048:sparse_dispatch	0.243860	0.002139	0.256510	0.003157	236.370	3.419	0.219	0.000
+[ratio] layout=inference M=8 event_dense_over_sparse=0.054x wall_dense_over_sparse=0.112x
+[profile] inference:M8:K768:N2048:dense top=8
+  kernel_op=aten::mm calls=3 device_us=15.026 cpu_us=184.364 device_memory_MiB=0.094
+  kernel_op=void cutlass::Kernel2<cutlass_80_wmma_tensorop_f16_s161616gemm_f16_16x16_128x2_tn_align8>(cutlass_80_wmma_tensorop_f16_s161616gemm_f16_16x16_128x2_tn_align8::Params) calls=3 device_us=15.026 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=7.306 cpu_us=2853.767 device_memory_MiB=0.000
+  kernel_op=cuLaunchKernel calls=3 device_us=0.000 cpu_us=54.357 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=24.114 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=11.130 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=9.945 device_memory_MiB=0.000
+  kernel_op=aten::matmul calls=3 device_us=0.000 cpu_us=7.483 device_memory_MiB=0.000
+[profile] inference:M8:K768:N2048:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=65.059 cpu_us=1171.860 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=65.059 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=21.647 cpu_us=127.746 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=974.256 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=239.516 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=73.591 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=30.930 device_memory_MiB=0.094
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=23.491 device_memory_MiB=0.000
+[cuda_graph] layout=inference M=8 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=inference M=8 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[agreement] layout=training M=8 K=768 N=2048 ok=1 nrms=1.9099216e-05 max_abs_ratio=0.0014759817 cosine=1.000000000 pack_wall_ms=8.223707
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+training:M8:K768:N2048:dense	0.032911	0.001005	0.012131	0.001606	12.462	4.043	0.031	0.000
+training:M8:K768:N2048:sparse_dispatch	0.249768	0.000273	0.249072	0.001149	234.255	10.311	0.219	0.000
+[ratio] layout=training M=8 event_dense_over_sparse=0.049x wall_dense_over_sparse=0.132x
+[profile] training:M8:K768:N2048:dense top=8
+  kernel_op=aten::mm calls=3 device_us=16.000 cpu_us=142.468 device_memory_MiB=0.094
+  kernel_op=void cutlass::Kernel2<cutlass_80_wmma_tensorop_f16_s161616gemm_f16_16x16_128x2_tn_align8>(cutlass_80_wmma_tensorop_f16_s161616gemm_f16_16x16_128x2_tn_align8::Params) calls=3 device_us=16.000 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=8.193 cpu_us=2182.666 device_memory_MiB=0.000
+  kernel_op=cuLaunchKernel calls=3 device_us=0.000 cpu_us=38.393 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=7.382 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=6.140 device_memory_MiB=0.000
+  kernel_op=aten::matmul calls=3 device_us=0.000 cpu_us=5.758 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=5.685 device_memory_MiB=0.000
+[profile] training:M8:K768:N2048:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=64.355 cpu_us=781.836 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=64.355 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=21.925 cpu_us=2594.951 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=128.238 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=49.515 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=29.133 device_memory_MiB=0.094
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=15.307 device_memory_MiB=0.000
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=13.583 device_memory_MiB=0.000
+[cuda_graph] layout=training M=8 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=training M=8 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[padding] M=128 padded_M=128 pad_event_batch_ms=0
+[agreement] layout=inference M=128 K=768 N=2048 ok=1 nrms=2.0632075e-05 max_abs_ratio=0.0024175674 cosine=1.000000119 pack_wall_ms=429.652104
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+inference:M128:K768:N2048:dense	0.031925	0.000278	0.012408	0.000229	10.378	2.057	0.500	0.000
+inference:M128:K768:N2048:sparse_dispatch	0.262242	0.000856	0.249651	0.001578	222.380	1.138	0.688	0.000
+[ratio] layout=inference M=128 event_dense_over_sparse=0.050x wall_dense_over_sparse=0.122x
+[profile] inference:M128:K768:N2048:dense top=8
+  kernel_op=aten::mm calls=3 device_us=22.420 cpu_us=321.543 device_memory_MiB=1.500
+  kernel_op=ampere_fp16_s16816gemm_fp16_64x64_ldg8_f2f_stages_64x5_tn calls=3 device_us=22.420 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=8.075 cpu_us=532.132 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernel calls=3 device_us=0.000 cpu_us=170.557 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=41.802 device_memory_MiB=0.000
+  kernel_op=aten::transpose calls=3 device_us=0.000 cpu_us=29.095 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=18.574 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=18.381 device_memory_MiB=0.000
+[profile] inference:M128:K768:N2048:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=65.256 cpu_us=1044.050 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=65.256 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=22.245 cpu_us=3149.605 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=193.026 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=45.560 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=31.419 device_memory_MiB=1.500
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=25.549 device_memory_MiB=0.000
+  kernel_op=cudaFuncGetAttributes calls=3 device_us=0.000 cpu_us=17.687 device_memory_MiB=0.000
+[cuda_graph] layout=inference M=128 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=inference M=128 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[agreement] layout=training M=128 K=768 N=2048 ok=1 nrms=2.0486606e-05 max_abs_ratio=0.0014911479 cosine=0.999999940 pack_wall_ms=8.223707
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+training:M128:K768:N2048:dense	0.031082	0.000078	0.014651	0.004877	27.730	7.793	0.500	0.000
+training:M128:K768:N2048:sparse_dispatch	0.279350	0.031601	0.271182	0.004746	241.351	19.335	0.688	0.000
+[ratio] layout=training M=128 event_dense_over_sparse=0.054x wall_dense_over_sparse=0.111x
+[profile] training:M128:K768:N2048:dense top=8
+  kernel_op=aten::mm calls=3 device_us=22.770 cpu_us=115.522 device_memory_MiB=1.500
+  kernel_op=ampere_fp16_s16816gemm_fp16_64x64_ldg8_f2f_stages_64x5_tn calls=3 device_us=22.770 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=8.498 cpu_us=2571.671 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernel calls=3 device_us=0.000 cpu_us=39.513 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=27.892 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=8.195 device_memory_MiB=0.000
+  kernel_op=cudaOccupancyMaxActiveBlocksPerMultiprocessor calls=3 device_us=0.000 cpu_us=7.538 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=5.964 device_memory_MiB=0.000
+[profile] training:M128:K768:N2048:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=65.012 cpu_us=761.387 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=65.012 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=21.976 cpu_us=2744.876 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=135.569 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=60.627 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=34.198 device_memory_MiB=1.500
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=17.733 device_memory_MiB=0.000
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=13.226 device_memory_MiB=0.000
+[cuda_graph] layout=training M=128 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=training M=128 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[padding] M=8192 padded_M=8192 pad_event_batch_ms=0
+[agreement] layout=inference M=8192 K=768 N=2048 ok=1 nrms=2.0348967e-05 max_abs_ratio=0.0024214969 cosine=1.000000119 pack_wall_ms=429.652104
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+inference:M8192:K768:N2048:dense	0.354377	0.002014	0.329326	0.014622	13.964	2.321	32.000	0.000
+inference:M8192:K768:N2048:sparse_dispatch	0.442636	0.001199	0.289578	0.013382	225.639	1.880	32.188	0.000
+[ratio] layout=inference M=8192 event_dense_over_sparse=1.137x wall_dense_over_sparse=0.801x
+[profile] inference:M8192:K768:N2048:dense top=8
+  kernel_op=aten::mm calls=3 device_us=868.809 cpu_us=176.953 device_memory_MiB=96.000
+  kernel_op=ampere_fp16_s1688gemm_fp16_128x128_ldg8_f2f_tn calls=3 device_us=868.809 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=290.668 cpu_us=561.201 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=838.601 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernel calls=3 device_us=0.000 cpu_us=75.944 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=11.270 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=11.242 device_memory_MiB=0.000
+  kernel_op=aten::matmul calls=3 device_us=0.000 cpu_us=9.696 device_memory_MiB=0.000
+[profile] inference:M8192:K768:N2048:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=550.776 cpu_us=1808.126 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=550.776 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=180.905 cpu_us=3219.020 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=458.976 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=252.787 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=247.888 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=72.778 device_memory_MiB=96.000
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=72.210 device_memory_MiB=0.000
+[cuda_graph] layout=inference M=8192 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=inference M=8192 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[agreement] layout=training M=8192 K=768 N=2048 ok=1 nrms=2.0532047e-05 max_abs_ratio=0.0029923629 cosine=1.000000000 pack_wall_ms=8.223707
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+training:M8192:K768:N2048:dense	0.330110	0.000828	0.311989	0.007878	13.010	2.185	32.000	0.000
+training:M8192:K768:N2048:sparse_dispatch	0.436441	0.001500	0.245958	0.004030	245.655	17.608	32.188	0.000
+[ratio] layout=training M=8192 event_dense_over_sparse=1.268x wall_dense_over_sparse=0.756x
+[profile] training:M8192:K768:N2048:dense top=8
+  kernel_op=aten::mm calls=3 device_us=826.973 cpu_us=193.975 device_memory_MiB=96.000
+  kernel_op=ampere_fp16_s1688gemm_fp16_128x128_ldg8_f2f_tn calls=3 device_us=826.973 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=278.052 cpu_us=92.769 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=789.170 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernel calls=3 device_us=0.000 cpu_us=66.545 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=12.002 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=11.899 device_memory_MiB=0.000
+  kernel_op=aten::transpose calls=3 device_us=0.000 cpu_us=9.315 device_memory_MiB=0.000
+[profile] training:M8192:K768:N2048:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=510.737 cpu_us=1080.148 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=510.737 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=178.773 cpu_us=99.297 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=292.918 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=160.796 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=68.758 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=43.115 device_memory_MiB=96.000
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=27.140 device_memory_MiB=0.000
+[cuda_graph] layout=training M=8192 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=training M=8192 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[ATTRIBUTION COMPLETE] wall/event/host/profiler are separate; public plan reuse remains NOT_IMPLEMENTED
+[pack] K=2048 N=768 inference_wall_ms=0.246342 training_wall_ms=0.061349 inference_packed_t=False training_packed_t=True
+[padding] M=1 padded_M=8 input_MiB=0.003906 padded_MiB=0.031250 pad_event_batch_ms=0.014029; slicing is a view
+[agreement] layout=inference M=1 K=2048 N=768 ok=1 nrms=2.6526839e-05 max_abs_ratio=0.0007351095 cosine=1.000000000 pack_wall_ms=0.246342
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+inference:M1:K2048:N768:dense	0.024956	0.000073	0.012858	0.000226	7.937	0.076	0.001	0.000
+inference:M1:K2048:N768:sparse_dispatch	0.297496	0.009446	0.254672	0.013650	236.476	4.689	0.230	0.000
+inference:M1:K2048:N768:sparse_explicit_pad	0.297491	0.027091	0.280830	0.031757	228.319	11.679	0.199	0.000
+[ratio] layout=inference M=1 event_dense_over_sparse=0.050x wall_dense_over_sparse=0.084x
+[profile] inference:M1:K2048:N768:dense top=8
+  kernel_op=aten::mm calls=3 device_us=12.991 cpu_us=167.361 device_memory_MiB=0.004
+  kernel_op=std::enable_if<!(false), void>::type internal::gemvx::kernel<int, int, __half, __half, __half, float, false, true, true, false, 7, false, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half>, float> >(cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half>, float>) calls=3 device_us=12.991 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=7.398 cpu_us=78.592 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernel calls=3 device_us=0.000 cpu_us=131.876 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=9.594 device_memory_MiB=0.000
+  kernel_op=aten::transpose calls=3 device_us=0.000 cpu_us=7.178 device_memory_MiB=0.000
+  kernel_op=aten::matmul calls=3 device_us=0.000 cpu_us=7.167 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=6.703 device_memory_MiB=0.000
+[profile] inference:M1:K2048:N768:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=143.927 cpu_us=612.244 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=143.927 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::copy_ calls=3 device_us=2.455 cpu_us=26.976 device_memory_MiB=0.000
+  kernel_op=Memcpy DtoD (Device -> Device) calls=3 device_us=2.455 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::fill_ calls=3 device_us=2.396 cpu_us=64.730 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::FillFunctor<c10::Half>, std::array<char*, 1ul> >(int, at::native::FillFunctor<c10::Half>, std::array<char*, 1ul>) calls=3 device_us=2.396 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=0.740 cpu_us=208.291 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=130.936 device_memory_MiB=-0.094
+[profile] inference:M1:K2048:N768:sparse_explicit_pad top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=143.276 cpu_us=823.618 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=143.276 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=47.976 cpu_us=122.597 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=117.282 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=61.989 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=23.743 device_memory_MiB=0.035
+  kernel_op=cudaFuncGetAttributes calls=3 device_us=0.000 cpu_us=20.956 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=19.761 device_memory_MiB=0.000
+[cuda_graph] layout=inference M=1 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=inference M=1 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[agreement] layout=training M=1 K=2048 N=768 ok=1 nrms=1.814564e-05 max_abs_ratio=0.0004105827 cosine=1.000000238 pack_wall_ms=0.061349
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+training:M1:K2048:N768:dense	0.031587	0.000583	0.012622	0.003394	8.158	0.085	0.001	0.000
+training:M1:K2048:N768:sparse_dispatch	0.322882	0.013724	0.274922	0.000237	269.483	30.815	0.230	0.000
+training:M1:K2048:N768:sparse_explicit_pad	0.284629	0.003459	0.248874	0.012490	239.529	16.233	0.199	0.000
+[ratio] layout=training M=1 event_dense_over_sparse=0.046x wall_dense_over_sparse=0.098x
+[profile] training:M1:K2048:N768:dense top=8
+  kernel_op=aten::mm calls=3 device_us=14.410 cpu_us=125.274 device_memory_MiB=0.004
+  kernel_op=std::enable_if<!(false), void>::type internal::gemvx::kernel<int, int, __half, __half, __half, float, false, true, true, false, 7, false, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half>, float> >(cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half const>, cublasGemvTensorStridedBatched<__half>, float>) calls=3 device_us=14.410 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=7.884 cpu_us=79.638 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=54.052 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernel calls=3 device_us=0.000 cpu_us=43.291 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=8.029 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=6.120 device_memory_MiB=0.000
+  kernel_op=aten::transpose calls=3 device_us=0.000 cpu_us=5.139 device_memory_MiB=0.000
+[profile] training:M1:K2048:N768:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=143.424 cpu_us=708.725 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=143.424 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::copy_ calls=3 device_us=2.398 cpu_us=11.206 device_memory_MiB=0.000
+  kernel_op=Memcpy DtoD (Device -> Device) calls=3 device_us=2.398 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=aten::fill_ calls=3 device_us=2.103 cpu_us=37.061 device_memory_MiB=0.000
+  kernel_op=void at::native::vectorized_elementwise_kernel<4, at::native::FillFunctor<c10::Half>, std::array<char*, 1ul> >(int, at::native::FillFunctor<c10::Half>, std::array<char*, 1ul>) calls=3 device_us=2.103 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=0.711 cpu_us=82.740 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=131.616 device_memory_MiB=-0.094
+[profile] training:M1:K2048:N768:sparse_explicit_pad top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=143.307 cpu_us=1487.320 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=143.307 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=48.330 cpu_us=423.556 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=235.924 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=104.734 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=59.016 device_memory_MiB=0.035
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=25.799 device_memory_MiB=0.000
+  kernel_op=cudaFuncGetAttributes calls=3 device_us=0.000 cpu_us=22.994 device_memory_MiB=0.000
+[cuda_graph] layout=training M=1 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=training M=1 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[padding] M=8 padded_M=8 pad_event_batch_ms=0
+[agreement] layout=inference M=8 K=2048 N=768 ok=1 nrms=2.9870278e-05 max_abs_ratio=0.0014801336 cosine=1.000000000 pack_wall_ms=0.246342
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+inference:M8:K2048:N768:dense	0.028035	0.000745	0.016091	0.001646	10.948	2.532	0.012	0.000
+inference:M8:K2048:N768:sparse_dispatch	0.300445	0.000060	0.260374	0.022469	268.317	14.610	0.199	0.000
+[ratio] layout=inference M=8 event_dense_over_sparse=0.062x wall_dense_over_sparse=0.093x
+[profile] inference:M8:K2048:N768:dense top=8
+  kernel_op=aten::mm calls=3 device_us=21.896 cpu_us=305.885 device_memory_MiB=0.035
+  kernel_op=void cutlass::Kernel2<cutlass_80_wmma_tensorop_f16_s161616gemm_f16_16x16_128x2_tn_align8>(cutlass_80_wmma_tensorop_f16_s161616gemm_f16_16x16_128x2_tn_align8::Params) calls=3 device_us=21.896 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=10.179 cpu_us=852.214 device_memory_MiB=0.000
+  kernel_op=cuLaunchKernel calls=3 device_us=0.000 cpu_us=140.718 device_memory_MiB=0.000
+  kernel_op=aten::matmul calls=3 device_us=0.000 cpu_us=13.678 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=12.770 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=8.528 device_memory_MiB=0.000
+  kernel_op=aten::transpose calls=3 device_us=0.000 cpu_us=7.880 device_memory_MiB=0.000
+[profile] inference:M8:K2048:N768:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=143.777 cpu_us=831.406 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=143.777 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=47.916 cpu_us=2354.462 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=158.723 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=77.629 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=66.173 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=30.753 device_memory_MiB=0.035
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=18.352 device_memory_MiB=0.000
+[cuda_graph] layout=inference M=8 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=inference M=8 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[agreement] layout=training M=8 K=2048 N=768 ok=1 nrms=2.2813962e-05 max_abs_ratio=0.00088705099 cosine=1.000000000 pack_wall_ms=0.061349
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+training:M8:K2048:N768:dense	0.029726	0.000380	0.010259	0.000046	12.238	4.020	0.012	0.000
+training:M8:K2048:N768:sparse_dispatch	0.283110	0.001014	0.253819	0.015110	240.910	0.157	0.199	0.000
+[ratio] layout=training M=8 event_dense_over_sparse=0.040x wall_dense_over_sparse=0.105x
+[profile] training:M8:K2048:N768:dense top=8
+  kernel_op=aten::mm calls=3 device_us=21.368 cpu_us=485.801 device_memory_MiB=0.035
+  kernel_op=void cutlass::Kernel2<cutlass_80_wmma_tensorop_f16_s161616gemm_f16_16x16_128x2_tn_align8>(cutlass_80_wmma_tensorop_f16_s161616gemm_f16_16x16_128x2_tn_align8::Params) calls=3 device_us=21.368 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=9.710 cpu_us=185.678 device_memory_MiB=0.000
+  kernel_op=cuLaunchKernel calls=3 device_us=0.000 cpu_us=94.863 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=47.996 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=16.408 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=14.743 device_memory_MiB=0.000
+  kernel_op=aten::matmul calls=3 device_us=0.000 cpu_us=12.650 device_memory_MiB=0.000
+[profile] training:M8:K2048:N768:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=143.077 cpu_us=920.964 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=143.077 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=47.919 cpu_us=2590.821 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=252.024 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=64.331 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=36.290 device_memory_MiB=0.035
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=18.699 device_memory_MiB=0.000
+  kernel_op=cudaFuncGetAttributes calls=3 device_us=0.000 cpu_us=14.270 device_memory_MiB=0.000
+[cuda_graph] layout=training M=8 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=training M=8 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[padding] M=128 padded_M=128 pad_event_batch_ms=0
+[agreement] layout=inference M=128 K=2048 N=768 ok=1 nrms=0.0002698552 max_abs_ratio=0.0029797601 cosine=1.000000000 pack_wall_ms=0.246342
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+inference:M128:K2048:N768:dense	0.032856	0.000968	0.024976	0.000749	11.160	0.176	0.188	0.000
+inference:M128:K2048:N768:sparse_dispatch	0.290448	0.000301	0.265099	0.012339	246.562	3.844	0.375	0.000
+[ratio] layout=inference M=128 event_dense_over_sparse=0.094x wall_dense_over_sparse=0.113x
+[profile] inference:M128:K2048:N768:dense top=8
+  kernel_op=aten::mm calls=3 device_us=29.588 cpu_us=137.282 device_memory_MiB=0.562
+  kernel_op=ampere_fp16_s16816gemm_fp16_64x64_ldg8_f2f_stages_64x5_tn calls=3 device_us=28.109 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=10.740 cpu_us=143.544 device_memory_MiB=0.000
+  kernel_op=Memset (Device) calls=3 device_us=1.479 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=cudaMemsetAsync calls=3 device_us=0.000 cpu_us=41.237 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernel calls=3 device_us=0.000 cpu_us=30.503 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=7.899 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=6.649 device_memory_MiB=0.000
+[profile] inference:M128:K2048:N768:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=144.439 cpu_us=683.740 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=144.439 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=48.718 cpu_us=129.931 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=97.996 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=45.283 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=39.107 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=22.948 device_memory_MiB=0.562
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=11.606 device_memory_MiB=0.000
+[cuda_graph] layout=inference M=128 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=inference M=128 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[agreement] layout=training M=128 K=2048 N=768 ok=1 nrms=0.00027189174 max_abs_ratio=0.0036815822 cosine=0.999999881 pack_wall_ms=0.061349
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+training:M128:K2048:N768:dense	0.048051	0.008761	0.017328	0.002386	11.208	0.540	0.188	0.000
+training:M128:K2048:N768:sparse_dispatch	0.284508	0.018368	0.304610	0.015843	213.213	5.591	0.375	0.000
+[ratio] layout=training M=128 event_dense_over_sparse=0.057x wall_dense_over_sparse=0.169x
+[profile] training:M128:K2048:N768:dense top=8
+  kernel_op=aten::mm calls=3 device_us=29.944 cpu_us=413.027 device_memory_MiB=0.562
+  kernel_op=ampere_fp16_s16816gemm_fp16_64x64_ldg8_f2f_stages_64x5_tn calls=3 device_us=28.087 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=10.728 cpu_us=138.191 device_memory_MiB=0.000
+  kernel_op=Memset (Device) calls=3 device_us=1.857 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernel calls=3 device_us=0.000 cpu_us=96.649 device_memory_MiB=0.000
+  kernel_op=cudaMemsetAsync calls=3 device_us=0.000 cpu_us=87.288 device_memory_MiB=0.000
+  kernel_op=aten::matmul calls=3 device_us=0.000 cpu_us=48.736 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=11.022 device_memory_MiB=0.000
+[profile] training:M128:K2048:N768:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=144.345 cpu_us=844.741 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=144.345 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=48.401 cpu_us=78.008 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=177.705 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=124.774 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=54.812 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=32.893 device_memory_MiB=0.562
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=16.642 device_memory_MiB=0.000
+[cuda_graph] layout=training M=128 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=training M=128 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[padding] M=8192 padded_M=8192 pad_event_batch_ms=0
+[agreement] layout=inference M=8192 K=2048 N=768 ok=1 nrms=3.2380656e-05 max_abs_ratio=0.0029657616 cosine=1.000000000 pack_wall_ms=0.246342
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+inference:M8192:K2048:N768:dense	0.343329	0.008309	0.298659	0.000914	10.201	0.026	12.000	0.000
+inference:M8192:K2048:N768:sparse_dispatch	0.413291	0.005575	0.241280	0.003853	217.181	0.210	12.188	0.000
+[ratio] layout=inference M=8192 event_dense_over_sparse=1.238x wall_dense_over_sparse=0.831x
+[profile] inference:M8192:K2048:N768:dense top=8
+  kernel_op=aten::mm calls=3 device_us=1454.063 cpu_us=160.581 device_memory_MiB=36.000
+  kernel_op=void cutlass::Kernel2<cutlass_80_tensorop_f16_s16816gemm_relu_f16_256x128_32x3_tn_align8>(cutlass_80_tensorop_f16_s16816gemm_relu_f16_256x128_32x3_tn_align8::Params) calls=3 device_us=1454.063 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=276.135 cpu_us=77.916 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=1386.772 device_memory_MiB=0.000
+  kernel_op=cuLaunchKernel calls=3 device_us=0.000 cpu_us=60.026 device_memory_MiB=0.000
+  kernel_op=aten::matmul calls=3 device_us=0.000 cpu_us=9.991 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=8.574 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=7.362 device_memory_MiB=0.000
+[profile] inference:M8192:K2048:N768:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=449.177 cpu_us=674.824 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=449.177 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=148.564 cpu_us=84.426 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=202.282 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=136.217 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=58.487 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=28.466 device_memory_MiB=36.000
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=16.614 device_memory_MiB=0.000
+[cuda_graph] layout=inference M=8192 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=inference M=8192 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[agreement] layout=training M=8192 K=2048 N=768 ok=1 nrms=3.183349e-05 max_abs_ratio=0.0036636258 cosine=0.999999940 pack_wall_ms=0.061349
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+training:M8192:K2048:N768:dense	0.341482	0.003644	0.318514	0.001659	10.348	0.308	12.000	0.000
+training:M8192:K2048:N768:sparse_dispatch	0.414527	0.005376	0.245902	0.011861	233.088	20.873	12.188	0.000
+[ratio] layout=training M=8192 event_dense_over_sparse=1.295x wall_dense_over_sparse=0.824x
+[profile] training:M8192:K2048:N768:dense top=8
+  kernel_op=aten::mm calls=3 device_us=1386.712 cpu_us=156.258 device_memory_MiB=36.000
+  kernel_op=void cutlass::Kernel2<cutlass_80_tensorop_f16_s16816gemm_relu_f16_256x128_32x3_tn_align8>(cutlass_80_tensorop_f16_s16816gemm_relu_f16_256x128_32x3_tn_align8::Params) calls=3 device_us=1386.712 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=276.301 cpu_us=142.284 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=1423.104 device_memory_MiB=0.000
+  kernel_op=cuLaunchKernel calls=3 device_us=0.000 cpu_us=37.439 device_memory_MiB=0.000
+  kernel_op=aten::linear calls=3 device_us=0.000 cpu_us=7.235 device_memory_MiB=0.000
+  kernel_op=aten::t calls=3 device_us=0.000 cpu_us=5.850 device_memory_MiB=0.000
+  kernel_op=aten::transpose calls=3 device_us=0.000 cpu_us=5.679 device_memory_MiB=0.000
+[profile] training:M8192:K2048:N768:sparse_dispatch top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=449.912 cpu_us=620.551 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=449.912 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=155.106 cpu_us=81.213 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=152.461 device_memory_MiB=0.000
+  kernel_op=PythonSubclass calls=9 device_us=0.000 cpu_us=108.069 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=42.366 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=23.512 device_memory_MiB=36.000
+  kernel_op=aten::t calls=12 device_us=0.000 cpu_us=11.191 device_memory_MiB=0.000
+[cuda_graph] layout=training M=8192 variant=dense status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[cuda_graph] layout=training M=8192 variant=sparse_dispatch status=UNAVAILABLE reason=AssertionError: Tensor-likes are not close!
+[ATTRIBUTION COMPLETE] wall/event/host/profiler are separate; public plan reuse remains NOT_IMPLEMENTED
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-21 00:07:16)
+==============================================================================

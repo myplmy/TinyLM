@@ -1,0 +1,335 @@
+P025B Stage0bWf: probe conservative alg_id and Split-K candidates, then confirm the selected row apart from search
+
+==============================================================================
+[runlog] 2026-09-21 00:07:31  name=P025B_Stage0bWf_wsl_sparse24_algorithm_sweep
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sparse24_path_attribution.py --require-wsl --mode tune --m-values 1,128,1024,8192 --layouts inference --alg-ids 0,1,2,3,4 --split-k-values 1,2,4 --split-k-modes 0,1 --rounds 3 --warmup 5 --iters 20 --tune-warmup 3 --tune-iters 10 --profile-iters 3 --min-speedup 1.10 --max-nrms 0.001 --max-abs-ratio 0.01 --min-cosine 0.999999
+==============================================================================
+runtime_system=Linux release=6.18.33.2-microsoft-standard-WSL2 WSL_DISTRO_NAME=Ubuntu
+torch=2.10.0+cu130 cuda=13.0 cudnn=91501 cusparselt_pkg=0.8.0 backend_version=800 compiled=True available=True
+NOTE: wall_sync includes dispatch+GPU+synchronize; event_batch includes all GPU ops; host_enqueue excludes final drain; profiler rows attribute individual ops.
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/sparse/semi_structured.py:568: UserWarning: The PyTorch API of SparseSemiStructuredTensor is in prototype stage and will change in the near future. Please open a Github issue for features requests and see our documentation on the torch.sparse module for further information about the project.
+  return cls(
+[pack] K=768 N=2048 inference_wall_ms=468.267955 training_wall_ms=2.020596 inference_packed_t=False training_packed_t=True
+[tuning contract] backend_version=800 reported_max_alg_id=None alg_ids=[0, 1, 2, 3, 4] split_k=[1, 2, 4] split_k_modes=[0, 1]
+[tune row] layout=inference M=1 K=768 N=2048 alg=0 split_k=1 mode=-1 event_batch_ms=0.197802 dense_over_candidate=0.054x
+[tune unsupported] layout=inference M=1 alg=0 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=0 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=0 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=0 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=1 K=768 N=2048 alg=1 split_k=1 mode=-1 event_batch_ms=0.219750 dense_over_candidate=0.048x
+[tune unsupported] layout=inference M=1 alg=1 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=1 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=1 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=1 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=1 K=768 N=2048 alg=2 split_k=1 mode=-1 event_batch_ms=0.232448 dense_over_candidate=0.046x
+[tune unsupported] layout=inference M=1 alg=2 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=2 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=2 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=2 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=1 K=768 N=2048 alg=3 split_k=1 mode=-1 event_batch_ms=0.278435 dense_over_candidate=0.038x
+[tune unsupported] layout=inference M=1 alg=3 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=3 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=3 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=3 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=4 split_k=1 mode=-1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1 alg=4 split_k=2 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1 alg=4 split_k=2 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1 alg=4 split_k=4 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1 alg=4 split_k=4 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+confirm:inference:M1:K768:N2048:dense	0.032024	0.005666	0.010240	0.000664	6.690	0.390	0.004	0.000
+confirm:inference:M1:K768:N2048:default_alg0	0.268666	0.028616	0.232906	0.005290	223.235	4.281	0.219	0.000
+confirm:inference:M1:K768:N2048:tuned	0.239019	0.008039	0.240554	0.006432	222.743	10.360	0.219	0.000
+[tune selected] layout=inference M=1 alg=0 split_k=1 mode=-1 search_wall_ms=267.139 confirmed_event_speedup=0.043x
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/profiler/profiler.py:217: UserWarning: Warning: Profiler clears events at the end of each cycle.Only events from the current cycle will be reported.To keep events across cycles, set acc_events=True.
+  _warn_once(
+[profile] tuned:inference:M1:K768:N2048 top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=67.431 cpu_us=1214.016 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=67.431 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=23.803 cpu_us=2634.572 device_memory_MiB=0.000
+  kernel_op=cudaFuncGetAttributes calls=3 device_us=0.000 cpu_us=340.768 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=288.782 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=53.306 device_memory_MiB=0.094
+  kernel_op=aten::t calls=6 device_us=0.000 cpu_us=36.811 device_memory_MiB=0.000
+  kernel_op=aten::slice calls=3 device_us=0.000 cpu_us=18.472 device_memory_MiB=0.000
+[tune row] layout=inference M=128 K=768 N=2048 alg=0 split_k=1 mode=-1 event_batch_ms=0.200438 dense_over_candidate=0.093x
+[tune unsupported] layout=inference M=128 alg=0 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=0 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=0 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=0 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=128 K=768 N=2048 alg=1 split_k=1 mode=-1 event_batch_ms=0.234026 dense_over_candidate=0.079x
+[tune unsupported] layout=inference M=128 alg=1 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=1 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=1 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=1 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=128 K=768 N=2048 alg=2 split_k=1 mode=-1 event_batch_ms=0.240234 dense_over_candidate=0.077x
+[tune unsupported] layout=inference M=128 alg=2 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=2 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=2 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=2 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=128 K=768 N=2048 alg=3 split_k=1 mode=-1 event_batch_ms=0.224896 dense_over_candidate=0.083x
+[tune unsupported] layout=inference M=128 alg=3 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=3 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=3 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=3 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=4 split_k=1 mode=-1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=128 alg=4 split_k=2 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=128 alg=4 split_k=2 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=128 alg=4 split_k=4 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=128 alg=4 split_k=4 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+confirm:inference:M128:K768:N2048:dense	0.030908	0.001037	0.011246	0.000061	8.533	0.095	0.500	0.000
+confirm:inference:M128:K768:N2048:default_alg0	0.230310	0.004626	0.239373	0.027123	225.079	23.378	0.688	0.000
+confirm:inference:M128:K768:N2048:tuned	0.249957	0.004260	0.222432	0.015400	209.979	2.203	0.688	0.000
+[tune selected] layout=inference M=128 alg=0 split_k=1 mode=-1 search_wall_ms=32.247 confirmed_event_speedup=0.051x
+[profile] tuned:inference:M128:K768:N2048 top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=67.205 cpu_us=675.476 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=67.205 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=22.513 cpu_us=126.975 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=46.517 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=21.581 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=17.750 device_memory_MiB=1.500
+  kernel_op=aten::t calls=6 device_us=0.000 cpu_us=14.290 device_memory_MiB=0.000
+  kernel_op=cudaFuncGetAttributes calls=3 device_us=0.000 cpu_us=8.328 device_memory_MiB=0.000
+[tune row] layout=inference M=1024 K=768 N=2048 alg=0 split_k=1 mode=-1 event_batch_ms=0.241238 dense_over_candidate=0.268x
+[tune unsupported] layout=inference M=1024 alg=0 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=0 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=0 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=0 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=1024 K=768 N=2048 alg=1 split_k=1 mode=-1 event_batch_ms=0.228995 dense_over_candidate=0.282x
+[tune unsupported] layout=inference M=1024 alg=1 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=1 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=1 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=1 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=1024 K=768 N=2048 alg=2 split_k=1 mode=-1 event_batch_ms=0.228541 dense_over_candidate=0.282x
+[tune unsupported] layout=inference M=1024 alg=2 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=2 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=2 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=2 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=1024 K=768 N=2048 alg=3 split_k=1 mode=-1 event_batch_ms=0.235501 dense_over_candidate=0.274x
+[tune unsupported] layout=inference M=1024 alg=3 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=3 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=3 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=3 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=4 split_k=1 mode=-1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1024 alg=4 split_k=2 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1024 alg=4 split_k=2 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1024 alg=4 split_k=4 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1024 alg=4 split_k=4 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+confirm:inference:M1024:K768:N2048:dense	0.063012	0.000599	0.045226	0.000053	10.105	0.333	4.000	0.000
+confirm:inference:M1024:K768:N2048:default_alg0	0.234987	0.002291	0.227594	0.007699	204.343	3.596	4.188	0.000
+confirm:inference:M1024:K768:N2048:tuned	0.237883	0.005419	0.230074	0.012877	208.434	7.129	4.188	0.000
+[tune selected] layout=inference M=1024 alg=2 split_k=1 mode=-1 search_wall_ms=28.313 confirmed_event_speedup=0.197x
+[profile] tuned:inference:M1024:K768:N2048 top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=89.703 cpu_us=770.748 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize128x128x64_stage2_warpsize2x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=89.703 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=29.223 cpu_us=98.577 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=58.572 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=17.873 device_memory_MiB=12.000
+  kernel_op=aten::t calls=6 device_us=0.000 cpu_us=17.599 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=13.842 device_memory_MiB=0.000
+  kernel_op=cudaFuncGetAttributes calls=3 device_us=0.000 cpu_us=9.078 device_memory_MiB=0.000
+[tune row] layout=inference M=8192 K=768 N=2048 alg=0 split_k=1 mode=-1 event_batch_ms=0.235235 dense_over_candidate=1.491x
+[tune unsupported] layout=inference M=8192 alg=0 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=0 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=0 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=0 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=8192 K=768 N=2048 alg=1 split_k=1 mode=-1 event_batch_ms=0.291510 dense_over_candidate=1.203x
+[tune unsupported] layout=inference M=8192 alg=1 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=1 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=1 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=1 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=8192 K=768 N=2048 alg=2 split_k=1 mode=-1 event_batch_ms=0.258794 dense_over_candidate=1.355x
+[tune unsupported] layout=inference M=8192 alg=2 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=2 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=2 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=2 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=8192 K=768 N=2048 alg=3 split_k=1 mode=-1 event_batch_ms=0.234477 dense_over_candidate=1.496x
+[tune unsupported] layout=inference M=8192 alg=3 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=3 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=3 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=3 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=4 split_k=1 mode=-1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=8192 alg=4 split_k=2 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=8192 alg=4 split_k=2 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=8192 alg=4 split_k=4 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=8192 alg=4 split_k=4 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+confirm:inference:M8192:K768:N2048:dense	0.342806	0.002895	0.317053	0.002016	10.246	0.210	32.000	0.000
+confirm:inference:M8192:K768:N2048:default_alg0	0.432347	0.006065	0.230704	0.008464	218.961	0.355	32.188	0.000
+confirm:inference:M8192:K768:N2048:tuned	0.440562	0.002509	0.254830	0.013890	242.435	2.247	32.188	0.000
+[tune selected] layout=inference M=8192 alg=3 split_k=1 mode=-1 search_wall_ms=55.390 confirmed_event_speedup=1.244x
+[profile] tuned:inference:M8192:K768:N2048 top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=859.450 cpu_us=744.535 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize128x64x64_stage2_warpsize2x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=859.450 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=177.001 cpu_us=103.129 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=561.080 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=267.929 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=23.570 device_memory_MiB=96.000
+  kernel_op=aten::t calls=6 device_us=0.000 cpu_us=15.893 device_memory_MiB=0.000
+  kernel_op=aten::transpose calls=6 device_us=0.000 cpu_us=15.014 device_memory_MiB=0.000
+[pack] K=2048 N=768 inference_wall_ms=0.336424 training_wall_ms=0.189225 inference_packed_t=False training_packed_t=True
+[tuning contract] backend_version=800 reported_max_alg_id=None alg_ids=[0, 1, 2, 3, 4] split_k=[1, 2, 4] split_k_modes=[0, 1]
+[tune row] layout=inference M=1 K=2048 N=768 alg=0 split_k=1 mode=-1 event_batch_ms=0.235139 dense_over_candidate=0.042x
+[tune unsupported] layout=inference M=1 alg=0 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=0 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=0 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=0 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=1 K=2048 N=768 alg=1 split_k=1 mode=-1 event_batch_ms=0.210749 dense_over_candidate=0.046x
+[tune unsupported] layout=inference M=1 alg=1 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=1 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=1 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=1 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=1 K=2048 N=768 alg=2 split_k=1 mode=-1 event_batch_ms=0.214803 dense_over_candidate=0.045x
+[tune unsupported] layout=inference M=1 alg=2 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=2 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=2 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=2 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=1 K=2048 N=768 alg=3 split_k=1 mode=-1 event_batch_ms=0.267690 dense_over_candidate=0.037x
+[tune unsupported] layout=inference M=1 alg=3 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=3 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=3 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=3 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1 alg=4 split_k=1 mode=-1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1 alg=4 split_k=2 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1 alg=4 split_k=2 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1 alg=4 split_k=4 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1 alg=4 split_k=4 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+confirm:inference:M1:K2048:N768:dense	0.027158	0.001421	0.012709	0.000587	8.280	0.030	0.001	0.000
+confirm:inference:M1:K2048:N768:default_alg0	0.262658	0.001668	0.262909	0.045298	228.511	26.955	0.199	0.000
+confirm:inference:M1:K2048:N768:tuned	0.271778	0.032104	0.246251	0.001475	234.118	19.361	0.199	0.000
+[tune selected] layout=inference M=1 alg=1 split_k=1 mode=-1 search_wall_ms=23.339 confirmed_event_speedup=0.052x
+[profile] tuned:inference:M1:K2048:N768 top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=41.387 cpu_us=815.408 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize128x64x64_stage5_warpsize2x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=41.387 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=14.099 cpu_us=90.764 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=263.119 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=29.092 device_memory_MiB=0.035
+  kernel_op=aten::t calls=6 device_us=0.000 cpu_us=16.101 device_memory_MiB=0.000
+  kernel_op=cudaFuncGetAttributes calls=3 device_us=0.000 cpu_us=9.409 device_memory_MiB=0.000
+  kernel_op=aten::transpose calls=6 device_us=0.000 cpu_us=9.237 device_memory_MiB=0.000
+[tune row] layout=inference M=128 K=2048 N=768 alg=0 split_k=1 mode=-1 event_batch_ms=0.266317 dense_over_candidate=0.103x
+[tune unsupported] layout=inference M=128 alg=0 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=0 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=0 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=0 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=128 K=2048 N=768 alg=1 split_k=1 mode=-1 event_batch_ms=0.252598 dense_over_candidate=0.109x
+[tune unsupported] layout=inference M=128 alg=1 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=1 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=1 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=1 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=128 K=2048 N=768 alg=2 split_k=1 mode=-1 event_batch_ms=0.224010 dense_over_candidate=0.123x
+[tune unsupported] layout=inference M=128 alg=2 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=2 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=2 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=2 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=128 K=2048 N=768 alg=3 split_k=1 mode=-1 event_batch_ms=0.297920 dense_over_candidate=0.092x
+[tune unsupported] layout=inference M=128 alg=3 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=3 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=3 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=3 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=128 alg=4 split_k=1 mode=-1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=128 alg=4 split_k=2 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=128 alg=4 split_k=2 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=128 alg=4 split_k=4 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=128 alg=4 split_k=4 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+confirm:inference:M128:K2048:N768:dense	0.033473	0.000066	0.023694	0.002837	15.253	0.073	0.188	0.000
+confirm:inference:M128:K2048:N768:default_alg0	0.294102	0.000081	0.243414	0.009776	258.802	2.861	0.375	0.000
+confirm:inference:M128:K2048:N768:tuned	0.290671	0.016733	0.258331	0.020915	276.130	5.400	0.375	0.000
+[tune selected] layout=inference M=128 alg=2 split_k=1 mode=-1 search_wall_ms=25.289 confirmed_event_speedup=0.092x
+[profile] tuned:inference:M128:K2048:N768 top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=86.208 cpu_us=848.140 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize128x128x64_stage2_warpsize2x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=86.208 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=29.120 cpu_us=76.774 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=294.921 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=66.862 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=30.878 device_memory_MiB=0.562
+  kernel_op=aten::t calls=6 device_us=0.000 cpu_us=18.079 device_memory_MiB=0.000
+  kernel_op=aten::slice calls=3 device_us=0.000 cpu_us=9.865 device_memory_MiB=0.000
+[tune row] layout=inference M=1024 K=2048 N=768 alg=0 split_k=1 mode=-1 event_batch_ms=0.284138 dense_over_candidate=0.200x
+[tune unsupported] layout=inference M=1024 alg=0 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=0 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=0 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=0 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=1024 K=2048 N=768 alg=1 split_k=1 mode=-1 event_batch_ms=0.244138 dense_over_candidate=0.232x
+[tune unsupported] layout=inference M=1024 alg=1 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=1 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=1 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=1 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=1024 K=2048 N=768 alg=2 split_k=1 mode=-1 event_batch_ms=0.261741 dense_over_candidate=0.217x
+[tune unsupported] layout=inference M=1024 alg=2 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=2 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=2 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=2 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=1024 K=2048 N=768 alg=3 split_k=1 mode=-1 event_batch_ms=0.256534 dense_over_candidate=0.221x
+[tune unsupported] layout=inference M=1024 alg=3 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=3 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=3 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=3 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=1024 alg=4 split_k=1 mode=-1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1024 alg=4 split_k=2 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1024 alg=4 split_k=2 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1024 alg=4 split_k=4 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=1024 alg=4 split_k=4 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+confirm:inference:M1024:K2048:N768:dense	0.078281	0.000479	0.053990	0.000062	10.235	0.150	1.500	0.000
+confirm:inference:M1024:K2048:N768:default_alg0	0.268028	0.001526	0.294715	0.043699	217.261	8.683	1.688	0.000
+confirm:inference:M1024:K2048:N768:tuned	0.297871	0.040967	0.250523	0.005755	227.233	0.726	1.688	0.000
+[tune selected] layout=inference M=1024 alg=1 split_k=1 mode=-1 search_wall_ms=26.726 confirmed_event_speedup=0.216x
+[profile] tuned:inference:M1024:K2048:N768 top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=84.672 cpu_us=874.371 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize128x64x64_stage5_warpsize2x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=84.672 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=28.224 cpu_us=94.489 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=268.832 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=36.481 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=27.704 device_memory_MiB=4.500
+  kernel_op=aten::t calls=6 device_us=0.000 cpu_us=17.002 device_memory_MiB=0.000
+  kernel_op=aten::slice calls=3 device_us=0.000 cpu_us=9.284 device_memory_MiB=0.000
+[tune row] layout=inference M=8192 K=2048 N=768 alg=0 split_k=1 mode=-1 event_batch_ms=0.234390 dense_over_candidate=1.633x
+[tune unsupported] layout=inference M=8192 alg=0 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=0 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=0 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=0 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=8192 K=2048 N=768 alg=1 split_k=1 mode=-1 event_batch_ms=0.252224 dense_over_candidate=1.517x
+[tune unsupported] layout=inference M=8192 alg=1 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=1 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=1 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=1 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=8192 K=2048 N=768 alg=2 split_k=1 mode=-1 event_batch_ms=0.258739 dense_over_candidate=1.479x
+[tune unsupported] layout=inference M=8192 alg=2 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=2 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=2 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=2 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune row] layout=inference M=8192 K=2048 N=768 alg=3 split_k=1 mode=-1 event_batch_ms=0.264944 dense_over_candidate=1.445x
+[tune unsupported] layout=inference M=8192 alg=3 split_k=2 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=3 split_k=2 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=3 split_k=4 mode=0 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=3 split_k=4 mode=1 reason=RuntimeError: CUDA error: internal error when calling `cusparseLtMatmul( &handle, &plan, alpha_ptr, compressed_A.data_ptr(), dense_B.data_ptr(), &beta, res.data_ptr(), res.data_ptr(), workspacePtr.get(), &stream, 1)`
+[tune unsupported] layout=inference M=8192 alg=4 split_k=1 mode=-1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=8192 alg=4 split_k=2 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=8192 alg=4 split_k=2 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=8192 alg=4 split_k=4 mode=0 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+[tune unsupported] layout=inference M=8192 alg=4 split_k=4 mode=1 reason=RuntimeError: CUDA error: invalid value when calling `cusparseLtMatmulAlgSetAttribute( &handle, &alg_sel, CUSPARSELT_MATMUL_ALG_CONFIG_ID, &alg_id, sizeof(alg_id))`
+label	wall_sync_ms	wall_MAD	event_batch_ms	event_MAD	host_enqueue_us	host_MAD	peak_delta_MiB	peak_MAD
+confirm:inference:M8192:K2048:N768:dense	0.344607	0.003944	0.325133	0.004038	11.281	0.670	12.000	0.000
+confirm:inference:M8192:K2048:N768:default_alg0	0.444969	0.036462	0.261000	0.008093	238.607	15.146	12.188	0.000
+confirm:inference:M8192:K2048:N768:tuned	0.409762	0.001768	0.233966	0.000662	240.278	40.797	12.188	0.000
+[tune selected] layout=inference M=8192 alg=0 split_k=1 mode=-1 search_wall_ms=35.050 confirmed_event_speedup=1.390x
+[profile] tuned:inference:M8192:K2048:N768 top=8
+  kernel_op=aten::_cslt_sparse_mm calls=3 device_us=462.056 cpu_us=799.575 device_memory_MiB=0.000
+  kernel_op=sm86_xmma_sparse_gemm_f16f16_f16f32_f32_tn_t_tilesize256x128x64_stage2_warpsize4x2x1_sptensor16x8x32_execute_kernel_5x_cusparselt calls=3 device_us=462.056 cpu_us=0.000 device_memory_MiB=0.000
+  kernel_op=Activity Buffer Request calls=1 device_us=159.149 cpu_us=80.185 device_memory_MiB=0.000
+  kernel_op=cudaLaunchKernelExC calls=3 device_us=0.000 cpu_us=265.105 device_memory_MiB=0.000
+  kernel_op=cudaDeviceSynchronize calls=2 device_us=0.000 cpu_us=140.794 device_memory_MiB=0.000
+  kernel_op=aten::empty calls=3 device_us=0.000 cpu_us=18.752 device_memory_MiB=36.000
+  kernel_op=aten::t calls=6 device_us=0.000 cpu_us=14.295 device_memory_MiB=0.000
+  kernel_op=cudaFuncGetAttributes calls=3 device_us=0.000 cpu_us=8.468 device_memory_MiB=0.000
+[tune summary] [(768, 2048, 'inference', 1, (0, 1, -1), 0.04256847543433309), (768, 2048, 'inference', 128, (0, 1, -1), 0.05056107329845177), (768, 2048, 'inference', 1024, (2, 1, -1), 0.196570142692435), (768, 2048, 'inference', 8192, (3, 1, -1), 1.2441717449315435), (2048, 768, 'inference', 1, (1, 1, -1), 0.051609086399954145), (2048, 768, 'inference', 128, (2, 1, -1), 0.09172101616805085), (2048, 768, 'inference', 1024, (1, 1, -1), 0.21551057057654358), (2048, 768, 'inference', 8192, (0, 1, -1), 1.3896559574176253)]
+[GATE CANDIDATE] at least one tuned row reached 1.10x; TLinear/model integration remains NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-21 00:07:38)
+==============================================================================

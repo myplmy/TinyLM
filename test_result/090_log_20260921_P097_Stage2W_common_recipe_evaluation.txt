@@ -1,0 +1,28 @@
+P097 Stage2W: same task IDs with per-checkpoint tokenizer/data, common byte bpb, and deterministic prompt panel; training 0
+
+==============================================================================
+[runlog] 2026-09-21 00:08:14  name=P097_Stage2W_common_recipe_evaluation
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/check_p097_stage2_assets.py --outputs runs/bench/p097_stage2_panel.jsonl runs/bench/p097_stage2_prompts.jsonl
+==============================================================================
+[PASS] checkpoint runs/ckpt/m100s10_ko-en-control-v2_300M_p097_ctrl_v2.pt
+[PASS] checkpoint runs/ckpt/m100s10_ko-en-fw2_300M_p097_fw2.pt
+[PASS] checkpoint runs/ckpt/m100s10_ko-en-edu-v2_300M_p097_edu_v2.pt
+[PASS] checkpoint runs/ckpt/m100s10_ko-en-madlad_300M_p097_madlad.pt
+[PASS] train-json runs/logs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2.json
+[PASS] train-json runs/logs/m100s10_ko-en-fw2_300M_p097_fw2.json
+[PASS] train-json runs/logs/m100s10_ko-en-edu-v2_300M_p097_edu_v2.json
+[PASS] train-json runs/logs/m100s10_ko-en-madlad_300M_p097_madlad.json
+[PASS] benchmark datasets/bench/kobest_copa.jsonl
+[PASS] benchmark datasets/bench/kobest_hellaswag.jsonl
+[MISS] benchmark datasets/bench/klue_ynat.jsonl
+[MISS] benchmark datasets/bench/klue_nli.jsonl
+[PASS] benchmark datasets/bench/arc_easy_full.jsonl
+[PASS] benchmark datasets/bench/hellaswag.jsonl
+[PASS] common-bpb datasets/squad/train-v2.0.json
+[NEXT] fetch missing public benchmarks under repo HF cache:
+  python scripts/fetch_bench_data.py --only klue_ynat klue_nli
+[GATE FAIL] missing assets=2
+------------------------------------------------------------------------------
+[runlog] 종료코드 2  소요 0.0분  (2026-09-21 00:08:14)
+==============================================================================
