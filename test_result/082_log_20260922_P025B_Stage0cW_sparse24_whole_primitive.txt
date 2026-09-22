@@ -1,0 +1,25 @@
+
+==============================================================================
+[runlog] 2026-09-22 00:41:44  name=P025B_Stage0cW_sparse24_whole_primitive
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sparse24_whole_primitive.py --require-wsl --m 8192 --accum 16 --warmup 3 --iters 10 --pack-repeats 5 --min-speedup 1.10
+==============================================================================
+runtime=Linux release=6.18.33.2-microsoft-standard-WSL2 WSL_DISTRO_NAME=Ubuntu
+gpu=NVIDIA GeForce RTX 4070 Ti SUPER torch=2.10.0+cu130 M=8192 accum=16
+NOTE: weight-gradient stays dense; pack is once per optimizer step and is amortized explicitly.
+NOTE: graph time excludes pack; amortized time adds pack/accum back.
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/sparse/semi_structured.py:635: UserWarning: The PyTorch API of SparseSemiStructuredTensor is in prototype stage and will change in the near future. Please open a Github issue for features requests and see our documentation on the torch.sparse module for further information about the project.
+  return cls(
+[shape] M=8192 K=768 N=2048 pack_ms=0.043175 pack_per_micro_ms=0.002698
+  eager_event dense=0.944214 sparse=0.704922 amortized=0.707620 speedup=1.334x
+  eager_wall  dense=0.979873 sparse=1.019493 amortized=1.022191 speedup=0.959x
+  graph_event dense=0.937677 sparse=0.673997 amortized=0.676695 speedup=1.386x
+[shape] M=8192 K=2048 N=768 pack_ms=0.062274 pack_per_micro_ms=0.003892
+  eager_event dense=0.982016 sparse=0.709018 amortized=0.712910 speedup=1.377x
+  eager_wall  dense=0.983485 sparse=1.058615 amortized=1.062507 speedup=0.926x
+  graph_event dense=0.891699 sparse=0.642765 amortized=0.646657 speedup=1.379x
+[GATE CANDIDATE] best amortized path floor=1.379x >= 1.10x
+[LIMIT] optimizer state, TLinear quantization, whole Transformer and quality remain NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-22 00:41:47)
+==============================================================================

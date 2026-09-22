@@ -1,0 +1,23 @@
+P014D Stage1Wb: v1 base-3 incremental table and GIL release; training 0
+Gate preserves Stage1W shapes and >=1.50x native/int8 threshold.
+
+==============================================================================
+[runlog] 2026-09-22 00:41:11  name=P014D_Stage1Wb_native_lut_incremental
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/test_lut_cpu_native.py --compile
+==============================================================================
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_lut_cpu_native.py", line 70, in <module>
+    raise SystemExit(main())
+  File "/home/uranus/tinyLM/scripts/test_lut_cpu_native.py", line 53, in main
+    torch.testing.assert_close(actual, reference, rtol=1e-6, atol=1e-6)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/testing/_comparison.py", line 1600, in assert_close
+    raise error_metas[0].to_error(msg)
+AssertionError: Tensor-likes are not close!
+
+Mismatched elements: 9 / 42 (21.4%)
+Greatest absolute difference: 5.7220458984375e-06 at index (0, 0, 0) (up to 1e-06 allowed)
+Greatest relative difference: 4.527037890511565e-05 at index (1, 1, 3) (up to 1e-06 allowed)
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.3분  (2026-09-22 00:41:28)
+==============================================================================
