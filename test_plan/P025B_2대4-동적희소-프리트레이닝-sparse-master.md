@@ -2,7 +2,7 @@
 
 > **승인 2026-09-13.** 정본 제안서: [`20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md`](../proposal/done/20260913_TinyLM-2대4-동적희소-프리트레이닝-sparse-master-제안서-approved.md)  
 > P025의 고정 2:4 개념을 대체하지 않고, native kernel·topology·dense/sparse master를 분리하는 후속 계획이다.  
-> **현재 상태(2026-09-21):** Windows Stage0b는 import를 통과했지만 RTX 4070 Ti SUPER
+> **현재 상태(2026-09-22):** Windows Stage0b는 import를 통과했지만 RTX 4070 Ti SUPER
 > `sm_89`·PyTorch 2.10.0 환경에서 `cuSPARSELt not supported`로 첫 native 호출이 거부됐다
 > ([결과 082 §6](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)).
 > WSL Stage0bW의 `operation is not supported`는 backend 불가가 아니라, one-way
@@ -21,7 +21,11 @@
 > pre-replay 구현 결함을 닫고 graph 8행을 모두 통과했다. M=1 graph는
 > 0.079~0.369×로 음성이지만 M=8192 graph는 1.400~2.342× 후보다. 반면
 > 일반 PyTorch wall은 0.771~0.802×로 여전히 느리다([082 §12](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#12-stage0bwg-cuda-graph-복구2026-09-21--구현-오류는-닫혔고-큰-m의-replay-후보는-성립했다)).
-> 따라서 Stage0c whole primitive를 열되 whole-step/TLinear/품질은 아직 `NOT_RUN`이다.
+> Stage0cW에서 fwd+dgrad+dense-wgrad+pack/accum의 eager event는 1.334~1.377×,
+> graph event는 1.379~1.386×로 후보를 통과했지만 동기 wall은 0.926~0.959×로
+> 여전히 느리다([082 §13](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#13-stage0cw-whole-primitive2026-09-22--gpu-work는-양성-동기-wall은-음성)).
+> 따라서 낮은 수준 GPU primitive 후보는 남지만 TLinear·optimizer·전체 Transformer·품질은
+> `NOT_RUN`이며 바로 기본 경로로 승격하지 않는다.
 
 ## 1. 왜 — 0을 넣는 것과 실제 희소 학습은 다르다
 
@@ -57,7 +61,7 @@ native 속도, dense-master 품질, inactive state를 제거한 sparse-master, t
 | **Stage0bWe ⚠️ 부분 유효** | wall-sync·CUDA Event·host enqueue·M1 padding·profiler·CUDA Graph를 같은 pack에서 분리 | 정합·wall/event/host/profiler 유효; graph는 pre-replay 비교 결함으로 전 행 무효 | [082 §11](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#11-stage0bwewf-실제-귀속2026-09-21--gpu-op-후보는-m8192뿐-host-wall은-전부-음성) |
 | **Stage0bWf ✅ 부분 후보** | 공개 `_cslt_sparse_mm`의 `alg_id`·Split-K를 탐색과 확인 측정으로 분리 | M8192 event 1.244/1.390×, wall 0.778/0.841×; 비기본 alg tuning 이득 없음 | [082 §11](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#11-stage0bwewf-실제-귀속2026-09-21--gpu-op-후보는-m8192뿐-host-wall은-전부-음성) |
 | **Stage0bWg ✅ graph 복구** | We의 graph pre-replay 결함만 M1/M8192 inference/training에서 재검증 | 8행 모두 OK; M8192 graph 1.400~2.342× 후보, M1 음성 | [082 §12](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#12-stage0bwg-cuda-graph-복구2026-09-21--구현-오류는-닫혔고-큰-m의-replay-후보는-성립했다) |
-| **Stage0c 🔄** | dense vs 2:4 whole primitive forward/backward/pack-update | graph 후보가 전체 primitive에서 ≥1.10× 또는 메모리 가치를 남김 | 0.2 |
+| **Stage0c ✅ 부분 후보** | dense vs 2:4 whole primitive forward/dgrad/dense-wgrad/pack-update | event 1.334~1.386× 양성, wall 0.926~0.959× 음성; 통합 채택 아님 | [082 §13](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#13-stage0cw-whole-primitive2026-09-22--gpu-work는-양성-동기-wall은-음성) |
 | **Stage1a ⏸** | dense-master 2:4, 250 step | sparse-master 메모리 트랙 별도 재승인 | 0.25 |
 | **Stage1b** | flip/death/birth/resurrection 계측 | active count·birth/death 보존 | 0.25 |
 | **Stage1c** | sparse-master 250 step | hidden dense state 없음, invariant 100% | 0.3 |
@@ -152,9 +156,9 @@ surface와 공식 API만으로 확정하지 않고 **검증 가설**로 낮춘�
   probe와 fresh confirmation. low-level event만 M8192 후보, wall과 algorithm tuning은 음성.
 - 완료: `run_P025B_Stage0bWg_wsl_sparse24_graph_recovery-done.sh` — capture 뒤 첫 replay를
   보장하고 graph 8행을 전부 회수했다([082 §12](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#12-stage0bwg-cuda-graph-복구2026-09-21--구현-오류는-닫혔고-큰-m의-replay-후보는-성립했다)).
-- 실행 대기: `run_P025B_Stage0cW_sparse24_whole_primitive.sh` — M8192에서
+- 완료: `run_P025B_Stage0cW_sparse24_whole_primitive-done.sh` — M8192에서
   forward+input-gradient+dense weight-gradient와 optimizer-step pack 비용을 accum16으로 상각해
-  eager event/wall/graph을 분리한다.
+  eager event/wall/graph을 분리했다. GPU work는 후보이지만 wall은 음성이다.
 - 미작성: Stage1a~Stage4와 Stage2i 학습 후 checkpoint end-to-end 추론. Stage0cW의
   전체 primitive가 음성이면 가속 분기를 자동 열지 않고 sparse-master 메모리 축을 별도 판정한다.
 

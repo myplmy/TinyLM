@@ -241,8 +241,8 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p35b_a3_*` | P035B A3 동역학(`e60`·`e80`)과 audit 오염 대조(`off80`) | **예약 2026-09-15.** 세 팔 모두 m100s8·250 step·600M exact pool·seed 1337; 🚫품질 또는 anneal 기본값 판정에 사용 금지 |
 | `p097_ctrl_v2`·`p097_fw2`·`p097_edu_v2`·`p097_madlad` | P097 300M 한영 dataset recipe 대조 | **사용 완료 2026-09-20.** 전 팔 m100s10 dense·CLA2·Muon RMS4×4·300.024M draw·600M nominal pool·seed1337·exit0. tokenizer/data/val이 달라 자기 val_loss 교차비교 금지([090 §5](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#5-stage0bstage1abd-실제-완료2026-09-20)) |
 | `p097_{ctrl_v2,fw2}_s{2024,31415}` | P097 control/FineWeb2 교환 재현성 | **예약 2026-09-21.** 기존 seed1337에 두 seed를 더해 YNAT/ARC 강점과 common-bpb 열세의 부호만 재판단; 기본 dataset 승격 금지 |
-| `p060b_q_{off,on}_s{1337,2024,31415}` | P060B GQA 300M 품질 3-seed | **예약 2026-09-21.** seed 내 `sdpa_gqa` 하나만 변경; memory gate 음성을 품질 PASS로 승격 금지 |
-| `d14_cla2_norecur_rms4_lr{15,20}[_s2024|_s31415]`·`d14_cla2_norecur_rms4_s{2024,31415}` | P005b CLA2 LR 1.0/1.5/2.0 3-seed | **예약 2026-09-21.** 논문의 CLA별 LR 최적화를 우리 RMS4 조건에서 재판단 |
+| `p060b_q_{off,on}_s{1337,2024,31415}` | P060B GQA 300M 품질 3-seed | **사용 완료 2026-09-22.** full-val 차이는 전부 실무 분해능 0.024 안이지만 방향 불일치; 속도 중립·reserved -1.986%. 기본 off 유지([088 §3.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#31-최신-누적-판정-stage2wstage3w2026-09-22--품질은-실무상-동급-cache-배포-정합은-미통과)) |
+| `d14_cla2_norecur_rms4_lr{15,20}[_s2024|_s31415]`·`d14_cla2_norecur_rms4_s{2024,31415}` | P005b CLA2 LR 1.0/1.5/2.0 3-seed | **사용 완료 2026-09-22.** LR1.5가 base 대비 3/3 우세(평균 -0.0027), LR2.0은 3/3 열세. CLA2 d14 후보 LR만 1.5e-3([078 §16](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#16-stage13142026-09-22--cla2의-lr-15e-3-후보가-3-seed-동일-방향으로-재현됐다)) |
 | `p098_r2_{ctrl,reinject}_s{1337,2024,31415}` | P098 재귀 embedding 재주입 | **예약 2026-09-21.** m100s8 dense·CLA2·R2·RMS4×4 300M; cycle 덧셈 on/off만 변경 |
 | `p092_s{1,2,3}_*` | P092 full-trainer dense/static/DST panel | **예약 2026-09-21.** 30M→100M→gate→300M 3-seed; dense mask라 하드웨어 가속/저장 절감 주장 금지 |
 | `p076_s2_mean`·`p076_s2_middle`·`p076_s2_normmean` | P076 Stage2 부모 집약 품질 3팔 | **예약 2026-09-20.** m100R1c tied·같은 dense parent·Muon RMS4×4·CLA2·300M/600M·seed1337; `group_init`만 변경 |
@@ -3067,8 +3067,11 @@ d16_r20 −0.04078 · d18_norecur −0.03688 · d16_g4 −0.05063 · ★**d14_no
 **CLA2 에 LR 스윕을 따로 돌렸고** 최적 LR 이 기준선의 **1.5배**(1.5e-3 → 2.25e-3)였다.
 ★**우리는 모든 팔을 `--lr 1e-3` 으로 돌린다.**
 
-★★**그러므로 +0.024 는 *"CLA2 를 그 아키텍처의 최적 LR 밖에서 잰 값"*** 이다.
-🚫**이 수로 CLA 축의 교환비(0.00587 nats/MiB)를 확정하지 않는다** — 선결은 `cla2 × lr` 2점(⚙3.7h).
+★★**그러므로 +0.024 는 *"CLA2 를 그 아키텍처의 최적 LR 밖에서 잰 값"*** 으로 재검증했다.
+2026-09-22 3-seed panel에서 LR1.5e-3이 1.0e-3보다 평균 **-0.0027 nats**(세 seed
+모두 같은 방향), LR2.0e-3은 세 seed 모두 열세였다([078 §16](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#16-stage13142026-09-22--cla2의-lr-15e-3-후보가-3-seed-동일-방향으로-재현됐다)).
+따라서 최적화 누락이 종전 +0.024의 약 11%를 회수하지만, 그 대가를 없애지는
+못한다. CLA2 d14 레시피에서 LR1.5e-3을 후보로 쓰되 교환비를 공짜로 재판정하지 않는다.
 ✅**구조 검증은 통과**다(소유자·인접·엔트리·균등 넷 전부 일치).
 ⚠️**우리 `report()` FLOPs 식에 `cla_group` 이 없어** 논문이 말하는 FLOPs 감소가 **회계에 안 잡힌다**.
 
@@ -3421,6 +3424,10 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
   `0.079~0.369×`, M8192는 `1.400~2.342×`이지만 일반 wall은
   `0.771~0.802×`다. captured work 후보를 whole-step으로 옮기지 않고 Stage0cW에서
   fwd+dgrad+wgrad+pack/accum을 재다([082 §12](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#12-stage0bwg-cuda-graph-복구2026-09-21--구현-오류는-닫혔고-큰-m의-replay-후보는-성립했다)).
+- **P025B Stage0cW**: M8192 whole primitive의 eager event 1.334/1.377×, graph
+  1.386/1.379×로 1.10× 후보선을 넘었지만 동기 wall은 0.959/0.926×로 음성이다.
+  pack/accum은 0.0027~0.0039ms라 주 병목이 아니며 TLinear·sparse wgrad·optimizer·품질은
+  `NOT_RUN`이다([082 §13](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#13-stage0cw-whole-primitive2026-09-22--gpu-work는-양성-동기-wall은-음성)).
 - **P060B Wb·모델 통합**: isolated B8/T1024에서 forced CUDNN/FLASH는 off보다 각각
   `1.051/1.031×`, default는 `1.018×`이고 EFFICIENT는 unavailable이다. actual model 경로는
   logits가 일치하고 `11.1354→9.8974 ms`(`0.889×`, 약 11.1% 단축)였지만 allocation은
@@ -3431,6 +3438,9 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
   무효였다. 4-D Wd에서 grouped EFFICIENT는 실행됐지만 1.232~1.639× 느렸다. Stage1W actual
   training은 속도 1.0025×, reserved 절감 1.986%라 10% memory 문턱을 못 넘었다. default micro와
   actual forward 속도 후보는 보존하지만 학습 memory 레버는 음성이다([결과 088 §9](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#9-stage0awdstage1w-실제-결과2026-09-2021--default-micro-후보-학습-memory-gate-음성)).
+- **P060B Stage2/3**: cache decode는 seq128에서 NRMS 0.004489/cosine 0.999990으로
+  정합 문턱을 못 넘어 timing·text가 `NOT_RUN`이다. 300M 3-seed full-val은 실무상 동급이지만
+  방향 불일치, 속도 중립, reserved -1.986%라 기본 off를 유지한다([088 §3.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#31-최신-누적-판정-stage2wstage3w2026-09-22--품질은-실무상-동급-cache-배포-정합은-미통과)).
 - **P022C Wc**: cached FP8 weight는 2/3 형상에서 1.10×를 넘었지만 2048→768은 0.968×이고,
   모든 FP8 팔이 NRMS 3.76~3.78%·working-memory 증가라 세 계약 동시 PASS가 없다. cache-only
   TLinear 통합은 열지 않는다([결과 081 §9](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md#9-stage0bwc-ae-원인-귀속2026-09-21--weight-cache만으로-세-계약을-함께-못-살린다)).
@@ -3471,4 +3481,6 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
 79. ★★**WSL full training은 exact-tag post-run W&B를 사용하고, 50M 미만 probe는 업로드하지
     않는다.** remote 실패는 JSON·학습 rc를 덮지 않으며 W&B는 정본이 아니다.
 80. ★★**native extension과 빠른 kernel은 동의어가 아니다.** P014D C++ LUT v0의 compiled
-    정합은 PASS지만 합성 두 측정에서 dense 대비 0.288~0.731×다. actual model·SIMD 전에는 속도 채택 금지.
+    정합은 PASS지만 actual model의 native/int8은 1.188~1.249×로 1.50× 문턱 미달이다.
+    v1 Wb는 float32 누산을 1e-6로 판정한 테스트 결함으로 속도 전 중단했으며,
+    1e-5 정합 교정 후 actual model 속도는 Stage1Wc 전 `NOT_RUN`이다.

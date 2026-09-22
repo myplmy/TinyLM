@@ -4,7 +4,7 @@
 > 그래서 이름에 시각이 없다(제안서 §3.6). 🚫`check_handoff` 는 `*_HANDOFF.md` 만 보므로
 > 이 파일에 고정 섹션 8개를 요구하지 않는다 — **면제 코드가 필요 없다.**
 >
-> **신설** 2026-09-08(2차) · **최신 갱신** 2026-09-21 · **근거** [제안서(승인)](../proposal/done/20260908_연구방향-길잡이-파일-approved.md)
+> **신설** 2026-09-08(2차) · **최신 갱신** 2026-09-22 · **근거** [제안서(승인)](../proposal/done/20260908_연구방향-길잡이-파일-approved.md)
 > · 사용자 지시 8(원안) → 2026-09-08(2차) 지시 2B(*"claude 개선안으로 승인"*).
 >
 > ★**읽는 순서**: `ai_dev_tool/06` → **이 파일** → 최신 핸드오프.
@@ -39,12 +39,12 @@
 | **재귀** | ★**승자의 부품(상주 축 한정)** — 300M→600M 토큰 이득은 재귀·무재귀 네 형상에서 재현됐고, RMS4 우세도 재귀 d12에서 시작해 무재귀 네 형상으로 전이했다 | ★**098 계획** ← 078 §8 ← 076 §11.5(2026-09-21) | P098 embedding 재주입 덧셈판 on/off 3-seed 300M panel ⚙11.1h | 기본-off 덧셈을 구현했지만 concat+adapter·반복 수 무작위화·절단 BPTT는 없다. 두 seed 이상 우세 전 재귀 기본값 변경 금지 |
 | **MLP 타잉** | 🚫**exact 직접 공유 기각·집약 초기화 mean 유지** — P076 Stage2W는 mean≈middle, norm_mean +0.0030 열세 | ★**079 §3** ← 064 §9(2026-09-21) ← 086 §4 | attention-only B3는 별도 `attn_group_init` 구현·승인 선결 | single-seed 집약 결과는 타잉 자체 부활 근거가 아니며 norm_mean만 탈락시킨다 |
 | **어텐션 타잉** | 🚫**직접 공유 현 조건 기각** — `ag2`가 dense보다 +0.0073 열세(자의 3.0배). ⚠️head 정렬·저랭크 차이를 쓰는 방식은 별도 방법이며 0런 | ★**079 §3**(2026-09-11) ← 058 | [P093](../test_plan/P093_구조조건부-직접공유와-완화타잉.md)의 중복·회계에서만 보존; 직접 `ag2` 반복과 CLA 혼합은 하지 않음 | 종전 `ag2` 표본 공백과 CLA 교락은 해소됐다. 직접 공유를 되살리려면 같은 격자 반복이 아니라 대가 완화의 새 구현·순메모리 근거가 필요하다 |
-| **CLA/KV** | ✅**승격 후보 1순위** — 유일하게 깊이보다 싸다 | 결과 059 · 2026-09-08 | P005b Stage13~14 `cla2 × lr 1.0/1.5/2.0` 3-seed panel ⚙10.1h | ★**값어치가 컨텍스트에 선형**이다(seq2048 이면 0.00293). 우리 대가 +0.024가 논문 +0.00516의 4.6배인 원인이 미최적 LR인지 세 seed로 확정 전 교환비 승격 금지 |
-| **양자화** | ⏸**부분** — LUT 1.600 상주 채택·scalar native 속도 음성 | ★**075 §15** ← 069 §9(2026-09-21) ← 014 §18 | SIMD/vectorized layout 또는 외부 kernel ABI는 별도 구현 승인 | native v0는 reference보다 약1.79×지만 int8 대비1.188~1.249×로 1.50× 채택선 미달 |
+| **CLA/KV** | ✅**승격 후보·LR 교정 완료** — 유일하게 깊이보다 싸다 | ★**078 §16** ← 059(2026-09-22) | 자동 실험 없음; CLA1/CLA2 각 최적 LR 직접쌍은 신규 계획 승인 선결 | LR1.5가 CLA2 d14에서 3/3 우세지만 평균 회수는 0.0027 nats로 종전 +0.024의 약 11%다. 컨텍스트 선형 가치는 남음 |
+| **양자화** | ⏸**부분** — LUT 1.600 상주 채택·v1 속도 NOT_RUN | ★**075 §15** ← 069 §10(2026-09-22) ← 014 §18 | P014D Stage1Wc native v1 actual gate ⚙0.1h | v0 native/int8 1.188~1.249× 음성. Wb는 1e-6 테스트 결함으로 속도 전 중단; 1e-5 compile 정합만 PASS |
 | **토큰·코퍼스** | ⚠️**P097 공통평가 완주·전면 승자 없음** | ★**090 §8**(2026-09-21) ← 078 §13 ← 075 §19 | control/FineWeb2 두 추가 seed + 공통 panel ⚙6.0h | control bpb 1.3355 vs FineWeb2 YNAT 40.9% 강점이 갈림. 재현 전 혼합 recipe·기본 dataset 교체 금지 |
-| **옵티마이저** | ★**Muon RMS4를 사용자 기본 채택·연구축은 열림** — 상단·WD·형상·seed2024·역사적 길이 전이를 통과 | ★**078 §11~§15** ← 076 §13 ← 075 §19(2026-09-16) | 현재 코드 기본은 RMS4×4·KD off·optimizer-aware WD. 새 smoke 뒤 실제 본런 검증; QK-norm·schedule-scaled WD는 별도 연구 | Muon 일반행렬 WD0, embedding AdamW WD0.1, norm/bias/gate WD0, LRM WD0.01. 기본값 구현과 CPU 계약은 `STATIC_ONLY`; 현재 변경 뒤 학습은 `NOT_RUN` |
+| **옵티마이저** | ★**Muon RMS4 기본 후보·연구축은 열림** — 상단·WD·형상·seed·길이 전이 통과 | ★**078 §16** ← 078 §11~§15 ← 076 §13(2026-09-22) | CLA2 d14는 LR1.5e-3 후보; QK-norm·schedule-scaled WD는 별도 연구 | LR1.5 이득은 CLA2 형상 한정이며 글로벌 LR 기본값 변경 근거가 아님 |
 | **토크나이저/어휘** | ⏸**보류** — 선결은 P075 단계1(어휘 16,384) ⚙2.0h | 결과 053 · 2026-08-22 | P075 단계1(**16 MiB 예산이 열릴 때**) | 어휘를 줄이면 **M=8192 무릎이 움직인다**(무릎은 어휘 32,768 기준). 그러면 속도·VRAM 표가 전부 다시 필요하다 |
-| **속도** | ⚠️**부분 후보·end-to-end 미확정** — P025B M8192 graph는 양성, 일반 wall·P060B training memory·P014D v0는 음성 | ★**088 §9** ← 082 §12 ← 081 §9 ← 069 §9(2026-09-21) | P014D v1 → P025B Stage0cW → P060B cache deploy gate 순 | P025B M8192 graph 1.400~2.342×라도 wall 0.771~0.802×. GQA reserved −1.986%는 decode 이득이 아니며 세 게이트 전 기본값 변경 금지 |
+| **속도** | ⚠️**GPU work 후보·실제 경로 미채택** — P025B event 양성, wall·P060B cache·P014D v0 음성/미완결 | ★**088 §3.1** ← 082 §13 ← 069 §10(2026-09-22) | P014D Stage1Wc ⚙0.1h; P025B/P060B 자동 후속 없음 | P025B whole primitive event 1.334~1.386×지만 wall 0.926~0.959×. GQA 품질은 동급이어도 cache 정합 미통과·reserved -1.986% |
 | **지능/벤치** | 🚫**v3.0 core 회귀·P097 recipe 전면 승자 없음·Q2a synthetic만 PASS** | ★**090 §8**(2026-09-21) ← 085 §4 ← 074 §27 | P097 두 recipe seed panel은 교환 재현성만; 실제 Q2b는 보호 데이터·팀 의미검토 선결 | recipe 벤치와 synthetic 320개·cap/provenance PASS 둘 다 봉인 final 품질이 아니다 |
 
 ---
@@ -84,9 +84,9 @@
   parameterization은 음성이다. P094는 P022C shadow evidence 부재로 정상 `HOLD`다.
 - P095 S0b는 1 MiB payload와 metadata·read/write 계약만 PASS다. P096 Q2a는 synthetic
   taxonomy/provenance 계약만 PASS다. 두 결과 모두 모델 능력으로 승격하지 않는다.
-- P022C Wb는 한 형상 1.148×지만 수치·메모리 음성이고 weight-cache Wc는 `NOT_RUN`이다.
-  P025B Wd는 synthetic 음성이며 We/Wf가 host/GPU/algorithm 귀속을 분리한다. P060B actual model
-  forward만 약 11.1% 단축 후보를 남겼고 allocation 감소·backward·학습은 확인되지 않았다.
+- P022C Wc는 수치·메모리 동시 PASS가 없다. P025B Stage0cW는 whole primitive
+  event/graph 1.334~1.386× 후보지만 wall 0.926~0.959×로 음성이다. P060B Stage3 품질은
+  실무상 동급이지만 Stage2 cache 정합은 미통과이므로 기본 off를 유지한다.
 - P097 Stage2Wb 공통평가에서 control/FineWeb2 강점이 갈렸고 전면 승자는 없었다.
   벤치 launcher의 `--wandb` 누락으로 원격 전송은 0회였지만 문항 JSONL에서 local TSV
   72행을 복구했다. 두 추가 seed 전 기본 dataset 교체는 하지 않는다.
@@ -96,10 +96,10 @@
 P078의 기존 종결도 유지한다. 2026-09-20 P087 Stage3bW 회수로 P087을 종결해 현재 계획
 인덱스는 실행 전 25·진행 46·종결 42다.
 
-기존 runnable P076 Stage1W·P014D Stage0bW·P087 Stage3bW는 모두 회수됐다. 현재는
-frontier·결과 정본을 다시 대조해 P014D v1, P025B whole primitive, P060B deploy/품질,
-P005b CLA LR, P092 full trainer, P097 seed 패널, P098 재주입의 **실물 WSL SH 31건**을
-구성했다. P077/P081/P052/P057/P062/P065/P068의 낡은 계획 문구는 결과상 종결·하향이라
+기존 runnable P076 Stage1W·P014D Stage0bW·P087 Stage3bW는 모두 회수됐다. 2026-09-22에는
+51.1h pack의 첫 16건(P014D/P025B/P060B/P005b)을 회수했고, P014D Stage1Wc와
+P092 full trainer, P097 seed 패널, P098 재주입이 실물 WSL SH로 남았다.
+P077/P081/P052/P057/P062/P065/P068의 낡은 계획 문구는 결과상 종결·하향이라
 시간 채우기 재실행에서 제외했다. P091 actual selector panel과 P095 full Transformer는 이번
 51.1h 연구 pack보다 선결 설계 불확실성이 높아 차순위로 두었다. 이 상태는
 [실험계획목록](../test_plan/실험계획목록.md)의 세 표에 계획당 한 행으로 반영한다.

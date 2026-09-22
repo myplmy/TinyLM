@@ -261,7 +261,8 @@ def main() -> int:
 
     n_ok = 0
     for nm, cols, rows, key, lab in plan:
-        run = wandb.init(project=a.project, id=nm, name=nm, resume="allow", reinit=True)
+        run = wandb.init(project=a.project, id=nm, name=nm, resume="allow",
+                         reinit="finish_previous")
         # ★`log` 로 올리면 **history 와 summary 양쪽**에 들어가고, summary 쪽을
         #   `summaryTable(tableKey=...)` 이 읽는다. 🚫같은 키를 나중에 다시 log 하면
         #   **summary 의 표가 통째로 교체된다** — 그래서 실제 도구는 **누적 표**를 올려야 한다.

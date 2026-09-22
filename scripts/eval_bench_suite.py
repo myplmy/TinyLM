@@ -1343,7 +1343,7 @@ def _push_wandb(summary, a):
             for tag, rec in per.items():
                 rid = f"bench-{task}-{tag}"
                 r = wandb.init(project=a.wandb_project, id=rid, name=rid, resume="allow",
-                               reinit=True, config={"task": task, "model": tag,
+                               reinit="finish_previous", config={"task": task, "model": tag,
                                                     "preset": a.preset, "n": a.n,
                                                     "seed": a.seed, "pmi": not a.no_pmi})
                 r.summary.update({k: v for k, v in rec.items()
@@ -1370,7 +1370,8 @@ def _push_wandb(summary, a):
             skipped += 1
             continue
         rid = _run_name(a, tag, data)
-        r = wandb.init(project=a.wandb_project, id=rid, name=rid, resume="allow", reinit=True)
+        r = wandb.init(project=a.wandb_project, id=rid, name=rid, resume="allow",
+                       reinit="finish_previous")
         flat = {}
         for task, rec in tasks.items():
             for k, v in rec.items():

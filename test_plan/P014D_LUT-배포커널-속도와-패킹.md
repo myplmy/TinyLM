@@ -1,8 +1,8 @@
 # P014D — **LUT 배포 커널: 속도와 패킹**
 
-- **상태**: 🔄**진행 중·native CPU v0 음성, v1 정적 구현** — Stage0bW CPU profile은 완주했고
+- **상태**: 🔄**진행 중·native CPU v0 음성, v1 actual 속도 NOT_RUN** — Stage0bW CPU profile은 완주했고
   ([결과 069 §8](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#8-stage0bw-교정-재실행2026-09-20--프로파일은-완주했고-즉시-커널-착수-근거는-부족)). 5-trit/per-row-alpha C++ v0는 actual model에서 Python reference보다 1.79× 빠르지만 int8 대비 1.188~1.249×로 채택선 1.50×에 미달했다([결과 069 §9](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#9-stage1w-native-lut-actual-model-gate2026-09-20--reference는-개선-int8-문턱은-미달)). moonshot의 3:4 전용 설계는 분리하고 generic g5에 GIL 해제·base-3 증분 표를 차용한 v1 Stage1Wb를 준비했다. 실제 속도는 `NOT_RUN`.
-- **상태 갱신**: 2026-09-21
+- **상태 갱신**: 2026-09-22
 - **신설**: 2026-08-30 (사용자 지시 12 — P014 가 길어져 가독성·관리가 나빠졌다)
 - **이관 원본**: [P014](P014_커스텀삼진커널-검증.md) · [P014B](P014B_LUT커널-실사-및-속도게이트.md) · [P014C](P014C_우리구조에맞는-역양자화제거-경로.md)
 - **선행 결과**: [003](../test_result/003_20260725001000_P014-커널-어닐버그.md) · [016 §24](../test_result/016_20260731110000_P034-실행시메모리-순위역전확인.md) · [028](../test_result/028_20260807_P014C-per-row는-공짜지만-융합커널은-6.5배-느리다.md)
@@ -177,13 +177,24 @@ exit8 음성이다. 이는 per-row 재양자화 speed gate이며 품질 채택�
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
+## 9.1 최신 누적 상태(2026-09-22) — Stage1Wb 회수와 Stage1Wc
+
+Wb는 C++ compile 후 첫 합성 정합 비교에서 최대절대차 `5.72e-6`을 `1e-6`로
+판정해 exit 1이었다. benchmark·actual checkpoint에 도달하지 않았으므로 v1 속도 판정은
+`NOT_RUN`이다. 반면 참조 einsum과 incremental 표의 float32 누산 순서 차이를 반영한
+`rtol=atol=1e-5`로는 2-D·3-D·TLinear dispatch가 독립 컴파일 테스트에서 통과했다.
+`run_P014D_Stage1Wc_native_lut_tolerance_recovery.sh`는 종전 형상·checkpoint·
+1.50× 문턱을 바꾸지 않고 정합 설계 결함만 교정한 재실행이다.
+
 ## 10. 2026-09-21 Stage1W 결과와 다음 경계
 
 compiled 정합·합성·두 actual checkpoint decode가 모두 실행됐다. native/reference는
 1.785~1.790×였지만 native/int8은 1.188~1.249×로 §5 채택선 1.50×에 미달했다. 따라서
 scalar C++ v0를 기본 배포 backend로 승격하지 않는다. g5 packed 상주 레버와 reference 구현은
 보존하며, 속도 후속은 SIMD/vectorized layout 또는 외부 T-MAC/BitNet ABI 적합성 실사라는 별도
-구현 질문이다. 그 구현 승인 전 새 launcher를 만들지 않는다.
+구현 질문이다. Stage1Wb는 incremental float32 누산에 `1e-6` 허용오차를 쓴
+단위시험에서 중단했고 actual 속도는 미실행이다([069 §10](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#10-stage1wb2026-09-22--커널-속도가-아니라-과도하게-좁은-단위시험에서-중단)).
+수정한 `1e-5` 계약은 독립 CPU compile 테스트를 통과했고 Stage1Wc 재실행이 남았다.
 
 ## 11. 2026-09-21 moonshot 비교와 Stage1Wb native v1
 

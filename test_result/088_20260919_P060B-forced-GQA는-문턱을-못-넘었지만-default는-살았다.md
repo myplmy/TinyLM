@@ -85,6 +85,88 @@
 | permitted_claim | DIRECT_PAIRED | DIRECT_PAIRED | 같은 입력·세션의 forward 속도·working-memory 비교 |
 <!-- /TINYLM_CONDITION_SIGNATURE_V1 -->
 
+## 3.1 최신 누적 판정: Stage2W·Stage3W(2026-09-22) — **품질은 실무상 동급, cache 배포 정합은 미통과**
+
+### 3.1.1 Stage2W cache deploy — seq128 decode에서 조기 중단
+
+> 로그: `088_log_20260922_P060B_Stage2W_gqa_deploy_cache.txt` · exit 4.
+
+seq128 prefill 정합 검사는 조기 반환을 발생시키지 않았지만, 이어진 cache decode에서
+`NRMS=0.0044894`, `cosine=0.9999901`로 사전등록 문턱 `NRMS<=0.001`,
+`cosine>=0.999999`를 모두 못 넘었다. 이는 backend 미지원 예외가 아니라 off의
+K/V 물리 복제와 on의 `enable_gqa=True` 결과가 cache를 포함한 전체 모델에서 쌓인
+수치 차이다.
+
+진단이 fail-fast로 정지했으므로 seq512/1024, prefill/decode timing, peak allocation,
+3개 greedy text는 **NOT_RUN**이다. 즉 “cache GQA가 느리다”나 “text가 달라졌다”가
+이 로그의 결론이 아니다. 문턱을 사후에 느슨하게 바꿔 PASS로 만들지 않았고,
+Stage2W는 배포 정합 게이트 **음성·후속 계측 미완결**로 보존한다.
+
+### 3.1.2 Stage3W 300M 3-seed 품질 panel
+
+> **원본 로그(7건)**:
+> `088_log_20260922_P060B_Stage3aW_gqa_quality_off_s1337.txt`,
+> `088_log_20260922_P060B_Stage3aW_gqa_quality_on_s1337.txt`,
+> `088_log_20260922_P060B_Stage3aW_gqa_quality_off_s2024.txt`,
+> `088_log_20260922_P060B_Stage3aW_gqa_quality_on_s2024.txt`,
+> `088_log_20260922_P060B_Stage3aW_gqa_quality_off_s31415.txt`,
+> `088_log_20260922_P060B_Stage3aW_gqa_quality_on_s31415.txt`,
+> `088_log_20260922_P060B_Stage3bW_gqa_quality_pair.txt`.
+> 학습 6팔·paired 3회 모두 exit 0, 전 팔 `n_skip=0`, W&B post-run sync PASS.
+
+| seed | off full-val | on full-val | off−on | paired 판정 | on/off ms/step |
+|---:|---:|---:|---:|---|---:|
+| 1337 | 3.6346 | **3.6344** | +0.0001 | 구분 불가 | 0.9898× |
+| 2024 | **3.6362** | 3.6366 | -0.0004 | 구분 불가 | 1.0123× |
+| 31415 | **3.6387** | 3.6448 | -0.0062 | 통계적 유의·실무 분해능 0.024 미만 | 0.9943× |
+| 평균 | **3.6365** | 3.6386 | -0.0021 | 방향 불일치·실무상 동급 | 0.9988× |
+
+on은 reserved VRAM 8.852→8.676 GiB(**-1.986%**), allocated 8.009→7.886 GiB
+(**-1.536%**)로 세 seed 모두 같은 절감을 남겼다. 하지만 ms/step은 빠름/느림/빠름이
+갈렸고 평균 비율 0.9988×로 중립이다. paired full-val도 한 seed는 on 우세,
+두 seed는 off 우세라 사전등록한 “세 seed 방향 일치”는 통과하지 못했다.
+모든 차이가 현 계열의 실무 분해능 안이므로 **품질 비퇴행 후보**는 남지만,
+Stage1의 10% 메모리 문턱 미달과 Stage2 cache 정합 실패를 넘어 기본 on으로 승격할 근거는 아니다.
+
+JSON 학습-마지막 val은 off/on 평균 3.5820/3.5842였지만, 이 판정은 동일 크롭
+full-val을 정본으로 쓴다. 로그의 W&B `reinit` deprecation은 upload 실패가 아니며
+전 팔 `[wandb-auto] PASS`를 확인했다. 후속 코드는 `finish_previous`로 교정했다.
+
+<!-- TINYLM_CONDITION_SIGNATURE_V1 id=P060B-stage3W-gqa-quality-panel -->
+| field | arm_a | arm_b | evidence |
+| --- | --- | --- | --- |
+| pool_id | ko-en exact 600M | ko-en exact 600M | launcher·JSON |
+| actual_pool_tokens | 597000000 | 597000000 | exact cache, val 제외 |
+| pool_override | true | true | `--pool-tokens 600M` |
+| steps | 2289 | 2289 | launcher·JSON |
+| micro_bs | 8 | 8 | launcher·JSON |
+| accum | 16 | 16 | launcher·JSON |
+| seq | 1024 | 1024 | launcher·JSON |
+| actual_draw_tokens | 300023808 | 300023808 | 2289×8×16×1024 |
+| sampler_with_replacement | true | true | Loader 계약 |
+| expected_unique_tokens | 235824254 | 235824254 | 복원추출 공식 |
+| sequential_epoch_claim | false | false | epoch 주장 없음 |
+| scheduler | wsd | wsd | launcher |
+| warmup | 100 | 100 | trainer 계약 |
+| anneal_start | same trainer rule | same trainer rule | 동일 2289-step 지평선 |
+| decay_fraction | 0.20 | 0.20 | launcher |
+| absolute_schedule_horizon | 2289 steps | 2289 steps | launcher |
+| train_language_expected | ko/en about 50/50 legacy pool | ko/en about 50/50 legacy pool | 동일 cache |
+| train_language_observed | not logged; seed-matched pair | not logged; seed-matched pair | seed 1337,2024,31415 |
+| eval_dataset | 300M paired full-val | 300M paired full-val | 1464 same crops per seed |
+| eval_language | same ko-en val cache | same ko-en val cache | paired_eval |
+| tokenizer | ko-en BPE 32768 | ko-en BPE 32768 | cache |
+| grad_ckpt | false | false | launcher |
+| representation | repeated K/V off | dispatcher enable_gqa on | `--sdpa-gqa` 단일 변경 |
+| seed | 1337,2024,31415 | 1337,2024,31415 | seed 내 직접 짝 |
+| comparator_tag | `p060b_q_off_s*` three runs | `p060b_q_on_s*` three runs | JSON·paired log |
+| matched_axes | pool_id,actual_pool_tokens,pool_override,steps,micro_bs,accum,seq,actual_draw_tokens,sampler_with_replacement,expected_unique_tokens,sequential_epoch_claim,scheduler,warmup,anneal_start,decay_fraction,absolute_schedule_horizon,train_language_expected,train_language_observed,eval_dataset,eval_language,tokenizer,grad_ckpt,seed | same | representation 외 고정 |
+| changed_axes | representation | representation | off 대 on |
+| unmeasured_axes | NONE | NONE | 품질 panel 완주 |
+| not_run_claims | CACHE_DEPLOY_ADOPTION,OTHER_ARCHITECTURES,DOWNSTREAM_BENCH | CACHE_DEPLOY_ADOPTION,OTHER_ARCHITECTURES,DOWNSTREAM_BENCH | Stage2 미통과·d14 300M 한계 |
+| permitted_claim | DIRECT_PAIRED | DIRECT_PAIRED | seed 내 off/on 품질·시간·VRAM |
+<!-- /TINYLM_CONDITION_SIGNATURE_V1 -->
+
 ## 4. 후속
 
 먼저 `run_P060B_Stage0aWb_wsl_sdpa_gqa_backend.sh`로 default/forced 후보선 분리를
@@ -259,3 +341,93 @@ memory의 유효 레버가 아니며 Stage1W는 exit8 과학적 음성이다. 32
 | not_run_claims | FULL_QUALITY,LONG_CONTEXT,DEPLOY_GENERATION | same | 250-step 범위 |
 | permitted_claim | DIRECT_PAIRED | DIRECT_PAIRED | 같은 학습조건 speed/reserved 비교 |
 <!-- /TINYLM_CONDITION_SIGNATURE_V1 -->
+
+---
+
+## ★부록 — 재현 명령 정본 (`run_P060B_Stage2W_gqa_deploy_cache-done.sh` 추출, 2026-09-22)
+
+> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).
+> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.
+
+```
+   "$python_bin" scripts/diag_sdpa_gqa_deploy.py      --ckpt "$ckpt" --arch dense --data ko-en --seqs 128,512,1024      --max-new 32 --warmup 2 --iters 5 --max-nrms 0.001      --min-cosine 0.999999 --max-slowdown 1.05 --min-benefit 0.05
+```
+
+---
+
+## ★부록 — 재현 명령 정본 (`run_P060B_Stage3aW_gqa_quality_off_s1337-done.sh` 추출, 2026-09-22)
+
+> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).
+> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.
+
+```
+   "$python_bin" run100m.py train --arch dense --preset m100s10 --data ko-en      --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8      --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20      --eval-every 100 --save-every 500 --optimizer muon --muon-scale rms      --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --no-ckpt --compile      --seed 1337 --tag p060b_q_off_s1337
+```
+
+---
+
+## ★부록 — 재현 명령 정본 (`run_P060B_Stage3aW_gqa_quality_off_s2024-done.sh` 추출, 2026-09-22)
+
+> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).
+> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.
+
+```
+   "$python_bin" run100m.py train --arch dense --preset m100s10 --data ko-en      --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8      --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20      --eval-every 100 --save-every 500 --optimizer muon --muon-scale rms      --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --no-ckpt --compile      --seed 2024 --tag p060b_q_off_s2024
+```
+
+---
+
+## ★부록 — 재현 명령 정본 (`run_P060B_Stage3aW_gqa_quality_off_s31415-done.sh` 추출, 2026-09-22)
+
+> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).
+> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.
+
+```
+   "$python_bin" run100m.py train --arch dense --preset m100s10 --data ko-en      --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8      --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20      --eval-every 100 --save-every 500 --optimizer muon --muon-scale rms      --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --no-ckpt --compile      --seed 31415 --tag p060b_q_off_s31415
+```
+
+---
+
+## ★부록 — 재현 명령 정본 (`run_P060B_Stage3aW_gqa_quality_on_s1337-done.sh` 추출, 2026-09-22)
+
+> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).
+> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.
+
+```
+   "$python_bin" run100m.py train --arch dense --preset m100s10 --data ko-en      --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8      --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20      --eval-every 100 --save-every 500 --optimizer muon --muon-scale rms      --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --sdpa-gqa --no-ckpt --compile      --seed 1337 --tag p060b_q_on_s1337
+```
+
+---
+
+## ★부록 — 재현 명령 정본 (`run_P060B_Stage3aW_gqa_quality_on_s2024-done.sh` 추출, 2026-09-22)
+
+> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).
+> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.
+
+```
+   "$python_bin" run100m.py train --arch dense --preset m100s10 --data ko-en      --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8      --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20      --eval-every 100 --save-every 500 --optimizer muon --muon-scale rms      --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --sdpa-gqa --no-ckpt --compile      --seed 2024 --tag p060b_q_on_s2024
+```
+
+---
+
+## ★부록 — 재현 명령 정본 (`run_P060B_Stage3aW_gqa_quality_on_s31415-done.sh` 추출, 2026-09-22)
+
+> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).
+> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.
+
+```
+   "$python_bin" run100m.py train --arch dense --preset m100s10 --data ko-en      --tokens 300M --pool-tokens 600M --exact-cache --steps 2289 --micro-bs 8      --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20      --eval-every 100 --save-every 500 --optimizer muon --muon-scale rms      --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --sdpa-gqa --no-ckpt --compile      --seed 31415 --tag p060b_q_on_s31415
+```
+
+---
+
+## ★부록 — 재현 명령 정본 (`run_P060B_Stage3bW_gqa_quality_pair-done.sh` 추출, 2026-09-22)
+
+> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).
+> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.
+
+```
+   "$python_bin" scripts/paired_eval.py --preset m100s10 --data ko-en --tokens 300M      --models p060b_q_off_s1337 p060b_q_on_s1337      --dump-crops runs/logs/p060b_gqa_quality_s1337.json || exit $?
+   "$python_bin" scripts/paired_eval.py --preset m100s10 --data ko-en --tokens 300M      --models p060b_q_off_s2024 p060b_q_on_s2024      --dump-crops runs/logs/p060b_gqa_quality_s2024.json || exit $?
+   "$python_bin" scripts/paired_eval.py --preset m100s10 --data ko-en --tokens 300M      --models p060b_q_off_s31415 p060b_q_on_s31415      --dump-crops runs/logs/p060b_gqa_quality_s31415.json
+```

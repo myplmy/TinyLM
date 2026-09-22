@@ -206,7 +206,7 @@ def upload_runs(run_ctx, runs, *, project: str, entity: str | None = None) -> No
         cfg, summ, hist = payload(name, d)
         run = run_ctx.init(
             project=project, entity=entity, id=name, name=name,
-            config=cfg, resume="allow", reinit=True,
+            config=cfg, resume="allow", reinit="finish_previous",
         )
         for index, point in enumerate(hist):
             if isinstance(point, dict):
@@ -301,7 +301,7 @@ def main():
                 continue
             r = run_ctx.init(project=a.project, entity=a.entity,
                              id=f"meta_{p.stem}", name=f"meta_{p.stem}",
-                             resume="allow", reinit=True)
+                             resume="allow", reinit="finish_previous")
             art = run_ctx.Artifact(p.stem, type="metadata")
             art.add_file(str(p))
             r.log_artifact(art)

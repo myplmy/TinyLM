@@ -98,7 +98,7 @@ def main() -> int:
         for tag, _reason, run_id, rows in targets:
             run = wandb.init(
                 project=args.project, entity=args.entity, id=run_id, name=run_id,
-                resume="allow", reinit=True,
+                resume="allow", reinit="finish_previous",
             )
             run.summary.update(_summary(rows))
             wide = bench_tsv.rows_for(tag, wide=True)

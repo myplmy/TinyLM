@@ -6,12 +6,15 @@
 > 전까지 WSL 결과는 `E2E_NOT_RUN`이다. Stage0aW 보존 로그에서 forced backend는 음성이었지만
 > dispatcher-selected `on_default`가 속도 +0.3%·working memory −37.2%로 실용 문턱을 통과했다
 > ([결과 088](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)).
-> **현재 상태(2026-09-21):** Wd에서 default는 B8/T1024·B1/T128 모두 speed/memory micro
+> **현재 상태(2026-09-22):** Wd에서 default는 B8/T1024·B1/T128 모두 speed/memory micro
 > 문턱을 통과했고 grouped EFFICIENT는 실행됐지만 1.232~1.639× 느렸다. Stage1W actual training은
 > 속도 1.0025×로 중립이나 reserved 절감 1.986%로 10% 문턱에 미달해 음성이다([결과 088 §9](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#9-stage0awdstage1w-실제-결과2026-09-2021--default-micro-후보-학습-memory-gate-음성)).
 > 추가 실사에서 종전 `sdpa_gqa` 경로가 KV-cache decode(`q_len<kv_len`)에서는
 > K/V를 다시 4배 복제해 일반 생성 이득이 0임을 확인했다. 기본 off를 유지하며
-> cache mask+`enable_gqa` Stage2W와 on/off 300M 3-seed Stage3W를 준비했다.
+> Stage2W cache decode는 seq128에서 NRMS 0.004489/cosine 0.999990으로 정합 문턱을
+> 못 넘어 후속 속도·text가 `NOT_RUN`이다. Stage3W on/off 300M 3-seed는 품질 차이가
+> 모두 실무 분해능 0.024 안이지만 방향이 일치하지 않았고, 속도는 중립,
+> reserved 절감은 1.986%로 재현됐다([088 §3.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#31-최신-누적-판정-stage2wstage3w2026-09-22--품질은-실무상-동급-cache-배포-정합은-미통과)).
 
 ## 1. 재개 근거와 비재개 경계
 
@@ -53,8 +56,8 @@ WSL + `sm_89`는 플랫폼 선결을 만족한다. 패키지 존재는 커널 PA
 | **Stage0aWd ✅ 귀속 완료** | batch×KV-head를 접은 4-D zero-stride grouped-broadcast로 EFFICIENT 재검증 | grouped EFFICIENT 실행 가능하지만 속도 음성; default 실용 후보 유지 | [088 §9.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#91-wd-backend-귀속) |
 | **Stage0bW ✅ actual model 후보** | d14 RMS4 checkpoint full/cache prefill/decode | bit-identical, on/off 0.889×로 11.1% 빠름; peak 감소 0% | [088 §6.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#62-actual-d14-checkpoint-model-path) |
 | **Stage1W 🚫 memory gate 음성** | 현 WSL current recipe 250-step off vs default GQA 학습 속도·peak reserved·NaN/skip | speed 1.0025× PASS, reserved 절감 1.986% FAIL | [088 §9.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#92-stage1w-학습-gate) |
-| **Stage2W** | 배포 prefill/decode·장문 생성 정합성 | cache 경로 실제 텍스트와 속도 방향 통과 | 별도 승인·모델 실행 |
-| **Stage3W** | 300M GQA off/on 세 seed 품질 panel | 세 seed 방향 일치, 속도/메모리 후보와 품질 비퇴행 | 학습 6팔+평가 |
+| **Stage2W 🚫 정합 미통과** | 배포 prefill/decode·장문 생성 정합성 | seq128 decode 정합 실패; seq512/1024·속도·text NOT_RUN | [088 §3.1.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#311-stage2w-cache-deploy--seq128-decode에서-조기-중단) |
+| **Stage3W ⚠️ 혼합** | 300M GQA off/on 세 seed 품질 panel | 실무상 동급이나 방향 불일치; 속도 중립·reserved -1.986% | [088 §3.1.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#312-stage3w-300m-3-seed-품질-panel) |
 
 Stage0aW exit 8은 forced-only 사전등록 질문에는 유효한 음성이지만, 실용 후보선에서
 `on_default`를 제외한 설계 때문에 전체 GQA 음성으로 읽을 수 없다. Stage0aWb는 두 후보군을

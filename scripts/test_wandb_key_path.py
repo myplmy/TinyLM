@@ -88,6 +88,33 @@ class WandbKeyPathTests(unittest.TestCase):
         self.assertEqual(summary["final_val_loss"], 3.5)
         self.assertEqual(history[0]["step"], 1)
 
+    def test_upload_uses_non_deprecated_reinit_contract(self) -> None:
+        class Run:
+            def __init__(self):
+                self.summary = {}
+
+            def finish(self):
+                return None
+
+        class Context:
+            def __init__(self):
+                self.kwargs = []
+
+            def init(self, **kwargs):
+                self.kwargs.append(kwargs)
+                return Run()
+
+            def log(self, _point, step=None):
+                return step
+
+        context = Context()
+        wandb_sync.upload_runs(
+            context,
+            [("fixture", {"final": {"val_loss": 3.5}, "history": []})],
+            project="tinylm",
+        )
+        self.assertEqual(context.kwargs[0]["reinit"], "finish_previous")
+
     def test_bounded_backfill_manifest_and_remote_ids(self) -> None:
         rows = wandb_backfill.load_manifest(
             ROOT / "scripts" / "wandb_backfill_tags.tsv"

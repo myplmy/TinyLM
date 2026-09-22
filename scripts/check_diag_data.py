@@ -86,6 +86,10 @@ EXEMPT = {
     "diag_lut_kernel.py":
         "LUT 커널의 **수치 동등성**(max|dlogit|)을 재는 단위시험이다. 합성 텐서가 정상이고 "
         "퇴화할 대상 자체가 없다",
+    "diag_layer_state_selector.py":
+        "P091 R2의 CE 절대값을 품질로 읽지 않고, 같은 합성 window에서 gate-zero 전후 "
+        "차이 S와 optimizer-only 상대 update U만 계산한다. 절대 지표 경고의 대상이 아닌 "
+        "difference/contract 진단이며, 실제 selector-to-gain 품질은 R3 NOT_RUN으로 명시한다",
 }
 
 

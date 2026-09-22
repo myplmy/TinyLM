@@ -194,16 +194,19 @@ custom LUT kernel의 상한을 직접 실측한 것도 아니다.
 ## 12.8 2026-09-19 WSL 재개 상태
 
 P025B의 cuSPARSELt 방향 오류와 We graph 구현 결함은 Wg에서 닫혔다.
-M1 graph는 `0.079~0.369×`로 음성이지만 M8192 graph는 `1.400~2.342×`로
-빠르다. 반면 일반 PyTorch wall은 `0.771~0.802×`로 여전히 느리다. 큰 M의
-captured work 후보를 TLinear/checkpoint 추론으로 승격하지 않고 Stage0cW에서
-weight-gradient·pack/accum 상각을 포함해 재다.
+Stage0cW에서 M8192 fwd+dgrad+dense-wgrad+pack/accum을 합쳐도 event/graph는
+`1.334~1.386×`로 빨랐지만 동기 wall은 `0.926~0.959×`로 여전히 느리다.
+따라서 GPU work 후보와 실제 호출 경로 음성을 같이 보존하고 TLinear/checkpoint 추론으로
+승격하지 않는다([082 §13](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#13-stage0cw-whole-primitive2026-09-22--gpu-work는-양성-동기-wall은-음성)).
 
 P060B actual model GQA 경로는 logits 동등성을 유지하며 `11.1354→9.8974 ms`(약 11.1% 단축)를
 관찰했다. 단 종전 구현은 `q_len<kv_len` cache decode에서 GQA를 끄고 K/V를
 다시 4배 복제했으므로 일반 생성 decode 이득은 0이었다. Wd의 default micro는 working −37.2%와 속도 ±0.3% 후보지만 grouped EFFICIENT는
 1.232~1.639× 느리다. Stage1W actual training은 속도 1.0025×이나 reserved 절감이 1.986%뿐이라
 10% memory gate 음성이다. 따라서 배포 forward 후보는 유지하되 학습 기본값은 off다.
+Stage2 cache decode에서는 seq128 전체 모델 정합이 NRMS 0.004489/cosine 0.999990으로
+문턱을 못 넘어 속도·peak·text가 `NOT_RUN`이다. Stage3 3-seed는 속도 중립·품질 실무상
+동급이었지만 방향이 일치하지 않아 배포 채택 근거를 추가하지 못했다.
 
 P014D Stage0bW는 완주했다. int8은 fp32보다 5~15% 빨랐지만 LUT reference는 +1~+23% 느리고
 LUT 언팩 대역은 25.1~36.3%였다. 사용자 후속 승인으로 g=5/per-row-alpha C++ native v0를
@@ -211,4 +214,6 @@ LUT 언팩 대역은 25.1~36.3%였다. 사용자 후속 승인으로 g=5/per-row
 actual model에서 native/reference는 1.785~1.790×였지만 native/int8은 1.188~1.249×로 1.50×
 채택선 미달이고 fp32보다도 느리다. moonshot의 3:4/32-state native kernel은
 현 generic g5 checkpoint에 그대로 쓸 수 없다. GIL 해제와 base-3 증분 243-state 표만
-v1에 차용했고 실제 속도는 `NOT_RUN`이다.
+v1에 차용했다. Stage1Wb는 incremental float32 누산을 `1e-6`로 판정한
+단위시험 결함으로 benchmark 전 exit1이었다. `1e-5` CPU compile 정합은 PASS했지만
+actual model 속도는 Stage1Wc 전 `NOT_RUN`이다([069 §10](../../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#10-stage1wb2026-09-22--커널-속도가-아니라-과도하게-좁은-단위시험에서-중단)).
