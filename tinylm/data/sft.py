@@ -39,14 +39,38 @@ canonical 대화(`tinylm/chat/canonical.py` 규약)를 받아
 """
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
+import unicodedata
 
 IGNORE = -100
 
 #: ★지도 토큰이 이 비율보다 적으면 **경고**한다. 실측 v1 = 29.9%.
 #:   🚫성공 기준값이 아니라 **계측 경보**다 — 0 이면 마스크가 통째로 비었다는 뜻이다.
 MIN_SUPERVISED_RATIO = 0.02
+
+
+def conversation_split_key(row):
+    """출처/tree가 달라도 첫 user 질문이 같으면 한 split로 묶는다.
+
+    system-first 대화에서도 system 지시문으로 그룹을 만들지 않는다.
+    """
+    user = next((m for m in row["messages"] if m["role"] == "user"), None)
+    if user is None:
+        raise ValueError("SFT split key: user turn is absent")
+    content = user["content"]
+    if isinstance(content, str):
+        text = content
+    else:
+        text = " ".join(
+            block["text"] for block in content
+            if block.get("type") == "text" and isinstance(block.get("text"), str)
+        )
+    normalized = " ".join(unicodedata.normalize("NFKC", text).casefold().split())
+    if not normalized:
+        raise ValueError("SFT split key: first user prompt is empty")
+    return hashlib.sha256(normalized.encode("utf-8")).digest()
 
 
 def _spans_to_token_mask(offsets, spans):
@@ -150,3 +174,30 @@ def mask_stats(rows, tok, kind="chatml"):
     return {"records": len(rows), "tokens": total, "supervised": sup,
             "ratio": (sup / total if total else 0.0), "empty_mask": empty,
             "max_len": (max(lens) if lens else 0), "per_record": per}
+
+def encode_sft_batch(rows, tok, *, seq, pad_id, vocab_size, kind="chatml"):
+    """대화 경계를 넘지 않는 고정길이 SFT batch를 순수 리스트로 만든다.
+
+    긴 대화는 조용히 자르지 않고 거절한다. 각 대화의 마지막 이후 label은
+    ignore_index=-100이므로 패딩을 예측하지 않는다. 모델/GPU는 사용하지 않는다.
+    """
+    if seq < 1 or pad_id is None or not (0 <= pad_id < vocab_size):
+        raise ValueError("SFT batch: seq/pad_id/vocab_size가 유효하지 않다")
+    xs, ys, supervised = [], [], 0
+    if not rows:
+        raise ValueError("SFT batch: 대화가 0개다")
+    for index, row in enumerate(rows):
+        ids, labels, _ = encode_conversation(row, tok, kind)
+        if len(ids) < 2 or len(ids) - 1 > seq:
+            raise ValueError(f"SFT batch row {index}: 길이 {len(ids)}가 seq={seq}와 맞지 않는다")
+        if any(token < 0 or token >= vocab_size for token in ids):
+            raise ValueError(f"SFT batch row {index}: 어휘 밖 token id가 있다")
+        x, y = sft_targets(ids, labels)
+        count = sum(target != IGNORE for target in y)
+        if count == 0:
+            raise ValueError(f"SFT batch row {index}: 지도 target이 0개다")
+        supervised += count
+        xs.append(x + [pad_id] * (seq - len(x)))
+        ys.append(y + [IGNORE] * (seq - len(y)))
+    return xs, ys, {"rows": len(rows), "supervised": supervised,
+                    "positions": len(rows) * seq}

@@ -241,7 +241,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p35b_a3_*` | P035B A3 동역학(`e60`·`e80`)과 audit 오염 대조(`off80`) | **예약 2026-09-15.** 세 팔 모두 m100s8·250 step·600M exact pool·seed 1337; 🚫품질 또는 anneal 기본값 판정에 사용 금지 |
 | `p097_ctrl_v2`·`p097_fw2`·`p097_edu_v2`·`p097_madlad` | P097 300M 한영 dataset recipe 대조 | **사용 완료 2026-09-20.** 전 팔 m100s10 dense·CLA2·Muon RMS4×4·300.024M draw·600M nominal pool·seed1337·exit0. tokenizer/data/val이 달라 자기 val_loss 교차비교 금지([090 §5](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#5-stage0bstage1abd-실제-완료2026-09-20)) |
 | `p097_{ctrl_v2,fw2}_s{2024,31415}` | P097 control/FineWeb2 교환 재현성 | **예약 2026-09-21.** 기존 seed1337에 두 seed를 더해 YNAT/ARC 강점과 common-bpb 열세의 부호만 재판단; 기본 dataset 승격 금지 |
-| `p060b_q_{off,on}_s{1337,2024,31415}` | P060B GQA 300M 품질 3-seed | **사용 완료 2026-09-22.** full-val 차이는 전부 실무 분해능 0.024 안이지만 방향 불일치; 속도 중립·reserved -1.986%. 기본 off 유지([088 §3.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#31-최신-누적-판정-stage2wstage3w2026-09-22--품질은-실무상-동급-cache-배포-정합은-미통과)) |
+| `p060b_q_{off,on}_s{1337,2024,31415}` | P060B GQA 300M 품질 3-seed | **사용 완료 2026-09-22.** full-val 차이는 전부 실무 분해능 0.024 안이지만 방향 불일치; 속도 중립·reserved -1.986%. 기본 off 유지([088 §10](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#31-최신-누적-판정-stage2wstage3w2026-09-22--품질은-실무상-동급-cache-배포-정합은-미통과)) |
 | `d14_cla2_norecur_rms4_lr{15,20}[_s2024|_s31415]`·`d14_cla2_norecur_rms4_s{2024,31415}` | P005b CLA2 LR 1.0/1.5/2.0 3-seed | **사용 완료 2026-09-22.** LR1.5가 base 대비 3/3 우세(평균 -0.0027), LR2.0은 3/3 열세. CLA2 d14 후보 LR만 1.5e-3([078 §16](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#16-stage13142026-09-22--cla2의-lr-15e-3-후보가-3-seed-동일-방향으로-재현됐다)) |
 | `p098_r2_{ctrl,reinject}_s{1337,2024,31415}` | P098 재귀 embedding 재주입 | **예약 2026-09-21.** m100s8 dense·CLA2·R2·RMS4×4 300M; cycle 덧셈 on/off만 변경 |
 | `p092_s{1,2,3}_*` | P092 full-trainer dense/static/DST panel | **예약 2026-09-21.** 30M→100M→gate→300M 3-seed; dense mask라 하드웨어 가속/저장 절감 주장 금지 |
@@ -3440,7 +3440,7 @@ dense tensor+mask이므로 trainer·가속·메모리·품질은 계속 `NOT_RUN
   actual forward 속도 후보는 보존하지만 학습 memory 레버는 음성이다([결과 088 §9](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#9-stage0awdstage1w-실제-결과2026-09-2021--default-micro-후보-학습-memory-gate-음성)).
 - **P060B Stage2/3**: cache decode는 seq128에서 NRMS 0.004489/cosine 0.999990으로
   정합 문턱을 못 넘어 timing·text가 `NOT_RUN`이다. 300M 3-seed full-val은 실무상 동급이지만
-  방향 불일치, 속도 중립, reserved -1.986%라 기본 off를 유지한다([088 §3.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#31-최신-누적-판정-stage2wstage3w2026-09-22--품질은-실무상-동급-cache-배포-정합은-미통과)).
+  방향 불일치, 속도 중립, reserved -1.986%라 기본 off를 유지한다([088 §10](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#31-최신-누적-판정-stage2wstage3w2026-09-22--품질은-실무상-동급-cache-배포-정합은-미통과)).
 - **P022C Wc**: cached FP8 weight는 2/3 형상에서 1.10×를 넘었지만 2048→768은 0.968×이고,
   모든 FP8 팔이 NRMS 3.76~3.78%·working-memory 증가라 세 계약 동시 PASS가 없다. cache-only
   TLinear 통합은 열지 않는다([결과 081 §9](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md#9-stage0bwc-ae-원인-귀속2026-09-21--weight-cache만으로-세-계약을-함께-못-살린다)).

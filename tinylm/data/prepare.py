@@ -416,6 +416,64 @@ def build_tokenizer(name, vocab_size=VOCAB):
     return tok
 
 
+def chat_tokenizer_path(name, vocab_size=VOCAB):
+    """P075/P090 별도 ChatML-32 어휘. 기존 토크나이저·체크포인트와 호환되지 않는다."""
+    return DATA_CACHE / f"tok-{name}-{vocab_size}-chat32.json"
+
+
+def verify_chat_tokenizer(tok, vocab_size=VOCAB):
+    """예약 슬롯의 단일 ID와 총 어휘 크기를 fail-closed로 확인한다."""
+    from ..chat.tokens import SLOT_NAMES
+    expected = ("<pad>", "<bos>", "<eos>", *SLOT_NAMES)
+    ids = [tok.token_to_id(name) for name in expected]
+    if tok.get_vocab_size() != vocab_size or any(value is None for value in ids):
+        raise ValueError("chat32 tokenizer: vocab 크기 또는 예약 슬롯이 일치하지 않는다")
+    if len(set(ids)) != len(ids):
+        raise ValueError("chat32 tokenizer: 특수토큰 ID가 중복됐다")
+    for name, token_id in zip(expected, ids):
+        if tok.encode(name).ids != [token_id]:
+            raise ValueError(f"chat32 tokenizer: {name}이 단일 ID가 아니다")
+    return dict(zip(expected, ids))
+
+
+def build_chat_tokenizer(name, vocab_size=VOCAB):
+    """명시적 신규 어휘만 만든다. 기존 tok-{name}-{vocab}.json은 절대 덮지 않는다.
+
+    신규 어휘는 기존 체크포인트의 embedding/head ID와 호환되지 않는다.
+    따라서 이 함수는 새 모델 사전학습 준비용이며 기존 checkpoint SFT에 쓰지 않는다.
+    """
+    from tokenizers import ByteLevelBPETokenizer, Tokenizer
+    from ..chat.tokens import SLOT_NAMES
+    if name not in DATASETS:
+        raise ValueError(f"chat32 tokenizer: 알 수 없는 데이터 이름 {name!r}")
+    if vocab_size < 3 + len(SLOT_NAMES) + 256:
+        raise ValueError("chat32 tokenizer: 어휘가 예약 슬롯과 byte alphabet보다 작다")
+    path = chat_tokenizer_path(name, vocab_size)
+    if path.exists():
+        tok = Tokenizer.from_file(str(path))
+        verify_chat_tokenizer(tok, vocab_size)
+        return tok
+    tok = ByteLevelBPETokenizer()
+    src = _stream(name)
+    def sample():
+        try:
+            for i, (text, _source_index) in enumerate(src):
+                if i >= 200_000:
+                    break
+                yield text
+        finally:
+            src.close()
+    tok.train_from_iterator(
+        sample(), vocab_size=vocab_size, min_frequency=2,
+        special_tokens=["<pad>", "<bos>", "<eos>", *SLOT_NAMES],
+    )
+    verify_chat_tokenizer(tok, vocab_size)
+    DATA_CACHE.mkdir(parents=True, exist_ok=True)
+    tok.save(str(path))
+    print(f"[tok] chat32 신규 어휘 저장 {path} — 기존 체크포인트와 호환되지 않음")
+    return tok
+
+
 def _find_reusable(name, n_tokens):
     """같은 name, tokens>=n_tokens 캐시 중 가장 작은 것(상위 호환)을 고른다."""
     best = None

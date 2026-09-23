@@ -44,7 +44,7 @@
 | **토큰·코퍼스** | ⚠️**P097 공통평가 완주·전면 승자 없음** | ★**090 §8**(2026-09-21) ← 078 §13 ← 075 §19 | control/FineWeb2 두 추가 seed + 공통 panel ⚙6.0h | control bpb 1.3355 vs FineWeb2 YNAT 40.9% 강점이 갈림. 재현 전 혼합 recipe·기본 dataset 교체 금지 |
 | **옵티마이저** | ★**Muon RMS4 기본 후보·연구축은 열림** — 상단·WD·형상·seed·길이 전이 통과 | ★**078 §16** ← 078 §11~§15 ← 076 §13(2026-09-22) | CLA2 d14는 LR1.5e-3 후보; QK-norm·schedule-scaled WD는 별도 연구 | LR1.5 이득은 CLA2 형상 한정이며 글로벌 LR 기본값 변경 근거가 아님 |
 | **토크나이저/어휘** | ⏸**보류** — 선결은 P075 단계1(어휘 16,384) ⚙2.0h | 결과 053 · 2026-08-22 | P075 단계1(**16 MiB 예산이 열릴 때**) | 어휘를 줄이면 **M=8192 무릎이 움직인다**(무릎은 어휘 32,768 기준). 그러면 속도·VRAM 표가 전부 다시 필요하다 |
-| **속도** | ⚠️**GPU work 후보·실제 경로 미채택** — P025B event 양성, wall·P060B cache·P014D v0 음성/미완결 | ★**088 §3.1** ← 082 §13 ← 069 §10(2026-09-22) | P014D Stage1Wc ⚙0.1h; P025B/P060B 자동 후속 없음 | P025B whole primitive event 1.334~1.386×지만 wall 0.926~0.959×. GQA 품질은 동급이어도 cache 정합 미통과·reserved -1.986% |
+| **속도** | ⚠️**GPU work 후보·실제 경로 미채택** — P025B event 양성, wall·P060B cache·P014D v0 음성/미완결 | ★**088 §10** ← 082 §13 ← 069 §10(2026-09-22) | P014D Stage1Wc ⚙0.1h; P025B/P060B 자동 후속 없음 | P025B whole primitive event 1.334~1.386×지만 wall 0.926~0.959×. GQA 품질은 동급이어도 cache 정합 미통과·reserved -1.986% |
 | **지능/벤치** | 🚫**v3.0 core 회귀·P097 recipe 전면 승자 없음·Q2a synthetic만 PASS** | ★**090 §8**(2026-09-21) ← 085 §4 ← 074 §27 | P097 두 recipe seed panel은 교환 재현성만; 실제 Q2b는 보호 데이터·팀 의미검토 선결 | recipe 벤치와 synthetic 320개·cap/provenance PASS 둘 다 봉인 final 품질이 아니다 |
 
 ---

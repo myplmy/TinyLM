@@ -38,7 +38,7 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPT_DIR))
-from handoff_queue import inherited_rows
+from handoff_queue import inherited_rows, inherited_rows_locked
 
 ROOT = SCRIPT_DIR.parent
 HANDOFF = ROOT / "handoff"
@@ -157,6 +157,8 @@ def main() -> int:
         description="핸드오프 파일을 **시계로** 만든다(이름을 사람이 안 정한다)")
     ap.add_argument("--title", required=True, help="첫 줄 한 줄 제목")
     ap.add_argument("--dry-run", action="store_true", help="이름만 인쇄하고 안 만든다")
+    ap.add_argument("--queue-locked", action="store_true",
+                    help="진행 중 큐의 런처·TSV 인벤토리를 조회하지 않고 직전 표만 UNVERIFIED로 계승")
     a = ap.parse_args()
 
     now = dt.datetime.now()
@@ -186,7 +188,8 @@ def main() -> int:
         queue_source = "없음"
     else:
         try:
-            queue_rows = "\n".join(inherited_rows(HANDOFF / prev))
+            inherit = inherited_rows_locked if a.queue_locked else inherited_rows
+            queue_rows = NL.join(inherit(HANDOFF / prev))
         except (OSError, UnicodeError, ValueError, RuntimeError) as exc:
             print(f"\n  🚫직전 큐 이관 실패: {type(exc).__name__}: {exc}")
             print("  핸드오프는 만들지 않았다. 원인을 고친 뒤 다시 실행한다.")

@@ -1,0 +1,57 @@
+P014D Stage1Wc: Stage1Wb stopped at an overly strict 1e-6 synthetic tolerance.
+The incremental float32 kernel is now checked at rtol=atol=1e-5; model speed gate remains >=1.50x native/int8.
+
+==============================================================================
+[runlog] 2026-09-23 00:33:12  name=P014D_Stage1Wc_native_lut_tolerance_recovery
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/test_lut_cpu_native.py --compile
+==============================================================================
+[PASS] P014D native CPU LUT compiled correctness: 2-D/3-D and TLinear dispatch
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-23 00:33:15)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-23 00:33:15  name=P014D_Stage1Wc_native_lut_tolerance_recovery
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/bench_lut_cpu_native.py --threads 1 --warmup 3 --iters 10
+==============================================================================
+torch=2.10.0+cu130 threads=1 dtype=float32
+M	K	N	dense_ms	python_lut_ms	native_lut_ms	native_vs_dense	native_vs_python
+1	768	2048	0.099738	0.407490	0.160660	0.621x	2.536x
+1	2048	768	0.073472	0.360128	0.194401	0.378x	1.852x
+1	768	768	0.035188	0.202560	0.081084	0.434x	2.498x
+[LIMIT] synthetic v0 is a correctness/native-overhead baseline, not the model tok/s gate
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-23 00:33:17)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-23 00:33:17  name=P014D_Stage1Wc_native_lut_tolerance_recovery
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/bench_lut_cpu_model.py --preset m100R1c --data ko-en --tokens 300M --models mC_cla2_ag4 mC_cla2_ag4_r20 --max-new 32 --threads 1 --warmup 2 --iters 3 --min-speedup 1.50
+==============================================================================
+torch=2.10.0+cu130 threads=1 prompt='대한민국의 수도 서울은'
+model	path	median_ms	tok_per_s	vs_int8
+[lut] ★삼진 46개 층 -> LUT 코드. 상주 7.72 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+[lut] ★삼진 46개 층 -> LUT 코드. 상주 7.72 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+mC_cla2_ag4	fp32	700.378	45.690	1.324x
+mC_cla2_ag4	int8	927.162	34.514	1.000x
+mC_cla2_ag4	lut_reference	1412.672	22.652	0.656x
+mC_cla2_ag4	lut_native	705.379	45.366	1.314x
+[model] mC_cla2_ag4 native_vs_int8=1.314x native_vs_reference=2.003x
+[lut] ★삼진 46개 층 -> LUT 코드. 상주 7.72 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+[lut] ★삼진 46개 층 -> LUT 코드. 상주 7.72 MiB (코드 + per-row alpha)
+[lut] ⚠️★per-row alpha 로 재추정했다 — 대가는 결과 028 이 쟀다(+0.0038~0.0068 bpb, 분해능 0.008 미만)
+mC_cla2_ag4_r20	fp32	1056.396	30.292	1.457x
+mC_cla2_ag4_r20	int8	1539.025	20.792	1.000x
+mC_cla2_ag4_r20	lut_reference	2504.187	12.779	0.615x
+mC_cla2_ag4_r20	lut_native	1250.460	25.591	1.231x
+[model] mC_cla2_ag4_r20 native_vs_int8=1.231x native_vs_reference=2.003x
+[GATE NEGATIVE] no model reached native LUT/int8 >= 1.50x
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 0.7분  (2026-09-23 00:34:00)
+==============================================================================

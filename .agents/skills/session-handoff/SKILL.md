@@ -85,13 +85,25 @@ GPU·학습·모델 로딩·스모크·삭제·commit·push를 실제로 하지 
 자동 이관 행은 항상 `REVALIDATE`다. AI가 현재 로그·계획·선결을 감사해 `READY/GATED/HOLD`로
 바꾸기 전에는 실행을 권하지 않는다.
 
-- 인벤토리: `PRESENT`, `DONE`, `MISSING`, `REPLACED`
+- 인벤토리: `PRESENT`, `DONE`, `MISSING`, `REPLACED`, `UNVERIFIED`(진행 중 큐 잠금)
 - 실행상태: `READY`, `GATED`, `HOLD`, `DONE`, `REVALIDATE`
 - 직전 미완료 배치를 현재 §7에서 빼려면 `이전 큐 제외·완료 이관` 표에 파일명·처리·근거를 쓴다.
 - 재감사하지 않았다는 사실은 삭제 근거가 아니며 `REVALIDATE` 근거다.
 - 현재 큐의 배치 수·시간 합계는 §7 본표만 집계한다. §7.1 이하의 완료·제외 이관 이력은
   계승 증거일 뿐 현재 큐에 다시 합산하지 않는다. `run_queue.bat` 같은 운영 실행기는
   `experiments.tsv` 실험 배치가 아니므로 배치 수·시간에서 제외한다.
+
+### 3.2 진행 중 큐 잠금 예외
+
+사용자가 진행 중 큐의 실험 로그·런처를 읽지 말라고 지정하면
+`scripts/new_handoff.py --title "..." --queue-locked`를 사용한다.
+생성기는 직전 핸드오프 §7만 읽고, `experiments.tsv`와 런처 경로의
+존재·내용을 조회하지 않는다. 자동 행의 인벤토리는
+`UNVERIFIED`, 실행상태는 `REVALIDATE`, id는 미확인으로 둔다.
+예상 시간은 **직전 문서의 역사값**이며 현 큐 제안이 아니다.
+§7에 `시간 미달 사유`와 잠금 해제 뒤 재감사 선결을 명시한다.
+`handoff_queue.py --audit`는 문서 상속만 확인하므로 사용할 수 있지만
+`queue_menu.py --audit`나 live inventory를 열면 안 된다.
 
 ### 4. 한정 검증
 

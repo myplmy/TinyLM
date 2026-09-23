@@ -1,0 +1,325 @@
+
+==============================================================================
+[runlog] 2026-09-23 10:27:43  name=P092_Stage1W_full_trainer_30M
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 229 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 229 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode none --connectivity-density 1.0 --connectivity-update-every 50 --connectivity-swap-fraction 0.1 --tag p092_s1_dense30
+==============================================================================
+[cmd] python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 229 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 229 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode none --connectivity-density 1.0 --connectivity-update-every 50 --connectivity-swap-fraction 0.1 --tag p092_s1_dense30
+[ckpt] m100s10 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> /home/uranus/tinyLM/data_cache/ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 14 -> 7 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+10+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       84.6M      17.3 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           93.3M      19.1 MiB
+
+
+  저장(packed, 안 B)                         19.1 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.1 MiB
+  ★상주(runtime, 현 구현)                     678.7 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.1MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.173 GFLOP
+  ★KV 캐시(fp32)        : 10.5 KB/token  (엔트리 7개 / 방문 14회)
+                          1024 ctx 10.5 MiB → ★상주+KV = 689.2 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[p092_s1_dense30] device=cuda  229step x 131K tok = 30M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[opt] ★Muon(P005) — 행렬 85개(84.8M)는 Muon, 그 외 72개는 AdamW. 🚫muP 는 미구현(P005 A축)
+[opt] ★muon_lr=4.00e-03 (= lr 1.00e-03 x 4) · AdamW 그룹 2개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지
+[opt] ★★muon_scale=rms  — 형상별 업데이트 스케일 (V1 검증, ai_dev_tool/09)
+[opt]                  형상    개수    jordan       rms  rms/jordan
+[opt]         (2048, 768)    28    1.6330    9.0510        5.54
+[opt]          (768, 768)    28    1.0000    5.5426        5.54
+[opt]         (768, 2048)    14    1.0000    9.0510        9.05
+[opt]          (192, 768)    14    1.0000    5.5426        5.54
+[opt]          (768, 256)     1    1.7321    5.5426        3.20
+[opt]    ★비의 형상 간 퍼짐 = **2.83배** — 1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다
+[opt] ★A08 — `opt_muon` 상태를 체크포인트에 저장한다(종전 미저장 = resume 시 모멘텀이 조용히 0). 체크포인트가 ⚙+339 MB 커진다
+[opt] ★A08 — 행렬 weight decay = 0 (명시) · AdamW 팔의 dense 그룹은 0.1 이다(교락 축)
+  step     0/229  ce 10.4153  |g| 2.28  anneal 0.00  lr 4.55e-05  12820 ms/step
+  step    10/229  ce 9.6299  |g| 1.19  anneal 0.00  lr 5.00e-04  2904 ms/step
+  step    20/229  ce 8.1218  |g| 1.67  anneal 0.00  lr 9.55e-04  2265 ms/step
+  step    30/229  ce 7.1254  |g| 0.52  anneal 0.00  lr 1.00e-03  2135 ms/step
+  step    40/229  ce 6.7462  |g| 0.58  anneal 0.06  lr 1.00e-03  2001 ms/step
+  step    50/229  ce 6.4429  |g| 0.58  anneal 0.16  lr 1.00e-03  1981 ms/step
+  step    60/229  ce 6.3102  |g| 0.64  anneal 0.26  lr 1.00e-03  1910 ms/step
+  step    70/229  ce 6.1867  |g| 0.58  anneal 0.35  lr 1.00e-03  1907 ms/step
+  step    80/229  ce 6.0456  |g| 0.65  anneal 0.45  lr 1.00e-03  1864 ms/step
+  step    90/229  ce 5.9373  |g| 0.67  anneal 0.54  lr 1.00e-03  1867 ms/step
+  step   100/229  ce 5.8465  |g| 0.56  anneal 0.64  lr 1.00e-03  1835 ms/step
+  step   110/229  ce 5.7304  |g| 0.79  anneal 0.74  lr 1.00e-03  1840 ms/step
+  step   120/229  ce 5.6549  |g| 0.49  anneal 0.83  lr 1.00e-03  1815 ms/step
+  step   130/229  ce 5.6695  |g| 0.67  anneal 0.93  lr 1.00e-03  1822 ms/step
+  step   140/229  ce 5.5614  |g| 0.53  anneal 1.00  lr 1.00e-03  1803 ms/step
+  step   150/229  ce 5.4947  |g| 0.60  anneal 1.00  lr 1.00e-03  1810 ms/step
+  step   160/229  ce 5.4571  |g| 0.40  anneal 1.00  lr 1.00e-03  1793 ms/step
+  step   170/229  ce 5.3327  |g| 0.49  anneal 1.00  lr 1.00e-03  1799 ms/step
+  step   180/229  ce 5.3407  |g| 0.44  anneal 1.00  lr 1.00e-03  1786 ms/step
+  step   190/229  ce 5.2875  |g| 0.43  anneal 1.00  lr 9.93e-04  1792 ms/step
+  step   200/229  ce 5.2215  |g| 0.41  anneal 1.00  lr 8.15e-04  1780 ms/step
+  step   210/229  ce 5.0917  |g| 0.28  anneal 1.00  lr 4.92e-04  1785 ms/step
+  step   220/229  ce 5.0997  |g| 0.28  anneal 1.00  lr 2.01e-04  1774 ms/step
+  step   228/229  ce 5.0084  |g| 0.27  anneal 1.00  lr 1.01e-04  1782 ms/step
+    >> val_loss 5.0675  ppl 158.78  (train_ce 5.008, val-CE +0.059)  bpb 1.671
+       best 갱신 5.0675 -> m100s10_ko-en_300M_p092_s1_dense30_best.pt
+
+[p092_s1_dense30] 최종 val_loss 5.0203  ppl 151.46  best 5.0675@229  (93.3M, 6.9분, skip 0, VRAM 8.85GB(reserved)/8.01GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 8.85GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 7.0분  (2026-09-23 10:34:41)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-23 10:34:41  name=P092_Stage1W_full_trainer_30M
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 229 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 229 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode static --connectivity-density 0.5 --connectivity-update-every 50 --connectivity-swap-fraction 0.1 --tag p092_s1_static50
+==============================================================================
+[cmd] python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 229 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 229 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode static --connectivity-density 0.5 --connectivity-update-every 50 --connectivity-swap-fraction 0.1 --tag p092_s1_static50
+[ckpt] m100s10 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> /home/uranus/tinyLM/data_cache/ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 14 -> 7 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[connectivity] P092 mode=static density=0.500000 active=42319872/84639744 update_every=50 swap_fraction=0.1
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+10+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       84.6M      17.3 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           93.3M      19.1 MiB
+
+
+  저장(packed, 안 B)                         19.1 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.1 MiB
+  ★상주(runtime, 현 구현)                     678.7 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.1MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.173 GFLOP
+  ★KV 캐시(fp32)        : 10.5 KB/token  (엔트리 7개 / 방문 14회)
+                          1024 ctx 10.5 MiB → ★상주+KV = 689.2 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[p092_s1_static50] device=cuda  229step x 131K tok = 30M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[opt] ★Muon(P005) — 행렬 85개(84.8M)는 Muon, 그 외 72개는 AdamW. 🚫muP 는 미구현(P005 A축)
+[opt] ★muon_lr=4.00e-03 (= lr 1.00e-03 x 4) · AdamW 그룹 2개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지
+[opt] ★★muon_scale=rms  — 형상별 업데이트 스케일 (V1 검증, ai_dev_tool/09)
+[opt]                  형상    개수    jordan       rms  rms/jordan
+[opt]         (2048, 768)    28    1.6330    9.0510        5.54
+[opt]          (768, 768)    28    1.0000    5.5426        5.54
+[opt]         (768, 2048)    14    1.0000    9.0510        9.05
+[opt]          (192, 768)    14    1.0000    5.5426        5.54
+[opt]          (768, 256)     1    1.7321    5.5426        3.20
+[opt]    ★비의 형상 간 퍼짐 = **2.83배** — 1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다
+[opt] ★A08 — `opt_muon` 상태를 체크포인트에 저장한다(종전 미저장 = resume 시 모멘텀이 조용히 0). 체크포인트가 ⚙+339 MB 커진다
+[opt] ★A08 — 행렬 weight decay = 0 (명시) · AdamW 팔의 dense 그룹은 0.1 이다(교락 축)
+W0923 10:34:54.909000 1315756 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+  step     0/229  ce 10.4140  |g| 1.69  anneal 0.00  lr 4.55e-05  33263 ms/step
+  step    10/229  ce 9.5758  |g| 1.34  anneal 0.00  lr 5.00e-04  4417 ms/step
+  step    20/229  ce 8.1807  |g| 1.44  anneal 0.00  lr 9.55e-04  3213 ms/step
+  step    30/229  ce 7.5723  |g| 0.83  anneal 0.00  lr 1.00e-03  2675 ms/step
+  step    40/229  ce 7.2936  |g| 0.48  anneal 0.06  lr 1.00e-03  2485 ms/step
+  step    50/229  ce 7.2775  |g| 2.44  anneal 0.16  lr 1.00e-03  2306 ms/step
+  step    60/229  ce 7.1377  |g| 1.28  anneal 0.26  lr 1.00e-03  2230 ms/step
+  step    70/229  ce 6.9497  |g| 0.85  anneal 0.35  lr 1.00e-03  2137 ms/step
+  step    80/229  ce 6.8854  |g| 0.85  anneal 0.45  lr 1.00e-03  2102 ms/step
+  step    90/229  ce 6.7722  |g| 0.64  anneal 0.54  lr 1.00e-03  2053 ms/step
+  step   100/229  ce 6.6444  |g| 0.56  anneal 0.64  lr 1.00e-03  2033 ms/step
+  step   110/229  ce 6.5078  |g| 0.48  anneal 0.74  lr 1.00e-03  1992 ms/step
+  step   120/229  ce 6.4546  |g| 0.63  anneal 0.83  lr 1.00e-03  1980 ms/step
+  step   130/229  ce 6.4123  |g| 0.56  anneal 0.93  lr 1.00e-03  1949 ms/step
+  step   140/229  ce 6.3161  |g| 0.55  anneal 1.00  lr 1.00e-03  1942 ms/step
+  step   150/229  ce 6.2133  |g| 0.42  anneal 1.00  lr 1.00e-03  1918 ms/step
+  step   160/229  ce 6.1648  |g| 0.40  anneal 1.00  lr 1.00e-03  1914 ms/step
+  step   170/229  ce 6.0321  |g| 0.50  anneal 1.00  lr 1.00e-03  1895 ms/step
+  step   180/229  ce 6.0285  |g| 0.51  anneal 1.00  lr 1.00e-03  1892 ms/step
+  step   190/229  ce 5.9861  |g| 0.69  anneal 1.00  lr 9.93e-04  1876 ms/step
+  step   200/229  ce 5.8913  |g| 0.36  anneal 1.00  lr 8.15e-04  1861 ms/step
+  step   210/229  ce 5.7625  |g| 0.26  anneal 1.00  lr 4.92e-04  1859 ms/step
+  step   220/229  ce 5.7559  |g| 0.30  anneal 1.00  lr 2.01e-04  1847 ms/step
+  step   228/229  ce 5.6615  |g| 0.24  anneal 1.00  lr 1.01e-04  1849 ms/step
+    >> val_loss 5.6963  ppl 297.75  (train_ce 5.662, val-CE +0.035)  bpb 1.878
+       best 갱신 5.6963 -> m100s10_ko-en_300M_p092_s1_static50_best.pt
+
+[p092_s1_static50] 최종 val_loss 5.6606  ppl 287.33  best 5.6963@229  (93.3M, 7.2분, skip 0, VRAM 8.93GB(reserved)/8.09GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 8.93GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 7.2분  (2026-09-23 10:41:56)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-23 10:41:56  name=P092_Stage1W_full_trainer_30M
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 229 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 229 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode dynamic --connectivity-density 0.5 --connectivity-update-every 50 --connectivity-swap-fraction 0.1 --tag p092_s1_dynamic50
+==============================================================================
+[cmd] python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 229 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 229 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode dynamic --connectivity-density 0.5 --connectivity-update-every 50 --connectivity-swap-fraction 0.1 --tag p092_s1_dynamic50
+[ckpt] m100s10 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> /home/uranus/tinyLM/data_cache/ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 14 -> 7 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[connectivity] P092 mode=dynamic density=0.500000 active=42319872/84639744 update_every=50 swap_fraction=0.1
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+10+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       84.6M      17.3 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           93.3M      19.1 MiB
+
+
+  저장(packed, 안 B)                         19.1 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.1 MiB
+  ★상주(runtime, 현 구현)                     678.7 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.1MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.173 GFLOP
+  ★KV 캐시(fp32)        : 10.5 KB/token  (엔트리 7개 / 방문 14회)
+                          1024 ctx 10.5 MiB → ★상주+KV = 689.2 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[p092_s1_dynamic50] device=cuda  229step x 131K tok = 30M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[opt] ★Muon(P005) — 행렬 85개(84.8M)는 Muon, 그 외 72개는 AdamW. 🚫muP 는 미구현(P005 A축)
+[opt] ★muon_lr=4.00e-03 (= lr 1.00e-03 x 4) · AdamW 그룹 2개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지
+[opt] ★★muon_scale=rms  — 형상별 업데이트 스케일 (V1 검증, ai_dev_tool/09)
+[opt]                  형상    개수    jordan       rms  rms/jordan
+[opt]         (2048, 768)    28    1.6330    9.0510        5.54
+[opt]          (768, 768)    28    1.0000    5.5426        5.54
+[opt]         (768, 2048)    14    1.0000    9.0510        9.05
+[opt]          (192, 768)    14    1.0000    5.5426        5.54
+[opt]          (768, 256)     1    1.7321    5.5426        3.20
+[opt]    ★비의 형상 간 퍼짐 = **2.83배** — 1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다
+[opt] ★A08 — `opt_muon` 상태를 체크포인트에 저장한다(종전 미저장 = resume 시 모멘텀이 조용히 0). 체크포인트가 ⚙+339 MB 커진다
+[opt] ★A08 — 행렬 weight decay = 0 (명시) · AdamW 팔의 dense 그룹은 0.1 이다(교락 축)
+W0923 10:42:12.880000 1316633 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+  step     0/229  ce 10.4140  |g| 1.69  anneal 0.00  lr 4.55e-05  32475 ms/step
+  step    10/229  ce 9.5757  |g| 1.34  anneal 0.00  lr 5.00e-04  4627 ms/step
+  step    20/229  ce 8.1828  |g| 1.44  anneal 0.00  lr 9.55e-04  3176 ms/step
+  step    30/229  ce 7.7556  |g| 1.53  anneal 0.00  lr 1.00e-03  2747 ms/step
+  step    40/229  ce 7.3606  |g| 0.58  anneal 0.06  lr 1.00e-03  2460 ms/step
+[connectivity] step=50 births=4287360 deaths=4287360 updates=1
+  step    50/229  ce 7.1935  |g| 1.05  anneal 0.16  lr 1.00e-03  2343 ms/step
+  step    60/229  ce 7.1037  |g| 0.96  anneal 0.26  lr 1.00e-03  2216 ms/step
+  step    70/229  ce 7.0543  |g| 3.16  anneal 0.35  lr 1.00e-03  2122 ms/step
+  step    80/229  ce 6.9408  |g| 0.61  anneal 0.45  lr 1.00e-03  2092 ms/step
+  step    90/229  ce 6.8373  |g| 0.71  anneal 0.54  lr 1.00e-03  2035 ms/step
+[connectivity] step=100 births=4287360 deaths=4287360 updates=2
+  step   100/229  ce 6.7260  |g| 0.59  anneal 0.64  lr 1.00e-03  2019 ms/step
+  step   110/229  ce 6.5677  |g| 0.57  anneal 0.74  lr 1.00e-03  1983 ms/step
+  step   120/229  ce 6.5125  |g| 0.62  anneal 0.83  lr 1.00e-03  1975 ms/step
+  step   130/229  ce 6.4652  |g| 0.76  anneal 0.93  lr 1.00e-03  1943 ms/step
+  step   140/229  ce 6.3605  |g| 0.62  anneal 1.00  lr 1.00e-03  1938 ms/step
+[connectivity] step=150 births=4287360 deaths=4287360 updates=3
+  step   150/229  ce 6.2595  |g| 0.68  anneal 1.00  lr 1.00e-03  1913 ms/step
+  step   160/229  ce 6.2054  |g| 0.61  anneal 1.00  lr 1.00e-03  1911 ms/step
+  step   170/229  ce 6.0533  |g| 0.47  anneal 1.00  lr 1.00e-03  1891 ms/step
+  step   180/229  ce 6.0446  |g| 0.56  anneal 1.00  lr 1.00e-03  1890 ms/step
+  step   190/229  ce 6.0055  |g| 0.51  anneal 1.00  lr 9.93e-04  1872 ms/step
+[connectivity] step=200 births=4287360 deaths=4287360 updates=4
+  step   200/229  ce 5.9036  |g| 0.46  anneal 1.00  lr 8.15e-04  1873 ms/step
+  step   210/229  ce 5.7810  |g| 0.27  anneal 1.00  lr 4.92e-04  1858 ms/step
+  step   220/229  ce 5.7719  |g| 0.31  anneal 1.00  lr 2.01e-04  1858 ms/step
+  step   228/229  ce 5.6789  |g| 0.24  anneal 1.00  lr 1.01e-04  1848 ms/step
+    >> val_loss 5.7106  ppl 302.06  (train_ce 5.679, val-CE +0.032)  bpb 1.883
+       best 갱신 5.7106 -> m100s10_ko-en_300M_p092_s1_dynamic50_best.pt
+
+[p092_s1_dynamic50] 최종 val_loss 5.6784  ppl 292.49  best 5.7106@229  (93.3M, 7.2분, skip 0, VRAM 9.25GB(reserved)/8.40GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 9.25GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 7.2분  (2026-09-23 10:49:11)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-23 10:49:11  name=P092_Stage1W_full_trainer_30M
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 229 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 229 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode dynamic --connectivity-density 0.25 --connectivity-update-every 50 --connectivity-swap-fraction 0.1 --tag p092_s1_dynamic25
+==============================================================================
+[cmd] python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 229 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 229 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode dynamic --connectivity-density 0.25 --connectivity-update-every 50 --connectivity-swap-fraction 0.1 --tag p092_s1_dynamic25
+[ckpt] m100s10 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> /home/uranus/tinyLM/data_cache/ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 14 -> 7 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[connectivity] P092 mode=dynamic density=0.250000 active=21159936/84639744 update_every=50 swap_fraction=0.1
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+10+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       84.6M      17.3 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           93.3M      19.1 MiB
+
+
+  저장(packed, 안 B)                         19.1 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.1 MiB
+  ★상주(runtime, 현 구현)                     678.7 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.1MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.173 GFLOP
+  ★KV 캐시(fp32)        : 10.5 KB/token  (엔트리 7개 / 방문 14회)
+                          1024 ctx 10.5 MiB → ★상주+KV = 689.2 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[p092_s1_dynamic25] device=cuda  229step x 131K tok = 30M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[opt] ★Muon(P005) — 행렬 85개(84.8M)는 Muon, 그 외 72개는 AdamW. 🚫muP 는 미구현(P005 A축)
+[opt] ★muon_lr=4.00e-03 (= lr 1.00e-03 x 4) · AdamW 그룹 2개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지
+[opt] ★★muon_scale=rms  — 형상별 업데이트 스케일 (V1 검증, ai_dev_tool/09)
+[opt]                  형상    개수    jordan       rms  rms/jordan
+[opt]         (2048, 768)    28    1.6330    9.0510        5.54
+[opt]          (768, 768)    28    1.0000    5.5426        5.54
+[opt]         (768, 2048)    14    1.0000    9.0510        9.05
+[opt]          (192, 768)    14    1.0000    5.5426        5.54
+[opt]          (768, 256)     1    1.7321    5.5426        3.20
+[opt]    ★비의 형상 간 퍼짐 = **2.83배** — 1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다
+[opt] ★A08 — `opt_muon` 상태를 체크포인트에 저장한다(종전 미저장 = resume 시 모멘텀이 조용히 0). 체크포인트가 ⚙+339 MB 커진다
+[opt] ★A08 — 행렬 weight decay = 0 (명시) · AdamW 팔의 dense 그룹은 0.1 이다(교락 축)
+  step     0/229  ce 10.4134  |g| 1.47  anneal 0.00  lr 4.55e-05  16812 ms/step
+  step    10/229  ce 9.6267  |g| 1.32  anneal 0.00  lr 5.00e-04  2953 ms/step
+  step    20/229  ce 8.1868  |g| 1.52  anneal 0.00  lr 9.55e-04  2436 ms/step
+  step    30/229  ce 7.5665  |g| 0.64  anneal 0.00  lr 1.00e-03  2153 ms/step
+  step    40/229  ce 7.2914  |g| 0.67  anneal 0.06  lr 1.00e-03  2084 ms/step
+[connectivity] step=50 births=2189824 deaths=2189824 updates=1
+  step    50/229  ce 7.0662  |g| 0.80  anneal 0.16  lr 1.00e-03  1983 ms/step
+  step    60/229  ce 6.9722  |g| 0.76  anneal 0.26  lr 1.00e-03  1968 ms/step
+  step    70/229  ce 6.8615  |g| 0.76  anneal 0.35  lr 1.00e-03  1908 ms/step
+  step    80/229  ce 6.7478  |g| 0.66  anneal 0.45  lr 1.00e-03  1905 ms/step
+  step    90/229  ce 6.5897  |g| 0.67  anneal 0.54  lr 1.00e-03  1865 ms/step
+[connectivity] step=100 births=2189824 deaths=2189824 updates=2
+  step   100/229  ce 6.4899  |g| 0.65  anneal 0.64  lr 1.00e-03  1869 ms/step
+  step   110/229  ce 6.3557  |g| 0.71  anneal 0.74  lr 1.00e-03  1839 ms/step
+  step   120/229  ce 6.3098  |g| 0.72  anneal 0.83  lr 1.00e-03  1843 ms/step
+  step   130/229  ce 6.2712  |g| 0.57  anneal 0.93  lr 1.00e-03  1823 ms/step
+  step   140/229  ce 6.1668  |g| 0.61  anneal 1.00  lr 1.00e-03  1822 ms/step
+[connectivity] step=150 births=2189824 deaths=2189824 updates=3
+  step   150/229  ce 6.0736  |g| 0.43  anneal 1.00  lr 1.00e-03  1804 ms/step
+  step   160/229  ce 6.0302  |g| 0.44  anneal 1.00  lr 1.00e-03  1814 ms/step
+  step   170/229  ce 5.9409  |g| 0.83  anneal 1.00  lr 1.00e-03  1799 ms/step
+  step   180/229  ce 5.9117  |g| 0.70  anneal 1.00  lr 1.00e-03  1800 ms/step
+  step   190/229  ce 5.8675  |g| 0.43  anneal 1.00  lr 9.93e-04  1787 ms/step
+[connectivity] step=200 births=2189824 deaths=2189824 updates=4
+  step   200/229  ce 5.7719  |g| 0.46  anneal 1.00  lr 8.15e-04  1793 ms/step
+  step   210/229  ce 5.6349  |g| 0.26  anneal 1.00  lr 4.92e-04  1781 ms/step
+  step   220/229  ce 5.6344  |g| 0.28  anneal 1.00  lr 2.01e-04  1785 ms/step
+  step   228/229  ce 5.5439  |g| 0.25  anneal 1.00  lr 1.01e-04  1777 ms/step
+    >> val_loss 5.5769  ppl 264.24  (train_ce 5.544, val-CE +0.033)  bpb 1.839
+       best 갱신 5.5769 -> m100s10_ko-en_300M_p092_s1_dynamic25_best.pt
+
+[p092_s1_dynamic25] 최종 val_loss 5.5391  ppl 254.44  best 5.5769@229  (93.3M, 6.9분, skip 0, VRAM 9.25GB(reserved)/8.40GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 9.25GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 7.0분  (2026-09-23 10:56:08)
+==============================================================================

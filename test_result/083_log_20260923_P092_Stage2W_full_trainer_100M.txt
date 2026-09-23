@@ -1,0 +1,839 @@
+
+==============================================================================
+[runlog] 2026-09-23 10:56:26  name=P092_Stage2W_full_trainer_100M
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 763 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 100 --save-every 500 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode none --connectivity-density 1.0 --connectivity-update-every 100 --connectivity-swap-fraction 0.1 --tag p092_s2_dense100
+==============================================================================
+[cmd] python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 763 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 100 --save-every 500 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode none --connectivity-density 1.0 --connectivity-update-every 100 --connectivity-swap-fraction 0.1 --tag p092_s2_dense100
+[ckpt] m100s10 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> /home/uranus/tinyLM/data_cache/ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 14 -> 7 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+10+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       84.6M      17.3 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           93.3M      19.1 MiB
+
+
+  저장(packed, 안 B)                         19.1 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.1 MiB
+  ★상주(runtime, 현 구현)                     678.7 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.1MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.173 GFLOP
+  ★KV 캐시(fp32)        : 10.5 KB/token  (엔트리 7개 / 방문 14회)
+                          1024 ctx 10.5 MiB → ★상주+KV = 689.2 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[p092_s2_dense100] device=cuda  763step x 131K tok = 100M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[opt] ★Muon(P005) — 행렬 85개(84.8M)는 Muon, 그 외 72개는 AdamW. 🚫muP 는 미구현(P005 A축)
+[opt] ★muon_lr=4.00e-03 (= lr 1.00e-03 x 4) · AdamW 그룹 2개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지
+[opt] ★★muon_scale=rms  — 형상별 업데이트 스케일 (V1 검증, ai_dev_tool/09)
+[opt]                  형상    개수    jordan       rms  rms/jordan
+[opt]         (2048, 768)    28    1.6330    9.0510        5.54
+[opt]          (768, 768)    28    1.0000    5.5426        5.54
+[opt]         (768, 2048)    14    1.0000    9.0510        9.05
+[opt]          (192, 768)    14    1.0000    5.5426        5.54
+[opt]          (768, 256)     1    1.7321    5.5426        3.20
+[opt]    ★비의 형상 간 퍼짐 = **2.83배** — 1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다
+[opt] ★A08 — `opt_muon` 상태를 체크포인트에 저장한다(종전 미저장 = resume 시 모멘텀이 조용히 0). 체크포인트가 ⚙+339 MB 커진다
+[opt] ★A08 — 행렬 weight decay = 0 (명시) · AdamW 팔의 dense 그룹은 0.1 이다(교락 축)
+  step     0/763  ce 10.4153  |g| 2.28  anneal 0.00  lr 1.32e-05  13190 ms/step
+  step    10/763  ce 10.0125  |g| 1.43  anneal 0.00  lr 1.45e-04  2935 ms/step
+  step    20/763  ce 9.4609  |g| 1.32  anneal 0.00  lr 2.76e-04  2276 ms/step
+  step    30/763  ce 8.6643  |g| 1.79  anneal 0.00  lr 4.08e-04  2148 ms/step
+  step    40/763  ce 7.7566  |g| 1.33  anneal 0.00  lr 5.39e-04  2019 ms/step
+  step    50/763  ce 7.0750  |g| 0.55  anneal 0.00  lr 6.71e-04  1986 ms/step
+  step    60/763  ce 6.7522  |g| 0.54  anneal 0.00  lr 8.03e-04  1919 ms/step
+  step    70/763  ce 6.5463  |g| 0.59  anneal 0.00  lr 9.34e-04  1910 ms/step
+  step    80/763  ce 6.3316  |g| 0.50  anneal 0.00  lr 1.00e-03  1871 ms/step
+  step    90/763  ce 6.1590  |g| 0.63  anneal 0.00  lr 1.00e-03  1870 ms/step
+    >> val_loss 7.0531  ppl 1156.47  (train_ce 6.021, val-CE +1.032)  bpb 2.326
+       best 갱신 7.0531 -> m100s10_ko-en_300M_p092_s2_dense100_best.pt
+  step   100/763  ce 6.0326  |g| 0.70  anneal 0.00  lr 1.00e-03  1871 ms/step
+  step   110/763  ce 5.8898  |g| 0.62  anneal 0.00  lr 1.00e-03  1872 ms/step
+  step   120/763  ce 5.7820  |g| 0.54  anneal 0.02  lr 1.00e-03  1848 ms/step
+  step   130/763  ce 5.7413  |g| 0.48  anneal 0.05  lr 1.00e-03  1850 ms/step
+  step   140/763  ce 5.6166  |g| 0.55  anneal 0.08  lr 1.00e-03  1831 ms/step
+  step   150/763  ce 5.5387  |g| 0.55  anneal 0.10  lr 1.00e-03  1833 ms/step
+  step   160/763  ce 5.4770  |g| 0.35  anneal 0.13  lr 1.00e-03  1817 ms/step
+  step   170/763  ce 5.3460  |g| 0.51  anneal 0.16  lr 1.00e-03  1820 ms/step
+  step   180/763  ce 5.3404  |g| 0.51  anneal 0.19  lr 1.00e-03  1807 ms/step
+  step   190/763  ce 5.2689  |g| 0.52  anneal 0.22  lr 1.00e-03  1810 ms/step
+    >> val_loss 5.4606  ppl 235.24  (train_ce 5.269, val-CE +0.191)  bpb 1.801
+       best 갱신 5.4606 -> m100s10_ko-en_300M_p092_s2_dense100_best.pt
+  step   200/763  ce 5.2029  |g| 0.41  anneal 0.25  lr 1.00e-03  1808 ms/step
+  step   210/763  ce 5.0875  |g| 0.37  anneal 0.28  lr 1.00e-03  1810 ms/step
+  step   220/763  ce 5.0976  |g| 0.49  anneal 0.31  lr 1.00e-03  1800 ms/step
+  step   230/763  ce 5.0226  |g| 0.45  anneal 0.34  lr 1.00e-03  1802 ms/step
+  step   240/763  ce 5.0966  |g| 0.51  anneal 0.37  lr 1.00e-03  1793 ms/step
+  step   250/763  ce 4.9633  |g| 0.38  anneal 0.40  lr 1.00e-03  1797 ms/step
+  step   260/763  ce 4.9609  |g| 0.43  anneal 0.42  lr 1.00e-03  1789 ms/step
+  step   270/763  ce 4.9118  |g| 0.36  anneal 0.45  lr 1.00e-03  1792 ms/step
+  step   280/763  ce 4.8238  |g| 0.36  anneal 0.48  lr 1.00e-03  1784 ms/step
+  step   290/763  ce 4.8370  |g| 0.35  anneal 0.51  lr 1.00e-03  1787 ms/step
+    >> val_loss 4.8637  ppl 129.51  (train_ce 4.668, val-CE +0.195)  bpb 1.604
+       best 갱신 4.8637 -> m100s10_ko-en_300M_p092_s2_dense100_best.pt
+  step   300/763  ce 4.6668  |g| 0.40  anneal 0.54  lr 1.00e-03  1785 ms/step
+  step   310/763  ce 4.6442  |g| 0.39  anneal 0.57  lr 1.00e-03  1789 ms/step
+  step   320/763  ce 4.7110  |g| 0.46  anneal 0.60  lr 1.00e-03  1782 ms/step
+  step   330/763  ce 4.6013  |g| 0.42  anneal 0.63  lr 1.00e-03  1775 ms/step
+  step   340/763  ce 4.5432  |g| 0.35  anneal 0.66  lr 1.00e-03  1779 ms/step
+  step   350/763  ce 4.4434  |g| 0.46  anneal 0.69  lr 1.00e-03  1773 ms/step
+  step   360/763  ce 4.5087  |g| 0.51  anneal 0.72  lr 1.00e-03  1776 ms/step
+  step   370/763  ce 4.4609  |g| 0.39  anneal 0.74  lr 1.00e-03  1770 ms/step
+  step   380/763  ce 4.4857  |g| 0.38  anneal 0.77  lr 1.00e-03  1773 ms/step
+  step   390/763  ce 4.3793  |g| 0.44  anneal 0.80  lr 1.00e-03  1767 ms/step
+    >> val_loss 4.4569  ppl 86.22  (train_ce 4.427, val-CE +0.030)  bpb 1.470
+       best 갱신 4.4569 -> m100s10_ko-en_300M_p092_s2_dense100_best.pt
+  step   400/763  ce 4.4370  |g| 0.44  anneal 0.83  lr 1.00e-03  1776 ms/step
+  step   410/763  ce 4.2908  |g| 0.41  anneal 0.86  lr 1.00e-03  1770 ms/step
+  step   420/763  ce 4.3942  |g| 0.39  anneal 0.89  lr 1.00e-03  1773 ms/step
+  step   430/763  ce 4.3934  |g| 0.40  anneal 0.92  lr 1.00e-03  1768 ms/step
+  step   440/763  ce 4.3713  |g| 0.44  anneal 0.95  lr 1.00e-03  1770 ms/step
+  step   450/763  ce 4.3896  |g| 0.34  anneal 0.98  lr 1.00e-03  1765 ms/step
+  step   460/763  ce 4.3581  |g| 0.43  anneal 1.00  lr 1.00e-03  1768 ms/step
+  step   470/763  ce 4.2882  |g| 0.46  anneal 1.00  lr 1.00e-03  1764 ms/step
+  step   480/763  ce 4.3813  |g| 0.47  anneal 1.00  lr 1.00e-03  1767 ms/step
+  step   490/763  ce 4.3626  |g| 0.43  anneal 1.00  lr 1.00e-03  1762 ms/step
+    >> val_loss 4.3153  ppl 74.84  (train_ce 4.345, val-CE -0.030)  bpb 1.423
+       best 갱신 4.3153 -> m100s10_ko-en_300M_p092_s2_dense100_best.pt
+  step   500/763  ce 4.3767  |g| 0.42  anneal 1.00  lr 1.00e-03  1770 ms/step
+  step   510/763  ce 4.2048  |g| 0.39  anneal 1.00  lr 1.00e-03  1766 ms/step
+  step   520/763  ce 4.2496  |g| 0.40  anneal 1.00  lr 1.00e-03  1768 ms/step
+  step   530/763  ce 4.2847  |g| 0.38  anneal 1.00  lr 1.00e-03  1764 ms/step
+  step   540/763  ce 4.2511  |g| 0.41  anneal 1.00  lr 1.00e-03  1767 ms/step
+  step   550/763  ce 4.2363  |g| 0.46  anneal 1.00  lr 1.00e-03  1763 ms/step
+  step   560/763  ce 4.2209  |g| 0.38  anneal 1.00  lr 1.00e-03  1766 ms/step
+  step   570/763  ce 4.2000  |g| 0.35  anneal 1.00  lr 1.00e-03  1762 ms/step
+  step   580/763  ce 4.1952  |g| 0.43  anneal 1.00  lr 1.00e-03  1764 ms/step
+  step   590/763  ce 4.2328  |g| 0.33  anneal 1.00  lr 1.00e-03  1760 ms/step
+    >> val_loss 4.2128  ppl 67.55  (train_ce 4.236, val-CE -0.024)  bpb 1.389
+       best 갱신 4.2128 -> m100s10_ko-en_300M_p092_s2_dense100_best.pt
+  step   600/763  ce 4.2426  |g| 0.37  anneal 1.00  lr 1.00e-03  1766 ms/step
+  step   610/763  ce 4.2412  |g| 0.36  anneal 1.00  lr 1.00e-03  1763 ms/step
+  step   620/763  ce 4.1645  |g| 0.38  anneal 1.00  lr 1.00e-03  1764 ms/step
+  step   630/763  ce 4.1716  |g| 0.28  anneal 1.00  lr 9.98e-04  1761 ms/step
+  step   640/763  ce 4.1435  |g| 0.39  anneal 1.00  lr 9.76e-04  1763 ms/step
+  step   650/763  ce 4.1795  |g| 0.35  anneal 1.00  lr 9.32e-04  1760 ms/step
+  step   660/763  ce 4.1799  |g| 0.31  anneal 1.00  lr 8.68e-04  1762 ms/step
+  step   670/763  ce 4.1756  |g| 0.30  anneal 1.00  lr 7.87e-04  1759 ms/step
+  step   680/763  ce 4.2320  |g| 0.23  anneal 1.00  lr 6.95e-04  1761 ms/step
+  step   690/763  ce 4.0722  |g| 0.26  anneal 1.00  lr 5.94e-04  1758 ms/step
+    >> val_loss 4.0609  ppl 58.03  (train_ce 4.151, val-CE -0.090)  bpb 1.339
+       best 갱신 4.0609 -> m100s10_ko-en_300M_p092_s2_dense100_best.pt
+  step   700/763  ce 4.0564  |g| 0.23  anneal 1.00  lr 4.92e-04  1762 ms/step
+  step   710/763  ce 4.0597  |g| 0.22  anneal 1.00  lr 3.92e-04  1760 ms/step
+  step   720/763  ce 4.0663  |g| 0.22  anneal 1.00  lr 3.01e-04  1761 ms/step
+  step   730/763  ce 4.0553  |g| 0.22  anneal 1.00  lr 2.22e-04  1759 ms/step
+  step   740/763  ce 4.0340  |g| 0.21  anneal 1.00  lr 1.61e-04  1760 ms/step
+  step   750/763  ce 3.9580  |g| 0.22  anneal 1.00  lr 1.20e-04  1758 ms/step
+  step   760/763  ce 3.9719  |g| 0.22  anneal 1.00  lr 1.01e-04  1759 ms/step
+  step   762/763  ce 4.0492  |g| 0.21  anneal 1.00  lr 1.00e-04  1759 ms/step
+    >> val_loss 3.9956  ppl 54.36  (train_ce 4.049, val-CE -0.054)  bpb 1.318
+       best 갱신 3.9956 -> m100s10_ko-en_300M_p092_s2_dense100_best.pt
+
+[p092_s2_dense100] 최종 val_loss 3.9675  ppl 52.85  best 3.9956@763  (93.3M, 22.4분, skip 0, VRAM 8.85GB(reserved)/8.01GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 8.85GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+
+[wandb-auto] successful WSL full training; starting fail-open post-run sync
+[wandb-auto] project=tinylm exact_tag=p092_s2_dense100 draw_tokens=100007936
+
+############################################################################################
+  wandb 동기화 — PUSH · 1런
+############################################################################################
+  ★기존 `runs/logs/*.json` 과 `test_result/*.txt` 는 **읽기만** 한다. 수정하지 않는다.
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/uranus/.netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+
+  --- m100s10_ko-en_300M_p092_s2_dense100
+      config 59개 · summary 33개 · history 8점
+      final={'val_loss': 3.9675, 'ppl': 52.85223495134148, 'bpb': 1.3083046969871999, 'ema': False}  grad_max=0.8517099022865295  vram=8.8515625  ms/step=1576.1117935180664
+wandb: setting up run m100s10_ko-en_300M_p092_s2_dense100
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260923_111858-m100s10_ko-en_300M_p092_s2_dense100
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run m100s10_ko-en_300M_p092_s2_dense100
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_p092_s2_dense100
+wandb: updating run metadata; uploading summary
+wandb: uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json
+wandb: 
+wandb: Run history:
+wandb:            bpb █▄▃▂▂▁▁▁
+wandb:            gap █▃▃▂▁▁▁▁
+wandb:           kd_n ▁▁▁▁▁▁▁▁
+wandb:   nokd_ce_mean █▅▄▃▂▂▁▁
+wandb: nokd_loss_mean █▅▄▃▂▂▁▁
+wandb:         nokd_n ▁▂▃▄▅▆▇█
+wandb:            ppl █▂▁▁▁▁▁▁
+wandb:           step ▁▂▃▄▅▆▇█
+wandb:       train_ce █▅▃▂▂▂▁▁
+wandb:     train_loss █▅▃▂▂▂▁▁
+wandb:             +1 ...
+wandb: 
+wandb: Run summary:
+wandb:            best_step 763
+wandb:             best_val 3.99562
+wandb:                  bpb 1.31758
+wandb:      bytes_per_token 4.37505
+wandb:  connectivity_births 0
+wandb:  connectivity_deaths 0
+wandb: connectivity_updates 0
+wandb:            deploy_mb 19.08684
+wandb:                  ema False
+wandb:            final_bpb 1.3083
+wandb:                  +36 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en_300M_p092_s2_dense100 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_p092_s2_dense100
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260923_111858-m100s10_ko-en_300M_p092_s2_dense100/logs
+
+  ⚠️★**wandb 는 정본이 아니다.** 판정 근거는 `test_result/` 문서이고,
+     wandb 는 **찾아보기 편하라고 있는 사본**이다. 둘이 다르면 문서가 옳다.
+[wandb-auto] PASS post-run sync
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 22.6분  (2026-09-23 11:19:01)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-23 11:19:01  name=P092_Stage2W_full_trainer_100M
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 763 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 100 --save-every 500 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode static --connectivity-density 0.5 --connectivity-update-every 100 --connectivity-swap-fraction 0.1 --tag p092_s2_static50
+==============================================================================
+[cmd] python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 763 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 100 --save-every 500 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode static --connectivity-density 0.5 --connectivity-update-every 100 --connectivity-swap-fraction 0.1 --tag p092_s2_static50
+[ckpt] m100s10 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> /home/uranus/tinyLM/data_cache/ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 14 -> 7 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[connectivity] P092 mode=static density=0.500000 active=42319872/84639744 update_every=100 swap_fraction=0.1
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+10+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       84.6M      17.3 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           93.3M      19.1 MiB
+
+
+  저장(packed, 안 B)                         19.1 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.1 MiB
+  ★상주(runtime, 현 구현)                     678.7 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.1MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.173 GFLOP
+  ★KV 캐시(fp32)        : 10.5 KB/token  (엔트리 7개 / 방문 14회)
+                          1024 ctx 10.5 MiB → ★상주+KV = 689.2 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[p092_s2_static50] device=cuda  763step x 131K tok = 100M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[opt] ★Muon(P005) — 행렬 85개(84.8M)는 Muon, 그 외 72개는 AdamW. 🚫muP 는 미구현(P005 A축)
+[opt] ★muon_lr=4.00e-03 (= lr 1.00e-03 x 4) · AdamW 그룹 2개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지
+[opt] ★★muon_scale=rms  — 형상별 업데이트 스케일 (V1 검증, ai_dev_tool/09)
+[opt]                  형상    개수    jordan       rms  rms/jordan
+[opt]         (2048, 768)    28    1.6330    9.0510        5.54
+[opt]          (768, 768)    28    1.0000    5.5426        5.54
+[opt]         (768, 2048)    14    1.0000    9.0510        9.05
+[opt]          (192, 768)    14    1.0000    5.5426        5.54
+[opt]          (768, 256)     1    1.7321    5.5426        3.20
+[opt]    ★비의 형상 간 퍼짐 = **2.83배** — 1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다
+[opt] ★A08 — `opt_muon` 상태를 체크포인트에 저장한다(종전 미저장 = resume 시 모멘텀이 조용히 0). 체크포인트가 ⚙+339 MB 커진다
+[opt] ★A08 — 행렬 weight decay = 0 (명시) · AdamW 팔의 dense 그룹은 0.1 이다(교락 축)
+  step     0/763  ce 10.4140  |g| 1.69  anneal 0.00  lr 1.32e-05  15825 ms/step
+  step    10/763  ce 9.9526  |g| 0.90  anneal 0.00  lr 1.45e-04  2866 ms/step
+  step    20/763  ce 9.4100  |g| 1.45  anneal 0.00  lr 2.76e-04  2381 ms/step
+  step    30/763  ce 8.6291  |g| 1.84  anneal 0.00  lr 4.08e-04  2120 ms/step
+  step    40/763  ce 7.8248  |g| 1.20  anneal 0.00  lr 5.39e-04  1987 ms/step
+  step    50/763  ce 7.3260  |g| 1.31  anneal 0.00  lr 6.71e-04  1962 ms/step
+  step    60/763  ce 7.1029  |g| 0.63  anneal 0.00  lr 8.03e-04  1897 ms/step
+  step    70/763  ce 6.9367  |g| 1.05  anneal 0.00  lr 9.34e-04  1889 ms/step
+  step    80/763  ce 6.7831  |g| 0.68  anneal 0.00  lr 1.00e-03  1850 ms/step
+  step    90/763  ce 6.6320  |g| 0.60  anneal 0.00  lr 1.00e-03  1850 ms/step
+    >> val_loss 6.5794  ppl 720.09  (train_ce 6.533, val-CE +0.046)  bpb 2.170
+       best 갱신 6.5794 -> m100s10_ko-en_300M_p092_s2_static50_best.pt
+  step   100/763  ce 6.5015  |g| 0.69  anneal 0.00  lr 1.00e-03  1886 ms/step
+  step   110/763  ce 6.3615  |g| 0.59  anneal 0.00  lr 1.00e-03  1858 ms/step
+  step   120/763  ce 6.3108  |g| 0.45  anneal 0.02  lr 1.00e-03  1836 ms/step
+  step   130/763  ce 6.2743  |g| 0.71  anneal 0.05  lr 1.00e-03  1835 ms/step
+  step   140/763  ce 6.1256  |g| 0.37  anneal 0.08  lr 1.00e-03  1816 ms/step
+  step   150/763  ce 6.0497  |g| 0.44  anneal 0.10  lr 1.00e-03  1821 ms/step
+  step   160/763  ce 5.9928  |g| 0.41  anneal 0.13  lr 1.00e-03  1803 ms/step
+  step   170/763  ce 5.8582  |g| 0.42  anneal 0.16  lr 1.00e-03  1808 ms/step
+  step   180/763  ce 5.8236  |g| 0.35  anneal 0.19  lr 1.00e-03  1794 ms/step
+  step   190/763  ce 5.7724  |g| 0.38  anneal 0.22  lr 1.00e-03  1798 ms/step
+    >> val_loss 5.7694  ppl 320.34  (train_ce 5.751, val-CE +0.018)  bpb 1.902
+       best 갱신 5.7694 -> m100s10_ko-en_300M_p092_s2_static50_best.pt
+  step   200/763  ce 5.7061  |g| 0.51  anneal 0.25  lr 1.00e-03  1796 ms/step
+  step   210/763  ce 5.5847  |g| 0.45  anneal 0.28  lr 1.00e-03  1800 ms/step
+  step   220/763  ce 5.5799  |g| 0.46  anneal 0.31  lr 1.00e-03  1789 ms/step
+  step   230/763  ce 5.4646  |g| 0.55  anneal 0.34  lr 1.00e-03  1793 ms/step
+  step   240/763  ce 5.5216  |g| 0.42  anneal 0.37  lr 1.00e-03  1783 ms/step
+  step   250/763  ce 5.3982  |g| 0.45  anneal 0.40  lr 1.00e-03  1787 ms/step
+  step   260/763  ce 5.3771  |g| 0.46  anneal 0.42  lr 1.00e-03  1778 ms/step
+  step   270/763  ce 5.3283  |g| 0.40  anneal 0.45  lr 1.00e-03  1782 ms/step
+  step   280/763  ce 5.2287  |g| 0.48  anneal 0.48  lr 1.00e-03  1777 ms/step
+  step   290/763  ce 5.2479  |g| 0.33  anneal 0.51  lr 1.00e-03  1782 ms/step
+    >> val_loss 5.2206  ppl 185.05  (train_ce 5.091, val-CE +0.130)  bpb 1.722
+       best 갱신 5.2206 -> m100s10_ko-en_300M_p092_s2_static50_best.pt
+  step   300/763  ce 5.0914  |g| 0.42  anneal 0.54  lr 1.00e-03  1782 ms/step
+  step   310/763  ce 5.0754  |g| 0.39  anneal 0.57  lr 1.00e-03  1786 ms/step
+  step   320/763  ce 5.1212  |g| 0.41  anneal 0.60  lr 1.00e-03  1780 ms/step
+  step   330/763  ce 5.0650  |g| 0.34  anneal 0.63  lr 1.00e-03  1784 ms/step
+  step   340/763  ce 4.9732  |g| 0.45  anneal 0.66  lr 1.00e-03  1779 ms/step
+  step   350/763  ce 4.9046  |g| 0.47  anneal 0.69  lr 1.00e-03  1782 ms/step
+  step   360/763  ce 4.9681  |g| 0.48  anneal 0.72  lr 1.00e-03  1777 ms/step
+  step   370/763  ce 4.9218  |g| 0.44  anneal 0.74  lr 1.00e-03  1780 ms/step
+  step   380/763  ce 4.9397  |g| 0.44  anneal 0.77  lr 1.00e-03  1774 ms/step
+  step   390/763  ce 4.8077  |g| 0.40  anneal 0.80  lr 1.00e-03  1778 ms/step
+    >> val_loss 4.8669  ppl 129.91  (train_ce 4.859, val-CE +0.008)  bpb 1.605
+       best 갱신 4.8669 -> m100s10_ko-en_300M_p092_s2_static50_best.pt
+  step   400/763  ce 4.8767  |g| 0.40  anneal 0.83  lr 1.00e-03  1777 ms/step
+  step   410/763  ce 4.7157  |g| 0.38  anneal 0.86  lr 1.00e-03  1779 ms/step
+  step   420/763  ce 4.7937  |g| 0.45  anneal 0.89  lr 1.00e-03  1774 ms/step
+  step   430/763  ce 4.7836  |g| 0.49  anneal 0.92  lr 1.00e-03  1777 ms/step
+  step   440/763  ce 4.7383  |g| 0.50  anneal 0.95  lr 1.00e-03  1771 ms/step
+  step   450/763  ce 4.7371  |g| 0.49  anneal 0.98  lr 1.00e-03  1774 ms/step
+  step   460/763  ce 4.6788  |g| 0.48  anneal 1.00  lr 1.00e-03  1769 ms/step
+  step   470/763  ce 4.5958  |g| 0.50  anneal 1.00  lr 1.00e-03  1771 ms/step
+  step   480/763  ce 4.6780  |g| 0.39  anneal 1.00  lr 1.00e-03  1766 ms/step
+  step   490/763  ce 4.6473  |g| 0.47  anneal 1.00  lr 1.00e-03  1769 ms/step
+    >> val_loss 4.5791  ppl 97.42  (train_ce 4.615, val-CE -0.036)  bpb 1.510
+       best 갱신 4.5791 -> m100s10_ko-en_300M_p092_s2_static50_best.pt
+  step   500/763  ce 4.6313  |g| 0.47  anneal 1.00  lr 1.00e-03  1769 ms/step
+  step   510/763  ce 4.4729  |g| 0.51  anneal 1.00  lr 1.00e-03  1772 ms/step
+  step   520/763  ce 4.5134  |g| 0.59  anneal 1.00  lr 1.00e-03  1768 ms/step
+  step   530/763  ce 4.5319  |g| 0.46  anneal 1.00  lr 1.00e-03  1770 ms/step
+  step   540/763  ce 4.5040  |g| 0.62  anneal 1.00  lr 1.00e-03  1765 ms/step
+  step   550/763  ce 4.4546  |g| 0.40  anneal 1.00  lr 1.00e-03  1768 ms/step
+  step   560/763  ce 4.4577  |g| 0.44  anneal 1.00  lr 1.00e-03  1764 ms/step
+  step   570/763  ce 4.4342  |g| 0.44  anneal 1.00  lr 1.00e-03  1766 ms/step
+  step   580/763  ce 4.4133  |g| 0.50  anneal 1.00  lr 1.00e-03  1762 ms/step
+  step   590/763  ce 4.4498  |g| 0.52  anneal 1.00  lr 1.00e-03  1764 ms/step
+    >> val_loss 4.4172  ppl 82.86  (train_ce 4.451, val-CE -0.034)  bpb 1.457
+       best 갱신 4.4172 -> m100s10_ko-en_300M_p092_s2_static50_best.pt
+  step   600/763  ce 4.4541  |g| 0.48  anneal 1.00  lr 1.00e-03  1764 ms/step
+  step   610/763  ce 4.4388  |g| 0.49  anneal 1.00  lr 1.00e-03  1766 ms/step
+  step   620/763  ce 4.3650  |g| 0.39  anneal 1.00  lr 1.00e-03  1762 ms/step
+  step   630/763  ce 4.3800  |g| 0.46  anneal 1.00  lr 9.98e-04  1764 ms/step
+  step   640/763  ce 4.3483  |g| 0.49  anneal 1.00  lr 9.76e-04  1760 ms/step
+  step   650/763  ce 4.3758  |g| 0.44  anneal 1.00  lr 9.32e-04  1762 ms/step
+  step   660/763  ce 4.3780  |g| 0.38  anneal 1.00  lr 8.68e-04  1759 ms/step
+  step   670/763  ce 4.3620  |g| 0.35  anneal 1.00  lr 7.87e-04  1761 ms/step
+  step   680/763  ce 4.4134  |g| 0.27  anneal 1.00  lr 6.95e-04  1758 ms/step
+  step   690/763  ce 4.2484  |g| 0.30  anneal 1.00  lr 5.94e-04  1755 ms/step
+    >> val_loss 4.2428  ppl 69.60  (train_ce 4.328, val-CE -0.085)  bpb 1.399
+       best 갱신 4.2428 -> m100s10_ko-en_300M_p092_s2_static50_best.pt
+  step   700/763  ce 4.2360  |g| 0.26  anneal 1.00  lr 4.92e-04  1759 ms/step
+  step   710/763  ce 4.2381  |g| 0.23  anneal 1.00  lr 3.92e-04  1756 ms/step
+  step   720/763  ce 4.2446  |g| 0.23  anneal 1.00  lr 3.01e-04  1760 ms/step
+  step   730/763  ce 4.2379  |g| 0.24  anneal 1.00  lr 2.22e-04  1761 ms/step
+  step   740/763  ce 4.2159  |g| 0.23  anneal 1.00  lr 1.61e-04  1759 ms/step
+  step   750/763  ce 4.1416  |g| 0.23  anneal 1.00  lr 1.20e-04  1756 ms/step
+  step   760/763  ce 4.1504  |g| 0.22  anneal 1.00  lr 1.01e-04  1757 ms/step
+  step   762/763  ce 4.2274  |g| 0.23  anneal 1.00  lr 1.00e-04  1757 ms/step
+    >> val_loss 4.1744  ppl 65.00  (train_ce 4.227, val-CE -0.053)  bpb 1.377
+       best 갱신 4.1744 -> m100s10_ko-en_300M_p092_s2_static50_best.pt
+
+[p092_s2_static50] 최종 val_loss 4.1470  ppl 63.25  best 4.1744@763  (93.3M, 22.4분, skip 0, VRAM 8.93GB(reserved)/8.09GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 8.93GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+
+[wandb-auto] successful WSL full training; starting fail-open post-run sync
+[wandb-auto] project=tinylm exact_tag=p092_s2_static50 draw_tokens=100007936
+
+############################################################################################
+  wandb 동기화 — PUSH · 1런
+############################################################################################
+  ★기존 `runs/logs/*.json` 과 `test_result/*.txt` 는 **읽기만** 한다. 수정하지 않는다.
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/uranus/.netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+
+  --- m100s10_ko-en_300M_p092_s2_static50
+      config 59개 · summary 33개 · history 8점
+      final={'val_loss': 4.14703125, 'ppl': 63.24595987035573, 'bpb': 1.3675061028173154, 'ema': False}  grad_max=1.0329225063323975  vram=8.927734375  ms/step=1566.976547241211
+wandb: setting up run m100s10_ko-en_300M_p092_s2_static50
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260923_114133-m100s10_ko-en_300M_p092_s2_static50
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run m100s10_ko-en_300M_p092_s2_static50
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_p092_s2_static50
+wandb: updating run metadata; uploading summary
+wandb: uploading history steps 0-7, summary
+wandb: 
+wandb: Run history:
+wandb:            bpb █▆▄▃▂▂▁▁
+wandb:            gap ▅▄█▄▃▃▁▂
+wandb:           kd_n ▁▁▁▁▁▁▁▁
+wandb:   nokd_ce_mean █▆▄▃▂▂▁▁
+wandb: nokd_loss_mean █▆▄▃▂▂▁▁
+wandb:         nokd_n ▁▂▃▄▅▆▇█
+wandb:            ppl █▄▂▂▁▁▁▁
+wandb:           step ▁▂▃▄▅▆▇█
+wandb:       train_ce █▆▄▃▂▂▁▁
+wandb:     train_loss █▆▄▃▂▂▁▁
+wandb:             +1 ...
+wandb: 
+wandb: Run summary:
+wandb:            best_step 763
+wandb:             best_val 4.17438
+wandb:                  bpb 1.37652
+wandb:      bytes_per_token 4.37505
+wandb:  connectivity_births 0
+wandb:  connectivity_deaths 0
+wandb: connectivity_updates 0
+wandb:            deploy_mb 19.08684
+wandb:                  ema False
+wandb:            final_bpb 1.36751
+wandb:                  +36 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en_300M_p092_s2_static50 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_p092_s2_static50
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260923_114133-m100s10_ko-en_300M_p092_s2_static50/logs
+
+  ⚠️★**wandb 는 정본이 아니다.** 판정 근거는 `test_result/` 문서이고,
+     wandb 는 **찾아보기 편하라고 있는 사본**이다. 둘이 다르면 문서가 옳다.
+[wandb-auto] PASS post-run sync
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 22.6분  (2026-09-23 11:41:36)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-23 11:41:36  name=P092_Stage2W_full_trainer_100M
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 763 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 100 --save-every 500 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode dynamic --connectivity-density 0.5 --connectivity-update-every 100 --connectivity-swap-fraction 0.1 --tag p092_s2_dynamic50
+==============================================================================
+[cmd] python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 763 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 100 --save-every 500 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode dynamic --connectivity-density 0.5 --connectivity-update-every 100 --connectivity-swap-fraction 0.1 --tag p092_s2_dynamic50
+[ckpt] m100s10 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> /home/uranus/tinyLM/data_cache/ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 14 -> 7 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[connectivity] P092 mode=dynamic density=0.500000 active=42319872/84639744 update_every=100 swap_fraction=0.1
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+10+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       84.6M      17.3 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           93.3M      19.1 MiB
+
+
+  저장(packed, 안 B)                         19.1 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.1 MiB
+  ★상주(runtime, 현 구현)                     678.7 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.1MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.173 GFLOP
+  ★KV 캐시(fp32)        : 10.5 KB/token  (엔트리 7개 / 방문 14회)
+                          1024 ctx 10.5 MiB → ★상주+KV = 689.2 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[p092_s2_dynamic50] device=cuda  763step x 131K tok = 100M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[opt] ★Muon(P005) — 행렬 85개(84.8M)는 Muon, 그 외 72개는 AdamW. 🚫muP 는 미구현(P005 A축)
+[opt] ★muon_lr=4.00e-03 (= lr 1.00e-03 x 4) · AdamW 그룹 2개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지
+[opt] ★★muon_scale=rms  — 형상별 업데이트 스케일 (V1 검증, ai_dev_tool/09)
+[opt]                  형상    개수    jordan       rms  rms/jordan
+[opt]         (2048, 768)    28    1.6330    9.0510        5.54
+[opt]          (768, 768)    28    1.0000    5.5426        5.54
+[opt]         (768, 2048)    14    1.0000    9.0510        9.05
+[opt]          (192, 768)    14    1.0000    5.5426        5.54
+[opt]          (768, 256)     1    1.7321    5.5426        3.20
+[opt]    ★비의 형상 간 퍼짐 = **2.83배** — 1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다
+[opt] ★A08 — `opt_muon` 상태를 체크포인트에 저장한다(종전 미저장 = resume 시 모멘텀이 조용히 0). 체크포인트가 ⚙+339 MB 커진다
+[opt] ★A08 — 행렬 weight decay = 0 (명시) · AdamW 팔의 dense 그룹은 0.1 이다(교락 축)
+  step     0/763  ce 10.4140  |g| 1.69  anneal 0.00  lr 1.32e-05  15384 ms/step
+  step    10/763  ce 9.9527  |g| 0.90  anneal 0.00  lr 1.45e-04  2891 ms/step
+  step    20/763  ce 9.4101  |g| 1.45  anneal 0.00  lr 2.76e-04  2372 ms/step
+  step    30/763  ce 8.6289  |g| 1.84  anneal 0.00  lr 4.08e-04  2117 ms/step
+  step    40/763  ce 7.8261  |g| 1.21  anneal 0.00  lr 5.39e-04  2052 ms/step
+  step    50/763  ce 7.3256  |g| 0.99  anneal 0.00  lr 6.71e-04  1962 ms/step
+  step    60/763  ce 7.1014  |g| 0.53  anneal 0.00  lr 8.03e-04  1938 ms/step
+  step    70/763  ce 6.9336  |g| 0.62  anneal 0.00  lr 9.34e-04  1887 ms/step
+  step    80/763  ce 6.8299  |g| 0.85  anneal 0.00  lr 1.00e-03  1879 ms/step
+  step    90/763  ce 6.6484  |g| 0.60  anneal 0.00  lr 1.00e-03  1848 ms/step
+[connectivity] step=100 births=4287360 deaths=4287360 updates=1
+    >> val_loss 6.6306  ppl 757.96  (train_ce 6.562, val-CE +0.068)  bpb 2.186
+       best 갱신 6.6306 -> m100s10_ko-en_300M_p092_s2_dynamic50_best.pt
+  step   100/763  ce 6.5282  |g| 0.73  anneal 0.00  lr 1.00e-03  1884 ms/step
+  step   110/763  ce 6.4046  |g| 0.78  anneal 0.00  lr 1.00e-03  1855 ms/step
+  step   120/763  ce 6.3354  |g| 0.62  anneal 0.02  lr 1.00e-03  1855 ms/step
+  step   130/763  ce 6.2695  |g| 0.48  anneal 0.05  lr 1.00e-03  1833 ms/step
+  step   140/763  ce 6.1758  |g| 0.55  anneal 0.08  lr 1.00e-03  1835 ms/step
+  step   150/763  ce 6.0896  |g| 0.50  anneal 0.10  lr 1.00e-03  1818 ms/step
+  step   160/763  ce 6.0128  |g| 0.38  anneal 0.13  lr 1.00e-03  1820 ms/step
+  step   170/763  ce 5.8792  |g| 0.66  anneal 0.16  lr 1.00e-03  1806 ms/step
+  step   180/763  ce 5.8591  |g| 0.52  anneal 0.19  lr 1.00e-03  1807 ms/step
+  step   190/763  ce 5.8115  |g| 0.44  anneal 0.22  lr 1.00e-03  1794 ms/step
+[connectivity] step=200 births=4287360 deaths=4287360 updates=2
+    >> val_loss 5.8694  ppl 354.03  (train_ce 5.765, val-CE +0.104)  bpb 1.935
+       best 갱신 5.8694 -> m100s10_ko-en_300M_p092_s2_dynamic50_best.pt
+  step   200/763  ce 5.7142  |g| 0.44  anneal 0.25  lr 1.00e-03  1807 ms/step
+  step   210/763  ce 5.5990  |g| 0.45  anneal 0.28  lr 1.00e-03  1796 ms/step
+  step   220/763  ce 5.5907  |g| 0.45  anneal 0.31  lr 1.00e-03  1798 ms/step
+  step   230/763  ce 5.4934  |g| 0.65  anneal 0.34  lr 1.00e-03  1789 ms/step
+  step   240/763  ce 5.5450  |g| 0.42  anneal 0.37  lr 1.00e-03  1791 ms/step
+  step   250/763  ce 5.4101  |g| 0.46  anneal 0.40  lr 1.00e-03  1783 ms/step
+  step   260/763  ce 5.3985  |g| 0.51  anneal 0.42  lr 1.00e-03  1786 ms/step
+  step   270/763  ce 5.3437  |g| 0.39  anneal 0.45  lr 1.00e-03  1778 ms/step
+  step   280/763  ce 5.2556  |g| 0.40  anneal 0.48  lr 1.00e-03  1780 ms/step
+  step   290/763  ce 5.2691  |g| 0.35  anneal 0.51  lr 1.00e-03  1773 ms/step
+[connectivity] step=300 births=4287360 deaths=4287360 updates=3
+    >> val_loss 5.2675  ppl 193.93  (train_ce 5.104, val-CE +0.163)  bpb 1.737
+       best 갱신 5.2675 -> m100s10_ko-en_300M_p092_s2_dynamic50_best.pt
+  step   300/763  ce 5.1054  |g| 0.41  anneal 0.54  lr 1.00e-03  1782 ms/step
+  step   310/763  ce 5.0914  |g| 0.49  anneal 0.57  lr 1.00e-03  1776 ms/step
+  step   320/763  ce 5.1331  |g| 0.40  anneal 0.60  lr 1.00e-03  1777 ms/step
+  step   330/763  ce 5.0851  |g| 0.44  anneal 0.63  lr 1.00e-03  1772 ms/step
+  step   340/763  ce 4.9975  |g| 0.39  anneal 0.66  lr 1.00e-03  1773 ms/step
+  step   350/763  ce 4.9340  |g| 0.52  anneal 0.69  lr 1.00e-03  1769 ms/step
+  step   360/763  ce 4.9876  |g| 0.50  anneal 0.72  lr 1.00e-03  1770 ms/step
+  step   370/763  ce 4.9455  |g| 0.42  anneal 0.74  lr 1.00e-03  1766 ms/step
+  step   380/763  ce 4.9666  |g| 0.46  anneal 0.77  lr 1.00e-03  1761 ms/step
+  step   390/763  ce 4.8484  |g| 0.40  anneal 0.80  lr 1.00e-03  1763 ms/step
+[connectivity] step=400 births=4287360 deaths=4287360 updates=4
+    >> val_loss 4.9156  ppl 136.40  (train_ce 4.902, val-CE +0.014)  bpb 1.621
+       best 갱신 4.9156 -> m100s10_ko-en_300M_p092_s2_dynamic50_best.pt
+  step   400/763  ce 4.9278  |g| 0.35  anneal 0.83  lr 1.00e-03  1769 ms/step
+  step   410/763  ce 4.7600  |g| 0.45  anneal 0.86  lr 1.00e-03  1765 ms/step
+  step   420/763  ce 4.8363  |g| 0.42  anneal 0.89  lr 1.00e-03  1766 ms/step
+  step   430/763  ce 4.8290  |g| 0.45  anneal 0.92  lr 1.00e-03  1763 ms/step
+  step   440/763  ce 4.7906  |g| 0.44  anneal 0.95  lr 1.00e-03  1763 ms/step
+  step   450/763  ce 4.8025  |g| 0.43  anneal 0.98  lr 1.00e-03  1760 ms/step
+  step   460/763  ce 4.7219  |g| 0.49  anneal 1.00  lr 1.00e-03  1761 ms/step
+  step   470/763  ce 4.6530  |g| 0.41  anneal 1.00  lr 1.00e-03  1758 ms/step
+  step   480/763  ce 4.7384  |g| 0.47  anneal 1.00  lr 1.00e-03  1759 ms/step
+  step   490/763  ce 4.6948  |g| 0.50  anneal 1.00  lr 1.00e-03  1756 ms/step
+[connectivity] step=500 births=4287360 deaths=4287360 updates=5
+    >> val_loss 4.6506  ppl 104.65  (train_ce 4.680, val-CE -0.029)  bpb 1.534
+       best 갱신 4.6506 -> m100s10_ko-en_300M_p092_s2_dynamic50_best.pt
+  step   500/763  ce 4.7031  |g| 0.45  anneal 1.00  lr 1.00e-03  1762 ms/step
+  step   510/763  ce 4.5132  |g| 0.51  anneal 1.00  lr 1.00e-03  1759 ms/step
+  step   520/763  ce 4.5390  |g| 0.47  anneal 1.00  lr 1.00e-03  1760 ms/step
+  step   530/763  ce 4.5662  |g| 0.44  anneal 1.00  lr 1.00e-03  1757 ms/step
+  step   540/763  ce 4.5396  |g| 0.54  anneal 1.00  lr 1.00e-03  1758 ms/step
+  step   550/763  ce 4.4907  |g| 0.49  anneal 1.00  lr 1.00e-03  1756 ms/step
+  step   560/763  ce 4.4925  |g| 0.37  anneal 1.00  lr 1.00e-03  1757 ms/step
+  step   570/763  ce 4.4650  |g| 0.41  anneal 1.00  lr 1.00e-03  1754 ms/step
+  step   580/763  ce 4.4465  |g| 0.46  anneal 1.00  lr 1.00e-03  1755 ms/step
+  step   590/763  ce 4.4744  |g| 0.50  anneal 1.00  lr 1.00e-03  1753 ms/step
+[connectivity] step=600 births=4287360 deaths=4287360 updates=6
+    >> val_loss 4.4444  ppl 85.15  (train_ce 4.467, val-CE -0.023)  bpb 1.466
+       best 갱신 4.4444 -> m100s10_ko-en_300M_p092_s2_dynamic50_best.pt
+  step   600/763  ce 4.4727  |g| 0.49  anneal 1.00  lr 1.00e-03  1757 ms/step
+  step   610/763  ce 4.4674  |g| 0.53  anneal 1.00  lr 1.00e-03  1754 ms/step
+  step   620/763  ce 4.3827  |g| 0.45  anneal 1.00  lr 1.00e-03  1755 ms/step
+  step   630/763  ce 4.3882  |g| 0.34  anneal 1.00  lr 9.98e-04  1753 ms/step
+  step   640/763  ce 4.3633  |g| 0.45  anneal 1.00  lr 9.76e-04  1754 ms/step
+  step   650/763  ce 4.3999  |g| 0.37  anneal 1.00  lr 9.32e-04  1751 ms/step
+  step   660/763  ce 4.3997  |g| 0.40  anneal 1.00  lr 8.68e-04  1753 ms/step
+  step   670/763  ce 4.3774  |g| 0.38  anneal 1.00  lr 7.87e-04  1750 ms/step
+  step   680/763  ce 4.4331  |g| 0.28  anneal 1.00  lr 6.95e-04  1751 ms/step
+  step   690/763  ce 4.2712  |g| 0.29  anneal 1.00  lr 5.94e-04  1749 ms/step
+[connectivity] step=700 births=4287360 deaths=4287360 updates=7
+    >> val_loss 4.2600  ppl 70.81  (train_ce 4.347, val-CE -0.087)  bpb 1.405
+       best 갱신 4.2600 -> m100s10_ko-en_300M_p092_s2_dynamic50_best.pt
+  step   700/763  ce 4.2598  |g| 0.26  anneal 1.00  lr 4.92e-04  1753 ms/step
+  step   710/763  ce 4.2558  |g| 0.24  anneal 1.00  lr 3.92e-04  1750 ms/step
+  step   720/763  ce 4.2589  |g| 0.23  anneal 1.00  lr 3.01e-04  1752 ms/step
+  step   730/763  ce 4.2470  |g| 0.23  anneal 1.00  lr 2.22e-04  1750 ms/step
+  step   740/763  ce 4.2324  |g| 0.22  anneal 1.00  lr 1.61e-04  1754 ms/step
+  step   750/763  ce 4.1551  |g| 0.23  anneal 1.00  lr 1.20e-04  1751 ms/step
+  step   760/763  ce 4.1603  |g| 0.23  anneal 1.00  lr 1.01e-04  1753 ms/step
+  step   762/763  ce 4.2417  |g| 0.23  anneal 1.00  lr 1.00e-04  1752 ms/step
+    >> val_loss 4.1859  ppl 65.76  (train_ce 4.242, val-CE -0.056)  bpb 1.380
+       best 갱신 4.1859 -> m100s10_ko-en_300M_p092_s2_dynamic50_best.pt
+
+[p092_s2_dynamic50] 최종 val_loss 4.1641  ppl 64.33  best 4.1859@763  (93.3M, 22.4분, skip 0, VRAM 9.25GB(reserved)/8.40GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 9.25GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+
+[wandb-auto] successful WSL full training; starting fail-open post-run sync
+[wandb-auto] project=tinylm exact_tag=p092_s2_dynamic50 draw_tokens=100007936
+
+############################################################################################
+  wandb 동기화 — PUSH · 1런
+############################################################################################
+  ★기존 `runs/logs/*.json` 과 `test_result/*.txt` 는 **읽기만** 한다. 수정하지 않는다.
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/uranus/.netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+
+  --- m100s10_ko-en_300M_p092_s2_dynamic50
+      config 59개 · summary 33개 · history 8점
+      final={'val_loss': 4.1640625, 'ppl': 64.33234259239626, 'bpb': 1.3731222501066822, 'ema': False}  grad_max=1.1189346313476562  vram=9.248046875  ms/step=1590.8558368682861
+wandb: setting up run m100s10_ko-en_300M_p092_s2_dynamic50
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260923_120403-m100s10_ko-en_300M_p092_s2_dynamic50
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run m100s10_ko-en_300M_p092_s2_dynamic50
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_p092_s2_dynamic50
+wandb: updating run metadata; uploading summary
+wandb: uploading summary
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading config.yaml
+wandb: 
+wandb: Run history:
+wandb:            bpb █▆▄▃▂▂▁▁
+wandb:            gap ▅▆█▄▃▃▁▂
+wandb:           kd_n ▁▁▁▁▁▁▁▁
+wandb:   nokd_ce_mean █▆▄▃▂▂▁▁
+wandb: nokd_loss_mean █▆▄▃▂▂▁▁
+wandb:         nokd_n ▁▂▃▄▅▆▇█
+wandb:            ppl █▄▂▂▁▁▁▁
+wandb:           step ▁▂▃▄▅▆▇█
+wandb:       train_ce █▆▄▃▂▂▁▁
+wandb:     train_loss █▆▄▃▂▂▁▁
+wandb:             +1 ...
+wandb: 
+wandb: Run summary:
+wandb:            best_step 763
+wandb:             best_val 4.18594
+wandb:                  bpb 1.38034
+wandb:      bytes_per_token 4.37505
+wandb:  connectivity_births 30011520
+wandb:  connectivity_deaths 30011520
+wandb: connectivity_updates 7
+wandb:            deploy_mb 19.08684
+wandb:                  ema False
+wandb:            final_bpb 1.37312
+wandb:                  +36 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en_300M_p092_s2_dynamic50 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_p092_s2_dynamic50
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260923_120403-m100s10_ko-en_300M_p092_s2_dynamic50/logs
+
+  ⚠️★**wandb 는 정본이 아니다.** 판정 근거는 `test_result/` 문서이고,
+     wandb 는 **찾아보기 편하라고 있는 사본**이다. 둘이 다르면 문서가 옳다.
+[wandb-auto] PASS post-run sync
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 22.6분  (2026-09-23 12:04:11)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-23 12:04:11  name=P092_Stage2W_full_trainer_100M
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 763 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 100 --save-every 500 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode dynamic --connectivity-density 0.25 --connectivity-update-every 100 --connectivity-swap-fraction 0.1 --tag p092_s2_dynamic25
+==============================================================================
+[cmd] python run100m.py train --preset m100s10 --arch dense --data ko-en --tokens 300M --pool-tokens 600M --exact-cache --steps 763 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.60 --decay-frac 0.20 --seed 1337 --eval-every 100 --save-every 500 --compile --no-ckpt --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --cla-group 2 --connectivity-mode dynamic --connectivity-density 0.25 --connectivity-update-every 100 --connectivity-swap-fraction 0.1 --tag p092_s2_dynamic25
+[ckpt] m100s10 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> /home/uranus/tinyLM/data_cache/ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 14 -> 7 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[connectivity] P092 mode=dynamic density=0.250000 active=21159936/84639744 update_every=100 swap_fraction=0.1
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+10+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       84.6M      17.3 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                           93.3M      19.1 MiB
+
+
+  저장(packed, 안 B)                         19.1 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        22.1 MiB
+  ★상주(runtime, 현 구현)                     678.7 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 19.1MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.173 GFLOP
+  ★KV 캐시(fp32)        : 10.5 KB/token  (엔트리 7개 / 방문 14회)
+                          1024 ctx 10.5 MiB → ★상주+KV = 689.2 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[p092_s2_dynamic25] device=cuda  763step x 131K tok = 100M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[opt] ★Muon(P005) — 행렬 85개(84.8M)는 Muon, 그 외 72개는 AdamW. 🚫muP 는 미구현(P005 A축)
+[opt] ★muon_lr=4.00e-03 (= lr 1.00e-03 x 4) · AdamW 그룹 2개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지
+[opt] ★★muon_scale=rms  — 형상별 업데이트 스케일 (V1 검증, ai_dev_tool/09)
+[opt]                  형상    개수    jordan       rms  rms/jordan
+[opt]         (2048, 768)    28    1.6330    9.0510        5.54
+[opt]          (768, 768)    28    1.0000    5.5426        5.54
+[opt]         (768, 2048)    14    1.0000    9.0510        9.05
+[opt]          (192, 768)    14    1.0000    5.5426        5.54
+[opt]          (768, 256)     1    1.7321    5.5426        3.20
+[opt]    ★비의 형상 간 퍼짐 = **2.83배** — 1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다
+[opt] ★A08 — `opt_muon` 상태를 체크포인트에 저장한다(종전 미저장 = resume 시 모멘텀이 조용히 0). 체크포인트가 ⚙+339 MB 커진다
+[opt] ★A08 — 행렬 weight decay = 0 (명시) · AdamW 팔의 dense 그룹은 0.1 이다(교락 축)
+  step     0/763  ce 10.4134  |g| 1.47  anneal 0.00  lr 1.32e-05  16364 ms/step
+  step    10/763  ce 9.9993  |g| 0.79  anneal 0.00  lr 1.45e-04  2892 ms/step
+  step    20/763  ce 9.4525  |g| 1.45  anneal 0.00  lr 2.76e-04  2403 ms/step
+  step    30/763  ce 8.6703  |g| 1.82  anneal 0.00  lr 4.08e-04  2129 ms/step
+  step    40/763  ce 7.8798  |g| 1.14  anneal 0.00  lr 5.39e-04  2066 ms/step
+  step    50/763  ce 7.3182  |g| 0.60  anneal 0.00  lr 6.71e-04  1966 ms/step
+  step    60/763  ce 7.1204  |g| 0.91  anneal 0.00  lr 8.03e-04  1948 ms/step
+  step    70/763  ce 6.9627  |g| 0.72  anneal 0.00  lr 9.34e-04  1894 ms/step
+  step    80/763  ce 6.8191  |g| 0.65  anneal 0.00  lr 1.00e-03  1890 ms/step
+  step    90/763  ce 6.6617  |g| 0.73  anneal 0.00  lr 1.00e-03  1859 ms/step
+[connectivity] step=100 births=2189824 deaths=2189824 updates=1
+    >> val_loss 6.7763  ppl 876.77  (train_ce 6.541, val-CE +0.235)  bpb 2.235
+       best 갱신 6.7763 -> m100s10_ko-en_300M_p092_s2_dynamic25_best.pt
+  step   100/763  ce 6.5298  |g| 0.62  anneal 0.00  lr 1.00e-03  1924 ms/step
+  step   110/763  ce 6.4287  |g| 1.08  anneal 0.00  lr 1.00e-03  1893 ms/step
+  step   120/763  ce 6.3596  |g| 0.64  anneal 0.02  lr 1.00e-03  1888 ms/step
+  step   130/763  ce 6.2600  |g| 0.39  anneal 0.05  lr 1.00e-03  1865 ms/step
+  step   140/763  ce 6.1662  |g| 0.53  anneal 0.08  lr 1.00e-03  1863 ms/step
+  step   150/763  ce 6.0770  |g| 0.62  anneal 0.10  lr 1.00e-03  1844 ms/step
+  step   160/763  ce 6.0131  |g| 0.42  anneal 0.13  lr 1.00e-03  1843 ms/step
+  step   170/763  ce 5.8652  |g| 0.50  anneal 0.16  lr 1.00e-03  1828 ms/step
+  step   180/763  ce 5.8587  |g| 0.65  anneal 0.19  lr 1.00e-03  1829 ms/step
+  step   190/763  ce 5.7862  |g| 0.53  anneal 0.22  lr 1.00e-03  1816 ms/step
+[connectivity] step=200 births=2189824 deaths=2189824 updates=2
+    >> val_loss 6.0200  ppl 411.58  (train_ce 5.758, val-CE +0.262)  bpb 1.985
+       best 갱신 6.0200 -> m100s10_ko-en_300M_p092_s2_dynamic25_best.pt
+  step   200/763  ce 5.7086  |g| 0.51  anneal 0.25  lr 1.00e-03  1827 ms/step
+  step   210/763  ce 5.5926  |g| 0.52  anneal 0.28  lr 1.00e-03  1815 ms/step
+  step   220/763  ce 5.6042  |g| 0.60  anneal 0.31  lr 1.00e-03  1816 ms/step
+  step   230/763  ce 5.4967  |g| 0.43  anneal 0.34  lr 1.00e-03  1806 ms/step
+  step   240/763  ce 5.5564  |g| 0.50  anneal 0.37  lr 1.00e-03  1807 ms/step
+  step   250/763  ce 5.4377  |g| 0.41  anneal 0.40  lr 1.00e-03  1799 ms/step
+  step   260/763  ce 5.4136  |g| 0.48  anneal 0.42  lr 1.00e-03  1800 ms/step
+  step   270/763  ce 5.3691  |g| 0.51  anneal 0.45  lr 1.00e-03  1792 ms/step
+  step   280/763  ce 5.2822  |g| 0.39  anneal 0.48  lr 1.00e-03  1794 ms/step
+  step   290/763  ce 5.3039  |g| 0.43  anneal 0.51  lr 1.00e-03  1786 ms/step
+[connectivity] step=300 births=2189824 deaths=2189824 updates=3
+    >> val_loss 5.4469  ppl 232.03  (train_ce 5.144, val-CE +0.303)  bpb 1.796
+       best 갱신 5.4469 -> m100s10_ko-en_300M_p092_s2_dynamic25_best.pt
+  step   300/763  ce 5.1436  |g| 0.43  anneal 0.54  lr 1.00e-03  1794 ms/step
+  step   310/763  ce 5.1249  |g| 0.39  anneal 0.57  lr 1.00e-03  1787 ms/step
+  step   320/763  ce 5.2027  |g| 0.48  anneal 0.60  lr 1.00e-03  1790 ms/step
+  step   330/763  ce 5.1455  |g| 0.43  anneal 0.63  lr 1.00e-03  1784 ms/step
+  step   340/763  ce 5.0633  |g| 0.56  anneal 0.66  lr 1.00e-03  1786 ms/step
+  step   350/763  ce 5.0044  |g| 0.54  anneal 0.69  lr 1.00e-03  1780 ms/step
+  step   360/763  ce 5.0704  |g| 0.55  anneal 0.72  lr 1.00e-03  1781 ms/step
+  step   370/763  ce 5.0311  |g| 0.54  anneal 0.74  lr 1.00e-03  1775 ms/step
+  step   380/763  ce 5.0594  |g| 0.47  anneal 0.77  lr 1.00e-03  1778 ms/step
+  step   390/763  ce 4.9422  |g| 0.41  anneal 0.80  lr 1.00e-03  1773 ms/step
+[connectivity] step=400 births=2189824 deaths=2189824 updates=4
+    >> val_loss 5.0606  ppl 157.69  (train_ce 5.013, val-CE +0.048)  bpb 1.669
+       best 갱신 5.0606 -> m100s10_ko-en_300M_p092_s2_dynamic25_best.pt
+  step   400/763  ce 5.0424  |g| 0.44  anneal 0.83  lr 1.00e-03  1781 ms/step
+  step   410/763  ce 4.8648  |g| 0.51  anneal 0.86  lr 1.00e-03  1776 ms/step
+  step   420/763  ce 4.9727  |g| 0.46  anneal 0.89  lr 1.00e-03  1778 ms/step
+  step   430/763  ce 4.9873  |g| 0.39  anneal 0.92  lr 1.00e-03  1773 ms/step
+  step   440/763  ce 4.9510  |g| 0.42  anneal 0.95  lr 1.00e-03  1775 ms/step
+  step   450/763  ce 4.9816  |g| 0.40  anneal 0.98  lr 1.00e-03  1771 ms/step
+  step   460/763  ce 4.8971  |g| 0.53  anneal 1.00  lr 1.00e-03  1773 ms/step
+  step   470/763  ce 4.8694  |g| 0.50  anneal 1.00  lr 1.00e-03  1771 ms/step
+  step   480/763  ce 4.9444  |g| 0.64  anneal 1.00  lr 1.00e-03  1774 ms/step
+  step   490/763  ce 4.8844  |g| 0.55  anneal 1.00  lr 1.00e-03  1770 ms/step
+[connectivity] step=500 births=2189824 deaths=2189824 updates=5
+    >> val_loss 4.8319  ppl 125.45  (train_ce 4.889, val-CE -0.057)  bpb 1.593
+       best 갱신 4.8319 -> m100s10_ko-en_300M_p092_s2_dynamic25_best.pt
+  step   500/763  ce 4.8768  |g| 0.56  anneal 1.00  lr 1.00e-03  1783 ms/step
+  step   510/763  ce 4.7043  |g| 0.55  anneal 1.00  lr 1.00e-03  1778 ms/step
+  step   520/763  ce 4.7365  |g| 0.67  anneal 1.00  lr 1.00e-03  1780 ms/step
+  step   530/763  ce 4.7728  |g| 0.63  anneal 1.00  lr 1.00e-03  1776 ms/step
+  step   540/763  ce 4.7334  |g| 0.63  anneal 1.00  lr 1.00e-03  1778 ms/step
+  step   550/763  ce 4.6754  |g| 0.59  anneal 1.00  lr 1.00e-03  1774 ms/step
+  step   560/763  ce 4.6922  |g| 0.40  anneal 1.00  lr 1.00e-03  1776 ms/step
+  step   570/763  ce 4.6536  |g| 0.53  anneal 1.00  lr 1.00e-03  1773 ms/step
+  step   580/763  ce 4.6286  |g| 0.53  anneal 1.00  lr 1.00e-03  1774 ms/step
+  step   590/763  ce 4.6438  |g| 0.47  anneal 1.00  lr 1.00e-03  1771 ms/step
+[connectivity] step=600 births=2189824 deaths=2189824 updates=6
+    >> val_loss 4.6250  ppl 102.00  (train_ce 4.648, val-CE -0.023)  bpb 1.525
+       best 갱신 4.6250 -> m100s10_ko-en_300M_p092_s2_dynamic25_best.pt
+  step   600/763  ce 4.6552  |g| 0.55  anneal 1.00  lr 1.00e-03  1776 ms/step
+  step   610/763  ce 4.6119  |g| 0.52  anneal 1.00  lr 1.00e-03  1773 ms/step
+  step   620/763  ce 4.5573  |g| 0.42  anneal 1.00  lr 1.00e-03  1774 ms/step
+  step   630/763  ce 4.5715  |g| 0.49  anneal 1.00  lr 9.98e-04  1772 ms/step
+  step   640/763  ce 4.5299  |g| 0.48  anneal 1.00  lr 9.76e-04  1773 ms/step
+  step   650/763  ce 4.5676  |g| 0.53  anneal 1.00  lr 9.32e-04  1770 ms/step
+  step   660/763  ce 4.5705  |g| 0.57  anneal 1.00  lr 8.68e-04  1771 ms/step
+  step   670/763  ce 4.5508  |g| 0.43  anneal 1.00  lr 7.87e-04  1769 ms/step
+  step   680/763  ce 4.5871  |g| 0.43  anneal 1.00  lr 6.95e-04  1770 ms/step
+  step   690/763  ce 4.4225  |g| 0.35  anneal 1.00  lr 5.94e-04  1767 ms/step
+[connectivity] step=700 births=2189824 deaths=2189824 updates=7
+    >> val_loss 4.4119  ppl 82.42  (train_ce 4.496, val-CE -0.084)  bpb 1.455
+       best 갱신 4.4119 -> m100s10_ko-en_300M_p092_s2_dynamic25_best.pt
+  step   700/763  ce 4.4046  |g| 0.33  anneal 1.00  lr 4.92e-04  1772 ms/step
+  step   710/763  ce 4.3977  |g| 0.24  anneal 1.00  lr 3.92e-04  1769 ms/step
+  step   720/763  ce 4.3990  |g| 0.24  anneal 1.00  lr 3.01e-04  1770 ms/step
+  step   730/763  ce 4.3865  |g| 0.25  anneal 1.00  lr 2.22e-04  1768 ms/step
+  step   740/763  ce 4.3760  |g| 0.24  anneal 1.00  lr 1.61e-04  1769 ms/step
+  step   750/763  ce 4.2987  |g| 0.25  anneal 1.00  lr 1.20e-04  1767 ms/step
+  step   760/763  ce 4.3088  |g| 0.24  anneal 1.00  lr 1.01e-04  1764 ms/step
+  step   762/763  ce 4.3852  |g| 0.24  anneal 1.00  lr 1.00e-04  1767 ms/step
+    >> val_loss 4.3319  ppl 76.09  (train_ce 4.385, val-CE -0.053)  bpb 1.428
+       best 갱신 4.3319 -> m100s10_ko-en_300M_p092_s2_dynamic25_best.pt
+
+[p092_s2_dynamic25] 최종 val_loss 4.3055  ppl 74.10  best 4.3319@763  (93.3M, 22.6분, skip 0, VRAM 9.25GB(reserved)/8.40GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 9.25GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+
+[wandb-auto] successful WSL full training; starting fail-open post-run sync
+[wandb-auto] project=tinylm exact_tag=p092_s2_dynamic25 draw_tokens=100007936
+
+############################################################################################
+  wandb 동기화 — PUSH · 1런
+############################################################################################
+  ★기존 `runs/logs/*.json` 과 `test_result/*.txt` 는 **읽기만** 한다. 수정하지 않는다.
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/uranus/.netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+
+  --- m100s10_ko-en_300M_p092_s2_dynamic25
+      config 59개 · summary 33개 · history 8점
+      final={'val_loss': 4.30546875, 'ppl': 74.1039435363508, 'bpb': 1.4197517298945452, 'ema': False}  grad_max=1.0784265995025635  vram=9.248046875  ms/step=1579.6864032745361
+wandb: setting up run m100s10_ko-en_300M_p092_s2_dynamic25
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260923_122650-m100s10_ko-en_300M_p092_s2_dynamic25
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run m100s10_ko-en_300M_p092_s2_dynamic25
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_p092_s2_dynamic25
+wandb: updating run metadata; uploading summary
+wandb: uploading history steps 0-7, summary
+wandb: 
+wandb: Run history:
+wandb:            bpb █▆▄▃▂▂▁▁
+wandb:            gap ▇▇█▃▁▂▁▂
+wandb:           kd_n ▁▁▁▁▁▁▁▁
+wandb:   nokd_ce_mean █▅▄▃▂▂▁▁
+wandb: nokd_loss_mean █▅▄▃▂▂▁▁
+wandb:         nokd_n ▁▂▃▄▅▆▇█
+wandb:            ppl █▄▂▂▁▁▁▁
+wandb:           step ▁▂▃▄▅▆▇█
+wandb:       train_ce █▅▃▃▃▂▁▁
+wandb:     train_loss █▅▃▃▃▂▁▁
+wandb:             +1 ...
+wandb: 
+wandb: Run summary:
+wandb:            best_step 763
+wandb:             best_val 4.33188
+wandb:                  bpb 1.42846
+wandb:      bytes_per_token 4.37505
+wandb:  connectivity_births 15328768
+wandb:  connectivity_deaths 15328768
+wandb: connectivity_updates 7
+wandb:            deploy_mb 19.08684
+wandb:                  ema False
+wandb:            final_bpb 1.41975
+wandb:                  +36 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en_300M_p092_s2_dynamic25 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en_300M_p092_s2_dynamic25
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260923_122650-m100s10_ko-en_300M_p092_s2_dynamic25/logs
+
+  ⚠️★**wandb 는 정본이 아니다.** 판정 근거는 `test_result/` 문서이고,
+     wandb 는 **찾아보기 편하라고 있는 사본**이다. 둘이 다르면 문서가 옳다.
+[wandb-auto] PASS post-run sync
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 22.7분  (2026-09-23 12:26:53)
+==============================================================================

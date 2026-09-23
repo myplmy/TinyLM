@@ -1,8 +1,8 @@
 # 제안 — TinyLM 학습환경을 WSL2 Linux로 단계적으로 이관한다
 
 > **작성일**: 2026-09-15  
-> **최종 수정일**: 2026-09-19
-> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent와 관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 사용자 범위 예외 종결(manual compact 검증 제외, 전체 증거 `PARTIAL`) / M4 `PARTIAL`(설치 메타데이터만 확인; P025B 종전 판정 `INVALID_DIAGNOSTIC`, 교정 gate와 나머지 backend `NOT_RUN`) / M5 `NOT_RUN`
+> **최종 수정일**: 2026-09-23
+> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 manual compact 제외의 `PARTIAL` 종결 / M4 `PARTIAL`(기존 P025B·FP8·SDPA 실제 backend 진단은 있으나 전체 계약 미완) / M5 `NOT_RUN` / M6 최종 운영 전환 보류
 > **분류**: 작업환경 / 실행기반 / 실험 재현성  
 > **실험번호**: `PNone`  
 > **실험계획 비대상 사유**: 이 문서는 환경 이관 의사결정 제안이다. 승인 뒤 필요한 교량 실험은 기존 계획의 환경 단계 또는 별도 승인된 실험계획으로 등록한다.
@@ -529,3 +529,22 @@ WIP guard·auto compact는 범위별로 작동했고 smoke의 두 실제 회차�
    미작성 M4 gate는 backlog이며 현재 실행 큐나 파일명 목록으로 제시하지 않는다.
 5. 최신 smoke PASS만으로 M4·M5·M6를 대신할 수 없으므로 파일명은 `-approved-on-going`을 유지하고
    `proposal/done/`으로 이관하지 않는다.
+
+## 13. 2026-09-23 on-going 상태 재감사 — 기존 결과문서만 사용
+
+이 절은 **이미 문서화된 2026-09-22 이전 결과**만 대조한다. 현재 진행 중인
+사용자 큐의 로그·런처 .sh는 읽거나 수정하지 않았고 새 실험 결과도 반영하지 않는다.
+§12.2c의 “설치 메타데이터만·나머지 backend 전부 NOT_RUN”은
+그 절 작성 시점 기록이며 현재의 완전한 요약이 아니다.
+
+| M4 축 | 기존 문서에서 확인한 범위 | 아직 못 주장하는 것 |
+|---|---|---|
+| cuSPARSELt 2:4 | [결과 082 §7~13](../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)의 WSL 정합·input-gradient·inference·whole primitive 진단. 큰 M에서 GPU event 후보가 있지만 동기 wall은 음성 | 실제 TLinear/학습 step/체크포인트 배포 속도·품질 |
+| FP8 | [결과 081 §6~9](../test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md)의 _scaled_mm 실행과 A~E 귀속. 캐시 하나로 속도·수치·메모리 계약을 모두 만족하지 못함 | shadow/write-back·backward·실제 whole-step |
+| native SDPA | [결과 088 §7~10](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)의 default/CUDNN/FLASH 실행, direct EFFICIENT 불가, grouped 4-D EFFICIENT 실행·속도 음성. Stage2W cache decode는 정합 미통과 | 배포 기본 GQA 채택, 모든 길이의 cache 정합, 전체 M4 backend PASS |
+| Triton·외부 flash-attn | Triton 패키지와 P014D native LUT 시도는 있으나 [결과 069 §10](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md)의 테스트 설계 문턱에서 실제 속도 미측정; 외부 flash-attn 미설치 | 각 backend의 정확성·속도·메모리 통합 게이트 |
+
+따라서 M4는 더 이상 “설치만 확인”으로 축소해서도 안 되지만
+**backend별 부분 증거를 종합 완료로 승격할 수도 없다**. M5 동일 checkpoint
+Windows/WSL 교량은 `NOT_RUN`이고 M6 운영 전환·done 이관의 종료조건도
+충족하지 않았다. 상태 접미사 `-approved-on-going`을 유지한다.

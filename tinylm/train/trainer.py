@@ -110,24 +110,22 @@ def _ce_chunked(logits2d, y1d, chunk=0):
 
     `chunk <= 0` 이면 종전 호출 그대로 → **비트 동일**. 켜면 합산 순서가 달라져
     비트 동일이 아니다(부동소수 결합법칙). 수학적으로는 동일하다
-    (`mean = sum/N`, 청크 `sum` 을 모아 N 으로 나눈다).
+    (무마스크는 `sum/N`, SFT 마스크는 무시되지 않은 타깃 수로 나눈다).
     """
     if chunk is None or chunk <= 0 or chunk >= logits2d.shape[0]:
         return F.cross_entropy(logits2d, y1d)
-    # ★★사용자 지적(2026-08-22) — **`mean` 의 분모는 N 이 아니라 "무시되지 않은 타깃 수"** 다.
-    #   `ignore_index`(기본 −100)가 하나라도 있으면 `sum/N != mean` 이 되고,
-    #   그 차이는 **손실이 조금 작아지는 형태로 조용히** 나타난다.
-    #   우리 로더는 패딩을 쓰지 않으므로 지금은 전부 유효하지만, **가정을 단언으로 박는다** —
-    #   나중에 패딩이 들어오면 여기서 죽는 것이 조용히 틀리는 것보다 낫다.
-    assert bool((y1d >= 0).all()), (
-        "★`--ce-chunk` 는 **ignore_index 가 없는 타깃**을 전제한다. 음수 라벨이 있다 — "
-        "패딩이 들어왔다면 청킹 분모를 '유효 타깃 수' 로 고쳐야 한다")
+    # P090 SFT: ignore_index=-100을 허용한다. 기존 무마스크 배치에서는
+    # valid == N이므로 청크 합산·나눗셈 순서가 종전과 같다.
+    # 마스크 배치는 supervised 토큰 수로 나눠 PyTorch CE(mean)와 맞춘다.
+    valid = int((y1d >= 0).sum().item())
+    if valid == 0:
+        raise ValueError("ce_chunk: 지도 대상 토큰이 0개다")
     N = logits2d.shape[0]
     acc = None
     for i in range(0, N, chunk):
         part = F.cross_entropy(logits2d[i:i + chunk], y1d[i:i + chunk], reduction="sum")
         acc = part if acc is None else acc + part
-    return acc / N
+    return acc / (N if valid == N else valid)
 
 
 def _step_stats(step_ms, warm=100):

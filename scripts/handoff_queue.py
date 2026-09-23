@@ -32,7 +32,7 @@ QUEUE_COLUMNS = (
     "선결",
     "근거",
 )
-INVENTORY_STATES = {"PRESENT", "DONE", "MISSING", "REPLACED"}
+INVENTORY_STATES = {"PRESENT", "DONE", "MISSING", "REPLACED", "UNVERIFIED"}
 EXECUTION_STATES = {"READY", "GATED", "HOLD", "DONE", "REVALIDATE"}
 INHERITED_REASON_PREFIX = "직전 핸드오프 계승"
 REVALIDATE_REASON_SUFFIX = "현재 과학적 순서 재검증 필요"
@@ -156,6 +156,41 @@ def _load_registry() -> tuple[list[dict[str, object]], list[str]]:
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module.load()
+
+
+def inherited_rows_locked(previous: Path) -> list[str]:
+    """Carry prior incomplete rows without stat/glob/read of any launcher.
+
+    UNVERIFIED means the prior hours and names are a historical snapshot, not a
+    current queue recommendation. This mode is for an explicit active-queue lock.
+    """
+    section = _section(previous.read_text(encoding="utf-8"))
+    table = next(
+        ((head, rows) for head, rows in _tables(section)
+         if all(column in head for column in QUEUE_COLUMNS)),
+        None,
+    )
+    if table is None:
+        raise ValueError("previous handoff has no complete queue table")
+    head, rows = table
+    out, cumulative = [], 0.0
+    for row in rows:
+        batch = row[head.index("배치 파일")].strip(" `")
+        if not is_experiment_launcher(batch):
+            continue
+        if row[head.index("실행상태")].strip(" `") == "DONE":
+            continue
+        hours = float(row[head.index("⚙")].strip(" `⚙h시간"))
+        cumulative += hours
+        experiment = re.sub(r"\s+", " ", row[head.index("실험")]).replace("|", r"\|")
+        precondition = re.sub(r"\s+", " ", row[head.index("선결")]).replace("|", r"\|")
+        reason = inherited_reason(row[head.index("근거")])
+        reason += "; 현재 큐 잠금으로 런처 인벤토리 미검증"
+        out.append(
+            f"| {len(out) + 1} | — | {experiment} | `{batch}` | {hours:.1f} | "
+            f"{cumulative:.1f} | UNVERIFIED | REVALIDATE | {precondition} | {reason} |"
+        )
+    return out
 
 
 def inherited_rows(previous: Path) -> list[str]:

@@ -1,13 +1,13 @@
 # 제안 — Scout + 1 MiB 장기기억을 먼저 더해 학습가능성부터 검증한다
 
-> **작성** 2026-09-16 · **상태** 🔄권장안 A 승인·S0 대기 · **분류** 실험계획
+> **작성** 2026-09-16 · **상태** 🔄권장안 A 승인·S0a/S0bB 계약 완료, S0bT·S1 대기 · **분류** 실험계획
 > 양식: `proposal/README.md` §3. 아홉 절을 모두 작성한다.
 > 저장소 기준: `AGENTS.md` → 최신 유효 handoff → `handoff/COMPASS.md` → `docs/EXPERIMENT_BASELINES.md` → 실제 코드·결과문서 순으로 대조한다.
 > 🚫 **이 문서는 제안서다. 승인 전에는 구현·학습·배치파일 생성을 시작하지 않는다.**
 >
 > **승인 기록(2026-09-18):** 사용자가 권장안 A를 승인했다. 실험계획은
 > [P095](../test_plan/P095_Scout-1MiB-LTM-학습가능성.md)로 이관했다. S0 causal-isolation과
-> 물리 회계, 구현·smoke·GPU·배치·재현은 남아 있어 `-approved-on-going` 상태다.
+> S0a 인과 primitive와 S0bB hidden bridge·물리 byte/latency 계약은 기존 결과 087에서 확인됐다. full Transformer coda 결합·S1 실제 학습성·품질은 남아 있어 `-approved-on-going` 상태다.
 >
 > **제안 핵심:** 기존 TinyLM backbone을 줄이거나 tying으로 비용을 먼저 상쇄하지 않는다.
 > 기존 모델에 작은 causal Scout와 **논리적 배포용량 1 MiB의 explicit long-term memory(LTM)** 를 그대로 추가하여,

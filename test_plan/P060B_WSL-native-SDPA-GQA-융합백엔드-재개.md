@@ -14,7 +14,7 @@
 > Stage2W cache decode는 seq128에서 NRMS 0.004489/cosine 0.999990으로 정합 문턱을
 > 못 넘어 후속 속도·text가 `NOT_RUN`이다. Stage3W on/off 300M 3-seed는 품질 차이가
 > 모두 실무 분해능 0.024 안이지만 방향이 일치하지 않았고, 속도는 중립,
-> reserved 절감은 1.986%로 재현됐다([088 §3.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#31-최신-누적-판정-stage2wstage3w2026-09-22--품질은-실무상-동급-cache-배포-정합은-미통과)).
+> reserved 절감은 1.986%로 재현됐다([088 §10](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#31-최신-누적-판정-stage2wstage3w2026-09-22--품질은-실무상-동급-cache-배포-정합은-미통과)).
 
 ## 1. 재개 근거와 비재개 경계
 
@@ -56,8 +56,9 @@ WSL + `sm_89`는 플랫폼 선결을 만족한다. 패키지 존재는 커널 PA
 | **Stage0aWd ✅ 귀속 완료** | batch×KV-head를 접은 4-D zero-stride grouped-broadcast로 EFFICIENT 재검증 | grouped EFFICIENT 실행 가능하지만 속도 음성; default 실용 후보 유지 | [088 §9.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#91-wd-backend-귀속) |
 | **Stage0bW ✅ actual model 후보** | d14 RMS4 checkpoint full/cache prefill/decode | bit-identical, on/off 0.889×로 11.1% 빠름; peak 감소 0% | [088 §6.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#62-actual-d14-checkpoint-model-path) |
 | **Stage1W 🚫 memory gate 음성** | 현 WSL current recipe 250-step off vs default GQA 학습 속도·peak reserved·NaN/skip | speed 1.0025× PASS, reserved 절감 1.986% FAIL | [088 §9.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#92-stage1w-학습-gate) |
-| **Stage2W 🚫 정합 미통과** | 배포 prefill/decode·장문 생성 정합성 | seq128 decode 정합 실패; seq512/1024·속도·text NOT_RUN | [088 §3.1.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#311-stage2w-cache-deploy--seq128-decode에서-조기-중단) |
-| **Stage3W ⚠️ 혼합** | 300M GQA off/on 세 seed 품질 panel | 실무상 동급이나 방향 불일치; 속도 중립·reserved -1.986% | [088 §3.1.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#312-stage3w-300m-3-seed-품질-panel) |
+| **Stage2W 🚫 정합 미통과** | 배포 prefill/decode·장문 생성 정합성 | seq128 decode 정합 실패; seq512/1024·속도·text NOT_RUN | [088 §10.1](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#311-stage2w-cache-deploy--seq128-decode에서-조기-중단) |
+| **Stage2b 🔄 승인·정적 구현** | Stage2W 조기 중단 원인 귀속: off/on cache × off/on decode 4경로; bf16/fp32 math; seq128/512/1023/1024; layer·text·time·peak | 기존 NRMS≤0.001·cosine≥0.999999·속도/메모리 문턱 유지; 정합 실패 exit4, backend 실패 exit5, 유효 음성 exit8 | GPU·모델 `NOT_RUN`; 런처는 진행 중 큐 잠금으로 미작성 |
+| **Stage3W ⚠️ 혼합** | 300M GQA off/on 세 seed 품질 panel | 실무상 동급이나 방향 불일치; 속도 중립·reserved -1.986% | [088 §10.2](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#312-stage3w-300m-3-seed-품질-panel) |
 
 Stage0aW exit 8은 forced-only 사전등록 질문에는 유효한 음성이지만, 실용 후보선에서
 `on_default`를 제외한 설계 때문에 전체 GQA 음성으로 읽을 수 없다. Stage0aWb는 두 후보군을
@@ -141,5 +142,32 @@ recipe stratum에서 default dispatcher 후보가 학습에도 전이하는지 �
 - on/off≤1.05와 reserved-memory ≥10% 절감을 모두 만족해야 exit0 후보이며, 유효 음성은 exit8이다.
 - 50M 미만 속도 probe라 W&B 업로드를 금지한다. 품질은 `NOT_RUN`이다.
 - 실행 파일: `run_P060B_Stage1W_sdpa_gqa_training_gate.sh`.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 10. 2026-09-23 Stage2b 승인 — cache/decode 원인 분리
+
+사용자가 Stage2b를 승인했다. Stage2W는 seq128 첫 정합 실패로 뒤 길이·텍스트·속도
+측정이 중단되었으므로 실패의 원인이 prefill cache인지 decode 연산인지 확정할 수 없다.
+기존 음성 결과와 문턱은 보존한다.
+
+- `scripts/diag_sdpa_gqa_deploy_attribution.py`는 off-cache/off-decode,
+  off-cache/on-decode, on-cache/off-decode, on-cache/on-decode를 같은 입력에서 교차한다.
+  prefill cache K/V 차이와 첫 차이 attention 층도 출력한다.
+- bf16 기본 경로와 fp32 강제 MATH 경로를 분리한다. fp32는 수치 귀속용이지
+  bf16 배포 성능의 대체 지표가 아니다.
+- seq128/512/1023/1024를 모두 수집한다. 최대 context에서 다음 토큰이 허용되지
+  않으면 decode는 `NOT_RUN`으로 적고 prefill만 남긴다. 한 길이의 backend 오류는
+  다른 길이 수집을 막지 않는다.
+- 세 실제 프롬프트의 greedy 텍스트 일치, 동일 off-cache의 prefill/decode 시간과
+  peak allocation을 별도 측정한다. 속도·메모리 판정은 정합 통과 후에만 후보로 읽는다.
+- exit 4는 정합/텍스트 실패, exit 5는 backend 런타임 오류, exit 8은 유효 측정의
+  속도·메모리 음성이다. 정적 구문·순수 판정 함수만 확인했고 GPU/모델은 `NOT_RUN`.
+  `sdpa_gqa` 기본값은 계속 off다.
+
+진행 중인 사용자 실험 큐의 로그와 실험 런처 `.sh`는 읽거나 수정하지 않는다.
+따라서 Stage2b 새 런처·실행 태그/registry 충돌 확인 및 GPU 실행은 큐 종료 후의
+별도 사전검사 대상으로 남긴다. 현 preflight는 계획 중복과 기존 문턱만 확인한
+부분 점검이며, 동적 검증이나 registry PASS가 아니다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
