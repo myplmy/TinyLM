@@ -61,7 +61,10 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 29	P097	run_P097_Stage3cW_ctrl_v2_s31415.sh	Y	1.2	Y	N	control-v2 300M seed31415 세 시드 panel
 30	P097	run_P097_Stage3dW_fineweb2_s31415.sh	Y	1.2	Y	N	FineWeb2 300M seed31415 세 시드 panel
 31	P097	run_P097_Stage4W_ctrl_fw2_seed_panel.sh	D	1.2	Y	Y	control/FineWeb2 세 seed의 YNAT/NLI/ARC/HellaSwag/common-bpb를 공통 문항에서 비교하고 W&B를 갱신한다
-3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	체크포인트 회수 49GB→. ★판정 정본이 checkpoints.tsv 로 바뀌었다(TSV, keep/hold/delete). 삭제 후보 13.2GB/34개. YES 를 직접 입력해야 지운다
+32	P092	run_P092_Stage3Wb_resident_speed_diagnostic.sh	D	0.2	Y	Y	기존 100M dense/static/DST checkpoint에서 mask 포함 상주와 TTFT/decode를 분리 계측. 옛 Stage3W는 HOLD로 보존
+33	P029	run_P029_Stage2W_wiki_eos_panel.sh	D	0.2	Y	N	옛 5문항·2모델을 EOS/KV-cache/greedy 경로로 재관찰. 원답안 JSONL 수동 판독 전 품질 판정 금지
+34	P100	run_P100_Stage0W_capability_baseline.sh	D	0.3	Y	Y	기존 두 recipe의 한영 지식·문맥·형식·단기기억 원답안을 base/QA 형식으로 저장. 서열·SFT 인과 주장 금지
+3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	2026-09-23 TSV 실물 142건·60.677GiB 삭제 후보. WSL SH 단일 frozen preview와 대문자 YES, 실행 전 학습/파일 writer 중단 필수
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
 #   2026-08-14 삭제분: P049 단계1(041 §14.8) · P049B 단계1(043 §13.9) · F-1(046 §9)

@@ -16,17 +16,19 @@
 
 | 규칙 | 판정 | 근거 |
 |---|---|---|
-| `tiny_*` | `delete` | 스모크. `run_smoke_check.bat` 이 매번 재생성한다 |
-| 짝 json 의 `steps < 500`(그 런의 `_best` 형제 포함) | `delete` | 기준표 §2.3 — 250스텝급은 **품질 판정 사용 금지** |
-| 그 밖 전부 | `hold` | 🚫**축이 닫혔는지는 기계가 모른다** |
+| `tiny_synthetic_*_sm_*` | `delete` | 스모크의 정확한 재생성 산출물만 |
+| 그 밖 전부 | `hold` | 스텝 수만으로는 역할·향후 참조를 판단할 수 없음 |
+
+★2026-09-23 교정: `steps < 500`는 P092 30M(229-step) **품질 게이트**까지
+삭제 대상으로 오분류했다. 짧은 런도 기본 `hold`로 두고 결과·후속을 사람이 판단한다.
 
 ### 🚫★`_best` 를 이름만 보고 `delete` 로 적지 않는다
 
 `checkpoints.tsv` 머리말 **규칙 6**(2026-08-20 신설)이 그것을 금지한다 —
 `denseb_best` 사고 때 **규칙을 *역할* 이 아니라 *이름* 에 걸어** 부모 계보의 유일본이
 삭제 후보가 됐다. ★**그래서 이 도구는 `_best` 접미사를 보지 않는다.**
-프로브의 `_best` 를 지우는 근거는 *"이름이 `_best` 라서"* 가 아니라
-★***"그 런이 250스텝이라 품질 판정에 못 쓴다"*** 는 **역할** 이다.
+신규 `_best`도 본체의 역할과 향후 참조를 확인하기 전에는
+`hold`다. 짧은 런이라는 이유만으로 본체·best를 자동 삭제하지 않는다.
 
 🚫**보호는 이 도구가 하지 않는다.** `cleanup_ckpt.py` 의 `PROTECTED` · `PROTECTED_RE` ·
 `derived_protection()`(부모·교사로 읽힌 것)이 **삭제 직전에** 다시 막는다 — 두 겹이다.
@@ -43,6 +45,7 @@ import io
 import json
 import os
 import sys
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -51,7 +54,6 @@ CKPT = ROOT / "runs" / "ckpt"
 LOGS = ROOT / "runs" / "logs"
 NL = chr(10)
 TAB = chr(9)
-FULL_STEPS = 500      # ★실측 분포가 {20,30,40,250} vs {763,2289,4578} 로 깨끗이 갈린다
 
 
 def listed():
@@ -82,15 +84,13 @@ def steps_of(name):
 
 
 def judge(name):
-    if name.startswith("tiny_"):
-        return "delete", "tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다"
+    if name.startswith("tiny_synthetic_") and "_sm_" in name:
+        return "delete", "tiny synthetic smoke 산출물 - 다음 smoke에서 재생성"
     st = steps_of(name)
-    if st is not None and st < FULL_STEPS:
-        return "delete", (f"{st}스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). "
-                          f"판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)")
     if st is None:
         return "hold", "짝 json 이 없다 - 어떤 런인지 모른다. 사람이 확인"
-    return "hold", f"{st}스텝 full-train - 축이 닫혔는지는 기계가 모른다. 사람이 판정"
+    return "hold", (f"{st}스텝 - 짧은 품질 게이트도 있으므로 길이만으로 삭제 금지. "
+                    "역할·후속 참조를 사람이 판정")
 
 
 def main() -> int:
@@ -135,8 +135,8 @@ def main() -> int:
 
     src = io.open(TSV, encoding="utf-8").read()
     n0 = len(src)
-    add = [f"# ★2026-09-04 자동 판정 {len(news)}행 (scripts/ckpt_audit.py) — "
-           f"규칙은 tiny_* 와 steps<500 둘뿐이고 나머지는 hold 다"]
+    add = [f"# ★{date.today().isoformat()} 자동 판정 {len(news)}행 (scripts/ckpt_audit.py) — "
+           "정확한 tiny synthetic smoke만 delete, 나머지는 길이와 무관하게 hold"]
     for v, name, mb, why in rows:
         add.append(TAB.join((v, name, f"{mb:.1f}", why)))
     body = (src.rstrip(NL) + NL + NL.join(add) + NL).encode("utf-8")

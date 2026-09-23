@@ -1,28 +1,13 @@
 #!/usr/bin/env python3
-"""체크포인트 정리 — **판정 목록 문서를 진실의 원천으로 삼아** 삭제한다. GPU 0.
+"""체크포인트 정리 — checkpoints.tsv delete 판정만 처리한다. GPU 0.
 
-## 왜 배치에 파일명을 박지 않았나
+WSL 사용자 실행 경로는 run_cleanup_checkpoints.sh가 호출하는 --interactive다.
+한 프로세스 안에서 정확한 파일/크기를 먼저 보여주고 대문자 YES를 받은 뒤
+TSV, 부모 참조, inode, 크기, mtime/ctime을 재검증한다. 달라지면 삭제 0건이다.
 
-**함정 18: "적용 대상 집합을 두 곳에서 정의"** — 결과 016 §13·§14 가 같은 실수를 2회 냈다.
-삭제 목록을 `.bat` 에 68줄 박아 두면 문서와 배치가 **따로 늙는다.** 문서에서 판정을 바꿔도
-배치는 옛 목록을 지운다. 그래서 **집합은 한 곳에서만 정한다** —
-`docs/20260813_체크포인트_정리목록.md` 의 표가 정본이고 이 스크립트는 그것을 읽는다.
-
-(배치에서 `for /f` 로 파일을 읽을 수 없다는 사정도 있다 — 이 저장소는 `.bat` 에서
-`%` 를 금지한다(lint 규칙 3). 목록을 읽어 분배하는 일은 파이썬이 해야 한다.)
-
-## 안전장치 넷
-
-1. **기본은 dry-run.** `--yes` 없이는 한 파일도 지우지 않는다.
-2. **화이트리스트 방식.** 문서에서 `삭제 가능` 으로 판정된 것만 후보다.
-   `보존`·`보류`·목록에 없는 파일은 **건드릴 수 없다**(오탈자로 지워지는 경로가 없다).
-3. **정본 보호 하드코딩.** 부모/교사와 `--kd-best` 대상은 목록이 뭐라 하든 거부한다.
-   ★2026-08-14 에 `m100_ko-en_300M_dense_best.pt` 가 실수로 지워졌다. 그 재발을 막는 줄이다.
-4. **삭제 전 존재 확인 + 사후 대조.** 지운 개수·바이트를 세어 계획과 맞는지 본다.
-
-사용:
-    python scripts/cleanup_ckpt.py              # 계획만 인쇄(아무것도 안 지운다)
-    python scripts/cleanup_ckpt.py --yes        # 실제 삭제
+인자 없이 실행하면 read-only 계획만 인쇄한다. --yes는 Windows BAT 호환
+레거시 직접 경로여서 별도 dry-run과 동일 계획을 고정하지 못한다.
+WSL에서는 직접 --yes를 사용하지 않는다.
 """
 from __future__ import annotations
 
@@ -149,9 +134,22 @@ def parse_doc():
     return out
 
 
+def _file_identity(path: Path):
+    """Fail closed on links and freeze identity, size and write timestamps."""
+    import stat as _stat
+    item = path.lstat()
+    if not _stat.S_ISREG(item.st_mode):
+        raise ValueError(f"cleanup target is not a regular file: {path}")
+    return (item.st_dev, item.st_ino, item.st_size,
+            item.st_mtime_ns, item.st_ctime_ns)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--yes", action="store_true", help="실제로 지운다(없으면 dry-run)")
+    mode = ap.add_mutually_exclusive_group()
+    mode.add_argument("--yes", action="store_true", help="구형 직접 실행 경로")
+    mode.add_argument("--interactive", action="store_true",
+                      help="한 프로세스에서 미리 본 정확한 파일만 YES 후 삭제")
     a = ap.parse_args()
 
     doc = parse_doc()
@@ -194,6 +192,16 @@ def main():
     for name in disk:
         if name not in doc:
             unlisted.append(name)
+
+    preview = {}
+    registry_bytes = None
+    if a.interactive:
+        if not parse_tsv():
+            raise SystemExit("[STOP] interactive cleanup requires populated checkpoints.tsv")
+        registry_bytes = TSV.read_bytes()
+        preview = {name: _file_identity(CKPT / name) for name in plan}
+        if parse_doc() != doc or any(preview[name][2] != disk[name] for name in plan):
+            raise SystemExit("[STOP] cleanup plan changed during preview construction")
 
     W = 78
     print("=" * W)
@@ -238,8 +246,37 @@ def main():
     print(f"  합계 {sum(disk[n] for n in plan)/2**30:.1f} GB / {len(plan)}개")
 
     if not a.yes:
-        print("\n  [DRY-RUN] 아무것도 지우지 않았다. 실제로 지우려면 --yes 를 붙인다.")
-        return 0
+        if not a.interactive:
+            print()
+            print("  [DRY-RUN] 아무것도 지우지 않았다. 사용자 실행은 run_cleanup_checkpoints.sh를 쓴다.")
+            return 0
+        if inconsistent:
+            print("[STOP] 판정 불일치가 있어 삭제를 취소한다.")
+            return 1
+        print()
+        print("위 정확한 파일만 삭제합니다. 대문자 YES 외에는 취소합니다.", flush=True)
+        try:
+            answer = input("delete these files? ")
+        except EOFError:
+            answer = ""
+        if answer != "YES":
+            print("[cancel] nothing was deleted.")
+            return 0
+        if TSV.read_bytes() != registry_bytes or parse_doc() != doc:
+            print("[STOP] checkpoints.tsv 판정이 미리보기 이후 바뀌었다. 삭제 0건.")
+            return 1
+        new_parents = derived_protection()
+        for name in plan:
+            if name in new_parents or name in guard:
+                print(f"[STOP] {name} 이 새 부모/보호 대상이 됐다. 삭제 0건.")
+                return 1
+            try:
+                unchanged = _file_identity(CKPT / name) == preview[name]
+            except (OSError, ValueError):
+                unchanged = False
+            if not unchanged:
+                print(f"[STOP] {name} 파일 identity/크기/시각이 바뀌었다. 삭제 0건.")
+                return 1
 
     print("\n  삭제 중...")
     ok, fail, freed = 0, 0, 0
@@ -247,6 +284,8 @@ def main():
         p = CKPT / n
         sz = disk[n]
         try:
+            if a.interactive and _file_identity(p) != preview[n]:
+                raise RuntimeError("target changed after YES; refusing this file")
             p.unlink()
             ok += 1
             freed += sz

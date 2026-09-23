@@ -2,13 +2,10 @@
 
 > **승인 2026-09-13.** 정본 제안서: [`20260913_Dynamic-Sparse-Training-연결희소성-학습-제안서-approved.md`](../proposal/done/20260913_Dynamic-Sparse-Training-연결희소성-학습-제안서-approved.md)  
 > P016/P025/P025B의 고정 N:M이 아니라, 자유 connectivity budget을 유지하며 prune/regrow하는 알고리즘 축이다.  
-> **현재 상태(2026-09-14):** Stage0c CUDA 계약은 finite loss·inactive gradient·birth/death
-> 보존을 모두 통과했다([결과 083 §6](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
-> actual `TLinear` mask와 trainer-agnostic controller의 Stage1aT 계약도 사용자 로그에서 PASS했다
-> ([083 §8](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md#8-stage1at-actual-tlinear-microtrainer2026-09-19)).
-> full Transformer/trainer의 default-off CLI·mask·gradient score·optimizer-state reset·vectorized
-> rewire를 2026-09-21 구현했고 30M→100M→게이트→300M 3-seed SH를 준비했다.
-> 정적 배선만 PASS이며 GPU·compile 상호작용·속도·메모리·품질은 여전히 `NOT_RUN`이다.
+> **현재 상태(2026-09-23):** Stage0c·Stage1aT CUDA 계약과 Stage1W 30M/Stage2W 100M
+> full-trainer 여덟 팔은 사용자 로그로 완료됐다([083 §9~§10](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
+> 품질 격차는 감소했지만 기존 Stage3 gate는 실패했다. 원본 Stage3W SH는 HOLD로 보존하고,
+> 승인된 Stage3Wb 병목 진단만 작성했다. 새 진단의 GPU·추론 상주는 `NOT_RUN`이다.
 
 ## 1. 왜 — 삼진 0과 연결 부재를 구분해야 한다
 
@@ -134,3 +131,13 @@ Stage0에서 `H300`을 실측하기 전에 절대 GPU-h를 확정값으로 바�
 [결과 083 §9](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)의 여덟 JSON은 모두 exit0·skip0다. 30M dense 5.02031 대비 static50 +0.64031, dynamic50 +0.65813, dynamic25 +0.51875로 **사전 30M 중단선 +0.15를 세 branch 모두 초과**했다. 그 뒤 실행된 100M는 실측으로 보존하되 Stage1 선결을 통과한 것으로 소급 표시하지 않는다. 100M dense 3.96750 대비 dynamic50 +0.19656, dynamic25 +0.33797이고 static50 +0.17953이다. 최선 dynamic50도 **Stage3 gate +0.07 실패**다.
 
 예측 중 “50% connectivity는 살아날 수 있다”는 이 recipe/예산에서 불성립, “75% 급락 가능성”은 관찰과 합치지만 과학적 양성 채택은 아니다. sparse 팔의 속도·상주 이득도 없다. 30M dynamic50 `grad_max=22.09` 경보가 있었고 100M는 1.119라 지속 발산 확정은 피한다. 향후 구조 희소를 재개하려면 난도를 줄인 일정·초기화 또는 별도 하드웨어 회계와 새 문턱을 사전 승인받아야 한다. 기존 Stage3 SH의 존재는 실행 권장이 아니다.
+
+## 9.3 2026-09-23 Stage3Wb — 먼저 병목·상주를 분리, 이후 한 시드 탐색
+
+[결과 083 §10](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)의 후속 감사에서는 30M→100M dense 격차가 세 희소 팔 모두 감소했다. 그러나 기존 +0.15/+0.07 사전 문턱을 통과한 것은 아니다. 사용자 결정은 기존 Stage3W 3시드 런처를 삭제하지 않고 다음 순서로 재검토하는 것이다.
+
+1. **Stage3Wb 진단(신규 .sh, 사용자 실행)**: 기존 100M 세 checkpoint의 bool mask 포함 텐서 상주, checkpoint byte, CUDA allocated delta, TTFT, decode tok/s를 dense/static50/DST50 순서와 역순으로 계측한다. 역사 학습 ms/step은 별도 표에 보존한다. [진단 런처](../run_P092_Stage3Wb_resident_speed_diagnostic.sh)는 학습 0, 약 0.2h이다.
+2. **원인별 수정**: 실제 관측된 로드·상주·kernel 병목에 한정해 최소 수정하고 동일 checkpoint 정합·동일 형상·같은 측정법으로 전후를 비교한다. 현재는 dense mask GEMM이라 FLOP을 건너뛰지 않고, 일반 JSON `runtime_mb`에 mask도 포함되지 않는다. 저장 packed 수치나 synthetic kernel 우세를 모델 배포 개선으로 승격하지 않는다.
+3. **300M 한 시드**: 진단과 수정 결과에서 실질적 속도 또는 배포 상주 이득이 확인되고 새 품질/비용 게이트를 사전 등록한 뒤에만 동일조건 dense/DST50 한 시드로 탐색한다. 이 미래 단계는 현재 `NOT_RUN`이며 아직 SH를 만들지 않는다. 원래 Stage3W의 gate 실패를 소급 통과시키지 않는다.
+
+기존 `run_P092_Stage3W_full_trainer_300M_seeds.sh`는 인벤토리와 권장순서에서 **HOLD 상태로 보존**한다. 문턱 실패를 이유로 런처를 단독 제외·삭제하거나, 승인된 진단을 원래 3시드 계획의 대체 실행으로 오인하지 않는다. Stage3Wb의 성공은 병목 원인 판독이며 품질 승격이 아니다.

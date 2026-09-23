@@ -68,6 +68,7 @@ flag	grade	evidence	checked	declared_in
 --changed	ok		2026-09-04	scripts/check_change_scope.py
 --check	ok		2026-09-04	scripts/label_val_unseen_relations.py,scripts/wandb_sync.py
 --check-cache	ok		2026-09-04	scripts/bench_infer.py,scripts/probe_prompts.py,tinylm/cli.py
+--check-only	ok	모델/GPU 없이 입력 checkpoint·JSON·출력 충돌만 검사	2026-09-23	scripts/diag_p092_resident_speed.py,scripts/eval_p100_capability_panel.py
 --ckpt	ok		2026-09-04	scripts/diag_layer_gates.py,scripts/diag_lrm_values.py,scripts/diag_lut_kernel.py,scripts/diag_sparse34_pack.py,scripts/diag_vocab.py
 --ckpt-path	ok		2026-09-04	tinylm/cli.py
 --ckpt-tokens	ok		2026-09-04	scripts/diag_val_docs.py,scripts/paired_eval.py,tinylm/cli.py
@@ -167,6 +168,7 @@ flag	grade	evidence	checked	declared_in
 --inspect	ok		2026-09-04	scripts/diag_val_docs.py
 --inspect-chars	ok		2026-09-04	scripts/diag_val_docs.py
 --int8-store	ok		2026-09-04	scripts/bench_infer.py,scripts/mem_runtime.py
+--interactive	exp	사용자 YES 시 checkpoint 삭제 가능; preview 동일성 검증	2026-09-23	scripts/cleanup_ckpt.py
 --item	ok		2026-09-04	scripts/wip.py
 --items	ok	보존된 benchmark per-item JSONL에서 local TSV만 복구	2026-09-21	scripts/recover_bench_tsv_from_items.py
 --iters	ok		2026-09-19	scripts/diag_dtype_map.py,scripts/diag_fp8_scaling_overhead.py,scripts/diag_int8mm_paths.py,scripts/diag_scout_memory_integration.py,scripts/diag_sdpa_backends.py,scripts/diag_sdpa_gqa_model_path.py,scripts/diag_sdpa_wsl_gqa.py,scripts/diag_sparse24_inference_attribution.py
@@ -425,4 +427,4 @@ flag	grade	evidence	checked	declared_in
 --wip	ok	정적 audit evidence를 exact open WIP와 session에 결합	2026-09-21	scripts/check_static_all.py
 --wq-dtype	ok		2026-09-04	tinylm/cli.py
 --write	ok		2026-09-04	scripts/label_heldout_controlled.py,scripts/stamp_index_dates.py
---yes	ok		2026-09-04	scripts/cleanup_ckpt.py
+--yes	exp	직접 checkpoint 삭제; WSL 실행기는 interactive 경로 사용	2026-09-23	scripts/cleanup_ckpt.py

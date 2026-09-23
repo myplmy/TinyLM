@@ -490,3 +490,7 @@ train 0·val 0건이다. v3 val 한국어 9건은 일반 한국어 SFT
 (사람 WoZ 멀티턴, task 지향)을 조사했으나 원본을 취득하거나
 번역하지 않았다. Aya Collection 전량 974 MB도 원천별 적격성 미확인으로
 미다운로드다. 새 실험 .sh·모델 평가·공식 품질 판정은 `NOT_RUN`이다.
+
+### 2026-09-23 Aya Collection 한국어 train 취득·출처 감사
+
+사용자가 허용한 [비보호 원천](../HF/sft_sources/aya_collection_ko/korean/) 두 shard 973,675,125 byte를 pinned revision으로 확보했다. [감사 manifest](../HF/sft_ready/p090_aya_collection_ko_audit_20260923_manifest.json)는 후보 3,605,618행/빈쌍 276행/21 source/29 그룹/검토 표본 420개이며, 사람 주석 `Aya-Dataset` 한국어 train은 361행이다. 이는 provenance gate의 진행일 뿐 source별 권리·사실성·중복·PII·벤치 누출·한국어 다회전 적격성 통과가 아니다. 본 계획의 한국어 SFT·멀티턴 학습은 여전히 `NOT_RUN`이고, 검토 자료만 `HF/sft_ready`에 격리한다.

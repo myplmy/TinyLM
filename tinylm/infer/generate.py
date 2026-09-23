@@ -40,7 +40,23 @@ def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8
     st = torch.load(path, map_location=device)
     cfg = TMTConfig(**st["cfg"])
     model = TiedMLPTransformer(cfg).to(device)
-    model.load_state_dict(_strip(st["model"]))
+    state = _strip(st["model"])
+    # P092: a None buffer is omitted from state_dict. Register the saved bool
+    # mask before strict loading, otherwise connectivity checkpoints have
+    # unexpected keys and cannot be used for inference or resident audits.
+    if any(key.endswith(".connectivity_mask") for key in state):
+        from ..model.ternary import TLinear
+        for module_name, module in model.named_modules():
+            if not isinstance(module, TLinear):
+                continue
+            key = f"{module_name}.connectivity_mask"
+            if key not in state:
+                continue
+            saved = state[key]
+            if saved.dtype != torch.bool or saved.shape != module.weight.shape:
+                raise ValueError(f"P092 checkpoint mask has invalid dtype/shape: {key}")
+            module.set_connectivity(torch.zeros_like(saved), dense_regrowth_gradient=False)
+    model.load_state_dict(state)
     model.set_anneal(1.0)                       # 배포 상태(완전 삼진)에서 추론
     model.eval()
     model.freeze_quant()                        # ★삼진화 1회만(결과 014: 재계산이 CPU 시간의 ~79%)

@@ -137,6 +137,8 @@ def compile_frontier(root: Path):
         idx = index.get(ident, {})
         launchers = [row for row in experiments if row["plan"].upper() == ident.upper()]
         live = [row for row in launchers if row["exists"]]
+        # A live historical launcher remains in inventory but is not READY.
+        eligible = [row for row in live if not row["note"].lstrip().upper().startswith("HOLD:")]
         done_launchers = [name for row in launchers for name in row["done"]]
         header_state = plan_header_state(text, path.name)
         index_state = idx.get("index_state", "MISSING")
@@ -157,9 +159,9 @@ def compile_frontier(root: Path):
             readiness = "CONFLICT"
         elif index_state == "DONE":
             readiness = "DONE"
-        elif live and any(row["gpu"].upper() == "Y" for row in live):
+        elif eligible and any(row["gpu"].upper() == "Y" for row in eligible):
             readiness = "READY"
-        elif live:
+        elif eligible:
             readiness = "GATED"
         else:
             readiness = "HOLD"
