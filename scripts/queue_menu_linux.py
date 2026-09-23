@@ -359,7 +359,10 @@ def cmd_build(rows, pick: str, smoke_policy: str | None) -> int:
 def cmd_audit(rows, warn) -> int:
     listed = {str(row["shell_batch"]) for row in rows}
     on_disk = {path.name for path in ROOT.glob("run_*.sh")}
-    live_disk = {name for name in on_disk if "-done" not in name} - {"run_queue.sh"}
+    live_disk = {
+        name for name in on_disk
+        if not name.endswith(("-done.sh", "-cancel.sh"))
+    } - {"run_queue.sh"}
     errors = 0
 
     unexpected = sorted(live_disk - listed)

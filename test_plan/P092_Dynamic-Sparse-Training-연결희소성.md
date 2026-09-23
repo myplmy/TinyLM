@@ -4,7 +4,7 @@
 > P016/P025/P025B의 고정 N:M이 아니라, 자유 connectivity budget을 유지하며 prune/regrow하는 알고리즘 축이다.  
 > **현재 상태(2026-09-23):** Stage0c·Stage1aT CUDA 계약과 Stage1W 30M/Stage2W 100M
 > full-trainer 여덟 팔은 사용자 로그로 완료됐다([083 §9~§10](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
-> 품질 격차는 감소했지만 기존 Stage3 gate는 실패했다. 원본 Stage3W SH는 HOLD로 보존하고,
+> 품질 격차는 감소했지만 기존 Stage3 gate는 실패했다. 구 Stage3W 3시드 SH는 -cancel 이력으로 보존하고,
 > 승인된 Stage3Wb 병목 진단만 작성했다. 새 진단의 GPU·추론 상주는 `NOT_RUN`이다.
 
 ## 1. 왜 — 삼진 0과 연결 부재를 구분해야 한다
@@ -82,8 +82,8 @@ Stage0에서 `H300`을 실측하기 전에 절대 GPU-h를 확정값으로 바�
 - 완료: `run_P092_Stage1aT_tlinear_dst_contract-done.sh` — actual TLinear/controller 계약 PASS.
 - 완료: `run_P092_Stage1W_full_trainer_30M-done.sh` — 4팔 모두 exit0·skip0, sparse 셋 모두 dense gap>+0.15.
 - 완료: `run_P092_Stage2W_full_trainer_100M-done.sh` — 4팔 모두 exit0·skip0, 최선 dynamic50도 dense gap +0.19656.
-- **HOLD, 실행 권장 안 함**: `run_P092_Stage3W_full_trainer_300M_seeds.sh` — Stage2 dynamic 팔 중
-  dense gap≤0.07·skip0가 하나도 없다. gate 음성은 exit8이며 결과를 뒤집는 새 설계 승인 전 300M 3-seed 자동 실행 금지.
+- **실행 설계 취소, 연구축 유지**: `run_P092_Stage3W_full_trainer_300M_seeds-cancel.sh` — 100M gate 실패로 기존 런처가 exit8이며, 사용자 선택인 Stage3Wb 진단→수정→한 시드와도 다르다.
+  3시드 일괄안의 GPU 실행은 0건. Stage3Wb와 조건부 300M 한 시드는 별도 설계로 남는다.
 
 ## 8. 한계
 
@@ -141,3 +141,9 @@ Stage0에서 `H300`을 실측하기 전에 절대 GPU-h를 확정값으로 바�
 3. **300M 한 시드**: 진단과 수정 결과에서 실질적 속도 또는 배포 상주 이득이 확인되고 새 품질/비용 게이트를 사전 등록한 뒤에만 동일조건 dense/DST50 한 시드로 탐색한다. 이 미래 단계는 현재 `NOT_RUN`이며 아직 SH를 만들지 않는다. 원래 Stage3W의 gate 실패를 소급 통과시키지 않는다.
 
 기존 `run_P092_Stage3W_full_trainer_300M_seeds.sh`는 인벤토리와 권장순서에서 **HOLD 상태로 보존**한다. 문턱 실패를 이유로 런처를 단독 제외·삭제하거나, 승인된 진단을 원래 3시드 계획의 대체 실행으로 오인하지 않는다. Stage3Wb의 성공은 병목 원인 판독이며 품질 승격이 아니다.
+
+## 9.4 2026-09-23 옛 Stage3W 3시드 실행 설계 취소
+
+사용자가 이번에 live SH 5건의 우선순위·취소 여부를 판단하도록 지시했다. 옛 `run_P092_Stage3W_full_trainer_300M_seeds.sh`는 100M +0.19656 대 사전 +0.07 게이트에서 exit8로 막히며, 12개 300M 학습 호출을 묶은 형태도 사용자 선택인 **Stage3Wb 진단→관측 병목 수정→동일조건 한 시드**와 맞지 않는다. 그래서 파일 내용과 역사 명령은 [`-cancel` 보존본](../run_P092_Stage3W_full_trainer_300M_seeds-cancel.sh)으로 남기고 실험 큐 활성행만 취소 이력으로 옮겼다. GPU 학습 실행은 0건이며, 이전 §9.3의 HOLD 표현은 그때의 상태 기록이다.
+
+취소 대상은 옛 **3시드 일괄 실행 설계**뿐이다. P092 Stage0~2의 관측값, 연결희소 연구축, [Stage3Wb 진단](../run_P092_Stage3Wb_resident_speed_diagnostic.sh)은 그대로 열린다. Stage3Wb 사용자 로그에서 속도·상주·정합을 판독하고 측정된 원인을 수정·재측정한 뒤, 새 판정선을 사전등록한 300M 한 시드 런처가 필요한지 결정한다. 실패한 옛 게이트를 삭제하거나 통과했다고 소급하지 않는다.

@@ -14,4 +14,4 @@ if [ "$rc" -ne 0 ]; then
   printf '%s\n' "[FAIL] P092 Stage3Wb diagnostic rc=$rc; no 300M training follows" >&2
   exit "$rc"
 fi
-"$python_bin" scripts/runlog.py --num 083 --name P092_Stage3Wb_resident_speed_diagnostic --note "Read runs/bench/p092_stage3wb_resident_speed.json plus this log. Diagnose and fix a measured cause before any one-seed 300M probe; preserve old Stage3W HOLD."
+"$python_bin" scripts/runlog.py --num 083 --name P092_Stage3Wb_resident_speed_diagnostic --note "Read runs/bench/p092_stage3wb_resident_speed.json plus this log. Diagnose and fix a measured cause before any one-seed 300M probe; the old 3-seed SH is -cancel history, not a DST-axis rejection."

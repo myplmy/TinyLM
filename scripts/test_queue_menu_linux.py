@@ -101,6 +101,17 @@ class LinuxQueueTests(unittest.TestCase):
             self.assertIn("Completed (-done)", output.getvalue())
             self.assertNotIn("Unavailable Linux/WSL", output.getvalue())
 
+    def test_cancelled_shell_is_not_a_live_queue_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "run_P092_Stage3W-cancel.sh").write_text(
+                "#!/usr/bin/env bash" + chr(10), encoding="ascii"
+            )
+            with mock.patch.object(linux_queue, "ROOT", root), mock.patch.object(
+                linux_queue, "REQUIRED_COMMON", set()
+            ):
+                self.assertEqual(linux_queue.cmd_audit([], []), 0)
+
     def test_native_shell_row_is_runnable_without_bat(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

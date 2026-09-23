@@ -494,3 +494,9 @@ train 0·val 0건이다. v3 val 한국어 9건은 일반 한국어 SFT
 ### 2026-09-23 Aya Collection 한국어 train 취득·출처 감사
 
 사용자가 허용한 [비보호 원천](../HF/sft_sources/aya_collection_ko/korean/) 두 shard 973,675,125 byte를 pinned revision으로 확보했다. [감사 manifest](../HF/sft_ready/p090_aya_collection_ko_audit_20260923_manifest.json)는 후보 3,605,618행/빈쌍 276행/21 source/29 그룹/검토 표본 420개이며, 사람 주석 `Aya-Dataset` 한국어 train은 361행이다. 이는 provenance gate의 진행일 뿐 source별 권리·사실성·중복·PII·벤치 누출·한국어 다회전 적격성 통과가 아니다. 본 계획의 한국어 SFT·멀티턴 학습은 여전히 `NOT_RUN`이고, 검토 자료만 `HF/sft_ready`에 격리한다.
+
+## 15. 2026-09-23 공개 원천 우선순위 갱신 — 본런 SH는 아직 열지 않는다
+
+[공개 원천 감사 §6](../docs/20260923_한영일-SFT-멀티턴-공개원천-선별과-확보-감사.md)의 목적별 선택을 이 계획의 데이터 선결로 채택한다. 한국어 **직접 멀티턴 품질 pilot**은 확보한 공감형 `multi_2/multi_3` 18,568행에서 엄격한 역할 복원·첫 질문 그룹 분할·유형별 50건 사람 검토 뒤 소량만 선별한다. 영어 **사람참여 대화 및 영→한 번역 pilot**은 OASST2 strict best-rank 다회전 후보 2,377 tree를 원천으로 하되 100~300 tree·번역문 50건 사람 검토가 선결이다. OASST2 한국어 strict 유효 경로 4개는 다회전 0개이고, Aya Collection 대량 원본은 단일턴 번역·템플릿 혼합이므로 한국어 다회전 기본 학습에서 제외한다. CarrotAI는 단일턴 합성·중복 경보로 보류한다.
+
+이는 **원천 우선순위**이지 `TRAIN_READY`가 아니다. 출처별 권리/PII, 평가 오염, canonical role·assistant-only mask·1024-token 길이, 한국어 train/val 실제 다회전 수와 parent/tokenizer 계보가 닫히기 전에는 P090 SFT 본런 SH를 작성하거나 GPU 학습을 권하지 않는다. 기존 §13~14의 취득 당시 상태는 역사 기록으로 보존한다.
