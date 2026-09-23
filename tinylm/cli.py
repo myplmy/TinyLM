@@ -112,6 +112,9 @@ def main():
                    help="★★(결과 054) 평균 CE 를 행 청크로. 0=끄기=비트 동일. "
                         "**P065 두 팔이 정확히 CE 에서 OOM 났다** — --kd-chunk 는 KD 만 나눈다. "
                         "무KD + --no-ckpt 조합에서 이 항이 노출된다. 권장 2048")
+    p.add_argument("--loss-first", action="store_true",
+                   help="(P102A S1) FP32 factorized CE row-recompute path; train only, default off")
+
     p.add_argument("--tokenizer-hf", default=None, metavar="HF폴더",
                    help="★(P067) 외부 HF 모델의 tokenizer.json 으로 토큰화한다. "
                         "**데이터 캐시가 분리되고 vocab_size 가 그 어휘로 바뀐다**")
@@ -318,6 +321,8 @@ def main():
     p.add_argument("--check-cache", action="store_true",
                    help="캐시 유/무 그리디 출력 일치 검증만 하고 종료")
     a = p.parse_args()
+    if a.loss_first and a.cmd != "train":
+        p.error("--loss-first is only wired for the train command")
     if a.chat32_tokenizer:
         if a.cmd not in ("prepare", "train") or a.data == "synthetic":
             p.error("--chat32-tokenizer is for real-data prepare/train only")
@@ -442,7 +447,7 @@ def main():
               repeat_mode=a.repeat_mode, repeat_block=a.repeat_block,
               repeat_embed_reinject=a.repeat_embed_reinject,
               reuse_attn_on_dup=a.reuse_attn_on_dup,
-              ce_chunk=a.ce_chunk, cla_group=a.cla_group,
+              ce_chunk=a.ce_chunk, loss_first=a.loss_first, cla_group=a.cla_group,
               cla_edges=(not a.no_cla_edges), mlp_lrm=a.mlp_lrm,
               mlp_lrm_mode=a.mlp_lrm_mode, mlp_lrm_wd=a.mlp_lrm_wd,
               tokenizer_hf=a.tokenizer_hf, kd_teacher_hf=a.kd_teacher_hf,

@@ -47,3 +47,42 @@ def boundary_cache_bytes(tokens, dim, *, group=64, scale_bytes=4):
     if min(tokens, dim, group, scale_bytes) < 1 or dim % group:
         raise ValueError("invalid cache dimensions")
     return tokens * (dim + (dim // group) * scale_bytes)
+
+
+class BoundaryTable:
+    """CPU-only frozen-prefix boundary table; no file or protected-data I/O."""
+
+    def __init__(self, hidden: torch.Tensor, *, quantized: bool, group: int = 64):
+        if (group < 1 or hidden.ndim != 2 or min(hidden.shape) < 1
+                or hidden.shape[1] % group or not bool(torch.isfinite(hidden).all())):
+            raise ValueError("boundary table requires nonempty [tokens,dim] and divisible group")
+        source = hidden.detach().to("cpu").contiguous()
+        self.shape = tuple(source.shape)
+        self.group = group
+        self.quantized = bool(quantized)
+        self.values = self.codes = self.scales = None
+        if self.quantized:
+            self.codes, self.scales = quantize_boundary_int8(source, group=group)
+        else:
+            self.values = source.clone()
+
+    @property
+    def payload_bytes(self) -> int:
+        if self.quantized:
+            return self.codes.numel() * self.codes.element_size() + (
+                self.scales.numel() * self.scales.element_size())
+        return self.values.numel() * self.values.element_size()
+
+    def gather(self, indices: torch.Tensor, *, device=None) -> torch.Tensor:
+        if indices.ndim != 1 or indices.dtype != torch.long:
+            raise ValueError("boundary indices must be a 1D long tensor")
+        ids = indices.detach().to("cpu")
+        if ids.numel() and (int(ids.min()) < 0 or int(ids.max()) >= self.shape[0]):
+            raise IndexError("boundary index outside frozen source")
+        if self.quantized:
+            result = dequantize_boundary_int8(
+                self.codes.index_select(0, ids),
+                self.scales.index_select(0, ids), group=self.group)
+        else:
+            result = self.values.index_select(0, ids)
+        return result.to(device) if device is not None else result

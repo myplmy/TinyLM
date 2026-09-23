@@ -494,3 +494,15 @@ C0를 거절하면 18층 전체 조합의 가치만 미확인으로 남는다. *
 사용자가 §10의 권장 첫 단계인 **작은 기능 게이트부터 진행**을 승인했다. 별도 [P101A 계획](../test_plan/P101A_M0-U2-QK-MTP-기능계약.md)과 사용자 실행 [Stage0W SH](../run_P101A_Stage0W_u2_mtp_function_gate.sh)를 만들었다. E384 함수 보존과 EOS를 넘지 않는 MTP 표적은 CPU tensor fixture에서, QK gain은 기본 off인 opt-in 모델 경로와 소형 모델 게이트 코드에서 분리했다. CPU 수학 fixture는 PASS; 실제 소형 모델 게이트·M0 checkpoint 이관·GPU/품질은 NOT_RUN이다.
 
 현재 승인 범위의 **전체 구현 완료가 아니다**. 독립 MTP aux head와 trunk/공유 어휘 gradient, 같은 유효 배치의 loss 집계, 실제 M0 함수 보존 이관, G2의 품질·속도 비교는 남아 있다. 신규 C0 1.2B 학습 SH는 기준표의 한국어/풀 제약에 따라 만들지 않는다. 이 종료조건 때문에 `-approved-on-going`을 유지한다.
+
+## 12. 2026-09-24 막힘 상태 재감사 — 구현과 사용자 검증 분리
+
+이전 WIP 3A가 실제 소형 모델·M0 로그 부재를 이유로 전체 `막힘`이 된 것은 범위가 넓었다. 사용자 실행 [Stage0W](../run_P101A_Stage0W_u2_mtp_function_gate.sh)의 로그는 **작성된 코드의 함수·gradient 판정과 G2 실행 개방**에 필요하다. 독립 MTP aux head, 공유 어휘 gradient, 유효토큰 분모와 배포 제거의 기본 off 구현을 작성하지 못하게 하는 권한·기술적 선결은 아니다. 사용자 승인 A안의 구현 요청을 §11의 '작은 gate만'으로 축소해 읽은 부분은 교정한다.
+
+| 구분 | 현재 직접 증거 | AI 작업 / 사용자 증거의 경계 |
+|---|---|---|
+| 작성된 코드 | E/QK strict 이식, 독립 MTP aux head·배포 payload 제거, FP32 3-head loss/공유 emb gradient CPU 계약 | 실제 M0·작은 모델 gate는 NOT_RUN, 전체 trainer·계속학습 경로는 미구현. GPT 작업을 계속한다 |
+| 사용자 검증 | Stage0W 소형 모델, 실제 M0 hash/함수 | Codex 모델 로딩 금지 때문에 사용자 결과가 필요하지만 코드 집필 전체의 정지 사유는 아님 |
+| 채택·G2 | 같은 부모·풀·어닐·optimizer와 100M 대응 팔 | Stage0/G1 PASS 및 GPU 실행 뒤에만 효과 판정. 1.2B/C0 런처는 종전 금지 유지 |
+
+현재 제안서는 `approved-on-going`이다. WIP는 GPT 구현 중으로 유지하고, 동적 `NOT_RUN`과 필요한 사용자 로그는 이 절 및 [P101A 계획](../test_plan/P101A_M0-U2-QK-MTP-기능계약.md)에 기록한다. 작은 CPU 계약 PASS를 실모델 기능 완료나 지능 향상으로 승격하지 않는다.

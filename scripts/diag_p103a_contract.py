@@ -21,7 +21,7 @@ def main() -> int:
     import torch.nn.functional as F
     from tinylm.train.p103a_contract import (
         ffn_tiles, quantize_boundary_int8, dequantize_boundary_int8,
-        boundary_cache_bytes,
+        boundary_cache_bytes, BoundaryTable,
     )
 
     torch.manual_seed(103)
@@ -63,7 +63,33 @@ def main() -> int:
         raise RuntimeError("X3 20M cache byte accounting differs")
     if codes.dtype != torch.int8 or scales.dtype != torch.float32 or nrms > 0.03:
         raise RuntimeError(f"X3 INT8 fixture failed: nrms={nrms}")
-    print(f"[PASS] P103A X1 toy VJP; X2 full/tile output; X3 INT8 nrms={nrms:.6g} size={expected}B")
+    small = boundary[:12, :64]
+    for bad, bad_group in ((small, 0), (torch.full_like(small, float("nan")), 64)):
+        try:
+            BoundaryTable(bad, quantized=False, group=bad_group)
+        except ValueError:
+            pass
+        else:
+            raise RuntimeError("X3 invalid boundary cache was accepted")
+    exact_table = BoundaryTable(small, quantized=False, group=64)
+    int8_table = BoundaryTable(small, quantized=True, group=64)
+    indices = torch.tensor([3, 2, 3, 11], dtype=torch.long)
+    if exact_table.payload_bytes != 12 * 64 * 4 or int8_table.payload_bytes != 12 * (64 + 4):
+        raise RuntimeError("X3 exact/INT8 table payload accounting differs")
+    if not torch.equal(exact_table.gather(indices), small.index_select(0, indices)):
+        raise RuntimeError("X3 exact boundary cache changed frozen activations")
+    tail = torch.randn(8, 64, requires_grad=True)
+    reference_loss = F.linear(small.index_select(0, indices), tail).square().mean()
+    cached_loss = F.linear(exact_table.gather(indices), tail).square().mean()
+    reference_grad = torch.autograd.grad(reference_loss, tail, retain_graph=True)[0]
+    cached_grad = torch.autograd.grad(cached_loss, tail)[0]
+    if (not torch.allclose(reference_loss, cached_loss, atol=0, rtol=0)
+            or not torch.allclose(reference_grad, cached_grad, atol=0, rtol=0)):
+        raise RuntimeError("X3 exact frozen boundary changed tail loss or gradient")
+    quant_hidden = int8_table.gather(indices)
+    if quant_hidden.shape != (4, 64) or not bool(torch.isfinite(quant_hidden).all()):
+        raise RuntimeError("X3 INT8 gathered boundary is invalid")
+    print(f"[PASS] P103A X1 toy VJP; X2 full/tile; X3 exact tail loss/grad, INT8 nrms={nrms:.6g} size={expected}B")
     print("[LIMIT] X1 transformer attention, X2 optimizer, X3 whole-model/RAM/quality NOT_RUN")
     return 0
 

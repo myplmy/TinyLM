@@ -83,3 +83,6 @@ Stage1cW에서 고른 C 부모와 A/B가 같은 공개 원문·평가 질문을 
 ## 9. 실행 이력 / 갱신
 
 - 2026-09-24: 기존 독립 SFT trainer self-test와 legacy 실토크나이저 합성 mask PASS. 공개 v3 직접 preflight는 train/val 2996/158행·split 겹침0·빈 마스크0·M3/M4 누락0으로 full-mask PASS지만 manifest tokenizer-mask/contamination/사람 품질은 NOT_RUN, TRAIN_READY=False. chat32 prepare/train·checkpoint SHA 계보·새 어휘의 공개 v3 길이 gate 자기시험과 Stage1a/1b SH는 STATIC_ONLY; 실제 chat32 부모·C 원답안·SFT/품질 `NOT_RUN`. P100 per-model preset/token parser self-test와 세 기존 checkpoint/JSON metadata-only preflight는 PASS.
+
+- 2026-09-24 막힘 재감사: `TRAIN_READY=False`는 정식 SFT 런처 실행·성과판정의 gate이지 A/B/C 계보 검사·trainer 코드 작성의 전면 중단 사유가 아니다. 공개 오염/사람 품질, B 부모 실제 학습, C 공통 원답안은 사용자 실행·검토로 남기되 GPT 소유 코딩 결손은 작업원장에서 진행 중으로 추적한다. 데이터 적격성과 부모 '최선'을 현재 미검증으로 유지한다.
+- 2026-09-24: 비보호 공개 v3 3,154행을 고정 P100 한영 9문항의 base/QA prompt와 사용자 turn 단위 exact 공백·대소문자 정규화로 비교해 중복 0건(`panel_exact_gate=PASS`)을 읽기 전용 관측했다. 이것은 **해당 9문항의 정확 일치만** 배제하며 전체 benchmark/보호 held-out 오염 검사나 사람 품질 PASS가 아니다. manifest의 `contamination_gate`·`source_quality_gate`는 여전히 NOT_RUN, `train_ready=false`; Stage2 정식 학습 SH는 아직 만들지 않는다.

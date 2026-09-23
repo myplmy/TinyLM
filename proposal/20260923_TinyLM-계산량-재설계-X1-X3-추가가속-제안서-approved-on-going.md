@@ -452,3 +452,15 @@ X3의 약60GB는 **20M개 token position × hidden 768개 값의 활성 캐시**
 사용자가 §10의 권장안(원 checkpoint 보존, X1 선행, X3 INT8 경계 활성 캐시 별도 검증)을 승인했다. 별도 [P103A 계획](../test_plan/P103A_X1-X2-X3-계산량-기능계약.md)과 사용자 실행 [Stage0W SH](../run_P103A_Stage0W_compute_math_contract.sh)를 만들었다. 공유 prefix VJP toy, 실제 물리 FFN tile 출력, INT8 per64 양자·복원 fixture는 CPU PASS했다. 20M×768의 INT8+FP32 scale은 산술상 16.32GB이며 이 계산은 RAM 운용 실측이 아니다.
 
 X1의 Transformer mask·position·CLA 통합, X2의 실모델 FFN/optimizer·회복학습, X3의 frozen-prefix hash·캐시 무효화·RAM 단일 사본·RSS/품질/whole-wall은 모두 NOT_RUN이다. 원안의 39%·29.5%·41%는 예측으로 유지한다. 전체 승인 범위가 미완료이므로 `-approved-on-going`을 유지한다.
+
+## 12. 2026-09-24 막힘 상태 재감사 — 보호 대상과 범용 구현 분리
+
+이전 WIP 3C는 실제 KnowledgePack 중복률·GPU FFN 비용·반복 SFT가 없다는 이유로 X1~X3 전체를 `막힘`으로 뒀다. **실제 보호 데이터 접근과 20M 전량 RAM/품질 채택**은 사용자의 별도 권한·동적 증거가 필요하다. 그러나 X2 물리 tile·optimizer 정합 및 X3 2M 이하 synthetic exact/INT8 boundary의 기본 off 구현·정합 코딩은 그 결과를 기다릴 이유가 없다. GPT가 이 범위를 계속 구현한다.
+
+| 축 | 현재 확인 | 코드 작성과 채택의 경계 |
+|---|---|---|
+| X1 | 비보호 공개 SFT v3의 최소32/64/128 exact prefix 반복은 951/83/0 token | 공개 corpus에서 구조적 기회가 작다는 관측일 뿐 보호 KnowledgePack 대상의 중복률은 NOT_RUN. 보호 경로는 접근하지 않는다 |
+| X2 | physical FFN tile의 작은 CPU 출력 계약 PASS | 실제 모델·Muon 상태·compile 경로 opt-in 구현은 GPT 작업. GPU whole-wall과 품질은 사용자 판정 |
+| X3 | INT8 per64 산술16.32GB·작은 q/deq, CPU `BoundaryTable` exact/INT8 index gather·exact tail loss/gradient PASS | 실제 frozen lower model→2M boundary build·sampler/position/mask·한 update·4epoch·20M RAM RSS/품질은 미구현 또는 사용자 실행 전 NOT_RUN |
+
+기존 [frontier 감사](../handoff/audit/WIP_20260923_CONTINUATION_FRONTIER_R1.md)는 2026-09-23 시점의 불변 스냅샷이므로 소급 수정하지 않는다. 현재 코딩 상태는 이 절과 [P103A 계획](../test_plan/P103A_X1-X2-X3-계산량-기능계약.md)이 소유한다. 새 연구 결과가 없어 COMPASS의 파레토/축 결론도 이번 상태 교정만으로 바꾸지 않는다.

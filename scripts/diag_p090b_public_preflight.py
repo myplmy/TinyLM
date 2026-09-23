@@ -45,6 +45,34 @@ def split_counts(train_rows: list[dict], val_rows: list[dict]) -> dict:
 
 
 
+def panel_exact_overlap(rows: list[dict]) -> dict:
+    """Count exact P100 fixed-panel prompts in user turns; never print text."""
+    from collections import Counter
+    from eval_p100_capability_panel import CASES
+
+    def norm(value: str) -> str:
+        return " ".join(value.casefold().split())
+
+    prompts: dict[str, set[str]] = {}
+    for case_id, _ability, prompt, _rubric in CASES:
+        for form in (prompt, "Question: " + prompt + " Answer:"):
+            prompts.setdefault(norm(form), set()).add(case_id)
+    hits: Counter[str] = Counter()
+    for row in rows:
+        for message in row.get("messages", ()):
+            if message.get("role") != "user":
+                continue
+            content = message.get("content", ())
+            texts = ([content] if isinstance(content, str) else
+                     [block.get("text", "") for block in content
+                      if isinstance(block, dict) and block.get("type") == "text"])
+            for value in texts:
+                for case_id in prompts.get(norm(value), ()):
+                    hits[case_id] += 1
+    return {"matched_user_messages": sum(hits.values()),
+            "case_ids": dict(sorted(hits.items()))}
+
+
 def full_mask_counts(rows: list[dict], tok) -> dict:
     """Count assistant body and stop-token coverage without printing any text."""
     from tinylm.chat.serialize import SPECS
@@ -81,7 +109,12 @@ def main() -> int:
             {"role": "assistant", "content": [{"type": "text", "text": "답변"}]}]}
         checked = full_mask_counts([conversation], SyntheticTokenizer())
         assert checked["missing_assistant_body"] == 0 and checked["missing_end_token"] == 0
-        print("[PASS] public SFT split/assistant/end aggregate fixture; corpus/model/GPU NOT_RUN")
+        from eval_p100_capability_panel import CASES
+        panel_row = {"messages": [{"role": "user",
+                                   "content": [{"type": "text", "text": CASES[0][2]}]}]}
+        if panel_exact_overlap([panel_row])["case_ids"] != {CASES[0][0]: 1}:
+            raise AssertionError("fixed-panel exact prompt was missed")
+        print("[PASS] public SFT split/assistant/end/P100 exact-panel fixture; corpus/model/GPU NOT_RUN")
         return 0
     if not args.manifest or not args.tokenizer:
         ap.error("--manifest and --tokenizer are required")
@@ -110,6 +143,7 @@ def main() -> int:
     train_mask = mask_stats(tr, tok)
     val_mask = mask_stats(va, tok)
     full_mask = full_mask_counts(tr + va, tok)
+    panel = panel_exact_overlap(tr + va)
     mask_pass = (0.02 <= train_mask["ratio"] <= 0.90
                  and 0.02 <= val_mask["ratio"] <= 0.90
                  and train_mask["empty_mask"] == 0
@@ -125,6 +159,8 @@ def main() -> int:
               "val_empty_mask": val_mask["empty_mask"],
               "licenses": sorted(licenses),
               "split": counts,
+              "panel_exact_overlap": panel,
+              "panel_exact_gate": "PASS" if panel["matched_user_messages"] == 0 else "FAIL",
               "contamination_gate": manifest.get("contamination_gate", "NOT_RUN"),
               "manifest_tokenizer_mask_gate": manifest.get("tokenizer_mask_gate", "NOT_RUN"),
               "aggregate_mask_gate": "PASS" if mask_pass else "FAIL",
@@ -139,11 +175,13 @@ def main() -> int:
                              and report["full_mask_gate"] == "PASS"
                              and report["source_quality_gate"] == "PASS"
                              and not counts["source_id_overlap"]
-                             and not counts["first_prompt_overlap"])
+                             and not counts["first_prompt_overlap"]
+                             and not panel["matched_user_messages"])
     print(json.dumps(report, ensure_ascii=False, sort_keys=True))
     if (not mask_pass or report["full_mask_gate"] != "PASS"
-            or counts["source_id_overlap"] or counts["first_prompt_overlap"]):
-        print("[FAIL] public SFT split or aggregate mask contract", file=sys.stderr)
+            or counts["source_id_overlap"] or counts["first_prompt_overlap"]
+            or panel["matched_user_messages"]):
+        print("[FAIL] public SFT split, mask or P100 exact prompt overlap", file=sys.stderr)
         return 1
     if not report["train_ready"]:
         print("[HOLD] pilot-only: contamination or other TRAIN_READY evidence is missing")

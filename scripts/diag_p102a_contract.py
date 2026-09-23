@@ -21,7 +21,7 @@ def main() -> int:
     import torch
     import torch.nn.functional as F
     from tinylm.train.p102a_contract import (
-        factorized_ce_chunks, update_local_vjp, sampled_mtp_loss,
+        factorized_ce_chunks, factorized_ce_loss_first, update_local_vjp, sampled_mtp_loss,
     )
 
     torch.manual_seed(102)
@@ -32,13 +32,22 @@ def main() -> int:
     full = F.cross_entropy(((h @ up) @ emb.T).float(), targets,
                            ignore_index=-100, reduction="sum")
     chunked = factorized_ce_chunks(h, up, emb, targets, 3)
-    if not torch.allclose(full, chunked, rtol=1e-6, atol=1e-6):
+    loss_first = factorized_ce_loss_first(h, up, emb, targets, 3)
+    if not torch.allclose(full, chunked, rtol=1e-6, atol=1e-6) or not torch.allclose(full, loss_first, rtol=1e-6, atol=1e-6):
         raise RuntimeError("S1 reference loss differs")
     grad_full = torch.autograd.grad(full, (h, up, emb), retain_graph=True)
     grad_chunk = torch.autograd.grad(chunked, (h, up, emb))
+    grad_first = torch.autograd.grad(loss_first, (h, up, emb))
     if not all(torch.allclose(a, b, rtol=1e-5, atol=1e-5)
                for a, b in zip(grad_full, grad_chunk)):
-        raise RuntimeError("S1 hidden/up/emb gradient differs")
+        raise RuntimeError("S1 chunk reference gradient differs")
+    if not all(torch.allclose(a, b, rtol=1e-5, atol=1e-5)
+               for a, b in zip(grad_full, grad_first)):
+        raise RuntimeError("S1 loss-first hidden/up/emb gradient differs")
+    ignored = factorized_ce_loss_first(h, up, emb, torch.full_like(targets, -100), 3)
+    ignored_grads = torch.autograd.grad(ignored, (h, up, emb))
+    if ignored.item() != 0 or any(torch.count_nonzero(g) for g in ignored_grads):
+        raise RuntimeError("S1 ignored targets produced loss or gradient")
 
     w = torch.randn(4, 5, requires_grad=True)
     surrogate = w.square()
@@ -59,8 +68,8 @@ def main() -> int:
     expected = torch.stack(estimates).mean()
     if not torch.allclose(full_mean, expected, rtol=1e-12, atol=1e-12):
         raise RuntimeError("S3 sampled MTP estimator is biased in four-micro exhaustive fixture")
-    print("[PASS] P102A S1 full/chunk loss+all gradients, S2 VJP, S3 HT expectation")
-    print("[LIMIT] fused kernel, real STE cached graph, MTP trainer and GPU wall NOT_RUN")
+    print("[PASS] P102A S1 full/chunk/loss-first FP32 loss+all gradients, S2 VJP, S3 HT expectation")
+    print("[LIMIT] trainer opt-in is STATIC_ONLY; actual model, GPU speed, S2 cache and MTP trainer NOT_RUN")
     return 0
 
 

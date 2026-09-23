@@ -36,6 +36,15 @@ class TiedMLPTransformer(nn.Module):
         if cfg.emb_rank:
             nn.init.normal_(self.emb_up.weight, std=0.02)
 
+        # P101A: independent training-only readouts, initialized from main U.
+        # No keys or computation are added when mtp_aux is disabled.
+        self.mtp_up2 = self.mtp_up4 = None
+        if getattr(cfg, "mtp_aux", False):
+            if self.emb_up is None:
+                raise ValueError("P101A MTP requires a factorized main head")
+            self.mtp_up2 = nn.Parameter(self.emb_up.weight.detach().clone())
+            self.mtp_up4 = nn.Parameter(self.emb_up.weight.detach().clone())
+
         self.pre_mlps = nn.ModuleList([MLP(cfg) for _ in range(cfg.n_prelude)])
         self.mid_mlps = nn.ModuleList([MLP(cfg) for _ in range(cfg.n_mlp_groups)])
         self.coda_mlps = nn.ModuleList([MLP(cfg) for _ in range(cfg.n_coda)])
@@ -406,6 +415,21 @@ class TiedMLPTransformer(nn.Module):
                 for v0 in range(0, V, C)]
         return torch.cat(outs, dim=-1)
 
+    def mtp_aux_logits(self, hidden, horizon):
+        """Training-only reference readout; deployment uses the main head only."""
+        if not getattr(self.cfg, "mtp_aux", False) or horizon not in (2, 4):
+            raise ValueError("MTP auxiliary head is disabled or horizon is invalid")
+        projection = self.mtp_up2 if horizon == 2 else self.mtp_up4
+        return F.linear(F.linear(hidden, projection.t()), self._emb_w())
+
+    def mtp_deployment_payload(self):
+        """Strict-loadable main-model state with both auxiliary keys removed."""
+        if not getattr(self.cfg, "mtp_aux", False):
+            raise ValueError("MTP deployment export requires enabled auxiliary heads")
+        state = {k: v for k, v in self.state_dict().items()
+                 if k not in ("mtp_up2", "mtp_up4")}
+        return {"model": state, "cfg": dict(self.cfg.__dict__, mtp_aux=False)}
+
     def enable_unpack_cache(self, on=True):
         """★P034 단계3C — int8 언팩 결과를 **유니크 모듈당 1회**로 줄인다(타잉 전용 이득).
 
@@ -620,7 +644,7 @@ class TiedMLPTransformer(nn.Module):
 
     # ---------- forward ----------
     def forward(self, tokens, mode_override=None, return_aux=False,
-                past_kv=None, use_cache=False, logits_last_only=False):
+                past_kv=None, use_cache=False, logits_last_only=False, return_hidden=False):
         """`past_kv` 는 **owner 층 인덱스 → (k, v)** 딕셔너리다.
 
         ★CLA 주의: KV 를 공유하는 층들은 **캐시도 공유**한다. 그래서 캐시 키는 층 인덱스가
@@ -628,6 +652,9 @@ class TiedMLPTransformer(nn.Module):
         cla_group 배로 중복 저장하게 된다.
         """
         cfg = self.cfg
+        if return_hidden and (return_aux or use_cache or past_kv is not None or logits_last_only):
+            raise ValueError("return_hidden is training-only and cannot mix with cache, aux or last-logits")
+        # Default False keeps the original logits path and public generation contract.
         B, T = tokens.shape
         # 캐시가 있으면 이번 forward 의 토큰은 past 뒤에 붙는다 → 절대위치가 past_len 만큼 밀린다.
         past_len = 0
@@ -798,6 +825,8 @@ class TiedMLPTransformer(nn.Module):
                                  "라벨 모양이 안 맞는다(자르는 것은 로짓이지 라벨이 아니다)")
             x = x[:, -1:, :]
         x = self.norm_f(x) * self.norm_f_scale
+        if return_hidden:
+            return x
         logits = self._head_logits(x)          # ★P034 단계5(청크 복원 포함)
 
         if use_cache:
@@ -838,7 +867,7 @@ class TiedMLPTransformer(nn.Module):
     def param_groups(self, lr, weight_decay=0.1):
         import math
         tied = {id(p) for m in self.mid_mlps for p in m.parameters()} if self.cfg.tie_mlp else set()
-        gt, dense, nodecay, lrm, qkg = [], [], [], [], []
+        gt, dense, nodecay, lrm, qkg, mtp = [], [], [], [], [], []
         for n, p in self.named_parameters():
             if not p.requires_grad:
                 continue
@@ -849,7 +878,9 @@ class TiedMLPTransformer(nn.Module):
             #   🚫`endswith(".lrm")` 만 보면 벡터 승수가 아래 `nodecay`(dim<2)로 새어
             #   **wd 가 조용히 0 이 된다** = 팔 B 와 B' 를 못 가른다.
             #   ✅스칼라 모드의 `.lrm` 도 이 규칙에 그대로 걸리므로 **비트 동일**이다.
-            if n.endswith(".qk_gain_logit"):
+            if n in ("mtp_up2", "mtp_up4"):
+                mtp.append(p)
+            elif n.endswith(".qk_gain_logit"):
                 qkg.append(p)
             elif n.rsplit(".", 1)[-1].startswith("lrm"):
                 lrm.append(p)
@@ -866,6 +897,8 @@ class TiedMLPTransformer(nn.Module):
                   # P086 scalar/vector group is unchanged when QK gain is off.
                   {"params": lrm, "lr": lr,
                    "weight_decay": float(getattr(self.cfg, "mlp_lrm_wd", 0.01))}]
+        if mtp:
+            groups.append({"params": mtp, "lr": lr, "weight_decay": weight_decay})
         if qkg:
             groups.append({"params": qkg, "lr": lr * 0.1, "weight_decay": 0.0})
         return groups

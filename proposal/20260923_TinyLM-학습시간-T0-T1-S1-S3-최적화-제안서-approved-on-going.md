@@ -370,3 +370,16 @@ Lhat_k = lambda_k / N_k * sum_j (I_kj / p_kj) * sum_valid_t CE[k,j,t]
 사용자가 §10의 권장 순서(T1 확인 후 S1 우선)를 승인했다. 별도 [P102A 계획](../test_plan/P102A_T1-S1-S2-S3-학습시간-기능계약.md)과 사용자 실행 [Stage0W SH](../run_P102A_Stage0W_speed_math_contract.sh)를 만들었다. factorized CE 행 청크, 고정 유효 가중치의 VJP, 전체 valid-token 분모를 사용한 S3 HT 추정량의 CPU FP32 reference는 PASS했다.
 
 이는 **fused loss 커널이나 trainer 가속의 구현 증거가 아니다**. 공유 입출력 embedding까지 포함한 S1 전 parameter gradient/update, S2 실제 STE refresh/optimizer 연결, S3 MTP trainer 연결, A/B/B/A whole-wall 및 품질은 NOT_RUN이다. 현재 전체 승인 범위는 미완료이므로 `-approved-on-going`을 유지하고 1.2B 학습 SH를 만들지 않는다.
+
+## 12. 2026-09-24 막힘 상태 재감사 — T1 결과와 S1 코드 작성의 선결 구분
+
+이전 WIP 3B는 T1 GPU whole-wall 로그가 없다는 이유로 S1/S2 구현까지 `막힘`으로 묶었다. §10 권장 순서는 **속도 우선순위·채택 판단**의 순서이지, 기본 off인 수치정합 코드를 사전에 작성할 수 없다는 뜻은 아니다. 따라서 GPT 구현 작업은 진행 중으로 되돌리고, T1 측정과 A/B/B/A 실속도 채택만 사용자 로그 전 `NOT_RUN`으로 둔다.
+
+| 구성 | 이번 확인 | 계속할 GPT 작업 | 동적 판정 선결 |
+|---|---|---|---|
+| T1 | trainer host phase-wall·100M paired SH 준비 | 로그가 오면 비교 조건·순서효과·전체 wall 귀속을 판독 | 사용자 GPU 2팔 결과 |
+| S1 | FP32 row-recompute CE의 hidden/up/shared emb gradient CPU PASS; `--loss-first` dense·비KD·비compile 기본 off trainer 경로와 hidden 반환 코드 연결 | 별도 [Stage0bW](../run_P102A_Stage0bW_loss_first_model_gate.sh)에서 전 모델 gradient/update 검증 후 AMP 수치·whole-wall 계측 | 실제 모델·GPU whole-wall·peak NOT_RUN |
+| S2 | 고정 유효 가중치의 VJP 합 수학 fixture | 실제 STE cache 버전·skip/anneal/optimizer 무효화 코딩 | 정확한 update·memory/whole-wall 결과 |
+| S3 | 올바른 전량 유효타깃 분모의 HT fixture | P101A 전량 MTP 경로가 생긴 뒤 선택 계산 통합 | 전량 MTP 기준선·품질/시간 |
+
+현재 S1 CPU 수치 PASS와 기본 off trainer 배선은 **코드 수준 STATIC_ONLY**다. 실제 TinyLM 모델·AMP/compile 변형·GPU 속도 이득의 증거가 아니다. 제안서 `approved-on-going`을 유지하며, 사용자 T1 로그 부재를 GPT의 남은 S2/S3 코딩을 정당화하는 포괄 사유로 쓰지 않는다.

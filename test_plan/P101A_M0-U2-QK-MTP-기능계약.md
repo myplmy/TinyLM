@@ -22,11 +22,11 @@ Q1은 실수 산술에서 정확히 같을 수 있다. BF16/quantized export는 
 
 ### Stage0W — 함수·수학 계약, 사용자 실행용 SH
 
-[CPU 수학 게이트](../scripts/diag_p101a_math_contract.py)는 E 확장·gradient·strict target key/shape·원본 및 전역 RNG 불변·QK gain 초기 τ=1과 EOS horizon2/4 target을 검사한다. [QK 작은 모델 게이트](../scripts/diag_p101a_qk_gain.py)는 새 exact-key helper로 strict load한 모델의 초기 함수·parameter group을 검사한다. 두 코드는 [실물 SH](../run_P101A_Stage0W_u2_mtp_function_gate.sh)로 한 로그에 기록한다. QK는 `attn_group=1`에서만 per-layer/head 구현을 허용한다.
+[CPU 수학 게이트](../scripts/diag_p101a_math_contract.py)는 E 확장·엄격 상태키/로컬 RNG·QK τ=1, EOS horizon2/4, 독립 aux projection+공유 어휘를 쓰는 FP32 3-head loss/모든 gradient·유효타깃 분모를 full-logit 기준과 대조한다. [작은 모델 게이트](../scripts/diag_p101a_qk_gain.py)는 사용자 실행으로 strict 이식·기본 off hidden 경로·MTP head 독립성/gradient·배포 payload에서 aux key 제거 후 주 logits 불변을 본다. 두 코드는 [실물 SH](../run_P101A_Stage0W_u2_mtp_function_gate.sh)로 한 로그에 기록한다. QK는 `attn_group=1`에서만 per-layer/head 구현을 허용한다. Codex는 실제 모델 gate를 실행하지 않는다.
 
 ### Stage1W — 실제 M0 계속학습 전 선결, 현재 미작성
 
-M0 원본 checkpoint hash, 동일 tokenizer/cache, 어닐·optimizer 이력과 새 상태이식 helper를 실제 model path에서 검사한다. helper의 예상외/missing key 거부는 CPU fixture PASS지만 실제 checkpoint 함수 보존은 `NOT_RUN`이다. MTP aux head·assistant 경계·gradient/배포 제거와 trainer opt-in은 아직 미구현이다. 이 단계의 SH는 **작성하지 않는다**. Stage0W가 PASS해도 100M 학습이 열리지 않는다.
+M0 원본 checkpoint hash, 동일 tokenizer/cache, 어닐·optimizer 이력과 새 상태이식 helper를 실제 model path에서 검사한다. helper의 예상외/missing key 거부와 두 독립 MTP head의 주 U 복사·배포 payload 제거는 코드/CPU tensor 계약이 있다. 실제 tiny/M0 모델 함수 보존은 사용자 실행 전 `NOT_RUN`이다. 학습 trainer opt-in과 assistant 경계는 아직 미구현이며, 이 단계의 SH는 **작성하지 않는다**. Stage0W가 PASS해도 100M 학습이 자동으로 열리지 않는다.
 
 ### Stage2W — 100M 이하 분리 학습, 별도 사용자 승인
 
@@ -60,3 +60,5 @@ E384의 checkpoint 실물 이식, MTP head·trainer·배포 제거, 실제 모�
 ## 9. 실행 이력 / 갱신
 
 - 2026-09-24: `tinylm/train/p101a_contract.py`, QK gain config/Attention/optimizer opt-in과 CPU 수학 fixture를 구현. E/MTP fixture와 E256→E384 state-dict strict-key·local RNG·tau1 거부 fixture는 PASS. 작은 모델·실제 M0 checkpoint gate는 사용자 실행 전 `NOT_RUN`.
+
+- 2026-09-24 막힘 재감사: Stage0W 모델 로그는 함수·G2 승인 증거이지 기본 off 코딩 금지가 아니다. `mtp_loss_components`/`mtp_weighted_mean`의 S+1 입력·독립 horizon2/4·공유 어휘 gradient·update valid-token 분모가 full-logit CPU fixture와 일치했다. 모델에 독립 aux head·정규화 hidden 반환·배포 payload 제거 코드를 추가하고 작은 사용자 모델 gate를 확장했다. **Codex는 그 모델 gate를 실행하지 않았다.** 실제 M0 이식·전체 trainer·GPU·품질은 NOT_RUN/미구현으로 분리하고 GPT 구현을 계속한다.

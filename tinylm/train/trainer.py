@@ -186,7 +186,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           repeat_embed_reinject=False, reuse_attn_on_dup=False,
           connectivity_mode="none", connectivity_density=1.0,
           connectivity_update_every=100, connectivity_swap_fraction=0.1,
-          ce_chunk=0, cla_group=None, cla_edges=True,
+          ce_chunk=0, loss_first=False, cla_group=None, cla_edges=True,
           mlp_lrm=False, mlp_lrm_mode="scalar", mlp_lrm_wd=0.01,
           tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
           chat32_tokenizer=False,
@@ -205,6 +205,21 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                          "--resume과 함께 쓸 수 없다")
     if anneal_audit and (anneal_audit_every < 1 or anneal_audit_max_modules < 1):
         raise ValueError("--anneal-audit-every/--anneal-audit-max-modules 는 양수여야 한다")
+    if loss_first:
+        if (compile_ or kd or kd_cache or kd_teacher_hf or ce_chunk
+                or chat32_tokenizer or use_ternary_kernel or ternary_kernel_triton
+                or resume or decay_from):
+            raise ValueError("P102A loss-first requires fresh uncompiled, non-KD standard FP32-head path")
+        if (arch != "dense" or not tag or "p102a" not in str(tag)
+                or not re.fullmatch(r"[A-Za-z0-9_]+", str(tag))):
+            raise ValueError("P102A loss-first requires dense arch and a distinct safe p102a tag")
+        out_tok = tokstr or (f"{int(n_tokens)//1_000_000}M" if n_tokens >= 10**6
+                             else str(int(n_tokens)))
+        out_name = f"{preset}_{data}_{out_tok}_{tag}"
+        for output in (CKPT / f"{out_name}.pt", CKPT / f"{out_name}_best.pt",
+                       LOGS / f"{out_name}.json"):
+            if output.exists() or output.is_symlink():
+                raise FileExistsError(f"P102A loss-first output exists: {output}")
     if chat32_tokenizer:
         if (not exact_cache or tokenizer_hf or kd_teacher_hf or kd or kd_cache
                 or init_from or decay_from or resume or doc_filter):
@@ -738,6 +753,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                 seed=(1234 + (seed - 1337)) % (2 ** 31))
     va = Loader("val", micro_bs, seq, device, meta["dir"], seed=99)
     hist, t0, gmax, gpeak, n_skip = [], time.time(), 0.0, 0.0, 0
+    _loss_first_fn = None
+    if loss_first:
+        from .p102a_contract import factorized_ce_loss_first as _loss_first_fn
+        if model.emb_up is None:
+            raise ValueError("P102A loss-first requires factorized embedding")
+        print("[P102A] loss-first opt-in: FP32 row-recompute CE; model/GPU speed gate pending")
     # ★T-1(2026-08-13) — **순수 스텝 시간**을 따로 잰다. 기존 `ms/step` 인쇄는 건드리지 않는다.
     #   인쇄값은 `time.time()-t0` 를 스텝 수로 나눈 **누적 평균**이라 eval·베스트 저장·EMA 가
     #   전부 섞인다. 그 자체는 규약(`(누적평균×N − step0)/(N−1)`)으로 다뤄 왔지만,
@@ -885,23 +906,30 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             if _cudagraph_step is not None:
                 _cudagraph_step()
             with torch.autocast(device, dtype=torch.bfloat16, enabled=(device == "cuda")):
-                logits = model(x)
-                ce = _ce_chunked(logits.reshape(-1, cfg.vocab_size), y.reshape(-1), ce_chunk)
-                if kd_reader is not None:               # 오프라인 KD(캐시 top-k)
-                    from .kd_cache import kd_cache_loss
-                    tv, ti = kd_reader.next(device)
-                    kl = kd_cache_loss(logits, tv, ti, cfg.vocab_size, kd_temp)
-                    loss = ((1 - kd_alpha) * ce + kd_alpha * kl) / accum
-                elif teacher is not None and kd_this:   # 온라인 KD(교사 forward, skip-forward 반영)
-                    with torch.no_grad():
-                        tlog = teacher(x)
-                    # ★외부 HF 교사면 fp32 승격을 켠다(§_kd_kl 주석). 내부 dense 교사는 종전대로.
-                    kl = _kd_kl(logits.reshape(-1, cfg.vocab_size),
-                                tlog.reshape(-1, cfg.vocab_size), kd_temp, kd_chunk,
-                                fp32=bool(kd_teacher_hf))
-                    loss = ((1 - kd_alpha) * ce + kd_alpha * kl) / accum
-                else:
+                if loss_first:
+                    hidden = model(x, return_hidden=True)
+                    ce = (_loss_first_fn(hidden.reshape(-1, hidden.shape[-1]).float(),
+                                         model._emb_up_w(), model._emb_w(),
+                                         y.reshape(-1), 512) / y.numel())
                     loss = ce / accum
+                else:
+                    logits = model(x)
+                    ce = _ce_chunked(logits.reshape(-1, cfg.vocab_size), y.reshape(-1), ce_chunk)
+                    if kd_reader is not None:               # 오프라인 KD(캐시 top-k)
+                        from .kd_cache import kd_cache_loss
+                        tv, ti = kd_reader.next(device)
+                        kl = kd_cache_loss(logits, tv, ti, cfg.vocab_size, kd_temp)
+                        loss = ((1 - kd_alpha) * ce + kd_alpha * kl) / accum
+                    elif teacher is not None and kd_this:   # 온라인 KD(교사 forward, skip-forward 반영)
+                        with torch.no_grad():
+                            tlog = teacher(x)
+                        # ★외부 HF 교사면 fp32 승격을 켠다(§_kd_kl 주석). 내부 dense 교사는 종전대로.
+                        kl = _kd_kl(logits.reshape(-1, cfg.vocab_size),
+                                    tlog.reshape(-1, cfg.vocab_size), kd_temp, kd_chunk,
+                                    fp32=bool(kd_teacher_hf))
+                        loss = ((1 - kd_alpha) * ce + kd_alpha * kl) / accum
+                    else:
+                        loss = ce / accum
             loss.backward()
             tot += loss.item()
             tot_ce += ce.item() / accum      # KD 여부와 무관하게 순수 CE 를 따로 누적
@@ -1137,6 +1165,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "eval_every": int(eval_every),                          # P102A T1 cadence identity
            "compile": bool(compile_),                              # paired T1 condition
            "compile_mode": str(compile_mode) if compile_ else None,
+           "loss_first": bool(loss_first),                        # P102A S1 opt-in identity
            "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용
            "arenas": bool(arenas), "arena_lambda": arena_lambda,  # (P036) Arenas residual
            "arena_end": arena_end,
