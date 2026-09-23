@@ -415,6 +415,45 @@ def set_state(
     return result["previous"], result["current"]
 
 
+def _sync_instruction_count_line(lines: list[str], row_count: int) -> tuple[str, str]:
+    matches = [i for i, line in enumerate(lines) if line.startswith("- **사용자 지시**: ")]
+    if len(matches) != 1:
+        raise ValueError(f"WIP instruction-count metadata count must be 1: {len(matches)}")
+    index = matches[0]
+    before = lines[index]
+    after = f"- **사용자 지시**: {row_count}건(아래 표가 정본)"
+    lines[index] = after
+    return before, after
+
+
+def sync_instruction_count(path: Path, reason: str, approval_ref: str) -> None:
+    """Audited repair for older ledgers whose header predates --add rows."""
+    if not reason.strip() or not approval_ref.strip():
+        raise ValueError("--sync-count requires --reason and --approval-ref")
+
+    def mutate(lines: list[str], text: str) -> None:
+        table = parse_table(text)
+        _require_v2(table)
+        before, after = _sync_instruction_count_line(lines, len(table.rows))
+        if before == after:
+            raise ValueError("WIP instruction count is already current")
+        record = {
+            "change_id": f"WIP-{dt.datetime.now().astimezone():%Y%m%dT%H%M%S%z}-COUNT",
+            "timestamp": _now(),
+            "operation": "sync displayed instruction count with v2 table",
+            "before": before,
+            "before_sha256": _sha_text(before),
+            "after": after,
+            "after_sha256": _sha_text(after),
+            "reason": reason.strip(),
+            "approval_ref": approval_ref.strip(),
+        }
+        payload = json.dumps(record, ensure_ascii=False, indent=2)
+        _append_to_section(lines, AUDIT_HEADING, ["```json", *payload.splitlines(), "```"])
+
+    _mutate(path, mutate)
+
+
 def add_item(path: Path, item_id: str, directive: str, resume: str) -> None:
     def mutate(lines: list[str], text: str) -> None:
         table = parse_table(text)
@@ -426,6 +465,7 @@ def add_item(path: Path, item_id: str, directive: str, resume: str) -> None:
             insertion,
             _render_row((f"**{item_id}**", _escape_cell(directive), WAIT, "—", "—", _escape_cell(resume))),
         )
+        _sync_instruction_count_line(lines, len(table.rows) + 1)
         _append_to_section(
             lines,
             LOG_HEADING,
@@ -624,18 +664,22 @@ def show(path: Path) -> int:
     print("=" * 104)
     print(f"  {prefix} {path.name} — 항목 {len(table.rows)}개")
     print("=" * 104)
-    open_count = 0
+    active_count = blocked_count = 0
     for _, item_id, cells in table.rows:
         status = cells[2]
         if any(mark in status for mark in OPEN_MARKS):
-            open_count += 1
+            active_count += 1
+        elif BLOCK in status:
+            blocked_count += 1
         directive = re.sub(r"\s+", " ", cells[1])[:52]
         work = re.sub(r"\s+", " ", cells[3] if table.is_v2 else cells[-2])[:38]
         print(f"  {item_id:>3}  {status:<10}  {directive:<54}  {work}")
-    print(f"\n  열린 항목 {open_count}개 · 닫힌 항목 {len(table.rows) - open_count}개")
+    incomplete = active_count + blocked_count
+    print(f"\n  미완료 {incomplete}개 (대기·진행 {active_count}, 막힘 {blocked_count}) "
+          f"· 완료 {len(table.rows) - incomplete}개")
     if not table.is_v2:
         print("  LEGACY_READ_ONLY: 상태 변경·닫기 금지")
-    return open_count
+    return incomplete
 
 
 def _validate_static_audit(path: Path, audit_path: Path) -> None:
@@ -672,9 +716,9 @@ def close(path: Path, static_audit: Path | None = None) -> Path:
     text = path.read_text(encoding="utf-8")
     table = parse_table(text)
     _require_v2(table)
-    open_items = [item_id for _, item_id, cells in table.rows if any(mark in cells[2] for mark in OPEN_MARKS)]
-    if open_items:
-        raise ValueError(f"열린 항목 {len(open_items)}개: {', '.join(open_items)}")
+    incomplete = [item_id for _, item_id, cells in table.rows if DONE not in cells[2]]
+    if incomplete:
+        raise ValueError(f"미완료 항목 {len(incomplete)}개: {', '.join(incomplete)}")
     elided = [item_id for _, item_id, cells in table.rows if any(x in cells[1] for x in ("(…)", "(...)"))]
     if elided:
         raise ValueError(f"지시 원문 생략 표식이 남음: {', '.join(elided)}")
@@ -879,6 +923,7 @@ def main() -> int:
     action.add_argument("--capsule-check", action="store_true")
     action.add_argument("--capsule-print", action="store_true")
     action.add_argument("--repair-name-collision", action="store_true")
+    action.add_argument("--sync-count", action="store_true")
     action.add_argument("--close", action="store_true")
     parser.add_argument("--file")
     parser.add_argument("--note")
@@ -932,7 +977,7 @@ def main() -> int:
         active = (
             args.add, args.start, args.done, args.block, args.wait, args.override,
             args.bind_session, args.migrate_v2, args.capsule_check, args.capsule_print,
-            args.repair_name_collision, args.close,
+            args.repair_name_collision, args.sync_count, args.close,
         )
         if args.list or not any(active):
             show(path)
@@ -962,6 +1007,10 @@ def main() -> int:
             audit_path = (ROOT / args.static_audit).resolve() if args.static_audit else None
             target = close(path, audit_path)
             print(f"CLOSED {target.relative_to(ROOT).as_posix()}; source preserved by rename")
+            return 0
+        if args.sync_count:
+            sync_instruction_count(path, args.reason or "", args.approval_ref or "")
+            print(f"COUNT_OK {path.name} rows={len(parse_table(path.read_text(encoding='utf-8')).rows)}")
             return 0
         if args.add:
             if not args.directive or not args.resume:

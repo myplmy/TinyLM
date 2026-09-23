@@ -290,6 +290,8 @@ fp32 상주와 int8 상주가 갈린다.**
 | ★**`mC_cla1_ag4`·`mC_d36_ag8_cla1`** | P073 단계2 = 어텐션 축을 cla1 위에서 재가격 | **예약**(배치 준비 완료 2026-08-26) |
 | ★**`mC_initonly_nc`** | P065 단계3 = 표준 대조군의 `--no-ckpt` 쌍둥이 | **예약**(배치 준비 완료 2026-08-26) |
 | ★★**`d6_dense`·`d8_dense`·`d10_dense`·`d12_dense`** | P074 단계1 = **얕은 dense 깊이 곡선**(프리셋 `m100s2/s4/s6/s8`) | **예약**(배치 준비 완료 2026-08-26). ⚠️`--depth-init role` 은 **미측정 옵션**이다 |
+| `dense_p102a_t0_s1337`·`dense_p102a_t1_s1337` | P102A Stage1W T0 eval100/save0 대 T1 eval500/save1000, 동일 100M draw·600M exact pool | **예약**(사용자 GPU 실행 NOT_RUN; 단일 순서에서 속도 채택 금지) |
+| `dense_chat32_p090b_s1337` | P090B Stage1bW 별도 chat32 601M exact 풀·300,023,808 draw 새 부모, legacy init/KD 없음 | **예약**(사용자 GPU 실행 NOT_RUN; 기존 legacy와 tokenizer 단독효과 귀속 금지) |
 | `k_*`, `kc_*`, `*_smoke` | tiny 스모크 | 사용중 |
 
 > 체크포인트·로그 파일명 = `{preset}_{data}_{tokens}_{tag 또는 arch}`. **같은 (preset,data,tokens)

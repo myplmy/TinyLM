@@ -8,3 +8,9 @@ cd "$repo_root"
 python_bin="$(tinylm_python)" || exit $?
 "$python_bin" scripts/runlog.py --num 093 --name P102A_Stage0W_speed_math_contract --note "S1 CE reference, S2 VJP sum, S3 HT expectation. Fused kernel and whole-step speed are NOT_RUN."
 "$python_bin" scripts/runlog.py --num 093 --name P102A_Stage0W_speed_math_contract -- "$python_bin" -B -X utf8 scripts/diag_p102a_contract.py
+rc=$?
+if [[ "$rc" -ne 0 ]]; then
+    printf "[FAIL] P102A math contract rc=%s\n" "$rc" >&2
+    exit "$rc"
+fi
+"$python_bin" scripts/runlog.py --num 093 --name P102A_Stage0W_speed_math_contract -- "$python_bin" -B -X utf8 scripts/diag_p102a_t1_wall_contract.py --self-test

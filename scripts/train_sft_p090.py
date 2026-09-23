@@ -78,6 +78,34 @@ def micro_groups(records, order, micro_bs, accum):
         yield [[records[j] for j in selected[i:i + micro_bs]] for i in range(0, len(selected), micro_bs)]
 
 
+
+def validate_lineage_names(parent: Path, tokenizer_file: Path, data: str, lineage: str) -> None:
+    """Refuse legacy/chat32 filename mixing before any checkpoint is loaded."""
+    if lineage not in ("legacy", "chat32"):
+        raise ValueError(f"unsupported SFT lineage: {lineage}")
+    suffix = "-chat32" if lineage == "chat32" else ""
+    expected = f"tok-{data}-32768{suffix}.json"
+    if f"_{data}_" not in parent.name or tokenizer_file.name != expected:
+        raise ValueError("parent data name and tokenizer lineage do not agree")
+    if (lineage == "chat32") != ("chat32" in parent.stem):
+        raise ValueError("parent filename and declared SFT lineage do not agree")
+
+
+def validate_parent_lineage(state: dict, tokenizer_sha256: str, lineage: str, tok) -> None:
+    """Require explicit tokenizer identity for a newly pretrained chat32 parent."""
+    saved_hash = state.get("tokenizer_sha256")
+    if saved_hash is not None and str(saved_hash).upper() != tokenizer_sha256.upper():
+        raise ValueError("parent checkpoint tokenizer SHA256 differs")
+    saved_lineage = state.get("tokenizer_lineage")
+    if lineage == "chat32":
+        if saved_lineage != "chat32" or saved_hash is None:
+            raise ValueError("chat32 parent lacks matching tokenizer lineage/hash metadata")
+        from tinylm.data.prepare import verify_chat_tokenizer
+        verify_chat_tokenizer(tok, tok.get_vocab_size())
+    elif saved_lineage not in (None, "legacy"):
+        raise ValueError("legacy SFT refuses a non-legacy parent")
+
+
 def check_inputs(args):
     parent = scoped_read(args.parent, CKPT, ".pt")
     tokenizer_file = scoped_read(args.tokenizer, ROOT / "data_cache", ".json")
@@ -86,10 +114,7 @@ def check_inputs(args):
     manifest_file = scoped_read(args.manifest, READY, ".json")
     if parent == args.output.resolve() or train_file == val_file:
         raise ValueError("parent/output or train/val collide")
-    if "-chat32" in tokenizer_file.name:
-        raise ValueError("legacy SFT pilot refuses chat32 without a new pretrained parent")
-    if f"_{args.data}_" not in parent.name or tokenizer_file.name != f"tok-{args.data}-32768.json":
-        raise ValueError("parent and legacy tokenizer data names do not agree")
+    validate_lineage_names(parent, tokenizer_file, args.data, args.lineage)
     if sha256(parent) != args.parent_sha256.upper() or sha256(tokenizer_file) != args.tokenizer_sha256.upper():
         raise ValueError("parent or tokenizer SHA256 mismatch")
     manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
@@ -208,6 +233,7 @@ def train(args, parent, tokenizer_file, train_file, val_file, manifest):
     cfg = TMTConfig(**parent_state["cfg"])
     if tokenizer.get_vocab_size() != cfg.vocab_size:
         raise ValueError("parent and tokenizer vocab widths differ")
+    validate_parent_lineage(parent_state, args.tokenizer_sha256, args.lineage, tokenizer)
     model = TiedMLPTransformer(cfg).to(device)
     model.load_state_dict(_strip(parent_state["model"]), strict=True)
     model.set_anneal(1.0)
@@ -246,6 +272,8 @@ def train(args, parent, tokenizer_file, train_file, val_file, manifest):
         print(f"[SFT] epoch={epoch} updates={updates} train_ce={record['train_ce']:.6f} val_ce={val_ce:.6f}")
     evidence = {
         "schema": "TINYLM_SFT_PILOT_V1", "parent": parent.name,
+        "lineage": args.lineage, "data": args.data,
+        "parent_tokenizer_sha256": parent_state.get("tokenizer_sha256"),
         "parent_sha256": args.parent_sha256.upper(), "tokenizer_sha256": args.tokenizer_sha256.upper(),
         "train_sha256": sha256(train_file), "val_sha256": sha256(val_file),
         "optimizer": args.optimizer, "lr": args.lr, "epochs": args.epochs,
@@ -312,7 +340,27 @@ def self_test():
         assert "prompt overlap" in str(exc)
     else:
         raise AssertionError("cross-source prompt leak was not rejected")
-    print("[PASS] SFT shift/pad/multi-turn/group fixture; model/GPU NOT_RUN")
+    validate_lineage_names(Path("m100_ko-en_300M_dense.pt"),
+                           Path("tok-ko-en-32768.json"), "ko-en", "legacy")
+    validate_lineage_names(Path("m100_ko-en_300M_chat32_parent.pt"),
+                           Path("tok-ko-en-32768-chat32.json"), "ko-en", "chat32")
+    for parent_name, tokenizer_name, lineage in (
+            ("m100_ko-en_300M_dense.pt", "tok-ko-en-32768-chat32.json", "chat32"),
+            ("m100_ko-en_300M_chat32_parent.pt", "tok-ko-en-32768.json", "legacy")):
+        try:
+            validate_lineage_names(Path(parent_name), Path(tokenizer_name), "ko-en", lineage)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("mixed SFT lineage was accepted")
+    try:
+        validate_parent_lineage({"tokenizer_lineage": "chat32"},
+                                "ABCD", "chat32", tokenizer)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("chat32 parent without tokenizer hash was accepted")
+    print("[PASS] SFT shift/pad/multi-turn/group and lineage rejection fixture; model/GPU NOT_RUN")
 
 
 def main():
@@ -324,6 +372,8 @@ def main():
     parser.add_argument("--parent-sha256")
     parser.add_argument("--tokenizer-sha256")
     parser.add_argument("--data", default="ko-en")
+    parser.add_argument("--lineage", choices=("legacy", "chat32"), default="legacy",
+                        help="legacy is unchanged; chat32 requires a new parent with exact tokenizer metadata")
     parser.add_argument("--epochs", type=int, default=3)
     parser.add_argument("--micro-bs", type=int, default=2)
     parser.add_argument("--accum", type=int, default=4)

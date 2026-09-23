@@ -22,6 +22,7 @@ def main() -> int:
     import torch.nn.functional as F
     from tinylm.config import TMTConfig
     from tinylm.model import TiedMLPTransformer
+    from tinylm.train.p101a_contract import migrate_p101a_state
 
     torch.manual_seed(101)
     base = dict(vocab_size=256, dim=128, ffn_dim=256, n_q_heads=4,
@@ -30,10 +31,14 @@ def main() -> int:
                 max_seq_len=32)
     off = TiedMLPTransformer(TMTConfig(**base, qk_gain_learnable=False))
     on = TiedMLPTransformer(TMTConfig(**base, qk_gain_learnable=True))
-    missing, unexpected = on.load_state_dict(off.state_dict(), strict=False)
     expected = [name for name, _ in on.named_parameters() if name.endswith(".qk_gain_logit")]
-    if sorted(missing) != sorted(expected) or unexpected or len(expected) != 4:
-        raise RuntimeError(f"migration mismatch missing={missing} unexpected={unexpected}")
+    if len(expected) != 4:
+        raise RuntimeError(f"unexpected QK gain count: {len(expected)}")
+    source = off.state_dict()
+    migrated = migrate_p101a_state(source, on.state_dict())
+    if sorted(set(migrated) - set(source)) != sorted(expected):
+        raise RuntimeError("migration added keys outside the expected QK gains")
+    on.load_state_dict(migrated, strict=True)
     gains = [p for name, p in on.named_parameters() if name in expected]
     tau = torch.cat([0.5 + 3.5 * torch.sigmoid(p) for p in gains])
     if not torch.allclose(tau, torch.ones_like(tau), atol=1e-6, rtol=0):

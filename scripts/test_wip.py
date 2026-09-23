@@ -2,6 +2,8 @@
 """Isolated regression tests for scripts/wip.py; no repository WIP is changed."""
 from __future__ import annotations
 
+import io
+from contextlib import redirect_stdout
 import importlib.util
 import json
 import tempfile
@@ -40,6 +42,24 @@ class WipV2Tests(unittest.TestCase):
             "실행 중인 사용자 프로세스 없음",
             "낡은 PASS 주장을 되살리지 않음",
         )
+
+    def test_add_updates_instruction_count_and_sync_repairs_old_header(self) -> None:
+        path = self.create()
+        WIP.add_item(path, "3", "추가 지시", "GPT가 다음 검사")
+        current = path.read_text(encoding="utf-8")
+        self.assertIn("- **사용자 지시**: 3건(아래 표가 정본)", current)
+        path.write_text(current.replace("- **사용자 지시**: 3건(아래 표가 정본)",
+                                        "- **사용자 지시**: 2건(아래 표가 정본)"),
+                        encoding="utf-8")
+        WIP.sync_instruction_count(path, "기존 --add의 메타 수 미갱신", "사용자 지시")
+        repaired = path.read_text(encoding="utf-8")
+        self.assertIn("- **사용자 지시**: 3건(아래 표가 정본)", repaired)
+        self.assertIn('"operation": "sync displayed instruction count with v2 table"',
+                      repaired)
+        self.assertIn("상황판 SHA-256", WIP.capsule_text(path))
+        with self.assertRaisesRegex(ValueError, "already current"):
+            WIP.sync_instruction_count(path, "중복", "사용자 지시")
+
 
     def test_new_state_history_and_capsule(self) -> None:
         path = self.create()
@@ -195,7 +215,7 @@ class WipV2Tests(unittest.TestCase):
 
     def test_close_refuses_open_then_renames_completed(self) -> None:
         path = self.create()
-        with self.assertRaisesRegex(ValueError, "열린 항목"):
+        with self.assertRaisesRegex(ValueError, "미완료 항목"):
             WIP.close(path)
         for item in ("1", "2A"):
             WIP.set_state(path, item, WIP.RUN, "착수", None, "완료 처리")
@@ -219,6 +239,23 @@ class WipV2Tests(unittest.TestCase):
         target = WIP.close(path, audit)
         self.assertFalse(path.exists())
         self.assertTrue(target.exists())
+
+
+    def test_blocked_remains_incomplete_and_cannot_close(self) -> None:
+        path = self.create()
+        WIP.set_state(path, "1", WIP.BLOCK, "외부 증거 미도착", None,
+                      "GPT가 로그를 판독한다")
+        WIP.set_state(path, "2A", WIP.RUN, "착수", None, "완료 처리")
+        WIP.set_state(path, "2A", WIP.DONE, "완료", "없음", None)
+        output = io.StringIO()
+        with redirect_stdout(output):
+            self.assertEqual(WIP.show(path), 1)
+        self.assertIn("미완료 1개 (대기·진행 0, 막힘 1) · 완료 1개",
+                      output.getvalue())
+        with self.assertRaisesRegex(ValueError, "미완료 항목 1개: 1"):
+            WIP.close(path)
+        self.assertTrue(path.exists())
+
 
     def test_static_audit_session_id_accepts_markdown_metadata(self) -> None:
         path = self.create()

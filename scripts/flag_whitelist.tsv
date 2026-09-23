@@ -16,9 +16,14 @@
 --tokenizer-sha256	ok	P090 tokenizer SHA256 일치 확인	2026-09-23	scripts/train_sft_p090.py
 flag	grade	evidence	checked	declared_in
 --best-candidate	ok	P090B 읽기 전용 기존 최선 부모 후보 경로; 선정과 학습은 별도	2026-09-24	scripts/diag_p090b_three_lineages.py
---chat32-tokenizer	ok	P090B 신규 chat32 어휘 경로 확인; 기존 부모 호환 주장 금지	2026-09-24	scripts/diag_p090b_three_lineages.py
+--chat32-tokenizer	exp	P090B 새 어휘·격리 exact 캐시와 신규 부모 사전학습 전용; legacy/KD/1x풀 거부, 실제 사용자 GPU 별도	2026-09-24	scripts/diag_p090b_three_lineages.py,tinylm/cli.py
 --legacy-parent	ok	P090B 기존 32k 부모 파일 존재 계약	2026-09-24	scripts/diag_p090b_three_lineages.py
 --legacy-tokenizer	ok	P090B 기존 32k 토크나이저 계보 확인	2026-09-24	scripts/diag_p090b_three_lineages.py
+--input	ok	P103A 공개 SFT exact prefix census 입력은 HF/sft_ready 직하 canonical만 허용	2026-09-24	scripts/diag_p103a_prefix_census.py
+--lineage	exp	P090 SFT legacy 기본과 신규 chat32 부모/어휘 계보를 분리; chat32 hash 없으면 중단	2026-09-24	scripts/train_sft_p090.py
+--max-branches	exp	P103A X1 가상 묶음의 최대 자연 분기 수; speed 채택값 아님	2026-09-24	scripts/diag_p103a_prefix_census.py
+--max-seq	exp	P090B chat32 어휘로 공개 canonical을 재인코딩할 context 길이; 넘으면 SFT gate 음성	2026-09-24	scripts/diag_p090b_chat32_sft_lengths.py
+--min-prefix	exp	P103A X1 exact token 접두부 최소 길이; 민감도 별도 보고	2026-09-24	scripts/diag_p103a_prefix_census.py
 --max-ce-abs	exp	P104A 소형 기능 bridge의 사전 숫자 허용치; 전체 M5 품질 아님	2026-09-24	scripts/check_m5_dense_bridge.py
 --max-grad-rel	exp	P104A 소형 한 업데이트 gradient 허용치; 과학적 ruler 아님	2026-09-24	scripts/check_m5_dense_bridge.py
 --max-initial-abs	exp	P101A tau1 tiny model 초기 함수 허용치	2026-09-24	scripts/diag_p101a_qk_gain.py
@@ -384,6 +389,7 @@ flag	grade	evidence	checked	declared_in
 --student	ok		2026-09-04	scripts/diag_kd_loss.py
 --suffix	ok		2026-09-04	scripts/diag_val_lang.py,scripts/diag_vocab.py
 --sync	ok		2026-09-04	scripts/check_flag_whitelist.py
+--sync-count	ok	WIP 추가 지시 수 상단 메타를 실제 v2 행수와 감사 이력으로 동기화	2026-09-24	scripts/wip.py
 --tag	ok		2026-09-04	scripts/check_run_registry.py,scripts/check_smoke.py,scripts/diag_dtype_map.py,scripts/diag_group_agg.py,scripts/diag_layer_gates.py,scripts/diag_lrm_values.py,scripts/diag_repeat_attn_sim.py,scripts/diag_val_docs.py,scripts/eval_slices.py,scripts/registry.py,scripts/wandb_sync.py,tinylm/cli.py
 --target-tokens	ok	teacher-forced 실제 텍스트 probe의 target 토큰 수	2026-09-18	scripts/infer_text_probe.py
 --target-train	ok		2026-09-04	scripts/diag_dataset_tokens.py

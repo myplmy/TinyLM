@@ -115,6 +115,9 @@ def main():
     p.add_argument("--tokenizer-hf", default=None, metavar="HF폴더",
                    help="★(P067) 외부 HF 모델의 tokenizer.json 으로 토큰화한다. "
                         "**데이터 캐시가 분리되고 vocab_size 가 그 어휘로 바뀐다**")
+    p.add_argument("--chat32-tokenizer", action="store_true",
+                   help="(P090B) 별도 chat32 어휘·정확 캐시로 새 부모를 처음부터 사전학습. "
+                        "기본 off=기존 어휘/캐시; 기존 부모·KD 와 병용 금지")
     p.add_argument("--kd-teacher-hf", default=None, metavar="HF폴더",
                    help="★(P067) KD 교사를 외부 HF CausalLM 으로. "
                         "⚠️**어휘가 학생과 같아야 한다** — 보통 --tokenizer-hf 와 같은 폴더")
@@ -315,6 +318,19 @@ def main():
     p.add_argument("--check-cache", action="store_true",
                    help="캐시 유/무 그리디 출력 일치 검증만 하고 종료")
     a = p.parse_args()
+    if a.chat32_tokenizer:
+        if a.cmd not in ("prepare", "train") or a.data == "synthetic":
+            p.error("--chat32-tokenizer is for real-data prepare/train only")
+        if (not a.exact_cache or a.tokenizer_hf or a.kd or a.kd_teacher_hf
+                or a.kd_cache or a.init_from or a.init_from_tag or a.resume
+                or a.decay_from):
+            p.error("chat32 requires exact new corpus and forbids old parent/KD/resume")
+        if a.cmd == "train":
+            draw = a.steps * a.micro_bs * a.accum * a.seq
+            if a.pool_tokens is None or _tok(a.pool_tokens) < 2 * draw:
+                p.error("chat32 parent requires explicit pool at least twice the training draw")
+            if not a.tag or "chat32" not in a.tag:
+                p.error("chat32 parent needs a distinct tag containing chat32")
 
     import sys as _sys                           # 실행 인자 로그(배치파일에서 어떤 조건인지 추적)
     print("[cmd] python " + " ".join(_sys.argv))
@@ -344,7 +360,8 @@ def main():
     if a.cmd == "prepare":
         from .data import prepare
         prepare(a.data, pool_tok if pool_tok else n_tok, exact=a.exact_cache, hf_tok=a.tokenizer_hf,
-                doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars)
+                doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars,
+                chat32=a.chat32_tokenizer)
 
     elif a.cmd == "kdcache":
         from .train.kd_cache import build_kd_cache
@@ -429,6 +446,7 @@ def main():
               cla_edges=(not a.no_cla_edges), mlp_lrm=a.mlp_lrm,
               mlp_lrm_mode=a.mlp_lrm_mode, mlp_lrm_wd=a.mlp_lrm_wd,
               tokenizer_hf=a.tokenizer_hf, kd_teacher_hf=a.kd_teacher_hf,
+              chat32_tokenizer=a.chat32_tokenizer,
               teacher_dtype=a.teacher_dtype,
               save_every=a.save_every)
 

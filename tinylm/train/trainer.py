@@ -6,6 +6,7 @@ v6 효율/실험: WSD, EMA, best.pt, 조기종료, dense 부모초기화, dense 
 from __future__ import annotations
 
 import json
+import re
 import math
 import time
 
@@ -188,6 +189,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           ce_chunk=0, cla_group=None, cla_edges=True,
           mlp_lrm=False, mlp_lrm_mode="scalar", mlp_lrm_wd=0.01,
           tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
+          chat32_tokenizer=False,
           save_every=0):
     # ★A08 — 명시한 신규 실험 옵션만 작동한다. **옛 Muon 상태의 조용한 재초기화를 거절한다.**
     if matrix_weight_decay is not None and (
@@ -203,6 +205,22 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                          "--resume과 함께 쓸 수 없다")
     if anneal_audit and (anneal_audit_every < 1 or anneal_audit_max_modules < 1):
         raise ValueError("--anneal-audit-every/--anneal-audit-max-modules 는 양수여야 한다")
+    if chat32_tokenizer:
+        if (not exact_cache or tokenizer_hf or kd_teacher_hf or kd or kd_cache
+                or init_from or decay_from or resume or doc_filter):
+            raise ValueError("chat32 parent needs fresh exact unfiltered pool, no old parent/KD/resume")
+        draw = steps * micro_bs * accum * seq
+        if pool_tokens is None or int(pool_tokens) < 2 * draw:
+            raise ValueError("chat32 parent pool must be at least twice the training draw")
+        if not tag or not re.fullmatch(r"[A-Za-z0-9_]+", str(tag)) or "chat32" not in tag:
+            raise ValueError("chat32 parent tag must be unique, safe and name its lineage")
+        out_tok = tokstr or (f"{int(n_tokens)//1_000_000}M" if n_tokens >= 10**6
+                             else str(int(n_tokens)))
+        out_name = f"{preset}_{data}_{out_tok}_{tag}"
+        for output in (CKPT / f"{out_name}.pt", CKPT / f"{out_name}_best.pt",
+                       LOGS / f"{out_name}.json"):
+            if output.exists() or output.is_symlink():
+                raise FileExistsError(f"chat32 parent output exists: {output}")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
     #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
@@ -223,8 +241,15 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     #   이 인자를 받아, **필터 캐시를 만들 수는 있는데 그것으로 학습할 방법이 없었다**
     #   (결과 023 §2 의 "분리해서 쓰는 것과 분리한 것을 읽는 것은 별개 작업" 과 같은 계열).
     meta = prepare(data, int(pool_tokens) if pool_tokens else n_tokens, exact=exact_cache,
-                   doc_filter=doc_filter, doc_min_chars=doc_min_chars, hf_tok=tokenizer_hf)
+                   doc_filter=doc_filter, doc_min_chars=doc_min_chars,
+                   hf_tok=tokenizer_hf, chat32=chat32_tokenizer)
+    if chat32_tokenizer and (meta.get("tokenizer_lineage") != "chat32"
+                              or not meta.get("tokenizer_sha256")
+                              or not str(meta.get("dir", "")).endswith("_chat32")):
+        raise ValueError("chat32 train cache has no matching tokenizer provenance")
     cfg = build_config(preset, arch, seq, ckpt)
+    if chat32_tokenizer and cfg.vocab_size != int(meta["vocab"]):
+        raise ValueError("chat32 model vocab and token cache disagree")
     # ★★P067(2026-08-22) — **외부 토크나이저면 어휘가 바뀐다.**
     #   ⚠️여기서 `cfg.vocab_size` 를 안 고치면 임베딩이 32,768 인 채로 id 151,935 가 들어와
     #   **IndexError 또는 (더 나쁘게) 조용한 오참조**가 난다.
@@ -721,6 +746,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     #   하면 스필 판정이 자동이 된다(결과 037 §4.1).
     #   ⚠️ **인쇄를 바꾸지 않는 이유**: 과거 로그와의 비교 가능성을 깨지 않기 위해서다.
     step_ms = []                      # 스텝 순수 소요(ms). eval·ckpt 저장 **제외**
+    # P102A T1: host wall attribution only; no extra CUDA sync or math change.
+    _phase_wall = {"eval_sec": 0.0, "save_sec": 0.0, "snapshot_sec": 0.0,
+                   "final_eval_sec": 0.0, "eval_calls": 0, "checkpoint_writes": 0}
     # ★VRAM 자동 계측(P021B 교훈): 사람이 nvidia-smi 를 눈으로 보게 하면 반드시 빠뜨린다.
     #   여기서 피크를 리셋하고 종료 시 json 에 기록한다. compile/모델 로드 뒤라 학습 피크만 잡힌다.
     #   주의: nvidia-smi 표시값 ≈ reserved + CUDA 컨텍스트(~0.4~0.8GB) 이므로 reserved 가 하한이다.
@@ -750,6 +778,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         (주기 eval 은 s≡3 mod 4 = 비KD 스텝, 최종 eval 은 s=2288≡0 = KD 스텝에 걸린다.)
         """
         nonlocal best_val, best_step, since_improve
+        _eval_started = time.perf_counter()
         m = evaluate(model, va, 50, device, bytes_per_token=bpt); m["ema"] = False   # 주 지표 = raw
         ce = train_ce if train_ce is not None else train_loss
         line = (f"    >> val_loss {m['val_loss']:.4f}  ppl {m['ppl']:.2f}  "
@@ -780,6 +809,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             m["nokd_ce_mean"] = _acc["no_ce"] / _acc["no_n"]
         m["kd_n"], m["nokd_n"] = _acc["kd_n"], _acc["no_n"]
         hist.append(m); print(line)
+        _phase_wall["eval_sec"] += time.perf_counter() - _eval_started
+        _phase_wall["eval_calls"] += 1
         # ★P058(2026-08-13) — **eval 과 체크포인트 저장을 분리한다.**
         #   종전에는 eval 마다 model+optimizer 를 통째로 직렬화했다. `eval_every 100` 이면
         #   2289스텝 런에서 **23회**다. AdamW 상태까지 포함하므로 학생 모델보다 크다.
@@ -788,8 +819,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         is_best = m["val_loss"] < best_val - 1e-4                # best 판정 = raw
         due = (save_every <= 0) or (step % save_every == 0) or (step >= steps)
         if due or is_best:
+            _save_started = time.perf_counter()
             blob = {"model": model.state_dict(), "opt": opt.state_dict(),
                     "step": step, "cfg": cfg.__dict__}
+            if chat32_tokenizer:
+                blob["tokenizer_lineage"] = "chat32"
+                blob["tokenizer_sha256"] = meta["tokenizer_sha256"]
             # ★★A08 — 종전에는 **Muon 상태를 저장하지 않았다.** 기존 `opt` 와 같은 규약으로 넣는다.
             if opt_muon is not None:
                 blob["opt_muon"] = opt_muon.state_dict()
@@ -801,6 +836,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                 best_val, best_step, since_improve = m["val_loss"], step, 0
                 torch.save(blob, ck_best)
                 print(f"       best 갱신 {best_val:.4f} -> {ck_best.name}")
+            _phase_wall["save_sec"] += time.perf_counter() - _save_started
+            _phase_wall["checkpoint_writes"] += int(due) + int(is_best)
         elif is_best:                                            # 도달 불가(위에서 처리) — 방어
             best_val, best_step, since_improve = m["val_loss"], step, 0
         else:
@@ -955,13 +992,22 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                 break
         if (s + 1) in snap_steps:               # 토큰 마크 스냅샷(plateau 분기 소스)
             snap = CKPT / f"{name}_snap{snap_steps[s + 1]}.pt"
-            torch.save({"model": model.state_dict(), "cfg": cfg.__dict__, "step": s + 1}, snap)
+            _snapshot_started = time.perf_counter()
+            snap_blob = {"model": model.state_dict(), "cfg": cfg.__dict__, "step": s + 1}
+            if chat32_tokenizer:
+                snap_blob["tokenizer_lineage"] = "chat32"
+                snap_blob["tokenizer_sha256"] = meta["tokenizer_sha256"]
+            torch.save(snap_blob, snap)
+            _phase_wall["snapshot_sec"] += time.perf_counter() - _snapshot_started
+            _phase_wall["checkpoint_writes"] += 1
             print(f"       [snapshot] {snap_steps[s + 1]} 토큰 지점 저장 -> {snap.name}")
 
+    _final_eval_started = time.perf_counter()
     final = evaluate(model, va, 100, device, bytes_per_token=bpt); final["ema"] = False
     if shadow is not None:
         backup = _swap_in_ema(); fe = evaluate(model, va, 100, device); _swap_out(backup)
         final["val_ema"], final["ppl_ema"] = fe["val_loss"], fe["ppl"]
+    _phase_wall["final_eval_sec"] += time.perf_counter() - _final_eval_started
     n_par = sum(p.numel() for p in model.parameters())
     import os as _os
     res = {"arch": arch, "preset": preset, "data": data, "params": n_par, "steps": steps,
@@ -1014,6 +1060,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "nokd_step_ce_mean": (_acc["no_ce"] / _acc["no_n"]) if _acc["no_n"] else None,
            "kd_step_n": _acc["kd_n"], "nokd_step_n": _acc["no_n"],
            "lora_rank": lora_rank, "wall_sec": time.time() - t0,
+           "t1_phase_wall": {**_phase_wall, "step_sec": sum(step_ms) / 1000.0,
+                             "kind": "host_wall_no_extra_sync"},
            "sparse34": bool(sparse34), "bpw": 1.25 if sparse34 else 1.95,
            "connectivity_mode": str(cfg.connectivity_mode),
            "connectivity_density": float(cfg.connectivity_density),
@@ -1050,6 +1098,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "repeat_embed_reinject": bool(getattr(cfg, "repeat_embed_reinject", False)),
            "reuse_attn_on_dup": bool(getattr(cfg, "reuse_attn_on_dup", False)),
            "tokenizer_hf": (str(tokenizer_hf) if tokenizer_hf else None),   # ★P067
+           "tokenizer_lineage": ("chat32" if chat32_tokenizer else "legacy"),
+           "tokenizer_sha256": (meta["tokenizer_sha256"] if chat32_tokenizer else None),
            "kd_teacher_hf": (str(kd_teacher_hf) if kd_teacher_hf else None),
            "teacher_dtype": str(teacher_dtype),
            "ce_chunk": int(ce_chunk),   # ★결과 054
@@ -1084,6 +1134,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                                  if opt_muon is not None else None),
            "vocab_size": int(cfg.vocab_size),
            "save_every": int(save_every or 0),                     # (P058)
+           "eval_every": int(eval_every),                          # P102A T1 cadence identity
+           "compile": bool(compile_),                              # paired T1 condition
+           "compile_mode": str(compile_mode) if compile_ else None,
            "n_layers": int(cfg.n_layers),                         # (P049) 깊이 — 프리셋 적용 확인용
            "arenas": bool(arenas), "arena_lambda": arena_lambda,  # (P036) Arenas residual
            "arena_end": arena_end,

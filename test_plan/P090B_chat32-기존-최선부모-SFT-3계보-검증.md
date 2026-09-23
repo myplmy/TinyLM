@@ -24,10 +24,21 @@ A는 tokenization overhead가 있지만 지금 기능 gate를 통과할 수 있�
 
 [세 계보 점검](../scripts/diag_p090b_three_lineages.py), [마스크 진단](../scripts/diag_sft_mask.py), [SFT 독립 trainer 자기시험](../scripts/train_sft_p090.py)을 [SH](../run_P090B_Stage0W_three_lineage_sft_gate.sh)로 묶는다. 합성 대화4종에서 prompt 지도0·assistant end 포함·다회전 turn 순서·CE/gradient를 확인한다. 보호 corpus·모델·GPU는 쓰지 않는다. 지금 관찰: A 토크나이저/부모 파일 있음, B chat32 토크나이저 없음, C M0 후보 파일은 있으나 '최선' 선정 미완.
 
-### Stage1W — B chat32 신규 부모와 C 기존 부모 선정, 선결 미완
+### Stage0bW — 공개 v3 전수 무원문 마스크·split 선결, 정식 학습과 분리
 
-[P075 어휘 생성](P075_토크나이저-어휘예산과-한국어-분절.md)의 신규 tokenizer를 별도 이름으로 만들고 단일 ID 32개를 검증한다. 그 tokenizer로 같은 구조·원문 pool·약300M draw의 **신규 사전학습 부모**를 사용자 실행해야 한다. 예전 checkpoint를 단순 strict=False로 읽거나 embedding row를 같은 ID라고 복사하지 않는다. 이 단계를 대체할 embedding mapping은 별도 함수·초기 동등성 gate가 필요하다. 이번에 신규 부모 학습 SH는 만들지 않는다.
-같은 단계에서 P100 원답안 panel·P097 Stage4 공통평가의 동일 질문·토크나이저·언어별 결과를 대조해 C 부모를 **SFT 전에** 확정한다. 단일 영어 full-val이나 checkpoint 파일 존재만으로 '최선'을 선언하지 않는다. 후보별 구조·pretrain 토큰·평가 경로가 다르면 C와 A의 비교는 설명적 관찰로 제한한다.
+[공개 preflight](../scripts/diag_p090b_public_preflight.py)를 [독립 SH](../run_P090B_Stage0bW_public_sft_preflight.sh)로 실행한다. SHA-pinned train/val·legacy tokenizer, source-ID/첫 질문 중복, 지도토큰 비율·빈 마스크와 3,154행의 assistant 본문(M3)·종료토큰(M4)을 **원문 출력 없이** 검사한다. Codex의 비보호 공개 v3 읽기 전용 관측은 train 2,996행(ko175/en2821)·val158행, split 겹침0·빈 마스크0·지도비율 train75.19%/val75.03%, M3/M4 누락 각각0이다. 직접 계산한 full-mask gate는 PASS지만 manifest의 tokenizer_mask 표기는 아직 NOT_RUN이고 contamination/source-quality도 NOT_RUN이므로 `TRAIN_READY=False`, pilot-only다. 이 단계의 exit0은 정식 SFT 승인 신호가 아니다.
+
+### Stage1aW — B chat32 신규 어휘·분리 캐시 준비
+
+[P075 어휘 생성](P075_토크나이저-어휘예산과-한국어-분절.md)의 32개 단일 ID를 [준비 SH](../run_P090B_Stage1aW_chat32_prepare.sh)로 사용자 실행한다. 기본 legacy 어휘·cache를 덮지 않고 `tok-ko-en-32768-chat32.json` 및 `ko-en_601000000_chat32` 별도 경로만 만든다. `prepare`는 기존·부분 chat32 cache의 계보·hash·symlink를 fail-closed 검사한다. 준비 직후 같은 공개 v3 canonical 행을 새 어휘로 전량 재인코딩하는 [길이 gate](../scripts/diag_p090b_chat32_sft_lengths.py)를 실행해 1024 context 초과가 0건인지 확인한다. 실패 시 Stage1bW를 자동 개방하지 않는다. 이는 HF/디스크 I/O를 쓰는 사용자 소유 단계이며 Codex가 실행하지 않는다.
+
+### Stage1bW — B 새 300M 부모 사전학습
+
+[사용자 실행 SH](../run_P090B_Stage1bW_chat32_parent_300M.sh)는 m100s10 dense/CLA2·seed1337·KD off·Muon RMS4, 2289×8×16×1024=300,023,808 token을 신규 어휘로 처음부터 학습한다. **2배 풀은 600,047,616 token 이상**이므로 600M이 아닌 601M exact cache를 사전등록한다. Stage1bW를 단독 선택해도 공개 v3 chat32 길이 gate를 다시 실행하고, 초과가 있으면 GPU 학습 전에 중단한다. 부모·캐시의 hash·lineage가 없으면 SFT trainer가 거절한다. 기존 A legacy 부모는 다른 tokenizer와 기존 부모 초기화·pool600M 계보이므로 A/B의 차이는 **전체 계보/시스템 비교**일 뿐 순수 tokenizer 효과가 아니다. 같은 raw 문서 byte·부모 초기화까지 맞춘 후속 대조 전에는 인과 귀속하지 않는다.
+
+### Stage1cW — C 기존 최선 부모 선정, 아직 자료 선결
+
+[동일 원답안 SH](../run_P090B_Stage1cW_best_parent_panel.sh)는 같은 legacy ko-en 어휘의 d14 300M·d14 600M·d16 1200M 세 체크포인트를 각자 preset·token 네임스페이스로 지정한다. [P100 평가기](../scripts/eval_p100_capability_panel.py)는 기존 3필드 입력을 유지하고 이 5필드 지정만 추가했으며 모델 없는 metadata-only preflight는 3/3 PASS했다. 실제 원답안·형식·한국어/영어 판단과 P097 Stage4의 공통 벤치 근거를 대조해 C 부모를 **SFT 전에** 고른다. 다른 학습토큰·풀·구조를 가진 세 모델의 상대 답변은 설명적 후보 선별이지 구조/토크나이저의 인과효과가 아니다. 단일 영어 full-val이나 파일 존재만으로 '최선'을 선언하지 않는다.
 
 
 ### Stage2W — 3갈래 SFT, 원천 적격성 뒤에만
@@ -36,14 +47,17 @@ A는 tokenization overhead가 있지만 지금 기능 gate를 통과할 수 있�
 
 ### Stage3W — 최종 SFT 계보 판정
 
-Stage1W에서 고른 C 부모와 A/B가 같은 공개 원문·평가 질문을 사용했는지 확인한 후, 한국어·영어 내용 정확성, 형식·멀티턴, 망각, 연산·상주를 각각 보고한다. M0 `d16_cla2_norecur_rms4_t1200`은 존재 후보이지 한국어 '최고' 확정이 아니다. B는 새 사전학습 계보까지 바뀌므로 A 대비 순수 tokenizer 효과로 귀속하지 않는다.
+Stage1cW에서 고른 C 부모와 A/B가 같은 공개 원문·평가 질문을 사용했는지 확인한 후, 한국어·영어 내용 정확성, 형식·멀티턴, 망각, 연산·상주를 각각 보고한다. M0 `d16_cla2_norecur_rms4_t1200`은 존재 후보이지 한국어 '최고' 확정이 아니다. B는 새 사전학습 계보까지 바뀌므로 A 대비 순수 tokenizer 효과로 귀속하지 않는다.
 
 ## 5. 판정 기준
 
 | 결과 | 판정 |
 |---|---|
 | Stage0 A 마스크 누출·end 미지도·CE gradient 오류 | SFT gate FAIL, 학습 금지 |
-| B chat32 어휘 또는 같은 ID의 새 부모 없음 | B NOT_READY, A/C와 품질 비교 금지 |
+| B chat32 어휘·601M cache·같은 tokenizer SHA가 checkpoint에 없음 | B NOT_READY, A/C와 품질 비교 금지 |
+| Stage1b 신규 부모에 old init/KD·legacy cache가 섞임 | 설계 무효, train 시작 전에 중단 |
+| chat32 재인코딩 공개 v3 중 1024 context 초과가 1건 이상 | 현재 동일 canonical B SFT gate 음성, 행 필터·동일자료 대조를 재설계 |
+| 601M chat32 pool와 기존 600M legacy pool의 차이 | A/B 시스템 비교만, tokenizer 단독 효과 결론 금지 |
 | 보호 held-out 오염 미검사·공개 원천 QA 미완 | 정식 학습 `TRAIN_READY=0`, pilot-only와 공식 결론 분리 |
 | 세 갈래 생성 평가 | source·부모·tokenizer 계보를 남긴 같은 질문의 원답안·common-bpb만 비교 |
 
@@ -52,12 +66,15 @@ Stage1W에서 고른 C 부모와 A/B가 같은 공개 원문·평가 질문을 �
 | 단계 | 예상 | 자원 |
 |---|---:|---|
 | Stage0W | 약0.1h | CPU·비보호 tokenizer |
-| B 신규 어휘/부모 | 어휘/300M 학습 별도 산정 | 사용자 데이터·GPU |
+| Stage0bW | 약0.1h | 비보호 공개 HF/sft_ready 읽기 전용 CPU |
+| B Stage1aW 어휘/601M cache | ⚙1~3h, 신규 분리 디스크 약1.2GB 이상 | 사용자 HF/CPU/디스크 |
+| B Stage1bW 부모 300.024M | ⚙2h(환경 의존), 16GiB 단일 GPU | 사용자 모델/GPU |
+| Stage1cW C 공통 원답안 | ⚙0.3h | 사용자 GPU/모델, 새 출력 JSONL |
 | 3 SFT 팔 | 원천 지도토큰 수·epoch 확인 뒤 산정 | 사용자 GPU/모델 |
 
 ## 7. 실행 파일
 
-`run_P090B_Stage0W_three_lineage_sft_gate.sh`만 작성, 결과번호096. Stage2 학습 SH는 corpus `TRAIN_READY`, chat32 부모, C 부모 선정 뒤 만든다. 이 문서는 사용자에게 실험용 파일 작성 자체를 데이터 gate 통과로 오인시키지 않는다.
+`run_P090B_Stage0W_three_lineage_sft_gate.sh`, `run_P090B_Stage0bW_public_sft_preflight.sh`, `run_P090B_Stage1aW_chat32_prepare.sh`, `run_P090B_Stage1bW_chat32_parent_300M.sh`, `run_P090B_Stage1cW_best_parent_panel.sh`를 작성, 결과번호096의 단계별 별도 로그를 사용한다. Stage1a/1b는 WSL smoke PASS와 사용자 실행이 선결이며 출력 collision이면 중단한다. Stage2 SFT 학습 SH는 corpus `TRAIN_READY`, chat32 부모, C 부모 선정 뒤 만든다. 이 문서는 사용자에게 실험용 파일 작성 자체를 데이터 gate 통과로 오인시키지 않는다.
 
 ## 8. 한계
 
@@ -65,4 +82,4 @@ Stage1W에서 고른 C 부모와 A/B가 같은 공개 원문·평가 질문을 �
 
 ## 9. 실행 이력 / 갱신
 
-- 2026-09-24: 기존 독립 SFT trainer self-test와 legacy 실토크나이저 합성 mask PASS. 세 계보 인벤토리 A 존재/B NOT_READY/C 후보 존재·선정 미완. 실제 SFT/품질 `NOT_RUN`.
+- 2026-09-24: 기존 독립 SFT trainer self-test와 legacy 실토크나이저 합성 mask PASS. 공개 v3 직접 preflight는 train/val 2996/158행·split 겹침0·빈 마스크0·M3/M4 누락0으로 full-mask PASS지만 manifest tokenizer-mask/contamination/사람 품질은 NOT_RUN, TRAIN_READY=False. chat32 prepare/train·checkpoint SHA 계보·새 어휘의 공개 v3 길이 gate 자기시험과 Stage1a/1b SH는 STATIC_ONLY; 실제 chat32 부모·C 원답안·SFT/품질 `NOT_RUN`. P100 per-model preset/token parser self-test와 세 기존 checkpoint/JSON metadata-only preflight는 PASS.

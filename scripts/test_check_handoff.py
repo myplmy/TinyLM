@@ -156,6 +156,16 @@ def test_handoff_transfer_recognizes_sh_launcher() -> None:
     assert QUEUE_MODULE.transferred_batches(text) == {"run_wsl.sh"}
 
 
+def test_queue_ids_follow_active_platform() -> None:
+    windows = [{"batch": "run_a.bat"}, {"batch": "run_b.bat"}]
+    linux = [{"batch": "run_a.bat", "shell_batch": "run_a.sh"}]
+    win_ids = MODULE.queue_ids_for_platform(windows, linux, platform="win32")
+    wsl_ids = MODULE.queue_ids_for_platform(windows, linux, platform="linux")
+    assert win_ids == {"run_a.bat": 0, "run_b.bat": 1}
+    assert wsl_ids == {"run_a.sh": 0, "run_a.bat": 0}
+    assert "run_b.bat" not in wsl_ids
+
+
 def main() -> int:
     tests = [
         test_completed_transfer_is_not_live_queue,
@@ -169,6 +179,7 @@ def main() -> int:
         test_inherited_reason_boilerplate_is_idempotent,
         test_handoff_queue_recognizes_bat_and_sh_launchers,
         test_handoff_transfer_recognizes_sh_launcher,
+        test_queue_ids_follow_active_platform,
     ]
     for test in tests:
         test()

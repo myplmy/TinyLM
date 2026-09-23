@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import gzip
 import time
 from pathlib import Path
@@ -573,7 +574,7 @@ def spam_signature(text, min_chars=50_000):
 
 
 def prepare(name, n_tokens, val_frac=0.005, exact=False,
-            doc_filter=False, doc_min_chars=50_000, hf_tok=None):
+            doc_filter=False, doc_min_chars=50_000, hf_tok=None, chat32=False):
     """★P067(2026-08-22) — `hf_tok` 은 **외부 HF 모델 폴더 경로**다.
 
     주면 우리 BPE 대신 그 모델의 `tokenizer.json` 으로 토큰화하고
@@ -585,6 +586,13 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
     (있으면 그 캐시, 없으면 정확히 그 크기로 신규 생성.) 토큰스윕처럼 '모든 예산이 같은 풀에서 샘플'해야
     할 때, 더 큰 캐시가 존재해도 특정 크기를 콕 집어 요청하는 용도."""
     n_tokens = int(n_tokens)
+    if chat32:
+        if name == "synthetic" or name not in DATASETS:
+            raise ValueError("chat32 requires a named real-data corpus")
+        if hf_tok or not exact or name in TOKEN_BALANCED_DATASETS:
+            raise ValueError("chat32 requires exact cache, no HF tokenizer and supported corpus")
+        # New token IDs must never reuse the legacy cache or an external HF cache.
+        print("[chat32] isolated new-tokenizer cache; legacy checkpoint IDs are incompatible")
     DATA_CACHE.mkdir(parents=True, exist_ok=True)
 
     if name != "synthetic":
@@ -592,13 +600,32 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
             _sfx = ("_filtered" if doc_filter else "")
             if hf_tok:
                 _sfx += "_tok-" + Path(str(hf_tok)).name.replace("models--", "").replace("--", "-")
+            if chat32:
+                _sfx += "_chat32"
             d = DATA_CACHE / (f"{name}_{n_tokens}" + _sfx)
-            if (d / "meta.json").exists() and (d / "train.bin").exists():
+            if chat32 and (d.is_symlink() or any((d / x).is_symlink()
+                                                 for x in ("meta.json", "train.bin", "val.bin"))):
+                raise ValueError("chat32 cache symlink is forbidden")
+            complete = ((d / "meta.json").exists() and (d / "train.bin").exists()
+                        and (not chat32 or (d / "val.bin").exists()))
+            if complete:
                 m = json.loads((d / "meta.json").read_text()); m["dir"] = str(d)
+                if chat32:
+                    from tokenizers import Tokenizer
+                    tokenizer_file = chat_tokenizer_path(name)
+                    if tokenizer_file.is_symlink() or not tokenizer_file.is_file():
+                        raise ValueError("chat32 tokenizer file is absent or linked")
+                    verify_chat_tokenizer(Tokenizer.from_file(str(tokenizer_file)))
+                    token_sha = hashlib.sha256(tokenizer_file.read_bytes()).hexdigest().upper()
+                    if (m.get("tokenizer_lineage") != "chat32"
+                            or m.get("tokenizer_sha256") != token_sha):
+                        raise ValueError("chat32 cache and tokenizer identity differ")
                 if name in TOKEN_BALANCED_DATASETS:
                     _validate_token_balanced_cache(d, m)
                 print(f"[data] 정확 캐시 사용(exact, 상위호환 무시): {n_tokens/1e6:.1f}M ({name}) -> {d}")
                 return _ensure_bpt(m)
+            if chat32 and d.exists():
+                raise FileExistsError(f"partial chat32 cache needs user review: {d}")
             print(f"[data] 정확 캐시({name}_{n_tokens}) 없음 → 정확히 그 크기로 신규 생성(상위호환 무시)")
         else:
             reuse = _find_reusable(name, n_tokens)
@@ -615,8 +642,13 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
     # ★P067 — 외부 토크나이저면 **완전히 다른 캐시**다. 접미사로 분리한다.
     if hf_tok:
         suffix += "_tok-" + Path(str(hf_tok)).name.replace("models--", "").replace("--", "-")
+    if chat32:
+        suffix += "_chat32"
     cache_dir = DATA_CACHE / f"{name}_{n_tokens}{suffix}"
-    cache_dir.mkdir(parents=True, exist_ok=True)
+    if chat32 and (cache_dir.exists() or cache_dir.is_symlink()):
+        raise FileExistsError(f"chat32 cache appeared before creation: {cache_dir}")
+    if not chat32:
+        cache_dir.mkdir(parents=True, exist_ok=True)
 
     if name == "synthetic":
         print(f"[data] 합성 토큰 {n_tokens/1e6:.1f}M 생성 (동작 확인용, 캐시 안 함)")
@@ -640,6 +672,17 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
             print(f"[tok] ★외부 토크나이저 사용: {_tokdir}  어휘 {_v:,}  eos={eos}")
             print(f"[tok] ⚠️★이 캐시는 **기존 캐시와 직접 비교 불가**다 — 토큰 경계가 다르다"
                   f"(함정 2). 교차비교는 `scripts/common_bpb.py` 로만.")
+        elif chat32:
+            tokenizer_file = chat_tokenizer_path(name)
+            if tokenizer_file.is_symlink():
+                raise ValueError("chat32 tokenizer symlink is forbidden")
+            tok = build_chat_tokenizer(name)
+            cache_dir.mkdir(parents=True, exist_ok=False)
+            _v = tok.get_vocab_size()
+            eos = tok.token_to_id("<eos>")
+            if eos is None:
+                raise ValueError("chat32 tokenizer has no EOS ID")
+            print(f"[tok] chat32 isolated corpus cache, vocab={_v}, eos={eos}")
         else:
             tok = build_tokenizer(name)
             _v = VOCAB
@@ -732,6 +775,9 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
             "hf_tokenizer": (str(hf_tok) if hf_tok else None),
             "train": int(len(arr) - n_val), "val": int(n_val), "dir": str(cache_dir)}
     if name != "synthetic":
+        if chat32:
+            token_file = chat_tokenizer_path(name)
+            meta["tokenizer_lineage"], meta["tokenizer_sha256"] = "chat32", hashlib.sha256(token_file.read_bytes()).hexdigest().upper()
         meta["bytes_per_token"] = total_bytes / max(total, 1)
         # ★2026-08-06(결과 006 §5.5) — `bytes_per_token` 은 **스트림 전체** 평균인데
         #   `bpb = loss / ln2 / bytes_per_token` 의 loss 는 **val 에서만** 잰다. 구성이 다르면
@@ -739,7 +785,7 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
         #   기존 필드는 **건드리지 않는다**(구 로그·구 문서와의 연속성).
         try:
             from tokenizers import Tokenizer as _Tok
-            _t = _Tok.from_file(str(tokenizer_path(name)))
+            _t = _Tok.from_file(str(chat_tokenizer_path(name) if chat32 else tokenizer_path(name)))
             _v = arr[-n_val:].tolist()
             meta["bytes_per_token_val"] = len(_t.decode(_v).encode("utf-8")) / max(len(_v), 1)
             print(f"[bpb] bytes_per_token  스트림 {meta['bytes_per_token']:.4f} / "

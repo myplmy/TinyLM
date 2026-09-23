@@ -44,6 +44,18 @@ DEFAULT_HOURS_TARGET = 48.0
 QUEUE_REQUIRED_COLUMNS = ("순", "id", "실험", "배치", "⚙", "누적", "선결", "근거")
 LAUNCHER_RE = re.compile(r"run_[A-Za-z0-9_]+\.(?:bat|sh)", re.IGNORECASE)
 
+def queue_ids_for_platform(windows_rows: list[dict], linux_rows: list[dict],
+                           *, platform: str) -> dict[str, int]:
+    """Match queue_menu --ids for the running platform, not a mixed menu."""
+    if platform == "win32":
+        return {str(row["batch"]): index for index, row in enumerate(windows_rows)}
+    ids: dict[str, int] = {}
+    for index, row in enumerate(linux_rows):
+        ids[str(row["shell_batch"])] = index
+        ids[str(row["batch"])] = index  # BAT alias only when its SH companion exists.
+    return ids
+
+
 # (키, 정규식, 에러인가) — 규약 §3 의 고정 섹션
 REQUIRED = [
     ("지시표",   r"^##\s*0\..*(사용자 지시|지시사항)", True),
@@ -451,11 +463,11 @@ def lint(path: Path, hours_target: float = DEFAULT_HOURS_TARGET):
             from queue_menu import load as _q_load, available as _q_avail
             from queue_menu_linux import available as _ql_avail, with_shell_state as _q_shell_state
             _rows, _ = _q_load()
-            _qid = {r["batch"]: i for i, r in enumerate(_q_avail(_rows))}
-            _qid.update({
-                r["shell_batch"]: i
-                for i, r in enumerate(_ql_avail(_q_shell_state(_rows, root=ROOT)))
-            })
+            _qid = queue_ids_for_platform(
+                _q_avail(_rows),
+                _ql_avail(_q_shell_state(_rows, root=ROOT)),
+                platform=sys.platform,
+            )
         except Exception:                                    # noqa: BLE001
             _qid = None
         i7 = next((k for k, l in enumerate(lines) if re.match(r'^##\s*7\.', l)), None)

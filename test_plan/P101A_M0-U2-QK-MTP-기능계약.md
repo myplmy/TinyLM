@@ -4,7 +4,7 @@
 
 ## 1. 왜
 
-기존 `--emb-rank`는 E를 바꿀 수 있지만 M0 체크포인트의 함수 보존 이식기는 없었다. 기존 QK RMSNorm에는 학습 gain이 없었다. MTP는 S+1 crop에서 미래 타깃·EOS 문서경계를 맞춰야 하며, head·trainer 결합은 아직 없다. 신규 C0 1.2B는 한국어/풀 gate HOLD이므로 이 실험에는 넣지 않는다.
+기존 `--emb-rank`는 E를 바꿀 수 있지만 M0 체크포인트의 함수 보존 이식기는 없었다. 현재는 순수 상태사전의 E-rank 확장·QK gain exact-key helper까지 구현했고, 실제 M0 checkpoint 로드·계속학습 경로는 아직 없다. 기존 QK RMSNorm에는 학습 gain이 없었다. MTP는 S+1 crop에서 미래 타깃·EOS 문서경계를 맞춰야 하며, head·trainer 결합은 아직 없다. 신규 C0 1.2B는 한국어/풀 gate HOLD이므로 이 실험에는 넣지 않는다.
 
 ## 2. 질문
 
@@ -22,11 +22,11 @@ Q1은 실수 산술에서 정확히 같을 수 있다. BF16/quantized export는 
 
 ### Stage0W — 함수·수학 계약, 사용자 실행용 SH
 
-[CPU 수학 게이트](../scripts/diag_p101a_math_contract.py)는 E 확장·gradient와 EOS가 있는 horizon2/4 target을 검사한다. [QK 작은 모델 게이트](../scripts/diag_p101a_qk_gain.py)는 새 모델의 초기 함수·모델 parameter group을 검사한다. 두 코드는 [실물 SH](../run_P101A_Stage0W_u2_mtp_function_gate.sh)로 한 로그에 기록한다. QK는 `attn_group=1`에서만 per-layer/head 구현을 허용한다.
+[CPU 수학 게이트](../scripts/diag_p101a_math_contract.py)는 E 확장·gradient·strict target key/shape·원본 및 전역 RNG 불변·QK gain 초기 τ=1과 EOS horizon2/4 target을 검사한다. [QK 작은 모델 게이트](../scripts/diag_p101a_qk_gain.py)는 새 exact-key helper로 strict load한 모델의 초기 함수·parameter group을 검사한다. 두 코드는 [실물 SH](../run_P101A_Stage0W_u2_mtp_function_gate.sh)로 한 로그에 기록한다. QK는 `attn_group=1`에서만 per-layer/head 구현을 허용한다.
 
 ### Stage1W — 실제 M0 계속학습 전 선결, 현재 미작성
 
-M0 원본 checkpoint hash, 동일 tokenizer/cache, 어닐·optimizer 이력, 기존 gain key 이식, E384 weight migration을 실제 model path에서 검사한다. MTP aux head·assistant 경계·gradient/배포 제거와 trainer opt-in은 아직 미구현이다. 이 단계의 SH는 **작성하지 않는다**. Stage0W가 PASS해도 100M 학습이 열리지 않는다.
+M0 원본 checkpoint hash, 동일 tokenizer/cache, 어닐·optimizer 이력과 새 상태이식 helper를 실제 model path에서 검사한다. helper의 예상외/missing key 거부는 CPU fixture PASS지만 실제 checkpoint 함수 보존은 `NOT_RUN`이다. MTP aux head·assistant 경계·gradient/배포 제거와 trainer opt-in은 아직 미구현이다. 이 단계의 SH는 **작성하지 않는다**. Stage0W가 PASS해도 100M 학습이 열리지 않는다.
 
 ### Stage2W — 100M 이하 분리 학습, 별도 사용자 승인
 
@@ -59,4 +59,4 @@ E384의 checkpoint 실물 이식, MTP head·trainer·배포 제거, 실제 모�
 
 ## 9. 실행 이력 / 갱신
 
-- 2026-09-24: `tinylm/train/p101a_contract.py`, QK gain config/Attention/optimizer opt-in과 CPU 수학 fixture를 구현. E/MTP fixture는 PASS, 실제 tiny 모델 gate는 사용자 실행 전 `NOT_RUN`.
+- 2026-09-24: `tinylm/train/p101a_contract.py`, QK gain config/Attention/optimizer opt-in과 CPU 수학 fixture를 구현. E/MTP fixture와 E256→E384 state-dict strict-key·local RNG·tau1 거부 fixture는 PASS. 작은 모델·실제 M0 checkpoint gate는 사용자 실행 전 `NOT_RUN`.

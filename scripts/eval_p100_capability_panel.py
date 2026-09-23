@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 import sys
 
@@ -31,31 +32,65 @@ def sha256(path):
     return digest.hexdigest()
 
 
-def parse_model(raw, preset, tokens):
+def split_model_spec(raw, preset, tokens):
     cells = raw.split(",")
-    if len(cells) != 3 or cells[2] not in ("dense", "tied"):
-        raise ValueError("model must be tag,data,dense|tied")
-    tag, data, arch = cells
-    stem = f"{preset}_{data}_{tokens}_{tag}"
+    if len(cells) == 3:
+        tag, data, arch = cells
+        model_preset, model_tokens = preset, tokens
+    elif len(cells) == 5:
+        tag, data, arch, model_preset, model_tokens = cells
+    else:
+        raise ValueError("model must be tag,data,arch[,preset,tokens]")
+    if arch not in ("dense", "tied") or not all(
+            re.fullmatch(r"[A-Za-z0-9_-]+", item)
+            for item in (tag, data, model_preset, model_tokens)):
+        raise ValueError("model specification has invalid architecture or path component")
+    return tag, data, arch, model_preset, model_tokens
+
+
+def parse_model(raw, preset, tokens):
+    tag, data, arch, model_preset, model_tokens = split_model_spec(raw, preset, tokens)
+    stem = f"{model_preset}_{data}_{model_tokens}_{tag}"
     checkpoint = ROOT / "runs/ckpt" / f"{stem}.pt"
     metadata = ROOT / "runs/logs" / f"{stem}.json"
     if not checkpoint.is_file() or not metadata.is_file():
         raise FileNotFoundError(f"paired checkpoint/JSON missing: {stem}")
     meta = json.loads(metadata.read_text(encoding="utf-8"))
-    if meta.get("tag") != stem or meta.get("arch") != arch or "final" not in meta:
+    if (meta.get("tag") != stem or meta.get("arch") != arch or "final" not in meta
+            or meta.get("preset") not in (None, model_preset)
+            or meta.get("data") not in (None, data)):
         raise ValueError(f"model metadata does not match: {stem}")
-    return tag, data, arch, checkpoint, meta
+    return tag, data, arch, checkpoint, meta, model_preset, model_tokens
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", action="append", required=True)
+    parser.add_argument("--model", action="append",
+                        help="tag,data,arch or tag,data,arch,preset,tokens")
     parser.add_argument("--preset", default="m100s10")
     parser.add_argument("--tokens", default="300M")
-    parser.add_argument("--out", required=True)
+    parser.add_argument("--out")
     parser.add_argument("--check-only", action="store_true")
+    parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--max-new", type=int, default=80)
     args = parser.parse_args()
+    if args.self_test:
+        assert split_model_spec("a,ko-en,dense", "m100s10", "300M") == (
+            "a", "ko-en", "dense", "m100s10", "300M")
+        assert split_model_spec("b,ko-en,dense,m100s12,1200M", "m100s10", "300M") == (
+            "b", "ko-en", "dense", "m100s12", "1200M")
+        for bad in ("a,ko-en,dense,../../bad,300M", "a,ko-en,unknown",
+                    "a,ko-en,dense,extra"):
+            try:
+                split_model_spec(bad, "m100s10", "300M")
+            except ValueError:
+                pass
+            else:
+                raise AssertionError("invalid per-model spec was accepted")
+        print("[PASS] P100 per-model preset/token namespace parser; model/GPU NOT_RUN")
+        return 0
+    if not args.model or not args.out:
+        parser.error("--model and --out are required outside --self-test")
     if args.max_new < 8 or args.max_new > 256:
         parser.error("max-new must be 8..256")
     output = ROOT / args.out
@@ -75,7 +110,7 @@ def main():
     import torch
 
     rows = []
-    for tag, data, arch, checkpoint, meta in models:
+    for tag, data, arch, checkpoint, meta, model_preset, model_tokens in models:
         model, cfg, device = load_model(arch, str(checkpoint))
         tok = load_tokenizer(data)
         tokenizer_hash = sha256(tokenizer_path(data))
@@ -87,6 +122,7 @@ def main():
                               temperature=0, top_k=1, device=device,
                               use_cache=True, logits_last_only=True)
                 rows.append(dict(model=tag, data=data, arch=arch,
+                                 preset=model_preset, token_namespace=model_tokens,
                                  checkpoint_sha256=checkpoint_hash,
                                  tokenizer_sha256=tokenizer_hash,
                                  final_val=meta["final"]["val_loss"],

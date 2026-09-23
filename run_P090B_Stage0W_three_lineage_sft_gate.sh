@@ -14,3 +14,6 @@ if [[ "$rc" -ne 0 ]]; then exit "$rc"; fi
 rc=$?
 if [[ "$rc" -ne 0 ]]; then exit "$rc"; fi
 "$python_bin" scripts/runlog.py --num 096 --name P090B_Stage0W_three_lineage_sft_gate -- "$python_bin" -B -X utf8 scripts/train_sft_p090.py --self-test
+rc=$?
+if [[ "$rc" -ne 0 ]]; then exit "$rc"; fi
+"$python_bin" scripts/runlog.py --num 096 --name P090B_Stage0W_three_lineage_sft_gate -- "$python_bin" -B -X utf8 scripts/diag_p090b_chat32_route.py
