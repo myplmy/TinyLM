@@ -548,3 +548,22 @@ WIP guard·auto compact는 범위별로 작동했고 smoke의 두 실제 회차�
 **backend별 부분 증거를 종합 완료로 승격할 수도 없다**. M5 동일 checkpoint
 Windows/WSL 교량은 `NOT_RUN`이고 M6 운영 전환·done 이관의 종료조건도
 충족하지 않았다. 상태 접미사 `-approved-on-going`을 유지한다.
+## 14. 2026-09-24 M4/M5 잔여 계약과 소형 교량 준비
+
+사용자는 M4에서 외부 패키지 `flash-attn`만 제외했다. 이는 PyTorch 내장 FLASH SDPA,
+EFFICIENT SDPA, cuDNN SDPA, Triton 및 cuSPARSELt의 계약을 제외하거나 통과 처리한다는
+뜻이 아니다. §13의 결과 081·082·088은 각각의 부분 동적 증거이며 전체 M4 승인 증거가 아니다.
+
+[P104A 별도 계획](../test_plan/P104A_WSL-M4-M5-게이트와-소형-dense-교량.md)은
+WSL Triton 직접 커널 호출과 동일한 소형 dense checkpoint의 Windows/WSL 평가·한 번의
+업데이트 교량을 분리한다. `scripts/diag_m4_triton_ternary.py --check-only`,
+`scripts/diag_m5_dense_bridge.py --check-only`,
+`scripts/check_m5_dense_bridge.py --self-test`는 모델·GPU 없이 통과했지만,
+실제 커널·체크포인트 실행은 모두 `NOT_RUN`이다. Windows BAT와 WSL SH는 사용자 실행용이며
+Codex가 실행하지 않는다. 사용자 승인으로 Windows BAT를 `Stage1B`로 개명하고 계획·TSV·
+runlog 참조를 맞췄다. 소형 M5 JSON은 실제 파라미터 갱신과 갱신 후 CE를 필수로 한 V2 계약이다. 배치 이름·줄끝·큐 정합과 codex-safe 정적 검사는 통과했지만 양 OS 실행은 `NOT_RUN`이다.
+
+소형 교량의 출력은 기능·환경 차이 진단이다. 동일 체크포인트의 전체 validation·품질·속도
+대조를 대체하지 않으며, Windows와 WSL 양쪽 결과 및 추가 M4 게이트가 있어야 M5/M4를
+각각 판정할 수 있다. 이 조건과 사용자 최종 운영 전환 결정이 남아 있으므로 이 제안서는
+`-approved-on-going` 상태를 유지하고 `done`으로 이관하지 않는다.

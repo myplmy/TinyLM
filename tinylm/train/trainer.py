@@ -179,7 +179,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           anneal_audit=None, anneal_audit_every=100, anneal_audit_max_modules=8,
           arenas=False, arena_lambda=0.1, arena_end=0.9,
           doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None,
-          kd_teacher_infer=False, sdpa_gqa=False, kd_chunk=0, depth_init="prop",
+          kd_teacher_infer=False, sdpa_gqa=False, qk_gain_learnable=False,
+          kd_chunk=0, depth_init="prop",
           attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
           repeat_embed_reinject=False, reuse_attn_on_dup=False,
           connectivity_mode="none", connectivity_density=1.0,
@@ -382,6 +383,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     cfg.center_weights = center_weights
     # ★F-1(2026-08-14) — 기본 False = 종전 `repeat_interleave` 경로 = 비트 동일.
     cfg.sdpa_gqa = bool(sdpa_gqa)
+    cfg.qk_gain_learnable = bool(qk_gain_learnable)
+    if cfg.qk_gain_learnable and cfg.attn_group != 1:
+        raise ValueError("P101A QK gain requires attn_group=1 for per-layer parameters")
     if sdpa_gqa:
         print(f"[sdpa] ★enable_gqa=True — K/V 를 물리 복제(x{cfg.n_q_heads // cfg.n_kv_heads})하지 "
               f"않고 커널에 맡긴다. ⚠️커널 경로가 바뀌므로 **로짓 비트 동일을 가정하지 않는다** "
@@ -1027,6 +1031,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "emb_rank": int(cfg.emb_rank),                          # (P046) 임베딩 병목 E
            "kd_teacher_infer": bool(kd_teacher_infer),            # (P042) 교사 추론 모드
            "sdpa_gqa": bool(cfg.sdpa_gqa),                        # (F-1) enable_gqa 경로
+           "qk_gain_learnable": bool(cfg.qk_gain_learnable),     # P101A default off
            "kd_chunk": int(kd_chunk or 0),                        # (T-2/P053) KD 손실 청크 행수
            "depth_init": str(depth_init),                         # (P049) 깊이 확장 이식 방식
            "group_init": str(group_init),                         # (P076) 공유 그룹 부모 집약

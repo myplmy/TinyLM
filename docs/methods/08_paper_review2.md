@@ -24,6 +24,7 @@
 | **3** | **Kimi K2**(기술보고서, Moonshot AI) | 1.04T MoE 를 15.5T 토큰에 **스파이크 없이** 학습 | **MuonClip**(Muon + QK-Clip) · 리라이팅 데이터 증강 · 희소도 스케일링 법칙 | `training_quality`(06) · `training_speed`(05) · `corpus_selection`(07) | ⚠️★**셋으로 갈린다** — QK-Clip 🚫**불필요**(우리는 QK-norm) · ★**RMS-match 스케일 = 채택 후보** · ★**리라이팅 = 우리 실측을 외부에서 확증** | ⏳P005 단계5(제안) |
 | **4** | **QK-Norm**(arXiv:2010.04245, Henry et al., EMNLP 2020 Findings) | 소프트맥스 포화를 막으면서 **표현력을 안 잃는** 정규화 | q·k 를 head 차원으로 **ℓ2 정규화**한 뒤 ★**학습 가능한 스칼라 `g`** 로 곱한다. `g₀ = log₂(L²−L)` | `architecture`(01) · `training_quality`(06) | ⚠️★**부분 미채택 상태였음이 드러났다** — 우리는 정규화만 쓰고 **`g` 를 안 넣었다**. 우리 유효 `g = √head_dim = 8` vs 논문 권장 초기값 **20.0**(L=1024) | ⏳측정 M1 먼저([보고서](../20260908_QK-norm이-과도-상한인가-QK-Clip과의-대조.md)) |
 | **5** | **QK-Normed MLA**(arXiv:2606.16310, 2026-06-15) ⚠️**초록만** | MLA 에서 전체 K 캐싱 없이 QK 정규화를 쓴다 | RMSNorm 을 **static affine weight + dynamic scalar RMS** 로 분해 | `architecture`(01) · `memory`(02) | ✅**대조 근거로만 채택** — 400M·100B 에서 **QK-Norm 이 QK-Clip 을 이긴다**. 🚫MLA 는 우리 구조가 아니다 | 🚫없음 |
+| **6** | **TTPO**(arXiv:2608.27448v1, 2026-08-27) | 무정답 시험 시점 수학 문제의 정책 갱신 | 다수결 positive/negative 분기, positive OPSD·negative GRPO와 토큰 선택 | `training_quality`(06) · `benchmarks`(10) | ⏸**개념만 차용** — 현 TinyLM에는 thinking teacher·안정적인 정답 추출·64회 rollout 자원이 없고 held-out 오염 위험이 큼 | 🚫즉시 계획 없음(§6) |
 
 ---
 
@@ -338,3 +339,40 @@ Figure 6 · §2.3: DeepSeek-V3 는 헤드 수를 층 수의 2배로 두는데, K
    ★**affine weight 가 있다.** 우리 것에는 없다(§4.3).
 
 🚫**MLA 자체는 우리 구조가 아니다**(우리는 GQA+CLA). **캐싱 기법은 채택 대상이 아니다.**
+
+---
+
+## 6. TTPO — 다수결의 오류를 비대칭 업데이트로 제한하지만 지금 TinyLM 기본 학습에 넣지 않는다
+
+- **논문**: Wang et al., [TTPO: Test-Time Policy Optimization](https://arxiv.org/abs/2608.27448), arXiv:2608.27448v1(2026-08-27). [저자 코드](https://github.com/ZJU-REAL/TTPO).
+- **검토 원본**: `article/TTPO TEST-TIME POLICY OPTIMIZATION.pdf`(로컬, SHA-256 `D67E875FFC81FE065C02C0C02808F522653BA8DDAEC5E629507A3A5EE7FA7E22`). `mutool`로 본문 1~9쪽의 방법·결과·ablation, 12~13쪽 설정, 17쪽 한계를 읽었다. 미판독 부록·코드 구현은 결과 근거로 쓰지 않는다.
+- **TinyLM 상태**: 모델 약105M, 현재 대화/SFT 경로는 학습 게이트 준비 단계이고 thinking-mode 교사·검증 가능한 64-rollout 수학 과제 계약은 없다. 보호 held-out을 학습 입력으로 사용하지 않는다.
+
+### 6.1 원리와 실제 논문 증거
+
+각 문제에서 `K=64`개 rollout의 최종 답을 추출해 다수결 pseudo-label로 나눈다. 다수결과 **같은 답**의 trajectory에는 답을 힌트로 받은 thinking-on 고정 교사의 분포를 non-thinking 학생에 forward KL로 증류한다(OPSD). **다른 답**의 trajectory에는 집단 상대 보상의 음의 advantage로 GRPO 패널티를 적용한다. 전자는 학생 entropy와 교사/학생 KL이 높은 위치에 가중, 후자는 이상 토큰 점수의 상위 절반만 벌한다. 이 두 분기는 같은 지도신호가 아니다.
+
+논문 Fig.1/§3.2의 “pseudo-label이 틀려도 disagreeing rollout 약79%는 실제로도 틀림”은 **Qwen3-1.7B의 어려운 수학 TTT** 관측이다. 정답이 다수결과 다르다는 사실만으로 TinyLM의 자유 대화 답변을 자동 오답 판정할 근거는 아니다. 반대로 majority가 전부 틀린 문항에서 positive 증류는 참 정답을 가르치지 않고 **자기 답의 reasoning 스타일**을 모사한다.
+
+논문 Table 2의 Qwen3-1.7B TTT 평균은 **38.0→45.2%**(AIME26/HMMT26/BRUMO25)이고 평가 단위는 **temperature1.0의 Avg@12**다. Table 1의 OpenThoughts 비교에서 TTPO와 정답 기반 OPSD는 1.7B **40.1 대39.7%**다. 전체를 “TinyLM 단일답 정확도 +7.2%p”로 복제하지 않는다. 같은 평가 benchmark 문제로 **라벨 없이 적응**한 TTT이므로, 우리 held-out 판정지에 직접 적용하면 독립 평가가 오염된다.
+
+### 6.2 실제 비용·전제와 현재 미충족
+
+| 논문 조건(§4.1/부록 A) | TinyLM에 필요한 선결·위험 |
+|---|---|
+| Qwen3 1.7B/4B/8B, thinking-on 고정 base 교사와 thinking-off 학생, LoRA r64 α128 | 현재 TinyLM의 chat 토큰·SFT도 동적 품질 미검증. thinking-mode-on/off 분포 차나 답 힌트 교사가 없음 |
+| 문제당 **64개 생성**, 업데이트에는 positive4+negative4 등 8개 사용 | 단일 RTX 4070 Ti SUPER에서 장문 생성 비용 큼. 현재 모델이 같은 형식의 정답을 추출하는지 먼저 확인해야 함 |
+| 생성 상한16,000토큰, gradient는 첫1,024 completion 토큰 | 우리 현재 context·샘플 포맷과 다름. 논문 설정을 그대로 옮겨도 같은 학습이 되지 않음 |
+| 4×H20 GPU TTPO, bf16·FlashAttention2·full-vocab KL, 100 update | WSL 단일 GPU와 외부 flash-attn 제외 요청의 환경에서 즉시 실행 불가; extra teacher forward·vocab KL의 메모리/시간 미계측 |
+| 답이 추출 가능한 고난도 수학문제 | 논문 한계 §F는 **수학·검증 가능한 최종답**으로 범위를 제한. 자유 한국어 대화·형식·단기기억 일반화는 미증명 |
+
+### 6.3 차용·보류·기각의 분리
+
+| 부분 | 판정 | TinyLM에 맞는 후속 조건 |
+|---|---|---|
+| **오답 후보에만 보수적 패널티**와 token-level confidence 필터 | **개념 차용 가능**. 정답이 확인된 오답과 P090 rejected 자료가 있는 경우의 손실 설계 힌트 | 먼저 assistant-only SFT·정답/오답 검증·동형 부모 대조를 완성. 불확실한 다수결을 정답으로 쓰지 않음 |
+| 다수결로 pseudo-label을 만들고 시험 문제 자체에서 모델 업데이트 | **현 시점 부적합**. 64개 생성의 품질·비용과 benchmark leakage가 가장 큼 | 학습·평가 분리된 공개 수학 데이터, 실제 pass@K/majority 정확도와 비용 측정 뒤만 연구 후보 |
+| thinking 교사 조건부 OPSD + full-vocab KL 전체 | **즉시 구현 불가**. 원 논문의 핵심 teacher mode와 검증 가능한 답이 현재 없다 | 독립 teacher/학생 capability, full-vocab KL VRAM, 같은 입력 비교 조건이 먼저 |
+| 논문의 +7.2%p / 대규모 무정답 수학 성과 | **TinyLM 예상효과로 사용 불가** | 모델 규모·시험지·평가단위·rollout 예산이 일치하지 않음 |
+
+**즉시 적용 가능하면서 효과가 뛰어날 것으로 입증된 메커니즘은 현재 0건**이다. 따라서 이 요청의 “그런 메커니즘이 있으면 제안서” 조건은 충족하지 않아 **새 제안서는 작성하지 않는다**. P090 SFT·실제 정답 추출·독립 수학 패널에서 기초 정답률과 64-rollout 대비 소형 `K`의 비용을 확인한 뒤, 원안 전체가 아닌 **검증된 오답의 selective negative learning**을 별도 제안할 수 있다. 이는 현재 승인된 A/B/C 구현·M4/M5·SFT 게이트의 선결이 아니다.

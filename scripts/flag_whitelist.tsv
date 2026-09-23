@@ -15,6 +15,17 @@
 --tokenizer-data	exp	P090 tokenizer 계보 선택; parent와 일치 필요	2026-09-23	scripts/prepare_public_sft.py
 --tokenizer-sha256	ok	P090 tokenizer SHA256 일치 확인	2026-09-23	scripts/train_sft_p090.py
 flag	grade	evidence	checked	declared_in
+--best-candidate	ok	P090B 읽기 전용 기존 최선 부모 후보 경로; 선정과 학습은 별도	2026-09-24	scripts/diag_p090b_three_lineages.py
+--chat32-tokenizer	ok	P090B 신규 chat32 어휘 경로 확인; 기존 부모 호환 주장 금지	2026-09-24	scripts/diag_p090b_three_lineages.py
+--legacy-parent	ok	P090B 기존 32k 부모 파일 존재 계약	2026-09-24	scripts/diag_p090b_three_lineages.py
+--legacy-tokenizer	ok	P090B 기존 32k 토크나이저 계보 확인	2026-09-24	scripts/diag_p090b_three_lineages.py
+--max-ce-abs	exp	P104A 소형 기능 bridge의 사전 숫자 허용치; 전체 M5 품질 아님	2026-09-24	scripts/check_m5_dense_bridge.py
+--max-grad-rel	exp	P104A 소형 한 업데이트 gradient 허용치; 과학적 ruler 아님	2026-09-24	scripts/check_m5_dense_bridge.py
+--max-initial-abs	exp	P101A tau1 tiny model 초기 함수 허용치	2026-09-24	scripts/diag_p101a_qk_gain.py
+--platform	ok	P104A Windows/WSL 실제 OS 라벨 검증	2026-09-24	scripts/diag_m5_dense_bridge.py
+--qk-gain-learnable	exp	P101A RMSNorm 뒤 head별 QK gain opt-in; default off	2026-09-24	tinylm/cli.py
+--win	ok	P104A Windows 사용자 JSON 비교 입력	2026-09-24	scripts/check_m5_dense_bridge.py
+--wsl	ok	P104A WSL 사용자 JSON 비교 입력	2026-09-24	scripts/check_m5_dense_bridge.py
 --abl-crops	ok		2026-09-04	scripts/diag_layer_map.py
 --accum	ok		2026-09-04	scripts/check_run_registry.py,tinylm/cli.py
 --add	ok		2026-09-04	scripts/wip.py

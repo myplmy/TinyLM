@@ -1,12 +1,12 @@
 # 제안 — T0/T1 학습 기반 위에 출력 손실 융합·업데이트 단위 양자화 재사용·MTP 예산화를 적용한다
 
-> **작성** 2026-09-23 · **상태** 판단 대기 · **분류** 실험계획 / 학습시간 / 런타임
+> **작성** 2026-09-23 · **상태** 승인 후 진행 중 · **분류** 실험계획 / 학습시간 / 런타임
 > 양식: [proposal/README.md](https://github.com/myplmy/TinyLM/blob/ea363b34ebb42f3fb4a9bf3187467bc9df991223/proposal/README.md) §3 및 [_TEMPLATE.md](https://github.com/myplmy/TinyLM/blob/ea363b34ebb42f3fb4a9bf3187467bc9df991223/proposal/_TEMPLATE.md).
 > 대상: **myplmy/TinyLM만** · 확인 commit: `ea363b34ebb42f3fb4a9bf3187467bc9df991223`.
 > 문서·계산·서식 검사만 수행한다. 저장소 수정, 런처 작성, 설치, 모델 로딩, GPU 실행, 학습, PR/commit은 수행하지 않았다.
 > 제안의 구현·동적 검증 상태: **DESIGNED / NOT_RUN**. 문서 작성 요청을 실험 실행 승인으로 해석하지 않는다.
-> 권장 경로: `proposal/20260923_TinyLM-학습시간-T0-T1-S1-S3-최적화-제안서.md`.
-> **2026-09-24 후속 검토**: 원안 미승인. 특히 S3 표본 손실의 분모·선택확률과 1.2B 확인 단계는 아래 10절 정정이 우선한다.
+> 권장 경로: `proposal/20260923_TinyLM-학습시간-T0-T1-S1-S3-최적화-제안서-approved-on-going.md`.
+> **2026-09-24 후속 검토**: 당시 원안 미승인. 특히 S3 표본 손실의 분모·선택확률과 1.2B 확인 단계는 아래 10절 정정이 우선한다.
 
 ---
 
@@ -365,3 +365,8 @@ Lhat_k = lambda_k / N_k * sum_j (I_kj / p_kj) * sum_valid_t CE[k,j,t]
 **권장: A로 현재 wall 비중을 재고, S1만 별도 승인 뒤 구현한다.** S3의 현 수식은 계획·런처에 복제하지 않는다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+## 11. 2026-09-24 사용자 승인과 구현·검증 경계
+
+사용자가 §10의 권장 순서(T1 확인 후 S1 우선)를 승인했다. 별도 [P102A 계획](../test_plan/P102A_T1-S1-S2-S3-학습시간-기능계약.md)과 사용자 실행 [Stage0W SH](../run_P102A_Stage0W_speed_math_contract.sh)를 만들었다. factorized CE 행 청크, 고정 유효 가중치의 VJP, 전체 valid-token 분모를 사용한 S3 HT 추정량의 CPU FP32 reference는 PASS했다.
+
+이는 **fused loss 커널이나 trainer 가속의 구현 증거가 아니다**. 공유 입출력 embedding까지 포함한 S1 전 parameter gradient/update, S2 실제 STE refresh/optimizer 연결, S3 MTP trainer 연결, A/B/B/A whole-wall 및 품질은 NOT_RUN이다. 현재 전체 승인 범위는 미완료이므로 `-approved-on-going`을 유지하고 1.2B 학습 SH를 만들지 않는다.

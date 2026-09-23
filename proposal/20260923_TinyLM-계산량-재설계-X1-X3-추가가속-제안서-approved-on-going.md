@@ -1,12 +1,12 @@
 # 제안 — 중복 문맥 재계산·전폭 FFN·반복 하부 계산을 줄이는 추가 학습시간 개선안 X1/X2/X3
 
-> **작성** 2026-09-23 · **상태** 판단 대기 · **분류** 실험계획 / 계산 그래프 / 학습시간
+> **작성** 2026-09-23 · **상태** 승인 후 진행 중 · **분류** 실험계획 / 계산 그래프 / 학습시간
 > 양식: [proposal/README.md](https://github.com/myplmy/TinyLM/blob/ea363b34ebb42f3fb4a9bf3187467bc9df991223/proposal/README.md) §3 및 [_TEMPLATE.md](https://github.com/myplmy/TinyLM/blob/ea363b34ebb42f3fb4a9bf3187467bc9df991223/proposal/_TEMPLATE.md).
 > 대상: **myplmy/TinyLM** · 확인 commit `ea363b34ebb42f3fb4a9bf3187467bc9df991223`.
-> 선행: [T0/T1/S1~S3 제안서](20260923_TinyLM-학습시간-T0-T1-S1-S3-최적화-제안서.md).
+> 선행: [T0/T1/S1~S3 제안서](20260923_TinyLM-학습시간-T0-T1-S1-S3-최적화-제안서-approved-on-going.md).
 > 상태: **DESIGNED / 신규 모델 구현·학습 NOT_RUN**. 기존 모델·데이터·Git 원격 상태를 변경하지 않았다.
-> 권장 경로: `proposal/20260923_TinyLM-계산량-재설계-X1-X3-추가가속-제안서.md`.
-> **2026-09-24 후속 검토**: 원안 미승인. X3의 20M-token FP32 캐시는 수용 불가이며, 10절의 저정밀 활성 캐시·RAM·정확성 분리 판정을 우선한다.
+> 권장 경로: `proposal/20260923_TinyLM-계산량-재설계-X1-X3-추가가속-제안서-approved-on-going.md`.
+> **2026-09-24 후속 검토**: 당시 원안 미승인. X3의 20M-token FP32 캐시는 수용 불가이며, 10절의 저정밀 활성 캐시·RAM·정확성 분리 판정을 우선한다.
 > X1/X2/X3는 이번 추가안이다. M0/C0/U2와 이전 학습방법 R1/R2/R3, 속도방법 S1/S2/S3와 혼동하지 않는다.
 
 ---
@@ -447,3 +447,8 @@ X3의 약60GB는 **20M개 token position × hidden 768개 값의 활성 캐시**
 **결론:** 사용자가 제시한 “20GB 이내면 RAM”은 **INT8 또는 FP8 활성 캐시에서 산술상 가능**하다. 최우선은 FP32 master를 저정밀으로 바꾸는 것이 아니라, **원 checkpoint를 유지한 채 INT8 boundary cache의 품질·RSS·wall을 검증**하는 것이다. 현재 상태는 크기 계산 `PASS` / 정밀도·훈련 품질·실제 RAM 운용 `NOT_RUN`이다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+## 11. 2026-09-24 사용자 승인과 구현·검증 경계
+
+사용자가 §10의 권장안(원 checkpoint 보존, X1 선행, X3 INT8 경계 활성 캐시 별도 검증)을 승인했다. 별도 [P103A 계획](../test_plan/P103A_X1-X2-X3-계산량-기능계약.md)과 사용자 실행 [Stage0W SH](../run_P103A_Stage0W_compute_math_contract.sh)를 만들었다. 공유 prefix VJP toy, 실제 물리 FFN tile 출력, INT8 per64 양자·복원 fixture는 CPU PASS했다. 20M×768의 INT8+FP32 scale은 산술상 16.32GB이며 이 계산은 RAM 운용 실측이 아니다.
+
+X1의 Transformer mask·position·CLA 통합, X2의 실모델 FFN/optimizer·회복학습, X3의 frozen-prefix hash·캐시 무효화·RAM 단일 사본·RSS/품질/whole-wall은 모두 NOT_RUN이다. 원안의 39%·29.5%·41%는 예측으로 유지한다. 전체 승인 범위가 미완료이므로 `-approved-on-going`을 유지한다.

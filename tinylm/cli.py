@@ -250,6 +250,8 @@ def main():
     p.add_argument("--sdpa-gqa", action="store_true",
                    help="(F-1) GQA K/V 물리복제 대신 SDPA enable_gqa 사용. 기본 off=비트동일. "
                         "게이트: scripts/diag_gqa_equiv.py")
+    p.add_argument("--qk-gain-learnable", action="store_true",
+                   help="(P101A) RMSNorm 뒤 head별 QK gain. 기본 off=기존 경로")
     p.add_argument("--kd-chunk", type=int, default=0,
                    help="(T-2/P053) KD KL 을 이 행수씩 나눠 계산(0=off=비트동일). "
                         "동시 임시텐서를 줄인다 — backward 저장분은 안 줄어든다")
@@ -417,7 +419,8 @@ def main():
               doc_filter=a.doc_filter, doc_min_chars=a.doc_min_chars,
               lora_decay=a.lora_decay, emb_rank=a.emb_rank,
               kd_teacher_infer=a.kd_teacher_infer,
-              sdpa_gqa=a.sdpa_gqa, kd_chunk=a.kd_chunk, depth_init=a.depth_init,
+              sdpa_gqa=a.sdpa_gqa, qk_gain_learnable=a.qk_gain_learnable,
+              kd_chunk=a.kd_chunk, depth_init=a.depth_init,
               attn_group=a.attn_group, train_repeat=a.train_repeat,
               repeat_mode=a.repeat_mode, repeat_block=a.repeat_block,
               repeat_embed_reinject=a.repeat_embed_reinject,

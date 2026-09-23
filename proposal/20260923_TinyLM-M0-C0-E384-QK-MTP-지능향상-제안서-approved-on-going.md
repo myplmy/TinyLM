@@ -1,11 +1,11 @@
 # 제안 — M0를 기준으로 C0·E384/QK 스케일·기존 코퍼스 MTP의 지능 개선을 검증한다
 
-> **작성** 2026-09-23 · **상태** 판단 대기 · **분류** 실험계획 / 아키텍처 / 학습목표
+> **작성** 2026-09-23 · **상태** 승인 후 진행 중 · **분류** 실험계획 / 아키텍처 / 학습목표
 > 양식: [proposal/README.md §3](https://github.com/myplmy/TinyLM/blob/ea363b34ebb42f3fb4a9bf3187467bc9df991223/proposal/README.md), [정식 _TEMPLATE.md](https://github.com/myplmy/TinyLM/blob/ea363b34ebb42f3fb4a9bf3187467bc9df991223/proposal/_TEMPLATE.md)의 아홉 절을 따른다.
 > 대상: **myplmy/TinyLM만**. 기준 commit: `ea363b34ebb42f3fb4a9bf3187467bc9df991223`.
 > 문서 작성만 수행했다. 저장소 수정·PR·런처 생성·학습·모델 로딩·새 데이터 제작은 수행하지 않았다. 제안서 작성 요청을 실험 실행 승인으로 해석하지 않는다.
-> 권장 저장 위치: `proposal/20260923_TinyLM-M0-C0-E384-QK-MTP-지능향상-제안서.md`.
-> **2026-09-24 후속 검토**: 원안은 미승인이다. 아래 10절의 C0 학습량·P006 귀속·배포예산 정정을 먼저 읽는다.
+> 권장 저장 위치: `proposal/20260923_TinyLM-M0-C0-E384-QK-MTP-지능향상-제안서-approved-on-going.md`.
+> **2026-09-24 후속 검토**: 당시 원안은 미승인이었다. 아래 10절의 C0 학습량·P006 귀속·배포예산 정정을 먼저 읽는다.
 
 ---
 
@@ -489,3 +489,8 @@ C0를 거절하면 18층 전체 조합의 가치만 미확인으로 남는다. *
 **권장: A의 정적·작은 기능 gate부터.** 실제 학습은 별도 승인 후 P006의 후속 계획에서 토큰 산식, pool/val 언어비, 태그 충돌을 preflight한다. C0/B는 대응 16층 대조를 갖춘 뒤 판단한다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+## 11. 2026-09-24 사용자 승인과 구현·검증 경계
+
+사용자가 §10의 권장 첫 단계인 **작은 기능 게이트부터 진행**을 승인했다. 별도 [P101A 계획](../test_plan/P101A_M0-U2-QK-MTP-기능계약.md)과 사용자 실행 [Stage0W SH](../run_P101A_Stage0W_u2_mtp_function_gate.sh)를 만들었다. E384 함수 보존과 EOS를 넘지 않는 MTP 표적은 CPU tensor fixture에서, QK gain은 기본 off인 opt-in 모델 경로와 소형 모델 게이트 코드에서 분리했다. CPU 수학 fixture는 PASS; 실제 소형 모델 게이트·M0 checkpoint 이관·GPU/품질은 NOT_RUN이다.
+
+현재 승인 범위의 **전체 구현 완료가 아니다**. 독립 MTP aux head와 trunk/공유 어휘 gradient, 같은 유효 배치의 loss 집계, 실제 M0 함수 보존 이관, G2의 품질·속도 비교는 남아 있다. 신규 C0 1.2B 학습 SH는 기준표의 한국어/풀 제약에 따라 만들지 않는다. 이 종료조건 때문에 `-approved-on-going`을 유지한다.

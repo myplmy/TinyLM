@@ -60,6 +60,8 @@ class Attention(nn.Module):
         self.q_proj = TLinear(cfg, cfg.dim, cfg.dim, mode_delta=True)
         self.o_proj = TLinear(cfg, cfg.dim, cfg.dim, out_scale=o_scale, mode_delta=True)
         self.q_norm = RMSNorm(cfg.head_dim, cfg.norm_eps)
+        self.qk_gain_logit = (nn.Parameter(torch.full((cfg.n_q_heads,), math.log(1.0 / 6.0)))
+                              if getattr(cfg, "qk_gain_learnable", False) else None)
         if owns_kv:
             self.k_proj = TLinear(cfg, cfg.dim, cfg.kv_dim)
             self.v_proj = TLinear(cfg, cfg.dim, cfg.kv_dim)
@@ -79,6 +81,9 @@ class Attention(nn.Module):
         q = self.q_proj(x, mode_p).view(B, T, c.n_q_heads, c.head_dim).transpose(1, 2)
         q = self.q_norm(q)                          # v5: RoPE 전에 정규화
         q = apply_rope(q, cos, sin)
+        if self.qk_gain_logit is not None:
+            tau = 0.5 + 3.5 * torch.sigmoid(self.qk_gain_logit)
+            q = q * tau.to(q.dtype).view(1, -1, 1, 1)
         k, v = kv
         n_rep = c.n_q_heads // c.n_kv_heads
         # ── F-1 (2026-08-14) — GQA 복제를 SDPA 에 맡긴다 ─────────────────────────

@@ -26,6 +26,8 @@ class TiedMLPTransformer(nn.Module):
     def __init__(self, cfg: TMTConfig):
         super().__init__()
         self.cfg = cfg
+        if getattr(cfg, "qk_gain_learnable", False) and cfg.attn_group != 1:
+            raise ValueError("P101A QK gain requires attn_group=1 for per-layer parameters")
         E = cfg.emb_rank if cfg.emb_rank else cfg.dim
 
         self.emb = nn.Embedding(cfg.vocab_size, E)
@@ -836,7 +838,7 @@ class TiedMLPTransformer(nn.Module):
     def param_groups(self, lr, weight_decay=0.1):
         import math
         tied = {id(p) for m in self.mid_mlps for p in m.parameters()} if self.cfg.tie_mlp else set()
-        gt, dense, nodecay, lrm = [], [], [], []
+        gt, dense, nodecay, lrm, qkg = [], [], [], [], []
         for n, p in self.named_parameters():
             if not p.requires_grad:
                 continue
@@ -847,7 +849,9 @@ class TiedMLPTransformer(nn.Module):
             #   🚫`endswith(".lrm")` 만 보면 벡터 승수가 아래 `nodecay`(dim<2)로 새어
             #   **wd 가 조용히 0 이 된다** = 팔 B 와 B' 를 못 가른다.
             #   ✅스칼라 모드의 `.lrm` 도 이 규칙에 그대로 걸리므로 **비트 동일**이다.
-            if n.rsplit(".", 1)[-1].startswith("lrm"):
+            if n.endswith(".qk_gain_logit"):
+                qkg.append(p)
+            elif n.rsplit(".", 1)[-1].startswith("lrm"):
                 lrm.append(p)
             elif p.dim() < 2 or any(k in n for k in ("scale", "shift", "gates", "gain", "bias")):
                 nodecay.append(p)
@@ -856,12 +860,15 @@ class TiedMLPTransformer(nn.Module):
             else:
                 dense.append(p)
         g = self.cfg.mlp_group if self.cfg.tie_mlp else 1
-        return [{"params": gt, "lr": lr / math.sqrt(g), "weight_decay": weight_decay},
-                {"params": dense, "lr": lr, "weight_decay": weight_decay},
-                {"params": nodecay, "lr": lr, "weight_decay": 0.0},
-                # ★P086 단계3 — 종전 하드코딩 0.01 을 `cfg` 로 뺐다(기본 0.01 = 비트 동일).
-                {"params": lrm, "lr": lr,
-                 "weight_decay": float(getattr(self.cfg, "mlp_lrm_wd", 0.01))}]
+        groups = [{"params": gt, "lr": lr / math.sqrt(g), "weight_decay": weight_decay},
+                  {"params": dense, "lr": lr, "weight_decay": weight_decay},
+                  {"params": nodecay, "lr": lr, "weight_decay": 0.0},
+                  # P086 scalar/vector group is unchanged when QK gain is off.
+                  {"params": lrm, "lr": lr,
+                   "weight_decay": float(getattr(self.cfg, "mlp_lrm_wd", 0.01))}]
+        if qkg:
+            groups.append({"params": qkg, "lr": lr * 0.1, "weight_decay": 0.0})
+        return groups
 
     # ---------- accounting ----------
     # ★bpw 회계 규약 (2026-07-31 통일 — 결과 016 §7.4·§8.4, P034 §5)

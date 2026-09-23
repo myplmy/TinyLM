@@ -114,6 +114,7 @@ class TMTConfig:
     #   n_rep 배 복제하지 않고 `enable_gqa=True` 로 커널에 넘긴다(활성 메모리 절감).
     #   ⚠️ 커널 경로가 달라지므로 **로짓이 비트 동일하지 않을 수 있다** — 게이트가 잰다.
     sdpa_gqa: bool = False
+    qk_gain_learnable: bool = False  # P101A: per-layer/head Q scale, default off
     # ── P014C 단계2 (2026-08-14) : per-row 융합 int8 matmul ────────────────────
     #   기본 False = 종전 경로. True 면 `_i8` 저장 + **per-row α**(micro_group=0) 일 때만
     #   `torch._weight_int8pack_mm` 로 **fp32 복원 없이** 곱한다. 조건 미충족이면 조용히
