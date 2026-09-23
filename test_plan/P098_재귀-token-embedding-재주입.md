@@ -65,13 +65,13 @@ Transformer 설계에서 쓰는 입력 embedding 재주입·adapter·절단 역�
 
 ## 7. 실행
 
-- `run_P098_Stage1aW_r2_ctrl_s1337.sh`
-- `run_P098_Stage1bW_r2_reinject_s1337.sh`
-- `run_P098_Stage1cW_r2_ctrl_s2024.sh`
-- `run_P098_Stage1dW_r2_reinject_s2024.sh`
-- `run_P098_Stage1eW_r2_ctrl_s31415.sh`
-- `run_P098_Stage1fW_r2_reinject_s31415.sh`
-- `run_P098_Stage2W_r2_reinject_pair.sh`
+- `run_P098_Stage1aW_r2_ctrl_s1337-done.sh`
+- `run_P098_Stage1bW_r2_reinject_s1337-done.sh`
+- `run_P098_Stage1cW_r2_ctrl_s2024-done.sh`
+- `run_P098_Stage1dW_r2_reinject_s2024-done.sh`
+- `run_P098_Stage1eW_r2_ctrl_s31415-done.sh`
+- `run_P098_Stage1fW_r2_reinject_s31415-done.sh`
+- `run_P098_Stage2W_r2_reinject_pair-done.sh`
 
 ## 8. 한계
 
@@ -92,3 +92,9 @@ Transformer 설계에서 쓰는 입력 embedding 재주입·adapter·절단 역�
 **판정**: 결과 회수 시 현 재귀 계열 ruler를 `scripts/_rulers.py`에서 재조회.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 10. 2026-09-23 Stage1/2W 실제 세 시드 — 단순 덧셈판 미승격
+
+[결과 091](../test_result/091_20260923_P098-R2-초기임베딩-재주입은-3시드-실무-동급.md)은 여섯 300M 학습·세 paired full-val을 모두 회수했다. 학습 exit0·skip0이고 세 seed의 paired off−on은 +0.0015(SE0.0004), +0.0001(SE0.0004), +0.0002(SE0.0005)다. 모두 재귀 실무 자 0.0018 미만이며, 첫 seed의 t=3.47은 그 checkpoint 쌍의 통계 차이일 뿐 3-seed 채택 근거가 아니다.
+
+§3의 0.003~0.015 nats 개선 가능성은 실측과 맞지 않는다. §5의 “세 seed가 재귀 ruler를 넘으면 adapter/norm 후보” 선결은 **불성립**이다. 단순 재주입은 기본 off 유지, 자동 추가 GPU 실험 없음. 부품 전체를 종결하지 않고 concat+adapter/normalization은 다른 독립 설계·비용·문턱이 승인될 때만 재개한다. 40 MiB 배포 tok/s와 실제 한국어 대화·논리 점수는 이 패널에서 NOT_RUN이다.

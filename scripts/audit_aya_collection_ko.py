@@ -14,8 +14,11 @@ import json
 import os
 from pathlib import Path
 import re
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+import tinylm  # noqa: F401  - set HF_HOME/HF_HUB_CACHE before huggingface_hub import
 HF = ROOT / "HF"
 SOURCE = HF / "sft_sources" / "aya_collection_ko"
 READY = HF / "sft_ready"

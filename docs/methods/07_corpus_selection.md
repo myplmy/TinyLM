@@ -242,3 +242,9 @@ margin과 동일 원문의 byte-bpb로 판정했다. Stage2Wb에서 control bpb 
 FineWeb2 YNAT **40.9%**·ARC **36.3%**로 강점이 갈렸고 KoBEST/NLI/HellaSwag에서 한 recipe의
 전면 우세는 없었다. 따라서 기본 dataset은 유지하고 control/FineWeb2 추가 2-seed로
 교환 재현성만 확인한다([090 §8](../../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#8-stage2wb-공통평가-복구2026-09-21--네-recipe를-같은-문항에서-비교했지만-전면-승자는-없다)).
+
+## 8. 2026-09-23 P097 Stage3 — seed는 확보됐고 recipe 순위는 Stage4 대기
+
+[결과 090 §13](../../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md)에서 control-v2/FineWeb2의 추가 seed2024·31415 네 학습은 모두 exit0·skip0이었다. 각 자체 val의 seed별 값은 control 3.51156/3.51359, FineWeb2 3.89656/3.88172다. 이 값의 서로 다른 계열 차이는 **원천·tokenizer·validation이 동시에 다르므로 품질 순위로 사용할 수 없다**. 같은 recipe 안의 재현성만 보는 숫자다.
+
+Stage2Wb에서 본 common-bpb 대 한국어/영어 과제의 강점 교환이 두 seed에도 유지되는지는 미측정이다. 이미 작성된 `run_P097_Stage4W_ctrl_fw2_seed_panel.sh`가 같은 원문·동일 문항과 seed panel을 수집한 뒤에만 corpus 대체를 논의한다. Wiki 서식 반복의 현재 생성률과 한국어 SFT 대화능력도 Stage3 자기 val에서 추론하지 않는다.

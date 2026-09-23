@@ -146,7 +146,7 @@ M=12,288 은 **서로 다른 두 형상(mb12×1024, mb24×512)이 똑같이 OOM*
 | **★교사 forward int8**(신규) | 💡 | — (P042 §7, B-1) | 교사도 `to_int8()`. ★결과 016 §12.3: **GPU int8 언팩은 −12~15% 뿐** | 속도 −1%(교사가 1/4 스텝) | ~VRAM **−350MB** → **`--no-ckpt`(−17.3%) 개방 확률↑**. **VRAM 을 −1% 로 사는 셈** |
 | ~~accum 조정으로 스텝 반감~~ | 🚫**이득 0 확정** | — (B-5) | — | — | 🚫★결과 007: ms/step 이 accum 에 **~선형** → **총 벽시계 이득 없다.** 다시 시도하지 않는다 |
 
-## 2026-09-19 WSL 후속 게이트 판정
+## 2026-09-19~23 WSL 후속 게이트 판정
 
 | 계획 | 사용자 보존 결과 | 현재 판정 | 다음 |
 |---|---|---|---|
@@ -154,7 +154,8 @@ M=12,288 은 **서로 다른 두 형상(mb12×1024, mb24×512)이 똑같이 OOM*
 | [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | Stage0cW event/graph `1.334~1.386×`, 동기 wall `0.926~0.959×` | 큰 M GPU work 후보·호출 wall 음성 | 실제 통합이 host overhead를 없애애만 후속; 기본 경로 불변 |
 | [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | Stage3 3-seed 속도 평균 `0.9988×`, reserved −1.986%; Stage2 cache 정합 미통과 | 품질 실무상 동급이어도 배포 적합성 미증명 | 기본 off 유지; 정합 원인·분해 설계 전 채택 금지 |
 | [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | R2 pipeline PASS; `S rho=-1.0~0.4`, `U rho=1.0` | selector S 불안정; 속도·품질 증거 없음 | S를 기본 selector로 승격 금지 |
-| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | full trainer opt-in과 vectorized topology update 구현 | 여전히 dense mask GEMM이므로 가속 0으로 취급 | 30M/100M/300M에서 계측 overhead를 실측 전 `NOT_RUN` |
+| [P014D](../../test_plan/P014D_LUT-배포커널-속도와-패킹.md) | native CPU v1 compiled 정합 PASS, 두 actual checkpoint native/int8 1.314×·1.231× | 1.50× 속도 문턱 미달(exit8 유효 음성) | scalar v1 기본 배포 미채택; SIMD/ABI 별도 설계([069 §11](../../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md)) |
+| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | 30M/100M dense/static/DST 8팔 전부 exit0·skip0. 100M dynamic50 중앙 1590.9ms vs static50 1567.0ms | dense mask GEMM 가속 없음; 100M 최선 dynamic sparse dense gap +0.19656로 Stage3 gate 실패 | Stage3 HOLD([083 §9](../../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) |
 | [P093](../../test_plan/P093_구조조건부-직접공유와-완화타잉.md) | rank16 output NRMS `0.974`, rank0 대비 개선 약 `0.75%` | 현재 parent approximation 과학적 음성 | 새 parameterization 없이는 모델/GPU 단계로 진행하지 않음 |
 
 forced SDPA의 raw warning은 모든 backend가 실패했다는 뜻이 아니었다. EFFICIENT를 강제한 팔에서

@@ -42,12 +42,12 @@ TinyLM TWN은 활성 연결에서도 quantizer가 0을 만든다. 그러나 `Q(W
 | **Stage0b ⚠️ 무효** | mask/ternary forward-backward 최초 시도 | `tinylm` import 전에 종료; 과학적 결과 `NOT_RUN`([083](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) | 진입 시간만 |
 | **Stage0c ✅ 완료** | CUDA mask/ternary forward-backward, inactive gradient proxy, active conservation | finite·inactive grad 12.144601·births=deaths=16로 통과([083 §6](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) | 진입 시간만 |
 | **Stage1aT ✅ 완료** | actual TLinear static50/DST50 microtrainer 계약 | active 8192/16384·transition 4, mask/inactive/active-only/birth=death/state reset PASS | [083 §8](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md#8-stage1at-actual-tlinear-microtrainer2026-09-19) |
-| **Stage1a 🔄 구현 완료·실행 대기** | full Transformer/trainer 30M dense/static50/DST50 | default-off·compile·mask/state-reset·finite 통과 | 0.20 H300 |
-| **Stage1b 🔄 실행 대기** | 30M DST75(25% density) | 50% 대비 catastrophic divergence 없음 | 0.10 H300 |
-| **Stage2a** | 100M dense/static50/DST50/DST75 | best sparse dense gap ≤0.07 | 1~2 H300 |
-| **Stage2b** | optimizer cold-start/loss spike | 반복 spike 회복·state 계약 정상 | Stage2a 포함 |
-| **Stage3a** | best density 300M, 1 seed | 현 TinyLM 채택선 안 | 1 H300 |
-| **Stage3b** | runner-up/재현 seed | 효과가 seed noise보다 큼 | 2~4 H300 |
+| **Stage1a ✅ 30M 완료·sparse 품질 음성** | full Transformer/trainer 30M dense/static50/DST50 | default-off·compile·mask/state-reset·finite 통과 | 0.20 H300 |
+| **Stage1b ✅ 30M 완료·25% density 음성** | 30M DST75(25% density) | 50% 대비 catastrophic divergence 없음 | 0.10 H300 |
+| **Stage2a ✅ 완료·문턱 실패** | 100M dense/static50/DST50/DST75 | best dynamic gap +0.19656 > 0.07 | 1~2 H300 |
+| **Stage2b ⚠️ 부분** | optimizer cold-start/loss spike | 100M 본런 grad_max≤1.119, update7; 반복 spike 회복의 시간열 추가 분석은 미완 | Stage2a 포함 |
+| **Stage3a HOLD** | best density 300M, 1 seed | Stage2 gap gate 음성이라 자동 진행 금지 | 1 H300 |
+| **Stage3b HOLD** | runner-up/재현 seed | Stage3a 미개방 | 2~4 H300 |
 | **Stage4** | storage/kernel 후속 판정 | 알고리즘적 생존 후만 새 제안 | GPU 0 |
 
 Stage0a/c의 공통 정본은 `tinylm/train/sparsity_contract.py`와
@@ -83,10 +83,10 @@ Stage0에서 `H300`을 실측하기 전에 절대 GPU-h를 확정값으로 바�
 - 실행 완료: `run_P092_Stage0c_dynamic_sparse_contract-done.bat` — CUDA 계약 PASS가 인쇄값까지 2/2 재현됐다([결과 083 §6~§7](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
 - Stage0a 순수 계약 회귀는 Codex 정적 검사 5/5 PASS.
 - 완료: `run_P092_Stage1aT_tlinear_dst_contract-done.sh` — actual TLinear/controller 계약 PASS.
-- 실행 대기: `run_P092_Stage1W_full_trainer_30M.sh` — dense/static50/DST50/DST25.
-- 실행 대기: `run_P092_Stage2W_full_trainer_100M.sh` — 같은 4팔 100M.
-- 조건부 실행: `run_P092_Stage3W_full_trainer_300M_seeds.sh` — Stage2 dynamic 팔 중
-  dense gap≤0.07·skip0 하나 이상일 때만 4팔×3seed 300M. 앞 gate 음성은 exit8이다.
+- 완료: `run_P092_Stage1W_full_trainer_30M-done.sh` — 4팔 모두 exit0·skip0, sparse 셋 모두 dense gap>+0.15.
+- 완료: `run_P092_Stage2W_full_trainer_100M-done.sh` — 4팔 모두 exit0·skip0, 최선 dynamic50도 dense gap +0.19656.
+- **HOLD, 실행 권장 안 함**: `run_P092_Stage3W_full_trainer_300M_seeds.sh` — Stage2 dynamic 팔 중
+  dense gap≤0.07·skip0가 하나도 없다. gate 음성은 exit8이며 결과를 뒤집는 새 설계 승인 전 300M 3-seed 자동 실행 금지.
 
 ## 8. 한계
 
@@ -128,3 +128,9 @@ Stage0에서 `H300`을 실측하기 전에 절대 GPU-h를 확정값으로 바�
 속도·storage 절감을 주장하지 않는다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 9.2 2026-09-23 30M·100M full-trainer 결과와 stage gate
+
+[결과 083 §9](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)의 여덟 JSON은 모두 exit0·skip0다. 30M dense 5.02031 대비 static50 +0.64031, dynamic50 +0.65813, dynamic25 +0.51875로 **사전 30M 중단선 +0.15를 세 branch 모두 초과**했다. 그 뒤 실행된 100M는 실측으로 보존하되 Stage1 선결을 통과한 것으로 소급 표시하지 않는다. 100M dense 3.96750 대비 dynamic50 +0.19656, dynamic25 +0.33797이고 static50 +0.17953이다. 최선 dynamic50도 **Stage3 gate +0.07 실패**다.
+
+예측 중 “50% connectivity는 살아날 수 있다”는 이 recipe/예산에서 불성립, “75% 급락 가능성”은 관찰과 합치지만 과학적 양성 채택은 아니다. sparse 팔의 속도·상주 이득도 없다. 30M dynamic50 `grad_max=22.09` 경보가 있었고 100M는 1.119라 지속 발산 확정은 피한다. 향후 구조 희소를 재개하려면 난도를 줄인 일정·초기화 또는 별도 하드웨어 회계와 새 문턱을 사전 승인받아야 한다. 기존 Stage3 SH의 존재는 실행 권장이 아니다.

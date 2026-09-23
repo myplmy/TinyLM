@@ -240,11 +240,11 @@ fp32 상주와 int8 상주가 갈린다.**
 | `qa_*` | 어닐 형태(P035: `qa_step60`·`qa_step80`) | ⚠️**2026-08-23 정정 — 이 행이 낡았다.** P035 는 **결과 022 로 종결**(2×2 네 값이 1.07σ 안, 형태 효과의 부호가 전이점에 따라 뒤집힘 = 검출 불가). `--anneal-shape` 은 구현돼 있고 **재실행 계획 없음** |
 | `p35b_a3_*` | P035B A3 동역학(`e60`·`e80`)과 audit 오염 대조(`off80`) | **예약 2026-09-15.** 세 팔 모두 m100s8·250 step·600M exact pool·seed 1337; 🚫품질 또는 anneal 기본값 판정에 사용 금지 |
 | `p097_ctrl_v2`·`p097_fw2`·`p097_edu_v2`·`p097_madlad` | P097 300M 한영 dataset recipe 대조 | **사용 완료 2026-09-20.** 전 팔 m100s10 dense·CLA2·Muon RMS4×4·300.024M draw·600M nominal pool·seed1337·exit0. tokenizer/data/val이 달라 자기 val_loss 교차비교 금지([090 §5](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#5-stage0bstage1abd-실제-완료2026-09-20)) |
-| `p097_{ctrl_v2,fw2}_s{2024,31415}` | P097 control/FineWeb2 교환 재현성 | **예약 2026-09-21.** 기존 seed1337에 두 seed를 더해 YNAT/ARC 강점과 common-bpb 열세의 부호만 재판단; 기본 dataset 승격 금지 |
+| `p097_{ctrl_v2,fw2}_s{2024,31415}` | P097 control/FineWeb2 추가 seed | **사용 완료 2026-09-23.** 네 팔 exit0·skip0; 자기 val은 다른 tokenizer/val로 교차 품질 비교 금지. Stage4 공통 문항·byte-bpb 후 재현성 판정([090 §13](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md)) |
 | `p060b_q_{off,on}_s{1337,2024,31415}` | P060B GQA 300M 품질 3-seed | **사용 완료 2026-09-22.** full-val 차이는 전부 실무 분해능 0.024 안이지만 방향 불일치; 속도 중립·reserved -1.986%. 기본 off 유지([088 §10](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#31-최신-누적-판정-stage2wstage3w2026-09-22--품질은-실무상-동급-cache-배포-정합은-미통과)) |
 | `d14_cla2_norecur_rms4_lr{15,20}[_s2024|_s31415]`·`d14_cla2_norecur_rms4_s{2024,31415}` | P005b CLA2 LR 1.0/1.5/2.0 3-seed | **사용 완료 2026-09-22.** LR1.5가 base 대비 3/3 우세(평균 -0.0027), LR2.0은 3/3 열세. CLA2 d14 후보 LR만 1.5e-3([078 §16](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#16-stage13142026-09-22--cla2의-lr-15e-3-후보가-3-seed-동일-방향으로-재현됐다)) |
-| `p098_r2_{ctrl,reinject}_s{1337,2024,31415}` | P098 재귀 embedding 재주입 | **예약 2026-09-21.** m100s8 dense·CLA2·R2·RMS4×4 300M; cycle 덧셈 on/off만 변경 |
-| `p092_s{1,2,3}_*` | P092 full-trainer dense/static/DST panel | **예약 2026-09-21.** 30M→100M→gate→300M 3-seed; dense mask라 하드웨어 가속/저장 절감 주장 금지 |
+| `p098_r2_{ctrl,reinject}_s{1337,2024,31415}` | P098 재귀 embedding 재주입 | **사용 완료 2026-09-23.** paired off−on +0.0015/+0.0001/+0.0002로 재귀 자 0.0018 안, 기본 off 유지([091](../test_result/091_20260923_P098-R2-초기임베딩-재주입은-3시드-실무-동급.md)) |
+| `p092_s{1,2}_*`·`p092_s3_*` | P092 full-trainer dense/static/DST | **Stage1/2 사용 완료 2026-09-23**, Stage3는 사전 gate 실패로 HOLD. 100M 최선 dynamic50 dense gap +0.19656 > +0.07; mask GEMM 가속 주장 금지([083 §9](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) |
 | `p076_s2_mean`·`p076_s2_middle`·`p076_s2_normmean` | P076 Stage2 부모 집약 품질 3팔 | **예약 2026-09-20.** m100R1c tied·같은 dense parent·Muon RMS4×4·CLA2·300M/600M·seed1337; `group_init`만 변경 |
 | `p060b_s1w_off250`·`p060b_s1w_on250` | P060B WSL GQA 250-step 속도/VRAM gate | **예약 2026-09-20.** m100s10 dense·Muon RMS4×4·CLA2·32.768M probe; 품질/W&B 판정 금지 |
 | `mA_*`,`mB_*`,`mC_*` | 1차 리뷰 최적안 검증(REVIEW1) | ✅ **완료**(결과 012). 승자 = `mA_g4s34_k4` |
@@ -296,6 +296,18 @@ fp32 상주와 int8 상주가 갈린다.**
 > 안에서 태그가 겹치면 조용히 덮어쓴다.** 새 태그는 반드시 위 표에 추가한다.
 
 ---
+
+### 2.7 2026-09-23 신규 실행 회수 — 결과 번호별 허용 주장
+
+| 결과 | 같은 조건에서 확인한 값 | 허용 주장·다음 gate |
+|---|---|---|
+| [069 §11](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md) | P014D native LUT/int8 actual 1.314×·1.231×; compiled 정합 PASS | 1.50× 속도 채택선 **실패**(exit8 유효 음성). SIMD·다른 CPU 일반화 NOT_RUN |
+| [083 §9](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md) | 100M dense 3.96750, static50 4.14703, dynamic50 4.16406, dynamic25 4.30547 | 최선 dynamic gap +0.19656로 Stage3 +0.07 gate 실패. 30M 세 sparse도 +0.15 중단선 초과 후 100M가 실행된 절차 이탈을 보존 |
+| [090 §13](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md) | 추가 두 seed 자기 val control 3.51156/3.51359, FineWeb2 3.89656/3.88172; 전부 skip0 | **서로 다른 tokenizer·자기 val**을 직접 차감하지 않는다. Stage4 같은 원문·문항 아직 NOT_RUN |
+| [091](../test_result/091_20260923_P098-R2-초기임베딩-재주입은-3시드-실무-동급.md) | R2 on/off paired off−on +0.0015/+0.0001/+0.0002 | 모두 재귀 실무 자 0.0018 안. 단순 덧셈 default-off 유지; 다운스트림 NOT_RUN |
+
+이 표는 결과문서의 숫자·조건 서명으로 거슬러 올라가는 **요약**이다. 다른 풀,
+tokenizer, validation·생성 경로를 이 표의 순서만 보고 합산·순위화하지 않는다.
 
 ## 3. 비교 유효성 규칙 (무효 비교 방지)
 

@@ -1,8 +1,7 @@
 # P014D — **LUT 배포 커널: 속도와 패킹**
 
-- **상태**: 🔄**진행 중·native CPU v0 음성, v1 actual 속도 NOT_RUN** — Stage0bW CPU profile은 완주했고
-  ([결과 069 §8](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#8-stage0bw-교정-재실행2026-09-20--프로파일은-완주했고-즉시-커널-착수-근거는-부족)). 5-trit/per-row-alpha C++ v0는 actual model에서 Python reference보다 1.79× 빠르지만 int8 대비 1.188~1.249×로 채택선 1.50×에 미달했다([결과 069 §9](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#9-stage1w-native-lut-actual-model-gate2026-09-20--reference는-개선-int8-문턱은-미달)). moonshot의 3:4 전용 설계는 분리하고 generic g5에 GIL 해제·base-3 증분 표를 차용한 v1 Stage1Wb를 준비했다. 실제 속도는 `NOT_RUN`.
-- **상태 갱신**: 2026-09-22
+- **상태**: 🔄진행 중. native CPU v1 Stage1Wc 정합 PASS, actual model native/int8 1.314×/1.231×로 1.50× 채택선 미달([결과 069 §11](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md)). 기본 backend는 불변; SIMD/외부 ABI 후속은 별도 설계·승인 전 HOLD.
+- **상태 갱신**: 2026-09-23
 - **신설**: 2026-08-30 (사용자 지시 12 — P014 가 길어져 가독성·관리가 나빠졌다)
 - **이관 원본**: [P014](P014_커스텀삼진커널-검증.md) · [P014B](P014B_LUT커널-실사-및-속도게이트.md) · [P014C](P014C_우리구조에맞는-역양자화제거-경로.md)
 - **선행 결과**: [003](../test_result/003_20260725001000_P014-커널-어닐버그.md) · [016 §24](../test_result/016_20260731110000_P034-실행시메모리-순위역전확인.md) · [028](../test_result/028_20260807_P014C-per-row는-공짜지만-융합커널은-6.5배-느리다.md)
@@ -215,3 +214,9 @@ checkpoint·int8 대조·1.50× 문턱을 쓴다. 정적 source/default contract
 compile·CPU model·속도는 사용자 실행 전 `NOT_RUN`이다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 12. 2026-09-23 Stage1Wc v1 재실행 — 실측 음성, 축 전체 종결 아님
+
+[결과 069 §11](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md)은 1e-5 compiled 정합 PASS와 두 actual checkpoint의 native/int8 1.314×·1.231×, native/reference 약 2.003×를 분리했다. 속도 문턱 1.50×는 둘 다 미달해 exit8 `GATE NEGATIVE`가 유효한 음성 결과다. `run_P014D_Stage1Wc_native_lut_tolerance_recovery-done.sh`로 실행 이력을 남긴다.
+
+§3의 “scalar LUT만으로 int8 1.5×” 예측은 Wc에서 **불성립**이다. 기본 경로 승격을 막고 g5/per-row-alpha의 메모리 레버와 reference는 보존한다. 새 SIMD/layout 또는 외부 ABI 적합성 연구는 지금 실행할 실물 런처가 없으며 사전 비용·정합·교환비가 없는 상태에서 자동 GPU/CPU 장시간 실험으로 열지 않는다. GPU 학습/모델 품질이나 모든 CPU 아키텍처의 속도를 이 음성 결과로 종결하지 않는다.
