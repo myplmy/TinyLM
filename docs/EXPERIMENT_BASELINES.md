@@ -291,7 +291,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | ★**`mC_initonly_nc`** | P065 단계3 = 표준 대조군의 `--no-ckpt` 쌍둥이 | **예약**(배치 준비 완료 2026-08-26) |
 | ★★**`d6_dense`·`d8_dense`·`d10_dense`·`d12_dense`** | P074 단계1 = **얕은 dense 깊이 곡선**(프리셋 `m100s2/s4/s6/s8`) | **예약**(배치 준비 완료 2026-08-26). ⚠️`--depth-init role` 은 **미측정 옵션**이다 |
 | `dense_p102a_t0_s1337`·`dense_p102a_t1_s1337` | P102A Stage1W T0 eval100/save0 대 T1 eval500/save1000, 동일 100M draw·600M exact pool | **사용 완료 2026-09-24** 두 팔 exit0·skip0. 사용자 요약기 whole-wall 1.01897× 단일순서 관측, fixed-crop·역순 반복 전 T1 기본 채택 금지([093](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md)) |
-| `p101a_b0_s1337`·`p101a_e384_s1337`·`p101a_qk_s1337`·`p101a_mtp_s1337`·`p101a_mtp_ht_s1337` (동일 팔의 seed2024·31415도 조건 예약) | P101A 고정 M0 가중치·legacy 32k·기존 1.2B exact pool, 762step=99,876,864 draw; 한 arm 한 변수, S3 HT는 후속 | **조건 예약·현재 HOLD**: Stage0W PASS이나 Stage1W 결합 M0 주 logits 1.2398e-5 >1e-5 FAIL. 독립 팔 Stage1Wb 사용자 재진단 전 학습 SH 0개, GPU·품질 NOT_RUN([092 §3](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)) |
+| `p101a_b0_s1337`·`p101a_e384_s1337`·`p101a_qk_s1337`·`p101a_mtp_s1337`·`p101a_mtp_ht_s1337` (동일 팔의 seed2024·31415도 조건 예약) | P101A 고정 M0 가중치·legacy 32k·기존 1.2B exact pool, 762step=99,876,864 draw; 한 arm 한 변수, S3 HT는 후속 | **조건 예약·현재 HOLD**: Stage0W PASS, Stage1Wb 실제 M0 독립 팔 E384만 1.2398e-5 >1e-5 FAIL; QK/MTP는 이 입력 정합 PASS. Stage1Wc FP32/FP64 원인분리 실제 모델 NOT_RUN, 학습 SH 0개·GPU·품질 NOT_RUN([092 §7](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)) |
 | `dense_chat32_p090b_s1337` | P090B Stage1bW 별도 chat32 601M exact 풀·300,023,808 draw 새 부모, legacy init/KD 없음 | **예약**(사용자 GPU 실행 NOT_RUN; 기존 legacy와 tokenizer 단독효과 귀속 금지) |
 | `k_*`, `kc_*`, `*_smoke` | tiny 스모크 | 사용중 |
 
@@ -309,6 +309,8 @@ fp32 상주와 int8 상주가 갈린다.**
 | [090 §14](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md) | 세 시드 공통과제에서 FineWeb2 YNAT 방향3/3(유의2/3), control 영문 SQuAD-context bpb 3/3 낮음; ARC 방향 교환·NLI/Hella 우연 부근 | 동일 원문 byte-bpb는 설명적 비교이나 source/tokenizer 교락·recipe별 차등 오염 미측정. 자기 val 차감·기본 데이터셋 교체 금지 |
 | [091](../test_result/091_20260923_P098-R2-초기임베딩-재주입은-3시드-실무-동급.md) | R2 on/off paired off−on +0.0015/+0.0001/+0.0002 | 모두 재귀 실무 자 0.0018 안. 단순 덧셈 default-off 유지; 다운스트림 NOT_RUN |
 | [093](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md) | S1/S2 작은 모델 함수 PASS. T0/T1 100M의 사용자 요약기 eval/save 25.514s 감소·whole-wall 34.183s 감소(1.01897×) | 단일 순서 속도 방향만 관측, fixed-crop 품질·역순 반복·S3 GPU 효과 NOT_RUN. 원 훈련 JSON 직접 판독 후에도 단일 순서·fixed crop 미검증으로 표준 승격 보류 |
+| [094 §8](../test_result/094_20260925_P103A-X2-함수통과-X3-하부MLP-동결누락.md) | P103A 하부 MLP freeze 교정 뒤 tiny exact 차0/0/0/0, 실제 M0 12/4 exact 차0/0/0/7.45e-9; 기존 5e-5 문턱 2/2 PASS | fixed 8-token CPU 함수만 검증. INT8 boundary NRMS는 보고값, 2M/20M cache·GPU wall·RSS·언어 품질 NOT_RUN |
+| [095 §6](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md) | M4 direct Triton 한 형상 NRMS0.00039494·cosine1로 통과; Windows tiny M5 V2 JSON eval CE10.424150·one-step nonzero update 기록, 현 코드 SHA5/5 동일 | M4 whole-step/전 형상 아님. Windows만 수집했으므로 WSL 동일 checkpoint/code/input SHA 및 CE/gradient 대조, 실제 M5 품질은 NOT_RUN |
 
 이 표는 결과문서의 숫자·조건 서명으로 거슬러 올라가는 **요약**이다. 다른 풀,
 tokenizer, validation·생성 경로를 이 표의 순서만 보고 합산·순위화하지 않는다.

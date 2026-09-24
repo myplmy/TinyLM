@@ -25,6 +25,7 @@
 | **4** | **QK-Norm**(arXiv:2010.04245, Henry et al., EMNLP 2020 Findings) | 소프트맥스 포화를 막으면서 **표현력을 안 잃는** 정규화 | q·k 를 head 차원으로 **ℓ2 정규화**한 뒤 ★**학습 가능한 스칼라 `g`** 로 곱한다. `g₀ = log₂(L²−L)` | `architecture`(01) · `training_quality`(06) | ⚠️★**부분 미채택 상태였음이 드러났다** — 우리는 정규화만 쓰고 **`g` 를 안 넣었다**. 우리 유효 `g = √head_dim = 8` vs 논문 권장 초기값 **20.0**(L=1024) | ⏳측정 M1 먼저([보고서](../20260908_QK-norm이-과도-상한인가-QK-Clip과의-대조.md)) |
 | **5** | **QK-Normed MLA**(arXiv:2606.16310, 2026-06-15) ⚠️**초록만** | MLA 에서 전체 K 캐싱 없이 QK 정규화를 쓴다 | RMSNorm 을 **static affine weight + dynamic scalar RMS** 로 분해 | `architecture`(01) · `memory`(02) | ✅**대조 근거로만 채택** — 400M·100B 에서 **QK-Norm 이 QK-Clip 을 이긴다**. 🚫MLA 는 우리 구조가 아니다 | 🚫없음 |
 | **6** | **TTPO**(arXiv:2608.27448v1, 2026-08-27) | 무정답 시험 시점 수학 문제의 정책 갱신 | 다수결 positive/negative 분기, positive OPSD·negative GRPO와 토큰 선택 | `training_quality`(06) · `benchmarks`(10) | ⏸**개념만 차용** — 현 TinyLM에는 thinking teacher·안정적인 정답 추출·64회 rollout 자원이 없고 held-out 오염 위험이 큼 | 🚫즉시 계획 없음(§6) |
+| **7** | **Ternary Bonsai 2 27B**(PrismML 백서, 2026-09, 로컬14쪽) | 27B hybrid reasoning 모델의 저비트 저장·직접 커널·능력 보존 | 고정 Hadamard 회전·group128 삼진·소수 FP16 예외·PTQ1_0/PQ2_0 | `memory`(02) · `training_quality`(06) · `inference_speed`(12) | ⚠️**배포 계측 개념 차용** — TinyLM from-scratch 학습/한국어 전이는 미증명, 외부 교사 pilot은 별도 검증 | 🚫즉시 기본경로 제안 없음(§7) |
 
 ---
 
@@ -376,3 +377,42 @@ Figure 6 · §2.3: DeepSeek-V3 는 헤드 수를 층 수의 2배로 두는데, K
 | 논문의 +7.2%p / 대규모 무정답 수학 성과 | **TinyLM 예상효과로 사용 불가** | 모델 규모·시험지·평가단위·rollout 예산이 일치하지 않음 |
 
 **즉시 적용 가능하면서 효과가 뛰어날 것으로 입증된 메커니즘은 현재 0건**이다. 따라서 이 요청의 “그런 메커니즘이 있으면 제안서” 조건은 충족하지 않아 **새 제안서는 작성하지 않는다**. P090 SFT·실제 정답 추출·독립 수학 패널에서 기초 정답률과 64-rollout 대비 소형 `K`의 비용을 확인한 뒤, 원안 전체가 아닌 **검증된 오답의 selective negative learning**을 별도 제안할 수 있다. 이는 현재 승인된 A/B/C 구현·M4/M5·SFT 게이트의 선결이 아니다.
+
+## 7. Ternary Bonsai 2 27B — 회전 삼진·직접 패킹 커널은 배포 설계 힌트, TinyLM 학습 처방은 아니다
+
+- **원문**: PrismML, [Ternary Bonsai 2 27B 백서](https://github.com/PrismML-Eng/Bonsai-demo/blob/main/bonsai-2-27b-whitepaper.pdf), 2026-09. 로컬 제공본 `article/prismML/bonsai-2-27b-whitepaper.pdf`, SHA-256 `AEA10331EDE3B34C34C21D1A45B80FD0FD6E231B3E8DB7BD6346E20FCB8402C4`.
+- **실제로 읽은 범위**: 14쪽 전부. §2.1~2.4(형식·고정 회전), §3/부록 A(직접 커널), §4/부록 B·C(비교·채점), 부록 D(처리량 조건), §5(한계). 외부 모델 구현 코드를 읽거나 실행하지 않았고, 공급자의 재현 실험도 하지 않았다.
+- **별도 현재 출처**: [공식 모델카드](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/README.md), [공식 실행 README](https://github.com/PrismML-Eng/Bonsai-demo/blob/main/README.md), [알려진 문제](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/KNOWN_ISSUES.md). 외부 페이지는 갱신될 수 있으므로 아래 백서 수치와 합쳐 단일 실험으로 취급하지 않는다.
+
+### 7.1 백서가 실제로 제시한 메커니즘과 분모
+
+| 항목 | 백서의 증거 | TinyLM에 주는 의미 |
+|---|---|---|
+| 모델 구조 | §2 표1: Qwen3.8-27B 계보, 언어 backbone 24.35B+embedding/head 2.54B, 별도 vision 0.47B; 약 75% linear attention | 우리 약100M·CLA/GQA/TLinear 구조와 다르다. Bonsai 가중치/회전 계수를 TinyLM에 복사하는 처방 아님 |
+| 삼진 저장 | §2.1~2.3: `{-1,0,+1}`, group128 FP16 scale; 순수 삼진 약1.71bpw, 언어 전체 이론1.72bpw, PTQ1_0 1.76bpw/5.93GB, PQ2_0 2.16bpw/7.25GB | 저장 GB(10진)이지 TinyLM runtime MiB·RSS·KV·훈련 마스터가 아니다. 실제 패킹과 배포 지표를 분리 |
+| 정밀도 예외 | §2.2 표2: recurrent-state 경로와 norm 등 26,238,464개(언어 파라미터의 0.0976%)를 bf16 등으로 보존 | ‘완전 전층 삼진’ 광고와 구별. 우리에는 동일 recurrent-state 경로가 없으므로 정확한 예외 집합·0.0976%를 복사 못 함 |
+| 회전 basis | §2.4: block1024 Hadamard+고정 부호, 가중치는 회전 좌표에서 저장하고 활성값은 런타임 변환 | matrix별 padding/역변환·새 커널이 필요. 백서는 TinyLM의 처음부터 학습하는 TLinear와 같은 최적화/수렴 레시피를 명시하지 않음 |
+| packed 직접 실행 | §3/부록 A: 압축 가중치를 FP16 dense로 펼치지 않고 fused low-bit GEMM에서 decode·scale 적용 | 우리 P014D/P025B처럼 **패킹·언팩·전체 호출 wall**을 같이 재야 한다. synthetic event만으로 도입 금지 |
+
+백서 §2.3의 FP16 53.80GB 대비 5.93GB는 *언어모델 저장 파일* 약9.1배의 비교다. 별도 vision 0.63/0.93GB, KV cache, 활성값, 훈련 optimizer는 이 표의 분모 밖이다. TinyLM의 40MiB 배포 목표나 단일 CPU 15tok/s 목표를 27B의 파일 크기와 같은 눈금으로 판정하지 않는다.
+
+### 7.2 성능과 계측: 높은 평균 뒤에 남는 실패 가족
+
+백서 §4/부록 B·C는 H100의 vLLM/EvalScope 동일 경로에서 thinking `xhigh`, 20 benchmark 평균 **83.9 대 Qwen3.8 FP16 85.4**를 보고한다. 이는 백서가 정의한 평균의 98.2%이지 문항별 오류율·한국어 정확도·교사 답변 검증률의 98.2%가 아니다. `medium`은 별도 부록 C 표11에서 **79.3 대82.6**으로 비율도 다르다. 추가 agentic 과제는 Terminal-Bench 2.1 **52.8 대69.7**, SWE-bench Verified **60.8 대80.6**으로 평균 보존율과 다르게 약 3/4 수준이다. 수치는 모두 공급자 백서의 특정 harness·추론 budget 관측이며 TinyLM 전이효과가 아니다.
+
+§3 표5의 RTX 4090에서는 PTQ1_0이 batch1 decode 96.7tok/s 대 PQ2_0 90.9tok/s이나 prefill은 1,634 대3,134tok/s로 반대다. 4070 Ti SUPER·WSL·단일 CPU에서 동일 우열은 미측정이다. 부록 D는 세 반복과 warm-up, `tg128/pp512`, depth0·batch1·vision 제외, NVIDIA board 전력과 Apple powermetrics의 분모 차이를 밝힌다. 회전 transform은 batch1 decode의 주요 부가비용이며 §5도 최적화 과제로 남긴다.
+
+**버전 분리:** 현재 공급자 [모델카드](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/README.md)는 14 benchmark 평균 **84.78**, PTQ1_0 5.95GB/PQ2_0 7.21GB라고 적는다. 로컬 2026-09-17 생성 백서의 20 benchmark 83.9, 5.93/7.25GB와 평가 집합·포장 수가 다르다. 어느 쪽이 정정인지 확인 없이 병합·평균하지 않고 각 주장에 PDF SHA 또는 모델카드 revision·벤치 목록을 결합한다. HF 페이지의 자동 `:F16`/일반 llama.cpp 사용 예시는 [공식 데모 README](https://github.com/PrismML-Eng/Bonsai-demo/blob/main/README.md)의 ‘Bonsai 2는 Hadamard-aware PrismML fork 필요’ 계약과 충돌한다. F16은 53GB급으로 이 프로젝트 16GB GPU 교사 후보의 저비트 실행 명령이 아니다. 설치·다운로드·실행은 이번 작업에서 `NOT_RUN`이다.
+
+### 7.3 TinyLM 차용·보류·불가 판정
+
+| 요소 | 분류 | 이유와 최소 후속 검증 |
+|---|---|---|
+| packed 직접 소비, decode/prefill 분리, 저장·상주·KV·RSS 별도 회계 | **타당·기존 축 보강** | P014D/P025B의 wall/event·실제 모델 결과를 같은 형상에서 비교. 커널보다 unpack/변환이 크면 같은 패킹도 속도 음성 |
+| 민감한 소수 텐서를 높은 정밀도로 보존 | **개념 차용** | TinyLM TLinear/embedding/norm의 부위별 오류·상주 증가를 먼저 계측. Qwen hybrid recurrent 경로의 0.0976%를 목표 수치로 복사하지 않음 |
+| 고정 Hadamard 회전 뒤 삼진화 | **개선 후에만 연구 후보** | 이미 학습된 FP32↔삼진 TinyLM의 같은 checkpoint·같은 정합/언어 평가와 회전/역회전·padding·decode wall을 분리. 백서에는 우리 from-scratch STE/optimizer 수렴 레시피와 개별 회전 ablation이 없음 |
+| Bonsai 2 27B를 외부 텍스트 교사로 평가 | **개념 차용/조건부 pilot** | Apache-2.0 표시·실제 모델 revision·출력 이용 조건, PrismML fork/quant·template·reasoning effort, 16GB VRAM/KV와 accepted sample당 비용·한국어 검증 QA 정답률을 먼저 확인. 교사와 학생은 순차 실행하고 학생 checkpoint/보호 data 접근 없음 |
+| 27B 수치·98.2%를 TinyLM 직접 품질/속도 향상으로 이식 | **사용불가** | 모델 규모·아키텍처·벤치/언어·runtime·분모가 다름. 27B packed 5.93GB가 TinyLM 40MiB 안에 든다는 해석도 불가 |
+| 백서를 완전한 학습·커널 구현 명세로 취급 | **사용불가** | 공개 문서는 회전 정의·출력·runtime 개요를 제공하지만 훈련 목적/데이터/optimizer·커널 소스 정합을 충분히 고정하지 않음 |
+
+현재 이 백서만으로 TinyLM에 **즉시 적용 가능하면서 큰 효과가 확인된 새 메커니즘은 0건**이다. 따라서 새로운 구현 제안서를 이 결과만으로 만들어 곧바로 기본 경로를 바꾸지 않는다. 최우선 재사용은 기존 P014D/P025B의 전체 호출 실측 계약, 그 다음은 사용자 별도 승인 아래 외부 교사의 **무힌트·독립 검증 pilot**이다. 후자는 본 백서가 TinyLM 증류 성공을 보인 것이 아니라 교사 후보를 비교할 이유를 준다는 뜻이다.

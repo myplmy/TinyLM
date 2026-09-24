@@ -1,6 +1,6 @@
 # P104A — 외부 flash-attn 제외 M4와 M5 소형 dense 교량의 기능 게이트
 
-> 제안 계기: [WSL 이관 제안서](../proposal/20260915_WSL2-Linux-학습환경-단계적-이관-제안서-approved-on-going.md) M4/M5와 사용자 승인. **2026-09-25 현재 Windows Stage1B는 모델 전 Z 드라이브/UNC 경로 오류 exit1; 교정 Stage1Bb는 STATIC_ONLY, Windows/WSL 기능 교량·전체 품질 NOT_RUN.**
+> 제안 계기: [WSL 이관 제안서](../proposal/20260915_WSL2-Linux-학습환경-단계적-이관-제안서-approved-on-going.md) M4/M5와 사용자 승인. **2026-09-25 현재 Windows Stage1B는 모델 전 Z 드라이브/UNC 경로 오류 exit1; 교정 Stage1Bb Windows tiny 수집 PASS, M4 Triton 지정형상 PASS; Windows/WSL 기능 대조·전체 품질 NOT_RUN.**
 
 ## 1. 왜 — backend 지원과 환경 교량을 동적 증거로 구분한다
 
@@ -26,23 +26,23 @@ Triton 커널은 sm89에서 direct 호출될 수 있지만 fp32 dot 제약·TF32
 
 [진단](../scripts/diag_m4_triton_ternary.py)의 --check-only와 [M5 수집기](../scripts/diag_m5_dense_bridge.py)의 --check-only, [비교기](../scripts/check_m5_dense_bridge.py)의 --self-test를 실행한다. 모델·GPU는 0. 두 OS 모두 같은 tracked code SHA와 tiny checkpoint 파일을 사용해야 한다.
 
-### 단계 1 — M4 WSL direct Triton, 사용자 실행
+### 단계 1 — M4 WSL direct Triton 지정형상 PASS(결과095 §6.1), 다른 형상·whole-step 미판정
 
 [WSL SH](../run_P104A_Stage0W_m4_triton_ternary.sh)에서 M64/K768/N768/G128의 reference 대 직접 Triton 호출, NRMS≤0.02, cosine≥0.999, CUDA peak allocated를 기록한다. 미설치/미지원은 exit2, 실행됐지만 정합 문턱 실패는 exit8로 구별한다. 이 gate는 다른 M4 축의 역사 수치와 합쳐야 하며, 훈련 whole-step 가속 판정이 아니다.
 
 ### 단계 2 — M5 같은 tiny checkpoint의 Windows/WSL 소형 dense 교량
 
-[교정 Windows Stage1Bb BAT](../run_P104A_Stage1Bb_m5_dense_bridge.bat)를 먼저, [WSL SH](../run_P104A_Stage1W_m5_dense_bridge.sh)를 나중에 사용자 실행한다. 둘 다 `runs/ckpt/tiny_synthetic_2M_dense.pt`를 읽고 서로 다른 `runs/bench/p104a_m5_*.json`을 새로 쓴다. 입력은 CPU seed104 고정, 같은 checkpoint와 code SHA를 비교기가 강제한다. 업데이트 전·후 평가 CE, 훈련 전 CE/gradient norm, 업데이트된 실제 파라미터 한 좌표의 절댓값 변화, 평가 wall, peak allocated/reserved를 분리 기록한다. 여기서 SGD는 **교량 기능 control**이며 표준 Muon 학습의 품질 대조가 아니다.
+[교정 Windows Stage1Bb BAT](../run_P104A_Stage1Bb_m5_dense_bridge-done.bat)를 먼저, [WSL SH](../run_P104A_Stage1W_m5_dense_bridge.sh)를 나중에 사용자 실행한다. 둘 다 `runs/ckpt/tiny_synthetic_2M_dense.pt`를 읽고 서로 다른 `runs/bench/p104a_m5_*.json`을 새로 쓴다. 입력은 CPU seed104 고정, 같은 checkpoint와 code SHA를 비교기가 강제한다. 업데이트 전·후 평가 CE, 훈련 전 CE/gradient norm, 업데이트된 실제 파라미터 한 좌표의 절댓값 변화, 평가 wall, peak allocated/reserved를 분리 기록한다. 여기서 SGD는 **교량 기능 control**이며 표준 Muon 학습의 품질 대조가 아니다.
 
 ### Stage1B — Windows 소형 dense 수집
 
 사용자 Windows BAT가 같은 tiny checkpoint에서 기능 수치·환경 서명을 먼저 기록한다. V2 JSON에는 optimizer가 실제 바꾼 좌표와 업데이트 후 평가 CE가 반드시 포함된다. 기존 JSON이 있으면 중단하며 자동 덮어쓰지 않는다.
 
-### Stage1Bb — Windows 드라이브/UNC 별칭 교정 재실행
+### Stage1Bb — Windows 드라이브/UNC 별칭 교정 수집 PASS(결과095 §6.2)
 
-2026-09-24 Stage1B는 CUDA·모델 계산 이전에 `Path(__file__)`의 `Z:` 표기와 `ROOT=Path(__file__).resolve()`의 WSL UNC 표기를 `relative_to`로 섞어 `ValueError` 종료코드1이었다. 수집기의 코드 SHA 키를 명시한 저장소 상대 이름으로 고정하고 모든 파일을 동일 ROOT에서 구성했다. 순수 Windows 드라이브·UNC·POSIX 경로 fixture는 PASS지만 Windows 실제 실행은 `NOT_RUN`이다. 별도 Stage1Bb BAT로 동일 tiny checkpoint/seed104·write-once Windows JSON을 새로 생성하며, 그 성공과 동반 WSL Stage1W 뒤에만 M5 소형 기능을 판정한다. 기존 Stage1B 로그는 실패 이력으로 보존한다.
+2026-09-24 Stage1B는 CUDA·모델 계산 이전에 `Path(__file__)`의 `Z:` 표기와 `ROOT=Path(__file__).resolve()`의 WSL UNC 표기를 `relative_to`로 섞어 `ValueError` 종료코드1이었다. 수집기의 코드 SHA 키를 명시한 저장소 상대 이름으로 고정하고 모든 파일을 동일 ROOT에서 구성했다. 순수 경로 fixture에 이어 2026-09-25 Stage1Bb 사용자 Windows tiny model/JSON 수집도 PASS했다. 동일 tiny checkpoint/seed104의 WSL Stage1W를 별도로 실행·비교한 뒤에만 M5 양 OS 소형 기능을 판정한다. 기존 Stage1B 로그는 실패 이력으로 보존한다.
 
-### Stage1W — WSL 소형 dense 수집·대조
+### Stage1W — WSL 소형 dense 수집·대조 NOT_RUN, Windows JSON 선결 충족
 
 사용자 WSL SH는 Win JSON 존재를 선결로 확인하고 WSL 값을 기록한 뒤 둘의 hash·CE·gradient 차이를 판독한다. 어느 쪽도 Codex가 대신 실행하지 않는다.
 
@@ -72,9 +72,9 @@ same real checkpoint·같은 tokenizer·같은 평가 풀·condition signature�
 
 ## 7. 실행 파일과 로그
 
-- `run_P104A_Stage0W_m4_triton_ternary.sh` → 결과번호095의 Stage0W 로그.
-- 원본 실패 Stage1B BAT는 결과095 부록에 명령을 남기고 사용자 승인으로 삭제했으며, 현재 재실행은 [Stage1Bb BAT](../run_P104A_Stage1Bb_m5_dense_bridge.bat) / [WSL Stage1W SH](../run_P104A_Stage1W_m5_dense_bridge.sh) 순서다. 플랫폼별 V2 JSON은 기존 출력이 있으면 중단하며 자동 덮어쓰지 않는다.
-- 사용자가 실제 실행하기 전 상태는 `E2E_NOT_RUN`. 전체 WSL 제안서 종료는 M4 범위별 실제 판정, M5 실제 품질 교량, 사용자 최종 정본 승인까지 필요하다.
+- `run_P104A_Stage0W_m4_triton_ternary-done.sh` → 결과번호095의 Stage0W 로그.
+- 원본 실패 Stage1B BAT는 결과095 부록에 명령을 남기고 사용자 승인으로 삭제했으며, 현재 재실행은 [Stage1Bb BAT](../run_P104A_Stage1Bb_m5_dense_bridge-done.bat) / [WSL Stage1W SH](../run_P104A_Stage1W_m5_dense_bridge.sh) 순서다. 플랫폼별 V2 JSON은 기존 출력이 있으면 중단하며 자동 덮어쓰지 않는다.
+- Stage0W 지정형상과 Windows Stage1Bb는 사용자 실행 PASS, WSL Stage1W·전체 M4/M5 품질은 `E2E_NOT_RUN`. 전체 WSL 제안서 종료에는 M4 범위별 판정, M5 실제 품질 교량, 사용자 최종 정본 승인이 필요하다.
 
 ## 8. 한계
 
@@ -86,3 +86,5 @@ same real checkpoint·같은 tokenizer·같은 평가 풀·condition signature�
 - 2026-09-24: 사용자 승인으로 Windows 단계 `Stage1Win`을 `Stage1B`로 개명했다. M5 진단은 업데이트 호출뿐 아니라 실제 파라미터 변화와 후 평가 CE를 V2 JSON으로 기록하도록 보강했다. 소형 checkpoint 실제 실행은 여전히 `NOT_RUN`.
 
 - 2026-09-25 사용자 로그 회수: [결과095](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md)의 Windows Stage1B는 모델 전 `Z:`/UNC `relative_to` ValueError로 exit1이었다. 양 OS CE가 가깝다는 §3 예측은 **시험되지 않았다**. 코드 SHA 키를 동일 ROOT의 명시 상대 이름으로 만들고 Windows 드라이브·UNC·POSIX 순수 경로 fixture PASS; 사용자 Stage1Bb 실제 Windows E2E는 `NOT_RUN`. 원 BAT는 -done 실패 이력, 새 `run_P104A_Stage1Bb_m5_dense_bridge.bat` 성공 뒤 기존 Stage1W와 대조한다. 소형 PASS여도 전체 M5 품질은 남는다.
+
+- 2026-09-25 추가 사용자 로그: [결과095 §6](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md)의 Stage0W direct Triton M64/K768/N768/G128는 NRMS0.00039494·cosine1·exit0으로 **그 형상만** 기능 PASS. Windows Stage1Bb는 tiny model/one-step 수집과 V2 JSON 기록이 exit0이며, 승인된 정확 JSON의 코드 SHA 다섯 개가 현 WSL 코드와 일치한다. `float(loss)` 경고는 backward/SGD 뒤 scalar 직렬화에서만 발생해 이번 양 OS 교량의 코드를 바꾸지 않는다. WSL Stage1W 비교, 전체 M4 백엔드/real-checkpoint M5 품질은 `NOT_RUN`이고 M4/M5 이관 전체 done 아님. 실행한 두 런처는 `-done`으로 개명했다.
