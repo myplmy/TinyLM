@@ -180,15 +180,22 @@ class TiedMLPTransformer(nn.Module):
             raise RuntimeError("P102A quant cache requires a fresh training update")
         if any(m._i8 is not None or m._lut_codes is not None for m in self._tlinear_cache):
             raise RuntimeError("P102A quant cache cannot use deployment weights")
-        self.refresh_quant()
         entries = []
-        for module in self._tlinear_cache:
-            graph = module._wq
-            if graph is None or not graph.requires_grad:
-                raise RuntimeError("P102A STE surrogate has no gradient graph")
-            leaf = graph.detach().requires_grad_(True)
-            module._wq = leaf
-            entries.append((module, graph, leaf))
+        try:
+            self.refresh_quant()
+            for module in self._tlinear_cache:
+                graph = module._wq
+                if graph is None or not graph.requires_grad:
+                    raise RuntimeError("P102A STE surrogate has no gradient graph")
+                leaf = graph.detach().requires_grad_(True)
+                module._wq = leaf
+                entries.append((module, graph, leaf))
+            if not entries:
+                raise RuntimeError("P102A quant cache has no STE modules")
+        except Exception:
+            for module in self._tlinear_cache:
+                module._wq = None
+            raise
         self._p102a_quant_update = entries
 
     def finish_quant_update_cache(self):
@@ -196,10 +203,10 @@ class TiedMLPTransformer(nn.Module):
         entries = self._p102a_quant_update
         if entries is None:
             raise RuntimeError("P102A quant cache was not started")
+        if any(module._wq is not leaf for module, _, leaf in entries):
+            raise RuntimeError("P102A cached surrogate was replaced during the update")
         graphs, gradients = [], []
         for module, graph, leaf in entries:
-            if module._wq is not leaf:
-                raise RuntimeError("P102A cached surrogate was replaced during the update")
             module._wq = None
             if leaf.grad is not None:
                 graphs.append(graph)

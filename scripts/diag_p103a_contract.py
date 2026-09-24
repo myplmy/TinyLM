@@ -21,7 +21,7 @@ def main() -> int:
     import torch.nn.functional as F
     from tinylm.train.p103a_contract import (
         ffn_tiles, quantize_boundary_int8, dequantize_boundary_int8,
-        boundary_cache_bytes, BoundaryTable,
+        boundary_cache_bytes, BoundaryTable, ffn_tile_accounting,
     )
 
     torch.manual_seed(103)
@@ -133,6 +133,44 @@ def main() -> int:
         pass
     else:
         raise RuntimeError("X3 off-grid random crop was accepted")
+    accounting = ffn_tile_accounting(768, 2048, 16, 512, 1)
+    if (accounting["full_ffn_weight_elements"] != 75497472
+            or accounting["selected_gemm_weight_elements"] != 18874368
+            or accounting["selected_operand_fraction"] != 0.25
+            or accounting["fp32_master_bytes"] != 301989888
+            or accounting["muon_buffer_bytes"] != 301989888
+            or accounting["optimizer_shape_fraction"] != 1.0):
+        raise RuntimeError("X2 selected GEMM vs full Muon-state accounting differs")
+    from tinylm.train.p103a_contract import fixed_window_cache_budget, validate_window_cache_manifest
+    budget = fixed_window_cache_budget(2_000_000, 1024, 768)
+    if (budget["windows"] != 1953 or budget["boundary_tokens"] != 1_999_872
+            or budget["unused_source_tokens"] != 127
+            or budget["exact_payload_bytes"] != 6_143_606_784
+            or budget["int8_per64_payload_bytes"] != 1_631_895_552):
+        raise RuntimeError("X3 2M fixed-window payload accounting differs")
+    manifest = {"schema": "P103A_FIXED_WINDOW_CACHE_V1",
+                "parent_sha256": "A" * 64, "tokenizer_sha256": "B" * 64,
+                "source_cache_meta_sha256": "C" * 64,
+                "source_window_sha256": "D" * 64,
+                "lower_function_sha256": "E" * 64,
+                "context_policy": "fixed_window_causal_start0_v1",
+                "tokenizer_lineage": "legacy32", "backend_signature": "cpu_fp32_fixture",
+                "split_layer": 12, "precision": "fp32", "source_tokens": 2_000_000,
+                "seq": 1024, "dim": 768, "group": 64, "windows": 1953,
+                "boundary_tokens": 1_999_872, "payload_bytes": 6_143_606_784}
+    validate_window_cache_manifest(manifest)
+    validate_window_cache_manifest(dict(manifest, precision="int8_per64",
+                                        payload_bytes=1_631_895_552))
+    for bad in (dict(manifest, parent_sha256="wrong"),
+                dict(manifest, context_policy="random_crop"),
+                dict(manifest, payload_bytes=6_143_606_783)):
+        try:
+            validate_window_cache_manifest(bad)
+        except ValueError:
+            pass
+        else:
+            raise RuntimeError("X3 stale/wrong 2M cache manifest was accepted")
+    print(f"[BUDGET] X2 selected operand 0.25, full Muon buffer 301989888B; X3 2M windows={budget['windows']} exact={budget['exact_payload_bytes']}B INT8={budget['int8_per64_payload_bytes']}B")
     print(f"[PASS] P103A X1 toy VJP; X2 full/tile; X3 exact window-key/fixed S+1 grid, INT8 nrms={nrms:.6g} size={expected}B")
     print("[LIMIT] X1 transformer attention, X2 optimizer, X3 whole-model/RAM/quality NOT_RUN")
     return 0

@@ -161,3 +161,66 @@ def gather_fixed_window_xy(stream: torch.Tensor, starts: torch.Tensor, seq: int)
     offsets = torch.arange(seq + 1, device=stream.device)
     raw = stream[(starts.to(stream.device)[:, None] + offsets[None, :])]
     return raw[:, :-1], raw[:, 1:]
+
+def ffn_tile_accounting(dim: int, ffn_dim: int, layers: int, tile_size: int, active_tiles: int) -> dict:
+    """X2 operand reduction vs unchanged dense Muon state; no speed claim."""
+    if (min(dim, ffn_dim, layers, tile_size, active_tiles) < 1
+            or ffn_dim % tile_size or active_tiles > ffn_dim // tile_size):
+        raise ValueError("invalid X2 FFN tile accounting dimensions")
+    full = layers * 3 * dim * ffn_dim
+    selected = layers * 3 * dim * tile_size * active_tiles
+    return {"full_ffn_weight_elements": full,
+            "selected_gemm_weight_elements": selected,
+            "selected_operand_fraction": selected / full,
+            "fp32_master_bytes": full * 4,
+            "muon_buffer_bytes": full * 4,
+            "optimizer_shape_fraction": 1.0}
+
+def fixed_window_cache_budget(source_tokens: int, seq: int, dim: int, *,
+                              group: int = 64, exact_dtype_bytes: int = 4) -> dict:
+    """Lower-bound payload sizes for aligned S+1 crops; no allocation or speed claim."""
+    values = (source_tokens, seq, dim, group, exact_dtype_bytes)
+    if (any(isinstance(value, bool) or not isinstance(value, int) for value in values)
+            or source_tokens <= seq or seq < 2 or dim < 1 or group < 1
+            or dim % group or exact_dtype_bytes not in (2, 4)):
+        raise ValueError("invalid fixed-window cache layout")
+    windows = (source_tokens - 1) // seq
+    positions = windows * seq
+    return {"windows": windows, "boundary_tokens": positions,
+            "unused_source_tokens": source_tokens - positions - 1,
+            "exact_payload_bytes": positions * dim * exact_dtype_bytes,
+            "int8_per64_payload_bytes": boundary_cache_bytes(positions, dim, group=group),
+            "window_hash_bytes": windows * 32, "window_offset_bytes": windows * 8}
+
+
+def validate_window_cache_manifest(manifest: dict) -> dict:
+    """Validate a proposed pinned layout, not the existence or contents of a cache file."""
+    import re
+    if not isinstance(manifest, dict) or manifest.get("schema") != "P103A_FIXED_WINDOW_CACHE_V1":
+        raise ValueError("unknown fixed-window manifest")
+    hashes = ("parent_sha256", "tokenizer_sha256", "source_cache_meta_sha256",
+              "source_window_sha256", "lower_function_sha256")
+    if any(not isinstance(manifest.get(key), str) or not re.fullmatch(
+            "[0-9A-Fa-f]{64}", manifest[key]) for key in hashes):
+        raise ValueError("fixed-window cache provenance hash is missing")
+    if (manifest.get("context_policy") != "fixed_window_causal_start0_v1"
+            or manifest.get("tokenizer_lineage") != "legacy32"
+            or not isinstance(manifest.get("backend_signature"), str)
+            or not manifest["backend_signature"].strip()
+            or not isinstance(manifest.get("split_layer"), int)
+            or isinstance(manifest["split_layer"], bool) or manifest["split_layer"] < 1):
+        raise ValueError("fixed-window model/position contract differs")
+    precision = manifest.get("precision")
+    if precision not in ("fp32", "bf16", "fp16", "int8_per64"):
+        raise ValueError("unsupported fixed-window precision")
+    layout = fixed_window_cache_budget(
+        manifest.get("source_tokens"), manifest.get("seq"), manifest.get("dim"),
+        group=manifest.get("group", 64),
+        exact_dtype_bytes=4 if precision == "fp32" else 2)
+    required_bytes = (layout["int8_per64_payload_bytes"] if precision == "int8_per64"
+                      else layout["exact_payload_bytes"])
+    if (manifest.get("windows") != layout["windows"]
+            or manifest.get("boundary_tokens") != layout["boundary_tokens"]
+            or manifest.get("payload_bytes") != required_bytes):
+        raise ValueError("fixed-window cache shape or byte count differs")
+    return layout

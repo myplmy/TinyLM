@@ -58,6 +58,45 @@ def main() -> int:
     if not torch.allclose(ref1 + ref2, joint, rtol=1e-6, atol=1e-6):
         raise RuntimeError("S2 VJP sum contract differs")
 
+    from types import SimpleNamespace
+    from tinylm.model.transformer import TiedMLPTransformer
+    weight = torch.tensor([1.0, 2.0], requires_grad=True)
+    first = SimpleNamespace(_i8=None, _lut_codes=None, _wq=None)
+    second = SimpleNamespace(_i8=None, _lut_codes=None, _wq=None)
+    def broken_refresh():
+        first._wq = weight.square()
+        second._wq = None
+    fake = SimpleNamespace(training=True, _quant_frozen=False,
+                           _p102a_quant_update=None, _tlinear_cache=[first, second],
+                           refresh_quant=broken_refresh)
+    try:
+        TiedMLPTransformer.begin_quant_update_cache(fake)
+    except RuntimeError:
+        pass
+    else:
+        raise RuntimeError("S2 accepted an incomplete STE cache")
+    if first._wq is not None or second._wq is not None or fake._p102a_quant_update is not None:
+        raise RuntimeError("S2 begin failure left partial cache state")
+    fake._tlinear_cache = [first]
+    fake.refresh_quant = lambda: setattr(first, "_wq", weight.square())
+    TiedMLPTransformer.begin_quant_update_cache(fake)
+    (first._wq * 3).sum().backward()
+    TiedMLPTransformer.finish_quant_update_cache(fake)
+    if not torch.equal(weight.grad, torch.tensor([6.0, 12.0])):
+        raise RuntimeError("S2 cached STE VJP gradient differs")
+    weight.grad = None
+    TiedMLPTransformer.begin_quant_update_cache(fake)
+    first._wq = torch.zeros_like(first._wq)
+    try:
+        TiedMLPTransformer.finish_quant_update_cache(fake)
+    except RuntimeError:
+        pass
+    else:
+        raise RuntimeError("S2 accepted a replaced STE leaf")
+    TiedMLPTransformer.abort_quant_update_cache(fake)
+    if first._wq is not None or fake._p102a_quant_update is not None or weight.grad is not None:
+        raise RuntimeError("S2 abort failed to clear a replaced cache")
+
     counts = [2, 3, 4, 5]
     sums = [torch.tensor(v, dtype=torch.float64) for v in (2, 6, 12, 20)]
     full_mean = sum(sums) / sum(counts)
@@ -74,7 +113,11 @@ def main() -> int:
     if (sum(mask) != 8 or mask != balanced_mtp_micro_mask(16, 1337, 7, 2)
             or random.getstate() != random_state):
         raise RuntimeError("S3 half-sample mask changed shape, determinism or global RNG")
-    print("[PASS] P102A S1 loss/gradients, S2 VJP, S3 HT expectation and private 8/16 selection")
+    clipped_full = torch.tensor(2.0).clamp(-1, 1)
+    mean_clipped_sample = torch.tensor([20.0, -16.0]).clamp(-1, 1).mean()
+    if clipped_full.item() != 1 or mean_clipped_sample.item() != 0:
+        raise RuntimeError("S3 post-clip nonlinearity counterexample changed")
+    print("[PASS] P102A S1 loss/gradients, S2 VJP/lifecycle recovery, S3 HT expectation and private 8/16 selection")
     print("[LIMIT] S1/S2/S3 opt-in code STATIC_ONLY; actual TinyLM model, GPU wall/peak and quality NOT_RUN")
     return 0
 

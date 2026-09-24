@@ -488,3 +488,11 @@ X1의 Transformer mask·position·CLA 통합, X2의 실모델 FFN/optimizer·회
 고정 S+1 비중첩 window sampler와 off-grid crop 거부의 순수 CPU 계약은 PASS했다. [Stage1aW 사용자 게이트](../run_P103A_Stage1aW_m0_boundary.sh)는 같은 고정 SHA의 M0 final을 16층 CLA2 앞12/뒤4로 분리하고 전체 forward 대비 exact boundary의 logits·loss·gradient·한 update를 비교하도록 준비했다. 다만 `--check-only`도 체크포인트/메타데이터를 읽으므로 Codex 자동 안전 검토가 거절했다. 이를 우회하지 않았고 **M0 자산 재검사와 실제 모델 함수 결과는 `NOT_RUN`**이다.
 
 이 게이트에 성공하더라도 8-token 합성 window 수준이며 2M cache build·INT8 근사 품질·20M 단일 RAM/RSS·GPU whole-wall의 채택 문턱은 별도로 남는다.
+
+### 12.5 현재 구현 게이트의 비용 재회계와 2M 확대 조건 — 2026-09-24
+
+X2의 한 tile 물리 GEMM 피연산 원소는 전체 FFN의 25%가 되지만, 현 M0 16층·768×2048 gate/up/down의 FP32 master와 Muon full-width 버퍼는 각각 301,989,888 byte로 그대로 남는다. `muon.py`는 전체 gradient를 직교화한다. 따라서 물리 tile 함수 게이트가 성공해도 optimizer 상주·whole-step 가속을 주장하지 않는다.
+
+X3의 2M source token을 실제 seq1024 비중첩 `S+1` 창으로 자르면 1,953창·boundary 1,999,872위치이며 FP32 exact 원시 payload 6,143,606,784 byte, INT8 per64 원시 payload 1,631,895,552 byte다. 인덱스·모델·임시 버퍼와 RAM page-cache는 제외한 하한이다. 부모·토크나이저·source/window·lower-function SHA와 dtype/backend/split을 묶는 manifest 정적 검사는 구현했지만 실제 2M cache 파일은 만들거나 검증하지 않았다.
+
+현재 사용자 승인 게이트의 GPT 산출물은 [P103A 기능 계획](../test_plan/P103A_X1-X2-X3-계산량-기능계약.md)의 작은 모델 및 고정 M0 Stage1aW까지다. Stage1aW의 실제 경계 dtype·CLA 함수/gradient 로그를 먼저 판독해 실패를 교정하고, 통과 시 정확한 재현 계약으로 **별도 2M builder·uncached/exact/INT8/RSS/wall 후속 항목**을 연다. 이는 사용자 E2E 대기를 현 작업원장의 GPT 항목 `진행`이나 `막힘`으로 남기지 않는 상태 규칙과 별개로, 연구안 자체는 계속 `approved-on-going`이라는 뜻이다.
