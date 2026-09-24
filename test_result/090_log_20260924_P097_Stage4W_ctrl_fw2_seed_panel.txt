@@ -1,0 +1,1528 @@
+
+==============================================================================
+[runlog] 2026-09-24 20:28:57  name=P097_Stage4W_ctrl_fw2_seed_panel
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/eval_bench_suite.py --task klue_ynat --n 1200 --models p097_ctrl_v2 p097_fw2 p097_ctrl_v2_s2024 p097_fw2_s2024 p097_ctrl_v2_s31415 p097_fw2_s31415 --model-data ko-en-control-v2 ko-en-fw2 ko-en-control-v2 ko-en-fw2 ko-en-control-v2 ko-en-fw2 --model-arch dense dense dense dense dense dense --preset m100s10 --tokens 300M --seq-max 1024 --seed 99 --device cuda --per-item-jsonl runs/bench/p097_stage4_seed_panel.jsonl --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=1200  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [klue_ynat] ★한국어 뉴스 주제 7지선다   kind=mc   공식 metric=macro-F1(공식)
+================================================================================================
+  전체 9,107행 중 1200문항 (seed=99)  id 앞 10개: [18, 19, 25, 32, 35, 38, 40, 53, 55, 65]
+  ★**우연 수준 = 14.3%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  p097_ctrl_v2       우도acc **17.6%** [95%CI 15.5%~19.8%]  길이정규acc 12.9%  정답CE 7.3773  ★평균마진 +0.2225  ★결정마진 -0.8831  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **17.6%** / 공식 하네스(합logL) **12.9%** (차 +4.67pp)  ·  우리 길이정규(토큰) 12.9% / 공식 acc_norm(문자) 15.8% (차 -2.92pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_fw2           우도acc **40.9%** [95%CI 38.2%~43.7%]  길이정규acc 40.9%  정답CE 6.3501  ★평균마진 +1.4463  ★결정마진 -0.9754  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **40.9%** / 공식 하네스(합logL) **37.5%** (차 +3.42pp)  ·  우리 길이정규(토큰) 40.9% / 공식 acc_norm(문자) 37.9% (차 +3.00pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_ctrl_v2_s2024 우도acc **22.9%** [95%CI 20.6%~25.4%]  길이정규acc 23.4%  정답CE 6.9165  ★평균마진 +0.5368  ★결정마진 -0.7176  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **22.9%** / 공식 하네스(합logL) **20.5%** (차 +2.42pp)  ·  우리 길이정규(토큰) 23.4% / 공식 acc_norm(문자) 16.5% (차 +6.92pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_fw2_s2024     우도acc **24.6%** [95%CI 22.2%~27.1%]  길이정규acc 31.4%  정답CE 7.0768  ★평균마진 +0.7859  ★결정마진 -1.3386  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **24.6%** / 공식 하네스(합logL) **29.0%** (차 -4.42pp)  ·  우리 길이정규(토큰) 31.4% / 공식 acc_norm(문자) 20.9% (차 +10.50pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_ctrl_v2_s31415 우도acc **33.4%** [95%CI 30.8%~36.1%]  길이정규acc 25.3%  정답CE 6.9274  ★평균마진 +0.8062  ★결정마진 -0.4731  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **33.4%** / 공식 하네스(합logL) **27.1%** (차 +6.33pp)  ·  우리 길이정규(토큰) 25.3% / 공식 acc_norm(문자) 24.8% (차 +0.58pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_fw2_s31415    우도acc **46.8%** [95%CI 43.9%~49.6%]  길이정규acc 31.6%  정답CE 6.5136  ★평균마진 +1.4972  ★결정마진 -0.5267  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **46.8%** / 공식 하네스(합logL) **40.4%** (차 +6.33pp)  ·  우리 길이정규(토큰) 31.6% / 공식 acc_norm(문자) 37.2% (차 -5.58pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  ── paired 정답CE 비교 (★**ID 교집합** 1200문항) ──
+     모델별 보유: p097_ctrl_v2 1200 · p097_fw2 1200 · p097_ctrl_v2_s2024 1200 · p097_fw2_s2024 1200 · p097_ctrl_v2_s31415 1200 · p097_fw2_s31415 1200
+    p097_ctrl_v2 - p097_fw2: Δ +1.0272 ± 0.0499  SD 0.8818 SE 0.0255 t +40.35  승률 87.5%  필요N(SE0.002) **194,396**
+      ★**부호는 확정이다**(t +40.35). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 194,396) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.9744, +1.0774] (가족 1200개 · 문항 CI 의 **1.03배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2 - p097_ctrl_v2_s2024: Δ +0.4608 ± 0.0419  SD 0.7403 SE 0.0214 t +21.56  승률 75.7%  필요N(SE0.002) **137,026**
+      ★**부호는 확정이다**(t +21.56). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 137,026) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.4182, +0.5044] (가족 1200개 · 문항 CI 의 **1.03배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2 - p097_fw2_s2024: Δ +0.3006 ± 0.0517  SD 0.9133 SE 0.0264 t +11.40  승률 63.0%  필요N(SE0.002) **208,508**
+      ★**부호는 확정이다**(t +11.40). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 208,508) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.2465, +0.3526] (가족 1200개 · 문항 CI 의 **1.03배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2 - p097_ctrl_v2_s31415: Δ +0.4499 ± 0.0319  SD 0.5643 SE 0.0163 t +27.62  승률 78.2%  필요N(SE0.002) **79,600**
+      ★**부호는 확정이다**(t +27.62). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 79,600) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.4182, +0.4811] (가족 1200개 · 문항 CI 의 **0.99배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2 - p097_fw2_s31415: Δ +0.8638 ± 0.0509  SD 0.8991 SE 0.0260 t +33.28  승률 82.7%  필요N(SE0.002) **202,089**
+      ★**부호는 확정이다**(t +33.28). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 202,089) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.8096, +0.9171] (가족 1200개 · 문항 CI 의 **1.06배**)  ✅0 을 안 포함한다
+    p097_fw2 - p097_ctrl_v2_s2024: Δ -0.5664 ± 0.0422  SD 0.7460 SE 0.0215 t -26.30  승률 21.1%  필요N(SE0.002) **139,127**
+      ★**부호는 확정이다**(t -26.30). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 139,127) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.6093, -0.5240] (가족 1200개 · 문항 CI 의 **1.01배**)  ✅0 을 안 포함한다
+    p097_fw2 - p097_fw2_s2024: Δ -0.7266 ± 0.0477  SD 0.8426 SE 0.0243 t -29.87  승률 19.8%  필요N(SE0.002) **177,496**
+      ★**부호는 확정이다**(t -29.87). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 177,496) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.7757, -0.6778] (가족 1200개 · 문항 CI 의 **1.03배**)  ✅0 을 안 포함한다
+    p097_fw2 - p097_ctrl_v2_s31415: Δ -0.5773 ± 0.0521  SD 0.9213 SE 0.0266 t -21.70  승률 26.1%  필요N(SE0.002) **212,221**
+      ★**부호는 확정이다**(t -21.70). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 212,221) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.6335, -0.5243] (가족 1200개 · 문항 CI 의 **1.05배**)  ✅0 을 안 포함한다
+    p097_fw2 - p097_fw2_s31415: Δ -0.1634 ± 0.0425  SD 0.7517 SE 0.0217 t -7.53  승률 41.4%  필요N(SE0.002) **141,254**
+      ★**부호는 확정이다**(t -7.53). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 141,254) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.2071, -0.1202] (가족 1200개 · 문항 CI 의 **1.02배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2_s2024 - p097_fw2_s2024: Δ -0.1603 ± 0.0486  SD 0.8581 SE 0.0248 t -6.47  승률 42.5%  필요N(SE0.002) **184,087**
+      ★**부호는 확정이다**(t -6.47). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 184,087) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.2081, -0.1111] (가족 1200개 · 문항 CI 의 **1.00배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2_s2024 - p097_ctrl_v2_s31415: Δ -0.0109 ± 0.0474  SD 0.8383 SE 0.0242 t -0.45  승률 56.5%  필요N(SE0.002) **175,667**
+      ⚠️★**1200 문항으로는 부족하다**(필요 175,667) **그리고** t -0.45 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+      ★★가족 재표집 95%CI [-0.0582, +0.0336] (가족 1200개 · 문항 CI 의 **0.97배**)  🚫★**0 을 포함한다** — 문항을 독립으로 보면 유의했다
+    p097_ctrl_v2_s2024 - p097_fw2_s31415: Δ +0.4029 ± 0.0464  SD 0.8200 SE 0.0237 t +17.02  승률 70.8%  필요N(SE0.002) **168,095**
+      ★**부호는 확정이다**(t +17.02). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 168,095) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.3562, +0.4498] (가족 1200개 · 문항 CI 의 **1.01배**)  ✅0 을 안 포함한다
+    p097_fw2_s2024 - p097_ctrl_v2_s31415: Δ +0.1494 ± 0.0564  SD 0.9967 SE 0.0288 t +5.19  승률 57.4%  필요N(SE0.002) **248,328**
+      ★**부호는 확정이다**(t +5.19). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 248,328) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.0934, +0.2089] (가족 1200개 · 문항 CI 의 **1.02배**)  ✅0 을 안 포함한다
+    p097_fw2_s2024 - p097_fw2_s31415: Δ +0.5632 ± 0.0429  SD 0.7589 SE 0.0219 t +25.71  승률 80.5%  필요N(SE0.002) **143,992**
+      ★**부호는 확정이다**(t +25.71). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 143,992) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.5198, +0.6068] (가족 1200개 · 문항 CI 의 **1.01배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2_s31415 - p097_fw2_s31415: Δ +0.4138 ± 0.0489  SD 0.8642 SE 0.0249 t +16.59  승률 66.1%  필요N(SE0.002) **186,704**
+      ★**부호는 확정이다**(t +16.59). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 186,704) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.3640, +0.4646] (가족 1200개 · 문항 CI 의 **1.03배**)  ✅0 을 안 포함한다
+
+  ── paired 정확도 비교 · McNemar (★**ID 교집합** 1200문항) ──
+     ★비대응 CI 가 겹쳐도 대응 검정은 가를 수 있다. 🚫반대도 있다.
+    p097_ctrl_v2 - p097_fw2: Δacc -23.33pp  불일치 101/381  z -12.75  ★정확p **2.796e-39**  ★**유의**  필요n(z=2) **30** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-26.67pp, -19.92pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_ctrl_v2 - p097_ctrl_v2_s2024: Δacc -5.33pp  불일치 75/139  z -4.37  ★정확p **1.445e-05**  ★**유의**  필요n(z=2) **251** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-7.75pp, -3.00pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_ctrl_v2 - p097_fw2_s2024: Δacc -7.00pp  불일치 63/147  z -5.80  ★정확p **6.465e-09**  ★**유의**  필요n(z=2) **143** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-9.33pp, -4.75pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_ctrl_v2 - p097_ctrl_v2_s31415: Δacc -15.83pp  불일치 62/252  z -10.72  ★정확p **2.543e-28**  ★**유의**  필요n(z=2) **42** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-18.58pp, -13.25pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_ctrl_v2 - p097_fw2_s31415: Δacc -29.17pp  불일치 98/448  z -14.98  ★정확p **1.939e-54**  ★**유의**  필요n(z=2) **22** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-32.58pp, -25.75pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_fw2 - p097_ctrl_v2_s2024: Δacc +18.00pp  불일치 292/76  z +11.26  ★정확p **5.756e-31**  ★**유의**  필요n(z=2) **38** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [+15.08pp, +21.00pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_fw2 - p097_fw2_s2024: Δacc +16.33pp  불일치 287/91  z +10.08  ★정확p **9.186e-25**  ★**유의**  필요n(z=2) **48** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [+13.25pp, +19.33pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_fw2 - p097_ctrl_v2_s31415: Δacc +7.50pp  불일치 233/143  z +4.64  ★정확p **4.014e-06**  ★**유의**  필요n(z=2) **223** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [+4.42pp, +10.75pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_fw2 - p097_fw2_s31415: Δacc -5.83pp  불일치 150/220  z -3.64  ★정확p **0.0003221**  ★**유의**  필요n(z=2) **363** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-8.92pp, -2.42pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_ctrl_v2_s2024 - p097_fw2_s2024: Δacc -1.67pp  불일치 109/129  z -1.30  ★정확p **0.218**  🚫**못 가른다**  필요n(z=2) **2,856** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-4.17pp, +0.75pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 2.4배 늘려야 한다
+    p097_ctrl_v2_s2024 - p097_ctrl_v2_s31415: Δacc -10.50pp  불일치 84/210  z -7.35  ★정확p **1.305e-13**  ★**유의**  필요n(z=2) **89** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-13.17pp, -7.67pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_ctrl_v2_s2024 - p097_fw2_s31415: Δacc -23.83pp  불일치 135/421  z -12.13  ★정확p **3.424e-35**  ★**유의**  필요n(z=2) **33** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-27.33pp, -20.33pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_fw2_s2024 - p097_ctrl_v2_s31415: Δacc -8.83pp  불일치 108/214  z -5.91  ★정확p **3.552e-09**  ★**유의**  필요n(z=2) **138** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-11.58pp, -5.92pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_fw2_s2024 - p097_fw2_s31415: Δacc -22.17pp  불일치 107/373  z -12.14  ★정확p **1.574e-35**  ★**유의**  필요n(z=2) **33** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-25.33pp, -18.83pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_ctrl_v2_s31415 - p097_fw2_s31415: Δacc -13.33pp  불일치 103/263  z -8.36  ★정확p **2.923e-17**  ★**유의**  필요n(z=2) **69** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-16.25pp, -10.25pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  klue_ynat       p097_ctrl_v2            17.6%  정답CE 7.3773 / 평균마진 +0.2225 / ★결정마진 -0.8831 / 공식규약 12.9%(+4.7pp)
+  klue_ynat       p097_fw2                40.9%  정답CE 6.3501 / 평균마진 +1.4463 / ★결정마진 -0.9754 / 공식규약 37.5%(+3.4pp)
+  klue_ynat       p097_ctrl_v2_s2024      22.9%  정답CE 6.9165 / 평균마진 +0.5368 / ★결정마진 -0.7176 / 공식규약 20.5%(+2.4pp)
+  klue_ynat       p097_fw2_s2024          24.6%  정답CE 7.0768 / 평균마진 +0.7859 / ★결정마진 -1.3386 / 공식규약 29.0%(-4.4pp)
+  klue_ynat       p097_ctrl_v2_s31415     33.4%  정답CE 6.9274 / 평균마진 +0.8062 / ★결정마진 -0.4731 / 공식규약 27.1%(+6.3pp)
+  klue_ynat       p097_fw2_s31415         46.8%  정답CE 6.5136 / 평균마진 +1.4972 / ★결정마진 -0.5267 / 공식규약 40.4%(+6.3pp)
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+  [bench-tsv] local upsert updated=6 inserted=12 skipped_models=0 -> test_result/bench_results.tsv
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/uranus/.netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_204900-m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2-benchtable_wide-mHU6hA
+wandb: uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2-benchtable_wide-mHU6hA
+wandb: uploading history steps 23-23, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/klue_ynat/acc 0.17583
+wandb:             bench/klue_ynat/acc_norm 0.12917
+wandb:                 bench/klue_ynat/arch dense
+wandb:                 bench/klue_ynat/data ko-en-control-v2
+wandb:              bench/klue_ynat/gold_ce 7.37734
+wandb:          bench/klue_ynat/gold_margin 0.2225
+wandb: bench/klue_ynat/gold_margin_decision -0.88312
+wandb:          bench/klue_ynat/harness_acc 0.12917
+wandb:     bench/klue_ynat/harness_acc_norm 0.15833
+wandb:                    bench/klue_ynat/n 1200
+wandb:                                  +49 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-control-v2_300M_p097_ctrl_v2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_204900-m100s10_ko-en-control-v2_300M_p097_ctrl_v2/logs
+  ✅ m100s10_ko-en-control-v2_300M_p097_ctrl_v2  (1과제 · summary 키 16개 · 표 6행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_204906-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024-benchtable_wide-1OduoA
+wandb: uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024-benchtable_wide-1OduoA
+wandb: uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt; uploading media/table/bench/table_wide_2290_ab67de99a5aa76b2fbb4.table.json; uploading wandb-summary.json
+wandb: 
+wandb: Run summary:
+wandb:                  bench/klue_ynat/acc 0.22917
+wandb:             bench/klue_ynat/acc_norm 0.23417
+wandb:                 bench/klue_ynat/arch dense
+wandb:                 bench/klue_ynat/data ko-en-control-v2
+wandb:              bench/klue_ynat/gold_ce 6.9165
+wandb:          bench/klue_ynat/gold_margin 0.5368
+wandb: bench/klue_ynat/gold_margin_decision -0.71761
+wandb:          bench/klue_ynat/harness_acc 0.205
+wandb:     bench/klue_ynat/harness_acc_norm 0.165
+wandb:                    bench/klue_ynat/n 1200
+wandb:                                  +52 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_204906-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024/logs
+  ✅ m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024  (1과제 · summary 키 16개 · 표 1행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_204912-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415-benchtable_wide-SKIbjA
+wandb: uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415-benchtable_wide-SKIbjA
+wandb: uploading requirements.txt; uploading media/table/bench/table_wide_2290_488080889b57aabcb5d6.table.json; uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json
+wandb: 
+wandb: Run summary:
+wandb:                  bench/klue_ynat/acc 0.33417
+wandb:             bench/klue_ynat/acc_norm 0.25333
+wandb:                 bench/klue_ynat/arch dense
+wandb:                 bench/klue_ynat/data ko-en-control-v2
+wandb:              bench/klue_ynat/gold_ce 6.9274
+wandb:          bench/klue_ynat/gold_margin 0.80615
+wandb: bench/klue_ynat/gold_margin_decision -0.47307
+wandb:          bench/klue_ynat/harness_acc 0.27083
+wandb:     bench/klue_ynat/harness_acc_norm 0.2475
+wandb:                    bench/klue_ynat/n 1200
+wandb:                                  +52 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_204912-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415/logs
+  ✅ m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415  (1과제 · summary 키 16개 · 표 1행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-fw2_300M_p097_fw2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_204919-m100s10_ko-en-fw2_300M_p097_fw2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-fw2_300M_p097_fw2
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2-benchtable_wide-TPiRIw
+wandb: uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2-benchtable_wide-TPiRIw
+wandb: uploading media/table/bench/table_wide_2290_d69caf1020ddbdb39041.table.json; uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt
+wandb: uploading history steps 23-23, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/klue_ynat/acc 0.40917
+wandb:             bench/klue_ynat/acc_norm 0.40917
+wandb:                 bench/klue_ynat/arch dense
+wandb:                 bench/klue_ynat/data ko-en-fw2
+wandb:              bench/klue_ynat/gold_ce 6.35015
+wandb:          bench/klue_ynat/gold_margin 1.44632
+wandb: bench/klue_ynat/gold_margin_decision -0.97538
+wandb:          bench/klue_ynat/harness_acc 0.375
+wandb:     bench/klue_ynat/harness_acc_norm 0.37917
+wandb:                    bench/klue_ynat/n 1200
+wandb:                                  +49 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-fw2_300M_p097_fw2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_204919-m100s10_ko-en-fw2_300M_p097_fw2/logs
+  ✅ m100s10_ko-en-fw2_300M_p097_fw2  (1과제 · summary 키 16개 · 표 6행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_204925-m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s2024-benchtable_wide-QroSew
+wandb: uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s2024-benchtable_wide-QroSew
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: 
+wandb: Run summary:
+wandb:                  bench/klue_ynat/acc 0.24583
+wandb:             bench/klue_ynat/acc_norm 0.31417
+wandb:                 bench/klue_ynat/arch dense
+wandb:                 bench/klue_ynat/data ko-en-fw2
+wandb:              bench/klue_ynat/gold_ce 7.07678
+wandb:          bench/klue_ynat/gold_margin 0.78594
+wandb: bench/klue_ynat/gold_margin_decision -1.33855
+wandb:          bench/klue_ynat/harness_acc 0.29
+wandb:     bench/klue_ynat/harness_acc_norm 0.20917
+wandb:                    bench/klue_ynat/n 1200
+wandb:                                  +52 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-fw2_300M_p097_fw2_s2024 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_204925-m100s10_ko-en-fw2_300M_p097_fw2_s2024/logs
+  ✅ m100s10_ko-en-fw2_300M_p097_fw2_s2024  (1과제 · summary 키 16개 · 표 1행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_204930-m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s31415-benchtable_wide-WTVNrA
+wandb: uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s31415-benchtable_wide-WTVNrA
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media/table/bench/table_wide_2290_8ee6c491c2d883fa92bd.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 23-23, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/klue_ynat/acc 0.4675
+wandb:             bench/klue_ynat/acc_norm 0.31583
+wandb:                 bench/klue_ynat/arch dense
+wandb:                 bench/klue_ynat/data ko-en-fw2
+wandb:              bench/klue_ynat/gold_ce 6.51357
+wandb:          bench/klue_ynat/gold_margin 1.49723
+wandb: bench/klue_ynat/gold_margin_decision -0.52666
+wandb:          bench/klue_ynat/harness_acc 0.40417
+wandb:     bench/klue_ynat/harness_acc_norm 0.37167
+wandb:                    bench/klue_ynat/n 1200
+wandb:                                  +52 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-fw2_300M_p097_fw2_s31415 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_204930-m100s10_ko-en-fw2_300M_p097_fw2_s31415/logs
+  ✅ m100s10_ko-en-fw2_300M_p097_fw2_s31415  (1과제 · summary 키 16개 · 표 1행 [로컬 정본에서 전량 재구성])
+
+  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고
+     프로젝트도 같은 `tinylm` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.
+     키는 `bench/<과제>/<지표>` 다. 올림 6개 · 건너뜀 0개.
+  ★표 키는 `bench/table_wide`(wide) 이고 정본은 `test_result/bench_results.tsv` 다 — 표는 매번 **전량 재구성**한다.
+     Vega y축은 `${field:y_metric}` 하나로 acc/acc_norm/gold_ce 를 바꾼다(제안서 §4.2.3).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 20.7분  (2026-09-24 20:49:37)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-24 20:49:37  name=P097_Stage4W_ctrl_fw2_seed_panel
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/eval_bench_suite.py --task klue_nli --n 1200 --models p097_ctrl_v2 p097_fw2 p097_ctrl_v2_s2024 p097_fw2_s2024 p097_ctrl_v2_s31415 p097_fw2_s31415 --model-data ko-en-control-v2 ko-en-fw2 ko-en-control-v2 ko-en-fw2 ko-en-control-v2 ko-en-fw2 --model-arch dense dense dense dense dense dense --preset m100s10 --tokens 300M --seq-max 1024 --seed 99 --device cuda --per-item-jsonl runs/bench/p097_stage4_seed_panel.jsonl --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=1200  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [klue_nli] ★한국어 NLI 3지선다   kind=mc   공식 metric=accuracy(공식)
+================================================================================================
+  전체 3,000행 중 1200문항 (seed=99)  id 앞 10개: [4, 8, 9, 10, 11, 15, 21, 25, 26, 27]
+  ★**우연 수준 = 33.3%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  p097_ctrl_v2       우도acc **31.6%** [95%CI 29.0%~34.3%]  길이정규acc 33.0%  정답CE 8.0073  ★평균마진 -0.0049  ★결정마진 -1.1056  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **31.6%** / 공식 하네스(합logL) **33.5%** (차 -1.92pp)  ·  우리 길이정규(토큰) 33.0% / 공식 acc_norm(문자) 33.5% (차 -0.50pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_fw2           우도acc **32.0%** [95%CI 29.4%~34.7%]  길이정규acc 32.1%  정답CE 7.6798  ★평균마진 -0.0117  ★결정마진 -0.9241  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **32.0%** / 공식 하네스(합logL) **31.8%** (차 +0.17pp)  ·  우리 길이정규(토큰) 32.1% / 공식 acc_norm(문자) 31.8% (차 +0.25pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+  🚫★**퇴화** — 한 선택지를 95.5% 로 찍는다. 이 숫자는 능력이 아니라 **편향**이다(규약 7)
+
+  p097_ctrl_v2_s2024 우도acc **32.4%** [95%CI 29.8%~35.1%]  길이정규acc 33.6%  정답CE 8.6479  ★평균마진 +0.0276  ★결정마진 -1.1346  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **32.4%** / 공식 하네스(합logL) **33.4%** (차 -1.00pp)  ·  우리 길이정규(토큰) 33.6% / 공식 acc_norm(문자) 33.4% (차 +0.17pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_fw2_s2024     우도acc **32.4%** [95%CI 29.8%~35.1%]  길이정규acc 32.0%  정답CE 7.5702  ★평균마진 +0.0171  ★결정마진 -0.8667  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **32.4%** / 공식 하네스(합logL) **32.5%** (차 -0.08pp)  ·  우리 길이정규(토큰) 32.0% / 공식 acc_norm(문자) 32.5% (차 -0.50pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_ctrl_v2_s31415 우도acc **32.2%** [95%CI 29.7%~34.9%]  길이정규acc 33.6%  정답CE 8.2206  ★평균마진 -0.0763  ★결정마진 -1.5156  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **32.2%** / 공식 하네스(합logL) **32.1%** (차 +0.17pp)  ·  우리 길이정규(토큰) 33.6% / 공식 acc_norm(문자) 32.1% (차 +1.50pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+  🚫★**퇴화** — 한 선택지를 99.3% 로 찍는다. 이 숫자는 능력이 아니라 **편향**이다(규약 7)
+
+  p097_fw2_s31415    우도acc **32.8%** [95%CI 30.2%~35.5%]  길이정규acc 32.2%  정답CE 7.5598  ★평균마진 +0.0428  ★결정마진 -0.7913  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **32.8%** / 공식 하네스(합logL) **31.8%** (차 +1.00pp)  ·  우리 길이정규(토큰) 32.2% / 공식 acc_norm(문자) 31.8% (차 +0.33pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  ── paired 정답CE 비교 (★**ID 교집합** 1200문항) ──
+     모델별 보유: p097_ctrl_v2 1200 · p097_fw2 1200 · p097_ctrl_v2_s2024 1200 · p097_fw2_s2024 1200 · p097_ctrl_v2_s31415 1200 · p097_fw2_s31415 1200
+    p097_ctrl_v2 - p097_fw2: Δ +0.3275 ± 0.1700  SD 3.0044 SE 0.0867 t +3.78  승률 32.7%  필요N(SE0.002) **2,256,605**
+      ★**부호는 확정이다**(t +3.78). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 2,256,605) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.1662, +0.4945] (가족 1200개 · 문항 CI 의 **0.97배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2 - p097_ctrl_v2_s2024: Δ -0.6406 ± 0.0438  SD 0.7747 SE 0.0224 t -28.64  승률 20.8%  필요N(SE0.002) **150,038**
+      ★**부호는 확정이다**(t -28.64). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 150,038) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.6834, -0.5972] (가족 1200개 · 문항 CI 의 **0.98배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2 - p097_fw2_s2024: Δ +0.4372 ± 0.1638  SD 2.8948 SE 0.0836 t +5.23  승률 35.2%  필요N(SE0.002) **2,095,006**
+      ★**부호는 확정이다**(t +5.23). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 2,095,006) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.2834, +0.5972] (가족 1200개 · 문항 CI 의 **0.96배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2 - p097_ctrl_v2_s31415: Δ -0.2132 ± 0.0727  SD 1.2852 SE 0.0371 t -5.75  승률 36.9%  필요N(SE0.002) **412,909**
+      ★**부호는 확정이다**(t -5.75). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 412,909) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.2829, -0.1428] (가족 1200개 · 문항 CI 의 **0.96배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2 - p097_fw2_s31415: Δ +0.4475 ± 0.1667  SD 2.9464 SE 0.0851 t +5.26  승률 34.2%  필요N(SE0.002) **2,170,328**
+      ★**부호는 확정이다**(t +5.26). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 2,170,328) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.2928, +0.6138] (가족 1200개 · 문항 CI 의 **0.96배**)  ✅0 을 안 포함한다
+    p097_fw2 - p097_ctrl_v2_s2024: Δ -0.9681 ± 0.1581  SD 2.7941 SE 0.0807 t -12.00  승률 55.8%  필요N(SE0.002) **1,951,693**
+      ★**부호는 확정이다**(t -12.00). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 1,951,693) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-1.1300, -0.8124] (가족 1200개 · 문항 CI 의 **1.00배**)  ✅0 을 안 포함한다
+    p097_fw2 - p097_fw2_s2024: Δ +0.1097 ± 0.0377  SD 0.6670 SE 0.0193 t +5.70  승률 57.0%  필요N(SE0.002) **111,227**
+      ★**부호는 확정이다**(t +5.70). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 111,227) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.0721, +0.1462] (가족 1200개 · 문항 CI 의 **0.98배**)  ✅0 을 안 포함한다
+    p097_fw2 - p097_ctrl_v2_s31415: Δ -0.5407 ± 0.1164  SD 2.0577 SE 0.0594 t -9.10  승률 55.2%  필요N(SE0.002) **1,058,558**
+      ★**부호는 확정이다**(t -9.10). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 1,058,558) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.6597, -0.4276] (가족 1200개 · 문항 CI 의 **1.00배**)  ✅0 을 안 포함한다
+    p097_fw2 - p097_fw2_s31415: Δ +0.1200 ± 0.0300  SD 0.5305 SE 0.0153 t +7.84  승률 60.3%  필요N(SE0.002) **70,357**
+      ★**부호는 확정이다**(t +7.84). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 70,357) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.0902, +0.1488] (가족 1200개 · 문항 CI 의 **0.98배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2_s2024 - p097_fw2_s2024: Δ +1.0777 ± 0.1520  SD 2.6869 SE 0.0776 t +13.90  승률 54.5%  필요N(SE0.002) **1,804,818**
+      ★**부호는 확정이다**(t +13.90). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 1,804,818) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.9278, +1.2338] (가족 1200개 · 문항 CI 의 **1.01배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2_s2024 - p097_ctrl_v2_s31415: Δ +0.4273 ± 0.0656  SD 1.1593 SE 0.0335 t +12.77  승률 64.8%  필요N(SE0.002) **335,984**
+      ★**부호는 확정이다**(t +12.77). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 335,984) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.3630, +0.4911] (가족 1200개 · 문항 CI 의 **0.98배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2_s2024 - p097_fw2_s31415: Δ +1.0881 ± 0.1556  SD 2.7508 SE 0.0794 t +13.70  승률 51.2%  필요N(SE0.002) **1,891,718**
+      ★**부호는 확정이다**(t +13.70). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 1,891,718) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.9333, +1.2515] (가족 1200개 · 문항 CI 의 **1.02배**)  ✅0 을 안 포함한다
+    p097_fw2_s2024 - p097_ctrl_v2_s31415: Δ -0.6504 ± 0.1073  SD 1.8962 SE 0.0547 t -11.88  승률 52.2%  필요N(SE0.002) **898,880**
+      ★**부호는 확정이다**(t -11.88). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 898,880) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.7586, -0.5468] (가족 1200개 · 문항 CI 의 **0.99배**)  ✅0 을 안 포함한다
+    p097_fw2_s2024 - p097_fw2_s31415: Δ +0.0104 ± 0.0353  SD 0.6238 SE 0.0180 t +0.58  승률 48.8%  필요N(SE0.002) **97,267**
+      ⚠️★**1200 문항으로는 부족하다**(필요 97,267) **그리고** t +0.58 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+      ★★가족 재표집 95%CI [-0.0249, +0.0457] (가족 1200개 · 문항 CI 의 **1.00배**)  🚫★**0 을 포함한다** — 문항을 독립으로 보면 유의했다
+    p097_ctrl_v2_s31415 - p097_fw2_s31415: Δ +0.6608 ± 0.1132  SD 2.0002 SE 0.0577 t +11.44  승률 49.3%  필요N(SE0.002) **1,000,197**
+      ★**부호는 확정이다**(t +11.44). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 1,000,197) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.5509, +0.7756] (가족 1200개 · 문항 CI 의 **0.99배**)  ✅0 을 안 포함한다
+
+  ── paired 정확도 비교 · McNemar (★**ID 교집합** 1200문항) ──
+     ★비대응 CI 가 겹쳐도 대응 검정은 가를 수 있다. 🚫반대도 있다.
+    p097_ctrl_v2 - p097_fw2: Δacc -0.42pp  불일치 54/59  z -0.47  ★정확p **0.7069**  🚫**못 가른다**  필요n(z=2) **21,696** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-2.17pp, +1.33pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 18.1배 늘려야 한다
+    p097_ctrl_v2 - p097_ctrl_v2_s2024: Δacc -0.83pp  불일치 87/97  z -0.74  ★정확p **0.5071**  🚫**못 가른다**  필요n(z=2) **8,832** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-3.25pp, +1.42pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 7.4배 늘려야 한다
+    p097_ctrl_v2 - p097_fw2_s2024: Δacc -0.83pp  불일치 139/149  z -0.59  ★정확p **0.596**  🚫**못 가른다**  필요n(z=2) **13,824** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-3.67pp, +2.00pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 11.5배 늘려야 한다
+    p097_ctrl_v2 - p097_ctrl_v2_s31415: Δacc -0.67pp  불일치 53/61  z -0.75  ★정확p **0.5123**  🚫**못 가른다**  필요n(z=2) **8,550** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-2.42pp, +1.08pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 7.1배 늘려야 한다
+    p097_ctrl_v2 - p097_fw2_s31415: Δacc -1.25pp  불일치 224/239  z -0.70  ★정확p **0.5153**  🚫**못 가른다**  필요n(z=2) **9,878** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-4.83pp, +2.17pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 8.2배 늘려야 한다
+    p097_fw2 - p097_ctrl_v2_s2024: Δacc -0.42pp  불일치 125/130  z -0.31  ★정확p **0.8023**  🚫**못 가른다**  필요n(z=2) **48,960** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-3.17pp, +2.25pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 40.8배 늘려야 한다
+    p097_fw2 - p097_fw2_s2024: Δacc -0.42pp  불일치 147/152  z -0.29  ★정확p **0.8171**  🚫**못 가른다**  필요n(z=2) **57,409** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-3.33pp, +2.50pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 47.8배 늘려야 한다
+    p097_fw2 - p097_ctrl_v2_s31415: Δacc -0.25pp  불일치 19/22  z -0.47  ★정확p **0.7552**  🚫**못 가른다**  필요n(z=2) **21,867** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-1.33pp, +0.75pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 18.2배 늘려야 한다
+    p097_fw2 - p097_fw2_s31415: Δacc -0.83pp  불일치 241/251  z -0.45  ★정확p **0.685**  🚫**못 가른다**  필요n(z=2) **23,617** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-4.42pp, +2.75pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 19.7배 늘려야 한다
+    p097_ctrl_v2_s2024 - p097_fw2_s2024: Δacc +0.00pp  불일치 134/134  z +0.00  ★정확p **1**  🚫**못 가른다**  필요n(z=2) **0** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-2.75pp, +2.67pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_ctrl_v2_s2024 - p097_ctrl_v2_s31415: Δacc +0.17pp  불일치 126/124  z +0.13  ★정확p **0.9496**  🚫**못 가른다**  필요n(z=2) **300,001** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-2.50pp, +2.83pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 250.0배 늘려야 한다
+    p097_ctrl_v2_s2024 - p097_fw2_s31415: Δacc -0.42pp  불일치 216/221  z -0.24  ★정확p **0.8483**  🚫**못 가른다**  필요n(z=2) **83,904** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-3.83pp, +3.00pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 69.9배 늘려야 한다
+    p097_fw2_s2024 - p097_ctrl_v2_s31415: Δacc +0.17pp  불일치 166/164  z +0.11  ★정확p **0.9561**  🚫**못 가른다**  필요n(z=2) **396,000** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-2.83pp, +3.17pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 330.0배 늘려야 한다
+    p097_fw2_s2024 - p097_fw2_s31415: Δacc -0.42pp  불일치 152/157  z -0.28  ★정확p **0.82**  🚫**못 가른다**  필요n(z=2) **59,329** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-3.33pp, +2.33pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 49.4배 늘려야 한다
+    p097_ctrl_v2_s31415 - p097_fw2_s31415: Δacc -0.58pp  불일치 258/265  z -0.31  ★정확p **0.7931**  🚫**못 가른다**  필요n(z=2) **51,233** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-4.42pp, +3.00pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 42.7배 늘려야 한다
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  klue_nli        p097_ctrl_v2            31.6%  정답CE 8.0073 / 평균마진 -0.0049 / ★결정마진 -1.1056 / 공식규약 33.5%(-1.9pp)
+  klue_nli        p097_fw2                32.0%  정답CE 7.6798 / 평균마진 -0.0117 / ★결정마진 -0.9241 / 공식규약 31.8%(+0.2pp)
+  klue_nli        p097_ctrl_v2_s2024      32.4%  정답CE 8.6479 / 평균마진 +0.0276 / ★결정마진 -1.1346 / 공식규약 33.4%(-1.0pp)
+  klue_nli        p097_fw2_s2024          32.4%  정답CE 7.5702 / 평균마진 +0.0171 / ★결정마진 -0.8667 / 공식규약 32.5%(-0.1pp)
+  klue_nli        p097_ctrl_v2_s31415     32.2%  정답CE 8.2206 / 평균마진 -0.0763 / ★결정마진 -1.5156 / 공식규약 32.1%(+0.2pp)
+  klue_nli        p097_fw2_s31415         32.8%  정답CE 7.5598 / 평균마진 +0.0428 / ★결정마진 -0.7913 / 공식규약 31.8%(+1.0pp)
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+  [bench-tsv] local upsert updated=6 inserted=12 skipped_models=0 -> test_result/bench_results.tsv
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/uranus/.netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_205854-m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2-benchtable_wide-mHU6hA
+wandb: uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2-benchtable_wide-mHU6hA
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media/table/bench/table_wide_2291_b667a1d50c738c4248e8.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: 
+wandb: Run summary:
+wandb:                  bench/klue_nli/acc 0.31583
+wandb:             bench/klue_nli/acc_norm 0.33
+wandb:                 bench/klue_nli/arch dense
+wandb:                 bench/klue_nli/data ko-en-control-v2
+wandb:              bench/klue_nli/gold_ce 8.00733
+wandb:          bench/klue_nli/gold_margin -0.00492
+wandb: bench/klue_nli/gold_margin_decision -1.10555
+wandb:          bench/klue_nli/harness_acc 0.335
+wandb:     bench/klue_nli/harness_acc_norm 0.335
+wandb:                    bench/klue_nli/n 1200
+wandb:                                 +65 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-control-v2_300M_p097_ctrl_v2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_205854-m100s10_ko-en-control-v2_300M_p097_ctrl_v2/logs
+  ✅ m100s10_ko-en-control-v2_300M_p097_ctrl_v2  (1과제 · summary 키 16개 · 표 6행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_205900-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024-benchtable_wide-1OduoA
+wandb: uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024-benchtable_wide-1OduoA
+wandb: uploading history steps 24-24, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/klue_nli/acc 0.32417
+wandb:             bench/klue_nli/acc_norm 0.33583
+wandb:                 bench/klue_nli/arch dense
+wandb:                 bench/klue_nli/data ko-en-control-v2
+wandb:              bench/klue_nli/gold_ce 8.64791
+wandb:          bench/klue_nli/gold_margin 0.02755
+wandb: bench/klue_nli/gold_margin_decision -1.13462
+wandb:          bench/klue_nli/harness_acc 0.33417
+wandb:     bench/klue_nli/harness_acc_norm 0.33417
+wandb:                    bench/klue_nli/n 1200
+wandb:                                 +68 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_205900-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024/logs
+  ✅ m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024  (1과제 · summary 키 16개 · 표 2행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_205907-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415-benchtable_wide-SKIbjA
+wandb: uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415-benchtable_wide-SKIbjA
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media/table/bench/table_wide_2291_e4a18661cedd53dd687a.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 24-24, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/klue_nli/acc 0.3225
+wandb:             bench/klue_nli/acc_norm 0.33583
+wandb:                 bench/klue_nli/arch dense
+wandb:                 bench/klue_nli/data ko-en-control-v2
+wandb:              bench/klue_nli/gold_ce 8.22056
+wandb:          bench/klue_nli/gold_margin -0.07632
+wandb: bench/klue_nli/gold_margin_decision -1.51563
+wandb:          bench/klue_nli/harness_acc 0.32083
+wandb:     bench/klue_nli/harness_acc_norm 0.32083
+wandb:                    bench/klue_nli/n 1200
+wandb:                                 +68 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_205907-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415/logs
+  ✅ m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415  (1과제 · summary 키 16개 · 표 2행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-fw2_300M_p097_fw2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_205913-m100s10_ko-en-fw2_300M_p097_fw2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-fw2_300M_p097_fw2
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2-benchtable_wide-TPiRIw
+wandb: uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2-benchtable_wide-TPiRIw
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media/table/bench/table_wide_2291_aee43dc68e5cb441d814.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: 
+wandb: Run summary:
+wandb:                  bench/klue_nli/acc 0.32
+wandb:             bench/klue_nli/acc_norm 0.32083
+wandb:                 bench/klue_nli/arch dense
+wandb:                 bench/klue_nli/data ko-en-fw2
+wandb:              bench/klue_nli/gold_ce 7.67983
+wandb:          bench/klue_nli/gold_margin -0.01165
+wandb: bench/klue_nli/gold_margin_decision -0.92412
+wandb:          bench/klue_nli/harness_acc 0.31833
+wandb:     bench/klue_nli/harness_acc_norm 0.31833
+wandb:                    bench/klue_nli/n 1200
+wandb:                                 +65 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-fw2_300M_p097_fw2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_205913-m100s10_ko-en-fw2_300M_p097_fw2/logs
+  ✅ m100s10_ko-en-fw2_300M_p097_fw2  (1과제 · summary 키 16개 · 표 6행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_205919-m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s2024-benchtable_wide-QroSew
+wandb: uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s2024-benchtable_wide-QroSew
+wandb: uploading history steps 24-24, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/klue_nli/acc 0.32417
+wandb:             bench/klue_nli/acc_norm 0.32
+wandb:                 bench/klue_nli/arch dense
+wandb:                 bench/klue_nli/data ko-en-fw2
+wandb:              bench/klue_nli/gold_ce 7.57017
+wandb:          bench/klue_nli/gold_margin 0.01709
+wandb: bench/klue_nli/gold_margin_decision -0.86667
+wandb:          bench/klue_nli/harness_acc 0.325
+wandb:     bench/klue_nli/harness_acc_norm 0.325
+wandb:                    bench/klue_nli/n 1200
+wandb:                                 +68 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-fw2_300M_p097_fw2_s2024 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_205919-m100s10_ko-en-fw2_300M_p097_fw2_s2024/logs
+  ✅ m100s10_ko-en-fw2_300M_p097_fw2_s2024  (1과제 · summary 키 16개 · 표 2행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_205925-m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s31415-benchtable_wide-WTVNrA
+wandb: uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s31415-benchtable_wide-WTVNrA
+wandb: uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt; uploading media/table/bench/table_wide_2291_6dc92b8b7d60fbaa112c.table.json; uploading wandb-summary.json
+wandb: uploading history steps 24-24, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/klue_nli/acc 0.32833
+wandb:             bench/klue_nli/acc_norm 0.32167
+wandb:                 bench/klue_nli/arch dense
+wandb:                 bench/klue_nli/data ko-en-fw2
+wandb:              bench/klue_nli/gold_ce 7.55979
+wandb:          bench/klue_nli/gold_margin 0.0428
+wandb: bench/klue_nli/gold_margin_decision -0.79128
+wandb:          bench/klue_nli/harness_acc 0.31833
+wandb:     bench/klue_nli/harness_acc_norm 0.31833
+wandb:                    bench/klue_nli/n 1200
+wandb:                                 +68 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-fw2_300M_p097_fw2_s31415 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_205925-m100s10_ko-en-fw2_300M_p097_fw2_s31415/logs
+  ✅ m100s10_ko-en-fw2_300M_p097_fw2_s31415  (1과제 · summary 키 16개 · 표 2행 [로컬 정본에서 전량 재구성])
+
+  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고
+     프로젝트도 같은 `tinylm` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.
+     키는 `bench/<과제>/<지표>` 다. 올림 6개 · 건너뜀 0개.
+  ★표 키는 `bench/table_wide`(wide) 이고 정본은 `test_result/bench_results.tsv` 다 — 표는 매번 **전량 재구성**한다.
+     Vega y축은 `${field:y_metric}` 하나로 acc/acc_norm/gold_ce 를 바꾼다(제안서 §4.2.3).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 9.9분  (2026-09-24 20:59:32)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-24 20:59:32  name=P097_Stage4W_ctrl_fw2_seed_panel
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/eval_bench_suite.py --task arc_easy_full --n 1200 --models p097_ctrl_v2 p097_fw2 p097_ctrl_v2_s2024 p097_fw2_s2024 p097_ctrl_v2_s31415 p097_fw2_s31415 --model-data ko-en-control-v2 ko-en-fw2 ko-en-control-v2 ko-en-fw2 ko-en-control-v2 ko-en-fw2 --model-arch dense dense dense dense dense dense --preset m100s10 --tokens 300M --seq-max 1024 --seed 99 --device cuda --per-item-jsonl runs/bench/p097_stage4_seed_panel.jsonl --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=1200  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [arc_easy_full] ★4지선다 과학 전량 5,197   kind=mc   공식 metric=acc / acc_norm
+================================================================================================
+  전체 5,197행 중 1200문항 (seed=99)  id 앞 10개: [1, 5, 9, 11, 14, 19, 20, 24, 30, 33]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  p097_ctrl_v2       우도acc **34.0%** [95%CI 31.4%~36.7%]  길이정규acc 33.6%  정답CE 6.2053  ★평균마진 +0.2997  ★결정마진 -0.3333  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **34.0%** / 공식 하네스(합logL) **36.4%** (차 -2.42pp)  ·  우리 길이정규(토큰) 33.6% / 공식 acc_norm(문자) 36.6% (차 -3.00pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_fw2           우도acc **36.3%** [95%CI 33.7%~39.1%]  길이정규acc 32.6%  정답CE 6.4385  ★평균마진 +0.3568  ★결정마진 -0.3417  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **36.3%** / 공식 하네스(합logL) **36.1%** (차 +0.25pp)  ·  우리 길이정규(토큰) 32.6% / 공식 acc_norm(문자) 35.4% (차 -2.83pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_ctrl_v2_s2024 우도acc **39.6%** [95%CI 36.9%~42.4%]  길이정규acc 35.0%  정답CE 6.1477  ★평균마진 +0.3487  ★결정마진 -0.2780  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **39.6%** / 공식 하네스(합logL) **38.6%** (차 +1.00pp)  ·  우리 길이정규(토큰) 35.0% / 공식 acc_norm(문자) 35.2% (차 -0.25pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_fw2_s2024     우도acc **33.6%** [95%CI 31.0%~36.3%]  길이정규acc 33.8%  정답CE 6.2228  ★평균마진 +0.2752  ★결정마진 -0.3307  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **33.6%** / 공식 하네스(합logL) **38.2%** (차 -4.58pp)  ·  우리 길이정규(토큰) 33.8% / 공식 acc_norm(문자) 35.3% (차 -1.58pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_ctrl_v2_s31415 우도acc **35.3%** [95%CI 32.7%~38.1%]  길이정규acc 32.9%  정답CE 6.7890  ★평균마진 +0.3178  ★결정마진 -0.3409  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **35.3%** / 공식 하네스(합logL) **37.7%** (차 -2.33pp)  ·  우리 길이정규(토큰) 32.9% / 공식 acc_norm(문자) 34.8% (차 -1.92pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_fw2_s31415    우도acc **34.7%** [95%CI 32.0%~37.4%]  길이정규acc 33.8%  정답CE 6.4669  ★평균마진 +0.2842  ★결정마진 -0.3175  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **34.7%** / 공식 하네스(합logL) **37.2%** (차 -2.58pp)  ·  우리 길이정규(토큰) 33.8% / 공식 acc_norm(문자) 35.2% (차 -1.42pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  ── paired 정답CE 비교 (★**ID 교집합** 1200문항) ──
+     모델별 보유: p097_ctrl_v2 1200 · p097_fw2 1200 · p097_ctrl_v2_s2024 1200 · p097_fw2_s2024 1200 · p097_ctrl_v2_s31415 1200 · p097_fw2_s31415 1200
+    p097_ctrl_v2 - p097_fw2: Δ -0.2332 ± 0.0527  SD 0.9307 SE 0.0269 t -8.68  승률 38.2%  필요N(SE0.002) **216,544**
+      ★**부호는 확정이다**(t -8.68). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 216,544) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.2847, -0.1798] (가족 1200개 · 문항 CI 의 **1.00배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2 - p097_ctrl_v2_s2024: Δ +0.0577 ± 0.0413  SD 0.7306 SE 0.0211 t +2.73  승률 52.1%  필요N(SE0.002) **133,449**
+      ★**부호는 확정이다**(t +2.73). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 133,449) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.0184, +0.1000] (가족 1200개 · 문항 CI 의 **0.99배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2 - p097_fw2_s2024: Δ -0.0174 ± 0.0517  SD 0.9143 SE 0.0264 t -0.66  승률 46.0%  필요N(SE0.002) **208,982**
+      ⚠️★**1200 문항으로는 부족하다**(필요 208,982) **그리고** t -0.66 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+      ★★가족 재표집 95%CI [-0.0697, +0.0355] (가족 1200개 · 문항 CI 의 **1.02배**)  🚫★**0 을 포함한다** — 문항을 독립으로 보면 유의했다
+    p097_ctrl_v2 - p097_ctrl_v2_s31415: Δ -0.5836 ± 0.0490  SD 0.8655 SE 0.0250 t -23.36  승률 23.1%  필요N(SE0.002) **187,253**
+      ★**부호는 확정이다**(t -23.36). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 187,253) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.6302, -0.5329] (가족 1200개 · 문항 CI 의 **0.99배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2 - p097_fw2_s31415: Δ -0.2616 ± 0.0572  SD 1.0103 SE 0.0292 t -8.97  승률 39.2%  필요N(SE0.002) **255,168**
+      ★**부호는 확정이다**(t -8.97). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 255,168) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.3206, -0.2067] (가족 1200개 · 문항 CI 의 **1.00배**)  ✅0 을 안 포함한다
+    p097_fw2 - p097_ctrl_v2_s2024: Δ +0.2909 ± 0.0551  SD 0.9740 SE 0.0281 t +10.34  승률 65.8%  필요N(SE0.002) **237,172**
+      ★**부호는 확정이다**(t +10.34). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 237,172) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.2374, +0.3458] (가족 1200개 · 문항 CI 의 **0.98배**)  ✅0 을 안 포함한다
+    p097_fw2 - p097_fw2_s2024: Δ +0.2158 ± 0.0404  SD 0.7142 SE 0.0206 t +10.47  승률 62.2%  필요N(SE0.002) **127,525**
+      ★**부호는 확정이다**(t +10.47). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 127,525) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.1757, +0.2579] (가족 1200개 · 문항 CI 의 **1.02배**)  ✅0 을 안 포함한다
+    p097_fw2 - p097_ctrl_v2_s31415: Δ -0.3504 ± 0.0516  SD 0.9116 SE 0.0263 t -13.32  승률 32.2%  필요N(SE0.002) **207,771**
+      ★**부호는 확정이다**(t -13.32). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 207,771) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.4022, -0.3016] (가족 1200개 · 문항 CI 의 **0.98배**)  ✅0 을 안 포함한다
+    p097_fw2 - p097_fw2_s31415: Δ -0.0284 ± 0.0401  SD 0.7092 SE 0.0205 t -1.39  승률 51.5%  필요N(SE0.002) **125,739**
+      ⚠️★**1200 문항으로는 부족하다**(필요 125,739) **그리고** t -1.39 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+      ★★가족 재표집 95%CI [-0.0709, +0.0124] (가족 1200개 · 문항 CI 의 **1.04배**)  🚫★**0 을 포함한다** — 문항을 독립으로 보면 유의했다
+    p097_ctrl_v2_s2024 - p097_fw2_s2024: Δ -0.0751 ± 0.0543  SD 0.9593 SE 0.0277 t -2.71  승률 43.8%  필요N(SE0.002) **230,087**
+      ★**부호는 확정이다**(t -2.71). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 230,087) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.1279, -0.0210] (가족 1200개 · 문항 CI 의 **0.98배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2_s2024 - p097_ctrl_v2_s31415: Δ -0.6413 ± 0.0506  SD 0.8949 SE 0.0258 t -24.82  승률 21.5%  필요N(SE0.002) **200,202**
+      ★**부호는 확정이다**(t -24.82). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 200,202) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.6924, -0.5908] (가족 1200개 · 문항 CI 의 **1.00배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2_s2024 - p097_fw2_s31415: Δ -0.3192 ± 0.0604  SD 1.0679 SE 0.0308 t -10.36  승률 35.9%  필요N(SE0.002) **285,118**
+      ★**부호는 확정이다**(t -10.36). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 285,118) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.3815, -0.2588] (가족 1200개 · 문항 CI 의 **1.02배**)  ✅0 을 안 포함한다
+    p097_fw2_s2024 - p097_ctrl_v2_s31415: Δ -0.5662 ± 0.0556  SD 0.9834 SE 0.0284 t -19.95  승률 23.2%  필요N(SE0.002) **241,766**
+      ★**부호는 확정이다**(t -19.95). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 241,766) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.6228, -0.5129] (가족 1200개 · 문항 CI 의 **0.99배**)  ✅0 을 안 포함한다
+    p097_fw2_s2024 - p097_fw2_s31415: Δ -0.2442 ± 0.0419  SD 0.7401 SE 0.0214 t -11.43  승률 39.8%  필요N(SE0.002) **136,949**
+      ★**부호는 확정이다**(t -11.43). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 136,949) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [-0.2872, -0.2034] (가족 1200개 · 문항 CI 의 **1.00배**)  ✅0 을 안 포함한다
+    p097_ctrl_v2_s31415 - p097_fw2_s31415: Δ +0.3221 ± 0.0531  SD 0.9381 SE 0.0271 t +11.89  승률 67.0%  필요N(SE0.002) **220,023**
+      ★**부호는 확정이다**(t +11.89). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 220,023) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.2715, +0.3767] (가족 1200개 · 문항 CI 의 **0.99배**)  ✅0 을 안 포함한다
+
+  ── paired 정확도 비교 · McNemar (★**ID 교집합** 1200문항) ──
+     ★비대응 CI 가 겹쳐도 대응 검정은 가를 수 있다. 🚫반대도 있다.
+    p097_ctrl_v2 - p097_fw2: Δacc -2.33pp  불일치 152/180  z -1.54  ★정확p **0.1383**  🚫**못 가른다**  필요n(z=2) **2,033** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-5.25pp, +0.58pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 1.7배 늘려야 한다
+    p097_ctrl_v2 - p097_ctrl_v2_s2024: Δacc -5.58pp  불일치 142/209  z -3.58  ★정확p **0.0004117**  ★**유의**  필요n(z=2) **376** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-8.67pp, -2.50pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_ctrl_v2 - p097_fw2_s2024: Δacc +0.42pp  불일치 181/176  z +0.26  ★정확p **0.8324**  🚫**못 가른다**  필요n(z=2) **68,544** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-2.50pp, +3.58pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 57.1배 늘려야 한다
+    p097_ctrl_v2 - p097_ctrl_v2_s31415: Δacc -1.33pp  불일치 177/193  z -0.83  ★정확p **0.4355**  🚫**못 가른다**  필요n(z=2) **6,938** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-4.58pp, +1.75pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 5.8배 늘려야 한다
+    p097_ctrl_v2 - p097_fw2_s31415: Δacc -0.67pp  불일치 170/178  z -0.43  ★정확p **0.7075**  🚫**못 가른다**  필요n(z=2) **26,100** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-3.75pp, +2.42pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 21.8배 늘려야 한다
+    p097_fw2 - p097_ctrl_v2_s2024: Δacc -3.25pp  불일치 161/200  z -2.05  ★정확p **0.04535**  ★**유의**  필요n(z=2) **1,140** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-6.42pp, -0.33pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_fw2 - p097_fw2_s2024: Δacc +2.75pp  불일치 185/152  z +1.80  ★정확p **0.08115**  🚫**못 가른다**  필요n(z=2) **1,486** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-0.25pp, +5.75pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 1.2배 늘려야 한다
+    p097_fw2 - p097_ctrl_v2_s31415: Δacc +1.00pp  불일치 182/170  z +0.64  ★정확p **0.5577**  🚫**못 가른다**  필요n(z=2) **11,734** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-2.17pp, +4.17pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 9.8배 늘려야 한다
+    p097_fw2 - p097_fw2_s31415: Δacc +1.67pp  불일치 173/153  z +1.11  ★정확p **0.2926**  🚫**못 가른다**  필요n(z=2) **3,912** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-1.17pp, +4.67pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 3.3배 늘려야 한다
+    p097_ctrl_v2_s2024 - p097_fw2_s2024: Δacc +6.00pp  불일치 215/143  z +3.81  ★정확p **0.0001672**  ★**유의**  필요n(z=2) **332** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [+3.00pp, +8.92pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_ctrl_v2_s2024 - p097_ctrl_v2_s31415: Δacc +4.25pp  불일치 205/154  z +2.69  ★정확p **0.008228**  ★**유의**  필요n(z=2) **663** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [+1.17pp, +7.33pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_ctrl_v2_s2024 - p097_fw2_s31415: Δacc +4.92pp  불일치 200/141  z +3.20  ★정확p **0.001645**  ★**유의**  필요n(z=2) **471** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [+2.00pp, +8.00pp] (가족 1200개)  ✅0 을 안 포함한다
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+    p097_fw2_s2024 - p097_ctrl_v2_s31415: Δacc -1.75pp  불일치 165/186  z -1.12  ★정확p **0.2857**  🚫**못 가른다**  필요n(z=2) **3,821** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-4.75pp, +1.25pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 3.2배 늘려야 한다
+    p097_fw2_s2024 - p097_fw2_s31415: Δacc -1.08pp  불일치 147/160  z -0.74  ★정확p **0.4935**  🚫**못 가른다**  필요n(z=2) **8,720** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-3.83pp, +1.92pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 7.3배 늘려야 한다
+    p097_ctrl_v2_s31415 - p097_fw2_s31415: Δacc +0.67pp  불일치 181/173  z +0.43  ★정확p **0.7099**  🚫**못 가른다**  필요n(z=2) **26,550** / 보유 1,200
+      ★★가족 재표집 Δacc 95%CI [-2.42pp, +3.75pp] (가족 1200개)  🚫★**0 을 포함한다**
+        ⚠️★**문항 상관만 담는다** — 🚫**학습 시드 불확실성은 여전히 밖**이다(규칙 45)
+      ⚠️★**이 과제로는 못 가른다.** 문항을 22.1배 늘려야 한다
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  arc_easy_full   p097_ctrl_v2            34.0%  정답CE 6.2053 / 평균마진 +0.2997 / ★결정마진 -0.3333 / 공식규약 36.4%(-2.4pp)
+  arc_easy_full   p097_fw2                36.3%  정답CE 6.4385 / 평균마진 +0.3568 / ★결정마진 -0.3417 / 공식규약 36.1%(+0.3pp)
+  arc_easy_full   p097_ctrl_v2_s2024      39.6%  정답CE 6.1477 / 평균마진 +0.3487 / ★결정마진 -0.2780 / 공식규약 38.6%(+1.0pp)
+  arc_easy_full   p097_fw2_s2024          33.6%  정답CE 6.2228 / 평균마진 +0.2752 / ★결정마진 -0.3307 / 공식규약 38.2%(-4.6pp)
+  arc_easy_full   p097_ctrl_v2_s31415     35.3%  정답CE 6.7890 / 평균마진 +0.3178 / ★결정마진 -0.3409 / 공식규약 37.7%(-2.3pp)
+  arc_easy_full   p097_fw2_s31415         34.7%  정답CE 6.4669 / 평균마진 +0.2842 / ★결정마진 -0.3175 / 공식규약 37.2%(-2.6pp)
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+  [bench-tsv] local upsert updated=6 inserted=12 skipped_models=0 -> test_result/bench_results.tsv
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/uranus/.netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_211154-m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: WARNING Artifact "run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2-benchtable_wide-mHU6hA" already exists with the same content. No new version will be created.
+wandb: updating run metadata
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media/table/bench/table_wide_2292_b667a1d50c738c4248e8.table.json; uploading output.log; uploading wandb-summary.json (+ 1 more)
+wandb: uploading history steps 25-25, summary, console lines 0-0
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy_full/acc 0.34
+wandb:             bench/arc_easy_full/acc_norm 0.33583
+wandb:                 bench/arc_easy_full/arch dense
+wandb:                 bench/arc_easy_full/data ko-en-control-v2
+wandb:              bench/arc_easy_full/gold_ce 6.20535
+wandb:          bench/arc_easy_full/gold_margin 0.29966
+wandb: bench/arc_easy_full/gold_margin_decision -0.33333
+wandb:          bench/arc_easy_full/harness_acc 0.36417
+wandb:     bench/arc_easy_full/harness_acc_norm 0.36583
+wandb:                    bench/arc_easy_full/n 1200
+wandb:                                      +81 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-control-v2_300M_p097_ctrl_v2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 5 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_211154-m100s10_ko-en-control-v2_300M_p097_ctrl_v2/logs
+  ✅ m100s10_ko-en-control-v2_300M_p097_ctrl_v2  (1과제 · summary 키 16개 · 표 6행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_211201-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024-benchtable_wide-1OduoA
+wandb: uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024-benchtable_wide-1OduoA
+wandb: uploading history steps 25-25, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy_full/acc 0.39583
+wandb:             bench/arc_easy_full/acc_norm 0.35
+wandb:                 bench/arc_easy_full/arch dense
+wandb:                 bench/arc_easy_full/data ko-en-control-v2
+wandb:              bench/arc_easy_full/gold_ce 6.14768
+wandb:          bench/arc_easy_full/gold_margin 0.34867
+wandb: bench/arc_easy_full/gold_margin_decision -0.27802
+wandb:          bench/arc_easy_full/harness_acc 0.38583
+wandb:     bench/arc_easy_full/harness_acc_norm 0.3525
+wandb:                    bench/arc_easy_full/n 1200
+wandb:                                      +84 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_211201-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024/logs
+  ✅ m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024  (1과제 · summary 키 16개 · 표 3행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_211207-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415-benchtable_wide-SKIbjA
+wandb: uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415-benchtable_wide-SKIbjA
+wandb: uploading history steps 25-25, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy_full/acc 0.35333
+wandb:             bench/arc_easy_full/acc_norm 0.32917
+wandb:                 bench/arc_easy_full/arch dense
+wandb:                 bench/arc_easy_full/data ko-en-control-v2
+wandb:              bench/arc_easy_full/gold_ce 6.78896
+wandb:          bench/arc_easy_full/gold_margin 0.3178
+wandb: bench/arc_easy_full/gold_margin_decision -0.34095
+wandb:          bench/arc_easy_full/harness_acc 0.37667
+wandb:     bench/arc_easy_full/harness_acc_norm 0.34833
+wandb:                    bench/arc_easy_full/n 1200
+wandb:                                      +84 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_211207-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415/logs
+  ✅ m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415  (1과제 · summary 키 16개 · 표 3행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-fw2_300M_p097_fw2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_211213-m100s10_ko-en-fw2_300M_p097_fw2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-fw2_300M_p097_fw2
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2-benchtable_wide-TPiRIw
+wandb: WARNING Artifact "run-m100s10_ko-en-fw2_300M_p097_fw2-benchtable_wide-TPiRIw" already exists with the same content. No new version will be created.
+wandb: uploading media/table/bench/table_wide_2292_aee43dc68e5cb441d814.table.json; uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy_full/acc 0.36333
+wandb:             bench/arc_easy_full/acc_norm 0.32583
+wandb:                 bench/arc_easy_full/arch dense
+wandb:                 bench/arc_easy_full/data ko-en-fw2
+wandb:              bench/arc_easy_full/gold_ce 6.43855
+wandb:          bench/arc_easy_full/gold_margin 0.35677
+wandb: bench/arc_easy_full/gold_margin_decision -0.34166
+wandb:          bench/arc_easy_full/harness_acc 0.36083
+wandb:     bench/arc_easy_full/harness_acc_norm 0.35417
+wandb:                    bench/arc_easy_full/n 1200
+wandb:                                      +81 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-fw2_300M_p097_fw2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_211213-m100s10_ko-en-fw2_300M_p097_fw2/logs
+  ✅ m100s10_ko-en-fw2_300M_p097_fw2  (1과제 · summary 키 16개 · 표 6행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_211218-m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s2024-benchtable_wide-QroSew
+wandb: uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s2024-benchtable_wide-QroSew
+wandb: uploading history steps 25-25, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy_full/acc 0.33583
+wandb:             bench/arc_easy_full/acc_norm 0.3375
+wandb:                 bench/arc_easy_full/arch dense
+wandb:                 bench/arc_easy_full/data ko-en-fw2
+wandb:              bench/arc_easy_full/gold_ce 6.22275
+wandb:          bench/arc_easy_full/gold_margin 0.27519
+wandb: bench/arc_easy_full/gold_margin_decision -0.3307
+wandb:          bench/arc_easy_full/harness_acc 0.38167
+wandb:     bench/arc_easy_full/harness_acc_norm 0.35333
+wandb:                    bench/arc_easy_full/n 1200
+wandb:                                      +84 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-fw2_300M_p097_fw2_s2024 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_211218-m100s10_ko-en-fw2_300M_p097_fw2_s2024/logs
+  ✅ m100s10_ko-en-fw2_300M_p097_fw2_s2024  (1과제 · summary 키 16개 · 표 3행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_211224-m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s31415-benchtable_wide-WTVNrA
+wandb: uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s31415-benchtable_wide-WTVNrA
+wandb: uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy_full/acc 0.34667
+wandb:             bench/arc_easy_full/acc_norm 0.3375
+wandb:                 bench/arc_easy_full/arch dense
+wandb:                 bench/arc_easy_full/data ko-en-fw2
+wandb:              bench/arc_easy_full/gold_ce 6.46691
+wandb:          bench/arc_easy_full/gold_margin 0.28416
+wandb: bench/arc_easy_full/gold_margin_decision -0.31747
+wandb:          bench/arc_easy_full/harness_acc 0.3725
+wandb:     bench/arc_easy_full/harness_acc_norm 0.35167
+wandb:                    bench/arc_easy_full/n 1200
+wandb:                                      +84 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-fw2_300M_p097_fw2_s31415 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_211224-m100s10_ko-en-fw2_300M_p097_fw2_s31415/logs
+  ✅ m100s10_ko-en-fw2_300M_p097_fw2_s31415  (1과제 · summary 키 16개 · 표 3행 [로컬 정본에서 전량 재구성])
+
+  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고
+     프로젝트도 같은 `tinylm` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.
+     키는 `bench/<과제>/<지표>` 다. 올림 6개 · 건너뜀 0개.
+  ★표 키는 `bench/table_wide`(wide) 이고 정본은 `test_result/bench_results.tsv` 다 — 표는 매번 **전량 재구성**한다.
+     Vega y축은 `${field:y_metric}` 하나로 acc/acc_norm/gold_ce 를 바꾼다(제안서 §4.2.3).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 13.0분  (2026-09-24 21:12:33)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-24 21:12:33  name=P097_Stage4W_ctrl_fw2_seed_panel
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/eval_bench_suite.py --task hellaswag --n 1200 --models p097_ctrl_v2 p097_fw2 p097_ctrl_v2_s2024 p097_fw2_s2024 p097_ctrl_v2_s31415 p097_fw2_s31415 --model-data ko-en-control-v2 ko-en-fw2 ko-en-control-v2 ko-en-fw2 ko-en-control-v2 ko-en-fw2 --model-arch dense dense dense dense dense dense --preset m100s10 --tokens 300M --seq-max 1024 --seed 99 --device cuda --per-item-jsonl runs/bench/p097_stage4_seed_panel.jsonl --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=1200  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [hellaswag] 4지선다 문장완성   kind=mc   공식 metric=acc / acc_norm
+================================================================================================
+  전체 10,042행 중 1200문항 (seed=99)  id 앞 10개: [19, 22, 25, 35, 38, 41, 53, 68, 83, 106]
+  ★**우연 수준 = 25.0%** — 이 값보다 유의하게 높지 않으면 '모델이 못 푼다' 가 답이다
+
+  p097_ctrl_v2       우도acc **27.8%** [95%CI 25.4%~30.4%]  길이정규acc 26.5%  정답CE 3.7440  ★평균마진 +0.0557  ★결정마진 -0.2597  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **27.8%** / 공식 하네스(합logL) **26.4%** (차 +1.42pp)  ·  우리 길이정규(토큰) 26.5% / 공식 acc_norm(문자) 26.1% (차 +0.42pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_fw2           우도acc **28.2%** [95%CI 25.8%~30.9%]  길이정규acc 26.8%  정답CE 3.6832  ★평균마진 +0.0496  ★결정마진 -0.2808  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **28.2%** / 공식 하네스(합logL) **25.7%** (차 +2.58pp)  ·  우리 길이정규(토큰) 26.8% / 공식 acc_norm(문자) 27.2% (차 -0.33pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_ctrl_v2_s2024 우도acc **27.4%** [95%CI 25.0%~30.0%]  길이정규acc 26.1%  정답CE 3.7016  ★평균마진 +0.0472  ★결정마진 -0.2644  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **27.4%** / 공식 하네스(합logL) **25.0%** (차 +2.42pp)  ·  우리 길이정규(토큰) 26.1% / 공식 acc_norm(문자) 26.7% (차 -0.58pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_fw2_s2024     우도acc **27.0%** [95%CI 24.6%~29.6%]  길이정규acc 25.6%  정답CE 3.7047  ★평균마진 +0.0390  ★결정마진 -0.2811  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **27.0%** / 공식 하네스(합logL) **25.8%** (차 +1.25pp)  ·  우리 길이정규(토큰) 25.6% / 공식 acc_norm(문자) 25.3% (차 +0.25pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_ctrl_v2_s31415 우도acc **26.4%** [95%CI 24.0%~29.0%]  길이정규acc 27.3%  정답CE 3.7179  ★평균마진 +0.0468  ★결정마진 -0.2778  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **26.4%** / 공식 하네스(합logL) **25.6%** (차 +0.83pp)  ·  우리 길이정규(토큰) 27.3% / 공식 acc_norm(문자) 26.6% (차 +0.67pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  p097_fw2_s31415    우도acc **27.4%** [95%CI 25.0%~30.0%]  길이정규acc 27.5%  정답CE 3.7040  ★평균마진 +0.0455  ★결정마진 -0.2774  N=1200 제외=0
+     ★평균마진 = 오답 **평균** − 정답 · ★결정마진 = 오답 **최강** − 정답. 🚫**평균마진은 결정 경계가 아니다** — 정답 0, 오답 −1/2/2 면 평균마진이 +1 인데 모델은 틀린다. **argmax 의 부호와 같은 것은 결정마진뿐**이다
+     ★★규약 대조 — 우리(평균CE·PMI) **27.4%** / 공식 하네스(합logL) **25.9%** (차 +1.50pp)  ·  우리 길이정규(토큰) 27.5% / 공식 acc_norm(문자) 26.0% (차 +1.50pp)
+     ⚠️★**공식 열은 '우리 채점기가 하네스 규약을 흉내낸 것'** 이지 하네스를 돌린 것이 아니다 — 프롬프트 형식·few-shot·토크나이저가 다르다. 🚫**리더보드 점수와 직접 비교하지 않는다**
+  ✅ 문항별 원장 1200행(+건너뜀 0행) -^> runs/bench/p097_stage4_seed_panel.jsonl
+
+  ── paired 정답CE 비교 (★**ID 교집합** 1200문항) ──
+     모델별 보유: p097_ctrl_v2 1200 · p097_fw2 1200 · p097_ctrl_v2_s2024 1200 · p097_fw2_s2024 1200 · p097_ctrl_v2_s31415 1200 · p097_fw2_s31415 1200
+    p097_ctrl_v2 - p097_fw2: Δ +0.0608 ± 0.0108  SD 0.1916 SE 0.0055 t +10.99  승률 64.1%  필요N(SE0.002) **9,178**
+      ★**부호는 확정이다**(t +10.99). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 9,178) — **크기를 인용할 때 ± 를 함께 적는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_ctrl_v2 - p097_ctrl_v2_s2024: Δ +0.0424 ± 0.0111  SD 0.1970 SE 0.0057 t +7.46  승률 62.3%  필요N(SE0.002) **9,704**
+      ★**부호는 확정이다**(t +7.46). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 9,704) — **크기를 인용할 때 ± 를 함께 적는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_ctrl_v2 - p097_fw2_s2024: Δ +0.0393 ± 0.0116  SD 0.2053 SE 0.0059 t +6.64  승률 59.8%  필요N(SE0.002) **10,533**
+      ★**부호는 확정이다**(t +6.64). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 10,533) — **크기를 인용할 때 ± 를 함께 적는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_ctrl_v2 - p097_ctrl_v2_s31415: Δ +0.0261 ± 0.0106  SD 0.1868 SE 0.0054 t +4.84  승률 58.2%  필요N(SE0.002) **8,721**
+      ★**부호는 확정이다**(t +4.84). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 8,721) — **크기를 인용할 때 ± 를 함께 적는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_ctrl_v2 - p097_fw2_s31415: Δ +0.0400 ± 0.0110  SD 0.1936 SE 0.0056 t +7.15  승률 61.4%  필요N(SE0.002) **9,366**
+      ★**부호는 확정이다**(t +7.15). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 9,366) — **크기를 인용할 때 ± 를 함께 적는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_fw2 - p097_ctrl_v2_s2024: Δ -0.0183 ± 0.0112  SD 0.1980 SE 0.0057 t -3.21  승률 45.2%  필요N(SE0.002) **9,798**
+      ★**부호는 확정이다**(t -3.21). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 9,798) — **크기를 인용할 때 ± 를 함께 적는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_fw2 - p097_fw2_s2024: Δ -0.0214 ± 0.0113  SD 0.1999 SE 0.0058 t -3.72  승률 44.1%  필요N(SE0.002) **9,986**
+      ★**부호는 확정이다**(t -3.72). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 9,986) — **크기를 인용할 때 ± 를 함께 적는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_fw2 - p097_ctrl_v2_s31415: Δ -0.0347 ± 0.0108  SD 0.1917 SE 0.0055 t -6.27  승률 42.1%  필요N(SE0.002) **9,191**
+      ★**부호는 확정이다**(t -6.27). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 9,191) — **크기를 인용할 때 ± 를 함께 적는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_fw2 - p097_fw2_s31415: Δ -0.0208 ± 0.0103  SD 0.1818 SE 0.0052 t -3.97  승률 44.4%  필요N(SE0.002) **8,263**
+      ★**부호는 확정이다**(t -3.97). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 8,263) — **크기를 인용할 때 ± 를 함께 적는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_ctrl_v2_s2024 - p097_fw2_s2024: Δ -0.0031 ± 0.0119  SD 0.2103 SE 0.0061 t -0.51  승률 49.9%  필요N(SE0.002) **11,060**
+      ⚠️★**1200 문항으로는 부족하다**(필요 11,060) **그리고** t -0.51 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_ctrl_v2_s2024 - p097_ctrl_v2_s31415: Δ -0.0164 ± 0.0107  SD 0.1897 SE 0.0055 t -2.99  승률 46.6%  필요N(SE0.002) **8,995**
+      ★**부호는 확정이다**(t -2.99). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 8,995) — **크기를 인용할 때 ± 를 함께 적는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_ctrl_v2_s2024 - p097_fw2_s31415: Δ -0.0025 ± 0.0114  SD 0.2019 SE 0.0058 t -0.43  승률 50.4%  필요N(SE0.002) **10,187**
+      ⚠️★**1200 문항으로는 부족하다**(필요 10,187) **그리고** t -0.43 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_fw2_s2024 - p097_ctrl_v2_s31415: Δ -0.0133 ± 0.0112  SD 0.1975 SE 0.0057 t -2.33  승률 47.8%  필요N(SE0.002) **9,749**
+      ★**부호는 확정이다**(t -2.33). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 9,749) — **크기를 인용할 때 ± 를 함께 적는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_fw2_s2024 - p097_fw2_s31415: Δ +0.0006 ± 0.0109  SD 0.1924 SE 0.0056 t +0.11  승률 50.2%  필요N(SE0.002) **9,259**
+      ⚠️★**1200 문항으로는 부족하다**(필요 9,259) **그리고** t +0.11 도 2 미만이다 → 이 Δ 로 **서열을 매기지 않는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+    p097_ctrl_v2_s31415 - p097_fw2_s31415: Δ +0.0139 ± 0.0108  SD 0.1901 SE 0.0055 t +2.53  승률 52.7%  필요N(SE0.002) **9,032**
+      ★**부호는 확정이다**(t +2.53). 🚫단 정밀도 목표 SE 0.002 에는 1200 이 부족하다(필요 9,032) — **크기를 인용할 때 ± 를 함께 적는다**
+      ⚠️가족이 1개뿐이라 재표집 CI 를 못 만든다
+
+  ── paired 정확도 비교 · McNemar (★**ID 교집합** 1200문항) ──
+     ★비대응 CI 가 겹쳐도 대응 검정은 가를 수 있다. 🚫반대도 있다.
+    p097_ctrl_v2 - p097_fw2: Δacc -0.42pp  불일치 68/73  z -0.42  ★정확p **0.7364**  🚫**못 가른다**  필요n(z=2) **27,073** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 22.6배 늘려야 한다
+    p097_ctrl_v2 - p097_ctrl_v2_s2024: Δacc +0.42pp  불일치 70/65  z +0.43  ★정확p **0.7308**  🚫**못 가른다**  필요n(z=2) **25,920** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 21.6배 늘려야 한다
+    p097_ctrl_v2 - p097_fw2_s2024: Δacc +0.83pp  불일치 81/71  z +0.81  ★정확p **0.4655**  🚫**못 가른다**  필요n(z=2) **7,296** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 6.1배 늘려야 한다
+    p097_ctrl_v2 - p097_ctrl_v2_s31415: Δacc +1.42pp  불일치 88/71  z +1.35  ★정확p **0.2043**  🚫**못 가른다**  필요n(z=2) **2,641** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 2.2배 늘려야 한다
+    p097_ctrl_v2 - p097_fw2_s31415: Δacc +0.42pp  불일치 74/69  z +0.42  ★정확p **0.7381**  🚫**못 가른다**  필요n(z=2) **27,456** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 22.9배 늘려야 한다
+    p097_fw2 - p097_ctrl_v2_s2024: Δacc +0.83pp  불일치 79/69  z +0.82  ★정확p **0.4595**  🚫**못 가른다**  필요n(z=2) **7,104** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 5.9배 늘려야 한다
+    p097_fw2 - p097_fw2_s2024: Δacc +1.25pp  불일치 81/66  z +1.24  ★정확p **0.2481**  🚫**못 가른다**  필요n(z=2) **3,136** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 2.6배 늘려야 한다
+    p097_fw2 - p097_ctrl_v2_s31415: Δacc +1.83pp  불일치 97/75  z +1.68  ★정확p **0.1091**  🚫**못 가른다**  필요n(z=2) **1,706** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 1.4배 늘려야 한다
+    p097_fw2 - p097_fw2_s31415: Δacc +0.83pp  불일치 77/67  z +0.83  ★정확p **0.4534**  🚫**못 가른다**  필요n(z=2) **6,912** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 5.8배 늘려야 한다
+    p097_ctrl_v2_s2024 - p097_fw2_s2024: Δacc +0.42pp  불일치 76/71  z +0.41  ★정확p **0.7416**  🚫**못 가른다**  필요n(z=2) **28,224** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 23.5배 늘려야 한다
+    p097_ctrl_v2_s2024 - p097_ctrl_v2_s31415: Δacc +1.00pp  불일치 86/74  z +0.95  ★정확p **0.3846**  🚫**못 가른다**  필요n(z=2) **5,334** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 4.4배 늘려야 한다
+    p097_ctrl_v2_s2024 - p097_fw2_s31415: Δacc +0.00pp  불일치 75/75  z +0.00  ★정확p **1**  🚫**못 가른다**  필요n(z=2) **0** / 보유 1,200
+    p097_fw2_s2024 - p097_ctrl_v2_s31415: Δacc +0.58pp  불일치 84/77  z +0.55  ★정확p **0.6364**  🚫**못 가른다**  필요n(z=2) **15,772** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 13.1배 늘려야 한다
+    p097_fw2_s2024 - p097_fw2_s31415: Δacc -0.42pp  불일치 63/68  z -0.44  ★정확p **0.7269**  🚫**못 가른다**  필요n(z=2) **25,153** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 21.0배 늘려야 한다
+    p097_ctrl_v2_s31415 - p097_fw2_s31415: Δacc -1.00pp  불일치 66/78  z -1.00  ★정확p **0.3594**  🚫**못 가른다**  필요n(z=2) **4,800** / 보유 1,200
+      ⚠️★**이 과제로는 못 가른다.** 문항을 4.0배 늘려야 한다
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  hellaswag       p097_ctrl_v2            27.8%  정답CE 3.7440 / 평균마진 +0.0557 / ★결정마진 -0.2597 / 공식규약 26.4%(+1.4pp)
+  hellaswag       p097_fw2                28.2%  정답CE 3.6832 / 평균마진 +0.0496 / ★결정마진 -0.2808 / 공식규약 25.7%(+2.6pp)
+  hellaswag       p097_ctrl_v2_s2024      27.4%  정답CE 3.7016 / 평균마진 +0.0472 / ★결정마진 -0.2644 / 공식규약 25.0%(+2.4pp)
+  hellaswag       p097_fw2_s2024          27.0%  정답CE 3.7047 / 평균마진 +0.0390 / ★결정마진 -0.2811 / 공식규약 25.8%(+1.3pp)
+  hellaswag       p097_ctrl_v2_s31415     26.4%  정답CE 3.7179 / 평균마진 +0.0468 / ★결정마진 -0.2778 / 공식규약 25.6%(+0.8pp)
+  hellaswag       p097_fw2_s31415         27.4%  정답CE 3.7040 / 평균마진 +0.0455 / ★결정마진 -0.2774 / 공식규약 25.9%(+1.5pp)
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+  [bench-tsv] local upsert updated=6 inserted=12 skipped_models=0 -> test_result/bench_results.tsv
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/uranus/.netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_212454-m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: WARNING Artifact "run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2-benchtable_wide-mHU6hA" already exists with the same content. No new version will be created.
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2-benchtable_wide-mHU6hA
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 26-26, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy_full/acc 0.34
+wandb:             bench/arc_easy_full/acc_norm 0.33583
+wandb:                 bench/arc_easy_full/arch dense
+wandb:                 bench/arc_easy_full/data ko-en-control-v2
+wandb:              bench/arc_easy_full/gold_ce 6.20535
+wandb:          bench/arc_easy_full/gold_margin 0.29966
+wandb: bench/arc_easy_full/gold_margin_decision -0.33333
+wandb:          bench/arc_easy_full/harness_acc 0.36417
+wandb:     bench/arc_easy_full/harness_acc_norm 0.36583
+wandb:                    bench/arc_easy_full/n 1200
+wandb:                                      +97 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-control-v2_300M_p097_ctrl_v2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_212454-m100s10_ko-en-control-v2_300M_p097_ctrl_v2/logs
+  ✅ m100s10_ko-en-control-v2_300M_p097_ctrl_v2  (1과제 · summary 키 16개 · 표 6행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_212459-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024-benchtable_wide-1OduoA
+wandb: uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024-benchtable_wide-1OduoA
+wandb: uploading history steps 26-26, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy_full/acc 0.39583
+wandb:             bench/arc_easy_full/acc_norm 0.35
+wandb:                 bench/arc_easy_full/arch dense
+wandb:                 bench/arc_easy_full/data ko-en-control-v2
+wandb:              bench/arc_easy_full/gold_ce 6.14768
+wandb:          bench/arc_easy_full/gold_margin 0.34867
+wandb: bench/arc_easy_full/gold_margin_decision -0.27802
+wandb:          bench/arc_easy_full/harness_acc 0.38583
+wandb:     bench/arc_easy_full/harness_acc_norm 0.3525
+wandb:                    bench/arc_easy_full/n 1200
+wandb:                                     +100 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_212459-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024/logs
+  ✅ m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024  (1과제 · summary 키 16개 · 표 4행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_212505-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415-benchtable_wide-SKIbjA
+wandb: uploading artifact run-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415-benchtable_wide-SKIbjA
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media/table/bench/table_wide_2293_1f53e0cc9f6e4f89bbfa.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 26-26, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy_full/acc 0.35333
+wandb:             bench/arc_easy_full/acc_norm 0.32917
+wandb:                 bench/arc_easy_full/arch dense
+wandb:                 bench/arc_easy_full/data ko-en-control-v2
+wandb:              bench/arc_easy_full/gold_ce 6.78896
+wandb:          bench/arc_easy_full/gold_margin 0.3178
+wandb: bench/arc_easy_full/gold_margin_decision -0.34095
+wandb:          bench/arc_easy_full/harness_acc 0.37667
+wandb:     bench/arc_easy_full/harness_acc_norm 0.34833
+wandb:                    bench/arc_easy_full/n 1200
+wandb:                                     +100 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_212505-m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415/logs
+  ✅ m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415  (1과제 · summary 키 16개 · 표 4행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-fw2_300M_p097_fw2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_212514-m100s10_ko-en-fw2_300M_p097_fw2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-fw2_300M_p097_fw2
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2-benchtable_wide-TPiRIw
+wandb: WARNING Artifact "run-m100s10_ko-en-fw2_300M_p097_fw2-benchtable_wide-TPiRIw" already exists with the same content. No new version will be created.
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading wandb-summary.json; uploading config.yaml
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy_full/acc 0.36333
+wandb:             bench/arc_easy_full/acc_norm 0.32583
+wandb:                 bench/arc_easy_full/arch dense
+wandb:                 bench/arc_easy_full/data ko-en-fw2
+wandb:              bench/arc_easy_full/gold_ce 6.43855
+wandb:          bench/arc_easy_full/gold_margin 0.35677
+wandb: bench/arc_easy_full/gold_margin_decision -0.34166
+wandb:          bench/arc_easy_full/harness_acc 0.36083
+wandb:     bench/arc_easy_full/harness_acc_norm 0.35417
+wandb:                    bench/arc_easy_full/n 1200
+wandb:                                      +97 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-fw2_300M_p097_fw2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_212514-m100s10_ko-en-fw2_300M_p097_fw2/logs
+  ✅ m100s10_ko-en-fw2_300M_p097_fw2  (1과제 · summary 키 16개 · 표 6행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_212518-m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s2024-benchtable_wide-QroSew
+wandb: uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s2024-benchtable_wide-QroSew
+wandb: uploading wandb-metadata.json; uploading requirements.txt; uploading media/table/bench/table_wide_2293_f1f7538c66889256c102.table.json; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 26-26, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy_full/acc 0.33583
+wandb:             bench/arc_easy_full/acc_norm 0.3375
+wandb:                 bench/arc_easy_full/arch dense
+wandb:                 bench/arc_easy_full/data ko-en-fw2
+wandb:              bench/arc_easy_full/gold_ce 6.22275
+wandb:          bench/arc_easy_full/gold_margin 0.27519
+wandb: bench/arc_easy_full/gold_margin_decision -0.3307
+wandb:          bench/arc_easy_full/harness_acc 0.38167
+wandb:     bench/arc_easy_full/harness_acc_norm 0.35333
+wandb:                    bench/arc_easy_full/n 1200
+wandb:                                     +100 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-fw2_300M_p097_fw2_s2024 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s2024
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_212518-m100s10_ko-en-fw2_300M_p097_fw2_s2024/logs
+  ✅ m100s10_ko-en-fw2_300M_p097_fw2_s2024  (1과제 · summary 키 16개 · 표 4행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_212523-m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: updating run metadata; uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s31415-benchtable_wide-WTVNrA
+wandb: uploading artifact run-m100s10_ko-en-fw2_300M_p097_fw2_s31415-benchtable_wide-WTVNrA
+wandb: uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt; uploading media/table/bench/table_wide_2293_ccbf192473bfa10eb4ea.table.json
+wandb: uploading history steps 26-26, summary
+wandb: 
+wandb: Run summary:
+wandb:                  bench/arc_easy_full/acc 0.34667
+wandb:             bench/arc_easy_full/acc_norm 0.3375
+wandb:                 bench/arc_easy_full/arch dense
+wandb:                 bench/arc_easy_full/data ko-en-fw2
+wandb:              bench/arc_easy_full/gold_ce 6.46691
+wandb:          bench/arc_easy_full/gold_margin 0.28416
+wandb: bench/arc_easy_full/gold_margin_decision -0.31747
+wandb:          bench/arc_easy_full/harness_acc 0.3725
+wandb:     bench/arc_easy_full/harness_acc_norm 0.35167
+wandb:                    bench/arc_easy_full/n 1200
+wandb:                                     +100 ...
+wandb: 
+wandb: 🚀 View run m100s10_ko-en-fw2_300M_p097_fw2_s31415 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s10_ko-en-fw2_300M_p097_fw2_s31415
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_212523-m100s10_ko-en-fw2_300M_p097_fw2_s31415/logs
+  ✅ m100s10_ko-en-fw2_300M_p097_fw2_s31415  (1과제 · summary 키 16개 · 표 4행 [로컬 정본에서 전량 재구성])
+
+  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고
+     프로젝트도 같은 `tinylm` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.
+     키는 `bench/<과제>/<지표>` 다. 올림 6개 · 건너뜀 0개.
+  ★표 키는 `bench/table_wide`(wide) 이고 정본은 `test_result/bench_results.tsv` 다 — 표는 매번 **전량 재구성**한다.
+     Vega y축은 `${field:y_metric}` 하나로 acc/acc_norm/gold_ce 를 바꾼다(제안서 §4.2.3).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 12.9분  (2026-09-24 21:25:29)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-24 21:25:29  name=P097_Stage4W_ctrl_fw2_seed_panel
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/common_bpb.py --preset m100s10 --tokens 300M --models p097_ctrl_v2 p097_fw2 p097_ctrl_v2_s2024 p097_fw2_s2024 p097_ctrl_v2_s31415 p097_fw2_s31415 --data ko-en-control-v2 ko-en-fw2 ko-en-control-v2 ko-en-fw2 ko-en-control-v2 ko-en-fw2 --arch dense dense dense dense dense dense --max-docs 1000 --micro-bs 4 --ce-chunk 1024 --device cuda
+==============================================================================
+############################################################################################
+  P028 단계1 — 공통 원문 bpb (SQuAD v2 context)
+############################################################################################
+  device=cuda  문서 1,000개  **0.73 MB**  seq=1024
+  ★같은 원문·같은 바이트에 서로 다른 토크나이저의 모델을 통과시킨다.
+    bpb = loss / ln2 / (bytes/token) 이므로 **토크나이저가 달라도 비교가 성립**한다.
+  ⚠️ 영문 전용이다. 한국어 공통 원문은 아직 없다(07_corpus_selection §3).
+  ⚠️★**이 4,000개 중 8.7%(348개)가 우리 학습 스트림과 축자 겹친다**(로그 068 [4/4]).
+     모든 후보 모델이 **같은 스트림**으로 학습됐으므로 서로 간 비교는 유효하지만,
+     🚫**절대 bpb 는 낙관 쪽으로 치우쳐 있다** — 외부 모델과 비교할 때 특히 그렇다.
+     [E22] 어휘 32,768 · CE fp32 사본 0.13 GB + logits(bf16) 0.27 GB = **0.40 GB**
+
+  ── p097_ctrl_v2 (ko-en-control-v2, dense)
+     토큰 166,981  bytes/token 4.3872  손실 4.0613  **bpb 1.3355**
+     [E22] 어휘 32,768 · CE fp32 사본 0.13 GB + logits(bf16) 0.27 GB = **0.40 GB**
+
+  ── p097_fw2 (ko-en-fw2, dense)
+     토큰 168,802  bytes/token 4.3398  손실 4.0359  **bpb 1.3417**
+     [E22] 어휘 32,768 · CE fp32 사본 0.13 GB + logits(bf16) 0.27 GB = **0.40 GB**
+
+  ── p097_ctrl_v2_s2024 (ko-en-control-v2, dense)
+     토큰 166,981  bytes/token 4.3872  손실 4.0478  **bpb 1.3311**
+     [E22] 어휘 32,768 · CE fp32 사본 0.13 GB + logits(bf16) 0.27 GB = **0.40 GB**
+
+  ── p097_fw2_s2024 (ko-en-fw2, dense)
+     토큰 168,802  bytes/token 4.3398  손실 4.0565  **bpb 1.3485**
+     [E22] 어휘 32,768 · CE fp32 사본 0.13 GB + logits(bf16) 0.27 GB = **0.40 GB**
+
+  ── p097_ctrl_v2_s31415 (ko-en-control-v2, dense)
+     토큰 166,981  bytes/token 4.3872  손실 4.0556  **bpb 1.3337**
+     [E22] 어휘 32,768 · CE fp32 사본 0.13 GB + logits(bf16) 0.27 GB = **0.40 GB**
+
+  ── p097_fw2_s31415 (ko-en-fw2, dense)
+     토큰 168,802  bytes/token 4.3398  손실 4.0328  **bpb 1.3406**
+
+============================================================================================
+  ★공통 원문 bpb — 이것이 데이터셋 간 비교로 유효한 유일한 수치다
+============================================================================================
+  모델                데이터셋                 토큰수   B/tok       손실      bpb
+  ------------------------------------------------------------------------
+  p097_ctrl_v2_s2024ko-en-control-v2   166,981   4.387   4.0478   1.3311
+  p097_ctrl_v2_s31415ko-en-control-v2   166,981   4.387   4.0556   1.3337
+  p097_ctrl_v2      ko-en-control-v2   166,981   4.387   4.0613   1.3355
+  p097_fw2_s31415   ko-en-fw2        168,802   4.340   4.0328   1.3406
+  p097_fw2          ko-en-fw2        168,802   4.340   4.0359   1.3417
+  p097_fw2_s2024    ko-en-fw2        168,802   4.340   4.0565   1.3485
+
+  최저 bpb = p097_ctrl_v2_s2024 (ko-en-control-v2) 1.3311
+
+  ★쓸 자(공통 원문 bpb, 실측 2σ) — 보수값 **0.00378** (전 계열 최대, 결과 075 §15)
+     ★환산 nats = bpb x 3.02634 · 교호작용의 자는 x1.414
+     🚫종전 인쇄값 0.008 는 **폐기 fallback 0.024 의 환산치**다 — 인용 금지
+
+  읽는 법
+    · **bpb 만** 비교한다. '손실' 열은 토크나이저마다 토큰 수가 달라 **비교 불가**다.
+      (일부러 함께 찍는다 — 둘이 다른 이야기를 한다는 것이 이 실험의 요점이다)
+    · bpb 차이가 위에 인쇄된 **실측 자**보다 작으면 **서열을 매기지 않는다.**
+    · 토큰 수가 크게 다르면 그 자체가 정보다 — 토크나이저가 이 원문을 얼마나 잘 압축하는가.
+
+  한계
+    · **영문 전용.** 한국어 쪽 결론은 이 실험으로 나오지 않는다.
+    · SQuAD context 는 영문 위키다. 두 모델 다 영문을 절반 학습했으므로 조건은 공정하지만,
+      **한국어 능력은 전혀 반영되지 않는다.**
+    · 문서를 `\n\n` 로 이어붙여 하나의 스트림으로 만든다 — 문서 경계에서 컨텍스트가 섞인다.
+      모든 모델에 동일하게 적용되므로 비교에는 영향이 없다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-09-24 21:25:47)
+==============================================================================

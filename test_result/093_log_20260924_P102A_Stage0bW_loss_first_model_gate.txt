@@ -1,0 +1,15 @@
+Compare full CE vs loss-first on the same tiny model: loss, all gradients, one optimizer update. A CPU function PASS is not a GPU speed PASS.
+
+==============================================================================
+[runlog] 2026-09-24 20:27:03  name=P102A_Stage0bW_loss_first_model_gate
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p102a_model_loss_first.py
+==============================================================================
+/home/uranus/tinyLM/scripts/diag_p102a_model_loss_first.py:47: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  loss_delta = float((full_loss - fast_loss).abs())
+[PASS] P102A tiny model loss=4.7683716e-07 grad=1.4901161e-08 update=9.3132257e-10
+[LIMIT] CPU FP32 tiny model; full trainer, CUDA BF16, peak and wall NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-24 20:27:05)
+==============================================================================

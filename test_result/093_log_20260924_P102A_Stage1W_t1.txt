@@ -1,0 +1,201 @@
+Candidate eval500/save1000. In-run val crops differ from control; fixed-crop quality is separate.
+
+==============================================================================
+[runlog] 2026-09-24 22:00:40  name=P102A_Stage1W_t1
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --preset m100s12 --arch dense --data ko-en --tokens 100M --ckpt-tokens 300M --pool-tokens 600M --exact-cache --steps 763 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --eval-every 500 --save-every 1000 --tag dense_p102a_t1_s1337
+==============================================================================
+[cmd] python run100m.py train --preset m100s12 --arch dense --data ko-en --tokens 100M --ckpt-tokens 300M --pool-tokens 600M --exact-cache --steps 763 --micro-bs 8 --accum 16 --seq 1024 --lr 1e-3 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --seed 1337 --compile --no-ckpt --ce-chunk 2048 --init-from --depth-init role --cla-group 2 --optimizer muon --muon-scale rms --muon-lr-mult 4 --matrix-weight-decay 0 --eval-every 500 --save-every 1000 --tag dense_p102a_t1_s1337
+  ★읽는 체크포인트의 토큰 칸 = 300M (쓰는 것은 100M) — 부모·교사 파일명과 학습 길이를 갈라 쓴다
+[ckpt] m100s12 용 'dense' 가 없어 부모 프리셋 것을 쓴다 -> m100_ko-en_300M_dense.pt
+[data] 정확 캐시 사용(exact, 상위호환 무시): 600.0M (ko-en) -> /home/uranus/tinyLM/data_cache/ko-en_600000000
+[P073] ★cla_group 1 -> 2 — KV 소유 층이 16 -> 8 개
+[P073] ⚠️**파라미터·VRAM·KV캐시가 전부 바뀐다.** 기준선과 1개 조건만 다르다
+[init] ★★경고: 구조 불일치 — 학생 층 16(prelude 2/mid 12/coda 2) vs 교사 층 20(prelude 2/mid 16/coda 2)
+[init] ★**역할 구간별 비례 대응**으로 이식한다(P049 선결, 2026-08-14) — prelude↔prelude, middle↔middle, coda↔coda. 종전의 인덱스 zip 이 아니다.
+[init] ★대응표 student->teacher: [0, 1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 14, 15, 16, 18, 19]
+[init] ⚠️ 이 런을 층수가 같은 런과 비교할 때 **초기화 조건이 다르다**는 것을 명시할 것.
+[init] dense 부모초기화 완료 (중간 MLP는 dense — 층당 1개, 그룹 집약 없음, group_init=mean)  <- m100_ko-en_300M_dense.pt
+[compile] mode=default — 첫 스텝은 수 분 걸릴 수 있습니다
+========================================================================
+d=768 ffn=2048 layers=2+12+2  MLP g=1  CLA=2  vocab=32768 E=256
+========================================================================
+  삼진 가중치                       96.7M      19.7 MiB
+  임베딩(factorized)               8.6M       1.8 MiB
+  기타(norm/gate/router)          0.0M       0.1 MiB
+  ----------------------------------------------------
+  합계                          105.4M      21.6 MiB
+
+
+  저장(packed, 안 B)                         21.6 MiB   B: code(log2 3 / 1.25) + group scale(16/micro_group)
+  저장(참고, 안 C 컨테이너)                        25.0 MiB
+  ★상주(runtime, 현 구현)                     770.9 MiB   = 유니크삼진 x 4B x 2벌 + 나머지 fp32 (결과 016)
+  L3(32MiB) 상주       : 불가   ★**상주 기준**으로 판정한다 — 저장 기준은 21.6MB 라 오해를 부른다(결과 016)
+  MLP 블록(층별 독립)    : 1.0 MiB  (dense: 재사용 없음)
+  토큰당 FLOPs          : 0.198 GFLOP
+  ★KV 캐시(fp32)        : 12.0 KB/token  (엔트리 8개 / 방문 16회)
+                          1024 ctx 12.0 MiB → ★상주+KV = 782.9 MiB
+    ⚠️KV 는 seq 에 선형이다 — 한 수가 아니라 기울기로 읽는다
+========================================================================
+[dense_p102a_t1_s1337] device=cuda  763step x 131K tok = 100M 토큰  (sched=wsd ema=0.0 lora_r=0)
+
+[opt] ★Muon(P005) — 행렬 97개(96.9M)는 Muon, 그 외 82개는 AdamW. 🚫muP 는 미구현(P005 A축)
+[opt] ★muon_lr=4.00e-03 (= lr 1.00e-03 x 4) · AdamW 그룹 2개는 `param_groups()` 규약(wd 0.1/0/0.01) 유지
+[opt] ★★muon_scale=rms  — 형상별 업데이트 스케일 (V1 검증, ai_dev_tool/09)
+[opt]                  형상    개수    jordan       rms  rms/jordan
+[opt]         (2048, 768)    32    1.6330    9.0510        5.54
+[opt]          (768, 768)    32    1.0000    5.5426        5.54
+[opt]         (768, 2048)    16    1.0000    9.0510        9.05
+[opt]          (192, 768)    16    1.0000    5.5426        5.54
+[opt]          (768, 256)     1    1.7321    5.5426        3.20
+[opt]    ★비의 형상 간 퍼짐 = **2.83배** — 1.00 에서 멀수록 균일 배수(`--muon-lr-mult`)로는 규약을 못 바꾼다
+[opt] ★A08 — `opt_muon` 상태를 체크포인트에 저장한다(종전 미저장 = resume 시 모멘텀이 조용히 0). 체크포인트가 ⚙+388 MB 커진다
+[opt] ★A08 — 행렬 weight decay = 0 (명시) · AdamW 팔의 dense 그룹은 0.1 이다(교락 축)
+[sched] shape=linear  anneal_start=0.15(step~114)  anneal_end=0.80(step~610)  완전삼진=0.80(step~610)  decay_frac=0.20  LR감쇠시작=0.80(step~610)  정렬됨
+  step     0/763  ce 5.2687  |g| 2.66  anneal 0.00  lr 1.32e-05  16313 ms/step
+  step    10/763  ce 4.7751  |g| 0.88  anneal 0.00  lr 1.45e-04  3590 ms/step
+  step    20/763  ce 4.4529  |g| 0.46  anneal 0.00  lr 2.76e-04  2995 ms/step
+  step    30/763  ce 4.3598  |g| 0.35  anneal 0.00  lr 4.08e-04  2726 ms/step
+  step    40/763  ce 4.2795  |g| 0.48  anneal 0.00  lr 5.39e-04  2629 ms/step
+  step    50/763  ce 4.1871  |g| 0.56  anneal 0.00  lr 6.71e-04  2575 ms/step
+  step    60/763  ce 4.2725  |g| 0.68  anneal 0.00  lr 8.03e-04  2498 ms/step
+  step    70/763  ce 4.2779  |g| 0.53  anneal 0.00  lr 9.34e-04  2495 ms/step
+  step    80/763  ce 4.2247  |g| 0.70  anneal 0.00  lr 1.00e-03  2488 ms/step
+  step    90/763  ce 4.1780  |g| 0.58  anneal 0.00  lr 1.00e-03  2454 ms/step
+  step   100/763  ce 4.2060  |g| 0.56  anneal 0.00  lr 1.00e-03  2452 ms/step
+  step   110/763  ce 4.1695  |g| 0.43  anneal 0.00  lr 1.00e-03  2453 ms/step
+  step   120/763  ce 4.1469  |g| 0.48  anneal 0.01  lr 1.00e-03  2437 ms/step
+  step   130/763  ce 4.1764  |g| 0.47  anneal 0.03  lr 1.00e-03  2434 ms/step
+  step   140/763  ce 4.1485  |g| 0.36  anneal 0.05  lr 1.00e-03  2434 ms/step
+  step   150/763  ce 4.1420  |g| 0.46  anneal 0.07  lr 1.00e-03  2433 ms/step
+  step   160/763  ce 4.1273  |g| 0.44  anneal 0.09  lr 1.00e-03  2422 ms/step
+  step   170/763  ce 4.0799  |g| 0.44  anneal 0.11  lr 1.00e-03  2419 ms/step
+  step   180/763  ce 4.1136  |g| 0.38  anneal 0.13  lr 1.00e-03  2415 ms/step
+  step   190/763  ce 4.0528  |g| 0.40  anneal 0.15  lr 1.00e-03  2402 ms/step
+  step   200/763  ce 4.0642  |g| 0.39  anneal 0.17  lr 1.00e-03  2399 ms/step
+  step   210/763  ce 4.0092  |g| 0.44  anneal 0.19  lr 1.00e-03  2398 ms/step
+  step   220/763  ce 4.0259  |g| 0.47  anneal 0.21  lr 1.00e-03  2386 ms/step
+  step   230/763  ce 4.0481  |g| 0.45  anneal 0.23  lr 1.00e-03  2383 ms/step
+  step   240/763  ce 4.0668  |g| 0.46  anneal 0.25  lr 1.00e-03  2380 ms/step
+  step   250/763  ce 3.9805  |g| 0.44  anneal 0.27  lr 1.00e-03  2370 ms/step
+  step   260/763  ce 4.0270  |g| 0.53  anneal 0.29  lr 1.00e-03  2368 ms/step
+  step   270/763  ce 4.0432  |g| 0.38  anneal 0.31  lr 1.00e-03  2359 ms/step
+  step   280/763  ce 3.9872  |g| 0.38  anneal 0.33  lr 1.00e-03  2358 ms/step
+  step   290/763  ce 4.0267  |g| 0.46  anneal 0.35  lr 1.00e-03  2357 ms/step
+  step   300/763  ce 3.9198  |g| 0.46  anneal 0.37  lr 1.00e-03  2359 ms/step
+  step   310/763  ce 3.9457  |g| 0.39  anneal 0.39  lr 1.00e-03  2354 ms/step
+  step   320/763  ce 4.0437  |g| 0.39  anneal 0.41  lr 1.00e-03  2354 ms/step
+  step   330/763  ce 3.9681  |g| 0.43  anneal 0.43  lr 1.00e-03  2356 ms/step
+  step   340/763  ce 3.9486  |g| 0.55  anneal 0.46  lr 1.00e-03  2352 ms/step
+  step   350/763  ce 3.8723  |g| 0.44  anneal 0.48  lr 1.00e-03  2356 ms/step
+  step   360/763  ce 3.9560  |g| 0.48  anneal 0.50  lr 1.00e-03  2358 ms/step
+  step   370/763  ce 3.9363  |g| 0.49  anneal 0.52  lr 1.00e-03  2353 ms/step
+  step   380/763  ce 3.9713  |g| 0.46  anneal 0.54  lr 1.00e-03  2354 ms/step
+  step   390/763  ce 3.8673  |g| 0.41  anneal 0.56  lr 1.00e-03  2354 ms/step
+  step   400/763  ce 3.9423  |g| 0.56  anneal 0.58  lr 1.00e-03  2350 ms/step
+  step   410/763  ce 3.8206  |g| 0.56  anneal 0.60  lr 1.00e-03  2350 ms/step
+  step   420/763  ce 3.9306  |g| 0.48  anneal 0.62  lr 1.00e-03  2350 ms/step
+  step   430/763  ce 3.9302  |g| 0.49  anneal 0.64  lr 1.00e-03  2346 ms/step
+  step   440/763  ce 3.9043  |g| 0.48  anneal 0.66  lr 1.00e-03  2345 ms/step
+  step   450/763  ce 3.9449  |g| 0.43  anneal 0.68  lr 1.00e-03  2345 ms/step
+  step   460/763  ce 3.9146  |g| 0.52  anneal 0.70  lr 1.00e-03  2341 ms/step
+  step   470/763  ce 3.8537  |g| 0.45  anneal 0.72  lr 1.00e-03  2342 ms/step
+  step   480/763  ce 3.9571  |g| 0.42  anneal 0.74  lr 1.00e-03  2343 ms/step
+  step   490/763  ce 3.9587  |g| 0.59  anneal 0.76  lr 1.00e-03  2341 ms/step
+    >> val_loss 4.0788  ppl 59.07  (train_ce 3.953, val-CE +0.126)  bpb 1.345
+       best 갱신 4.0788 -> m100s12_ko-en_100M_dense_p102a_t1_s1337_best.pt
+  step   500/763  ce 3.9863  |g| 0.58  anneal 0.78  lr 1.00e-03  2351 ms/step
+  step   510/763  ce 3.8151  |g| 0.46  anneal 0.80  lr 1.00e-03  2352 ms/step
+  step   520/763  ce 3.8875  |g| 0.59  anneal 0.82  lr 1.00e-03  2354 ms/step
+  step   530/763  ce 3.9397  |g| 0.45  anneal 0.84  lr 1.00e-03  2352 ms/step
+  step   540/763  ce 3.9170  |g| 0.57  anneal 0.86  lr 1.00e-03  2354 ms/step
+  step   550/763  ce 3.9125  |g| 0.52  anneal 0.88  lr 1.00e-03  2356 ms/step
+  step   560/763  ce 3.8959  |g| 0.45  anneal 0.90  lr 1.00e-03  2354 ms/step
+  step   570/763  ce 3.8997  |g| 0.44  anneal 0.92  lr 1.00e-03  2355 ms/step
+  step   580/763  ce 3.9004  |g| 0.58  anneal 0.94  lr 1.00e-03  2357 ms/step
+  step   590/763  ce 3.9557  |g| 0.75  anneal 0.96  lr 1.00e-03  2353 ms/step
+  step   600/763  ce 3.9819  |g| 0.58  anneal 0.98  lr 1.00e-03  2355 ms/step
+  step   610/763  ce 3.9960  |g| 0.54  anneal 1.00  lr 1.00e-03  2357 ms/step
+  step   620/763  ce 3.9190  |g| 0.52  anneal 1.00  lr 1.00e-03  2355 ms/step
+  step   630/763  ce 3.9229  |g| 0.69  anneal 1.00  lr 9.98e-04  2355 ms/step
+  step   640/763  ce 3.9017  |g| 0.58  anneal 1.00  lr 9.76e-04  2356 ms/step
+  step   650/763  ce 3.9431  |g| 0.50  anneal 1.00  lr 9.32e-04  2352 ms/step
+  step   660/763  ce 3.9433  |g| 0.44  anneal 1.00  lr 8.68e-04  2352 ms/step
+  step   670/763  ce 3.9406  |g| 0.38  anneal 1.00  lr 7.87e-04  2354 ms/step
+  step   680/763  ce 3.9959  |g| 0.32  anneal 1.00  lr 6.95e-04  2351 ms/step
+  step   690/763  ce 3.8534  |g| 0.30  anneal 1.00  lr 5.94e-04  2353 ms/step
+  step   700/763  ce 3.8320  |g| 0.27  anneal 1.00  lr 4.92e-04  2354 ms/step
+  step   710/763  ce 3.8436  |g| 0.25  anneal 1.00  lr 3.92e-04  2356 ms/step
+  step   720/763  ce 3.8426  |g| 0.22  anneal 1.00  lr 3.01e-04  2354 ms/step
+  step   730/763  ce 3.8196  |g| 0.30  anneal 1.00  lr 2.22e-04  2355 ms/step
+  step   740/763  ce 3.8084  |g| 0.24  anneal 1.00  lr 1.61e-04  2357 ms/step
+  step   750/763  ce 3.7362  |g| 0.22  anneal 1.00  lr 1.20e-04  2354 ms/step
+  step   760/763  ce 3.7479  |g| 0.23  anneal 1.00  lr 1.01e-04  2354 ms/step
+  step   762/763  ce 3.8145  |g| 0.22  anneal 1.00  lr 1.00e-04  2354 ms/step
+    >> val_loss 3.7538  ppl 42.68  (train_ce 3.814, val-CE -0.061)  bpb 1.238
+       best 갱신 3.7538 -> m100s12_ko-en_100M_dense_p102a_t1_s1337_best.pt
+
+[dense_p102a_t1_s1337] 최종 val_loss 3.7619  ppl 43.03  best 3.7538@763  (105.4M, 30.0분, skip 0, VRAM 9.07GB(reserved)/8.07GB(alloc))
+[vram] M(=micro_bs×seq)=8,192  peak reserved 9.07GB  (nvidia-smi 표시값은 여기에 CUDA 컨텍스트 0.4~0.8GB 가 더해진다)
+
+[wandb-auto] successful WSL full training; starting fail-open post-run sync
+[wandb-auto] project=tinylm exact_tag=dense_p102a_t1_s1337 draw_tokens=100007936
+
+############################################################################################
+  wandb 동기화 — PUSH · 1런
+############################################################################################
+  ★기존 `runs/logs/*.json` 과 `test_result/*.txt` 는 **읽기만** 한다. 수정하지 않는다.
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/uranus/.netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+
+  --- m100s12_ko-en_100M_dense_p102a_t1_s1337
+      config 60개 · summary 33개 · history 2점
+      final={'val_loss': 3.761875, 'ppl': 43.029029819959916, 'bpb': 1.2404987352183294, 'ema': False}  grad_max=0.8848143815994263  vram=9.07421875  ms/step=2204.914093017578
+wandb: setting up run m100s12_ko-en_100M_dense_p102a_t1_s1337
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260924_223055-m100s12_ko-en_100M_dense_p102a_t1_s1337
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run m100s12_ko-en_100M_dense_p102a_t1_s1337
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_100M_dense_p102a_t1_s1337
+wandb: updating run metadata; uploading summary
+wandb: uploading history steps 0-1, summary
+wandb: 
+wandb: Run history:
+wandb:            bpb █▁
+wandb:            gap █▁
+wandb:           kd_n ▁▁
+wandb:   nokd_ce_mean █▁
+wandb: nokd_loss_mean █▁
+wandb:         nokd_n ▁█
+wandb:            ppl █▁
+wandb:           step ▁█
+wandb:       train_ce █▁
+wandb:     train_loss █▁
+wandb:             +1 ...
+wandb: 
+wandb: Run summary:
+wandb:            best_step 763
+wandb:             best_val 3.75375
+wandb:                  bpb 1.23782
+wandb:      bytes_per_token 4.37505
+wandb:  connectivity_births 0
+wandb:  connectivity_deaths 0
+wandb: connectivity_updates 0
+wandb:            deploy_mb 21.56332
+wandb:                  ema False
+wandb:            final_bpb 1.2405
+wandb:                  +36 ...
+wandb: 
+wandb: 🚀 View run m100s12_ko-en_100M_dense_p102a_t1_s1337 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100s12_ko-en_100M_dense_p102a_t1_s1337
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260924_223055-m100s12_ko-en_100M_dense_p102a_t1_s1337/logs
+
+  ⚠️★**wandb 는 정본이 아니다.** 판정 근거는 `test_result/` 문서이고,
+     wandb 는 **찾아보기 편하라고 있는 사본**이다. 둘이 다르면 문서가 옳다.
+[wandb-auto] PASS post-run sync
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 30.3분  (2026-09-24 22:30:58)
+==============================================================================

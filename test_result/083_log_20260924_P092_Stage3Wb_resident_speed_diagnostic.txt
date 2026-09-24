@@ -1,0 +1,21 @@
+P092: compare mask-inclusive held tensors, CUDA allocated delta, TTFT, decode tok/s. Historical training ms/step is a separate metric.
+
+==============================================================================
+[runlog] 2026-09-24 21:28:56  name=P092_Stage3Wb_resident_speed_diagnostic
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p092_resident_speed.py --out runs/bench/p092_stage3wb_resident_speed.json --max-new 32 --reps 3
+==============================================================================
+[INPUT] p092_s2_dense100 checkpoint_bytes=780040939 training_ms_step=1576.11
+[INPUT] p092_s2_static50 checkpoint_bytes=864711987 training_ms_step=1566.98
+[INPUT] p092_s2_dynamic50 checkpoint_bytes=864712535 training_ms_step=1590.86
+[MEASURE] pass=1 p092_s2_dense100 held_mib=678.92 mask_mib=0.00 ttft_ms=10.46 tok_s=86.39
+[MEASURE] pass=1 p092_s2_static50 held_mib=759.64 mask_mib=80.72 ttft_ms=10.82 tok_s=63.45
+[MEASURE] pass=1 p092_s2_dynamic50 held_mib=759.64 mask_mib=80.72 ttft_ms=10.25 tok_s=75.69
+[MEASURE] pass=2 p092_s2_dynamic50 held_mib=759.64 mask_mib=80.72 ttft_ms=14.91 tok_s=74.50
+[MEASURE] pass=2 p092_s2_static50 held_mib=759.64 mask_mib=80.72 ttft_ms=11.76 tok_s=72.16
+[MEASURE] pass=2 p092_s2_dense100 held_mib=678.92 mask_mib=0.00 ttft_ms=9.80 tok_s=80.35
+[PASS] wrote runs/bench/p092_stage3wb_resident_speed.json; quality/adoption NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.4분  (2026-09-24 21:29:18)
+==============================================================================
+Read runs/bench/p092_stage3wb_resident_speed.json plus this log. Diagnose and fix a measured cause before any one-seed 300M probe; the old 3-seed SH is -cancel history, not a DST-axis rejection.

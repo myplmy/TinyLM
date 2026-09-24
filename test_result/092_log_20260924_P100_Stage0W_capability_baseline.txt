@@ -1,0 +1,65 @@
+P100: compare same prompt in base and Q/A form on existing control/FineWeb2 models. These models have different tokenizers and pools; descriptive only.
+
+==============================================================================
+[runlog] 2026-09-24 21:26:38  name=P100_Stage0W_capability_baseline
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/eval_p100_capability_panel.py --model p097_ctrl_v2,ko-en-control-v2,dense --model p097_fw2,ko-en-fw2,dense --preset m100s10 --tokens 300M --out runs/bench/p100_stage0w_capability_baseline.jsonl --max-new 80
+==============================================================================
+[ANSWER] p097_ctrl_v2 KO_FACT base: '대한민국의 수도는 어디인가요?\n\n같이 보기 \n 대한민국의 재난\n\n각주 \n\n대한민국의 재난\n재난'
+[ANSWER] p097_ctrl_v2 KO_FACT qa: 'Question: 대한민국의 수도는 어디인가요? Answer: 1st, 2nd, 3rd, 5th, 7th, 9th, 10th, 12th, 12th, 13th, 14th, 15th, 16th, 17th, 17th, 18th, 19th, 21st, 22st, 23st, 23st, 24th, 24th, 24th, 24th, 24th, 24th'
+[ANSWER] p097_ctrl_v2 EN_FACT base: 'What is the capital of South Korea?\nThe capital of South Korea is the capital of South Korea. The capital of South Korea is the capital of South Korea. The capital of South Korea is the capital of South Korea.\nThe capital of South Korea is the capital of South Korea. The capital of South Korea is the capital of South Korea.\nThe capital of South Korea is the capital of South Korea.\nThe capital of South'
+[ANSWER] p097_ctrl_v2 EN_FACT qa: 'Question: What is the capital of South Korea? Answer:\n- What is the capital of South Korea?\n- What is the capital of South Korea?\n- What is the capital of South Korea?\n- What is the capital of South Korea?\n- What is the capital of South Korea?\n- What is the capital of South Korea?\n- What is the capital of South Korea?\n- What is the capital of South Korea?'
+[ANSWER] p097_ctrl_v2 KO_CONTEXT base: '문서: 파란 상자의 암호는 417입니다. 질문: 파란 상자의 암호는 무엇인가요?\n\n각주 \n\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n불교 용어\n'
+[ANSWER] p097_ctrl_v2 KO_CONTEXT qa: 'Question: 문서: 파란 상자의 암호는 417입니다. 질문: 파란 상자의 암호는 무엇인가요? Answer: 1, 2, 3, 4, 5, 7, 9, 11, 12, 13, 14, 15, 16, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,'
+[ANSWER] p097_ctrl_v2 EN_CONTEXT base: 'Note: The blue box code is 417. Question: What is the blue box code?\n- The blue box code is the blue box code.\n- The blue box code is the blue box code.\n- The blue box code is the blue box code.\n- The blue box code is the blue box code.\n- The blue box code is the blue box code.\n- The blue box code is the blue box code.\n- The blue box code is the'
+[ANSWER] p097_ctrl_v2 EN_CONTEXT qa: 'Question: Note: The blue box code is 417. Question: What is the blue box code? Answer: What is the blue box code?\n- What is the blue box code?\n- What is the blue box code?\n- What is the blue box code?\n- What is the blue box code?\n- What is the blue box code?\n- What is the blue box code?\n- What is the blue box code?\n- What is the blue box code?\n'
+[ANSWER] p097_ctrl_v2 KO_FORMAT base: '도시와 나라를 JSON 두 키 city,country로만 쓰세요. 대상은 서울, 대한민국입니다.\n\n같이 보기 \n 한국문화대백과사전\n\n각주 \n\n대한민국의 문화\n대한민국의 문화'
+[ANSWER] p097_ctrl_v2 KO_FORMAT qa: 'Question: 도시와 나라를 JSON 두 키 city,country로만 쓰세요. 대상은 서울, 대한민국입니다. Answer: 1.\n\n각주\n\n외부 링크 \n 서울특별시의 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와 도시와'
+[ANSWER] p097_ctrl_v2 KO_MULTI base: '사용자: 비밀 코드명은 달빛-47입니다. 어시스턴트: 확인했습니다. 사용자: 날씨 이야기는 무시하고 코드명만 말해 주세요. 어시스턴트: 확인했습니다.\n\n각주\n\n외부 링크 \n\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우'
+[ANSWER] p097_ctrl_v2 KO_MULTI qa: 'Question: 사용자: 비밀 코드명은 달빛-47입니다. 어시스턴트: 확인했습니다. 사용자: 날씨 이야기는 무시하고 코드명만 말해 주세요. 어시스턴트: Answer: The Answer.\n\n각주\n\n외부 링크 \n\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임\n윈도우 게임'
+[ANSWER] p097_ctrl_v2 EN_MULTI base: 'User: The code name is moon-47. Assistant: Noted. User: Ignore the weather and repeat only the code name. Assistant: Noted. User: Noted. User: Noted. User: Noted. User: Noted. User: Noted. User: Noted. User: Noted. User: Noted. User: Noted. User: Noted. User: Noted. User: Noted. User: Noted. User: Noted. User: Noted. User:'
+[ANSWER] p097_ctrl_v2 EN_MULTI qa: 'Question: User: The code name is moon-47. Assistant: Noted. User: Ignore the weather and repeat only the code name. Assistant: Answer: The code name is moon-47.\n- The code name is moon-47. The code name is moon-47. The code name is moon-47. The code name is moon-47. The code name is moon-47. The code name is moon-47. The code name is moon-47. The code name is moon-47. The code name is moon-'
+[ANSWER] p097_ctrl_v2 KO_LOGIC base: '규칙: A이면 B, B이면 C입니다. A가 참일 때 C가 참인지 한 문장으로 답하세요.\n\n같이 보기 \n 한국어의 날\n\n각주 \n\n한국어 낱말\n한국어의 날'
+[ANSWER] p097_ctrl_v2 KO_LOGIC qa: 'Question: 규칙: A이면 B, B이면 C입니다. A가 참일 때 C가 참인지 한 문장으로 답하세요. Answer: A, B, B, B, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C, C,'
+[ANSWER] p097_ctrl_v2 KO_NEGATION base: '사과는 빨갛고 배는 노랗습니다. 빨갛지 않은 과일은 무엇인가요?\n\n등장인물 \n\n이소라(李細羅, ? ~ ?)는 조선 후기의 문신이다.\n\n이소라(李細羅, ? ~ ?)는 조선 후기의 문신이다.\n\n이소라(李細羅, ? ~ ?)는 조선 후기의 문신이다.\n\n이소라(李細羅, ? ~ ?)는 조선 후기의'
+[ANSWER] p097_ctrl_v2 KO_NEGATION qa: 'Question: 사과는 빨갛고 배는 노랗습니다. 빨갛지 않은 과일은 무엇인가요? Answer: 1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.'
+[ANSWER] p097_fw2 KO_FACT base: '대한민국의 수도는 어디인가요?\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-'
+[ANSWER] p097_fw2 KO_FACT qa: 'Question: 대한민국의 수도는 어디인가요? Answer:\n“I’m not a fan of the world, but I’m a fan of the world.”\n“I’m a fan of the world, but I’m a fan of the world.”\n“I’m a fan of the world, but I’m a fan of the world.”\n“I’m a fan of the world, but I’m a'
+[ANSWER] p097_fw2 EN_FACT base: 'What is the capital of South Korea?\nThe first major economic crisis in the world is the Vietnam War. The Vietnam War, which was fought in the Vietnam War, was the first major economic crisis in the world to be fought in the Vietnam War. The Vietnam War, which was the first major economic crisis in the world, was the first major economic crisis in the world to be fought in the Vietnam War.\nThe Vietnam War,'
+[ANSWER] p097_fw2 EN_FACT qa: 'Question: What is the capital of South Korea? Answer:\n- The United States is the largest country in the world. It is the largest country in the world. It is the largest country in the world. It is the largest country in the world. It is the largest country in the world. It is the largest country in the world. It is the largest country in the world. It is the largest country in the world. It is the largest'
+[ANSWER] p097_fw2 KO_CONTEXT base: '문서: 파란 상자의 암호는 417입니다. 질문: 파란 상자의 암호는 무엇인가요?\n답변: 파란 상자의 암호는 417입니다. 파란 상자의 암호는 417입니다. 파란 상자의 암호는 417입니다. 파란 상자의 암호는 417입니다. 파란 상자의 암호는 417입니다. 파란 상자의 암호는 417입니다. 파란 상자의 암호는 417입니다. 파란 상자의 암호는 4'
+[ANSWER] p097_fw2 KO_CONTEXT qa: 'Question: 문서: 파란 상자의 암호는 417입니다. 질문: 파란 상자의 암호는 무엇인가요? Answer: 파란 상자의 암호는 417입니다.\n-\n파란 상자의 암호는 417입니다.\n-\n파란 상자의 암호는 417입니다.\n-\n파란 상자의 암호는 417입니다.\n-\n파란 상자의 암호는 417입니다.\n-\n파란 상자의 암호는 417입니다.\n-\n파란'
+[ANSWER] p097_fw2 EN_CONTEXT base: 'Note: The blue box code is 417. Question: What is the blue box code?\n- The blue box code is 417. Question: What is the blue box code?\n- The blue box code is 417. Question: What is the blue box code?\n- The blue box code is 417. Question: What is the blue box code?\n- The blue box code is 417. Question: What is the blue box code?\n- The blue'
+[ANSWER] p097_fw2 EN_CONTEXT qa: 'Question: Note: The blue box code is 417. Question: What is the blue box code? Answer: The blue box code is 417. Question: The blue box code is 417. Question: The blue box code is 417. Question: The blue box code is 417. Question: The blue box code is 417. Question: The blue box code is 417. Question: The blue box code is 417. Question: The blue box code is 417. Question:'
+[ANSWER] p097_fw2 KO_FORMAT base: '도시와 나라를 JSON 두 키 city,country로만 쓰세요. 대상은 서울, 대한민국입니다.\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-'
+[ANSWER] p097_fw2 KO_FORMAT qa: 'Question: 도시와 나라를 JSON 두 키 city,country로만 쓰세요. 대상은 서울, 대한민국입니다. Answer:\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-'
+[ANSWER] p097_fw2 KO_MULTI base: '사용자: 비밀 코드명은 달빛-47입니다. 어시스턴트: 확인했습니다. 사용자: 날씨 이야기는 무시하고 코드명만 말해 주세요. 어시스턴트: 확인했습니다. 어시스턴트: 확인했습니다. 어시스턴트: 확인했습니다. 어시스턴트: 확인했습니다. 어시스턴트: 확인했습니다. 어시스턴트: 확인했습니다. 어시스턴트: 확인했습니다. 어시스턴트: 확인했습니다. 어시스턴트: 확인했습니다. 어시스턴트: 확인했습니다. 어시스턴트:'
+[ANSWER] p097_fw2 KO_MULTI qa: 'Question: 사용자: 비밀 코드명은 달빛-47입니다. 어시스턴트: 확인했습니다. 사용자: 날씨 이야기는 무시하고 코드명만 말해 주세요. 어시스턴트: Answer: "I am a bit of a bit of money, but I am a bit of money, but I am a bit of money, and I am a bit of money, and I am a bit of money, and I am a bit of money, and I am a bit of money, and I am a bit of money, and I am a bit of money, and I am a bit'
+[ANSWER] p097_fw2 EN_MULTI base: 'User: The code name is moon-47. Assistant: Noted. User: Ignore the weather and repeat only the code name. Assistant: Noted. User: Ignore the weather and repeat only the code name.\n- The code name is the name of the weather and repeat only the code name.\n- The code name is the name of the weather and repeat only the code name.\n- The code name is the name of the weather and repeat only the code name.\n- The code name is the name of'
+[ANSWER] p097_fw2 EN_MULTI qa: 'Question: User: The code name is moon-47. Assistant: Noted. User: Ignore the weather and repeat only the code name. Assistant: Answer: Ignore the weather and repeat the code name.\n- The code name is the name of the weather and repeat the code name.\n- The code name is the name of the weather and repeat the code name.\n- The code name is the name of the weather and repeat the code name.\n- The code name is the name of the weather and repeat the code name.\n'
+[ANSWER] p097_fw2 KO_LOGIC base: '규칙: A이면 B, B이면 C입니다. A가 참일 때 C가 참인지 한 문장으로 답하세요.\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-'
+[ANSWER] p097_fw2 KO_LOGIC qa: 'Question: 규칙: A이면 B, B이면 C입니다. A가 참일 때 C가 참인지 한 문장으로 답하세요. Answer: A는 참일 때 C가 참일 때 C가 참일 때 C가 참일 때 C가 참일 때 C가 참일 때 C가 참일 때 C가 참일 때 C가 참일 때 C가 참일 때 C가 참일 때 C가 참일 때 C가 참일 때 C가 참일 때 C가 참일 때 C가 참일 때'
+[ANSWER] p097_fw2 KO_NEGATION base: '사과는 빨갛고 배는 노랗습니다. 빨갛지 않은 과일은 무엇인가요?\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-'
+[ANSWER] p097_fw2 KO_NEGATION qa: 'Question: 사과는 빨갛고 배는 노랗습니다. 빨갛지 않은 과일은 무엇인가요? Answer:\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-'
+[PASS] saved 36 raw answers at runs/bench/p100_stage0w_capability_baseline.jsonl
+[LIMIT] qualitative panel only; no score, no causal dataset or SFT claim
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.7분  (2026-09-24 21:27:17)
+==============================================================================
+Review full answers per ability and form; no automatic intelligence score. P097 Stage4W common benchmark remains separately required.
+P100: compare same prompt in base and Q/A form on existing control/FineWeb2 models. These models have different tokenizers and pools; descriptive only.
+
+==============================================================================
+[runlog] 2026-09-24 22:31:15  name=P100_Stage0W_capability_baseline
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/eval_p100_capability_panel.py --model p097_ctrl_v2,ko-en-control-v2,dense --model p097_fw2,ko-en-fw2,dense --preset m100s10 --tokens 300M --out runs/bench/p100_stage0w_capability_baseline.jsonl --max-new 80
+==============================================================================
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/eval_p100_capability_panel.py", line 145, in <module>
+    raise SystemExit(main())
+  File "/home/uranus/tinyLM/scripts/eval_p100_capability_panel.py", line 100, in main
+    raise FileExistsError(f"refusing existing output: {output}")
+FileExistsError: refusing existing output: /home/uranus/tinyLM/runs/bench/p100_stage0w_capability_baseline.jsonl
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-09-24 22:31:15)
+==============================================================================

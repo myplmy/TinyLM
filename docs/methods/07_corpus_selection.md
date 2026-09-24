@@ -251,6 +251,6 @@ Stage2Wb에서 본 common-bpb 대 한국어/영어 과제의 강점 교환이 �
 
 ## 9. 2026-09-24 P097 Stage4W 세 시드 공통 문항 — 교환 재현, 기본 교체 보류
 
-[결과090 §14](../../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md)에서 control-v2/FineWeb2의 세 seed 공통 YNAT/NLI/ARC/HellaSwag 각 1,200 ID와 영문 SQuAD-context bpb가 전부 exit0으로 회수됐다. FineWeb2의 YNAT 정확도 방향은 3/3(대응 유의2/3), control의 영문 bpb 낮음은 3/3이었다. 반면 ARC 방향은 seed별로 달랐고 NLI/Hella는 우연 수준 부근이다. 자기 val은 여전히 서로 다른 시험지이며 전면 승자·기본 recipe 변경은 아니다.
+[결과090 §14](../../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md)에서 control-v2/FineWeb2의 세 seed 공통 YNAT/NLI/ARC/HellaSwag 각 1,200 ID와 영문 SQuAD-context bpb가 전부 exit0으로 회수됐다. 문항별 원본 28,800행에서 공통 ID/gold·내부 acc를 직접 확인했다. FineWeb2의 YNAT 정확도 방향은 3/3(대응 유의2/3), control의 영문 bpb 낮음은 3/3이었다. 반면 ARC 방향은 seed별로 달랐고 NLI/Hella는 우연 수준 부근이다. 자기 val은 여전히 서로 다른 시험지이며 전면 승자·기본 recipe 변경은 아니다.
 
 중요한 계측 한계: `common_bpb.py`가 인쇄한 SQuAD 4,000개 중 348개(8.7%) 겹침은 **과거 ko-en 학습 스트림의 관측**이다. 새 두 recipe가 같은 학습 스트림이라는 문구는 사실과 맞지 않아 코드 출력에서 제거했다. 동일 raw byte-bpb 수치는 설명적 비교로 기록하되, 현재 선택한 1,000문서와 recipe별 차등 오염률·한국어 공통 bpb·대화 능력은 별도 `NOT_RUN`이다. 세 seed 방향을 새 혼합 recipe의 설계 동기로만 쓰고 데이터셋 단독 인과효과로 승격하지 않는다.

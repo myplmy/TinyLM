@@ -1,0 +1,20 @@
+Use the same tiny dense checkpoint in WSL. This is a one-step functional bridge, not full M5 quality.
+
+==============================================================================
+[runlog] 2026-09-24 23:18:09  name=P104A_Stage1B_m5_dense_bridge
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python -B -X utf8 scripts/diag_m5_dense_bridge.py
+==============================================================================
+Traceback (most recent call last):
+  File "z:\TinyLM\scripts\diag_m5_dense_bridge.py", line 168, in <module>
+    raise SystemExit(main())
+  File "z:\TinyLM\scripts\diag_m5_dense_bridge.py", line 66, in main
+    code_sha = {p.relative_to(ROOT).as_posix(): digest(p) for p in CODE}
+  File "z:\TinyLM\scripts\diag_m5_dense_bridge.py", line 66, in <dictcomp>
+    code_sha = {p.relative_to(ROOT).as_posix(): digest(p) for p in CODE}
+  File "W:\miniforge3\envs\collatz_torch\lib\pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: 'z:\\TinyLM\\scripts\\diag_m5_dense_bridge.py' is not in the subpath of '\\\\wsl.localhost\\Ubuntu\\home\\uranus\\tinyLM' OR one path is relative and the other is absolute.
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-09-24 23:18:17)
+==============================================================================

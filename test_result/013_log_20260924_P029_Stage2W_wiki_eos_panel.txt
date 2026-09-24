@@ -1,0 +1,23 @@
+P029 Stage2W: raw continuation and footer/repetition review after EOS/KV-cache correction; old temperature-dependent result remains historical.
+
+==============================================================================
+[runlog] 2026-09-24 21:26:02  name=P029_Stage2W_wiki_eos_panel
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/eval_recipe_prompt_panel.py --models mA_g4s34_k4 p6d --model-data ko-en ko-en --model-arch tied dense --preset m100 --tokens 300M --max-new 80 --device cuda --out runs/bench/p029_stage2w_wiki_eos_panel.jsonl
+==============================================================================
+[panel] model=mA_g4s34_k4 data=ko-en prompt=1 chars=19
+[panel] model=mA_g4s34_k4 data=ko-en prompt=2 chars=167
+[panel] model=mA_g4s34_k4 data=ko-en prompt=3 chars=118
+[panel] model=mA_g4s34_k4 data=ko-en prompt=4 chars=502
+[panel] model=mA_g4s34_k4 data=ko-en prompt=5 chars=202
+[panel] model=p6d data=ko-en prompt=1 chars=269
+[panel] model=p6d data=ko-en prompt=2 chars=159
+[panel] model=p6d data=ko-en prompt=3 chars=96
+[panel] model=p6d data=ko-en prompt=4 chars=512
+[panel] model=p6d data=ko-en prompt=5 chars=164
+[PASS] P097 prompt panel rows=10 -> runs/bench/p029_stage2w_wiki_eos_panel.jsonl
+[LIMIT] qualitative continuations require human review; this script does not rank them
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-09-24 21:26:23)
+==============================================================================
+Review raw JSONL output by hand. Five prompts x two models cannot rank architecture or prove dataset causality.

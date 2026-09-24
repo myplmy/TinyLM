@@ -1,0 +1,65 @@
+Arm A legacy tokenizer, arm B chat32 new parent, arm C selected-best parent remain separate lineages. No quality claim.
+
+==============================================================================
+[runlog] 2026-09-24 20:24:21  name=P090B_Stage0W_three_lineage_sft_gate
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p090b_three_lineages.py
+==============================================================================
+[A] legacy_vocab=32768 chatml_single_ids={'<|im_start|>': None, '<|im_end|>': None} parent_present=YES
+[B] chat32_tokenizer=NOT_READY; new parent and training are NOT_RUN
+[C] best_parent_candidate_present=True selection=NOT_DECIDED
+[C] an English full-val score alone cannot select the best Korean conversational parent
+[PASS] three-arm lineage inventory; supervised corpus/parent matching/quality NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-24 20:24:27)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-24 20:24:27  name=P090B_Stage0W_three_lineage_sft_gate
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_sft_mask.py --data ko-en
+==============================================================================
+
+================================================================================================
+  P090 선결 — assistant-only 손실 마스크 실사 (학습 0 · GPU 0)
+================================================================================================
+  코퍼스 = (내장 합성 4종)  ·  레코드 4개  ·  토크나이저 = ko-en  ·  규약 = chatml
+  ★성공 기준: 지도 비율 [2%, 90%] · 빈 마스크 0 · M3 0 · M4 0
+
+  ── M1·M2 규모 ------------------------------------------------------------
+     토큰 347  ·  ★지도 토큰 54  ·  ★**비율 15.6%**
+     빈 마스크 레코드 0개  ·  최장 140 토큰
+
+  ── M3 경계 --------------------------------------------------------------
+     M3 위반 0건  ·  ★M5(입력 누출) 0건  (검사 4개)
+     M4 경계 토큰 미포함 0건  (`<|im_end|>`)
+
+  ── 밀기 규약 ------------------------------------------------------------
+     ids 51 -^> x 50 · y 50  (✅같다)
+     ★밀기는 **여기서 한 번만** 한다 — `trainer.py` 와 같은 규약이다
+
+  ✅**통과** — 지도 비율 15.6% · 빈 마스크 0 · M3 0 · M4 0
+  ⚠️★**이 도구는 마스크만 본다.** 그 마스크로 학습했을 때 좋아지는지는 P090 이 잰다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-24 20:24:28)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-24 20:24:28  name=P090B_Stage0W_three_lineage_sft_gate
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/train_sft_p090.py --self-test
+==============================================================================
+[PASS] SFT shift/pad/multi-turn/group and lineage rejection fixture; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-24 20:24:29)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-24 20:24:29  name=P090B_Stage0W_three_lineage_sft_gate
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p090b_chat32_route.py
+==============================================================================
+[PASS] chat32 opt-in, isolated name and forbidden-route guards; cache/model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-24 20:24:30)
+==============================================================================

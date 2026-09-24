@@ -73,7 +73,7 @@ same real checkpoint·같은 tokenizer·같은 평가 풀·condition signature�
 ## 7. 실행 파일과 로그
 
 - `run_P104A_Stage0W_m4_triton_ternary.sh` → 결과번호095의 Stage0W 로그.
-- 원본 실패 [Stage1B BAT](../run_P104A_Stage1B_m5_dense_bridge-done.bat)는 보존하고, 현재 재실행은 [Stage1Bb BAT](../run_P104A_Stage1Bb_m5_dense_bridge.bat) / [WSL Stage1W SH](../run_P104A_Stage1W_m5_dense_bridge.sh) 순서다. 플랫폼별 V2 JSON은 기존 출력이 있으면 중단하며 자동 덮어쓰지 않는다.
+- 원본 실패 Stage1B BAT는 결과095 부록에 명령을 남기고 사용자 승인으로 삭제했으며, 현재 재실행은 [Stage1Bb BAT](../run_P104A_Stage1Bb_m5_dense_bridge.bat) / [WSL Stage1W SH](../run_P104A_Stage1W_m5_dense_bridge.sh) 순서다. 플랫폼별 V2 JSON은 기존 출력이 있으면 중단하며 자동 덮어쓰지 않는다.
 - 사용자가 실제 실행하기 전 상태는 `E2E_NOT_RUN`. 전체 WSL 제안서 종료는 M4 범위별 실제 판정, M5 실제 품질 교량, 사용자 최종 정본 승인까지 필요하다.
 
 ## 8. 한계

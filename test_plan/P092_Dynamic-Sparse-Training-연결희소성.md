@@ -152,4 +152,4 @@ Stage0에서 `H300`을 실측하기 전에 절대 GPU-h를 확정값으로 바�
 
 ## 9.5 2026-09-25 Stage3Wb 완료 — 상주·추론 가속 음성
 
-[결과083 §12](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)의 실제 로드 텐서는 dense678.92MiB, static/dynamic 각759.64MiB(mask80.72MiB)였고 두 순서 모두 dense의 decode tok/s가 높았다. Stage3Wb 진단 실행 자체는 PASS이나 **현재 dense-mask 구현의 상주 절감·추론 가속 예측은 기각**한다. 사용자 승인 순서인 ‘원인별 수정 후 한 시드 300M’의 수정 단계는 희소 연산/압축 배포 새 설계 없이는 충족되지 않아 old 3시드 Stage3W -cancel 이력과 300M 품질 `NOT_RUN`을 유지한다. 런처는 `run_P092_Stage3Wb_resident_speed_diagnostic-done.sh`다.
+[결과083 §12~13](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)의 실제 로드 텐서는 dense678.92MiB, static/dynamic 각759.64MiB(mask80.72MiB)였고, 승인된 JSON 직접 대조에서 CUDA allocated delta도 sparse가 +403.59MiB였다. 두 순서 모두 dense의 decode tok/s가 높았다. Stage3Wb 진단 실행 자체는 PASS이나 **현재 dense-mask 구현의 상주 절감·추론 가속 예측은 기각**한다. 사용자 승인 순서인 ‘원인별 수정 후 한 시드 300M’의 수정 단계는 희소 연산/압축 배포 새 설계 없이는 충족되지 않아 old 3시드 Stage3W -cancel 이력과 300M 품질 `NOT_RUN`을 유지한다. 런처는 `run_P092_Stage3Wb_resident_speed_diagnostic-done.sh`다.

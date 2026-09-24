@@ -156,7 +156,7 @@ M=12,288 은 **서로 다른 두 형상(mb12×1024, mb24×512)이 똑같이 OOM*
 | [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | R2 pipeline PASS; `S rho=-1.0~0.4`, `U rho=1.0` | selector S 불안정; 속도·품질 증거 없음 | S를 기본 selector로 승격 금지 |
 | [P014D](../../test_plan/P014D_LUT-배포커널-속도와-패킹.md) | native CPU v1 compiled 정합 PASS, 두 actual checkpoint native/int8 1.314×·1.231× | 1.50× 속도 문턱 미달(exit8 유효 음성) | scalar v1 기본 배포 미채택; SIMD/ABI 별도 설계([069 §11](../../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md)) |
 | [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | 100M sparse mask 포함 held759.64MiB 대 dense678.92MiB; 두 순서 decode tok/s도 sparse가 낮음 | 현재 dense-mask DST의 상주·추론 가속 음성, 학습 품질 +0.07 gate 실패 | kernel/압축 배포 새 설계 전 300M 자동 재개 금지([083 §12](../../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) |
-| [P102A](../../test_plan/P102A_T1-S1-S2-S3-학습시간-기능계약.md) | T0/T1 같은 100M 두 팔 사용자 실행: eval/save 32.703→7.189s, whole-wall 1836.554→1802.371s(1.01897×) | eval/save 감소 방향은 관측, 나머지 약8.67s는 단일 실행 순서·clock/compile 교란 가능해 T1 기본 채택 불가 | 역순 반복·동일 fixed-crop 품질 및 원 JSON 대조 뒤 판단([093](../../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md)) |
+| [P102A](../../test_plan/P102A_T1-S1-S2-S3-학습시간-기능계약.md) | T0/T1 같은 100M 두 팔 사용자 실행: eval/save 32.703→7.189s, whole-wall 1836.554→1802.371s(1.01897×) | eval/save 감소 방향은 관측, 나머지 약8.67s는 단일 실행 순서·clock/compile 교란 가능해 T1 기본 채택 불가 | 원 JSON 직접 대조 완료; 역순 반복·동일 fixed-crop 품질 뒤 채택 판단([093](../../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md)) |
 | [P093](../../test_plan/P093_구조조건부-직접공유와-완화타잉.md) | rank16 output NRMS `0.974`, rank0 대비 개선 약 `0.75%` | 현재 parent approximation 과학적 음성 | 새 parameterization 없이는 모델/GPU 단계로 진행하지 않음 |
 
 forced SDPA의 raw warning은 모든 backend가 실패했다는 뜻이 아니었다. EFFICIENT를 강제한 팔에서

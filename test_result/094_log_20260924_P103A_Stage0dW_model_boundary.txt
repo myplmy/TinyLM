@@ -1,0 +1,19 @@
+Tiny CLA2 frozen lower/tail same-window exact cache: full-model logits/loss/all gradients/one SGD update. INT8 boundary error report only; actual M0 12/4 and 2M/20M NOT_RUN.
+
+==============================================================================
+[runlog] 2026-09-24 20:27:56  name=P103A_Stage0dW_model_boundary
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p103a_model_boundary.py
+==============================================================================
+/home/uranus/tinyLM/scripts/diag_p103a_model_boundary.py:65: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  logit_delta = float((ref_logits - cached_logits).abs().amax())
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p103a_model_boundary.py", line 97, in <module>
+    raise SystemExit(main())
+  File "/home/uranus/tinyLM/scripts/diag_p103a_model_boundary.py", line 76, in main
+    raise RuntimeError(f"X3 gradient presence differs: {name}")
+RuntimeError: X3 gradient presence differs: pre_mlps.0.gate_proj.weight
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-09-24 20:27:57)
+==============================================================================

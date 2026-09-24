@@ -1,0 +1,16 @@
+Full four-tile tiny-model loss/all gradients/SGD update vs original plus one physical 64-channel tile. Optimizer state remains full; GPU wall and quality NOT_RUN.
+
+==============================================================================
+[runlog] 2026-09-24 20:27:39  name=P103A_Stage0cW_model_ffn_tile
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p103a_model_ffn_tile.py
+==============================================================================
+/home/uranus/tinyLM/scripts/diag_p103a_model_ffn_tile.py:47: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  loss_delta = float((base - tiled).abs())
+[X2] full_loss=0 full_grad=0 full_update=0 one_tile=0 widths=[64, 64, 64, 64]
+[PASS] P103A X2 full-tile model function/gradient/update and one-tile physical width
+[LIMIT] optimizer state remains full-width; GPU wall/memory/quality NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-24 20:27:41)
+==============================================================================

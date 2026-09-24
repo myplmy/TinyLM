@@ -1,0 +1,16 @@
+Tiny model STE update cache vs three per-micro refreshes: same loss/all named gradients/clip/SGD update. CPU only; CUDA peak and wall NOT_RUN.
+
+==============================================================================
+[runlog] 2026-09-24 20:27:22  name=P102A_Stage0cW_ste_update_cache_model_gate
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p102a_ste_update_cache.py
+==============================================================================
+/home/uranus/tinyLM/scripts/diag_p102a_ste_update_cache.py:83: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  max_update = max(float((ref_params[name] - test_params[name]).abs().amax())
+[S2] loss=0 grad=1.8626451e-09 clip_norm_delta=0 update=9.3132257e-10 leaf_grads=24
+[PASS] P102A S2 cached STE VJP equals per-micro reference on CPU tiny model
+[LIMIT] CUDA BF16, peak, whole-step wall and quality NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-24 20:27:24)
+==============================================================================
