@@ -1,0 +1,26 @@
+Windows drive/UNC path alias fixed by root-relative code keys. Verify pure path contract before the same tiny checkpoint and seed104 GPU gate.
+
+==============================================================================
+[runlog] 2026-09-25 02:20:39  name=P104A_Stage1Bb_m5_dense_bridge
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python -B -X utf8 scripts/check_m5_dense_bridge.py --self-test
+==============================================================================
+[PASS] M5 JSON comparator fixture; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-25 02:20:39)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-25 02:20:40  name=P104A_Stage1Bb_m5_dense_bridge
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python -B -X utf8 scripts/diag_m5_dense_bridge.py --platform windows --out runs/bench/p104a_m5_windows.json
+==============================================================================
+z:\TinyLM\scripts\diag_m5_dense_bridge.py:145: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\bld\libtorch_1770197068560\work\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
+  "one_step_ce": float(loss),
+[PASS] small dense functional bridge windows: eval_ce=10.424150 one_step_ce=10.424150 post_step_eval_ce=10.424013 param_delta=1.1920929e-07 peak_reserved=140509184
+[EVIDENCE] \\wsl.localhost\Ubuntu\home\uranus\tinyLM\runs\bench\p104a_m5_windows.json; full M5 real-checkpoint quality NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-25 02:20:47)
+==============================================================================
+Run WSL Stage1W only after this Windows JSON exists; compare checkpoint/code/input SHA and one-step CE. Full M5 quality NOT_RUN.

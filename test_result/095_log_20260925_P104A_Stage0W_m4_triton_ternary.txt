@@ -1,0 +1,16 @@
+Direct Triton call required. Reference fallback does not count as M4 pass. Read NRMS, cosine and peak allocation separately.
+
+==============================================================================
+[runlog] 2026-09-25 02:11:45  name=P104A_Stage0W_m4_triton_ternary
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_m4_triton_ternary.py --m 64 --k 768 --n 768 --group 128 --max-nrms 0.02 --min-cosine 0.999
+==============================================================================
+platform=Linux torch=2.10.0+cu130 cuda=13.0
+cudnn=91501 triton_import=True
+direct_call=YES dtype=torch.float32 nrms=0.00039494157 cosine=1 max_abs=0.039142609
+peak_allocated_bytes=11978752 incremental_peak_bytes=196608
+[PASS] M4 direct Triton invocation, numeric gate, peak allocation; whole-model NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-25 02:11:49)
+==============================================================================
+M4 Triton function gate passed only for this shape. M4 other backends and M5 real quality remain separate.
