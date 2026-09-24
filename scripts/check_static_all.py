@@ -80,6 +80,8 @@ CHECKS = [
      "`run_REVIEW4_expC_bench_n5000.bat` 는 계획번호도 단계도 없어 **어느 계획의 몇 단계인지 파일명이 "
      "말하지 않았다.** 🚫계획서에 Stage3 가 있다고 **Stage3B** 가 되는 것이 아니다 — 단계를 먼저 쓴다. "
      "✅위반 1건 검출 후 P085 를 쓰고 개명"),
+    ("test_check_batch_name", ["test_check_batch_name.py"],
+     "복합 재실행 Stage 접미사는 정확한 계획 표기만 허용하는가"),
     ("check_heldout_defects", ["check_heldout_defects.py"],
      "★★held-out 의 **의미 결함**(2026-09-03). 구조 검사(정답 불변·중복·문자폭)는 다 통과하는데 "
      "**정답으로 표시된 후보가 거짓**인 문항이 있었다. D1=완전 일치(정확) · D2=정답 후보가 answer 의 "
@@ -90,6 +92,8 @@ CHECKS = [
      "게이트 3(`check_batch_flags`)은 *'파서에 있는가'* 만 본다 — **함정 37 의 셋째 얼굴**. ✅실검출 2건·오탐 2건은 규칙으로 면제"),
     ("check_batch_flags",   ["check_batch_flags.py"],
      "배치가 쓰는 CLI 플래그가 **파서에 실제로 있는가**(미구현 배치 2회 재발)"),
+    ("test_check_batch_flags", ["test_check_batch_flags.py"],
+     "Windows runlog 자식 파서에 --platform 등 인자가 귀속되고 잘못된 플래그는 거부되는가"),
     ("check_flag_whitelist", ["check_flag_whitelist.py"],
      "★★배치가 써도 되는 플래그인가 — **'존재' 가 아니라 '의도'**(2026-09-04, 승인된 제안서). "
      "게이트 3·5 를 통과해도 `--drop-contaminated`(미구현) · `--repeat-kv-reuse`(기각)는 "
@@ -174,6 +178,8 @@ CHECKS = [
      "제안서 린터가 빈 절·계측위험 누락·상태접미사 drift를 실제로 거부하는가"),
     ("check_diag_data",     ["check_diag_data.py"],
      "진단 도구의 계측 건강 — 절대지표에 난수 정답을 쓰는가"),
+    ("test_check_diag_data", ["test_check_diag_data.py"],
+     "동일입력 차이 진단의 난수는 허용하고 절대품질 난수정답 CE는 검출하는가"),
     ("queue_menu --audit",  ["queue_menu.py", "--audit"],
      "`experiments.tsv` ↔ 디스크 양방향 대조"),
     ("sync_experiments_tsv", ["sync_experiments_tsv.py"],

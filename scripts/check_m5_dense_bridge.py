@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 
 
 def compare(win, wsl, *, ce_limit=0.01, grad_rel_limit=0.10):
@@ -57,6 +57,15 @@ def main() -> int:
         assert compare(a, dict(b, post_step_eval_ce=2.1))[0] == 8
         assert compare(a, dict(b, one_step_param_delta_abs=0.0))[0] == 8
         assert compare(a, dict(b, post_step_eval_ce=float("nan")))[0] == 2
+        from diag_m5_dense_bridge import CODE_RELATIVE, code_paths
+        for root in (PureWindowsPath("Z:/TinyLM"),
+                     PureWindowsPath("//wsl.localhost/Ubuntu/home/uranus/tinyLM"),
+                     PurePosixPath("/home/uranus/tinyLM")):
+            paths = code_paths(root)
+            if (tuple(paths) != CODE_RELATIVE
+                    or paths["scripts/diag_m5_dense_bridge.py"]
+                    != root / "scripts" / "diag_m5_dense_bridge.py"):
+                raise RuntimeError("M5 source paths depend on an OS-specific alias")
         print("[PASS] M5 JSON comparator fixture; model/GPU NOT_RUN")
         return 0
     if not (0 < args.max_ce_abs < 1 and 0 < args.max_grad_rel < 1):

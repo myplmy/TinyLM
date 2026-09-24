@@ -80,7 +80,7 @@ def main() -> int:
     test_norm = float(torch.nn.utils.clip_grad_norm_(candidate.parameters(), 1.0))
     torch.optim.SGD(reference.parameters(), lr=1e-3).step()
     torch.optim.SGD(candidate.parameters(), lr=1e-3).step()
-    max_update = max(float((ref_params[name] - test_params[name]).abs().amax())
+    max_update = max(float((ref_params[name].detach() - test_params[name].detach()).abs().amax())
                      for name in ref_params)
     reference.clear_quant()
     candidate.clear_quant()

@@ -14,13 +14,18 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 CKPT = ROOT / "runs" / "ckpt" / "tiny_synthetic_2M_dense.pt"
-CODE = (
-    ROOT / "tinylm" / "config.py",
-    ROOT / "tinylm" / "model" / "modules.py",
-    ROOT / "tinylm" / "model" / "ternary.py",
-    ROOT / "tinylm" / "model" / "transformer.py",
-    Path(__file__),
+CODE_RELATIVE = (
+    "tinylm/config.py",
+    "tinylm/model/modules.py",
+    "tinylm/model/ternary.py",
+    "tinylm/model/transformer.py",
+    "scripts/diag_m5_dense_bridge.py",
 )
+
+
+def code_paths(root: Path) -> dict[str, Path]:
+    """Use one repository-root spelling for paths, including this script."""
+    return {name: root.joinpath(*name.split("/")) for name in CODE_RELATIVE}
 
 
 def digest(path: Path) -> str:
@@ -63,7 +68,7 @@ def main() -> int:
     if not torch.cuda.is_available() or not CKPT.is_file():
         raise RuntimeError("CUDA and the exact shared tiny dense checkpoint are required")
     ckpt_sha = digest(CKPT)
-    code_sha = {p.relative_to(ROOT).as_posix(): digest(p) for p in CODE}
+    code_sha = {name: digest(path) for name, path in code_paths(ROOT).items()}
     state = torch.load(CKPT, map_location="cpu", weights_only=True)
     cfg = TMTConfig(**state["cfg"])
     if cfg.tie_mlp:

@@ -59,7 +59,7 @@ def plan_doc(pnum: str):
 def stage_present(doc: Path, stage: str) -> bool:
     """`Stage0` · `stage3b` · `단계3` 를 서로 인정한다."""
     txt = io.open(doc, encoding="utf-8", errors="replace").read()
-    m = re.match(r"^(?:stage|Stage|S)?\s*(\d+)([A-Za-z]?)$", stage)
+    m = re.match(r"^(?:stage|Stage|S)?\s*(\d+)([A-Za-z]*)$", stage)
     if not m:
         return False
     n, suf = m.group(1), (m.group(2) or "")

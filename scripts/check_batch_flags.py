@@ -44,7 +44,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ACK = re.compile(r"^:NOTIMPL\b|NOT IMPLEMENTED", re.I | re.M)
 
 FLAG = re.compile(r"(?<![\w-])--[a-z0-9][a-z0-9-]*")
-CALL = re.compile(r"^\s*python\s+(?:scripts\\runlog\.py[^\n]*?--\s+python\s+)?"
+CALL = re.compile(r"^\s*python\s+(?:scripts[\\/]runlog\.py[^\n]*?--\s+python\s+(?:-B\s+)?(?:-X\s+utf8\s+)?)?"
                   r"([\w\\/.-]+\.py)\s+(.*)$", re.I | re.M)
 
 

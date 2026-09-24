@@ -44,7 +44,7 @@ def main() -> int:
     x, y = raw[:, :-1], raw[:, 1:]
     base = F.cross_entropy(reference(x).float().reshape(-1, cfg.vocab_size), y.reshape(-1))
     tiled = F.cross_entropy(all_tiles(x).float().reshape(-1, cfg.vocab_size), y.reshape(-1))
-    loss_delta = float((base - tiled).abs())
+    loss_delta = float((base.detach() - tiled.detach()).abs())
     base.backward()
     tiled.backward()
     rp, tp = dict(reference.named_parameters()), dict(all_tiles.named_parameters())
@@ -59,7 +59,7 @@ def main() -> int:
             grad_delta = max(grad_delta, float((a - b).abs().amax()))
     torch.optim.SGD(reference.parameters(), lr=1e-3).step()
     torch.optim.SGD(all_tiles.parameters(), lr=1e-3).step()
-    update_delta = max(float((rp[name] - tp[name]).abs().amax()) for name in rp)
+    update_delta = max(float((rp[name].detach() - tp[name].detach()).abs().amax()) for name in rp)
     one_tile = TiedMLPTransformer(replace(cfg, x2_active_tiles=(0,)))
     one_tile.load_state_dict(reference.state_dict(), strict=True)
     one_tile.train()
@@ -69,7 +69,7 @@ def main() -> int:
     measured = mlp(probe, None)
     expected = ffn_tiles(probe, mlp.gate_proj._wq, mlp.up_proj._wq,
                          mlp.down_proj._wq, (0,), tile_size=64)
-    subset_delta = float((measured - expected).abs().amax())
+    subset_delta = float((measured.detach() - expected.detach()).abs().amax())
     widths = [m._x2_last_width for m in (list(one_tile.pre_mlps)
               + list(one_tile.mid_mlps) + list(one_tile.coda_mlps))]
     print(f"[X2] full_loss={loss_delta:.8g} full_grad={grad_delta:.8g} full_update={update_delta:.8g} one_tile={subset_delta:.8g} widths={widths}")

@@ -9,9 +9,10 @@ import torch
 import torch.nn.functional as F
 
 
-def validate_frozen_split(model, split_layer: int) -> None:
+def validate_split_geometry(model, split_layer: int) -> None:
     cfg = model.cfg
-    if (not isinstance(split_layer, int) or not 1 <= split_layer < cfg.n_layers
+    if (not isinstance(split_layer, int) or isinstance(split_layer, bool)
+            or not 1 <= split_layer < cfg.n_layers
             or cfg.tie_mlp or cfg.n_modes != 1 or cfg.attn_group != 1
             or cfg.grad_checkpoint or cfg.use_ternary_kernel
             or cfg.train_repeat != 1.0 or cfg.infer_repeat != 1.0
@@ -26,12 +27,35 @@ def validate_frozen_split(model, split_layer: int) -> None:
     if model.owner[split_layer] != split_layer or any(
             model.owner[i] < split_layer for i in range(split_layer, cfg.n_layers)):
         raise ValueError("X3 split crosses a CLA owner/consumer group")
+    lower_mlps = {id(layer.mlp[0]) for layer in model.layers[:split_layer]}
+    upper_mlps = {id(layer.mlp[0]) for layer in model.layers[split_layer:]}
+    if lower_mlps & upper_mlps:
+        raise ValueError("X3 lower MLP is shared with the trainable upper side")
+
+
+def validate_frozen_split(model, split_layer: int) -> None:
+    validate_split_geometry(model, split_layer)
     if any(p.requires_grad for p in model.emb.parameters()):
         raise ValueError("X3 shared input/output embedding must be frozen")
     if model.emb_up is not None and any(p.requires_grad for p in model.emb_up.parameters()):
         raise ValueError("X3 shared factorized head must be frozen")
     if any(p.requires_grad for layer in model.layers[:split_layer] for p in layer.parameters()):
         raise ValueError("X3 lower layers must be frozen before caching")
+    if any(p.requires_grad for layer in model.layers[:split_layer]
+           for p in layer.mlp[0].parameters()):
+        raise ValueError("X3 lower MLP reference must be frozen before caching")
+
+
+def freeze_lower_dependency(model, split_layer: int) -> None:
+    """Freeze registered layers and unregistered MLP references on the lower side."""
+    validate_split_geometry(model, split_layer)
+    model.emb.requires_grad_(False)
+    if model.emb_up is not None:
+        model.emb_up.requires_grad_(False)
+    for layer in model.layers[:split_layer]:
+        layer.requires_grad_(False)
+        layer.mlp[0].requires_grad_(False)
+    validate_frozen_split(model, split_layer)
 
 
 def _visit(model, x, start: int, stop: int, cos, sin):

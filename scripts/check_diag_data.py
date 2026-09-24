@@ -54,6 +54,7 @@ P049B 게이트가 이 검사를 **통과했는데도 틀렸다** — 교사 ful
 from __future__ import annotations
 
 import re
+import ast
 import sys
 from pathlib import Path
 
@@ -90,32 +91,54 @@ EXEMPT = {
         "P091 R2의 CE 절대값을 품질로 읽지 않고, 같은 합성 window에서 gate-zero 전후 "
         "차이 S와 optimizer-only 상대 update U만 계산한다. 절대 지표 경고의 대상이 아닌 "
         "difference/contract 진단이며, 실제 selector-to-gain 품질은 R3 NOT_RUN으로 명시한다",
+    # These calculate same-input function differences, not absolute model quality.
+    # Random targets are valid here only because no absolute quality is claimed.
+    "diag_m5_dense_bridge.py": "same synthetic input across OS; absolute CE is paired-function evidence only",
+    "diag_p101a_math_contract.py": "synthetic E/QK/MTP loss and gradient equivalence, not CE quality",
+    "diag_p101a_qk_gain.py": "same tiny model before/after tau=1 function and gradient equivalence",
+    "diag_p101a_m0_arm_attribution.py": "same pinned M0 inputs for independent-arm logit/gradient drift, not quality",
+    "diag_p102a_contract.py": "synthetic S1/S2/S3 reference difference contract, not quality",
+    "diag_p102a_model_loss_first.py": "same tiny model full-CE versus loss-first difference contract",
+    "diag_p102a_ste_update_cache.py": "same tiny model cached versus per-micro STE difference contract",
+    "diag_p103a_m0_boundary.py": "same pinned M0 exact-boundary versus full-model difference gate",
+    "diag_p103a_model_boundary.py": "same tiny CLA2 exact-boundary versus full-model difference gate",
+    "diag_p103a_model_ffn_tile.py": "same tiny FFN full-tile versus original difference gate",
+    "diag_dtype_map.py": "random targets time backward cost only; no loss quality claim",
+    "diag_kd_loss.py": "controlled synthetic teacher/student logits compare KD-to-CE gradient scale, not quality",
 }
 
 
-def audit(p: Path):
+def audit(p: Path, *, source_text: str | None = None):
     """(치명, 경고, 정보) 목록."""
-    txt = p.read_text(encoding="utf-8", errors="replace")
+    txt = source_text if source_text is not None else p.read_text(encoding="utf-8", errors="replace")
     err, warn, info = [], [], []
-    if p.name in EXEMPT:
-        return err, warn, [f"면제 — {EXEMPT[p.name]}"]
+    exempt_reason = EXEMPT.get(p.name)
 
+    if exempt_reason is not None:
+        return err, warn, [f"절대 품질 검사 대상 아님 — {exempt_reason}"]
     if not ABS_METRIC.search(txt):
         return err, warn, ["절대 지표 없음 — 이 검사의 대상이 아니다(차이 지표 도구)"]
 
-    # 난수로 만든 텐서 이름을 모은다
+    # Parse nested calls correctly; a regex stopped at reshape() and missed the
+    # second cross_entropy argument, or left a closing parenthesis on a plain name.
     rand_names = set(RAND_TENSOR.findall(txt))
-    # 그 이름이 CE 의 **정답 인자**로 들어가는가
-    for m in re.finditer(r"cross_entropy\([^)]*\)", txt):
-        call = m.group(0)
-        args = call[call.index("(") + 1:]
-        parts = [a.strip() for a in args.split(",")]
-        if len(parts) >= 2:
-            tgt = re.sub(r"\..*$", "", parts[1]).strip()
-            if tgt in rand_names:
-                err.append(f"★`cross_entropy(..., {tgt})` 의 정답이 **난수**다 "
-                           f"(`{tgt} = torch.randint(...)`). 학습된 모델일수록 CE 가 "
-                           f"나빠진다 = **부호가 뒤집힌 계측**(함정 31, 결과 041 §11)")
+    try:
+        tree = ast.parse(txt)
+    except SyntaxError as exc:
+        return [f"진단기 Python 구문 오류: {exc}"], warn, info
+    for call in ast.walk(tree):
+        if not isinstance(call, ast.Call) or len(call.args) < 2:
+            continue
+        fn = call.func
+        if not ((isinstance(fn, ast.Attribute) and fn.attr == "cross_entropy")
+                or (isinstance(fn, ast.Name) and fn.id == "cross_entropy")):
+            continue
+        targets = {node.id for node in ast.walk(call.args[1]) if isinstance(node, ast.Name)}
+        for target in sorted(targets & rand_names):
+            err.append(f"★`cross_entropy(..., {target})` 의 정답이 **난수**다 "
+                       f"(`{target} = torch.randint(...)`). 학습된 모델일수록 CE 가 "
+                       f"나빠진다 = **부호가 뒤집힌 계측**(함정 31, 결과 041 §11)")
+
 
     # 합성 데이터라도 **퇴화 감지 장치가 있으면** 통과로 본다(함정 32 의 규칙을 지킨 것).
     has_guard = re.search(r"총변동거리|degenerate|퇴화", txt)

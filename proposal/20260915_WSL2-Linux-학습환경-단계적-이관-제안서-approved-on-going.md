@@ -2,7 +2,7 @@
 
 > **작성일**: 2026-09-15  
 > **최종 수정일**: 2026-09-23
-> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 manual compact 제외의 `PARTIAL` 종결 / M4 `PARTIAL`(기존 P025B·FP8·SDPA 실제 backend 진단은 있으나 전체 계약 미완) / M5 `NOT_RUN` / M6 최종 운영 전환 보류
+> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 manual compact 제외의 `PARTIAL` 종결 / M4 `PARTIAL`(기존 P025B·FP8·SDPA 실제 backend 진단은 있으나 전체 계약 미완) / M5 Windows 첫 수집 `실행 오류`/양 OS 기능 교량 `NOT_RUN` / M6 최종 운영 전환 보류
 > **분류**: 작업환경 / 실행기반 / 실험 재현성  
 > **실험번호**: `PNone`  
 > **실험계획 비대상 사유**: 이 문서는 환경 이관 의사결정 제안이다. 승인 뒤 필요한 교량 실험은 기존 계획의 환경 단계 또는 별도 승인된 실험계획으로 등록한다.
@@ -567,3 +567,9 @@ runlog 참조를 맞췄다. 소형 M5 JSON은 실제 파라미터 갱신과 갱�
 대조를 대체하지 않으며, Windows와 WSL 양쪽 결과 및 추가 M4 게이트가 있어야 M5/M4를
 각각 판정할 수 있다. 이 조건과 사용자 최종 운영 전환 결정이 남아 있으므로 이 제안서는
 `-approved-on-going` 상태를 유지하고 `done`으로 이관하지 않는다.
+
+## 15. 2026-09-25 M5 Windows 첫 실행 실패와 경로 별칭 교정
+
+[결과095](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md)의 사용자 Windows Stage1B 실행은 코드 SHA 사전검사에서 `Z:` 자기 파일과 WSL UNC `ROOT`의 `relative_to`가 충돌해 종료코드1이었다. `torch.load`·forward·업데이트 전 실패라 Windows CUDA/모델 호환성의 음성 결과가 아니고, M5 양 OS 기능 대조는 여전히 `NOT_RUN`이다. Linux `--check-only`와 BAT 형식 린트가 이 분기를 지나지 않았던 검증 공백을 보존한다.
+
+진단기는 모든 코드 파일을 고정 저장소 상대 이름·동일 ROOT로 구성하도록 교정했고 Windows 드라이브/UNC/WSL 순수 경로 자기시험은 PASS했다. 원본 실패 BAT는 `-done` 역사 증거, 새 사용자 실행 [Stage1Bb](../run_P104A_Stage1Bb_m5_dense_bridge.bat)는 기존 출력 write-once 계약과 같은 checkpoint·seed104를 유지한다. Stage1Bb 실제 Windows와 후속 WSL Stage1W, M4 잔여 Triton 실제 호출·동일 real-checkpoint 품질은 `NOT_RUN`이다. 최신 WSL smoke 42팔 실패0·계측0은 이 별도 교량 결과가 아니므로 M5/M6 또는 제안서 done 상태로 승격하지 않는다.

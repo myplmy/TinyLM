@@ -27,7 +27,7 @@ def main() -> int:
     from tinylm.config import TMTConfig
     from tinylm.model import TiedMLPTransformer
     from tinylm.train.p103a_contract import WindowBoundaryTable, fixed_window_starts, gather_fixed_window_xy
-    from tinylm.train.p103a_model_boundary import frozen_prefix_boundary, tail_logits_from_boundary
+    from tinylm.train.p103a_model_boundary import (freeze_lower_dependency, frozen_prefix_boundary, tail_logits_from_boundary)
 
     torch.set_num_threads(1)
     torch.manual_seed(103)
@@ -40,10 +40,7 @@ def main() -> int:
     candidate.load_state_dict(reference.state_dict(), strict=True)
     split = 2
     for model in (reference, candidate):
-        model.emb.requires_grad_(False)
-        model.emb_up.requires_grad_(False)
-        for layer in model.layers[:split]:
-            layer.requires_grad_(False)
+        freeze_lower_dependency(model, split)
         model.train()
     stream = torch.randint(0, cfg.vocab_size, (17,),
                            generator=torch.Generator().manual_seed(31))
@@ -62,8 +59,8 @@ def main() -> int:
     cached_logits = tail_logits_from_boundary(candidate, exact, split)
     cached_loss = F.cross_entropy(cached_logits.float().reshape(-1, cfg.vocab_size),
                                   y.reshape(-1))
-    logit_delta = float((ref_logits - cached_logits).abs().amax())
-    loss_delta = float((ref_loss - cached_loss).abs())
+    logit_delta = float((ref_logits.detach() - cached_logits.detach()).abs().amax())
+    loss_delta = float((ref_loss.detach() - cached_loss.detach()).abs())
     ref_loss.backward()
     cached_loss.backward()
     rp, cp = dict(reference.named_parameters()), dict(candidate.named_parameters())
@@ -78,7 +75,7 @@ def main() -> int:
             grad_delta = max(grad_delta, float((a - b).abs().amax()))
     torch.optim.SGD(reference.parameters(), lr=1e-3).step()
     torch.optim.SGD(candidate.parameters(), lr=1e-3).step()
-    update_delta = max(float((rp[name] - cp[name]).abs().amax()) for name in rp)
+    update_delta = max(float((rp[name].detach() - cp[name].detach()).abs().amax()) for name in rp)
     quant_table = WindowBoundaryTable(x, boundary, parent_sha256=parent_sha,
                                        split_layer=split, quantized=True)
     approx = quant_table.gather(ids, x, parent_sha256=parent_sha, split_layer=split)

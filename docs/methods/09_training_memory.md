@@ -298,7 +298,7 @@ python scripts/check_spill.py test_result/037_log_20260808_P018_compressed_teach
 | [P025B](../../test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md) | Stage0cW pack은 0.0027~0.0039ms/µstep로 작고 GPU work는 양성이지만 sparse optimizer state·peak VRAM은 미측정 | 속도 후보를 sparse-master 메모리 절감으로 부르지 않음; 메모리 축 별도 |
 | [P060B](../../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md) | isolated working memory 약 −37%; 3-seed training reserved `8.852→8.676GB`(−1.986%), allocated −1.536% 재현 | 10% 문턱 음성. cache decode 정합 미통과라 배포 memory 이득으로 승격 금지 |
 | [P091](../../test_plan/P091_Muon후반-적응적-블록-확장-재학습.md) | owner/optimizer mapping과 selector 계약만 PASS | local optimizer state·temporary BA·peak reserved 미측정 |
-| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | dense tensor+mask controller 계약 PASS | structural active count를 저장 절감으로 환산하지 않음 |
+| [P092](../../test_plan/P092_Dynamic-Sparse-Training-연결희소성.md) | Stage3Wb 실제 모델 보유 텐서 dense678.92MiB, sparse759.64MiB(mask80.72MiB) | 현재 structural active 절반은 FP32 상주 절감이 아니다. 보유 텐서는 RSS/peak/압축 배포 파일과 다르며 추가 저장 최적화·실측이 필요([083 §12](../../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) |
 | [P093](../../test_plan/P093_구조조건부-직접공유와-완화타잉.md) | 회계상 절감 후보였으나 현재 parent approximation output NRMS `0.974` | 품질 viability를 못 넘은 회계 후보를 메모리 승자로 승격 금지 |
 | [P095](../../test_plan/P095_Scout-1MiB-LTM-학습가능성.md) | payload 1,048,576 B + metadata 1,032 B = physical 1,049,608 B | primitive fixture만 PASS; full Transformer resident/RSS·학습은 `NOT_RUN` |
 

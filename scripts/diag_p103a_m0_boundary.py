@@ -29,7 +29,7 @@ def main() -> int:
     from tinylm.model import TiedMLPTransformer
     from tinylm.train.init_utils import _strip
     from tinylm.train.p103a_contract import WindowBoundaryTable, fixed_window_starts, gather_fixed_window_xy
-    from tinylm.train.p103a_model_boundary import frozen_prefix_boundary, tail_logits_from_boundary
+    from tinylm.train.p103a_model_boundary import (freeze_lower_dependency, frozen_prefix_boundary, tail_logits_from_boundary)
 
     torch.set_num_threads(1)
     state = torch.load(PARENT, map_location="cpu", weights_only=True)
@@ -44,10 +44,7 @@ def main() -> int:
     model = TiedMLPTransformer(cfg)
     model.load_state_dict(_strip(state["model"]), strict=True)
     del state
-    model.emb.requires_grad_(False)
-    model.emb_up.requires_grad_(False)
-    for layer in model.layers[:split]:
-        layer.requires_grad_(False)
+    freeze_lower_dependency(model, split)
     model.train()
     stream = torch.randint(0, cfg.vocab_size, (17,),
                            generator=torch.Generator().manual_seed(31))

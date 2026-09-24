@@ -240,7 +240,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | `qa_*` | 어닐 형태(P035: `qa_step60`·`qa_step80`) | ⚠️**2026-08-23 정정 — 이 행이 낡았다.** P035 는 **결과 022 로 종결**(2×2 네 값이 1.07σ 안, 형태 효과의 부호가 전이점에 따라 뒤집힘 = 검출 불가). `--anneal-shape` 은 구현돼 있고 **재실행 계획 없음** |
 | `p35b_a3_*` | P035B A3 동역학(`e60`·`e80`)과 audit 오염 대조(`off80`) | **예약 2026-09-15.** 세 팔 모두 m100s8·250 step·600M exact pool·seed 1337; 🚫품질 또는 anneal 기본값 판정에 사용 금지 |
 | `p097_ctrl_v2`·`p097_fw2`·`p097_edu_v2`·`p097_madlad` | P097 300M 한영 dataset recipe 대조 | **사용 완료 2026-09-20.** 전 팔 m100s10 dense·CLA2·Muon RMS4×4·300.024M draw·600M nominal pool·seed1337·exit0. tokenizer/data/val이 달라 자기 val_loss 교차비교 금지([090 §5](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md#5-stage0bstage1abd-실제-완료2026-09-20)) |
-| `p097_{ctrl_v2,fw2}_s{2024,31415}` | P097 control/FineWeb2 추가 seed | **사용 완료 2026-09-23.** 네 팔 exit0·skip0; 자기 val은 다른 tokenizer/val로 교차 품질 비교 금지. Stage4 공통 문항·byte-bpb 후 재현성 판정([090 §13](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md)) |
+| `p097_{ctrl_v2,fw2}_s{2024,31415}` | P097 control/FineWeb2 추가 seed | **사용 완료 2026-09-23, Stage4 공통평가 2026-09-24 완료.** 자기 val 교차비교 금지. FineWeb2 YNAT 방향·control 영문 bpb 방향은 재현됐지만 전면 승자/기본 데이터셋 교체는 아님([090 §14](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md)) |
 | `p060b_q_{off,on}_s{1337,2024,31415}` | P060B GQA 300M 품질 3-seed | **사용 완료 2026-09-22.** full-val 차이는 전부 실무 분해능 0.024 안이지만 방향 불일치; 속도 중립·reserved -1.986%. 기본 off 유지([088 §10](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#31-최신-누적-판정-stage2wstage3w2026-09-22--품질은-실무상-동급-cache-배포-정합은-미통과)) |
 | `d14_cla2_norecur_rms4_lr{15,20}[_s2024|_s31415]`·`d14_cla2_norecur_rms4_s{2024,31415}` | P005b CLA2 LR 1.0/1.5/2.0 3-seed | **사용 완료 2026-09-22.** LR1.5가 base 대비 3/3 우세(평균 -0.0027), LR2.0은 3/3 열세. CLA2 d14 후보 LR만 1.5e-3([078 §16](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#16-stage13142026-09-22--cla2의-lr-15e-3-후보가-3-seed-동일-방향으로-재현됐다)) |
 | `p098_r2_{ctrl,reinject}_s{1337,2024,31415}` | P098 재귀 embedding 재주입 | **사용 완료 2026-09-23.** paired off−on +0.0015/+0.0001/+0.0002로 재귀 자 0.0018 안, 기본 off 유지([091](../test_result/091_20260923_P098-R2-초기임베딩-재주입은-3시드-실무-동급.md)) |
@@ -290,8 +290,8 @@ fp32 상주와 int8 상주가 갈린다.**
 | ★**`mC_cla1_ag4`·`mC_d36_ag8_cla1`** | P073 단계2 = 어텐션 축을 cla1 위에서 재가격 | **예약**(배치 준비 완료 2026-08-26) |
 | ★**`mC_initonly_nc`** | P065 단계3 = 표준 대조군의 `--no-ckpt` 쌍둥이 | **예약**(배치 준비 완료 2026-08-26) |
 | ★★**`d6_dense`·`d8_dense`·`d10_dense`·`d12_dense`** | P074 단계1 = **얕은 dense 깊이 곡선**(프리셋 `m100s2/s4/s6/s8`) | **예약**(배치 준비 완료 2026-08-26). ⚠️`--depth-init role` 은 **미측정 옵션**이다 |
-| `dense_p102a_t0_s1337`·`dense_p102a_t1_s1337` | P102A Stage1W T0 eval100/save0 대 T1 eval500/save1000, 동일 100M draw·600M exact pool | **예약**(사용자 GPU 실행 NOT_RUN; 단일 순서에서 속도 채택 금지) |
-| `p101a_b0_s1337`·`p101a_e384_s1337`·`p101a_qk_s1337`·`p101a_mtp_s1337`·`p101a_mtp_ht_s1337` (동일 팔의 seed2024·31415도 조건 예약) | P101A 고정 M0 가중치·legacy 32k·기존 1.2B exact pool, 762step=99,876,864 draw; 한 arm 한 변수, S3 HT는 후속 | **조건 예약**(Stage0/1 모델 기능·별도 학습 승인 전 SH 0개, GPU·품질 NOT_RUN) |
+| `dense_p102a_t0_s1337`·`dense_p102a_t1_s1337` | P102A Stage1W T0 eval100/save0 대 T1 eval500/save1000, 동일 100M draw·600M exact pool | **사용 완료 2026-09-24** 두 팔 exit0·skip0. 사용자 요약기 whole-wall 1.01897× 단일순서 관측, fixed-crop·역순 반복 전 T1 기본 채택 금지([093](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md)) |
+| `p101a_b0_s1337`·`p101a_e384_s1337`·`p101a_qk_s1337`·`p101a_mtp_s1337`·`p101a_mtp_ht_s1337` (동일 팔의 seed2024·31415도 조건 예약) | P101A 고정 M0 가중치·legacy 32k·기존 1.2B exact pool, 762step=99,876,864 draw; 한 arm 한 변수, S3 HT는 후속 | **조건 예약·현재 HOLD**: Stage0W PASS이나 Stage1W 결합 M0 주 logits 1.2398e-5 >1e-5 FAIL. 독립 팔 Stage1Wb 사용자 재진단 전 학습 SH 0개, GPU·품질 NOT_RUN([092 §3](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)) |
 | `dense_chat32_p090b_s1337` | P090B Stage1bW 별도 chat32 601M exact 풀·300,023,808 draw 새 부모, legacy init/KD 없음 | **예약**(사용자 GPU 실행 NOT_RUN; 기존 legacy와 tokenizer 단독효과 귀속 금지) |
 | `k_*`, `kc_*`, `*_smoke` | tiny 스모크 | 사용중 |
 
@@ -305,9 +305,10 @@ fp32 상주와 int8 상주가 갈린다.**
 | 결과 | 같은 조건에서 확인한 값 | 허용 주장·다음 gate |
 |---|---|---|
 | [069 §11](../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md) | P014D native LUT/int8 actual 1.314×·1.231×; compiled 정합 PASS | 1.50× 속도 채택선 **실패**(exit8 유효 음성). SIMD·다른 CPU 일반화 NOT_RUN |
-| [083 §9](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md) | 100M dense 3.96750, static50 4.14703, dynamic50 4.16406, dynamic25 4.30547 | 최선 dynamic gap +0.19656로 Stage3 +0.07 gate 실패. 30M 세 sparse도 +0.15 중단선 초과 후 100M가 실행된 절차 이탈을 보존 |
-| [090 §13](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md) | 추가 두 seed 자기 val control 3.51156/3.51359, FineWeb2 3.89656/3.88172; 전부 skip0 | **서로 다른 tokenizer·자기 val**을 직접 차감하지 않는다. Stage4 같은 원문·문항 아직 NOT_RUN |
+| [083 §9/§12](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md) | 100M dynamic50 dense gap +0.19656로 Stage3 +0.07 실패; Stage3Wb sparse 보유759.64MiB(mask80.72) 대 dense678.92MiB, decode 두 순서 열세 | 현재 dense-mask의 상주·생성 가속 음성. 30M·100M 품질 gate는 역사 실패, 300M 후속은 새 kernel/압축 설계 전 자동 재개하지 않음 |
+| [090 §14](../test_result/090_20260919_P097-세-cache는-완성됐지만-학습은-0step이다.md) | 세 시드 공통과제에서 FineWeb2 YNAT 방향3/3(유의2/3), control 영문 SQuAD-context bpb 3/3 낮음; ARC 방향 교환·NLI/Hella 우연 부근 | 동일 원문 byte-bpb는 설명적 비교이나 source/tokenizer 교락·recipe별 차등 오염 미측정. 자기 val 차감·기본 데이터셋 교체 금지 |
 | [091](../test_result/091_20260923_P098-R2-초기임베딩-재주입은-3시드-실무-동급.md) | R2 on/off paired off−on +0.0015/+0.0001/+0.0002 | 모두 재귀 실무 자 0.0018 안. 단순 덧셈 default-off 유지; 다운스트림 NOT_RUN |
+| [093](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md) | S1/S2 작은 모델 함수 PASS. T0/T1 100M의 사용자 요약기 eval/save 25.514s 감소·whole-wall 34.183s 감소(1.01897×) | 단일 순서 속도 방향만 관측, fixed-crop 품질·역순 반복·S3 GPU 효과 NOT_RUN. 원 훈련 JSON 직접 판독 전 표준 승격 보류 |
 
 이 표는 결과문서의 숫자·조건 서명으로 거슬러 올라가는 **요약**이다. 다른 풀,
 tokenizer, validation·생성 경로를 이 표의 순서만 보고 합산·순위화하지 않는다.

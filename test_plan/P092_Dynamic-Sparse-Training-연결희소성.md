@@ -6,6 +6,8 @@
 > full-trainer 여덟 팔은 사용자 로그로 완료됐다([083 §9~§10](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
 > 품질 격차는 감소했지만 기존 Stage3 gate는 실패했다. 구 Stage3W 3시드 SH는 -cancel 이력으로 보존하고,
 > 승인된 Stage3Wb 병목 진단만 작성했다. 새 진단의 GPU·추론 상주는 `NOT_RUN`이다.
+> **2026-09-25 최신:** Stage3Wb 모델 보유 텐서/추론 실측은 sparse 두 팔의 mask +80.72MiB와 dense 대비 느린 decode를 확인했다. 현재 구현의 상주·속도 가속은 음성, 300M 품질은 NOT_RUN([083 §12](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)).
+
 
 ## 1. 왜 — 삼진 0과 연결 부재를 구분해야 한다
 
@@ -147,3 +149,7 @@ Stage0에서 `H300`을 실측하기 전에 절대 GPU-h를 확정값으로 바�
 사용자가 이번에 live SH 5건의 우선순위·취소 여부를 판단하도록 지시했다. 옛 `run_P092_Stage3W_full_trainer_300M_seeds.sh`는 100M +0.19656 대 사전 +0.07 게이트에서 exit8로 막히며, 12개 300M 학습 호출을 묶은 형태도 사용자 선택인 **Stage3Wb 진단→관측 병목 수정→동일조건 한 시드**와 맞지 않는다. 그래서 파일 내용과 역사 명령은 [`-cancel` 보존본](../run_P092_Stage3W_full_trainer_300M_seeds-cancel.sh)으로 남기고 실험 큐 활성행만 취소 이력으로 옮겼다. GPU 학습 실행은 0건이며, 이전 §9.3의 HOLD 표현은 그때의 상태 기록이다.
 
 취소 대상은 옛 **3시드 일괄 실행 설계**뿐이다. P092 Stage0~2의 관측값, 연결희소 연구축, [Stage3Wb 진단](../run_P092_Stage3Wb_resident_speed_diagnostic.sh)은 그대로 열린다. Stage3Wb 사용자 로그에서 속도·상주·정합을 판독하고 측정된 원인을 수정·재측정한 뒤, 새 판정선을 사전등록한 300M 한 시드 런처가 필요한지 결정한다. 실패한 옛 게이트를 삭제하거나 통과했다고 소급하지 않는다.
+
+## 9.5 2026-09-25 Stage3Wb 완료 — 상주·추론 가속 음성
+
+[결과083 §12](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)의 실제 로드 텐서는 dense678.92MiB, static/dynamic 각759.64MiB(mask80.72MiB)였고 두 순서 모두 dense의 decode tok/s가 높았다. Stage3Wb 진단 실행 자체는 PASS이나 **현재 dense-mask 구현의 상주 절감·추론 가속 예측은 기각**한다. 사용자 승인 순서인 ‘원인별 수정 후 한 시드 300M’의 수정 단계는 희소 연산/압축 배포 새 설계 없이는 충족되지 않아 old 3시드 Stage3W -cancel 이력과 300M 품질 `NOT_RUN`을 유지한다. 런처는 `run_P092_Stage3Wb_resident_speed_diagnostic-done.sh`다.

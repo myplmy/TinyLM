@@ -1,6 +1,6 @@
 # P101A — M0 기반 U2 E384·QK gain·MTP 기능 게이트
 
-> 제안 계기: [승인된 A안](../proposal/20260923_TinyLM-M0-C0-E384-QK-MTP-지능향상-제안서-approved-on-going.md) 10절. 독립 계획으로 분리해 기존 P006/P030 본문을 소급 수정하지 않는다. MTP 효과의 정본 번호는 여전히 P006이며 본 계획은 **A 결합의 기능 계약**만 소유한다. 2026-09-24 정적 코드·CPU 수학 fixture PASS, 실제 모델 gate와 GPU·품질 NOT_RUN.
+> 제안 계기: [승인된 A안](../proposal/20260923_TinyLM-M0-C0-E384-QK-MTP-지능향상-제안서-approved-on-going.md) 10절. 독립 suffix 기능 계획. **2026-09-25 현재 Stage0W 기능 PASS, 고정 M0 Stage1W 결합 팔은 max_abs 1.2397766e-05로 원 1e-5 문턱 FAIL; Stage1Wb 독립 팔 재진단은 STATIC_ONLY/NOT_RUN. 학습·GPU·품질은 NOT_RUN.**
 
 ## 1. 왜
 
@@ -27,6 +27,10 @@ Q1은 실수 산술에서 정확히 같을 수 있다. BF16/quantized export는 
 ### Stage1W — 실제 M0 checkpoint 기능 게이트 준비, continued trainer 기본 off·STATIC_ONLY
 
 [M0 진단기](../scripts/diag_p101a_m0_migration.py)는 로컬 final checkpoint·기존 32k tokenizer·1.2B 정확 캐시 metadata의 고정 SHA와 런 JSON 계약을 먼저 확인한다. `--check-only`는 876,874,091B final, 1,194,000,000-token train 및 6,000,000-token val의 파일 존재·크기·해시를 읽기 전용으로 PASS했다. [사용자 실행 SH](../run_P101A_Stage1W_m0_migration_gate.sh)의 본 경로는 실제 M0 state를 strict 로드해 E384·QK·독립 MTP head로 이식한 뒤 동일 입력 주 logits, 배포용 aux 제거 및 새 rank/aux gradient를 검사한다. **Codex는 checkpoint를 모델로 로딩하지 않았다.** Stage0W 소형 모델과 Stage1W 실제 M0 모델 결과는 `NOT_RUN`이며, continued-training trainer opt-in은 기본 off 코드로 연결했지만 실제 모델/GPU 실행은 NOT_RUN이며 assistant 경계는 미구현이다. 어느 기능 게이트도 100M 학습을 자동 개방하지 않는다. 후속 코드 감사에서 `prepare(exact)`의 `bytes_per_token` 부재 시 meta.json 자동 백필 쓰기를 확인했으므로, 고정 cache에 유한·양수 bpt와 uint16 dtype이 있는지 모델·캐시 진입 전에 fail-closed하도록 보강했다. **이 신규 검사 자체는 보호 자산 읽기 경계 때문에 Codex가 재실행하지 않았으며**, 앞선 check-only PASS는 이 추가 조건을 포함하지 않는다.
+
+### Stage1Wb — 승인된 독립 M0 팔별 drift 귀속 재실행
+
+2026-09-24 Stage1W의 결합 E384+QK+MTP 진단은 `max_abs=1.2397766e-05`로 기존 `1e-5` 기능 문턱을 실패했다. 이 결합 구성은 Stage2의 독립 E384/QK/MTP 팔이 아니므로 결합 실패만으로 어느 팔의 오류인지 판정할 수 없다. 같은 고정 M0 부모·legacy tokenizer·입력에서 E384, QK, MTP를 각각 따로 strict 이식하고 주 logits `max_abs`·NRMS·argmax 불일치·해당 새 파라미터 gradient 및 MTP 배포 제거를 기록한다. **기존 문턱은 완화하지 않는다.** 이 재실행은 CPU 사용자 모델 gate이고 실행 전 `NOT_RUN`; 한 팔이라도 기능 문턱을 못 넘으면 해당 Stage2 학습은 열지 않는다.
 
 ### Stage2W — 100M 이하 분리 학습, 별도 사용자 승인
 
@@ -73,3 +77,5 @@ E384의 **실제 모델** checkpoint 이식·MTP head·배포 제거는 코드�
 - 2026-09-24 후속: B0/E384/QK/MTP/MTP-HT의 한 축만 달라지는 arm 함수·seed 고정 태그와 parent/tokenizer/cache SHA JSON을 trainer에 fail-closed로 연결했다. 결합 팔 거부·CPU E/QK/MTP fixture PASS. Stage2 사용자 학습 SH는 별도 승인·Stage0/1 실제 기능 PASS 전 0개이며 품질 `NOT_RUN`.
 
 - 2026-09-24 후속: `prepare(exact)`가 기존 cache meta의 `bytes_per_token`이 없으면 사용자 원본에 자동 백필 쓰기를 한다는 경로를 코드에서 발견했다. 고정 M0 자산 verifier가 유한·양수 bpt와 uint16 dtype을 요구하도록 수정했고 missing/bool/NaN/wrong-dtype **합성 fixture는 PASS**했으나, 이 추가 조건은 자산 읽기 허용 밖이라 Codex가 실행하지 않았다. 과거 check-only PASS를 새 조건의 PASS로 승격하지 않는다. 사용자 게이트가 이를 FAIL하면 원본 meta를 임의 수정하지 않고 사유를 회신한다.
+
+- 2026-09-25 사용자 로그 회수: [결과092 §2~3](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)의 Stage0W 두 호출은 PASS. 실제 M0 Stage1W는 결합 E384+QK+MTP 주 logits `max_abs=1.2397766e-05`가 원 `1e-5` 문턱을 넘고 aux/gradient 전에 exit1이었다. ‘초기 함수가 매우 가깝다’는 방향은 맞지만 **사전 기능 문턱은 실패**했으므로 Stage2 HOLD. 결합 팔은 승인된 독립 팔과 달라 `run_P101A_Stage1Wb_m0_arm_attribution.sh`로 원 문턱 유지·독립 팔 귀속을 사용자 재실행한다. 기존 Stage0W/Stage1W 런처는 -done 실패/성공 이력으로 보존한다.

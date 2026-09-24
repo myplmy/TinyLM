@@ -78,7 +78,7 @@ def main() -> int:
     with output.open("x", encoding="utf-8") as stream:
         for row in rows:
             stream.write(json.dumps(row, ensure_ascii=False) + "\n")
-    print(f"[PASS] P097 prompt panel rows={len(rows)} -> {output.relative_to(ROOT)}")
+    print(f"[PASS] prompt panel rows={len(rows)} -> {output.relative_to(ROOT)}")
     print("[LIMIT] qualitative continuations require human review; this script does not rank them")
     return 0
 

@@ -44,7 +44,7 @@ def main() -> int:
     fast_loss = factorized_ce_loss_first(
         hidden.reshape(-1, cfg.dim).float(), candidate._emb_up_w(),
         candidate._emb_w(), y.reshape(-1), 4) / y.numel()
-    loss_delta = float((full_loss - fast_loss).abs())
+    loss_delta = float((full_loss.detach() - fast_loss.detach()).abs())
     if loss_delta > 1e-5:
         print(f"[GATE FAIL] S1 loss delta={loss_delta:.8g}")
         return 1
@@ -66,7 +66,7 @@ def main() -> int:
         return 1
     torch.optim.SGD(reference.parameters(), lr=1e-3).step()
     torch.optim.SGD(candidate.parameters(), lr=1e-3).step()
-    max_update = max(float((ref_params[k] - test_params[k]).abs().amax())
+    max_update = max(float((ref_params[k].detach() - test_params[k].detach()).abs().amax())
                      for k in ref_params)
     if max_update > 1e-5:
         print(f"[GATE FAIL] S1 update max_abs={max_update:.8g}")
