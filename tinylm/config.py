@@ -116,6 +116,8 @@ class TMTConfig:
     sdpa_gqa: bool = False
     qk_gain_learnable: bool = False  # P101A: per-layer/head Q scale, default off
     mtp_aux: bool = False            # P101A training-only horizon 2/4 heads; default off
+    x2_tile_size: int = 512         # P103A X2 physical FFN tile width, opt-in only
+    x2_active_tiles: tuple = ()     # empty = original full FFN; static model gate only
     # ── P014C 단계2 (2026-08-14) : per-row 융합 int8 matmul ────────────────────
     #   기본 False = 종전 경로. True 면 `_i8` 저장 + **per-row α**(micro_group=0) 일 때만
     #   `torch._weight_int8pack_mm` 로 **fp32 복원 없이** 곱한다. 조건 미충족이면 조용히
@@ -187,6 +189,13 @@ class TMTConfig:
         if self.micro_group:
             assert self.dim % self.micro_group == 0 and self.ffn_dim % self.micro_group == 0
         assert self.n_middle % self.mlp_group == 0
+        if self.x2_active_tiles:
+            total = self.ffn_dim // self.x2_tile_size if self.x2_tile_size > 0 else 0
+            assert self.x2_tile_size > 0 and self.ffn_dim % self.x2_tile_size == 0
+            assert tuple(sorted(set(self.x2_active_tiles))) == tuple(self.x2_active_tiles)
+            assert all(isinstance(i, int) and 0 <= i < total for i in self.x2_active_tiles)
+            assert self.n_modes == 1 and self.mlp_lora_rank == 0 and not self.mlp_film
+            assert not self.mlp_lrm and not self.use_ternary_kernel
         assert self.attn_group >= 1 and self.n_middle % self.attn_group == 0, \
             f"n_middle {self.n_middle} % attn_group {self.attn_group} != 0"
         assert self.train_repeat > 0, "train_repeat 는 양수여야 한다"

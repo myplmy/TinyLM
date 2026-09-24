@@ -28,6 +28,8 @@ A는 tokenization overhead가 있지만 지금 기능 gate를 통과할 수 있�
 
 [공개 preflight](../scripts/diag_p090b_public_preflight.py)를 [독립 SH](../run_P090B_Stage0bW_public_sft_preflight.sh)로 실행한다. SHA-pinned train/val·legacy tokenizer, source-ID/첫 질문 중복, 지도토큰 비율·빈 마스크와 3,154행의 assistant 본문(M3)·종료토큰(M4)을 **원문 출력 없이** 검사한다. Codex의 비보호 공개 v3 읽기 전용 관측은 train 2,996행(ko175/en2821)·val158행, split 겹침0·빈 마스크0·지도비율 train75.19%/val75.03%, M3/M4 누락 각각0이다. 직접 계산한 full-mask gate는 PASS지만 manifest의 tokenizer_mask 표기는 아직 NOT_RUN이고 contamination/source-quality도 NOT_RUN이므로 `TRAIN_READY=False`, pilot-only다. 이 단계의 exit0은 정식 SFT 승인 신호가 아니다.
 
+이번 후속 자동 선별은 canonical train/val SHA와 각 행의 출처 revision·Apache-2.0 표기를 메타데이터끼리 대조해 `source_metadata_gate=PASS`(불일치0)였다. 공개 v3 3,154행의 한국어는 184행(**5.83%**), 멀티턴은 879행, URL 포함54행·이메일형 문자열 포함6행, 동일 assistant 답안 최대 반복4회다. 이 집계는 원문을 출력하지 않고 출처/언어별 결정론적 사람 검토 행 인덱스만 남긴다. **같은 생성 계보의 Apache-2.0 메타 일치는 외부 라이선스 원문이나 개별 대화의 권리·정확성·안전성을 증명하지 않으며** 사람 품질과 전체 오염은 여전히 `NOT_RUN`, 정식 학습 `TRAIN_READY=false`다.
+
 ### Stage1aW — B chat32 신규 어휘·분리 캐시 준비
 
 [P075 어휘 생성](P075_토크나이저-어휘예산과-한국어-분절.md)의 32개 단일 ID를 [준비 SH](../run_P090B_Stage1aW_chat32_prepare.sh)로 사용자 실행한다. 기본 legacy 어휘·cache를 덮지 않고 `tok-ko-en-32768-chat32.json` 및 `ko-en_601000000_chat32` 별도 경로만 만든다. `prepare`는 기존·부분 chat32 cache의 계보·hash·symlink를 fail-closed 검사한다. 준비 직후 같은 공개 v3 canonical 행을 새 어휘로 전량 재인코딩하는 [길이 gate](../scripts/diag_p090b_chat32_sft_lengths.py)를 실행해 1024 context 초과가 0건인지 확인한다. 실패 시 Stage1bW를 자동 개방하지 않는다. 이는 HF/디스크 I/O를 쓰는 사용자 소유 단계이며 Codex가 실행하지 않는다.
@@ -43,7 +45,7 @@ A는 tokenization overhead가 있지만 지금 기능 gate를 통과할 수 있�
 
 ### Stage2W — 3갈래 SFT, 원천 적격성 뒤에만
 
-동일한 공개 canonical train/val, source/tree 단위 분리, 사람 품질·PII·중복·평가 오염 검사를 통과한 corpus로 각 부모의 tokenizer에 맞춰 다시 encode한다. 동일 assistant target **원문 byte와 레코드/epoch**, batch·LR·optimizer·실제 지도토큰을 기록한다. A와 C는 parent만 다르게 legacy tokenizer에서 비교 가능하되 pretrain 길이·구조가 다르면 `DESCRIPTIVE_ONLY`다. B와 A는 tokenizer뿐 아니라 pretrain 계보 차이도 있으므로 matched 신규 부모를 갖추기 전 단일 tokenizer 효과로 귀속하지 않는다. 실제 답안·형식·한국어·영어·멀티턴·full-val 망각을 함께 본다.
+동일한 공개 canonical train/val, source/tree 단위 분리, 사람 품질·PII·중복·평가 오염 검사를 통과한 corpus로 각 부모의 tokenizer에 맞춰 다시 encode한다. 동일 assistant target **원문 byte와 레코드/epoch**, batch·LR·optimizer·실제 지도토큰을 기록한다. A와 C는 parent만 다르게 legacy tokenizer에서 비교 가능하되 pretrain 길이·구조가 다르면 `DESCRIPTIVE_ONLY`다. B와 A는 tokenizer뿐 아니라 pretrain 계보 차이도 있으므로 matched 신규 부모를 갖추기 전 단일 tokenizer 효과로 귀속하지 않는다. 실제 답안·형식·한국어·영어·멀티턴·full-val 망각을 함께 본다. 현재 v3의 한국어 비중은 5.83%뿐이므로 한국어 멀티턴 정식 corpus로 자동 승격하지 않는다. [공개 원천 선별 감사](../docs/20260923_한영일-SFT-멀티턴-공개원천-선별과-확보-감사.md) §6의 한국어 공감형 엄격 복원 pilot과 OASST2 영어 tree의 사람검수 번역 pilot을 별도 계보로 준비한 뒤, 검수된 같은 canonical 원문을 A/B/C에 사용한다.
 
 ### Stage3W — 최종 SFT 계보 판정
 
@@ -86,3 +88,7 @@ Stage1cW에서 고른 C 부모와 A/B가 같은 공개 원문·평가 질문을 
 
 - 2026-09-24 막힘 재감사: `TRAIN_READY=False`는 정식 SFT 런처 실행·성과판정의 gate이지 A/B/C 계보 검사·trainer 코드 작성의 전면 중단 사유가 아니다. 공개 오염/사람 품질, B 부모 실제 학습, C 공통 원답안은 사용자 실행·검토로 남기되 GPT 소유 코딩 결손은 작업원장에서 진행 중으로 추적한다. 데이터 적격성과 부모 '최선'을 현재 미검증으로 유지한다.
 - 2026-09-24: 비보호 공개 v3 3,154행을 고정 P100 한영 9문항의 base/QA prompt와 사용자 turn 단위 exact 공백·대소문자 정규화로 비교해 중복 0건(`panel_exact_gate=PASS`)을 읽기 전용 관측했다. 이것은 **해당 9문항의 정확 일치만** 배제하며 전체 benchmark/보호 held-out 오염 검사나 사람 품질 PASS가 아니다. manifest의 `contamination_gate`·`source_quality_gate`는 여전히 NOT_RUN, `train_ready=false`; Stage2 정식 학습 SH는 아직 만들지 않는다.
+
+- 2026-09-24 후속: 독립 SFT trainer의 정식 실행은 이제 manifest의 `contamination_gate`·`tokenizer_mask_gate`·`source_quality_gate` **세 항목 모두 PASS**가 아니면 fail-closed한다. `--pilot-only`에서만 HOLD를 명시한 채 허용하고, 결과 JSON에 세 gate·부모 step·n_layers/dim/ffn_dim/E/CLA/타잉/어휘 구조를 남긴다. 합성 self-test PASS. 현재 공개 v3 manifest는 contamination/tokenizer-mask NOT_RUN이고 사람 품질 승인도 없으므로 정식 SFT `TRAIN_READY=false`; A/B/C 실제 SFT·성능은 `NOT_RUN`.
+
+- 2026-09-24 후속: 기존 Stage0b 공개 preflight에 출처/license/revision·언어비·멀티턴·URL/이메일·답안 반복 집계와 사람 검토 행 인덱스를 원문 없이 추가했다. 합성 self-test 및 공개 v3 read-only 실행 PASS: 출처 불일치0, 한국어184/3154=5.83%, 멀티턴879, URL54, 이메일형6, 답안 최대 반복4. `source_metadata_gate=PASS`는 사람이 판단할 `source_quality_gate=NOT_RUN`을 대체하지 않으며 formal SFT는 계속 HOLD다.

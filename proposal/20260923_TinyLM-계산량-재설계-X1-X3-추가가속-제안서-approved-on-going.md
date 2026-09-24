@@ -464,3 +464,27 @@ X1의 Transformer mask·position·CLA 통합, X2의 실모델 FFN/optimizer·회
 | X3 | INT8 per64 산술16.32GB·작은 q/deq, CPU `BoundaryTable` exact/INT8 index gather·exact tail loss/gradient PASS | 실제 frozen lower model→2M boundary build·sampler/position/mask·한 update·4epoch·20M RAM RSS/품질은 미구현 또는 사용자 실행 전 NOT_RUN |
 
 기존 [frontier 감사](../handoff/audit/WIP_20260923_CONTINUATION_FRONTIER_R1.md)는 2026-09-23 시점의 불변 스냅샷이므로 소급 수정하지 않는다. 현재 코딩 상태는 이 절과 [P103A 계획](../test_plan/P103A_X1-X2-X3-계산량-기능계약.md)이 소유한다. 새 연구 결과가 없어 COMPASS의 파레토/축 결론도 이번 상태 교정만으로 바꾸지 않는다.
+
+### 12.1 X2 실제 MLP 물리 tile 선결 — 2026-09-24
+
+기본 off인 `x2_active_tiles` 선택으로 MLP gate/up의 유효 STE 가중치 행과 down 열을 실제 선택 폭만큼 slice하는 코드를 추가했다. 전체 4 tile은 기존 FFN 함수·전 gradient·한 update 보존을, 1 tile은 실제 좁은 GEMM 폭을 [P103A Stage0cW 사용자 게이트](../run_P103A_Stage0cW_model_ffn_tile.sh)에서 확인하도록 했다. `--check-only`·구문은 PASS이나 **소형 모델 본 실행·GPU wall·품질은 `NOT_RUN`**이다.
+
+이 구현은 선택되지 않은 tile의 파라미터/optimizer state를 제거하지 않는다. 따라서 모델 저장·상주·optimizer 메모리 절감과 whole-step 속도 향상을 주장할 수 없다. X1 보호 KnowledgePack 및 X3 실제 2M frozen-prefix/20M RAM gate도 여전히 `NOT_RUN`이다.
+
+### 12.2 X3 token-ID 캐시 키 설계결함과 고정 윈도우 선결 — 2026-09-24
+
+동일 token ID여도 왼쪽 문맥·RoPE 절대위치가 달라지면 lower Transformer의 activation은 다르다. 원안의 `20M token`을 현재 random-crop Loader의 개별 token ID로 인덱싱해 재사용하면 수치 근사가 아니라 **잘못된 경계값을 학습**할 위험이 있다. 따라서 실제 X3에서는 고정 전체 causal window와 부모 checkpoint SHA·split layer·position/segment/CLA 정책을 캐시 키에 포함해야 하며, crop 시작점이 다른 표본에는 재사용하지 않는다.
+
+현재 추가한 [`WindowBoundaryTable`](../tinylm/train/p103a_contract.py)은 비보호 합성 `[W,S,D]` 입력에서 token-window SHA/부모 SHA/분할층/고정 시작 위치를 묶고 오염된 조회를 거절하는 CPU 계약이다. 이 fixture PASS는 실제 lower 모델 생성값의 정확성·20M RAM·GPU wall·품질을 증명하지 않는다. Stage1 모델 통합 전에는 fixed-window sampler와 CLA owner 경계를 확정해야 한다.
+
+### 12.3 앞12/뒤4 경계의 소형 모델 함수 게이트 — 2026-09-24
+
+원안 §6.3의 앞12/뒤4 split은 CLA2 owner pair를 가르지 않아야 한다. 이를 4층/2층 경계로 축소한 [제한된 모델 함수](../tinylm/train/p103a_model_boundary.py)와 [Stage0dW 사용자 SH](../run_P103A_Stage0dW_model_boundary.sh)를 추가했다. embedding/head·하부를 freeze하고 같은 고정 causal window의 전체 forward와 exact boundary→상부 재개에서 logits·전 gradient·한 update를 비교한다. 현재 코드와 `--check-only`만 정적 PASS, **실제 모델 결과는 `NOT_RUN`**이다.
+
+이 게이트를 통과해도 M0 실제16층 12/4, 2M fixed-window sampler·cache build/lookup·INT8 근사 품질·20M RAM 단일 사본·GPU whole-wall을 증명하지 않는다. 특히 공유 embedding/head를 갱신하면 캐시의 입력 함수가 달라지므로 frozen 단계에서는 둘 다 고정한다.
+
+### 12.4 실제 M0 12/4 함수 게이트의 실행 경계 — 2026-09-24
+
+고정 S+1 비중첩 window sampler와 off-grid crop 거부의 순수 CPU 계약은 PASS했다. [Stage1aW 사용자 게이트](../run_P103A_Stage1aW_m0_boundary.sh)는 같은 고정 SHA의 M0 final을 16층 CLA2 앞12/뒤4로 분리하고 전체 forward 대비 exact boundary의 logits·loss·gradient·한 update를 비교하도록 준비했다. 다만 `--check-only`도 체크포인트/메타데이터를 읽으므로 Codex 자동 안전 검토가 거절했다. 이를 우회하지 않았고 **M0 자산 재검사와 실제 모델 함수 결과는 `NOT_RUN`**이다.
+
+이 게이트에 성공하더라도 8-token 합성 window 수준이며 2M cache build·INT8 근사 품질·20M 단일 RAM/RSS·GPU whole-wall의 채택 문턱은 별도로 남는다.

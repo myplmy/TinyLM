@@ -181,6 +181,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           arenas=False, arena_lambda=0.1, arena_end=0.9,
           doc_filter=False, doc_min_chars=50_000, lora_decay=0.0, emb_rank=None,
           kd_teacher_infer=False, sdpa_gqa=False, qk_gain_learnable=False,
+          p101a_m0=False, mtp_aux=False, mtp_sample_half=False, ste_update_cache=False,
           kd_chunk=0, depth_init="prop",
           attn_group=None, train_repeat=None, repeat_mode="uniform", repeat_block=0,
           repeat_embed_reinject=False, reuse_attn_on_dup=False,
@@ -220,6 +221,76 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                        LOGS / f"{out_name}.json"):
             if output.exists() or output.is_symlink():
                 raise FileExistsError(f"P102A loss-first output exists: {output}")
+    if ste_update_cache:
+        if (arch != "dense" or compile_ or ckpt or resume or kd or kd_cache
+                or kd_teacher_hf or loss_first or mtp_aux or p101a_m0
+                or arenas or sparse34 or center_weights or use_ternary_kernel
+                or ternary_kernel_triton or connectivity_mode != "none"
+                or wq_dtype not in (None, "fp32") or opt_dtype != "fp32"
+                or train_repeat not in (None, 1.0) or repeat_embed_reinject
+                or lora_rank or mlp_film or tokenizer_hf or chat32_tokenizer):
+            raise ValueError("P102A S2 requires a fresh dense FP32-STE training path")
+        if (not tag or not re.fullmatch(r"[A-Za-z0-9_]+", str(tag))
+                or "p102a_s2" not in tag):
+            raise ValueError("P102A S2 requires a distinct safe p102a_s2 tag")
+        out_tok = tokstr or (f"{int(n_tokens)//1_000_000}M" if n_tokens >= 10**6
+                             else str(int(n_tokens)))
+        out_name = f"{preset}_{data}_{out_tok}_{tag}"
+        for output in (CKPT / f"{out_name}.pt", CKPT / f"{out_name}_best.pt",
+                       LOGS / f"{out_name}.json"):
+            if output.exists() or output.is_symlink():
+                raise FileExistsError(f"P102A S2 output exists: {output}")
+
+    if mtp_sample_half and not mtp_aux:
+        raise ValueError("P102A S3 half-MTP requires the P101A full-MTP path")
+    if mtp_aux and not p101a_m0:
+        raise ValueError("P101A MTP aux requires the pinned M0 continuation path")
+    _p101a_arm = None
+    if p101a_m0:
+        if (preset != "m100s12" or arch != "dense" or data != "ko-en"
+                or n_tokens != 100000000 or steps != 762 or micro_bs != 8
+                or accum != 16 or seq != 1024 or pool_tokens != 1200000000
+                or not exact_cache or ckpt or lr != 2e-4 or sched != "wsd"
+                or decay_frac != 0.2 or optimizer != "muon"
+                or muon_scale != "rms" or muon_lr_mult != 4.0
+                or matrix_weight_decay not in (None, 0.0)
+                or seed not in (1337, 2024, 31415) or tokstr not in (None, "100M")):
+            raise ValueError("P101A M0 continuation requires the pre-registered 100M Muon RMS4 recipe")
+        if (init_from or decay_from or resume or kd or kd_cache or kd_teacher_hf
+                or tokenizer_hf or chat32_tokenizer or loss_first or compile_
+                or doc_filter or center_weights or arenas or sparse34
+                or lora_rank or mlp_film or sdpa_gqa or mlp_lrm
+                or connectivity_mode != "none" or repeat_embed_reinject
+                or train_repeat not in (None, 1.0) or use_ternary_kernel
+                or ternary_kernel_triton or emb_rank not in (None, 256, 384)
+                or opt_dtype != "fp32" or wq_dtype not in (None, "fp32")
+                or attn_group is not None or mlp_group is not None or mlp_split is not None
+                or micro_group not in (None, 128) or cla_group not in (None, 2)
+                or not cla_edges or ema or lora_decay
+                or anneal_shape != "linear" or anneal_start is not None or anneal_end != 0.60
+                or optimizer_audit or anneal_audit):
+            raise ValueError("P101A M0 continuation forbids unrelated architecture/trainer changes")
+        from .p101a_contract import p101a_arm_name
+        _p101a_arm = p101a_arm_name(emb_rank or 256, qk_gain_learnable, mtp_aux, mtp_sample_half)
+        if tag != f"p101a_{_p101a_arm}_s{seed}":
+            raise ValueError(f"P101A arm {_p101a_arm} needs the exact seed-tagged control name")
+        out_tok = tokstr or "100M"
+        out_name = f"{preset}_{data}_{out_tok}_{tag}"
+        for output in (CKPT / f"{out_name}.pt", CKPT / f"{out_name}_best.pt",
+                       LOGS / f"{out_name}.json"):
+            if output.exists() or output.is_symlink():
+                raise FileExistsError(f"P101A continuation output exists: {output}")
+    _p101a_run = None
+    _p101a_parent_sha = None
+    _p101a_tokenizer_sha = None
+    _p101a_cache_sha = None
+    if p101a_m0:
+        from .p101a_assets import PARENT as _P101A_PARENT, TOKENIZER as _P101A_TOKENIZER, CACHE as _P101A_CACHE, EXPECTED as _P101A_EXPECTED, verify_m0_assets
+        _p101a_run = verify_m0_assets()  # Hash and cache check before prepare/model/GPU work.
+        _p101a_parent_sha = _P101A_EXPECTED[_P101A_PARENT]
+        print("[P101A] pinned M0 parent/tokenizer/cache metadata verified; weight-only continuation")
+        _p101a_tokenizer_sha = _P101A_EXPECTED[_P101A_TOKENIZER]
+        _p101a_cache_sha = _P101A_EXPECTED[_P101A_CACHE / "meta.json"]
     if chat32_tokenizer:
         if (not exact_cache or tokenizer_hf or kd_teacher_hf or kd or kd_cache
                 or init_from or decay_from or resume or doc_filter):
@@ -262,7 +333,26 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                               or not meta.get("tokenizer_sha256")
                               or not str(meta.get("dir", "")).endswith("_chat32")):
         raise ValueError("chat32 train cache has no matching tokenizer provenance")
-    cfg = build_config(preset, arch, seq, ckpt)
+    _p101a_blob = None
+    _p101a_parent_anneal = None
+    if p101a_m0:
+        from ..config import TMTConfig
+        _p101a_blob = torch.load(_P101A_PARENT, map_location="cpu", weights_only=True)
+        if (not isinstance(_p101a_blob, dict)
+                or not {"model", "cfg", "step"}.issubset(_p101a_blob)
+                or _p101a_blob["step"] != _p101a_run["steps"]):
+            raise ValueError("P101A M0 checkpoint schema/step does not match run JSON")
+        cfg = TMTConfig(**_p101a_blob["cfg"])
+        if (cfg.n_layers != 16 or cfg.dim != 768 or cfg.emb_rank != 256
+                or cfg.vocab_size != 32768 or cfg.tie_mlp or cfg.cla_group != 2):
+            raise ValueError("P101A M0 checkpoint model geometry differs")
+        _p101a_parent_anneal = float(cfg.quant_anneal)
+        if not 0 < _p101a_parent_anneal <= 1:
+            raise ValueError("P101A parent quant anneal is invalid")
+        cfg.grad_checkpoint = bool(ckpt)
+        print(f"[P101A] parent anneal={_p101a_parent_anneal:.6f}; no QAT restart")
+    else:
+        cfg = build_config(preset, arch, seq, ckpt)
     if chat32_tokenizer and cfg.vocab_size != int(meta["vocab"]):
         raise ValueError("chat32 model vocab and token cache disagree")
     # ★★P067(2026-08-22) — **외부 토크나이저면 어휘가 바뀐다.**
@@ -426,6 +516,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     cfg.qk_gain_learnable = bool(qk_gain_learnable)
     if cfg.qk_gain_learnable and cfg.attn_group != 1:
         raise ValueError("P101A QK gain requires attn_group=1 for per-layer parameters")
+    cfg.mtp_aux = bool(mtp_aux)
     if sdpa_gqa:
         print(f"[sdpa] ★enable_gqa=True — K/V 를 물리 복제(x{cfg.n_q_heads // cfg.n_kv_heads})하지 "
               f"않고 커널에 맡긴다. ⚠️커널 경로가 바뀌므로 **로짓 비트 동일을 가정하지 않는다** "
@@ -454,6 +545,14 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     cfg.connectivity_update_every = int(connectivity_update_every)
     cfg.connectivity_swap_fraction = float(connectivity_swap_fraction)
     model = TiedMLPTransformer(cfg).to(device)
+    if p101a_m0:
+        from .init_utils import _strip
+        from .p101a_contract import migrate_p101a_state
+        parent_state = _strip(_p101a_blob["model"])
+        model.load_state_dict(migrate_p101a_state(parent_state, model.state_dict()), strict=True)
+        model.set_anneal(_p101a_parent_anneal)
+        del parent_state, _p101a_blob
+        print("[P101A] M0 weights migrated strictly; optimizer state is fresh, not resume")
 
     if init_from:
         init_from_dense(model, init_from, device, depth_init=depth_init, group_init=group_init)
@@ -637,7 +736,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     #   **warmup 도 wsd 감쇠도 못 받고 상수로 남았다** — AdamW 팔과 Muon 팔이
     #   **다른 스케줄을 도는 무효 비교**가 된다. 두 옥티마이저에 같은 계수를 건다.
     base_lrs_muon = [g["lr"] for g in opt_muon.param_groups] if opt_muon is not None else []
-    warm = 0 if sched == "decay" else max(5, min(steps // 10, 100))
+    warm = (100 if p101a_m0 else
+            (0 if sched == "decay" else max(5, min(steps // 10, 100))))
     # (P026) cooldown-QAT 스케줄 정렬 표시. anneal_end=완전삼진 도달, decay_start=LR 감쇠 시작.
     assert 0.0 < anneal_end <= 1.0, f"--anneal-end 는 (0,1] 이어야 함: {anneal_end}"
     # (P035) 어닐 시작점. 미지정이면 종전 하드코딩식 그대로 → 기본 동작 무변.
@@ -753,6 +853,18 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                 seed=(1234 + (seed - 1337)) % (2 ** 31))
     va = Loader("val", micro_bs, seq, device, meta["dir"], seed=99)
     hist, t0, gmax, gpeak, n_skip = [], time.time(), 0.0, 0.0, 0
+    _p101a_eos_id = None
+    _p101a_mtp_counts = {"input_draw_tokens": 0, "ntp_targets": 0,
+                          "aux2_targets": 0, "aux4_targets": 0, "sampled2_micro": 0, "sampled4_micro": 0}
+    if mtp_aux:
+        from tokenizers import Tokenizer
+        from .p101a_assets import TOKENIZER as _P101A_TOKENIZER
+        from .p102a_contract import balanced_mtp_micro_mask
+        from .p101a_contract import mtp_targets_from_xy, mtp_loss_components, mtp_aux_coefficients
+        _p101a_eos_id = Tokenizer.from_file(str(_P101A_TOKENIZER)).token_to_id("<eos>")
+        if _p101a_eos_id is None:
+            raise ValueError("P101A pinned tokenizer has no EOS ID")
+        print(f"[P101A] MTP horizon2/4 active; eos={_p101a_eos_id}; accumulation-wide valid-token denominators")
     _loss_first_fn = None
     if loss_first:
         from .p102a_contract import factorized_ce_loss_first as _loss_first_fn
@@ -843,6 +955,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             _save_started = time.perf_counter()
             blob = {"model": model.state_dict(), "opt": opt.state_dict(),
                     "step": step, "cfg": cfg.__dict__}
+            if p101a_m0:
+                blob["p101a_parent_sha256"] = _p101a_parent_sha
+                blob["p101a_parent_anneal"] = _p101a_parent_anneal
             if chat32_tokenizer:
                 blob["tokenizer_lineage"] = "chat32"
                 blob["tokenizer_sha256"] = meta["tokenizer_sha256"]
@@ -867,7 +982,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
 
     for s in range(start, steps):
         # LR cooldown·quant 전이·보조경로 제거는 anneal_schedule.py의 서로 다른 계약이다.
-        anneal = quant_anneal_factor(s, steps, sched, anneal_shape, a0, anneal_end)
+        anneal = (_p101a_parent_anneal if p101a_m0 else
+                  quant_anneal_factor(s, steps, sched, anneal_shape, a0, anneal_end))
         model.set_anneal(anneal)
         if arenas:
             # ★P036 Arenas — λ_t 를 λ_0 에서 0 으로 선형 감쇠시키고 arena_end 이후 0 으로 고정한다.
@@ -901,12 +1017,52 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         model.train()
         _t_step = time.time()         # ★T-1: 순수 스텝 시작(eval·저장은 이 뒤에 온다)
         tot, tot_ce = 0.0, 0.0        # tot=실제 최적화 손실(KD면 혼합), tot_ce=항상 순수 CE
-        for _ in range(accum):
-            x, y = tr()
+        _mtp_batches = None
+        if mtp_aux:
+            # Capture the same sampler draws before forward so each horizon uses
+            # one valid-target denominator over the entire optimizer update.
+            _mtp_batches = [tr() for _ in range(accum)]
+            _mtp_count1 = sum(batch_x.numel() for batch_x, _ in _mtp_batches)
+            _mtp_count2 = torch.zeros((), dtype=torch.long, device=device)
+            _mtp_count4 = torch.zeros((), dtype=torch.long, device=device)
+            for batch_x, batch_y in _mtp_batches:
+                _mtp_count2 += mtp_targets_from_xy(batch_x, batch_y, 2, eos_id=_p101a_eos_id)[1].sum()
+                _mtp_count4 += mtp_targets_from_xy(batch_x, batch_y, 4, eos_id=_p101a_eos_id)[1].sum()
+            _mtp_flags = {k: (balanced_mtp_micro_mask(accum, seed, s, k)
+                              if mtp_sample_half else (True,) * accum) for k in (2, 4)}
+            _mtp_sample_p = 0.5 if mtp_sample_half else 1.0
+            if mtp_sample_half and any(sum(mask) != accum // 2 for mask in _mtp_flags.values()):
+                raise RuntimeError("P102A S3 balance changed")
+            _mtp_lambda2, _mtp_lambda4 = mtp_aux_coefficients(s, steps)
+            _p101a_mtp_counts["sampled2_micro"] += sum(_mtp_flags[2]) if _mtp_lambda2 > 0 else 0
+            _p101a_mtp_counts["sampled4_micro"] += sum(_mtp_flags[4]) if _mtp_lambda4 > 0 else 0
+            _p101a_mtp_counts["input_draw_tokens"] += _mtp_count1
+            _p101a_mtp_counts["ntp_targets"] += _mtp_count1
+            _p101a_mtp_counts["aux2_targets"] += int(_mtp_count2)
+            _p101a_mtp_counts["aux4_targets"] += int(_mtp_count4)
+            if _mtp_count1 < 1:
+                raise ValueError("P101A update has no NTP target")
+
+        if ste_update_cache:
+            model.begin_quant_update_cache()
+        for micro_idx in range(accum):
+            x, y = (_mtp_batches[micro_idx] if mtp_aux else tr())
             if _cudagraph_step is not None:
                 _cudagraph_step()
             with torch.autocast(device, dtype=torch.bfloat16, enabled=(device == "cuda")):
-                if loss_first:
+                if mtp_aux:
+                    hidden = model(x, return_hidden=True)
+                    active = tuple(k for k, lam in ((2, _mtp_lambda2), (4, _mtp_lambda4))
+                                   if lam > 0 and _mtp_flags[k][micro_idx])
+                    pieces = mtp_loss_components(
+                        hidden.float(), model._emb_up_w(), model.mtp_up2, model.mtp_up4,
+                        model._emb_w(), x, y, eos_id=_p101a_eos_id, chunk=256,
+                        active_horizons=active)
+                    ce = pieces[1][0] / x.numel()
+                    loss = (pieces[1][0] / _mtp_count1
+                            + _mtp_lambda2 * pieces[2][0] / (_mtp_sample_p * _mtp_count2.clamp_min(1))
+                            + _mtp_lambda4 * pieces[4][0] / (_mtp_sample_p * _mtp_count4.clamp_min(1)))
+                elif loss_first:
                     hidden = model(x, return_hidden=True)
                     ce = (_loss_first_fn(hidden.reshape(-1, hidden.shape[-1]).float(),
                                          model._emb_up_w(), model._emb_w(),
@@ -933,6 +1089,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             loss.backward()
             tot += loss.item()
             tot_ce += ce.item() / accum      # KD 여부와 무관하게 순수 CE 를 따로 누적
+        if ste_update_cache:
+            model.finish_quant_update_cache()
         if _connectivity is not None:
             _connectivity.capture_scores_and_mask_gradients(
                 capture_scores=(cfg.connectivity_mode == "dynamic"
@@ -1009,7 +1167,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             #   4스텝마다 혼합손실 ↔ CE 로 진동해 과적합처럼 보였다(결과 012 §4 의 'loss 2↔4 진동').
             #   → **런 간 비교 가능한 ce 를 항상 앞에** 두고, 최적화 손실은 **다를 때만** 표기한다.
             _mix = (f"  loss {tot:.4f}[KD혼합]"
-                    if (kd_this and teacher is not None) or kd_reader is not None else "")
+                    if (kd_this and teacher is not None) or kd_reader is not None
+                    else (f"  loss {tot:.4f}[MTP{'-HT' if mtp_sample_half else ''}]" if mtp_aux else ""))
             print(f"  step {s:>5}/{steps}  ce {tot_ce:.4f}{_mix}  |g| {gn:.2f}  "
                   f"anneal {model.cfg.quant_anneal:.2f}  lr {opt.param_groups[1]['lr']:.2e}  "
                   f"{el/(s-start+1)*1000:.0f} ms/step")
@@ -1022,6 +1181,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             snap = CKPT / f"{name}_snap{snap_steps[s + 1]}.pt"
             _snapshot_started = time.perf_counter()
             snap_blob = {"model": model.state_dict(), "cfg": cfg.__dict__, "step": s + 1}
+            if p101a_m0:
+                snap_blob["p101a_parent_sha256"] = _p101a_parent_sha
+                snap_blob["p101a_parent_anneal"] = _p101a_parent_anneal
             if chat32_tokenizer:
                 snap_blob["tokenizer_lineage"] = "chat32"
                 snap_blob["tokenizer_sha256"] = meta["tokenizer_sha256"]
@@ -1108,6 +1270,20 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "kd_teacher_infer": bool(kd_teacher_infer),            # (P042) 교사 추론 모드
            "sdpa_gqa": bool(cfg.sdpa_gqa),                        # (F-1) enable_gqa 경로
            "qk_gain_learnable": bool(cfg.qk_gain_learnable),     # P101A default off
+           "p101a_m0": bool(p101a_m0),
+           "p101a_parent_sha256": _p101a_parent_sha,
+           "p101a_arm": _p101a_arm,
+           "p101a_tokenizer_sha256": _p101a_tokenizer_sha,
+           "p101a_cache_meta_sha256": _p101a_cache_sha,
+           "p101a_parent_anneal": _p101a_parent_anneal,
+           "p101a_weight_only_init": bool(p101a_m0),
+           "mtp_aux": bool(mtp_aux),
+           "mtp_eos_id": _p101a_eos_id,
+           "mtp_target_counts_attempted": (_p101a_mtp_counts if mtp_aux else None),
+           "mtp_sample_half": bool(mtp_sample_half),
+           "mtp_sample_probability": (0.5 if mtp_sample_half else (1.0 if mtp_aux else None)),
+           "mtp_loss_kind": ("update_valid_mean" if mtp_aux else None),
+           "ste_update_cache": bool(ste_update_cache),
            "kd_chunk": int(kd_chunk or 0),                        # (T-2/P053) KD 손실 청크 행수
            "depth_init": str(depth_init),                         # (P049) 깊이 확장 이식 방식
            "group_init": str(group_init),                         # (P076) 공유 그룹 부모 집약

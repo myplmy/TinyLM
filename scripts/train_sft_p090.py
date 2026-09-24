@@ -106,6 +106,14 @@ def validate_parent_lineage(state: dict, tokenizer_sha256: str, lineage: str, to
         raise ValueError("legacy SFT refuses a non-legacy parent")
 
 
+def require_formal_readiness(manifest: dict, *, pilot_only: bool) -> None:
+    """A formal SFT run needs every independent corpus gate; pilot keeps HOLD visible."""
+    required = ("contamination_gate", "tokenizer_mask_gate", "source_quality_gate")
+    missing = [name for name in required if manifest.get(name) != "PASS"]
+    if missing and not pilot_only:
+        raise ValueError("formal SFT source gates are not PASS: " + ", ".join(missing))
+
+
 def check_inputs(args):
     parent = scoped_read(args.parent, CKPT, ".pt")
     tokenizer_file = scoped_read(args.tokenizer, ROOT / "data_cache", ".json")
@@ -129,8 +137,7 @@ def check_inputs(args):
             expected_hashes.get(split) != sha256(path)
             for split, path in (("train", train_file), ("val", val_file))):
         raise ValueError("public SFT corpus SHA256 differs from the manifest")
-    if manifest.get("contamination_gate") != "PASS" and not args.pilot_only:
-        raise ValueError("contamination gate is not PASS; only --pilot-only is permitted")
+    require_formal_readiness(manifest, pilot_only=args.pilot_only)
     new_output(args.output, CKPT, ".pt")
     new_output(args.log, LOGS, ".json")
     return parent, tokenizer_file, train_file, val_file, manifest
@@ -275,12 +282,19 @@ def train(args, parent, tokenizer_file, train_file, val_file, manifest):
         "lineage": args.lineage, "data": args.data,
         "parent_tokenizer_sha256": parent_state.get("tokenizer_sha256"),
         "parent_sha256": args.parent_sha256.upper(), "tokenizer_sha256": args.tokenizer_sha256.upper(),
+        "parent_step": parent_state.get("step"),
+        "parent_geometry": {"n_layers": cfg.n_layers, "dim": cfg.dim,
+                            "ffn_dim": cfg.ffn_dim, "emb_rank": cfg.emb_rank,
+                            "cla_group": cfg.cla_group, "tie_mlp": cfg.tie_mlp,
+                            "vocab_size": cfg.vocab_size},
         "train_sha256": sha256(train_file), "val_sha256": sha256(val_file),
         "optimizer": args.optimizer, "lr": args.lr, "epochs": args.epochs,
         "micro_bs": args.micro_bs, "accum": args.accum, "seed": args.seed,
         "ce_chunk": args.ce_chunk, "muon_lr_mult": args.muon_lr_mult,
         "matrix_weight_decay": args.matrix_weight_decay,
         "history": history, "pilot_only": args.pilot_only,
+        "tokenizer_mask_gate": manifest.get("tokenizer_mask_gate", "NOT_RUN"),
+        "source_quality_gate": manifest.get("source_quality_gate", "NOT_RUN"),
         "contamination_gate": manifest.get("contamination_gate", "NOT_RUN"),
         "base_full_val_forgetting": "NOT_RUN", "generation_capability": "NOT_RUN",
     }
@@ -360,6 +374,18 @@ def self_test():
         pass
     else:
         raise AssertionError("chat32 parent without tokenizer hash was accepted")
+    gates = {"contamination_gate": "PASS", "tokenizer_mask_gate": "PASS",
+             "source_quality_gate": "PASS"}
+    require_formal_readiness(gates, pilot_only=False)
+    for missing in gates:
+        partial = dict(gates, **{missing: "NOT_RUN"})
+        try:
+            require_formal_readiness(partial, pilot_only=False)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"formal SFT accepted missing {missing}")
+        require_formal_readiness(partial, pilot_only=True)
     print("[PASS] SFT shift/pad/multi-turn/group and lineage rejection fixture; model/GPU NOT_RUN")
 
 
@@ -401,6 +427,7 @@ def main():
             or args.ce_chunk < 1):
         parser.error("invalid epochs, batch, lr or matrix weight decay")
     parent, tokenizer, tr, va, manifest = check_inputs(args)
+    print(f"[P090] formal source gates: contamination={manifest.get('contamination_gate')} tokenizer_mask={manifest.get('tokenizer_mask_gate')} source_quality={manifest.get('source_quality_gate')} pilot_only={args.pilot_only}")
     print(f"[P090] parent={parent.name} tokenizer={tokenizer.name} contamination={manifest.get('contamination_gate')}")
     state = train(args, parent, tokenizer, tr, va, manifest)
     save_new(args, state)

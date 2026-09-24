@@ -122,6 +122,7 @@ class TiedMLPTransformer(nn.Module):
         self.register_buffer("_anneal", torch.tensor(float(cfg.quant_anneal)), persistent=False)
         self._tlinear_cache = list(self._tlinears())   # ②: 매 forward 모듈 트리 순회 제거(plain list)
         self._quant_frozen = False                     # freeze_quant() 참조(추론 전용 최적화)
+        self._p102a_quant_update = None                # S2 opt-in; default forward remains unchanged
         self._int8_store = False                       # P034 단계3
         self._lut_store = False                        # ★P014 단계1 (LUT 배포 경로)
         self._unpack_cache = False                     # P034 단계3C (기본 off = 종전 경로)
@@ -173,7 +174,51 @@ class TiedMLPTransformer(nn.Module):
         for m in self._tlinear_cache:
             m.refresh_quant(self._anneal, ar)
 
+    def begin_quant_update_cache(self):
+        """S2: build each STE surrogate once and accumulate micro gradients on detached leaves."""
+        if not self.training or self._quant_frozen or self._p102a_quant_update is not None:
+            raise RuntimeError("P102A quant cache requires a fresh training update")
+        if any(m._i8 is not None or m._lut_codes is not None for m in self._tlinear_cache):
+            raise RuntimeError("P102A quant cache cannot use deployment weights")
+        self.refresh_quant()
+        entries = []
+        for module in self._tlinear_cache:
+            graph = module._wq
+            if graph is None or not graph.requires_grad:
+                raise RuntimeError("P102A STE surrogate has no gradient graph")
+            leaf = graph.detach().requires_grad_(True)
+            module._wq = leaf
+            entries.append((module, graph, leaf))
+        self._p102a_quant_update = entries
+
+    def finish_quant_update_cache(self):
+        """Apply the one VJP before clipping/optimizer; reject an empty update."""
+        entries = self._p102a_quant_update
+        if entries is None:
+            raise RuntimeError("P102A quant cache was not started")
+        graphs, gradients = [], []
+        for module, graph, leaf in entries:
+            if module._wq is not leaf:
+                raise RuntimeError("P102A cached surrogate was replaced during the update")
+            module._wq = None
+            if leaf.grad is not None:
+                graphs.append(graph)
+                gradients.append(leaf.grad)
+        self._p102a_quant_update = None
+        if not graphs:
+            raise RuntimeError("P102A quant cache received no micro gradients")
+        torch.autograd.backward(graphs, gradients)
+
+    def abort_quant_update_cache(self):
+        """Discard a failed update without applying a partial STE VJP."""
+        if self._p102a_quant_update is not None:
+            for module, _, _ in self._p102a_quant_update:
+                module._wq = None
+            self._p102a_quant_update = None
+
     def clear_quant(self):
+        if self._p102a_quant_update is not None:
+            raise RuntimeError("P102A quant cache must finish or abort before clear_quant")
         self._quant_frozen = False
         for m in self._tlinear_cache:
             m.clear_quant()
@@ -673,7 +718,7 @@ class TiedMLPTransformer(nn.Module):
         embed_state = x
         # ★RoPE 는 절대위치다. 캐시 사용 시 [:T] 가 아니라 [past_len : past_len+T] 를 써야 한다.
         cos, sin = self.rope_cos[past_len:past_len + T], self.rope_sin[past_len:past_len + T]
-        if not self._quant_frozen:
+        if not self._quant_frozen and self._p102a_quant_update is None:
             self.refresh_quant()
 
         # ★P034 단계3C: 언팩 캐시 세대 갱신. 기본 off 면 이 블록이 통째로 건너뛰어진다.

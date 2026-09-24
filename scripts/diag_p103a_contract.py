@@ -89,7 +89,51 @@ def main() -> int:
     quant_hidden = int8_table.gather(indices)
     if quant_hidden.shape != (4, 64) or not bool(torch.isfinite(quant_hidden).all()):
         raise RuntimeError("X3 INT8 gathered boundary is invalid")
-    print(f"[PASS] P103A X1 toy VJP; X2 full/tile; X3 exact tail loss/grad, INT8 nrms={nrms:.6g} size={expected}B")
+    windows = torch.arange(4 * 6, dtype=torch.long).reshape(4, 6)
+    window_hidden = torch.randn(4, 6, 64)
+    from tinylm.train.p103a_contract import WindowBoundaryTable
+    parent_sha = "A" * 64
+    ordered = torch.tensor([2, 0], dtype=torch.long)
+    exact_windows = WindowBoundaryTable(windows, window_hidden,
+                                         parent_sha256=parent_sha, split_layer=2,
+                                         quantized=False)
+    picked = exact_windows.gather(ordered, windows.index_select(0, ordered),
+                                  parent_sha256=parent_sha, split_layer=2)
+    if not torch.equal(picked, window_hidden.index_select(0, ordered)):
+        raise RuntimeError("X3 fixed-window exact boundary changed")
+    quant_windows = WindowBoundaryTable(windows, window_hidden,
+                                         parent_sha256=parent_sha, split_layer=2,
+                                         quantized=True)
+    if not bool(torch.isfinite(quant_windows.gather(
+            ordered, windows.index_select(0, ordered),
+            parent_sha256=parent_sha, split_layer=2)).all()):
+        raise RuntimeError("X3 fixed-window INT8 boundary is non-finite")
+    wrong = windows.index_select(0, ordered).clone()
+    wrong[0, 0] += 1
+    for supplied, sha in ((wrong, parent_sha),
+                          (windows.index_select(0, ordered), "B" * 64)):
+        try:
+            exact_windows.gather(ordered, supplied, parent_sha256=sha, split_layer=2)
+        except ValueError:
+            pass
+        else:
+            raise RuntimeError("X3 changed window context/parent was accepted")
+    from tinylm.train.p103a_contract import fixed_window_starts, gather_fixed_window_xy
+    stream = torch.arange(13, dtype=torch.long)
+    starts = fixed_window_starts(stream.numel(), 4)
+    if starts.tolist() != [0, 4, 8]:
+        raise RuntimeError("X3 fixed-window start grid differs")
+    fx, fy = gather_fixed_window_xy(stream, starts, 4)
+    if (fx.tolist() != [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11]]
+            or fy.tolist() != [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]):
+        raise RuntimeError("X3 fixed S+1 windows lost NTP shift")
+    try:
+        gather_fixed_window_xy(stream, torch.tensor([1]), 4)
+    except ValueError:
+        pass
+    else:
+        raise RuntimeError("X3 off-grid random crop was accepted")
+    print(f"[PASS] P103A X1 toy VJP; X2 full/tile; X3 exact window-key/fixed S+1 grid, INT8 nrms={nrms:.6g} size={expected}B")
     print("[LIMIT] X1 transformer attention, X2 optimizer, X3 whole-model/RAM/quality NOT_RUN")
     return 0
 

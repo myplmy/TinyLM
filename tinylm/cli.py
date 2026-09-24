@@ -258,6 +258,14 @@ def main():
                         "게이트: scripts/diag_gqa_equiv.py")
     p.add_argument("--qk-gain-learnable", action="store_true",
                    help="(P101A) RMSNorm 뒤 head별 QK gain. 기본 off=기존 경로")
+    p.add_argument("--p101a-m0", action="store_true",
+                   help="(P101A) 고정 SHA의 M0 final 가중치만 이어받는 별도 continued-training 경로")
+    p.add_argument("--mtp-aux", action="store_true",
+                   help="(P101A) 독립 horizon2/4 보조 head. --p101a-m0 전용, 기본 off")
+    p.add_argument("--mtp-sample-half", action="store_true",
+                   help="(P102A S3) MTP 보조 head를 update당 micro 절반만 HT 보정 계산; 기본 off")
+    p.add_argument("--ste-update-cache", action="store_true",
+                   help="(P102A S2) update당 STE VJP 1회 opt-in, 기본 off")
     p.add_argument("--kd-chunk", type=int, default=0,
                    help="(T-2/P053) KD KL 을 이 행수씩 나눠 계산(0=off=비트동일). "
                         "동시 임시텐서를 줄인다 — backward 저장분은 안 줄어든다")
@@ -321,6 +329,14 @@ def main():
     p.add_argument("--check-cache", action="store_true",
                    help="캐시 유/무 그리디 출력 일치 검증만 하고 종료")
     a = p.parse_args()
+    if a.p101a_m0 and a.cmd != "train":
+        p.error("--p101a-m0 is only wired for train")
+    if a.mtp_aux and not a.p101a_m0:
+        p.error("--mtp-aux requires --p101a-m0")
+    if a.mtp_sample_half and not a.mtp_aux:
+        p.error("--mtp-sample-half requires --mtp-aux")
+    if a.ste_update_cache and a.cmd != "train":
+        p.error("--ste-update-cache is only wired for train")
     if a.loss_first and a.cmd != "train":
         p.error("--loss-first is only wired for the train command")
     if a.chat32_tokenizer:
@@ -442,6 +458,9 @@ def main():
               lora_decay=a.lora_decay, emb_rank=a.emb_rank,
               kd_teacher_infer=a.kd_teacher_infer,
               sdpa_gqa=a.sdpa_gqa, qk_gain_learnable=a.qk_gain_learnable,
+              p101a_m0=a.p101a_m0, mtp_aux=a.mtp_aux,
+              ste_update_cache=a.ste_update_cache,
+              mtp_sample_half=a.mtp_sample_half,
               kd_chunk=a.kd_chunk, depth_init=a.depth_init,
               attn_group=a.attn_group, train_repeat=a.train_repeat,
               repeat_mode=a.repeat_mode, repeat_block=a.repeat_block,

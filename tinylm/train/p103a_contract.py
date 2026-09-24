@@ -86,3 +86,78 @@ class BoundaryTable:
         else:
             result = self.values.index_select(0, ids)
         return result.to(device) if device is not None else result
+
+class WindowBoundaryTable:
+    """Synthetic fixed-window boundary index; no model/file/large-cache creation.
+
+    A token ID alone is not a Transformer activation key: left context and RoPE
+    position must match. This table only accepts the exact pinned full window.
+    The caller must separately verify that `hidden` came from `parent_sha256`.
+    """
+
+    POLICY = "fixed_window_causal_start0_v1"
+
+    def __init__(self, tokens: torch.Tensor, hidden: torch.Tensor, *,
+                 parent_sha256: str, split_layer: int, quantized: bool, group: int = 64,
+                 context_policy: str = POLICY):
+        import hashlib
+        import re
+        if (tokens.ndim != 2 or tokens.dtype != torch.long or tokens.shape[1] < 2
+                or hidden.ndim != 3 or hidden.shape[:2] != tokens.shape
+                or not re.fullmatch(r"[0-9A-Fa-f]{64}", parent_sha256)
+                or not isinstance(split_layer, int) or split_layer < 1
+                or context_policy != self.POLICY):
+            raise ValueError("X3 requires pinned full causal windows, parent and split")
+        self.windows, self.seq, self.dim = hidden.shape
+        self.parent_sha256 = parent_sha256.upper()
+        self.split_layer = split_layer
+        self.context_policy = context_policy
+        rows = tokens.detach().to("cpu").contiguous()
+        self.window_hashes = tuple(hashlib.sha256(row.numpy().tobytes()).hexdigest()
+                                   for row in rows)
+        self.table = BoundaryTable(hidden.reshape(-1, self.dim),
+                                   quantized=quantized, group=group)
+
+    @property
+    def payload_bytes(self) -> int:
+        return self.table.payload_bytes
+
+    def gather(self, window_ids: torch.Tensor, tokens: torch.Tensor, *,
+               parent_sha256: str, split_layer: int, context_policy: str = POLICY,
+               device=None) -> torch.Tensor:
+        import hashlib
+        if (parent_sha256.upper() != self.parent_sha256
+                or split_layer != self.split_layer or context_policy != self.context_policy
+                or window_ids.ndim != 1 or window_ids.dtype != torch.long
+                or tokens.ndim != 2 or tokens.dtype != torch.long
+                or tokens.shape != (window_ids.numel(), self.seq)):
+            raise ValueError("X3 frozen-window provenance/shape differs")
+        ids = window_ids.detach().to("cpu")
+        rows = tokens.detach().to("cpu").contiguous()
+        for index, row in zip(ids.tolist(), rows):
+            if not 0 <= index < self.windows:
+                raise IndexError("X3 window index outside cache")
+            if hashlib.sha256(row.numpy().tobytes()).hexdigest() != self.window_hashes[index]:
+                raise ValueError("X3 same token ID has different window context or order")
+        flat = (ids[:, None] * self.seq + torch.arange(self.seq)).reshape(-1)
+        return self.table.gather(flat, device=device).reshape(ids.numel(), self.seq, self.dim)
+
+def fixed_window_starts(token_count: int, seq: int) -> torch.Tensor:
+    """Nonoverlapping S+1 NTP windows; no random crop or document reinterpretation."""
+    if not isinstance(token_count, int) or not isinstance(seq, int) or seq < 2 or token_count <= seq:
+        raise ValueError("X3 fixed window needs integer token_count > seq >= 2")
+    return torch.arange(0, token_count - seq, seq, dtype=torch.long)
+
+
+def gather_fixed_window_xy(stream: torch.Tensor, starts: torch.Tensor, seq: int):
+    """Return exact x/y crops; reject any off-grid or out-of-range start."""
+    if (stream.ndim != 1 or stream.dtype != torch.long or starts.ndim != 1
+            or starts.dtype != torch.long or not isinstance(seq, int) or seq < 2):
+        raise ValueError("X3 fixed window stream/starts must be 1D integer tensors")
+    ids = starts.detach().to("cpu")
+    if ids.numel() and (bool((ids < 0).any()) or bool((ids % seq != 0).any())
+                         or int(ids.max()) + seq >= stream.numel()):
+        raise ValueError("X3 random/off-grid crop cannot reuse fixed-window cache")
+    offsets = torch.arange(seq + 1, device=stream.device)
+    raw = stream[(starts.to(stream.device)[:, None] + offsets[None, :])]
+    return raw[:, :-1], raw[:, 1:]

@@ -94,3 +94,15 @@ def sampled_mtp_loss(loss_sums, valid_counts, selected, *, probability):
     if not picked:
         raise ValueError("no selected micro-batch for nonempty MTP target")
     return sum(picked) / denominator
+
+def balanced_mtp_micro_mask(accum: int, seed: int, update: int, horizon: int) -> tuple[bool, ...]:
+    """Fixed-size half sample with marginal inclusion p=1/2 under a private RNG."""
+    import random
+    if (not isinstance(accum, int) or accum < 2 or accum % 2
+            or not isinstance(seed, int) or seed < 0
+            or not isinstance(update, int) or update < 0
+            or horizon not in (2, 4)):
+        raise ValueError("S3 needs even accumulation, nonnegative seed/update and horizon2/4")
+    rng = random.Random((seed << 32) ^ (update << 3) ^ horizon)
+    selected = set(rng.sample(range(accum), accum // 2))
+    return tuple(index in selected for index in range(accum))

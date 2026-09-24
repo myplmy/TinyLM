@@ -501,8 +501,20 @@ C0를 거절하면 18층 전체 조합의 가치만 미확인으로 남는다. *
 
 | 구분 | 현재 직접 증거 | AI 작업 / 사용자 증거의 경계 |
 |---|---|---|
-| 작성된 코드 | E/QK strict 이식, 독립 MTP aux head·배포 payload 제거, FP32 3-head loss/공유 emb gradient CPU 계약 | 실제 M0·작은 모델 gate는 NOT_RUN, 전체 trainer·계속학습 경로는 미구현. GPT 작업을 계속한다 |
+| 작성된 코드 | E/QK strict 이식, 독립 MTP aux head·배포 payload 제거, FP32 3-head loss/공유 emb gradient CPU 계약 | 실제 M0·작은 모델 gate는 NOT_RUN, continued trainer 코드는 기본 off STATIC_ONLY, 실제 모델/GPU/품질은 NOT_RUN. GPT 작업을 계속한다 |
 | 사용자 검증 | Stage0W 소형 모델, 실제 M0 hash/함수 | Codex 모델 로딩 금지 때문에 사용자 결과가 필요하지만 코드 집필 전체의 정지 사유는 아님 |
 | 채택·G2 | 같은 부모·풀·어닐·optimizer와 100M 대응 팔 | Stage0/G1 PASS 및 GPU 실행 뒤에만 효과 판정. 1.2B/C0 런처는 종전 금지 유지 |
 
 현재 제안서는 `approved-on-going`이다. WIP는 GPT 구현 중으로 유지하고, 동적 `NOT_RUN`과 필요한 사용자 로그는 이 절 및 [P101A 계획](../test_plan/P101A_M0-U2-QK-MTP-기능계약.md)에 기록한다. 작은 CPU 계약 PASS를 실모델 기능 완료나 지능 향상으로 승격하지 않는다.
+
+2026-09-24 후속: M0 final·기존 tokenizer·정확 캐시 metadata의 고정 SHA와 로그 조건을 실제 파일에서 읽기 전용으로 확인했고, [P101A Stage1W CPU 모델 gate](../run_P101A_Stage1W_m0_migration_gate.sh)를 작성했다. 검사의 `--check-only`는 PASS이나 본 checkpoint를 모델로 로딩한 함수·gradient 검사는 사용자 실행 전 `NOT_RUN`이다. continued trainer는 코드로 연결했으나 모델/GPU 미검증, G2 품질/속도는 미실행이다.
+
+### 12.1 M0 네 팔 분리·자산 서명 선결 — 2026-09-24
+
+P101A opt-in continued trainer는 B0/E384/QK gain/MTP full을 한 번에 하나의 독립변수로 제한하고, S3의 MTP half-HT는 별도 후속 arm으로 분리한다. `p101a_b0_s1337`, `p101a_e384_s1337`, `p101a_qk_s1337`, `p101a_mtp_s1337`, `p101a_mtp_ht_s1337`(seed2024·31415는 같은 suffix 규칙) 정확 태그와 기존 M0 parent·legacy tokenizer·cache metadata SHA를 결과 JSON에 기록한다. 762 step의 draw는 99,876,864 token이며 기존 1.2B cache를 **재사용**할 뿐 새 1.2B 학습을 시작하지 않는다.
+
+결합 팔은 새 계획 없이 실행되지 않으며 Stage0/1 사용자 모델 기능·별도 학습 승인 전 100M 미만 학습 SH는 0개다. CPU 분리 팔·E/QK/MTP 수학과 정적 게이트만 PASS이고 실제 모델·GPU 품질은 `NOT_RUN`이다.
+
+### 12.2 고정 cache metadata 자동 백필 방지 — 2026-09-24
+
+현재 `prepare(exact)`는 재사용 cache의 `bytes_per_token`이 빠져 있으면 `meta.json`에 자동 백필 쓰기를 한다. P101A처럼 cache metadata SHA를 고정한 비교에서는 이것이 첫 run 뒤 자산 계보를 바꿀 수 있으므로, 모델·train 진입 전에 유한·양수 bpt와 uint16 dtype을 검사하고 없으면 중단하도록 했다. 기존 SHA/metadata `--check-only` PASS는 이 새 조건 추가 **이전**의 관측이며, 보호 자산 읽기 자동 안전 검토 거절 뒤 Codex가 재실행하지 않았다. 새 조건의 결과는 `NOT_RUN`이고 실패 시 원본 meta를 조용히 보정하지 않는다.

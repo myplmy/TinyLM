@@ -22,9 +22,36 @@ def main() -> int:
     import torch.nn.functional as F
     from tinylm.train.p101a_contract import (expand_factorized, migrate_p101a_state,
                                              mtp_targets_from_xy, mtp_loss_components,
-                                             mtp_weighted_mean, mtp_aux_coefficients)
+                                             mtp_weighted_mean, mtp_aux_coefficients, p101a_arm_name)
+    from tinylm.train.p101a_assets import validate_m0_cache_meta
 
     torch.manual_seed(101)
+    arms = {"b0": (256, False, False, False),
+            "e384": (384, False, False, False),
+            "qk": (256, True, False, False),
+            "mtp": (256, False, True, False),
+            "mtp_ht": (256, False, True, True)}
+    if any(p101a_arm_name(*params) != name for name, params in arms.items()):
+        raise RuntimeError("P101A separated arm name differs")
+    try:
+        p101a_arm_name(384, True, True)
+    except ValueError:
+        pass
+    else:
+        raise RuntimeError("P101A confounded combined arm was accepted")
+    fake_meta = {"data": "ko-en", "train": 1194000000, "val": 6000000,
+                 "vocab": 32768, "token_dtype": "uint16", "bytes_per_token": 2.3}
+    validate_m0_cache_meta(fake_meta)
+    for bad in (dict(fake_meta, bytes_per_token=None),
+                dict(fake_meta, bytes_per_token=True),
+                dict(fake_meta, bytes_per_token=float("nan")),
+                dict(fake_meta, token_dtype="float32")):
+        try:
+            validate_m0_cache_meta(bad)
+        except ValueError:
+            pass
+        else:
+            raise RuntimeError("P101A mutable/invalid pinned cache metadata was accepted")
     w = torch.randn(128, 16)
     up = torch.randn(32, 16)
     wider_w, wider_up = expand_factorized(w, up, 8)
@@ -128,6 +155,21 @@ def main() -> int:
             logits, masked.reshape(-1), ignore_index=-100, reduction="sum") / valid.sum()
     grad_ref = torch.autograd.grad(ref, params, retain_graph=True)
     grad_loss = torch.autograd.grad(loss, params)
+    split_pieces = [mtp_loss_components(hidden[i:i + 1], main_up, aux2_up,
+                                        aux4_up, vocab, xx[i:i + 1], yy[i:i + 1],
+                                        eos_id=2, chunk=3) for i in range(2)]
+    split_loss = mtp_weighted_mean(split_pieces, lambda2, lambda4)
+    split_grads = torch.autograd.grad(split_loss, params)
+    if not torch.allclose(loss, split_loss, atol=1e-5, rtol=1e-5):
+        raise RuntimeError("MTP accumulation-wide scalar differs from combined batch")
+    if not all(torch.allclose(a, b, atol=1e-5, rtol=1e-5)
+               for a, b in zip(grad_ref, split_grads)):
+        raise RuntimeError("MTP accumulation-wide gradient differs")
+    inactive = mtp_loss_components(hidden, main_up, aux2_up, aux4_up,
+                                   vocab, xx, yy, eos_id=2, chunk=3, active_horizons=())
+    if (inactive[2][0].item() != 0 or inactive[4][0].item() != 0
+            or not torch.allclose(mtp_weighted_mean([inactive], 0, 0), pieces[1][0] / pieces[1][1])):
+        raise RuntimeError("zero-weight MTP heads were not skipped")
     if not torch.allclose(loss, ref, atol=1e-5, rtol=1e-5):
         raise RuntimeError("MTP loss-first scalar differs from full-logit reference")
     if not all(torch.allclose(a, b, atol=1e-5, rtol=1e-5)
@@ -135,8 +177,8 @@ def main() -> int:
         raise RuntimeError("MTP hidden/main/aux/shared-vocab gradients differ")
     if not all(float(g.abs().sum()) > 0 for g in grad_loss):
         raise RuntimeError("MTP head or shared embedding received zero gradient")
-    print(f"[PASS] P101A E expansion/state migration max_abs={max_abs:.8g}; QK tau=1; MTP EOS/loss-first/all gradients")
-    print("[LIMIT] assistant message mask, full trainer/model integration, GPU and quality NOT_RUN")
+    print(f"[PASS] P101A separated arms, pinned-meta reject; E migration max_abs={max_abs:.8g}; QK tau=1; MTP EOS/split-update loss/gradients")
+    print("[LIMIT] assistant message mask and real TinyLM trainer/model, GPU and quality E2E NOT_RUN")
     return 0
 
 

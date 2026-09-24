@@ -162,6 +162,29 @@ class MLP(nn.Module):
         self.down_proj = TLinear(cfg, cfg.ffn_dim, cfg.dim, out_scale=o_scale, mode_delta=True)
 
     def forward(self, x, mode_p, lora=None, film=None, lrm=None):
+        tiles = tuple(getattr(self.gate_proj.cfg, "x2_active_tiles", ()) or ())
+        if tiles:
+            cfg = self.gate_proj.cfg
+            if mode_p is not None or lora is not None or film is not None or lrm is not None:
+                raise RuntimeError("P103A X2 does not support mode/LoRA/FiLM/LRM paths")
+            size = int(cfg.x2_tile_size)
+            total = cfg.ffn_dim // size if size > 0 else 0
+            if (size < 1 or cfg.ffn_dim % size or not tiles
+                    or tuple(sorted(set(tiles))) != tiles
+                    or any(not 0 <= tile < total for tile in tiles)):
+                raise ValueError("P103A X2 invalid FFN tile selection")
+            linears = (self.gate_proj, self.up_proj, self.down_proj)
+            if any(m._wq is None or m._i8 is not None or m._lut_codes is not None
+                   for m in linears):
+                raise RuntimeError("P103A X2 needs live STE weights, not deployment storage")
+            indices = torch.cat([torch.arange(tile * size, (tile + 1) * size,
+                                              device=x.device) for tile in tiles])
+            gate = F.linear(x, self.gate_proj._wq.index_select(0, indices))
+            up = F.linear(x, self.up_proj._wq.index_select(0, indices))
+            hidden = F.silu(gate) * up
+            out = F.linear(hidden, self.down_proj._wq.index_select(1, indices))
+            self._x2_last_width = int(indices.numel())
+            return out * (total / len(tiles))
         g = self.gate_proj(x, mode_p)
         u = self.up_proj(x, mode_p)
         # ★P086 — `W̄ = s·W` 를 **출력 쪽에서** 건다. TLinear 는 선형이라 동치이고,

@@ -237,6 +237,7 @@ flag	grade	evidence	checked	declared_in
 --manifest	ok	승인된 W&B backfill raw-tag 목록을 명시해 삭제한 과거 run의 무차별 부활을 막는다	2026-09-21	scripts/wandb_backfill.py
 --match-train-repeat	ok		2026-09-04	scripts/paired_eval.py
 --matrix-weight-decay	ok	A08 - 두 옵티마이저의 행렬 WD만 덮어쓴다. 미지정은 optimizer-aware 규약(AdamW 행렬 0.1, Muon 행렬 0)이며 임베딩·norm·LRM WD는 불변. 2026-09-18 Muon RMS4 기본 채용 뒤에도 None을 유지해 이 구분을 보존	2026-09-18	tinylm/cli.py
+--max-abs	exp	P101A 실제 M0 함수 이식의 FP32 max absolute gate; 품질·GPU 문턱 아님	2026-09-24	scripts/diag_p101a_m0_migration.py
 --max-abs-ratio	ok	P025B FP16 GEMM max absolute error를 reference RMS로 정규화한 outlier gate	2026-09-19	scripts/diag_sparse24_inference_attribution.py
 --max-bytes	ok		2026-09-04	scripts/diag_spam_rate.py
 --max-memory-ratio	ok	P022C FP8 peak allocation의 BF16 대비 독립 문턱	2026-09-20	scripts/diag_fp8_path_attribution.py
@@ -273,6 +274,8 @@ flag	grade	evidence	checked	declared_in
 --models	ok		2026-09-04	scripts/bench_fused_int8.py,scripts/bench_infer.py,scripts/census_heldout_discrimination.py,scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_attention_sink.py,scripts/diag_decode_profile.py,scripts/diag_fp8_precision.py,scripts/diag_kvcache.py,scripts/diag_layer_map.py,scripts/diag_sparse34.py,scripts/diag_trapping.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py,scripts/mem_runtime.py,scripts/paired_eval.py,scripts/probe_prompts.py
 --m-values	ok	P025B one-way inference/training pack을 decode·prefill·training 형상 M별로 분리	2026-09-19	scripts/diag_sparse24_inference_attribution.py
 --modes	ok		2026-09-04	scripts/diag_depth_init.py
+--mtp-aux	exp	P101A 고정 M0 계속학습의 horizon2/4 독립 보조 head; 기본 off·실제 품질 NOT_RUN	2026-09-24	tinylm/cli.py
+--mtp-sample-half	exp	P102A S3 P101A MTP 전용 8/16 균형 HT 보정 opt-in; 기본 off·속도/품질 NOT_RUN	2026-09-24	tinylm/cli.py
 --muon-lr-mult	ok	P005/P005b - Muon 그룹 lr 배수. 2026-09-18 사용자 확정 기본 4.0; 명시적 실험값은 계속 기록	2026-09-18	tinylm/cli.py
 --muon-scale	ok	P005b b-1 - Muon 업데이트 스케일 규약. 2026-09-18 사용자 확정 기본 rms=0.2*sqrt(max(out,in)); jordan은 레거시 대조. 두 규약은 균일 LR 배수로 치환 불가	2026-09-18	tinylm/cli.py
 --n	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/diag_sparse34_pack.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py
@@ -302,6 +305,7 @@ flag	grade	evidence	checked	declared_in
 --outdir	ok		2026-09-04	scripts/runlog.py
 --outputs	ok	P097 공통평가 산출물의 기존 존재 여부를 실행 전에 fail-closed 검사	2026-09-20	scripts/check_p097_stage2_assets.py
 --override	ok		2026-09-04	scripts/wip.py
+--p101a-m0	exp	P101A SHA 고정 M0 가중치만 이어받는 100M 계속학습; optimizer 새 시작·anneal 보존	2026-09-24	tinylm/cli.py
 --pairs	ok		2026-09-04	scripts/paired_join.py
 --pack-repeats	ok	P025B optimizer-step 패킹 중앙값 반복수	2026-09-21	scripts/diag_sparse24_whole_primitive.py
 --paths	ok		2026-09-04	scripts/diag_decode_profile.py
@@ -382,6 +386,7 @@ flag	grade	evidence	checked	declared_in
 --static-audit	ok	WIP close가 소비할 exact codex-safe audit evidence 경로	2026-09-21	scripts/wip.py
 --stamp-reuse-min	ok		2026-09-04	scripts/runlog.py
 --start	ok		2026-09-04	scripts/wip.py
+--ste-update-cache	exp	P102A S2 update당 STE VJP 1회 기본 off; 사용자 모델/속도 gate 전 채택 금지	2026-09-24	tinylm/cli.py
 --steps	ok		2026-09-19	scripts/check_run_registry.py,scripts/diag_dynamic_sparse_tlinear.py,scripts/diag_scout_memory_integration.py,tinylm/cli.py
 --strict	ok		2026-09-04	scripts/dryrun_batch.py
 --structural-audit	ok	SFT 표면 슬롯을 가린 train/eval template 근접도 감사	2026-09-18	scripts/audit_sft_corpus.py

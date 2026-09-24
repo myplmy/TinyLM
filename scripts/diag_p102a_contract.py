@@ -21,7 +21,7 @@ def main() -> int:
     import torch
     import torch.nn.functional as F
     from tinylm.train.p102a_contract import (
-        factorized_ce_chunks, factorized_ce_loss_first, update_local_vjp, sampled_mtp_loss,
+        factorized_ce_chunks, factorized_ce_loss_first, update_local_vjp, sampled_mtp_loss, balanced_mtp_micro_mask,
     )
 
     torch.manual_seed(102)
@@ -68,8 +68,14 @@ def main() -> int:
     expected = torch.stack(estimates).mean()
     if not torch.allclose(full_mean, expected, rtol=1e-12, atol=1e-12):
         raise RuntimeError("S3 sampled MTP estimator is biased in four-micro exhaustive fixture")
-    print("[PASS] P102A S1 full/chunk/loss-first FP32 loss+all gradients, S2 VJP, S3 HT expectation")
-    print("[LIMIT] trainer opt-in is STATIC_ONLY; actual model, GPU speed, S2 cache and MTP trainer NOT_RUN")
+    import random
+    random_state = random.getstate()
+    mask = balanced_mtp_micro_mask(16, 1337, 7, 2)
+    if (sum(mask) != 8 or mask != balanced_mtp_micro_mask(16, 1337, 7, 2)
+            or random.getstate() != random_state):
+        raise RuntimeError("S3 half-sample mask changed shape, determinism or global RNG")
+    print("[PASS] P102A S1 loss/gradients, S2 VJP, S3 HT expectation and private 8/16 selection")
+    print("[LIMIT] S1/S2/S3 opt-in code STATIC_ONLY; actual TinyLM model, GPU wall/peak and quality NOT_RUN")
     return 0
 
 

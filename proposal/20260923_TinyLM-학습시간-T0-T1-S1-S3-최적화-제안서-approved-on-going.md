@@ -380,6 +380,18 @@ Lhat_k = lambda_k / N_k * sum_j (I_kj / p_kj) * sum_valid_t CE[k,j,t]
 | T1 | trainer host phase-wall·100M paired SH 준비 | 로그가 오면 비교 조건·순서효과·전체 wall 귀속을 판독 | 사용자 GPU 2팔 결과 |
 | S1 | FP32 row-recompute CE의 hidden/up/shared emb gradient CPU PASS; `--loss-first` dense·비KD·비compile 기본 off trainer 경로와 hidden 반환 코드 연결 | 별도 [Stage0bW](../run_P102A_Stage0bW_loss_first_model_gate.sh)에서 전 모델 gradient/update 검증 후 AMP 수치·whole-wall 계측 | 실제 모델·GPU whole-wall·peak NOT_RUN |
 | S2 | 고정 유효 가중치의 VJP 합 수학 fixture | 실제 STE cache 버전·skip/anneal/optimizer 무효화 코딩 | 정확한 update·memory/whole-wall 결과 |
-| S3 | 올바른 전량 유효타깃 분모의 HT fixture | P101A 전량 MTP 경로가 생긴 뒤 선택 계산 통합 | 전량 MTP 기준선·품질/시간 |
+| S3 | 전량 유효분모 HT 수학·8/16 private RNG fixture PASS; `--mtp-sample-half` 기본 off trainer 코드 STATIC_ONLY | 사용자 full MTP 기준선 기능·품질 뒤 모델/AMP·whole-wall 계측 | 전량 MTP 기준선·품질/시간 실제 `NOT_RUN` |
 
 현재 S1 CPU 수치 PASS와 기본 off trainer 배선은 **코드 수준 STATIC_ONLY**다. 실제 TinyLM 모델·AMP/compile 변형·GPU 속도 이득의 증거가 아니다. 제안서 `approved-on-going`을 유지하며, 사용자 T1 로그 부재를 GPT의 남은 S2/S3 코딩을 정당화하는 포괄 사유로 쓰지 않는다.
+
+### 12.1 S2 기본 off STE update cache 선결 — 2026-09-24
+
+[P102A 계획](../test_plan/P102A_T1-S1-S2-S3-학습시간-기능계약.md)에 Stage0cW를 추가했다. 모델은 update 시작에 삼진 STE graph를 한 번 만들고 micro별 detached surrogate gradient를 누적한 뒤 clipping 전에 원래 graph로 VJP를 한 번 전파한다. `--ste-update-cache`는 별도 `p102a_s2` 태그, dense·비KD·비compile·FP32 STE에서만 켜진다. 기본 경로는 바뀌지 않는다.
+
+[사용자 실행 게이트](../run_P102A_Stage0cW_ste_update_cache_model_gate.sh)는 3 micro 소형 모델의 loss·전 parameter gradient·clip·SGD update를 기존 매-forward refresh와 비교한다. 정적 구문과 `--check-only`는 PASS, **실제 모델 gate·CUDA BF16·peak·whole-wall·품질은 `NOT_RUN`**이다. 이 구현 자체는 S2 가속이나 채택 증거가 아니다. 사용자 T1 로그 부재도 S2 코드 작성 중단 사유가 아니지만, 실제 성능 판정은 여전히 별도다.
+
+### 12.2 S3 반수 MTP 보조계산 opt-in 선결 — 2026-09-24
+
+P101A 전량 MTP trainer가 기능 코드로 생겨 `--mtp-sample-half`를 기본 off로 연결했다. horizon2/4 각각 16 micro 중 독립 private RNG의 균형8개를 선택하고, 원래 **전체 update의 유효타깃 분모**에 포함확률 `p=1/2`의 역수를 곱한다. 선택된 head에서만 FP32 CE를 계산하므로 추정식의 clipping 전 기대값은 전량 보조 loss와 같다. 4-micro 가능한 모든 선택의 수학 fixture와 16-micro 재현/전역 RNG 보존 fixture PASS.
+
+이 등가는 clipping·Muon update·이후 학습 궤적·품질을 보존한다는 뜻이 아니다. P101A 전량 MTP 실제 모델/품질 기준선이 `NOT_RUN`이므로 S3 사용자 학습 SH는 작성하지 않았고 속도·품질 채택도 열지 않았다.

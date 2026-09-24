@@ -121,14 +121,17 @@ def mtp_aux_coefficients(update: int, updates: int) -> tuple[float, float]:
 def mtp_loss_components(hidden: torch.Tensor, main_up: torch.Tensor,
                         aux2_up: torch.Tensor, aux4_up: torch.Tensor,
                         emb: torch.Tensor, x: torch.Tensor, y: torch.Tensor,
-                        *, eos_id: int, chunk: int = 256) -> dict[int, tuple[torch.Tensor, torch.Tensor]]:
+                        *, eos_id: int, chunk: int = 256,
+                        active_horizons: tuple[int, ...] = (2, 4)) -> dict[int, tuple[torch.Tensor, torch.Tensor]]:
     """FP32 loss sums/counts for same-input NTP and horizon-2/4 aux heads.
 
     The three projection matrices are distinct; the vocabulary table is shared.
     Caller combines sums across every micro-batch before dividing by counts.
-    This tensor core is not yet wired to the full TinyLM trainer.
+    The opt-in M0 trainer calls this core; whole-model behavior is not yet E2E-verified.
     """
     from .p102a_contract import factorized_ce_loss_first
+    if any(k not in (2, 4) for k in active_horizons) or len(set(active_horizons)) != len(active_horizons):
+        raise ValueError("MTP active horizons must be unique members of (2, 4)")
 
     if (hidden.ndim != 3 or x.ndim != 2 or y.shape != x.shape
             or hidden.shape[:2] != x.shape or x.shape[1] < 4
@@ -155,9 +158,10 @@ def mtp_loss_components(hidden: torch.Tensor, main_up: torch.Tensor,
         target, valid = mtp_targets_from_xy(x, y, horizon, eos_id=eos_id)
         masked = target.masked_fill(~valid, -100)
         width = target.shape[1]
-        loss_sum = factorized_ce_loss_first(
+        loss_sum = (factorized_ce_loss_first(
             hidden[:, :width].reshape(-1, hidden.shape[-1]),
             projection, emb, masked.reshape(-1), chunk)
+            if horizon in active_horizons else hidden.new_zeros(()))
         sums[horizon] = loss_sum, valid.sum()
     return sums
 
@@ -176,3 +180,21 @@ def mtp_weighted_mean(parts: list[dict[int, tuple[torch.Tensor, torch.Tensor]]],
     return (totals[1] / counts[1]
             + lambda2 * totals[2] / counts[2].clamp_min(1)
             + lambda4 * totals[4] / counts[4].clamp_min(1))
+
+def p101a_arm_name(rank: int, qk_gain: bool, mtp_aux: bool,
+                   mtp_sample_half: bool = False) -> str:
+    """One independent variable per first M0 continuation arm; combined needs a new plan."""
+    if rank not in (256, 384) or (mtp_sample_half and not mtp_aux):
+        raise ValueError("P101A arm has unsupported rank or sampled MTP without full MTP")
+    axes = int(rank == 384) + int(bool(qk_gain)) + int(bool(mtp_aux))
+    if axes > 1:
+        raise ValueError("P101A first continuation allows only one changed axis")
+    if mtp_sample_half:
+        return "mtp_ht"
+    if mtp_aux:
+        return "mtp"
+    if qk_gain:
+        return "qk"
+    if rank == 384:
+        return "e384"
+    return "b0"
