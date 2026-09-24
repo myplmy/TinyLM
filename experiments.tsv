@@ -31,15 +31,9 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 # CANCEL 2026-09-23: 옛 P092 Stage3W 3시드 일괄안은 100M gate 실패와 사용자 선택(진단→원인 수정→300M 한 시드)에 맞지 않아 실행 설계만 취소; P092 연구축·Stage3Wb 유지
 # 26	P092	run_P092_Stage3W_full_trainer_300M_seeds-cancel.sh	Y	13.5	Y	Y	구 3시드 일괄 학습 이력; GPU/모델 실행 0건, 과학적 축 폐기 아님	8
-39	P104A	run_P104A_Stage0W_m4_triton_ternary.sh	D	0.1	Y	Y	WSL M4 direct Triton ternary matmul 정합·피크메모리; fallback 불허	8
-41	P104A	run_P104A_Stage1W_m5_dense_bridge.sh	D	0.1	Y	Y	WSL M5 동일 tiny dense checkpoint 평가·한 업데이트 및 Windows JSON 대조
-43	P090B	run_P090B_Stage1aW_chat32_prepare.sh	N	2.0	Y	Y	사용자 실행 신규 chat32 어휘·601M exact 분리 cache 준비; HF/디스크 I/O와 어휘 해시 확인
-44	P090B	run_P090B_Stage1bW_chat32_parent_300M.sh	Y	2.0	Y	Y	Stage1a 자산·WSL smoke 선결; 신규 d14 dense chat32 부모 300.024M, 601M exact pool, no init/KD; legacy와 tokenizer 단독효과 귀속금지
-56	P101A	run_P101A_Stage1Wb_m0_arm_attribution.sh	N	0.3	N	N	고정 M0에서 승인 독립 E384/QK/MTP 팔별 주 로짓 drift·gradient·배포 제거를 원 1e-5 문턱으로 재진단; 결합팔 실패 이력 보존
-57	P103A	run_P103A_Stage0dWb_model_boundary_freeze.sh	N	0.1	N	N	하부 MLP 참조를 함께 동결한 CLA2 소형 exact 경계 재진단; 원 Stage0dW gradient 오류 보존
-58	P103A	run_P103A_Stage1aWb_m0_boundary_freeze.sh	N	0.4	N	N	Stage0dWb PASS 뒤 고정 M0 12/4 경계와 하부 MLP 동결 재진단; 원 5e-5 문턱 유지
-59	P104A	run_P104A_Stage1Bb_m5_dense_bridge.bat	D	0.1	Y	Y	Windows 드라이브/UNC 경로 별칭 수정 뒤 같은 tiny dense SHA·seed104 write-once 수집 재실행; WSL Stage1W 선결
-40	P101A	run_P101A_Stage1Wc_e384_roundoff_attribution.sh	N	0.3	N	N	고정 M0 E384 원 1e-5 실패의 FP32 input/body/head와 FP64 지도 분해; 진단 exit0은 측정완료, 학습 HOLD
+1	P105	run_P105_Stage0W_wiki_format_contract.sh	N	0.1	N	N	위키 꼬리/URL source·generation JSONL 분모와 본문 제목 비오인 합성 계약; 실제 원천·모델 NOT_RUN
+2	P106	run_P106_Stage0W_verified_teacher_contract.sh	N	0.1	N	N	검증형 teacher ACCEPT/REJECT/UNKNOWN·split·문자열 target·assistant mask 출처 합성 계약; teacher/SFT NOT_RUN
+3	P105	run_P105_Stage1W_wiki_panel_7model.sh	D	2.0	Y	Y	사용자 단독 GPU 현존 7모델×고정20문항×2디코딩=280출력; metadata 계보 사전검사, chat32 SFT 미래팔 NOT_RUN
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	2026-09-23 TSV 실물 142건·60.677GiB 삭제 후보. WSL SH 단일 frozen preview와 대문자 YES, 실행 전 학습/파일 writer 중단 필수
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
@@ -435,6 +429,18 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   53	P103A	run_P103A_Stage1aW_m0_boundary.sh	N	0.4	N	N	고정 SHA의 실제 M0 16층 CLA2 12/4 frozen lower/tail exact window 로짓·gradient·update CPU 기능 gate; 2M/20M 캐시 아님
 #   54	P090B	run_P090B_Stage0cW_empathetic_multiturn_contract.sh	N	0.1	N	N	고정 공개 한국어 multi_2/3 원천의 역할 복원·중복·사람 QA 행 인덱스 CPU gate; 정식 TRAIN_READY 아님
 #   55	P090B	run_P090B_Stage0dW_oasst2_translation_candidates.sh	N	0.1	N	N	고정 OASST2 영어 다회전 200개 번역 pilot ID·50개 사람 QA ID를 v3 중복·legacy 길이 gate 뒤 선정; 번역·TRAIN_READY 아님
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   39	P104A	run_P104A_Stage0W_m4_triton_ternary.sh	D	0.1	Y	Y	WSL M4 direct Triton ternary matmul 정합·피크메모리; fallback 불허	8
+#   41	P104A	run_P104A_Stage1W_m5_dense_bridge.sh	D	0.1	Y	Y	WSL M5 동일 tiny dense checkpoint 평가·한 업데이트 및 Windows JSON 대조
+#   43	P090B	run_P090B_Stage1aW_chat32_prepare.sh	N	2.0	Y	Y	사용자 실행 신규 chat32 어휘·601M exact 분리 cache 준비; HF/디스크 I/O와 어휘 해시 확인
+#   44	P090B	run_P090B_Stage1bW_chat32_parent_300M.sh	Y	2.0	Y	Y	Stage1a 자산·WSL smoke 선결; 신규 d14 dense chat32 부모 300.024M, 601M exact pool, no init/KD; legacy와 tokenizer 단독효과 귀속금지
+#   56	P101A	run_P101A_Stage1Wb_m0_arm_attribution.sh	N	0.3	N	N	고정 M0에서 승인 독립 E384/QK/MTP 팔별 주 로짓 drift·gradient·배포 제거를 원 1e-5 문턱으로 재진단; 결합팔 실패 이력 보존
+#   57	P103A	run_P103A_Stage0dWb_model_boundary_freeze.sh	N	0.1	N	N	하부 MLP 참조를 함께 동결한 CLA2 소형 exact 경계 재진단; 원 Stage0dW gradient 오류 보존
+#   58	P103A	run_P103A_Stage1aWb_m0_boundary_freeze.sh	N	0.4	N	N	Stage0dWb PASS 뒤 고정 M0 12/4 경계와 하부 MLP 동결 재진단; 원 5e-5 문턱 유지
+#   59	P104A	run_P104A_Stage1Bb_m5_dense_bridge.bat	D	0.1	Y	Y	Windows 드라이브/UNC 경로 별칭 수정 뒤 같은 tiny dense SHA·seed104 write-once 수집 재실행; WSL Stage1W 선결
+#   40	P101A	run_P101A_Stage1Wc_e384_roundoff_attribution.sh	N	0.3	N	N	고정 M0 E384 원 1e-5 실패의 FP32 input/body/head와 FP64 지도 분해; 진단 exit0은 측정완료, 학습 HOLD
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)

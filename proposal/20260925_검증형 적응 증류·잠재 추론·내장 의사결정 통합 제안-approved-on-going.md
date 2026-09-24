@@ -2,10 +2,10 @@
 
 작성일: 2026-09-25
 검토 기준: `myplmy/TinyLM`, `main@ea363b34ebb42f3fb4a9bf3187467bc9df991223` (2026-09-23 커밋)
-**상태**: 판단 대기 · **DESIGNED / NOT_RUN**. 읽기 전용 코드·문헌 검토에 근거한 설계다. 저장소 수정, 모델 실행, 학습, 성능 측정은 수행하지 않았다.
-**분류**: 후속학습·추론 방법론 제안(미승인).
-**양식**: [proposal/README.md](README.md)의 판단 대기 문서; 아래 원문 1~9절은 보존하고 §10에서 비판적 검토를 누적한다.
-실험 번호: 미배정. 기존 P 번호를 임의로 차지하지 않는다.
+**상태**: 승인 후 진행 중 · **Stage0W STATIC_ONLY / 교사·학생 품질 NOT_RUN**. 승인 범위와 미완료 게이트는 §11이 소유한다.
+**분류**: 후속학습·추론 방법론 제안(§10.3 A 우선 승인, B/C 보류).
+**양식**: [proposal/README.md](README.md)의 승인 진행 문서; 원문 1~9절은 보존하고 §10 비판·§11 승인 이력을 누적한다.
+실험 번호: 첫 계약 [P106](../test_plan/P106_검증형-교사-정답-계보와-SFT-첫게이트.md). 후속 B/C 번호는 미배정.
 
 ## 1. 결론·목표·범위
 
@@ -548,3 +548,9 @@ Bonsai 2는 **신규 27B 계보**, 뒤 두 8B는 **서로 다른 이전 계보**
 G0는 모든 teacher 후보에 같은 **사전 고정** 한국어·영어, 논리/산술/문맥/형식 문제 가족을 주되 개발용 문제와 sealed 최종 시험을 분리한다. 모델·pack·template·effort별 정답/불확실/완료율, 짧은 검증풀이 오류, 교사 자기판정 대비 독립 검증 불일치, accepted sample당 출력 토큰·wall·VRAM을 기록한다. 가족별 중복·원문 오염·사람 표본 심사를 실시하고 **비교 통과 기준과 예산은 데이터를 보기 전에** 등록한다. 가장 큰 27B가 모든 항목을 이긴다고 가정하지 않는다. P100/P090B의 정성 실패와 P097 dataset bundle 교락을 teacher 효과로 오인하지 않는다.
 
 첫 기능 산출물은 model 다운로드나 20M 학습이 아니라 **불확실/오답 배제·loss-mask provenance·서로 다른 tokenizer의 문자열 target·split 격리** 계약이다. 실제 teacher+student 품질/비용 판단은 사용자 E2E 뒤의 별도 실험계획·권한이다. B/C를 채택하지 않아도 A-only가 최종안일 수 있다. 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 한다.
+
+## 11. 2026-09-25 §10.3 권장 검증 순서 승인과 미승격 범위
+
+사용자가 **A-only 정적 검증 텍스트 SFT 우선, 적응 교사 A1/A2는 대조 뒤, B 잠재·C 결정 헤드는 보류**라는 §10.3 순서를 승인했다. 승인 직후 [P106 계획](../test_plan/P106_검증형-교사-정답-계보와-SFT-첫게이트.md)에 Stage0W 무모델 계약과 G0a/G0b/A0 조건부 단계를 분리했고 [계약 진단기](../scripts/diag_p106_verified_teacher_contract.py)의 합성 ACCEPT/REJECT/UNKNOWN·split·문자열 target/assistant span fixture를 통과했다.
+
+첫 산출물은 검증상태·loss-mask 출처·계보 스키마이지 교사 정답의 참을 증명한 것이 아니다. Bonsai 2 27B/이전 8B 두 계보의 정확 revision·LICENSE/NOTICE·PrismML fork·한국어 독립 QA·accepted sample당 비용은 사용자 모델/자산 gate 전 `NOT_RUN`; 어떤 teacher도 선택하지 않았다. [공개 SFT 100+1행 사람 검수](../review_request/20260925_공개-한국어-SFT-멀티턴-1차GPT-사용자-검수요청.md)와 오염·권리·부모 계보가 확인되기 전 A0 학습 `TRAIN_READY=false`다. 이 승인으로 B/C 기본 경로·GPU 학습·외부 다운로드를 자동 허용하지 않는다.

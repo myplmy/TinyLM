@@ -1,10 +1,10 @@
 # P090B — 기존 32k·chat32·최선 부모 SFT 세 계보 검증
 
-> 사용자 2026-09-24 추가 선택: 두 토크나이저 계보와 기존 최고 성능 모델 init까지 세 갈래를 비교한다. [P090](P090_SFT-경로.md)의 기존 역사 절을 고치지 않는 별도 suffix 계획. 사용자 실행 전까지 SFT 학습·GPU·보호 held-out 평가는 `NOT_RUN`이다.
+> 사용자 2026-09-24 추가 선택: 두 토크나이저 계보와 기존 최고 성능 모델 init까지 세 갈래를 비교한다. [P090](P090_SFT-경로.md)의 기존 역사 절을 고치지 않는 별도 suffix 계획. **2026-09-25 chat32 새 부모 300.024M 사전학습은 사용자 GPU 실행 완료**했지만 실제 train pool이 사전등록 2배 기준보다2.053M 부족하다. 정식 SFT·보호 held-out·세 계보 품질비교는 `NOT_RUN`이다.
 
 ## 1. 왜
 
-현재 [tinylm/chat](../tinylm/chat/serialize.py)의 canonical ChatML 양식과 [assistant-only loader](../tinylm/data/sft.py)는 있다. [독립 SFT trainer](../scripts/train_sft_p090.py)는 기존 32k 토크나이저와 부모 checkpoint에서만 학습한다. 실제 기존 어휘의 `<|im_start|>`·`<|im_end|>` 단일 ID는 없고, 별도 chat32 파일/부모는 아직 없다. 새 tokenizer를 예전 checkpoint에 바로 끼우면 token ID 의미가 달라 무효다.
+[tinylm/chat](../tinylm/chat/serialize.py)의 canonical ChatML 양식과 [assistant-only loader](../tinylm/data/sft.py)는 있다. 기존 32k 어휘의 `<|im_start|>`·`<|im_end|>` 단일 ID는 없고, 2026-09-25 별도 chat32 파일과 새 300M 부모가 생성됐다([결과096 §9](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)). 새 tokenizer를 옛 checkpoint에 끼우는 것은 여전히 무효이며 SFT trainer의 실제 A/B/C 연결·품질은 미실행이다.
 
 ## 2. 질문
 
@@ -38,13 +38,13 @@ A는 tokenization overhead가 있지만 지금 기능 gate를 통과할 수 있�
 
 [고정 SHA read-only 진단](../scripts/diag_p090b_oasst2_translation_candidates.py)과 [사용자 SH](../run_P090B_Stage0dW_oasst2_translation_candidates.sh)는 OASST2 ready tree에서 review 통과·비합성·영어 role 교대의 best-rank 경로를 한 tree당 하나만 고른다. 이 정책에서 다회전 2,378개를 확인했고 기존 공개 v3 첫 질문 exact 겹침 888, legacy 32k 길이 1024 초과 336, OASST2 내부 첫 질문 중복 1개를 걸러 후보 1,153개가 남았다. 고정 해시 순위로 번역 pilot 200개·사람 원답안 검토 50개 tree 행 인덱스만 출력하며 원문·번역물·파일을 생성하지 않는다. 앞선 원천 감사의 다회전 2,377은 선별 정책이 달라 서로 같은 집합이라고 주장하지 않는다. 카드 Apache-2.0 표기는 개별 권리 검증이 아니며, 영어 후보가 생긴 것만으로 한국어 학습 `TRAIN_READY`가 되지 않는다. 원문·번역 병렬 보존, 숫자·고유명사·맥락·사실성·PII 사람 검토와 번역 후 tokenizer/mask/중복·평가 오염 검사는 사용자 후속 단계다.
 
-### Stage1aW — B chat32 신규 어휘·분리 캐시 준비
+### Stage1aW — B chat32 신규 어휘·분리 캐시 준비 완료(결과096 §9.1), 2배 train 풀 주장은 철회
 
-[P075 어휘 생성](P075_토크나이저-어휘예산과-한국어-분절.md)의 32개 단일 ID를 [준비 SH](../run_P090B_Stage1aW_chat32_prepare.sh)로 사용자 실행한다. 기본 legacy 어휘·cache를 덮지 않고 `tok-ko-en-32768-chat32.json` 및 `ko-en_601000000_chat32` 별도 경로만 만든다. `prepare`는 기존·부분 chat32 cache의 계보·hash·symlink를 fail-closed 검사한다. 준비 직후 같은 공개 v3 canonical 행을 새 어휘로 전량 재인코딩하는 [길이 gate](../scripts/diag_p090b_chat32_sft_lengths.py)를 실행해 1024 context 초과가 0건인지 확인한다. 실패 시 Stage1bW를 자동 개방하지 않는다. 이는 HF/디스크 I/O를 쓰는 사용자 소유 단계이며 Codex가 실행하지 않는다.
+사용자가 [준비 SH](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)로 legacy와 분리된 `tok-ko-en-32768-chat32.json` 및 `ko-en_601000000_chat32`를 생성했다. marker ID3/4와 SHA `9716F40E...`, 공개 v3 train2996/val158행의 길이 초과0을 확인했다. 단 전체 601M에서 validation 3.005M을 떼 실제 train은 597.995M이다. source token 비중은 Wikipedia34.4%/FineWeb-Edu65.6%로 설정 문서 비중50/50과 다르다. 원본 legacy cache는 보존하며 사용자가 수행한 HF/디스크 I/O를 Codex 실행으로 오인하지 않는다.
 
-### Stage1bW — B 새 300M 부모 사전학습
+### Stage1bW — B 새 300M 부모 사전학습 완료(결과096 §9.2), 풀 조건 편차
 
-[사용자 실행 SH](../run_P090B_Stage1bW_chat32_parent_300M.sh)는 m100s10 dense/CLA2·seed1337·KD off·Muon RMS4, 2289×8×16×1024=300,023,808 token을 신규 어휘로 처음부터 학습한다. **2배 풀은 600,047,616 token 이상**이므로 600M이 아닌 601M exact cache를 사전등록한다. Stage1bW를 단독 선택해도 공개 v3 chat32 길이 gate를 다시 실행하고, 초과가 있으면 GPU 학습 전에 중단한다. 부모·캐시의 hash·lineage가 없으면 SFT trainer가 거절한다. 기존 A legacy 부모는 다른 tokenizer와 기존 부모 초기화·pool600M 계보이므로 A/B의 차이는 **전체 계보/시스템 비교**일 뿐 순수 tokenizer 효과가 아니다. 같은 raw 문서 byte·부모 초기화까지 맞춘 후속 대조 전에는 인과 귀속하지 않는다.
+[사용자 실행 SH](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)로 m100s10 dense/CLA2·seed1337·KD off·Muon RMS4, 2289×8×16×1024=300,023,808 token을 신규 어휘로 처음부터 학습했다. 기존 사전등록의 **총 cache 601M ≥ 2×draw** 해석은 오류였다. `prepare.py`가 val 0.5%를 분리해 실제 train 597,995,000 < 600,047,616(차2,052,616)이다. 다음 엄격 2배 실험은 총 cache 최소603,062,931, 실무적으로 604M 별도 경로를 사전등록해야 한다. 현재 부모의 `init_from=false`, skip0, best val3.54625/최종3.6028125는 **설명적 학습 관측**이다. 기존 A/C와 tokenizer·pool·초기화가 달라 순수 tokenizer 효과로 귀속하지 않는다.
 
 ### Stage1cW — C 기존 최선 부모 선정, 아직 자료 선결
 
@@ -64,10 +64,10 @@ Stage1cW에서 고른 C 부모와 A/B가 같은 공개 원문·평가 질문을 
 | 결과 | 판정 |
 |---|---|
 | Stage0 A 마스크 누출·end 미지도·CE gradient 오류 | SFT gate FAIL, 학습 금지 |
-| B chat32 어휘·601M cache·같은 tokenizer SHA가 checkpoint에 없음 | B NOT_READY, A/C와 품질 비교 금지 |
+| B chat32 어휘·분리 cache·같은 tokenizer SHA가 checkpoint에 없음 | B NOT_READY, A/C와 품질 비교 금지 |
 | Stage1b 신규 부모에 old init/KD·legacy cache가 섞임 | 설계 무효, train 시작 전에 중단 |
 | chat32 재인코딩 공개 v3 중 1024 context 초과가 1건 이상 | 현재 동일 canonical B SFT gate 음성, 행 필터·동일자료 대조를 재설계 |
-| 601M chat32 pool와 기존 600M legacy pool의 차이 | A/B 시스템 비교만, tokenizer 단독 효과 결론 금지 |
+| Stage1b 실제 train pool597.995M < 2×draw600.047616M 또는 legacy와 어휘·풀 계보가 다름 | 2배 풀 계약 미달·A/B 시스템 설명만, tokenizer 단독 효과 결론 금지 |
 | 보호 held-out 오염 미검사·공개 원천 QA 미완 | 정식 학습 `TRAIN_READY=0`, pilot-only와 공식 결론 분리 |
 | 세 갈래 생성 평가 | source·부모·tokenizer 계보를 남긴 같은 질문의 원답안·common-bpb만 비교 |
 
@@ -86,11 +86,11 @@ Stage1cW에서 고른 C 부모와 A/B가 같은 공개 원문·평가 질문을 
 
 ## 7. 실행 파일
 
-`run_P090B_Stage0W_three_lineage_sft_gate.sh`, `run_P090B_Stage0bW_public_sft_preflight.sh`, `run_P090B_Stage0cW_empathetic_multiturn_contract.sh`, `run_P090B_Stage0dW_oasst2_translation_candidates.sh`, `run_P090B_Stage1aW_chat32_prepare.sh`, `run_P090B_Stage1bW_chat32_parent_300M.sh`, `run_P090B_Stage1cW_best_parent_panel.sh`를 작성, 결과번호096의 단계별 별도 로그를 사용한다. Stage1a/1b는 WSL smoke PASS와 사용자 실행이 선결이며 출력 collision이면 중단한다. Stage2 SFT 학습 SH는 corpus `TRAIN_READY`, chat32 부모, C 부모 선정 뒤 만든다. 이 문서는 사용자에게 실험용 파일 작성 자체를 데이터 gate 통과로 오인시키지 않는다.
+Stage0W~Stage1cW 중 실제 완료한 단계의 명령·로그는 [결과096](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)의 시간순 절·재현명령 부록이 소유한다. Stage1aW·1bW `-done`은 사용자 삭제 지시로 제거했고 Git 원본에서 복구 가능하다. 2배 train 풀 보정이 필요하면 총604M 별도 cache·새 단계명/태그의 선결 검토가 필요하다. Stage2 정식 SFT SH는 corpus `TRAIN_READY`와 부모 계보·C 부모 선정 뒤에만 작성한다.
 
 ## 8. 한계
 
-기존 32k ChatML에서 special marker는 다중 토큰이다. 신규 chat32 부모가 없으므로 3갈래 모델 성능 결과는 0건이다. 공개 HF 원천 확보는 사용권/사람 품질/평가 오염 PASS가 아니다. Codex는 SFT 학습·모델 평가를 대리 실행하지 않는다.
+기존 32k ChatML에서 special marker는 다중 토큰이고 신규 chat32 어휘/부모는 사용자 실행으로 존재한다. 하지만 실제 train pool의 2배 조건은 미달이며 세 계보 SFT 품질 결과는 0건이다. 공개 HF 원천 확보·길이 PASS는 사용권/사람 품질/평가 오염 PASS가 아니다. Codex는 SFT 학습·모델 평가를 대리 실행하지 않는다.
 
 ## 9. 실행 이력 / 갱신
 
@@ -108,3 +108,5 @@ Stage1cW에서 고른 C 부모와 A/B가 같은 공개 원문·평가 질문을 
 - 2026-09-24 상태 재감사: 고정 OASST2 영어 ready tree의 review 통과·비합성 best-rank 다회전 2378개에서 기존 공개 v3 첫 질문 exact 겹침888, legacy 1024 초과336, 내부 첫 질문 중복1을 제외해 영어 후보1153개를 읽기 전용 확인했다. 번역 pilot200·사람 검토50 행 인덱스만 고정했고 번역·외부 송신·새 파일 작성0. 원문 사실성·PII·개별 권리·번역 품질·한국어 학습 적격은 `NOT_RUN`이며 이후 결과가 도착하면 새 WIP 항목에서 corpus 구성과 세 계보 대조를 재개한다.
 
 - 2026-09-25 사용자 로그 회수: [결과096](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)의 Stage0W/bW/cW/dW는 기능·공개 후보 검사에서 종료코드0이나 v3 `train_ready=false`, 한국어 공감형 구조 `PARTIAL`(마커 이상1), OASST2 번역 `NOT_RUN`이다. Stage1cW 세 부모 54답안을 [결과096 §8](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)에서 직접 판독했어도 한국어 위키 표제/반복과 형식 실패가 모두 있어 §3의 ‘C가 더 좋을 수 있다’는 예측은 **미확정**. [100+1행 사람 검수 요청](../review_request/20260925_공개-한국어-SFT-멀티턴-1차GPT-사용자-검수요청.md)과 P097 공통 조건을 판독하기 전 C 부모 선정·정식 SFT 금지. 다섯 실행 런처는 -done 이력이다.
+
+- 2026-09-25 Stage1aW/1bW 사용자 실행: [결과096 §9](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)의 chat32 marker 단일 ID3/4·새 tokenizer SHA 일치·공개 v3 길이 초과0, 부모 학습300,023,808 token·skip0·grad_max0.94927·best val3.54625@2289·final val3.6028125를 기록했다. §3의 B가 효율을 높일 수 있다는 예측은 다른 계보와 직접 비교가 없어 미확정이다. **사전등록 2배 풀은 실패**: 총601M에서 val3.005M 제외 후 train597.995M으로 요구600.047616M보다2.052616M 작다. 원 학습을 소급 무효 삭제하지 않되 품질 승격·정식 SFT는 HOLD하고 후속 엄격 대조는 새 단계·총604M 이상 cache로 설계한다.

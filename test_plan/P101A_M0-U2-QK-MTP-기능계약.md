@@ -1,6 +1,6 @@
 # P101A — M0 기반 U2 E384·QK gain·MTP 기능 게이트
 
-> 제안 계기: [승인된 A안](../proposal/20260923_TinyLM-M0-C0-E384-QK-MTP-지능향상-제안서-approved-on-going.md) 10절. 독립 suffix 기능 계획. **2026-09-25 현재 Stage0W 기능 PASS, 고정 M0 Stage1W 결합 팔은 max_abs 1.2397766e-05로 원 1e-5 문턱 FAIL; Stage1Wb 사용자 재진단에서 E384만 원 1e-5 문턱 FAIL, QK/MTP는 이 입력의 기능 정합 PASS; Stage1Wc 원인분리는 STATIC_ONLY/NOT_RUN. 학습·GPU·품질은 NOT_RUN.**
+> 제안 계기: [승인된 A안](../proposal/20260923_TinyLM-M0-C0-E384-QK-MTP-지능향상-제안서-approved-on-going.md) 10절. 독립 suffix 기능 계획. **2026-09-25 현재 Stage1Wb E384 원1e-5 기능 FAIL 유지, QK/MTP는 한 입력 정합 PASS. Stage1Wc 사용자 M0 세 seed에서 FP32 입력/body/head 누적 반올림 가설을 지지하고 FP64 공통 head 차≈0; 이는 원인분리 완료이지 E384 기능 PASS가 아니다. 학습·GPU·품질 NOT_RUN.**
 
 ## 1. 왜
 
@@ -33,9 +33,9 @@ Q1은 실수 산술에서 정확히 같을 수 있다. BF16/quantized export는 
 2026-09-24 Stage1W의 결합 E384+QK+MTP 진단은 `max_abs=1.2397766e-05`로 기존 `1e-5` 기능 문턱을 실패했다. 이 결합 구성은 Stage2의 독립 E384/QK/MTP 팔이 아니므로 결합 실패만으로 어느 팔의 오류인지 판정할 수 없다. 같은 고정 M0 부모·legacy tokenizer·입력에서 E384, QK, MTP를 각각 따로 strict 이식하고 주 logits `max_abs`·NRMS·argmax 불일치·해당 새 파라미터 gradient 및 MTP 배포 제거를 기록한다. **기존 문턱은 완화하지 않는다.** 이는 2026-09-24의 실행 전 설계이며 실제 결과는 [결과092 §7](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)에 있다. E384 문턱 실패 때문에 해당 Stage2 학습은 열지 않는다.
 
 
-### Stage1Wc — E384 FP32 차이 원인분리, 사용자 CPU 모델 진단만
+### Stage1Wc — E384 FP32 차이 원인분리 완료(결과092 §8), 원 기능 FAIL 유지
 
-Stage1Wb에서 E384만 `1.23977661e-5 > 1e-5`로 실패했다. [진단기](../scripts/diag_p101a_e384_roundoff.py)와 [별도 SH](../run_P101A_Stage1Wc_e384_roundoff_attribution.sh)는 같은 고정 M0 부모·legacy 32k·기존 입력 seed7과 추가 seed17/31을 **읽기 전용**으로 사용한다. 이식된 기존 E256 weight/U 열이 비트 동일하고 새 U 열이 0인지 확인한 뒤, FP32 입력 임베딩·body hidden·공통 hidden 출력 head·전체 주 로짓 차이를 나눠 보고하고 FP64 수학 지도와 대조한다. 독립변수는 관측 분해뿐이며 학습토큰0, 태그/체크포인트 출력0, GPU0, 약0.3h CPU와 수 GiB host RAM 예상이다. tensor-only 자기시험과 shell 구문은 PASS지만 실제 M0 진단은 사용자 실행 전 `NOT_RUN`이다.
+Stage1Wb에서 E384만 `1.23977661e-5 > 1e-5`로 실패했다. [진단기](../scripts/diag_p101a_e384_roundoff.py)와 [사용자 실행 SH](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)는 고정 M0·legacy 32k·seed7/17/31의 old-block bit-identical/new-U zero, FP32 입력·body·head 및 FP64 수학 지도를 검사했다. 실제 로그 [결과092 §8](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)는 전체 FP32 차 1.14~1.24e-5(세 seed 모두 초과), FP64 공통 head 차 최대 3.55e-15, top1 변경0을 기록한다. 계측 종료코드0은 원1e-5 기능 문턱 PASS가 아니며 학습·GPU·품질은 `NOT_RUN`이다.
 
 **사전 판정:** 이전 Stage1Wb의 `1e-5`를 그대로 보존한다. Stage1Wc exit0은 수치 계측 완료일 뿐 E384 기능 PASS가 아니다. state old-block/zero-new-U가 실패하면 migration 코드 결함, FP64 거의0·FP32만 차이가 나면 형상 변경에 따른 반올림 가설을 지지하지만 원인별 최소 수정·별도 기능 재게이트 전까지 E384 학습을 열지 않는다. 다른 seed에서 차이가 커지면 문턱을 조용히 완화하지 않고 재설계한다. `check_run_registry.py`의 광범위 `runs/` 스캔은 승인 범위 밖이라 이 무학습 진단에서는 `NOT_RUN`이며 새 학습 태그 preflight는 별도로 한다.
 ### Stage2W — 100M 이하 분리 학습, 별도 사용자 승인
@@ -64,11 +64,11 @@ B0/E-only/QK-only/MTP-only는 동일 SHA의 M0 final 가중치만 이식하고 �
 
 ## 7. 실행 파일
 
-`run_P101A_Stage0W_u2_mtp_function_gate.sh`와 `run_P101A_Stage1W_m0_migration_gate.sh`를 서로 다른 이름으로 작성했다. 결과번호092, 기능 실패는 exit1이다. 실제 학습 런처는 0개. `P006`·기준표 조건이 정본이며 새 태그·풀 예산은 학습 단계에서 preflight한다.
+Stage0W·Stage1W·Stage1Wb·Stage1Wc 사용자 실행 이력과 정확 재현명령은 [결과092](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) 부록에 보존했다. 실행 완료 `-done` 두 파일은 사용자 지시로 삭제했으며 원본은 Git에서 복구 가능하다. 현재 E384 학습 런처는 0개, 새 수치 remedy가 승인되면 새 단계명을 써야 한다.
 
 ## 8. 한계
 
-E384의 **실제 모델** checkpoint 이식·MTP head·배포 제거는 코드와 사용자 실행 게이트만 준비됐고 실제 결과는 `NOT_RUN`이다. 계속학습 trainer는 STATIC_ONLY, assistant 경계는 미구현이며 품질·GPU 속도도 미실행이다. 새 QK gain은 기본 off로만 안전하다. Stage0W/Stage1W의 기능 PASS가 나와도 A 권장안 전체나 학습효과의 완료로 승격하지 않는다.
+실제 M0에서는 E384 이식이 원 함수 문턱을 실패했고 QK/MTP 독립 팔은 해당 입력만 정합했다. Stage1Wc 수치 귀속 뒤에도 계속학습 trainer 동적 실행·assistant 경계·품질·GPU 속도는 `NOT_RUN`이며 새 QK gain은 기본 off다. 현재 기능·진단 결과를 A 권장안 전체나 학습효과 완료로 승격하지 않는다.
 
 ## 9. 실행 이력 / 갱신
 
@@ -87,3 +87,5 @@ E384의 **실제 모델** checkpoint 이식·MTP head·배포 제거는 코드�
 - 2026-09-25 사용자 로그 회수: [결과092 §2~3](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)의 Stage0W 두 호출은 PASS. 실제 M0 Stage1W는 결합 E384+QK+MTP 주 logits `max_abs=1.2397766e-05`가 원 `1e-5` 문턱을 넘고 aux/gradient 전에 exit1이었다. ‘초기 함수가 매우 가깝다’는 방향은 맞지만 **사전 기능 문턱은 실패**했으므로 Stage2 HOLD. 결합 팔은 승인된 독립 팔과 달라 `run_P101A_Stage1Wb_m0_arm_attribution.sh`로 원 문턱 유지·독립 팔 귀속을 사용자 재실행한다. 기존 Stage0W/Stage1W 런처는 -done 실패/성공 이력으로 보존한다.
 
 - 2026-09-25 Stage1Wb 후속: [결과092 §7](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)에서 실제 M0 독립 팔 중 E384만 `1.23977661e-5 > 1e-5`로 기능 FAIL, QK/MTP 주 로짓0·top1변경0, MTP aux 제거 차0이다. 작은 NRMS `4.01000563e-7`은 사전등록 문턱을 대신하지 않는다. Stage1Wc 별도 CPU 원인분리 코드·SH는 tensor-only self-test PASS/실제 M0 `NOT_RUN`, E384 Stage2 학습 HOLD. QK/MTP도 GPU·품질 자동 개방은 아니다. 원 Stage1Wb SH는 `-done` 시도 이력으로 개명했다.
+
+- 2026-09-25 Stage1Wc 사용자 로그 회수: [결과092 §8](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)에서 old E256 block bit-identical·new U zero, 세 seed의 FP32 전체 logits 차 1.1444e-5~1.2398e-5가 원 문턱을 모두 넘었다. FP64 공통 hidden head 차는 3.55e-15 이하라 shape/연산 순서 반올림 가설을 지지한다. §3의 실수산술 동치 예상은 지지됐지만 FP32 기능 문턱은 실패했다. Stage2 E384 학습 HOLD, 새로운 remedy는 원 문턱 완화 없이 별도 사전등록한다.

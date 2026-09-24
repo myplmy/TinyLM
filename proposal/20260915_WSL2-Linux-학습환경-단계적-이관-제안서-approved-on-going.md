@@ -572,7 +572,7 @@ runlog 참조를 맞췄다. 소형 M5 JSON은 실제 파라미터 갱신과 갱�
 
 [결과095](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md)의 사용자 Windows Stage1B 실행은 코드 SHA 사전검사에서 `Z:` 자기 파일과 WSL UNC `ROOT`의 `relative_to`가 충돌해 종료코드1이었다. `torch.load`·forward·업데이트 전 실패라 Windows CUDA/모델 호환성의 음성 결과가 아니고, M5 양 OS 기능 대조는 여전히 `NOT_RUN`이다. Linux `--check-only`와 BAT 형식 린트가 이 분기를 지나지 않았던 검증 공백을 보존한다.
 
-진단기는 모든 코드 파일을 고정 저장소 상대 이름·동일 ROOT로 구성하도록 교정했고 Windows 드라이브/UNC/WSL 순수 경로 자기시험은 PASS했다. 원본 실패 BAT는 `-done` 역사 증거, 새 사용자 실행 [Stage1Bb](../run_P104A_Stage1Bb_m5_dense_bridge.bat)는 기존 출력 write-once 계약과 같은 checkpoint·seed104를 유지한다. Stage1Bb 실제 Windows와 후속 WSL Stage1W, M4 잔여 Triton 실제 호출·동일 real-checkpoint 품질은 `NOT_RUN`이다. 최신 WSL smoke 42팔 실패0·계측0은 이 별도 교량 결과가 아니므로 M5/M6 또는 제안서 done 상태로 승격하지 않는다.
+진단기는 모든 코드 파일을 고정 저장소 상대 이름·동일 ROOT로 구성하도록 교정했고 Windows 드라이브/UNC/WSL 순수 경로 자기시험은 PASS했다. 원본 실패 BAT는 `-done` 역사 증거, 새 사용자 실행 [Stage1Bb](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md)는 기존 출력 write-once 계약과 같은 checkpoint·seed104를 유지한다. Stage1Bb 실제 Windows와 후속 WSL Stage1W, M4 잔여 Triton 실제 호출·동일 real-checkpoint 품질은 `NOT_RUN`이다. 최신 WSL smoke 42팔 실패0·계측0은 이 별도 교량 결과가 아니므로 M5/M6 또는 제안서 done 상태로 승격하지 않는다.
 
 ## 16. 2026-09-25 M4 Triton 지정형상과 Windows M5 수집 회수 — 전체 이관은 계속 on-going
 
@@ -581,3 +581,9 @@ runlog 참조를 맞췄다. 소형 M5 JSON은 실제 파라미터 갱신과 갱�
 Windows 교정 Stage1Bb도 같은 tiny synthetic checkpoint·seed104에서 V2 JSON 수집을 종료코드0으로 마쳤다. 사용자 승인으로 그 **정확한 Windows JSON만** 읽어 eval CE10.42415047, one-step gradient norm1.18074405, 실제 한 좌표 변화1.1920929e-7, post-step CE10.42401314를 직접 확인했고 코드 SHA 다섯 파일은 현재 WSL 작업트리와 같았다. checkpoint·입력 SHA는 JSON에 기록됐지만 Codex가 자산을 직접 재해시하지 않았다. 경고 `float(loss)`는 backward/SGD 뒤 JSON scalar화에서 발생해 현재 Windows 수집을 무효화하지 않는다. 진단기 코드를 지금 바꾸면 다음 WSL JSON의 코드 SHA가 달라지므로 이 교량 전에는 유지한다.
 
 다음은 **같은 코드 상태**에서 사용자 WSL `run_P104A_Stage1W_m5_dense_bridge.sh`가 Windows JSON과 checkpoint/code/input SHA·eval/one-step/post-step CE·gradient 차이를 대조하는 것이다. 실제 real-checkpoint 품질·상주·속도, 외부 flash-attn을 제외한 M4 전체 계약과 M6 운영전환 사용자 결정은 여전히 별도다. 따라서 이 제안서의 `-approved-on-going` 접미사를 유지한다.
+
+## 17. 2026-09-25 M5 사용자 Windows–WSL 소형 교량 실제 비교
+
+§16은 비교 전 역사 상태다. 새 사용자 [결과095 §7](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md)의 Windows/WSL V2 JSON은 checkpoint/code5/input SHA가 각각 일치했다. synthetic32-token eval CE 절댓차8.5830688e-6, 한 갱신 뒤 CE 차0.0002117157, gradient 상대차4.4422713e-6와 양쪽 비영 update로 사전 기능 문턱 CE0.01·gradient0.10을 통과했다. WSL의 `float(loss)` 경고는 Windows와 같은 후처리 scalar 변환이며 비교기 exit0을 바꾸지 않았다.
+
+202609250414 사용자 WSL smoke는 42팔·실패0·exit0 오류표지0·계측 오류0이었다. 이는 당시 코드 트리의 동적 스모크 범위 PASS이고 본 교량의 실제 언어 품질을 대신하지 않는다. M4의 다른 형상·whole-step, 동일 real-checkpoint의 M5 품질·상주·속도, M6 운영전환 승인과 외부 flash-attn 제외 범위는 여전히 남는다. 따라서 `-approved-on-going` 유지, 제안서 `done` 이관 금지.
