@@ -1,0 +1,25 @@
+Compare same checkpoint/code/input SHA, eval CE and one SGD update across Windows and WSL. Do not claim full M5 quality.
+
+==============================================================================
+[runlog] 2026-09-25 04:29:24  name=P104A_Stage1W_m5_dense_bridge
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_m5_dense_bridge.py --platform wsl --out runs/bench/p104a_m5_wsl.json
+==============================================================================
+/home/uranus/tinyLM/scripts/diag_m5_dense_bridge.py:145: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  "one_step_ce": float(loss),
+[PASS] small dense functional bridge wsl: eval_ce=10.424142 one_step_ce=10.424142 post_step_eval_ce=10.424225 param_delta=1.1920929e-07 peak_reserved=140509184
+[EVIDENCE] /home/uranus/tinyLM/runs/bench/p104a_m5_wsl.json; full M5 real-checkpoint quality NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-25 04:29:28)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-25 04:29:28  name=P104A_Stage1W_m5_dense_bridge
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/check_m5_dense_bridge.py --win runs/bench/p104a_m5_windows.json --wsl runs/bench/p104a_m5_wsl.json
+==============================================================================
+eval_ce_abs=8.5830688e-06 one_step_ce_abs=8.5830688e-06 post_step_ce_abs=0.0002117157 grad_norm_rel=4.4422713e-06 [FUNCTIONAL_BRIDGE_PASS; full M5 quality NOT_RUN]
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-25 04:29:28)
+==============================================================================

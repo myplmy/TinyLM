@@ -1,0 +1,16 @@
+E384 old-block and zero-new-U, FP32 input/body/head vs FP64 math; original 1e-5 Stage1Wb gate remains FAIL. User-run CPU model, no training.
+
+==============================================================================
+[runlog] 2026-09-25 04:29:43  name=P101A_Stage1Wc_e384_roundoff_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p101a_e384_roundoff.py
+==============================================================================
+[STATE] old E256 blocks bit-identical; E384 new projection columns zero
+[SEED 7] input32=2.5331974e-07 body32=1.90734863e-06 head32_common_hidden=9.53674316e-06 full32=1.23977661e-05 nrms=4.01000577e-07 top1_changed=0 input64=0 head64_common_hidden=2.66453526e-15
+[SEED 17] input32=2.38418579e-07 body32=1.90734863e-06 head32_common_hidden=7.62939453e-06 full32=1.14440918e-05 nrms=4.70972892e-07 top1_changed=0 input64=0 head64_common_hidden=3.55271368e-15
+[SEED 31] input32=2.38418579e-07 body32=2.62260437e-06 head32_common_hidden=7.62939453e-06 full32=1.15633011e-05 nrms=4.67136925e-07 top1_changed=0 input64=0 head64_common_hidden=1.77635684e-15
+[DIAGNOSTIC COMPLETE] historical_threshold=1e-05 exceeded_on_panel=1
+[LIMIT] measurement completion is not an E384 function PASS; Stage1Wb FAIL and E384 training HOLD remain until a separately approved remedy
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.2분  (2026-09-25 04:29:53)
+==============================================================================
