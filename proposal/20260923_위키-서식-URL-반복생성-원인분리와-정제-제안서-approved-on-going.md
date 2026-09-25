@@ -168,3 +168,9 @@ source 분포와 W2 보존율을 확인한 뒤에만 검토한다. 세 방법을
 
 원본 `ko-en` cache, HF/원문, checkpoint는 수정하지 않았다. W0의 사용자 모델 실행·W1의 고정 원천 JSONL/토크나이저 및 사람 오탐20~50건·W2 새 정제본과 matched 학습은 각 선결 전 `NOT_RUN`이다. 최초 제안서 §1의 당시 큐 잠금 설명과 이 절의 최신 승인은 시간순 기록으로 병기한다.
 2026-09-25 추가: P105 Stage1Wc는 같은 7모델·280답안의 실제 EOS/80-token 종료 사유를 새 write-once 출력으로 계측하도록 선택적 생성 메타데이터·감사기·WSL SH를 준비했다. 합성/fake-model 회귀만 PASS이며 사용자 모델 패널은 NOT_RUN이다. W1 공개 원천·사람 오탐 검토와 W2 matched 정제 대조가 남아 있어 done 이관 조건을 충족하지 않는다.
+
+### 10.1 2026-09-25 사용자 Stage1Wc 회수와 W1 원천 확정
+
+[결과097 §8](../test_result/097_20260925_P105-위키표제는-재현됐지만-FineWeb2-무표제는-품질개선이-아니다.md)의 새 패널은 이전 생성문과 280/280 같고 EOS94/280·80토큰 상한186/280·EOS 부재0을 실제 기록했다. 반복 후보140 중 126은 상한과 동시 발생했다. 따라서 앞 절의 Stage1Wc NOT_RUN은 준비 당시 역사 상태이고, 현재는 사용자 실행 완료다. EOS 정지가 항상 꺼져 있다는 단일 원인은 배제되지만 원천·SFT 인과와 의미 품질은 여전히 미판정이다.
+
+[P105 계획 Stage1bW](../test_plan/P105_위키-꼬리서식-노출과-생성원인-분리.md)의 W1 1차 표적은 사전학습 한국어 입력 wikimedia/wikipedia 20231101.ko, 동일 조합의 영어 대조는 HuggingFaceFW/fineweb-edu sample-10BT로 확정한다. 원 학습의 HF revision pin이 코드에 없으므로 감사 snapshot을 고정해도 역사적 동일 바이트는 별도 증거 전 DESCRIPTIVE_ONLY다. raw 원문을 chat32 SFT 대화로 재분류하지 않고, 검수된 한국어 공감형·OASST2 번역 pilot를 canonical ChatML/assistant-only 경로로만 별도 준비한다(TRAIN_READY=false). W1 원천 추출·사람 오탐·W2 matched 정제/학습은 미실행이므로 제안서 on-going 유지.

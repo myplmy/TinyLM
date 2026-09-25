@@ -29,6 +29,41 @@ class SmokeEntrypointExitTests(unittest.TestCase):
             )
         self.assertNotEqual(first, second)
 
+    def test_commit_banner_distinguishes_clean_and_dirty(self) -> None:
+        import contextlib
+        import io
+
+        cases = (
+            ((0, 0), "INFO 작업트리 clean", False),
+            ((2, 0), "INFO 비코드 변경만", False),
+            ((2, 1), "⚠️ 실행 코드 미커밋", True),
+            ((None, None), "⚠️ 작업트리 상태 확인 불가", True),
+        )
+        for state, phrase, expect_warning in cases:
+            with self.subTest(state=state), tempfile.TemporaryDirectory() as temporary:
+                path = Path(temporary) / "smoke.txt"
+                with contextlib.redirect_stdout(io.StringIO()):
+                    runlog._header(path, "abcdef0", state)
+                body = path.read_text(encoding="utf-8")
+                self.assertIn(phrase, body)
+                self.assertEqual("⚠️" in body, expect_warning)
+
+    def test_root_shell_dirty_counts_as_code(self) -> None:
+        from types import SimpleNamespace
+        from unittest.mock import patch
+
+        replies = (
+            SimpleNamespace(returncode=0, stdout="abcdef0" + chr(10)),
+            SimpleNamespace(
+                returncode=0,
+                stdout="?? run_P100_Stage0bW_saved_answer_triage.sh"
+                + chr(10) + "?? test_result/example.txt" + chr(10),
+            ),
+        )
+        with patch("subprocess.run", side_effect=replies):
+            sha, counts = runlog._git_state()
+        self.assertEqual(sha, "abcdef0")
+        self.assertEqual(counts, (2, 1))
     def test_summary_isolates_last_accidentally_appended_session(self) -> None:
         text = (
             f"{summarize_smoke.SESSION_MARK}\nold-arm\n"

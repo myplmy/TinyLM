@@ -201,7 +201,7 @@ def _git_state():
       2026-09-07 스모크가 `+dirty 30개` 였는데 **30건이 전부 데이터셋 파일**이었다.
       즉 코드는 그 커밋 그대로였는데 배너는 *"이 커밋으로 검증한 것이 아니다"* 라고만 했다.
       🚫**늘 켜져 있고 아무것도 구분 못 하는 경고는 미탐과 같다**(경보 피로, 함정 38).
-      -> **코드 dirty 를 따로 센다**: `tinylm/` · `scripts/` · `run100m.py` · `*.bat` · `*.py`.
+      -> **코드 dirty 를 따로 센다**: `tinylm/` · `scripts/` · `run100m.py` · `*.bat` · `*.py` · `*.sh`.
       ★그것이 0 이면 *"코드는 이 커밋 그대로"* 라고 **말할 수 있다.**
     """
     import subprocess as sp
@@ -222,7 +222,7 @@ def _git_state():
             path = l[3:].split(" -> ")[-1].strip().strip('"')
             low = path.lower()
             if (low.startswith(("tinylm/", "scripts/", "util/"))
-                    or low.endswith((".bat", ".py"))):
+                    or low.endswith((".bat", ".py", ".sh"))):
                 code += 1
         return sha.stdout.strip(), (n, code)
     except Exception:                            # noqa: BLE001 — 로그를 못 쓰게 만들면 안 된다
@@ -342,10 +342,18 @@ def _header(path, sha, dirty):
         d = f"  +dirty {_tot}개(커밋 안 된 변경)"
     else:
         d = f"  +dirty {_tot}개(커밋 안 된 변경) 중 ★**코드 {_code}개**"
-    line = (f"[commit] {sha or '(git 없음)'}{d}\n"
-            f"[commit] ⚠️ ★**코드 dirty** 가 0 이 아니면 이 커밋 상태로 검증한 것이 아니다 — "
-            f"커밋 + 미커밋 변경의 합이다.\n"
-            f"{'=' * 78}\n")
+    if _tot is None:
+        state = "[commit] ⚠️ 작업트리 상태 확인 불가 — 커밋 단독 검증으로 귀속하지 않는다."
+    elif _tot == 0:
+        state = "[commit] INFO 작업트리 clean — 기록 시점의 실행 코드가 커밋과 일치한다."
+    elif _code == 0:
+        state = "[commit] INFO 비코드 변경만 있음 — 기록 시점의 실행 코드는 커밋과 일치한다."
+    elif _code is None:
+        state = "[commit] ⚠️ 변경 파일 분류 불가 — 커밋 단독 검증으로 귀속하지 않는다."
+    else:
+        state = "[commit] ⚠️ 실행 코드 미커밋 변경 있음 — 커밋과 변경의 합을 검증했다."
+    line = (f"[commit] {sha or '(git 없음)'}{d}" + chr(10) + state + chr(10)
+            + "=" * 78 + chr(10))
     with open(path, "a", encoding="utf-8", newline=os.linesep) as f:
         f.write(line); f.flush(); os.fsync(f.fileno())
     sys.stdout.write(line); sys.stdout.flush()

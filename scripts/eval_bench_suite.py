@@ -728,19 +728,35 @@ def run_sft(items, model, tok, dev, seq_max, max_new, torch, F):
             "skipped": skipped, "ungraded": ungraded, "rows": rows}
 
 
+def _cloze_detail(item, scored, completion=""):
+    """Keep an exact item-level trace without changing the existing cloze metric."""
+    ident = item.get("_iid")
+    if scored is None:
+        return {"id": ident, "skipped": True,
+                "reason": "empty_gold_or_context_overflow"}
+    correct = int(completion.strip().split()[:1] == item["gold"].strip().split()[:1])
+    return {"id": ident, "skipped": False, "gold": item["gold"],
+            "completion": completion, "correct": correct,
+            "gold_mean_ce": scored[0], "gold_sum_ce": scored[1],
+            "gold_token_count": scored[2]}
+
+
 def run_cloze(items, model, tok, dev, seq_max, torch, F):
-    """★2026-09-10 — `ids` 를 함께 돌려준다(A03 조치 2: paired 는 **ID 교집합**으로 잇는다)."""
-    ok, ces, skipped, ids = [], [], 0, []
+    """Return old scores plus item records keyed by the common benchmark ID."""
+    ok, ces, skipped, ids, details = [], [], 0, [], []
     for it in items:
         r = seq_ce(model, tok, dev, it["ctx"], it["gold"], seq_max, torch, F)
         if r is None:
             skipped += 1
+            details.append(_cloze_detail(it, None))
             continue
         gen = greedy(model, tok, dev, it["ctx"], 6, seq_max, torch)
-        ok.append(1 if gen.strip().split()[:1] == it["gold"].strip().split()[:1] else 0)
-        ces.append(r[1])                           # ★합CE = 그 단어의 -logP -^> PPL 로 간다
+        detail = _cloze_detail(it, r, gen)
+        ok.append(detail["correct"])
+        ces.append(r[1])                           # Existing sum-CE/PPL denominator.
         ids.append(it.get("_iid"))
-    return ok, ces, skipped, ids
+        details.append(detail)
+    return ok, ces, skipped, ids, details
 
 
 def main():
@@ -959,11 +975,19 @@ def main():
                 per_ok[tag] = dict(zip(sres["ids"], sres["ok"]))
 
             elif kind == "cloze":
-                ok, ces, sk, cids = run_cloze(items, model, tok, dev, a.seq_max, torch, F)
+                ok, ces, sk, cids, details = run_cloze(items, model, tok, dev, a.seq_max, torch, F)
                 p, lo, hi = wilson(sum(ok), len(ok))
                 ppl = math.exp(statistics.fmean(ces)) if ces else float("nan")
                 rec.update(acc=p, acc_ci=[lo, hi], ppl=ppl, n=len(ok), skipped=sk,
                            gold_ce=statistics.fmean(ces) if ces else None)
+                if a.per_item_jsonl:
+                    _dump_items(
+                        a.per_item_jsonl, task, tag,
+                        {
+                            "rows": [row for row in details if not row["skipped"]],
+                            "skip_rows": [row for row in details if row["skipped"]],
+                        },
+                    )
                 print(f"\n  {tag:<18} 마지막단어acc **{p:.1%}** [95%CI {lo:.1%}~{hi:.1%}]  "
                       f"PPL {ppl:,.1f}  N={len(ok)} 제외={sk}")
                 per_model[tag] = dict(zip(cids, ces))
