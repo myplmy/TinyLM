@@ -1,0 +1,143 @@
+P069 public LAMBADA 5153-row seed panel: s2/s3 differ only in seed, model/GPU user-run.
+
+==============================================================================
+[runlog] 2026-09-25 23:31:18  name=P069_Stage0bW_lambada_seed_pair
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p069_lambada_preflight.py --self-test
+==============================================================================
+[PASS] P069 LAMBADA matched-seed and mismatch fixtures; model NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-25 23:31:18)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-25 23:31:18  name=P069_Stage0bW_lambada_seed_pair
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p069_lambada_preflight.py --check-only
+==============================================================================
+[PASS] P069 LAMBADA asset rows=5153 sha256=9ACDCB12E8C2EF4EB3D0958B547A8C7076488DF2D6FF460377881AB3841F3D97
+[PASS] s2/s3 fixed preset/pool/draw/tokenizer family/parent/grad-ckpt; only seed differs
+[LIMIT] historical mC_initonly/s2 is not a seed-only pair; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-25 23:31:18)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-25 23:31:18  name=P069_Stage0bW_lambada_seed_pair
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/eval_bench_suite.py --task lambada --n 5153 --models mC_initonly_s2 mC_initonly_s3 --preset m100R1c --data ko-en --model-data ko-en ko-en --model-arch tied tied --tokens 300M --seq-max 1024 --seed 99 --device cuda --per-item-jsonl runs/bench/p069_stage0bw_lambada_s2_s3.jsonl --wandb
+==============================================================================
+
+################################################################################################
+  ★벤치마크 전수 — 학습 0. **우연 수준을 결과보다 먼저 인쇄한다**(함정 34)
+################################################################################################
+  device=cuda  n=5153  seq_max=1024  seed=99  PMI=on
+  ⚠️★우리 모델은 **100M base LM(SFT 없음)** 이다. 생성 과제는 0 이 정상이고,
+     ★**0 이 나오면 0 을 기록한다** — 그것을 확인하는 것이 이 런의 목적이다.
+  ⚠️★공식 metric 이름을 우리 지표에 쓰지 않는다(규약 2). 아래 '공식' 열은 참고다.
+
+================================================================================================
+  [lambada] ★마지막 단어 예측   kind=cloze   공식 metric=acc / ppl
+================================================================================================
+  전체 5,153행 중 5153문항 (seed=99)  id 앞 10개: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  ✅ 문항별 원장 5153행(+건너뜀 0행) -^> runs/bench/p069_stage0bw_lambada_s2_s3.jsonl
+
+  mC_initonly_s2     마지막단어acc **0.9%** [95%CI 0.7%~1.2%]  PPL 1,119.9  N=5153 제외=0
+  ✅ 문항별 원장 5153행(+건너뜀 0행) -^> runs/bench/p069_stage0bw_lambada_s2_s3.jsonl
+
+  mC_initonly_s3     마지막단어acc **1.3%** [95%CI 1.0%~1.6%]  PPL 1,031.9  N=5153 제외=0
+
+  ── paired 정답CE 비교 (★**ID 교집합** 5153문항) ──
+     모델별 보유: mC_initonly_s2 5153 · mC_initonly_s3 5153
+    mC_initonly_s2 - mC_initonly_s3: Δ +0.0819 ± 0.0331  SD 1.2138 SE 0.0169 t +4.84  승률 53.2%  필요N(SE0.002) **368,322**
+      ★**부호는 확정이다**(t +4.84). 🚫단 정밀도 목표 SE 0.002 에는 5153 이 부족하다(필요 368,322) — **크기를 인용할 때 ± 를 함께 적는다**
+      ★★가족 재표집 95%CI [+0.0472, +0.1151] (가족 5153개 · 문항 CI 의 **1.02배**)  ✅0 을 안 포함한다
+
+################################################################################################
+  요약 — ★이 표를 결과문서에 그대로 옮긴다
+################################################################################################
+  과제              모델                         주지표  비고
+------------------------------------------------------------------------------------------------
+  lambada         mC_initonly_s2           0.9%  정답CE 7.0210 / PPL 1,120
+  lambada         mC_initonly_s3           1.3%  정답CE 6.9391 / PPL 1,032
+
+  ⚠️★**우연 수준 근처면 그 과제는 이 모델을 서열화하지 못한다.**
+     ★그래도 지운다는 뜻이 아니다 — **'못 푼다' 는 것이 측정된 사실**이다.
+  [bench-tsv] local upsert updated=0 inserted=4 skipped_models=0 -> test_result/bench_results.tsv
+
+################################################################################################
+  W&B 업로드 — 벤치마크 결과
+################################################################################################
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/uranus/.netrc
+wandb: Currently logged in as: myplmy (myplmy-ir) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run m100R1c_ko-en_300M_mC_initonly_s2
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260925_235151-m100R1c_ko-en_300M_mC_initonly_s2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100R1c_ko-en_300M_mC_initonly_s2
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100R1c_ko-en_300M_mC_initonly_s2
+wandb: updating run metadata; uploading artifact run-m100R1c_ko-en_300M_mC_initonly_s2-benchtable_wide-wpdsmw
+wandb: uploading artifact run-m100R1c_ko-en_300M_mC_initonly_s2-benchtable_wide-wpdsmw
+wandb: uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json; uploading requirements.txt; uploading media/table/bench/table_wide_2290_5bd10db41cc119d4b8f7.table.json
+wandb: uploading history steps 23-23, summary
+wandb: 
+wandb: Run summary:
+wandb:     bench/lambada/acc 0.00893
+wandb:    bench/lambada/arch tied
+wandb:    bench/lambada/data ko-en
+wandb: bench/lambada/gold_ce 7.021
+wandb:       bench/lambada/n 5153
+wandb: bench/lambada/n_asked 5153
+wandb:     bench/lambada/pmi True
+wandb:     bench/lambada/ppl 1119.90634
+wandb:    bench/lambada/seed 99
+wandb: bench/lambada/skipped 0
+wandb:                   +39 ...
+wandb: 
+wandb: 🚀 View run m100R1c_ko-en_300M_mC_initonly_s2 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100R1c_ko-en_300M_mC_initonly_s2
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260925_235151-m100R1c_ko-en_300M_mC_initonly_s2/logs
+  ✅ m100R1c_ko-en_300M_mC_initonly_s2  (1과제 · summary 키 11개 · 표 1행 [로컬 정본에서 전량 재구성])
+wandb: setting up run m100R1c_ko-en_300M_mC_initonly_s3
+wandb: Tracking run with wandb version 0.28.2
+wandb: Run data is saved locally in /home/uranus/tinyLM/wandb/run-20260925_235158-m100R1c_ko-en_300M_mC_initonly_s3
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run m100R1c_ko-en_300M_mC_initonly_s3
+wandb: ⭐️ View project at https://wandb.ai/myplmy-ir/tinylm
+wandb: 🚀 View run at https://wandb.ai/myplmy-ir/tinylm/runs/m100R1c_ko-en_300M_mC_initonly_s3
+wandb: updating run metadata; uploading artifact run-m100R1c_ko-en_300M_mC_initonly_s3-benchtable_wide-LcXaeg
+wandb: uploading artifact run-m100R1c_ko-en_300M_mC_initonly_s3-benchtable_wide-LcXaeg
+wandb: uploading requirements.txt; uploading media/table/bench/table_wide_2290_279a377411ffab007c27.table.json; uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json
+wandb: uploading history steps 23-23, summary
+wandb: 
+wandb: Run summary:
+wandb:     bench/lambada/acc 0.013
+wandb:    bench/lambada/arch tied
+wandb:    bench/lambada/data ko-en
+wandb: bench/lambada/gold_ce 6.93912
+wandb:       bench/lambada/n 5153
+wandb: bench/lambada/n_asked 5153
+wandb:     bench/lambada/pmi True
+wandb:     bench/lambada/ppl 1031.85913
+wandb:    bench/lambada/seed 99
+wandb: bench/lambada/skipped 0
+wandb:                   +44 ...
+wandb: 
+wandb: 🚀 View run m100R1c_ko-en_300M_mC_initonly_s3 at: https://wandb.ai/myplmy-ir/tinylm/runs/m100R1c_ko-en_300M_mC_initonly_s3
+wandb: ⭐️ View project at: https://wandb.ai/myplmy-ir/tinylm
+wandb: Synced 4 W&B file(s), 1 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260925_235158-m100R1c_ko-en_300M_mC_initonly_s3/logs
+  ✅ m100R1c_ko-en_300M_mC_initonly_s3  (1과제 · summary 키 11개 · 표 1행 [로컬 정본에서 전량 재구성])
+
+  ★런 이름 = **학습 런과 동일**한 {preset}_{data}_{tokens}_{tag} 이고
+     프로젝트도 같은 `tinylm` 다 — 모델을 열면 그 모델의 벤치가 거기 있다.
+     키는 `bench/<과제>/<지표>` 다. 올림 2개 · 건너뜀 0개.
+  ★표 키는 `bench/table_wide`(wide) 이고 정본은 `test_result/bench_results.tsv` 다 — 표는 매번 **전량 재구성**한다.
+     Vega y축은 `${field:y_metric}` 하나로 acc/acc_norm/gold_ce 를 바꾼다(제안서 §4.2.3).
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 20.8분  (2026-09-25 23:52:05)
+==============================================================================
+Read item-level ID, strict last-word accuracy and gold CE/PPL separately. W&B is a derived view; local results stay authoritative.

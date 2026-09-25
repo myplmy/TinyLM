@@ -4,7 +4,7 @@
 > 그래서 이름에 시각이 없다(제안서 §3.6). 🚫`check_handoff` 는 `*_HANDOFF.md` 만 보므로
 > 이 파일에 고정 섹션 8개를 요구하지 않는다 — **면제 코드가 필요 없다.**
 >
-> **신설** 2026-09-08(2차) · **최신 갱신** 2026-09-25 · **근거** [제안서(승인)](../proposal/done/20260908_연구방향-길잡이-파일-approved.md)
+> **신설** 2026-09-08(2차) · **최신 갱신** 2026-09-26 · **근거** [제안서(승인)](../proposal/done/20260908_연구방향-길잡이-파일-approved.md)
 > · 사용자 지시 8(원안) → 2026-09-08(2차) 지시 2B(*"claude 개선안으로 승인"*).
 >
 > ★**읽는 순서**: `ai_dev_tool/06` → **이 파일** → 최신 핸드오프.
@@ -45,7 +45,19 @@
 | **옵티마이저** | ★**Muon RMS4 기본 후보·연구축은 열림** — 상단·WD·형상·seed·길이 전이 통과 | ★**078 §16** ← 078 §11~§15 ← 076 §13(2026-09-22) | CLA2 d14는 LR1.5e-3 후보; QK-norm·schedule-scaled WD는 별도 연구 | LR1.5 이득은 CLA2 형상 한정이며 글로벌 LR 기본값 변경 근거가 아님 |
 | **토크나이저/어휘** | chat32 단일 ChatML ID3/4와 새 32k dense 부모300M은 **사용자 실행 완료**; 16k 어휘 축 P075는 별도 보류 | ★**096 §9**(2026-09-25) ← 결과053 | 공개 SFT 권리·사람 품질·오염과 B 부모 train 풀 계약 재검토 전 chat32 채택 금지; P075 16k는 16MiB 예산 선결 | 새 부모 best val3.54625는 다른 tokenizer·풀인 legacy와 직접 우열 불가. 어휘를 줄이면 M=8192 무릎·속도·VRAM 재계측 필요 |
 | **속도** | ⚠️ P014D native v1 채택선 음성에 더해 **P092 현 dense-mask DST는 상주·생성 속도 모두 음성** | ★**083 §12**(2026-09-24) ← 088 §10 ← 082 §13 ← 069 §11 | P092는 희소 커널·압축 배포 새 설계 없이는 300M 품질 팔을 자동 열지 않음; P014D SIMD/ABI도 별도 승인 | P092 sparse held759.64MiB(mask80.72) > dense678.92, decode 두 순서 모두 dense보다 느림. 이것은 실제 RSS/CPU 엣지·300M 품질이 아니며 현 가속 경로 부재를 뜻함 |
-| **지능/벤치** | 🚫 P105 실제 7모델에서 표제·퇴화 답안 재현, P106 교사 레코드만 합성 PASS; **SFT TRAIN_READY=false** | ★**098·097 §8**(2026-09-25) ← 096 §9 ← 092 §9 | 공개 한국어 SFT 100+1행 GPT·사용자 검수 및 P106 실제 교사 revision/license/verifier 선결. P100 엄격 신호·P105 EOS는 회수. [P069 Stage0bW](../test_plan/P069_다지표-평가체계.md) 두 시드 LAMBADA는 새 smoke 후 사용자 실행; SFT 권리와 원답안 의미/source 인과는 별도 | P100 0/16 엄격 신호와 P105 EOS94/280도 지식 정답률·지능 순위가 아니다. P106 accepted1 등은 fixture이지 교사 참값이 아니다. P090B 부모 사전학습을 SFT 증거로 오인 금지 |
+| **지능/벤치** | 🚫 P105 실제 7모델에서 표제·퇴화 답안 재현, P106 교사 레코드만 합성 PASS; **SFT TRAIN_READY=false** | ★**098·097 §8**(2026-09-25) ← 096 §9 ← 092 §9 | 공개 한국어 SFT 100+1행 GPT·사용자 검수 및 P106 실제 교사 revision/license/verifier 선결. P100 엄격 신호·P105 EOS는 회수. [P069 Stage0bW](../test_plan/P069_다지표-평가체계.md) 사용자 전수 결과056 §9 회수: s2/s3 CE 차이는 seed 기술 신호, 정확도 두 팔 약1%; 다음 동일조건 HellaSwag/ARC-Easy와 문답 별도; SFT 권리와 원답안 의미/source 인과는 별도 | P100 0/16 엄격 신호와 P105 EOS94/280도 지식 정답률·지능 순위가 아니다. P106 accepted1 등은 fixture이지 교사 참값이 아니다. P090B 부모 사전학습을 SFT 증거로 오인 금지; P069 영어 cloze를 한국어·대화 지능 증거로 오인 금지 |
+
+### 1.1 2026-09-26 상위 계획 실행가능 게이트 (위 표의 해당 축 `다음 한 걸음` 보충)
+
+- [P037 Stage0W](../test_plan/P037_데이터파이프라인-무결성검증.md): 기존 300M/600M 캐시의 문서 겹침·공통 val 후보·순서 편향을 먼저 읽기 전용으로 센다. B(공통 val만)→A(같은 val+고정 셔플), 잔여 소스 편향이 있을 때만 C를 조건부 연다. 캐시 실물 감사 NOT_RUN.
+- [P060B Stage2bW](../test_plan/P060B_WSL-native-SDPA-GQA-융합백엔드-재개.md): 기존 체크포인트에서 cache/decode GQA 경로와 dtype/길이별 이득·대가를 분해한다. 모델 배포 승격 아님.
+- [P095 S0bT](../test_plan/P095_Scout-1MiB-LTM-학습가능성.md): 첫 coda의 opt-in memory 배선과 gate0·인과성·backward를 사용자 소형 모델로 확인한다. 학습 품질 NOT_RUN.
+- [P030B Stage0W](../test_plan/P030B_WSL-현행-RMS4-CPU배포-실측.md): 이미 측정한 P030 Stage5/6/7b 대신 현행 d14 RMS4의 WSL 1코어 tok/s와 물리 RSS를 같은 세션에서 본다.
+- [P102A Stage1Wb](../test_plan/P102A_T1-S1-S2-S3-학습시간-기능계약.md): 종전 T0→T1의 총 34.183초 중 eval/save 25.514초를 분리한 뒤 ABBA 네 새 팔을 준비했다. 체크포인트 목록 갱신 완료; 학습 NOT_RUN.
+- [P014E Stage1Wa](../test_plan/P014E_회전삼진-민감도와-직접패킹-단계게이트.md): 사용자 지정 A/B/C의 각 실제 가중치에서 무회전/3×256/pad1024을 별개 CPU 진단한다. whole-decode/RSS/품질은 미측정.
+- [P103A Stage1bW](../test_plan/P103A_X1-X2-X3-계산량-기능계약.md): pinned M0 첫창 exact 함수 확인 뒤 고정2M 경계 FP32/INT8 write-once 파일을 빌드한다. 전체 학습 이득은 아직 미판정.
+- [P104A Stage2B/2W](../test_plan/P104A_WSL-M4-M5-게이트와-소형-dense-교량.md): 기실측 tiny 합성 교량과 분리해 같은 d14 실물 checkpoint를 Windows·WSL 양쪽에서 읽는 고정 val/한-step 교량. 두 OS 사용자 실행 전 기능 PASS 주장 금지.
+- [P069 결과056 §9](../test_result/056_20260823_P069-벤치13종-hellaswag와-piqa만-살아있다.md): 사용자 LAMBADA 전수 5,153문항×2 체크포인트가 회수됐다. 두 팔 0.89%/1.30% 정확도는 seed 기술 신호이지 대화·한국어 지능 개선 증거가 아니다.
 
 ---
 

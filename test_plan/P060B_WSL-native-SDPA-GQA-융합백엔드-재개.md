@@ -77,6 +77,7 @@ Stage0aW exit 8은 forced-only 사전등록 질문에는 유효한 음성이지�
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
+
 ## 8. 2026-09-21 Wd·Stage1W 결과
 
 Wd는 4-D grouped EFFICIENT의 실행 가능성을 확인했지만 default보다 23.2~63.9% 느려 backend
@@ -169,5 +170,23 @@ recipe stratum에서 default dispatcher 후보가 학습에도 전이하는지 �
 따라서 Stage2b 새 런처·실행 태그/registry 충돌 확인 및 GPU 실행은 큐 종료 후의
 별도 사전검사 대상으로 남긴다. 현 preflight는 계획 중복과 기존 문턱만 확인한
 부분 점검이며, 동적 검증이나 registry PASS가 아니다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 11. 2026-09-26 Stage2bW 실물화 — cache/decode 네 경로 사용자 게이트
+
+§10의 queue-locked 문장은 **당시 잠금 이력**이다. 사용자 큐가 끝나 [WSL SH](../run_P060B_Stage2bW_gqa_cache_attribution.sh)를 새 단계 구분자 Stage2bW로 작성했다. 동일한 기존 dense checkpoint m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt와 Stage2W의 NRMS≤0.001·cosine≥0.999999·최대 속도대가5%·최소 이득5%를 고정하고, 새 학습·새 태그·기존 로그 덮어쓰기는 0이다. 차이는 Stage2W의 첫 실패 즉시 중단 대신 seq128/512/1023/1024에서 cache on/off×decode on/off 네 경로와 첫 어긋난 층, bf16 대 MATH 정밀도 귀속을 **끝까지 수집**하는 것이다.
+
+| preflight 축 | 판정·근거 |
+|---|---|
+| A 계산 | 학습 0step·draw 0; 기존 checkpoint 읽기만 하므로 2× pool 환산은 비해당 |
+| B 자산 | Stage2W 원본 088의 동일 WSL d14 dense checkpoint를 사용; 없거나 심볼릭 링크면 SH exit9 |
+| C 태그 | 신규 학습 tag 없음, 별도 runlog 단계명 Stage2bW; 사용자 기존 자산 덮어쓰기 없음 |
+| D 중복 | 기존 Stage2W는 seq128 decode에서 exit4 후 중단; Stage2bW는 네 교차와 뒤 길이 수집으로 다른 질문 |
+| E 비교 | 동일 토큰·checkpoint·dtype별 고정 context에서 off/on 경로를 대조; fp32 MATH는 수치 귀속이며 배포 속도 대체 아님 |
+| F 자원 | 사용자 단독 RTX 4070 Ti SUPER 진단, 예상 최대 0.5h·학습 없음·W&B 없음; Codex 모델/GPU NOT_RUN |
+| G 판정 | CPU fixture exit0·셸 구문 PASS. 사용자 실물에서 0 후보, 4 정합/텍스트 음성, 5 backend 장애, 8 유효 속도/메모리 음성. 4·8은 큐 과학적 음성 코드, 5는 실행 실패 |
+
+독립 CPU 판정 회귀 scripts/test_sdpa_gqa_attribution_gate.py는 후보·정합·runtime·효익 음성 분기를 통과했다. 사용자 새 smoke가 이번 변경에 PASS한 뒤에만 SH를 권한다. Stage2bW가 원인 귀속을 해도 default sdpa_gqa는 계속 off이며 실제 모델 품질·전체 추론 채택은 별개다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

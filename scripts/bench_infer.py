@@ -219,6 +219,8 @@ def bench_one(model, cfg, tok, prompt, max_new, device, reps, use_cache=True,
 def main():
     ap = argparse.ArgumentParser(description="P030 추론 속도 벤치")
     ap.add_argument("--models", nargs="*")
+    ap.add_argument("--require-all", action="store_true",
+                    help="요청한 모든 모델·기기·스레드·캐시 행이 실제 측정되지 않으면 종료 2")
     ap.add_argument("--device", nargs="*", default=["cuda", "cpu"])
     ap.add_argument("--threads", nargs="*", type=int, default=[0],
                     help="CPU 스레드 수(0=torch 기본). 엣지는 코어가 적으니 1 이 가장 현실적")
@@ -287,6 +289,9 @@ def main():
     print("  P030 추론 속도 벤치 (단계1: KV 캐시 + eos + 삼진 1회계산 반영)")
     print(f"  max_new={a.max_new}  reps={a.reps}(중위값)  프롬프트={PROMPT!r}")
     _watch = _CpuWatch() if (a.cpu_watch or a.cpu_ext_limit is not None) else None
+    if a.require_all and a.cpu_watch and (_watch is None or _watch.ps is None):
+        print("[FAIL] require-all: psutil CPU watcher unavailable; timing conditions are unmeasured")
+        return 2
     dirty_rows = 0
     if _watch is not None:
         if _watch.ps is None:
@@ -439,6 +444,13 @@ def main():
     print("\n★한계: 삼진은 dequant 후 GEMM(저장≠실행 크기 — 상주는 같은 표의 상주MB 열) /")
     print("        Windows CPU 측정은 노이즈 큼(중위값 사용, 1~2% 차이는 읽지 않는다) /")
     print("        batch 1 단일요청. 서버 처리량은 다른 주제다.")
+    if a.require_all:
+        expected = len(models) * len(modes) * sum(
+            len(a.threads) if dev == "cpu" else 1 for dev in a.device
+        )
+        if len(rows) != expected:
+            print(f"[FAIL] require-all: expected {expected} measured rows, got {len(rows)}")
+            return 2
     return 0
 
 

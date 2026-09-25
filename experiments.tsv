@@ -29,9 +29,19 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
+1	P037	run_P037_Stage0W_common_val_census.sh	N	0.5	Y	Y	기존 ko-en 300M/600M 캐시 read-only val SHA·문서누출·train head/tail JS; B 공통val만/A 공통val+셔플 분리 전 필수, 새 smoke 선결	8
+1	P060B	run_P060B_Stage2bW_gqa_cache_attribution.sh	D	0.5	Y	Y	기존 d14 dense checkpoint에서 cache/decode GQA 4경로와 bf16/MATH 귀속·seq128/512/1023/1024 전수; 새 smoke 선결	4,8
+2	P095	run_P095_S0bT_coda_wiring.sh	N	0.2	N	Y	Tiny Transformer 실제 first-coda Scout opt-in 배선: gate0 identity·fact-context 분리·미래누출·reset·backward; 새 smoke 선결
+2	P030B	run_P030B_Stage0W_wsl_cpu_d14_rms4.sh	N	0.6	Y	Y	기실행 P030 Stage5/6/7b 반복 아님: 현재 WSL d14 RMS4와 옛 d14를 동일 세션 CPU1/4 decode·물리 RSS로 기술 대조; 새 smoke 선결
+2	P102A	run_P102A_Stage1Wb_t1_abba_100M.sh	Y	2.5	Y	Y	기존 T1 단일순서 잔여8.669초 분리: 새 동일코드 100M T0-T1-T1-T0 4팔과 같은 600M val 고정 crop; checkpoint 목록 갱신 완료, 새 smoke 선결	8
+3	P014E	run_P014E_Stage1Wa_A_d14_rms4_rotation_weights.sh	N	0.3	Y	Y	A 현재 d14 RMS4 dense 실제 gate 가중치 무회전/3x256/pad1024 합성입력 CPU p50/p95·오차; 새 smoke 선결
+4	P014E	run_P014E_Stage1Wa_B_mc_initonly_s2_rotation_weights.sh	N	0.3	Y	Y	B 역사 mC tied s2 같은 체크포인트 내부 회전 대조; 가족간 우열 인과 아님, 새 smoke 선결
+5	P014E	run_P014E_Stage1Wa_C_d12_r20_rotation_weights.sh	N	0.3	Y	Y	C 32MiB 재귀 후보 같은 체크포인트 내부 회전 대조; 방문수 wall 별도, 새 smoke 선결
+6	P103A	run_P103A_Stage1bW_m0_fixed2m_cache.sh	D	2.0	Y	Y	고정 M0 부모12/4의 실제2M 창 FP32+INT8 경계 cache 약7.8GiB write-once, 첫1024-token 정확 함수 선결; 품질·whole-step 미판정
+# P104A Windows prerequisite: run_P104A_Stage2B_m5_real_bridge.bat direct on Windows before the WSL queue row below.
+7	P104A	run_P104A_Stage2W_m5_real_bridge.sh	D	1.0	Y	Y	Windows Stage2B JSON 선결; 같은 d14 real checkpoint/ko-en 고정 full-val과 한 SGD update 양 OS SHA·CE·gradient 기능교량, 재학습 아님	8
 # CANCEL 2026-09-23: 옛 P092 Stage3W 3시드 일괄안은 100M gate 실패와 사용자 선택(진단→원인 수정→300M 한 시드)에 맞지 않아 실행 설계만 취소; P092 연구축·Stage3Wb 유지
 # 26	P092	run_P092_Stage3W_full_trainer_300M_seeds-cancel.sh	Y	13.5	Y	Y	구 3시드 일괄 학습 이력; GPU/모델 실행 0건, 과학적 축 폐기 아님	8
-1	P069	run_P069_Stage0bW_lambada_seed_pair.sh	D	1.5	Y	Y	LAMBADA 5153문항 mC tied 두 시드 s2/s3 동일조건; 문항 CE·정오·skip 저장, 새 smoke 선결
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	2026-09-23 TSV 실물 142건·60.677GiB 삭제 후보. WSL SH 단일 frozen preview와 대문자 YES, 실행 전 학습/파일 writer 중단 필수
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
@@ -455,6 +465,10 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 # ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
 #   1	P100	run_P100_Stage0bW_saved_answer_triage.sh	N	0.1	N	N	저장된 36답안의 직접답변·JSON 신호만 엄격 분류; 모델 재실행0, 정확도 주장 금지
 #   2	P105	run_P105_Stage1Wc_wiki_termination_panel.sh	D	2.0	Y	Y	7모델 280답안의 실제 EOS/길이 종료원인·반복 동시 기록; 원본 패널 불변, 인과 주장 금지
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P069	run_P069_Stage0bW_lambada_seed_pair.sh	D	1.5	Y	Y	LAMBADA 5153문항 mC tied 두 시드 s2/s3 동일조건; 문항 CE·정오·skip 저장, 새 smoke 선결
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)

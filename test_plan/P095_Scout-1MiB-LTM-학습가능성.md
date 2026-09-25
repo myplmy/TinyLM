@@ -70,7 +70,7 @@ explicit long-term memory(LTM)를 추가해, 새로운 episodic fact를 쓰고 �
 |---|---|---|---:|
 | **S0a primitive ✅** | read-before-write, prefix invariance, history dependence, logical 1 MiB, backward | 독립 CPU fixture 전부 통과 | `STATIC_ONLY`, GPU 0 |
 | **S0bB ✅ 완료** | default-off hidden bridge의 shape·write mask·reset·determinism·physical byte·latency·prefix causality | 논리 1 MiB·overhead 0.098%, median 10.97ms, identity/reset/prefix/backward PASS | [087 §4](../test_result/087_20260919_P095-S0a-memory-primitive-계약은-통과했다.md#4-s0b-hidden-bridge-계약2026-09-19) |
-| **S0bT ⏸** | full Transformer coda 전 wiring과 fact context 제거/oracle 누출 fixture | BASE chance 부근, 미래/label 누출 0, fallback 동일 | 모델 wiring `NOT_RUN`, GPU 0 |
+| **S0bT 🧪 정적 준비** | 첫 coda opt-in wrapper와 fact/question 분리·prefix/reset/backward 작은 실제 Transformer gate | gate0 exact, fact 제거 뒤 memory에만 응답 변화, 미래 token이 prefix 불변 | 코드/SH STATIC_ONLY, 사용자 CPU 모델 E2E NOT_RUN·GPU 0 |
 | **S1 oracle memory** | oracle WRITE에서 READ/retrieval/fusion overfit과 unseen episode | train QA≥99%, recall@4≥99%; unseen에서 M이 controls보다 CI 하한 기준 우세 | ≤0.05 H300 |
 | **S2 capacity/conflict** | 25/50/100/120% occupancy, duplicate, update, conflict, tombstone, eviction | exact duplicate<1%, capacity 증가에도 원인불명 collapse 없음 | ≤0.10 H300 |
 | **S3 learned WRITE** | explicit hint→100/50/20/0% anneal, source-disjoint eval | WRITE F1≥95%, hint 0에서 oracle 성능의 ≥80% | ≤0.08 H300 |
@@ -148,3 +148,19 @@ full Transformer coda wiring은 S0bT로 명시적으로 남긴다.
   finite backward를 검사한다. full Transformer wiring·shortcut dataset·learned WRITE는 `NOT_RUN`이다.
 - 2026-09-19: 사용자 S0bB 로그가 논리 1,048,576B·물리 1,049,608B, median 10.97ms와
   bridge 계약을 통과했다. full Transformer coda wiring과 학습성은 계속 `NOT_RUN`이다.
+
+## 10. 2026-09-26 S0bT — 기존 Transformer 첫 coda 앞 opt-in Scout 배선
+
+[ScoutCodaAdapter](../tinylm/model/scout_coda.py)는 기존 TiedMLPTransformer 본체·cfg 기본값·checkpoint를 바꾸지 않고 한 번의 forward에만 first-coda pre-hook을 붙인다. bridge의 상태는 암묵적인 전역 캐시가 아니라 호출 인자/반환값이고, hook은 예외가 나도 제거한다. 단일 시퀀스·grad checkpoint off·KV cache 미사용 조건에서만 작동한다. 이 경로는 학습 기본값이나 배포 기능이 아니라 **실제 backbone을 지나는 S0bT 기능 게이트**다.
+
+[사용자 CPU SH](../run_P095_S0bT_coda_wiring.sh)는 [진단기](../scripts/diag_p095_s0bt_coda.py)의 AST check-only 뒤 작은 Transformer를 직접 만들어 검사한다. gate=0에서 backbone 로짓 bit-exact와 state reset, gate=1에서 과거 fact chunk만 write한 memory state가 fact가 없는 새 question chunk 출력에 영향을 주는지, fact 값 변경·미래 질문 token 변경·반복 reset의 효과, bridge/embedding gradient 유한·비영을 각각 확인한다. fact/question은 별도 model.forward로 처리해 같은 문맥 내 shortcut을 피하고 question write_mask는 전부 false로 고정한다. 128-slot 작은 기능 상태만 사용하며 기존 S0bB의 1MiB payload 회계·실측을 이 함수 결과로 승격하지 않는다.
+
+| preflight 축 | 판정 |
+|---|---|
+| 기존 기능 중복 | S0a primitive·S0bB hidden bridge는 있었으나 backbone coda 주입은 0건이어서 새 연결이 필요 |
+| 새 학습·태그·풀 | 0step·0 tag·합성 token만 사용, 기존 TinyDataset/캐시·체크포인트 접근 없음 |
+| 코드 영향 | wrapper와 사용자 진단/SH만 추가; 기본 Transformer.forward·checkpoint schema 무변경 |
+| 자원 | CPU 작은 모델 약0.2h 상한·GPU0·W&B0, 새 smoke 뒤 사용자 실행 |
+| 판정 | AST/CLI 정적 PASS; 실제 tiny 모델 identity·causality·prefix·backward는 사용자 실행 전 NOT_RUN |
+
+S0bT 기능이 통과해도 learned WRITE 정책, 1MiB 실제 Transformer 상태, 모델 언어 QA/일반 LM 품질·전체 배포 RSS, trainer/compile/cached generation은 미검증이다. 후속 S1은 합성 QA에서 BASE가 chance 부근인지와 M/REMOVE/SHUFFLE/NULL 원인대조를 먼저 설계해야 하며 S0bT만으로 채택하지 않는다. 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

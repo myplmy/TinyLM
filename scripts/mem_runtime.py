@@ -123,6 +123,8 @@ def _drop_gate(dmax: float, lut: bool) -> str:
 def main():
     ap = argparse.ArgumentParser(description="P034 단계1 실행시 메모리 실측")
     ap.add_argument("--models", nargs="*")
+    ap.add_argument("--require-all", action="store_true",
+                    help="요청한 모든 모델의 실제 RSS 행이 없으면 종료 2")
     ap.add_argument("--device", default="cpu", choices=["cpu", "cuda"])
     ap.add_argument("--data", default="ko-en")
     ap.add_argument("--tokens", default="300M")
@@ -352,6 +354,9 @@ def main():
     if skipped:
         print(f"\n  ⚠️★건너뛴 태그 {len(skipped)} 개: {', '.join(skipped)} "
               f"— 아래 표는 **부분 측정**이다")
+    if a.require_all and len(rows) != len(models):
+        print(f"[FAIL] require-all: expected {len(models)} RSS rows, got {len(rows)}")
+        return 2
     if len(rows) < 2:
         return 0
 

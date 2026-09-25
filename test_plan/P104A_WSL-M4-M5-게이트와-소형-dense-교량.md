@@ -1,5 +1,7 @@
 # P104A — 외부 flash-attn 제외 M4와 M5 소형 dense 교량의 기능 게이트
 
+> **2026-09-26 최신 상태**: M4 Triton·tiny 양 OS 기능 PASS는 역사 보존. 사용자 선택으로 같은 실제 d14 checkpoint의 Windows Stage2B BAT·WSL Stage2W SH/비교기를 구현했고 CPU fixture PASS, 양 OS 사용자 실물 E2E NOT_RUN. 같은 파라미터 재학습은 이 교량의 대체가 아니다.
+
 > 제안 계기: [WSL 이관 제안서](../proposal/20260915_WSL2-Linux-학습환경-단계적-이관-제안서-approved-on-going.md) M4/M5와 사용자 승인. **2026-09-25 현재 역사적 Stage1B Windows 경로 실패는 보존. 교정 Stage1Bb Windows와 Stage1W WSL의 동일 SHA 소형 기능 교량 PASS, M4 Triton 지정형상 PASS; 실제 체크포인트 품질·whole-step 속도 NOT_RUN.**
 
 ## 1. 왜 — backend 지원과 환경 교량을 동적 증거로 구분한다
@@ -90,3 +92,25 @@ same real checkpoint·같은 tokenizer·같은 평가 풀·condition signature�
 - 2026-09-25 추가 사용자 로그: [결과095 §6](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md)의 Stage0W direct Triton M64/K768/N768/G128는 NRMS0.00039494·cosine1·exit0으로 **그 형상만** 기능 PASS. Windows Stage1Bb는 tiny model/one-step 수집과 V2 JSON 기록이 exit0이며, 승인된 정확 JSON의 코드 SHA 다섯 개가 현 WSL 코드와 일치한다. `float(loss)` 경고는 backward/SGD 뒤 scalar 직렬화에서만 발생해 이번 양 OS 교량의 코드를 바꾸지 않는다. WSL Stage1W 비교, 전체 M4 백엔드/real-checkpoint M5 품질은 `NOT_RUN`이고 M4/M5 이관 전체 done 아님. 실행한 두 런처는 `-done`으로 개명했다.
 
 - 2026-09-25 사용자 Stage1W 회수: [결과095 §7](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md)의 Windows/WSL V2 JSON은 checkpoint/code5/input SHA가 같고 eval CE 차8.58e-6, post-step 차2.12e-4, grad 상대차4.44e-6, 양쪽 비영 갱신으로 사전 기능 문턱을 통과했다. §3의 소형 loss 근접 예측은 해당 범위에서 지지된다. 사용자 실행 중 동일 `float(loss)` 경고가 나타났지만 비교 완료 전 코드 SHA 보존 방침은 유효했고 경고만으로 PASS를 무효화하지 않는다. 실제 체크포인트 언어 품질·속도는 별도 승인 전 `NOT_RUN`.
+
+## 10. 2026-09-26 Stage2B/Stage2W — 재학습 없는 동일 실물 체크포인트 교량
+
+사용자 질문을 기존 두 JSON으로 재검토했다. 2026-09-25 Windows/WSL의 동일 tiny_synthetic_2M_dense 체크포인트·입력·코드 SHA에서 eval CE 차8.58e-6와 비영 한 업데이트는 실제 PASS지만 **실제 언어 체크포인트가 아니다**. Windows 과거 학습 파라미터를 WSL에서 한 번 더 돌리면 새로운 체크포인트가 생겨 OS 경로·초기 RNG·데이터 순서·PyTorch/CUDA 스택 차이가 함께 바뀐다. 따라서 이 과제의 “같은 체크포인트를 양 OS에서 실행할 수 있는가” 질문을 닫는 최소 비용은 **기존 실물 한 파일을 양쪽이 그대로 읽는 방식**이다. 사용자가 이 안을 승인했으며, 긴 재학습은 이 단계에 넣지 않는다.
+
+| 단계 | 실물 파일·순서 | 선결·예상 |
+|---|---|---|
+| Windows Stage2B | [BAT](../run_P104A_Stage2B_m5_real_bridge.bat) 직접 사용자 실행 → 새 runs/bench/p104a_m5_real_windows.json | Windows GPU, TinyLM repo root, 약1h |
+| WSL Stage2W | [SH](../run_P104A_Stage2W_m5_real_bridge.sh) 사용자 실행 → 새 runs/bench/p104a_m5_real_wsl.json → [비교기](../scripts/check_m5_real_bridge.py) | Windows JSON 존재, 새 smoke PASS, WSL GPU 약1h |
+
+양쪽 [수집기](../scripts/diag_m5_real_bridge.py)는 같은 runs/ckpt/m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt를 **읽기만** 한다. legacy ko-en 600M cache val.bin의 SHA와 tokenizer SHA, checkpoint SHA, 현재 config/modules/ternary/transformer/수집기 코드 SHA를 JSON에 기록한다. val 3,000,000 토큰의 비중첩 seq1024 **전 2,929창·2,999,296 target 토큰**을 같은 순서로 평가해 CE와 GPU 동기 host wall·peak allocated/reserved를 얻는다. 이어 CPU seed가 아니라 고정 val prefix의 동일 2×256 token으로 메모리 안에서만 SGD lr1e-4 한 업데이트를 수행해 전후 CE·gradient norm·비영 파라미터 좌표 변화·step wall을 기록한다. 이 SGD는 **교량 기능 control**로, 현행 Muon RMS4 300M 학습 속도/품질 재현을 뜻하지 않는다. 출력 JSON은 플랫폼별 write-once이고 원본 checkpoint/cache는 변경하지 않는다.
+
+[비교기](../scripts/check_m5_real_bridge.py)는 checkpoint/code/cache input/step input/tokenizer SHA와 window·token 분모가 다르면 exit2, 동일 입력에서 전후 CE 절대차>0.01·gradient norm 상대차>0.10·zero update는 유효 gate 음성 exit8, 해당 기능 문턱 내면 exit0으로 분리한다. 양 OS eval/one-step wall 비율은 스택·드라이버·클럭·전력/열의 영향으로 **설명적 수치**일 뿐 OS 단독 인과나 전체 학습 가속이 아니다. 새 수집·비교 CPU self-test와 출력 경로 check-only는 PASS, 실제 Windows·WSL 실물 모델은 사용자 실행 전 NOT_RUN. 기존 tiny V2 JSON과 새 real V1 JSON은 서로 섞지 않는다.
+
+| preflight 축 | 판정 |
+|---|---|
+| 동일성 | checkpoint·val cache·tokenizer·코드·입력 SHA가 양 OS에서 모두 일치해야 직접 기능 대조 가능 |
+| 자원 | 기존 한 체크포인트, GPU 16GB 단일 장치, 각 OS 약1h·학습 체크포인트 쓰기0; 사용자 단독 감시 |
+| 중복 | tiny synthetic 결과095 §7와 다른 실물 언어 CE·2929창; 같은 파라미터 재학습은 이 질문에 중복 비용 |
+| 한계 | fixed-val 기능 근접은 M5의 실물 실행 증거지만 Windows↔WSL 300M 훈련 재현성·배포 CPU 상주/속도·외부 flash-attn은 여전히 별도 |
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
