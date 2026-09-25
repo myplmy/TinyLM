@@ -1,10 +1,11 @@
 # 제안 — 실험 프론티어 전수감사와 장시간 큐 근시안 재발 방지
 
-> **작성** 2026-09-19 · **보완** 2026-09-21 · **상태** 🔄승인 후 진행 중 · **분류** 작업방식
+> **작성** 2026-09-19 · **보완** 2026-09-25 · **상태** 🔄승인 후 진행 중 · **분류** 작업방식
 > 양식: [`proposal/README.md`](README.md) §3. **아홉 절을 비우지 않는다** — 없으면 *"없다"* 라고 쓴다.
-> **승인**: 2026-09-21 사용자 권장 C안 승인. M2 inventory compiler·fixture, M3 현재
+> **승인**: 2026-09-21 사용자 권장 C안 승인. M2 inventory compiler·fixture, M3 당시
 > frontier 114/114 + non-DONE disposition 72/72, M4 READY 50.8h + GATED 0.3h 편성까지
 > 정적 증거를 확보했다. M5 3회 queue 운영 증거가 남아 완료 이관 전이다.
+> **2026-09-25 재발 감사:** COMPASS는 갱신됐지만 새 큐의 현재 frontier 산출물·non-DONE 전수 disposition은 없었다. §6.5~§6.6의 실사와 보완안을 참조한다. 기존 M3/M4는 2026-09-21의 한 번의 편성 증거이지 후속 모든 큐의 자동 보증이 아니다.
 
 ---
 
@@ -147,6 +148,28 @@ handoff/큐 보고가 참조하며, (c) Codex의 최종 후보표가 모든 `dis
 택할지는 사용자와 Codex의 판단이다. 따라서 M2 출력이 곧 실행 명령은 아니며, M3의 큐 편성은
 반드시 각 행의 한 줄 근거와 사용자 승인 경계를 남긴다.
 
+### 6.5 2026-09-25 재발 실사 — 구조 검사와 큐 전수 판단은 달랐다
+
+| 대상 | 직접 확인한 증거 | 판정 |
+|---|---|---|
+| COMPASS | 커밋 5002db5가 [양자화·토큰/코퍼스·지능/벤치](../handoff/COMPASS.md) 세 행에 P014E·P105·P106을 반영했다 | **갱신 수행**. 이번 누락의 대상이 아니다. |
+| 정적 frontier 검사 | [이번 정적 감사](../handoff/audit/WIP_20260925c_STATIC_AUDIT.json)는 frontier_audit·fixture PASS. [정적 묶음](../scripts/check_static_all.py)이 실행한 것은 frontier_audit.py --check | **구조 검사만 수행**. 파일을 보존하거나 현재 큐가 모든 후보를 검토했는지는 보지 않았다. |
+| 현 트리 읽기 전용 재계산 | 2026-09-25 현재 물리/색인/frontier **123/123/123**, non-DONE **81**, DONE42·GATED2·HOLD79·READY0·충돌0. 순간 SHA 32F3B569096EE34D9F4D3ED37875C0F4EB983F7331A20E6CD2F45B55AC4A8553 | **현재 집합 정합**. 이 stdout은 보존된 frontier/disposition 산출물이 아니다. |
+| 현 큐의 후보별 판단 | [202609250944 handoff §7](../handoff/202609250944_HANDOFF.md)은 실물 2건 0.2h, 시간 미달 사유, 직전 큐 3건의 완료 이관만 기록했다. 현재 frontier SHA와 non-DONE 81개 각각의 포함·제외·보류 행은 없다 | **원 승인 C안의 전수 소비 계약 미수행**. 단, 현재 READY0이므로 0.2h 편성 자체가 잘못됐다는 증거는 아니다. |
+| 마지막 보존 frontier | [2026-09-23 R1](../handoff/audit/WIP_20260923_CONTINUATION_FRONTIER_R1.md)은 115/115/115·다른 SHA; [2026-09-21 72/72 disposition](../handoff/audit/20260921b_FRONTIER_DISPOSITION.md)은 과거 114계획 편성 | 현재 123계획·81 non-DONE의 대체 증거가 아니다. |
+
+**왜 재발했나.** §6.2의 약속은 “새 큐마다 현재 frontier artifact/SHA를 인계에 묶고 모든 disposition_required 행을 checker가 대조한다”였다. 실제 [frontier_audit.py](../scripts/frontier_audit.py) --check의 종료코드는 물리 계획 ID와 색인 ID의 집합 차이만 반영한다. 출력의 conflicts가 양수여도 그 자체로 실패하지 않고, preflight_count는 설계 preflight 통과 수가 아니라 live launcher 수다. [test_frontier_audit.py](../scripts/test_frontier_audit.py)는 오래된 P014·새 P097의 집합 보존만 시험한다. [handoff_queue.py](../scripts/handoff_queue.py)와 [Codex 핸드오프 검사기](../.agents/skills/session-handoff/scripts/check_handoff_codex.py)는 **직전 미완료 배치의 계승**·섹션 구조·시간 미달 문구는 보지만, 현재 frontier SHA나 81개 ID의 판단표를 요구하지 않는다. 따라서 GPT가 현재 frontier를 새 큐의 실제 입력으로 읽지 않아도 정적 61종과 handoff 린터가 녹색이었다.
+
+이는 정적 검사기가 자기 계약인 P=F를 어긴 것이 아니라 **계약이 큐 소비까지 닿지 않았고 GPT도 절차를 빠뜨린** 사례다. 2026-09-21 M3/M4의 일회성 성공을 지속 강제로 읽은 상태 표현 역시 오해를 키웠다. M5 사용자 큐 3회 운영 증거가 없는 점은 별도 미완료이지 이번 GPT 측 감사 누락의 핑계가 아니다. 현재 79개 HOLD의 개별 우선순위 판단은 미확인이나, 빠진 READY 팔이 있었다고 단정하지 않는다.
+
+### 6.6 보완 계약 — 큐가 바뀔 때만 현재 frontier를 강제한다
+
+새 audit 문서를 매 세션 무조건 늘리지 않는다. 권장 실험 §7의 **집합·순서·시간·실행상태가 바뀌는 경우**에만 입력 문서 해시로 frontier JSON 한 건과, 필요할 때 동일 stem의 Markdown 한 건을 만든다. source manifest가 같으면 기존 산출물을 재사용한다. 현재 handoff는 그 정확한 경로·frontier SHA와 non-DONE 각 ID의 INCLUDE/EXCLUDE/HOLD 판단을 한 번씩 연결한다.
+
+별도 checker는 (1) 현재 source manifest와 artifact가 동일한가, (2) disposition_required 집합과 판단표 집합이 정확히 같은가·중복 0인가, (3) INCLUDE 실물·id·시간이 §7 및 TSV/디스크와 일치하는가, (4) 충돌 행을 종료코드 0으로 숨기지 않는가, (5) 48h 미달 시 미포함 READY가 0인가 또는 가치/권한 때문에 보류한 이유를 사용자에게 명시했는가를 검증한다. 마지막 항목은 저가치 런으로 48h를 강제하지 않으면서 누락과 의도적 제외를 구별한다. 이 checker는 기존 handoff_queue의 **직전 큐 무손실 계승**을 대체하지 않고 보완한다.
+
+회귀 fixture에는 계획 ID 집합은 그대로지만 launcher·결과만 바뀐 stale artifact, 한 ID disposition 누락, conflicts>0인데 기존 --check가 0을 반환하는 경우, 일반 문구만 있는 48h 미달, 오래된 P014D와 최신 P105의 동시 존재를 넣는다. 구현 전에는 큐 변경 문서에 FRONTIER_COVERAGE_NOT_VERIFIED를 명시하고, 구조 검사 PASS를 FRONTIER_CONSUMED나 과학적 우선순위 PASS로 승격하지 않는다. 이번 요청은 **제안서 보완**이므로 검사기·훅·핸드오프 양식 코드는 수정하지 않았다; 기계 강제 구현은 별도 명시 지시와 검증 뒤 착수한다.
+
 ## 7. 거절하면 못 하는 것
 
 실험 자체는 계속할 수 있다. 다만 최신 세션에서 만든 계획이 오래된 승인·진행 계획을 계속
@@ -162,6 +185,7 @@ handoff/큐 보고가 참조하며, (c) Codex의 최종 후보표가 모든 `dis
 | 새 검사도 안 읽힘 | checker가 종합검사 밖에 존재 | `check_static_all.py`에 연결하고 회귀 fixture 추가 |
 | Windows 검사만 통과하고 WSL SH는 미검사 | live 큐가 있는데 preflight 학습 호출 0건 | BAT·SH 공통 호출 추출과 WSL fixture를 종합검사에 연결; 0건 성공을 금지 |
 | 표가 다시 날짜별 append로 증식 | 동일 P번호가 여러 행에 등장 | one-plan-one-row checker가 즉시 실패 |
+| 구조 검사 PASS를 현재 큐 전수감사로 오인 | --check는 P=F만 확인하고 handoff는 frontier SHA 없이도 통과 | §6.6의 현재 artifact·전수 disposition checker를 큐 변경 시 강제; 미구현 동안 FRONTIER_COVERAGE_NOT_VERIFIED |
 
 계측 위험을 반드시 하나 이상 적는다. 이 저장소 사고의 대다수가 계측이었다.
 
@@ -178,6 +202,16 @@ handoff/큐 보고가 참조하며, (c) Codex의 최종 후보표가 모든 `dis
 
 **C안을 승인·착수했다.** M0·M1과 M2의 수동 기준선(9건 false ongoing 교정·P087 복구)은 앞선
 사용자 지시로 수행했고, 2026-09-21 M2 자동 inventory compiler와 old/new plan fixture를 구현했다.
-M3~M5는 current artifact·coverage·3회 queue 증거를 아직 확보하지 않았으며, 계획 상태를 자동으로
+M3의 2026-09-21 artifact·72/72 coverage와 M4의 51.1h 편성은 그때의 한 차례 증거다. 2026-09-25 새 큐의 현행 artifact·81/81 coverage 및 M5의 3회 운영 증거는 아직 없다. 계획 상태를 자동으로
 “종결”시키지 않고 결과·registry 충돌을 보고하는 보수적 감사기로 만든다. 이번 재감사에서 발견한
 BAT 전용 `dryrun_batch`는 WSL SH까지 읽도록 수정하고 회귀를 정적 묶음에 연결했다.
+
+### 2026-09-25 재발에 대한 보완안 비교
+
+| 보완안 | 내용 | 장점 | 단점·영향도·수행비용 |
+|---|---|---|---|
+| A — 사람 체크 | 작성자가 현재 frontier hash와 모든 non-DONE 판단을 수동 대조 | 코드 변경 없음 | GPT가 또 생략해도 통과; 문서 영향 낮음, 반복 검토비 높음 |
+| **B — 현재 SHA·전수 coverage 게이트** | §7 변경 때만 산출물/판단표를 만들고 checker가 현재 입력·전체 ID·큐 행을 대조 | 이번 누락을 종료 전 실패로 만들며 audit 문서 증식을 제한 | checker/fixture·handoff 계약 변경 필요; 영향 중간·구현/검증 ⚙1~2h |
+| C — 감사기의 우선순위·큐 자동 생성 | READY 팔을 자동 편성 | 누락 위험은 낮으나 과학적 가치·권리·시간 trade-off를 코드가 대신 결정; 영향 높음·유지비 높음 |
+
+**보완 권장 B.** 원 승인 C안의 미구현 “현재 큐가 frontier를 소비했는가” 부분을 기계적으로 닫는다. 현 컴파일러상 READY0·GATED2·HOLD79이므로 0.2h 자체를 오류로 규정하지 않고, 모든 HOLD의 최신 선결과 제외 근거가 실제로 검토됐는지를 검증 가능하게 한다. 이 턴은 분석·문서 보완만 수행하며 코드 강제나 M5 완료를 선언하지 않는다.
