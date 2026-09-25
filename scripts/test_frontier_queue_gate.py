@@ -69,6 +69,31 @@ class FrontierQueueGateTests(unittest.TestCase):
         self.assertEqual(next(row for row in data["dispositions"] if row["plan_id"] == "P097")["review"],
                          "AUTO_NO_LAUNCHER")
 
+    def test_source_text_only_change_mints_new_artifact_without_overwriting_old(self):
+        results = self.root / "test_result"
+        results.mkdir()
+        source = results / "097_fixture.md"
+        source.write_text("# result first" + chr(10), encoding="utf-8")
+        old_path, old_frontier = self._prepared()
+        self._accept_live(old_path)
+        self.assertEqual(verify_handoff(self.root, self.handoff), [])
+        old_bytes = old_path.read_bytes()
+
+        source.write_text("# result revised" + chr(10), encoding="utf-8")
+        new_path, new_frontier, created = prepare(self.root, self.handoff)
+        self.assertTrue(created)
+        self.assertNotEqual(old_path, new_path)
+        self.assertEqual(old_frontier["frontier_sha256"], new_frontier["frontier_sha256"])
+        self.assertEqual(old_path.read_bytes(), old_bytes)
+        self.assertTrue(any("stale" in error for error in verify_handoff(self.root, self.handoff)))
+
+        self.handoff.write_text(
+            self.handoff.read_text(encoding="utf-8").replace(
+                marker(old_path, old_frontier), marker(new_path, new_frontier)),
+            encoding="utf-8")
+        self._accept_live(new_path)
+        self.assertEqual(verify_handoff(self.root, self.handoff), [])
+
     def test_missing_marker_stale_source_and_missing_disposition_fail(self):
         self.assertIn("exactly one", verify_handoff(self.root, self.handoff)[0])
         path, _frontier = self._prepared()

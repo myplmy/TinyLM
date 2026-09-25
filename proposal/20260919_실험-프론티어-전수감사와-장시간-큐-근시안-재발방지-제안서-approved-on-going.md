@@ -236,3 +236,19 @@ AI는 현재 §7에 올린 live-plan의 INCLUDE 이유를 수동으로 적고, �
 **검증 수준·잔여:** [격리 회귀](../scripts/test_frontier_queue_gate.py)는 누락 marker, stale source/queue, 빠진 ID, conflict, BAT→WSL SH 대응과 역사 MISSING/HOLD 보존을 확인한다. [WIP 회귀](../scripts/test_wip.py)는 queue 원장이 --handoff나 유효 marker 없이 닫히지 않음을 확인한다. 두 회귀는 [정적 묶음](../scripts/check_static_all.py)에 연결한다. 이는 C2의 코드/합성 정적 증거일 뿐 새 Codex 세션·사용자 smoke E2E나 M5 3회 운영 증거가 아니다. AUTO_NO_LAUNCHER 계획의 구현 가치·선결 우선순위는 별도 사람 감사로 남으며, C2가 모든 연구계획의 가치 평가를 자동 완료했다고 주장하지 않는다.
 
 **상태:** C2 코드·격리 회귀 PASS. 현재 handoff의 artifact는 non-DONE81/81·live 수동 INCLUDE2로 --check 오류0, 이번 실제 WIP close는 --handoff 누락 exit2로 거부하고 정확 handoff+static audit에서는 -done으로 닫혔다. 이는 **현재 로컬 종료 경로의 관찰**이지 신규 사용자 smoke·다른 세션 3회 운영 증거가 아니다. AUTO_NO_LAUNCHER79의 과학적 가치 심사와 M5는 미완료이므로 제안서 done 이관·전체 ACTIVE_VERIFIED는 선언하지 않는다.
+
+### 2026-09-25 후속 C2b — 결과문서 본문 변경의 artifact 충돌 교정
+
+이번 P105 결과097에 원답안 정성 절을 추가했을 때 결과문서 SHA는 바뀌었으나 frontier 행의 latest_result=097과 빈 큐는 같아 종전 파일명 FRONTIER_QUEUE_B7A0440D34FF_4F53CDA18C2B.json이 재사용됐다. 종전 prepare는 파일이 존재하면 원천 manifest를 대조하지 않고 반환하고 check는 stale manifest를 거부한다. 검출은 정상이나 새 핸드오프를 닫을 새 artifact를 만들 경로가 없던 결함이다. 과거 JSON을 덮어써 역사 증거를 바꾸지 않는다.
+
+사용자 승인에 따라 두 번째 파일명 해시를 큐만이 아니라 현재 source_manifest와 queue_rows의 결합 SHA-256으로 바꿨다. 같은 frontier 행 SHA·빈 큐에서도 새 이름 FRONTIER_QUEUE_B7A0440D34FF_F6990B83D1BD.json이 생기며, JSON의 순수 queue_sha256 필드는 그대로다. 격리 회귀는 결과 본문만 수정→frontier 행 SHA 동일→새 artifact 생성→구 artifact byte 불변→옛 marker stale 거부→새 marker 수동 live 판정 후 PASS를 검증한다. C2 회귀 7/7은 CPU 임시트리 증거이며 사용자 새 smoke는 E2E_NOT_RUN이다.
+
+**남은 별도 문제 — 과학적 우선순위:** 물리/색인123/123 중 미종결81(계획25·진행56)은 현재 연구 런처0이라 모두 AUTO_NO_LAUNCHER/HOLD로 자동 등록된다. 이 표지는 가치·구현가능성 심사가 아니다. first_unfinished_stage 38/81이 미식별이고, first_prerequisite는 현재 단계가 아니라 본문에서 처음 보인 “선결” 문장을 택해 P014E G0 완료 문구나 P029 옛 미판독 문구를 가리킬 수 있다. preflight_count도 실제 preflight PASS 수가 아니라 live launcher 수다. COMPASS 검사기는 결과문서 번호만 대조하므로 결과097의 새 §7이나 review_request의 1차 SFT 검수를 자동 감지하지 못한다. C2b가 동작해도 0런처를 “목표 달성” 또는 전수 과학 심사 완료로 해석하면 안 된다.
+
+| 향후 보완안(미승인) | 장점 | 대가·제약 |
+|---|---|---|
+| A. 현재 C2와 작성자 수동 기억 유지 | 코드0 | 자동 HOLD 뒤 구현 우선순위를 또 놓칠 수 있음 |
+| **B. C3 수동 의미 triage 종료 게이트** | 런처0·미종결 계획이 있으면 오래된/새 계획의 BUILD_NEXT·USER_DECISION·FAILED_GATE·LOW_PRIORITY 근거와 다음 구현 한 건 이상을 인계에 요구; 과학적 선택은 사람 담당 | 현재 단계 필드 정규화·checker/fixture 필요 |
+| C. 81개 전부의 구조화 단계 manifest와 매 큐 수동 재승인 | 누락 탐지 가장 강함 | 문서·유지비와 재검토 부담 큼 |
+
+**권장 제안은 B지만 구현 승인은 아직 없다.** 이번 승인 범위는 C2 artifact 충돌 수정·회귀뿐이다. 기존 M5 3회 사용자 큐 운영과 C3 의미 심사는 계속 미완료다.

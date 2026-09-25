@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fail-closed frontier evidence for a finalized handoff experiment queue.
 
-The prepare action creates one reusable artifact per frontier/queue signature.
+The prepare action creates one reusable artifact per frontier/source/queue signature.
 It never chooses a live experiment: every live-plan decision starts as
 REVIEW_REQUIRED. Plans without a live launcher are machine-labeled HOLD with
 AUTO_NO_LAUNCHER, which is an inventory fact, not a scientific priority review.
@@ -117,7 +117,12 @@ def _frontier(root: Path) -> dict:
 
 
 def artifact_name(frontier: dict, queue: list[dict]) -> str:
-    return f"FRONTIER_QUEUE_{frontier['frontier_sha256'][:12]}_{_json_hash(queue)[:12]}.json"
+    # Plan/result wording can change without altering compiled frontier rows. Bind
+    # the full source manifest as well as the queue so immutable evidence is not
+    # silently reused with stale input hashes.
+    source_queue = _json_hash({"source_manifest": frontier["source_manifest"],
+                               "queue_rows": queue})
+    return f"FRONTIER_QUEUE_{frontier['frontier_sha256'][:12]}_{source_queue[:12]}.json"
 
 
 def prepare(root: Path, handoff: Path) -> tuple[Path, dict, bool]:
