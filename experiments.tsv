@@ -32,8 +32,6 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 # CANCEL 2026-09-23: 옛 P092 Stage3W 3시드 일괄안은 100M gate 실패와 사용자 선택(진단→원인 수정→300M 한 시드)에 맞지 않아 실행 설계만 취소; P092 연구축·Stage3Wb 유지
 # 26	P092	run_P092_Stage3W_full_trainer_300M_seeds-cancel.sh	Y	13.5	Y	Y	구 3시드 일괄 학습 이력; GPU/모델 실행 0건, 과학적 축 폐기 아님	8
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	2026-09-23 TSV 실물 142건·60.677GiB 삭제 후보. WSL SH 단일 frozen preview와 대문자 YES, 실행 전 학습/파일 writer 중단 필수
-1	P105	run_P105_Stage1Wb_wiki_repetition_reaudit.sh	N	0.1	N	N	기존 280답안 JSONL 읽기 전용: 한 글자 줄 루프·구절 4회 반복후보 재집계; 모델 재실행0, 의미 품질 NOT_RUN
-2	P014E	run_P014E_Stage0W_rotation_math_contract.sh	N	0.1	N	N	고정 3x256/1024-pad Hadamard·g128 이론회계 12행 합성 CPU 게이트; 모델·GPU 0, 실제 속도/품질 NOT_RUN
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
 #   2026-08-14 삭제분: P049 단계1(041 §14.8) · P049B 단계1(043 §13.9) · F-1(046 §9)
@@ -446,6 +444,11 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   1	P105	run_P105_Stage0W_wiki_format_contract.sh	N	0.1	N	N	위키 꼬리/URL source·generation JSONL 분모와 본문 제목 비오인 합성 계약; 실제 원천·모델 NOT_RUN
 #   2	P106	run_P106_Stage0W_verified_teacher_contract.sh	N	0.1	N	N	검증형 teacher ACCEPT/REJECT/UNKNOWN·split·문자열 target·assistant mask 출처 합성 계약; teacher/SFT NOT_RUN
 #   3	P105	run_P105_Stage1W_wiki_panel_7model.sh	D	2.0	Y	Y	사용자 단독 GPU 현존 7모델×고정20문항×2디코딩=280출력; metadata 계보 사전검사, chat32 SFT 미래팔 NOT_RUN
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P105	run_P105_Stage1Wb_wiki_repetition_reaudit.sh	N	0.1	N	N	기존 280답안 JSONL 읽기 전용: 한 글자 줄 루프·구절 4회 반복후보 재집계; 모델 재실행0, 의미 품질 NOT_RUN
+#   2	P014E	run_P014E_Stage0W_rotation_math_contract.sh	N	0.1	N	N	고정 3x256/1024-pad Hadamard·g128 이론회계 12행 합성 CPU 게이트; 모델·GPU 0, 실제 속도/품질 NOT_RUN
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)

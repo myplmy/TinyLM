@@ -312,8 +312,9 @@ fp32 상주와 int8 상주가 갈린다.**
 | [094 §8](../test_result/094_20260925_P103A-X2-함수통과-X3-하부MLP-동결누락.md) | P103A 하부 MLP freeze 교정 뒤 tiny exact 차0/0/0/0, 실제 M0 12/4 exact 차0/0/0/7.45e-9; 기존 5e-5 문턱 2/2 PASS | fixed 8-token CPU 함수만 검증. INT8 boundary NRMS는 보고값, 2M/20M cache·GPU wall·RSS·언어 품질 NOT_RUN |
 | [095 §7](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md) | M4 direct Triton 지정형상 PASS; Windows/WSL 동일 checkpoint/code/input SHA의 tiny synthetic eval CE 차8.58e-6·post 차2.12e-4·grad 상대차4.44e-6로 소형 기능 교량 PASS | 양 OS Torch/cuDNN 스택이 달라 OS 단독효과 아님. M4 whole-step·실제 체크포인트 M5 품질·속도 NOT_RUN |
 | [096 §9](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md) | chat32 새 어휘·300.024M dense 부모 사전학습 완료(best val3.54625/최종3.6028125, skip0). 문서 비율50:50 대비 token은 위키34.35%/FineWeb-Edu65.65%; 총601M 중 train597.995M | 사전등록 2×draw600.047616M에2.052616M 미달. 본런 학습 결과 자체는 보존하나 tokenizer 단독효과·한국어 SFT/대화 품질·정식 적격성은 NOT_RUN |
-| [097](../test_result/097_20260925_P105-위키표제는-재현됐지만-FineWeb2-무표제는-품질개선이-아니다.md) | 사용자 7모델×40=280 고정 프롬프트 생성: 표제145/280, 원치 않는 URL2/280, 동일 URL 반복0. P097 control 표제25/40 대 FineWeb2 0/40 | FineWeb2의 `-` 반복·빈답2로 무표제는 품질 개선 아님. source/tokenizer 동시 변화라 인과 불가; source·EOS·의미점수 NOT_RUN |
+| [097](../test_result/097_20260925_P105-위키표제는-재현됐지만-FineWeb2-무표제는-품질개선이-아니다.md) | 사용자 7모델×40=280 고정 프롬프트 생성: 표제145/280, 원치 않는 URL2/280, 동일 URL 반복0. 같은 저장 답안 재감사에서 반복 후보140/280(줄116·구절129의 합집합), control24/40·FineWeb2 28/40 | Stage1W의 반복 휴리스틱22와 새 탐지 정의는 달라 증가량 비교 불가. FineWeb2의 무표제는 품질 개선 아님. source/tokenizer 동시 변화라 인과 불가; 원답안 byte 동일성·source·EOS·의미점수 NOT_RUN |
 | [098](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md) | 합성 verified-teacher 계약 ACCEPT/REJECT/UNKNOWN 각1·negative6·split 누출1 거부 | 자료 구조 fixture PASS만. 실제 교사 참값·license·비용·SFT NOT_RUN |
+| [099](../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md) | P014E G0 합성12행: FP64 직교 동치 최대절대차1.55e-15, FP32 최대 NRMS3.18e-7; 768→1024 pad의 2-bit+g128 이론 byte +33.3% | 수학·회계 계약만 PASS. 무회전 삼진 대조, 실제 checkpoint 민감도·물리 packed byte·상주·속도·품질 NOT_RUN; 역사 P014D/P025B wall 음성 불변 |
 
 이 표는 결과문서의 숫자·조건 서명으로 거슬러 올라가는 **요약**이다. 다른 풀,
 tokenizer, validation·생성 경로를 이 표의 순서만 보고 합산·순위화하지 않는다.
