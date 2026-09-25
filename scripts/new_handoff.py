@@ -112,6 +112,8 @@ SKELETON = """# HANDOFF {date} {hm} — {title}
 
 > FRONTIER_COVERAGE_NOT_VERIFIED — 큐를 확정한 뒤 frontier_queue_gate.py --prepare --handoff 로 현재 산출물을 만들고 전체 live-plan 판단을 기록한다. WIP close --handoff 전 --check 가 0이어야 한다.
 
+> FRONTIER_SEMANTIC_NOT_VERIFIED — frontier_semantic_gate.py --prepare 의 미종결 계획·on-going 제안서 전수 template을 사람이 판단한 뒤 §7 marker와 --check 증거로 교체한다.
+
 | 순 | id | 실험 | 배치 파일 | ⚙ | 누적 | 인벤토리 | 실행상태 | 선결 | 근거 |
 |---:|---:|---|---|---:|---:|---|---|---|---|
 {queue_rows}

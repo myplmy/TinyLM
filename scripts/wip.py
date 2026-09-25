@@ -756,6 +756,10 @@ def close(path: Path, static_audit: Path | None = None,
         frontier_errors = verify_handoff(ROOT, selected)
         if frontier_errors:
             raise ValueError("frontier queue gate failed: " + " | ".join(frontier_errors))
+        from frontier_semantic_gate import verify_handoff as verify_semantic_handoff
+        semantic_errors = verify_semantic_handoff(ROOT, selected)
+        if semantic_errors:
+            raise ValueError("frontier semantic triage failed: " + " | ".join(semantic_errors))
     target = path.with_name(path.stem + "-done.md")
     if target.exists():
         raise ValueError(f"close target already exists: {target.name}")

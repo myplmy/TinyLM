@@ -160,6 +160,8 @@ CHECKS = [
      "오래된 P014와 최신 P097 fixture가 함께 frontier에 남는가"),
     ("test_frontier_queue_gate", ["test_frontier_queue_gate.py"],
      "현재 frontier SHA·큐·non-DONE disposition 누락과 stale 입력을 종료 전 거부하는가"),
+    ("test_frontier_semantic_gate", ["test_frontier_semantic_gate.py"],
+     "미종결 계획과 승인 on-going 제안서의 수동 가치 triage·원천 최신성 누락을 종료 전 거부하는가"),
     ("test_wip", ["test_wip.py"],
      "큐/핸드오프 WIP close가 frontier coverage 없이 fail-closed인가"),
     ("check_run_registry",  ["check_run_registry.py"],

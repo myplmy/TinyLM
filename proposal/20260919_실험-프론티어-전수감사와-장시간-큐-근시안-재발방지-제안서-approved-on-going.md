@@ -252,3 +252,11 @@ AI는 현재 §7에 올린 live-plan의 INCLUDE 이유를 수동으로 적고, �
 | C. 81개 전부의 구조화 단계 manifest와 매 큐 수동 재승인 | 누락 탐지 가장 강함 | 문서·유지비와 재검토 부담 큼 |
 
 **권장 제안은 B지만 구현 승인은 아직 없다.** 이번 승인 범위는 C2 artifact 충돌 수정·회귀뿐이다. 기존 M5 3회 사용자 큐 운영과 C3 의미 심사는 계속 미완료다.
+
+### 2026-09-25 후속 C3 — 수동 의미 triage 종료 게이트 승인
+
+사용자가 앞 절의 B안을 승인했다. 이전 문단의 미승인 표기는 당시 기록이고, 이 절 이후에는 C3 승인 범위가 우선한다. C2는 물리계획 123/123 및 미종결 81/81의 집합만 확인했으며 연구 런처 0건 때문에 81건 전부 AUTO_NO_LAUNCHER/HOLD였다. 이는 과학적 가치판정이 아니다. 별도로 루트의 approved-on-going 제안서 20건도 기존 frontier 집합에 포함되지 않아 연구·작업방식 진행항목을 누락할 수 있었다.
+
+권장 C3 구현은 계획마다 가치 등급과 BUILD_NEXT / USER_DECISION / FAILED_GATE / LOW_PRIORITY / EVIDENCE_NEEDED / DOC_CORRECTION 중 하나, 근거·증거·다음 행동을 수동 기입한다. BUILD_NEXT는 중복 없는 순위를 매긴다. 승인 진행 제안서 20건도 IMPLEMENT_NEXT / USER_DECISION / FAILED_GATE / E2E_PENDING / LOW_PRIORITY / DOC_REFRESH로 각각 분류한다. 템플릿은 모두 REVIEW_REQUIRED에서 시작하므로 런처 부재만 이유로 자동 종료하지 못한다. 적어도 한 다음 구현이 없으면 사용자의 명시적 no-build 승인 참조가 필요하다.
+
+현재 source manifest와 제안서 SHA에 결합된 별도 C3 artifact를 handoff/audit에 두고, 새 핸드오프 §7의 독립 marker와 scripts/wip.py --close의 fail-closed 검사를 연결한다. C2의 큐 인벤토리 marker는 유지하며 C3가 이를 대체하지 않는다. 사용자 모델·GPU·스모크는 실행하지 않고, C3 정적 회귀와 실제 새 세션 E2E를 분리한다. 81+20 수동 검수의 반복 비용과 형식적 복제 위험이 남으므로 근거의 과학적 타당성은 여전히 사용자·Codex의 검토 대상이다. M5 3회 운영이 끝나기 전 done 이관하지 않는다.

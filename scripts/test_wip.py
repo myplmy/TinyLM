@@ -276,6 +276,11 @@ class WipV2Tests(unittest.TestCase):
                 WIP.close(path, audit, handoff)
         handoff.write_text(valid_handoff, encoding="utf-8")
         with patch("frontier_queue_gate.verify_handoff", return_value=[]):
+            with self.assertRaisesRegex(ValueError, "semantic triage"):
+                WIP.close(path, audit, handoff)
+        with patch("frontier_queue_gate.verify_handoff", return_value=[]), patch(
+            "frontier_semantic_gate.verify_handoff", return_value=[]
+        ):
             target = WIP.close(path, audit, handoff)
         self.assertTrue(target.exists())
 
