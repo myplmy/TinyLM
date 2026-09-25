@@ -1,8 +1,8 @@
 # 제안 — TinyLM 학습환경을 WSL2 Linux로 단계적으로 이관한다
 
 > **작성일**: 2026-09-15  
-> **최종 수정일**: 2026-09-23
-> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 manual compact 제외의 `PARTIAL` 종결 / M4 `PARTIAL`(기존 P025B·FP8·SDPA 실제 backend 진단은 있으나 전체 계약 미완) / M5 Windows 첫 수집 `실행 오류`/양 OS 기능 교량 `NOT_RUN` / M6 최종 운영 전환 보류
+> **최종 수정일**: 2026-09-25
+> **상태**: ✅사용자 승인·진행 중 / M2R 정적 PASS / WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED` / M3 manual compact 제외의 `PARTIAL` 종결 / M4 `PARTIAL`(기존 P025B·FP8·SDPA 실제 backend 진단은 있으나 전체 계약 미완) / M5 양 OS 소형 기능 교량 PASS(결과095 §7), 실제 checkpoint 품질·상주·속도 `NOT_RUN` / M6 최종 운영 전환 보류
 > **분류**: 작업환경 / 실행기반 / 실험 재현성  
 > **실험번호**: `PNone`  
 > **실험계획 비대상 사유**: 이 문서는 환경 이관 의사결정 제안이다. 승인 뒤 필요한 교량 실험은 기존 계획의 환경 단계 또는 별도 승인된 실험계획으로 등록한다.

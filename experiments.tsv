@@ -31,6 +31,8 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 # CANCEL 2026-09-23: 옛 P092 Stage3W 3시드 일괄안은 100M gate 실패와 사용자 선택(진단→원인 수정→300M 한 시드)에 맞지 않아 실행 설계만 취소; P092 연구축·Stage3Wb 유지
 # 26	P092	run_P092_Stage3W_full_trainer_300M_seeds-cancel.sh	Y	13.5	Y	Y	구 3시드 일괄 학습 이력; GPU/모델 실행 0건, 과학적 축 폐기 아님	8
+1	P100	run_P100_Stage0bW_saved_answer_triage.sh	N	0.1	N	N	저장된 36답안의 직접답변·JSON 신호만 엄격 분류; 모델 재실행0, 정확도 주장 금지
+2	P105	run_P105_Stage1Wc_wiki_termination_panel.sh	D	2.0	Y	Y	7모델 280답안의 실제 EOS/길이 종료원인·반복 동시 기록; 원본 패널 불변, 인과 주장 금지
 3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	2026-09-23 TSV 실물 142건·60.677GiB 삭제 후보. WSL SH 단일 frozen preview와 대문자 YES, 실행 전 학습/파일 writer 중단 필수
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다

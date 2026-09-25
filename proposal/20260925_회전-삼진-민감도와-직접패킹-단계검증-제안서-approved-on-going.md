@@ -80,3 +80,4 @@
 ### 2026-09-25 승인·착수 범위
 
 사용자가 권장 B안을 승인했다. [P014E 계획](../test_plan/P014E_회전삼진-민감도와-직접패킹-단계게이트.md)과 독립 CPU G0 진단기·WSL SH를 만들었다. G0의 12행 합성 자체시험은 통과했지만 사용자 SH E2E·실제 checkpoint 민감도·CPU/GPU 속도·full-val은 `NOT_RUN`이다. G1은 같은 checkpoint 선택과 G0 사용자 로그, G2는 G1의 실제 wall/상주 가능 위치, G3는 G2의 품질·배포 순이득이 선결이다. 기본 TLinear·데이터·optimizer·P014D/P025B 역사 판정을 바꾸지 않았다. 이 미완료 조건 때문에 제안서는 `-approved-on-going`으로 유지한다.
+2026-09-25 후속 상태: 사용자 P014E G0 결과099의 합성 12행은 exit0·문턱 PASS다. 위 승인·착수 단락의 사용자 SH E2E NOT_RUN은 작성 당시 이력으로만 읽는다. 실제 checkpoint의 G1 CPU wall/RSS, G2 품질·상주, G3 조건부 검증은 여전히 NOT_RUN이므로 done 이관하지 않는다.

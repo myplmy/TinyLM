@@ -82,7 +82,7 @@ def metadata(spec) -> dict:
             "lineage": lineage, "checkpoint": ckpt, "tokenizer": tokenizer, "meta": meta}
 
 
-def evaluate(items, out: Path, seed: int, max_new: int) -> None:
+def evaluate(items, out: Path, seed: int, max_new: int, record_termination: bool = False) -> None:
     import torch
     from tokenizers import Tokenizer
     from tinylm.infer.generate import load_model, sample
@@ -101,9 +101,11 @@ def evaluate(items, out: Path, seed: int, max_new: int) -> None:
                     local_seed = seed + int(hashlib.sha256(
                         f"{item['tag']}:{case_id}:{decode}".encode()).hexdigest()[:8], 16)
                     torch.manual_seed(local_seed)
-                    full = sample(model, cfg, tokenizer, prompt, max_new=max_new,
+                    generated = sample(model, cfg, tokenizer, prompt, max_new=max_new,
                                   temperature=temperature, top_k=top_k, device=device,
-                                  use_cache=True, stop_at_eos=True, logits_last_only=True)
+                                  use_cache=True, stop_at_eos=True, logits_last_only=True,
+                                  return_metadata=record_termination)
+                    full, termination = generated if record_termination else (generated, {})
                     if not full.startswith(prompt):
                         raise ValueError(f"prompt prefix changed: {item['tag']} {case_id}")
                     row = {"schema": "P105_WIKI_PANEL_V1", "model": item["tag"],
@@ -116,6 +118,9 @@ def evaluate(items, out: Path, seed: int, max_new: int) -> None:
                            "temperature": temperature, "top_k": top_k,
                            "stop_at_eos": True, "finish_reason": "NOT_MEASURED",
                            "url_requested": url_requested, "heading_requested": heading_requested}
+                    if record_termination:
+                        row.update(termination)
+                        row["termination_schema"] = "P105_TERMINATION_V1"
                     stream.write(json.dumps(row, ensure_ascii=False) + chr(10))
                     stream.flush()
                     print(f"[ANSWER] {item['tag']} {case_id} {decode}: {full[len(prompt):]!r}", flush=True)
@@ -124,7 +129,8 @@ def evaluate(items, out: Path, seed: int, max_new: int) -> None:
                 torch.cuda.empty_cache()
     partial.rename(out)
     print(f"[PASS] {len(items) * len(CASES) * len(DECODES)} raw answers saved: {out.relative_to(ROOT)}")
-    print("[LIMIT] source causality, semantic quality and actual EOS finish reason NOT_MEASURED")
+    print("[LIMIT] source causality and semantic quality NOT_RUN; "
+          + ("actual EOS reason MEASURED" if record_termination else "actual EOS reason NOT_MEASURED"))
 
 
 def self_test() -> None:
@@ -147,6 +153,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--self-test", action="store_true")
     ap.add_argument("--check-only", action="store_true")
+    ap.add_argument("--record-termination", action="store_true")
     ap.add_argument("--model", action="append", default=[])
     ap.add_argument("--out")
     ap.add_argument("--seed", type=int, default=20260925)
@@ -171,7 +178,7 @@ def main() -> int:
             print(f"[CHECK] {item['tag']} lineage={item['lineage']} final_val={item['meta']['final']['val_loss']}")
         print(f"[PASS] {len(items)} model/JSON/tokenizer pairs; model/GPU NOT_RUN")
         return 0
-    evaluate(items, out, args.seed, args.max_new)
+    evaluate(items, out, args.seed, args.max_new, args.record_termination)
     return 0
 
 

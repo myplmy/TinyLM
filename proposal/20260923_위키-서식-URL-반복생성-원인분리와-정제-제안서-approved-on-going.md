@@ -167,3 +167,4 @@ source 분포와 W2 보존율을 확인한 뒤에만 검토한다. 세 방법을
 사용자는 W0에 6차 리뷰의 300M RMS4 d18 품질-edge 후보 1, 새 chat32 사전학습 부모 1, P097 같은 seed control/FineWeb2 각1, P100 세 부모, 후속 chat32 SFT 완료 모델 1을 요청했다. 겹치는 checkpoint는 SHA로 한 번만 세고, `최고 품질`은 d14/d16/d18의 **같은 300M RMS4 full-val 비교 범위**에서 d18 후보라는 뜻으로 제한한다. P097 pair는 결과090의 최소 사전 시드1337을 고정하되 다른 tokenizer/원천 조건의 효과로 인과 귀속하지 않는다. 아직 존재가 확인되지 않은 chat32 SFT 모델 팔은 `NOT_RUN`이다.
 
 원본 `ko-en` cache, HF/원문, checkpoint는 수정하지 않았다. W0의 사용자 모델 실행·W1의 고정 원천 JSONL/토크나이저 및 사람 오탐20~50건·W2 새 정제본과 matched 학습은 각 선결 전 `NOT_RUN`이다. 최초 제안서 §1의 당시 큐 잠금 설명과 이 절의 최신 승인은 시간순 기록으로 병기한다.
+2026-09-25 추가: P105 Stage1Wc는 같은 7모델·280답안의 실제 EOS/80-token 종료 사유를 새 write-once 출력으로 계측하도록 선택적 생성 메타데이터·감사기·WSL SH를 준비했다. 합성/fake-model 회귀만 PASS이며 사용자 모델 패널은 NOT_RUN이다. W1 공개 원천·사람 오탐 검토와 W2 matched 정제 대조가 남아 있어 done 이관 조건을 충족하지 않는다.

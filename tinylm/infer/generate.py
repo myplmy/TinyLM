@@ -93,7 +93,8 @@ def _pick(logits, temperature, top_k):
 
 @torch.no_grad()
 def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, device=None,
-           use_cache=True, stop_at_eos=True, eos_id=None, logits_last_only=False):
+           use_cache=True, stop_at_eos=True, eos_id=None, logits_last_only=False,
+           return_metadata=False):
     """★샘플링 루프의 **단일 소스**. 이미 로드된 모델을 받아 텍스트를 이어쓴다.
 
     `generate()`(체크포인트 경로로 매번 로드)와 여러 프롬프트를 한 모델로 돌리는 도구
@@ -109,10 +110,12 @@ def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, devi
         (결과 013 에서 한국어 프롬프트에 영문 문서가 난입한 원인).
     """
     device = device or next(model.parameters()).device
+    stop_requested = bool(stop_at_eos)
     if eos_id is None:
         eos_id = tok.token_to_id("<eos>")
         if eos_id is None:
             eos_id, stop_at_eos = -1, False
+    eos_available = eos_id >= 0
     ids = tok.encode(prompt).ids
     x = torch.tensor([ids], dtype=torch.long, device=device)
     dev_type = device if isinstance(device, str) else device.type
@@ -123,6 +126,8 @@ def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, devi
     #   🚫**기본 off = 비트 동일.** 켜면 마지막 한 위치만 만든다(0.125 MiB).
     head_options = {"logits_last_only": True} if logits_last_only else {}
     past = None
+    generated_tokens = 0
+    ended_on_eos = False
     for _ in range(max_new):
         if use_cache:
             # 첫 스텝은 프롬프트 전체(prefill), 이후는 직전 1토큰만 흘린다.
@@ -139,9 +144,20 @@ def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, devi
                 logits = model(x[:, -cfg.max_seq_len:], **head_options)[:, -1, :].float()
         nxt = _pick(logits, temperature, top_k)
         x = torch.cat([x, nxt], dim=1)
+        generated_tokens += 1
         if stop_at_eos and int(nxt.item()) == eos_id:
+            ended_on_eos = True
             break
-    return tok.decode(x[0].tolist())
+    decoded = tok.decode(x[0].tolist())
+    if not return_metadata:
+        return decoded
+    reason = ("EOS" if ended_on_eos else
+              "EOS_UNAVAILABLE" if stop_requested and not eos_available else
+              "MAX_NEW_EOS_DISABLED" if not stop_requested else "MAX_NEW")
+    return decoded, {"finish_reason": reason, "generated_tokens": generated_tokens,
+                     "max_new": max_new, "eos_token_available": eos_available,
+                     "stop_at_eos_requested": stop_requested,
+                     "stop_at_eos_effective": bool(stop_at_eos and eos_available)}
 
 
 def generate(prompt, arch="tied", data="ko-en", max_new=100, temperature=0.8,

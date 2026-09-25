@@ -52,6 +52,25 @@ def main() -> int:
     sample(model, _Cfg(), _Tokenizer(), "x", max_new=2, temperature=0.0,
            device="cpu", use_cache=True, stop_at_eos=False, logits_last_only=True)
     assert model.flags and all(model.flags), model.flags
+    text, missing = sample(model, _Cfg(), _Tokenizer(), "x", max_new=2,
+                           temperature=0.0, device="cpu", return_metadata=True,
+                           logits_last_only=True)
+    assert text and missing["finish_reason"] == "EOS_UNAVAILABLE"
+    assert missing["generated_tokens"] == 2 and not missing["stop_at_eos_effective"]
+
+    class _EosTokenizer(_Tokenizer):
+        def token_to_id(self, _token):
+            return 3
+
+    text, stopped = sample(model, _Cfg(), _EosTokenizer(), "x", max_new=2,
+                           temperature=0.0, device="cpu", return_metadata=True,
+                           logits_last_only=True)
+    assert text and stopped["finish_reason"] == "EOS"
+    assert stopped["generated_tokens"] == 1 and stopped["stop_at_eos_effective"]
+    _, limit = sample(model, _Cfg(), _EosTokenizer(), "x", max_new=2,
+                      temperature=0.0, device="cpu", stop_at_eos=False,
+                      return_metadata=True, logits_last_only=True)
+    assert limit["finish_reason"] == "MAX_NEW_EOS_DISABLED" and limit["generated_tokens"] == 2
     print("[PASS] generation sampling requests logits_last_only on prefill and decode")
     return 0
 
