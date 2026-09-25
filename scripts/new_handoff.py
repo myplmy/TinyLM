@@ -110,6 +110,8 @@ SKELETON = """# HANDOFF {date} {hm} — {title}
 
 > 직전 큐 자동 이관 원천: `{queue_source}`. 자동 행은 전부 `REVALIDATE`이며 과학적 순서·선결을 다시 판정한다.
 
+> FRONTIER_COVERAGE_NOT_VERIFIED — 큐를 확정한 뒤 frontier_queue_gate.py --prepare --handoff 로 현재 산출물을 만들고 전체 live-plan 판단을 기록한다. WIP close --handoff 전 --check 가 0이어야 한다.
+
 | 순 | id | 실험 | 배치 파일 | ⚙ | 누적 | 인벤토리 | 실행상태 | 선결 | 근거 |
 |---:|---:|---|---|---:|---:|---|---|---|---|
 {queue_rows}

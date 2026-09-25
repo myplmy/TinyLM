@@ -8,6 +8,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 MODULE_PATH = Path(__file__).resolve().with_name("wip.py")
@@ -239,6 +240,45 @@ class WipV2Tests(unittest.TestCase):
         target = WIP.close(path, audit)
         self.assertFalse(path.exists())
         self.assertTrue(target.exists())
+
+    def test_queue_handoff_close_requires_frontier_gate(self) -> None:
+        path = WIP.create_ledger(
+            ["1=다음 권장 실험 순서와 세션 핸드오프 작성"],
+            "handoff/prev_HANDOFF.md", "docs", "GPU 금지", "사용자 실행", "없음",
+        )
+        WIP.set_state(path, "1", WIP.RUN, "큐 감사", None, "완료 처리")
+        WIP.set_state(path, "1", WIP.DONE, "완료", "handoff/next_HANDOFF.md", None)
+        audit = self.root / "audit-queue.json"
+        audit.write_text(json.dumps({
+            "schema": "TINYLM_STATIC_AUDIT_V1", "profile": "codex-safe",
+            "wip": {"path": path.relative_to(self.root).as_posix(),
+                    "sha256": WIP._sha_bytes(path.read_bytes()), "session_id": None},
+            "counts": {"errors": 0, "actionable_warnings": 0},
+        }), encoding="utf-8")
+        handoff = self.handoff / "202609251234_HANDOFF.md"
+        handoff.write_text("- **이전**: [prev](prev_HANDOFF.md)" + chr(10)
+                           + path.name + chr(10) + "## 7. 다음 권장 실험 순서" + chr(10),
+                           encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "requires --handoff"):
+            WIP.close(path, audit)
+        with self.assertRaisesRegex(ValueError, "frontier queue gate failed"):
+            WIP.close(path, audit, handoff)
+        self.assertTrue(path.exists())
+        valid_handoff = handoff.read_text(encoding="utf-8")
+        handoff.write_text(valid_handoff.replace("prev_HANDOFF.md", "foreign_HANDOFF.md"),
+                           encoding="utf-8")
+        with patch("frontier_queue_gate.verify_handoff", return_value=[]):
+            with self.assertRaisesRegex(ValueError, "previous-chain"):
+                WIP.close(path, audit, handoff)
+        handoff.write_text(valid_handoff.replace(path.name, "foreign_WIP.md"), encoding="utf-8")
+        with patch("frontier_queue_gate.verify_handoff", return_value=[]):
+            with self.assertRaisesRegex(ValueError, "exact WIP"):
+                WIP.close(path, audit, handoff)
+        handoff.write_text(valid_handoff, encoding="utf-8")
+        with patch("frontier_queue_gate.verify_handoff", return_value=[]):
+            target = WIP.close(path, audit, handoff)
+        self.assertTrue(target.exists())
+
 
 
     def test_blocked_remains_incomplete_and_cannot_close(self) -> None:

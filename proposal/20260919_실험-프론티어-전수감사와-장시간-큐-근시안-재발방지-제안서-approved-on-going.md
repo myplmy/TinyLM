@@ -215,3 +215,24 @@ BAT 전용 `dryrun_batch`는 WSL SH까지 읽도록 수정하고 회귀를 정�
 | C — 감사기의 우선순위·큐 자동 생성 | READY 팔을 자동 편성 | 누락 위험은 낮으나 과학적 가치·권리·시간 trade-off를 코드가 대신 결정; 영향 높음·유지비 높음 |
 
 **보완 권장 B.** 원 승인 C안의 미구현 “현재 큐가 frontier를 소비했는가” 부분을 기계적으로 닫는다. 현 컴파일러상 READY0·GATED2·HOLD79이므로 0.2h 자체를 오류로 규정하지 않고, 모든 HOLD의 최신 선결과 제외 근거가 실제로 검토됐는지를 검증 가능하게 한다. 이 턴은 분석·문서 보완만 수행하며 코드 강제나 M5 완료를 선언하지 않는다.
+
+### 2026-09-25 후속 C2 — 프론티어 감사의 자동 발동 지점
+
+원 승인 C안의 자동 inventory 컴파일과 앞 절 보완 B안의 coverage 검사를 결합한다. C1(우선순위까지 자동 생성)은 채택하지 않는다. **C2는 감사 발동·누락 차단만 자동화하고 과학적 우선순위는 Codex·사용자가 정한다.** 앞 절의 “코드 미변경”은 1차 보완 당시 기록이며, 아래는 이번 사용자 구현 지시의 별도 후속이다.
+
+| 발동안 | 작동 시점 | 반복 누락 방지력 | 대가·판정 |
+|---|---|---|---|
+| 스킬 문구만 추가 | AI가 핸드오프를 쓸 때 | 낮음 — 과거에도 문구는 있었으나 빠뜨림 | 코드0, **단독 강제안 아님** |
+| PreToolUse 훅 | 셸·패치 호출 전 | 낮음 — 최종 §7과 source manifest가 확정되기 전 발화; hash 재신뢰·fail-open/E2E 부담 | 지금 도입 안 함 |
+| handoff 생성기만 | 템플릿 생성 시 | 중간 — 이후 AI가 큐를 교체하면 초기 감사가 낡음 | 경고 placeholder로만 사용 |
+| **WIP close + 현재 handoff 검사** | §7 편성·원장 완료 뒤 | 높음 — 현 frontier/큐 SHA·전수 ID·실물/시간을 검사하고 미충족 시 close 거부 | **C2 채택**. 큐/핸드오프 지시 없는 WIP에는 적용하지 않음 |
+
+**구현 계약.** [frontier_queue_gate.py](../scripts/frontier_queue_gate.py)는 현재 계획·색인·TSV·COMPASS·기준표·결과·활성 리뷰에서 frontier를 다시 컴파일한다. source SHA와 §7의 배치/id/시간/실행상태 SHA로 이름을 정한 **한 JSON**을 handoff/audit에 만들며, 입력이 같으면 재사용·덮어쓰기 금지다. 물리/색인 차이 또는 충돌행은 생성부터 거부한다. non-DONE 각 ID를 정확히 한 번 싣고 실물 런처가 있는 계획은 REVIEW_REQUIRED로 시작한다. 실물 0건인 계획의 AUTO_NO_LAUNCHER/HOLD는 **지금 실행 가능한 런처가 없다는 재고 사실**이지, 그 계획의 과학적 가치 평가를 완료했다는 뜻이 아니다.
+
+AI는 현재 §7에 올린 live-plan의 INCLUDE 이유를 수동으로 적고, 올리지 않은 live-plan은 EXCLUDE/HOLD의 구체 사유를 적는다. READY를 빼려면 사용자 승인 참조가 필요하다. 검사기는 artifact source manifest·queue SHA 최신성, 모든 non-DONE ID coverage·중복0, §7 실물/TSV 시간/WSL 메뉴 id, INCLUDE↔§7 일치, 미검토 live-plan, 충돌행을 실패로 처리한다. [new_handoff.py](../scripts/new_handoff.py)의 §7 골격은 FRONTIER_COVERAGE_NOT_VERIFIED를 명시하고, [wip.py](../scripts/wip.py)의 queue/핸드오프 지시 원장은 --close 때 정확한 --handoff를 요구해 [현재 frontier marker](../scripts/frontier_queue_gate.py)를 검사한 뒤에만 -done으로 옮긴다. 기존 static-audit hash gate는 그대로 선행한다.
+
+**실행 순서:** 현재 핸드오프의 §7을 확정 → frontier_queue_gate.py --prepare --handoff로 재사용 가능한 JSON 생성 → live-plan REVIEW_REQUIRED를 수동 disposition으로 채움 → §7에 출력 marker 한 개를 넣음 → 같은 도구 --check → codex-safe 정적 감사 → wip.py --close --static-audit ... --handoff ... . `--prepare`는 실험·GPU·모델을 실행하지 않고, `--check`는 읽기 전용이다. 진행 중 큐 잠금의 UNVERIFIED 행은 frontier/런처 접근을 피하고 종료를 거부해 기존 WIP를 열어 둔다.
+
+**검증 수준·잔여:** [격리 회귀](../scripts/test_frontier_queue_gate.py)는 누락 marker, stale source/queue, 빠진 ID, conflict, BAT→WSL SH 대응과 역사 MISSING/HOLD 보존을 확인한다. [WIP 회귀](../scripts/test_wip.py)는 queue 원장이 --handoff나 유효 marker 없이 닫히지 않음을 확인한다. 두 회귀는 [정적 묶음](../scripts/check_static_all.py)에 연결한다. 이는 C2의 코드/합성 정적 증거일 뿐 새 Codex 세션·사용자 smoke E2E나 M5 3회 운영 증거가 아니다. AUTO_NO_LAUNCHER 계획의 구현 가치·선결 우선순위는 별도 사람 감사로 남으며, C2가 모든 연구계획의 가치 평가를 자동 완료했다고 주장하지 않는다.
+
+**상태:** C2 코드·격리 회귀 PASS. 현재 handoff의 artifact는 non-DONE81/81·live 수동 INCLUDE2로 --check 오류0, 이번 실제 WIP close는 --handoff 누락 exit2로 거부하고 정확 handoff+static audit에서는 -done으로 닫혔다. 이는 **현재 로컬 종료 경로의 관찰**이지 신규 사용자 smoke·다른 세션 3회 운영 증거가 아니다. AUTO_NO_LAUNCHER79의 과학적 가치 심사와 M5는 미완료이므로 제안서 done 이관·전체 ACTIVE_VERIFIED는 선언하지 않는다.

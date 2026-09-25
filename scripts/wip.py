@@ -712,7 +712,16 @@ def _validate_static_audit(path: Path, audit_path: Path) -> None:
         )
 
 
-def close(path: Path, static_audit: Path | None = None) -> Path:
+def _requires_frontier_handoff(table) -> bool:
+    """Queue/handoff requests must not close without a current §7 frontier gate."""
+    return any(
+        re.search(r"핸드오프|handoff|권장.{0,10}실험|큐.{0,6}(?:편성|계획)", cells[1], re.I)
+        for _, _item_id, cells in table.rows
+    )
+
+
+def close(path: Path, static_audit: Path | None = None,
+          handoff_path: Path | None = None) -> Path:
     text = path.read_text(encoding="utf-8")
     table = parse_table(text)
     _require_v2(table)
@@ -728,6 +737,25 @@ def close(path: Path, static_audit: Path | None = None) -> Path:
         raise ValueError("this WIP requires --static-audit before close")
     if static_audit is not None:
         _validate_static_audit(path, static_audit.resolve())
+    if _requires_frontier_handoff(table):
+        if handoff_path is None:
+            raise ValueError("queue/handoff WIP close requires --handoff and current frontier coverage")
+        selected = handoff_path.resolve()
+        if (handoff_path.is_symlink() or not selected.is_relative_to(HANDOFF.resolve())
+                or not selected.is_file()):
+            raise ValueError("--handoff must name a non-symlink file under handoff/")
+        handoff_head = selected.read_text(encoding="utf-8")[:1600]
+        previous_ref = _metadata(text, "직전 핸드오프", "").strip("` ")
+        if previous_ref and previous_ref != "(없음)":
+            if f"]({Path(previous_ref).name})" not in handoff_head:
+                raise ValueError("--handoff previous-chain does not match this WIP")
+        closed_name = path.stem + "-done.md"
+        if path.name not in handoff_head and closed_name not in handoff_head:
+            raise ValueError("--handoff does not link this exact WIP")
+        from frontier_queue_gate import verify_handoff
+        frontier_errors = verify_handoff(ROOT, selected)
+        if frontier_errors:
+            raise ValueError("frontier queue gate failed: " + " | ".join(frontier_errors))
     target = path.with_name(path.stem + "-done.md")
     if target.exists():
         raise ValueError(f"close target already exists: {target.name}")
@@ -945,6 +973,7 @@ def main() -> int:
     parser.add_argument("--allow-concurrent", action="store_true")
     parser.add_argument("--concurrent-reason")
     parser.add_argument("--session-id", default=os.environ.get("CODEX_SESSION_ID", ""))
+    parser.add_argument("--handoff", help="exact finalized handoff; required for queue/handoff WIP close")
     parser.add_argument("--static-audit")
     args = parser.parse_args()
     try:
@@ -1005,7 +1034,8 @@ def main() -> int:
             return 0
         if args.close:
             audit_path = (ROOT / args.static_audit).resolve() if args.static_audit else None
-            target = close(path, audit_path)
+            handoff_path = (ROOT / args.handoff) if args.handoff else None
+            target = close(path, audit_path, handoff_path)
             print(f"CLOSED {target.relative_to(ROOT).as_posix()}; source preserved by rename")
             return 0
         if args.sync_count:

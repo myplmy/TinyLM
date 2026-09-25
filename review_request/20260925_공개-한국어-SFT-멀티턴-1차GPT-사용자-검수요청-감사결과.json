@@ -1,0 +1,1122 @@
+{
+  "artifact_schema_version": "1.0",
+  "audit": {
+    "title": "공개 한국어 SFT 멀티턴 1차 GPT 사용자 검수 — 감사 결과",
+    "audit_date": "2026-09-25",
+    "status": "FIRST_PASS_SAMPLE_REVIEW_COMPLETE_USER_FINAL_DECISION_PENDING",
+    "review_basis": "review_request/20260925_공개-한국어-SFT-멀티턴-1차GPT-사용자-검수요청.md §§1-6",
+    "source": {
+      "path": "HF/sft_sources/p090_empathetic_ko_9847cd2/Empathetic_data.jsonl",
+      "expected_sha256": "BC2B24FBEE11782071A9F84FBCEE615721F729ED31A01103E6755F80F9BC80C8",
+      "observed_sha256_before_content_read": "bc2b24fbee11782071a9f84fbcee615721f729ed31a01103e6755f80f9bc80c8",
+      "matched_before_read": true
+    },
+    "scope": {
+      "fixed_samples": {
+        "multi_2": 50,
+        "multi_3": 50,
+        "total": 100
+      },
+      "expected_type_mismatches": 0,
+      "marker_anomaly_index": 24932,
+      "marker_anomaly_separate_from_sample": true,
+      "non_sample_rows_content_reviewed": false,
+      "population_defect_rate_extrapolated": false,
+      "population_counts": {
+        "multi_2": 3812,
+        "multi_3": 14755,
+        "total_candidates": 18567
+      },
+      "sample_rates": {
+        "multi_2": "50/3812 = 1.31%",
+        "multi_3": "50/14755 = 0.34%",
+        "total": "100/18567 = 0.54%"
+      }
+    },
+    "sampling_note": "균형 고정 표본이며 모집단 비례 표본이 아니다. 100행 비율을 전체 18,567 후보 결함률로 환산하지 않음."
+  },
+  "counts": {
+    "overall": {
+      "denominator": 100,
+      "A_CANDIDATE": 64,
+      "REJECT": 20,
+      "UNCERTAIN": 16
+    },
+    "by_type": {
+      "multi_2": {
+        "denominator": 50,
+        "A_CANDIDATE": 35,
+        "REJECT": 8,
+        "UNCERTAIN": 7,
+        "reject_reason_code_counts": {
+          "FORMAT": 4,
+          "CONTEXT": 1,
+          "SAFETY": 2,
+          "KOREAN": 1
+        }
+      },
+      "multi_3": {
+        "denominator": 50,
+        "A_CANDIDATE": 29,
+        "REJECT": 12,
+        "UNCERTAIN": 9,
+        "reject_reason_code_counts": {
+          "SAFETY": 2,
+          "KOREAN": 7,
+          "CONTEXT": 2,
+          "FACT": 1
+        }
+      }
+    },
+    "reject_reason_code_counts": {
+      "FORMAT": 4,
+      "CONTEXT": 3,
+      "SAFETY": 4,
+      "KOREAN": 8,
+      "FACT": 1
+    }
+  },
+  "marker_sequence_anomaly": {
+    "raw_row_index_zero_based": 24932,
+    "type": "multi_3",
+    "field": "instruction",
+    "marker_sequence": "질문: → 답변: → 질문: → 답변: → 질문:",
+    "marker_positions_zero_based_unicode_codepoint": [
+      0,
+      26,
+      88,
+      124,
+      213
+    ],
+    "failure_type": "마지막 질문 마커 직전 assistant 발화와의 경계 구분자(줄바꿈/공백) 누락. 마커 카운트와 역할 순서는 정상이나 토큰 경계가 붙어 있음.",
+    "included_in_sample_denominator": false,
+    "auto_restored": false
+  },
+  "repeated_defect_patterns": [
+    {
+      "pattern": "운동 통증을 원인·강도 구분 없이 정상화하거나 한계를 무시하도록 권함",
+      "candidate_indices": [
+        15170,
+        23019,
+        12942,
+        18779
+      ]
+    },
+    {
+      "pattern": "placeholder를 실제 추천처럼 제시",
+      "candidate_indices": [
+        16779,
+        14988
+      ]
+    },
+    {
+      "pattern": "구체 추천 대신 질문을 반복하며 답변을 미룸",
+      "candidate_indices": [
+        23756,
+        5681,
+        4548,
+        22777,
+        21142
+      ]
+    },
+    {
+      "pattern": "한국어 비문·번역투·호응 오류",
+      "candidate_indices": [
+        11481,
+        16380,
+        18162,
+        18502,
+        272,
+        987,
+        13658,
+        21661
+      ]
+    },
+    {
+      "pattern": "우울·불면·무흥미 등 전문성 검토가 필요한 일반 조언",
+      "candidate_indices": [
+        5179,
+        5413,
+        1251,
+        8647,
+        16823,
+        16599
+      ]
+    }
+  ],
+  "broader_decisions": {
+    "license_and_individual_rights": "USER_FINAL_REVIEW_REQUIRED",
+    "evaluation_contamination": "NOT_ASSESSED",
+    "privacy_copy_policy": "USER_FINAL_REVIEW_REQUIRED; sample review found no obvious direct identifiers or long copied passages, absence is not proof",
+    "source_tree_dedup_and_train_val_split": "USER_FINAL_REVIEW_REQUIRED",
+    "Korean_quality_floor": "USER_FINAL_REVIEW_REQUIRED",
+    "train_ready": false
+  },
+  "external_fact_check_references": [
+    {
+      "supports_rows": [
+        15170,
+        23019
+      ],
+      "title": "Avoid workout injuries — Harvard Health",
+      "url": "https://www.health.harvard.edu/pain/avoid-workout-injuries"
+    },
+    {
+      "supports_rows": [
+        18779
+      ],
+      "title": "How much caffeine is safe? — Poison Control",
+      "url": "https://www.poison.org/articles/caffeine"
+    },
+    {
+      "supports_rows": [
+        14989
+      ],
+      "title": "What Is Sweat & Why Do We Sweat? — Cleveland Clinic",
+      "url": "https://my.clevelandclinic.org/health/body/sweat"
+    }
+  ],
+  "review_rows": [
+    {
+      "raw_row_index_zero_based": 16452,
+      "type": "multi_2",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "설정된 persona 없이 여행 경험을 1인칭으로 주장",
+      "suggested_action": "persona 기준 확인 후 판정",
+      "free_observation": "개인 경험을 가진 assistant처럼 답함"
+    },
+    {
+      "raw_row_index_zero_based": 13412,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "이사·재회 계획에 공감하고 연락 방법을 이어 물음",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 22777,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "한식 선호를 반영해 다음 선택을 물음",
+      "suggested_action": "잠정 유지",
+      "free_observation": "구체 요리 추천은 아직 나오지 않음"
+    },
+    {
+      "raw_row_index_zero_based": 20401,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "액션 영화 언급을 받아 선호 질문으로 연결",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 3402,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "바다 선호를 반영하고 지역을 확인",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 23756,
+      "type": "multi_2",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "FORMAT"
+      ],
+      "evidence": "추천을 직접 물었지만 구체 추천 없이 선택 질문만 제시",
+      "suggested_action": "샘플 제외; 추천 미제공 패턴 검색",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 9279,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "성취 경험을 받아 다음 목표를 물음",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 4548,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "SF 선호는 반영했으나 책 추천은 미제공",
+      "suggested_action": "잠정 유지",
+      "free_observation": "추가 취향 질문으로 추천을 미룸"
+    },
+    {
+      "raw_row_index_zero_based": 9737,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "초보·간단한 한식이라는 조건을 이어 물음",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 8105,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "커피가 그립다는 말을 인정하고 감량을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": "대체 음료 안내는 이어지지 않음"
+    },
+    {
+      "raw_row_index_zero_based": 16779,
+      "type": "multi_2",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "FORMAT"
+      ],
+      "evidence": "장소 답변에 XX 공원 placeholder 사용",
+      "suggested_action": "샘플 제외; placeholder 패턴 검색",
+      "free_observation": "실제 지역 정보가 없음"
+    },
+    {
+      "raw_row_index_zero_based": 4427,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "음악을 스트레스 대처로 받아들이고 장르 질문",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 20942,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "카페에서 책 읽기 계획을 자연스럽게 반영",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 21142,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "조깅에 맞는 거리·속도·시간 추적 기능 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": "앱 이름은 제시하지 않음"
+    },
+    {
+      "raw_row_index_zero_based": 9121,
+      "type": "multi_2",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "추천 식물명 피트로니아 확인 필요",
+      "suggested_action": "식물명 확인 후 판정",
+      "free_observation": "식물 전문 용어"
+    },
+    {
+      "raw_row_index_zero_based": 5859,
+      "type": "multi_2",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "CONTEXT"
+      ],
+      "evidence": "사용자 통증 언급 없이 앞 답변에서 허리 통증을 삽입",
+      "suggested_action": "샘플 제외; 근거 없는 개인 상태 삽입 검색",
+      "free_observation": "운동 조언의 전제가 대화에 없음"
+    },
+    {
+      "raw_row_index_zero_based": 11022,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "micro-control 어려움에 연습·개선으로 연결",
+      "suggested_action": "잠정 유지",
+      "free_observation": "첫 롤 의미는 모호했지만 후속 턴에서 구체화"
+    },
+    {
+      "raw_row_index_zero_based": 3316,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "클래식 음악을 스트레스 완화 취향에 맞춰 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 15170,
+      "type": "multi_2",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "SAFETY"
+      ],
+      "evidence": "원인 불명 통증을 정상 적응으로 단정하고 지속 운동을 권함",
+      "suggested_action": "샘플 제외; 통증 대응 패턴 검색",
+      "free_observation": "운동 통증과 근육통을 구별하지 않음"
+    },
+    {
+      "raw_row_index_zero_based": 21438,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "조용한 공원 산책을 받아 대화 지속",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 23810,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "기초 학습 요청에 학원·온라인 강의를 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 11481,
+      "type": "multi_2",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "KOREAN"
+      ],
+      "evidence": "독서가·거에요 등 부자연스러운 표현",
+      "suggested_action": "샘플 제외; 자연성 패턴 검색",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 21899,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "초보 서핑에 강습을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 7462,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "건성 피부 조건과 개인별 반응 주의를 함께 언급",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 9948,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "친구에게 감정을 말한 경험을 긍정적으로 받음",
+      "suggested_action": "잠정 유지",
+      "free_observation": "마지막 질문은 다소 교재식"
+    },
+    {
+      "raw_row_index_zero_based": 7919,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "해변 캠핑 계획을 자연스럽게 반영",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 539,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "사회학 관심을 사회문제 이해와 연결",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 17911,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "어두운 곳 촬영에 ISO·삼각대를 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 25113,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "매출 부진과 사업자 부담을 인정",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 2046,
+      "type": "multi_2",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "곡명 표기와 초급 적합성 확인 필요",
+      "suggested_action": "곡명·난이도 확인 후 판정",
+      "free_observation": "음악 교육 판단 포함"
+    },
+    {
+      "raw_row_index_zero_based": 4263,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "같은 취미의 사람을 만나고 싶은 선호를 반영",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 892,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "신입의 대화 어려움을 인정하고 작은 시작을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 11464,
+      "type": "multi_2",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "유기농 재배 기준 및 건강상 이점의 범위 불명확",
+      "suggested_action": "기준 지역·사실 확인 후 판정",
+      "free_observation": "기준이 지역별로 다를 수 있음"
+    },
+    {
+      "raw_row_index_zero_based": 16458,
+      "type": "multi_2",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "특정 원두명과 현행 판매 여부 확인 필요",
+      "suggested_action": "제품명·판매 상태 확인 후 판정",
+      "free_observation": "제품 추천 사실 미확인"
+    },
+    {
+      "raw_row_index_zero_based": 10603,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "저녁 시간이 없다는 조건에 주말 운동을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 1122,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "까르보나라를 만든 경험을 구체적으로 받아줌",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 1760,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "햇빛 드는 명상 순간을 반영",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 5968,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "가까운 공원 산책 계획에 반응",
+      "suggested_action": "잠정 유지",
+      "free_observation": "동물 관찰은 장소에 따라 다를 수 있음"
+    },
+    {
+      "raw_row_index_zero_based": 5681,
+      "type": "multi_2",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "FORMAT"
+      ],
+      "evidence": "가까운 스키장을 물었는데 위치 확인 없이 일반 검색만 안내",
+      "suggested_action": "샘플 제외; 필요한 지역 확인 후 재검",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 14988,
+      "type": "multi_2",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "FORMAT"
+      ],
+      "evidence": "책 추천 요청에 ABC 작가·XYZ placeholder 사용",
+      "suggested_action": "샘플 제외; placeholder 패턴 검색",
+      "free_observation": "인기작이라는 근거도 없음"
+    },
+    {
+      "raw_row_index_zero_based": 23488,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "마케팅 프로젝트의 진척을 인정하고 응원",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 23019,
+      "type": "multi_2",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "SAFETY"
+      ],
+      "evidence": "통증을 초기에 흔한 일로 단정하고 지속되면 줄 거라 함",
+      "suggested_action": "샘플 제외; 통증 대응 패턴 검색",
+      "free_observation": "통증 원인·강도 확인 없음"
+    },
+    {
+      "raw_row_index_zero_based": 16199,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "자연 속 휴식에 산책·피크닉을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 22603,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "자존감 저하를 알아차리고 질문으로 이어감",
+      "suggested_action": "잠정 유지",
+      "free_observation": "정서적 지지보다 질문 비중이 큼"
+    },
+    {
+      "raw_row_index_zero_based": 5179,
+      "type": "multi_2",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "우울감에 피아노가 기분 전환을 줄 것이라 단정",
+      "suggested_action": "정신건강 검토 후 판정",
+      "free_observation": "임상적 효과 주장으로 읽힐 수 있음"
+    },
+    {
+      "raw_row_index_zero_based": 16016,
+      "type": "multi_2",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "퇴직금 일부 사용·나머지 저축·투자를 제안",
+      "suggested_action": "재무 맥락 확인 후 판정",
+      "free_observation": "개인 재정 조언"
+    },
+    {
+      "raw_row_index_zero_based": 14531,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "시간관리·의사소통 학습 계획을 이어 물음",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 16614,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "외식 선호를 인정하고 집밥을 절충안으로 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 889,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "야간 근무 뒤 드라마로 쉬는 점을 받아줌",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 22196,
+      "type": "multi_2",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "로맨틱 코미디 선호를 반영",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 11398,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "교사·친구 도움 이후 다른 교재·강의를 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 18779,
+      "type": "multi_3",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "SAFETY"
+      ],
+      "evidence": "빠른 심박 뒤 간식·운동을 제안하고 증상 대응은 없음",
+      "suggested_action": "샘플 제외; 고카페인 증상 대응 검색",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 11179,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "휴식 시간 부족에 우선순위·시간관리를 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": "앞선 턴의 일반 조언이 반복됨"
+    },
+    {
+      "raw_row_index_zero_based": 16380,
+      "type": "multi_3",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "KOREAN"
+      ],
+      "evidence": "앞선 답변에 문장 구조가 성립하지 않는 구절 있음",
+      "suggested_action": "샘플 제외; 부자연 문장 패턴 검색",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 18498,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "가족과 가벼운 등산으로 푸는 방식을 반영",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 23137,
+      "type": "multi_3",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "CONTEXT"
+      ],
+      "evidence": "친구와 동생 관계를 가족 간 대우로 잘못 묶음",
+      "suggested_action": "샘플 제외; 관계 오해 패턴 검색",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 5413,
+      "type": "multi_3",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "우울감을 스트레스와 연결해 일반 휴식 활동을 제안",
+      "suggested_action": "정신건강 검토 후 판정",
+      "free_observation": "전문성 판단 유보"
+    },
+    {
+      "raw_row_index_zero_based": 4966,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "복잡한 수학 문제를 나누어 보라고 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 12942,
+      "type": "multi_3",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "SAFETY"
+      ],
+      "evidence": "요가가 힘들 때 자기 한계를 지키지 않아도 된다고 권함",
+      "suggested_action": "샘플 제외; 운동 안전 문구 검색",
+      "free_observation": "쉬어도 된다는 문장과 상충"
+    },
+    {
+      "raw_row_index_zero_based": 25321,
+      "type": "multi_3",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "히바리차의 실제 차종·문화 맥락 확인 필요",
+      "suggested_action": "명칭·문화 맥락 확인 후 판정",
+      "free_observation": "마음이 편해질 수밖에 없다는 단정"
+    },
+    {
+      "raw_row_index_zero_based": 3513,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "함께 영화를 보는 관심사를 따라감",
+      "suggested_action": "잠정 유지",
+      "free_observation": "최초 고백 조언 요청은 해결되지 않음"
+    },
+    {
+      "raw_row_index_zero_based": 1251,
+      "type": "multi_3",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "반복되는 우울감에 일반 스트레스 해소법 제안",
+      "suggested_action": "정신건강 검토 후 판정",
+      "free_observation": "전문성 판단 유보"
+    },
+    {
+      "raw_row_index_zero_based": 17871,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "신뢰 회복에 시간과 일관성이 필요하다고 답함",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 25709,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "짧은 집중·휴식과 공부 환경을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 8647,
+      "type": "multi_3",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "우울·피로에 긍정적 사고와 활동을 권함",
+      "suggested_action": "정신건강 검토 후 판정",
+      "free_observation": "증상 경중 정보 부족"
+    },
+    {
+      "raw_row_index_zero_based": 6143,
+      "type": "multi_3",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "앱 이름과 기능의 현행 여부·플랫폼 미확인",
+      "suggested_action": "앱 정보 확인 후 판정",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 21457,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "요가와 균형감·안정감 경험을 반영",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 5293,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "소음 문제 뒤 일반 집중 방법과 계획을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": "구체적인 소음 차단법은 제한적"
+    },
+    {
+      "raw_row_index_zero_based": 22521,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "자료 탐색 어려움에 주변 도움을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 13103,
+      "type": "multi_3",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "CONTEXT"
+      ],
+      "evidence": "잠들기 어려움·아침 알람 맥락에 공포소설을 긍정하고 수면 목표를 놓침",
+      "suggested_action": "샘플 제외; 수면 맥락 보존 패턴 검색",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 16055,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "친구를 만나기 어려운 외로움에 모임 탐색을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 18162,
+      "type": "multi_3",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "KOREAN"
+      ],
+      "evidence": "앞선 답변의 시험에 분주했던 상황이 부자연스러움",
+      "suggested_action": "샘플 제외; 자연성 패턴 검색",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 21795,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "버린 음식에 공감함",
+      "suggested_action": "잠정 유지",
+      "free_observation": "새 냉장고 구매 질문은 다소 비약적"
+    },
+    {
+      "raw_row_index_zero_based": 16599,
+      "type": "multi_3",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "업무·건강 문제에 따른 불면을 말했지만 구체 수면 대책 없이 되묻음",
+      "suggested_action": "건강 맥락 확인 후 판정",
+      "free_observation": "불면·건강 문제 동반"
+    },
+    {
+      "raw_row_index_zero_based": 5449,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "주인공 감정 이해 문제를 구체 예시로 확인",
+      "suggested_action": "잠정 유지",
+      "free_observation": "조언보다 추가 질문 중심"
+    },
+    {
+      "raw_row_index_zero_based": 15697,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "우선순위·도움 요청의 어려움을 이어 다룸",
+      "suggested_action": "잠정 유지",
+      "free_observation": "구체적인 업무 조정안은 적음"
+    },
+    {
+      "raw_row_index_zero_based": 16655,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "업무 분담을 동료와 논의하도록 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 11053,
+      "type": "multi_3",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "assistant가 공원 탐방을 자신의 취미라고 주장",
+      "suggested_action": "persona 기준 확인 후 판정",
+      "free_observation": "설정된 persona 없음"
+    },
+    {
+      "raw_row_index_zero_based": 16823,
+      "type": "multi_3",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "여러 활동이 모두 재미없다는 말에 일반 취미 탐색을 권함",
+      "suggested_action": "정신건강 검토 후 판정",
+      "free_observation": "무흥미 증상의 맥락 확인 필요"
+    },
+    {
+      "raw_row_index_zero_based": 4098,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "서두르지 말고 비교하라는 응답은 맥락에 맞음",
+      "suggested_action": "잠정 유지",
+      "free_observation": "선호한 스타일 추천은 아직 없음"
+    },
+    {
+      "raw_row_index_zero_based": 18502,
+      "type": "multi_3",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "KOREAN"
+      ],
+      "evidence": "썬더한 수박은 명백한 어휘 오류",
+      "suggested_action": "샘플 제외; 어휘 오류 패턴 검색",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 645,
+      "type": "multi_3",
+      "verdict": "UNCERTAIN",
+      "reason_codes": [],
+      "evidence": "충분히 자도 피곤하다는 말에 식단만 일반 권고",
+      "suggested_action": "건강 맥락 확인 후 판정",
+      "free_observation": "원인 감별 정보 부족"
+    },
+    {
+      "raw_row_index_zero_based": 25717,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "체력이 낮다는 조건에 짧은 걷기부터 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 14141,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "스트레스·피로에 휴식·계획·운동을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 13658,
+      "type": "multi_3",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "KOREAN"
+      ],
+      "evidence": "단수 사용자에게 여러분을 쓰는 등 호응이 어색함",
+      "suggested_action": "샘플 제외; 호응 오류 패턴 검색",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 25374,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "반복 비판·따돌림에 거리 두기와 지지 관계를 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 14989,
+      "type": "multi_3",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "FACT"
+      ],
+      "evidence": "핫요가의 땀을 디톡스 효과로 단정",
+      "suggested_action": "샘플 제외; 건강 오정보 패턴 검색",
+      "free_observation": "과도한 땀이 해독한다는 근거 부족"
+    },
+    {
+      "raw_row_index_zero_based": 272,
+      "type": "multi_3",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "KOREAN"
+      ],
+      "evidence": "앞선 답변의 친구와 함께 시간을 보는이 부자연스러움",
+      "suggested_action": "샘플 제외; 번역투 패턴 검색",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 10425,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "우선순위 이후에도 힘든 점에 휴식·스트레스 해소 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 987,
+      "type": "multi_3",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "KOREAN"
+      ],
+      "evidence": "앞선 답변의 저희가 마음이 어두워지고가 비문에 가까움",
+      "suggested_action": "샘플 제외; 문장 오류 패턴 검색",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 21661,
+      "type": "multi_3",
+      "verdict": "REJECT",
+      "reason_codes": [
+        "KOREAN"
+      ],
+      "evidence": "힘들어지는 건 어렵죠가 의미상 성립하지 않음",
+      "suggested_action": "샘플 제외; 문장 오류 패턴 검색",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 3567,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "흥미를 느꼈던 한자 공부로 돌아가도록 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": "결과를 보장하는 표현은 다소 강함"
+    },
+    {
+      "raw_row_index_zero_based": 6387,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "혼자 공부가 어려운 상황에 스터디·교사 도움을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 5361,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "음악과 공부 집중에 관한 사용자의 생각을 받음",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 5938,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "마지막 동료 소통 문제에 대화·존중을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": "앞선 수면 부족 문제는 미해결"
+    },
+    {
+      "raw_row_index_zero_based": 9981,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "명상 시작에 장소·시간·호흡 집중을 제안",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 9991,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "사과·대화로 화해 중인 점을 긍정",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 1572,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "온라인 동행자 만남에 공공장소·개인정보 주의를 안내",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 70,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "수면 방해 요인과 마지막 스트레스 질문을 연결",
+      "suggested_action": "잠정 유지",
+      "free_observation": ""
+    },
+    {
+      "raw_row_index_zero_based": 5860,
+      "type": "multi_3",
+      "verdict": "A_CANDIDATE",
+      "reason_codes": [],
+      "evidence": "이미 시도 중인 명상·음악을 인정",
+      "suggested_action": "잠정 유지",
+      "free_observation": "후속 세부 질문으로 마무리"
+    }
+  ]
+}
+
