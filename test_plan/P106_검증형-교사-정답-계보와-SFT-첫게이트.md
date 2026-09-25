@@ -21,9 +21,9 @@ Q1~Q3의 합성 계약은 모델 없이 PASS 가능하지만 필드 진술만으
 
 ## 4. 단계 설계
 
-### Stage0W — 무모델 데이터계약·음성 fixture PASS, 교사 정답성 NOT_RUN
+### Stage0W — 무모델 데이터계약·음성 fixture 사용자 실행 완료(결과098), 교사 정답성 NOT_RUN
 
-[독립 검사기](../scripts/diag_p106_verified_teacher_contract.py)와 [사용자 SH](../run_P106_Stage0W_verified_teacher_contract.sh)는 합성 ACCEPT/REJECT/UNKNOWN, teacher 자기판정 거부, split 조상 누출, token ID target 거부, canonical assistant-only 문자 span을 검증한다. 원문/교사모델/HF/GPU 접근0. 검사기가 출력할 수 있는 것은 레코드 수·해시 ID·오류 이유코드뿐이며 이 PASS는 정답 검증 PASS가 아니다.
+[독립 검사기](../scripts/diag_p106_verified_teacher_contract.py)와 사용자 `run_P106_Stage0W_verified_teacher_contract.sh`는 합성 ACCEPT/REJECT/UNKNOWN, teacher 자기판정 거부, split 조상 누출, token ID target 거부, canonical assistant-only 문자 span을 검증해 [결과098](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)에 남겼다. 재현명령 보존 뒤 SH는 삭제 대상으로 이관됐다. 원문/교사모델/HF/GPU 접근0이며 이 PASS는 정답 검증 PASS가 아니다.
 
 ### G0a — 공급자/교사 자산과 소규모 개발 pilot
 
@@ -67,3 +67,4 @@ Stage0W의 무모델 계약만 실물로 만든다. G0a/G0b teacher launcher는 
 ## 9. 실행 이력 / 갱신
 
 - 2026-09-25: 사용자 §10.3 권장 순서 승인. Stage0W 검사기의 합성 ACCEPT/REJECT/UNKNOWN·teacher 자기판정 거부·split 조상 중복·문자열 target·assistant span fixture가 직접 PASS했고 SH 문법/entrypoint도 PASS다. 이는 **계약 구조만** 검증한다. G0 teacher 자산·실제 독립 정답성·A0 SFT는 권리·사람 품질과 별도 사용자 실행 전 `NOT_RUN`; [검수요청 §7](../review_request/20260925_공개-한국어-SFT-멀티턴-1차GPT-사용자-검수요청.md)을 A0 사람 선결로 둔다.
+- 2026-09-25: 사용자 [Stage0W 원본](../test_result/098_log_20260925_P106_Stage0W_verified_teacher_contract.txt) exit0 회수. 합성 accepted/reject/unknown 각1, negative6·교차 split 누출1 거부로 Q1~Q3 구조 예측을 재확인했다([결과098](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)). Q4 실제 교사 3후보의 라이선스·정답·비용과 A0 SFT는 `NOT_RUN`; 교사 선정 없음.
