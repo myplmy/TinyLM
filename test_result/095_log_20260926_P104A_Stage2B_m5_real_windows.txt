@@ -1,0 +1,34 @@
+P104A same real d14 checkpoint Windows capture; no training checkpoint write.
+
+==============================================================================
+[runlog] 2026-09-26 06:18:49  name=P104A_Stage2B_m5_real_windows
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python -B -X utf8 scripts\check_m5_real_bridge.py --self-test
+==============================================================================
+[PASS] P104A real M5 SHA/coverage/numeric and negative fixtures; GPU/model NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 06:18:49)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-26 06:18:50  name=P104A_Stage2B_m5_real_windows
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python -B -X utf8 scripts\diag_m5_real_bridge.py --platform windows --out runs/bench/p104a_m5_real_windows.json --check-only
+==============================================================================
+[CHECK_ONLY] P104A real windows: output=p104a_m5_real_windows.json, model/GPU/data NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 06:18:50)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-26 06:18:51  name=P104A_Stage2B_m5_real_windows
+[runlog] cwd=z:\TinyLM
+[runlog] cmd=python -B -X utf8 scripts\diag_m5_real_bridge.py --platform windows --out runs/bench/p104a_m5_real_windows.json
+==============================================================================
+[MEASURED] M5 real windows: windows=2929 CE=3.55091185 step_CE=3.17555141 post_CE=3.17782569 grad=3.63026071 step_ms=231.555
+[EVIDENCE] \\wsl.localhost\Ubuntu\home\uranus\tinyLM\runs\bench\p104a_m5_real_windows.json; compare with the other OS only when checkpoint/code/input SHA match
+[LIMIT] full fixed-val CE and one SGD step are not 300M training reproducibility or OS-only speed attribution
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.8분  (2026-09-26 06:19:40)
+==============================================================================
+Read the Windows JSON and run the WSL companion on the identical checkpoint before comparing CE and gradient; wall ratios are descriptive.

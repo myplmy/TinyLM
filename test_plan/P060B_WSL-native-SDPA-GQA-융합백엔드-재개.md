@@ -175,7 +175,7 @@ recipe stratum에서 default dispatcher 후보가 학습에도 전이하는지 �
 
 ## 11. 2026-09-26 Stage2bW 실물화 — cache/decode 네 경로 사용자 게이트
 
-§10의 queue-locked 문장은 **당시 잠금 이력**이다. 사용자 큐가 끝나 [WSL SH](../run_P060B_Stage2bW_gqa_cache_attribution.sh)를 새 단계 구분자 Stage2bW로 작성했다. 동일한 기존 dense checkpoint m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt와 Stage2W의 NRMS≤0.001·cosine≥0.999999·최대 속도대가5%·최소 이득5%를 고정하고, 새 학습·새 태그·기존 로그 덮어쓰기는 0이다. 차이는 Stage2W의 첫 실패 즉시 중단 대신 seq128/512/1023/1024에서 cache on/off×decode on/off 네 경로와 첫 어긋난 층, bf16 대 MATH 정밀도 귀속을 **끝까지 수집**하는 것이다.
+§10의 queue-locked 문장은 **당시 잠금 이력**이다. 사용자 큐가 끝나 WSL SH `run_P060B_Stage2bW_gqa_cache_attribution.sh`를 새 단계 구분자 Stage2bW로 작성했다(명령은 [결과088 §11](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)에 보존). 동일한 기존 dense checkpoint m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt와 Stage2W의 NRMS≤0.001·cosine≥0.999999·최대 속도대가5%·최소 이득5%를 고정하고, 새 학습·새 태그·기존 로그 덮어쓰기는 0이다. 차이는 Stage2W의 첫 실패 즉시 중단 대신 seq128/512/1023/1024에서 cache on/off×decode on/off 네 경로와 첫 어긋난 층, bf16 대 MATH 정밀도 귀속을 **끝까지 수집**하는 것이다.
 
 | preflight 축 | 판정·근거 |
 |---|---|
@@ -188,5 +188,7 @@ recipe stratum에서 default dispatcher 후보가 학습에도 전이하는지 �
 | G 판정 | CPU fixture exit0·셸 구문 PASS. 사용자 실물에서 0 후보, 4 정합/텍스트 음성, 5 backend 장애, 8 유효 속도/메모리 음성. 4·8은 큐 과학적 음성 코드, 5는 실행 실패 |
 
 독립 CPU 판정 회귀 scripts/test_sdpa_gqa_attribution_gate.py는 후보·정합·runtime·효익 음성 분기를 통과했다. 사용자 새 smoke가 이번 변경에 PASS한 뒤에만 SH를 권한다. Stage2bW가 원인 귀속을 해도 default sdpa_gqa는 계속 off이며 실제 모델 품질·전체 추론 채택은 별개다.
+
+2026-09-26 [088 결과 §11](../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md): Stage2bW는 실물에서 종료4 정합 음성이다. 동일 prefill/KV와 FP32 MATH 대조는 같지만 BF16 decode가 첫 층부터 갈리고 NRMS가 문턱 0.001을 넘었다. on/off decode가 1.14~2.08배 느려지는 방향이며 일부 peak allocation도 늘었다. 기본 GQA off 유지; 원인 수치 정합과 whole-model 품질을 분리한다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

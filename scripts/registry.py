@@ -78,7 +78,7 @@ DEFAULTS = {
     "opt_dtype": "fp32", "ema": 0.0, "arenas": False, "arena_lambda": 0.0,
     "anneal_shape": "linear", "anneal_end": 0.60, "decay_frac": 0.2, "seed": 1337,
     "sched": "cosine", "grad_ckpt": True, "exact_cache": False, "init_from": False,
-    "depth_init": "zip", "group_init": "mean",
+    "depth_init": "zip", "group_init": "mean", "attn_group_init": "mean",
     "cla_group": 1, "cla_edges": True, "attn_group": 1,
     "mlp_group": 1, "train_repeat": 1.0, "repeat_mode": "uniform", "emb_init": None,
     "tokenizer_hf": None, "doc_filter": False, "micro_bs": 8, "accum": 8, "seq": 1024,

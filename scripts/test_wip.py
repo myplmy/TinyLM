@@ -284,6 +284,19 @@ class WipV2Tests(unittest.TestCase):
             target = WIP.close(path, audit, handoff)
         self.assertTrue(target.exists())
 
+    def test_previous_chain_accepts_intervening_handoff_and_rejects_cycle(self) -> None:
+        original = self.handoff / "prev_HANDOFF.md"
+        intervening = self.handoff / "middle_HANDOFF.md"
+        latest = self.handoff / "latest_HANDOFF.md"
+        original.write_text("- **이전**: [none](none_HANDOFF.md)\n", encoding="utf-8")
+        intervening.write_text("- **이전**: [prev](prev_HANDOFF.md)\n", encoding="utf-8")
+        latest.write_text("- **이전**: [middle](middle_HANDOFF.md)\n", encoding="utf-8")
+        self.assertTrue(WIP._handoff_previous_chain_contains(latest, original.name))
+        intervening.write_text("- **이전**: [latest](latest_HANDOFF.md)\n", encoding="utf-8")
+        self.assertFalse(WIP._handoff_previous_chain_contains(latest, original.name))
+        intervening.write_text("- **이전**: [escape](../prev_HANDOFF.md)\n", encoding="utf-8")
+        self.assertFalse(WIP._handoff_previous_chain_contains(latest, original.name))
+
 
 
     def test_blocked_remains_incomplete_and_cannot_close(self) -> None:

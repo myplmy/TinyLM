@@ -1,0 +1,43 @@
+P104A identical real d14 checkpoint Windows/WSL fixed-val and one-step bridge; WSL follows Windows.
+
+==============================================================================
+[runlog] 2026-09-26 06:19:56  name=P104A_Stage2W_m5_real_bridge
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/check_m5_real_bridge.py --self-test
+==============================================================================
+[PASS] P104A real M5 SHA/coverage/numeric and negative fixtures; GPU/model NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 06:19:56)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-26 06:19:56  name=P104A_Stage2W_m5_real_bridge
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_m5_real_bridge.py --platform wsl --out runs/bench/p104a_m5_real_wsl.json --check-only
+==============================================================================
+[CHECK_ONLY] P104A real wsl: output=p104a_m5_real_wsl.json, model/GPU/data NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 06:19:56)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-26 06:19:56  name=P104A_Stage2W_m5_real_bridge
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_m5_real_bridge.py --platform wsl --out runs/bench/p104a_m5_real_wsl.json
+==============================================================================
+[MEASURED] M5 real wsl: windows=2929 CE=3.55092996 step_CE=3.17860508 post_CE=3.17737389 grad=3.63684893 step_ms=223.129
+[EVIDENCE] /home/uranus/tinyLM/runs/bench/p104a_m5_real_wsl.json; compare with the other OS only when checkpoint/code/input SHA match
+[LIMIT] full fixed-val CE and one SGD step are not 300M training reproducibility or OS-only speed attribution
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.6분  (2026-09-26 06:20:33)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-26 06:20:33  name=P104A_Stage2W_m5_real_bridge
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/check_m5_real_bridge.py --win runs/bench/p104a_m5_real_windows.json --wsl runs/bench/p104a_m5_real_wsl.json --max-ce-abs 0.01 --max-grad-rel 0.10
+==============================================================================
+eval_ce_abs=1.8116475e-05 one_step_ce_abs=0.0030536652 post_step_ce_abs=0.00045180321 grad_norm_rel=0.0018115189 [FUNCTIONAL_BRIDGE_PASS; full M5 quality NOT_RUN]; fixed_val_windows=2929 eval_wall_windows_over_wsl=1.0350 one_step_wall_windows_over_wsl=1.0378 [REAL_CHECKPOINT_FUNCTIONAL_PASS; OS speed and 300M training equivalence NOT_DECIDED]
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 06:20:33)
+==============================================================================

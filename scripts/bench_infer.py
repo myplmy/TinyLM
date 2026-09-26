@@ -47,6 +47,17 @@ DEFAULT_MODELS = [
 PROMPT = "대한민국의 수도 서울은"          # 학습 분포 안. 길이는 --prompt-tokens 로 패딩
 
 
+def _speed_transition_verdict(storage_ratio: float, resident_ratio: float, speed_ratio: float) -> str:
+    """Descriptive readout only; tied denominators cannot explain a speed gap."""
+    if abs(speed_ratio - 1.0) <= 0.03:
+        return "속도비~1.0(3% 이내)"
+    if abs(storage_ratio - 1.0) <= 0.03 and abs(resident_ratio - 1.0) <= 0.03:
+        return "속도차 원인 미귀속(저장·상주 동률)"
+    if abs(speed_ratio - resident_ratio) < abs(speed_ratio - storage_ratio):
+        return "상주비에 가까움(인과 미확정)"
+    return "저장비에 가까움(인과 미확정)"
+
+
 # ★★2026-08-29 (사용자 지적) — **CPU 측정이 다른 프로세스에 오염됐을 수 있다.**
 #
 #   결과 014 §12 의 배포경로 수(12.50 tok/s 등)는 **Windows 데스크톱에서 잰 것**이고,
@@ -425,14 +436,12 @@ def main():
                 print(f"    {'모델':16} {'저장비':>7} {'상주비':>7} {'속도비':>7}   판정")
                 for _, _nt, tag, mb, r, _t, _c, rt in sub[1:]:
                     sp, st, rr = base_pk / mb, base_rt / rt, r / base_rate
-                    # 어느 축을 따라가는지 기계적으로 판정한다(눈대중 금지)
-                    d_pk, d_rt, d_1 = abs(rr - sp), abs(rr - st), abs(rr - 1.0)
-                    verdict = ("전이 없음(속도비~1.0)" if d_1 <= min(d_pk, d_rt)
-                               else "상주를 따라감" if d_rt < d_pk else "저장을 따라감")
+                    # 저장·상주 비가 함께 1 근처면 그 어느 쪽도 속도 차를 설명하지 못한다.
+                    verdict = _speed_transition_verdict(sp, st, rr)
                     print(f"    {tag:16} {sp:6.2f}x {st:6.2f}x {rr:6.2f}x   {verdict}")
-        print("\n  읽는 법: 속도비가 1.0 근처면 **전이 없음** — 가중치가 GEMM 직전에 fp32 로")
-        print("           dequant 되기 때문이다. 그것이 P034 단계2~4 가 존재하는 이유이고,")
-        print("           음성 결과이지 실패가 아니다.")
+        print("\n  읽는 법: 속도비가 1.0의 3% 이내면 관측상 속도 변화가 작다.")
+        print("           저장·상주 비가 둘 다 1 근처인데 속도만 변하면 원인은 미귀속이다.")
+        print("           비율 근접성만으로 dequant·캐시·클럭의 인과를 확정하지 않는다.")
         if a.both_cache:
             print("\n★캐시 이득(같은 모델, on/off):")
             for dev, nt, tag, mb, r, _t, c, _rt in rows:

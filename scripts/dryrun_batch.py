@@ -61,9 +61,10 @@ CALL = re.compile(r"^\s*python\s+(?:scripts\\runlog\.py[^\n]*?--\s+python\s+)?"
 SHELL_PY = (r'(?:"\$(?:python_bin|TLM_PY)"|'
             r'\$(?:python_bin|TLM_PY)|'
             r'/[^\s"]*python(?:3(?:\.\d+)?)?)')
+SHELL_FLAGS = r'(?:[ \t]+(?:-B|-I|-X[ \t]+utf8))*'
 SHELL_CALL = re.compile(
-    rf"^\s*(?:exec\s+)?{SHELL_PY}\s+scripts/runlog\.py\b.*?\s--\s+"
-    rf"{SHELL_PY}\s+([\w/.-]+\.py)\s+(.*)$",
+    rf"^[ \t]*(?:exec[ \t]+)?{SHELL_PY}[ \t]+scripts/runlog\.py\b.*?[ \t]--[ \t]+"
+    rf"{SHELL_PY}{SHELL_FLAGS}[ \t]+([\w/.-]+\.py)[ \t]+(.*)$",
     re.I | re.M,
 )
 
@@ -259,6 +260,15 @@ def show(r: dict, strict_hits: list):
             if field in SILENT_COSTLY:
                 silent.append(field)
         print(f"     {field:<14}{str(given):>12}{str(b):>12}{str(e):>12}   {note}")
+
+    mlp_init = got.get("--group-init", "mean")
+    attn_init = got.get("--attn-group-init", mlp_init)
+    print(f"     부모집약 MLP={mlp_init} attention={attn_init} "
+          f"({'명시 분리' if '--attn-group-init' in got else '기존 규약 계승'})")
+    if "--attn-group-init" in got and (
+            r["arch"] != "tied" or "--init-from" not in got or eff.attn_group <= 1):
+        strict_hits.append(f"{tag}: attn-group-init needs tied init-from and attn-group>1")
+        print("     🚫attn-group-init 은 tied 부모이식·ag2 이상에서만 의미가 있다")
 
     # ── 파생량 ────────────────────────────────────────────────────────────
     steps = _num(got.get("--steps", 3000), int) or 0

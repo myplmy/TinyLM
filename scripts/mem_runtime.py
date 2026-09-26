@@ -42,6 +42,11 @@ DEFAULT_MODELS = [("p6d", "dense"), ("mC_g8_k4", "tied"), ("mA_g4s34_k4", "tied"
 PROMPT = "대한민국의 수도 서울은"          # 한글이라 .bat 가 아니라 여기 산다
 
 
+def _fp32_one_copy_bound_applies(*, lut: bool, int8_store: bool) -> bool:
+    """The 2x upper bound assumes removing only one of two FP32 copies."""
+    return not (lut or int8_store)
+
+
 def rss_mb():
     try:
         import psutil
@@ -414,12 +419,13 @@ def main():
                 continue
             print(f"  {tag:>16} {res:9.1f} {res2:9.1f} {res/res2:7.2f}x "
                   f"{_drop_gate(dmax, a.lut):>18}")
-        if a.lut:
+        if not _fp32_one_copy_bound_applies(lut=a.lut, int8_store=getattr(a, "int8_store", False)):
             # ★★2026-08-31 정정 — 종전에는 이 표가 `dmax == 0.0` 을 그대로 물어
             #   `--lut` 런에서 **언제나 ★실패**를 찍었다. 바로 위 모델별 절이
             #   *"0 이 아닌 것이 정상"* 이라고 인쇄하는 동안이다(함정 18 · 함정 38).
-            print("\n  · ★**LUT 경로이므로 이론 상한 2.00배가 적용되지 않는다** — "
-                  "삼진 항이 4B x 2벌에서 1.600bpw 로 바뀌므로 감축이 2 를 크게 넘는 것이 정상이다.")
+            _format = "LUT 1.600bpw" if a.lut else "INT8 저장 코드"
+            print(f"\n  · ★**{_format} 경로이므로 FP32 latent 한 벌 제거의 이론 상한 2.00배가 적용되지 않는다** — "
+                  "저장 코드·스케일의 비트폭이 별도 변수이므로 2배 초과 수치도 가능하다.")
             print("  · 🚫**로짓 차이로 품질을 판정하지 않는다** — 품질은 "
                   "`paired_eval`/`common_bpb` 가 소유한다(함정 34).")
         else:

@@ -435,3 +435,70 @@ full-val을 정본으로 쓴다. 로그의 W&B `reinit` deprecation은 upload �
    "$python_bin" scripts/paired_eval.py --preset m100s10 --data ko-en --tokens 300M      --models p060b_q_off_s2024 p060b_q_on_s2024      --dump-crops runs/logs/p060b_gqa_quality_s2024.json || exit $?
    "$python_bin" scripts/paired_eval.py --preset m100s10 --data ko-en --tokens 300M      --models p060b_q_off_s31415 p060b_q_on_s31415      --dump-crops runs/logs/p060b_gqa_quality_s31415.json
 ```
+
+## 11. 2026-09-26 Stage2bW — 캐시는 같고 BF16 decode 수치·비용이 실패했다
+
+사용자 원본 [`088_log_20260926_P060B_Stage2bW_gqa_cache_attribution.txt`](088_log_20260926_P060B_Stage2bW_gqa_cache_attribution.txt). exit0 fixture 뒤 실제 d14 RMS4 모델 진단은 **exit4 사전 정의된 agreement 실패**다. 도구 예외나 모델 미실행이 아니다. `seq=1024` decode는 최대 context가 이미 찼으므로 명시 `NOT_RUN`; 128/512/1023 세 길이만 decode 분모다.
+
+| 길이 | BF16 decode-only on 대 off NRMS | FP32 MATH 동일 대조 | on/off 같은 cache decode 지연비 | on의 peak 감소율 |
+|---:|---:|---|---:|---:|
+| 128 | **0.008208** | 출력 정확 일치 | **2.083×**(느림) | 0.0% |
+| 512 | **0.008184** | 출력 정확 일치 | **1.231×**(느림) | **−40.3%**(증가) |
+| 1023 | **0.004400** | 출력 정확 일치 | **1.136×**(느림) | **−68.4%**(증가) |
+
+사전 문턱은 NRMS≤0.001·cosine≥0.999999, slowdown≤1.05·peak 절감≥5%다. BF16 decode-only는 세 길이 전부 수치 문턱을 넘었고 속도·메모리도 채택 방향과 반대다. prefill on/off와 cache-only on/off는 전 길이에서 동일했으며 각 CLA owner의 K/V cache 차도 0이었다. 첫 차는 BF16 decode의 첫 attention layer0에서 보였고 FP32 MATH 경로에서는 사라졌다. 따라서 **캐시 내용 불일치보다 BF16 decode 연산/커널 경로 차이가 원인 후보**라는 귀속은 타당하지만, 정확한 저수준 커널 원인까지 이 로그가 증명하지는 않는다. 세 텍스트 프롬프트의 그리디 문자열 일치는 수치·속도 실패를 무효화하지 않는다.
+
+### 11.1 조건 서명 — 같은 체크포인트의 BF16 decode 경로
+
+<!-- TINYLM_CONDITION_SIGNATURE_V1 id=P060B_STAGE2BW_BF16_DECODE -->
+| field | arm_a | arm_b | evidence |
+|---|---|---|---|
+| pool_id | NOT_APPLICABLE | NOT_APPLICABLE | 추론 진단, 학습 없음 |
+| actual_pool_tokens | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| pool_override | NO | NO | 데이터 재구성 없음 |
+| steps | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| micro_bs | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| accum | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| seq | 128,512,1023 | 128,512,1023 | 같은 세 길이 |
+| actual_draw_tokens | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| sampler_with_replacement | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| expected_unique_tokens | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| sequential_epoch_claim | NO | NO | epoch 없음 |
+| scheduler | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| warmup | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| anneal_start | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| decay_fraction | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| absolute_schedule_horizon | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| train_language_expected | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| train_language_observed | NOT_APPLICABLE | NOT_APPLICABLE | 학습 없음 |
+| eval_dataset | SAME_FIXED_PROMPTS | SAME_FIXED_PROMPTS | 같은 진단 입력 |
+| eval_language | KO_EN_PROMPTS | KO_EN_PROMPTS | 세 그리디 문자열은 보조 |
+| tokenizer | ko-en CLI | ko-en CLI | 동일 모델·입력 |
+| grad_ckpt | NO | NO | 추론 |
+| checkpoint | d14_cla2_norecur_rms4 | d14_cla2_norecur_rms4 | 같은 파일 |
+| precision | BF16 | BF16 | 같은 정밀도 |
+| cache_route | OFF | OFF | decode-only 귀속에서 cache off 고정 |
+| sdpa_gqa_decode | OFF | ON | 유일한 경로 변경 |
+| comparator_tag | P060B_OFF_OFF | P060B_ON_OFF | 같은 cache 상태 |
+| matched_axes | pool_id,actual_pool_tokens,pool_override,steps,micro_bs,accum,seq,actual_draw_tokens,sampler_with_replacement,expected_unique_tokens,sequential_epoch_claim,scheduler,warmup,anneal_start,decay_fraction,absolute_schedule_horizon,train_language_expected,train_language_observed,eval_dataset,eval_language,tokenizer,grad_ckpt,checkpoint,precision,cache_route | pool_id,actual_pool_tokens,pool_override,steps,micro_bs,accum,seq,actual_draw_tokens,sampler_with_replacement,expected_unique_tokens,sequential_epoch_claim,scheduler,warmup,anneal_start,decay_fraction,absolute_schedule_horizon,train_language_expected,train_language_observed,eval_dataset,eval_language,tokenizer,grad_ckpt,checkpoint,precision,cache_route | 진단 통제축 |
+| changed_axes | sdpa_gqa_decode | sdpa_gqa_decode | decode 경로만 변경 |
+| unmeasured_axes | NONE | NONE | 저수준 kernel ID는 not_run_claims |
+| not_run_claims | KERNEL_ROOT_CAUSE,TRAINING_QUALITY,DEPLOYMENT,SEQ1024_DECODE | KERNEL_ROOT_CAUSE,TRAINING_QUALITY,DEPLOYMENT,SEQ1024_DECODE | 이 진단의 한계 |
+| permitted_claim | DESCRIPTIVE_ONLY | DESCRIPTIVE_ONLY | 경로 귀속 진단, 기본 채택 아님 |
+<!-- /TINYLM_CONDITION_SIGNATURE_V1 -->
+
+기본 GQA off를 유지한다. 후속을 연다면 BF16 decode kernel 경로와 FP32 대조의 연산 차를 먼저 좁히고, 속도/peak를 같은 host에서 다시 확인해야 한다. 현 수치에서 문턱을 임의 완화하거나 그리디 3/3 일치만으로 수치 FAIL을 PASS로 바꾸지 않는다.
+
+---
+
+## ★부록 — 재현 명령 정본 (`run_P060B_Stage2bW_gqa_cache_attribution-done.sh` 추출, 2026-09-26)
+
+> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).
+> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.
+
+```
+"$python_bin" -B -X utf8 scripts/test_sdpa_gqa_attribution_gate.py
+"$python_bin" -B -X utf8 scripts/diag_sdpa_gqa_deploy_attribution.py    --ckpt "$ckpt" --arch dense --data ko-en --seqs 128,512,1023,1024    --max-new 32 --warmup 2 --iters 5 --max-nrms 0.001    --min-cosine 0.999999 --max-slowdown 1.05 --min-benefit 0.05
+```
+
+이 SH의 재현 변수는 `cd /home/uranus/tinyLM`, `python_bin=/home/uranus/miniforge3/envs/tlm_torch/bin/python`, `ckpt=runs/ckpt/m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt`다. 종료 4 음성 자체를 다시 PASS로 바꾸는 용도로 재실행하지 않는다.

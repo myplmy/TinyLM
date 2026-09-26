@@ -1,0 +1,32 @@
+P037 existing 300M/600M cache val identity, train order and document overlap; read-only.
+
+==============================================================================
+[runlog] 2026-09-26 03:08:47  name=P037_Stage0W_common_val_census
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p037_common_val.py --self-test
+==============================================================================
+[PASS] P037 document-boundary/hash/JS and invalid-cache contracts; real caches NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 03:08:47)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-26 03:08:47  name=P037_Stage0W_common_val_census
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p037_common_val.py --check-only
+==============================================================================
+{"rows": [{"cache": "ko-en_300000000", "meta": {"bytes_per_token": 4.477816, "data": "ko-en", "tokens": 300000000, "train": 298500000, "val": 1500000, "vocab": 32768}}, {"cache": "ko-en_600000000", "meta": {"bytes_per_token": 4.375045498122953, "data": "ko-en", "dir": "Z:\\TinyLM\\data_cache\\ko-en_600000000", "tokens": 600000000, "train": 597000000, "val": 3000000, "vocab": 32768}}], "schema": "P037_STAGE0W_PREFLIGHT_V1"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 03:08:47)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-26 03:08:48  name=P037_Stage0W_common_val_census
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p037_common_val.py
+==============================================================================
+{"common_val_docs": 3861, "common_val_max_doc_fraction": 0.017033666666666666, "common_val_source": "ko-en_600000000", "eos_id": 2, "limit": "same token IDs only; JS is distribution diagnostic, not model quality or source-language ratio", "rows": [{"cache": "ko-en_300000000", "common_val_doc_overlap_in_train": 2, "tokens": 300000000, "train_docs_scanned": 313724, "train_head_tail_js_nats": 0.09242354315446824, "train_tail_vs_own_val_js_nats": 0.034569025083693514, "train_tokens": 298500000, "val_sha256": "48B394D66DC589AF7455B063AC6450FEA610EA819E1FB6751C5763778E093EDB", "val_tokens": 1500000}, {"cache": "ko-en_600000000", "common_val_doc_overlap_in_train": 6, "tokens": 600000000, "train_docs_scanned": 708642, "train_head_tail_js_nats": 0.14150175329024406, "train_tail_vs_own_val_js_nats": 0.026111922628331306, "train_tokens": 597000000, "val_sha256": "1AE1C68DE18402CE1FFC44EA54D68DD5768B9F7082FA2EEE8E8F2F433BC4FF0B", "val_tokens": 3000000}], "schema": "P037_STAGE0W_CACHE_AUDIT_V1", "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3", "val_300_vs_600_js_nats": 0.035954237887991486, "val_byte_identical": false}
+[GATE NEGATIVE] common val overlaps current train; B/A builders must exclude these documents
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 0.1분  (2026-09-26 03:08:52)
+==============================================================================

@@ -162,6 +162,7 @@ def _lr_factor(s, warm, steps, sched, decay_frac=0.2):
 def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_every,
           resume=False, ckpt=True, compile_=False, *,
           sched="cosine", ema=0.0, early_stop=0, init_from=None, group_init="mean",
+          attn_group_init=None,
           kd=False, kd_alpha=0.5, kd_temp=2.0, lora_rank=0, lora_bits=2, mlp_film=False,
           tag=None, tokstr=None, compile_mode="default", mlp_group=None, micro_group=None,
           mlp_split=None,
@@ -192,6 +193,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
           chat32_tokenizer=False,
           save_every=0):
+    if attn_group_init is not None and (arch != "tied" or not init_from):
+        raise ValueError("--attn-group-init requires tied --init-from")
     # ★A08 — 명시한 신규 실험 옵션만 작동한다. **옛 Muon 상태의 조용한 재초기화를 거절한다.**
     if matrix_weight_decay is not None and (
             not math.isfinite(matrix_weight_decay) or matrix_weight_decay < 0):
@@ -555,7 +558,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         print("[P101A] M0 weights migrated strictly; optimizer state is fresh, not resume")
 
     if init_from:
-        init_from_dense(model, init_from, device, depth_init=depth_init, group_init=group_init)
+        init_from_dense(model, init_from, device, depth_init=depth_init,
+                        group_init=group_init, attn_group_init=attn_group_init)
 
     _connectivity = None
     _connectivity_totals = {"births": 0, "deaths": 0, "updates": 0}
@@ -1286,7 +1290,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "ste_update_cache": bool(ste_update_cache),
            "kd_chunk": int(kd_chunk or 0),                        # (T-2/P053) KD 손실 청크 행수
            "depth_init": str(depth_init),                         # (P049) 깊이 확장 이식 방식
-           "group_init": str(group_init),                         # (P076) 공유 그룹 부모 집약
+           "group_init": str(group_init),                         # (P076) 공유 MLP 부모 집약
+           "attn_group_init": str(attn_group_init or group_init), # (P076 B3) 실제 공유 어텐션 집약
            # ★★2026-08-27 (자백 A13) — 임베딩 초기화 갈래. `copy`/`svd`/`random`/`none`.
            #   `mC_e128`(난수)과 `mC_e128svd`(SVD)가 **json 으로 구분되지 않던** 것을 닫는다.
            "emb_init": str(getattr(model, "_emb_init", "none")),

@@ -51,7 +51,7 @@ CONFIG_KEYS = [
     "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cache",
     "sched", "anneal_end", "decay_frac", "grad_ckpt", "compile",
     "mlp_group", "micro_group", "attn_group", "mlp_split", "n_layers",
-    "emb_rank", "sparse34", "bpw", "depth_init", "group_init", "train_repeat", "repeat_mode",
+    "emb_rank", "sparse34", "bpw", "depth_init", "group_init", "attn_group_init", "train_repeat", "repeat_mode",
     "repeat_embed_reinject",
     "connectivity_mode", "connectivity_density", "connectivity_update_every",
     "connectivity_swap_fraction",

@@ -1,0 +1,213 @@
+P060B crossed cache/decode GQA paths; user GPU diagnostic only, no training.
+
+==============================================================================
+[runlog] 2026-09-26 03:09:07  name=P060B_Stage2bW_gqa_cache_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_sdpa_gqa_attribution_gate.py
+==============================================================================
+[PASS] P060B Stage2b exit=0 candidate, 4 agreement, 5 runtime, 8 valid negative
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 03:09:07)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-26 03:09:07  name=P060B_Stage2bW_gqa_cache_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_sdpa_gqa_deploy_attribution.py --ckpt runs/ckpt/m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt --arch dense --data ko-en --seqs 128,512,1023,1024 --max-new 32 --warmup 2 --iters 5 --max-nrms 0.001 --min-cosine 0.999999 --max-slowdown 1.05 --min-benefit 0.05
+==============================================================================
+shape seq=128 precision=bf16 decode_supported=1
+path=prefill_on_vs_off max_abs=0 nrms=0 cosine=1 argmax_equal=1 agreement=PASS
+cache seq=128 owner=0 part=k max_abs=0 nrms=0 cosine=0.999999821
+cache seq=128 owner=0 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=128 owner=10 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=128 owner=10 part=v max_abs=0 nrms=0 cosine=1
+cache seq=128 owner=12 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=128 owner=12 part=v max_abs=0 nrms=0 cosine=1
+cache seq=128 owner=2 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=128 owner=2 part=v max_abs=0 nrms=0 cosine=1
+cache seq=128 owner=4 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=128 owner=4 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=128 owner=6 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=128 owner=6 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=128 owner=8 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=128 owner=8 part=v max_abs=0 nrms=0 cosine=1.00000012
+paths: off_off=off-cache/off-decode; on_off=off-cache/on-decode
+paths: off_on=on-cache/off-decode; on_on=on-cache/on-decode
+path=on_off_vs_off_off max_abs=0.125 nrms=0.00820815284 cosine=0.999986053 argmax_equal=1 agreement=FAIL
+path=off_on_vs_off_off max_abs=0 nrms=0 cosine=1.00000012 argmax_equal=1 agreement=PASS
+path=on_on_vs_off_off max_abs=0.125 nrms=0.00820815284 cosine=0.999986053 argmax_equal=1 agreement=FAIL
+layer_attribution seq=128 precision=bf16 decode_only
+first_attention_divergence layer=0 max_abs=0.015625 nrms=0.00227026339 cosine=0.999997437
+layer_attribution seq=128 precision=bf16 cache_only
+first_attention_divergence none_above_registered_limit
+timing seq=128 prefill_on_over_off=1.0346 decode_on_over_off_same_cache=2.0832 decode_peak_reduction=0.000%
+shape seq=128 precision=fp32_math decode_supported=1
+path=prefill_on_vs_off max_abs=0 nrms=0 cosine=1.00000024 argmax_equal=1 agreement=PASS
+cache seq=128 owner=0 part=k max_abs=0 nrms=0 cosine=1
+cache seq=128 owner=0 part=v max_abs=0 nrms=0 cosine=0.999999881
+cache seq=128 owner=10 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=128 owner=10 part=v max_abs=0 nrms=0 cosine=1
+cache seq=128 owner=12 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=128 owner=12 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=128 owner=2 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=128 owner=2 part=v max_abs=0 nrms=0 cosine=0.99999994
+cache seq=128 owner=4 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=128 owner=4 part=v max_abs=0 nrms=0 cosine=1
+cache seq=128 owner=6 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=128 owner=6 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=128 owner=8 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=128 owner=8 part=v max_abs=0 nrms=0 cosine=1.00000012
+paths: off_off=off-cache/off-decode; on_off=off-cache/on-decode
+paths: off_on=on-cache/off-decode; on_on=on-cache/on-decode
+path=on_off_vs_off_off max_abs=0 nrms=0 cosine=0.99999994 argmax_equal=1 agreement=PASS
+path=off_on_vs_off_off max_abs=0 nrms=0 cosine=0.99999994 argmax_equal=1 agreement=PASS
+path=on_on_vs_off_off max_abs=0 nrms=0 cosine=0.99999994 argmax_equal=1 agreement=PASS
+layer_attribution seq=128 precision=fp32_math decode_only
+first_attention_divergence none_above_registered_limit
+layer_attribution seq=128 precision=fp32_math cache_only
+first_attention_divergence none_above_registered_limit
+shape seq=512 precision=bf16 decode_supported=1
+path=prefill_on_vs_off max_abs=0 nrms=0 cosine=1 argmax_equal=1 agreement=PASS
+cache seq=512 owner=0 part=k max_abs=0 nrms=0 cosine=1
+cache seq=512 owner=0 part=v max_abs=0 nrms=0 cosine=1
+cache seq=512 owner=10 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=512 owner=10 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=512 owner=12 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=512 owner=12 part=v max_abs=0 nrms=0 cosine=1
+cache seq=512 owner=2 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=512 owner=2 part=v max_abs=0 nrms=0 cosine=1
+cache seq=512 owner=4 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=512 owner=4 part=v max_abs=0 nrms=0 cosine=1
+cache seq=512 owner=6 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=512 owner=6 part=v max_abs=0 nrms=0 cosine=1
+cache seq=512 owner=8 part=k max_abs=0 nrms=0 cosine=1
+cache seq=512 owner=8 part=v max_abs=0 nrms=0 cosine=0.99999994
+paths: off_off=off-cache/off-decode; on_off=off-cache/on-decode
+paths: off_on=on-cache/off-decode; on_on=on-cache/on-decode
+path=on_off_vs_off_off max_abs=0.06640625 nrms=0.00818377733 cosine=0.999967098 argmax_equal=1 agreement=FAIL
+path=off_on_vs_off_off max_abs=0 nrms=0 cosine=1.00000012 argmax_equal=1 agreement=PASS
+path=on_on_vs_off_off max_abs=0.06640625 nrms=0.00818377733 cosine=0.999967098 argmax_equal=1 agreement=FAIL
+layer_attribution seq=512 precision=bf16 decode_only
+first_attention_divergence layer=0 max_abs=0.0078125 nrms=0.00150487665 cosine=0.999998927
+layer_attribution seq=512 precision=bf16 cache_only
+first_attention_divergence none_above_registered_limit
+timing seq=512 prefill_on_over_off=0.9979 decode_on_over_off_same_cache=1.2310 decode_peak_reduction=-40.255%
+shape seq=512 precision=fp32_math decode_supported=1
+path=prefill_on_vs_off max_abs=0 nrms=0 cosine=1 argmax_equal=1 agreement=PASS
+cache seq=512 owner=0 part=k max_abs=0 nrms=0 cosine=1
+cache seq=512 owner=0 part=v max_abs=0 nrms=0 cosine=1
+cache seq=512 owner=10 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=512 owner=10 part=v max_abs=0 nrms=0 cosine=0.99999994
+cache seq=512 owner=12 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=512 owner=12 part=v max_abs=0 nrms=0 cosine=1
+cache seq=512 owner=2 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=512 owner=2 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=512 owner=4 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=512 owner=4 part=v max_abs=0 nrms=0 cosine=1
+cache seq=512 owner=6 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=512 owner=6 part=v max_abs=0 nrms=0 cosine=0.99999994
+cache seq=512 owner=8 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=512 owner=8 part=v max_abs=0 nrms=0 cosine=0.999999821
+paths: off_off=off-cache/off-decode; on_off=off-cache/on-decode
+paths: off_on=on-cache/off-decode; on_on=on-cache/on-decode
+path=on_off_vs_off_off max_abs=0 nrms=0 cosine=1.00000012 argmax_equal=1 agreement=PASS
+path=off_on_vs_off_off max_abs=0 nrms=0 cosine=1.00000012 argmax_equal=1 agreement=PASS
+path=on_on_vs_off_off max_abs=0 nrms=0 cosine=1.00000012 argmax_equal=1 agreement=PASS
+layer_attribution seq=512 precision=fp32_math decode_only
+first_attention_divergence none_above_registered_limit
+layer_attribution seq=512 precision=fp32_math cache_only
+first_attention_divergence none_above_registered_limit
+shape seq=1023 precision=bf16 decode_supported=1
+path=prefill_on_vs_off max_abs=0 nrms=0 cosine=0.999999881 argmax_equal=1 agreement=PASS
+cache seq=1023 owner=0 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=1023 owner=0 part=v max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=10 part=k max_abs=0 nrms=0 cosine=0.99999994
+cache seq=1023 owner=10 part=v max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=12 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=12 part=v max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=2 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=1023 owner=2 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=1023 owner=4 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=4 part=v max_abs=0 nrms=0 cosine=0.99999994
+cache seq=1023 owner=6 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=1023 owner=6 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=1023 owner=8 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=8 part=v max_abs=0 nrms=0 cosine=1.00000012
+paths: off_off=off-cache/off-decode; on_off=off-cache/on-decode
+paths: off_on=on-cache/off-decode; on_on=on-cache/on-decode
+path=on_off_vs_off_off max_abs=0.0625 nrms=0.00439988635 cosine=0.999990344 argmax_equal=1 agreement=FAIL
+path=off_on_vs_off_off max_abs=0 nrms=0 cosine=1 argmax_equal=1 agreement=PASS
+path=on_on_vs_off_off max_abs=0.0625 nrms=0.00439988635 cosine=0.999990344 argmax_equal=1 agreement=FAIL
+layer_attribution seq=1023 precision=bf16 decode_only
+first_attention_divergence layer=0 max_abs=0.0078125 nrms=0.00118004729 cosine=0.999999344
+layer_attribution seq=1023 precision=bf16 cache_only
+first_attention_divergence none_above_registered_limit
+timing seq=1023 prefill_on_over_off=0.8564 decode_on_over_off_same_cache=1.1361 decode_peak_reduction=-68.427%
+shape seq=1023 precision=fp32_math decode_supported=1
+path=prefill_on_vs_off max_abs=0 nrms=0 cosine=1 argmax_equal=1 agreement=PASS
+cache seq=1023 owner=0 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=0 part=v max_abs=0 nrms=0 cosine=0.999999881
+cache seq=1023 owner=10 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=10 part=v max_abs=0 nrms=0 cosine=0.999999821
+cache seq=1023 owner=12 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=12 part=v max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=2 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=2 part=v max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=4 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=4 part=v max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=6 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=6 part=v max_abs=0 nrms=0 cosine=0.99999994
+cache seq=1023 owner=8 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1023 owner=8 part=v max_abs=0 nrms=0 cosine=1.00000012
+paths: off_off=off-cache/off-decode; on_off=off-cache/on-decode
+paths: off_on=on-cache/off-decode; on_on=on-cache/on-decode
+path=on_off_vs_off_off max_abs=0 nrms=0 cosine=1.00000012 argmax_equal=1 agreement=PASS
+path=off_on_vs_off_off max_abs=0 nrms=0 cosine=1.00000012 argmax_equal=1 agreement=PASS
+path=on_on_vs_off_off max_abs=0 nrms=0 cosine=1.00000012 argmax_equal=1 agreement=PASS
+layer_attribution seq=1023 precision=fp32_math decode_only
+first_attention_divergence none_above_registered_limit
+layer_attribution seq=1023 precision=fp32_math cache_only
+first_attention_divergence none_above_registered_limit
+shape seq=1024 precision=bf16 decode_supported=0
+path=prefill_on_vs_off max_abs=0 nrms=0 cosine=1.00000012 argmax_equal=1 agreement=PASS
+cache seq=1024 owner=0 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=0 part=v max_abs=0 nrms=0 cosine=0.999999881
+cache seq=1024 owner=10 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=10 part=v max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=12 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=12 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=1024 owner=2 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=2 part=v max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=4 part=k max_abs=0 nrms=0 cosine=0.999999762
+cache seq=1024 owner=4 part=v max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=6 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=6 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=1024 owner=8 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=1024 owner=8 part=v max_abs=0 nrms=0 cosine=1.00000012
+timing seq=1024 prefill_on_over_off=0.9311
+[NOT_RUN] seq=1024 decode exceeds context=1024
+shape seq=1024 precision=fp32_math decode_supported=0
+path=prefill_on_vs_off max_abs=0 nrms=0 cosine=0.999999881 argmax_equal=1 agreement=PASS
+cache seq=1024 owner=0 part=k max_abs=0 nrms=0 cosine=1.00000012
+cache seq=1024 owner=0 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=1024 owner=10 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=10 part=v max_abs=0 nrms=0 cosine=0.999999821
+cache seq=1024 owner=12 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=12 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=1024 owner=2 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=2 part=v max_abs=0 nrms=0 cosine=1.00000012
+cache seq=1024 owner=4 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=4 part=v max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=6 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=6 part=v max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=8 part=k max_abs=0 nrms=0 cosine=1
+cache seq=1024 owner=8 part=v max_abs=0 nrms=0 cosine=1
+[NOT_RUN] seq=1024 decode exceeds context=1024
+text_prompt=1 exact_equal=1 prompt='대한민국의 수도 서울은'
+text_prompt=2 exact_equal=1 prompt='인공지능 모델의 학습 과정을 간단히 설명하면'
+text_prompt=3 exact_equal=1 prompt='The most important trade-off in a small language model is'
+[GATE FAIL agreement] registered NRMS/cosine or greedy-text contract failed
+[LIMIT] diagnostic attribution only; default sdpa_gqa remains off
+------------------------------------------------------------------------------
+[runlog] 종료코드 4  소요 0.1분  (2026-09-26 03:09:15)
+==============================================================================

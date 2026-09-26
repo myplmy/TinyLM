@@ -99,8 +99,8 @@ same real checkpoint·같은 tokenizer·같은 평가 풀·condition signature�
 
 | 단계 | 실물 파일·순서 | 선결·예상 |
 |---|---|---|
-| Windows Stage2B | [BAT](../run_P104A_Stage2B_m5_real_bridge.bat) 직접 사용자 실행 → 새 runs/bench/p104a_m5_real_windows.json | Windows GPU, TinyLM repo root, 약1h |
-| WSL Stage2W | [SH](../run_P104A_Stage2W_m5_real_bridge.sh) 사용자 실행 → 새 runs/bench/p104a_m5_real_wsl.json → [비교기](../scripts/check_m5_real_bridge.py) | Windows JSON 존재, 새 smoke PASS, WSL GPU 약1h |
+| Windows Stage2B | BAT `run_P104A_Stage2B_m5_real_bridge.bat` 사용자 실행 이력 → runs/bench/p104a_m5_real_windows.json; 명령은 [결과095 §8](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md)에 보존 | Windows GPU, TinyLM repo root, 약1h |
+| WSL Stage2W | SH `run_P104A_Stage2W_m5_real_bridge.sh` 사용자 실행 이력 → runs/bench/p104a_m5_real_wsl.json → [비교기](../scripts/check_m5_real_bridge.py) | Windows JSON 존재, 당시 smoke PASS, WSL GPU 약1h |
 
 양쪽 [수집기](../scripts/diag_m5_real_bridge.py)는 같은 runs/ckpt/m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt를 **읽기만** 한다. legacy ko-en 600M cache val.bin의 SHA와 tokenizer SHA, checkpoint SHA, 현재 config/modules/ternary/transformer/수집기 코드 SHA를 JSON에 기록한다. val 3,000,000 토큰의 비중첩 seq1024 **전 2,929창·2,999,296 target 토큰**을 같은 순서로 평가해 CE와 GPU 동기 host wall·peak allocated/reserved를 얻는다. 이어 CPU seed가 아니라 고정 val prefix의 동일 2×256 token으로 메모리 안에서만 SGD lr1e-4 한 업데이트를 수행해 전후 CE·gradient norm·비영 파라미터 좌표 변화·step wall을 기록한다. 이 SGD는 **교량 기능 control**로, 현행 Muon RMS4 300M 학습 속도/품질 재현을 뜻하지 않는다. 출력 JSON은 플랫폼별 write-once이고 원본 checkpoint/cache는 변경하지 않는다.
 
@@ -112,5 +112,7 @@ same real checkpoint·같은 tokenizer·같은 평가 풀·condition signature�
 | 자원 | 기존 한 체크포인트, GPU 16GB 단일 장치, 각 OS 약1h·학습 체크포인트 쓰기0; 사용자 단독 감시 |
 | 중복 | tiny synthetic 결과095 §7와 다른 실물 언어 CE·2929창; 같은 파라미터 재학습은 이 질문에 중복 비용 |
 | 한계 | fixed-val 기능 근접은 M5의 실물 실행 증거지만 Windows↔WSL 300M 훈련 재현성·배포 CPU 상주/속도·외부 flash-attn은 여전히 별도 |
+
+2026-09-26 [095 결과 §8](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md): 사용자 Stage2B Windows·Stage2W WSL에서 동일 실물 체크포인트·입력·코드 SHA와 full-val 2,929창을 비교해 comparator 종료0·실물 기능 교량 PASS다. full-val CE 절댓차 1.81e-5, 시작 CE 0.00305, gradient norm 상대차0.00181. 300M 재학습 동등성이나 OS 속도 인과는 여전히 NOT_RUN/NOT_DECIDED다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

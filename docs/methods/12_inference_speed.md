@@ -217,3 +217,13 @@ actual model에서 native/reference는 1.785~1.790×였지만 native/int8은 1.1
 v1에 차용했다. Stage1Wb는 incremental float32 누산을 `1e-6`로 판정한
 단위시험 결함으로 benchmark 전 exit1이었다. `1e-5` CPU compile 정합은 PASS했지만
 actual model 속도는 Stage1Wc 전 `NOT_RUN`이다([069 §10](../../test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md#10-stage1wb2026-09-22--커널-속도가-아니라-과도하게-좁은-단위시험에서-중단)).
+
+## 12.9 2026-09-26 P030B WSL 현재 d14 CPU·상주
+
+[결과100](../../test_result/100_20260926_P030B-1코어-바닥은-통과했지만-상주-목표는-미달이다.md)의 사용자 Stage0W는 두 d14 체크포인트에서 1코어 32.64/37.49 tok/s, 4코어 44.68/42.37 tok/s를 같은 WSL 세션에 측정했다. 두 팔 모두 1코어 15 tok/s 바닥은 통과하나, 측정 순서가 고정되고 4코어 방향이 역전되어 1.149×를 optimizer 인과효과로 볼 수 없다. 현 int8-store/unpack-cache의 텐서합산 116.2MiB와 fp32 KV10.5MiB의 하한 126.7MiB는 40MiB 상한 밖이다. 저장19.1MiB는 packed 실물 상주가 아니다.
+
+벤치의 자동 `전이 없음(속도비~1.0)`과 상주 도구의 int8 병용 `2× 상한` 문구는 원시 측정과 다른 설명 오류였고 2026-09-26 후속 코드에서 교정했다(CPU 회귀3/3). RSS는 한 프로세스의 이전 모델 할당자를 보유해 모델 단독 증분이 아니므로, 원인별 속도와 깨끗한 물리 RSS는 별도 Stage0Wb에서 물어야 한다. 이전 Windows Stage5 full-logits와 이번 WSL last-only 수치를 직접 뺄셈하지 않는다.
+
+## 12.10 2026-09-26 P060B decode·P014E 회전 부분 계측
+
+[결과088 §11](../../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)의 같은 checkpoint·KV에서 BF16 GQA decode는 첫 층부터 수치가 갈렸고 on/off 시간이 1.14~2.08배로 나빠졌다. FP32 MATH 대조가 맞는 것과 BF16 경로 배포 채택은 별개다. [결과099 §5](../../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md)의 세 checkpoint 선택 투영에서 3×256 오차 개선은 계보/층에 따라 달랐고, 1024 padding은 이론 byte +33.3%와 online 회전 시간을 요구한다. 두 실험 모두 전체 모델 CPU decode·RSS·언어 품질의 순이득 증거가 아니다.

@@ -44,6 +44,11 @@ def main() -> int:
     assert " ".join(shell_calls[0][1].split()) == (
         "train --preset m100s10 --tokens 300M --steps 2289 --tag p097_ctrl_v2"
     )
+    flagged = shell_train.replace('"$python_bin" run100m.py', '"$python_bin" -B -X utf8 run100m.py')
+    assert list(MOD.launcher_calls(flagged)) == shell_calls
+    gate = '"$python_bin" scripts/runlog.py --name gate -- "$python_bin" -B -X utf8 scripts/diag_p076_attn_only.py' + chr(10)
+    sequential = list(MOD.launcher_calls(gate + flagged))
+    assert sequential == shell_calls  # A no-arg gate must not swallow the following train call.
     batch_calls = list(MOD.launcher_calls(batch_train))
     assert len(batch_calls) == 1
     assert batch_calls[0][0] == "run100m.py"

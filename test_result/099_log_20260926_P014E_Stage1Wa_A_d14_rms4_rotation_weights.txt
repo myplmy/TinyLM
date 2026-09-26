@@ -1,0 +1,42 @@
+P014E A: same-checkpoint no-rotation/3x256/pad1024; actual weights but synthetic inputs.
+
+==============================================================================
+[runlog] 2026-09-26 05:17:02  name=P014E_Stage1Wa_A_d14_rms4_rotation_weights
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p014e_checkpoint_rotation.py --self-test
+==============================================================================
+[PASS] P014E Stage1Wa synthetic math/timing contract; checkpoint/model NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 05:17:02)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-26 05:17:02  name=P014E_Stage1Wa_A_d14_rms4_rotation_weights
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p014e_checkpoint_rotation.py --check-only --arch dense --ckpt runs/ckpt/m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt
+==============================================================================
+{"arch": "dense", "checkpoint": "runs/ckpt/m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt", "checkpoint_bytes": 780043067, "json": "runs/logs/m100s10_ko-en_300M_d14_cla2_norecur_rms4.json", "label": "A", "preset": "m100s10", "seed": 1337, "status": "STATIC_ONLY", "train_repeat": 1.0}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 05:17:03)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-26 05:17:03  name=P014E_Stage1Wa_A_d14_rms4_rotation_weights
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p014e_checkpoint_rotation.py --arch dense --ckpt runs/ckpt/m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt --seed 20260926 --batch 8 --warmup 2 --iters 7
+==============================================================================
+{"arch": "dense", "checkpoint": "runs/ckpt/m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt", "checkpoint_bytes": 780043067, "checkpoint_sha256": "0C2AE9CD0F443CE6241AFC7DA892C989CBF01F5127A11425B2D56F188426AB97", "json": "runs/logs/m100s10_ko-en_300M_d14_cla2_norecur_rms4.json", "label": "A", "model_load_sec": 6.430161484982818, "preset": "m100s10", "seed": 1337, "selected_count": 3, "train_repeat": 1.0}
+{"actual_fp32_weight_bytes": 12582912, "batch": 8, "identity_nrms": 0.0, "label": "A", "mode": "no_rotation", "module": "pre_mlps.0.gate_proj", "pack_ms": 5.953053, "projection_plus_online_rotation_p50_ms": 0.491288, "projection_plus_online_rotation_p95_ms": 0.636353, "rows": 2048, "seed": 20260926, "ternary_vs_float_nrms": 0.41239451428642443, "theoretical_code_scale_bytes": 442368, "width": 768}
+{"actual_fp32_weight_bytes": 12582912, "batch": 8, "identity_nrms": 5.038631774367374e-07, "label": "A", "mode": "three_256", "module": "pre_mlps.0.gate_proj", "pack_ms": 17.776768, "projection_plus_online_rotation_p50_ms": 0.657071, "projection_plus_online_rotation_p95_ms": 0.802628, "rows": 2048, "seed": 20260926, "ternary_vs_float_nrms": 0.44102673551112875, "theoretical_code_scale_bytes": 442368, "width": 768}
+{"actual_fp32_weight_bytes": 16777216, "batch": 8, "identity_nrms": 4.7052314147720276e-07, "label": "A", "mode": "pad_1024", "module": "pre_mlps.0.gate_proj", "pack_ms": 34.034201, "projection_plus_online_rotation_p50_ms": 0.944981, "projection_plus_online_rotation_p95_ms": 1.333181, "rows": 2048, "seed": 20260926, "ternary_vs_float_nrms": 0.3869448841621514, "theoretical_code_scale_bytes": 589824, "width": 1024}
+{"actual_fp32_weight_bytes": 12582912, "batch": 8, "identity_nrms": 0.0, "label": "A", "mode": "no_rotation", "module": "mid_mlps.5.gate_proj", "pack_ms": 4.014914, "projection_plus_online_rotation_p50_ms": 0.486241, "projection_plus_online_rotation_p95_ms": 0.752811, "rows": 2048, "seed": 20260926, "ternary_vs_float_nrms": 0.43986653181100915, "theoretical_code_scale_bytes": 442368, "width": 768}
+{"actual_fp32_weight_bytes": 12582912, "batch": 8, "identity_nrms": 5.045143532922263e-07, "label": "A", "mode": "three_256", "module": "mid_mlps.5.gate_proj", "pack_ms": 18.347416, "projection_plus_online_rotation_p50_ms": 0.657736, "projection_plus_online_rotation_p95_ms": 0.827119, "rows": 2048, "seed": 20260926, "ternary_vs_float_nrms": 0.43017822059667615, "theoretical_code_scale_bytes": 442368, "width": 768}
+{"actual_fp32_weight_bytes": 16777216, "batch": 8, "identity_nrms": 4.7272602668066113e-07, "label": "A", "mode": "pad_1024", "module": "mid_mlps.5.gate_proj", "pack_ms": 28.431894, "projection_plus_online_rotation_p50_ms": 0.87859, "projection_plus_online_rotation_p95_ms": 1.153724, "rows": 2048, "seed": 20260926, "ternary_vs_float_nrms": 0.38948615837391426, "theoretical_code_scale_bytes": 589824, "width": 1024}
+{"actual_fp32_weight_bytes": 12582912, "batch": 8, "identity_nrms": 0.0, "label": "A", "mode": "no_rotation", "module": "coda_mlps.1.gate_proj", "pack_ms": 3.937253, "projection_plus_online_rotation_p50_ms": 0.510617, "projection_plus_online_rotation_p95_ms": 0.714448, "rows": 2048, "seed": 20260926, "ternary_vs_float_nrms": 0.46614878474530036, "theoretical_code_scale_bytes": 442368, "width": 768}
+{"actual_fp32_weight_bytes": 12582912, "batch": 8, "identity_nrms": 5.003601908849071e-07, "label": "A", "mode": "three_256", "module": "coda_mlps.1.gate_proj", "pack_ms": 17.179048, "projection_plus_online_rotation_p50_ms": 0.656029, "projection_plus_online_rotation_p95_ms": 0.719167, "rows": 2048, "seed": 20260926, "ternary_vs_float_nrms": 0.43081116394075764, "theoretical_code_scale_bytes": 442368, "width": 768}
+{"actual_fp32_weight_bytes": 16777216, "batch": 8, "identity_nrms": 4.7272374773788534e-07, "label": "A", "mode": "pad_1024", "module": "coda_mlps.1.gate_proj", "pack_ms": 27.370474, "projection_plus_online_rotation_p50_ms": 0.929551, "projection_plus_online_rotation_p95_ms": 1.329196, "rows": 2048, "seed": 20260926, "ternary_vs_float_nrms": 0.3871412933969347, "theoretical_code_scale_bytes": 589824, "width": 1024}
+[MEASURED_NO_ADOPTION] actual checkpoint weights, synthetic activations and one-thread projection micro wall only
+[NOT_RUN] whole-model CPU decode p95, physical 2-bit packing/RSS, GPU whole-step and full-val quality
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-26 05:17:11)
+==============================================================================

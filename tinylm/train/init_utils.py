@@ -38,6 +38,15 @@ def _aggregate_group_tensors(tensors, mode: str):
     return mean if target == 0.0 else mean * (target / current)
 
 
+def _attention_init_mode(group_init, override, attn_group):
+    if group_init not in GROUP_INIT_MODES:
+        raise ValueError(f"unsupported group_init={group_init!r}; choices={GROUP_INIT_MODES}")
+    if override is not None and override not in GROUP_INIT_MODES:
+        raise ValueError(f"unsupported attn_group_init={override!r}; choices={GROUP_INIT_MODES}")
+    if override is not None and attn_group <= 1:
+        raise ValueError("attn_group_init requires attn_group > 1; otherwise it is a no-op")
+    return group_init if override is None else override
+
 def _teacher_attn_parameter(teacher, mapped_layer: int, parameter_name: str):
     """Resolve layer-local Q/O versus CLA-owned K/V teacher parameters."""
     source = teacher_attention_source_index(teacher.owner, mapped_layer, parameter_name)
@@ -161,17 +170,19 @@ def _depth_map(sc, tc):
     return idx, rep
 
 
-def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init="prop", group_init="mean"):
+def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init="prop",
+                    group_init="mean", attn_group_init=None):
     """dense 가중치를 tied 학생에 이식.
       - 임베딩·최종노름·어텐션(q/o, 소유층 k/v)·adaLN·gate: 인덱스 그대로 복사
       - prelude/coda MLP: 그대로 복사
       - 중간 MLP: dense의 mlp_group개 층을 group_init 규약으로 공유 인스턴스에 집약
     LoRA(있으면)는 U=0 초기화라 시작 시 항등 → 별도 처리 불필요."""
-    if group_init not in GROUP_INIT_MODES:
-        raise ValueError(f"unsupported group_init={group_init!r}; choices={GROUP_INIT_MODES}")
+    ag = int(getattr(student.cfg, "attn_group", 1) or 1)
+    attn_mode = _attention_init_mode(group_init, attn_group_init, ag)
     teacher, _ = load_dense(dense_path, device)
     g = student.cfg.mlp_group
     student._group_init = group_init
+    student._attn_group_init = attn_mode
 
     # ★2026-08-07(P046) — `--emb-rank` 로 E 를 바꾸면 임베딩 shape 이 교사와 다르다.
     #   종전에는 `load_state_dict` 가 **strict 라 즉사**했다. 지금은 **건너뛰고 크게 알린다** —
@@ -258,12 +269,12 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
     #   ⚠️**평균이 옳다는 보장은 없다.** MLP 에서는 실측으로 부모초기화 이득이 살아남았지만
     #     (결과 030 §2: step0 7.7742 vs 난수 10.4051) **어텐션은 아직 안 쟀다.**
     #     P057 단계0 게이트가 그것을 재고, 통과선은 **step0 CE ^< 9.3972**(대역 검사, 함정 34).
-    ag = int(getattr(sc, "attn_group", 1) or 1)
     shared_done = set()
     if ag > 1:
         if student.mid_attns is None:
             raise RuntimeError(f"attn_group={ag} 인데 student.mid_attns 가 없다 — 모델 구성 불일치")
-        print(f"[init] ★P057 그룹 어텐션 이식: attn_group={ag}, group_init={group_init}, "
+        print(f"[init] ★P057 그룹 어텐션 이식: attn_group={ag}, "
+              f"group_init={group_init}, attn_group_init={attn_mode}, "
               f"공유 어텐션 {len(student.mid_attns)}개")
         for j, at_s in enumerate(student.mid_attns):
             # 이 공유 어텐션을 쓰는 학생 **중간층** 인덱스 → 대응표 → 교사 층
@@ -276,7 +287,7 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
                     _teacher_attn_parameter(teacher, ti, f"{nm}.weight").data
                     for ti in t_ids
                 ]
-                dst.copy_(_aggregate_group_tensors(values, group_init))
+                dst.copy_(_aggregate_group_tensors(values, attn_mode))
             # ★q/k norm 등 추가 파라미터가 있으면 함께 평균한다(빠뜨리면 조용히 난수로 남는다)
             ref = dict(at_s.named_parameters())
             for nm2, ps in ref.items():
@@ -291,11 +302,12 @@ def init_from_dense(student: TiedMLPTransformer, dense_path, device, depth_init=
                     print(f"[init] ⚠️ 공유 어텐션 파라미터 {nm2!r} 이 교사에 없다 — "
                           f"**난수로 남는다.** 결과문서에 적을 것")
                     continue
-                ps.data.copy_(_aggregate_group_tensors(values, group_init))
+                ps.data.copy_(_aggregate_group_tensors(values, attn_mode))
             shared_done.add(id(at_s))
             print(f"[init]   공유 어텐션 {j}: 교사 층 "
-                  f"{t_ids} -> {group_init}")
-        print(f"[init] ⚠️★어텐션 집약은 **MLP와 같은 group_init 규약**이지만 **효과는 미검증**이다. "
+                  f"{t_ids} -> {attn_mode}")
+        print(f"[init] ⚠️★어텐션 집약은 별도 attn_group_init 규약으로 선택할 수 있지만 "
+              f"**효과는 미검증**이다. "
               f"P057 단계0 게이트가 step0 CE 로 잰다(통과 대역 5.0~9.40, 함정 34)")
 
     seen = {}                    # 교사 층 ti 가 몇 번째로 쓰였나 (identity 모드용)

@@ -10,7 +10,7 @@ import torch
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from tinylm.train.init_utils import _aggregate_group_tensors
+from tinylm.train.init_utils import _aggregate_group_tensors, _attention_init_mode
 
 
 def main() -> int:
@@ -21,6 +21,10 @@ def main() -> int:
         torch.tensor([[4.0, 3.0], [2.0, 1.0]]),
     ]
     legacy = sum(values) / len(values)
+    assert _attention_init_mode("mean", None, 1) == "mean"
+    assert _attention_init_mode("middle", None, 2) == "middle"
+    assert _attention_init_mode("mean", "norm_mean", 2) == "norm_mean"
+    assert _attention_init_mode("mean", "mean", 2) == "mean"
     actual_mean = _aggregate_group_tensors(values, "mean")
     assert torch.equal(actual_mean, legacy), "default mean must preserve legacy arithmetic"
     assert _aggregate_group_tensors(values, "middle") is values[2]
@@ -45,6 +49,14 @@ def main() -> int:
         assert "unsupported group_init" in str(exc)
     else:
         raise AssertionError("unknown group_init was accepted")
+    for group_mode, override, attn_group in (("mean", "norm_mean", 1),
+                                             ("mean", "bogus", 2)):
+        try:
+            _attention_init_mode(group_mode, override, attn_group)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("invalid attention-only group init was accepted")
 
     print("[PASS] P076 group init: legacy mean, middle, norm restoration, fail-closed")
     return 0

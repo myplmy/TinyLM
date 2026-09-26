@@ -37,6 +37,7 @@ REQUIRED = ["seed", "micro_bs", "accum", "eff_batch", "pool_tokens", "exact_cach
             "sdpa_gqa", "kd_chunk",                    # F-1 / T-2
             "depth_init", "n_layers",                  # P049
             "attn_group", "train_repeat", "mlp_split", "repeat_mode",  # P057 / P049B
+            "group_init", "attn_group_init",            # P076 B3 separate parent aggregation
             "kd_alpha", "kd_temp",                     # ★P055(2026-08-20) — 한 번도 안 실렸다
             "wq_dtype", "emb_chunk",
             "reuse_attn_on_dup",                       # ★P049 §17.3(2026-08-22)
@@ -179,6 +180,8 @@ EXPECT = {   # 태그 접미사 -> 그 런이 반드시 만족해야 하는 값
     #   `build_attention` 미import 가 **스모크 0에러를 통과**하고 실험 로그(044)에서 죽었다.
     #   이 두 줄은 "필드가 실렸는가" 뿐 아니라 **그 경로로 모델이 지어지는가**를 산다.
     "sm_ag":     {"attn_group": 2, "init_from": True},
+    "sm_ag_attnorm": {"attn_group": 2, "init_from": True,
+                       "group_init": "mean", "attn_group_init": "norm_mean"},
     "sm_split":  {"mlp_split": [1], "init_from": True},
     # ★2026-08-22 (함정 37) — `_wq` bf16 저장은 **새 코드 경로**다. 필드만 넣으면 안 돈다.
     "sm_wqbf16": {"wq_dtype": "bf16", "init_from": True},

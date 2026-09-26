@@ -154,6 +154,11 @@ python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch t
 if errorlevel 1 echo [WARN] sm_ag failed - continuing
 
 echo.
+python scripts\runlog.py --name !TL_LOGNAME! --note "[7b] P076 ag2 attention norm-mean only; MLP parent aggregation stays mean"
+python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --attn-group 2 --init-from --group-init mean --attn-group-init norm_mean --tag sm_ag_attnorm
+if errorlevel 1 echo [WARN] sm_ag_attnorm failed - continuing
+
+echo.
 echo [8] P061 uneven tying path - split boundary plus per-group transplant
 python scripts\runlog.py --name !TL_LOGNAME! --note "[8] P061 uneven tying path - split boundary plus per-group transplant"
 python scripts\runlog.py --name !TL_LOGNAME! -- python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --mlp-split 1 --init-from --tag sm_split

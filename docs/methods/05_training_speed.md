@@ -163,3 +163,7 @@ forced SDPA의 raw warning은 모든 backend가 실패했다는 뜻이 아니었
 GQA head 수가 달라 해당 kernel이 선택되지 못했고, 같은 로그의 CUDNN·FLASH·default 팔은 실제로
 실행됐다. 진단기는 이제 backend별 warning을 해당 행에 붙여 출력한다. 계약 PASS나 isolated
 forward 속도를 학습 속도·end-to-end throughput으로 확대하지 않는다.
+
+## 2026-09-26 P102A ABBA·P103A 경계 캐시
+
+[결과093 §10](../../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md)의 100M 네 팔은 T0→T1에서 T1 whole-wall 0.990×, T1→T0에서 1.073×로 방향이 바뀌었다. eval/save 절약은 두 순서에서 재현됐지만 총시간 이득은 아니다. host wall·GPU kernel·각 팔 뒤 W&B 자동 송신과 팔 사이 유휴 조건을 구별해야 하며, 한 세션 두 순서를 독립 시드로 세지 않는다. [결과094 §9](../../test_result/094_20260925_P103A-X2-함수통과-X3-하부MLP-동결누락.md)의 exact6.14GB/INT8 1.63GB는 캐시 **파일 크기/구축 기능** 관측이다. Stage1cW의 tail 학습시간·I/O·RSS·품질을 재기 전에는 가속으로 부르지 않는다.

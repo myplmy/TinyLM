@@ -22,7 +22,7 @@ Windows 옛 d14 무재귀 19.19 tok/s라 현 RMS4도 15를 넘을 수 있지만 
 
 ### Stage0W — 정확 두 체크포인트 같은 세션 CPU 게이트
 
-[SH](../run_P030B_Stage0W_wsl_cpu_d14_rms4.sh)는 m100s10/ko-en/300M의 d14_cla2_norecur와 d14_cla2_norecur_rms4 final 두 파일이 존재할 때만 시작한다. 기존 bench_infer.py에 둘을 **같은 명령**으로 전달해 CPU 1/4스레드, max_new128, reps3, KV cache on, drop-latent+int8-store+unpack-cache, logits_last_only, cache 정합과 psutil 외부부하·사전 idle10초를 기록한다. 같은 SH에서 mem_runtime.py가 **동일 저장·언팩·KV fp32 상태**의 실제 상주와 packed 식을 따로 적는다. Windows 역사 Stage5에는 full-logits였으므로 숫자를 직접 뺄셈하지 않는다.
+SH `run_P030B_Stage0W_wsl_cpu_d14_rms4.sh`(완료 명령은 [결과100 §4](../test_result/100_20260926_P030B-1코어-바닥은-통과했지만-상주-목표는-미달이다.md)에 보존)는 m100s10/ko-en/300M의 d14_cla2_norecur와 d14_cla2_norecur_rms4 final 두 파일이 존재할 때만 시작한다. 기존 bench_infer.py에 둘을 **같은 명령**으로 전달해 CPU 1/4스레드, max_new128, reps3, KV cache on, drop-latent+int8-store+unpack-cache, logits_last_only, cache 정합과 psutil 외부부하·사전 idle10초를 기록한다. 같은 SH에서 mem_runtime.py가 **동일 저장·언팩·KV fp32 상태**의 실제 상주와 packed 식을 따로 적는다. Windows 역사 Stage5에는 full-logits였으므로 숫자를 직접 뺄셈하지 않는다.
 
 ### Stage1W — 조건부 품질·배포 판단
 
@@ -47,14 +47,15 @@ Windows 옛 d14 무재귀 19.19 tok/s라 현 RMS4도 15를 넘을 수 있지만 
 
 ## 7. 실행
 
-실물 [run_P030B_Stage0W_wsl_cpu_d14_rms4.sh](../run_P030B_Stage0W_wsl_cpu_d14_rms4.sh). 사용자 새 smoke PASS 뒤 실행한다. 출력은 별도 P030B runlog이며 과거 P030 결과014를 덮지 않는다. 등록된 두 checkpoint 태그는 기존 자산이고 새 train tag/토큰/풀은 0이다.
+실물 `run_P030B_Stage0W_wsl_cpu_d14_rms4.sh`는 사용자 smoke PASS 뒤 실행을 완료했다([결과100](../test_result/100_20260926_P030B-1코어-바닥은-통과했지만-상주-목표는-미달이다.md)). 출력은 별도 P030B runlog이며 과거 P030 결과014를 덮지 않는다. 등록된 두 checkpoint 태그는 기존 자산이고 새 train tag/토큰/풀은 0이다.
 
 ## 8. 한계
 
-WSL과 Windows의 다른 시점·스택을 직접 인과 비교하지 않는다. CPU 한 호스트/프롬프트/128 decode-token/두 checkpoint의 측정이며 다른 prompt 분포·저전력 엣지 기기 일반화가 아니다. bench_infer의 runtime_mb는 회계값이고 물리 RSS는 mem_runtime 별도 출력으로만 판정한다. 모델 로딩·CPU 실행은 사용자 소유다.
+WSL과 Windows의 다른 시점·스택을 직접 인과 비교하지 않는다. CPU 한 호스트/프롬프트/128 decode-token/두 checkpoint의 측정이며 다른 prompt 분포·저전력 엣지 기기 일반화가 아니다. bench_infer의 runtime_mb는 회계값이고 mem_runtime의 프로세스 RSS는 allocator·런타임에 오염될 수 있다. 모델 상주 목표는 최소 텐서+KV 회계와 별도 깨끗한 프로세스 측정을 구분한다. 모델 로딩·CPU 실행은 사용자 소유다.
 
 ## 9. 실행 이력
 
 - 2026-09-26: P030 Stage5/6/7b 기실행을 결과014 §15~18에서 재확인해 중복 SH를 만들지 않았다. P030B는 새 WSL 현행 d14 RMS4 계보를 묻는 별도 계획. 기존 bench/mem 도구와 사용자 SH 준비, 정적 검사 전/사용자 모델 NOT_RUN.
+- 2026-09-26 사용자 Stage0W: [결과100](../test_result/100_20260926_P030B-1코어-바닥은-통과했지만-상주-목표는-미달이다.md) — 속도/상주 두 도구 exit0, 1코어 두 팔 32.64/37.49 tok/s로 15 바닥 통과. int8 경로 텐서116.2+KV10.5=126.7 MiB로 40 상한 미달. 고정 측정 순서·체크포인트 가중치 차이가 있으므로 1.149× 원인 귀속 금지. 자동 문구의 동점 회계 판정·2× 상한 설명 오류는 원시 측정과 분리해 후속 교정한다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

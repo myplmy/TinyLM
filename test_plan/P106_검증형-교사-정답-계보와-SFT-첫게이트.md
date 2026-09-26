@@ -68,3 +68,15 @@ Stage0W의 무모델 계약만 실물로 만든다. G0a/G0b teacher launcher는 
 
 - 2026-09-25: 사용자 §10.3 권장 순서 승인. Stage0W 검사기의 합성 ACCEPT/REJECT/UNKNOWN·teacher 자기판정 거부·split 조상 중복·문자열 target·assistant span fixture가 직접 PASS했고 SH 문법/entrypoint도 PASS다. 이는 **계약 구조만** 검증한다. G0 teacher 자산·실제 독립 정답성·A0 SFT는 권리·사람 품질과 별도 사용자 실행 전 `NOT_RUN`; [검수요청 §7](../review_request/20260925_공개-한국어-SFT-멀티턴-1차GPT-사용자-검수요청.md)을 A0 사람 선결로 둔다.
 - 2026-09-25: 사용자 [Stage0W 원본](../test_result/098_log_20260925_P106_Stage0W_verified_teacher_contract.txt) exit0 회수. 합성 accepted/reject/unknown 각1, negative6·교차 split 누출1 거부로 Q1~Q3 구조 예측을 재확인했다([결과098](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)). Q4 실제 교사 3후보의 라이선스·정답·비용과 A0 SFT는 `NOT_RUN`; 교사 선정 없음.
+
+## 10. 2026-09-26 G0a 선결 — Bonsai 2 27B 자산 메타데이터 gate
+
+사용자가 지목한 로컬 `Ternary-Bonsai-2-27B-PTQ1_0.gguf` 한 파일은 5,946,648,928B·GGUF v3 헤더다. CPU/CUDA 표기 폴더의 `llama-cli --version`은 모두 Prism fork build10735/commit `842b18804`이며, 이 조회는 모델 가중치 로딩이 아니다. 그러나 CUDA 표기 폴더에 `libggml-cuda.so*`가 0건이고 두 CLI의 빌드 ID가 같으므로 **GPU backend는 미검증**이다. 로컬 모델 폴더에 정확 revision의 LICENSE/NOTICE/README도 없다. 폴더명·모델크기·CLI 도움말을 라이선스나 실제 GPU 구동 PASS로 승격하지 않는다.
+
+[Stage0bW 자산 SH](../run_P106_Stage0bW_bonsai27b_asset_preflight.sh)는 GGUF v3/파일크기, 두 CLI의 version/ELF, 정확 모델 폴더의 LICENSE·README 및 CUDA plugin을 메타데이터만으로 확인한다. self-test/check-only는 모델 미열람이다. 자산 부족은 사전등록 exit8 `HOLD`, 헤더/바이너리 결함은 exit2 `FAIL`로 나눈다. 5.9GB SHA 계산은 HOLD가 해소될 때까지 미실행이다. 이 게이트는 teacher answer/정확도·KV/VRAM·출력비용을 측정하지 않는다.
+
+G0a 실제 teacher 소형 pilot의 선결은 (1) 정확 GGUF revision의 공식 LICENSE/NOTICE·model card/출력 재이용 조건을 사람이 확인, (2) GPU를 쓰려면 해당 Prism fork CUDA backend 파일/실제 인식 확인 또는 CPU pilot을 명시 선택, (3) chat template·reasoning effort·출력 상한·독립 verifier 가능한 공개 개발문항을 고정하는 것이다. 본 교사는 27B 한 후보일 뿐 8B 두 계보와 동일조건 3후보 비교는 아직 아니다. 권리/런타임 선결 전에는 모델 로딩 SH나 A0 학생 SFT SH를 READY로 쓰지 않는다.
+
+이 게이트의 예상 시간은 약0.1h·GPU0·모델 생성0이다. 자산 조회가 통과해도 실제 교사 선택은 G0b 기준·독립 verifier와 사용자 E2E 후 별도 판정한다. 웹 공식 페이지 재검증은 도구 인증 오류로 `NOT_RUN`; 이전 제안서의 Apache 표기만 현재 정확 파일의 권리 근거로 삼지 않는다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

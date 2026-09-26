@@ -1,0 +1,24 @@
+P095 opt-in first-coda Scout memory wiring; CPU model gate, default backbone unchanged.
+
+==============================================================================
+[runlog] 2026-09-26 03:09:30  name=P095_S0bT_coda_wiring
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p095_s0bt_coda.py --check-only
+==============================================================================
+[CHECK_ONLY] P095 wrapper syntax/entrypoint PASS; model and memory E2E NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 03:09:30)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-26 03:09:30  name=P095_S0bT_coda_wiring
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p095_s0bt_coda.py
+==============================================================================
+off_exact=1 fact_writes=4 history_delta=0.039704982 fact_delta=0.027213961 prefix_delta=1.1920929e-07 reset_equal=1
+state_bytes=49288 gradient_norms={'bridge.fuse.weight': 0.0009885223116725683, 'bridge.write_value.weight': 0.001210267306305468, 'backbone.emb.weight': 0.03664379194378853}
+[PASS] P095 S0bT real tiny Transformer first-coda wiring, explicit read-before-write, no context shortcut, prefix/reset and backward
+[LIMIT] synthetic tokens and 128-slot fixture; 1 MiB full state, learned WRITE, language QA, compiled trainer and deployment NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 03:09:32)
+==============================================================================

@@ -140,6 +140,8 @@ def main():
     p.add_argument("--group-init", choices=list(GROUP_INIT_MODES), default="mean",
                    help="(P076) 공유 MLP/어텐션 부모 집약. mean=종전 산술평균(기본·비트 동일), "
                         "middle=그룹 중앙 교사층, norm_mean=평균 방향의 노름을 교사 평균으로 복원")
+    p.add_argument("--attn-group-init", choices=list(GROUP_INIT_MODES), default=None,
+                   help="(P076 B3) 어텐션 공유 그룹만 별도 집약. 미지정 시 group-init 계승")
     p.add_argument("--ckpt-tokens", default=None, metavar="300M",
                    help="★★2026-09-07 신설(함정 28 여섯째) — **이 명령이 읽는** 체크포인트 "
                         "파일명의 토큰 칸. `--init-from` 부모 · `--init-from-tag` · KD 교사 셋에 "
@@ -426,6 +428,7 @@ def main():
               a.lr, a.eval_every, a.resume, ckpt, a.compile,
               sched=a.sched, ema=a.ema, early_stop=a.early_stop,
               init_from=init_src, group_init=a.group_init,
+              attn_group_init=a.attn_group_init,
               kd=(kd_teacher if a.kd else False),
               kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
               lora_rank=a.lora_rank, lora_bits=a.lora_bits, mlp_film=a.mlp_film,

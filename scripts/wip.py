@@ -720,6 +720,36 @@ def _requires_frontier_handoff(table) -> bool:
     )
 
 
+def _handoff_previous_chain_contains(selected: Path, target_name: str) -> bool:
+    """Follow real previous links; a later valid handoff may intervene after WIP creation.
+
+    The direct-link legacy case remains accepted. Every intermediate link must be
+    a single plain filename under handoff/, present, non-symlinked and acyclic.
+    """
+    current = selected
+    seen = {selected}
+    for depth in range(32):
+        head = current.read_text(encoding="utf-8")[:1600]
+        links = re.findall(r"(?m)^- \*\*이전\*\*:.*?\]\(([^)]+)\)", head)
+        if len(links) != 1:
+            return False
+        name = links[0]
+        if name != Path(name).name or "\\" in name or name in (".", ".."):
+            return False
+        candidate = current.parent / name
+        if name == target_name:
+            # The old direct-link contract did not demand an on-disk predecessor.
+            return depth == 0 or (not candidate.is_symlink() and candidate.is_file())
+        if candidate.is_symlink() or not candidate.is_file():
+            return False
+        resolved = candidate.resolve()
+        if not resolved.is_relative_to(HANDOFF.resolve()) or resolved in seen:
+            return False
+        seen.add(resolved)
+        current = resolved
+    return False
+
+
 def close(path: Path, static_audit: Path | None = None,
           handoff_path: Path | None = None) -> Path:
     text = path.read_text(encoding="utf-8")
@@ -747,7 +777,7 @@ def close(path: Path, static_audit: Path | None = None,
         handoff_head = selected.read_text(encoding="utf-8")[:1600]
         previous_ref = _metadata(text, "직전 핸드오프", "").strip("` ")
         if previous_ref and previous_ref != "(없음)":
-            if f"]({Path(previous_ref).name})" not in handoff_head:
+            if not _handoff_previous_chain_contains(selected, Path(previous_ref).name):
                 raise ValueError("--handoff previous-chain does not match this WIP")
         closed_name = path.stem + "-done.md"
         if path.name not in handoff_head and closed_name not in handoff_head:
