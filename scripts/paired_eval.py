@@ -104,9 +104,38 @@ def paired_stats(a, b):
     return m, sd, se, t, n, win
 
 
+def preflight_inputs(preset, data, ckpt_tokens, models, dump_crops=None, *, resolver=None):
+    """Resolve exact checkpoint inputs before cache/model loading or output creation.
+
+    This opt-in guard uses the same path resolver as the evaluation loop.  It
+    checks only file type and names; it never opens checkpoint contents.
+    """
+    from tinylm import paths
+
+    resolve = resolver or paths.resolve_ckpt
+    if not models:
+        raise ValueError("paired evaluation needs at least one model tag")
+    checked = {}
+    for tag in models:
+        real_tag = tag.split("#", 1)[0]
+        ck = Path(resolve(preset, data, ckpt_tokens, real_tag, must_exist=True))
+        if ck.is_symlink() or not ck.is_file():
+            raise ValueError(f"paired input absent, linked, or not regular: {ck}")
+        checked[real_tag] = ck
+    if dump_crops is not None:
+        output = Path(dump_crops)
+        if output.exists() or output.is_symlink():
+            raise FileExistsError(f"paired crop output already exists: {output}")
+    return checked
+
+
 def main():
     ap = argparse.ArgumentParser(description="P032 결정적 full-val + paired 비교")
     ap.add_argument("--models", nargs="*", default=DEFAULT_MODELS)
+    ap.add_argument("--check-inputs", action="store_true",
+                    help="모델/캐시를 열지 않고 checkpoint resolver·출력 충돌만 확인")
+    ap.add_argument("--require-inputs", action="store_true",
+                    help="실제 평가에서도 모든 입력을 cache/model 로딩 전에 fail-closed 검사")
     ap.add_argument("--dump-crops", default=None, metavar="OUT.json",
                    help="★P078 단계0 — 크롭별 손실을 json 으로 저장한다. "
                         "{tag: [손실...]} 구조이고 `diag_visit_selectivity.py` 가 읽는다. "
@@ -168,6 +197,22 @@ def main():
                     help="★(P049 §17.3) 재귀 통과에서 어텐션 출력 재사용. **학습과 같은 값**을 준다")
     a = ap.parse_args()
 
+    checked_inputs = None
+    if a.check_inputs or a.require_inputs:
+        try:
+            checked_inputs = preflight_inputs(
+                a.preset, a.data, a.ckpt_tokens or a.tokens,
+                a.models, a.dump_crops,
+            )
+        except (FileNotFoundError, FileExistsError, ValueError, OSError) as exc:
+            print(f"[STOP] paired input preflight: {type(exc).__name__}: {exc}")
+            return 9
+        print("[PASS] paired inputs resolved before cache/model loading: "
+              + ", ".join(path.name for path in checked_inputs.values()))
+        if a.check_inputs:
+            print("[CHECK_ONLY] model/GPU/cache content NOT_READ; no crop output written")
+            return 0
+
     # ★임베딩 양자화 per-tag
     emb_map = {}
     for spec in (a.emb_quant_per_tag or []):
@@ -217,7 +262,11 @@ def main():
     for tag in a.models:
         # ★`TAG#2` 는 같은 체크포인트를 다른 설정으로 한 번 더 넣는 표기다
         real_tag = tag.split("#", 1)[0]
-        ck = paths.resolve_ckpt(a.preset, a.data, _ckpt_tok, real_tag)
+        ck = (checked_inputs[real_tag] if checked_inputs is not None else
+              paths.resolve_ckpt(a.preset, a.data, _ckpt_tok, real_tag))
+        if checked_inputs is not None and (ck.is_symlink() or not ck.is_file()):
+            print(f"[STOP] paired input changed after preflight: {ck}")
+            return 9
         if not ck.exists():
             print(f"\n  [건너뜀] 체크포인트 없음: {ck.name}")
             if _ckpt_tok == a.tokens:

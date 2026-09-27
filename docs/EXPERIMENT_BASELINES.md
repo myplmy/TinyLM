@@ -246,7 +246,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p098_r2_{ctrl,reinject}_s{1337,2024,31415}` | P098 재귀 embedding 재주입 | **사용 완료 2026-09-23.** paired off−on +0.0015/+0.0001/+0.0002로 재귀 자 0.0018 안, 기본 off 유지([091](../test_result/091_20260923_P098-R2-초기임베딩-재주입은-3시드-실무-동급.md)) |
 | `p092_s{1,2}_*`·`p092_s3_*` | P092 full-trainer dense/static/DST | **Stage1/2 사용 완료 2026-09-23**, 구 Stage3W 3시드 런처는 gate 실패와 새 한 시드 경로로 -cancel. 30M→100M 격차는 감소했지만 최선 dynamic50 +0.19656 > +0.07. mask는 dense GEMM이며 일반 runtime_mb에 bool mask 약 80.72 MiB가 빠져 있다. Stage3Wb 사용자 계측·원 JSON 직접 대조 결과 보유 텐서 sparse759.64MiB(mask80.72) > dense678.92, CUDA allocated delta도 +403.59MiB, decode 두 순서 열세; 현 구현 가속·상주 절감 음성([083 §13](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) |
 | `p076_s2_mean`·`p076_s2_middle`·`p076_s2_normmean` | P076 Stage2 부모 집약 품질 3팔 | **사용 완료 2026-09-21.** m100R1c tied·같은 dense parent·Muon RMS4×4·CLA2·300M/600M·seed1337; `attn_group=1`에서 MLP `group_init`만 변경. mean≈middle, norm_mean +0.0030 열세([064 §9](../test_result/064_20260831_P076-도구가-두-팔-다-죽었다-build_config-위치인자.md)) |
-| `p076_b3_ag2_{mean,attnorm}_s1337` | P076 B3 attention-only 부모 집약 ag2 쌍 | **사용 완료 2026-09-26~27.** Stage2bW 배선 기능 PASS, 같은 m100R1c tied·dense parent·Muon RMS4×4·CLA2/ag2·300.024M/600M·seed1337·MLP mean 두 팔 skip0. JSON 최종 학습로그 val 3.57484375/3.57531250으로 후보+0.00046875; 동일 crop Stage2eW·다중 시드는 NOT_RUN([064 §10](../test_result/064_20260831_P076-도구가-두-팔-다-죽었다-build_config-위치인자.md)) |
+| `p076_b3_ag2_{mean,attnorm}_s1337` | P076 B3 attention-only 부모 집약 ag2 쌍 | **학습 사용 완료 2026-09-26~27.** Stage2bW 기능 PASS, 같은 m100R1c tied·dense parent·Muon RMS4×4·CLA2/ag2·300.024M/600M·seed1337·MLP mean 두 팔 skip0. 최종 학습로그 val 3.57484375/3.57531250으로 후보+0.00046875. Stage2eW 평가 런처는 체크포인트 이름에 잘못된 `_tied_`를 넣어 평가0건; Stage2eWb 공통 resolver check-only PASS이나 GPU paired·다중 시드는 NOT_RUN([064 §11](../test_result/064_20260831_P076-도구가-두-팔-다-죽었다-build_config-위치인자.md)) |
 | `p060b_s1w_off250`·`p060b_s1w_on250` | P060B WSL GQA 250-step 속도/VRAM gate | **예약 2026-09-20.** m100s10 dense·Muon RMS4×4·CLA2·32.768M probe; 품질/W&B 판정 금지 |
 | `mA_*`,`mB_*`,`mC_*` | 1차 리뷰 최적안 검증(REVIEW1) | ✅ **완료**(결과 012). 승자 = `mA_g4s34_k4` |
 | `p6d_s2` | σ 측정 — p6d 를 시드만 바꿔 재현(REVIEW1 [1]) | ✅ **완료**(결과 012, σ=0.012) |
@@ -485,6 +485,10 @@ step0 은 **초기점**을 재고, 판정 대상은 **그 초기점에서 출발
 [결과098 §6~§7](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)의 verbosity4 대조는 GPU40 기본 GDN AR/chunked `disabled` 대 `--no-op-offload` 둘 다 `enabled`를 직접 확인했다. 생성은5.1→6.7tok/s로 개선됐지만 full GPU 약54tok/s에 한참 못 미친다. GPU all의 첫32층 FFN gate/up/down 가중치만 CPU에 두면 GDN 둘 다 `enabled`, 교사 단독 VRAM 증가 약4,084MiB·생성7.0tok/s다. Stage0i verbosity3의 `enabled` 미출력에 따른 exit8은 **무효 계측**이며 이 판정에 넣지 않는다.
 
 사용자 승인 합성 1-step 공존에서는 FFN32/micro8과 FFN60/micro8, FFN32/micro4가 모두 실제 교사 생성·학생 optimizer 업데이트를 끝냈다. 다만 NVML의 **시작 free−실행 중 used 증가표본**으로 환산한 여유는 각각 **126/1,019/4,679MiB**였다. §5.3의 카드 총량16,376MiB 기반 명목 여유보다 약314MiB 보수적이며, 단독 teacher+과거 student reserved의 단순 합계는 실행 중 allocator/활성 peak를 대체하지 않는다. 특히 FFN32/micro8은 OOM0이어도 안전 여유가 없다. micro4는 합성 eager·난수 학생에 한해 유망하고, 실제 `micro4×accum32 --compile --init-from`의 속도·VRAM·품질은 아직 `NOT_RUN`이다. 따라서 현재 기본은 **교사 단독 선생성→독립 검증→학생 단독 학습**이고, 온라인 동시 KD 채택은 후속 실제 학습 게이트 전 금지한다.
+
+### 5.5 2026-09-27 P076 micro/누산 합성 게이트 — 같은 131K 업데이트, 실제 학습 아님
+
+[결과064 §12](../test_result/064_20260831_P076-도구가-두-팔-다-죽었다-build_config-위치인자.md)의 무부모·무컴파일·합성 여덟 시퀀스×16회·Muon RMS4 1-update에서 micro8/accum16/no-ckpt는 peak reserved **11,480MiB**(두 번 동일)·wall 4.596/4.461초였다. 같은 유효배치의 micro4/accum32/no-ckpt는 **6,392MiB(−5,088, −44.3%)**·4.373/4.352초, micro4/accum32/ckpt-on은 **2,486MiB**·5.320초 한 번이었다. A/B 두 순서 중앙값4.5285/4.3625초의 3.7% 방향은 짧은 eager probe에서만 관측됐고 안정적 학습 가속이라고 단정하지 않는다. 실제 P076 Stage2c/d의 compiled·부모·데이터 학습 reserved8,846MiB와 절대량을 차감해 micro4의 예상 실물값으로 쓰지 않는다. 현행 학습 recipe는 그대로이며, 온라인 교사 공존을 요구하는 별도 실학습 게이트가 승인될 때만 micro4×accum32/no-ckpt를 1차 후보로 둔다.
 
 ## 6. 알려진 버그·함정 (설계 시 반영)
 

@@ -1,0 +1,57 @@
+Authorized bounded CPU/GPU diagnostic: same eight synthetic sequences and 131072 effective tokens, compare micro8 accum16 no-ckpt, micro4 accum32 no-ckpt, micro4 accum32 ckpt-on. One eager update per arm, no parent/data/cache/checkpoint writes, not model quality.
+
+==============================================================================
+[runlog] 2026-09-27 16:26:50  name=P076_Stage2fW_micro_accum_probe
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout -s TERM -k 5s 180s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/probe_p076_micro_accum.py --micro-bs 8 --accum 16 --no-ckpt
+==============================================================================
+{"accum": 16, "activation_checkpoint": false, "checkpoint_write": false, "compiled": false, "data": "SYNTHETIC_IN_MEMORY", "effective_tokens": 131072, "effective_tokens_per_sec": 28518.0, "finite_gradient": true, "gpu_total_mib": 16375, "initial_cuda_free_mib": 15085, "limit": "one eager synthetic update; no compile/parent/dataset/teacher; not 300M training quality or stable wall", "micro_bs": 8, "parent_init": "RANDOM_NOT_P076_PARENT", "peak_allocated_mib": 11236, "peak_reserved_mib": 11480, "same_eight_sequences_each_seen": 16, "schema": "P076_MICRO_ACCUM_V1", "seq": 1024, "step_count": 1, "wall_sec": 4.596}
+[PASS] synthetic one-update VRAM/time only; real trainer quality NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-27 16:26:58)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 16:27:11  name=P076_Stage2fW_micro_accum_probe
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout -s TERM -k 5s 180s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/probe_p076_micro_accum.py --micro-bs 4 --accum 32 --no-ckpt
+==============================================================================
+{"accum": 32, "activation_checkpoint": false, "checkpoint_write": false, "compiled": false, "data": "SYNTHETIC_IN_MEMORY", "effective_tokens": 131072, "effective_tokens_per_sec": 29973.2, "finite_gradient": true, "gpu_total_mib": 16375, "initial_cuda_free_mib": 15085, "limit": "one eager synthetic update; no compile/parent/dataset/teacher; not 300M training quality or stable wall", "micro_bs": 4, "parent_init": "RANDOM_NOT_P076_PARENT", "peak_allocated_mib": 6194, "peak_reserved_mib": 6392, "same_eight_sequences_each_seen": 16, "schema": "P076_MICRO_ACCUM_V1", "seq": 1024, "step_count": 1, "wall_sec": 4.373}
+[PASS] synthetic one-update VRAM/time only; real trainer quality NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-27 16:27:18)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 16:27:29  name=P076_Stage2fW_micro_accum_probe
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout -s TERM -k 5s 180s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/probe_p076_micro_accum.py --micro-bs 4 --accum 32
+==============================================================================
+{"accum": 32, "activation_checkpoint": true, "checkpoint_write": false, "compiled": false, "data": "SYNTHETIC_IN_MEMORY", "effective_tokens": 131072, "effective_tokens_per_sec": 24635.9, "finite_gradient": true, "gpu_total_mib": 16375, "initial_cuda_free_mib": 15085, "limit": "one eager synthetic update; no compile/parent/dataset/teacher; not 300M training quality or stable wall", "micro_bs": 4, "parent_init": "RANDOM_NOT_P076_PARENT", "peak_allocated_mib": 2309, "peak_reserved_mib": 2486, "same_eight_sequences_each_seen": 16, "schema": "P076_MICRO_ACCUM_V1", "seq": 1024, "step_count": 1, "wall_sec": 5.32}
+[PASS] synthetic one-update VRAM/time only; real trainer quality NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-27 16:27:37)
+==============================================================================
+Order-bias check after A/B/C first panel: repeat the same B then A synthetic one-update conditions, no changed flags, to avoid calling one 5 percent wall difference a stable speed gain.
+
+==============================================================================
+[runlog] 2026-09-27 16:28:11  name=P076_Stage2fW_micro_accum_probe
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout -s TERM -k 5s 180s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/probe_p076_micro_accum.py --micro-bs 4 --accum 32 --no-ckpt
+==============================================================================
+{"accum": 32, "activation_checkpoint": false, "checkpoint_write": false, "compiled": false, "data": "SYNTHETIC_IN_MEMORY", "effective_tokens": 131072, "effective_tokens_per_sec": 30117.6, "finite_gradient": true, "gpu_total_mib": 16375, "initial_cuda_free_mib": 15085, "limit": "one eager synthetic update; no compile/parent/dataset/teacher; not 300M training quality or stable wall", "micro_bs": 4, "parent_init": "RANDOM_NOT_P076_PARENT", "peak_allocated_mib": 6194, "peak_reserved_mib": 6392, "same_eight_sequences_each_seen": 16, "schema": "P076_MICRO_ACCUM_V1", "seq": 1024, "step_count": 1, "wall_sec": 4.352}
+[PASS] synthetic one-update VRAM/time only; real trainer quality NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-27 16:28:17)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 16:28:29  name=P076_Stage2fW_micro_accum_probe
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout -s TERM -k 5s 180s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/probe_p076_micro_accum.py --micro-bs 8 --accum 16 --no-ckpt
+==============================================================================
+{"accum": 16, "activation_checkpoint": false, "checkpoint_write": false, "compiled": false, "data": "SYNTHETIC_IN_MEMORY", "effective_tokens": 131072, "effective_tokens_per_sec": 29381.2, "finite_gradient": true, "gpu_total_mib": 16375, "initial_cuda_free_mib": 15085, "limit": "one eager synthetic update; no compile/parent/dataset/teacher; not 300M training quality or stable wall", "micro_bs": 8, "parent_init": "RANDOM_NOT_P076_PARENT", "peak_allocated_mib": 11236, "peak_reserved_mib": 11480, "same_eight_sequences_each_seen": 16, "schema": "P076_MICRO_ACCUM_V1", "seq": 1024, "step_count": 1, "wall_sec": 4.461}
+[PASS] synthetic one-update VRAM/time only; real trainer quality NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-27 16:28:36)
+==============================================================================

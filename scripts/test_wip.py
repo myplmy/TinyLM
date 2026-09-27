@@ -6,17 +6,20 @@ import io
 from contextlib import redirect_stdout
 import importlib.util
 import json
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
 from pathlib import Path
 
 MODULE_PATH = Path(__file__).resolve().with_name("wip.py")
+# The environment audit runs this suite with Python -I, which excludes the
+# script directory from sys.path. wip.close() imports its sibling gate modules.
+sys.path.insert(0, str(MODULE_PATH.parent))
 SPEC = importlib.util.spec_from_file_location("tinylm_wip_v2", MODULE_PATH)
 if SPEC is None or SPEC.loader is None:
     raise RuntimeError(f"cannot load {MODULE_PATH}")
 WIP = importlib.util.module_from_spec(SPEC)
-import sys
 sys.modules[SPEC.name] = WIP
 SPEC.loader.exec_module(WIP)
 

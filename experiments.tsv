@@ -29,11 +29,14 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-3	P076	run_P076_Stage2eW_ag2_attn_pair.sh	D	0.3	Y	Y	두 신규 ag2 체크포인트가 모두 성공했을 때만 600M 같은 crop paired full-val; 한 시드로 기본값 승격 금지
+1	P076	run_P076_Stage2eWb_ag2_attn_pair.sh	D	0.3	Y	Y	Stage2eW의 잘못된 _tied_ checkpoint 선검사로 평가0건; Wb는 paired_eval 공통 resolver/check-inputs를 거쳐 같은 두 ag2 최종모델의 600M 동일 crop 평가, 한 시드 승격 금지
+2	P037	run_P037_Stage0Wb_common_val_300M_builder.sh	N	1.0	Y	Y	기존300M train에서 공통val 동일 EOS 문서를 제외하고 격리 300M cache 생성; 데이터 기능계약만, SFT·학습 아님; 사용자 실행 전 NOT_RUN
+3	P030B	run_P030B_Stage0Wb_cpu_order_rss.sh	N	1.0	Y	Y	기존 d14 두 final의 CPU1 속도 A/B/B/A 독립 프로세스 및 같은 int8 unpack RSS를 재서 순서 편향과 40MiB 미달을 분리; 모델 실행은 사용자 소유
+# P076 Stage2eW attempted then stopped before runlog: its '_tied_' checkpoint guard was wrong; the -done SH remains historical evidence and is not a quality result.
 # P104A Windows prerequisite: run_P104A_Stage2B_m5_real_bridge.bat direct on Windows before the WSL queue row below.
 # CANCEL 2026-09-23: 옛 P092 Stage3W 3시드 일괄안은 100M gate 실패와 사용자 선택(진단→원인 수정→300M 한 시드)에 맞지 않아 실행 설계만 취소; P092 연구축·Stage3Wb 유지
 # 26	P092	run_P092_Stage3W_full_trainer_300M_seeds-cancel.sh	Y	13.5	Y	Y	구 3시드 일괄 학습 이력; GPU/모델 실행 0건, 과학적 축 폐기 아님	8
-3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	2026-09-23 TSV 실물 142건·60.677GiB 삭제 후보. WSL SH 단일 frozen preview와 대문자 YES, 실행 전 학습/파일 writer 중단 필수
+3	-	run_cleanup_checkpoints.bat	N	0.1	N	Y	2026-09-27 TSV 실물 299건·184.321GiB 중 delete 76건·11.9GiB 후보. WSL SH frozen preview와 대문자 YES, 실행 전 학습/파일 writer 중단 필수
 #
 # ★완료·삭제된 배치 — 재현 명령은 전부 결과문서에 있다
 #   2026-08-14 삭제분: P049 단계1(041 §14.8) · P049B 단계1(043 §13.9) · F-1(046 §9)

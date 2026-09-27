@@ -603,6 +603,21 @@ delete	m100s8_ko-en_600M_d12_cla2_r20_rms4_t600_best.pt	651.6	final 짝 실존·
 keep	m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt	743.9	P090B chat32 사전학습 부모 final; 후속 3계보 SFT·형식 비교의 실제 init 후보라 보존(2026-09-26)
 keep	m100s10_ko-en_300M_dense_chat32_p090b_s1337_best.pt	743.9	P090B chat32 부모 best 유일본; best val 대 final 차이와 SFT 부모 선정 전 보존(2026-09-26)
 keep	m100s12_ko-en_100M_dense_p102a_t0_s1337.pt	836.2	P102A T0 100M 기존 final; C 단계 원인분리·조건부 ABBA 공통 crop 대조가 실제로 읽음(2026-09-26)
-hold	m100s12_ko-en_100M_dense_p102a_t0_s1337_best.pt	836.3	P102A T0 best 유일본, final 짝과 active best 참조는 없지만 ABBA fixed-crop 판독 전 삭제보류(2026-09-26)
+delete	m100s12_ko-en_100M_dense_p102a_t0_s1337_best.pt	836.3	P102A ABBA 고정 crop·결과093 §10~§11 회수 완료; final 보존, 현재 best 참조·G1 부모보호 0(2026-09-27 직접 재검수)
 keep	m100s12_ko-en_100M_dense_p102a_t1_s1337.pt	836.2	P102A T1 100M 기존 final; C 단계 원인분리·조건부 ABBA 공통 crop 대조가 실제로 읽음(2026-09-26)
-hold	m100s12_ko-en_100M_dense_p102a_t1_s1337_best.pt	836.3	P102A T1 best 유일본, final 짝과 active best 참조는 없지만 ABBA fixed-crop 판독 전 삭제보류(2026-09-26)
+delete	m100s12_ko-en_100M_dense_p102a_t1_s1337_best.pt	836.3	P102A ABBA 고정 crop·결과093 §10~§11 회수 완료; final 보존, 현재 best 참조·G1 부모보호 0(2026-09-27 직접 재검수)
+# ★2026-09-27 자동 판정 14행 (scripts/ckpt_audit.py) — 정확한 tiny synthetic smoke만 delete, 나머지는 길이와 무관하게 hold
+keep	m100R1c_ko-en_300M_p076_b3_ag2_attnorm_s1337.pt	444.9	P076 Stage2eWb 동일 crop paired의 정확 최종 입력; 평가 전 삭제 금지(결과064 §11)
+delete	m100R1c_ko-en_300M_p076_b3_ag2_attnorm_s1337_best.pt	444.9	P076 Stage2eWb는 final만 읽음; final 보존·현재 best 참조/G1 부모보호 0, 결과 JSON의 best 수치만 보존(2026-09-27 검수)
+keep	m100R1c_ko-en_300M_p076_b3_ag2_mean_s1337.pt	444.9	P076 Stage2eWb 동일 crop paired의 정확 최종 대조 입력; 평가 전 삭제 금지(결과064 §11)
+delete	m100R1c_ko-en_300M_p076_b3_ag2_mean_s1337_best.pt	444.9	P076 Stage2eWb는 final만 읽음; final 보존·현재 best 참조/G1 부모보호 0, 결과 JSON의 best 수치만 보존(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t0abba_a_s1337.pt	836.3	P102A T1 ABBA 사용자 완료·고정2929 crop/JSON 결과093 §10~§11 보존, T1 기본 미채택; 현재 런처/부모/후속 S축 입력 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t0abba_a_s1337_best.pt	836.3	같은 ABBA 완료 팔의 best; final/JSON/고정 crop 정본 존재, 현재 best/부모 참조 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t0abba_b_s1337.pt	836.3	P102A T1 ABBA 사용자 완료·고정2929 crop/JSON 결과093 §10~§11 보존, T1 기본 미채택; 현재 런처/부모/후속 S축 입력 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t0abba_b_s1337_best.pt	836.3	같은 ABBA 완료 팔의 best; final/JSON/고정 crop 정본 존재, 현재 best/부모 참조 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t1abba_a_s1337.pt	836.3	P102A T1 ABBA 사용자 완료·고정2929 crop/JSON 결과093 §10~§11 보존, T1 기본 미채택; 현재 런처/부모/후속 S축 입력 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t1abba_a_s1337_best.pt	836.3	같은 ABBA 완료 팔의 best; final/JSON/고정 crop 정본 존재, 현재 best/부모 참조 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t1abba_b_s1337.pt	836.3	P102A T1 ABBA 사용자 완료·고정2929 crop/JSON 결과093 §10~§11 보존, T1 기본 미채택; 현재 런처/부모/후속 S축 입력 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t1abba_b_s1337_best.pt	836.3	같은 ABBA 완료 팔의 best; final/JSON/고정 crop 정본 존재, 현재 best/부모 참조 0(2026-09-27 검수)
+delete	tiny_synthetic_2M_sm_ag_attnorm.pt	41.0	tiny synthetic smoke 산출물 - 다음 smoke에서 재생성
+delete	tiny_synthetic_2M_sm_ag_attnorm_best.pt	41.0	tiny synthetic smoke 산출물 - 다음 smoke에서 재생성

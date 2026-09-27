@@ -63,3 +63,18 @@ WSL과 Windows의 다른 시점·스택을 직접 인과 비교하지 않는다.
 ## 2026-09-27 Stage0W 두 훈련 JSON 직접 재검산
 
 [결과100 §5](../test_result/100_20260926_P030B-1코어-바닥은-통과했지만-상주-목표는-미달이다.md)에서 정확 두 훈련 JSON을 직접 읽어 같은 m100s10 dense·300,023,808 draw·exact600M 풀·seed1337·dense 부모·CLA2·skip0을 확인했다. optimizer는 AdamW 대 Muon RMS4로 다르다. 따라서 §1의 예전 훈련 메타 미열람은 해소됐지만, 학습 가중치와 고정 실행 순서가 달라 1코어1.149×을 optimizer 순수 추론 효과라 할 수 없다. 상주126.7MiB 미달 판정은 유지한다.
+
+## 10. 2026-09-27 Stage0Wb — CPU 모델 측정 순서와 RSS 독립 프로세스 게이트
+
+직전 Stage0W의 d14 두 체크포인트 속도비1.149×은 **A→B 고정 순서**이고 현 int8 경로 텐서+KV가126.7MiB라 40MiB 목표는 이미 실패했다. 이번 후속은 구조·학습을 바꾸지 않고 고정 순서 편향 및 프로세스 RSS를 다시 잰다. `run_P030B_Stage0Wb_cpu_order_rss.sh`는 기존 두 final을 `paired_eval.py --check-inputs`의 공통 경로 resolver로 모델 로딩 전 확인한 뒤, 같은 한 문장·CPU 1스레드·128 decode·reps3·int8-store/unpack-cache·last-only·CPU watch로 **A→B→B→A 각 새 프로세스**를 실행하도록 준비했다. 각 팔 뒤 별도 `mem_runtime.py`도 같은 A/B/B/A 순서로 별도 프로세스에서 실행한다. 현재 지시상 Codex의 런처/모델 실행은 금지이므로 코드는 정적 상태이고 수치 `NOT_RUN`이다.
+
+예측: 고정 순서가 주원인이면 A/B의 속도 차가 순서 반전에서 줄거나 부호가 바뀐다. 방향이 유지돼도 가중치 값이 다른 두 최종 모델이므로 optimizer가 순수하게 inference를 빠르게 했다고 말할 수 없다. RSS가 실제로 작아지더라도 물리 텐서+KV 126.7MiB와 양립하는지 먼저 확인한다. 40MiB 목표 미달을 속도 PASS로 상쇄하지 않는다. 외부 CPU 부하·시스템 cache·clock이 크게 다르면 기술 판정 보류다.
+
+| 비용·선결 | 값 |
+|---|---|
+| 사용자 실행 | WSL CPU 단독, GPU0, 약1.0h 상한(8개 독립 프로세스·각 benchmark 10초 idle) |
+| 자산 | 기존 두 final checkpoint와 legacy tokenizer, 새 학습·다운로드·저장0 |
+| PASS 한계 | 입력 정합·ABBA 8행 출력·프로세스별 RSS, 속도비는 조건부 설명값 |
+| 중단 | 한 팔 오류/외부 CPU 부하 편차·RSS/텐서 회계 모순이면 채택 주장 금지 |
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
