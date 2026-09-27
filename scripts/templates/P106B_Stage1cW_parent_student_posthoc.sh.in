@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# P106B Stage1cW: user-run paired P076 parent vs P106B pseudo-SFT student.
+# Around 1.5 h GPU; public fixed tasks only. No protected held-out access.
+# This is a tiny-pilot diagnostic, not proof of general intelligence gain.
+set -euo pipefail
+repo_root="$(cd "$(dirname "$0")" && pwd)"
+source "$repo_root/scripts/shell/tinylm_env.sh"
+cd "$repo_root"
+python_bin="$(tinylm_python)" || exit 9
+stamp="$(date +%Y%m%d)"
+log="test_result/101_log_${stamp}_P106B_Stage1cW_parent_student_posthoc.txt"
+if [[ -e "$log" || -L "$log" ]]; then
+  printf '[STOP] Stage1cW runlog already exists: %s; use a new stage suffix for retries.\n' "$log" >&2
+  exit 9
+fi
+"$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 --note \
+  'Prerequisite: Stage1bW checkpoint/result manifest with matching SHA and fresh WSL smoke PASS. Compare SAME P076 parent/tokenizer/preset against its P106B pseudo-SFT child on public fixed inputs. No protected held-out.'
+"$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 -- \
+  "$python_bin" -B -X utf8 scripts/diag_p106b_posthoc.py --self-test
+"$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 -- \
+  "$python_bin" -B -X utf8 scripts/diag_p106b_posthoc.py --check-only
+"$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 -- \
+  "$python_bin" -B -X utf8 scripts/eval_p100_capability_panel.py \
+  --model p076_b3_ag2_mean_s1337,ko-en,tied,m100R1c,300M \
+  --model p106b_s1b_oasst2_ko_online_s1337,ko-en,tied,m100R1c,300M \
+  --out runs/bench/p106b_stage1c_p100_parent_student.jsonl --max-new 80 --check-only
+"$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 --note \
+  'P100 9 bilingual prompts x base/QA x 2 models: save 36 raw answers, then conservative direct/JSON triage. Scores do not replace manual answer reading.'
+failures=0
+"$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 -- \
+  "$python_bin" -B -X utf8 scripts/eval_p100_capability_panel.py \
+  --model p076_b3_ag2_mean_s1337,ko-en,tied,m100R1c,300M \
+  --model p106b_s1b_oasst2_ko_online_s1337,ko-en,tied,m100R1c,300M \
+  --out runs/bench/p106b_stage1c_p100_parent_student.jsonl --max-new 80 || failures=$((failures + 1))
+if (( failures == 0 )); then
+  "$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 -- \
+    "$python_bin" -B -X utf8 scripts/diag_p100_answer_triage.py \
+    --input-jsonl runs/bench/p106b_stage1c_p100_parent_student.jsonl || failures=$((failures + 1))
+fi
+"$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 --note \
+  'Three public tasks, n=512 each, seed99, same parent/student model lineage. Per-item gold/prediction/margin saved locally first; user execution also sends summary through established W&B benchmark contract.'
+"$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 -- \
+  "$python_bin" -B -X utf8 scripts/eval_bench_suite.py --task klue_ynat --n 512 \
+  --models p076_b3_ag2_mean_s1337 p106b_s1b_oasst2_ko_online_s1337 \
+  --model-arch tied tied --preset m100R1c --data ko-en --tokens 300M \
+  --seq-max 1024 --seed 99 --device cuda \
+  --per-item-jsonl runs/bench/p106b_stage1c_klue_ynat_items.jsonl --wandb || failures=$((failures + 1))
+"$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 -- \
+  "$python_bin" -B -X utf8 scripts/eval_bench_suite.py --task klue_nli --n 512 \
+  --models p076_b3_ag2_mean_s1337 p106b_s1b_oasst2_ko_online_s1337 \
+  --model-arch tied tied --preset m100R1c --data ko-en --tokens 300M \
+  --seq-max 1024 --seed 99 --device cuda \
+  --per-item-jsonl runs/bench/p106b_stage1c_klue_nli_items.jsonl --wandb || failures=$((failures + 1))
+"$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 -- \
+  "$python_bin" -B -X utf8 scripts/eval_bench_suite.py --task arc_easy --n 512 \
+  --models p076_b3_ag2_mean_s1337 p106b_s1b_oasst2_ko_online_s1337 \
+  --model-arch tied tied --preset m100R1c --data ko-en --tokens 300M \
+  --seq-max 1024 --seed 99 --device cuda \
+  --per-item-jsonl runs/bench/p106b_stage1c_arc_easy_items.jsonl --wandb || failures=$((failures + 1))
+if (( failures == 0 )); then
+  "$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 -- \
+    "$python_bin" -B -X utf8 scripts/diag_p106b_posthoc.py || failures=$((failures + 1))
+fi
+if (( failures > 0 )); then
+  "$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 --note \
+    'PARTIAL: one or more evaluation arms failed. Preserve every raw log and per-item file; do not claim a paired benchmark result.'
+  exit 9
+fi
+"$python_bin" scripts/runlog.py --name P106B_Stage1cW_parent_student_posthoc --num 101 --note \
+  'Read paired improved/regressed IDs, then manually classify wrong facts, Korean meaning, format, context, reasoning, repetition and source translation defects. n=512 panels and 2 student updates cannot establish general intelligence gain.'
