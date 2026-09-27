@@ -1,0 +1,46 @@
+Authorized bounded CPU+GPU teacher probe. Server --reasoning auto, request efforts none/low/medium; same four source pairs, tagged prompt, thinking sampler, seed and max2048. Raw reasoning/final goes to new ignored v9.
+
+==============================================================================
+[runlog] 2026-09-28 03:37:06  name=P106B_Stage2hW_effort_profile
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_effort_profile.py --self-test
+==============================================================================
+[PASS] none/low/medium same prompt/seed/sampler/cap and crossed order; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 03:37:06)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 03:37:06  name=P106B_Stage2hW_effort_profile
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_effort_profile.py --check-only
+==============================================================================
+{"cases": [2, 5, 14, 16], "efforts": ["none", "low", "medium"], "max_tokens": 2048, "model_gpu": "NOT_RUN", "new_output": "HF/sft_ready/p106b_teacher_sft/v9/reasoning_effort_profile.jsonl", "orders": [["none", "low", "medium"], ["medium", "low", "none"], ["low", "none", "medium"], ["medium", "none", "low"]], "sampler": {"min_p": 0.05, "presence_penalty": 0.0, "repeat_penalty": 1.0, "stream": false, "temperature": 1.0, "top_k": 20, "top_p": 0.95}, "source": {"selection": "all original pinned sixteen; candidate generation only", "source_tree_ids": ["c2c8d82d-7561-48de-b689-606693499d04", "ddab2b7f-b236-4836-9f08-923481e4c417", "e39bffcb-62a7-44c1-aca0-bf81b464ec40", "c4aa459a-a68c-49da-b1ce-fc0a36f6281f", "f789ec5a-f20d-43c0-838d-f08e23479642", "489c253f-66ff-4d92-b4c2-196732ca2a71", "caf2a8f4-9a85-4021-b6a3-973fdf1e1ff5", "8a6e2984-3934-4555-9865-567bf5a5bd16", "0506f6c4-1a82-4176-8c13-dc5c47842b4e", "b394b2ab-09d1-4616-ada8-5436c7051dd5", "853a9ea8-c063-4e25-8774-137f09027e22", "9027c3b3-da98-47c8-bb7c-60af652b4429", "f417a9ee-fb2b-48fe-b1ed-582a1c9e7860", "45920a80-02c0-4968-87a1-892a184f2983", "fb3807e2-0b67-40ea-8682-02eeaaaf6bb5", "071e1f1f-6420-4c3f-8e52-aa032422ac51"], "v1_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947", "v2_sha256": "9434C90FF68444810DA83DF3161DA475AD21D2A7E7AA8BACF6C7AAC28A52D318", "v3_sha256": "55D4D9A41B3D30B1535D0A47ACD1CCECBFB8C244ABC4AD8FD90CAD264376D0DD"}, "student_training": "NOT_RUN"}
+[CHECK_ONLY] pinned teacher source/effort prompt PASS; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-28 03:37:12)
+==============================================================================
+Read: completion tokens include hidden reasoning; request wall includes HTTP and first-call effects. Unsupported or truncated arms remain negative evidence. No teacher answer truth or 5-step student rate claim.
+
+==============================================================================
+[runlog] 2026-09-28 03:37:12  name=P106B_Stage2hW_effort_profile
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_effort_profile.py --execute
+==============================================================================
+[EFFORT_ROW] {"api_error": "", "case": 2, "completion_tokens": 269, "effort": "none", "final_chars": 441, "finish": "stop", "format": "TAGGED_COMPLETE", "reasoning_chars": 0, "request_wall_sec": 5.094}
+[EFFORT_ROW] {"api_error": "", "case": 2, "completion_tokens": 957, "effort": "low", "final_chars": 338, "finish": "stop", "format": "TAGGED_COMPLETE", "reasoning_chars": 2571, "request_wall_sec": 16.207}
+[EFFORT_ROW] {"api_error": "", "case": 2, "completion_tokens": 1399, "effort": "medium", "final_chars": 401, "finish": "stop", "format": "TAGGED_COMPLETE", "reasoning_chars": 3184, "request_wall_sec": 22.954}
+[EFFORT_ROW] {"api_error": "", "case": 5, "completion_tokens": 2048, "effort": "medium", "final_chars": 0, "finish": "length", "format": "INCOMPLETE", "reasoning_chars": 7902, "request_wall_sec": 34.327}
+[EFFORT_ROW] {"api_error": "", "case": 5, "completion_tokens": 1361, "effort": "low", "final_chars": 1125, "finish": "stop", "format": "TAGGED_COMPLETE", "reasoning_chars": 4208, "request_wall_sec": 23.085}
+[EFFORT_ROW] {"api_error": "", "case": 5, "completion_tokens": 403, "effort": "none", "final_chars": 1252, "finish": "stop", "format": "TAGGED_COMPLETE", "reasoning_chars": 0, "request_wall_sec": 6.831}
+[EFFORT_ROW] {"api_error": "", "case": 14, "completion_tokens": 1538, "effort": "low", "final_chars": 432, "finish": "stop", "format": "TAGGED_COMPLETE", "reasoning_chars": 5394, "request_wall_sec": 23.557}
+[EFFORT_ROW] {"api_error": "", "case": 14, "completion_tokens": 231, "effort": "none", "final_chars": 497, "finish": "stop", "format": "TAGGED_COMPLETE", "reasoning_chars": 0, "request_wall_sec": 3.905}
+[EFFORT_ROW] {"api_error": "", "case": 14, "completion_tokens": 2048, "effort": "medium", "final_chars": 0, "finish": "length", "format": "INCOMPLETE", "reasoning_chars": 8135, "request_wall_sec": 32.001}
+[EFFORT_ROW] {"api_error": "", "case": 16, "completion_tokens": 2036, "effort": "medium", "final_chars": 195, "finish": "stop", "format": "TAGGED_COMPLETE", "reasoning_chars": 6778, "request_wall_sec": 32.6}
+[EFFORT_ROW] {"api_error": "", "case": 16, "completion_tokens": 160, "effort": "none", "final_chars": 368, "finish": "stop", "format": "TAGGED_COMPLETE", "reasoning_chars": 0, "request_wall_sec": 2.738}
+[EFFORT_ROW] {"api_error": "", "case": 16, "completion_tokens": 1310, "effort": "low", "final_chars": 182, "finish": "stop", "format": "TAGGED_COMPLETE", "reasoning_chars": 4695, "request_wall_sec": 20.557}
+{"per_effort": {"low": {"completion_tokens": 5166, "completion_tokens_per_request_wall_sec": 61.938, "format_status": {"TAGGED_COMPLETE": 4}, "request_wall_sec": 83.406, "requests": 4, "usage_missing": 0}, "medium": {"completion_tokens": 7531, "completion_tokens_per_request_wall_sec": 61.789, "format_status": {"INCOMPLETE": 2, "TAGGED_COMPLETE": 2}, "request_wall_sec": 121.882, "requests": 4, "usage_missing": 0}, "none": {"completion_tokens": 1063, "completion_tokens_per_request_wall_sec": 57.249, "format_status": {"TAGGED_COMPLETE": 4}, "request_wall_sec": 18.568, "requests": 4, "usage_missing": 0}}, "quality": "NOT_RUN", "raw_sha256": "715505F94A6668034B091F7D1DECC0A0245165FC654E38A6A39A7A2D495E2DBC", "schema": "P106B_STAGE2HW_EFFORT_PROFILE_V1", "student_training": "NOT_RUN", "whole_wall_sec": 226.441}
+[PASS] bounded effort/format timing recorded; quality/student training NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 4.1분  (2026-09-28 03:41:16)
+==============================================================================

@@ -1,0 +1,47 @@
+Prerequisites: fresh user WSL smoke PASS; idle RTX GPU; exact v1-v4 and review SHA. The eight v4 hard-reject rows only. New v5 write-once attempt journal, never modify earlier source or student checkpoint.
+
+==============================================================================
+[runlog] 2026-09-28 02:11:32  name=P106B_Stage1gW_targeted_repair_retry
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_targeted_repair.py --self-test
+==============================================================================
+[PASS] eight-case selection, entity/script/role hooks and bounded retry contract; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 02:11:32)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 02:11:32  name=P106B_Stage1gW_targeted_repair_retry
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_targeted_repair.py --check-only
+==============================================================================
+{"max_attempts": 3, "model_gpu": "NOT_RUN", "new_output": "HF/sft_ready/p106b_teacher_sft/v5/targeted_repair_attempts.jsonl", "selected_cases": [3, 6, 7, 8, 11, 12, 14, 16], "source": {"review_sha256": "5870FF065EB79108BA2B1532D352D96C9DC6782DD736B44DD67171441FAB733F", "selection": "exactly eight hard-reject rows; not a random quality sample", "source_tree_ids": ["e39bffcb-62a7-44c1-aca0-bf81b464ec40", "489c253f-66ff-4d92-b4c2-196732ca2a71", "caf2a8f4-9a85-4021-b6a3-973fdf1e1ff5", "8a6e2984-3934-4555-9865-567bf5a5bd16", "853a9ea8-c063-4e25-8774-137f09027e22", "9027c3b3-da98-47c8-bb7c-60af652b4429", "45920a80-02c0-4968-87a1-892a184f2983", "071e1f1f-6420-4c3f-8e52-aa032422ac51"], "v1_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947", "v2_sha256": "9434C90FF68444810DA83DF3161DA475AD21D2A7E7AA8BACF6C7AAC28A52D318", "v3_sha256": "55D4D9A41B3D30B1535D0A47ACD1CCECBFB8C244ABC4AD8FD90CAD264376D0DD", "v4_sha256": "63E7F7A1E487F10E1A1214E2C2489AD9DDD754DEDE33CA5893242CEAE983CAFA"}, "student_training": "NOT_RUN", "v4_error_codes": {"3": ["UNEXPECTED_CYRILLIC_ARABIC_OR_HAN_SCRIPT"], "6": ["BOY_GENDER_NOT_PRESERVED"], "7": ["DAVIS_HARVARD_ENTITY_CHANGED", "UNVERIFIED_ONE_STOP_CLAIM"], "8": ["RUBBER_TERM_CORRUPTED"], "11": ["UNEXPECTED_CYRILLIC_ARABIC_OR_HAN_SCRIPT"], "12": ["SUN_ENTITY_CORRUPTED"], "14": ["EMAIL_REGISTER_CORRUPTED"], "16": ["UNEXPECTED_CYRILLIC_ARABIC_OR_HAN_SCRIPT", "USER_ASSISTANT_ROLE_INVERTED"]}}
+[CHECK_ONLY] v4/review lineage and all eight baseline failure hooks PASS; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-28 02:11:38)
+==============================================================================
+Gate: 8/8 first-valid responses after at most three attempts each. Validator catches named script/entity/gender/role/typo defects only. A lint PASS is not answer truth, license, PII, student training or model quality.
+
+==============================================================================
+[runlog] 2026-09-28 02:11:38  name=P106B_Stage1gW_targeted_repair_retry
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_targeted_repair.py --execute
+==============================================================================
+[TARGETED_ATTEMPT] {"attempt": 1, "case": 3, "completion_tokens": 1080, "elapsed_sec": 18.191, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "validator_errors": ["UNEXPECTED_CYRILLIC_ARABIC_OR_HAN_SCRIPT", "KENYA_ENTITY_CHANGED"]}
+[TARGETED_ATTEMPT] {"attempt": 2, "case": 3, "completion_tokens": 1375, "elapsed_sec": 23.0, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "validator_errors": []}
+[TARGETED_ATTEMPT] {"attempt": 1, "case": 6, "completion_tokens": 4059, "elapsed_sec": 67.105, "finish_reason": "stop", "format_status": "NOT_JSON", "validator_errors": ["NOT_COMPLETE_JSON"]}
+[TARGETED_ATTEMPT] {"attempt": 2, "case": 6, "completion_tokens": 2144, "elapsed_sec": 35.618, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "validator_errors": []}
+[TARGETED_ATTEMPT] {"attempt": 1, "case": 7, "completion_tokens": 4096, "elapsed_sec": 67.524, "finish_reason": "length", "format_status": "INCOMPLETE", "validator_errors": ["NOT_COMPLETE_JSON"]}
+[TARGETED_ATTEMPT] {"attempt": 2, "case": 7, "completion_tokens": 1846, "elapsed_sec": 30.479, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "validator_errors": []}
+[TARGETED_ATTEMPT] {"attempt": 1, "case": 8, "completion_tokens": 1049, "elapsed_sec": 17.673, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "validator_errors": []}
+[TARGETED_ATTEMPT] {"attempt": 1, "case": 11, "completion_tokens": 4096, "elapsed_sec": 67.848, "finish_reason": "length", "format_status": "INCOMPLETE", "validator_errors": ["NOT_COMPLETE_JSON"]}
+[TARGETED_ATTEMPT] {"attempt": 2, "case": 11, "completion_tokens": 2193, "elapsed_sec": 35.992, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "validator_errors": ["UNEXPECTED_CYRILLIC_ARABIC_OR_HAN_SCRIPT"]}
+[TARGETED_ATTEMPT] {"attempt": 3, "case": 11, "completion_tokens": 1325, "elapsed_sec": 21.92, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "validator_errors": ["UNEXPECTED_CYRILLIC_ARABIC_OR_HAN_SCRIPT"]}
+[TARGETED_ATTEMPT] {"attempt": 1, "case": 12, "completion_tokens": 1328, "elapsed_sec": 21.038, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "validator_errors": []}
+[TARGETED_ATTEMPT] {"attempt": 1, "case": 14, "completion_tokens": 1936, "elapsed_sec": 31.164, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "validator_errors": []}
+[TARGETED_ATTEMPT] {"attempt": 1, "case": 16, "completion_tokens": 2150, "elapsed_sec": 33.334, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "validator_errors": []}
+{"accepted_for_training": 0, "attempts": 13, "cases": 8, "elapsed_sec": 474.232, "independent_truth_status": "NOT_RUN", "limit": "deterministic lint catches named defects only; no automatic truth or SFT acceptance", "lint_pass_cases": 7, "max_attempts_per_case": 3, "raw_jsonl": "HF/sft_ready/p106b_teacher_sft/v5/targeted_repair_attempts.jsonl", "raw_sha256": "95D784C952C66A0D78A17936CAD087930A0FB558A6292CA7253D9855DBDD685C", "schema": "P106B_STAGE1GW_TARGETED_REPAIR_V1", "source": {"review_sha256": "5870FF065EB79108BA2B1532D352D96C9DC6782DD736B44DD67171441FAB733F", "selection": "exactly eight hard-reject rows; not a random quality sample", "source_tree_ids": ["e39bffcb-62a7-44c1-aca0-bf81b464ec40", "489c253f-66ff-4d92-b4c2-196732ca2a71", "caf2a8f4-9a85-4021-b6a3-973fdf1e1ff5", "8a6e2984-3934-4555-9865-567bf5a5bd16", "853a9ea8-c063-4e25-8774-137f09027e22", "9027c3b3-da98-47c8-bb7c-60af652b4429", "45920a80-02c0-4968-87a1-892a184f2983", "071e1f1f-6420-4c3f-8e52-aa032422ac51"], "v1_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947", "v2_sha256": "9434C90FF68444810DA83DF3161DA475AD21D2A7E7AA8BACF6C7AAC28A52D318", "v3_sha256": "55D4D9A41B3D30B1535D0A47ACD1CCECBFB8C244ABC4AD8FD90CAD264376D0DD", "v4_sha256": "63E7F7A1E487F10E1A1214E2C2489AD9DDD754DEDE33CA5893242CEAE983CAFA"}, "student_training": "NOT_RUN", "teacher_model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "validator_error_counts": {"KENYA_ENTITY_CHANGED": 1, "NOT_COMPLETE_JSON": 3, "UNEXPECTED_CYRILLIC_ARABIC_OR_HAN_SCRIPT": 3}}
+[GATE NEGATIVE] lint pass 7/8; all attempts preserved
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 8.3분  (2026-09-28 02:19:56)
+==============================================================================
