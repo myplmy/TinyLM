@@ -1,7 +1,7 @@
 # 제안 — 실험결과 증거추적과 live-review 연쇄누락 재발 방지
 
-> **작성** 2026-09-22 · **상태** ✅결과문서 한정 B안 승인·진행 중 · **분류** 작업방식
-> 양식: [`proposal/README.md`](README.md) §3. 2026-09-23 조건부 승인이다. 아래 원안의 review 관련 구현 조항은 §9.1로 대체한다.
+> **작성** 2026-09-22 · **상태** ✅승인범위 완료(결과문서 한정 B안) · 역사/현행 실물 closure·회귀 완료, 2026-09-27 `done/` 이관 · **분류** 작업방식
+> 양식: [`proposal/README.md`](../README.md) §3. 2026-09-23 조건부 승인이다. 아래 원안의 review 관련 구현 조항은 §9.1로 대체한다.
 
 ---
 
@@ -152,8 +152,12 @@ review는 검사 대상이 아니며 checker PASS를 review PASS로 쓰지 않�
 
 ### 9.2 2026-09-27 실물 결과 closure와 WIP 종료 연결 구현
 
-이번 [P106B 결과101](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 사용자 지정 원본2건과 같은 WIP에서 승인된 Codex 제한 진단 원본3건을 결과 본문의 정확한 다섯 절에 각각 대응시켰다. 독립 [closure manifest](../handoff/audit/WIP_20260927e_RESULT_CLOSURE.json)는 `input_logs` 5건을 별도 선언하며 `scripts/check_result_closure.py --manifest` 오류0을 확인했다. 초판 검사에서 §1/§2의 원본 basename이 해당 절 안에 없다는 결함2건을 **실제로 검출**한 뒤 해당 절을 보완해 오류0이 됐다. review 문서는 여전히 검사 범위 밖이다.
+이번 [P106B 결과101](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 사용자 지정 원본2건과 같은 WIP에서 승인된 Codex 제한 진단 원본3건을 결과 본문의 정확한 다섯 절에 각각 대응시켰다. 독립 [closure manifest](../../handoff/audit/WIP_20260927e_RESULT_CLOSURE.json)는 `input_logs` 5건을 별도 선언하며 `scripts/check_result_closure.py --manifest` 오류0을 확인했다. 초판 검사에서 §1/§2의 원본 basename이 해당 절 안에 없다는 결함2건을 **실제로 검출**한 뒤 해당 절을 보완해 오류0이 됐다. review 문서는 여전히 검사 범위 밖이다.
 
-누락됐던 M3의 종료 연결도 [WIP 작성기](../scripts/wip.py)에 반영했다. 사용자 지시에 결과문서의 작성·반영·갱신·기록이 명시된 WIP만 `--close`에서 `--result-closure`를 요구하고, `handoff/audit`의 정확 manifest가 현재 WIP/session, 입력 로그 집합, 결과문서 절·basename 1:1을 통과해야 `-done`으로 옮긴다. 다른 WIP는 기존 종료 계약을 유지한다. [WIP 회귀](../scripts/test_wip.py)는 누락 manifest·타 세션·불완전 매핑을 거절하고 정상 종료를 확인했다. [정적 묶음](../scripts/check_static_all.py)은 결과 closure 순수 fixture도 별도 검사로 연결했다. 원본 로그 내용이나 보호 데이터를 자동 발견하지 않고, 진행 중 큐 잠금은 우선한다.
+누락됐던 M3의 종료 연결도 [WIP 작성기](../../scripts/wip.py)에 반영했다. 사용자 지시에 결과문서의 작성·반영·갱신·기록이 명시된 WIP만 `--close`에서 `--result-closure`를 요구하고, `handoff/audit`의 정확 manifest가 현재 WIP/session, 입력 로그 집합, 결과문서 절·basename 1:1을 통과해야 `-done`으로 옮긴다. 다른 WIP는 기존 종료 계약을 유지한다. [WIP 회귀](../../scripts/test_wip.py)는 누락 manifest·타 세션·불완전 매핑을 거절하고 정상 종료를 확인했다. [정적 묶음](../../scripts/check_static_all.py)은 결과 closure 순수 fixture도 별도 검사로 연결했다. 원본 로그 내용이나 보호 데이터를 자동 발견하지 않고, 진행 중 큐 잠금은 우선한다.
 
-**아직 완료 이관하지 않는 비허가 외 이유**는 첫 사고의 정확16 로그/4결과 역사 집합 M0를 이 새 계약으로 재구성·재검증한 증거가 없고, 다음 독립 결과회수에서 종료 강제가 실제 누락을 예방하는지 운영 재현이 1회뿐이라는 점이다. 현재 다섯 로그의 오류0은 원본 의미·수치/과학적 해석 또는 review 최신성 PASS가 아니다. M0 역사 입력 집합이 회수 가능하면 별도 manifest로 고정하고, 후속 결과회수 1회에서도 누락 검출/정상 종료를 관찰한 뒤 `done` 이관을 다시 판단한다.
+### 9.3 2026-09-27 역사 M0 회수와 승인 범위 종결
+
+초기 사고의 정확 [2026-09-22 사용자 지정 로그16건/결과4건](../../handoff/audit/WIP_20260922_RESULT_CLOSURE_RETRO.json)도 사용자 원본 파일명 집합에서 독립 manifest로 복원해 exact 결과 절·basename 16/16, closure 오류0을 확인했다. 이는 당시 WIP에 Codex 세션 ID가 기록되지 않아 `LEGACY_UNBOUND`라고 **명시한 소급 입력 감사**이지 과거 WIP를 다시 닫거나 session id를 지어낸 결과가 아니다. 이번 새 [5건 manifest](../../handoff/audit/WIP_20260927e_RESULT_CLOSURE.json)는 초기 basename 누락2건을 직접 검출하고 고친 뒤 5/5 오류0이다. M1/M2의 exact 스키마·checker, M3의 결과문서형 WIP 종료 강제, M4의 누락·중복·traversal·review 배제·타 세션 회귀, M5의 Codex 규약·스킬·정적 묶음 연결이 모두 확인됐다.
+
+따라서 **사용자가 승인한 결과문서 한정 B안의 구현·명시 종료조건은 완료**다. 다른 새 결과회수에서 지속적으로 오류를 감시하는 일은 운영 모니터링이지 이 승인안을 무기한 `on-going`으로 둘 이유가 아니다. 현재 WIP의 실제 `--close --result-closure`에도 이 manifest를 연결해 마지막 운영 증거로 남긴다. closure PASS는 원본 로그 의미·실험 수치의 정합성, review 최신성 또는 보호 데이터 품질을 보증하지 않는다. 원안 제목에 남은 `live-review`는 역사적 문제 이름일 뿐 구현 범위가 아니다.
