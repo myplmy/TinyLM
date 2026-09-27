@@ -180,7 +180,7 @@ def live_launchers(root: Path) -> list[Path]:
     # scripts/batch/tool_*.bat are parameterized helpers, not standalone
     # experiment launchers; their TL_MODELS values can be overridden by a
     # caller. Audit the resolved root run_*.bat/.sh instead.
-    paths = [*root.glob("run_*.bat"), *root.glob("run_*.sh")]
+    paths = [*root.glob("run*.bat"), *root.glob("run*.sh")]
     return sorted((path for path in paths if path.is_file()
                    and "-done" not in path.name and "-cancel" not in path.name),
                   key=lambda path: path.as_posix())

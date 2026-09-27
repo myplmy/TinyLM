@@ -38,6 +38,12 @@ A는 tokenization overhead가 있지만 지금 기능 gate를 통과할 수 있�
 
 [고정 SHA read-only 진단](../scripts/diag_p090b_oasst2_translation_candidates.py)과 [사용자 SH](../run_P090B_Stage0dW_oasst2_translation_candidates.sh)는 OASST2 ready tree에서 review 통과·비합성·영어 role 교대의 best-rank 경로를 한 tree당 하나만 고른다. 이 정책에서 다회전 2,378개를 확인했고 기존 공개 v3 첫 질문 exact 겹침 888, legacy 32k 길이 1024 초과 336, OASST2 내부 첫 질문 중복 1개를 걸러 후보 1,153개가 남았다. 고정 해시 순위로 번역 pilot 200개·사람 원답안 검토 50개 tree 행 인덱스만 출력하며 원문·번역물·파일을 생성하지 않는다. 앞선 원천 감사의 다회전 2,377은 선별 정책이 달라 서로 같은 집합이라고 주장하지 않는다. 카드 Apache-2.0 표기는 개별 권리 검증이 아니며, 영어 후보가 생긴 것만으로 한국어 학습 `TRAIN_READY`가 되지 않는다. 원문·번역 병렬 보존, 숫자·고유명사·맥락·사실성·PII 사람 검토와 번역 후 tokenizer/mask/중복·평가 오염 검사는 사용자 후속 단계다.
 
+### Stage0eW — 공개 v3 세 게이트 증거와 BasicKorean 정확 pilot 사용성 분리
+
+사용자가 2026-09-27 승인한 비보호 공개 v3 및 **정확한 외부 pilot 한 폴더**의 읽기 전용 CPU 사전검사다. [진단기](../scripts/diag_p090b_public_pilot_readiness.py)는 양쪽 SHA/행수·legacy/chat32의 전체 assistant body/end/빈 마스크/1024 길이, 공개 train/val과 pilot train/dev/eval의 첫 질문 exact 중복, P100 고정 문항 exact를 원문 출력 없이 센다. 마스크 성공 조건은 기존 Stage0bW의 지도비율 `[0.02,0.90]`, 빈 마스크0, 본문·end 누락0에 문맥 길이≤1024를 더한다. 단 P100 아홉 문항과 pilot 이외의 평가셋·근사/의미 중복은 전수 오염검사가 아니다.
+
+독립 사람검수·사용권/출처·평가 오염·정식 학습 적격은 기술 마스크와 **별개의 게이트**다. pilot은 원래 BasicKorean v1의 소형 제작 표본이며 P090 공개 v3 manifest 스키마·`HF/sft_ready` 파일 계약으로 자동 합류하지 않는다. 직접 학습을 위해 source metadata와 별도 승인·버전드 어댑터가 필요하더라도, 이번 단계에서는 만들지 않는다. 실제 CPU 검사 결과와 제작 agent에게 돌릴 보완 요구는 [결과096 §10](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)에 둔다. exit0은 코드·자료 판독 성공이며 `TRAIN_READY`는 아니다.
+
 ### Stage1aW — B chat32 신규 어휘·분리 캐시 준비 완료(결과096 §9.1), 2배 train 풀 주장은 철회
 
 사용자가 [준비 SH](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)로 legacy와 분리된 `tok-ko-en-32768-chat32.json` 및 `ko-en_601000000_chat32`를 생성했다. marker ID3/4와 SHA `9716F40E...`, 공개 v3 train2996/val158행의 길이 초과0을 확인했다. 단 전체 601M에서 validation 3.005M을 떼 실제 train은 597.995M이다. source token 비중은 Wikipedia34.4%/FineWeb-Edu65.6%로 설정 문서 비중50/50과 다르다. 원본 legacy cache는 보존하며 사용자가 수행한 HF/디스크 I/O를 Codex 실행으로 오인하지 않는다.
@@ -79,6 +85,7 @@ Stage1cW에서 고른 C 부모와 A/B가 같은 공개 원문·평가 질문을 
 | Stage0bW | 약0.1h | 비보호 공개 HF/sft_ready 읽기 전용 CPU |
 | Stage0cW 한국어 공감형 | 약0.1h | 비보호 공개 HF/sft_sources·legacy tokenizer 읽기 전용 CPU |
 | Stage0dW OASST2 영어 후보 | 약0.1h | 비보호 공개 OASST2·v3·legacy tokenizer 읽기 전용 CPU |
+| Stage0eW 공개 v3+정확 BasicKorean pilot 증거 | 약0.1h(실행 완료) | 승인된 pilot 한 폴더와 비보호 공개 v3·두 tokenizer 읽기 전용 CPU; 생성 로그·증거 manifest만 저장 |
 | B Stage1aW 어휘/601M cache | ⚙1~3h, 신규 분리 디스크 약1.2GB 이상 | 사용자 HF/CPU/디스크 |
 | B Stage1bW 부모 300.024M | ⚙2h(환경 의존), 16GiB 단일 GPU | 사용자 모델/GPU |
 | Stage1cW C 공통 원답안 | ⚙0.3h | 사용자 GPU/모델, 새 출력 JSONL |
@@ -110,3 +117,5 @@ Stage0W~Stage1cW 중 실제 완료한 단계의 명령·로그는 [결과096](..
 - 2026-09-25 사용자 로그 회수: [결과096](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)의 Stage0W/bW/cW/dW는 기능·공개 후보 검사에서 종료코드0이나 v3 `train_ready=false`, 한국어 공감형 구조 `PARTIAL`(마커 이상1), OASST2 번역 `NOT_RUN`이다. Stage1cW 세 부모 54답안을 [결과096 §8](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)에서 직접 판독했어도 한국어 위키 표제/반복과 형식 실패가 모두 있어 §3의 ‘C가 더 좋을 수 있다’는 예측은 **미확정**. [100+1행 사람 검수 요청](../review_request/20260925_공개-한국어-SFT-멀티턴-1차GPT-사용자-검수요청.md)과 P097 공통 조건을 판독하기 전 C 부모 선정·정식 SFT 금지. 다섯 실행 런처는 -done 이력이다.
 
 - 2026-09-25 Stage1aW/1bW 사용자 실행: [결과096 §9](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)의 chat32 marker 단일 ID3/4·새 tokenizer SHA 일치·공개 v3 길이 초과0, 부모 학습300,023,808 token·skip0·grad_max0.94927·best val3.54625@2289·final val3.6028125를 기록했다. §3의 B가 효율을 높일 수 있다는 예측은 다른 계보와 직접 비교가 없어 미확정이다. **사전등록 2배 풀은 실패**: 총601M에서 val3.005M 제외 후 train597.995M으로 요구600.047616M보다2.052616M 작다. 원 학습을 소급 무효 삭제하지 않되 품질 승격·정식 SFT는 HOLD하고 후속 엄격 대조는 새 단계·총604M 이상 cache로 설계한다.
+
+- 2026-09-27 Stage0eW: 사용자 승인 범위에서 Codex가 공개 v3와 정확한 `BasicKorean/v1/pilot`을 **CPU 읽기 전용**으로 실행([결과096 §10](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)). 양 토크나이저 마스크 기술 PASS, pilot 150/12/17행·전179행 검토 대기, 계획 P2 2~3MB 대비 현재186,312B, BasicKorean 직접 trainer schema/경로 불일치다. 공개 v3 manifest 세 필수 gate는 여전히 모두 PASS가 아니고 넓은 오염·사람 품질 미완이므로 `TRAIN_READY=false`; 학습0·원본 변경0.

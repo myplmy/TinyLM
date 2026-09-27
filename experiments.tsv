@@ -29,10 +29,7 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-1	P106	run_P106_Stage0pW_full_teacher_accum.sh	D	0.8	Y	Y	이번 사용자 지시 한정 full-GPU Bonsai 교사와 P076 부모+compile 학생 micro4/accum32/no-ckpt 대 micro8/accum16/ckpt-on 두 짧은 자원 팔; 합성 입력·체크포인트 저장0·정식 SFT 아님	8
-1	P076	run_P076_Stage2eWb_ag2_attn_pair.sh	D	0.3	Y	Y	Stage2eW의 잘못된 _tied_ checkpoint 선검사로 평가0건; Wb는 paired_eval 공통 resolver/check-inputs를 거쳐 같은 두 ag2 최종모델의 600M 동일 crop 평가, 한 시드 승격 금지
-2	P037	run_P037_Stage0Wb_common_val_300M_builder.sh	N	1.0	Y	Y	기존300M train에서 공통val 동일 EOS 문서를 제외하고 격리 300M cache 생성; 데이터 기능계약만, SFT·학습 아님; 사용자 실행 전 NOT_RUN
-3	P030B	run_P030B_Stage0Wb_cpu_order_rss.sh	N	1.0	Y	Y	기존 d14 두 final의 CPU1 속도 A/B/B/A 독립 프로세스 및 같은 int8 unpack RSS를 재서 순서 편향과 40MiB 미달을 분리; 모델 실행은 사용자 소유
+1	P090B	run_P090B_Stage0eW_public_pilot_readiness.sh	N	0.1	N	Y	승인된 정확 BasicKorean pilot와 공개 v3를 읽기 전용 CPU 감사; raw 대화 출력·학습·다운로드 없음, TRAIN_READY는 사람 판정 전 HOLD
 # P076 Stage2eW attempted then stopped before runlog: its '_tied_' checkpoint guard was wrong; the -done SH remains historical evidence and is not a quality result.
 # P104A Windows prerequisite: run_P104A_Stage2B_m5_real_bridge.bat direct on Windows before the WSL queue row below.
 # CANCEL 2026-09-23: 옛 P092 Stage3W 3시드 일괄안은 100M gate 실패와 사용자 선택(진단→원인 수정→300M 한 시드)에 맞지 않아 실행 설계만 취소; P092 연구축·Stage3Wb 유지
@@ -494,6 +491,13 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   2	P106	run_P106_Stage0oW_bonsai27b_p076_micro4_coload.sh	D	0.3	Y	Y	교사FFN32 GDN융합 고정, 학생 P076 합성 micro-bs8 대비 micro-bs4 1-step peak/OOM 진단; 실제 누산32/compile/부모초기화 학습 효과는 미실행	8
 #   2	P076	run_P076_Stage2cW_ag2_mean_s1337.sh	Y	3.1	Y	Y	ag2 mean 대조군 300.024M; SH 내부 B3 기능 게이트 재검 뒤 같은 dense 부모/600M풀/seed 학습, 성공시 runlog W&B 자동 후송	8
 #   2	P076	run_P076_Stage2dW_ag2_attnorm_s1337.sh	Y	3.1	Y	Y	ag2 attention-only norm_mean 후보 300.024M; MLP mean 고정·SH 내부 기능 게이트 재검·동일조건 대조, 성공시 runlog W&B 자동 후송	8
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P106	run_P106_Stage0pW_full_teacher_accum.sh	D	0.8	Y	Y	이번 사용자 지시 한정 full-GPU Bonsai 교사와 P076 부모+compile 학생 micro4/accum32/no-ckpt 대 micro8/accum16/ckpt-on 두 짧은 자원 팔; 합성 입력·체크포인트 저장0·정식 SFT 아님	8
+#   1	P076	run_P076_Stage2eWb_ag2_attn_pair.sh	D	0.3	Y	Y	Stage2eW의 잘못된 _tied_ checkpoint 선검사로 평가0건; Wb는 paired_eval 공통 resolver/check-inputs를 거쳐 같은 두 ag2 최종모델의 600M 동일 crop 평가, 한 시드 승격 금지
+#   2	P037	run_P037_Stage0Wb_common_val_300M_builder.sh	N	1.0	Y	Y	기존300M train에서 공통val 동일 EOS 문서를 제외하고 격리 300M cache 생성; 데이터 기능계약만, SFT·학습 아님; 사용자 실행 전 NOT_RUN
+#   3	P030B	run_P030B_Stage0Wb_cpu_order_rss.sh	N	1.0	Y	Y	기존 d14 두 final의 CPU1 속도 A/B/B/A 독립 프로세스 및 같은 int8 unpack RSS를 재서 순서 편향과 40MiB 미달을 분리; 모델 실행은 사용자 소유
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
