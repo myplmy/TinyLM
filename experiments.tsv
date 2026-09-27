@@ -29,8 +29,9 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-1	P106B	run_P106B_Stage1fW_teacher_repair_full16.sh	D	0.92	Y	Y	새 WSL smoke PASS와 v1/v2/v3 SHA 선결; 공개16 원답을 medium 사고예산2048·권장 sampler로 교정 후보화, 형식12/16/3300초·v4 write-once, 학생학습·자동수락0	8
-2	P103A	run_P103A_Stage1cWa_cache_tail_readback.sh	Y	0.3	Y	Y	새 smoke PASS·기존 pinned M0 2M exact/INT8 캐시 선결; 고정창0/976/1952의 uncached/exact/INT8 tail logits·loss·gradient와 선택창 wall/RSS, full2M 품질/속도 아님	8
+1	P106B	run_P106B_Stage1gW_targeted_repair_retry.sh	D	0.5	Y	Y	새 WSL smoke PASS와 v1~v4/review SHA 선결; 결함8만 개선 프롬프트·응답별 문자/지명/역할 검사 최대3회, v5 시도 전부 write-once·학생학습/자동수락0	8
+# DONE 2026-09-28 P103A Stage1cWa: 세 선택창 저장 exact 대 uncached 최대차5e-5 안 함수 PASS, 속도/팔별 peak 미판정; 결과094 §11.
+# DONE 2026-09-28 P106B Stage1fW: 교정형16/16 형식 PASS·직접 검토 명백결함8, 학생 교육 채택0; 결과101 §10.
 # DONE 2026-09-27 P106B Stage1dW: 교정형3/3 완결·종료0, WebRTC API 교정/수학 대조 통과 그러나 GPT-3 한국어 수치 새 오류, 학생학습0; 결과101.
 # DONE 2026-09-27 P106B Stage1aWc: 사용자 한정 Codex GPU 진단 4쌍 대응 8요청 종료0·2.8분. cap768 완결0/4, cap3072 완결3/4, 학생학습0; 결과101.
 # DONE 2026-09-27 P106B Stage1aWb: 기본 sandbox NVML 조회 차단으로 교사 적재 전 종료9, 번역0; 정확 로그101 보존.
@@ -509,6 +510,11 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #
 # ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
 #   1	P090B	run_P090B_Stage0eW_public_pilot_readiness.sh	N	0.1	N	Y	승인된 정확 BasicKorean pilot와 공개 v3를 읽기 전용 CPU 감사; raw 대화 출력·학습·다운로드 없음, TRAIN_READY는 사람 판정 전 HOLD
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P106B	run_P106B_Stage1fW_teacher_repair_full16.sh	D	0.92	Y	Y	새 WSL smoke PASS와 v1/v2/v3 SHA 선결; 공개16 원답을 medium 사고예산2048·권장 sampler로 교정 후보화, 형식12/16/3300초·v4 write-once, 학생학습·자동수락0	8
+#   2	P103A	run_P103A_Stage1cWa_cache_tail_readback.sh	Y	0.3	Y	Y	새 smoke PASS·기존 pinned M0 2M exact/INT8 캐시 선결; 고정창0/976/1952의 uncached/exact/INT8 tail logits·loss·gradient와 선택창 wall/RSS, full2M 품질/속도 아님	8
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)

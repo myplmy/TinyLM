@@ -167,3 +167,5 @@ forward 속도를 학습 속도·end-to-end throughput으로 확대하지 않는
 ## 2026-09-26 P102A ABBA·P103A 경계 캐시
 
 [결과093 §10](../../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md)의 100M 네 팔은 T0→T1에서 T1 whole-wall 0.990×, T1→T0에서 1.073×로 방향이 바뀌었다. eval/save 절약은 두 순서에서 재현됐지만 총시간 이득은 아니다. host wall·GPU kernel·각 팔 뒤 W&B 자동 송신과 팔 사이 유휴 조건을 구별해야 하며, 한 세션 두 순서를 독립 시드로 세지 않는다. [결과094 §9](../../test_result/094_20260925_P103A-X2-함수통과-X3-하부MLP-동결누락.md)의 exact6.14GB/INT8 1.63GB는 캐시 **파일 크기/구축 기능** 관측이다. Stage1cW의 tail 학습시간·I/O·RSS·품질을 재기 전에는 가속으로 부르지 않는다.
+
+2026-09-28 [결과094 §11](../../test_result/094_20260925_P103A-X2-함수통과-X3-하부MLP-동결누락.md)의 세 선택창은 저장 exact boundary의 logits·gradient가 uncached 대비 각각 최대2.956e-5·9.537e-6으로 기능 문턱5e-5를 통과했다. 그러나 타이머는 캐시 memmap 읽기·CPU→GPU 전송·dequant를 제외하고, 첫 uncached 호출0.2492초는 다른 uncached 창 약0.05초보다 느렸으며 RSS·CUDA reserved는 reset 없는 누적 high-water다. 따라서 이 결과도 **X3 학습 가속·팔별 상주 절감 실측이 아니다**. 동일 조건의 교차 순서·I/O 포함 whole-wall과 프로세스별 peak, 전체2M 반복/빌드 상각을 별도 계측해야 한다.

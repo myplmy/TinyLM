@@ -501,6 +501,12 @@ X3의 2M source token을 실제 seq1024 비중첩 `S+1` 창으로 자르면 1,95
 
 §12.5의 “2M builder가 아직 없다”는 당시 상태다. 사용자 [결과094 §9~§10](../test_result/094_20260925_P103A-X2-함수통과-X3-하부MLP-동결누락.md)은 pinned M0 exact/INT8 1,953창 cache를 실제 생성했고 첫 창 exact 경계차0·INT8 NRMS최대.005912282를 기록했다. 그러나 파일 byte가 존재하는 것과 학습 중 읽어 tail loss/gradient를 계산하는 것, 전체 build+read+update wall/RSS가 빠른 것은 서로 다르다.
 
-이번 구현은 [P103A Stage1cWa](../test_plan/P103A_X1-X2-X3-계산량-기능계약.md#11-2026-09-27-stage1cwa--저장된-실제-캐시의-선택창-tail-함수gradient-readback-준비)의 첫 간극을 좁힌다. 새 [진단기](../scripts/diag_p103a_cache_tail_readback.py)와 [사용자 SH](../run_P103A_Stage1cWa_cache_tail_readback.sh)는 정확 기존 cache를 **읽기 전용**으로 두고 first/mid/last 세 창의 토큰 hash, FP32/INT8 manifest·크기, 같은 M0 부모/코드 경계를 선검사한다. uncached 전체 forward/backward와 저장 exact/INT8 tail의 logits/CE/전 trainable gradient를 같은 창으로 비교한다. CPU self-test/manifest check-only는 PASS, 사용자 모델/GPU는 `NOT_RUN`; 선택창 wall·RSS는 본 2M throughput 판정으로 승격하지 않는다.
+이번 구현은 [P103A Stage1cWa](../test_plan/P103A_X1-X2-X3-계산량-기능계약.md#11-2026-09-27-stage1cwa--저장된-실제-캐시의-선택창-tail-함수gradient-readback-준비)의 첫 간극을 좁힌다. [진단기](../scripts/diag_p103a_cache_tail_readback.py)와 당시 사용자 SH(재현명령은 [결과094 §11](../test_result/094_20260925_P103A-X2-함수통과-X3-하부MLP-동결누락.md)에 보존)는 기존 cache를 **읽기 전용**으로 두고 first/mid/last 세 창의 토큰 hash, FP32/INT8 manifest·크기, 같은 M0 부모/코드 경계를 선검사한다. uncached 전체 forward/backward와 저장 exact/INT8 tail의 logits/CE/전 trainable gradient를 같은 창으로 비교한다. 이 문단의 CPU self-test/manifest check-only와 사용자 모델/GPU `NOT_RUN`은 Stage1cWa 실행 **전** 상태이고, 최신 사용자 결과는 아래 절에 누적한다.
+
+## 13. 2026-09-28 Stage1cWa 회수 — X3 함수는 통과, 가속/상주는 미판정
+
+[결과094 §11](../test_result/094_20260925_P103A-X2-함수통과-X3-하부MLP-동결누락.md)은 pinned M0의 세 실제 선택창에서 저장 FP32 exact tail 대 uncached logits/gradient 최대차 `2.956e-5/9.537e-6`로 원 `5e-5` 기능 문턱을 통과했다. INT8은 logits/gradient 최대차 `0.1485/0.0311`을 보고했으나 정밀도/언어품질 채택 문턱은 없다. 측정 wall은 memmap I/O·CPU→GPU·dequant 준비를 제외하며 첫 uncached만 다른 창보다 크게 느리고, RSS·CUDA reserved는 팔별이 아닌 누적 high-water다. 따라서 **현재 X3 가속이나 상주 절감의 실측은 0건**이다. 해당 SH는 재현명령과 Git 복구 이력을 남겨 완료 이관했다.
+
+이 진행 제안서를 닫지 못하는 비승인 이유는 정확 함수 이후의 **공정 전체2M 생성+읽기+tail 반복 whole-wall/peak 계측과 근사 INT8 품질/망각**이 아직 없기 때문이다. 다음 실험은 선택창 순서를 교차하고 파일 I/O/H2D/dequant·tail을 분리하며 새 프로세스별 상주 peak를 기록해야 한다. 20M cache 확대는 이 후속 손익/품질 증거 뒤에만 연다. 이번 결과의 세 창 기능 PASS를 20M RAM 적합성이나 지능 개선으로 옮기지 않는다.
 
 제안서 완료를 막는 **승인 부재 외** 선결은 (1) 이 실제 캐시 readback tail 함수 문턱의 사용자 원본, (2) 전체2M build+I/O+tail update의 end-to-end wall/RSS 대 uncached 기준, (3) INT8 boundary 근사로 인한 full-val/한영 능력 비퇴행, (4) X1 실제 대상 prefix 공유율과 X2 물리 tile 뒤 optimizer 비용 분리다. 현재 SH는 (1)을 시험할 수 있게 만들었지만 (2)~(4)를 결과로 만든 것은 아니므로 `-approved-on-going`을 유지한다. 데이터를 더 만들거나 보호 KnowledgePack에 접근하지 않았다.

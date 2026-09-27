@@ -1,0 +1,51 @@
+Prerequisites: user-observed fresh WSL smoke PASS, idle GPU, pinned v1/v2/v3 raw SHA. All 16 original OASST2 pairs are untrusted; teacher may correct or state uncertainty. New ignored v4 retains source/reasoning/final/repair status, never overwrites v1-v3.
+
+==============================================================================
+[runlog] 2026-09-28 01:03:17  name=P106B_Stage1fW_teacher_repair_full16
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_answer_repair_full.py --self-test
+==============================================================================
+[PASS] repair prompt treats source as data; reasoning/final separated, correction self-claim is not truth, no student target
+[PASS] full16 wrapper keeps all candidates unaccepted; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 01:03:17)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 01:03:17  name=P106B_Stage1fW_teacher_repair_full16
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_answer_repair_full.py --check-only
+==============================================================================
+{"cases": 16, "ctx": 6144, "max_tokens": 4096, "new_output": "/home/uranus/tinyLM/HF/sft_ready/p106b_teacher_sft/v4/teacher_repair_full16_candidates.jsonl", "sampler": {"min_p": 0.05, "presence_penalty": 0.0, "reasoning_effort": "medium", "repeat_penalty": 1.0, "stream": false, "temperature": 1.0, "top_k": 20, "top_p": 0.95}, "source": {"selection": "all original pinned sixteen; candidate generation only", "source_tree_ids": ["c2c8d82d-7561-48de-b689-606693499d04", "ddab2b7f-b236-4836-9f08-923481e4c417", "e39bffcb-62a7-44c1-aca0-bf81b464ec40", "c4aa459a-a68c-49da-b1ce-fc0a36f6281f", "f789ec5a-f20d-43c0-838d-f08e23479642", "489c253f-66ff-4d92-b4c2-196732ca2a71", "caf2a8f4-9a85-4021-b6a3-973fdf1e1ff5", "8a6e2984-3934-4555-9865-567bf5a5bd16", "0506f6c4-1a82-4176-8c13-dc5c47842b4e", "b394b2ab-09d1-4616-ada8-5436c7051dd5", "853a9ea8-c063-4e25-8774-137f09027e22", "9027c3b3-da98-47c8-bb7c-60af652b4429", "f417a9ee-fb2b-48fe-b1ed-582a1c9e7860", "45920a80-02c0-4968-87a1-892a184f2983", "fb3807e2-0b67-40ea-8682-02eeaaaf6bb5", "071e1f1f-6420-4c3f-8e52-aa032422ac51"], "v1_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947", "v2_sha256": "9434C90FF68444810DA83DF3161DA475AD21D2A7E7AA8BACF6C7AAC28A52D318", "v3_sha256": "55D4D9A41B3D30B1535D0A47ACD1CCECBFB8C244ABC4AD8FD90CAD264376D0DD"}, "student_training": "NOT_RUN", "thinking_budget_tokens": 2048}
+[CHECK_ONLY] pinned v1/v2/v3 lineage PASS; teacher/model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-28 01:03:22)
+==============================================================================
+Format gate: at least 12/16 stop+JSON within a hard 3300s. Even if format passes, teacher correction is self-claim, training accept=0. Inspect v4 with independent claim/source review before any student SFT.
+
+==============================================================================
+[runlog] 2026-09-28 01:03:23  name=P106B_Stage1fW_teacher_repair_full16
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_answer_repair_full.py --execute
+==============================================================================
+[TEACHER_REPAIR_ROW] {"case": 1, "completion_tokens": 629, "declared_correction": "CORRECTED", "elapsed_sec": 10.03, "final_chars": 336, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 1917}
+[TEACHER_REPAIR_ROW] {"case": 2, "completion_tokens": 554, "declared_correction": "PRESERVED", "elapsed_sec": 8.647, "final_chars": 277, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 1003}
+[TEACHER_REPAIR_ROW] {"case": 3, "completion_tokens": 656, "declared_correction": "PRESERVED", "elapsed_sec": 10.041, "final_chars": 262, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 2183}
+[TEACHER_REPAIR_ROW] {"case": 4, "completion_tokens": 2146, "declared_correction": "PRESERVED", "elapsed_sec": 32.306, "final_chars": 234, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 7767}
+[TEACHER_REPAIR_ROW] {"case": 5, "completion_tokens": 1549, "declared_correction": "CORRECTED", "elapsed_sec": 23.484, "final_chars": 1111, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 4678}
+[TEACHER_REPAIR_ROW] {"case": 6, "completion_tokens": 1186, "declared_correction": "CORRECTED", "elapsed_sec": 17.938, "final_chars": 238, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 4041}
+[TEACHER_REPAIR_ROW] {"case": 7, "completion_tokens": 1745, "declared_correction": "CORRECTED", "elapsed_sec": 26.391, "final_chars": 360, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 5195}
+[TEACHER_REPAIR_ROW] {"case": 8, "completion_tokens": 476, "declared_correction": "PRESERVED", "elapsed_sec": 7.319, "final_chars": 214, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 1454}
+[TEACHER_REPAIR_ROW] {"case": 9, "completion_tokens": 1527, "declared_correction": "PRESERVED", "elapsed_sec": 23.042, "final_chars": 230, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 3856}
+[TEACHER_REPAIR_ROW] {"case": 10, "completion_tokens": 765, "declared_correction": "CORRECTED", "elapsed_sec": 12.122, "final_chars": 192, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 2653}
+[TEACHER_REPAIR_ROW] {"case": 11, "completion_tokens": 2219, "declared_correction": "CORRECTED", "elapsed_sec": 34.022, "final_chars": 361, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 8090}
+[TEACHER_REPAIR_ROW] {"case": 12, "completion_tokens": 1292, "declared_correction": "CORRECTED", "elapsed_sec": 21.092, "final_chars": 317, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 2916}
+[TEACHER_REPAIR_ROW] {"case": 13, "completion_tokens": 634, "declared_correction": "PRESERVED", "elapsed_sec": 10.742, "final_chars": 379, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 1883}
+[TEACHER_REPAIR_ROW] {"case": 14, "completion_tokens": 846, "declared_correction": "CORRECTED", "elapsed_sec": 14.239, "final_chars": 446, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 2641}
+[TEACHER_REPAIR_ROW] {"case": 15, "completion_tokens": 174, "declared_correction": "PRESERVED", "elapsed_sec": 3.115, "final_chars": 157, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 524}
+[TEACHER_REPAIR_ROW] {"case": 16, "completion_tokens": 1300, "declared_correction": "PRESERVED", "elapsed_sec": 21.792, "final_chars": 211, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 3924}
+{"accepted_for_training": 0, "ctx": 6144, "declared_correction": {"CORRECTED": 8, "PRESERVED": 8}, "elapsed_sec": 278.659, "finish_reason": {"stop": 16}, "format_status": {"JSON_COMPLETE": 16}, "independent_truth_status": "NOT_RUN", "limit": "16 selected sources; teacher self-declared repair is not fact verification", "max_tokens": 4096, "raw_jsonl": "HF/sft_ready/p106b_teacher_sft/v4/teacher_repair_full16_candidates.jsonl", "raw_sha256": "63E7F7A1E487F10E1A1214E2C2489AD9DDD754DEDE33CA5893242CEAE983CAFA", "rows": 16, "sampler": {"min_p": 0.05, "presence_penalty": 0.0, "reasoning_effort": "medium", "repeat_penalty": 1.0, "stream": false, "temperature": 1.0, "top_k": 20, "top_p": 0.95}, "schema": "P106B_STAGE1FW_TEACHER_REPAIR_FULL16_V1", "source": {"selection": "all original pinned sixteen; candidate generation only", "source_tree_ids": ["c2c8d82d-7561-48de-b689-606693499d04", "ddab2b7f-b236-4836-9f08-923481e4c417", "e39bffcb-62a7-44c1-aca0-bf81b464ec40", "c4aa459a-a68c-49da-b1ce-fc0a36f6281f", "f789ec5a-f20d-43c0-838d-f08e23479642", "489c253f-66ff-4d92-b4c2-196732ca2a71", "caf2a8f4-9a85-4021-b6a3-973fdf1e1ff5", "8a6e2984-3934-4555-9865-567bf5a5bd16", "0506f6c4-1a82-4176-8c13-dc5c47842b4e", "b394b2ab-09d1-4616-ada8-5436c7051dd5", "853a9ea8-c063-4e25-8774-137f09027e22", "9027c3b3-da98-47c8-bb7c-60af652b4429", "f417a9ee-fb2b-48fe-b1ed-582a1c9e7860", "45920a80-02c0-4968-87a1-892a184f2983", "fb3807e2-0b67-40ea-8682-02eeaaaf6bb5", "071e1f1f-6420-4c3f-8e52-aa032422ac51"], "v1_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947", "v2_sha256": "9434C90FF68444810DA83DF3161DA475AD21D2A7E7AA8BACF6C7AAC28A52D318", "v3_sha256": "55D4D9A41B3D30B1535D0A47ACD1CCECBFB8C244ABC4AD8FD90CAD264376D0DD"}, "student_training": "NOT_RUN", "teacher_model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "thinking_budget_tokens": 2048}
+[PASS] teacher repair candidate format only; correction truth and student SFT NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 4.9분  (2026-09-28 01:08:19)
+==============================================================================
