@@ -1,0 +1,96 @@
+P106 CUDA16 attribution only: verbose info plus simple IO, offline, ctx512, output16, timeout120s. Confirm offloaded layers and GPU buffers; exit0 alone is insufficient.
+
+==============================================================================
+[runlog] 2026-09-27 13:43:24  name=P106_Stage0dW_bonsai27b_gpu16_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_bonsai_assets.py --check-only
+==============================================================================
+[CHECK_ONLY] P106 pinned GGUF/CPU/CUDA paths; files, model and runtime NOT_READ
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 13:43:25)
+==============================================================================
+GPU free before model=14620MiB; no simultaneous TinyLM training is claimed.
+
+==============================================================================
+[runlog] 2026-09-27 13:43:25  name=P106_Stage0dW_bonsai27b_gpu16_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=env CUDA_VISIBLE_DEVICES=0 timeout -s TERM -k 5s 120s /home/uranus/llama-prism-bin-ubuntu-x64-cuda133/llama-prism-b10743-adfffbe/llama-cli --offline --simple-io --verbosity 3 --model /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf --gpu-layers 16 --ctx-size 512 --n-predict 16 --threads 8 --batch-size 64 --ubatch-size 64 --flash-attn auto --reasoning-effort medium --reasoning-budget 8 --temp 0 --top-p 1 --top-k 0 --min-p 0 --no-display-prompt --single-turn --no-warmup --prompt Answer 2+2 as one digit.
+==============================================================================
+0.00.156.185 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.156.658 W srv  llama_server: -----------------
+0.00.156.676 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.156.677 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.156.677 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.156.677 W srv  llama_server: -----------------
+0.00.178.733 I srv    load_model: loading model '/home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf'
+0.01.406.671 W resolve_fused_ops: layer 0 is assigned to device CPU but fused Gated Delta Net (autoregressive) is assigned to device CUDA0 (usually due to missing support)
+0.01.406.699 W resolve_fused_ops: fused Gated Delta Net (autoregressive) not supported, set to disabled
+0.01.408.375 W resolve_fused_ops: layer 0 is assigned to device CPU but fused Gated Delta Net (chunked) is assigned to device CUDA0 (usually due to missing support)
+0.01.408.400 W resolve_fused_ops: fused Gated Delta Net (chunked) not supported, set to disabled
+0.01.429.314 I cmn          init: llama threadpool init, n_threads = 8
+0.02.497.632 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 512, kv_unified = 'false'
+0.02.500.614 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.02.500.670 I srv  llama_server: model loaded
+0.02.500.685 I srv  llama_server: listening on http://127.0.0.1:50985
+0.02.579.715 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.02.579.824 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.09.464.857 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =     15, progress = 0.79, t =   4.34 s / 3.45 tokens per second
+
+
+Loading model... 
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b10743-adfffbe41
+model      : /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf
+ftype      : PTQ1_0 - 1.75 bpw ternary (group 128)
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> Answer 2+2 as one digit.
+
+[Start thinking]
+
+The user asks me to answer 
+[End thinking]
+
+40.15.023.343 I slot print_timing: id  0 | task 0 | prompt eval time =    5879.42 ms /    19 tokens (  309.44 ms per token,     3.23 tokens per second)
+0.15.023.361 I slot print_timing: id  0 | task 0 |        eval time =    4023.34 ms /    11 tokens (  402.33 ms per token,     2.49 tokens per second)
+0.15.023.362 I slot print_timing: id  0 | task 0 |       total time =    9902.76 ms /    30 tokens
+0.15.023.368 I slot print_timing: id  0 | task 0 |    graphs reused =          9
+0.15.023.420 I slot      release: id  0 | task 0 | stop processing: n_tokens = 29, truncated = 0
+
+0.15.024.114 I srv    operator(): operator(): cleaning up before exit...
+0.15.024.970 W ~llama_context:  CUDA_Host compute buffer size of  23.1290 MiB, does not match expectation of   9.4387 MiB
+
+[ Prompt: 3.2 t/s | Generation: 2.5 t/s ]
+
+
+Exiting...
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-09-27 13:43:40)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 13:43:40  name=P106_Stage0dW_bonsai27b_gpu16_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=nvidia-smi --query-gpu=name,memory.total,memory.used,memory.free --format=csv,noheader,nounits
+==============================================================================
+NVIDIA GeForce RTX 4070 Ti SUPER, 16376, 1446, 14616
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 13:43:40)
+==============================================================================

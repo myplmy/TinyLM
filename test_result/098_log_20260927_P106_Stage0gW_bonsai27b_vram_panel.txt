@@ -1,0 +1,159 @@
+P106 technical memory panel: same local PTQ1_0/Prism, hybrid16 then full GPU, ctx512/output64, each120s cap. In-process 0.2s NVML samples; no concurrent TinyLM training.
+
+==============================================================================
+[runlog] 2026-09-27 13:48:13  name=P106_Stage0gW_bonsai27b_vram_panel
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_vram_sample.py --self-test
+==============================================================================
+[PASS] P106 in-memory VRAM sampler parser; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 13:48:13)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 13:48:13  name=P106_Stage0gW_bonsai27b_vram_panel
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_vram_sample.py --gpu-layers 16
+==============================================================================
+[P106] bounded command: /home/uranus/llama-prism-bin-ubuntu-x64-cuda133/llama-prism-b10743-adfffbe/llama-cli --offline --simple-io --verbosity 3 --model /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf --gpu-layers 16 --ctx-size 512 --n-predict 64 --threads 8 --batch-size 64 --ubatch-size 64 --flash-attn auto --reasoning-effort medium --reasoning-budget 16 --temp 0 --top-p 1 --top-k 0 --min-p 0 --no-display-prompt --single-turn --no-warmup --prompt Answer the arithmetic question 2+2. State the result as one digit.
+
+
+Loading model... 
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b10743-adfffbe41
+model      : /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf
+ftype      : PTQ1_0 - 1.75 bpw ternary (group 128)
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> Answer the arithmetic question 2+2. State the result as one digit.
+
+[Start thinking]
+
+The user asks me to answer the arithmetic question 2+2 and state
+[End thinking]
+
+4
+
+[ Prompt: 3.6 t/s | Generation: 2.7 t/s ]
+
+
+Exiting...
+0.00.144.567 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.145.013 W srv  llama_server: -----------------
+0.00.145.031 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.145.032 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.145.032 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.145.032 W srv  llama_server: -----------------
+0.00.166.897 I srv    load_model: loading model '/home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf'
+0.01.552.870 W resolve_fused_ops: layer 0 is assigned to device CPU but fused Gated Delta Net (autoregressive) is assigned to device CUDA0 (usually due to missing support)
+0.01.552.894 W resolve_fused_ops: fused Gated Delta Net (autoregressive) not supported, set to disabled
+0.01.554.429 W resolve_fused_ops: layer 0 is assigned to device CPU but fused Gated Delta Net (chunked) is assigned to device CUDA0 (usually due to missing support)
+0.01.554.447 W resolve_fused_ops: fused Gated Delta Net (chunked) not supported, set to disabled
+0.01.574.692 I cmn          init: llama threadpool init, n_threads = 8
+0.02.615.402 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 512, kv_unified = 'false'
+0.02.618.291 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.02.618.352 I srv  llama_server: model loaded
+0.02.618.368 I srv  llama_server: listening on http://127.0.0.1:47819
+0.02.768.392 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.02.768.494 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.08.446.831 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =     22, progress = 0.85, t =   5.68 s / 3.87 tokens per second
+0.16.740.526 I slot print_timing: id  0 | task 0 | prompt eval time =    7225.62 ms /    26 tokens (  277.91 ms per token,     3.60 tokens per second)
+0.16.740.544 I slot print_timing: id  0 | task 0 |        eval time =    6746.34 ms /    19 tokens (  374.80 ms per token,     2.67 tokens per second)
+0.16.740.545 I slot print_timing: id  0 | task 0 |       total time =   13971.96 ms /    45 tokens
+0.16.740.552 I slot print_timing: id  0 | task 0 |    graphs reused =         17
+0.16.740.589 I slot      release: id  0 | task 0 | stop processing: n_tokens = 44, truncated = 0
+0.16.741.165 I srv    operator(): operator(): cleaning up before exit...
+0.16.742.004 W ~llama_context:  CUDA_Host compute buffer size of  23.9881 MiB, does not match expectation of   9.4387 MiB
+{"after_free_mib": 14619, "after_used_mib": 1443, "baseline_free_mib": 14616, "baseline_used_mib": 1446, "cli_exit": 0, "gpu_layers_requested": "16", "limit": "0.2s external NVML samples can miss a narrower transient peak; no concurrent TinyLM trainer", "model_output_contains_digit_four": true, "peak_increment_mib_sampled": 1817, "peak_used_mib_sampled": 3263, "sample_count": 69, "sample_failures": [], "schema": "P106_RUNTIME_VRAM_V1", "wall_sec": 16.928}
+[PASS] bounded process and sampled CUDA allocation; quality/concurrent training NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-09-27 13:48:31)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 13:48:31  name=P106_Stage0gW_bonsai27b_vram_panel
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_vram_sample.py --gpu-layers all
+==============================================================================
+[P106] bounded command: /home/uranus/llama-prism-bin-ubuntu-x64-cuda133/llama-prism-b10743-adfffbe/llama-cli --offline --simple-io --verbosity 3 --model /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf --gpu-layers all --ctx-size 512 --n-predict 64 --threads 8 --batch-size 64 --ubatch-size 64 --flash-attn auto --reasoning-effort medium --reasoning-budget 16 --temp 0 --top-p 1 --top-k 0 --min-p 0 --no-display-prompt --single-turn --no-warmup --prompt Answer the arithmetic question 2+2. State the result as one digit.
+
+
+Loading model... 
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b10743-adfffbe41
+model      : /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf
+ftype      : PTQ1_0 - 1.75 bpw ternary (group 128)
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> Answer the arithmetic question 2+2. State the result as one digit.
+
+[Start thinking]
+
+The user asks me to answer the arithmetic question 2+2 and state
+[End thinking]
+
+4
+
+[ Prompt: 168.5 t/s | Generation: 54.2 t/s ]
+
+
+Exiting...
+0.00.134.631 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.135.089 W srv  llama_server: -----------------
+0.00.135.119 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.135.120 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.135.120 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.135.121 W srv  llama_server: -----------------
+0.00.156.937 I srv    load_model: loading model '/home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf'
+0.01.684.042 I cmn          init: llama threadpool init, n_threads = 8
+0.01.819.666 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 512, kv_unified = 'false'
+0.01.823.346 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.01.823.410 I srv  llama_server: model loaded
+0.01.823.434 I srv  llama_server: listening on http://127.0.0.1:49845
+0.01.952.243 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.01.952.344 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.02.438.540 I slot print_timing: id  0 | task 0 | prompt eval time =     154.29 ms /    26 tokens (    5.93 ms per token,   168.52 tokens per second)
+0.02.438.558 I slot print_timing: id  0 | task 0 |        eval time =     331.84 ms /    19 tokens (   18.44 ms per token,    54.24 tokens per second)
+0.02.438.558 I slot print_timing: id  0 | task 0 |       total time =     486.13 ms /    45 tokens
+0.02.438.565 I slot print_timing: id  0 | task 0 |    graphs reused =         17
+0.02.438.616 I slot      release: id  0 | task 0 | stop processing: n_tokens = 44, truncated = 0
+0.02.439.234 I srv    operator(): operator(): cleaning up before exit...
+{"after_free_mib": 14619, "after_used_mib": 1443, "baseline_free_mib": 14619, "baseline_used_mib": 1443, "cli_exit": 0, "gpu_layers_requested": "all", "limit": "0.2s external NVML samples can miss a narrower transient peak; no concurrent TinyLM trainer", "model_output_contains_digit_four": true, "peak_increment_mib_sampled": 5874, "peak_used_mib_sampled": 7317, "sample_count": 12, "sample_failures": [], "schema": "P106_RUNTIME_VRAM_V1", "wall_sec": 2.664}
+[PASS] bounded process and sampled CUDA allocation; quality/concurrent training NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 13:48:33)
+==============================================================================

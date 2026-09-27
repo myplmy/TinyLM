@@ -1,0 +1,68 @@
+
+==============================================================================
+[runlog] 2026-09-27 13:45:47  name=P106_Stage0fW_bonsai27b_fullgpu_budget
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=env CUDA_VISIBLE_DEVICES=0 timeout -s TERM -k 5s 120s /home/uranus/llama-prism-bin-ubuntu-x64-cuda133/llama-prism-b10743-adfffbe/llama-cli --offline --simple-io --verbosity 3 --model /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf --gpu-layers all --ctx-size 512 --n-predict 64 --threads 8 --batch-size 64 --ubatch-size 64 --flash-attn auto --reasoning-effort medium --reasoning-budget 16 --temp 0 --top-p 1 --top-k 0 --min-p 0 --no-display-prompt --single-turn --no-warmup --prompt Answer the arithmetic question 2+2. State the result as one digit.
+==============================================================================
+0.00.141.382 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.141.767 W srv  llama_server: -----------------
+0.00.141.786 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.141.786 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.141.786 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.141.786 W srv  llama_server: -----------------
+0.00.163.608 I srv    load_model: loading model '/home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf'
+0.04.316.386 I cmn          init: llama threadpool init, n_threads = 8
+0.04.519.010 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 512, kv_unified = 'false'
+0.04.521.904 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.04.521.967 I srv  llama_server: model loaded
+0.04.521.987 I srv  llama_server: listening on http://127.0.0.1:49839
+0.04.562.435 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.04.562.589 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+
+
+Loading model... 
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b10743-adfffbe41
+model      : /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf
+ftype      : PTQ1_0 - 1.75 bpw ternary (group 128)
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> Answer the arithmetic question 2+2. State the result as one digit.
+
+[Start thinking]
+
+The user asks me to answer the arithmetic question 2+2 and state
+[End thinking]
+
+40.05.154.320 I slot print_timing: id  0 | task 0 | prompt eval time =     229.05 ms /    26 tokens (    8.81 ms per token,   113.51 tokens per second)
+0.05.154.344 I slot print_timing: id  0 | task 0 |        eval time =     362.61 ms /    19 tokens (   20.14 ms per token,    49.64 tokens per second)
+0.05.154.346 I slot print_timing: id  0 | task 0 |       total time =     591.66 ms /    45 tokens
+0.05.154.354 I slot print_timing: id  0 | task 0 |    graphs reused =         17
+0.05.154.411 I slot      release: id  0 | task 0 | stop processing: n_tokens = 44, truncated = 0
+
+0.05.155.122 I srv    operator(): operator(): cleaning up before exit...
+
+[ Prompt: 113.5 t/s | Generation: 49.6 t/s ]
+
+
+Exiting...
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-27 13:45:52)
+==============================================================================

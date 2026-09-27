@@ -80,3 +80,48 @@ G0a 실제 teacher 소형 pilot의 선결은 (1) 정확 GGUF revision의 공식 
 이 게이트의 예상 시간은 약0.1h·GPU0·모델 생성0이다. 자산 조회가 통과해도 실제 교사 선택은 G0b 기준·독립 verifier와 사용자 E2E 후 별도 판정한다. 웹 공식 페이지 재검증은 도구 인증 오류로 `NOT_RUN`; 이전 제안서의 Apache 표기만 현재 정확 파일의 권리 근거로 삼지 않는다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+
+## 11. 2026-09-27 Stage0bW 재판독과 Stage0cW 제한 구동 — 권리 출처·백엔드·예산 분리
+
+§10의 Stage0bW `HOLD8`은 **그때 검사한 `b10735/842b188` 폴더**에 대한 유효한 이력이다. 당시 폴더에 CUDA plugin과 LICENSE/card가 없었다는 관측을 지우지 않는다. 그러나 그 이유를 현재 장치 전체의 CUDA 불가·교사 로컬 시험 불가로 일반화한 것은 과도했다. 사용자가 새 `/home/uranus/llama-prism-bin-ubuntu-x64-cuda133/llama-prism-b10743-adfffbe` 패키지와 이번 요청의 CPU+GPU 제한 시험을 승인했다. 새 패키지에는 `libggml-cuda.so`가 있고 `llama-cli`는 build10743/commit `adfffbe41`이다. PyTorch CUDA 가능과 Prism backend는 별개이며, 이 패키지의 실제 모델 오프로딩은 Stage0cW 로그로 판정한다.
+
+정확한 로컬 `Ternary-Bonsai-2-27B-PTQ1_0.gguf` 5,946,648,928B의 SHA-256은 `53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3`로 [공식 PTQ1_0 파일](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/Ternary-Bonsai-2-27B-PTQ1_0.gguf)의 공개값과 일치한다. 공식 [모델 카드](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf)는 Apache-2.0을 표시하고 [LICENSE](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/LICENSE)·[NOTICE](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/NOTICE.txt)를 제공한다. **로컬 파일에 사본이 없다는 이유만으로 로컬 기술 시험을 막지 않는다.** 배포·모델/파생물 재배포는 NOTICE 보존 등 별도 권리 검토 대상이며, 교사 출력의 정답성·훈련 데이터 재이용 적격성은 이 자산 확인만으로 증명하지 않는다.
+
+Stage0cW의 독립변수는 **동일 파일·동일 새 CLI의 GPU 오프로딩 층 수 0→16**이다. 공개 산술 한 문장, ctx512·출력 최대64토큰·CPU 스레드8·temperature0·reasoning effort medium·budget16을 고정한다. `--ctx-size 0`은 모델의 262K 문맥을 잡을 수 있어 금지한다. 각 팔 wall 상한 180초, GPU 팔 전 `nvidia-smi` free≥8192MiB, 원본 HF/체크포인트 쓰기0, 외부 다운로드0, 사용자 작업 중인 학습 프로세스가 확인되면 중단한다. `llama-cli`의 실제 로딩·출력·오프로딩 층·CUDA 버퍼와 전후 VRAM을 기록하되 **64토큰 출력을 정답률이나 teacher 채택으로 쓰지 않는다**. 이번 지시에서만 Codex 제한 실행이 승인됐고 일반 운영 실행 소유권은 사용자다.
+
+| 안 | 역할 | 예상 대가·판정 |
+|---|---|---|
+| A CPU `-ngl 0` | GPU 충돌 없는 기준선 | RAM 약6GB+버퍼, 느릴 수 있음; CPU 기능만 |
+| B hybrid `-ngl 16` | 16GB 카드에서 학습 VRAM 여유를 남길 후보 | CPU↔GPU 전송·부분 오프로딩 지연 가능; 실제 VRAM/속도 확인 후 판단 |
+| C full GPU `-ngl all` | 교사 단독 처리량 상한 | 5.95GB 가중치 외 KV/compute가 추가되어 TinyLM 학습 reserved 약8.64GiB와 동시 상주를 보장하지 않음; 이번 작은 시험은 실행하지 않음 |
+
+이번 시험 PASS의 최소 조건은 정확 SHA·새 CLI/plugin·CPU 팔 exit0/출력>0과 hybrid 팔 exit0/실제 CUDA 층 오프로딩·출력>0이다. 하나라도 무너지면 해당 팔은 `FAIL` 또는 자원 `HOLD`로 분리한다. 현장 GPU 메모리 free 14,627MiB(사전 읽기)는 실행 시 바뀔 수 있으므로 런처가 다시 확인한다. Stage0cW가 통과해도 Q4의 교사 정확도, 한국어 SFT 데이터 권리/사람 검수, 8B 후보 대조와 A0 학습은 `NOT_RUN`이다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 12. 2026-09-27 실제 CPU/GPU 패널 — 동시 배치 추산과 남은 교사 품질 문턱
+
+[결과098 §4~§5](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)는 사용자 Stage0bW `HOLD8`을 **옛 패키지에 대한 역사 결과**로 보존하면서, 이번 요청의 제한된 Codex CPU/GPU 시험을 별도 Stage0cW/dW/eW/fW/gW/hW로 기록한다. §11의 “full GPU 미실행”은 실행 전 계획 문장이고 **이번 Stage0f/gW에서 단독 full GPU가 실제 실행됐다**. 로컬 SHA와 공식 파일 SHA 일치, 새 `b10743/adfffbe41` CUDA plugin 존재, CPU0·GPU16/40/48/56/all 각 프로세스 종료0·산술 출력4를 확인했다. 이는 기술 구동이지 독립 검증 교사 채택이 아니다.
+
+동일 PTQ1_0·Prism·ctx512·합성 프롬프트/출력상한64의 단독 실행에서 0.2초 **전역 GPU 사용량 표본** 증가와 생성 tok/s는 GPU16 `1,817MiB/2.7`, GPU40 `3,795MiB/4.9`, GPU48 `4,479MiB/7.7`, GPU56 `5,145MiB/12.4`, full `5,874MiB/54.2`였다. 별도 CPU0는 약2.1tok/s였다. `16,376MiB 카드 − 팔별 시작 GPU 점유 − P076 학생 reserved 8,846MiB − 교사 증가표본`으로 계산한 **동시 상주 추정 잔여**는 순서대로 4,267/2,272/1,608/942/213MiB다. 실제 학생·교사를 같은 시각에 돌린 횟수는 **0회**이며, NVML 전역 표본은 좁은 peak·다른 프로세스·allocator 단편화를 놓칠 수 있다. 따라서 full은 단독 생성 전용, 최소2GiB 명목 여유의 CPU16층/GPU40을 **동시 실험 1순위**, GPU48은 약1.57GiB 여유의 조건부 후보, GPU56은 장기 동시 운영 보류다. GPU40의 생성4.9tok/s는 full54.2tok/s보다 약11배 느려 대량 교사 데이터라면 **교사 단독 full GPU 선생성→독립 검증→학생 단독 학습**이 우선이다.
+
+부분 오프로딩 16/40/48/56 모두 첫 CPU 층 때문에 fused Gated Delta Net이 비활성화됐고, hybrid 종료 때 `CUDA_Host compute buffer` 23.99 대 기대9.44MiB 경고가 있었다. full에서는 전자가 없었다. 현재 짧은 CLI 내부 서버는 localhost 임시 포트에만 바인딩됐지만 CORS `*`·API key 없음 경고를 냈으므로 장시간 교사 서비스로 확대하기 전 접근제어가 별도 선결이다. 새로운 [VRAM sampler](../scripts/diag_p106_vram_sample.py)의 0.2초 표본과 [런처](../run_P106_Stage0hW_bonsai27b_concurrent_budget.sh)의 정적·동적 계약은 기능 범위로만 PASS이고, Q4 공개문항 가족별 정답성/완료율·accepted sample 비용, 8B 후보 대조, 실제 동시 학생 학습, A0 SFT는 모두 `NOT_RUN`이다.
+
+Stage0cW 로그의 llama 로딩 스피너가 두 줄에 백스페이스를 남겨 정적 제어문자 검사에서 실패했다. 사용자 승인 아래 원본 SHA와 정제 후 SHA를 [결과098 §5](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)에 기록하고 그 스피너 줄만 정규화했다. 이후 Stage0d/g/h는 `--simple-io`로 같은 사고 없이 수집됐다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 13. 2026-09-27 Stage0iW~0oW — GDN 배치 원인과 교사·학생 공존의 세 게이트
+
+[결과098 §6~§7](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)은 같은 GGUF/Prism/ctx512·64출력 상한에서 `--fit off`, `--op-offload` 유무, FFN tensor CPU override만 바꾼 제한 실험이다. 계획 §12의 GPU40 기본 생성4.9tok/s·GDN 비활성은 **고정 판정이 아니라 개선 대조군**이다. Stage0iW의 `--require-fusion`은 verbosity3에서 `enabled` 로그가 생략돼 exit8을 잘못 찍었다. **무효 계측**으로 남기고, Stage0lW verbosity4 복구를 정본으로 쓴다.
+
+| 단계 | 한 축과 사전 질문 | 실제 관측·판정 |
+|---|---|---|
+| Stage0lW A/B/C | GPU40 기본 vs `--no-op-offload`, GPU48 확장. `--fit off` 고정, trace4에서 AR/chunked `enabled`를 명시 확인 | GPU40 기본 GDN 둘 다 disabled/5.1tok/s; no-op은 둘 다 enabled/6.7tok/s·VRAM3,791MiB. GPU48 no-op 둘 다 enabled/9.2tok/s·4,455MiB. 옵션이 **융합을 복구**하나 CPU층 병목은 남음 |
+| Stage0jW/kW | `-ngl all`의 논리 GPU 층을 보존하고 첫32층 FFN gate/up/down 96 tensor만 CPU | FFN32 약4,084~4,087MiB·7.0~7.2tok/s, Stage0k trace4 GDN 둘 다 enabled. 정확 tensor 이름 확인; 원본 GGUF 변경0 |
+| Stage0mW/nW/oW | FFN32 micro8 → FFN60 micro8 → FFN32 micro4. 교사 실제 생성과 P076 같은 모양의 합성 학생 Muon 1 step을 겹침 | 세 팔 모두 짧은 공존 exit0·OOM0. `nvidia-smi` 시작 free−증가표본은 126/1,019/4,679MiB. 앞 두 팔은 안전여유 부족; micro4는 별도 학습 recipe 후보일 뿐 |
+
+동시 시험의 학생은 `m100R1c tied/ag2/cla2`, seq1024, Muon RMS4×4·AdamW, 합성 token과 무컴파일·난수 초기화, micro8 또는4, `accum=1`, **체크포인트·캐시·부모 읽기0**으로 제한했다. 이는 사용자 승인 1~3 step 안에서 실제 두 프로세스의 상주/동시 계산 peak를 확인한 것이다. 실제 P076 micro8×accum16/compile/부모/실데이터 300M 학습과 동일하지 않다. 변경된 micro4로 유효 배치를 유지하려면 `accum=32`지만 GPU wall·품질·장기 OOM은 **NOT_RUN**이므로 기본 팔을 조용히 변경하지 않는다. FFN60의 단독 VRAM 표본2,527MiB와 생성3.2tok/s는 메모리 확보와 CPU 처리량 손해를 분리한다.
+
+현재 기술 권고는 **교사 단독 full GPU에서 후보 답안 생성→독립 verifier와 사람 검토→교사 해제→학생 학습**이다. 실시간 공존이 실질적으로 필요할 때에는 별도 계획·사용자 실행으로 `FFN32/no-op/fit-off + micro4×accum32`의 실제 학습 조건, peak/step wall·학습 품질을 미리 등록하고 판정한다. Stage0oW의 4,679MiB 표본 여유를 장시간 운영 안전 보증으로 사용하지 않는다. P106 Q4 교사 정답성·accepted sample 비용·세 계보 비교와 A0 SFT `TRAIN_READY`는 계속 `NOT_RUN`이다.

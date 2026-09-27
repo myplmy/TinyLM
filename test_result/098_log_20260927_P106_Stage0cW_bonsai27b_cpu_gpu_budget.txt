@@ -1,0 +1,140 @@
+P106 bounded technical runtime only: same published SHA/Prism build, CPU ngl0 then CUDA ngl16; ctx512, 64 output tokens, each timeout180s. No quality or concurrent-training claim.
+
+==============================================================================
+[runlog] 2026-09-27 13:39:21  name=P106_Stage0cW_bonsai27b_cpu_gpu_budget
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_bonsai_assets.py --self-test
+==============================================================================
+[PASS] P106 GGUF v3/negative header and stderr-version contract; teacher/model NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 13:39:21)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 13:39:21  name=P106_Stage0cW_bonsai27b_cpu_gpu_budget
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_bonsai_assets.py
+==============================================================================
+{"cpu_runtime_version": "version: 0.2.0-dev (build 10743, commit adfffbe41) | built with GNU 11.4.0 for Linux x86_64", "cuda_plugins": ["libggml-cuda.so"], "cuda_runtime_dir": "/home/uranus/llama-prism-bin-ubuntu-x64-cuda133/llama-prism-b10743-adfffbe", "cuda_runtime_version": "version: 0.2.0-dev (build 10743, commit adfffbe41) | built with GNU 11.4.0 for Linux x86_64", "gguf_version": 3, "license_files": [], "license_rights_review": "PUBLIC_APACHE2_SOURCE_IDENTIFIED_LOCAL_TEST_ONLY", "model": "HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf", "model_bytes": 5946648928, "model_cards": [], "model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "notice_files": [], "official_license_url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/LICENSE", "official_model_blob_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "official_model_blob_url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/Ternary-Bonsai-2-27B-PTQ1_0.gguf", "official_model_card_url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/README.md", "official_notice_url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/NOTICE.txt", "prompt_template_review": "NOT_RUN", "reasons": [], "redistribution_review": "NOT_RUN", "schema": "P106_G0A_BONSAI_ASSET_V1", "teacher_generation": "NOT_RUN"}
+[ASSET PASS] published blob SHA, new Prism CLI and CUDA plugin present; actual CUDA/model behavior NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-27 13:39:29)
+==============================================================================
+CPU-only arm: ngl0; CUDA backend may initialize, but no model layers are offloaded.
+
+==============================================================================
+[runlog] 2026-09-27 13:39:30  name=P106_Stage0cW_bonsai27b_cpu_gpu_budget
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout -s TERM -k 5s 180s /home/uranus/llama-prism-bin-ubuntu-x64-cuda133/llama-prism-b10743-adfffbe/llama-cli --model /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf --gpu-layers 0 --ctx-size 512 --n-predict 64 --threads 8 --batch-size 64 --ubatch-size 64 --flash-attn auto --reasoning-effort medium --reasoning-budget 16 --temp 0 --top-p 1 --top-k 0 --min-p 0 --no-display-prompt --single-turn --no-warmup --prompt Answer the arithmetic question 2+2. State the result as one digit.
+==============================================================================
+
+
+Loading model... [spinner control characters normalized; other output unchanged]
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b10743-adfffbe41
+model      : /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf
+ftype      : PTQ1_0 - 1.75 bpw ternary (group 128)
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> Answer the arithmetic question 2+2. State the result as one digit.
+
+[Start thinking]
+
+The user asks me to answer the arithmetic question 2+2 and state
+[End thinking]
+
+4
+
+[ Prompt: 2.8 t/s | Generation: 2.1 t/s ]
+
+
+Exiting...
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.4분  (2026-09-27 13:39:51)
+==============================================================================
+CUDA hybrid arm: ngl16 with GPU free=14602MiB before launch; this is NOT simultaneous TinyLM training.
+
+==============================================================================
+[runlog] 2026-09-27 13:39:51  name=P106_Stage0cW_bonsai27b_cpu_gpu_budget
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=nvidia-smi --query-gpu=name,memory.total,memory.used,memory.free --format=csv,noheader,nounits
+==============================================================================
+NVIDIA GeForce RTX 4070 Ti SUPER, 16376, 1460, 14602
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 13:39:51)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 13:39:51  name=P106_Stage0cW_bonsai27b_cpu_gpu_budget
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=env CUDA_VISIBLE_DEVICES=0 timeout -s TERM -k 5s 180s /home/uranus/llama-prism-bin-ubuntu-x64-cuda133/llama-prism-b10743-adfffbe/llama-cli --model /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf --gpu-layers 16 --ctx-size 512 --n-predict 64 --threads 8 --batch-size 64 --ubatch-size 64 --flash-attn auto --reasoning-effort medium --reasoning-budget 16 --temp 0 --top-p 1 --top-k 0 --min-p 0 --no-display-prompt --single-turn --no-warmup --prompt Answer the arithmetic question 2+2. State the result as one digit.
+==============================================================================
+
+
+Loading model... [spinner control characters normalized; other output unchanged]
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b10743-adfffbe41
+model      : /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf
+ftype      : PTQ1_0 - 1.75 bpw ternary (group 128)
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> Answer the arithmetic question 2+2. State the result as one digit.
+
+[Start thinking]
+
+The user asks me to answer the arithmetic question 2+2 and state
+[End thinking]
+
+4
+
+[ Prompt: 3.6 t/s | Generation: 2.4 t/s ]
+
+
+Exiting...
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-09-27 13:40:11)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 13:40:11  name=P106_Stage0cW_bonsai27b_cpu_gpu_budget
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=nvidia-smi --query-gpu=name,memory.total,memory.used,memory.free --format=csv,noheader,nounits
+==============================================================================
+NVIDIA GeForce RTX 4070 Ti SUPER, 16376, 1460, 14602
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 13:40:11)
+==============================================================================

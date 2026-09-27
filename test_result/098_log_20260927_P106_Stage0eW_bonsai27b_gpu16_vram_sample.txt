@@ -1,0 +1,74 @@
+
+==============================================================================
+[runlog] 2026-09-27 13:44:41  name=P106_Stage0eW_bonsai27b_gpu16_vram_sample
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=env CUDA_VISIBLE_DEVICES=0 timeout -s TERM -k 5s 120s /home/uranus/llama-prism-bin-ubuntu-x64-cuda133/llama-prism-b10743-adfffbe/llama-cli --offline --simple-io --verbosity 3 --model /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf --gpu-layers 16 --ctx-size 512 --n-predict 64 --threads 8 --batch-size 64 --ubatch-size 64 --flash-attn auto --reasoning-effort medium --reasoning-budget 16 --temp 0 --top-p 1 --top-k 0 --min-p 0 --no-display-prompt --single-turn --no-warmup --prompt Answer the arithmetic question 2+2. State the result as one digit.
+==============================================================================
+0.00.146.053 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.146.556 W srv  llama_server: -----------------
+0.00.146.575 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.146.575 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.146.576 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.146.576 W srv  llama_server: -----------------
+0.00.168.508 I srv    load_model: loading model '/home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf'
+0.01.264.959 W resolve_fused_ops: layer 0 is assigned to device CPU but fused Gated Delta Net (autoregressive) is assigned to device CUDA0 (usually due to missing support)
+0.01.264.985 W resolve_fused_ops: fused Gated Delta Net (autoregressive) not supported, set to disabled
+0.01.266.214 W resolve_fused_ops: layer 0 is assigned to device CPU but fused Gated Delta Net (chunked) is assigned to device CUDA0 (usually due to missing support)
+0.01.266.233 W resolve_fused_ops: fused Gated Delta Net (chunked) not supported, set to disabled
+0.01.287.060 I cmn          init: llama threadpool init, n_threads = 8
+0.02.494.541 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 512, kv_unified = 'false'
+0.02.498.655 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.02.498.725 I srv  llama_server: model loaded
+0.02.498.742 I srv  llama_server: listening on http://127.0.0.1:50901
+0.02.574.724 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.02.574.859 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.08.263.448 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =     22, progress = 0.85, t =   5.69 s / 3.87 tokens per second
+
+
+Loading model... 
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b10743-adfffbe41
+model      : /home/uranus/tinyLM/HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf/Ternary-Bonsai-2-27B-PTQ1_0.gguf
+ftype      : PTQ1_0 - 1.75 bpw ternary (group 128)
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> Answer the arithmetic question 2+2. State the result as one digit.
+
+[Start thinking]
+
+The user asks me to answer the arithmetic question 2+2 and state
+[End thinking]
+
+40.16.658.123 I slot print_timing: id  0 | task 0 | prompt eval time =    7147.80 ms /    26 tokens (  274.92 ms per token,     3.64 tokens per second)
+0.16.658.158 I slot print_timing: id  0 | task 0 |        eval time =    6935.38 ms /    19 tokens (  385.30 ms per token,     2.60 tokens per second)
+0.16.658.175 I slot print_timing: id  0 | task 0 |       total time =   14083.18 ms /    45 tokens
+0.16.658.182 I slot print_timing: id  0 | task 0 |    graphs reused =         17
+0.16.658.230 I slot      release: id  0 | task 0 | stop processing: n_tokens = 44, truncated = 0
+
+0.16.658.892 I srv    operator(): operator(): cleaning up before exit...
+0.16.659.829 W ~llama_context:  CUDA_Host compute buffer size of  23.9881 MiB, does not match expectation of   9.4387 MiB
+
+[ Prompt: 3.6 t/s | Generation: 2.6 t/s ]
+
+
+Exiting...
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-09-27 13:44:58)
+==============================================================================

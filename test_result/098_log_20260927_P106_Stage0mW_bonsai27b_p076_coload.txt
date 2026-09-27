@@ -1,0 +1,39 @@
+User-approved narrow teacher+synthetic-student co-residency; FFN32 CPU, GDN fused, 1 eager optimizer update, no parent/cache/checkpoint/compile. Full P076 training NOT_RUN.
+
+==============================================================================
+[runlog] 2026-09-27 14:26:01  name=P106_Stage0mW_bonsai27b_p076_coload
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_coload.py --self-test
+==============================================================================
+[PASS] P106 co-load CPU contract; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 14:26:01)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 14:26:01  name=P106_Stage0mW_bonsai27b_p076_coload
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_coload.py --placement ffn32
+==============================================================================
+[P106 COLOAD] placement=ffn32, offline localhost authenticated server, ctx512, no disk cache; synthetic P076 1-step; no checkpoint
+[TEACHER] 0.00.642.739 I load_tensors: offloaded 65/65 layers to GPU
+[TEACHER] 0.00.642.746 I load_tensors:   CPU_Mapped model buffer size =  2830.25 MiB
+[TEACHER] 0.00.642.747 I load_tensors:        CUDA0 model buffer size =  3610.33 MiB
+[TEACHER] 0.01.297.870 I resolve_fused_ops: Flash Attention enabled
+[TEACHER] 0.01.297.891 I resolve_fused_ops: resolving fused Gated Delta Net support:
+[TEACHER] 0.01.298.574 I resolve_fused_ops: fused Gated Delta Net (autoregressive) enabled
+[TEACHER] 0.01.299.144 I resolve_fused_ops: fused Gated Delta Net (chunked) enabled
+[TEACHER] 0.01.299.162 I resolve_fused_ops: resolving fused Lightning Indexer support:
+[TEACHER] 0.01.299.693 I resolve_fused_ops: Lightning Indexer enabled
+[TEACHER] 0.01.299.710 I resolve_fused_ops: resolving fused DeepSeek V4 HC support:
+[TEACHER] 0.01.300.234 I resolve_fused_ops: fused DeepSeek V4 HC pre enabled
+[TEACHER] 0.01.300.834 I resolve_fused_ops: fused DeepSeek V4 HC comb enabled
+[TEACHER] 0.01.301.578 I resolve_fused_ops: fused DeepSeek V4 HC post enabled
+[TEACHER] 0.01.802.918 I srv  llama_server: listening on http://127.0.0.1:50599
+[STUDENT] [STUDENT_READY] model_reserved_mib=214
+[STUDENT] {"accum": 1, "architecture": "m100R1c tied, ag2, cla2, no activation checkpoint", "checkpoint_write": false, "compile": false, "data": "SYNTHETIC_IN_MEMORY", "loss": 10.410118103027344, "micro_bs": 8, "model_reserved_mib": 214, "optimizer": "Muon RMS4 x4 matrices + AdamW others, matrix WD 0", "parent_init": "RANDOM_NOT_P076_PARENT", "peak_allocated_mib": 11022, "peak_reserved_mib": 11268, "schema": "P106_P076_STUDENT_PROXY_V1", "seq": 1024, "step_count": 1, "wall_sec": 3.656}
+{"baseline_free_mib": 14617, "baseline_used_mib": 1445, "combined_peak_increment_mib_sampled": 14491, "combined_peak_used_mib_sampled": 15936, "fusion": {"gdn_ar_enabled": true, "gdn_chunked_enabled": true}, "limits": "synthetic random-init eager one update, accum1; 0.2s global NVML samples; not P076 compiled 300M training or teacher-quality proof", "placement": "ffn32", "sample_count": 51, "sample_errors": [], "schema": "P106_P076_COLOAD_V1", "student_exit": 0, "teacher_exit_during_test": null, "teacher_generation": ["completion_status=OK, content_chars=32"], "teacher_idle_increment_mib": 4532}
+[PASS] bounded teacher generation + synthetic student update co-residency; full P076 training NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.2분  (2026-09-27 14:26:13)
+==============================================================================

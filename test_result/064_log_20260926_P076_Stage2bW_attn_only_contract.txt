@@ -1,0 +1,58 @@
+Same ag2 student: default and explicit mean must be identical, MLP weights invariant, only attention norm-mean changes. Step0 is an init gate, not a quality ranking.
+
+==============================================================================
+[runlog] 2026-09-26 15:02:39  name=P076_Stage2bW_attn_only_contract
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p076_attn_only.py --check-only
+==============================================================================
+[CHECK_ONLY] P076 B3 source and launcher contract; parent/cache/model NOT_READ
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-26 15:02:39)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-26 15:02:39  name=P076_Stage2bW_attn_only_contract
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p076_attn_only.py
+==============================================================================
+[init] ★P057 그룹 어텐션 이식: attn_group=2, group_init=mean, attn_group_init=mean, 공유 어텐션 8개
+[init]   공유 어텐션 0: 교사 층 [2, 3] -> mean
+[init]   공유 어텐션 1: 교사 층 [4, 5] -> mean
+[init]   공유 어텐션 2: 교사 층 [6, 7] -> mean
+[init]   공유 어텐션 3: 교사 층 [8, 9] -> mean
+[init]   공유 어텐션 4: 교사 층 [10, 11] -> mean
+[init]   공유 어텐션 5: 교사 층 [12, 13] -> mean
+[init]   공유 어텐션 6: 교사 층 [14, 15] -> mean
+[init]   공유 어텐션 7: 교사 층 [16, 17] -> mean
+[init] ⚠️★어텐션 집약은 별도 attn_group_init 규약으로 선택할 수 있지만 **효과는 미검증**이다. P057 단계0 게이트가 step0 CE 로 잰다(통과 대역 5.0~9.40, 함정 34)
+[init] dense 부모초기화 완료 (중간 MLP는 8층 그룹, group_init=mean)  <- m100_ko-en_300M_dense.pt
+[MEASURED] legacy mlp_sha=5EBDA85E8353DCC3F45F7C0E68AEDAE2618E9392E0EAB65C0D790594B4C11419 attn_sha=780FAE96739DE2F02611DC9BE006D33E80DC195A676304178A3999A62C669032 step0_CE=7.0105653
+[init] ★P057 그룹 어텐션 이식: attn_group=2, group_init=mean, attn_group_init=mean, 공유 어텐션 8개
+[init]   공유 어텐션 0: 교사 층 [2, 3] -> mean
+[init]   공유 어텐션 1: 교사 층 [4, 5] -> mean
+[init]   공유 어텐션 2: 교사 층 [6, 7] -> mean
+[init]   공유 어텐션 3: 교사 층 [8, 9] -> mean
+[init]   공유 어텐션 4: 교사 층 [10, 11] -> mean
+[init]   공유 어텐션 5: 교사 층 [12, 13] -> mean
+[init]   공유 어텐션 6: 교사 층 [14, 15] -> mean
+[init]   공유 어텐션 7: 교사 층 [16, 17] -> mean
+[init] ⚠️★어텐션 집약은 별도 attn_group_init 규약으로 선택할 수 있지만 **효과는 미검증**이다. P057 단계0 게이트가 step0 CE 로 잰다(통과 대역 5.0~9.40, 함정 34)
+[init] dense 부모초기화 완료 (중간 MLP는 8층 그룹, group_init=mean)  <- m100_ko-en_300M_dense.pt
+[MEASURED] explicit_mean mlp_sha=5EBDA85E8353DCC3F45F7C0E68AEDAE2618E9392E0EAB65C0D790594B4C11419 attn_sha=780FAE96739DE2F02611DC9BE006D33E80DC195A676304178A3999A62C669032 step0_CE=7.0105653
+[init] ★P057 그룹 어텐션 이식: attn_group=2, group_init=mean, attn_group_init=norm_mean, 공유 어텐션 8개
+[init]   공유 어텐션 0: 교사 층 [2, 3] -> norm_mean
+[init]   공유 어텐션 1: 교사 층 [4, 5] -> norm_mean
+[init]   공유 어텐션 2: 교사 층 [6, 7] -> norm_mean
+[init]   공유 어텐션 3: 교사 층 [8, 9] -> norm_mean
+[init]   공유 어텐션 4: 교사 층 [10, 11] -> norm_mean
+[init]   공유 어텐션 5: 교사 층 [12, 13] -> norm_mean
+[init]   공유 어텐션 6: 교사 층 [14, 15] -> norm_mean
+[init]   공유 어텐션 7: 교사 층 [16, 17] -> norm_mean
+[init] ⚠️★어텐션 집약은 별도 attn_group_init 규약으로 선택할 수 있지만 **효과는 미검증**이다. P057 단계0 게이트가 step0 CE 로 잰다(통과 대역 5.0~9.40, 함정 34)
+[init] dense 부모초기화 완료 (중간 MLP는 8층 그룹, group_init=mean)  <- m100_ko-en_300M_dense.pt
+[MEASURED] attention_norm_mean mlp_sha=5EBDA85E8353DCC3F45F7C0E68AEDAE2618E9392E0EAB65C0D790594B4C11419 attn_sha=6DED143B168CEBB6AB948B18352E4BABC4EB21899584C1E960A42B7A750E04D2 step0_CE=7.1494617
+[PASS] default/explicit mean identical; MLP invariant; attention-only change; all step0 CE in init band
+[LIMIT] step0 is a binary init gate, not a final-quality ranking or ag2 adoption result
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-26 15:02:47)
+==============================================================================

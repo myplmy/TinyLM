@@ -246,7 +246,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p098_r2_{ctrl,reinject}_s{1337,2024,31415}` | P098 재귀 embedding 재주입 | **사용 완료 2026-09-23.** paired off−on +0.0015/+0.0001/+0.0002로 재귀 자 0.0018 안, 기본 off 유지([091](../test_result/091_20260923_P098-R2-초기임베딩-재주입은-3시드-실무-동급.md)) |
 | `p092_s{1,2}_*`·`p092_s3_*` | P092 full-trainer dense/static/DST | **Stage1/2 사용 완료 2026-09-23**, 구 Stage3W 3시드 런처는 gate 실패와 새 한 시드 경로로 -cancel. 30M→100M 격차는 감소했지만 최선 dynamic50 +0.19656 > +0.07. mask는 dense GEMM이며 일반 runtime_mb에 bool mask 약 80.72 MiB가 빠져 있다. Stage3Wb 사용자 계측·원 JSON 직접 대조 결과 보유 텐서 sparse759.64MiB(mask80.72) > dense678.92, CUDA allocated delta도 +403.59MiB, decode 두 순서 열세; 현 구현 가속·상주 절감 음성([083 §13](../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)) |
 | `p076_s2_mean`·`p076_s2_middle`·`p076_s2_normmean` | P076 Stage2 부모 집약 품질 3팔 | **사용 완료 2026-09-21.** m100R1c tied·같은 dense parent·Muon RMS4×4·CLA2·300M/600M·seed1337; `attn_group=1`에서 MLP `group_init`만 변경. mean≈middle, norm_mean +0.0030 열세([064 §9](../test_result/064_20260831_P076-도구가-두-팔-다-죽었다-build_config-위치인자.md)) |
-| `p076_b3_ag2_{mean,attnorm}_s1337` | P076 B3 attention-only 부모 집약 ag2 쌍 | **예약 2026-09-26.** Stage2bW 게이트 뒤 같은 m100R1c tied·dense parent·Muon RMS4×4·CLA2/ag2·300.024M/600M·seed1337; MLP mean 고정, attention mean/norm_mean만 변경. 사용자 E2E NOT_RUN |
+| `p076_b3_ag2_{mean,attnorm}_s1337` | P076 B3 attention-only 부모 집약 ag2 쌍 | **사용 완료 2026-09-26~27.** Stage2bW 배선 기능 PASS, 같은 m100R1c tied·dense parent·Muon RMS4×4·CLA2/ag2·300.024M/600M·seed1337·MLP mean 두 팔 skip0. JSON 최종 학습로그 val 3.57484375/3.57531250으로 후보+0.00046875; 동일 crop Stage2eW·다중 시드는 NOT_RUN([064 §10](../test_result/064_20260831_P076-도구가-두-팔-다-죽었다-build_config-위치인자.md)) |
 | `p060b_s1w_off250`·`p060b_s1w_on250` | P060B WSL GQA 250-step 속도/VRAM gate | **예약 2026-09-20.** m100s10 dense·Muon RMS4×4·CLA2·32.768M probe; 품질/W&B 판정 금지 |
 | `mA_*`,`mB_*`,`mC_*` | 1차 리뷰 최적안 검증(REVIEW1) | ✅ **완료**(결과 012). 승자 = `mA_g4s34_k4` |
 | `p6d_s2` | σ 측정 — p6d 를 시드만 바꿔 재현(REVIEW1 [1]) | ✅ **완료**(결과 012, σ=0.012) |
@@ -315,7 +315,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | [095 §8](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md) | M4 Triton 지정형상·tiny 합성 M5 뒤 동일 실물 checkpoint 양 OS 기능 교량 PASS. full-val 2,929창 CE abs1.81e-5, 한-step CE abs.00305·grad norm rel.00181 | checkpoint/code/input SHA 일치 범위의 기능 비교. Torch/cuDNN/OS 차가 묶여 있으며 순수 OS 속도·300M 재학습 동등성 NOT_DECIDED |
 | [096 §9](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md) | chat32 새 어휘·300.024M dense 부모 사전학습 완료(best val3.54625/최종3.6028125, skip0). 문서 비율50:50 대비 token은 위키34.35%/FineWeb-Edu65.65%; 총601M 중 train597.995M | 사전등록 2×draw600.047616M에2.052616M 미달. 본런 학습 결과 자체는 보존하나 tokenizer 단독효과·한국어 SFT/대화 품질·정식 적격성은 NOT_RUN |
 | [097](../test_result/097_20260925_P105-위키표제는-재현됐지만-FineWeb2-무표제는-품질개선이-아니다.md) | 사용자 7모델×40=280 고정 프롬프트 생성: 표제145/280, 원치 않는 URL2/280, 동일 URL 반복0. 같은 저장 답안 재감사에서 반복 후보140/280(줄116·구절129의 합집합), control24/40·FineWeb2 28/40 | Stage1W의 반복 휴리스틱22와 새 탐지 정의는 달라 증가량 비교 불가. FineWeb2의 무표제는 품질 개선 아님. source/tokenizer 동시 변화라 인과 불가; 원답안 byte 동일성·source·EOS·의미점수 NOT_RUN |
-| [098](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md) | 합성 verified-teacher 계약 ACCEPT/REJECT/UNKNOWN 각1·negative6·split 누출1 거부 | 자료 구조 fixture PASS만. 실제 교사 참값·license·비용·SFT NOT_RUN |
+| [098 §5~§7](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md) | 합성 verified-teacher 계약 PASS. 공식 SHA와 같은 Bonsai 2 27B PTQ1_0의 Prism b10743 CPU/GPU 기술 구동 PASS. GPU40 `--no-op-offload`는 GDN AR/chunked 융합을 복구해 생성5.1→6.7tok/s, FFN32 CPU override는 약4,084MiB·7.0tok/s·융합 on. 합성 P076 학생 1-step 공존에서 FFN32/micro8의 남은 free 표본126MiB, FFN60/micro8 1,019MiB, FFN32/micro4 4,679MiB | 짧은 공존은 실제지만 무컴파일·난수 초기화·accum1이라 **정식 P076 학습 안전증거가 아님**. Stage0i verbosity3 exit8은 융합 검출기 무효 판정. 독립 verifier 정답성·accepted sample 비용·한국어 SFT 적격성 NOT_RUN |
 | [099 §5](../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md) | P014E G0 수학 PASS 뒤 G1a 세 실물 checkpoint의 선택 pre/mid/coda 투영 진단. A pre의 3×256 NRMS 악화, B/C 선택 투영 개선; 1024 pad는 이론 byte +33.3%·online 비용 | 실제 가중치·합성 활성값의 부분 관측만. 전체 모델 packed RSS/CPU decode·full-val·한영 품질 NOT_RUN; 역사 P014D/P025B wall 음성 불변 |
 
 이 표는 결과문서의 숫자·조건 서명으로 거슬러 올라가는 **요약**이다. 다른 풀,
@@ -473,6 +473,18 @@ step0 은 **초기점**을 재고, 판정 대상은 **그 초기점에서 출발
 > 아직 깨끗하게 재지 못했다. 어느 숫자도 단독 인용하지 않는다.**
 
 ---
+
+### 5.3 2026-09-27 P106 외부 교사와 P076 학생의 16GB 단일 GPU 동시 예산 — **추산, 공존 E2E 아님**
+
+[결과098 §5](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)의 같은 PTQ1_0/Prism·ctx512·합성64토큰 교사 단독 패널에서 0.2초 간격 **전역 GPU used 증가표본**은 GPU16/40/48/56/full 순서로 1,817/3,795/4,479/5,145/5,874MiB였다. P076 학생 두 300M 학습 팔의 같은 형상 reserved는 각각 8.638672GiB = 8,846MiB다([결과064 §10](../test_result/064_20260831_P076-도구가-두-팔-다-죽었다-build_config-위치인자.md)). 카드 16,376MiB와 팔별 교사 시작 기본점유 약1,443~1,463MiB를 각각 빼면 학생과의 **명목 동시 여유**는 GPU16 4,267MiB, GPU40 2,272MiB, GPU48 1,608MiB, GPU56 942MiB, full 213MiB다.
+
+이 수는 서로 다른 시간의 peak를 **산술 합산한 상한 검토**이지 실제 교사+학생 공존 성공 증거가 아니다. NVML 전역 표본이 좁은 peak를 놓칠 수 있고 allocator·그래프·KV·동시 kernel 경합이 더해진다. 최소2GiB 여유를 운영 목표로 하면 GPU40이 첫 공존 후보, GPU48은 약1.57GiB의 위험한 조건부 후보, GPU56/full은 장기 동시 운영 권고 금지다. 다만 부분 오프로딩은 첫 CPU 층에서 fused Gated Delta Net이 꺼져 GPU40/48/56 생성이 각각4.9/7.7/12.4tok/s로 full54.2tok/s보다 훨씬 느렸다. 대량 교사 답안은 교사 단독 full GPU 선생성·독립 검증 후 학생 단독 학습을 우선한다. 이 한 프롬프트는 교사 정답률도 학습품질도 측정하지 않는다.
+
+### 5.4 2026-09-27 P106 GDN 복구·FFN override·짧은 공존 — §5.3의 추산 갱신
+
+[결과098 §6~§7](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)의 verbosity4 대조는 GPU40 기본 GDN AR/chunked `disabled` 대 `--no-op-offload` 둘 다 `enabled`를 직접 확인했다. 생성은5.1→6.7tok/s로 개선됐지만 full GPU 약54tok/s에 한참 못 미친다. GPU all의 첫32층 FFN gate/up/down 가중치만 CPU에 두면 GDN 둘 다 `enabled`, 교사 단독 VRAM 증가 약4,084MiB·생성7.0tok/s다. Stage0i verbosity3의 `enabled` 미출력에 따른 exit8은 **무효 계측**이며 이 판정에 넣지 않는다.
+
+사용자 승인 합성 1-step 공존에서는 FFN32/micro8과 FFN60/micro8, FFN32/micro4가 모두 실제 교사 생성·학생 optimizer 업데이트를 끝냈다. 다만 NVML의 **시작 free−실행 중 used 증가표본**으로 환산한 여유는 각각 **126/1,019/4,679MiB**였다. §5.3의 카드 총량16,376MiB 기반 명목 여유보다 약314MiB 보수적이며, 단독 teacher+과거 student reserved의 단순 합계는 실행 중 allocator/활성 peak를 대체하지 않는다. 특히 FFN32/micro8은 OOM0이어도 안전 여유가 없다. micro4는 합성 eager·난수 학생에 한해 유망하고, 실제 `micro4×accum32 --compile --init-from`의 속도·VRAM·품질은 아직 `NOT_RUN`이다. 따라서 현재 기본은 **교사 단독 선생성→독립 검증→학생 단독 학습**이고, 온라인 동시 KD 채택은 후속 실제 학습 게이트 전 금지한다.
 
 ## 6. 알려진 버그·함정 (설계 시 반영)
 

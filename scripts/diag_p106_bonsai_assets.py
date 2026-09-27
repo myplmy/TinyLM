@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""P106 G0a user-run metadata-only Bonsai 2 GGUF/Prism runtime preflight.
+"""P106 G0a/G0b metadata-only Bonsai 2 GGUF/Prism runtime preflight.
 
-No model weights are loaded or generated. An exit-8 HOLD is a valid asset result,
-not a teacher-quality failure. License text and CUDA behavior need separate review.
+No model weights are loaded or generated. The exact model SHA is checked against
+the published PTQ1_0 blob; public license/card links are evidence, not a claim
+about redistribution or teacher-answer quality. CUDA execution is a separate gate.
 """
 from __future__ import annotations
 
@@ -18,8 +19,16 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_DIR = ROOT / "HF/models--prism-ml--Ternary-Bonsai-2-27B-gguf"
 MODEL = MODEL_DIR / "Ternary-Bonsai-2-27B-PTQ1_0.gguf"
-CPU_DIR = Path("/home/uranus/llama-prism-b10735-842b188-bin-ubuntu-x64-cpu/llama-prism-b10735-842b188")
-CUDA_DIR = Path("/home/uranus/llama-prism-b10735-842b188-bin-ubuntu-x64-cuda133/llama-prism-b10735-842b188")
+CUDA_DIR = Path("/home/uranus/llama-prism-bin-ubuntu-x64-cuda133/llama-prism-b10743-adfffbe")
+CPU_DIR = CUDA_DIR  # one verified fork binary; --gpu-layers 0 selects CPU-only execution
+MODEL_SHA256 = "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3"
+MODEL_BLOB_URL = (
+    "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/"
+    "blob/main/Ternary-Bonsai-2-27B-PTQ1_0.gguf"
+)
+LICENSE_URL = "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/LICENSE"
+NOTICE_URL = "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/NOTICE.txt"
+CARD_URL = "https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/README.md"
 
 
 def gguf_version(header: bytes) -> int:
@@ -43,14 +52,15 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest().upper()
 
 
-def version_text(stdout: str, stderr: str) -> str:
-    body = stdout.strip() or stderr.strip()
-    if "842b188" not in body:
-        raise ValueError("Prism runtime version does not match pinned fork 842b188")
-    return " | ".join(body.splitlines()[:2])
+def version_text(stdout: str, stderr: str, expected_commit: str) -> str:
+    lines = [line.strip() for line in (stdout + "\n" + stderr).splitlines()]
+    version_lines = [line for line in lines if line.startswith(("version:", "built with "))]
+    if not version_lines or expected_commit not in " ".join(version_lines):
+        raise ValueError(f"Prism runtime version does not match pinned fork {expected_commit}")
+    return " | ".join(version_lines[:2])
 
 
-def runtime_version(path: Path) -> str:
+def runtime_version(path: Path, expected_commit: str) -> str:
     if not regular(path) or not os.access(path, os.X_OK):
         raise ValueError(f"Prism CLI missing, linked or not executable: {path}")
     with path.open("rb") as stream:
@@ -60,7 +70,7 @@ def runtime_version(path: Path) -> str:
                                text=True, timeout=10, check=False)
     if completed.returncode != 0:
         raise RuntimeError(f"Prism CLI --version exit={completed.returncode}: {path}")
-    return version_text(completed.stdout, completed.stderr)
+    return version_text(completed.stdout, completed.stderr, expected_commit)
 
 
 def self_test() -> None:
@@ -73,7 +83,15 @@ def self_test() -> None:
             pass
         else:
             raise AssertionError("invalid GGUF header accepted")
-    assert version_text("", "version: 0.2.0-dev (build 10735, commit 842b18804)").startswith("version:")
+    assert version_text("", "version: 0.2.0-dev (build 10735, commit 842b18804)", "842b188").startswith("version:")
+    assert version_text("", "version: 0.2.0-dev (build 10743, commit adfffbe41)", "adfffbe").startswith("version:")
+    assert version_text("", "ggml_cuda_init: sandbox denied\nversion: 0.2.0-dev (build 10743, commit adfffbe41)", "adfffbe").startswith("version:")
+    try:
+        version_text("version: 0.2.0-dev (build 10735, commit 842b18804)", "", "adfffbe")
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("old CUDA runtime accepted as new release")
     print("[PASS] P106 GGUF v3/negative header and stderr-version contract; teacher/model NOT_RUN")
 
 
@@ -85,37 +103,41 @@ def audit() -> int:
         raise ValueError(f"PTQ1_0 file is unexpectedly small: {size} bytes")
     with MODEL.open("rb") as stream:
         version = gguf_version(stream.read(8))
-    cpu_version = runtime_version(CPU_DIR / "llama-cli")
-    cuda_version = runtime_version(CUDA_DIR / "llama-cli")
+    cpu_version = runtime_version(CPU_DIR / "llama-cli", "adfffbe")
+    cuda_version = runtime_version(CUDA_DIR / "llama-cli", "adfffbe")
     cuda_plugins = sorted(path.name for path in CUDA_DIR.glob("libggml-cuda.so*")
                           if regular(path))
     licenses = sorted(path.name for path in MODEL_DIR.glob("LICENSE*") if regular(path))
     notices = sorted(path.name for path in MODEL_DIR.glob("NOTICE*") if regular(path))
     cards = sorted(path.name for path in MODEL_DIR.glob("README*") if regular(path))
     reasons = []
-    if not licenses:
-        reasons.append("exact revision license text is absent")
-    if not cards:
-        reasons.append("exact revision model card/template is absent")
     if not cuda_plugins:
-        reasons.append("CUDA package has no libggml-cuda.so plugin; GPU capability unverified")
-    # Hashing 5.9 GB is deferred while legal/runtime preconditions already HOLD.
-    pinned_sha = sha256_file(MODEL) if not reasons else "NOT_RUN_HOLD"
+        reasons.append("selected CUDA package has no libggml-cuda.so plugin")
+    pinned_sha = sha256_file(MODEL)
+    if pinned_sha != MODEL_SHA256:
+        raise ValueError("local PTQ1_0 SHA-256 differs from the published model blob")
     result = {
         "schema": "P106_G0A_BONSAI_ASSET_V1",
         "model": MODEL.relative_to(ROOT).as_posix(), "model_bytes": size,
         "gguf_version": version, "model_sha256": pinned_sha,
         "cpu_runtime_version": cpu_version, "cuda_runtime_version": cuda_version,
+        "cuda_runtime_dir": str(CUDA_DIR),
         "cuda_plugins": cuda_plugins, "license_files": licenses,
         "notice_files": notices, "model_cards": cards,
-        "license_rights_review": "NOT_RUN", "prompt_template_review": "NOT_RUN",
+        "official_model_blob_sha256": MODEL_SHA256,
+        "official_model_blob_url": MODEL_BLOB_URL,
+        "official_license_url": LICENSE_URL, "official_notice_url": NOTICE_URL,
+        "official_model_card_url": CARD_URL,
+        "license_rights_review": "PUBLIC_APACHE2_SOURCE_IDENTIFIED_LOCAL_TEST_ONLY",
+        "redistribution_review": "NOT_RUN",
+        "prompt_template_review": "NOT_RUN",
         "teacher_generation": "NOT_RUN", "reasons": reasons,
     }
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     if reasons:
         print("[GATE HOLD] asset metadata alone cannot authorize teacher inference or training")
         return 8
-    print("[ASSET CANDIDATE] files are present; human license/template and bounded model E2E remain separate")
+    print("[ASSET PASS] published blob SHA, new Prism CLI and CUDA plugin present; actual CUDA/model behavior NOT_RUN")
     return 0
 
 

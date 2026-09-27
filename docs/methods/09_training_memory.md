@@ -304,3 +304,9 @@ python scripts/check_spill.py test_result/037_log_20260808_P018_compressed_teach
 
 후속 측정은 `peak reserved`·tokens/sec·val을 함께 남긴다. 논리 payload, allocator allocation,
 process RSS와 checkpoint 저장 크기는 서로 대체하지 않는다.
+
+## 2026-09-27 P106 외부 교사 동시 VRAM 산술 — 측정 분모 분리
+
+[결과098 §5](../../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)의 Bonsai 2 27B PTQ1_0 교사 단독 NVML 0.2초 **전역 used 증가표본**은 GPU40/48/56/full에서 3,795/4,479/5,145/5,874MiB다. [결과064 §10](../../test_result/064_20260831_P076-도구가-두-팔-다-죽었다-build_config-위치인자.md)의 P076 학생 reserved 8,846MiB와 약1,443~1,463MiB idle 점유를 16,376MiB 카드에서 뺀 명목 여유는 각각2,272/1,608/942/213MiB다. 이 값은 서로 다른 프로세스의 **별도 실측을 더한 추산**이며 동시 실행 중의 CUDA allocator·KV·host pinned·kernel 경합이나 좁은 peak를 재지 않았다. GPU40이 ≥2GiB 여유의 첫 공존 후보이나 생성4.9tok/s로 full54.2tok/s보다 약11배 느리고 fused Gated Delta Net이 꺼진다. 교사 단독 full GPU에서 답안 후보 생성·검증 후 학생 단독 학습이 우선이며 동시 KD는 별도 사용자 E2E 없이는 PASS가 아니다.
+
+후속 [결과098 §6~§7](../../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)은 `--no-op-offload`로 GPU40의 GDN 융합을 복구했고, FFN 첫32층 CPU override에서도 융합을 보존했다. 그러나 **실제** 합성 1-step 교사+학생 공존에서 시작 NVML free−사용증가 표본은 FFN32/micro8 **126MiB**, FFN60/micro8 **1,019MiB**, FFN32/micro4 **4,679MiB**였다. 이 후속 실측은 앞의 산술 추천 GPU40을 운영 보증으로 읽지 말아야 함을 보였다. micro4 학생 peak reserved6,058MiB 대 micro8 11,268MiB는 무컴파일·난수·accum1 조건이고 실제 P076 `micro4×accum32`의 품질·wall·peak는 미실행이다. 여유 판단은 카드 total−전역 used만 아니라 **같은 순간의 free 표본과 학생 allocator peak**, CPU mapped 약2.8~5.1GiB, 재현 조건을 함께 본다.

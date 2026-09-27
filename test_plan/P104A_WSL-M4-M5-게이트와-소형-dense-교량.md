@@ -116,3 +116,7 @@ same real checkpoint·같은 tokenizer·같은 평가 풀·condition signature�
 2026-09-26 [095 결과 §8](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md): 사용자 Stage2B Windows·Stage2W WSL에서 동일 실물 체크포인트·입력·코드 SHA와 full-val 2,929창을 비교해 comparator 종료0·실물 기능 교량 PASS다. full-val CE 절댓차 1.81e-5, 시작 CE 0.00305, gradient norm 상대차0.00181. 300M 재학습 동등성이나 OS 속도 인과는 여전히 NOT_RUN/NOT_DECIDED다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-09-27 Stage2B/2W 실물 JSON 직접 재검산
+
+[결과095 §9](../test_result/095_20260925_P104A-Windows-M5-드라이브-UNC-별칭오류.md)의 Windows/WSL JSON을 직접 읽어 같은 checkpoint/code/input/step-input/tokenizer SHA와 2,929창·2,999,296토큰을 확인했다. full-val CE 절댓차1.81165e-5, 한 step grad norm 상대차0.00181152로 기능 교량 PASS 유지. Torch/cuDNN 스택이 달라 OS 순수 속도·300M 재학습 동등성은 여전히 NOT_DECIDED다.
