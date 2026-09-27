@@ -29,20 +29,6 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-1	P076	run_P076_Stage2bW_attn_only_contract.sh	D	0.4	Y	Y	사용자 승인 B3: ag2 기본/명시 mean 비트동일·MLP 불변·attention만 norm_mean·step0 이식 대역 기능 게이트	8
-1	P106	run_P106_Stage0bW_bonsai27b_asset_preflight.sh	N	0.1	N	Y	사용자 보유 GGUF/Prism CPU·CUDA 메타데이터만 검증; LICENSE/model card·CUDA plugin 부재는 유효 HOLD8, 모델 로딩·교사 생성0	8
-2	P106	run_P106_Stage0cW_bonsai27b_cpu_gpu_budget.sh	D	0.3	Y	Y	이번 지시 한정 승인된 PTQ1_0 같은 SHA/Prism CLI의 CPU ngl0 대 CUDA hybrid ngl16, ctx512/출력64/각180초 상한·GPU free8192MiB 선결; 정답률 아님	8
-2	P106	run_P106_Stage0dW_bonsai27b_gpu16_attribution.sh	D	0.1	Y	Y	Stage0c의 간결 출력에서 GPU 실제 배치 미계측을 복구; 같은 PTQ1_0·CUDA ngl16·offline/simple-io·info 로그로 offload 층/버퍼 확인, ctx512/출력16/120초 상한	8
-2	P106	run_P106_Stage0gW_bonsai27b_vram_panel.sh	D	0.1	Y	Y	동일 PTQ1_0·Prism의 hybrid16 대 full GPU를 ctx512·출력64·각120초 cap으로 재고 0.2초 NVML peak 증가/속도를 분리; TinyLM 학습 동시 실행0	8
-2	P106	run_P106_Stage0hW_bonsai27b_concurrent_budget.sh	D	0.3	Y	Y	교사 단독 GPU40/48/56 같은 ctx512·출력64의 sampled VRAM/tok/s를 P076 학습 reserved8.64GiB와 산술 비교; 동시 실행은 하지 않음	8
-2	P106	run_P106_Stage0iW_bonsai27b_gdn_opoffload.sh	D	0.3	Y	Y	GPU40 fit-off 대조 A와 no-op-offload B, GPU48 no-op-offload C의 GDN AR/chunked fusion·VRAM·tok/s 동일조건 진단; exit8은 유효 음성	8
-2	P106	run_P106_Stage0jW_bonsai27b_ffn_cpu_override.sh	D	0.3	Y	Y	GPU all fit-off의 op-offload on/off와 FFN 첫32층 96 tensor CPU override를 4팔로 분리, GDN fusion·VRAM·tok/s 비교; 원본GGUF 변경0	8
-2	P106	run_P106_Stage0lW_bonsai27b_gdn_trace4.sh	D	0.3	Y	Y	Stage0i verbosity3 미관측을 복구: 동일 GPU40 A/B·GPU48 C에 trace4를 켜 GDN AR/chunked enabled 직접 확인; exit8은 명시 로그 기준 음성	8
-2	P106	run_P106_Stage0mW_bonsai27b_p076_coload.sh	D	0.3	Y	Y	사용자 승인 좁은 동시상주: FFN32 CPU/GDN 융합 교사 서버와 P076 동일형상 합성 1-step Muon RMS4 학생; 부모·캐시·체크포인트/컴파일 없음, full training 판정 금지	8
-2	P106	run_P106_Stage0nW_bonsai27b_ffn60_coload.sh	D	0.3	Y	Y	FFN32 동시구동 peak 여유 약440MiB로 부족하여 FFN 첫60층만 CPU로 확대; GDN 융합/단독 tok/s와 합성 P076 1-step 동시 peak/OOM을 재검, full training 별도	8
-2	P106	run_P106_Stage0oW_bonsai27b_p076_micro4_coload.sh	D	0.3	Y	Y	교사FFN32 GDN융합 고정, 학생 P076 합성 micro-bs8 대비 micro-bs4 1-step peak/OOM 진단; 실제 누산32/compile/부모초기화 학습 효과는 미실행	8
-2	P076	run_P076_Stage2cW_ag2_mean_s1337.sh	Y	3.1	Y	Y	ag2 mean 대조군 300.024M; SH 내부 B3 기능 게이트 재검 뒤 같은 dense 부모/600M풀/seed 학습, 성공시 runlog W&B 자동 후송	8
-2	P076	run_P076_Stage2dW_ag2_attnorm_s1337.sh	Y	3.1	Y	Y	ag2 attention-only norm_mean 후보 300.024M; MLP mean 고정·SH 내부 기능 게이트 재검·동일조건 대조, 성공시 runlog W&B 자동 후송	8
 3	P076	run_P076_Stage2eW_ag2_attn_pair.sh	D	0.3	Y	Y	두 신규 ag2 체크포인트가 모두 성공했을 때만 600M 같은 crop paired full-val; 한 시드로 기본값 승격 금지
 # P104A Windows prerequisite: run_P104A_Stage2B_m5_real_bridge.bat direct on Windows before the WSL queue row below.
 # CANCEL 2026-09-23: 옛 P092 Stage3W 3시드 일괄안은 100M gate 실패와 사용자 선택(진단→원인 수정→300M 한 시드)에 맞지 않아 실행 설계만 취소; P092 연구축·Stage3Wb 유지
@@ -487,6 +473,23 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   5	P014E	run_P014E_Stage1Wa_C_d12_r20_rotation_weights.sh	N	0.3	Y	Y	C 32MiB 재귀 후보 같은 체크포인트 내부 회전 대조; 방문수 wall 별도, 새 smoke 선결
 #   6	P103A	run_P103A_Stage1bW_m0_fixed2m_cache.sh	D	2.0	Y	Y	고정 M0 부모12/4의 실제2M 창 FP32+INT8 경계 cache 약7.8GiB write-once, 첫1024-token 정확 함수 선결; 품질·whole-step 미판정
 #   7	P104A	run_P104A_Stage2W_m5_real_bridge.sh	D	1.0	Y	Y	Windows Stage2B JSON 선결; 같은 d14 real checkpoint/ko-en 고정 full-val과 한 SGD update 양 OS SHA·CE·gradient 기능교량, 재학습 아님	8
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P076	run_P076_Stage2bW_attn_only_contract.sh	D	0.4	Y	Y	사용자 승인 B3: ag2 기본/명시 mean 비트동일·MLP 불변·attention만 norm_mean·step0 이식 대역 기능 게이트	8
+#   1	P106	run_P106_Stage0bW_bonsai27b_asset_preflight.sh	N	0.1	N	Y	사용자 보유 GGUF/Prism CPU·CUDA 메타데이터만 검증; LICENSE/model card·CUDA plugin 부재는 유효 HOLD8, 모델 로딩·교사 생성0	8
+#   2	P106	run_P106_Stage0cW_bonsai27b_cpu_gpu_budget.sh	D	0.3	Y	Y	이번 지시 한정 승인된 PTQ1_0 같은 SHA/Prism CLI의 CPU ngl0 대 CUDA hybrid ngl16, ctx512/출력64/각180초 상한·GPU free8192MiB 선결; 정답률 아님	8
+#   2	P106	run_P106_Stage0dW_bonsai27b_gpu16_attribution.sh	D	0.1	Y	Y	Stage0c의 간결 출력에서 GPU 실제 배치 미계측을 복구; 같은 PTQ1_0·CUDA ngl16·offline/simple-io·info 로그로 offload 층/버퍼 확인, ctx512/출력16/120초 상한	8
+#   2	P106	run_P106_Stage0gW_bonsai27b_vram_panel.sh	D	0.1	Y	Y	동일 PTQ1_0·Prism의 hybrid16 대 full GPU를 ctx512·출력64·각120초 cap으로 재고 0.2초 NVML peak 증가/속도를 분리; TinyLM 학습 동시 실행0	8
+#   2	P106	run_P106_Stage0hW_bonsai27b_concurrent_budget.sh	D	0.3	Y	Y	교사 단독 GPU40/48/56 같은 ctx512·출력64의 sampled VRAM/tok/s를 P076 학습 reserved8.64GiB와 산술 비교; 동시 실행은 하지 않음	8
+#   2	P106	run_P106_Stage0iW_bonsai27b_gdn_opoffload.sh	D	0.3	Y	Y	GPU40 A/B·GPU48 C 탐색 이력. verbosity3 B/C enabled 로그 부재를 음성으로 오판해 exit8 무효계측; Stage0l trace4로 복구	8
+#   2	P106	run_P106_Stage0jW_bonsai27b_ffn_cpu_override.sh	D	0.3	Y	Y	GPU all fit-off의 op-offload on/off와 FFN 첫32층 96 tensor CPU override 4팔; VRAM/tok/s 유효, verbosity3 GDN 여부는 미관측·Stage0k trace4로 보강	8
+#   2	P106	run_P106_Stage0lW_bonsai27b_gdn_trace4.sh	D	0.3	Y	Y	Stage0i verbosity3 미관측을 복구: 동일 GPU40 A/B·GPU48 C에 trace4를 켜 GDN AR/chunked enabled 직접 확인; exit8은 명시 로그 기준 음성	8
+#   2	P106	run_P106_Stage0mW_bonsai27b_p076_coload.sh	D	0.3	Y	Y	사용자 승인 좁은 동시상주: FFN32 CPU/GDN 융합 교사 서버와 P076 동일형상 합성 1-step Muon RMS4 학생; 부모·캐시·체크포인트/컴파일 없음, full training 판정 금지	8
+#   2	P106	run_P106_Stage0nW_bonsai27b_ffn60_coload.sh	D	0.3	Y	Y	FFN32/micro8 공존의 당시 카드총량 기준 여유 약440MiB, NVML free−증가 보수값126MiB로 부족하여 FFN60 CPU 민감도·공존 재검; full training 별도	8
+#   2	P106	run_P106_Stage0oW_bonsai27b_p076_micro4_coload.sh	D	0.3	Y	Y	교사FFN32 GDN융합 고정, 학생 P076 합성 micro-bs8 대비 micro-bs4 1-step peak/OOM 진단; 실제 누산32/compile/부모초기화 학습 효과는 미실행	8
+#   2	P076	run_P076_Stage2cW_ag2_mean_s1337.sh	Y	3.1	Y	Y	ag2 mean 대조군 300.024M; SH 내부 B3 기능 게이트 재검 뒤 같은 dense 부모/600M풀/seed 학습, 성공시 runlog W&B 자동 후송	8
+#   2	P076	run_P076_Stage2dW_ag2_attnorm_s1337.sh	Y	3.1	Y	Y	ag2 attention-only norm_mean 후보 300.024M; MLP mean 고정·SH 내부 기능 게이트 재검·동일조건 대조, 성공시 runlog W&B 자동 후송	8
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
