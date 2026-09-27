@@ -29,6 +29,7 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
+1	P106	run_P106_Stage0pW_full_teacher_accum.sh	D	0.8	Y	Y	이번 사용자 지시 한정 full-GPU Bonsai 교사와 P076 부모+compile 학생 micro4/accum32/no-ckpt 대 micro8/accum16/ckpt-on 두 짧은 자원 팔; 합성 입력·체크포인트 저장0·정식 SFT 아님	8
 1	P076	run_P076_Stage2eWb_ag2_attn_pair.sh	D	0.3	Y	Y	Stage2eW의 잘못된 _tied_ checkpoint 선검사로 평가0건; Wb는 paired_eval 공통 resolver/check-inputs를 거쳐 같은 두 ag2 최종모델의 600M 동일 crop 평가, 한 시드 승격 금지
 2	P037	run_P037_Stage0Wb_common_val_300M_builder.sh	N	1.0	Y	Y	기존300M train에서 공통val 동일 EOS 문서를 제외하고 격리 300M cache 생성; 데이터 기능계약만, SFT·학습 아님; 사용자 실행 전 NOT_RUN
 3	P030B	run_P030B_Stage0Wb_cpu_order_rss.sh	N	1.0	Y	Y	기존 d14 두 final의 CPU1 속도 A/B/B/A 독립 프로세스 및 같은 int8 unpack RSS를 재서 순서 편향과 40MiB 미달을 분리; 모델 실행은 사용자 소유

@@ -125,3 +125,35 @@ Stage0cW 로그의 llama 로딩 스피너가 두 줄에 백스페이스를 남�
 동시 시험의 학생은 `m100R1c tied/ag2/cla2`, seq1024, Muon RMS4×4·AdamW, 합성 token과 무컴파일·난수 초기화, micro8 또는4, `accum=1`, **체크포인트·캐시·부모 읽기0**으로 제한했다. 이는 사용자 승인 1~3 step 안에서 실제 두 프로세스의 상주/동시 계산 peak를 확인한 것이다. 실제 P076 micro8×accum16/compile/부모/실데이터 300M 학습과 동일하지 않다. 변경된 micro4로 유효 배치를 유지하려면 `accum=32`지만 GPU wall·품질·장기 OOM은 **NOT_RUN**이므로 기본 팔을 조용히 변경하지 않는다. FFN60의 단독 VRAM 표본2,527MiB와 생성3.2tok/s는 메모리 확보와 CPU 처리량 손해를 분리한다.
 
 현재 기술 권고는 **교사 단독 full GPU에서 후보 답안 생성→독립 verifier와 사람 검토→교사 해제→학생 학습**이다. 실시간 공존이 실질적으로 필요할 때에는 별도 계획·사용자 실행으로 `FFN32/no-op/fit-off + micro4×accum32`의 실제 학습 조건, peak/step wall·학습 품질을 미리 등록하고 판정한다. Stage0oW의 4,679MiB 표본 여유를 장시간 운영 안전 보증으로 사용하지 않는다. P106 Q4 교사 정답성·accepted sample 비용·세 계보 비교와 A0 SFT `TRAIN_READY`는 계속 `NOT_RUN`이다.
+
+## 14. 2026-09-27 Stage0pW — full-GPU 교사와 같은 유효배치 학생 두 팔의 짧은 자원 게이트
+
+사용자는 §13의 순차 선생성 C안을 이번 선택지에서 **기각**하고, 같은 `131,072` token/update인 (A) full 교사+학생 `micro4×accum32 --no-ckpt`와 (B) full 교사+학생 `micro8×accum16`의 **activation checkpoint 기본 ON**을 직접 비교하도록 정정·승인했다. 이번 지시에서만 Codex의 매우 짧은 GPU 시험을 허가했으며, 정식 학습·체크포인트 저장·원본 데이터/캐시 변경 허가는 아니다. 새 런처와 로그명은 Stage0m/n/o 이력과 구별하는 `Stage0pW`를 쓴다.
+
+| 사전 추산 | A micro4/no-ckpt | B micro8/ckpt-on | 의미 |
+|---|---:|---:|---|
+| 이전 FFN32 교사+합성 학생 1-step 여유 표본 | 4,679MiB | micro8/no-ckpt 126MiB | B의 checkpoint 효과는 이 표본에 없음 |
+| full 교사−FFN32 단독 VRAM 증가 표본 | 약+1,790MiB | 약+1,790MiB | 서로 다른 단독 런의 차, 동시 peak 아님 |
+| full 교사 치환 단순 추산 | 약**2,889MiB 여유** | 126−1,790 = **−1,664MiB**에서 checkpoint 절감분 추가 | B는 무OOM에 최소1,664MiB, 2GiB 여유에 약3,712MiB 절감 필요 |
+
+추산을 실제 결과로 부르지 않는다. A의 합성 micro4 checkpoint OFF는 6,392MiB reserved(단독)였으나 full 교사·부모초기화·compile을 함께 쓰지 않았다. B의 같은 형상 checkpoint ON reserved는 **미실측**이다. 과거 P073 Stage6b `micro4×accum32/no-ckpt`의 2,289-step 성공은 구조/반복 방문이 달라 P076+full 교사의 운영 가능성을 증명하지 않는다. P067의 같은 micro4×accum32 OOM은 외부 Qwen 어휘151,936·teacher-logit 경로의 비용이어서 텍스트 교사 Bonsai를 통한 SFT 전이값으로 복사하지 않는다.
+
+### 14.1 두 팔의 고정 계약·문턱
+
+- **독립변수**: micro 분할과 activation checkpoint를 함께 바꾸는 **자원 Pareto** 비교다. 학생 두 팔은 모두 `m100R1c tied/ag2/cla2`, 같은 dense 부모 `m100_ko-en_300M_dense.pt`, Muon RMS4×4+AdamW·WD0·bf16 autocast·CE chunk2048·`torch.compile(mode=default)` 및 같은 여덟 in-memory 합성 시퀀스×16회로 131,072 target-token/update를 고정한다. **둘 이상 동시에 바뀌므로 어느 변화가 VRAM 차의 몇 MiB인지 단독 귀속하지 않는다.** 첫 컴파일 업데이트와 두 번째 반복 업데이트의 peak/wall을 분리한다.
+- 교사는 같은 SHA의 `Bonsai-2-27B PTQ1_0`를 Prism build10743 `-ngl all --fit off --no-op-offload`, ctx512·localhost 인증·offline·disk cache0으로 별도 프로세스에 적재한다. 실제 응답1건 이상·GDN AR/chunked enabled를 확인한다. 두 학생 팔은 **서로 다른 교사/학생 새 프로세스**로 순차 실행한다.
+- **자원 사전조건**: 사용자 GPU에 다른 compute 앱0·시작 free≥14GiB, 정확 GGUF/부모/서버 정규 파일, 출력 runlog 고유 이름. 부족하면 모델 로딩 전 `HOLD8`. 교사·학생 어느 한쪽 OOM은 과학적 자원 음성 `exit8`, 프로세스·계측 오류는 `exit9`. 자식·서버는 정상/예외/timeout 모두 process-group 종료, 임시 API key는 출력 금지한다.
+- **선택 문턱**: 두 팔 각각 부모/compile/optimizer 두 짧은 업데이트 종료0, 교사 생성·융합 확인, 전역0.2초 NVML 표본상 시작 free−증가 peak≥2GiB. 미달이면 그 팔은 짧은 공존이 동작해도 **운영 안전 후보는 HOLD**. 표본은 sub-0.2초 peak를 놓칠 수 있으므로 PyTorch 학생 peak allocated/reserved도 별도로 기록한다. 이 문턱을 통과해도 정식 ChatML SFT/한국어 품질/장시간 안정성은 `NOT_RUN`이다.
+- **비용/금지**: 독립 팔 두 개의 첫 compile은 각각 수분 걸릴 수 있어 합계 예상≤1 GPU시간, 각 자식 timeout과 사용자 현재 다른 GPU 작업 발견 시 중단한다. 원본 HF·데이터 cache·체크포인트·`runs/` 쓰기0, 별도 `test_result/098_log_...Stage0pW...txt`만 기록. 코드 컴파일 임시파일은 원본 cache가 아닌 고유 `/tmp` 공간에 둔다. 실제 SFT `TRAIN_READY=false` 동안 next-token 본학습 SH를 만들지 않는다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 15. 2026-09-27 Stage0pW 실제 결과·SFT 선결·후속 선택
+
+[결과098 §8](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)의 사용자 허가 범위 안에서 Codex가 full-GPU 교사와 부모·compile 학생 두 팔을 각 **합성 2업데이트** 실행했다. 시작 다른 compute 앱0·free15,158/15,141MiB, 두 팔 모두 teacher GPU65/65·GDN AR/chunked enabled·교사 비어 있지 않은 응답32·학생 exit0·OOM0·유한 gradient였다. 전역0.2초 표본의 최저 여유는 A micro4/no-ckpt **3,576MiB**, B micro8/ckpt-on **4,422MiB**로 모두 사전2GiB 문턱을 통과했다. 추산 A2,889MiB보다 실제 A 표본은687MiB 많았고, B의 기존 합성 micro8/no-ckpt 126MiB 우려는 checkpoint-on+부모·compile의 이 새 bundle에서 **그대로 전이되지 않았다**. 추산이 틀렸음을 숨기지 않고 실물 우선으로 교정한다.
+
+같은 유효배치에서 학생 PyTorch 두 번째 업데이트 peak reserved는 A4,962/B4,122MiB, 두 번째 업데이트 시간은 A2.490/B3.222초였다. **B가 표본 여유846MiB를 더 제공**하지만 시간은 각 한 점이라 학습 처리량 순위가 아니다. A는 새 SFT가 필요한 안전여유를 이미 넘고 짧은 후속 계산은 빨랐으나 장기 여유가 더 좁다. micro4+checkpoint on은 메모리만 더 줄일 수 있어도 현재 두 팔 모두 안전 문턱을 넘었고 재계산 시간이 예상돼 **추가 GPU 팔을 자동 열지 않는다**. 사용자 기각으로 교사 선생성 순차 C안은 현재 선택지에서 제외한다.
+
+공개 v3 SFT manifest(`HF/sft_ready/p090_public_v3_manifest.json`)의 현재 메타데이터는 `contamination_gate=NOT_RUN`, `tokenizer_mask_gate=NOT_RUN`, `source_quality_gate` 필드 **부재**다. `scripts/train_sft_p090.py`는 세 값 모두 `PASS`가 아니면 정식 학습을 거부한다. 100+1행 GPT 1차 검수의 잠정 후보64/거부20/불확실16은 전체3,154행의 사용자 권리·PII·사실성/자연성 승인이 아니며, 공개 v3의 한국어184/3,154행(5.83%)과 멀티턴879행도 구성상 한계다. `training_gate=NOT_RUN` 역시 manifest에 남아 있으나 현재 formal trainer의 직접 필수 필드는 위 세 가지다. 준비를 끝내려면 **평가 오염 검증**, 고정 tokenizer SHA·ChatML assistant-only mask의 manifest 등록, 출처별 권리/품질/PII 검수와 거부행 제외·split 재해시를 **새 버전의 승인된 원천**에 반영해야 한다. 보호 held-out 원본은 별도 사용자 범위 승인이 필요하고, GPT가 manifest 세 값을 근거 없이 PASS로 고치는 것은 금지한다. chat32 부모는 300M 학습의 사전등록 2배 train 풀보다 약2.053M 토큰 부족해 계보 비교 전에 별도 캐시/부모 계획이 필요하다([P090B](P090B_chat32-기존-최선부모-SFT-3계보-검증.md)).
+
+**현재 권장**: VRAM 여유를 우선하면 B(micro8×accum16/ckpt-on)를 다음 온라인 SFT 통합의 **자원 후보 1순위**, A(micro4×accum32/no-ckpt)는 처리량 후보로 보존한다. 어느 쪽도 SFT 학습 SH가 아니다. 교사 독립 정답성·수락 비용, 공개 SFT `TRAIN_READY=true`, 학생/교사 텍스트 target 연결과 실제 assistant-only 손실·실데이터/장기 peak를 별도로 검증한 뒤 사용자 승인으로만 본학습을 편성한다. 이번 짧은 GPU 허가는 다음 지시에 승계하지 않는다.

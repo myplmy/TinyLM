@@ -228,6 +228,10 @@ CHECKS = [
      "`--cla-group` 누락으로 3.6시간을 태운 자리가 이 사이였다. "
      "✅17개 학습 호출 실사에서 실제 OOM 배치 1건 검출·오탐 0. "
      "⚠️`-done` 은 건너뛴다(끝난 배치의 알려진 실패로 스위트를 빨갛게 두면 새 문제를 가린다)"),
+    ("check_launcher_tags", ["check_launcher_tags.py"],
+     "BAT·SH 실험 진입점의 입력 모델/부모/교사 태그와 필수 checkpoint guard가 실제 독립 파일로 해석되는가. 새 출력 --tag는 존재를 요구하지 않는다"),
+    ("test_check_launcher_tags", ["test_check_launcher_tags.py"],
+     "옛 P076 _tied_ 선검사 결함·미존재 --models/부모 태그 검출, 새 출력 태그와 -done 이력 면제 회귀"),
     ("check_compass",       ["check_compass.py"],
      "★★**연구방향 나침반(`handoff/COMPASS.md`)이 낡았는가**(2026-09-08(2차) 신설, 승인된 제안서). "
      "축 12개 각각에 대해 **사람이 적은 인용 번호** vs **그 축을 제목에서 다루는 결과문서의 최대 번호** — "

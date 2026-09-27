@@ -32,6 +32,6 @@ P093 R1의 shared parent + rank-`r` 근사는 `r=0/4/8/16`에서 output NRMS가
 품질 viability가 선결이며, 새 factorization·학습 가능한 residual 설계 없이 GPU 품질 단계로
 진행하지 않는다.
 
-## 2026-09-27 P076 attention-only 부모 집약 — 배선 PASS, 품질 미판정
+## 2026-09-27 P076 attention-only 부모 집약 — 배선 PASS, 단일시드 후보 비승격
 
-[결과064 §10~§11](../../test_result/064_20260831_P076-도구가-두-팔-다-죽었다-build_config-위치인자.md)의 Stage2bW에서 기존 mean과 명시 mean의 MLP/attention SHA는 같고 attention-only norm_mean은 MLP SHA를 보존한 채 attention SHA만 바꿨다. 새 ag2 300M 두 팔도 같은 부모·풀·seed·MLP mean으로 skip0 완주했지만 최종 학습로그 CE 차는 후보+0.00046875다. 최초 동일 고정 crop Stage2eW는 잘못된 checkpoint 경로 guard에서 평가0건으로 멈췄고, 공통 resolver로 수정한 Stage2eWb는 입력 check-only만 PASS다. 기존 ag1 MLP 전체 norm_mean +0.0030 열세를 이번 ag2 attention-only 결과에 합산하지 않는다. 같은 상주·packed 회계와 서로 다른 날짜의 ms/step만으로 아키텍처 기본값을 바꾸지 않는다.
+[결과064 §10~§13](../../test_result/064_20260831_P076-도구가-두-팔-다-죽었다-build_config-위치인자.md)의 Stage2bW에서 기존 mean과 명시 mean의 MLP/attention SHA는 같고 attention-only norm_mean은 MLP SHA를 보존한 채 attention SHA만 바꿨다. 새 ag2 300M 두 팔도 같은 부모·풀·seed·MLP mean으로 skip0 완주했다. 옛 Stage2eW는 잘못된 체크포인트 guard로 평가0건이었지만 Stage2eWb 사용자 paired는 같은 600M val 2,929 crop에서 mean **3.6005797753** 대 attnorm **3.6017860009**, 후보 **+0.0012062256**을 확인했다. 이 한 시드의 attention-only norm_mean은 기본값으로 승격하지 않고 mean을 유지한다. 기존 ag1 MLP 전체 norm_mean +0.0030 열세와 합산하지 않으며, 다중 seed 일반화·실제 배포 상주/속도·한국어 SFT는 여전히 미판정이다. 같은 상주 회계와 서로 다른 날짜의 ms/step만으로 아키텍처 기본값을 바꾸지 않는다.

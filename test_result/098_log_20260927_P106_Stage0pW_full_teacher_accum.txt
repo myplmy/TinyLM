@@ -1,0 +1,78 @@
+Same 131072 tokens/update, full-GPU Bonsai teacher. A=P076 parent+compile micro4/accum32/no-ckpt; B=micro8/accum16/ckpt-on. Two tiny synthetic updates each. VRAM only; SFT/teacher truth NOT_RUN.
+
+==============================================================================
+[runlog] 2026-09-27 18:34:31  name=P106_Stage0pW_full_teacher_accum
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_full_coload_accum.py --self-test
+==============================================================================
+[PASS] approved two-arm effective-batch/cleanup/preflight contract; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 18:34:31)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 18:34:31  name=P106_Stage0pW_full_teacher_accum
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_full_coload_accum.py --check-only --micro-bs 4 --accum 32 --no-ckpt
+==============================================================================
+{"activation_checkpoint": false, "checkpoint_write": false, "data": "SYNTHETIC_IN_MEMORY", "effective_tokens_per_update": 131072, "schema": "P106_STAGE0PW_PREFLIGHT_V1", "sft": "NOT_RUN", "student": "P076_M100R1C_AG2_CLA2_PARENT_COMPILE_MUON_RMS4", "student_accum": 32, "student_micro_bs": 4, "teacher_placement": "GPU_ALL_NO_OP_OFFLOAD_FIT_OFF_CTX512"}
+[CHECK_ONLY] asset names/modes and approved arm; GPU/model/HF content NOT_READ
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 18:34:32)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 18:34:32  name=P106_Stage0pW_full_teacher_accum
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_full_coload_accum.py --check-only --micro-bs 8 --accum 16
+==============================================================================
+{"activation_checkpoint": true, "checkpoint_write": false, "data": "SYNTHETIC_IN_MEMORY", "effective_tokens_per_update": 131072, "schema": "P106_STAGE0PW_PREFLIGHT_V1", "sft": "NOT_RUN", "student": "P076_M100R1C_AG2_CLA2_PARENT_COMPILE_MUON_RMS4", "student_accum": 16, "student_micro_bs": 8, "teacher_placement": "GPU_ALL_NO_OP_OFFLOAD_FIT_OFF_CTX512"}
+[CHECK_ONLY] asset names/modes and approved arm; GPU/model/HF content NOT_READ
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 18:34:32)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 18:34:32  name=P106_Stage0pW_full_teacher_accum
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_full_coload_accum.py --micro-bs 4 --accum 32 --no-ckpt
+==============================================================================
+[P106 Stage0pW] parent-initialized compiled student first, then full-GPU offline authenticated teacher; no data/checkpoint write
+[STUDENT] [STUDENT_READY] micro=4 accum=32 ckpt=False reserved_mib=458 compile_cache=/tmp/tinylm_p106_stage0pw_ypmana6n
+[STUDENT] [STUDENT_STEP] {"finite_gradient": true, "peak_allocated_mib": 4486, "peak_reserved_mib": 4710, "step": 1, "wall_sec": 40.871}
+[STUDENT] [STUDENT_STEP] {"finite_gradient": true, "peak_allocated_mib": 4725, "peak_reserved_mib": 4962, "step": 2, "wall_sec": 2.49}
+[STUDENT] {"accum": 32, "activation_checkpoint": false, "checkpoint_write": false, "compiled": true, "data": "SYNTHETIC_IN_MEMORY", "effective_tokens_per_update": 131072, "micro_bs": 4, "parent_init": "m100_ko-en_300M_dense.pt", "schema": "P106_STAGE0PW_STUDENT_V1", "sft_quality": "NOT_RUN", "steps": [{"finite_gradient": true, "peak_allocated_mib": 4486, "peak_reserved_mib": 4710, "step": 1, "wall_sec": 40.871}, {"finite_gradient": true, "peak_allocated_mib": 4725, "peak_reserved_mib": 4962, "step": 2, "wall_sec": 2.49}]}
+[TEACHER] 0.01.105.752 I load_tensors: offloaded 65/65 layers to GPU
+[TEACHER] 0.01.105.769 I load_tensors:   CPU_Mapped model buffer size =   265.23 MiB
+[TEACHER] 0.01.105.770 I load_tensors:        CUDA0 model buffer size =  5395.33 MiB
+[TEACHER] 0.01.817.562 I resolve_fused_ops: resolving fused Gated Delta Net support:
+[TEACHER] 0.01.818.357 I resolve_fused_ops: fused Gated Delta Net (autoregressive) enabled
+[TEACHER] 0.01.819.204 I resolve_fused_ops: fused Gated Delta Net (chunked) enabled
+{"activation_checkpoint": false, "baseline_free_mib": 15158, "baseline_used_mib": 904, "combined_peak_used_mib_sampled": 12486, "effective_tokens_per_update": 131072, "fusion": {"gdn_ar_enabled": true, "gdn_chunked_enabled": true}, "gguf_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "limits": "two synthetic parent-initialized compiled updates, no real SFT/data/300M schedule; 0.2s global NVML samples may miss a narrower peak", "parent_sha256": "142FC8741F838A0414D6CD3DAA1689F03A1E0FF046D14EA71558ED531E3DE6AB", "remaining_free_mib_sampled_est": 3576, "sample_count": 197, "sample_errors": [], "schema": "P106_STAGE0PW_FULL_TEACHER_PANEL_V1", "server_exit_during_test": null, "student_accum": 32, "student_exit": 0, "student_micro_bs": 4, "student_ready_used_mib": 1611, "teacher_generation_errors": [], "teacher_generation_ok": 32, "teacher_student_ready_free_mib": 8122, "teacher_student_ready_used_mib": 7940}
+[PASS] two tiny compiled co-resident updates and sampled margin; full SFT/long-run quality NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.1분  (2026-09-27 18:35:35)
+==============================================================================
+A collected; after process cleanup, B uses micro8/accum16 with activation checkpoint ON. No model quality interpretation.
+
+==============================================================================
+[runlog] 2026-09-27 18:35:36  name=P106_Stage0pW_full_teacher_accum
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_full_coload_accum.py --micro-bs 8 --accum 16
+==============================================================================
+[P106 Stage0pW] parent-initialized compiled student first, then full-GPU offline authenticated teacher; no data/checkpoint write
+[STUDENT] [STUDENT_READY] micro=8 accum=16 ckpt=True reserved_mib=458 compile_cache=/tmp/tinylm_p106_stage0pw_jfo1m7c8
+[STUDENT] [STUDENT_STEP] {"finite_gradient": true, "peak_allocated_mib": 3409, "peak_reserved_mib": 3830, "step": 1, "wall_sec": 46.523}
+[STUDENT] [STUDENT_STEP] {"finite_gradient": true, "peak_allocated_mib": 3647, "peak_reserved_mib": 4122, "step": 2, "wall_sec": 3.222}
+[STUDENT] {"accum": 16, "activation_checkpoint": true, "checkpoint_write": false, "compiled": true, "data": "SYNTHETIC_IN_MEMORY", "effective_tokens_per_update": 131072, "micro_bs": 8, "parent_init": "m100_ko-en_300M_dense.pt", "schema": "P106_STAGE0PW_STUDENT_V1", "sft_quality": "NOT_RUN", "steps": [{"finite_gradient": true, "peak_allocated_mib": 3409, "peak_reserved_mib": 3830, "step": 1, "wall_sec": 46.523}, {"finite_gradient": true, "peak_allocated_mib": 3647, "peak_reserved_mib": 4122, "step": 2, "wall_sec": 3.222}]}
+[TEACHER] 0.00.757.729 I load_tensors: offloaded 65/65 layers to GPU
+[TEACHER] 0.00.757.742 I load_tensors:   CPU_Mapped model buffer size =   265.23 MiB
+[TEACHER] 0.00.757.743 I load_tensors:        CUDA0 model buffer size =  5395.33 MiB
+[TEACHER] 0.01.453.200 I resolve_fused_ops: resolving fused Gated Delta Net support:
+[TEACHER] 0.01.453.900 I resolve_fused_ops: fused Gated Delta Net (autoregressive) enabled
+[TEACHER] 0.01.454.560 I resolve_fused_ops: fused Gated Delta Net (chunked) enabled
+{"activation_checkpoint": true, "baseline_free_mib": 15141, "baseline_used_mib": 921, "combined_peak_used_mib_sampled": 11640, "effective_tokens_per_update": 131072, "fusion": {"gdn_ar_enabled": true, "gdn_chunked_enabled": true}, "gguf_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "limits": "two synthetic parent-initialized compiled updates, no real SFT/data/300M schedule; 0.2s global NVML samples may miss a narrower peak", "parent_sha256": "142FC8741F838A0414D6CD3DAA1689F03A1E0FF046D14EA71558ED531E3DE6AB", "remaining_free_mib_sampled_est": 4422, "sample_count": 227, "sample_errors": [], "schema": "P106_STAGE0PW_FULL_TEACHER_PANEL_V1", "server_exit_during_test": null, "student_accum": 16, "student_exit": 0, "student_micro_bs": 8, "student_ready_used_mib": 1629, "teacher_generation_errors": [], "teacher_generation_ok": 32, "teacher_student_ready_free_mib": 8111, "teacher_student_ready_used_mib": 7951}
+[PASS] two tiny compiled co-resident updates and sampled margin; full SFT/long-run quality NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.1분  (2026-09-27 18:36:39)
+==============================================================================

@@ -1,0 +1,32 @@
+Build isolated ko-en-commonval-v1 300M cache from existing 300M train and pinned 600M val; exclude exact overlapping documents. CPU/data gate only. No SFT training or quality claim.
+
+==============================================================================
+[runlog] 2026-09-27 17:34:33  name=P037_Stage0Wb_common_val_300M_builder
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/build_p037_common_val.py --self-test
+==============================================================================
+[PASS] P037 Stage0Wb in-memory exclusion/copy plan; real cache NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 17:34:33)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 17:34:33  name=P037_Stage0Wb_common_val_300M_builder
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/build_p037_common_val.py --check-only
+==============================================================================
+{"eos_id": 2, "note": "no cache written; train exclusion capacity unverified", "output": "/home/uranus/tinyLM/data_cache/ko-en-commonval-v1_300000000", "schema": "P037_STAGE0WB_PREFLIGHT_V1", "source": "ko-en_300000000", "source_train": 298500000, "val_source": "ko-en_600000000", "val_tokens": 3000000}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 17:34:35)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 17:34:35  name=P037_Stage0Wb_common_val_300M_builder
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/build_p037_common_val.py
+==============================================================================
+{"census": {"selected_overlap_docs": 2, "selected_overlap_tokens": 1387, "selected_scan_docs": 311983, "selected_train_tokens": 297000000, "source_docs": 313724, "source_overlap_docs": 2, "source_overlap_tokens": 1387, "terminal_truncated_doc": 1}, "common_val_sha256": "1AE1C68DE18402CE1FFC44EA54D68DD5768B9F7082FA2EEE8E8F2F433BC4FF0B", "output": "/home/uranus/tinyLM/data_cache/ko-en-commonval-v1_300000000", "schema": "P037_STAGE0WB_PLAN_V1", "source_train_sha256": "FCB5A25CDC038B490B0FC05F9D46D0ABFD9391FA569B83BCAE70AAFA8B1A0C9D"}
+{"census": {"selected_overlap_docs": 2, "selected_overlap_tokens": 1387, "selected_scan_docs": 311983, "selected_train_tokens": 297000000, "source_docs": 313724, "source_overlap_docs": 2, "source_overlap_tokens": 1387, "terminal_truncated_doc": 1}, "full_doc_overlap": 0, "limit": "cache construction only; SFT/multiturn training and quality NOT_RUN", "output": "/home/uranus/tinyLM/data_cache/ko-en-commonval-v1_300000000", "schema": "P037_STAGE0WB_CACHE_V1", "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3", "train_sha256": "BFAFCD876B281216538832734079E3CF6543F4568588FF9399C08777DA4463AB", "train_tokens": 297000000, "val_sha256": "1AE1C68DE18402CE1FFC44EA54D68DD5768B9F7082FA2EEE8E8F2F433BC4FF0B", "val_tokens": 3000000}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-27 17:34:41)
+==============================================================================

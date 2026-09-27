@@ -68,6 +68,36 @@ SUCCESS_REF = re.compile(r"3\.80|3\.69|3\.7[0-9]|TEACHER_|기준값|참고값|�
 RAND_TENSOR = re.compile(r"(\w+)\s*=\s*torch\.randint")
 
 
+def _reads_real_val_memmap(tree: ast.AST) -> bool:
+    """Recognize an actual val.bin memmap, not a filename mention in a comment."""
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call) or not node.args:
+            continue
+        fn = node.func
+        if not (isinstance(fn, ast.Attribute) and fn.attr == "memmap"
+                and isinstance(fn.value, ast.Name) and fn.value.id == "np"):
+            continue
+        if any(isinstance(part, ast.Constant) and part.value == "val.bin"
+               for part in ast.walk(node.args[0])):
+            return True
+    return False
+
+
+def _has_explicit_step0_band(tree: ast.AST) -> bool:
+    """A two-sided numerical CE gate is a success reference, not a quality rank."""
+    for node in ast.walk(tree):
+        if (isinstance(node, ast.Compare) and len(node.ops) == 2
+                and all(isinstance(op, ast.LtE) for op in node.ops)
+                and isinstance(node.left, ast.Constant)
+                and isinstance(node.left.value, (int, float))
+                and isinstance(node.comparators[0], ast.Subscript)
+                and isinstance(node.comparators[1], ast.Constant)
+                and isinstance(node.comparators[1].value, (int, float))
+                and node.left.value < node.comparators[1].value):
+            return True
+    return False
+
+
 # ★★2026-08-28 (사용자 지적: "경고를 확인 안 하는 건지") — **경고 6건을 전수 판정했다.**
 #   결론: **네 도구는 이 검사의 대상이 아니다.** `ABS_METRIC` 정규식이 `bpb`·`ce` 같은
 #   단어를 파일 어디에서든 잡기 때문에, **CE 를 계산하지 않고 인쇄만 하는 도구**까지 걸린다.
@@ -142,10 +172,21 @@ def audit(p: Path, *, source_text: str | None = None):
 
     # 합성 데이터라도 **퇴화 감지 장치가 있으면** 통과로 본다(함정 32 의 규칙을 지킨 것).
     has_guard = re.search(r"총변동거리|degenerate|퇴화", txt)
-    if not REAL_DATA.search(txt) and not has_guard:
+    real_val_memmap = _reads_real_val_memmap(tree)
+    # P104A M5 compares the same real checkpoint/input across operating
+    # systems. Its CE is a paired-function readout; the comparison checker,
+    # not this producer, owns the cross-OS acceptance threshold.
+    m5_paired_only = (p.name == "diag_m5_real_bridge.py" and real_val_memmap
+                      and "SAME_CHECKPOINT_CROSS_OS_FUNCTION_ONLY" in txt)
+    # P076 B3 uses a preregistered two-sided step-0 CE band as a binary init
+    # gate. Requiring an unrelated dense/tied fixed CE constant is a false hit.
+    p076_step0_band = (p.name == "diag_p076_attn_only.py"
+                       and "[GATE NEGATIVE]" in txt
+                       and _has_explicit_step0_band(tree))
+    if not (REAL_DATA.search(txt) or real_val_memmap or has_guard):
         warn.append("절대 지표를 계산하는데 **실데이터도 안 읽고 퇴화 감지도 없다** — "
                     "합성 데이터는 조용히 퇴화한다(함정 32, 결과 042 §3)")
-    if not SUCCESS_REF.search(txt):
+    if not (SUCCESS_REF.search(txt) or m5_paired_only or p076_step0_band):
         warn.append("★**성공 기준값이 안 보인다** — 실패 쪽(난수 ≈ ln V)만 있으면 "
                     "부호가 뒤집힌 지표를 못 알아본다. **'성공했을 때 나와야 하는 값'** 을 "
                     "인쇄할 것(함정 31). dense=3.8080 / **타잉+부모초기화=7.7742** / 난수=10.3972 — "
