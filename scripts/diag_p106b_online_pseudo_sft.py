@@ -55,6 +55,20 @@ MIN_UNIQUE = 8
 MAX_WALL_SEC = 2400
 
 
+class PrerequisiteHold(ValueError):
+    """A valid upstream gate-negative, not a broken student implementation."""
+
+
+def require_teacher_format_gate(manifest: dict) -> None:
+    completed = manifest.get("format_outcomes", {}).get("JSON_COMPLETE", 0)
+    if type(completed) is not int or completed < 0:
+        raise ValueError("Stage1aW JSON_COMPLETE count is invalid")
+    if completed < 12:
+        raise PrerequisiteHold(
+            f"Stage1aW complete Korean JSON {completed}/16 below preregistered 12/16"
+        )
+
+
 def digest(path: Path) -> str:
     if not regular(path):
         raise FileNotFoundError(f"required regular input absent or linked: {path}")
@@ -77,8 +91,7 @@ def load_source() -> tuple[list[dict], dict]:
         raise ValueError("Stage1aW candidate JSONL SHA mismatch")
     if manifest.get("selected") != 16 or manifest.get("recorded") != 16:
         raise ValueError("Stage1aW must have all sixteen bounded candidates")
-    if manifest.get("format_outcomes", {}).get("JSON_COMPLETE", 0) < 12:
-        raise ValueError("Stage1aW format gate did not reach 12/16")
+    require_teacher_format_gate(manifest)
     selected, _ = select_candidates()
     rows = [json.loads(line) for line in SOURCE_CANDIDATES.read_text(encoding="utf-8").splitlines()
             if line.strip()]
@@ -529,6 +542,13 @@ def self_test() -> None:
               {"assistant_supervised_tokens": 43}], 100)
     assert meta["tokens"] == 85 and meta["final"]["val_loss"] is None
     assert meta["tag"] == OUTPUT_META.stem and meta["checkpoint_sha256"] == "A"
+    try:
+        require_teacher_format_gate({"format_outcomes": {"JSON_COMPLETE": 9}})
+    except PrerequisiteHold as exc:
+        assert "9/16" in str(exc)
+    else:
+        raise AssertionError("valid upstream 9/16 gate-negative was accepted")
+    require_teacher_format_gate({"format_outcomes": {"JSON_COMPLETE": 12}})
     print("[PASS] P106B pseudo-label filter, assistant-only target and micro8/accum16 fixture; GPU/model NOT_RUN")
 
 
@@ -547,6 +567,9 @@ def main() -> int:
             return 0
         try:
             report = check_inputs(hash_model=False)
+        except PrerequisiteHold as exc:
+            print(f"[HOLD] {exc}; student/model training NOT_RUN")
+            return 8
         except FileNotFoundError as exc:
             print(f"[HOLD] {exc}; Stage1aW user result is required")
             return 8

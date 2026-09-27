@@ -1,0 +1,36 @@
+Prerequisite: user-observed fresh WSL smoke PASS; idle GPU. Source OASST2 pinned; output new HF/sft_ready/p106b_teacher_sft/v1 candidate JSONL only. JSON_COMPLETE is not P106 verified ACCEPT.
+
+==============================================================================
+[runlog] 2026-09-27 21:10:57  name=P106B_Stage1aW_oasst2_teacher_ko_gate
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_oasst2_teacher_ko_gate.py --self-test
+==============================================================================
+[PASS] P106 strict terminal OASST2 pair and teacher JSON negative fixtures; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 21:10:57)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 21:10:57  name=P106B_Stage1aW_oasst2_teacher_ko_gate
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_oasst2_teacher_ko_gate.py --check-only
+==============================================================================
+{"candidate_text_export": false, "counts": {"eligible_after_filters": 138, "internal_prompt_duplicate": 1, "reviewed_terminal_english_pairs": 1326, "selected": 16, "too_long_chars": 531, "v3_prompt_overlap": 656}, "schema": "P106_STAGE1AW_OASST2_SELECTION_V1", "selected_tree_ids": ["c2c8d82d-7561-48de-b689-606693499d04", "ddab2b7f-b236-4836-9f08-923481e4c417", "e39bffcb-62a7-44c1-aca0-bf81b464ec40", "c4aa459a-a68c-49da-b1ce-fc0a36f6281f", "f789ec5a-f20d-43c0-838d-f08e23479642", "489c253f-66ff-4d92-b4c2-196732ca2a71", "caf2a8f4-9a85-4021-b6a3-973fdf1e1ff5", "8a6e2984-3934-4555-9865-567bf5a5bd16", "0506f6c4-1a82-4176-8c13-dc5c47842b4e", "b394b2ab-09d1-4616-ada8-5436c7051dd5", "853a9ea8-c063-4e25-8774-137f09027e22", "9027c3b3-da98-47c8-bb7c-60af652b4429", "f417a9ee-fb2b-48fe-b1ed-582a1c9e7860", "45920a80-02c0-4968-87a1-892a184f2983", "fb3807e2-0b67-40ea-8682-02eeaaaf6bb5", "071e1f1f-6420-4c3f-8e52-aa032422ac51"], "source_sha256": "7A886A16CCFC1173C4F00A6897523E3C95B2785A86EE44A18A98F4F2807EE29B", "teacher_generation": "NOT_RUN"}
+{"max_output_tokens": 768, "model_bytes": 5946648928, "model_sha256_expected": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "output_is_review_only": true, "source_sha256": "7A886A16CCFC1173C4F00A6897523E3C95B2785A86EE44A18A98F4F2807EE29B", "teacher_ctx": 1024}
+[CHECK_ONLY] source/asset metadata PASS; teacher/model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-27 21:11:00)
+==============================================================================
+Pass: >=12/16 complete Korean JSON pairs within 1800s, free GPU pre>=8192MiB/post>=2048MiB. Exit8 is a gate-negative; exit9 is a tool fault. All rows remain UNKNOWN and student learning=0.
+
+==============================================================================
+[runlog] 2026-09-27 21:11:00  name=P106B_Stage1aW_oasst2_teacher_ko_gate
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106_oasst2_teacher_ko_gate.py --execute
+==============================================================================
+{"candidate_text_export": false, "counts": {"eligible_after_filters": 138, "internal_prompt_duplicate": 1, "reviewed_terminal_english_pairs": 1326, "selected": 16, "too_long_chars": 531, "v3_prompt_overlap": 656}, "schema": "P106_STAGE1AW_OASST2_SELECTION_V1", "selected_tree_ids": ["c2c8d82d-7561-48de-b689-606693499d04", "ddab2b7f-b236-4836-9f08-923481e4c417", "e39bffcb-62a7-44c1-aca0-bf81b464ec40", "c4aa459a-a68c-49da-b1ce-fc0a36f6281f", "f789ec5a-f20d-43c0-838d-f08e23479642", "489c253f-66ff-4d92-b4c2-196732ca2a71", "caf2a8f4-9a85-4021-b6a3-973fdf1e1ff5", "8a6e2984-3934-4555-9865-567bf5a5bd16", "0506f6c4-1a82-4176-8c13-dc5c47842b4e", "b394b2ab-09d1-4616-ada8-5436c7051dd5", "853a9ea8-c063-4e25-8774-137f09027e22", "9027c3b3-da98-47c8-bb7c-60af652b4429", "f417a9ee-fb2b-48fe-b1ed-582a1c9e7860", "45920a80-02c0-4968-87a1-892a184f2983", "fb3807e2-0b67-40ea-8682-02eeaaaf6bb5", "071e1f1f-6420-4c3f-8e52-aa032422ac51"], "source_sha256": "7A886A16CCFC1173C4F00A6897523E3C95B2785A86EE44A18A98F4F2807EE29B", "teacher_generation": "NOT_RUN"}
+{"completion_tokens_reported": 10429, "dataset_version": "p106b_teacher_sft/v1", "elapsed_sec": 173.97, "format_outcomes": {"INCOMPLETE": 7, "JSON_COMPLETE": 9}, "human_review": "NOT_RUN", "limits": "Only bounded source-to-Korean candidate generation; no student learning or teacher truth claim", "output_jsonl": "HF/sft_ready/p106b_teacher_sft/v1/teacher_format_candidates.jsonl", "output_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947", "recorded": 16, "schema": "P106_STAGE1AW_OASST2_KO_CANDIDATES_V1", "selected": 16, "teacher_model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "train_ready": false, "usage_rows": 16, "wall_sec_per_complete_json": 19.33}
+[GATE NEGATIVE] fewer than 12/16 complete Korean JSON pairs; no training approval
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 3.1분  (2026-09-27 21:14:04)
+==============================================================================

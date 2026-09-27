@@ -720,6 +720,50 @@ def _requires_frontier_handoff(table) -> bool:
     )
 
 
+def _requires_result_closure(table) -> bool:
+    """Only an explicit result-document write asks for raw-log closure."""
+    return any(
+        re.search(r"(?:결과문서|실험결과 문서)", cells[1])
+        and re.search(r"(?:작성|반영|갱신|기록)", cells[1])
+        for _, _item_id, cells in table.rows
+    )
+
+
+def _validate_result_closure(path: Path, artifact: Path) -> None:
+    from check_result_closure import _scoped_path, validate_manifest
+
+    scope = HANDOFF / "audit"
+    target = artifact.resolve()
+    if (scope.is_symlink() or artifact.is_symlink()
+            or not target.is_relative_to(scope.resolve()) or not target.is_file()):
+        raise ValueError("result closure must be a regular manifest inside handoff/audit")
+    data = json.loads(target.read_text(encoding="utf-8"))
+    allowed_names = {path.relative_to(ROOT).as_posix(),
+                     path.with_name(path.stem + "-done.md").relative_to(ROOT).as_posix()}
+    if data.get("wip") not in allowed_names:
+        raise ValueError("result closure manifest points to another WIP")
+    session = _metadata(path.read_text(encoding="utf-8"), "Codex 세션 ID", "").strip("` ")
+    if (data.get("session_id") or "") != session:
+        raise ValueError("result closure session id differs from the WIP")
+    result_scope = ROOT / "test_result"
+
+    def _wip_result_closure_scoped_file(raw: str, suffix: str) -> Path:
+        _scoped_path(raw, suffix)
+        candidate = ROOT / raw
+        if (result_scope.is_symlink() or candidate.is_symlink()
+                or not candidate.resolve().is_relative_to(result_scope.resolve())):
+            raise ValueError("result closure path escapes or links outside test_result")
+        return candidate
+
+    errors = validate_manifest(
+        data,
+        read_result=lambda raw: _wip_result_closure_scoped_file(raw, ".md").read_text(encoding="utf-8"),
+        log_exists=lambda raw: _wip_result_closure_scoped_file(raw, ".txt").is_file(),
+    )
+    if errors:
+        raise ValueError("result closure failed: " + " | ".join(errors))
+
+
 def _handoff_previous_chain_contains(selected: Path, target_name: str) -> bool:
     """Follow real previous links; a later valid handoff may intervene after WIP creation.
 
@@ -751,7 +795,8 @@ def _handoff_previous_chain_contains(selected: Path, target_name: str) -> bool:
 
 
 def close(path: Path, static_audit: Path | None = None,
-          handoff_path: Path | None = None) -> Path:
+          handoff_path: Path | None = None,
+          result_closure: Path | None = None) -> Path:
     text = path.read_text(encoding="utf-8")
     table = parse_table(text)
     _require_v2(table)
@@ -767,6 +812,10 @@ def close(path: Path, static_audit: Path | None = None,
         raise ValueError("this WIP requires --static-audit before close")
     if static_audit is not None:
         _validate_static_audit(path, static_audit.resolve())
+    if _requires_result_closure(table) and result_closure is None:
+        raise ValueError("result-document WIP close requires --result-closure")
+    if result_closure is not None:
+        _validate_result_closure(path, result_closure)
     if _requires_frontier_handoff(table):
         if handoff_path is None:
             raise ValueError("queue/handoff WIP close requires --handoff and current frontier coverage")
@@ -1009,6 +1058,7 @@ def main() -> int:
     parser.add_argument("--session-id", default=os.environ.get("CODEX_SESSION_ID", ""))
     parser.add_argument("--handoff", help="exact finalized handoff; required for queue/handoff WIP close")
     parser.add_argument("--static-audit")
+    parser.add_argument("--result-closure", help="exact result-only raw-log manifest for result-document WIP close")
     args = parser.parse_args()
     try:
         if (args.allow_concurrent or args.concurrent_reason) and not args.new:
@@ -1069,7 +1119,8 @@ def main() -> int:
         if args.close:
             audit_path = (ROOT / args.static_audit).resolve() if args.static_audit else None
             handoff_path = (ROOT / args.handoff) if args.handoff else None
-            target = close(path, audit_path, handoff_path)
+            closure_path = (ROOT / args.result_closure) if args.result_closure else None
+            target = close(path, audit_path, handoff_path, closure_path)
             print(f"CLOSED {target.relative_to(ROOT).as_posix()}; source preserved by rename")
             return 0
         if args.sync_count:

@@ -64,6 +64,9 @@ python scripts/new_handoff.py --title "<이 세션이 남긴 것 한 줄>"
 - `정본 동기화·미갱신 사유`: `산출물/필요 여부/실제 diff/미갱신 사유`를 모두 채움
 - 정적검사 전문은 handoff에 복사하지 않고 동일 세션의 `handoff/audit/*_STATIC_AUDIT.json`을
   머리말에서 링크한다. handoff·WIP·audit 세 문서가 한 세션 묶음이며 각 역할을 중복하지 않는다.
+- 사용자 원본 로그를 결과문서에 반영한 WIP라면 `handoff/audit/*_RESULT_CLOSURE.json`의
+  정확 입력 집합·결과 절 1:1 검사 결과를 짧게 링크한다. `wip.py --close`에는 같은 파일을
+  `--result-closure`로 전달한다. 이것은 정적 감사나 review 최신성 증거를 대체하지 않는다.
 - `스모크·동적 검증 계승`: `REQUIRED_USER_RUN`, `NOT_REQUIRED(정확한 근거)`,
   `NOT_RUN_PENDING` 중 하나를 기록하고 대기 상태는 사용자 부탁과 연결
 - `사용자에게 부탁하는 것`: `대상/정확한 위치/근거/사용자가 할 행동/완료 신호/AI 후속 처리`

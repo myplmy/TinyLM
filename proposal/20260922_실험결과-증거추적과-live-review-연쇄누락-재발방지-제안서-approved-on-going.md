@@ -149,3 +149,11 @@ review는 검사 대상이 아니며 checker PASS를 review PASS로 쓰지 않�
 2026-09-23 현재 checker·합성 fixture·스킬 지침은 정적 구현됐지만
 실물 회수 manifest, 세션 종료 자동 연동과 전체 회귀가 남아 `-approved-on-going`이다. 진행 중 큐의 로그와
 런처 .sh는 승인으로 열리지 않는다.
+
+### 9.2 2026-09-27 실물 결과 closure와 WIP 종료 연결 구현
+
+이번 [P106B 결과101](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 사용자 지정 원본2건과 같은 WIP에서 승인된 Codex 제한 진단 원본3건을 결과 본문의 정확한 다섯 절에 각각 대응시켰다. 독립 [closure manifest](../handoff/audit/WIP_20260927e_RESULT_CLOSURE.json)는 `input_logs` 5건을 별도 선언하며 `scripts/check_result_closure.py --manifest` 오류0을 확인했다. 초판 검사에서 §1/§2의 원본 basename이 해당 절 안에 없다는 결함2건을 **실제로 검출**한 뒤 해당 절을 보완해 오류0이 됐다. review 문서는 여전히 검사 범위 밖이다.
+
+누락됐던 M3의 종료 연결도 [WIP 작성기](../scripts/wip.py)에 반영했다. 사용자 지시에 결과문서의 작성·반영·갱신·기록이 명시된 WIP만 `--close`에서 `--result-closure`를 요구하고, `handoff/audit`의 정확 manifest가 현재 WIP/session, 입력 로그 집합, 결과문서 절·basename 1:1을 통과해야 `-done`으로 옮긴다. 다른 WIP는 기존 종료 계약을 유지한다. [WIP 회귀](../scripts/test_wip.py)는 누락 manifest·타 세션·불완전 매핑을 거절하고 정상 종료를 확인했다. [정적 묶음](../scripts/check_static_all.py)은 결과 closure 순수 fixture도 별도 검사로 연결했다. 원본 로그 내용이나 보호 데이터를 자동 발견하지 않고, 진행 중 큐 잠금은 우선한다.
+
+**아직 완료 이관하지 않는 비허가 외 이유**는 첫 사고의 정확16 로그/4결과 역사 집합 M0를 이 새 계약으로 재구성·재검증한 증거가 없고, 다음 독립 결과회수에서 종료 강제가 실제 누락을 예방하는지 운영 재현이 1회뿐이라는 점이다. 현재 다섯 로그의 오류0은 원본 의미·수치/과학적 해석 또는 review 최신성 PASS가 아니다. M0 역사 입력 집합이 회수 가능하면 별도 manifest로 고정하고, 후속 결과회수 1회에서도 누락 검출/정상 종료를 관찰한 뒤 `done` 이관을 다시 판단한다.

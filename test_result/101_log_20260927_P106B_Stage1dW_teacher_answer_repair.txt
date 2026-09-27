@@ -1,0 +1,37 @@
+Known WebRTC source error, stale model-self claim, and verified arithmetic control; teacher repairs English answer into Korean JSON. Medium thinking, official sampler, ctx6144/max4096, thinking budget2048. Original v1/v2 immutable; new ignored v3 retains source/reasoning/final/correction separately.
+
+==============================================================================
+[runlog] 2026-09-27 22:06:00  name=P106B_Stage1dW_teacher_answer_repair
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_answer_repair.py --self-test
+==============================================================================
+[PASS] repair prompt treats source as data; reasoning/final separated, correction self-claim is not truth, no student target
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 22:06:00)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 22:06:00  name=P106B_Stage1dW_teacher_answer_repair
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_answer_repair.py --check-only
+==============================================================================
+{"cases": 3, "ctx": 6144, "max_tokens": 4096, "sampler": {"min_p": 0.05, "presence_penalty": 0.0, "reasoning_effort": "medium", "repeat_penalty": 1.0, "stream": false, "temperature": 1.0, "top_k": 20, "top_p": 0.95}, "source": {"selection": "known API error; stale model-self claim; solvable math control", "source_tree_ids": ["f789ec5a-f20d-43c0-838d-f08e23479642", "c2c8d82d-7561-48de-b689-606693499d04", "ddab2b7f-b236-4836-9f08-923481e4c417"], "v1_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947", "v2_sha256": "9434C90FF68444810DA83DF3161DA475AD21D2A7E7AA8BACF6C7AAC28A52D318"}, "student_training": "NOT_RUN", "thinking_budget_tokens": 2048}
+[CHECK_ONLY] v1/v2 lineage PASS; teacher/model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-27 22:06:05)
+==============================================================================
+At least 2/3 complete JSON is a FORMAT gate only. Teacher correction_status is self-claim, never independent truth. No student target is accepted or trained in this run.
+
+==============================================================================
+[runlog] 2026-09-27 22:06:05  name=P106B_Stage1dW_teacher_answer_repair
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_answer_repair.py --execute
+==============================================================================
+[TEACHER_REPAIR_ROW] {"case": 1, "completion_tokens": 2485, "declared_correction": "CORRECTED", "elapsed_sec": 41.738, "final_chars": 1416, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 7987}
+[TEACHER_REPAIR_ROW] {"case": 2, "completion_tokens": 539, "declared_correction": "CORRECTED", "elapsed_sec": 9.226, "final_chars": 315, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 1360}
+[TEACHER_REPAIR_ROW] {"case": 3, "completion_tokens": 348, "declared_correction": "PRESERVED", "elapsed_sec": 6.168, "final_chars": 201, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 717}
+{"accepted_for_training": 0, "ctx": 6144, "declared_correction": {"CORRECTED": 2, "PRESERVED": 1}, "elapsed_sec": 59.458, "finish_reason": {"stop": 3}, "format_status": {"JSON_COMPLETE": 3}, "independent_truth_status": "NOT_RUN", "limit": "Three selected sources only; teacher self-declared repair is not fact verification", "max_tokens": 4096, "raw_jsonl": "HF/sft_ready/p106b_teacher_sft/v3/teacher_repair_probe.jsonl", "raw_sha256": "55D4D9A41B3D30B1535D0A47ACD1CCECBFB8C244ABC4AD8FD90CAD264376D0DD", "rows": 3, "sampler": {"min_p": 0.05, "presence_penalty": 0.0, "reasoning_effort": "medium", "repeat_penalty": 1.0, "stream": false, "temperature": 1.0, "top_k": 20, "top_p": 0.95}, "schema": "P106B_STAGE1DW_TEACHER_REPAIR_V1", "source": {"selection": "known API error; stale model-self claim; solvable math control", "source_tree_ids": ["f789ec5a-f20d-43c0-838d-f08e23479642", "c2c8d82d-7561-48de-b689-606693499d04", "ddab2b7f-b236-4836-9f08-923481e4c417"], "v1_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947", "v2_sha256": "9434C90FF68444810DA83DF3161DA475AD21D2A7E7AA8BACF6C7AAC28A52D318"}, "student_training": "NOT_RUN", "teacher_model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "thinking_budget_tokens": 2048}
+[PASS] teacher repair candidate format only; correction truth and student SFT NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.1분  (2026-09-27 22:07:14)
+==============================================================================

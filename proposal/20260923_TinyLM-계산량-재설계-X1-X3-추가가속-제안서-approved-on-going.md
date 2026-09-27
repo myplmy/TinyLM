@@ -496,3 +496,11 @@ X2의 한 tile 물리 GEMM 피연산 원소는 전체 FFN의 25%가 되지만, �
 X3의 2M source token을 실제 seq1024 비중첩 `S+1` 창으로 자르면 1,953창·boundary 1,999,872위치이며 FP32 exact 원시 payload 6,143,606,784 byte, INT8 per64 원시 payload 1,631,895,552 byte다. 인덱스·모델·임시 버퍼와 RAM page-cache는 제외한 하한이다. 부모·토크나이저·source/window·lower-function SHA와 dtype/backend/split을 묶는 manifest 정적 검사는 구현했지만 실제 2M cache 파일은 만들거나 검증하지 않았다.
 
 현재 사용자 승인 게이트의 GPT 산출물은 [P103A 기능 계획](../test_plan/P103A_X1-X2-X3-계산량-기능계약.md)의 작은 모델 및 고정 M0 Stage1aW까지다. Stage1aW의 실제 경계 dtype·CLA 함수/gradient 로그를 먼저 판독해 실패를 교정하고, 통과 시 정확한 재현 계약으로 **별도 2M builder·uncached/exact/INT8/RSS/wall 후속 항목**을 연다. 이는 사용자 E2E 대기를 현 작업원장의 GPT 항목 `진행`이나 `막힘`으로 남기지 않는 상태 규칙과 별개로, 연구안 자체는 계속 `approved-on-going`이라는 뜻이다.
+
+## 13. 2026-09-27 X3 저장 캐시 readback 선결 — on-going 종료를 막는 실제 기술 항목
+
+§12.5의 “2M builder가 아직 없다”는 당시 상태다. 사용자 [결과094 §9~§10](../test_result/094_20260925_P103A-X2-함수통과-X3-하부MLP-동결누락.md)은 pinned M0 exact/INT8 1,953창 cache를 실제 생성했고 첫 창 exact 경계차0·INT8 NRMS최대.005912282를 기록했다. 그러나 파일 byte가 존재하는 것과 학습 중 읽어 tail loss/gradient를 계산하는 것, 전체 build+read+update wall/RSS가 빠른 것은 서로 다르다.
+
+이번 구현은 [P103A Stage1cWa](../test_plan/P103A_X1-X2-X3-계산량-기능계약.md#11-2026-09-27-stage1cwa--저장된-실제-캐시의-선택창-tail-함수gradient-readback-준비)의 첫 간극을 좁힌다. 새 [진단기](../scripts/diag_p103a_cache_tail_readback.py)와 [사용자 SH](../run_P103A_Stage1cWa_cache_tail_readback.sh)는 정확 기존 cache를 **읽기 전용**으로 두고 first/mid/last 세 창의 토큰 hash, FP32/INT8 manifest·크기, 같은 M0 부모/코드 경계를 선검사한다. uncached 전체 forward/backward와 저장 exact/INT8 tail의 logits/CE/전 trainable gradient를 같은 창으로 비교한다. CPU self-test/manifest check-only는 PASS, 사용자 모델/GPU는 `NOT_RUN`; 선택창 wall·RSS는 본 2M throughput 판정으로 승격하지 않는다.
+
+제안서 완료를 막는 **승인 부재 외** 선결은 (1) 이 실제 캐시 readback tail 함수 문턱의 사용자 원본, (2) 전체2M build+I/O+tail update의 end-to-end wall/RSS 대 uncached 기준, (3) INT8 boundary 근사로 인한 full-val/한영 능력 비퇴행, (4) X1 실제 대상 prefix 공유율과 X2 물리 tile 뒤 optimizer 비용 분리다. 현재 SH는 (1)을 시험할 수 있게 만들었지만 (2)~(4)를 결과로 만든 것은 아니므로 `-approved-on-going`을 유지한다. 데이터를 더 만들거나 보호 KnowledgePack에 접근하지 않았다.

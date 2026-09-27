@@ -29,8 +29,13 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-1	P106B	run_P106B_Stage1aW_oasst2_teacher_ko_gate.sh	D	0.5	Y	Y	새 WSL smoke PASS 후 pinned OASST2 영어 단일턴 16개를 full-GPU Bonsai로 한국어 JSON 번역; 12/16 완성·1800초 상한, 모두 UNKNOWN·학습0	8
-2	P106B	run_P106B_Stage1bW_online_pseudo_sft_micro8.sh	Y	0.75	Y	Y	Stage1aW 12/16과 새 smoke 선결; full 교사+학습완료 P076 mean 학생 micro8/accum16/ckpt-on의 미검증 pseudo SFT 2업데이트, 고유 진단 checkpoint1·품질판정 금지	8
+1	P106B	run_P106B_Stage1fW_teacher_repair_full16.sh	D	0.92	Y	Y	새 WSL smoke PASS와 v1/v2/v3 SHA 선결; 공개16 원답을 medium 사고예산2048·권장 sampler로 교정 후보화, 형식12/16/3300초·v4 write-once, 학생학습·자동수락0	8
+2	P103A	run_P103A_Stage1cWa_cache_tail_readback.sh	Y	0.3	Y	Y	새 smoke PASS·기존 pinned M0 2M exact/INT8 캐시 선결; 고정창0/976/1952의 uncached/exact/INT8 tail logits·loss·gradient와 선택창 wall/RSS, full2M 품질/속도 아님	8
+# DONE 2026-09-27 P106B Stage1dW: 교정형3/3 완결·종료0, WebRTC API 교정/수학 대조 통과 그러나 GPT-3 한국어 수치 새 오류, 학생학습0; 결과101.
+# DONE 2026-09-27 P106B Stage1aWc: 사용자 한정 Codex GPU 진단 4쌍 대응 8요청 종료0·2.8분. cap768 완결0/4, cap3072 완결3/4, 학생학습0; 결과101.
+# DONE 2026-09-27 P106B Stage1aWb: 기본 sandbox NVML 조회 차단으로 교사 적재 전 종료9, 번역0; 정확 로그101 보존.
+# DONE 2026-09-27 P106B Stage1aW: 교사 JSON9/16로 문턱12 미달 exit8; 재현명령·원본은 결과101.
+# DONE 2026-09-27 P106B Stage1bW: 상류 음성에서 check-only 중단·학생학습0, exit9 분류 결함 후속 HOLD8 수정; 결과101.
 # P106B Stage1cW는 Stage1bW 고유 checkpoint가 아직 없어 입력태그 린터 FAIL이다. scripts/templates/P106B_Stage1cW_parent_student_posthoc.sh.in을 보존하되 실물/TSV 등록은 사용자 Stage1bW 성공 뒤 새 단계로 활성화한다.
 # P076 Stage2eW attempted then stopped before runlog: its '_tied_' checkpoint guard was wrong; the -done SH remains historical evidence and is not a quality result.
 # P104A Windows prerequisite: run_P104A_Stage2B_m5_real_bridge.bat direct on Windows before the WSL queue row below.

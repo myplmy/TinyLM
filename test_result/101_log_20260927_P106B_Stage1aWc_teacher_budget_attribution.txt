@@ -1,0 +1,42 @@
+Prior Wb failed before teacher load because default sandbox denied NVML. This is a distinct approved GPU-permitted retry. v1 remains read-only; four paired public cases, ctx4096, medium/model-card sampler, cap768 vs3072, new v2 evidence only.
+
+==============================================================================
+[runlog] 2026-09-27 21:52:03  name=P106B_Stage1aWc_teacher_budget_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_budget_attribution.py --self-test
+==============================================================================
+[PASS] paired teacher response separates reasoning/final/finish/usage; only final JSON is a possible student target; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 21:52:03)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 21:52:03  name=P106B_Stage1aWc_teacher_budget_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_budget_attribution.py --check-only
+==============================================================================
+{"caps": [768, 3072], "ctx": 4096, "pairs": 4, "sampler": {"min_p": 0.05, "presence_penalty": 0.0, "reasoning_effort": "medium", "repeat_penalty": 1.0, "stream": false, "temperature": 1.0, "top_k": 20, "top_p": 0.95}, "source": {"prior_complete_control": 1, "prior_incomplete": 3, "tree_ids": ["f789ec5a-f20d-43c0-838d-f08e23479642", "489c253f-66ff-4d92-b4c2-196732ca2a71", "b394b2ab-09d1-4616-ada8-5436c7051dd5", "c2c8d82d-7561-48de-b689-606693499d04"], "v1_candidate_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947"}, "student_training": "NOT_RUN"}
+[CHECK_ONLY] immutable v1 lineage and paired four-case design PASS; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-27 21:52:07)
+==============================================================================
+Read per-arm finish_reason, reasoning_content and final content separately. Only complete final JSON assistant_ko is future student target. Four-case panel is not the 12/16 full gate; no student/model-quality claim.
+
+==============================================================================
+[runlog] 2026-09-27 21:52:08  name=P106B_Stage1aWc_teacher_budget_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_budget_attribution.py --execute
+==============================================================================
+[TEACHER_ROW] {"cap": 768, "case": 1, "completion_tokens": 768, "elapsed_sec": 13.328, "final_chars": 0, "finish_reason": "length", "format_status": "INCOMPLETE", "reasoning_chars": 2646}
+[TEACHER_ROW] {"cap": 3072, "case": 1, "completion_tokens": 950, "elapsed_sec": 15.647, "final_chars": 437, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 2698}
+[TEACHER_ROW] {"cap": 3072, "case": 2, "completion_tokens": 3072, "elapsed_sec": 51.59, "final_chars": 0, "finish_reason": "length", "format_status": "INCOMPLETE", "reasoning_chars": 8373}
+[TEACHER_ROW] {"cap": 768, "case": 2, "completion_tokens": 768, "elapsed_sec": 12.695, "final_chars": 0, "finish_reason": "length", "format_status": "INCOMPLETE", "reasoning_chars": 2620}
+[TEACHER_ROW] {"cap": 768, "case": 3, "completion_tokens": 768, "elapsed_sec": 13.251, "final_chars": 0, "finish_reason": "length", "format_status": "INCOMPLETE", "reasoning_chars": 2201}
+[TEACHER_ROW] {"cap": 3072, "case": 3, "completion_tokens": 1141, "elapsed_sec": 18.781, "final_chars": 146, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 2887}
+[TEACHER_ROW] {"cap": 3072, "case": 4, "completion_tokens": 1054, "elapsed_sec": 17.932, "final_chars": 221, "finish_reason": "stop", "format_status": "JSON_COMPLETE", "reasoning_chars": 2679}
+[TEACHER_ROW] {"cap": 768, "case": 4, "completion_tokens": 768, "elapsed_sec": 12.659, "final_chars": 0, "finish_reason": "length", "format_status": "INCOMPLETE", "reasoning_chars": 2298}
+{"arms": {"3072": {"completed_previous_incomplete": 2, "completion_tokens_reported": 6217, "finish_reason": {"length": 1, "stop": 3}, "format_status": {"INCOMPLETE": 1, "JSON_COMPLETE": 3}, "responses": 4, "teacher_final_content_present": 3, "teacher_reasoning_content_present": 4}, "768": {"completed_previous_incomplete": 0, "completion_tokens_reported": 3072, "finish_reason": {"length": 4}, "format_status": {"INCOMPLETE": 4}, "responses": 4, "teacher_final_content_present": 0, "teacher_reasoning_content_present": 4}}, "claim_limit": "Four selected v1 cases only; not a new 12/16 population gate", "dataset_version": "p106b_teacher_sft/v2", "elapsed_sec": 158.757, "paired_caps": [768, 3072], "quality": "NOT_RUN", "raw_jsonl": "HF/sft_ready/p106b_teacher_sft/v2/budget_probe.jsonl", "raw_sha256": "9434C90FF68444810DA83DF3161DA475AD21D2A7E7AA8BACF6C7AAC28A52D318", "rows": 8, "sampler": {"min_p": 0.05, "presence_penalty": 0.0, "reasoning_effort": "medium", "repeat_penalty": 1.0, "stream": false, "temperature": 1.0, "top_k": 20, "top_p": 0.95}, "schema": "P106B_STAGE1AWB_BUDGET_ATTRIBUTION_V1", "source": {"prior_complete_control": 1, "prior_incomplete": 3, "tree_ids": ["f789ec5a-f20d-43c0-838d-f08e23479642", "489c253f-66ff-4d92-b4c2-196732ca2a71", "b394b2ab-09d1-4616-ada8-5436c7051dd5", "c2c8d82d-7561-48de-b689-606693499d04"], "v1_candidate_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947"}, "student_training": "NOT_RUN", "teacher_ctx": 4096, "teacher_model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3"}
+[PASS] four paired format/finish-reason observations only; no student training or full16 gate
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 2.8분  (2026-09-27 21:54:55)
+==============================================================================

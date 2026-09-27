@@ -1,0 +1,33 @@
+Four pinned public OASST2 pairs: prior v1 incomplete3/control complete1. Same ctx4096, medium reasoning and explicit Bonsai thinking sampler; only max_tokens768 vs3072 changes within pair. v1 read-only; raw reasoning/final separated in new ignored v2.
+
+==============================================================================
+[runlog] 2026-09-27 21:50:14  name=P106B_Stage1aWb_teacher_budget_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_budget_attribution.py --self-test
+==============================================================================
+[PASS] paired teacher response separates reasoning/final/finish/usage; only final JSON is a possible student target; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 21:50:14)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 21:50:15  name=P106B_Stage1aWb_teacher_budget_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_budget_attribution.py --check-only
+==============================================================================
+{"caps": [768, 3072], "ctx": 4096, "pairs": 4, "sampler": {"min_p": 0.05, "presence_penalty": 0.0, "reasoning_effort": "medium", "repeat_penalty": 1.0, "stream": false, "temperature": 1.0, "top_k": 20, "top_p": 0.95}, "source": {"prior_complete_control": 1, "prior_incomplete": 3, "tree_ids": ["f789ec5a-f20d-43c0-838d-f08e23479642", "489c253f-66ff-4d92-b4c2-196732ca2a71", "b394b2ab-09d1-4616-ada8-5436c7051dd5", "c2c8d82d-7561-48de-b689-606693499d04"], "v1_candidate_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947"}, "student_training": "NOT_RUN"}
+[CHECK_ONLY] immutable v1 lineage and paired four-case design PASS; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-27 21:50:18)
+==============================================================================
+Read finish_reason and per-arm JSON_COMPLETE/usage/timing; 4-pair selected panel is NOT a 12/16 population gate. Student training and quality remain NOT_RUN. Exit8 is bounded resource/time negative, exit9 tool fault.
+
+==============================================================================
+[runlog] 2026-09-27 21:50:18  name=P106B_Stage1aWb_teacher_budget_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_budget_attribution.py --execute
+==============================================================================
+[FAIL] P106B Stage1aWb RuntimeError: cannot inspect competing GPU compute processes
+------------------------------------------------------------------------------
+[runlog] 종료코드 9  소요 0.1분  (2026-09-27 21:50:26)
+==============================================================================

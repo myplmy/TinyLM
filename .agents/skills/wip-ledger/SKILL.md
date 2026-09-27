@@ -21,6 +21,14 @@ description: 세션 착수 시 WIP 작업원장을 만들고 작업 중 갱신�
 
 ## v2 고정 계약
 
+사용자 원본 로그를 **결과문서에 작성·반영·갱신·기록**하는 지시가 있는 WIP는 종료 시
+`handoff/audit/<정확한_WIP>_RESULT_CLOSURE.json`을 별도로 제시한다. manifest의 독립
+`input_logs` 전부가 결과문서의 정확한 절·원본 basename에 1:1로 연결돼야 하며,
+`scripts/check_result_closure.py --manifest <정확 파일>`과 `wip.py --close
+--result-closure <정확 파일>`가 같은 계약을 확인한다. 결과문서 쓰기가 없는 WIP에
+일반적으로 이 파일을 요구하지 않는다. 보호 로그 잠금은 언제나 우선하고 잠금 중에는
+검사기로 접근하지 않는다. review 문서는 closure 범위가 아니다.
+
 상태의 **의미**는 [Codex 02 §10 상태 의미](../../../ai_dev_tool/Codex/02_핸드오프_규약.md)가 정본이다. `진행`은 GPT가 할 수 있는 잔여 작업이 실제로 있을 때만 사용한다. GPT 담당 구현·검토·산출물이 끝났다면 사용자 모델·GPU·E2E 실행이 `NOT_RUN`이어도 현재 항목을 `완료`로 전이하고, 사용자 실행과 그 뒤에만 가능한 후속 일은 핸드오프에 기록한다. 사용자 E2E만을 이유로 `대기`·`진행`·`막힘`을 유지하지 않는다. `막힘`은 별도 사용자 결정·권한·해석 또는 외부 경로 변경 없이는 GPT가 현재 작업을 진행할 수 없는 경우다. E2E 결과 뒤 새 구현이 필요해지면 그때 새 WIP 항목을 추가한다.
 
 ```text
@@ -73,6 +81,8 @@ python -X utf8 scripts/wip.py --add 3 --file handoff/WIP_YYYYMMDD_작업원장.m
   --directive "추가 사용자 지시 원문" --resume "첫 행동"
 python -X utf8 scripts/wip.py --capsule-check --file handoff/WIP_YYYYMMDD_작업원장.md
 python -X utf8 scripts/wip.py --close --file handoff/WIP_YYYYMMDD_작업원장.md
+# 결과문서 쓰기 지시가 있는 WIP의 종료에는 위 명령에 다음 정확한 manifest를 추가한다:
+# --result-closure handoff/audit/WIP_YYYYMMDD_RESULT_CLOSURE.json
 ```
 
 허용 상태 전이는 `대기→진행`, `진행→완료`, `대기·진행→막힘`, `막힘→대기·진행`이다.

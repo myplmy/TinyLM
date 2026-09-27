@@ -244,6 +244,50 @@ class WipV2Tests(unittest.TestCase):
         self.assertFalse(path.exists())
         self.assertTrue(target.exists())
 
+    def test_result_document_close_requires_exact_result_only_manifest(self) -> None:
+        path = WIP.create_ledger(
+            ["1=사용자가 지정한 실험 로그를 결과문서에 반영한다"],
+            "handoff/prev_HANDOFF.md", "test_result only", "GPU 금지",
+            "사용자 실행", "없음", session_id="fixture-session",
+        )
+        WIP.set_state(path, "1", WIP.RUN, "원본 판독", None, "결과문서 기록")
+        WIP.set_state(path, "1", WIP.DONE, "기록 완료", "test_result/101_test.md", None)
+        static = self.root / "audit-static.json"
+        static.write_text(json.dumps({
+            "schema": "TINYLM_STATIC_AUDIT_V1", "profile": "codex-safe",
+            "wip": {"path": path.relative_to(self.root).as_posix(),
+                    "sha256": WIP._sha_bytes(path.read_bytes()),
+                    "session_id": "fixture-session"},
+            "counts": {"errors": 0, "actionable_warnings": 0},
+        }), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "requires --result-closure"):
+            WIP.close(path, static)
+        result_dir = self.root / "test_result"
+        result_dir.mkdir()
+        log = result_dir / "101_log_20260927_fixture.txt"
+        doc = result_dir / "101_fixture.md"
+        log.write_text("raw", encoding="utf-8")
+        doc.write_text("## 1. Fixture" + chr(10) + log.name, encoding="utf-8")
+        audit_dir = self.handoff / "audit"
+        audit_dir.mkdir()
+        manifest = audit_dir / "fixture_RESULT_CLOSURE.json"
+        data = {"schema": "TINYLM_RESULT_CLOSURE_V1",
+                "session_id": "fixture-session",
+                "wip": path.with_name(path.stem + "-done.md").relative_to(self.root).as_posix(),
+                "input_logs": ["test_result/" + log.name],
+                "mappings": [{"log": "test_result/" + log.name,
+                              "result": "test_result/" + doc.name,
+                              "section": "## 1. Fixture", "status": "RECORDED"}]}
+        manifest.write_text(json.dumps(dict(data, session_id="other")), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "session id differs"):
+            WIP.close(path, static, result_closure=manifest)
+        manifest.write_text(json.dumps(dict(data, mappings=[])), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "result closure failed"):
+            WIP.close(path, static, result_closure=manifest)
+        manifest.write_text(json.dumps(data), encoding="utf-8")
+        target = WIP.close(path, static, result_closure=manifest)
+        self.assertTrue(target.is_file())
+
     def test_queue_handoff_close_requires_frontier_gate(self) -> None:
         path = WIP.create_ledger(
             ["1=다음 권장 실험 순서와 세션 핸드오프 작성"],

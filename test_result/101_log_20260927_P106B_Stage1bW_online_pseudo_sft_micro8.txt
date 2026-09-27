@@ -1,0 +1,21 @@
+Prerequisite: Stage1aW 12/16 format PASS, fresh WSL smoke PASS, idle >=14GiB GPU. Student: trained P076 B3 mean, legacy tokenizer, micro8/accum16, activation checkpoint ON; teacher full GPU.
+
+==============================================================================
+[runlog] 2026-09-27 21:14:19  name=P106B_Stage1bW_online_pseudo_sft_micro8
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_online_pseudo_sft.py --self-test
+==============================================================================
+[PASS] P106B pseudo-label filter, assistant-only target and micro8/accum16 fixture; GPU/model NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-27 21:14:20)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-27 21:14:20  name=P106B_Stage1bW_online_pseudo_sft_micro8
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_online_pseudo_sft.py --check-only
+==============================================================================
+[FAIL] P106B Stage1bW ValueError: Stage1aW format gate did not reach 12/16
+------------------------------------------------------------------------------
+[runlog] 종료코드 9  소요 0.0분  (2026-09-27 21:14:20)
+==============================================================================

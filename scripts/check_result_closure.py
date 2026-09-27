@@ -150,7 +150,19 @@ def self_test():
                              log_exists=exists)
     outside = dict(base, review_disposition="UPDATED")
     assert any("review" in e for e in validate_manifest(outside, read_result=reader, log_exists=exists))
-    print("[PASS] result-only closure fixtures: valid, missing input, missing backlink, review scope")
+    duplicate = dict(base, input_logs=[log, log])
+    assert any("duplicate" in e for e in validate_manifest(duplicate, read_result=reader,
+                                                            log_exists=exists))
+    escaped = dict(base, input_logs=["test_result/../secret.txt"])
+    assert any("path" in e for e in validate_manifest(escaped, read_result=reader,
+                                                       log_exists=exists))
+    wrong_section = dict(base, mappings=[dict(base["mappings"][0], section="## 2. Missing")])
+    assert any("section" in e for e in validate_manifest(wrong_section, read_result=reader,
+                                                          log_exists=exists))
+    exempt_without_reason = dict(base, mappings=[dict(base["mappings"][0], status="EXEMPT")])
+    assert any("requires a reason" in e for e in validate_manifest(
+        exempt_without_reason, read_result=reader, log_exists=exists))
+    print("[PASS] result-only closure fixtures: valid, missing/duplicate input, exact backlink/section, traversal, review scope, exemption")
 
 
 def _safe_existing(raw):
