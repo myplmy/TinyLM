@@ -42,7 +42,8 @@ WORD_DIR = PROTECTED_ROOT / "concept"
 LEXICON_DIR = DICT_DIR.parent
 VOCAB_TXT = (LEXICON_DIR / "한국어 학습용 어휘 목록.txt",
              LEXICON_DIR / "한국어기초 어휘(4만개).txt")
-OUTPUT_DIR = PUBLIC_DIR / "p106b_multisource_v1/jobs"
+OUTPUT_DIR = PUBLIC_DIR / "p106b_public_job_deck_v1"
+DICT_QUARANTINE_DIR = PUBLIC_DIR / "p106b_krdict_by_sa_quarantine_v1"
 APPROVAL = PUBLIC_DIR / "p106b_multisource_rights_approval.json"
 OASST2_REVISION = "179dd21fc55192153d94adb0e0ce8f69e222bf75"
 DICT_REPO = "https://krdict.korean.go.kr"
@@ -419,29 +420,50 @@ def _attested(protected: dict) -> bool:
             and value.get("source_sha256") == protected)
 
 
+def _public_output_job(job: dict) -> bool:
+    """Fail closed: no dictionary locator or BY-SA-derived text in public jobs."""
+    return (job.get("source_family") in {"aya_dataset", "oasst2"}
+            and job.get("source_repo") in {"CohereLabs/aya_dataset", "OpenAssistant/oasst2"}
+            and job.get("rights_status") == "CARD_ONLY"
+            and job.get("protected_locator") is None
+            and isinstance(job.get("source_payload"), dict))
+
+
 def census(*, write: bool) -> dict:
     if write and (OUTPUT_DIR.exists() or OUTPUT_DIR.is_symlink()):
-        raise FileExistsError("multisource v1 output already exists; use a new stage")
+        raise FileExistsError("public-only job output already exists; use a new stage")
+    if write and ((ROOT / "HF").is_symlink() or PUBLIC_DIR.is_symlink()
+                  or not OUTPUT_DIR.resolve().is_relative_to((ROOT / "HF").resolve())):
+        raise ValueError("public output must remain inside the non-symlink repository HF directory")
     public, old_keys = public_inventory()
-    files, words, protected, word_priority = protected_inventory()
-    if write and not _attested(protected):
-        raise PermissionError("exact protected-source rights/derivative-use attestation absent")
+    # A public-only export must not even require access to the protected
+    # dictionary. The combined read-only census is a separate operation.
+    files, protected, word_priority = [], {}, set()
+    if not write:
+        files, _words, protected, word_priority = protected_inventory()
     counts: Counter[str] = Counter()
     IDs: set[str] = set()
-    writers = ({"public": ShardWriter(OUTPUT_DIR, "public_jobs"),
-                "dictionary": ShardWriter(OUTPUT_DIR, "dictionary_refs")} if write else {})
-    sources = (("public", aya_jobs(public)),
-               ("public", oasst2_jobs(old_keys, counts)),
-               ("dictionary", dictionary_refs(files, word_priority,
-                                               protected["dictionary"], counts)))
+    writer = ShardWriter(OUTPUT_DIR, "public_jobs") if write else None
+    emitted_jobs = 0
+    sources = [("public", aya_jobs(public)),
+               ("public", oasst2_jobs(old_keys, counts))]
+    if not write:
+        sources.append(("dictionary", dictionary_refs(
+            files, word_priority, protected["dictionary"], counts)))
     for category, source in sources:
         for job in source:
             if job["job_id"] in IDs:
                 raise ValueError("duplicate source/target job ID")
             IDs.add(job["job_id"])
             counts[f"{job['source_family']}:{job['target_language']}:{job['split']}"] += 1
-            if write:
-                writers[category].append(job)
+            if write and category == "public":
+                if not _public_output_job(job):
+                    raise ValueError("public output contains protected/unknown source job")
+                assert writer is not None
+                writer.append(job)
+                emitted_jobs += 1
+            elif write and (category != "dictionary" or job.get("protected_locator") is None):
+                raise ValueError("dictionary source was not isolated as a locator")
     result = {"schema": "P106B_STAGE2KW_MULTISOURCE_DECK_V1",
               "jobs": len(IDs), "counts": dict(sorted(counts.items())),
               "public_v3_manifest_sha256": digest(PUBLIC_MANIFEST),
@@ -449,23 +471,33 @@ def census(*, write: bool) -> dict:
                                for key, value in public["sources"].items()},
               "oasst2": {"repo": "OpenAssistant/oasst2", "revision": OASST2_REVISION,
                          "source_sha256": OASST2_SHA},
-              "protected_source": protected,
-              "protected_source_manifest_sha256": _sha(json.dumps(
-                  protected, ensure_ascii=False, sort_keys=True)),
+              "protected_source": protected if not write else None,
+              "protected_source_manifest_sha256": (_sha(json.dumps(
+                  protected, ensure_ascii=False, sort_keys=True)) if not write else None),
               "dictionary_english_child_status": "WAIT_KOREAN_TEACHER_QA_AND_LINEAGE",
-              "rights_gate": "ATTESTED" if _attested(protected) else "HOLD",
+              "rights_gate": ("ATTESTED_RECORD_ONLY" if _attested(protected) else "HOLD")
+              if not write else "PROTECTED_NOT_READ_HOLD",
+              "output_scope": "PUBLIC_ONLY" if write else "READ_ONLY_CENSUS",
+              "public_jobs_emitted": emitted_jobs,
+              "dictionary_jobs_emitted": 0,
+              "dictionary_quarantine_namespace": DICT_QUARANTINE_DIR.relative_to(ROOT).as_posix(),
+              "dictionary_quarantine_status": "NOT_CREATED_NO_TEACHER_INPUT_NO_TRAINING",
+              "legal_limit": "filesystem separation and teacher paraphrase do not prove CC BY-SA non-derivation or model-license status",
               "length_policy": "No 1200-character cutoff: teacher server exact chat-template token budget checked before generation; overlong source gets separate compression child job, never silent truncation",
               "split_policy": "Aya original v3 split; OASST2/krdict concept-hash split before translation; all derived language variants retain parent_concept_id",
-              "status": "JOBS_ONLY_NOT_TEACHER_ANSWERS_OR_TRAIN_READY"}
+              "status": ("PUBLIC_JOBS_ONLY_NO_DICTIONARY_NO_TRAIN_READY" if write else
+                         "JOBS_ONLY_NOT_TEACHER_ANSWERS_OR_TRAIN_READY")}
     if write:
-        result["shards"] = {}
-        for category, writer in writers.items():
-            manifest = writer.close(lineage={"source_family": category,
-                                            "public_manifest_sha256": result["public_v3_manifest_sha256"]})
-            verify(OUTPUT_DIR, manifest)
-            result["shards"][category] = {"manifest": writer.manifest_path.relative_to(ROOT).as_posix(),
-                                           "rows": manifest["rows"],
-                                           "concat_sha256": manifest["concat_sha256"]}
+        assert writer is not None
+        manifest = writer.close(lineage={"source_family": "public_only",
+                                         "public_manifest_sha256": result["public_v3_manifest_sha256"],
+                                         "dictionary_jobs_emitted": 0})
+        verify(OUTPUT_DIR, manifest)
+        if manifest["rows"] != emitted_jobs or emitted_jobs != len(IDs):
+            raise ValueError("public output count includes dictionary jobs")
+        result["shards"] = {"public": {"manifest": writer.manifest_path.relative_to(ROOT).as_posix(),
+                                        "rows": manifest["rows"],
+                                        "concat_sha256": manifest["concat_sha256"]}}
         with (OUTPUT_DIR / "source_deck_manifest.json").open("x", encoding="utf-8") as stream:
             stream.write(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     return result
@@ -511,6 +543,16 @@ def self_test() -> None:
     assert translated["parent_concept_id"] == fixture["parent_concept_id"]
     assert "NUMBER:1,200" not in compression_literal_screen(
         {"question": "What is 1,200 meters?"}, translated["source_payload"]["source_turns"][0])
+    compressed_row = wrap_teacher_answer(short_request, {
+        "format_status": "TAGGED_COMPLETE", "teacher_model_sha256": "D" * 64,
+        "parsed_content": {"user_text": "What is 1,200 m?",
+                           "assistant_text": "1.2 km.", "correction_note": "shortened"}}, "gen-compress")
+    translated_row = wrap_teacher_answer(translated, {
+        "format_status": "TAGGED_COMPLETE", "teacher_model_sha256": "D" * 64,
+        "parsed_content": {"user_text": "1,200미터는 무엇인가요?",
+                           "assistant_text": "1.2킬로미터입니다.", "correction_note": "translated"}}, "gen-translate")
+    assert compressed_row["meta"]["source_transform"] == "teacher_source_compression"
+    assert translated_row["meta"]["source_transform"] == "translation_after_source_compression"
     compressed = compression_child(source)
     assert compressed["parent_concept_id"] == source["parent_concept_id"]
     assert compressed["source_transform"] == "teacher_source_compression"
@@ -527,6 +569,10 @@ def self_test() -> None:
     assert wrapped["meta"]["parent_concept_id"] == source["concept_id"]
     assert wrapped["meta"]["student_training"] == "NOT_RUN"
     assert not _attested({"dictionary": {}, "concept_word_files": {}, "vocabulary_txt": {}})
+    assert OUTPUT_DIR != DICT_QUARANTINE_DIR
+    assert _public_output_job(source) and not _public_output_job(korean)
+    assert not _public_output_job(dict(source, rights_status="LOCAL_RIGHTS_REVIEW"))
+    assert not _public_output_job(dict(source, protected_locator={"file": "protected.json"}))
     print("[PASS] source/revision/sense lineage, split-before-translation, protected rights hold; source/model NOT_RUN")
 
 
@@ -545,8 +591,9 @@ def main() -> int:
             print(json.dumps({key: report[key] for key in (
                 "schema", "jobs", "counts", "public_repos", "oasst2",
                 "protected_source_manifest_sha256", "dictionary_english_child_status",
-                "rights_gate", "status")}, ensure_ascii=False, sort_keys=True))
-            print("[PASS] versioned source jobs only, teacher/student NOT_RUN" if args.execute
+                "rights_gate", "output_scope", "public_jobs_emitted", "dictionary_jobs_emitted",
+                "dictionary_quarantine_namespace", "dictionary_quarantine_status", "status")}, ensure_ascii=False, sort_keys=True))
+            print("[PASS] public-only source jobs; dictionary/teacher/student NOT_RUN" if args.execute
                   else "[CHECK_ONLY] exact named source census; no data copied or model run")
         return 0
     except PermissionError as exc:

@@ -28,6 +28,8 @@
 
 단순한 태그형 출력은 고정16에서 15건, JSON은14건 완결했으나 **1건 차를 일반적인 형식 우위로 채택하지 않는다**. 소형 학생 배선 Stage2gW는 실제2업데이트·유한 손실/gradient와 새 checkpoint를 만들었지만 13행 반복의 train CE 하락이라 지능 향상 예측의 근거가 아니다. 예상하지 못한 Stage2fW의 **PEG native-format HTTP500**은 독립 단일문항에서도 재현됐고, parser 우회는 `length`/중복 태그 때문에 교육 답 회복이 아니었다. Stage2iWa는 서버500과 원천 수락률 부족으로 optimizer0/5였다. 따라서 ~~형식 gate 뒤 현재 유한 source로 바로 온라인5회 처리율을 잴 수 있다~~는 낙관적 경로를 철회하고 Stage2fWb 보충→Stage2iWd 한 업데이트 기술 게이트→사용자 확정 다원천 C안의 새 계보/권리·실제 토큰 예산 순서로 바꾼다.
 
+2026-09-28 사용자 [Stage2kW/Stage2fWb 결과101 §23~§24](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): source 계보 read-only census 87,361 job은 독립 실행으로 재현됐다. Stage2fWb의 누락7 job 보충은 한국어14/16·영어15/16 **형식** 후보로 각12/16 문턱을 통과했다. 다만 case26 한국어의 native PEG500은 새 seed에서도 두 번 재현됐고 학생 교육/품질은0/`NOT_RUN`이다. 따라서 Stage2iWd의 기술 1업데이트 선결은 열렸으나 교사 완전성, 한영 5:5, 5회 및 300M~600M 확장은 열리지 않았다. 유효하게 등록된 `HOLD` 문항을 문턱 통과라는 이유로 조용히 수락하지 않는다.
+
 ## 4. 단계 설계 — 싼 것부터
 
 ### Stage0W — 공개 OASST2 한정 선별/비보호 CPU 게이트(코드 작성, 실자료 check-only)
@@ -178,7 +180,27 @@ Stage2iWa는 **학생 optimizer 0회**로 종료했고, HTTP500 응답 본문·�
 | OASST2 | 별도 `OpenAssistant/oasst2` revision `179dd21…`의 reviewed 단일턴 영어5400·한국어5. 공개 v3 첫 질문 겹침/자체 중복 제외 후 영어3824·한국어1개 계열; 영어 질문/답 각각1200자 이하로 제한하면 새로운 계열2018개 | 원 EN 교정+KO 번역; 원 KO는 한영 양방향 **canary 1개**만 | OASST1 v3와 이름을 혼동하지 않음. OASST2 reviewed EN 멀티턴2378은 이 Stage2k **단일턴** 작업표에 자동 편입하지 않음 |
 | 국립국어원 JSON | 지정 2026-08-19 JSON11개, 뜻풀이76,833개/고유 표제 target ID53,671. `concept/word-*.txt` 27개와 TXT2는 표제어 **선정 우선순위/교차검증**이지 새 독립 QA 행이 아님 | 의미 ID·품사·동형어·용례 근거로 KO QA; 실제 KO 교사 답이 생긴 뒤 별도 EN 번역 child | 현 작업표는 원문 뜻풀이/용례를 출력하지 않는 locator76,833건만 설계. `target_code+lexicalUnit+sense+file/ordinal`로 ID 충돌 회피; 사이트 CC BY-SA2.0 KR 정책과 로컬 판본 파생·배포 계약 별도 검토 |
 
-Stage2kW 읽기 전용 실사에서는 public Aya 양언어 job2,878개, OASST2 양언어 job7,650개, 사전 한국어 의미 locator76,833개 등 **87,361개 job**을 계수했다. 이것은 **교사 답안/독립 지식/학습 토큰 수가 아니다**. 사전 뜻풀이 하나에서 한국어 QA를 생성한 뒤 영어 번역 child를 만들 때도 부모 의미 ID와 train/val split이 고정된다. 공개 Aya의 기존 v3 split을 유지하고 OASST2/사전은 원천 concept hash로 *생성 전에* split한다. 정규화된 첫 질문이 v3와 겹치는 OASST2는 제외한다. 모든 job은 source repo·revision·원본 SHA·object/sense ID·변환종류·부모 concept ID·언어·rights 상태를 갖는다. 보호 dictionary 원문/word 파일의 내용은 이 작업표에 복사하지 않으며, 실제 `--execute`는 사용자 소유 `HF/sft_ready/p106b_multisource_rights_approval.json`의 정확 원천 SHA·파생 사용 승인 기록이 없으면 `HOLD8`이다. 현재 그 승인/실행은 `NOT_RUN`이고 20MB 샤드로 만든 학습 corpus도 없다.
+Stage2kW 읽기 전용 실사에서는 public Aya 양언어 job2,878개, OASST2 양언어 job7,650개, 사전 한국어 의미 locator76,833개 등 **87,361개 job**을 계수했고 사용자 [원본 결과101 §23](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 같은 수를 재확인했다. 이것은 **교사 답안/독립 지식/학습 토큰 수가 아니다**. 사전 뜻풀이 하나에서 한국어 QA를 생성한 뒤 영어 번역 child를 만들 때도 부모 의미 ID와 train/val split이 고정된다. 공개 Aya의 기존 v3 split을 유지하고 OASST2/사전은 원천 concept hash로 *생성 전에* split한다. 정규화된 첫 질문이 v3와 겹치는 OASST2는 제외한다. 모든 job은 source repo·revision·원본 SHA·object/sense ID·변환종류·부모 concept ID·언어·rights 상태를 갖는다. **당시 Stage2kW는 읽기 전용**이었으며 구 통합 `--execute` 설계의 공개+사전 locator 같은 출력 디렉터리와 보호 source rights attestation는 실제로 실행되지 않았다. 사용자 권리 분리 회신 후 이 구 출력 경로는 폐기하고, 아래 Stage2kWb의 공개 job만 별도 네임스페이스에 쓰도록 변경한다. 사전 파생 원문·후보·학습 corpus는 여전히 만들지 않았고 별도 격리/권리 판단 대상이다.
+
+### Stage2kWb — 공개 원천만의 분리 job deck, 사전 계열은 읽기도·쓰기에도 포함하지 않음
+
+Stage2kW의 87,361건 전체를 한 데이터셋으로 출력하면 사전의 CC BY-SA 계열 locator가 공개 Aya/OASST2와 같은 산출물에 들어간다. [새 공개 전용 관리자](../scripts/build_p106b_multisource_deck.py)의 `--execute`는 `HF/sft_ready/p106b_public_job_deck_v1/`에 **Aya Dataset 2,878 + OASST2 7,650 = 예상10,528개** public source job만 write-once 20,000,000B 이하 JSONL 샤드로 기록한다. `source_family/repo/rights_status/protected_locator`의 네 조건 중 하나라도 사전·미지 출처이면 출력 전에 거부한다. **이 실행 모드에서는 지정 보호 사전 폴더를 읽지 않는다.** `--check-only`는 기존 Stage2kW와 같은 87,361 job read-only 합계이며 공개 전용 실행과 동일한 분모로 혼동하지 않는다. 다음 단계의 실제 교사 답/학생 target은 아직0이다.
+
+[별도 사용자 CPU SH](../run_P106B_Stage2kWb_public_only_job_deck.sh)는 새 smoke PASS 뒤 self-test→격리 회귀→공개 `--execute`만 실행한다(예상≤0.1h, GPU0). 출력 디렉터리가 이미 있으면 덮어쓰지 않고 실패하며, 샤드 SHA·행수/총byte와 공개 source id/split을 검산한다. 사전 계열의 미래 물리 네임스페이스는 `HF/sft_ready/p106b_krdict_by_sa_quarantine_v1/`로 **별도 예약만** 하며 이번 SH가 만들지 않는다. CC BY-SA로 분리된 데이터 행을 공유할 때의 표시·동일조건, 개념만 사용한 독립 새 행인지 여부, 모델/출력 공개 때의 권리 판단은 각각 다른 문제다. 폴더 분리나 교사 문장 변환이 자동 법적 면제라는 주장은 하지 않는다. 공식 [사전 정책](https://krdict.korean.go.kr/kor/kboardPolicy/copyRightTermsInfo)과 [CC BY-SA 2.0 KR 법문](https://creativecommons.org/licenses/by-sa/2.0/kr/legalcode.ko)은 저작물 변형 배포/편집물 구분을 명시하며, [CC의 AI 학습 해설](https://creativecommons.org/using-cc-licensed-works-for-ai-training-2/)은 모델·출력의 실제 표현 재현과 공개 맥락을 별도 판단 대상으로 둔다. 이 단계는 법률 자문이나 사전 파생 학습 승인이 아니다.
+
+### 사전 파생 3안·모델 원문 재현 검증 — 사용자 1안 선택, 실제 생성 `NOT_RUN`
+
+사용자 제안대로 **사전 파생 행을 공개 자료와 다른 디렉터리·manifest에 저장하고 Git에서 제외**하는 것은 혼합 방지의 첫 단계다. 다만 훈련 로더의 `source_family/rights_status` allowlist와 같은 concept/문장 교차 검사, 원본→교사 후보→검토본의 SHA/부모 계보가 없으면 파일을 복사·재직렬화할 때 다시 섞일 수 있다. 현재 공개 전용 writer의 synthetic 회귀는 보호 사전의 읽기·출력0만 증명한다. 아직 사전 파생 writer/학습 로더 소비 경계는 없다.
+
+| 후보 | 만들 데이터 | 라이선스·품질 경계 | 비용·권장 |
+|---|---|---|---|
+| **A: CC BY-SA 격리 후보** | 뜻풀이·용례를 교사에게 주어 만든 질문/답·교정본을 `p106b_krdict_by_sa_quarantine_v1`에 별도 저장, 원본 표현과 생성 이력 기록 | 사전 표현에서 파생된 행으로 **보수적으로** 분류하고 출처·변경·CC BY-SA 표지를 유지; 공개셋/일반 trainer에 자동 병합 금지. 학습모델 자체에 동일조건이 자동 전염된다는 주장도, 반드시 무관하다는 주장도 하지 않음 | 가장 빠른 한국어 근거형 pilot. 사용자 분리 요청과 일치하나 배포·모델 출력 검토가 남음 |
+| **B: 의미요소→새 예문→새 정의 재합성** | 첫 교사가 원 `표제어+정의`에서 의미·품사·조건을 추출하고 새 예문 작성. **다른 문맥/작성자**는 원 정의·원 예문을 보지 않고 `표제어+새 예문`으로 정의를 다시 쓴다. 세 번째 검토자가 새 세트의 뜻·용례 일치 확인 | 사용자 제안의 이중 재구성을 개선했지만 단계1이 원표현을 보므로 법적 독립성은 자동 보증 안 됨. 원문/재합성본은 별도 계보로 두고 드문 장문·고유 문구 겹침과 의미왜곡을 검토할 때까지 A와 같은 격리 상태 | 표현 거리 증가 가능, 교사 비용·환각/뜻 변화 위험 증가. 독립셋 승격은 별도 사람/권리 검토 후 |
+| **C: 독립 원천 clean-room** | 표제어·일반 개념만 선정하고 독립 사용허락 원천 또는 원문을 보지 않은 작성자가 뜻·예문을 새로 만든다 | 사전 예문·정의는 작성자/교사 입력으로 전달하지 않으며 출처·질문 분포를 별도로 기록. 독립 창작 주장도 최종 표현/권리 검토 필요 | 법적 분리 설명은 가장 명료하지만 한국어 뜻의 정확한 sense 대응과 제작 시간이 비용 |
+
+**모델 재현성 점검 설계(미실행):** 같은 부모/토크나이저/질문셋에서 사전 미사용 대조와 사전계열 사용 후보를 비교한다. (i) 원문 중 **드물고 긴** 예문 앞부분을 준 완성 질문, (ii) 원문 문구를 주지 않은 의미 질문, (iii) 동일 길이·주제의 공용표현 및 사전 외 독립 문장 대조를 나눠 생성한다. 원문/출력의 연속 일치 최장 길이, 드문 n-gram·근사 표현을 **후보 추출**에 쓰고 문장 길이·표제어 빈도·공용표현 배경율을 맞춰 오탐을 보정한다. [GPT-3 중복 분석](https://arxiv.org/pdf/2005.14165)은 짧거나 흔한 문구의 오탐을 지적했고, [암기 계측 연구](https://arxiv.org/abs/2202.07646)는 중복·프롬프트 길이에 따른 원문 재현 차이를 보고했다. 높은 점수 행은 독립 사람이 원문·출력의 창작적 표현/맥락을 직접 검토한다. **n-gram 일치만으로 침해·파생 판정하지 않으며 0건 탐지도 암기/권리 문제 부재를 증명하지 않는다.** 보호 예문과 생성 원답은 ignored 격리 저장에만 두고 Git·일반 벤치 원본에는 넣지 않는다.
+
+사용자는 **A안부터** 진행하고, B안의 새 예문/새 정의 후보와 A안·원문 간 표현 유사성은 **사후 비교**하기로 확정했다. [격리 어댑터](../scripts/p106b_rights_isolation.py)는 사전 원문 없이 합성 fixture만 사용해 다음 보조 계약을 구현했다: 원본 locator+SHA를 가진 `krdict` job만 받아 교사 내용의 질문/답을 코드 소유 canonical로 감싼 다음 `CC_BY_SA_2_0_KR_CANDIDATE`·출처 URL·`training_eligible=false`·`independent_expression_status=NOT_DETERMINED`를 붙인다. 이것을 다시 `P106B_RESTRICTED_CANDIDATE_V1`의 **상위 envelope**로 감싸, 일반 `load_canonical()`이 경로만 받아 학습셋으로 오용하면 `messages` 부재로 실패한다. 1~128행 write-once pilot writer는 오직 `HF/sft_ready/p106b_krdict_by_sa_quarantine_v1/candidates/`에만 기록하고 공개 job 디렉터리와 다른 SHA 샤드를 쓴다. 합성 CPU 자기시험은 이 격리·재입력 실패를 확인했으나 실제 사전 뜻풀이/용례를 읽거나 교사에게 전달하거나 파생 행을 만들지 않았다. 현재 저장소 `.gitignore`·`.agents/project.json`은 `HF/`를 제외하지만 Git 강제 staging 위험까지 자동 제거하지는 않으므로 향후 커밋은 명시 경로만 검토한다. A안의 실물 교사 후보 생성·원문/후보/B안 비교와 모델 출력 유사성 검사는 별도 사용자 실행/계획 선결이며 `NOT_RUN`이다.
 
 교사관리 코드의 `teacher_admission()`은 향후 같은 localhost 교사 서버의 `/apply-template`·`/tokenize`에서 정확 입력 토큰을 받은 뒤 `DIRECT/COMPRESSION_REQUIRED/HOLD`를 반환한다. `wrap_teacher_answer()`는 **교사가 작성한 최종 태그 본문**만 canonical로 감싸고 source repo/revision/SHA·object/sense·변환 종류·부모 concept ID·권리 상태를 메타데이터로 고정한다. 교사 사고는 외부 raw sidecar 참조일 뿐 현재 학생 loss 대상이 아니다. 출처가 사전인 job은 승인된 조건에서도 영문 번역을 **같은 concept의 자식**으로 생성하지, 독립 지식 건수로 세지 않는다. 이 함수 계약의 합성 CPU 자기시험은 PASS지만 다원천 교사 실제 호출/정답성은 `NOT_RUN`이다.
 
@@ -250,6 +272,7 @@ JSON 내부에는 `한국어기초사전 - 국립국어원 제공`, 생성시각
 | Stage2fWb | ≤0.5h hard wall | 사용자 full 교사 GPU, 기존 부분 raw29시도 참조+누락7문항만 생성; 학생0 |
 | Stage2iWd | ≤1.5h hard wall | 사용자 full 교사+P076 학생, OASST1 원천의 **1 optimizer 기술 gate**, Stage2fWb PASS 선결·checkpoint0 |
 | Stage2kW | 약0.1h CPU | 정확 공개 v3/OASST2와 지정 보호 사전/word/TXT **읽기 전용** 구조·SHA/계수; 모델·복사·출력 deck0 |
+| Stage2kWb | ≤0.1h CPU | 공개 Aya Dataset/OASST2 job 예상10,528건만 별도 ignored HF 20MB 샤드로 새로 기록; 보호 사전 접근0·교사/학생/GPU0 |
 | Stage2W | `NOT_ESTIMABLE` | 승인 원천의 실제 유니크 지도토큰·교사 accepted sample 비용·동일평가 확인 후 산정 |
 
 ## 7. 실행 파일·사전 점검
@@ -264,7 +287,7 @@ JSON 내부에는 `한국어기초사전 - 국립국어원 제공`, 생성시각
 - Stage2hW: 이번 지시의 명시적 단기 CPU+GPU 허용으로 교사-only 12요청을 직접 실측했다. v9 write-once 원본과 별도 runlog를 결과101에 회수한다. **학생 온라인 5회가 아니다.**
 - Stage2iWa/Wb/Wc: 사용자는 A(low)만 실행했고 [결과101 §20](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 교사33응답 뒤 HTTP500·optimizer0/5를 회수했다. B(none)/C(medium)는 미실행, 구 Wa/v10 write-once 불변이다. 세 팔은 이제 Stage2fWb 형식·manifest를 모델 전에 요구하도록 고쳤다. OASST1 365후보/언어는 5회 필요320/언어 대비 얕으므로 B/C 무조건 실행 권고 금지. 새 OASST2/Aya/사전 C안과 같은 원천으로 오인하지 않는다.
 - Stage2jW/Wb: 이번 사용자 한정 Codex 교사-only4+1요청의 별도 v11/v12 결과가 [결과101 §21~§22](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에 있다. 교사 native parser의 문항26 HTTP500은 정확 PEG 불일치, bypass의 HTTP200은 길이 소진·중복 태그로 답안 불가다. 사용자 재실행 단계가 아니며 같은 출력 버전을 재사용하지 않는다.
-- Stage2fWb/Stage2iWd/Stage2kW: 사용자 실행 또는 CPU 확인용 새 SH를 별도 등록했다. 각각 원형 부분29시도 SHA 참조+누락7문항 보충, 한영 gate 후 OASST1 원천 1-update 백엔드 복구, Aya Dataset/OASST2/정확 사전 JSON·word/TXT read-only 계보 실사다. 현재 사용자 새 smoke와 각 원본 결과 전 `E2E_NOT_RUN`이다.
+- Stage2fWb/Stage2kW: 사용자 [원본 결과101 §23~§24](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 Stage2kW 읽기 전용87,361 job과 Stage2fWb 구29시도 참조+새8시도, 한영 형식 KO14/EN15·종료0을 확인했다. case26 native PEG500 2회는 무효 후보로 보존한다. Stage2iWd의 OASST1 1 optimizer 기술 복구는 **새 코드 smoke PASS 뒤 사용자 실행**이며 모델 E2E `NOT_RUN`. Stage2kWb는 사용자 권리 분리 회신으로 공개 source만 새 경로에 출력하는 CPU SH, 아직 실행 `NOT_RUN`이다.
 - Stage1cW: [비활성 SH 템플릿](../scripts/templates/P106B_Stage1cW_parent_student_posthoc.sh.in)만 있다. Stage1b 고유 checkpoint가 아직 없어 루트 SH/TSV에 등록하면 입력태그 린터가 실제 FAIL한다. 사용자가 Stage1b 로그·체크포인트를 회신해 SHA/메타데이터를 판독한 **다음 지시**에서 새 단계명으로 활성화한다. 생성 답안·문항별 벤치 원본이 결과문서의 근거다.
 - Stage2W: 원천 수·사람 표본·평가 설계 미확정이므로 **SH 미작성**. 두 준비 SH가 존재하는 것과 Stage2 본학습 사용 승인은 다르다.
 - tag `p106b_s1b_oasst2_ko_online_s1337`: 레지스트리 조회에서 기존 로그 충돌0. 새 Stage1b 출력은 P106B 고유 이름이며 기존 P076/공개 SFT/교사 파일을 덮지 않는다. 과거 P076 mean은 같은 시작점 전후 진단의 부모이지 **동일 학습량의 교사 없는 대조군**이 아니다.
@@ -296,3 +319,5 @@ OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 
 - 2026-09-28 사용자 새 [smoke](../smoketest_logs/202609281223_smoke_cf99a59.txt)는 이전 `cf99a59` 트리의43팔·실패0·exit0 오류표지0·계측0이었다. [결과101 §14~§20](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은 Stage2a/b CPU 계약, Stage2c 태그15/16·JSON14/16, Stage2d 한국어13+2행, Stage2f 문항26 HTTP500 미완, Stage2g 학생2업데이트/비패딩36,894, Stage2iWa 교사33응답·optimizer0/5를 구분했다. Stage2g CE 하락은 같은13행 반복 train 내 결과이지 val/대화 품질이 아니다.
 - 2026-09-28 GPT 한정 직접 Stage2jW/Wb: 새 서버의 Stage2f 문항26에서 `peg-native format` HTTP500을 재현했고 입력817+max4096<ctx6144·free≈8.5GiB였다. parser bypass는 HTTP200이나 `length`4096·반복 태그로 불완결이어서 학생 target 금지. Stage2i 원 실패 입력은 교사-only 새 서버에서 HTTP200이므로 공통 원인을 단정하지 않는다. v8/v10 원형과 새 v11/v12 진단은 각각 불변이다.
 - 2026-09-28 사용자 다원천 C안·초과길이 A안 선택: 기존 공개 v3 `oasst`는 OASST1이라는 계보 오류를 정정했다. 고정 OASST2 ready trees13,854 중 reviewed 영어 단일턴5,400/한국어5; 새 Stage2kW 읽기 전용 계약은 Aya Dataset 영어1,439개·OASST2 중복제외 영어3,824/한국어1개·사전 뜻풀이76,833 locator를 분리해 계수했다. 87,361 job은 답안/학습토큰이 아니다. 보호 원문/교사 변환 실행은 별도 정확 권리·파생 승인 기록 전 `HOLD`이고, 1200자 초과는 교사 실제 template 토큰 예산을 재어 DIRECT/압축 별도 child로 분기한다.
+- 2026-09-28 사용자 반환: Stage2kW 독립 CPU 결과는 87,361 job/read-only, Stage2fWb는 old29+new8시도·case26 PEG500 2회에도 KO14/EN15로 사전 각12/16 형식 문턱을 통과했다. 이것은 학생 학습·한영5:5·교사 정답 PASS가 아니다. 새 코드/권리 분리 뒤 사용자 smoke는 별도 재실행이 필요하다.
+- 2026-09-28 공식 정책 대조: 사전 별도 저장은 독립 공개원천과의 물리·계보 혼합을 막지만, 사전 예문/뜻풀이의 표현을 변형한 행의 권리나 모델 공개 시의 법적 판단을 자동 면제하지 않는다. Stage2kWb는 공개 source만 쓰고 보호 계열 전송/복사0; 사전 파생 별도 후보셋/개념만 재합성의 범위는 사용자 추가 선택과 검토에 따라 별도 구현한다.

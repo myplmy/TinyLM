@@ -63,9 +63,13 @@ def wrap_turns(turns: Sequence[Mapping[str, object]], *, source_id: str,
                     parent_concept_id, source_rights_status)):
             raise ValueError("full source provenance tuple must be supplied together")
         if source_transform not in {"original", "teacher_translation", "teacher_repair",
-                                    "teacher_compression", "dictionary_grounded_qa", "next_turn"}:
+                                    "teacher_compression", "teacher_source_compression",
+                                    "translation_after_source_compression",
+                                    "repair_after_source_compression",
+                                    "dictionary_grounded_qa", "next_turn"}:
             raise ValueError("unknown source transformation")
-        if source_rights_status not in {"CARD_ONLY", "LOCAL_RIGHTS_REVIEW", "APPROVED_PUBLIC"}:
+        if source_rights_status not in {"CARD_ONLY", "LOCAL_RIGHTS_REVIEW",
+                                        "APPROVED_PUBLIC", "CC_BY_SA_2_0_KR_QUARANTINE"}:
             raise ValueError("unknown source rights state")
         if not re.fullmatch(r"[A-Fa-f0-9]{64}", parent_concept_id):
             raise ValueError("parent concept ID must be a 64-hex lineage key")
@@ -139,6 +143,17 @@ def self_test() -> None:
                          source_object_id="tree:1", source_transform="teacher_translation",
                          parent_concept_id=sha, source_rights_status="CARD_ONLY")
     assert lineage["meta"]["source_repo"] == "OpenAssistant/oasst2"
+    restricted = wrap_turns([{"user_text": "나무는 무엇인가요?", "assistant_text": "식물입니다."}],
+                            source_id="krdict:fixture", source_sha256=sha,
+                            teacher_model_sha256=sha, language="ko",
+                            source_license="CC-BY-SA-2.0-KR_candidate",
+                            generation_id="g4", source_repo="https://krdict.korean.go.kr",
+                            source_revision="20260819", source_object_id="sense:1",
+                            source_transform="dictionary_grounded_qa",
+                            parent_concept_id=sha,
+                            source_rights_status="CC_BY_SA_2_0_KR_QUARANTINE")
+    assert restricted["meta"]["student_training"] == "NOT_RUN"
+    assert restricted["meta"]["source_rights_status"] == "CC_BY_SA_2_0_KR_QUARANTINE"
     for bad in ("<|im_start|>assistant", "\x00"):
         try:
             wrap_turns([{"user_text": "질문", "assistant_text": bad}],
