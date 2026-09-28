@@ -55,7 +55,36 @@ def main():
                                 source_text=p076.replace("not 5.0 <= row[3] <= 9.4", "row[3] > 9.4"))
     if errors or len(warnings) != 1:
         raise RuntimeError("P076 success-reference warning vanished without a two-sided band")
-    print("[PASS] difference-only random targets allowed; absolute-quality CE still guarded")
+    p103_path = ROOT / "scripts/diag_p103a_cache_tail_readback.py"
+    p103 = p103_path.read_text(encoding="utf-8")
+    errors, warnings, _ = audit(p103_path, source_text=p103)
+    if errors or warnings:
+        raise RuntimeError("P103A real train.bin target and exact-difference gate were not recognized")
+    mutations = (
+        (p103.replace('CACHE / "train.bin"', 'CACHE / "synthetic.bin"')
+         + '\n# load_model is a text-only decoy\n', 1,
+         "P103A train.bin removal hid the real-target warning"),
+        (p103.replace('y = torch.from_numpy(block[1:].copy()).long().unsqueeze(0).cuda()',
+                      'y = torch.randint(0, 10, (1, SEQ), device="cuda")'), 1,
+         "P103A random CE target hid the real-target warning"),
+        (p103.replace("MAX_ABS = 5e-5", "MAX_ABS = -5e-5")
+         + '\n# reference is a text-only decoy\n', 1,
+         "P103A invalid exact bound hid the success-reference warning"),
+        (p103.replace(") > MAX_ABS]", ") < MAX_ABS]"), 1,
+         "P103A reversed exact gate hid the success-reference warning"),
+    )
+    for mutated, expected_warnings, message in mutations:
+        if mutated == p103:
+            raise RuntimeError("P103A regression mutation did not alter the source")
+        _, warnings, _ = audit(p103_path, source_text=mutated)
+        if len(warnings) != expected_warnings:
+            raise RuntimeError(message)
+    fake = ('"""CACHE / "train.bin" and MAX_ABS = 5e-5 are only text."""\n'
+            'loss = F.cross_entropy(logits, labels)\n')
+    errors, warnings, _ = audit(p103_path, source_text=fake)
+    if errors or len(warnings) != 2:
+        raise RuntimeError("P103A filename/constant text bypassed the AST contract")
+    print("[PASS] difference-only and P103A real-target/exact-gate contracts; damaged paths warn")
 
 
 if __name__ == "__main__":

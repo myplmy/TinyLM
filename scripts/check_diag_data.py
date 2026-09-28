@@ -55,6 +55,7 @@ from __future__ import annotations
 
 import re
 import ast
+import math
 import sys
 from pathlib import Path
 
@@ -96,6 +97,102 @@ def _has_explicit_step0_band(tree: ast.AST) -> bool:
                 and node.left.value < node.comparators[1].value):
             return True
     return False
+
+
+def _p103a_contract(tree: ast.AST) -> tuple[bool, bool]:
+    """Recognize P103A's real train-target lineage and exact-difference gate.
+
+    This is deliberately narrower than a filename/constant exemption: a
+    ``train.bin`` mention without a target derived from that memmap, or an
+    unused ``MAX_ABS`` constant, must not silence the corresponding warning.
+    """
+    execute = next((node for node in getattr(tree, "body", ())
+                    if isinstance(node, ast.FunctionDef) and node.name == "execute"), None)
+    if execute is None:
+        return False, False
+    imported_cache = any(
+        isinstance(node, ast.ImportFrom)
+        and node.module == "tinylm.train.p101a_assets"
+        and any(alias.name == "CACHE" for alias in node.names)
+        for node in getattr(tree, "body", ()))
+    assignments = {
+        target.id: node.value
+        for node in ast.walk(execute) if isinstance(node, ast.Assign)
+        for target in node.targets if isinstance(target, ast.Name)
+    }
+
+    def names(expr: ast.AST | None) -> set[str]:
+        return {node.id for node in ast.walk(expr) if isinstance(node, ast.Name)} if expr else set()
+
+    def subscript_key(node: ast.AST) -> str | None:
+        return (node.slice.value if isinstance(node, ast.Subscript)
+                and isinstance(node.slice, ast.Constant)
+                and isinstance(node.slice.value, str) else None)
+
+    source = assignments.get("source")
+    real_source = (
+        imported_cache and isinstance(source, ast.Call)
+        and isinstance(source.func, ast.Attribute) and source.func.attr == "memmap"
+        and isinstance(source.func.value, ast.Name) and source.func.value.id == "np"
+        and bool(source.args) and isinstance(source.args[0], ast.BinOp)
+        and isinstance(source.args[0].op, ast.Div)
+        and isinstance(source.args[0].left, ast.Name)
+        and source.args[0].left.id == "CACHE"
+        and isinstance(source.args[0].right, ast.Constant)
+        and source.args[0].right.value == "train.bin"
+        and any(keyword.arg == "mode" and isinstance(keyword.value, ast.Constant)
+                and keyword.value.value == "r" for keyword in source.keywords)
+    )
+    target_lineage = (
+        real_source and "source" in names(assignments.get("block"))
+        and "block" in names(assignments.get("y"))
+        and any(isinstance(node, ast.Call) and len(node.args) >= 2
+                and isinstance(node.func, ast.Attribute) and node.func.attr == "cross_entropy"
+                and "y" in names(node.args[1]) for node in ast.walk(execute))
+    )
+
+    bound = next((node.value.value for node in getattr(tree, "body", ())
+                  if isinstance(node, ast.Assign)
+                  and any(isinstance(target, ast.Name) and target.id == "MAX_ABS"
+                          for target in node.targets)
+                  and isinstance(node.value, ast.Constant)
+                  and type(node.value.value) in (int, float)), None)
+    exact_bad = assignments.get("exact_bad")
+    gated_difference = False
+    if isinstance(exact_bad, ast.ListComp):
+        exact_arm = any(
+            isinstance(node, ast.Compare) and len(node.ops) == 1
+            and isinstance(node.ops[0], ast.Eq)
+            and subscript_key(node.left) == "arm"
+            and isinstance(node.comparators[0], ast.Constant)
+            and node.comparators[0].value == "exact"
+            for clause in exact_bad.generators for condition in clause.ifs
+            for node in ast.walk(condition)
+        )
+        required = {"logit_max_abs_vs_uncached", "loss_abs_vs_uncached",
+                    "grad_max_abs_vs_uncached"}
+        bounded = any(
+            isinstance(node, ast.Compare) and len(node.ops) == 1
+            and isinstance(node.ops[0], ast.Gt)
+            and isinstance(node.comparators[0], ast.Name)
+            and node.comparators[0].id == "MAX_ABS"
+            and isinstance(node.left, ast.Call)
+            and isinstance(node.left.func, ast.Name) and node.left.func.id == "max"
+            and required.issubset({subscript_key(arg) for arg in node.left.args})
+            for clause in exact_bad.generators for condition in clause.ifs
+            for node in ast.walk(condition)
+        )
+        rejects = any(
+            isinstance(node, ast.If) and isinstance(node.test, ast.Name)
+            and node.test.id == "exact_bad"
+            and any(isinstance(child, ast.Return) and isinstance(child.value, ast.Constant)
+                    and child.value.value == 8 for child in ast.walk(node))
+            for node in ast.walk(execute)
+        )
+        gated_difference = exact_arm and bounded and rejects
+    success_gate = (type(bound) in (int, float) and math.isfinite(bound)
+                    and 0 < bound < 1 and gated_difference)
+    return bool(target_lineage), bool(success_gate)
 
 
 # ★★2026-08-28 (사용자 지적: "경고를 확인 안 하는 건지") — **경고 6건을 전수 판정했다.**
@@ -183,10 +280,18 @@ def audit(p: Path, *, source_text: str | None = None):
     p076_step0_band = (p.name == "diag_p076_attn_only.py"
                        and "[GATE NEGATIVE]" in txt
                        and _has_explicit_step0_band(tree))
-    if not (REAL_DATA.search(txt) or real_val_memmap or has_guard):
+    is_p103a_readback = p.name == "diag_p103a_cache_tail_readback.py"
+    p103a_real_target, p103a_exact_gate = (
+        _p103a_contract(tree) if is_p103a_readback else (False, False))
+    # The P103A path must not inherit a generic comment/string escape hatch.
+    real_data_or_guard = (p103a_real_target if is_p103a_readback else
+                          bool(REAL_DATA.search(txt) or real_val_memmap or has_guard))
+    success_reference = (p103a_exact_gate if is_p103a_readback else
+                         bool(SUCCESS_REF.search(txt) or m5_paired_only or p076_step0_band))
+    if not real_data_or_guard:
         warn.append("절대 지표를 계산하는데 **실데이터도 안 읽고 퇴화 감지도 없다** — "
                     "합성 데이터는 조용히 퇴화한다(함정 32, 결과 042 §3)")
-    if not (SUCCESS_REF.search(txt) or m5_paired_only or p076_step0_band):
+    if not success_reference:
         warn.append("★**성공 기준값이 안 보인다** — 실패 쪽(난수 ≈ ln V)만 있으면 "
                     "부호가 뒤집힌 지표를 못 알아본다. **'성공했을 때 나와야 하는 값'** 을 "
                     "인쇄할 것(함정 31). dense=3.8080 / **타잉+부모초기화=7.7742** / 난수=10.3972 — "
