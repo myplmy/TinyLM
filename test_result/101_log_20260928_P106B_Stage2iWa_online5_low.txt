@@ -1,0 +1,35 @@
+Option A low: model-card thinking sampler; low is described as unsupported/near xhigh by the current card. Five micro8*accum16 updates need 640 fresh accepted teacher answers. 4h cap, P076 parent, full teacher, write-once <=20MB HF shards, no checkpoint or formal SFT quality claim.
+
+==============================================================================
+[runlog] 2026-09-28 13:33:52  name=P106B_Stage2iWa_online5_low
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_online_rate5.py --self-test
+==============================================================================
+[PASS] five updates require 640 accepted fresh teacher answers; no repeats/ckpt; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:33:52)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 13:33:53  name=P106B_Stage2iWa_online5_low
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_online_rate5.py --check-only --effort low
+==============================================================================
+{"accum": 16, "candidate_jobs_per_language": {"en": 365, "ko": 365}, "ctx_and_cap": [3072, 2048], "effort": "low", "micro": 8, "model_gpu": "NOT_RUN", "needed_accepted_answers": 640, "quality": "NOT_RUN", "schema": "P106B_STAGE2IW_ONLINE_RATE5_INPUT_V1", "source": {"job_deck_sha256": "7681ADB24E197CD9A544DC43A2F21D69C047FFC3E417BB403E1BBB3F1B1B5B09", "paired_concepts": 365, "policy": "OASST2-only 320 paired concepts, one fresh response per language/job; same concepts across languages, no within-language reuse", "source_card_licenses": {"aya": "Apache-2.0", "oasst": "Apache-2.0"}, "source_sha256": "96A3507344FEFCA5072887AB4664DBB9BEDBD37BCD0D01A564220C1008D4F836", "train_jobs_sha256": "398D7E2E648E9784919F3AD3A2B52C5EAF875062FF77C9FBB4AA310E17DE589D"}, "student_parent": "runs/ckpt/m100R1c_ko-en_300M_p076_b3_ag2_mean_s1337.pt", "updates": 5}
+[CHECK_ONLY] source/tokenizer/parent PASS; GPU/student updates NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:33:54)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 13:33:54  name=P106B_Stage2iWa_online5_low
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_online_rate5.py --execute --effort low --max-wall-sec 14400
+==============================================================================
+[STUDENT_READY] parent_step=2289 compile=default ckpt=ON micro=8 accum=16 free_mib=14812 cache=/tmp/tinylm_p106b_stage1bw_e_k4lq9l
+W0928 13:37:49.086000 3458055 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[GATE NEGATIVE] teacher API error HTTPError: HTTP Error 500: Internal Server Error; completed optimizer updates=0
+[ONLINE_SUMMARY] {"effort": "low", "quality": "NOT_RUN", "raw_counts": {"INCOMPLETE": 9, "PARSE_ERROR": 1, "PSEUDO_FORMAT_READY": 23}, "reason": "teacher API error HTTPError: HTTP Error 500: Internal Server Error", "source_jobs_used": {"en": 11, "ko": 23}, "status": "GATE_NEGATIVE_PARTIAL", "student_checkpoint_written": false, "updates_completed": 0, "whole_wall_sec": 791.995}
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 13.9분  (2026-09-28 13:47:47)
+==============================================================================

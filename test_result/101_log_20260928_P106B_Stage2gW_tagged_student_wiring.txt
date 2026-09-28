@@ -1,0 +1,37 @@
+Prerequisites: fresh WSL smoke PASS, idle RTX GPU, Stage2d v7 exact train/val SHA and P076 mean legacy parent. Teacher is offline; only final assistant text receives SFT loss.
+
+==============================================================================
+[runlog] 2026-09-28 13:30:58  name=P106B_Stage2gW_tagged_student_wiring
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/train_p106b_tagged_pilot.py --self-test
+==============================================================================
+[PASS] canonical final-only targets and 2-update micro8xaccum16 pilot contract; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:30:59)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 13:30:59  name=P106B_Stage2gW_tagged_student_wiring
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/train_p106b_tagged_pilot.py --check-only
+==============================================================================
+{"accum": 16, "micro_bs": 8, "parent_sha256": "41036721CEAAE3EACA568BF45FA5079745EBAE85B42033D28ECC9709F5D00A71", "student_model_gpu": "NOT_RUN_IN_CHECK_ONLY", "teacher_label_status": "PSEUDO_UNVERIFIED", "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3", "train_rows": 13, "updates": 2, "v7_manifest_sha256": "07778EF43C5C03D6CADAC0161DE02799EE4E25E23C3D1FB8BE2088B2A2FAA344", "val_rows": 2}
+[CHECK_ONLY] v7 corpus/parent/tokenizer lineage PASS; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:31:01)
+==============================================================================
+Gate: two finite micro8xaccum16 updates, nonzero assistant supervised tokens, finite CE/gradient, new checkpoint+metadata only. Pseudo labels are unverified; base full-val, benchmarks and 300M/600M quality remain NOT_RUN.
+
+==============================================================================
+[runlog] 2026-09-28 13:31:01  name=P106B_Stage2gW_tagged_student_wiring
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/train_p106b_tagged_pilot.py --execute
+==============================================================================
+W0928 13:31:18.639000 3457227 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[STUDENT_STEP] {"accum": 16, "assistant_ce": 4.20544534, "assistant_supervised_tokens": 12590, "conversation_exposures": 128, "grad_norm_before_clip": 4.13893, "micro_bs": 8, "peak_allocated_mib": 1817, "peak_reserved_mib": 2352, "unique_conversations": 13, "update": 1, "wall_sec": 138.914}
+[STUDENT_STEP] {"accum": 16, "assistant_ce": 3.78990474, "assistant_supervised_tokens": 12590, "conversation_exposures": 128, "grad_norm_before_clip": 4.050635, "micro_bs": 8, "peak_allocated_mib": 2056, "peak_reserved_mib": 2606, "unique_conversations": 13, "update": 2, "wall_sec": 1.005}
+{"accum": 16, "activation_checkpoint": true, "assistant_supervised_tokens": 25180, "base_full_val_forgetting": "NOT_RUN", "benchmark_accuracy": "NOT_RUN", "checkpoint_path": "runs/ckpt/m100R1c_ko-en_300M_p106b_s2g_tagged_pilot_s1337.pt", "checkpoint_sha256": "A771952BB4E470328757093BBAA644F6917C765E6525B1A247898D65BBC2CDC8", "compiled": true, "formal_train_ready": false, "input": {"accum": 16, "micro_bs": 8, "parent_sha256": "41036721CEAAE3EACA568BF45FA5079745EBAE85B42033D28ECC9709F5D00A71", "student_model_gpu": "NOT_RUN_IN_CHECK_ONLY", "teacher_label_status": "PSEUDO_UNVERIFIED", "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3", "train_rows": 13, "updates": 2, "v7_manifest_sha256": "07778EF43C5C03D6CADAC0161DE02799EE4E25E23C3D1FB8BE2088B2A2FAA344", "val_rows": 2}, "limit": "at most 16 unique Korean source pairs repeated to 128 exposures/update; not 300M/600M", "micro_bs": 8, "paired_metadata_sha256": "D6004CBA0ED6AFB5BCA54604691F22D643025A3D4D6F713C1065AEFB9D22244C", "parent_step": 2289, "processed_nonpadding_tokens_by_update": [18447, 18447], "pseudo_val_quality": "NOT_RUN", "schema": "P106B_STAGE2GW_TAGGED_PILOT_SFT_V1", "student": "P076 mean legacy32", "tag": "p106b_s2g_tagged_pilot_s1337", "teacher_co_resident": false, "updates": [{"accum": 16, "assistant_ce": 4.20544534, "assistant_supervised_tokens": 12590, "conversation_exposures": 128, "grad_norm_before_clip": 4.13893, "micro_bs": 8, "peak_allocated_mib": 1817, "peak_reserved_mib": 2352, "unique_conversations": 13, "update": 1, "wall_sec": 138.914}, {"accum": 16, "assistant_ce": 3.78990474, "assistant_supervised_tokens": 12590, "conversation_exposures": 128, "grad_norm_before_clip": 4.050635, "micro_bs": 8, "peak_allocated_mib": 2056, "peak_reserved_mib": 2606, "unique_conversations": 13, "update": 2, "wall_sec": 1.005}]}
+[PASS] tiny offline-teacher student wiring only; generalization/300M NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 2.6분  (2026-09-28 13:33:35)
+==============================================================================

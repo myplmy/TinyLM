@@ -24,6 +24,10 @@
 - 독립 검증 없이 번역을 바로 학습하면 문맥 생략·잘못된 번역·의미 추가가 학생에 전달될 수 있다. 이는 **금지할 수밖에 없는 실행 오류가 아니라 측정·관리할 데이터 소음**이다. 따라서 자동 구조·PII/숫자 보존 필터, 원문/번역 별도 저장, 사후 표본검토를 두되 0% 오류를 주장하지 않는다.
 - 16개의 짧은 대화를 반복해 2업데이트하는 Stage1b는 배선·VRAM·비용만 측정한다. 고유 진단 체크포인트를 남기고 Stage1c에서 같은 공개 문항을 재평가하더라도, 작은 노출에 따른 큰 분산/망각 때문에 지능 향상을 예측하거나 주장하지 않는다.
 
+### 3.1 2026-09-28 예측 대조 — 형식 회복과 배선은 확인, 온라인5회는 미완
+
+단순한 태그형 출력은 고정16에서 15건, JSON은14건 완결했으나 **1건 차를 일반적인 형식 우위로 채택하지 않는다**. 소형 학생 배선 Stage2gW는 실제2업데이트·유한 손실/gradient와 새 checkpoint를 만들었지만 13행 반복의 train CE 하락이라 지능 향상 예측의 근거가 아니다. 예상하지 못한 Stage2fW의 **PEG native-format HTTP500**은 독립 단일문항에서도 재현됐고, parser 우회는 `length`/중복 태그 때문에 교육 답 회복이 아니었다. Stage2iWa는 서버500과 원천 수락률 부족으로 optimizer0/5였다. 따라서 ~~형식 gate 뒤 현재 유한 source로 바로 온라인5회 처리율을 잴 수 있다~~는 낙관적 경로를 철회하고 Stage2fWb 보충→Stage2iWd 한 업데이트 기술 게이트→사용자 확정 다원천 C안의 새 계보/권리·실제 토큰 예산 순서로 바꾼다.
+
 ## 4. 단계 설계 — 싼 것부터
 
 ### Stage0W — 공개 OASST2 한정 선별/비보호 CPU 게이트(코드 작성, 실자료 check-only)
@@ -126,7 +130,9 @@ Stage2hW 결과의 `completion_tokens`는 사고+최종을 합치며 요청 wall
 
 ### Stage2iWa/Wb/Wc — 교사+학생 온라인 5 optimizer 업데이트 처리율 (사용자 실행 세 팔)
 
-사용자는 120 optimizer 업데이트를 즉시 돌리지 않고 **5회만 먼저 실측**한 뒤 결과로 다시 결정했다. 이후 직접 실행은 하지 말고 아래 세 조건을 각각 SH로 준비하라고 지시했다. [공통 진단](../scripts/diag_p106b_online_rate5.py)은 Stage2e의 공개 v3 **OASST2 단일턴·영어 원천** 중 길이 상한을 통과한 365개 concept의 영/한 쌍을 고정 순서로 읽는다. ko는 번역, en은 원답 교정이다. 다섯 optimizer 업데이트 각각 micro8×accum16을 채우려면 **새 교사 출력이 수락된 640 대화**가 필요하다. 한 microbatch마다 새 출력8개를 요청하고 언어를 교대로 바꾼다. 같은 원천 concept의 영/한 출력은 쌍을 이루므로 **640개 독립 concept는 아니다**. 실패 출력은 새 source로 대체하되 언어당 고유 후보365개를 소진하면 `exit8`이며, 실패를 반복 seed로 감추지 않는다.
+사용자는 120 optimizer 업데이트를 즉시 돌리지 않고 **5회만 먼저 실측**한 뒤 결과로 다시 결정했다. 이후 직접 실행은 하지 말고 아래 세 조건을 각각 SH로 준비하라고 지시했다. [공통 진단](../scripts/diag_p106b_online_rate5.py)은 Stage2e의 공개 v3 **`OpenAssistant/oasst1` 단일턴·영어 원천** 중 길이 상한을 통과한 365개 concept의 영/한 쌍을 고정 순서로 읽는다. ko는 번역, en은 원답 교정이다. 다섯 optimizer 업데이트 각각 micro8×accum16을 채우려면 **새 교사 출력이 수락된 640 대화**가 필요하다. 한 microbatch마다 새 출력8개를 요청하고 언어를 교대로 바꾼다. 같은 원천 concept의 영/한 출력은 쌍을 이루므로 **640개 독립 concept는 아니다**. 실패 출력은 새 source로 대체하되 언어당 고유 후보365개를 소진하면 `exit8`이며, 실패를 반복 seed로 감추지 않는다.
+
+**2026-09-28 원천 계보 정정:** 기존 설명의 `OASST2`는 잘못이다. Stage2a/c/d의 고정16은 `OpenAssistant/oasst2`이지만, Stage2e 작업표는 [공개 v3 manifest](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)에 연결된 `OpenAssistant/oasst1`과 `CohereLabs/aya_dataset`에서 왔다. Stage2iWa는 그 작업표 중 `oasst`·영어 원문·단일턴 624쌍을 골라 질문/답 각각1200자 이하로 더 줄인 **365쌍**이다. 5회에는 한영 각각320개의 수락 답이 필요하므로 후보 수락률≥87.7%가 필요하지만 사용자 초반 원본은33요청 중23형식 후보(69.7%)였다. 서버500을 빼더라도 이 유한 풀만으로 5회 완료를 전망하기 어렵다. Stage2iWb/Wc와 동일 OASST1 pool로 만든 추후 실험은 원천을 숨기지 않고 provenance를 명시하며, 새 OASST2/Aya/사전 안과 직접 한 변수 비교로 취급하지 않는다.
 
 | 구분 | SH | 교사 사고/출력 예산 | 모델카드 sampler | 상한 |
 |---|---|---|---|---:|
@@ -137,6 +143,48 @@ Stage2hW 결과의 `completion_tokens`는 사고+최종을 합치며 요청 wall
 [PrismML 공식 모델카드](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf)는 thinking과 non-thinking sampler를 위처럼 다르게 권장한다. **현재 카드에는 `low`를 지원하지 않으며 xhigh에 가깝다고 적혀 있는데** 로컬 Stage2hW의 `low`는 4/4 완결·medium보다 짧았다. 카드/실물 런타임 차이 가능성이 있어 A를 정식 저비용 reasoning 경로로 가정하지 않는다. `--reasoning auto`와 요청별 top-level `reasoning_effort`를 유지하고 출력에서 사고·최종을 따로 기록한다. 사고 텍스트는 원본 `HF/sft_ready/p106b_teacher_sft/v10_online_rate5_<effort>/raw_*.jsonl`의 sidecar일 뿐 assistant 지도 target이 아니다. 소프트웨어가 교사의 `[[QUESTION]]`/`[[ANSWER]]`/`[[NOTE]]`를 파싱해 canonical 역할·ChatML·assistant-only 마스크를 소유한다.
 
 세 팔은 동일한 P076 B3 mean 부모·legacy32 tokenizer·학생 micro8/accum16/ckpt-on, 모델 compile/default, Muon RMS4+AdamW를 쓴다. 동일한 공개 source/문항 순서를 쓰지만 교사 sampler/사고강도뿐 아니라 ctx/max 출력 상한도 달라 **팔 간 품질 또는 속도 차를 effort 단독 효과로 귀속하지 않는다**. 각 응답의 완료토큰·요청벽시계·format/reject, 학생 업데이트의 teacher/compute/전체벽시계·실제 비패딩 처리/assistant 지도토큰·언어별 토큰·전역 표본 peak와 PyTorch reserved를 별도 기록한다. 모든 시도와 학생 target은 20,000,000바이트 이하 write-once JSONL 샤드/해시 manifest로 남긴다. 시작 다른 GPU compute 앱0/free≥14GiB, 공존 후 free≥2GiB, 중간 free<512MiB·시간 초과·소스 고갈·형식 실패는 부분 이력을 보존하고 `exit8`이다. **체크포인트 저장0·held-out 평가0·정식 `TRAIN_READY`/품질 PASS0**. `exit0`은 이 제한 처리율 gate의 5업데이트 기능 완료일 뿐이다. 5회 결과와 한국어/영어의 실제 비패딩 토큰 비율·교사/학생 속도를 본 뒤에만 120회 온라인 지속 여부, chunk 선제생성/10GB 이하 RAM 버퍼의 필요성을 새 계획으로 결정한다. 이 세 SH를 큐에서 모두 연속 실행할 필요는 없다.
+
+### Stage2jW — Stage2f/Stage2iWa 공통 HTTP 500의 매우 작은 원인 격리 (이번 지시 직접 허용)
+
+2026-09-28 사용자 원본은 Stage2fW 교사-only 패널의 25번째 문항을 기록한 뒤 26번째에서 HTTP 500·`exit9`, Stage2iWa 온라인 low의 교사 응답33건 뒤 다음 요청에서 HTTP 500·`exit8`, 학생 optimizer 업데이트0을 보였다. 두 단계의 기존 클라이언트는 HTTP 오류 본문을 버렸고 Stage2fW는 부분 raw 29행을 남겼지만 manifest를 닫지 못했다. 따라서 **서버가 왜 500을 반환했는지 로그만으로는 확정할 수 없다**. Stage2iWa의 서버 실패를 과학적 음성8로 분류한 것은 도구 분류 결함이고, Stage2fW가 미통과인데 Stage2iWa의 check-only가 이를 선결에서 거부하지 않은 것도 계약 결함이다. Stage2gW의 학생2업데이트는 별도 v7 한국어13행 반복으로 Stage2fW의 성공이나 온라인5회가 아니다.
+
+사용자는 이번 지시에 한해 매우 작은 CPU+GPU 직접 게이트를 허용했다. [Stage2jW 진단](../scripts/diag_p106b_http500_isolation.py)과 [별도 SH](../run_P106B_Stage2jW_http500_isolation.sh)는 **교사만** 두 개의 새 localhost 서버로 올려 각 환경의 실패 직전 입력과 첫 실패 입력을 고정 2개씩, 최대4요청/600초로 한정한다. 기존 Stage2fW 부분 raw SHA `2D395CD2155D04934F13240430B4D566BA621B6871775BCCB4083D8202E7347E`, Stage2iWa 부분 raw SHA `17A3EE87711E78D58FCD4A3BEF3A16662A02BE7BF25A00C4B949C22780EE5146`를 먼저 대조한다. GPU 경쟁 프로세스0·시작 free≥8192MiB에서만 모델을 올리고 출력은 새 `HF/sft_ready/p106b_teacher_sft/v11_http500_isolation/`에 write-once로 남긴다. 학생 로드/업데이트·체크포인트 쓰기·원본 v8/v10 재실행/수정은0이다.
+
+독립변수는 **긴 세션 상태를 없앤 새 서버에서 정확 실패 위치 입력의 HTTP 500이 재현되는가**이다. 서버 `/apply-template`+`/tokenize`의 프롬프트 토큰 수, `ctx/max_tokens`의 명목 합, HTTP 본문 SHA/오류유형, 제한된 서버 오류 줄, 요청 전후·표본 GPU 점유를 기록한다. 두 서버 방식은 long-session 누적상태·학생 공존/학습을 의도적으로 제거하므로 HTTP 500이 **재현되지 않아도 기존 실패를 해결했다는 뜻이 아니다**. 재현되면 HTTP 500은 도구/백엔드 실패 `exit9`로 보고 본문 근거로 입력 초과·메모리·서버 결함을 더 좁힌다. 재현되지 않으면 장시간 상태/학생 공존 여부를 별도 사용자 실행 단계로 확인해야 하고, 출력 상한 축소·자동 retry만으로 원인을 숨기지 않는다. 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### Stage2jWb — peg-native parser 우회 단일 요청, 학생 입력으로 직접 사용 금지
+
+Stage2jW에서 Stage2fW 문항26은 새 서버에서도 HTTP500을 재현했고, 원문 오류 본문은 `The model produced output that does not match the expected peg-native format`이었다. 서버 토큰 preflight의 입력817+출력상한4096은 ctx6144보다 작고, 응답 뒤 GPU free는 약8.5GiB였다. 따라서 **그 재현 사례**는 긴 세션 누적상태·학생 공존·명목 컨텍스트 초과나 관측 OOM이 필수 원인은 아니라는 반례다. 반면 Stage2iWa의 한국어 소스23은 학생 없는 새 서버에서 HTTP200이라 원래 온라인500의 원인을 아직 모른다.
+
+이번 승인된 초소형 진단 범위에서 [Stage2jWb](../run_P106B_Stage2jWb_peg_parser_bypass.sh)는 Stage2f 문항26 하나만 동일 모델/소스/seed/sampler/ctx/max로 재생하고 서버의 `--skip-chat-parsing`만 바꾼다. [llama.cpp 서버 안내](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md)는 이 옵션이 서버의 chat/reasoning/tool 파싱을 건너뛰어 원형 응답을 `content`에 담는다고 설명한다. 실행해 HTTP200·원형 출력이 나오면 **서버 native 파서와 실제 모델 출력의 불일치**로 원인을 더 좁힐 수 있다. 그러나 사고와 최종답 구분도 비활성화되므로 원형 `content`는 **학생 assistant target이 아니며** 한국어/영어 tagged 필드만 임의 정규식으로 뽑아 학습시키지 않는다. 원형 응답은 새 무시된 `HF/sft_ready/p106b_teacher_sft/v12_peg_bypass_case26/`에 write-once로 남기고 실행 로그에는 SHA·구조 표지 수만 적는다. 단일 요청/최대300초·학생0·checkpoint0이고, 서버 우회가 형식·사실 품질 해결이라는 주장은 금지한다.
+
+### Stage2fWb — 옛 29시도 SHA 참조 + 빠진 7문항만 새 버전에서 보충
+
+사용자 Stage2fW는 32개 고정 job 중 **25번 문항까지 29시도**를 남기고 26번에서 서버의 PEG native-format HTTP500으로 종료9였다. old partial 원본은 손대지 않는다. [보충 진단](../scripts/diag_p106b_bilingual_recovery.py)과 [별도 SH](../run_P106B_Stage2fWb_bilingual_teacher_recovery.sh)는 정확 old SHA/29시도/1~25번 job 매핑을 대조하고 **26~32번 일곱 문항만** 새 `HF/sft_ready/p106b_bilingual_v2/teacher_recovery/`에 요청한다. 기존 29시도는 복사하지 않고 SHA 참조로 결합해 언어/주제/학생 비패딩·assistant 지도 토큰 분모를 재계산한다. 신규 답은 교사 tagged 형식→코드 소유 canonical/ChatML의 1024 위치·중복 화면까지 검사하되 자동 교육 채택은0이다.
+
+Stage2jWb 단일 문항은 `--skip-chat-parsing`에서 HTTP200이지만 **max4096을 모두 사용해 `length`로 끝났고 tagged QUESTION/ANSWER가 반복돼 파서 완결이 아니다**. 따라서 서버 파서를 우회한 원문을 학생에게 전달하지 않는다. 원래 native 파서는 유지하고, 정확한 `peg-native format` 500만 **해당 문항의 거부된 교사 시도**로 기록·다른 seed에서 최대 한 번 재요청한다. 두 번 모두 실패하면 그 문항을 거부하고 다른 고정 job을 계속한다. 알 수 없는 HTTP/transport 실패는 도구 실패 `exit9`로 멈추며 부분 시도·오류본문·서버 진단과 manifest를 보존한다. 형식/길이/중복 거절도 감추지 않는다. 결합 패널의 사전 문턱은 한영 각 후보≥12/16, hard wall1800초, 기존 P106B의 **형식/코드 래핑 가능성만** 판정한다. 이 7문항 보충은 같은 32개 입력을 처음부터 다시 뽑는 것보다 교사 비용을 줄이지만, 새 서버/날짜·실패 처리 정책이 달라 old Stage2f와 시간비 인과 비교는 금지한다.
+
+### Stage2iWd — 옛 OASST1 원천의 온라인 백엔드 1-update 재시험 (조건부)
+
+Stage2iWa는 **학생 optimizer 0회**로 종료했고, HTTP500 응답 본문·서버 진단을 기록하지 않아 그것이 Stage2f의 PEG 출력 불일치와 같은 실패인지 모른다. [후속 코드](../scripts/diag_p106b_online_rate1.py)와 [별도 SH](../run_P106B_Stage2iWd_online1_backend.sh)는 **Stage2fWb 한영 각 후보≥12/16·manifest SHA**를 모델 로딩 전에 요구하고, 같은 P076 부모/legacy32·micro8×accum16·low thinking sampler·OASST1 finite source에서 **1 optimizer 업데이트**까지만 진단한다. 정확 PEG native-format 500은 해당 교사 시도만 거부·별도 SHA/오류본문 기록하고 다음 고유 source로 가며, 다른 서버/전송 오류는 부분 원본 보존 후 **도구 실패 exit9**다. 새 `v13_online_rate1_low_backend/`에 모든 시도·후보와 실제 업데이트에 들어간 generation ID를 구분해 write-once 저장하고 checkpoint는0이다. `Stage2iWa` raw의 `accepted_for_training=true` 23건은 실제로 optimizer가0회여서 **선정된 미적용 후보**였으며 새 코드에서 같은 오해를 반복하지 않는다. 이 1회는 OASST2/Aya/사전 혼합 5회 목표가 아니라 **동시 교사+학생 호출 경로의 수리 검증**이다. 사용자 재실행·새 smoke 이전에는 E2E `NOT_RUN`이다.
+
+### Stage2kW — 사용자 선택 C: Aya Dataset·OASST2·국립국어원 다원천을 계보별로 묶는 읽기 전용 계약
+
+사용자는 다원천 C안을 선택했지만 A안의 비용/원천 분리와 B안의 사전 권리·다의어 주의도 보존하라고 했다. [원천 관리자](../scripts/build_p106b_multisource_deck.py)와 [CPU 읽기 전용 SH](../run_P106B_Stage2kW_multisource_lineage_census.sh)는 다음 사실을 **같은 집합으로 뭉개지 않고** 별도 계보로 기록한다.
+
+| 층 | 고정 원천·선별 관측 | 생성 역할 | 독립성·선결 |
+|---|---|---|---|
+| Aya 영어 | 공개 v3의 `CohereLabs/aya_dataset` revision `f9ea0458…`에서 영어 단일턴 train1363/val76개. `aya_collection`과 **다른 저장소**다 | 원 영어 QA의 교정 EN + 교사 번역 KO | 같은 `parent_concept_id`, 두 언어를 독립 사실2건으로 세지 않음. 카드 Apache-2.0만으로 사람 품질/PII PASS 아님 |
+| OASST2 | 별도 `OpenAssistant/oasst2` revision `179dd21…`의 reviewed 단일턴 영어5400·한국어5. 공개 v3 첫 질문 겹침/자체 중복 제외 후 영어3824·한국어1개 계열; 영어 질문/답 각각1200자 이하로 제한하면 새로운 계열2018개 | 원 EN 교정+KO 번역; 원 KO는 한영 양방향 **canary 1개**만 | OASST1 v3와 이름을 혼동하지 않음. OASST2 reviewed EN 멀티턴2378은 이 Stage2k **단일턴** 작업표에 자동 편입하지 않음 |
+| 국립국어원 JSON | 지정 2026-08-19 JSON11개, 뜻풀이76,833개/고유 표제 target ID53,671. `concept/word-*.txt` 27개와 TXT2는 표제어 **선정 우선순위/교차검증**이지 새 독립 QA 행이 아님 | 의미 ID·품사·동형어·용례 근거로 KO QA; 실제 KO 교사 답이 생긴 뒤 별도 EN 번역 child | 현 작업표는 원문 뜻풀이/용례를 출력하지 않는 locator76,833건만 설계. `target_code+lexicalUnit+sense+file/ordinal`로 ID 충돌 회피; 사이트 CC BY-SA2.0 KR 정책과 로컬 판본 파생·배포 계약 별도 검토 |
+
+Stage2kW 읽기 전용 실사에서는 public Aya 양언어 job2,878개, OASST2 양언어 job7,650개, 사전 한국어 의미 locator76,833개 등 **87,361개 job**을 계수했다. 이것은 **교사 답안/독립 지식/학습 토큰 수가 아니다**. 사전 뜻풀이 하나에서 한국어 QA를 생성한 뒤 영어 번역 child를 만들 때도 부모 의미 ID와 train/val split이 고정된다. 공개 Aya의 기존 v3 split을 유지하고 OASST2/사전은 원천 concept hash로 *생성 전에* split한다. 정규화된 첫 질문이 v3와 겹치는 OASST2는 제외한다. 모든 job은 source repo·revision·원본 SHA·object/sense ID·변환종류·부모 concept ID·언어·rights 상태를 갖는다. 보호 dictionary 원문/word 파일의 내용은 이 작업표에 복사하지 않으며, 실제 `--execute`는 사용자 소유 `HF/sft_ready/p106b_multisource_rights_approval.json`의 정확 원천 SHA·파생 사용 승인 기록이 없으면 `HOLD8`이다. 현재 그 승인/실행은 `NOT_RUN`이고 20MB 샤드로 만든 학습 corpus도 없다.
+
+교사관리 코드의 `teacher_admission()`은 향후 같은 localhost 교사 서버의 `/apply-template`·`/tokenize`에서 정확 입력 토큰을 받은 뒤 `DIRECT/COMPRESSION_REQUIRED/HOLD`를 반환한다. `wrap_teacher_answer()`는 **교사가 작성한 최종 태그 본문**만 canonical로 감싸고 source repo/revision/SHA·object/sense·변환 종류·부모 concept ID·권리 상태를 메타데이터로 고정한다. 교사 사고는 외부 raw sidecar 참조일 뿐 현재 학생 loss 대상이 아니다. 출처가 사전인 job은 승인된 조건에서도 영문 번역을 **같은 concept의 자식**으로 생성하지, 독립 지식 건수로 세지 않는다. 이 함수 계약의 합성 CPU 자기시험은 PASS지만 다원천 교사 실제 호출/정답성은 `NOT_RUN`이다.
+
+**사용자 A안 확정 — 1,200자 규칙 폐기:** Stage2iWa의 `질문≤1200자·답≤1200자`는 `ctx3072/max2048`에서 약1024 입력토큰을 남기기 위한 거친 프록시였다. 이는 모델/토크나이저의 절대 제한이 아니다. Stage2jW의 **원천 약2461자**도 교사 chat template 입력817토큰으로 `817+4096<6144`였고 실제 실패는 PEG native-format 불일치였다. 새 관리자에서는 문자 기준으로 미리 버리지 않고, 요청 직전 서버 `/apply-template`·`/tokenize`의 **실제 입력토큰 + 출력상한 + 안전여유128 ≤ context**면 원문 그대로 쓴다. 미달만 `COMPRESSION_REQUIRED` 별도 child 작업으로 보내며 원문을 조용히 자르지 않는다. [교사 `compress_qa` 작업](../scripts/p106b_teacher_format.py)은 질문 의도·답 사실·부정·고유명사·숫자·단위·형식 제약 보존을 요청한다. [원천 관리자](../scripts/build_p106b_multisource_deck.py)는 **먼저 원천 언어에서** 압축 QA를 만들고, 숫자·부정/필수 리터럴의 보수적 누락 검사를 거친 후에만 원래 목표 언어의 번역/교정 child를 생성하도록 부모 concept/split/생성 ID를 계승한다. 한국어 번역 목표를 원천 영어 압축 단계에 섞지 않는다. 이는 **의미보존의 충분조건이 아니므로** 압축본의 원문 대조/표본 품질 확인 전 학생 target으로 자동 채택하지 않는다. 너무 긴 입력이 압축 프롬프트에도 안 들어가면 문단 근거 분할 또는 HOLD이지 무근거 앞부분 절단이 아니다. 지금은 이 함수 계약의 CPU fixture만 PASS이며 실제 teacher 압축·새 한영 토큰 균형은 E2E `NOT_RUN`이다.
+
+**규모 경계:** 사전76,833 의미 ID와 공개 약5,264 원천 concept을 각각 한 번 100토큰 대화로 바꾸어도 대략8M토큰 규모의 거친 계산에 불과하다. 300M 비패딩 처리토큰의 4epoch 하한인 고유75M에는 한참 모자랄 수 있다. 5회 처리율·생성 답 길이·거부/근사중복률 실측 전에 이 작업표만으로 300M/600M 완주 가능하다고 주장하지 않는다. 사전 한국어 자산은 [국립국어원 공식 저작권 정책](https://krdict.korean.go.kr/kor/kboardPolicy/copyRightTermsInfo)의 표시/동일조건을 로컬 판본·파생물/배포 방식에 적용하는 결정을 별도로 받아야 한다. 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 ### Stage3W/Stage4W — 300M 먼저, 한국어 평가 통과 때만 600M (조건부)
 
@@ -198,6 +246,10 @@ JSON 내부에는 `한국어기초사전 - 국립국어원 제공`, 생성시각
 | Stage1cW | 약1.5h(공개 3과제×512와 P10036) | 사용자 GPU 모델2개 순차 평가, 보호 held-out0·문항별 원본 write-once |
 | Stage2hW | 4.1분 실측(상한17분) | 이번 지시 한정 Codex 교사-only 12요청, 학생 학습0; GPU 결과는 결과101 후속 절에 귀속 |
 | Stage2iWa/Wb/Wc | 각각 4h/1.5h/6h hard wall | **사용자 실행용 대안 세 팔**, 합산 큐 의무 아님; GPU full 교사+P076 학생, 최대5 optimizer 업데이트·체크포인트0 |
+| Stage2jW/Wb | 각각 ≤0.17h/≤0.08h hard wall | 이번 사용자 한정 GPT 직접 교사-only GPU 4+1요청, 학생·checkpoint0; 진단 원본 결과101에 별도 기록 |
+| Stage2fWb | ≤0.5h hard wall | 사용자 full 교사 GPU, 기존 부분 raw29시도 참조+누락7문항만 생성; 학생0 |
+| Stage2iWd | ≤1.5h hard wall | 사용자 full 교사+P076 학생, OASST1 원천의 **1 optimizer 기술 gate**, Stage2fWb PASS 선결·checkpoint0 |
+| Stage2kW | 약0.1h CPU | 정확 공개 v3/OASST2와 지정 보호 사전/word/TXT **읽기 전용** 구조·SHA/계수; 모델·복사·출력 deck0 |
 | Stage2W | `NOT_ESTIMABLE` | 승인 원천의 실제 유니크 지도토큰·교사 accepted sample 비용·동일평가 확인 후 산정 |
 
 ## 7. 실행 파일·사전 점검
@@ -208,9 +260,11 @@ JSON 내부에는 `한국어기초사전 - 국립국어원 제공`, 생성시각
 - Stage1dW: 완료 런처는 결과101·Git 보존 후 삭제. 교사 교정형3/3 형식 통과이나 새 수치오류1, 자동 학습수락0.
 - Stage1fW: 사용자 실행·결과101 §10에서 교정형16/16 형식 PASS·답안 결함8을 회수했다. `run_P106B_Stage1fW_teacher_repair_full16-done.sh`는 재현명령과 Git 이력 보존 뒤 사용자 승인 삭제 조건을 별도로 판정한다.
 - Stage1gW: 역사 SH는 결과101 §11에 재현명령과 원본을 보존하고 완료 표기로 전이한다. 사용자 실행8행 중 lint7/8로 사전 문턱 실패; 재실행은 같은 v5에 하지 않는다.
-- Stage2a~gW: 교사 내용↔코드 소유 양식·코퍼스 비용·공개 job deck·소형 학생 배선의 각 독립 게이트 SH가 존재한다. Stage2eW 공개 job deck은 2026-09-28 CPU로 실제 생성·SHA 검증했지만 교사 출력이나 학생 품질은 아니다. Stage2c/d/f/g는 각 선결 버전의 사용자 실행 전까지 E2E `NOT_RUN`이다.
+- Stage2a/b/c/d/gW: [결과101 §14~§17·§19](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 사용자 실제 로그로 CPU 계약·태그15/16·v7 한국어13/2·학생 오프라인2업데이트를 회수했다. Stage2e 공개 v3 job deck5,429개는 생성됐으나 교사 답/품질이 아니다. Stage2fW는 문항26 HTTP500·출력 manifest 부재로 **미완·exit9**이며 Stage2fWb 별도 보충이 필요하다.
 - Stage2hW: 이번 지시의 명시적 단기 CPU+GPU 허용으로 교사-only 12요청을 직접 실측했다. v9 write-once 원본과 별도 runlog를 결과101에 회수한다. **학생 온라인 5회가 아니다.**
-- Stage2iWa/Wb/Wc: 사용자 요청으로 세 effort별 SH·분리된 v10 output·write-once partial 기록을 준비한다. GPT는 세 팔을 직접 실행하지 않는다. 새 smoke와 Stage2eW job deck SHA, GPU idle/VRAM, 정확 부모/tokenizer 선결이다. A/B/C 중 하나의 결과만으로 다른 팔이 PASS한 것으로 승격하지 않는다.
+- Stage2iWa/Wb/Wc: 사용자는 A(low)만 실행했고 [결과101 §20](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 교사33응답 뒤 HTTP500·optimizer0/5를 회수했다. B(none)/C(medium)는 미실행, 구 Wa/v10 write-once 불변이다. 세 팔은 이제 Stage2fWb 형식·manifest를 모델 전에 요구하도록 고쳤다. OASST1 365후보/언어는 5회 필요320/언어 대비 얕으므로 B/C 무조건 실행 권고 금지. 새 OASST2/Aya/사전 C안과 같은 원천으로 오인하지 않는다.
+- Stage2jW/Wb: 이번 사용자 한정 Codex 교사-only4+1요청의 별도 v11/v12 결과가 [결과101 §21~§22](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에 있다. 교사 native parser의 문항26 HTTP500은 정확 PEG 불일치, bypass의 HTTP200은 길이 소진·중복 태그로 답안 불가다. 사용자 재실행 단계가 아니며 같은 출력 버전을 재사용하지 않는다.
+- Stage2fWb/Stage2iWd/Stage2kW: 사용자 실행 또는 CPU 확인용 새 SH를 별도 등록했다. 각각 원형 부분29시도 SHA 참조+누락7문항 보충, 한영 gate 후 OASST1 원천 1-update 백엔드 복구, Aya Dataset/OASST2/정확 사전 JSON·word/TXT read-only 계보 실사다. 현재 사용자 새 smoke와 각 원본 결과 전 `E2E_NOT_RUN`이다.
 - Stage1cW: [비활성 SH 템플릿](../scripts/templates/P106B_Stage1cW_parent_student_posthoc.sh.in)만 있다. Stage1b 고유 checkpoint가 아직 없어 루트 SH/TSV에 등록하면 입력태그 린터가 실제 FAIL한다. 사용자가 Stage1b 로그·체크포인트를 회신해 SHA/메타데이터를 판독한 **다음 지시**에서 새 단계명으로 활성화한다. 생성 답안·문항별 벤치 원본이 결과문서의 근거다.
 - Stage2W: 원천 수·사람 표본·평가 설계 미확정이므로 **SH 미작성**. 두 준비 SH가 존재하는 것과 Stage2 본학습 사용 승인은 다르다.
 - tag `p106b_s1b_oasst2_ko_online_s1337`: 레지스트리 조회에서 기존 로그 충돌0. 새 Stage1b 출력은 P106B 고유 이름이며 기존 P076/공개 SFT/교사 파일을 덮지 않는다. 과거 P076 mean은 같은 시작점 전후 진단의 부모이지 **동일 학습량의 교사 없는 대조군**이 아니다.
@@ -231,7 +285,7 @@ JSON 내부에는 `한국어기초사전 - 국립국어원 제공`, 생성시각
 
 ## 8. 한계·보호선
 
-OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 정답이 아니므로 P106의 검증형 `ACCEPT` 원장을 이 실험으로 채우지 않는다. 출처 카드 Apache-2.0 표기는 개별 텍스트의 개인정보·권리 승인이 아니다. 자동 연락처/숫자 검사는 **명백한 경우만** 걸러 의미 왜곡 전부를 검출하지 않는다. 그래서 원문·교사가 실제 가르친 문구·선정/거부 상태를 버전드 데이터셋에 남기고 사후 분석한다. 사전 파일의 뜻풀이가 전부 존재해도 다의어 표준번호·출처/라이선스·용례 부재를 건너뛰지 않는다. GPT가 보호 `concept`/사전 원본을 HF에 복사하거나 학습·GPU를 대신 실행하지 않는다. 성공해도 16유니크×2업데이트의 과적합·분산 때문에 Stage2 대조 없이 데이터 채택을 판정하지 않는다.
+OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 정답이 아니므로 P106의 검증형 `ACCEPT` 원장을 이 실험으로 채우지 않는다. 출처 카드 Apache-2.0 표기는 개별 텍스트의 개인정보·권리 승인이 아니다. 자동 연락처/숫자 검사는 **명백한 경우만** 걸러 의미 왜곡 전부를 검출하지 않는다. 그래서 원문·교사가 실제 가르친 문구·선정/거부 상태를 버전드 데이터셋에 남기고 사후 분석한다. 사전 파일의 뜻풀이가 전부 존재해도 다의어 표준번호·출처/라이선스·용례 유형을 건너뛰지 않는다. 원칙적으로 GPT가 보호 `concept`/사전 원본을 HF에 복사하거나 학습·GPU를 대신 실행하지 않는다. 이번 사용자 지시에만 허용된 Stage2jW/Wb 교사-only 초소형 GPU 진단은 이 원칙의 **한정 예외**이며 학생·사전 원본을 건드리지 않았다. 성공해도 13유니크×2업데이트의 과적합·분산 때문에 Stage2 대조 없이 데이터 채택을 판정하지 않는다.
 
 ## 9. 실행 이력 / 갱신
 
@@ -239,3 +293,6 @@ OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 
 - 2026-09-27: 사용자 [결과101](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 새 smoke43/0/0/0 뒤 Stage1aW 교사16응답 중 완결9·미완결7, 실측 wall173.97초·총 생성10,429토큰을 회수했다. `12/16` 사전 문턱 미달은 §3이 경고한 형식 음성으로 유지한다. 당시 파서는 비정상 `finish_reason`을 하나로 뭉치고 사고/최종 부분출력·행별 사용량을 저장하지 않아 **절단 원인 귀속이 불가**하다. Stage1bW는 상류 실패 뒤 check-only에서 종료9로 잘못 분류했고 실제 교사+학생 학습은0회였다. 후속 코드는 같은 v1 문턱을 HOLD8로 고쳤지만 원본 로그는 수정하지 않는다. 새 설정의 재실행은 다른 단계·데이터 버전으로만 연다.
 - 2026-09-27 후속: Stage1aWb는 기본 sandbox NVML 실패로 교사 적재0, Stage1aWc는 사용자 한정 허용 경로에서 4쌍 대응 cap768 0/4 대3072 3/4 완결을 확인했다. 사고문은 양쪽4/4 존재, 최종 문구는 큰 cap3/4에만 있었다. v2 raw는 불변이다. 직접 읽은 WebRTC 번역은 원문 API 오개념을 옮겼고, 교사 교정형 Stage1dW는 세 문항 JSON3/3을 냈으나 자기 `CORRECTED` 2건 중 하나가 GPT‑3 175B를 **175억**으로 새로 오기했다. [결과101 §9](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 외부 API/논문 근거 대조에 따라 그 행은 REJECT, WebRTC는 API 사실만 부분 확인, 수학50·20은 산술 확인이다. v3 원본·점검표를 별도 보존하고 자동 `ACCEPT`/학생학습0을 유지한다.
 - 2026-09-28: 사용자 새 smoke43/0/0/0 뒤 Stage1fW full16 완결, 교사 자기 `CORRECTED`8/`PRESERVED`8. 직접 검토에서 새 결함8·추가검토4·잠정4라 자동 학습 채택0을 유지한다. 사용자 승인 A로 Stage1gW의 결함8만 프롬프트·진단기 response hook·최대3회 재시도에 연결했다. v5 출력은 새 버전·모델 사용자 실행 전 `NOT_RUN`이다.
+- 2026-09-28 사용자 새 [smoke](../smoketest_logs/202609281223_smoke_cf99a59.txt)는 이전 `cf99a59` 트리의43팔·실패0·exit0 오류표지0·계측0이었다. [결과101 §14~§20](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은 Stage2a/b CPU 계약, Stage2c 태그15/16·JSON14/16, Stage2d 한국어13+2행, Stage2f 문항26 HTTP500 미완, Stage2g 학생2업데이트/비패딩36,894, Stage2iWa 교사33응답·optimizer0/5를 구분했다. Stage2g CE 하락은 같은13행 반복 train 내 결과이지 val/대화 품질이 아니다.
+- 2026-09-28 GPT 한정 직접 Stage2jW/Wb: 새 서버의 Stage2f 문항26에서 `peg-native format` HTTP500을 재현했고 입력817+max4096<ctx6144·free≈8.5GiB였다. parser bypass는 HTTP200이나 `length`4096·반복 태그로 불완결이어서 학생 target 금지. Stage2i 원 실패 입력은 교사-only 새 서버에서 HTTP200이므로 공통 원인을 단정하지 않는다. v8/v10 원형과 새 v11/v12 진단은 각각 불변이다.
+- 2026-09-28 사용자 다원천 C안·초과길이 A안 선택: 기존 공개 v3 `oasst`는 OASST1이라는 계보 오류를 정정했다. 고정 OASST2 ready trees13,854 중 reviewed 영어 단일턴5,400/한국어5; 새 Stage2kW 읽기 전용 계약은 Aya Dataset 영어1,439개·OASST2 중복제외 영어3,824/한국어1개·사전 뜻풀이76,833 locator를 분리해 계수했다. 87,361 job은 답안/학습토큰이 아니다. 보호 원문/교사 변환 실행은 별도 정확 권리·파생 승인 기록 전 `HOLD`이고, 1200자 초과는 교사 실제 template 토큰 예산을 재어 DIRECT/압축 별도 child로 분기한다.

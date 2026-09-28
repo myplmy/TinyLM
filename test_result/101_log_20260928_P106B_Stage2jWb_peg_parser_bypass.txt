@@ -1,0 +1,32 @@
+Authorized one-request CPU+GPU forensic: reproduce Stage2f case26 with only --skip-chat-parsing changed. Raw content stays in ignored HF v12; reasoning/final NOT separated, training target0, checkpoint0.
+
+==============================================================================
+[runlog] 2026-09-28 14:40:41  name=P106B_Stage2jWb_peg_parser_bypass
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_peg_bypass_probe.py --self-test
+==============================================================================
+[PASS] one fixed case, --skip-chat-parsing only; no student/target/ckpt; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 14:40:42)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 14:40:42  name=P106B_Stage2jWb_peg_parser_bypass
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_peg_bypass_probe.py --check-only
+==============================================================================
+{"case": 26, "job_id": "23C70D2483660848F0F4617B3669374747B6AD70FC3BB4B9BC993881A19B3495", "model_gpu": "NOT_RUN", "output": "HF/sft_ready/p106b_teacher_sft/v12_peg_bypass_case26", "student_training": "NOT_RUN"}
+[CHECK_ONLY] exact failed input pinned; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 14:40:43)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 14:40:43  name=P106B_Stage2jWb_peg_parser_bypass
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_peg_bypass_probe.py --execute
+==============================================================================
+[PEG_BYPASS] {"completion_tokens": 4096, "content_sha256": "64BE463967CD9ECA066ACED63AFE8ECCF4DBE5F8B5782B1B69FACF967A65931C", "error_type": "", "http_status": 200, "native_marker_counts": {"</think>": 0, "<think>": 0, "<|im_end|>": 0, "<|im_start|>": 0, "[[/ANSWER]]": 1, "[[/QUESTION]]": 2, "[[ANSWER]]": 2, "[[QUESTION]]": 2}, "raw_sha256": "544CC012588A8E096D82E60A3F83E073E7C34A739E4469678FA2C497A9CC679E", "request_wall_sec": 60.698, "student_training": "NOT_RUN"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.1분  (2026-09-28 14:41:52)
+==============================================================================

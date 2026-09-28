@@ -1,0 +1,34 @@
+Prerequisite Stage2cW v6 teacher log/manifest and fixed val cases. Canonical wrapper is code-owned; raw reasoning remains a SHA-bound sidecar and never an active SFT target.
+
+==============================================================================
+[runlog] 2026-09-28 13:14:37  name=P106B_Stage2dW_tagged_pilot_canonical
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/build_p106b_tagged_pilot.py --self-test
+==============================================================================
+[PASS] fixed val split, question dedup, sidecar-only reasoning and assistant mask; dataset/model NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:14:38)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 13:14:38  name=P106B_Stage2dW_tagged_pilot_canonical
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/build_p106b_tagged_pilot.py --check-only
+==============================================================================
+{"fixed_val_cases": [2, 15], "model_gpu": "NOT_RUN", "new_output": "HF/sft_ready/p106b_teacher_sft/v7", "source": {"teacher_model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "v4_source_sha256": "63E7F7A1E487F10E1A1214E2C2489AD9DDD754DEDE33CA5893242CEAE983CAFA", "v6_manifest_sha256": "D22508135060330BB257DE86450B6D64E5874A082624ECD496ADBD8696318410", "v6_raw_sha256": "C37A6115C54CA67D5C4D6130CB465925B643C7425F901AD306A4CD0C21F32AEF"}, "student_training": "NOT_RUN", "valid_tagged": 15}
+[CHECK_ONLY] pinned v6 format/val prerequisites PASS; output/student NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:14:39)
+==============================================================================
+Gate: >=12 tagged valid cases and fixed val cases; write-once train/val canonical shards <=20MB with hashes. Dataset stays PSEUDO_UNVERIFIED, tiny Korean-only pilot, no 300M/600M or student training claim.
+
+==============================================================================
+[runlog] 2026-09-28 13:14:39  name=P106B_Stage2dW_tagged_pilot_canonical
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/build_p106b_tagged_pilot.py --execute
+==============================================================================
+{"datasets": {"train": {"assistant_supervised_tokens": 1273, "canonical_tokens": 1871, "concat_sha256": "6D3EEA106EB02D32F25ABD90545C09AEE70FEB496E0FA8163342A3D892FB6193", "rows": 13, "shards_manifest": "HF/sft_ready/p106b_teacher_sft/v7/train_shards_manifest.json"}, "val": {"assistant_supervised_tokens": 35, "canonical_tokens": 127, "concat_sha256": "159C1CCE2C8FCEDD95F3ECECF61CC935B60CA51ADB2F629D396C035CD8A61251", "rows": 2, "shards_manifest": "HF/sft_ready/p106b_teacher_sft/v7/val_shards_manifest.json"}}, "formal_train_ready": false, "language": "ko_only", "limit": "tiny format/wrapper pilot only; not 300M/600M, no English or multi-turn corpus", "max_shard_bytes": 20000000, "schema": "P106B_STAGE2DW_TAGGED_PILOT_V1", "source": {"teacher_model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "v4_source_sha256": "63E7F7A1E487F10E1A1214E2C2489AD9DDD754DEDE33CA5893242CEAE983CAFA", "v6_manifest_sha256": "D22508135060330BB257DE86450B6D64E5874A082624ECD496ADBD8696318410", "v6_raw_sha256": "C37A6115C54CA67D5C4D6130CB465925B643C7425F901AD306A4CD0C21F32AEF"}, "student_training": "NOT_RUN", "teacher_reasoning": "raw v6 sidecar only, not an active canonical thinking block", "teacher_truth_status": "PSEUDO_UNVERIFIED", "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3"}
+[PASS] versioned tagged pilot canonical/ChatML wrapper; student/model GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:14:40)
+==============================================================================

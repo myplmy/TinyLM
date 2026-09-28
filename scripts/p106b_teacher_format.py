@@ -18,6 +18,18 @@ TASKS = {
     "repair": "Treat the supplied draft as untrusted. Fix the listed defects while preserving the user's question and supported facts.",
     "diversify": "Produce a substantively different question/answer using this concept, not a mere synonym swap. Preserve supported facts.",
     "next_turn": "Write the next user question and assistant answer for this same dialogue; use its explicit previous turns only.",
+    "compress_qa": (
+        "Rewrite an overlong source question and answer into one shorter question/answer pair. "
+        "Preserve the original intent, required answer, negation, named entities, numbers, units, "
+        "format constraints and uncertainty. Do not add a new fact. If the source cannot be "
+        "faithfully shortened, state that in the note; the software will reject uncertain pairs."
+    ),
+    "grounded_qa": (
+        "Write one learner-friendly question and answer grounded ONLY in the supplied dictionary "
+        "sense and example. Preserve the exact headword meaning and sense identity; do not "
+        "invent an example, usage rule or cultural fact. If the evidence is insufficient, "
+        "state the gap in the note; the software will reject uncertain pairs."
+    ),
 }
 FIELD_PATTERN = re.compile(
     r"\A\s*\[\[QUESTION\]\]\s*\n(?P<question>.*?)\n\[\[/QUESTION\]\]"
@@ -160,6 +172,10 @@ def self_test() -> None:
             pass
         else:
             raise AssertionError("malformed teacher output was accepted")
+    assert "Preserve the original intent" in teacher_prompt(
+        "compress_qa", "en", {"source_question": "What is 2+2?", "source_answer": "4"})[0]["content"]
+    assert "dictionary" in teacher_prompt(
+        "grounded_qa", "ko", {"headword": "나무", "definition": "여러해살이 식물"})[0]["content"]
     print("[PASS] task registry/tagged parser and separate reasoning/final; canonical/student model NOT_RUN")
 
 

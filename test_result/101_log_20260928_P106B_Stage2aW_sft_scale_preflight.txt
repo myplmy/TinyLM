@@ -1,0 +1,22 @@
+Read-only v4 Korean 16-case cost sample. Distinguish teacher completion, serialized student corpus, assistant supervised tokens and training positions; 300M/600M extrapolation is not a forecast.
+
+==============================================================================
+[runlog] 2026-09-28 13:01:12  name=P106B_Stage2aW_sft_scale_preflight
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_scale_preflight.py --self-test
+==============================================================================
+[PASS] four token denominators and 300M/600M arithmetic; model/GPU/data writes NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:01:15)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 13:01:15  name=P106B_Stage2aW_sft_scale_preflight
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_scale_preflight.py --check-only
+==============================================================================
+{"english_sample": "NOT_RUN", "report": {"assistant_supervised_fraction": 0.6363, "assistant_supervised_sample": 1298, "student_canonical_sample": 2040, "targets": {"300000000": {"naive_teacher_days_for_unique_four_epoch_floor_at_v4_ratio": 118.6, "naive_teacher_days_for_unique_one_epoch_at_v4_ratio": 474.3, "nominal_steps_if_full_seq1024_micro8_accum16": 2289, "unique_student_canonical_tokens_if_four_epochs_at_least": 75000000, "unique_student_canonical_tokens_if_one_epoch": 300000000}, "600000000": {"naive_teacher_days_for_unique_four_epoch_floor_at_v4_ratio": 237.1, "naive_teacher_days_for_unique_one_epoch_at_v4_ratio": 948.6, "nominal_steps_if_full_seq1024_micro8_accum16": 4578, "unique_student_canonical_tokens_if_four_epochs_at_least": 150000000, "unique_student_canonical_tokens_if_one_epoch": 600000000}}, "teacher_completion_per_canonical": 8.675, "teacher_completion_sample": 17698, "teacher_wall_sample_sec": 278.659}, "sample_language": "ko_only", "sample_max_serialized_row_tokens": 408, "sample_rows": 16, "sample_truth_status": "UNVERIFIED_WITH_KNOWN_DEFECTS", "schema": "P106B_STAGE2AW_SCALE_PREFLIGHT_V1", "source_sha256": "63E7F7A1E487F10E1A1214E2C2489AD9DDD754DEDE33CA5893242CEAE983CAFA", "student_tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3", "warning": "V4 simple extrapolation is not a throughput forecast; format, batching, reasoning, English mix and reject rate differ. No unique 300M/600M corpus exists."}
+[CHECK_ONLY] sampled denominators; teacher/large corpus/student GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:01:16)
+==============================================================================

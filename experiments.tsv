@@ -28,6 +28,11 @@
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
+1	P106B	run_P106B_Stage2jW_http500_isolation.sh	D	0.17	Y	Y	이번 지시 한정 GPT 초소형 GPU 교사-only 4요청/10분: Stage2f/i 실패 직전·첫 실패 입력을 각각 새 서버에서 HTTP 본문·입력 토큰·GPU 점유 계측, 학생0·원본불변; 500은 도구실패9	8
+1	P106B	run_P106B_Stage2jWb_peg_parser_bypass.sh	D	0.08	Y	Y	이번 지시 한정 GPT 초소형 GPU 교사-only 1요청/5분: Stage2f case26 HTTP500의 peg-native 파서만 우회하여 원형 출력·표지 계측, 학습 target0·기존원본 불변; 우회 HTTP200은 품질 PASS 아님	8
+2	P106B	run_P106B_Stage2fWb_bilingual_teacher_recovery.sh	D	0.5	Y	Y	Stage2fW 부분 원본29시도 정확 SHA 참조, 빠진26~32 일곱 고정 job만 v2 write-once 보충. PEG500은 최대 한 번 재시도 뒤 문항 거부, 기타 HTTP는 도구실패9; 한영각 후보12/16 형식문턱·학생학습0	8
+3	P106B	run_P106B_Stage2iWd_online1_backend.sh	Y	1.5	Y	Y	Stage2fWb 한영각 형식12/16·manifest 선결, 기존 공개v3 OASST1 단일턴/low·P076 부모를 유지한 1 optimizer 동시 호출 복구 진단. 정확 PEG500은 행 거부, 미상 HTTP는 도구실패9; v13 write-once·체크포인트/품질 판정0	8
+4	P106B	run_P106B_Stage2kW_multisource_lineage_census.sh	N	0.1	N	N	정확 Aya Dataset 공개v3/OASST2·지정 국립국어원 JSON11/word27/TXT2를 읽기만 하여 source repo/revision/object/sense·split·권리/중복 계수; 보호원문복사·교사모델·학습0	8
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 2	P106B	run_P106B_Stage2aW_sft_scale_preflight.sh	N	0.1	N	N	고정 v4 16행과 legacy 학생 tokenizer를 읽기만 하여 교사 사고포함 생성/학생 대화/assistant 지도/명목 처리위치와 300M·600M 규모 외삽을 분리; 학습·데이터 생성0
 3	P106B	run_P106B_Stage2bW_content_wrapper_contract.sh	N	0.1	N	N	교사는 질문·답 내용만 제공, 코드가 역할·출처·canonical/ChatML·assistant-only 마스크를 소유하는 합성 두 턴 계약; 모델·데이터 생성0
@@ -35,9 +40,9 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 5	P106B	run_P106B_Stage2dW_tagged_pilot_canonical.sh	N	0.1	N	N	Stage2c v6 태그 완결≥12/16·고정 val2문항 선결, raw thinking sidecar SHA 참조만 가진 canonical train/val v7을 20MB 이하 write-once 분할; 소형 한국어 pilot·학생학습0	8
 7	P106B	run_P106B_Stage2fW_bilingual_teacher_pilot.sh	D	0.7	Y	Y	Stage2c 태그≥12/16·Stage2e 유한 deck 선결, 8주제×한영2×2=32개 고정 job의 교사 tagged 생성·중복거부·실제 학생 토큰/지도토큰·교사 output/wall 계측; 신뢰/300M/학생학습 아님	8
 8	P106B	run_P106B_Stage2gW_tagged_student_wiring.sh	Y	1.0	Y	Y	Stage2d v7 canonical train/val·P076 mean 부모 SHA 선결, 교사 종료 후 학생만 micro8×accum16/ckpt-on 2업데이트·assistant-only mask/새 태그·처리토큰 계측; 300M/600M·품질 판정 아님	8
-10	P106B	run_P106B_Stage2iWa_online5_low.sh	Y	4.0	Y	Y	대안 A: 공개 OASST2 고정 source·새 교사답 최대640건, 모델카드 thinking sampler·low·ctx3072/max2048, P076 학생 micro8/accum16 5 optimizer 실측·원본20MB 샤드·체크포인트0; 다른 두 팔 자동 연속실행 금지	8
-11	P106B	run_P106B_Stage2iWb_online5_none.sh	Y	1.5	Y	Y	대안 B: 같은 source/학생, 모델카드 instruct sampler·none·ctx1536/max1024, 최대5 optimizer 처리율 진단; 구 교사 effort 프로브 none과 sampler 달라 직접 속도귀속 금지·체크포인트0	8
-12	P106B	run_P106B_Stage2iWc_online5_medium.sh	Y	6.0	Y	Y	대안 C: 같은 source/학생, 모델카드 thinking sampler·medium·ctx6144/max4096, Stage2h 출력 절단 회피 가능성·VRAM/시간 문턱 별도; 최대5 optimizer·체크포인트0	8
+10	P106B	run_P106B_Stage2iWa_online5_low.sh	Y	4.0	Y	Y	대안 A: 공개 v3 OASST1 고정 source·새 교사답 최대640건, 모델카드 thinking sampler·low·ctx3072/max2048, P076 학생 micro8/accum16 5 optimizer 실측·원본20MB 샤드·체크포인트0; Stage2fWb 형식 문턱 전 실행 금지, 다른 두 팔 자동 연속실행 금지	8
+11	P106B	run_P106B_Stage2iWb_online5_none.sh	Y	1.5	Y	Y	대안 B: 같은 공개 v3 OASST1 source/학생, 모델카드 instruct sampler·none·ctx1536/max1024, 최대5 optimizer 처리율 진단; Stage2fWb 선결·구 교사 effort 프로브 none과 sampler 달라 직접 속도귀속 금지·체크포인트0	8
+12	P106B	run_P106B_Stage2iWc_online5_medium.sh	Y	6.0	Y	Y	대안 C: 같은 공개 v3 OASST1 source/학생, 모델카드 thinking sampler·medium·ctx6144/max4096, Stage2h 출력 절단 회피 가능성·VRAM/시간 문턱 별도; Stage2fWb 선결·최대5 optimizer·체크포인트0	8
 # DONE 2026-09-28 P106B Stage1gW: 결함8행 13요청·lint7/8<문턱8/8 exit8, v5 직접 감사 명백 오류5/추가검토2/잠정1, 학생학습0; 결과101 §11.
 # DONE 2026-09-28 P103A Stage1cWa: 세 선택창 저장 exact 대 uncached 최대차5e-5 안 함수 PASS, 속도/팔별 peak 미판정; 결과094 §11.
 # DONE 2026-09-28 P106B Stage1fW: 교정형16/16 형식 PASS·직접 검토 명백결함8, 학생 교육 채택0; 결과101 §10.

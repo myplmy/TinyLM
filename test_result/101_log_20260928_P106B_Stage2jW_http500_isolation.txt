@@ -1,0 +1,36 @@
+One-instruction CPU+GPU authorization only: four fixed teacher-only requests in two fresh servers, max600s. Exact v8/v10 partial SHA pinned; no student, training, checkpoint or old output write. HTTP 500 is tool failure, not gate-negative quality.
+
+==============================================================================
+[runlog] 2026-09-28 14:34:47  name=P106B_Stage2jW_http500_isolation
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_http500_isolation.py --self-test
+==============================================================================
+[PASS] teacher-only four fixed requests, 600s hard wall and write-once diagnostic output; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 14:34:48)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 14:34:48  name=P106B_Stage2jW_http500_isolation
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_http500_isolation.py --check-only
+==============================================================================
+{"model_gpu": "NOT_RUN", "output": "HF/sft_ready/p106b_teacher_sft/v11_http500_isolation", "positions": [["stage2f", 25, "011C33F668207E7B8F6FF150247DBBC2E4937484F5351EC5D7C6AA9F8F140649"], ["stage2f", 26, "23C70D2483660848F0F4617B3669374747B6AD70FC3BB4B9BC993881A19B3495"], ["stage2i_low", 22, "354C34488C9046B76C9E9D9800251C74589DBED399465234927A6230B31203D9"], ["stage2i_low", 23, "121E2BCD903825952525DA5AD30DDFB5BD93B7C14529C113FF689B8B38D9AC48"]], "student_updates": 0}
+[CHECK_ONLY] exact old partial SHA and four fixed jobs PASS; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 14:34:49)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 14:34:49  name=P106B_Stage2jW_http500_isolation
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_http500_isolation.py --execute
+==============================================================================
+[HTTP500_ISOLATION] {"arm": "stage2f", "body_sha256": "", "ctx": 6144, "error_type": "", "free_mib_after": 8520, "http_status": 200, "input_tokens": 336, "max_tokens": 4096, "nominal_sum_exceeds_ctx": false, "position": 25, "request_wall_sec": 31.603, "sampled_peak_used_mib": 7544}
+[HTTP500_ISOLATION] {"arm": "stage2f", "body_sha256": "D612E193C190B3AD58DA6B1DE44BF9D4511DFAB9834B55CDF63EDDCB1BFFB1F2", "ctx": 6144, "error_type": "server_error", "free_mib_after": 8536, "http_status": 500, "input_tokens": 817, "max_tokens": 4096, "nominal_sum_exceeds_ctx": false, "position": 26, "request_wall_sec": 34.072, "sampled_peak_used_mib": 7750}
+[HTTP500_ISOLATION] {"arm": "stage2i_low", "body_sha256": "", "ctx": 3072, "error_type": "", "free_mib_after": 8728, "http_status": 200, "input_tokens": 583, "max_tokens": 2048, "nominal_sum_exceeds_ctx": false, "position": 22, "request_wall_sec": 30.563, "sampled_peak_used_mib": 7345}
+[HTTP500_ISOLATION] {"arm": "stage2i_low", "body_sha256": "", "ctx": 3072, "error_type": "", "free_mib_after": 8730, "http_status": 200, "input_tokens": 323, "max_tokens": 2048, "nominal_sum_exceeds_ctx": false, "position": 23, "request_wall_sec": 18.228, "sampled_peak_used_mib": 7345}
+[HTTP500_SUMMARY] {"http_errors_recorded": 1, "old_long_session_reproduced": false, "raw_sha256": "CB2A302A81BBA28004CB1BD15A3473A602F8CDC445499A371DD50D667073F642", "requests_recorded": 4, "student_updates": 0, "whole_wall_sec": 119.352}
+------------------------------------------------------------------------------
+[runlog] 종료코드 9  소요 2.2분  (2026-09-28 14:37:00)
+==============================================================================

@@ -168,6 +168,8 @@ CHECKS = [
      "결과문서 한정 원본 로그·정확 절 매핑의 누락·review 범위·경로 오류 회귀"),
     ("check_run_registry",  ["check_run_registry.py"],
      "런 레지스트리·중복·태그 충돌"),
+    ("test_check_run_registry_null_val", ["test_check_run_registry_null_val.py"],
+     "SFT 진단 런의 val_loss=null을 NOT_RUN으로 표시하면서 계획 조회·태그 충돌을 계속 검사하는가"),
     ("check_result_numbers", ["check_result_numbers.py"],
      "★결과문서 번호 = 실험군 번호. **로그 파일명이 이미 번호를 말한다**(2026-08-22 오배정)"),
     ("check_hf_redirect",   ["check_hf_redirect.py"],

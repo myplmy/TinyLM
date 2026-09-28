@@ -1,0 +1,31 @@
+CPU contract: tagged teacher fields, code-owned roles/provenance and existing TinyLM canonical/ChatML assistant-only labels; raw reasoning stays SHA-bound sidecar, dataset files stay <=20MB.
+
+==============================================================================
+[runlog] 2026-09-28 13:01:31  name=P106B_Stage2bW_content_wrapper_contract
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_teacher_format.py --self-test
+==============================================================================
+[PASS] task registry/tagged parser and separate reasoning/final; canonical/student model NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:01:31)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 13:01:31  name=P106B_Stage2bW_content_wrapper_contract
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_teacher_wrapper.py --self-test
+==============================================================================
+[PASS] teacher text -> canonical multi-turn -> existing ChatML/assistant mask; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:01:32)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 13:01:32  name=P106B_Stage2bW_content_wrapper_contract
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_shards.py --self-test
+==============================================================================
+[PASS] write-once UTF-8 row-aligned shards, each <=20MB, exact reassembly SHA; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:01:32)
+==============================================================================

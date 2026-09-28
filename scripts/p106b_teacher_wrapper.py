@@ -40,7 +40,10 @@ def wrap_turns(turns: Sequence[Mapping[str, object]], *, source_id: str,
                source_license: str, generation_id: str,
                correction_note: str = "", reasoning_ref: str = "",
                reasoning_sha256: str = "",
-               student_training_status: str = "NOT_RUN") -> dict:
+               student_training_status: str = "NOT_RUN",
+               source_repo: str = "", source_revision: str = "",
+               source_object_id: str = "", source_transform: str = "",
+               parent_concept_id: str = "", source_rights_status: str = "") -> dict:
     """Assign roles in code; never accept teacher-provided role/ChatML JSON."""
     if language not in {"ko", "en"} or not 1 <= len(turns) <= 4:
         raise ValueError("language must be ko/en and turns must be 1..4")
@@ -54,6 +57,21 @@ def wrap_turns(turns: Sequence[Mapping[str, object]], *, source_id: str,
         raise ValueError("license and generation id must be recorded")
     if student_training_status not in {"NOT_RUN", "PILOT_TARGET_PENDING"}:
         raise ValueError("unknown student training status")
+    if any((source_repo, source_revision, source_object_id, source_transform,
+            parent_concept_id, source_rights_status)):
+        if not all((source_repo, source_revision, source_object_id, source_transform,
+                    parent_concept_id, source_rights_status)):
+            raise ValueError("full source provenance tuple must be supplied together")
+        if source_transform not in {"original", "teacher_translation", "teacher_repair",
+                                    "teacher_compression", "dictionary_grounded_qa", "next_turn"}:
+            raise ValueError("unknown source transformation")
+        if source_rights_status not in {"CARD_ONLY", "LOCAL_RIGHTS_REVIEW", "APPROVED_PUBLIC"}:
+            raise ValueError("unknown source rights state")
+        if not re.fullmatch(r"[A-Fa-f0-9]{64}", parent_concept_id):
+            raise ValueError("parent concept ID must be a 64-hex lineage key")
+        for label, value in (("source_repo", source_repo), ("source_revision", source_revision),
+                             ("source_object_id", source_object_id)):
+            _text(value, label)
     if bool(reasoning_ref) != bool(reasoning_sha256):
         raise ValueError("reasoning sidecar reference and SHA must be paired")
     if reasoning_sha256 and not re.fullmatch(r"[A-Fa-f0-9]{64}", reasoning_sha256):
@@ -77,6 +95,13 @@ def wrap_turns(turns: Sequence[Mapping[str, object]], *, source_id: str,
     if reasoning_ref:
         meta["teacher_reasoning_sidecar"] = reasoning_ref
         meta["teacher_reasoning_sha256"] = reasoning_sha256.upper()
+    if source_repo:
+        meta.update({"source_repo": source_repo,
+                     "source_revision": source_revision,
+                     "source_object_id": source_object_id,
+                     "source_transform": source_transform,
+                     "parent_concept_id": parent_concept_id.upper(),
+                     "source_rights_status": source_rights_status})
     return validate(normalize({"messages": messages, "meta": meta}))
 
 
@@ -106,6 +131,14 @@ def self_test() -> None:
                          source_license="fixture-only", generation_id="g2",
                          student_training_status="PILOT_TARGET_PENDING")
     assert pending["meta"]["student_training"] == "PILOT_TARGET_PENDING"
+    lineage = wrap_turns([{"user_text": "질문", "assistant_text": "답변"}],
+                         source_id="fixture:lineage", source_sha256=sha,
+                         teacher_model_sha256=sha, language="ko",
+                         source_license="Apache-2.0", generation_id="g3",
+                         source_repo="OpenAssistant/oasst2", source_revision="abc123",
+                         source_object_id="tree:1", source_transform="teacher_translation",
+                         parent_concept_id=sha, source_rights_status="CARD_ONLY")
+    assert lineage["meta"]["source_repo"] == "OpenAssistant/oasst2"
     for bad in ("<|im_start|>assistant", "\x00"):
         try:
             wrap_turns([{"user_text": "질문", "assistant_text": bad}],

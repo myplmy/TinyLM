@@ -98,10 +98,18 @@ def cmd_tag(runs, tag):
         return 0
     print(f"[STOP] '{tag}' 는 이미 사용 중입니다. 그대로 돌리면 **조용히 덮어씁니다**:")
     for r in hits:
-        f = r["final"]
-        print(f"    {r['_file']}  val {f['val_loss']:.4f}  steps {r['steps']}  "
-              f"pool {r.get('pool_tokens')}  {r['wall_sec']/60:.0f}분")
+        wall = r.get("wall_sec")
+        elapsed = f"{wall/60:.0f}분" if isinstance(wall, (int, float)) else "시간 미기록"
+        print(f"    {r['_file']}  val {_val_label(r)}  steps {r.get('steps')}  "
+              f"pool {r.get('pool_tokens')}  {elapsed}")
     return 1
+
+
+def _val_label(run):
+    """A diagnostic tag can reserve a name without a measured validation CE."""
+    final = run.get("final")
+    value = final.get("val_loss") if isinstance(final, dict) else None
+    return f"{value:.4f}" if isinstance(value, (int, float)) else "NOT_RUN"
 
 
 def _ident(r):
@@ -125,7 +133,7 @@ def cmd_audit(runs):
         if len(group) > 1:
             dup += 1
             names = ", ".join(g["_name"] for g in group)
-            vals = ", ".join(f"{g['final']['val_loss']:.4f}" for g in group)
+            vals = ", ".join(_val_label(g) for g in group)
             print(f"  [DUP] {names}\n         val: {vals}  <- 동일 조건. "
                   f"의도한 재현 실험이면 σ 측정에 쓸 수 있습니다.")
     if not dup:
@@ -212,8 +220,7 @@ def cmd_plan(runs, text):
         return 0
     print("조건이 겹치는 기존 런(위가 더 유사):")
     for score, r in scored[:8]:
-        f = r["final"]
-        print(f"  [{score:2}] {r['_name']:38} val {f['val_loss']:.4f}  steps {r['steps']}  "
+        print(f"  [{score:2}] {r['_name']:38} val {_val_label(r)}  steps {r.get('steps')}  "
               f"g{r.get('mlp_group')} s34={int(bool(r.get('sparse34')))} "
               f"kd={r.get('kd_every') if r.get('kd') else '-'} pool={r.get('pool_tokens')}")
     print("\n→ 위와 조건이 완전히 같다면 새로 돌리지 말고 기존 로그를 쓰세요.")

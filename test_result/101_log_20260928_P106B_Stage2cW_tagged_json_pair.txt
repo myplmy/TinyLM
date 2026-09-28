@@ -1,0 +1,66 @@
+Prerequisites: fresh user WSL smoke PASS, idle GPU/free >=8192MiB, exact v1-v4 source SHA. Crossed tagged vs JSON wire format on same 16 cases; v6 write-once raw reasoning/final. No student training.
+
+==============================================================================
+[runlog] 2026-09-28 13:01:48  name=P106B_Stage2cW_tagged_json_pair
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_tagged_pair.py --self-test
+==============================================================================
+[PASS] crossed paired prompts, tagged parser and content-only canonical wrapper; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-28 13:01:48)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-28 13:01:48  name=P106B_Stage2cW_tagged_json_pair
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_tagged_pair.py --check-only
+==============================================================================
+{"cases": 16, "model_gpu": "NOT_RUN", "new_output": "HF/sft_ready/p106b_teacher_sft/v6/tagged_json_pair_attempts.jsonl", "requests": 32, "sampler": {"min_p": 0.05, "presence_penalty": 0.0, "reasoning_effort": "medium", "repeat_penalty": 1.0, "stream": false, "temperature": 1.0, "top_k": 20, "top_p": 0.95}, "source": {"source_tree_ids": ["c2c8d82d-7561-48de-b689-606693499d04", "ddab2b7f-b236-4836-9f08-923481e4c417", "e39bffcb-62a7-44c1-aca0-bf81b464ec40", "c4aa459a-a68c-49da-b1ce-fc0a36f6281f", "f789ec5a-f20d-43c0-838d-f08e23479642", "489c253f-66ff-4d92-b4c2-196732ca2a71", "caf2a8f4-9a85-4021-b6a3-973fdf1e1ff5", "8a6e2984-3934-4555-9865-567bf5a5bd16", "0506f6c4-1a82-4176-8c13-dc5c47842b4e", "b394b2ab-09d1-4616-ada8-5436c7051dd5", "853a9ea8-c063-4e25-8774-137f09027e22", "9027c3b3-da98-47c8-bb7c-60af652b4429", "f417a9ee-fb2b-48fe-b1ed-582a1c9e7860", "45920a80-02c0-4968-87a1-892a184f2983", "fb3807e2-0b67-40ea-8682-02eeaaaf6bb5", "071e1f1f-6420-4c3f-8e52-aa032422ac51"], "v1_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947", "v2_sha256": "9434C90FF68444810DA83DF3161DA475AD21D2A7E7AA8BACF6C7AAC28A52D318", "v3_sha256": "55D4D9A41B3D30B1535D0A47ACD1CCECBFB8C244ABC4AD8FD90CAD264376D0DD", "v4_sha256": "63E7F7A1E487F10E1A1214E2C2489AD9DDD754DEDE33CA5893242CEAE983CAFA"}, "student_training": "NOT_RUN"}
+[CHECK_ONLY] v4/source lineage PASS; teacher/model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-28 13:01:53)
+==============================================================================
+Gate: tagged final+canonical wrapper >=12/16; paired per-request completion tokens and wall report-only. A format PASS never validates answer truth, 50:50 bilingual quality, student SFT or broad corpus throughput.
+
+==============================================================================
+[runlog] 2026-09-28 13:01:53  name=P106B_Stage2cW_tagged_json_pair
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_teacher_tagged_pair.py --execute
+==============================================================================
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 1, "completion_tokens": 2188, "finish": "stop", "format": "tagged", "request_wall_sec": 32.217, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 1, "completion_tokens": 1975, "finish": "stop", "format": "json_control", "request_wall_sec": 28.53, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 2, "completion_tokens": 998, "finish": "stop", "format": "json_control", "request_wall_sec": 14.791, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 2, "completion_tokens": 2132, "finish": "stop", "format": "tagged", "request_wall_sec": 31.22, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": false, "case": 3, "completion_tokens": 2745, "finish": "stop", "format": "tagged", "request_wall_sec": 40.092, "status": "PARSE_ERROR"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 3, "completion_tokens": 556, "finish": "stop", "format": "json_control", "request_wall_sec": 8.426, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 4, "completion_tokens": 1362, "finish": "stop", "format": "json_control", "request_wall_sec": 20.311, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 4, "completion_tokens": 2239, "finish": "stop", "format": "tagged", "request_wall_sec": 32.903, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 5, "completion_tokens": 1365, "finish": "stop", "format": "tagged", "request_wall_sec": 20.069, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 5, "completion_tokens": 2078, "finish": "stop", "format": "json_control", "request_wall_sec": 30.581, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 6, "completion_tokens": 2129, "finish": "stop", "format": "json_control", "request_wall_sec": 31.246, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 6, "completion_tokens": 2157, "finish": "stop", "format": "tagged", "request_wall_sec": 31.598, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 7, "completion_tokens": 879, "finish": "stop", "format": "tagged", "request_wall_sec": 13.191, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 7, "completion_tokens": 1083, "finish": "stop", "format": "json_control", "request_wall_sec": 16.085, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 8, "completion_tokens": 484, "finish": "stop", "format": "json_control", "request_wall_sec": 7.302, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 8, "completion_tokens": 794, "finish": "stop", "format": "tagged", "request_wall_sec": 11.848, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 9, "completion_tokens": 2137, "finish": "stop", "format": "tagged", "request_wall_sec": 31.135, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 9, "completion_tokens": 2109, "finish": "stop", "format": "json_control", "request_wall_sec": 30.71, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 10, "completion_tokens": 1077, "finish": "stop", "format": "json_control", "request_wall_sec": 15.725, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 10, "completion_tokens": 1009, "finish": "stop", "format": "tagged", "request_wall_sec": 14.959, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 11, "completion_tokens": 865, "finish": "stop", "format": "tagged", "request_wall_sec": 12.773, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 11, "completion_tokens": 1143, "finish": "stop", "format": "json_control", "request_wall_sec": 16.951, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": false, "case": 12, "completion_tokens": 2232, "finish": "stop", "format": "json_control", "request_wall_sec": 32.703, "status": "PARSE_ERROR"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 12, "completion_tokens": 914, "finish": "stop", "format": "tagged", "request_wall_sec": 13.548, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 13, "completion_tokens": 1004, "finish": "stop", "format": "tagged", "request_wall_sec": 14.754, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 13, "completion_tokens": 570, "finish": "stop", "format": "json_control", "request_wall_sec": 8.611, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": false, "case": 14, "completion_tokens": 3754, "finish": "stop", "format": "json_control", "request_wall_sec": 54.563, "status": "PARSE_ERROR"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 14, "completion_tokens": 1354, "finish": "stop", "format": "tagged", "request_wall_sec": 19.916, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 15, "completion_tokens": 479, "finish": "stop", "format": "tagged", "request_wall_sec": 7.116, "status": "TAGGED_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 15, "completion_tokens": 953, "finish": "stop", "format": "json_control", "request_wall_sec": 14.032, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 16, "completion_tokens": 2164, "finish": "stop", "format": "json_control", "request_wall_sec": 31.488, "status": "JSON_COMPLETE"}
+[WIRE_PAIR] {"canonical_wrapper_ok": true, "case": 16, "completion_tokens": 1220, "finish": "stop", "format": "tagged", "request_wall_sec": 18.07, "status": "TAGGED_COMPLETE"}
+{"accepted_for_training": 0, "canonical_wrapper_ok": {"json_control": 14, "tagged": 15}, "cases": 16, "completion_tokens": {"json_control": 24667, "tagged": 23481}, "ctx": 6144, "format_status": {"json_control": {"JSON_COMPLETE": 14, "PARSE_ERROR": 2}, "tagged": {"PARSE_ERROR": 1, "TAGGED_COMPLETE": 15}}, "language": "ko", "limit": "same source paired wire-format only; no truth or broad corpus claim", "max_tokens": 4096, "order": "ABBA alternating by case", "quality": "NOT_RUN", "raw_jsonl": "HF/sft_ready/p106b_teacher_sft/v6/tagged_json_pair_attempts.jsonl", "raw_sha256": "C37A6115C54CA67D5C4D6130CB465925B643C7425F901AD306A4CD0C21F32AEF", "request_wall_sec": {"json_control": 362.055, "tagged": 345.409}, "requests": 32, "sampler": {"min_p": 0.05, "presence_penalty": 0.0, "reasoning_effort": "medium", "repeat_penalty": 1.0, "stream": false, "temperature": 1.0, "top_k": 20, "top_p": 0.95}, "schema": "P106B_STAGE2CW_TAGGED_JSON_PAIR_V1", "source": {"source_tree_ids": ["c2c8d82d-7561-48de-b689-606693499d04", "ddab2b7f-b236-4836-9f08-923481e4c417", "e39bffcb-62a7-44c1-aca0-bf81b464ec40", "c4aa459a-a68c-49da-b1ce-fc0a36f6281f", "f789ec5a-f20d-43c0-838d-f08e23479642", "489c253f-66ff-4d92-b4c2-196732ca2a71", "caf2a8f4-9a85-4021-b6a3-973fdf1e1ff5", "8a6e2984-3934-4555-9865-567bf5a5bd16", "0506f6c4-1a82-4176-8c13-dc5c47842b4e", "b394b2ab-09d1-4616-ada8-5436c7051dd5", "853a9ea8-c063-4e25-8774-137f09027e22", "9027c3b3-da98-47c8-bb7c-60af652b4429", "f417a9ee-fb2b-48fe-b1ed-582a1c9e7860", "45920a80-02c0-4968-87a1-892a184f2983", "fb3807e2-0b67-40ea-8682-02eeaaaf6bb5", "071e1f1f-6420-4c3f-8e52-aa032422ac51"], "v1_sha256": "BA2384B380EBAADBD72F2D43B3501C4C16D2C4971FA8536F0F3A215F0E00F947", "v2_sha256": "9434C90FF68444810DA83DF3161DA475AD21D2A7E7AA8BACF6C7AAC28A52D318", "v3_sha256": "55D4D9A41B3D30B1535D0A47ACD1CCECBFB8C244ABC4AD8FD90CAD264376D0DD", "v4_sha256": "63E7F7A1E487F10E1A1214E2C2489AD9DDD754DEDE33CA5893242CEAE983CAFA"}, "student_training": "NOT_RUN", "task": "repair", "teacher_model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "thinking_budget_tokens": 2048, "whole_wall_sec": 709.81}
+[PASS] tagged output format only; completion/time paired, truth/student SFT NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 12.5분  (2026-09-28 13:14:20)
+==============================================================================
