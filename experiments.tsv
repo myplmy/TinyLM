@@ -29,9 +29,7 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 1	P106B	run_P106B_Stage2kWb_public_only_job_deck.sh	N	0.1	N	N	Aya Dataset/OASST2 공개 source job 예상10528건만 새 ignored HF 공개 네임스페이스에 20MB 이하 write-once 출력. 지정 사전 접근·출력0, 교사/학생/훈련0; 법적 TRAIN_READY 아님
-2	P106B	run_P106B_Stage2fWb_bilingual_teacher_recovery.sh	D	0.5	Y	Y	Stage2fW 부분 원본29시도 정확 SHA 참조, 빠진26~32 일곱 고정 job만 v2 write-once 보충. PEG500은 최대 한 번 재시도 뒤 문항 거부, 기타 HTTP는 도구실패9; 한영각 후보12/16 형식문턱·학생학습0	8
 3	P106B	run_P106B_Stage2iWd_online1_backend.sh	Y	1.5	Y	Y	Stage2fWb 한영각 형식12/16·manifest 선결, 기존 공개v3 OASST1 단일턴/low·P076 부모를 유지한 1 optimizer 동시 호출 복구 진단. 정확 PEG500은 행 거부, 미상 HTTP는 도구실패9; v13 write-once·체크포인트/품질 판정0	8
-4	P106B	run_P106B_Stage2kW_multisource_lineage_census.sh	N	0.1	N	N	정확 Aya Dataset 공개v3/OASST2·지정 국립국어원 JSON11/word27/TXT2를 읽기만 하여 source repo/revision/object/sense·split·권리/중복 계수; 보호원문복사·교사모델·학습0	8
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 11	P106B	run_P106B_Stage2iWb_online5_none.sh	Y	1.5	Y	Y	대안 B: 같은 공개 v3 OASST1 source/학생, 모델카드 instruct sampler·none·ctx1536/max1024, 최대5 optimizer 처리율 진단; Stage2fWb 선결·구 교사 effort 프로브 none과 sampler 달라 직접 속도귀속 금지·체크포인트0	8
 12	P106B	run_P106B_Stage2iWc_online5_medium.sh	Y	6.0	Y	Y	대안 C: 같은 공개 v3 OASST1 source/학생, 모델카드 thinking sampler·medium·ctx6144/max4096, Stage2h 출력 절단 회피 가능성·VRAM/시간 문턱 별도; Stage2fWb 선결·최대5 optimizer·체크포인트0	8
@@ -542,6 +540,11 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   7	P106B	run_P106B_Stage2fW_bilingual_teacher_pilot.sh	D	0.7	Y	Y	Stage2c 태그≥12/16·Stage2e 유한 deck 선결, 8주제×한영2×2=32개 고정 job의 교사 tagged 생성·중복거부·실제 학생 토큰/지도토큰·교사 output/wall 계측; 신뢰/300M/학생학습 아님	8
 #   8	P106B	run_P106B_Stage2gW_tagged_student_wiring.sh	Y	1.0	Y	Y	Stage2d v7 canonical train/val·P076 mean 부모 SHA 선결, 교사 종료 후 학생만 micro8×accum16/ckpt-on 2업데이트·assistant-only mask/새 태그·처리토큰 계측; 300M/600M·품질 판정 아님	8
 #   10	P106B	run_P106B_Stage2iWa_online5_low.sh	Y	4.0	Y	Y	대안 A: 공개 v3 OASST1 고정 source·새 교사답 최대640건, 모델카드 thinking sampler·low·ctx3072/max2048, P076 학생 micro8/accum16 5 optimizer 실측·원본20MB 샤드·체크포인트0; Stage2fWb 형식 문턱 전 실행 금지, 다른 두 팔 자동 연속실행 금지	8
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   2	P106B	run_P106B_Stage2fWb_bilingual_teacher_recovery.sh	D	0.5	Y	Y	Stage2fW 부분 원본29시도 정확 SHA 참조, 빠진26~32 일곱 고정 job만 v2 write-once 보충. PEG500은 최대 한 번 재시도 뒤 문항 거부, 기타 HTTP는 도구실패9; 한영각 후보12/16 형식문턱·학생학습0	8
+#   4	P106B	run_P106B_Stage2kW_multisource_lineage_census.sh	N	0.1	N	N	정확 Aya Dataset 공개v3/OASST2·지정 국립국어원 JSON11/word27/TXT2를 읽기만 하여 source repo/revision/object/sense·split·권리/중복 계수; 보호원문복사·교사모델·학습0	8
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
