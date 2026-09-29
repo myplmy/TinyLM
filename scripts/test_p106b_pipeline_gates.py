@@ -19,6 +19,7 @@ from scripts import p106b_repeat4_gate as c4
 from scripts import diag_p106b_parallel_gate as parallel
 from scripts import diag_p106b_overlap_gate as overlap
 from scripts import diag_p106b_integrated_gate as integrated
+from scripts import diag_p106b_integrated_a2_gate as integrated_a2
 from scripts.p106b_gate_runtime import GateNegative, ToolFailure
 from scripts.p106b_shards import verify
 from tinylm.data.prepare import SyntheticTokenizer
@@ -145,6 +146,13 @@ class Tests(unittest.TestCase):
         spec = integrated.GATES[0]
         with self.assertRaises(GateNegative):
             integrated.evidence_contract({"input": {"code_sha256": {}}}, spec, {}, "wrong")
+
+    def test_a2_only_integration_contract(self):
+        integrated_a2.self_test()
+        self.assertEqual(integrated_a2.GATES[0][0], "v27_overlap_budget_recovery_low")
+        self.assertTrue(all("parallel" not in spec[0] for spec in integrated_a2.GATES))
+        self.assertEqual(integrated_a2.take_to_target([1, 2], 31), ([1], 1))
+        self.assertFalse(integrated_a2.interval_overlap([(0.0, 1.0)], [(1.0, 2.0)]))
 
     def test_monitor_failure_prevents_optimizer(self):
         obj = object.__new__(pipeline.StudentAccumulator)

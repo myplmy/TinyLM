@@ -29,8 +29,7 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-1	P106B	run_P106B_Stage3aWb_parallel_teacher_budget_recovery.sh	Y	1.5	Y	Y	기존A1 1.140/1.015배·한국어완결1~2/4 음성 보존. 별도v26은한영각16source·slotctx6144/output4096·1→2→2→1 ABBA·각언어12/16/두순서속도>1.05·OOM/GDN 검사; 최대2h, 지능판정0	8
-2	P106B	run_P106B_Stage3bWb_teacher_student_overlap_recovery.sh	Y	1.0	Y	Y	기존A2 serial KO4/8로겹침팔미실행 보존. 별도v27은한영각16source·ctx6144/output4096·각언어12/16 후 serial대producer/consumer실제overlap·VRAM/마스크 검사; 최대2h·인과속도/품질채택0	8
+1	P106B	run_P106B_Stage3fWb_integrated_a2_one_slot.sh	Y	1.5	Y	Y	사용자C안: A1 두슬롯음성 보존·A2b 단일슬롯겹침 기능PASS에 B2/B4형식·C4안전만 연결. 공개보존64+신규64 정확128행/16micro·optimizer1·교사최대3회라벨재시도·v28원형보존·checkpoint0; hard2h, 답품질/인과속도판정0	8
 # HOLD 2026-09-30 P106B: run_P106B_Stage2iWh_online5_public_low-hold.sh. 사용자 요청대로 미실행 low5를 보존하되 현재 우선순위·큐에서 제외; 재활성화는 새 지시/새 단계가 필요하다.
 # HOLD 2026-09-30 P106B: run_P106B_Stage2iWf_online5_public_medium-hold.sh. 기존 medium 자원·품질 미판정 보류를 유지하고 큐/직접 실험 시작을 차단한다.
 # DONE 2026-09-28 P106B Stage1gW: 결함8행 13요청·lint7/8<문턱8/8 exit8, v5 직접 감사 명백 오류5/추가검토2/잠정1, 학생학습0; 결과101 §11.
@@ -572,6 +571,11 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   7	P106B	run_P106B_Stage3fW_integrated_one_update.sh	Y	0.8	Y	Y	A1속도/자원+A2기능+B2/B4형식+독립C4 safety 현재SHA 모두PASS뒤 2slot·B2·queue·Cepoch1 보존64+fresh64, micro8accum16 optimizer1·최대2h;4epoch/품질완료아님	8
 #   8	P106B	run_P106B_Stage3g0W_followup4_corpus.sh	N	0.1	N	N	통합1회PASS source128행 SHA뒤v25 concept/prompt분할·20MB corpus 준비·모델0; 정식300M아님	8
 #   9	P106B	run_P106B_Stage3gW_followup4_student.sh	Y	0.4	Y	Y	Stage3g0W v25선결·원P076부모부터새자료실제4pass 소형SFT/새ckpt·같은full-val/고정답안사후검토·최대2h;지능채택/300M/검증정답아님	8
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P106B	run_P106B_Stage3aWb_parallel_teacher_budget_recovery.sh	Y	1.5	Y	Y	기존A1 1.140/1.015배·한국어완결1~2/4 음성 보존. 별도v26은한영각16source·slotctx6144/output4096·1→2→2→1 ABBA·각언어12/16/두순서속도>1.05·OOM/GDN 검사; 최대2h, 지능판정0	8
+#   2	P106B	run_P106B_Stage3bWb_teacher_student_overlap_recovery.sh	Y	1.0	Y	Y	기존A2 serial KO4/8로겹침팔미실행 보존. 별도v27은한영각16source·ctx6144/output4096·각언어12/16 후 serial대producer/consumer실제overlap·VRAM/마스크 검사; 최대2h·인과속도/품질채택0	8
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)

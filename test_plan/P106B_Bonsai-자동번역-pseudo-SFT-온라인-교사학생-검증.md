@@ -4,7 +4,7 @@
 
 ## 1. 왜 — 질문을 두 개로 나눈다
 
-> 2026-09-30 최신 상태: [결과101 §31](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 새 smoke43/0/0/0 뒤 A1 두 슬롯은 속도비1.140/1.015×·KO형식1~2/4로 exit8, A2는 serial KO4/8에서 exit8·겹침0이다. B2/B4는 한영 각4/4 **형식만 PASS**. C4 실제100행4pass/4optimizer는 SFT-val 개선에도 기존 base full-val+0.018444 악화·고정답8/8 미달이다. f/g0/g는 상류 선결차단으로 실제 통합·후속교육0. 사용자 선택 A로 legacy/chat32 실패 원인 진단과 출력예산·질문수 확대 A1Wb/A2Wb 새 단계·SH를 준비했으며 새 실모델은 NOT_RUN이다. Wh/Wf는 -hold·큐 제외, 300M·교사 정답·지능 채택은 미판정이다.
+> 2026-09-30 최신 회수: [결과101 §32](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 새 smoke43/0/0/0 뒤 A1b 두 슬롯은 유효자료 속도비0.951/1.056×·수락행 감소·한국어11/16으로 **음성8**이다. A2b 한 슬롯 생산·소비는 같은 28행을 두 팔에서 처리하고 실제 시간구간 겹침·부분 optimizer를 확인해 **기능 PASS0**지만 cold compile/고정순서 교락으로1.188× wall은 인과 가속이 아니다. 과거 C4 100행4pass의 base full-val+0.018444 악화·고정 첫 답0/8(재시도 없음)은 유지된다. 사용자 선택 C로 A1을 요구하지 않는 새 Stage3fWb **기술 배선 1업데이트**만 준비한다. 교사는 모델카드 thinking sampler와 라벨형 질문·답2개를 쓰고, 코드가 원본/JSON/ChatML을 래핑하며 새 단계에서만 최대3회 형식 재시도·원본 보존한다. 통합 실물·품질·formal SFT/300M은 NOT_RUN, Wh/Wf는 -hold다.
 
 [결과098 §8](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)의 full-GPU Bonsai+P076 모양 학생 두 팔은 **합성 입력 2업데이트 자원공존**만 확인했다. 실제 교사 문자열이 학생의 canonical ChatML assistant-only 손실로 들어간 증거는 0이다. [공개 SFT 적격성 결과096 §10](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)는 전체 공개 v3의 `TRAIN_READY=false`를 보존한다. 그렇다고 모든 교사 번역을 사람이 전수 승인할 때까지 **별도 소형 pseudo-label 기능 실험조차 금지할 근거는 없다.**
 
@@ -299,6 +299,19 @@ A1의 원본 v22는 두 쌍 중 첫 속도비1.140×만 1.05를 넘었고 역순
 
 출력예산과 표본을 **동시에** 바꿨으므로 옛 v22/v23과의 속도 차이를 한 변수의 효과로 귀속하지 않는다. 큰8문항 B2/B4가 각4/4였다는 관측은 출력 상한 가설의 근거일 뿐 확증이 아니다. 새 A1도 문구·학생대화 길이가 팔별로 달라 순서교차와 수락행 수를 함께 본다. A2는 고정 serial-first 순서와 cold compile 때문에 실제 겹침이 있어도 전체 wall 차를 인과적 학습가속으로 채택하지 않는다. 두 새 런은 버전드 새 자료만 만들고 현재 v19~v23·원래 부모/체크포인트/결과101 원본을 변경하지 않는다.
 
+### Stage3fWb — 사용자 선택 C: A1 음성을 보존하고 A2 단일 슬롯으로 통합 1업데이트
+
+**예측과 대립 가설.** [결과101 §32](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 A1b의 두 슬롯 유효자료 속도비0.951/1.056×·수락행 감소가 문턱 실패로 확정됐다. 반면 A2b는 단일 슬롯 생산·소비 시간구간 겹침을 기능적으로 확인했다. 따라서 두 슬롯 가속을 요구하지 않는 **새 v28 통합 배선**은 한 optimizer 업데이트를 완성할 수 있다. 반대로 교사 출력 절단/PEG·작은 학생 자원 여유·고유 source 소진·actual overlap 부재가 이를 막을 수 있다. C4 답안 첫8문항0/8은 재시도 N회 실패가 아니며 v28 기능 성공이 이를 품질 성공으로 뒤집지 않는다.
+
+| 단계·선결 | 실행 계약 | 사전 판정 |
+|---|---|---|
+| Stage3fWb CPU | 기존 v27 A2b 실제 겹침·같은 원문 SHA, v20 B2·v21 B4 형식, v19 C4 운영 안전선, 동일 부모/토크나이저/교사·공개 job deck SHA를 exact 검증. v22/v26 A1은 **불필요·비채택** | 읽기 전용 `--check-only`와 회귀 PASS여야 GPU 런처 안내 가능; 기존 v24 통합원본 불변 |
+| Stage3fWb 사용자 GPU | `v28_integrated_a2_one_slot_low/` write-once, full-GPU 교사 한 벌·1 slot·ctx6144/output4096. C4의 보존 공개 행64(한영32씩) + 기존 v17 개념과 겹치지 않는 공개 원천에서 교사가 새 답64(한영32씩), 2답/질문. 교사는 `[[QUESTION]]`/`[[ANSWER_1]]`/`[[ANSWER_2]]` **내용만** 출력하고 코드가 원형 JSONL·canonical ChatML·assistant-only mask를 작성한다. 교육용 답은 `PSEUDO_UNVERIFIED`이며 사전 출처·보호 자료는 연결하지 않는다. | 학생 micro8×accum16·checkpoint ON, 정확128행/16micro의 optimizer1회·finite CE/gradient, 실제 생산·소비 interval 겹침·GDN/VRAM sampler 건강이면 **기술 기능0**. 형식/자원/원천 부족은 음성8, 도구 실패9; checkpoint0·held-out·교사 정답·지능/4epoch/300M 채택은 NOT_RUN |
+
+교사 sampling은 [PrismML GGUF 카드의 thinking-mode 값](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf/blob/main/README.md) `temperature=1.0/top_p=0.95/top_k=20/min_p=0.05/presence_penalty=0/repetition_penalty=1.0`을 llama.cpp API의 `repeat_penalty=1.0`으로 매 요청에 명시한다. 현 서버 helper의 reasoning effort는 과거 low와 같지만 카드에서 low가 정식 지원되지 않아 xhigh 유사 동작 가능성이 있다. 비용·품질을 medium과 인과 비교하지 않는다. **새 단계에만** 하나의 concept당 최대3회: 처음은 원형 프롬프트, 출력 길이·형식·PEG·중복 등 retryable 실패면 다음 seed와 사유별 짧은 보정 지시로 재요청한다. 각 시도의 ID/seed/실제 교사 원형·사고 sidecar·분류·피드백을 20MB 이하 별도 shard/manifest에 보존한다. 요청 실패가 교육 정답성 실패라는 뜻은 아니고, 재시도 형식 통과도 사실성 승인이 아니다. full128 명목 위치131,072와 실제 비패딩/지도 토큰을 따로 기록한다. **비용:** 예상1~1.5 GPU시간·hard2h, 재시도 때문에 한도 내 부분 종료 가능. 새 사용자 smoke PASS와 GPU 단독 free≥14,000MiB가 선결이다.
+
+**Preflight:** 독립변수는 `A1 두 슬롯을 빼고 A2 단일 슬롯 생산·소비만 사용한 통합 배선`; 같은 부모/교사/토크나이저/공개 deck을 exact SHA로 묶었다. 기존 v24는 A1 음성으로 모델0이라 중복 실험이 아니다. `8×16×1024=131,072`은 명목 위치이며 실제 학습량은 생성 길이로 달라진다. 64 보존+64 신규는 pretrain의 풀≥2배 기준을 만족시키려는 품질 런이 **아닌 기술 게이트**라 지능 채택 판정은 금지한다. 새 태그/버전 충돌0·체크포인트 쓰기0, 짧은 A2b 표본 peak10,845MiB는 v28 장시간 peak 보증이 아니다. [실제 SH](../run_P106B_Stage3fWb_integrated_a2_one_slot.sh)와 코드·CPU 회귀만 Codex가 준비하고 GPU 실행은 사용자 소유다. 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
 ### Stage3cW 품질 사후 감사 — 운영 안전과 답변 능력의 반례
 
 C4는 좁은 SFT-val CE3.700334→3.571472로 개선됐지만, 같은 base full-val 2,929 crop에서3.600580→3.619024(**+0.018444 악화**)다. `PILOT_SAFETY_PASSED`의0.1nat 운영 문턱 안이라는 이유로 악화를 지우지 않는다. 부모 고정8문항은 채팅 시작 마커를 반복했고 자식 고정8문항도 모두80토큰 상한까지 갔다. 자식은 산수·지식에서 질문을 되풀이하고 논리 문항은 내용은 관련 있으나 요구한 yes/no 형식을 지키지 못해 **요구 정답과 형식 동시충족0/8**이다. 현재 legacy32는 `<|im_start|>`/종료 마커가8/7개의 분절토큰이고, chat32는 ID3/ID4 한 개다. 직렬화기는 assistant 머리를 한 번만 붙이므로 중복 머리 생성이 구현상의 직접 중복삽입임은 관찰되지 않았다. legacy 부모의 채팅 표지 미학습·작은78k토큰 SFT·EOS만 멈추는 추론 경로는 원인 후보이며 **어느 하나가 유일 원인이라는 증거는 없다**.
@@ -383,7 +396,7 @@ C4는 좁은 SFT-val CE3.700334→3.571472로 개선됐지만, 같은 base full-
 ### Stage3 실행 파일 (모두 사용자 실행·새 smoke 선결)
 
 - 역사 Stage3a/b/c0/c/d/e/f/g0/g 아홉 SH는 전부 사용자 9/30에 **착수된 이력**이다. 각각의 정확한 명령4개와 성공·음성·미실행 구분은 [결과101 §31·재현부록](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에 보존했다. `-done`은 사용 시도 표지이지 A1/A2/통합의 과학적 성공 표지가 아니다.
-- 다음 사용자 실행용: [A1 Stage3aWb 새 예산 ABBA](../run_P106B_Stage3aWb_parallel_teacher_budget_recovery.sh), [A2 Stage3bWb 새 예산 생산·소비](../run_P106B_Stage3bWb_teacher_student_overlap_recovery.sh). 둘 다 **새 smoke 선결·본런 미실행**이며 통합·실교육을 자동 재개하지 않는다.
+- Stage3aWb/3bWb는 사용자 실행이 끝났고 [결과101 §32](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에 음성/기능 PASS를 분리했다. `-done`은 과학적 성공 표시가 아니다. 다음 사용자 실행 후보는 **새 smoke 뒤** [Stage3fWb A2 단일 슬롯 통합 1업데이트](../run_P106B_Stage3fWb_integrated_a2_one_slot.sh) 하나이며, 정답·지능 채택과 후속 4epoch는 별도다.
 
 §7 handoff 큐는 실제id·시간·조건부상태 정본이다.1개의update로4epoch완료를 보고하지 않으며300M 목표는 현재 코퍼스 부족·생산비용 때문에 별도 원천확장/품질 계획을 요구한다.
 
@@ -406,3 +419,4 @@ OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 
 - 2026-09-29 후속 [smoke](../smoketest_logs/202609291711_smoke_848dd6a.txt)는848dd6a 실행 당시43/0/0/0. We 첫실행의 계측 daemon timeout이 main에 전달되지 않은 **코드 결함**은 사용자 traceback과 exact v15 원형141/후보123·updates0으로 확인했다. ctx/출력상한이나 교사 품질 실패라고 단정하지 않는다. Ctrl+C/status와 sampleerrors 누락·후속 dataset output collision을 각각 수리/설명하고 medium은 보류했다. low 이미 실행했던 OASST1 Wd1 성공은 보존하며, 사용자 재선택 A로 새 공개원천·수리코드 Wg1→통과시Wh5를 별도 단계/버전으로 준비했다. 다음 가설은 계측 오류가 다시 발생하면 조용히 학습을 계속하지 않고 원본·partial을 남기며 fail9하는가이고 실물 결과 전 미확인이다.
 - 2026-09-30 회수: 9/29 Wg low1은 새 source에서128답/1optimizer·원형196행·유효25,133대화토큰으로 완료됐다. sampler errors0와GDN latchtrue를 관측해 작은 기술 gate만 PASS로 옮겼다([결과101 §30](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 길이절단55건이 교사시간43.635%를 쓴 것은 남은 생산병목이다. 사용자 B,C4,A1+A2와 독립C4 뒤 통합1→실교육 승인에 따라 Stage3 9개SH/구현을 준비했으며 모델실행0. 별도 미실행Wh/Wf는 보존했다.
 - 2026-09-30 2차 회수: 새 [smoke](../smoketest_logs/202609300046_smoke_f417544.txt)43/0/0/0 뒤 [결과101 §31](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 아홉 Stage3 시도를 분리했다. 예측한 A1 두 순서>1.05는 역순1.015로 **불성립**, 예측한 A2 실제 겹침은 KO4/8 문턱미달로 **미측정**이다. B2/B4 형식은 한영4/4로 예상보다 잘 되었지만 teacher 정답성은 여전히 별도다. C4는4pass·4optimizer를 완료하고 좁은SFT-val CE를 개선했으나 base full-val+0.018444 악화·고정답8/8 실패로 ~~운영 중단선 통과 뒤 바로 후속교육~~ 해석을 철회한다. 상류차단 f/g0/g는 실행 시도 로그만 있고 실교육0이다. 사용자 선택 A에 따라 토크나이저 계보·원답을 CPU 대조하고 A1Wb/A2Wb만 새v26/v27로 준비한다. 새 GPU 결과 전 통합 HOLD, Wh/Wf 미실행 두 파일은 `-hold`/큐 제외다.
+- 2026-09-30 3차 회수: 사용자 [새 smoke](../smoketest_logs/202609300319_smoke_f0a103e.txt)43/0/0/0 뒤 [결과101 §32](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 A1b는 네 팔 실물·자원 probe까지 수행했으나 두 슬롯 24/25행 대 한 슬롯28행, 속도쌍0.951/1.056×라 속도·수락 보존 예측이 **불성립**이다. A2b는 serial/overlap 각28행·실제 구간 겹침·각 부분 optimizer1회로 기능 예측이 **성립**했다. 1.1875× whole-wall은 첫 팔 cold compile/고정순서 교락이므로 가속 채택 예측은 하지 않는다. 사용자 선택 C에 따라 A1 음성을 통과로 바꾸지 않고 A2 단일 슬롯의 새 Stage3fWb를 별도 v28·SH로 정적 준비했다. 교사 thinking sampler·최대3회 원형보존 재시도·코드 소유 라벨 파서/JSON/ChatML 계약을 포함하고, 새 GPU/학생 품질은 `NOT_RUN`이다.
