@@ -70,6 +70,15 @@ EFFORT_CONFIG = {
     "low": (3072, 2048),
     "medium": (6144, 4096),
 }
+PUBLIC_VARIANTS = {"public1", "public5", "publiclow1", "publiclow5"}
+REPORT_SCHEMAS = {
+    "initial": "P106B_STAGE2IW_ONLINE_RATE5_V1",
+    "backend1": "P106B_STAGE2IWD_ONLINE_RATE1_V1",
+    "public1": "P106B_STAGE2IWE_ONLINE_PUBLIC1_V1",
+    "public5": "P106B_STAGE2IWF_ONLINE_PUBLIC5_V1",
+    "publiclow1": "P106B_STAGE2IWG_ONLINE_PUBLIC1_LOW_V1",
+    "publiclow5": "P106B_STAGE2IWH_ONLINE_PUBLIC5_LOW_V1",
+}
 
 
 class GateNegative(Exception):
@@ -82,6 +91,35 @@ class PrerequisiteHold(ValueError):
 
 class ToolFailure(Exception):
     """Unknown backend/API failure; never report as a scientific negative."""
+
+
+def termination_disposition(exc: BaseException) -> tuple[str, int]:
+    if isinstance(exc, KeyboardInterrupt):
+        return "INTERRUPTED_USER", 130
+    if isinstance(exc, GateNegative):
+        return "GATE_NEGATIVE_PARTIAL", 8
+    return "TOOL_FAILURE_PARTIAL", 9
+
+
+def sample_memory(stop, reader, samples: list[int], errors: list[str]) -> None:
+    """A failed sampler is observable by the trainer, never an unhandled daemon error."""
+    while not stop.wait(0.2):
+        try:
+            used_mib, free_mib = reader()
+            samples.append(used_mib)
+            if free_mib < 512:
+                errors.append("FREE_LT_512")
+                return
+        except Exception as exc:
+            errors.append(type(exc).__name__)
+            return
+
+
+def require_sampler_health(errors: list[str]) -> None:
+    if "FREE_LT_512" in errors:
+        raise GateNegative("sampled free VRAM below 512MiB")
+    if errors:
+        raise ToolFailure("VRAM telemetry failed: " + ",".join(errors) + "; memory evidence invalid")
 
 
 def capture_server_line(line: str, signals: dict, tail: list[str], api_key: str) -> None:
@@ -261,35 +299,55 @@ def paths(effort: str, variant: str = "initial") -> tuple[Path, Path]:
     elif variant == "public5" and effort == "medium":
         directory = OUTPUT_BASE / "v16_online_public5_medium"
         report_name = "online_public5_manifest.json"
+    elif variant == "publiclow1" and effort == "low":
+        directory = OUTPUT_BASE / "v17_online_public1_low"
+        report_name = "online_public1_low_manifest.json"
+    elif variant == "publiclow5" and effort == "low":
+        directory = OUTPUT_BASE / "v18_online_public5_low"
+        report_name = "online_public5_low_manifest.json"
     else:
         raise ValueError("unknown online output variant/effort")
     return directory, directory / report_name
 
 
 def check_only(effort: str, variant: str = "initial") -> dict:
-    public = variant in {"public1", "public5"}
+    directory, manifest = paths(effort, variant)
+    if variant in {"public1", "public5"}:
+        raise PrerequisiteHold("public medium postponed by user; use new publiclow1/publiclow5 stages")
+    public = variant in PUBLIC_VARIANTS
     jobs, source = public_source_jobs() if public else source_jobs()
     bilingual = None if public else require_bilingual_panel(source)
-    if variant == "public5":
-        prerequisite = paths("medium", "public1")[1]
+    if variant == "publiclow5":
+        prerequisite = paths("low", "publiclow1")[1]
         if prerequisite.is_symlink() or not prerequisite.is_file():
-            raise PrerequisiteHold("Stage2iWe public one-update result missing or linked")
+            raise PrerequisiteHold("Stage2iWg low public one-update result missing or linked")
         prior = json.loads(prerequisite.read_text(encoding="utf-8"))
-        if (prior.get("schema") != "P106B_STAGE2IWE_ONLINE_PUBLIC1_V1"
+        if (prior.get("schema") != REPORT_SCHEMAS["publiclow1"]
                 or prior.get("status") != "ONE_UPDATE_COMPLETE"
                 or prior.get("updates_completed") != 1
+                or prior.get("effort") != "low"
+                or prior.get("actually_trained_conversations") != 128
+                or prior.get("student_parent_sha256") != STUDENT_SHA256
+                or prior.get("teacher_model_sha256") != MODEL_SHA256
+                or prior.get("sample_errors")
                 or prior.get("source", {}).get("job_deck_sha256") != source["job_deck_sha256"]):
-            raise PrerequisiteHold("Stage2iWe one-update public source gate not passed")
+            raise PrerequisiteHold("Stage2iWg low one-update public source gate not passed")
+        for name in ("raw_shards_manifest", "canonical_shards_manifest"):
+            if prior.get(name) not in {"raw_shards_manifest.json", "canonical_shards_manifest.json"}:
+                raise ValueError("one-update shard manifest reference invalid")
+            path = prerequisite.parent / prior[name]
+            if path.is_symlink() or not path.is_file():
+                raise ValueError("one-update shard manifest absent or linked")
+            verify(prerequisite.parent, json.loads(path.read_text(encoding="utf-8")))
     if STUDENT.is_symlink() or not STUDENT.is_file() or STUDENT.stat().st_size < 400_000_000:
         raise FileNotFoundError("P076 B3 student parent missing or linked")
     if sha256_file(TOKENIZER) != TOKENIZER_SHA256:
         raise ValueError("legacy tokenizer SHA differs")
     if sha256_file(STUDENT) != STUDENT_SHA256:
         raise ValueError("P076 mean student parent SHA differs")
-    directory, manifest = paths(effort, variant)
     if directory.exists() or directory.is_symlink() or manifest.exists():
-        raise FileExistsError("online output version already exists")
-    target_updates = 1 if variant in {"backend1", "public1"} else UPDATES
+        raise FileExistsError(f"online output version already exists: {directory.relative_to(ROOT)}; deleting runlog does not remove HF data; preserve it and use a new stage")
+    target_updates = 1 if variant in {"backend1", "public1", "publiclow1"} else UPDATES
     return {"schema": ("P106B_STAGE2IWE_ONLINE_PUBLIC_INPUT_V1" if public else
                        "P106B_STAGE2IWD_ONLINE_RATE1_INPUT_V1" if variant == "backend1"
                        else "P106B_STAGE2IW_ONLINE_RATE5_INPUT_V1"), "effort": effort,
@@ -314,6 +372,25 @@ def self_test() -> None:
     assert paths("low", "initial")[1].name == "online_rate5_manifest.json"
     assert paths("medium", "public1")[1].name == "online_public1_manifest.json"
     assert paths("medium", "public5")[1].name == "online_public5_manifest.json"
+    assert paths("low", "publiclow1")[0].name == "v17_online_public1_low"
+    assert paths("low", "publiclow5")[0].name == "v18_online_public5_low"
+    assert termination_disposition(KeyboardInterrupt()) == ("INTERRUPTED_USER", 130)
+    assert termination_disposition(ValueError("fixture")) == ("TOOL_FAILURE_PARTIAL", 9)
+    assert termination_disposition(GateNegative("fixture")) == ("GATE_NEGATIVE_PARTIAL", 8)
+    class FixtureStop:
+        def wait(self, _seconds):
+            return False
+    def timeout_reader():
+        raise subprocess.TimeoutExpired(["fixture"], 5)
+    fixture_samples, fixture_errors = [], []
+    sample_memory(FixtureStop(), timeout_reader, fixture_samples, fixture_errors)
+    assert fixture_errors == ["TimeoutExpired"] and not fixture_samples
+    try:
+        require_sampler_health(fixture_errors)
+    except ToolFailure:
+        pass
+    else:
+        raise AssertionError("VRAM sampler timeout was accepted as healthy")
     signals = {"gdn_ar_enabled": None, "gdn_chunked_enabled": None,
                "kv_cache_space_warnings": 0, "attention_ubatch_failures": 0}
     tail: list[str] = []
@@ -334,7 +411,7 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
     import torch
 
     inputs = check_only(effort, variant)
-    public = variant in {"public1", "public5"}
+    public = variant in PUBLIC_VARIANTS
     if _compute_apps():
         print("[HOLD] competing GPU compute app; no student/teacher started")
         return 8
@@ -365,6 +442,7 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                "--reasoning", "auto"]
     server = None
     drain_worker = None
+    sampler_worker = None
     stop = threading.Event()
     samples: list[int] = []
     sample_errors: list[str] = []
@@ -376,10 +454,12 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
     all_seen: set[str] = set()
     used = {"ko": 0, "en": 0}
     started = time.monotonic()
-    status, reason = "PARTIAL", "not_started"
+    status, reason = "RUNNING", "server_starting"
+    active_phase, pending_generation_id = "SERVER_START", None
+    error_record = None
     raw_writer = canonical_writer = None
     accepted_total = 0
-    tool_failure = False
+    result_code = 0
     try:
         server = subprocess.Popen(command, cwd=ROOT, stdin=subprocess.DEVNULL,
                                   stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -391,21 +471,10 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
             for line in server.stdout:
                 capture_server_line(line, server_signals, server_lines, key)
 
-        def sample() -> None:
-            while not stop.wait(0.2):
-                try:
-                    used_mib, free_mib = read_memory()
-                    samples.append(used_mib)
-                    if free_mib < 512:
-                        sample_errors.append("FREE_LT_512")
-                        return
-                except (OSError, RuntimeError, ValueError, IndexError) as exc:
-                    sample_errors.append(type(exc).__name__)
-                    return
-
         drain_worker = threading.Thread(target=drain, daemon=True)
         drain_worker.start()
-        threading.Thread(target=sample, daemon=True).start()
+        sampler_worker = threading.Thread(target=sample_memory, args=(stop, read_memory, samples, sample_errors), daemon=True)
+        sampler_worker.start()
         deadline = time.monotonic() + 120
         while time.monotonic() < deadline:
             if server.poll() is not None:
@@ -435,8 +504,7 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                 language = "ko" if micro_index % 2 else "en"
                 batch = []
                 while len(batch) < MICRO:
-                    if sample_errors:
-                        raise GateNegative("GPU memory sampler failed or free<512MiB")
+                    require_sampler_health(sample_errors)
                     if time.monotonic() - started >= wall_limit:
                         raise GateNegative("authorized online wall limit reached before five updates")
                     cursor = used[language]
@@ -455,6 +523,8 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                         task = job["task"]
                     generation_id = ((f"{variant}_u{update_index:02d}m{micro_index:02d}a{cursor:04d}{language}")
                                      if public else f"u{update_index:02d}m{micro_index:02d}a{cursor:03d}{language}")
+                    pending_generation_id = generation_id
+                    active_phase = "TEACHER_TOKEN_ADMISSION" if public else "TEACHER_REQUEST"
                     if public:
                         if len(json.dumps(source_payload, ensure_ascii=False)) > 12_000:
                             admission = {"decision": "PROMPT_PAYLOAD_LIMIT_HOLD", "input_tokens": None}
@@ -484,6 +554,7 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                                                "accepted_for_training": False,
                                                "selected_for_pilot_microbatch": False})
                             counts[admission["decision"]] += 1
+                            pending_generation_id = None
                             continue
                     else:
                         admission = None
@@ -494,6 +565,7 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                                "max_tokens": max_tokens, "reasoning_effort": effort,
                                "seed": seed}
                     t0 = time.monotonic()
+                    active_phase = "TEACHER_REQUEST"
                     try:
                         reply = _http_json(f"http://127.0.0.1:{port}/v1/chat/completions",
                                            key, payload, timeout=120)
@@ -583,6 +655,7 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                                 language_tokens[language] += len(encoded[0])
                     counts[record["screen_status"]] += 1
                     raw_writer.append(record)
+                    pending_generation_id = None
                     if backend is not None:
                         print("[TEACHER_BACKEND_ERROR] " + json.dumps({
                             "generation_id": generation_id,
@@ -592,6 +665,14 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                             sort_keys=True), flush=True)
                         if backend["classification"] != "PEG_NATIVE_MISMATCH":
                             raise ToolFailure("unknown teacher backend/API failure; see versioned raw")
+                active_phase = "STUDENT_FORWARD_BACKWARD"
+                require_sampler_health(sample_errors)
+                print("[ONLINE_PROGRESS] " + json.dumps({
+                    "update": update_index, "microbatch": micro_index,
+                    "completed_microbatches_before_current": micro_index - 1,
+                    "format_candidates": accepted_total, "updates_completed": len(updates),
+                    "source_jobs_used": dict(used), "teacher_wall_sec_this_update": round(teacher_wall, 3)},
+                    sort_keys=True), flush=True)
                 t1 = time.monotonic()
                 part = loss_sum(model, batch, pad_id, torch.device("cuda"), cfg.vocab_size, 2048)
                 if not bool(torch.isfinite(part)):
@@ -608,6 +689,8 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
             if not math.isfinite(float(grad)):
                 raise GateNegative("nonfinite student gradient")
             t2 = time.monotonic()
+            active_phase = "OPTIMIZER_STEP"
+            require_sampler_health(sample_errors)
             adamw.step()
             muon.step()
             torch.cuda.synchronize()
@@ -626,26 +709,48 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                     "sampled_global_used_peak_mib": max(samples) if samples else None}
             updates.append(step)
             print("[ONLINE_UPDATE] " + json.dumps(step, ensure_ascii=False, sort_keys=True), flush=True)
+        require_sampler_health(sample_errors)
         status, reason = ("ONE_UPDATE_COMPLETE" if target_updates == 1 else "FIVE_UPDATES_COMPLETE",
                           "throughput/resource pilot only")
+        active_phase = "COMPLETE"
     except GateNegative as exc:
         status, reason = "GATE_NEGATIVE_PARTIAL", str(exc)
+        result_code = 8
         print(f"[GATE NEGATIVE] {reason}; completed optimizer updates={len(updates)}", flush=True)
     except ToolFailure as exc:
         status, reason = "TOOL_FAILURE_PARTIAL", str(exc)
-        tool_failure = True
+        result_code = 9
+        error_record = {"type": type(exc).__name__, "phase": active_phase,
+                        "pending_generation_id": pending_generation_id, "message": reason}
         print(f"[TOOL FAIL] {reason}; completed optimizer updates={len(updates)}", flush=True)
+    except (KeyboardInterrupt, Exception) as exc:
+        status, result_code = termination_disposition(exc)
+        reason = ("user interrupt (Ctrl+C); partial targets are not completed updates"
+                  if isinstance(exc, KeyboardInterrupt) else
+                  f"{type(exc).__name__} during {active_phase}: {str(exc).replace(key, '<redacted-api-key>')[:400]}")
+        error_record = {"type": type(exc).__name__, "phase": active_phase,
+                        "pending_generation_id": pending_generation_id, "message": reason}
+        print(f"[{'INTERRUPTED' if result_code == 130 else 'TOOL FAIL'}] {reason}; completed optimizer updates={len(updates)}", flush=True)
     finally:
         stop.set()
         _kill_group(server)
+        if sampler_worker is not None:
+            sampler_worker.join(timeout=6)
         if drain_worker is not None:
             drain_worker.join(timeout=5)
+        if status in {"ONE_UPDATE_COMPLETE", "FIVE_UPDATES_COMPLETE"} and sample_errors:
+            status, result_code = "TOOL_FAILURE_PARTIAL", 9
+            reason = "VRAM telemetry failed at finalization: " + ",".join(sample_errors)
         if raw_writer is not None and canonical_writer is not None and not counts:
             with manifest_path.open("x", encoding="utf-8") as stream:
-                stream.write(json.dumps({"schema": ("P106B_STAGE2IWE_ONLINE_PUBLIC1_V1" if variant == "public1"
-                                                     else "P106B_STAGE2IWF_ONLINE_PUBLIC5_V1" if variant == "public5"
-                                                     else "P106B_STAGE2IW_ONLINE_RATE5_V1"),
+                stream.write(json.dumps({"schema": REPORT_SCHEMAS[variant],
                                          "status": status, "reason": reason,
+                                         "termination_phase": active_phase, "error": error_record,
+                                         "pending_generation_id": pending_generation_id,
+                                         "exit_code": result_code,
+                                         "sample_errors": sample_errors,
+                                         "source": source,
+                                         "variant": variant,
                                          "effort": effort, "updates_completed": len(updates),
                                          "teacher_attempts": 0,
                                          "student_checkpoint_written": False,
@@ -662,11 +767,11 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                            for generation_id in step["trained_generation_ids"]]
             if len(trained_ids) != len(set(trained_ids)) or len(trained_ids) > accepted_total:
                 raise ValueError("online trained generation IDs are duplicated or exceed candidates")
-            report = {"schema": ("P106B_STAGE2IWE_ONLINE_PUBLIC1_V1" if variant == "public1"
-                                  else "P106B_STAGE2IWF_ONLINE_PUBLIC5_V1" if variant == "public5"
-                                  else "P106B_STAGE2IWD_ONLINE_RATE1_V1" if variant == "backend1"
-                                  else "P106B_STAGE2IW_ONLINE_RATE5_V1"),
+            report = {"schema": REPORT_SCHEMAS[variant],
                       "status": status, "reason": reason, "effort": effort,
+                      "termination_phase": active_phase, "error": error_record,
+                      "pending_generation_id": pending_generation_id,
+                      "exit_code": result_code,
                       "variant": variant, "target_updates": target_updates,
                       "source": source,
                       "inputs": inputs, "teacher_assets": teacher_assets,
@@ -705,7 +810,7 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                 "status", "reason", "effort", "updates_completed", "source_jobs_used",
                 "raw_counts", "whole_wall_sec", "student_checkpoint_written", "quality")},
                 ensure_ascii=False, sort_keys=True), flush=True)
-    return 9 if tool_failure else 0 if status in {"ONE_UPDATE_COMPLETE", "FIVE_UPDATES_COMPLETE"} else 8
+    return result_code
 
 
 def main() -> int:
@@ -715,7 +820,7 @@ def main() -> int:
     group.add_argument("--check-only", action="store_true")
     group.add_argument("--execute", action="store_true")
     parser.add_argument("--effort", choices=sorted(EFFORT_CONFIG), default="low")
-    parser.add_argument("--variant", choices=("initial", "public1", "public5"), default="initial")
+    parser.add_argument("--variant", choices=("initial", "public1", "public5", "publiclow1", "publiclow5"), default="initial")
     parser.add_argument("--max-wall-sec", type=int, default=MAX_WALL_SEC)
     args = parser.parse_args()
     try:
@@ -728,7 +833,7 @@ def main() -> int:
             if not 60 <= args.max_wall_sec <= MAX_WALL_SEC:
                 raise ValueError("wall cap must be 60..21600 seconds")
             def time_limit(_signum, _frame):
-                raise TimeoutError("online five-step hard wall exceeded")
+                raise GateNegative("authorized online hard wall exceeded")
             old = signal.signal(signal.SIGALRM, time_limit)
             signal.alarm(args.max_wall_sec + 180)
             try:
@@ -740,7 +845,7 @@ def main() -> int:
     except PrerequisiteHold as exc:
         print(f"[HOLD] P106B Stage2iW {exc}; teacher/student GPU NOT_RUN")
         return 8
-    except (OSError, ValueError, RuntimeError, TypeError, KeyError, TimeoutError) as exc:
+    except (OSError, ValueError, RuntimeError, TypeError, KeyError, subprocess.SubprocessError) as exc:
         print(f"[FAIL] P106B Stage2iW {type(exc).__name__}: {exc}", file=sys.stderr)
         return 9
 

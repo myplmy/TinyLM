@@ -4,6 +4,8 @@
 
 ## 1. 왜 — 질문을 두 개로 나눈다
 
+> 2026-09-29 후속 상태: 공개 Stage2iWe medium은 VRAM 계측 스레드 timeout 미처리 뒤 사용자 Ctrl+C, 같은 출력 재실행 check-only는 충돌9였다. [결과101 §29](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)가 정본이다. **medium We/Wf는 사용자 지시로 보류**, 새 공개 low Stage2iWg 1회→Wh 5회만 수리 검증 단계로 준비한다. 기존 OASST1 low1 성공은 보존하며 새 공개 source 시험과 중복으로 세지 않는다.
+
 [결과098 §8](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)의 full-GPU Bonsai+P076 모양 학생 두 팔은 **합성 입력 2업데이트 자원공존**만 확인했다. 실제 교사 문자열이 학생의 canonical ChatML assistant-only 손실로 들어간 증거는 0이다. [공개 SFT 적격성 결과096 §10](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)는 전체 공개 v3의 `TRAIN_READY=false`를 보존한다. 그렇다고 모든 교사 번역을 사람이 전수 승인할 때까지 **별도 소형 pseudo-label 기능 실험조차 금지할 근거는 없다.**
 
 이 계획은 먼저 `교사 출력 → 자동 형식/민감정보 필터 → 학생 loss`가 실제로 작동하는지만 잰다. 그 뒤 한국어 대화·지식 향상을 주장하려면 원답/번역 정합·오염·동일 부모 대조와 독립 평가가 별도로 필요하다. 교사 자신의 답이나 `verifier_origin` 필드만으로 진실을 보증하지 않는다.
@@ -33,6 +35,16 @@
 2026-09-29 [결과101 §25~§28](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): Stage2kWb 공개 작업표10,528개가 실제 생성됐고 Stage2iWd low는1업데이트, Wb none은5업데이트를 완료했다. 그러나 Wc medium은 **4회 뒤 한국어 원천365개 소진**으로 5회 문턱에 실패했다. 앞서 “현재 유한 source는 5회에 부족할 수 있다”는 예측이 medium에서 확인됐고 none에서는 예상과 달리 수락률이 높아 5회를 끝냈다. 두 팔의 context·출력상한·sampler가 달라 사고 강도 단독 원인을 주장하지 않는다. none/medium manifest의 GDN false는 잘린 서버 오류 버퍼에서 유도한 **무효 계측**으로 교정한다. 어떤 팔도 checkpoint/held-out 품질을 만들지 않았으므로 300M~600M 실질 능력 가설은 아직 열려 있다.
 
 ## 4. 단계 설계 — 싼 것부터
+
+### Stage2iWg→Stage2iWh — 새 공개 low·VRAM 계측 수리 1회→5회 (2026-09-29 후속 A 승인, 사용자 실행 미완)
+
+앞선 **OASST1 low1 Stage2iWd**는1 optimizer·128답·약76.8분에 완료됐으므로 그 조건을 다시 반복하지 않는다. 이번 **공개 Aya Dataset/OASST2 대응 concept5,015개/언어**는 다른 원천이며, We에서 발견한 `nvidia-smi TimeoutExpired`의 sampler fail-open과 Ctrl+C의 `PARTIAL/not_started` 기록 결함을 고친 실물 경로가 새 검증 대상이다. Wg는 `--effort low --variant publiclow1`·thinking sampler(temperature1/top_p.95/top_k20/min_p.05/presence0/repeat1)·ctx3072/max2048, 학생 P076 mean SHA·legacy32·micro8×accum16/ckpt-on·compile를 고정해128개 fresh target/1 optimizer까지만 실행한다. We medium과 원천·context·sampler·실제 적용량이 같지 않아 단일 사고강도 인과 비교로 쓰지 않는다. [모델카드](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf#best-practices)의 low 미지원/xhigh 유사 주의가 있어 작은 실측 없이 저비용을 보증하지 않는다.
+
+`sample_memory()`는 query timeout 등 계측 실패를 공유 원장에 기록하고 다음 teacher/forward/backward/optimizer 경계에서 **tool fail9**로 중단한다. 처리 중 HTTP는 반환/기존120초 timeout까지 기다릴 수 있다. free<512MiB는 자원 음성8, Ctrl+C는130, source/상한 소진은8이며 각각 partial manifest에 status/reason/phase/pending ID/실제 적용수를 남긴다. 샘플 스레드 실패를 CPU regression에서 주입해 **5/5 테스트**했고 launcher self-test에도 timeout 검출이 있다. 이 정적 통과는 실제 WSL GPU monitor가 안정적이라는 증거가 아니다.
+
+Wg는 새 `v17_online_public1_low/`, Wh는 별도 `v18_online_public5_low/`에 원형·canonical·SHA를20MB 이하 write-once 저장한다. **기존 v15/원본 runlog 삭제나 덮어쓰기 없이** 새 단계로 재시도한다. 실제 템플릿 입력토큰+2048+128≤3072 조건을 만족하지 않는 행은 원문 절단하지 않고 초과 사유로 남긴다. Wh의 모델 로드 전 gate는 Wg의 **동일 public deck SHA·부모/교사 SHA·effort low·ONE_UPDATE_COMPLETE·실제128적용·sample_errors 비어 있음·raw/canonical shard SHA**를 모두 요구한다. Wh는 같은 부모에서 새로 시작해5 optimizer/640답·6h 상한이므로 Wg와 더해6연속 학습으로 부르지 않는다. Wg2h/Wh6h는 상한이지 정식 교육량/성공 예측이 아니다. 두 새 SH의 실제 CPU check-only와 모델 E2E는 구분하며 새 코드 smoke0/0/0/0 뒤에만 GPU 실행한다.
+
+**기존 medium 보류:** We 실험 시도는 -done으로 이관하지만 검증 PASS 아님, 미실행 Wf SH는 사용자 지시로 HOLD 보존한다. 데이터셋 삭제/medium 학습 재개는 이번 범위에 없으며, 향후 자원 여유와 low의 품질 부족이 실측된 뒤 사용자와 다시 결정한다.
 
 ### Stage0W — 공개 OASST2 한정 선별/비보호 CPU 게이트(코드 작성, 실자료 check-only)
 
@@ -287,6 +299,8 @@ JSON 내부에는 `한국어기초사전 - 국립국어원 제공`, 생성시각
 | Stage2kWb | ≤0.1h CPU | 공개 Aya Dataset/OASST2 job 예상10,528건만 별도 ignored HF 20MB 샤드로 새로 기록; 보호 사전 접근0·교사/학생/GPU0 |
 | Stage2iWe | ≤2.0h GPU | 공개 전용 medium 1 optimizer·실제 token admission·P076 부모, 체크포인트0. Stage2kWb 10,528 job 생성·새 smoke PASS 선결 |
 | Stage2iWf | ≤6.0h GPU | 동일 public deck SHA의 Stage2iWe 1회 PASS가 선결. 5 optimizer·640 신선후보, 체크포인트0 |
+| Stage2iWg | ≤2.0h GPU | 새 공개원천 low1·계측수리 실물 gate. 구 OASST1 low1 반복 아님; 신규 v17·128 fresh·checkpoint0 |
+| Stage2iWh | ≤6.0h GPU | Wg low1·동일 source/부모/교사 SHA·정상 monitor·실제128 적용 선결; 신규 v18·640 fresh·checkpoint0 |
 | Stage2W | `NOT_ESTIMABLE` | 승인 원천의 실제 유니크 지도토큰·교사 accepted sample 비용·동일평가 확인 후 산정 |
 
 ## 7. 실행 파일·사전 점검
@@ -302,7 +316,8 @@ JSON 내부에는 `한국어기초사전 - 국립국어원 제공`, 생성시각
 - Stage2iWa/Wb/Wc: [결과101 §20·§27~§28](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 Wa는33요청/optimizer0 도구 사고, Wb none은5/5·52분 기술 완료, Wc medium은4/5·한국어365원천 소진 exit8로 분리한다. Wc의 canonical 형식 후보611 중 실제 학생 업데이트에 들어간 것은512다. 구 v10 원본 불변·같은 단계 재실행 금지. OASST1 B/C와 새 Aya/OASST2 공개 원천의 효과를 한 변수 비교로 오인하지 않는다.
 - Stage2jW/Wb: 이번 사용자 한정 Codex 교사-only4+1요청의 별도 v11/v12 결과가 [결과101 §21~§22](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에 있다. 교사 native parser의 문항26 HTTP500은 정확 PEG 불일치, bypass의 HTTP200은 길이 소진·중복 태그로 답안 불가다. 사용자 재실행 단계가 아니며 같은 출력 버전을 재사용하지 않는다.
 - Stage2fWb/Stage2kW/Wb·Stage2iWd: [결과101 §23~§26](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 Stage2kW 읽기 전용87,361 job과 Stage2fWb 한영 형식 KO14/EN15을 보존한다. 2026-09-29 새 smoke43/0/0/0 뒤 Stage2kWb 공개 job10,528과 Stage2iWd low 동시 1 optimizer·약76.8분 완료, checkpoint/품질0. 실물 기술 경로는 열렸으나 교사 진실성·formal SFT는 아니다.
-- Stage2iWe/Wf: 사용자 A안으로 공개 Aya/OASST2 분리 덱의 1회→5회 gate 코드·새 SH·TSV를 작성했다. 현재 CPU self-test/Stage2iWe check-only PASS, 실제 두 GPU 단계는 `E2E_NOT_RUN`; Stage2iWf는 We 실측 전 check-only HOLD8이다.
+- Stage2iWe/Wf: We medium 첫실행은 sampler `TimeoutExpired` 미처리 뒤 사용자 Ctrl+C·optimizer0/후보123이었다. 같은날 로그 삭제 후 재실행은 output존재 check-only exit9였다([결과101 §29](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 사용자 지시로 medium 보류, We -done·재현 보존 후 삭제 판정, 미실행 Wf SH는 HOLD로 보존하며 모델 전 check-only8로 막는다.
+- Stage2iWg/Wh: [새 low1 SH](../run_P106B_Stage2iWg_online1_public_low.sh)와 [조건부 low5 SH](../run_P106B_Stage2iWh_online5_public_low.sh)는 수리 sampler/Ctrl+C·공개 source gate를 포함한다. Wg CPU check-only PASS, Wh는 Wg 실제 결과가 없어 HOLD8. 모델·학습 `E2E_NOT_RUN`이다.
 - Stage1cW: [비활성 SH 템플릿](../scripts/templates/P106B_Stage1cW_parent_student_posthoc.sh.in)만 있다. Stage1b 고유 checkpoint가 아직 없어 루트 SH/TSV에 등록하면 입력태그 린터가 실제 FAIL한다. 사용자가 Stage1b 로그·체크포인트를 회신해 SHA/메타데이터를 판독한 **다음 지시**에서 새 단계명으로 활성화한다. 생성 답안·문항별 벤치 원본이 결과문서의 근거다.
 - Stage2W: 원천 수·사람 표본·평가 설계 미확정이므로 **SH 미작성**. 두 준비 SH가 존재하는 것과 Stage2 본학습 사용 승인은 다르다.
 - tag `p106b_s1b_oasst2_ko_online_s1337`: 레지스트리 조회에서 기존 로그 충돌0. 새 Stage1b 출력은 P106B 고유 이름이며 기존 P076/공개 SFT/교사 파일을 덮지 않는다. 과거 P076 mean은 같은 시작점 전후 진단의 부모이지 **동일 학습량의 교사 없는 대조군**이 아니다.
@@ -337,3 +352,4 @@ OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 
 - 2026-09-28 사용자 반환: Stage2kW 독립 CPU 결과는 87,361 job/read-only, Stage2fWb는 old29+new8시도·case26 PEG500 2회에도 KO14/EN15로 사전 각12/16 형식 문턱을 통과했다. 이것은 학생 학습·한영5:5·교사 정답 PASS가 아니다. 새 코드/권리 분리 뒤 사용자 smoke는 별도 재실행이 필요하다.
 - 2026-09-28 공식 정책 대조: 사전 별도 저장은 독립 공개원천과의 물리·계보 혼합을 막지만, 사전 예문/뜻풀이의 표현을 변형한 행의 권리나 모델 공개 시의 법적 판단을 자동 면제하지 않는다. Stage2kWb는 공개 source만 쓰고 보호 계열 전송/복사0; 사전 파생 별도 후보셋/개념만 재합성의 범위는 사용자 추가 선택과 검토에 따라 별도 구현한다.
 - 2026-09-29 사용자 [smoke](../smoketest_logs/202609290441_smoke_b12060e.txt) 43/0/0/0과 [결과101 §25~§28](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) 회수: 공개 전용 Stage2kWb job10,528·Stage2iWd low1/1·Wb none5/5 기술 기능을 확인했으나, Wc medium은 한국어365후보를 모두 써도 4/5에서 exit8이었다. Wc 형식 후보611 중 학생 optimizer에 실제 적용된 것은512, 남은99는 미적용 raw/canonical 후보로만 보존한다. none5의 비패딩141,422토큰과 medium4의100,408토큰은 300M/600M이 아니고 checkpoint/held-out 평가0이다. 장시간 서버 오류 tail에서 GDN 시작 줄이 밀린 결함은 계측 보강했지만 새 GPU 런 전에는 해당 팔 fusion 상태 `UNKNOWN`. 사용자 선택 A로 공개 Aya/OASST2 전용 Stage2iWe 1회→통과 시 Stage2iWf 5회만 준비했으며 현 E2E는 `NOT_RUN`이다.
+- 2026-09-29 후속 [smoke](../smoketest_logs/202609291711_smoke_848dd6a.txt)는848dd6a 실행 당시43/0/0/0. We 첫실행의 계측 daemon timeout이 main에 전달되지 않은 **코드 결함**은 사용자 traceback과 exact v15 원형141/후보123·updates0으로 확인했다. ctx/출력상한이나 교사 품질 실패라고 단정하지 않는다. Ctrl+C/status와 sampleerrors 누락·후속 dataset output collision을 각각 수리/설명하고 medium은 보류했다. low 이미 실행했던 OASST1 Wd1 성공은 보존하며, 사용자 재선택 A로 새 공개원천·수리코드 Wg1→통과시Wh5를 별도 단계/버전으로 준비했다. 다음 가설은 계측 오류가 다시 발생하면 조용히 학습을 계속하지 않고 원본·partial을 남기며 fail9하는가이고 실물 결과 전 미확인이다.
