@@ -29,7 +29,6 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-13	P106B	run_P106B_Stage2iWe_online1_public_medium.sh	Y	2.0	Y	Y	Stage2kWb 공개 Aya Dataset/OASST2 CARD_ONLY source만 사용, 실제 교사 토큰예산 검사와 고유 concept 한영 1 optimizer 기술 gate; 구 OASST1 none과 인과 비교 금지·체크포인트/품질0	8
 90	P106B	run_P106B_Stage2iWf_online5_public_medium.sh	Y	6.0	Y	Y	HOLD: 사용자 2026-09-29 low 우선·medium 보류. 미실행 medium5 SH는 취소하지 않고 보존하며 코드 check-only에서 HOLD8, 향후 자원 여유·품질 부족 근거와 사용자 결정 전 실행 금지	8
 1	P106B	run_P106B_Stage2iWg_online1_public_low.sh	Y	2.0	Y	Y	새 공개 Aya/OASST2 low1·128 신선답/optimizer1, nvidia-smi TimeoutExpired 스레드 fail-open·Ctrl+C manifest 수리 검증; 옛 OASST1 low1 중복 아님, 새 smoke·v17 부재·P076 부모 선결	8
 2	P106B	run_P106B_Stage2iWh_online5_public_low.sh	Y	6.0	Y	Y	Stage2iWg low1 동일 public deck/부모/교사 SHA·실제128 적용·VRAM계측 정상 PASS 뒤만 low5·640 신선답·v18, 체크포인트/정식품질0; 사용자 새 원천 A안	8
@@ -552,6 +551,10 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   3	P106B	run_P106B_Stage2iWd_online1_backend.sh	Y	1.5	Y	Y	Stage2fWb 한영각 형식12/16·manifest 선결, 기존 공개v3 OASST1 단일턴/low·P076 부모를 유지한 1 optimizer 동시 호출 복구 진단. 정확 PEG500은 행 거부, 미상 HTTP는 도구실패9; v13 write-once·체크포인트/품질 판정0	8
 #   11	P106B	run_P106B_Stage2iWb_online5_none.sh	Y	1.5	Y	Y	대안 B: 같은 공개 v3 OASST1 source/학생, 모델카드 instruct sampler·none·ctx1536/max1024, 최대5 optimizer 처리율 진단; Stage2fWb 선결·구 교사 effort 프로브 none과 sampler 달라 직접 속도귀속 금지·체크포인트0	8
 #   12	P106B	run_P106B_Stage2iWc_online5_medium.sh	Y	6.0	Y	Y	대안 C: 같은 공개 v3 OASST1 source/학생, 모델카드 thinking sampler·medium·ctx6144/max4096, Stage2h 출력 절단 회피 가능성·VRAM/시간 문턱 별도; Stage2fWb 선결·최대5 optimizer·체크포인트0	8
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   13	P106B	run_P106B_Stage2iWe_online1_public_medium.sh	Y	2.0	Y	Y	Stage2kWb 공개 Aya Dataset/OASST2 CARD_ONLY source만 사용, 실제 교사 토큰예산 검사와 고유 concept 한영 1 optimizer 기술 gate; 구 OASST1 none과 인과 비교 금지·체크포인트/품질0	8
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
