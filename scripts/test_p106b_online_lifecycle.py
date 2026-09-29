@@ -49,6 +49,14 @@ class OnlineLifecycleTests(unittest.TestCase):
         online.capture_server_line("failed fixture", signals, [], "secret")
         self.assertIsNone(signals["gdn_ar_enabled"])
 
+    def test_student_timing_windows_preserve_first_and_rest_without_compile_claim(self):
+        result = online.student_timing_fields([4.0] + [0.2] * 15, 0.5)
+        self.assertEqual(result["student_first_microbatch_wall_sec"], 4.0)
+        self.assertEqual(result["student_later_microbatches_wall_sec"], 3.0)
+        self.assertEqual(result["student_optimizer_wall_sec"], 0.5)
+        with self.assertRaises(ValueError):
+            online.student_timing_fields([4.0], 0.5)
+
     def run_mock_until_exception(self, error):
         """Exercise real execute/finally with fake modules, transports and model factory."""
         class FakeTokenizer:

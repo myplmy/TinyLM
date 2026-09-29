@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# P106B Stage2iWg: new public Aya/OASST2 low 1-update telemetry recovery.
+# P106B Stage2iWg: completed user low1 run, result101 section30; keep original command evidence.
 # Former low1 used OASST1; this is not a duplicate source/backend gate.
 # User-only GPU, at most 2h, full teacher + P076 micro8*accum16/ckpt-on.
 set -euo pipefail

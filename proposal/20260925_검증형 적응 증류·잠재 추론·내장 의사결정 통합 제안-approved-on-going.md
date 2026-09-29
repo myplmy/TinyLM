@@ -606,3 +606,11 @@ G0는 모든 teacher 후보에 같은 **사전 고정** 한국어·영어, 논�
 §17의 medium We는 [결과101 §29](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 첫 실물 시도 **VRAM sampler timeout 스레드 예외 미처리**·사용자 Ctrl+C로 optimizer0/형식후보123이었다. 재실행 원본은 남은 v15 write-once 출력과 충돌해 check-only9만 기록했다. GDN latch true와 KV-cache 경고10은 남아 있지만 sampleErrors 빈값·peak11009는 죽은 sampler의 불완전 데이터로 판정한다. 최초 nvidia query 지연의 환경 원인을 교사 품질·OOM으로 단정하지 않는다. 수리는 계측 timeout→공유 오류/다음 backward·optimizer 전 tool fail9, user interrupt130→phase·미완 request·후보/실제 적용분리, microbatch 진행기록이다. CPU 모의5/5 PASS는 실물 공존 성공이 아니다.
 
 사용자는 **기존 low 실행 확인 후** 새 공개 Aya/OASST2·수리 경로만 A안 low1→조건부low5로 확정했다. OASST1 low1의 역사 성공은 다시 실행하지 않으며, 신규 Wg/Wh는 v17/v18에 원형·최종·canonical·20MB SHA 샤드를 따로 보존한다. We v15 raw141/후보123·optimizer0과 medium Wf SH는 각각 역사적 실패자료/미실행 HOLD로 보존한다. 기존 교사 데이터는 `HF/sft_ready/p106b_teacher_sft/`의 버전별 원형/학생후보에 있고 Git commit 대상이 아니다. medium 재개는 자원 여유와 low의 부족한 교육품질이 확인된 뒤 사용자 결정 사항이다. **학생 held-out·무교사 matched 비교·오답·망각·300M~600M 실처리량·검증형 ACCEPT가 없어 on-going 유지**한다.
+
+## 19. 2026-09-30 생산 병목·보존자료 교육 게이트 — 승인 구현과 미실행 구분
+
+[결과101 §30](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의9/29 공개 low Wg는128fresh/1 optimizer·비패딩25,133으로 기술 완료됐다. 교사는completion61.43tok/s였지만 유효학생자료는6.04tok/s이며 length55행이교사시간43.635%를썼다. [규모/비용 보고서](../docs/20260929_P106B-low-교사학생-처리율과-SFT-규모-비용-분석.md)의 유한 train10,030job 외삽은 고유1.29M/4epoch5.14M로300M에 턱없이 부족하다. 이는 모델이 배울 수 없다는 결론이 아니라 현재 원천·길이·사고·실패의 생산 손익을 측정한 것이다.
+
+사용자는 한 교사1/2slot ABBA(A1), durable producer/consumer(A2), 한 질문의답2→4(B), 보존자료 실제4pass(C4)를 승인했다. [P106B Stage3](../test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md)의9 SH와 선결 코드를 구현하고 CPU회귀10/10을 수행했으며 GPU·모델은 실행하지 않았다. 독립 C4의100train/28val은 source concept/질문을 분리하고 full-val망각·SFTval·고정답을 남긴다. A1 속도/자원·A2 기능·B2/B4 형식·독립C4 safety의 현재SHA가 통과하면 통합1 optimizer, 그 후 새로운 보존자료의 작은4epoch교육으로 진행한다. 통합1회는 C reader epoch1이지4epoch 완료가 아니다. 기존Wh low5보존·mediumHOLD를 유지한다.
+
+**완료 불가 원인은 남은 실증 계약**이다: 학생 원답/오류·망각/held-out, 동등노출 무교사 대조, 검증형 P106 ACCEPT와 adaptive정책 효과, B 잠재추론/C 의사결정의 부가가치·배포손익이 없다. 이 제안의 B/C와 이번 producer/다중답/재사용 A/B/C는 명칭만 같고 다른 계층의 작업이다. 이번 구현을 제안 전체 성공으로 보지 않고 on-going을 유지하며, 사용자 실험만 기다린다는 이유로 GPT의 이번 구현 WIP를 진행/막힘으로 붙잡지 않는다.

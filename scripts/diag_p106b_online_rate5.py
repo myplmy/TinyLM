@@ -122,6 +122,18 @@ def require_sampler_health(errors: list[str]) -> None:
         raise ToolFailure("VRAM telemetry failed: " + ",".join(errors) + "; memory evidence invalid")
 
 
+def student_timing_fields(micro_seconds: list[float], optimizer_seconds: float) -> dict:
+    """Observed windows, not a claim that the first microbatch equals compile cost."""
+    if (len(micro_seconds) != ACCUM or any(not math.isfinite(value) or value < 0
+                                         for value in micro_seconds + [optimizer_seconds])):
+        raise ValueError("student timing windows are incomplete or nonfinite")
+    return {"student_microbatch_wall_sec": [round(value, 6) for value in micro_seconds],
+            "student_first_microbatch_wall_sec": round(micro_seconds[0], 6),
+            "student_later_microbatches_wall_sec": round(sum(micro_seconds[1:]), 6),
+            "student_optimizer_wall_sec": round(optimizer_seconds, 6),
+            "student_timing_limit": "first and later microbatch windows may include compile/recompile; no pure kernel or compile-only estimate"}
+
+
 def capture_server_line(line: str, signals: dict, tail: list[str], api_key: str) -> None:
     """Latch startup fusion evidence before the bounded diagnostic tail rolls over."""
     for suffix, key in (("autoregressive", "gdn_ar_enabled"),
@@ -377,6 +389,9 @@ def self_test() -> None:
     assert termination_disposition(KeyboardInterrupt()) == ("INTERRUPTED_USER", 130)
     assert termination_disposition(ValueError("fixture")) == ("TOOL_FAILURE_PARTIAL", 9)
     assert termination_disposition(GateNegative("fixture")) == ("GATE_NEGATIVE_PARTIAL", 8)
+    timing = student_timing_fields([3.0] + [0.1] * (ACCUM - 1), 0.2)
+    assert timing["student_first_microbatch_wall_sec"] == 3.0
+    assert timing["student_later_microbatches_wall_sec"] == 1.5
     class FixtureStop:
         def wait(self, _seconds):
             return False
@@ -407,6 +422,7 @@ def self_test() -> None:
 
 
 def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
+    execute_started = time.monotonic()
     from tokenizers import Tokenizer
     import torch
 
@@ -497,6 +513,8 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
             torch.cuda.reset_peak_memory_stats()
             update_started = time.monotonic()
             teacher_wall = student_wall = 0.0
+            student_micro_seconds: list[float] = []
+            assistant_loss_sum = 0.0
             completion_tokens = processed_tokens = supervised_tokens = 0
             language_tokens = {"ko": 0, "en": 0}
             update_generation_ids: list[str] = []
@@ -677,9 +695,12 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                 part = loss_sum(model, batch, pad_id, torch.device("cuda"), cfg.vocab_size, 2048)
                 if not bool(torch.isfinite(part)):
                     raise GateNegative("nonfinite student assistant-only loss")
+                assistant_loss_sum += float(part.detach())
                 part.backward()  # normalize accumulated gradients by the *actual* target count below
                 torch.cuda.synchronize()
-                student_wall += time.monotonic() - t1
+                micro_wall = time.monotonic() - t1
+                student_micro_seconds.append(micro_wall)
+                student_wall += micro_wall
             if supervised_tokens <= 0:
                 raise GateNegative("zero student assistant target tokens")
             for parameter in model.parameters():
@@ -694,19 +715,22 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
             adamw.step()
             muon.step()
             torch.cuda.synchronize()
-            student_wall += time.monotonic() - t2
+            optimizer_wall = time.monotonic() - t2
+            student_wall += optimizer_wall
             step = {"update": update_index, "teacher_request_wall_sec": round(teacher_wall, 3),
                     "student_compute_wall_sec": round(student_wall, 3),
                     "whole_update_wall_sec": round(time.monotonic() - update_started, 3),
                     "micro": MICRO, "accum": ACCUM, "fresh_accepted": MICRO * ACCUM,
                     "processed_nonpadding_conversation_tokens": processed_tokens,
                     "assistant_supervised_tokens": supervised_tokens,
+                    "assistant_only_train_ce": assistant_loss_sum / supervised_tokens,
                     "language_nonpadding_tokens": language_tokens,
                     "teacher_completion_tokens": completion_tokens,
                     "trained_generation_ids": update_generation_ids,
                     "grad_norm_before_clip": round(float(grad), 6),
                     "student_peak_reserved_mib": torch.cuda.max_memory_reserved() // 2**20,
                     "sampled_global_used_peak_mib": max(samples) if samples else None}
+            step.update(student_timing_fields(student_micro_seconds, optimizer_wall))
             updates.append(step)
             print("[ONLINE_UPDATE] " + json.dumps(step, ensure_ascii=False, sort_keys=True), flush=True)
         require_sampler_health(sample_errors)
@@ -793,6 +817,8 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                       "canonical_concat_sha256": (canonical_manifest["concat_sha256"]
                                                   if canonical_manifest is not None else None),
                       "whole_wall_sec": round(time.monotonic() - started, 3),
+                      "pre_server_wall_sec": round(started - execute_started, 3),
+                      "full_execute_wall_sec": round(time.monotonic() - execute_started, 3),
                       "sampled_global_peak_mib": max(samples) if samples else None,
                       "sample_errors": sample_errors,
                       "server_error_tail": server_lines[-20:],

@@ -1,0 +1,66 @@
+Low-first public Aya Dataset/OASST2 gate, not old OASST1 low1 repetition. New v17 write-once HF raw/canonical <=20MB shards, 128 fresh answers/1 optimizer, no checkpoint or quality claim. Ctrl+C is INTERRUPTED_USER/130; nvidia-smi timeout is telemetry tool failure/9, never healthy memory evidence. Model card does not guarantee low is faster; thinking sampler and ctx3072/max2048 are measured settings. Medium remains HOLD.
+
+==============================================================================
+[runlog] 2026-09-29 19:27:44  name=P106B_Stage2iWg_online1_public_low
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_online_lifecycle.py
+==============================================================================
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.004s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-29 19:27:45)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-29 19:27:45  name=P106B_Stage2iWg_online1_public_low
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_online_rate5.py --self-test
+==============================================================================
+[PASS] five updates require 640 accepted fresh teacher answers; no repeats/ckpt; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-29 19:27:46)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-29 19:27:46  name=P106B_Stage2iWg_online1_public_low
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_online_rate5.py --check-only --effort low --variant publiclow1
+==============================================================================
+{"accum": 16, "bilingual_gate": null, "candidate_jobs_per_language": {"en": 5015, "ko": 5015}, "ctx_and_cap": [3072, 2048], "effort": "low", "micro": 8, "model_gpu": "NOT_RUN", "needed_accepted_answers": 128, "quality": "NOT_RUN", "schema": "P106B_STAGE2IWE_ONLINE_PUBLIC_INPUT_V1", "source": {"job_deck_sha256": "0A1022269BBDDF3539E97D63894BD7DBA2EA3838FADA8AF26A4255643031232C", "paired_concepts": 5015, "policy": "public-only Stage2kWb; split before translation, unique concept per language, actual teacher input token admission", "rights_status": "CARD_ONLY", "source_families": ["aya_dataset", "oasst2"], "source_repos": {"aya": {"repo": "CohereLabs/aya_dataset", "revision": "f9ea04583f02a8f86404ff6c58bf75fe637df8a2"}, "oasst1": {"repo": "OpenAssistant/oasst1", "revision": "fdf72ae0827c1cda404aff25b6603abec9e3399b"}, "oasst2": {"repo": "OpenAssistant/oasst2", "revision": "179dd21fc55192153d94adb0e0ce8f69e222bf75", "source_sha256": "7A886A16CCFC1173C4F00A6897523E3C95B2785A86EE44A18A98F4F2807EE29B"}}, "train_jobs_sha256": "E8216C3573678B871D1A824DF2D5672DDD7F7EBEBC9CE3D25F1EA5A095D8232A"}, "student_parent": "runs/ckpt/m100R1c_ko-en_300M_p076_b3_ag2_mean_s1337.pt", "updates": 1, "variant": "publiclow1"}
+[CHECK_ONLY] source/tokenizer/parent PASS; GPU/student updates NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-29 19:27:48)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-29 19:27:48  name=P106B_Stage2iWg_online1_public_low
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_online_rate5.py --execute --effort low --variant publiclow1 --max-wall-sec 7200
+==============================================================================
+[STUDENT_READY] parent_step=2289 compile=default ckpt=ON micro=8 accum=16 free_mib=14373 cache=/tmp/tinylm_p106b_stage1bw_ku9c37lq
+[TEACHER_BACKEND_ERROR] {"body_sha256": "D612E193C190B3AD58DA6B1DE44BF9D4511DFAB9834B55CDF63EDDCB1BFFB1F2", "classification": "PEG_NATIVE_MISMATCH", "generation_id": "publiclow1_u01m01a0006ko", "http_status": 500}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 0, "format_candidates": 8, "microbatch": 1, "source_jobs_used": {"en": 0, "ko": 10}, "teacher_wall_sec_this_update": 227.917, "update": 1, "updates_completed": 0}
+W0929 19:32:06.060000 3938687 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 1, "format_candidates": 16, "microbatch": 2, "source_jobs_used": {"en": 11, "ko": 10}, "teacher_wall_sec_this_update": 453.268, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 2, "format_candidates": 24, "microbatch": 3, "source_jobs_used": {"en": 11, "ko": 22}, "teacher_wall_sec_this_update": 671.25, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 3, "format_candidates": 32, "microbatch": 4, "source_jobs_used": {"en": 28, "ko": 22}, "teacher_wall_sec_this_update": 1069.748, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 4, "format_candidates": 40, "microbatch": 5, "source_jobs_used": {"en": 28, "ko": 33}, "teacher_wall_sec_this_update": 1327.729, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 5, "format_candidates": 48, "microbatch": 6, "source_jobs_used": {"en": 37, "ko": 33}, "teacher_wall_sec_this_update": 1521.652, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 6, "format_candidates": 56, "microbatch": 7, "source_jobs_used": {"en": 37, "ko": 48}, "teacher_wall_sec_this_update": 1870.383, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 7, "format_candidates": 64, "microbatch": 8, "source_jobs_used": {"en": 47, "ko": 48}, "teacher_wall_sec_this_update": 2064.349, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 8, "format_candidates": 72, "microbatch": 9, "source_jobs_used": {"en": 47, "ko": 63}, "teacher_wall_sec_this_update": 2434.492, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 9, "format_candidates": 80, "microbatch": 10, "source_jobs_used": {"en": 59, "ko": 63}, "teacher_wall_sec_this_update": 2666.706, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 10, "format_candidates": 88, "microbatch": 11, "source_jobs_used": {"en": 59, "ko": 78}, "teacher_wall_sec_this_update": 2973.536, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 11, "format_candidates": 96, "microbatch": 12, "source_jobs_used": {"en": 70, "ko": 78}, "teacher_wall_sec_this_update": 3183.139, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 12, "format_candidates": 104, "microbatch": 13, "source_jobs_used": {"en": 70, "ko": 93}, "teacher_wall_sec_this_update": 3477.2, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 13, "format_candidates": 112, "microbatch": 14, "source_jobs_used": {"en": 79, "ko": 93}, "teacher_wall_sec_this_update": 3651.822, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 14, "format_candidates": 120, "microbatch": 15, "source_jobs_used": {"en": 79, "ko": 104}, "teacher_wall_sec_this_update": 3879.667, "update": 1, "updates_completed": 0}
+[ONLINE_PROGRESS] {"completed_microbatches_before_current": 15, "format_candidates": 128, "microbatch": 16, "source_jobs_used": {"en": 92, "ko": 104}, "teacher_wall_sec_this_update": 4158.396, "update": 1, "updates_completed": 0}
+[ONLINE_UPDATE] {"accum": 16, "assistant_supervised_tokens": 18735, "fresh_accepted": 128, "grad_norm_before_clip": 4.220869, "language_nonpadding_tokens": {"en": 11771, "ko": 13362}, "micro": 8, "processed_nonpadding_conversation_tokens": 25133, "sampled_global_used_peak_mib": 10632, "student_compute_wall_sec": 167.789, "student_peak_reserved_mib": 2322, "teacher_completion_tokens": 255455, "teacher_request_wall_sec": 4158.396, "trained_generation_ids": ["publiclow1_u01m01a0000ko", "publiclow1_u01m01a0001ko", "publiclow1_u01m01a0002ko", "publiclow1_u01m01a0003ko", "publiclow1_u01m01a0004ko", "publiclow1_u01m01a0005ko", "publiclow1_u01m01a0007ko", "publiclow1_u01m01a0009ko", "publiclow1_u01m02a0000en", "publiclow1_u01m02a0001en", "publiclow1_u01m02a0003en", "publiclow1_u01m02a0005en", "publiclow1_u01m02a0006en", "publiclow1_u01m02a0007en", "publiclow1_u01m02a0009en", "publiclow1_u01m02a0010en", "publiclow1_u01m03a0010ko", "publiclow1_u01m03a0011ko", "publiclow1_u01m03a0012ko", "publiclow1_u01m03a0014ko", "publiclow1_u01m03a0018ko", "publiclow1_u01m03a0019ko", "publiclow1_u01m03a0020ko", "publiclow1_u01m03a0021ko", "publiclow1_u01m04a0018en", "publiclow1_u01m04a0019en", "publiclow1_u01m04a0020en", "publiclow1_u01m04a0021en", "publiclow1_u01m04a0022en", "publiclow1_u01m04a0024en", "publiclow1_u01m04a0025en", "publiclow1_u01m04a0027en", "publiclow1_u01m05a0025ko", "publiclow1_u01m05a0026ko", "publiclow1_u01m05a0027ko", "publiclow1_u01m05a0028ko", "publiclow1_u01m05a0029ko", "publiclow1_u01m05a0030ko", "publiclow1_u01m05a0031ko", "publiclow1_u01m05a0032ko", "publiclow1_u01m06a0028en", "publiclow1_u01m06a0029en", "publiclow1_u01m06a0030en", "publiclow1_u01m06a0031en", "publiclow1_u01m06a0033en", "publiclow1_u01m06a0034en", "publiclow1_u01m06a0035en", "publiclow1_u01m06a0036en", "publiclow1_u01m07a0033ko", "publiclow1_u01m07a0034ko", "publiclow1_u01m07a0037ko", "publiclow1_u01m07a0041ko", "publiclow1_u01m07a0044ko", "publiclow1_u01m07a0045ko", "publiclow1_u01m07a0046ko", "publiclow1_u01m07a0047ko", "publiclow1_u01m08a0037en", "publiclow1_u01m08a0039en", "publiclow1_u01m08a0040en", "publiclow1_u01m08a0041en", "publiclow1_u01m08a0042en", "publiclow1_u01m08a0044en", "publiclow1_u01m08a0045en", "publiclow1_u01m08a0046en", "publiclow1_u01m09a0050ko", "publiclow1_u01m09a0051ko", "publiclow1_u01m09a0052ko", "publiclow1_u01m09a0053ko", "publiclow1_u01m09a0056ko", "publiclow1_u01m09a0059ko", "publiclow1_u01m09a0060ko", "publiclow1_u01m09a0062ko", "publiclow1_u01m10a0047en", "publiclow1_u01m10a0048en", "publiclow1_u01m10a0050en", "publiclow1_u01m10a0051en", "publiclow1_u01m10a0052en", "publiclow1_u01m10a0053en", "publiclow1_u01m10a0056en", "publiclow1_u01m10a0058en", "publiclow1_u01m11a0065ko", "publiclow1_u01m11a0066ko", "publiclow1_u01m11a0068ko", "publiclow1_u01m11a0069ko", "publiclow1_u01m11a0070ko", "publiclow1_u01m11a0074ko", "publiclow1_u01m11a0075ko", "publiclow1_u01m11a0077ko", "publiclow1_u01m12a0061en", "publiclow1_u01m12a0062en", "publiclow1_u01m12a0063en", "publiclow1_u01m12a0065en", "publiclow1_u01m12a0066en", "publiclow1_u01m12a0067en", "publiclow1_u01m12a0068en", "publiclow1_u01m12a0069en", "publiclow1_u01m13a0078ko", "publiclow1_u01m13a0079ko", "publiclow1_u01m13a0081ko", "publiclow1_u01m13a0084ko", "publiclow1_u01m13a0085ko", "publiclow1_u01m13a0090ko", "publiclow1_u01m13a0091ko", "publiclow1_u01m13a0092ko", "publiclow1_u01m14a0070en", "publiclow1_u01m14a0071en", "publiclow1_u01m14a0073en", "publiclow1_u01m14a0074en", "publiclow1_u01m14a0075en", "publiclow1_u01m14a0076en", "publiclow1_u01m14a0077en", "publiclow1_u01m14a0078en", "publiclow1_u01m15a0093ko", "publiclow1_u01m15a0094ko", "publiclow1_u01m15a0096ko", "publiclow1_u01m15a0097ko", "publiclow1_u01m15a0098ko", "publiclow1_u01m15a0099ko", "publiclow1_u01m15a0101ko", "publiclow1_u01m15a0103ko", "publiclow1_u01m16a0079en", "publiclow1_u01m16a0080en", "publiclow1_u01m16a0081en", "publiclow1_u01m16a0085en", "publiclow1_u01m16a0087en", "publiclow1_u01m16a0088en", "publiclow1_u01m16a0089en", "publiclow1_u01m16a0091en"], "update": 1, "whole_update_wall_sec": 4327.981}
+[ONLINE_SUMMARY] {"effort": "low", "quality": "NOT_RUN", "raw_counts": {"COMPRESSION_REQUIRED": 8, "INCOMPLETE": 55, "PARSE_ERROR": 4, "PEG_NATIVE_MISMATCH": 1, "PSEUDO_FORMAT_READY": 128}, "reason": "throughput/resource pilot only", "source_jobs_used": {"en": 92, "ko": 104}, "status": "ONE_UPDATE_COMPLETE", "student_checkpoint_written": false, "updates_completed": 1, "whole_wall_sec": 4332.154}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 73.2분  (2026-09-29 20:40:58)
+==============================================================================
