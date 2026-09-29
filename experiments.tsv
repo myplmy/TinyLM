@@ -33,15 +33,6 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 2	P106B	run_P106B_Stage3bWb_teacher_student_overlap_recovery.sh	Y	1.0	Y	Y	기존A2 serial KO4/8로겹침팔미실행 보존. 별도v27은한영각16source·ctx6144/output4096·각언어12/16 후 serial대producer/consumer실제overlap·VRAM/마스크 검사; 최대2h·인과속도/품질채택0	8
 # HOLD 2026-09-30 P106B: run_P106B_Stage2iWh_online5_public_low-hold.sh. 사용자 요청대로 미실행 low5를 보존하되 현재 우선순위·큐에서 제외; 재활성화는 새 지시/새 단계가 필요하다.
 # HOLD 2026-09-30 P106B: run_P106B_Stage2iWf_online5_public_medium-hold.sh. 기존 medium 자원·품질 미판정 보류를 유지하고 큐/직접 실험 시작을 차단한다.
-1	P106B	run_P106B_Stage3c0W_repeat4_corpus.sh	N	0.1	N	N	새 smoke 및 exact v17 raw/canonical SHA 선결,100 train28 val concept/prompt분할·v19 write-once <=20MB, 모델0	8
-2	P106B	run_P106B_Stage3aW_parallel_teacher_slots.sh	Y	0.9	Y	Y	A1 단일교사1/2slot ABBA·같은low문항/seed/slotctx3072와학생상주,유효tok/s 두쌍>1.05·언어>=3/4·수락수감소없음·별도활성16행자원probe; 최대2h·품질0	8
-3	P106B	run_P106B_Stage3dW_multi_answer2.sh	D	0.5	Y	Y	B2 한질문2답·ctx6144/max4096 low·태그/래퍼/assistant마스크·언어>=3/4,같은concept변형을독립지식으로세지않음; 최대1h·학생0	8
-4	P106B	run_P106B_Stage3bW_teacher_student_overlap.sh	Y	0.8	Y	Y	A2 serial대1slot생산/소비겹침16source·원형durable뒤32행/20MB RAM queue·학생부분누산최대16행; 실제overlap·언어>=6/8·finite/자원,최대2h·속도인과0	8
-5	P106B	run_P106B_Stage3cW_repeat4_saved_sft.sh	Y	0.4	Y	Y	Stage3c0W v19선결,100행정확4pass/4partialoptimizer·full-val망각/SFTval/원답8쌍·새checkpoint,비패딩78260/지도57852·0.1nat 운영safety;최대2h	8
-6	P106B	run_P106B_Stage3eW_multi_answer4.sh	D	0.7	Y	Y	B2 형식PASS뒤4답확장·ctx12288/max8192,한질문변형4개source계보/중복·출력절단확인; 최대1h·통합첫B2와분리	8
-7	P106B	run_P106B_Stage3fW_integrated_one_update.sh	Y	0.8	Y	Y	A1속도/자원+A2기능+B2/B4형식+독립C4 safety 현재SHA 모두PASS뒤 2slot·B2·queue·Cepoch1 보존64+fresh64, micro8accum16 optimizer1·최대2h;4epoch/품질완료아님	8
-8	P106B	run_P106B_Stage3g0W_followup4_corpus.sh	N	0.1	N	N	통합1회PASS source128행 SHA뒤v25 concept/prompt분할·20MB corpus 준비·모델0; 정식300M아님	8
-9	P106B	run_P106B_Stage3gW_followup4_student.sh	Y	0.4	Y	Y	Stage3g0W v25선결·원P076부모부터새자료실제4pass 소형SFT/새ckpt·같은full-val/고정답안사후검토·최대2h;지능채택/300M/검증정답아님	8
 # DONE 2026-09-28 P106B Stage1gW: 결함8행 13요청·lint7/8<문턱8/8 exit8, v5 직접 감사 명백 오류5/추가검토2/잠정1, 학생학습0; 결과101 §11.
 # DONE 2026-09-28 P103A Stage1cWa: 세 선택창 저장 exact 대 uncached 최대차5e-5 안 함수 PASS, 속도/팔별 peak 미판정; 결과094 §11.
 # DONE 2026-09-28 P106B Stage1fW: 교정형16/16 형식 PASS·직접 검토 명백결함8, 학생 교육 채택0; 결과101 §10.
@@ -569,6 +560,18 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #
 # ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
 #   1	P106B	run_P106B_Stage2iWg_online1_public_low.sh	Y	2.0	Y	Y	새 공개 Aya/OASST2 low1·128 신선답/optimizer1, nvidia-smi TimeoutExpired 스레드 fail-open·Ctrl+C manifest 수리 검증; 옛 OASST1 low1 중복 아님, 새 smoke·v17 부재·P076 부모 선결	8
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P106B	run_P106B_Stage3c0W_repeat4_corpus.sh	N	0.1	N	N	새 smoke 및 exact v17 raw/canonical SHA 선결,100 train28 val concept/prompt분할·v19 write-once <=20MB, 모델0	8
+#   2	P106B	run_P106B_Stage3aW_parallel_teacher_slots.sh	Y	0.9	Y	Y	A1 단일교사1/2slot ABBA·같은low문항/seed/slotctx3072와학생상주,유효tok/s 두쌍>1.05·언어>=3/4·수락수감소없음·별도활성16행자원probe; 최대2h·품질0	8
+#   3	P106B	run_P106B_Stage3dW_multi_answer2.sh	D	0.5	Y	Y	B2 한질문2답·ctx6144/max4096 low·태그/래퍼/assistant마스크·언어>=3/4,같은concept변형을독립지식으로세지않음; 최대1h·학생0	8
+#   4	P106B	run_P106B_Stage3bW_teacher_student_overlap.sh	Y	0.8	Y	Y	A2 serial대1slot생산/소비겹침16source·원형durable뒤32행/20MB RAM queue·학생부분누산최대16행; 실제overlap·언어>=6/8·finite/자원,최대2h·속도인과0	8
+#   5	P106B	run_P106B_Stage3cW_repeat4_saved_sft.sh	Y	0.4	Y	Y	Stage3c0W v19선결,100행정확4pass/4partialoptimizer·full-val망각/SFTval/원답8쌍·새checkpoint,비패딩78260/지도57852·0.1nat 운영safety;최대2h	8
+#   6	P106B	run_P106B_Stage3eW_multi_answer4.sh	D	0.7	Y	Y	B2 형식PASS뒤4답확장·ctx12288/max8192,한질문변형4개source계보/중복·출력절단확인; 최대1h·통합첫B2와분리	8
+#   7	P106B	run_P106B_Stage3fW_integrated_one_update.sh	Y	0.8	Y	Y	A1속도/자원+A2기능+B2/B4형식+독립C4 safety 현재SHA 모두PASS뒤 2slot·B2·queue·Cepoch1 보존64+fresh64, micro8accum16 optimizer1·최대2h;4epoch/품질완료아님	8
+#   8	P106B	run_P106B_Stage3g0W_followup4_corpus.sh	N	0.1	N	N	통합1회PASS source128행 SHA뒤v25 concept/prompt분할·20MB corpus 준비·모델0; 정식300M아님	8
+#   9	P106B	run_P106B_Stage3gW_followup4_student.sh	Y	0.4	Y	Y	Stage3g0W v25선결·원P076부모부터새자료실제4pass 소형SFT/새ckpt·같은full-val/고정답안사후검토·최대2h;지능채택/300M/검증정답아님	8
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
