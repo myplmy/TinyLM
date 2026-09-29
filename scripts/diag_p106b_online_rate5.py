@@ -17,6 +17,7 @@ import json
 import math
 import os
 from pathlib import Path
+import re
 import signal
 import subprocess
 import sys
@@ -27,6 +28,7 @@ from urllib.error import HTTPError, URLError
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.build_p106b_job_deck import OUTPUT as JOB_DIR, OUTPUT_MANIFEST  # noqa: E402
+from scripts.build_p106b_multisource_deck import teacher_admission  # noqa: E402
 from scripts.diag_p106_bonsai_assets import sha256_file  # noqa: E402
 from scripts.diag_p106_coload import _free_port, _http_json  # noqa: E402
 from scripts.diag_p106_full_coload_accum import _compute_apps, _kill_group  # noqa: E402
@@ -46,8 +48,13 @@ from scripts.train_sft_p090 import encode_records, loss_sum  # noqa: E402
 UPDATES = 5
 MAX_WALL_SEC = 6 * 3600
 MAX_ATTEMPTS_PER_LANGUAGE = 365
+MAX_PUBLIC_ATTEMPTS_PER_LANGUAGE = 1280
 STUDENT_SHA256 = "41036721CEAAE3EACA568BF45FA5079745EBAE85B42033D28ECC9709F5D00A71"
 OUTPUT_BASE = ROOT / "HF/sft_ready/p106b_teacher_sft"
+PUBLIC_JOB_DIR = ROOT / "HF/sft_ready/p106b_public_job_deck_v1"
+PUBLIC_JOB_REPORT = PUBLIC_JOB_DIR / "source_deck_manifest.json"
+PUBLIC_JOB_SHARDS = PUBLIC_JOB_DIR / "public_jobs_shards_manifest.json"
+PUBLIC_JOB_REPORT_SHA256 = "0A1022269BBDDF3539E97D63894BD7DBA2EA3838FADA8AF26A4255643031232C"
 PUBLIC_V3_MANIFEST = ROOT / "HF/sft_ready/p090_public_v3_manifest.json"
 BILINGUAL_REPORT = ROOT / "HF/sft_ready/p106b_bilingual_v2/teacher_recovery/recovery_manifest.json"
 THINKING_SAMPLER = {k: v for k, v in SAMPLER.items() if k != "reasoning_effort"}
@@ -75,6 +82,25 @@ class PrerequisiteHold(ValueError):
 
 class ToolFailure(Exception):
     """Unknown backend/API failure; never report as a scientific negative."""
+
+
+def capture_server_line(line: str, signals: dict, tail: list[str], api_key: str) -> None:
+    """Latch startup fusion evidence before the bounded diagnostic tail rolls over."""
+    for suffix, key in (("autoregressive", "gdn_ar_enabled"),
+                        ("chunked", "gdn_chunked_enabled")):
+        prefix = f"fused Gated Delta Net ({suffix}) "
+        if prefix + "enabled" in line:
+            signals[key] = True
+        elif prefix + "disabled" in line:
+            signals[key] = False
+    if "failed to find free space in the KV cache" in line:
+        signals["kv_cache_space_warnings"] += 1
+    if "failed to prepare attention ubatches" in line:
+        signals["attention_ubatch_failures"] += 1
+    if "fused Gated Delta Net" in line or "error" in line or "failed" in line:
+        tail.append(line.replace(api_key, "<redacted-api-key>").strip()[:400])
+        if len(tail) > 48:
+            del tail[:24]
 
 
 def require_bilingual_panel(source: dict) -> dict:
@@ -154,6 +180,74 @@ def source_jobs() -> tuple[dict[str, list[dict]], dict]:
                       "policy": "OASST1-only 320 paired concepts, one fresh response per language/job; same concepts across languages, no within-language reuse"}
 
 
+def public_source_jobs() -> tuple[dict[str, list[dict]], dict]:
+    """Use only the already materialized public Aya/OASST2 deck, never a dictionary locator."""
+    if any(path.is_symlink() or not path.is_file() for path in
+           (PUBLIC_JOB_REPORT, PUBLIC_JOB_SHARDS)):
+        raise PrerequisiteHold("Stage2kWb public-only job deck absent or linked")
+    if sha256_file(PUBLIC_JOB_REPORT) != PUBLIC_JOB_REPORT_SHA256:
+        raise PrerequisiteHold("Stage2kWb public-only manifest SHA changed; preserve old stage")
+    report = json.loads(PUBLIC_JOB_REPORT.read_text(encoding="utf-8"))
+    spec = json.loads(PUBLIC_JOB_SHARDS.read_text(encoding="utf-8"))
+    expected = report.get("shards", {}).get("public", {})
+    if (report.get("schema") != "P106B_STAGE2KW_MULTISOURCE_DECK_V1"
+            or report.get("status") != "PUBLIC_JOBS_ONLY_NO_DICTIONARY_NO_TRAIN_READY"
+            or report.get("output_scope") != "PUBLIC_ONLY"
+            or report.get("dictionary_jobs_emitted") != 0
+            or report.get("protected_source") is not None
+            or expected.get("concat_sha256") != spec.get("concat_sha256")
+            or expected.get("rows") != spec.get("rows")
+            or spec.get("rows", 0) < 640):
+        raise PrerequisiteHold("Stage2kWb public-only source lineage/status differs")
+    verify(PUBLIC_JOB_DIR, spec)
+    pairs: dict[str, dict[str, dict]] = {"ko": {}, "en": {}}
+    for shard in spec["shards"]:
+        with (PUBLIC_JOB_DIR / shard["path"]).open(encoding="utf-8") as stream:
+            for line in stream:
+                row = json.loads(line)
+                if row.get("split") != "train":
+                    continue
+                if (row.get("schema") != "P106B_STAGE2KW_SOURCE_JOB_V1"
+                        or row.get("source_family") not in {"aya_dataset", "oasst2"}
+                        or row.get("source_repo") != ("CohereLabs/aya_dataset" if row.get("source_family") == "aya_dataset" else "OpenAssistant/oasst2")
+                        or row.get("source_license") != "Apache-2.0_card"
+                        or row.get("rights_status") != "CARD_ONLY"
+                        or row.get("protected_locator") is not None
+                        or row.get("accepted_for_training") is not False
+                        or row.get("target_language") not in pairs
+                        or row.get("source_language") not in pairs
+                        or row.get("teacher_task") not in {"repair", "translate"}
+                        or row.get("source_transform") not in {"teacher_repair", "teacher_translation"}
+                        or row.get("parent_concept_id") != row.get("concept_id")
+                        or re.fullmatch(r"[A-Za-z0-9._:-]{1,160}", str(row.get("source_id", ""))) is None
+                        or re.fullmatch(r"[A-Fa-f0-9]{64}", str(row.get("source_sha256", ""))) is None
+                        or not isinstance(row.get("source_payload"), dict)
+                        or len(row["source_payload"].get("source_turns", [])) != 1
+                        or not isinstance(row["source_payload"]["source_turns"][0], dict)
+                        or not isinstance(row["source_payload"]["source_turns"][0].get("user_text"), str)
+                        or not isinstance(row["source_payload"]["source_turns"][0].get("assistant_text"), str)):
+                    raise PrerequisiteHold("public deck has an unapproved or malformed training job")
+                language, concept = row["target_language"], row["parent_concept_id"]
+                if concept in pairs[language]:
+                    raise ValueError("duplicate public concept/language")
+                pairs[language][concept] = row
+    paired = sorted(set(pairs["ko"]) & set(pairs["en"]),
+                    key=lambda value: hashlib.sha256(("p106b_online_public:" + value).encode()).hexdigest())
+    if len(paired) < 320:
+        raise PrerequisiteHold("public deck has fewer than 320 paired train concepts")
+    selected = {language: [pairs[language][concept] for concept in paired]
+                for language in ("ko", "en")}
+    return selected, {"job_deck_sha256": sha256_file(PUBLIC_JOB_REPORT),
+                      "train_jobs_sha256": spec["concat_sha256"],
+                      "paired_concepts": len(paired),
+                      "source_repos": {"aya": report["public_repos"]["aya"],
+                                       "oasst1": report["public_repos"]["oasst"],
+                                       "oasst2": report["oasst2"]},
+                      "source_families": ["aya_dataset", "oasst2"],
+                      "rights_status": "CARD_ONLY",
+                      "policy": "public-only Stage2kWb; split before translation, unique concept per language, actual teacher input token admission"}
+
+
 def paths(effort: str, variant: str = "initial") -> tuple[Path, Path]:
     if variant == "initial":
         directory = OUTPUT_BASE / f"v10_online_rate5_{effort}"
@@ -161,14 +255,31 @@ def paths(effort: str, variant: str = "initial") -> tuple[Path, Path]:
     elif variant == "backend1" and effort == "low":
         directory = OUTPUT_BASE / "v13_online_rate1_low_backend"
         report_name = "online_rate1_manifest.json"
+    elif variant == "public1" and effort == "medium":
+        directory = OUTPUT_BASE / "v15_online_public1_medium"
+        report_name = "online_public1_manifest.json"
+    elif variant == "public5" and effort == "medium":
+        directory = OUTPUT_BASE / "v16_online_public5_medium"
+        report_name = "online_public5_manifest.json"
     else:
         raise ValueError("unknown online output variant/effort")
     return directory, directory / report_name
 
 
 def check_only(effort: str, variant: str = "initial") -> dict:
-    jobs, source = source_jobs()
-    bilingual = require_bilingual_panel(source)
+    public = variant in {"public1", "public5"}
+    jobs, source = public_source_jobs() if public else source_jobs()
+    bilingual = None if public else require_bilingual_panel(source)
+    if variant == "public5":
+        prerequisite = paths("medium", "public1")[1]
+        if prerequisite.is_symlink() or not prerequisite.is_file():
+            raise PrerequisiteHold("Stage2iWe public one-update result missing or linked")
+        prior = json.loads(prerequisite.read_text(encoding="utf-8"))
+        if (prior.get("schema") != "P106B_STAGE2IWE_ONLINE_PUBLIC1_V1"
+                or prior.get("status") != "ONE_UPDATE_COMPLETE"
+                or prior.get("updates_completed") != 1
+                or prior.get("source", {}).get("job_deck_sha256") != source["job_deck_sha256"]):
+            raise PrerequisiteHold("Stage2iWe one-update public source gate not passed")
     if STUDENT.is_symlink() or not STUDENT.is_file() or STUDENT.stat().st_size < 400_000_000:
         raise FileNotFoundError("P076 B3 student parent missing or linked")
     if sha256_file(TOKENIZER) != TOKENIZER_SHA256:
@@ -178,9 +289,11 @@ def check_only(effort: str, variant: str = "initial") -> dict:
     directory, manifest = paths(effort, variant)
     if directory.exists() or directory.is_symlink() or manifest.exists():
         raise FileExistsError("online output version already exists")
-    target_updates = 1 if variant == "backend1" else UPDATES
-    return {"schema": ("P106B_STAGE2IWD_ONLINE_RATE1_INPUT_V1" if variant == "backend1"
+    target_updates = 1 if variant in {"backend1", "public1"} else UPDATES
+    return {"schema": ("P106B_STAGE2IWE_ONLINE_PUBLIC_INPUT_V1" if public else
+                       "P106B_STAGE2IWD_ONLINE_RATE1_INPUT_V1" if variant == "backend1"
                        else "P106B_STAGE2IW_ONLINE_RATE5_INPUT_V1"), "effort": effort,
+            "variant": variant,
             "ctx_and_cap": EFFORT_CONFIG[effort], "updates": target_updates,
             "micro": MICRO, "accum": ACCUM,
             "needed_accepted_answers": target_updates * MICRO * ACCUM,
@@ -199,6 +312,20 @@ def self_test() -> None:
     assert THINKING_SAMPLER["temperature"] == 1.0
     assert paths("low", "backend1")[1].name == "online_rate1_manifest.json"
     assert paths("low", "initial")[1].name == "online_rate5_manifest.json"
+    assert paths("medium", "public1")[1].name == "online_public1_manifest.json"
+    assert paths("medium", "public5")[1].name == "online_public5_manifest.json"
+    signals = {"gdn_ar_enabled": None, "gdn_chunked_enabled": None,
+               "kv_cache_space_warnings": 0, "attention_ubatch_failures": 0}
+    tail: list[str] = []
+    capture_server_line("fused Gated Delta Net (autoregressive) enabled", signals, tail, "secret")
+    capture_server_line("fused Gated Delta Net (chunked) enabled", signals, tail, "secret")
+    for _ in range(70):
+        capture_server_line("failed to find free space in the KV cache", signals, tail, "secret")
+    capture_server_line("failed to prepare attention ubatches secret", signals, tail, "secret")
+    assert signals == {"gdn_ar_enabled": True, "gdn_chunked_enabled": True,
+                       "kv_cache_space_warnings": 70, "attention_ubatch_failures": 1}
+    assert all("secret" not in line for line in tail)
+    assert not any("Gated Delta Net" in line for line in tail)
     print("[PASS] five updates require 640 accepted fresh teacher answers; no repeats/ckpt; GPU NOT_RUN")
 
 
@@ -207,14 +334,16 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
     import torch
 
     inputs = check_only(effort, variant)
+    public = variant in {"public1", "public5"}
     if _compute_apps():
         print("[HOLD] competing GPU compute app; no student/teacher started")
         return 8
     if read_memory()[1] < 14_000:
         print("[HOLD] GPU free below 14000MiB; no student/teacher started")
         return 8
-    teacher_assets = asset_preflight(hash_model=True)
-    jobs, source = source_jobs()
+    teacher_assets = {name: value for name, value in asset_preflight(hash_model=True).items()
+                      if name not in {"teacher_ctx", "max_output_tokens"}}
+    jobs, source = public_source_jobs() if public else source_jobs()
     directory, manifest_path = paths(effort, variant)
     target_updates = inputs["updates"]
     context, max_tokens = EFFORT_CONFIG[effort]
@@ -235,10 +364,13 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                "--no-warmup", "--fit", "off", "--no-op-offload", "--gpu-layers", "all",
                "--reasoning", "auto"]
     server = None
+    drain_worker = None
     stop = threading.Event()
     samples: list[int] = []
     sample_errors: list[str] = []
     server_lines: list[str] = []
+    server_signals = {"gdn_ar_enabled": None, "gdn_chunked_enabled": None,
+                      "kv_cache_space_warnings": 0, "attention_ubatch_failures": 0}
     counts: Counter[str] = Counter()
     updates: list[dict] = []
     all_seen: set[str] = set()
@@ -257,10 +389,7 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
         def drain() -> None:
             assert server is not None and server.stdout is not None
             for line in server.stdout:
-                if "fused Gated Delta Net" in line or "error" in line or "failed" in line:
-                    server_lines.append(line.replace(key, "<redacted-api-key>").strip()[:400])
-                    if len(server_lines) > 48:
-                        del server_lines[:24]
+                capture_server_line(line, server_signals, server_lines, key)
 
         def sample() -> None:
             while not stop.wait(0.2):
@@ -274,7 +403,8 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                     sample_errors.append(type(exc).__name__)
                     return
 
-        threading.Thread(target=drain, daemon=True).start()
+        drain_worker = threading.Thread(target=drain, daemon=True)
+        drain_worker.start()
         threading.Thread(target=sample, daemon=True).start()
         deadline = time.monotonic() + 120
         while time.monotonic() < deadline:
@@ -310,14 +440,54 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                     if time.monotonic() - started >= wall_limit:
                         raise GateNegative("authorized online wall limit reached before five updates")
                     cursor = used[language]
-                    if cursor >= min(len(jobs[language]), MAX_ATTEMPTS_PER_LANGUAGE):
+                    cap = MAX_PUBLIC_ATTEMPTS_PER_LANGUAGE if public else MAX_ATTEMPTS_PER_LANGUAGE
+                    if cursor >= min(len(jobs[language]), cap):
                         raise GateNegative(f"{language} finite source pool exhausted before five updates")
                     job = jobs[language][cursor]
                     used[language] += 1
-                    turn = job["source_turns"][0]
-                    source_payload = {"user_en": turn["user_text"],
-                                      "original_assistant_en": turn["assistant_text"]}
-                    prompt = teacher_prompt(job["task"], language, source_payload)
+                    if public:
+                        source_payload = job["source_payload"]
+                        task = job["teacher_task"]
+                    else:
+                        turn = job["source_turns"][0]
+                        source_payload = {"user_en": turn["user_text"],
+                                          "original_assistant_en": turn["assistant_text"]}
+                        task = job["task"]
+                    generation_id = ((f"{variant}_u{update_index:02d}m{micro_index:02d}a{cursor:04d}{language}")
+                                     if public else f"u{update_index:02d}m{micro_index:02d}a{cursor:03d}{language}")
+                    if public:
+                        if len(json.dumps(source_payload, ensure_ascii=False)) > 12_000:
+                            admission = {"decision": "PROMPT_PAYLOAD_LIMIT_HOLD", "input_tokens": None}
+                        else:
+                            try:
+                                admission = teacher_admission(
+                                    port, key, job, source_payload, context=context,
+                                    max_output=max_tokens, effort=effort)
+                            except (HTTPError, URLError, TimeoutError, OSError, ValueError) as exc:
+                                raw_writer.append({"schema": "P106B_STAGE2IW_RAW_ATTEMPT_V1",
+                                                   "generation_id": generation_id,
+                                                   "job_id": job["job_id"], "concept_id": job["concept_id"],
+                                                   "language": language, "source": source_payload,
+                                                   "screen_status": "TOKEN_ADMISSION_TOOL_FAILURE",
+                                                   "error_type": type(exc).__name__,
+                                                   "accepted_for_training": False,
+                                                   "selected_for_pilot_microbatch": False})
+                                counts["TOKEN_ADMISSION_TOOL_FAILURE"] += 1
+                                raise ToolFailure("public teacher token admission failed; see versioned raw") from exc
+                        if admission["decision"] != "DIRECT":
+                            raw_writer.append({"schema": "P106B_STAGE2IW_RAW_ATTEMPT_V1",
+                                               "generation_id": generation_id,
+                                               "job_id": job["job_id"], "concept_id": job["concept_id"],
+                                               "language": language, "source": source_payload,
+                                               "teacher_admission": admission,
+                                               "screen_status": admission["decision"],
+                                               "accepted_for_training": False,
+                                               "selected_for_pilot_microbatch": False})
+                            counts[admission["decision"]] += 1
+                            continue
+                    else:
+                        admission = None
+                    prompt = teacher_prompt(task, language, source_payload)
                     seed = 20260928 + cursor
                     sampler = (INSTRUCT_SAMPLER if effort == "none" else THINKING_SAMPLER)
                     payload = {"messages": prompt, **sampler,
@@ -344,7 +514,6 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                         completion_tokens += usage
                     elif parsed is not None:
                         counts["USAGE_MISSING"] += 1
-                    generation_id = f"u{update_index:02d}m{micro_index:02d}a{cursor:03d}{language}"
                     record = {"schema": "P106B_STAGE2IW_RAW_ATTEMPT_V1",
                               "generation_id": generation_id, "job_id": job["job_id"],
                               "concept_id": job["concept_id"], "language": language,
@@ -355,6 +524,14 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                               "planned_microbatch": micro_index,
                               "accepted_for_training": False,
                               "selected_for_pilot_microbatch": False}
+                    if public:
+                        record.update({"source_family": job["source_family"],
+                                       "source_repo": job["source_repo"],
+                                       "source_revision": job["source_revision"],
+                                       "source_sha256": job["source_sha256"],
+                                       "parent_concept_id": job["parent_concept_id"],
+                                       "rights_status": job["rights_status"],
+                                       "teacher_admission": admission})
                     content = parsed.get("parsed_content") if parsed else None
                     encoded = None
                     if backend is not None:
@@ -374,7 +551,8 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                                     [{"user_text": content["user_text"],
                                       "assistant_text": content["assistant_text"]}],
                                     source_id=job["source_id"],
-                                    source_sha256=source["source_sha256"],
+                                    source_sha256=(job["source_sha256"] if public
+                                                   else source["source_sha256"]),
                                     teacher_model_sha256=MODEL_SHA256,
                                     language=language, source_license=job["source_license"],
                                     generation_id=generation_id,
@@ -382,7 +560,13 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                                     reasoning_ref=(f"{directory.relative_to(ROOT).as_posix()}/"
                                                    f"raw_shards_manifest.json#{generation_id}") if reasoning else "",
                                     reasoning_sha256=reasoning_sha,
-                                    student_training_status="PILOT_TARGET_PENDING")
+                                    student_training_status="PILOT_TARGET_PENDING",
+                                    **({"source_repo": job["source_repo"],
+                                        "source_revision": job["source_revision"],
+                                        "source_object_id": job["source_id"],
+                                        "source_transform": job["source_transform"],
+                                        "parent_concept_id": job["parent_concept_id"],
+                                        "source_rights_status": job["rights_status"]} if public else {}))
                                 encoded = encode_records([canonical], tokenizer, SEQ, cfg.vocab_size)[0]
                             except ValueError as exc:
                                 record["screen_status"] = f"WRAP_OR_TOKENIZE:{str(exc)[:180]}"
@@ -454,9 +638,13 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
     finally:
         stop.set()
         _kill_group(server)
+        if drain_worker is not None:
+            drain_worker.join(timeout=5)
         if raw_writer is not None and canonical_writer is not None and not counts:
             with manifest_path.open("x", encoding="utf-8") as stream:
-                stream.write(json.dumps({"schema": "P106B_STAGE2IW_ONLINE_RATE5_V1",
+                stream.write(json.dumps({"schema": ("P106B_STAGE2IWE_ONLINE_PUBLIC1_V1" if variant == "public1"
+                                                     else "P106B_STAGE2IWF_ONLINE_PUBLIC5_V1" if variant == "public5"
+                                                     else "P106B_STAGE2IW_ONLINE_RATE5_V1"),
                                          "status": status, "reason": reason,
                                          "effort": effort, "updates_completed": len(updates),
                                          "teacher_attempts": 0,
@@ -470,10 +658,17 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
             verify(directory, raw_manifest)
             if canonical_manifest is not None:
                 verify(directory, canonical_manifest)
-            report = {"schema": ("P106B_STAGE2IWD_ONLINE_RATE1_V1" if variant == "backend1"
+            trained_ids = [generation_id for step in updates
+                           for generation_id in step["trained_generation_ids"]]
+            if len(trained_ids) != len(set(trained_ids)) or len(trained_ids) > accepted_total:
+                raise ValueError("online trained generation IDs are duplicated or exceed candidates")
+            report = {"schema": ("P106B_STAGE2IWE_ONLINE_PUBLIC1_V1" if variant == "public1"
+                                  else "P106B_STAGE2IWF_ONLINE_PUBLIC5_V1" if variant == "public5"
+                                  else "P106B_STAGE2IWD_ONLINE_RATE1_V1" if variant == "backend1"
                                   else "P106B_STAGE2IW_ONLINE_RATE5_V1"),
                       "status": status, "reason": reason, "effort": effort,
                       "variant": variant, "target_updates": target_updates,
+                      "source": source,
                       "inputs": inputs, "teacher_assets": teacher_assets,
                       "teacher_model_sha256": MODEL_SHA256,
                       "student_parent_sha256": STUDENT_SHA256,
@@ -484,6 +679,9 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                       "model_card_effort_note": "model card says low is unsupported/near xhigh; local Stage2hW timing is empirical only",
                       "updates_completed": len(updates),
                       "updates": updates, "raw_counts": dict(counts),
+                      "format_candidates": accepted_total,
+                      "actually_trained_conversations": len(trained_ids),
+                      "format_candidates_without_optimizer_step": accepted_total - len(trained_ids),
                       "source_jobs_used": used, "raw_shards_manifest": "raw_shards_manifest.json",
                       "canonical_shards_manifest": "canonical_shards_manifest.json" if accepted_total else None,
                       "raw_concat_sha256": raw_manifest["concat_sha256"],
@@ -493,11 +691,14 @@ def execute(effort: str, wall_limit: int, variant: str = "initial") -> int:
                       "sampled_global_peak_mib": max(samples) if samples else None,
                       "sample_errors": sample_errors,
                       "server_error_tail": server_lines[-20:],
-                      "gdn_ar_enabled": any("fused Gated Delta Net (autoregressive) enabled" in line for line in server_lines),
-                      "gdn_chunked_enabled": any("fused Gated Delta Net (chunked) enabled" in line for line in server_lines),
+                      "gdn_ar_enabled": server_signals["gdn_ar_enabled"],
+                      "gdn_chunked_enabled": server_signals["gdn_chunked_enabled"],
+                      "server_kv_cache_space_warnings": server_signals["kv_cache_space_warnings"],
+                      "server_attention_ubatch_failures": server_signals["attention_ubatch_failures"],
                       "student_checkpoint_written": False,
                       "formal_train_ready": False, "quality": "NOT_RUN",
-                      "limits": "OASST1 public-v3 short single-turn source subset, same concepts reused across ko/en; no held-out evaluation"}
+                      "limits": ("Aya Dataset/OASST2 public-only CARD_ONLY sources; no held-out evaluation or formal rights/quality approval"
+                                 if public else "OASST1 public-v3 short single-turn source subset, same concepts reused across ko/en; no held-out evaluation")}
             with manifest_path.open("x", encoding="utf-8") as stream:
                 stream.write(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
             print("[ONLINE_SUMMARY] " + json.dumps({k: report[k] for k in (
@@ -514,13 +715,14 @@ def main() -> int:
     group.add_argument("--check-only", action="store_true")
     group.add_argument("--execute", action="store_true")
     parser.add_argument("--effort", choices=sorted(EFFORT_CONFIG), default="low")
+    parser.add_argument("--variant", choices=("initial", "public1", "public5"), default="initial")
     parser.add_argument("--max-wall-sec", type=int, default=MAX_WALL_SEC)
     args = parser.parse_args()
     try:
         if args.self_test:
             self_test()
         elif args.check_only:
-            print(json.dumps(check_only(args.effort), ensure_ascii=False, sort_keys=True))
+            print(json.dumps(check_only(args.effort, args.variant), ensure_ascii=False, sort_keys=True))
             print("[CHECK_ONLY] source/tokenizer/parent PASS; GPU/student updates NOT_RUN")
         else:
             if not 60 <= args.max_wall_sec <= MAX_WALL_SEC:
@@ -530,7 +732,7 @@ def main() -> int:
             old = signal.signal(signal.SIGALRM, time_limit)
             signal.alarm(args.max_wall_sec + 180)
             try:
-                return execute(args.effort, args.max_wall_sec)
+                return execute(args.effort, args.max_wall_sec, args.variant)
             finally:
                 signal.alarm(0)
                 signal.signal(signal.SIGALRM, old)

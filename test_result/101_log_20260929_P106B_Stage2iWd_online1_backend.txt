@@ -1,0 +1,37 @@
+Original Stage2iWa used OASST1 from public-v3, not OASST2. This one-update technical recovery uses the same source/parent/low sampler after Stage2fWb PASS. Known PEG 500 is a rejected attempt; unknown API failure is tool exit9. New v13 raw/canonical, no checkpoint or quality claim.
+
+==============================================================================
+[runlog] 2026-09-29 04:49:07  name=P106B_Stage2iWd_online1_backend
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_online_rate1.py --self-test
+==============================================================================
+[PASS] five updates require 640 accepted fresh teacher answers; no repeats/ckpt; GPU NOT_RUN
+[PASS] new write-once backend1 output, one update only; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-29 04:49:08)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-29 04:49:08  name=P106B_Stage2iWd_online1_backend
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_online_rate1.py --check-only
+==============================================================================
+{"accum": 16, "bilingual_gate": {"candidate_counts": {"en": 15, "ko": 14}, "recovery_manifest_sha256": "B94BD6B5258580ADE8C253CAC0AB48CEA0E3DAB16D09B9CB46FACB9958CDA12A"}, "candidate_jobs_per_language": {"en": 365, "ko": 365}, "ctx_and_cap": [3072, 2048], "effort": "low", "micro": 8, "model_gpu": "NOT_RUN", "needed_accepted_answers": 128, "quality": "NOT_RUN", "schema": "P106B_STAGE2IWD_ONLINE_RATE1_INPUT_V1", "source": {"job_deck_sha256": "7681ADB24E197CD9A544DC43A2F21D69C047FFC3E417BB403E1BBB3F1B1B5B09", "paired_concepts": 365, "policy": "OASST1-only 320 paired concepts, one fresh response per language/job; same concepts across languages, no within-language reuse", "source_card_licenses": {"aya": "Apache-2.0", "oasst": "Apache-2.0"}, "source_repos": {"aya": {"repo": "CohereLabs/aya_dataset", "revision": "f9ea04583f02a8f86404ff6c58bf75fe637df8a2"}, "oasst": {"repo": "OpenAssistant/oasst1", "revision": "fdf72ae0827c1cda404aff25b6603abec9e3399b"}}, "source_sha256": "96A3507344FEFCA5072887AB4664DBB9BEDBD37BCD0D01A564220C1008D4F836", "train_jobs_sha256": "398D7E2E648E9784919F3AD3A2B52C5EAF875062FF77C9FBB4AA310E17DE589D"}, "student_parent": "runs/ckpt/m100R1c_ko-en_300M_p076_b3_ag2_mean_s1337.pt", "updates": 1}
+[CHECK_ONLY] Stage2fWb/parent/source PASS; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-29 04:49:10)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-29 04:49:10  name=P106B_Stage2iWd_online1_backend
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_online_rate1.py --execute
+==============================================================================
+[STUDENT_READY] parent_step=2289 compile=default ckpt=ON micro=8 accum=16 free_mib=14391 cache=/tmp/tinylm_p106b_stage1bw_3r__vl_w
+W0929 04:53:27.227000 3630882 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[TEACHER_BACKEND_ERROR] {"body_sha256": "D612E193C190B3AD58DA6B1DE44BF9D4511DFAB9834B55CDF63EDDCB1BFFB1F2", "classification": "PEG_NATIVE_MISMATCH", "generation_id": "u01m03a022ko", "http_status": 500}
+[ONLINE_UPDATE] {"accum": 16, "assistant_supervised_tokens": 16427, "fresh_accepted": 128, "grad_norm_before_clip": 3.835782, "language_nonpadding_tokens": {"en": 10892, "ko": 12422}, "micro": 8, "processed_nonpadding_conversation_tokens": 23314, "sampled_global_used_peak_mib": 10201, "student_compute_wall_sec": 153.954, "student_peak_reserved_mib": 2126, "teacher_completion_tokens": 269531, "teacher_request_wall_sec": 4106.891, "trained_generation_ids": ["u01m01a000ko", "u01m01a002ko", "u01m01a003ko", "u01m01a005ko", "u01m01a006ko", "u01m01a007ko", "u01m01a008ko", "u01m01a009ko", "u01m02a001en", "u01m02a002en", "u01m02a004en", "u01m02a005en", "u01m02a007en", "u01m02a008en", "u01m02a009en", "u01m02a010en", "u01m03a011ko", "u01m03a012ko", "u01m03a013ko", "u01m03a017ko", "u01m03a018ko", "u01m03a019ko", "u01m03a020ko", "u01m03a024ko", "u01m04a011en", "u01m04a012en", "u01m04a013en", "u01m04a016en", "u01m04a018en", "u01m04a020en", "u01m04a022en", "u01m04a024en", "u01m05a025ko", "u01m05a026ko", "u01m05a029ko", "u01m05a030ko", "u01m05a032ko", "u01m05a033ko", "u01m05a034ko", "u01m05a035ko", "u01m06a025en", "u01m06a031en", "u01m06a032en", "u01m06a033en", "u01m06a034en", "u01m06a035en", "u01m06a036en", "u01m06a037en", "u01m07a036ko", "u01m07a037ko", "u01m07a039ko", "u01m07a042ko", "u01m07a045ko", "u01m07a046ko", "u01m07a047ko", "u01m07a049ko", "u01m08a038en", "u01m08a040en", "u01m08a041en", "u01m08a042en", "u01m08a043en", "u01m08a044en", "u01m08a045en", "u01m08a049en", "u01m09a050ko", "u01m09a051ko", "u01m09a054ko", "u01m09a055ko", "u01m09a058ko", "u01m09a059ko", "u01m09a060ko", "u01m09a063ko", "u01m10a050en", "u01m10a051en", "u01m10a053en", "u01m10a054en", "u01m10a055en", "u01m10a057en", "u01m10a058en", "u01m10a060en", "u01m11a064ko", "u01m11a065ko", "u01m11a066ko", "u01m11a068ko", "u01m11a070ko", "u01m11a072ko", "u01m11a074ko", "u01m11a076ko", "u01m12a062en", "u01m12a064en", "u01m12a065en", "u01m12a066en", "u01m12a067en", "u01m12a068en", "u01m12a069en", "u01m12a070en", "u01m13a077ko", "u01m13a078ko", "u01m13a079ko", "u01m13a080ko", "u01m13a083ko", "u01m13a086ko", "u01m13a088ko", "u01m13a089ko", "u01m14a071en", "u01m14a073en", "u01m14a074en", "u01m14a076en", "u01m14a077en", "u01m14a079en", "u01m14a080en", "u01m14a083en", "u01m15a090ko", "u01m15a092ko", "u01m15a093ko", "u01m15a094ko", "u01m15a096ko", "u01m15a098ko", "u01m15a099ko", "u01m15a100ko", "u01m16a086en", "u01m16a087en", "u01m16a088en", "u01m16a089en", "u01m16a090en", "u01m16a091en", "u01m16a092en", "u01m16a093en"], "update": 1, "whole_update_wall_sec": 4261.28}
+[ONLINE_SUMMARY] {"effort": "low", "quality": "NOT_RUN", "raw_counts": {"INCOMPLETE": 61, "PARSE_ERROR": 5, "PEG_NATIVE_MISMATCH": 1, "PSEUDO_FORMAT_READY": 128}, "reason": "throughput/resource pilot only", "source_jobs_used": {"en": 94, "ko": 101}, "status": "ONE_UPDATE_COMPLETE", "student_checkpoint_written": false, "updates_completed": 1, "whole_wall_sec": 4264.069}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 76.8분  (2026-09-29 06:05:56)
+==============================================================================

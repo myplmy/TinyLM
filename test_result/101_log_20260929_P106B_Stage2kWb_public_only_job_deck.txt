@@ -1,0 +1,32 @@
+Public Aya Dataset/OASST2 source jobs only in new ignored HF namespace. No protected dictionary read or output, no teacher answer or student training. Source card rights and later model publication remain separate decisions.
+
+==============================================================================
+[runlog] 2026-09-29 04:48:47  name=P106B_Stage2kWb_public_only_job_deck
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/build_p106b_multisource_deck.py --self-test
+==============================================================================
+[PASS] source/revision/sense lineage, split-before-translation, protected rights hold; source/model NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-29 04:48:48)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-29 04:48:48  name=P106B_Stage2kWb_public_only_job_deck
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_source_isolation.py
+==============================================================================
+[PASS] public-only write-once shards, dictionary unread/unemitted, quarantine untouched
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-29 04:48:49)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-29 04:48:49  name=P106B_Stage2kWb_public_only_job_deck
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/build_p106b_multisource_deck.py --execute
+==============================================================================
+{"counts": {"aya_dataset:en:train": 1363, "aya_dataset:en:val": 76, "aya_dataset:ko:train": 1363, "aya_dataset:ko:val": 76, "oasst2:en:train": 3652, "oasst2:en:val": 173, "oasst2:ko:train": 3652, "oasst2:ko:val": 173, "oasst2_en_duplicate_internal": 14, "oasst2_en_overlap_public_v3": 1562, "oasst2_en_reviewed_single": 5400, "oasst2_ko_overlap_public_v3": 4, "oasst2_ko_reviewed_single": 5}, "dictionary_english_child_status": "WAIT_KOREAN_TEACHER_QA_AND_LINEAGE", "dictionary_jobs_emitted": 0, "dictionary_quarantine_namespace": "HF/sft_ready/p106b_krdict_by_sa_quarantine_v1", "dictionary_quarantine_status": "NOT_CREATED_NO_TEACHER_INPUT_NO_TRAINING", "jobs": 10528, "oasst2": {"repo": "OpenAssistant/oasst2", "revision": "179dd21fc55192153d94adb0e0ce8f69e222bf75", "source_sha256": "7A886A16CCFC1173C4F00A6897523E3C95B2785A86EE44A18A98F4F2807EE29B"}, "output_scope": "PUBLIC_ONLY", "protected_source_manifest_sha256": null, "public_jobs_emitted": 10528, "public_repos": {"aya": {"repo": "CohereLabs/aya_dataset", "revision": "f9ea04583f02a8f86404ff6c58bf75fe637df8a2"}, "oasst": {"repo": "OpenAssistant/oasst1", "revision": "fdf72ae0827c1cda404aff25b6603abec9e3399b"}}, "rights_gate": "PROTECTED_NOT_READ_HOLD", "schema": "P106B_STAGE2KW_MULTISOURCE_DECK_V1", "status": "PUBLIC_JOBS_ONLY_NO_DICTIONARY_NO_TRAIN_READY"}
+[PASS] public-only source jobs; dictionary/teacher/student NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-29 04:48:52)
+==============================================================================
