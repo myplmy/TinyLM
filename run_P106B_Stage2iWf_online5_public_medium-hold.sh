@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# P106B Stage2iWf: five new public-only Aya/OASST2 online medium updates.
+# HOLD 2026-09-30 by user: retain medium5 study, but disable direct launch and queue membership.
 # Requires the separate Stage2iWe one-update success with the same source SHA.
 # Expected up to 6h GPU; each student target is a fresh teacher answer.
 set -euo pipefail
+printf '[HOLD] Stage2iWf is preserved but not runnable until a separate decision.\n' >&2
+exit 8
 repo_root="$(cd "$(dirname "$0")" && pwd)"
 source "$repo_root/scripts/shell/tinylm_env.sh"
 cd "$repo_root"

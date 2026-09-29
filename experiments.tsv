@@ -29,8 +29,10 @@
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-90	P106B	run_P106B_Stage2iWf_online5_public_medium.sh	Y	6.0	Y	Y	HOLD: 사용자 2026-09-29 low 우선·medium 보류. 미실행 medium5 SH는 취소하지 않고 보존하며 코드 check-only에서 HOLD8, 향후 자원 여유·품질 부족 근거와 사용자 결정 전 실행 금지	8
-70	P106B	run_P106B_Stage2iWh_online5_public_low.sh	Y	6.0	Y	Y	Wg1 사용자 기술 PASS 계승·새 smoke 뒤 실행가능. low5·640 신선답/v18 처리율 지속성 진단은 기존 권장큐에서 임의 제외·취소하지 않고 보존; quality/checkpoint0·새9 gate와중복생성주의	8
+1	P106B	run_P106B_Stage3aWb_parallel_teacher_budget_recovery.sh	Y	1.5	Y	Y	기존A1 1.140/1.015배·한국어완결1~2/4 음성 보존. 별도v26은한영각16source·slotctx6144/output4096·1→2→2→1 ABBA·각언어12/16/두순서속도>1.05·OOM/GDN 검사; 최대2h, 지능판정0	8
+2	P106B	run_P106B_Stage3bWb_teacher_student_overlap_recovery.sh	Y	1.0	Y	Y	기존A2 serial KO4/8로겹침팔미실행 보존. 별도v27은한영각16source·ctx6144/output4096·각언어12/16 후 serial대producer/consumer실제overlap·VRAM/마스크 검사; 최대2h·인과속도/품질채택0	8
+# HOLD 2026-09-30 P106B: run_P106B_Stage2iWh_online5_public_low-hold.sh. 사용자 요청대로 미실행 low5를 보존하되 현재 우선순위·큐에서 제외; 재활성화는 새 지시/새 단계가 필요하다.
+# HOLD 2026-09-30 P106B: run_P106B_Stage2iWf_online5_public_medium-hold.sh. 기존 medium 자원·품질 미판정 보류를 유지하고 큐/직접 실험 시작을 차단한다.
 1	P106B	run_P106B_Stage3c0W_repeat4_corpus.sh	N	0.1	N	N	새 smoke 및 exact v17 raw/canonical SHA 선결,100 train28 val concept/prompt분할·v19 write-once <=20MB, 모델0	8
 2	P106B	run_P106B_Stage3aW_parallel_teacher_slots.sh	Y	0.9	Y	Y	A1 단일교사1/2slot ABBA·같은low문항/seed/slotctx3072와학생상주,유효tok/s 두쌍>1.05·언어>=3/4·수락수감소없음·별도활성16행자원probe; 최대2h·품질0	8
 3	P106B	run_P106B_Stage3dW_multi_answer2.sh	D	0.5	Y	Y	B2 한질문2답·ctx6144/max4096 low·태그/래퍼/assistant마스크·언어>=3/4,같은concept변형을독립지식으로세지않음; 최대1h·학생0	8

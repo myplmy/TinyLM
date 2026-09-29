@@ -182,7 +182,8 @@ def live_launchers(root: Path) -> list[Path]:
     # caller. Audit the resolved root run_*.bat/.sh instead.
     paths = [*root.glob("run*.bat"), *root.glob("run*.sh")]
     return sorted((path for path in paths if path.is_file()
-                   and "-done" not in path.name and "-cancel" not in path.name),
+                   and "-done" not in path.name and "-cancel" not in path.name
+                   and "-hold" not in path.name),
                   key=lambda path: path.as_posix())
 
 

@@ -1,0 +1,43 @@
+After integration and v25 prepare: actual small research SFT4 passes, original SHA-fixed P076 parent, full-val forgetting/fixed answers and new checkpoint. At most2h. Not300M/large SFT, not verified pseudo-label truth; medium HOLD preserved. Existing HF/parent/tokenizer unchanged. New smoke is prerequisite. Never delete original outputs to force a rerun.
+
+==============================================================================
+[runlog] 2026-09-30 02:21:30  name=P106B_Stage3gW_followup4_student
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_pipeline_gates.py
+==============================================================================
+.[PASS] A1 paired order/speed/format gate; GPU NOT_RUN
+..[PASS] A2 bounded queue/stop/content comparison; model/GPU NOT_RUN
+..[PIPELINE_ITEM] {"id": "fixture0", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture2", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture3", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture_duplicate", "language": "en", "rows": 0, "status": "EXACT_DUPLICATE"}
+.[PASS] integration five evidence artifacts/four methods/one-update semantics; GPU NOT_RUN
+....
+----------------------------------------------------------------------
+Ran 10 tests in 0.108s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 02:21:31)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 02:21:31  name=P106B_Stage3gW_followup4_student
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_repeat4_gate.py --self-test
+==============================================================================
+[PASS] C4 group split/exact four passes/no artificial row refill; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 02:21:32)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 02:21:32  name=P106B_Stage3gW_followup4_student
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_repeat4_gate.py --check-only --mode train-followup
+==============================================================================
+[GATE_NEGATIVE] PrerequisiteHold: C4 CPU source prepare not completed
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 0.0분  (2026-09-30 02:21:33)
+==============================================================================

@@ -4,7 +4,7 @@
 
 ## 1. 왜 — 질문을 두 개로 나눈다
 
-> 2026-09-30 최신 상태: [결과101 §30](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 공개 low Wg는128답/optimizer1 기술 완료, 교사69.307분·학생2.796분(첫 compile 포함), 비패딩25,133/지도18,735다. 사용자 B·C4·A1+A2 승인과 독립 C4 후 통합1회→작은 실교육에 따라 아래 Stage3 9개 SH를 준비했다. 전부 STATIC_ONLY/실모델 NOT_RUN. medium Wf는 HOLD, Wh low5는 임의 제외·취소하지 않고 보존한다. 300M·교사 정답·지능 채택은 아직 미판정이다.
+> 2026-09-30 최신 상태: [결과101 §31](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 새 smoke43/0/0/0 뒤 A1 두 슬롯은 속도비1.140/1.015×·KO형식1~2/4로 exit8, A2는 serial KO4/8에서 exit8·겹침0이다. B2/B4는 한영 각4/4 **형식만 PASS**. C4 실제100행4pass/4optimizer는 SFT-val 개선에도 기존 base full-val+0.018444 악화·고정답8/8 미달이다. f/g0/g는 상류 선결차단으로 실제 통합·후속교육0. 사용자 선택 A로 legacy/chat32 실패 원인 진단과 출력예산·질문수 확대 A1Wb/A2Wb 새 단계·SH를 준비했으며 새 실모델은 NOT_RUN이다. Wh/Wf는 -hold·큐 제외, 300M·교사 정답·지능 채택은 미판정이다.
 
 [결과098 §8](../test_result/098_20260925_P106-검증형-교사-레코드-계약만-통과했다.md)의 full-GPU Bonsai+P076 모양 학생 두 팔은 **합성 입력 2업데이트 자원공존**만 확인했다. 실제 교사 문자열이 학생의 canonical ChatML assistant-only 손실로 들어간 증거는 0이다. [공개 SFT 적격성 결과096 §10](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)는 전체 공개 v3의 `TRAIN_READY=false`를 보존한다. 그렇다고 모든 교사 번역을 사람이 전수 승인할 때까지 **별도 소형 pseudo-label 기능 실험조차 금지할 근거는 없다.**
 
@@ -190,7 +190,7 @@ Stage2iWc의 `exit8`은 **한국어 OASST1 단일턴365개 소진**, 코드 예�
 
 새 [Stage2iWe SH](../run_P106B_Stage2iWe_online1_public_medium.sh)는 medium 모델카드 sampler·ctx6144/max4096, 같은 P076 부모·legacy32·micro8×accum16/ckpt-on에서 **1 optimizer 업데이트/128개 신선 후보**만 실행하고 2h hard wall·write-once v15·checkpoint0으로 제한한다. 교사 `/apply-template`→`/tokenize`의 실제 입력 토큰과 `input+4096+128≤6144` 조건을 각 job마다 확인한다. 초과/12k payload 한계 행은 `COMPRESSION_REQUIRED`/HOLD로 raw에 남기고 무단 절단하지 않으며, 미확인 token API 오류는 tool fail9로 분리한다. 교사 답이 완결돼도 사실성·개인정보는 아직 미검증이다. 출력을 직접 학습하는 범위는 **진단용 pseudo-label**에 한정한다.
 
-Stage2iWe 사용자 원본 manifest가 **동일 공개 deck SHA·ONE_UPDATE_COMPLETE·실제1회**이면 [Stage2iWf SH](../run_P106B_Stage2iWf_online5_public_medium.sh)의 check-only가 통과하도록 선결을 코드로 묶었다. Wf는 같은 조건으로 새 v16 namespace에 5회/640개 fresh target·6h hard wall을 별도 재시험한다. Stage2iWe의 교사답이나 학생 가중치를 재사용하지 않고 같은 부모에서 다시 시작하므로 두 실행의 1+5를 6연속 학습으로 세지 않는다. 5회 통과는 기술 처리율/원천 수급 관측뿐이며 **OASST1 none 5회와 원천·길이 선별이 달라 인과 속도·품질 비교 금지**다. Wf 이후에도 300M/600M, 지능 상승, 멀티턴 능력은 별도 평가·권리·오답 분석 전 `NOT_RUN`이다.
+Stage2iWe 사용자 원본 manifest가 **동일 공개 deck SHA·ONE_UPDATE_COMPLETE·실제1회**이면 당시 Stage2iWf 구현의 check-only가 통과하도록 선결을 코드로 묶었었다. 하지만 We는 완료하지 못했고 사용자는 medium 보류를 유지한다. [보존 Wf SH](../run_P106B_Stage2iWf_online5_public_medium-hold.sh)는 직접 실행해도 즉시 HOLD8이며 현재 큐의 실험이 아니다. 재개되더라도 Stage2iWe의 교사답이나 학생 가중치를 재사용하지 않고 같은 부모에서 새 단계로 준비해야 한다. 5회 통과는 기술 처리율/원천 수급 관측뿐이며 **OASST1 none 5회와 원천·길이 선별이 달라 인과 속도·품질 비교 금지**다. 300M/600M, 지능 상승, 멀티턴 능력은 별도 평가·권리·오답 분석 전 `NOT_RUN`이다.
 
 ### Stage2kW — 사용자 선택 C: Aya Dataset·OASST2·국립국어원 다원천을 계보별로 묶는 읽기 전용 계약
 
@@ -288,6 +288,23 @@ A1의1.05 문턱은 이 pilot의 작은 order/noise 여유이며 통계적 신�
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
+### Stage3aWb/3bWb — 2026-09-30 사용자 A 승인: 옛 실패를 보존한 별도 재시험
+
+A1의 원본 v22는 두 쌍 중 첫 속도비1.140×만 1.05를 넘었고 역순은1.015×, KO형식은1~2/4였다. A2의 v23은 고정16교사 요청 중 KO4/8·EN6/8이라 serial에서만 partial10행과 학생 일부 backward를 남기고 optimizer/실제겹침0이었다. **이것은 도구 전체 실패가 아니라 사전 형식 문턱의 음성**이다. 그러나 A2 최상위 `arms=[]`는 partial serial 원형을 보여 주지 못한 기록 결함이므로 새 코드에서는 `serial/arm_manifest.json`이 있으면 상위 요약에도 `partial_arm=true`를 남긴다. 기존 v22/v23 JSON·문턱은 수정하지 않는다.
+
+| 새 단계 | 변경축·불변축 | 사전 판정과 비용 |
+|---|---|---|
+| Stage3aWb | 한 교사·같은 공개원천/부모·low sampler, **질문군 언어당4→16 / slot당ctx3072→6144 / output2048→4096**; 새 v26, ABBA1→2→2→1 | 각 팔 KO·EN 각각≥12/16 형식 완료, 두 순서쌍의 유효학생자료 tok/s 모두>1.05, 두 슬롯에서 완결행 감소0, 활성학생16행 공존·GDN/VRAM 계측 정상. ⚙1.5h·hard2h. 형식 회복·속도 증가/OOM안전은 사용자 E2E 전 NOT_RUN |
+| Stage3bWb | 같은 원천/부모·low, **질문군 언어당8→16 / ctx3072→6144 / output2048→4096**; 새 v27, serial→durable producer/consumer | serial·overlap 각 KO·EN≥12/16, 실제 교사/학생 실행구간 겹침, 표본VRAM·finite loss/gradient. 각 팔 최대32행의 부분누산이며 128행 본학습·인과적 속도채택은 아님. ⚙1.0h·hard2h. E2E NOT_RUN |
+
+출력예산과 표본을 **동시에** 바꿨으므로 옛 v22/v23과의 속도 차이를 한 변수의 효과로 귀속하지 않는다. 큰8문항 B2/B4가 각4/4였다는 관측은 출력 상한 가설의 근거일 뿐 확증이 아니다. 새 A1도 문구·학생대화 길이가 팔별로 달라 순서교차와 수락행 수를 함께 본다. A2는 고정 serial-first 순서와 cold compile 때문에 실제 겹침이 있어도 전체 wall 차를 인과적 학습가속으로 채택하지 않는다. 두 새 런은 버전드 새 자료만 만들고 현재 v19~v23·원래 부모/체크포인트/결과101 원본을 변경하지 않는다.
+
+### Stage3cW 품질 사후 감사 — 운영 안전과 답변 능력의 반례
+
+C4는 좁은 SFT-val CE3.700334→3.571472로 개선됐지만, 같은 base full-val 2,929 crop에서3.600580→3.619024(**+0.018444 악화**)다. `PILOT_SAFETY_PASSED`의0.1nat 운영 문턱 안이라는 이유로 악화를 지우지 않는다. 부모 고정8문항은 채팅 시작 마커를 반복했고 자식 고정8문항도 모두80토큰 상한까지 갔다. 자식은 산수·지식에서 질문을 되풀이하고 논리 문항은 내용은 관련 있으나 요구한 yes/no 형식을 지키지 못해 **요구 정답과 형식 동시충족0/8**이다. 현재 legacy32는 `<|im_start|>`/종료 마커가8/7개의 분절토큰이고, chat32는 ID3/ID4 한 개다. 직렬화기는 assistant 머리를 한 번만 붙이므로 중복 머리 생성이 구현상의 직접 중복삽입임은 관찰되지 않았다. legacy 부모의 채팅 표지 미학습·작은78k토큰 SFT·EOS만 멈추는 추론 경로는 원인 후보이며 **어느 하나가 유일 원인이라는 증거는 없다**.
+
+동일 4epoch 소형 학습을 다시 반복하지 않는다. chat32 부모와 기존 legacy의 계보·prompt/종료 제어, 의미 있는 고정 원답 평가를 별도 후속으로 설계하고, 새 A1/A2의 생산성 결과를 먼저 회수한다. 현재 Stage3f/g0/g 런처는 사용자가 check-only로 시도해 음성8을 남겼지만 통합·새 corpus·학생학습 **0**이다. A1Wb/A2Wb가 추후 성공해도 v22/v23 기존 SHA를 재해석해 원래 통합런처를 통과시키지 않고, 사용자 의미·자원 판단 후 새 단계로 별도 사전등록한다.
+
 ## 5. 판정 기준·사전등록 범위
 
 | 관측 | 판정 |
@@ -326,6 +343,8 @@ A1의1.05 문턱은 이 pilot의 작은 order/noise 여유이며 통계적 신�
 | Stage2iWf | ≤6.0h GPU | 동일 public deck SHA의 Stage2iWe 1회 PASS가 선결. 5 optimizer·640 신선후보, 체크포인트0 |
 | Stage2iWg | ≤2.0h GPU | 새 공개원천 low1·계측수리 실물 gate. 구 OASST1 low1 반복 아님; 신규 v17·128 fresh·checkpoint0 |
 | Stage2iWh | ≤6.0h GPU | Wg low1·동일 source/부모/교사 SHA·정상 monitor·실제128 적용 선결; 신규 v18·640 fresh·checkpoint0 |
+| Stage3aWb | ⚙1.5h·hard2h GPU | 기존1.140/1.015×·KO1~2/4 음성 뒤 질문 언어당16·ctx6144/output4096 별도v26; 사용자 실물 전 속도·OOM NOT_RUN |
+| Stage3bWb | ⚙1.0h·hard2h GPU | 기존 serial KO4/8·overlap0 음성 뒤 질문 언어당16·ctx6144/output4096 별도v27; 학생 partial최대32행·통합0 |
 | Stage2W | `NOT_ESTIMABLE` | 승인 원천의 실제 유니크 지도토큰·교사 accepted sample 비용·동일평가 확인 후 산정 |
 
 ## 7. 실행 파일·사전 점검
@@ -342,7 +361,7 @@ A1의1.05 문턱은 이 pilot의 작은 order/noise 여유이며 통계적 신�
 - Stage2jW/Wb: 이번 사용자 한정 Codex 교사-only4+1요청의 별도 v11/v12 결과가 [결과101 §21~§22](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에 있다. 교사 native parser의 문항26 HTTP500은 정확 PEG 불일치, bypass의 HTTP200은 길이 소진·중복 태그로 답안 불가다. 사용자 재실행 단계가 아니며 같은 출력 버전을 재사용하지 않는다.
 - Stage2fWb/Stage2kW/Wb·Stage2iWd: [결과101 §23~§26](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 Stage2kW 읽기 전용87,361 job과 Stage2fWb 한영 형식 KO14/EN15을 보존한다. 2026-09-29 새 smoke43/0/0/0 뒤 Stage2kWb 공개 job10,528과 Stage2iWd low 동시 1 optimizer·약76.8분 완료, checkpoint/품질0. 실물 기술 경로는 열렸으나 교사 진실성·formal SFT는 아니다.
 - Stage2iWe/Wf: We medium 첫실행은 sampler `TimeoutExpired` 미처리 뒤 사용자 Ctrl+C·optimizer0/후보123이었다. 같은날 로그 삭제 후 재실행은 output존재 check-only exit9였다([결과101 §29](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 사용자 지시로 medium 보류, We -done·재현 보존 후 삭제 판정, 미실행 Wf SH는 HOLD로 보존하며 모델 전 check-only8로 막는다.
-- Stage2iWg/Wh: [새 low1 SH](../run_P106B_Stage2iWg_online1_public_low.sh)와 [조건부 low5 SH](../run_P106B_Stage2iWh_online5_public_low.sh)는 수리 sampler/Ctrl+C·공개 source gate를 포함한다. Wg CPU check-only PASS, Wh는 Wg 실제 결과가 없어 HOLD8. 모델·학습 `E2E_NOT_RUN`이다.
+- Stage2iWg/Wh: Wg는 사용자 9/29 기술1회 완료([결과101 §30](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)); 해당 SH는 명령4개와 Git 복구점을 남기고 삭제했다. Wh low5는 지금 [보존 SH](../run_P106B_Stage2iWh_online5_public_low-hold.sh)로 개명해 직접 실행도 HOLD8로 차단했다. 두 팔의 학습량을 합치거나 Wh를 이미 수행한 것으로 표기하지 않는다.
 - Stage1cW: [비활성 SH 템플릿](../scripts/templates/P106B_Stage1cW_parent_student_posthoc.sh.in)만 있다. Stage1b 고유 checkpoint가 아직 없어 루트 SH/TSV에 등록하면 입력태그 린터가 실제 FAIL한다. 사용자가 Stage1b 로그·체크포인트를 회신해 SHA/메타데이터를 판독한 **다음 지시**에서 새 단계명으로 활성화한다. 생성 답안·문항별 벤치 원본이 결과문서의 근거다.
 - Stage2W: 원천 수·사람 표본·평가 설계 미확정이므로 **SH 미작성**. 두 준비 SH가 존재하는 것과 Stage2 본학습 사용 승인은 다르다.
 - tag `p106b_s1b_oasst2_ko_online_s1337`: 레지스트리 조회에서 기존 로그 충돌0. 새 Stage1b 출력은 P106B 고유 이름이며 기존 P076/공개 SFT/교사 파일을 덮지 않는다. 과거 P076 mean은 같은 시작점 전후 진단의 부모이지 **동일 학습량의 교사 없는 대조군**이 아니다.
@@ -363,10 +382,8 @@ A1의1.05 문턱은 이 pilot의 작은 order/noise 여유이며 통계적 신�
 
 ### Stage3 실행 파일 (모두 사용자 실행·새 smoke 선결)
 
-- [Stage3c0W 보존자료 준비](../run_P106B_Stage3c0W_repeat4_corpus.sh) → [Stage3cW 독립4epoch](../run_P106B_Stage3cW_repeat4_saved_sft.sh)
-- [Stage3aW A1 슬롯 ABBA](../run_P106B_Stage3aW_parallel_teacher_slots.sh), [Stage3bW A2 생산/소비 겹침](../run_P106B_Stage3bW_teacher_student_overlap.sh)
-- [Stage3dW B2](../run_P106B_Stage3dW_multi_answer2.sh) → [Stage3eW B4](../run_P106B_Stage3eW_multi_answer4.sh)
-- [Stage3fW 통합1회](../run_P106B_Stage3fW_integrated_one_update.sh) → [Stage3g0W 후속자료 준비](../run_P106B_Stage3g0W_followup4_corpus.sh) → [Stage3gW 작은 실제4epoch교육](../run_P106B_Stage3gW_followup4_student.sh)
+- 역사 Stage3a/b/c0/c/d/e/f/g0/g 아홉 SH는 전부 사용자 9/30에 **착수된 이력**이다. 각각의 정확한 명령4개와 성공·음성·미실행 구분은 [결과101 §31·재현부록](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에 보존했다. `-done`은 사용 시도 표지이지 A1/A2/통합의 과학적 성공 표지가 아니다.
+- 다음 사용자 실행용: [A1 Stage3aWb 새 예산 ABBA](../run_P106B_Stage3aWb_parallel_teacher_budget_recovery.sh), [A2 Stage3bWb 새 예산 생산·소비](../run_P106B_Stage3bWb_teacher_student_overlap_recovery.sh). 둘 다 **새 smoke 선결·본런 미실행**이며 통합·실교육을 자동 재개하지 않는다.
 
 §7 handoff 큐는 실제id·시간·조건부상태 정본이다.1개의update로4epoch완료를 보고하지 않으며300M 목표는 현재 코퍼스 부족·생산비용 때문에 별도 원천확장/품질 계획을 요구한다.
 
@@ -388,3 +405,4 @@ OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 
 - 2026-09-29 사용자 [smoke](../smoketest_logs/202609290441_smoke_b12060e.txt) 43/0/0/0과 [결과101 §25~§28](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) 회수: 공개 전용 Stage2kWb job10,528·Stage2iWd low1/1·Wb none5/5 기술 기능을 확인했으나, Wc medium은 한국어365후보를 모두 써도 4/5에서 exit8이었다. Wc 형식 후보611 중 학생 optimizer에 실제 적용된 것은512, 남은99는 미적용 raw/canonical 후보로만 보존한다. none5의 비패딩141,422토큰과 medium4의100,408토큰은 300M/600M이 아니고 checkpoint/held-out 평가0이다. 장시간 서버 오류 tail에서 GDN 시작 줄이 밀린 결함은 계측 보강했지만 새 GPU 런 전에는 해당 팔 fusion 상태 `UNKNOWN`. 사용자 선택 A로 공개 Aya/OASST2 전용 Stage2iWe 1회→통과 시 Stage2iWf 5회만 준비했으며 현 E2E는 `NOT_RUN`이다.
 - 2026-09-29 후속 [smoke](../smoketest_logs/202609291711_smoke_848dd6a.txt)는848dd6a 실행 당시43/0/0/0. We 첫실행의 계측 daemon timeout이 main에 전달되지 않은 **코드 결함**은 사용자 traceback과 exact v15 원형141/후보123·updates0으로 확인했다. ctx/출력상한이나 교사 품질 실패라고 단정하지 않는다. Ctrl+C/status와 sampleerrors 누락·후속 dataset output collision을 각각 수리/설명하고 medium은 보류했다. low 이미 실행했던 OASST1 Wd1 성공은 보존하며, 사용자 재선택 A로 새 공개원천·수리코드 Wg1→통과시Wh5를 별도 단계/버전으로 준비했다. 다음 가설은 계측 오류가 다시 발생하면 조용히 학습을 계속하지 않고 원본·partial을 남기며 fail9하는가이고 실물 결과 전 미확인이다.
 - 2026-09-30 회수: 9/29 Wg low1은 새 source에서128답/1optimizer·원형196행·유효25,133대화토큰으로 완료됐다. sampler errors0와GDN latchtrue를 관측해 작은 기술 gate만 PASS로 옮겼다([결과101 §30](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 길이절단55건이 교사시간43.635%를 쓴 것은 남은 생산병목이다. 사용자 B,C4,A1+A2와 독립C4 뒤 통합1→실교육 승인에 따라 Stage3 9개SH/구현을 준비했으며 모델실행0. 별도 미실행Wh/Wf는 보존했다.
+- 2026-09-30 2차 회수: 새 [smoke](../smoketest_logs/202609300046_smoke_f417544.txt)43/0/0/0 뒤 [결과101 §31](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 아홉 Stage3 시도를 분리했다. 예측한 A1 두 순서>1.05는 역순1.015로 **불성립**, 예측한 A2 실제 겹침은 KO4/8 문턱미달로 **미측정**이다. B2/B4 형식은 한영4/4로 예상보다 잘 되었지만 teacher 정답성은 여전히 별도다. C4는4pass·4optimizer를 완료하고 좁은SFT-val CE를 개선했으나 base full-val+0.018444 악화·고정답8/8 실패로 ~~운영 중단선 통과 뒤 바로 후속교육~~ 해석을 철회한다. 상류차단 f/g0/g는 실행 시도 로그만 있고 실교육0이다. 사용자 선택 A에 따라 토크나이저 계보·원답을 CPU 대조하고 A1Wb/A2Wb만 새v26/v27로 준비한다. 새 GPU 결과 전 통합 HOLD, Wh/Wf 미실행 두 파일은 `-hold`/큐 제외다.

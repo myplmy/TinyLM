@@ -1,0 +1,43 @@
+Only after current A1 speed/resource, A2 overlap, B2 and B4 format, independent C4 safety PASS. First integration uses B2 fields for resource control. One teacher two slots, durable queue, C-reader epoch1:64 replay plus64 fresh variants. Micro8 accum16 checkpoint-on, exactly one optimizer. At most2h; not4epoch/300M/formal TRAIN_READY. Existing HF/parent/tokenizer unchanged. New smoke is prerequisite. Never delete original outputs to force a rerun.
+
+==============================================================================
+[runlog] 2026-09-30 02:20:52  name=P106B_Stage3fW_integrated_one_update
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_pipeline_gates.py
+==============================================================================
+.[PASS] A1 paired order/speed/format gate; GPU NOT_RUN
+..[PASS] A2 bounded queue/stop/content comparison; model/GPU NOT_RUN
+..[PIPELINE_ITEM] {"id": "fixture0", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture2", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture3", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture_duplicate", "language": "en", "rows": 0, "status": "EXACT_DUPLICATE"}
+.[PASS] integration five evidence artifacts/four methods/one-update semantics; GPU NOT_RUN
+....
+----------------------------------------------------------------------
+Ran 10 tests in 0.054s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 02:20:53)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 02:20:53  name=P106B_Stage3fW_integrated_one_update
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_integrated_gate.py --self-test
+==============================================================================
+[PASS] integration five evidence artifacts/four methods/one-update semantics; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 02:20:54)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 02:20:54  name=P106B_Stage3fW_integrated_one_update
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_integrated_gate.py --check-only
+==============================================================================
+[GATE_NEGATIVE] PrerequisiteHold: user prerequisite not passed: HF/sft_ready/p106b_teacher_sft/v22_parallel_abba_low/gate_manifest.json
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 0.0분  (2026-09-30 02:20:56)
+==============================================================================

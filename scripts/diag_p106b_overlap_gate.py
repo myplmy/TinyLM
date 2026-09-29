@@ -17,7 +17,18 @@ from scripts.p106b_gate_runtime import (TeacherSession, fixed_jobs, student_inpu
     idle_before_gpu, write_report, wall_limit, disposition, GateNegative, ToolFailure, code_contract, teacher_inputs)
 from scripts.p106b_pipeline import CandidateWriter, StudentAccumulator
 
-DIRECTORY = ROOT / "HF/sft_ready/p106b_teacher_sft/v23_overlap_low"
+ORIGINAL_DIRECTORY = ROOT / "HF/sft_ready/p106b_teacher_sft/v23_overlap_low"
+RECOVERY_DIRECTORY = ROOT / "HF/sft_ready/p106b_teacher_sft/v27_overlap_budget_recovery_low"
+
+
+def settings(mode):
+    if mode == "original":
+        return {"directory": ORIGINAL_DIRECTORY, "concepts_per_language": 8,
+                "per_slot_context": 3072, "max_output": 2048, "minimum_complete_per_language": 6}
+    if mode == "recovery":
+        return {"directory": RECOVERY_DIRECTORY, "concepts_per_language": 16,
+                "per_slot_context": 6144, "max_output": 4096, "minimum_complete_per_language": 12}
+    raise ValueError("unknown A2 mode")
 
 
 class BoundedRows:
@@ -76,7 +87,7 @@ def run_arm(path, jobs, inputs, overlap):
         student.add(block)
         student_windows.append((t0, time.monotonic()))
     try:
-        with TeacherSession(3072) as session:
+        with TeacherSession(inputs["per_slot_context"]) as session:
             student.monitor = session.check_monitor
             def produce():
                 try:
@@ -85,7 +96,8 @@ def run_arm(path, jobs, inputs, overlap):
                             break
                         t0 = time.monotonic()
                         rows = writer.request(session, job, f"a2_{'overlap' if overlap else 'serial'}_{index:02d}",
-                            20260930+index)
+                            20260930+index, per_slot=inputs["per_slot_context"],
+                            maximum=inputs["max_output"])
                         teacher_windows.append((t0, time.monotonic()))
                         accepted.extend(rows)
                         if overlap:
@@ -118,8 +130,9 @@ def run_arm(path, jobs, inputs, overlap):
                     consume_block(accepted[start:start+8])
             if errors:
                 raise errors[0]
-            if min(writer.accepted.get("ko", 0), writer.accepted.get("en", 0)) < 6:
-                raise GateNegative("A2 fewer than6/8 question groups in either language")
+            if min(writer.accepted.get("ko", 0), writer.accepted.get("en", 0)) < inputs["minimum_complete_per_language"]:
+                raise GateNegative(f"A2 fewer than {inputs['minimum_complete_per_language']}"
+                                   f"/{inputs['concepts_per_language']} question groups in either language")
             update = student.finish()
             phase_wall = time.monotonic() - timer
             session.require_valid_resources()
@@ -146,45 +159,64 @@ def run_arm(path, jobs, inputs, overlap):
     return result
 
 
-def check():
-    jobs, source = fixed_jobs(8)
+def check(mode="original"):
+    cfg = settings(mode)
+    jobs, source = fixed_jobs(cfg["concepts_per_language"])
     student = student_inputs()
-    new_directory(DIRECTORY)
+    new_directory(cfg["directory"])
     return jobs, {**student, **teacher_inputs(), "code_sha256": code_contract("diag_p106b_overlap_gate.py"),
-        "source": source, "question_groups": 16, "teacher_slots": 1,
+        "source": source, "mode": mode, "question_groups": len(jobs),
+        "concepts_per_language": cfg["concepts_per_language"],
+        "minimum_complete_per_language": cfg["minimum_complete_per_language"],
+        "per_slot_context": cfg["per_slot_context"], "max_output": cfg["max_output"],
+        "teacher_slots": 1,
         "student_micro": 8, "accum_limit": 16, "exact_full_128_update": False,
-        "limit": "partial up-to16-row resource update per arm, no row refill; effective targets reported",
+        "limit": f"partial up-to{len(jobs)}-row resource update per arm, no row refill; effective targets reported",
         "student_quality": "NOT_RUN", "formal_train_ready": False}
 
 
 def execute(jobs, inputs):
     idle_before_gpu()
-    DIRECTORY.mkdir(parents=True, exist_ok=False)
+    directory = settings(inputs["mode"])["directory"]
+    directory.mkdir(parents=True, exist_ok=False)
     arms = []
     status, rc, reason = "PARTIAL", 9, "not started"
     started = time.monotonic()
     try:
         with wall_limit(7200):
             for name, overlap in (("serial", False), ("overlap", True)):
-                arms.append(run_arm(DIRECTORY / name, jobs, inputs, overlap))
+                arm_path = directory / name
+                try:
+                    arms.append(run_arm(arm_path, jobs, inputs, overlap))
+                except (Exception, KeyboardInterrupt):
+                    # run_arm writes an immutable partial arm record before raising.
+                    # The top-level report must not claim zero observed arms.
+                    record = arm_path / "arm_manifest.json"
+                    if record.is_file() and not record.is_symlink():
+                        arms.append({**json.loads(record.read_text(encoding="utf-8")),
+                                     "partial_arm": True})
+                    raise
             if not arms[1]["actual_teacher_student_interval_overlap"]:
                 raise GateNegative("A2 did not actually overlap intervals")
             status, rc, reason = "OVERLAP_FUNCTION_GATE_PASSED", 0, "actual overlapping durable queue verified; not speed/quality adoption"
     except (Exception, KeyboardInterrupt) as exc:
         status, rc = disposition(exc)
         reason = f"{type(exc).__name__}: {str(exc)[:250]}"
-    comparable = len(arms) == 2 and arms[0]["text_sha256"] == arms[1]["text_sha256"]
+    comparable = (len(arms) == 2 and all(not arm.get("partial_arm") for arm in arms)
+                  and arms[0]["text_sha256"] == arms[1]["text_sha256"])
     ratio = arms[0]["phase_wall_sec"] / arms[1]["phase_wall_sec"] if comparable else None
     report = {"schema": "P106B_OVERLAP_GATE_V1", "status": status, "exit_code": rc,
         "reason": reason, "input": inputs, "arms": arms, "identical_generated_text": comparable,
         "serial_over_overlap_wall_ratio": ratio, "causal_speed_claim": False,
         "wall_sec": time.monotonic()-started, "limit": "fixed serial-first order/cold compile remain; functional gate only"}
-    write_report(DIRECTORY / "gate_manifest.json", report)
+    write_report(directory / "gate_manifest.json", report)
     print("[OVERLAP_SUMMARY] " + json.dumps(report, sort_keys=True), flush=True)
     return rc
 
 
 def self_test():
+    assert settings("original")["directory"] != settings("recovery")["directory"]
+    assert settings("recovery")["minimum_complete_per_language"] == 12
     stop = threading.Event()
     buffer = BoundedRows(stop, 128)
     row = {"text": "한국어 English"}
@@ -206,12 +238,13 @@ def main():
     modes = ap.add_mutually_exclusive_group(required=True)
     for name in ("self-test", "check-only", "execute"):
         modes.add_argument("--"+name, action="store_true")
+    ap.add_argument("--mode", choices=("original", "recovery"), default="original")
     args = ap.parse_args()
     try:
         if args.self_test:
             self_test()
             return 0
-        jobs, info = check()
+        jobs, info = check(args.mode)
         if args.check_only:
             print(json.dumps(info, sort_keys=True))
             return 0

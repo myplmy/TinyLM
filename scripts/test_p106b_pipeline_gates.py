@@ -112,6 +112,23 @@ class Tests(unittest.TestCase):
         with self.assertRaises(ValueError):
             q.put({"large": "x"*128})
 
+    def test_overlap_summary_preserves_partial_serial_arm(self):
+        with tempfile.TemporaryDirectory(prefix="p106b_partial_gate_") as temporary:
+            root = Path(temporary) / "v27"
+            def fail_after_record(path, _jobs, _inputs, _overlap):
+                path.mkdir()
+                (path / "arm_manifest.json").write_text(json.dumps({
+                    "accepted_groups": {"ko": 4, "en": 6}, "canonical_rows": 10,
+                    "text_sha256": "fixture", "phase_wall_sec": 0.5}), encoding="utf-8")
+                raise GateNegative("fixed cohort insufficient")
+            with patch.object(overlap, "settings", return_value={"directory": root}), \
+                 patch.object(overlap, "idle_before_gpu"), patch.object(overlap, "run_arm", side_effect=fail_after_record):
+                self.assertEqual(overlap.execute([], {"mode": "recovery"}), 8)
+            report = json.loads((root / "gate_manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(report["status"], "GATE_NEGATIVE")
+            self.assertEqual(len(report["arms"]), 1)
+            self.assertTrue(report["arms"][0]["partial_arm"])
+
     def test_same_prompt_different_concepts_do_not_cross_split(self):
         from tinylm.chat.canonical import normalize
         rows = [normalize({"messages": [{"role": "user", "content": f"question{i//2}"},

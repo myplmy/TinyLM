@@ -112,6 +112,22 @@ class LinuxQueueTests(unittest.TestCase):
             ):
                 self.assertEqual(linux_queue.cmd_audit([], []), 0)
 
+    def test_held_shell_never_runnable_and_active_registration_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            name = "run_P106B_Stage2iWh_online5_public_low-hold.sh"
+            (root / name).write_text("#!/usr/bin/env bash\nexit 8\n", encoding="ascii")
+            with mock.patch.object(linux_queue, "ROOT", root), mock.patch.object(
+                linux_queue, "REQUIRED_COMMON", set()
+            ):
+                self.assertEqual(linux_queue.cmd_audit([], []), 0)
+                rows = linux_queue.with_shell_state([row(name)], root=root)
+                self.assertEqual(linux_queue.available(rows), [])
+                output = StringIO()
+                with redirect_stdout(output):
+                    self.assertEqual(linux_queue.cmd_audit(rows, []), 1)
+                self.assertIn("held shell entries", output.getvalue())
+
     def test_native_shell_row_is_runnable_without_bat(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

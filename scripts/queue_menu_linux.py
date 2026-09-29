@@ -46,7 +46,8 @@ def with_shell_state(rows, root: Path = ROOT):
 def available(rows):
     # BAT companion rows require both the canonical BAT and its SH adapter.
     # Native SH rows point at the same file in both fields, so this also covers them.
-    return [row for row in rows if row["shell_exists"] and row["exists"]]
+    return [row for row in rows if row["shell_exists"] and row["exists"]
+            and not str(row["shell_batch"]).endswith(("-done.sh", "-cancel.sh", "-hold.sh"))]
 
 
 def _display_rows(rows, warn):
@@ -361,9 +362,17 @@ def cmd_audit(rows, warn) -> int:
     on_disk = {path.name for path in ROOT.glob("run_*.sh")}
     live_disk = {
         name for name in on_disk
-        if not name.endswith(("-done.sh", "-cancel.sh"))
+        if not name.endswith(("-done.sh", "-cancel.sh", "-hold.sh"))
     } - {"run_queue.sh"}
     errors = 0
+
+    registered_hold = sorted(str(row["shell_batch"]) for row in rows
+                             if str(row["shell_batch"]).endswith("-hold.sh"))
+    if registered_hold:
+        errors += len(registered_hold)
+        print("[FAIL] held shell entries must be history comments, not active TSV rows:")
+        for name in registered_hold:
+            print(f"  {name}")
 
     unexpected = sorted(live_disk - listed)
     if unexpected:

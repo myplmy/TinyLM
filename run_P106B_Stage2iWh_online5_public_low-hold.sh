@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# P106B Stage2iWh: low 5-update pilot after same-deck Stage2iWg low1 PASS.
+# HOLD 2026-09-30 by user: retain low5 study, but disable direct launch and queue membership.
 # Full teacher + P076 micro8*accum16/ckpt-on, up to 6h, no saved checkpoint.
 set -euo pipefail
+printf '[HOLD] Stage2iWh is preserved but not runnable until a separate decision.\n' >&2
+exit 8
 repo_root="$(cd "$(dirname "$0")" && pwd)"
 source "$repo_root/scripts/shell/tinylm_env.sh"
 cd "$repo_root"

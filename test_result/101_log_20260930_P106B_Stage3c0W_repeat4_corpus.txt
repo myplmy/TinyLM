@@ -1,0 +1,53 @@
+CPU-only prepare C4: exact v17 raw/canonical SHA, deterministic concept/prompt-disjoint100 train28 val into new v19 <=20MB shards. No teacher/student model. Refuse existing version. Existing HF/parent/tokenizer unchanged. New smoke is prerequisite. Never delete original outputs to force a rerun.
+
+==============================================================================
+[runlog] 2026-09-30 01:35:22  name=P106B_Stage3c0W_repeat4_corpus
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_pipeline_gates.py
+==============================================================================
+.[PASS] A1 paired order/speed/format gate; GPU NOT_RUN
+..[PASS] A2 bounded queue/stop/content comparison; model/GPU NOT_RUN
+..[PIPELINE_ITEM] {"id": "fixture0", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture2", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture3", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture_duplicate", "language": "en", "rows": 0, "status": "EXACT_DUPLICATE"}
+.[PASS] integration five evidence artifacts/four methods/one-update semantics; GPU NOT_RUN
+....
+----------------------------------------------------------------------
+Ran 10 tests in 0.063s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-09-30 01:35:28)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 01:35:28  name=P106B_Stage3c0W_repeat4_corpus
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_repeat4_gate.py --self-test
+==============================================================================
+[PASS] C4 group split/exact four passes/no artificial row refill; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 01:35:29)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 01:35:29  name=P106B_Stage3c0W_repeat4_corpus
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_repeat4_gate.py --check-only --mode prepare
+==============================================================================
+{"parent_sha256": "41036721CEAAE3EACA568BF45FA5079745EBAE85B42033D28ECC9709F5D00A71", "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3", "code_sha256": {"p106b_gate_runtime.py": "319459598EABD9075D5197E91B1A0B03E90B733C9F921A8F96D5CA9812BC4EC9", "p106b_pipeline.py": "E208D63BF739033F286B4F92288B6DA0BAF4A8C4BA18C1E0D97751B1B921BC1D", "p106b_multi_answer.py": "1F3161A4AFDE19888B3877A67734F48843E1DC651806C8F08E1331E1B55C9BAF", "p106b_repeat4_gate.py": "6AB042FDBE906A24ABF2779CD12ADB5B7DF7E5D9F36412C964F7CD6079E35188"}, "source_manifest": "HF/sft_ready/p106b_teacher_sft/v17_online_public1_low/online_public1_low_manifest.json", "source_manifest_sha256": "2206E86B1F4D4DB1B1F1F28C1479974371B7EBB4D3F454103DD1D134EEF5AE01", "followup_after_integrated": false, "source_concat_sha256": "4DBFA18CFE1EE9EFB14E6B733FF6601A2742A57E73000D0FE4AF0FD7F1CF3EB9", "train_rows": 100, "val_rows": 28, "epochs": 4, "unique_train_conversation_tokens": 19565, "train_processed_tokens_4epochs": 78260, "train_assistant_tokens_4epochs": 57852, "val_conversation_tokens": 5568, "micro": 8, "accum": 16, "updates_expected": 4, "limit": "short final group is not padded with repeated conversations; exact each row four times", "formal_train_ready": false, "teacher_truth": "PSEUDO_UNVERIFIED"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 01:35:30)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 01:35:30  name=P106B_Stage3c0W_repeat4_corpus
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_repeat4_gate.py --execute --mode prepare
+==============================================================================
+[PASS] new concept/prompt-disjoint C4 corpus only; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 01:35:32)
+==============================================================================

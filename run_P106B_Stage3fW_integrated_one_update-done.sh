@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# P106B_Stage3fW_integrated_one_update: approved independent/pipeline pilot, user execution only.
+# P106B_Stage3fW_integrated_one_update: approved independent/pipeline pilot, user execution only. Attempted by user on 2026-09-30; preserve the original command sequence.
 # Expected 0.8h; hard limit is inside the diagnostic. Exit0 functional,8 negative/HOLD,9 tool,130 interrupted.
 set -euo pipefail
 repo_root="$(cd "$(dirname "$0")" && pwd)"

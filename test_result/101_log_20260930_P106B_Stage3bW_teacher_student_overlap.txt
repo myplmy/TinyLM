@@ -1,0 +1,70 @@
+A2: serial vs durable bounded producer/consumer, one teacher slot, student micro8 with partial up-to16-row accumulation. At most2h. True interval overlap and >=6/8 language groups required. Order/cold compile prevent causal speed claim. Existing HF/parent/tokenizer unchanged. New smoke is prerequisite. Never delete original outputs to force a rerun.
+
+==============================================================================
+[runlog] 2026-09-30 01:56:54  name=P106B_Stage3bW_teacher_student_overlap
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_pipeline_gates.py
+==============================================================================
+.[PASS] A1 paired order/speed/format gate; GPU NOT_RUN
+..[PASS] A2 bounded queue/stop/content comparison; model/GPU NOT_RUN
+..[PIPELINE_ITEM] {"id": "fixture0", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture2", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture3", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture_duplicate", "language": "en", "rows": 0, "status": "EXACT_DUPLICATE"}
+.[PASS] integration five evidence artifacts/four methods/one-update semantics; GPU NOT_RUN
+....
+----------------------------------------------------------------------
+Ran 10 tests in 0.050s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 01:56:56)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 01:56:56  name=P106B_Stage3bW_teacher_student_overlap
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_overlap_gate.py --self-test
+==============================================================================
+[PASS] A2 bounded queue/stop/content comparison; model/GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 01:56:57)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 01:56:57  name=P106B_Stage3bW_teacher_student_overlap
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_overlap_gate.py --check-only
+==============================================================================
+{"accum_limit": 16, "code_sha256": {"diag_p106b_overlap_gate.py": "14CE306B40B98D3AED1B6971215FDE8099EDB099FC728ECF16D0BBC85EFD50E1", "p106b_gate_runtime.py": "319459598EABD9075D5197E91B1A0B03E90B733C9F921A8F96D5CA9812BC4EC9", "p106b_multi_answer.py": "1F3161A4AFDE19888B3877A67734F48843E1DC651806C8F08E1331E1B55C9BAF", "p106b_pipeline.py": "E208D63BF739033F286B4F92288B6DA0BAF4A8C4BA18C1E0D97751B1B921BC1D"}, "exact_full_128_update": false, "formal_train_ready": false, "limit": "partial up-to16-row resource update per arm, no row refill; effective targets reported", "parent_sha256": "41036721CEAAE3EACA568BF45FA5079745EBAE85B42033D28ECC9709F5D00A71", "question_groups": 16, "server_sha256": "F0321669B20397593E3AC09972BF6F4B7A0684954906565353B7CA84B4B0320F", "source": {"job_deck_sha256": "0A1022269BBDDF3539E97D63894BD7DBA2EA3838FADA8AF26A4255643031232C", "paired_concepts": 5015, "policy": "public-only Stage2kWb; split before translation, unique concept per language, actual teacher input token admission", "rights_status": "CARD_ONLY", "source_families": ["aya_dataset", "oasst2"], "source_repos": {"aya": {"repo": "CohereLabs/aya_dataset", "revision": "f9ea04583f02a8f86404ff6c58bf75fe637df8a2"}, "oasst1": {"repo": "OpenAssistant/oasst1", "revision": "fdf72ae0827c1cda404aff25b6603abec9e3399b"}, "oasst2": {"repo": "OpenAssistant/oasst2", "revision": "179dd21fc55192153d94adb0e0ce8f69e222bf75", "source_sha256": "7A886A16CCFC1173C4F00A6897523E3C95B2785A86EE44A18A98F4F2807EE29B"}}, "train_jobs_sha256": "E8216C3573678B871D1A824DF2D5672DDD7F7EBEBC9CE3D25F1EA5A095D8232A"}, "student_micro": 8, "student_quality": "NOT_RUN", "teacher_model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "teacher_slots": 1, "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 01:56:59)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 01:56:59  name=P106B_Stage3bW_teacher_student_overlap
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_overlap_gate.py --execute
+==============================================================================
+[PIPELINE_ITEM] {"id": "a2_serial_00", "language": "ko", "rows": 0, "status": "INCOMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_01", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_02", "language": "ko", "rows": 0, "status": "INCOMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_03", "language": "en", "rows": 0, "status": "INCOMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_04", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_05", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_06", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_07", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_08", "language": "ko", "rows": 0, "status": "INCOMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_09", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_10", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_11", "language": "en", "rows": 0, "status": "INCOMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_12", "language": "ko", "rows": 0, "status": "INCOMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_13", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_14", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "a2_serial_15", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+W0930 02:04:17.337000 4018986 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[OVERLAP_SUMMARY] {"arms": [], "causal_speed_claim": false, "exit_code": 8, "identical_generated_text": false, "input": {"accum_limit": 16, "code_sha256": {"diag_p106b_overlap_gate.py": "14CE306B40B98D3AED1B6971215FDE8099EDB099FC728ECF16D0BBC85EFD50E1", "p106b_gate_runtime.py": "319459598EABD9075D5197E91B1A0B03E90B733C9F921A8F96D5CA9812BC4EC9", "p106b_multi_answer.py": "1F3161A4AFDE19888B3877A67734F48843E1DC651806C8F08E1331E1B55C9BAF", "p106b_pipeline.py": "E208D63BF739033F286B4F92288B6DA0BAF4A8C4BA18C1E0D97751B1B921BC1D"}, "exact_full_128_update": false, "formal_train_ready": false, "limit": "partial up-to16-row resource update per arm, no row refill; effective targets reported", "parent_sha256": "41036721CEAAE3EACA568BF45FA5079745EBAE85B42033D28ECC9709F5D00A71", "question_groups": 16, "server_sha256": "F0321669B20397593E3AC09972BF6F4B7A0684954906565353B7CA84B4B0320F", "source": {"job_deck_sha256": "0A1022269BBDDF3539E97D63894BD7DBA2EA3838FADA8AF26A4255643031232C", "paired_concepts": 5015, "policy": "public-only Stage2kWb; split before translation, unique concept per language, actual teacher input token admission", "rights_status": "CARD_ONLY", "source_families": ["aya_dataset", "oasst2"], "source_repos": {"aya": {"repo": "CohereLabs/aya_dataset", "revision": "f9ea04583f02a8f86404ff6c58bf75fe637df8a2"}, "oasst1": {"repo": "OpenAssistant/oasst1", "revision": "fdf72ae0827c1cda404aff25b6603abec9e3399b"}, "oasst2": {"repo": "OpenAssistant/oasst2", "revision": "179dd21fc55192153d94adb0e0ce8f69e222bf75", "source_sha256": "7A886A16CCFC1173C4F00A6897523E3C95B2785A86EE44A18A98F4F2807EE29B"}}, "train_jobs_sha256": "E8216C3573678B871D1A824DF2D5672DDD7F7EBEBC9CE3D25F1EA5A095D8232A"}, "student_micro": 8, "student_quality": "NOT_RUN", "teacher_model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "teacher_slots": 1, "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3"}, "limit": "fixed serial-first order/cold compile remain; functional gate only", "reason": "GateNegative: A2 fewer than6/8 question groups in either language", "schema": "P106B_OVERLAP_GATE_V1", "serial_over_overlap_wall_ratio": null, "status": "GATE_NEGATIVE", "wall_sec": 513.4383959240513}
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 8.9분  (2026-09-30 02:05:53)
+==============================================================================
