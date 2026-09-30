@@ -14,7 +14,7 @@ import threading
 import time
 from urllib.error import HTTPError
 
-from scripts.p106b_gate_runtime import ROOT, MODEL_SHA256, TOKENIZER, ToolFailure
+from scripts.p106b_gate_runtime import ROOT, MODEL_SHA256, TOKENIZER, ToolFailure, disposition
 from scripts.p106b_shards import ShardWriter, verify
 from scripts.p106b_teacher_format import teacher_prompt, parse_reply
 from scripts.p106b_teacher_wrapper import wrap_turns
@@ -27,6 +27,17 @@ def flush_row(writer):
     # Persistence precedes queue admission. No earlier version is rewritten.
     writer._file.flush()
     os.fsync(writer._file.fileno())
+
+
+def validate_job_contract(job):
+    """Validate code-owned provenance before paying for a teacher response."""
+    wrap_turns([{"user_text": "contract", "assistant_text": "contract"}],
+        source_id=job["source_id"], source_sha256=job["source_sha256"],
+        teacher_model_sha256=MODEL_SHA256, language=job["target_language"],
+        source_license=job["source_license"], generation_id="contract",
+        source_repo=job["source_repo"], source_revision=job["source_revision"],
+        source_object_id=job["source_id"], source_transform=job["source_transform"],
+        parent_concept_id=job["parent_concept_id"], source_rights_status=job["rights_status"])
 
 
 class CandidateWriter:
@@ -42,6 +53,7 @@ class CandidateWriter:
         self.seen = set()
 
     def request(self, session, job, ident, seed, *, count=1, per_slot=3072, maximum=2048):
+        validate_job_contract(job)
         messages = (teacher_prompt(job["teacher_task"], job["target_language"], job["source_payload"])
                     if count == 1 else multi_prompt(job, count))
         admission = session.count_prompt(messages, per_slot, maximum)
@@ -50,7 +62,7 @@ class CandidateWriter:
                   "seed": seed, "reasoning_effort": "low", "requested_answers": count}
         rows = []
         t0 = time.monotonic()
-        backend = None
+        backend, processing_error, processing_exception, reply = None, None, None, None
         if admission["decision"] != "DIRECT":
             record["screen_status"] = admission["decision"]
         else:
@@ -85,6 +97,13 @@ class CandidateWriter:
             except HTTPError as exc:
                 backend = capture_http_error(exc, session.key)
                 record.update(backend_error=backend, screen_status=backend["classification"])
+            except Exception as exc:
+                # A paid response must survive parser/wrapper errors as an immutable raw record.
+                processing_error = {"type": type(exc).__name__, "reason": str(exc)[:200]}
+                processing_exception = exc
+                record.update(teacher_raw_reply=reply, processing_error=processing_error,
+                              screen_status="PIPELINE_PROCESSING_ERROR")
+                rows = []
         record["wall_sec"] = round(time.monotonic() - t0, 6)
         with self.lock:
             fingerprints = [hashlib.sha256(json.dumps(row["messages"],
@@ -96,7 +115,8 @@ class CandidateWriter:
             flush_row(self.raw)
             self.raw_count += 1
             self.counts[record["screen_status"]] += 1
-            usage = record.get("teacher", {}).get("usage", {}) or {}
+            usage = (record.get("teacher", {}).get("usage", {})
+                     or (reply.get("usage", {}) if isinstance(reply, dict) else {}) or {})
             self.completion += usage.get("completion_tokens", 0) or 0
             self.request_sec += record["wall_sec"]
             if rows:
@@ -112,6 +132,11 @@ class CandidateWriter:
             "status": record["screen_status"], "rows": len(rows)}, sort_keys=True), flush=True)
         if backend and backend["classification"] != "PEG_NATIVE_MISMATCH":
             raise ToolFailure("unknown teacher backend error; raw body evidence retained")
+        if processing_error:
+            if disposition(processing_exception)[1] == 8:
+                raise processing_exception
+            raise ToolFailure("teacher response processing failed; raw reply retained: "
+                              + processing_error["type"] + ": " + processing_error["reason"])
         return rows
 
     def close(self):

@@ -1,0 +1,56 @@
+B parent baseline: exact chat32 dense14 300M checkpoint and native tokenizer/cache. Collect native full-val CE, up to4 real val-text continuations, 8 fixed bilingual questions with first attempt and up to3 attempts. No student training. Raw answers require human review; completion is technical, not intelligence PASS.
+
+==============================================================================
+[runlog] 2026-09-30 15:53:41  name=P106B_Stage3hW_chat32_parent_baseline
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_generate_chat_stops.py
+==============================================================================
+[PASS] opt-in single/multi-token ChatML stops; default path unchanged; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 15:53:42)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 15:53:42  name=P106B_Stage3hW_chat32_parent_baseline
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_education_followup.py --self-test
+==============================================================================
+[PASS] lineage-specific inputs/shared group split/answer attempts/correction screen; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 15:53:43)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 15:53:43  name=P106B_Stage3hW_chat32_parent_baseline
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_education_followup.py
+==============================================================================
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.003s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 15:53:44)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 15:53:44  name=P106B_Stage3hW_chat32_parent_baseline
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_education_followup.py --check-only --mode parent-b
+==============================================================================
+{"actual_pretrain_pool_tokens": 597995000, "code_sha256": "55720543E49844B83C1EED957C56242E24BC4A4860D15FDCD295E1D527607CA9", "formal_train_ready": false, "grad_max": 0.9492709636688232, "init_from": false, "limit": "native-token CE not comparable across A/B tokenizer; generation quality must be inspected", "metadata_sha256": "293F000D652B91645C534DAB0E5C20E30EBA9FC3FEEE66A2E69B2201AB55BFB8", "mix_token_frac": [0.34351264312487695, 0.656487356875123], "mode": "parent-b", "n_skip": 0, "native_val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C", "parent": "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt", "parent_sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950", "pool_shortfall_tokens": 2052616, "pretrain_best_sample_val": 3.54625, "pretrain_data": "ko-en: Korean Wikipedia + English FineWeb-Edu", "pretrain_final_sample_val": 3.6028125, "pretrain_steps": 2289, "pretrain_tokens": 300023808, "required_two_times_draw": 600047616, "runtime_contract": {"scripts/p106b_gate_runtime.py": "319459598EABD9075D5197E91B1A0B03E90B733C9F921A8F96D5CA9812BC4EC9", "scripts/p106b_multi_answer.py": "1F3161A4AFDE19888B3877A67734F48843E1DC651806C8F08E1331E1B55C9BAF", "scripts/p106b_pipeline.py": "E208D63BF739033F286B4F92288B6DA0BAF4A8C4BA18C1E0D97751B1B921BC1D", "scripts/p106b_repeat4_gate.py": "6AB042FDBE906A24ABF2779CD12ADB5B7DF7E5D9F36412C964F7CD6079E35188", "scripts/p106b_teacher_format.py": "337FE84524312E29F1E3A07F235A55F5893A1CBF08446520C493866826C8EF6D", "scripts/train_sft_p090.py": "CF01D75F21562D6195A6A620A483468CAC736A02B6AC2DB7EF70211E19670E34", "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"}, "schema": "P106B_EDUCATION_PREFLIGHT_V1"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 15:53:46)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 15:53:46  name=P106B_Stage3hW_chat32_parent_baseline
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_education_followup.py --execute --mode parent-b
+==============================================================================
+[BASELINE] loaded pinned B parent; measuring its native full validation and fixed Korean/English answers
+[EDUCATION_SUMMARY] {"schema": "P106B_PARENT_BASELINE_V1", "status": "BASELINE_COMPLETE", "input": {"schema": "P106B_EDUCATION_PREFLIGHT_V1", "mode": "parent-b", "code_sha256": "55720543E49844B83C1EED957C56242E24BC4A4860D15FDCD295E1D527607CA9", "runtime_contract": {"tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D", "scripts/train_sft_p090.py": "CF01D75F21562D6195A6A620A483468CAC736A02B6AC2DB7EF70211E19670E34", "scripts/p106b_pipeline.py": "E208D63BF739033F286B4F92288B6DA0BAF4A8C4BA18C1E0D97751B1B921BC1D", "scripts/p106b_gate_runtime.py": "319459598EABD9075D5197E91B1A0B03E90B733C9F921A8F96D5CA9812BC4EC9", "scripts/p106b_multi_answer.py": "1F3161A4AFDE19888B3877A67734F48843E1DC651806C8F08E1331E1B55C9BAF", "scripts/p106b_teacher_format.py": "337FE84524312E29F1E3A07F235A55F5893A1CBF08446520C493866826C8EF6D", "scripts/p106b_repeat4_gate.py": "6AB042FDBE906A24ABF2779CD12ADB5B7DF7E5D9F36412C964F7CD6079E35188"}, "formal_train_ready": false, "parent": "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt", "parent_sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950", "pretrain_data": "ko-en: Korean Wikipedia + English FineWeb-Edu", "pretrain_tokens": 300023808, "pretrain_steps": 2289, "mix_token_frac": [0.34351264312487695, 0.656487356875123], "init_from": false, "pretrain_final_sample_val": 3.6028125, "pretrain_best_sample_val": 3.54625, "grad_max": 0.9492709636688232, "n_skip": 0, "actual_pretrain_pool_tokens": 597995000, "required_two_times_draw": 600047616, "pool_shortfall_tokens": 2052616, "native_val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C", "metadata_sha256": "293F000D652B91645C534DAB0E5C20E30EBA9FC3FEEE66A2E69B2201AB55BFB8", "limit": "native-token CE not comparable across A/B tokenizer; generation quality must be inspected"}, "native_full_val_ce": 3.5904176272578847, "native_val_crops": 2934, "native_val_tokens": 3004416, "answers": {"first_attempt_pass": 0, "pass_within_three": 0, "questions": 8, "actual_attempts": 24, "raw_concat_sha256": "2768847930D860A0E5EF240F1B80BDC98F2F5C97E49A8489B746B79E5DF150D1", "limit": "narrow rubric and conditional retry upper bound; human semantics separately reviewed"}, "native_text_probes": {"selected_native_crops": {"ko": [0, 2], "en": [4, 5]}, "rows": 4, "concat_sha256": "CC70E621A1C80F617DBF13C17CB0D1FF791DB132D6E2FD5E39FE2B712FD44D1F", "language_status": {"ko": "OBSERVED", "en": "OBSERVED"}, "limit": "script-ratio heuristic and up to4 fixed prefixes; not whole-corpus quality"}, "parent_quality": "MANUAL_RAW_REVIEW_REQUIRED", "limit": "technical baseline complete even if answer rubric fails; no trained-SFT claim", "whole_wall_sec": 60.30207775498275}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.1분  (2026-09-30 15:54:51)
+==============================================================================

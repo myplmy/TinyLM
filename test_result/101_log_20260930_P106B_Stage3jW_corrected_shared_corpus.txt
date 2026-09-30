@@ -1,0 +1,45 @@
+Prepare corrected common raw corpus after C gate. Keep parent concepts, translated variants and normalized questions together in train/val. Encode each split with its own A/B tokenizer; record actual conversation and assistant tokens. New v29 shards only; no model or GPU.
+
+==============================================================================
+[runlog] 2026-09-30 15:58:28  name=P106B_Stage3jW_corrected_shared_corpus
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_generate_chat_stops.py
+==============================================================================
+[PASS] opt-in single/multi-token ChatML stops; default path unchanged; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 15:58:29)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 15:58:29  name=P106B_Stage3jW_corrected_shared_corpus
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_education_followup.py --self-test
+==============================================================================
+[PASS] lineage-specific inputs/shared group split/answer attempts/correction screen; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 15:58:30)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 15:58:30  name=P106B_Stage3jW_corrected_shared_corpus
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_education_followup.py
+==============================================================================
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.004s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 15:58:30)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 15:58:30  name=P106B_Stage3jW_corrected_shared_corpus
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_education_followup.py --check-only --mode prepare
+==============================================================================
+[GATE_NEGATIVE] PrerequisiteHold: required report absent/linked: report.json
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 0.0분  (2026-09-30 15:58:31)
+==============================================================================

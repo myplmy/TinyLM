@@ -4,6 +4,8 @@
 
 ## 1. 왜
 
+> 2026-09-30 부모사후평가 [결과101 §34](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): 같은 B부모의nativefull-val3.590418/2,934crop, 고정8질문×3시도24답에서요구답+형식0/8, 실제텍스트4prefix에서도반복을직접관측했다. 정확한train597.995M/val3.005M 캐시의ChatML 시작/종료ID3/4는전수0회여서어휘예약과대화경계학습은다르다. SFT/대화능력확보로승격하지않으며사용자선택에따른 C교정→B/A교육은 P106B 새복구단계에서진행한다. 이번C는모델교육전에코드enum/경로결함으로실패해두학생학습0이다.
+
 [tinylm/chat](../tinylm/chat/serialize.py)의 canonical ChatML 양식과 [assistant-only loader](../tinylm/data/sft.py)는 있다. 기존 32k 어휘의 `<|im_start|>`·`<|im_end|>` 단일 ID는 없고, 2026-09-25 별도 chat32 파일과 새 300M 부모가 생성됐다([결과096 §9](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)). 새 tokenizer를 옛 checkpoint에 끼우는 것은 여전히 무효이며 SFT trainer의 실제 A/B/C 연결·품질은 미실행이다.
 
 ## 2. 질문

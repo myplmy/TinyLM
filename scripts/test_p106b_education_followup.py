@@ -11,9 +11,136 @@ from scripts import p106b_education_followup as edu
 from scripts.p106b_gate_runtime import PrerequisiteHold
 from scripts.p106b_shards import ShardWriter
 from tinylm.chat.canonical import normalize
+from tinylm.data.prepare import SyntheticTokenizer
+from scripts import p106b_pipeline as pipeline
 
 
 class Tests(unittest.TestCase):
+    @staticmethod
+    def correction_fixture_rows():
+        rows = [normalize({"messages": [{"role": "user", "content": f"질문{i}"},
+                     {"role": "assistant", "content": f"답변{i}"}],
+             "meta": {"source": "fixture", "source_id": f"fixture:{i}", "generation_id": f"old{i}",
+                      "language": "ko", "parent_concept_id": f"{i:064X}",
+                      "source_repo": "fixture/public", "source_revision": "fixture-revision",
+                      "source_license": "fixture-only"}}) for i in range(12)] + [normalize({
+             "messages": [{"role": "user", "content": f"Question{i}"}, {"role": "assistant", "content": f"Answer{i}"}],
+             "meta": {"source": "fixture", "source_id": f"fixture:en{i}", "generation_id": f"old_en{i}",
+                      "language": "en", "parent_concept_id": f"{i:064X}",
+                      "source_repo": "fixture/public", "source_revision": "fixture-revision",
+                      "source_license": "fixture-only"}}) for i in range(12)]
+        # Preserve concept/question identity across real two-answer variants.
+        for index in (0, 1, 12, 13):
+            variant = json.loads(json.dumps(rows[index]))
+            variant["meta"]["generation_id"] += "_a2"
+            variant["messages"][1]["content"][0]["text"] += " variant2"
+            rows.append(variant)
+        return rows
+
+    def test_real_correction_to_canonical_roundtrip(self):
+        class FakeTeacher:
+            key = "fixture"
+            def __init__(self, *_args):
+                pass
+            def __enter__(self):
+                return self
+            def __exit__(self, *_args):
+                pass
+            def count_prompt(self, *_args):
+                return {"decision": "DIRECT"}
+            def complete(self, messages, seed, _maximum):
+                ko = "Korean" in messages[0]["content"]
+                q, a = (f"질문{seed}", f"답변{seed}") if ko else (f"Question{seed}", f"Answer{seed}")
+                if "[[ANSWER_2]]" in messages[0]["content"]:
+                    final = f"[[QUESTION]]\n{q}\n[[/QUESTION]]\n[[ANSWER_1]]\n{a}\n[[/ANSWER_1]]\n[[ANSWER_2]]\n{a} variant2\n[[/ANSWER_2]]"
+                else:
+                    final = f"[[QUESTION]]\n{q}\n[[/QUESTION]]\n[[ANSWER]]\n{a}\n[[/ANSWER]]"
+                return {"choices": [{"finish_reason": "stop", "message": {"content": final,
+                        "reasoning_content": "SIDE_CAR_ONLY"}}], "usage": {"completion_tokens": 20}}
+            def check_monitor(self):
+                pass
+            def require_valid_resources(self):
+                pass
+            def evidence(self):
+                return {"fixture": "CPU_ONLY"}
+        with tempfile.TemporaryDirectory(prefix="p106b_actual_C_fixture_") as directory:
+            root = Path(directory)
+            target = root / "correction"
+            target.mkdir()
+            contract = edu.runtime_contract()
+            info = {"code_sha256": edu.sha256_file(Path(edu.__file__)), "runtime_contract": contract}
+            with patch.object(edu, "ROOT", root), patch.object(edu, "BASE", root), \
+                 patch.object(edu, "runtime_contract", return_value=contract), \
+                 patch.object(edu, "arm_inputs", side_effect=lambda arm: edu.ARMS[arm]), \
+                 patch.object(pipeline, "ROOT", root), \
+                 patch.object(edu, "TeacherSession", FakeTeacher), \
+                 patch.object(edu, "original_rows", return_value=self.correction_fixture_rows()), \
+                 patch("tokenizers.Tokenizer.from_file", return_value=SyntheticTokenizer()):
+                report = edu.correct(target, info)
+                self.assertEqual(report["status"], "CORRECTION_FORMAT_PASSED")
+                rows = edu.read_rows(target, "selected", report["selected_concat_sha256"])
+                self.assertEqual(len(rows), 28)
+                self.assertTrue(all(r["meta"]["source_transform"] == "teacher_repair" for r in rows))
+                self.assertTrue(all("SIDE_CAR_ONLY" not in json.dumps(r["messages"]) for r in rows))
+                # The actual downstream consumer must find that same correction directory.
+                _train, _val, preview = edu.prepare_preview()
+                self.assertEqual(preview["source_concat_sha256"], report["selected_concat_sha256"])
+                self.assertEqual(len(_train)+len(_val), 28)
+
+    def test_small_pilot_contains_all_four_profiles(self):
+        plans = edu.correction_plan(self.correction_fixture_rows(), pilot=True)
+        self.assertEqual(len(plans), 4)
+        self.assertEqual({(g[0]["meta"]["language"], 2 if len(g)>1 else 1) for _i,g in plans},
+                         {("ko",1),("ko",2),("en",1),("en",2)})
+
+    def test_correction_producer_and_consumer_directory_agree(self):
+        self.assertEqual(edu.stage_directory("correct"), edu.BASE / "correction")
+        self.assertEqual(edu.stage_directory("train-a"), edu.BASE / "a")
+
+    def test_invalid_provenance_is_rejected_before_teacher_call(self):
+        job = edu.build_correction_job([self.correction_fixture_rows()[0]])
+        job["source_transform"] = "C_correction_v28"
+        with self.assertRaisesRegex(ValueError, "unknown source transformation"):
+            pipeline.validate_job_contract(job)
+
+    def test_paid_reply_survives_wrapper_error(self):
+        from scripts.p106b_teacher_wrapper import wrap_turns as real_wrap
+        from scripts.p106b_gate_runtime import ToolFailure
+        job = edu.build_correction_job([self.correction_fixture_rows()[0]])
+        class Session:
+            key = "fixture"
+            calls = 0
+            def count_prompt(self, *_args):
+                return {"decision": "DIRECT"}
+            def complete(self, *_args):
+                self.calls += 1
+                return {"choices": [{"finish_reason": "stop", "message": {"content":
+                    "[[QUESTION]]\n질문\n[[/QUESTION]]\n[[ANSWER]]\n답변\n[[/ANSWER]]",
+                    "reasoning_content": "RETAIN_RAW_ONLY"}}], "usage": {"completion_tokens": 7}}
+        calls = []
+        def wrap_then_fail(*args, **kwargs):
+            calls.append(1)
+            if len(calls) == 1:  # Pre-request contract validates normally.
+                return real_wrap(*args, **kwargs)
+            raise ValueError("injected post-response wrapper failure")
+        with tempfile.TemporaryDirectory(prefix="p106b_raw_failure_fixture_") as directory:
+            root = Path(directory)
+            with patch.object(pipeline, "ROOT", root), \
+                 patch("tokenizers.Tokenizer.from_file", return_value=SyntheticTokenizer()), \
+                 patch.object(pipeline, "wrap_turns", side_effect=wrap_then_fail):
+                writer = pipeline.CandidateWriter(root, {"fixture": True})
+                session = Session()
+                with self.assertRaises(ToolFailure):
+                    writer.request(session, job, "failure1", 1)
+                report = writer.close()
+                self.assertEqual(session.calls, 1)
+                self.assertEqual(report["raw_rows"], 1)
+                self.assertEqual(report["canonical_rows"], 0)
+                self.assertEqual(report["teacher_completion_tokens"], 7)
+                raw = json.loads((root/"raw_000000.jsonl").read_text(encoding="utf-8"))
+                self.assertEqual(raw["screen_status"], "PIPELINE_PROCESSING_ERROR")
+                self.assertIn("RETAIN_RAW_ONLY", json.dumps(raw["teacher_raw_reply"]))
+
     def test_failed_upstream_is_not_accepted_as_complete(self):
         with tempfile.TemporaryDirectory(prefix="p106b_edu_fixture_") as directory:
             root = Path(directory)
@@ -56,6 +183,25 @@ class Tests(unittest.TestCase):
         self.assertFalse(edu.score_answer("arithmetic_en", "3 or 4"))
         self.assertFalse(edu.score_answer("format_en", '{"result":5,"extra":1}'))
         self.assertTrue(edu.score_answer("format_en", '{"result":5}'))
+
+    def test_resource_negative_keeps_exit8_and_raw_record(self):
+        from scripts.p106b_gate_runtime import GateNegative, disposition
+        job = edu.build_correction_job([self.correction_fixture_rows()[0]])
+        class Session:
+            key = "fixture"
+            def count_prompt(self, *_args):
+                return {"decision": "DIRECT"}
+            def complete(self, *_args):
+                raise GateNegative("fixture resource margin")
+        with tempfile.TemporaryDirectory(prefix="p106b_resource_fixture_") as directory:
+            root = Path(directory)
+            with patch.object(pipeline, "ROOT", root), \
+                 patch("tokenizers.Tokenizer.from_file", return_value=SyntheticTokenizer()):
+                writer = pipeline.CandidateWriter(root, {})
+                with self.assertRaises(GateNegative) as caught:
+                    writer.request(Session(), job, "resource1", 1)
+                self.assertEqual(disposition(caught.exception)[1], 8)
+                self.assertEqual(writer.close()["raw_rows"], 1)
 
 
 if __name__ == "__main__":

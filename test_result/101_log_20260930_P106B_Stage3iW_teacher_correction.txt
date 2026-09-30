@@ -1,0 +1,57 @@
+C correction: require B baseline artifact. Revisit v28 original question groups with pinned one-slot Bonsai thinking sampler, at most3 attempts. Code wraps tagged content; preserve original v28, raw attempts, correction-of IDs and selected candidates. Require at least75 percent groups per language and both tokenizer length contracts; pseudo labels remain unverified. Hard2h; no student training.
+
+==============================================================================
+[runlog] 2026-09-30 15:55:08  name=P106B_Stage3iW_teacher_correction
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_generate_chat_stops.py
+==============================================================================
+[PASS] opt-in single/multi-token ChatML stops; default path unchanged; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 15:55:09)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 15:55:09  name=P106B_Stage3iW_teacher_correction
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_education_followup.py --self-test
+==============================================================================
+[PASS] lineage-specific inputs/shared group split/answer attempts/correction screen; GPU NOT_RUN
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 15:55:10)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 15:55:10  name=P106B_Stage3iW_teacher_correction
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_education_followup.py
+==============================================================================
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.003s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 15:55:11)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 15:55:11  name=P106B_Stage3iW_teacher_correction
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_education_followup.py --check-only --mode correct
+==============================================================================
+{"code_sha256": "55720543E49844B83C1EED957C56242E24BC4A4860D15FDCD295E1D527607CA9", "context": 6144, "formal_train_ready": false, "groups_per_language": {"en": 48, "ko": 48}, "max_output": 4096, "maximum_attempts_per_group": 3, "mode": "correct", "runtime_contract": {"scripts/p106b_gate_runtime.py": "319459598EABD9075D5197E91B1A0B03E90B733C9F921A8F96D5CA9812BC4EC9", "scripts/p106b_multi_answer.py": "1F3161A4AFDE19888B3877A67734F48843E1DC651806C8F08E1331E1B55C9BAF", "scripts/p106b_pipeline.py": "E208D63BF739033F286B4F92288B6DA0BAF4A8C4BA18C1E0D97751B1B921BC1D", "scripts/p106b_repeat4_gate.py": "6AB042FDBE906A24ABF2779CD12ADB5B7DF7E5D9F36412C964F7CD6079E35188", "scripts/p106b_teacher_format.py": "337FE84524312E29F1E3A07F235A55F5893A1CBF08446520C493866826C8EF6D", "scripts/train_sft_p090.py": "CF01D75F21562D6195A6A620A483468CAC736A02B6AC2DB7EF70211E19670E34", "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"}, "schema": "P106B_EDUCATION_PREFLIGHT_V1", "server_sha256": "F0321669B20397593E3AC09972BF6F4B7A0684954906565353B7CA84B4B0320F", "source_groups": 96, "source_manifest_sha256": "CBC350C7AEA4C6F8F46904207F5EF517D9A11395EB4C67E16A32ECD5201023A5", "teacher_model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "teacher_sampler": {"min_p": 0.05, "presence_penalty": 0.0, "reasoning_effort": "low", "repeat_penalty": 1.0, "stream": false, "temperature": 1.0, "top_k": 20, "top_p": 0.95}, "teacher_truth": "PSEUDO_UNVERIFIED"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 15:55:12)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 15:55:12  name=P106B_Stage3iW_teacher_correction
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_education_followup.py --execute --mode correct
+==============================================================================
+[PIPELINE_ITEM] {"id": "C_000_try1", "language": "ko", "rows": 0, "status": "INCOMPLETE"}
+[PIPELINE_ITEM] {"id": "C_000_try2", "language": "ko", "rows": 0, "status": "INCOMPLETE"}
+[TOOL_FAILURE] ValueError: unknown source transformation
+------------------------------------------------------------------------------
+[runlog] 종료코드 9  소요 3.0분  (2026-09-30 15:58:11)
+==============================================================================

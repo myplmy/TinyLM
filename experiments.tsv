@@ -28,13 +28,13 @@
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
+1	P106B	run_P106B_Stage3iWb_correction_wire_pilot.sh	D	0.3	Y	Y	기존B부모 기준선SHA 유지·한영single/multi4프로필 C래퍼 복구, 최대3시도·소형연결0은품질아님	8
+2	P106B	run_P106B_Stage3iWc_teacher_correction_recovery.sh	D	2	Y	Y	소형C성공후96질문군전체교정, v30/correction 단일주소·teacher_repair·유료응답예외raw보존	8
+3	P106B	run_P106B_Stage3jWb_corrected_shared_corpus_recovery.sh	N	0.1	N	Y	새C v30/selected commonSHA·concept/질문split·양어휘 mask/token·exactprobe겹침0	8
+4	P106B	run_P106B_Stage3kWb_chat32_corrected_repeat4_recovery.sh	Y	0.75	Y	Y	공통v30자료 Bchat32 14층dense 자기parent4epoch·신태그recovery·first/within3·nativeval전후	8
+5	P106B	run_P106B_Stage3lWb_legacy_corrected_repeat4_recovery.sh	Y	0.75	Y	Y	같은v30원문 Alegacy20층tied 자기parent4epoch대조·새recovery태그·B실패와독립	8
+6	P106B	run_P106B_Stage3mWb_corrected_lineage_pair_recovery.sh	N	0.1	N	Y	v30두학생원답/child/commonrawSHA연결·first와within3 분리·교차tokenCE순위금지	8
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
-1	P106B	run_P106B_Stage3hW_chat32_parent_baseline.sh	D	0.75	Y	Y	chat32 14층dense 부모 exactSHA·자체native fullval/한영실제텍스트·8고정질문 first/최대3시도. 학습0, 답안사람검토·CE토크나이저교차비교금지; hard2h	8
-2	P106B	run_P106B_Stage3iW_teacher_correction.sh	D	2.0	Y	Y	B 부모 baseline기술report 후 v28 원질문군 C교정·1교사1slot·최대3회·원본/교정/변경사유보존·각언어75퍼센트+양어휘context기능gate; 진실성UNVERIFIED, hard2h	8
-3	P106B	run_P106B_Stage3jW_corrected_shared_corpus.sh	N	0.1	N	N	C 성공후 공통corrected raw concept/질문 split·A/B 각각mask/token예산 기록. 부모/GPU0	8
-4	P106B	run_P106B_Stage3kW_chat32_corrected_repeat4.sh	Y	0.75	Y	Y	공통교정자료 B14층chat32 기존부모 exact4epoch·MuonRMS4 LR1e-4·micro8/accum16상한/ckptON·새child/자체val망각/first와최대3시도답안; hard2h	8
-5	P106B	run_P106B_Stage3lW_legacy_corrected_repeat4.sh	Y	0.75	Y	Y	동일교정원문 A20층legacy P076부모4epoch 대조·같은학습설정/자기cache·새child/first와최대3시도답안. B구조/어휘/pretrain교락·chat32단독효과주장금지; hard2h	8
-6	P106B	run_P106B_Stage3mW_corrected_lineage_pair.sh	N	0.1	N	N	A/B 공통자료SHA·각childSHA·8문항raw와first/within3·자체loss전후 연결. GPU0·교차어휘CE비교금지	8
 # HOLD 2026-09-30 P106B: run_P106B_Stage2iWh_online5_public_low-hold.sh. 사용자 요청대로 미실행 low5를 보존하되 현재 우선순위·큐에서 제외; 재활성화는 새 지시/새 단계가 필요하다.
 # HOLD 2026-09-30 P106B: run_P106B_Stage2iWf_online5_public_medium-hold.sh. 기존 medium 자원·품질 미판정 보류를 유지하고 큐/직접 실험 시작을 차단한다.
 # DONE 2026-09-28 P106B Stage1gW: 결함8행 13요청·lint7/8<문턱8/8 exit8, v5 직접 감사 명백 오류5/추가검토2/잠정1, 학생학습0; 결과101 §11.
@@ -585,6 +585,15 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #
 # ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
 #   1	P106B	run_P106B_Stage3fWb_integrated_a2_one_slot.sh	Y	1.5	Y	Y	사용자C안: A1 두슬롯음성 보존·A2b 단일슬롯겹침 기능PASS에 B2/B4형식·C4안전만 연결. 공개보존64+신규64 정확128행/16micro·optimizer1·교사최대3회라벨재시도·v28원형보존·checkpoint0; hard2h, 답품질/인과속도판정0	8
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P106B	run_P106B_Stage3hW_chat32_parent_baseline.sh	D	0.75	Y	Y	chat32 14층dense 부모 exactSHA·자체native fullval/한영실제텍스트·8고정질문 first/최대3시도. 학습0, 답안사람검토·CE토크나이저교차비교금지; hard2h	8
+#   2	P106B	run_P106B_Stage3iW_teacher_correction.sh	D	2.0	Y	Y	B 부모 baseline기술report 후 v28 원질문군 C교정·1교사1slot·최대3회·원본/교정/변경사유보존·각언어75퍼센트+양어휘context기능gate; 진실성UNVERIFIED, hard2h	8
+#   3	P106B	run_P106B_Stage3jW_corrected_shared_corpus.sh	N	0.1	N	N	C 성공후 공통corrected raw concept/질문 split·A/B 각각mask/token예산 기록. 부모/GPU0	8
+#   4	P106B	run_P106B_Stage3kW_chat32_corrected_repeat4.sh	Y	0.75	Y	Y	공통교정자료 B14층chat32 기존부모 exact4epoch·MuonRMS4 LR1e-4·micro8/accum16상한/ckptON·새child/자체val망각/first와최대3시도답안; hard2h	8
+#   5	P106B	run_P106B_Stage3lW_legacy_corrected_repeat4.sh	Y	0.75	Y	Y	동일교정원문 A20층legacy P076부모4epoch 대조·같은학습설정/자기cache·새child/first와최대3시도답안. B구조/어휘/pretrain교락·chat32단독효과주장금지; hard2h	8
+#   6	P106B	run_P106B_Stage3mW_corrected_lineage_pair.sh	N	0.1	N	N	A/B 공통자료SHA·각childSHA·8문항raw와first/within3·자체loss전후 연결. GPU0·교차어휘CE비교금지	8
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)

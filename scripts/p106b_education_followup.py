@@ -6,6 +6,7 @@ Correction remains PSEUDO_UNVERIFIED. Each lineage uses its own tokenizer/cache.
 """
 from __future__ import annotations
 import argparse
+import ast
 from collections import Counter
 import gc
 import hashlib
@@ -25,7 +26,7 @@ from scripts.diag_p106_bonsai_assets import regular, sha256_file
 from scripts.p106b_gate_runtime import (TeacherSession, GateNegative, PrerequisiteHold,
     ToolFailure, idle_before_gpu, new_directory, wall_limit, write_report, disposition,
     THINKING_SAMPLER, teacher_inputs)
-from scripts.p106b_pipeline import CandidateWriter
+from scripts.p106b_pipeline import CandidateWriter, validate_job_contract
 from scripts.p106b_shards import ShardWriter, verify
 from scripts.p106b_repeat4_gate import group_split, PROBES
 from scripts.train_sft_p090 import (encode_records, micro_groups, loss_sum, evaluate,
@@ -34,22 +35,32 @@ from tinylm.data.sft import conversation_split_key
 
 V28 = ROOT / "HF/sft_ready/p106b_teacher_sft/v28_integrated_a2_one_slot_low"
 V28_SHA = "CBC350C7AEA4C6F8F46904207F5EF517D9A11395EB4C67E16A32ECD5201023A5"
-BASE = ROOT / "HF/sft_ready/p106b_teacher_sft/v29_corrected_lineage_pilot"
+OLD_BASE = ROOT / "HF/sft_ready/p106b_teacher_sft/v29_corrected_lineage_pilot"
+BASE = ROOT / "HF/sft_ready/p106b_teacher_sft/v30_correction_recovery_lineage_pilot"
+BASELINE_SHA = "38E1EB39FF0D14F7E8BCDB4C9614553A5CBBE93EDA2E2353E0FB7690F8C7F399"
+BASELINE_FUNCTIONS = {"answers":"461A2E397562638006858E66FBF59711099EE645D1647044B789D8477463FA60","load_student":"D7189B898807091903B18AFCE143BB77C9A0179EFCB60DA65D7CEBCC8EC01F7B","native_text_probes":"6C44C41BF1DFDE9C030322623BE236F2DCF30543DB326AA639BB1714F3D499C6","parent_baseline":"B1A6632CB3CDC353E88D5692278679C516CDA192636AB11A611477F94A92A663","parent_baseline_check":"CE90569B9F88D3264F95ABF29279BED660B40466083C63690571B2EA048CCC49","score_answer":"05FC71EFEFF0AF25872C6D185EF5D0E77B9804E3ECB75FE712D57477183ED475"}
 ARMS = {
     "a": {"parent": "runs/ckpt/m100R1c_ko-en_300M_p076_b3_ag2_mean_s1337.pt",
           "sha": "41036721CEAAE3EACA568BF45FA5079745EBAE85B42033D28ECC9709F5D00A71",
           "tokenizer": "data_cache/tok-ko-en-32768.json",
           "tok_sha": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3",
           "lineage": "legacy", "cache": "data_cache/ko-en_600000000", "layers": 20,
-          "tied": True, "stem": "m100R1c_ko-en_300M_p106b_s3l_corrected_a_s1337"},
+          "tied": True, "stem": "m100R1c_ko-en_300M_p106b_s3l_recovery_a_s1337"},
     "b": {"parent": "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt",
           "sha": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
           "tokenizer": "data_cache/tok-ko-en-32768-chat32.json",
           "tok_sha": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
           "lineage": "chat32", "cache": "data_cache/ko-en_601000000_chat32", "layers": 14,
-          "tied": False, "stem": "m100s10_ko-en_300M_p106b_s3k_corrected_chat32_s1337"},
+          "tied": False, "stem": "m100s10_ko-en_300M_p106b_s3k_recovery_chat32_s1337"},
 }
-MODES = ("parent-b", "correct", "prepare", "train-b", "train-a", "compare")
+MODES = ("parent-b", "correct-pilot", "correct", "prepare", "train-b", "train-a", "compare")
+
+
+def stage_directory(mode):
+    names = {"parent-b": "parent-b", "correct-pilot": "correction-pilot",
+             "correct": "correction", "prepare": "prepare",
+             "train-a": "a", "train-b": "b", "compare": "compare"}
+    return BASE / names[mode]
 
 
 def sha_text(text):
@@ -58,7 +69,7 @@ def sha_text(text):
 
 def read_report(path, schema, status=None):
     if not regular(path):
-        raise PrerequisiteHold(f"required report absent/linked: {path.name}")
+        raise PrerequisiteHold(f"required report absent/linked: {path}")
     if (path.parent / "failure.json").exists():
         raise PrerequisiteHold(f"upstream failure journal present: {path.parent.name}")
     report = json.loads(path.read_text(encoding="utf-8"))
@@ -133,6 +144,65 @@ def correction_groups(rows):
     return list(grouped.values())
 
 
+def correction_plan(rows, pilot=False):
+    plans = list(enumerate(correction_groups(rows)))
+    if not pilot:
+        return plans
+    picked = {}
+    for index, group in plans:
+        profile = (group[0]["meta"]["language"], 2 if len(group) > 1 else 1)
+        picked.setdefault(profile, (index, group))
+    expected = {("ko", 1), ("en", 1), ("ko", 2), ("en", 2)}
+    if set(picked) != expected:
+        raise PrerequisiteHold("pilot lacks one-answer/two-answer Korean/English profiles")
+    return [picked[profile] for profile in (("ko", 1), ("en", 1), ("ko", 2), ("en", 2))]
+
+
+def build_correction_job(group):
+    row, meta = group[0], group[0]["meta"]
+    job = {"teacher_task": "repair", "target_language": meta["language"],
+        "source_payload": {"question": text_content(row["messages"][0]),
+            "answer": text_content(row["messages"][1]),
+            "answer_variants": [text_content(r["messages"][1]) for r in group],
+            "defects": ["Remove unintended Japanese/script mixing and malformed words.",
+                "Use natural target-language phrasing; preserve supported numbers and constraints.",
+                "When context or facts are insufficient, ask for clarification or state uncertainty; do not invent a diagnosis, source or fact."]},
+        "source_id": meta["source_id"], "source_sha256": sha_text(json.dumps(group, sort_keys=True, ensure_ascii=False)),
+        "source_license": meta.get("source_license", "SOURCE_METADATA_ONLY"),
+        "source_repo": meta.get("source_repo", "public_v28"), "source_revision": meta.get("source_revision", "v28"),
+        "source_transform": "teacher_repair", "parent_concept_id": meta["parent_concept_id"],
+        "rights_status": "CARD_ONLY", "split": "train"}
+    validate_job_contract(job)
+    return job
+
+
+def baseline_evidence():
+    """Reuse the observed B assessment, without promoting changed C code to E2E PASS."""
+    path = OLD_BASE / "parent-b/report.json"
+    if not regular(path) or sha256_file(path) != BASELINE_SHA:
+        raise PrerequisiteHold("exact observed B baseline absent/changed")
+    report = read_report(path, "P106B_PARENT_BASELINE_V1", "BASELINE_COMPLETE")
+    current = parent_baseline_check()
+    for key in ("parent_sha256", "native_val_sha256", "metadata_sha256"):
+        if report["input"].get(key) != current[key]:
+            raise PrerequisiteHold("B baseline input identity changed: " + key)
+    tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
+    actual = {node.name: sha_text(ast.dump(node, include_attributes=False)) for node in tree.body
+              if isinstance(node, ast.FunctionDef) and node.name in BASELINE_FUNCTIONS}
+    if actual != BASELINE_FUNCTIONS:
+        raise PrerequisiteHold("baseline evaluation functions changed; old assessment cannot be relabeled")
+    old_runtime = report["input"]["runtime_contract"]
+    for name in ("tinylm/infer/generate.py", "scripts/train_sft_p090.py", "scripts/p106b_repeat4_gate.py"):
+        if sha256_file(ROOT / name) != old_runtime[name]:
+            raise PrerequisiteHold("baseline evaluation helper changed: " + name)
+    for stem, summary in (("answers_parent", report["answers"]), ("native_text_parent", report["native_text_probes"])):
+        read_rows(path.parent, stem, summary.get("raw_concat_sha256", summary.get("concat_sha256")))
+    return {"path": path.relative_to(ROOT).as_posix(), "sha256": BASELINE_SHA,
+        "recorded_commit": "20cef06", "observed_first_pass": report["answers"]["first_attempt_pass"],
+        "observed_within3_pass": report["answers"]["pass_within_three"],
+        "scope": "existing observed parent evidence only; recovery pipeline GPU NOT_RUN"}
+
+
 def content_screen(rows):
     for row in rows:
         if row["meta"]["language"] == "ko":
@@ -175,7 +245,7 @@ def parent_baseline_check():
 
 
 def prepare_preview():
-    directory = BASE / "correction"
+    directory = stage_directory("correct")
     report = read_report(directory / "report.json", "P106B_CORRECTION_V1", "CORRECTION_FORMAT_PASSED")
     require_current_stage(report)
     rows = read_rows(directory, "selected", report["selected_concat_sha256"])
@@ -204,21 +274,29 @@ def prepare_preview():
 
 
 def check(mode):
-    target = BASE / mode.replace("train-", "")
+    target = stage_directory(mode)
     new_directory(target)
     info = {"schema": "P106B_EDUCATION_PREFLIGHT_V1", "mode": mode,
             "code_sha256": sha256_file(Path(__file__)), "runtime_contract": runtime_contract(),
             "formal_train_ready": False}
     if mode == "parent-b":
         info.update(parent_baseline_check())
-    elif mode == "correct":
-        prior = read_report(BASE / "parent-b/report.json", "P106B_PARENT_BASELINE_V1", "BASELINE_COMPLETE")
-        require_current_stage(prior)
-        if prior["input"]["parent_sha256"] != ARMS["b"]["sha"]:
-            raise PrerequisiteHold("B baseline parent differs")
-        groups = correction_groups(original_rows())
+    elif mode in ("correct-pilot", "correct"):
+        info["baseline_evidence"] = baseline_evidence()
+        if mode == "correct":
+            pilot = read_report(stage_directory("correct-pilot") / "report.json",
+                "P106B_CORRECTION_V1", "CORRECTION_FORMAT_PASSED")
+            require_current_stage(pilot)
+            if pilot["input"].get("mode") != "correct-pilot" or pilot["input"].get("source_groups") != 4:
+                raise PrerequisiteHold("four-profile recovery pilot not observed complete")
+            info["pilot_report_sha256"] = sha256_file(stage_directory("correct-pilot") / "report.json")
+        plans = correction_plan(original_rows(), pilot=mode == "correct-pilot")
+        groups = [group for _index, group in plans]
+        for group in groups:
+            build_correction_job(group)  # Actual canonical provenance checks, no teacher/model.
         counts = Counter(g[0]["meta"]["language"] for g in groups)
         info.update(source_manifest_sha256=V28_SHA, source_groups=len(groups),
+                    source_group_indices=[index for index, _group in plans],
                     groups_per_language=dict(counts), maximum_attempts_per_group=3,
                     teacher_truth="PSEUDO_UNVERIFIED", max_output=4096, context=6144)
         info.update(teacher_inputs(), teacher_sampler={**THINKING_SAMPLER, "reasoning_effort": "low"})
@@ -228,10 +306,10 @@ def check(mode):
     elif mode.startswith("train-"):
         arm = mode[-1]
         spec = arm_inputs(arm)
-        corpus = read_report(BASE / "prepare/report.json", "P106B_SHARED_CORPUS_V1", "CORPUS_READY")
+        corpus = read_report(stage_directory("prepare") / "report.json", "P106B_SHARED_CORPUS_V1", "CORPUS_READY")
         require_current_stage(corpus)
         for stem in ("train", "val"):
-            read_rows(BASE / "prepare", stem, corpus[stem + "_concat_sha256"])
+            read_rows(stage_directory("prepare"), stem, corpus[stem + "_concat_sha256"])
         for suffix in (".pt",):
             if (ROOT / "runs/ckpt" / (spec["stem"] + suffix)).exists():
                 raise FileExistsError("new student output checkpoint exists")
@@ -244,11 +322,11 @@ def check(mode):
             if not regular(ROOT / spec["cache"] / name):
                 raise PrerequisiteHold("lineage native validation cache absent/linked")
         info.update(arm=arm, parent_sha256=spec["sha"], tokenizer_sha256=spec["tok_sha"],
-                    corpus_sha256=sha256_file(BASE / "prepare/report.json"), micro=8, accum=16,
+                    corpus_sha256=sha256_file(stage_directory("prepare") / "report.json"), micro=8, accum=16,
                     epochs=4, learning_rate=1e-4, optimizer="Muon RMS4", checkpoint_on=True,
                     quality="new before/after answer and own-cache full-val evidence", disk_free_bytes=disk_free)
     else:
-        reports = [read_report(BASE / arm / "report.json", "P106B_LINEAGE_EDUCATION_V1", "EDUCATION_COMPLETE") for arm in ("a", "b")]
+        reports = [read_report(stage_directory("train-" + arm) / "report.json", "P106B_LINEAGE_EDUCATION_V1", "EDUCATION_COMPLETE") for arm in ("a", "b")]
         for report in reports:
             require_current_stage(report)
         if reports[0]["input"]["corpus_sha256"] != reports[1]["input"]["corpus_sha256"]:
@@ -422,31 +500,21 @@ def native_text_probes(base, cfg, tok, directory, label, cache):
 
 def correct(target, info):
     originals = original_rows()
-    groups = correction_groups(originals)
+    plans = correction_plan(originals, pilot=info.get("mode") == "correct-pilot")
+    groups = [group for _index, group in plans]
     original_spec = write_rows(target, "original", originals, info)
     writer = CandidateWriter(target, info)
     journal = ShardWriter(target, "review_journal")
     selected, accepted = [], Counter()
     from tokenizers import Tokenizer
     encoders = [Tokenizer.from_file(str(ROOT / spec["tokenizer"])) for spec in ARMS.values()]
-    session, completed = None, False
+    session, completed, fatal = None, False, None
     try:
         with TeacherSession(6144, 1) as session:
-            for index, group in enumerate(groups):
+            for index, group in plans:
                 row = group[0]
                 meta = row["meta"]
-                job = {"teacher_task": "repair", "target_language": meta["language"],
-                    "source_payload": {"question": text_content(row["messages"][0]),
-                        "answer": text_content(row["messages"][1]),
-                        "answer_variants": [text_content(r["messages"][1]) for r in group],
-                        "defects": ["Remove unintended Japanese/script mixing and malformed words.",
-                            "Use natural target-language phrasing; preserve supported numbers and constraints.",
-                            "When context or facts are insufficient, ask for clarification or state uncertainty; do not invent a diagnosis, source or fact."]},
-                    "source_id": meta["source_id"], "source_sha256": sha_text(json.dumps(group, sort_keys=True, ensure_ascii=False)),
-                    "source_license": meta.get("source_license", "SOURCE_METADATA_ONLY"),
-                    "source_repo": meta.get("source_repo", "public_v28"), "source_revision": meta.get("source_revision", "v28"),
-                    "source_transform": "C_correction_v28", "parent_concept_id": meta["parent_concept_id"],
-                    "rights_status": "CARD_ONLY", "split": "train"}
+                job = build_correction_job(group)
                 rows = []
                 count = 2 if len(group) > 1 else 1
                 for attempt in range(1, 4):
@@ -479,6 +547,9 @@ def correct(target, info):
                 session.check_monitor()
             session.require_valid_resources()
             completed = True
+    except (Exception, KeyboardInterrupt) as exc:
+        fatal = exc
+        raise
     finally:
         metrics = writer.close()
         review = journal.close(lineage=info) if journal._total_rows else None
@@ -488,7 +559,10 @@ def correct(target, info):
         # Always preserve partial evidence before reporting a negative screen.
         expected = Counter(group[0]["meta"]["language"] for group in groups)
         passed = completed and all(accepted[lang] >= math.ceil(expected[lang] * .75) for lang in ("ko", "en")) and bool(spec)
-        report = {"schema": "P106B_CORRECTION_V1", "status": "CORRECTION_FORMAT_PASSED" if passed else "GATE_NEGATIVE",
+        failure_status, failure_rc = disposition(fatal) if fatal else ("GATE_NEGATIVE", 8)
+        report = {"schema": "P106B_CORRECTION_V1", "status": "CORRECTION_FORMAT_PASSED" if passed else failure_status,
+            "exit_code": 0 if passed else failure_rc,
+            "failure_reason": f"{type(fatal).__name__}: {str(fatal)[:250]}" if fatal else None,
             "input": info, **metrics, "selected_rows": len(selected),
             "original_concat_sha256": original_spec["concat_sha256"],
             "accepted_groups_by_language": dict(accepted), "expected_groups_by_language": dict(expected),
@@ -515,7 +589,7 @@ def educate(target, info, arm):
     from scripts.paired_eval import full_val_losses, paired_stats
     spec = ARMS[arm]
     torch, model, base, cfg, tok, adam, muon = load_student(arm, training=True)
-    train_rows, val_rows = [read_rows(BASE / "prepare", name) for name in ("train", "val")]
+    train_rows, val_rows = [read_rows(stage_directory("prepare"), name) for name in ("train", "val")]
     tr, va = [encode_records(rows, tok, 1024, cfg.vocab_size) for rows in (train_rows, val_rows)]
     pad = tok.token_to_id("<pad>")
     if pad is None:
@@ -592,12 +666,12 @@ def educate(target, info, arm):
 
 
 def compare(info):
-    rows = [read_report(BASE / arm / "report.json", "P106B_LINEAGE_EDUCATION_V1", "EDUCATION_COMPLETE") for arm in ("b", "a")]
+    rows = [read_report(stage_directory("train-" + arm) / "report.json", "P106B_LINEAGE_EDUCATION_V1", "EDUCATION_COMPLETE") for arm in ("b", "a")]
     for arm, report in zip(("b", "a"), rows):
         if sha256_file(ROOT / report["checkpoint"]) != report["checkpoint_sha256"]:
             raise ValueError("student checkpoint changed")
         for label in ("parent", "student"):
-            answers_rows = read_rows(BASE / arm, "answers_" + label, report[label + "_answers"]["raw_concat_sha256"])
+            answers_rows = read_rows(stage_directory("train-" + arm), "answers_" + label, report[label + "_answers"]["raw_concat_sha256"])
             if {r["id"] for r in answers_rows} != {name for name, _ in PROBES}:
                 raise ValueError("paired question set incomplete")
     return {"schema": "P106B_LINEAGE_PAIR_V1", "status": "EVIDENCE_PAIRED", "input": info,
@@ -641,13 +715,13 @@ def main():
             print(json.dumps(info, ensure_ascii=False, sort_keys=True))
             return 0
         began = time.monotonic()
-        if args.mode in ("parent-b", "correct", "train-a", "train-b"):
+        if args.mode in ("parent-b", "correct-pilot", "correct", "train-a", "train-b"):
             idle_before_gpu()
         target.mkdir(parents=True, exist_ok=False)
         with wall_limit(7200):
             if args.mode == "parent-b":
                 report = parent_baseline(target, info)
-            elif args.mode == "correct":
+            elif args.mode in ("correct", "correct-pilot"):
                 report = correct(target, info)
             elif args.mode == "prepare":
                 report = prepare_corpus(target, info)
@@ -656,7 +730,7 @@ def main():
             else:
                 report = compare(info)
         report["whole_wall_sec"] = time.monotonic() - began
-        if args.mode != "correct":
+        if args.mode not in ("correct", "correct-pilot"):
             write_report(target / "report.json", report)
         print("[EDUCATION_SUMMARY] " + json.dumps(report, ensure_ascii=False), flush=True)
         return 8 if report.get("operational_safety") is False else 0
