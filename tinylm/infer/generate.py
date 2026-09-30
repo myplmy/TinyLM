@@ -94,7 +94,7 @@ def _pick(logits, temperature, top_k):
 @torch.no_grad()
 def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, device=None,
            use_cache=True, stop_at_eos=True, eos_id=None, logits_last_only=False,
-           return_metadata=False):
+           return_metadata=False, stop_token_sequences=None):
     """★샘플링 루프의 **단일 소스**. 이미 로드된 모델을 받아 텍스트를 이어쓴다.
 
     `generate()`(체크포인트 경로로 매번 로드)와 여러 프롬프트를 한 모델로 돌리는 도구
@@ -117,6 +117,10 @@ def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, devi
             eos_id, stop_at_eos = -1, False
     eos_available = eos_id >= 0
     ids = tok.encode(prompt).ids
+    stops = tuple(tuple(seq) for seq in (stop_token_sequences or ()))
+    if any(not seq or any(type(token) is not int or token < 0 for token in seq) for seq in stops):
+        raise ValueError("stop token sequences must be nonempty nonnegative integer lists")
+    generated_ids, matched_stop = [], None
     x = torch.tensor([ids], dtype=torch.long, device=device)
     dev_type = device if isinstance(device, str) else device.type
     ac = dict(dtype=torch.bfloat16, enabled=(dev_type == "cuda"))
@@ -145,19 +149,31 @@ def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, devi
         nxt = _pick(logits, temperature, top_k)
         x = torch.cat([x, nxt], dim=1)
         generated_tokens += 1
+        if stops:
+            generated_ids.append(int(nxt.item()))
         if stop_at_eos and int(nxt.item()) == eos_id:
             ended_on_eos = True
             break
+        if stops:
+            matched_stop = next((seq for seq in stops
+                                 if len(generated_ids) >= len(seq)
+                                 and tuple(generated_ids[-len(seq):]) == seq), None)
+            if matched_stop is not None:
+                break
     decoded = tok.decode(x[0].tolist())
     if not return_metadata:
         return decoded
-    reason = ("EOS" if ended_on_eos else
+    reason = ("EOS" if ended_on_eos else "STOP_SEQUENCE" if matched_stop is not None else
               "EOS_UNAVAILABLE" if stop_requested and not eos_available else
               "MAX_NEW_EOS_DISABLED" if not stop_requested else "MAX_NEW")
-    return decoded, {"finish_reason": reason, "generated_tokens": generated_tokens,
+    metadata = {"finish_reason": reason, "generated_tokens": generated_tokens,
                      "max_new": max_new, "eos_token_available": eos_available,
                      "stop_at_eos_requested": stop_requested,
                      "stop_at_eos_effective": bool(stop_at_eos and eos_available)}
+    if stops:
+        metadata.update(stop_token_sequences=[list(seq) for seq in stops],
+                        matched_stop_sequence=list(matched_stop) if matched_stop else None)
+    return decoded, metadata
 
 
 def generate(prompt, arch="tied", data="ko-en", max_new=100, temperature=0.8,
