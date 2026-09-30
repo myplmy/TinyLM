@@ -37,13 +37,15 @@ class Tests(unittest.TestCase):
             rows.append(variant)
         return rows
 
-    def test_real_correction_to_canonical_roundtrip(self):
+    def run_correction_fixture(self, pilot=False, bad_multi=False):
         class FakeTeacher:
             key = "fixture"
             contexts = []
             requests = []
-            def __init__(self, context, slots):
+            def __init__(self, context, slots, **controls):
                 self.contexts.append((context, slots))
+                self.effort = controls.get("effort")
+                self.thinking_budget = controls.get("thinking_budget")
             def __enter__(self):
                 return self
             def __exit__(self, *_args):
@@ -54,6 +56,8 @@ class Tests(unittest.TestCase):
             def complete(self, messages, seed, _maximum):
                 ko = "Korean" in messages[0]["content"]
                 q, a = (f"질문{seed}", f"답변{seed}") if ko else (f"Question{seed}", f"Answer{seed}")
+                if bad_multi and ko and "[[ANSWER_2]]" in messages[0]["content"]:
+                    q, a = "열불견증은 무엇인가?", f"갑상선 기능 과장증 답변{seed}"
                 if "[[ANSWER_2]]" in messages[0]["content"]:
                     final = f"[[QUESTION]]\n{q}\n[[/QUESTION]]\n[[ANSWER_1]]\n{a}\n[[/ANSWER_1]]\n[[ANSWER_2]]\n{a} variant2\n[[/ANSWER_2]]"
                 else:
@@ -71,7 +75,8 @@ class Tests(unittest.TestCase):
             target = root / "correction"
             target.mkdir()
             contract = edu.runtime_contract()
-            info = {"code_sha256": edu.sha256_file(Path(edu.__file__)), "runtime_contract": contract}
+            info = {"code_sha256": edu.sha256_file(Path(edu.__file__)), "runtime_contract": contract,
+                    "mode": "correct-pilot" if pilot else "correct"}
             with patch.object(edu, "ROOT", root), patch.object(edu, "BASE", root), \
                  patch.object(edu, "runtime_contract", return_value=contract), \
                  patch.object(edu, "arm_inputs", side_effect=lambda arm: edu.ARMS[arm]), \
@@ -80,25 +85,55 @@ class Tests(unittest.TestCase):
                  patch.object(edu, "original_rows", return_value=self.correction_fixture_rows()), \
                  patch("tokenizers.Tokenizer.from_file", return_value=SyntheticTokenizer()):
                 report = edu.correct(target, info)
-                self.assertEqual(report["status"], "CORRECTION_FORMAT_PASSED")
+                self.assertEqual(report["status"], "CORRECTION_WIRING_PASSED" if pilot else "CORRECTION_FORMAT_PASSED")
                 rows = edu.read_rows(target, "selected", report["selected_concat_sha256"])
-                self.assertEqual(len(rows), 28)
+                self.assertEqual(len(rows), 4 if pilot and bad_multi else 6 if pilot else 28)
                 self.assertTrue(all(r["meta"]["source_transform"] == "teacher_repair" for r in rows))
                 self.assertTrue(all("SIDE_CAR_ONLY" not in json.dumps(r["messages"]) for r in rows))
-                # The actual downstream consumer must find that same correction directory.
-                _train, _val, preview = edu.prepare_preview()
-                self.assertEqual(preview["source_concat_sha256"], report["selected_concat_sha256"])
-                self.assertEqual(len(_train)+len(_val), 28)
-                self.assertEqual(FakeTeacher.contexts, [(8192, 1)])
-                self.assertEqual(FakeTeacher.requests, [(8192, 6144)] * 24)
-                self.assertEqual(report["required_groups_by_language"], {"ko": 9, "en": 9})
+                if not pilot:
+                    _train, _val, preview = edu.prepare_preview()
+                    self.assertEqual(preview["source_concat_sha256"], report["selected_concat_sha256"])
+                    self.assertEqual(len(_train)+len(_val), 28)
+                self.assertEqual(FakeTeacher.contexts, [(32768, 1)])
+                self.assertEqual(FakeTeacher.requests, [(32768, 16384)] * (6 if pilot and bad_multi else 4 if pilot else 24))
+                self.assertEqual(report["required_groups_by_language"], {"ko": 2, "en": 2} if pilot else {"ko": 9, "en": 9})
+                return report
+
+    def test_real_correction_to_canonical_roundtrip(self):
+        self.run_correction_fixture()
+
+    def test_wire_pilot_keeps_bad_content_out_of_training(self):
+        report = self.run_correction_fixture(pilot=True, bad_multi=True)
+        self.assertTrue(report["wire_passed"])
+        self.assertFalse(report["quality_screen_passed"])
+        self.assertFalse(report["student_training_allowed"])
+        self.assertEqual(report["accepted_groups_by_language"], {"ko": 1, "en": 2})
+        self.assertEqual(report["wired_groups_by_language"], {"ko": 2, "en": 2})
+
+    def test_prompt_and_feedback_can_repair_question_not_echo_it(self):
+        from scripts.p106b_teacher_format import teacher_prompt
+        from scripts.p106b_multi_answer import multi_prompt
+        group = [self.correction_fixture_rows()[0]]
+        group[0]["messages"][0]["content"][0]["text"] = "22세 여성의 열불견증은?"
+        job = edu.build_correction_job(group)
+        self.assertNotIn("answer", job["source_payload"])
+        self.assertEqual(job["source_payload"]["detected_source_issues"][0]["role"], "user")
+        self.assertEqual(job["source_payload"]["detected_source_issues"][0]["problem_text"], "열불견증")
+        for prompt in (teacher_prompt("repair", "ko", job["source_payload"]), multi_prompt(job, 2)):
+            self.assertIn("NOT erroneous wording", prompt[0]["content"])
+            self.assertIn("even inside QUESTION", prompt[0]["content"])
+            self.assertIn("열불견증", prompt[1]["content"])
+        hint = edu.retry_feedback("OBSERVED_MALFORMED_TERMINOLOGY", edu.content_issues(group))
+        self.assertEqual(hint["issues"][0]["message"], 0)
+        self.assertIn("QUESTION", hint["action"])
 
     def test_budget_recovery_does_not_reuse_old_output_or_child_tags(self):
-        self.assertEqual(edu.CORRECTION_CONTEXT, 8192)
-        self.assertEqual(edu.CORRECTION_MAX_OUTPUT, 6144)
-        self.assertEqual(edu.BASE.name, "v31_correction_budget_recovery_lineage_pilot")
-        self.assertIn("_budget_", edu.ARMS["a"]["stem"])
-        self.assertIn("_budget_", edu.ARMS["b"]["stem"])
+        self.assertEqual(edu.CORRECTION_CONTEXT, 32768)
+        self.assertEqual(edu.CORRECTION_MAX_OUTPUT, 16384)
+        self.assertEqual(edu.CORRECTION_THINKING_BUDGET, 8192)
+        self.assertEqual(edu.BASE.name, "v32_prompt_wire_effort_panel")
+        self.assertIn("_feedback_", edu.ARMS["a"]["stem"])
+        self.assertIn("_feedback_", edu.ARMS["b"]["stem"])
 
     def test_global_three_of_four_cannot_override_korean_threshold(self):
         passed, required = edu.correction_gate(True, {"ko": 2, "en": 2}, {"ko": 1, "en": 2}, 4)

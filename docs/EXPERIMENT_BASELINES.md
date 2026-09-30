@@ -310,7 +310,9 @@ fp32 상주와 int8 상주가 갈린다.**
 | P106B Stage3hW B 부모관측·Stage3iW C 도구실패 | 정확chat32 B14층dense·20cef06 사용자smokePASS | **부모평가완료:** nativefull-val3.590418/2,934crop·3,004,416토큰. fixed8질문×3시도24답은first0/within3도0, native4prefix반복. ChatML ID3/4가train597.995M/val3.005M에각각0회. C는미등록enum+출력경로불일치로tool9·원형2만기록/3번째내용결손, 후속j/k/l/m은모델0/선결8. old C4품질과새원본을혼동하지않음([101 §34](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)) |
 | `p106b_s3k_recovery_chat32_s1337` / `p106b_s3l_recovery_a_s1337` | v30 교정 복구 뒤 두학생4epoch 계획 | **태그미사용·교육/child0.** 소형C의KO1/2 형식음성8으로 전체C/공통자료/두교육/비교가선결8에서끝났다. 모델 학습실패 아님([101 §35](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)) |
 | P106B Stage3iWb 소형C·Stage3iWc~mWb 선결, 새v31 예산복구 | 동일v28 고정4프로필/low sampler·기존B관측은유지 | **관측:** 8요청/5length4096·KO1/2/EN2/2·수락4후보, request419.242초/completion27,315·후보대화922/지도668/학생학습0. GDN true·sampler0·globalpeak7700MiB. 사용자A의6144/ctx8192·언어별75%불변·새6SH 정적준비이며새GPU/교육은NOT_RUN([101 §35](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)) |
-| `p106b_s3k_budget_chat32_s1337` / `p106b_s3l_budget_a_s1337` | 새v31 교정/공통자료 성공 뒤 Bchat32/Alegacy 각자부모4pass | **예약·미사용.** 부모/어휘·학습설정은기존교육계약유지, code/교정output는새버전이다. 태그충돌점검·CPU16/12회귀와새소형check-only는정적선결일뿐교육품질PASS아님 |
+| `p106b_s3k_budget_chat32_s1337` / `p106b_s3l_budget_a_s1337` | v31 교정/공통자료 후 교육 계획 | **미사용·교육/child0.** 교사완결5/7이나질문/답오조어선별로KO1/2 음성8·후속5단선결8. 새v32와feedback태그로대체하며옛음성보존([101 §36](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)) |
+| P106B v31 관측·v32 프롬프트/배선/effort 대응 준비 | 기존B baseline유지·새단계출력/SchemaV2 | **실측:** 7요청/canonical8/selected4·두KO다중답완결후내용거부·학생0. **설계:** 8K사고/16K합계/32Kctx·low/medium/xhigh대응12·명시선택·배선/전체언어별75%분리·8SH. 새GPU/정답성/quality NOT_RUN([101 §36](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)) |
+| `p106b_s3k_feedback_chat32_s1337` / `p106b_s3l_feedback_a_s1337` | v32 전체교정/공통자료후 두자기부모4pass | **예약·미사용.** 같은raw/마스크와자기CE전후/first/within3 원답·별도child. 형식선별을정식TRAIN_READY/P106 ACCEPT로바꾸지않음 |
 
 > 체크포인트·로그 파일명 = `{preset}_{data}_{tokens}_{tag 또는 arch}`. **같은 (preset,data,tokens)
 > 안에서 태그가 겹치면 조용히 덮어쓴다.** 새 태그는 반드시 위 표에 추가한다.

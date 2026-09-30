@@ -28,12 +28,14 @@
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
-1	P106B	run_P106B_Stage3iWd_correction_output_budget.sh	D	0.5	Y	Y	같은소스4프로필 low6144/ctx8192 출력예산복구·정확절단진단·언어별75%유지·v31·학생0	8
-2	P106B	run_P106B_Stage3iWe_teacher_correction_budget.sh	D	3	Y	Y	소형C통과후96질문군교정·같은6144/8192·low권장sampler·원형/교정/재시도보존·hard6h	8
-3	P106B	run_P106B_Stage3jWc_corrected_shared_corpus_budget.sh	N	0.1	N	Y	v31 C선택SHA·공통concept/질문split·양어휘mask/token·사고target0	8
-4	P106B	run_P106B_Stage3kWc_chat32_corrected_repeat4_budget.sh	Y	0.75	Y	Y	같은v31자료 Bchat32자기parent4epoch·새budget태그·first/within3/nativeval전후	8
-5	P106B	run_P106B_Stage3lWc_legacy_corrected_repeat4_budget.sh	Y	0.75	Y	Y	같은v31자료 Alegacy자기parent4epoch대조·새budget태그·B실패와독립	8
-6	P106B	run_P106B_Stage3mWc_corrected_lineage_pair_budget.sh	N	0.1	N	Y	v31두학생원답/child/commonrawSHA·first/within3분리·교차tokenCE순위금지	8
+1	P106B	run_P106B_Stage3nW_effort_upper_budget_panel.sh	D	1	Y	Y	같은4프로필 low/medium/xhigh 대응12요청·사고8192/전체16384/ctx32768·정답성미평가	8
+2	P106B	run_P106B_Stage3n0W_effort_choice.sh	N	0.1	N	Y	대응패널 원답검토후사용자가숫자로setting선택·자동기본값없음·CPU	8
+3	P106B	run_P106B_Stage3iWf_wire_content_gate.sh	D	0.75	Y	Y	배선4프로필/양어휘mask 검증·내용부적합행제외·pilot만으로학습허용안함	8
+4	P106B	run_P106B_Stage3iWg_teacher_correction_feedback.sh	D	4	Y	Y	현재wire gate후96교정·질문/답오조어수리·정확feedback·언어별75%/hard6h 유지	8
+5	P106B	run_P106B_Stage3jWd_shared_corpus_feedback.sh	N	0.1	N	Y	전체교정성공후공통concept/질문split·사고target0·정확probe겹침0	8
+6	P106B	run_P106B_Stage3kWd_chat32_repeat4_feedback.sh	Y	0.75	Y	Y	같은v32공통자료 Bchat32자기부모4epoch·새feedback태그·first/within3/nativeval	8
+7	P106B	run_P106B_Stage3lWd_legacy_repeat4_feedback.sh	Y	0.75	Y	Y	같은v32공통자료 Alegacy대조4epoch·별도feedback태그·B실패와독립	8
+8	P106B	run_P106B_Stage3mWd_lineage_pair_feedback.sh	N	0.1	N	Y	두현재교육report/child/commonraw/원답SHA연결·교차tokenCE순위금지	8
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 # HOLD 2026-09-30 P106B: run_P106B_Stage2iWh_online5_public_low-hold.sh. 사용자 요청대로 미실행 low5를 보존하되 현재 우선순위·큐에서 제외; 재활성화는 새 지시/새 단계가 필요하다.
 # HOLD 2026-09-30 P106B: run_P106B_Stage2iWf_online5_public_medium-hold.sh. 기존 medium 자원·품질 미판정 보류를 유지하고 큐/직접 실험 시작을 차단한다.
@@ -603,6 +605,15 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   4	P106B	run_P106B_Stage3kWb_chat32_corrected_repeat4_recovery.sh	Y	0.75	Y	Y	공통v30자료 Bchat32 14층dense 자기parent4epoch·신태그recovery·first/within3·nativeval전후	8
 #   5	P106B	run_P106B_Stage3lWb_legacy_corrected_repeat4_recovery.sh	Y	0.75	Y	Y	같은v30원문 Alegacy20층tied 자기parent4epoch대조·새recovery태그·B실패와독립	8
 #   6	P106B	run_P106B_Stage3mWb_corrected_lineage_pair_recovery.sh	N	0.1	N	Y	v30두학생원답/child/commonrawSHA연결·first와within3 분리·교차tokenCE순위금지	8
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P106B	run_P106B_Stage3iWd_correction_output_budget.sh	D	0.5	Y	Y	같은소스4프로필 low6144/ctx8192 출력예산복구·정확절단진단·언어별75%유지·v31·학생0	8
+#   2	P106B	run_P106B_Stage3iWe_teacher_correction_budget.sh	D	3	Y	Y	소형C통과후96질문군교정·같은6144/8192·low권장sampler·원형/교정/재시도보존·hard6h	8
+#   3	P106B	run_P106B_Stage3jWc_corrected_shared_corpus_budget.sh	N	0.1	N	Y	v31 C선택SHA·공통concept/질문split·양어휘mask/token·사고target0	8
+#   4	P106B	run_P106B_Stage3kWc_chat32_corrected_repeat4_budget.sh	Y	0.75	Y	Y	같은v31자료 Bchat32자기parent4epoch·새budget태그·first/within3/nativeval전후	8
+#   5	P106B	run_P106B_Stage3lWc_legacy_corrected_repeat4_budget.sh	Y	0.75	Y	Y	같은v31자료 Alegacy자기parent4epoch대조·새budget태그·B실패와독립	8
+#   6	P106B	run_P106B_Stage3mWc_corrected_lineage_pair_budget.sh	N	0.1	N	Y	v31두학생원답/child/commonrawSHA·first/within3분리·교차tokenCE순위금지	8
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)

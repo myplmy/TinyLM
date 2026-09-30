@@ -23,7 +23,7 @@ from types import SimpleNamespace
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.diag_p106_bonsai_assets import regular, sha256_file
-from scripts.p106b_gate_runtime import (TeacherSession, GateNegative, PrerequisiteHold,
+from scripts.p106b_gate_runtime import (TeacherSession, EffortView, GateNegative, PrerequisiteHold,
     ToolFailure, idle_before_gpu, new_directory, wall_limit, write_report, disposition,
     THINKING_SAMPLER, teacher_inputs)
 from scripts.p106b_pipeline import CandidateWriter, validate_job_contract
@@ -36,9 +36,13 @@ from tinylm.data.sft import conversation_split_key
 V28 = ROOT / "HF/sft_ready/p106b_teacher_sft/v28_integrated_a2_one_slot_low"
 V28_SHA = "CBC350C7AEA4C6F8F46904207F5EF517D9A11395EB4C67E16A32ECD5201023A5"
 OLD_BASE = ROOT / "HF/sft_ready/p106b_teacher_sft/v29_corrected_lineage_pilot"
-BASE = ROOT / "HF/sft_ready/p106b_teacher_sft/v31_correction_budget_recovery_lineage_pilot"
-CORRECTION_CONTEXT = 8192
-CORRECTION_MAX_OUTPUT = 6144
+BASE = ROOT / "HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel"
+CORRECTION_CONTEXT = 32768
+CORRECTION_MAX_OUTPUT = 16384
+CORRECTION_THINKING_BUDGET = 8192
+CORRECTION_SCHEMA = "P106B_CORRECTION_V2"
+EFFORT_PANEL_SCHEMA = "P106B_EFFORT_UPPER_PANEL_V1"
+EFFORTS = ("low", "medium", "xhigh")
 BASELINE_SHA = "38E1EB39FF0D14F7E8BCDB4C9614553A5CBBE93EDA2E2353E0FB7690F8C7F399"
 BASELINE_FUNCTIONS = {"answers":"461A2E397562638006858E66FBF59711099EE645D1647044B789D8477463FA60","load_student":"D7189B898807091903B18AFCE143BB77C9A0179EFCB60DA65D7CEBCC8EC01F7B","native_text_probes":"6C44C41BF1DFDE9C030322623BE236F2DCF30543DB326AA639BB1714F3D499C6","parent_baseline":"B1A6632CB3CDC353E88D5692278679C516CDA192636AB11A611477F94A92A663","parent_baseline_check":"CE90569B9F88D3264F95ABF29279BED660B40466083C63690571B2EA048CCC49","score_answer":"05FC71EFEFF0AF25872C6D185EF5D0E77B9804E3ECB75FE712D57477183ED475"}
 ARMS = {
@@ -47,19 +51,19 @@ ARMS = {
           "tokenizer": "data_cache/tok-ko-en-32768.json",
           "tok_sha": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3",
           "lineage": "legacy", "cache": "data_cache/ko-en_600000000", "layers": 20,
-          "tied": True, "stem": "m100R1c_ko-en_300M_p106b_s3l_budget_a_s1337"},
+          "tied": True, "stem": "m100R1c_ko-en_300M_p106b_s3l_feedback_a_s1337"},
     "b": {"parent": "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt",
           "sha": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
           "tokenizer": "data_cache/tok-ko-en-32768-chat32.json",
           "tok_sha": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
           "lineage": "chat32", "cache": "data_cache/ko-en_601000000_chat32", "layers": 14,
-          "tied": False, "stem": "m100s10_ko-en_300M_p106b_s3k_budget_chat32_s1337"},
+          "tied": False, "stem": "m100s10_ko-en_300M_p106b_s3k_feedback_chat32_s1337"},
 }
-MODES = ("parent-b", "correct-pilot", "correct", "prepare", "train-b", "train-a", "compare")
+MODES = ("parent-b", "effort-panel", "choose-effort", "correct-pilot", "correct", "prepare", "train-b", "train-a", "compare")
 
 
 def stage_directory(mode):
-    names = {"parent-b": "parent-b", "correct-pilot": "correction-pilot",
+    names = {"parent-b": "parent-b", "effort-panel": "effort-panel", "choose-effort": "effort-choice", "correct-pilot": "correction-pilot",
              "correct": "correction", "prepare": "prepare",
              "train-a": "a", "train-b": "b", "compare": "compare"}
     return BASE / names[mode]
@@ -164,8 +168,9 @@ def build_correction_job(group):
     row, meta = group[0], group[0]["meta"]
     job = {"teacher_task": "repair", "target_language": meta["language"],
         "source_payload": {"question": text_content(row["messages"][0]),
-            "answer": text_content(row["messages"][1]),
             "answer_variants": [text_content(r["messages"][1]) for r in group],
+            "question_policy": "Repair spelling/translation in QUESTION as well as ANSWER. Preserve intent, numbers and requirements, not malformed words.",
+            "detected_source_issues": content_issues(group),
             "defects": ["Remove unintended Japanese/script mixing and malformed words.",
                 "Use natural target-language phrasing; preserve supported numbers and constraints.",
                 "When context or facts are insufficient, ask for clarification or state uncertainty; do not invent a diagnosis, source or fact."]},
@@ -205,16 +210,36 @@ def baseline_evidence():
         "scope": "existing observed parent evidence only; recovery pipeline GPU NOT_RUN"}
 
 
-def content_screen(rows):
-    for row in rows:
+def content_issues(rows):
+    issues = []
+    patterns = (("KANA_MIXED_KO", r"[\u3040-\u30ff]+"),
+                ("OBSERVED_MALFORMED_TERMINOLOGY", r"열\s*불견증|갑상선\s*기능\s*과장증|근전위근축성갈레트병"))
+    for index, row in enumerate(rows):
         if row["meta"]["language"] == "ko":
-            text = " ".join(text_content(m) for m in row["messages"])
-            # A narrow observed script/terminology screen, not a semantic verifier.
-            if re.search(r"[\u3040-\u30ff]", text):
-                return "KANA_MIXED_KO"
-            if any(term in text for term in ("열불견증", "갑상선기능과장증", "근전위근축성갈레트병")):
-                return "OBSERVED_MALFORMED_TERMINOLOGY"
-    return "CONTENT_SCREEN_PASS"
+            for message_index, message in enumerate(row["messages"]):
+                text = text_content(message)
+                for code, pattern in patterns:
+                    for match in re.finditer(pattern, text):
+                        issues.append({"code": code, "row": index, "message": message_index,
+                            "role": message["role"], "problem_text": match.group(),
+                            "span": list(match.span())})
+    return issues
+
+
+def content_screen(rows):
+    issues = content_issues(rows)
+    return issues[0]["code"] if issues else "CONTENT_SCREEN_PASS"
+
+
+def retry_feedback(status, issues):
+    return {"previous_screen": status, "issues": issues[:16],
+        "action": "Correct the listed wording in QUESTION and ANSWERS, preserving intended meaning and constraints. Do not echo a malformed term just to preserve the question. If unsure, use plain language and acknowledge the gap. Close every required label and keep the response focused."}
+
+
+def wire_encoding(rows, encoders):
+    return {arm: [{"conversation_tokens": len(r[0]), "assistant_targets": r[2]}
+                   for r in encode_records(rows, tok, 1024, 32768)]
+            for arm, tok in encoders.items()}
 
 
 def parent_baseline_check():
@@ -248,7 +273,7 @@ def parent_baseline_check():
 
 def prepare_preview():
     directory = stage_directory("correct")
-    report = read_report(directory / "report.json", "P106B_CORRECTION_V1", "CORRECTION_FORMAT_PASSED")
+    report = read_report(directory / "report.json", CORRECTION_SCHEMA, "CORRECTION_FORMAT_PASSED")
     require_current_stage(report)
     rows = read_rows(directory, "selected", report["selected_concat_sha256"])
     probe_questions = {re.sub(r"\s+", " ", text).strip().casefold() for _name, text in PROBES}
@@ -284,16 +309,24 @@ def check(mode):
             "formal_train_ready": False}
     if mode == "parent-b":
         info.update(parent_baseline_check())
-    elif mode in ("correct-pilot", "correct"):
+    elif mode in ("effort-panel", "correct-pilot", "correct"):
         info["baseline_evidence"] = baseline_evidence()
+        if mode != "effort-panel":
+            choice = read_report(stage_directory("choose-effort") / "report.json",
+                                 "P106B_EFFORT_CHOICE_V1", "EFFORT_CHOSEN")
+            require_current_stage(choice)
+            info["teacher_effort"] = choice["effort"]
+            info["effort_choice_sha256"] = sha256_file(stage_directory("choose-effort") / "report.json")
         if mode == "correct":
             pilot = read_report(stage_directory("correct-pilot") / "report.json",
-                "P106B_CORRECTION_V1", "CORRECTION_FORMAT_PASSED")
+                CORRECTION_SCHEMA, "CORRECTION_WIRING_PASSED")
             require_current_stage(pilot)
             if pilot["input"].get("mode") != "correct-pilot" or pilot["input"].get("source_groups") != 4:
                 raise PrerequisiteHold("four-profile recovery pilot not observed complete")
+            if pilot["input"].get("effort_choice_sha256") != info["effort_choice_sha256"]:
+                raise PrerequisiteHold("pilot/full correction effort choice differs")
             info["pilot_report_sha256"] = sha256_file(stage_directory("correct-pilot") / "report.json")
-        plans = correction_plan(original_rows(), pilot=mode == "correct-pilot")
+        plans = correction_plan(original_rows(), pilot=mode in ("correct-pilot", "effort-panel"))
         groups = [group for _index, group in plans]
         for group in groups:
             build_correction_job(group)  # Actual canonical provenance checks, no teacher/model.
@@ -302,8 +335,19 @@ def check(mode):
                     source_group_indices=[index for index, _group in plans],
                     groups_per_language=dict(counts), maximum_attempts_per_group=3,
                     teacher_truth="PSEUDO_UNVERIFIED", max_output=CORRECTION_MAX_OUTPUT,
-                    context=CORRECTION_CONTEXT)
-        info.update(teacher_inputs(), teacher_sampler={**THINKING_SAMPLER, "reasoning_effort": "low"})
+                    context=CORRECTION_CONTEXT, thinking_budget_tokens=CORRECTION_THINKING_BUDGET)
+        info.update(teacher_inputs(), teacher_sampler=dict(THINKING_SAMPLER),
+                    effort_calibration_note="low is a valid template label, but the model card says its short-reasoning calibration is unsupported/near xhigh")
+        if mode == "effort-panel":
+            info.update(efforts=list(EFFORTS), maximum_attempts_per_group=1,
+                        source_groups=4, requests=12)
+    elif mode == "choose-effort":
+        panel = read_report(stage_directory("effort-panel") / "report.json", EFFORT_PANEL_SCHEMA, "EFFORT_PANEL_RECORDED")
+        require_current_stage(panel)
+        eligible = [e for e in EFFORTS if panel["per_effort"][e]["wire_complete"]]
+        if not eligible:
+            raise PrerequisiteHold("no effort completed all four technical profiles; preserve panel and redesign")
+        info.update(eligible_efforts=eligible, panel_sha256=sha256_file(stage_directory("effort-panel") / "report.json"))
     elif mode == "prepare":
         _tr, _va, preview = prepare_preview()
         info.update(preview)
@@ -510,6 +554,88 @@ def correction_gate(completed, expected, accepted, selected_rows):
     return bool(passed), required
 
 
+def effort_panel(target, info):
+    plans = correction_plan(original_rows(), pilot=True)
+    from tokenizers import Tokenizer
+    encoders = {arm: Tokenizer.from_file(str(ROOT / spec["tokenizer"])) for arm, spec in ARMS.items()}
+    writer = CandidateWriter(target, info)
+    journal = ShardWriter(target, "panel_journal")
+    records, session = [], None
+    orders = (("low", "medium", "xhigh"), ("xhigh", "medium", "low"),
+              ("medium", "low", "xhigh"), ("xhigh", "low", "medium"))
+    try:
+        with TeacherSession(info["context"], 1, effort="medium",
+                            thinking_budget=info["thinking_budget_tokens"]) as session:
+            for position, (index, group) in enumerate(plans):
+                job = build_correction_job(group)
+                count = 2 if len(group) > 1 else 1
+                for effort in orders[position]:
+                    ident = f"panel_{effort}_C_{index:03d}"
+                    rows = writer.request(EffortView(session, effort), job, ident,
+                        20262000 + index * 10 + 1, count=count, per_slot=info["context"],
+                        maximum=info["max_output"], dedupe_scope=effort)
+                    encoding, encoding_error = {}, None
+                    if rows:
+                        try:
+                            encoding = wire_encoding(rows, encoders)
+                        except ValueError as exc:
+                            encoding_error = str(exc)
+                    wire_ok = len(rows) == count and bool(encoding) and encoding_error is None
+                    diagnostic = writer.response_diagnostics[ident]
+                    record = {"generation_id": ident, "group": index, "effort": effort,
+                        "profile": [group[0]["meta"]["language"], count],
+                        "order": list(orders[position]), "seed": 20262000 + index * 10 + 1,
+                        "wire_ok": wire_ok, "encoding": encoding, "encoding_error": encoding_error,
+                        "content_issues": content_issues(rows), "diagnostic": diagnostic}
+                    # Request duration and usage remain exact in the corresponding raw record.
+                    records.append(record)
+                    journal.append(record)
+                    session.check_monitor()
+            session.require_valid_resources()
+    finally:
+        metrics = writer.close()
+        jspec = journal.close(lineage=info) if records else None
+        if jspec:
+            verify(target, jspec)
+    raw = read_rows(target, "raw", metrics["raw_concat_sha256"])
+    by_id = {r["generation_id"]: r for r in raw}
+    summaries = {}
+    for effort in EFFORTS:
+        subset = [r for r in records if r["effort"] == effort]
+        wall = sum(by_id[r["generation_id"]]["wall_sec"] for r in subset)
+        completion = sum(r["diagnostic"]["server_usage"].get("completion_tokens", 0) for r in subset)
+        usable = [r for r in subset if r["wire_ok"] and not r["content_issues"]]
+        summaries[effort] = {"requests": len(subset), "wire_complete": len(subset) == 4 and all(r["wire_ok"] for r in subset),
+            "wire_profiles": sum(r["wire_ok"] for r in subset), "content_screen_passed_groups": len(usable),
+            "request_sum_sec": wall, "completion_tokens": completion,
+            "completion_tok_per_sec": completion / wall if wall else None,
+            "usable_groups_per_sec": len(usable) / wall if wall else None,
+            "semantic_truth": "NOT_RUN", "answer_refs": [r["generation_id"] for r in subset]}
+    return {"schema": EFFORT_PANEL_SCHEMA, "status": "EFFORT_PANEL_RECORDED", "input": info,
+        **metrics, "per_effort": summaries, "records": records,
+        "panel_journal_sha256": jspec["concat_sha256"], "server": session.evidence(),
+        "thinking_budget_effective_observation": "request configured; no separate emitted-reasoning token count in this server evidence",
+        "student_training": "NOT_RUN", "quality": "NOT_RUN"}
+
+
+def choose_effort(info):
+    panel = read_report(stage_directory("effort-panel") / "report.json", EFFORT_PANEL_SCHEMA, "EFFORT_PANEL_RECORDED")
+    require_current_stage(panel)
+    print("저장된 최종 답안을 읽은 뒤 선택하세요. 시간·형식 통과는 정답성을 보장하지 않습니다.", flush=True)
+    for number, effort in enumerate(info["eligible_efforts"], 1):
+        print(f"{number}. {effort}: " + json.dumps(panel["per_effort"][effort], ensure_ascii=False), flush=True)
+    if not sys.stdin.isatty():
+        raise PrerequisiteHold("interactive effort choice required; no default silently adopted")
+    # runlog forwards stdout line by line; a newline makes the operator prompt visible.
+    print("번호를 입력하세요. 빈 입력은 설정을 고르지 않고 중단합니다:", flush=True)
+    raw = input().strip()
+    if not raw.isdigit() or not 1 <= int(raw) <= len(info["eligible_efforts"]):
+        raise PrerequisiteHold("effort selection not made")
+    effort = info["eligible_efforts"][int(raw) - 1]
+    return {"schema": "P106B_EFFORT_CHOICE_V1", "status": "EFFORT_CHOSEN", "input": info,
+            "effort": effort, "selection_owner": "user", "semantic_truth": "PSEUDO_UNVERIFIED"}
+
+
 def correct(target, info):
     originals = original_rows()
     plans = correction_plan(originals, pilot=info.get("mode") == "correct-pilot")
@@ -519,19 +645,24 @@ def correct(target, info):
     journal = ShardWriter(target, "review_journal")
     selected, accepted = [], Counter()
     from tokenizers import Tokenizer
-    encoders = [Tokenizer.from_file(str(ROOT / spec["tokenizer"])) for spec in ARMS.values()]
+    encoders = {arm: Tokenizer.from_file(str(ROOT / spec["tokenizer"])) for arm, spec in ARMS.items()}
+    wired = Counter()
+    wired_indices = set()
     session, completed, fatal = None, False, None
     try:
-        with TeacherSession(info.get("context", CORRECTION_CONTEXT), 1) as session:
+        with TeacherSession(info.get("context", CORRECTION_CONTEXT), 1,
+            effort=info.get("teacher_effort", "medium"),
+            thinking_budget=info.get("thinking_budget_tokens", CORRECTION_THINKING_BUDGET)) as session:
             for index, group in plans:
                 row = group[0]
                 meta = row["meta"]
                 job = build_correction_job(group)
                 rows = []
                 count = 2 if len(group) > 1 else 1
+                last_issues = content_issues(group)
                 for attempt in range(1, 4):
                     if attempt > 1:
-                        job["source_payload"]["retry_hint"] = "Close all requested field labels; keep concise, preserve uncertainty. Previous screen: " + status
+                        job["source_payload"]["retry_feedback"] = retry_feedback(status, last_issues)
                     ident = f"C_{index:03d}_try{attempt}"
                     generated = writer.request(session, job, ident,
                         20262000 + index * 10 + attempt, count=count,
@@ -545,14 +676,20 @@ def correct(target, info):
                         status = diagnostic.get("cause", "NO_FORMAT_READY_ROWS")
                     else:
                         status = wire_status or "NO_FORMAT_READY_ROWS"
-                    if generated and status == "CONTENT_SCREEN_PASS":
+                    encoding = {}
+                    if generated:
                         try:
-                            for tok in encoders:
-                                encode_records(generated, tok, 1024, 32768)
+                            encoding = wire_encoding(generated, encoders)
                         except ValueError:
                             status = "CONTEXT_EXCEEDS_A_OR_B"
+                    wire_ok = len(generated) == count and bool(encoding)
+                    if wire_ok and index not in wired_indices:
+                        wired_indices.add(index)
+                        wired[meta["language"]] += 1
+                    last_issues = content_issues(generated) if generated else last_issues
                     journal.append({"group": index, "attempt": attempt, "status": status,
                         "response_diagnostic": diagnostic,
+                        "content_issues": last_issues, "wire_ok": wire_ok, "encoding": encoding,
                         "original_generation_ids": [r["meta"]["generation_id"] for r in group],
                         "original_text_sha256": job["source_sha256"], "generated_rows": len(generated),
                         "requested_changes": job["source_payload"]["defects"],
@@ -581,14 +718,21 @@ def correct(target, info):
         spec = write_rows(target, "selected", selected, info) if selected else None
         # Always preserve partial evidence before reporting a negative screen.
         expected = Counter(group[0]["meta"]["language"] for group in groups)
-        passed, required = correction_gate(completed, expected, accepted, len(selected))
+        quality_passed, required = correction_gate(completed, expected, accepted, len(selected))
+        pilot = info.get("mode") == "correct-pilot"
+        wire_passed = completed and all(wired[lang] == expected[lang] and expected[lang] > 0 for lang in ("ko", "en"))
+        passed = wire_passed if pilot else quality_passed
         failure_status, failure_rc = disposition(fatal) if fatal else ("GATE_NEGATIVE", 8)
-        report = {"schema": "P106B_CORRECTION_V1", "status": "CORRECTION_FORMAT_PASSED" if passed else failure_status,
+        report = {"schema": CORRECTION_SCHEMA,
+            "status": ("CORRECTION_WIRING_PASSED" if pilot else "CORRECTION_FORMAT_PASSED") if passed else failure_status,
             "exit_code": 0 if passed else failure_rc,
             "failure_reason": f"{type(fatal).__name__}: {str(fatal)[:250]}" if fatal else None,
             "input": info, **metrics, "selected_rows": len(selected),
             "original_concat_sha256": original_spec["concat_sha256"],
             "accepted_groups_by_language": dict(accepted), "expected_groups_by_language": dict(expected),
+            "wired_groups_by_language": dict(wired), "wire_passed": wire_passed,
+            "quality_screen_passed": quality_passed, "student_training_allowed": bool(not pilot and quality_passed),
+            "pipeline_formatted_response_counts_by_language": metrics["accepted_groups"],
             "selected_concat_sha256": spec["concat_sha256"] if spec else None,
             "review_journal_sha256": review["concat_sha256"] if review else None,
             "teacher_truth": "PSEUDO_UNVERIFIED", "semantic_quality": "MANUAL_REVIEW_REQUIRED",
@@ -598,12 +742,16 @@ def correct(target, info):
         print("[CORRECTION_DIAGNOSTIC] " + json.dumps({"mode": info.get("mode"),
             "status": report["status"], "exit_code": report["exit_code"],
             "accepted_groups_by_language": report["accepted_groups_by_language"],
+            "wired_groups_by_language": report["wired_groups_by_language"],
+            "wire_passed": report["wire_passed"],
+            "quality_screen_passed": report["quality_screen_passed"],
+            "student_training_allowed": report["student_training_allowed"],
             "required_groups_by_language": report["required_groups_by_language"],
             "response_cause_counts": report["response_cause_counts"],
             "selected_rows": report["selected_rows"], "student_training": "NOT_RUN"},
             ensure_ascii=False, sort_keys=True), flush=True)
     if not passed:
-        raise GateNegative("correction format/length screen below75% per language; partial preserved")
+        raise GateNegative("four-profile technical wiring incomplete" if pilot else "full correction content/context screen below75% per language; partial preserved")
     return report
 
 
@@ -746,7 +894,8 @@ def main():
             print(json.dumps(info, ensure_ascii=False, sort_keys=True))
             return 0
         began = time.monotonic()
-        if args.mode in ("parent-b", "correct-pilot", "correct", "train-a", "train-b"):
+        choice_report = choose_effort(info) if args.mode == "choose-effort" else None
+        if args.mode in ("parent-b", "effort-panel", "correct-pilot", "correct", "train-a", "train-b"):
             idle_before_gpu()
         target.mkdir(parents=True, exist_ok=False)
         # Full96 teacher work is conditional on the short four-profile gate.
@@ -754,6 +903,10 @@ def main():
         with wall_limit(info["hard_wall_sec"]):
             if args.mode == "parent-b":
                 report = parent_baseline(target, info)
+            elif args.mode == "effort-panel":
+                report = effort_panel(target, info)
+            elif args.mode == "choose-effort":
+                report = choice_report
             elif args.mode in ("correct", "correct-pilot"):
                 report = correct(target, info)
             elif args.mode == "prepare":

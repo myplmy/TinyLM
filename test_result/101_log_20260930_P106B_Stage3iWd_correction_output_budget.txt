@@ -1,0 +1,94 @@
+Four-profile output-budget recovery, same source0/32/64/65 and seeds. Low temperature1 top_p0.95 top_k20 min_p0.05 presence0 repeat1. Output6144 context8192. Preserve reasoning only in raw sidecar, canonical/ChatML remain code-owned. Language75 percent threshold is unchanged; first gate only, no student training.
+
+==============================================================================
+[runlog] 2026-09-30 20:28:40  name=P106B_Stage3iWd_correction_output_budget
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_education_followup.py
+==============================================================================
+.........[PIPELINE_ITEM] {"id": "failure1", "language": "ko", "rows": 0, "status": "PIPELINE_PROCESSING_ERROR"}
+...[PIPELINE_ITEM] {"id": "C_000_try1", "language": "ko", "rows": 2, "status": "MULTI_FORMAT_READY"}
+[PIPELINE_ITEM] {"id": "C_001_try1", "language": "ko", "rows": 2, "status": "MULTI_FORMAT_READY"}
+[PIPELINE_ITEM] {"id": "C_002_try1", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_003_try1", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_004_try1", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_005_try1", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_006_try1", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_007_try1", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_008_try1", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_009_try1", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_010_try1", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_011_try1", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_012_try1", "language": "en", "rows": 2, "status": "MULTI_FORMAT_READY"}
+[PIPELINE_ITEM] {"id": "C_013_try1", "language": "en", "rows": 2, "status": "MULTI_FORMAT_READY"}
+[PIPELINE_ITEM] {"id": "C_014_try1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_015_try1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_016_try1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_017_try1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_018_try1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_019_try1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_020_try1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_021_try1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_022_try1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_023_try1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[CORRECTION_DIAGNOSTIC] {"accepted_groups_by_language": {"en": 12, "ko": 12}, "exit_code": 0, "mode": null, "required_groups_by_language": {"en": 9, "ko": 9}, "response_cause_counts": {"STOPPED_FINAL_PRESENT": 24}, "selected_rows": 28, "status": "CORRECTION_FORMAT_PASSED", "student_training": "NOT_RUN"}
+.[PIPELINE_ITEM] {"id": "resource1", "language": "ko", "rows": 0, "status": "PIPELINE_PROCESSING_ERROR"}
+...
+----------------------------------------------------------------------
+Ran 16 tests in 0.248s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 20:28:41)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 20:28:41  name=P106B_Stage3iWd_correction_output_budget
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_pipeline_gates.py
+==============================================================================
+[PASS] A2-only integration exact128/one-slot/overlap contract; GPU NOT_RUN
+..[OVERLAP_SUMMARY] {"arms": [{"accepted_groups": {"en": 6, "ko": 4}, "canonical_rows": 10, "partial_arm": true, "phase_wall_sec": 0.5, "text_sha256": "fixture"}], "causal_speed_claim": false, "exit_code": 8, "identical_generated_text": false, "input": {"mode": "recovery"}, "limit": "fixed serial-first order/cold compile remain; functional gate only", "reason": "GateNegative: fixed cohort insufficient", "schema": "P106B_OVERLAP_GATE_V1", "serial_over_overlap_wall_ratio": null, "status": "GATE_NEGATIVE", "wall_sec": 0.0004503520904108882}
+.[PASS] A1 paired order/speed/format gate; GPU NOT_RUN
+..[PASS] A2 bounded queue/stop/content comparison; model/GPU NOT_RUN
+..[PIPELINE_ITEM] {"id": "fixture0", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture2", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture3", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "fixture_duplicate", "language": "en", "rows": 0, "status": "EXACT_DUPLICATE"}
+.[PASS] integration five evidence artifacts/four methods/one-update semantics; GPU NOT_RUN
+....
+----------------------------------------------------------------------
+Ran 12 tests in 0.049s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 20:28:42)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 20:28:42  name=P106B_Stage3iWd_correction_output_budget
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_education_followup.py --check-only --mode correct-pilot
+==============================================================================
+{"baseline_evidence": {"observed_first_pass": 0, "observed_within3_pass": 0, "path": "HF/sft_ready/p106b_teacher_sft/v29_corrected_lineage_pilot/parent-b/report.json", "recorded_commit": "20cef06", "scope": "existing observed parent evidence only; recovery pipeline GPU NOT_RUN", "sha256": "38E1EB39FF0D14F7E8BCDB4C9614553A5CBBE93EDA2E2353E0FB7690F8C7F399"}, "code_sha256": "3E4BE9D8EC73B2D0929A936C4C6D8EAC1C73C0A1BF4231801CD6CD1BAFB0B7D5", "context": 8192, "formal_train_ready": false, "groups_per_language": {"en": 2, "ko": 2}, "hard_wall_sec": 7200, "max_output": 6144, "maximum_attempts_per_group": 3, "mode": "correct-pilot", "runtime_contract": {"scripts/p106b_gate_runtime.py": "319459598EABD9075D5197E91B1A0B03E90B733C9F921A8F96D5CA9812BC4EC9", "scripts/p106b_multi_answer.py": "1F3161A4AFDE19888B3877A67734F48843E1DC651806C8F08E1331E1B55C9BAF", "scripts/p106b_pipeline.py": "ADD4A090F58B641711B595017A295064AE44A5B656AEE69806C552E8F512EAF9", "scripts/p106b_repeat4_gate.py": "6AB042FDBE906A24ABF2779CD12ADB5B7DF7E5D9F36412C964F7CD6079E35188", "scripts/p106b_teacher_format.py": "337FE84524312E29F1E3A07F235A55F5893A1CBF08446520C493866826C8EF6D", "scripts/train_sft_p090.py": "CF01D75F21562D6195A6A620A483468CAC736A02B6AC2DB7EF70211E19670E34", "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"}, "schema": "P106B_EDUCATION_PREFLIGHT_V1", "server_sha256": "F0321669B20397593E3AC09972BF6F4B7A0684954906565353B7CA84B4B0320F", "source_group_indices": [0, 32, 64, 65], "source_groups": 4, "source_manifest_sha256": "CBC350C7AEA4C6F8F46904207F5EF517D9A11395EB4C67E16A32ECD5201023A5", "teacher_model_sha256": "53107F530AA52EB00912263AB1EE29BD199261C87CD7B4AD4CA1318C1FE33EE3", "teacher_sampler": {"min_p": 0.05, "presence_penalty": 0.0, "reasoning_effort": "low", "repeat_penalty": 1.0, "stream": false, "temperature": 1.0, "top_k": 20, "top_p": 0.95}, "teacher_truth": "PSEUDO_UNVERIFIED"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-09-30 20:28:44)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-09-30 20:28:44  name=P106B_Stage3iWd_correction_output_budget
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_education_followup.py --execute --mode correct-pilot
+==============================================================================
+[PIPELINE_ITEM] {"id": "C_000_try1", "language": "ko", "rows": 0, "status": "INCOMPLETE"}
+[PIPELINE_ITEM] {"id": "C_000_try2", "language": "ko", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_032_try1", "language": "en", "rows": 1, "status": "TAGGED_COMPLETE"}
+[PIPELINE_ITEM] {"id": "C_064_try1", "language": "ko", "rows": 2, "status": "MULTI_FORMAT_READY"}
+[PIPELINE_ITEM] {"id": "C_064_try2", "language": "ko", "rows": 2, "status": "MULTI_FORMAT_READY"}
+[PIPELINE_ITEM] {"id": "C_064_try3", "language": "ko", "rows": 0, "status": "INCOMPLETE"}
+[PIPELINE_ITEM] {"id": "C_065_try1", "language": "en", "rows": 2, "status": "MULTI_FORMAT_READY"}
+[CORRECTION_DIAGNOSTIC] {"accepted_groups_by_language": {"en": 2, "ko": 1}, "exit_code": 8, "mode": "correct-pilot", "required_groups_by_language": {"en": 2, "ko": 2}, "response_cause_counts": {"OUTPUT_LIMIT_PARTIAL_FINAL": 1, "OUTPUT_LIMIT_REASONING_ONLY": 1, "STOPPED_FINAL_PRESENT": 5}, "selected_rows": 4, "status": "GATE_NEGATIVE", "student_training": "NOT_RUN"}
+[GATE_NEGATIVE] GateNegative: correction format/length screen below75% per language; partial preserved
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 9.1분  (2026-09-30 20:37:49)
+==============================================================================

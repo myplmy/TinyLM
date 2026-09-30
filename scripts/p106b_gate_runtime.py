@@ -112,8 +112,14 @@ def teacher_inputs():
 
 class TeacherSession:
     """One weight copy, explicit slots/context; never started by check-only."""
-    def __init__(self, context: int, slots: int = 1, require_free: int = 2048):
+    def __init__(self, context: int, slots: int = 1, require_free: int = 2048, *,
+                 effort: str = "low", thinking_budget: int | None = None):
+        if effort not in {"low", "medium", "xhigh", "none"}:
+            raise ValueError("unsupported teacher effort label")
+        if thinking_budget is not None and (type(thinking_budget) is not int or thinking_budget <= 0):
+            raise ValueError("positive numerical thinking budget required")
         self.context, self.slots, self.require_free = context, slots, require_free
+        self.effort, self.thinking_budget = effort, thinking_budget
         self.port, self.key = _free_port(), __import__("secrets").token_hex(24)
         self.process = None
         self.stop = threading.Event()
@@ -168,9 +174,9 @@ class TeacherSession:
     def url(self, route: str) -> str:
         return f"http://127.0.0.1:{self.port}{route}"
 
-    def count_prompt(self, messages: list[dict], per_slot_context: int, maximum: int) -> dict:
+    def count_prompt(self, messages: list[dict], per_slot_context: int, maximum: int, *, effort=None) -> dict:
         formatted = _http_json(self.url("/apply-template"), self.key,
-                              {"messages": messages, "reasoning_effort": "low"}, timeout=10)
+                              {"messages": messages, "reasoning_effort": effort or self.effort}, timeout=10)
         if not isinstance(formatted.get("prompt"), str):
             raise ToolFailure("teacher applied template missing")
         encoded = _http_json(self.url("/tokenize"), self.key,
@@ -183,11 +189,14 @@ class TeacherSession:
                 "max_output": maximum, "reserve": 128,
                 "decision": "DIRECT" if size + maximum + 128 <= per_slot_context else "COMPRESSION_REQUIRED"}
 
-    def complete(self, messages: list[dict], seed: int, maximum: int) -> dict:
+    def complete(self, messages: list[dict], seed: int, maximum: int, *, effort=None) -> dict:
         self.check_monitor()
+        payload = {"messages": messages, **THINKING_SAMPLER,
+                   "reasoning_effort": effort or self.effort, "max_tokens": maximum, "seed": seed}
+        if self.thinking_budget is not None:
+            payload["thinking_budget_tokens"] = self.thinking_budget
         reply = _http_json(self.url("/v1/chat/completions"), self.key,
-            {"messages": messages, **THINKING_SAMPLER, "reasoning_effort": "low",
-             "max_tokens": maximum, "seed": seed}, timeout=240)
+            payload, timeout=max(240, 600 if maximum > 6144 else 240))
         self.check_monitor()
         return reply
 
@@ -216,6 +225,22 @@ class TeacherSession:
         _kill_group(self.process)
         for worker in self.workers:
             worker.join(timeout=6)
+
+
+class EffortView:
+    """Per-request controls on one server; no weight duplication or shared mutation."""
+    def __init__(self, session, effort):
+        if effort not in {"low", "medium", "xhigh"}:
+            raise ValueError("unknown paired-panel effort")
+        self.session, self.effort = session, effort
+        self.thinking_budget = session.thinking_budget
+        self.key = session.key
+
+    def count_prompt(self, messages, context, maximum):
+        return self.session.count_prompt(messages, context, maximum, effort=self.effort)
+
+    def complete(self, messages, seed, maximum):
+        return self.session.complete(messages, seed, maximum, effort=self.effort)
 
 
 def idle_before_gpu() -> None:

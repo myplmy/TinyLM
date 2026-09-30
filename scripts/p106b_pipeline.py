@@ -90,14 +90,16 @@ class CandidateWriter:
         self.seen = set()
         self.response_diagnostics, self.response_causes = {}, Counter()
 
-    def request(self, session, job, ident, seed, *, count=1, per_slot=3072, maximum=2048):
+    def request(self, session, job, ident, seed, *, count=1, per_slot=3072, maximum=2048, dedupe_scope=""):
         validate_job_contract(job)
         messages = (teacher_prompt(job["teacher_task"], job["target_language"], job["source_payload"])
                     if count == 1 else multi_prompt(job, count))
         admission = session.count_prompt(messages, per_slot, maximum)
         record = {"generation_id": ident, "source": job, "admission": admission,
                   "accepted_for_training": False, "semantic_truth": "PSEUDO_UNVERIFIED",
-                  "seed": seed, "reasoning_effort": "low", "requested_answers": count}
+                  "seed": seed, "reasoning_effort": getattr(session, "effort", "UNRECORDED_LABEL"),
+                  "thinking_budget_tokens_requested": getattr(session, "thinking_budget", None),
+                  "requested_answers": count, "dedupe_scope": dedupe_scope}
         rows = []
         t0 = time.monotonic()
         backend, processing_error, processing_exception, reply = None, None, None, None
@@ -146,7 +148,7 @@ class CandidateWriter:
         diagnostic = response_diagnostic(reply, maximum)
         record["response_diagnostic"] = diagnostic
         with self.lock:
-            fingerprints = [hashlib.sha256(json.dumps(row["messages"],
+            fingerprints = [dedupe_scope + ":" + hashlib.sha256(json.dumps(row["messages"],
                 ensure_ascii=False, sort_keys=True).encode()).hexdigest() for row in rows]
             if len(set(fingerprints)) != len(fingerprints) or any(h in self.seen for h in fingerprints):
                 record["screen_status"] = "EXACT_DUPLICATE"

@@ -4,6 +4,8 @@
 
 ## 1. 왜 — 질문을 두 개로 나눈다
 
+> **2026-09-30 최신 iWd~mWc 실행 회수:** [결과101 §36](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 교사7요청 중5건은 완결됐지만 한국어 다중답의 입력 질문 오조어와 새 오조어가 선별에서 거부됐다. 기존 질문 문자열 보존 지시와 내용검사가 충돌했고 retry는 실제 문제 문구를 알려주지 않았다. 전체96 교정·두 학생 교육은 선결8로 **NOT_RUN**이다. 사용자 승인 A에 따라 질문의 의도 보존/오조어 수리와 위치별 피드백을 구현하고, 새 v32에서 소형 배선과 전체 내용 문턱을 분리한다. 사고8,192·총출력16,384·문맥32,768의 같은4문항 low/medium/xhigh 12요청 대응 시험부터 진행하며 설정은 사용자가 고른다. 옛 유효 음성·B 부모 기준선은 그대로 보존한다. 새 실행은 아직 사용자 **NOT_RUN**이다.
+
 > **2026-09-30 h~m 실행 회수:** [결과101 §34](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 B 부모평가는 완료했지만 고정8질문×3시도 전부 답/형식미달(0/8), native4prefix도 반복을 보였다. 실제 B 학습캐시의ChatML ID3/4는train597.995M/val3.005M에0회다. C는미등록변환enum·writer/reader 경로불일치로종료9, 후속j/k/l/m은선결8·모델/교육0이다. 기존v29원본을보존하고 사용자 A선택의 **기존B관측 기준선 유지→작은C4프로필→전체C→B/A**를새v30·새단계로준비했다. GPU복구/교육은NOT_RUN이다.
 
 > **2026-09-30 11:34 실행 회수:** [결과101 §33](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 새 smoke43/0/0/0 뒤 Stage3fWb는 단일 슬롯 교사42요청·신규64행+보존64행/실제대화24,187·지도17,110·optimizer1을 완료했다. checkpoint0이므로 새 교육은 원래 부모에서 시작한다. 형식 재시도는6개 task를 회복했지만 고정16답 부분검토에 일본어 혼입·부자연한 한국어가 남았다. 사용자 **C 자료교정→B chat32 부모 우선·A 기존 학생 대조**를 승인했고, B 부모의 데이터·학습 여부·실제 답안을 먼저 평가하도록 요청했다. 아래 Stage3hW~3mW의 코드·런처를 준비하며 모델 실행은 사용자 소유다.
@@ -358,7 +360,33 @@ C4는 좁은 SFT-val CE3.700334→3.571472로 개선됐지만, 같은 base full-
 
 ## 6. 비용·자원
 
-### Stage3iWd~3mWc — 출력 예산 복구와 조건부 교육 (사용자 A 승인)
+### Stage3nW/3n0W·3iWf~3mWd — 프롬프트 수리·사고상한 대응비교·배선/내용 분리 (사용자 두 A안)
+
+**계기/예측 대조:** [결과101 §36](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md). 구v31 소형은실제KO다중답을2회완결했지만입력질문의오조어보존과내용검사가충돌해선택KO1/2·뒤5단교육0이었다. 이는출력이전혀없던v30과다르며포기의근거가아니다. 기존clean fixture가실제bad-question echo를시험하지않은빈틈을추가회귀로막는다.
+
+**새 질문:** (1) 의도를보존하되질문/답의오조어를수리하라는명확한계약과위치별feedback이오류를줄이는가? (2) 동일한8K 사고/16K 전체/32K문맥에서요청low/medium/xhigh의실제완결·유효후보tok/s/원답은어떻게다른가? (3) 소형배선과전체내용gate를분리해도문제후보의학습을막는가?
+
+**상한·실행분리:** total16,384는사고+최종답합계이며top-levelthinking_budget_tokens8,192를별도전달한다. 숫자값요청과실효사고토큰관측을같다고부르지않는다. 현재바이너리정적지원/공식문서·GGUFheader는확인했으나새효과/32Kpeak는NOT_RUN이다. modelcard의low경고와local4문항low83.406/medium121.882초라는반대관측을함께보존한다. 명시xhigh의우위는미확인이다. none/high로임의전환하지않고thinking sampler1/.95/20/.05/0/1을유지한다.
+
+| 새 단계·실물 | 선결/질문/판정 | 예상비용 |
+|---|---|---|
+| Stage3nW [실물SH](../run_P106B_Stage3nW_effort_upper_budget_panel.sh) | 같은4프로필 low/medium/xhigh·12요청·순서교차/seed고정·8K사고/16K합계/32Kctx | 1h·모델단계hard2h |
+| Stage3n0W [실물SH](../run_P106B_Stage3n0W_effort_choice.sh) | 패널원답/비율검토후TTY 번호선택·자동채택없음 | 0.1h·모델단계hard2h |
+| Stage3iWf [실물SH](../run_P106B_Stage3iWf_wire_content_gate.sh) | 선택effort·4프로필 actual파서/양mask·문제행선별/정확feedback | 0.75h·모델단계hard2h |
+| Stage3iWg [실물SH](../run_P106B_Stage3iWg_teacher_correction_feedback.sh) | 소형wire성공·현재choice/source/code·96교정·언어당48중≥36 | 4h·hard6h |
+| Stage3jWd [실물SH](../run_P106B_Stage3jWd_shared_corpus_feedback.sh) | 전체교정성공/선택SHA·양tokenizer·개념/질문split | 0.1h·모델단계hard2h |
+| Stage3kWd [실물SH](../run_P106B_Stage3kWd_chat32_repeat4_feedback.sh) | 공통raw·B14chat32 exact부모·새feedback태그·4pass | 0.75h·모델단계hard2h |
+| Stage3lWd [실물SH](../run_P106B_Stage3lWd_legacy_repeat4_feedback.sh) | 같은공통raw·A20legacy exact부모·새feedback태그·4pass대조 | 0.75h·모델단계hard2h |
+| Stage3mWd [실물SH](../run_P106B_Stage3mWd_lineage_pair_feedback.sh) | 두현재교육/child/원답/commonraw SHA·자기CE 변화만 | 0.1h·모델단계hard2h |
+
+**gate 계약:** v32/CORRECTION_V2. 소형pilot는4프로필에각1회이상엄격파서/양어휘 길이·mask·teacher자원계약이있으면CORRECTION_WIRING_PASSED다. 나쁜내용은여전히selected에서제외하며pilot의student_training_allowed=false다. 전체96은기존언어별75% 내용/문맥/자료량·사유저장을유지하고CORRECTION_FORMAT_PASSED 이후에만공통자료를만든다. 옛v31 결과를새기준으로PASS소급하지않는다.
+
+**선택과종속성:** 첫권고는새smoke뒤nW 대응12요청만이다. 원답을후속판독한사용자가n0W에서기술적으로4프로필을완성한effort를선택해야뒤pilot/full이열린다. 선택없는무인큐는HOLD8이며default를몰래채택하지않는다. 이후B/A는같은공통raw·micro8/accum16상한·ckptON·compile·MuonRMS4/LR1e-4·정확4pass, 자기native/SFT CE 전후·first/within3·원답/child를보존한다. 실제corpus token/업데이트수는j단계전미정이다.
+
+**한계/예측:** 문구명확화와더큰총예산이완결을도울수있지만잘못된의학·논리정보를truth로보장하지않는다. 질문복잡도/언어/parent/어휘·구조교락을유지한다. 패널은4문항/각1응답의처리율진단이지정답성순위가아니다. 전체96의최악288요청은16K상한을모두쓰면6h도넘을수있어부분증거/제한사유를보존한다. 새예상합계7.55h는조건부이며시간충전을위한중복생성을하지않는다.
+
+
+### Stage3iWd~3mWc — 실행 회수: 완결 후내용음성·교육0
 
 **질문/예측:** v30에서 실제5응답이4,096 출력 상한에 닿았고 KO다중답은3회 모두 사고에서 절단됐다. 출력6,144·문맥8,192로 늘리면 완결률을 회복할 수 있는지 같은 원천0/32/64/65·seed·low·권장 sampler로 먼저 확인한다. 더 긴 사고·새 답의 길이 초과·원천 내용 결함이 남아 실패할 수도 있다. 소형2그룹/언어는 여전히각2수락이 필요하며 전체3/4로 한국어 미달을 덮지 않는다.
 
@@ -366,12 +394,12 @@ C4는 좁은 SFT-val CE3.700334→3.571472로 개선됐지만, 같은 base full-
 
 | 새 단계·실물 런처 | 선결·수행 | 판정/예상 비용 |
 |---|---|---|
-| Stage3iWd [출력 예산 소형 시험](../run_P106B_Stage3iWd_correction_output_budget.sh) | 새 smoke 네 값0·same4profile·6144/8192·정확 length/사고/최종 진단 | KO/EN 각각2/2·GDN/계측·양어휘화면. 교사 단독·학생0, 예상0.5h/hard2h |
-| Stage3iWe [전체 교정](../run_P106B_Stage3iWe_teacher_correction_budget.sh) | iWd 실제 통과·현재 source/code·96질문군 | 언어당48그룹중≥36·원형/교정/사유/재시도. 예상3h/hard6h·학생0 |
-| Stage3jWc [공통 자료](../run_P106B_Stage3jWc_corrected_shared_corpus_budget.sh) | 전체 C 통과·선택 SHA·양 tokenizer | 동일 개념/질문 split·실제token/mask·probe 정확겹침0. CPU0.1h |
-| Stage3kWc [chat32 B 교육](../run_P106B_Stage3kWc_chat32_corrected_repeat4_budget.sh) | 공통 자료·B exact 부모·disk≥2GiB·새budget태그 | 기존 micro8/accum16상한·ckptON·compile·MuonRMS4/LR1e-4·정확4pass·자기CE전후/first/within3 원답. 예상0.75h/hard2h |
-| Stage3lWc [legacy A 대조](../run_P106B_Stage3lWc_legacy_corrected_repeat4_budget.sh) | 같은 공통 자료·A exact 부모·disk≥2GiB·새budget태그 | 같은4pass/설정, B 실패와 독립. 예상0.75h/hard2h |
-| Stage3mWc [원답 비교](../run_P106B_Stage3mWc_corrected_lineage_pair_budget.sh) | 두 교육 report/child/answer/commonraw SHA | first/within3 분리·자기native CE 변화만·어휘/부모/구조 교락. CPU0.1h |
+| Stage3iWd [출력 예산 소형 시험](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) | 새 smoke 네 값0·same4profile·6144/8192·정확 length/사고/최종 진단 | KO/EN 각각2/2·GDN/계측·양어휘화면. 교사 단독·학생0, 예상0.5h/hard2h |
+| Stage3iWe [전체 교정](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) | iWd 실제 통과·현재 source/code·96질문군 | 언어당48그룹중≥36·원형/교정/사유/재시도. 예상3h/hard6h·학생0 |
+| Stage3jWc [공통 자료](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) | 전체 C 통과·선택 SHA·양 tokenizer | 동일 개념/질문 split·실제token/mask·probe 정확겹침0. CPU0.1h |
+| Stage3kWc [chat32 B 교육](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) | 공통 자료·B exact 부모·disk≥2GiB·새budget태그 | 기존 micro8/accum16상한·ckptON·compile·MuonRMS4/LR1e-4·정확4pass·자기CE전후/first/within3 원답. 예상0.75h/hard2h |
+| Stage3lWc [legacy A 대조](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) | 같은 공통 자료·A exact 부모·disk≥2GiB·새budget태그 | 같은4pass/설정, B 실패와 독립. 예상0.75h/hard2h |
+| Stage3mWc [원답 비교](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) | 두 교육 report/child/answer/commonraw SHA | first/within3 분리·자기native CE 변화만·어휘/부모/구조 교락. CPU0.1h |
 
 **비용·한계:** 예상 합계5.2h이며 소형부터 조건부다. 기존419.242초/4그룹을96그룹으로 확장하면2.795h여서 종전 full-C hard2h는 부족할 수 있다. 새6144의 실제 소요/수락률은 미확인이라 전체 교정은 예상3h·hard6h로 제한한다. HTTP timeout240초는 유지한다. 전체 최악288요청이 모두 상한을 채우면6h도 부족할 수 있으며 그 경우 부분 원형/실패 사유를 보존한다. GPU시간을48h로 채우려고 같은 질문·원형을 재생성하지 않는다. 후보자료가 없어서 교육을 막은 상태와 교육 자체의 품질 실패를 구분한다. KO/EN 질문 복잡도가 달라 언어 단독 비교가 아니고, 형식 수락/CPU16+12회귀는 의미·교사 truth·새GPU/학습 성공을 보장하지 않는다.
 
