@@ -358,7 +358,28 @@ C4는 좁은 SFT-val CE3.700334→3.571472로 개선됐지만, 같은 base full-
 
 ## 6. 비용·자원
 
-### Stage3iWb~3mWb — 2026-09-30 연결 오류 복구 (사용자 A 승인)
+### Stage3iWd~3mWc — 출력 예산 복구와 조건부 교육 (사용자 A 승인)
+
+**질문/예측:** v30에서 실제5응답이4,096 출력 상한에 닿았고 KO다중답은3회 모두 사고에서 절단됐다. 출력6,144·문맥8,192로 늘리면 완결률을 회복할 수 있는지 같은 원천0/32/64/65·seed·low·권장 sampler로 먼저 확인한다. 더 긴 사고·새 답의 길이 초과·원천 내용 결함이 남아 실패할 수도 있다. 소형2그룹/언어는 여전히각2수락이 필요하며 전체3/4로 한국어 미달을 덮지 않는다.
+
+**기존 계약 유지:** 교사는 항목 라벨만 출력하고 JSON/ChatML/role/mask는 코드가 만든다. 사고는 raw sidecar에만 남고 학생 target에는 넣지 않는다. `temperature=1.0, top_p=0.95, top_k=20, min_p=0.05, presence_penalty=0.0, repeat_penalty=1.0`, 최대3시도·언어별75%·양어휘1024 길이/마스크·B 부모 관측 기준선 잠금은 유지한다. `v31_correction_budget_recovery_lineage_pilot`와 budget child 태그로 출력한다. 구v29/v30·부모·원로그는 불변이다.
+
+| 새 단계·실물 런처 | 선결·수행 | 판정/예상 비용 |
+|---|---|---|
+| Stage3iWd [출력 예산 소형 시험](../run_P106B_Stage3iWd_correction_output_budget.sh) | 새 smoke 네 값0·same4profile·6144/8192·정확 length/사고/최종 진단 | KO/EN 각각2/2·GDN/계측·양어휘화면. 교사 단독·학생0, 예상0.5h/hard2h |
+| Stage3iWe [전체 교정](../run_P106B_Stage3iWe_teacher_correction_budget.sh) | iWd 실제 통과·현재 source/code·96질문군 | 언어당48그룹중≥36·원형/교정/사유/재시도. 예상3h/hard6h·학생0 |
+| Stage3jWc [공통 자료](../run_P106B_Stage3jWc_corrected_shared_corpus_budget.sh) | 전체 C 통과·선택 SHA·양 tokenizer | 동일 개념/질문 split·실제token/mask·probe 정확겹침0. CPU0.1h |
+| Stage3kWc [chat32 B 교육](../run_P106B_Stage3kWc_chat32_corrected_repeat4_budget.sh) | 공통 자료·B exact 부모·disk≥2GiB·새budget태그 | 기존 micro8/accum16상한·ckptON·compile·MuonRMS4/LR1e-4·정확4pass·자기CE전후/first/within3 원답. 예상0.75h/hard2h |
+| Stage3lWc [legacy A 대조](../run_P106B_Stage3lWc_legacy_corrected_repeat4_budget.sh) | 같은 공통 자료·A exact 부모·disk≥2GiB·새budget태그 | 같은4pass/설정, B 실패와 독립. 예상0.75h/hard2h |
+| Stage3mWc [원답 비교](../run_P106B_Stage3mWc_corrected_lineage_pair_budget.sh) | 두 교육 report/child/answer/commonraw SHA | first/within3 분리·자기native CE 변화만·어휘/부모/구조 교락. CPU0.1h |
+
+**비용·한계:** 예상 합계5.2h이며 소형부터 조건부다. 기존419.242초/4그룹을96그룹으로 확장하면2.795h여서 종전 full-C hard2h는 부족할 수 있다. 새6144의 실제 소요/수락률은 미확인이라 전체 교정은 예상3h·hard6h로 제한한다. HTTP timeout240초는 유지한다. 전체 최악288요청이 모두 상한을 채우면6h도 부족할 수 있으며 그 경우 부분 원형/실패 사유를 보존한다. GPU시간을48h로 채우려고 같은 질문·원형을 재생성하지 않는다. 후보자료가 없어서 교육을 막은 상태와 교육 자체의 품질 실패를 구분한다. KO/EN 질문 복잡도가 달라 언어 단독 비교가 아니고, 형식 수락/CPU16+12회귀는 의미·교사 truth·새GPU/학습 성공을 보장하지 않는다.
+
+**실행/예측 대조:** [결과101 §35](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 음성과 원답을 그대로 유지한다. 새 단계는 구현/정적 준비이고 GPU·교정 완결·학생 교육은 NOT_RUN이다. 새 관측 전 문턱 변경·원본 삭제·B baseline 중복 평가를 하지 않는다.
+
+### Stage3iWb~3mWb — 2026-09-30 연결 복구 실행 회수: 소형 음성·후속 선결 차단
+
+**2026-09-30 실측/예측 대조:** [결과101 §35](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md). 실제 C 연결은 수락4행까지 정상화됐으나 KO다중답3시도가 모두 사고에서 length4096로 절단됐다. 총8요청5length·KO1/2/EN2/2로 언어별75% 미달, 뒤5단은 선결8·교육0이다. 과거 코드enum/주소실패와 새 출력예산 음성을 구분하며 언어별 문턱은 낮추지 않는다. 위 v30 표는 실행 이력이고 현재 권고는 아래 새 단계다.
 
 **목적/예측.** C의학습자료수/교사정답성 판정전에 미등록source_transform·서로다른출력주소·처리예외raw누락을고친다. 작은시험은같은공개v28의원group 인덱스0/32/64/65로한영단일답/다중답4프로필을덮는다. registered `teacher_repair`로actualjob을교사호출전에validating하고작성/소비주소는 `stage_directory()` 하나가소유한다. 실제C→JSON/ChatML/mask/후속split을호출하는CPU회귀의2실패를먼저재현했으며수정뒤11/11과기존pipeline12/12를통과했다. runtime새실패·길이절단·자연어/내용문제는여전히가능하고형식0을진실성으로승격하지않는다.
 
@@ -366,12 +387,12 @@ C4는 좁은 SFT-val CE3.700334→3.571472로 개선됐지만, 같은 base full-
 
 | 새단계·실물SH | 선결·수행 | 판정/예상비용 |
 |---|---|---|
-| Stage3iWb [소형C연결](../run_P106B_Stage3iWb_correction_wire_pilot.sh) | exact 기존B관측·v28 SHA·4프로필·actual출처검사, 새v30/correction-pilot | 언어당2group 각각ceil75%=2완료·양어휘길이/mask·GDN/sampler, 최대3시도·checkpoint0. 이6후보행은기능표본이지교육corpus가아님. ⚙0.3h·hard2h |
-| Stage3iWc [전체C복구](../run_P106B_Stage3iWc_teacher_correction_recovery.sh) | 새소형report/현재code/hash가PASS인뒤96질문군을v30/correction에작성 | 기존언어당48group≥36·양어휘context/narrow script화면·무중복, 원형/교정/사유/paid reply예외보존. ⚙2h·hard2h·teachertruthUNVERIFIED |
-| Stage3jWb [공통split복구](../run_P106B_Stage3jWb_corrected_shared_corpus_recovery.sh) | v30/correction/selected exact SHA, 부모concept/같은질문을함께분리 | 실제token·mask·exactprobe중복0·v30/prepare. CPU⚙0.1h |
-| Stage3kWb [B4epoch복구](../run_P106B_Stage3kWb_chat32_corrected_repeat4_recovery.sh) | 새공통raw·B자기어휘/parent/cache, 새tag `p106b_s3k_recovery_chat32_s1337` | 기존학습설정·정확4pass·자기CE전후·first/within3/raw/child·토크나이저단독인과금지. ⚙0.75h·hard2h |
-| Stage3lWb [A4epoch복구](../run_P106B_Stage3lWb_legacy_corrected_repeat4_recovery.sh) | 같은새raw·A자기legacy parent/cache, 새tag `p106b_s3l_recovery_a_s1337` | B실패와독립실행 가능·같은4pass/micro8/accum16상한/ckptON/MuonRMS4 LR1e-4. ⚙0.75h·hard2h |
-| Stage3mWb [두계보증거연결](../run_P106B_Stage3mWb_corrected_lineage_pair_recovery.sh) | 새v30 A/B report·commonraw/child/8question SHA | 자체cache 전후·first/within3 원답만짝지음, token CE 교차순위금지. CPU⚙0.1h |
+| Stage3iWb [소형C연결](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) | exact 기존B관측·v28 SHA·4프로필·actual출처검사, 새v30/correction-pilot | 언어당2group 각각ceil75%=2완료·양어휘길이/mask·GDN/sampler, 최대3시도·checkpoint0. 이6후보행은기능표본이지교육corpus가아님. ⚙0.3h·hard2h |
+| Stage3iWc [전체C복구](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) | 새소형report/현재code/hash가PASS인뒤96질문군을v30/correction에작성 | 기존언어당48group≥36·양어휘context/narrow script화면·무중복, 원형/교정/사유/paid reply예외보존. ⚙2h·hard2h·teachertruthUNVERIFIED |
+| Stage3jWb [공통split복구](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) | v30/correction/selected exact SHA, 부모concept/같은질문을함께분리 | 실제token·mask·exactprobe중복0·v30/prepare. CPU⚙0.1h |
+| Stage3kWb [B4epoch복구](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) | 새공통raw·B자기어휘/parent/cache, 새tag `p106b_s3k_recovery_chat32_s1337` | 기존학습설정·정확4pass·자기CE전후·first/within3/raw/child·토크나이저단독인과금지. ⚙0.75h·hard2h |
+| Stage3lWb [A4epoch복구](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) | 같은새raw·A자기legacy parent/cache, 새tag `p106b_s3l_recovery_a_s1337` | B실패와독립실행 가능·같은4pass/micro8/accum16상한/ckptON/MuonRMS4 LR1e-4. ⚙0.75h·hard2h |
+| Stage3mWb [두계보증거연결](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) | 새v30 A/B report·commonraw/child/8question SHA | 자체cache 전후·first/within3 원답만짝지음, token CE 교차순위금지. CPU⚙0.1h |
 
 새v30파일·두학생checkpoint/metadata는write-once이고oldv29/oldtag/HF/cache/checkpoint를수정하지않는다. 전체합계4.0h이며새smoke가맨앞선결이다. 새태그충돌0·정적/CPU PASS, 실제파일내용을학생이어떻게배웠는지/자원/교정의새오류는사용자원본전NOT_RUN이다. 큰300M학습량이나멀티턴능력으로올리지않는다.
 

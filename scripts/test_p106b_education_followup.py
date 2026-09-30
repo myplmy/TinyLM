@@ -40,13 +40,16 @@ class Tests(unittest.TestCase):
     def test_real_correction_to_canonical_roundtrip(self):
         class FakeTeacher:
             key = "fixture"
-            def __init__(self, *_args):
-                pass
+            contexts = []
+            requests = []
+            def __init__(self, context, slots):
+                self.contexts.append((context, slots))
             def __enter__(self):
                 return self
             def __exit__(self, *_args):
                 pass
-            def count_prompt(self, *_args):
+            def count_prompt(self, _messages, context, maximum):
+                self.requests.append((context, maximum))
                 return {"decision": "DIRECT"}
             def complete(self, messages, seed, _maximum):
                 ko = "Korean" in messages[0]["content"]
@@ -86,6 +89,56 @@ class Tests(unittest.TestCase):
                 _train, _val, preview = edu.prepare_preview()
                 self.assertEqual(preview["source_concat_sha256"], report["selected_concat_sha256"])
                 self.assertEqual(len(_train)+len(_val), 28)
+                self.assertEqual(FakeTeacher.contexts, [(8192, 1)])
+                self.assertEqual(FakeTeacher.requests, [(8192, 6144)] * 24)
+                self.assertEqual(report["required_groups_by_language"], {"ko": 9, "en": 9})
+
+    def test_budget_recovery_does_not_reuse_old_output_or_child_tags(self):
+        self.assertEqual(edu.CORRECTION_CONTEXT, 8192)
+        self.assertEqual(edu.CORRECTION_MAX_OUTPUT, 6144)
+        self.assertEqual(edu.BASE.name, "v31_correction_budget_recovery_lineage_pilot")
+        self.assertIn("_budget_", edu.ARMS["a"]["stem"])
+        self.assertIn("_budget_", edu.ARMS["b"]["stem"])
+
+    def test_global_three_of_four_cannot_override_korean_threshold(self):
+        passed, required = edu.correction_gate(True, {"ko": 2, "en": 2}, {"ko": 1, "en": 2}, 4)
+        self.assertEqual(required, {"ko": 2, "en": 2})
+        self.assertFalse(passed)
+        self.assertTrue(edu.correction_gate(True, {"ko": 2, "en": 2}, {"ko": 2, "en": 2}, 6)[0])
+        self.assertFalse(edu.correction_gate(False, {"ko": 2, "en": 2}, {"ko": 2, "en": 2}, 6)[0])
+
+    def test_length_diagnostics_distinguish_reasoning_and_partial_final(self):
+        for final, expected in (("", "OUTPUT_LIMIT_REASONING_ONLY"),
+                                ("[[QUESTION]]\n질문", "OUTPUT_LIMIT_PARTIAL_FINAL")):
+            reply = {"choices": [{"finish_reason": "length", "message": {
+                "content": final, "reasoning_content": "thinking"}}],
+                "usage": {"completion_tokens": 4096, "prompt_tokens": 1412}}
+            row = pipeline.response_diagnostic(reply, 4096)
+            self.assertEqual(row["cause"], expected)
+            self.assertTrue(row["at_requested_output_limit"])
+            self.assertEqual(row["reasoning_chars"], 8)
+            self.assertEqual(row["server_usage"]["completion_tokens"], 4096)
+            row = pipeline.response_diagnostic(reply, 6144)
+            self.assertEqual(row["cause"], "FINISH_LENGTH_OTHER_OR_UNKNOWN_LIMIT")
+
+    def test_diagnostic_cannot_destroy_a_malformed_paid_reply(self):
+        for reply in (None, {}, {"choices": None}, {"choices": "invalid"},
+                      {"choices": [None]}, {"choices": [{"message": None}]}):
+            row = pipeline.response_diagnostic(reply, 6144)
+            self.assertEqual(row["reasoning_chars"], 0)
+            self.assertEqual(row["final_chars"], 0)
+            self.assertEqual(row["cause"], "NO_REPLY" if reply is None else "OTHER_FINISH_REASON")
+
+    def test_length_response_with_closed_fields_is_not_admitted(self):
+        from scripts.p106b_teacher_format import parse_reply
+        from scripts.p106b_multi_answer import parse_multi
+        final = "[[QUESTION]]\n질문\n[[/QUESTION]]\n[[ANSWER]]\n답변\n[[/ANSWER]]"
+        reply = {"choices": [{"finish_reason": "length", "message": {"content": final}}],
+                 "usage": {"completion_tokens": 6144}}
+        self.assertIsNone(parse_reply(reply, language="ko")["parsed_content"])
+        multi = final.replace("[[ANSWER]]", "[[ANSWER_1]]").replace("[[/ANSWER]]", "[[/ANSWER_1]]")
+        reply["choices"][0]["message"]["content"] = multi + "\n[[ANSWER_2]]\n답변2\n[[/ANSWER_2]]"
+        self.assertIsNone(parse_multi(reply, 2, "ko")["parsed"])
 
     def test_small_pilot_contains_all_four_profiles(self):
         plans = edu.correction_plan(self.correction_fixture_rows(), pilot=True)

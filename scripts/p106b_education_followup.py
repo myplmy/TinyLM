@@ -36,7 +36,9 @@ from tinylm.data.sft import conversation_split_key
 V28 = ROOT / "HF/sft_ready/p106b_teacher_sft/v28_integrated_a2_one_slot_low"
 V28_SHA = "CBC350C7AEA4C6F8F46904207F5EF517D9A11395EB4C67E16A32ECD5201023A5"
 OLD_BASE = ROOT / "HF/sft_ready/p106b_teacher_sft/v29_corrected_lineage_pilot"
-BASE = ROOT / "HF/sft_ready/p106b_teacher_sft/v30_correction_recovery_lineage_pilot"
+BASE = ROOT / "HF/sft_ready/p106b_teacher_sft/v31_correction_budget_recovery_lineage_pilot"
+CORRECTION_CONTEXT = 8192
+CORRECTION_MAX_OUTPUT = 6144
 BASELINE_SHA = "38E1EB39FF0D14F7E8BCDB4C9614553A5CBBE93EDA2E2353E0FB7690F8C7F399"
 BASELINE_FUNCTIONS = {"answers":"461A2E397562638006858E66FBF59711099EE645D1647044B789D8477463FA60","load_student":"D7189B898807091903B18AFCE143BB77C9A0179EFCB60DA65D7CEBCC8EC01F7B","native_text_probes":"6C44C41BF1DFDE9C030322623BE236F2DCF30543DB326AA639BB1714F3D499C6","parent_baseline":"B1A6632CB3CDC353E88D5692278679C516CDA192636AB11A611477F94A92A663","parent_baseline_check":"CE90569B9F88D3264F95ABF29279BED660B40466083C63690571B2EA048CCC49","score_answer":"05FC71EFEFF0AF25872C6D185EF5D0E77B9804E3ECB75FE712D57477183ED475"}
 ARMS = {
@@ -45,13 +47,13 @@ ARMS = {
           "tokenizer": "data_cache/tok-ko-en-32768.json",
           "tok_sha": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3",
           "lineage": "legacy", "cache": "data_cache/ko-en_600000000", "layers": 20,
-          "tied": True, "stem": "m100R1c_ko-en_300M_p106b_s3l_recovery_a_s1337"},
+          "tied": True, "stem": "m100R1c_ko-en_300M_p106b_s3l_budget_a_s1337"},
     "b": {"parent": "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt",
           "sha": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
           "tokenizer": "data_cache/tok-ko-en-32768-chat32.json",
           "tok_sha": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
           "lineage": "chat32", "cache": "data_cache/ko-en_601000000_chat32", "layers": 14,
-          "tied": False, "stem": "m100s10_ko-en_300M_p106b_s3k_recovery_chat32_s1337"},
+          "tied": False, "stem": "m100s10_ko-en_300M_p106b_s3k_budget_chat32_s1337"},
 }
 MODES = ("parent-b", "correct-pilot", "correct", "prepare", "train-b", "train-a", "compare")
 
@@ -278,6 +280,7 @@ def check(mode):
     new_directory(target)
     info = {"schema": "P106B_EDUCATION_PREFLIGHT_V1", "mode": mode,
             "code_sha256": sha256_file(Path(__file__)), "runtime_contract": runtime_contract(),
+            "hard_wall_sec": 21600 if mode == "correct" else 7200,
             "formal_train_ready": False}
     if mode == "parent-b":
         info.update(parent_baseline_check())
@@ -298,7 +301,8 @@ def check(mode):
         info.update(source_manifest_sha256=V28_SHA, source_groups=len(groups),
                     source_group_indices=[index for index, _group in plans],
                     groups_per_language=dict(counts), maximum_attempts_per_group=3,
-                    teacher_truth="PSEUDO_UNVERIFIED", max_output=4096, context=6144)
+                    teacher_truth="PSEUDO_UNVERIFIED", max_output=CORRECTION_MAX_OUTPUT,
+                    context=CORRECTION_CONTEXT)
         info.update(teacher_inputs(), teacher_sampler={**THINKING_SAMPLER, "reasoning_effort": "low"})
     elif mode == "prepare":
         _tr, _va, preview = prepare_preview()
@@ -498,6 +502,14 @@ def native_text_probes(base, cfg, tok, directory, label, cache):
             "limit": "script-ratio heuristic and up to4 fixed prefixes; not whole-corpus quality"}
 
 
+def correction_gate(completed, expected, accepted, selected_rows):
+    required = {lang: math.ceil(expected.get(lang, 0) * .75) for lang in ("ko", "en")}
+    passed = (completed and selected_rows > 0
+              and all(required[lang] > 0 and accepted.get(lang, 0) >= required[lang]
+                      for lang in ("ko", "en")))
+    return bool(passed), required
+
+
 def correct(target, info):
     originals = original_rows()
     plans = correction_plan(originals, pilot=info.get("mode") == "correct-pilot")
@@ -510,7 +522,7 @@ def correct(target, info):
     encoders = [Tokenizer.from_file(str(ROOT / spec["tokenizer"])) for spec in ARMS.values()]
     session, completed, fatal = None, False, None
     try:
-        with TeacherSession(6144, 1) as session:
+        with TeacherSession(info.get("context", CORRECTION_CONTEXT), 1) as session:
             for index, group in plans:
                 row = group[0]
                 meta = row["meta"]
@@ -520,9 +532,19 @@ def correct(target, info):
                 for attempt in range(1, 4):
                     if attempt > 1:
                         job["source_payload"]["retry_hint"] = "Close all requested field labels; keep concise, preserve uncertainty. Previous screen: " + status
-                    generated = writer.request(session, job, f"C_{index:03d}_try{attempt}",
-                        20262000 + index * 10 + attempt, count=count, per_slot=6144, maximum=4096)
-                    status = content_screen(generated) if generated else "NO_FORMAT_READY_ROWS"
+                    ident = f"C_{index:03d}_try{attempt}"
+                    generated = writer.request(session, job, ident,
+                        20262000 + index * 10 + attempt, count=count,
+                        per_slot=info.get("context", CORRECTION_CONTEXT),
+                        maximum=info.get("max_output", CORRECTION_MAX_OUTPUT))
+                    diagnostic = writer.response_diagnostics.get(ident, {})
+                    wire_status = diagnostic.get("wire_screen_status")
+                    if generated:
+                        status = content_screen(generated)
+                    elif wire_status == "INCOMPLETE":
+                        status = diagnostic.get("cause", "NO_FORMAT_READY_ROWS")
+                    else:
+                        status = wire_status or "NO_FORMAT_READY_ROWS"
                     if generated and status == "CONTENT_SCREEN_PASS":
                         try:
                             for tok in encoders:
@@ -530,6 +552,7 @@ def correct(target, info):
                         except ValueError:
                             status = "CONTEXT_EXCEEDS_A_OR_B"
                     journal.append({"group": index, "attempt": attempt, "status": status,
+                        "response_diagnostic": diagnostic,
                         "original_generation_ids": [r["meta"]["generation_id"] for r in group],
                         "original_text_sha256": job["source_sha256"], "generated_rows": len(generated),
                         "requested_changes": job["source_payload"]["defects"],
@@ -558,7 +581,7 @@ def correct(target, info):
         spec = write_rows(target, "selected", selected, info) if selected else None
         # Always preserve partial evidence before reporting a negative screen.
         expected = Counter(group[0]["meta"]["language"] for group in groups)
-        passed = completed and all(accepted[lang] >= math.ceil(expected[lang] * .75) for lang in ("ko", "en")) and bool(spec)
+        passed, required = correction_gate(completed, expected, accepted, len(selected))
         failure_status, failure_rc = disposition(fatal) if fatal else ("GATE_NEGATIVE", 8)
         report = {"schema": "P106B_CORRECTION_V1", "status": "CORRECTION_FORMAT_PASSED" if passed else failure_status,
             "exit_code": 0 if passed else failure_rc,
@@ -569,8 +592,16 @@ def correct(target, info):
             "selected_concat_sha256": spec["concat_sha256"] if spec else None,
             "review_journal_sha256": review["concat_sha256"] if review else None,
             "teacher_truth": "PSEUDO_UNVERIFIED", "semantic_quality": "MANUAL_REVIEW_REQUIRED",
+            "required_groups_by_language": required,
             "server": session.evidence() if session else None}
         write_report(target / "report.json", report)
+        print("[CORRECTION_DIAGNOSTIC] " + json.dumps({"mode": info.get("mode"),
+            "status": report["status"], "exit_code": report["exit_code"],
+            "accepted_groups_by_language": report["accepted_groups_by_language"],
+            "required_groups_by_language": report["required_groups_by_language"],
+            "response_cause_counts": report["response_cause_counts"],
+            "selected_rows": report["selected_rows"], "student_training": "NOT_RUN"},
+            ensure_ascii=False, sort_keys=True), flush=True)
     if not passed:
         raise GateNegative("correction format/length screen below75% per language; partial preserved")
     return report
@@ -718,7 +749,9 @@ def main():
         if args.mode in ("parent-b", "correct-pilot", "correct", "train-a", "train-b"):
             idle_before_gpu()
         target.mkdir(parents=True, exist_ok=False)
-        with wall_limit(7200):
+        # Full96 teacher work is conditional on the short four-profile gate.
+        # The old pilot cost already extrapolates beyond the former two-hour cap.
+        with wall_limit(info["hard_wall_sec"]):
             if args.mode == "parent-b":
                 report = parent_baseline(target, info)
             elif args.mode in ("correct", "correct-pilot"):

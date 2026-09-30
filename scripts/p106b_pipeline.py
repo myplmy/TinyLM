@@ -40,6 +40,43 @@ def validate_job_contract(job):
         parent_concept_id=job["parent_concept_id"], source_rights_status=job["rights_status"])
 
 
+def response_diagnostic(reply, maximum):
+    """Observe wire completion without loosening the final-field parser.
+
+    Reasoning/final lengths are characters, not inferred model-token counts.
+    The server completion token count includes both and is retained separately.
+    """
+    choices = reply.get("choices", []) if isinstance(reply, dict) else []
+    choices = choices if isinstance(choices, list) else []
+    choice = choices[0] if len(choices) == 1 and isinstance(choices[0], dict) else {}
+    message = choice.get("message", {})
+    message = message if isinstance(message, dict) else {}
+    usage = reply.get("usage", {}) if isinstance(reply, dict) else {}
+    usage = usage if isinstance(usage, dict) else {}
+    final = message.get("content") or ""
+    reasoning = message.get("reasoning_content") or ""
+    final_chars = len(final) if isinstance(final, str) else None
+    reasoning_chars = len(reasoning) if isinstance(reasoning, str) else None
+    finish = choice.get("finish_reason")
+    completion = usage.get("completion_tokens")
+    at_output_limit = (type(completion) is int and completion >= maximum)
+    if finish == "length" and at_output_limit:
+        if final_chars == 0:
+            cause = "OUTPUT_LIMIT_REASONING_ONLY" if reasoning_chars else "OUTPUT_LIMIT_NO_VISIBLE_CONTENT"
+        else:
+            cause = "OUTPUT_LIMIT_PARTIAL_FINAL"
+    elif finish == "length":
+        cause = "FINISH_LENGTH_OTHER_OR_UNKNOWN_LIMIT"
+    elif finish == "stop":
+        cause = "STOPPED_FINAL_PRESENT" if final_chars else "STOPPED_WITHOUT_FINAL"
+    else:
+        cause = "NO_REPLY" if reply is None else "OTHER_FINISH_REASON"
+    return {"cause": cause, "finish_reason": finish, "requested_max_output": maximum,
+            "at_requested_output_limit": at_output_limit,
+            "server_usage": usage, "reasoning_chars": reasoning_chars, "final_chars": final_chars,
+            "length_units": "characters, not model tokens"}
+
+
 class CandidateWriter:
     def __init__(self, directory, lineage):
         from tokenizers import Tokenizer
@@ -51,6 +88,7 @@ class CandidateWriter:
         self.raw_count = self.row_count = self.completion = self.tokens = self.targets = 0
         self.request_sec = 0.0
         self.seen = set()
+        self.response_diagnostics, self.response_causes = {}, Counter()
 
     def request(self, session, job, ident, seed, *, count=1, per_slot=3072, maximum=2048):
         validate_job_contract(job)
@@ -105,16 +143,21 @@ class CandidateWriter:
                               screen_status="PIPELINE_PROCESSING_ERROR")
                 rows = []
         record["wall_sec"] = round(time.monotonic() - t0, 6)
+        diagnostic = response_diagnostic(reply, maximum)
+        record["response_diagnostic"] = diagnostic
         with self.lock:
             fingerprints = [hashlib.sha256(json.dumps(row["messages"],
                 ensure_ascii=False, sort_keys=True).encode()).hexdigest() for row in rows]
             if len(set(fingerprints)) != len(fingerprints) or any(h in self.seen for h in fingerprints):
                 record["screen_status"] = "EXACT_DUPLICATE"
                 rows = []
+            diagnostic["wire_screen_status"] = record["screen_status"]
             self.raw.append(record)
             flush_row(self.raw)
             self.raw_count += 1
             self.counts[record["screen_status"]] += 1
+            self.response_diagnostics[ident] = diagnostic
+            self.response_causes[diagnostic["cause"]] += 1
             usage = (record.get("teacher", {}).get("usage", {})
                      or (reply.get("usage", {}) if isinstance(reply, dict) else {}) or {})
             self.completion += usage.get("completion_tokens", 0) or 0
@@ -142,6 +185,7 @@ class CandidateWriter:
     def close(self):
         output = {"raw_rows": self.raw_count, "canonical_rows": self.row_count,
                   "status_counts": dict(self.counts), "accepted_groups": dict(self.accepted),
+                  "response_cause_counts": dict(self.response_causes),
                   "teacher_completion_tokens": self.completion, "request_sum_sec": self.request_sec,
                   "student_conversation_tokens": self.tokens, "assistant_targets": self.targets}
         for name, writer, count in (("raw", self.raw, self.raw_count),
