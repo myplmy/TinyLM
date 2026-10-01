@@ -1,0 +1,1863 @@
+CPU/read-only gate. No interactive input or teacher/student loading. Show actual frozen v32 source questions, all effort answers and saved parent/child attempts; recorded lexical and narrow rubric labels are not semantic truth. PASS is only this technical evidence scope.
+
+==============================================================================
+[runlog] 2026-10-01 22:19:11  name=P106B_Stage3pW_saved_answers_view
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/view_p106b_saved_answers.py --mode panel --check-only
+==============================================================================
+[PASS] exact recorded report/shards verified; semantic truth NOT_RUN; model execution0
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-01 22:19:12)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-01 22:19:12  name=P106B_Stage3pW_saved_answers_view
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/view_p106b_saved_answers.py --mode education --check-only
+==============================================================================
+[PASS] exact recorded report/shards verified; semantic truth NOT_RUN; model execution0
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-01 22:19:12)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-01 22:19:12  name=P106B_Stage3pW_saved_answers_view
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/view_p106b_saved_answers.py --mode panel
+==============================================================================
+교사 대응 원답 — 원천별 세 effort. 옛 문자열 화면은 정답/품질 점수가 아닙니다.
+
+원천 C000
+원천 질문: 대학 과제로 양방향 연결 리스트를 구현해야 하는데, 센티넬 노드의 개념을 설명해 주실 수 있을까요?
+
+[low] 실제 요청 순서: ['low', 'medium', 'xhigh']; seed=20262001
+요청 시간=23.274781초; 형식/양어휘 배선=True
+생성 질문: 대학 과제로 양방향 연결 리스트를 구현해야 하는데, 센티넬 노드의 개념을 설명해 주실 수 있을까요?
+답1: 네. 센티넬 노드는 양방향 연결 리스트의 앞, 또는 앞과 뒤에 놓는 실제 데이터가 없는 보조 노드입니다. 이 노드는 리스트의 시작점과 끝점을 대신해 포인터를 연결하는 역할을 하며, 이전(previous) 포인터와 다음(next) 포인터를 가지고 실제 노드와 같은 구조를 합니다.
+
+실제 리스트가 비어 있을 때, 첫 노드나 마지막 노드와 같은 특수 상황을 별도 검사하지 않아도 됩니다. 예를 들어 센티넬의 다음(next) 포인터가 센티넬 자체를 가리키면 리스트에 실제 노드가 없다는, 즉 리스트가 비어 있는 상태라고 볼 수 있습니다. 리스트의 앞쪽 또는 뒷쪽의 노드를 넣을 때는 새 노드의 이전과 다음 포인터를 센티넬과 이웃 노드에 연결한 뒤, 센티넬의 다음 포인터를 새 노드로, 이웃 노드의 이전 포인터를 새 노드로 바꿔 주면 됩니다. 노드를 뺄 때도 이전 노드와 다음 노드의 포인터만 바꿔 주면 되므로, 비어 있는 리스트와 같은 특수 케이스를 따로 처리할 필요가 없어 구현이 단순해집니다.
+과거 검사 관찰(현재 품질 판정 아님): []
+원형/사고 참조: HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel/effort-panel/raw_shards_manifest.json#panel_low_C_000
+
+[medium] 실제 요청 순서: ['low', 'medium', 'xhigh']; seed=20262001
+요청 시간=28.090629초; 형식/양어휘 배선=True
+생성 질문: 대학 과제로 양방향 연결 리스트를 구현해야 하는데, 센티넬 노드의 개념을 설명해 주실 수 있을까요?
+답1: 네, 양방향 연결 리스트의 센티넬 노드 개념을 설명해 드리겠습니다.
+
+양방향 연결 리스트는 노드로 이루어진 시퀀스입니다. 각 노드는 값과 두 개의 포인터를 포함하는데, 하나는 시퀀스의 이전 노드를 가리키는 이전(previous) 포인터이고, 다른 하나는 시퀀스의 다음 노드를 가리키는 다음(next) 포인터입니다. 시퀀스의 첫 번째 노드를 리스트의 헤드(head)라고 부르며, 마지막 노드를 테일(tail)이라고 부릅니다.
+
+양방향 연결 리스트를 다룰 때 생길 수 있는 문제 중 하나는 리스트가 비어 있는 경우를 처리하기 어렵다는 점입니다. 예를 들어, 리스트의 맨 앞에 새로운 노드를 삽입하려면 새 노드의 이전 포인터를 리스트의 헤드로 설정해야 하지만, 리스트가 비어 있으면 헤드가 존재하지 않을 수 있습니다. 마찬가지로, 리스트에서 노드를 제거하려면 제거하는 노드의 이전 노드의 다음 포인터가 시퀀스의 다음 노드를 가리키도록 설정해야 하지만, 제거하는 노드가 리스트의 헤드라면 그 다음 노드가 존재하지 않을 수 있습니다.
+
+이런 작업을 단순화하기 위해 센티넬 노드를 사용할 수 있습니다. 센티넬 노드는 리스트의 앞과 끝에 배치되는 특별한 노드로, 리스트의 헤드와 테일의 자리대리를 위한 플레이스홀더 역할을 합니다. 센티넬 노드는 값이 없고, 이전 포인터는 리스트의 테일을 가리키며 다음 포인터는 리스트의 헤드를 가리킵니다.
+
+센티넬 노드를 사용하면 리스트가 비어 있는 경우를 센티넬 노드의 다음 포인터가 센티넬 노드 자체를 가리키는지(다른 노드가 없다는 뜻)를 확인하여 처리할 수 있습니다. 리스트의 맨 앞에 새 노드를 삽입할 때는 새 노드의 이전 포인터를 센티넬 노드로, 센티넬 노드의 다음 포인터를 새 노드로 설정할 수 있습니다. 마찬가지로, 리스트에서 노드를 제거할 때는 이전 노드의 다음 포인터를 시퀀스의 다음 노드로, 다음 노드의 이전 포인터를 시퀀스의 이전 노드로 설정할 수 있습니다.
+
+센티넬 노드를 사용하면 양방향 연결 리스트 구현이 단순해지고, 비어 있는 리스트라는 특수 케이스를 별도로 처리할 필요 없기 때문에 더 견고해집니다.
+과거 검사 관찰(현재 품질 판정 아님): []
+원형/사고 참조: HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel/effort-panel/raw_shards_manifest.json#panel_medium_C_000
+
+[xhigh] 실제 요청 순서: ['low', 'medium', 'xhigh']; seed=20262001
+요청 시간=33.03283초; 형식/양어휘 배선=True
+생성 질문: 대학 과제로 양방향 연결 리스트를 구현해야 하는데, 센티넬 노드의 개념을 설명해 주실 수 있을까요?
+답1: 네, 설명해 드릴게요.
+
+양방향 연결 리스트는 각 노드가 이전 노드를 가리키는 previous 포인터와 다음 노드를 가리키는 next 포인터를 갖는 구조입니다. 리스트의 첫 번째 노드를 head, 마지막 노드를 tail이라고 부릅니다.
+
+센티넬 노드는 실제 데이터를 저장하지 않고, 리스트의 시작점이나 끝점을 고정하기 위한 추가 노드입니다. 예를 들어 리스트 앞쪽에 센티넬을 두면, 리스트가 비어 있을 때도 센티넬의 next 포인터로 리스트가 비었는지 확인할 수 있습니다. 또한 맨 앞에 노드를 넣거나 노드를 삭제할 때, head가 없는 특수 케이스를 별도 분기로 처리할 필요가 줄어듭니다.
+
+대표적인 구현은 리스트 앞에 헤드 센티넬 하나를 두는 방식입니다. 이 방식에서 리스트가 비어 있을 때 센티넬의 next가 null을 가리키는 경우와, 원형 구조에서 센티넬의 next가 센티넬 자체를 가리키는 경우처럼 구현 형태에 따라 다릅니다.
+
+헤드 센티넬을 사용하는 경우를 간단히 보면, 리스트가 비어 있을 때 다음 실제 노드가 없음을 센티넬의 next 포인터로 확인합니다. 리스트 맨 앞에 새 노드를 넣을 때는 새 노드의 previous를 센티넬로, 센티넬.next의 previous를 새 노드로, 센티넬.next를 새 노드로 설정합니다. 노드를 삭제할 때는 삭제 노드의 previous.next를 삭제 노드의 다음 노드로, 삭제 노드의 다음 노드 previous를 삭제 노드의 이전 노드로 설정합니다.
+
+이렇게 하면 리스트가 비어 있는 경우라는 특수 케이스를 별도 처리해야 하는 코드가 줄고, 전체 구현이 간단해집니다.
+과거 검사 관찰(현재 품질 판정 아님): []
+원형/사고 참조: HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel/effort-panel/raw_shards_manifest.json#panel_xhigh_C_000
+
+원천 C032
+원천 질문: The majority of cars tend to have a range of less than 200 miles, but there is a good proportion of cars that have a range of more than 200 miles.
+is there any grammar issues?
+
+[xhigh] 실제 요청 순서: ['xhigh', 'medium', 'low']; seed=20262321
+요청 시간=17.119892초; 형식/양어휘 배선=True
+생성 질문: The majority of cars tend to have a range of less than 200 miles, but there is a good proportion of cars that have a range of more than 200 miles. Are there any grammatical issues?
+답1: No, there are no grammatical issues. The sentence is grammatically correct and effectively conveys the intended meaning: most cars have a range of less than 200 miles, while a significant proportion have a range of more than 200 miles.
+과거 검사 관찰(현재 품질 판정 아님): []
+원형/사고 참조: HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel/effort-panel/raw_shards_manifest.json#panel_xhigh_C_032
+
+[medium] 실제 요청 순서: ['xhigh', 'medium', 'low']; seed=20262321
+요청 시간=16.715822초; 형식/양어휘 배선=True
+생성 질문: Are there any grammar issues in this sentence: The majority of cars tend to have a range of less than 200 miles, but there is a good proportion of cars that have a range of more than 200 miles?
+답1: No, there are no major grammar issues. The sentence is grammatically acceptable and clearly conveys that most cars have a range under 200 miles, while a substantial proportion have a range over 200 miles.
+과거 검사 관찰(현재 품질 판정 아님): []
+원형/사고 참조: HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel/effort-panel/raw_shards_manifest.json#panel_medium_C_032
+
+[low] 실제 요청 순서: ['xhigh', 'medium', 'low']; seed=20262321
+요청 시간=18.035829초; 형식/양어휘 배선=True
+생성 질문: The majority of cars tend to have a range of less than 200 miles, but there is a good proportion of cars that have a range of more than 200 miles. Are there any grammar issues?
+답1: No. The sentence is grammatically correct and effectively conveys the intended meaning: most cars have a range of less than 200 miles, and a significant proportion have a range of more than 200 miles.
+과거 검사 관찰(현재 품질 판정 아님): []
+원형/사고 참조: HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel/effort-panel/raw_shards_manifest.json#panel_low_C_032
+
+원천 C064
+원천 질문: 22세 여성 환자의 손 떨림, 목 부종, 열불견증에 대해 가장 가능성 있는 진단, 중증 질환, 놓칠 수 있는 질환, 자각/역사, 임상 특징, 검사, 치료 관리를 어떻게 정리할 수 있습니까?
+
+[medium] 실제 요청 순서: ['medium', 'low', 'xhigh']; seed=20262641
+요청 시간=140.021288초; 형식/양어휘 배선=True
+생성 질문: 22세 여성 환자의 손 떨림, 목 부종, 열감(발열/발한)에 대해 가장 가능성 있는 진단, 중증 질환, 놓칠 수 있는 질환, 자각/역사, 임상 특징, 검사, 치료 관리를 어떻게 정리할 수 있습니까?
+답1: 가장 가능성 있는 진단은 갑상선기능과장증(특히 초발성 갑상선기능과장증)이며, 손 떨림·목 부종·열감은 교란/추적증, 갑상선종, 자율신경 과활성 등과 함께 고려할 수 있습니다. 중증·놓칠 수 있는 질환으로 파킨슨병, 다발성경변증, 근전유근축성갈레트병(ALS)은 22세에서는 드물지만 수면·근력·조율 이상을 동반하면 배제해야 합니다. 흔치 않은 병력·임상 특징으로는 가족력, 외상·신경계질환력, 스트레스·수면 부족, 식이/생활습관 변화, 수족/근력/조율/균형 이상, 근경직/근통, 발한·체온 변화, 식욕/체중 변화, 눈/피부·갑상선 부종이 있습니다. 검사로는 TSH, FT3, FT4, 갑상선 항체(TPOAb, TRAb), 갑상선 초음파, EEG, 뇌·경척관 MRI, 혈액검사(B12, 중금속, 전해질, 빈혈/철, 갑상선 관련 지표)가 필요합니다. 치료 관리는 원인별 전수, 갑상선기능과장증 조절(항갑상선제, 베타차로브록, 필요 시 항응고/갑상선 수술), 신경학적 원인 의심 시 재활·물리/작업치료, 생활습관 개선, 정기 모니터링 및 재평가입니다.
+생성 질문: 22세 여성 환자의 손 떨림, 목 부종, 열감(발열/발한)에 대해 가장 가능성 있는 진단, 중증 질환, 놓칠 수 있는 질환, 자각/역사, 임상 특징, 검사, 치료 관리를 어떻게 정리할 수 있습니까?
+답2: 22세 여성에서 손 떨림, 목 부종, 열감(발열/발한)은 “가장 가능성 있는 진단”으로는 갑상선기능과장증(초발성 갑상선기능과장증)을 먼저 고려합니다. 이 질환은 갑상선 호르몬 과다로 인해 진전, 발한/열감, 체중 감소, 식욕 증가, 수면 부족, 심박 증가, 눈/피부·갑상선 부종, 목/갑상선 부종 등을 유발할 수 있습니다. “중증 질환”으로는 파킨슨병, 다발성경변증, 근전유근축성갈레트병(ALS)은 22세에서는 드물지만, 근력 손실, 근경직, 조율 장애, 균형 장애, 발성/호흡 이상을 동반하면 조기 평가가 필요합니다. “놓칠 수 있는 질환”으로는 경련성/근경련성 질환, 외주신경병, 손터널증후군, ulnar 신경 압박,Wilson병,중금속중독, 비타민 결핍(B12, B6), 갑상선성 갑상선 종/갑상선염, 자율신경 과활성, 스트레스/과각전/수면 부족 등이 있습니다. “자각/역사”로는 가족력(신경계/갑상선), 외상/신경계질환력, 약물/사료/생활습관 변화, 스트레스/수면 부족, 식이 변화, 최근体重/심박/발한/근력 변화, 눈/피부/갑상선 부종, 발성/호흡 이상, 근경직/근통/조율 이상, 균형 장애, 발성/호흡 이상을 확인합니다. “임상 특징”으로는 휴식 또는 동작 중 손 떨림, 팔/다리의 근톤 증가/경직, 조율/균형 장애, 피로/약화, 발한/체온 변화, 식욕/체중 변화, 눈/피부·갑상선 부종, 목/갑상선 부종, 심박 증가, 수면 부족, 발성/호흡 이상을 포함합니다. “검사”로는 TSH, FT3, FT4, 갑상선 항체(TPOAb, TRAb), 갑상선 초음파, EEG, 뇌·경척관 MRI, 혈액검사(B12, 중금속, 전해질, 빈혈/철, 갑상선 관련 지표), 필요 시 EMG/NCS가 필요합니다. “치료 관리”로는 원인별 전수, 갑상선기능과장증 조절(항갑상선제, 베타차로브록, 필요 시 갑상선 수술), 신경학적 원인 의심 시 재활·물리/작업치료, 생활습관 개선, 정기 모니터링 및 재평가가 필요합니다.
+과거 검사 관찰(현재 품질 판정 아님): [{"code": "OBSERVED_MALFORMED_TERMINOLOGY", "row": 0, "message": 1, "role": "assistant", "problem_text": "갑상선기능과장증", "span": [14, 22]}, {"code": "OBSERVED_MALFORMED_TERMINOLOGY", "row": 0, "message": 1, "role": "assistant", "problem_text": "갑상선기능과장증", "span": [30, 38]}, {"code": "OBSERVED_MALFORMED_TERMINOLOGY", "row": 0, "message": 1, "role": "assistant", "problem_text": "갑상선기능과장증", "span": [432, 440]}, {"code": "OBSERVED_MALFORMED_TERMINOLOGY", "row": 1, "message": 1, "role": "assistant", "problem_text": "갑상선기능과장증", "span": [50, 58]}, {"code": "OBSERVED_MALFORMED_TERMINOLOGY", "row": 1, "message": 1, "role": "assistant", "problem_text": "갑상선기능과장증", "span": [63, 71]}, {"code": "OBSERVED_MALFORMED_TERMINOLOGY", "row": 1, "message": 1, "role": "assistant", "problem_text": "갑상선기능과장증", "span": [858, 866]}]
+원형/사고 참조: HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel/effort-panel/raw_shards_manifest.json#panel_medium_C_064
+
+[low] 실제 요청 순서: ['medium', 'low', 'xhigh']; seed=20262641
+요청 시간=133.961091초; 형식/양어휘 배선=True
+생성 질문: 22세 여성 환자의 손 떨림, 목 부종, 그리고 정확한 용어가 불명확한 열·체온·발한 관련 증상 의심 사례에 대해, 가장 가능성 있는 진단, 중증으로 놓칠 수 있는 질환, 놓칠 수 있는 질환, 병력·자각, 임상 특징, 검사, 치료 관리를 어떻게 정리할 수 있습니까?
+답1: 가장 가능성 있는 방향은 갑상선 기능 고진전증, 본질적 진전, 그리고 다른 신경학적 질환입니다. 병력은 진전/신경질환 가족력, 약물·카페인·스트레스, 외상/감기, 갑상선·목 병력, 발한·체온 상승 여부를 확인하고, 임상에서는 휴식·동작성 떨림, 목의 부종 또는 촉촉/결절, 근긴이·조율·피로·약화, 균형 장애를 봅니다. 검사로는 갑상선 호르몬(TSH, FT4, FT3), 갑상선·목 초음파, EEG, 뇌/목 MRI, 필요 시 혈액검사와 신경전도·근전도를 진행합니다. 치료는 원인별 약물, 물리·작업치료, 생활습관 조정, 정기 추적입니다.
+생성 질문: 22세 여성 환자의 손 떨림, 목 부종, 그리고 정확한 용어가 불명확한 열·체온·발한 관련 증상 의심 사례에 대해, 가장 가능성 있는 진단, 중증으로 놓칠 수 있는 질환, 놓칠 수 있는 질환, 병력·자각, 임상 특징, 검사, 치료 관리를 어떻게 정리할 수 있습니까?
+답2: 이 증상은 단일 원인만 판단하기 어렵습니다. 손 떨림은 본질적 진전, 갑상선 기능 고진전증, 약물·스트레스에 의한 진전, 파키니슨증·다발성 경변증·ALS(진행성 운동신경 장애) 등 신경학적 질환을 포함할 수 있습니다. 목 부종은 갑상선 비대/염변, 림프절, 다른 목 구조 병변을 의심하게 하고, 열·체온·발한 관련 증상이 동반되면 갑상선 기능 이상 가능성을 함께 고려해야 합니다. 병력은 가족력, 약물·카페인·수면·스트레스, 외상/감기, 목 증상, 진전 양상과 진행 경로를 확인하고, 임상에서는 떨림이 휴식 중인지·운동 중인지, 목에 촉촉·결절/통증, 근긴이·조율·약화/피로, 균형 장애가 있는지 봅니다. 검사로는 TSH·FT4·FT3, 갑상선/목 초음파, EEG, 뇌·목 MRI, 필요 시 혈액검사(B12, 중금속, 염증 등)와 신경전도·근전도를 검토합니다. 치료는 갑상선 기능 이상이면 갑상선 조절제 등, 진전/신경학적 질환이면 원인·진전 양상에 맞는 약물·재활치료, 생활습관 조정과 정기 모니터링/재평가로 정리합니다.
+과거 검사 관찰(현재 품질 판정 아님): []
+원형/사고 참조: HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel/effort-panel/raw_shards_manifest.json#panel_low_C_064
+
+[xhigh] 실제 요청 순서: ['medium', 'low', 'xhigh']; seed=20262641
+요청 시간=133.698345초; 형식/양어휘 배선=True
+생성 질문: 22세 여성 환자의 손 떨림, 목 부종, 발한/열에 민감함(열내성 저하)에 대해 가장 가능성 있는 진단, 중증 질환, 놓칠 수 있는 질환, 자각/역사, 임상 특징, 검사, 치료 관리를 어떻게 정리할 수 있습니까?
+답1: 가장 가능성은 갑상선 기능 과장증이며, 목 부종이 갑상선 비대, 발한/열에 민감함, 손 떨림이 동반되면 우선 의심합니다. 중증·놓치기 쉬운 질환으로는 중추 신경계 질환, 근전위근축성 갈레트병(ALS), 다발성경변증, 중증 갑상선 기능 과장증, 외주신경 병변, 손터널증후군, ulnar 신경 압박, 윌슨병, 중금속 중독, 비타민 결핍을 고려합니다. 자각/역사, 임상 특징, 검사, 치료 관리는 진전 양상과 가족력/질병력/외상/생활습관 변화, 근톤·조율·약화·피로, TSH/fT4/fT3·갑상선 초음파/필요 시 MRI·EEG·혈액검사(중금속·B12·구약 등), 전문의 평가와 원인별 치료·재활치료·추적관리를 순서로 정리할 수 있습니다.
+생성 질문: 22세 여성 환자의 손 떨림, 목 부종, 발한/열에 민감함(열내성 저하)에 대해 가장 가능성 있는 진단, 중증 질환, 놓칠 수 있는 질환, 자각/역사, 임상 특징, 검사, 치료 관리를 어떻게 정리할 수 있습니까?
+답2: 이 병체는 갑상선 질환과 신경계 질환을 함께 고려해야 합니다. 손 떨림만 있으면 본질적 진전, 불안, 신경학적 질환이 가능하지만, 22세에서 목 부종과 발한/열에 민감함이 있으면 갑상선 기능 과장증이 가장 가능성 있는 진단입니다. 목 부종이 갑상선 비대인지 린프절이나 기타 원인인지는 초음파 등으로 확인해야 하며, 진전이 휴식·동작·조율에서 어떤지에 따라 신경계 원인과 갑상선 질환을 구분합니다. 중증 가능성은 중증 갑상선 기능 과장증, 중추 신경계 질환, ALS, 다발성경변증에 있으며, 놓칠 수 있는 원인은 외주신경 병변, 손터널증후군, ulnar 신경 압박, 윌슨병, 중금속 중독, 비타민 결핍입니다. 검사에는 갑상선 호르몬, 갑상선 초음파, 신경학적 평가, MRI/EEG, 혈액 검사가 조합되고, 치료 관리는 전문의 평가 후 원인별 치료, 필요 시 약제, 물리·작업치료, 정기 추적과 치료 계획 조정을 의미합니다.
+과거 검사 관찰(현재 품질 판정 아님): [{"code": "OBSERVED_MALFORMED_TERMINOLOGY", "row": 0, "message": 1, "role": "assistant", "problem_text": "갑상선 기능 과장증", "span": [8, 18]}, {"code": "OBSERVED_MALFORMED_TERMINOLOGY", "row": 0, "message": 1, "role": "assistant", "problem_text": "갑상선 기능 과장증", "span": [124, 134]}, {"code": "OBSERVED_MALFORMED_TERMINOLOGY", "row": 1, "message": 1, "role": "assistant", "problem_text": "갑상선 기능 과장증", "span": [100, 110]}, {"code": "OBSERVED_MALFORMED_TERMINOLOGY", "row": 1, "message": 1, "role": "assistant", "problem_text": "갑상선 기능 과장증", "span": [233, 243]}]
+원형/사고 참조: HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel/effort-panel/raw_shards_manifest.json#panel_xhigh_C_064
+
+원천 C065
+원천 질문: What is the most likely diagnosis and a concise diagnostic/management plan for a 22-year-old woman presenting with hand tremors, neck swelling, and heat intolerance?
+
+[xhigh] 실제 요청 순서: ['xhigh', 'low', 'medium']; seed=20262651
+요청 시간=20.465034초; 형식/양어휘 배선=True
+생성 질문: What is the most likely diagnosis and a concise diagnostic/management plan for a 22-year-old woman with hand tremors, neck swelling, and heat intolerance?
+답1: Most likely hyperthyroidism, especially Graves disease if the neck swelling is a goiter. Plan: test TSH, free T4/free T3, TSH receptor antibody, and thyroid ultrasound; add ECG and urgent review if tachycardia, fever, confusion, or instability is present. If hyperthyroidism is confirmed, treat with beta-blockers for symptoms and antithyroid medication, with endocrine follow-up; treat eye signs if present and consider radioactive iodine or surgery if disease is refractory.
+생성 질문: What is the most likely diagnosis and a concise diagnostic/management plan for a 22-year-old woman with hand tremors, neck swelling, and heat intolerance?
+답2: These symptoms suggest excess thyroid hormone, commonly from Graves disease in a young woman with goiter. A low TSH with elevated free T4/T3 and positive TSH receptor antibody would support hyperthyroidism; ultrasound can assess the goiter. Management is symptom control and thyroid hormone suppression, followed by specialist care. If thyroid tests are normal, a neurologic workup for tremor is needed, and any signs of thyroid storm require emergency treatment.
+과거 검사 관찰(현재 품질 판정 아님): []
+원형/사고 참조: HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel/effort-panel/raw_shards_manifest.json#panel_xhigh_C_065
+
+[low] 실제 요청 순서: ['xhigh', 'low', 'medium']; seed=20262651
+요청 시간=16.932786초; 형식/양어휘 배선=True
+생성 질문: What is the most likely diagnosis and a concise diagnostic/management plan for a 22-year-old woman with hand tremors, neck swelling, and heat intolerance?
+답1: Most likely: Graves disease causing hyperthyroidism, pending confirmation. Check TSH, free T4/T3, TSH receptor antibody, thyroid ultrasound, ECG, and vitals. Treat urgently if signs of thyroid storm; otherwise start a beta-blocker for symptoms and start antithyroid medication if hyperthyroidism is confirmed.
+생성 질문: What is the most likely diagnosis and a concise diagnostic/management plan for a 22-year-old woman with hand tremors, neck swelling, and heat intolerance?
+답2: In a young woman, hand tremor, heat intolerance, and neck swelling suggest hyperthyroidism, most commonly Graves disease. Confirm with thyroid function tests, Graves antibodies, and thyroid imaging; also assess for thyroid storm or other causes such as subacute thyroiditis. If hyperthyroidism is confirmed, management includes beta-blocker symptom control, antithyroid medication, endocrine follow-up, and specialist care if refractory. If thyroid tests are normal, pursue a neurologic workup for tremor.
+과거 검사 관찰(현재 품질 판정 아님): []
+원형/사고 참조: HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel/effort-panel/raw_shards_manifest.json#panel_low_C_065
+
+[medium] 실제 요청 순서: ['xhigh', 'low', 'medium']; seed=20262651
+요청 시간=36.806924초; 형식/양어휘 배선=True
+생성 질문: What is the most likely diagnosis and a concise diagnostic and management plan for a 22-year-old woman with hand tremor, neck swelling, and heat intolerance?
+답1: Probable Graves disease/hyperthyroidism. Confirm with TSH, free T4/T3, TSH receptor antibody, and thyroid ultrasound; start a beta-blocker for symptoms and add antithyroid medication if confirmed; refer ophthalmology if eye signs are present and endocrinology for follow-up.
+생성 질문: What is the most likely diagnosis and a concise diagnostic and management plan for a 22-year-old woman with hand tremor, neck swelling, and heat intolerance?
+답2: The combination of tremor, neck swelling, and heat intolerance in a young woman most strongly suggests hyperthyroidism, especially Graves disease, but this remains a likely diagnosis until testing is available. Take a focused history and exam for goiter, palpitations, anxiety, weight loss, eye symptoms, and medications, then check TSH, free T4/T3, TSH receptor and TPO antibodies, ECG, and CBC; consider thyroid ultrasound. Urgent evaluation is needed if she is unstable, febrile, confused, or has severe tachycardia. If Graves disease is confirmed, manage with antithyroid medication, symptom control, ophthalmology if eye disease is present, and endocrine follow-up; consider radioactive iodine or surgery only if treatment is refractory. If thyroid tests are normal, pursue a neurologic tremor workup and state the uncertainty rather than assuming a thyroid diagnosis.
+과거 검사 관찰(현재 품질 판정 아님): []
+원형/사고 참조: HF/sft_ready/p106b_teacher_sft/v32_prompt_wire_effort_panel/effort-panel/raw_shards_manifest.json#panel_medium_C_065
+
+설정 선택 입력 없음. 교사 의미/정답 검증 NOT_RUN. 사고 전문은 학생 답에 포함하지 않습니다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-01 22:19:12)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-01 22:19:12  name=P106B_Stage3pW_saved_answers_view
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/view_p106b_saved_answers.py --mode education
+==============================================================================
+학생 실제 원답 — 각자 부모/자식·각 시도를 함께 표시합니다. 좁은 rubric은 내용 전체의 정답률이 아닙니다.
+
+질문 ID: arithmetic_en
+
+[b/parent/시도1] 실제 입력:
+<|im_start|>user
+What is 7 minus 4? Answer with one digit.<|im_end|>
+<|im_start|>assistant
+
+실제 출력:  I am not sure if I am not sure if I am not sure I am not sure if I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I am not sure I
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도2] 실제 입력:
+<|im_start|>user
+What is 7 minus 4? Answer with one digit.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Answer 2.3 minus 5.3 minus 5.3 minus 7.3 minus 5.3 minus 8.3 minus 8.3 minus 8.3 minus 8.3 minus 8.3 minus 8.3 minus 8.3 minus 8.3 minus 11.3 minus 10 minus 11.3 minus 11.3 minus 12.3 minus 12.3 minus 12.3 minus 11.3 minus 13.3 minus 13.3 minus 13.3 minus 13.3 minus 13.3 minus 13.4 minus 13.3 minus 13.4 minus 13.3 minus 13.3 minus 13.3 minus
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도3] 실제 입력:
+<|im_start|>user
+What is 7 minus 4? Answer with one digit.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Answer two numbers of questions, which are given to the subject.
+The answers are given to the subject.
+The students are not going to try to answer a question, but they can choose the question.
+The questions are given to the subject.
+What is the difference between the following questions?
+1. What is a question?
+2. What is a question?
+3. What is a question?
+4. What is a question?
+5. What is a question?
+7. What is a question?
+8. What is a question?
+9. What is a question?
+10. What is a question?
+11. What are the questions?
+13. What is a question?
+14. What is a question?
+15
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도1] 실제 입력:
+<|im_start|>user
+What is 7 minus 4? Answer with one digit.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: What is 8 minus 4? Answer with one digit.ulin = 0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도2] 실제 입력:
+<|im_start|>user
+What is 7 minus 4? Answer with one digit.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Answer 2 = answer 4(s) and answer 4(s) = 2(s)
+Answer 5 = a
+Answer 5 = a
+Answer 5 = a
+Answer 6 = a
+Answer 7 = a
+Answer 7 = a
+Answer 7 = a
+Answer 11 = a
+Answer 15 = a
+Answer 21 = a
+Answer 22 = a
+Answer 21 = a
+Answer 22 = a
+Answer 22 = a
+Answer 22 = a
+Answer 22 = a
+Answer 23 = a
+Answer 22 = a
+Answer 22 = a
+Answer 23 = a
+Answer 23 = a
+Answer 22 = a
+Answer 24 = a
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도3] 실제 입력:
+<|im_start|>user
+What is 7 minus 4? Answer with one digit.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Answer two numbers.
+Answer 3 = 0.6.5.2 4 = 0.6.5.1 8 seconds.
+Answer 4 = 1,6,7,8,8,8,8,8,8,9,8,8,8,12,1,3,5,4,6,6,2,4,5,5,5,6,5,0,5,4,5,5,2,4,5,5,5,6,2,4,5,4,5,5,2,3,4,5,5,5,5,5,4,4,5,5,5,5,5,5,5,5,5,
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[a/parent/시도1] 실제 입력:
+<|im_start|>user
+What is 7 minus 4? Answer with one digit.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도2] 실제 입력:
+<|im_start|>user
+What is 7 minus 4? Answer with one digit.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <single.tree_were+were>>
+<single.tree_were+were>
+<single.tree_were+were>
+<single.tree_were>
+<single.tree_were>
+<single.tree_were>
+<single.tree_were>
+<single.tree_were>
+<single.tree_were>
+<single.tree_were>
+
+<single.tree_were>
+<single.tree_were>
+<single.tree_were>
+<single.tree
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도3] 실제 입력:
+<|im_start|>user
+What is 7 minus 4? Answer with one digit.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>||<|im_start|> =|
+<|im_start|>||<|
+The answer is only about the user.
+If you have been reading this article, please share it and share it with your friends.
+The first week of class, I read the article.
+So what is the first week of class?
+First week of class is the day of class. It is going to be the day of class. It takes the students to class. The class week is going to be the day of class. And that goes to class. I will be reading this article.
+In order for any student to be the day of class, this is the end of class.
+If someone has been watching
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도1] 실제 입력:
+<|im_start|>user
+What is 7 minus 4? Answer with one digit.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: What is 7 minus 4? Answer with one digit.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 20, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도2] 실제 입력:
+<|im_start|>user
+What is 7 minus 4? Answer with one digit.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: This is only a small amount of time per unit of time. You can imagine that a unit of time that has been selected for a unit of time has been assigned to a place where it is necessary for a specific unit to have a unit of time. It will be necessary for a unit of time to have a unit of time equal to every unit of time.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 80, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도3] 실제 입력:
+<|im_start|>user
+What is 7 minus 4? Answer with one digit.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: The first digit of a pdf file was made by the following steps:
+[im_end|>] The first digit has a unique identity.
+The second digit has a unique identity.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 47, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+질문 ID: arithmetic_ko
+
+[b/parent/시도1] 실제 입력:
+<|im_start|>user
+2 더하기 3의 값만 숫자로 답하세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 
+각주
+
+외부 링크 
+
+대한민국의 음악 그룹
+대한민국의 음악 그룹
+대한민국의 팝 음악 그룹
+대한민국의 팝 음악 그룹
+대한민국의 걸 그룹
+대한민국의 팝 음악 그룹
+대한민국의 팝 음악 그룹
+대한민국의 걸 그룹
+대한민국의 팝 음악 그룹
+대한민국의 걸 그룹
+대한민국의 팝 음악 그룹
+대한민국의 걸 그룹
+대한민국의 팝 음악 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 팝 음악 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 팝 음악 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+대한민국의 걸 그룹
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도2] 실제 입력:
+<|im_start|>user
+2 더하기 3의 값만 숫자로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 
+4인용
+2.3.4.2.6
+3.3.6.2.6
+5.4.8.5.2.6
+6.6.2.6.2
+6.6.7.8.1
+8.7.4.7
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "EOS", "generated_tokens": 65, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도3] 실제 입력:
+<|im_start|>user
+2 더하기 3의 값만 숫자로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: The above mentioned
+The following is based on a list of items that are not known.
+Authors are not always aware of the data they do. But they should not necessarily be considered as information.
+Authors are not always aware of the data.
+Answer only when it is in a position to be considered as a information.
+If you are in doubt about the value of the information, you are probably a bit surprised.
+The above mentioned lists are as follows:
+1) Answer. They are not very easy to understand (e.g. if the information is not known), but have no real knowledge and can be easily understood.
+2) Answer. They are not very precise.
+Authors are not always aware of any information.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도1] 실제 입력:
+<|im_start|>user
+2 더하기 3의 값만 숫자로 답하세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 3 더하기 3의 값만 숫자로 답하세요. 이때 숫자는 0.5로 답하세요.
+
+3 더하기 3의 값만 숫자로 답하세요.
+
+3 더하기 3의 값만 숫자로 답하세요.
+
+3 더하기 3의 값만 숫자로 답하세요.
+
+3 더하기 3의 값만 숫자로 답하세요.
+
+3 더하기 3의 값만 숫자로 답하세요.
+
+3 더하기 3의 값만 숫자로 답하세요.
+
+3 더하기 3의 값만 숫자로 답하세요.
+
+3 더하기 3의 값만 숫자로 답하세요.
+
+3 더하기 3의 값만 숫자로 답하세요.
+
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도2] 실제 입력:
+<|im_start|>user
+2 더하기 3의 값만 숫자로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: summer in an array
+summer in a array
+summer in a array (a value that is 0.86;
+$0.86).AEALTE = 0.86;summer
+summer in an array: 0.86;summer by
+: 0.87;summer by
+: 0.89;summer by
+: 0.89;summer by
+: 0.84;summer by
+: 0.9;summer by
+: 0.00;summer by
+: 0.10;summer by
+: 0.00;summer by
+: 0.45;summer by
+: 0.00;sum
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도3] 실제 입력:
+<|im_start|>user
+2 더하기 3의 값만 숫자로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 2 IF your answer, if you'd like to read the correct answer, don't send a message, because you'd need a quick response, but it's probably too easy.uliner, because I just need a better response, but that's the basic way.uliner, for example, is just a simple example.uliner is more likely to be able to read, though it works by taking a good example and using a higher quality of information, since it can often be more useful than those of a better response.uliner is another excellent example of how to use a given response.uliner will require a little effort, because it can also be effective in detecting errors.uliner is also good for detecting errors.uliner is also a great choice for identifying errors, since
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[a/parent/시도1] 실제 입력:
+<|im_start|>user
+2 더하기 3의 값만 숫자로 답하세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도2] 실제 입력:
+<|im_start|>user
+2 더하기 3의 값만 숫자로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 7, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도3] 실제 입력:
+<|im_start|>user
+2 더하기 3의 값만 숫자로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_starti>>masking
+<|im_starti>>true
+<|im_starti>>masking
+<|im_starti>>masking
+<|im_starti>>masking
+<|im_starti>>masking
+<|im_starti>>masking
+<|im_starti>>masking
+<|im_starti>>masking
+<|im_starti>>masking
+<|im_starti>>masking
+<|im_starti>>masking
+<|im_st
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도1] 실제 입력:
+<|im_start|>user
+2 더하기 3의 값만 숫자로 답하세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 2 더하기 3의 값만 숫자로 답하세요.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 20, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도2] 실제 입력:
+<|im_start|>user
+2 더하기 3의 값만 숫자로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: (T1:1)
+1. Choose to write.
+2. Select and add.
+3. Collect and add (T2:1)
+Rock Rate is a new method of dividing the text into four or more sections. A second section allows the desired section to be selected and followed.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 71, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도3] 실제 입력:
+<|im_start|>user
+2 더하기 3의 값만 숫자로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 2 더하기 5의 값만 숫자로 답합니다.
+3 더하기 5의 값만 수로 답니다.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 32, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+질문 ID: format_en
+
+[b/parent/시도1] 실제 입력:
+<|im_start|>user
+Return only JSON with key result and integer value 5.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with key
+Return only JSON with
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도2] 실제 입력:
+<|im_start|>user
+Return only JSON with key result and integer value 5.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: - A list of key tasks required for each
+- A list of priority
+- A list of
+- Each list of key tasks required for each
+- A list of key tasks required for each
+- A list of key tasks required for each
+- A list of key tasks required for each
+- A list of key tasks required for each
+- List of key tasks required for each
+- List of key tasks required for each
+- List of key tasks required for each
+The most common way for A list of key tasks used in an exam is to include all the key tasks in each of the
+- The key tasks must be structured and the key tasks are organized.
+- An example is the
+- A list of key tasks required for each task.
+- List of
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도3] 실제 입력:
+<|im_start|>user
+Return only JSON with key result and integer value 5.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: to see if it will be available for all applications.
+APAAP provides an overview of the key problems of a resource.
+This is a key challenge that the world should not be. The world needs to be prepared so that the world can be prepared with the key.
+One of the keys to making this a resource is the World Mapping Unit. It needs to be prepared as part of a project management program. The World Mapping Unit is the National Research and Engineering Unit which also has the potential to deliver a variety of technical and technological solutions through the use of technology, technology and more.
+The World Mapping Unit is another key challenge for the world. It has many different areas that need to be prepared. It is a project management program that is available for all applications.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도1] 실제 입력:
+<|im_start|>user
+Return only JSON with key result and integer value 5.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Return only JSON with key result and integer value 5. 됭케르크
+Return only JSON with key result and integer value 5. 됭케르크
+Return only JSON with key result and integer value 5. 됭케르크
+Return only JSON with key result and integer value 5. 됭케르크
+Return only JSON with key result and integer value 5. 됭케르크
+Return only JSON with key result and integer value 5. 됭케르크
+Return only JSON with key result and integer value 5. 됭케르크
+Return only JSON with key result and integer value 5. 됭케르크
+
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도2] 실제 입력:
+<|im_start|>user
+Return only JSON with key result and integer value 5.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Answer only what was asked when a number or number of users came from a set of users.
+Answer all the variables that were assigned to the user. That is, the user has to calculate the first number.
+Answer all the variables that were assigned to the user.
+Answer only the variables that were assigned to the user.
+Answer only the variables that were assigned to the user.
+Answer only the variables that were assigned to the user.
+Answer all values that were assigned to the user.
+Answer all variables that were assigned to the user.
+Answer all variables that were assigned to the user.
+Answer all variables that were assigned to the user.
+Answer all variables that were assigned to the user.
+Answer
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도3] 실제 입력:
+<|im_start|>user
+Return only JSON with key result and integer value 5.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: What are the options for you to apply for this test? Please check the information box to see where your answer is.
+Choose a DISCLABOR test.
+The option with keys is a list of keys, which will make it hard for the student to access, including a DISCLABOR test.
+If the key is a function of a DISCLABOR test, it will help.
+Return the DISCLAAOR test to find a dilemma for your student.
+Check the DISCLABOR test and your student’s CISCLABOR test.
+DISCLABOR test, DISCLABOR test, DISCLABOR test, D
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[a/parent/시도1] 실제 입력:
+<|im_start|>user
+Return only JSON with key result and integer value 5.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도2] 실제 입력:
+<|im_start|>user
+Return only JSON with key result and integer value 5.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+Route: the name of the "cock" was used
+The first page was selected on the right of the page. It was then presented as a user-friendly and useful tool for the user.
+The first pages were displayed on the first page. The third page was chosen as a user-friendly, the user-friendly, and the first page was selected on the third page. The first page was placed in the middle of the page, with the text being
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도3] 실제 입력:
+<|im_start|>user
+Return only JSON with key result and integer value 5.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <_im_end|>motick
+<_im_end|>motick
+<_im_end|>motick
+<_im_end|>motick
+<_im_end|>
+<_im_end|>motick
+<_im_end|>motick
+<_im_end|>motick
+<_im_end|>motick
+<_im_end|>motick
+<_im_end|>motick
+<_im_end|>motick
+<_im_end|>motick
+<_im_end|>motick
+<_im_end|>mot
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도1] 실제 입력:
+<|im_start|>user
+Return only JSON with key result and integer value 5.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Return only JSON with key result and integer value 5.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 22, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도2] 실제 입력:
+<|im_start|>user
+Return only JSON with key result and integer value 5.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Return a value 5.0, and combine it with its corresponding value.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 23, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도3] 실제 입력:
+<|im_start|>user
+Return only JSON with key result and integer value 5.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Return only JSON with key result:
+
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 18, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+질문 ID: format_ko
+
+[b/parent/시도1] 실제 입력:
+<|im_start|>user
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 
+같이 보기 
+ 한국 요리
+
+각주
+
+외부 링크 
+ 한국 요리
+
+대한민국의 요리
+대한민국의 요리
+대한민국의 요리
+대한민국의 요리
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "EOS", "generated_tokens": 30, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도2] 실제 입력:
+<|im_start|>user
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Answer no. 3
+The second example is the one for an answer to questions, and the other for answers to questions.
+Analyzed the answer is a list of questions for answers to questions of interest, and the answer is a list of questions for answers to questions for answers to questions about interest.
+For the simplest questions to be answered, ask one question or ask the other for answers to questions about interest.
+Analyzed the answer to answer the answer, then ask him/her for answers to answer the answer of his or her questions. Then ask one question in which answer is given.
+Analyzed the answer to answer questions, then ask him/her for answers, and ask him/her for answers to answers.
+Analyzed
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도3] 실제 입력:
+<|im_start|>user
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력:  authors not to surprise you
+ authors no more than the first couple of words than the first two.
+Authors no more than
+- Authors no more than
+each of the first word,
+authors no more than
+b.a.t.
+Authors no more than
+each of the second,
+each of the first word,
+each of the second,
+each of the third,
+each of the second,
+each of the third,
+each of the first,
+each of the first,
+each of the first,
+each of the second,
+each of the second,
+each of the second,
+each of the third,
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도1] 실제 입력:
+<|im_start|>user
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 한국어 과일 두 개를 쉼표로 구분해서만 쓰세요. 됩니다.
+
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요. 됩니다.
+
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요. 됩니다.
+
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요. 됩니다.
+
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요. 됩니다.
+
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요. 됩니다.
+
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요. 됩니다.
+
+한국어 과일 두 개를
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도2] 실제 입력:
+<|im_start|>user
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: The simplest option is to use the requested format. 됭케르크-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아우르-아
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도3] 실제 입력:
+<|im_start|>user
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Analode not specified, except as a result of the errors. esoteric and sub-mortarial conditions. esoteric
+Something which is not specified without the correct answer. esoteric
+Something which is not specified, except in a condition that is not defined
+Soment or subclass. esoteric
+Soment or subclass. esoteric
+Soment or subclass. esoteric
+Soment or subclass. esoteric
+Soment or subClass. esoteric
+Soment or subclass. esoteric
+Soment or subClass. esoteric
+We suggest that a class may be notified of these two different languages. esoteric
+S
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[a/parent/시도1] 실제 입력:
+<|im_start|>user
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도2] 실제 입력:
+<|im_start|>user
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>="(im_start|>
+<|im_start|>=", +(|im_start|> )}}
+<us_im_start|> <us_im_start|>
+<us_im_start|> <us_im_start|>
+
+<us_im_start|> (<us_im_start|>
+<us_im_start|> <us_im_start|>
+<us_im_start|> <us_im_start|>
+<us_im_start|> <us_im_start|>
+
+<us
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도3] 실제 입력:
+<|im_start|>user
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <usr
+<usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title <usr>title
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도1] 실제 입력:
+<|im_start|>user
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 23, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도2] 실제 입력:
+<|im_start|>user
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 7, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도3] 실제 입력:
+<|im_start|>user
+한국어 과일 두 개를 쉼표로 구분해서만 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: The question is, the question is, why? The question is, what are the questions in the question?
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 29, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+질문 ID: knowledge_en
+
+[b/parent/시도1] 실제 입력:
+<|im_start|>user
+Name the planet humans live on, in one word.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+- Authors: Authors:
+-
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도2] 실제 입력:
+<|im_start|>user
+Name the planet humans live on, in one word.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: The first of four chapters can be used for every
+other task in a book, but the following is what a
+find the reader.
+The most important thing that is to have a
+find the reader of the book.
+The only thing that is to have a
+precision is the information the reader makes. The reader can view
+precision by the author, which is the way it is viewed
+in the text.
+A summary of the best
+finders, and the most important questions of
+the author, and the author will learn about the
+dissertations of the book.
+The author tells the reader the
+dissertations of the book, and how the reader
+is likely to be able to follow the story.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도3] 실제 입력:
+<|im_start|>user
+Name the planet humans live on, in one word.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Order the planet
+A planet who does not have planets or planets that may be
+Say, as an explanation, or the planet that has planets
+Live Earth with planets
+Answer when they have planets and planets
+Tooled by the planets
+Answer when they have planets or planets or planets
+A planet with planets or planets
+Tools of their planet
+A planet without planets
+A planet without planets
+A planet without planets
+A planet without planets
+A planet without planets
+A planet without planets
+A planet without planets
+Answer when they have planets
+A planet with planets
+Answer when they have planets
+A planet with planets
+A planet with planets
+A planet with planets
+A planet with planets
+Answer when they have planets
+An
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도1] 실제 입력:
+<|im_start|>user
+Name the planet humans live on, in one word.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Name the planet humans live on.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup.rup
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도2] 실제 입력:
+<|im_start|>user
+Name the planet humans live on, in one word.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: The planet is at its lowest point. It is at its lowest point. It is at its highest point. It is at its lowest point.
+The planet is at its lowest point. Its lowest point is at its highest point. It is at its lowest point. It is at its lowest point.
+This planet is at its lowest point, where it is at its highest point. It is at its lowest points. This planet is at its lowest point. Its highest point. It is at its lowest point.
+This planet is at its highest point, and it is at its highest point. It is at its highest point.
+Determine what is the planet?
+Determine the planet location, location, and location to the nearest world. Determine the planet location
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도3] 실제 입력:
+<|im_start|>user
+Name the planet humans live on, in one word.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 1. Let us start by looking at the planet’s temperature, the location of the Earth, and the temperature of the planet.111.
+2. We should not get a temperature at an average temperature of 1.5 to 1.5.
+3. If you don’t notice the temperature or temperature, you can immediately notice temperature changes, or if you notice more than 2.5.
+4. Our average temperature is 2,200 degrees, and depends on the temperature you observe.111.
+5. If you see the temperature above 1, that is why it’s so important to see the temperature at that temperature.111.
+6. For example, when the temperature above 1 is 0.5, the temperature below 1 is 0.5.2,
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[a/parent/시도1] 실제 입력:
+<|im_start|>user
+Name the planet humans live on, in one word.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도2] 실제 입력:
+<|im_start|>user
+Name the planet humans live on, in one word.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: A description of the planet by the name of the planet, <us><us> <|im_start|><us><us><us>
+|In this way, the planet is the first planet, the first man, which means the first man. This is the first man. It is the first man.
+<us><us><us><us><us><us><us><a>, the first man. The first man is the first man. The second man is the first man. There is no object. The first man is the first man. The second man is the first man. The second man is the first man. The second man is the first man.
+What is a planet?<us
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도3] 실제 입력:
+<|im_start|>user
+Name the planet humans live on, in one word.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: The user is expected to answer the question
+<_im_start|> <|im_start|>
+<_im_start|> <|im_start|> <|im_start|>
+What do you think? Should you think?
+> How does your planet live?
+<_im_start|><||>
+<_im_start|> A new search option.< (a)>>
+<_im_start|> </im_start|>
+<_im_start|> </im_start|>
+<_im_start|> </im_start|>
+<_im_start|>
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도1] 실제 입력:
+<|im_start|>user
+Name the planet humans live on, in one word.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Name the planet humans live on, in one word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in another word, in
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도2] 실제 입력:
+<|im_start|>user
+Name the planet humans live on, in one word.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: A planet, the planet, is a system in which the planet is a system that consists of all two system systems: the system, the system, and the planet.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 41, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도3] 실제 입력:
+<|im_start|>user
+Name the planet humans live on, in one word.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: The answer is neither question; only if the planet human population can survive without its own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own own work and own own your own own own free online classroom experience by learning to do with your own personal experience and learning about their own own own own own online community.
+If you’re in a business-by-the-market environment, you may be eligible to take a loan for an online work experience
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+질문 ID: knowledge_ko
+
+[b/parent/시도1] 실제 입력:
+<|im_start|>user
+물이 얼면 무엇이 되나요? 한 문장으로 답하세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 
+각주
+
+외부 링크 
+
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+대한민국의 법
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도2] 실제 입력:
+<|im_start|>user
+물이 얼면 무엇이 되나요? 한 문장으로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Definition of the method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+ Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+Definition of method
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도3] 실제 입력:
+<|im_start|>user
+물이 얼면 무엇이 되나요? 한 문장으로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력:  Alonzo
+ Nissonia (Nisson)
+ Oscar
+ Awk (Nisson)
+ Nissonia
+
+ Luckily!
+ Awk (Nisson)
+
+외부 링크 
+ 
+
+ 
+캐나다의 전자 음악 그룹
+캐나다의 프로그레시브 록 밴드
+캐나다의 얼터너티브 록
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "EOS", "generated_tokens": 71, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도1] 실제 입력:
+<|im_start|>user
+물이 얼면 무엇이 되나요? 한 문장으로 답하세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론 물론
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도2] 실제 입력:
+<|im_start|>user
+물이 얼면 무엇이 되나요? 한 문장으로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: How is the procedure performed? After the procedure, it is called an
+method to remove any gaps and to remove any gaps,
+when needed.umen in the process is called a
+conformant.umen in a final procedure.umen in a final procedure is called an
+conformant.umen in a final procedure, it happens because the process is given
+on the completed procedure.umen in a final procedure,
+the procedure is called a final procedure.umen in a final procedure.umen in a final procedure is called an
+conformant.umen in a final work performed during the procedure.umen in a final procedure
+layer can be called an amber.umen in a final procedure
+typically occurs when a broken material is removed and the material is placed
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도3] 실제 입력:
+<|im_start|>user
+물이 얼면 무엇이 되나요? 한 문장으로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: In addition to this, the speaker will use the required format to see the output.»
+It is possible that the speaker might use the required format to see the output, but it is not in the format.»
+It is expected that the speaker can use the required format to see the output output.»
+It should be remembered that the speaker has chosen to see the output output.»
+It is possible that the speaker can use the required format to see the output output.»
+However, it is not possible to see the output output.»
+It is not necessary to see the output output and see the output output.»
+It is possible that the speaker will use the required format to see the output output.»
+It is possible that the speaker will use the required
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[a/parent/시도1] 실제 입력:
+<|im_start|>user
+물이 얼면 무엇이 되나요? 한 문장으로 답하세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도2] 실제 입력:
+<|im_start|>user
+물이 얼면 무엇이 되나요? 한 문장으로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.c||us.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도3] 실제 입력:
+<|im_start|>user
+물이 얼면 무엇이 되나요? 한 문장으로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|>
+<|im_start|
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도1] 실제 입력:
+<|im_start|>user
+물이 얼면 무엇이 되나요? 한 문장으로 답하세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 물이 얼면 무엇이 되나요? 한 문장으로 답하세요.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 23, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도2] 실제 입력:
+<|im_start|>user
+물이 얼면 무엇이 되나요? 한 문장으로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 불꽃!(2) 2.
+
+어드벤처 타임!(3) 2.
+
+같이 보기 
+ 게임 디럭스
+
+각주 
+
+비디오 게임
+2000년 비디오 게임
+플레이스테이션 2 게임
+동물을 소재로 한 작품
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "EOS", "generated_tokens": 53, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도3] 실제 입력:
+<|im_start|>user
+물이 얼면 무엇이 되나요? 한 문장으로 답하세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 
+재능 
+수면(素眉)과 원(原)은 임을 할 수 없다. 즉, 원은 임으로 하는 임을 할 수 없다면 원은 임으로 하는 임을 할 수 없다. 임은 임으로 하는 임을 할 수 없다면 원은 임으로 하는 임을 할 수 없다면 원은 임으로 할 수 없다면 원은 임으로 하는 임을 할 수 없다면 원은 임으로 하는 임을 할 수 없다면 원은 임으로 하는 임을 할 수 없다면 원은 임으로 하는 임을 할 수 없다면 원은 임으로 하는 임을 할 수 없다면 원은 임으로 하는 임을 할 수 없다면 원은 임으로 하는 임을 할 수 없다면 원은 임으로
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+질문 ID: logic_en
+
+[b/parent/시도1] 실제 입력:
+<|im_start|>user
+All red boxes are heavy. This box is red. Is it heavy? Answer yes or no.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: I have been working on this for a long time. I have been working on this for a long time. I have been working on this for a long time. I have been working on this for a long time. I have been working on this for a long time. I have been working on this for a long time. I have been working on this for a long time. I have been working on this for a long time. I have been working on this for a long time. I have been working on this for a long time. I have been working on this for a long time. I have been working on this for a long time. I have been working on this for a long time. I have been working on this for a long time. I have been working on this
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도2] 실제 입력:
+<|im_start|>user
+All red boxes are heavy. This box is red. Is it heavy? Answer yes or no.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: I am very excited about the question. How do you explain the answer?
+I am very excited about the issue of using the requested format.
+Skills are used in the text.
+Is it easy to explain the issue?
+Is it easy to explain the issue?
+Yes. What is the answer?
+The answer is the most important. It’s easier to explain, but it’s less known. I’d like to take a look at the answer.
+I don’t know what. I will talk about the answer and what the answer is, but I believe it is, but I’ll be able to explain all of the answers.
+I’m very excited about the issue and I hope I know what the answer is.
+Pract
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도3] 실제 입력:
+<|im_start|>user
+All red boxes are heavy. This box is red. Is it heavy? Answer yes or no.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: the teacher and teacher are not required to
+disput the book from the teacher. They are not required for the
+laboratory school that is required for a reading or
+materials. When students are not allowed to complete their own instruction, they
+have the opportunity to read and read the books without the
+reading.
+Students are encouraged to read the books and read the
+books and read them in the same direction. They are required to read
+say each book in the same direction. Once the book has been read,
+it is required to read the books and read by everyone during the reading
+and reading. These books are required to read the books. They are
+drawed or are placed to read the books, or read the books
+and read the books
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도1] 실제 입력:
+<|im_start|>user
+All red boxes are heavy. This box is red. Is it heavy? Answer yes or no.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: The red boxes are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도2] 실제 입력:
+<|im_start|>user
+All red boxes are heavy. This box is red. Is it heavy? Answer yes or no.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Year 8th of the day. Please contact us for assistance.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "EOS", "generated_tokens": 15, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도3] 실제 입력:
+<|im_start|>user
+All red boxes are heavy. This box is red. Is it heavy? Answer yes or no.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: The red boxes are not heavy, but they are not heavy. However, if they are heavy, red boxes can still be heavy. If they are heavy, a red box may be heavy. When red boxes are heavy, red boxes are heavy, but not heavy. If they are heavy, red boxes can still be heavy.
+If the red box is heavy, red boxes can be heavy, unless they are heavy. If they are heavy, red boxes can no longer be heavy. If they do not have a red box, red boxes can still be heavy.
+Answer if the red box was heavy, red boxes can still be heavy, but not heavy. If they are heavy, red boxes can still be heavy, but not heavy, red boxes can still be heavy.
+If
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[a/parent/시도1] 실제 입력:
+<|im_start|>user
+All red boxes are heavy. This box is red. Is it heavy? Answer yes or no.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도2] 실제 입력:
+<|im_start|>user
+All red boxes are heavy. This box is red. Is it heavy? Answer yes or no.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: |im_end|>||im_end|> 
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도3] 실제 입력:
+<|im_start|>user
+All red boxes are heavy. This box is red. Is it heavy? Answer yes or no.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>the
+<|im_start|>the
+<|im_start|>the
+<|im_start|>the
+<|im_start|>the
+<|im_start|>the
+<|im_start/>the
+<|im_start|>the
+<|im_start|>the
+<|im_start|>the
+<|im_start|>the
+<|im_start|>the
+<|im_start|>the
+ <|im_start|>the
+<|im_start|>the
+<|im_start|>the
+
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도1] 실제 입력:
+<|im_start|>user
+All red boxes are heavy. This box is red. Is it heavy? Answer yes or no.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: All red boxes are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are heavy. They are
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도2] 실제 입력:
+<|im_start|>user
+All red boxes are heavy. This box is red. Is it heavy? Answer yes or no.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: The choice of your left side of the box is the only choice. If you go to the left side of the box you make a change.
+If the left side of the box is not active or passive, you have to take the appropriate action.
+If you go to the right side of the box, it will take time to choose a change.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 79, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도3] 실제 입력:
+<|im_start|>user
+All red boxes are heavy. This box is red. Is it heavy? Answer yes or no.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: Any explanation that would change this box is simply a short answer. When the correct answer is correct, the answer will be unrecognized.
+
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 37, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+질문 ID: memory_ko
+
+[b/parent/시도1] 실제 입력:
+<|im_start|>user
+내가 정한 비밀 단어는 별빛입니다. 비밀 단어만 다시 쓰세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 
+같이 보기 
+ 한국어의 문법
+
+각주
+
+외부 링크 
+ 한국어의 문법
+
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+한국어 문법
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도2] 실제 입력:
+<|im_start|>user
+내가 정한 비밀 단어는 별빛입니다. 비밀 단어만 다시 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: "Ojorra", I.
+Ojorra ("Ojorra")
+Ojanorra "Ojorra", I.
+Ojorra "Ojorra", I.
+Ojorra "Ojorra", I.
+"Ojorra", I.
+"Ojorra", I.
+"Ojorra", I.
+"Ojorra", I.
+"Ojorra", I.
+"Ojorra", I.
+"Ojorra", I.
+"Ojorra", I.
+"Ojorra", I.
+"Ojorra", I.
+"Ojorra", I.
+"O
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/parent/시도3] 실제 입력:
+<|im_start|>user
+내가 정한 비밀 단어는 별빛입니다. 비밀 단어만 다시 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 
+각주
+
+외부 링크 
+
+일본의 과학 소설
+일본의 소설
+일본의 만화
+일본의 소설
+일본의 SF 소설
+일본의 SF 소설
+일본어 소설
+SF 애니메이션
+일본의 SF 소설
+2014년 소설
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "EOS", "generated_tokens": 43, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도1] 실제 입력:
+<|im_start|>user
+내가 정한 비밀 단어는 별빛입니다. 비밀 단어만 다시 쓰세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 이것은 왜 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐는 것입니다. 이때 우리가 알고 있느냐
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도2] 실제 입력:
+<|im_start|>user
+내가 정한 비밀 단어는 별빛입니다. 비밀 단어만 다시 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: "Oddly, I should be able to understand and explain the basic principles of the course.»
+"Oddly, I should be able to understand the foundation of a course that I have been reading in my lifetime.»
+"Oddly, I should be able to understand and explain the principles of the course.»
+"Oddly, I should be able to understand, explain, explain, explain, and present.»
+"Oddly, I should be able to understand and explain all aspects of the course.»
+"Oddly, I should be able to understand the principles of the course, including, for example, the principles of the course.»
+"Oddly, I should be able to understand and explain all aspects of
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[b/student/시도3] 실제 입력:
+<|im_start|>user
+내가 정한 비밀 단어는 별빛입니다. 비밀 단어만 다시 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: The process was not the same as the same method of interpretation:
+The following text was given:
+The following text is used to identify the answer.
+The following text is used to identify each answer:
+In the following text one can find the answer:
+Document 2.0: The question is answered in one of two languages:
+The question is answered in one of two languages:
+The question is answered in one language:
+The question is answered in another language:
+The question is answered in each language:
+The question is answered in two languages:
+The question is answered in two languages:
+The question is answered in pairs:
+The question is answered in pairs:
+The question is answered in pairs:
+The question is answered in pairs:
+The
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[4]]}
+
+[a/parent/시도1] 실제 입력:
+<|im_start|>user
+내가 정한 비밀 단어는 별빛입니다. 비밀 단어만 다시 쓰세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start|>assistant
+<|im_start
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도2] 실제 입력:
+<|im_start|>user
+내가 정한 비밀 단어는 별빛입니다. 비밀 단어만 다시 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <o><usr>
+<o><usr><usr><usr>
+<o><usr><usr><usr>
+<o><usr><usr>
+<o><usr><usr>
+<o><usr>
+<o><usr><usr>
+<o><usr><usr>
+<o><usr><usr>
+<o><usr><usr>
+<o><usr><usr>
+<o><usr>
+<o><usr>
+<o><usr>
+<o><
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "MAX_NEW", "generated_tokens": 160, "matched_stop_sequence": null, "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/parent/시도3] 실제 입력:
+<|im_start|>user
+내가 정한 비밀 단어는 별빛입니다. 비밀 단어만 다시 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: <|im_start|>assistant
+
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 18, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도1] 실제 입력:
+<|im_start|>user
+내가 정한 비밀 단어는 별빛입니다. 비밀 단어만 다시 쓰세요.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 내가 정한 비밀을 읽으면 다시 쓰세요.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 17, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도2] 실제 입력:
+<|im_start|>user
+내가 정한 비밀 단어는 별빛입니다. 비밀 단어만 다시 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: If you want to know, you're not likely to know the answer.
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 22, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+[a/student/시도3] 실제 입력:
+<|im_start|>user
+내가 정한 비밀 단어는 별빛입니다. 비밀 단어만 다시 쓰세요.
+Answer only what was asked, using the requested format.<|im_end|>
+<|im_start|>assistant
+
+실제 출력: 
+기존 기록 rubric=False; 생성 메타={"eos_token_available": true, "finish_reason": "STOP_SEQUENCE", "generated_tokens": 7, "matched_stop_sequence": [30, 94, 376, 65, 769, 94, 32], "max_new": 160, "stop_at_eos_effective": true, "stop_at_eos_requested": true, "stop_token_sequences": [[30, 94, 376, 65, 769, 94, 32]]}
+
+새 채점·유사도·모델 실행0. 부모 구조/토크나이저가 달라 chat32 단독 인과비교가 아닙니다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-01 22:19:12)
+==============================================================================
