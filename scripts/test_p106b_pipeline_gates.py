@@ -58,7 +58,7 @@ class FakeSession:
 
 
 class Tests(unittest.TestCase):
-    def test_wire_rejects_extra_and_duplicate(self):
+    def test_wire_rejects_extra_but_preserves_duplicate_for_contract(self):
         parsed = multi.parse_multi(response(2), 2, "en")
         self.assertEqual(parsed["status"], "MULTI_FORMAT_READY")
         bad = response(2)
@@ -66,7 +66,7 @@ class Tests(unittest.TestCase):
         self.assertIsNone(multi.parse_multi(bad, 2, "en")["parsed"])
         bad = response(2)
         bad["choices"][0]["message"]["content"] = bad["choices"][0]["message"]["content"].replace("variant2", "variant1")
-        self.assertIsNone(multi.parse_multi(bad, 2, "en")["parsed"])
+        self.assertEqual(multi.parse_multi(bad, 2, "en")["status"], "MULTI_FORMAT_READY")
 
     def test_truncation_not_candidate(self):
         self.assertIsNone(multi.parse_multi(response(4, "length"), 4, "en")["parsed"])

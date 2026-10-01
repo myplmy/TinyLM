@@ -18,7 +18,7 @@ from scripts.p106b_gate_runtime import ROOT, MODEL_SHA256, TOKENIZER, ToolFailur
 from scripts.p106b_shards import ShardWriter, verify
 from scripts.p106b_teacher_format import teacher_prompt, parse_reply, script_observations
 from scripts.p106b_teacher_wrapper import wrap_turns
-from scripts.p106b_multi_answer import multi_prompt, parse_multi, wrap_multi
+from scripts.p106b_multi_answer import multi_prompt, parse_multi, wrap_multi, replacement_prompt, parse_replacement
 from scripts.p106b_http_errors import capture_http_error
 from scripts.train_sft_p090 import encode_records, loss_sum
 
@@ -78,7 +78,7 @@ def response_diagnostic(reply, maximum):
 
 
 class CandidateWriter:
-    def __init__(self, directory, lineage):
+    def __init__(self, directory, lineage, *, observer=None):
         from tokenizers import Tokenizer
         self.directory, self.lineage = directory, lineage
         self.raw, self.canonical = ShardWriter(directory, "raw"), ShardWriter(directory, "canonical")
@@ -89,29 +89,36 @@ class CandidateWriter:
         self.request_sec = 0.0
         self.seen = set()
         self.response_diagnostics, self.response_causes = {}, Counter()
+        self.observer = observer
 
-    def request(self, session, job, ident, seed, *, count=1, per_slot=3072, maximum=2048, dedupe_scope=""):
+    def request(self, session, job, ident, seed, *, count=1, per_slot=3072, maximum=2048, dedupe_scope="", replacement=None, output_contract=None):
         validate_job_contract(job)
-        messages = (teacher_prompt(job["teacher_task"], job["target_language"], job["source_payload"])
-                    if count == 1 else multi_prompt(job, count))
+        messages = (replacement_prompt(job, replacement) if replacement else
+                    (teacher_prompt(job["teacher_task"], job["target_language"], job["source_payload"])
+                     if count == 1 else multi_prompt(job, count)))
         admission = session.count_prompt(messages, per_slot, maximum)
         record = {"generation_id": ident, "source": job, "admission": admission,
                   "accepted_for_training": False, "semantic_truth": "PSEUDO_UNVERIFIED",
                   "seed": seed, "reasoning_effort": getattr(session, "effort", "UNRECORDED_LABEL"),
                   "thinking_budget_tokens_requested": getattr(session, "thinking_budget", None),
-                  "requested_answers": count, "dedupe_scope": dedupe_scope}
+                  "requested_answers": count, "dedupe_scope": dedupe_scope,
+                  "replacement_contract": replacement, "output_contract": output_contract}
         rows = []
+        completion_call_attempted = False
         t0 = time.monotonic()
         backend, processing_error, processing_exception, reply = None, None, None, None
         if admission["decision"] != "DIRECT":
             record["screen_status"] = admission["decision"]
         else:
             try:
+                completion_call_attempted = True
                 reply = session.complete(messages, seed, maximum)
-                parsed = (parse_reply(reply, language=job["target_language"]) if count == 1
-                          else parse_multi(reply, count, job["target_language"]))
+                parsed = (parse_replacement(reply, replacement, job["target_language"]) if replacement else
+                          (parse_reply(reply, language=job["target_language"]) if count == 1
+                           else parse_multi(reply, count, job["target_language"])))
                 record.update(teacher=parsed, screen_status=parsed["status"] if count != 1 else parsed["format_status"])
                 content = parsed.get("parsed") if count != 1 else parsed.get("parsed_content")
+                record["transport_complete"] = bool(content)
                 if content:
                     reasoning = parsed["teacher_reasoning_content"]
                     ref = f"{self.directory.relative_to(ROOT)}/raw_shards_manifest.json#{ident}"
@@ -128,7 +135,19 @@ class CandidateWriter:
                         row["meta"].update(source_split=job["split"], answer_variant=1, variants_in_group=1)
                         rows = [row]
                     else:
-                        rows = wrap_multi(job, parsed, ident, MODEL_SHA256, ref)
+                        rows = wrap_multi(job, parsed, ident, MODEL_SHA256, ref, count)
+                    if output_contract is not None:
+                        from scripts.p106b_output_contract import row_text, text_sha
+                        for candidate in rows:
+                            candidate["meta"]["output_contract"] = output_contract
+                            candidate["meta"]["output_contract_effective"] = (
+                                output_contract["kind"] if text_sha(row_text(candidate, 0)) == output_contract["question_sha256"] else "UNKNOWN")
+                    if self.observer is not None:
+                        from scripts.p106b_output_contract import row_text
+                        observation = self.observer.observe(ident, row_text(rows[0], 0),
+                                                           [row_text(r, 1) for r in rows])
+                        record["lexical_observation"] = observation
+                        print("[LEXICAL_OBSERVATION] " + json.dumps(observation, ensure_ascii=False), flush=True)
                     for candidate in rows:
                         for message in candidate["messages"]:
                             text = message["content"]
@@ -157,13 +176,28 @@ class CandidateWriter:
                 rows = []
         record["wall_sec"] = round(time.monotonic() - t0, 6)
         diagnostic = response_diagnostic(reply, maximum)
+        diagnostic["completion_call_attempted"] = completion_call_attempted
+        diagnostic["transport_complete"] = record.get("transport_complete", False)
         record["response_diagnostic"] = diagnostic
         with self.lock:
             fingerprints = [dedupe_scope + ":" + hashlib.sha256(json.dumps(row["messages"],
                 ensure_ascii=False, sort_keys=True).encode()).hexdigest() for row in rows]
-            if len(set(fingerprints)) != len(fingerprints) or any(h in self.seen for h in fingerprints):
-                record["screen_status"] = "EXACT_DUPLICATE"
-                rows = []
+            kept, kept_hashes, duplicate_slots = [], [], []
+            retained_answers = set((replacement or {}).get("retained_answers", {}).values())
+            for row, fingerprint in zip(rows, fingerprints):
+                from scripts.p106b_output_contract import row_text
+                if (fingerprint in self.seen or fingerprint in kept_hashes
+                        or row_text(row, 1) in retained_answers):
+                    duplicate_slots.append(row["meta"].get("answer_variant", 1))
+                else:
+                    kept.append(row)
+                    kept_hashes.append(fingerprint)
+            rows, fingerprints = kept, kept_hashes
+            if duplicate_slots:
+                record["screen_status"] = "PARTIAL_EXACT_DUPLICATE" if rows else "EXACT_DUPLICATE"
+            record["duplicate_slots"] = diagnostic["duplicate_slots"] = duplicate_slots
+            # Retained rows alone contribute to token/target accounting.
+            encoded = encode_records(rows, self.tok, 1024, 32768) if rows else []
             diagnostic["wire_screen_status"] = record["screen_status"]
             self.raw.append(record)
             flush_row(self.raw)

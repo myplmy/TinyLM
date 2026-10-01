@@ -4,17 +4,19 @@ This is not a semantic classifier or a new source of retry allowances.
 The initial request, backend/parse recovery and any future approved duplicate
 recovery must consume this same object. It never invokes a teacher itself.
 """
-from dataclasses import dataclass, field
-
-
-@dataclass
 class RequestBudget:
-    maximum: int = 3
-    reasons: list[str] = field(default_factory=list)
-
-    def __post_init__(self):
-        if type(self.maximum) is not int or not 1 <= self.maximum <= 3:
+    def __init__(self, maximum=3):
+        if type(maximum) is not int or not 1 <= maximum <= 3:
             raise ValueError("teacher total attempts must stay within the existing 1..3 ceiling")
+        self._maximum, self._reasons = maximum, []
+
+    @property
+    def maximum(self):
+        return self._maximum
+
+    @property
+    def reasons(self):
+        return tuple(self._reasons)
 
     @property
     def remaining(self):
@@ -25,8 +27,8 @@ class RequestBudget:
             raise ValueError("request reason required")
         if not self.remaining:
             raise RuntimeError("shared teacher request budget exhausted")
-        self.reasons.append(reason)
-        return len(self.reasons)
+        self._reasons.append(reason)
+        return len(self._reasons)
 
     def attempts(self):
         while self.remaining:

@@ -520,7 +520,7 @@ OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 
 
 [결과101 §37](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 패널/선택/교정/자료/두교육/대조8단계는 모두 **완료**했다. 예상한 실제 wrapper/양mask·4epoch 실행은 성립, ~~그것만으로 답변능력 개선~~은 고정rubric0/8과 실제표지/질문반복으로 확인되지 않았다. xhigh 선택을 보존한다. teacher 정답성·정식TRAIN_READY·300M교육은 미확인이다.
 
-조건부 승인 [온라인/후행 분리안](../proposal/20261001_P106B-온라인-계약검사와-후행-품질검증-분리-제안서-approved-on-going.md)의 무입력·원답보기·공유3시도를 구현했다. 자동 재생성 유형분류는 [별도설계](../proposal/20261001_P106B-유일출력-변형계약과-공유재생성예산-제안서.md), 유사도와 새보고는 각각 연구 제안의 재승인 전 **HOLD**다. 기존 content/quality 필드를 폐지된 의미값 대신 어떻게 호환할지 사용자 방향을 요청했다. 선택 전 교정 수락/학습허용 소비자를 임의로 재해석하지 않는다.
+당시 조건부 승인 [온라인/후행 분리안](../proposal/20261001_P106B-온라인-계약검사와-후행-품질검증-분리-제안서-approved-on-going.md)은 무입력·원답보기·공유3시도까지만 구현하고 [유일출력 별도설계](../proposal/20261001_P106B-유일출력-변형계약과-공유재생성예산-제안서-approved-on-going.md)·유사도·새보고·품질필드 호환의 선택을 요청했다. 이 이력은 아래2026-10-02 사용자 추가 승인·새v33 구현으로 갱신됐다. 원형 결과와 옛 미구현 상태를 새 경로의 현재 판정으로 복사하지 않는다.
 
 | 단계 | 실물 실행 파일 | 예상·자원 | 사전 판정 | 상태 |
 |---|---|---|---|---|
@@ -530,3 +530,34 @@ OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 
 **독립변수:** ID만 표시하던 화면과 입력 대기를 명시 설정/실제 원답 표시로 바꿔 기술 계약을 검사한다. 새 품질 지표나 GPU 교육조건 비교가 아니다. 새 태그·모델출력·학습토큰0, 풀2배 조건은 학습하지 않으므로 N/A다. `check_run_registry.py --steps 1 --micro-bs 0 --accum 1 --seq 1` 계산 전용 경로가0토큰을 확인했고 광범위 runs 레지스트리를 읽지 않았다. 과거v32를 새코드 E2E PASS로 재계산하지 않는다. GPU 재시험은 호환 선택/보류방법 승인 후 새버전·새단계에서 준비한다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 2026-10-02 운영A·유일출력A·문자A/B·분리보고A 승인 구현 — 새 v33
+
+2026-10-01 사용자 oW/pW는 [결과101 §38](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 CPU12 모의시험과 동결18교사답/96학생시도 재표시로 완료했다. 옛 GPU 패널과 교육 결과를 새 모델 관측으로 중복 계수하지 않는다. 원형2SH의7명령과Git복구점을 결과에 보존하고-done 개명·사용자 승인 적격삭제를 수행했다.
+
+**새 독립변수:** 온라인 잘못된 문구/의미 재시도를 제거하고, 유일출력/UNKNOWN/명시변형의 코드계약과 총3회 기술회복·문자 관찰·분리보고로 전환한다. 원형 v32·옛 역사 문턱은 변경하지 않는다. 새 `v33_online_technical_contract`에서 원천 v28 질문/대조 답을 사용하되 신규 생성변환은 `teacher_answer`이고 의미/오조어 검증은 후행이다. 기존 xhigh 사용자 선택의 정확 SHA를 실행전 설정으로만 계승한다. 기존 B부모 평가도 평가 함수/원형SHA를 검산해 교육 전 기준선으로만 사용한다. 새 경로 GPU PASS로 승격하지 않는다.
+
+**예측과 대립 가설:** 유일답/UNKNOWN의 불필요한 중복 호출과 잘못된 문구 목록의 내용 오판을 줄일 것으로 예상한다. 파서·문맥·출처의 실패나 교사의 질문 재작성은 여전히 발생할 수 있으며 typed 계약이 UNKNOWN으로 내려갈 수 있다. 문구 screen을 제거해도 교육 품질이 좋아진다는 예측은 하지 않는다. 변형가능의 완전동일답만 정상 슬롯/질문을 고정해 남은 요청 예산으로 회복하고, 언어/유사도 관찰은 경고만 기록한다.
+
+| 단계 | 실물 런처 | 비용/자원 | 선결 | 사전 판정·상태 |
+|---|---|---:|---|---|
+| Stage3oWb | [run_P106B_Stage3oWb_online_contract_v3_cpu.sh](../run_P106B_Stage3oWb_online_contract_v3_cpu.sh) | ⚙0.10h/CPU·GPU0 | 새 사용자 smoke0.1h | 무모델 회귀·null/UNKNOWN·총3시도·정상 슬롯 보존; STATIC_ONLY/E2E_NOT_RUN |
+| Stage3qWa | [run_P106B_Stage3qWa_lexical_ab_cpu.sh](../run_P106B_Stage3qWa_lexical_ab_cpu.sh) | ⚙0.05h/CPU·GPU0 | 새 smoke0.1h | 정확 동결12요청 문자 A/B 비용·실문구 표시; 오탐/실시간 GPU 판단 유보; STATIC_ONLY/E2E_NOT_RUN |
+| Stage3rW | [run_P106B_Stage3rW_review_packet_prepare.sh](../run_P106B_Stage3rW_review_packet_prepare.sh) | ⚙0.05h/CPU·GPU0 | 새 smoke0.1h | 후행20대상 패킷 준비만; 지금 GPT/로컬 의미판독0; STATIC_ONLY/E2E_NOT_RUN |
+| Stage3qWb | [run_P106B_Stage3qWb_known_output_teacher.sh](../run_P106B_Stage3qWb_known_output_teacher.sh) | ⚙0.50h/사용자 GPU | oWb0.1h와 문자 qWa0.05h | 코드고정 유일2/변형2 한영 질문·최대12교사 요청·정상 슬롯 보존; STATIC_ONLY/E2E_NOT_RUN |
+| Stage3iWh | [run_P106B_Stage3iWh_online_technical_wire.sh](../run_P106B_Stage3iWh_online_technical_wire.sh) | ⚙0.75h/사용자 GPU | qWb0.5h | 현재 qWb 관측 후 같은4원천 프로필/양mask 기술 통과; STATIC_ONLY/E2E_NOT_RUN |
+| Stage3iWi | [run_P106B_Stage3iWi_online_technical_collection.sh](../run_P106B_Stage3iWi_online_technical_collection.sh) | ⚙4.00h/사용자 GPU | iWh0.75h | 현재 iWh 뒤96그룹·언어별75% 기술자료량; 내용진실 미평가; STATIC_ONLY/E2E_NOT_RUN |
+| Stage3jWe | [run_P106B_Stage3jWe_shared_corpus_contract.sh](../run_P106B_Stage3jWe_shared_corpus_contract.sh) | ⚙0.10h/CPU·GPU0 | iWi4h | 현재 전체자료 뒤 concept/질문 split·사고target0·두어휘mask; STATIC_ONLY/E2E_NOT_RUN |
+| Stage3kWe | [run_P106B_Stage3kWe_chat32_repeat4_contract.sh](../run_P106B_Stage3kWe_chat32_repeat4_contract.sh) | ⚙0.75h/사용자 GPU | jWe0.1h | B자기부모·동일v33자료4pass·새태그·native/실답 보존; STATIC_ONLY/E2E_NOT_RUN |
+| Stage3lWe | [run_P106B_Stage3lWe_legacy_repeat4_contract.sh](../run_P106B_Stage3lWe_legacy_repeat4_contract.sh) | ⚙0.75h/사용자 GPU | jWe0.1h | A자기부모대조·동일v33자료4pass·B교육과 독립; STATIC_ONLY/E2E_NOT_RUN |
+| Stage3mWe | [run_P106B_Stage3mWe_lineage_pair_contract.sh](../run_P106B_Stage3mWe_lineage_pair_contract.sh) | ⚙0.10h/CPU·GPU0 | kWe/lWe 각0.75h | 두현재교육원답/childSHA 대조; 기술/정성/CE 분리; STATIC_ONLY/E2E_NOT_RUN |
+
+**판정 분리:** qWb는 코드고정4계약과재시도/슬롯의 기술 PASS, iWh는4프로필/양mask 연결 PASS, iWi는언어별75% **기술 자료량** PASS다. 옛 quality3필드는null이며 통과 status는COLLECTION_TECHNICAL_READY다. 이 값은 정답률이나자료권리 적격이 아니다. B/A 교육은 각자 부모·각자토크나이저/기존 native crop로 전후를 비교하고 같은8질문 첫답/최대3시도를 보존한다. 기존0/8의 rubic과 의미 전체 정답성을 동일하게 취급하지 않는다.
+
+**문자 A/B:** 현재 기본A는같은요청; B는최근32답/256KiB큐·상한64·후보표시상위3을추가하며모드로되돌릴수있다. 같은12요청10반복 CPU비용은 결과§38.3에관측했고 비용선(p95≤200ms·peak≤32MiB)은통과했다. 실제 교사/학생whole-wall·오탐은미측정이라B기본채택하지않는다. 유사도는자동재생성/격리/수락/손실에영향0이다. 임베딩/NLI는 후속 별도 데이터셋 검증 계약으로만남기며이번구현0이다.
+
+**preflight:** 교사입력/샘플링xhigh·8K사고/16K전체/32Kctx는동일설정, 기존실험을반복하지않도록새출력경로/태그/단계명을사용한다. 태그는 `p106b_s3k_contract_chat32_s1337`와 `p106b_s3l_contract_a_s1337`로 별도예약하며 원형을덮지않는다. 풀2배·300M표준은 이소형의4pass배선진단에충족되지않는**의도된 예외**다. 실제토큰=각자tokenizer로직렬화한비패딩대화합×4이고지도토큰/패딩계산상한은별도표시한다. 업데이트수는4×ceil(train행/128), micro8×accum16·seq≤1024·checkpoint-on이다. 동일자료라도어휘가달라토큰분모/부모/구조가달라 **tokenizer단독인과·교차CE순위·300M효과**는금지다. Codex사전조회는허용된정확아티팩트/계산전용레지스트리경로만사용하고전체runs를열지않는다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+**원본 보존·한계:** 이전v32의실제품질/비용·선택값을새 코드 결과로재계산하지않는다. 신규교사/학생/GPU·스모크는사용자실행이고현재NOT_RUN이다. 교사raw/사고·canonical·선택/미선택·교정의계보는20MB이하write-once샤드로남는다. 후행 패킷20개 준비는판독이아니며지금GPT가내용을새로평가하지않는다. 제안서종료는승인범위새사용자실행/결과회수후판정하고 사용자실행대기만으로현재GPT WIP를미완료로유지하지않는다.

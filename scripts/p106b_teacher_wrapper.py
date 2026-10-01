@@ -62,7 +62,7 @@ def wrap_turns(turns: Sequence[Mapping[str, object]], *, source_id: str,
         if not all((source_repo, source_revision, source_object_id, source_transform,
                     parent_concept_id, source_rights_status)):
             raise ValueError("full source provenance tuple must be supplied together")
-        if source_transform not in {"original", "teacher_translation", "teacher_repair",
+        if source_transform not in {"original", "teacher_translation", "teacher_repair", "teacher_answer",
                                     "teacher_compression", "teacher_source_compression",
                                     "translation_after_source_compression",
                                     "repair_after_source_compression",

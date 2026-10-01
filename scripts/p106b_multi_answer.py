@@ -14,8 +14,10 @@ def multi_prompt(job: dict, count: int) -> list[dict]:
     fields = "[[QUESTION]]\n<one question>\n[[/QUESTION]]\n" + "\n".join(
         f"[[ANSWER_{index}]]\n<answer {index}>\n[[/ANSWER_{index}]]" for index in range(1, count + 1))
     instruction = (content_instructions(job["teacher_task"], job["target_language"])
-        + " Produce one question and distinct, mutually consistent answers to that same question. "
-          "Answer 1 is concise, answer 2 explains briefly; when 4 are requested answer 3 uses two bullets "
+        + " Produce one question and mutually consistent answers to that same question. "
+          "Only vary phrasing where the source question allows it. A fixed literal/output format "
+          "must remain identical when no other valid response exists. "
+          "Where the question allows variation, answer 1 is concise, answer 2 explains briefly; when 4 are requested answer 3 uses two bullets "
           "and answer 4 is conversational. Preserve supported facts, entities, units and uncertainty. "
           "No private reasoning in final fields. No JSON wrapper, ChatML, roles, notes or text outside exact fields. "
           "JSON/code/foreign-language quotation inside an answer is allowed when required by the source question:\n" + fields)
@@ -50,19 +52,60 @@ def parse_multi(reply: dict, count: int, language: str) -> dict:
     if (not 1 <= len(question) <= 2000 or any(not 1 <= len(a) <= 6000 for a in answers)
             or any(re.search(r"\[\[/?(?:QUESTION|ANSWER(?:_[1-4])?|NOTE)\]\]", text)
                    for text in [question] + answers)
-            or len({re.sub(r"\s+", " ", a).casefold() for a in answers}) != count):
-        result["status"] = "EMPTY_DUPLICATE_OR_NESTED_FIELDS"
+            ):
+        result["status"] = "EMPTY_OR_NESTED_FIELDS"
         return result
     result.update(status="MULTI_FORMAT_READY", parsed={"question": question, "answers": answers})
     return result
 
 
-def wrap_multi(job: dict, parsed: dict, generation_id: str, model_sha: str, reasoning_ref: str) -> list[dict]:
+def replacement_prompt(job, replacement):
+    slots = replacement["slots"]
+    if not slots or any(type(i) is not int or i not in (1, 2, 3, 4) for i in slots):
+        raise ValueError("replacement slots required")
+    fields = "\n".join(f"[[ANSWER_{i}]]\n<replacement answer>\n[[/ANSWER_{i}]]" for i in slots)
+    instruction = (content_instructions(job["teacher_task"], job["target_language"])
+        + " The code has retained the question and successful answers. Return ONLY missing "
+          "answer slots below; do not rewrite QUESTION or retained answers. Give consistent "
+          "valid alternatives, not copies of retained answers. No JSON/roles/outside text:\n" + fields)
+    return [{"role": "system", "content": instruction},
+            {"role": "user", "content": json.dumps(replacement, ensure_ascii=False)}]
+
+
+def parse_replacement(reply, replacement, language):
+    slots = replacement["slots"]
+    # Reuse the strict completion/type checks, then apply a missing-slot-only grammar.
+    message = reply["choices"][0]["message"]
+    final, reasoning = message.get("content") or "", message.get("reasoning_content") or ""
+    if language not in ("ko", "en") or len(reply["choices"]) != 1 or not isinstance(final, str) or not isinstance(reasoning, str):
+        raise ValueError("one replacement completion required")
+    result = {"teacher_final_content": final, "teacher_reasoning_content": reasoning,
+              "finish_reason": reply["choices"][0].get("finish_reason"),
+              "usage": reply.get("usage", {}), "status": "INCOMPLETE", "parsed": None}
+    if result["finish_reason"] != "stop":
+        return result
+    pattern = r"\A\s*" + r"\s*\n".join(
+        rf"\[\[ANSWER_{i}\]\]\s*\n(?P<a{i}>.*?)\n\[\[/ANSWER_{i}\]\]" for i in slots) + r"\s*\Z"
+    match = re.fullmatch(pattern, final, flags=re.DOTALL)
+    if match is None:
+        result["status"] = "PARSE_ERROR"
+        return result
+    answers = [match.group(f"a{i}").strip() for i in slots]
+    if any(not 1 <= len(a) <= 6000 or re.search(r"\[\[/?(?:QUESTION|ANSWER(?:_[1-4])?|NOTE)\]\]", a) for a in answers):
+        result["status"] = "EMPTY_OR_NESTED_FIELDS"
+        return result
+    result.update(status="MULTI_FORMAT_READY", parsed={"question": replacement["question"],
+                  "answers": answers, "slots": slots})
+    return result
+
+
+def wrap_multi(job: dict, parsed: dict, generation_id: str, model_sha: str, reasoning_ref: str,
+               requested_count=None) -> list[dict]:
     content = parsed["parsed"]
     reasoning = parsed["teacher_reasoning_content"]
     sha = hashlib.sha256(reasoning.encode()).hexdigest().upper() if reasoning else ""
     rows = []
-    for index, answer in enumerate(content["answers"], 1):
+    for index, answer in zip(content.get("slots", range(1, len(content["answers"]) + 1)), content["answers"]):
         row = wrap_turns([{"user_text": content["question"], "assistant_text": answer}],
             source_id=job["source_id"], source_sha256=job["source_sha256"],
             teacher_model_sha256=model_sha, language=job["target_language"],
@@ -71,7 +114,7 @@ def wrap_multi(job: dict, parsed: dict, generation_id: str, model_sha: str, reas
             source_repo=job["source_repo"], source_revision=job["source_revision"],
             source_object_id=job["source_id"], source_transform=job["source_transform"],
             parent_concept_id=job["parent_concept_id"], source_rights_status=job["rights_status"])
-        row["meta"].update(answer_variant=index, variants_in_group=len(content["answers"]),
+        row["meta"].update(answer_variant=index, variants_in_group=requested_count or len(content["answers"]),
             concept_group=job["parent_concept_id"], source_split=job["split"],
             semantic_consistency="MANUAL_REVIEW_REQUIRED")
         rows.append(row)

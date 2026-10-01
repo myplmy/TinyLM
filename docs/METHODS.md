@@ -30,6 +30,8 @@
 
 ## 버전 개요
 
+2026-10-02 P106B 온라인 기술계약·유일출력/UNKNOWN·공유3시도·문자관찰·분리보고의 승인 구현과 후행 판독 준비는 [방법론03](methods/03_knowledge_quality.md)의 최신 절이 소유한다. 🧪실험도구 STATIC_ONLY/CPU 검증이며 새 교사/학생 품질 PASS가 아니다. 의미 임베딩/NLI·GPT 후행 판독은 이번 미실행이다.
+
 - **v4** — 단일파일 아키텍처. 측정 기반 설계 확정(prelude/coda, 어텐션 독립, MLP 타잉,
   CLA2, factorized embedding, g128 삼진). 300M 실전에서 NaN 발산.
 - **v5** — 학습 발산 해결(QK-norm, NaN 가드, compile 안전 어닐, LR 재조정).

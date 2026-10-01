@@ -88,55 +88,52 @@ class Tests(unittest.TestCase):
                 self.assertGreater(report["whole_wall_sec"], 0)
                 persisted = json.loads((target / "report.json").read_text(encoding="utf-8"))
                 self.assertEqual(persisted["whole_wall_sec"], report["whole_wall_sec"])
-                self.assertEqual(report["status"], "CORRECTION_WIRING_PASSED" if pilot else "CORRECTION_FORMAT_PASSED")
+                self.assertEqual(report["status"], "CORRECTION_WIRING_PASSED" if pilot else "COLLECTION_TECHNICAL_READY")
                 rows = edu.read_rows(target, "selected", report["selected_concat_sha256"])
-                self.assertEqual(len(rows), 4 if pilot and bad_multi else 6 if pilot else 28)
-                self.assertTrue(all(r["meta"]["source_transform"] == "teacher_repair" for r in rows))
+                self.assertEqual(len(rows), 6 if pilot else 28)
+                self.assertTrue(all(r["meta"]["source_transform"] == "teacher_answer" for r in rows))
                 self.assertTrue(all("SIDE_CAR_ONLY" not in json.dumps(r["messages"]) for r in rows))
                 if not pilot:
                     _train, _val, preview = edu.prepare_preview()
                     self.assertEqual(preview["source_concat_sha256"], report["selected_concat_sha256"])
                     self.assertEqual(len(_train)+len(_val), 28)
                 self.assertEqual(FakeTeacher.contexts, [(32768, 1)])
-                self.assertEqual(FakeTeacher.requests, [(32768, 16384)] * (6 if pilot and bad_multi else 4 if pilot else 24))
+                self.assertEqual(FakeTeacher.requests, [(32768, 16384)] * (4 if pilot else 24))
                 self.assertEqual(report["required_groups_by_language"], {"ko": 2, "en": 2} if pilot else {"ko": 9, "en": 9})
                 return report
 
     def test_real_correction_to_canonical_roundtrip(self):
         self.run_correction_fixture()
 
-    def test_wire_pilot_keeps_bad_content_out_of_training(self):
+    def test_wire_pilot_does_not_semantically_screen_or_retry(self):
         report = self.run_correction_fixture(pilot=True, bad_multi=True)
         self.assertTrue(report["wire_passed"])
-        self.assertFalse(report["quality_screen_passed"])
+        self.assertIsNone(report["quality_screen_passed"])
         self.assertFalse(report["student_training_allowed"])
-        self.assertEqual(report["accepted_groups_by_language"], {"ko": 1, "en": 2})
+        self.assertEqual(report["accepted_groups_by_language"], {"ko": 2, "en": 2})
         self.assertEqual(report["wired_groups_by_language"], {"ko": 2, "en": 2})
 
-    def test_prompt_and_feedback_can_repair_question_not_echo_it(self):
+    def test_primary_prompt_has_no_detected_badword_feedback(self):
         from scripts.p106b_teacher_format import teacher_prompt
         from scripts.p106b_multi_answer import multi_prompt
         group = [self.correction_fixture_rows()[0]]
         group[0]["messages"][0]["content"][0]["text"] = "22세 여성의 열불견증은?"
         job = edu.build_correction_job(group)
         self.assertNotIn("answer", job["source_payload"])
-        self.assertEqual(job["source_payload"]["detected_source_issues"][0]["role"], "user")
-        self.assertEqual(job["source_payload"]["detected_source_issues"][0]["problem_text"], "열불견증")
-        for prompt in (teacher_prompt("repair", "ko", job["source_payload"]), multi_prompt(job, 2)):
-            self.assertIn("NOT erroneous wording", prompt[0]["content"])
-            self.assertIn("even inside QUESTION", prompt[0]["content"])
+        self.assertNotIn("detected_source_issues", job["source_payload"])
+        for prompt in (teacher_prompt(job["teacher_task"], "ko", job["source_payload"]), multi_prompt(job, 2)):
+            self.assertIn("Draft answers are unverified", prompt[0]["content"])
             self.assertIn("열불견증", prompt[1]["content"])
-        hint = edu.retry_feedback("OBSERVED_MALFORMED_TERMINOLOGY", edu.content_issues(group))
-        self.assertEqual(hint["issues"][0]["message"], 0)
-        self.assertIn("QUESTION", hint["action"])
+        self.assertFalse(hasattr(edu, "content_issues"))
+        self.assertFalse(hasattr(edu, "retry_feedback"))
 
     def test_budget_recovery_does_not_reuse_old_output_or_child_tags(self):
         self.assertEqual(edu.CORRECTION_CONTEXT, 32768)
         self.assertEqual(edu.CORRECTION_MAX_OUTPUT, 16384)
         self.assertEqual(edu.CORRECTION_THINKING_BUDGET, 8192)
-        self.assertEqual(edu.BASE.name, "v32_prompt_wire_effort_panel")
-        self.assertIn("_feedback_", edu.ARMS["a"]["stem"])
-        self.assertIn("_feedback_", edu.ARMS["b"]["stem"])
+        self.assertEqual(edu.BASE.name, "v33_online_technical_contract")
+        self.assertIn("_contract_", edu.ARMS["a"]["stem"])
+        self.assertIn("_contract_", edu.ARMS["b"]["stem"])
 
     def test_global_three_of_four_cannot_override_korean_threshold(self):
         passed, required = edu.correction_gate(True, {"ko": 2, "en": 2}, {"ko": 1, "en": 2}, 4)

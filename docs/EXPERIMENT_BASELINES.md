@@ -313,6 +313,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_s3k_budget_chat32_s1337` / `p106b_s3l_budget_a_s1337` | v31 교정/공통자료 후 교육 계획 | **미사용·교육/child0.** 교사완결5/7이나질문/답오조어선별로KO1/2 음성8·후속5단선결8. 새v32와feedback태그로대체하며옛음성보존([101 §36](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)) |
 | P106B v31 관측·v32 프롬프트/배선/effort 대응 준비 | 기존B baseline유지·새단계출력/SchemaV2 | **실측:** 7요청/canonical8/selected4·두KO다중답완결후내용거부·학생0. **설계:** 8K사고/16K합계/32Kctx·low/medium/xhigh대응12·명시선택·배선/전체언어별75%분리·8SH. 새GPU/정답성/quality NOT_RUN([101 §36](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)) |
 | `p106b_s3k_feedback_chat32_s1337` / `p106b_s3l_feedback_a_s1337` | v32 전체교정/공통94train·34val·두자기부모4pass | **2026-10-01 실행완료**, [101 §37](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md). B52904/A62680 실제대화토큰·각4update·reserved3738/2938MiB. SFT val각약0.14감소·native각약0.014악화·고정rubric전후0/8. 구조/어휘/부모가달라인과순위금지·formal TRAIN_READY/P106 ACCEPT 아님 |
+| `p106b_s3k_contract_chat32_s1337` / `p106b_s3l_contract_a_s1337` | 새v33 온라인 기술자료·각자 부모/어휘의공통자료4pass | **2026-10-02 예약·GPU NOT_RUN.** 운영A(의미선별폐지·품질null)/유일출력A/문자경고/분리보고 승인. 코드고정출력gate→4프로필→전체96기술자료량→공통split·양mask→B/A교육. 새태그·새폴더로옛결과불변. 학생토큰/지도토큰/처리상한·업데이트분모별도; 소형반복은600M풀·300M교육증거아님([101 §38](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)) |
 
 > 체크포인트·로그 파일명 = `{preset}_{data}_{tokens}_{tag 또는 arch}`. **같은 (preset,data,tokens)
 > 안에서 태그가 겹치면 조용히 덮어쓴다.** 새 태그는 반드시 위 표에 추가한다.

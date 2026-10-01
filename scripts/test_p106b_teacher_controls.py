@@ -86,7 +86,8 @@ class ControlTests(unittest.TestCase):
             self.assertEqual(report["canonical_rows"], 18)
             for effort in edu.EFFORTS:
                 self.assertTrue(report["per_effort"][effort]["wire_complete"])
-                self.assertEqual(report["per_effort"][effort]["content_screen_passed_groups"], 4)
+                self.assertIsNone(report["per_effort"][effort]["content_screen_passed_groups"])
+                self.assertIsNone(report["per_effort"][effort]["usable_groups_per_sec"])
             self.assertEqual(report["student_training"], "NOT_RUN")
 
     def test_no_effort_is_silently_chosen_for_unattended_queue(self):

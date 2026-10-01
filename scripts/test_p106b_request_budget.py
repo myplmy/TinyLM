@@ -28,6 +28,15 @@ class Tests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 RequestBudget(value)
 
+    def test_public_history_and_ceiling_are_readonly(self):
+        budget = RequestBudget()
+        budget.take("initial")
+        with self.assertRaises(AttributeError):
+            budget.maximum = 5
+        with self.assertRaises(AttributeError):
+            budget.reasons.clear()
+        self.assertEqual(budget.remaining, 2)
+
 
 if __name__ == "__main__":
     unittest.main()

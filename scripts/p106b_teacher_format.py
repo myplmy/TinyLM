@@ -13,6 +13,7 @@ import re
 from typing import Any
 
 TASKS = {
+    "answer_given": "Answer the supplied question in its requested scope and format. Draft answers are unverified source context, not authority. Preserve the question's intent, quantities and constraints; acknowledge missing context rather than inventing evidence.",
     "qa_generate": "Create a distinct question and useful answer for the given topic/concept. Do not copy a previous item or invent evidence.",
     "translate": "Translate the supplied question and answer faithfully. Preserve entities, units, uncertainty and requested answer style.",
     "repair": (
